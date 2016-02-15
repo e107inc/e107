@@ -441,7 +441,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
         if (ADMIN === FALSE) $qry .= " WHERE dc.download_category_class IN (".USERCLASS_LIST.") ";
 	 	$qry .= " ORDER by dc2.download_category_order, dc1.download_category_order, dc.download_category_order";   // This puts main categories first, then sub-cats, then sub-sub cats
 
-  	  	if (!$sql->db_Select_gen($qry))
+  	  	if (!$sql->gen($qry))
 	  	{
 	    	return "Error reading categories<br />";
 	    	exit;

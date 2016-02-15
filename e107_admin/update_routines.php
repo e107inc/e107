@@ -1708,7 +1708,7 @@ function update_70x_to_706($type='')
 	if(!$sql->db_Field("plugin",5))  // not plugin_rss so just add the new one.
 	{
 	  if ($just_check) return update_needed();
-      $sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
+      $sql->gen("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_addons` TEXT NOT NULL ;");
 	  catch_error($sql);
 	}
 
@@ -1716,7 +1716,7 @@ function update_70x_to_706($type='')
 	if($sql->db_Field("plugin",5) == "plugin_rss")
 	{
 	  if ($just_check) return update_needed();
-	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
+	  $sql->gen("ALTER TABLE `".MPREFIX."plugin` CHANGE `plugin_rss` `plugin_addons` TEXT NOT NULL;");
 	  catch_error($sql);
 	}
 
@@ -1724,16 +1724,16 @@ function update_70x_to_706($type='')
 	if($sql->db_Field("dblog",5) == "dblog_query")
 	{
       if ($just_check) return update_needed();
-	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL DEFAULT '';");
+	  $sql->gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_query` `dblog_title` VARCHAR( 255 ) NOT NULL DEFAULT '';");
 	  catch_error($sql);
-	  $sql->db_Select_gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
+	  $sql->gen("ALTER TABLE `".MPREFIX."dblog` CHANGE `dblog_remarks` `dblog_remarks` TEXT NOT NULL;");
 	  catch_error($sql);
 	}
 
 	if(!$sql->db_Field("plugin","plugin_path","UNIQUE"))
 	{
       if ($just_check) return update_needed();
-      if(!$sql->db_Select_gen("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
+      if(!$sql->gen("ALTER TABLE `".MPREFIX."plugin` ADD UNIQUE (`plugin_path`);"))
 	  {
 		$mesg = LAN_UPDATE_12." : <a href='".e_ADMIN."db.php?plugin'>".ADLAN_145."</a>.";
         //$ns -> tablerender(LAN_ERROR,$mes);
@@ -1745,7 +1745,7 @@ function update_70x_to_706($type='')
 	if(!$sql->db_Field("online",6)) // online_active field
 	{
 	  if ($just_check) return update_needed();
-	  $sql->db_Select_gen("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
+	  $sql->gen("ALTER TABLE ".MPREFIX."online ADD online_active INT(10) UNSIGNED NOT NULL DEFAULT '0'");
 	  catch_error($sql);
 	}
 
@@ -1755,9 +1755,9 @@ function update_70x_to_706($type='')
 	  if (!in_array('tmp_ip', $row))
 	  {
 		if ($just_check) return update_needed();
-		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
-		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
-		$sql->db_Select_gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
+		$sql->gen("ALTER TABLE `".MPREFIX."tmp` ADD INDEX `tmp_ip` (`tmp_ip`);");
+		$sql->gen("ALTER TABLE `".MPREFIX."upload` ADD INDEX `upload_active` (`upload_active`);");
+		$sql->gen("ALTER TABLE `".MPREFIX."generic` ADD INDEX `gen_type` (`gen_type`);");
 	  }
 	}
 
@@ -1852,7 +1852,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_54);
 		return !$just_check;		// No point carrying on - return 'nothing to do'
 	}
-	if ($sql->db_Select_gen("SHOW INDEX FROM ".MPREFIX.$target))
+	if ($sql->gen("SHOW INDEX FROM ".MPREFIX.$target))
 	{
 		$found = FALSE;
 		while ($row = $sql -> db_Fetch())
@@ -1867,7 +1867,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		{
 			return 'Required to add index to '.$target;
 		}
-		$sql->db_Select_gen("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
+		$sql->gen("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
 		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_37);
 	}
 	return FALSE;

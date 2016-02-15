@@ -1582,7 +1582,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 			}
 			$qry = "REPLACE INTO `#banlist` (".implode(',', array_keys($field_list)).") values ('".implode("', '", $field_list)."')";
 			//	  echo count($field_list)." elements, query: ".$qry."<br />";
-			if (!$sql->db_Select_gen($qry))
+			if (!$sql->gen($qry))
 			{
 				$mes->addError(BANLAN_50.$line_num);
 				return BANLAN_50.$line_num;

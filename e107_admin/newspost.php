@@ -2431,11 +2431,11 @@ class admin_newspost
 			$query .= ($check_perms ? "WHERE {$check_perms}" : '')."ORDER BY {$ordfield} ".strtoupper($this->_sort_order);
 		}
 
-		$newsposts = $sql->db_Select_gen($query);
+		$newsposts = $sql->gen($query);
 		
 		//echo "sql=".$query;
 		
-		if ($sql->db_Select_gen($query." LIMIT ".$this->getFrom().", {$amount}"))
+		if ($sql->gen($query." LIMIT ".$this->getFrom().", {$amount}"))
 		{
 			$newsarray = $e107->sql->db_getList();
 
@@ -2865,7 +2865,7 @@ class admin_newspost
 				}
 			}
 
-	        $sql->db_Select_gen($qry);
+	        $sql->gen($qry);
 	        while($row = $sql->fetch())
 	        {
 	        	if(vartrue($_POST['news_author']))
@@ -3920,7 +3920,7 @@ class admin_newspost
 		$deleteCount = 0;
 		$updateCount = 0;
 		$canDelete = isset($_POST['newsdeletecomments']);
-		if ($result = e107::getDb()->db_Select_gen($qry))
+		if ($result = e107::getDb()->gen($qry))
 		{
 			while ($row = e107::getDb()->fetch())
 			{

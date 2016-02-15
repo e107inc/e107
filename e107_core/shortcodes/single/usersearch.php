@@ -43,7 +43,7 @@ function usersearch_shortcode($parm)
 		WHERE {$search_field} LIKE '".$tp->toDb($posted)."%'{$emailSrch}
 	";
 	
-	if($sql->db_Select_gen($qry))
+	if($sql->gen($qry))
 	{
 		if($emailSrch) $info_field = 'user_email';
 		while($row = $sql->db_Fetch())

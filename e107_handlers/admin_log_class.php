@@ -444,7 +444,7 @@ class e_admin_log
 		global $sql;
 		if ($days == false)
 		{ // $days is false, so truncate the log table
-			$sql->db_Select_gen("TRUNCATE TABLE #dblog ");
+			$sql->gen("TRUNCATE TABLE #dblog ");
 		}
 		else
 		{ // $days is set, so remove all entries older than that.
