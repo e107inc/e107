@@ -23,9 +23,11 @@ class gallery_shortcodes extends e_shortcode
 	
 	function init()
 	{
-		$this->downloadable = e107::getPlugPref('gallery','downloadable');	
-		$pop_w 				= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
-		$pop_h 				= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
+		$this->downloadable = e107::getPlugPref('gallery','downloadable');
+		$prefW              = e107::getPlugPref('gallery','pop_w');
+		$prefH              = e107::getPlugPref('gallery','pop_h');
+		$pop_w 				= vartrue($prefW, 1024);
+		$pop_h 				= vartrue($prefH, 768);
 		$this->attFull 		= array('w'=>$pop_w, 'h'=>$pop_h, 'x'=>1, 'crop'=>0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 	}
 			

@@ -906,7 +906,7 @@ class e_user_model extends e_admin_model
 	 * data to user model
 	 * @return e_user_model
 	 */
-	public function mergePostedData()
+	public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
     	$posted = $this->getPostedData();
     	foreach ($posted as $key => $value)
@@ -2383,7 +2383,7 @@ class e_user_extended_model extends e_admin_model
 	 * data to user extended model
 	 * @return e_user_extended_model
 	 */
-	public function mergePostedData()
+	public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
     	$posted = $this->getPostedData();
     	foreach ($posted as $key => $value)
@@ -2493,7 +2493,7 @@ class e_user_extended_structure_model extends e_model
 	/**
 	 * Loading of single structure row not allowed for front model
 	 */
-	public function load()
+	public function load($id = null, $force = false)
 	{
 		return $this;
 	}
@@ -2732,7 +2732,7 @@ class e_user_pref extends e_front_model
 	 * @param boolean $force
 	 * @return boolean success
 	 */
-	public function save($from_post = false, $force = false)
+	public function save($from_post = false, $force = false, $session_messages = false)
 	{
 		if($this->_user->getId())
 		{

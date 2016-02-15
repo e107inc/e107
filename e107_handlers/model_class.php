@@ -1488,13 +1488,13 @@ class e_model extends e_object
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
 		if($qry)
 		{
-			$res = $sql->db_Select_gen($qry, $this->getParam('db_debug') ? true : false);
+			$res = $sql->gen($qry, $this->getParam('db_debug') ? true : false);
 		}
 		else
 		{
 			if(!is_numeric($id)) $id = "'{$id}'";
 
-			$res = $sql->db_Select(
+			$res = $sql->select(
 				$this->getModelTable(),
 				$this->getParam('db_fields', '*'),
 				$this->getFieldIdName().'='.$id.' '.trim($this->getParam('db_where', '')),
@@ -1506,7 +1506,7 @@ class e_model extends e_object
 
 		if($res)
 		{
-			$this->setData($sql->db_Fetch());
+			$this->setData($sql->fetch());
 		}
 
 		if($sql->getLastErrorNumber())
@@ -1624,7 +1624,7 @@ class e_model extends e_object
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    public function delete()
+    public function delete($ids, $destroy = true, $session_messages = false)
     {
     }
 
@@ -1651,7 +1651,7 @@ class e_model extends e_object
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    protected function dbUpdate()
+    protected function dbUpdate($force = false, $session_messages = false)
     {
     }
 
@@ -2510,7 +2510,7 @@ class e_front_model extends e_model
      * @param boolean $force
      * @return e_front_model
      */
-	public function load($id, $force = false)
+	public function load($id=null, $force = false)
 	{
 		parent::load($id, $force);
 
@@ -3121,12 +3121,12 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
-	public function isCacheEnabled()
+	public function isCacheEnabled($checkId = true)
 	{
 		return (null !== $this->getCacheString());
 	}
 
-	public function getCacheString()
+	public function getCacheString($replace = false)
 	{
 		return $this->_cache_string;
 	}
@@ -3424,11 +3424,11 @@ class e_tree_model extends e_front_model
 		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
 	}
 
-	public function update()
+	public function update($from_post = true, $force = false, $session_messages = false)
 	{
 	}
 
-	public function delete()
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 	}
 }

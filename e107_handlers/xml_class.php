@@ -1242,7 +1242,7 @@ class XMLParse
     var $isError = false;
     var $error = '';
 
-    function XMLParse($xml = NULL)
+    function __construct($xml = NULL)
     {
         $this->rawXML = $xml;
 		$mes = e107::getMessage();

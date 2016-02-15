@@ -33,7 +33,7 @@ class core_page_url extends eUrlConfig
 	/**
 	 * 
 	 */
-	public function create($route, $params = array())
+	public function create($route, $params = array(), $options = array())
 	{
 		if(!$params) return 'page.php';
 		
