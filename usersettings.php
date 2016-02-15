@@ -452,7 +452,7 @@ if ($dataToSave && !$promptPassword)
 		validatorClass::addFieldTypes($userMethods->userVettingInfo,$changedData);
 
 		// print_a($changedData);
-		if (FALSE === $sql->db_Update('user', $changedData))
+		if (FALSE === $sql->update('user', $changedData))
 		{
 			$message .= '<br />'.LAN_USET_43;
 		}
@@ -476,10 +476,10 @@ if ($dataToSave && !$promptPassword)
 		if (false === $sql->retrieve('user_extended', 'user_extended_id', 'user_extended_id='.$inp))
 		{
 			// ***** Next line creates a record which presumably should be there anyway, so could generate an error if no test first
-			$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".$inp."', '')");
+			$sql->gen("INSERT INTO #user_extended (user_extended_id, user_hidden_fields) values ('".$inp."', '')");
 			//print_a('New extended fields added: '.$inp.'<br />');
 		}
-		if (false === $sql->db_Update('user_extended', $changedEUFData))
+		if (false === $sql->update('user_extended', $changedEUFData))
 		{
 			$message .= '<br />Error updating EUF';
 		}
@@ -582,7 +582,7 @@ if ($dataToSave && !$promptPassword)
 		// If user has changed display name, update the record in the online table
 	if (isset($changedUserData['user_name']) && !$_uid)
 	{
-		$sql->db_Update('online', "online_user_id = '".USERID.".".$changedUserData['user_name']."' WHERE online_user_id = '".USERID.".".USERNAME."'");
+		$sql->update('online', "online_user_id = '".USERID.".".$changedUserData['user_name']."' WHERE online_user_id = '".USERID.".".USERNAME."'");
 	}
 
 

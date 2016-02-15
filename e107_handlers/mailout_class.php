@@ -216,7 +216,7 @@ class core_mailout
 		
 		e107::getMessage()->addDebug("Selector query: ".$qry);
 
-		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
+		if (!( $this->mail_count = $sql->gen($qry))) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
 	}

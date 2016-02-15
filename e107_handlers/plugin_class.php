@@ -1796,7 +1796,7 @@ class e107plugin
 						}
 						break;
 					case 'mysql': // all should be lowercase
-						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], mysql_get_server_info(), '<=') === FALSE))
+						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], e107::getDb()->mySqlServerInfo(), '<=') === FALSE))
 						{
 							$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
 							$canContinue = FALSE;

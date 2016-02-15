@@ -44,9 +44,9 @@ class db_table_admin
 			$prefix = MPREFIX;
 		}
 		//	echo "Get table structure for: {$table_name}, prefix: {$prefix}<br />";
-		$sql->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `'.$prefix.$table_name."`";
-		if (!($z = $sql->db_Select_gen($qry)))
+		if (!($z = $sql->gen($qry)))
 		{
 			return FALSE;
 		}
@@ -621,7 +621,7 @@ class db_table_admin
 				{
 					return 'Table doesn\'t exist';
 				}
-				if ($sql->db_Select_gen($newStructure[0]))
+				if ($sql->gen($newStructure[0]))
 				{
 					return TRUE;
 				}

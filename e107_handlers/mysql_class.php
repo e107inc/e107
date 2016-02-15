@@ -1168,41 +1168,46 @@ class e_db_mysql
 			switch ($type)
 			{
 					case 'both':
-					case 3:
+					case 3: // MYSQL_BOTH:
 						$type = ($this->pdo) ? PDO::FETCH_BOTH: MYSQL_BOTH; // 3
 					break;
 
 					case 'num':
-					case 2: 
+					case 2; // MYSQL_NUM: // 2
 						$type = ($this->pdo) ? PDO::FETCH_NUM : MYSQL_NUM;
 					break;
 
 					case 'assoc':
-					case 1: 
+					case 1; //: // 1
 					default:
 						$type =  ($this->pdo) ?  PDO::FETCH_ASSOC : MYSQL_ASSOC;
 					break;
 				}
 		}
-		elseif($this->pdo) // convert type to PDO.
+		else
 		{
-			switch ($type)
+
+			if($this->pdo) // convert type to PDO.
 			{
-				case 'both': // 3
-					$type = PDO::FETCH_BOTH;
-				break;
-				case 'num': // 2
-					$type = PDO::FETCH_NUM;
-				break;
+				switch ($type)
+				{
+					case 'both': // 3
+						$type = PDO::FETCH_BOTH;
+					break;
+
+					case 'num': // 2
+						$type = PDO::FETCH_NUM;
+					break;
+
 					case 'assoc': // 1
-				default:
-					$type = PDO::FETCH_ASSOC;
-				break;
+					default:
+						$type = PDO::FETCH_ASSOC;
+					break;
+				}
 			}
 		}
 
 
-		
 		$b = microtime();
 		if($this->mySQLresult)
 		{

@@ -44,7 +44,7 @@ function imageselector_shortcode($parm = '', $mod = '')
 			// FIXME - media_type=image?
 			if($sql->gen($qry))
 			{
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 					//$imagelist[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
 					$imagelist[$row['media_category']][] = array('path' => $row['media_url'], 'fname' => $row['media_name']. " (".$row['media_dimensions'].") ");

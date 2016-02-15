@@ -30,7 +30,7 @@ function iconpicker_shortcode($parm)
 		
 		if($sql->gen($qry))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				list($tmp,$tmp2,$size) = explode("_",$row['media_category']);
 				

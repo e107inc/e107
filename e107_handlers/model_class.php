@@ -1676,7 +1676,7 @@ class e_model extends e_object
 	/**
 	 * Set parameter array
 	 * Core implemented:
-	 * - db_query: string db query to be passed to load() ($sql->db_Select_gen())
+	 * - db_query: string db query to be passed to load() ($sql->gen())
 	 * - db_query
 	 * - db_fields
 	 * - db_where
@@ -3237,7 +3237,7 @@ class e_tree_model extends e_front_model
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
-			if($sql->db_Select_gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
+			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 				while($tmp = $sql->db_Fetch())

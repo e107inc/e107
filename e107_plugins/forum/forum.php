@@ -144,7 +144,7 @@ $total_topics = $sql->count("forum_thread", "(*)");
 $total_replies = $sql->count("forum_post", "(*)");
 $total_members = $sql->count("user");
 $newest_member = $sql->select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
-list($nuser_id, $nuser_name) = $sql->fetch(); // FIXME $nuser_id & $user_name return empty even though print_a($newest_member); returns proper result.
+list($nuser_id, $nuser_name) = $sql->fetch('num'); // FIXME $nuser_id & $user_name return empty even though print_a($newest_member); returns proper result.
 
 if(!defined('e_TRACKING_DISABLED'))
 {
