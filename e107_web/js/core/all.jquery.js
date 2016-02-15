@@ -327,6 +327,82 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Behavior to attach a click event to elements with .e-expandit class.
+	 *
+	 * @type {{attach: Function}}
+	 */
+	e107.behaviors.eExpandIt = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-expandit').once('e-expandit').each(function ()
+			{
+				// default 'toggle'.
+				$(this).click(function ()
+				{
+					var $this = $(this);
+					var href = ($this.is("a")) ? $this.attr("href") : '';
+					var $button = $this.find('button');
+
+					if($button.length > 0)
+					{
+						var textMore = $button.attr('data-text-more');
+						var textLess = $button.attr('data-text-less');
+
+						if(textLess && textMore)
+						{
+							if($button.html() == textMore)
+							{
+								$this.find('.e-expandit-ellipsis').hide();
+								$button.html(textLess);
+							}
+							else
+							{
+								$this.find('.e-expandit-ellipsis').show();
+								$button.html(textMore);
+							}
+						}
+					}
+
+					if((href === "#" || href == "") && $this.attr("data-target"))
+					{
+						var select = $this.attr("data-target").split(','); // support multiple targets (comma separated)
+
+						$(select).each(function ()
+						{
+							$('#' + this).slideToggle("slow");
+						});
+
+						if($this.attr("data-return") === 'true')
+						{
+							return true;
+						}
+
+						return false;
+					}
+
+
+					if(href === "#" || href == "")
+					{
+						var idt = $(this).nextAll("div");
+						$(idt).slideToggle("slow");
+						return true;
+					}
+
+					$(href).slideToggle('slow', function ()
+					{
+						if($(this).is(':visible'))
+						{
+							$(this).css('display', 'initial');
+						}
+					});
+
+					return false;
+				});
+			});
+		}
+	};
+
+	/**
 	 * Dynamic next/prev.
 	 *
 	 * @param e object (eg. from selector)
@@ -439,52 +515,7 @@ $(document).ready(function()
 					});
 				}
 		 });
-		     		
-    		
-    	// default 'toggle'. 	
-       	$(".e-expandit").click(function () {
-       		
-       		var href = ($(this).is("a")) ? $(this).attr("href") : '';
-       		
-       		if((href === "#" || href == "") && $(this).attr("data-target"))
-       		{
-       			select = $(this).attr("data-target").split(','); // support multiple targets (comma separated)
-       			
-       			$(select).each( function() {
-       				
-       				$('#'+ this).slideToggle("slow");
-				});
 
-                if($(this).attr("data-return")==='true')
-                {
-                    return true;
-                }
-
-       			
-       			return false;
-       		}
-       	
-			
-						
-			if(href === "#" || href == "") 
-			{
-				idt = $(this).nextAll("div");	
-				$(idt).slideToggle("slow");
-				 return true;			
-			}
-		
-			      		    		
-       		//var id = $(this).attr("href");   		
-			$(href).slideToggle("slow");
-			
-			return false;
-		}); 
-
-
-
-
-
-		
 		// On 
 		$(".e-expandit-on").click(function () {
        		
