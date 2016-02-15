@@ -28,7 +28,7 @@ function iconpicker_shortcode($parm)
 		$size_section = array();
 		$lastsize = "16";
 		
-		if($sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
 			while($row = $sql->db_Fetch())
 			{

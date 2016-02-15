@@ -231,7 +231,7 @@ class newsletter
 			$newsletter_header	= $tp->toFORM($edit['newsletter_header']);
 		}
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -326,7 +326,7 @@ class newsletter
 		{
 		$nlArray = $sql -> db_getList();
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -398,7 +398,8 @@ class newsletter
 			$mes->addSuccess(NLLAN_39);
 		}
 
-		$ns->tablerender($caption, $mes->render() . $text);
+		echo $mes->render();
+	//	$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 

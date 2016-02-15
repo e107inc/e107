@@ -673,7 +673,7 @@ class adminstyle_infopanel
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 		$settings = varset($pref['core-infopanel-menus'],array());
 	
-		if (e107::getDb()->db_Select_gen($menu_qry))
+		if (e107::getDb()->gen($menu_qry))
 		{
 			while ($row = e107::getDb()->db_Fetch())
 			{

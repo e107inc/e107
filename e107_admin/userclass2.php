@@ -1273,7 +1273,7 @@ unset($title);
 	if (isset($_POST['remove_db_fields']))
 	{	// Remove the DB fields
 	  $message = "Remove DB fields: ";
-	  $sql->db_Select_gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
+	  $sql->gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
 	  $message .= "Completed";
 	}
 

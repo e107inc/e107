@@ -1165,7 +1165,7 @@ class comment
 			ORDER BY c.comment_datestamp ".$sort;
 		}
 		
-		$this->totalComments = $sql->db_Select_gen($query);
+		$this->totalComments = $sql->gen($query);
 			
 		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
 		
@@ -1247,7 +1247,7 @@ class comment
 		FROM #comments
 		WHERE comment_author_id = '{$id}'
 		";
-			if ($sql->db_Select_gen($qry))
+			if ($sql->gen($qry))
 			{
 				$row = $sql->db_Fetch();
 				$sql->db_Update("user", "user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
@@ -1265,7 +1265,7 @@ class comment
 		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}'
 		GROUP BY author
 		";
-			if ($sql->db_Select_gen($qry))
+			if ($sql->gen($qry))
 			{
 				while ($row = $sql->db_Fetch())
 				{
@@ -1396,7 +1396,7 @@ class comment
 		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
 		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
-			if ($comment_total = $sql->db_Select_gen($query))
+			if ($comment_total = $sql->gen($query))
 			{
 				$width = 0;
 				while ($row = $sql->db_Fetch())
@@ -1432,7 +1432,7 @@ class comment
 							break;
 						case '2': //	downloads
 							$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
-							if ($sql2->db_Select_gen($qryd))
+							if ($sql2->gen($qryd))
 							{
 								$row2 = $sql2->db_Fetch();
 								$ret['comment_type'] = COMLAN_TYPE_2;
@@ -1481,7 +1481,7 @@ class comment
 										if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
 										{
 											$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
-											if ($sql2->db_Select_gen($qryp))
+											if ($sql2->gen($qryp))
 											{
 												$row2 = $sql2->db_Fetch();
 												$ret['comment_type'] = $var['plugin_name'];

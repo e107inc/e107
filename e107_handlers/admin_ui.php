@@ -3435,7 +3435,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			// Make query
 			$sql = e107::getDb();
-			if($qry && $sql->db_Select_gen($qry, $debug))
+			if($qry && $sql->gen($qry, $debug))
 			{
 				while ($res = $sql->db_Fetch())
 				{
