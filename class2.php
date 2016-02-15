@@ -1042,7 +1042,7 @@ if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['ma
 
 if(!isset($_E107['no_prunetmp']))
 {
-	$sql->db_Delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
+	$sql->delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
 }
 
 
@@ -1076,7 +1076,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	if (isset($pref['track_online']) && $pref['track_online'])
 	{
-		$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
+		$sql->update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
 	}
 	
 	// earlier event trigger with user data still available 
@@ -1505,9 +1505,9 @@ function getperms($arg, $ap = ADMINPERMS)
 		$sql = e107::getDb('psql');
 
 		// FIXME - cache it, avoid sql query here
-		if ($sql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
+		if ($sql->select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			$arg = 'P'.$row['plugin_id'];
 		}
 	}
@@ -1603,7 +1603,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
 			$tmp = $eArrayStorage->WriteArray($_user_pref);
-			$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
+			$sql->update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
 			return $tmp;
 			break;
 	}
@@ -1654,8 +1654,8 @@ class floodprotect
 
 		if (FLOODPROTECT == true)
 		{
-			$sql->db_Select($table, '*', 'ORDER BY '.$orderfield.' DESC LIMIT 1', 'no_where');
-			$row=$sql->db_Fetch();
+			$sql->select($table, '*', 'ORDER BY '.$orderfield.' DESC LIMIT 1', 'no_where');
+			$row=$sql->fetch();
 			return ($row[$orderfield] > (time() - FLOODTIMEOUT) ? false : true);
 		}
 		else
@@ -2055,9 +2055,9 @@ function force_userupdate($currentUser)
 
 	if (!e107::getPref('disable_emailcheck',TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
-	if(e107::getDb()->db_Select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
+	if(e107::getDb()->select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
 	{
-		while($row = e107::getDb()->db_Fetch())
+		while($row = e107::getDb()->fetch())
 		{
 			if (!check_class($row['user_extended_struct_applicable'])) { continue; }		// Must be applicable to this user class
 			if (!check_class($row['user_extended_struct_write'])) { continue; }				// And user must be able to change it

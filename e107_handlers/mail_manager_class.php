@@ -1615,7 +1615,7 @@ class e107MailManager
 			$query .= " LIMIT {$start}, {$count}";
 		}
 		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		$result = $this->db->db_Select_gen($query);
+		$result = $this->db->gen($query);
 		if ($result !== FALSE)
 		{
 			$this->queryCount[1] = $this->db->total_results;			// Save number of records found
@@ -1684,7 +1684,7 @@ class e107MailManager
 			$query .= " LIMIT {$start}, {$count}";
 		}
 //		echo "{$start}, {$count} Target query: {$query}<br />";
-		$result = $this->db2->db_Select_gen($query);
+		$result = $this->db2->gen($query);
 		if ($result !== FALSE)
 		{
 			$this->queryCount[2] = $this->db2->total_results;			// Save number of records found

@@ -1791,7 +1791,7 @@ if($this->pdo == true)
 
 		if(!$link)
 		{
-			return nl2br(LANINS_084."\n\n<b>".LANINS_083."\n</b><i>".mysql_error($link)."</i>");
+			return nl2br(LANINS_084."\n\n<b>".LANINS_083."\n</b><i>".e107::getDb()->getLastErrorText()."</i>");
 		}
 
 		$this->dbLink = $link;		// Needed for mysql_close() to work round bug in PHP 5.3

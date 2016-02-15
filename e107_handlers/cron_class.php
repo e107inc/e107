@@ -336,14 +336,14 @@ class _system_cron
 			$table = $tab[0];
 			$text = "";
 			
-			$sql->db_Select_gen("SHOW CREATE TABLE `".$table."`");
+			$sql->gen("SHOW CREATE TABLE `".$table."`");
 			$row2 = $sql->db_Fetch();
 			$text .= $row2['Create Table'];
 			$text .= ";\n\n";
 			
 			ob_end_clean(); // prevent memory exhaustian 
 			
-			$count = $sql->db_Select_gen("SELECT * FROM `".$table."`");
+			$count = $sql->gen("SELECT * FROM `".$table."`");
 			$data_array = "";
 		
 			while($row = $sql->db_Fetch())

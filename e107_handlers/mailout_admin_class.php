@@ -1934,7 +1934,7 @@ class mailoutAdminClass extends e107MailManager
 
 		//Finally - check for inconsistent recipient and content status records -
 		// basically verify counts
-		if(($res = $this->db2->db_Select_gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`, 
+		if(($res = $this->db2->gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`,
 					mc.`mail_source_id`, mc.`mail_togo_count`, mc.`mail_sent_count`, mc.`mail_fail_count`, mc.`mail_bounce_count`, mc.`mail_source_id` FROM `#mail_recipients` AS mr
 					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id` 
 					WHERE mc.`mail_content_status` <= " . MAIL_STATUS_MAX_ACTIVE . "

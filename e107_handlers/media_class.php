@@ -408,7 +408,7 @@ class e_media
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
 		}
 		
-		return e107::getDb()->db_Select_gen($query);	
+		return e107::getDb()->gen($query);
 		*/
 	}
 	

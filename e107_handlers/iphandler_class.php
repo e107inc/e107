@@ -1271,7 +1271,7 @@ class banlistManager
 			}
 		}
 
-		if ($sql->db_Select_gen($qry))
+		if ($sql->gen($qry))
 		{
 			while ($row = $sql->db_Fetch())
 			{

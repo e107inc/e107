@@ -24,12 +24,12 @@ function sublinks_shortcode($parm)
 
 	$text = "\n\n<!-- Sublinks Start -->\n\n";
     $text .= $style['prelink'];
-    $sql->db_Select("links", "link_id","link_url= '{$page}' AND link_category = {$cat} LIMIT 1");
-    $row = $sql->db_Fetch();
+    $sql->select("links", "link_id","link_url= '{$page}' AND link_category = {$cat} LIMIT 1");
+    $row = $sql->fetch();
     $parent = $row['link_id'];
 
- 	$link_total = $sql->db_Select("links", "*", "link_class IN (".USERCLASS_LIST.") AND link_parent={$parent} ORDER BY link_order ASC");
-	while($linkInfo = $sql->db_Fetch())
+ 	$link_total = $sql->select("links", "*", "link_class IN (".USERCLASS_LIST.") AND link_parent={$parent} ORDER BY link_order ASC");
+	while($linkInfo = $sql->fetch())
 	{
  		$text .= $sublinks->makeLink($linkInfo,TRUE, $style, false);
 	}
