@@ -2984,8 +2984,9 @@ class e107
 				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'.php'; // menu language file.
 				break;
 			case 'admin' :
-				
-				$adminLan = vartrue(self::getPref('adminlanguage'), e_LANGUAGE);
+
+				$aLangPref = self::getPref('adminlanguage');
+				$adminLan = vartrue($aLangPref, e_LANGUAGE);
 						
 				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'_admin_'.$unitName.'.php'; 
 				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'/'.'admin_'.$unitName.'.php'; 
@@ -3650,8 +3651,9 @@ class e107
 		}
 
 		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
-		
-		$requestSelf =  array_shift(explode('?', e_REQUEST_URL)); 
+
+		$tmp = explode('?', e_REQUEST_URL);
+		$requestSelf =  array_shift($tmp);
 		
 		if(substr($requestSelf,-4) !== '.php' && substr($requestSelf,-1) !== '/')
 		{
@@ -3659,9 +3661,11 @@ class e107
 		}
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
+
 		define('e_REQUEST_SELF', $requestSelf); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
-		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
+		$tmp2 = explode('?', e_REQUEST_URI);
+		define('e_REQUEST_HTTP', array_shift($tmp2)); // SELF URL without the QUERY string and leading domain part
 
 		if(!deftrue('e_SINGLE_ENTRY'))
 		{

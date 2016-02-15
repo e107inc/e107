@@ -500,7 +500,7 @@ class e_news_item extends e_front_model
 	 * @param boolean $force
 	 * @return e_news_item
 	 */
-	public function load($id, $force = false)
+	public function load($id=null, $force = false)
 	{
 		
 		$id = intval($id);

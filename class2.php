@@ -547,7 +547,7 @@ define('e_COOKIE', $pref['cookie_name']);
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
 // And, this is robust against hack attacks. Malignant users can put **anything** in HTTP_HOST!
-if($pref['redirectsiteurl'] && $pref['siteurl']) {
+if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
@@ -556,11 +556,17 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 			$self = e_REQUEST_URL;
 			//if(e_QUERY){ $self .= '?'.e_QUERY; }
 			$location = str_replace('://www.', '://', $self);
-			header("Location: {$location}", true, 301); // send 301 header, not 302
+			if(defined('e_DEBUG') && e_DEBUG === true)
+			{
+				echo "Redirecting to location: ".$location;
+			}
+
+			e107::getRedirect()->go($location,true,301);
+		//	header("Location: {$location}", true, 301); // send 301 header, not 302
 			exit();
 		}
 	}
-    else
+    elseif(deftrue('e_DOMAIN'))
 	{
 		// Find domain and port from user and from pref
 		list($urlbase,$urlport) = explode(':',$_SERVER['HTTP_HOST'].':');
@@ -588,8 +594,20 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
 				$location = implode('/',$aeSELF).($_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '');
 
-			header("Location: {$location}", true, 301); // send 301 header, not 302
-			exit();
+			//
+		//	header("Location: {$location}", true, 301); // send 301 header, not 302
+			if(defined('e_DEBUG') && e_DEBUG === true)
+			{
+				echo "DEBUG INFO: site-redirect preference enabled.<br />Redirecting to: <a hre='".$location."'>".$location."</a>";;
+				echo "<br />e_DOMAIN: ".e_DOMAIN;
+				echo "<br />e_SUBDOMAIN: ".e_SUBDOMAIN;
+			}
+			else
+			{
+				e107::getRedirect()->go($location,true,301);
+			}
+
+				exit();
 			}
 		}
 	}

@@ -322,11 +322,11 @@ class _system_cron
 		
 		return;
 		
-		
+		/*
 		require(e_BASE."e107_config.php");
 
 		$sql = e107::getDb();
-		$dbtable = $mySQLdefaultdb; // TODO - retrieve this in a better way. (without including e107_config) 
+		$dbtable = $mySQLdefaultdb; //
 	
 		$backupFile = e_BACKUP.SITENAME."_".date("Y-m-d-H-i-s").".sql";
 		$result = mysql_list_tables($dbtable);
@@ -374,7 +374,7 @@ class _system_cron
 			
 		}
 				
-		
+		*/
 		
 	}
 	
