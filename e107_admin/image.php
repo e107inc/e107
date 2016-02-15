@@ -1458,7 +1458,7 @@ class media_admin_ui extends e_admin_ui
 	 */
 	function videoTab($parm='')
 	{
-	//	$apiKey = e107::pref('core','youtube_apikey');
+		$apiKey = e107::pref('core','youtube_apikey');
 
 		$searchQry = $this->getQuery('search');
 
@@ -1525,7 +1525,7 @@ class media_admin_ui extends e_admin_ui
 			$accFeed = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=".$defaultAccount."&key=".$apiKey;
 			$accData = e107::getFile()->getRemoteContent($accFeed);
 			$accData = json_decode($accData,true);
-			$channelID = null;
+			$channelID = e107::pref('core', 'youtube_default_account');
 
 			foreach($accData['items'] as $val)
 			{
