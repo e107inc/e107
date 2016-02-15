@@ -843,6 +843,7 @@ class e_install
 		$xml_installed = (!function_exists('utf8_encode')) ? false : true;
 		$exif_installed = (!function_exists('exif_imagetype')) ? false : true;
 		$gdlib_installed = (extension_loaded('gd') && function_exists('gd_info')) ? true : false;
+		$curl_installed = (function_exists('curl_version')) ?  true : false;
 
 
 
@@ -877,8 +878,11 @@ class e_install
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-error";
 
 		$gdLibColor = ($gdlib_installed == true) ? "text-success" : "text-error";
+		$curlColor = ($curl_installed == true) ? "text-success" : "text-error"; //TODO Below.
 
 		$xmlExtensionLink = "<a href='http://php.net/manual/en/ref.xml.php'>php.net</a>";
+
+		// TODO Lots of repetition below - clean it up with an array and loop.
 
 		$output = "
 			<table class='table table-striped table-bordered' style='width: 100%; margin-left: auto; margin-right: auto;'>
@@ -917,6 +921,7 @@ class e_install
 					<td class='{$exifColor}'>".($exif_installed ? "<i class='glyphicon glyphicon-ok'></i> ".LANINS_017 : str_replace("[x]", $exifExtensionLink, LANINS_054) )."</td>
 				</tr>
 			</table>\n";
+
 		$this->finish_form();
 		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
 		$this->logLine('Stage 4 completed');

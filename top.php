@@ -210,7 +210,7 @@ if ($action == 'top')
 
 	if ($subaction == 'comment' || $subaction == 'all')
 	{
-		$top_forum_posters = $sql->db_Select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
+		$top_forum_posters = $sql->select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -258,7 +258,7 @@ if ($action == 'top')
 	 
 	if ($subaction == 'chat' || $subaction == 'all') 
 	{
-		$top_forum_posters = $sql->db_Select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
+		$top_forum_posters = $sql->select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -271,7 +271,7 @@ if ($action == 'top')
 		$counter = 1;
 		if($top_forum_posters)
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (chat), LANs
 				$ldata = $rank->getRanks($row);
