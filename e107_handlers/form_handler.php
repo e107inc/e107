@@ -3994,21 +3994,23 @@ class e_form
 	{
 		$tp = e107::getParser();
 
-		$ajaxParms = array();
 
-		if(!empty($attributes['writeParms']['ajax']))
-		{
-			$ajaxParms['data-src'] = varset($attributes['writeParms']['ajax']['src']);
-			$ajaxParms['data-target'] = varset($attributes['writeParms']['ajax']['target']);
-			$ajaxParms['data-method'] = varset($attributes['writeParms']['ajax']['method'], 'html');
-			$ajaxParms['data-loading'] = varset($attributes['writeParms']['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
-
-			unset($attributes['writeParms']['ajax']);
-		}
 
 		$parms = vartrue($attributes['writeParms'], array());
 
 		if(is_string($parms)) parse_str($parms, $parms);
+
+		$ajaxParms = array();
+
+		if(!empty($parms['ajax']))
+		{
+			$ajaxParms['data-src'] = varset($parms['ajax']['src']);
+			$ajaxParms['data-target'] = varset($parms['ajax']['target']);
+			$ajaxParms['data-method'] = varset($parms['ajax']['method'], 'html');
+			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
+
+			unset($attributes['writeParms']['ajax']);
+		}
 
 		if(!empty($attributes['multilan']))
 		{
