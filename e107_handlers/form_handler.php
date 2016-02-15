@@ -1713,10 +1713,10 @@ class e_form
 		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
 		}
 		
-		if($multi_line === false)
-		{
+	//	if($multi_line === false)
+	//	{
 		//	return implode("&nbsp;&nbsp;", $text);
-		}
+	//	}
 		
 		// support of UI owned 'newline' parameter
 		if(!varset($options['sep']) && vartrue($options['newline']))  $options['sep'] = '<br />'; // TODO div class=separator?

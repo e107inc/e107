@@ -1473,7 +1473,7 @@ class e_parse extends e_parser
 
 
 		// Make sure we have a valid count for word wrapping
-		if (!$wrap && $pref['main_wordwrap'])
+		if (!$wrap && !empty($pref['main_wordwrap']))
 		{
 			$wrap = $pref['main_wordwrap'];
 		}
@@ -1785,7 +1785,7 @@ class e_parse extends e_parser
 
 
 						// profanity filter
-						if ($pref['profanity_filter'])
+						if (!empty($pref['profanity_filter']))
 						{
 							if (!is_object($this->e_pf))
 							{

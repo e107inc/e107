@@ -71,11 +71,11 @@ define("LANINS_046", "5");
 define("LANINS_047", "Administrator Details");
 define("LANINS_048", "EXIF extension");
 define("LANINS_049", "The two passwords you entered are not the same. Please go back and try again.");
-define("LANINS_050", "XML Extension");
+define("LANINS_050", "XML extension");
 define("LANINS_051", "Installed");
 define("LANINS_052", "Not Installed");
-define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [x] before continuing");
-define("LANINS_054", "e107 v2.x requires the PHP EXIF Extension to be installed. Please contact your host or read the information at [x] before continuing");
+// define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [x] before continuing");
+// define("LANINS_054", "e107 v2.x requires the PHP EXIF Extension to be installed. Please contact your host or read the information at [x] before continuing");
 define("LANINS_055", "Install Confirmation");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 now has all the information it needs to complete the installation.
@@ -176,8 +176,9 @@ define("LANINS_134", "Installation");
 define("LANINS_135", "of");   //single time use installer only as in .1 of 8  not replacing by LAN_SEARCH_12
 define("LANINS_136", "Deleted existing database");
 define("LANINS_137", "Found existing database");
-define("LANINS_138", "Version");
+// define("LANINS_138", "Version");
 
 define("LANINS_141", "Please fill in the form below with your MySQL details. If you do not know this information, please contact your hosting provider. You may hover over each field for additional information.");
 define("LANINS_142", "IMPORTANT: Please rename e107.htaccess to .htaccess");
 define("LANINS_144", "IMPORTANT: Please copy and paste the contents of the [b]e107.htaccess[/b] into your [b].htaccess[/b] file. Please take care NOT to overwrite any existing data that may be in it.");
+define("LANINS_145", "e107 v2.x requires the PHP [x] to be installed. Please contact your host or read the information at [y] before continuing.");

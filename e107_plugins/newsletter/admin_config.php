@@ -105,10 +105,11 @@ class newsletter
 			$this->createIssue();
 		}
 
-		if($mes)
+		echo $mes->render();
+		/*if($mes)
 		{
 			$ns->tablerender($caption, $mes->render() . $text);
-		}
+		}*/
 	}
 
 
