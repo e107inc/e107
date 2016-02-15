@@ -1210,7 +1210,7 @@ class admin_shortcodes
 		}
 	}
 
-	function getBadge($total, $type = 'latest')
+	static function getBadge($total, $type = 'latest')
 	{
 		
 		/*
@@ -1269,7 +1269,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * Attempt to Convert Old $text string into new array format (e_status and e_latest)
 	 */
-	function legacyToConfig($text)
+	static function legacyToConfig($text)
 	{
 		$var = array();
 		preg_match_all('/(<img[^>]*>)[\s]*<a[^>]href=(\'|")([^\'"]*)(\'|")>([^<]*)<\/a>[: ]*([\d]*)/is',$text, $match);

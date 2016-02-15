@@ -87,7 +87,7 @@ if (isset($_POST['delp']))
 	if (USERID == $tmp[1] || (ADMIN && getperms("4")))
 	{
 		$sql->select("user", "user_sess", "user_id='". USERID."'");
-		$row = $sql->db_Fetch();
+		$row = $sql->fetch();
 		@unlink(e_AVATAR_UPLOAD.$row['user_sess']);
 		$sql->update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
 		header("location:".e_SELF."?id.".$tmp[1]);
@@ -234,9 +234,9 @@ if (isset($id))
 	exit;
 }
 
-$users_total = $sql->db_Count("user","(*)", "WHERE user_ban = 0");
+$users_total = $sql->count("user","(*)", "WHERE user_ban = 0");
 
-if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
+if (!$sql->select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
 {
 	echo "<div style='text-align:center'><b>".LAN_USER_53."</b></div>";
 }

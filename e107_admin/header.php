@@ -453,12 +453,12 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 /*
  * Admin LAN
  * TODO - remove it from here
- */
+ *//*
 e107::js('inline',"
 	(".e_jshelper::toString(LAN_JSCONFIRM).").addModLan('core', 'delete_confirm');
 	(".e_jshelper::toString(LAN_DELETE).").addModLan('core', 'delete');
 
-",'prototype',5);
+",'prototype',5);*/
 
 // [JSManager] Load JS Includes - Zone 5 - After theme_head, before e107:loaded trigger
 
