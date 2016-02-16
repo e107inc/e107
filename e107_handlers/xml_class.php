@@ -589,7 +589,7 @@ class xmlClass
 
 		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
 		
-		if(!$xml = simplexml_load_string($xmlData))
+		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
 		{
 			$this->errors = $this->getErrors($xmlData);
 			return FALSE;

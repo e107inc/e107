@@ -17,7 +17,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-define('ADMINFEED', 'http://e107.org/adminfeed');
+
 define('ADMINFEEDMORE', 'http://e107.org/blog');
 
 
@@ -31,17 +31,14 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
-		e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
+	//	e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
 		
 		$code = "
 		
 		
 		jQuery(function($){
-		    $('#e-adminfeed').rssfeed('".ADMINFEED."', {
-    		limit: 3,
-    		header: false,
-    		linktarget: '_blank'
-  			});
+
+  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
 
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
 
