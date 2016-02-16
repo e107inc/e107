@@ -3790,7 +3790,7 @@ class e_admin_controller_ui extends e_admin_controller
 			// filter for WHERE and FROM clauses
 			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'string', 'number'); //method? 'user',
 			
-			if($var['type'] == 'method' && ($var['data'] == 'string' || $var['data'] == 'str'))
+			if($var['type'] == 'method' && !empty($var['data']) && ($var['data'] == 'string' || $var['data'] == 'str'))
 			{
 				$searchable_types[] = 'method';
 			}
@@ -5508,7 +5508,7 @@ class e_admin_ui extends e_admin_controller_ui
 					continue;
 				}
 
-				if($att['type'] == 'comma' && (!vartrue($att['data']) || !vartrue($att['rule'])))
+				if(varset($att['type']) == 'comma' && (empty($att['data']) || empty($att['rule'])))
 				{
 					$att['data'] = 'set';
 					$att['validate'] = 'set';
@@ -5524,7 +5524,7 @@ class e_admin_ui extends e_admin_controller_ui
 					$att['data'] = 'set';
 				}
 
-				if(($key !== 'options' && false !== varset($att['data']) && null !== $att['type'] && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
+				if(($key !== 'options' && false !== varset($att['data']) && null !== varset($att['type']) && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
@@ -5540,7 +5540,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->validationRules = array();
 			foreach ($this->fields as $key => $att)
 			{
-				if(null === $att['type'] || vartrue($att['noedit']))
+				if(null === varset($att['type']) || vartrue($att['noedit']))
 				{
 					continue;
 				}
