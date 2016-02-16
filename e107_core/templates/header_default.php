@@ -724,7 +724,7 @@ if ($e107_popup != 1) {
 // M: Send top of body for custom pages and for news
 //
 	//XXX - remove all page detections
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
+	if (defset('e_PAGE') == 'news.php' && isset($NEWSHEADER))
 	{
 		parseheader($NEWSHEADER);
 	}

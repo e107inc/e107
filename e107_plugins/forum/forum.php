@@ -259,7 +259,8 @@ if (USER && vartrue($allread) != TRUE && $total_new_threads && $total_new_thread
 	$fVars->INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_FORUM_0057.'</a>'.(e_QUERY != 'new' ? ", <a href='".e_SELF."?new'>".LAN_FORUM_0058."</a>" : '');
 }
 
-if (USER && vartrue($forum->prefs->get('track')) && e_QUERY != 'track')
+$trackPref = $forum->prefs->get('track');
+if (USER && vartrue($trackPref) && e_QUERY != 'track')
 {
 	$fVars->INFO .= "<br /><a href='".e_SELF."?track'>".LAN_FORUM_0030.'</a>';
 }
@@ -421,8 +422,8 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->REPLIESX = "<span class='badge {$badgeReplies}'>".$f['forum_replies']."</span>";
 
 
-
-	if(is_array($forumList['subs'][$f['forum_id']]))
+	$subId = $f['forum_id'];
+	if(!empty($forumList['subs']) && is_array($forumList['subs'][$subId]))
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
 		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
@@ -469,6 +470,8 @@ function parse_forum($f, $restricted_string = '')
 		$fVars->LASTPOSTDATE = "-";
 		$fVars->LASTPOST = '-';
 	}
+
+
 	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
 }
 
@@ -483,9 +486,13 @@ function parse_subs($forumList, $id ='', $lastpost_datestamp)
 	$subList = $forumList['subs'][$id];
 
 	$ret['text'] = '';
+	$ret['threads'] = 0;
+	$ret['replies'] = 0;
 
 	foreach($subList as $sub)
 	{
+	//	print_a($sub);
+
 		$ret['text'] .= ($ret['text'] ? ', ' : '');
 
 		$urlData                = $sub;
@@ -501,7 +508,7 @@ function parse_subs($forumList, $id ='', $lastpost_datestamp)
 		{
 			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
 			$ret['lastpost_user'] = $sub['forum_lastpost_user'];
-			$ret['lastpost_user_anon'] = $sub['lastpost_user_anon'];
+			$ret['lastpost_user_anon'] = $sub['forum_lastpost_user_anon'];
 			$ret['user_name'] = $sub['user_name'];
 			$lastpost_datestamp = $tmp[0];
 		}
@@ -542,7 +549,7 @@ if (e_QUERY == 'new')
 		$forum_newstring .= $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 	}
 
-	if (!$newThreadList)
+	if (empty($newThreadList))
 	{
 		$nVars->NEWSPOSTNAME = LAN_FORUM_0029;
 		$forum_newstring = $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
@@ -574,7 +581,7 @@ $forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
 
 if ($forum->prefs->get('enclose'))
 {
-	$ns->tablerender($forum->prefs->get('title'), $forum_main_start.$forum_string.$forum_main_end, array('forum', 'main3'));
+	$ns->tablerender($forum->prefs->get('title'), $forum_main_start.$forum_string.$forum_main_end, 'forum');
 }
 else
 {
