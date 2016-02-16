@@ -622,7 +622,8 @@ class e_db_mysql
 				{
 					return null;
 				}
-				return array_shift($this->fetch());
+				$rows = $this->fetch();
+				return array_shift($rows);
 			break;
 			
 			case 'one':
