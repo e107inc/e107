@@ -1256,12 +1256,12 @@ class e_install
 \$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
 
 ";
-
+/*
 if($this->pdo == true)
 {
 	$config_file .= 'define("e_PDO", true);';
 	$config_file .= "\n\n";
-}
+}*/
 
 
 		$config_result = $this->write_config($config_file);		
