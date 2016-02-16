@@ -891,16 +891,18 @@ class e_parse extends e_parser
 
 	protected function simpleReplace($tmp) 
 	{
+
 		$unset = ($this->replaceUnset !== false ? $this->replaceUnset : $tmp[0]);
-		$key = $tmp[1];
+
 		if(is_array($this->replaceVars))
 		{
             $this->replaceVars = new e_vars($this->replaceVars);
 			//return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);
 		}
-	//	
-		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
+		$key = $tmp[1]; // PHP7 fix.
+		return ($this->replaceVars->$key !== null ? $this->replaceVars->$key : $unset); // Doesn't work.
 	}
+
 
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
 	{
