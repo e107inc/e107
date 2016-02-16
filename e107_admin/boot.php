@@ -20,6 +20,10 @@ if (!defined('e107_INIT'))
 
 header('Content-type: text/html; charset=utf-8', TRUE);
 
+define('ADMINFEED', 'http://e107.org/adminfeed');
+
+
+
 if(!empty($_GET['iframe'])) // global iframe support. 
 {
 	define('e_IFRAME', true);
@@ -32,6 +36,41 @@ if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_
 	echo json_encode($d);
 	exit;
 }
+
+if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
+{
+
+	$limit = 3;
+
+	if($data = e107::getXml()->getRemoteFile(ADMINFEED,3))
+	{
+	//	print_a($data);
+		$rows = e107::getXml()->parseXml($data, 'advanced');
+		$defaultImg = $rows['channel']['image']['url'];
+
+		$text = '<div style="margin-left:10px;margin-top:10px">';
+		$count = 1;
+		foreach($rows['channel']['item'] as $row)
+		{
+			if($count > $limit){ break; }
+
+			$description = $tp->toText($row['description']);
+			$text .= '
+			<div class="media">
+			  <div class="media-body">
+			    <h4 class="media-heading"><a href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
+			   '.$tp->text_truncate($description,150).'
+			  </div></div>';
+			  $count++;
+		}
+		$text .= '</div>';
+		echo $text;
+
+	}
+	exit;
+}
+
+
 
 if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 {
