@@ -71,6 +71,7 @@ class admin_start
 			'unanswered'	=> 1.4,
 			'lightwindow'	=> '1.0b',
 			'aa_jquery'		=> 1.2,
+			'aa_jquery'		=> 1.4,
 			'who'			=> 1.0,
 			'ratings'		=> 4.2,
 			'lightbox'		=> 1.5,
