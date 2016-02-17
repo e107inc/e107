@@ -228,7 +228,7 @@ class e_chart
 	 */
 	public function setData($data)
 	{
-		$this->id = $id;
+	//	$this->id = $id;
 		if($data == 'demo')
 		{
 			$this->data = $this->getDemoData();	
