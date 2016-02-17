@@ -106,8 +106,11 @@ class e_form
 	
 		$class 			= "";
 		$autoComplete 	= "";
-	
-		parse_str($options,$options);
+
+		if(is_string($options))
+		{
+			parse_str($options, $options);
+		}
 	
 		if(vartrue($options['class']))
 		{
