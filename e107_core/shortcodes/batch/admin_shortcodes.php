@@ -1803,7 +1803,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 		}	
 		
-		return $menu_vars;
+		return !empty($menu_vars) ? $menu_vars : null;
 	}
 
 
