@@ -5524,7 +5524,7 @@ class e_admin_ui extends e_admin_controller_ui
 					$att['data'] = 'set';
 				}
 
-				if(($key !== 'options' && false !== varset($att['data']) && null !== varset($att['type']) && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
+				if(($key !== 'options' && false !== varset($att['data']) && null !== varset($att['type'],null) && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
 				}
@@ -5540,7 +5540,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$this->validationRules = array();
 			foreach ($this->fields as $key => $att)
 			{
-				if(null === varset($att['type']) || vartrue($att['noedit']))
+				if(null === varset($att['type'], null) || vartrue($att['noedit']))
 				{
 					continue;
 				}

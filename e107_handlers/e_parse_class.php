@@ -4141,7 +4141,7 @@ return;
 	//    libxml_use_internal_errors(true); // hides errors.
         $doc  = $this->domObj;
 	    libxml_use_internal_errors(true);
-        @$doc->loadHTML($html, 'HTML-ENTITIES', 'UTF-8');
+        @$doc->loadHTML($html);
 		// $doc->encoding = 'UTF-8';
 
      //   $doc->resolveExternals = true;
