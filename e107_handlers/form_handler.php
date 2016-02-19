@@ -953,10 +953,18 @@ class e_form
 		$id = $this->name2id($name);
 
 		$classes = array('date'	=> 'e-date', 'datetime'	=> 'e-datetime');
-		
+
+		// If default value is set.
 		if ($datestamp)
 		{
-		   $value = is_numeric($datestamp) ? e107::getDate()->convert_date($datestamp, $dateFormat) : $datestamp; //date("d/m/Y H:i:s", $datestamp);
+			// Create timestamp.
+			if(!is_numeric($datestamp))
+			{
+				$datestamp = strtotime($datestamp);
+			}
+
+			// Convert date to proper format.
+			$value = e107::getDate()->convert_date($datestamp, $dateFormat);
 		}
 
 		$text = "";
@@ -967,6 +975,7 @@ class e_form
 		$required 	= vartrue($options['required']) ? "required" : "";
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
+		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
 		
 		if(vartrue($options['inline']))
 		{
@@ -976,7 +985,7 @@ class e_form
 		}
 		else
 		{			
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} />";		
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
