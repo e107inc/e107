@@ -150,6 +150,14 @@ class e_jsmanager
      */
     protected $_index_all = array();
 
+   /**
+     * Registered link tags files by type (core|theme|plugin|other)
+     *
+     * @var array
+     */
+	protected $_e_link = array();
+
+
     /**
      * Registered CSS files by type (core|theme|plugin|other)
      *
@@ -783,6 +791,62 @@ class e_jsmanager
 		}
 	}
 
+
+	/**
+	 * Add a <link> tag to the head.
+	 * @param array $attributes key>value pairs
+	 * @example addLink(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
+	 */
+	public function addLink($attributes=array())
+	{
+		if(!empty($attributes))
+		{
+			$this->_e_link[] = $attributes;
+		}
+	}
+
+
+	/**
+	 * Render all link tags. (other than css)
+	 * @return null
+	 */
+	public function renderLinks()
+	{
+
+		if(empty($this->_e_link))
+		{
+			return null;
+		}
+
+		$text = '';
+
+		foreach($this->_e_link as $v)
+		{
+			if(!empty($v['type']))
+			{
+				if($v['type'] == 'text/css' || $v['rel'] == 'stylesheet') // not for this purpose. use e107::css();
+				{
+					continue;
+				}
+			}
+
+
+			$text .= "\n<link";
+			foreach($v as $key=>$val)
+			{
+				if(!empty($val))
+				{
+					$text .= " ".$key."=\"".$val."\"";
+				}
+			}
+			$text .= " />";
+
+		}
+
+		echo $text;
+	}
+
+
 	/**
 	 * Require JS file(s). Used by corresponding public proxy methods.
 	 *
@@ -1354,7 +1418,7 @@ class e_jsmanager
 			return false;
 		}
 
-		if(e_REQUEST_HTTP == e_ADMIN_ABS."menus.php") // disabled in menu-manager. 
+		if(e_REQUEST_HTTP == e_ADMIN_ABS."menus.php") // disabled in menu-manager.
 		{
 			return false;
 		}

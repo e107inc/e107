@@ -40,7 +40,7 @@ class notify
 	{
 		$active = e107::getConfig()->get('notify');
 
-		if(empty($active) && e_PAGE == 'notify.php')
+		if(empty($active) && defset('e_PAGE') == 'notify.php')
 		{
 			e107::getMessage()->addDebug('Notify is disabled!');
 			return false;
@@ -179,7 +179,7 @@ class notify
 			if (false !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
-				while ($row = $sql->fetch(MYSQL_ASSOC))
+				while ($row = $sql->fetch())
 				{
 					if ($row['user_email'] != $emailFilter)
 					{

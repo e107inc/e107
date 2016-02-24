@@ -205,7 +205,7 @@ class e_pref extends e_front_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function set($pref_name, $value)
+	public function set($pref_name, $value=null, $strict = false)
 	{
 		global $pref;
 		if(empty($pref_name) || !is_string($pref_name))
@@ -341,7 +341,7 @@ class e_pref extends e_front_model
 	 * @param boolean $strict
 	 * @return $this|\e_model
 	 */
-	final public function addData($pref_name, $value = null)
+	final public function addData($pref_name, $value = null, $override = true)
 	{
 		global $pref;
 		parent::addData($pref_name, $value, false);
@@ -361,7 +361,7 @@ class e_pref extends e_front_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final public function setData($pref_name, $value = null)
+	final public function setData($pref_name, $value = null, $strict = false)
 	{
 		global $pref;
 		if(empty($pref_name))
@@ -393,7 +393,7 @@ class e_pref extends e_front_model
 	 * @param string $pref_name
 	 * @return e_pref
 	 */
-	final public function removeData($pref_name)
+	final public function removeData($pref_name=null)
 	{
 		global $pref;
 		parent::removeData((string) $pref_name);
@@ -752,14 +752,14 @@ class e_pref extends e_front_model
     /**
      * Override
      */
-    public function delete()
+    public function delete($ids, $destroy = true, $session_messages = false)
     {
     }
 
     /**
      * Override
      */
-    protected function dbUpdate()
+    protected function dbUpdate($force = false, $session_messages = false)
     {
     }
 }
@@ -877,6 +877,54 @@ final class e_core_pref extends e_pref
 		$prefid = trim($prefid);
 		return array_search($prefid, $this->aliases);
 	}
+
+
+	/**
+	 * Export data from core pref and remove if needed. Useful for core pref -> menu table parm migration.
+	 * @param array $prefList  key/value pairs.  key = oldpref value = new pref key
+	 * @param bool|false $remove
+	 * @return array|false if no match found.
+	 */
+	public function migrateData($prefList=array(), $remove=false)
+	{
+		$data = self::getData();
+		$array = array();
+		$save = false;
+
+		if(empty($prefList))
+		{
+			return false;
+		}
+
+		foreach($data as $k=>$v)
+		{
+			if(isset($prefList[$k]))
+			{
+				$key = $prefList[$k];
+				$array[$key] = $v;
+
+				if($remove == true)
+				{
+					self::remove($k);
+					$save = true;
+				}
+			}
+
+		}
+
+		if(empty($array))
+		{
+			return false;
+		}
+
+		if(!empty($save))
+		{
+			self::save(false,true,false);
+		}
+
+		return $array;
+
+	}
 }
 
 /**
@@ -935,7 +983,7 @@ class e_plugin_pref extends e_pref
 	 * @see e107_handlers/e_pref#delete()
 	 * @return boolean
 	 */
-	public function delete()
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = false;
 		if($this->plugin_id)

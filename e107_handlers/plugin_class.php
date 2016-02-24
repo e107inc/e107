@@ -60,7 +60,8 @@ class e107plugin
 		'e_related',
 		'e_rss',
 		'e_upload',
-		'e_user'
+		'e_user',
+		'e_library', // For third-party libraries are defined by plugins/themes.
 	);
 
 
@@ -198,7 +199,7 @@ class e107plugin
 
 		if ($sql->select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
 		{
-			$row = $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			return intval($row['plugin_id']);
 		}
 		
@@ -319,7 +320,7 @@ class e107plugin
 		if ($sql->select('plugin', "*")) // Read all the plugin DB info into an array to save lots of accesses
 
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				$pluginDBList[$row['plugin_path']] = $row;
 				$pluginDBList[$row['plugin_path']]['status'] = 'read';
@@ -1432,7 +1433,7 @@ class e107plugin
 		}
 			
 		// Load install language file and set lan_global pref. 
-		$this->XmlLanguageFiles($function, $plug_vars['languageFiles'], 'pre'); // First of all, see if there's a language file specific to install
+		$this->XmlLanguageFiles($function, varset($plug_vars['languageFiles']), 'pre'); // First of all, see if there's a language file specific to install
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
 		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
@@ -1795,7 +1796,7 @@ class e107plugin
 						}
 						break;
 					case 'mysql': // all should be lowercase
-						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], mysql_get_server_info(), '<=') === FALSE))
+						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], e107::getDb()->mySqlServerInfo(), '<=') === FALSE))
 						{
 							$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
 							$canContinue = FALSE;
@@ -2116,7 +2117,7 @@ class e107plugin
 					$data['title'] 		= $v['@value'];
 					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
-					$data['class'] 		= $this->getPerm($v['@attributes']['perm'], 'member');
+					$data['class'] 		= $this->getPerm(varset($v['@attributes']['perm']), 'member');
 					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				

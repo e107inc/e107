@@ -37,7 +37,14 @@ $caption = TD_MENU_L1;
 
 if(!empty($parm))
 {
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
 }
 
 if(!$OTHERNEWS_STYLE)

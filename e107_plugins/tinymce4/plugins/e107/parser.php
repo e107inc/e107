@@ -249,6 +249,19 @@ TEMPL;
 				$hKey => $match[4]
 			);
 		}
+		elseif(preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // Theme-image SEF Urls
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_THEME/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+
+		}
+
 
 		return $ret;
 	}

@@ -100,9 +100,9 @@ else
 	else
 	{
 		$sql->db_Select("news_category", "category_id, category_name", "category_id='{$news_category}'");
-		list($category_id, $category_name) = $sql->db_Fetch(MYSQL_NUM);
+		list($category_id, $category_name) = $sql->db_Fetch('num');
 		$sql->db_Select("user", "user_id, user_name", "user_id='{$news_author}'");
-		list($a_id, $a_name) = $sql->db_Fetch(MYSQL_NUM);
+		list($a_id, $a_name) = $sql->db_Fetch('num');
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
 	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">

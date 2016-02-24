@@ -41,7 +41,7 @@
 
     <IfModule mod_env.c>
         SetEnv HTTP_MOD_REWRITE On
-        SetEnv HTTP_MOD_REWRITE_MEDIA Off
+        SetEnv HTTP_MOD_REWRITE_MEDIA On
     </IfModule>
 
 ### enable rewrites
@@ -77,6 +77,28 @@
 	RewriteRule .* index.php [L]
 
 </IfModule>
+
+### Mod_Expires Settings (when available)
+### May be modified if required
+    <IfModule mod_expires.c>
+        ExpiresActive On
+        ExpiresDefault "access plus 2 hours"
+        ExpiresByType image/x-icon "access plus 1 year”
+        ExpiresByType image/gif "access plus 1 week"
+        ExpiresByType image/png "access plus 1 week"
+        ExpiresByType image/jpg "access plus 1 week"
+        ExpiresByType image/jpeg "access plus 1 week"
+        ExpiresByType text/css "access plus 1 month"
+        ExpiresByType application/javascript "access plus 1 month"
+        ExpiresByType text/javascript "access plus 1 month"
+        ExpiresByType text/x-javascript "access plus 1 month"
+    </IfModule>
+
+### Gzip Compression Module
+<ifmodule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/xml text/xml application/rss+xml
+</ifmodule>
+
 
 ### Enable when developing locally. 
 ### SetEnv E_DEV true

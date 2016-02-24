@@ -608,7 +608,7 @@ if(e_AJAX_REQUEST)
 		}
 		elseif($sql->db_Select('userclass_classes', '*', "userclass_id='".$class_num."' "))
 		{
-			$row = $sql->db_Fetch(MYSQL_ASSOC);
+			$row = $sql->db_Fetch();
 
 			//Response action - reset all group checkboxes
 			$jshelper->addResponseAction('reset-checked', array('group_classes_select' => '0'));
@@ -702,7 +702,7 @@ if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 			userclass2_adminlog("02","ID:{$class_id} (".$e_userclass->uc_get_classname($classID).")");
 			if ($sql->db_Select('user', 'user_id, user_class', "user_class = '{$classID}' OR user_class REGEXP('^{$classID},') OR user_class REGEXP(',{$classID},') OR user_class REGEXP(',{$classID}$')"))
 			{	// Delete existing users from class
-				while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+				while ($row = $sql->db_Fetch())
 				{
 					$uidList[$row['user_id']] = $row['user_class'];
 				}
@@ -1273,7 +1273,7 @@ unset($title);
 	if (isset($_POST['remove_db_fields']))
 	{	// Remove the DB fields
 	  $message = "Remove DB fields: ";
-	  $sql->db_Select_gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
+	  $sql->gen("ALTER TABLE #userclass_classes DROP `userclass_parent`, DROP `userclass_accum`, DROP `userclass_visibility`");
 	  $message .= "Completed";
 	}
 

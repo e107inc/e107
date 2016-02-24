@@ -10,109 +10,142 @@
 
 if (!defined('e107_INIT'))  exit;
 
-global $menu_pref;
-
-$e107 = e107::getInstance();
-$tp = e107::getParser();
-$sql = e107::getDb();
-$gen = new convert;
-$pref = e107::getPref();
 e107::lan('forum','menu',true);  // English_menu.php or {LANGUAGE}_menu.php
-
-// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_newforumposts_menu.php');
-// include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/'.e_LANGUAGE.'_menu.php');
 include_once(e_PLUGIN.'forum/forum_class.php');
 
-$max_age = vartrue($menu_pref['newforumposts_maxage'], 0);
-$max_age = $max_age == 0 ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
-$forum = new e107forum;
-$forumList = implode(',', $forum->getForumPermList('view'));
-//TODO: Use query from forum class to get thread list
-$qry = "
-SELECT
-	p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
-	t.thread_id, t.thread_datestamp, t.thread_name, u.user_name
-FROM `#forum_post` as p
-LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-LEFT JOIN `#user` AS u ON u.user_id = p.post_user
-WHERE {$maxage} p.post_forum IN ({$forumList})
-ORDER BY p.post_datestamp DESC LIMIT 0, ".$menu_pref['newforumposts_display'];
 
-// Get forum plugin preferences.
-$plugForumPrefs = e107::getPlugConfig('forum')->getPref();
-// New MySQL class instantiation to avoid overrides.
-$db = new e_db_mysql();
-
-// TODO: cache menu.
-if($results = $sql->gen($qry))
+class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 {
-	$text = "<ul>";
-	
-	while($row = $sql->fetch(MYSQL_ASSOC))
+
+	private $plugPref = null;
+	private $menuPref = null;
+	private $forumObj = null;
+
+	function __construct()
 	{
-		$datestamp 	= $gen->convert_date($row['post_datestamp'], 'relative');
-		$id 		= $row['thread_id'];
-		$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
-		$topic 		.= strip_tags($tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
-		
-		if($row['post_user_anon'])
-		{
-			$poster = $row['post_user_anon'];
-		}
-		else
-		{
-			if($row['user_name'])
-			{
-				$poster = "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $row['user_name'], 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
-			}
-			else
-			{
-				$poster = '[deleted]';
-			}
-		}
+		$this->forumObj = new e107forum;
+		$this->plugPref = e107::pref('forum'); // general forum preferences.
+		$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
 
-		$post = strip_tags($tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-		$post = $tp->text_truncate($post, $menu_pref['newforumposts_characters'], $menu_pref['newforumposts_postfix']);
+		$this->render();
 
-		// Count previous posts for calculating proper (topic) page number for the current post.
-		$postNum = $db->count('forum_post', '(*)', "WHERE post_id <= " . $row['post_id'] . " AND post_thread = " . $row['thread_id'] . " ORDER BY post_id ASC");
-		// Calculate (topic) page number for the current post.
-		$postPage = ceil($postNum / vartrue($plugForumPrefs['postspage'], 10));
-		// Load thread for passing it to e107::url().
-		$thread = $db->retrieve('forum_thread', '*', 'thread_id = ' . $row['thread_id']);
-
-		// Create URL for post.
-		// like: e107_plugins/forum/forum_viewtopic.php?id=1&p=2#post-55
-		$url = e107::url('forum', 'topic', $thread, array(
-			'query'    => array(
-				'p' => $postPage, // proper page number
-			),
-			'fragment' => 'post-' . $row['post_id'], // jump page to post
-		));
-
-		//FIXME Use f=post/id query.
-
-
-		$text .= "<li>";
-		
-		if ($menu_pref['newforumposts_title'])
-		{
-			$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
-		}
-		else
-		{
-			$text .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='muted'>{$datestamp}</small><br />{$post}<br />";
-		}
-		
-		$text .= "</li>";
-		
 	}
-	
-	$text .= "</ul>";
+
+
+
+
+	function getQuery()
+	{
+		$max_age = vartrue($this->menuPref['maxage'], 0);
+		$max_age = ($max_age == 0) ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
+
+		$forumList = implode(',', $this->forumObj->getForumPermList('view'));
+
+		$qry = "
+		SELECT
+			p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
+			t.thread_id, t.thread_datestamp, t.thread_name, u.user_name, f.forum_sef
+		FROM `#forum_post` as p
+
+		LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
+		LEFT JOIN `#forum` as f ON f.forum_id = t.thread_forum_id
+		LEFT JOIN `#user` AS u ON u.user_id = p.post_user
+		WHERE {$max_age} p.post_forum IN ({$forumList})
+		ORDER BY p.post_datestamp DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
+
+		return $qry;
+	}
+
+
+
+	// TODO: cache menu.
+	function render()
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb('nfp');
+		$pref = e107::getPref();
+
+		$qry = $this->getQuery();
+
+
+		if($results = $sql->gen($qry))
+		{
+			$text = "<ul>";
+
+			while($row = $sql->fetch())
+			{
+				$datestamp 	= $tp->toDate($row['post_datestamp'], 'relative');
+				$id 		= $row['thread_id'];
+				$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
+				$topic 		.= strip_tags($tp->toHTML($row['thread_name'], true, 'emotes_off, no_make_clickable, parse_bb', '', $pref['menu_wordwrap']));
+
+				$row['thread_sef'] = $this->forumObj->getThreadSef($row);
+
+				if($row['post_user_anon'])
+				{
+					$poster = $row['post_user_anon'];
+				}
+				else
+				{
+					if($row['user_name'])
+					{
+						$poster = "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $row['user_name'], 'id' => $row['post_user']))."'>{$row['user_name']}</a>";
+					}
+					else
+					{
+						$poster = '[deleted]';
+					}
+				}
+
+				$post = strip_tags($tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
+				$post = $tp->text_truncate($post, $this->menuPref['characters'], $this->menuPref['postfix']);
+
+				// Count previous posts for calculating proper (topic) page number for the current post.
+				//	$postNum = $sql2->count('forum_post', '(*)', "WHERE post_id <= " . $row['post_id'] . " AND post_thread = " . $row['thread_id'] . " ORDER BY post_id ASC");
+				//	$postPage = ceil($postNum / vartrue($this->plugPref['postspage'], 10)); // Calculate (topic) page number for the current post.
+				//	$thread = $sql->retrieve('forum_thread', '*', 'thread_id = ' . $row['thread_id']); 	// Load thread for passing it to e107::url().
+
+				// Create URL for post.
+				// like: e107_plugins/forum/forum_viewtopic.php?f=post&id=1
+				$url = e107::url('forum', 'topic', $row, array(
+					'query'    => array(
+						'f' => 'post',
+						'id'    => intval($row['post_id']) // proper page number
+					),
+				));
+
+
+				$text .= "<li>";
+
+				if ($this->menuPref['title'])
+				{
+					$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
+				}
+				else
+				{
+					$text .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='text-muted muted'>{$datestamp}</small><br />{$post}<br />";
+				}
+
+				$text .= "</li>";
+
+			}
+
+			$text .= "</ul>";
+		}
+		else
+		{
+			$text = LAN_FORUM_MENU_002;
+		}
+
+		$caption = varset($this->menuPref['caption'][e_LANGUAGE], $this->menuPref['caption']);
+		e107::getRender()->tablerender($caption, $text, 'nfp_menu');
+
+	}
+
 }
-else
-{
-	$text = LAN_FORUM_MENU_002;
-}
-e107::getRender()->tablerender($menu_pref['newforumposts_caption'], $text, 'nfp_menu');
+
+new forum_newforumposts_menu;
+
+
+

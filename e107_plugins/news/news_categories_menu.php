@@ -8,13 +8,21 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$cacheString = 'nq_news_categories_menu_'.md5($parm);
+$cacheString = 'nq_news_categories_menu_'.md5(serialize($parm));
 $cached = e107::getCache()->retrieve($cacheString);
 if(false === $cached)
 {
 	e107::plugLan('news');
 
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
+
 	$ctree = e107::getObject('e_news_category_tree', null, e_HANDLER.'news_class.php');
 
 	$template = e107::getTemplate('news', 'news_menu', 'category');

@@ -23,10 +23,12 @@ class gallery_shortcodes extends e_shortcode
 	
 	function init()
 	{
-		$this->downloadable = e107::getPlugPref('gallery','downloadable');	
-		$pop_w 				= vartrue(e107::getPlugPref('gallery','pop_w'),1024);
-		$pop_h 				= vartrue(e107::getPlugPref('gallery','pop_h'),768);		
-		$this->attFull 		= 'w='.$pop_w.'&h='.$pop_h.'&x=1';
+		$this->downloadable = e107::getPlugPref('gallery','downloadable');
+		$prefW              = e107::getPlugPref('gallery','pop_w');
+		$prefH              = e107::getPlugPref('gallery','pop_h');
+		$pop_w 				= vartrue($prefW, 1024);
+		$pop_h 				= vartrue($prefH, 768);
+		$this->attFull 		= array('w'=>$pop_w, 'h'=>$pop_h, 'x'=>1, 'crop'=>0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 	}
 			
 	function sc_gallery_caption($parm='')
@@ -77,11 +79,15 @@ class gallery_shortcodes extends e_shortcode
 		
 		$class 		= ($this->slideMode == TRUE) ? 'gallery-slideshow-thumb img-responsive img-rounded' : varset($parms['class'],'gallery-thumb img-responsive');
 	//	$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
-			$rel 		= ($this->slideMode == TRUE) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
-		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
+		$rel 		= ($this->slideMode == TRUE) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
+
+		//$att        = array('aw'=>$w, 'ah'=>$h, 'x'=>1, 'crop'=>1);
+		$caption    = $tp->toAttribute($this->var['media_caption']) ;
+		$att        = array('w'=>$w, 'h'=>$h, 'class'=>$class, 'alt'=>$caption, 'x'=>1, 'crop'=>1);
+
 		
 		$srcFull = $tp->thumbUrl($this->var['media_url'], $this->attFull);
-		
+
 		if(vartrue($parms['actualPreview'])) 
 		{
 			$srcFull = $tp->replaceConstants($this->var['media_url'], 'full');
@@ -91,15 +97,14 @@ class gallery_shortcodes extends e_shortcode
 		elseif(isset($parms['thumbsrc'])) return $tp->thumbUrl($this->var['media_url'],$att);
 		elseif(isset($parms['imageurl'])) return $tp->replaceConstants($this->var['media_url'], 'full');
 		
-		$caption = $tp->toAttribute($this->var['media_caption']) ;	
+
 		$description = ($this->downloadable) ? " <a class='btn btn-xs btn-default btn-mini e-tip' title='Right-click > Save Link As' href='".$srcFull."'>Download</a>" : "";
-		
 		$description .= $tp->toAttribute($this->var['media_description']);
 		
 		$text = "<a class='".$class."' title=\"".$description."\" href='".$srcFull."'  data-gal='{$rel}'  >";
-		$text .= "<img class='".$class."' src='".$tp->thumbUrl($this->var['media_url'],$att)."'  alt=\"".$caption."\" />";
+		$text .= $tp->toImage($this->var['media_url'],$att);
 		$text .= "</a>";
-		
+
 		return $text;	
 	}
 	
@@ -153,7 +158,7 @@ class gallery_shortcodes extends e_shortcode
 		// we passs both fields, the router will convert one of them to 'cat' variable, based on the current URL config
 		$url = 'route::gallery/index/list?media_cat_category='.$this->curCat.'--AMP--media_cat_sef='.$this->var['media_cat_sef'].'--AMP--frm=--FROM--::full=1';
 		$parm = 'total='.$this->total.'&amount='.$this->amount.'&current='.$this->from.'&url='.rawurlencode($url); // .'&url='.$url;
-		$text .= e107::getParser()->parseTemplate("{NEXTPREV=".$parm."}");
+		$text = e107::getParser()->parseTemplate("{NEXTPREV=".$parm."}");
 		return $text;	
 	}
 	

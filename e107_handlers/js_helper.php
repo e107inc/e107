@@ -138,7 +138,7 @@ class e_jshelper
             foreach ($field_array as $field => $value)
 	        {
 	            //associative arrays only - no numeric keys!
-	            //to speed this up use $sql->db_Fetch(MYSQL_ASSOC);
+	            //to speed this up use $sql->db_Fetch();
 	            //when passing large data from the DB
 	            if (is_numeric($field) || empty($field)) continue;
 

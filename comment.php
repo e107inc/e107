@@ -422,7 +422,7 @@ elseif ($action == 'comment')
 					AND n.news_allow_comments=0";
 				}
 
-				if (!$sql->db_Select_gen($query))
+				if (!$sql->gen($query))
 				{
 					e107::redirect();
 					exit;

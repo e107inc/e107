@@ -155,7 +155,7 @@ class alt_login
 			}
 			if($aa_sql -> db_Select_gen($qry))
 			{ // Existing user - get current data, see if any changes
-				$row = $aa_sql->db_Fetch(MYSQL_ASSOC);
+				$row = $aa_sql->db_Fetch();
 				foreach ($db_vals as $k => $v)
 				{
 					if ($row[$k] == $v) unset($db_vals[$k]);

@@ -112,7 +112,7 @@ $TEMPLATE_LIST_NEW['ADMIN_MESSAGE'] = "<div style='text-align:center'><b>{MESSAG
 
 
 $TEMPLATE_LIST_NEW['ADMIN_START'] = "
-<div style='text-align:center'>
+<div>
 <form action='".e_SELF."' method='post' name='menu_conf_form' id='menu_conf_form' class='admin-menu' enctype='multipart/form-data'>";
 
 $TEMPLATE_LIST_NEW['ADMIN_END'] = "
@@ -156,9 +156,9 @@ $TEMPLATE_LIST_NEW['FIELD_TABLE_END'] = "</table>";
 
 //header for options page
 $TEMPLATE_LIST_NEW['OPTIONS_HEADER'] = "
-<div id='{ID}' class='e-hideme center'>
+<div id='{ID}' class='e-hideme'>
 <table class='table adminlist'>
-<tr><td colspan='4' class='forumheader'>{TITLE}</td></tr>";
+<tr><td colspan='4' class='forumheader'><h4>{TITLE}</h4></td></tr>";
 
 //template for spacer row
 $TEMPLATE_LIST_NEW['TOPIC_ROW_SPACER'] = "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";

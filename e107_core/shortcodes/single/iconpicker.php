@@ -28,9 +28,9 @@ function iconpicker_shortcode($parm)
 		$size_section = array();
 		$lastsize = "16";
 		
-		if($sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				list($tmp,$tmp2,$size) = explode("_",$row['media_category']);
 				

@@ -194,7 +194,7 @@ elseif ($action == 'forums')
 	ORDER BY p.post_datestamp DESC LIMIT {$from}, 10
 	";
 
-	if (!$sql->db_Select_gen($qry))
+	if (!$sql->gen($qry))
 	{
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8.'</span>';
 	}
@@ -206,7 +206,7 @@ elseif ($action == 'forums')
 		$userposts_forum_table_string = '';
 		while(true)
 		{
-			$row = $sql->db_Fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			if(empty($row)) break;
 
 			$datestamp = $gen->convert_date($row['post_datestamp'], 'short');

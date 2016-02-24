@@ -745,11 +745,17 @@ class e107forum
 			$postInfo['post_thread'] = $newThreadId;
 			$newPostId = $this->postAdd($postInfo, false);
 			$this->threadMarkAsRead($newThreadId);
-			$threadInfo['thread_sef'] = eHelper::title2sef($threadInfo['thread_name'],'dashl');
+			$threadInfo['thread_sef'] = $this->getThreadsef($threadInfo);
 
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
 		return false;
+	}
+
+
+	function getThreadSef($threadInfo)
+	{
+		return eHelper::title2sef($threadInfo['thread_name'],'dashl');
 	}
 
 
@@ -861,7 +867,7 @@ class e107forum
 		}
 		if($sql->gen($qry))
 		{
-			$tmp = $sql->fetch(MYSQL_ASSOC);
+			$tmp = $sql->fetch();
 			if($tmp)
 			{
 				if(trim($tmp['thread_options']) != '')
@@ -917,7 +923,7 @@ class e107forum
 		if($sql->gen($qry))
 		{
 			$ret = array();
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 				$ret[] = $row;
@@ -977,7 +983,7 @@ class e107forum
 		if($sql->gen($qry))
 		{
 			$ret = array();
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[$row['post_user']] = $row['post_count'];
 			}
@@ -1023,7 +1029,7 @@ class e107forum
 
 			$postList = array();
 			
-			while($row = $sql->Fetch(MYSQL_ASSOC))
+			while($row = $sql->Fetch())
 			{
 				$postList[] = $row['post_id'];
 			}
@@ -1043,7 +1049,7 @@ class e107forum
 				return true;
 			}
 
-			$tmp = $sql->fetch(MYSQL_ASSOC);
+			$tmp = $sql->fetch();
 
 			$attachment_array = e107::unserialize($tmp['post_attachments']);
 	   		$files = $attachment_array['file'];
@@ -1181,7 +1187,7 @@ class e107forum
 			{
 				if ($sql->select('forum', 'forum_id', 'forum_parent != 0'))
 				{
-					while ($row = $sql->fetch(MYSQL_ASSOC))
+					while ($row = $sql->fetch())
 					{
 						$parentList[] = $row['forum_id'];
 					}
@@ -1201,7 +1207,7 @@ class e107forum
 				{
 					if ($sql2->select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) // forum_t used in forum_update
 					{
-						while ($row = $sql2->fetch(MYSQL_ASSOC))
+						while ($row = $sql2->fetch())
 						{
 							set_time_limit(60);
 							$this->forumUpdateLastpost('thread', $row['thread_id']);
@@ -1210,7 +1216,7 @@ class e107forum
 				}
 				if ($sql->select('forum_thread', 'thread_id, thread_lastuser, thread_lastuser_anon, thread_datestamp', 'thread_forum_id='.$id.' ORDER BY thread_datestamp DESC LIMIT 1'))
 				{
-					$row = $sql->fetch(MYSQL_ASSOC);
+					$row = $sql->fetch();
 					$lp_info = $row['thread_datestamp'].'.'.$row['thread_id'];
 					$lp_user = $row['thread_lastuser'];
 				}
@@ -1252,7 +1258,7 @@ class e107forum
 
 		if ($sql->select('forum_thread', 'thread_id', $qry))
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 		  		$newIdList[] = $row['thread_id'];
 			}
@@ -1288,7 +1294,7 @@ class e107forum
 	{
 		if (e107::getDb()->select('forum', '*', 'forum_parent=0 ORDER BY forum_order ASC'))
 		{
-			while ($row = e107::getDb()->fetch(MYSQL_ASSOC)) {
+			while ($row = e107::getDb()->fetch()) {
 				$ret[] = $row;
 			}
 			return $ret;
@@ -1308,7 +1314,7 @@ class e107forum
 		if($uclass == e_UC_ADMIN || trim($uclass) == '')
 		{
 			$sql->select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$this->modArray[$row['user_id']] = $row['user_name'];
 			}
@@ -1379,7 +1385,7 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				if($type == 'all')
 				{
@@ -1408,7 +1414,7 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				if($forum_id == '')
 				{
@@ -1456,7 +1462,7 @@ class e107forum
 		WHERE ft.thread_lastpost > '.USERLV.' '.$viewed;
 		if($sql->gen($_newqry))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = $row['thread_forum_id'];
 				if($row['forum_sub'])
@@ -1647,7 +1653,7 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			return $sql->fetch(MYSQL_ASSOC);
+			return $sql->fetch();
 		}
 		return FALSE;
 	}
@@ -1700,7 +1706,7 @@ class e107forum
 		$ret = array();
 		if ($sql->gen($qry))
 		{
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 			//	$row['thread_sef'] = eHelper::title2sef($row['thread_name']);
 				$ret[] = $row;
@@ -1724,7 +1730,7 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			$row = $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 			return $row;
 		}
@@ -1923,7 +1929,7 @@ class e107forum
 		if($sql->gen($qry))
 		{
 			$ret = array();
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[$row['post_user']] = $row['cnt'];
 			}
@@ -2104,7 +2110,7 @@ class e107forum
 			if($sql->select('forum_post', 'post_id', 'post_thread = '.$threadId))
 			{
 				$postList = array();
-				while($row = $sql->fetch(MYSQL_ASSOC))
+				while($row = $sql->fetch())
 				{
 					$postList[] = $row['post_id'];
 				}
@@ -2159,7 +2165,7 @@ class e107forum
 		}
 		
 
-		$row = $sql->fetch(MYSQL_ASSOC);
+		$row = $sql->fetch();
 
 		//delete attachments if they exist
 		if($row['post_attachments'])
@@ -2197,6 +2203,42 @@ class e107forum
 		}
 		return $deleted; // return boolean. $threadInfo['thread_total_replies'];
 	}
+
+
+	/**
+	 *  Check for legacy Prefernces and upgrade if neccessary.
+	 */
+	public function upgradeLegacyPrefs()
+	{
+
+			e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
+
+			$legacyMenuPrefs = array(
+				'newforumposts_caption'     => 'caption',
+				'newforumposts_display'     => 'display',
+				'newforumposts_maxage'      => 'maxage',
+				'newforumposts_characters'  => 'chars',
+				'newforumposts_postfix'     => 'postfix',
+				'newforumposts_title'       => 'title'
+			);
+
+			if($newPrefs = e107::getConfig('menu')->migrateData($legacyMenuPrefs, true)) // returns false if no match found.
+			{
+				if(e107::getMenu()->setParms('forum','newforumposts_menu', $newPrefs) !== false)
+				{
+					e107::getMessage()->addDebug("Sucessfully Migrated newforumposts prefs from core to menu table. ");
+				}
+				else
+				{
+					e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
+				}
+			}
+
+	}
+
+
+
+
 
 }
 

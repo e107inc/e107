@@ -360,7 +360,7 @@ class e_media
 		$qry .= "ORDER BY media_cat_order";
 		
 		e107::getDb()->gen($qry);
-		while($row = e107::getDb()->fetch(MYSQL_ASSOC))
+		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_cat_category'];
 			$ret[$id] = $row;
@@ -408,7 +408,7 @@ class e_media
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
 		}
 		
-		return e107::getDb()->db_Select_gen($query);	
+		return e107::getDb()->gen($query);
 		*/
 	}
 	
@@ -494,7 +494,7 @@ class e_media
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
 		e107::getDb()->gen($query);
-		while($row = e107::getDb()->fetch(MYSQL_ASSOC))
+		while($row = e107::getDb()->fetch())
 		{
 			$id = $row['media_id'];
 			$ret[$id] = $row;
@@ -904,7 +904,7 @@ class e_media
 		if($type == 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css');
+			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css');
 		//	print_a($subject);
 		}
 		elseif($type == 'fa3')

@@ -865,7 +865,7 @@ Following fields auto-filled in code as required:
 		}
 		else
 		{
-			$row = $db->db_Fetch(MYSQL_ASSOC);
+			$row = $db->db_Fetch();
 			if ($uid && ($uid != $row['user_id']))
 			{
 				$error = 'UID mismatch: '.$uid.'/'.$row['user_id'];

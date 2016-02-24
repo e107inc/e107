@@ -190,11 +190,18 @@ function step2()
 	$ret = '';
 	$failed = false;
 	$text = '';
+	$sql = e107::getDb();
 	foreach ($tabList as $name => $rename)
 	{
 		$message = 'Creating table ' . ($rename ? $rename : $name);
 
-		$result = $db -> createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
+		if($sql->isTable($name) && $sql->isEmpty($name))
+		{
+			$mes -> addSuccess("Skipping table ".$name." (already exists)");
+			continue;
+		}
+
+		$result = $db->createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
 		if ($result === true)
 		{
 			$mes -> addSuccess($message);
@@ -221,9 +228,9 @@ function step2()
 	$ns -> tablerender('Step 2: Forum table creation', $mes -> render() . $text);
 }
 
-// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib,
-// $source)
 
+
+// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib, $source)
 function step3()
 {
 	$ns = e107::getRender();
@@ -346,6 +353,15 @@ function step4()
 	$fconf -> setPref($old_prefs) -> save(false, true);
 	$coreConfig -> save(false, true);
 
+
+	// -----Upgrade old menu prefs ----------------
+	global $forum;
+	$forum->upgradeLegacyPrefs();
+
+	// --------------------
+
+
+
 	$result = array(
 		'usercount' => 0,
 		'viewcount' => 0,
@@ -357,7 +373,7 @@ function step4()
 		require_once (e_HANDLER . 'user_extended_class.php');
 		$ue = new e107_user_extended;
 
-		while ($row = $db -> fetch(MYSQL_ASSOC))
+		while ($row = $db -> fetch())
 		{
 			$result['usercount']++;
 			$userId = (int)$row['user_id'];
@@ -700,7 +716,7 @@ function step8_ajax()
 
 	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$parentList[] = $row['forum_id'];
 		}
@@ -750,7 +766,7 @@ function step9()
 	";
 	if ($sql -> gen($qry))
 	{
-		while ($row = $sql -> fetch(MYSQL_ASSOC))
+		while ($row = $sql -> fetch())
 		{
 			$threadList[] = $row['thread_id'];
 		}
@@ -758,7 +774,7 @@ function step9()
 		{
 			if ($sql -> select('forum_thread', 'thread_options', 'thread_id = ' . $threadId, 'default'))
 			{
-				$row = $sql -> fetch(MYSQL_ASSOC);
+				$row = $sql -> fetch();
 				if ($row['thread_options'])
 				{
 					$opts = unserialize($row['thread_options']);
@@ -864,7 +880,7 @@ function step10_ajax()//TODO
 	
 	if ($sql->gen($qry))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$postList[] = $row;
 		}
@@ -1261,7 +1277,7 @@ function step12()
 
 class forumUpgrade
 {
-	var $newVersion = '2.0';
+	private $newVersion = '2.0';
 	var $error = array();
 	public $updateInfo;
 	private $attachmentData;
@@ -1338,7 +1354,7 @@ class forumUpgrade
 		/*
 		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
-			$row = $sql -> fetch(MYSQL_ASSOC);
+			$row = $sql -> fetch();
 			$this -> updateInfo = unserialize($row['gen_chardata']);
 		}
 		else
@@ -1358,10 +1374,12 @@ class forumUpgrade
 
 	function setNewVersion()
 	{
-		$sql = e107::getDb();
+		// $sql = e107::getDb();
 
-		$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
-		e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+	//	$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum' OR plugin_name = 'LAN_PLUGIN_FORUM_NAME'");
+	//	e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+
+		e107::getPlugin()->refresh('forum');
 
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}

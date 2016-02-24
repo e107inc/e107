@@ -647,6 +647,7 @@ class news_admin_ui extends e_admin_ui
 		'news_meta_description' ,
 		'news_ping',
 
+		'news_email_notify',
 		'news_allow_comments' ,
 		'news_start' ,
 		'news_end' ,
@@ -655,6 +656,7 @@ class news_admin_ui extends e_admin_ui
 		'news_sticky',
 
 		'news_comment_total' ,
+		'submitted_id',
 		'options' );
 
 
@@ -672,10 +674,11 @@ class news_admin_ui extends e_admin_ui
 
 		$order = array_flip($newOrder);
 
-		if ($order[$a] == $order[$b])
+		if($order[$a] == $order[$b])
 		{
 			return 0;
 		}
+
 		return ($order[$a] < $order[$b]) ? -1 : 1;
 
 	}
@@ -1305,7 +1308,7 @@ class news_form_ui extends e_admin_form_ui
 		{
 			$auth = ($curVal) ? intval($curVal) : USERID;
 			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
-			$row = $sql->fetch(MYSQL_ASSOC);
+			$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$curVal."'>".$row['user_name'])."</a>";
 		}
@@ -2428,11 +2431,11 @@ class admin_newspost
 			$query .= ($check_perms ? "WHERE {$check_perms}" : '')."ORDER BY {$ordfield} ".strtoupper($this->_sort_order);
 		}
 
-		$newsposts = $sql->db_Select_gen($query);
+		$newsposts = $sql->gen($query);
 		
 		//echo "sql=".$query;
 		
-		if ($sql->db_Select_gen($query." LIMIT ".$this->getFrom().", {$amount}"))
+		if ($sql->gen($query." LIMIT ".$this->getFrom().", {$amount}"))
 		{
 			$newsarray = $e107->sql->db_getList();
 
@@ -2838,7 +2841,7 @@ class admin_newspost
 		{
 			$auth = ($_POST['news_author']) ? intval($_POST['news_author']) : USERID;
 			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
-           	$row = $sql->fetch(MYSQL_ASSOC);
+           	$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
 			$text .= "<a href='".$e107->url->create('user/profile/view', 'name='.$row['user_name'].'&id='.$_POST['news_author'])."'>".$row['user_name']."</a>";
 		}
@@ -2862,7 +2865,7 @@ class admin_newspost
 				}
 			}
 
-	        $sql->db_Select_gen($qry);
+	        $sql->gen($qry);
 	        while($row = $sql->fetch())
 	        {
 	        	if(vartrue($_POST['news_author']))
@@ -3917,9 +3920,9 @@ class admin_newspost
 		$deleteCount = 0;
 		$updateCount = 0;
 		$canDelete = isset($_POST['newsdeletecomments']);
-		if ($result = e107::getDb()->db_Select_gen($qry))
+		if ($result = e107::getDb()->gen($qry))
 		{
-			while ($row = e107::getDb()->fetch(MYSQL_ASSOC))
+			while ($row = e107::getDb()->fetch())
 			{
 				if ($canDelete && ($row['news_allow_comments'] != 0) && ($row['c_count'] > 0))	// N.B. sense of 'news_allow_comments' is 0 = allow!!!
 				{		// Delete comments

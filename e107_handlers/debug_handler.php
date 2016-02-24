@@ -60,6 +60,12 @@ else
 	define('E107_DEBUG_LEVEL', 0);
 }
 
+if(!defined('e_DEBUG'))
+{
+	$e_DEBUG = (E107_DEBUG_LEVEL > 0) ? true: false;
+	define('e_DEBUG', $e_DEBUG);
+}
+
 // 
 // Define all debug constants -- each one will be zero or a value
 // They all have different values and can be 'or'ed together
@@ -116,7 +122,7 @@ class e107_debug {
 														// removed: inline debug breaks pages!
 	);
 
-	function e107_debug() 
+	function __construct()
 	{
 	  if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) 
 	  {

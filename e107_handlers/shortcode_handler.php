@@ -835,7 +835,8 @@ class e_parse_shortcode
 		{
 			if ($this->eVars->isVar($matches[1]))
 			{
-				return $this->eVars->$matches[1];
+				$match1 = $matches[1]; // php7 fix.
+				return $this->eVars->$match1;
 			}
 		}
 		if (strpos($matches[1], E_NL) !== false)

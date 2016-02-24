@@ -116,7 +116,7 @@ class e107_user_extended
 
 		if($sql->select('user_extended_struct', '*', "user_extended_struct_text != '_system_' ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				if ($row['user_extended_struct_type'] == 0)
 				{	// Its a category
@@ -379,7 +379,7 @@ class e107_user_extended
 		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' {$more} ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[$row['user_extended_struct_parent']][] = $row;
 			}
@@ -417,7 +417,7 @@ class e107_user_extended
 		
 		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 {$sys} {$more} ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[$row[$indexField]] = $row;
 			}
@@ -438,7 +438,7 @@ class e107_user_extended
 		
 		if($sql->select("user_extended_struct", "*", "user_extended_struct_type > 0 ORDER BY user_extended_struct_order ASC"))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = 'user_'.$row['user_extended_struct_name'];
 			}

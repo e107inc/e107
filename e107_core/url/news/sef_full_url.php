@@ -94,9 +94,9 @@ class core_news_sef_full_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->db_Select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
+		if($sql->select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['news_id']);
 		}
 		else $request->setRequestParam('name', 0);
@@ -122,9 +122,9 @@ class core_news_sef_full_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$id = e107::getParser()->toDB($name);
-		if($sql->db_Select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
+		if($sql->select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['category_id']);
 		}
 		else $request->setRequestParam('name', 0);

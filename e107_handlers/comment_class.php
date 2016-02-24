@@ -126,7 +126,7 @@ class comment
 			$sc_style['COMMENT_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td><td id='commentform' style='width:80%;'>";
 			$sc_style['COMMENT_INPUT']['post']		= "</td></tr>";
 			
-			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td colspan='2' id='commentformbutton' style='width:80%;'>";
+			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td style='width:20%; vertical-align:top;'>&nbsp;</td><td id='commentformbutton' style='width:80%;'>";
 			$sc_style['COMMENT_BUTTON']['post']		= "</td></tr>";
 					
 		}	
@@ -1088,7 +1088,11 @@ class comment
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
 		$replace = array($modcomment,$text,$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
-			
+
+
+	//	$return = null;
+	//	$tablerender = true;
+
 		if(!$return)
 		{		
 			if ($tablerender)
@@ -1103,6 +1107,11 @@ class comment
 		}		
 			//echo $modcomment.$comment;
 			//echo $text;
+
+		if(!deftrue('BOOTSTRAP')) //v1.x
+		{
+			$comment = $ns->tablerender(COMLAN_9, $comment, 'comment', true );
+		}
 		
 		
 		
@@ -1156,7 +1165,7 @@ class comment
 			ORDER BY c.comment_datestamp ".$sort;
 		}
 		
-		$this->totalComments = $sql->db_Select_gen($query);
+		$this->totalComments = $sql->gen($query);
 			
 		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
 		
@@ -1202,13 +1211,16 @@ class comment
 	{
 		//return "table=".$table."  id=".$id."  from=".$from;
 		//$from = $from + $this->commentsPerPage;
-		
-		
+
+
 		// from calculations are done by eNav() js.
 		if($this->totalComments > $this->commentsPerPage)
 		{
-			return "<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>" . LAN_PREVIOUS . "</a>
-			<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>" . LAN_NEXT . "</a>";
+			$prev = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
+			$next = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
+
+			return "<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
+			<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$next}'>" . LAN_NEXT . "</a>";
 		}
 		
 	}
@@ -1235,7 +1247,7 @@ class comment
 		FROM #comments
 		WHERE comment_author_id = '{$id}'
 		";
-			if ($sql->db_Select_gen($qry))
+			if ($sql->gen($qry))
 			{
 				$row = $sql->db_Fetch();
 				$sql->db_Update("user", "user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
@@ -1253,7 +1265,7 @@ class comment
 		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}'
 		GROUP BY author
 		";
-			if ($sql->db_Select_gen($qry))
+			if ($sql->gen($qry))
 			{
 				while ($row = $sql->db_Fetch())
 				{
@@ -1384,7 +1396,7 @@ class comment
 		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
 		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
-			if ($comment_total = $sql->db_Select_gen($query))
+			if ($comment_total = $sql->gen($query))
 			{
 				$width = 0;
 				while ($row = $sql->db_Fetch())
@@ -1420,7 +1432,7 @@ class comment
 							break;
 						case '2': //	downloads
 							$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
-							if ($sql2->db_Select_gen($qryd))
+							if ($sql2->gen($qryd))
 							{
 								$row2 = $sql2->db_Fetch();
 								$ret['comment_type'] = COMLAN_TYPE_2;
@@ -1469,7 +1481,7 @@ class comment
 										if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
 										{
 											$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
-											if ($sql2->db_Select_gen($qryp))
+											if ($sql2->gen($qryp))
 											{
 												$row2 = $sql2->db_Fetch();
 												$ret['comment_type'] = $var['plugin_name'];

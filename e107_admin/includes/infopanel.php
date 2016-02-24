@@ -17,7 +17,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-define('ADMINFEED', 'http://e107.org/adminfeed');
+
 define('ADMINFEEDMORE', 'http://e107.org/blog');
 
 
@@ -31,17 +31,14 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
-		e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
+	//	e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
 		
 		$code = "
 		
 		
 		jQuery(function($){
-		    $('#e-adminfeed').rssfeed('".ADMINFEED."', {
-    		limit: 3,
-    		header: false,
-    		linktarget: '_blank'
-  			});
+
+  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
 
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
 
@@ -673,7 +670,7 @@ class adminstyle_infopanel
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 		$settings = varset($pref['core-infopanel-menus'],array());
 	
-		if (e107::getDb()->db_Select_gen($menu_qry))
+		if (e107::getDb()->gen($menu_qry))
 		{
 			while ($row = e107::getDb()->db_Fetch())
 			{
@@ -764,6 +761,7 @@ class adminstyle_infopanel
 			foreach($array as $key => $value) 
 			{
 				extract($value);
+				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
 					$entries[1] = $log_data['date'];

@@ -589,7 +589,7 @@ class xmlClass
 
 		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
 		
-		if(!$xml = simplexml_load_string($xmlData))
+		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
 		{
 			$this->errors = $this->getErrors($xmlData);
 			return FALSE;
@@ -1175,6 +1175,7 @@ class xmlClass
 						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
 
 						$insert_array[$fieldkey] = $fieldval;
+
 					}
 					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
 					{
@@ -1186,7 +1187,9 @@ class xmlClass
 					}
 					else
 					{
-						$ret['failed'][] = $table;
+						$error = $sql->getLastErrorText();
+						$lastQry = $sql->getLastQuery();
+						$ret['failed'][] = $table. "\n[".$error."]\n".$lastQry."\n\n";
 					}
 				}
 			}
@@ -1239,7 +1242,7 @@ class XMLParse
     var $isError = false;
     var $error = '';
 
-    function XMLParse($xml = NULL)
+    function __construct($xml = NULL)
     {
         $this->rawXML = $xml;
 		$mes = e107::getMessage();

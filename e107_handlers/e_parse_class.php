@@ -72,6 +72,8 @@ class e_parse extends e_parser
 	
 	public $thumbCrop = 0;
 
+	private $thumbEncode = 0;
+
 	// Set up the defaults
 	var $e_optDefault = array(
 		// default context: reflects legacy settings (many items enabled)
@@ -889,16 +891,18 @@ class e_parse extends e_parser
 
 	protected function simpleReplace($tmp) 
 	{
+
 		$unset = ($this->replaceUnset !== false ? $this->replaceUnset : $tmp[0]);
-		$key = $tmp[1];
+
 		if(is_array($this->replaceVars))
 		{
             $this->replaceVars = new e_vars($this->replaceVars);
 			//return ($this->replaceVars[$key] !== null ? $this->replaceVars[$key]: $unset);
 		}
-	//	
-		return ($this->replaceVars->$tmp[1] !== null ? $this->replaceVars->$tmp[1] : $unset); // Doesn't work. 
+		$key = $tmp[1]; // PHP7 fix.
+		return ($this->replaceVars->$key !== null ? $this->replaceVars->$key : $unset); // Doesn't work.
 	}
+
 
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "a", $nobr = "pre", $utf = FALSE)
 	{
@@ -1471,7 +1475,7 @@ class e_parse extends e_parser
 
 
 		// Make sure we have a valid count for word wrapping
-		if (!$wrap && $pref['main_wordwrap'])
+		if (!$wrap && !empty($pref['main_wordwrap']))
 		{
 			$wrap = $pref['main_wordwrap'];
 		}
@@ -1783,7 +1787,7 @@ class e_parse extends e_parser
 
 
 						// profanity filter
-						if ($pref['profanity_filter'])
+						if (!empty($pref['profanity_filter']))
 						{
 							if (!is_object($this->e_pf))
 							{
@@ -2159,25 +2163,49 @@ class e_parse extends e_parser
 	 */
 	public function setThumbSize($w=null,$h=null,$crop=null)
 	{
-		if($w)
+		if($w !== null)
 		{
 			$this->thumbWidth = intval($w);	
 		}
 		
-		if($h)
+		if($h !== null)
 		{
 			$this->thumbHeight = intval($h);	
 		}	
 		
-		if($crop)
+		if($crop !== null)
 		{
 			$this->thumbCrop = intval($crop);	
 		}				
 		
 	}
 
+	public function thumbEncode($val = null)
+	{
+
+		if($val !== null)
+		{
+			$this->thumbEncode = intval($val);
+			return null;
+		}
+
+		return $this->thumbEncode;
+	}
 
 
+	/**
+	 * Retrieve img tag width and height attributes for current thumbnail.
+	 * @return string
+	 */
+	public function thumbDimensions($type = 'single')
+	{
+		if(!empty($this->thumbCrop) && !empty($this->thumbWidth) && !empty($this->thumbHeight)) // dimensions are known.
+		{
+			return ($type == 'double') ? 'width="'.$this->thumbWidth.'" height="'.$this->thumbHeight.'"' : "width='".$this->thumbWidth."' height='".$this->thumbHeight."'";
+		}
+
+		return null;
+	}
 
 
 	/**
@@ -2246,6 +2274,16 @@ class e_parse extends e_parser
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
         
 		$thurl = 'src='.urlencode($url).'&amp;';
+
+		if(isset($options['crop']))
+		{
+			$this->thumbCrop = intval($options['crop']);
+		}
+
+		if(isset($options['x']))
+		{
+			$this->thumbEncode($options['x']);
+		}
 				
 		if(vartrue($options['aw']) || vartrue($options['ah']) || $this->thumbCrop == 1)
 		{
@@ -2273,6 +2311,7 @@ class e_parse extends e_parser
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
 			$options['thurl'] = $thurl;
+			$options['x'] = $this->thumbEncode();
 
 			if($sefUrl = $this->thumbUrlSEF($url,$options))
 			{
@@ -2280,13 +2319,85 @@ class e_parse extends e_parser
 			}
 		}
 
-		if(vartrue($options['x']))//base64 encode url
+		if(!empty($this->thumbEncode))//base64 encode url
 		{
 			$thurl = 'id='.base64_encode($thurl);
 		}
 
 		return $baseurl.$thurl;
 	}
+
+
+	/**
+	 * Experimental: Generate a Thumb URL for use in the img srcset attribute.
+	 * @param string $src eg. {e_MEDIA_IMAGE}myimage.jpg
+	 * @param int|str $width - desired size in px or '2x' or '3x' or null for all or array (
+	 * @return string
+	 */
+	function thumbSrcSet($src='', $width=null)
+	{
+		if(is_array($width))
+		{
+			$parm = $width;
+			$width = $width['size'];
+
+			if(!empty($parm['aw']) || !empty($parm['aw']) )
+			{
+				$this->thumbWidth($parm['aw']);
+				$this->thumbHeight($parm['ah']);
+				$this->thumbCrop = 1;
+			}
+			elseif(!empty($parm['w']) || !empty($parm['w']) )
+			{
+				$this->thumbWidth($parm['w']);
+				$this->thumbHeight($parm['h']);
+
+			}
+
+		}
+
+		$encode =  $this->thumbEncode();;
+		if($width == null || $width=='all')
+		{
+			$links = array();
+			$mag = ($width == null) ? array(1, 2) : array(160,320,460,600,780,920,1100);
+			foreach($mag as $v)
+			{
+				$w = ($this->thumbWidth * $v);
+				$h =  ($this->thumbHeight * $v);
+
+				$att = (!empty($this->thumbCrop)) ? array('aw' => $w, 'ah' => $h) : array('w' => $w, 'h' => $h);
+				$att['x'] = $encode;
+
+				$add = ($width == null) ? " ".$v."x" : " ".$v."w";
+				$links[] = $this->thumbUrl($src, $att).$add; // " w".$width; //
+			}
+
+			return implode(", ",$links);
+
+		}
+		elseif($width == '2x')
+		{
+			$width = ($this->thumbWidth * 2);
+			$height = ($this->thumbHeight * 2);
+		}
+		elseif($width == '3x')
+		{
+			$width = (!empty($parm['w'])) ? ($parm['w'] * 3) : ($this->thumbWidth * 3);
+			$height = (!empty($parm['h'])) ? ($parm['h'] * 3) : ($this->thumbHeight * 3);
+		}
+		else
+		{
+			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
+		}
+
+		$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height) : array('w'  => $width,	'h'  => $height	);
+
+		$parms['x'] = $encode;
+		return $this->thumbUrl($src, $parms)." ".$width."w";
+
+	}
+
 
 	/**
 	 * Used by thumbUrl when SEF Image URLS is active. @see e107.htaccess
@@ -3124,19 +3235,18 @@ class e_parser
 	 * Parse xxxxx.glyph file to bootstrap glyph format. 
 	 * @param string $text 
 	 * @param array of $parms
+	 * @example $tp->toGlyph('fa-spinner', 'spin=1');
+	 * @example $tp->toGlyph('fa-spinner', array('spin'=>1));
+	 * @example $tp->toGlyph('fa-shield', array('rotate'=>90, 'size'=>'2x'));
 	 */ 
 	public function toGlyph($text, $space=" ")
 	{
-
-
 
 		if(!deftrue('BOOTSTRAP') || empty($text))
 		{
 			return false;	
 		}
-		
-		
-		
+
 		if(is_array($space)) 
 		{
 			$parm = $space;
@@ -3172,8 +3282,10 @@ class e_parser
 		$removePrefix = array('glyphicon-','icon-','fa-');
 		
 		$id = str_replace($removePrefix, "", $cls);
-		
-		
+
+		$spin = null;
+		$rotate = null;
+
 	//	return print_r($fa4,true);
 		
 		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also. 
@@ -3181,6 +3293,8 @@ class e_parser
 			$prefix = 'fa fa-';
 			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
 			$tag 	= 'i';
+			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
+			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
 		}
 		elseif(deftrue("BOOTSTRAP")) 
 		{
@@ -3198,8 +3312,10 @@ class e_parser
 			$size = '';
 			
 		}
+
+		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		
-		$text = "<".$tag." class='".$prefix.$id.$size."'></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate."'></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
@@ -3291,12 +3407,18 @@ class e_parser
 			return;
 		}
 
+		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
+		{
+		//	return "<div class='alert alert-danger'>Use \$tp->toImage() instead of toIcon() for ".$icon."</div>"; // debug info only.
+		}
+
 		if(substr($icon,0,3) == '<i ') // if it's html (ie. css sprite) return the code.
 		{
 			return $icon;
 		}
 				
 		$ext = pathinfo($icon, PATHINFO_EXTENSION);
+		$dimensions = null;
 		
 		if(!$ext || $ext == 'glyph') // Bootstrap or Font-Awesome. 
 		{
@@ -3306,6 +3428,7 @@ class e_parser
 		if(strpos($icon,'e_MEDIA')!==FALSE)
 		{
 			$path = $this->thumbUrl($icon);
+			$dimensions = $this->thumbDimensions();
 		}
 		elseif($icon[0] == '{')
 		{
@@ -3332,37 +3455,54 @@ class e_parser
 		{
 			$path = $icon;
 		}
-	
+
+
+
 		
-		
-		return "<img class='icon' src='".$path."' alt='".basename($path)."'  />";	
+		return "<img class='icon' src='".$path."' alt='".basename($path)."' ".$dimensions." />";
 	}
 
 
 	/**
-	 * @param $file
-	 * @param array $parm  legacy|w|h
+	 * Render an <img> tag.
+	 * @param string $file
+	 * @param array $parm  legacy|w|h|alt|class|id|crop
 	 * @return string
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
 	 */
 	public function toImage($file, $parm=array())
 	{
 
-		if(!vartrue($file))
+		if(empty($file))
 		{
-			return '';
+			return null;
 		}
 
-		$file = trim($file);
-
-		$ext = pathinfo($file, PATHINFO_EXTENSION);
-
-		if($ext != 'jpg' && $ext !='gif' && $ext != 'png') // Bootstrap or Font-Awesome.
+		if(strpos($file,'e_AVATAR')!==false)
 		{
-			return '';
+			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for ".$file."</div>"; // debug info only.
+
 		}
 
-		$tp = e107::getParser();
+		$srcset     = null;
+		$path       = null;
+		$file       = trim($file);
+		$ext        = pathinfo($file, PATHINFO_EXTENSION);
+		$accepted   = array('jpg','gif','png','jpeg');
+		$tp         = $this;
+
+		if(!in_array($ext,$accepted))
+		{
+			return null;
+		}
+
+		if(!empty($parm['aw']) || !empty($parm['ah']))
+		{
+			$parm['w'] = $parm['aw'];
+			$parm['h'] = $parm['ah'];
+			$parm['crop'] = 1;
+			unset($parm['aw'],$parm['ah']);
+		}
 
 		if(!empty($parm['w']))
 		{
@@ -3375,15 +3515,35 @@ class e_parser
 		}
 
 
-		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false) //v2.x path.
+		if(!empty($parm['crop']))
 		{
-			$path = $tp->thumbUrl($file,null,null,true);
+			$tp->setThumbSize(null, null, 1);
 		}
-		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_WHEREEVER}
+
+		if(!empty($parm['x']))
 		{
-			$path = $tp->replaceConstants($file,'full');
+			$tp->thumbEncode(true);
 		}
-		elseif(!empty($parm['legacy'])) // Search legacy path for image.
+
+		if(empty($parm['w']))
+		{
+			$parm['w'] = $tp->thumbWidth();
+		}
+
+		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false) //v2.x path.
+		{
+
+			$path = $tp->thumbUrl($file);
+			$srcSetParm = $parm;
+			$srcSetParm['size'] = '2x';
+			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+
+		}
+		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
+		{
+			$path = $tp->replaceConstants($file,'abs');
+		}
+		elseif(!empty($parm['legacy'])) // Search legacy path for image in a specific folder. No path, only file name provided.
 		{
 
 			$legacyPath = $parm['legacy'].$file;
@@ -3391,12 +3551,12 @@ class e_parser
 
 			if(is_readable($filePath))
 			{
-				$path = $tp->replaceConstants($legacyPath,'full');
+				$path = $tp->replaceConstants($legacyPath,'abs');
 			}
 			else
 			{
 				$log = e107::getAdminLog();
-				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+				$log->addDebug('Broken Image Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
 			}
 
 		}
@@ -3405,21 +3565,15 @@ class e_parser
 			$path = $file;
 		}
 
+		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
+		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive";
+		$alt    = (!empty($parm['alt']))    ? $tp->toAttribute($parm['alt']) : basename($file);
+		$style  = (!empty($parm['style']))  ? "style=\"".$parm['style']."\" " :  ""  ;
+		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
+		$width  = (!empty($parm['w']))      ? "width=\"".intval($parm['w'])."\" " : "";
+		$height = (!empty($parm['h']))      ? "height=\"".intval($parm['h'])."\" " : "";
 
-		if(empty($style))
-		{
-			$insertStyle = '';
-		}
-		else
-		{
-			$insertStyle = "style='";
-
-		}
-
-
-		$alt = (!empty($parm['alt'])) ? $tp->toAttribute($parm['alt']) : basename($path);
-
-		return "<img class='img-responsive' src='".$path."' alt=\"".$alt."\"  {$insertStyle} />";
+		return "<img {$id}class='{$class}' src='".$path."' alt=\"".$alt."\" ".$srcset.$width.$height.$style." />";
 
 	}
 
@@ -4255,7 +4409,7 @@ class e_emotefilter {
 	var $replace;
 	var $emotes;
 	 
-	function e_emotefilter() /* constructor */
+	function __construct() /* constructor */
 	{		
 		$pref = e107::getPref();
 		
@@ -4343,7 +4497,7 @@ class e_profanityFilter
 {
 	var $profanityList;
 
-	function e_profanityFilter() 
+	function __construct()
 	{
 		global $pref;
 

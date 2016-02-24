@@ -229,7 +229,7 @@
 		
 		if($user_profile->identifier >0)
 		{
-			if (!$sql->db_Select("user", "*", "user_xup = '".$prov_id."' ")) // New User
+			if (!$sql->select("user", "*", "user_xup = '".$prov_id."' ")) // New User
 			{
 				$user_join 				= time();
 				$user_pass 				= md5($user_profile->identifier.$user_join);
@@ -245,7 +245,7 @@
 					'user_xup'			=> $prov_id
 				);
 				
-				if($newid = $sql->db_Insert('user',$insert,true))
+				if($newid = $sql->insert('user',$insert,true))
 				{
 					e107::getEvent()->trigger('usersup', $insert);	
 					if(!USERID)

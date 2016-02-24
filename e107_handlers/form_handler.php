@@ -106,8 +106,11 @@ class e_form
 	
 		$class 			= "";
 		$autoComplete 	= "";
-	
-		parse_str($options,$options);
+
+		if(is_string($options))
+		{
+			parse_str($options, $options);
+		}
 	
 		if(vartrue($options['class']))
 		{
@@ -1267,6 +1270,11 @@ class e_form
 		if(is_string($options)) parse_str($options, $options);
 		// auto-height support
 
+		if(empty($options['class']))
+		{
+			$options['class'] = '';
+		}
+
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
 			$options['class'] .= " form-control input-".$options['size'];	
@@ -1300,6 +1308,7 @@ class e_form
 		//size - large|medium|small
 		//width should be explicit set by current admin theme
 	//	$size = 'input-large';
+		$height = '';
 		
 		switch($size)
 		{
@@ -1707,10 +1716,10 @@ class e_form
 		//	$text[] = $this->radio($name, $value, (string) $checked === (string) $value)."".$this->label($label, $name, $value).(isset($helpLabel) ? "<div class='field-help'>".$helpLabel."</div>" : '');
 		}
 		
-		if($multi_line === false)
-		{
+	//	if($multi_line === false)
+	//	{
 		//	return implode("&nbsp;&nbsp;", $text);
-		}
+	//	}
 		
 		// support of UI owned 'newline' parameter
 		if(!varset($options['sep']) && vartrue($options['newline']))  $options['sep'] = '<br />'; // TODO div class=separator?
@@ -1746,7 +1755,15 @@ class e_form
 		
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
-			$options['class'] .= " input-".$options['size'];	
+			if(!empty($options['class']))
+			{
+				$options['class'] .= " input-".$options['size'];
+			}
+			else
+			{
+				$options['class'] = "input-".$options['size'];
+			}
+
 			unset($options['size']); // don't include in html 'size='. 	
 		}
 		$options = $this->format_options('select', $name, $options);
@@ -3463,9 +3480,9 @@ class e_form
 				{
 					return $this->renderInline($field,$id,$attributes['title'],$value,substr($value,0,50)."...",'textarea'); //FIXME.
 				}
-				
-				
-				$expand = '...';
+
+
+				$expand = '<span class="e-expandit-ellipsis">...</span>';
 				$toexpand = false;
 				if($attributes['type'] == 'bbarea' && !isset($parms['bb'])) $parms['bb'] = true; //force bb parsing for bbareas
 				$elid = trim(str_replace('_', '-', $field)).'-'.$id;
@@ -3475,17 +3492,11 @@ class e_form
 					$ttl = vartrue($parms['expand']);
 					if($ttl == 1)
 					{
-						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right'>More..</button>";
-						$ttl1 = "<button class='btn btn-default btn-xs btn-mini pull-right'>..Less</button>";
-					}
-					else
-					{
-						$ttl1 = null;
+						$dataAttr = "data-text-more='" . LAN_MORE . "' data-text-less='" . LAN_LESS . "'";
+						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . "</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl, $ttl)."</a>";
-					$contracts = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit">'.defset($ttl1, $ttl1)."</a>";
-					
 				}
 
 				$oldval = $value;
@@ -3503,9 +3514,8 @@ class e_form
 				if($toexpand)
 				{
 					// force hide! TODO - core style .expand-c (expand container)
-					// TODO: Hide 'More..' button when text fully displayed.
-					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).$contracts.'</span></span>';
-					$value .= $expands; 	// 'More..' button. Keep it at the bottom so it does't cut the sentence. 
+					$value .= '<span class="expand-c" style="display: none" id="'.$elid.'-expand"><span>'.str_replace($value,'',$oldval).'</span></span>';
+					$value .= varset($expands); 	// 'More..' button. Keep it at the bottom so it does't cut the sentence.
 				}
 				
 				
@@ -3832,7 +3842,7 @@ class e_form
 				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
 				$_value = $value;
 
-				if($attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.
+				if(!empty($attributes['data']) && $attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.
 				{
 					$value = e107::unserialize($value); // (saved as array, return it as an array)
 				}
@@ -3978,12 +3988,25 @@ class e_form
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
 	{
-	//	return print_a($value,true);
-		$parms = vartrue($attributes['writeParms'], array());
-
 		$tp = e107::getParser();
 
+
+
+		$parms = vartrue($attributes['writeParms'], array());
+
 		if(is_string($parms)) parse_str($parms, $parms);
+
+		$ajaxParms = array();
+
+		if(!empty($parms['ajax']))
+		{
+			$ajaxParms['data-src'] = varset($parms['ajax']['src']);
+			$ajaxParms['data-target'] = varset($parms['ajax']['target']);
+			$ajaxParms['data-method'] = varset($parms['ajax']['method'], 'html');
+			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
+
+			unset($attributes['writeParms']['ajax']);
+		}
 
 		if(!empty($attributes['multilan']))
 		{
@@ -4094,7 +4117,15 @@ class e_form
 				{
 					$sefSource = $this->name2id($parms['sef']);
 					$sefTarget = $this->name2id($key);
-					$parms['tdClassRight'] .= 'input-group';
+					if(!empty($parms['tdClassRight']))
+					{
+						$parms['tdClassRight'] .= 'input-group';
+					}
+					else
+					{
+						$parms['tdClassRight'] = 'input-group';
+					}
+
 					$parms['post'] = "<span class='form-inline input-group-btn pull-left'><a class='e-sef-generate btn btn-default' data-src='".$sefSource."' data-target='".$sefTarget."' data-confirm=\"".LAN_WILL_OVERWRITE_SEF." ".LAN_JSCONFIRM."\">".LAN_GENERATE."</a></span>";
 				}
 
@@ -4303,6 +4334,14 @@ class e_form
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
+
+				// Allow Ajax API.
+				if(!empty($ajaxParms))
+				{
+					$eloptions = array_merge_recursive($eloptions, $ajaxParms);
+					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
+				}
+
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
@@ -4766,7 +4805,16 @@ class e_form
 
 			if(!empty($writeParms['sef'])) // group sef generate button with input element.
 			{
-				$writeParms['tdClassRight'] .= 'input-group';
+				if(empty($writeParms['tdClassRight']))
+				{
+					$writeParms['tdClassRight'] = 'input-group';
+
+				}
+				else
+				{
+					$writeParms['tdClassRight'] .= ' input-group';
+				}
+
 			}
 			
 			if('hidden' === $att['type'])

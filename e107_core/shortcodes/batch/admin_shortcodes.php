@@ -539,16 +539,16 @@ class admin_shortcodes
 					if (e_QUERY == 'logall')
 					{
 						$text .= "<div id='adminlog'>";
-						$cnt = $sql -> db_Select('admin_log', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
+						$cnt = $sql ->select('admin_log', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
 					}
 					else
 					{
 						$text .= "<div style='display: none;' id='adminlog'>";
-						$cnt = $sql -> db_Select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
+						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
 					}
 					$text .= ($cnt) ? '<ul>' : '';
 					$gen = e107::getDateConvert();
-					while ($row = $sql -> db_Fetch())
+					while ($row = $sql ->fetch())
 					{
 						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
 						$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
@@ -832,7 +832,7 @@ class admin_shortcodes
 			$xml->filter = array('@attributes' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
 
 			$nav_sql = new db;
-			if ($nav_sql -> db_Select('plugin', '*', 'plugin_installflag=1'))
+			if ($nav_sql ->select('plugin', '*', 'plugin_installflag=1'))
 			{
 				$tmp = array();
 				$e107_var['plugm']['text'] = ADLAN_95;
@@ -844,7 +844,7 @@ class admin_shortcodes
 				$tmp['plugm']['link'] = e_ADMIN.'plugin.php';
 				$tmp['plugm']['perm'] = 'P';
 
-				while($rowplug = $nav_sql -> db_Fetch())
+				while($rowplug = $nav_sql ->fetch())
 				{
 					$plugin_id = $rowplug['plugin_id'];
 					$plugin_path = $rowplug['plugin_path'];
@@ -897,9 +897,9 @@ class admin_shortcodes
 				if (strstr(e_SELF, '/admin.php'))
 				{
 					global $sql;
-					if ($sql -> db_Select('plugin', '*', 'plugin_installflag=1'))
+					if ($sql ->select('plugin', '*', 'plugin_installflag=1'))
 					{
-						while($rowplug = $sql -> db_Fetch())
+						while($rowplug = $sql->fetch())
 						{
 							extract($rowplug);
 							if(varset($rowplug[1]))
@@ -1057,7 +1057,7 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_12."</b>
 			<br />
-			".e107::getDB()->mySqlServerInfo.
+			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
 			"<br />
 			".FOOTLAN_16.": ".$mySQLdefaultdb."
 			<br /><br />
@@ -1210,7 +1210,7 @@ class admin_shortcodes
 		}
 	}
 
-	function getBadge($total, $type = 'latest')
+	static function getBadge($total, $type = 'latest')
 	{
 		
 		/*
@@ -1269,7 +1269,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * Attempt to Convert Old $text string into new array format (e_status and e_latest)
 	 */
-	function legacyToConfig($text)
+	static function legacyToConfig($text)
 	{
 		$var = array();
 		preg_match_all('/(<img[^>]*>)[\s]*<a[^>]href=(\'|")([^\'"]*)(\'|")>([^<]*)<\/a>[: ]*([\d]*)/is',$text, $match);
@@ -1803,7 +1803,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 		}	
 		
-		return $menu_vars;
+		return !empty($menu_vars) ? $menu_vars : null;
 	}
 
 

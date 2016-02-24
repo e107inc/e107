@@ -99,8 +99,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 			{
 				$this->adminMenu['opt3'] = array('divider'=>true);
 				$this->adminMenu['main/update'] = array('caption'=>"Redo v1.x Forum Upgrade", 'perm'=>0, 'uri'=>'{e_PLUGIN}forum/forum_update.php');
-			}
 
+
+
+			}
 
 		}
 	}
@@ -257,6 +259,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			require_once(e_PLUGIN.'forum/forum_class.php');
 			$this->forumObj	=  new e107forum;
+
+			if(E107_DEBUG_LEVEL > 0) // check fpr legacy prefs in debug mode. Should normally be done during upgrade.
+			{
+				$this->forumObj->upgradeLegacyPrefs();
+			}
 
 
 			if (!empty($_POST['do_prune']) && !empty($_POST['prune_days']) && !empty($_POST['pruneForum']))
@@ -2000,7 +2007,7 @@ class forumAdmin
 				<th colspan='2'>".LAN_FORUM_1001."</th>
 				<th>".LAN_OPTIONS."</th>
 			</tr>";
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				$parentList[] = $row;
 			}
@@ -2042,7 +2049,7 @@ class forumAdmin
 				else
 				{
 					$forumList = array();
-					while ($row = $sql->fetch(MYSQL_ASSOC))
+					while ($row = $sql->fetch())
 					{
 						$forumList[] = $row;
 					}
@@ -2116,7 +2123,7 @@ class forumAdmin
 		{
 			if ($sql->select('forum', '*', "forum_id=$id"))
 			{
-				$row = $sql->fetch(MYSQL_ASSOC);
+				$row = $sql->fetch();
 			}
 		}
 		else
@@ -2181,7 +2188,7 @@ class forumAdmin
 		{
 			if ($sql->select('forum', '*', "forum_id=$id"))
 			{
-				$fInfo = $sql->fetch(MYSQL_ASSOC);
+				$fInfo = $sql->fetch();
 			}
 		}
 		else
@@ -2208,7 +2215,7 @@ class forumAdmin
 
 			$sql->select('forum', '*', 'forum_parent=0');
 			$text .= "<select name='forum_parent' class='tbox'>\n";
-			while (list($fid, $fname) = $sql->fetch(MYSQL_NUM))
+			while (list($fid, $fname) = $sql->fetch('num'))
 			{
 				$sel = ($fid == vartrue($fInfo['forum_parent']) ? "selected='selected'" : '');
 				$text .= "<option value='{$fid}' {$sel}>{$fname}</option>\n";

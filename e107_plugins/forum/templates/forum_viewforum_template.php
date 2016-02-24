@@ -13,7 +13,7 @@ if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 
 
-if (!$FORUM_VIEW_START)
+if (empty($FORUM_VIEW_START))
 {
 $FORUM_VIEW_START = "
 
@@ -55,7 +55,7 @@ $FORUM_VIEW_START = "
 	</tr>";
 }
 
-if(!$FORUM_VIEW_START_CONTAINER)
+if(empty($FORUM_VIEW_START_CONTAINER))
 {
 	$FORUM_VIEW_START_CONTAINER = "
 	<div style='text-align:center'>
@@ -71,7 +71,7 @@ if(!$FORUM_VIEW_START_CONTAINER)
 }
 
 
-if (!$FORUM_VIEW_FORUM) {
+if (empty($FORUM_VIEW_FORUM)) {
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
@@ -93,7 +93,8 @@ if (!$FORUM_VIEW_FORUM) {
 		</tr>";
 }
 
-if (!$FORUM_VIEW_FORUM_STICKY) {
+if (empty($FORUM_VIEW_FORUM_STICKY))
+{
 	$FORUM_VIEW_FORUM_STICKY = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
@@ -115,7 +116,8 @@ if (!$FORUM_VIEW_FORUM_STICKY) {
 		</tr>";
 }
 
-if (!$FORUM_VIEW_FORUM_ANNOUNCE) {
+if (empty($FORUM_VIEW_FORUM_ANNOUNCE))
+{
 	$FORUM_VIEW_FORUM_ANNOUNCE = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
@@ -137,7 +139,8 @@ if (!$FORUM_VIEW_FORUM_ANNOUNCE) {
 		</tr>";
 }
 
-if (!$FORUM_VIEW_END) {
+if (empty($FORUM_VIEW_END))
+{
 	$FORUM_VIEW_END = "
 		</table>
 		</div>
@@ -191,7 +194,7 @@ if (!$FORUM_VIEW_END) {
 }
 
 
-if(!$FORUM_VIEW_END_CONTAINER)
+if(empty($FORUM_VIEW_END_CONTAINER))
 {
 	$FORUM_VIEW_END_CONTAINER = "
 		<table style='".USER_WIDTH."'>
@@ -206,7 +209,7 @@ if(!$FORUM_VIEW_END_CONTAINER)
 }
 
 
-if (!$FORUM_VIEW_SUB_START)
+if (empty($FORUM_VIEW_SUB_START))
  {
 	$FORUM_VIEW_SUB_START = "
 	<tr>
@@ -224,7 +227,8 @@ if (!$FORUM_VIEW_SUB_START)
 	";
 }
 
-if (!$FORUM_VIEW_SUB) {
+if (empty($FORUM_VIEW_SUB))
+{
 	$FORUM_VIEW_SUB = "
 	<tr>
 		<td class='forumheader3' style='text-align:center'>{NEWFLAG}</td>
@@ -236,7 +240,8 @@ if (!$FORUM_VIEW_SUB) {
 	";
 }
 
-if (!$FORUM_VIEW_SUB_END) {
+if (empty($FORUM_VIEW_SUB_END))
+{
 	$FORUM_VIEW_SUB_END = "
 	</table><br /><br />
 	</div>
@@ -245,12 +250,13 @@ if (!$FORUM_VIEW_SUB_END) {
 	";
 }
 
-if (!$FORUM_IMPORTANT_ROW) {
+if (empty($FORUM_IMPORTANT_ROW)) {
 	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1006."</b></span></td></tr>";
 }
 
 
-if (!$FORUM_NORMAL_ROW) {
+if (empty($FORUM_NORMAL_ROW))
+{
 	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>";
 }
 

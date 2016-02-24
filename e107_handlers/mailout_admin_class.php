@@ -467,7 +467,7 @@ class mailoutAdminClass extends e107MailManager
 			// Make sure DB object created
 			if($this->db2->select('user', 'user_name, user_loginname', 'user_id=' . intval($uid)))
 			{
-				$row = $this->db2->fetch(MYSQL_ASSOC);
+				$row = $this->db2->fetch();
 				$this->userCache[$uid] = $row['user_name'] . ' (' . $row['user_loginname'] . ')';
 			}
 			else
@@ -1907,7 +1907,7 @@ class mailoutAdminClass extends e107MailManager
 		{
 			$items = array();
 			// Store record number of any content record that needs to be changed
-			while($row = $this->db2->fetch(MYSQL_ASSOC))
+			while($row = $this->db2->fetch())
 			{
 				$items[] = $row['mail_source_id'];
 				if($row['mail_source_id'])
@@ -1934,7 +1934,7 @@ class mailoutAdminClass extends e107MailManager
 
 		//Finally - check for inconsistent recipient and content status records -
 		// basically verify counts
-		if(($res = $this->db2->db_Select_gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`, 
+		if(($res = $this->db2->gen("SELECT COUNT(mr.`mail_status`) AS mr_count, mr.`mail_status`,
 					mc.`mail_source_id`, mc.`mail_togo_count`, mc.`mail_sent_count`, mc.`mail_fail_count`, mc.`mail_bounce_count`, mc.`mail_source_id` FROM `#mail_recipients` AS mr
 					LEFT JOIN `#mail_content` AS mc ON mr.`mail_detail_id` = mc.`mail_source_id` 
 					WHERE mc.`mail_content_status` <= " . MAIL_STATUS_MAX_ACTIVE . "
@@ -1952,7 +1952,7 @@ class mailoutAdminClass extends e107MailManager
 			// This forces one more loop, so we can clean up for last record read
 			$changeCount = 0;
 			$saveRow = array();
-			while(($row = $this->db2->fetch(MYSQL_ASSOC)) || $notLast)
+			while(($row = $this->db2->fetch()) || $notLast)
 			{
 				if(($lastMail > 0 && $row === FALSE) || ($lastMail != $row['mail_source_id']))
 				{

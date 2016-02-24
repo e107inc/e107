@@ -290,7 +290,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['accordion']['js_type'] 			= 'jquery';
     <div data-src="images/image_2.jpg"></div>
 </div>
  */
-
+/*
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['list_start'] = '<!-- start Camera -->
 <div class="box featurebox camera_wrap camera_azure_skin">
 	
@@ -317,6 +317,7 @@ $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_start'] = ''; // <ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_item'] = ''; // <li><a href="#tab-{FEATUREBOX_COUNTER}-activate">{FEATUREBOX_TITLE}</a></li>';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_end'] = ''; // </ul>';
 $FEATUREBOX_CATEGORY_TEMPLATE['camera']['nav_separator'] = '';
+*/
 
 // Depracated camera.js, need replacement
 //$FEATUREBOX_CATEGORY_TEMPLATE['camera']['js'] = '{e_WEB_JS}camera/scripts/camera.min.js';

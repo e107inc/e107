@@ -67,7 +67,11 @@ class themeHandler
 
 		
 		//enable inner tabindex counter
-		$this->frm = new e_form();
+		if(!deftrue("E107_INSTALL"))
+		{
+			 $this->frm = new e_form();
+		}
+
 		
 		$this->fl = e107::getFile();
 		
@@ -1249,14 +1253,14 @@ class themeHandler
 						$text .= "&nbsp;</td>
 							</tr>";
 						
-						$text .= "
+						/*$text .= "
 							<tr>
 			                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
 								<td colspan='2' style='vertical-align:top width:auto;'>
 								<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
 								<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
 								</td>
-							</tr>";
+							</tr>";*/
 					}
 		
 					// New in 0.8   ----   site theme.
@@ -1667,7 +1671,7 @@ class themeHandler
 				//	echo $plug;
 				if($sql->db_Select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
 				{
-					$row = $sql->db_Fetch(MYSQL_ASSOC);
+					$row = $sql->db_Fetch();
 					$name = "installplugin[".$row['plugin_id']."]";
 					$text .= $this->frm->admin_button($name, ADLAN_121." ".$plug."", 'delete');
 				}
@@ -1744,10 +1748,12 @@ class themeHandler
 		
 		if($contentCheck === true)
 		{
-			$sql->db_Delete("menus", "menu_layout !='' ");
+			$sql->delete("menus", "menu_layout !='' ");
 		}
 		
 		e107::getCache()->clear();
+		e107::getCache()->clearAll('js');
+		e107::getCache()->clearAll('css');
 		
 		if($core->save())
 		{
@@ -1909,8 +1915,7 @@ class themeHandler
 		$mes = e107::getMessage();
 		
 		//TODO adminlog
-		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('image_preload', $_POST['image_preload'])->setPosted('sitetheme_deflayout',
-			 $_POST['layout_default']);
+		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('sitetheme_deflayout', $_POST['layout_default']);
 		
 		$msg = $this->setThemeConfig();
 		if($msg)
@@ -2223,7 +2228,7 @@ class themeHandler
 			{
 				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
 				
-				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=>$val['@attributes']['scope']);
+				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=> vartrue($val['@attributes']['scope']));
 			}
 
 			unset($vars['stylesheets']);

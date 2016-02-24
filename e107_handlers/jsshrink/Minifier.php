@@ -72,7 +72,7 @@ class Minifier
      *
      * @var array
      */
-    protected $options;
+    protected $options = array();
 
     /**
      * Contains the default options for minification. This array is merged with
@@ -537,7 +537,7 @@ class Minifier
      */
     protected static function isAlphaNumeric($char)
     {
-        return preg_match('/^[\w\$]$/', $char) === 1 || $char == '/';
+        return preg_match('/^[\w\$\pL]$/', $char) === 1 || $char == '/';
     }
 
     /**

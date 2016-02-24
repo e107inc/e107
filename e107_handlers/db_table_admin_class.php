@@ -44,13 +44,13 @@ class db_table_admin
 			$prefix = MPREFIX;
 		}
 		//	echo "Get table structure for: {$table_name}, prefix: {$prefix}<br />";
-		$sql->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `'.$prefix.$table_name."`";
-		if (!($z = $sql->db_Select_gen($qry)))
+		if (!($z = $sql->gen($qry)))
 		{
 			return FALSE;
 		}
-		$row = $sql->db_Fetch(MYSQL_NUM);
+		$row = $sql->db_Fetch('num');
 		$tmp = str_replace("`", "", stripslashes($row[1])).';'; // Add semicolon to work with our parser
 		$count = preg_match_all("#CREATE\s+?TABLE\s+?`{0,1}({$prefix}{$table_name})`{0,1}\s+?\((.*?)\)\s+?(?:TYPE|ENGINE)\s*\=\s*(.*?);#is", $tmp, $matches, PREG_SET_ORDER);
 		if ($count === FALSE)
@@ -621,7 +621,7 @@ class db_table_admin
 				{
 					return 'Table doesn\'t exist';
 				}
-				if ($sql->db_Select_gen($newStructure[0]))
+				if ($sql->gen($newStructure[0]))
 				{
 					return TRUE;
 				}

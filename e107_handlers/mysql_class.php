@@ -63,44 +63,41 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 $db_ConnectionID = NULL;	// Stores ID for the first DB connection used - which should be the main E107 DB - then used as default
 
 
+
+
 class e_db_mysql
 {
 	// TODO switch to protected vars where needed
-	public $mySQLserver;
-	public $mySQLuser;
-	public $mySQLpassword;
-	public $mySQLdefaultdb;
-	public $mySQLPrefix;
-	public $mySQLaccess;
-	public $mySQLresult;
-	public $mySQLrows;
-	public $mySQLerror = '';			// Error reporting mode - TRUE shows messages
+	public      $mySQLserver;
+	public       $mySQLuser;
+	protected   $mySQLpassword;
+	protected   $mySQLdefaultdb;
+	public      $mySQLPrefix;
+	protected   $mySQLaccess;
+	public      $mySQLresult;
+	public      $mySQLrows;
+	public      $mySQLerror = '';			// Error reporting mode - TRUE shows messages
 
-	protected $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
-	protected $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
-	protected $mySQLlastQuery = '';
+	protected   $mySQLlastErrNum = 0;		// Number of last error - now protected, use getLastErrorNumber()
+	protected   $mySQLlastErrText = '';		// Text of last error - now protected, use getLastErrorText()
+	protected   $mySQLlastQuery = '';
 
-	public $mySQLcurTable;
-	public $mySQLlanguage;
-	public $mySQLinfo;
-	public $tabset;
-	public $mySQLtableList = array(); // list of all Db tables.
+	public      $mySQLcurTable;
+	public       $mySQLlanguage;
+	public      $mySQLinfo;
+	public      $tabset;
+	public      $mySQLtableList = array(); // list of all Db tables.
 
-	public $mySQLtableListLanguage = array(); // Db table list for the currently selected language
-	public $mySQLtablelist = array();
+	public      $mySQLtableListLanguage = array(); // Db table list for the currently selected language
+	public      $mySQLtablelist = array();
 
 	protected	$dbFieldDefs = array();		// Local cache - Field type definitions for _FIELD_DEFS and _NOTNULL arrays
-	/**
-	 * MySQL Charset
-	 *
-	 * @var string
-	 */
-	public $mySQLcharset;
-	public	$mySqlServerInfo = '?';			// Server info - needed for various things
+	public      $mySQLcharset;
+	public	    $mySqlServerInfo = '?';			// Server info - needed for various things
 
-	public $total_results = false;			// Total number of results
+	public      $total_results = false;			// Total number of results
 	
-	private $pdo = false; // using PDO or not. 
+	private     $pdo = false; // using PDO or not.
 
 	/**
 	* Constructor - gets language options from the cookie or session
@@ -110,8 +107,9 @@ class e_db_mysql
 	{
 
 		global $pref, $db_defaultPrefix;
-		
-		if(defined('e_PDO') && e_PDO === true)
+
+
+		if((PHP_MAJOR_VERSION > 6) || (defined('e_PDO') && e_PDO === true))
 		{
 			$this->pdo = true;	
 		}
@@ -135,7 +133,18 @@ class e_db_mysql
 		if(defined('e_LANGUAGE')) $this->mySQLlanguage = e107::getLanguage()->e_language;
 	}
 
+	function getPDO()
+	{
+		return $this->pdo;
+	}
 
+
+	function getMode()
+	{
+		 $this->gen('SELECT @@sql_mode');
+		 $row = $this->fetch();
+		 return $row['@@sql_mode'];
+	}
 
 	/**
 	 * Connects to mySQL server and selects database - generally not required if your table is in the main DB.<br />
@@ -161,21 +170,19 @@ class e_db_mysql
 		global $db_ConnectionID, $db_defaultPrefix;
 		e107::getSingleton('e107_traffic')->BumpWho('db Connect', 1);
 
-		$this->mySQLserver = $mySQLserver;
-		$this->mySQLuser = $mySQLuser;
-		$this->mySQLpassword = $mySQLpassword;
-		$this->mySQLdefaultdb = $mySQLdefaultdb;
-		$this->mySQLPrefix = $mySQLPrefix;
-
-		$temp = $this->mySQLerror;
-		$this->mySQLerror = FALSE;
+		$this->mySQLserver      = $mySQLserver;
+		$this->mySQLuser        = $mySQLuser;
+		$this->mySQLpassword    = $mySQLpassword;
+		$this->mySQLdefaultdb   = $mySQLdefaultdb;
+		$this->mySQLPrefix      = $mySQLPrefix;
+		$this->mySQLerror       = false;
 		
 		
 		if($this->pdo)
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));		
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 			}
 			catch(PDOException $ex)
 			{
@@ -203,7 +210,7 @@ class e_db_mysql
 			}
 		}
 
-		$this->mySqlServerInfo = ($this->pdo) ? $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO) : mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
+		$this->mySqlServerInfo = ($this->pdo) ? $this->mySQLaccess->query('select version()')->fetchColumn() : mysql_get_server_info();		// We always need this for db_Set_Charset() - so make generally available
 
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
@@ -219,9 +226,12 @@ class e_db_mysql
 		$this->dbError('dbConnect/SelectDB');
 
 		// Save the connection resource
-		if ($db_ConnectionID == NULL)
+		if ($db_ConnectionID == null)
+		{
 			$db_ConnectionID = $this->mySQLaccess;
-		return TRUE;
+		}
+
+		return true;
 	}
 
 
@@ -254,16 +264,17 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));		
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 			}
 			catch(PDOException $ex)
 			{
 				$this->mySQLlastErrText = $ex->getMessage();
-				//	echo "<pre>".print_r($ex,true)."</pre>";	// Useful for Debug. 
+					echo "<pre>".print_r($ex,true)."</pre>";	// Useful for Debug.
 				return false;
 			}
 			
-			$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO);
+		//	$this->mySqlServerInfo = $this->mySQLaccess->getAttribute(PDO::ATTR_SERVER_INFO);
+			$this->mySqlServerInfo =  $this->mySQLaccess->query('select version()')->fetchColumn();
 
 		}
 		else // Legacy. 
@@ -282,6 +293,16 @@ class e_db_mysql
 		if ($db_ConnectionID == NULL){ 	$db_ConnectionID = $this->mySQLaccess; }
 		
 		return true;
+	}
+
+
+	/**
+	 * Get Server Info
+	 * @return mixed
+	 */
+	public function getServerInfo()
+	{
+		return $this->mySqlServerInfo;
 	}
 
 
@@ -349,13 +370,15 @@ class e_db_mysql
 
 
 	/**
+	* @deprecated
 	* @return void
 	* @desc Enter description here...
 	* @access private
 	*/
 	function db_Show_Performance()
 	{
-		return $db_debug->Show_Performance();
+	//	e107::getDebug()-Show_P
+	//	return $db_debug->Show_Performance();
 	}
 
 
@@ -422,8 +445,17 @@ class e_db_mysql
 		//	print_a($query);
 		//	print_a($prep);
 		//	echo "<hr>";
-		//	$sQryRes = $prep->execute($query); 	
-			$sQryRes = $this->mySQLaccess->query($query); 	
+		//	$sQryRes = $prep->execute($query);
+
+			try
+			{
+				$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+			}
+			catch(PDOException $ex)
+			{
+				$sQryRes = false;
+			}
+
 		}
 		else 
 		{
@@ -437,6 +469,7 @@ class e_db_mysql
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 
+
 		$this->total_results = false;
 
 		// Need to get the total record count as well. Return code is a resource identifier
@@ -449,7 +482,7 @@ class e_db_mysql
 				$rc = $fr->fetchColumn();
 				$this->total_results = (int) $rc;
 			}
-			else
+			else /* @XXX Subject of Removal. */
 			{
 				$fr = mysql_query('SELECT FOUND_ROWS()', $this->mySQLaccess);
 				$rc =  mysql_fetch_array($fr);
@@ -461,6 +494,7 @@ class e_db_mysql
 
 		if (E107_DEBUG_LEVEL)
 		{
+
 			global $db_debug;
 			$aTrace = debug_backtrace();
 			$pTable = $this->mySQLcurTable;
@@ -472,7 +506,7 @@ class e_db_mysql
 			if(is_object($db_debug))
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
-			   	$nFields = $db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
 			else
 			{
@@ -588,7 +622,8 @@ class e_db_mysql
 				{
 					return null;
 				}
-				return array_shift($this->fetch());
+				$rows = $this->fetch();
+				return array_shift($rows);
 			break;
 			
 			case 'one':
@@ -826,6 +861,16 @@ class e_db_mysql
 
 	public function rowCount($result=null)
 	{
+
+		if($this->pdo)
+		{
+			if(!$this->mySQLresult)
+			{
+				return -1;
+			}
+
+		}
+
 		$rows = $this->mySQLrows = ($this->pdo) ? $this->mySQLresult->rowCount() :  mysql_num_rows($this->mySQLresult);
 		$this->dbError('db_Rows');
 		return $rows;	
@@ -1101,10 +1146,10 @@ class e_db_mysql
 
 
 	/**
+	 * @param string $type assoc|num|both
 	* @return array MySQL row
-	* @param string $mode
 	* @desc Fetch an array containing row data (see PHP's mysql_fetch_array() docs)<br />
-	* <br />
+	* @example
 	* Example :<br />
 	* <code>while($row = $sql->fetch()){
 	*  $text .= $row['username'];
@@ -1112,32 +1157,58 @@ class e_db_mysql
 	*
 	* @access public
 	*/
-	function fetch($type = MYSQL_ASSOC)
+	function fetch($type = 'assoc')
 	{
-		if (!(is_int($type)))
+		if (!is_int($type))
 		{
-			$type=MYSQL_ASSOC;
+	//		$type='assoc';
 		}
-		
-		if($this->pdo) // convert type to PDO. 
+
+		if(defined('MYSQL_ASSOC'))
 		{
-			switch ($type) 
+			switch ($type)
 			{
-				case MYSQL_BOTH:
-					$type = PDO::FETCH_BOTH;	
-				break;
-				
-				case MYSQL_NUM: 
-					$type = PDO::FETCH_NUM;	
-				break;
-				
-				case MYSQL_ASSOC:
-				default:
-					$type = PDO::FETCH_ASSOC;
-				break;
+					case 'both':
+					case 3: // MYSQL_BOTH:
+						$type = ($this->pdo) ? PDO::FETCH_BOTH: MYSQL_BOTH; // 3
+					break;
+
+					case 'num':
+					case 2; // MYSQL_NUM: // 2
+						$type = ($this->pdo) ? PDO::FETCH_NUM : MYSQL_NUM;
+					break;
+
+					case 'assoc':
+					case 1; //: // 1
+					default:
+						$type =  ($this->pdo) ?  PDO::FETCH_ASSOC : MYSQL_ASSOC;
+					break;
+				}
+		}
+		else
+		{
+
+			if($this->pdo) // convert type to PDO.
+			{
+				switch ($type)
+				{
+					case 'both': // 3
+						$type = PDO::FETCH_BOTH;
+					break;
+
+					case 'num': // 2
+						$type = PDO::FETCH_NUM;
+					break;
+
+					case 'assoc': // 1
+					default:
+						$type = PDO::FETCH_ASSOC;
+					break;
+				}
 			}
 		}
-		
+
+
 		$b = microtime();
 		if($this->mySQLresult)
 		{
@@ -1157,7 +1228,7 @@ class e_db_mysql
 	 * fetch() alias
 	 * @deprecated
 	 */
-	function db_Fetch($type = MYSQL_ASSOC)
+	function db_Fetch($type = null)
 	{
 		return $this->fetch($type);
 	}
@@ -1822,12 +1893,7 @@ class e_db_mysql
 	 */
 	function escape($data, $strip = true)
 	{
-		
-		if($this->pdo)
-		{
-			return $data;
-		}
-		
+
 		if ($strip)
 		{
 			$data = strip_if_magic($data);
@@ -1839,7 +1905,11 @@ class e_db_mysql
         	$this->mySQLaccess = $db_ConnectionID;
 		}
 		
-		
+		if($this->pdo)
+		{
+			return $data;
+		//	return $this->mySQLaccess->quote($data);
+		}
 
 		return mysql_real_escape_string($data,$this->mySQLaccess);
 	}
@@ -1943,7 +2013,7 @@ class e_db_mysql
 				$table = array();
 				if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."lan_".strtolower($language)."%' "))
 				{
-					while($rows = $this->fetch(MYSQL_NUM))
+					while($rows = $this->fetch('num'))
 					{
 						$table[] = str_replace($this->mySQLPrefix,"",$rows[0]);
 					}
@@ -1964,7 +2034,7 @@ class e_db_mysql
 			if($res = $this->db_Query("SHOW TABLES LIKE '".$this->mySQLPrefix."%' "))
 			{
 				$length = strlen($this->mySQLPrefix);
-				while($rows = $this->fetch(MYSQL_NUM))
+				while($rows = $this->fetch('num'))
 				{
 					$table[] = substr($rows[0],$length);
 				}
@@ -2097,7 +2167,7 @@ class e_db_mysql
 		$qry = "SHOW CREATE TABLE {$old}";
 		if ($this->gen($qry))
 		{
-			$row = $this->fetch(MYSQL_NUM);
+			$row = $this->fetch('num');
 			$qry = $row[1];
 			//        $qry = str_replace($old, $new, $qry);
 			$qry = preg_replace("#CREATE\sTABLE\s`{0,1}".$old."`{0,1}\s#", "CREATE TABLE `{$new}` ", $qry, 1); // More selective search
@@ -2220,6 +2290,29 @@ class e_db_mysql
 	*/
 	function dbError($from)
 	{
+
+//	$this->mySQLaccess->getMessage();
+
+		if($this->pdo)
+		{
+		//	$this->mySQLlastErrNum =;
+			$this->mySQLerror = true;
+			if(is_object($this->mySQLaccess))
+			{
+				$errInfo= $this->mySQLaccess->errorInfo();
+				$this->mySQLlastErrNum = $errInfo[1];
+				$this->mySQLlastErrText = $errInfo[2]; //  $ex->getMessage();
+			}
+			if($this->mySQLlastErrNum == 0)
+			{
+				return null;
+			}
+
+			return $this->mySQLlastErrText;
+		}
+
+
+
 		$this->mySQLlastErrNum = mysql_errno();
 		$this->mySQLlastErrText = '';
 		if ($this->mySQLlastErrNum == 0)
@@ -2262,7 +2355,6 @@ class e_db_mysql
 	 * Check if MySQL version is utf8 compatible and may be used as it accordingly to the user choice
 	 *
 	 * @TODO Simplify when the conversion script will be available
-	 *
 	 * @access public
 	 * @param string    MySQL charset may be forced in special circumstances
 	 *                  UTF-8 encoding and decoding is left to the progammer
@@ -2328,7 +2420,6 @@ class e_db_mysql
 	 *			fields which are 'NOT NULL' but have no default are added to the '_NOTNULL' list
 	 *</code>
 	 *	@param string $tableName - table name, without any prefixes (language or general)
-	 *
 	 *	@return boolean|array - FALSE if not found/not to be used. Array of field names and processing types and null overrides if found
 	 */
 	public function getFieldDefs($tableName)
@@ -2375,15 +2466,12 @@ class e_db_mysql
 	}
 
 
-	/*
+	/**
 	 *	Search the specified file for a field type definition of the specified table.
-	 *
 	 *	If found, generate and save a cache file in the e_CACHE_DB directory,
 	 *	Always also update $this->dbFieldDefs[$tableName] - FALSE if not found, data if found
-	 *
 	 *	@param	string $defFile - file name, including path
 	 *	@param	string $tableName - name of table sought
-	 *
 	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
 	 */
 	protected function loadTableDef($defFile, $tableName)
@@ -2424,12 +2512,9 @@ class e_db_mysql
 
 	/**
 	 *	Creates a field type definition from the structure of the table in the DB
-	 *
 	 *	Generate and save a cache file in the e_CACHE_DB directory,
 	 *	Also update $this->dbFieldDefs[$tableName] - FALSE if error, data if found
-	 *
 	 *	@param	string $tableName - name of table sought
-	 *
 	 *	@return boolean TRUE on success, FALSE on not found (some errors intentionally ignored)
 	 */
 	protected function makeTableDef($tableName)
