@@ -945,31 +945,32 @@ class pluginManager{
 
 
 // -----------------------------------------------------------------------------
+// TODO FIXME - This needs cleaning: e107::getMessage(), limit the globals, etc. 
 
    function pluginInstall()
    {
         global $plugin,$admin_log,$eplug_folder;
-			$text = $plugin->install_plugin($this->id);
+		$text = $plugin->install_plugin($this->id);
 		
 		$log = e107::getAdminLog();
 			
 			
 			
-			if ($text === FALSE)
-			{ // Tidy this up
-				$this->show_message(EPL_ADLAN_99, E_MESSAGE_ERROR);
-			}
-			else
-			{
-				 $plugin->save_addon_prefs('update');
-				 $info = $plugin->getinfo($this->id);
-				 
-				 $name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$info['plugin_version']. "({e_PLUGIN}".$info['plugin_path'].")";
-				 
-				$log->log_event('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
-			
-				$this->show_message($text, E_MESSAGE_SUCCESS);
-			}
+		if ($text === FALSE)
+		{ // Tidy this up
+			$this->show_message(EPL_ADLAN_99, E_MESSAGE_ERROR);
+		}
+		else
+		{
+			$plugin->save_addon_prefs('update');
+			$info = $plugin->getinfo($this->id);
+			 
+			$name = deftrue($info['plugin_name'],$info['plugin_name']). " v".$info['plugin_version']. "({e_PLUGIN}".$info['plugin_path'].")";
+			 
+			$log->log_event('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
+		
+			$this->show_message($text, E_MESSAGE_SUCCESS);
+		}
 
    }
 
@@ -2756,7 +2757,7 @@ $template = <<<TEMPLATE
 	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
 	<adminLinks>
-		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="" iconSmall="" primary="true" >LAN_CONFIGURE</link>
+		<link url="admin_config.php" description="{ADMINLINKS_DESCRIPTION}" icon="" iconSmall="" icon128="" primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
 	{PLUGINPREFS}
 </e107Plugin>

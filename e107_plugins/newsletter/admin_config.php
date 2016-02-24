@@ -105,10 +105,11 @@ class newsletter
 			$this->createIssue();
 		}
 
-		if($mes)
+		echo $mes->render();
+		/*if($mes)
 		{
 			$ns->tablerender($caption, $mes->render() . $text);
-		}
+		}*/
 	}
 
 
@@ -231,7 +232,7 @@ class newsletter
 			$newsletter_header	= $tp->toFORM($edit['newsletter_header']);
 		}
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -326,7 +327,7 @@ class newsletter
 		{
 		$nlArray = $sql -> db_getList();
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -398,7 +399,8 @@ class newsletter
 			$mes->addSuccess(NLLAN_39);
 		}
 
-		$ns->tablerender($caption, $mes->render() . $text);
+		echo $mes->render();
+	//	$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 
@@ -424,14 +426,14 @@ class newsletter
 		{
 			return FALSE;
 		}
-		$newsletterInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterInfo = $sql->fetch();
 
 		// Get parent details - has header/footer and subscriber list
 		if(!$sql->select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
 		{
 			return FALSE;
 		}
-		$newsletterParentInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterParentInfo = $sql->fetch();
 		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
@@ -478,7 +480,7 @@ class newsletter
 			{
 				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch(MYSQL_ASSOC);
+					$row = $sql->db_Fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -704,7 +706,7 @@ class newsletter
 	{
 		$sql = e107::getDb();
 		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
-		if($nl_row = $sql->fetch(MYSQL_ASSOC))
+		if($nl_row = $sql->fetch())
 		{
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);

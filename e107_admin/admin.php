@@ -71,6 +71,7 @@ class admin_start
 			'unanswered'	=> 1.4,
 			'lightwindow'	=> '1.0b',
 			'aa_jquery'		=> 1.2,
+			'aa_jquery'		=> 1.4,
 			'who'			=> 1.0,
 			'ratings'		=> 4.2,
 			'lightbox'		=> 1.5,
@@ -205,7 +206,11 @@ class admin_start
 			e_HANDLER."np_class.php",
 			e_CORE."shortcodes/single/user_extended.sc",
 			e_ADMIN."download.php",
-			e_PLUGIN."banner/config.php"
+			e_PLUGIN."banner/config.php",
+			e_PLUGIN."forum/newforumposts_menu_config.php",
+			e_PLUGIN."forum/e_latest.php",
+			e_PLUGIN."forum/e_status.php"
+
 		);
 
 		$found = array();

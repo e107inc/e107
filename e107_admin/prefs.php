@@ -1799,12 +1799,21 @@ $text .= "
 								
 		$text .= "
 					</tbody>
-			</table>
+			</table>";
+
+	if(E107_DEBUG_LEVEL > 0)
+	{
+
+
+		$text .= "
 			<table class='table adminform' style='margin-top: 20px'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
+				<thead>
+					<tr><th colspan='2'><span class='label label-warning'>DEPRECATED</span> Available only in DEBUG mode</th></tr>
+				</thead>
 				<tbody>
 					<tr>
 						<td>".PRFLAN_248."</td>
@@ -1836,8 +1845,21 @@ $text .= "
 					</tr>
 		";	
 					
+			$text .= "
+					</tbody></table>";
+
+	}
+	else
+	{
+		$text .= "<div>".
+			$frm->hidden('e_jslib_nocombine',1).
+			$frm->hidden('e_jslib_nocache', 1).
+			$frm->hidden('e_jslib_nobcache',1).
+			$frm->hidden('e_jslib_gzip',0).
+			"</div>";
+
+	}
 		$text .= "
-					</tbody></table>
 			".pref_submit('javascript')."
 					</fieldset>
 					

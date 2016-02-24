@@ -326,9 +326,6 @@ else
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
 
 
-
-
-
 foreach($CSSORDER as $val)
 {
 	$cssId = $val."_css";
@@ -340,7 +337,7 @@ unset($CSSORDER);
 
 $e_js->renderCached('css');
 
-
+$e_js->renderLinks();
 
 /*
 $e_js->renderJs('other_css', false, 'css', false);
@@ -522,8 +519,8 @@ elseif (file_exists(e_BASE."favicon.ico"))
 
 //
 // FIXME H: Generate JS for image preloads (do we really need this?)
-//
-
+/* @DEPRECATED  */
+/*
 if ($pref['image_preload'] && is_dir(THEME.'images'))
 {
 	$ejs_listpics = '';
@@ -551,7 +548,7 @@ if (isset($script_text) && $script_text)
 	echo $script_text;
 	echo "// -->\n";
 	echo "</script>\n";
-}
+}*/
 
 
 //
@@ -603,7 +600,7 @@ echo "</head>\n";
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
-			if($key == '_header_' || $key == '_footer_')
+			if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
 			{
 				continue;	
 			}
@@ -642,7 +639,7 @@ echo "</head>\n";
         $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
         $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
     }
-    elseif($def) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
+    elseif(!empty($def) && is_array($HEADER)) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
     {
       //    echo " MODE 0.8";
         if(isset($HEADER[$def]) && isset($FOOTER[$def]))
@@ -683,22 +680,28 @@ else
 	}
 }
 
-// Bootstrap Modal Window - too important to template. 
-/*
-echo '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-header">
-            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-             	<h4 class="modal-caption">&nbsp;</h4>
-             </div>
-             <div class="modal-body">
-             <p>Loading…</p>
-             </div>
-             <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
-            </div>
-        </div>
-';
-*/
+// Bootstrap Modal Window
+if(deftrue('BOOTSTRAP'))
+{
+//	if(empty($LAYOUT['_modal_'])) // leave it set for now.
+	{
+		$LAYOUT['_modal_'] = '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+		            <div class="modal-header">
+		                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		                <h4 class="modal-caption">&nbsp;</h4>
+		             </div>
+		             <div class="modal-body">
+		             <p>Loading…</p>
+		             </div>
+		             <div class="modal-footer">
+		                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+		            </div>
+		        </div>
+		';
+	}
+
+	echo $LAYOUT['_modal_'];
+}
 
 
 
@@ -727,7 +730,7 @@ if ($e107_popup != 1) {
 // M: Send top of body for custom pages and for news
 //
 	//XXX - remove all page detections
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
+	if (defset('e_PAGE') == 'news.php' && isset($NEWSHEADER))
 	{
 		parseheader($NEWSHEADER);
 	}

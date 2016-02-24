@@ -623,7 +623,7 @@ class e107MailManager
 		{
 			return false;
 		}
-		if ($result = $this->db->fetch(MYSQL_ASSOC))
+		if ($result = $this->db->fetch())
 		{
 			$this->queryActive--;
 			return $this->dbToBoth($result);
@@ -1444,7 +1444,7 @@ class e107MailManager
 					$errors[] = 'Not found in DB: '.$vals[1].'/'.$vals[2];
 				}
 				
-				$row = $this->db->fetch(MYSQL_ASSOC);
+				$row = $this->db->fetch();
 				
 				$row = $this->dbToBoth($row);
 				
@@ -1615,7 +1615,7 @@ class e107MailManager
 			$query .= " LIMIT {$start}, {$count}";
 		}
 		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		$result = $this->db->db_Select_gen($query);
+		$result = $this->db->gen($query);
 		if ($result !== FALSE)
 		{
 			$this->queryCount[1] = $this->db->total_results;			// Save number of records found
@@ -1684,7 +1684,7 @@ class e107MailManager
 			$query .= " LIMIT {$start}, {$count}";
 		}
 //		echo "{$start}, {$count} Target query: {$query}<br />";
-		$result = $this->db2->db_Select_gen($query);
+		$result = $this->db2->gen($query);
 		if ($result !== FALSE)
 		{
 			$this->queryCount[2] = $this->db2->total_results;			// Save number of records found
@@ -1715,7 +1715,7 @@ class e107MailManager
 	 */
 	public function getNextTargetStatus()
 	{
-		$result = $this->db2->db_Fetch(MYSQL_ASSOC);
+		$result = $this->db2->db_Fetch();
 		if (is_array($result)) { return $this->dbToTarget($result); }
 		return FALSE;
 	}

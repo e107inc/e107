@@ -922,7 +922,7 @@ class download
       	<option value=''>{$blankText}</option>\n";
       // Its a structured display option - need a 2-step process to create a tree
       $catlist = array();
-      while ($dlrow = $sql->fetch(MYSQL_ASSOC))
+      while ($dlrow = $sql->fetch())
       {
          $tmp = $dlrow['download_category_parent'];
         	if ($tmp == '0')

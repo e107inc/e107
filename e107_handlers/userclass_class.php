@@ -148,7 +148,7 @@ class user_class
 		{
 			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent', 'nowhere')) // The order statement should give a consistent return
 			{
-				while ($row = $this->sql_r->fetch(MYSQL_ASSOC))
+				while ($row = $this->sql_r->fetch())
 				{
 					$this->class_tree[$row['userclass_id']] = $row;
 					$this->class_tree[$row['userclass_id']]['class_children'] = array();		// Create the child array in case needed
@@ -1081,7 +1081,7 @@ class user_class
 		$qry = "SELECT user_id,{$fieldList} FROM `#user` WHERE user_class REGEXP '{$class_regex}' ORDER BY '{$orderBy}'";
 		if ($this->sql_r->db_Select_gen($qry))
 		{
-			while ($row = $this->sql_r->db_Fetch(MYSQL_ASSOC))
+			while ($row = $this->sql_r->db_Fetch())
 			{
 				$ret[$row['user_id']] = $row;
 			}

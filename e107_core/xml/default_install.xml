@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<e107Export version="0.8.0 (cvs)" timestamp="1251856226">
+<e107Export version="2.0" timestamp="1251856226">
 	<prefs>
 		<core name="admin_alerts_ok">1</core>
 		<core name="admin_alerts_uniquemenu">0</core>
@@ -513,7 +513,8 @@ City, State, Country
 				<field name="media_cat_owner">_common</field>
 				<field name="media_cat_category">_common_image</field>
 				<field name="media_cat_title">(Common Images)</field>
-				<field name="media_cat_diz">Media in this category will be available in all areas of admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -523,7 +524,8 @@ City, State, Country
 				<field name="media_cat_owner">_common</field>
 				<field name="media_cat_category">_common_file</field>
 				<field name="media_cat_title">(Common Files)</field>
-				<field name="media_cat_diz">Media in this category will be available in all areas of admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Media in this category will be available in all areas of admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -533,7 +535,8 @@ City, State, Country
 				<field name="media_cat_owner">news</field>
 				<field name="media_cat_category">news</field>
 				<field name="media_cat_title">News</field>
-				<field name="media_cat_diz">Will be available in the news area. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Will be available in the news area.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">1</field>
@@ -543,7 +546,8 @@ City, State, Country
 				<field name="media_cat_owner">page</field>
 				<field name="media_cat_category">page</field>
 				<field name="media_cat_title">Custom Pages</field>
-				<field name="media_cat_diz">Will be available in the custom pages area of admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Will be available in the custom pages area of admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -553,6 +557,7 @@ City, State, Country
 				<field name="media_cat_owner">download</field>
 				<field name="media_cat_category">download_image</field>
 				<field name="media_cat_title">Download Images</field>
+				<field name="media_cat_sef"></field>
 				<field name="media_cat_diz"></field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
@@ -563,6 +568,7 @@ City, State, Country
 				<field name="media_cat_owner">download</field>
 				<field name="media_cat_category">download_thumb</field>
 				<field name="media_cat_title">Download Thumbnails</field>
+				<field name="media_cat_sef"></field>
 				<field name="media_cat_diz"></field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
@@ -573,6 +579,7 @@ City, State, Country
 				<field name="media_cat_owner">download</field>
 				<field name="media_cat_category">download_file</field>
 				<field name="media_cat_title">Download Files</field>
+				<field name="media_cat_sef"></field>
 				<field name="media_cat_diz"></field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
@@ -583,7 +590,8 @@ City, State, Country
 				<field name="media_cat_owner">news</field>
 				<field name="media_cat_category">news_thumb</field>
 				<field name="media_cat_title">News Thumbnails (Legacy)</field>
-				<field name="media_cat_diz">Legacy news thumbnails. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Legacy news thumbnails.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">1</field>
@@ -593,7 +601,8 @@ City, State, Country
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_16</field>
 				<field name="media_cat_title">Icons 16px</field>
-				<field name="media_cat_diz">Available where icons are used in admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -603,7 +612,8 @@ City, State, Country
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_32</field>
 				<field name="media_cat_title">Icons 32px</field>
-				<field name="media_cat_diz">Available where icons are used in admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -613,7 +623,8 @@ City, State, Country
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_48</field>
 				<field name="media_cat_title">Icons 48px</field>
-				<field name="media_cat_diz">Available where icons are used in admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -623,7 +634,8 @@ City, State, Country
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_64</field>
 				<field name="media_cat_title">Icons 64px</field>
-				<field name="media_cat_diz">Available where icons are used in admin. </field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
 				<field name="media_cat_class">253</field>
 				<field name="media_cat_image"></field>
 				<field name="media_cat_order">0</field>
@@ -1080,6 +1092,7 @@ City, State, Country
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">253</field>
@@ -1091,6 +1104,7 @@ City, State, Country
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">246</field>
@@ -1102,6 +1116,7 @@ City, State, Country
 				<field name="userclass_visibility">254</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">254</field>
@@ -1113,6 +1128,7 @@ City, State, Country
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">248</field>
@@ -1124,6 +1140,7 @@ City, State, Country
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">249</field>
@@ -1135,6 +1152,7 @@ City, State, Country
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">1</field>
@@ -1146,6 +1164,7 @@ City, State, Country
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">247</field>
@@ -1157,6 +1176,7 @@ City, State, Country
 				<field name="userclass_visibility">254</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">250</field>
@@ -1168,6 +1188,7 @@ City, State, Country
 				<field name="userclass_visibility">253</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">0</field>
@@ -1179,6 +1200,7 @@ City, State, Country
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">252</field>
@@ -1190,6 +1212,7 @@ City, State, Country
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">255</field>
@@ -1201,6 +1224,7 @@ City, State, Country
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 			<item>
 				<field name="userclass_id">251</field>
@@ -1212,6 +1236,7 @@ City, State, Country
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
 			</item>
 		</dbTable>
 	</database>

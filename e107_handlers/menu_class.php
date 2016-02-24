@@ -41,6 +41,11 @@ class e_menu
 	 */
 	protected $_visibility_cache = array();
 
+
+	protected $_current_menu = null;
+
+	protected $_current_parms = array();
+
 	/**
 	 * Constructor
 	 *
@@ -126,14 +131,21 @@ class e_menu
 		}
 		
 		return $data;		
-	}	
-	
-	
-	
+	}
 
 
 	/**
-	 * V2 Menu Re-Write - retrieve Menu data from $pref['menu_layouts']
+	 * Return the preferences/parms for the current menu.
+	 * @return array
+	 */
+	public function pref()
+	{
+		return $this->_current_parms;
+	}
+
+
+	/**
+	 * Experimental V2 Menu Re-Write - retrieve Menu data from $pref['menu_layouts']
 	 */
 	protected function getData($layout)
 	{
@@ -184,11 +196,25 @@ class e_menu
 	}
 
 
+	/**
+	 * Set Parms for a specific menu.
+	 * @param string $plugin ie. plugin folder name.
+	 * @param string $menu menu name. including the _menu but not the .php
+	 * @param array $parms
+	 * @param string|int $location default 'all' or  a menu area number..
+	 * @return int|boolean number of records updated or false.
+	 */
+	public function setParms($plugin, $menu, $parms=array(), $location = 'all')
+	{
+		$qry = 'menu_parms="'.e107::serialize($parms).'" WHERE menu_parms="" AND menu_path="'.$plugin.'/" AND menu_name="'.$menu.'" ';
+		$qry .= ($location != 'all') ? 'menu_location='.intval($location) : '';
+
+		return  e107::getDb()->update('menus', $qry);
+	}
 
 	
 	/** 
-	 * @DEPRECATED 
-	 * Legacy Function to retrieve Menu data from tables.
+	 * Function to retrieve Menu data from tables.
 	 */
 	private function getDataLegacy()
 	{
@@ -201,6 +227,7 @@ class e_menu
 		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
 	//	$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST);
 		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
+	//	$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
 		
 		$eMenuArea = array();
 		// $eMenuList = array();
@@ -403,17 +430,27 @@ class e_menu
 	//	global $sql; // required at the moment.
 		global $sc_style, $e107_debug;
 				
-		$e107 = e107::getInstance();		
+
 		$sql = e107::getDb();
 		$ns = e107::getRender();
-		$tp = e107::getParser();		
+		$tp = e107::getParser();
+
+		if($tmp = e107::unserialize($parm)) // support e_menu.php e107 serialized parm.
+		{
+			$parm = $tmp;
+			unset($tmp);
+		}
+
+		$this->_current_parms = $parm;
+		$this->_current_menu = $mname;
+
 
 		if($return)
 		{
 			ob_start();
 		}
 
-		if(vartrue($error_handler->debug))
+		if(e_DEBUG === true)
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
@@ -484,7 +521,8 @@ class e_menu
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
 		e107::getDB()->db_Mark_Time("(After ".$mname.")");
-		if($error_handler->debug==true)
+
+		if(e_DEBUG === true)
 		{
 			echo "\n<!-- Menu End: ".$mname." -->\n";
 		}

@@ -42,9 +42,9 @@ function imageselector_shortcode($parm = '', $mod = '')
 			$qry .= vartrue($parms['media']) && $parms['media'] !== 'all' ? " AND media_category='".$tp->toDB($parms['media'])."' " : " AND `media_category` NOT REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ";
 			$qry .= " AND media_url REGEXP '\.jpg$|\.png$|\.gif$|\.jpeg$|\.svn$|\.JPG$|\.PNG$|\.GIF$|\.jpeg$|\.SVN$' ORDER BY media_name";
 			// FIXME - media_type=image?
-			if($sql->db_Select_gen($qry))
+			if($sql->gen($qry))
 			{
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 					//$imagelist[$row['media_category']][$row['media_url']] = $row['media_name']. " (".$row['media_dimensions'].") ";
 					$imagelist[$row['media_category']][] = array('path' => $row['media_url'], 'fname' => $row['media_name']. " (".$row['media_dimensions'].") ");

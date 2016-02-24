@@ -441,7 +441,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
         if (ADMIN === FALSE) $qry .= " WHERE dc.download_category_class IN (".USERCLASS_LIST.") ";
 	 	$qry .= " ORDER by dc2.download_category_order, dc1.download_category_order, dc.download_category_order";   // This puts main categories first, then sub-cats, then sub-sub cats
 
-  	  	if (!$sql->db_Select_gen($qry))
+  	  	if (!$sql->gen($qry))
 	  	{
 	    	return "Error reading categories<br />";
 	    	exit;
@@ -452,7 +452,7 @@ SC_BEGIN DOWNLOAD_CATEGORY_SELECT
 
 		// Its a structured display option - need a 2-step process to create a tree
 	    $catlist = array();
-	    while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+	    while ($row = $sql->db_Fetch())
 	    {
 			$tmp = $row['download_category_parent'];
 	      	if ($tmp == '0')

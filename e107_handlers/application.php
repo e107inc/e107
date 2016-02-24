@@ -309,7 +309,7 @@ class eFront
 	{
 		if(null !== $status) 
 		{
-			if($status[0] === '{')
+			if(!empty($status[0]) && ($status[0] === '{'))
 			{
 				$status = e107::getParser()->replaceConstants($status);
 			} 
@@ -3585,9 +3585,17 @@ class eRequest
 		{
 			$qstring = self::getQueryString();
 		}
-		
-		define("e_SELF", e_REQUEST_SELF);
-		define("e_QUERY", $qstring);
+
+		if(!defined('e_SELF'))
+		{
+			define("e_SELF", e_REQUEST_SELF);
+		}
+
+		if(!defined('e_QUERY'))
+		{
+			define("e_QUERY", $qstring);
+		}
+
 		$_SERVER['QUERY_STRING'] = e_QUERY;	
 		
 		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc. 

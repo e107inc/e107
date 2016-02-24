@@ -1511,7 +1511,7 @@ if(isset($page_title[$action]))
 	}
 
 	$num_entry = 0;
-	if($sql->db_Select_gen($qry.$limit_clause))
+	if($sql->gen($qry.$limit_clause))
 	{
 		$num_entry = $sql->total_results;
 	}
@@ -1519,7 +1519,7 @@ if(isset($page_title[$action]))
 	{
 		$from = 0; // We may be on a later page
 		$limit_clause = " LIMIT {$from}, {$amount} ";
-		$sql->db_Select_gen($qry.$limit_clause); // Re-run query with new value of $from
+		$sql->gen($qry.$limit_clause); // Re-run query with new value of $from
 		$num_entry = $sql->total_results;
 	}
 

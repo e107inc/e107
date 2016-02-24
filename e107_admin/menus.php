@@ -883,7 +883,7 @@ class e_layout
 		$frm = e107::getForm();
 		
 	//	$text = "<i class='icon-align-justify'></i> ";
-		$text .= str_replace("_menu","",$row['name']);
+		$text = str_replace("_menu","",$row['name']);
 	
 	//	$layout = 'layout';
 	//	$area = 'area';
@@ -986,6 +986,12 @@ class e_layout
 		
 		foreach($files as $file)
 		{
+
+			if($file == 'e_menu.php')
+			{
+				continue;
+			}
+
 			$valid_menu = false;
 			
 			if (file_exists($file['path'].'/plugin.xml') || file_exists($file['path'].'/plugin.php'))

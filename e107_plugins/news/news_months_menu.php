@@ -8,12 +8,20 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$cString = 'nq_news_months_menu_'.md5($parm);
+$cString = 'nq_news_months_menu_'.md5(serialize($parm));
 $cached = e107::getCache()->retrieve($cString);
 
 if(!empty($parm))
 {
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
+
 }
 
 

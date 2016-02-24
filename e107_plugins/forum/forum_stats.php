@@ -615,7 +615,7 @@ class forumStats
 			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				if ($row['user_name'])
 				{

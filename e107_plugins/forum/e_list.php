@@ -30,7 +30,7 @@ class list_forum
 		{	// New posts since last visit, up to limit
 			$lvisit = $this->parent->getlvisit();
 			$qry = "
-			SELECT tp.thread_name AS parent_name, tp.thread_id as parent_id, 
+			SELECT t.thread_name AS parent_name, t.thread_id as parent_id,
 			f.forum_id, f.forum_name, f.forum_class, 
 			u.user_name, lp.user_name AS lp_name, 
 			t.thread_id, t.thread_views as tviews, t.thread_name, t.thread_datestamp, t.thread_user,
@@ -43,6 +43,7 @@ class list_forum
 			WHERE find_in_set(forum_class, '".USERCLASS_LIST."')
 			AND t.thread_lastpost > {$lvisit}
 			ORDER BY tp.post_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
+
 		}
 		else
 		{	// Most recently updated threads up to limit

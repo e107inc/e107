@@ -44,7 +44,7 @@ button, button:active                      { outline: 0; }
 #tab-container table  		{ border-top:0px;}
 #tab-container td  			{ border-top:0px; border-bottom:1px solid rgb(221, 221, 221) }
 .tab-border 				{ border-left: 1px solid #ddd; }
-.tab-content 				{ overflow: visible }
+.tab-content 				{ overflow: visible;  }
 
 /* .core-mainpanel-block 		{ text-align:center; width:140px; float:left; height:100px; display:block; padding:1px; margin: 0;  } */
 .core-mainpanel-block 		{ text-align:center; width:20%; float:left; height:80px; display:block; padding:1px 5px; margin: 0px 0px 10px 0px;  }
@@ -951,15 +951,15 @@ a.e-media-select
 
 /****************************************************************/	
 
-ul#e-status						{ margin:0 14px }
-ul#e-status li 					{ padding-bottom:6px; font-size:85% }
+ul#e-status						{ margin:0 }
+ul#e-status li 					{ padding-bottom:6px; font-size: 0.9em }
 ul#e-status						{ line-height:20px }
 ul#e-status li  a span.badge,
 ul#e-status li  a span.label	{ float:right; font-size:85% }
 ul#e-status li  a:hover  		{ text-decoration: none; }
 
-ul#e-latest						{ margin:0 14px}
-ul#e-latest li 					{ padding-bottom:6px;  font-size:85%}
+ul#e-latest						{ margin:0 }
+ul#e-latest li 					{ padding-bottom:6px;  font-size: 0.9em}
 ul#e-latest						{ line-height:17px }
 ul#e-latest li  a  span.label	{ float:right;font-size:85% }
 ul#e-latest li  a:hover  		{ text-decoration: none; }
@@ -1229,6 +1229,10 @@ li.rssRow > div {
 .admin-theme-cell-admin	 	 { background-color:#FFFFD5; border: 1px solid #FFCC00; }
 
 #e-online table                { margin-top:10px; margin-left:auto; margin-right:auto }
+#core-plugin-list img.icon    { width: 32px; height:32px }
+.tab-content #core,
+.tab-content #plugin,
+.tab-content #theme             { padding-top:20px }
 
 /*
 

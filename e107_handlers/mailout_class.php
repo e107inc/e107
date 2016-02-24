@@ -216,7 +216,7 @@ class core_mailout
 		
 		e107::getMessage()->addDebug("Selector query: ".$qry);
 
-		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
+		if (!( $this->mail_count = $sql->gen($qry))) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
 	}
@@ -237,7 +237,7 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 		
-		if (!($row = $sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
+		if (!($row = $sql->db_Fetch())) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],

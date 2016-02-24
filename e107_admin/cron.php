@@ -109,7 +109,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 			
 			$sql->gen("SELECT cron_function,cron_active FROM #cron ");
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$this->curCrons[] = $row['cron_function'];
 				if($row['cron_active']==1)
@@ -403,7 +403,7 @@ class cron_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			if($sql->select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
 			{
-				$row = $sql->fetch(MYSQL_ASSOC);
+				$row = $sql->fetch();
 				$class_func = $row['cron_function'];
 				$cron_name = $row['cron_name'];	
 			}

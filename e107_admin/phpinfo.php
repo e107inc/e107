@@ -25,7 +25,8 @@ require_once("auth.php");
 
 ob_start();
 phpinfo();
-$phpinfo .= ob_get_contents();
+$phpinfo = ob_get_contents();
+
 $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 $phpinfo = str_replace("font","span",$phpinfo);
 $phpinfo = str_replace("</body></html>","",$phpinfo);
@@ -36,7 +37,8 @@ $phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
 $phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
-$phpinfo = str_replace('<table  cellpadding="3" width="600">', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+
 
 $mes = e107::getMessage();
 

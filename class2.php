@@ -132,6 +132,7 @@ set_error_handler(array(&$error_handler, 'handle_error'));
 //
 define('e107_INIT', true);
 
+
 // MOVED TO $e107->prepare_request()
 // setup some php options
 //e107_ini_set('magic_quotes_runtime',     0);
@@ -546,7 +547,7 @@ define('e_COOKIE', $pref['cookie_name']);
 // if the option to force users to use a particular url for the site is enabled, redirect users there as needed
 // Now matches RFC 2616 (sec 3.2): case insensitive, https/:443 and http/:80 are equivalent.
 // And, this is robust against hack attacks. Malignant users can put **anything** in HTTP_HOST!
-if($pref['redirectsiteurl'] && $pref['siteurl']) {
+if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 
 	if(isset($pref['multilanguage_subdomain']) && $pref['multilanguage_subdomain'])
 	{
@@ -555,11 +556,17 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 			$self = e_REQUEST_URL;
 			//if(e_QUERY){ $self .= '?'.e_QUERY; }
 			$location = str_replace('://www.', '://', $self);
-			header("Location: {$location}", true, 301); // send 301 header, not 302
+			if(defined('e_DEBUG') && e_DEBUG === true)
+			{
+				echo "Redirecting to location: ".$location;
+			}
+
+			e107::getRedirect()->go($location,true,301);
+		//	header("Location: {$location}", true, 301); // send 301 header, not 302
 			exit();
 		}
 	}
-    else
+    elseif(deftrue('e_DOMAIN'))
 	{
 		// Find domain and port from user and from pref
 		list($urlbase,$urlport) = explode(':',$_SERVER['HTTP_HOST'].':');
@@ -587,8 +594,20 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
 				$location = implode('/',$aeSELF).($_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '');
 
-			header("Location: {$location}", true, 301); // send 301 header, not 302
-			exit();
+			//
+		//	header("Location: {$location}", true, 301); // send 301 header, not 302
+			if(defined('e_DEBUG') && e_DEBUG === true)
+			{
+				echo "DEBUG INFO: site-redirect preference enabled.<br />Redirecting to: <a hre='".$location."'>".$location."</a>";;
+				echo "<br />e_DOMAIN: ".e_DOMAIN;
+				echo "<br />e_SUBDOMAIN: ".e_SUBDOMAIN;
+			}
+			else
+			{
+				e107::getRedirect()->go($location,true,301);
+			}
+
+				exit();
 			}
 		}
 	}
@@ -1023,7 +1042,7 @@ if(($pref['membersonly_enabled'] && !isset($_E107['allow_guest'])) || ($pref['ma
 
 if(!isset($_E107['no_prunetmp']))
 {
-	$sql->db_Delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
+	$sql->delete('tmp', 'tmp_time < '.(time() - 300)." AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
 }
 
 
@@ -1057,7 +1076,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	// TODO - should be done inside online handler, more core areas need it (session handler for example)
 	if (isset($pref['track_online']) && $pref['track_online'])
 	{
-		$sql->db_Update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
+		$sql->update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
 	}
 	
 	// earlier event trigger with user data still available 
@@ -1486,9 +1505,9 @@ function getperms($arg, $ap = ADMINPERMS)
 		$sql = e107::getDb('psql');
 
 		// FIXME - cache it, avoid sql query here
-		if ($sql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
+		if ($sql->select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' LIMIT 1 "))
 		{
-			$row = $sql->db_Fetch();
+			$row = $sql->fetch();
 			$arg = 'P'.$row['plugin_id'];
 		}
 	}
@@ -1584,7 +1603,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		default:
 			$_user_pref = $tp->toDB($user_pref, true, true, 'pReFs');
 			$tmp = $eArrayStorage->WriteArray($_user_pref);
-			$sql->db_Update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
+			$sql->update('user', "user_prefs='$tmp' WHERE user_id=".intval($uid));
 			return $tmp;
 			break;
 	}
@@ -1635,8 +1654,8 @@ class floodprotect
 
 		if (FLOODPROTECT == true)
 		{
-			$sql->db_Select($table, '*', 'ORDER BY '.$orderfield.' DESC LIMIT 1', 'no_where');
-			$row=$sql->db_Fetch();
+			$sql->select($table, '*', 'ORDER BY '.$orderfield.' DESC LIMIT 1', 'no_where');
+			$row=$sql->fetch();
 			return ($row[$orderfield] > (time() - FLOODTIMEOUT) ? false : true);
 		}
 		else
@@ -2036,9 +2055,9 @@ function force_userupdate($currentUser)
 
 	if (!e107::getPref('disable_emailcheck',TRUE) && !trim($currentUser['user_email'])) return TRUE;
 
-	if(e107::getDb()->db_Select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
+	if(e107::getDb()->select('user_extended_struct', 'user_extended_struct_applicable, user_extended_struct_write, user_extended_struct_name, user_extended_struct_type', 'user_extended_struct_required = 1 AND user_extended_struct_applicable != '.e_UC_NOBODY))
 	{
-		while($row = e107::getDb()->db_Fetch())
+		while($row = e107::getDb()->fetch())
 		{
 			if (!check_class($row['user_extended_struct_applicable'])) { continue; }		// Must be applicable to this user class
 			if (!check_class($row['user_extended_struct_write'])) { continue; }				// And user must be able to change it
@@ -2068,11 +2087,22 @@ class error_handler
 
 	var $errors;
 	var $debug = false;
+	protected $xdebug = false;
+	protected $docroot = '';
+	protected $label = array();
 
-	function error_handler()
+	function __construct()
 	{
-		//
+		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated", E_STRICT => "Strict");
+		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger', E_STRICT => 'primary');
+		$this->docroot = dirname(realpath(__FILE__)).DIRECTORY_SEPARATOR;
+
 		// This is initialized before the current debug level is known
+		if(function_exists('xdebug_get_function_stack'))
+		{
+			$this->xdebug = true;
+		}
+
 		//
 		global $_E107;
 		if(isset($_E107['debug']))
@@ -2100,16 +2130,31 @@ class error_handler
 
 	function handle_error($type, $message, $file, $line, $context) {
 		$startup_error = (!defined('E107_DEBUG_LEVEL')); // Error before debug system initialized
-		
-		
+
+
+
 		switch($type) {
 			case E_NOTICE:
+			case E_DEPRECATED:
+		//	case E_STRICT:
+
 			if ($startup_error || E107_DBG_ALLERRORS || E107_DBG_ERRBACKTRACE)
 			{
-				$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
-				$trace = debug_backtrace();
-				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+
+
+				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
+
+				if($this->xdebug)
+				{
+					$backtrace = xdebug_get_function_stack();
+				}
+				else
+				{
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				}
+
 				$error['trace'] = $backtrace;
 				$this->errors[] = $error;
 			}
@@ -2117,10 +2162,20 @@ class error_handler
 			case E_WARNING:
 			if ($startup_error || E107_DBG_BASIC || E107_DBG_ERRBACKTRACE)
 			{
-				$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
-				$trace = debug_backtrace();
-				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+			//	$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "<span class='label label-".$this->color[$type]."'>".$this->label[$type]."</span> {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
+
+				if($this->xdebug)
+				{
+					$backtrace = xdebug_get_function_stack();
+				}
+				else
+				{
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				}
+
 				$error['trace'] = $backtrace;
 				$this->errors[] = $error;
 			}
@@ -2128,7 +2183,7 @@ class error_handler
 			case E_USER_ERROR:
 			if ($this->debug == true)
 			{
-				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
+				$error['short'] = "&nbsp;&nbsp;&nbsp;&nbsp;Internal Error Message: {$message}, Line <mark>{$line}</mark> of {$file}<br />\n";
 				$trace = debug_backtrace();
 				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
 				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
@@ -2141,6 +2196,44 @@ class error_handler
 		}
 	}
 
+
+
+	function render_trace($array)
+	{
+		if($this->xdebug == false)
+		{
+			return print_a($array, true);
+		}
+
+		array_pop($array);
+
+
+		$text = "<table class='table table-bordered table-striped table-condensed'>
+		<tr class='danger'><th>#</th><th>Function</th><th>Location</th></tr>";
+		foreach($array as $key=>$val)
+		{
+			$text .= "
+			<tr>
+				<td>".$key."</td>
+				<td>";
+			$text .= !empty($val['class']) ? $val['class']."->" : '';
+			$text .= !empty($val['include_filename']) ? "include: ". str_replace($this->docroot,'', $val['include_filename']) : '';
+			$text .= !empty($val['function']) ? $val['function']."(" : "";
+			$text .= !empty($val['params']) ? print_r($val['params'],true) : '';
+			$text .= !empty($val['function']) ? ")" : "";
+			$text .="</td>
+				<td>";
+			$text .= str_replace($this->docroot,'', $val['file']).":".$val['line'];
+			$text .= "</td>
+			</tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
+	}
+
 	function return_errors()
 	{
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
@@ -2150,11 +2243,15 @@ class error_handler
 
 		if (E107_DBG_ERRBACKTRACE)
 		{
+
+
+
 			foreach ($this->errors as $key => $value)
 			{
 				$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='btn btn-info button e-expandit' data-target = 'bt_{$key}' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace'  />\n";
-				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
-				$ret .= "</td>\n\t</tr>";
+					$ret .= "</td>\n\t</tr>";
+				$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".$this->render_trace($value['trace'])."</td></tr>\n";
+
 				if($index == 0) { $index = 1; } else { $index = 0; }
 			}
 		

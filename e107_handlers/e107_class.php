@@ -213,7 +213,8 @@ class e107
 		'userlogin'					 	 => '{e_HANDLER}login.php',
 		'validatorClass'				 => '{e_HANDLER}validator_class.php',
 		'xmlClass'						 => '{e_HANDLER}xml_class.php',
-		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php'
+		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php',
+		'e_library_manager'              => '{e_HANDLER}library_manager.php'
 	);
 
 	/**
@@ -625,7 +626,7 @@ class e107
 	 * @param string $for prefix|server|user|password|defaultdb - leave blank for full array. 
 	 * @return string or array
 	 */
-	function getMySQLConfig($for='')
+	public static function getMySQLConfig($for='')
 	{
 		$key = 'mySQL'.$for;
 		$self = self::getInstance();
@@ -798,7 +799,18 @@ class e107
 
 		if($path && is_string($path) && !class_exists($class_name, false))
 		{
-			e107_require_once($path); //no existence/security checks here!
+			global $e107_debug, $_E107;
+
+			if(($e107_debug || isset($_E107['debug']) || (defined('e_DEBUG') && e_DEBUG === true) ))
+			{
+				require_once($path);
+			}
+			else
+			{
+				@require_once($path);
+			}
+
+			// remove the need for external function.
 			//e107_require_once() is available without class2.php. - see core_functions.php
 		}
 		if(class_exists($class_name, false))
@@ -1359,7 +1371,7 @@ class e107
 	/**
 	 * Retrieve override handler singleton object
 	 *
-	 * @return notify
+	 * @return override
 	 */
 	public static function getOverride()
 	{
@@ -1639,6 +1651,46 @@ class e107
 	}
 
 	/**
+	 * Retrieve Library Manager singleton object (internal use only. Use e107::library())
+	 *
+	 * @return e_library_manager
+	 */
+	private static function getLibrary()
+	{
+		return self::getSingleton('e_library_manager', true);
+	}
+
+	/**
+	 * Library Common Public Function.
+	 *
+	 * @param string $action
+	 *  - 'detect': Tries to detect a library and its installed version.
+	 *  - 'load': Loads a library.
+	 * @param string $library
+	 *  The name of the library to detect/load.
+	 *
+	 * @return array|boolean
+	 *  - In case of 'detect': An associative array containing registered information for the library specified by
+	 *    $name, or FALSE if the library $name is not registered.
+	 *  - In case of 'load': An associative array of the library information.
+	 */
+	public static function library($action, $library)
+	{
+		$libraryHandler = e107::getLibrary();
+
+		switch ($action)
+		{
+			case 'detect':
+				return $libraryHandler->detect($library);
+				break;
+
+			case 'load':
+				return $libraryHandler->load($library);
+				break;
+		}
+	}
+
+	/**
 	 * Retrieve JS Manager singleton object
 	 *
 	 * @return e_jsmanager
@@ -1724,6 +1776,20 @@ class e107
 
 		$jshandler->resetDependency();
 	}
+
+
+	/**
+	 * Add a <link> tag to the head of the html document.
+	 * @param array $attributes
+	 * @example e107::link(array('rel'=>"dns-prefetch", "href" => "http://example-domain.com/"));
+	 */
+	public static function link($attributes=array())
+	{
+		self::getJs()->addLink($attributes);
+	}
+
+
+
 
 	/**
 	 * CSS Common Public Function. Prefered is shortcode script path
@@ -2522,7 +2588,7 @@ class e107
 			$path = e_PLUGIN.$plugin.'/languages/'.$fname.'.php';	
 		}
 		
-		if(E107_DBG_INCLUDES)
+		if(deftrue('E107_DBG_INCLUDES'))
 		{
 			e107::getMessage()->addDebug("Attempting to Load: ".$path);	
 		}	
@@ -2918,8 +2984,9 @@ class e107
 				$searchPath[3] = e_PLUGIN.$unitName.'/languages/'.e_LANGUAGE.'.php'; // menu language file.
 				break;
 			case 'admin' :
-				
-				$adminLan = vartrue(self::getPref('adminlanguage'), e_LANGUAGE);
+
+				$aLangPref = self::getPref('adminlanguage');
+				$adminLan = vartrue($aLangPref, e_LANGUAGE);
 						
 				$searchPath[1] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'_admin_'.$unitName.'.php'; 
 				$searchPath[2] = e_PLUGIN.$unitName.'/languages/'.$adminLan.'/'.'admin_'.$unitName.'.php'; 
@@ -3210,7 +3277,7 @@ class e107
 	{
 		define('MAGIC_QUOTES_GPC', (ini_get('magic_quotes_gpc') ? true : false));
 
-		define('MPREFIX', $this->getMySQLConfig('prefix')); // mysql prefix
+		define('MPREFIX', self::getMySQLConfig('prefix')); // mysql prefix
 
 		define('CHARSET', 'utf-8'); // set CHARSET for backward compatibility
 
@@ -3259,7 +3326,6 @@ class e107
 		define('e_UC_MEMBER', 253);
 		define('e_UC_ADMIN', 254);
 		define('e_UC_NOBODY', 255);
-		
 
 
 		return $this;
@@ -3585,8 +3651,9 @@ class e107
 		}
 
 		define('e_REQUEST_URL', str_replace(array("'", '"'), array('%27', '%22'), $requestUrl)); // full request url string (including domain)
-		
-		$requestSelf =  array_shift(explode('?', e_REQUEST_URL)); 
+
+		$tmp = explode('?', e_REQUEST_URL);
+		$requestSelf =  array_shift($tmp);
 		
 		if(substr($requestSelf,-4) !== '.php' && substr($requestSelf,-1) !== '/')
 		{
@@ -3594,9 +3661,11 @@ class e107
 		}
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
+
 		define('e_REQUEST_SELF', $requestSelf); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
-		define('e_REQUEST_HTTP', array_shift(explode('?', e_REQUEST_URI))); // SELF URL without the QUERY string and leading domain part
+		$tmp2 = explode('?', e_REQUEST_URI);
+		define('e_REQUEST_HTTP', array_shift($tmp2)); // SELF URL without the QUERY string and leading domain part
 
 		if(!deftrue('e_SINGLE_ENTRY'))
 		{
@@ -3615,8 +3684,6 @@ class e107
 		{
 			define('e_SELF', e_REQUEST_SELF);
 		}
-
-
 
 
 

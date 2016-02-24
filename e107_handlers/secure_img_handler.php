@@ -21,7 +21,7 @@ class secure_image
 	protected $BASE_DIR;
 	public $FONT_COLOR = "90,90,90";
 
-	function secure_image()
+	function __construct()
 	{
 		
 /*
@@ -30,36 +30,74 @@ class secure_image
 	 		return call_user_func($user_func);
 		}
  * */
-
-	
 		list($usec, $sec) = explode(" ", microtime());
 		$this->random_number = str_replace(".", "", $sec.$usec);
 
-		$imgp = dirname(__FILE__);
-		if (substr($imgp,-1,1) != DIRECTORY_SEPARATOR) $imgp .= DIRECTORY_SEPARATOR;
-		$imgp = str_replace('/', DIRECTORY_SEPARATOR, $imgp);
-		@include($imgp.'..'.DIRECTORY_SEPARATOR.'e107_config.php');
-		if(!isset($mySQLserver))
-		{
-			if(defined('e_DEBUG'))
-			{
-				echo "FAILED TO LOAD e107_config.php in secure_img_handler.php";
-			}
-			exit;
-		}
-		// FIX - new prefered configuration format - $E107_CONFIG
-		if(isset($E107_CONFIG))
-		{
-			extract($E107_CONFIG);
-		}
 
-		$this->THIS_DIR 			= $imgp;
-		$this->BASE_DIR 			= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
-		$this->FONTS_DIRECTORY 		= isset($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
-	//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
-        $this->IMAGES_DIRECTORY     =  $IMAGES_DIRECTORY;
-		$this->MYSQL_INFO = array('db' => $mySQLdefaultdb, 'server' => $mySQLserver, 'user' => $mySQLuser, 'password' => $mySQLpassword, 'prefix' => $mySQLprefix);
+        if(class_exists('e107'))
+        {
+            $this->BASE_DIR             = e_BASE;
+
+	        $CORE_DIRECTORY             = e107::getFolder('CORE');
+            $this->HANDLERS_DIRECTORY 	= e107::getFolder('HANDLERS');
+			$this->FONTS_DIRECTORY 		= !empty($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
+		//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
+	        $this->IMAGES_DIRECTORY     =  e107::getFolder('IMAGES');
+			$this->MYSQL_INFO = array(
+				'mySQLdefaultdb' => e107::getMySQLConfig('defaultdb'),
+				'mySQLserver'    => e107::getMySQLConfig('server'),
+				'mySQLuser'      => e107::getMySQLConfig('user'),
+				'mySQLpassword'  => e107::getMySQLConfig('password'),
+				'mySQLprefix'    => e107::getMySQLConfig('prefix')
+			);
+
+        }
+		else
+		{
+	
+
+
+			$imgp               = dirname(__FILE__);
+			if (substr($imgp,-1,1) != DIRECTORY_SEPARATOR) $imgp .= DIRECTORY_SEPARATOR;
+			$imgp = str_replace('/', DIRECTORY_SEPARATOR, $imgp);
+
+			$HANDLERS_DIRECTORY = '';
+			$IMAGES_DIRECTORY = '';
+			$mySQLdefaultdb = '';
+			$mySQLuser = '';
+			$mySQLpassword = '';
+			$mySQLprefix= '';
+
+
+			@include($imgp.'..'.DIRECTORY_SEPARATOR.'e107_config.php');
+			if(!isset($mySQLserver))
+			{
+				if(defined('e_DEBUG'))
+				{
+					echo "FAILED TO LOAD e107_config.php in secure_img_handler.php";
+				}
+				exit;
+			}
+			// FIX - new prefered configuration format - $E107_CONFIG
+			if(isset($E107_CONFIG))
+			{
+				extract($E107_CONFIG);
+			}
+
+
+			$this->THIS_DIR 	= $imgp;
+			$this->BASE_DIR 	= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+			$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
+			$this->FONTS_DIRECTORY 		= isset($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
+		//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
+	        $this->IMAGES_DIRECTORY     =  $IMAGES_DIRECTORY;
+			$this->MYSQL_INFO = array(
+				'mySQLdefaultdb' => $mySQLdefaultdb,
+				'mySQLserver'   => $mySQLserver,
+				'mySQLuser'     => $mySQLuser,
+				'mySQLpassword' => $mySQLpassword,
+				'mySQLprefix'    => $mySQLprefix);
+		}
 	}
 
 	function create_code()
@@ -80,7 +118,7 @@ class secure_image
 		$code = substr($rcode, 2, 6);
 		$recnum = $this->random_number;
 		$del_time = time()+1200;
-		$sql->db_Insert("tmp", "'{$recnum}',{$del_time},'{$code}'");
+		$sql->insert("tmp", "'{$recnum}',{$del_time},'{$code}'");
 		return $recnum;
 	}
 
@@ -97,9 +135,9 @@ class secure_image
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'")) {
-			$row = $sql->db_Fetch();
-			$sql->db_Delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
+		if ($sql->select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'")) {
+			$row = $sql->fetch();
+			$sql->delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
 			//list($code, $path) = explode(",", $row['tmp_info']);
 			$code = intval($row['tmp_info']);
 			return ($checkstr == $code);
@@ -126,8 +164,7 @@ class secure_image
 			return LAN_INVALID_CODE;	
 		}
 		
-		return true;	
-		
+
 	}
 	
 	
@@ -196,7 +233,10 @@ class secure_image
 		$frm = e107::getForm();	
 		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1, 'placeholder'=>LAN_ENTER_CODE));
 	}
-	
+
+	/**
+	 * @return mixed|string
+	 */
 	function renderLabel()
 	{
 		if ($user_func = e107::getOverride()->check($this,'renderLabel'))
@@ -206,10 +246,13 @@ class secure_image
 			
 		return LAN_ENTER_CODE;	
 	}
-	
+
 
 	/**
 	 * Render the generated Image. Called without class2 environment (standalone).
+	 * @param $qcode
+	 * @param string $color
+	 * @return mixed
 	 */
 	function render($qcode, $color='')
 	{
@@ -228,16 +271,19 @@ class secure_image
 			
 	 		return call_user_func($user_func,$qcode);
 		}
+
 		
 		if(!is_numeric($qcode)){ exit; }
 		$recnum = preg_replace('#\D#',"",$qcode);
 
 		$imgtypes = array('png'=>"png",'gif'=>"gif",'jpg'=>"jpeg",);
 
-		@mysql_connect($this->MYSQL_INFO['server'], $this->MYSQL_INFO['user'],  $this->MYSQL_INFO['password']) || die('db connection failed');
-		@mysql_select_db($this->MYSQL_INFO['db']);
+		/** @FIXME - needs to use mysql class. */
 
-		$result = mysql_query("SELECT tmp_info FROM {$this->MYSQL_INFO['prefix']}tmp WHERE tmp_ip = '{$recnum}'");
+		@mysql_connect($this->MYSQL_INFO['mySQLserver'], $this->MYSQL_INFO['mySQLuser'],  $this->MYSQL_INFO['mySQLpassword']) || die('db connection failed');
+		@mysql_select_db($this->MYSQL_INFO['mySQLdefaultdb']);
+
+		$result = mysql_query("SELECT tmp_info FROM {$this->MYSQL_INFO['mySQLprefix']}tmp WHERE tmp_ip = '{$recnum}'");
 		if(!$result || !($row = mysql_fetch_array($result, MYSQL_ASSOC)))
 		{
 			// echo "Render Failed";
@@ -391,10 +437,10 @@ class secure_image
 		switch($type)
 		{
 			case "jpeg":
-				imagejpeg($image);
+				imagejpeg($image, null, 60 );
 				break;
 			case "png":
-				imagepng($image);
+				imagepng($image, null, 9);
 				break;
 			case "gif":
 				imagegif($image);

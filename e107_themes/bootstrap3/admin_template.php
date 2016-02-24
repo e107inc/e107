@@ -269,7 +269,7 @@ $ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="d
 $ADMIN_HEADER .= '<div class="container-fluid">
 
       <div class="row">
-        <div class="col-md-2" id="left-panel">
+        <div class="col-md-3 col-lg-2" id="left-panel">
         	{SETSTYLE=admin_menu}
 		
 			{ADMIN_MENU}
@@ -296,7 +296,7 @@ $ADMIN_HEADER .= '<div class="container-fluid">
 			{SETSTYLE=default}
 			
          </div>
-        <div class="col-md-10" id="right-panel" >
+        <div class="col-md-9 col-lg-10" id="right-panel" >
          <div class="sidebar-toggle"><a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a></div>
         	<div>
         

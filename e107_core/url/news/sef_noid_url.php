@@ -290,9 +290,9 @@ class core_news_sef_noid_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->db_Select('news', 'news_id', "news_sef='{$id}'")) 
+		if($sql->select('news', 'news_id', "news_sef='{$id}'"))
 		{
-			$id = $sql->db_Fetch();
+			$id = $sql->fetch();
 			return $id['news_id'];
 		}
 		return false;
@@ -304,9 +304,9 @@ class core_news_sef_noid_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->db_Select('news_category', 'category_id', "category_sef='{$id}'")) 
+		if($sql->select('news_category', 'category_id', "category_sef='{$id}'"))
 		{
-			$id = $sql->db_Fetch();
+			$id = $sql->fetch();
 			return $id['category_id'];
 		}
 		return false;

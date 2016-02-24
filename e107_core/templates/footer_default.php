@@ -187,9 +187,9 @@ if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
-	echo "<div class='e-debug query-notice'><table class='fborder' style='width: 100%;'>
+	echo "<div class='e-debug query-notice'><table class='fborder table table-striped table-bordered' style='width: 100%;'>
 		<tr>
-		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
+		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
 		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
