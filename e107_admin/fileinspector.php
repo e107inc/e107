@@ -202,7 +202,7 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
-		".FC_LAN_3." ".FC_LAN_5.":
+		".LAN_SHOW." ".FC_LAN_5.":
 		</td>
 		<td colspan='2' style='width: 65%'>".$frm->select('core',$coreOpts,$_POST['core'])."	</td>
 		</tr>";
@@ -221,7 +221,7 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
-		".FC_LAN_3." ".FC_LAN_13.":
+		".LAN_SHOW." ".FC_LAN_13.":
 		</td>
 		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='missing' value='1'".(($_POST['missing'] == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
@@ -231,7 +231,7 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
-		".FC_LAN_3." ".FC_LAN_7.":
+		".LAN_SHOW." ".FC_LAN_7.":
 		</td>
 		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
@@ -243,7 +243,7 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
-		".FC_LAN_3." ".FC_LAN_21.":
+		".LAN_SHOW." ".FC_LAN_21.":
 		</td>
 		<td colspan='2' style='width: 65%'>
 		<input type='radio' name='oldcore' value='1'".(($_POST['oldcore'] == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;

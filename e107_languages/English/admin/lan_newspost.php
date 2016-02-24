@@ -150,7 +150,7 @@ define("LAN_NEWS_23", "Choose an image or video for this news item");
 // define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 // define("LAN_NEWS_25", "Auto-Thumbnail size");
 // define("LAN_NEWS_26", "add new upload field");
-define("LAN_NEWS_27", "Summary");
+//define("LAN_NEWS_27", "Summary");
 
 define("LAN_NEWS_28", "Sticky");
 define("LAN_NEWS_29", "Select if news item will be sticky");

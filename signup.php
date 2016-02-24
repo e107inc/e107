@@ -234,7 +234,7 @@ class signup
 			}
 			else
 			{
-				message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+				message_handler("ALERT",LAN_INCORRECT_PASSWORD); // Incorrect Password.
 				return false;
 			}
 		}

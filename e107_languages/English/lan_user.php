@@ -97,7 +97,7 @@ define("LAN_USER_66", "Visits to site since registration");		// LAN_146
 define("LAN_USER_67", "Chatbox posts");							// LAN_147
 define("LAN_USER_68", "Comments posted");						// LAN_148
 define("LAN_USER_69", "Forum posts");							// LAN_149
-define("LAN_USER_70", "Show");									// LAN_419
+//define("LAN_USER_70", "Show");									// LAN_419
 define("LAN_USER_71", "Signature: ");							// LAN_120
 define("LAN_USER_72", "Avatar: ");								// LAN_121
 define("LAN_USER_73", "choice of Content/Mail-lists");

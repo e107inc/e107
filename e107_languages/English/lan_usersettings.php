@@ -88,7 +88,7 @@ define("LAN_USET_18", "User data changed by admin: --ID--, login name: --LOGNAME
 //define("LAN_USET_19", "Custom Title");			Now LAN_USER_74
 define("LAN_USET_20", "You must also change the user's password if you are changing their login name or email address");
 define("LAN_USET_21", "Please validate the changes by re-entering your password: ");
-define("LAN_USET_22", "Invalid password!"); // TODO LAN common?
+//define("LAN_USET_22", "Invalid password!"); // LAN_INCORRECT_PASSWORD
 define("LAN_USET_23", "Leave blank to keep existing password");		// LAN_401
 define("LAN_USET_24", "New password: ");							// LAN_152
 define("LAN_USET_25", "Re-type new password: ");					// LAN_153
