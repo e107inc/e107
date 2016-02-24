@@ -986,7 +986,7 @@ class pageClass
 			}
 			else
 			{
-				e107::getMessage()->addError(LAN_PAGE_7);
+				e107::getMessage()->addError(LAN_INCORRECT_PASSWORD);
 			}
 		}
 		else
