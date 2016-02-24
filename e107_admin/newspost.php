@@ -397,7 +397,7 @@ class news_admin_ui extends e_admin_ui
 		'news_id'				=> array('title' => LAN_ID, 	    'type' => 'text', 	    'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false, 'readParms'=>'link=sef&target=blank'),
  		'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'method', 	'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),
  		'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'text',       'tab'=>0, 'writeParms'=> array('required'=> 1, 'size'=>'block-level'), 'inline'=>true,		'width' => 'auto', 'thclass' => '', 				'class' => null, 		'nosort' => false),
-		'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 	    'tab'=>0, 'writeParms'=>'size=block-level',	'width' => 'auto', 	'thclass' => 'left', 				'class' => 'left', 		'nosort' => false),
+		'news_summary'			=> array('title' => LAN_SUMMARY, 	'type' => 'text', 	    'tab'=>0, 'writeParms'=>'size=block-level',	'width' => 'auto', 	'thclass' => 'left', 				'class' => 'left', 		'nosort' => false),
 		'news_body'			    => array('title' => "", 	        'type' => 'method',     'tab'=>0,  'nolist'=>true, 'writeParms'=>'nolabel=1','data'=>'str',		'width' => 'auto', 	'thclass' => '',  'class' => null, 		'nosort' => false),
 		'news_extended'			=> array('title' => "", 	        'type' => null,     'tab'=>0,  'nolist'=>true, 'writeParms'=>'nolabel=1','data'=>'str',		'width' => 'auto', 	'thclass' => '',  'class' => null, 		'nosort' => false),
 
@@ -1564,7 +1564,7 @@ class admin_newspost
 				'news_id'				=> array('title' => LAN_ID, 	'type' => 'number', 	'data'=> 'int', 'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false),
  				'news_thumbnail'		=> array('title' => NWSLAN_67, 	'type' => 'image', 			'data'=> 'str', 'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParams' => 'path={e_MEDIA}','readonly'=>false),		  		
  				'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
-				'news_summary'			=> array('title' => LAN_NEWS_27, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
+				'news_summary'			=> array('title' => LAN_SUMMARY, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),			
 				
 				'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 				'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'text', 		'data'=> 'str','width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -2804,7 +2804,7 @@ class admin_newspost
 							</tr>
 
 							<tr>
-								<td>".LAN_NEWS_27.":</td>
+								<td>".LAN_SUMMARY.":</td>
 								<td>
 								<input type='text' name='news_summary' value=\"". $tp->post_toForm(vartrue($_POST['news_summary']))."\" class='tbox' style='width:90%' />
 									".
