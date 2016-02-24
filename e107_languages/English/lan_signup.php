@@ -84,7 +84,7 @@ define("LAN_SIGNUP_48", "Username or Email");
 define("LAN_SIGNUP_49", "If you registered with the wrong email address, as well as filling in the box above, type a new email address and your password here:");
 define("LAN_SIGNUP_50", "New Email");
 define("LAN_SIGNUP_51", "Old Password");
-define("LAN_SIGNUP_52", "Incorrect Password");
+//define("LAN_SIGNUP_52", "Incorrect Password");//LAN_INCORRECT_PASSWORD
 define("LAN_SIGNUP_53", "field failed validation test");
 define("LAN_SIGNUP_54", "Click here to fill in your details to register");
 //define("LAN_SIGNUP_55", "That display name is too long. Please choose another");

@@ -370,7 +370,7 @@ elseif (isset($_POST['SaveValidatedInfo']))
 		if ($userMethods->CheckPassword($_POST['currentpassword'], $udata['user_loginname'], $udata['user_password']) === false) // Use old data to validate
 
 		{  // Invalid password
-			echo "<br />".LAN_USET_22."<br />";
+			echo "<br />".LAN_INCORRECT_PASSWORD."<br />";
 			if(!$adminEdit)
 			{
 				require_once (FOOTERF);
