@@ -35,7 +35,7 @@ $bcList = array(
 	"LAN_308"   => "LAN_USER_63", // Real Name
 	"LAN_403"   => "LAN_USER_64", // Site Stats
 	"LAN_404"   => "LAN_USER_65", // Last visit
-	"LAN_419"   => "LAN_USER_70", // Show
+	"LAN_419"   => "LAN_SHOW", // Show
 	"LAN_425"   => "LAN_USER_62" // Send Private Message
 );
 

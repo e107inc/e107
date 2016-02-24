@@ -8,7 +8,7 @@
 
 define("FC_LAN_1", "File Inspector");
 define("FC_LAN_2", "Scan Options");
-define("FC_LAN_3", "Show");
+//define("FC_LAN_3", "Show");
 define("FC_LAN_4", "All");
 define("FC_LAN_5", "Core Files");
 define("FC_LAN_6", "Integrity Fail Only");
