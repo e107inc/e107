@@ -679,7 +679,7 @@ class e_form
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
 			
 		$text .= "\n<div id='{$optioni}' style='display:none;padding:10px' >\n"; //TODO unique id. 
-		
+		$count = 0;
 		if (vartrue($pref['avatar_upload']) && FILE_UPLOADS && vartrue($options['upload']))
 		{
 				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
@@ -691,21 +691,36 @@ class e_form
 				if(count($avFiles) > 0)
 				{
 					$text .= "<div class='divider'><span>OR</span></div>";
+					$count = 1;
 				}
 		}
 		
-				
+
 		foreach($avFiles as $fi)
 		{
 			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname']);	
 			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
-			//TODO javascript CSS selector 		
+			$count++;
+
+
+			//TODO javascript CSS selector
+		}
+		
+		if($count == 0)
+		{
+			$text .= "<div class='row'>";
+			$text .= "<div class='alert alert-info'>No Avatars Available</div>"; //TODO LAN
+
+			if(ADMIN)
+			{
+				$text .= "<div class='alert alert-danger'>Admin-Only Notice: The folder <b>".e_AVATAR_DEFAULT."</b> is empty. Upload some default avatars images to this folder for users to choose avatars from.</div>"; //TODO LAN
+			}
+
+			$text .= "</div>";
 		}
 		
 		
-		
-		
-		$text .= "<br />
+		$text .= "
 		</div>";
 		
 		// Used by usersettings.php right now. 
@@ -717,7 +732,7 @@ class e_form
 		
 		
 		return $text;
-		
+		/*
 		//TODO discuss and FIXME
 		    // Intentionally disable uploadable avatar and photos at this stage
 			if (false && $pref['avatar_upload'] && FILE_UPLOADS)
@@ -730,7 +745,7 @@ class e_form
 			{
 				$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40' />
 				<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
-			}  
+			}  */
 	}
 
 

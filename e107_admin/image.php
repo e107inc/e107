@@ -1910,7 +1910,17 @@ class media_admin_ui extends e_admin_ui
 	}
 
 
+	function renderHelp()
+	{
+		if($this->getAction() == 'avatar')
+		{
+			$text = "Avatar Pre-selection Folder: <br /><code>".e_AVATAR_DEFAULT."</code>"; //TODO LAN
 
+			return array('caption'=>EMESSLAN_TITLE_INFO, 'text'=>$text);
+		}
+
+
+	}
 
 
 
