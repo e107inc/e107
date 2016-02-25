@@ -194,6 +194,8 @@ elseif ($action == 'forums')
 	ORDER BY p.post_datestamp DESC LIMIT {$from}, 10
 	";
 
+	$debug = deftrue('e_DEBUG');
+
 	if (!$sql->gen($qry))
 	{
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8.'</span>';
