@@ -186,8 +186,8 @@ class gallery_shortcodes extends e_shortcode
 		$tmpl 	= e107::getTemplate('gallery','gallery');		
 		$limit 	= vartrue($parm['limit'], 6);
 		
-		$list = e107::getMedia()->getImages('gallery_'.$cat.'|gallery_image_'.$cat, 0, $limit);
-	
+		$list = e107::getMedia()->getImages('gallery_image|gallery_'.$cat.'|gallery_image_'.$cat, 0, $limit);
+
 		if(count($list) < 1 && vartrue($parm['placeholder']))
 		{
 			$list = array();
@@ -198,7 +198,8 @@ class gallery_shortcodes extends e_shortcode
 			}	
 		}
 		
-		//NOTE: Using tablerender() allows the theme developer to set the number of columns etc using col-xx-xx 
+		//NOTE: Using tablerender() allows the theme developer to set the number of columns etc using col-xx-xx
+		$text = '';
 		foreach($list as $val)
 		{
 			$this->var = $val;
@@ -226,7 +227,7 @@ class gallery_shortcodes extends e_shortcode
 		$amount 			= $parms[1] ? intval($parms[1]) : 3; // vartrue(e107::getPlugPref('gallery','slideshow_perslide'),3);
 		$parms 				= $parms[2];
 		$limit 				= (integer) vartrue($parms['limit'], 16);
-		$list 				= e107::getMedia()->getImages('gallery_'.$this->sliderCat.'|gallery_image_'.$this->sliderCat,0,$limit);
+		$list 				= e107::getMedia()->getImages('gallery_image|gallery_'.$this->sliderCat.'|gallery_image_'.$this->sliderCat,0,$limit);
 		$tmpl 				= e107::getTemplate('gallery','gallery');
 		$tmpl				= array_change_key_case($tmpl); // change template key to lowercase (BC fix)
 		$tmpl_key			= vartrue($parms['template'],'slideshow_slide_item');
@@ -235,6 +236,7 @@ class gallery_shortcodes extends e_shortcode
 		$cat 				= $catList['gallery_'.$this->sliderCat];
 
 		$count = 1;
+		$inner = '';
 		foreach($list as $row)
 		{
 			$this->setVars($row)
@@ -258,11 +260,13 @@ class gallery_shortcodes extends e_shortcode
 		$inner .= ($count != 1) ? "</div><!-- END SLIDES -->" : "";
 		return $inner;
 	}
-	
+
+
+
 	function sc_gallery_jumper($parm)
 	{
 		// echo "SlideCount=".$this->slideCount; 
-		if($this->slideCount ==1 ){ return "gallery-jumper must be loaded after Gallery-Slides"; }
+		if($this->slideCount ==1 && deftrue('E107_DBG_BASIC')){ return "gallery-jumper must be loaded after Gallery-Slides"; }
 			
 		$text = '';
 		for($i=1; $i < ($this->slideCount); $i++)
