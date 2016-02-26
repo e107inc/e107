@@ -97,6 +97,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           <p class="lead">{NEWSSUMMARY}</p>
           {NEWSVIDEO: item=1}
           {NEWSBODY}
+          {EXTENDED}
 		  <hr>
 			<div class="options">
 			<div class="btn-group hidden-print">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>

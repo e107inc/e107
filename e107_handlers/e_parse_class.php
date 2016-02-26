@@ -3339,10 +3339,12 @@ class e_parser
 		$tp 		= e107::getParser();
 		$width 		= $tp->thumbWidth;
 		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
-		
+		$linkStart  = '';
+		$linkEnd    =  '';
 		
 		if(!isset($userData['user_image']) && USERID)
 		{
+			$userData['user_id']    = USERID;
 			$userData['user_image']	= USERIMAGE;
 			$userData['user_name']	= USERNAME; 
 		}
@@ -3379,6 +3381,12 @@ class e_parser
 		{
 			$img = $genericImg;
 		}
+
+		if(($img == $genericImg) && ($userData['user_id'] == USERID))
+		{
+			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit',$userData)."'>";
+			$linkEnd = "</a>";
+		}
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		$shape = (vartrue($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
@@ -3386,7 +3394,9 @@ class e_parser
 
 		$heightInsert = empty($height) ? '' : "height='".$height."'";
 
-		$text = "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' ".$heightInsert." />";
+		$text = $linkStart;
+		$text .= "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' ".$heightInsert." />";
+		$text .= $linkEnd;
 	//	return $img;
 		return $text;
 		

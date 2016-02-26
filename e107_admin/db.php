@@ -1194,7 +1194,7 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." ".LAN_PREFS."</th>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." &nbsp;".LAN_PREFS."</th>
 					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
@@ -1202,6 +1202,7 @@ class system_tools
 				<tbody>
 
 				";
+				//TODO Add support for plugin Prefs.
 
 					$pref_types  = e107::getConfig()->aliases;
 					unset($pref_types['core_old'], $pref_types['core_backup']);
@@ -1230,7 +1231,7 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_tables').DBLAN_97."</th>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_tables')." &nbsp;".DBLAN_97."</th>
 					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
@@ -1630,7 +1631,7 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
  */
 function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 {
-	$xml = e107::getSingleton('xmlClass');
+	$xml = e107::getXml();
 	$tp = e107::getParser();
 	$mes = e107::getMessage();
 

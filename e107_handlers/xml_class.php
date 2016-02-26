@@ -1011,7 +1011,7 @@ class xmlClass
 			foreach($tables as $tbl)
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
-				e107::getDB()->db_Select($eTable, "*");
+				e107::getDB()->select($eTable, "*");
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 				while($row = e107::getDB()-> db_Fetch())
 				{

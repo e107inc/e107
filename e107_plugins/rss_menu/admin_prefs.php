@@ -93,10 +93,11 @@ class rss_ui extends e_admin_ui
 		protected $pid				= 'rss_id';
 		protected $perPage 			= 10; 
 			
-		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => '', 'data' => '', 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		protected $fields 		= array (
+			'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => false, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'rss_id'          =>   array ( 'title' => LAN_ID,         'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_name'        =>   array ( 'title' => LAN_TITLE,      'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_path'        =>   array ( 'title' => 'Plugin-Dir',   'type' => 'text', 'data' => 'int', 'readonly'=>1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_name'        =>   array ( 'title' => LAN_TITLE,      'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_path'        =>   array ( 'title' => 'Plugin-Dir',   'type' => 'text', 'data' => 'str', 'readonly'=>1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_url'         =>   array ( 'title' => LAN_URL,        'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_topicid'     =>   array ( 'title' => 'Topic id',     'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
