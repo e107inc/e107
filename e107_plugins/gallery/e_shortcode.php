@@ -138,17 +138,19 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_cat_thumb($parm='')
 	{
 		$parms = eHelper::scParams($parm);
-		
+		$tp 				= e107::getParser();
+    
 		$w 			= vartrue($parms['w']) ? $parms['w'] : 300; // 260;
 		$h 			= vartrue($parms['h']) ? $parms['h'] : 200; // 180;	
-		$att 		= 'aw='.$w.'&ah='.$h.'&x=1'; // 'aw=190&ah=150';
-		
+
+		$caption    = $tp->toAttribute($this->var['media_cat_title']) ;   
+		$att        = array('w'=>$w, 'h'=>$h, 'class'=>$class, 'alt'=>$caption, 'x'=>1, 'crop'=>1);		
 		$url = e107::getUrl()->create('gallery/index/list', $this->var);
 		
 		if(isset($parms['thumbsrc'])) return e107::getParser()->thumbUrl($this->var['media_cat_image'],$att);		
 		
-		$text = "<a class='thumbnail' href='".$url."'>";
-		$text .= "<img class='img-responsive' data-src='holder.js/".$w."x".$h."' src='".e107::getParser()->thumbUrl($this->var['media_cat_image'],$att)."' alt='' />";
+		$text = "<a class='thumbnail' href='".$url."' >";
+		$text .= $tp->toImage($this->var['media_cat_image'],$att);
 		$text .= "</a>";
 		return $text;		
 	}
