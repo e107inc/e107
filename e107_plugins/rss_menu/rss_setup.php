@@ -25,9 +25,20 @@ class rss_menu_setup
 		$mes = e107::getMessage();
 
 		$insert = array(
-			array('rss_id' => 0,'rss_name' => 'News','rss_url' => 'news','rss_topicid' => '','rss_path' => 'news','rss_text' => 'The rss feed of the news','rss_datestamp' => time(),'rss_class' => '0','rss_limit' => '9')
+			'rss_id'        => 0,
+			'rss_name'      => 'News',
+			'rss_url'       => 'news',
+			'rss_topicid'   => '',
+			'rss_path'      => 'news',
+			'rss_text'      => 'The rss feed of the news',
+			'rss_datestamp' => time(),
+			'rss_class'     => '0',
+			'rss_limit'     => '9'
 		);
-		
+
+
+	//	$mes->addInfo(print_a($insert,true));
+
 		$status = ($sql->insert('rss', $insert)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes->add("Adding Default table data to table: rss",$status); //TODO Generic LAN "LAN_DEFAULT_TABLE_DATA"
 
