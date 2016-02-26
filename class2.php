@@ -1264,26 +1264,28 @@ if(!isset($_E107['no_menus']))
 }
 
 // here we USE the theme
-if(e_ADMIN_AREA)
+if(!isset($_E107['no_theme']))
 {
-	if(file_exists(THEME.'admin_theme.php')&&(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY.'menus.php?configure')===FALSE)) // no admin theme when previewing.
+	if(e_ADMIN_AREA)
 	{
-		require_once (THEME.'admin_theme.php');
+		if(file_exists(THEME.'admin_theme.php')&&(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY.'menus.php?configure')===FALSE)) // no admin theme when previewing.
+		{
+			require_once (THEME.'admin_theme.php');
+		}
+		else
+		{
+			require_once (THEME.'theme.php');
+		}
 	}
 	else
 	{
 		require_once (THEME.'theme.php');
+		if(isset($SC_WRAPPER))
+		{
+			e107::scStyle($SC_WRAPPER);
+		}
 	}
 }
-else
-{
-	require_once (THEME.'theme.php');
-	if(isset($SC_WRAPPER))
-	{
-		e107::scStyle($SC_WRAPPER);
-	}
-}
-
 
 //----------------------------
 //	Load shortcode handler
