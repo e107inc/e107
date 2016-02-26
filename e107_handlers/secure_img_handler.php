@@ -16,7 +16,6 @@ class secure_image
 	protected $HANDLERS_DIRECTORY;
 	protected $IMAGES_DIRECTORY;
 	protected $FONTS_DIRECTORY;
-	protected $MYSQL_INFO;
 	protected $THIS_DIR;
 	protected $BASE_DIR;
 	public $FONT_COLOR = "90,90,90";
@@ -32,73 +31,16 @@ class secure_image
  * */
 		list($usec, $sec) = explode(" ", microtime());
 		$this->random_number = str_replace(".", "", $sec.$usec);
+        $this->BASE_DIR             = e_BASE;
 
+        $CORE_DIRECTORY             = e107::getFolder('CORE');
+		$this->HANDLERS_DIRECTORY 	= e107::getFolder('HANDLERS');
+		$this->FONTS_DIRECTORY 		= !empty($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
+	    $this->IMAGES_DIRECTORY     =  e107::getFolder('IMAGES');
 
-        if(class_exists('e107'))
-        {
-            $this->BASE_DIR             = e_BASE;
-
-	        $CORE_DIRECTORY             = e107::getFolder('CORE');
-            $this->HANDLERS_DIRECTORY 	= e107::getFolder('HANDLERS');
-			$this->FONTS_DIRECTORY 		= !empty($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
-		//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
-	        $this->IMAGES_DIRECTORY     =  e107::getFolder('IMAGES');
-			$this->MYSQL_INFO = array(
-				'mySQLdefaultdb' => e107::getMySQLConfig('defaultdb'),
-				'mySQLserver'    => e107::getMySQLConfig('server'),
-				'mySQLuser'      => e107::getMySQLConfig('user'),
-				'mySQLpassword'  => e107::getMySQLConfig('password'),
-				'mySQLprefix'    => e107::getMySQLConfig('prefix')
-			);
-
-        }
-		else
-		{
-	
-
-
-			$imgp               = dirname(__FILE__);
-			if (substr($imgp,-1,1) != DIRECTORY_SEPARATOR) $imgp .= DIRECTORY_SEPARATOR;
-			$imgp = str_replace('/', DIRECTORY_SEPARATOR, $imgp);
-
-			$HANDLERS_DIRECTORY = '';
-			$IMAGES_DIRECTORY = '';
-			$mySQLdefaultdb = '';
-			$mySQLuser = '';
-			$mySQLpassword = '';
-			$mySQLprefix= '';
-
-
-			@include($imgp.'..'.DIRECTORY_SEPARATOR.'e107_config.php');
-			if(!isset($mySQLserver))
-			{
-				if(defined('e_DEBUG'))
-				{
-					echo "FAILED TO LOAD e107_config.php in secure_img_handler.php";
-				}
-				exit;
-			}
-			// FIX - new prefered configuration format - $E107_CONFIG
-			if(isset($E107_CONFIG))
-			{
-				extract($E107_CONFIG);
-			}
-
-
-			$this->THIS_DIR 	= $imgp;
-			$this->BASE_DIR 	= realpath($imgp.'..'.DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-			$this->HANDLERS_DIRECTORY 	= $HANDLERS_DIRECTORY;
-			$this->FONTS_DIRECTORY 		= isset($CORE_DIRECTORY) ? $CORE_DIRECTORY."fonts/" : "e107_core/fonts/";
-		//	$this->IMAGES_DIRECTORY 	= str_replace('/', DIRECTORY_SEPARATOR, $IMAGES_DIRECTORY);
-	        $this->IMAGES_DIRECTORY     =  $IMAGES_DIRECTORY;
-			$this->MYSQL_INFO = array(
-				'mySQLdefaultdb' => $mySQLdefaultdb,
-				'mySQLserver'   => $mySQLserver,
-				'mySQLuser'     => $mySQLuser,
-				'mySQLpassword' => $mySQLpassword,
-				'mySQLprefix'    => $mySQLprefix);
-		}
 	}
+
+
 
 	function create_code()
 	{
@@ -108,7 +50,7 @@ class secure_image
 		}
 
 		$pref = e107::getPref();
-		$sql = e107::getDb();
+	//	$sql = e107::getDb();
 
 		mt_srand ((double)microtime() * 1000000);
 		$maxran = 1000000;
@@ -117,24 +59,37 @@ class secure_image
 		$rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey));
 		$code = substr($rcode, 2, 6);
 		$recnum = $this->random_number;
-		$del_time = time()+1200;
-		$sql->insert("tmp", "'{$recnum}',{$del_time},'{$code}'");
+	//	$del_time = time()+1200;
+	//	$sql->insert("tmp", "'{$recnum}',{$del_time},'{$code}'");
+
+		$_SESSION['secure_img'][$recnum] = $code;
+
 		return $recnum;
 	}
 
 	/* Return TRUE if code is valid, otherwise return FALSE 
 	 * 
 	 */
-	function verify_code($rec_num, $checkstr)
+	function verify_code($recnum, $checkstr)
 	{
 		if ($user_func = e107::getOverride()->check($this,'verify_code'))
 		{
-	 		return call_user_func($user_func,$rec_num,$checkstr);
+	 		return call_user_func($user_func,$recnum,$checkstr);
 		}
 		
-		$sql = e107::getDb();
-		$tp = e107::getParser();
+	//	$sql = e107::getDb();
+	//	$tp = e107::getParser();
 
+		if(!empty($_SESSION['secure_img'][$recnum]) && (intval($_SESSION['secure_img'][$recnum]) == $checkstr))
+		{
+			unset($_SESSION['secure_img']);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+/*
 		if ($sql->select("tmp", "tmp_info", "tmp_ip = '".$tp -> toDB($rec_num)."'")) {
 			$row = $sql->fetch();
 			$sql->delete("tmp", "tmp_ip = '".$tp -> toDB($rec_num)."'");
@@ -142,13 +97,18 @@ class secure_image
 			$code = intval($row['tmp_info']);
 			return ($checkstr == $code);
 		}
-		return FALSE;
+		return FALSE;*/
 	}
 	
 	
 	
 	// Return an Error message (true) if check fails, otherwise return false. 
-	function invalidCode($rec_num,$checkstr)
+	/**
+	 * @param $rec_num
+	 * @param $checkstr
+	 * @return bool|mixed|string
+	 */
+	function invalidCode($rec_num, $checkstr)
 	{
 		if ($user_func = e107::getOverride()->check($this,'invalidCode'))
 		{
@@ -169,6 +129,9 @@ class secure_image
 	
 	
 	//XXX Discuss - Add more posibilities for themers? e_CAPTCHA_BGIMAGE, e_CAPTCH_WIDTH, e_CAPTCHA_HEIGHT?
+	/**
+	 * @return mixed|string
+	 */
 	function r_image()
 	{
 		if ($user_func = e107::getOverride()->check($this,'r_image'))
@@ -186,7 +149,7 @@ class secure_image
 		}
 		
 		$code = $this->create_code();
-		return "<img src='".e_HTTP.$this->IMAGES_DIRECTORY."secimg.php?id={$code}&amp;clr={$color}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
+		return "<img src='".e_IMAGE_ABS."secimg.php?id={$code}&amp;clr={$color}' class='icon secure-image' alt='Missing Code' style='max-width:100%' />";
 	}
 	
 	
@@ -219,10 +182,11 @@ class secure_image
 
 		return implode(",", $rgb); 
 	}
-	
-	
-	
 
+
+	/**
+	 * @return mixed|string
+	 */
 	function renderInput()
 	{
 		if ($user_func = e107::getOverride()->check($this,'renderInput'))
@@ -231,8 +195,10 @@ class secure_image
 		}
 			
 		$frm = e107::getForm();	
-		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array("size"=>20,"title"=> LAN_ENTER_CODE,'required'=>1, 'placeholder'=>LAN_ENTER_CODE));
+		return $frm->hidden("rand_num", $this->random_number).$frm->text("code_verify", "", 20, array( "size"=>20, 'required'=>1, 'placeholder'=>LAN_ENTER_CODE));
 	}
+
+
 
 	/**
 	 * @return mixed|string
@@ -262,10 +228,8 @@ class secure_image
 		}
 		
 	//	echo "COLOR: ".$this->FONT_COLOR;
-		
-		require_once($this->BASE_DIR.$this->HANDLERS_DIRECTORY."override_class.php");
-		$over = new override;
-		
+		$over = e107::getOverride();
+
 		if ($user_func = $over->check($this,'render'))
 		{
 			
@@ -280,18 +244,30 @@ class secure_image
 
 		/** @FIXME - needs to use mysql class. */
 
-		@mysql_connect($this->MYSQL_INFO['mySQLserver'], $this->MYSQL_INFO['mySQLuser'],  $this->MYSQL_INFO['mySQLpassword']) || die('db connection failed');
-		@mysql_select_db($this->MYSQL_INFO['mySQLdefaultdb']);
+	//	@mysql_connect($this->MYSQL_INFO['mySQLserver'], $this->MYSQL_INFO['mySQLuser'],  $this->MYSQL_INFO['mySQLpassword']) || die('db connection failed');
+	//	@mysql_select_db($this->MYSQL_INFO['mySQLdefaultdb']);
 
-		$result = mysql_query("SELECT tmp_info FROM {$this->MYSQL_INFO['mySQLprefix']}tmp WHERE tmp_ip = '{$recnum}'");
-		if(!$result || !($row = mysql_fetch_array($result, MYSQL_ASSOC)))
+	//	$result = mysql_query("SELECT tmp_info FROM {$this->MYSQL_INFO['mySQLprefix']}tmp WHERE tmp_ip = '{$recnum}'");
+	//	if(!$result || !($row = mysql_fetch_array($result, MYSQL_ASSOC)))
 		{
 			// echo "Render Failed";
 			// echo "SELECT tmp_info FROM {$this->MYSQL_INFO['prefix']}tmp WHERE tmp_ip = '{$recnum}'";
+	//		exit;
+		}
+
+	//	$code = intval($row['tmp_info']); // new value
+
+
+		if(isset($_SESSION['secure_img'][$recnum]))
+		{
+			$code = $_SESSION['secure_img'][$recnum];
+		}
+		else
+		{
+			echo "Render Failed";
 			exit;
 		}
 
-		$code = intval($row['tmp_info']); // new value
 
 		$type = "none";
 
@@ -305,7 +281,7 @@ class secure_image
 			}
 		}
 
-		$path 		= $this->BASE_DIR.$this->IMAGES_DIRECTORY;
+		$path 		= e_IMAGE;
 		$fontpath 	= $this->BASE_DIR.$this->IMAGES_DIRECTORY;
 		$secureimg 	= array();
 
