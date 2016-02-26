@@ -2419,7 +2419,10 @@ class e107plugin
 			$setup_file = e_PLUGIN.$path.'/'.str_replace("_menu","",$path).'_setup.php';
 		}
 
-		e107::getMessage()->addDebug("Checking for SetUp File: ".$setup_file);
+		if(deftrue('E107_DBG_INCLUDES'))
+		{
+			e107::getMessage()->addDebug("Checking for SetUp File: ".$setup_file);
+		}
 
 		if (is_readable($setup_file))
 		{
