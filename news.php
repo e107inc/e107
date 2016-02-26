@@ -889,17 +889,23 @@ else
 	}
 
 	$i= 1;
+
+	$socialInstalled = e107::isInstalled('social');
+
 	while(isset($newsAr[$i]) && $i <= $interval) 
 	{
 		$news = $newsAr[$i];
 		
-		// Set the Values for the social shortcode usage. 
-		$socialArray = array('url'=>e107::getUrl()->create('news/view/item', $news, 'full=1'), 'title'=>$tp->toText($news['news_title']), 'tags'=>$news['news_meta_keywords']);
-		$socialObj = e107::getScBatch('social');
-
-		if(is_object($socialObj))
+		// Set the Values for the social shortcode usage.
+		if($socialInstalled == true)
 		{
-			$socialObj->setVars($socialArray);
+			$socialArray = array('url'=>e107::getUrl()->create('news/view/item', $news, 'full=1'), 'title'=>$tp->toText($news['news_title']), 'tags'=>$news['news_meta_keywords']);
+			$socialObj = e107::getScBatch('social');
+
+			if(is_object($socialObj))
+			{
+				$socialObj->setVars($socialArray);
+			}
 		}
 
 		if(function_exists("news_style")) // BC
