@@ -26,6 +26,8 @@
 $_E107['no_online'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_menus'] = true;
+$_E107['no_maintenance'] = true;
+$_E107['no_theme'] = true;
 require_once("../class2.php");
 
 /*
@@ -41,7 +43,7 @@ if(!isset($mySQLserver))
 }*/
 
 
-require_once(realpath(e_BASE.$HANDLERS_DIRECTORY.DIRECTORY_SEPARATOR."secure_img_handler.php"));
+// require_once(realpath(e_BASE.$HANDLERS_DIRECTORY.DIRECTORY_SEPARATOR."secure_img_handler.php"));
 
 require_once(e_HANDLER."secure_img_handler.php");
 

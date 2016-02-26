@@ -49,18 +49,19 @@ class secure_image
 	 		return call_user_func($user_func);
 		}
 
-		$pref = e107::getPref();
+	//	$pref = e107::getPref();
 	//	$sql = e107::getDb();
 
-		mt_srand ((double)microtime() * 1000000);
-		$maxran = 1000000;
-		$rand_num = mt_rand(0, $maxran);
-		$datekey = date("r");
-		$rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey));
-		$code = substr($rcode, 2, 6);
+	//	mt_srand ((double)microtime() * 1000000);
+	//	$maxran = 1000000;
+	//	$rand_num = mt_rand(0, $maxran);
+	//	$datekey = date("r");
+	//	$rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey));
+	//	$code = substr($rcode, 2, 6);
 		$recnum = $this->random_number;
 	//	$del_time = time()+1200;
-	//	$sql->insert("tmp", "'{$recnum}',{$del_time},'{$code}'");
+
+		$code =e107::getUserSession()->generateRandomString('*****');
 
 		$_SESSION['secure_img'][$recnum] = $code;
 
