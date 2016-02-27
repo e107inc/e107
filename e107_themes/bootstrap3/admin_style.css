@@ -788,24 +788,24 @@ tr.first a, th a							{ color: rgb(102, 102, 102); }
 /* Dark Drop-Down Menus */
 
 
-ul.col-selection 				{ padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+ul.col-selection 				            { padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:310px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
 
 
 ul.col-selection 							{ text-align:left;  overflow:visible; z-index:101;  background-color: rgb(23, 23, 23); }
 ul.col-selection > li a 					{ border-top: 1px solid rgb(51, 51, 51);  border-bottom: 1px solid rgb(32, 32, 32); }
-ul.col-selection > li a 					{ padding: 3px 0px 0px 25px; color: rgb(153, 153, 153); }
-ul.col-selection > li a label 				{ padding-left:0px; display:block; line-height:25px; }
+ul.col-selection > li a 					{ padding: 3px 0 0 5px; color: rgb(153, 153, 153); }
+ul.col-selection > li a label 				{ padding-left:0; display:block; line-height:25px; }
 ul.col-selection > li a:hover 				{ color: #FFF; background-image: linear-gradient(to bottom, #08C, #0077B3);}
-
-
 ul.col-selection 							{ background-color: rgb(39, 39, 39);}
-ul.scroll-menu 								{  max-height:350px; overflow:auto;    }
+ul.col-selection ul.nav > li                  { padding:0 }
+ul.scroll-menu 								{ max-height:350px; overflow:auto;    }
 
 
 .nav ul li ul.dropdown-menu 				{ border-left:1px solid rgb(51, 51, 51); background-color: rgb(39, 39, 39); }
 .nav ul li ul.dropdown-menu > li a 			{ border-top: 1px solid rgb(51, 51, 51); border-bottom: 1px solid rgb(32, 32, 32); }
 .nav ul li ul.dropdown-menu > li a 			{ padding-top:5px; padding-bottom:5px; color: rgb(200,200,200); }
 .nav ul li ul.dropdown-menu > li a:hover 	{ color: rgb(255, 255, 255); }
+
 
 .navbar .btn-navbar{ margin-top:12px }
 
