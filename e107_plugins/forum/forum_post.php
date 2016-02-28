@@ -345,7 +345,7 @@ class forum_post_handler
 	function getTemplate($type = 'post')
 	{
 
-		global $FORUMPOST;
+		global $FORUMPOST, $subjectbox, $userbox, $poll_form, $fileattach, $fileattach_alert; // needed for BC.
 
 		$FORUM_POST_TEMPLATE        = array();
 		$FORUM_POSTED_TEMPLATE      = array();
