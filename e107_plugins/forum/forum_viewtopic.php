@@ -296,8 +296,14 @@ if ($forum->prefs->get('track') && USER)
 
 }
 
+$modUser = array();
+foreach ( $forum->modArray as $user)
+{
+	$modUser[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
+}
 
-$tVars->MODERATORS = LAN_FORUM_2003.": ". implode(', ', $forum->modArray);
+$tVars->MODERATORS = LAN_FORUM_2003.": ". implode(', ', $modUser);
+unset($modUser);
 
 $tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_FORUM_2004 : '');
 
