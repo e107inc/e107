@@ -870,7 +870,7 @@ class e_menuManager {
 			}
 		}
 
-		$check = $sql->update("menus", "menu_parms='".$parms."' WHERE menu_id=".$id."");
+		$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
 
 		if($check)
 		{
@@ -881,6 +881,7 @@ class e_menuManager {
 		}
 		elseif(false === $check)
 		{
+
 			return array('msg'=>LAN_UPDATED_FAILED,'error'=>true);
             
 		}
