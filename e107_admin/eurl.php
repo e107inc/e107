@@ -37,10 +37,11 @@ class eurl_admin extends e_admin_dispatcher
 	);
 
 	protected $adminMenu = array(
-		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
+		'main/config'		=> array('caption'=> LAN_EURL_MENU_PROFILES, 'perm' => 'L'),
 		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
+		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
-		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_REDIRECTS, 'perm' => 'L'),
+
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
 	);
 
