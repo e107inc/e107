@@ -181,6 +181,11 @@ class social_ui extends e_admin_ui
 					"enabled" => true,
 					"keys"    => array ( "id" => "", "secret" => "" )
 				),
+				
+				"Steam" => array (
+					"enabled" => true,
+					"keys"	 => array ( "key" => "" )
+				),
 
 				/*
 				"MySpace" => array (
@@ -212,6 +217,7 @@ class social_ui extends e_admin_ui
 				"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
 				"Foursquare"	=> "https://www.foursquare.com/oauth/",
 				"Github"		=> "https://github.com/settings/applications/new",
+				"Steam"			=> "http://steamcommunity.com/dev/apikey",
 			);
 
 

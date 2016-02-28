@@ -63,10 +63,15 @@ return
 				"enabled" => #FOURSQUARE_ADAPTER_STATUS#,
 				"keys"    => array ( "id" => "#FOURSQUARE_APPLICATION_APP_ID#", "secret" => "#FOURSQUARE_APPLICATION_SECRET#" ) 
 			),
+            
+            "Steam" => array (
+            	"enabled" => #STEAM_ADAPTER_STATUS#,
+                "keys"	  => array ( "key" => "#STEAM_APPLICATION_KEY#" )
+            ),
 		),
 
 		// if you want to enable logging, set 'debug_mode' to true  then provide a writable file by the web server on "debug_file"
-		"debug_mode" => false,
+		"debug_mode" => true,
 
-		"debug_file" => ""
+		"debug_file" => "debug_log"
 	);
