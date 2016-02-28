@@ -738,7 +738,11 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 		//	$text .=  //  . " log files have been found. Click the button below to process these files.</p>";
 			$mes->addWarning($tp->lanVars(ADSTAT_LAN_85, $_SESSION['stats_log_files_total'], true));
-			$text .= $frm->progressBar('rebuild-progress',0,array("btn-label"=>"Rebuild Stats", 'url'=>e_REQUEST_URI));
+
+			if(!empty($_SESSION['stats_log_files_total']))
+			{
+				$text .= $frm->progressBar('rebuild-progress',0,array("btn-label"=>"Rebuild Stats", 'url'=>e_REQUEST_URI));
+			}
 
 			$text .= $frm->close();
 			return $text;
@@ -1136,8 +1140,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 	}
 
-if(e_DEBUG)
-{
+
 	new log_adminArea();
 
 	require_once(e_ADMIN."auth.php");
@@ -1145,8 +1148,8 @@ if(e_DEBUG)
 
 	require_once(e_ADMIN."footer.php");
 	exit;
-}
 
+/*
 
 require_once(e_ADMIN.'auth.php');
 
@@ -1154,7 +1157,7 @@ require_once(e_HANDLER.'userclass_class.php');
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-
+*/
 
 
 if (e_QUERY) 
