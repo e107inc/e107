@@ -464,8 +464,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		// e_HTTP.'user.php?id.'.$this->postInfo['post_user']
 		$text = '<div class="btn-group btn-block ">
 
-    <a class="btn btn-default btn-sm col-sm-10 btn-small" href="'.$userUrl.'">'.$username.'</a>
-    <button class="btn btn-default btn-sm col-sm-2 btn-small dropdown-toggle" data-toggle="dropdown">
+    <a class="btn btn-default btn-sm col-sm-9  btn-small" href="'.$userUrl.'">'.$username.'</a>
+    <button class="btn btn-default btn-sm col-sm-3  btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu left">

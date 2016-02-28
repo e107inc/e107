@@ -338,9 +338,9 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 													</div>
 
 												{NEWFLAG} {ANON_IP}</div>
-												<div class='col-xs-4 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
 												<div class='col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
-												<div class='col-xs-3 col-sm-1 span1 right text-right'>{POSTOPTIONS}</div>
+												<div class='col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
 										
 										</div>
 
