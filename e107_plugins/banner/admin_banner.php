@@ -407,6 +407,7 @@ class banner_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write': // Edit Page
+				$text = '';
 				if (count($this->clients)) 
 				{
 					$text = $frm->select('banner_clientname_sel',$this->clients, $curVal,'', LAN_SELECT);
@@ -473,7 +474,7 @@ class banner_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return  array();
 			break;
 		}
 	}
@@ -515,7 +516,7 @@ class banner_form_ui extends e_admin_form_ui
 	{
 		if($mode != 'read')
 		{
-			return; 
+			return null;
 		}
 		
 		$frm = e107::getForm();		
@@ -526,8 +527,8 @@ class banner_form_ui extends e_admin_form_ui
 		$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
 		
 		return $clickpercentage; 
-		$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
-		$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
+		//$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
+	//	$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 	}	
 	
 	
