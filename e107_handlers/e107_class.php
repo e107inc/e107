@@ -3211,14 +3211,26 @@ class e107
 		{
 			if(($key == "QUERY_STRING") && (
 				strpos(strtolower($input),"../../")!==FALSE 
-				|| strpos(strtolower($input),"=http")!==FALSE 
-				|| strpos(strtolower($input),strtolower("http%3A%2F%2F"))!==FALSE
-				|| strpos(strtolower($input),"php:")!==FALSE  
+				|| strpos(strtolower($input),"php:")!==FALSE
 				|| strpos(strtolower($input),"data:")!==FALSE
 				|| strpos(strtolower($input),strtolower("%3Cscript"))!==FALSE
 				))
 			{
 	
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
+				exit();
+			}
+
+			if(($key == "QUERY_STRING") && empty($_GET['hauth.done']) && ( // exception for hybridAuth.
+				strpos(strtolower($input),"=http")!==FALSE
+				|| strpos(strtolower($input),strtolower("http%3A%2F%2F"))!==FALSE
+				))
+			{
+
 				header('HTTP/1.0 400 Bad Request', true, 400);
 				if(deftrue('e_DEBUG'))
 				{
