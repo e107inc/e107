@@ -7,7 +7,7 @@
 		<link url='admin_config.php' description='Configure gSitemap' icon='images/icon.png' iconSmall='images/icon_16.png' primary='true' >LAN_CONFIGURE</link>		
 	</adminLinks>
 	<siteLinks>
-		<link name="" url="gsitemap.php?show"  lan="GSLAN_Name">Sitemap</link>
+		<link name="" url="gsitemap.php?show" sef='index' lan="GSLAN_Name">Sitemap</link>
 	</siteLinks>
 	<pluginPrefs>
 	</pluginPrefs>

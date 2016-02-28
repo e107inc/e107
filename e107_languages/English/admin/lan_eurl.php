@@ -55,11 +55,11 @@ define("LAN_EURL_MODREWR_DESCR", "Removes entry script file name (index.php/) fr
 
 // navigation
 define("LAN_EURL_MENU", "Site URLs");
-define("LAN_EURL_MENU_CONFIG", "URL Profiles");
-define("LAN_EURL_MENU_ALIASES", "Aliases");
+define("LAN_EURL_MENU_CONFIG", "Configurations");
+define("LAN_EURL_MENU_ALIASES", "Profile Aliases");
 define("LAN_EURL_MENU_SETTINGS", "Settings");
 define("LAN_EURL_MENU_HELP", "Help");
-define("LAN_EURL_MENU_REDIRECTS", "Redirects");
+define("LAN_EURL_MENU_PROFILES", "Profiles");
 
 define("LAN_EURL_UC", "Under Construction");
 
