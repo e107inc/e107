@@ -2001,11 +2001,13 @@ class e107forum
 
 
 			$dfltsep = ' :: ';
-			$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a>".$dfltsep."<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_PLUGIN_FORUM_NAME."</a>".$dfltsep;
+			$BREADCRUMB = "<a class='forumlink' href='".e_HTTP."index.php'>".SITENAME."</a>".$dfltsep.
+			"<a class='forumlink' href='". e107::url('forum','index')."'>".LAN_PLUGIN_FORUM_NAME."</a>".$dfltsep;
+
 			if($forumInfo['sub_parent'])
 			{
 				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
+				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN_ABS."forum/forum_viewforum.php?{$forumInfo['forum_sub']}'>{$forum_sub_parent}</a>".$dfltsep;
 			}
 
 			$tmpFname = $forumInfo['forum_name'];
@@ -2013,7 +2015,7 @@ class e107forum
 
 			if ($forum_href)
 			{
-				$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forumInfo['forum_id']}'>".$tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
+				$BREADCRUMB .= "<a class='forumlink' href='".e107::url('forum', 'forum', $forumInfo)."'>".$tp->toHTML($tmpFname, TRUE, 'no_hook,emotes_off')."</a>";
 			} else
 			{
 				$BREADCRUMB .= $tmpFname;
