@@ -188,16 +188,15 @@ class social_ui extends e_admin_ui
 					"keys"    => array ( "key" => "", "secret" => "" )
 				),
 				*/
+				"Steam" => array (
+					"enabled" => true,
+					"keys"	 => array ( "key" => "" )
+				),
 
 				"Twitter" => array (
 					"enabled" => true,
 					"keys"    => array ( "key" => "", "secret" => "" )
 				),
-
-
-
-
-
 
 
 
@@ -212,6 +211,7 @@ class social_ui extends e_admin_ui
 				"LinkedIn"		=> "https://www.linkedin.com/secure/developer",
 				"Foursquare"	=> "https://www.foursquare.com/oauth/",
 				"Github"		=> "https://github.com/settings/applications/new",
+				"Steam"			=> "http://steamcommunity.com/dev/apikey",
 			);
 
 
@@ -313,7 +313,7 @@ class social_ui extends e_admin_ui
 			foreach($this->social_logins as $prov=>$val)
 			{
 
-				$label = varset($this->social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$social_external[$prov]."'>".$prov."</a>" : $prov;
+				$label = varset($this->social_external[$prov]) ? "<a class='e-tip' rel='external' title='Get a key from the provider' href='".$this->social_external[$prov]."'>".$prov."</a>" : $prov;
 				$radio_label = strtolower($prov);
 				$text .= "
 					<tr>
