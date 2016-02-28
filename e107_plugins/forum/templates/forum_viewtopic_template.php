@@ -315,7 +315,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 	<div class='row-fluid'>
 		<div>{BACKLINK}</div>
 	</div>
-	
+
 	<div class='row row-fluid'>
 		<div class='col-md-9 span9 pull-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
 	</div>
@@ -405,6 +405,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 		{QUICKREPLY}
 	</div>
 </div>
+<small class='text-muted'>{MODERATORS}</small>
 {THREADSTATUS}
 ";
 
