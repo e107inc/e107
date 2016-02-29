@@ -19,3 +19,6 @@ a.btn           {  }
 
 mark            { text-decoration: underline; color:#FF0000; font-weight:bold; } /* .searchhighlight */
 .list-unstyled  { list-style: outside none none; }
+
+#login-template { width:60%; max-width:350px; margin-right:auto;margin-left:auto; }
+div.form-group  { padding-top: 5px }

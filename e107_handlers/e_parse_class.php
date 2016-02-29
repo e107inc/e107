@@ -828,11 +828,16 @@ class e_parse extends e_parser
 	 * @param object $eVars - XXX more info needed.
 	 * @return string
 	 */
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = null, $eVars = null)
+	function parseTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
 	{
 		if(!empty($extraCodes) && $this->isSimpleParse($extraCodes)) // support for a combined simple and standard template parse. - (eg. used by signup email template.) 
 		{
 			$text = $this->simpleParse($text, $extraCodes, false);
+		}
+
+		if(!is_bool($parseSCFiles))
+		{
+			trigger_error("\$parseSCFiles in parseTemplate() was given incorrect data");
 		}
 
 		return e107::getScParser()->parseCodes($text, $parseSCFiles, $extraCodes, $eVars);
