@@ -95,16 +95,22 @@ class login_shortcodes extends e_shortcode
 	{
 		return LAN_LOGIN_8;	
 	}
+
+	function sc_login_table_rememberme($parm=null)
+	{
+		return e107::getForm()->checkbox('autologin',1,false,LAN_LOGIN_8);
+
+	}
 	
 	function sc_login_table_submit($parm="") //FIXME use $frm
 	{
 		
-		$class = ($parm == 'large') ? "btn-large" : "";		
+		$class = ($parm == 'large') ? "btn-large btn-lg" : "";
 		return "<input class='btn btn-primary ".$class." button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 	}
 	
 	
-	function sc_login_table_footer_userreg()
+	function sc_login_table_footer_userreg($parm='')
 	{
 		$pref = e107::getPref();
 		

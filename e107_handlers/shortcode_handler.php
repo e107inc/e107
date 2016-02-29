@@ -748,6 +748,8 @@ class e_parse_shortcode
 		
 		if (is_object($extraCodes))
 		{
+
+
 	
 			$this->addedCodes = &$extraCodes;
 			
@@ -1302,6 +1304,8 @@ class e_shortcode
 	 * Sets wrapper id (to be retrieved from the registry while parsing)
 	 * Example e107::getScBatch('contact')->wrapper('contact/form');
 	 * which results in using the $CONTACT_WRAPPER['form'] wrapper in the parsing phase
+	 * Template cannot be loaded via include, only by getTemplate or getCoreTemplate
+	 * e107::getScBatch() must be used also.
 	 */
 	public function wrapper($id = null)
 	{

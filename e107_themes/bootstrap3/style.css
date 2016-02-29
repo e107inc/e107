@@ -119,6 +119,9 @@ img.featurebox { border-radius: 5px }
 
 .tab-pane { padding-top:15px }
 
+#login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
+#login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
+#login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
 /* CUSTOM Responsive Styles */
 
 

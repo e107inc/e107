@@ -2,7 +2,7 @@
 // $Id$
 
 if (!defined('e107_INIT')) { exit; }
-
+/*
 // ##### LOGIN HEADER TABLE -----------------------------------------------------------------------
 if(!isset($LOGIN_TABLE_HEADER)) //FIXME - use {LOGO} . 
 {
@@ -77,14 +77,14 @@ if(!isset($LOGIN_TABLE_FOOTER))
 		</div>
 	</div>";
 }
-// ##### ------------------------------------------------------------------------------------------
+// ##### ------------------------------------------------------------------------------------------*/
 
 
 
 // Starter for v2. - Bootstrap 
 $LOGIN_TEMPLATE['page']['header'] = "
 	<div id='login-template'>
-		<div class='center' style='padding:50px; margin-left:auto; margin-right: auto'>
+		<div class='center'>
 			{LOGO=login}
 		</div>";
 
@@ -102,24 +102,27 @@ $LOGIN_TEMPLATE['page']['body'] = '
 	{
 	  $LOGIN_TEMPLATE['page']['body'] .= "<span>";
 	}
+
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_USERNAME'] = "<div class='form-group'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_PASSWORD'] = "<div class='form-group'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_SECIMG'] = "<div class='form-group'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_TEXTBOC'] = "<div class='form-group'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_REMEMBERME'] = "<div class='form-group checkbox'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_SUBMIT'] = "<div class='form-group'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_FOOTER_USERREG'] = "<div class='form-group'>{---}</div>";
+
 $LOGIN_TEMPLATE['page']['body'] .= '
        {LOGIN_TABLE_USERNAME}
         {LOGIN_TABLE_PASSWORD}
 		{LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}
-		</span>
-        <label class="checkbox">
-         {LOGIN_TABLE_AUTOLOGIN} {LOGIN_TABLE_AUTOLOGIN_LAN}
-        </label>
+        {LOGIN_TABLE_REMEMBERME}
         {LOGIN_TABLE_SUBMIT=large}
 
  ';
 
 $LOGIN_TEMPLATE['page']['footer'] =  "
 			<div style='margin-bottom:100px; width:70%;margin-right:auto;margin-left:auto'>
-				<div style='text-align:center'><br />
-					{LOGIN_TABLE_FOOTER_USERREG}
-					
-				</div>
+				<div style='text-align:center'>{LOGIN_TABLE_FOOTER_USERREG}</div>
 			</div>
 	</div>";
 	
