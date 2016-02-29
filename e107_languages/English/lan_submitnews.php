@@ -10,14 +10,14 @@
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Submit News");
-define("LAN_7", "Name: ");
+//define("LAN_7", "Name: ");//LAN_NAME
 //define("LAN_62", "News Title: ");//LAN_TITLE
-define("LAN_112", "Email Address: ");
-define("LAN_133", "Thank you");
+//define("LAN_112", "Email Address: ");//LAN_EMAIL
+//define("LAN_133", "Thank you");//Not Used
 define("LAN_134", "Your item has been submitted for review by one of the site administrators.");
 define("LAN_135", "News Item: ");
 define("LAN_136", "Submit News Item");
-define("NWSLAN_6", "Category");
+//define("NWSLAN_6", "Category"); LAN_CATEGORY
 define("NWSLAN_10", "No news categories");
 //define("NWSLAN_11", "You don"t have access to this area.");//LAN_UI_403_BODY_ERROR
 //define("NWSLAN_12", "Access Denied.");//LAN_UI_403_TITLE_ERROR

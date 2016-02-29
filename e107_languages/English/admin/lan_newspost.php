@@ -11,7 +11,7 @@
 // define("NWSLAN_3", "No news items yet.");
 define("NWSLAN_4", "News - Existing News");
 // define("NWSLAN_5", "Open HTML Editor");
-define("NWSLAN_6", "Category");
+//define("NWSLAN_6", "Category"); // LAN_CATEGORY
 
 // define("NWSLAN_9", "tick to confirm");
 define("NWSLAN_10", "No news categories");
@@ -31,7 +31,7 @@ define("NWSLAN_21", "Activate between");
 define("NWSLAN_24", "Preview again");
 define("NWSLAN_25", "Update news in database");
 define("NWSLAN_26", "Post news to database");
-define("NWSLAN_27", "Preview");
+//define("NWSLAN_27", "Preview");// LAN_PREVIEW
 
 define("NWSLAN_29", "News - Add New Item");
 define("NWSLAN_29a", "News - Update Existing Item");
@@ -51,8 +51,8 @@ define("NWSLAN_39", "Are you sure you want to delete this news item?");
 define("NWSLAN_43", "No news items");
 define("NWSLAN_44", "News Front Page");
 define("NWSLAN_45", "Create News Item");
-define("NWSLAN_46", "Categories");
-define("NWSLAN_46a", "News - Categories");
+//define("NWSLAN_46", "Categories");//Not Used
+//define("NWSLAN_46a", "News - Categories");
 define("NWSLAN_47", "Submitted News");
 define("NWSLAN_48", "News Options");
 define("NWSLAN_49", "Submitted by");
@@ -71,7 +71,7 @@ define("NWSLAN_59", "No submitted news");
 // define("NWSLAN_62", "Go to page: ");
 define("NWSLAN_63", "Search newsposts");
 
-define("NWSLAN_66", "Upload");
+//define("NWSLAN_66", "Upload");//LAN_UPLOAD
 define("NWSLAN_67", "Image/Video");
 // define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
@@ -156,7 +156,7 @@ define("LAN_NEWS_28", "Sticky");
 define("LAN_NEWS_29", "Select if news item will be sticky");
 define("LAN_NEWS_30", "If selected, news item will appear above all others");
 // define("LAN_NEWS_31", "This news post is <b>sticky</b> (it will be shown above all other items). ");
-define("LAN_NEWS_32", "Date stamp");
+//define("LAN_NEWS_32", "Date stamp");//LAN_DATESTAMP
 define("LAN_NEWS_33", "Set the date stamp for the current news item");
 
 define("LAN_NEWS_34", "Trackback");
@@ -184,7 +184,7 @@ define("LAN_NEWS_52", "General Information");
 define("LAN_NEWS_53", "Advanced Options");
 define("LAN_NEWS_54", "stay in edit mode");
 
-define("LAN_NEWS_55", "Maintenance");				// Was LAN_NEWS_50 in 0.7
+//define("LAN_NEWS_55", "Maintenance");//LAN_MAINTENANCE				// Was LAN_NEWS_50 in 0.7
 define("LAN_NEWS_56", "Recalculate comment counts");
 define("LAN_NEWS_57", "Proceed");
 define("LAN_NEWS_58", "Update complete - --UPDATE-- comment counts updated, --DELETED-- disallowed comments deleted");
@@ -194,7 +194,7 @@ define("LAN_NEWS_60", "Comment Total");
 define("LAN_NEWS_61", "Also delete disallowed comments");
 define("LAN_NEWS_62", "Error accessing database, or no news items found");
 
-define("LAN_NEWS_63", "Create Category");
+//define("LAN_NEWS_63", "Create Category");//LAN_CREATE_CATEGORY
 define("LAN_NEWS_64", "Old Submitted");
 define("LAN_NEWS_65", "Please choose unique SEF URL string for this category");
 define("LAN_NEWS_66", ""); // Unused
