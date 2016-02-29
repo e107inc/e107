@@ -181,7 +181,7 @@ class pageClass
 				$id = 0;
 			break;
 		}
-		e107::setRegistry('core/pages/request', array('action' => $request, 'id' => $id));
+		e107::setRegistry('core/page/request', array('action' => $request, 'id' => $id));
 	}
 
 	

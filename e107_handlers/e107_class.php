@@ -532,6 +532,11 @@ class e107
 			return self::$_registry[$id];
 		}
 
+		if($id == '_all_')
+		{
+			return self::$_registry;
+		}
+
 		return $default;
 	}
 

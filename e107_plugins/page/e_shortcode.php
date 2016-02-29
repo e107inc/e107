@@ -17,7 +17,7 @@ class page_shortcodes extends e_shortcode
 		function __construct()
 		{
 			
-			$this->request = e107::getRegistry('core/pages/request');
+			$this->request = e107::getRegistry('core/page/request');
 			
 			$action = varset($this->request['action']);
 			
