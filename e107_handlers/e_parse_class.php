@@ -529,7 +529,6 @@ class e_parse extends e_parser
 
 				$data = str_replace(array('%7B','%7D'),array('{','}'),$data); // fix for {e_XXX} paths.
 
-
 			//	$data = urldecode($data); //XXX Commented out :  NO LONGER REQUIRED. symptom of cleaning the HTML - urlencodes src attributes containing { and } .eg. {e_BASE}
 
 			}
@@ -1579,8 +1578,8 @@ class e_parse extends e_parser
 						//	$code_text = str_replace('&','&amp;',$code_text); // validation safe.
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
-							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?							
-							$full_text =$this->replaceConstants($full_text,'abs');	
+							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?
+							$full_text =$this->replaceConstants($full_text,'abs');
 							$full_text = $html_start.$full_text.$html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
@@ -3012,6 +3011,7 @@ class e_parser
     protected $removedList        = array();
     protected $nodesToDelete      = array();
     protected $nodesToConvert     = array();
+    protected $nodesToDisableSC = array();
     protected $pathList           = array();
     protected $allowedAttributes  = array(
                                     'default'   => array('id', 'style', 'class'),
@@ -3939,6 +3939,9 @@ TMPL;
 
 		    echo "</div>";
 
+		    echo "<h3>DB -> bbarea</h3>";
+		    echo e107::getForm()->bbarea('name',$tp->toForm($dbText));
+
 	    }
 
 	    echo "<h3>toDB() &gg; toHtml()</h3>";
@@ -3971,6 +3974,9 @@ TMPL;
 
 		    echo "<h3>Nodes to Convert</h3>";
 			print_a($this->nodesToConvert);
+
+			  echo "<h3>Nodes to Disable SC</h3>";
+			print_a($this->nodesToDisableSC);
 		}
 
 	    similar_text($text, html_entity_decode( $toForm, ENT_COMPAT, 'UTF-8'),$perc);
@@ -4181,17 +4187,25 @@ return;
 
 		//	echo "<br />Path = ".$path;
         //   $tag = strval(basename($path));
+
+
+	        if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html.
+            {
+                 $this->pathList[] = $path;
+                 $this->nodesToConvert[] =  $node->parentNode; // $node;
+                continue;
+            }
+
+            if(substr($path,-4) == '/pre'  || substr($path,-5) == '/code')
+            {
+                $this->pathList[] = $path;
+                $this->nodesToDisableSC[] = $node;
+            }
             
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
             {
-                 if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html.
-                 {
-                    $this->pathList[] = $path; 
-                    $this->nodesToConvert[] =  $node->parentNode; // $node; 
-                    continue;
-                 }
-                
+
                 $this->removedList['tags'][] = $tag;
                 $this->nodesToDelete[] = $node; 
                 continue;
@@ -4248,7 +4262,20 @@ return;
         {
             $node->parentNode->removeChild($node);
         }  
-        
+
+		// Disable Shortcodes in pre/code
+       foreach($this->nodesToDisableSC as $node)
+       {
+		//	$value = $node->C14N();
+			$value = $node->nodeValue;
+		//	$value = str_replace("&#xD;","",$value);
+			$value = str_replace('{','{{{',$value); // temporarily change {e_XXX} to {{{e_XXX}}}
+			$value = str_replace('}','}}}',$value); // temporarily change {e_XXX} to {{{e_XXX}}}
+	        $node->nodeValue =  $value;
+
+        }
+
+
         // Convert <code> and <pre> Tags to Htmlentities. 
         foreach($this->nodesToConvert as $node)  
         {
@@ -4274,9 +4301,13 @@ return;
             $node->nodeValue = $value;
         }
 
+
         $cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
 
-		$cleaned = str_replace ('@nbsp;', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
+		$cleaned = str_replace('@nbsp;', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
+
+		$cleaned = str_replace('{{{','&#123;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
+	    $cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
 
         $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
 
