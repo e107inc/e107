@@ -281,7 +281,7 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_id">1</field>
 			<field name="chapter_parent">0</field>
 			<field name="chapter_name">General</field>
-			<field name="chapter_sef"></field>
+			<field name="chapter_sef">general</field>
 			<field name="chapter_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tempor odio. Quisque volutpat lorem nec lectus congue suscipit. In hac habitasse platea dictumst. Etiam odio nisi, egestas vitae amet.</field>
 			<field name="chapter_meta_keywords"></field>
 			<field name="chapter_manager">0</field>
@@ -294,7 +294,7 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_id">2</field>
 			<field name="chapter_parent">1</field>
 			<field name="chapter_name">Chapter 1</field>
-			<field name="chapter_sef"></field>
+			<field name="chapter_sef">chapter-1</field>
 			<field name="chapter_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut nunc ac neque egestas ullamcorper. In convallis semper hendrerit. Etiam non dolor nisl, varius facilisis dui. Nunc egestas massa nunc.</field>
 			<field name="chapter_meta_keywords"></field>
 			<field name="chapter_manager">0</field>
