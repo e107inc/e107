@@ -438,7 +438,7 @@ class pageClass
 		//$bookId = $row['chapter_parent'];
 		$bookSef = $this->getSef($row['chapter_parent']);
 		$bookTitle = $this->getName($row['chapter_parent']);
-		
+
 		$urlData = array(
 			'chapter_id' 	=> $row['chapter_id'],
 			'chapter_name'	=> $tp->toHtml($row['chapter_name']),
@@ -490,10 +490,14 @@ class pageClass
 						'title' => $page['page_title'],
 						'text'	=> $tp->toHtml($page['page_text'],true)
 					);*/
+					$page['chapter_id']     = $page['page_chapter'];
+					$page['chapter_name']   =  $this->getName($page['page_chapter']);
 					$page['chapter_parent'] = $this->getParent($page['page_chapter']);
 					$page['chapter_sef'] = $this->getSef($page['page_chapter']); // $chapter_sef;
+
+					$page['book_id']    = $page['chapter_parent'];
+					$page['book_name']  =  $this->getName($page['chapter_parent']);
 					$page['book_sef'] = $bookSef;
-					$page['book_id']    = $this->getParent($page['chapter_parent']);
 					
 				//	$this->page = $page;
 					$this->batch->setVars($page);
