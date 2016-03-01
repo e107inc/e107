@@ -149,7 +149,7 @@ class pageClass
 			$this->debug .= "<b>pageSelected</b> ".$this->pageSelected." <br />";
 		}
 		
-		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef,chapter_name FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = e107::getDb()->retrieve("SELECT chapter_id,chapter_sef,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
 		foreach($books as $row)
 		{
@@ -490,13 +490,16 @@ class pageClass
 						'title' => $page['page_title'],
 						'text'	=> $tp->toHtml($page['page_text'],true)
 					);*/
-					
+					$page['chapter_parent'] = $this->getParent($page['page_chapter']);
 					$page['chapter_sef'] = $this->getSef($page['page_chapter']); // $chapter_sef;
-					$page['book_sef'] = $bookSef; 
+					$page['book_sef'] = $bookSef;
+					$page['book_id']    = $this->getParent($page['chapter_parent']);
 					
 				//	$this->page = $page;
 					$this->batch->setVars($page);
 				//	$this->batch->setVars(new e_vars($data))->setScVar('page', $this->page);
+
+
 					
 
 				//	$url = e107::getUrl()->create('page/view', $page, 'allow=page_id,page_sef,chapter_sef,book_sef');
@@ -563,6 +566,7 @@ class pageClass
 			$this->page['np'] = '';
 			$this->page['err'] = TRUE;
 			$this->page['cachecontrol'] = false;
+
 			
 			// -------------------------------------
 			
@@ -629,16 +633,23 @@ class pageClass
 	//	$this->batch->setVars(new e_vars($ret))->setScVar('page', $this->page); // Removed in favour of $this->var (cross-compatible with menus and other parts of e107 that use the same shortcodes) 
 	
 		// ---- New --- -
-		$this->page['page_text'] 	= $this->pageToRender;
-		$this->page['np'] 			= $pagenav;
-		$this->page['rating'] 		= $rating;
-		$this->page['comments'] 	= $comments;
-		$this->page['err'] 			= FALSE;
-		$this->page['cachecontrol'] = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);	
-		
+		$this->page['page_text'] 	    = $this->pageToRender;
+		$this->page['np'] 			    = $pagenav;
+		$this->page['rating'] 		    = $rating;
+		$this->page['comments'] 	    = $comments;
+		$this->page['err'] 			    = false;
+		$this->page['cachecontrol']     = (isset($this->page['page_password']) && !$this->page['page_password'] && $this->authorized === true);
+		$this->page['chapter_id']       = $this->page['page_chapter'];
+		$this->page['chapter_name']     = $this->getName($this->page['page_chapter']);
+		$this->page['chapter_sef']      = $this->getSef($this->page['page_chapter']);
+		$this->page['chapter_parent']   = $this->getParent($this->page['page_chapter']);
+		$this->page['book_id']          = $this->page['chapter_parent'];
+		$this->page['book_parent']      = $this->getParent($this->page['chapter_parent']);
+		$this->page['book_sef']         = $this->getSef($this->page['chapter_parent']);
+		$this->page['book_name']        = $this->getName($this->page['chapter_parent']);
 		// -----------------
-	
-	
+
+
 		$this->batch->setVars($this->page);
 		
 		
