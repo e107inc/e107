@@ -4157,8 +4157,11 @@ return;
         $doc  = $this->domObj;
 	    libxml_use_internal_errors(true);
     //    @$doc->loadHTML($html);
-	$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
-	@$doc->loadHTML($html);
+	    if(function_exists('mb_convert_encoding'))
+	    {
+			$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+	    }
+		@$doc->loadHTML($html);
 		// $doc->encoding = 'UTF-8';
 
      //   $doc->resolveExternals = true;
