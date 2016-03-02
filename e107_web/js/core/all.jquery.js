@@ -220,6 +220,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			}
 		}
 
+		// BC.
+		if(options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
+		{
+			options.target = "#" + options.target;
+		}
+
 		var form = $element.closest("form").attr('id');
 		var data = $('#' + form).serialize();
 
@@ -236,8 +242,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			},
 			success: function (response)
 			{
-				var $target = $("#" + options.target);
-				var jsonObject = null;
+				var $target = $(options.target);
+				var jsonObject = response;
 
 				if(typeof response == 'string')
 				{
@@ -277,8 +283,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 */
 	e107.ajax.ajaxJsonResponseHandler = function ($target, options, commands)
 	{
-		$.each(commands, function (command)
+		$(commands).each(function ()
 		{
+			var command = this;
+
 			switch(command.command)
 			{
 				// Command to insert new content into the DOM.
@@ -304,7 +312,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					$(command.selector).css(command.arguments);
 					break;
 
-				// Command to merge settings e107.settings object.
+				// Command to set the settings that will be used for other commands in this response.
 				case 'settings':
 					if(typeof command.settings == 'object')
 					{
@@ -321,6 +329,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				case 'invoke':
 					var $element = $(command.selector);
 					$element[command.method].apply($element, command.arguments);
+					break;
+
+				// Command to set attribute for element.
+				case 'attr':
+					// Get target selector from the response. If it is not there, default to our presets.
+					$target = command.selector ? $(command.selector) : $target;
+					$target.attr(command.name, command.value);
+					break;
+
+				// Command to remove attribute from element.
+				case 'removeAttr':
+					// Get target selector from the response. If it is not there, default to our presets.
+					$target = command.selector ? $(command.selector) : $target;
+					$target.removeAttr(command.name);
 					break;
 			}
 		});
