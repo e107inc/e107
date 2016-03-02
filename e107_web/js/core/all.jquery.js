@@ -304,7 +304,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					$(command.selector).css(command.arguments);
 					break;
 
-				// Command to set the settings that will be used for other commands in this response.
+				// Command to merge settings e107.settings object.
 				case 'settings':
 					if(typeof command.settings == 'object')
 					{
