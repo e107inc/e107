@@ -293,7 +293,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				case 'insert':
 					// Get target selector from the response. If it is not there, default to our presets.
 					$target = command.selector ? $(command.selector) : $target;
-					e107.ajax.ajaxResponseHandler($target, options, command.data);
+					var newOptions = options;
+					newOptions.method = command.method;
+					e107.ajax.ajaxResponseHandler($target, newOptions, command.data);
 					break;
 
 				// Command to remove a chunk from the page.
