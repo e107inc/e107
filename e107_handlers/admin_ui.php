@@ -2204,7 +2204,8 @@ class e_admin_controller
 		session_write_close();
 
 		// do redirect
-		header('Location: '.$url);
+		e107::redirect($url);
+	//	header('Location: '.$url);
 		exit;
 	}
 

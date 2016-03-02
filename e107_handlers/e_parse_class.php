@@ -3939,8 +3939,7 @@ TMPL;
 
 		    echo "</div>";
 
-		    echo "<h3>DB -> bbarea</h3>";
-		    echo e107::getForm()->bbarea('name',$tp->toForm($dbText));
+
 
 	    }
 
@@ -3958,6 +3957,10 @@ TMPL;
 	    $toFormRender .= e107::getForm()->close();
 
 		echo  $toFormRender;
+
+
+		 echo "<h3>toDB &gg; bbarea</h3>";
+	    echo e107::getForm()->bbarea('name',$toForm);
 
 		if(!empty($advanced))
 		{
@@ -4167,7 +4170,9 @@ return;
 	    {
 			$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
 	    }
+
 		@$doc->loadHTML($html);
+
 		// $doc->encoding = 'UTF-8';
 
      //   $doc->resolveExternals = true;
@@ -4189,19 +4194,15 @@ return;
         //   $tag = strval(basename($path));
 
 
-	        if(strpos($path,'/code/') !== false || strpos($path,'/pre/') !== false) //  treat as html.
+	        if(strpos($path,'/code') !== false || strpos($path,'/pre') !== false) //  treat as html.
             {
-                 $this->pathList[] = $path;
-                 $this->nodesToConvert[] =  $node->parentNode; // $node;
+                $this->pathList[] = $path;
+            //     $this->nodesToConvert[] =  $node->parentNode; // $node;
+                $this->nodesToDisableSC[] = $node;
                 continue;
             }
 
-            if(substr($path,-4) == '/pre'  || substr($path,-5) == '/code')
-            {
-                $this->pathList[] = $path;
-                $this->nodesToDisableSC[] = $node;
-            }
-            
+
             $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
             {
@@ -4264,24 +4265,43 @@ return;
         }  
 
 		// Disable Shortcodes in pre/code
+
        foreach($this->nodesToDisableSC as $node)
        {
-		//	$value = $node->C14N();
-			$value = $node->nodeValue;
-		//	$value = str_replace("&#xD;","",$value);
+			$value = $node->C14N();
+			$value = str_replace("&#xD;","\r",$value);
+
+	        if($node->nodeName == 'pre')
+            {
+                $value = preg_replace('/^<pre[^>]*>/','',$value);
+                $value = str_replace("</pre>", "", $value);
+            }
+
+            if($node->nodeName == 'code')
+            {
+                $value = preg_replace('/^<code[^>]*>/','',$value);
+                $value = str_replace("</code>", "", $value);
+            }
+
 			$value = str_replace('{','{{{',$value); // temporarily change {e_XXX} to {{{e_XXX}}}
 			$value = str_replace('}','}}}',$value); // temporarily change {e_XXX} to {{{e_XXX}}}
-	        $node->nodeValue =  $value;
+
+	     //  $value = htmlentities(htmlentities($value)); // Crashes apache.
+	        $node->nodeValue =  $value; // Crashes apache sometimes FIXME! .
 
         }
 
 
-        // Convert <code> and <pre> Tags to Htmlentities. 
+
+        // Convert <code> and <pre> Tags to Htmlentities.
+        /* TODO XXX Still necessary? Perhaps using bbcodes only?
         foreach($this->nodesToConvert as $node)  
         {
             $value = $node->C14N();
 
             $value = str_replace("&#xD;","",$value);
+
+        //    print_a("WOWOWO");
             
             if($node->nodeName == 'pre')
             {
@@ -4300,14 +4320,15 @@ return;
             $value = htmlentities(htmlentities($value)); // Needed
             $node->nodeValue = $value;
         }
-
+		*/
 
         $cleaned = $doc->saveHTML($doc->documentElement); // $doc->documentElement fixes utf-8/entities issue. @see http://stackoverflow.com/questions/8218230/php-domdocument-loadhtml-not-encoding-utf-8-correctly
 
 		$cleaned = str_replace('@nbsp;', '&nbsp;',  $cleaned); // prevent replacement of &nbsp; with spaces. - convert back.
 
+
 		$cleaned = str_replace('{{{','&#123;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
-	    $cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
+         $cleaned = str_replace('}}}','&#125;', $cleaned); // convert shortcode temporary triple-curly braces back to entities.
 
         $cleaned = str_replace(array('<body>','</body>','<html>','</html>','<!DOCTYPE html>','<meta charset="UTF-8">','<?xml version="1.0" encoding="utf-8"?>'),'',$cleaned); // filter out tags. 
 
