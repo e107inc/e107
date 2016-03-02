@@ -119,299 +119,6 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	});
 
 	/**
-	 * Get a reasonable default event handler for a (jQuery) element.
-	 *
-	 * @param $element
-	 *  JQuery element.
-	 */
-	e107.ajax.getDefaultEventHandler = function ($element)
-	{
-		var event = 'click'; // Default event handler.
-		var tag = $element.prop("tagName").toLowerCase();
-
-		if(tag == 'input')
-		{
-			var type = $element.attr('type').toLowerCase();
-
-			switch(type)
-			{
-				case 'submit':
-				case 'button':
-					// Pressing the ENTER key within a textfield triggers the click event of
-					// the form's first submit button. Triggering Ajax in this situation
-					// leads to problems, like breaking autocomplete textfields, so we bind
-					// to mousedown instead of click.
-					event = 'mousedown';
-					break;
-
-				case 'radio':
-				case 'checkbox':
-					event = 'change';
-					break;
-
-				// text, number, password, date, datetime, datetime-local, month, week, time,
-				// email, search, tel, url, color, range
-				default:
-					event = 'blur';
-					break;
-			}
-		}
-		else
-		{
-			switch(tag)
-			{
-				case 'button':
-					// Pressing the ENTER key within a textfield triggers the click event of
-					// the form's first submit button. Triggering Ajax in this situation
-					// leads to problems, like breaking autocomplete textfields, so we bind
-					// to mousedown instead of click.
-					event = 'mousedown';
-					break;
-
-				case 'select':
-					event = 'change';
-					break;
-
-				case 'textarea':
-					event = 'blur';
-					break;
-			}
-		}
-
-		return event;
-	};
-
-	/**
-	 * Handler fo Ajax requests.
-	 *
-	 * @param $element
-	 *  JQuery element which fired the event.
-	 * @param options
-	 *  An object with Ajax request options.
-	 */
-	e107.ajax.ajaxRequestHandler = function ($element, options)
-	{
-		var $loadingImage = null;
-
-		// Loading image.
-		if(options.loading != null)
-		{
-			$loadingImage = $(options.loading);
-			$element.after($loadingImage);
-		}
-
-		// Old way - href='myscript.php#id-to-target.
-		if(options.target == null || options.url == null)
-		{
-			if(options.href != null)
-			{
-				var tmp = options.href.split('#');
-				var id = tmp[1];
-
-				if(options.url == null)
-				{
-					options.url = tmp[0];
-				}
-
-				if(options.target == null)
-				{
-					options.target = id;
-				}
-			}
-		}
-
-		// BC.
-		if(options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
-		{
-			options.target = "#" + options.target;
-		}
-
-		var form = $element.closest("form").attr('id');
-		var data = $('#' + form).serialize();
-
-		$.ajax({
-			type: options.type || 'POST',
-			url: options.url,
-			data: data || '',
-			complete: function ()
-			{
-				if($loadingImage)
-				{
-					$loadingImage.remove();
-				}
-			},
-			success: function (response)
-			{
-				var $target = $(options.target);
-				var jsonObject = response;
-
-				if(typeof response == 'string')
-				{
-					try
-					{
-						jsonObject = $.parseJSON(response);
-					} catch(e)
-					{
-						// Not JSON.
-					}
-				}
-
-				if(typeof jsonObject == 'object')
-				{
-					// If result is JSON.
-					e107.ajax.ajaxJsonResponseHandler($target, options, jsonObject);
-				}
-				else
-				{
-					// If result is a simple text/html.
-					e107.ajax.ajaxResponseHandler($target, options, response);
-				}
-			}
-		});
-	};
-
-	/**
-	 * Handler for JSON responses. Provides a series of commands that the server
-	 * can request the client perform.
-	 *
-	 * @param $target
-	 *  JQuery (target) object.
-	 * @param options
-	 *  Object with options for Ajax request.
-	 * @param commands
-	 *  JSON object with commands.
-	 */
-	e107.ajax.ajaxJsonResponseHandler = function ($target, options, commands)
-	{
-		$(commands).each(function ()
-		{
-			var command = this;
-
-			switch(command.command)
-			{
-				// Command to insert new content into the DOM.
-				case 'insert':
-					// Get target selector from the response. If it is not there, default to our presets.
-					$target = command.selector ? $(command.selector) : $target;
-					var newOptions = options;
-					newOptions.method = command.method;
-					e107.ajax.ajaxResponseHandler($target, newOptions, command.data);
-					break;
-
-				// Command to remove a chunk from the page.
-				case 'remove':
-					e107.detachBehaviors($(command.selector));
-					$(command.selector).remove();
-					break;
-
-				// Command to provide an alert.
-				case 'alert':
-					alert(command.text, command.title);
-					break;
-
-				// Command to provide the jQuery css() function.
-				case 'css':
-					$(command.selector).css(command.arguments);
-					break;
-
-				// Command to set the settings that will be used for other commands in this response.
-				case 'settings':
-					if(typeof command.settings == 'object')
-					{
-						$.extend(true, e107.settings, command.settings);
-					}
-					break;
-
-				// Command to attach data using jQuery's data API.
-				case 'data':
-					$(command.selector).data(command.name, command.value);
-					break;
-
-				// Command to apply a jQuery method.
-				case 'invoke':
-					var $element = $(command.selector);
-					$element[command.method].apply($element, command.arguments);
-					break;
-
-				// Command to set attribute for element.
-				case 'attr':
-					// Get target selector from the response. If it is not there, default to our presets.
-					$target = command.selector ? $(command.selector) : $target;
-					$target.attr(command.name, command.value);
-					break;
-
-				// Command to remove attribute from element.
-				case 'removeAttr':
-					// Get target selector from the response. If it is not there, default to our presets.
-					$target = command.selector ? $(command.selector) : $target;
-					$target.removeAttr(command.name);
-					break;
-			}
-		});
-	};
-
-	/**
-	 * Handler for text/html responses. Inserting new content into the DOM.
-	 *
-	 * @param $target
-	 *  JQuery (target) object.
-	 * @param options
-	 *  An object with Ajax request options.
-	 * @param data
-	 *  Text/HTML content.
-	 */
-	e107.ajax.ajaxResponseHandler = function ($target, options, data)
-	{
-		var html = null;
-
-		// If removing content from the wrapper, detach behaviors first.
-		switch(options.method)
-		{
-			case 'html':
-			case 'replaceWith':
-				e107.detachBehaviors($target);
-				break;
-		}
-
-		// Inserting content.
-		switch(options.method)
-		{
-			case 'replaceWith':
-				html = $.parseHTML(data);
-				$target.replaceWith(html);
-				break;
-
-			case 'append':
-				html = $.parseHTML(data);
-				$target.append(html);
-				break;
-
-			case 'prepend':
-				html = $.parseHTML(data);
-				$target.prepend(html);
-				break;
-
-			case 'before':
-				html = $.parseHTML(data);
-				$target.before(html);
-				break;
-
-			case 'after':
-				html = $.parseHTML(data);
-				$target.after(html);
-				break;
-
-			case 'html':
-			default:
-				$target.html(data).hide().show("slow");
-				break;
-		}
-
-		// Attach all registered behaviors to the new content.
-		e107.attachBehaviors();
-	};
-
-	/**
 	 * Attaches the AJAX behavior to each AJAX form/page elements. E107 uses
 	 * this behavior to enhance form/page elements with .e-ajax class.
 	 */
@@ -421,7 +128,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$(context).find('.e-ajax').once('e-ajax').each(function ()
 			{
 				var $this = $(this);
-				var event = $this.attr('data-event') || e107.ajax.getDefaultEventHandler($this);
+				var event = $this.attr('data-event') || e107.callbacks.getDefaultEventHandler($this);
 
 				$this.on(event, function ()
 				{
@@ -455,7 +162,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						ajaxOptions.type = 'GET';
 					}
 
-					e107.ajax.ajaxRequestHandler($element, ajaxOptions);
+					e107.callbacks.ajaxRequestHandler($element, ajaxOptions);
 
 					return false;
 				});
@@ -587,6 +294,299 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			src = src.replace(oldVal, newVal);
 			$(navid).attr("data-src", src);
 		}
+	};
+
+	/**
+	 * Get a reasonable default event handler for a (jQuery) element.
+	 *
+	 * @param $element
+	 *  JQuery element.
+	 */
+	e107.callbacks.getDefaultEventHandler = function ($element)
+	{
+		var event = 'click'; // Default event handler.
+		var tag = $element.prop("tagName").toLowerCase();
+
+		if(tag == 'input')
+		{
+			var type = $element.attr('type').toLowerCase();
+
+			switch(type)
+			{
+				case 'submit':
+				case 'button':
+					// Pressing the ENTER key within a textfield triggers the click event of
+					// the form's first submit button. Triggering Ajax in this situation
+					// leads to problems, like breaking autocomplete textfields, so we bind
+					// to mousedown instead of click.
+					event = 'mousedown';
+					break;
+
+				case 'radio':
+				case 'checkbox':
+					event = 'change';
+					break;
+
+				// text, number, password, date, datetime, datetime-local, month, week, time,
+				// email, search, tel, url, color, range
+				default:
+					event = 'blur';
+					break;
+			}
+		}
+		else
+		{
+			switch(tag)
+			{
+				case 'button':
+					// Pressing the ENTER key within a textfield triggers the click event of
+					// the form's first submit button. Triggering Ajax in this situation
+					// leads to problems, like breaking autocomplete textfields, so we bind
+					// to mousedown instead of click.
+					event = 'mousedown';
+					break;
+
+				case 'select':
+					event = 'change';
+					break;
+
+				case 'textarea':
+					event = 'blur';
+					break;
+			}
+		}
+
+		return event;
+	};
+
+	/**
+	 * Handler fo Ajax requests.
+	 *
+	 * @param $element
+	 *  JQuery element which fired the event.
+	 * @param options
+	 *  An object with Ajax request options.
+	 */
+	e107.callbacks.ajaxRequestHandler = function ($element, options)
+	{
+		var $loadingImage = null;
+
+		// Loading image.
+		if(options.loading != null)
+		{
+			$loadingImage = $(options.loading);
+			$element.after($loadingImage);
+		}
+
+		// Old way - href='myscript.php#id-to-target.
+		if(options.target == null || options.url == null)
+		{
+			if(options.href != null)
+			{
+				var tmp = options.href.split('#');
+				var id = tmp[1];
+
+				if(options.url == null)
+				{
+					options.url = tmp[0];
+				}
+
+				if(options.target == null)
+				{
+					options.target = id;
+				}
+			}
+		}
+
+		// BC.
+		if(options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
+		{
+			options.target = "#" + options.target;
+		}
+
+		var form = $element.closest("form").attr('id');
+		var data = $('#' + form).serialize();
+
+		$.ajax({
+			type: options.type || 'POST',
+			url: options.url,
+			data: data || '',
+			complete: function ()
+			{
+				if($loadingImage)
+				{
+					$loadingImage.remove();
+				}
+			},
+			success: function (response)
+			{
+				var $target = $(options.target);
+				var jsonObject = response;
+
+				if(typeof response == 'string')
+				{
+					try
+					{
+						jsonObject = $.parseJSON(response);
+					} catch(e)
+					{
+						// Not JSON.
+					}
+				}
+
+				if(typeof jsonObject == 'object')
+				{
+					// If result is JSON.
+					e107.callbacks.ajaxJsonResponseHandler($target, options, jsonObject);
+				}
+				else
+				{
+					// If result is a simple text/html.
+					e107.callbacks.ajaxResponseHandler($target, options, response);
+				}
+			}
+		});
+	};
+
+	/**
+	 * Handler for JSON responses. Provides a series of commands that the server
+	 * can request the client perform.
+	 *
+	 * @param $target
+	 *  JQuery (target) object.
+	 * @param options
+	 *  Object with options for Ajax request.
+	 * @param commands
+	 *  JSON object with commands.
+	 */
+	e107.callbacks.ajaxJsonResponseHandler = function ($target, options, commands)
+	{
+		$(commands).each(function ()
+		{
+			var command = this;
+
+			switch(command.command)
+			{
+				// Command to insert new content into the DOM.
+				case 'insert':
+					// Get target selector from the response. If it is not there, default to our presets.
+					$target = command.selector ? $(command.selector) : $target;
+					var newOptions = options;
+					newOptions.method = command.method;
+					e107.callbacks.ajaxResponseHandler($target, newOptions, command.data);
+					break;
+
+				// Command to remove a chunk from the page.
+				case 'remove':
+					e107.detachBehaviors($(command.selector));
+					$(command.selector).remove();
+					break;
+
+				// Command to provide an alert.
+				case 'alert':
+					alert(command.text, command.title);
+					break;
+
+				// Command to provide the jQuery css() function.
+				case 'css':
+					$(command.selector).css(command.arguments);
+					break;
+
+				// Command to set the settings that will be used for other commands in this response.
+				case 'settings':
+					if(typeof command.settings == 'object')
+					{
+						$.extend(true, e107.settings, command.settings);
+					}
+					break;
+
+				// Command to attach data using jQuery's data API.
+				case 'data':
+					$(command.selector).data(command.name, command.value);
+					break;
+
+				// Command to apply a jQuery method.
+				case 'invoke':
+					var $element = $(command.selector);
+					$element[command.method].apply($element, command.arguments);
+					break;
+
+				// Command to set attribute for element.
+				case 'attr':
+					// Get target selector from the response. If it is not there, default to our presets.
+					$target = command.selector ? $(command.selector) : $target;
+					$target.attr(command.name, command.value);
+					break;
+
+				// Command to remove attribute from element.
+				case 'removeAttr':
+					// Get target selector from the response. If it is not there, default to our presets.
+					$target = command.selector ? $(command.selector) : $target;
+					$target.removeAttr(command.name);
+					break;
+			}
+		});
+	};
+
+	/**
+	 * Handler for text/html responses. Inserting new content into the DOM.
+	 *
+	 * @param $target
+	 *  JQuery (target) object.
+	 * @param options
+	 *  An object with Ajax request options.
+	 * @param data
+	 *  Text/HTML content.
+	 */
+	e107.callbacks.ajaxResponseHandler = function ($target, options, data)
+	{
+		var html = null;
+
+		// If removing content from the wrapper, detach behaviors first.
+		switch(options.method)
+		{
+			case 'html':
+			case 'replaceWith':
+				e107.detachBehaviors($target);
+				break;
+		}
+
+		// Inserting content.
+		switch(options.method)
+		{
+			case 'replaceWith':
+				html = $.parseHTML(data);
+				$target.replaceWith(html);
+				break;
+
+			case 'append':
+				html = $.parseHTML(data);
+				$target.append(html);
+				break;
+
+			case 'prepend':
+				html = $.parseHTML(data);
+				$target.prepend(html);
+				break;
+
+			case 'before':
+				html = $.parseHTML(data);
+				$target.before(html);
+				break;
+
+			case 'after':
+				html = $.parseHTML(data);
+				$target.after(html);
+				break;
+
+			case 'html':
+			default:
+				$target.html(data).hide().show("slow");
+				break;
+		}
+
+		// Attach all registered behaviors to the new content.
+		e107.attachBehaviors();
 	};
 
 })(jQuery);
