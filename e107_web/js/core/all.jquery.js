@@ -462,22 +462,22 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		$(commands).each(function ()
 		{
 			var command = this;
+			// Get target selector from the response. If it is not there, default to our presets.
+			var $newtarget = command.target ? $(command.target) : $target;
 
 			switch(command.command)
 			{
 				// Command to insert new content into the DOM.
 				case 'insert':
-					// Get target selector from the response. If it is not there, default to our presets.
-					$target = command.selector ? $(command.selector) : $target;
 					var newOptions = options;
 					newOptions.method = command.method;
-					e107.callbacks.ajaxResponseHandler($target, newOptions, command.data);
+					e107.callbacks.ajaxResponseHandler($newtarget, newOptions, command.data);
 					break;
 
 				// Command to remove a chunk from the page.
 				case 'remove':
-					e107.detachBehaviors($(command.selector));
-					$(command.selector).remove();
+					e107.detachBehaviors($(command.target));
+					$(command.target).remove();
 					break;
 
 				// Command to provide an alert.
@@ -487,7 +487,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 				// Command to provide the jQuery css() function.
 				case 'css':
-					$(command.selector).css(command.arguments);
+					$(command.target).css(command.arguments);
 					break;
 
 				// Command to set the settings that will be used for other commands in this response.
@@ -500,27 +500,23 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 				// Command to attach data using jQuery's data API.
 				case 'data':
-					$(command.selector).data(command.name, command.value);
+					$(command.target).data(command.name, command.value);
 					break;
 
 				// Command to apply a jQuery method.
 				case 'invoke':
-					var $element = $(command.selector);
+					var $element = $(command.target);
 					$element[command.method].apply($element, command.arguments);
 					break;
 
 				// Command to set attribute for element.
 				case 'attr':
-					// Get target selector from the response. If it is not there, default to our presets.
-					$target = command.selector ? $(command.selector) : $target;
-					$target.attr(command.name, command.value);
+					$newtarget.attr(command.name, command.value);
 					break;
 
 				// Command to remove attribute from element.
 				case 'removeAttr':
-					// Get target selector from the response. If it is not there, default to our presets.
-					$target = command.selector ? $(command.selector) : $target;
-					$target.removeAttr(command.name);
+					$newtarget.removeAttr(command.name);
 					break;
 			}
 		});
