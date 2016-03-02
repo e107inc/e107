@@ -591,7 +591,11 @@ class e_bbcode
    function processTag($tag, $html)
     {
         $html = "<html><body>".$html."</body></html>";
-        $doc = new DOMDocument();     
+        $doc = new DOMDocument();
+        if(function_exists('mb_convert_encoding'))
+	{
+		$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+	}
         $doc->loadHTML($html);
 
         $tmp = $doc->getElementsByTagName($tag);
