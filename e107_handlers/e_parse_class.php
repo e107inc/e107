@@ -3196,8 +3196,12 @@ class e_parser
 		       
 		$doc->preserveWhiteSpace = true;
 		libxml_use_internal_errors(true);
-        $doc->loadHTML($html);
-	
+		if(function_exists('mb_convert_encoding'))
+	    	{
+			$html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+		}
+		$doc->loadHTML($html);
+		
 		$tg = explode(",", $taglist);
 		$ret = array();
 		
