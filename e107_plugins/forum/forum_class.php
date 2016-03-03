@@ -865,7 +865,7 @@ class e107forum
 			FROM `#forum_thread`
 			WHERE thread_id = '.$id;
 		}
-		if($sql->gen($qry))
+		if($sql->gen($qry)!==false)
 		{
 			$tmp = $sql->fetch();
 			if($tmp)
