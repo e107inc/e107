@@ -508,16 +508,6 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var $element = $(command.target);
 					$element[command.method].apply($element, command.arguments);
 					break;
-
-				// Command to set attribute for element.
-				case 'attr':
-					$newtarget.attr(command.name, command.value);
-					break;
-
-				// Command to remove attribute from element.
-				case 'removeAttr':
-					$newtarget.removeAttr(command.name);
-					break;
 			}
 		});
 	};
