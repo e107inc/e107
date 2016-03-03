@@ -75,7 +75,9 @@ class admin_start
 			'who'			=> 1.0,
 			'ratings'		=> 4.2,
 			'lightbox'		=> 1.5,
-			'e107slider'	=> 0.1
+			'e107slider'	=> 0.1,
+			'forumthanks'   => 0.5
+
 	);
 
 
