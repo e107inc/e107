@@ -4269,6 +4269,12 @@ return;
        foreach($this->nodesToDisableSC as $node)
        {
 			$value = $node->C14N();
+
+			if(empty($value))
+			{
+				continue;
+			}
+
 			$value = str_replace("&#xD;","\r",$value);
 
 	        if($node->nodeName == 'pre')
