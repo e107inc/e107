@@ -17,7 +17,8 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 {
 	if(e_PAGE != 'image.php')
 	{
-		e107::js('footer', "https://tinymce.cachefly.net/4.2/tinymce.min.js");
+		e107::js('footer', "https://tinymce.cachefly.net/4.3/tinymce.min.js");
+
 	//	e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
 		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
 
