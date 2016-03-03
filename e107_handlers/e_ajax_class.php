@@ -37,7 +37,9 @@
  *   $ajax = e107::ajax();
  *
  *   $commands = array();
- *   // Remove 'disabled' attribute from the content of '#object-1' on the page.
+ *   // Merge array into e107.settings javascript object.
+ *   $commands[] = $ajax->commandSettings(array('foo' => 'bar'));
+ *   // Remove 'disabled' attribute from the '#object-1' element.
  *   $commands[] = $ajax->commandInvoke('#object-1', 'removeAttr', array('disabled'));
  *   // Insert HTML content into the '#object-1' element.
  *   $commands[] = $ajax->commandInsert('#object-1', 'html', 'some html content');
@@ -118,7 +120,7 @@ class e_ajax_class
 	 *   The message string to display to the user.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 */
 	public function commandAlert($text)
 	{
@@ -142,7 +144,7 @@ class e_ajax_class
 	 *   The data to use with the jQuery method.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 */
 	public function commandInsert($target, $method, $html)
 	{
@@ -165,7 +167,7 @@ class e_ajax_class
 	 *   A jQuery selector string.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 *
 	 * @see http://docs.jquery.com/Manipulation/remove#expr
 	 */
@@ -189,7 +191,7 @@ class e_ajax_class
 	 *   An array of key/value pairs to set in the CSS for the target.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 *
 	 * @see http://docs.jquery.com/CSS/css#properties
 	 */
@@ -214,7 +216,7 @@ class e_ajax_class
 	 *   array.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 */
 	public function commandSettings($settings)
 	{
@@ -239,7 +241,7 @@ class e_ajax_class
 	 *   The value of the data. Not just limited to strings can be any format.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 *
 	 * @see http://docs.jquery.com/Core/data#namevalue
 	 */
@@ -269,7 +271,7 @@ class e_ajax_class
 	 *   (optional) A list of arguments to the jQuery $method, if any.
 	 *
 	 * @return array
-	 *   An array suitable for use with the e107::ajax->render() function.
+	 *   An array suitable for use with the e107::ajax()->render() function.
 	 */
 	public function commandInvoke($target, $method, array $arguments = array())
 	{
