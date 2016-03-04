@@ -206,10 +206,13 @@ elseif ($action == 'forums')
 		$vars = new e_vars();
 
 		$userposts_forum_table_string = '';
-		while(true)
+		while($row = $sql->fetch())
 		{
-			$row = $sql->fetch();
-			if(empty($row)) break;
+
+			if(empty($row))
+			{
+				continue; 
+			}
 
 			$datestamp = $gen->convert_date($row['post_datestamp'], 'short');
 			if ($row['thread_datestamp'] == $row['post_datestamp'])
