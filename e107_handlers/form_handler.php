@@ -2017,7 +2017,7 @@ class e_form
 
 	function optgroup_open($label, $disabled = false, $options = null)
 	{
-		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">";
+		return "<optgroup class='optgroup ".varset($options['class'])."' label='{$label}'".($disabled ? " disabled='disabled'" : '').">\n";
 	}
 
     /**
@@ -2034,42 +2034,26 @@ class e_form
 		if(false === $value) $value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
-		
+
 		return "<option value='{$value}'".$this->get_attributes($options).">".defset($option_title, $option_title)."</option>";
 	}
 
 
     /**
-    * Use selectbox() instead. 
+    * Use selectbox() instead.
     */
 	function option_multi($option_array, $selected = false, $options = array())
 	{
 		if(is_string($option_array)) parse_str($option_array, $option_array);
 
 		$text = '';
+
 		foreach ($option_array as $value => $label)
 		{
 			if(is_array($label))
 			{
-				$text .= $this->optgroup_open($value);
-				foreach($label as $val => $lab)
-				{
-					
-					if(is_array($lab)) 
-					{
-						$text .= $this->optgroup_open($val,null,array('class'=>'level-2')); // Not valid HTML5 - but appears to work in modern browsers. 
-						foreach($lab as $k=>$v)
-						{
-							$text .= $this->option($v, $k, (is_array($selected) ? in_array($k, $selected) : $selected == $k), $options)."\n";
-						}	
-						$text .= $this->optgroup_close($val);
-					}
-					else
-					{
-						$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
-					}
-				}
-				$text .= $this->optgroup_close();
+				$text .= $this->optgroup($value,$label,$selected,$options, 1);
+
 			}
 			else
 			{
@@ -2080,9 +2064,46 @@ class e_form
 		return $text;
 	}
 
+
+	/**
+	 * No compliant, but it works.
+	 * @param $value
+	 * @param $label
+	 * @param $selected
+	 * @param $options
+	 * @param int $level
+	 * @return string
+	 */
+	private function optgroup($value, $label, $selected, $options, $level=1)
+	{
+		$level++;
+		$text = $this->optgroup_open($value, null, array('class'=>'level-'.$level));
+
+		foreach($label as $val => $lab)
+		{
+			if(is_array($lab))
+			{
+				$text .= $this->optgroup($val,$lab,$selected,$options,$level);
+			}
+			else
+			{
+				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
+			}
+
+		}
+
+		$text .= $this->optgroup_close();
+
+		return $text;
+	}
+
+
+
+
+
 	function optgroup_close()
 	{
-		return "</optgroup>";
+		return "</optgroup>\n";
 	}
 
 	function select_close()

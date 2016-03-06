@@ -19,7 +19,7 @@ class social_comment
 	{
 		$social = e107::pref('core','social_login');
 
-		if(!empty($social))
+		if(!empty($social) && is_array($social))
 		{
 			$this->facebookActive = vartrue($social['Facebook']['keys']['id']);
 		}
