@@ -248,10 +248,14 @@ class userUpload
 			<td class='forumheader3'>".DOWLAN_11.":</td>
 			<td class='forumheader3'>";
 		
-			require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
-			$dlparm = (isset($download_category)) ? $download_category : "";
-			$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$dlparm}}",true,$download_shortcodes); //FIXME - move to e_upload.php
-		
+		//	require_once(e_CORE."shortcodes/batch/download_shortcodes.php");
+		//	$dlparm = (isset($download_category)) ? $download_category : "";
+		//	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$dlparm}}",true,$download_shortcodes);
+
+		$optArray = e107::getAddonConfig('e_upload','','category');
+
+		$text .= e107::getForm()->select('category', $optArray, $_POST['category'], array('default'=>''));
+
 		
 		$text .= "</td>
 			</tr>
@@ -337,7 +341,7 @@ class userUpload
 			</tr>
 		
 			<tr>
-			<td class='forumheader3'>".LAN_412."</td>
+			<td class='forumheader3'>".LAN_IMAGE."/".LAN_SCREENSHOT."</td>
 			<td class='forumheader3'><input class='tbox' style='width:90%' name='file_userfile[]' type='file' size='47' /></td>
 			</tr>
 		
