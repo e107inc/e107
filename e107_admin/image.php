@@ -729,7 +729,7 @@ class media_admin_ui extends e_admin_ui
 				'other'			=> e_MEDIA_FILE
 		);
 		
-		protected $fieldpref = array( 'media_id', 'media_title', 'media_caption', 'media_category', 'media_datestamp','media_userclass', 'options');
+		protected $fieldpref = array( 'media_id', 'media_name', 'media_caption', 'media_category', 'media_datestamp','media_userclass', 'options');
 
 
 

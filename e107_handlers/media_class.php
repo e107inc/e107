@@ -1034,7 +1034,7 @@ class e_media
 			}
 			$this->log("Line: ".__LINE__." Couldn't find the file: ".$oldpath);
 			$mes->addError("Couldn't find the file: ".$oldpath);
-			return;
+			return false;
 		}	
 			
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
