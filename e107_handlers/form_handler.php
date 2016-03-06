@@ -2052,7 +2052,7 @@ class e_form
 		{
 			if(is_array($label))
 			{
-				$text .= $this->optgroup($value,$label,$selected,$options, 1);
+				$text .= $this->optgroup($value,$label,$selected,$options, 0);
 
 			}
 			else
