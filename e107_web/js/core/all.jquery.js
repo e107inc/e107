@@ -397,7 +397,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		}
 
 		// BC.
-		if(options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
+		if(options.target && options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
 		{
 			options.target = "#" + options.target;
 		}
