@@ -122,6 +122,7 @@ define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field adm
 define("LAN_SHOW", "Show");
 define("LAN_GENERATE", "Generate");
 define("LAN_SUMMARY", "Summary");  // TODO   more files use summary replace
+define("LAN_REQUIRED_BLANK", "Required field(s) were left blank.");
 
 
 ?>

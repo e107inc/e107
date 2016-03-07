@@ -102,20 +102,24 @@ class userUpload
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		
-		$error = false;
-		$postemail ='';
+		$error              = false;
+		$postemail          ='';
+		$catID              = null;
+		$catOwner           = null;
+		$file               = null;
+		$image              = null;
+		$filesize           = 0;
+
 						
-	    if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description'] && $_POST['download_category'])
+	    if ((!empty($_POST['file_email']) || USER == true) && !empty($_POST['file_name']) && !empty($_POST['file_description']) && !empty($_POST['category']))
 	    {
 
 	    //	$uploaded = file_upload(e_FILE."public/", "unique");
 	    	$fl = e107::getFile();
 	    	$uploaded = $fl->getUploaded(e_UPLOAD, "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
 	    
-	   //      $uploaded = process_uploaded_files(e_UPLOAD, "unique", array('max_file_count' => 2, 'extra_file_types' => TRUE));
-	
 	   	 	// First, see what errors the upload handler picked up
-	        if ($uploaded === FALSE)
+	        if ($uploaded === false)
 	        {
 	            $error = true;
 	            $mes->addError(LAN_UL_021);
@@ -151,13 +155,17 @@ class userUpload
 	        }
 	
 	    	// The upload handler checks max file size
-	        $downloadCategory = intval($_POST['download_category']);
-	        if (!$downloadCategory)
-	        {
-	            $error = true;
+
+	    	if(!empty($_POST['category']))
+		    {
+		        list($catOwner, $catID) = explode("__",$_POST['category'],2);
+		    }
+		    else
+		    {
+		         $error = true;
 	            $mes->addError(LAN_UL_037);
-	        }
-	
+		    }
+
 	   		 // an error - delete the files to keep things tidy
 	        if ($error)
 	        {
@@ -196,11 +204,33 @@ class userUpload
 	                $_POST['file_description'] = $tp->toDB($_POST['file_description']);
 					
 	                $file_time = time();
-					
-	                $sql->insert("upload", "0, '".$poster."', '".$postemail."', '".$tp -> toDB($_POST['file_website'])."', '".$file_time."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$downloadCategory."'");
+
+	                $insertQry = array(
+		                'upload_id'             => 0,
+		                'upload_poster'         => $poster,
+		                'upload_email'          => $postemail,
+		                'upload_website'        => $tp->toDB($_POST['file_website']),
+		                'upload_datestamp'      => $file_time,
+		                'upload_name'           => $tp->toDB($_POST['file_name']),
+		                'upload_version'        => $tp->toDB($_POST['file_version']),
+		                'upload_file'           => $file,
+		                'upload_ss'             => $image,
+		                'upload_description'    => $tp->toDB($_POST['file_description']),
+		                'upload_demo'           => $tp->toDB($_POST['file_demo']),
+		                'upload_filesize'       => $filesize,
+		                'upload_active'         => 0,
+		                'upload_category'       => intval($catID),
+		                'upload_owner'          => $catOwner
+	                );
+
+
+	                $sql->insert("upload", $insertQry);
 	                
-	                $edata_fu = array("upload_user" => $poster, "upload_email" => $postemail, "upload_name" => $tp -> toDB($_POST['file_name']),"upload_file" => $file, "upload_version" => $_POST['file_version'], "upload_description" => $tp -> toDB($_POST['file_description']), "upload_size" => $filesize, "upload_category" => $downloadCategory, "upload_website" => $tp -> toDB($_POST['file_website']), "upload_image" => $image, "upload_demo" => $tp -> toDB($_POST['file_demo']), "upload_time" => $file_time);
-	                
+	                $edata_fu = $insertQry;
+	                $edata_fu["upload_user"] = $poster;
+	                $edata_fu["upload_time"] = $file_time;
+
+
 					e107::getEvent()->trigger("fileupload", $edata_fu); // BC
 					e107::getEvent()->trigger("user_file_upload", $edata_fu);
 					
@@ -210,7 +240,7 @@ class userUpload
 	    }
 	    else
 	    {	// Error - missing data
-			$mes->addError(LAN_ERROR_29); 
+			$mes->addError(LAN_REQUIRED_BLANK);
 	    }
 	
 		echo e107::getMessage()->render(); 
@@ -237,7 +267,7 @@ class userUpload
 		$ns = e107::getRender();
 		$tp = e107::getParser();		 
 				
-		$text = "<div style='text-align:center'>
+		$text = "<div>
 			<form enctype='multipart/form-data' method='post' onsubmit='return frmVerify()' action='".e_SELF."'>
 			<table style='".USER_WIDTH."' class='table fborder'>
 			<colgroup>
@@ -261,7 +291,7 @@ class userUpload
 			</tr>
 		
 			<tr>
-			<td style='text-align:center' class='forumheader3'>".LAN_419."</td>
+			<td class='forumheader3'>".LAN_419."</td>
 			<td class='forumheader3'>";
 		
 	//	$text .= "<b>".LAN_406."</b><br />".LAN_419.":";
@@ -308,56 +338,56 @@ class userUpload
 		
 		$text .= "</td></tr>"; 
 		 
-		 //TODO Replcae all form inputs with $frm methods. 
+		$frm = e107::getForm();
 				
 		if (!USER) // Prompt for name, email
 		{	
 		  $text .= "<tr>
 			<td class='forumheader3'>".LAN_61."</td>
-			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_poster' type='text' size='50' maxlength='100' value='{$poster}' /></td>
+			<td class='forumheader3'>".$frm->text('file_poster',$_POST['file_poster'],100, 'required=1')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_112."</span></td>
-			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_email' id='user_email' type='text' size='50' maxlength='100' value='".$postemail."' required /></td>
+			<td class='forumheader3'>".$frm->text('file_email',$_POST['file_email'],100, 'required=1')."</td>
 			</tr>";
 		}
 
 		$text .= "
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_409."</span></td>
-			<td class='forumheader3'><input class='tbox form-control' style='width:90%'  name='file_name' id='file_name' type='text' size='50' maxlength='100' required /></td>
+			<td class='forumheader3'>".$frm->text('file_name', $_POST['file_name'], 100, 'required=1')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_410."</td>
-			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_version' type='text' size='10' maxlength='10' /></td>
+			<td class='forumheader3'>".$frm->text('file_version',$_POST['file_version'],10)."</td>
 			</tr>
 		
 		
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_411."</span></td>
-			<td class='forumheader3'><input class='tbox' style='width:90%'  id='file_realpath' name='file_userfile[]' type='file' size='47' /></td>
+			<td class='forumheader3'>".$frm->file('file_userfile[]')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_IMAGE."/".LAN_SCREENSHOT."</td>
-			<td class='forumheader3'><input class='tbox' style='width:90%' name='file_userfile[]' type='file' size='47' /></td>
+			<td class='forumheader3'>".$frm->file('file_userfile[]')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'><span style='text-decoration:underline'>".LAN_413."</span></td>
-			<td class='forumheader3'><textarea class='tbox form-control' style='width:90%' name='file_description' id='file_description' cols='59' rows='6' required></textarea></td>
+			<td class='forumheader3'>".$frm->textarea('file_description', $_POST['file_description'], 6, 59, 'size=block-level&required=1')."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_144."</td>
-			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_website' type='text' size='50' maxlength='100' value='".(defined(USERURL) ? USERURL : "")."' /></td>
+			<td class='forumheader3'>".$frm->text('file_website', $_POST['file_website'], 100)."</td>
 			</tr>
 		
 			<tr>
 			<td class='forumheader3'>".LAN_414."<br /><span class='smalltext'>".LAN_415."</span></td>
-			<td class='forumheader3'><input class='tbox form-control' style='width:90%' name='file_demo' type='text' size='50' maxlength='100' /></td>
+			<td class='forumheader3'>".$frm->text('file_demo', $_POST['file_demo'], 100)."</td>
 			</tr>
 		
 			<tr>

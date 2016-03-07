@@ -596,8 +596,16 @@ class e_form
 		{
 			$url .= "&amp;video=1";	
 		}			
-		
-		$title = "Media Manager : ".$category;
+
+		if(E107_DBG_BASIC)
+		{
+
+			$title = "Media Manager : ".$category;
+		}
+		else
+		{
+				$title = LAN_EDIT;
+		}
 
 	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
 	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
@@ -842,7 +850,7 @@ class e_form
 			$width = vartrue($sc_parameters['w'], 120);
 			$height = vartrue($sc_parameters['h'], 100);
 
-			$ret = "<div class='imgselector-container e-tip' {$title} style='margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
+			$ret = "<div class='imgselector-container e-tip' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
 			
@@ -853,10 +861,17 @@ class e_form
 			{
 			 	$cat = $cat . "_image";		
 			}
+
+
 		}
 		
 		
 		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
+
+		if($cat != '_icon' && $blank == false) // ICONS
+		{
+			$ret .= "<div class='text-right'><a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-block e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search')."</a></div>";
+		}
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 

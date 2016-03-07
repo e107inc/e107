@@ -96,6 +96,12 @@ class news_admin extends e_admin_dispatcher
 	{
 
 
+		if(!empty($_GET['sub']) && $_GET['action'] == 'create')
+		{
+			$this->adminMenu['sub/list']['selected'] = true;
+			$this->getResponse()->setTitle(NWSLAN_47);
+		}
+
 
 
 	}
@@ -291,7 +297,9 @@ class news_sub_form_ui extends e_admin_form_ui
 		
 		$text .= '
 
-		 <div id="submitted_'.$submitnews_id.'" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
+		 <div id="submitted_'.$submitnews_id.'" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
+		 <div class="modal-dialog modal-lg">
+    <div class="modal-content">
 			    <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
@@ -321,7 +329,8 @@ class news_sub_form_ui extends e_admin_form_ui
 			    <div class="modal-footer">
 			    <a href="#" data-dismiss="modal" class="btn btn-primary">'.LAN_NEWS_67.'</a>
 			    </div>
-			    </div>';		
+			    </div>
+			    </div></div>';
 			
 		return $text;	
 			
@@ -337,10 +346,27 @@ class news_sub_form_ui extends e_admin_form_ui
 		{
 			$text = "<div class='btn-group'>";
 			$approved = $this->getController()->getListModel()->get('submitnews_auth'); // approved;
+
+
+				$row = $this->getController()->getListModel();
+
+		$submitnews_id 		= $row->get('submitnews_id');
+		$submitnews_title 	= $row->get('submitnews_title');
+		$submitnews_file 	= $row->get('submitnews_file');
+		$submitnews_item 	= $row->get('submitnews_item');
+
+	//	$text .= "<a href='#submitted_".$submitnews_id."' class='e-modal'  >";
+
+
+			$text   = "<a class='btn btn-default  btn-large' data-toggle='modal' href='#submitted_".$submitnews_id."' data-cache='false' data-target='#submitted_".$submitnews_id."'  title='".LAN_PREVIEW."'>".ADMIN_VIEW_ICON."</a>";
+
+
+
+
 			if($approved == 0)
 			{
 				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
-				$text = "<a class='btn btn-large' href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
+				$text .= "<a class='btn btn-default btn-large' href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
 				// NWSLAN_103;	
 			} 
 			else // Already submitted; 
@@ -348,7 +374,7 @@ class news_sub_form_ui extends e_admin_form_ui
 				
 			}
 					
-			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'btn btn-large action delete'));
+			$text .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'btn btn-default btn-large action delete'));
 			$text .= "</div>";
 			return $text;
 		}
@@ -452,12 +478,20 @@ class news_admin_ui extends e_admin_ui
 
 	public function beforeCreate($new_data)
 	{
+		if(!empty($new_data['news_thumbnail']) && !empty($_GET['sub'])) // From SubmitNews.
+		{
+			$new_data['news_thumbnail'] = $this->processSubNewsImages($new_data['news_thumbnail']);
+		}
+
+
 		$new_data['news_thumbnail'] = $this->processThumbs($new_data['news_thumbnail']);
 
 		if(empty($new_data['news_datestamp']))
 		{
 			$new_data['news_datestamp'] = time();
 		}
+
+
 
 		$new_data['news_sef'] =  empty($new_data['news_sef']) ?  eHelper::title2sef($new_data['news_title']) : eHelper::secureSef($new_data['news_sef']);
 
@@ -470,6 +504,43 @@ class news_admin_ui extends e_admin_ui
 		}
 
 		return $new_data;
+	}
+
+	private function processSubNewsImages($row)
+	{
+		$new = array();
+		foreach($row as $k=>$v)
+		{
+			$tmp = urldecode($v);
+			if(strpos($tmp,'{e_UPLOAD}')!==false)
+			{
+				list($root,$qry) = explode("?",$tmp);
+				parse_str($qry,$opt);
+				if(!empty($opt['src']))
+				{
+
+					$f = str_replace('{e_UPLOAD}','',$opt['src']);
+				//	e107::getMessage()->addInfo("<h3>Importing File</h3>".print_a($f,true));
+					if($bbpath = e107::getMedia()->importFile($f,'news', e_UPLOAD.$f))
+					{
+						$new[] = $bbpath;
+					}
+				}
+
+			}
+			elseif(!empty($v))
+			{
+				$new[] = $v;
+			}
+		}
+
+	//		e107::getMessage()->addInfo("<h3>Process SubNews Images</h3>".print_a($new,true));
+
+		return implode(",",$new);
+
+
+
+
 	}
 
 
@@ -1190,7 +1261,7 @@ class news_admin_ui extends e_admin_ui
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 		if ($sql->select("submitnews", "*", "submitnews_id=".intval($id)))
 		{
 			$row = $sql->fetch();
@@ -1198,23 +1269,9 @@ class news_admin_ui extends e_admin_ui
 			$data['news_body'] = $row['submitnews_item'];
 			$data['news_category'] = intval( $row['submitnews_category']);
 			$data['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
-			$thumbs = array();
 
-			if($row['submitnews_file'])
-			{
-					$files = explode(",",$row['submitnews_file']);
-					foreach($files as $f)
-					{
-						if($bbpath = e107::getMedia()->importFile($f,'news'))
-						{
-							$thumbs[] = $bbpath;
-						//	$data['news_body'] .= "\n\n[img]".$bbpath."[/img]";
-						}
-
-					}
-			}
-
-			$data['news_thumbnail'] = implode(",",$thumbs);
+			$data['news_thumbnail'] = $row['submitnews_file']; // implode(",",$thumbs);
+			$data['news_sef']    = eHelper::dasherize($data['news_title']);
 			$data['submitted_id']   = $id;
 
 			foreach($data as $k=>$v)
@@ -1437,6 +1494,20 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
+			if(!empty($_GET['sub']))
+			{
+				$thumbTmp = explode(",",$curval);
+				$paths = array();
+				foreach($thumbTmp as $key=>$path)
+				{
+					$paths[] = e107::getParser()->thumbUrl(e_TEMP.$path,'aw=800'); ;
+				}
+
+				$curval = implode(",", $paths);
+
+			}
+
+
 			$tp = e107::getParser();
 			$frm = e107::getForm();
 
@@ -1447,7 +1518,7 @@ class news_form_ui extends e_admin_form_ui
 			{
 				if(!empty($path) && (strpos($path, ",") == false) && $path[0] != "{" && $tp->isVideo($path) === false )//BC compat
 				{
-					$thumbTmp[$key] = "{e_IMAGE}newspost_images/".$path;
+				//	$thumbTmp[$key] = "{e_IMAGE}newspost_images/".$path;
 				}
 			}
 

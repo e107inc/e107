@@ -503,13 +503,14 @@ CREATE TABLE upload (
   upload_datestamp int(10) unsigned NOT NULL default '0',
   upload_name varchar(100) NOT NULL default '',
   upload_version varchar(10) NOT NULL default '',
-  upload_file varchar(100) NOT NULL default '',
+  upload_file varchar(180) NOT NULL default '',
   upload_ss varchar(100) NOT NULL default '',
   upload_description text NOT NULL,
   upload_demo varchar(100) NOT NULL default '',
   upload_filesize int(10) unsigned NOT NULL default '0',
   upload_active tinyint(3) unsigned NOT NULL default '0',
   upload_category tinyint(3) unsigned NOT NULL default '0',
+  upload_owner varchar(50) NOT NULL default '',
   PRIMARY KEY  (upload_id),
   KEY upload_active (upload_active)
 ) ENGINE=MyISAM;

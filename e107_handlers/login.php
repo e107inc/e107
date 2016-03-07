@@ -616,8 +616,10 @@ class userlogin
 	//	$text  = e107::getParser()->toDB($text);
 	//	$text = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS_);
 
-		$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+		$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
 
+		// unset($debug[0]);
+		$debug[0] = e_REQUEST_URI;
 
 	//	$array = debug_backtrace();
 	//	e107::getLog()->e_log_event(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);
