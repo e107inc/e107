@@ -1661,7 +1661,7 @@ class e107
 	 *
 	 * @return e_ajax_class
 	 */
-	public static function ajax()
+	public static function getAjax()
 	{
 		return self::getSingleton('e_ajax_class', true);
 	}
