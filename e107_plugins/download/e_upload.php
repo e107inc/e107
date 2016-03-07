@@ -85,13 +85,13 @@ class download_upload
 	        foreach($v['download_category_sub'] as $row)
 	        {
 	            $id2 = $row['download_category_name'];
-		        $arr[$id] = array($row['download_category_id']=>$id2);
+		        $arr[$id] = array('download__'.$row['download_category_id']=>$id2);
 	            if(!empty($row['download_category_sub']))
 	            {
 					foreach($row['download_category_sub'] as $key=>$val)
 					{
 						$subid = $val['download_category_name'];
-						$arr[$id][$subid] = array($val['download_category_id']=>$subid);
+						$arr[$id][$subid] = array('download__'.$val['download_category_id']=>$subid);
 					}
 	            }
 

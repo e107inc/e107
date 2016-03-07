@@ -42,6 +42,16 @@ class e_media
 
 		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
 	}
+
+
+	public function debug($val)
+	{
+
+		$this->logging = intval($val);
+	}
+
+
+
 	/**
 	 * Import files from specified path into media database. 
 	 * @param string $cat Category nickname
@@ -804,8 +814,12 @@ class e_media
 	}
 
 
-
-	function checkDupe($oldpath,$newpath)
+	/**
+	 * @param string $oldpath - path to pre-moved file (no e107 constants)
+	 * @param string $newpath - new path to move file to (no e107 constants)
+	 * @return bool|string returns false if duplciate entry found otherwise return new path.
+	 */
+	function checkDupe($oldpath, $newpath)
 	{
 		$mes = e107::getMessage();	
 		$tp = e107::getParser();
@@ -823,9 +837,11 @@ class e_media
 		if($sql->select("core_media","media_url","media_url LIKE '%".$tp->createConstants($newpath,'rel')."' LIMIT 1"))
 		{
 			// $mes->addWarning($newpath." detected in media-manager.");
-			$this->log("Import not performed. ".$newpath." detected in media table already.");	
-			$row = $sql->fetch();
-			$newpath = $row['media_url'];
+			$this->log("Import not performed. ".$newpath." detected in media table already.");
+
+			return false;
+			//$row = $sql->fetch();
+			//$newpath = $row['media_url']; // causes trouble with importFile() if {e_MEDIA_CONSTANT} returned.
 		}
 
 		return $newpath;	
@@ -1022,7 +1038,7 @@ class e_media
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-        if(!$oldpath) $oldpath = e_IMPORT.$file;
+        if(empty($oldpath)) $oldpath = e_IMPORT.$file;
 		
 		if(!file_exists($oldpath))
 		{
@@ -1045,10 +1061,15 @@ class e_media
 				$mes->addError("Couldn't generate path from file info:".$oldpath);
 				return FALSE;
 		}
-				
-		$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file);
+
+
+		if(!$newpath = $this->checkDupe($oldpath,$typePath.'/'.$file))
+		{
+			return $tp->createConstants($typePath.'/'.$file,'rel');
+		}
+
 		$newpath = $this->checkFileExtension($newpath, $img_data['media_type']);
-		
+
 		if(!rename($oldpath, $newpath)) // e_MEDIA.$newpath was working before. 
 		{
 			$this->log("Couldn't move file from ".realpath($oldpath)." to ".e_MEDIA.$newpath);

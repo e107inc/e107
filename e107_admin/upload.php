@@ -42,6 +42,7 @@ class upload_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'V'),
+		// 'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'V'),
 	//	'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'V'),
 			
 	/*
@@ -75,7 +76,7 @@ class upload_ui extends e_admin_ui
             'checkboxes'            =>   array ( 'title' => '', 'type' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => true, 'class' => 'center', 'toggle' => 'e-multiselect',  ),
             'upload_id'             =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'upload_datestamp'      =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-           'upload_name'           =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
+            'upload_name'           =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
             'upload_poster'         =>   array ( 'title' => UPLLAN_5, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_email'          =>   array ( 'title' => LAN_EMAIL, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_website'        =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -86,19 +87,25 @@ class upload_ui extends e_admin_ui
             'upload_demo'           =>   array ( 'title' => UPLLAN_14, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_active'         =>   array ( 'title' => LAN_STATUS, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true),
-            'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
+            'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
+            'upload_owner'          =>   array ( 'title' => LAN_OWNER, 'type' => 'text', 'readonly'=>true, 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
             'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
-		protected $fieldpref = array('checkboxes', 'upload_datestamp', 'upload_name', 'upload_category', 'options');
+		protected $fieldpref = array('checkboxes', 'upload_datestamp', 'upload_poster','upload_name', 'upload_category', 'upload_owner', 'options');
 		
 		
-
+	public $categories = array();
 		
     // optional
     public function init()
     {
-        $qry = "
+
+        $this->categories = e107::getAddonConfig('e_upload','','category');
+
+
+       /* $qry = "
         SELECT dc.download_category_name, dc.download_category_id
         FROM #download_category AS dc
         WHERE dc.download_category_parent = 0
@@ -127,7 +134,7 @@ class upload_ui extends e_admin_ui
             $parent = $cats[$id];
             $label = e107::getParser()->toHTML($parent['download_category_name'], false, 'TITLE');
             $this->addSubcategories($id, $cats, $subIndex, $label);
-        }
+        }*/
     }
 
 
@@ -299,6 +306,60 @@ class upload_ui extends e_admin_ui
 
 class upload_form_ui extends e_admin_form_ui
 {
+
+    public function upload_category($value, $type, $options = array())
+    {
+        switch($type)
+        {
+
+
+            case 'read':
+
+
+             $owner =  $this->getController()->getListModel()->get('upload_owner');
+
+             $opts =  $this->getController()->categories[$owner];
+
+			return print_a($opts,true);
+
+             foreach($opts as $k=>$v)
+             {
+
+             }
+
+                return $value."-- ".$owner; // $this->radio_switch('upload_active', $va
+                return $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+            break;
+
+	        case 'write':
+	            $owner =  $this->getController()->getModel()->get('upload_owner');
+                return $value."-- ".$owner; // $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
+            break;
+
+            case 'batch':
+
+				//TODO move all 'downloads' specific code into e_upload.php .
+				/*
+				$pref = e107::pref('core', 'e_upload_list');
+				foreach($pref as $k=>$v)
+				{
+					$def = 'LAN_PLUGIN_'.strtoupper($v).'_NAME';
+					$text =  $this->option('Send to '.defset($def,$v), 'send_to_'.$k, false, array('other' => 'style="padding-left: 15px"'));
+				}
+				*/
+
+			//	$text =  $this->option(LAN_ACCEPT, 'upload_active', false, array('other' => 'style="padding-left: 15px"'));
+
+
+          //      return $text; // $this->option('Accept', 'upload_active', false, array('other' => 'style="padding-left: 15px"'));
+            break;
+        }
+    }
+
+
+
+
+
     public function upload_active($value, $type, $options = array())
     {
         switch($type)
