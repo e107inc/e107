@@ -13,7 +13,7 @@
 		<link url='admin_download.php?mirror' description='' icon='images/downloads_32.png' iconSmall=''>DOWLAN_128</link>		
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}download/download.php" perm="everyone">LAN_PLUGIN_DOWNLOAD_NAME</link>	
+		<link url="{e_PLUGIN}download/download.php" sef='index' perm="everyone">LAN_PLUGIN_DOWNLOAD_NAME</link>
 	</siteLinks>	
 	<mainPrefs>
 		<pref name="download_php"></pref>
