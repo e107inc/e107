@@ -2743,27 +2743,23 @@ class e107
 	public static function url($plugin='',$key, $row=array(), $options = array())
 	{
 
-		/* TODO backward compat - core keys. */
-		/*
-		if($plugin == 'user')
+		/* backward compat - core keys. ie. news/xxx/xxx user/xxx/xxx etc, */
+		$legacy = array('news','page','search','user','download','gallery');
+
+		if(strpos($plugin,'/')!==false)
 		{
-			switch($key)
+			$tmp = explode("/",$plugin,2);
+
+			if(in_array($tmp[0], $legacy))
 			{
-				case "profile":
-					$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
-					return self::getUrl()->create('user/profile/view', $uparams);
-				break;
-
-				case "settings":
-					//  code
-					break;
-
-
-
+				return self::getUrl()->create($plugin, $key, $row);
 			}
-		}
-		*/
 
+			// shorthand - for internal use.
+			$plugin = $tmp[0];
+			$row = $key;
+			$key = $tmp[1];
+		}
 
 		$tmp = e107::getAddonConfig('e_url');
 		$tp = e107::getParser();

@@ -1234,6 +1234,10 @@ li.rssRow > div {
 .tab-content #plugin,
 .tab-content #theme             { padding-top:20px }
 
+.alert-warning pre          { color: white }
+
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }

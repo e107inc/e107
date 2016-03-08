@@ -134,7 +134,7 @@ class news_cat_ui extends e_admin_ui
 			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
 		);
 
-		protected $fieldpref = array('checkboxes', 'category_icon', 'category_id', 'category_name', 'category_description','category_manager', 'category_order', 'options');
+		protected $fieldpref = array('checkboxes', 'category_icon', 'category_id', 'category_name', 'category_description', 'category_sef', 'category_manager', 'category_order', 'options');
 		
 	//	protected $newspost;
 	

@@ -23,6 +23,7 @@ $sublink_type['forum']['url'] = "{e_PLUGIN}forum/forum_viewforum.php?#";
 $sublink_type['forum']['fieldid'] = 'forum_id';
 $sublink_type['forum']['fieldname'] = 'forum_name';
 $sublink_type['forum']['fielddiz'] = 'forum_description';
+$sublink_type['forum']['sef'] = 'forum/forum';
 
 
 ?>
