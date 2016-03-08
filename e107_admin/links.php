@@ -153,10 +153,6 @@ class links_admin_ui extends e_admin_ui
 
 
 
-
-
-
-
 	public function handleListLinkParentBatch($selected, $value)
 	{
 		$field = 'link_parent';
@@ -208,7 +204,7 @@ class links_admin_ui extends e_admin_ui
 
 	/**
 	 * Form submitted - 'etrigger_generate_sublinks' POST variable caught
-	 */
+	 *//*
 	public function SublinksGenerateSublinksTrigger()
 	{
 		$this->generateSublinks();
@@ -217,13 +213,19 @@ class links_admin_ui extends e_admin_ui
 	public function sublinksObserver()
 	{
 		$this->getTreeModel()->load();
-	}
+	}*/
 
 	/**
 	 * Sublinks generator
 	 */
 	public function toolsPage()
 	{
+
+		if(!empty($_POST['etrigger_generate_sublinks']))
+		{
+			$this->generateSublinks($_POST);
+		}
+
 		$sublinks = $this->sublink_data();
 		$ui = $this->getUI();
 		// TODO - use UI create form
@@ -257,7 +259,7 @@ class links_admin_ui extends e_admin_ui
 							</td>
 						</tr>
 						<tr>
-							<td>".LINKLAN_7."</td>
+							<td>".LINKLAN_7." (".LAN_OPTIONAL.")</td>
 							<td>
 								";
 		$text .= $ui->link_parent($this->getPosted('link_parent'), 'write');
@@ -341,17 +343,17 @@ class links_admin_ui extends e_admin_ui
 
 		if(!$pid)
 		{
-			$mes->warning(LCLAN_109);
-			return;
+		//	$mes->addWarning(LCLAN_109);
+		//	return;
 		}
 		if(!$subtype)
 		{
-			$mes->warning(LCLAN_110);
+			$mes->addWarning(LCLAN_110);
 			return;
 		}
 		if(!$sublink)
 		{
-			$mes->error(LCLAN_111);
+			$mes->addError(LCLAN_111);
 			return;
 		}
 
@@ -362,8 +364,8 @@ class links_admin_ui extends e_admin_ui
 		$sql2 = e107::getDb('sql2');
 
 
-		$sql->db_Select("links", "*", "link_id=".$pid);
-		$par = $sql->db_Fetch();
+		$sql->select("links", "*", "link_id=".$pid);
+		$par = $sql->fetch();
 
 		//extract($par);
 		// Added option for passing of result array
@@ -397,9 +399,9 @@ class links_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			$sql->db_Select($sublink['table'], "*", $sublink['query']);
+			$sql->select($sublink['table'], "*", $sublink['query']);
 			$count = 1;
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$subcat = $row[($sublink['fieldid'])];
 				$name = $row[($sublink['fieldname'])];
@@ -414,22 +416,22 @@ class links_admin_ui extends e_admin_ui
 						'link_url'			=> $suburl,
 						'link_description'	=> $subdiz,
 						'link_button'		=> $subicon,
-						'link_category'		=> $par['link_category'],
+						'link_category'		=> vartrue($par['link_category'],1),
 						'link_order'		=> $count,
 						'link_parent'		=> $subparent,
 						'link_open'			=> $par['link_open'],
-						'link_class'		=> $par['link_class'],
+						'link_class'		=> intval($par['link_class']),
 						'link_function'		=> ''
 				);
 
-				if($sql2->db_Insert("links",$insert_array))
+				if($sql2->insert("links",$insert_array))
 				{
-					$message .= LAN_CREATED." ({$name})[!br!]";
-					$mes->success(LAN_CREATED." ({$name})");
+					$message = LAN_CREATED." ({$name})[!br!]";
+					$mes->addSuccess(LAN_CREATED." ({$name})");
 				} else
 				{
-					$message .= LAN_CREATED_FAILED." ({$name})[!br!]";
-					$mes->error(LAN_CREATED_FAILED." ({$name})");
+					$message = LAN_CREATED_FAILED." ({$name})[!br!]";
+					$mes->addError(LAN_CREATED_FAILED." ({$name})");
 				}
 				$count++;
 			}
