@@ -6,31 +6,30 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Chatbox e_search addon
  */
 
 
 if (!defined('e107_INIT')) { exit; }
 
-// v2 e_search addon.
-// Removes the need for search_parser.php, search_advanced.php and in most cases search language files.
+// v2 e_upload addon.
 
 class download_upload
 {
 
-	/*function config()
+	function config()
 	{
-		$cron = array();
-
-		$cron[] = array(
-			'name'			=> "Prune Download Log older than 12 months", // Prune downloads history
-			'function'		=> "pruneLog",
-			'category'		=> '',
-			'description' 	=> "Non functional at the moment"
+		$config = array(
+			'name'			    => LAN_PLUGIN_DOWNLOAD_NAME, // Prune downloads history
+			'table'		        => "download",  // table to insert upload data into.
+			'media'	            => array(
+									'file'      => 'download_file',  // media-category for first imported file.
+									'preview'   => '_common_image',  // media-category for screenshot/preview imported file.
+									),
+			'url'               => e_PLUGIN_ABS.'download/admin_download.php?mode=main&action=edit&id={ID}' // URL to edit new record.
 		);
 
-		return $cron;
-	}*/
+		return $config;
+	}
 
 
 	/**
@@ -66,6 +65,9 @@ class download_upload
 	 */
 	function category()
 	{
+
+
+
 		$sql = e107::getDb();
 		$qry = "SELECT download_category_id,download_category_name,download_category_parent FROM `#download_category`  WHERE download_category_class IN (".USERCLASS_LIST.")  ORDER BY download_category_order, download_category_parent";
 
@@ -108,12 +110,33 @@ class download_upload
 
 	}
 
-
-	// TODO
-	function copy($row)
+	function insert($upload)
 	{
 
+		 $ret = array(
+            'download_name'             => $upload['upload_name'],
+            'download_url'              => $upload['upload_file'],
+            'download_sef'              => eHelper::title2sef($upload['upload_name']),
+            'download_author'           => $upload['upload_poster'],
+            'download_author_email'     => $upload['upload_email'],
+            'download_author_website'   => $upload['upload_website'],
+            'download_description'      => $upload['upload_description'],
+            'download_keywords'         => null,
+            'download_filesize'         => $upload['upload_filesize'],
+            'download_requested'        => 0,
+            'download_category'         => $upload['upload_category'],
+            'download_active'           => 1,
+            'download_datestamp'        => $upload['upload_datestamp'],
+            'download_thumb'            => null,
+            'download_image'            => $upload['upload_ss'],
+            'download_comment'          => 1,
+            'download_class'            => e_UC_MEMBER,
+            'download_visible'          => e_UC_MEMBER,
+            'download_mirror'           => null,
+            'download_mirror_type'      => 0,
+        );
 
+        return $ret;
 
 	}
 
