@@ -75,26 +75,35 @@ class upload_ui extends e_admin_ui
 		protected $fields = array (
             'checkboxes'            =>   array ( 'title' => '', 'type' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => true, 'class' => 'center', 'toggle' => 'e-multiselect',  ),
             'upload_id'             =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-            'upload_datestamp'      =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-            'upload_name'           =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
-            'upload_poster'         =>   array ( 'title' => UPLLAN_5, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_email'          =>   array ( 'title' => LAN_EMAIL, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_datestamp'      =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '15%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_name'           =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true, 'inline' => true),
+           'upload_email'          =>   array ( 'title' => LAN_EMAIL, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_website'        =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'upload_version'        =>   array ( 'title' => LAN_VERSION, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_file'           =>   array ( 'title' => LAN_FILE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'validate' => true ),
+            'upload_file'           =>   array ( 'title' => LAN_FILE, 'type' => 'text', 'data' => 'str', 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
             'upload_ss'             =>   array ( 'title' => 'Ss', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_description'    =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-            'upload_demo'           =>   array ( 'title' => UPLLAN_14, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_active'         =>   array ( 'title' => LAN_STATUS, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true),
-            'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
-            'upload_owner'          =>   array ( 'title' => LAN_OWNER, 'type' => 'text', 'readonly'=>true, 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_description'    =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'upload_poster'         =>   array ( 'title' => UPLLAN_5, 'type' => 'user', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
-            'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => '', 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+            'upload_demo'           =>   array ( 'title' => UPLLAN_14, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+            'upload_active'         =>   array ( 'title' => "Imported", 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true, 'filter'=>true),
+            'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
+            'upload_owner'          =>   array ( 'title' => LAN_OWNER, 'type' => 'text', 'readonly'=>true, 'data' => 'str', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+            'options'               =>   array ( 'title' => LAN_OPTIONS, 'type' => '', 'data' => '', 'width' => '140px', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
-		protected $fieldpref = array('checkboxes', 'upload_datestamp', 'upload_poster','upload_name', 'upload_category', 'upload_owner', 'options');
-		
+		protected $fieldpref = array('checkboxes', 'upload_datestamp', 'upload_name', 'upload_description', 'upload_file', 'upload_filesize', 'upload_poster','upload_name', 'upload_category', 'upload_owner', 'upload_active', 'options');
+/*
+		protected $prefs = array(
+			'upload_categories'	   	=> array('title'=> 'Display Contact info on Contact form', 'type'=>'checkboxes', 'data'=>'int'),
+
+			//	'classic_look'				=> array('title'=> 'Use Classic Layout', 'type'=>'boolean')
+		);
+*/
+
+
 		
 	public $categories = array();
 		
@@ -103,6 +112,8 @@ class upload_ui extends e_admin_ui
     {
 
         $this->categories = e107::getAddonConfig('e_upload','','category');
+
+     //   $this->prefs['upload_categories']['writeParms']['optArray'] = array(1,2,3,4);
 
 
        /* $qry = "
@@ -200,12 +211,12 @@ class upload_ui extends e_admin_ui
     public function afterUpdate($new_data, $old_data, $id)
     {
 		
-        $did = $this->move2download($new_data); //TODO Move this to e_upload.php .. method 'insert()'; 
+        $did = $this->move2download($new_data);
         $isSession = vartrue($_POST['__after_submit_action']) && !isset($_POST['e__execute_batch']) != 'edit' ? true : false;
         if($did)
         {
             $sql = e107::getDb('activate');
-            if(!$sql->delete('upload', 'upload_id='.$id))
+            if(!$sql->update('upload', 'upload_active = 1 WHERE upload_id='.$id))
             {
                 e107::getMessage()
                     ->addError(UPLLAN_68.' #'.$sql->getLastErrorNumber().' '.$sql->getLastErrorText(), 'default', $isSession)
@@ -213,8 +224,14 @@ class upload_ui extends e_admin_ui
             }
             else
             {
-                $link = '<br><a href="'.e_PLUGIN_ABS.'download/admin_download.php?mode=main&action=edit&id='.$did.'">'.UPLLAN_64.'</a>';
+                $owner = varset($new_data['upload_owner'],'download');
+                $obj = e107::getAddon($owner,'e_upload');
+                $config = $obj->config();
+                $url = str_replace('{ID}',$did, $config['url']);
+
+                $link = '<br><a href="'.$url.'">'.UPLLAN_64.'</a>'; //FIXME Needs generic LAN for all areas, not just downloads.
                 $message = str_replace('[x]', $link, UPLLAN_63);
+
                 e107::getMessage()->addSuccess($message, 'default', $isSession);
             }
 
@@ -243,6 +260,16 @@ class upload_ui extends e_admin_ui
             return 0;
         }
 
+        $owner = varset($upload['upload_owner'], 'download');
+
+        $uploadObj = e107::getAddon($owner,'e_upload');
+
+        $config =  $uploadObj->config(); // import configuration from e_upload
+
+        $mediaFile = varset($config['media']['file'],'_common_file');
+        $mediaImage = varset($config['media']['preview'], '_common_image');
+
+
         $media = e107::getMedia();
         $uploadPath = e_UPLOAD;
         if(!file_exists($uploadPath.$upload['upload_file']))
@@ -250,7 +277,8 @@ class upload_ui extends e_admin_ui
             $this->getModel()->addValidationError(LAN_FILE_NOT_FOUND);
             return false;
         }
-        $downloadPath = $media->importFile($upload['upload_file'], 'download_file', $uploadPath.$upload['upload_file'], array('media_caption' => $upload['upload_name']));
+
+        $downloadPath = $media->importFile($upload['upload_file'], $mediaFile, $uploadPath.$upload['upload_file'], array('media_caption' => $upload['upload_name']));
         if(false === $downloadPath)
         {
             $this->getModel()->addValidationError(UPLLAN_66);
@@ -260,44 +288,41 @@ class upload_ui extends e_admin_ui
         $imagePath = null;
         if($upload['upload_ss'] && file_exists($uploadPath.$upload['upload_ss']))
         {
-            $imagePath = $media->importFile($upload['upload_ss'], '_common_image', $uploadPath.$upload['upload_ss'], array('media_caption' => $upload['upload_name'].' '.LAN_PREVIEW));
+            $imagePath = $media->importFile($upload['upload_ss'], $mediaImage, $uploadPath.$upload['upload_ss'], array('media_caption' => $upload['upload_name'].' '.LAN_PREVIEW));
         }
 
         $author = $upload['upload_poster'] ? e107::getSystemUser($upload['upload_poster'])->getRealName() : LAN_ANONYMOUS;
 
-        $dl = array(
-            'download_name' => $upload['upload_name'],
-            'download_url' => $downloadPath,
-            'download_sef' => eHelper::title2sef($upload['upload_name']),
-            'download_author' => $author,
-            'download_author_email' => $upload['upload_email'],
-            'download_author_website' => $upload['upload_website'],
-            'download_description' => $upload['upload_description'],
-            'download_keywords' => null,
-            'download_filesize' => $upload['upload_filesize'],
-            'download_requested' => 0,
-            'download_category' => $upload['upload_category'],
-            'download_active' => 1,
-            'download_datestamp' => $upload['upload_datestamp'],
-            'download_thumb' => null,
-            'download_image' => $imagePath,
-            'download_comment' => 1,
-            'download_class' => e_UC_MEMBER,
-            'download_visible' => e_UC_MEMBER,
-            'download_mirror' => null,
-            'download_mirror_type' => 0,
-        );
+		$upload['upload_ss'] = $imagePath;
+		$upload['upload_file'] = $downloadPath;
+		$upload['upload_poster'] = $author;
+
+        $dl =  $uploadObj->insert($upload);
 
         $sql = e107::getDb('activate');
-        $id = $sql->insert('download', $dl);
-        if(!$id)
+
+        if(!empty($dl) && !empty($config['table']))
         {
-            $this->getModel()->addValidationError(UPLLAN_68.' #'.$sql->getLastErrorNumber().' '.$sql->getLastErrorText());
-            e107::getMessage()->addDebug($sql->getLastQuery());
-            return;
+             $id = $sql->insert($config['table'], $dl);
+
+	        if(!$id)
+	        {
+	            $this->getModel()->addValidationError(UPLLAN_68.' #'.$sql->getLastErrorNumber().' '.$sql->getLastErrorText());
+	            e107::getMessage()->addDebug($sql->getLastQuery());
+	            return null;
+	        }
+
+            return $id;
+        }
+        else
+        {
+            e107::getMessage()->addDebug('table: '.$config['table']);
+            e107::getMessage()->addDebug('data: '.print_a($dl,true));
+
+            return false;
         }
 
-        return $id;
+
     }
 
 }
@@ -306,29 +331,40 @@ class upload_ui extends e_admin_ui
 
 class upload_form_ui extends e_admin_form_ui
 {
+	private function findKey($owner, $array,$value)
+	{
+		$searchKey = $owner."__".$value;
+
+		$ret = null;
+
+		foreach($array as $k=>$v)
+		{
+			if(is_array($v))
+			{
+				$ret = $this->findKey($owner,$v,$value);
+			}
+			elseif($k == $searchKey)
+			{
+				$ret = $v;
+			}
+
+		}
+
+		return $ret;
+	//	return print_a($array,true);
+	}
+
 
     public function upload_category($value, $type, $options = array())
     {
+
+        $opts =  $this->getController()->categories;
+
         switch($type)
         {
-
-
             case 'read':
-
-
-             $owner =  $this->getController()->getListModel()->get('upload_owner');
-
-             $opts =  $this->getController()->categories[$owner];
-
-			return print_a($opts,true);
-
-             foreach($opts as $k=>$v)
-             {
-
-             }
-
-                return $value."-- ".$owner; // $this->radio_switch('upload_active', $va
-                return $value ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
+                  $owner =  $this->getController()->getListModel()->get('upload_owner');
+             return $this->findKey($owner, $opts[$owner], $value);
             break;
 
 	        case 'write':
@@ -338,16 +374,22 @@ class upload_form_ui extends e_admin_form_ui
 
             case 'batch':
 
-				//TODO move all 'downloads' specific code into e_upload.php .
-				/*
-				$pref = e107::pref('core', 'e_upload_list');
+				return array();
+
+				$pref = e107::getAddonConfig('e_upload');
+
+				$tp = e107::getParser();
+
+				$lan = "Send to [x]";
+				$text = '';
 				foreach($pref as $k=>$v)
 				{
-					$def = 'LAN_PLUGIN_'.strtoupper($v).'_NAME';
-					$text =  $this->option('Send to '.defset($def,$v), 'send_to_'.$k, false, array('other' => 'style="padding-left: 15px"'));
+					$def = $v['name'];
+					$diz = $tp->lanVars($lan,$def);
+					$text .=  $this->option($diz, 'send_to_'.$k, false, array('other' => 'style="padding-left: 15px"'));
 				}
-				*/
 
+				return $text;
 			//	$text =  $this->option(LAN_ACCEPT, 'upload_active', false, array('other' => 'style="padding-left: 15px"'));
 
 
@@ -388,6 +430,27 @@ class upload_form_ui extends e_admin_form_ui
 	
 				
                 return $text; // $this->option('Accept', 'upload_active', false, array('other' => 'style="padding-left: 15px"'));
+            break;
+
+	        case 'filter':
+	            return array(0=>LAN_NO, 1=>LAN_YES);
+	        break;
+        }
+    }
+
+	public function upload_filesize($value, $type, $options = array())
+    {
+        switch($type)
+        {
+
+
+            case 'read':
+            case 'write':
+                return e107::getFile()->file_size_encode($value);
+            break;
+
+            case 'batch':
+
             break;
         }
     }

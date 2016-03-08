@@ -282,9 +282,18 @@ class userUpload
 		//	$dlparm = (isset($download_category)) ? $download_category : "";
 		//	$text .= $tp->parseTemplate("{DOWNLOAD_CATEGORY_SELECT={$dlparm}}",true,$download_shortcodes);
 
+		$configs = e107::getAddonConfig('e_upload','','config');
+
 		$optArray = e107::getAddonConfig('e_upload','','category');
 
-		$text .= e107::getForm()->select('category', $optArray, $_POST['category'], array('default'=>''));
+		$newArray = array();
+		foreach($optArray as $plug=>$opts)
+		{
+			$name = $configs[$plug]['name'];
+			$newArray[$name] = $opts;
+		}
+
+		$text .= e107::getForm()->select('category', $newArray, $_POST['category'], array('default'=>''));
 
 		
 		$text .= "</td>
