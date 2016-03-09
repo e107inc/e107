@@ -267,11 +267,21 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_email($parm='')
 	{
+
 		$tp = e107::getParser();
-		return /* Condition             */ ($this->var['user_hideemail'] && !ADMIN) ?
-		       /*  Hidden and Not Admin */ "<i>".LAN_USER_35."</i>" :
-		       /*  Not Hidden or Admin  */ "<span style='unicode-bidi:bidi-override; direction: rtl;'>" . strrev($tp->toHTML($this->var['user_email'],"no_replace")) . "</span>";
-		       ########################################################
+
+		if($this->var['user_hideemail'] && !ADMIN)
+		{
+			return "<i>".LAN_USER_35."</i>";
+		}
+		else
+		{
+			return $tp->emailObfuscate($this->var['user_email']);
+			//list($user,$dom) = explode('@', $this->var['user_email']);
+			//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
+		}
+
+		      ########################################################
 		       # Security Note - 04 May 2013                          #
 		       ########################################################
 		       #                                                      #
