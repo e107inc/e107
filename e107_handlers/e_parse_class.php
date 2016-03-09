@@ -1380,6 +1380,71 @@ class e_parse extends e_parser
 
 
 	/**
+	 * Replace text represenation of website urls and email addresses with clickable equivalents.
+	 * @param string $text
+	 * @param string $type email|url
+	 * @param array $opts options. (see below)
+	 * @param string $opts['sub'] substitute text within links
+	 * @param bool $opts['ext'] load link in new window (not for email)
+	 * @return string
+	 */
+	private function makeClickable($text='', $type='email', $opts=array())
+	{
+
+		if(empty($text))
+		{
+			return '';
+		}
+
+		$textReplace = (!empty($opts['sub'])) ? $opts['sub'] : '';
+
+		if(substr($textReplace,-6) == '.glyph')
+		{
+			$textReplace = $this->toGlyph($textReplace,'');
+		}
+
+		switch($type)
+		{
+			default:
+			case "email":
+
+				preg_match_all("#(?:[\n\r ]|^)?([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", $text, $match);
+
+				if(!empty($match[0]))
+				{
+
+					$srch = array();
+					$repl = array();
+
+					foreach($match[0] as $eml)
+					{
+						$email = trim($eml);
+						$srch[] = $email;
+						$repl[] = $this->emailObfuscate($email,$textReplace);
+					}
+					$text = str_replace($srch,$repl,$text);
+				}
+				break;
+
+			case "url":
+
+				$linktext = (!empty($textReplace)) ? $textReplace : '\\2';
+				$external = (!empty($opts['ext'])) ? 'rel="external"' : '';
+
+				$text = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a class=\"e-url\" href=\"\\2\" ".$external.">".$linktext."</a>", $text);
+				$text = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a class=\"e-url\" href=\"http://\\2\" ".$external.">".$linktext."</a>", $text);
+
+				break;
+
+		}
+
+		return $text;
+
+
+
+	}
+
+	/**
 	 * Converts the text (presumably retrieved from the database) for HTML output.
 	 *
 	 * @param string $text
@@ -1677,30 +1742,19 @@ class e_parse extends e_parser
 						{
 							if ($opts['link_replace'] && ADMIN_AREA !== true)
 							{
-								$_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
+
 								$link_text = $pref['link_text'];
-								
-								if(substr($link_text,-6) == '.glyph')
-								{
-									$link_text = $this->toGlyph($link_text,'');	
-								}
-								
-//								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-//								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $sub_blk);
-								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" {$_ext}>".$link_text."</a>", $sub_blk);
-								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$link_text."</a>", $sub_blk);
 								$email_text = ($pref['email_text']) ? $this->replaceConstants($pref['email_text']) : LAN_EMAIL_SUBS;
-								$sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $sub_blk);
+
+								$sub_blk = $this->makeClickable($sub_blk, 'url', array('sub'=> $link_text,'ext'=>$pref['links_new_window']));
+								$sub_blk = $this->makeClickable($sub_blk, 'email', array('sub'=> $email_text));
 							}
 							else
 							{
-								$email_text = '$1$2©$3';
 
-//								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $sub_blk);
-//								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s()[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $sub_blk);
-								$sub_blk = preg_replace("#(^|[\s])([\w]+?://(?:[\w-%]+?)(?:\.[\w-%]+?)+.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $sub_blk);
-								$sub_blk = preg_replace("#(^|[\s])((?:www|ftp)(?:\.[\w-%]+?){2}.*?)(?=$|[\s[\]<]|\.\s|\.$|,\s|,$)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $sub_blk);
-								$sub_blk = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $sub_blk);
+								$sub_blk = $this->makeClickable($sub_blk, 'url', array('ext'=>true));
+								$sub_blk = $this->makeClickable($sub_blk, 'email');
+
 							}
 						}
 
@@ -2951,28 +3005,83 @@ class e_parse extends e_parser
 
 
 
-
-
-
 	/**
-	 * Given an email address, returns a link including js-based obfuscation
+	 * Given an email address, returns a link including with obfuscated text.
+	 * e-email css in e107.css inserts the user/domain data for display.
+	 *
+	 * @param string $email
+	 * @param string $words [optional] text to display
+	 * @param null $subject [optional] default subject for email.
+	 * @return string
 	 */
-	function emailObfuscate($email, $words = '', $subject = '')
+	function emailObfuscate($email, $words = null, $subject =null)
 	{
-		if(strpos($email, '@') === FALSE)
+		if(strpos($email, '@') === false)
 		{
 			return '';
 		}
+
 		if ($subject)
 		{
 			$subject = '?subject='.$subject;
 		}
+
 		list($name, $address) = explode('@', $email, 2);
-		$reassembled = '"'.$name.'"+"@"+"'.$address.'"';
-		return "<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+".$reassembled.$subject.";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+".$reassembled."; return true;' onmouseout='window.status=\"\";return true;'>".$words.'</a>';
+
+		if(empty($words))
+		{
+			$words = "&#64;";
+			$user = "data-user='".$this->obfuscate($name)."'";
+			$dom =  "data-dom='".$this->obfuscate($address)."'";
+		}
+		else
+		{
+			$user = '';
+			$dom = '';
+		}
+
+		$url = "mailto:".$email.$subject;
+
+		$safe = $this->obfuscate($url);
+
+		return "<a class='e-email' {$user} {$dom} rel='external' href='".$safe."'>".$words.'</a>';
 	}
 
-	
+
+
+	/**
+	 * Obfuscate text from bots using Randomized encoding.
+	 * @param $text
+	 * @return string
+	 */
+	public function obfuscate($text)
+	{
+		$ret = '';
+		foreach (str_split($text) as $letter)
+		{
+			switch (rand(1, 3))
+			{
+				// HTML entity code
+				case 1:
+					$ret .= '&#'.ord($letter).';';
+				break;
+
+				// Hex character code
+				case 2:
+					$ret .= '&#x'.dechex(ord($letter)).';';
+				break;
+
+				// Raw (no) encoding
+				case 3:
+					$ret .= $letter;
+			}
+		}
+
+		return $ret;
+	}
+
+
+
 	
 	public function __get($name)
 	{
