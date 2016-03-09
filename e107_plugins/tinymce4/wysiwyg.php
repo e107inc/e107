@@ -600,12 +600,15 @@ class wysiwyg
 
 
 		$ret['convert_fonts_to_spans']	= false;
-		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
-		
+		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
+
+	//	$ret['content_css'] = e_WEB_ABS."js/bootstrap/css/bootstrap.min.css";
+
 		$ret['relative_urls']			= false;  //Media Manager prefers it like this. 
 		$ret['preformatted']			= true;
 		$ret['document_base_url']		= SITEURL;
-
+		$ret['schema']                  = "html5";
+		$ret['element_format']          = "html";
 
 	//	$ret['table_default_attributes'] = json_encode(array('class'=>'table table-striped' ));
 
@@ -614,6 +617,16 @@ class wysiwyg
 		{
 			$ret['templates']				 = $tp->replaceConstants($ret['templates'],'abs'); // $this->getTemplates(); 
 		}
+
+		if(ADMIN)
+		{
+			$ret['templates'] = $this->getSnippets();
+		}
+
+
+
+
+
 		//	$this->config['verify_css_classes']	= 'false';
 		
 		$text = array();
@@ -777,6 +790,28 @@ class wysiwyg
 		
 		
 		
+	}
+
+
+	private function getSnippets()
+	{
+		$files = e107::getFile()->get_files(e_PLUGIN."tinymce4/snippets");
+
+		$ret = array();
+		foreach($files as $f)
+		{
+			$content = file_get_contents($f['path'].$f['fname'], null, null, null, 140);
+
+			preg_match('/<!--[^\w]*Title:[\s]([^\r\n]*)[\s]*Info: ?([^\r\n]*)/is', $content, $m);
+			if(!empty($m[1]))
+			{
+				$url = e_PLUGIN_ABS."tinymce4/snippets/".$f['fname'];
+				$ret[] = array('title'=>trim($m[1]), 'url'=>$url, 'description'=>trim($m[2]));
+			}
+		}
+
+		return json_encode($ret);
+
 	}
 
 
