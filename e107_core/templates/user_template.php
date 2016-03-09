@@ -217,7 +217,58 @@ $USER_EMBED_USERPROFILE_TEMPLATE = "
 
 
 
-// Convert Templates from v1.x to v2.x Standards. 
+// Convert Templates from v1.x to v2.x Standards.
+/** TODO EXPERIMENTAL  */
+/*
+if(defset('BOOTSTRAP') == 3)
+{
+	//EXPERIMENTAL
+	e107::css('inline', "
+	#user-profile-avatar {
+	max-width: 150px;
+margin-top: -90px;
+margin-bottom: 15px;
+border: 5px solid #fff;
+border-radius: 100%;
+box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+margin-left:auto;
+margin-right:auto;
+}
+
+
+
+
+");
+
+
+	$USER_FULL_TEMPLATE = '{SETIMAGE: w=600}
+<div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default panel-profile">
+        <div class="ans panel-heading" style="height:180px; background-size: cover;background-image: url({USER_PHOTO: type=url});"></div>
+        <div class="panel-body text-center">
+          {SETIMAGE: w=200}
+          {USER_PICTURE: shape=circle&link=1}
+
+          <h5>{USER_NAME}</h5>
+          <p>{USER_SIGNATURE}</p>
+          </div>
+
+
+      </div>
+
+
+
+
+   </div>
+</div>
+
+	';
+
+}
+*/
+
+
 
 $USER_TEMPLATE['view'] 				= $USER_FULL_TEMPLATE;
 $USER_TEMPLATE['extended']['start'] = $EXTENDED_CATEGORY_START;

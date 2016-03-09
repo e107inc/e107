@@ -3342,7 +3342,7 @@ class e_parser
 	public function toAvatar($userData=null, $options=array())
 	{
 		$tp 		= e107::getParser();
-		$width 		= $tp->thumbWidth;
+		$width 		= !empty($options['w']) ? intval($options['w']) : $tp->thumbWidth;
 		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
 		$linkStart  = '';
 		$linkEnd    =  '';
@@ -3355,7 +3355,7 @@ class e_parser
 		}
 		
 		
-		$image = varset($userData['user_image']); 
+		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 		
 		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
 		
@@ -3387,20 +3387,26 @@ class e_parser
 			$img = $genericImg;
 		}
 
-		if(($img == $genericImg) && ($userData['user_id'] == USERID))
+		if(($img == $genericImg) && ($userData['user_id'] == USERID) && !empty($options['link']))
 		{
-			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit',$userData)."'>";
+			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit')."'>";
 			$linkEnd = "</a>";
 		}
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
-		$shape = (vartrue($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
+		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
+
+		if(!empty($options['type']) && $options['type'] == 'url')
+		{
+			return $img;
+		}
 
 
 		$heightInsert = empty($height) ? '' : "height='".$height."'";
+		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : "";
 
 		$text = $linkStart;
-		$text .= "<img class='".$shape." img-responsive user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$shape." user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
 	//	return $img;
 		return $text;

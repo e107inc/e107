@@ -597,11 +597,23 @@ class user_shortcodes extends e_shortcode
 		}
 	}
 	
-	
+
+	function sc_user_photo($parm)
+	{
+		$row = array('user_image'=>$this->var['user_sess']);
+
+		return e107::getParser()->toAvatar($row, $parm);
+	}
+
 	
 	function sc_user_picture($parm) 
 	{
 		$tp = e107::getParser();
+		$parm['id'] = 'user-profile-avatar';
+		return $tp->toAvatar($this->var, $parm);
+
+
+
 		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
 		
 		if ($this->var['user_sess'] && file_exists(e_MEDIA."avatars/".$this->var['user_sess']))

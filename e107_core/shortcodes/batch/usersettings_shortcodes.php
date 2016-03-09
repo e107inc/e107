@@ -242,9 +242,11 @@ class usersettings_shortcodes extends e_shortcode
 	function sc_photo_upload($parm)
 	{ 
 		$diz = LAN_USET_27.". ".LAN_USET_28.".";
-		
+		$text = '';
+
 		if(USERPHOTO)
 		{
+
 			$text .= e107::getParser()->parseTemplate("{PICTURE}",true);
 		}
 		
@@ -373,7 +375,7 @@ class usersettings_shortcodes extends e_shortcode
 				$fieldList = $sql->db_getList();
 				foreach($fieldList as $field)
 				{
-					cachevars("extendedfield_{$cat['user_extended_struct_name']}", $field);
+					cachevars("extendedfield_{$field['user_extended_struct_name']}", $field);
 					//TODO use $this instead of parseTemplate(); 
 					$ret .= $this->sc_userextended_field($field['user_extended_struct_name']);
 			//		$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", TRUE, $usersettings_shortcodes);
