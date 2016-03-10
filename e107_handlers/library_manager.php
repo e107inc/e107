@@ -284,11 +284,11 @@ class e_library_manager
 	 *   ignored.
 	 *
 	 * @return
-	 *   An associative array of the library information as returned from info(). The top-level properties
+	 *   An associative array of the library information as returned from config(). The top-level properties
 	 *   contain the effective definition of the library (variant) that has been loaded. Additionally:
-	 *   - installed: Whether the library is installed, as determined by detectLibrary().
+	 *   - installed: Whether the library is installed, as determined by detect().
 	 *   - loaded: Either the amount of library files that have been loaded, or FALSE if the library could not be
-	 *   loaded. See MYPLUGIN_library::info() for more information.
+	 *   loaded. See MYPLUGIN_library::config() for more information.
 	 */
 	public function load($name, $variant = null)
 	{
