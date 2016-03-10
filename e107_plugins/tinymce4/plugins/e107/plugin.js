@@ -75,8 +75,8 @@
 						title: 'Media Manager',
 						url: url + '/mediamanager.php?image',
 						width: 1050,
-						height: 650
-					
+						height: 680,
+						id: 'media-manager'
 					});
 				}
 			});
@@ -96,8 +96,8 @@
 						title: 'Media Manager',
 						url: url + '/mediamanager.php?video',
 						width: 1050,
-						height: 650
-					
+						height: 650,
+						id: 'media-manager'
 					});
 				}
 			});
@@ -112,8 +112,9 @@
 						title: 'Media Manager',
 						url: url + '/mediamanager.php?glyph',
 						width: 1050,
-						height: 650
-					
+						height: 650,
+						id: 'media-manager'
+
 					});
 				}
 			});

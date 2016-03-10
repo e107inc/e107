@@ -963,7 +963,7 @@ class media_admin_ui extends e_admin_ui
 
 		if($this->getQuery('iframe'))
 		{
-			e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
+		// 	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			
  			if(!$this->getQuery('for'))

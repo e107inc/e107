@@ -2364,7 +2364,7 @@ class e_parse extends e_parser
 		}
 
 
-		if(e_MOD_REWRITE_MEDIA == true)// Experimental SEF URL support.
+		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']))// Experimental SEF URL support.
 		{
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
@@ -2465,8 +2465,15 @@ class e_parse extends e_parser
 	 */
 	private function thumbUrlSEF($url='', $options=array())
 	{
-
-		$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
+		if(!empty($options['full']))
+		{
+			$base = SITEURL;
+		}
+		else
+		{
+			$base = (!empty($options['ebase'])) ? '{e_BASE}' : e_HTTP;
+		}
+	//	$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
 
 		if(!empty($options['x'])  && !empty($options['ext'])) // base64 encoded. Build URL for:  RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1
 		{
