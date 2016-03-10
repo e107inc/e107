@@ -420,6 +420,7 @@ class wysiwyg
                     {title: 'Paragraph', block: 'p'},
                     {title: 'Blockquote', block: 'blockquote'},
                     {title: 'Div', block: 'div'},
+
                     {title: 'Pre', block: 'pre'},
                     {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
                 ]},
@@ -429,7 +430,8 @@ class wysiwyg
                     {title: 'Center', block: 'div',classes: 'text-center', icon: 'aligncenter'},
                     {title: 'Right', block: 'div', classes: 'text-right',  icon: 'alignright'},
                     {title: 'Justify', block: 'div', classes: 'text-justify', icon: 'alignjustify'},
-                    {title: 'No-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
+                    {title: 'No Text-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
+                    {title: 'Clear Float', block: 'div', classes: 'clearfix'},
                     {title: 'Image Left', selector: 'img', classes: 'pull-left', styles: {'margin': '0 10px 5px 0'  },  icon: 'alignleft'},
                     {title: 'Image Right', selector: 'img', classes: 'pull-right', styles: { 'margin': '0 0 5px 10px'}, icon: 'alignright'}
 
@@ -450,7 +452,6 @@ class wysiwyg
                  {title: 'Alert (Info)', block: 'div', classes: 'alert alert-info'},
                  {title: 'Alert (Warning)', block: 'div', classes: 'alert alert-warning'},
                  {title: 'Alert (Danger)', block: 'div', classes: 'alert alert-block alert-danger'},
-                 {title: 'Float Clear', block: 'div', classes: 'clearfix'},
                  {title: 'Lead', block: 'p', classes: 'lead'},
                  {title: 'Well', block: 'div', classes: 'well'},
 				 {title: 'Row', block: 'div', classes: 'row'},
@@ -506,7 +507,16 @@ class wysiwyg
         {title: 'Button (Danger)', value: 'btn btn-danger'}
     ]";
 
-
+	/*	$ret['setup'] = "function(ed) {
+      ed.addMenuItem('test', {
+         text: 'Clear Floats',
+         context: 'insert',
+         icon: false,
+         onclick: function() {
+            ed.insertContent('<div class=\"clearfix\" ></div>');
+         }
+      });
+      }";*/
 // https://github.com/valtlfelipe/TinyMCE-LocalAutoSave
 
 
@@ -600,7 +610,17 @@ class wysiwyg
 
 
 		$ret['convert_fonts_to_spans']	= false;
-		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
+
+		$editorCSS = array(
+
+			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
+			'http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
+			e_PLUGIN_ABS.'tinymce4/editor.css',
+		);
+
+
+		$ret['content_css']				= json_encode($editorCSS);
+		$ret['content_style']           = "div.clearfix { border-top:1px solid red } ";
 
 	//	$ret['content_css'] = e_WEB_ABS."js/bootstrap/css/bootstrap.min.css";
 
