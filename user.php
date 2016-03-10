@@ -187,7 +187,8 @@ if (vartrue($records) > 30)
 
 if (isset($id))
 {
-	if ($id == 0)
+	$user_exists = $sql->count("user","(*)", "WHERE user_id = ".$id."");
+	if($id == 0 || $user_exists == false)
 	{
 		$text = "<div style='text-align:center'>".LAN_USER_49." ".SITENAME."</div>";
 		$ns->tablerender(LAN_ERROR, $text);
