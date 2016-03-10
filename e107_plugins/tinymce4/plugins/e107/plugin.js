@@ -17,11 +17,12 @@
 
 			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
 
-
+	
 			ed.on('beforeSetContent', function(e) {
 				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
 			});
 
+		//	ed.contentCSS.push(url+'/e107.css');
 
 
 			ed.on('postProcess', function(e) {
