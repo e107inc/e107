@@ -851,8 +851,30 @@ $(document).ready(function()
 		
 
 		
-		// 	Tooltips for bbarea. 
-		$(".bbcode_buttons, a.e-tip").tooltip({placement: 'top',opacity: 1.0, fade: true,html: true, container:'body'});
+		// 	Tooltips for bbarea.
+
+		$(".bbcode_buttons, a.e-tip").each(function() {
+
+			var tip = $(this).attr('title');
+
+			if(tip === undefined)
+			{
+				return;
+			}
+
+			var pos = $(this).attr('data-tooltip-position');
+
+			if(pos === undefined)
+			{
+				pos = 'top';
+			}
+
+			$(this).tooltip({opacity:1.0, fade:true, placement: pos, container: 'body'});
+			// $(this).css( 'cursor', 'pointer' )
+		});
+
+		
+	//	$(".bbcode_buttons, a.e-tip").tooltip({placement: 'top',opacity: 1.0, fade: true,html: true, container:'body'});
 	//	$("a.e-tip").tipsy({gravity: 'w',opacity: 1.0, fade: true,html: true});
 	//	var tabs = $('#tab-container').clone(true);
 	//	$('#htmlEditor').append(tabs);

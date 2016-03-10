@@ -73,7 +73,8 @@ class social_shortcodes extends e_shortcode
  			
 		
 	
-		$class = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
+		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
+		$tooltipPos = vartrue($parm['tip-pos'], 'top');
 
 		$text = '';
 
@@ -83,7 +84,7 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" class="e-tip social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-'.$id.' '.$class.'"></span></a>';
+				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="e-tip social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-'.$id.' '.$class.'"></span></a>';
 				 $text .= "\n";
 			}
 		}
