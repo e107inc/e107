@@ -617,7 +617,7 @@ class wysiwyg
 		$editorCSS = array(
 
 			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
-			'http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
+			'http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
 			e_PLUGIN_ABS.'tinymce4/editor.css',
 		);
 

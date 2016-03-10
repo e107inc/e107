@@ -129,6 +129,7 @@ $param['itemlink'] 		= defset('OTHERNEWS_ITEMLINK');
 $param['thumbnail'] 	= defset('OTHERNEWS_THUMB');
 $param['catlink'] 		= defset('OTHERNEWS_CATLINK');
 $param['caticon'] 		= defset('OTHERNEWS_CATICON');
+$param['template_key']  = 'news_menu/other/item';
 
 $style 					= defset('OTHERNEWS_CELL');
 $nbr_cols 				= defset('OTHERNEWS_COLS');

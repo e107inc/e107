@@ -327,6 +327,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : defset('ICONSTYLE','');
 	$param['current_action'] = $action;
+	$param['template_key'] = 'list';
 
 	// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 	e107::getEvent()->trigger('news_list_parse', $newsList);
@@ -502,6 +503,7 @@ if ($action == 'extend')
 
 		$param = array();
 		$param['current_action'] = $action;
+		$param['template_key'] = 'view';
 		
 		if(vartrue($NEWSSTYLE)) 
 		{
@@ -852,6 +854,7 @@ else
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 	$param = array();
 	$param['current_action'] = $action;
+	$param['template_key'] = 'default';
 	
 	// Get Correct Template 
 	// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode - XXX No this is not NEWSLISTSTYLE - which provides only summaries. 
