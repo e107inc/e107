@@ -82,7 +82,8 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=900&h=300}
-		<h2>{NEWSTITLELINK}</h2>
+		<div class="default-item">
+		<h2 class="news-title">{NEWSTITLELINK}</h2>
           <p class="lead">{GLYPH=user} &nbsp;{NEWSAUTHOR}</p>
           <hr>
            <div class="row">
@@ -102,7 +103,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 			<div class="options">
 			<div class="btn-group hidden-print">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
 			</div>
-
+		</div>
 ';
 
 

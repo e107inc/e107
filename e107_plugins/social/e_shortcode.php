@@ -83,11 +83,8 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" class="e-tip social-icon social-'.$id.'" title="'.$data['title'].'">
-				 	<span class="fa fa-'.$id.' '.$class.'"></span>
-				 </a>';
-				 
-				 $text .= "\n";	
+				 $text .= '<a rel="external" href="'.$data['href'].'" class="e-tip social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-'.$id.' '.$class.'"></span></a>';
+				 $text .= "\n";
 			}
 		}
 
@@ -272,13 +269,15 @@ class social_shortcodes extends e_shortcode
 		if(vartrue($parm['dropdown']))
 		{
 			$dir = ($parm['dropdown'] == 'right') ? 'pull-right' : '';
-	
+			$class = varset($parm['class'],'btn-group');
+
+
 			$text = '<div class="btn-group hidden-print '.$dir.'">
 				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu"  style="min-width:435px">
 				  
-				    <li><div class="btn-group" style="padding-left: 7px;">'.implode("\n",$opt).'</div></li>
+				    <li><div class="'.$class.'" style="padding-left: 7px;">'.implode("\n",$opt).'</div></li>
 				  </ul>
 				</div>';
 		
@@ -287,10 +286,9 @@ class social_shortcodes extends e_shortcode
 		else
 		{
 			
-		
-			
-			
-			return '<div class="btn-group text-center hidden-print">'.implode("\n",$opt)."</div>";
+			$class = varset($parm['class'],'btn-group');
+
+			return '<div class="'.$class.' text-center hidden-print">'.implode("\n",$opt)."</div>";
 		
 		}	
 		

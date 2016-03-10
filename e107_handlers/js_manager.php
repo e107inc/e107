@@ -217,6 +217,9 @@ class e_jsmanager
 
 	protected $_cache_enabled = false;
 
+
+	protected $_sep = '#|#';
+
 	/**
 	 * Constructor
 	 *
@@ -949,25 +952,25 @@ class e_jsmanager
 		{
 			case 'core':
 				// added direct CDN support
-				$file_path = (strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path)."|{$pre}|{$post}";
+				$file_path = (strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
 				$registry = &$this->_e_jslib_core;
 			break;
 
 			case 'plugin':
 				$file_path = explode(':', $file_path);
-				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/')."|{$pre}|{$post}";
+				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
 				$registry = &$this->_e_jslib_plugin;
 			break;
 
 			case 'theme':
-				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/')."|{$pre}|{$post}";
+				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/').$this->_sep.$pre.$this->_sep.$post;
 				//echo "file-Path = ".$file_path;
 				$registry = &$this->_e_jslib_theme;
 			break;
 
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
 				// added direct CDN support
-				$file_path = $runtime_location.'|'.(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path)."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;
@@ -975,21 +978,21 @@ class e_jsmanager
 
 			case 'plugin_css':
 				$file_path = explode(':', $file_path);
-				$file_path = $runtime_location.'|{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/')."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
 			break;
 
 			case 'theme_css':
-				$file_path = $runtime_location.'|{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/')."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.'{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/').$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
 				$registry = &$this->_e_css['theme'];
 				$runtime = true;
 			break;
 
 			case 'other_css':
-				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 'mix')."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.$tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
 				$registry = &$this->_e_css['other'];
 				$runtime = true;
@@ -1003,7 +1006,7 @@ class e_jsmanager
 
 
 			case 'header':
-				$file_path = $tp->createConstants($file_path, 'mix')."|{$pre}|{$post}";
+				$file_path = $tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -1018,7 +1021,7 @@ class e_jsmanager
 			break;
 
 			case 'footer':
-				$file_path = $tp->createConstants($file_path, 'mix')."|{$pre}|{$post}";
+				$file_path = $tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -1277,7 +1280,7 @@ class e_jsmanager
             {
             	if('css' === $external)
 				{
-					$path = explode('|', $path, 4);
+					$path = explode($this->_sep, $path, 4);
 					$media = $path[0] ? $path[0] : 'all';
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
@@ -1297,7 +1300,7 @@ class e_jsmanager
 				{
 					if(strpos($path, 'http') === 0 || strpos($path, '//') === 0) continue; // not allowed
 					
-					$path = explode('|', $path, 3);
+					$path = explode($this->_sep, $path, 3);
 					$pre = varset($path[1], '');
 					if($pre) $pre .= "\n";
 					$post = varset($path[2], '');
@@ -1327,7 +1330,7 @@ class e_jsmanager
 				            	
 				if('css' === $external)
 				{
-					$path = explode('|', $path, 4);
+					$path = explode($this->_sep, $path, 4);
 					$media = $path[0];
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
@@ -1348,7 +1351,7 @@ class e_jsmanager
 					continue;
 				}
 
-				$path = explode('|', $path, 4);
+				$path = explode($this->_sep, $path, 4);
 				$pre = varset($path[1], '');
 				if($pre) $pre .= "\n";
 				$post = varset($path[2], '');
