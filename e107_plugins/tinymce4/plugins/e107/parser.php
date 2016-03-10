@@ -189,6 +189,9 @@ TEMPL;
 
 		if(check_class($pref['post_html'])) // Plain HTML mode.
 		{
+
+			$content = trim($content);
+
 			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
 			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
 			$content 	= str_replace($srch, $repl, $content);
@@ -261,6 +264,11 @@ TEMPL;
 			);
 
 		}
+		elseif(defined('TINYMCE_DEBUG'))
+		{
+			print_a("thumbUrlDecode: No Matches");
+
+		}
 
 
 		return $ret;
@@ -279,6 +287,11 @@ TEMPL;
 
 		$srch = array("?","&");
 		$repl = array("\?","&amp;");
+
+		if(defined('TINYMCE_DEBUG'))
+		{
+			print_a($arr);
+		}
 
 		foreach($arr['img'] as $img)
 		{
@@ -299,6 +312,7 @@ TEMPL;
 				$qr['h'] = $img['height'];
 			}
 
+			$qr['ebase'] = true; 
 			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
 			$replacement = '<img src="'.$src.'" '.$style.$alt.$title.$class.$width.$height.' />';

@@ -454,6 +454,10 @@ class e_bbcode
 				{
 					$ret[] = $tp->replaceConstants($i,'full');
 				}
+				elseif(strpos($i,'thumb.php')!==false || strpos($i,'media/img/')!==false || strpos($i,'theme/img/')!==false) // absolute path.
+				{
+					$ret[] = SITEURLBASE.$i;
+				}
 				else
 				{
 					$ret[] = $path.$i;	

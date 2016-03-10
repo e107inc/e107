@@ -343,7 +343,10 @@ class wysiwyg
 			
 		);
 
-
+	//	if(e_ADMIN_AREA)
+		{
+	//		$ret['skin_url']     = e_PLUGIN_ABS.'tinymce4/skins/eskin';
+		}
 		
 		// Loop thru XML parms. 
 		foreach($config as $k=>$xml)
@@ -387,11 +390,11 @@ class wysiwyg
 		// plugins: "visualblocks",
 
 
-
+/*
 		$formats = array(
 			'hilitecolor' => array('inline'=> 'span', 'classes'=> 'hilitecolor', 'styles'=> array('backgroundColor'=> '%value'))
 			//	block : 'h1', attributes : {title : "Header"}, styles : {color : red}
-		);
+		);*/
 
 		//@see http://www.tinymce.com/wiki.php/Configuration:formats
 

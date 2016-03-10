@@ -34,19 +34,29 @@ e107::css('theme','admin_dark.css');
 e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
 
 e107::css('inline', "
-/* TinyMce */
+
 
 .mce-menubar .mce-caret             { border-top-color: #C6C6C6!important  }
 .mce-menubar:hover .mce-caret       { border-top-color: #FFFFFF!important }
-.mce-menubar .mce-btn button        { color: #C6C6C6!important; } /* v4.1+ */
-.mce-menubar .mce-btn button span   { color: #C6C6C6!important; } /* v4.0 */
+.mce-menubar .mce-btn button        { color: #C6C6C6!important; }
+.mce-menubar .mce-btn button span   { color: #C6C6C6!important; }
 .mce-menubar .mce-btn button:hover  { color: #FFFFFF!important; }
-.mce-menubar.mce-toolbar            { background-color: #373737!important; }
+.mce-menubar.mce-toolbar, .mce-window-head            { background-color: #373737; !important }
 .mce-tinymce[role=application]      { border-color: #373737!important; }
 .mce-menubar  .mce-menubtn:hover,
 .mce-menubtn:active,
 .mce-menubtn:focus                  { background-color:transparent!important; color: #FFFFFF!important; border-color:transparent!important; }
 .mce-menubar  .mce-btn.mce-active   { color:white!important; border-color:transparent!important; background-color: transparent!important; }
+
+
+body.forceColors                { margin:0; background-color: #373737; !important}
+body.forceColors a              { color: white}
+body.forceColors li a              { color: silver}
+
+div#media-manager div.mce-window-head  { background-color: #373737; !important }
+div#media-manager div.mce-title        { color:white; }
+div#media-manager, html                { color: silver; background-color: #373737; !important}
+
 
 ");
 

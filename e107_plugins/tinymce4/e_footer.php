@@ -42,7 +42,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 	}
 	else
 	{
-		e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
+	//	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
 	//	e107::js('tinymce','tiny_mce_popup.js','jquery');
 	}
 	
@@ -150,6 +150,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 			$('.e-dialog-close').click(function(){
 
 				top.tinymce.activeEditor.windowManager.close();
+
 			});
 
 
