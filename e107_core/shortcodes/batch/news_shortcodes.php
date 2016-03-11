@@ -879,8 +879,10 @@ class news_shortcodes extends e_shortcode
 		{
 			$array['types'] = 'news,page';
 		}
-		
-		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']));	
+
+		$template = e107::getTemplate('news', 'news', 'related');
+
+		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']),$template);
 	}
 
 

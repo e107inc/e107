@@ -197,3 +197,11 @@ $NEWS_TEMPLATE['category']['item'] = '
 	</table>
 	</div>
 ';
+
+### Related 'start' - Options: Core 'single' shortcodes including {SETIMAGE}
+### Related 'item' - Options: {RELATED_URL} {RELATED_IMAGE} {RELATED_TITLE} {RELATED_SUMMARY}
+### Related 'end' - Options:  Options: Core 'single' shortcodes including {SETIMAGE}
+
+$NEWS_TEMPLATE['related']['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>";
+$NEWS_TEMPLATE['related']['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
+$NEWS_TEMPLATE['related']['end'] = "</ul>";

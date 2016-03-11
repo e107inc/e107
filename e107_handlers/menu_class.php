@@ -478,11 +478,11 @@ class e_menu
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
 				$page_shortcodes->setVars($page);
 				  
-				$head = $tp->parseTemplate($template['start'], true);
-				$foot = $tp->parseTemplate($template['end'], true);
+				$head = $tp->parseTemplate($template['start'], true, $page_shortcodes);
+				$foot = $tp->parseTemplate($template['end'], true, $page_shortcodes);
 				  
 			// 	print_a($template['body']);           
-				$text = $head.$tp->parseTemplate($template['body'], true, $page_shortcodes).$template['end'];
+				$text = $head.$tp->parseTemplate($template['body'], true, $page_shortcodes).$foot;
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
 				
 				
