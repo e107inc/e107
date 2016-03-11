@@ -12,6 +12,7 @@ CREATE TABLE banner (
   banner_clicks int(10) unsigned NOT NULL default '0',
   banner_impressions int(10) unsigned NOT NULL default '0',
   banner_ip text NOT NULL,
+  banner_tooltip varchar(250) NOT NULL default '',
   banner_description text NOT NULL,
   banner_campaign varchar(150) NOT NULL default '',
   PRIMARY KEY  (banner_id)

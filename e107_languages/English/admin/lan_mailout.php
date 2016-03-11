@@ -280,8 +280,7 @@ define("LAN_MAILOUT_259", "");
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
 define("LAN_MAILOUT_260", "User-Type");
-define("LAN_BASIC", "Basic");
-define("LAN_ADVANCED", "Advanced");
+
 
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
