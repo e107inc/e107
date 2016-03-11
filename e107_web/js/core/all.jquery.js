@@ -993,7 +993,7 @@ $(document).ready(function()
     $(document).on("click", ".e-dialog-close", function(){
 			parent.$('.modal').modal('hide');
             $('.modal').modal('hide');
-
+			parent.$('[data-dismiss=modal]').trigger({ type: 'click' });
 
          //   $('#modal').modal('hide');
 			// parent.$.colorbox.close()	
