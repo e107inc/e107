@@ -266,6 +266,19 @@ class social_shortcodes extends e_shortcode
 				unset($opt[$v]);	
 			}	
 		}
+		elseif(!empty($parm['type']))
+		{
+			$newlist = array();
+			$tmp = explode(",",$parm['type']);
+			foreach($tmp as $v)
+			{
+				$newlist[$v] = $opt[$v];
+			}
+
+			$opt = $newlist;
+
+		//	print_a($opt);
+		}
 		
 		if(vartrue($parm['dropdown']))
 		{
