@@ -84,7 +84,7 @@ class e_library_manager
 		}
 
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
-		if($library['library_path'] === false || !file_exists($libraryPath))
+		if($library['library_path'] === false || (!file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
 		{
 			$library['error'] = LAN_LIBRARY_MANAGER_09;
 
@@ -284,11 +284,11 @@ class e_library_manager
 	 *   ignored.
 	 *
 	 * @return
-	 *   An associative array of the library information as returned from info(). The top-level properties
+	 *   An associative array of the library information as returned from config(). The top-level properties
 	 *   contain the effective definition of the library (variant) that has been loaded. Additionally:
-	 *   - installed: Whether the library is installed, as determined by detectLibrary().
+	 *   - installed: Whether the library is installed, as determined by detect().
 	 *   - loaded: Either the amount of library files that have been loaded, or FALSE if the library could not be
-	 *   loaded. See MYPLUGIN_library::info() for more information.
+	 *   loaded. See MYPLUGIN_library::config() for more information.
 	 */
 	public function load($name, $variant = null)
 	{
@@ -830,6 +830,7 @@ class e_library_manager
 		// Construct the full path to the library for later use.
 		$path = e107::getParser()->replaceConstants($library['library_path']);
 		$path = ($library['path'] !== '' ? $path . '/' . $library['path'] : $path);
+		$path = rtrim($path, '/');
 
 		// Count the number of loaded files for the return value.
 		$count = 0;
@@ -957,7 +958,6 @@ class e_library_manager
 		require_once $file_path;
 	}
 
-
 	/**
 	 * Gets the version information from an arbitrary library.
 	 *
@@ -988,7 +988,27 @@ class e_library_manager
 
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
 		$file = $libraryPath . '/' . $options['file'];
-		if(empty($options['file']) || !file_exists($file))
+
+		if(empty($options['file']))
+		{
+			return;
+		}
+
+		// If remote file (e.g. CDN URL)... we download file to temp, and get version number.
+		// The library will be cached with version number, so this only run once per library.
+		if(substr($file, 0, 4) == 'http')
+		{
+			$content = file_get_contents($file);
+			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');
+
+			if($tmpFile)
+			{
+				file_put_contents($tmpFile, $content);
+				$file = $tmpFile;
+			}
+		}
+
+		if(!file_exists($file))
 		{
 			return;
 		}
@@ -999,11 +1019,24 @@ class e_library_manager
 			if(preg_match($options['pattern'], $line, $version))
 			{
 				fclose($file);
+
+				// If downloaded file, we need to unlink it from temp.
+				if(isset($tmpFile) && file_exists($tmpFile))
+				{
+					unlink($tmpFile);
+				}
+
 				return $version[1];
 			}
 			$options['lines']--;
 		}
 		fclose($file);
+
+		// If downloaded file, we need to unlink it from temp.
+		if(isset($tmpFile) && file_exists($tmpFile))
+		{
+			unlink($tmpFile);
+		}
 	}
 
 	/**
