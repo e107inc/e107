@@ -1491,7 +1491,7 @@ legend{color:#fff}
 .alert .alert-link,.alert a{color:#fff;text-decoration:underline}
 .alert .close,.alert a.btn{text-decoration:none}
 .alert .close{color:#000}
-a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover{border-color:#0f0f0f}
+a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover{border-color:#999999}
 .jumbotron{border:1px solid rgba(0,0,0,.6)}
 .panel-danger .panel-heading,.panel-info .panel-heading,.panel-primary .panel-heading,.panel-success .panel-heading,.panel-warning .panel-heading{border-color:#000}
 .btn:focus,.nav-pills>li>a,.nav-tabs>li>a,.navbar-default .navbar-nav>li>a,.navbar-inverse .navbar-nav>li>a,a,a:active,a:hover{outline:0}
