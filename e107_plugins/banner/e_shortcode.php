@@ -94,10 +94,23 @@ class banner_shortcodes extends e_shortcode
 					$src = ($row['banner_image'][0] == '{') ? $tp->thumbUrl($row['banner_image']) : e_IMAGE_ABS.'banners/'.$row['banner_image'];
 					
 					$ban_ret = "<img class='e-banner img-responsive' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
+
+
 				break;
 			}
 
-			return "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($row['banner_description'])."\">".$ban_ret.'</a>';
+			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($row['banner_tooltip'])."\">";
+			$item = $ban_ret;
+			$end = '</a>';
+
+			$text = $start.$item.$end;
+
+			if(!empty($row['banner_description']))
+			{
+				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
+			}
+
+			return $text;
 
 	}
 
