@@ -622,6 +622,8 @@ class e_media
 		else {
 			$option = $att;
 		}
+
+		$tp = e107::getParser();
 			
 		$frm 		= varset($option['from']) ? $option['from'] : 0;
 		$limit 		= varset($option['limit']) ? $option['limit'] : 20;
@@ -629,25 +631,34 @@ class e_media
 		$bbcode		= varset($option['bbcode']) ? $option['bbcode'] : null;
 		$navMode	= varset($option['nav']) ? TRUE : FALSE;
 		$search		= varset($option['search']) ? $option['search'] : null;
+		$prevId 	= $tagid."_prev"; // ID of image in Form.
 		
 		if($category !='_icon')
 		{
 			$cat 	= ($category) ? $category."+" : ""; // the '+' loads category '_common' as well as the chosen category. 
 			$images = $this->getImages($cat,$frm,$limit,$search);
 			$class 	= "media-select-image";
+			$classN = "media-select-image-none";
 			$w		= 120;
 			$h		= 100;
 			$total	= $this->countImages($cat,$search);
+			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
+		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/nomedia.png';
+		 	 return false;";
 		}
 		else // Icons
 		{
 			$cat 	= "";
 			$images = $this->getIcons($cat,0,200);
 			$class 	= "media-select-icon";
+			$classN = "media-select-icon-none";
 			$w		= 64;
 			$h		= 64;
 			$total 	= 500;
 			$total	= $this->countImages("_icon_16|_icon_32|_icon_48|_icon_64",$search);
+			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
+		 	parent.document.getElementById('".$prevId."').innerHTML= '';
+		 	 return false;";
 			// $total	= $this->countIcons($cat); //TODO
 		}
 		
@@ -656,7 +667,7 @@ class e_media
 	//	$total_images 	= $this->getImages($cat); // for use by next/prev in filter at some point. 
 	
 		$prevAtt		= '&aw='.vartrue($option['w'],$w); // .'&ah=100';	// Image Parsed back to Form as PREVIEW image. 	
-		$prevId 		= $tagid."_prev"; // ID of image in Form. 
+
 		$thumbAtt		= 'aw=120&ah=120';	// Thumbnail of the Media-Manager Preview. 	
 		
 		
@@ -692,12 +703,10 @@ class e_media
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
-			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
-		 	parent.document.getElementById('".$prevId."').src = '".e_IMAGE_ABS."generic/blank.gif';
-		 	 return false;";
-			
-			$text .= "<a class='thumbnail {$class} media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
-			<div style='text-align:center;position: relative; top: 30%'>No image</div>
+
+			// TODO LAN.
+			$text .= "<a title='No Image' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			<span>".$tp->toGlyph('fa-ban')."</span>
 			</a>";		
 		}
 

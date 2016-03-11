@@ -149,7 +149,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 			$('.e-dialog-close').click(function(){
 
-				top.tinymce.activeEditor.windowManager.close();
+				// top.tinymce.activeEditor.windowManager.close();
 
 			});
 

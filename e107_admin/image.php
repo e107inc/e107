@@ -1164,7 +1164,7 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('bbcode') != 'video' && $this->getQuery('bbcode') != 'glyph')
 		{	
 			$text .= "<div class='tab-pane active' id='core-media-select'>			
-					<div class='table' style='display:block'>";
+					<div  style='display:block;width:100%'>";
 				
 			$text .= $this->imageTab($type,$options);
 				

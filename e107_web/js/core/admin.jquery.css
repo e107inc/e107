@@ -21,13 +21,23 @@ a.media-select-icon:hover	{ border:1px solid red; }
 
  .media-select-active		{ opacity: .5; }
 
-.e-moving 					{ background-color: silver; }
+.e-moving 					    { background-color: silver; }
 
-legend 						{ display: none; }
-.chzn-choices				{ width: 350px; }
-.e-autocomplete				{ display: none }
-.e-expandit-container		{ margin-top:10px }
+legend 						    { display: none; }
+.chzn-choices				    { width: 350px; }
+.e-autocomplete				    { display: none }
+.e-expandit-container		    { margin-top:10px }
 
-input.helpbox				{ display:none; } /* legacy BBcode helper box - deprecated and hidden if found in v2.x */
+input.helpbox				        { display:none; } /* legacy BBcode helper box - deprecated and hidden if found in v2.x */
 
-*/
+a.media-select-none                 { text-align:center; text-decoration: none }
+a.media-select-image-none span      { font-size:50px }
+a.media-select-icon-none span       { font-size:30px  }
+
+
+@media (min-height: 500px){
+	a.media-select-image-none span  { font-size:80px }
+}
+
+
+
