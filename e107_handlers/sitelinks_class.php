@@ -1590,10 +1590,14 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		if(isset($data['link_active'])) return $data['link_active'];
 		
 		$dbLink = e_HTTP. e107::getParser()->replaceConstants($data['link_url'], TRUE, TRUE);
-		
+	//	$dbLink =  e107::getParser()->replaceConstants($data['link_url'], TRUE, TRUE);
+
+		$dbLink = str_replace("//","/",$dbLink); // precaution for e_HTTP inclusion above.
+
 		if(E107_DBG_PATH)
 		{
-		//	e107::getMessage()->addDebug("db=".$dbLink);
+			e107::getMessage()->addDebug("<h3>Sitelinks::isActive</h3>
+				db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
 		}
 	
 		if($exactMatch)
