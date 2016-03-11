@@ -2876,7 +2876,7 @@ class e_form
 	 * @param string $tags : comma separated list of keywords to return related items of.
 	 * @param array $curVal. eg. array('page'=> current-page-id-value); 
 	 */
-	function renderRelated($parm,$tags, $curVal) //XXX TODO Cache!
+	function renderRelated($parm,$tags, $curVal, $template=null) //XXX TODO Cache!
 	{
 		
 		if(empty($tags))
@@ -2895,6 +2895,19 @@ class e_form
 		{
 			$parm['types'] = 'news';	
 		}
+
+		if(empty($template))
+		{
+			$TEMPLATE['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>";
+			$TEMPLATE['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
+			$TEMPLATE['end'] = "</ul>";
+
+		}
+		else
+		{
+			$TEMPLATE = $template;
+		}
+
 		
 			
 		$tp = e107::getParser();
@@ -2902,7 +2915,8 @@ class e_form
 		$types = explode(',',$parm['types']);
 		$list = array();
 		
-		
+		$head = $tp->parseTemplate($TEMPLATE['start'],true);
+
 		foreach($types as $plug)
 		{
 		
@@ -2919,15 +2933,25 @@ class e_form
 			{
 				foreach($tmp as $val)
 				{
-					$list[] = "<li><a href='".$tp->replaceConstants($val['url'],'full')."'>".$val['title']."</a></li>";	
-					
+
+					$row = array(
+						'RELATED_URL'       => $tp->replaceConstants($val['url'],'full'),
+						'RELATED_TITLE'     => $val['title'],
+						'RELATED_IMAGE'     => $tp->toImage($val['image']),
+						'RELATED_SUMMARY'   => $tp->toHtml($val['summary'],true,'BODY')
+					);
+
+					$list[] = $tp->simpleParse($TEMPLATE['item'], $row);
+
 				}
 			}		
 		}
 		
 		if(count($list))
 		{
-			return "<div class='e-related clearfix hidden-print'><hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>".implode("\n",$list)."</ul></div>"; //XXX Tablerender?
+			return "<div class='e-related clearfix hidden-print'>".$head.implode("\n",$list).$tp->parseTemplate($TEMPLATE['end'], true)."</div>";
+
+		//	return "<div class='e-related clearfix hidden-print'><hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>".implode("\n",$list)."</div>"; //XXX Tablerender?
 		}
 		
 	}		
