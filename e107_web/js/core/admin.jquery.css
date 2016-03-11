@@ -15,7 +15,7 @@ a.media-select-none 		{ margin:5px; text-decoration:none; width:80px; height:80p
 	a.media-select-none 		{  width:120px; height:120px; }
 } 
 
-a.media-select-icon			{ text-align:center; vertical-align:middle; margin:1px; border:1px solid white; width:48px; height:48px;}
+a.media-select-icon			{ text-align:center; vertical-align:middle; margin:4px;  width:48px; height:48px;}
 a.media-select-icon:hover	{ border:1px solid red; }
 .media-select-container 	{ padding:10px; }
 
@@ -33,7 +33,6 @@ input.helpbox				        { display:none; } /* legacy BBcode helper box - depreca
 a.media-select-none                 { text-align:center; text-decoration: none }
 a.media-select-image-none span      { font-size:50px }
 a.media-select-icon-none span       { font-size:30px  }
-
 
 @media (min-height: 500px){
 	a.media-select-image-none span  { font-size:80px }
