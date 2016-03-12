@@ -53,6 +53,7 @@ class social_shortcodes extends e_shortcode
 	public $var;	
 	/**
 	 * {XURL_ICONS: size=2x}
+	 * {XURL_ICONS: type=facebook,twitter,vimeo}
 	 */	
 	function sc_xurl_icons($parm='')
 	{
@@ -75,6 +76,19 @@ class social_shortcodes extends e_shortcode
 	
 		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
 		$tooltipPos = vartrue($parm['tip-pos'], 'top');
+
+		if(!empty($parm['type']))
+		{
+			$newList = array();
+			$tmp = explode(",",$parm['type']);
+			foreach($tmp as $v)
+			{
+				$newList[$v] = $social[$v];
+
+			}
+
+			$social = $newList;
+		}
 
 		$text = '';
 
