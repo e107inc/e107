@@ -34,6 +34,7 @@ class banner_menu
 		$fields['banner_caption']       = array('title'=> BNRLAN_37, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 		$fields['banner_campaign']      = array('title'=> BNRLAN_39, 'type'=>'method');
 		$fields['banner_amount']        = array('title'=> BNRLAN_41, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*'));
+		$fields['banner_width']        = array('title'=> "Width", 'type'=>'text', 'help'=>"In pixels", 'writeParms'=>array('pattern'=>'[0-9]*'));
 		$fields['banner_rendertype']    = array('title'=> BNRLAN_43, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$renderTypes));
 
         return $fields;

@@ -2444,6 +2444,11 @@ class e_parse extends e_parser
 			$width = (!empty($parm['w'])) ? ($parm['w'] * 3) : ($this->thumbWidth * 3);
 			$height = (!empty($parm['h'])) ? ($parm['h'] * 3) : ($this->thumbHeight * 3);
 		}
+		elseif($width == '4x')
+		{
+			$width = (!empty($parm['w'])) ? ($parm['w'] * 4) : ($this->thumbWidth * 4);
+			$height = (!empty($parm['h'])) ? ($parm['h'] * 4) : ($this->thumbHeight * 4);
+		}
 		else
 		{
 			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
@@ -3672,7 +3677,7 @@ class e_parser
 
 			$path = $tp->thumbUrl($file);
 			$srcSetParm = $parm;
-			$srcSetParm['size'] = '2x';
+			$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
 			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
 
 		}
