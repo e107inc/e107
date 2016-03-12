@@ -27,6 +27,7 @@ if(!isset($SITEDOWN_TABLE))
 		<meta http-equiv='content-type' content='text/html; charset=utf-8' />
 		<meta http-equiv='content-style-type' content='text/css' />\n
 		<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='all' />
+		<link rel='stylesheet' media='all' property='stylesheet' type='text/css' href='http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' />
 		<title>{SITEDOWN_TABLE_PAGENAME}</title>
 	</head>
 	<body>
@@ -35,6 +36,9 @@ if(!isset($SITEDOWN_TABLE))
 		<hr />
 		<br />
 		{SITEDOWN_TABLE_MAINTAINANCETEXT}
+		</div>
+		<div style='margin-top:100px; text-align:center'>
+		{XURL_ICONS: size=3x&tip-pos=bottom}
 		</div>
 	</body>
 	</html>";
