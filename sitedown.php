@@ -42,4 +42,4 @@ if (!$SITEDOWN_TABLE)
 	}
 }
 
-echo $tp->parseTemplate($SITEDOWN_TABLE, TRUE, $sitedown_shortcodes);
+echo $tp->parseTemplate($SITEDOWN_TABLE, true, $sitedown_shortcodes);
