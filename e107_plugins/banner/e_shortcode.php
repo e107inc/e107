@@ -27,21 +27,26 @@ class banner_shortcodes extends e_shortcode
 	function sc_banner($parm='')
 	{
 		
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-			
-		$ret = '';
-	
-		$text = '';
+
 		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
 		$time = time();
 	
 		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '')."
-		AND banner_active IN (".USERCLASS_LIST.")
-		ORDER BY RAND($seed) LIMIT 1";
-	
+		AND banner_active IN (".USERCLASS_LIST.") ";
+
+		if($tags = e107::getRegistry('core/form/related'))
+		{
+			$tags_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
+			$query .= " AND banner_keywords REGEXP ".$tags_regexp;
+		}
+
+		$query .= "	ORDER BY RAND($seed) LIMIT 1";
+
+
+
 		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
 		{
 			$row = $sql->fetch();
@@ -109,6 +114,9 @@ class banner_shortcodes extends e_shortcode
 			{
 				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
 			}
+
+
+
 
 			return $text;
 

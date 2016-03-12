@@ -2885,7 +2885,9 @@ class e_form
 		}
 
 		$tags = str_replace(', ',',', $tags); //BC Fix, all tags should be comma separated without spaces ie. one,two NOT one, two
-		
+
+		e107::setRegistry('core/form/related',$tags); // TODO Move to elsewhere so it works without rendering? e107::related() set and get by plugins?
+
 		if(!varset($parm['limit']))
 		{
 			$parm = array('limit' => 5);
@@ -2925,7 +2927,10 @@ class e_form
 				continue;
 			}
 			
-			$parm['current'] = intval(varset($curVal[$plug])); 
+			$parm['current'] = intval(varset($curVal[$plug]));
+
+
+
 		
 			$tmp = $obj->compile($tags,$parm);	
 		
