@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <tinymce name="Administrators" version="4">
-    <plugins>advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen
+    <plugins>advlist lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen
         insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor emoticons </plugins>
     <menubar>edit view format insert table tools</menubar>
     <toolbar1>undo redo | removeformat | styleselect | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image  template | e107-image e107-video fontawesome smileys | preview | fullscreen</toolbar1>
