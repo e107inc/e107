@@ -475,9 +475,9 @@ class e_pref extends e_front_model
 			return $this;
 		}
 
-		if (e107::getDb()->db_Select('core', 'e107_value', "e107_name='{$id}'"))
+		if (e107::getDb('pref')->select('core', 'e107_value', "e107_name='{$id}'"))
 		{
-			$row = e107::getDb()->db_Fetch();
+			$row = e107::getDb()->fetch();
 
 			if($this->serial_bc)
 			{
