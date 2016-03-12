@@ -24,7 +24,9 @@ header('Content-type: text/html; charset=utf-8');
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-require_once(e_CORE.'shortcodes/batch/sitedown_shortcodes.php');
+// require_once(e_CORE.'shortcodes/batch/sitedown_shortcodes.php');
+
+$sitedown_shortcodes= e107::getScBatch('sitedown');
 
 if (!$SITEDOWN_TABLE)
 {
