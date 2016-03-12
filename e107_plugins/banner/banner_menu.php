@@ -101,7 +101,14 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";
 		$query .= (count($filter)) ? " AND (".implode(" OR ",$filter)." ) " : ""; 
 		$query .= ($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '');
-		
+
+
+		if($tags =	e107::getRegistry('core/form/related'))
+		{
+			$tags_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
+			$query .= " AND banner_keywords REGEXP ".$tags_regexp;
+		}
+
 		$query .= "	AND banner_active IN (".USERCLASS_LIST.") ORDER BY RAND($seed) LIMIT ".intval($menu_pref['banner_amount']);
 		
 		if($data = $sql->retrieve('banner', 'banner_id, banner_image, banner_clickurl,banner_campaign, banner_description', $query,true))
@@ -122,7 +129,6 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 	
 		$foot = e107::getParser()->parseTemplate($BANNER_MENU_END,true);
 
-	
 		switch ($menu_pref['banner_rendertype']) 
 		{
 

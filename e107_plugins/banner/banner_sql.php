@@ -15,5 +15,6 @@ CREATE TABLE banner (
   banner_tooltip varchar(250) NOT NULL default '',
   banner_description text NOT NULL,
   banner_campaign varchar(150) NOT NULL default '',
+  banner_keywords varchar(250) NOT NULL default '',
   PRIMARY KEY  (banner_id)
 ) ENGINE=MyISAM;

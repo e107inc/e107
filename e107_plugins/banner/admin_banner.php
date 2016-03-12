@@ -125,6 +125,7 @@ class banner_ui extends e_admin_ui
 		  'banner_tooltip' 		    =>   array ( 'title' => BNRLAN_49, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'center', 'thclass' => 'center',  ),
 
 		  'banner_description' 		=>   array ( 'title' => LAN_DESCRIPTION, 	'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_keywords' 		=>   array ( 'title' => LAN_KEYWORDS, 	'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'filter' => false, 'help' => 'When news or pages are loaded, this will limit banner result to matching keywords. Use with caution.', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
 		  'banner_startdate' 		=>   array ( 'title' => BNRLAN_17, 	'type' => 'datestamp',  'tab'=>1,'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'banner_enddate' 			=>   array ( 'title' => BNRLAN_18, 		'type' => 'datestamp',  'tab'=>1, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
