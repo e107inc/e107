@@ -196,7 +196,9 @@ elseif ($action == 'forums')
 
 	$debug = deftrue('e_DEBUG');
 
-	if (!$sql->gen($qry))
+	$sqlp = e107::getDb('posts');
+
+	if (!$sqlp->gen($qry))
 	{
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8.'</span>';
 	}
@@ -206,7 +208,7 @@ elseif ($action == 'forums')
 		$vars = new e_vars();
 
 		$userposts_forum_table_string = '';
-		while($row = $sql->fetch())
+		while($row = $sqlp->fetch())
 		{
 
 			if(empty($row))
