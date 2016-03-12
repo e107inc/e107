@@ -96,9 +96,11 @@ class banner_shortcodes extends e_shortcode
 				
 				default:
 					
-					$src = ($row['banner_image'][0] == '{') ? $tp->thumbUrl($row['banner_image']) : e_IMAGE_ABS.'banners/'.$row['banner_image'];
+					$src = ($row['banner_image'][0] == '{') ? $row['banner_image'] : e_IMAGE_ABS.'banners/'.$row['banner_image'];
 					
-					$ban_ret = "<img class='e-banner img-responsive' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
+				//	$ban_ret = "<img class='e-banner img-responsive' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
+
+					$ban_ret = $tp->toImage($src,   array('class'=>'e-banner img-responsive', 'alt'=>$row['banner_clickurl']));
 
 
 				break;

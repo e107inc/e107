@@ -72,10 +72,7 @@ else
 		}
 	}
 
-	if(isset($parms['w']) && isset($parms['h'])) // TODO.
-	{
-		e107::getParser()->setThumbSize(intval($parms['w']), intval($parms['h']));
-	}
+
 
 // print_a($menu_pref);
 
@@ -87,6 +84,12 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 		$ret = array(); 
 		
 		$head = e107::getParser()->parseTemplate($BANNER_MENU_START,true);
+
+		if(!empty($menu_pref['banner_width']))
+		{
+			e107::getParser()->thumbWidth($menu_pref['banner_width']);
+		}
+
 
 		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
