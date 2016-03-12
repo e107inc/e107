@@ -1523,7 +1523,7 @@ class e_jsmanager
 
 		$path = str_replace("../",'',$path);
 
-		$basePath = SITEURL.dirname($path)."/";
+		$basePath = dirname($path)."/";
 
 		foreach($match[1] as $k=>$v)
 		{
@@ -1533,7 +1533,11 @@ class e_jsmanager
 				continue;
 			}
 
-			$dir = "url(".$basePath.$v.")"; // relative to e_WEB_ABS."cache/";
+			$path = $this->normalizePath($basePath.$v);
+			$dir = "url(".SITEURL.$path.")"; // relative to e_WEB_ABS."cache/";
+
+		//	print_a($dir);
+
 			$newpath[$k] = $dir;
 		}
 
@@ -1541,6 +1545,54 @@ class e_jsmanager
 
 		return $this->compress($result, 'css');
 	}
+
+
+	/**
+	 * Normalize a path.
+	 * Replacement for realpath (move to core functions?)
+	 * It will _only_ normalize the path and resolve indirections (.. and .)
+	 * Normalization includes:
+	 * - directiory separator is always /
+	 * - there is never a trailing directory separator
+	 * @param  $path
+	 * @return String
+	 */
+	private function normalizePath($path)
+	{
+	    $parts = preg_split(":[\\\/]:", $path); // split on known directory separators
+
+	    // resolve relative paths
+	    for ($i = 0; $i < count($parts); $i +=1)
+	    {
+	        if ($parts[$i] === "..")   // resolve ..
+	        {
+	            if ($i === 0)
+	            {
+	                throw new Exception("Cannot resolve path, path seems invalid: `" . $path . "`");
+	            }
+
+	            unset($parts[$i - 1]);
+	            unset($parts[$i]);
+	            $parts = array_values($parts);
+	            $i -= 2;
+	        }
+	        elseif ($parts[$i] === ".")   // resolve .
+	        {
+	            unset($parts[$i]);
+	            $parts = array_values($parts);
+	            $i -= 1;
+	        }
+
+	        if ($i > 0 && $parts[$i] === "")  // remove empty parts
+	        {
+	            unset($parts[$i]);
+	            $parts = array_values($parts);
+	        }
+	    }
+
+	    return implode("/", $parts);
+	}
+
 
 
 	/**
