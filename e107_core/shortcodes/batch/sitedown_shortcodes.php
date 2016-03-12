@@ -26,7 +26,7 @@ class sitedown_shortcodes extends e_shortcode
 
 		if(!empty($pref['maintainance_text']))
 		{
-			return $tp->toHTML($pref['maintainance_text'], TRUE, 'parse_sc', 'admin');
+			return $tp->toHTML($pref['maintainance_text'], true, 'BODY', 'admin');
 		}
 		else
 		{

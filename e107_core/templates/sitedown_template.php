@@ -38,7 +38,7 @@ if(!isset($SITEDOWN_TABLE))
 	<body>
 		<div class='container'>
 			<div style='text-align:center;font-size: 14px; color: black; font-family: Tahoma, Verdana, Arial, Helvetica; text-decoration: none'>
-			<div style='text-align:center'>{LOGO}</div>
+			<div style='text-align:center'>{LOGO: h=300}</div>
 			<hr />
 			<br />
 			{SITEDOWN_TABLE_MAINTAINANCETEXT}
