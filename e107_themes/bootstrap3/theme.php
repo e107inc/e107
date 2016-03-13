@@ -374,7 +374,7 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
           </div>
           
 		  {SETSTYLE=portfolio}
-		  {SETIMAGE: w=700&h=500&crop=1}
+		  {SETIMAGE: w=400&h=400&crop=1}
 		  {GALLERY_PORTFOLIO: placeholder=1&limit=6}   
 		  
         </div><!-- /.row -->
