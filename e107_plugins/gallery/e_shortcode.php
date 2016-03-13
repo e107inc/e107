@@ -29,6 +29,25 @@ class gallery_shortcodes extends e_shortcode
 		$pop_w 				= vartrue($prefW, 1024);
 		$pop_h 				= vartrue($prefH, 768);
 		$this->attFull 		= array('w'=>$pop_w, 'h'=>$pop_h, 'x'=>1, 'crop'=>0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
+
+		e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
+		e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
+
+
+	$prettyPhoto = <<<JS
+$(document).ready(function(){
+    $("a[data-gal^='prettyPhoto']").prettyPhoto(
+	    {
+	    	hook: 'data-gal',
+	    	theme: 'pp_default',
+	    	overlay_gallery: false,
+	    	deeplinking: false
+	    }
+    );
+  });
+JS;
+
+	e107::js('footer-inline',$prettyPhoto,'jquery');
 	}
 			
 	function sc_gallery_caption($parm='')
@@ -180,6 +199,9 @@ class gallery_shortcodes extends e_shortcode
 	 */
 	function sc_gallery_portfolio($parms='')
 	{
+
+
+
 		$ns 	= e107::getRender();		
 		$parm 	= eHelper::scParams($parms);
 		$cat 	= (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery','slideshow_category'), 1); //TODO Separate pref?
@@ -206,7 +228,7 @@ class gallery_shortcodes extends e_shortcode
 			$this->var = $val;
 			$text .= $ns->tablerender('', $this->sc_gallery_thumb('class=gallery_thumb img-responsive img-home-portfolio'),'gallery_portfolio',true);	
 		}
-		
+
 		return $text;
 
 	}
