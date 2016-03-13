@@ -146,10 +146,11 @@ if (!defined("USER_WIDTH")) { define("USER_WIDTH","width:95%"); }
 
 	if (!empty($pref['news_subheader']))
 	{
+
 		$text .= "
-	  <div class='alert alert-block alert-info '>
+
 	    ".$tp->toHTML($pref['news_subheader'], true, "BODY")."
-	  </div>";
+	  ";
 	}
 
 
@@ -203,9 +204,8 @@ $text .= "
 </tr>
 <tr>
   <td style='width:20%' class='forumheader3'>".LAN_TITLE."</td>
-	<td style='width:80%' class='forumheader3'>
-    <input class='tbox form-control' type='text' id='submitnews_title' name='submitnews_title' size='60' value='".$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE')."' maxlength='200' style='width:90%' required />
-	</td>
+	<td style='width:80%' class='forumheader3'>".e107::getForm()->text('submitnews_title',$tp->toHTML(vartrue($_POST['submitnews_title']),TRUE,'USER_TITLE'),200, array('required'=>1))."
+   	</td>
 </tr>
 <tr>
   	<td style='width:20%' class='forumheader3'>".LAN_135."</td>

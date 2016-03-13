@@ -75,6 +75,11 @@ img.logo {
     margin-bottom: 30px;
 }
 
+
+.row > .col-md-4:nth-child(4n+1) {  clear:both; }  /* fix wrapping in gallery portfolio */
+
+
+
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
 
