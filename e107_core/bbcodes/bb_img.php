@@ -58,24 +58,29 @@ class bb_img extends e_bb_base
         foreach($imgParms as $k => $v)
         {
            // $parmStr .= " ".$k.'="'.$v.'"';
-            $p[] = $tp->toAttribute($k).'="'.$tp->toAttribute($v).'"';
+            if($v !== '')
+            {
+                 $p[] = $tp->toAttribute($k).'="'.$tp->toAttribute($v).'"';
+            }
         } 
 
         $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),0);
      //   $h = vartrue($imgParms['height']) ? intval($imgParms['height']) : e107::getBB()->resizeHeight();
         
-        $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing. 
-        $parmStr = implode(" ",$p);
+    //    $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing.
+    //    $parmStr = implode(" ",$p);
 
    //     print_a($imgParms);
-   //     print_a($parmStr);
 
-        $url = e107::getParser()->thumbUrl($code_text, $resize);
+   //     $url = e107::getParser()->thumbUrl($code_text, $resize);
+
+		$imgParms['w'] = $w;
 
 		if(!empty($figcaption))
 		{
 			$html = "<figure>\n";
-			$html .= "<img src=\"".$url."\" {$parmStr} />";
+		//	$html .= "<img src=\"".$url."\" {$parmStr} />";
+			$html .= $tp->toImage($code_text, $imgParms);
 			$html .= "<figcaption>".e107::getParser()->filter($figcaption,'str')."</figcaption>\n";
 			$html .= "</figure>";
 
@@ -83,7 +88,8 @@ class bb_img extends e_bb_base
 		}
 		else
 		{
-			return "<img src=\"".$url."\" {$parmStr} />";
+			return $tp->toImage($code_text, $imgParms);
+		//	return "<img src=\"".$url."\" {$parmStr} />";
 		}
     }
 
@@ -94,11 +100,9 @@ class bb_img extends e_bb_base
      */
     private function processParm($code_text, $parm, $mode='')
     {      
-        $tp = e107::getParser(); 
-        
+
         $imgParms               = array();
-        $parmStr                = "";
-     
+
         $parm = preg_replace('#onerror *=#i','',$parm);
         $parm = str_replace("amp;", "&", $parm);
         
@@ -109,17 +113,18 @@ class bb_img extends e_bb_base
 
 		if(!vartrue($imgParms['width']) && strpos($parm,'width')!==false) // Calculate thumbnail width from style. 
         {
-			preg_match("/width:([\d]*)/i", $parm, $m);
+			preg_match("/width:([\d]*)[p|x|%|;]*/i", $parm, $m);
 			if($m[1] > 0)
 			{
 				$imgParms['width'] = $m[1];
+				$imgParms['style'] = str_replace($m[0],'',$imgParms['style']); // strip hard-coded width styling.
 			}
 		}
 		
         if(!vartrue($imgParms['alt'])) // Generate an Alt value from filename if one not found.  
         {
            preg_match("/([\w]*)(?:\.png|\.jpg|\.jpeg|\.gif)/i", $code_text, $match); // Generate required Alt attribute. 
-           $imgParms['alt']        = ucwords(str_replace("_"," ",$match[1])); 
+           $imgParms['alt']  = ucwords(str_replace("_"," ",$match[1]));
         }
 		else
 		{
@@ -140,8 +145,7 @@ class bb_img extends e_bb_base
 			return $text;
 		}
         
-        
-        
+
         return $imgParms;       
     }  
     
