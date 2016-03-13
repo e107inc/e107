@@ -2063,6 +2063,11 @@ class e_form
 
 		$text = '';
 
+		if(empty($option_array))
+		{
+			return $this->option('','');
+		}
+
 		foreach ($option_array as $value => $label)
 		{
 			if(is_array($label))

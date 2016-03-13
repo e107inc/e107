@@ -343,8 +343,14 @@ class cron_admin_ui extends e_admin_ui
 			$mes 	= e107::getMessage();
 			$frm = e107::getForm();
 			
-
-			$lastload = intval(@file_get_contents(e_CACHE.'cronLastLoad.php'));
+			if(file_exists(e_CACHE.'cronLastLoad.php'))
+			{
+				$lastload = intval(@file_get_contents(e_CACHE.'cronLastLoad.php'));
+			}
+			else
+			{
+				$lastload = 0;
+			}
 
 			$ago = (time() - $lastload);
 	

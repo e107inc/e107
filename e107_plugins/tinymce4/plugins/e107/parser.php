@@ -302,7 +302,8 @@ TEMPL;
 			$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
 			$class 	= vartrue($img['class'])	? ' class="'.$img['class'].'"' : '';
 			$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
-			$title 	= vartrue($img['title'])		? ' title="'.$img['title'].'"' : '';
+			$title 	= vartrue($img['title'])	? ' title="'.$img['title'].'"' : '';
+			$srcset = vartrue($img['srcset'])   ? 'srcset="'.$img['srcset'].'"' : '';
 
 			$qr = $this->thumbUrlDecode($img['src']);
 
@@ -315,7 +316,7 @@ TEMPL;
 			$qr['ebase'] = true; 
 			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
-			$replacement = '<img src="'.$src.'" '.$style.$alt.$title.$class.$width.$height.' />';
+			$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';
 
 			$text = preg_replace($regexp, $replacement, $text);
 
