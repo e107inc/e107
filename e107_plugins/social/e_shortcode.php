@@ -77,6 +77,15 @@ class social_shortcodes extends e_shortcode
 		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
 		$tooltipPos = vartrue($parm['tip-pos'], 'top');
 
+		if(isset($parm['tip']))
+		{
+			$tooltip = ($parm['tip'] == 'false' || empty($parm['tooltip'])) ? '' : 'e-tip';
+		}
+		else
+		{
+			$tooltip = 'e-tip';
+		}
+
 		if(!empty($parm['type']))
 		{
 			$newList = array();
@@ -98,7 +107,7 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="e-tip social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-'.$id.' '.$class.'"></span></a>';
+				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-'.$id.' '.$class.'"></span></a>';
 				 $text .= "\n";
 			}
 		}
@@ -185,11 +194,8 @@ class social_shortcodes extends e_shortcode
 
 		$providers = $this->getProviders();
 
-
-		if(empty($parm)) // No parms so use prefs instead.
+		if(empty($parm['providers'])) // No parms so use prefs instead.
 		{
-
-			$parm['dropdown'] = ($pref['sharing_mode'] == 'dropdown') ? 1 : 0;
 			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : array_keys($providers);
 		}
 		else
@@ -197,9 +203,12 @@ class social_shortcodes extends e_shortcode
 			$parm['providers']  = array_keys($providers);
 		}
 
+		if(empty($parm['dropdown']))
+		{
+			$parm['dropdown'] = ($pref['sharing_mode'] == 'dropdown') ? 1 : 0;
+		}
 
 
-		
 		$url 			= varset($parm['url'], 		$defaultUrl);
 		$title 			= varset($parm['title'], 	$defaultTitle) ;
 		$description 	= varset($parm['title'], 	$defaultDiz);
@@ -210,11 +219,6 @@ class social_shortcodes extends e_shortcode
 		$size			= varset($parm['size'],		'md');
 
 
-
-
-
-
-	
 		$data = array('u'=> rawurlencode($url), 't'=> rawurlencode($title), 'd'	=> rawurlencode($description), 'm' => rawurlencode($media));
 		
 		if(!vartrue($parm['dropdown']))
@@ -234,6 +238,15 @@ class social_shortcodes extends e_shortcode
 	//	$hashtags .= str_replace(array(" ",'#'),"", $hashtags); // "#mytweet";
 
 		$hashtags = $this->getHashtags($tags);
+
+		if(isset($parm['tip']))
+		{
+			$tooltip = ($parm['tip'] == 'false' || empty($parm['tooltip'])) ? '' : 'e-tip';
+		}
+		else
+		{
+			$tooltip = 'e-tip';
+		}
 
 
 
@@ -268,7 +281,7 @@ class social_shortcodes extends e_shortcode
 
 
 			
-			$opt[$k] = "<a class='e-tip btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";	
+			$opt[$k] = "<a class='".$tooltip." btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";
 		}
 		
 		// Show only Email, Facebook, Twitter and Google. 
@@ -301,7 +314,7 @@ class social_shortcodes extends e_shortcode
 
 
 			$text = '<div class="btn-group hidden-print '.$dir.'">
-				  <a class="e-tip btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
+				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu"  style="min-width:435px">
 				  
