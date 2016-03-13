@@ -15,6 +15,9 @@
 	<mainPrefs>
 		<pref name="fb_active">1</pref>
 	</mainPrefs>
+	<pluginPrefs>
+		<pref name="menu_category">bootstrap3_carousel</pref>
+	</pluginPrefs>
 	<mediaCategories>
 		<category type="image">Featurebox</category>
 	</mediaCategories>
