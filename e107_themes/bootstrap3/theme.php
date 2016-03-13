@@ -355,7 +355,6 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
         <div class="row">
             <div class="col-lg-12">
             	{WMESSAGE}   
-            <hr>
           </div>
         </div><!-- /.row -->
       </div><!-- /.container -->
