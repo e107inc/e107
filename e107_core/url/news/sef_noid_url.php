@@ -160,7 +160,7 @@ class core_news_sef_noid_url extends eUrlConfig
 	 */
 	public function parse($pathInfo, $params, $request, $router, $config)
 	{
-		$page = $params['page'] ? intval($params['page']) : '0';
+		$page = !empty($params['page']) ? intval($params['page']) : '0';
 		if(!$pathInfo) 
 		{
 			## this var is used by default from legacy() method

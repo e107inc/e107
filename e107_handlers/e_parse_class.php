@@ -2408,7 +2408,10 @@ class e_parse extends e_parser
 			elseif(!empty($parm['w']) || !empty($parm['w']) )
 			{
 				$this->thumbWidth($parm['w']);
-				$this->thumbHeight($parm['h']);
+				if(isset($parm['h']))
+				{
+					$this->thumbHeight($parm['h']);
+				}
 
 			}
 
