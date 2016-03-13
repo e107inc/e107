@@ -313,12 +313,12 @@ class social_shortcodes extends e_shortcode
 			$class = varset($parm['class'],'btn-group');
 
 
-			$text = '<div class="btn-group hidden-print '.$dir.'">
+			$text = '<div class="social-share btn-group hidden-print '.$dir.'">
 				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
 				 
-				  <ul class="dropdown-menu" role="menu"  style="min-width:435px">
+				  <ul class="dropdown-menu" role="menu" >
 				  
-				    <li><div class="'.$class.'" style="padding-left: 7px;">'.implode("\n",$opt).'</div></li>
+				    <li><div class="'.$class.'">'.implode("\n",$opt).'</div></li>
 				  </ul>
 				</div>';
 		
@@ -327,7 +327,7 @@ class social_shortcodes extends e_shortcode
 		else
 		{
 			
-			$class = varset($parm['class'],'btn-group');
+			$class = varset($parm['class'],'btn-group social-share');
 
 			return '<div class="'.$class.' text-center hidden-print">'.implode("\n",$opt)."</div>";
 		
