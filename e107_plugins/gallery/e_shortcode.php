@@ -102,6 +102,7 @@ class gallery_shortcodes extends e_shortcode
 		$description .= $tp->toAttribute($this->var['media_description']);
 		
 		$text = "<a class='".$class."' title=\"".$description."\" href='".$srcFull."'  data-gal='{$rel}'  >";
+
 		$text .= $tp->toImage($this->var['media_url'],$att);
 		$text .= "</a>";
 
@@ -181,7 +182,7 @@ class gallery_shortcodes extends e_shortcode
 	{
 		$ns 	= e107::getRender();		
 		$parm 	= eHelper::scParams($parms);
-		$cat 	= ($parm['category']) ? $parm['category'] : vartrue(e107::getPlugPref('gallery','slideshow_category'), 1); //TODO Separate pref?
+		$cat 	= (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery','slideshow_category'), 1); //TODO Separate pref?
 
 		$tmpl 	= e107::getTemplate('gallery','gallery');		
 		$limit 	= vartrue($parm['limit'], 6);
