@@ -3,6 +3,7 @@
 if(USER_AREA)
 {
 	e107::css('social', 'css/fontello.css');
+	e107::css('social' ,'css/social.css');
 
 	$social = e107::pref('core','social_login');
 
