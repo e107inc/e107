@@ -2280,7 +2280,19 @@ class e_parse extends e_parser
 		return $this->thumbWidth;		
 	}
 
+	/**
+	 * Set or Get the value of the thumbNailbCrop.
+	 * @param bool $status = true/false
+	 */
+	public function thumbCrop($status=false)
+	{
+		if($status !== false)
+		{
+			$this->thumbCrop = intval($status);
+		}
 
+		return $this->thumbCrop;
+	}
 
 
 
@@ -3651,18 +3663,17 @@ class e_parser
 
 		if(!empty($parm['w']))
 		{
-			$tp->setThumbSize($parm['w']);
+			$tp->thumbWidth($parm['w']);
 		}
 
 		if(!empty($parm['h']))
 		{
-			$tp->setThumbSize(null, $parm['h']);
+			$tp->thumbHeight($parm['h']);
 		}
-
 
 		if(!empty($parm['crop']))
 		{
-			$tp->setThumbSize(null, null, 1);
+			$tp->thumbCrop(true);
 		}
 
 		if(!empty($parm['x']))
@@ -3674,6 +3685,7 @@ class e_parser
 		{
 			$parm['w'] = $tp->thumbWidth();
 		}
+		
 
 		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false) //v2.x path.
 		{
