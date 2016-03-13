@@ -103,7 +103,7 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 	
 		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)";
 		$query .= (count($filter)) ? " AND (".implode(" OR ",$filter)." ) " : ""; 
-		$query .= ($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '');
+	//	$query .= ($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '');
 
 
 		if($tags =	e107::getRegistry('core/form/related'))

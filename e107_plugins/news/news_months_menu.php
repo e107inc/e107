@@ -118,7 +118,7 @@ if(false === $cached)
 		));
 		$menu_text[] = $tp->simpleParse($template['item'], $vars);
 	}
-	$cached = $template['start'].implode($template['separator'], $menu_text).$template['end']; 
+	$cached = $template['start'].implode(varset($template['separator'],''), $menu_text).$template['end'];
 	if($cached) 
 	{
 		if(!$parms['showarchive']) $cached .= '<ul class="nav nav-list e-menu-link news-menu-archive"><li><a href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></li></ul>';

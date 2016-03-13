@@ -106,7 +106,9 @@ class banner_shortcodes extends e_shortcode
 				break;
 			}
 
-			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($row['banner_tooltip'])."\">";
+			$tooltip = varset($row['banner_tooltip'],'');
+
+			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($tooltip)."\">";
 			$item = $ban_ret;
 			$end = '</a>';
 

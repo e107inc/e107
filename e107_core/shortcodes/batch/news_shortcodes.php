@@ -256,13 +256,14 @@ class news_shortcodes extends e_shortcode
 	{
 		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
-		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
+		$categoryClass = varset($GLOBALS['NEWS_CSSMODE'],'');
+		return "<a class='".$categoryClass."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
 	}
 
 	function sc_newsdate($parm)
 	{
 	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
-		$con = new convert;
+		$con = e107::getDate();
 		if($parm == '')
 		{
 			return  $con->convert_date($date, 'long');

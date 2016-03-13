@@ -8,7 +8,6 @@
  *
  */
  
-define("PAGE_NAME", "Banner");
 
 define("BANNERLAN_16", "Username: ");
 define("BANNERLAN_17", "Password: ");
