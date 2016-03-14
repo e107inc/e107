@@ -2586,7 +2586,7 @@ class media_admin_ui extends e_admin_ui
 		
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
-			
+
 			$oldpath = e_IMPORT.$file;
 
 			if($_POST['batch_category'] == '_avatars_public' || $_POST['batch_category'] == '_avatars_private')
