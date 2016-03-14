@@ -2319,9 +2319,12 @@ class users_admin_form_ui extends e_admin_form_ui
 
 	function user_perms($curval,$mode)
 	{
-		if($mode == 'read')
+		$perms = $this->getController()->getModel()->get('user_perms');
+		$uid = $this->getController()->getModel()->get('user_id');
+
+		if($mode == 'read' || (str_replace(".","",$perms) == '0' && $uid == USERID))
 		{
-			$uid = $this->getController()->getModel()->get('user_id');
+
 			return e107::getUserPerms()->renderPerms($curval,$uid);		
 		}
 		if($mode == 'write')
@@ -2494,13 +2497,15 @@ class users_admin_form_ui extends e_admin_form_ui
 
 		$opts = array();
 
+		$opts['usersettings'] = LAN_EDIT;
+
 		if ($row['user_perms'] != "0")
 		{
 			// disabled user info <option value='userinfo'>".USRLAN_80."</option>
 		//	$text .= "<option value='usersettings'>".LAN_EDIT."</option>";
 
 
-			$opts['usersettings'] = LAN_EDIT;
+
 
 			// login/logout As
 			if(getperms('0') && !($row['user_admin'] && getperms('0', $row['user_perms'])))
