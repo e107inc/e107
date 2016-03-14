@@ -222,7 +222,7 @@ $USER_EMBED_USERPROFILE_TEMPLATE = "
 if(e_DEBUG == true)
 	{
 e107::css('inline', "
-#user-profile-avatar {
+.panel-profile .user-avatar {
 	max-width: 150px;
 	margin-top: -90px;
 	margin-bottom: 15px;
@@ -232,25 +232,47 @@ e107::css('inline', "
 	margin-left:auto;
 	margin-right:auto;
 }
-.panel-heading h5.user-id {
+.panel-profile .panel-heading h5.user-id {
 	color:#ffffff;
 }
-.panel-body span.padding-left {
+.panel-profile .panel-body span.padding-left {
 	display:block;
-	padding-left: 125px;
 }
-.panel-body p {
+.panel-profile .panel-body p {
 	clear: both;
+    float: none;
+    display: block;
 }
-.profile-header {
+.panel-profile .profile-header {
  	max-width:300px;
 	margin-left: auto;
 	margin-right: auto;
 }
+.panel-profile .profile-header h4 {
+    padding-bottom: 30px;
+}
+.panel-profile .panel-body p.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding-top: 10px;
+}
 ");
 
+$USER_EMBED_USERPROFILE_TEMPLATE = '
+<p class="row">
+	<span class="col-md-6">{USER_ADDON_LABEL}</span>
+	<span class="col-md-6">{USER_ADDON_TEXT}</span>
+ </p>
+';
+$EXTENDED_CATEGORY_TABLE = '
+<p class="row">
+    <span class="col-md-6">{EXTENDED_NAME}</span>
+    <span class="col-md-6">{EXTENDED_VALUE}</span>
+<p>
+';
+$sc_style['USER_COMMENTPOSTS']['pre'] = '<span class="col-md-6">'.LAN_USER_68.'</span><span class="col-md-6">';
 
-
+$sc_style['USER_COMMENTPER']['pre'] = ' ( ';
+$sc_style['USER_COMMENTPER']['post'] = '% )</span>';
 
 	$USER_FULL_TEMPLATE = '
 	{SETIMAGE: w=600}
@@ -264,22 +286,24 @@ e107::css('inline', "
                 {SETIMAGE: w=200}
                 {USER_PICTURE: shape=circle&link=1}
                 <div class="profile-header">
-                    <h4>{USER_NAME}</h4><br />
+                    <h4>{USER_NAME}</h4>
                     <p>{USER_SIGNATURE}</p>
                     <p>{USER_RATING}</p>
                     <p>{USER_SENDPM}</p>
                 </div>
             </div>
             <div class="panel-body">
-      		    <p>'.LAN_USER_63.':&nbsp; {USER_REALNAME}</p>
-                <p>Login Name {USER_LOGINNAME}</p>
-                <p>'.LAN_USER_60.':&nbsp; {USER_EMAIL}</p>
-                <p>'.LAN_USER_54.':&nbsp; {USER_LEVEL}</p>
-                <p>'.LAN_USER_65.':&nbsp; {USER_LASTVISIT}<br /><span class="padding-left">{USER_LASTVISIT_LAPSE}</span></p>
-                <p>'.LAN_USER_59.':&nbsp; {USER_JOIN}<br /><span class="padding-left">{USER_DAYSREGGED}</span></p>
-                <p>'.LAN_USER_66.':&nbsp; {USER_VISITS}</p>
-                <p>{USER_ADDONS} {USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
-                <p>{USER_EXTENDED_ALL}</p>
+      		    <p class="row"><span class="col-md-6">'.LAN_USER_63.'</span><span class="col-md-6"> {USER_REALNAME}</span></p>
+                <p class="row"><span class="col-md-6">'.LAN_USER_02.'</span><span class="col-md-6"> {USER_LOGINNAME}</span></p>
+                <p class="row"><span class="col-md-6">'.LAN_USER_60.'</span><span class="col-md-6"> {USER_EMAIL}</span></p>
+                <p class="row"><span class="col-md-6">'.LAN_USER_54.'</span><span class="col-md-6"> {USER_LEVEL}</p>
+                <p class="row"><span class="col-md-6">'.LAN_USER_65.'</span><span class="col-md-6"> {USER_LASTVISIT}<br /><span class="padding-left">{USER_LASTVISIT_LAPSE}</span></span></p>
+                <p class="row"><span class="col-md-6">'.LAN_USER_59.'</span><span class="col-md-6"> {USER_JOIN}<br /><span class="padding-left">{USER_DAYSREGGED}</span></span></p>
+                <p class="row"><span class="col-md-6">'.LAN_USER_66.'</span><span class="col-md-6"> {USER_VISITS}</span></p>
+                {USER_ADDONS}
+                <p class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
+                {USER_EXTENDED_ALL}
+                <p class="row"></p>
             </div>
             <div class="panel-body text-center"> 
                 {USER_UPDATE_LINK}
