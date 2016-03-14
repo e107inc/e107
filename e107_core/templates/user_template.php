@@ -219,7 +219,8 @@ $USER_EMBED_USERPROFILE_TEMPLATE = "
 
 // Convert Templates from v1.x to v2.x Standards.
 /** TODO EXPERIMENTAL  */
-
+if(e_DEBUG == true)
+	{
 e107::css('inline', "
 #user-profile-avatar {
 	max-width: 150px;
@@ -248,12 +249,16 @@ e107::css('inline', "
 }
 ");
 
-	$USER_FULL_TEMPLATE = '{SETIMAGE: w=600}
+
+
+
+	$USER_FULL_TEMPLATE = '
+	{SETIMAGE: w=600}
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default panel-profile clearfix">
-            <div class="ans panel-heading" style="height:180px; background-size: cover;background-image: url({USER_PHOTO: type=url});">
-                <h5 class="user-id">".LAN_USER_58." {USER_ID}<h5>
+            <div class="ans panel-heading" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
+                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}<h5>
             </div>
             <div class="panel-body text-center">
                 {SETIMAGE: w=200}
@@ -266,13 +271,13 @@ e107::css('inline', "
                 </div>
             </div>
             <div class="panel-body">
-      		    <p>".LAN_USER_63.":&nbsp; {USER_REALNAME}</p>
+      		    <p>'.LAN_USER_63.':&nbsp; {USER_REALNAME}</p>
                 <p>Login Name {USER_LOGINNAME}</p>
-                <p>".LAN_USER_60.":&nbsp; {USER_EMAIL}</p>
-                <p>".LAN_USER_54.":&nbsp; {USER_LEVEL}</p>
-                <p>".LAN_USER_65.":&nbsp; {USER_LASTVISIT}<br /><span class="padding-left">{USER_LASTVISIT_LAPSE}</span></p>
-                <p>".LAN_USER_59.":&nbsp; {USER_JOIN}<br /><span class="padding-left">{USER_DAYSREGGED}</span></p>
-                <p>".LAN_USER_66.":&nbsp; {USER_VISITS}</p>
+                <p>'.LAN_USER_60.':&nbsp; {USER_EMAIL}</p>
+                <p>'.LAN_USER_54.':&nbsp; {USER_LEVEL}</p>
+                <p>'.LAN_USER_65.':&nbsp; {USER_LASTVISIT}<br /><span class="padding-left">{USER_LASTVISIT_LAPSE}</span></p>
+                <p>'.LAN_USER_59.':&nbsp; {USER_JOIN}<br /><span class="padding-left">{USER_DAYSREGGED}</span></p>
+                <p>'.LAN_USER_66.':&nbsp; {USER_VISITS}</p>
                 <p>{USER_ADDONS} {USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
                 <p>{USER_EXTENDED_ALL}</p>
             </div>
@@ -299,9 +304,9 @@ e107::css('inline', "
         </div>
     </div>
 </div>
-	';
+';
+	}
 
-}
 
 
 
