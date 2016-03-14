@@ -251,6 +251,59 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+	//New v2.x Aliases
+
+	public function sc_news_id($parm=null)
+	{
+		return $this->sc_newsid();
+	}
+
+	public function sc_news_title($parm=null)
+	{
+		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newstitle($parm);
+	}
+
+	public function sc_news_body($parm=null)
+	{
+		return $this->sc_newsbody($parm);
+	}
+
+	public function sc_news_author($parm=null)
+	{
+		return $this->sc_newsauthor($parm);
+	}
+
+	public function sc_news_summary($parm=null)
+	{
+		return $this->sc_newssummary($parm);
+	}
+
+	public function sc_news_description($parm=null)
+	{
+		return $this->sc_newsmetadiz($parm);
+	}
+
+	public function sc_news_tags($parm=null)
+	{
+		return $this->sc_newstags($parm);
+	}
+
+	public  function sc_news_comment_count($parm=null)
+	{
+		return $this->sc_newscommentcount($parm);
+	}
+
+	public function sc_news_date($parm=null)
+	{
+		return $this->sc_newsdate($parm);
+	}
+
+	public function sc_news_user_avatar($parm=null)
+	{
+		return $this->sc_newsavatar($parm);
+	}
+
+// ----------------------------------- BC compatible Shortcodes ------------------------------------------- //
 
 	function sc_newscategory($parm=null)
 	{
@@ -286,7 +339,7 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function sc_newsavatar()
+	function sc_newsavatar($parm=null)
 	{
 		return vartrue($this->news_item['user_id']) ? e107::getParser()->parseTemplate("{USER_AVATAR=".$this->news_item['user_id']."}",true) : '';
 	} 
@@ -425,7 +478,7 @@ class news_shortcodes extends e_shortcode
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
-	function sc_newssummary()
+	function sc_newssummary($parm=null)
 	{
 		if($this->news_item['news_summary'])
 		{
@@ -887,7 +940,7 @@ class news_shortcodes extends e_shortcode
 	}
 
 
-	function sc_newsmetadiz()
+	function sc_newsmetadiz($parm=null)
 	{
   		return e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
 	}

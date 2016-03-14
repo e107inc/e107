@@ -754,7 +754,7 @@ class comment
 				{ 
 					if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' "))
 					{
-						if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".$tp->toDB($ip, true)."' "))
+						if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".USERIP."' "))
 						{
 							//list($cuser_id, $cuser_name) = $sql2->db_Fetch();
 							$tmp = $sql2->fetch();
@@ -859,7 +859,7 @@ class comment
 						e107::getCache()->clear("comment");
 
 
-						if ((empty($type) || $type == "news") && !$this->moderateComment($pref['comments_moderate']))
+						if ((empty($table) || $table == "news") && !$this->moderateComment($pref['comments_moderate']))
 						{
 							$sql->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
 						}

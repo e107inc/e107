@@ -123,7 +123,7 @@ if(!empty($menu_pref['banner_campaign']) && !empty($menu_pref['banner_amount']))
 				$ret[$cat][] = $tp->simpleParse($BANNER_MENU_ITEM, $var); 
 			}			
 		}
-		elseif(e_DEBUG == true)
+		elseif(e_DEBUG == true && getperms('0'))
 		{
 			echo "no banner data";
 			print_a($menu_pref);
