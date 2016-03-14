@@ -126,21 +126,22 @@ $COMMENT_TEMPLATE['item'] = '
 		<div class="media-body comment-box-right ">
 			<div class="row">
 				
-					<div class="comment-box-username span2 col-md-3">{USERNAME}</div>
-					<div class="comment-box-date span2 col-md-2">{TIMEDATE=relative}</div>
-					<div class="comment-status span2 col-md-3">{COMMENT_STATUS}</div>
-					<div class="comment-moderate span6 col-md-4 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
-				
+					<div class="comment-box-username span2 col-xs-6 col-sm-6 col-md-6">{USERNAME}</div>
+					<div class="comment-box-date span2 col-xs-6 col-sm-6  col-md-6 text-right text-muted">{TIMEDATE=relative}</div>
+
 			</div>
 			
-			<div class="row-fluid">	
-				<div class="span12" id="{COMMENT_ITEMID}-edit" contentEditable="false" >
+			<div class="row-fluid">
+				<div class="span12 col-xs-12 comment-text" id="{COMMENT_ITEMID}-edit" contentEditable="false" >
 					<p>
 						{COMMENT}
 					</p>
 				</div>
 			</div>	
-			
+			<div class="row">
+				<div class="comment-status span2 col-sm-12 col-md-6">{COMMENT_STATUS}</div>
+					<div class="comment-moderate span6 col-sm-12 col-md-6 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
+			</div>
 			
 				
 			

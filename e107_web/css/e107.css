@@ -139,6 +139,7 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 #comments-container { list-style: none outside none; margin:0px }
 #comments-container > li { padding: 5px 0px }
+.comment-text           { padding: 8px 0 }
 
 .e-email:before {    content: attr(data-user);    }
 .e-email:after {  	content: attr(data-dom)	}
