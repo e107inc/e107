@@ -604,6 +604,8 @@ class newsletter
 
 		$nl_sql = new db;
 		$_nl_sanatized = '';
+		$vs_text = '';
+
 
 		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
@@ -653,13 +655,13 @@ class newsletter
 				{
 					if ($val != $_last_subscriber)
 					{
-						$nl_sql -> db_Select("user", "*", "user_id=".$val);
-						if($nl_row = $nl_sql-> db_Fetch())
+						$nl_sql -> select("user", "*", "user_id=".$val);
+						if($nl_row = $nl_sql-> fetch())
 						{
 							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
 							$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
 							$link = e107::getUrl()->create('user/profile/view', $uparams);
-							$userlink = "<a href='".$link."'>".$nl_row['user_name']"</a>";
+							$userlink = "<a href='".$link."'>".$nl_row['user_name']."</a>";
 							$vs_text .= "
 							<tr>
 								<td>".$val."</td>
@@ -674,7 +676,7 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
+						$nl_sql -> update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
 					}
