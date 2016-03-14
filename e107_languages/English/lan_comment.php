@@ -79,4 +79,11 @@ define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideas");
 define("COMLAN_TYPE_8", "userprofile");
 define("COMLAN_TYPE_PAGE", "Content");		// Really custom page, but use a 'non-technical' description
+
+define("COMLAN_500", "Please [sign in] to leave a comment.");
+define("COMLAN_501", "If you are not yet registered, you may [click here to register].");
+
+
+
+
 ?>

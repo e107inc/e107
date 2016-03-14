@@ -130,7 +130,14 @@ class social_shortcodes extends e_shortcode
 		}
 		
 		$sc = e107::getScBatch('signup');
-		$text = "<p>Sign in with:</p>";
+
+		$text = '';
+
+		if(!empty($parm['label']))
+		{
+			$text .= "<p>Sign in with:</p>";
+		}
+
 		$text .= $sc->sc_signup_xup_login($parm);
 		$text .= "
 		<div class='clearfix'></div><hr class='clearfix' />";

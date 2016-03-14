@@ -112,8 +112,9 @@ $LOGIN_WRAPPER['page']['LOGIN_TABLE_SUBMIT'] = "<div class='form-group'>{---}</d
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_FOOTER_USERREG'] = "<div class='form-group'>{---}</div>";
 
 $LOGIN_TEMPLATE['page']['body'] .= '
-       {LOGIN_TABLE_USERNAME}
+        {LOGIN_TABLE_USERNAME}
         {LOGIN_TABLE_PASSWORD}
+        {SOCIAL_LOGIN: size=3x}
 		{LOGIN_TABLE_SECIMG_SECIMG} {LOGIN_TABLE_SECIMG_TEXTBOC}
         {LOGIN_TABLE_REMEMBERME}
         {LOGIN_TABLE_SUBMIT=large}
