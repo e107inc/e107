@@ -165,13 +165,13 @@ if (!USER)
 {
 	  $text .= "
 	  <tr>
-	    <td style='width:20%' class='forumheader3'>".LAN_7."</td>
+	    <td style='width:20%' class='forumheader3'>".LAN_NAME."</td>
 	    <td style='width:80%' class='forumheader3'>
 	      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($submitnews_user,FALSE,'USER_TITLE')."' maxlength='100' required />
 	    </td>
 	  </tr>
 	  <tr>
-	    <td style='width:20%' class='forumheader3'>".LAN_112."</td>
+	    <td style='width:20%' class='forumheader3'>".LAN_EMAIL."</td>
 	    <td style='width:80%' class='forumheader3'>
 	      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->toHTML($submitnews_email, FALSE, 'LINKTEXT')."' maxlength='100' required />
 	    </td>
@@ -180,7 +180,7 @@ if (!USER)
 
 $text .= "
 <tr>
-  <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
+  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY.": </td>
 	<td style='width:80%' class='forumheader3'>";
 
 if (!$sql->select("news_category"))
