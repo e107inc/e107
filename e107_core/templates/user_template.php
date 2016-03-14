@@ -219,7 +219,7 @@ $USER_EMBED_USERPROFILE_TEMPLATE = "
 
 // Convert Templates from v1.x to v2.x Standards.
 /** TODO EXPERIMENTAL  */
-/*
+
 if(defset('BOOTSTRAP') == 3)
 {
 	//EXPERIMENTAL
@@ -234,8 +234,13 @@ box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 margin-left:auto;
 margin-right:auto;
 }
-
-
+.panel-heading h5.user-id {
+    color:#ffffff;
+}
+.panel-body span {
+    display:block;
+    padding-left: 125px;
+}
 
 
 ");
@@ -244,29 +249,56 @@ margin-right:auto;
 	$USER_FULL_TEMPLATE = '{SETIMAGE: w=600}
 <div class="row">
     <div class="col-md-12">
-      <div class="panel panel-default panel-profile">
-        <div class="ans panel-heading" style="height:180px; background-size: cover;background-image: url({USER_PHOTO: type=url});"></div>
-        <div class="panel-body text-center">
-          {SETIMAGE: w=200}
-          {USER_PICTURE: shape=circle&link=1}
-
-          <h5>{USER_NAME}</h5>
-          <p>{USER_SIGNATURE}</p>
-          </div>
-
-
-      </div>
-
-
-
-
-   </div>
+        <div class="panel panel-default panel-profile clearfix">
+            <div class="ans panel-heading" style="height:180px; background-size: cover;background-image: url({USER_PHOTO: type=url});">
+                <h5 class="user-id">".LAN_USER_58." {USER_ID}<h5>
+            </div>
+            <div class="panel-body text-center">
+                {SETIMAGE: w=200}
+                {USER_PICTURE: shape=circle&link=1}
+            
+                <h5>{USER_NAME}</h5>
+                <p>{USER_SIGNATURE}</p>
+                <p>{USER_RATING}</p>
+                <p>{USER_SENDPM}</p>
+            </div>
+            <div class="panel-body">
+      		    <p>".LAN_USER_63.":&nbsp; {USER_REALNAME}</p>
+                <p>".LAN_USER_60.":&nbsp; {USER_EMAIL}</p>
+                <p>".LAN_USER_54.":&nbsp; {USER_LEVEL}</p>
+                <p>".LAN_USER_65.":&nbsp; {USER_LASTVISIT}<br /><span>{USER_LASTVISIT_LAPSE}</span></p>
+                <p>".LAN_USER_59.":&nbsp; {USER_JOIN}<br /><span>{USER_DAYSREGGED}</span></p>
+                <p>".LAN_USER_66.":&nbsp; {USER_VISITS}</p>
+                <p>{USER_ADDONS}</p>
+                <p>{USER_COMMENTPOSTS}</p>
+                <p>{USER_COMMENTPER}</p>
+                <p>{USER_EXTENDED_ALL}</p>
+            </div>
+            <div class="panel-body text-center"> 
+                {USER_UPDATE_LINK}
+            </div>
+            <div class="panel-body"> 
+                <ul class="pager user-view-nextprev">
+                    <li class="previous">
+    	               {USER_JUMP_LINK=prev}
+                    </li>
+	               <li>
+    	               <!-- Back to List? -->
+                    </li>
+                    <li class="next">
+    	               {USER_JUMP_LINK=next}
+                    </li>
+                </ul>
+            </div>        
+        </div>
+        <div class="panel panel-default clearfix">
+            {PROFILE_COMMENTS}
+            {PROFILE_COMMENT_FORM}
+        </div>
+    </div>
 </div>
-
 	';
-
 }
-*/
 
 
 
