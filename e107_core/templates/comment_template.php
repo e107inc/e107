@@ -119,17 +119,17 @@ $COMMENT_TEMPLATE['form']			= "
 
 
 $COMMENT_TEMPLATE['item'] = '
-		{SETIMAGE: w=100&h=100}
+		{SETIMAGE: w=80&h=80}
 		<div class="media-object comment-box-left pull-left span1">
 			{COMMENT_AVATAR}
 		</div>	
 		<div class="media-body comment-box-right ">
 			<div class="row">
 				
-					<div class="comment-box-username span2 col-md-2">{USERNAME}</div>
+					<div class="comment-box-username span2 col-md-3">{USERNAME}</div>
 					<div class="comment-box-date span2 col-md-2">{TIMEDATE=relative}</div>
 					<div class="comment-status span2 col-md-3">{COMMENT_STATUS}</div>
-					<div class="comment-moderate span6 col-md-5 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
+					<div class="comment-moderate span6 col-md-4 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
 				
 			</div>
 			

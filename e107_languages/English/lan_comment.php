@@ -55,7 +55,7 @@ define("COMLAN_326", "Reply to this");
 define("COMLAN_328", "Comments are locked");
 define("COMLAN_329", "Unauthorized");
 define("COMLAN_330", "IP:");
-define("COMLAN_331", "Pending Approval");
+define("COMLAN_331", "Awaiting Approval");
 define("COMLAN_332", "Couldn't delete comment");
 define("COMLAN_333", "Comment approved");
 define("COMLAN_334", "Couldn't approve comment");

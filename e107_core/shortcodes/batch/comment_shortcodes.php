@@ -431,13 +431,13 @@ class comment_shortcodes extends e_shortcode
 		list($prov,$id) = explode("_",$xup);
 		$prov = strtolower($prov);
 
-		if($prov == 'facebook' || $prov == 'twitter')
+		if($prov == 'facebook' || $prov == 'twitter') //TODO Get this working!
 		{
 			//TODO Move styling to e107.css 
-			$text = "<img src='".e_IMAGE_ABS."xup/".$prov.".png' style='display:inline-block;width:26px;height:26px;vertical-align:middle' alt='Share' />";
-			$text .= e107::getForm()->checkbox('comment_share',$prov,true);
-
-			$text .= LAN_SHARE;
+		//	$text = "<img src='".e_IMAGE_ABS."xup/".$prov.".png' style='display:inline-block;width:26px;height:26px;vertical-align:middle' alt='Share' />";
+		//	$text .= e107::getForm()->checkbox('comment_share',$prov,true);
+			$text = e107::getForm()->hidden('comment_share','');
+		//	$text .= LAN_SHARE;
 			return $text;
 		}
 	}
