@@ -325,8 +325,46 @@ class comment
 		}
 		else
 		{ // Comment entry not allowed - point to signup link
-			$text = "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
+			$userReg = intval(e107::pref('core','user_reg'));
+			$socialLogin = e107::pref('core','social_login_active');
+
+			$text = "<div class='comments-form-login'>";
+
+			$srch = array("[","]");
+
+			if(!empty($userReg) || !empty($socialLogin))
+			{
+
+				$COMLAN_500 = COMLAN_500; // Please [sign in] to leave a comment.
+
+				$repl = array("<a href='".e_LOGIN."'>","</a>");
+
+				$text .= "<div>".str_replace($srch,$repl,$COMLAN_500)."</div>";
+
+
+				if(!empty($socialLogin))
+				{
+					$text .= $tp->parseTemplate("{SOCIAL_LOGIN}",true);
+				//	$text .= "<br />";
+				}
+			}
+
+			if($userReg === 1)
+			{
+				$COMLAN_501 = COMLAN_501; // If you are not yet registered, you may [click here to register].
+
+				$repl = array("<a href='".e_SIGNUP."'>","</a>");
+
+				$text .= "<div>".str_replace($srch,$repl,$COMLAN_501)."</div>";
+			}
+
+			$text .= "</div>";
+
+
+		//	$text = "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
 		}
+
+
 		if ($return)
 		{
 			return $text;
