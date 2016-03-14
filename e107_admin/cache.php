@@ -167,7 +167,7 @@ $text = "
 
 						<tr>
 						<td>
-							<strong class='e-tip'>".CACLAN_28." <span class='label label-warning'>Experimental</span></strong>
+							<strong class='e-tip'>".CACLAN_28."</strong>
 							<div class='field-help'>".CACLAN_29."</div>
 						</td>
 						<td>{$jscsscache_label}</td>
