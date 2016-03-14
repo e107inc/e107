@@ -2425,6 +2425,10 @@ class media_admin_ui extends e_admin_ui
 
 		// <td>".$frm->textarea('batch_import_diz['.$c.']', ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description']))."</td>
 
+
+		$this->cats['_avatars_public'] = "Avatars Folder (user selectable)";
+		$this->cats['_avatars_private'] = "Avatars Folder (private)";
+
 		if(!isset($_POST['batch_category']) && substr($lastMime,0,5)=='image')
 		{
 			$_POST['batch_category'] = "_common_image";
@@ -2582,10 +2586,25 @@ class media_admin_ui extends e_admin_ui
 		
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
-						
-		//	$oldpath = e_MEDIA."temp/".$file;
-			$oldpath = e_IMPORT.$file;
 			
+			$oldpath = e_IMPORT.$file;
+
+			if($_POST['batch_category'] == '_avatars_public' || $_POST['batch_category'] == '_avatars_private')
+			{
+				$newpath = ($_POST['batch_category'] == '_avatars_public') ? e_AVATAR_DEFAULT.$file : $newpath = e_AVATAR_UPLOAD.$file;
+
+				if(rename($oldpath,$newpath))
+				{
+					$mes->addSuccess(IMALAN_128." ".$newpath);
+				}
+				else
+				{
+					$mes->addError(IMALAN_128." ".$newpath);
+				}
+				continue;
+			}
+
+
 			// Resize on Import Routine ------------------------
 			if(vartrue($img_import_w) && vartrue($img_import_h))
 			{
