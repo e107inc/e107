@@ -7,6 +7,7 @@
     <external_plugins>e107 example compat3x</external_plugins>
     <image_advtab>true</image_advtab>
     <extended_valid_elements>i[*], object[*],embed[*],bbcode[*]</extended_valid_elements>
+    <media_live_embeds>false</media_live_embeds>
     <templates>[
         {
         title: "Bootstrap table",
