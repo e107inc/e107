@@ -1083,7 +1083,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			if(defined('e_LOG_CRITICAL'))
 			{
 				$date = date('r');
-				file_put_contents(e_LOG.'criticalError.log',$date."\t\t". strip_tags($message)."\n", FILE_APPEND);
+				@file_put_contents(e_LOG.'criticalError.log',$date."\t\t". strip_tags($message)."\n", FILE_APPEND);
 				$message = LAN_ERROR_46; // "Check log for details";
 				$line = null;
 				$file = null;
