@@ -124,6 +124,8 @@ $ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
  *
  * @return string JS source
  */
+
+ /*
 function headerjs()
 {
 	$ret = "
@@ -153,4 +155,6 @@ function headerjs()
 	
 	return $ret;
 }
+
+ */
 ?>

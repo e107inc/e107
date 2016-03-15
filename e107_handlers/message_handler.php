@@ -1098,7 +1098,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			echo "<div class='alert alert-block alert-error alert-danger' style='font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><h4>CRITICAL ERROR: </h4>";
 			echo (!empty($line)) ? "Line $line " : "";
 			echo (!empty($file)) ? $file : "";
-			echo "<div>Error reported as: ".$message."</div>";
+			echo "<div>".$message."</div>";
 			echo "</div>";
 
 			if(!defined('FOOTERF'))
