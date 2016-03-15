@@ -144,6 +144,45 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 .e-email:before {    content: attr(data-user);    }
 .e-email:after {  	content: attr(data-dom)	}
 
+/* User Profile css */
+.panel-profile .user-avatar {
+	max-width: 150px;
+	margin-top: -90px;
+	margin-bottom: 15px;
+	border: 5px solid #fff;
+	border-radius: 100%;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	margin-left:auto;
+	margin-right:auto;
+}
+.panel-profile .panel-heading h5.user-id {
+	color:#ffffff;
+}
+.panel-profile .panel-body span.padding-left {
+	display:block;
+}
+.panel-profile .panel-body p {
+	clear: both;
+    float: none;
+    display: block;
+}
+.panel-profile .profile-header {
+ 	max-width:300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.panel-profile .profile-header h4 {
+    padding-bottom: 30px;
+}
+.panel-profile .panel-body p.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding-top: 10px;
+}
+
+
+
+
+
 
 
 /* default comments layout   */

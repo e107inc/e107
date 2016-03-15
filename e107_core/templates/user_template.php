@@ -25,6 +25,11 @@ global $user_shortcodes, $pref, $user;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
 define("HIDE_EMPTY_FIELDS", FALSE);
 
+
+
+
+/// --------------------- Start of Legacy Code --------------------------------------- //
+
 $EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader center'>{EXTENDED_NAME}</td></tr>";
 
 $EXTENDED_CATEGORY_TABLE = "
@@ -216,136 +221,8 @@ $USER_EMBED_USERPROFILE_TEMPLATE = "
 </tr>";
 
 
-
-// Convert Templates from v1.x to v2.x Standards.
-/** TODO EXPERIMENTAL  */
-if(e_DEBUG == true)
-	{
-e107::css('inline', "
-.panel-profile .user-avatar {
-	max-width: 150px;
-	margin-top: -90px;
-	margin-bottom: 15px;
-	border: 5px solid #fff;
-	border-radius: 100%;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-	margin-left:auto;
-	margin-right:auto;
-}
-.panel-profile .panel-heading h5.user-id {
-	color:#ffffff;
-}
-.panel-profile .panel-body span.padding-left {
-	display:block;
-}
-.panel-profile .panel-body p {
-	clear: both;
-    float: none;
-    display: block;
-}
-.panel-profile .profile-header {
- 	max-width:300px;
-	margin-left: auto;
-	margin-right: auto;
-}
-.panel-profile .profile-header h4 {
-    padding-bottom: 30px;
-}
-.panel-profile .panel-body p.row {
-    border-top: 1px solid rgba(170,170,170,0.35);
-    padding-top: 10px;
-}
-");
-
-$USER_EMBED_USERPROFILE_TEMPLATE = '
-<p class="row">
-	<span class="col-md-6">{USER_ADDON_LABEL}</span>
-	<span class="col-md-6">{USER_ADDON_TEXT}</span>
- </p>
-';
-$EXTENDED_CATEGORY_TABLE = '
-<p class="row">
-    <span class="col-md-6">{EXTENDED_NAME}</span>
-    <span class="col-md-6">{EXTENDED_VALUE}</span>
-<p>
-';
-$sc_style['USER_COMMENTPOSTS']['pre'] = '<span class="col-md-6">'.LAN_USER_68.'</span><span class="col-md-6">';
-
-$sc_style['USER_COMMENTPER']['pre'] = ' ( ';
-$sc_style['USER_COMMENTPER']['post'] = '% )</span>';
-
-	$USER_FULL_TEMPLATE = '
-	{SETIMAGE: w=600}
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default panel-profile clearfix">
-            <div class="ans panel-heading" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
-                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}<h5>
-            </div>
-            <div class="panel-body text-center">
-                {SETIMAGE: w=200}
-                {USER_PICTURE: shape=circle&link=1}
-                <div class="profile-header">
-                    <h4>{USER_NAME}</h4>
-                    <p>{USER_SIGNATURE}</p>
-                    <p>{USER_RATING}</p>
-                    <p>{USER_SENDPM}</p>
-                </div>
-            </div>
-            <div class="panel-body">
-      		    <p class="row"><span class="col-md-6">'.LAN_USER_63.'</span><span class="col-md-6"> {USER_REALNAME}</span></p>
-                <p class="row"><span class="col-md-6">'.LAN_USER_02.'</span><span class="col-md-6"> {USER_LOGINNAME}</span></p>
-                <p class="row"><span class="col-md-6">'.LAN_USER_60.'</span><span class="col-md-6"> {USER_EMAIL}</span></p>
-                <p class="row"><span class="col-md-6">'.LAN_USER_54.'</span><span class="col-md-6"> {USER_LEVEL}</p>
-                <p class="row"><span class="col-md-6">'.LAN_USER_65.'</span><span class="col-md-6"> {USER_LASTVISIT}<br /><span class="padding-left">{USER_LASTVISIT_LAPSE}</span></span></p>
-                <p class="row"><span class="col-md-6">'.LAN_USER_59.'</span><span class="col-md-6"> {USER_JOIN}<br /><span class="padding-left">{USER_DAYSREGGED}</span></span></p>
-                <p class="row"><span class="col-md-6">'.LAN_USER_66.'</span><span class="col-md-6"> {USER_VISITS}</span></p>
-                {USER_ADDONS}
-                <p class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
-                {USER_EXTENDED_ALL}
-                <p class="row"></p>
-            </div>
-            <div class="panel-body text-center"> 
-                {USER_UPDATE_LINK}
-            </div>
-            <div class="panel-body"> 
-                <ul class="pager user-view-nextprev">
-                    <li class="previous">
-    	               {USER_JUMP_LINK=prev}
-                    </li>
-	               <li>
-    	               <!-- Back to List? -->
-                    </li>
-                    <li class="next">
-    	               {USER_JUMP_LINK=next}
-                    </li>
-                </ul>
-            </div>        
-        </div>
-        <div class="panel panel-default clearfix">
-            {PROFILE_COMMENTS}
-            {PROFILE_COMMENT_FORM}
-        </div>
-    </div>
-</div>
-';
-	}
-
-
-
-
-$USER_TEMPLATE['view'] 				= $USER_FULL_TEMPLATE;
-$USER_TEMPLATE['extended']['start'] = $EXTENDED_CATEGORY_START;
-$USER_TEMPLATE['extended']['item'] 	= $EXTENDED_CATEGORY_TABLE ;
-$USER_TEMPLATE['extended']['start'] = $EXTENDED_CATEGORY_END;
-$USER_TEMPLATE['addon'] 			= $USER_EMBED_USERPROFILE_TEMPLATE;
-
-$USER_TEMPLATE['list']['start'] 	= $USER_SHORT_TEMPLATE_START;
-$USER_TEMPLATE['list']['item'] 		= $USER_SHORT_TEMPLATE;
-$USER_TEMPLATE['list']['end'] 		= $USER_SHORT_TEMPLATE_END;
-
-// Convert Shortcode Wrappers from v1.x to v2.x standards. 
-
+// Convert Shortcode Wrappers from v1.x to v2.x standards.
+$USER_TEMPLATE['view'] 				        =   $USER_FULL_TEMPLATE;
 $USER_WRAPPER['view']['USER_COMMENTS_LINK'] =	$sc_style['USER_COMMENTS_LINK']['pre']."{---}".$sc_style['USER_COMMENTS_LINK']['post'];
 $USER_WRAPPER['view']['USER_SIGNATURE'] 	=	$sc_style['USER_SIGNATURE']['pre']."{---}".$sc_style['USER_SIGNATURE']['post'];
 $USER_WRAPPER['view']['USER_UPDATE_LINK'] 	=	$sc_style['USER_UPDATE_LINK']['pre']."{---}".$sc_style['USER_UPDATE_LINK']['post'];
@@ -356,4 +233,160 @@ $USER_WRAPPER['view']['USER_LOGINNAME'] 	=	$sc_style['USER_LOGINNAME']['pre']."{
 
 $USER_WRAPPER['view']['USER_COMMENTPOSTS'] 	=	$sc_style['USER_COMMENTPOSTS']['pre']."{---}";
 $USER_WRAPPER['view']['USER_COMMENTPER'] 	=	$sc_style['USER_COMMENTPER']['pre']."{---}".$sc_style['USER_COMMENTPER']['post'];
+
+$USER_TEMPLATE['addon'] 			        = $USER_EMBED_USERPROFILE_TEMPLATE;
+$USER_TEMPLATE['extended']['start']         = $EXTENDED_CATEGORY_START;
+$USER_TEMPLATE['extended']['item'] 	        = $EXTENDED_CATEGORY_TABLE ;
+$USER_TEMPLATE['extended']['start']         = $EXTENDED_CATEGORY_END;
+$USER_TEMPLATE['list']['start'] 	        = $USER_SHORT_TEMPLATE_START;
+$USER_TEMPLATE['list']['item'] 		        = $USER_SHORT_TEMPLATE;
+$USER_TEMPLATE['list']['end'] 		        = $USER_SHORT_TEMPLATE_END;
+
+
+// ------------ End of Legacy Code ------------------------------- //
+
+//  v2.x Standards.
+if(deftrue('BOOTSTRAP'))
+{
+
+	$USER_TEMPLATE = array(); // reset the legacy template above.
+	$USER_WRAPPER = array(); // reset all the legacy wrappers above.
+
+
+	$USER_TEMPLATE['addon']  = '
+		<p class="row">
+			<span class="col-xs-12 col-md-6">{USER_ADDON_LABEL}</span>
+			<span class="col-xs-12 col-md-6">{USER_ADDON_TEXT}</span>
+		 </p>
+		';
+
+	$USER_TEMPLATE['extended']['start'] = '';
+	$USER_TEMPLATE['extended']['end']   = '';
+
+	$USER_TEMPLATE['extended']['item'] = '
+		<p class="row">
+		    <span class="col-xs-12 col-md-6">{EXTENDED_NAME}</span>
+		    <span class="col-xs-12 col-md-6">{EXTENDED_VALUE}</span>
+		<p>
+		';
+
+
+	$USER_TEMPLATE['list']['start']  = "
+		<div class='content user-list'>
+		<div class='center'>".LAN_USER_56." {TOTAL_USERS}
+		<br />
+		<br />
+		{USER_FORM_START}
+		<div class='form-inline'>
+		".LAN_SHOW.": {USER_FORM_RECORDS} ".LAN_USER_57." {USER_FORM_ORDER}
+		{USER_FORM_SUBMIT}
+		</div>
+		{USER_FORM_END}
+		</div>
+		<br />
+		<br />
+		<table style='".USER_WIDTH."' class='table fborder e-list'>
+		<thead>
+		<tr>
+		<th class='fcaption' style='width:2%'>&nbsp;</th>
+		<th class='fcaption' style='width:20%'>".LAN_USER_58."</th>
+		<th class='fcaption' style='width:20%'>".LAN_USER_60."</th>
+		<th class='fcaption' style='width:20%'>".LAN_USER_59."</th>
+		</tr>
+		</thead>
+		<tbody>
+		{SETIMAGE: w=40}
+	";
+
+
+	$USER_TEMPLATE['list']['item']  = "
+	<tr>
+		<td class='forumheader3' style='width:2%'>{USER_PICTURE}</td>
+		<td class='forumheader3' style='width:20%'>{USER_ID}: {USER_NAME_LINK}</td>
+		<td class='forumheader3' style='width:20%'>{USER_EMAIL}</td>
+		<td class='forumheader3' style='width:20%'>{USER_JOIN}</td>
+	</tr>
+	";
+
+	$USER_TEMPLATE['list']['end']  = "
+	</tbody>
+	</table>
+	</div>
+	";
+
+
+	// View shortcode wrappers.
+	$USER_WRAPPER['view']['USER_COMMENTPOSTS']  = '<span class="col-xs-12 col-md-6">'.LAN_USER_68.'</span><span class="col-xs-12 col-md-6">{---}';
+	$USER_WRAPPER['view']['USER_COMMENTPER']    = ' ( {---}% )</span>';
+	$USER_WRAPPER['view']['USER_SIGNATURE']     = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_RATING']        = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_SENDPM']         = '<div>{---}</div>';
+
+	$USER_TEMPLATE['view'] 				= '
+	{SETIMAGE: w=600}
+	<div class="row">
+	    <div class="col-md-12">
+	        <div class="panel panel-default panel-profile clearfix">
+	            <div class="panel-heading" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
+	                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}</h5>
+	            </div>
+	            <div class="panel-body text-center">
+	                {SETIMAGE: w=200}
+	                {USER_PICTURE: shape=circle&link=1}
+	                <div class="profile-header">
+	                    <h4>{USER_NAME}</h4>
+	                    {USER_SIGNATURE}
+	                    {USER_RATING}
+	                    {USER_SENDPM}
+	                </div>
+	            </div>
+	            <div class="panel-body">
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_63.'</span><span class="col-xs-12 col-md-6">{USER_REALNAME}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_02.'</span><span class="col-xs-12 col-md-6">{USER_LOGINNAME}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_60.'</span><span class="col-xs-12 col-md-6">{USER_EMAIL}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_54.'</span><span class="col-xs-12 col-md-6">{USER_LEVEL}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_65.'</span><span class="col-xs-12 col-md-6">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></span></p>
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_59.'</span><span class="col-xs-12 col-md-6">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></span></p>
+	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_66.'</span><span class="col-xs-12 col-md-6">{USER_VISITS}</span></p>
+	                {USER_ADDONS}
+	                <p class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
+	                {USER_EXTENDED_ALL}
+	                <p class="row"></p>
+	            </div>
+	            <div class="panel-body text-center">
+	                {USER_UPDATE_LINK}
+	            </div>
+	            <div class="panel-body">
+	                <ul class="pager user-view-nextprev">
+	                    <li class="previous">
+	                       {USER_JUMP_LINK=prev}
+	                    </li>
+		               <li>
+	                       <!-- Back to List? -->
+	                    </li>
+	                    <li class="next">
+	                       {USER_JUMP_LINK=next}
+	                    </li>
+	                </ul>
+	            </div>
+	        </div>
+	        <div class="panel panel-default clearfix">
+	            {PROFILE_COMMENTS}
+	            {PROFILE_COMMENT_FORM}
+	        </div>
+	    </div>
+	</div>
+	';
+}
+
+
+
+
+
+
+
+
+
+
+
 ?>
