@@ -421,7 +421,8 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_loginname($parm='')
 	{
-		if(ADMIN && getperms("4")) {
+		if(ADMIN && getperms("4"))
+		 {
 			return $this->var['user_loginname'];
 		}
 	}
@@ -618,11 +619,9 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_picture($parm) 
 	{
-		$tp = e107::getParser();
-		$parm['id'] = 'user-profile-avatar';
-		return $tp->toAvatar($this->var, $parm);
+		return e107::getParser()->toAvatar($this->var, $parm);
 
-
+/*
 
 		return $tp->parseTemplate("{USER_AVATAR=".$this->var['user_sess']."}",true);
 		
@@ -634,7 +633,7 @@ class user_shortcodes extends e_shortcode
 		else
 		{
 			return LAN_USER_42;
-		}
+		}*/
 	}
 	
 	/*  sc_USER_AVATAR - see single/user_avatar.php */ 

@@ -3542,7 +3542,7 @@ class e_parser
 		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : "";
 
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$shape." user-avatar e-tip' title=\"".$title."\" src='".$img."' alt='' width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$shape." user-avatar' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
 	//	return $img;
 		return $text;
