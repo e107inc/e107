@@ -216,7 +216,7 @@ class notify
 
 		}
 
-		if(E107_DEBUG_LEVEL > 0)
+		if(E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
 		{
 			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
 
