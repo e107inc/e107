@@ -62,4 +62,5 @@ define('LAN_ERROR_43', "Site unavailable temporarily");
 define('LAN_ERROR_44', "Site logo");
 
 define('LAN_ERROR_45', "What can you do now?");
+define('LAN_ERROR_46', "Check log for details.");
 ?>

@@ -1888,6 +1888,8 @@ function message_handler($mode, $message, $line = 0, $file = '')
 		return;
 	}
 
+
+
 	e107_require_once(e_HANDLER.'message_handler.php');
 	show_emessage($mode, $message, $line, $file);
 }
