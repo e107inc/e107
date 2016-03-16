@@ -398,7 +398,7 @@ class theme_builder
 				{
 					$nm = $key.'-'.$type;
 					$name = "xml[$nm]";	
-					$size = (count($val)==1) ? 'span7' : 'span2';
+					$size = (count($val)==1) ? 'col-md-7' : 'col-md-2';
 					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type, vartrue($defaults[$nm]))."</div>";	
 				}	
 			
@@ -588,7 +588,8 @@ TEMPLATE;
 			
 			$size 		= 30;
 			$help		= '';
-			
+			$sizex      = '';
+
 			switch ($info)
 			{
 				
@@ -601,7 +602,7 @@ TEMPLATE;
 				case 'main-lang':
 					$help 		= TPVLAN_CONV_4;
 					$required 	= false;
-					$placeholder= " ";
+					$placeholder= "LAN equivalent";
 					$pattern 	= "[A-Z0-9_]*";
 				break;
 				
@@ -644,7 +645,7 @@ TEMPLATE;
 				case 'summary-summary':
 					$help 		= TPVLAN_CONV_10;
 					$required 	= true;
-					$size 		= 100;
+					$size 		= 200;
 					$placeholder= " ";
 					$pattern	= "[A-Za-z,() \.0-9]*";
 				break;	
@@ -681,7 +682,8 @@ TEMPLATE;
 			$req = ($required == true) ? "&required=1" : "";	
 			$placeholder = (varset($placeholder)) ? $placeholder : $type;
 			$pat = ($pattern) ? "&pattern=".$pattern : "";
-			
+			$text = '';
+
 			switch ($type) 
 			{
 				
@@ -695,9 +697,9 @@ TEMPLATE;
 						$file = str_replace(e_THEME.$this->themeName."/",'',$path);
 						$text .= "<div class='row-fluid'>";
 						$text .= "<div class='controls'>";
-						$text .= "<div class='span3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
+						$text .= "<div class='col-md-3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
 						<div class='field-help'>".TPVLAN_CONV_14."</div></div>";
-						$text .= "<div class='span3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
+						$text .= "<div class='col-md-3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
 						<div class='field-help'>".TPVLAN_CONV_15."</div></div>";
 					//	$text .= "<div class='span2'>".$frm->checkbox('css['.$key.'][file]',$file, false, array('label'=>$file))."</div>";
 					//	$text .= "<div class='span2'>".$frm->text('css['.$key.'][name]', $default, $size, 'placeholder='.$placeholder . $req. $pat)."</div>";	
@@ -711,11 +713,11 @@ TEMPLATE;
 				
 				
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req);		
+					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req.'&size=block-level');
 				break;
 				
 				case 'description':
-					$text = $frm->textarea($name,$default, 3, 100, $req);	// pattern not supported. 	
+					$text = $frm->textarea($name,$default, 3, 100, $req,'&size=block-level');	// pattern not supported.
 				break;
 								
 						
@@ -733,7 +735,7 @@ TEMPLATE;
 				
 				
 				default:
-					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat);	
+					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat.'&size=block-level');
 				break;
 			}
 	
