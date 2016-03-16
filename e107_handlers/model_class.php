@@ -3001,7 +3001,8 @@ class e_admin_model extends e_front_model
 		if(is_numeric($id)) $id = intval($id);
 		else  $id = "'".e107::getParser()->toDB($id)."'";
 		$table  = $this->getModelTable();
-		$res = $sql->db_Delete($table, $this->getFieldIdName().'='.$id);
+		$where = $this->getFieldIdName().'='.$id;
+		$res = $sql->delete($table, $where);
         $this->_db_qry = $sql->getLastQuery();
 
 		if(!$res)
@@ -3017,8 +3018,13 @@ class e_admin_model extends e_front_model
 		}
     	else
 		{
-			e107::getAdminLog()->addSuccess($table,false);
-			e107::getAdminLog()->addArray($sqlQry)->save('ADMINUI_03');
+			if($table != 'admin_log')
+			{
+				$logData = array('TABLE'=>$table, 'WHERE'=>$where);
+				e107::getAdminLog()->addSuccess($table,false);
+				e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+			}
+
 			$this->clearCache();
 		}
 		return $res;
@@ -3595,7 +3601,7 @@ class e_admin_tree_model extends e_front_tree_model
 		$table = $this->getModelTable();
 		$sqlQry = $this->getFieldIdName().' IN (\''.$idstr.'\')';
 
-		$res = $sql->db_Delete($table, $sqlQry);
+		$res = $sql->delete($table, $sqlQry);
 
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
@@ -3627,9 +3633,11 @@ class e_admin_tree_model extends e_front_tree_model
 			}
 		}
 
-		$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
-		e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
-
+		if($table != 'admin_log')
+		{
+			$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
+			e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+		}
 		return $res;
 	}
 

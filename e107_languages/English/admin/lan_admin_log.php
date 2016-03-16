@@ -71,6 +71,7 @@ define("RL_LAN_069", "Download Name");
 define("RL_LAN_071", "User registration (ignores class setting above)");
 define("RL_LAN_072", "Signup email acknowledgement (ignores class setting above)");
 define("RL_LAN_073", "Login/Logout");
+
 define("RL_LAN_075", "Change display name");
 define("RL_LAN_076", "Change password");
 define("RL_LAN_077", "Change email address");
