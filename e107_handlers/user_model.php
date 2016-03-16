@@ -1702,7 +1702,7 @@ class e_user extends e_user_model
 
 
 		$where = implode(' OR ', $where);
-		if($sql->select('user', 'user_id, user_password, user_xup', $where))
+		if($sql->select('user', 'user_id, user_name, user_image, user_password, user_xup', $where))
 		{
 
 			$user = $sql->fetch();
@@ -1722,6 +1722,10 @@ class e_user extends e_user_model
 					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 				}
 			}
+
+			unset($user['user_password']);
+			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $user['user_id'], $user['user_name']);
+			// e107::getLog()->add('XUP Login', $user, E_LOG_INFORMATIVE, "LOGIN", LOG_TO_ROLLING, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 		}
 		
 		return $this;

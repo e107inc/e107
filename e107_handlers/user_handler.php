@@ -878,7 +878,7 @@ Following fields auto-filled in code as required:
 			{	// Valid user!
 				if ($row['user_ban'] != $newVal)		// We could implement a hierarchy here, so that an important status isn't overridden by a lesser one
 				{	// Only update if needed
-					$db->db_Update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
+					$db->update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
 					// Add to user audit log		TODO: Should we log to admin log as well?
 					$adminLog = e107::getAdminLog();
 					$adminLog->user_audit($logEvent, array('user_ban' => $newVal, 'user_email' => $row['user_email']), $row['user_id'], $row['user_loginname']);

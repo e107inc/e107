@@ -408,35 +408,71 @@ class e_admin_log
 	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{
-		global $e107,$tp;
 		list($time_usec, $time_sec) = explode(" ", microtime()); // Log event time immediately to minimise uncertainty
+
 		$time_usec = $time_usec * 1000000;
 
 		// See whether we should log this
 		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 		
-		if (!isset($user_logging_opts[$event_type]))
-			return; // Finished if not set to log this event type
+		if (!isset($user_logging_opts[$event_type]))  // Finished if not set to log this event type
+		{
+			return;
+		}
 
-		if ($this->rldb == NULL)
-			$this->rldb = new db; // Better use our own db - don't know what else is going on
+		if($this->rldb == null)
+		{
+			$this->rldb = e107::getDb('rldb'); // Better use our own db - don't know what else is going on
+		}
 
-		if ($id) $userid = $id;
-		else $userid = (USER === TRUE) ? USERID : 0;
-		if ($u_name) $userstring = $u_name;
-		else $userstring = (USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$userIP = e107::getIPHandler()->getIP(FALSE);
+		if(!empty($id))
+		{
+			 $userid = $id;
+		}
+		else
+		{
+			 $userid = (USER === true) ? USERID : 0;
+		}
+
+		if(!empty($u_name))
+		{
+			 $userstring = $u_name;
+		}
+		else
+		{
+			$userstring = (USER === true ? USERNAME : "LAN_ANONYMOUS");
+		}
+
+		$userIP = e107::getIPHandler()->getIP(false);
+
 		$eventcode = 'USER_'.$event_type;
 
 		$title = 'LAN_AUDIT_LOG_0'.$event_type; // This creates a string which will be displayed as a constant
-		$spacer = '';
+	/*	$spacer = '';
 		$detail = '';
+
 		foreach ($event_data as $k=>$v)
 		{
 			$detail .= $spacer.$k.'=>'.$v;
 			$spacer = '<br />';
 		}
-		$this->rldb->db_Insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
+	*/
+
+		$insertQry = array(
+			'dblog_id'          => 0,
+			'dblog_datestamp'   => intval($time_sec),
+			'dblog_microtime'   => intval($time_usec),
+			'dblog_eventcode'   => $eventcode,
+			'dblog_user_id'     => $userid,
+			'dblog_user_name'   => $userstring,
+			'dblog_ip'          => $userIP,
+			'dblog_title'       => $title,
+			'dblog_remarks'     => print_r($event_data,true),
+		);
+
+		$this->rldb->insert("audit_log", $insertQry);
+
+		// $this->rldb->insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
 	}
 
 
