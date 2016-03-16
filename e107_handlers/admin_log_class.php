@@ -143,6 +143,7 @@ class e_admin_log
 	 * @param integer $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
 	 * @param string $event_code [optional] - eg. 'BOUNCE'
 	 * @param integer $target [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
+	 * @param array $user - user to attribute the log to. array('user_id'=>2, 'user_name'=>'whoever');
 	 * @return e_admin_log
 	 * 
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
@@ -157,7 +158,7 @@ class e_admin_log
 	 *
 
 	 */
-	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '', $target = LOG_TO_ADMIN )
+	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '', $target = LOG_TO_ADMIN, $userData=null )
 	{
 		if ($event_code == '')
 		{
@@ -203,7 +204,7 @@ class e_admin_log
 		}
 		
 		
-		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, $target);
+		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, $target, $userData);
 
 		return $this;
 	}
@@ -231,12 +232,13 @@ class e_admin_log
 	 *		 LOG_TO_ADMIN		- admin log
 	 *		 LOG_TO_AUDIT		- audit log
 	 *		 LOG_TO_ROLLING		- rolling log
-	 *
+	 * @param array $userData - attribute user to log entry. array('user_id'=>2, 'user_name'=>'whatever');
 	 *	@return none
 
 	 * @todo - check microtime() call
+	 * @deprecated - use add() method instead.
 	 */
-	public function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT )
+	public function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT, $userData=null )
 	{
 		$e107 = e107::getInstance();
 		$pref = e107::getPref();
@@ -256,9 +258,25 @@ class e_admin_log
 		//---------------------------------------
 		// Calculations common to all logs
 		//---------------------------------------
+
 		$userid 		= deftrue('USER') ? USERID : 0;
 		$userstring 	= deftrue('USER') ? USERNAME : 'LAN_ANONYMOUS';
 		$userIP 		= e107::getIPHandler()->getIP(FALSE);
+
+		if(!empty($userData['user_id']))
+		{
+			$userid = $userData['user_id'];
+		}
+
+		if(!empty($userData['user_name']))
+		{
+			$userstring  = $userData['user_name'];
+		}
+
+		if(!empty($userData['user_ip']))
+		{
+			$userIP  = $userData['user_ip'];
+		}
 
 		$importance 	= $tp->toDB($importance, true, false, 'no_html');
 		$eventcode 		= $tp->toDB($eventcode, true, false, 'no_html');
