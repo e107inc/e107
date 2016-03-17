@@ -191,6 +191,7 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	
 	$c = 0;
 	$tp = e107::getParser();
+	$uploadfile = null;
 	
 	foreach ($files['name'] as $key=>$name)
 	{
@@ -299,12 +300,16 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 			if (!$first_error)  // All tests passed - can store it somewhere
 			{
+				$uploaded[$c] = e107::getFile()->get_file_info($uploadfile,true);
+
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
 				$uploaded[$c]['origname'] = $origname;
 				$uploaded[$c]['type'] = $files['type'][$key];
 				$uploaded[$c]['size'] = 0;
 				$uploaded[$c]['index'] = $key; // Store the actual index from the file_userfile array
+
+			//	e107::getMessage()->addDebug(print_a($uploaded[$c],true));
 
 				// Store as flat file
 				if ((!$ul_temp_dir && @move_uploaded_file($uploadfile, $destination_file)) || ($ul_temp_dir && @rename($uploadfile, $destination_file))) // This should work on all hosts

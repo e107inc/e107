@@ -298,8 +298,8 @@ class news_sub_form_ui extends e_admin_form_ui
 		$text .= '
 
 		 <div id="submitted_'.$submitnews_id.'" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
-		 <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+		 <div class="modal-dialog modal-lg" >
+             <div class="modal-content">
 			    <div class="modal-header">
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
@@ -326,9 +326,9 @@ class news_sub_form_ui extends e_admin_form_ui
 			    
 		$text .= '</p>
 			    </div>
-			    <div class="modal-footer">
-			    <a href="#" data-dismiss="modal" class="btn btn-primary">'.LAN_NEWS_67.'</a>
-			    </div>
+				    <div class="modal-footer">
+				    <a href="#" data-dismiss="modal" class="btn btn-primary">'.LAN_NEWS_67.'</a>
+				    </div>
 			    </div>
 			    </div></div>';
 			
@@ -835,6 +835,7 @@ class news_admin_ui extends e_admin_ui
 		$temp['nbr_cols'] 				= intval($_POST['nbr_cols']);
 		$temp['subnews_attach'] 		= intval($_POST['subnews_attach']);
 		$temp['subnews_resize'] 		= intval($_POST['subnews_resize']);
+		$temp['subnews_attach_minsize'] = e107::getParser()->filter($_POST['subnews_attach_minsize']);
 		$temp['subnews_class'] 			= intval($_POST['subnews_class']);
 		$temp['subnews_htmlarea'] 		= intval($_POST['subnews_htmlarea']);
 		$temp['news_subheader'] 		= e107::getParser()->toDB($_POST['news_subheader']);
@@ -1083,7 +1084,7 @@ class news_admin_ui extends e_admin_ui
 
 
 			$text = "
-			<form method='post' action='".e_SELF."?pref' id='core-newspost-settings-form'>";
+			<form method='post' action='".e_REQUEST_URI."' id='core-newspost-settings-form'>";
 
 			$tab1 = "
 
@@ -1164,6 +1165,28 @@ class news_admin_ui extends e_admin_ui
 							</tr>
 							";
 
+
+
+
+			$imageSizes = array(
+
+				'400×300'   => '400x300',
+				'640×480'   => '640x480',
+				'800×600'   => '800x600',
+				'1024×768'  => '1024x768',
+				'1600x1200' => '2 MP (1600×1200)',
+				'2272x1704' => '4 MP (2272×1704)',
+				'2816x2112' => '6 MP (2816×2112)',
+				'3264x2448' => '8 MP (3264×2448)',
+				// 10 MP (3648×2736)
+				// 12 MP (4096×3072)
+
+			);
+
+
+
+
+
 			$tab2  = "<table class='table adminform'>
 								<colgroup>
 									<col class='col-label' />
@@ -1187,6 +1210,12 @@ class news_admin_ui extends e_admin_ui
 								<td>".NWSLAN_100."</td>
 								<td>
 									".$frm->radio_switch('subnews_attach', $pref['subnews_attach'])."
+								</td>
+							</tr>
+								<tr>
+								<td>Only accept images larger than</td>
+								<td>
+									".$frm->select('subnews_attach_minsize', $imageSizes, $pref['subnews_attach_minsize'], null, 'Any Size')."
 								</td>
 							</tr>
 							<tr>
