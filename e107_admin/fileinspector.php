@@ -62,7 +62,7 @@ if(isset($_GET['scan']))
 	 <head>  	
 	 <title>Results</title>  
 	 ".$fi->headerCss()." ".headerjs()."
-	 <body style='background-color:#EEEEEE'>\n";
+	 <body style='height:100%;background-color:#2F2F2F'>\n";
 
 //	define('e_IFRAME', true);
 //	require_once(e_ADMIN."auth.php");
@@ -134,9 +134,16 @@ class file_inspector {
 	var $totalFiles = 0;
 	var $coredir = array();
 	var $progress_units = 0;
+
+	private $file_warning = 'yup';
+	private $folder_warning = '';
 	
-	function file_inspector()
+	function __construct()
 	{
+
+
+
+
 		global $e107,$core_image;
 		
 		//$this->totalFiles =  count($core_image,COUNT_RECURSIVE);
@@ -191,7 +198,7 @@ class file_inspector {
 		}
 		
 
-		$text = "<div style='text-align: center'>
+		$text = "<div>
 		<form action='".e_SELF."?mode=run' method='post' id='scanform'>
 		<table class='table table-striped adminform'>
 		<tr>
@@ -711,25 +718,25 @@ class file_inspector {
 			$text = "<div style='text-align:center'>
 			<table class='table adminlist'>
 			<tr>
-			<td class='fcaption' colspan='2'>".FR_LAN_2."</td>
+			<th class='fcaption' colspan='2'>".FR_LAN_2."</th>
 			</tr>";
 
 			$text .= "<tr style='display: none'><td style='width:60%'></td><td style='width:40%'></td></tr>";
 		
 			$text .= "<tr>
 			<td style='width:60%;padding:0px'>
-			<div style='height: 400px; width:101%; overflow: auto'>
+			<div style=' width:101%; overflow: auto'>
 			".$scan_text."
 			</div>
 			</td>
-			<td style='width:40%; vertical-align: top'><div style='height: 400px; overflow: auto'>";
+			<td style='width:40%; vertical-align: top'><div>";
 		} 
 		else 
 		{
 			$text = "<div style='text-align:center'>
 			<table class='table table-striped adminlist'>
 			<tr>
-			<td class='fcaption' colspan='2'>".FR_LAN_2."</td>
+			<th class='fcaption' colspan='2'>".FR_LAN_2."</th>
 			</tr>";
 			
 			$text .= "<tr>
@@ -942,7 +949,7 @@ class file_inspector {
 			$this -> create_image($_POST['snapshot_path']);
 			$text = "<div style='text-align:center'>
 			<form action='".e_SELF."' method='post' id='main_page'>
-			<table class='table adminform'>
+			<table class='table adminform'>snapshot_interface
 			<tr>
 			<td class='fcaption'>Snapshot Created</td>
 			</tr>";
@@ -1062,12 +1069,19 @@ class file_inspector {
 			$active = "";
 		}
 
+		echo e107::getForm()->progressBar('inspector',$inc);
 		
-		
-		echo '<div class="progress progress-striped '.$active.'">
+	/*	echo '<div class="progress progress-striped '.$active.'">
     			<div class="bar" style="width: '.$inc.'%"></div>
-   		 </div>';
-		
+   		 </div>';*/
+
+
+		echo "</div>
+		</div>";
+
+		return;
+
+
 	//	exit;
 		/*	
 	    echo "<div style='margin-left:auto;margin-right:auto;border:2px inset black;height:20px;width:700px;overflow:hidden;text-align:left'>    
@@ -1097,7 +1111,11 @@ class file_inspector {
 		
 		$query = http_build_query($_POST);
 		
-		$text = "<iframe src='".e_SELF."?$query' width='96%' style='margin-left:0px;width: 96%; height: 100%; min-height: 800px; max-height:1100px; border: 0px' frameborder='0' scrolling='auto' ></iframe>";
+		$text = "
+
+    <iframe src='".e_SELF."?$query' width='96%' style='margin-left:0; width: 98%; height:100vh; min-height: 100000px; border: 0px' frameborder='0' scrolling='auto' ></iframe>
+
+ ";
 		 $ns -> tablerender(FR_LAN_1, $text);
 	}
 		
