@@ -4468,7 +4468,7 @@ class e_form
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
-				if((empty($value) && varset($parms['currentInit'],USERID)!==0) || vartrue($parms['current'])) // include current user by default.
+				if((empty($value) && varset($parms['currentInit'],USERID)!=0) || vartrue($parms['current'])) // include current user by default.
 				{
 					$value = USERID;
 					if(vartrue($parms['current']))
