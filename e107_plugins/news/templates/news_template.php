@@ -80,25 +80,30 @@ $NEWS_TEMPLATE['default']['item'] = '
 ';
 */
 
+$NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
+
 $NEWS_TEMPLATE['default']['item'] = '
-		{SETIMAGE: w=900&h=300}
+		{SETIMAGE: w=400&h=400}
 		<div class="default-item">
 		<h2 class="news-title">{NEWSTITLELINK}</h2>
-          <p class="lead">{GLYPH=user} &nbsp;{NEWSAUTHOR}</p>
-          <hr>
-           <div class="row">
-        	<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
-        	<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
+
+        <hr class="news-heading-sep">
+         	<div class="row">
+        		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
+        		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>
-          <hr>
+        <hr>
           {NEWSIMAGE: item=1}
 
-         
-          <hr>
+
           <p class="lead">{NEWSSUMMARY}</p>
           {NEWSVIDEO: item=1}
+          <div class="text-justify">
           {NEWSBODY}
+          </div>
+          <div class="text-right">
           {EXTENDED}
+          </div>
 		  <hr>
 			<div class="options">
 			<div class="btn-group hidden-print">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
@@ -121,7 +126,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
 		<h2 class="news-title">{NEWSTITLELINK}</h2>
-		  <p class="lead">{NEWSSUMMARY}</p>
+
         <hr class="news-heading-sep">
          	<div class="row">
         		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
@@ -132,7 +137,10 @@ $NEWS_TEMPLATE['view']['item'] = '
 
 		<div class="body">
 			{NEWSIMAGE: item=1}
+			 <p class="lead">{NEWSSUMMARY}</p>
+			  <div class="text-justify">
 			{NEWSBODY=body}
+			</div>
 			<div class="news-videos-1">
 			{NEWSVIDEO: item=1}
 		 	{NEWSVIDEO: item=2}
@@ -155,7 +163,7 @@ $NEWS_TEMPLATE['view']['item'] = '
             {NEWSVIDEO: item=4}
 			{NEWSVIDEO: item=5}
 			
-           <div class="body-extended">
+           <div class="body-extended text-justify">
 				{NEWSBODY=extended}
 			</div>
 			
@@ -171,6 +179,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 	{NEWSRELATED}
 	<hr>
 	{NEWSNAVLINK}
+
 ';
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
@@ -201,7 +210,11 @@ $NEWS_TEMPLATE['category']['item'] = '
 ### Related 'start' - Options: Core 'single' shortcodes including {SETIMAGE}
 ### Related 'item' - Options: {RELATED_URL} {RELATED_IMAGE} {RELATED_TITLE} {RELATED_SUMMARY}
 ### Related 'end' - Options:  Options: Core 'single' shortcodes including {SETIMAGE}
-
+/*
 $NEWS_TEMPLATE['related']['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>";
 $NEWS_TEMPLATE['related']['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
-$NEWS_TEMPLATE['related']['end'] = "</ul>";
+$NEWS_TEMPLATE['related']['end'] = "</ul>";*/
+
+$NEWS_TEMPLATE['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">YOU MIGHT ALSO LIKE</h2><div class="row">';
+$NEWS_TEMPLATE['related']['item'] = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
+$NEWS_TEMPLATE['related']['end'] = '</div>';

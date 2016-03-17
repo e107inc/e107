@@ -481,7 +481,9 @@ class comment
 			$COMMENT_TEMPLATE['item'] = str_replace("row", "row-fluid", $COMMENT_TEMPLATE['item']);
 		}
 			
-			
+
+		e107::getParser()->setThumbSize(100,100); // BC FIx.  Set a default image size, in case the template doesn't have one.
+
 		if (vartrue($pref['nested_comments']))
 		{
 		//	$width2 = 100 - $width;
@@ -1150,7 +1152,7 @@ class comment
 		{
 			$comment = $ns->tablerender(COMLAN_9, $comment, 'comment', true );
 		}
-		
+
 		
 		
 

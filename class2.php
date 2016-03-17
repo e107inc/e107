@@ -1064,9 +1064,9 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 {
 	if (USER)
 	{
-		if (check_class(varset($pref['user_audit_class'],'')))
-		{  // Need to note in user audit trail
-			$admin_log->user_audit(USER_AUDIT_LOGOUT, '');
+		if (check_class(varset($pref['user_audit_class'],''))) // Need to note in user audit trail
+		{
+			e107::getLog()->user_audit(USER_AUDIT_LOGOUT, '', USERID, USERNAME);
 		}
 	}
 

@@ -263,8 +263,12 @@ class social_ui extends e_admin_ui
 		{
 			$this->testUrl = SITEURL."?route=system/xup/test";
 
-			$notice = "Note: In most cases you will need to obtain an id and secret key from one of the providers. Click the blue links below to configure.
-					<br />You may test your configuration with the following URL: <a href='".$this->testUrl."' rel='external'>".$this->testUrl."</a>";
+			$notice = "Note: In most cases you will need to obtain an id and secret key from one of the providers. Click the blue links to the right to configure.
+					<br />You may test your configuration with the following URL:<br /><a href='".$this->testUrl."' rel='external'>".$this->testUrl."</a>";
+
+			$callBack = SITEURL."index.php";
+			$notice .= "<br /><br />Your callback URL is: </br ><a href='".$callBack."'>".$callBack."</a>";
+
 
 			return array("caption"=>"Help",'text'=> $notice);
 
