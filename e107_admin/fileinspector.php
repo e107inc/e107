@@ -53,9 +53,10 @@ if(isset($_GET['scan']))
 
 	//header("Content-type: text/html; charset=".CHARSET, true);
 	//$css_file = file_exists(e_THEME.$pref['admintheme'].'/'.$pref['admincss']) ? e_THEME.$pref['admintheme'].'/'.$pref['admincss'] : e_THEME.$pref['admintheme'].'/'.$pref['admincss'];
-	$fi = new file_inspector;
+//	$fi = new file_inspector;
 
-	
+	$fi = e107::getSingleton('file_inspector');
+
 
 	 echo "<!DOCTYPE html>
 	 <html> 
@@ -96,7 +97,8 @@ if(isset($_GET['scan']))
 }
 else
 {
-	$fi = new file_inspector;
+	// $fi = new file_inspector;
+	$fi = e107::getSingleton('file_inspector');
 
 
 
@@ -149,11 +151,45 @@ class file_inspector {
 //	private $icon = array();
 	private $iconTag = array();
 
+	private $options = array(
+				'core'          => '',
+				'type'          =>'list',
+				'missing'       => 0,
+				'noncore'       => 9,
+				'nolang'        => 1,
+				'oldcore'       => 0,
+				'integrity'     => 1,
+				'regex'         => 0,
+				'mod'           => '',
+				'num'           => 0,
+				'line'          => 0
+	);
+
+
+	function setOptions($post)
+	{
+		foreach($this->options as $k=>$v)
+		{
+			if(isset($post[$k]))
+			{
+				$this->options[$k] = $post[$k];
+			}
+		}
+
+	}
+
+
 	function __construct()
 	{
 
 		$lng    = e107::getLanguage();
 		$langs  = $lng->installed();
+
+		if(isset($_GET['scan']))
+		{
+			$this->setOptions($_GET);
+		}
+
 
 		foreach($langs as $k=>$val)
 		 {
@@ -168,9 +204,6 @@ class file_inspector {
 
 		 $this->langs = $langs;
 		 $this->lang_short = $lang_short;
-
-
-
 
 
 		//TODO LAN
@@ -194,6 +227,7 @@ class file_inspector {
 			'folder_unknown'    => array('<i class="fa fa-folder-o text-primary" ></i>', "Non-core Folder"),
 
 			'file_check'        => array('<i class="fa fa-file text-success" style="color:#F6EDB0" ></i>', "Core File (Integrity Pass)"),
+			'file_core'        => array('<i class="fa fa-file-o text-success" style="color:#F6EDB0" ></i>', "Core File (Unchecked)"),
 			'file_fail'         => array('<i class="fa fa-file text-danger" ></i>', "Core File (Integrity Fail)"),
 			'file_missing'      => array('<i class="fa fa-file-o text-danger" ></i>', "Core File (Missing)"),
 			'file_old'          => array('<i class="fa fa-file-o text-warning" ></i>', "Core File (Old)"),
@@ -219,15 +253,21 @@ class file_inspector {
 		$this->countFiles($core_image);
 		
 		$this -> root_dir = $e107 -> file_path;
-		if (substr($this -> root_dir, -1) == '/') {
+		if (substr($this -> root_dir, -1) == '/')
+		{
 			$this -> root_dir = substr($this -> root_dir, 0, -1);
 		}
-		if ($_POST['core'] == 'fail') {
+
+		if ($_POST['core'] == 'fail')
+		{
 			$_POST['integrity'] = TRUE;
 		}
-		if (MAGIC_QUOTES_GPC && vartrue($_POST['regex'])) {
+
+		if (MAGIC_QUOTES_GPC && vartrue($_POST['regex']))
+		 {
 			$_POST['regex'] = stripslashes($_POST['regex']);
 		}
+
 		if ($_POST['regex']) {
 			if ($_POST['core'] == 'fail') {
 				$_POST['core'] = 'all';
@@ -236,7 +276,14 @@ class file_inspector {
 			$_POST['integrity'] = 0;
 		}
 	}	
-	
+
+
+	private function opt($key)
+	{
+		return $this->options[$key];
+	}
+
+
 	// Find the Total number of core files before scanning begins. 
 	function countFiles($array)
 	{
@@ -580,7 +627,7 @@ class file_inspector {
 
 		  if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== false)
 		  {	// We're checking a file here
-			if ($_POST['core'] != 'none')
+			if ($this->opt('core') != 'none')
 			{		// Look at core files
 			  $this -> count['core']['num']++;
 			  $this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
@@ -609,7 +656,7 @@ class file_inspector {
 			  }
 			  else
 			  {
-				if ($_POST['integrity'])
+				if ($this->opt('integrity'))
 				{	// Actually check file integrity
 				  switch ($this_action = $this->check_action($dir,$key))
 				  {
@@ -628,7 +675,7 @@ class file_inspector {
 						$this -> count['pass']['num']++;
 						$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
 
-						if ($_POST['core'] != 'fail')
+						if ($this->opt('core') != 'fail')
 						{
 						  $this -> files[$dir_id][$fid]['icon'] = 'file_check';
 						  $dir_icon = ($dir_icon == 'folder_fail' || $dir_icon == 'folder_missing') ? $dir_icon : 'folder_check';
@@ -645,7 +692,7 @@ class file_inspector {
 					case 'nocalc' :
 					  $this -> count['uncalculable']['num']++;
 					  $this -> count['uncalculable']['size'] += $this -> files[$dir_id][$fid]['size'];
-					  if ($_POST['core'] != 'fail')
+					  if ($this->opt('core') != 'fail')
 					  {
 						$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc';
 
@@ -670,7 +717,7 @@ class file_inspector {
 			  $known[$dir_id][$fid] = true;
 			}
 		  }
-		  else if ($_POST['missing'])
+		  else if ($this->opt('missing'))
 		  {
 			switch ($this_action = $this->check_action($dir,$key))
 			{
@@ -696,7 +743,7 @@ class file_inspector {
 		}
 	  }
 		
-		if (!empty($_POST['noncore']) || !empty($_POST['oldcore']))
+		if ($this->opt('noncore') || $this->opt('oldcore'))
 		{
 
 
@@ -736,7 +783,7 @@ class file_inspector {
 
 
 
-						if($_POST['nolang'] && !empty($langs) && !empty($lang_short)) // Hide Non-core Languages.
+						if($this->opt('nolang') && !empty($langs) && !empty($lang_short)) // Hide Non-core Languages.
 						{
 							
 							// PHP Lang files. 		
@@ -769,7 +816,7 @@ class file_inspector {
 							{
 								if (isset($deprecated[$readdir]))
 								 {
-									if ($_POST['oldcore'])
+									if ($this->opt('oldcore'))
 									{
 										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
 										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
@@ -781,7 +828,7 @@ class file_inspector {
 								}
 								else
 								{
-									if ($_POST['noncore'])
+									if ($this->opt('noncore'))
 									{
 										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
 										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
@@ -805,7 +852,7 @@ class file_inspector {
 								$parent_expand = TRUE;
 							}
 
-							if (!empty($_POST['regex']))
+							if (!empty($this->opt('regex')))
 							{
 								$file_content = file($dir.'/'.$readdir);
 								if ($this -> files[$dir_id][$aid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content))
@@ -824,7 +871,7 @@ class file_inspector {
 							{
 								if (isset($deprecated[$readdir]))
 								{
-									if ($_POST['oldcore'])
+									if ($this->opt('oldcore'))
 									 {
 										$dir_icon = ($dir_icon == 'folder_warning' || $dir_icon == 'folder_fail' || $dir_icon == 'folder_missing' ) ? $dir_icon : 'folder_old';
 										$parent_expand = TRUE;
@@ -832,14 +879,14 @@ class file_inspector {
 								}
 								else
 								{
-									if ($_POST['noncore'])
+									if ($this->opt('noncore'))
 									{
 										$dir_icon = ($dir_icon == 'folder_warning' || $dir_icon == 'folder_fail' || $dir_icon == 'folder_missing' || $dir_icon == 'folder_old' || $dir_icon == 'folder_old_dir') ? $dir_icon : 'folder_unknown';
 										$parent_expand = TRUE;
 									}
 								}
 							}
-						} else if ($_POST['core'] == 'none') {
+						} else if ($this->opt('core') == 'none') {
 							unset($this -> files[$dir_id][$aid]);
 						}
 					}
@@ -894,7 +941,8 @@ class file_inspector {
 	
 		echo "<div style='display:block;height:30px'>&nbsp;</div>";
 
-		if ($_POST['type'] == 'tree') {
+		if ($this->opt('type') == 'tree')
+		{
 			$text = "<div style='text-align:center'>
 			<table class='table adminlist'>
 			<tr>
@@ -925,7 +973,7 @@ class file_inspector {
 
 		$text .= "<table class='table-striped table adminlist' id='initial'>";
 		
-		if ($_POST['type'] == 'tree') 
+		if ($this->opt('type') == 'tree')
 		{
 			$text .= "<tr><th class='f' >".FR_LAN_3."</th>
 			<th class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
@@ -936,21 +984,25 @@ class file_inspector {
 			$text .= "<tr><th class='f' colspan='2'>".FR_LAN_3."</th></tr>";
 		}
 
-		if ($_POST['core'] != 'none') 
+		if ($this->opt('core') != 'none')
 		{
 			$text .= "<tr><td class='f'>".$this->iconTag['file_core']."&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td>
 			<td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
 		}
-		if ($_POST['missing']) {
+		if ($this->opt('missing'))
+		{
 			$text .= "<tr><td class='f' colspan='2'>".$this->iconTag['file_missing']."&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
 		}
-		if ($_POST['noncore']) {
+		if ($this->opt('noncore'))
+		{
 			$text .= "<tr><td class='f'>".$this->iconTag['file_unknown']."&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
 		}
-		if ($_POST['oldcore']) {
+		if ($this->opt('oldcore'))
+		{
 			$text .= "<tr><td class='f'>".$this->iconTag['file_old']."&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
-		if ($_POST['core'] == 'all') {
+		if ($this->opt('core') == 'all')
+		{
 			$text .= "<tr><td class='f'>".$this->iconTag['file']."&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		
@@ -965,7 +1017,7 @@ class file_inspector {
 			$text .= "<tr><td class='w' colspan='2'><div class='alert alert-warning'>".FR_LAN_27."</div></td></tr>";
 
 		}
-		if ($_POST['integrity'] && $_POST['core'] != 'none')
+		if ($this->opt('integrity') && ($this->opt('core') != 'none'))
 		{
 			$integrity_icon = $this -> count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
 			$integrity_text = $this -> count['fail']['num'] ? '( '.$this -> count['fail']['num'].' '.FR_LAN_19.' )' : '( '.FR_LAN_20.' )';
@@ -997,7 +1049,7 @@ class file_inspector {
 			</td></tr>";
 		}
 		
-		if ($_POST['type'] == 'tree' && !$this -> results && $_POST['regex'])
+		if ($this->opt('type') == 'tree' && !$this -> results && $this->opt('regex'))
 		{
 			$text .= "</td></tr>
 			<tr><td style='padding-right: 4px; text-align: center' colspan='2'><br />".FR_LAN_23."</td></tr>";
@@ -1005,12 +1057,12 @@ class file_inspector {
 
 		$text .= "</table>";
 		
-		if ($_POST['type'] != 'tree')
+		if ($this->opt('type') != 'tree')
 		{
 			$text .= "<br /></td></tr><tr>
 			<td colspan='2'>
 			<table class='table table-striped'>";
-			if (!$this -> results && $_POST['regex'])
+			if (!$this -> results && $this->opt('regex'))
 			{
 				$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
 			}
@@ -1028,7 +1080,7 @@ class file_inspector {
 			// $this->sendProgress($cnt,$this->totalFiles,$path);
 		
 			ksort($fid);
-			$text .= ($_POST['type'] == 'tree') ? "<table class='t' style='display: none' id='f_".$dir_id."'>" : "";
+			$text .= ($this->opt('type') == 'tree') ? "<table class='t' style='display: none' id='f_".$dir_id."'>" : "";
 			$initial = FALSE;
 			foreach ($fid as $key => $stext)
 			{
@@ -1039,7 +1091,7 @@ class file_inspector {
 
 				if (!$initial)
 				{
-					if ($_POST['type'] == 'tree')
+					if ($this->opt('type') == 'tree')
 					{
 
 						$rootIconKey = ($stext['level'] ? "folder_up" : "folder_root");
@@ -1054,46 +1106,21 @@ class file_inspector {
 				}
 				else
 				{
-					if ($_POST['type'] != 'tree')
+					if ($this->opt('type') != 'tree')
 					{
 						$stext['file'] = str_replace($this -> root_dir."/", "", $stext['file']);
 					}
 
+					$text .= $this->renderRow($stext);
 
 
-					$text .= "<tr>
-					<td class='f ".$iconKey."' title=\"".$this->getDiz($iconKey)."\">".$this->iconTag[$iconKey]."&nbsp;".$stext['file']."&nbsp;";
-
-					if ($_POST['regex'])
-					{
-						if ($_POST['num'] || $_POST['line'])
-						{
-							$text .= "<br />";
-						}
-
-						foreach ($stext['lines'] as $rkey => $rvalue)
-						{
-							if ($_POST['num']) {
-								$text .= "[".($rkey + 1)."] ";
-							}
-							if ($_POST['line']) {
-								$text .= htmlspecialchars($rvalue)."<br />";
-							}
-						}
-
-						$text .= "<br />";
-					} else {
-						$text .= "</td>
-						<td class='s'>".$this -> parsesize($stext['size']);
-					}
-					$text .= "</td></tr>";
 				}
 				$initial = TRUE;
 			}
-			$text .= ($_POST['type'] == 'tree') ? "</table>" : "";
+			$text .= ($this->opt('type') == 'tree') ? "</table>" : "";
 		}
 		
-		if ($_POST['type'] != 'tree') {
+		if ($this->opt('type') != 'tree') {
 			$text .= "</td>
 			</tr></table>";
 		}
@@ -1110,7 +1137,77 @@ class file_inspector {
 	 //$ns -> tablerender(FR_LAN_1.'...', $text);
 		
 	}
-	
+
+
+
+
+	function renderRow($stext)
+	{
+
+		$mode = $this->opt('core');
+
+		$iconKey = $stext['icon'];
+
+	//	return "<tr><td>".$mode." ( ".$iconKey.")</td></tr>";
+
+
+		if($mode == 'full' && $iconKey == 'file_check' )
+		{
+			return '';
+		}
+
+		if($mode == 'none')
+		{
+	//		return '';
+		}
+
+
+		$text = '';
+		$text .= "
+			<tr>
+			<td class='f ".$iconKey."' title=\"".$this->getDiz($iconKey)."\">".$this->iconTag[$iconKey]."&nbsp;".$stext['file']."&nbsp;";
+
+			if ($this->opt('regex'))
+			{
+				if ($this->opt('num') || $this->opt('line'))
+				{
+					$text .= "<br />";
+				}
+
+				foreach ($stext['lines'] as $rkey => $rvalue)
+				{
+					if ($this->opt('num'))
+					{
+						$text .= "[".($rkey + 1)."] ";
+					}
+
+					if ($this->opt('line'))
+					{
+						$text .= htmlspecialchars($rvalue)."<br />";
+					}
+				}
+
+				$text .= "<br />";
+			}
+			else
+			{
+				$text .= "</td>
+					<td class='s'>".$this -> parsesize($stext['size']);
+			}
+
+			$text .= "</td></tr>";
+
+		return $text;
+	}
+
+
+
+
+
+
+
+
+
 	function create_image($dir) {
 		global $core_image, $deprecated_image,$coredir;
 		
@@ -1435,7 +1532,8 @@ function fileinspector_adminmenu() //FIXME - has problems when navigation is on 
 function e_help()
 {
 
-	$fi = new file_inspector;
+//	$fi = new file_inspector;
+	$fi = e107::getSingleton('file_inspector');
 	$list = $fi->getLegend();
 
 	$text = '';
