@@ -3,17 +3,14 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc (e107.org)
+|     Copyright (C) 2008-2010 e107 Inc. 
 |     http://e107.org
-|
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.8/e107_admin/core_image.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
+|     $URL$
+|     $Id$
 +----------------------------------------------------------------------------+
 */
 
@@ -24,89 +21,286 @@ $core_image = array (
   array (
     'includes' => 
     array (
-      'beginner.php' => '399d299a1ad1dece1776fa3e477fdd31',
-      'cascade.php' => 'f02f4e7c20f7590a19681f0324307800',
-      'categories.php' => 'a99113a6cabb51bc0bcded28892a0957',
-      'classis.php' => '5648c4272072a1f3bbf2665329d480bd',
-      'combo.php' => '416828015462d3e305c002a3798ad76e',
-      'compact.php' => '2c5c2b4d66971f1b0aaa0ac8e81097e7',
+      'categories.php' => 'ae097ff78d237f4a03c66c338d6eb5f6',
+      'classis.php' => '6c1245da37c8dca0ee8d483dd572ad73',
+      'combo.php' => '68742ff162d39056cae0e501fb0420c6',
+      'compact.php' => '451c0f8d5fbc9f4455faad1af2557171',
+      'infopanel.php' => '46259072d4a012a7bcc28ede8b780159',
+      'tabbed.php' => 'ec7f6fdcde33e6e37f58475a33454c13',
     ),
-    'sql' => 
+    'admin.php' => 'c11676db2e3b3abc9027b98648d04dbc',
+    'admin_log.php' => '1326018558ff8ab9876b66997de087e7',
+    'administrator.php' => '5e90bfb07913cd24d4946a848e20c02e',
+    'auth.php' => '396ebe08149f612acb5afbb14204ae4f',
+    'banlist.php' => 'e255dd89949d0cfc258d4badfd7c37bc',
+    'banlist_export.php' => '5bde8ed38256544420bb357bc25a4804',
+    'boot.php' => '3ae75c589067cc7268db2affa665debe',
+    'cache.php' => '110b1f251f700bd36fa91cf39112fe90',
+    'check_inspector.php' => 'fa76c5a127656edcbdc562ae52f06b6a',
+    'comment.php' => '9e2d483db59634177437b9adcf0c6ff6',
+    'core_image.php' => '6810824ea41a15674467b8b9f8877d13',
+    'cpage.php' => '4481e04670da67543c6a3e806ac96ecb',
+    'credits.php' => '1cac4c29a0aef9bd2a06d0a71c0975ee',
+    'cron.php' => 'b49173457ccef0e69e3bddaeff34df4d',
+    'db.php' => 'addc732671b714dc0be141f750004b29',
+    'docs.php' => 'aa53dcaf0c327a62d15263d721645638',
+    'e107_update.php' => 'b96da20c6a1d5da6a59ea2e9542ce414',
+    'emoticon.php' => 'fc0c962af2f1ff2e1fea30042770cb7b',
+    'eurl.php' => 'a3131e93dd2dcd12ff3bdb7f7b63e507',
+ //   'fileinspector.php' => '7bc8d7a17e83c6bf69c7b02ac18adbd7',
+    'filemanager.php' => '6c305f09c765b6134137525c5aa64eed',
+    'fla.php' => 'ed40b63892b9c6e9c9332b654adce9f7',
+    'footer.php' => '1184441e4616f3d6258187caa47c2433',
+    'frontpage.php' => 'dc22240e3e1324ffd892994fdb9f0794',
+    'header.php' => '78453a21a9373e8da09d4b99448e94d3',
+    'image.php' => 'f866869fef253c5c7fd9d902b1cf29c7',
+    'index.php' => 'c5adf54ddac72dd49a94b5445826d58f',
+    'lancheck.php' => '9ccb740701b7bb6c465aef8a3e316e51',
+    'language.php' => 'ba3eaa812633e915e0b47751abfe21d2',
+    'links.php' => '12d398ffa987e654a34ba32d187a92bd',
+    'mailout.php' => '00c59f2d654b4a436ead99602d4377ed',
+    'menus.php' => 'a8f8ab2be269c4e910eb6eba3e5ce95a',
+    'message.php' => 'ed8fc2009c90300092a34054ac04b4b9',
+    'meta.php' => 'b4f06e44e1e762ebd3fe30e2ad0772d3',
+    'modcomment.php' => '0ed76d1ca6bd89e6c888a1e7bac77912',
+    'newspost.php' => '23609488a047b37707473ed2f6858391',
+    'notify.php' => '367221d877c8b3cd49459fcc6ae5e060',
+    'phpinfo.php' => '57ab71b6e1d79b189024922406185918',
+    'plugin.php' => 'f9e4f8c5c113a1844e4dcfd4a74b3d5b',
+    'prefs.php' => '9bf8f9edd5df94dc696e1fe2a7e3ba2f',
+    'search.php' => '8c0ff52ceb301a5a694dc9a153a5b3b4',
+    'theme.php' => 'b0c25cb005140e596b0e8ffe469eb8a4',
+    'ugflag.php' => 'a6e13cf2d6c9b836d87e432f2449e10a',
+    'update_routines.php' => '24ff96c476ea7e08124f25f14d51049f',
+    'updateadmin.php' => '5b5198c366c6e75d1d5cf75f28991250',
+    'upload.php' => '8d5ccb0d148ec20ee3cb75a3d3b171ac',
+    'userclass2.php' => 'f512bd5ed502c257b4b2b9478102eb22',
+    'users.php' => 'fa51c6bdee80ad962975557b067be56a',
+    'users_extended.php' => '7ebd7110ceb3c60bf471d4cbe3758b45',
+//    'ver.php' => '806421e63c50bcd7fa55923e2ef7b404',
+    'wmessage.php' => '1d28ba73c196997f9f248abb97805ab3',
+  ),
+  'e107_core' => 
+  array (
+    'bbcodes' => 
     array (
-      'db_update' => 
+      '_br.bb' => 'cb8d211703f0459735baa8dfbebb4bb4',
+      'b.bb' => 'a6e53f1418f25051a971012e6b9377b3',
+      'bb_alert.php' => '26ca680f5cc2aa2681723ec3a98565da',
+      'bb_block.php' => '59f4e17c36e98a8fe3b17c452117200a',
+      'bb_code.php' => 'ec79a47def957bf9889f0e52943a1a63',
+      'bb_glyph.php' => '147a7d5075947f99b8599df1ebf835f1',
+      'bb_h.php' => '945730e2d340571a0eb7e4aa78cd41c6',
+      'bb_img.php' => '8f0747f6b462f57c6ccf00c3c15a62ed',
+      'bb_markdown.php' => '871c8ca54ef739f9bae2774e814ded30',
+      'bb_nobr.php' => 'd364d4de62a75e674116d463e2374b5b',
+      'bb_p.php' => '6e238c62bd55a6dae4aa7006456e7e90',
+      'bb_video.php' => '9ea3a1c1d80c6d753b7b424ec746d073',
+      'bb_youtube.php' => 'c4c5b894e0e385754ad0d41f8763e901',
+      'blockquote.bb' => '31da56ef70d08646ecd8b8216f3ed60a',
+      'br.bb' => 'cb8d211703f0459735baa8dfbebb4bb4',
+      'center.bb' => '44573a48462af5ca94df53676d3760bc',
+      'color.bb' => '0e70ffe37063f208e4c052a63df17349',
+      'email.bb' => '2936bce8fca4b88d8841e7f9f617bff9',
+      'file.bb' => '4c16a9d0f19808d88852322cc2f5b454',
+      'flash.bb' => '360dff83984beb401ad51621ca39c09e',
+      'hide.bb' => 'f8029e565b7582febfc95e854683f7a1',
+      'html.bb' => '81d0339054083b58248b7bd223924ebe',
+      'i.bb' => 'c9667cbc9adb8b4b2d23ad99ccaddbc8',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'justify.bb' => '72ac43bf1333eef43bffddd95c14675f',
+      'left.bb' => 'a2463fb70ccb129e205085e6261d4001',
+      'link.bb' => 'b5a41fd23952c21f77040b9ca8a16021',
+      'list.bb' => '142e91ef1ff11225c5c5026126d9c26b',
+      'quote.bb' => 'aa47c5f86ea213048e3039df86c434f9',
+      'right.bb' => 'e29d5c63e5ae33e90eab9c4b4679ece2',
+      'sanitised.bb' => '7e6fb575a630bb52731ca8c4d371e755',
+      'size.bb' => 'c7add221549fc7885e1fe569761695c3',
+      'spoiler.bb' => '0dbff80b26ee12330ca9f4c850d097a0',
+      'stream.bb' => '044b0b153bf4ea25ea135e1d4a8e1dc2',
+      'table.bb' => '10468e339880ae870550e9f0c9465746',
+      'tbody.bb' => '9c0c1aca627328012c096da8f82ad8db',
+      'td.bb' => '87c0c853bd7361160fcf1f47e6aea119',
+      'textarea.bb' => '01d01d350f32abf5694e330acb311161',
+      'th.bb' => '0be92b3b0331bd140adc430ea176624e',
+      'time.bb' => '08b4918429e606561edf80bc22a7e59a',
+      'tr.bb' => '351627dab9429b9d707ae4010de977c7',
+      'u.bb' => '2564eda34e3d284dd24f2692a8295250',
+      'url.bb' => '809ad4429c367ac786b9be2e0bc49232',
+    ),
+    'controllers' => 
+    array (
+      'index' => 
+      array (
+        'index.php' => '0c3cfe940e50eec79fd6234e1c6f72f8',
+      ),
+      'system' => 
+      array (
+        'error.php' => '9d9d7c33f72488e0cb3bb06fb2105337',
+        'index.php' => 'e5c62362426b69190f6b448ff2802f5d',
+        'xup.php' => 'b535bd8ecd196358982240907a197a7f',
+      ),
+    ),
+    'fonts' => 
+    array (
+      'chaostimes.ttf' => '297ab8c474c02af73563c325f03be8e7',
+      'crazy_style.ttf' => '49440856471542a1572c49797a01bac7',
+      'puchakhonmagnifier3.ttf' => 'b231648264e3f4721ccac9280ef21db5',
+    ),
+    'override' => 
+    array (
+      'controllers' => 
       array (
         'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       ),
-      'core_pg.php' => 'af38d186d0a03cde899b4e0939b6ee6c',
-      'core_sql.php' => 'cc00538c4f8b87a107ac6d2dacbaf9b2',
-      'extended_country.php' => '0ef441f85dc0628bbf00c91e1163f114',
+      'url' => 
+      array (
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      ),
     ),
-    'ad_links.php' => 'd4d181f5337ba8bc939828d9068c8d43',
-    'admin.php' => '3300cf551a1fa5ecc473e2f355c97ea7',
-    'admin_classis.php' => 'ed861d18477db9ce0bc3620a69443723',
-    'admin_combo.php' => '8958300a2a42fd2aa68977d566c1edb9',
-    'admin_etalkers.php' => '9d684ef56c54bbf919e3346927cf4509',
-    'admin_log.php' => '38c702ad61600d3c48851ee1dc868dfd',
-    'adminb.php' => '1e31b2ad3907c7cba29dca04342cee1d',
-    'administrator.php' => 'bd8de4773ebe49ab0884ba3d1c19568c',
-    'article.php' => '7b21dc8ef4bc68ceb9ecf4d1c519a645',
-    'auth.php' => '6bdf6b7895598b70c76e219069b930c6',
-    'banlist.php' => 'f858a52c69ad86e1ed66127434a12915',
-    'banner.php' => '3913e712c16227a49c5333b7f0e64489',
-    'cache.php' => '62fc17d1f4c6db977c66642c5a76127a',
-    'cascade.php' => '3d70a650778f09e6c85efd91b6ab5e4a',
-    'categories.php' => 'cbbed37d26ab602700d46a0cb1955205',
-    'classis.php' => 'ae46c368d41390a44cd6005404d651d7',
-    'combo.php' => '6b0f9e175585ef0b42585b444b003678',
-    'comment.php' => '96f04e71003de6b6a6ea3a0f2ede285d',
-    'compact.php' => '20bccea2ef81cc86a86782fa4841e45f',
-    'content.php' => 'bf2239404990afed185913002429e682',
-    'core_image.php' => 'e989fac71ee65a3db9047565d6f34b48',
-    'cpage.php' => '57ab65c7fa55e1dcfc5f3a9a94bc2528',
-    'credits.php' => '322fe1169cd992db88624e84d7f51288',
-    'db.php' => 'a48795e26302b874c1fe397689f01d9f',
-    'db_verify.php' => 'e14434e165ac07b4cb630809dd4b3150',
-    'docs.php' => 'e5ebdd8fd30362636cfe1a3878b3fb18',
-    'download.php' => '636316389ea0a9dd8d6dc7b9d2044c81',
-    'e107_update.php' => 'c23624862e7dc50fab29aa1890c7872a',
-    'emoticon.php' => '4139a4c00680ed7b94bb2848bb9c7cec',
-    'fileinspector.php' => '7430c97538e5d63ced422b4d552344ae',
-    'filemanager.php' => 'af7dfc6ef908953d0208cd18ba5d444d',
-    'filetypes_.php' => 'f951037335e993337792606cc1475cec',
-    'fla.php' => 'c44c289dcdbe2bcf53305103275ce899',
-    'footer.php' => '0cc1b838f19770de51917dd614b7b246',
-    'frontpage.php' => '78acc7a2d9f879636291a2b45d06c80a',
-    'header.php' => 'a61922daac7e562e86251bd9a67877f3',
-    'image.php' => 'fc510663610cbf4b53eec2f9948999b6',
-    'index.php' => 'e4e143ee2d34d4ce1f17b3f043cc6cd6',
-    'lancheck.php' => '8b8fea89e7d9a0dc3d1931971a9b4939',
-    'language.php' => '67569d7ab4a4e25984c19353a143e31c',
-    'links.php' => '39c7ab07f379c047fe20f0415735b474',
-    'mailout.php' => '9779b609afed1f62c16bf7694f1a68e5',
-    'menus.php' => '1abba8d34311ca3795d37d4526a41042',
-    'message.php' => 'a598b5e493298500d81b815f1455280b',
-    'meta.php' => '346305add7d4a15981103cd42ae02d15',
-    'modcomment.php' => 'b8787d8ebce9cc813ccaa416ec3a923c',
-    'newspost.php' => '6aba9db62369e328f78f623644ea04a8',
-    'notify.php' => 'a988fd7416b4595e72975b22ccc6362b',
-    'phpinfo.php' => '994ea857810fe5f47ac8612f570aadb1',
-    'plugin.php' => '3714121cbb762b83f29f28a9fa1d094f',
-    'prefs.php' => 'e9ac6b838ef5368d1861481e629c8c08',
-    'review.php' => '1919d31943803a66cb2d12828bd92db2',
-    'search.php' => 'b1239e5af6795205648d8965ec3a1ec9',
-    'theme.php' => 'b05f7265501a3e1c5e7c47cb3f891831',
-    'ugflag.php' => 'b3b47767137dd7ea5e3726150507e158',
-    'update_routines.php' => '16e3369df255bb5d6f76e8288830e3e1',
-    'updateadmin.php' => '770fff43134883ea4d502498b28d70d2',
-    'upload.php' => '69b274043c816b5a8c7241c20de0b9fb',
-    'userclass.php' => 'b7fd96c785b6f3eead88fd5acd5760ad',
-    'userclass2.php' => 'f0a95f4feecabe0d801b4a7f64c89ec0',
-    'userinfo.php' => 'fcbb4c620a0a9ed430588ee7539fb2d7',
-    'users.php' => '97cf741f0e67b3be9a55232c4a189932',
-    'users_extended.php' => 'c0cc2efb094dbb76b7e73fd31aedd06a',
-    'users_extended_predefined.php' => 'a1bd4adc6a6c1996e304b467aed9d2c0',
-    'ver.php' => '50bdc51a07a780bad3c7b109feeb22b1',
-    'wmessage.php' => '17afb0f8ef07cfd675cd92e9f7e606a3',
+    'shortcodes' => 
+    array (
+      'batch' => 
+      array (
+        'admin_shortcodes.php' => 'b32e0ff2752b221396b8fb91a46fb936',
+        'bbcode_shortcodes.php' => 'b54ba0032c251126708aa34de6483b87',
+        'comment_shortcodes.php' => '7632639bc975197575b8cbf6318b0201',
+        'contact_shortcodes.php' => 'af47e40c599c11e7195291b16ab3659a',
+        'download_shortcodes.php' => '76d76d2f254ee062c0570743be79902b',
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+        'login_shortcodes.php' => '82edb1308fade235b8f605b40e88b8ae',
+        'news_archives.php' => '8b832cb77bfc1c01cf8c6ab6b815297a',
+        'news_shortcodes.php' => '1ba4f093044302a4ebae5491b6e7e0e4',
+        'page_shortcodes.php' => '8dec4acb590a6a7ded6979a7fc407493',
+        'signup_shortcodes.php' => 'dd3aa770f5489b4b536f879ef6e94e9b',
+        'sitedown_shortcodes.php' => '75803d14e0309192755d3b50d03b32a4',
+        'user_shortcodes.php' => '799451b478147ef54b546fcbaf09e799',
+        'usersettings_shortcodes.php' => 'a8aca2bf16f95b99dd3103c23f44a9b9',
+      ),
+      'single' => 
+      array (
+        'alerts.php' => 'cec9ee825b4f0cebcdcd8980413b3844',
+        'breadcrumb.sc' => 'b34d87b163e07ac7c0fc92e1fbd806e6',
+        'custom.php' => 'c457f06043565b4def6f9543211decf4',
+        'e_image.sc' => '3819fdf5b9dfc7b189fb4073d33ae0d5',
+        'email.sc' => 'a587a1b51fbefc39f3f267dfabe9d302',
+        'email_item.sc' => '9be9e2071a65fe13b75f4400a95458e0',
+        'emailto.sc' => '05843b1a7c7feb8f4985a55ac01ba9f3',
+        'extended.sc' => '868d45e725d7565a1d9c5b743aba0967',
+        'extended_icon.sc' => 'db16dbaa0dfa2f8fc944ba87c15a09d1',
+        'extended_text.sc' => '5a1426815f88bb2239912638af30beb0',
+        'extended_value.sc' => '009cba942acd1b469b5e87e578d35986',
+        'glyph.php' => '182a2c3e74de76a3b678a25f4dac2be4',
+        'iconpicker.php' => 'b0e8b0049c7906966f4418bc6bc5b02a',
+        'imagepreview.php' => 'fd1faf3645ed4ebc6edd67ef2cc3166d',
+        'imageselector.php' => 'b1cd272f8f9f8d08dd5c0184d9cb1340',
+        'imageselector.sc' => '59316c2aa9176c861e6d1971e80f4af2',
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+        'languagelinks.php' => 'c18d70bab2814d029e3e3adc37ba7acc',
+        'linkstyle.sc' => '5ed64d972bc892a798f80179878f1266',
+        'menu.php' => 'f50d1c67acb7b7156dbdd52f8e8fde03',
+        'navigation.php' => '95fc1677b24755dbea6f7c8e4ddc571b',
+        'news_categories.sc' => '95698ee3b943e234210a485a8763eb57',
+        'news_category.sc' => '06a8771970688d0ade93a677ecfb7a40',
+        'newsfile.sc' => '4fdbd547692df2f8d904528510704cbd',
+        'newsimage.sc' => '9d887c7ae3e14839b7b0ecd13e8d40ed',
+        'nextprev.php' => 'd6eec0fe40148b2c833fda2ccd85c0ae',
+        'picture.sc' => 'e54d7c161f28fc4ec48b62bdd5918e06',
+        'plugin.php' => '8278e83ac7c02da22e68047645fa20f7',
+        'print_item.sc' => 'ed277aaa1b10c5ab6133423fa12f86c2',
+        'profile.sc' => 'abb4a34666ab0449e79291f0c3409523',
+        'search.sc' => '38a0e895ffb3fb4e207a0d14c966e386',
+        'setimage.php' => 'dc300535692acb6b0ef7171e25fc3c65',
+        'setstyle.php' => '2a4afda19e5c664140221b6c4edf75bc',
+        'sitecontactinfo.sc' => 'a856554171861dd9a99ca38df94b742e',
+        'sitelinks.sc' => 'e854700dcb98db5aa7e1eea395c2b09c',
+        'sitelinks_alt.php' => '8e6450ddf1cd7524ef463fd432e9cd59',
+        'stylesheet.sc' => 'a8bd9f51464df30236eecfa15ef2dc5f',
+        'sublinks.php' => '8e2f833013170b59e39c2103e478f376',
+        'uploadfile.php' => '2a62dd9f4fad95873985b25df74322b4',
+        'url.php' => '1c91f1b0a0a0c865908c1dec80ea38aa',
+        'url.sc' => '4f16ea2dc7b13f177ba1127aaafe40b8',
+        'user_avatar.php' => '71edb17073b9648cd732926a7b576739',
+        'user_extended.php' => 'c6a7970c7d24f3f29ba7b6994ff907ba',
+        'user_extended_old.sc' => 'b792ffa76f13395cec95e30892c981d7',
+        'usersearch.php' => 'ad6411237f952fe3030a7f19810584f9',
+        'wmessage.php' => '70179bc95439c6974df8cd382205d9de',
+      ),
+    ),
+    'sql' => 
+    array (
+      'core_sql.php' => '6327eb7b74f4691bc38a6521f58a1d77',
+      'db_field_defs.php' => 'c00fea40ffa2874b3c03f2d32a848f6d',
+      'extended_country.php' => '8eaeaf4128fea26ff8b7f1404760a5bd',
+      'extended_timezones.php' => 'fc83f203428f1e37e075ec48851f673f',
+    ),
+    'templates' => 
+    array (
+      'admin_icons_template.php' => '969357011d8133ba5d8a81b55cafaf36',
+      'admin_template.php' => '3800678d247d6ce85e8fbc36b8cf443e',
+      'bbcode_template.php' => 'a22be3ec00cd8830b9cff43cc4862f53',
+      'chapter_template.php' => '958b8493fcb6b7e77cd2ab737623656c',
+      'comment_template.php' => 'fb51f24da87e48f5badbe9cd9eee17ef',
+      'contact_template.php' => '29670199e29ec0cbc4d292e343ff8d38',
+      'email_template.php' => '454b314d6eb5b9e3d01d1228e175f930',
+      'error_template.php' => 'd0487a3c3fb3964f757b6a3f3386e31f',
+      'footer_default.php' => '40055ae9333da016f4b7abda7a527062',
+      'fpw_template.php' => '7d2eb225cf15f809284a71a85fc5b4f5',
+      'header_default.php' => 'b2c572faf6707aac38a484576d13c165',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'login_template.php' => 'ba21aac5dd4dd025e2c9333260e9d813',
+      'membersonly_template.php' => '7b7bac0e3b3a01bac2cdca662a12dd5a',
+      'menu_template.php' => '005cf6e8ab8ab345aca65ee8f1aea745',
+      'navigation_template.php' => '8c5113587c9ce56b9c60f961556e38a4',
+      'nextprev_template.php' => '072bea07dd5e0784f212ac70f80b7e54',
+      'online_template.php' => '0bf5ffa29371f86502dbac983dc1fffd',
+      'page_template.php' => 'a0070ee251cc97a48f977a53dcc69aad',
+      'search_template.php' => '95fd04c93f7b35bc3624a132fb1b25b0',
+      'signup_template.php' => 'f100212a973ce9d6c001326693dc2cbe',
+      'sitedown_template.php' => 'e7a36b1bb662fe5bc6b75073b9a06b8c',
+      'trackback_template.php' => 'fd54d8c26c75f9d380e8ec90860b0107',
+      'user_template.php' => 'e3d0446df93b6c49aac098921e2afa6a',
+      'userposts_template.php' => '0245ac8f6ca3582eaaa3bf48d06d23e2',
+      'usersettings_template.php' => 'a2e9739938d210e25d343efbc4a33b4d',
+    ),
+    'url' => 
+    array (
+      'news' => 
+      array (
+        'sef_full_url.php' => 'e439fcea34d8154f0bdf5d0a60c93bcb',
+        'sef_noid_url.php' => '17d0661f2e9c9b2383d5f77bff6084ab',
+        'sef_url.php' => '987be3dedb8b23690ad2f85cb8c0bb18',
+        'url.php' => '620120219807d7675822cdd3f9480021',
+      ),
+      'page' => 
+      array (
+        'sef_chapters_url.php' => 'af8c23c964e3ea218b651336ccf33d7a',
+        'sef_noid_url.php' => '34fbb89d013654cdfb866679c190306d',
+        'sef_url.php' => '40beed582fe8f604e26f234fee43bf2a',
+        'url.php' => 'dbe26a3f6ffb22feabf1e06865c2b903',
+      ),
+      'search' => 
+      array (
+        'rewrite_url.php' => 'd170d7e386adf703774a656001910110',
+        'url.php' => '1500665423e0de89c52e59a32ba2b504',
+      ),
+      'system' => 
+      array (
+        'rewrite_url.php' => '301d61b3563a7073070cac344b60a6c9',
+        'url.php' => 'e260f299482abc489b5028382cdf75eb',
+      ),
+      'user' => 
+      array (
+        'rewrite_url.php' => '26a9e2c96f0e8a14891a4403e9cff632',
+        'url.php' => '062082556d94ea79cae6f7c64ebcde19',
+      ),
+    ),
+    'xml' => 
+    array (
+      'default_install.xml' => 'cc1d499a96121d59f5efe8634eee3578',
+      'user_extended.xml' => 'beb00894b86525a8f5b5b0c65ac7912b',
+    ),
+    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
   ),
   $coredir['docs'] => 
   array (
@@ -120,7 +314,7 @@ $core_image = array (
         'Banners' => '07ec3ec7746666e5c8dc62d126e69cdf',
         'Cache' => 'd277d62ce899f0c85b5f9ab2721e2359',
         'Chatbox' => 'ee6779c1a022095e1384da1696a62a90',
-        'Classes' => 'ee095eb315ad639cbda7e961f9ace940',
+        'Classes' => '1d93823de9c234c0ff74490549fe6955',
         'Downloads' => '8da67c083574a267ea6a82fe75f27329',
         'Emoticons' => '14a0d74aea591e0f8d82577aff8fe979',
         'Errors' => '46381d88a2326ff760562fea385b2fd0',
@@ -131,743 +325,312 @@ $core_image = array (
         'Maintainance' => 'f248eeafde7e99293b77d662304bfb52',
         'Menus' => '7344815f36b8aa616047ec8152ad54fa',
         'News' => '6eadf4f45748cad4f37e67fea04e05db',
-        'Preferences' => '9b3d173843f5ac04b8cac472a8e213f2',
+        'Preferences' => '1d42aa3f73f7e514f5596d4e338bc90d',
         'Uploads' => '1a979ee608d8dd812dd2752ba8d9f48a',
         'Users' => 'd62e15078e8d9d7ab8da7ec654cdef43',
         'Welcome_Message' => 'd3a3a4dfd02ec7258dd91364be7d6aa8',
       ),
     ),
-    'README.html' => '0f900f790eb4081e213fef89b92a5125',
-    'README_UPGRADE.html' => 'bd278a384e14d6306fc557a0560231fe',
+    'README.html' => 'df40c0a1c0f3511e2316077a1edd77b9',
+    'README_UPGRADE.html' => '2de751251b6d9a2a5e4dea52f5588ab6',
     'gpl.txt' => 'e19d8295ecad01988af40b5a943bd55f',
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
     'style.css' => '2e3b2c9e4bff6d8de091af58589faa1c',
   ),
-  $coredir['files'] => 
-  array (
-    'bbcode' => 
-    array (
-      'b.bb' => '467bfb5e80f460fcebcdc2e6a3a8d38b',
-      'blockquote.bb' => '2cfbbd3ab3fe2872d1a9873223d21522',
-      'br.bb' => 'cb8d211703f0459735baa8dfbebb4bb4',
-      'center.bb' => '5a1957946e3d8898a0b3d86650771809',
-      'code.bb' => 'fbc07a20865e76438614cb49d4f50b4b',
-      'color.bb' => '98b9d0ddcc76d2ee37af0f36eab8b1c3',
-      'email.bb' => '123a8b604a28524320639ba1e09bef35',
-      'file.bb' => '37ef44e5f420205d6c4f4519e69e7a32',
-      'flash.bb' => 'd008adf0a77ce5b3398e908765247646',
-      'hide.bb' => 'cf30f78c78855565b0bf868a01142fb8',
-      'html.bb' => '9938499c3ef8c80a2598b9c3aed7e371',
-      'i.bb' => 'ec842cfda8a6f33d53f8232763b56719',
-      'img.bb' => '55dbceb76b1d0f3ac070c0122ed7ee10',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'justify.bb' => '016500f910beb0f820dd58c4915f2489',
-      'left.bb' => '990ddba32b14bea648745cc373035bde',
-      'link.bb' => '0682a13d56650ba5ca6859e9da761e6b',
-      'list.bb' => 'a2b5f8075b9752bb5b60c3862c5d96ca',
-      'php.bb' => '18bfe745513afb3bb7ec4d69f0683d95',
-      'quote.bb' => '12bfbba32661e309a33972e388b0e912',
-      'right.bb' => '9bd60ca738b30f35742a0049c5efc191',
-      'size.bb' => 'bd62172ecb7083b85b534c2e45e79d48',
-      'spoiler.bb' => '5929f20a04438093df87b7246e843bf0',
-      'stream.bb' => '9661057e8db23c681e3ec2340ff3a4fa',
-      'textarea.bb' => '51f2669f52dfec3ed57f38402fcc7652',
-      'time.bb' => '3d83b0dfa9b139004bb19ee34b142b44',
-      'u.bb' => '7f8703e65a5f24bd9d2edd5fc0dfef48',
-      'url.bb' => 'ded6e905c2f5d9a12707d3bfa63d1d82',
-    ),
-    'cache' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'user_extended.xml' => 'd0aebe83cdec17b0a33d8a3dca37bd14',
-    ),
-    'downloadimages' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'downloads' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'downloadthumbs' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'images' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'import' => 
-    array (
-      'import_mapper.php' => '78a98bfedbe66b043e8562bcd6449125',
-      'import_readme.txt' => 'a76f8a52208d648e1c9e3afe71929755',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'mambo.php' => 'bbcff57b96ca83045d9f4afa982a6ff4',
-      'phpbb2.php' => '80bdbe33731a881d122d68003096c4ad',
-      'phpnuke.php' => '732653b3f39cf02364be2dcb0f065f3a',
-    ),
-    'misc' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'public' => 
-    array (
-      'avatars' => 
-      array (
-        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'resetcore' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'resetcore.php' => '8a69dad2ea719f5f8a85160b049d34eb',
-      'style.css' => 'e294495db6f91c4514c4f40d7b09fcd5',
-    ),
-    'shortcode' => 
-    array (
-      'batch' => 
-      array (
-        'bbcode_shortcodes.php' => 'ea6a74e0a309ad82b29f3fa467e77c39',
-        'comment_shortcodes.php' => 'd443298b9ca99525f12817f6a3234706',
-        'contact_shortcodes.php' => 'd593f9dadff312c61eb27e32457d7f95',
-        'download_shortcodes.php' => '7ab132b79c308f5d010743e135dedce3',
-        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-        'news_archives.php' => '1115fe90b0de9f170fce31c94680dabf',
-        'news_shortcodes.php' => '6db3c049835db41b7fdace7e6c494d81',
-        'signup_shortcodes.php' => '8726a38b93ea99fc74355f6188723c8f',
-        'sitedown_shortcodes.php' => '3ae9199cbae645d23869d517a5f6cef4',
-        'user_shortcodes.php' => '7f8fb9882adb3bcffdbd41435e62f154',
-        'usersettings_shortcodes.php' => '0ba56f47a83cdbbdf3a5c72475ec100c',
-      ),
-      'admin_alt_nav.sc' => '412e8fb7acac7746ea48b17854decfc4',
-      'admin_credits.sc' => '0eb1784fcb76e13c8addd81d9a741074',
-      'admin_docs.sc' => 'b010b7ac7618fa669c8777754a8337c6',
-      'admin_help.sc' => '1ad9d6f1c5af06e7ce2d0e1744b02cd4',
-      'admin_icon.sc' => 'e479849c3b09aae88aae3532b0550a92',
-      'admin_lang.sc' => 'f5bf42455eb337119639528aa7fea705',
-      'admin_latest.sc' => '96a92eb5000eb6e8f120b70734239968',
-      'admin_log.sc' => 'ad42fe098b732d8985cd44b11a3402d5',
-      'admin_logged.sc' => 'dec16fb0a9f5485db6ca1b4955753c2e',
-      'admin_logo.sc' => 'ff7174ceae0a5e01bfd0bc7a343c16a4',
-      'admin_menu.sc' => '33785fcda56c60c219a4cc30f6018f5b',
-      'admin_msg.sc' => '1906530f20e337964878fd144b1047c5',
-      'admin_nav.sc' => 'c22be64cb31ee333f0510f6dd8778363',
-      'admin_plugins.sc' => 'cdf52aad6688cde7741d695a62be944d',
-      'admin_preset.sc' => 'f27d1c59bb7459581fde09d29cfe6303',
-      'admin_pword.sc' => 'abbe3f9d2709e86cfb37b378f2b3d13f',
-      'admin_sel_lan.sc' => '6c2dbc4e17bdcc5f5260664ddb8c3280',
-      'admin_siteinfo.sc' => '63bfd9a632b66f9368337983dd921537',
-      'admin_status.sc' => 'ee77ec3ec0d56adfdc8681900a85bfc6',
-      'admin_userlan.sc' => 'cbaf3dda959b6a36f6b3f4cf0a6f7536',
-      'banner.sc' => '4a23a473eb15c7afbedbd4816f3922ea',
-      'breadcrumb.sc' => '0591ee7dc26ded7ac9a359dea4b8fdf6',
-      'custom.sc' => 'eae664abbaed381856936600574839a7',
-      'e_image.sc' => '3819fdf5b9dfc7b189fb4073d33ae0d5',
-      'email.sc' => 'a864fe0d78a0c9641b36d65688c63b10',
-      'email_item.sc' => 'a23b3abbb722bbf5bc58be9d23906583',
-      'emailto.sc' => '05843b1a7c7feb8f4985a55ac01ba9f3',
-      'extended.sc' => '868d45e725d7565a1d9c5b743aba0967',
-      'extended_icon.sc' => 'db16dbaa0dfa2f8fc944ba87c15a09d1',
-      'extended_text.sc' => '5a1426815f88bb2239912638af30beb0',
-      'extended_value.sc' => '1b720e5d3155c6d4a1464fc1e9cac5f1',
-      'imageselector.sc' => '31d9db59fdc34235656d40a275e63c26',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'languagelinks.sc' => '46f5c006e1b1f5e5b941a6330711bf77',
-      'linkstyle.sc' => '5ed64d972bc892a798f80179878f1266',
-      'logo.sc' => '9fb4b737a74ac8d1168fa29fe88766ac',
-      'menu.sc' => '44ea3e93ac49feeda0632a76773e2829',
-      'news_alt.sc' => '25596ffed2cf4bed831b80397c77e295',
-      'news_categories.sc' => 'c520fdee0b041b3622c93ca85f63f6fb',
-      'news_category.sc' => '25596ffed2cf4bed831b80397c77e295',
-      'newsfile.sc' => 'afe0363c51236eacdf1a5434d17533a3',
-      'newsimage.sc' => '75738371cff6146174ea00971730a0da',
-      'nextprev.sc' => 'c1c872831b48abb3c34d531e8ccdf2da',
-      'picture.sc' => '0f4d00920f1ddbac7293549862b3c0da',
-      'plugin.sc' => '3b827418651f2a8f070d1cf80fe2405f',
-      'print_item.sc' => '8ca4f150e4758249c346dd0edd5623f3',
-      'profile.sc' => 'ea7fc4eca12f39e19a735d2014fe341f',
-      'search.sc' => '12a174161a186e9a936fc10c946f0517',
-      'setstyle.sc' => '88ec920b668233bd21ba95e2cdd607e7',
-      'sitecontactinfo.sc' => '5467f65cd62b910389014b5fb8b33fe5',
-      'sitedescription.sc' => 'c617f50a35752e7cb8de2d15f7e6b614',
-      'sitedisclaimer.sc' => 'cd111b6abc576ca1ab70c103f3f2a49b',
-      'sitelinks.sc' => '754259e3bdab4efc147d92b50efdf262',
-      'sitelinks_alt.sc' => '24ee01a0e4b5181620320b936a63245e',
-      'sitename.sc' => 'a62bd1e1600931a2585f16b611fd0c6b',
-      'sitetag.sc' => '338e16589e67c9fe45613e3c6dbb9b0d',
-      'stylesheet.sc' => '40a390253676a08790cbadcd434619b3',
-      'uploadfile.sc' => '85ea5b2a10cde7c2267a40c359694aed',
-      'user_avatar.sc' => '1501550f2414900d47edee2621b2e624',
-      'user_extended.sc' => '8fdffc090d07e85ceb203542ecbb0d32',
-      'wmessage.sc' => 'b6bf7054c5f9ece93c13f2f1bfd13a31',
-    ),
-    'def_e107_prefs.php' => '0886a4b7774f246f31aa027d4b8eb18b',
-    'e107.css' => 'e5cfa4047831f19def7df032ef8bc830',
-    'e107.js' => '2089336ebd5204061afce9be3094ad73',
-    'e_ajax.js' => 'b583773e72852158e27af8a9bba7c97f',
-    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    'nav_menu.css' => '58ca165986f7428fb05e8b7b82c2ee13',
-    'nav_menu.js' => 'f6345dfb29d05884a5017ff17ed36387',
-    'nav_menu_alt.js' => 'cbfeb53bb0dfc7136f097c00265731ff',
-    'popup.js' => 'a9d1e17d0a4c399736fc7bf16ac48fa8',
-    'resetcore.php' => '8329fb938f7ae0058ab9582efc098c4c',
-    'sleight_img.gif' => '7616b49c48ca0cd6cbd15e9f747c8886',
-    'sleight_js.php' => '038fc3cccae701fab1c6aa35339a0853',
-    'thumb.php' => '1506afd0bc12c8663688f7ca449aa853',
-    'user.js' => 'd41d8cd98f00b204e9800998ecf8427e',
-  ),
   $coredir['handlers'] => 
   array (
-    'calendar' => 
+    'hybridauth' => 
     array (
-      'language' => 
+      'Hybrid' => 
       array (
-        'English.js' => '3eae52209f3587e2339a010280e22150',
+        'Providers' => 
+        array (
+          'AOL.php' => '363b16cae1ffd55db3ac5cc2f7e4733e',
+          'Facebook.php' => '4aee3d317fe69953e01bb46725d43f94',
+          'Foursquare.php' => '397589be7475ebaad8970ca4b6eb60fd',
+          'Github.php' => '2e2d5834cc8a82235c16e40aa00ce541',
+          'Google.php' => 'be4864960167e6b37de048b946c0d379',
+          'GoogleOpenID.php' => 'bb90e3e12d87f0726ff58c1f5569bc4e',
+          'LinkedIn.php' => '5523c4f074fe4e1861df527d73e49da4',
+          'Live.php' => '995b6de787eae81944909613e070bb4c',
+          'MySpace.php' => '0a0064690cfff91854cd21e89ee94949',
+          'OpenID.php' => 'cac0c4f546bf7cadd3e0e08045e9496e',
+          'Steam.php' => 'ed4d5df2401d5bda0310902950b5ae63',
+          'Twitter.php' => 'b75922ec5b73dac7048e60628b779723',
+          'Yahoo.php' => '54e31f108103ff5ae541d4b429d4eed2',
+        ),
+        'resources' => 
+        array (
+          'config.php.tpl' => 'a98e1313d7f3cb3b09c66be1a173bbe5',
+          'index.html' => '2b328c302ed608451171b3db0f6b92b3',
+          'openid_policy.html' => 'adaae0d22f0b9003a44534a64081d02d',
+          'openid_realm.html' => 'e2930bae092b00340ee16362ec5ac729',
+          'openid_xrds.xml' => 'b46a8e43108e0eca7dca32acca4decac',
+          'windows_live_channel.html' => '479decb220963b4ebb8e0dedd2a399a0',
+        ),
+        'thirdparty' => 
+        array (
+          'Facebook' => 
+          array (
+            'base_facebook.php' => '765cff749aa16cc4500f9bd81cbd21ab',
+            'facebook.php' => '6bf73e0998383aaf604c54bc7942b9ab',
+            'fb_ca_chain_bundle.crt' => '98ad487c6bcd023914be60299202eee0',
+          ),
+          'LinkedIn' => 
+          array (
+            'LinkedIn.php' => '1cd8fcbb82418c7f81d0de47f02f59c7',
+          ),
+          'OAuth' => 
+          array (
+            'OAuth.php' => '50bae8f493620f1fdfb2063b26ebe2a5',
+            'OAuth1Client.php' => 'e6992197dabf5e1bd7f4f4e3c7525ecd',
+            'OAuth2Client.php' => 'f7a5499ef47177ac1ca106e886382872',
+          ),
+          'OpenID' => 
+          array (
+            'LightOpenID.php' => '9fa681804a627f14911e458e7a102299',
+          ),
+          'WindowsLive' => 
+          array (
+            'OAuthWrapHandler.php' => '7080d96d73a963730a4b3d69c7a7083f',
+          ),
+          'index.html' => '2b328c302ed608451171b3db0f6b92b3',
+        ),
+        'Auth.php' => '8aaaec7085b894e0554ef19520f59f58',
+        'Endpoint.php' => 'be7e05c19af2a69d4db3e82a2cff5db2',
+        'Error.php' => 'd94721e20cb24b0730acc07fa8a95a14',
+        'Exception.php' => 'd49e817a88114c2dd431335530e9db74',
+        'Logger.php' => 'c5d7d3a272b8c57c83a8d33bbb0e5e7d',
+        'Provider_Adapter.php' => '9ba762f0f1e4ed0e2aa120ca30590ff2',
+        'Provider_Model.php' => '43641d00761ed128767cc4957e2198c4',
+        'Provider_Model_OAuth1.php' => '12aad5fd49338c606c754b398e7323dd',
+        'Provider_Model_OAuth2.php' => '83a61d2bd9a345c0b9bfc8ac411119c3',
+        'Provider_Model_OpenID.php' => '1c5133bc57c3d45aacb522b7b918b8b8',
+        'Storage.php' => '9c58abd4e46c9fecdf248db1022d2289',
+        'StorageInterface.php' => '7a52a9b9bdc3569a98a0e32fc630d424',
+        'User.php' => 'c219b2c31b17127f044e7d425dcd06db',
+        'User_Activity.php' => '4b8c29b5c442915664f864ee4e18ac6b',
+        'User_Contact.php' => 'b7f17423d61d42cb30b36a127f6e0e78',
+        'User_Profile.php' => '4165786a0cc8d26ae683eda0669bf635',
+        'index.html' => '2b328c302ed608451171b3db0f6b92b3',
       ),
-      'cal.gif' => 'c1e5255bd358fcd5a0779a0cc310a2fe',
-      'calendar-setup.js' => 'bcdf616f6ebfe8fdb0235d389fb1d238',
-      'calendar-setup_stripped.js' => '21fe92ab10616e9d40b066538b4d1fdb',
-      'calendar.css' => '33ea70fdc6b81e988ffce30ad8f7c4f2',
-      'calendar.js' => '0dca67d72cc4e8df1d64003ab4738d60',
-      'calendar_class.php' => '79d604e52ab3b9fa60b9d0cd84e9bd6e',
-      'calendar_stripped.js' => '3222e372b909b3eb246cdf3423493bda',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'menuarrow.gif' => 'b5a91d7a2755198b2eb729541ad3288c',
-      'menuarrow2.gif' => '1f8c673c8f76832febaeeac88a5f4353',
-      'sample.php' => '1d99312cd3ba1d6b9ef0484e6d138641',
+      'index.php' => '9e3830ed561ec508dc00344aebad5152',
+    ),
+    'jsshrink' => 
+    array (
+      'Minifier.php' => '10226dbede9950509b846658cac86c28',
     ),
     'phpmailer' => 
     array (
-      'language' => 
-      array (
-        'phpmailer.lang-en.php' => 'dca429b3dfc000a241f32ed11d3a6aca',
-      ),
-      'class.phpmailer.php' => 'cf32be10ca659080ad4550acd26c102e',
-      'class.pop3.php' => '5a96ba537abceb27300abeef11041302',
-      'class.smtp.php' => 'dcae7f76c4549f804401195e06e2cb3a',
+      'PHPMailerAutoload.php' => 'd913013ff50cc4313c71ba8ebe2568df',
+      'class.phpmailer.php' => 'ef7f968a568ac3865ff0f7673c063983',
+      'class.pop3.php' => '7ced4c02245a661c1ab8f78df4f08b52',
+      'class.smtp.php' => '040a830e46df23a4447884563c50df2d',
       'e107.htaccess' => '507de3fb6f951cafa6b1a346d232604f',
-      'mailout_process.php' => '51fae3c946ebe47c33b298c36ef6f545',
+      'mailout_process.php' => '42c15c77c602aa913bc6a90a4dc24549',
+    ),
+    'phpthumb' => 
+    array (
+      'thumb_plugins' => 
+      array (
+        'gd_reflection.inc.php' => '2383118969351919a769da4412242024',
+        'gd_watermark.inc.php' => 'd78300e6d296d75c8039a32ac73a41ff',
+        'gd_watermarkttf.inc.php' => 'dc20bfa54927ad5c5368e1212422cbdb',
+      ),
+      'GdThumb.inc.php' => '3fd9671636fc00c000dbfc3398fd58bb',
+      'PhpThumb.inc.php' => 'ba845a14a7118101afeb75cf02acbbdb',
+      'README' => '6e937f06aacafc739e00fb1ac0a1f437',
+      'ThumbBase.inc.php' => '92b1b08eaf0292517ff2c09bab904d5b',
+      'ThumbLib.inc.php' => 'f25782af2f6fbf49e3596fd08b787754',
     ),
     'search' => 
     array (
-      'advanced_comment.php' => 'be2b0d04f5abfb8d659288a69cb73d49',
-      'advanced_download.php' => 'fa435e7792317196d187e494212d0988',
-      'advanced_news.php' => '4dd2b43f9acb91ea02b39fa44ccf4299',
-      'advanced_pages.php' => '82c313fb52d708bd9aaad142a00dc2c4',
-      'advanced_user.php' => '0f1f1668327d513090f6e13824d281ad',
-      'comments_download.php' => '2cabddfffb2986e96bb7779da03d1f0a',
-      'comments_news.php' => '771713752895af10bfa75c3c2bac4d1e',
-      'comments_page.php' => '6e5a89313087d403e30cfeb8ddf4da78',
-      'comments_user.php' => 'caa387a56d6f1b35610e80061e18cc1c',
+      'advanced_comment.php' => '048b4c0b512c332f4aec111b7379688e',
+      'advanced_download.php' => 'b3eac239a6c9250063b9d48ed5684d9f',
+      'advanced_news.php' => '5c72d9eefe0058b9f675584f0668b112',
+      'advanced_pages.php' => '196e60da0d1072bc09dbd1ebc5750454',
+      'advanced_user.php' => '7783cc95b778ff6f6b2d4018ca350ef0',
+      'comments_download.php' => '825aba3c0c49124d15fd10668f37b7be',
+      'comments_news.php' => 'b3ee9865ee27a23d780fcfdefc2e3495',
+      'comments_page.php' => 'b13389b84b94ba155f9028224f684911',
+      'comments_user.php' => '9064d2c7f6dc711bef5855b2848d5028',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'search_comment.php' => 'd6969967014e8c14e613bad64a091253',
-      'search_download.php' => 'ba62e1be41cdd3457cfc2be8de146d01',
-      'search_event.php' => '17c68ea4f5728e87e7009b96b978006c',
-      'search_news.php' => 'bc0321e07ae69c925ac83a72ae67c136',
-      'search_pages.php' => '57521d1569a214c3ccb99406561a229f',
-      'search_user.php' => '90b545d731c887cef2715096d52cb968',
+      'search_comment.php' => '042923d4128b4f0e84a21007ed07de8e',
+      'search_download.php' => '5763c1a36b4c5ed3777b79d104b7b5e3',
+      'search_event.php' => '0cecc4ef09f41c0ebce1c5ccd39596b9',
+      'search_news.php' => '883f9e31e4a9109660f7ea4022ff23b1',
+      'search_pages.php' => '3984b41073d89961162a52c706db9e31',
+      'search_user.php' => 'dd62eddd66a45455dd46e48c286f9c0c',
     ),
-    'tiny_mce' => 
+    'utf8' => 
     array (
-      'langs' => 
+      'native' => 
       array (
-        'en.js' => 'f304920296d23ba3ed1a8ec3a2a1844d',
-      ),
-      'plugins' => 
-      array (
-        'contextmenu' => 
-        array (
-          'css' => 
-          array (
-            'contextmenu.css' => 'f3cb9b44e37f0dc452bed97c02bec4c4',
-          ),
-          'images' => 
-          array (
-            'spacer.gif' => '12bf9e19374920de3146a64775f46a5e',
-          ),
-          'contextmenu.css' => '93ad8b3e8a5e1a48bf6ed727ca0384e2',
-          'editor_plugin.js' => 'f4df4d4889b61ecd067ea2d6977420ca',
-          'editor_plugin_src.js' => '7772eef735b088e4a6fdfdf707e33e65',
-        ),
-        'emoticons' => 
-        array (
-          'images' => 
-          array (
-            'emoticons.png' => '2867c94a2d99dedf5964a4a0de9e5839',
-          ),
-          'langs' => 
-          array (
-            'en.js' => '25334d4a3d329cc805a54c3f815ff26a',
-          ),
-          'editor_plugin.js' => 'ede01e828a3698e2e00a9dbd503e7d95',
-          'emoticons.php' => '31f361fda0b760ad25d72a9cf8bed070',
-          'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-        ),
-        'ibrowser' => 
-        array (
-          'images' => 
-          array (
-            'constrain.gif' => '0ed8ffef1fb5cce76e51e2d720063ea9',
-            'ibrowser.gif' => '3f92a28951b2d3048473262f5367d12d',
-            'textflow.gif' => '2b34d07b43d1159590455146078cb4cc',
-          ),
-          'langs' => 
-          array (
-            'en.js' => '5bc48956a398ac86f36edb041a898a85',
-          ),
-          'config.php' => '4e178e32efb96453c26523ded26f6ee7',
-          'editor_plugin.js' => 'e16d63db65af69d1db26ff64b706a0d9',
-          'ibrowser.php' => '1865b7afd71373cfff0cb986b632ee35',
-        ),
-        'iespell' => 
-        array (
-          'images' => 
-          array (
-            'iespell.gif' => 'eb12c26b5768fcd344ea6205aa98e761',
-          ),
-          'langs' => 
-          array (
-            'en.js' => 'b262530d5b63841b50ab5b67f94883aa',
-          ),
-          'editor_plugin.js' => 'fae3a5e1abb9e78c55eb4dab42d8dfd1',
-          'editor_plugin_src.js' => '24caf83859f447628508cd99c907352c',
-        ),
-        'media' => 
-        array (
-          'css' => 
-          array (
-            'content.css' => 'f665ed43e62a4ab7c0661d00fa4f0fdb',
-            'media.css' => 'af181e09ae05dd73b0d32c0caa87d1a4',
-          ),
-          'images' => 
-          array (
-            'flash.gif' => '709d9df69d8c2030e56321046d76ab8b',
-            'media.gif' => '0541d5bf542ee730346a5f4641416356',
-            'quicktime.gif' => '4a4709a92bb1ef6bc1621019c92a83b8',
-            'realmedia.gif' => '51de6342ba5327787eba762116d20130',
-            'shockwave.gif' => 'acad15b370f34deb12355bea4b89c2e1',
-            'windowsmedia.gif' => '825f4eca28a633397050f9a6cca9358f',
-          ),
-          'jscripts' => 
-          array (
-            'embed.js' => '2288f2d23b707283921aaeff2dfeb005',
-            'media.js' => 'ff44b627774307f3ae807e6c27d66a06',
-          ),
-          'langs' => 
-          array (
-            'en.js' => 'de38190b0b16ff997c6f7a2e09818f3c',
-          ),
-          'editor_plugin.js' => '6c1cbbc18a0f3a07757ee1a3969d55f8',
-          'editor_plugin_src.js' => '9603968370efb4b25ae25d701db8ffd1',
-          'media.htm' => 'd3fce5ed41db220e12ebfebd143e1f47',
-        ),
-        'table' => 
-        array (
-          'css' => 
-          array (
-            'cell.css' => 'a51b50f9a8153e7f55fe06a03caca016',
-            'row.css' => '6d95ac81b478e4e8a176e209c739c38d',
-            'table.css' => '8357d1c13919a34806d23fa2160a8064',
-          ),
-          'images' => 
-          array (
-            'buttons.gif' => '7e50c576bb169b5dd93d9e28da67bb14',
-            'table.gif' => '476b000e94b74dac818f1ce03681ace5',
-            'table_cell_props.gif' => '6912d92a00e3e81a9baba3e251b7f0c0',
-            'table_delete.gif' => '060899ca004398671369f92ef6a88a90',
-            'table_delete_col.gif' => '333372a2469c8dfa12a002a2aad8de59',
-            'table_delete_row.gif' => 'c58d9413b1d8150011db91818595871b',
-            'table_insert_col_after.gif' => '5d19acf7a25262cf3ddc7a926a076218',
-            'table_insert_col_before.gif' => 'd5910a210405a8cc7a24086104b06fa1',
-            'table_insert_row_after.gif' => '6b3167fde6db6ac271488b9cef404792',
-            'table_insert_row_before.gif' => '0e37e4c48dcddb1123bc6140ce323694',
-            'table_merge_cells.gif' => 'd5552fd387ff429fbfe7b8aebc76b3c0',
-            'table_row_props.gif' => '639bc7a8c034d99ab1cbef8f602f8aa8',
-            'table_split_cells.gif' => 'aa2082cf1eb2e62eecda57fd2f986ab7',
-          ),
-          'jscripts' => 
-          array (
-            'cell.js' => 'df27f8a9de847dcc4b433960c72f99fa',
-            'merge_cells.js' => 'f75d50d1dea59b83bd7f091fe53be6d3',
-            'row.js' => '5564b689e370fc84c47b192de29e472b',
-            'table.js' => '260a2bfaa8e3a3313fb14904f6daf7ea',
-          ),
-          'langs' => 
-          array (
-            'en.js' => 'efb577fa33557c4f819d45f8be16ff20',
-          ),
-          'cell.htm' => '19a425a22f5dc25f42e755ad38d3ba98',
-          'editor_plugin.js' => '21d04eeb64cf88af767f0641f1c360ee',
-          'editor_plugin_src.js' => 'aeac85b281a5aff98f76157bbbbfb3f0',
-          'merge_cells.htm' => '9470fcdf7575a48d499fdde3f20d8d5e',
-          'row.htm' => '7c8c219909be04d09bad3bfeb048c560',
-          'table.htm' => 'ec13d5c3ebb1e460e4a99de394664dc0',
-        ),
-        'zoom' => 
-        array (
-          'editor_plugin.js' => 'b4029d6df8bb33172ea5c44a9ba409ac',
-          'editor_plugin_src.js' => '5a3aef8ef6b914daefb467674be73989',
-        ),
-      ),
-      'themes' => 
-      array (
-        'advanced' => 
-        array (
-          'css' => 
-          array (
-            'editor_content.css' => '4950d1774a92d46045b57911d41706ef',
-            'editor_popup.css' => 'e2c24b08b5fdb21ca55da439aa30564a',
-            'editor_ui.css' => '5d74992a65ac983a065f7c3d3012779e',
-          ),
-          'images' => 
-          array (
-            'xp' => 
-            array (
-              'tab_bg.gif' => '3d53300281d4652d1fe2482f1bbec413',
-              'tab_end.gif' => 'de9e554769bc24fc7f2acefddb04e895',
-              'tab_sel_bg.gif' => 'f330e9c65e356cb6829596e421cf1116',
-              'tab_sel_end.gif' => '6a4ffda436f2ffe5a56107d6c8c5a332',
-              'tabs_bg.gif' => 'b3a2d232dd5bf5e8a829571bbec08522',
-            ),
-            'anchor.gif' => '9997d8cbba012a0a8295ff92bced1207',
-            'anchor_symbol.gif' => '5cb42865ce70a58d420786854fed4ae1',
-            'backcolor.gif' => '9d4f0c287ef6a09ff25595c366920f61',
-            'bold.gif' => 'd4eac7372d4d546db5110407596720dd',
-            'bold_de_se.gif' => 'fa8d362da3c15cab263bc7eb2d192dd1',
-            'bold_es.gif' => 'eedfd6c0dc13c5db5054bd893ac92ca0',
-            'bold_fr.gif' => '8fbda35d5ebfc1474f93f808953b1386',
-            'bold_ru.gif' => 'c227dfb4b70957d31c240fd0fd9f55b6',
-            'browse.gif' => '2babc35c383abee1260e021dd87fd7a5',
-            'bullist.gif' => 'f360470402affab13062de5ffbfb7f74',
-            'button_menu.gif' => 'ed293e6a817f44328f74c0853c628e69',
-            'buttons.gif' => '23c32309ebbca60a52fd064860788620',
-            'cancel_button_bg.gif' => '57b808096854d5eeb5785effcd10c468',
-            'center.gif' => '652af6256deb0eeb781b0793ee4142f2',
-            'charmap.gif' => '3c3625a993caca8262dd93d61ff1a747',
-            'cleanup.gif' => 'f082f5fdea8020fd9cdd714a30ca8e71',
-            'close.gif' => '99fb1b6d91aca9519cfc18e182de8600',
-            'code.gif' => '158e1ad2922f59a800e27e459c71d051',
-            'color.gif' => 'c8e11c751b5575025fc50b7701719f0f',
-            'copy.gif' => 'ef9a435cc72f9fe652ebc49498b89e86',
-            'custom_1.gif' => 'bd1f96d299847c47fd535b1b54d3a2df',
-            'cut.gif' => '4e3e44cccf150856322ba78ccf2533e7',
-            'ecode.gif' => 'd78d5418d4c6883c837fdbeb7b824bb4',
-            'forecolor.gif' => '160b10bd5949887d251eb5b96291b799',
-            'full.gif' => '009750822e228e10f51e746ddf8d1fec',
-            'help.gif' => 'e244d2c9d8f1d1910c7145699f767a9c',
-            'hr.gif' => '8d92cb73437c32a0327323b538ad2214',
-            'image.gif' => 'decae954176586ab7504c178b28b5041',
-            'indent.gif' => '89c00ba134c89eb949411194060c135c',
-            'insert_button_bg.gif' => '13a80583b2bf71103ea378514ac717e5',
-            'italic.gif' => 'c8652735e55a968a2dd24d286c89642e',
-            'italic_de_se.gif' => '2eafa516095a0d8b3cd03e7b8a4430f7',
-            'italic_es.gif' => '61553fb992530dbbbad211eddcc66eb9',
-            'italic_ru.gif' => 'bbc7be374d89a1ced0441287eeba297a',
-            'justifycenter.gif' => '652af6256deb0eeb781b0793ee4142f2',
-            'justifyfull.gif' => '009750822e228e10f51e746ddf8d1fec',
-            'justifyleft.gif' => '7e1153a270935427f7b61c7b6c21ab8a',
-            'justifyright.gif' => 'b91052a13211f6b1bc0a5ca596fe4a6b',
-            'left.gif' => '7e1153a270935427f7b61c7b6c21ab8a',
-            'link.gif' => '59cbc5812b993e7f6823937e89e85c18',
-            'menu_check.gif' => '889563a22f10dd4535d0050b807e42ad',
-            'newdocument.gif' => 'e6d9f7d0bdc4d21d9b9fd1ad6b888733',
-            'numlist.gif' => 'd4c72d6e6d56fee2315ad59426a99a4e',
-            'opacity.png' => 'bd2babb5fb15f4ad5352dd05be54e898',
-            'outdent.gif' => 'b7249cc5a3bce3971f0b19fccac07f60',
-            'paste.gif' => '14d2f6c0e090ce821ca302a6b5d7e7d9',
-            'quote.gif' => '83277c79354c0cebed4b93b92ca96c56',
-            'redo.gif' => '0fb531683cf59bb0e1c9911d475e640c',
-            'removeformat.gif' => '2a5f195e9ec54e7e0e2fb40238678444',
-            'right.gif' => 'b91052a13211f6b1bc0a5ca596fe4a6b',
-            'separator.gif' => 'b0daa6a4ec9acc86c3b2b1bb71f5b6a5',
-            'spacer.gif' => '12bf9e19374920de3146a64775f46a5e',
-            'statusbar_resize.gif' => '4bece76f20ee7cd203d54c6ebd7a8153',
-            'strikethrough.gif' => '0dcca301aa909817a82d705cc9a62952',
-            'sub.gif' => 'dfbcf5f590c7a7d972f2750bf3e56a72',
-            'sup.gif' => '15145f77c6f9629bfdb83669f14338a9',
-            'table.gif' => '476b000e94b74dac818f1ce03681ace5',
-            'table_delete_col.gif' => '333372a2469c8dfa12a002a2aad8de59',
-            'table_delete_row.gif' => 'c58d9413b1d8150011db91818595871b',
-            'table_insert_col_after.gif' => '5d19acf7a25262cf3ddc7a926a076218',
-            'table_insert_col_before.gif' => 'd5910a210405a8cc7a24086104b06fa1',
-            'table_insert_row_after.gif' => '6b3167fde6db6ac271488b9cef404792',
-            'table_insert_row_before.gif' => '0e37e4c48dcddb1123bc6140ce323694',
-            'underline.gif' => '203e5139ee72c00d597e4b00ed96d84b',
-            'underline_es.gif' => '027608183023f80b0c9bf663c9e81301',
-            'underline_fr.gif' => '027608183023f80b0c9bf663c9e81301',
-            'underline_ru.gif' => '843cb1b52316024629bdc6adc665b918',
-            'undo.gif' => '7883b9e1f9bf0b860e77b904e1941591',
-            'unlink.gif' => 'dcd93dd109c065562fe9f5d6f978a028',
-            'visualaid.gif' => '491fbaab8d180fdd051cece94f2b8845',
-          ),
-          'jscripts' => 
-          array (
-            'about.js' => '7168d330431da1d7c082c84df665a6f0',
-            'anchor.js' => '5bffefe6a515c1b10fd636a4fbd45a34',
-            'charmap.js' => '124138e299a3ef0c823010d2fbbdaf0f',
-            'color_picker.js' => '9dcf13f6303af0db5d3fb280fa526f62',
-            'image.js' => 'bf79747eacc011f3902a1804b49d6265',
-            'link.js' => '3df42cdbae98782ae9a9bffaeba7ab53',
-            'source_editor.js' => 'f2419d8fb2804a46ed626e6a8b953539',
-          ),
-          'langs' => 
-          array (
-            'en.js' => 'd954dbe69d706823e7ce2acc99ca16c6',
-          ),
-          'about.htm' => 'fc2c574502ccf3e53fd00f52d9aa3869',
-          'anchor.htm' => '15ace71eb4c333034944ef7cfb1646d2',
-          'charmap.htm' => '9848d7254d4979ce94dfbdee055900ba',
-          'color_picker.htm' => 'c00bae115f05a96d5a561dd46cfb9fa4',
-          'editor_content.css' => '99f256c087e16872937f6cf9e4ea0c32',
-          'editor_popup.css' => 'a2bbb5f95ba2d3422c1666222170d700',
-          'editor_template.js' => '34f49851a46c0c3f5f90929fb5a1260e',
-          'editor_template_src.js' => 'cd30e9a71b4422f62e370538a3b24dc4',
-          'editor_ui.css' => '62632779c868eddf46f3a8e121083d31',
-          'image.htm' => '4a2a0fe9cc33b4997f718b58af1be6ca',
-          'link.htm' => '8f96d1fee5e848c10bd1c73faf0b38a6',
-          'source_editor.htm' => '7b533802f9534af465bb276a2c318f35',
-        ),
+        'core.php' => '9107db0663845b764b669c343253bbe4',
       ),
       'utils' => 
       array (
-        'editable_selects.js' => 'fafc283bd5b48b6cd188cf12856aac88',
-        'form_utils.js' => '74cf73cde95e530009a570facd900874',
-        'mclayer.js' => '1c7d5ff736bf571af7b1407758db937e',
-        'mctabs.js' => '70249b9a54761a08db2006afb99079a1',
-        'validate.js' => '50799f6a9ebc837f3d0345c4a42367bd',
+        'unicode.php' => 'd58538203ed8f015e27f0ba75d07d567',
       ),
-      'blank.htm' => '72406c871a9be7972922686221a885a2',
-      'filelist.php' => '63d5fa62565bc100d3345de82ab36985',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'tiny_mce.js' => 'ae9f1a863b1d3686cf0c6ab0994acf2b',
-      'tiny_mce_gzip.php' => '846511eed428312feca1f0e5fec6cd91',
-      'tiny_mce_popup.js' => '0a5ce4187f9d2f58e36302d7d40bf3d2',
-      'tiny_mce_src.js' => '1a99b9dcd773d76df1fee42e072cb1a4',
-      'wysiwyg.php' => '3cc70beacb90d7c9ea9dcfea7288a8be',
     ),
-    'admin_handler.php' => '2d593943e40bf02d5d46cf6b6af6b7e7',
-    'admin_log_class.php' => 'a19c073089c6149a755e253133594d65',
-    'arraystorage_class.php' => '4862b38926c8f68029c95d31990435a4',
-    'avatar_handler.php' => '54c9f790d9f17e30f52b8011633d486c',
-    'bbcode_handler.php' => '4871033a545a98c465e3b0aa6e911374',
-    'cache_handler.php' => 'e9b35486958d34ecf84afb69bed7fe16',
-    'comment_class.php' => 'e525ee48e0f89300368bf201aed95783',
-    'date_handler.php' => '900262e3d47034c444cf3da1abc9371d',
-    'db_debug_class.php' => 'a1ac847f296f4701473806f80d5f7d23',
-    'debug_handler.php' => 'fe93f06640b293a65a068d800c22daf6',
-    'e107_Compat_handler.php' => 'e76211b3178e4a9724933ecfe85ba8ea',
-    'e107_class.php' => '4ce6554308d42363e08c45c5b711df27',
-    'e_parse_class.php' => '39060ea3a2092ca529710b0fc4d69037',
-    'emailprint_class.php' => 'c7de0da4205693ddb952e9723a7fc226',
-    'emote.php' => 'b5d34cd652e828769f49b855b090c96f',
-    'emote_filter.php' => 'fedbb8c9daf1acd5f6dbbb9914b05dc4',
-    'encrypt_handler.php' => '7a6f592c0900d68fcf5cbf7b0eb1e364',
-    'equery_secure.php' => '00121b097ba978d5330349abbd350737',
-    'event_class.php' => 'd14906b7576984e7d9467c097e285b65',
-    'file_class.php' => 'f193a200c2717c932e3dd1ae7d378fcb',
-    'form_handler.php' => '67deba10eb6acf65d941b760deec6134',
-    'forum.php' => 'da5c0d4378b7288610945979d269a79c',
-    'forum_include.php' => '8b562f8ba508cc3572c84b443c4e7a6c',
-    'forum_mod.php' => 'fd1adbf1660996aeb4f51384506e0045',
+    'xmlrpc' => 
+    array (
+      'xmlrpc.inc.php' => '5ed90d0012f2f30cda4264f08f0cb433',
+      'xmlrpc_wrappers.inc.php' => 'a50cc80e8b1a904bab5d5941a4bbb116',
+      'xmlrpcs.inc.php' => '8366a9e4c6b31dd3e3c8819285bb4a94',
+    ),
+    'admin_handler.php' => 'b471c36efe01dde9aa143595eadd53be',
+    'admin_log_class.php' => 'ead1e82315e9b30658e236f11e71d1e3',
+    'admin_ui.php' => 'd5fa57baaa22e284700acdf7e08a86c6',
+    'application.php' => 'ded56c56abd29cff8690d81eb67871d9',
+    'arraystorage_class.php' => '5011a00314f74a171f08c2d36f45154d',
+    'avatar_handler.php' => '61a283783cbdfed9028f77016d1b26a0',
+    'bbcode_handler.php' => 'fb8bf72bb3c584085abf790c1a4482cb',
+    'benchmark.php' => '14bf70afcaa79f566c3b3c8e3a11eb48',
+    'bounce_handler.php' => '32901e36d88c7c834d7d70a9c21d6866',
+    'cache_handler.php' => 'dbc3ccecc53d85f2feef87d981209f3a',
+    'chart_class.php' => '211f5820ec2b39ba1ce9a3c9972629bb',
+    'cli_class.php' => '2e35af3cde44304a2ac3b807a83777da',
+    'comment_class.php' => '4ff513353b7ae9d5d8b6a795ac634568',
+    'core_functions.php' => '25c5801ea90df08fc3709fe0cf3bf205',
+    'cron_class.php' => '1e9c1dc6e7ddd2da2e072f418f3cc984',
+    'date_handler.php' => '98c85f8af86cd1eb97f6a10b55e47572',
+    'db_debug_class.php' => '9dbd10d4c8407373f3e5683153cf98a4',
+    'db_table_admin_class.php' => 'd038e9a589997b8cb1b85e862543272d',
+    'db_verify_class.php' => '798702253890fdfd741cc8d01c1ff73f',
+    'debug_handler.php' => '39e1c9ec84aeca05af28c1bf5d497f89',
+    'e107Url.php' => '8d13bcde926cd185ec23d9dff751ec2f',
+    'e107_class.php' => '999f38e4dd9834a0cdd4a55999376f39',
+    'e_ajax_class.php' => '35972545339ce8c85ea369853288af71',
+    'e_marketplace.php' => '0ea40e8162eb98c300ffdf9f6101ad9c',
+    'e_parse_class.php' => '9496ec0441048e7733ecc8e758ec8a90',
+    'e_ranks_class.php' => 'f5d06b91ceebcc5dcdea4daab0d133ae',
+    'e_upgrade_class.php' => '61468f439474b7e6aa30e4762cc320dd',
+    'emailprint_class.php' => '07e9273c695f3ce6490dbf57ed55be54',
+    'emote.php' => '1861804515670f2be1fd1a46a1efba61',
+    'emote_filter.php' => '42ceb071711e8a4537509afdd60f45e6',
+    'event_class.php' => '86970d2804f80fadfa5bd44af117a2f7',
+    'file_class.php' => 'd90dd3d34e97b8b4101bb216a7fcc9c8',
+    'form_handler.php' => 'a64955f092fa9652901898f3d41b53c7',
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    'input_class.php' => 'f819fe76d1fa518f430410aa4e6c803e',
-    'language_class.php' => '93fe59f6606cafbf4dddb8546fdd3a9b',
-    'level_handler.php' => 'a231a4e63fcf4f498f9bfd7411250faf',
-    'login.php' => 'cc67e51d6ea138cb66b9ada17adebaac',
-    'magpie_rss.php' => '1297fc8132b5ec0a2c04436b38ec6aee',
-    'mail.php' => '407db4ce0e57e22b7db8252af7f3085d',
-    'mail_validation_class.php' => '75e722bf8c6975349ec402682323314e',
-    'message_handler.php' => '176ebf4b88fb8267f143d28714bda42b',
-    'mysql_class.php' => '4dc9c8b12ad9395b93c2452197c64259',
-    'news_class.php' => 'c8c699da336670173562ede6f0f6a27c',
-    'notify_class.php' => '2b2908df0eb85e94686bfed263389e77',
-    'np_class.php' => '68a8edcf50703e47e19f165c1a108a45',
-    'override_class.php' => 'a1f7451103a7fb47f3e541c31cf32343',
-    'parser_functions.php' => '81daef0e484ee070d440e4ebc9bc8095',
-    'parser_handler.php' => '650775595b663683a426c61dba6215cc',
+    'iphandler_class.php' => '92cee2bbc29a5cdf8520be587b55155a',
+    'js_helper.php' => '1e28bb47c0dfdcbade4b602157bbae4f',
+    'js_manager.php' => 'c6acf1a20a615afc19d49c3a1fd17262',
+    'jslib_handler.php' => '599e11ffa5888521b68aaf78527813c1',
+    'json_compat_handler.php' => 'bfb1927f1288476bd1112d2310b5411f',
+    'language_class.php' => '07bc2a227f0ec37c28c9a528c43b9051',
+    'library_manager.php' => '7419a39015a1b027dcb88c1ffaf21058',
+    'login.php' => '110deea8c5e138fbcbd80b5d1acb3627',
+    'magpie_rss.php' => 'a04efb623cda4635cf46d9fe7c327d44',
+    'mail.php' => '30e8b4062255b2959643604b22f2de20',
+    'mail_manager_class.php' => '40361162ecb3f873fc2bf72dd9e95c50',
+    'mail_template_class.php' => '279830733102827f40e12ca8bbb450b5',
+    'mail_validation_class.php' => '6ced3acdeb2e3ba8f785d4a82c0b9b86',
+    'mailout_admin_class.php' => 'd11d71c22f267978ce3c068ef45baed7',
+    'mailout_class.php' => 'cf46e699b92faad90f55820a696501f5',
+    'markdown.php' => 'ad868fa8895d098e0e22a4b2ecf845e6',
+    'media_class.php' => 'a64e928a3ecc3e78c922304e13a6a3ec',
+    'menu_class.php' => '3dbca61018aa3c732ba9aa8d9d70f19c',
+    'menumanager_class.php' => 'b957dad4300e6b6b2957c4e33511cadd',
+    'message_handler.php' => 'bead49bd07f12aa92c3d5aee36aa8d84',
+    'model_class.php' => 'e750b0e084984816233db8cdf9992750',
+    'mysql_class.php' => '83603740977dd574def7d1b16801ce26',
+    'news_class.php' => 'daa47b944d1ba55bd9706f2c261d3d8a',
+    'notify_class.php' => '4f092bb32f2160df76975ff5b2c06cbf',
+    'online_class.php' => '6b0795303519b3c38a7b4f87d8931088',
+    'override_class.php' => '0eac80a7c87d86a84eda84420eedb36d',
     'pclerror.lib.php' => '7b1498a7efb4524dd899c954526c3ca2',
     'pcltar.lib.php' => 'b9313066aad3049bb0041099137a648e',
-    'pcltrace.lib.php' => 'eb165fe908cc30c85975b7d35614990b',
-    'pclzip.lib.php' => '1b0212a9a1e09b781172c8f6964296c2',
-    'php_compatibility_handler.php' => 'f77929f2cd211a855516e3e72873ee99',
-    'plugin_class.php' => 'd05c2666377d3c51de5c79119a56edc8',
-    'pop3_class.php' => '3164abd686583e15f96901ab722cd272',
-    'popup_handler.php' => '8915aa18adc4e69df003becaf508003d',
-    'pref_class.php' => '4d2d63ee3f969ee742d6b989863b11e7',
-    'preset_class.php' => '5a4df9b9b87aa3862dda2afd44165acd',
-    'profanity_filter.php' => 'd41dc2dcd84a33f37f3ea1200fef3814',
-    'rate_class.php' => '21ab83661e35eeb568386dc907a9726c',
-    'ren_help.php' => '75ebce4f529d186cede57846d7f63693',
-    'resize_handler.php' => '44e5777433fa18d97e80a4c16552f785',
-    'search_class.php' => 'fe9c65c10349512b91164b8b67e724be',
-    'secure_img_handler.php' => '18e7e3827ad38b79c3ff46b67e6627e1',
-    'secure_img_render.php' => 'e772c2042868b1d9ecafbee3b4eab4ef',
-    'session_handler.php' => '54f987aa4f0f2a31c646d9e0f81cd061',
-    'shortcode_handler.php' => '845f8b0fdfe8b6d273d8e02f3cf8efd5',
-    'sitelinks_class.php' => '64e7edf9541a0256066b9b636e550c18',
-    'smtp.php' => '71008c80b0a5e12faef990c0560f8226',
-    'theme_handler.php' => 'b38c4812a67c22705a15a263c66f3c92',
-    'traffic_class.php' => 'd9939fec7c60e3c8b95111dca22ce918',
-    'traffic_class_display.php' => '4583aae09eb49619d1b302160c27b721',
-    'upload_handler.php' => '8720ea79c13c327e5c1c019daf077d4c',
-    'user_extended_class.php' => '893014f71353a16c7eadaed563ac5dc7',
-    'user_func.php' => 'bb871abafb6c91109c809afa9514afcc',
-    'user_select_class.php' => '5f08187de31a562d5ea8ad88e1f6a3b2',
-    'userclass_class.php' => '141c0e6732238a2c8d2dbfee515fb376',
-    'usersession_class.php' => 'dcd6889bc9e8a11cba08fdd13f629615',
-    'xml_class.php' => '2625ffa68fd7516ddf64eea40e47f218',
+    'pcltrace.lib.php' => '5d09ee8d2866175cfdbf5d9f41065712',
+    'pclzip.lib.php' => '03a7c011e493ad4de5241e7ad2cf2cfc',
+    'php_compatibility_handler.php' => 'bdd9e118d13af39dba334df2845ff715',
+    'plugin_class.php' => 'ca7296edb1f1b2fc353993776069953c',
+    'pop3_class.php' => '21ba17e6d7c95bc1f589ff09324f86e7',
+    'pop_bounce_handler.php' => '65fabca64162da64d78715ff53750f9e',
+    'pref_class.php' => 'b6c95f08d8d526b4362d9a58f2dddbf1',
+    'profanity_filter.php' => '2d18b4578ddfe2fb66e21f86cbe3d172',
+    'rate_class.php' => 'e32d9bb8a201769c932512aa737e7689',
+    'redirection_class.php' => '228d82f116f316a0e5dd7b39b1d919c1',
+    'ren_help.php' => 'a383e22b22fcd422fa18cc5a174b0aff',
+    'resize_handler.php' => '3f80796cf3e158948c3f1083f77d8c83',
+    'search_class.php' => '146e9da5a2d6bf1ce01c3637d5a4bcf0',
+    'secure_img_handler.php' => 'da6a0927f1f713cd71cc2218782a177e',
+    'session_handler.php' => 'a16e45b9aedbe7efc796d09c3087e577',
+    'shortcode_handler.php' => '9fa75733242d83cc1aae3ffb6e3429e6',
+    'sitelinks_class.php' => '789ef3f33a98906db677f1f2ae4ad3f8',
+    'theme_handler.php' => '1e53f74cd97063b67fd5ec58c7906c08',
+    'traffic_class.php' => '2b975cff6132c664bb8f385a8a6c6bef',
+    'traffic_class_display.php' => '997e9dc59ab30521c2bdabc700632753',
+    'upload_handler.php' => '581f1ee7edd8f4bec43674ccb49eed01',
+    'user_extended_class.php' => '599ba57c459313502c71d00713215992',
+    'user_handler.php' => 'b73998078f33c9faf070a22ce15caef7',
+    'user_model.php' => '16ce8993347897718d9687884338c490',
+    'user_select_class.php' => '63e6a457f64597cb5a81dc10a44b13ca',
+    'userclass_class.php' => 'fe2e6caec8674a970caae98828acf649',
+    'validator_class.php' => '0d6a2f22a0a5101a6d15a19a571d85b7',
+    'xml_class.php' => 'b49dcacb1048020b11726cf7011d9cbc',
   ),
   $coredir['images'] => 
   array (
     'admin_images' => 
     array (
-      'adminlogs_16.png' => 'fbfd5c6e0baadff05bda59e2f077a0d1',
-      'adminlogs_32.png' => 'efd307a26601627eeebf563e22c8e5e7',
-      'adminpass_16.png' => 'fbba9d9f7580b2f98337f8c0f18d5c53',
-      'adminpass_32.png' => '57fa674965e09299b6cc340c7d406a36',
-      'admins_16.png' => '64ad9ccbbcf1be92f0822150034b9c1a',
-      'admins_32.png' => 'dc9cb0a7263efa4ea1dbb17ee1cdaa92',
-      'arrow_16.png' => '38b69b179e7cdf232aa367a0dc3c4cbd',
-      'arrow_32.png' => '95eb3ca28bf59f4cdbefec8fa86c3895',
-      'arrow_over_16.png' => 'c37f8d92046ccd1ea70cc3cfc8f0fbdf',
-      'arrow_over_32.png' => '93b788fd693c261aa8ea9ad788fce9b1',
-      'articles_16.png' => '2d99036d870389c45c140370ec296050',
-      'articles_32.png' => 'dbcdcd9f704906b9f3e1b48394abd545',
-      'banlist_16.png' => 'e2f4be1afe16286a0a5363ba5a88ffe8',
-      'banlist_32.png' => '5545b900ef6b8c90bce85143e5a985c9',
-      'banners_16.png' => '052830d01fdf73ed2e1955ab76f3859e',
-      'banners_32.png' => '3331be741e6c3f336034d6ddc5d223c3',
-      'blocked.png' => 'd2b20874ccf7079dbb71b6c94e117d21',
-      'cache_16.png' => 'f9aefee07fadf8f40e3883bac2973470',
-      'cache_32.png' => '76ddb6584a9096bab54567a082357f8d',
-      'cat_content_16.png' => 'af826022cad1ad5c5d2703d0a440aaf8',
-      'cat_content_32.png' => '80f9caf4f37acd5bdcdd4afb7ceeb6e9',
-      'cat_files_16.png' => '936037636275ca4c41a08fb962c79b86',
-      'cat_files_32.png' => 'e6d063e74e730d05d688626c6d375b89',
-      'cat_plugins_16.png' => 'a6bac798e6dad7b2e40487e3dedf51ad',
-      'cat_plugins_32.png' => '74b17e491961633f65a2510e92ebde18',
-      'cat_settings_16.png' => 'd981addefa729f697bf0b0dbf70293ea',
-      'cat_settings_32.png' => '707034db3893c074c959a226ac6f6732',
-      'cat_tools_16.png' => 'd1405a8ef3d0320c3ce7c8e870bd50b0',
-      'cat_tools_32.png' => 'ffeca06ab80ddeb1453b397ac30816c1',
-      'cat_users_16.png' => '32441383ed5d50d6fa9188b98d957dde',
-      'cat_users_32.png' => 'a331baef28f6e923bad1a26ba5d17e4f',
-      'chatbox_16.png' => '6524280b8f44bde11dd5ca5581432c14',
-      'chatbox_32.png' => '2e6ae5a5be12ec8d09b5083e959347b9',
-      'comments_16.png' => '721b2c81aa4fa1c43fe4211fb35c2ce0',
-      'comments_32.png' => 'd5ba6ada9b084efe6209e1d9d603f749',
-      'content_16.png' => '0205fc5130dc19a8b279244aeeeb4729',
-      'content_32.png' => '2d2b276bf5f57a38575446262ac4fc75',
-      'credits_16.png' => 'a24c7cbe05d44b7effcb6386f6a69455',
-      'credits_32.png' => '6b96e92e85026907fcc4be6c45ae60df',
-      'custom_16.png' => '3fdd7c500f2a5c8f9fe221d710958593',
-      'custom_32.png' => 'a3813ae977ea3567b61d9bd3dfc398fb',
-      'database_16.png' => '61541674f83748834b299d27d3aa5eb9',
-      'database_32.png' => '83bb87a7cbaf1d57cdded1fc7078f2ec',
-      'delete_16.png' => '3efc7450de9b20183c7196e3fd9a0b8b',
-      'delete_32.png' => '5c479d67b5dc9f8fcc567d4201619b5a',
-      'docs_16.png' => '70c3594a0a096d55e2af638a4bd7105e',
-      'docs_32.png' => '2903138ad0be7ee641704dceca59089b',
-      'down.png' => '434814c2c747f4062c6306fbfbec0622',
-      'downloads_16.png' => '98cbf2ae49e39048e7ca60cc56898477',
-      'downloads_32.png' => '1c745a271507abccff12574123b14f0d',
-      'edit_16.png' => 'b6a25f62385219e73803e16c9682d438',
-      'edit_32.png' => '17546bbd5fe9b8975fca44318f693932',
-      'emoticons_16.png' => 'b92db0a7212cee1023293df03ae5bc90',
-      'emoticons_32.png' => 'fa8974be1a06298f9819a1a203be02d8',
-      'extended_16.png' => '4a6f3c5952ca3417e278c11d2551388e',
-      'extended_32.png' => '72490efba6641db9a7521ff440cd9af9',
+      'admins_16.png' => 'be03219034579059cb0fc315c78b96b3',
+      'admins_32.png' => '5f790a4077e54c4e3fd95b0ef49a99d4',
+      'credits_logo.png' => 'c371698eb35914a9f641ffa18d1d764c',
+      'delete_16.png' => '08631befa2947558b4f197f71904030c',
+      'delete_32.png' => '17a1d2ded2440ca8870c64ecae552f73',
+      'edit_16.png' => 'e05ccfa261bcc8ce67be24aa16df587b',
+      'edit_32.png' => '1330a4ff1ec14ef24d6d9d6fd8ef3793',
+      'facebook_16.png' => 'efd09970017e3274c3971c0165a294bb',
       'failedlogin_16.png' => '8888638ff60c8b47131f02a66c8df598',
-      'fileinspector_16.png' => '7f7e61d6ed995277ce5fb60496d1a512',
-      'fileinspector_32.png' => 'ca4961289d1d1a0aa22f561c6df68f3b',
-      'filemanager_16.png' => '936037636275ca4c41a08fb962c79b86',
-      'filemanager_32.png' => 'e6d063e74e730d05d688626c6d375b89',
-      'forums_16.png' => '5773aa73ab08e4e575ceb2d60001f8f5',
-      'forums_32.png' => '543708df3b2731ea4607ea5741a21f12',
-      'frontpage_16.png' => 'e60c942e6e9a06ef05d167d7baceb2d5',
-      'frontpage_32.png' => '2f385c03a9223119729ae2a08c28c1c9',
-      'images_16.png' => 'baedd05460c41fd50c3eb4560cf1d574',
-      'images_32.png' => '594f730d41b24b6c2da4b18e7173712b',
-      'installed.png' => '31969aa03c0d7315e6b7d6b6b82e9e8c',
-      'language_16.png' => '15f89da876e53572a12521378b92dc0f',
-      'language_32.png' => '361c4a919639d165831e65a3a2c4fef1',
-      'leave_16.png' => '536b996002b22632e757a82256e09417',
-      'leave_32.png' => '171a1609e849b1836046e84cbd590bad',
-      'links_16.png' => 'd3da622046d044d11ee0f4418eafc426',
-      'links_32.png' => '41df266db1ae2cb292804acb1993e383',
-      'logout_16.png' => '1344f00789bc5007f0219ee412bc59cc',
-      'logout_32.png' => 'a97a480f681f58ef845d441fb3cb5eba',
-      'mail_16.png' => '0ef7b53ee7a39baaba506f330f7ae161',
-      'mail_32.png' => 'eb62361ca3d16865045a224fd8c74cf3',
-      'main_16.png' => '7df71fa173411541ec291f858ac33c40',
-      'main_32.png' => '1573eaa39de50801aa3e612ad99cd44c',
-      'maintain_16.png' => '8914863c97d297e7952034ee35b9580d',
-      'maintain_32.png' => '18c74535a7ecea3f53e05ff4ceb47c49',
-      'menus_16.png' => '45889621dc7577c1b5ec6627d1260ecd',
-      'menus_32.png' => '1df6ff20ba41d511667aeb95ec79b024',
-      'meta_16.png' => 'd016ee58c8a4b3be2347e1e6a560f575',
-      'meta_32.png' => 'cebc0933e6f32ebdcd174f1cd2c84175',
-      'news_16.png' => 'bbc0eb1411a21d970b3f3c9855e516af',
-      'news_32.png' => '5d7c3b72896f141b62dc256fa317db5d',
-      'newsfeeds_16.png' => '861fa883c8f6068c7826805013d07373',
-      'newsfeeds_32.png' => 'f0f57c5173167da962adb1517b2f98ff',
-      'noinstall.png' => 'f89fe8f057694f93e4e163e4daf3de2e',
-      'nopreview.png' => '49737d3c5a4ec9283374d6d0ad51d0f5',
-      'notify_16.png' => '18ec179018401ce76acc5c1c06907844',
-      'notify_32.png' => 'f766bf524380a6a38516cbd66ce9c5fb',
-      'phpinfo_16.png' => '5948f2468a9c5103a70f0e6e1345335e',
-      'phpinfo_32.png' => '2a7d8e07347e42d4e0b33e48bc7adffb',
-      'plugins_16.png' => 'a6bac798e6dad7b2e40487e3dedf51ad',
-      'plugins_32.png' => '74b17e491961633f65a2510e92ebde18',
-      'plugmanager_16.png' => 'c9e73da3fd4c7599a95898def126e2da',
-      'plugmanager_32.png' => '07f656ab0bae75a4dd83abdec439b4e5',
-      'polls_16.png' => 'dfa11ad7ecf088f5bc50152e3c8318de',
-      'polls_32.png' => '7c98815961fc0215e8bd38aef5e1c295',
-      'prefs_16.png' => 'ee40f8fae0672844fe428863e7b9b28f',
-      'prefs_32.png' => 'adcc28e37b40a339342bd1777c88efe3',
-      'reviews_16.png' => '8d3eb23e13ea9c11108fe0e2959a0ced',
-      'reviews_32.png' => '22750ab40ad6355053b9f6d88662f775',
-      'search_16.png' => 'f1f617ae57346558eefce7d0b79b71c2',
-      'search_32.png' => 'e0035406d30341e044c130ec0543a6c0',
-      'stats_16.png' => 'f24d43706a08a9b56af5a32b63450ddb',
-      'stats_32.png' => '403f0037feb233afd45899101b1a5630',
-      'sub_forums_16.png' => '16a40908a7b37e8353c978ce3ecd1910',
-      'sublink.png' => 'ccdbd8fa6d0d55ab04db69d55b4b85fc',
-      'sublink_16.png' => '01e36bad2b292ae96fc802fc3a13d3b2',
-      'themes_16.png' => 'dd5f28c2c4d15fae13310583371bde31',
-      'themes_32.png' => '17c89daac72616669908555e43dfc127',
-      'uninstalled.png' => '5b2f9aac0af8a3946a22e0ec066817eb',
-      'up.png' => 'f023b6d5e7688dc3bdc0f42bbb8ba002',
-      'upgrade.png' => 'd22e7b79c115c954255120aee1718277',
-      'uploads_16.png' => '971a694016a861f18d746bbd2912be9d',
-      'uploads_32.png' => '7a1d3f37f5f724f45fb2b9a8bace7582',
-      'userclass_16.png' => '1ec9ff416999d28f737495e5de9a50a6',
-      'userclass_32.png' => '7b017b1b700055243424f94aefeba3e4',
-      'users_16.png' => '32441383ed5d50d6fa9188b98d957dde',
-      'users_32.png' => 'a331baef28f6e923bad1a26ba5d17e4f',
-      'welcome_16.png' => '997361b25db69ead1224a55f44ca7a41',
-      'welcome_32.png' => '2bd4b95221a8d83bb03d9f488e9879b9',
+      'false_16.png' => '929984bf1bdeef9156a54c1f20e27e72',
+      'false_32.png' => 'c6ca33136bb2fdaa85362d4da9d4a8b9',
+      'github_16.png' => '701a1d10a1a18847647f953276f479c3',
+      'info_16.png' => 'b2fe3cfcbe243aebcb7c933a6937596d',
+      'info_32.png' => '64826c8abedaf0c7ba6fe0045e26cf91',
+      'lock_16.png' => '8aaddf8b8e93fe8aee26339892ad434c',
+      'nopreview.png' => '26789ed375397d62af0d07ae2f2ca2d8',
+      'true_16.png' => '3c30b3add73b806d2385b755a303e98a',
+      'true_32.png' => '9fafd955c709b4f436b84803c2c36ac3',
+      'twitter_16.png' => 'bf7a9d7ed828aa76412248a3e9316fdf',
+      'users_16.png' => '00695c3cbd405855221ae1aa942b828b',
+      'users_32.png' => 'ba7e60712db2df7c7cc9d4f2927a411e',
+      'warning_16.png' => '0c87b9146030965733f24905cbc66037',
+      'warning_32.png' => 'eed62f062ee7a570484a86a71cc38815',
     ),
     'avatars' => 
     array (
-      'avatar_1.png' => 'afcfe041eed1d882cc4931d389a53f6b',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
     ),
-    'banners' => 
+    'bbcode' => 
     array (
-      'banner1.png' => '3d15e8b33ec2644f1c63e75b5878cd32',
-      'banner2.png' => '1f7e31b2d7608c12d2f77612780846b7',
-      'banner3.png' => 'e0d62559bab3b6634281900187fa548b',
-    ),
-    'custom' => 
-    array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'block.png' => '26bc3ee0acfc13385cbff05cf1970522',
+      'blockquote.png' => '3fbc5d4c829ce3b16b6e2280b0c64c3e',
+      'bold.png' => '5dca9cc58d0b3627861486461d623307',
+      'br.png' => '71f9169e19b1d28cb93707c12ba1a3c9',
+      'center.png' => '35705b7d8b82740345659376980881c5',
+      'code.png' => '30583ffe0299705ee851a87dd7b8abe5',
+      'emotes.png' => '2867c94a2d99dedf5964a4a0de9e5839',
+      'flash.png' => '727cc8c84315a8237ed513f7103c31d2',
+      'fontcol.png' => '0fab5f18df075ceba3a43e6bb46e8054',
+      'fontsize.png' => '2caafdd8ec2bffe5ab6aefeabfa5c6c0',
+      'image.png' => 'a7c0ee9d827d5fa4c096124ec566120b',
+      'italic.png' => '05cbc71d7fecc7e728bb38887b870738',
+      'justify.png' => 'b34e80787136d275c680b72cb4ce4b5a',
+      'left.png' => 'e351e4b416a2a83bf79b8d9729149bc3',
+      'link.png' => 'f126df33f8ee6375095016652bc2c726',
+      'list.png' => '966b581272142686b78adb3c5688c345',
+      'newpage.png' => 'bf773e1202eb8dba2224d1fb38633003',
+      'nobr.png' => '16a4937e485171907a7fe716322835e2',
+      'paragraph.png' => 'c52c2ba2fce270149a939008b98a0aa1',
+      'prefile.png' => 'ce7da0d8f27b9e5df1c1538f1c8cd7bf',
+      'preimage.png' => '06ebc9d1b07e48380653cadfb7a35c3a',
+      'right.png' => 'dae26513d3ecc99caeb8c20e6f38a2ff',
+      'shortcode.png' => '2c296e414c6e833bdcab2e3dda798061',
+      'table.png' => '9c25f663666aa7b52e9ce0f67b753ae5',
+      'template.png' => '54281aba1f70c00dc1c947fd053fddfe',
+      'underline.png' => '029f425e1fdea3fb443773f648a3057d',
+      'youtube.png' => 'd150e4e9341b31fc8f1efd962eb9d5d9',
     ),
     'emotes' => 
     array (
@@ -911,7 +674,7 @@ $core_image = array (
       'expand.png' => '265205998404f04e3e2341b5af839054',
       'file.png' => '853ef1ee108dbf52dc94a30b71e34e4e',
       'file_check.png' => '221397df4726589bb54824f6168d5484',
-      'file_core.png' => '14659f2933ff4d012e0de7c1906a243a',
+      'file_core.png' => 'ab4a8f63019a62d7912dc56c96aeec0f',
       'file_fail.png' => '354ee40218c997f8c91505b7f5921ff5',
       'file_missing.png' => '98ab830e6df162aef5bcc01f27d4703b',
       'file_old.png' => '594e132af5820c784354ea1f2266867f',
@@ -933,12 +696,11 @@ $core_image = array (
       'forward.png' => 'fdd333af9d6f6c75a15353d95b4870d2',
       'info.png' => '14a80e7098141b76d3a025a31cba972f',
       'integrity_fail.png' => '1b6843bcc78dd0f3919535f2c4f3131c',
-      'integrity_pass.png' => '324a8f77bfbd3a84b1410cd35c9341ee',
+      'integrity_pass.png' => '3c30b3add73b806d2385b755a303e98a',
       'warning.png' => 'df4fc8eca478c717b04b6414c94ae76e',
     ),
     'filemanager' => 
     array (
-      'css.png' => '32ac2a0c288cf0aa36e38f4b5e6dc5b6',
       'def.png' => 'fb1d041d6a8676ca6b0e06774555fd01',
       'default.png' => '5930437a90ea872cf3bc52ddb8d960ef',
       'del.png' => '7ad01b059b7a69f526a0b382e5bf4387',
@@ -958,6 +720,7 @@ $core_image = array (
       'updir.png' => '562f1cb1fe4038dc999db57786ad2f3c',
       'xml.png' => 'd8b2f286726d631b1a819cfd2c62e89e',
       'zip.png' => 'd4119fcc2b0b0080a1e98645c109e314',
+      'zip_32.png' => 'c804423ccdc0cf2d24ebfa46e6ab015f',
     ),
     'generic' => 
     array (
@@ -1028,58 +791,103 @@ $core_image = array (
         'sticky.png' => '23d10c4451b4f17d249f6eeb7b721cf6',
         'user_select.png' => '4ee12681a97e352b072dfa9d5dac808f',
       ),
+      'answer.png' => 'eb63ab9d559dd785415ab5a783e93901',
+      'arrow.png' => '3da533b5546957f38646fed4cb74d7f7',
       'bar.png' => '278ca1b407bc68f138fa64f226700631',
       'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-      'code_bg.gif' => '2b9dbcbb11a7b4fd46c3b4b25f419435',
-      'code_bg.jpg' => 'd1693c7b554681efbd2e82ce04907eae',
-      'code_bg.png' => '09bd8d9951b5d993bb4371836a9dae51',
+      'blank_avatar.jpg' => '12383df3f8449e9e2c97ede33c466532',
+      'branch.gif' => 'e4f1b2d3f998559804aa1ac3450d88ad',
+      'branchbottom.gif' => '335459315ad97fe76b7a7ccce9e4c57e',
+      'branchtop.gif' => '0573af115f27abdcefb8bfcd3ce4a3e1',
+      'check.png' => '3c30b3add73b806d2385b755a303e98a',
+      'code_bg.gif' => 'd204fd8b24623a343096009688483d7f',
+      'code_bg.jpg' => '18028fd081fe79d59a3052314ef91c16',
+      'code_bg.png' => 'fd86c374bc60fa1d97055e3264c62a8f',
       'cred.png' => '0e39907fdaf0dca630919b54ab01c9c1',
+      'download.png' => 'e88b75bd624aebcf7b22c1f04bd18589',
+      'edit.png' => '875151704163ada2bfd202c91cc36727',
+      'email.png' => 'a8c4e0529faaccdb9b10c183769ce282',
+      'folder.gif' => 'cf4462572c72c3ea309c79da808e986f',
+      'line.gif' => '4d5a8ed6dc7cd5d6e71fcb6acd100955',
+      'linebottom.gif' => '9445d29997b70a66fbf5e9430db2b49c',
+      'loading_16.gif' => '3ea27db52edd87e498a71a998a6045e1',
+      'loading_32.gif' => '4b939210f9a45e202a14f095b824455c',
+      'minus.gif' => '43d8f606cdfc1318b3b9b0ead9354749',
+      'minusbottom.gif' => '93d8781ff4017357287acfb97f253dcc',
+      'minustop.gif' => '4edfa5cd18f12847054c5a603c345c50',
+      'new.png' => '80f07bf44018412309cd48742f0ed942',
+      'nomedia.png' => 'bd1ca3971064d13516e6bbe27b42e718',
+      'password.png' => '1c9c7ac34c58a5cc79a097b474bff848',
       'php-small-trans-light.gif' => 'f3cffe6d2a1a2fdd32c4d694e9cc989c',
+      'playlist_120.png' => '8018d0836fd7b6ed74889a79448f9bd6',
+      'plus.gif' => '5a65d2890a595d8218d4d00e59c47e9d',
+      'plusbottom.gif' => '5ac0b1e10996aa9ad70730527842739d',
+      'plustop.gif' => 'd0ae25b71adb33404ed64bd1a131bfe7',
       'poweredbymysql-88.png' => '850c2974bb9ff8fc41fb9cfdf244ce52',
+      'printer.png' => '4d305ed465a904d3847c34e4d197333d',
+      'question.png' => 'c1ed6f4aa816112b7454eb6b2c2c15ba',
+      'search_basic.png' => 'eca7ea7f68f306038e7afa9f8461c1a3',
+      'sticky.png' => '23d10c4451b4f17d249f6eeb7b721cf6',
+      'topicon.png' => '1ec9ff416999d28f737495e5de9a50a6',
+      'user_select.png' => '2431cdbcffa1b1d898b7e0ed8fd967e4',
       'valid-xhtml11.png' => '875ce84f7794284f50cafc7aab8b5a77',
       'valid-xhtml11_small.png' => '142b92a420fc7162912da3f96fdaa654',
       'vcss.png' => '780ad30f6a83c9dde3464ba9a4aeb664',
       'vcss_small.png' => 'ac93bad1a0a152c69bc0317b41b2ec63',
+      'warning.png' => '74712ff93b2aaca6367927c9e0d88735',
     ),
     'icons' => 
     array (
-      'download_32.png' => '28d16188580b522e2e296ab985aa371d',
-      'folder.png' => '20aa54f4fe9e4c3323d50089f0872a90',
+      'alarm_16.png' => 'ab3086cbd2ec938c301479baafa696b8',
+      'alarm_32.png' => '2339b43b5624ce183c809baf293436c1',
+      'colors_16.png' => 'ef9031f83045455fb821d383da5d9722',
+      'colors_32.png' => '44238095521fa08c7a1bb5a0aad9fc65',
+      'config_16.png' => '73ec11456246430d19b0a57c4e1fd524',
+      'config_32.png' => 'f0fa217cf263951da703629d3e75c347',
+      'download_32.png' => '7615d44b73ae8f3165df7b08453e4952',
       'folder_32.png' => '7d501e7392007bcf7458c8291eb0d4fe',
-      'folderx.png' => 'e801994723571d22e198487431ec7573',
+      'folder_48.png' => '20aa54f4fe9e4c3323d50089f0872a90',
       'folderx_32.png' => '8ac80a5d0cd4a4a08bdabb7d050e272c',
-      'html.png' => 'caa46c5b4aa1bf948a96dcb4c3c6611b',
-      'icon1.png' => 'bdb55c0c08483b5a5f13bb602ffdfaf4',
-      'icon10.png' => 'bef1f2d8866047851fd707f207c56908',
-      'icon11.png' => '9dcfb98cf72b89dbbc7501d944ac1849',
-      'icon12.png' => '1438dfa7e1f6082fe54f27969007b8cc',
-      'icon13.png' => 'd5e20c025e0d4ac1a53adb995733fe9f',
-      'icon14.png' => '8db20481620879f5ab538cca21323834',
-      'icon15.png' => '63083b9dcc1cdeab206c36fa0f1982a1',
-      'icon16.png' => '8195650382046743734b7fcfafcc27d5',
-      'icon17.png' => '7256aa31268c39b5d47744199d7fb18b',
-      'icon18.png' => 'e582b78688372dd7fff9851d1630b948',
-      'icon19.png' => 'c9bc67c97ec8728f1b224599cb440c0b',
-      'icon2.png' => '78fcc298d3b1153a29b95566d42a993f',
-      'icon20.png' => 'f915bdcd951e94a263d4040fb760aed9',
-      'icon21.png' => '0a26bcd73d38dc3acbf36399c66b3c94',
-      'icon22.png' => '69b7fda0348fc416f98b8ef0c5eabe8c',
-      'icon23.png' => 'f33c700ea73802ef02e6a4fc3262c074',
-      'icon24.png' => '3c8bb8e3ed55fb42e81375d62ef4a88e',
-      'icon25.png' => 'ffb34f77aa4a07a00618139204a860b7',
-      'icon26.png' => 'bbc0eb1411a21d970b3f3c9855e516af',
-      'icon3.png' => '8bd10c2043823acfc344a20ab3efee24',
-      'icon4.png' => '66383ba925e4f488df0fe4704d362627',
-      'icon5.png' => '83c34cfb4244dcca5fc42489aab98998',
-      'icon6.png' => '03e04b50657db966ff6ae0fc8930d904',
-      'icon7.png' => 'cdc8a8584b62f53498f4d90ecbffe7d1',
-      'icon8.png' => '716b3b9833d4cb03a5594cd0111784f9',
-      'icon9.png' => 'd0505cfb21a6d1c8cd6589c0a31e82cd',
+      'folderx_48.png' => 'e801994723571d22e198487431ec7573',
+      'help_16.png' => '2e809fd98f717d0cf39cf1106783984f',
+      'help_32.png' => 'b6e0c8fd327d080bf646f8a93eab2fe1',
+      'html_16.png' => 'e7baf80f2dab233ca3d365826e91831b',
+      'html_32.png' => 'a6e7918ffadaa2d6407f35a74f02ff2f',
+      'important_16.png' => '74712ff93b2aaca6367927c9e0d88735',
+      'important_32.png' => '2a03978dbde5b4891e99acba971b5a30',
+      'info_16.png' => 'b2fe3cfcbe243aebcb7c933a6937596d',
+      'info_32.png' => '64826c8abedaf0c7ba6fe0045e26cf91',
+      'news_16.png' => '6b6e65cd31345d53f0677cdb33605a8c',
+      'news_32.png' => '00c9d6a8b3b3ba299ff688f6a2952bac',
+      'plug_16.png' => '9daa823fed606e7cacd84e55822df241',
+      'plug_32.png' => 'c30006f94f6bcaf08b9d7ab86c16a5e3',
+      'sound_16.png' => '5dd524cc41f8d98862eb0fe913d81fd7',
+      'sound_32.png' => 'ba499c8961dff3dd3a049dac200f1a6a',
+      'thumbnail_16.png' => 'fe445c32bbf486143b85e31280651af8',
+      'thumbnail_32.png' => 'd97126e0d5522329440ceff127d44e30',
+      'video_16.png' => 'd9d1d95f277251d1bde1a0c923326162',
+      'video_32.png' => '3b96aa3d4c7b920b2fbae4615003f0f0',
+      'view_16.png' => 'eca7ea7f68f306038e7afa9f8461c1a3',
+      'view_32.png' => '92774749193cdde0ef62626e0a676127',
+      'wizard_16.png' => '3832973a901789df4df40107f8caf50c',
+      'wizard_32.png' => '623474d4c15139af52c104de84c82084',
     ),
-    'newspost_images' => 
+    'ranks' => 
     array (
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'welcome.png' => 'dcd1a6d6463e28fc84994d56bb383060',
+      'English_admin.png' => '6a53e49261dc02dd56b4f86d5112d308',
+      'English_main_admin.png' => 'c5ac4180f2e17c3cd087c44940e856e5',
+      'English_moderator.png' => 'c8787a0ddea6a46ae9f967ffb89071b3',
+      'index.htm' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'lev1.png' => 'b9db8d8f3cf30793cb44589d6894a4ff',
+      'lev10.png' => '15f64ff6fad076cdc787ace58052efb8',
+      'lev2.png' => 'c67c82734f8a8bcf7f9495bbf432867c',
+      'lev3.png' => '0c02fd862be4c31273d7faf90df6dbb3',
+      'lev4.png' => '32ce4904c833bc7ea6168d143c0b1854',
+      'lev5.png' => '97e90b5adeb789da1b6ec54bfe233aef',
+      'lev6.png' => '337d50e9edfa5fbeb5b371896f9a62d6',
+      'lev7.png' => '7e6f1ab54459340389e6e654613ef654',
+      'lev8.png' => '8345c08a11995fd17a309531aed51bdd',
+      'lev9.png' => 'cba9109a1476a1298b2f9b6fcfa79cab',
     ),
     'rate' => 
     array (
@@ -1144,11 +952,12 @@ $core_image = array (
       ),
       'box.png' => '37e0a80e5782adee28a52e456d11ba07',
       'boxend.png' => 'e075b96122cb84dd7bb9d0ce8c789e84',
+      'dislike_16.png' => '3f139e1916efe08c1ea12d6f77aef6d1',
+      'like_16.png' => '5d1a6231c153217bfc5c348748379f41',
       'star.png' => '59876e874a49bec49ee4c867a5e52251',
     ),
     'user_icons' => 
     array (
-      'realname_dark.png' => '495b61c3f719bc8bec44e1b25cc0b196',
       'realname_lite.png' => '9ca664d347f80793f016f61986ea3a38',
       'user_aim.png' => 'd54ddd04c02bcbb1dd6593ff5e8e2fa3',
       'user_birthday_dark.png' => '4acaaa85b357e0572759282ffe1922cf',
@@ -1164,18 +973,31 @@ $core_image = array (
       'user_star_dark.png' => '899b215d9dccb0ff4ff38d7d1decf031',
       'user_star_lite.png' => '3c579e4f29bb42a413567f241cb3a2c2',
     ),
-    'adminlogo.png' => 'aac088a88a8c729f950c158fa875f1ce',
-    'advanced.png' => '8e1db463c3cace7822b51ee311d208e4',
-    'button.png' => '4388e88589f99a52a2cffe5f7e837548',
-    'e107_icon_16.png' => 'd49ad6870dd304ce1b30b56be446ea07',
-    'e107_icon_32.png' => '9fcedf8edb4728a97001fd5cc9616ef8',
+    'xup' => 
+    array (
+      'alert.png' => '350ff6e085e0030851038a36ee4461d0',
+      'blogger.png' => '01386a53f7482d2152de525c36f84b04',
+      'facebook.png' => 'e6a7153c2f6100a7d9a6d879cc378c06',
+      'flickr.png' => 'b2413c84b9bbb8cec91a6c04ce5db8f0',
+      'google.png' => 'f6df87d0ff8b4893d3a4dc10340f8287',
+      'linkedin.png' => '619f40274b6f4d9392ac7106ebc3f1a1',
+      'livejournal.png' => '90269fcf581ee5d5a72ff9cea1767d5b',
+      'myspace.png' => 'dd9656f47210741e0e7c14d17c182716',
+      'openid.png' => 'f15719e90bf6081ad485162c9c746b3a',
+      'twitter.png' => 'f89bb2a222ef8696a665ef1bb779908f',
+      'wordpress.png' => '3be7d8e34b3adf384b4d9876faacd811',
+      'yahoo.png' => 'bdbefc0d255c622fa146efe5430cce6b',
+    ),
+    'adminlogo.png' => 'c4938e6c12fa071421082b273d1d15c9',
+    'button.png' => '8aee55fcf3a4a790d9e109ec01ce6b65',
+    'e107_icon_16.png' => 'ab4a8f63019a62d7912dc56c96aeec0f',
+    'e107_icon_32.png' => '307af051822313c78790280e015a0aea',
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    'logo.png' => '22bd0af2fc2849c900ebec1ea80bc8e3',
-    'logo_template.png' => '78e43c6f2492f1c5bcb5b4d223ebfc75',
-    'logo_template_large.png' => 'cce83a8f84255d2bab00522b73a4e6d4',
-    'pcmag.png' => 'abe521ccc3a89a43ff641ab3daf1f37d',
-    'splash.jpg' => '7f749391cb6d31dcf9c9145f3d30df4d',
-    'thumb.php' => 'd606e6c43e39f27bcf9f7622e32365eb',
+    'logo.png' => '000361c12fa453f393562b0e6034f133',
+    'logo_template.png' => 'a43eb89f798de0ac7f6a76042f391aac',
+    'logo_template_large.png' => '22238985a2ef17b9d2a3a07a665697e2',
+    'secimg.php' => '8ae2ba3eea1ab5cba0af39cdb30f08a3',
+    'thumb.php' => '759d4066504fdbcb9001f106b3b95eb7',
   ),
   $coredir['languages'] => 
   array (
@@ -1185,295 +1007,258 @@ $core_image = array (
       array (
         'help' => 
         array (
-          'administrator.php' => 'bfc3305d4af30024ef36e2c3cac685d5',
-          'article.php' => '3c7df3956134df9dfc86a4a67b73d78b',
-          'banlist.php' => '589e0268a08606ff935ee928292602c7',
-          'cache.php' => 'f889aa4a1889a3112699c899eb655744',
-          'chatbox.php' => 'd5aede1254e7e48e3e8733f18f6ec0ce',
-          'content.php' => 'dcf60ff22635488c42b4a99243bdf9f2',
-          'cpage.php' => '66e658a3daca00f9fe6d9bb1e5016eef',
-          'custommenu.php' => 'bc2d5fff1395d8495a45b80da77b7665',
-          'db.php' => '56210313eb216b42cedde3f548461f70',
-          'download.php' => 'dcfce12aec25465d48762456414ca9db',
-          'emoticon.php' => '44293ed224e20f90dc81554c1064842a',
-          'fileinspector.php' => 'b2ad72e245b79f582ee54c9ed1b7319b',
-          'filemanager.php' => '62e147fa032aa065b11a139d3d53a241',
-          'forum.php' => '161249fcb72351dee1b5b56fda1a15be',
-          'frontpage.php' => '44e0a1156408e6ccffed96f35a516d04',
-          'image.php' => '11a6e5190f22d4c3586b440a15203fdb',
+          'admin.php' => 'c6b8fab530497d5281695e2411f06795',
+          'admin_log.php' => '62a3f8bf892ae5be1bdd0aae5fca0f48',
+          'administrator.php' => '3584b691df5074df0e3848a2e32e6f7c',
+          'banlist.php' => 'ef1b89185c39d23432cd6be1e2cf3120',
+          'cache.php' => 'e9bd339aa6ea6ba26b11970bba3ae08a',
+          'cpage.php' => '3997c87062e5ba6abef9625a2e285645',
+          'cron.php' => '8638037c440776c8f00468cb038243d9',
+          'db.php' => '48420bfcea61deec432699bed61dc1c2',
+          'download.php' => 'e5ebb592e6fc1b0eab181894622cba54',
+          'emoticon.php' => 'de9dd3468a4649eeba48e54cddc2a195',
+          'fileinspector.php' => '208d68e5dd4c415d721df857ac2e8cc3',
+          'filemanager.php' => '6ba0056c3256510cd6167509bba2ae20',
+          'frontpage.php' => '8919846a99a01982eaf0b76d563cbfcd',
+          'image.php' => '181dd1e5e1b94db3e4b9240ceb57be84',
           'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-          'language.php' => '514346599719d0abc2f0a947945c77c8',
-          'link_category.php' => '5352ce360022a7fc0882fb77603405cb',
-          'links.php' => 'c9c06673b3d7089ac9a729e1601b82c4',
-          'list_menu_conf.php' => '88bd581ba21987493206e430885cd3f0',
-          'mailout.php' => '5050871042ba40b90e0dac92c29dab0b',
-          'menus.php' => '9b2d9d2e0610b55965d9b49ecd7a91c1',
-          'menus2.php' => '2249f7d8b325af8945ed1a5a3e9721e2',
-          'meta.php' => '6c85ff99c2707a2d6e73ac990971ba83',
-          'news_category.php' => '0c0bfcbb20aea2de7508c5cc3c4826f9',
-          'newsfeed.php' => '93f7ef1481d3fc59ecde4d40ad6b6c84',
-          'newspost.php' => '13fda1563ee88b65ebd855113ec7caef',
-          'notify.php' => '96e76c0244bf06754516ced2bbb6a760',
-          'phpinfo.php' => '201f61e8c6ba0619083a30143af56625',
-          'poll.php' => '3adef894abf1c1920a311899071ff8ee',
-          'prefs.php' => '4cc47a077677b93cdede1ca55e3b354f',
-          'review.php' => '6997e7c8d919246f698837c0ba3693b3',
-          'search.php' => 'e9b596e5e8855fe87e8905cf0dc9a6bd',
-          'theme.php' => '7ac282adfbb1f04fc10a6aa07c11e7bf',
-          'ugflag.php' => '3c686a412439317be96965a4f31bb720',
-          'updateadmin.php' => '60b51ca80381001703f4af931236cbc2',
-          'upload.php' => '38d7510182a2e393cd1a09b924c95df1',
-          'userclass2.php' => 'b1e5e797e72b5015dd9a7b39ad7dff22',
-          'users.php' => '135781d3419791aa07e7fb8988a733fb',
-          'users_extended.php' => 'b73f20ff4c7d9f9b9eae883b300b2426',
-          'wmessage.php' => '5aa5f420a6b29adad555ef7e55bd932f',
+          'language.php' => 'f92c6a8ddf10aa7c291ea6a9de358922',
+          'links.php' => '32c641949601a610fae7f8f144111ce8',
+          'mailout.php' => '3334647ed96061266d0b47594a15e57c',
+          'menus.php' => '81db8fe673eef5eff3502c3119fcc2d4',
+          'meta.php' => 'b809839a73f06d18286090c30d51d34b',
+          'newspost.php' => '57c4f51c28a940f4f0e9588f92018070',
+          'notify.php' => 'e5f8bee7f60ed5f1eac9d825c61b72de',
+          'phpinfo.php' => '3624055928ca805f987d98a85e1b347f',
+          'prefs.php' => '1197f5071f849744d1c2ee82f9de7c50',
+          'search.php' => '01fd124bcefc2f250fe250e6f14f7e08',
+          'theme.php' => 'fc976600d6111e84729c07d5a45cc8b3',
+          'ugflag.php' => 'e0e21aa61371d2570ca098fb5f3b84e8',
+          'updateadmin.php' => '9da115741ba932b7d06a4dc8e5a751d4',
+          'upload.php' => '136a2f99f4a6f73f7b1969b9c555b233',
+          'userclass2.php' => '837af83605ed9e42184a4b30717cfc9e',
+          'users.php' => 'dfcfa2e32aaab66011480430fd662045',
+          'users_extended.php' => 'fdc232a5a4da855248cf5aedb76df046',
+          'wmessage.php' => 'e3d2048026a5eabf7802216986dea845',
         ),
-        'lan_admin.php' => 'ae4bbdef3610765b59d67e2858707177',
-        'lan_admin_log.php' => '0f9dacdf93cb2d6a4145487de304cb87',
-        'lan_administrator.php' => '83b1eaead32e6c500d42a74c40b059a5',
-        'lan_banlist.php' => '4b00aa5ed58a9f78ad1cbefb74dedb33',
-        'lan_banner.php' => '11d2439138f74b116de4697e066f7ca5',
-        'lan_cache.php' => '0926abdc99274d71157280c9d58749e0',
-        'lan_cpage.php' => 'c95be0bafa672c32d75394f94bb3af02',
-        'lan_credits.php' => 'aae0c491eb54b8c529013691755044a1',
-        'lan_db.php' => 'c68b85a8b0c9817d3b996a5eac953b7f',
-        'lan_db_verify.php' => '6c6067d3b23c7c0d9f36cb17867dc80a',
-        'lan_docs.php' => '9df02b4a6fafef4e9be2962bfeaed509',
-        'lan_download.php' => '5b3e7f94055a824fbdecd45bdd67afe6',
-        'lan_e107_update.php' => '46f96e33e39b17c2ba54ef3011082041',
-        'lan_emoticon.php' => '58e2c1f2752eff0f4ec7e1e0c126e3b8',
-        'lan_fileinspector.php' => '70c6b39a6d29f3c77df604e2293d43b5',
-        'lan_filemanager.php' => '8955a0b3b7730d3f008957108525ccb8',
-        'lan_fla.php' => 'a987a7502238c9f1dae9555d944ebd38',
-        'lan_footer.php' => '74880a9ba3fbe4524bc2f0987e936ab6',
-        'lan_frontpage.php' => '37ec01b89e67032f33498cb43e44bdc9',
-        'lan_header.php' => '2a339d027e92c0d53501986fcfd71a0f',
-        'lan_image.php' => '573f928e8753db0df958df0cbdedc07c',
-        'lan_lancheck.php' => '7615ba9c34ea6b3b5867d27e834acb54',
-        'lan_language.php' => 'fdc99671777e203514aae7f52939d561',
-        'lan_links.php' => '07972ca8826ee35f36ef825ff793a991',
-        'lan_mailout.php' => 'bf59b50787dae47c9db0603ba86e169d',
-        'lan_menus.php' => 'aff6368b11b30bea0515de7cbad89dde',
-        'lan_message.php' => 'bcfd03068e0ee9d76eb1a3df969bb544',
-        'lan_meta.php' => '31801b3e9c137a3b22d58e5d80d291c8',
-        'lan_modcomment.php' => '7f8738c7c0b3ab882f4b9c330136b6b3',
-        'lan_newspost.php' => '0868c7b3d37352144cf2d424d97e8670',
-        'lan_notify.php' => '65a1a5a108c74ba8b2db5592c06a1ecd',
-        'lan_plugin.php' => '29ced1cfb16745f64bbbce037b8d74ba',
-        'lan_prefs.php' => '08bc01aee9d766842262e2a158c31010',
-        'lan_search.php' => '039a04acb5ab8b3ef5b617e1c1fcf7bc',
-        'lan_theme.php' => '20dab981133d2106e89afe3f14169166',
-        'lan_ugflag.php' => '29f0ad8c752be1bf98cc067534994711',
-        'lan_updateadmin.php' => 'ae3d2be7d92db3c4dd11f1e73fafeb7b',
-        'lan_upload.php' => '5a01a0c1676c4b21551ce427866edfe7',
-        'lan_userclass.php' => '3eedcbd961e57434d6c64f9321fddb59',
-        'lan_userclass2.php' => 'e475c31e99b4867d9517705b584f5a44',
-        'lan_userinfo.php' => '241d3c717696a30d97152aec8f5fcdf2',
-        'lan_users.php' => 'cc6c5b0856d4fb77f6c9cd1f31005e8c',
-        'lan_users_extended.php' => '9ae08fd0f346cf0319dc935c992f1036',
-        'lan_wmessage.php' => '27b96105500cdfa56bc27e391a0c2f3b',
+        'lan_admin.php' => '6b2f7a189bc3afe40d63ff22cb22b1ad',
+        'lan_admin_log.php' => 'c32d813933801d9731654192d412df4f',
+        'lan_administrator.php' => 'b08845f827e75aed895f790c177e8d2e',
+        'lan_banlist.php' => 'e7471abbb2850d81bb698cf3b8add444',
+        'lan_cache.php' => '4a1e60033e1f93ba9c8d53b618fd2573',
+        'lan_cpage.php' => 'ff4b0e9b252445cd372a77859f3ecb9b',
+        'lan_credits.php' => 'bbbeaa0a7432246ce40c49cdbcea3fb4',
+        'lan_cron.php' => '1f05b995989005e4887a412b9a00a83c',
+        'lan_db.php' => '1c82633b5f91aff696fb47c5aeb619f7',
+        'lan_db_verify.php' => 'daaa80b6f5c08eeeba2a37292a091657',
+        'lan_docs.php' => 'f8922844b7d3b07b05894c5a2a3bb659',
+        'lan_e107_update.php' => 'db41cf055b218b19c64569caf3dd7282',
+        'lan_emoticon.php' => 'c7cf23dad135ebb0601461c812a39a16',
+        'lan_eurl.php' => 'a67919fb1d67fba03cc38124cab94f3d',
+        'lan_fileinspector.php' => '87b19f21d0619f2fd2695f9d67571de9',
+        'lan_filemanager.php' => '60806d1551eba2183dd879ef9c24ad2e',
+        'lan_fla.php' => '7b9f43ed9df39cb97570275bac4ac12f',
+        'lan_footer.php' => '1750b079f9cccd7aad7693244e463605',
+        'lan_frontpage.php' => 'cc7928ef7c13e49b92d6483de7f90159',
+        'lan_header.php' => 'a0ab52875d98fa5024412a2d56f3f776',
+        'lan_image.php' => 'afcedbbfb5313acd40690372d9c1ae83',
+        'lan_lancheck.php' => '0c7fbec9c2fba2bf06c16aceab3a089c',
+        'lan_language.php' => '38e5eaf936684c67a8f057bda9a75adb',
+        'lan_links.php' => '346ab148cddf160e49c1374f74b24cfe',
+        'lan_log_messages.php' => 'b2abd3471b6603a8e6929c0a544b82f3',
+        'lan_mailout.php' => '4e2afde66ed516b947c6620e95ad2491',
+        'lan_menus.php' => '0823d1295a6ad2b039bf86be1719fd22',
+        'lan_message.php' => 'd5562be7fbd4ca4f36abd61544acb71b',
+        'lan_meta.php' => 'a7f3c5f83aed70454359e8f966817311',
+        'lan_newspost.php' => '41355b73bf2d0a8bf2bc78d530e44ebe',
+        'lan_notify.php' => '52cf1a811084a805e6f713008234b55d',
+        'lan_plugin.php' => '92de1f3e18fb66189c06f027a78e1c62',
+        'lan_prefs.php' => '9df88baa2b2e91502395cd58b349a5d9',
+        'lan_search.php' => '21ff51bffbd49bfbc3681599f450b15c',
+        'lan_theme.php' => '227c9ed15cf164527e7dbfe8411caff2',
+        'lan_ugflag.php' => '37822bbcc0494f77b0ff15211e525789',
+        'lan_updateadmin.php' => '6fd6367241fcdb9bd5e5c50e7f2c1d11',
+        'lan_upload.php' => 'c46a61f9edf09546d94d0d46c406fa79',
+        'lan_userclass2.php' => '169ccb28040d044c4d4c980d6b3c1366',
+        'lan_users.php' => 'bdde14c953566b8d53fe705f9f48ba4b',
+        'lan_users_extended.php' => 'dd7ead51182c4c0e7faddc603e5f0cff',
+        'lan_validator.php' => '3b5f7520f998c6fc96e6e9ec38bc7c4b',
+        'lan_wmessage.php' => '50f784c33cd472b8054b7cdbe900ba5f',
       ),
-      'English.php' => '92d7499a17a92e1c3259e5ed3dc61444',
-      'lan_banner.php' => '92308af6029553992ebc4a46e97d4e1d',
-      'lan_comment.php' => '19332dfe1a3261c78e7e67dfdf984017',
-      'lan_contact.php' => 'f6ec02eb9a5effc567f8483071105e66',
-      'lan_date.php' => 'af33dd14b696babe19fd09e386c200c5',
-      'lan_download.php' => 'a66ac115b0016fda2c45091353e59890',
-      'lan_email.php' => '797f6f5e516475e8202fc171997ebdf1',
-      'lan_equery_secure.php' => '90ce9b58fa3ee0bc424dc9eab0a9b92e',
-      'lan_error.php' => 'e63c154a52b72318443b0044d48ef9dd',
-      'lan_fpw.php' => '85470fb3dad6d9f765fe366f49e045eb',
-      'lan_installer.php' => '81560fd3264c885295b060968a6d0570',
-      'lan_links.php' => 'c309a9bc93d06a914bdc735efc9190cb',
-      'lan_login.php' => '3bf7ecb7c00be86b54c83370fab6f8c6',
-      'lan_mail_handler.php' => '001b336311279c058df01c2ae04aa87d',
-      'lan_membersonly.php' => '102bba47b482668bb433a5a607767bae',
-      'lan_news.php' => 'c3d990cb42ba5d40c6eaf915f6122448',
-      'lan_newspost.php' => '03cca3bd4c3553accde4fe1b2bb9856a',
-      'lan_notify.php' => 'f930fc0c3afd1516e3b63f63f6f51e16',
-      'lan_np.php' => '3d6c87e7ffeaa79de1ba06da0175f367',
-      'lan_online.php' => 'cf15db263203fc5cca674ac1e03923bd',
-      'lan_page.php' => '3c9c8e02259f7833670d198d02ab0a94',
-      'lan_parser_functions.php' => '54fe2858faa02517a93c293ce176571e',
-      'lan_prefs.php' => '0520bc45182553a3f44b88c51b5377f7',
-      'lan_print.php' => '8a3e985622e8dfcc82487b0165c2bf3a',
-      'lan_rate.php' => '02191b8a77011476d4e3e554387c01d5',
-      'lan_ren_help.php' => '1ca40febf5f376f3dd7190f46cd26f02',
-      'lan_search.php' => '01bed4f43957214885351de0d18e0e5c',
-      'lan_signup.php' => 'bba7802c9f6fa2a5d6c3a179e7b88fec',
-      'lan_sitedown.php' => '65c55fc812ceff72c4aba3f56dbaf4cc',
-      'lan_sitelinks.php' => 'ca292ed1c514df28d693b3e8cdc6baec',
-      'lan_submitnews.php' => 'ca6c4a8e2828f6317e56a8e4bff34d2a',
-      'lan_top.php' => 'eaf2c17d7c6e40e4e660e9a6dea851a1',
-      'lan_upload.php' => '52254da910f370cf89a14c080516e7fb',
-      'lan_upload_handler.php' => 'f61e83d33b48733bbf58c4189103b0bc',
-      'lan_user.php' => '992526de41f3848bcbcfb1134449522d',
-      'lan_user_extended.php' => '890b9ce3e1cebdc59d098a3465f7d151',
-      'lan_user_select.php' => '5632220cb249c60e812c3592f086039c',
-      'lan_userclass.php' => 'be226be048b076da4873e6d23b9b6b77',
-      'lan_userposts.php' => '976fa5108d96acf116bbd177d9b0f38a',
-      'lan_usersettings.php' => '76e37338a24462d18e3d405d70351913',
+      'English.php' => '3b6cd7c03fdad54dcfcfdc3009b99b3d',
+      'lan_comment.php' => '7270e72ed98424bc7466b33693669aa4',
+      'lan_contact.php' => '5a94202111d12939a706081708923900',
+      'lan_date.php' => '86152dfe069af16d656a80819cc5cb35',
+      'lan_email.php' => '096acda956f9f1fc7aedbf188ea83298',
+      'lan_error.php' => 'ed4f63fb05fc1534043ffe478f32f110',
+      'lan_fpw.php' => '7a8fd233406fb146d9867473a5fc62e2',
+      'lan_installer.php' => '6526882e8163ea48fef3e66ebd248dae',
+      'lan_library_manager.php' => 'ccdebaa2495040ed87a7dc98624c1e15',
+      'lan_login.php' => '9045b3fc81dde6ea80abd2c2a0f9a8ab',
+      'lan_mail_handler.php' => 'cdb57326de1cd9c6c0e5700ab724e152',
+      'lan_membersonly.php' => 'ede8262242781d6788b9fef62283bfd1',
+      'lan_news.php' => '20751521ed41e00dd9bd1c81bf4b2e03',
+      'lan_notify.php' => '344790e3aa3c59cee143197156893090',
+      'lan_np.php' => '5d5d07b4446fc68df9d5b0a690bfc05a',
+      'lan_online.php' => '6705854334bc0b6e90a1e656c44ed93b',
+      'lan_page.php' => '8c66047e75de8842e43380e846ba282a',
+      'lan_print.php' => 'f3db606f4364a411849fa0d7c9e76e77',
+      'lan_rate.php' => '9207a30c42f2a289e18aedd4bceaed5f',
+      'lan_ren_help.php' => '621bced927b2a6dfb6da1aa5db908d79',
+      'lan_search.php' => '08f34cf49bf48f57a27a6db36804b4a7',
+      'lan_signup.php' => 'fb9aab7137fadaf73d8ff2310a0cbd16',
+      'lan_sitedown.php' => 'b392ecba9e2135742f209582b1d38c59',
+      'lan_sitelinks.php' => '3df526bb7659a18fe114b12739d221bd',
+      'lan_submitnews.php' => 'ce10db6f067ba66c0921234784c1053e',
+      'lan_top.php' => '72b46640ce56deabb07c2c3e2f041e1f',
+      'lan_upload.php' => '400b599610d13aaf73d99caa18cb26ae',
+      'lan_upload_handler.php' => 'd217d9727eeed84d9364ea66f179e42f',
+      'lan_user.php' => 'd392eebbe4ec86a683725d8aeec2269a',
+      'lan_user_extended.php' => 'e48b524c5f75a216198c224f97fa0f4b',
+      'lan_user_select.php' => 'c9724e26d1071fd558bed0f9db47faca',
+      'lan_userclass.php' => '16269e9067311e0744363ca0102181e5',
+      'lan_userposts.php' => '29bd5ef5cb3f2ac15b788b4b6261594c',
+      'lan_usersettings.php' => '300bdc2736f6da8802425dea70471e91',
     ),
+    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+  ),
+  'e107_media' => 
+  array (
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
   ),
   $coredir['plugins'] => 
   array (
-    'admin_menu' => 
-    array (
-      'admin_menu.php' => '12f13f429b068399d2aad7270c07a5c9',
-    ),
-    'alt_auth' => 
+    '_blank' => 
     array (
       'images' => 
       array (
-        'icon_ldap.png' => 'a04116417bb033cbb747627677ba44e3',
+        'blank_16.png' => 'ab4a8f63019a62d7912dc56c96aeec0f',
+        'blank_32.png' => '307af051822313c78790280e015a0aea',
       ),
       'languages' => 
       array (
         'English' => 
         array (
-          'lan_alt_auth_conf.php' => '012604e8400b5dfce4a4d95086152ac2',
-          'lan_ldap_auth.php' => '1fec91ecfe7419204ef65af051a249bd',
-          'lan_otherdb_auth.php' => '11309b4fe52763d7d28f94df64001016',
+          'English_global.php' => '6c4cb4a359ed4102801c31bea76d685d',
         ),
       ),
-      'alt_auth_adminmenu.php' => '3dddfee80a662a804a06d833ad9d2670',
-      'alt_auth_conf.php' => '1aedac47a6220c61425f89a96fc766b0',
-      'alt_auth_login_class.php' => '0d10f8eab79b15e28effa341aa6b6cea',
-      'alt_auth_readme.txt' => '75b056df0169fa9a03bb31633d7fcbdb',
-      'alt_login_class.php' => '343de18d3ab651476e092c72d484ae41',
-      'ldap_auth.php' => '4d740c0d4ba51a7a8437df5fd6de3b85',
-      'ldap_conf.php' => '32f0718c8d2a6aa7f8d7b378ac0f371a',
-      'otherdb_auth.php' => '868524702a10c3046d7822b463f82477',
-      'otherdb_conf.php' => '7871556c81544d7373f2adb7e49414f5',
-      'plugin.php' => '918fb0e07512efb82b6cecb01c566ba3',
+      '_blank.php' => '2cc56e80e85e02cc49ef1effd1e5d2d3',
+      '_blank_setup.php' => 'b53beeba844cd3ab1cbbdce2bfb90a0b',
+      'admin_config.php' => 'cfe430007bee6a302fec177fda94f901',
+      'blank_sql.php' => 'cde4a45a49b203c7e9bfa599dc06784c',
+      'e_library.php' => '49d209dac5bf74190a17c681b6e473fc',
+      'plugin.xml' => '54a7f22318cf76396751d89937068841',
     ),
-    'alt_news' => 
+    'admin_menu' => 
     array (
-      'alt_news.php' => '67c4b14229bbb94f1ded6214e89216f1',
+      'admin_menu.php' => '76e68552d0dfad129cf9ef394ceb6618',
     ),
-    'banner_menu' => 
+    'alt_auth' => 
     array (
+      'images' => 
+      array (
+        'alt_auth_16.png' => '29abcad255e60d9d149a3c4a745559b2',
+        'alt_auth_32.png' => 'a04116417bb033cbb747627677ba44e3',
+      ),
       'languages' => 
       array (
-        'English.php' => '34df03d8f502238bd6f3c8102f1fc399',
+        'English' => 
+        array (
+          'English_log.php' => '7487cf9a2a28e3e6a04fa1150187d51a',
+          'admin_alt_auth.php' => 'e9e2ca7ced9f0baaa73ef0564ba1ead9',
+          'admin_e107db_conf.php' => 'c94eddef6faf76f92a005637738a1119',
+          'admin_importdb_conf.php' => 'c47c8b89014abb6ae36cb079693558a9',
+          'admin_ldap_conf.php' => '3157fa16e8d97cebc1c17b4ac7f08d23',
+          'admin_otherdb_conf.php' => '08b02fb2e7c2f22687cc3eb32ec46b1e',
+          'admin_radius_conf.php' => '5284be5cdb8604195d6b7be6746ef555',
+        ),
       ),
-      'banner_menu.php' => 'ba985aea9cf61edb441b9f2e73ad45cf',
-      'config.php' => '91398fb8db5e565e0659790796de8860',
+      'alt_auth_adminmenu.php' => '02e9a9f295abda8f15a4d78d3c59b1ab',
+      'alt_auth_conf.php' => 'a1f01291e2e968d6bd69bc021a7710df',
+      'alt_auth_login_class.php' => '1b13c4caa1d9d914d319e1abd75c9d24',
+      'alt_auth_sql.php' => 'f4c682a204a584f4b6cc2ecb270b327d',
+      'e107db_auth.php' => '478c38151f54c05953b56cac5abe13e8',
+      'e107db_conf.php' => 'ecd5ddb42cf12e985f5ecd51a541d2f2',
+      'e_help.php' => '051c55f13ca59d76db28c4c6fcd74e1e',
+      'extended_password_handler.php' => 'c4c2395b5274b2ccbe978f4683e6c961',
+      'importdb_auth.php' => '48e60358ea80b583e9992469579524ca',
+      'importdb_conf.php' => 'f4f4219ac1379105cb0143eec1139e2d',
+      'ldap_auth.php' => '3740ef2d0373961b363a269249ab87c5',
+      'ldap_conf.php' => 'ba2ca4ddacfd659c39c4a4061beac2b6',
+      'otherdb_auth.php' => '22b60414d72d8b8a20342a318d18f8d3',
+      'otherdb_conf.php' => '9a82923d38d43b8c4a3857f12a5fa9b6',
+      'plugin.xml' => 'c9fc958ed2b2abf1d6689411f8027948',
+      'radius_auth.php' => '770c0a83437511e5b39181f754b3c509',
+      'radius_conf.php' => '4336a04f7698c2995fe3f00e057e9bfe',
+    ),
+    'banner' => 
+    array (
+      'images' => 
+      array (
+        'banner1.png' => '97695f3ac25b75f8bd85f930757b0d9c',
+        'banners_16.png' => 'b15dc266a6de014b106bf071b6b996f1',
+        'banners_32.png' => 'ec0763156777d8e8f125fb24004ca2c3',
+      ),
+      'languages' => 
+      array (
+        'English_admin.php' => 'b094459114f5e1ac30ffe296edd0e263',
+        'English_front.php' => 'a46b53f7b5ab4b37e166b531ce0c71f8',
+        'English_global.php' => 'bd6dd086c6da98d33aa922277741d9b7',
+        'English_menu_banner.php' => 'a3cb9d987c7f6c78d670932eec973885',
+      ),
+      'admin_banner.php' => '20b11ec62dde9cbbdafa1f479b3c4e32',
+      'banner.php' => 'eeebc001dc727a2ba7b0967543428d1c',
+      'banner_menu.php' => '9848249a15aa56e930c648a6094815ae',
+      'banner_setup.php' => '13e18a06d5c198892d13b7b580e17fdd',
+      'banner_sql.php' => '950a1eda9eed1f1d735db4231dafc09d',
+      'banner_template.php' => '6cce6a757e0a9aa609ec52e04db9e527',
+      'e_menu.php' => '8173c4db24ee86f28a6cc0416b7f42f1',
+      'e_shortcode.php' => 'dd410b7adac946a6bdcc9fa27a01d536',
+      'plugin.xml' => '3ee13c88f3d07cbd2bdfd68944a7b933',
     ),
     'blogcalendar_menu' => 
     array (
       'languages' => 
       array (
-        'English.php' => 'bc4d844c9b0b8bb553913eb462542620',
+        'English.php' => '93582f12ed95c77304ef20b17cdb74ca',
       ),
-      'archive.php' => '8fbd24eafa2349e682fffcbcdfbddbc1',
-      'blogcalendar_menu.php' => '512b4589bee3e51d54dffa57dd2347a0',
-      'calendar.php' => '4c05e65f098d38d7ed84783a479d999e',
-      'config.php' => '8bf4ecf1ebf7b0a2628081ebdee358bb',
-      'functions.php' => 'f2cf77b89db87b5ac5d2a3935fd4ac59',
-      'styles.php' => '44147a6b0a19c0228b6639ece5d79733',
-    ),
-    'calendar_menu' => 
-    array (
-      'images' => 
-      array (
-        'b1.png' => 'de9174823c3ec762027752d1c8ca2787',
-        'b10.png' => 'e92aab589b5a33207640e533b6e5a68c',
-        'b11.png' => '45a15a73b00f46799b4a456ceb1d7cb7',
-        'b12.png' => '16ceea91edba926971991f86ff99204d',
-        'b13.png' => 'a737e352f69c566e88326015627f77f6',
-        'b14.png' => '5c74299db8f6e92e004b4aacfac7b910',
-        'b15.png' => '492bed712e09f7d95ea0d8593d4b373a',
-        'b16.png' => '5010d685380c5ecaf6d2941ac66e3648',
-        'b2.png' => '88d88374398613838909f9bea531c0d7',
-        'b3.png' => '68c92cd6c067ad930a05ab0262ee4a89',
-        'b4.png' => 'eabb1d49b67487e9b6502d3f22ee54eb',
-        'b5.png' => 'e297c23ad9a7d7a3f3fe34b5f08d2eeb',
-        'b6.png' => '894d38230672afa9765fff0afed8c2f9',
-        'b7.png' => '6aaafba2e9218606e573766a1b79e065',
-        'b8.png' => '2e7439fea8b0d6de515710fd0e894fb8',
-        'b9.png' => '56b3452cfe1d6a898ff17bd446cce73e',
-        'cal1.png' => 'c9a93d59ed67e69075f686563ddde806',
-        'cal2.png' => '80178ae70f6089d2933cf2323f7fed2e',
-        'cal3.png' => '3370f9cf32cc5683e07c2bc919d151e4',
-        'calendar_16.png' => 'ace8396ac74a5909b38a62835e76d9f9',
-        'calendar_32.png' => 'ee297b07e04c5d54afcfd124987c7d9f',
-        'icon_ec.png' => 'de31be991ae1102420a3bc76e3317045',
-        'star1.png' => '22cebabc9731207092fe2242c8922ef5',
-        'star2.png' => 'b50d4638fe170e7766ad473aa4039701',
-        'star3.png' => '8c04fb886a6d4f6d4ab505660186d160',
-        'star4.png' => '3645c9f38bab928554feff707d6a130a',
-        'star5.png' => 'c6289a1dd7d998ee799228b34af10e70',
-        'star6.png' => 'a65f3fa346ad5888f15d2d2d5c5977d8',
-        'star7.png' => 'be1cedf7be3f740c5a3cd92b3220badf',
-        'star8.png' => '575da0a997de16c305cdfd9e0433b09e',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '158355ab3a26f8c709126af50bbd4000',
-        'English_search.php' => 'fc1f68851e4c41b94e1bf1fcf9c25e10',
-      ),
-      'log' => 
-      array (
-        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      ),
-      'search' => 
-      array (
-        'search_parser.php' => '05b18b0087a2816766543bce7da0b5b1',
-      ),
-      'admin_config.php' => '1c338819605771130c4becf79f05cf06',
-      'calendar.php' => 'cd96dede903591eb4e609ae9b1aea129',
-      'calendar_menu.php' => '1cef409ba6b91f87b2c7361b9f3f5d7e',
-      'calendar_shortcodes.php' => '902d42e033e1d4ea3d1424be96f249d7',
-      'calendar_sql.php' => '39899457df794d8b56c58d3b1c8db88e',
-      'calendar_template.php' => 'd852ceef7f6c8c10c5b10db571e16ccb',
-      'e_list.php' => 'bc86836aabe7f01b4285d512a3079e9e',
-      'e_notify.php' => '4c206cee17bed1c6b02f66fe202252f5',
-      'e_rss.php' => '077b415bf70aaae7b8de3d55a5912632',
-      'e_search.php' => 'a1681c6fed9972dd140b72b3ebfbd3c8',
-      'ecal_class.php' => '8aca3973a9722d4e29aabcf54b488c99',
-      'event.php' => '5edb018949600600fe3769e6507f4704',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'next_event_menu.php' => '6d1819f703dc045efa0fd1a4041e6545',
-      'plugin.php' => '7e5ed3e5d637ff6239c0e7ed8ec84e35',
-      'readme.pdf' => 'bde9420355a7306b71df8c5143575347',
-      'subs_menu.php' => '816619639ab421ff3229f6536bb33416',
-      'subscribe.php' => 'a7e9baffa5250f183edcc3449a0b0bfa',
+      'archive.php' => 'cb1677bcca96410eeb4349200c9f3c05',
+      'blogcalendar_menu.php' => '3b557171c6208ae47d06ea4d23dce7ee',
+      'calendar.php' => '2e787eee092bf42a7247cdeff36f5b4d',
+      'config.php' => '311d39d112e54ad3c53bd495e5967ff2',
+      'functions.php' => 'db45bca971337d3c038cb48ade7941e5',
+      'styles.php' => 'd9d7d08944c4d07d4933724f8fd91625',
     ),
     'chatbox_menu' => 
     array (
       'images' => 
       array (
         'blocked.png' => 'd2b20874ccf7079dbb71b6c94e117d21',
-        'chatbox_16.png' => '6524280b8f44bde11dd5ca5581432c14',
-        'chatbox_32.png' => '2e6ae5a5be12ec8d09b5083e959347b9',
+        'chatbox_16.png' => '05ca6dfc508c57775611a42c31abd6d3',
+        'chatbox_32.png' => '992d38ce9daa482a6b529905748d3c59',
       ),
       'languages' => 
       array (
         'English' => 
         array (
-          'English.php' => 'f7161fde06c16b7a4c08311f6d6c1f98',
-          'English_config.php' => '9adc5ef167b75da9ea343a3f0b1e07a7',
-          'lan_chatbox_search.php' => 'cfe3e4e7191917199b79c85ae8b9f018',
+          'English.php' => '93434fab2953606efcf88b66fce4884c',
+          'English_global.php' => 'ed59c9793e000c079df4db77d6524cde',
+          'admin_chatbox_menu.php' => '911f67480f91c6c364a7cfd976754593',
         ),
       ),
-      'search' => 
-      array (
-        'search_advanced.php' => 'b7a8eab8e5969256ab578277c92d3c47',
-        'search_parser.php' => 'c576ea7d07ce91c106c3bae38912237c',
-      ),
-      'admin_chatbox.php' => '75780140254afd39349fe286a5c72669',
-      'chat.php' => '860bf5dbfc5f861df1f74f0c944e6957',
-      'chat_template.php' => 'cf97b7663cd4177f9c7ac299318ef8e5',
-      'chatbox_menu.php' => '350f84c6d36f7ba4b8ac6e7edf3d3280',
-      'chatbox_sql.php' => 'aeb0d501ff23212e304f7f9a83d6926d',
-      'e_list.php' => '11fde3fe8b58bec52bc6220053498509',
-      'e_notify.php' => '379fbef832829bc4e9188b9fed62f31f',
-      'e_rss.php' => 'e48224955d484055c9c662f430d529ae',
-      'e_search.php' => '172e48694433f84b0f8d43ffb880e881',
-      'e_status.php' => 'd5fbab54f8fcb5ec5eaa42c1b328cf6a',
-      'plugin.php' => 'e5cdb4f2a42dc00b08d06b33dea455ed',
+      'admin_chatbox.php' => 'd0d85a807a5842b7efd8a7f8f1ff1d9c',
+      'chat.php' => 'b86a2bff7c63509500dfaf980dee9bb2',
+      'chat_template.php' => '911003094e3c085afe5c950f02bc9d39',
+      'chatbox_menu.php' => '5e1d11ff7be17fc9667c069234636c0c',
+      'chatbox_sql.php' => 'f02190ddfd233b4895340e830dbc5f41',
+      'e_dashboard.php' => '6b8ed26ecedec7f516a23af755e29bff',
+      'e_header.php' => 'a895240378f485b2128f8e840d6355c6',
+      'e_list.php' => 'a1db4a266a52fd1985f2442df0dc430f',
+      'e_notify.php' => 'fbb52bad10ab919ed70edfe5b43f0c5e',
+      'e_rss.php' => '3702edf46226ee2d402a333604c95ca7',
+      'e_search.php' => 'd4a7499639e8f931bf2f646e5bdfc6e5',
+      'e_user.php' => '3e55e57b309fde417663f10da052e514',
+      'plugin.xml' => '95aa1cb507cddd3d8fea52ab6d5088ff',
     ),
     'clock_menu' => 
     array (
@@ -1481,217 +1266,171 @@ $core_image = array (
       array (
         'admin' => 
         array (
-          'English.php' => 'bb111f81956918d1a7e7875a032e521f',
+          'English.php' => '5f81da7166965e4a08f4bf4de060f409',
         ),
-        'English.php' => 'a6414a6871116b964cc12d77d72b2748',
+        'English.php' => 'c8c59cc8ea0426757eeb737f3a7f8754',
       ),
-      'clock.js' => '576433d4e5242c567e6c6d0d97b7ca73',
-      'clock_menu.php' => 'e0d33629ca46324479cf344eb2bdbdd8',
-      'config.php' => 'b5c6e83c7f9141ade22165ed62ed1884',
+      'clock.js' => '98871f097e7b77f981df163421edb721',
+      'clock_menu.php' => '3168321679773a9b312516a5f68ebeb9',
+      'config.php' => '990e7bff8e3cfee87d7bdbb9738fb80b',
     ),
     'comment_menu' => 
     array (
       'languages' => 
       array (
-        'English.php' => '10c5f9fd588de9eaa9bf96b42b11b535',
+        'English.php' => '09d47b5d33dbb66e8b80faecd3334564',
       ),
-      'comment_menu.php' => 'd3991926641aecf015f1acd6a3baeda6',
-      'comment_menu_shortcodes.php' => '4c212b7efffa496ec8b5280528d46259',
-      'comment_menu_template.php' => '17f0cb0b44f43d0cf62770f2b7cb4526',
-      'config.php' => 'd8e5bd9258392c98d02009d552401aa4',
+      'comment_menu.php' => '6fe3829a11bec401e1ad9ed9c74210e0',
+      'comment_menu_shortcodes.php' => 'd5ff4f4992b383ec31a910c3102018e8',
+      'comment_menu_template.php' => 'b0ceff5b38ab51ccbe4e43d6c8dca444',
+      'config.php' => 'a579c9036282edf33108d1a439216b22',
     ),
-    'compliance_menu' => 
+    'contact' => 
     array (
-      'images' => 
-      array (
-        'valid-xhtml11.png' => 'dc71b96214e7b1d1df0db38575f42313',
-        'vcss.png' => 'adcc065d9d9ce649cba7c03f58f3eed8',
-      ),
-      'languages' => 
-      array (
-        'English.php' => 'fa122fc7d21d653f3bea9f1a790cb173',
-      ),
-      'compliance_menu.php' => '4d0b73ff1df3ee7003286d61ad443478',
+      'contact_menu.php' => '976acc029be9e0fcd3b9dab558ec2d27',
+      'plugin.xml' => '9aa407c1147be936d4ee66daf2fcd183',
     ),
-    'content' => 
+    'download' => 
     array (
       'handlers' => 
       array (
-        'content_class.php' => '596da39e8137e9a92c93425abc2623c4',
-        'content_convert_class.php' => '2e05d94418f8960eaac431741ce402a1',
-        'content_db_class.php' => '1029aa4c0652a3d846592b4494c8e7a4',
-        'content_defines.php' => '784711a6c68dc17c7752fb084400229c',
-        'content_form_class.php' => '64e3e202792d28b837e2a86fc953fde6',
-        'content_preset.php' => 'd3bccd4ed8b20426222fadbeb6063cba',
+        'adminDownload_class.php' => '16966eed98108f56deb36556a754995f',
+        'category_class.php' => '153a72e1dc561c73c3ef4c49bb32fc33',
+        'download_class.php' => 'b9609792818ee0511127128b1ecd0fd9',
       ),
       'images' => 
       array (
-        'cat' => 
-        array (
-          16 => 
-          array (
-            'help.png' => '2e809fd98f717d0cf39cf1106783984f',
-            'ledblue.png' => 'ef03ae552afbfb83a6fa7904e32858ec',
-            'ledgreen.png' => '9fbd1469e20d4d18c42a67b8ba161b1f',
-            'ledlightblue.png' => 'fb788d9f8fcf0db66b7af5d88d0e9dd1',
-            'ledlightgreen.png' => '2469623cdc8957e372a3bcc0c495a438',
-            'ledorange.png' => '35a155381c22a4b41deccab43d72e3e3',
-            'ledpurple.png' => '870e78863fec7bcdf54f298df354708e',
-            'ledred.png' => 'a78b6edef88f45df366721425604da25',
-            'ledyellow.png' => '88b84ff109f92be3ab7771483902be26',
-            'messagebox_info.png' => 'b2fe3cfcbe243aebcb7c933a6937596d',
-          ),
-          48 => 
-          array (
-            'help.png' => 'b5ca621ba2f7f8456b347bc52f42c37e',
-            'ledblue.png' => 'fd023701c69e6d1eaa4ed552f213190c',
-            'ledgreen.png' => 'ec1034e5bc3164b221346b3c74b0059e',
-            'ledlightblue.png' => '4d1c8ed166533c3acbec721421be3400',
-            'ledlightgreen.png' => 'b634d062505badfbef4c2975ca343461',
-            'ledorange.png' => '6d8f2e413a621feca1f30ff286023b91',
-            'ledpurple.png' => '411a1f3315c4875a391d2b405e7a987f',
-            'ledred.png' => 'da8b898d4d4294b4a11a038aee027a7f',
-            'ledyellow.png' => '6d0bfa866c30e0afaa599807cbd802a3',
-            'messagebox_info.png' => '4b8fdb10f2fd9d65d7f09bfe16c432a8',
-          ),
-        ),
-        'file' => 
-        array (
-          'tmp' => 
-          array (
-            'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-          ),
-          'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-        ),
-        'icon' => 
-        array (
-          'tmp' => 
-          array (
-            'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-          ),
-          'blank.gif' => 'e3b9998dfa86c3849180ac8349da3f76',
-        ),
-        'image' => 
-        array (
-          'tmp' => 
-          array (
-            'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-          ),
-          'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-        ),
-        'content_16.png' => '2d99036d870389c45c140370ec296050',
-        'content_32.png' => 'dbcdcd9f704906b9f3e1b48394abd545',
-        'error_16.png' => 'e7eff95804de0967e46c89361bd97604',
-        'file_16.png' => '73d6e8b60327c61034be10adb2325771',
-        'manager_16.png' => '358cedfcdc6ef1f44657050dd5892fac',
-        'manager_48.png' => '3fd9a284f7d0d446ab430ccd4ef550dd',
-        'ok_16.png' => '2a65610ea93831bfb0ad07e77fd2e488',
-        'personal.png' => 'd1e39d963741e12edb0ed6261d72ace4',
-        'score.png' => 'c368fe32f78a4ce09298b0c94f5fa89e',
-        'score_empty.png' => '9cd759fdab39278d2fa4242c15d88871',
-        'score_end.png' => 'e075b96122cb84dd7bb9d0ce8c789e84',
-        'submit_16.png' => '90ec380e9ae114719e11f1332a89eefb',
-        'submit_32.png' => 'df3dd61d416b00c26d3cbcdf02e862b4',
-        'view_remove.png' => '084a9efcb11ca37426fbdae4fbeb0875',
-        'warning_16.png' => '10b4bdba8f5f7d7598822219123e7792',
-        'window_new.png' => '2bbce24fe15c0144cd225856ee0a990f',
+        'downloads_16.png' => '76ad001a47edbb670e3f7da9d8229eb7',
+        'downloads_32.png' => 'e7aea13e973f22cbecbbc360ad898954',
+      ),
+      'includes' => 
+      array (
+        'admin.php' => '6b5b5282e7e9954921934939073b6e7f',
       ),
       'languages' => 
       array (
         'English' => 
         array (
-          'lan_content.php' => '45d9ccc1d7a7d16b0332d5a0049bb836',
-          'lan_content_admin.php' => '856dfef2e8887b83040ccbb5b33f088a',
-          'lan_content_frontpage.php' => '1593838cd7ec925d50576a815bd3c9ee',
-          'lan_content_help.php' => 'd7cea6d1b8db2650fce4962ddfcd295d',
-          'lan_content_search.php' => '2b479bcefdb3b45f19c93ea5ae6bd221',
+          'English_admin.php' => 'f6ab69202e13bbdcd92668caa2513be0',
+          'English_front.php' => '1e8ddcfd35b6896af02c42e4a04f8bef',
+          'English_global.php' => '6a0dae409f9aeac1beeab2c0a194f8ec',
+          'English_log.php' => '2dc74bfb6155eaed61f2490ec82d9878',
         ),
-      ),
-      'menus' => 
-      array (
-        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      ),
-      'search' => 
-      array (
-        'search_advanced.php' => 'c6c6ae35cd1020d27a861ac693347560',
-        'search_comments.php' => '34b14edbe1d2e8fbac541dc03262b21d',
-        'search_parser.php' => '279e6a587720b6686f7f71d847f54f35',
       ),
       'templates' => 
       array (
-        'default' => 
-        array (
-          'content_archive_template.php' => '62bb9c57b8d97b412d589cac9bf201e1',
-          'content_author_template.php' => '2f6f195b33d930334ae20cc60b8ebbcd',
-          'content_cat_template.php' => '5470141c7a45562e154813450ce2c5c6',
-          'content_content_template.php' => 'bc29f18104b597287e028b812651461c',
-          'content_content_template_bigtext.php' => '66fa5e0429ce2b3c1e1a74a1a01fdc25',
-          'content_content_template_blackonwhite.php' => 'd0d7f73a3c1e269f10980879156dcdd2',
-          'content_content_template_whiteonblack.php' => '7200173ea254fde9a8e9dc33f030c791',
-          'content_np_template.php' => '2ad6c3c80a4fd2e14de8d2c8ba75fb9f',
-          'content_recent_template.php' => 'ed27692b0ab66df27fead9bc5015dde7',
-          'content_score_template.php' => '4272ddd2bfeb3698a88876411eab716c',
-          'content_search_template.php' => '30e7bf5ba4a25ab6f1eca9b522e75597',
-          'content_searchresult_template.php' => 'ea466f98d73a18d1e727fb3b4708a678',
-          'content_top_template.php' => '662e5228f88cb2486ca305da0828e617',
-        ),
-        'content_manager_template.php' => '6ab7ef97e7f4312f64766097aa9f0fc1',
-        'content_submit_type_template.php' => '7b02354f168c4584ddd25ae8cca95977',
-        'content_type_template.php' => '09a3aaa479ecd0a50055998fc18b7110',
+        'download_template.php' => 'baf998c8abba5d17f47a05db6a08e1a6',
       ),
-      'admin_content_config.php' => 'eadd444a88a1942065596ec5d710abde',
-      'content.js' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'content.php' => 'f714bcd07b21c334ecbc143c6361d17e',
-      'content_manager.php' => '2ca76d9420ea8c40d91fa410f099e19b',
-      'content_shortcodes.php' => '6eec7325d2ccaabafa89f0f76ac91a78',
-      'content_sql.php' => '2632a603dd04ed62bbb3f011d3c5de41',
-      'content_submit.php' => '00b3c60d1ef87219af86ab253dc732d4',
-      'content_update.php' => '3820d50a8de13fe523bc58e949229e67',
-      'content_update_check.php' => '83b6aa48eb79b70555f5d2d578baa07d',
-      'e_comment.php' => 'e5a8abcc72deaf2fe9c0a8b5eb4887ea',
-      'e_emailprint.php' => '48572a480656347a64798b024168a7f1',
-      'e_frontpage.php' => '4fee2ac77b9c66c1d5b760b95e6ea255',
-      'e_latest.php' => 'a2ddba2f8b0e67309960926086a0c985',
-      'e_list.php' => '07f0e1369439b9927ac11d48b6deeb06',
-      'e_meta.php' => 'cbb645eebdedb216511c413fe64991a8',
-      'e_notify.php' => '71dceb8ed800b8aa97dbc7a79628a8a5',
-      'e_rss.php' => '76954b881d598f26ecaebb4422f87696',
-      'e_search.php' => 'd86c2f562c466bd7200974bd16f07c45',
-      'e_status.php' => 'e327fef8f0ea1ad19fe9579b4f2ebe91',
-      'help.php' => '950985bb6c445147d901bb4fb00b0f1d',
-      'plugin.php' => 'cfb9004ff38e24cb87370ceb9017867f',
+      'url' => 
+      array (
+        'sef_url.php' => '41b6c4b747285802cedbd6f2899c828a',
+        'url.php' => '8a1f62a673c2336dcd73fbf44b0facc9',
+      ),
+      'admin_download.php' => 'f7cd65546340e0950dceb987e46b49c6',
+      'download.php' => '8be264014507c8b50d97874e2fbf548c',
+      'download_setup.php' => 'af5f0623f591fb440137b829eff0f1da',
+      'download_shortcodes.php' => '7b76945c8e1577e3be5920840e192b53',
+      'download_sql.php' => '5776a7ac15531f60fc8acfc9aa2b6110',
+      'e_cron.php' => '85b114bd085c801ca988e05f1b5f6e6c',
+      'e_frontpage.php' => '6635ecef4bec891ee56f9ffc8bd8af99',
+      'e_help.php' => '690599df9469f7b6166cc91ac8664b28',
+      'e_list.php' => '7bc6a9923ac247b6ce180adc513956c6',
+      'e_rss.php' => 'c1ed606cff5939cbf7555092eda0f05b',
+      'e_search.php' => 'f825f20af2bfc12e84f349a4f570d544',
+      'e_tagwords.php' => 'fa3f7473c4357363289de25df0e60037',
+      'e_upload.php' => 'f1d4ed5da2e2adcb3495811268965e1d',
+      'e_url.php' => '54920b5fd735cc1c62c4c462475cc1c9',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'plugin.xml' => '079bde79ad2c732854e2bcfada4cd9f1',
+      'request.php' => '4ad56822314784718715d4ea2fcdffda',
     ),
-    'counter_menu' => 
+    'faqs' => 
     array (
+      'controllers' => 
+      array (
+        'e107.list.php' => '21fe63aec5857dc95c5573e8c2430ec1',
+      ),
+      'images' => 
+      array (
+        'a.png' => '4f851bf289035c3c186e6d42d4921c2a',
+        'icon_16.png' => 'eef2fc282420b5ad773c20fc7068324b',
+        'icon_32.png' => '06480fb7e7abceb4aa3680f86585bc6f',
+        'q.png' => '9aed1521aafa4b8d469caed87c458766',
+      ),
       'languages' => 
       array (
-        'English.php' => '33ae994d0cd2b96deadf8d398d5d25d0',
+        'English' => 
+        array (
+          'English_admin.php' => '5b16358d0dda99399de03a633f50d1ca',
+          'English_front.php' => '552f546cea75cb72ab775571965fde25',
+          'English_global.php' => '65342c06e8cdf219260a58e8364227f4',
+        ),
       ),
-      'counter_menu.php' => '6d5e959504ca9a579f776610c8b258c5',
+      'templates' => 
+      array (
+        'faqs_template.php' => '79bd78ed797c81169801cabb9615b128',
+      ),
+      'admin_config.php' => 'e799de2cc340b7c9a925b3023b351da3',
+      'e_cron.php' => '7175dfa249e137c9be08110113de4dac',
+      'e_meta.php' => 'f917f9f99d76dbf6cf2b0cc81eb55212',
+      'e_search.php' => '7c16b4459b6de72905c18594e0487354',
+      'e_sitelink.php' => '3b197c1085bd8e914e82b1aa5d33ed02',
+      'e_url.php' => 'aa24f6cf79cf3cddb6eb8caf1269c508',
+      'faqs.css' => '6cba974214631909d82cc6793669f782',
+      'faqs.php' => 'd739074c27d772a36951bcf686ec4aaa',
+      'faqs_search_menu.php' => '889fb9387862d7df6c17de541014c03e',
+      'faqs_setup.php' => '093804c6115e8b52f29778e9aed3d6df',
+      'faqs_shortcodes.php' => '71f8244a5775fce9282fc0bdd599492a',
+      'faqs_sql.php' => '3c6cc6ff245ce072221a2880e9c59c4a',
+      'plugin.xml' => 'c5336175a132b71105e479426b69236f',
     ),
     'featurebox' => 
     array (
       'images' => 
       array (
         'featurebox_16.png' => '74eae49d9d53afb825bc21ac95be07b3',
-        'featurebox_32.png' => '9a498cd16e91c5cec29dfac61dc07199',
+        'featurebox_32.png' => '702219092da2a74fa492d2b16c004342',
+      ),
+      'includes' => 
+      array (
+        'category.php' => '0edb91ac8f0e4400e9f10639212e0718',
+        'item.php' => '264e8847c5d310ac43c6e77c93c6eb7b',
+        'tree.php' => '47c40e74f0623253eb9830c2b34fc7c6',
       ),
       'languages' => 
       array (
-        'English.php' => '9fa4e9a659ccde7db2cc65e81ad6694d',
+        'English_admin_featurebox.php' => 'fb8b5bd423e1e2caea424d9cfe99edc1',
+        'English_front_featurebox.php' => '2541a116628639fa84b5b0c5eed4bf48',
+        'English_global.php' => '1dedeec1a2240b84b7f73f7d50e78702',
       ),
       'templates' => 
       array (
-        'centered.php' => '39693534a9eb1b5e00d263fb22b4ded3',
-        'default.php' => '4ae642d4bfc6b53350d75197182330f7',
+        'featurebox_category_template.php' => 'cbd984a1c8f7703108143417837d3ab2',
+        'featurebox_template.php' => '48edaed31bdfbadb48bba432f9bbfbf7',
       ),
-      'admin_config.php' => '61506bca5d21856190eb627f4b603975',
-      'e_rss.php' => 'e3b277cca6f5262dcee948434aacfc5e',
-      'featurebox.php' => '196e5d4286ac7b19cfa34e66ec382979',
-      'plugin.php' => '39f2a1375fe640e6cda8347ff7ab8de3',
+      'admin_config.php' => '05ad0c983ff3b27614e85bb568d8e157',
+      'e_header.php' => '9fbf9ebf77a6926d660a1bdd4e8e5313',
+      'e_rss.php' => '6bdd042c06afda9e4dabc1e2e0415d29',
+      'e_shortcode.php' => '3ffe92d8919db905572a8688c95d7e25',
+      'featurebox.js' => 'bce0c1516d46bb5056fd92349a70a63d',
+      'featurebox.php' => 'df8a2e4300d09de0191c5b201bcc5d62',
+      'featurebox_menu.php' => 'a5cc35009d8261c648ba31e85e557d5b',
+      'featurebox_setup.php' => '22859392713758bfb6ddc8fcb515aae7',
+      'featurebox_sql.php' => '43de41a28ba673c87caa31f487b93cd6',
+      'plugin.xml' => '29371929102b95e779736075467c91c3',
     ),
     'forum' => 
     array (
+      'attachments' => 
+      array (
+        'thumb' => 
+        array (
+          'index.htm' => 'd41d8cd98f00b204e9800998ecf8427e',
+          'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+        ),
+        'index.htm' => 'd41d8cd98f00b204e9800998ecf8427e',
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      ),
       'images' => 
       array (
         'dark' => 
@@ -1707,12 +1446,14 @@ $core_image = array (
           'admin_edit.png' => 'ffe67f5626fbc4fe90d4d7e70e3df9ca',
           'admin_lock.png' => 'fe74ea0725e050cc1522f8c80d509dbd',
           'admin_move.png' => '7d3010809006f8bd0b52b89d507ee781',
+          'admin_split.png' => '1419d9c33b0a7ff56ff48def01f2521d',
           'admin_stick.png' => '7dea7baacf217c6f307a9a0a08fa27f4',
           'admin_unlock.png' => '535939916663b4d3e59fd744ded21481',
           'admin_unstick.png' => '87f050e6fe15dab0445cfefc47be2ddb',
           'aim.png' => 'ef7a16b7871c7b353a06186d3e0dce6b',
           'announce.png' => '86b85187f8e268e08f09b17ef17f1c8e',
           'announce_small.png' => '4306e6cbc173ecc3864b284e4731ca4f',
+          'attach.png' => 'f973d59b67f3cafbdce469bb76756ec3',
           'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
           'closed.png' => 'baeb3dcbb714f52d5f8007548ba487e9',
           'closed_small.png' => '6c541b1147791a28e78674a483f681d8',
@@ -1744,127 +1485,280 @@ $core_image = array (
           'sticky_closed.png' => 'ea5b16c543e3056e866ca5579ecd163c',
           'sticky_closed_small.png' => '8413fe336a2ec79bdcb0b3bfbcd50896',
           'sticky_small.png' => 'ebf41f357e88f4e6f29e6d7d8b3464e8',
+          'track.png' => 'a5e0104f53a91caf4fde33f5c6d341eb',
+          'untrack.png' => '173228ed8e12ca2ca34b683cc5480ebd',
           'website.png' => 'ecd92710246e39b964a1857e8370db56',
         ),
-        'lite' => 
+        'icons' => 
         array (
-          'English_admin.png' => '5fed0ae458f2100bfed0ffc655d1c1ce',
-          'English_main_admin.png' => '1b3ec206bc4a6daabc970c231e148f16',
-          'English_moderator.png' => '99b9bbef0e3440071ff394422819ea69',
-          'English_newthread.png' => 'eb68d1b9677fca9c32c556e050e4f20c',
-          'English_reply.png' => '58e4791eb2d8b5712b859639a0eb5320',
-          'admin.png' => '5fed0ae458f2100bfed0ffc655d1c1ce',
+          'English_admin.png' => '6a53e49261dc02dd56b4f86d5112d308',
+          'English_main_admin.png' => 'c5ac4180f2e17c3cd087c44940e856e5',
+          'English_moderator.png' => 'c8787a0ddea6a46ae9f967ffb89071b3',
+          'English_newthread.png' => 'ebb0e21a92a83783ff6a6a98e71feadc',
+          'English_reply.png' => '1c6879621e1228a83a3c57294d5d7146',
+          'admin.png' => '6a53e49261dc02dd56b4f86d5112d308',
           'admin_block.png' => 'e861b2014ffa66b391e3e4152278ec78',
           'admin_delete.png' => 'a8aca6d9512cdf1f18f98a324fc63fb1',
           'admin_edit.png' => 'c8d6b7bcc759884b6ed0a6bc4b53ad57',
           'admin_lock.png' => 'e709f1ded3bdea3174f30ef49f83aee3',
           'admin_move.png' => '704a6023c7f2900a6371a63f0dd56462',
-          'admin_stick.png' => '7dea7baacf217c6f307a9a0a08fa27f4',
+          'admin_split.png' => '1419d9c33b0a7ff56ff48def01f2521d',
+          'admin_stick.png' => 'c37141107d0e8d0b501028dc874f6271',
           'admin_unlock.png' => '19849fb8ace12d49b649724cdb1948de',
           'admin_unstick.png' => '4a6856f5ef4b32d56bd232c495baa817',
-          'aim.png' => 'ef7a16b7871c7b353a06186d3e0dce6b',
+          'aim.png' => 'b6091f0a77e556183c229a68134a9e57',
+          'announce.png' => '48abc44f6854bb035e3396c304636bff',
+          'announce_small.png' => '5456bb81364deb6483604b945271a418',
+          'attach.png' => 'f973d59b67f3cafbdce469bb76756ec3',
+          'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
+          'closed.png' => 'a068f651fe83fed3d4ce38f0a6a0becf',
+          'closed_small.png' => 'e044c85138bad6063ee018c1c5c67173',
+          'delete.png' => 'faef1c07b60d9e19c551f6ccf29f023c',
+          'e.png' => 'b5e5c9ab677b46ae99ac512039d012d8',
+          'edit.png' => '9b8b57f7efae7b2c81bfbfdaabb179f1',
+          'email.png' => '302f240ffa2009b99437c7a5c7d91adc',
+          'icq.png' => '04f07137e5b641fa62b66b1fbfab043f',
+          'main_admin.png' => 'c5ac4180f2e17c3cd087c44940e856e5',
+          'moderator.png' => 'c8787a0ddea6a46ae9f967ffb89071b3',
+          'msn.png' => '679658e6f45e6aadf0eb064003021bfa',
+          'new.png' => '86634ec727ee631605100acc166ae1de',
+          'new_popular.png' => '37d60559b22ff18cbf7bdec33f4a72c1',
+          'new_popular_small.png' => '38835e09eda2096d66f4c097981a72cb',
+          'new_small.png' => '9a55937ef58e84ba48df4855bab96dd1',
+          'newthread.png' => 'ebb0e21a92a83783ff6a6a98e71feadc',
+          'nonew.png' => 'd2b2e86363d3d3c042879300131d2c5e',
+          'nonew_popular.png' => 'e8a4b291ea4e5debf93b50496a776b2c',
+          'nonew_popular_small.png' => '859f726320fee9627ae26641edbb3c99',
+          'nonew_small.png' => 'c6cf852d0304324c88f8eb6b85c2cdb9',
+          'pm.png' => 'c428561dd9560f8db47e646a6d8871c5',
+          'post.png' => '5608f173001e5b6ab085eb88104ddb7b',
+          'post2.png' => 'af646ec059a80f2fbcc5f01fe0a76388',
+          'profile.png' => '53f3329f5b75c241a898a1e5e99b8e8f',
+          'quote.png' => 'bf97dc694e22591adab331804e548f49',
+          'reply.png' => '1c6879621e1228a83a3c57294d5d7146',
+          'report.png' => '6f07dbc520128576534c6361fd169a76',
+          'sticky.png' => 'ea4c39e283ecd8e2fcce1e9be032e2bd',
+          'sticky_closed.png' => '50632fa48f2980fd0452ae11337a3cc4',
+          'sticky_closed_small.png' => '174fb62586e1edf7f694d00392bb655f',
+          'sticky_small.png' => '869c9020b6a148bc8b15a769dd67c604',
+          'track.png' => 'a5e0104f53a91caf4fde33f5c6d341eb',
+          'untrack.png' => '173228ed8e12ca2ca34b683cc5480ebd',
+          'website.png' => 'fe8b45a0c4b851c1dec78f9544f351da',
+        ),
+        'lite' => 
+        array (
+          'English_admin.png' => '6a53e49261dc02dd56b4f86d5112d308',
+          'English_main_admin.png' => 'c5ac4180f2e17c3cd087c44940e856e5',
+          'English_moderator.png' => 'c8787a0ddea6a46ae9f967ffb89071b3',
+          'English_newthread.png' => 'ebb0e21a92a83783ff6a6a98e71feadc',
+          'English_reply.png' => '1c6879621e1228a83a3c57294d5d7146',
+          'admin.png' => '6a53e49261dc02dd56b4f86d5112d308',
+          'admin_block.png' => 'e861b2014ffa66b391e3e4152278ec78',
+          'admin_delete.png' => 'a8aca6d9512cdf1f18f98a324fc63fb1',
+          'admin_edit.png' => 'c8d6b7bcc759884b6ed0a6bc4b53ad57',
+          'admin_lock.png' => 'e709f1ded3bdea3174f30ef49f83aee3',
+          'admin_move.png' => '704a6023c7f2900a6371a63f0dd56462',
+          'admin_split.png' => '1419d9c33b0a7ff56ff48def01f2521d',
+          'admin_stick.png' => 'c37141107d0e8d0b501028dc874f6271',
+          'admin_unlock.png' => '19849fb8ace12d49b649724cdb1948de',
+          'admin_unstick.png' => '4a6856f5ef4b32d56bd232c495baa817',
+          'aim.png' => 'b6091f0a77e556183c229a68134a9e57',
           'announce.png' => '9874a0390f8b93d75af92a10a6311201',
           'announce_small.png' => '1b9b7a6b72ff112bc82b20537220e827',
+          'attach.png' => 'f973d59b67f3cafbdce469bb76756ec3',
           'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
           'closed.png' => 'baaf6f3e3dcca0f678f1a3c79a51a3b1',
           'closed_small.png' => '7207302f70051cff9c0167f20a89646d',
-          'delete.png' => '895db8d980f9378df51649443a5bdfc6',
+          'delete.png' => 'faef1c07b60d9e19c551f6ccf29f023c',
           'e.png' => 'b5e5c9ab677b46ae99ac512039d012d8',
-          'edit.png' => 'dc9067455b48da0bbc50993a4217eedd',
-          'email.png' => 'c51f9e3ef6f5b02087decb2ec7686278',
-          'icq.png' => '6bc6f030b47ff1ee2de0913e71552681',
-          'main_admin.png' => '1b3ec206bc4a6daabc970c231e148f16',
-          'moderator.png' => '99b9bbef0e3440071ff394422819ea69',
-          'msn.png' => 'cbf3f20c6baa59d7aae61bbc12bd9414',
+          'edit.png' => '9b8b57f7efae7b2c81bfbfdaabb179f1',
+          'email.png' => '302f240ffa2009b99437c7a5c7d91adc',
+          'icq.png' => '04f07137e5b641fa62b66b1fbfab043f',
+          'main_admin.png' => 'c5ac4180f2e17c3cd087c44940e856e5',
+          'moderator.png' => 'c8787a0ddea6a46ae9f967ffb89071b3',
+          'msn.png' => '679658e6f45e6aadf0eb064003021bfa',
           'new.png' => '8cf7c2a190bbbce7f18ce99818dbd481',
           'new_popular.png' => '37d60559b22ff18cbf7bdec33f4a72c1',
           'new_popular_small.png' => '7becbe1b6207fef993f1601463f57345',
           'new_small.png' => 'cff284b11533ac4bf740a146d019a942',
-          'newthread.png' => 'eb68d1b9677fca9c32c556e050e4f20c',
+          'newthread.png' => 'ebb0e21a92a83783ff6a6a98e71feadc',
           'nonew.png' => '2808e78e081d8c8d2d7802b9a290ce12',
           'nonew_popular.png' => '8df0ba08e69b552e7e24e9a2751e5d40',
           'nonew_popular_small.png' => '33355429da0af82e1f1c91bab2ba7f91',
           'nonew_small.png' => 'edc0414101f2e406d7c0a070f324220b',
-          'pm.png' => '11bcda04351efb950b1352b9a82a674d',
-          'post.png' => '22de7b984a3044b53c19a4ccd3cb49db',
-          'post2.png' => '0f6cfe51518affb7a6baac798abd907b',
-          'profile.png' => '32300a5d0546cf11e2cee898ec2e23c2',
-          'quote.png' => '579d14bfb1faabf191272938fae3ab65',
-          'reply.png' => '58e4791eb2d8b5712b859639a0eb5320',
-          'report.png' => '3194bb43c91125fce2709500bbe33a9a',
+          'pm.png' => 'c428561dd9560f8db47e646a6d8871c5',
+          'post.png' => '5608f173001e5b6ab085eb88104ddb7b',
+          'post2.png' => 'af646ec059a80f2fbcc5f01fe0a76388',
+          'profile.png' => '53f3329f5b75c241a898a1e5e99b8e8f',
+          'quote.png' => 'bf97dc694e22591adab331804e548f49',
+          'reply.png' => '1c6879621e1228a83a3c57294d5d7146',
+          'report.png' => '6f07dbc520128576534c6361fd169a76',
           'sticky.png' => '45f3c7bfd16c3806a79c3a9540a9e847',
           'sticky_closed.png' => '9fa98262861f0a900236f795dc72096e',
           'sticky_closed_small.png' => '5c7f041ff02f267c87e4c46d608e7014',
           'sticky_small.png' => '4e820e6a2bba0f75e38c2d2bdcfe2111',
-          'website.png' => '568b5e9dcc6fcc5067209e9390297162',
+          'track.png' => 'a5e0104f53a91caf4fde33f5c6d341eb',
+          'untrack.png' => '173228ed8e12ca2ca34b683cc5480ebd',
+          'website.png' => 'fe8b45a0c4b851c1dec78f9544f351da',
         ),
         'fcap.png' => 'db19cb1423e2898da7b2d3802c89404f',
         'fcap2.png' => '5f6f45697bc185d51f2c06d904642aad',
         'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'forums_16.png' => '5773aa73ab08e4e575ceb2d60001f8f5',
-        'forums_32.png' => '543708df3b2731ea4607ea5741a21f12',
+        'forums_16.png' => 'e7baf80f2dab233ca3d365826e91831b',
+        'forums_32.png' => 'e074671cf044ab8df12b74182e603198',
         'sub_forums_16.png' => '16a40908a7b37e8353c978ce3ecd1910',
+      ),
+      'js' => 
+      array (
+        'forum.js' => '4891c4cac4e6e3045417a2997efeb815',
       ),
       'languages' => 
       array (
         'English' => 
         array (
-          'lan_forum.php' => '8496b78042381e1eb0e55919386b1261',
-          'lan_forum_admin.php' => '796328f81eb77d6c218ad978e83911b9',
-          'lan_forum_conf.php' => '44f0d7ca6da7d71004e1acd9c1f04f70',
-          'lan_forum_frontpage.php' => '5ac941c384cf10a76b6ab040f7ee7986',
-          'lan_forum_post.php' => 'd92f497d14b273b09d3f6e1c3dffea21',
-          'lan_forum_search.php' => 'dd1263ff01cf0b71991de16756677f68',
-          'lan_forum_stats.php' => 'ecccb2b57c568336e5b1accfa29ad08b',
-          'lan_forum_uploads.php' => '840b741edd3f2d8fcc340b29804689b5',
-          'lan_forum_viewforum.php' => '7b44a441080e2b1a40b8c37944d9a719',
-          'lan_forum_viewtopic.php' => '867fb663d2d3cff381f01f08db23de98',
-          'lan_newforumposts_menu.php' => 'affcfab7c6a7dfa7ba9fd1c134075919',
+          'English_admin.php' => '2175de1de3e16b5d7799e88dcacaaa7d',
+          'English_front.php' => '9a4d7ab863c756b91601c79b6440be5f',
+          'English_global.php' => 'ff342cd70f5c04c4826d27bc7ec8fd2e',
+          'English_menu.php' => '681fdc936970079bb4dc9baa282e2236',
+          'English_notify.php' => 'e394e69ae09ea16c9af9469598ea4ea2',
+          'English_search.php' => '6f178cefc46bb87ae6e6ac7deca5207d',
         ),
       ),
-      'search' => 
+      'shortcodes' => 
       array (
-        'search_advanced.php' => '32a26ccc8c2be60abca8ba2930ba329e',
-        'search_parser.php' => '3419fe985c2b08959c127b6484a487fe',
+        'batch' => 
+        array (
+          'post_shortcodes.php' => '4ca81c74555da3df6ccd3e97a1e6cc7e',
+          'view_shortcodes.php' => '49197ba0386101129a385fa08c586808',
+        ),
       ),
       'templates' => 
       array (
-        'forum_icons_template.php' => 'ac7e8c8f02f32719f64cd5bde7ec5f20',
-        'forum_post_template.php' => 'f1017fb9b9ae6c73691d27b4da2d8cd3',
-        'forum_posted_template.php' => 'eea66e0ed7f2d2a51c5e01a07cb871aa',
-        'forum_preview_template.php' => '11b636f1bcccded162fcf42880df5b5d',
-        'forum_template.php' => '725a50b55d6e76a9844821992601aa67',
-        'forum_viewforum_template.php' => '004aacb79877ac05b538d320c8294b85',
-        'forum_viewtopic_template.php' => '57b91f8b3ad09f48010d4d4958623f26',
+        'forum_icons_template.php' => 'b04a5eacacaf498af3bf35e6d02a8b1d',
+        'forum_poll_template.php' => '157119654cccff5f22f8f5b1bc1a2b1b',
+        'forum_post_template.php' => '3387424269e87b5ba0c9453bf83665ed',
+        'forum_posted_template.php' => '288768c3e0baea6c291cc2cd80e529db',
+        'forum_preview_template.php' => 'c95b5ea09cd3742d04615c2ff4fa6e06',
+        'forum_template.php' => '5175c696148ff79f62dbc35b141d39ca',
+        'forum_viewforum_template.php' => '03efb23b70a4e2d779ef2f5896526df2',
+        'forum_viewtopic_template.php' => '31d27443ffcbb8f70593d149d06b3e25',
       ),
-      'e_emailprint.php' => '8a41fe10faf7c2293a65bd66e598dd82',
-      'e_frontpage.php' => 'c939394e051b055ccbc963d17b1a1d46',
-      'e_latest.php' => 'ba485c38b9ab90c0f572a2397b49c9f5',
-      'e_linkgen.php' => 'e0cdc0183ce0cf9adbbec54271c55766',
-      'e_list.php' => '523f01012192923c6901b7c088101ec0',
-      'e_rss.php' => '2d0f0839621d9d4539895e2047a76476',
-      'e_search.php' => '663a93cb1f0d05351ecbb85a3bf721d4',
-      'e_status.php' => 'e707e64a960612d443e16906faaf0e22',
-      'forum.php' => '35a1744e058ca88ee47e966088ac1923',
-      'forum_admin.php' => '741d27d12226bc98e4576697f4b97efc',
-      'forum_class.php' => 'cec775f3d1561a4262c76c438c02de69',
-      'forum_conf.php' => 'a4a4e140bda4b3d7cd73abd03170dc5b',
-      'forum_mod.php' => 'bc6667cba8050bd3a2c015dea9bcd730',
-      'forum_post.php' => 'd651a56661feb695867f8b914e2ed5d0',
-      'forum_post_shortcodes.php' => '1b976852110cac3652082c43777e3dc3',
-      'forum_shortcodes.php' => '06545816dec1484394144caeffb71a39',
-      'forum_sql.php' => '3355b8219c200d8d669ce08e59053465',
-      'forum_stats.php' => '9906e300c4764aa55e54d745ff3bc471',
+      'url' => 
+      array (
+        'rewrite_url.php' => 'c46beac9821ee835be35b3fa824e46ed',
+        'url.php' => 'f5efaaf9217ccebd2c0a76ec449940e5',
+      ),
+      'e_admin_events.php' => '82eacb1b841074a3720d05b106a43226',
+      'e_dashboard.php' => '5d79de7d271b8acb8ebf722694747218',
+      'e_emailprint.php' => '967272e45de7cad6a37461b7088e877a',
+      'e_frontpage.php' => 'c621dfe0ec29999dd2bb5aab8da91af4',
+      'e_linkgen.php' => '522cfa8c7b7edeed514e3d31c928dcdb',
+      'e_list.php' => '8de2aa4d145f57f58d2df1892d792d3a',
+      'e_menu.php' => 'd724fba815fbf3182c6f25f9e2a7909e',
+      'e_meta.php' => 'e84dc974b4a6a5450ae00112d5eee639',
+      'e_notify.php' => '28a9bd36f3c45d8954d887be7a3957d2',
+      'e_rss.php' => '1429e0f9f471b9c5f4d80ab2896b0d95',
+      'e_search.php' => '76656b5861840ef213369e762d4279f9',
+      'e_url.php' => '6d4bd7cb32f9ac8388aba6c2c83f9abb',
+      'e_user.php' => '348ab7db7f7b63111a50b47bf7600656',
+      'forum.css' => 'bb579d5b4fe0b76fe7baa7e631e4d133',
+      'forum.php' => '9a1ddbe1ab9d87fe4a4509e2fdfe589b',
+      'forum_admin.php' => 'f086e0accdd698c6b4f60be68d6fb985',
+      'forum_class.php' => '5ef4c97a34d71771b6e4b3d8b3d6e875',
+      'forum_conf.php' => '1d1456e85888aed47117d6c3266dccfe',
+      'forum_mod.php' => 'c4f19a68f45f78c54c5ed94a289b41c6',
+      'forum_post.php' => '8df8c7487926b27b0098b663a3fe5c52',
+      'forum_setup.php' => '099a48a50f96615a694af4ff6ab281a0',
+      'forum_sql.php' => '189a661d9376feac5382597c16eefd77',
+      'forum_stats.php' => '09bd7a40215aca7ec16f77db4ccbbe99',
       'forum_test.php' => 'ed668e3268952cb268b3f4aca0d2e37a',
-      'forum_update.php' => '8e1fed1bae66e84eb3ad0235a60f0c69',
-      'forum_update_check.php' => '95b6355554098357b5648807c4e95705',
-      'forum_uploads.php' => '3ae344a843771d9ee6e578a1ddd84f8c',
-      'forum_viewforum.php' => '53b717a8e1515fde643c25b89ae92e25',
-      'forum_viewtopic.php' => 'ab460e959ba4523374375e92abebb874',
-      'index.php' => '1d225ecdb6dfb425fcdd39501ed196c7',
-      'newforumposts_menu.php' => '294da398e0ec6c0114c8d41e203cd411',
-      'newforumposts_menu_config.php' => '8c7c855777e097fe6b8d92f9ef4e527b',
-      'plugin.php' => '871a97116e50c74039db5f2e3c96d040',
+      'forum_update.php' => 'c4e1726f26969650cb19ac53d264c9a3',
+      'forum_uploads.php' => '98237a792aae68502cdecdedb4cbba97',
+      'forum_viewforum.php' => '87607f7f3630d76c927162a6b97cfabb',
+      'forum_viewtopic.php' => '4d7a3bb343c6435bb171a950ddf7a277',
+      'index.php' => '73812e25d21d1108e723bca9fc4ecb7a',
+      'newforumposts_menu.php' => '43240d843e89b98cc2d241434645b744',
+      'plugin.xml' => '3d76c68a0c32d346dbb0d37b608c7078',
+    ),
+    'gallery' => 
+    array (
+      'controllers' => 
+      array (
+        'index.php' => '11b6109db43d8861859ae8a8650e7fc5',
+      ),
+      'images' => 
+      array (
+        'butterfly.jpg' => 'f259c8b3ec5af2f50a0fea3718aad82f',
+        'close.png' => 'a8067f78156956b1dc4ecd3963342505',
+        'gallery_16.png' => 'ff3486b0912a3337edbe21c36bbe0d4a',
+        'gallery_32.png' => 'e5f9266446794ad31d65353c5ad9bb17',
+        'horse.jpg' => '5c1d9fccbb6239c466b0b00547b9c767',
+        'lake-and-forest.jpg' => '93675c85b6a51f6c27bd64c191a0a760',
+        'loading.gif' => '217d3ca56193773e17d9b7dee098f9ce',
+      ),
+      'jslib' => 
+      array (
+        'prettyPhoto' => 
+        array (
+          'css' => 
+          array (
+            'prettyPhoto.css' => '1b78db595277f383ecbff235fc9fd252',
+          ),
+          'images' => 
+          array (
+            'prettyPhoto' => 
+            array (
+              'default' => 
+              array (
+                'default_thumb.png' => '2b88131bc051f343114fc573b0d7eb17',
+                'loader.gif' => '711ead4c81174ebab3d8cb4a22c19147',
+                'sprite.png' => 'd3d8392a6e0631c3e73b3a7f69ccd77e',
+                'sprite_next.png' => '42cedd94d54448eceb87a14c94354c55',
+                'sprite_prev.png' => '8b2e4157fb190c3084ce9d75fe9c805b',
+                'sprite_x.png' => '72538bec4038f5cc6ece4aebda0e7923',
+                'sprite_y.png' => 'b4c1c6c211735245de4b314a5e6ada28',
+              ),
+            ),
+          ),
+          'js' => 
+          array (
+            'jquery.prettyPhoto.js' => 'e7c9903320f4395e571398a79f6442ae',
+          ),
+        ),
+        'jquery.cycle.all.js' => '93e18f569290bea5456bc10879015e62',
+      ),
+      'languages' => 
+      array (
+        'English' => 
+        array (
+          'English_global.php' => 'aa1d5a29560dc7d6971cb2296aadf784',
+        ),
+      ),
+      'shortcodes' => 
+      array (
+        'batch' => 
+        array (
+          'gallery_shortcodes.php' => 'aa00af654cf14aff53014ee2e59ae052',
+        ),
+      ),
+      'templates' => 
+      array (
+        'gallery_template.php' => '1c74721d8bc66ae032af98b3517eb3ca',
+      ),
+      'url' => 
+      array (
+        'rewrite_url.php' => '9487842c13707f92e3d5901990690319',
+        'url.php' => '3b838dab94b458c845ba6eec985c908b',
+      ),
+      'admin_gallery.php' => '65ab27fc4ab5f342e59ee6b0d05cbb28',
+      'e_header.php' => '51c6d8ac5aaa37c470896eb604b5d057',
+      'e_shortcode.php' => '6b8e70e6bdb86e854b974cdaeb270dd4',
+      'e_url.php' => 'ba42dabdd5711b5c9bdf0cff31630680',
+      'gallery.php' => '16f2512e84121347d70e951e04272c4a',
+      'gallery_setup.php' => '810483b9e579c2ec98df8b8684cc11a8',
+      'gallery_style.css' => '01c25f943cdc47f208e53d93b047e622',
+      'plugin.xml' => '6aca58522bbc6e63edf6c34cb2bde568',
+      'slideshow_menu.php' => 'dcdb15dbfa8cb4e84d58189789591384',
     ),
     'gsitemap' => 
     array (
@@ -1875,96 +1769,98 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'gsitemap_English.php' => '350d69eb976b596ee599530d5e6bff1c',
+        'English_admin.php' => '13158dc222bfc5b8f11f78746a9abe70',
+        'English_front.php' => 'b0fbf8d9395eee2b36bab48d5557f934',
+        'English_global.php' => 'afed53e44de9de13b6528ae2c717c9fb',
+        'English_log.php' => '3f390471ce63b8dfd142b87b6d77c548',
       ),
-      'admin_config.php' => '4a582593a83c6353f6b2c49371623301',
-      'gsitemap_sql.php' => '81a34608c8cdd19c51fece5a25109159',
-      'plugin.php' => 'c88f725348400384ef5721432e9ad169',
+      'admin_config.php' => '667317d510cba78263c596736f374123',
+      'e_cron.php' => '0edb257f095eb269f93cd11ef31d27a3',
+      'e_module.php' => '7350201bf81a03a01eadbe0a426886d6',
+      'e_url.php' => 'f4c77fcfbbceadebfabb5662896eea36',
+      'gsitemap_sql.php' => '1b113956d7964d2b44a027cb8bcc91bb',
+      'plugin.xml' => 'b1d9543d44cfeed854f31a3d631f9bb5',
+      'weblog_pinger.php' => 'ac4eeaf7ff8179d57e192f2b7ce13aa1',
     ),
-    'integrity_check' => 
+    'import' => 
     array (
       'images' => 
       array (
-        'integ.gif' => '80475f4211b9a876938a439470cde13a',
-        'integrity_16.png' => 'e6ff53bf268d48088c085fb3d3e1f010',
-        'integrity_32.png' => '82a32c32fad17965fcb6ab955b8f15b9',
+        'blogger.png' => 'b2eb706e8a010272f8a7cff74f666b80',
+        'coppermine.png' => 'ced659191ca17c900b70e44e2e58ed95',
+        'csv.png' => 'ca19c61ea9417524e851e30dbe65fe70',
+        'drupal.png' => '13c26114b6f600e4b31c9b502cd900bb',
+        'e107.png' => '307af051822313c78790280e015a0aea',
+        'html.png' => '52e613e1612d502daaeb3e3752247e86',
+        'ikonboard.png' => 'e3f01ee7fe6b1076d68340d15849a5eb',
+        'import_16.png' => 'bf88f91b7cd2e76df028bf7895e39388',
+        'import_32.png' => 'b160a0b3167ef6f6dee213ed459330c7',
+        'joomla.png' => 'fd86374ad6e5a4a0c9577f183fd8e9c2',
+        'livejournal.png' => 'efc0065b1c38f0da76f47f8dc2c53acb',
+        'mambo.png' => 'eda2521c060e0f96dd5b23a8b4cd4c02',
+        'phpbb3.png' => 'cd475092ab5cf47e353c458dc0b3d24a',
+        'phpfusion.png' => '0d814210936133d50e7580f8ce63f8b3',
+        'phpnuke.png' => '9189634701ea6b25d4231a26fd96afc6',
+        'rss.png' => 'e890b9d01ac9028bf56a9d139a2d438d',
+        'smf.png' => '42c1a329d214006376a317580630a0e6',
+        'wordpress.png' => '9673221151941fdbfc6ef1f1cedabb68',
       ),
       'languages' => 
       array (
-        'English.php' => 'd78c5a1f0cd1dafde8fe3bf33083db1e',
+        'English_admin.php' => '8f58c8f035bced134f027df8be8d5a8c',
+        'English_global.php' => '2ef5bb98cf8a51d645c201ed0974056f',
       ),
-      'admin_integrity_check.php' => '0336e89bd0664a6e4ad9ff2c1ba9c236',
-      'plugin.php' => 'b32f26e2fc819c93a60a0c53692888fa',
-    ),
-    'lastseen' => 
-    array (
-      'languages' => 
+      'providers' => 
       array (
-        'English.php' => '847602620978795e90813a8ca2c2b2ec',
+        'PHPFusion_import_class.php' => '57030184287fc7e8df7ea1f1c7296905',
+        'PHPNuke_import_class.php' => 'd85c10af8f7ccf6ed64c7a2d5d45ed10',
+        'blogger_import_class.php' => 'ff9a0a934022c6a97d1ac306412606f2',
+        'coppermine_import_class.php' => '9c84c245327f720de7bbbda1f2b9c576',
+        'drupal_import_class.php' => '630a9f23247ed1e7ef8f4a05d755d989',
+        'e107_import_class.php' => 'b918cf2f779f4a22ae82aa27f6e62950',
+        'html_import_class.php' => '24bf0391d479f06ec54a43143c7a7554',
+        'ikonboard_import_class.php' => '7f19f3f18455cf419b21bb1955c9e303',
+        'joomla_import_class.php' => '0ff49f36c790f8336e3f06063e44ce44',
+        'livejournal_import_class.php' => 'ec2e1c4a6e5b3fcb3451a31c5e64dacd',
+        'mambo_import_class.php' => '0fbe649c15344687786489ba225bb53c',
+        'phpbb3_import_class.php' => 'ce139a87d67621689143fc7a762f7cea',
+        'rss_import_class.php' => 'e25646d184269a8ddb6643efd855b520',
+        'smf_import_class.php' => 'cc3af24dd0fa839093c2751beeec9c00',
+        'wordpress_import_class.php' => 'af97b70b66add15707136b50257d3f2e',
       ),
-      'lastseen_menu.php' => '2f1a208abccccfe316824d1defe2c857',
-    ),
-    'links_page' => 
-    array (
-      'cat_images' => 
-      array (
-        'linkspage_16.png' => 'e0f7bd92f88b61dd38d82f952b3b1e98',
-      ),
-      'images' => 
-      array (
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'generic.png' => 'bb86189cad80d49fbfe203dbac657a65',
-        'linkspage_16.png' => 'e0f7bd92f88b61dd38d82f952b3b1e98',
-        'linkspage_32.png' => '720b47a8d0dfb2e4cb2646c6be8e34e2',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '2ccba0ca70987d6c5bfece279e25957f',
-      ),
-      'link_images' => 
-      array (
-        'button.png' => '11a491739c3c8dba29d7e25e0b2ef50c',
-      ),
-      'search' => 
-      array (
-        'search_advanced.php' => '985406e38223116b67ffe4afa714f176',
-        'search_comments.php' => '6d3c5c4d9d15e0c0adf77b859a4c054b',
-        'search_parser.php' => 'ff43c05ffddd9ce508c98e913f90e167',
-      ),
-      'admin_linkspage_config.php' => '5576e1a0eee8984ad5909d901e481b30',
-      'e_comment.php' => '13b0aa38e21d08a535276a7526cedde2',
-      'e_frontpage.php' => '0a352c2a0b559b9d930943f1928f9d45',
-      'e_latest.php' => '6ab452dd2d2d46749d5149c5fd1905fc',
-      'e_list.php' => '9a49a4d6a015fb3fff2cda7a4ef788c1',
-      'e_notify.php' => 'eab13b015f9b5fa679fef28f63d72dde',
-      'e_rss.php' => 'd213cc9cc0d5eeed3442b861e565961e',
-      'e_search.php' => '7a7416dde4bc42481cf92431f4832b65',
-      'e_status.php' => 'e1b28e610e6f89277440430a2f8747d8',
-      'help.php' => 'a8495b50a8243ebbb3e37c8bcb169184',
-      'link_class.php' => '54cdcb1762817c504b6d81ed7924ad96',
-      'link_defines.php' => '1c9c8a4d29cac5f35e2164805bb3eca6',
-      'link_menu.php' => '20fd34d3e851223a174d56533dbb83a6',
-      'link_shortcodes.php' => '614948aa511415a9d151b16a0518c4ba',
-      'links.php' => '10d1f4b2e4ac07ad1a17c60ad5cee6a0',
-      'links_page_sql.php' => 'ebe16a35037a69b93eaa929782ca66ba',
-      'links_template.php' => 'b578512e4b94cd623ee3cfcf5d0be178',
-      'plugin.php' => 'b05df4d36293f4c2e2b949b3006cc712',
+      'admin_import.php' => '2f1ea9c9ae7b5e0ea9a037038a90ed81',
+      'csv_import.txt' => '41cd26b2c2b481f0466e34b8d8ba44ea',
+      'import_classes.php' => '3451e0f1578797e4e2a5df1af4058d32',
+      'import_forum_class.php' => '9ecbba4836811fb26b202ca90663afb4',
+      'import_links_class.php' => 'dd13092b5465903124c48933b07e2fbe',
+      'import_news_class.php' => '837dbf2eea9ec62ade6cd42b8a8eddcf',
+      'import_page_class.php' => 'c9d2bf2e3a6ae1df3e37e075facc1f02',
+      'import_readme.txt' => '8fbf34b8b609b8e3dc0d4f727731004c',
+      'import_user_class.php' => 'bee1b10a0b065d6a71c5915ad28260b9',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'plugin.xml' => '54f765c143d8ffbde257cc3f71600a44',
     ),
     'linkwords' => 
     array (
       'images' => 
       array (
-        'linkwords_16.png' => '938cd3261a4a86543de6949f66d2d53b',
-        'linkwords_32.png' => '83211d6305d2d1a4f0ae8ec7fc3e9ad5',
+        'linkwords_16.png' => '21fd452fec2173b4ee96696557befadc',
+        'linkwords_32.png' => '01cdbd50dc24fb11ff220dc924936fb4',
       ),
       'languages' => 
       array (
-        'English.php' => 'ad0d4babe14fbc9317ba40e34833bd58',
+        'English_admin.php' => '1bbdecb5049ace51ab11fdd9d3cf49ad',
+        'English_global.php' => 'a15427dd0820ac956bd6461b502616c3',
+        'English_log.php' => 'fd433e1303f0e7c4ee90990d0fbd28d1',
       ),
-      'admin_config.php' => '84e9d47d8301b15c0ea3e88c2d7b68dd',
-      'linkwords.php' => '6dbac4b16a1acaef98748f838f2fbf2e',
-      'linkwords_sql.php' => '33f4d40e8da9aa758c512d4847f6d5d7',
-      'plugin.php' => 'cda5616cc5cdb77a82392fe4d34d3ab4',
+      'admin_config.php' => '3a0417b2e349c81c28f85ef036c2ab10',
+      'e_header.php' => '29523cb0323dcf6e9e82dde03a3654f5',
+      'e_help.php' => '9b1c10f46466387f9eb125d5b261e009',
+      'e_tohtml.php' => '7f219fe57650e78eccd55c8237999276',
+      'linkwords.css' => 'f1aacdb34262c08e849632181b8ebc87',
+      'linkwords.php' => '69197e1feb402eb31cf3598a7a7e870a',
+      'linkwords_sql.php' => '2369e4b28555c116266d90496d96fcfd',
+      'plugin.xml' => '83a8dd54de3db444fc2574a51d2d8e5a',
     ),
     'list_new' => 
     array (
@@ -1989,23 +1885,25 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'English.php' => '3f559f59bef22144d80b09ea599732ba',
+        'English.php' => '3e56d50d095347e0189af2d6aee7e728',
+        'English_admin_list_new.php' => '08f377851f253b194fe87d692245f81b',
+        'English_global.php' => 'd9e0a974f94390757f27a49686dad54b',
       ),
       'section' => 
       array (
-        'list_comment.php' => '5efa984e2682a3fd37cffc87d8e8f94c',
-        'list_download.php' => 'd0c7e07e3fe2372c7a8eda1562793b67',
-        'list_members.php' => 'e49b1b7cfad6246287a43e59f803cef3',
-        'list_news.php' => '7faa1d6728ff1e692aa834ac4027c4e0',
+        'list_comment.php' => '8de7c4db95ca5c39173690ad1a88f7d8',
+        'list_members.php' => 'bcd06b0a8a9de4a745ae2221b72890db',
+        'list_news.php' => 'b5ffe28641070418b8dcc5088a75ee2b',
       ),
-      'admin_list_config.php' => '6a0ec89c7fc52da5ba7cfe7ba647d530',
-      'list.php' => '40e2923674835fe1c404219d164e7a92',
-      'list_class.php' => 'd114b0dc8172a77aea197a0d42084fa8',
-      'list_new_menu.php' => 'b130b1aeb94b0c494dc77f6c58c7a19c',
-      'list_recent_menu.php' => '83c2f61863857d3ce02539a668e98083',
-      'list_shortcodes.php' => '1c4972d09e83f1945c6652126bba6248',
-      'list_template.php' => 'ca73750411b19f1b8df71c5111fe1789',
-      'plugin.php' => 'c39cfd9c145036b3cfbfca56aef150dc',
+      'admin_list_config.php' => '473d7aea7332074e3c25259abcef1357',
+      'list.php' => 'a6ee21a0160a36396fda98c19002a54b',
+      'list_admin_class.php' => '0bb63fa3bae71f89207a2980fac98ea0',
+      'list_class.php' => '7d9ab7d53ef14275a1ed875c99e50e22',
+      'list_new_menu.php' => '5bed8873dab8ff4c83ce083a2e2f3048',
+      'list_recent_menu.php' => '835dec33341e6401ca390bb46c73dd8b',
+      'list_shortcodes.php' => '6d008b40213444dc065bb94da7f15d83',
+      'list_template.php' => '84efbf0c2622c663b561a37247c166d6',
+      'plugin.xml' => 'a3e9e9ca62f6e78c59a3d4c2f8a95cf1',
     ),
     'log' => 
     array (
@@ -2013,6 +1911,7 @@ $core_image = array (
       array (
         'abrowse.png' => 'da9925bf3cee78bb965c668857bb7225',
         'amaya.png' => '974a9fb5ae38e4d592aec302594ba58f',
+        'android.png' => '7d876f7346a7c108324c43062d20a2b8',
         'ant.png' => 'f667945ec89b7883922828deec0e2fd2',
         'aol.png' => '5681ae48b5ab3fca312ade1b42658ee2',
         'aol2.png' => '5681ae48b5ab3fca312ade1b42658ee2',
@@ -2025,6 +1924,7 @@ $core_image = array (
         'blazer.png' => '681d0c56db0d9eeec59e3b804dc809a8',
         'camino.png' => 'bcf331c02452984bada0f73534e15578',
         'chimera.png' => '6a6ad07a8495264fc00798ee298f3c04',
+        'chrome.png' => 'ba29192f2ff209f103742281a2efc244',
         'columbus.png' => 'd24df5eebe796dddf95eb6630f1ce1d3',
         'crazybrowser.png' => '96283b3c49fe550c35b96c595167670a',
         'curl.png' => 'c17099e14ae52777d46079cb126349ea',
@@ -2064,6 +1964,7 @@ $core_image = array (
         'netpositive.png' => 'f3bf2146aa97c9821ce096f5d38d9ee5',
         'netscape.png' => '4dda4c2e4c32cc5f1e7cdb5b56156f5c',
         'netscape2.png' => '4dda4c2e4c32cc5f1e7cdb5b56156f5c',
+        'nokia.png' => '3daa3619b7ee467cfc8964e70cac46c5',
         'omniweb.png' => '6b1d71fb7d85a3a5739bf33fa7646031',
         'openbsd.png' => '36a1043bb8aacd3ea0a85c5f4de3130a',
         'opera.png' => '8892071cd4ecb31298ec08373d1491dc',
@@ -2080,8 +1981,8 @@ $core_image = array (
         'slimbrowser.png' => 'dd18ad6de3ed12aaca4a495a8663343d',
         'spiders.png' => '40fe2edf5a3654abbaf364559ffaa62c',
         'staroffice.png' => '9df8b5abfefb57238799b1a15b6e32d9',
-        'stats_16.png' => '4483cdd34566efe12872d9622f10499e',
-        'stats_32.png' => 'feb2eeda7244d0d78bc635daa7ac4c4f',
+        'stats_16.png' => 'ae8d1ad12dda8cafae69e3a6d061fbc9',
+        'stats_32.png' => 'ad81faec57a1f9737d3861db0247ac11',
         'sunos.png' => '5cce74b569193c10dfa03b2c8b292268',
         'sunrise.png' => 'e0ef33096f7b1bef35972c9da07124fe',
         'unix.png' => '3adfb8b111bb64bb8c01a1b8e7d1fee0',
@@ -2094,81 +1995,143 @@ $core_image = array (
         'windows.png' => '28190c1e6828a3bb5892e14c5d324a66',
         'xiino.png' => '1067d1b475466744b562d1be8c7a462a',
       ),
+      'js' => 
+      array (
+        'awesomechart.js' => '0366ce2c88167ba995b6e96a9b89187a',
+      ),
       'languages' => 
       array (
-        'admin' => 
-        array (
-          'English.php' => 'a60ef592a7abd135da04b6cc482c992b',
-        ),
-        'English.php' => '583eaac1a83c65da8e8d697ea4dd8058',
+        'English.php' => 'ba367ba9a79af78773d639e33e669372',
+        'English_admin.php' => '711bf2e8d028f3bfaa392871b04f0d77',
+        'English_admin_log.php' => 'c68e1083e4fad18691c2c0f0fa038cf7',
+        'English_global.php' => 'c2ef36833cc2ba803a046c51b640777e',
+        'English_log.php' => '4e31483180dcfca797e6b0c03f3b1e43',
+        'English_log_help.php' => 'ca2954fc0abe9067b5dc3a74fe2fb181',
       ),
       'logs' => 
       array (
         'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
       ),
-      'admin_config.php' => '67f5b9dd7f192b2dc8ca820a348f9ba7',
-      'consolidate.php' => '1a17455630a62ef78d2c14778845df31',
-      'e_meta.php' => '70eae996ff1b54a3ddc1cea0a737320b',
-      'log.php' => '5ae5383b4abb6273e4d2b45850559d52',
-      'log_sql.php' => '6593acd37950a8e486b0fc1490cf1750',
-      'log_update.php' => '619bea78d9c76a1ec0cd4c44eeda36c5',
-      'log_update_check.php' => 'f4e7f5fb3767e4c19adae8cb5e41e62c',
-      'loginfo.php' => '68c8cc11daadec40bfbae1f4b9ece53a',
-      'plugin.php' => 'b078f64e2aab381fb9f99a109dd96262',
-      'stats.php' => 'd4d9200b6df966437eb88aefc8a8e3c3',
+      'admin_config.php' => 'c52348041710c68e119431251bf7033f',
+      'consolidate.php' => '69c6ce284aa9bd1a1ab5d8da6b088f61',
+      'e_help.php' => '700c9d96cc3af2106fbf70054630b1cc',
+      'e_meta.php' => 'd261f3508292bc4c26f44db2ac76f3e4',
+      'e_shortcode.php' => '064cff87af474824fa05506096da1449',
+      'e_url.php' => '0221cb38f07ec2975e6f189685211178',
+      'log.php' => '8461a32155cfe9ed7422ceda03c3674f',
+      'log_sql.php' => 'd2f48ba525c87b3f11cf5758e68cc9d2',
+      'loginfo.php' => '43f51cb38c1b01c123cb8753d38cccde',
+      'plugin.xml' => '38394faea875d2c4b1fb64bdf9ecc2b0',
+      'stats.php' => '44eaa532f00f8fc16a4b7cd8c2ecbdd6',
+      'stats_csv.php' => '9c719277f669b2f7eda3ecf19d71f598',
     ),
     'login_menu' => 
     array (
       'languages' => 
       array (
-        'English.php' => '3be9768e81217f108c055cff9f15c8d5',
+        'English.php' => 'b4b873314d5e75e633560d2d3c0bc225',
       ),
-      'config.php' => '5f0c8229c96c4d4cf5a806bfc8d1a1c4',
-      'login_menu.php' => '5617c07086b77c79d5c1e6548928536f',
-      'login_menu_shortcodes.php' => '4232d61c5e9f401c023de6888cbe4d99',
-      'login_menu_template.php' => '88e210369bd4f7ba640e0008b274d782',
+      'config.php' => 'eec553abae991aafeeb1aa265f535046',
+      'login_menu.php' => '7c08a49f4a9deac2986d6006d0567214',
+      'login_menu_class.php' => '422a1328a4fba493175d2f65978a615f',
+      'login_menu_shortcodes.php' => 'a746480677575c5d347be2db90f2657f',
+      'login_menu_template.php' => '414dbefe491526ce5cf465bf449fe49c',
+    ),
+    'metaweblog' => 
+    array (
+      'images' => 
+      array (
+        'wlw' => 
+        array (
+          'comments_32.png' => 'b2418362a0b5c8b88861f1d1b5c2430f',
+          'e107_icon_32.png' => 'f7050a3e321bc3df394e28a76e61d78c',
+          'e107_icon_32_wat.png' => 'b514b28940a4c19cb7b9ba8ea1f8dcab',
+        ),
+        'icon_16.png' => '0ee274d96bffd4f89d04231d0d52d96b',
+        'icon_32.png' => 'd41c4a47e15e4c3d7ad72f82d40be745',
+      ),
+      'languages' => 
+      array (
+        'English.php' => 'b36b63c7c0d4d6fc97145a1c34e7a0ba',
+      ),
+      'admin_config.php' => '66d974054ea5fc8883995b5885efab11',
+      'e_header.php' => '60e9790bc0eca538d73a699b8f149bb9',
+      'e_help.php' => 'd15c91305ba55dec5eee3fb83b523b1a',
+      'metaweblog.php' => '65dc1229630412da705102fc8d0dcf5d',
+      'plugin.xml' => '07f0c35468c6a758d0886ffefc960890',
+      'wlwmanifest.php' => '43e2fba9491eea19fc1dab855f733e86',
     ),
     'newforumposts_main' => 
     array (
       'images' => 
       array (
         'logo.png' => '06cb23ecc9cd39141194e1016a771f80',
-        'new_forum_16.png' => '6f37a1029e4ffa1a22a65a07269c4a16',
-        'new_forum_32.png' => '8e92602725475253ed57ea7625b19bf2',
+        'new_forum_16.png' => 'f973d59b67f3cafbdce469bb76756ec3',
+        'new_forum_32.png' => 'd46a2b1e57552f3e8aae503e31d98714',
       ),
       'languages' => 
       array (
-        'English.php' => 'cbabc36202b6ab51003f0b859fb14598',
+        'English.php' => 'dd53cad3e46082a35dc1fdd6ccf39c72',
       ),
-      'admin_config.php' => '965609648b5052dad40742d8c76b8bf9',
-      'newforumposts.sc' => '92de176e2d3503f91b9389d053d34348',
-      'newforumposts_main.php' => '53e0ce09459853547bd35154e74f25e8',
-      'plugin.php' => '81caf517e35d6fdb13bf56fb6ab5395e',
+      'admin_config.php' => '6686c5faddb998fe6f28161c24484b41',
+      'newforumposts.sc' => 'c451cca6ba0f0e7846e94a7e743e4c48',
+      'newforumposts_main.php' => '3a290391979d594f7a2fed2f7e75276b',
+      'plugin.php' => '4e5a763c9691eba131e7a640906c73f8',
+    ),
+    'news' => 
+    array (
+      'languages' => 
+      array (
+        'English.php' => '7446c28e9c348516c4cfbdaf6f16d2a0',
+      ),
+      'templates' => 
+      array (
+        'news_menu_template.php' => 'cd06c148db1f76a63733333c29dd2a0f',
+        'news_template.php' => '95384a14c3de12a264d35297c9406323',
+      ),
+      'e_featurebox.php' => 'f39d68b2336e42afa8658f37f751151d',
+      'e_header.php' => 'f363632b9893c720f98931c0693edfcc',
+      'e_menu.php' => '5bd43608aee20ef1f8dae392e5c69f8a',
+      'e_related.php' => 'f219b7353525f8687dd7eb54c2fffa19',
+      'e_rss.php' => 'bb339632686af1f8b9a9f55c7763fe48',
+      'e_search.php' => 'c72dca3818309e5824c85914be93d007',
+      'e_sitelink.php' => 'da08abd08754a98759acf35d7e28ca2b',
+      'latestnews_menu.php' => '55af451bf01bb46f0e644086497d589c',
+      'news_carousel.css' => '93f613b4d71895d5c93cbb8b5b0af2f9',
+      'news_carousel_menu.php' => 'b7019e4ebfd4747e61dba2d8acbbb12a',
+      'news_categories_menu.php' => 'f36a9525385f50a51ffeb464c24673ee',
+      'news_months_menu.php' => 'e84142eba40241a384e2d83b8591cd0c',
+      'other_news2_menu.php' => '1c0bf7a3fa798f2729faab70274cb6af',
+      'other_news_menu.php' => '7a9748a1e4a39a0c878f1187bd247647',
+      'plugin.xml' => '0749d096dbeac5955d2aa7194b5a3815',
     ),
     'newsfeed' => 
     array (
       'images' => 
       array (
-        'newsfeed_16.png' => '854bc5f8ddf61c6dfbe6c32e7bb7c0d1',
-        'newsfeed_32.png' => '6ff097b991a0c24947a29c16433abfdd',
+        'newsfeed_16.png' => 'a5e0104f53a91caf4fde33f5c6d341eb',
+        'newsfeed_32.png' => '248333c6047899fe3c3347232ca65b6a',
       ),
       'languages' => 
       array (
-        'English.php' => 'a166d6243430b0933b783255023239f8',
-        'English_frontpage.php' => '6bdb1ac20906e1242f6aacc5981325ff',
+        'English_admin.php' => '6bbbb390eacaf920722cbbb8c53cd476',
+        'English_frontpage.php' => 'ee842f62f07c257983ec2eba625a70e5',
+        'English_global.php' => 'b60fa3cb8db96379e8532911970679b5',
+        'English_newsfeed.php' => '5368bc4307798287fd4084dea3f362f2',
       ),
       'templates' => 
       array (
-        'newsfeed_menu_template.php' => 'a26b82efdcad76104273e02e268bcbe2',
-        'newsfeed_template.php' => '5a1b8f38599596ff798b4df30873720f',
+        'newsfeed_menu_template.php' => '8ad31565ed37c8d0f303805804de8d3a',
+        'newsfeed_template.php' => '31c560f79919f97e6269c91191e53443',
       ),
-      'admin_config.php' => '67d91a9c29acd1f52b4f12d36b3099e1',
-      'e_frontpage.php' => '2a8967b05bef4a2eb6b771ca44e6bf01',
-      'help.php' => '7942458e34eb69cdad92cc7d9454f626',
-      'newsfeed.php' => 'b822c0fa9ace6409cef05d73eeae3ff5',
-      'newsfeed_functions.php' => 'a06e7301f737550e69d18c85dc1a3153',
-      'newsfeed_menu.php' => '4ab274b2b3dde37f3807457aaeead9d9',
-      'plugin.php' => '9518316c3bbd37326a4c1383ae1d550d',
+      'admin_config.php' => '1c9eb1cca876854c47bf4d89264136ff',
+      'e_frontpage.php' => '515d98be9f5c03689cdbc45da69ad4ec',
+      'e_help.php' => 'be16140a52d66852ae49f7e5e97c3170',
+      'newsfeed.php' => '25136682e23f432075e06102e89d7306',
+      'newsfeed_functions.php' => '9a67ad5e0c36a2800d2764d8ba8ea35a',
+      'newsfeed_menu.php' => '63ff11c8eabc5986bc843c05d7b36c42',
+      'newsfeed_sql.php' => '6789e7b0c075617cc0bfe7fd7a2fca78',
+      'plugin.xml' => '5de5cad1beabe4e0242ff6654f4e69df',
     ),
     'newsletter' => 
     array (
@@ -2179,13 +2142,18 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'English.php' => '5fe08735f2bf070770827d051fcd69cd',
+        'English.php' => 'fcf69b1cf9200d761afa6d9ff2f2dc2b',
+        'English_admin.php' => '8b042b6951e71e1eb181643a2eae2a77',
+        'English_global.php' => 'de0d0cad65e44d5401b67c2aa4acf163',
       ),
-      'admin_config.php' => 'c6e4733cffed8bac3cbc27115476404e',
-      'newsletter_menu.php' => 'f8b8ab30443dea6a8dbb2e27c17799d6',
-      'plugin.php' => '5c491459a08ab61854fb5a8f56230f66',
+      'admin_config.php' => '8f9b87517d1d3ca4b1aed6a8776955fd',
+      'e_mailout.php' => 'abf1394b115e29a07061fb83f03972c7',
+      'newsletter_menu.php' => '3dd77b110391fd1fd62ee14f051bf373',
+      'newsletter_sql.php' => '5a1af3b93b014ab6ccecb8bda24bab9c',
+      'nl_archive.php' => '699f08e93396aa8d8b57edfaba4889a6',
+      'plugin.xml' => '080a548c46bab99558d4298396f73819',
     ),
-    'online_extended_menu' => 
+    'online' => 
     array (
       'images' => 
       array (
@@ -2193,84 +2161,44 @@ $core_image = array (
       ),
       'languages' => 
       array (
-        'English.php' => '80ef79863e369f62df51b9659551a432',
+        'English.php' => 'b75f0af465adb2f5a115b0dc51f6a293',
       ),
-      'online_extended_menu.php' => '16d72e57d0cae0206e0a079638f23d83',
+      'config.php' => '216a333eb93ba72d9c9fecf9688afc30',
+      'lastseen_menu.php' => '0f9d0c91d7c124d27c5a54a6e3e5ef09',
+      'online_menu.php' => 'cf0c7974bcff61f3995bf72150239a47',
+      'online_menu_template.php' => '42277c4b0b4ad98b4289814e3f7081a0',
+      'online_shortcodes.php' => '8179a53aae5af11bf0160d37f6f82854',
     ),
-    'online_menu' => 
+    'page' => 
     array (
+      'css' => 
+      array (
+        'page.navigation.css' => '73827273a151c433809d3ebf05cf2aa0',
+      ),
+      'img' => 
+      array (
+        'collapsed.png' => '902a7292b93115ad76ce161ac9cd2265',
+        'expanded.png' => 'f17f8b743c6c9659f4c76ca8dbf9d614',
+      ),
+      'js' => 
+      array (
+        'jquery.page.navigation.js' => '87f3b2f59b257c08da187de33512fccd',
+      ),
       'languages' => 
       array (
-        'English.php' => 'e7753b75880a1b606b6f525d736893cb',
-      ),
-      'online_menu.php' => 'ba0b67252034c72c5a002aef708082bc',
-    ),
-    'other_news_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => 'b04593965071e6f5bd46286fadcec456',
-      ),
-      'other_news2_menu.php' => '23ffe78f7e74092c6505bec603c04ec0',
-      'other_news_menu.php' => '43943c839fbd809ae19b75ca7b296451',
-    ),
-    'pdf' => 
-    array (
-      'font' => 
-      array (
-        'makefont' => 
+        'English' => 
         array (
-          'cp1250.map' => 'e100a417c3569cc2b7b8c1e976db4f14',
-          'cp1251.map' => '03af6a71a67c0a5a99e16af4bdf0889f',
-          'cp1252.map' => '2c892997d01d2138d800f5318bd76ad0',
-          'cp1253.map' => '169376db7929541ef8950dd888f53c9f',
-          'cp1254.map' => '6016c6d3a68c1d25696e64879b6527fc',
-          'cp1255.map' => '0359cc7d06098a20400118788c7e1468',
-          'cp1257.map' => '91b18d3c622bffa43003f38a60d15138',
-          'cp1258.map' => '2d92adf84aed86b29765234a77b312bb',
-          'cp874.map' => '3a3d272502dc21d4d12f3922633ca47f',
-          'iso-8859-1.map' => 'a0f13acbaa06faf3fe240e1c49b7616a',
-          'iso-8859-11.map' => '96aee891ad9f8c33f83b19c9b5fdadb2',
-          'iso-8859-15.map' => '3bd2a4bd4eb8130add17624e128e190c',
-          'iso-8859-16.map' => 'd1b40c31c1047d85881db30baee1f96b',
-          'iso-8859-2.map' => '098cf77f5a3c281af86dba50f5389f58',
-          'iso-8859-4.map' => '16c5ed9d616ffc407a560b3a92453f57',
-          'iso-8859-5.map' => 'b9d6ad1f178c189aadf370ac9fe308af',
-          'iso-8859-7.map' => 'bc6f9bdef50e1f802e5b17bd70b36d0d',
-          'iso-8859-9.map' => '4d8ddb1b69f39e44b88addd04269e684',
-          'koi8-r.map' => 'ed1be11b650e23bcf0804524d0299e73',
-          'koi8-u.map' => 'd445ee6c5ec5f2edd31fdc48724dd168',
-          'makefont.php' => '412c5335ef10e2fed8038a8ac5798971',
+          'English_global.php' => '4623e20daaf6c94d744f3395f61b8ffc',
         ),
-        'courier.php' => '16234bee90ef280e42cb167d1ba2c60e',
-        'helvetica.php' => '3dbdc93d4d688b45bfc6f4e49c45116e',
-        'helveticab.php' => '0e327a1ae8e5aaec1b28c5c366e14237',
-        'helveticabi.php' => 'f3d59db2e9426ac9e7f110705b07b7d7',
-        'helveticai.php' => '29a074a2a45c43a87630f46e22436b2c',
-        'symbol.php' => 'fd6c383c3cf14278d64b5cb1e8286890',
-        'times.php' => '1f954b34c3d40187b7a67b8dc4535c38',
-        'timesb.php' => 'd6197cb638addc463e2bc020fbf730a9',
-        'timesbi.php' => '1e77620e40e3e4bba0d29da4b10f55a8',
-        'timesi.php' => '9c92d3693094e7c46cfb6c6416369971',
-        'zapfdingbats.php' => 'f4f9f7de4fc64851280d29dfafc868d1',
       ),
-      'images' => 
-      array (
-        'pdf_16.png' => 'f79c40d961e1125010f572634fa61f8b',
-        'pdf_32.png' => '7815b3da903470812856fe16cd53bc97',
-      ),
-      'languages' => 
-      array (
-        'English.php' => 'cdc4aab2e1c8caf5ddf209e32946c623',
-      ),
-      'admin_pdf_config.php' => 'ab75370cbef1f9e7d32448717071eb82',
-      'e107pdf.php' => '2911ada133d8c7b104f553e8232361e1',
-      'fpdf.css' => '35c07d5049ac6e55b8ab473c6dc38bf0',
-      'fpdf.php' => '47653b1a92f6a51cec644abc9b267bdc',
-      'pdf.php' => '9c05a56fbb296b60cddcfc68ec1ae2c3',
-      'pdf.sc' => 'cd179b47d126ac55eb48cdbdbd4c1a19',
-      'plugin.php' => 'd5aba62f42496d21e3ec8d48ded5b3ba',
-      'ufpdf.php' => 'fe9444d6d9c0553bd06fc1904b0df484',
+      'chapter_menu.php' => '6ed2176095ab8d29578a8554ad52bcd4',
+      'e_related.php' => '2ffa16d0f3f7cef3bb3b4796e51639b2',
+      'e_search.php' => '084dde6082f2d38ba33bc9a13a67e95b',
+      'e_shortcode.php' => '8545b229e80ee9099b7c2634fff17721',
+      'e_sitelink.php' => 'efb29ccef74d5be8b58c014ff2b5c44f',
+      'page_menu.php' => 'aba88c0ab7654ec626380f040c1fe4d7',
+      'page_navigation_menu.php' => '8ad2cb8a865fefbdc894cdb471352131',
+      'plugin.xml' => 'e843e8f95025c026485b5548a5606148',
     ),
     'pm' => 
     array (
@@ -2287,35 +2215,43 @@ $core_image = array (
         'mail_send.png' => 'ac54828ad23a1e10bc84330f0b754a12',
         'mail_unblock.png' => 'b949c53a1ce63cc57f47d3335ea0468f',
         'newpm.gif' => '4d16f5fbaa8e76067053c8c901972bc4',
-        'pm.png' => '1adf028fe9c30aa21008b1c7dbc94243',
-        'pvt_message_16.png' => 'd327402ad98c005569023d691458c83d',
-        'pvt_message_32.png' => 'c466117afa172593078f2aae10394306',
+        'pm.png' => 'c428561dd9560f8db47e646a6d8871c5',
+        'pvt_message_16.png' => 'df0fa872fbabbe700ae0a949e1716c24',
+        'pvt_message_32.png' => '2be75a55c6bcc3b8c8e14787f7e16a3e',
         'read.png' => 'c7bacd62b460d2d05c210030c8733420',
         'unread.png' => 'ad2e1da81983bb1bf0c1aeb310cd9c17',
       ),
       'languages' => 
       array (
-        'admin' => 
-        array (
-          'English.php' => '8c6ed48f14ef1bf19bc22f97b48494db',
-        ),
-        'English.php' => 'ac6ca2e308d6d15e11b4d322298bf3c9',
+        'English.php' => 'dc44121d18af6dbbda55b9d044a7b9bb',
+        'English_admin_pm.php' => 'f5520434f5a5031d8b81785b96482a1d',
+        'English_global.php' => 'e93e25b6ffd8a4446daf18d5b7e0cc04',
+        'English_log.php' => '15891e8dc5dda03c40a694d8af587677',
+        'English_mailer.php' => 'd4152da83482731d05aafc0d2fe7c84a',
       ),
+      'url' => 
+      array (
+        'url.php' => 'c82d7e3bf213e890aa9a6489be24339c',
+      ),
+      'admin_config.php' => '23d4e5d9b35b35a22d64d3f9fb6e5cea',
+      'e_cron.php' => '1ebd8192bc4e0f042db095680ce785a0',
       'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'plugin.php' => 'c89f4e634476ef16447a5375f39ce495',
-      'pm.php' => 'a5aa043661c8230e93b8cb4effcc8007',
-      'pm_class.php' => 'df040f82c02af492432c132c0887a9f5',
-      'pm_conf.php' => '4219da868fbcd4ea43ecb050eec83fac',
-      'pm_default.php' => '0213fb9bcfe60d37041f44136727649b',
-      'pm_func.php' => '4b9c0a299c8995c1e6f6aab4071d2e17',
+      'plugin.xml' => '2febc3a0300123696289054e6fb891a3',
+      'pm.php' => 'a3b47e387bb62ebd1204991300835725',
+      'pm_class.php' => '226948043cc22f274c98bcfe5af20488',
+      'pm_conf.php' => '0c948845a1ced39c05cc783a18a8687f',
+      'pm_default.php' => 'bcc49601e7eba6c9809508dbc6f61239',
+      'pm_func.php' => '29ddb2d67947f25f0a12ba59c98b09fe',
       'pm_notes.txt' => 'df26332907da1f35c4731d8893aea23e',
-      'pm_shortcodes.php' => '944e2f2957ae880e49684f724cad8ab1',
-      'pm_sql.php' => '4608486c1027c6485dc32674fd536dc5',
-      'pm_template.php' => 'cc1bdd12537404e75f9bd6dca8022292',
-      'pm_update.php' => 'e66fc6610e273471a212471e07598710',
-      'pm_update_check.php' => 'a5b341b5373844cdfc1f961fb3d3151f',
-      'private_msg_menu.php' => 'ae1b1a633de92742b1d8460a6fa5d9fb',
-      'sendpm.sc' => '8e2ef687982946d62df06bf6e9bdbc24',
+      'pm_setup.php' => '2f4bd3184b83323b2b47ebf4f011dd30',
+      'pm_shortcodes.php' => 'ff68f2b20fb5d1e73916b591fe4d82f3',
+      'pm_sql.php' => '3e324d2263d7a25fe5a58ac320df09ff',
+      'pm_template.php' => '0a423f65e4aa4b29fa57ba4595a0cdd8',
+      'private_msg_menu.php' => '7ab804fe2c8570aa4208390ce86ce484',
+      'sendpm.sc' => 'b5d2100e03672b6e4cbdd8a947c40620',
+      'test.css' => 'bf0e2137d478807ed1725017b2bbe886',
+      'test.js' => '0a631813b4d5ba7bf271d265f46b97a0',
+      'textboxlist.js' => 'd4f923855e2b10e2f411aed13e70e242',
     ),
     'poll' => 
     array (
@@ -2324,12 +2260,14 @@ $core_image = array (
         'bar.png' => '37d6b48106f4cdde2f549720dfd0cf79',
         'barl.png' => '11f7a33d11a71e4dc52254ac6dd831ed',
         'barr.png' => '117b5de6bc7c859de48974d01887d738',
-        'polls_16.png' => 'dfa11ad7ecf088f5bc50152e3c8318de',
-        'polls_32.png' => '7c98815961fc0215e8bd38aef5e1c295',
+        'polls_16.png' => 'c909fe17cebc3a5e3bffaae376470176',
+        'polls_32.png' => 'c43e8d3d6b0a2c6a0fe8c4b6e4838934',
       ),
       'languages' => 
       array (
-        'English.php' => '36b348fdefe092023ee513a4b1e6aaae',
+        'English.php' => 'e3453d3f6faa97a3410bcdc4d25b2817',
+        'English_admin_poll.php' => 'b0bf0c492a32e1f696227840248d4f23',
+        'English_global.php' => '38d069a83b169bd16d0014dbbdf7f1e6',
       ),
       'search' => 
       array (
@@ -2337,47 +2275,42 @@ $core_image = array (
       ),
       'templates' => 
       array (
-        'poll_template.php' => '0c83f7e4984e9a0b8bbc196262cc650f',
+        'poll_template.php' => 'd15b2b884a827b2e24152358dae2f8fa',
       ),
-      'admin_config.php' => 'ba8fbd550cb0e34cdf445d117f5c93cc',
-      'oldpolls.php' => 'ae016f0aa026a6a9de8af8d24de53ff9',
-      'plugin.php' => '6dff875dd04ce5d602f4b64b7732610e',
-      'poll.php' => 'b51353ac9b1d4f9664b954d528644547',
-      'poll_class.php' => 'd5e58aa6c9ab5b63d51ab7b36fdf52f0',
-      'poll_menu.php' => 'b2e1d5b8d5e8cacf51e2724446b663c1',
-      'poll_sql.php' => 'ffe53748dbd1504f7c4204027814064a',
-    ),
-    'powered_by_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '4e4018bc11471818ca7256c722e28c13',
-      ),
-      'powered_by_menu.php' => '030115b6ab06ef38b31510aec2b11ee3',
+      'admin_config.php' => '577b88543a03b965a3e66a77c66b55a2',
+      'oldpolls.php' => '684c9812882206e3896be8601992fbea',
+      'plugin.xml' => '819cb994289c1d81185b030381a47396',
+      'poll.php' => '2c00349b55e898416b8ec7b2570c60e5',
+      'poll_class.php' => 'ca4eee1c0ccd5e135a2f2eecc4dd073a',
+      'poll_menu.php' => 'bfa15eb800ad5026763292e9bc467086',
+      'poll_sql.php' => '737b8fd86f1bd110750a3951f91de456',
     ),
     'rss_menu' => 
     array (
       'images' => 
       array (
-        'rss1.png' => 'c25701747091968c0f31dfc76f2cefbd',
-        'rss2.png' => '9382a50cb221e9e6b829df2a7f52d461',
-        'rss3.png' => '0a9bb4cb46a75b34db034ce6f2b763e6',
-        'rss4.png' => '9f9b20c3cdd5cee6072eda153278bef7',
-        'rss_16.png' => '276d6e7671548aea71f2c64b026d731f',
-        'rss_32.png' => '22602a166d61764a13184506dd75ea6c',
+        'rss1.png' => '9f64a2ca9d7779e5e7b61fbb4078f2b0',
+        'rss2.png' => 'd6b9e345e98b794845331a890616cac7',
+        'rss3.png' => 'ba7ab2130a34daf1ee89f62856a4fe6f',
+        'rss4.png' => '71a5149dceffdae203aa569c2100657c',
+        'rss_16.png' => '821ea39d603b367f4657c06f110183d0',
+        'rss_32.png' => 'e890b9d01ac9028bf56a9d139a2d438d',
       ),
       'languages' => 
       array (
-        'English.php' => '90ba4c3b30c128eac2a16d0007416c89',
+        'English_admin_rss_menu.php' => 'ebc6368db06a98f713a12206741138c4',
+        'English_global.php' => 'b1f198e4f2c6934a6d1ca7f280e2cd0d',
       ),
-      'admin_prefs.php' => '511047205732e1f3a5098052e3a2eb4e',
-      'e_meta.php' => 'cec75314cf27f19abc2ee1cbaa15c99a',
-      'plugin.php' => '46b1e37c9d18e6872083425afb3115fa',
-      'rss.php' => 'd2da7783fcbfe777929b54f93bf16a73',
-      'rss_menu.php' => '1be0ce84109cbbbcdadf68cc93fb5c20',
-      'rss_shortcodes.php' => '5f78ac16412442bb16f729c6e71c582a',
-      'rss_sql.php' => 'efee18037cab9fbf35cdf81f97efc2a3',
-      'rss_template.php' => '023614657d162b0f155fbe50e6e3dce2',
+      'admin_prefs.php' => '6ef1f80a745d676b10cd81bf4b2d3281',
+      'e_meta.php' => '3daea67e398f1f2adf828655a044b828',
+      'e_url.php' => '7bf6808dba697149a23ed4b60be89c71',
+      'plugin.xml' => '1b074fa08f89bb628701e1b3dd1d42ac',
+      'rss.php' => '1fb1baa8ff11a2b4b1b984e3cc5a0c67',
+      'rss_menu.php' => '533ae557e54f5e15a1afb44fbff01a93',
+      'rss_setup.php' => 'bab98c811cf2901bcf2d7740b8d267a7',
+      'rss_shortcodes.php' => 'd955d7a2311046fcf8bca65c27214f07',
+      'rss_sql.php' => 'f4e7db952521abb0891bd5e182531b00',
+      'rss_template.php' => 'b51c8905f67dee9d8d451a04bdeacc5b',
     ),
     'search_menu' => 
     array (
@@ -2386,640 +2319,613 @@ $core_image = array (
         'search.png' => 'f1f617ae57346558eefce7d0b79b71c2',
         'search_32.png' => 'e0035406d30341e044c130ec0543a6c0',
       ),
-      'languages' => 
-      array (
-        'English.php' => '091e3795b604b11354ad70dfc36ada65',
-      ),
-      'search_menu.php' => '7f656b728eb7b34a48043bda3b35d29f',
+      'search_menu.php' => '0fb80201411e661f0588d26265b08850',
     ),
-    'sitebutton_menu' => 
+    'siteinfo' => 
     array (
+      'images' => 
+      array (
+        'valid-xhtml11.png' => 'dc71b96214e7b1d1df0db38575f42313',
+        'vcss.png' => 'adcc065d9d9ce649cba7c03f58f3eed8',
+      ),
       'languages' => 
       array (
-        'English.php' => 'fdae05c8659df7d21edf91d0bd8aaa9d',
+        'English.php' => 'c5cfbd24e2262a913aa875bbeb362865',
       ),
-      'sitebutton_menu.php' => 'a798130948fa4626a4a576f34c71ebf3',
+      'compliance_menu.php' => '2e74ddd857d767f37959757568eb399b',
+      'counter_menu.php' => '9296dd2cd6480b36caef04fddad4a876',
+      'e_shortcode.php' => '2f4747fbd0bedb1cc9907cd840012a0a',
+      'plugin.xml' => 'e09d81d580d901f1b6b11cf6adb3b685',
+      'powered_by_menu.php' => 'f2dd082677e2474438abd0d9477243ad',
+      'sitebutton_menu.php' => '9e1b95fccf7b6b78bf4da8e912d8b992',
+    ),
+    'social' => 
+    array (
+      'css' => 
+      array (
+        'fontello.css' => '482b6acc28ce2993a09ae6c687b35e16',
+        'social.css' => 'a22ad46f01165df970fff30b4abc1184',
+      ),
+      'font' => 
+      array (
+        'fontello.eot' => '229a9a8f2ed6367026f6746f5ca06dfa',
+        'fontello.svg' => 'b8968438ba61c2342cda914cec336bb0',
+        'fontello.ttf' => 'f7a752818fd1fa10e91c1dfff5f7cf7b',
+        'fontello.woff' => '064b3b6e2b5d1b168f3a70c0148d76bd',
+      ),
+      'admin_config.php' => 'aa8703d044481934621654327590a6f2',
+      'e_admin.php' => 'd26a58e918ed30d07a2e1af503160d5f',
+      'e_comment.php' => 'aeddb5a0dd055621314734f48cd0a32b',
+      'e_event.php' => '317aef68946d7fd4ddfb65e72b0a3d6f',
+      'e_header.php' => '61c50d580be76232fcb85da5e7cc59a7',
+      'e_shortcode.php' => 'dfb5768992f03df1961490db2cb54b31',
+      'fb_like_menu.php' => '3a5a7def2e8ecc6407960bb18e1fe657',
+      'plugin.xml' => '3fa0814e91e62511cbd5ff405bfb798a',
+      'twitter_menu.php' => '2a959855e436a2d7f79cec62241c49e8',
+    ),
+    'tagwords' => 
+    array (
+      'images' => 
+      array (
+        'tagwords_16.png' => 'f99622bec009af6cb1f3371d4470ac79',
+        'tagwords_32.png' => '34497386968e7da2fe100049f4ed5ee7',
+      ),
+      'languages' => 
+      array (
+        'English.php' => 'ae0cb0b92a3edc7fa26420d8a4d59818',
+      ),
+      'section' => 
+      array (
+        'e_tagwords_news.php' => 'e2139281f9daa3e8b25065ffd8b53480',
+        'e_tagwords_page.php' => 'd811871ea978897a3a7b41cef36fab9a',
+      ),
+      'url' => 
+      array (
+        'url.php' => '10feab60503a1e339f23c38145aa5904',
+      ),
+      'admin_tagwords_config.php' => 'f3a6f3c919910627aaa76e9369eea249',
+      'e_event.php' => '870fb5b837132f3fd5f33d3e99e765eb',
+      'e_meta.php' => 'e31804993a0da5bef60b5809d7020326',
+      'plugin.xml' => '46dc021625f26ff2daf8e6501d852a8c',
+      'tagwords.php' => '7c0d90a79bf00b411b97e8823b31409a',
+      'tagwords.sc' => '34906e1876bbf5311937af47b9ae990b',
+      'tagwords_class.php' => 'f4d2324ee0ecfbe3be34c3a7ad705485',
+      'tagwords_css.php' => '3c16290b0cf123d19e84d4ec8b67c5f7',
+      'tagwords_menu.php' => 'fed9d3fb948fa1289e58fe55fb2ac40f',
+      'tagwords_shortcodes.php' => '12adbdea12ed36a57827d5cbe17e2bbe',
+      'tagwords_sql.php' => '235b3b8ba3f8fbc190564f7b2c0c42e2',
+      'tagwords_template.php' => '1e97537c9b612250343e239097bb06eb',
+    ),
+    'tinymce4' => 
+    array (
+      'images' => 
+      array (
+        'icon_16.png' => 'f12b167aa10fd7dbc3599418b11a7954',
+        'icon_32.png' => 'fd2ed10ab677e8da8b9790d01c8f59bb',
+      ),
+      'plugins' => 
+      array (
+        'bbcode' => 
+        array (
+          'plugin.js' => '1b0eca0c35ec8f423a8536f4f2f2aae3',
+          'plugin.min.js' => '1a723bb66a9eda747c89533a75b49c7a',
+        ),
+        'compat3x' => 
+        array (
+          'css' => 
+          array (
+            'dialog.css' => '73bac0bd6ed106bab513b7be6cf3d1ba',
+          ),
+          'img' => 
+          array (
+            'buttons.png' => '245a1554d2b0d5c678cc6698884ba929',
+            'icons.gif' => 'd94ad12342d245beaf3c5274e5ce25ae',
+            'items.gif' => 'd201498a710fc8aac6e117820b9814b7',
+            'menu_arrow.gif' => 'e21752451a9d80e276fef7b602bdbdba',
+            'menu_check.gif' => 'c7d003885737f94768eecae49dcbca63',
+            'progress.gif' => '208a0e0f39c548fd938680b564ea3bd1',
+            'tabs.gif' => '73604ff7e567051a1aae352e98989229',
+          ),
+          'utils' => 
+          array (
+            'editable_selects.js' => '0872e08ca2085fe8401199c256ce0749',
+            'form_utils.js' => 'f52de337ced3af1f261f5dc7c0c87ee7',
+            'mctabs.js' => 'c5c30f5d72f7979b842380d3a784ead0',
+            'validate.js' => '14e89ef667cf72d8bb0ef8c5f1a43cc1',
+          ),
+          'plugin.js' => '85ffc4ac4173e79b83ca9edaf728662d',
+          'plugin.min.js' => '441e7bba0626484443d3d77e1aebd253',
+          'tiny_mce_popup.js' => 'a1e838f01ce5a45aec782965f6dc72c3',
+        ),
+        'e107' => 
+        array (
+          'img' => 
+          array (
+            'logo-bootstrap.png' => '5573b567e9c393916a13429f3bf6459d',
+          ),
+          'dialog.htm' => 'b0fe6ce06532ad1f48b0882ad076166c',
+          'dialog.php' => '9ef1de497fe63220e35a34ea679d951b',
+          'mediamanager.php' => '5a832155bfbf60e0ac09de57e04972d1',
+          'parser.php' => 'b70de6cbf142574033311a1bbfab678a',
+          'plugin.js' => 'e507b3d070f4c7de1c215c5ce0e0fb8a',
+        ),
+        'example' => 
+        array (
+          'plugin.js' => '991c875424b78121bbacc0beba7c3120',
+          'plugin.min.js' => 'ba669082d7272d4a9e69fb2fdb82c293',
+        ),
+        'smileys' => 
+        array (
+          'img' => 
+          array (
+            'angel.png' => '68fe01426850d87ee16cb4be070f955d',
+            'confused.png' => '657ba33bddf3cad2526a2593a81b9fd9',
+            'cry.png' => '8ff4101af4d1a84a08c103a12c7d13fc',
+            'devil.png' => '978ed7fa0ac043d5deb37cdf8cea44bc',
+            'frown.png' => '9ff25de26963a9f299f7e1b0b2c5d611',
+            'gasp.png' => 'a074609293a0c844a5e8114792368416',
+            'glasses.png' => 'f3269885e3df76357df34092b6451df2',
+            'grin.png' => 'c134d8f268a5db5459454a30c8269b40',
+            'grumpy.png' => '631b077a6d192e1a156be9652960daac',
+            'heart.png' => 'f748b478e1fcd0df1d8bfdbe53d78b61',
+            'kiki.png' => '424e0de0ce32893952e3634d94d1aed6',
+            'kiss.png' => 'bd712ffc7382690dad9ec95ef3932196',
+            'pacman.png' => '6d6efecd48d98bd369f36006f199f27c',
+            'penguin.gif' => 'edb73590b2b135b5c768f5df9f36d5ca',
+            'putnam.gif' => '7dd415eae72ec162823b74c6f482bdd9',
+            'robot.gif' => 'be7e4e56dc78a370a2c3bcb137a5f95a',
+            'shark.gif' => 'f39b26dc9fe7ed4b56f6457c245988af',
+            'smile.png' => '419a96f5b5f9c00b57ffa4b287fcb796',
+            'squint.png' => '2e9e27cd1b2d9d691129b34a2f853755',
+            'sunglasses.png' => '9f678dbe9a5f4a32ac91379a90063285',
+            'tongue.png' => 'c5180642f292eff300f17c3617f4939f',
+            'unsure.png' => '6cfa93b7b33e6e43635e3cc41d75642d',
+            'upset.png' => 'caa8e4c0fdab2a2aa7a6d713ac77909d',
+          ),
+          'plugin.js' => '8d14a29bde83f41cace0033d3a542a7d',
+          'plugin.min.js' => '1ea41b734c25483424dfe6381ed98895',
+        ),
+      ),
+      'snippets' => 
+      array (
+        'bootstrap_row48.htm' => '0ce54dff0c2c15856fd1d5508932eb46',
+        'bootstrap_table.htm' => '60c93c01c126da321476ddd7320eec1b',
+      ),
+      'templates' => 
+      array (
+        'admin.xml' => 'aaa05f156a1d0fdf5c425642d3eaab2a',
+        'mainadmin.xml' => '96be29fff88c5cd0e235995df2365ffb',
+        'member.xml' => 'ff709f95fb2dd7d9c378a9bb7e14f6f1',
+      ),
+      'admin_config.php' => '3771354ddbf5e0708685dd35c44928f7',
+      'e_footer.php' => '3942a6d75feb2831b8594b4c117b2112',
+      'e_header.php' => '5a5c111c9d216f79236e8f786fff6337',
+      'editor.css' => '88a890e2bdcbbc11730fd3fb31b99c35',
+      'plugin.xml' => 'd1b3d0f9a267dbc2be94a02d66b09b79',
+      'tinymce4_setup.php' => '5b4762d7021c442444930e10f944f803',
+      'wysiwyg.php' => '68dd06cef2510c69c1e19f94680c906a',
     ),
     'trackback' => 
     array (
       'images' => 
       array (
-        'trackback_16.png' => '9092b95903c88570dab202d2a5892ca2',
-        'trackback_32.png' => '323e78071fe7dc88aa05034102403456',
+        'trackback_16.png' => '480d0a956f6e2576ab4e4f6f37d4685f',
+        'trackback_32.png' => 'f519629ab8b3e9a13937309f2884a133',
       ),
       'languages' => 
       array (
-        'English.php' => 'e482c4c1b04b71a713e8aa21cb4b047c',
+        'English_admin_trackback.php' => 'da0370dfc89641848577d4e7ca2cbde3',
+        'English_global.php' => 'ec99f07a8cb21d6d797c1fcd853b7724',
       ),
-      'admin_config.php' => 'd1222ea1494b8b8c06247e72fb5d2f9f',
-      'e_meta.php' => 'dee500df70205a00f524a0b0720205c9',
-      'modtrackback.php' => '97d65e889ac0682d106186d4c989e6ca',
-      'plugin.php' => 'faaf0e70297414b7f61db1a8f030a02c',
-      'trackback.php' => '68d35830a04bc5283cf0ab718b3ee2f2',
-      'trackbackClass.php' => '40cf1ea472926781f7ce51d0a9653f6e',
+      'admin_config.php' => '90c2ff249cd866901ed391fe255f943e',
+      'e_admin.php' => '15506f997e59e1188747d68220c4d2bd',
+      'e_meta.php' => '2109990abb604de589186de6ea2ac5ed',
+      'modtrackback.php' => '8afc60a3a02054ecb4c5deb4a00a46d6',
+      'plugin.xml' => 'b1fa22c1862c5ad282c7d506846aff3d',
+      'trackback.php' => '0eba0939a19133cf89a28dc1bfa80cd1',
+      'trackbackClass.php' => '5fa239191ddfd94a071fe53182f6f18c',
+      'trackback_sql.php' => 'df881c55452d101ac58a7120fa9a02ee',
     ),
-    'tree_menu' => 
+    'user' => 
     array (
       'languages' => 
       array (
-        'English.php' => 'be4478e772ee1e1189a57284891582d8',
+        'English.php' => 'de15fe61f8dcff91e237c332fd1c4394',
       ),
-      'config.php' => 'a78276d858ff5dcaf1980939ea0d9578',
-      'tree_menu.php' => '81ddba9d61a54caa9c8b74d80ae1f439',
+      'e_mailout.php' => 'bd7a535162d07b6170c8796a05c99247',
+      'plugin.xml' => '9e34ce6a64b8c4922428ae3fc8745fae',
+      'userlanguage_menu.php' => '4ad2b33b474c859f74f7484197d2b2fa',
+      'usertheme_menu.php' => '2676af71cd87105353c18edd4cbe157f',
+      'usertheme_menu_config.php' => '11a16f86ae291e2e910e034d4410e7ae',
     ),
-    'userlanguage_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '11eb945ea792024fc2ecd881d77781d7',
-      ),
-      'userlanguage_menu.php' => '86492340899ebf9da2fd44250544814a',
-    ),
-    'usertheme_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => 'a4163beed74433ec6657b9cbbba50846',
-      ),
-      'usertheme_menu.php' => 'ee312586d8f026d46e72704b913ccf85',
-    ),
+    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+  ),
+  'e107_system' => 
+  array (
+    '.htaccess' => '5cc8a02be988615b049f5abecba2f3a0',
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
   ),
   $coredir['themes'] => 
   array (
-    'crahan' => 
+    '_blank' => 
     array (
       'images' => 
       array (
-        'bullet2.gif' => '0f846116f7143e8f997f9175ea93168f',
-        'logo1.png' => 'c21ccdf73de64f318dbcb45ed048d585',
-        'logo2.png' => '422b66f0e312417fc5a9647d18b5cd6a',
-        'logo3.png' => '2e8eff0aa8a1c924bf0134e9ba6047ec',
-        'logo4.png' => '8f189548b4f02543a138e9bf0314d9f1',
+        'index.html' => '808ed42b90e8730f7432dff4b98c7f47',
       ),
       'languages' => 
       array (
-        'English.php' => '5634193f9c40908e7753db6c3b557c37',
+        'English.php' => '953df565a4e0b4a030ef663aaa4f012e',
       ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'preview.jpg' => 'b841409838526ba769866861bf236100',
-      'style.css' => 'ea3af6647ce3d7ed62c5a973b8a2a7bb',
-      'theme.php' => '9f63c8aa0ff3f0e6ab07c89a8bb7bd08',
+      'templates' => 
+      array (
+        'featurebox' => 
+        array (
+          'featurebox_category_template.php' => '2c60247b0a89936865af90f08fd2eb7a',
+        ),
+      ),
+      'blank.sc' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'index.html' => '808ed42b90e8730f7432dff4b98c7f47',
+      'style.css' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'theme.php' => 'f20d31496945c09e8247dda56b83d296',
+      'theme.xml' => '4e4300ec2364f52f6011bef1538a9dcc',
+      'theme_config.php' => '2b7f6eaf5c544dc59a0d68c5f921e400',
     ),
-    'e107v4a' => 
+    'bootstrap3' => 
     array (
-      'images' => 
+      'css' => 
       array (
-        'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
-        'bar.png' => 'e63a0d8adeca917fd487bee6634b0d54',
-        'barl.png' => '4559714c78a2ea8591505123897d528c',
-        'barr.png' => '283538272ee7de8888ddaccec7d0cf93',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bottom.png' => '6500994715b4d988e604fdb8cc592562',
-        'bottomleft.png' => '40d167ca546bec754489f2ed4825fe2c',
-        'bottomright.png' => '15c1d7e34d52549c285586ae5e03892c',
-        'bullet2.gif' => '5fea13d481fc903ce05bfed57341e1c1',
-        'bullet3.png' => 'ffd6c250377d22660e9045d5d97705de',
-        'button.png' => '69918234a9caea763d1c66781e50fe34',
-        'button2.png' => 'a0aea9a2dd8889f65f48a0621eb91d2c',
-        'button3.png' => 'd2fcad5cfabc21b2f204b1a5d7229e55',
-        'cap1.png' => '01271e8d5f2f5770bccc7dca903339f1',
-        'capdark.png' => '968732d5e5ddfa288f59af2c47f5d4d7',
-        'capleft.png' => '3beb236cb19fce601ebb3ac45f9e389f',
-        'caplight.png' => '8e6f1d6155da88c011f33ca4784b6989',
-        'capright.png' => 'a83ca3941c8a447f19b51ad89ecfc72a',
-        'captransition.png' => '27e1c09ff88834b2ea140fa4a3f974f2',
-        'fcap.png' => 'fbb6a2f0fb0b7f474812f622dc5423cb',
-        'fcap2.png' => 'df4f0cd94d3949340f9926da33a3b253',
-        'header.png' => 'f486dfa869b0cdf39445ea02d120a68e',
-        'left.png' => '38d094baede7ab50c1f6696a21f222ae',
-        'logo.png' => '8dd271371d50ac36b2a501297e0e8c73',
-        'nforumcaption.png' => '382fc538b165c4228dc1ac962bcccc1c',
-        'nforumcaption2.png' => 'd5095a41f9669de31650e2b397119e29',
-        'right.png' => '22025f8d78f4419f9ee92d9f88a34cef',
-        'search.png' => '088a3d0166f6683ea9586cdce438f8ef',
-        'temp.png' => '443805d6f488cd2669027b443f860483',
-        'top.png' => 'cd6994bb0a6a40ab5bb19edc86668d6e',
-        'topleft.png' => '37a08fb25f85cb85bbb9dca682fb9870',
-        'topright.png' => 'be43c8d3237cc599524fd5100a719057',
+        'bootstrap-dark.min.css' => 'e84d0c1d935986b6f0984220db9001b4',
       ),
-      'languages' => 
+      'fonts' => 
       array (
-        'English.php' => '267a4652945d08b0a14d421c47d7cdf8',
-      ),
-      'forum_template.php' => '5236c9308b808d1c0c96aa4b8647ccec',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'newsfeed_template.php' => 'bf35ae0a44194fb397c9816bd81c7522',
-      'preview.jpg' => '1f1e5815a674ceb1eaa562caa0e23607',
-      'style.css' => '31dbd50ef3ff04150146f4b618c18385',
-      'theme.php' => '533543688af3450cd14bdc170466c960',
-    ),
-    'human_condition' => 
-    array (
-      'images' => 
-      array (
-        'bg.png' => 'e6015f86e49dee0db753301c1e7b3966',
-        'bullet.png' => 'd96af312cdc074075a4e5fb559dac73b',
-        'bullet2.gif' => '9d376a8d449bec3df0d1086127799a6f',
-        'bullet2.png' => 'fad8045a7696954f7435c33bfd435811',
-        'comment.png' => 'f227913f7b341d5a696606d5a5f7baf9',
-        'footer.png' => '5fbba976e98c785c98b10aa2b2fe8e99',
-        'header.png' => '3da9f377741904abbcd94ff63a011e78',
-        'titlebar.png' => '9d7e299f83e2814fccd253d2f7b8ea04',
-      ),
-      'languages' => 
-      array (
-        'English.php' => 'e9de51bdb55910fdc36ebcf96dd86396',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'newforumpost.php' => '6a9cd60b76c00cd41384f21ce1265860',
-      'preview.jpg' => '37766edab6519ba0d82d89d0fad9b9df',
-      'style.css' => '98b43a380766349d489c4bdc3ea69eff',
-      'theme.php' => 'e7f8584099975bafbd28c2f8683de37b',
-    ),
-    'interfectus' => 
-    array (
-      'images' => 
-      array (
-        'background.jpg' => '9d2f41c5d82966332cb6438109160d2c',
-        'bar.png' => 'b67fed22a0eb45e8f98f34513b5ccf46',
-        'barl.png' => 'f89ad6313d8b53becafe22598ae74472',
-        'barr.png' => '0a5849424599a8533be5089ef74d286f',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bottomcol.png' => '78c5741f54dfec40c82f641045a92ad9',
-        'bottomleftcol.png' => '03a6d3ec5e14fdf7e478356ba92c955f',
-        'bottomrightcol.png' => 'c2bd7c6b693370833043eef967647829',
-        'bullet1.gif' => '029a9d7164bb4ed6a8be279af02bcb20',
-        'bullet2.gif' => '23c11ebc20e7c45ef75920ae2cfea93e',
-        'button.png' => 'e3f712ad4329ff235174499c2bb64a9d',
-        'cap1.png' => 'ab7deb73123e7f49b1304b0a6b787a8e',
-        'caption.png' => '16f3fb712fc7f9fd498233b6d1d2c56d',
-        'fcap.png' => 'c4a6f800c5ad92d7690d6ef6d33257e9',
-        'fcap2.png' => 'e6261197a46d0ba830b74bac1dbc14c6',
-        'footer.png' => 'c652160dd5fdfc9f4d50508c2ca6ad82',
-        'header.png' => '9bbef79c069270f41c14c7abaa300f68',
-        'leftcol.png' => '028354997e0d91ec6b808f51b4e2d056',
-        'link1.png' => '01c1e8458cd7bab11c832763fcbbbb23',
-        'link2.png' => '73d622e9782c81667528e6244603f832',
-        'menubottom.png' => '56cf53e0f327058a113e8e23610badee',
-        'menubottom2.png' => '6d9773d2afe504030b13627d7fd4d7de',
-        'menutop.png' => '6010f91e233a5898d758db3eafb23a68',
-        'menutop2.png' => '86c8a40fe7738475c143da269138c22f',
-        'pagefooter.png' => 'cef4949afdbdab08dbbdf5a7e6db0643',
-        'pageheader.png' => '916bb72001e7de90e00fb7a812e9438a',
-        'rightcol.png' => '6684d175a110688fca18a06d82c5bc25',
-        'search.png' => '0f9fa3188d15796337583ee1e1119769',
-        'topleftcol.png' => '8b11e9f5354e5d8c84e5aa70eed896b3',
-        'toprightcol.png' => 'aa0e7a7ed969629447669c6fd7ca827a',
-      ),
-      'languages' => 
-      array (
-        'English.php' => 'bcd2c57395cc693ee791c8cdc5a7e420',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'preview.jpg' => 'a4b48f473468c22cb5f03054eda08794',
-      'style.css' => 'bb2e6303ad7fed8a1119fd08b7bd11e8',
-      'theme.php' => '1f15d7afdfee8ca33bd2667085cee2bc',
-    ),
-    'jayya' => 
-    array (
-      'forum' => 
-      array (
-        'admin.png' => '64ebd91cca24b185ac81a05ddbd790eb',
-        'admin_delete.png' => '68567d088171dc9800c75e3717d01551',
-        'admin_edit.png' => 'a89466d56dbaae7d8bde1330e3714807',
-        'admin_lock.png' => '228e1b606811f415c253e851f779fea1',
-        'admin_move.png' => '7ec6991055150d10f3d61b0c4fc18527',
-        'admin_stick.png' => 'c3e003b6f1873284eae24ac8e8997983',
-        'admin_unlock.png' => '184c7a4c28517e01f3fda3c77f4c5d01',
-        'admin_unstick.png' => '87309a3d62a49f3432888c79ece6fb5e',
-        'announce.png' => 'eff175ae24b46fb0ee49a34cc6ca9e1e',
-        'closed_small.png' => '228e1b606811f415c253e851f779fea1',
-        'delete.png' => '7c20906029cbc1fc0c7c64d26d2868e2',
-        'e.png' => '6c335c5d89cc241296a45eddb888ee95',
-        'edit.png' => 'c762eaed37cf8d4a4ff68cdfcb5099a8',
-        'email.png' => 'e6c3d37c6a4c39b9330ca3bd7e9bcffa',
-        'fcap.png' => '20137d499eb7e57064231cc4bc910dd4',
-        'fcap2.png' => '0a733fe6e51713f13276eec753da2d9c',
-        'fcap2orig.png' => '5f6f45697bc185d51f2c06d904642aad',
-        'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'forum_icons_template.php' => '7b54f527b4da7200128d6e1e33918080',
-        'main_admin.png' => '4033115a6d4c622f16e23c7d82bc1bd9',
-        'moderator.png' => 'd3100a24d0bf141c8d3e5445d24b712a',
-        'new.png' => 'f80e5840a07b08c9502af386b9c6c928',
-        'new_popular.gif' => '9b92a52b897b1730793c4a975dd0edbf',
-        'new_small.png' => '5197b92d879fd774e87cf9ee26694498',
-        'newthread.png' => 'abfdbdcaa23bd33fdbd11f2f59c8e4c2',
-        'nonew.png' => '4113a87c52860c4e131e919b0f8f0193',
-        'nonew_popular.gif' => '9aa9a7418692e5cd1dd05026f577f984',
-        'nonew_small.png' => '36e801e40256dae69c5f864a60555a22',
-        'post.png' => 'c16dff0c96b789a40f1eb46c96291960',
-        'profile.png' => 'df45fd4fc914d95c3e17b5929e4cd44d',
-        'quote.png' => '33afa118321e687fb74b13c82d8ff04c',
-        'reply.png' => '2b3fe53b428e0449dcf7ac886e309a62',
-        'report.png' => '48eb0e1fd95db4c11441f058a9f45254',
-        'sticky.png' => '4ddcd806ceeccb602772e668a42fc500',
-        'stickyclosed.png' => '79cb1b7e7a1ae3f9d42cf3ec4bf57fc3',
-        'website.png' => '7fba90ad852e9ddcf968eedc7f49a39f',
+        'glyphicons-halflings-regular.eot' => 'fba244e2008489caa53ff520bf54e9d4',
+        'glyphicons-halflings-regular.svg' => '08be71ca1082210b7e45b7cfc05f6528',
+        'glyphicons-halflings-regular.ttf' => 'aacc5f5531ccb5c3a6bd59375929e186',
+        'glyphicons-halflings-regular.woff' => '5b0fa1e383f86d0593976c43cc534618',
+        'glyphicons-halflings-regular.woff2' => '4deeeb2d4aed6b975ea324be354d9a18',
       ),
       'images' => 
       array (
-        'arrow.png' => '38b69b179e7cdf232aa367a0dc3c4cbd',
-        'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bullet2.gif' => 'f46acab251856c2c2e03dbba9ed2e469',
-        'button.png' => '6ea310ffec2a7d4cdc2e76e0fcae2445',
-        'buttonover.png' => 'c76d73539fef2b9d72506583908cfb36',
-        'comments_16.png' => 'ada4e49b53f9732e0020f8f917125e16',
-        'computer.jpg' => '424fa719231f821ffeb6b26f6d8553ff',
-        'computer_pepper.jpg' => 'cdc1fe5c604b577faa4999a53a909f9d',
-        'email_16.png' => '90866c1f54ed36c131038d2fc0851ac8',
-        'on.png' => '34679051e7603ef4f91674e310fbd628',
-        'polls.png' => '2b352ea3b2c392dcc1c6551d1c1b3920',
-        'postedby_16.png' => 'bbc0eb1411a21d970b3f3c9855e516af',
-        'print_16.png' => '574a45049daf40bb348ba6252a1e435c',
-        's_body.png' => '7ba1f7cae60c29f12b290a1306df3281',
-        's_body_.png' => '7ba1f7cae60c29f12b290a1306df3281',
-        's_left_bevel.png' => '8568f929ef599f3116c49491f8893e90',
-        's_left_bevel_.png' => '8d43f9f9c6b647e654e181ad510721f1',
-        's_left_cap.png' => 'b6b3e6544925566237f0f357c7345bfb',
-        's_left_cap_.png' => '1bc0b1738662ed120e97cf2afb0d3d8c',
-        's_main_cap.png' => 'dfda87c00cfc0b6c3540c3666c8f4b51',
-        's_main_cap_.png' => '4061f78621a6fe3b65aeb6fc64faf84a',
-        's_nav.png' => '0ef5452590a980bb30cd463c0c6f4a8f',
-        's_nav_.png' => '0ef5452590a980bb30cd463c0c6f4a8f',
-        'screen.png' => 'd44a65d37f39fd788992214e3a4cbe84',
-        'top_mid_back.jpg' => '1afb134a1f0da2309319bc6f662d155f',
-        'top_mid_back_pepper.jpg' => 'cdc1fe5c604b577faa4999a53a909f9d',
-        'top_right_back.jpg' => '44d2f4803a1d902a0cebf289c9598857',
-        'top_right_back_pepper.png' => 'd44a65d37f39fd788992214e3a4cbe84',
+        'adminicons_16.png' => '0aba1938654881ab30aea909f9b54cd2',
+        'adminicons_32.png' => '0b52d86030a93067f38a4b28355da4cd',
+        'browsers.png' => '1b7ce1bdb01616c6456d245502022709',
+        'e107_adminlogo.png' => 'c26bdb78dfa72dac9f59774e12c154c1',
       ),
-      'languages' => 
+      'install' => 
       array (
-        'English.php' => '6d5c404d3f5949d55660c3ba47ad338c',
+        'install.xml' => 'a10960262532727f33befa5fce9712f9',
       ),
-      'admin_template.php' => 'a894a1c9e20bb7b895e1151854a1083e',
-      'canvas.css' => 'acdfee6441e3dc292657ca469b669df4',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'nav_menu.css' => 'ac9d2df99166eb5ce87c16bb146bc413',
-      'pepper.css' => 'bcd1ac74e7cacb3ace1396355f238cc8',
-      'preview.jpg' => '1d775846dbe1b7ea66065fc0eac72eaa',
-      'style.css' => 'c406d47937f253e08d655b1d1008a6c2',
-      'theme.php' => '82d43fe4ce914385611be80b3bc37bc9',
-    ),
-    'khatru' => 
-    array (
-      'images' => 
+      'templates' => 
       array (
-        'background.png' => 'ce934d43f3fd71ee27d26b135457f6f6',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bottom.png' => '6b249ab3e679d5bd3dd39768683f9d60',
-        'bottomleft.png' => 'e413385707e6a7d1e16229cfa49fe231',
-        'bottomright.png' => '8bf0be6aaa09fce54811e2879e137873',
-        'bullet.png' => '08eed4002e3d9fbf8f71d47c62a0fcfd',
-        'bullet2.gif' => '1ec22e77515023bd344efeef8d827747',
-        'button.png' => '62c64b41d5ad1a53fe6e23a2cf486b85',
-        'icon.png' => '53e431306fb2e33a5ed3df6750933285',
-        'left.png' => 'df5d30abe11aa5bf81d00fe5f16a9d31',
-        'logo1.png' => '2d754a5f6ed77a9c5b58d5ca6d381fa4',
-        'logo2.png' => 'de1b45f1e69c5d1874ee2fcde18e6073',
-        'logo3.png' => '91c059d925a2825e0010a4cc2d5189bd',
-        'menubg.png' => '1255daf004f8842b41e4f5e01e167c75',
-        'menubg2.png' => '68f34e41e6334f70b6f14ed397c3df67',
-        'nforumcaption.png' => '02cc27a5df2d68a063c5b2c8f4c42454',
-        'nforumcaption2.png' => '1d62d20a5c0acbfd2211f2e8519c7fea',
-        'right.png' => 'f29d08d4bf94b7e8946c09443004c77c',
-        'top.png' => '5922796553902b607cca12e9a04b5f8b',
-        'top2.png' => '9c11cc9f67cf21144e2c386fdc0b38d2',
-        'topleft.png' => '4b41f3bed350f3b72de850a0c6f1d7ce',
-        'topleft2.png' => '0dd4664012701da19679b020a916cf27',
-        'topright.png' => 'f2b03fb32176cc7c067b411992d02d02',
-        'topright2.png' => '7b6d4344421aad96d620a25a250d6f50',
+        'menu_template.php' => '1fd509a4dca9991a0768772b529e7434',
       ),
-      'languages' => 
-      array (
-        'English.php' => '66e19fa68eda6e34636ff907c328bb9e',
-      ),
-      'download_template.php' => 'a9742a3e65ac83e279cabee1e1e50fb6',
-      'forum_post_template.php' => 'fef4832dd26316448ef939cb2eb35931',
-      'forum_posted_template.php' => '66bb8c27404c12d7e784745685f1f398',
-      'forum_preview_template.php' => '4455c6b5e0991211db66dad466274bc0',
-      'forum_template.php' => '93227cac477be310f0e5a1f6b4a310e5',
-      'forum_viewforum_template.php' => '23b68de8f4d06ce6e22f281668d612d3',
-      'forum_viewtopic_template.php' => 'e26e8e97cbe85e2b248a221af5148537',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'newforumpost.php' => 'bd44d5240db6fb7af02138dd2499a8ef',
-      'news_template.php' => '0f5b689c4ad3d212934707f44b959b11',
-      'poll_template.php' => 'c01388206c3cf373ff04e01c38485d99',
-      'preview.png' => 'b164565b63d086a6a5a28fd76097487c',
-      'style.css' => 'be699284eb74ccbd6543eac6f60754ea',
-      'theme.php' => '91a9e9dd2439516210c1f0b29437a9ed',
-    ),
-    'kubrick' => 
-    array (
-      'images' => 
-      array (
-        '01_linkbg1.gif' => 'f63772c2cc656495a6d7f65d2a754f5f',
-        '01_linkbg2.gif' => '3bd01b3f95a387963bfb0b1ab01b8d91',
-        'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
-        'bullet2.gif' => 'd1b6cacb4849b507dad138766ed3057f',
-        'kubrickbg.jpg' => 'ebc477e9f99d802b450616239317cfb9',
-        'kubrickbgcolor.jpg' => 'a5fc1c9484453bdcc6a0c8eaa1d99ed3',
-        'kubrickbgwide.jpg' => '1214890da2d47e7fcd149817021bdf04',
-        'kubrickfooter.jpg' => '84b95d2c16d25dfef12d3c31ba33cbe4',
-        'kubrickheader.jpg' => '29de9d7614370f301799cb340c1db703',
-        'tileage.jpg' => '3435eafbab94790d5f74cb801b645c0a',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '05890778f266bd0669aac13c92103ba8',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'preview.jpg' => 'cb94c52db72d1ba8bd4d1e08ee41cbfb',
-      'style.css' => '0f93072e98199ac87d3d2957cda402b9',
-      'theme.js' => '092a48b0a95fcb44c48236c40948eb13',
-      'theme.php' => '449b35c64b081ab7061a97daec5ae1c0',
-      'ul.sc' => '94dc33c24a82bbe2c357d4ac165d8c09',
-    ),
-    'lamb' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => '48958de1c195f2b5694643a2fe1f2db2',
-        'bg.png' => '6de8f72fdabaf5bf9fbd7cbed462ca68',
-        'bluearrow.png' => 'a2df5d6a0f485040f843786e7c606e27',
-        'bluearrow_greybg.png' => '0e9896ea0eb8c9eb4f01efdccd2f8a03',
-        'boxbottom.png' => '01847b0507171e644013b4bab4febc78',
-        'boxtop.png' => '607a50aed74c069befab870576de5868',
-        'bullet2.gif' => '0f846116f7143e8f997f9175ea93168f',
-        'button.png' => 'a8c0d55b31b31f36c1b1505651e0c5d0',
-        'comment.png' => '4515b0331b8a6cb20f92efeacf214a59',
-        'download.png' => '80f205604db6d451bf57a71166b6a804',
-        'email.png' => '04c8a3218d13cb28be418ee835cac34f',
-        'greyarrow.png' => 'dc96c19cd1ca4751040b1e88cae51c12',
-        'lboxbottom.png' => '9144b3e9b6c290ef7c4348ace98128d8',
-        'lboxtop.png' => '1676f64eaad673a63ae221d370bfcb1d',
-        'left.png' => 'b7eb6f1082d63fa13db0da677ccbfad5',
-        'link.png' => 'ddc7ad68de90d91f2d85d1c8bea8d358',
-        'logo.png' => '5a5fcab0cdd03024f4163b385afa32cb',
-        'logo_template.png' => '7cbeaf46b35c917ceaa378476a8938ed',
-        'logobg.png' => '13be74d210b6e82c561fcf299087b5fa',
-        'nforumcaption.png' => '02cc27a5df2d68a063c5b2c8f4c42454',
-        'nforumcaption2.png' => '2b4a342e0fe48adfddb8e058d67cb8ca',
-        'right.png' => '62054b67c23bbbd0f258fbe8ce23ab2d',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '22dbd47c4a9f41af9d1bf3cbce5e19c9',
-      ),
-      'alt_style.css' => 'e9ee5679b9218c1c7d89c98c2f95b701',
-      'alt_theme.php' => '09fc4de57c31e85eac390e643d401ed7',
-      'chat_template.php' => '8a57696d7ecb512823073c64768c8ed7',
-      'download_template.php' => 'b6e968dc3f6d17d161b0105b67ae2903',
-      'forum_post_template.php' => 'f1a897cbd307b7f0324a501f6664540d',
-      'forum_posted_template.php' => '56a97c40620ae669bca178f30ffdd044',
-      'forum_preview_template.php' => '2391640ab5380b18ac17e54a99feb29f',
-      'forum_template.php' => '8c5f8a4dedc4829aca2c4f418ac49ceb',
-      'forum_viewforum_template.php' => '4cdfeb489d50e1e90be0ac8a4af60cf0',
-      'forum_viewtopic_template.php' => 'e0d6f0a2678206fa4542ee3ec6459333',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'newforumpost.php' => '7ec9f0bb87045e10862dc2b7dcc9757d',
-      'news_template.php' => '0f5b689c4ad3d212934707f44b959b11',
-      'preview.jpg' => '184658c1d2222cd0137cc445fcc785ea',
-      'style.css' => '475d1badb0a770d6da07c350ffd6dcb7',
-      'theme.php' => '6ca169bb182d7ef950c2b27ed88d28d2',
-    ),
-    'leaf' => 
-    array (
-      'fontstyles' => 
-      array (
-        'large.css' => '6428f461d0af5de2a5af1547e98b4590',
-        'medium.css' => '26ba7c74395c9c77f21a2345c2ed92b6',
-      ),
-      'images' => 
-      array (
-        '01_bg.gif' => '50f03651c070e4138c97a4a7ee9e5339',
-        '01_bodybg.jpg' => 'ca5f9a092c397986fa10d5990023ab25',
-        '01_font1.gif' => 'df5d2f07cf7e70371169f54c085435fa',
-        '01_font2.gif' => 'e9b455dd3cb7ecde36b321aebe977c47',
-        '01_font3.gif' => '8e9bb2d8d0b48f1cc64e519bb090ef6d',
-        '01_footer.jpg' => 'cf2f00b3e5a2aff05e70e728eb225cb4',
-        '01_hdot.gif' => '945bc76d6f25d2a32fafb0abe1933e1d',
-        '01_header01.jpg' => 'd41622f4fd90237ed438026896dadbc7',
-        '01_header02.jpg' => '3b01a113505d77d9103b8ad7ae490b0a',
-        '01_header03.jpg' => '2c25376dbaa1e2a038f8d46fedd5881f',
-        '01_header04.jpg' => 'dcff85a614aa8fbc68452d2795f5a2f4',
-        '01_item1.gif' => 'fd6e6c5768ada8f441cd1e80d3e61b8a',
-        '01_item2.gif' => 'a46a4994806a4c181310caa3e92e80c1',
-        '01_item3.gif' => '8dce3a9b0c43a0f8b6c9fa4b7500ec19',
-        '01_linkbg1.gif' => 'f63772c2cc656495a6d7f65d2a754f5f',
-        '01_linkbg2.gif' => '3bd01b3f95a387963bfb0b1ab01b8d91',
-        '01_logo.gif' => '06df534ab4f86845ce92257b6737b57a',
-        '01_m_comment.gif' => '27ac7a5eba1cbc30e793a013ac7c0c5d',
-        '01_m_default.gif' => '43b70b8bb69fed0f1ec499eb415dc234',
-        '01_m_news.gif' => '4521605dfa4313520323c28ea26f466d',
-        '01_mountaintop2.gif' => '034d9e56c10dd3579a7e371735b3075b',
-        '01_quote.gif' => '93174f052a4a478a633d57dd5d45e32c',
-        '01_s_about.gif' => '8d0f8698265a152a788fffa7184e681a',
-        '01_s_categories.gif' => 'a5dedac27cf2c1403b60e52fe4897016',
-        '01_s_chatbox.gif' => '493f3eb5cd5cb6655997a7e511e350c5',
-        '01_s_default.gif' => '68c19e8bb6615de2836ec827ab5a6675',
-        '01_s_latestcomment.gif' => '0b310e282c178c70e190f930ce199117',
-        '01_s_links.gif' => 'dc4858a967f948815f08acc3dceb33f4',
-        '01_s_login.gif' => '7f4e38303d5c571bb34660ffb60513e7',
-        '01_s_online.gif' => '1dcaf5db2305af2c315777f91c6fc828',
-        '01_s_search.gif' => '1bc719781f1d326651ad4733906d67a9',
-        'bullet2.gif' => '5d8d5d48a81b4a045de961a77413de18',
-      ),
-      'languages' => 
-      array (
-        'English.php' => 'b89b3b5688c29ffe9ad8ec70ce414db8',
-      ),
-      'bluehigh.ttf' => 'd3003ad3a5de2a785fbb898c89cf40ff',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'links.sc' => 'a3f5d8fa1e9e14c1b6cc27b06c7754fc',
-      'preview.png' => '804c22db1f71223d10e6f7b8b85f69a9',
-      'style.css' => 'e7392ac143d7daa82882e906b5413c31',
-      'theme.js' => '16285b5ba2631979457e5e2ec1cf10af',
-      'theme.php' => '9c7ebc86ae47a457591fdd86337cb11e',
-      'ul.sc' => '7614f31e4b096439bea1cd7c9f9ee0e9',
-    ),
-    'newsroom' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => '13b2cb049602ff94d0d80a0e0896d8e9',
-        'bullet2.gif' => '2ef6767f3a54a1e7c749421ef0ffad20',
-        'logo_bg.png' => '2a38a1ac257ff1d975e15a5169221fd8',
-        'logo_text.png' => 'a578be578c320aa365e9bf4ae07abe23',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'preview.jpg' => 'de22b398f66e271fdd908ac31f25e7e4',
-      'style.css' => 'bd8715343b586a898a6e4e7875e2f6b6',
-      'theme.php' => '5ee241f2ee0f5f852512101261bcad84',
-    ),
-    'reline' => 
-    array (
-      'images' => 
-      array (
-        'arrow.png' => '38b69b179e7cdf232aa367a0dc3c4cbd',
-        'bar.jpg' => '5afc27f5a70a68e53b1a51d74a40fbcc',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bullet2.gif' => 'b3baab02dac12534c559cb219422c2b3',
-        'button.png' => '6ea310ffec2a7d4cdc2e76e0fcae2445',
-        'buttonover.png' => 'c76d73539fef2b9d72506583908cfb36',
-        'comments_16.png' => 'ada4e49b53f9732e0020f8f917125e16',
-        'cube.png' => 'd3f6dd7ab8353b169403826534affb42',
-        'e_adminlogo.png' => 'ea8741ecbb591306740e29f420e324b9',
-        'e_logo.png' => 'c326c9fcad890ee3cf652b86b219d044',
-        'email_16.png' => '90866c1f54ed36c131038d2fc0851ac8',
-        'header.jpg' => '56fc3b2e5b74c3f3a111dbc462625c82',
-        'header.png' => '094cd7068dc557ce83b5205499ace920',
-        'loggedin.png' => '92edf005c8272484836b9f81e509b75a',
-        'logo.png' => 'c326c9fcad890ee3cf652b86b219d044',
-        'paperclip.png' => '7239a7df3faa4b0a77709b5f99dbbbf3',
-        'polls.png' => '2b352ea3b2c392dcc1c6551d1c1b3920',
-        'post_it_bottom.png' => '58bd6133cd5439ca03dabcf55a8d94f7',
-        'post_it_middle.png' => '2fabff36c04748927032e2d28bc3ccae',
-        'post_it_top.png' => 'c7caa215f5c456ab26cbf65d768d5568',
-        'postedby_16.png' => 'bbc0eb1411a21d970b3f3c9855e516af',
-        'print_16.png' => '574a45049daf40bb348ba6252a1e435c',
-        's_nav.png' => '0ef5452590a980bb30cd463c0c6f4a8f',
-        'search.png' => '5913e61a181f454a632998805524097d',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '3288884b05004a91af4802cb7e2098a2',
-      ),
-      'admin_style.css' => '7850d3c2db60fb1e649a6eb6201cfc11',
-      'admin_template.php' => '92c8ff5fde3790dbcfc895c52c7dc3d0',
-      'cube.sc' => 'f85e6d1f10ab3372ec7ebdb0548651ad',
-      'full_width.css' => 'f806f549c1200131c4c043db72408da7',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'preview.jpg' => '30da9e1ef04e5f1fef38ae3d23e0f3c4',
-      'style.css' => 'aa2df8aa8519c802f10e3eddfd95aed3',
-      'theme.php' => '67949514e7139dcbf5dbb9b29d221940',
-    ),
-    'sebes' => 
-    array (
-      'images' => 
-      array (
-        'arrow.png' => '26ea2f602e8ea98d2bedda29cb91c821',
-        'button.png' => 'b2ad00a38be298ac4fde8652fb26c8a8',
-        'fcaption.png' => '1cf687c703277456b26ea2aff99b3dce',
-        'forumheader.png' => 'ad4c1d57c875addbcb9b91c249c1400d',
-        'header.png' => '1dadfebcfa12467437c4fd9e02ccf34a',
-        'logo1.png' => '36dd9e17390cdca7ec3e8211df5e744c',
-        'logo1_template.png' => '5dc8493db503307b22ef2866b8bab58f',
-        'logo2.png' => '6c393b306658173bf9f65954aa059260',
-        'logo2_template.png' => '613631693ada2776add607af07ebb5d4',
-        'marrow.png' => 'c5e56a7c552347ba6a4c5f965c013828',
-        'oarrow.png' => '5e15f2f7b6a5e9ccea9583dc841dce8e',
-        'search.png' => '5d1c0bcd24277a60b6e5f13059d3ec4f',
-        'selarrow.png' => 'b8bd05491ab8b6796c01e9b8c54a7467',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '886394355713facf26c16e029a2b9d7b',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'preview.jpg' => 'a9e7139c84a52e4b164c460a6428b317',
-      'style.css' => '2520113be12170cc926299ac4ece598d',
-      'theme.php' => '9e888e822f698fbb187bd602ec3ca7c4',
-    ),
-    'templates' => 
-    array (
-      'admin_template.php' => '57aec9f3ef5be669eb7fd47b3635a1b1',
-      'banner_template.php' => '5c52f8c726bf4d8e2f843703c2bb24d4',
-      'bbcode_template.php' => 'fe842867e0501311a9edd6363560fdaf',
-      'comment_template.php' => 'be07b00f84a5fbbeeef3ad557294700d',
-      'contact_template.php' => '7ac53206a020fa101c8ea0be32db6e75',
-      'download_template.php' => 'da2e5aa05a326a17a976bf9d789dd509',
-      'email_template.php' => '8fdbeb00322c889ebf52e43b5b58fb42',
-      'footer_default.php' => '7178149c3035e2b16bb843eb0e9f529b',
-      'fpw_template.php' => '8db941158070fc816be8111953b786fd',
-      'header_default.php' => '958e7c6df8090617caa2d97277a4acff',
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'login_template.php' => '8952e4916524b95a3b3f75979e85a58c',
-      'membersonly_template.php' => '14635660ab8f2daed92f4260ed0f3fa1',
-      'online_template.php' => '0b98cb57967fb6a4d0015a8feb2ecd1c',
-      'search_template.php' => '100782de2e0ac37b7286bc2a1f65a2c2',
-      'signup_template.php' => '2ba1f894bbba7b332cace51b8dc6e31a',
-      'sitedown_template.php' => '85de9cb71af3df0f6e3ef44386d67d6e',
-      'trackback_template.php' => 'fd54d8c26c75f9d380e8ec90860b0107',
-      'user_template.php' => '40a17b45d7aad1c613fadec6453d75a4',
-      'userposts_template.php' => '6f9724081a0be3c5f974d16c92860c9d',
-      'usersettings_template.php' => '20d0f1ac95d0abe28ada5a98e987b70d',
-    ),
-    'vekna_blue' => 
-    array (
-      'images' => 
-      array (
-        'bg.gif' => '00b62b8cd66526297fcb79d3229eaa8d',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bullet2.gif' => '206da1d113ffa22ef1cd732e43885a33',
-        'button.png' => 'd7b133daf7c18942c478780df09d177e',
-        'cap.gif' => 'c63589fcc69d3ad5b10e13e562ac8aa6',
-        'capleft.gif' => 'd4ff03746b118ec243f533208949f7e0',
-        'caption.png' => '2e9177b9f59bb6f6c6748475506d0689',
-        'fcap.png' => '450b53805e3dfaf9d999c2858c40aa60',
-        'line_bg.gif' => 'ab28e1dd152e681ff434f2f7cd9a1a5d',
-        'logo4.jpg' => 'db6d375e1ab289c531b5046ec4a54e10',
-        'menu.png' => '782886f2b16869bc4377c7d2ca745fe2',
-        'menu1.gif' => '9eede26903c3fe185aab6a221bd90659',
-        'menubottom.png' => '2f54898aac2a907a1a0c530ce1ae36aa',
-      ),
-      'languages' => 
-      array (
-        'English.php' => 'ec72bdf5070bdc80cc485e6e2b8ec3a3',
-      ),
-      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-      'nav_menu.css' => '74b91306b957f69bc390ed612df76ac9',
-      'preview.jpg' => 'fbb8bde5f9eb4f8efc39f85234959823',
-      'style.css' => 'b11955766d34da3f5ee12aa7ca734655',
-      'theme.php' => '4e523e4af469271fbfbe5527b8ea859a',
+      'admin_dark.css' => 'b9e0216cec8ed97485c05ce7ef1e025f',
+      'admin_light.css' => '321a25a0afcd7c98a17c1454312044d7',
+      'admin_style.css' => '83f38385c74153f511fba3706bec0d9f',
+      'admin_template.php' => '24307f36ffec4bf3331193b214cd82a3',
+      'admin_theme.php' => 'acf48199ea601414bf15fd2224ada345',
+      'preview_frontend.png' => '0fdcd20bc1e6df3887182435f242a7d7',
+      'style.css' => '64b69fd2d27d0fc08afcbcb3bd3a5677',
+      'theme.php' => '51849d24ab516373dade39f847d6a3cb',
+      'theme.xml' => 'eaf84c3c8c8d7e1b2a4f7dec528207e1',
+      'theme_config.php' => '36d4b25923b21aaab3fcc723268c7220',
+      'theme_shortcodes.php' => '75c2b82cee7c6165a584dc0cf10eced7',
     ),
     'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
   ),
-  'article.php' => 'ee3b7df97cb467d35263bedf589abf98',
-  'backend.php' => '312552577f67c7965a76bda84b949a64',
-  'banner.php' => '6328a170fd3ee6f75ebdd2472f3fb397',
-  'class2.php' => '37696f5a30279e2ad8322862c788b067',
-  'comment.php' => 'b75934b785dd22089fa9d0b2723916a9',
-  'contact.php' => '77d372dad7c0a662b5dd837f8ce32228',
-  'content.php' => '10e6c1a9e2180598f8edd8f49022f26b',
-  'download.php' => '7be94c51d2d19953966d02c3f5e266de',
-  'e107.htaccess' => 'c5e1ad68b41f947be285926c0f81d914',
-  'e107_config.php' => 'd41d8cd98f00b204e9800998ecf8427e',
-  'email.php' => 'c786469d105283c6735a62172bb63865',
-  'error.php' => 'fe3ca6cc7b5947e43aead577a23128fe',
-  'favicon.ico' => '5fceb78b9124ddae4027396d7cfcd328',
-  'forum.php' => '3c10184d52685d7c9a6906a967b7e3d8',
-  'forum_viewforum.php' => '4b9fcc3a820ed2f93b4dc707c3ebe3b4',
-  'forum_viewtopic.php' => '5fea10d40850fd6f72cfbec7a328e120',
-  'fpw.php' => 'd599b553d2bdd87520615addfb55b573',
-  'gsitemap.php' => '4ebcfff3b23717454bb6b3538dd54565',
-  'index.php' => '960de1b196ffa6e7887fe99ae65fa682',
-  'links.php' => 'bed206fc2abe8f1307ef4db3b7fee63e',
-  'login.php' => '6dbfe3d33ddd132cc85f5cb52b692f8c',
-  'membersonly.php' => '0903a2ef48312a12ce81b2fa17fe0233',
-  'news.php' => '39b13f3be2acd01f8f28fb1cbfcbfaf8',
-  'online.php' => '947d1170bdc6cf524541d901f238f1a9',
-  'page.php' => '75881aa5f0a3b478bd65feb353863af7',
-  'print.php' => 'c115f1f57a0f6c691e5ce0e5b2d5b27a',
-  'rate.php' => '19160ac5ab1600124219c2b61c9c4a12',
-  'request.php' => '1cf6897842a4c804e33373e03c6b0ada',
-  'robots.txt' => '118aadbc5395ee3d4c6fade187097e5a',
-  'search.php' => '44bd9ed61fafe34b64a5d109ef2ec9d7',
-  'signup.php' => '6cfcc3d5d9fd54add87a960cac1d2032',
-  'sitedown.php' => '7a2d95fb0976ce5ab287a403b118acfa',
-  'subcontent.php' => '468072ef82e179b6ed5ff20a4eb36225',
-  'submitnews.php' => '090f7107c0f8c8636a84516a3cdfcfad',
-  'top.php' => '26cae358e9c9a83bfa686832231a2718',
-  'upload.php' => 'd7e5209dcd6f7964f0a6655e1f5ef8a5',
-  'user.php' => 'bcbc7a76b14c83784949613b6bf61b3d',
-  'userposts.php' => 'ffdb5e83f7f061ce19a376e5529c4a9d',
-  'usersettings.php' => '44aea0d3fb8906c41c84a31ed5054c6d',
+  'e107_web' => 
+  array (
+    'cache' => 
+    array (
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+    ),
+    'css' => 
+    array (
+      'backcompat.css' => '97caf24f0085fe6c53aa75c98c3f6584',
+      'e107.css' => '8455a174af8601ae6b8ebff7be216536',
+    ),
+    'js' => 
+    array (
+      'bootstrap' => 
+      array (
+        'css' => 
+        array (
+          'bootstrap-responsive.min.css' => 'fb263cd349402217da32378990bdf7ad',
+          'bootstrap.min.css' => '68c2370e4e71702b592fa3003fb5fc31',
+          'darkstrap.css' => 'a6638cc6ca7aecb5270d4ea6d9f17454',
+          'jquery-ui.custom.css' => '04c03c3d3a72d403d0c1b66c83bc2d6b',
+          'tooltip.css' => '21304b9a2055c3db5d038068ffd2e029',
+        ),
+        'font' => 
+        array (
+          'iconic_fill.eot' => '9f18ff4743bb5cf99607734b183fc625',
+          'iconic_fill.otf' => '3f7fbebd41bd785b4a9aed85d310467d',
+          'iconic_fill.svg' => 'a9a74e61afb32dca0fe0cdb37b4e9484',
+          'iconic_fill.ttf' => '210c37e1e9ee2616086949e686eb5efe',
+          'iconic_fill.woff' => '96a0be32ad6d4bdd745b1f3821471b3b',
+          'iconic_stroke.eot' => '09ab40388ba91ac41255a519946ebb6b',
+          'iconic_stroke.otf' => '33ee18ef5bd159c46c8bca6aee71cf1d',
+          'iconic_stroke.svg' => 'a5cd54c54003367668ab4cff166e9140',
+          'iconic_stroke.ttf' => 'e1e01f5ccdb67e37894de9d595569e76',
+          'iconic_stroke.woff' => 'c37505e05049fb4012f72a4e3246dbf2',
+        ),
+        'img' => 
+        array (
+          'glyphicons-halflings-white.png' => '74d3792fcab7350a2265cd7c2c2f780b',
+          'glyphicons-halflings.png' => 'f94351c086dcb6fc4002aabacc5b5dbe',
+        ),
+        'js' => 
+        array (
+          'bootstrap-tooltip.js' => 'dcd574d9644679e8208006abb2d841dc',
+          'bootstrap.min.js' => '017054996cb6ea104ad8b3e9be84f8b7',
+        ),
+      ),
+      'bootstrap-datetimepicker' => 
+      array (
+        'css' => 
+        array (
+          'bootstrap-datetimepicker.min.css' => '1bb299144d894a8c7c088613433c37c2',
+        ),
+        'js' => 
+        array (
+          'bootstrap-datetimepicker.min.js' => '43cab137e1c77f4051c26f8cb5526c48',
+        ),
+      ),
+      'bootstrap-editable' => 
+      array (
+        'css' => 
+        array (
+          'bootstrap-editable.css' => '1bcd5d535fc47aed35f2562319093034',
+        ),
+        'img' => 
+        array (
+          'clear.png' => '155ae048832d6d22580c6c316b26980e',
+          'loading.gif' => 'd4ab386bd1bab2b59665c6edfc5479f9',
+        ),
+        'js' => 
+        array (
+          'bootstrap-editable.min.js' => 'c4432665ab9ceb78698eff2b6362edb9',
+        ),
+      ),
+      'bootstrap-jasny' => 
+      array (
+        'img' => 
+        array (
+          'glyphicons-halflings-white.png' => '74d3792fcab7350a2265cd7c2c2f780b',
+          'glyphicons-halflings.png' => 'f94351c086dcb6fc4002aabacc5b5dbe',
+        ),
+        'js' => 
+        array (
+          'jasny-bootstrap.js' => '01d9f026a89420393b452392a0327215',
+        ),
+      ),
+      'bootstrap-multiselect' => 
+      array (
+        'css' => 
+        array (
+          'bootstrap-multiselect.css' => 'd41d8cd98f00b204e9800998ecf8427e',
+        ),
+        'js' => 
+        array (
+          'bootstrap-multiselect.js' => '7173272f198ad7500dcacf4355e30ac5',
+        ),
+      ),
+      'bootstrap-notify' => 
+      array (
+        'css' => 
+        array (
+          'bootstrap-notify.css' => 'd595fbd1864ee4d0936b4ec06b4cc34f',
+        ),
+        'js' => 
+        array (
+          'bootstrap-notify.js' => '98f7aa0cc9def69834fa8319405ba361',
+        ),
+      ),
+      'bootstrap-select' => 
+      array (
+        'bootstrap-select.min.css' => 'd29e447638cf8edbf4bceccf18e12512',
+        'bootstrap-select.min.js' => 'bc427d90622d98bfa997cbcb15d110dd',
+      ),
+      'bootstrap-tag' => 
+      array (
+        'bootstrap-tag.js' => '88a6318e17e7a7a56f74772c0631f02e',
+      ),
+      'bootstrap3-editable' => 
+      array (
+        'css' => 
+        array (
+          'bootstrap-editable.css' => '1bcd5d535fc47aed35f2562319093034',
+        ),
+        'img' => 
+        array (
+          'clear.png' => '155ae048832d6d22580c6c316b26980e',
+          'loading.gif' => 'd4ab386bd1bab2b59665c6edfc5479f9',
+        ),
+        'js' => 
+        array (
+          'bootstrap-editable.js' => 'f0197f0e91c88674e08983b809004dfa',
+          'bootstrap-editable.min.js' => 'b7da076b90d5e61e6fb71a8a047774e2',
+        ),
+      ),
+      'chart' => 
+      array (
+        'Chart.min.js' => 'a63b1a8a2738d75b814cae897a9917bd',
+        'ChartNew.js' => '3dc4aa469790555a2de1e9d2fad34660',
+        'mathFunctions.js' => '9d024ba9e003ec1c7c844c5bc8532981',
+      ),
+      'core' => 
+      array (
+        'admin.jquery.css' => 'a69758d5352c3b67f8c9b8849a3a9dc7',
+        'admin.jquery.js' => 'd2ff21fef47239d7675c84ef21291e9f',
+        'all.jquery.css' => 'de4d768f5bac9eaa0e9c2c6cc54707bf',
+        'all.jquery.js' => '6500664ec09f920581669295437be79f',
+        'draggable.js' => '21a9ad66157f559639dca62a92b2b2e1',
+        'front.jquery.js' => '41337628d479dcd497a4c7c7f829a6d4',
+        'mediaManager.js' => 'aa40f3df84bf1724bf9088e508aee561',
+      ),
+      'font-awesome' => 
+      array (
+        'css' => 
+        array (
+          'font-awesome.css' => '6a435edefe645fd85f73947175964f1b',
+          'font-awesome.min.css' => '68ee1b06f5ced6509eb7d38e544e6e2c',
+        ),
+        'font' => 
+        array (
+          'FontAwesome.otf' => 'ce7c39e06c6f0a7bf6703c09458a9f9c',
+          'fontawesome-webfont.eot' => '505dd321cb8fe1215dfd55a814dd2328',
+          'fontawesome-webfont.svg' => '0895ca8beda1779a04c4d259c4ffa0b2',
+          'fontawesome-webfont.ttf' => 'b8694fde417ab0b6429baa84766c71eb',
+          'fontawesome-webfont.woff' => '9024efdb23a58d0278e67c6358ebe093',
+        ),
+      ),
+      'password' => 
+      array (
+        'jquery.pwdMeter.js' => 'f6f4cda6a2db593be070b10de4f287f6',
+      ),
+      'plupload' => 
+      array (
+        'jquery.plupload.queue' => 
+        array (
+          'css' => 
+          array (
+            'jquery.plupload.queue.css' => 'f839bfba3be3c07c2bb3ad3b97f9effd',
+          ),
+          'img' => 
+          array (
+            'backgrounds.gif' => '1c7d4d342260dbaf37ac858265602144',
+            'buttons-disabled.png' => 'a2fef7f4bc16f43592867b1ac6c90121',
+            'buttons.png' => 'f0a101dd848acc4a156067901bb105ae',
+            'delete.gif' => 'c717185cfe962b3fdc5d41e1feca4692',
+            'done.gif' => 'bd615f6efdf91f1b5757327c9b62bee6',
+            'error.gif' => 'b3ead04ebcdcad5d9282ea42872a791c',
+            'throbber.gif' => '48f6ba130ef310735f789fc6e5806ccb',
+            'transp50.png' => '71ba01826b0e7b31f8a733ce74360ff2',
+          ),
+          'jquery.plupload.queue.js' => 'fdf4beaec7c1a277cfdb3589c373e1de',
+        ),
+        'jquery.ui.plupload' => 
+        array (
+          'css' => 
+          array (
+            'jquery.ui.plupload.css' => '944c9e6e320144ae94cdc7f6106fffba',
+          ),
+          'img' => 
+          array (
+            'loading.gif' => 'a0793f4b663ea1c58898f7c68a6e9ad4',
+            'plupload-bw.png' => '0bc44944f7f80a63b64d3042bd07e858',
+            'plupload.png' => '4ad7aca703c3df02c398da37d35dad47',
+          ),
+          'jquery.ui.plupload.js' => '54073c4f8fc5775e569ca04522a032bc',
+        ),
+        'Moxie.swf' => '0a64bc35d5ebdcd8325bba9f43cd60f6',
+        'Moxie.xap' => 'bd5fcd94a547093e43034d82ac772903',
+        'moxie.js' => '321b4da4ef2b90e03398263f898d9b7b',
+        'moxie.min.js' => 'bf81b7b43775af193685190fe13a316e',
+        'plupload.dev.js' => '0496980c30a06ffa3968e06fef1fad76',
+        'plupload.full.js' => '5f2ba177bf454d7c1dd0de4ae72f8b13',
+        'plupload.js' => '018fde5d57e7ace612107f75a520da2f',
+        'upload.php' => '6421c67c3522721a634a4562fd3eaa03',
+      ),
+      'rate' => 
+      array (
+        'img' => 
+        array (
+          'cancel-off.png' => '667e531824c1356ffc119a63b4e5e810',
+          'cancel-on.png' => '1153d38f6ed889df7d6a1cb113ee2a39',
+          'star-half.png' => 'd30cd83a2a86ecbbb8d1cdfd618f9858',
+          'star-off.png' => '8c5fde08bc9da9af3596e9e8f7f39232',
+          'star-on.png' => 'bf90cb105d8811edf5ef1ef55849ae36',
+        ),
+        'js' => 
+        array (
+          'jquery.raty.js' => '74afa5f115d5c35019a591e0ace9c6dd',
+        ),
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      ),
+      'selectize' => 
+      array (
+        'css' => 
+        array (
+          'selectize.bootstrap2.css' => 'd9a396fa2b692f379b095e280109f46b',
+          'selectize.bootstrap3.css' => 'ae154bb6e40ccf1301921e6e0c41bbad',
+          'selectize.css' => 'db7ad9d8fa48fb4e72e4e86e89fd0851',
+          'selectize.default.css' => '704ee71c73d139922aa7679af2fe1af9',
+          'selectize.legacy.css' => '3aa62ce7b03cdf7a114ad56b516bef0d',
+        ),
+        'js' => 
+        array (
+          'selectize.init.js' => 'db74df89e39833fd7f1795c9dc9fa899',
+          'selectize.js' => 'ecc8c256cf95d7d0118090e7ea74e88d',
+          'selectize.min.js' => 'cba096984d54ace952e33c7831fc542b',
+        ),
+      ),
+      'zrssfeed' => 
+      array (
+        'jquery.zrssfeed.min.js' => 'c4e9c19e7d3b0ffec46a258edd4f2c28',
+      ),
+      'chap_script.js' => '1b46cdbb5981470fd41e07522a2b6fd7',
+      'e107.js' => '364aaff54d7e1ba9e2ab32751c1f7dbe',
+      'e_ajax.php' => 'daece293c1fcaf8f9a9dd09b17289592',
+      'e_js.php' => '155720e459d7c520109d0fbee6d0e89e',
+      'e_jslib.php' => 'a1dd33d2fb680989cabe4fde0c2ccbc8',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'jquery.at.caret.min.js' => '74b3f03c6c7f5e7a2a1803bd159b502e',
+      'jquery.elastic.js' => '9e06c984eead5c3be35d56b6e9fa5a18',
+      'jquery.h5validate.min.js' => 'c5adfdc54539cf4922cf4ebc7d40e7ae',
+      'jquery.mailcheck.min.js' => '97717ff8f16b797c38ab28ebef2dee8a',
+      'nav_menu.js' => 'f6345dfb29d05884a5017ff17ed36387',
+      'nav_menu_alt.js' => 'cbfeb53bb0dfc7136f097c00265731ff',
+    ),
+    'lib' => 
+    array (
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+    ),
+    'utilities' => 
+    array (
+      'dbgen.php' => '13f4c8c7aa91bcd4e16616cd7ad82a65',
+      'passcalc.php' => '027492151ca8a53a8bcebe5355469ac6',
+      'passconv.php' => 'aee330de26b5acf88b1f70b4d6c17392',
+      'resetcore.php' => 'b04247e17451bd0e7a8b9d3c6a4813f9',
+      'style.css' => 'e294495db6f91c4514c4f40d7b09fcd5',
+    ),
+    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+  ),
+  'README.md' => 'e107b544834e3199e6abcfb462f3456f',
+  'banner.php' => '15fd7ab9a96351687ec0a4558ef27b6c',
+  'class2.php' => '7a7295cc4cf600f48362f26effa78cec',
+  'comment.php' => '07e0b6820c5a3a676f59a3e8fb191c80',
+  'contact.php' => '5b6f8b089fe4ea2f014043952e58a092',
+  'cron.php' => 'dbc7bc2d4f16b981cb78081d6f21c15a',
+  'download.php' => '59cf38522eddef6f98bdcbda5e3457dd',
+  'e107.htaccess' => 'e9182628f368cabbdd9aaa23161d4615',
+  'e107.robots.txt' => '77f76f843d6902cbfcde13bde778f704',
+  'email.php' => '10a0e43057c4f3475f0080257796427d',
+  'error.php' => 'd0abf0c986e043d988f86c29ce365643',
+  'fpw.php' => '49e5d25d86edae21faadb7c7abcb23d5',
+  'gsitemap.php' => '3ab0b00ddc0ddc732d343915bc927d30',
+  'index.php' => '0c1e218c1057955d362a91b6e74ef96b',
+  'login.php' => 'b65ea1f2b58c5d76a2bbe3d1c1e6bf63',
+  'membersonly.php' => '9ee6ea6f074168680c625a081f2b6fee',
+  'metaweblog.php' => '8b8c8d8fa167dd82178373e6a449430f',
+  'news.php' => '2a0318b152867ca01f1cc122b3bde25e',
+  'online.php' => '92a5eab98470dabe3e8948ce18bc9d47',
+  'page.php' => 'd5f5e3eeef90b6a8eeede1228c47c506',
+  'print.php' => '929b14f92fa4fc5a5c66ac05af9761e0',
+  'rate.php' => 'a824812587e7117b850aae690147251e',
+  'request.php' => '238a54d43ed100dfc4f6473ccce8f037',
+  'search.php' => '4c298b7a60d4b4763a97bde127cf0d99',
+  'signup.php' => '3f5e1957488ede420e230ac0e3e76f5a',
+  'sitedown.php' => 'ec7b87e5b3d181ad8ce7cd7386ed22be',
+  'submitnews.php' => '50e6767241512032201d320216ca4479',
+  'thumb.php' => '64452f2b1d86f702a326675cc3be1e15',
+  'top.php' => 'bcd3b7a316f9ea36fe918c9c296f0433',
+  'unsubscribe.php' => '8bfa9d5723edf1c4401d43f5186e7ee4',
+  'upload.php' => '1b5f441c0f141822894d5a7d96de0a16',
+  'user.php' => 'd29b43372d7689137ff19178b504e08f',
+  'userposts.php' => '0606bffbc6ddac09c311312739ff30de',
+  'usersettings.php' => 'b42f5695f023878ca8d0702cb5fede90',
 );
 
 $deprecated_image = array (
@@ -3120,70 +3026,51 @@ $deprecated_image = array (
     ),
     'includes' => 
     array (
+      'beginner.php' => 'e96e6113f5356ee8265581192f8696c9',
+      'cascade.php' => '11fdf4a2cf2504e65658a7ab88c99661',
     ),
     'sql' => 
     array (
       'db_update' => 
       array (
-        'table_update_603_rev6.php' => '8d86e635ec98ef9b86f3ee8d442f7402',
-        'table_update_603_to_604.php' => 'b2e91946ffe089e60f26857c2065f352',
-        'table_update_611_to_612.php' => 'ebc6d228d4f32dc709337d173e8e3e92',
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
       ),
+      'core_pg.php' => '48084454a6eaf05faca4b4afcc435c0b',
+      'core_sql.php' => '9ad62397f9ed51969f78b5405a86f56c',
+      'db_field_defs.php' => 'c00fea40ffa2874b3c03f2d32a848f6d',
+      'extended_country.php' => 'a0d285e0ed6c9db3eb10fd7d06c47af7',
+      'extended_timezones.php' => '656e5e7ec828908e4ca77769e050c5dd',
     ),
-    'chatbox.php' => '7e75a4fc9d8a70280cf3ea38a6957039',
-    'custommenu.php' => 'a1bcab76003c2d7a26075c6dde92a2ea',
-    'downloadOLD.php' => 'da13cde41db327d1a251bd02b4f11974',
-    'download_.php' => '17e197e6094df8c6f70c9d6ee5d99cb5',
-    'download_category.php' => '6f81e7b0d0fd7b8e1278bab935bcb431',
-    'filetypes.php' => 'f951037335e993337792606cc1475cec',
-    'forum.php' => '8fcecb7939d0e2f3776602f12f256d41',
-    'forum_conf.php' => '59104f7a4e953f4935c82eaedc060931',
-    'header_links.php' => '89b428327e178a5ec1cd590a8a5a5eea',
-    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    'link_category.php' => 'a037103b28a327d7f68b179a6430e0cc',
-    'linksOLD.php' => '97ea4f0610899f6f3892d4bf54f8fc57',
-    'log.php' => '79f63402eb374a1756984f60511d13fd',
-    'news_category.php' => 'f797eba058a27b2391eb25bd3cc185d9',
-    'newsfeed.php' => '9b0566edc1f49895997f39a07b9037b1',
-    'poll.php' => 'a2038a1b5a5f03b243ecd07ee5085181',
-    'submenusgen.php' => 'cbb94c39c1a0640983700119686402ac',
-    'submitnews.php' => '684139e60a097eb04be9767c49dd9985',
-    'theme_prev.php' => '386420f2c1c731f23c7df91926443e72',
+    'admin_classis.php' => '1ad9a3d24d76efdc2e5320caeb2b6e12',
+    'admin_combo.php' => '72ed3c4ca9c6e348af758323cface540',
+    'admin_etalkers.php' => '4606fdf97453273e37f0fd973e64c1d6',
+    'adminb.php' => '34fba5666d40d75b4a433cfb670ab33b',
+    'article.php' => '718991e8d07f3af22917c6babcb16d18',
+    'banner.php' => '4cd98ff7f8fd4350621e37114308fc69',
+    'cascade.php' => '426121b4aead34a87af264c23d76cf76',
+    'classis.php' => '0e53214c16a9b7fe96d7ad379c3ff96b',
+    'combo.php' => 'af8dbabf951de7b448556e2a58b136c1',
+    'content.php' => '393ac3283845587d8c9fde0cc60afb3e',
+    'db_verify.php' => 'e811e73c73dfd3d3333f12999c0b2564',
+    'filetypes.php' => 'acc9e4929262032b6497e4d397f32792',
+    'review.php' => 'b7ec4170f13068a622d1ec2582c21a6f',
+    'userclass.php' => '46791da1459ae7df9b4c0adb14ccbecf',
+    'userinfo.php' => '86461ecfae44ebdbaa1f710acc63cf13',
+    'users_extended_predefined.php' => 'a7f1f96f56cbb0b1f4a0b71126318597',
   ),
-  $coredir['docs'] => 
+  'e107_core' => 
   array (
-    'help' => 
+    'shortcodes' => 
     array (
-      'English' => 
+      'batch' => 
       array (
-        'Articles' => '8bdb338ca53cd252f0d3f3a7ad511520',
-        'Content' => '770d62fe3fa3c984956884553e85af2e',
       ),
-      'Administrators' => 'fde3f611512ac789609c80fc8a6f3609',
-      'Articles' => 'b59d04443bec2260d4bed4ef013c94b4',
-      'BBCode' => '33451916e62615ddeefb30103f570831',
-      'Banlist' => '83a4c139037713c03d0999e28335c852',
-      'Banners' => 'a1c096485e789b14c720b7c73b4ea7a2',
-      'Cache' => '7fc85b1d45b8d7f3cf7b4866d3d37aa8',
-      'Chatbox' => '5fa17c49db4bfef93729d2dac1fcc162',
-      'Classes' => 'ea8b68f265aef007a9636443b7da3dc5',
-      'Content' => '770d62fe3fa3c984956884553e85af2e',
-      'Downloads' => '37399eb226ad7d1d729f68f65efc7b00',
-      'Emoticons' => '14a0d74aea591e0f8d82577aff8fe979',
-      'Errors' => '46381d88a2326ff760562fea385b2fd0',
-      'Forums' => 'a2266bd5b818e1cf30168ac9053b7a59',
-      'Front_Page' => '7df90a02713ecf9d6ff1c7f7f77cbcb0',
-      'Help!' => 'cbbb887146e203d6e2cae27b17db7ff8',
-      'Links' => '320eb08defa1360070a4f0c062e5fc84',
-      'Maintainance' => 'cc818c06e047bba0e2c2349e954cfaf0',
-      'Menus' => '44a53801c18ad52aa9e50c3b4fbfe241',
-      'News' => 'e5ec6c8137c00916343f8f4f5084bfe7',
-      'Preferences' => 'a089239dbffa47eba773c3c4f878d4b3',
-      'Uploads' => '3db7011da6342cf030bb03f011706bb2',
-      'Users' => 'd64be592aae221b66ca4d33b69056e7f',
-      'Welcome_Message' => 'a3a7b26428d35d5ebb520e16ac6204da',
+      'single' => 
+      array (
+        'languagelinks.sc' => 'e3a9dcd828f8038370456b7bf9e12b27',
+        'user_avatar.sc' => '07f32144a465ad9cb7f8ac61c6fe475b',
+      ),
     ),
-    'ChangeLog_615.txt' => '0e4d3787cd2a3faf41c45d3b70311295',
   ),
   $coredir['files'] => 
   array (
@@ -3194,526 +3081,146 @@ $deprecated_image = array (
     ),
     'bbcode' => 
     array (
+      'b.bb' => '467bfb5e80f460fcebcdc2e6a3a8d38b',
+      'bb_youtube.php' => '4ffe9edd6c936153ccb24c27675f4646',
+      'blockquote.bb' => 'f08e9d2163d665d09927aec7ca6769c6',
+      'br.bb' => 'cb8d211703f0459735baa8dfbebb4bb4',
+      'center.bb' => '5a1957946e3d8898a0b3d86650771809',
+      'code.bb' => '15d5237cb3d77aaa80e830ffeb6f6bbb',
+      'color.bb' => '98b9d0ddcc76d2ee37af0f36eab8b1c3',
+      'email.bb' => '2a34e1c2752f7f4c1b903a831450402d',
+      'file.bb' => '655f2a241ed9ba30d37803ba6d6338bc',
+      'flash.bb' => 'b1000e9022a43d79457e0a58b4b5e611',
+      'hide.bb' => 'cf30f78c78855565b0bf868a01142fb8',
+      'html.bb' => '9938499c3ef8c80a2598b9c3aed7e371',
+      'i.bb' => 'ec842cfda8a6f33d53f8232763b56719',
+      'img.bb' => 'e35c5cecbe4168538bd5ca3bc47e6781',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'justify.bb' => '016500f910beb0f820dd58c4915f2489',
+      'left.bb' => '990ddba32b14bea648745cc373035bde',
+      'link.bb' => 'e9776a03f23071259f449d92f59863a7',
+      'list.bb' => '741e64dcaa10d60d312e8ae687d11f6e',
+      'php.bb' => 'b6afb99a8b52877e56e43efc54b9e5bb',
+      'quote.bb' => '12bfbba32661e309a33972e388b0e912',
+      'right.bb' => '9bd60ca738b30f35742a0049c5efc191',
+      'sanitised.bb' => '7e6fb575a630bb52731ca8c4d371e755',
+      'size.bb' => 'bd62172ecb7083b85b534c2e45e79d48',
+      'spoiler.bb' => '5929f20a04438093df87b7246e843bf0',
+      'stream.bb' => '9661057e8db23c681e3ec2340ff3a4fa',
+      'textarea.bb' => 'c9af59e1cd5aedc873f40f40727b3685',
+      'time.bb' => 'dda6c9f9d1245b82921e85f4c9950532',
+      'u.bb' => '7f8703e65a5f24bd9d2edd5fc0dfef48',
+      'url.bb' => 'e155b50c04ccfc87608a4b13486b9c46',
     ),
     'cache' => 
     array (
-    ),
-    'downloadimages' => 
-    array (
-    ),
-    'downloads' => 
-    array (
-    ),
-    'downloadthumbs' => 
-    array (
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'user_extended.xml' => 'd0aebe83cdec17b0a33d8a3dca37bd14',
     ),
     'images' => 
     array (
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
     ),
     'import' => 
     array (
-    ),
-    'misc' => 
-    array (
-    ),
-    'public' => 
-    array (
-      'avatars' => 
-      array (
-        'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-      ),
+      'import_mapper.php' => '78a98bfedbe66b043e8562bcd6449125',
+      'import_readme.txt' => 'a76f8a52208d648e1c9e3afe71929755',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'mambo.php' => 'b79d85a984fd5c61a8a38593049e8e41',
+      'phpbb2.php' => 'c8a4a1e92f50dc9cdf1e554265ad5e57',
+      'phpnuke.php' => '80cafed86a221c9f35a5e5972499eb6e',
     ),
     'resetcore' => 
     array (
+      'fixyoutube.php' => '8478c913f7481291810a8615e7837b79',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'resetcore.php' => '997cdcf4ec2e61556b89664bb346a345',
+      'style.css' => 'e294495db6f91c4514c4f40d7b09fcd5',
     ),
     'shortcode' => 
     array (
       'batch' => 
       array (
+        'bbcode_shortcodes.php' => '140adff9b52e4515b4e134b66eb144cc',
+        'comment_shortcodes.php' => 'ce5206ab062106520d046175c0375c65',
+        'contact_shortcodes.php' => 'e7daa09fb55080d4a8ff52c4a9243dce',
+        'download_shortcodes.php' => 'ddc28b227ed55098bc2a085585bc73af',
+        'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+        'news_archives.php' => '17478354b5a68bfcac46e46484b7e4ce',
+        'news_shortcodes.php' => '6f543bf4f6231e3a6bdec912c6ac9dd3',
+        'signup_shortcodes.php' => '85c54e5e3c3f7d90312b0f91fc2a9dab',
+        'sitedown_shortcodes.php' => '2e795ea320860124c884606926e37219',
+        'user_shortcodes.php' => 'fb17c7e2754da7bc9204c87995eca7ba',
+        'usersettings_shortcodes.php' => '00e31a02caced4d888064477aa7d664e',
       ),
+      'admin_alt_nav.sc' => '17f82050dadf0bcc51f36e9bcfab58d9',
+      'admin_credits.sc' => '513da741f9d89b8de701e0942f6ee0a9',
+      'admin_docs.sc' => 'b010b7ac7618fa669c8777754a8337c6',
+      'admin_help.sc' => '6bcd7a3280c9eb76cd0bbddb7cc4660a',
+      'admin_icon.sc' => '4843c11cc5e5e14db4d5cacd537569c2',
+      'admin_lang.sc' => 'c40da4411969e89998cd5030fc3f1eda',
+      'admin_latest.sc' => '703b4d9fdbcb549b50b7fb4af2b5596e',
+      'admin_log.sc' => '9ed4a14759eb20032fb3e953b3374ce3',
+      'admin_logged.sc' => 'dec16fb0a9f5485db6ca1b4955753c2e',
+      'admin_logo.sc' => 'a97a3ad7bd7a505373ca5b794310a7ff',
+      'admin_menu.sc' => '5a29730ac28d3fd1cebd33c470833378',
+      'admin_msg.sc' => '1906530f20e337964878fd144b1047c5',
+      'admin_nav.sc' => 'c22be64cb31ee333f0510f6dd8778363',
+      'admin_plugins.sc' => 'd2a629cdf1bda821867e4177bd4999e1',
+      'admin_preset.sc' => '4d330a7b56e4870a7fe954580fe2b587',
+      'admin_pword.sc' => '043dd84f51c5349bce4488ec89671cee',
+      'admin_sel_lan.sc' => '0d011beac7113c9cd8e0b31fd73ebdd0',
+      'admin_siteinfo.sc' => '64b9b7289a7794b4dbea603ca7ede2ab',
+      'admin_status.sc' => '0d29c1581183a9e0010cc440f0e407e8',
+      'admin_update.sc' => '495a22596e1649b9ca219385ceddf7b6',
+      'admin_userlan.sc' => 'd1ced8f4235d221877e47efcaaecc835',
+      'banner.sc' => '9f40612195bb3a863615b06f059b9ab1',
+      'breadcrumb.sc' => '0591ee7dc26ded7ac9a359dea4b8fdf6',
+      'custom.sc' => '7814fc67eb57a024131b876e94559097',
+      'e_image.sc' => '3819fdf5b9dfc7b189fb4073d33ae0d5',
+      'email.sc' => 'a587a1b51fbefc39f3f267dfabe9d302',
+      'email_item.sc' => '9b33c016a97ff8ccb3b544ded7030712',
+      'emailto.sc' => '2a090d41cd91744486aa4f74519f3c4b',
+      'extended.sc' => '868d45e725d7565a1d9c5b743aba0967',
+      'extended_icon.sc' => 'db16dbaa0dfa2f8fc944ba87c15a09d1',
+      'extended_text.sc' => '5a1426815f88bb2239912638af30beb0',
+      'extended_value.sc' => '1b720e5d3155c6d4a1464fc1e9cac5f1',
+      'imageselector.sc' => '66351b388d5e2700cb1ef2b0dbd1b4e9',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'languagelinks.sc' => '86777cfae68e873ef74d41c3ffd8a767',
+      'linkstyle.sc' => '5ed64d972bc892a798f80179878f1266',
+      'logo.sc' => '7989dac8bea9ec4c0da489fb942ae507',
+      'menu.sc' => 'f14b86a1d81b190aaeae5783b8398a97',
+      'news_alt.sc' => '25596ffed2cf4bed831b80397c77e295',
+      'news_categories.sc' => '84c01e079adf626fb875897e290bd212',
+      'news_category.sc' => '25596ffed2cf4bed831b80397c77e295',
+      'newsfile.sc' => '6f2f1591deaac955082369a610096aa0',
+      'newsimage.sc' => '9d887c7ae3e14839b7b0ecd13e8d40ed',
+      'nextprev.sc' => 'd9c84a726fb8e588211d1a42815edcd8',
+      'picture.sc' => 'aa9bc096ad37b40df413638f8d259fc9',
+      'plugin.sc' => 'be06266acd86f06b244dd27266df8f12',
+      'print_item.sc' => 'fb3b5508fed60548689a5c496d45e1b3',
+      'profile.sc' => 'abb4a34666ab0449e79291f0c3409523',
+      'search.sc' => '12a174161a186e9a936fc10c946f0517',
+      'setstyle.sc' => '88ec920b668233bd21ba95e2cdd607e7',
+      'sitecontactinfo.sc' => '5467f65cd62b910389014b5fb8b33fe5',
+      'sitedescription.sc' => 'c617f50a35752e7cb8de2d15f7e6b614',
+      'sitedisclaimer.sc' => '6a9e25a899608fd05a56e90a3f4bfd38',
+      'sitelinks.sc' => '754259e3bdab4efc147d92b50efdf262',
+      'sitelinks_alt.sc' => '5701cc59ee7bf1aa413f3b3dfe83378b',
+      'sitename.sc' => 'a62bd1e1600931a2585f16b611fd0c6b',
+      'sitetag.sc' => '338e16589e67c9fe45613e3c6dbb9b0d',
+      'stylesheet.sc' => 'bc460ebf776e08e73fac2af52f376aec',
+      'theme_disclaimer.sc' => '606d98f47c1a64b179d9baf6e6930dbc',
+      'uploadfile.sc' => 'f25209c2ea67bf30c50c18548c245be2',
+      'user_avatar.sc' => '1501550f2414900d47edee2621b2e624',
+      'user_extended.sc' => 'fa0c0db13bf38c94f7ae2c58576d879c',
+      'wmessage.sc' => '7e6ca101862dab61e56e748431bfb561',
     ),
-    'default.css' => '54d8e232fe73969b593f71df2afd6995',
-    'style.css' => 'd62b27257e32cc08296930879a6df478',
   ),
   $coredir['handlers'] => 
   array (
-    'calendar' => 
-    array (
-      'language' => 
-      array (
-      ),
-    ),
-    'htmlarea' => 
-    array (
-      'examples' => 
-      array (
-        '2-areas.cgi' => 'c26028a87777a45e8792cf9939cd5464',
-        '2-areas.html' => 'df7d45c30d0825f9c450f38c5af60508',
-        'character_map.html' => 'b064eb5c9586d743ec86ac54370ac61f',
-        'context-menu.html' => 'fc0226d993ec92c2a9c98fb06002bda1',
-        'core.html' => 'c0349e4a3810a822cbb01ce26019afcc',
-        'css.html' => '90120b460e62b056e46a443d869b104f',
-        'custom.css' => 'd841b6b070f3ae8e67e196ff2ee6c5fe',
-        'dynamic.css' => '402fa7e28e0b0c2035520676cc4ff581',
-        'dynamic_css.html' => '3bcdb4239b896d49ba2d32c329b54e74',
-        'empty.html' => '4404eb82dbf03fd2825e0fcce3413769',
-        'full-page.html' => '588ce9c643c645eb2b6cbe1dbbfc09fe',
-        'fully-loaded.html' => '5d7c6ca8fa4927dbbb40fc604d856922',
-        'images.html' => '9553c5838b7c90a33a0401084a7a0c46',
-        'index.html' => 'e8fdc4fc45c34917aff59da5c7ff001d',
-        'list-type.html' => '25df168ea209a4be5ea42f559683b96e',
-        'pieng.png' => 'f8915fe3b221dd044a93782fc0d2f5f0',
-        'remove-font-tags.html' => 'a0caff2e51ec7a7aad6e4cf2f6d12dd4',
-        'spell-checker.html' => 'e50a13ee08206801e968270c72adac0b',
-        'table-operations.html' => '3e14d124b11047df9e7ad3ef92c932cc',
-        'test.cgi' => 'b6b0615fc550bfec4c5e5adb1c69cc6a',
-      ),
-      'images' => 
-      array (
-        'ed_about.gif' => 'e0c3a2d4938e92642abe88319c37a019',
-        'ed_align_center.gif' => '419a7cac054b4b2dff1b9eab7a45b747',
-        'ed_align_justify.gif' => '9c31aa4411277ca29c3419f8df7b8b1d',
-        'ed_align_left.gif' => '9c22c00f4c67931140be15e59db6d517',
-        'ed_align_right.gif' => '93862fdc7d08142fa419cbd0f6c66213',
-        'ed_blank.gif' => '020874e9edcbcd0b514d1b30f14b18bb',
-        'ed_charmap.gif' => 'a897a03f66ec432ed8e7cd26c3b5f88e',
-        'ed_color_bg.gif' => 'c6e286fdfa3ba31ebed7f18b0ecc75b4',
-        'ed_color_fg.gif' => 'c72e9bc079196ed7b089afa9593cd8a9',
-        'ed_copy.gif' => 'cf622962955f521c5ae576797d1032f7',
-        'ed_custom.gif' => 'e7b27a6808e66a8a301cbaf64eb8825a',
-        'ed_cut.gif' => 'f512b15c53dea427a6173023b8945a87',
-        'ed_delete.gif' => '79ac46c129cf5dc8b21c5c0d42151831',
-        'ed_format_bold.gif' => 'f4f614c2cb06763fc3063c93f07cf415',
-        'ed_format_italic.gif' => 'a800ad94ba742d72099073f0faeb2004',
-        'ed_format_strike.gif' => '9aa5a079df34a4eedcc5c716c9386a74',
-        'ed_format_sub.gif' => 'b16263bc5ca08886c978db99f4feea40',
-        'ed_format_sup.gif' => 'cad7d563b915d56d38cb0ee680191a59',
-        'ed_format_underline.gif' => '505a23f166dcb38cea34af16ce4dbb5c',
-        'ed_help.gif' => 'e7fce3f8566622f3add66b5255948397',
-        'ed_hr.gif' => 'ff70dd8f9cefacf143e7396dcf4f58b6',
-        'ed_html.gif' => 'fa6e7d1b61493b607b61bd71bf1f36d5',
-        'ed_image.gif' => '4ab7d43a45532267df831d0a8fc34d8c',
-        'ed_indent_less.gif' => '850310807053467daa42cc8bba2fcbac',
-        'ed_indent_more.gif' => '3835d1bdd22a011a5b22e23fcce75e9e',
-        'ed_left_to_right.gif' => 'a0f9ecd9a146094c0265df9ab57e1dce',
-        'ed_link.gif' => 'f04cb59f80844ac38e9ce9f2698ce7f9',
-        'ed_list_bullet.gif' => '236b4559afbfec1d238a939b65ea9d0b',
-        'ed_list_num.gif' => '48d3e7c2c5826371be37b608d33af15a',
-        'ed_paste.gif' => '81e1666c11b6def84943d3fab3aeedfa',
-        'ed_print.gif' => '9bd797173a2fa37bedeeabd5d47e25cc',
-        'ed_redo.gif' => 'e9e8c51b9f00093a3f303f0bf2ce7e05',
-        'ed_right_to_left.gif' => 'c644f85dfa635e265e6a8da8c7c06227',
-        'ed_rmformat.gif' => '287498e569fb9a902e7cfc8dd634e449',
-        'ed_save.gif' => '07ad6426b48b0f86cf0985a599c7ee95',
-        'ed_save.png' => '0a17a62b278ba3554338d254c4e9af60',
-        'ed_show_border.gif' => 'ae228363e7079002dd18dffad8d66c62',
-        'ed_splitcel.gif' => '2c04da7e1c53d5c63aff4f80e5023b22',
-        'ed_undo.gif' => 'b9ba819ac9e7700ca0a876dba2b81c39',
-        'fullscreen_maximize.gif' => '2118040d93941f64f7a2096b2370d7c2',
-        'fullscreen_minimize.gif' => '816c96e44ded878836292b80da38ac1b',
-        'insert_table.gif' => '3a985dd81474a602d4318b67dc5023e2',
-      ),
-      'lang' => 
-      array (
-        'b5.js' => '447acabed5a028ed6130315d9c943de9',
-        'ch.js' => '9ad4148575e696b826345faf9c104ecb',
-        'cz.js' => '7e0d467e3c3f95365f07fcd57e9e6036',
-        'da.js' => '4450a6f37a4619e067466157477e227b',
-        'de.js' => '24be5c7286b694ec285fdd3e39430eb5',
-        'ee.js' => 'cef8b2148ce28b55eafdd41a9479d29e',
-        'el.js' => '49f2dd6d814083e200450934175e54ce',
-        'en.js' => '67a44be798d52f8434b1d5db9afc0344',
-        'es.js' => '465284bdda072f89c1aa381bd129d4eb',
-        'fi.js' => '1648e59b0fc3e98b673e260c4c4f2b54',
-        'fr.js' => '9c8d847c3c1384e36d115c0437036961',
-        'gb.js' => 'b6ff9b489e34676feeb33c94d67e3c40',
-        'he.js' => '5973c58ae6d3cf1a7e13d53968e2f8b5',
-        'hu.js' => 'e4058a7d72a280f4d007b0cba7dba299',
-        'it.js' => '48f677e19fcbbf3eb3e2f32e808e6195',
-        'ja-euc.js' => '1937933840fe8a3f6c27850f9d1a6b15',
-        'ja-jis.js' => '58f5669e271d2a9399ed4319b6a27563',
-        'ja-sjis.js' => '1ce17214bec7f48f7c7fbc0cb14ae591',
-        'ja-utf8.js' => '08eec318143c80b3f9d77c16e302c327',
-        'lt.js' => '8b5d346a3a49d276b0d613dbd05babc7',
-        'lv.js' => '1821f4505b4824daab558b8ab8456589',
-        'nb.js' => 'fe892254acff2640f3e52d26839b936b',
-        'nl.js' => '31994cf5b276689e361684336577611c',
-        'no.js' => 'ddb7044ad152be38f496969473a1175c',
-        'pl.js' => '9ec4ec413e44d1f372db4dc5d3117153',
-        'pt_br.js' => '79ffb2703fc0e55e71e54842a86598bd',
-        'ro.js' => 'cdbeac570a639c27ebddde2825352787',
-        'ru.js' => 'd980179d51e134536810d69fbd48568b',
-        'se.js' => 'eb12fb43788fd80aa4a60b7826ec01cb',
-        'si.js' => '886456af4fc31dbcd830e796ef7f3912',
-        'vn.js' => '8c6666b64ed1206242f30b0b7c47dd56',
-      ),
-      'plugins' => 
-      array (
-        'CSS' => 
-        array (
-          'lang' => 
-          array (
-            'en.js' => '8e6555db8565a1d7f048b6a18dde3fda',
-          ),
-          'css.js' => '090411fa76b76164871cf2344a83816b',
-        ),
-        'CharacterMap' => 
-        array (
-          'img' => 
-          array (
-            'ed_charmap.gif' => 'cbdbb8c0c3a4ec3d285d1b45eaafd08b',
-          ),
-          'lang' => 
-          array (
-            'de.js' => '4ed8e64697d6e02747eecff014fb37f9',
-            'en.js' => 'ead2887475037b02a936253d02b69f3d',
-          ),
-          'popups' => 
-          array (
-            'select_character.html' => 'a04ca5324301728db4e709e1ba6b042a',
-          ),
-          'character-map.js' => '45ca956159d003a48cc3f986d9b9378e',
-          'makefile.xml' => 'd931cda0bf52a8924c8f7ae33c7b2c1f',
-        ),
-        'ContextMenu' => 
-        array (
-          'lang' => 
-          array (
-            'de.js' => '4b2fce5f5d94db5a1a9e8d49b14f251f',
-            'el.js' => 'f66150fc20a7710a38f06ca26aba56c0',
-            'en.js' => '3cd3c38364df0fc5bf545c040b575bb6',
-            'he.js' => '42160bd5787ff8ebb2db2eba0b3765ed',
-            'nl.js' => 'be00a4d988b49422748508b18aaca0b7',
-          ),
-          '1.pl' => 'b6bf5f353d0a8855a1fd306b66cbe9c5',
-          'context-menu.js' => '5a7c67297506ef28729e14a3473862b3',
-          'makefile.xml' => '014bbd44792974fd68bedd459ad86916',
-          'menu.css' => 'e9a7d8e58b8467c4aa2c21d78a3d55f5',
-        ),
-        'EnterParagraphs' => 
-        array (
-          'enter-paragraphs.js' => 'e07557b92190a5afb75a1947b54183f6',
-        ),
-        'FullPage' => 
-        array (
-          'img' => 
-          array (
-            'docprop.gif' => '7d7b378ee76a7261839f1761747c92ca',
-          ),
-          'lang' => 
-          array (
-            'de.js' => 'f2521a052eb077cc4ca8bdac46b52318',
-            'en.js' => 'a32a89a7d529980c4578ce41d5060a83',
-            'he.js' => '4d7d7ac12427b8e83409f5a722b24a3c',
-            'ro.js' => '70c749f56e054ee375d3071835bff971',
-          ),
-          'popups' => 
-          array (
-            'docprop.html' => 'd70ad91008772d4cfddc481047450388',
-          ),
-          'full-page.js' => '64e3137a2797388a5f9c8997bc95254a',
-          'test.html' => 'bc2dbd5b474b8ee25201bdf9d6111f2d',
-        ),
-        'HtmlTidy' => 
-        array (
-          'img' => 
-          array (
-            'html-tidy.gif' => 'df7a4baa0a571884619ae7eb0c200bb7',
-            'makefile.xml' => '51b266fe6e1c56194e882daff3cced7c',
-          ),
-          'lang' => 
-          array (
-            'en.js' => 'db675a7d0202b2fb278038b16fbf9cd2',
-            'makefile.xml' => '093576d9af435ec31fd92da9bce1744a',
-          ),
-          'README' => 'e72c09ecd15ee4288dd403ef47bf0622',
-          'html-tidy-config.cfg' => '09ee92887f93971b1858f289427d441c',
-          'html-tidy-logic.php' => '8f7236a0097cc58f8f72dadb20ab3604',
-          'html-tidy.js' => '7b9e2fcfb2a25fd01ec420a67e32a858',
-          'makefile.xml' => '7dd3abc3e30aa07ac4b0d18810dea63e',
-        ),
-        'ImageManager' => 
-        array (
-          'Classes' => 
-          array (
-            'Files.php' => '2692b44b256a5bd27b675abb64250682',
-            'GD.php' => 'f0b6c4522817f07ca95bc64f9a162599',
-            'IM.php' => 'cba66d49670c9e1e3e12281c1e456999',
-            'ImageEditor.php' => 'e88d5eb443de0968694d7c84231a0a02',
-            'ImageManager.php' => '0c3d9e63708ad26239a03ac4b1b4319f',
-            'NetPBM.php' => 'd13aae16707bca40d61c9603cfb8bb59',
-            'Thumbnail.php' => '57b96ef8a203a79eefbc53c7aa32f79b',
-            'Transform.php' => '70627a5e07fd7bb51c35d5407333f64b',
-          ),
-          'assets' => 
-          array (
-            'EditorContent.js' => '56ca6920dc7b98dc4e975cebb8790712',
-            'ImageEditor.css' => '923a26cbde11cd05a2fe714d75d61edd',
-            'dialog.js' => 'e418b7c77ee9f8bf01d100b3de63757f',
-            'editor.css' => '0523943b213ec2edfd9f3562397ee24d',
-            'editor.js' => '97844fb6bc700e8c832a6bd95b6dd92c',
-            'editorFrame.css' => 'd585831ec0b2a9088755c5748d80ffd3',
-            'editorFrame.js' => '7da85c65207fcb1a66add2105d3d140c',
-            'hover.htc' => 'b8e7a2a9b05a94f4789ec220f4c688ab',
-            'imagelist.css' => '73a0b0581fb0020a3f734334dc60cdca',
-            'images.js' => 'a46d80c6482269737ea52879f92ba643',
-            'manager.css' => '8889b7af3a1d994e472fdd2ebe69500a',
-            'manager.js' => '4b1887eb16e3794e47b707feae04b58e',
-            'popup.js' => 'ce11aaa2796994d1a931e4376951fe8d',
-            'slider.js' => 'd8bf45b210537f1f220d3f7123c51160',
-            'wz_jsgraphics.js' => '034e994a173372f31661f66cd84cdb95',
-          ),
-          'img' => 
-          array (
-            '2x2.gif' => '889a061243a8d254b8a051f4c2e5888e',
-            '2x2_w.gif' => 'e602cc47d26909903907a1141736bc4b',
-            'btnFolderNew.gif' => 'd36d09544ef41db8a3230d25735960c8',
-            'btnFolderUp.gif' => '6ee5eb9556897ac23a6762645b9c98fc',
-            'btn_cancel.gif' => 'a4f53f6cfd7fe94f243762224f9f9c19',
-            'btn_ok.gif' => '9c9ef0692dc686d2f80f387821364454',
-            'crop.gif' => '9423eb4e1b1887ae43479f322bf624c3',
-            'default.gif' => 'fd81a1c481584f1b1f1166f29b9ca60a',
-            'div.gif' => 'cf5b3b40af68e894b7e8daf38dc590f0',
-            'dots.gif' => '1f1d5ee955a043ef4e32a1fb6908a9d6',
-            'edit_active.gif' => 'dd9aef4d47d74d2fd0468b306b93c7eb',
-            'edit_pencil.gif' => '3c1632099bd6d9f628d75cc945d65472',
-            'edit_trash.gif' => '544f51af0afd7c03f89aaed3bd236bce',
-            'folder.gif' => '6d3fe7d47b4a1f5788b755b9f41962fe',
-            'hand.gif' => '228dec68bb9d3e4db8f892da48b82077',
-            'islocked2.gif' => '9d20ae36b2ba9ecbff770e4905779725',
-            'locked.gif' => 'b1da4d2161b8a50077caff0affde606a',
-            'measure.gif' => 'b965f9dec293df5ff007e57a20da5862',
-            'noimages.gif' => '8f1b20dfcbb76ea7eccaaa7dce7bd2e6',
-            'rotate.gif' => '2e9f127ae49427d98a389f97e88b8302',
-            'save.gif' => '0ef008540649f73357ccb9e11fb0c143',
-            'scale.gif' => '7681e29865fd4206871bbf9ff78a0d6e',
-            'spacer.gif' => '221d8352905f2c38b3cb2bd191d630b0',
-            't_black.gif' => '56953a9124d388a2c36e1f40cc539776',
-            't_white.gif' => '9448cc76491fdc49524d19c21fd7c81c',
-            'unlocked.gif' => '180782c948e3dcc25efac3fdb4bc1f25',
-            'unlocked2.gif' => '717ef4a83a86cfc967c64110efdeadf7',
-          ),
-          'lang' => 
-          array (
-            'en.js' => '878cc575e93b0209fe9f16765c9834bc',
-          ),
-          'README.txt' => '1c6d282806895395a23e514c4f1066b5',
-          'config.inc.php' => '03269e9ae6a4b70e123e990a605031e6',
-          'editor.php' => '170e45516bfc45c5a826e430827e1119',
-          'editorFrame.php' => '802917ce477b1acd1e76d42be9aa5f6a',
-          'image-manager.js' => 'dc30741f304b2950d50e7b96e0d47611',
-          'images.php' => 'f218b51d5e9fcc072c5d66315423bab8',
-          'manager.php' => '71baed2d33b08b013ec8b9aeeb4e6077',
-          'newFolder.html' => '767491c7e3685a684e0061a7127b2ee4',
-          'thumbs.php' => 'dac30ffea29e6ce86cd4d00ffc5008cb',
-        ),
-        'ListType' => 
-        array (
-          'lang' => 
-          array (
-            'de.js' => '48151b4536ffef96e950b967a5ad27b3',
-            'en.js' => '3e2424f60d678219d71dd3c5992520b4',
-          ),
-          'list-type.js' => '9ae3d27711d44a896a4994ead5ce0e28',
-        ),
-        'SpellChecker' => 
-        array (
-          'img' => 
-          array (
-            'he-spell-check.gif' => 'a9691fd828640716a4824fd3687095cc',
-            'spell-check.gif' => '45f87ae3a236a82a00590675ab45300e',
-          ),
-          'lang' => 
-          array (
-            'cz.js' => '423ea6b03dd929379d8c3c0e2a1b03a6',
-            'da.js' => '497d53b6de504e815f21e0b52c4429be',
-            'de.js' => '8e1cf54a88bfa8f1f1bae8901ec724d3',
-            'en.js' => '377855eaba880269a2a806e1f410dbd7',
-            'he.js' => 'ee5604c67403b7344bd8aab484993b74',
-            'hu.js' => '2f79d9530b544abcc01c980066319b5e',
-            'it.js' => 'b731ddc9bccc8b8b45862bc8af1fc03c',
-            'nl.js' => '347cc6ab35dc6e52f078173aca6038cb',
-            'ro.js' => '1cb27ad27005caa43d26fe038aca361e',
-          ),
-          'readme-tech.html' => 'dbeb0b3677a42ec8d6ba93c74d80777d',
-          'spell-check-logic.cgi' => '8a73715a7dfca8571e40f2a0c0ce73ca',
-          'spell-check-style.css' => '6953de17403da48de1a429187892200f',
-          'spell-check-ui.html' => '3af087688cd52a07b4baedee45d4a36a',
-          'spell-check-ui.js' => 'a1567a45c985106c96c18e999dc56ffa',
-          'spell-checker.js' => 'd922b5b20388fb3d73ab470c79fb2f4e',
-        ),
-        'TableOperations' => 
-        array (
-          'img' => 
-          array (
-            'cell-delete.gif' => '7bfbe4bb08412b6933b9e4cb67279a50',
-            'cell-insert-after.gif' => '0cfcc1080fe87476e80ee62a5e7c228e',
-            'cell-insert-before.gif' => '90729f21741e8d1e6de6bda134b8e28d',
-            'cell-merge.gif' => '643f7ce0bd58e09e9d33afb7bafcfb41',
-            'cell-prop.gif' => 'd499211088027cb901d0e2110608b6ec',
-            'cell-split.gif' => '5f2d042f04107d2b74e205c4bcd75bed',
-            'col-delete.gif' => 'b7e7a41e9176c07af5a10ca2035019e1',
-            'col-insert-after.gif' => '999e3fec40db7cff90fafc0ef9b67c90',
-            'col-insert-before.gif' => 'bcbdc75b946ef3c67523e26105046731',
-            'col-split.gif' => 'c0c535be91376e5f5a763c3bee9bcaab',
-            'row-delete.gif' => '550b14813b04e8a1a49f2799bbf2ecae',
-            'row-insert-above.gif' => '121b8897f46625b42a0626e98b428ea3',
-            'row-insert-under.gif' => 'dad2c7e0d7b38f9982382c2925ca18a2',
-            'row-prop.gif' => 'e6df91ff1129ca622afb11dd1d9eb693',
-            'row-split.gif' => '42fea49dff83dd1437defdc43795e300',
-            'table-prop.gif' => 'a0c6945eba87e40f753952c16f1e788a',
-          ),
-          'lang' => 
-          array (
-            'cz.js' => '891f6cf5b22f7a1c8dcbf039a3bc29cd',
-            'da.js' => '6253788b287cd7069c02bce1c25458ab',
-            'de.js' => '48a37c922d8b8fc7d93cfb20a50357c4',
-            'el.js' => '342afc0caefe7e53ac753d6b8f2ed041',
-            'en.js' => '0d42d10515c8be7601482beffd37eff9',
-            'fi.js' => '5b8ee761a423e09cc360294f87e85c08',
-            'he.js' => 'a1645eb3b8b5306c7046791fd0b4b6a3',
-            'hu.js' => '971f436dce04d926c0835e93816b2912',
-            'it.js' => 'e9f2d5f3d7ff32468dd44077ea21937e',
-            'nl.js' => '7d1ec5afd720877120bb81f73ba0cf70',
-            'no.js' => '8613a29c3174424b0bf9abee60352434',
-            'ro.js' => 'a01f89c091380da4a56acd9acf06516e',
-          ),
-          'table-operations.js' => '1b988f2a82430274492780b22a2bb7ba',
-        ),
-      ),
-      'popups' => 
-      array (
-        'ImageEditor' => 
-        array (
-          'jscripts' => 
-          array (
-            'EditorContent.js' => 'a0d5619dd3570cd2ecc8711d23aa36d6',
-            'slider.js' => '3d58fd930085aa61cd9fb0e7bc81f01d',
-            'wz_jsgraphics.js' => '034e994a173372f31661f66cd84cdb95',
-          ),
-          '2x2.gif' => '889a061243a8d254b8a051f4c2e5888e',
-          '2x2_w.gif' => 'e602cc47d26909903907a1141736bc4b',
-          'GD.php' => 'ad14fd96ebf77707b3f177536c0b20f2',
-          'IM.php' => 'fcf6c91de9af23e2cb297412df1590e0',
-          'ImageEditor.css' => '923a26cbde11cd05a2fe714d75d61edd',
-          'ImageEditor.php' => '2f8f8c4fbfb1b0b3cd02efec79652c23',
-          'NetPBM.php' => 'aa5eefb655d68a94702d41ccf6ff7d7c',
-          'Transform.php' => 'e6448a8d758d5afb6ca1af5e6bfc7910',
-          'btn_cancel.gif' => 'a4f53f6cfd7fe94f243762224f9f9c19',
-          'btn_ok.gif' => '9c9ef0692dc686d2f80f387821364454',
-          'crop.gif' => '1a76734219b53116f4e9905ea2af2e23',
-          'div.gif' => 'cf5b3b40af68e894b7e8daf38dc590f0',
-          'hand.gif' => '228dec68bb9d3e4db8f892da48b82077',
-          'load_image.php' => 'f155a3b259125b861528d09768ed858d',
-          'locked.gif' => '9d20ae36b2ba9ecbff770e4905779725',
-          'man_image.html' => '8f012c3475587bc082fe6b20d942069a',
-          'rotate.gif' => '2e9f127ae49427d98a389f97e88b8302',
-          'ruler.gif' => '53000656f017f2c128e86dd9f314e95f',
-          'save.gif' => '0ef008540649f73357ccb9e11fb0c143',
-          'scale.gif' => '0ea1e46cc5de3f04a2e83f7daf690a95',
-          'spacer.gif' => '221d8352905f2c38b3cb2bd191d630b0',
-          't_black.gif' => '9897846e47b0b7dc9fcd2b89e918dacb',
-          't_white.gif' => '9448cc76491fdc49524d19c21fd7c81c',
-          'test.html' => '691e4bb7755b5ae86538a8852b9fe759',
-        ),
-        'ImageManager' => 
-        array (
-          'btnBack.gif' => '551c98aa577cd1fc06c6703ec167d6e8',
-          'btnFolderNew.gif' => 'd36d09544ef41db8a3230d25735960c8',
-          'btnFolderUp.gif' => '6ee5eb9556897ac23a6762645b9c98fc',
-          'config.inc.php' => '31d8cebc72d510e35cc1c53f496d6367',
-          'config.inc_orig.php' => '87b4ab3f0e7d8ae6a4562730cfe987c7',
-          'dots.gif' => '1f1d5ee955a043ef4e32a1fb6908a9d6',
-          'edit_active.gif' => 'dd9aef4d47d74d2fd0468b306b93c7eb',
-          'edit_pencil.gif' => '3c1632099bd6d9f628d75cc945d65472',
-          'edit_trash.gif' => '80269e15cbb7187371493dfa52b6a53d',
-          'folder.gif' => '6d3fe7d47b4a1f5788b755b9f41962fe',
-          'images.php' => 'aa1010985b23d278667e33c5d212c14f',
-          'loading.gif' => '3e131b006c211839150e2336691918f4',
-          'locked.gif' => 'b1da4d2161b8a50077caff0affde606a',
-          'newFolder.html' => 'd7a282c567c2d84c6bbd312645538a29',
-          'noimages.gif' => '8f1b20dfcbb76ea7eccaaa7dce7bd2e6',
-          'thumbs.php' => '2f721186a74b6a0ece248b667bdf915e',
-          'unlocked.gif' => '180782c948e3dcc25efac3fdb4bc1f25',
-          'uploading.gif' => '62d8e984849c9747f9a05de393e055be',
-        ),
-        'Copy of insert_image.html' => '8a06b1d93a6115f1ecc12ec2caf5749f',
-        'about.html' => '9c6c02a3a05707cfeb768b428f60516e',
-        'blank.html' => 'c83301425b2ad1d496473a5ff3d9ecca',
-        'custom2.html' => '2ccb932916cc2696d5d1952d4d36eb13',
-        'editor_help.html' => '7ca29d18f18c0040db5c3af15254d0e8',
-        'fullscreen.html' => '4d9d7c276363f212428b2ed15cf9d8a6',
-        'images.php' => '3755c66145eba21cc2199d455e855d73',
-        'insert_image.html' => 'e9db88c76c75487cdd5415525ff94444',
-        'insert_image.php' => 'b024826624d558a4600659d20189738b',
-        'insert_image2.php' => '8a06b1d93a6115f1ecc12ec2caf5749f',
-        'insert_table.html' => '47057008bd2f8af99f40b64d69fc7101',
-        'link.html' => 'c692e60fd034d33bfe452e014d99fdaa',
-        'old-fullscreen.html' => '0daa59e83fdb6b487c6502c5e6a2d42d',
-        'old_insert_image.html' => '9482a4fbbea5a45558f2faaf83291f09',
-        'popup.js' => '8efbf716ae23676c4cd3bec5a6b8df46',
-        'select_color.html' => 'c047474ad06f18557cd711c78bf86c4e',
-      ),
-      'ChangeLog' => 'c68e0a92145cad1afd0738dc0875f7a8',
-      'dialog.js' => 'd84853c01220bee8568dc68701ff5253',
-      'htmlarea.css' => '327b488d20dacdbf5466532bc2f6cd5a',
-      'htmlarea.inc.php' => 'ba73019f5bb7502c17fadeb92975cd59',
-      'htmlarea.js' => '13e42f7db453422762ce64cee52bb8f0',
-      'index.html' => 'dda9c564dbf0a33feb4535edf11f9110',
-      'index.php' => 'e515b64e6a348436045ef89d78776c1c',
-      'license.txt' => '9153c7000079a9f2f6441e6211a20689',
-      'popupdiv.js' => '3363d6531f00951387d0094217fcd3f9',
-      'popupwin.js' => 'b24c467ee42722fc061e262fe11a5b4c',
-      'reference.html' => '8b3cd84619e5476e118fb2d6285eceb7',
-      'release-notes.html' => '64d8c1087c9ae11062682129e1547fca',
-      'test.css' => '0edee201158cd4a1ffecd1334afe63dd',
-    ),
-    'javascript' => 
-    array (
-      'sitemap.php' => 'edd37423c3218ff1c3d242198ebfb60e',
-    ),
-    'parse' => 
-    array (
-      'parse_avatar.php' => 'bc7d58d3b0d15e23e030920b9051e16e',
-      'parse_emailto.php' => 'df63e9219382e8ea652dfc97b4a30ca4',
-      'parse_menu.php' => 'e3fa890a733e4262cfe0ae82910a338a',
-      'parse_picture.php' => '6fee5312651fb1f3b525a02ad1a7ac6a',
-      'parse_profile.php' => '64f116088d3e55f9a82e62c930828561',
-      'parse_username.php' => '986ffd8dd73ebc6685fa5b82b8119307',
-    ),
-    'phpmailer' => 
-    array (
-      'language' => 
-      array (
-      ),
-    ),
-    'search' => 
-    array (
-      'search_article.php' => '9bec55cc19fbce64f7985ca93306a0fa',
-      'search_chatbox.php' => '0de05ea2574562e19a0686a5bb803e43',
-      'search_content.php' => '7bb898d8278a238bb71cb8169b9ed2bc',
-      'search_forum.php' => 'dcfeb61a2f830291b4bb8b5e0617554f',
-      'search_links.php' => '9667c1e5eca93a0cb1610616c8acc329',
-      'search_review.php' => '323c3b48ecc585e6270ad7e35cc9f1e0',
-    ),
-    'sitemap' => 
-    array (
-      'sitemap_articles.php' => 'cadc92c5c59b98157358d7aaafe2750e',
-      'sitemap_content.php' => '51139ad22af3be101821fb95d192fb03',
-      'sitemap_custom.php' => 'fcb7a1472051f94d26428654f76971b6',
-      'sitemap_downloads.php' => '797820b44a3d942e7d01b0671f018238',
-      'sitemap_forums.php' => '0ee814778c6e0bfb2dfc887b55de9285',
-      'sitemap_links.php' => 'bf0baa44ab7bffa9b6edfb9d5d5d4879',
-      'sitemap_members.php' => '9b69a90d417413a0f71526d6e86d45f6',
-      'sitemap_news.php' => 'edbaecb0c53a67c70f18115fdf016929',
-      'sitemap_plugin.php' => '8efa15ed27447e28c5da1575e4585419',
-      'sitemap_reviews.php' => '2ed15c10e8d7cd03e4514483fae57a99',
-      'sitemap_stats.php' => 'b6c748044f12a7ecfd7c3d954368cbde',
-    ),
-    'textparse' => 
-    array (
-      'basic.php' => 'c90c4c7f52e629fdbab1485fe1f5b6b6',
-    ),
     'tiny_mce' => 
     array (
       'langs' => 
@@ -3725,6 +3232,7 @@ $deprecated_image = array (
         'da.js' => 'cc247f4d1e6091c73cc7ecf4b4cb7593',
         'de.js' => 'e537b2b171cd2f23576b629ab19ffa45',
         'el.js' => 'c096fbf3106ea60a2853ae7b20837083',
+        'en.js' => 'b8a3157ba03ebce3bb977a37c71d452e',
         'es.js' => '722eafb047cf340d2b4b3634c9e21b7e',
         'fa.js' => '765b91b313f4a0f26d42484c77467435',
         'fi.js' => 'ccc8cb4f10b06859601658a90bbe345e',
@@ -3750,25 +3258,40 @@ $deprecated_image = array (
       ),
       'plugins' => 
       array (
+        'compat2x' => 
+        array (
+          'editor_plugin.js' => '9e9ff1b8efdd329d514453fb94802c71',
+          'editor_plugin_src.js' => '6b423a86870018c27edcd24272aa9c32',
+        ),
         'contextmenu' => 
         array (
           'css' => 
           array (
+            'contextmenu.css' => 'f3cb9b44e37f0dc452bed97c02bec4c4',
           ),
           'images' => 
           array (
+            'spacer.gif' => '12bf9e19374920de3146a64775f46a5e',
           ),
+          'contextmenu.css' => '93ad8b3e8a5e1a48bf6ed727ca0384e2',
+          'editor_plugin.js' => '615aede93687b7373e0518026a69d65f',
+          'editor_plugin_src.js' => 'b256009ed61926f05000339423fc60b0',
         ),
         'emoticons' => 
         array (
           'images' => 
           array (
+            'emoticons.png' => '2867c94a2d99dedf5964a4a0de9e5839',
           ),
           'langs' => 
           array (
             'da.js' => '814c678d68b7846bd3cc7185293f4a1c',
+            'en.js' => '4e72c7cd68a7fb3a6b8f1e1cd6eeac8a',
             'es.js' => '5c5e44038d0d5083510970ed518093b0',
           ),
+          'editor_plugin.js' => 'f7e74630e641e122b5b71503ea58fc8c',
+          'emoticons.php' => '0e6acc8a0005b36417bd2714ce1a6c11',
+          'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
         ),
         'flash' => 
         array (
@@ -3818,20 +3341,29 @@ $deprecated_image = array (
         array (
           'images' => 
           array (
+            'constrain.gif' => '0ed8ffef1fb5cce76e51e2d720063ea9',
+            'ibrowser.gif' => '3f92a28951b2d3048473262f5367d12d',
+            'textflow.gif' => '2b34d07b43d1159590455146078cb4cc',
           ),
           'langs' => 
           array (
+            'English.php' => 'b4716dc46edddd195dc6a27d95630e2a',
             'da.js' => '3394bc3500d94fa47fd39c17f0bbfcf9',
+            'en.js' => '2f2d7290102dc90e696f878a96329f3c',
             'es.js' => '7b1df3446f8ccb76e80cfd9a5b13ed17',
             'nl.js' => '7004a5cd5e9e09d193d6742849dfb4ee',
             'pl.js' => '5bc48956a398ac86f36edb041a898a85',
             'sv.js' => 'b95727449ec9e4bd7c3774ae8ceef0ab',
           ),
+          'config.php' => '4e178e32efb96453c26523ded26f6ee7',
+          'editor_plugin.js' => 'da29c9b99d2509ac620533ea4e1fee14',
+          'ibrowser.php' => 'd8a10a8cb085104d9e9612b541921095',
         ),
         'iespell' => 
         array (
           'images' => 
           array (
+            'iespell.gif' => 'eb12c26b5768fcd344ea6205aa98e761',
           ),
           'langs' => 
           array (
@@ -3840,6 +3372,7 @@ $deprecated_image = array (
             'da.js' => 'cfc6d891c08e588b1461202d2568d7d6',
             'de.js' => '91728a57ef0ba20f25e47ee03b4866da',
             'el.js' => '3d65d19ee490b26fa1787bd8fbd35855',
+            'en.js' => 'b262530d5b63841b50ab5b67f94883aa',
             'es.js' => 'dd6eac9bdd597674c08d5daa9991d0fe',
             'fr.js' => '724009d0efaff99b88271c7f34ef1dfa',
             'fr_ca.js' => '54bbb38074a99afe3837478c49c0afc2',
@@ -3858,32 +3391,91 @@ $deprecated_image = array (
             'sv.js' => '9df8dd73b0ab656e8296b8a60969a2bd',
             'zh_cn.js' => 'fcfa956bf3fa2efc6ce5cb980399f4f8',
           ),
+          'editor_plugin.js' => '22526393cacb6447a0e3bfff2fb47773',
+          'editor_plugin_src.js' => '1430b2af9ec352aa6166a66a5405626b',
         ),
         'media' => 
         array (
           'css' => 
           array (
+            'content.css' => '3135bdacabceae466c3b643e33dc3e17',
+            'media.css' => 'b7d62f5bcf41bb15ddc82206ad11664d',
           ),
           'images' => 
           array (
+            'flash.gif' => '709d9df69d8c2030e56321046d76ab8b',
+            'media.gif' => '0541d5bf542ee730346a5f4641416356',
+            'quicktime.gif' => '4a4709a92bb1ef6bc1621019c92a83b8',
+            'realmedia.gif' => '51de6342ba5327787eba762116d20130',
+            'shockwave.gif' => 'acad15b370f34deb12355bea4b89c2e1',
+            'windowsmedia.gif' => '825f4eca28a633397050f9a6cca9358f',
+          ),
+          'img' => 
+          array (
+            'flash.gif' => '709d9df69d8c2030e56321046d76ab8b',
+            'flv_player.swf' => '0832561b93570aff683eeca311228419',
+            'quicktime.gif' => '4a4709a92bb1ef6bc1621019c92a83b8',
+            'realmedia.gif' => '51de6342ba5327787eba762116d20130',
+            'shockwave.gif' => 'acad15b370f34deb12355bea4b89c2e1',
+            'trans.gif' => '12bf9e19374920de3146a64775f46a5e',
+            'windowsmedia.gif' => '825f4eca28a633397050f9a6cca9358f',
+          ),
+          'js' => 
+          array (
+            'embed.js' => '2288f2d23b707283921aaeff2dfeb005',
+            'media.js' => 'c56e5dfcee7cd5d177df8fa248d29083',
           ),
           'jscripts' => 
           array (
+            'embed.js' => '2288f2d23b707283921aaeff2dfeb005',
+            'media.js' => 'ff44b627774307f3ae807e6c27d66a06',
           ),
           'langs' => 
           array (
+            'en.js' => 'de38190b0b16ff997c6f7a2e09818f3c',
+            'en_dlg.js' => '3439c7545446063966919aaaf8c9bc93',
           ),
+          'editor_plugin.js' => 'bcd5c851ca50eee87904b410c13c6d8c',
+          'editor_plugin_src.js' => 'e7a2cb92e6cc4a33dab11184147921bd',
+          'media.htm' => 'ac37ca5e4be99e68ade8f8032e9042f1',
         ),
         'table' => 
         array (
           'css' => 
           array (
+            'cell.css' => 'a51b50f9a8153e7f55fe06a03caca016',
+            'row.css' => '6d95ac81b478e4e8a176e209c739c38d',
+            'table.css' => '4490a8d23537f43adc8431afbd87be33',
           ),
           'images' => 
           array (
+            'buttons.gif' => '7e50c576bb169b5dd93d9e28da67bb14',
+            'table.gif' => '476b000e94b74dac818f1ce03681ace5',
+            'table_cell_props.gif' => '6912d92a00e3e81a9baba3e251b7f0c0',
+            'table_delete.gif' => '060899ca004398671369f92ef6a88a90',
+            'table_delete_col.gif' => '333372a2469c8dfa12a002a2aad8de59',
+            'table_delete_row.gif' => 'c58d9413b1d8150011db91818595871b',
+            'table_insert_col_after.gif' => '5d19acf7a25262cf3ddc7a926a076218',
+            'table_insert_col_before.gif' => 'd5910a210405a8cc7a24086104b06fa1',
+            'table_insert_row_after.gif' => '6b3167fde6db6ac271488b9cef404792',
+            'table_insert_row_before.gif' => '0e37e4c48dcddb1123bc6140ce323694',
+            'table_merge_cells.gif' => 'd5552fd387ff429fbfe7b8aebc76b3c0',
+            'table_row_props.gif' => '639bc7a8c034d99ab1cbef8f602f8aa8',
+            'table_split_cells.gif' => 'aa2082cf1eb2e62eecda57fd2f986ab7',
+          ),
+          'js' => 
+          array (
+            'cell.js' => 'd445d72fffdcbb12318d6019be4d1a53',
+            'merge_cells.js' => 'cd321e3350c013d4123ec52ea8ca6173',
+            'row.js' => '47978778bbc411d5dff43d1b437c4b70',
+            'table.js' => '8adaeae2fb56ed12588839a231654775',
           ),
           'jscripts' => 
           array (
+            'cell.js' => 'df27f8a9de847dcc4b433960c72f99fa',
+            'merge_cells.js' => 'f75d50d1dea59b83bd7f091fe53be6d3',
+            'row.js' => '5564b689e370fc84c47b192de29e472b',
+            'table.js' => '260a2bfaa8e3a3313fb14904f6daf7ea',
           ),
           'langs' => 
           array (
@@ -3893,6 +3485,8 @@ $deprecated_image = array (
             'da.js' => '6149f162722148ecf3876fb10b3e737e',
             'de.js' => '8cb4b9f7f1c94b051d781acb3da4d0d5',
             'el.js' => 'dcd0296a2b66bea7eb4014c5e499ae53',
+            'en.js' => 'efb577fa33557c4f819d45f8be16ff20',
+            'en_dlg.js' => 'c1b41c798f4b9c6de38fdd28c9e7c2e2',
             'es.js' => '438ea428f82d61c1ed95eaed346f97dc',
             'fa.js' => 'e64696a278069b4ea22bd952aaadfcaf',
             'fi.js' => 'fcf27030ae50526ae018dcfafa692002',
@@ -3916,9 +3510,17 @@ $deprecated_image = array (
             'tw.js' => '460af4c883d0599602a396ac6df2291f',
             'zh_cn.js' => '5e66efd3b2631d9d8a4b6d465df4444a',
           ),
+          'cell.htm' => '8897de52c93d9291d6b4312f6fa5b06f',
+          'editor_plugin.js' => 'b7789df41d0e9d67b532c4dd6a236b8e',
+          'editor_plugin_src.js' => '916737bf52517b328d4abd3eb909d1f6',
+          'merge_cells.htm' => 'e186ab851531e109edfe36463de1194c',
+          'row.htm' => '9c2f070ff15d6d76d86159c183432d44',
+          'table.htm' => 'd834be5d0d403f36ca024aee92454e6f',
         ),
         'zoom' => 
         array (
+          'editor_plugin.js' => 'b4029d6df8bb33172ea5c44a9ba409ac',
+          'editor_plugin_src.js' => 'c70d8c771103f9801cc0a0b48a18d19a',
         ),
       ),
       'themes' => 
@@ -3927,15 +3529,140 @@ $deprecated_image = array (
         array (
           'css' => 
           array (
+            'editor_content.css' => '4950d1774a92d46045b57911d41706ef',
+            'editor_popup.css' => 'e2c24b08b5fdb21ca55da439aa30564a',
+            'editor_ui.css' => '5d74992a65ac983a065f7c3d3012779e',
+          ),
+          'docs' => 
+          array (
+            'en' => 
+            array (
+              'images' => 
+              array (
+                'insert_anchor_window.gif' => '31ba68f936dfde5f280000f03f075a30',
+                'insert_image_window.gif' => '9ee69afeea6c1873588137837ce1382d',
+                'insert_link_window.gif' => '6fe4a492ca27b54d9a7c7c1f923455a9',
+                'insert_table_window.gif' => '6956617debd00b007292d2a365564eac',
+              ),
+              'about.htm' => '764466407de9a9a83452b9b3c86c60a0',
+              'common_buttons.htm' => '73dfa1decb7909ffb1ec0ebe13920ddd',
+              'create_accessible_content.htm' => 'd15201fd5783b7e9431862eabefb3a65',
+              'index.htm' => 'f9e5846d30636011991a2ffb0b5ef61b',
+              'insert_anchor_button.htm' => '489ef6dfa00d015274ab778a9b04b4e3',
+              'insert_image_button.htm' => 'f6d6048feacb971c22991c3b190c9918',
+              'insert_link_button.htm' => '14d85c7ae1b3a2b3137009b6ed8555ed',
+              'insert_table_button.htm' => '3510f97425d11f7b53cb6315afce90d0',
+              'style.css' => '82fb57bcdc42c11a367ea89a50038660',
+            ),
           ),
           'images' => 
           array (
             'xp' => 
             array (
+              'tab_bg.gif' => '3d53300281d4652d1fe2482f1bbec413',
+              'tab_end.gif' => 'de9e554769bc24fc7f2acefddb04e895',
+              'tab_sel_bg.gif' => 'f330e9c65e356cb6829596e421cf1116',
+              'tab_sel_end.gif' => '6a4ffda436f2ffe5a56107d6c8c5a332',
+              'tabs_bg.gif' => 'b3a2d232dd5bf5e8a829571bbec08522',
             ),
+            'anchor.gif' => '9997d8cbba012a0a8295ff92bced1207',
+            'anchor_symbol.gif' => '5cb42865ce70a58d420786854fed4ae1',
+            'backcolor.gif' => '9d4f0c287ef6a09ff25595c366920f61',
+            'bold.gif' => 'd4eac7372d4d546db5110407596720dd',
+            'bold_de_se.gif' => 'fa8d362da3c15cab263bc7eb2d192dd1',
+            'bold_es.gif' => 'eedfd6c0dc13c5db5054bd893ac92ca0',
+            'bold_fr.gif' => '8fbda35d5ebfc1474f93f808953b1386',
+            'bold_ru.gif' => 'c227dfb4b70957d31c240fd0fd9f55b6',
+            'bold_tw.gif' => 'c568a6c3d979acb4f6f96d86745aad7f',
+            'browse.gif' => '2babc35c383abee1260e021dd87fd7a5',
+            'bullist.gif' => 'f360470402affab13062de5ffbfb7f74',
+            'button_menu.gif' => 'ed293e6a817f44328f74c0853c628e69',
+            'buttons.gif' => '23c32309ebbca60a52fd064860788620',
+            'cancel_button_bg.gif' => '57b808096854d5eeb5785effcd10c468',
+            'center.gif' => '652af6256deb0eeb781b0793ee4142f2',
+            'charmap.gif' => '3c3625a993caca8262dd93d61ff1a747',
+            'cleanup.gif' => 'f082f5fdea8020fd9cdd714a30ca8e71',
+            'close.gif' => '99fb1b6d91aca9519cfc18e182de8600',
+            'code.gif' => '158e1ad2922f59a800e27e459c71d051',
+            'color.gif' => 'c8e11c751b5575025fc50b7701719f0f',
+            'copy.gif' => 'ef9a435cc72f9fe652ebc49498b89e86',
+            'custom_1.gif' => 'bd1f96d299847c47fd535b1b54d3a2df',
+            'cut.gif' => '4e3e44cccf150856322ba78ccf2533e7',
+            'ecode.gif' => 'd78d5418d4c6883c837fdbeb7b824bb4',
+            'forecolor.gif' => '160b10bd5949887d251eb5b96291b799',
+            'full.gif' => '009750822e228e10f51e746ddf8d1fec',
+            'help.gif' => 'e244d2c9d8f1d1910c7145699f767a9c',
+            'hr.gif' => '8d92cb73437c32a0327323b538ad2214',
+            'image.gif' => 'decae954176586ab7504c178b28b5041',
+            'indent.gif' => '89c00ba134c89eb949411194060c135c',
+            'insert_button_bg.gif' => '13a80583b2bf71103ea378514ac717e5',
+            'italic.gif' => 'c8652735e55a968a2dd24d286c89642e',
+            'italic_de_se.gif' => '2eafa516095a0d8b3cd03e7b8a4430f7',
+            'italic_es.gif' => '61553fb992530dbbbad211eddcc66eb9',
+            'italic_ru.gif' => 'bbc7be374d89a1ced0441287eeba297a',
+            'italic_tw.gif' => '0e673a64e0e502f8dac30c4a76af967b',
+            'justifycenter.gif' => '652af6256deb0eeb781b0793ee4142f2',
+            'justifyfull.gif' => '009750822e228e10f51e746ddf8d1fec',
+            'justifyleft.gif' => '7e1153a270935427f7b61c7b6c21ab8a',
+            'justifyright.gif' => 'b91052a13211f6b1bc0a5ca596fe4a6b',
+            'left.gif' => '7e1153a270935427f7b61c7b6c21ab8a',
+            'link.gif' => '59cbc5812b993e7f6823937e89e85c18',
+            'menu_check.gif' => '889563a22f10dd4535d0050b807e42ad',
+            'newdocument.gif' => 'e6d9f7d0bdc4d21d9b9fd1ad6b888733',
+            'numlist.gif' => 'd4c72d6e6d56fee2315ad59426a99a4e',
+            'opacity.png' => 'bd2babb5fb15f4ad5352dd05be54e898',
+            'outdent.gif' => 'b7249cc5a3bce3971f0b19fccac07f60',
+            'paste.gif' => '14d2f6c0e090ce821ca302a6b5d7e7d9',
+            'quote.gif' => '83277c79354c0cebed4b93b92ca96c56',
+            'redo.gif' => '0fb531683cf59bb0e1c9911d475e640c',
+            'removeformat.gif' => '2a5f195e9ec54e7e0e2fb40238678444',
+            'right.gif' => 'b91052a13211f6b1bc0a5ca596fe4a6b',
+            'separator.gif' => 'b0daa6a4ec9acc86c3b2b1bb71f5b6a5',
+            'spacer.gif' => '12bf9e19374920de3146a64775f46a5e',
+            'statusbar_resize.gif' => '4bece76f20ee7cd203d54c6ebd7a8153',
+            'strikethrough.gif' => '0dcca301aa909817a82d705cc9a62952',
+            'sub.gif' => 'dfbcf5f590c7a7d972f2750bf3e56a72',
+            'sup.gif' => '15145f77c6f9629bfdb83669f14338a9',
+            'table.gif' => '476b000e94b74dac818f1ce03681ace5',
+            'table_delete_col.gif' => '333372a2469c8dfa12a002a2aad8de59',
+            'table_delete_row.gif' => 'c58d9413b1d8150011db91818595871b',
+            'table_insert_col_after.gif' => '5d19acf7a25262cf3ddc7a926a076218',
+            'table_insert_col_before.gif' => 'd5910a210405a8cc7a24086104b06fa1',
+            'table_insert_row_after.gif' => '6b3167fde6db6ac271488b9cef404792',
+            'table_insert_row_before.gif' => '0e37e4c48dcddb1123bc6140ce323694',
+            'underline.gif' => '203e5139ee72c00d597e4b00ed96d84b',
+            'underline_es.gif' => '027608183023f80b0c9bf663c9e81301',
+            'underline_fr.gif' => '027608183023f80b0c9bf663c9e81301',
+            'underline_ru.gif' => '843cb1b52316024629bdc6adc665b918',
+            'underline_tw.gif' => '5be8c0f2086ce05c56f681775f1429f0',
+            'undo.gif' => '7883b9e1f9bf0b860e77b904e1941591',
+            'unlink.gif' => 'dcd93dd109c065562fe9f5d6f978a028',
+            'visualaid.gif' => '491fbaab8d180fdd051cece94f2b8845',
+          ),
+          'img' => 
+          array (
+            'colorpicker.jpg' => '35246246c8889992f3a2a42d501f8bfe',
+            'icons.gif' => '0709a7b61683ff5f347466cf14aa1f8e',
+          ),
+          'js' => 
+          array (
+            'about.js' => '7bf0a479da2e4c9a6cafda7626b98322',
+            'anchor.js' => '84df40a014548a495c806ff29688605d',
+            'charmap.js' => 'c2efdc6070e8d49ab61179d086512749',
+            'color_picker.js' => 'cd77c90f08f79f0653ea74efb104fdcf',
+            'image.js' => '466f1e7b127166b8bb865f5006d280b0',
+            'link.js' => 'c32414e9afb8d7887903a182c6886517',
+            'source_editor.js' => '9e10d96960c09241fef4ee2e0024411e',
           ),
           'jscripts' => 
           array (
+            'about.js' => '7168d330431da1d7c082c84df665a6f0',
+            'anchor.js' => '5bffefe6a515c1b10fd636a4fbd45a34',
+            'charmap.js' => '124138e299a3ef0c823010d2fbbdaf0f',
+            'color_picker.js' => '9dcf13f6303af0db5d3fb280fa526f62',
+            'image.js' => 'bf79747eacc011f3902a1804b49d6265',
+            'link.js' => '3df42cdbae98782ae9a9bffaeba7ab53',
+            'source_editor.js' => 'f2419d8fb2804a46ed626e6a8b953539',
           ),
           'langs' => 
           array (
@@ -3946,6 +3673,8 @@ $deprecated_image = array (
             'da.js' => '2df17219dbd20b478ddf818e782bf884',
             'de.js' => 'dacdff80bdd36137be8c01e49f321dc0',
             'el.js' => 'fd252d3ec3b889b64e49f156e1cce056',
+            'en.js' => 'f576640731578339d587b1b227d4449d',
+            'en_dlg.js' => '9e74c0e060e1a209644191c5b090d02b',
             'es.js' => '38f3298054a3c0eccef751738c29357e',
             'fa.js' => '7cba6a1fe0a72e6d7fff260e5434d509',
             'fi.js' => '05e023a47b125ad62b7ca756f11fca15',
@@ -3970,1742 +3699,115 @@ $deprecated_image = array (
             'tw.js' => '69e5f2fe9dae27269c4a31a8245bb2c7',
             'zh_cn.js' => 'e9a1c3aeb41c08b7ee4bed86c3cc193b',
           ),
+          'skins' => 
+          array (
+            'default' => 
+            array (
+              'img' => 
+              array (
+                'buttons.png' => 'f3b8decaa968630b3635b0d939d155cc',
+                'items.gif' => '5cb42865ce70a58d420786854fed4ae1',
+                'menu_arrow.gif' => 'e21752451a9d80e276fef7b602bdbdba',
+                'menu_check.gif' => 'c7d003885737f94768eecae49dcbca63',
+                'progress.gif' => '208a0e0f39c548fd938680b564ea3bd1',
+                'tabs.gif' => '47ef3b1cf81bd4cc7b27aed88af21533',
+              ),
+              'content.css' => 'fc86d84321a23cbd31f6936c3809eba2',
+              'dialog.css' => '71f6cefa23b6223e85d7bffcf0934412',
+              'ui.css' => '9bafd419c8ff293320e0d7b6c49cf24a',
+            ),
+          ),
+          'about.htm' => '866230a747a5dc27812b6fc80f5edc6a',
+          'anchor.htm' => '89fc96bc71b8f51c409ebeef480b148a',
+          'charmap.htm' => 'c9f33a629f80fe46c4012dc17948576f',
+          'color_picker.htm' => 'd3e7193150c1c4dae2eff6102663a1e1',
+          'editor_content.css' => '99f256c087e16872937f6cf9e4ea0c32',
+          'editor_popup.css' => 'a2bbb5f95ba2d3422c1666222170d700',
+          'editor_template.js' => 'e4f47b78c98d99433c91ec4a145f7ff5',
+          'editor_template_src.js' => '5c22a2f9266dae1e439c3050ef5284b8',
+          'editor_ui.css' => '62632779c868eddf46f3a8e121083d31',
+          'image.htm' => '8453941b410a1a31f5d79e2ac8a41e0e',
+          'link.htm' => 'de02c48a8f1664f083bae483b57e4781',
+          'source_editor.htm' => 'a34324fc81ac5bdd3afc5f986dc3cd3f',
         ),
       ),
       'utils' => 
       array (
+        'editable_selects.js' => 'fed66fbd97da928ad855ab40214ca7a3',
+        'form_utils.js' => 'e7174e00c3dd859b36fc76c0d463680e',
+        'mclayer.js' => '9db8de8efcf4da4694f65f8b64873b55',
+        'mctabs.js' => 'e25bdbe8e208ea443f0688809c491cc5',
+        'validate.js' => '49cf8ea372e8cce1b89c04f0a9e228a2',
       ),
+      'blank.htm' => '72406c871a9be7972922686221a885a2',
+      'filelist.php' => '63d5fa62565bc100d3345de82ab36985',
+      'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'tiny_mce.js' => '9f93010a684382a5ff180c275f0ee985',
+      'tiny_mce_gzip.js' => 'ea730144f7836073b9dcc0bd09c3ab5d',
+      'tiny_mce_gzip.php' => 'def6c78847a3a181cfed52b93d8d5f06',
+      'tiny_mce_popup.js' => '8ccd8e1ecd2700cb83ee770337b3b542',
+      'tiny_mce_src.js' => '3e0019162c45c999336c2fa811e4f522',
+      'wysiwyg.php' => '8f3cd9616eb6d35c5f2371dd4e155e4d',
     ),
-    'errorhandler_class.php' => 'b169b03bc392d49864077e8010abd800',
-    'poll_class.php' => '006ed3500ada715d561997ab4bd0eb5e',
-    'security_handler.php' => '5e858bf7b977021b74bfcc55c0d8f9f4',
-    'shortcuts.php' => '49ef7425046fce13b1fcef4fea3dcd63',
-    'submenus_handler.php' => 'b866789e832461178d2ab169b5158b6a',
-    'user_extended.php' => '45646ad4a16d5ceafadf6565130d226b',
-    'users.php' => 'bffb0d325569bbf3f0d946e226d834fa',
-  ),
-  $coredir['images'] => 
-  array (
-    'admin_images' => 
-    array (
-    ),
-    'avatars' => 
-    array (
-    ),
-    'banners' => 
-    array (
-      'e107.jpg' => '01982e7527b5dfab3b8634a0ab0bd75c',
-    ),
-    'custom' => 
-    array (
-    ),
-    'download_icons' => 
-    array (
-      'admin.png' => 'a7376ea540f3ca4f721909bd0e6ae71b',
-      'icon1.png' => 'e931689a5df4fc129cb7edf515504411',
-      'icon2.png' => '861ef3bb6203bb98533f5e4ad01ead5e',
-      'icon3.png' => '7178378df49945353c4cf6cd5e0f8622',
-      'icon4.png' => '3f56677de2890d6db093b0091f8e5e35',
-      'icon5.png' => '62de66653d9f686f7087ee7807fdcfd8',
-      'star2.gif' => '6cb9803a392f283aa7761169df820809',
-      'star4.gif' => '20c59fcebfc2ad7f416afa46752ec89f',
-    ),
-    'emotes' => 
-    array (
-      'default' => 
-      array (
-      ),
-    ),
-    'emoticons' => 
-    array (
-      'alien.png' => '6974b00de984da10b297e7fa9e628afa',
-      'amazed.png' => 'c283684df103a5e20700f96a5f41cb3f',
-      'angry.png' => '5ee786d3503d667e3f31682f1d7b37fa',
-      'biglaugh.png' => '113ab7a2958863073fd293f201b2b7ab',
-      'cheesey.png' => 'ce2406a7c0f680fee7a4980f2f01759b',
-      'confused.png' => 'ce8d57a08d36ae2651fe9a3c36e7ccae',
-      'cry.png' => 'af9f652ec6b891840fa16419b487b590',
-      'dead.png' => '769a5a9cf3fec9ba2025e68a0694ddbc',
-      'dodge.png' => '263141e145f83250115d57a384df93de',
-      'frown.png' => '36cbe1f5dd7d96e4555716391dc26ecd',
-      'gah.png' => 'ed1291107ee075f2878e046116ec8b6b',
-      'grin.png' => '2eaf0c22aab303d555b937331d54de3a',
-      'heart.png' => 'f481cd586397523f5a049ab0e3bb8b6c',
-      'idea.png' => 'efdc92d75376071b4f26bc4d9079504a',
-      'ill.png' => 'f31128acc9a7fcee11364906a62f99a4',
-      'mad.png' => 'cc8e3a28a0fb31ff8835976cadb56438',
-      'mistrust.png' => 'b8d139dac005d271ed1b772293be3004',
-      'neutral.png' => '387cd29b21d0eceab935d3fb161dc1f3',
-      'question.png' => '21d92683bb918283efdc68636a5249b2',
-      'rolleyes.png' => '9f7d79a73089c2080e2bf1023507ab72',
-      'sad.png' => '0e66d4ab21cf0010c9a6e2ffc94795ef',
-      'shades.png' => '2bc442022d4bb9b99850e4fb7c0919ec',
-      'shy.png' => '7d1fa9f1ebacd3bea124648efbcac26c',
-      'smile.png' => '98412834fb8063733c819817150a6706',
-      'special.png' => 'e802a5e499d0794ffc2e93c4eedb5f4c',
-      'suprised.png' => 'a3813e582897e99a5f5980bc6048567a',
-      'template.png' => '190417a4630f9e46eaa58eb782607fc5',
-      'template1.png' => '3b8aeab390660d69fce24f4628f0e0e7',
-      'template2.png' => '42f0eac79e6fc87adf652da6e3c0bf3f',
-      'tongue.png' => 'cd2b96e084ef3df7ab15a366e2bb728e',
-      'wink.png' => '4b057effb0ec0a0c38cc9267adc8e535',
-    ),
-    'fileinspector' => 
-    array (
-    ),
-    'filemanager' => 
-    array (
-    ),
-    'forum' => 
-    array (
-      'admin.png' => 'cdd0a7cbc97c39ceba3bae3bdc01eda2',
-      'admin_delete.png' => '707ddc11a86975090610a76e8ad01923',
-      'admin_edit.png' => 'a383175b504d64e64a84a21dda5c1619',
-      'admin_lock.png' => '744c74fecf65bd64d4ee22681cf6bd11',
-      'admin_move.png' => 'c892805676f983c34dbf308eeb2627c7',
-      'admin_stick.png' => 'ef0bc1380cdbd26118c6c53272e46af6',
-      'admin_unlock.png' => '1818d0d48dfe5f76c8bf3cee9d9e949c',
-      'admin_unstick.png' => '8b57798a150aff163c35a9e2a7c1ff62',
-      'aim.png' => 'bfd4c59a6cc8e1bb380520147657e58a',
-      'announce.png' => '51274830e593a079d57c3213da0b97ab',
-      'closed_small.png' => '23df1d00ed2742c32f08664b39ebe5e4',
-      'delete.png' => 'b9fc374f973e51f45c80884b56cab7c0',
-      'e.png' => '797612f8767a25e9a934580f7d778ef5',
-      'edit.png' => 'dc9067455b48da0bbc50993a4217eedd',
-      'email.png' => 'd954a0e84dcb099a5ece71ff181650db',
-      'fcap.png' => '3d1b365a597132548eb9635b6bca040d',
-      'fcap2.png' => '5f6f45697bc185d51f2c06d904642aad',
-      'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-      'icq.png' => '3ab7fe8b2bfcd5d1bc376caaa7d01969',
-      'lev1.png' => '6f459327ecc4db1418087664ec99cd0d',
-      'lev10.png' => '00fb85385b347b832cce42195c203000',
-      'lev2.png' => '9c348bddca193d020328b9910a5618ef',
-      'lev3.png' => 'c5baa56ed9d682b28f1ca823f75b69e6',
-      'lev4.png' => '29a7bbedc1bfd1d7a36ccb6b4e679baf',
-      'lev5.png' => 'de0edacf89d8013ec4d63619b0363abb',
-      'lev6.png' => 'c939b5600c78d4f679fa1892f9b57a63',
-      'lev7.png' => '57442dff53452b993d10397a393415e4',
-      'lev8.png' => '6ab02457fabe0c8951b51c80a47ebb5e',
-      'lev9.png' => '5197a5949253e509e4994cb2cbc0dc0d',
-      'main_admin.png' => 'cfdb4442feb26d0031828a0f7424f6fd',
-      'moderator.png' => '5c1772259c00d8aca7eda2bac696a826',
-      'msn.png' => 'd1613fee04df9ac3bca9d2d0cceb0c7f',
-      'new.png' => '2bbd79241cf8036164e9965055b6f8b3',
-      'new_popular.gif' => '3c47023ff01dc15fb3a678cb21cf55ad',
-      'new_small.png' => 'df5d599ecd2bdcc93d576d552b71a54c',
-      'newthread.png' => '26fcf53b08097e354ef4d3516fb64c71',
-      'newthread_alt.png' => '286f65b22c67f8edc8caabeb207acbd1',
-      'nonew.png' => '5fe81217e3c6f672a4e2f2922ddbe1c6',
-      'nonew_popular.gif' => 'bd77c2f2b42336d5690646d4006ea983',
-      'nonew_small.png' => '2544ba225c65f82c7788b003edb2d1fe',
-      'pm.png' => '75d5f1434923e1afa54f93dce494ba96',
-      'post.png' => '5212304c8b38fb4033ddf691fd7b77ba',
-      'post2.png' => '0f6cfe51518affb7a6baac798abd907b',
-      'profile.png' => 'ed21e84603c3bcf82eb1820235c36075',
-      'quote.png' => '579d14bfb1faabf191272938fae3ab65',
-      'reply.png' => 'b260ec33dee1736c5a258567d117eb69',
-      'reply_alt.png' => 'cfe83ef2927d9b7819a20fa62837a139',
-      'report.png' => 'f5e4ecc39864c5a8a66cbc3cac33c3e9',
-      'sticky.png' => 'c5bb0a20ef02bf8e52f3a93907804f20',
-      'stickyclosed.png' => '810fb2dee4cf3d593f5a50031a52cde8',
-      'template1.png' => 'feeb5c3f76438732948137e771def211',
-      'template2.png' => '56b7b1d54b872c29042e523c9c043c63',
-      'template3.png' => '66096ef11a4734f52cf06a624786678f',
-      'template4.png' => 'f81e1772495061820f50ed16e489d7b2',
-      'template5.png' => 'f5213d718fe9ad02d6040111c827e8ee',
-      'template6.png' => 'f8319c599737e975bd05ad1890f77725',
-      'template7.png' => 'a1d4f847a68fb991a1126d5c31bda6e5',
-      'website.png' => '568b5e9dcc6fcc5067209e9390297162',
-    ),
-    'generic' => 
-    array (
-      'English' => 
-      array (
-        'but_create.png' => 'fdd815c97c1f2b7cb6fbd579abd72937',
-        'but_delete.png' => '7d0a9a0845029855b1ee3a2df49150f2',
-      ),
-      'bbcode' => 
-      array (
-      ),
-      'dark' => 
-      array (
-      ),
-      'lite' => 
-      array (
-      ),
-      'access.png' => 'f32777222ff51a9d7717a5d66c10417d',
-      'admin.gif' => 'de326ebb9129598abcd207aeacbca61c',
-      'aim.png' => 'c4c641053830a0b470763991e7e1b343',
-      'article.png' => '4c1af0ea92374fcd32eb086f1e63d51b',
-      'attach1.png' => '3f24d017495d3e59a8a18de11a23f63c',
-      'banned.gif' => 'e944e98fc61c72d541437d58309d22d6',
-      'bday.png' => 'b91ccd6511a34855d3da5ec55178ef32',
-      'blankbutton.png' => '32718a34c4e4c62290e5dea6399aaf0c',
-      'blocked.png' => '1227a11750b236543697c6b1f493951c',
-      'broken.png' => 'ded230fd8afbd01c8647e287b78232fe',
-      'chatlink.png' => 'b9579a8c1af6be726547edfc5cfc6eaf',
-      'delete.png' => 'bbffdfd37ba4270e862a73d93b81769b',
-      'down.gif' => '841d5d013c86f7cd61e06b978c5c65a2',
-      'down.png' => 'd94fedebe97edf504f4e3611a831d2c2',
-      'download.png' => 'd121e11e2b01e117e12ca1d9d4bfc8da',
-      'download2.png' => '3fb794a0407283c91fa0f138f26722cb',
-      'e107.gif' => 'fc919304a3df80991ec801f39baf3ba5',
-      'e107.png' => '16751559410e5d868409898522df2cb4',
-      'edit.png' => 'f009b77ab253590ace79a70cfeff566c',
-      'email.png' => '36e771c8c0f3c5508cfb06d09a73133d',
-      'extand2_ico.png' => 'd6cab6c391859427df70a1cf73a3f8b3',
-      'extand_ico.png' => 'ef0dad81c4551e1cf4e5b92cc2682a42',
-      'friend.gif' => 'b86a05be607fc371d4af747e6fed3991',
-      'hme.png' => '18b3c9241db5836b5d5071ba45cb57a6',
-      'hme2.png' => 'e7b5ced50260f1ae8d2fc27d11305fa0',
-      'icq.png' => 'baba3fba52f76960e0917996509849ad',
-      'installed.png' => '13e75fe21dbe487dfe4a70fd8b6a4b8e',
-      'left.gif' => 'a33e2c78aec1bb670527e699bf09142d',
-      'link.png' => '9e921ccc10fdb20e1272441a14bec6cb',
-      'location.png' => 'b47fcee2cfd5e9d8428dbf0bd2279f43',
-      'mainadmin.gif' => 'e2ea0c3a07ad3360b6dc3565fadb92c9',
-      'move.png' => 'c38620b0e49020a0e509bb396629d98b',
-      'msn.png' => 'cb6f3038694b1050815a3c0faea7105c',
-      'new.png' => '19c5797308bdc437a7e612e0e0c36afe',
-      'new_comments.png' => '02c972790cfb529b39567fb2d813fbe4',
-      'newsdelete.png' => 'b108358657ce78bcd8a32bea790c5cef',
-      'newsedit.png' => '7905b143e1a8614f58deba888cfa1831',
-      'noaccess.png' => '1747d86cee75b592d74aa7657f37785e',
-      'noinstall.png' => 'f89fe8f057694f93e4e163e4daf3de2e',
-      'nonew_comments.png' => '7611b72fa10b37d8b25b42b82b7014d5',
-      'not_verified.gif' => '157e88132e5f7e6df5c56857177b5938',
-      'off.gif' => 'b7939422edcdf36818e632fba7fa4c42',
-      'off.png' => '211ebf7f9f317c20c24f34267f4ffe2d',
-      'placeholder.png' => 'b1b16f1feb58cc1c262f4728e710bce4',
-      'plugin.png' => '918cf0e41e6c810a36ddfd88b1571e96',
-      'printer.gif' => '8ac26fe4699decd7a018fcb9887ae04a',
-      'right.gif' => '59521255e9b42ecddf5b5c196db3acd5',
-      'rname.png' => 'd9602be8c82e8b9a439224b659ebbe40',
-      'star1.gif' => 'c92689cfe71f7e6dafccb9f54664ab45',
-      'star2.gif' => '6cb9803a392f283aa7761169df820809',
-      'star3.gif' => 'fde817afe8d962061bfe6e7c1d36d784',
-      'star4.gif' => '20c59fcebfc2ad7f416afa46752ec89f',
-      'uninstalled.png' => '67b9d067ee7eccc0f6732d0e709413c9',
-      'up.gif' => '733fe173358fbd482b5745a3e6b2bf3c',
-      'up.png' => '2bfaa32e6b6c45767ff67961d7f6a758',
-      'upgrade.png' => '8a2a682aa0a1713cb627275c1e371714',
-      'user.png' => '2a791be6fdba60bd8ef16d04faf4e789',
-    ),
-    'icons' => 
-    array (
-    ),
-    'install' => 
-    array (
-      'install1.png' => 'c5cdc95dcb566d3a06dd9491773cb915',
-      'install2.png' => '3a4afe78d9167935869fd62c3e32e5c7',
-    ),
-    'link_icons' => 
-    array (
-      'admin.png' => 'a7376ea540f3ca4f721909bd0e6ae71b',
-      'bullet2.gif' => '5fea13d481fc903ce05bfed57341e1c1',
-      'icon1.png' => 'e931689a5df4fc129cb7edf515504411',
-      'icon2.png' => '861ef3bb6203bb98533f5e4ad01ead5e',
-      'icon3.png' => '7178378df49945353c4cf6cd5e0f8622',
-      'icon4.png' => '3f56677de2890d6db093b0091f8e5e35',
-      'icon5.png' => '62de66653d9f686f7087ee7807fdcfd8',
-      'star2.gif' => '6cb9803a392f283aa7761169df820809',
-      'star4.gif' => '20c59fcebfc2ad7f416afa46752ec89f',
-    ),
-    'log' => 
-    array (
-      'beos.png' => 'e81a347cde7806d403369acf5125c4fe',
-      'explorer.png' => 'ad4b2066d1a13c4c3f01771684de08bc',
-      'firebird.png' => 'aa7ab3a68f2321baccdda8c13d2ba051',
-      'firefox.png' => '2b1b1ceb660b824b9dbffd7eeacf79bb',
-      'freebsd.png' => '0cc1da48e638ee3549a53c459a0beaf1',
-      'konqueror.png' => '086c6a2215282b93a0d827b9208709d8',
-      'linux.png' => '336a3e40452886a7bfac345e8a261138',
-      'lynx.png' => 'bf674cc89d48c3edca70148befacfc0c',
-      'mac.png' => '3b5ceead951265dc1648d172fbdd6461',
-      'mozilla.png' => '3bac9ec175a9a1210fe69133658e7a79',
-      'netbsd.png' => '0cc1da48e638ee3549a53c459a0beaf1',
-      'netcaptor.png' => '2e4d9005519f6ce2b393dfd5957b16f8',
-      'netscape.png' => 'ef183a5383deb9cf83d90cde42efb24d',
-      'openbsd.png' => '36a1043bb8aacd3ea0a85c5f4de3130a',
-      'opera.png' => '8892071cd4ecb31298ec08373d1491dc',
-      'robot.png' => '4af563ba21dd39f7d875f4e4af4f3d60',
-      'spiders.png' => 'd74d7cf44e339255fbf66d5414f14db1',
-      'sunos.png' => '455c936a67729dd85ebec12b9c6139eb',
-      'unix.png' => 'eeddedaa7da41673f0ef6d3e60876dc0',
-      'unknown.png' => 'ff386748bec43130392f50ddf6743d57',
-      'unspecified.png' => 'ff386748bec43130392f50ddf6743d57',
-      'web%20indexing%20robot.png' => '4af563ba21dd39f7d875f4e4af4f3d60',
-      'windows.png' => '693b0f409fb73b8c688582cbf231de41',
-    ),
-    'newsicons' => 
-    array (
-      'admin.png' => 'a7376ea540f3ca4f721909bd0e6ae71b',
-      'icon1.png' => 'e931689a5df4fc129cb7edf515504411',
-      'icon2.png' => '861ef3bb6203bb98533f5e4ad01ead5e',
-      'icon3.png' => '7178378df49945353c4cf6cd5e0f8622',
-      'icon4.png' => '3f56677de2890d6db093b0091f8e5e35',
-      'icon5.png' => '62de66653d9f686f7087ee7807fdcfd8',
-      'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
-    ),
-    'newspost_images' => 
-    array (
-    ),
-    'rate' => 
-    array (
-      'box' => 
-      array (
-      ),
-      'dark' => 
-      array (
-      ),
-      'lite' => 
-      array (
-      ),
-      '1.png' => '4b0844d8edcb6f21a30ccd614ce1f681',
-      '2.png' => '78f9dddde6747afdfe4d2ae74809c48b',
-      '3.png' => '0d94d295b5f76d02a3667f314f2e2e16',
-      '4.png' => '6bec72f755855b0f4bcad657627f2c8b',
-      '5.png' => 'f5fcf4a03e0e8a873421453fe9c8faa6',
-      '6.png' => '5f5e7867a7ab294c254490a97dbdb5e0',
-      '7.png' => '2c7386cf7b32d110795ede44b0649db1',
-      '8.png' => 'd831f36e9da9569a3ee9fc76ca744ab8',
-      '9.png' => '06a1a321bc60f7964ff49201187b6d6e',
-      'empty.png' => 'fba656dd42a4642df933475f41555579',
-    ),
-    'user_icons' => 
-    array (
-    ),
-    'logo3.png' => 'd4969f3e493bbf085b7b04db22fb66c3',
-  ),
-  'e107_install' => 
-  array (
-    'images' => 
-    array (
-      '01_bg.gif' => '50f03651c070e4138c97a4a7ee9e5339',
-      '01_bodybg.jpg' => 'ca5f9a092c397986fa10d5990023ab25',
-      '01_footer.jpg' => 'cf2f00b3e5a2aff05e70e728eb225cb4',
-      '01_hdot.gif' => '945bc76d6f25d2a32fafb0abe1933e1d',
-      '01_header01.jpg' => 'cb8f84e1d43a127604ea9b244ecab97e',
-      'bar.jpg' => 'deb2fd16258227f5e99fee0074b764af',
-      'bar2.gif' => 'eb85624e746f91fd33511783cccc92a6',
-      'bar2edge.gif' => '6d273a53798e532091bd6354f1e39c60',
-      'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-      'bottom.png' => '46e798abeb638c4f9540973d239b10e7',
-      'bottomleft.png' => '3db4e800cc8add7f4f360c5f055aba49',
-      'bottomright.png' => '28a54110d855fd47380cf094d6b7b169',
-      'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-      'bullet2.gif' => '5fea13d481fc903ce05bfed57341e1c1',
-      'button.png' => '69918234a9caea763d1c66781e50fe34',
-      'cap1.png' => 'c58d5a7a23bb01572a51ca806cf244e0',
-      'capdark.png' => '968732d5e5ddfa288f59af2c47f5d4d7',
-      'capleft.png' => 'a1af1a726e1aee5e6e9822b9ccba1a48',
-      'caplight.png' => '159e80e78ab67ceb935eb084d8dc51ff',
-      'capright.png' => '57e7b70a495978f5de9575e826cd7878',
-      'captransition.png' => 'f762ef589c33ff9695bf4731eaf23738',
-      'fcap.png' => 'fabf58910351f1f742dee108b60517b8',
-      'fcap2.png' => '777e56bcaf32e29ad505df49f3cb6019',
-      'left.png' => 'a7755093080be75e9430072bd3bb32b3',
-      'pspbrwse.jbf' => 'e84c6e90a5babd91ff1705cdd904a60c',
-      'right.png' => '1dc657e1d9065920653132f3a85d77ed',
-      'temp.png' => '35e34c98922cf2df737eef3cec806af2',
-      'top.png' => '75b4e22fcbe8059bf217690e08c265ac',
-      'topleft.png' => '8b45a5185fa619c3d336e1ceb618bc81',
-      'topright.png' => '1c6d6e49a6d9d173ec12f2baed2f45a8',
-    ),
-    'defaults.php' => 'd74f7f56a35eaba3a446d0d7b9ece61e',
-    'forms_class.php' => 'cab82e1076617e73b142f89e589e6302',
-    'index.html' => 'd41d8cd98f00b204e9800998ecf8427e',
-    'install_template_class.php' => '85720230062e45ca3e6c190a865db9a1',
-    'installer_handling_class.php' => '43abe84e4f29d084e5aeb58f048585b3',
-    'installer_template.html' => '7c5c280e54ef3ffb337143513dbefdcf',
-    'style.css' => '78939dd07a01f44a78bb95f58e7999e5',
-    'writable_file_list.txt' => '65391cea1b3218eee4fc5e3535c4b6eb',
+    'e107Form.php' => 'e2aaaa8c39d3492ab55a4baf9b4c11b5',
+    'e107_Compat_handler.php' => 'b927ac5a004fec8506e7d51b4e79a00f',
+    'encrypt_handler.php' => '71f05d8bee660dbfd299d8cf4feea2f8',
+    'equery_secure.php' => '00121b097ba978d5330349abbd350737',
+    'forum.php' => 'da5c0d4378b7288610945979d269a79c',
+    'forum_include.php' => '8b562f8ba508cc3572c84b443c4e7a6c',
+    'forum_mod.php' => '0ef4ab19bc8002337b2d3582c59874c9',
+    'input_class.php' => 'f819fe76d1fa518f430410aa4e6c803e',
+    'level_handler.php' => 'dbfc82241789bef8b968b946601c2ebb',
+    'parser_functions.php' => 'aefea0c8c0b1bd9d8dde7d1d14ed3f7c',
+    'preset_class.php' => '60ddb9dd3275fb742dafe464cdfe8ffc',
+    'secure_img_render.php' => 'd66dc845568abd43a66e4f21bd9f98b0',
+    'smtp.php' => 'e3802cca9a715e79e93569750c0459fc',
   ),
   $coredir['languages'] => 
   array (
-    'Danish' => 
-    array (
-      'lan_install.php' => '7106553eaeb91ce1f59d0108dac9d579',
-    ),
-    'Dutch' => 
-    array (
-      'lan_install.php' => '1670683dbb0fb0d17f932ae81940a416',
-    ),
     'English' => 
     array (
       'admin' => 
       array (
         'help' => 
         array (
-          'log.php' => '553fd4414b98f4aa5f0f6e1f8f7b0ad6',
+          'article.php' => '3c7df3956134df9dfc86a4a67b73d78b',
+          'chatbox.php' => 'df26b116189f5c3b615311ee4fc2fdc6',
+          'content.php' => 'dcf60ff22635488c42b4a99243bdf9f2',
+          'custommenu.php' => 'bc2d5fff1395d8495a45b80da77b7665',
+          'forum.php' => '161249fcb72351dee1b5b56fda1a15be',
+          'link_category.php' => '5352ce360022a7fc0882fb77603405cb',
+          'list_menu_conf.php' => '88bd581ba21987493206e430885cd3f0',
+          'menus2.php' => '2249f7d8b325af8945ed1a5a3e9721e2',
+          'news_category.php' => 'f50de991b9927da47a65da9113bf2c43',
+          'newsfeed.php' => '93f7ef1481d3fc59ecde4d40ad6b6c84',
+          'poll.php' => '3adef894abf1c1920a311899071ff8ee',
+          'review.php' => '6997e7c8d919246f698837c0ba3693b3',
         ),
-        'lan_admin.php.bak' => 'c8bd5eb16d7834de1975b2ac3cd301e3',
-        'lan_article.php' => '78d8dba28058eb99e32fc670fed68f34',
-        'lan_chatbox.php' => 'dc7462a5fb63958528d842662b0c0d4c',
-        'lan_content.php' => '4b4dd166785d89b717ca41602e4908de',
-        'lan_custommenu.php' => 'fca295a0aaca7e6dc6ea2b07d3ab8474',
-        'lan_download_category.php' => '868e2a17778c821e21579b28c8e8db85',
-        'lan_forum.php' => '3ab28d049e7ef2900dd601deb02ab693',
-        'lan_forum_conf.php' => '208dd010683d2894d17ab734d712a270',
-        'lan_link_category.php' => '4dff35a95718cc5cffee64fc635dc19e',
-        'lan_log.php' => '6bf26c44f7553beeb8ce574de27dc29e',
-        'lan_news_category.php' => '5337d8c36701776b22c27182a258e690',
-        'lan_newsfeed.php' => 'bba9d1991b304ee031ac8f4339aa6a61',
-        'lan_poll.php' => '9bedcde5926715eede2f03afcff20a67',
-        'lan_review.php' => '36820722f27e35f1fe10edf238a13d93',
-        'lan_submenusgen.php' => '40af0cbb4906703d1fc5d29d7f2790e4',
-        'lan_submitnews.php' => '595ca7b58df223022b3f7bd44e8238f4',
-        'lan_theme_prev.php' => '003c8edea2f4b757347a231cd61868ba',
-        'lan_theme_prev.phpOLD' => 'af65c38f8c4bc38654b6fcddc83b2a29',
+        'lan_banner.php' => 'fb60e0fec97591f025d5653dd38090dd',
       ),
       'lan_article.php' => '7cb2200110e779d2be72b32b5adae9e4',
-      'lan_chat.php' => '1216025ec3eb4295cb7b7920d9c6d5f4',
-      'lan_content.php' => '175020e7d6e637c7c560c7b710e7da67',
-      'lan_forum.php' => 'ca5e1c87b06b0b4c76aa17222a2049b9',
-      'lan_forum_post.php' => 'e354153441043fabd0cdd6ed99be37a7',
-      'lan_forum_viewforum.php' => 'ae655efbf1d88f64a6f9436894767a64',
-      'lan_forum_viewtopic.php' => 'dc93aa81babfe0ee610d559d70f8681a',
-      'lan_install.php' => '6182909e4053d2da395298e4ca73323a',
-      'lan_oldpolls.php' => '64379ca9ff42aaf1873b93bc41627fa7',
-      'lan_request.php' => '023a40948ec32b3359e9a5bae2b04f71',
-      'lan_sitemap.php' => '7d926f3eb3c81ed747a6682d4a9048a5',
-      'lan_stats.php' => 'f9058e0cd84a315f694618e2edf94d94',
-      'lan_subcontent.php' => '8307d6e57a66ad7df8a57777c1fdcb36',
-    ),
-    'Finnish' => 
-    array (
-      'lan_install.php' => '0f5a7f1603a519ee4456ec9fa1e7f8f9',
-    ),
-    'French' => 
-    array (
-      'lan_install.php' => '74ad3fd72cca13f1968785a89b6a09ad',
-    ),
-    'German' => 
-    array (
-      'lan_install.php' => 'c0e03443e52be1a6492e5b65776df1aa',
-    ),
-    'Hebrew' => 
-    array (
-      'lan_install.php' => '6f5fe3b0b3ba23463026f873453c98ab',
-    ),
-    'Portugese' => 
-    array (
-      'lan_install.php' => 'bfd10a1c0d92d1d5094a63d64aa9a809',
-    ),
-    'Portugese - Brazilian' => 
-    array (
-      'lan_install.php' => '4dcb400544c4cf60bf640d2418e15908',
-    ),
-    'Russian' => 
-    array (
-      'lan_install.php' => 'a99ce749efb53953f0121c71a88c9ae4',
-    ),
-  ),
-  $coredir['plugins'] => 
-  array (
-    'admin_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '9cc7dc759d47e98f86d2223097fb6dd8',
-      ),
-      '.#admin_menu.php.1.1' => '996aec68e661d293d168721272bdeb79',
-    ),
-    'alt_auth' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-        'English' => 
-        array (
-        ),
-        'ldap_auth_English.php' => '8553f2510a8f44e048e75b0caad969f6',
-      ),
-    ),
-    'alt_news' => 
-    array (
-    ),
-    'articles_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '559ed80821be94dbbae47b244dbd837d',
-      ),
-      'articles_menu.php' => 'fd15a3ca2e31528a95fc99184e440f63',
-      'articles_menu.phpOLD' => '879325102370b1fe12e4d7ccdfbb02a2',
-      'config.php' => '00b67a915d74fc094e077ea4466f7c2f',
-      'config.phpMAIN' => 'e72301f4e60ede3df654b0a32ffd07c1',
-    ),
-    'backend_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '2ceeff0b4fd187b6bc41f2c4112bec77',
-      ),
-      'backend_menu.php' => '3518985b836c9d8a0ba41966452d704d',
-    ),
-    'banner_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'blogcalendar_menu' => 
-    array (
-      'languages' => 
-      array (
-        'Dutch.php' => 'a5a25231f132dfe4b7f691e4ffeb684f',
-      ),
-    ),
-    'calendar_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'log' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-      'calendar_menu.crc.gz' => '90580c372c43234e82c73fe1687611d4',
-      'config.php' => '401d559f53265f4b1778701b8e9dd512',
-      'readme.rtf' => '47f6de1137030fe2efde782133ab725f',
-    ),
-    'chatbox_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-        'English' => 
-        array (
-        ),
-        'English.php' => '89c8271c28118aae2dbbe8f35adc9f9f',
-      ),
-      'search' => 
-      array (
-      ),
-    ),
-    'clock_menu' => 
-    array (
-      'languages' => 
-      array (
-        'admin' => 
-        array (
-        ),
-      ),
-    ),
-    'comment_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'compliance_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'content' => 
-    array (
-      'handlers' => 
-      array (
-      ),
-      'images' => 
-      array (
-        'cat' => 
-        array (
-          16 => 
-          array (
-          ),
-          48 => 
-          array (
-          ),
-        ),
-        'file' => 
-        array (
-          'tmp' => 
-          array (
-          ),
-        ),
-        'icon' => 
-        array (
-          'tmp' => 
-          array (
-          ),
-        ),
-        'image' => 
-        array (
-          'tmp' => 
-          array (
-          ),
-        ),
-        'redo.png' => 'df3dd61d416b00c26d3cbcdf02e862b4',
-      ),
-      'languages' => 
-      array (
-        'English' => 
-        array (
-        ),
-      ),
-      'menus' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-      'templates' => 
-      array (
-        'default' => 
-        array (
-        ),
-      ),
-    ),
-    'counter_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'custom' => 
-    array (
-      'Readme.txt' => '2a5a677029c6a1ff8f31f3cd24452386',
-    ),
-    'custompages' => 
-    array (
-      'Readme.txt' => 'fe1235ad725e996d9f123fdb4e4c13e8',
-    ),
-    'fader_menu' => 
-    array (
-      'images' => 
-      array (
-        'logo.png' => 'bcaf473988c4b267a7dcf56949a452eb',
-      ),
-      'languages' => 
-      array (
-        'English.php' => '33f3cf5b3c8706af602ed4cb3c81db9c',
-      ),
-      'config.php' => '0aabe62b3e1611c441e9a2c2114cd5cf',
-      'fader_menu.php' => '66caa671ec5bafd3fe27b4d2b5e4f6d9',
-      'plugin.php' => '242e63190113a2aa45358d7cb3b7535c',
-    ),
-    'featurebox' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'forum' => 
-    array (
-      'images' => 
-      array (
-        'dark' => 
-        array (
-        ),
-        'lite' => 
-        array (
-        ),
-      ),
-      'languages' => 
-      array (
-        'English' => 
-        array (
-        ),
-      ),
-      'search' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'gsitemap' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'headlines_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '2829e43dff89716317f5e07b2c9be60b',
-      ),
-      'headlines_menu.php' => 'ab3e7718b4bdc0692766939d1cce00bc',
-    ),
-    'integrity_check' => 
-    array (
-      'crc' => 
-      array (
-        'core_v0.603brevision #6.crc.gz' => '951d6ff1eb9b511e9de413fda1025fd0',
-        'core_v0.604b0.crc.gz' => '1b1d32dcd6b5748f5f61c1ae3ed75f60',
-        'core_v0.605b0.crc.gz' => 'cfcbd7b968e01b4d7085b993c2edc2fd',
-        'core_v0.606b0.crc.gz' => 'a507b39e47b6bd4da410800674f18b0e',
-        'core_v0.607b0.crc.gz' => 'd462a23b24951c04630d98fbdaaa303e',
-        'core_v0.608b0.crc.gz' => '8d28c1a7ed767f3b1f37fc2e5d42a7c4',
-        'core_v0.609b0.crc.gz' => '619d9fb859dcebee7335b107df732989',
-        'core_v0.610b0.crc.gz' => '40b629b94d1942330c3d6a00d9eb3928',
-        'core_v0.611b0.crc.gz' => 'd2fa16d9224fe1582e926dab65fd7974',
-        'core_v0.612b0.crc.gz' => '417f80d506105f093852f6ac444401d8',
-        'core_v0.613b0.crc.gz' => '10ee72857c69cee04b32c9713d0854ee',
-        'core_v0.614b0.crc.gz' => '8dc89467864a96ba78930ed1a8be086f',
-        'core_v0.616b0.crc.gz' => 'ff549280c337968ac0ba94797a8713c6',
-        'core_v0.617b20040917.crc.gz' => '772181b8a467cb436be8e70b5d792e36',
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-        'German.php' => 'e89edc419022cf2407fb101d3eab899f',
-      ),
-      'do_core_file.php' => 'fac13bd2f065a031c59841ab4cb7074e',
-      'integrity_check.crc.gz' => 'd5cec3024c3e3a0be2cca541bd60d179',
-      'integrity_check.php' => '49d5a8fa37a78f8716cb5e86d77337c0',
-    ),
-    'lastseen' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'links_page' => 
-    array (
-      'cat_images' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'link_images' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-    ),
-    'linkwords' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'list_new' => 
-    array (
-      'icon' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'section' => 
-      array (
-      ),
-      'new.php' => '8c374be27e41a4318f68e707021ff984',
-    ),
-    'log' => 
-    array (
-      'images' => 
-      array (
-        'trans.gif' => '39bc952559e5a8f4e84ba035fb2f7390',
-      ),
-      'languages' => 
-      array (
-        'admin' => 
-        array (
-        ),
-      ),
-      'logs' => 
-      array (
-      ),
-    ),
-    'login_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'newforumposts_main' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'config.php' => '276457a4bf2fa83ea6562797782310a6',
-    ),
-    'newforumposts_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '693095a9bd834689047de027f5e0cbbd',
-      ),
-      'config.php' => 'f01b9da7574412da71f6182494f33e1a',
-      'newforumposts_menu.php' => '2cccc461e0dcea560a8d60cbf6923cb8',
-    ),
-    'newsfeed' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'newsletter' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'online_extended_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'online_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'other_news_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'pdf' => 
-    array (
-      'font' => 
-      array (
-        'makefont' => 
-        array (
-        ),
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'pm' => 
-    array (
-      'attachments' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-        'admin' => 
-        array (
-        ),
-      ),
-    ),
-    'pm_menu' => 
-    array (
-      'images' => 
-      array (
-        'icon_pm.png' => '2912f05d43fd9f1aa7e5561f01f03d49',
-        'new.png' => '2bbd79241cf8036164e9965055b6f8b3',
-        'newpm.gif' => '4d16f5fbaa8e76067053c8c901972bc4',
-        'nonew.png' => '5fe81217e3c6f672a4e2f2922ddbe1c6',
-      ),
-      'languages' => 
-      array (
-        'admin' => 
-        array (
-          'Dutch.php' => 'deaec186998741c967926a2b4a2c8883',
-          'English.php' => '48e55f333c6cce298d8d42d23ac1ea86',
-          'French.php' => 'afada3c05cd276a42b3ea2c0143cc4eb',
-          'Hebrew.php' => '99a11d649976ca09269ba710331692a1',
-          'Hungarian.php' => '24c9bee3429ab4cb0310dbf53bdf46a7',
-          'Lithuanian.php' => '46ff3c0d24248c463bc1d4565ed8ae60',
-          'Swedish.php' => '36db180754f4fc798d801b809afb30c6',
-        ),
-        'Danish.php' => '0fd270f1290f030df0923b51c8e758d5',
-        'Dutch.php' => '70c30863dc1e573e57b29e7ea833fe86',
-        'English.php' => '3a1f134f8dfab0d6e9bd01affac61360',
-        'French.php' => '95edb5e8ee1adbef13968f678013a1c7',
-        'German.php' => '9777ec58ad0ba9749bf67a6fc90aad92',
-        'Hebrew.php' => 'f924ee08fd163ca1b5d8a0971c37350a',
-        'Hungarian.php' => '0bc057bb44fe3472db8782edbba65152',
-        'Icelandic.php' => 'fd660d11befa4952c4389e119311552c',
-        'Italian.php' => '5b1d9585320a00d8dc302c6b1d152dd2',
-        'Lithuanian.php' => '6de02c868fcf76f6eafa4d286139f51e',
-        'Swedish.php' => '89c03081c1f1bd395d8ef118034205f3',
-        'Turkish.php' => '8c3f69574f0a1b7967942bcccd81ce63',
-      ),
-      'parse' => 
-      array (
-        'parse_sendpm.php' => '684f65074a3c163bff33ceee2f60d77f',
-      ),
-      'help.php' => '05353ac9d91d7a289b949cd221209391',
-      'parser.php' => 'a3b9072ded8b976ec8e6a39fb1ec62a1',
-      'plugin.php' => 'e00be629dba8699c216a32717499e4c6',
-      'pm.php' => '854e2027e899d6fe2f61c34b4ec7c231',
-      'pm_class.php' => 'ceb78bfec4fa5d4858f3c6bdd96518f6',
-      'pm_conf.php' => '6356e8c2401e0f56bf3c2d765fc22c7e',
-      'pm_finduser.php' => 'f0f76ad2058a553e71565a514d5e5792',
-      'pm_inc.php' => '884be6eeb255e9896af2df673ed11838',
-      'pm_menu.php' => 'c0cb0fdf9a22d73ec4c296181a63bb9b',
-      'pm_readme.txt' => 'f8a601545af5083601733d9b2f317185',
-      'pm_sql.php' => '3bf115628a81235de959588024d9b06d',
-    ),
-    'poll' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'poll_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '75af431da617ae283526e043ba4f3c02',
-      ),
-      'poll_menu.php' => 'c2da89e8e0917e9fdc6d472c8427eade',
-    ),
-    'powered_by_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'review_menu' => 
-    array (
-      'languages' => 
-      array (
-        'English.php' => '7593a048368d0addb3e47bddc9026067',
-      ),
-      'config.php' => '3775094f836031f6027990847d9ebef2',
-      'review_menu.php' => '70f03130e54f35d210a4eb1c8419ce51',
-    ),
-    'rss_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'rss_meta.php' => '7205d95791b223ce785e95b0fda76c5a',
-    ),
-    'search_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'sitebutton_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'theme_layout' => 
-    array (
-      'images' => 
-      array (
-        'icon.png' => 'ff19586caf182a0c7cf7cfbc1a074de4',
-      ),
-      'layouts' => 
-      array (
-        'layout1_chatbox.php' => 'b1db2075c5c7ea9f9b2c4f1597d08435',
-        'layout1_comment.php' => 'ff0e3640109d2a025e1faf2e5581ec01',
-        'layout1_forum.php' => '74047e347e584a4533319d7d0593bdb5',
-        'layout1_main.php' => 'a65dc381f0e34fa3285f09720db06442',
-        'layout1_news.php' => '6a36222bfc1e5df83753406ad14f0272',
-        'layout1_poll.php' => '7298986d8189dcb866253b8526fed945',
-      ),
-      'chatbox_layout.php' => '6e16ab5944c40af2d49a1e97bf00b0f8',
-      'comment_layout.php' => '94eae619f29d869141caad9bd75cac24',
-      'forum_layout.php' => '9e701c700316d8f2136f7343b2aa1566',
-      'help.php' => 'a9dd8718eb1cff858c8a8ea9cd430fb5',
-      'main_layout.php' => 'd348abf32cdf27bb2eb744771eea5ff7',
-      'news_layout.php' => '6d609361cfedd501e23cdd4a90cc1e27',
-      'poll_layout.php' => '327e6500d7df79f36e06c700aa413c1f',
-      'theme.php' => 'd028142e833595ed508966fc37593659',
-      'theme_layout.php' => '1ef564f5bfa15e9974c3018da2560688',
-    ),
-    'trackback' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'tree_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'userlanguage_menu' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'usertheme_menu' => 
-    array (
-      'languages' => 
-      array (
-        'French.php' => 'd21ea52501b9efc12e86d3577cb7186f',
-        'usertheme_English.php' => '675a4f2690d5771613818338502eb4c5',
-        'usertheme_French.php' => 'd21ea52501b9efc12e86d3577cb7186f',
-      ),
+      'lan_banner.php' => '08d799095424424ae09402f1bb83b867',
     ),
   ),
   $coredir['themes'] => 
   array (
-    'blue_patriot' => 
-    array (
-      'images' => 
-      array (
-        'balloon.jpg' => '64dc97bcb2ba327399ae75905800f4e6',
-        'bar.jpg' => 'a6db2ab78d920a41f003a0c31e688199',
-        'blue_patriot_01.jpg' => '7831ce0cb8eb13b4ea1a92adbdab9d62',
-        'blue_patriot_02.jpg' => 'ac12826a6e0a05b9c070c5521161f120',
-        'blue_patriot_03.jpg' => 'c3411aaea64f1ccbd45dd412b7a2467c',
-        'blue_patriot_04.jpg' => 'ac3b851650183ac0d47b41472afcdecf',
-        'blue_patriot_05.jpg' => '0dfcd5f3553aa7e5d3df05dd13629e61',
-        'blue_patriot_06.jpg' => '15b839a9fd716900dd4cf603bff890e8',
-        'blue_patriot_07.jpg' => 'f71799048ccf41e6fc6689f3f609e2db',
-        'blue_patriot_08.jpg' => '5619bba0856394e207e8e39a6670dc50',
-        'blue_patriot_09.jpg' => 'ffec8e1466bbdc30c3c7a15e4cb7727b',
-        'blue_patriot_10.jpg' => '9f486fba3969a36958bbfc1ecb4f9851',
-        'blue_patriot_11.jpg' => '6c2c5e0ad28eb6f70775f9ee64d5b8d7',
-        'blue_patriot_12.jpg' => '5b5775e1043b999729199c4c27f43974',
-        'blue_patriot_13.jpg' => '557e9b1c1cf68dfb1b51969f6ada6fd4',
-        'blue_patriot_14.jpg' => 'bca587141e6745d02447526574e1b9c2',
-        'blue_patriot_15.jpg' => '99a9e333f4cccf0fcd79679864de9346',
-        'blue_patriot_16.jpg' => '71f45abb20a470dbb7b1f05571b9d165',
-        'blue_patriot_17.jpg' => '2955f18ffa7e16c441b17feaa3b6bcca',
-        'blue_patriot_18.jpg' => 'd7c7faf35abfd47fcd387a1745d4e5b3',
-        'blue_patriot_19.jpg' => '16f1986bb5658c5ef33916092760702c',
-        'blue_patriot_20.jpg' => '775a338453d65e0f8e6982b541ccbb95',
-        'blue_patriot_21.jpg' => 'afffe79cf460ce63991c5e85dbf116ba',
-        'blue_patriot_22.jpg' => 'd07ee234e9a0f53999ef60105591da82',
-        'blue_patriot_23.jpg' => 'd33fd108f4828402b9dbb710f29ac2b2',
-        'blue_patriot_24.jpg' => '430faa6d08785afe5254974c08407461',
-        'blue_patriot_25.jpg' => 'd005d6c8d1df0ef80cd308cecf6f8cff',
-        'blue_patriot_26.jpg' => '7f704f010bfb3fd6291a3b6a9ee465ba',
-        'blue_patriot_27.jpg' => '6852500646a0a40f845d29a9998e965d',
-        'blue_patriot_28.jpg' => '1fc8fe28545213a22cce040331db573b',
-        'blue_patriot_29.jpg' => '698df200ff09414407fcc0c84ee74926',
-        'blue_patriot_30.jpg' => 'fdd019a93a7d605d47dfa51ab6e965cc',
-        'blue_patriot_31.jpg' => '27d3aab176590dab3458102d865aed21',
-        'blue_patriot_32.jpg' => '1cee9c979aee7d52bcdf47f0fd1a1756',
-        'blue_patriot_33.jpg' => '802673dea5d6b3318392267cfbe798b4',
-        'blue_patriot_34.jpg' => '4a26464b5b3b2c4fd3621be82506bca9',
-        'blue_patriot_35.jpg' => '48f2693b73a17381db62d36836958406',
-        'blue_patriot_36.jpg' => 'abf7188d7973f01a9f255174ddfddf20',
-        'blue_patriot_37.jpg' => 'dbf963f8163715e98d74c0beb3af2d8a',
-        'blue_patriot_38.jpg' => 'a69c3868b52ceabecde8e10eed6ca0e6',
-        'blue_patriot_39.jpg' => 'd4409c49b7b9fe7ff945a25df0c90395',
-        'blue_patriot_40.jpg' => '623d4acd8692a8d5d91ced7108ec84e7',
-        'bodybg.jpg' => 'cf7b94186d42ddb69a007fe7d6a5a2bd',
-        'bullet2.gif' => 'de856ab1707989549981594c40ac0b0d',
-        'captionbg.jpg' => '3cfcfda4fa37a1dd9800bd2f8ff37b11',
-        'sm_folder.jpg' => 'f8de850ff6da330959af2431eb2b83fa',
-      ),
-      'style.css' => '4eeeebf4cc2410e55cc6d0015a7b2dcb',
-      'theme.php' => '522ceddf68bff62ff177e83d291b7b65',
-    ),
-    'clan' => 
-    array (
-      'forum' => 
-      array (
-        'admin_delete.png' => '707ddc11a86975090610a76e8ad01923',
-        'admin_edit.png' => 'a383175b504d64e64a84a21dda5c1619',
-        'admin_lock.png' => '744c74fecf65bd64d4ee22681cf6bd11',
-        'admin_move.png' => 'c892805676f983c34dbf308eeb2627c7',
-        'admin_stick.png' => 'ef0bc1380cdbd26118c6c53272e46af6',
-        'admin_unlock.png' => '1818d0d48dfe5f76c8bf3cee9d9e949c',
-        'admin_unstick.png' => '8b57798a150aff163c35a9e2a7c1ff62',
-        'announce.png' => '51274830e593a079d57c3213da0b97ab',
-        'closed.png' => '661d62b0359cece8ea019268aea90b72',
-        'closed_small.png' => '23df1d00ed2742c32f08664b39ebe5e4',
-        'delete.png' => 'b9fc374f973e51f45c80884b56cab7c0',
-        'e.png' => '5c4648034ca4494db00270b4f73cb4e9',
-        'edit.png' => '1dfc36a823e1752f2aef6fce3d4ab4d8',
-        'email.png' => 'f76baf56d637b8918f686345cd3ca7d2',
-        'fcap.png' => '35e09d61f248d03d9ae67ff46f6e5a91',
-        'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'moderator.png' => 'dc487b54b9dbbc1fc834a8ef882adea8',
-        'new.png' => '63c68b98a1ebf395a58c194688665404',
-        'new_popular.gif' => '3c47023ff01dc15fb3a678cb21cf55ad',
-        'new_small.png' => 'df5d599ecd2bdcc93d576d552b71a54c',
-        'newthread.png' => '0b580ca6d9cd6fd514c7ac3bb3b1c171',
-        'nonew.png' => '7833bd100df8495e076dfaf400d1afb3',
-        'nonew_popular.gif' => 'bd77c2f2b42336d5690646d4006ea983',
-        'nonew_small.png' => '2544ba225c65f82c7788b003edb2d1fe',
-        'post.png' => '4abd6992f5bcb6c624ce670468ff538a',
-        'profile.png' => 'd533f49ea50c756a6f61db3ae87ae8b1',
-        'quote.png' => 'fd587e1696430999022aa2e6dd765904',
-        'reply.png' => 'f7004bc6a716839bb4e803a4f08470ce',
-        'sticky.png' => '31f95734f8ddea70f1532658cc123e24',
-        'stickyclosed.png' => '0d8232ce1f8854a81a8832560fe47d4a',
-        'website.png' => '882b8448acefe7857e31639a78acb47e',
-      ),
-      'images' => 
-      array (
-        'bar.jpg' => '699a527e29ee1fee2932255d76c095fa',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '75b67e121016a521b1b975f3ead317a4',
-        'bullet1.gif' => '097e3c018ae655310889fa98f85be57b',
-        'bullet2.gif' => '026bd38853b2fc24353da648893737e5',
-        'cap.png' => '32a40d90d55b3fc92350e3437ec79d7e',
-        'cap2.png' => 'f56be37f5bb99b498a354762e1fac575',
-        'header.png' => '200d62810e3f06bf792e920bcdce1d30',
-        'logo.png' => 'bc9ceb041746cc1a021af2ed19002663',
-        'menubg.png' => 'c23f21ecfb2ea65d9870e155058fb5b0',
-        'topbar.png' => 'cf65e56f37871f04f3ce83337ae123e7',
-      ),
-      'style.css' => 'b9acced713fc611ec3c94abdbf5a6bcd',
-      'theme.php' => '88af12095e58d509e387eea822d36c0a',
-    ),
-    'comfort' => 
-    array (
-      'forum' => 
-      array (
-        'admin_delete.png' => '36fe015a4b8cfdbbe4b8aee8b7b563a7',
-        'admin_edit.png' => 'c03274b7f9e16ac1cb702ae8db849f7e',
-        'admin_lock.png' => 'e77b92a1f5877b64b9ccad7cf30b798d',
-        'admin_move.png' => '53724301fb9a5f735d47986feabaa5c2',
-        'admin_stick.png' => 'a3f08da8ab9eda3985365793ff91caf5',
-        'admin_unlock.png' => 'abbe887ff2c94e0fc7ccc6ec76e33e2f',
-        'admin_unstick.png' => '61807d0afc335e394bd9050157eae4c5',
-        'announce.png' => '51274830e593a079d57c3213da0b97ab',
-        'closed_small.png' => '23df1d00ed2742c32f08664b39ebe5e4',
-        'delete.png' => 'b9fc374f973e51f45c80884b56cab7c0',
-        'e.png' => '797612f8767a25e9a934580f7d778ef5',
-        'edit.png' => 'dc9067455b48da0bbc50993a4217eedd',
-        'email.png' => 'bd759f54b3496efb62529a08c2b15116',
-        'fcap.png' => 'fa0919ce75dbdcb15cf7e651d5842415',
-        'fcap2.png' => '2c1e274a0b58e66d9cc36a08df4d20c9',
-        'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'moderator.png' => 'dc487b54b9dbbc1fc834a8ef882adea8',
-        'new.png' => '2bbd79241cf8036164e9965055b6f8b3',
-        'new_popular.gif' => '3c47023ff01dc15fb3a678cb21cf55ad',
-        'new_popular.png' => '610f65b2547cdd8fd22fdf6903f90f61',
-        'new_small.png' => '7ccbd065e0bb7baff3bca315f2e7989e',
-        'newthread.png' => '2d08a2071204a9a9b4766969704b8fee',
-        'nonew.png' => '5fe81217e3c6f672a4e2f2922ddbe1c6',
-        'nonew_popular.gif' => 'bd77c2f2b42336d5690646d4006ea983',
-        'nonew_small.png' => '948a5a7b2bcb069fd17dcd0c467ce2b5',
-        'post.png' => '5212304c8b38fb4033ddf691fd7b77ba',
-        'profile.png' => 'ed21e84603c3bcf82eb1820235c36075',
-        'quote.png' => '579d14bfb1faabf191272938fae3ab65',
-        'reply.png' => 'ba0faaf5b9a0c9e4edafc921a049739f',
-        'sticky.png' => 'c5bb0a20ef02bf8e52f3a93907804f20',
-        'stickyclosed.png' => '810fb2dee4cf3d593f5a50031a52cde8',
-        'website.png' => '568b5e9dcc6fcc5067209e9390297162',
-      ),
-      'images' => 
-      array (
-        'bar.jpg' => '13b2cb049602ff94d0d80a0e0896d8e9',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '30f11ad7f707603148a90c4197c5b195',
-        'bg.gif' => '058052ed6c5234762c53f70b0001fb92',
-        'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-        'bullet2.gif' => '5e3525d341b9a47c514b094e9a5395a7',
-      ),
-      'style.css' => '6bbba211070fa8517ee4b8a6d3c26e7e',
-      'theme.php' => 'edba9bf51ddd484b9d77ffdb0c9c3a1c',
-    ),
-    'comfortless' => 
-    array (
-      'forum' => 
-      array (
-        'admin_delete.png' => '36fe015a4b8cfdbbe4b8aee8b7b563a7',
-        'admin_edit.png' => 'c03274b7f9e16ac1cb702ae8db849f7e',
-        'admin_lock.png' => 'e77b92a1f5877b64b9ccad7cf30b798d',
-        'admin_move.png' => '53724301fb9a5f735d47986feabaa5c2',
-        'admin_stick.png' => 'a3f08da8ab9eda3985365793ff91caf5',
-        'admin_unlock.png' => 'abbe887ff2c94e0fc7ccc6ec76e33e2f',
-        'admin_unstick.png' => '61807d0afc335e394bd9050157eae4c5',
-        'announce.png' => '51274830e593a079d57c3213da0b97ab',
-        'closed_small.png' => '23df1d00ed2742c32f08664b39ebe5e4',
-        'delete.png' => 'b9fc374f973e51f45c80884b56cab7c0',
-        'e.png' => '22d175dba98b439b73d17da6cd142adf',
-        'edit.png' => 'dc9067455b48da0bbc50993a4217eedd',
-        'email.png' => 'bd759f54b3496efb62529a08c2b15116',
-        'fcap.png' => 'fa0919ce75dbdcb15cf7e651d5842415',
-        'fcap2.png' => '2c1e274a0b58e66d9cc36a08df4d20c9',
-        'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'moderator.png' => 'dc487b54b9dbbc1fc834a8ef882adea8',
-        'new.png' => '2bbd79241cf8036164e9965055b6f8b3',
-        'new_popular.gif' => '3c47023ff01dc15fb3a678cb21cf55ad',
-        'new_small.png' => 'efb0e1cd78edb0a66d8e83c245e0f0d5',
-        'newthread.png' => '3b51e035b6cb3579d955372de1b36934',
-        'nonew.png' => '5fe81217e3c6f672a4e2f2922ddbe1c6',
-        'nonew_popular.gif' => 'bd77c2f2b42336d5690646d4006ea983',
-        'nonew_small.png' => '887892198ae123a03df21132e08c6964',
-        'post.png' => '5212304c8b38fb4033ddf691fd7b77ba',
-        'profile.png' => 'ed21e84603c3bcf82eb1820235c36075',
-        'quote.png' => '579d14bfb1faabf191272938fae3ab65',
-        'reply.png' => '26ff2128f3e5b5c985c688118015b69f',
-        'sticky.png' => 'c5bb0a20ef02bf8e52f3a93907804f20',
-        'stickyclosed.png' => '810fb2dee4cf3d593f5a50031a52cde8',
-        'website.png' => '568b5e9dcc6fcc5067209e9390297162',
-      ),
-      'images' => 
-      array (
-        'bar.jpg' => '13b2cb049602ff94d0d80a0e0896d8e9',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '30f11ad7f707603148a90c4197c5b195',
-        'bg.gif' => '058052ed6c5234762c53f70b0001fb92',
-        'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-        'bullet2.gif' => '5e3525d341b9a47c514b094e9a5395a7',
-      ),
-      'style.css' => '92e3bf1e539749704b1fcb013d9df71a',
-      'theme.php' => '58fecc858bb054ae7a71bc79ea12c5b7',
-    ),
-    'crahan' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'e107' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => 'a6db2ab78d920a41f003a0c31e688199',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '75b67e121016a521b1b975f3ead317a4',
-        'bullet1.gif' => '097e3c018ae655310889fa98f85be57b',
-        'bullet2.gif' => 'd6e34836e1e3270c3fe06557f9b93d9d',
-        'button.png' => '5a1a29b5670e03697659581da597b5fc',
-        'cap.png' => 'b439047ea62b69e3569cc70999ff6e5f',
-        'header.png' => '200d62810e3f06bf792e920bcdce1d30',
-        'installlogo.png' => '3cd312e939be5dbb073ce76a3116231d',
-        'logo.png' => '346418f2f391f029e9b83c854b74b1d7',
-      ),
-      'style.css' => 'e92d7179f04ee8849024a9af22877d0b',
-      'theme.php' => '39270d4c1c77ac7f34373d7fdb452984',
-    ),
-    'e107v4a' => 
-    array (
-      'images' => 
-      array (
-        'bar2.gif' => 'eb85624e746f91fd33511783cccc92a6',
-        'bar2edge.gif' => '6d273a53798e532091bd6354f1e39c60',
-      ),
-      'languages' => 
-      array (
-      ),
-      'forum_design.php' => '6afe8b9762a01cad599d77c37d54bf80',
-    ),
-    'example' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => 'a6db2ab78d920a41f003a0c31e688199',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => 'd3ef60cb45ff91968ce65db5b49b985b',
-        'bullet1.gif' => '097e3c018ae655310889fa98f85be57b',
-        'bullet2.gif' => 'd6e34836e1e3270c3fe06557f9b93d9d',
-        'cap.png' => '736f4166b8ecd0c1a8f031e336657c5e',
-        'header.png' => '200d62810e3f06bf792e920bcdce1d30',
-        'logo.png' => '346418f2f391f029e9b83c854b74b1d7',
-      ),
-      'style.css' => '64dfcfe7f8a5dd55d755d00f751fa97c',
-      'theme.php' => '6b0cdd3e6833728e44772a8c8722724f',
-    ),
-    'fiblack3d' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => 'a87f6df0dc62f6059164a784e48605f3',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '75b67e121016a521b1b975f3ead317a4',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bottomleft.png' => '258e3e69e770bbeacde6264051d8ac5c',
-        'bottommiddle.png' => '356edf3b2e72b9991576d8cdc1269a1f',
-        'bottomright.png' => 'd9b376c57987219f22b86737e6068080',
-        'bullet1.gif' => '097e3c018ae655310889fa98f85be57b',
-        'bullet2.gif' => 'f7a33fe24f02eb54392eb094b6ded7de',
-        'bullet3.gif' => 'b2cc886c34040cd25e787819e20433f2',
-        'button.png' => '5a1a29b5670e03697659581da597b5fc',
-        'cap.png' => 'b439047ea62b69e3569cc70999ff6e5f',
-        'cap1.gif' => '9ad552a50c8425d6c1d8d766216c1093',
-        'fcap.png' => 'c398adcd3acaa56b3b0168fe63140363',
-        'fcap2.png' => '484bca31074eacfc1b1689437780d987',
-        'g_head.gif' => 'e5b7c8416887f1c7d8d9427763072117',
-        'header.png' => '200d62810e3f06bf792e920bcdce1d30',
-        'left.png' => '96c753c33cf6d69d093120448681a510',
-        'logo.jpg' => 'a2a402adf9ec65f2abe9c5a141791d1e',
-        'logo2.png' => '867f8d31edb08e05bf3540cc03eedd2f',
-        'nforumcaption.png' => '18a5f435d48bdeb8e036af0020f8ed26',
-        'nforumcaption2.png' => '9864c81acddb5f2d2e792738e1468f4e',
-        'right.png' => 'fe20a5ed232fdb263b20b12e74ea34e2',
-        'sb_template.png' => '05d718c4d7ffff4cb4a39e1fe3098a13',
-        'tbbg.png' => '418dea906f043bd84f108e701921d53f',
-        'topleft.png' => '1d78bbdc0e9802cf3067eeb3efcf1a5a',
-        'topmiddle.png' => '875f5c3a51b520a8684a36e55bc412da',
-        'topright.png' => '5be0284fbb41ff6987b64cfb783e7c7d',
-        'y_head.gif' => '052f449cda374ade80ee10df09ecd227',
-      ),
-      'style.css' => 'd398533bd3d96e28ee03af6430dacbce',
-      'theme.php' => 'fdd24c507722ddbb56cd10d77c0c7c7a',
-    ),
-    'human_condition' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'interfectus' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'jayya' => 
-    array (
-      'forum' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'khatru' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'nexter.css' => '9290a07f99bb3d5068a3e6a3a580d325',
-    ),
-    'kubrick' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'nicetitle.js' => '81658d0b559af2fb4c0ad27b8ffb9a0d',
-    ),
-    'lamb' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'leaf' => 
-    array (
-      'fontstyles' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'leap of faith' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => 'deb2fd16258227f5e99fee0074b764af',
-        'bar2.gif' => 'eb85624e746f91fd33511783cccc92a6',
-        'bar2edge.gif' => '6d273a53798e532091bd6354f1e39c60',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bottom.png' => '46e798abeb638c4f9540973d239b10e7',
-        'bottomleft.png' => '3db4e800cc8add7f4f360c5f055aba49',
-        'bottomright.png' => '28a54110d855fd47380cf094d6b7b169',
-        'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-        'bullet2.gif' => '5fea13d481fc903ce05bfed57341e1c1',
-        'button.png' => '69918234a9caea763d1c66781e50fe34',
-        'cap1.png' => 'd014368f2839e01b455ef1d63175188d',
-        'capdark.png' => 'f8ec8fc5f9ccb1e72f0543e9405c0649',
-        'capleft.png' => 'b57f36c4daf41cee56d31cbd47f9b1f1',
-        'caplight.png' => 'ca308b892123bdb7e9e0f7cf1f729c59',
-        'capright.png' => '36e3ec810d778dc3664b456c714e62f3',
-        'captransition.png' => '7e9583f5c1c96b4191fa309a058aa314',
-        'fcap.png' => 'fabf58910351f1f742dee108b60517b8',
-        'fcap2.png' => '777e56bcaf32e29ad505df49f3cb6019',
-        'left.png' => 'a7755093080be75e9430072bd3bb32b3',
-        'right.png' => '1dc657e1d9065920653132f3a85d77ed',
-        'temp.png' => '35e34c98922cf2df737eef3cec806af2',
-        'top.png' => '75b4e22fcbe8059bf217690e08c265ac',
-        'topleft.png' => '8b45a5185fa619c3d336e1ceb618bc81',
-        'topright.png' => '1c6d6e49a6d9d173ec12f2baed2f45a8',
-      ),
-      'style.css' => '1b8a431a51e1e374e4eadcd8d7ed3ca6',
-      'theme.php' => 'ecde1a337a506f397465704e887a9865',
-    ),
-    'nagrunium' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => '13b2cb049602ff94d0d80a0e0896d8e9',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '30f11ad7f707603148a90c4197c5b195',
-        'bg.gif' => '058052ed6c5234762c53f70b0001fb92',
-        'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-        'bullet2.gif' => '5e3525d341b9a47c514b094e9a5395a7',
-      ),
-      'style.css' => '289d72f0f610c28fa47e856ef1d16113',
-      'theme.php' => '9417c6b28e9c4f9b2754c26cdb200abb',
-    ),
-    'newsroom' => 
-    array (
-      'images' => 
-      array (
-      ),
-    ),
-    'nordranious' => 
-    array (
-      'forum' => 
-      array (
-        'admin_delete.png' => '36fe015a4b8cfdbbe4b8aee8b7b563a7',
-        'admin_edit.png' => 'c03274b7f9e16ac1cb702ae8db849f7e',
-        'admin_lock.png' => 'e77b92a1f5877b64b9ccad7cf30b798d',
-        'admin_move.png' => '53724301fb9a5f735d47986feabaa5c2',
-        'admin_stick.png' => 'a3f08da8ab9eda3985365793ff91caf5',
-        'admin_unlock.png' => 'abbe887ff2c94e0fc7ccc6ec76e33e2f',
-        'admin_unstick.png' => '61807d0afc335e394bd9050157eae4c5',
-        'announce.png' => '51274830e593a079d57c3213da0b97ab',
-        'closed_small.png' => '23df1d00ed2742c32f08664b39ebe5e4',
-        'delete.png' => 'b9fc374f973e51f45c80884b56cab7c0',
-        'e.png' => '797612f8767a25e9a934580f7d778ef5',
-        'edit.png' => 'dc9067455b48da0bbc50993a4217eedd',
-        'email.png' => 'bd759f54b3496efb62529a08c2b15116',
-        'fcap.png' => 'b660b71d0208edb76a1b16930f2b81ac',
-        'fcap2.png' => '5f6f45697bc185d51f2c06d904642aad',
-        'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'moderator.png' => 'dc487b54b9dbbc1fc834a8ef882adea8',
-        'new.png' => '2bbd79241cf8036164e9965055b6f8b3',
-        'new_popular.gif' => '3c47023ff01dc15fb3a678cb21cf55ad',
-        'new_small.png' => 'c593a4a99887c7eaeb1cd8dd000ebfcd',
-        'newthread.png' => '94fdbfd082142c1443af2cf82914a833',
-        'nonew.png' => '5fe81217e3c6f672a4e2f2922ddbe1c6',
-        'nonew_popular.gif' => 'bd77c2f2b42336d5690646d4006ea983',
-        'nonew_small.png' => '1e88b9f0b2e714475d4243509336b5c4',
-        'post.png' => '5212304c8b38fb4033ddf691fd7b77ba',
-        'profile.png' => 'ed21e84603c3bcf82eb1820235c36075',
-        'quote.png' => '579d14bfb1faabf191272938fae3ab65',
-        'reply.png' => '556906857646412a52b35814b4f707ba',
-        'sticky.png' => 'c5bb0a20ef02bf8e52f3a93907804f20',
-        'stickyclosed.png' => '810fb2dee4cf3d593f5a50031a52cde8',
-        'website.png' => '568b5e9dcc6fcc5067209e9390297162',
-      ),
-      'images' => 
-      array (
-        'bar.jpg' => '683a63e29f5c473fe677836187953c1a',
-        'bar.png' => '9791d8cbd8e00c4b4538696990977d2b',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => 'd3ef60cb45ff91968ce65db5b49b985b',
-        'blank.gif' => '7de900b8e3dd46a432e384eb231f079d',
-        'bullet1.gif' => '09331909ba55a4f54c08018cede1ec85',
-        'bullet2.gif' => 'd6e34836e1e3270c3fe06557f9b93d9d',
-        'bullet3.gif' => '54e9d1f816051d002420875fb3499fd8',
-        'button.png' => '5a1a29b5670e03697659581da597b5fc',
-        'cap.png' => '81e98497b6b21b117be42ab30e6b8551',
-        'corner.png' => '55d255b0484a611b1e94e0c9f89fce34',
-        'left.png' => 'ddc536f7ec329942af71a88a8c8edaad',
-        'side.png' => '18dd6404dc3020641158c286b25b0ea9',
-        'top.png' => 'ca8d4b489c4c86f2cc8e1e0d48ef5eaf',
-      ),
-      'style.css' => '60e1cb2188f3fb4e88e21e138ff5aa07',
-      'theme.php' => 'f04beabe808e9269589d0a30889d8d6d',
-    ),
-    'phpbb' => 
-    array (
-      'forum' => 
-      array (
-        'admin_delete.png' => '36fe015a4b8cfdbbe4b8aee8b7b563a7',
-        'admin_edit.png' => 'c03274b7f9e16ac1cb702ae8db849f7e',
-        'admin_lock.png' => 'e77b92a1f5877b64b9ccad7cf30b798d',
-        'admin_move.png' => '53724301fb9a5f735d47986feabaa5c2',
-        'admin_stick.png' => 'a3f08da8ab9eda3985365793ff91caf5',
-        'admin_unlock.png' => 'abbe887ff2c94e0fc7ccc6ec76e33e2f',
-        'admin_unstick.png' => '61807d0afc335e394bd9050157eae4c5',
-        'announce.png' => '51274830e593a079d57c3213da0b97ab',
-        'closed_small.png' => '23df1d00ed2742c32f08664b39ebe5e4',
-        'delete.png' => 'b9fc374f973e51f45c80884b56cab7c0',
-        'e.png' => '797612f8767a25e9a934580f7d778ef5',
-        'edit.png' => 'dc9067455b48da0bbc50993a4217eedd',
-        'email.png' => 'bd759f54b3496efb62529a08c2b15116',
-        'fcap.png' => '3d1b365a597132548eb9635b6bca040d',
-        'fcap2.png' => '5f6f45697bc185d51f2c06d904642aad',
-        'finfobar.png' => '71585c0c2d3340ece8cf769a135286b9',
-        'moderator.png' => 'dc487b54b9dbbc1fc834a8ef882adea8',
-        'new.png' => '2bbd79241cf8036164e9965055b6f8b3',
-        'new_popular.gif' => '3c47023ff01dc15fb3a678cb21cf55ad',
-        'new_small.png' => 'c593a4a99887c7eaeb1cd8dd000ebfcd',
-        'newthread.png' => '94fdbfd082142c1443af2cf82914a833',
-        'nonew.png' => '5fe81217e3c6f672a4e2f2922ddbe1c6',
-        'nonew_popular.gif' => 'bd77c2f2b42336d5690646d4006ea983',
-        'nonew_small.png' => '1e88b9f0b2e714475d4243509336b5c4',
-        'post.png' => '5212304c8b38fb4033ddf691fd7b77ba',
-        'profile.png' => 'ed21e84603c3bcf82eb1820235c36075',
-        'quote.png' => '579d14bfb1faabf191272938fae3ab65',
-        'reply.png' => '556906857646412a52b35814b4f707ba',
-        'sticky.png' => 'c5bb0a20ef02bf8e52f3a93907804f20',
-        'stickyclosed.png' => '810fb2dee4cf3d593f5a50031a52cde8',
-        'website.png' => '568b5e9dcc6fcc5067209e9390297162',
-      ),
-      'images' => 
-      array (
-        'bar.jpg' => 'a6db2ab78d920a41f003a0c31e688199',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '75b67e121016a521b1b975f3ead317a4',
-        'bullet1.gif' => '097e3c018ae655310889fa98f85be57b',
-        'bullet2.gif' => 'd6e34836e1e3270c3fe06557f9b93d9d',
-        'bullet3.gif' => 'e1bfc882a4a4a1f3b245585e17181da6',
-        'button.png' => '5a1a29b5670e03697659581da597b5fc',
-        'cap.png' => 'b439047ea62b69e3569cc70999ff6e5f',
-        'cap1.gif' => '9ad552a50c8425d6c1d8d766216c1093',
-        'header.png' => '200d62810e3f06bf792e920bcdce1d30',
-        'sb_template.png' => '05d718c4d7ffff4cb4a39e1fe3098a13',
-      ),
-      'style.css' => '5eaeee033e7af67e3642494321211461',
-      'theme.php' => '3bebdfb44352857292267e9e40baa744',
-    ),
-    'ranyart' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => 'a6db2ab78d920a41f003a0c31e688199',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => 'd3ef60cb45ff91968ce65db5b49b985b',
-        'bullet1.gif' => '097e3c018ae655310889fa98f85be57b',
-        'bullet2.gif' => 'ffa05a27f0da01830e12d15095b5473b',
-        'button.png' => '15462dc5844b42f6891e3a05dbfc0b3b',
-        'cap.png' => '736f4166b8ecd0c1a8f031e336657c5e',
-        'clock.png' => 'b8a6c6b2c3e1b66f3ae03b217665a1a2',
-        'header.png' => '200d62810e3f06bf792e920bcdce1d30',
-        'logo.png' => '830db48cdb37387b806423ed0ca9960d',
-        'monitor.png' => 'fe57c7050bc8c7903806149e7f4e25b4',
-      ),
-      'style.css' => '62365fd9c2b8b1b18485f69f1503818d',
-      'theme.php' => '0c1cdae9b4143f3ea1a0855231fe4b84',
-    ),
-    'reline' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'sebes' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'smacks' => 
-    array (
-      'images' => 
-      array (
-        'bg.gif' => '890e67e4d2d362079e3a794ff0c3950b',
-        'bg.png' => 'e70a48befe520f37d50872c6d7816ab6',
-        'body.png' => '555772b48dc8bebc0be424d4ef837e51',
-        'bottom.png' => 'f12ecaa6b26786524f6e9b0c1d0baa91',
-        'bottomleft.png' => '0df01a95deaeecdcfbd378500fb016d1',
-        'bottomright.png' => 'faf4235009b7bceda62f5e6e98f71a92',
-        'bullet1.gif' => '992bd9b4f72c80b5e74168af0adb225b',
-        'bullet2.gif' => 'ee9887f23030161576dc7267a163c59b',
-        'caption.png' => '98afcbf04a2dc04ecd6491c9a4beb3b9',
-        'left.png' => '3eef5624d4a069d3e31fb8576e785419',
-        'logo.png' => 'bb8d5e083cf27c045313e6e5bcd97e52',
-        'right.png' => 'd47a3a781045dc015f9cca05eb1b5ab8',
-        'tablebg.png' => 'c5c91fb04407c388ef0be982bb8809ae',
-        'top.png' => 'a48a0e033119a0289852812325b594ef',
-        'topbar.png' => '0dd080dfcd0a2df285fa26f5a3740147',
-        'topleft.png' => 'c872a73060a134dbdc57727348a6d907',
-        'topright.png' => '23ffd97e5448427efd333179d094387a',
-      ),
-      'style.css' => '44eb298d24e6eff161e327c06289e801',
-      'theme.php' => '8e83b87b38504a2d08292c0bbf7301c5',
-    ),
-    'soar' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => '13b2cb049602ff94d0d80a0e0896d8e9',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '30f11ad7f707603148a90c4197c5b195',
-        'bg.gif' => '058052ed6c5234762c53f70b0001fb92',
-        'blank.gif' => '0e94b3486afb85d450b20ea1a6658cd7',
-        'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-        'bullet2.gif' => '5e3525d341b9a47c514b094e9a5395a7',
-        'cap1.png' => '98be8e32cc8651622d43a466f63b169c',
-        'caption.png' => '3d84f35bff62f78624822c7eae1bc5d2',
-        'caption2.png' => '2eac2c5145782f11f605842c3f5f6911',
-        'caption3.png' => '9804cedbccc111a22dc0b56c4aa5f1ae',
-        'fcap.png' => '808ecd89f8890df55e0f2a76555ef4d2',
-        'fcap2.png' => '90c520d65d4dd19217739cfcc6e3979a',
-        'hr.png' => 'e41d8ce6c3381c08bc20fad9ebf26aee',
-        'logo.jpg' => 'c79b084a3bb2e76ab49f9ddce0319ac1',
-        'nforumcaption.png' => '18a5f435d48bdeb8e036af0020f8ed26',
-        'nforumcaption2.png' => '9864c81acddb5f2d2e792738e1468f4e',
-        'shadow_left.png' => 'f47a342e00d6f4248b552fa5e39294d1',
-        'shadow_middle.png' => '946975a66e4db58fbe6442899afbeb13',
-        'shadow_right.png' => '00a7c72cc479dd89a50ccddeec650758',
-      ),
-      'forum_design.php' => '45e828a47cedaaa44e312470846d4930',
-      'style.css' => '62cb98d0e63beb9ca74cdfcd7c599785',
-      'theme.js' => 'bd6ab25405b19545bbdcad691da94fe8',
-      'theme.php' => '92fa9c0015733df0c6b935d0c2ce082c',
-    ),
     'templates' => 
     array (
-      'content_template.php' => '4234fe2ce5e65e85d0597efc6ee68d5d',
-      'forum_template.php' => '7c4aa61097a7cf0ea4a5f3d2089a5b9d',
-      'forum_viewforum_template.php' => '7a2c7fc3c28a3df76661ec297119daab',
-      'forum_viewtopic_template.php' => 'fb3516a937155a9e86eaa9a080905646',
-      'links_template.php' => '21d8747bb5c1d6d590a9ad0b0d26e576',
-    ),
-    'vekna_blue' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'wan' => 
-    array (
-      'forum' => 
-      array (
-        'fcap.png' => '5c3f4de6a594f0cfc26ba5f262cff6a3',
-        'fcap2.png' => '5faf526e1c2b8b8473d73b5f1a034baa',
-      ),
-      'images' => 
-      array (
-        'bar.jpg' => '36494528dd74cb5869a176be426f48fd',
-        'bar2.gif' => '340f87a5da4dfff37fd833a7a9834a92',
-        'bar2edge.gif' => '3a224f579f9c6fa28687b44c61a03581',
-        'bullet1.gif' => 'c80146f4417e32ea9f21f9a1bd71dd19',
-        'bullet2.gif' => '62dfcf66db90d4a8d16093604582630d',
-        'cap.png' => 'e4767da365351414865449a5b59450a2',
-        'desktop.gif' => '24bdbaec3683f038c4c1e77983357aea',
-        'header.png' => '9123aa2265308104754a534b8540c8ba',
-        'iconmail.png' => 'e4ba543e3f4e02185e7df1ea5b689800',
-        'iconprint.png' => '933d2be01f102e99f7ed03bea96bfbe1',
-      ),
-      'style.css' => '1e999f8f80ebc89a4bde3c803f934bd3',
-      'theme.php' => 'bbe4d283f553c324863c4451e3212ea4',
-    ),
-    'xog' => 
-    array (
-      'images' => 
-      array (
-        'bar.jpg' => '13b2cb049602ff94d0d80a0e0896d8e9',
-        'bar2.gif' => '7a3ae76cbf5e376e3e86eb01aaadefba',
-        'bar2edge.gif' => '30f11ad7f707603148a90c4197c5b195',
-        'bg.gif' => '058052ed6c5234762c53f70b0001fb92',
-        'bullet1.gif' => 'f3e084e73fc80fea93ee8e11ffef4739',
-        'bullet2.gif' => '5e3525d341b9a47c514b094e9a5395a7',
-        'hr.png' => 'e41d8ce6c3381c08bc20fad9ebf26aee',
-        'logo.png' => '973175159c8710e70cbb136a9db781a6',
-      ),
-      'style.css' => '0de81736ec6019f246ee3df97133ba2b',
-      'theme.php' => 'f61421dacc4fb1456f289569b9a22b9c',
+      'admin_icons_template.php' => '612f287d0af92c6f64554776098ab0e6',
+      'banner_template.php' => '035c5a2f5143ed21c205cc9d6f8bc8d0',
+      'nextprev_template.php' => '3c71c9ea45b2dac1bc842fde29d4a182',
     ),
   ),
-  'CHANGES.txt' => '20499ea696da01da57ff542cb8cc90ce',
-  'Copy of class2.php' => '4bc75d69d5486bb439f681467ccb9256',
-  'Copy of forum_post.php' => '0063a6cdd546d5f90374bbb3ae342a2a',
-  'README.txt' => 'f4ae5aa39099819a240951d0694fe105',
-  'ReadMe_English_iso-8859-1.txt' => 'a15c32416143ecdebb10fab747a9065a',
-  'chat.php' => 'f99ca9a68e350852ff12b6f201ff46e4',
-  'e107_6171_readme.txt' => '7f411eaafccc974f91447c8efd9992d4',
+  'README.txt' => '2fccdebccbb942113462ce02da526934',
+  'article.php' => 'dee1a91db0a668afce191f0ebebf22dd',
+  'backend.php' => '42ec5ced70b13df9882353ccd67f1aa7',
+  'forum.php' => '3c10184d52685d7c9a6906a967b7e3d8',
   'forum_post.php' => 'b4537a7296252a0d8c010824b698259b',
-  'install.php' => 'f6c6c7a5151ead93de10528d3a38092d',
-  'oldpolls.php' => '2758e56550195c508819c6062b950bc3',
-  'readme.txt' => 'ff257006036939e779d287cdfee3b4b3',
-  'sitemap.php' => 'd72fdc265a68f5a3b8a5d4b51d776f84',
-  'stats.php' => '70a4419f7b5ce5ad398a2f2d38ab55eb',
+  'forum_viewforum.php' => '4b9fcc3a820ed2f93b4dc707c3ebe3b4',
+  'forum_viewtopic.php' => '5fea10d40850fd6f72cfbec7a328e120',
+  'install.php' => '608c273d656960375693be1e5af7d446',
+  'subcontent.php' => '904275b02d5bf229ac734c9a26f42686',
   'upgrade.php' => '5e74e594b56732d62183c0300e222f2a',
 );
 

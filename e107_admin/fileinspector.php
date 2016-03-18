@@ -170,7 +170,7 @@ class file_inspector {
 		);*/
 
 		//TODO LAN
-		
+
 		$this->glyph = array(
 			'folder_close'      => array('<i class="fa fa-times-circle-o"></i>'),
 			'folder_up'         => array('<i class="fa fa-folder-open-o"></i>'),
@@ -542,6 +542,7 @@ class file_inspector {
 		  $path = $dir.'/'.$key;
 		  $child_open = false;
 		  $child_end = true;
+		  $dir_icon = 'folder_check';
 		  $sub_text .= $this -> inspect($value, $deprecated[$key], $level, $path, $child_end, $child_expand);
 		  $tree_end = false;
 		  if ($child_expand)
@@ -607,6 +608,7 @@ class file_inspector {
 					  {
 						$this -> count['pass']['num']++;
 						$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+
 						if ($_POST['core'] != 'fail')
 						{
 						  $this -> files[$dir_id][$fid]['icon'] = 'file_check';
@@ -616,6 +618,7 @@ class file_inspector {
 						{
 						  unset($this -> files[$dir_id][$fid]);
 						  $known[$dir_id][$fid] = true;
+
 						}
 					  }
 					  break;
@@ -626,6 +629,7 @@ class file_inspector {
 					  if ($_POST['core'] != 'fail')
 					  {
 						$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc';
+
 					  }
 					  else
 					  {
@@ -673,10 +677,13 @@ class file_inspector {
 		}
 	  }
 		
-		if ($_POST['noncore'] || $_POST['oldcore'])
+		if (!empty($_POST['noncore']) || !empty($_POST['oldcore']))
 		{
-			$handle = opendir($dir.'/');
-			
+			if(!$handle = opendir($dir.'/'))
+			{
+				//e107::getMessage()->addInfo("Couldn't Open : ".$dir);
+			}
+
 			while (is_resource($handle) && false !== ($readdir = readdir($handle)))
 			{
 				$prog_count = $this->count['unknown']['num'] + $this->count['deprecated']['num'];
@@ -728,8 +735,10 @@ class file_inspector {
 						}
 						
 						$aid = strtolower($readdir);
+
 												
-						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid]) {
+						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid])
+						{
 							if (strpos($dir.'/'.$readdir, 'htmlarea') === false) {
 								if (isset($deprecated[$readdir]))
 								 {
@@ -741,11 +750,14 @@ class file_inspector {
 										$this -> count['deprecated']['size'] += $this -> files[$dir_id][$aid]['size'];
 										$dir_icon = 'folder_old';
 									}
-								} else {
+								}
+								else
+								{
 									if ($_POST['noncore'])
 									{
 										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
 										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+										//echo "<br />dir: ".$dir.'/'.$readdir. " ( ".$this -> files[$dir_id][$aid]['size'].")";
 										$this -> files[$dir_id][$aid]['icon'] = 'file_unknown';
 										$this -> count['unknown']['num']++;
 										$this -> count['unknown']['size'] += $this -> files[$dir_id][$aid]['size'];
@@ -1047,7 +1059,9 @@ class file_inspector {
 		$text .= "</table>
 		</dit><br />";
 
+		echo e107::getMessage()->render();
 		echo $text;
+
 		
 	 //$ns -> tablerender(FR_LAN_1.'...', $text);
 		
@@ -1446,7 +1460,7 @@ $text .= ".d { margin: 2px 0px 1px 8px; cursor: pointer; white-space: nowrap }
 .w { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }
 .i { width: 16px; height: 16px }
 .e { width: 9px; height: 9px }
-i.fa-folder-open-o, i.fa-times-circle-o, .d { cursor:pointer }
+i.fa-folder-open-o, i.fa-times-circle-o { cursor:pointer }
 -->
 </style>\n";
 		
