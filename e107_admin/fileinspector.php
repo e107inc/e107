@@ -145,6 +145,7 @@ class file_inspector {
 
 	private $excludeFiles = array( '.', '..','/','.svn', 'CVS' ,'Thumbs.db', '.git');
 
+	private $knownSecurityIssues = array('htmlarea', 'e107_docs/docs.php');
 //	private $icon = array();
 	private $iconTag = array();
 
@@ -764,7 +765,8 @@ class file_inspector {
 
 						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid])
 						{
-							if (strpos($dir.'/'.$readdir, 'htmlarea') === false) {
+							if ($this->checkKnownSecurity($dir.'/'.$readdir) === false)
+							{
 								if (isset($deprecated[$readdir]))
 								 {
 									if ($_POST['oldcore'])
@@ -866,6 +868,22 @@ class file_inspector {
 		return $text;
 	}
 
+	private function checkKnownSecurity($path)
+	{
+
+		foreach($this->knownSecurityIssues as $v)
+		{
+			if(strpos($path, $v) !== false)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+
 	function scan_results()
 	{	
 		global $ns, $rs, $core_image, $deprecated_image;
@@ -942,9 +960,9 @@ class file_inspector {
 			$text .= "<tr><td style='padding-left: 4px' colspan='2'>
 			".$this->iconTag['warning']."&nbsp;<b>".FR_LAN_26."</b></td></tr>";
 		
-			$text .= "<tr><td class='f'>".$this->iconTag['file_warning']."&nbsp;".FR_LAN_28.":&nbsp;".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['warning']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_warning']." ".FR_LAN_28.": ".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['warning']['size'], 2)."</td></tr>";
 			
-			$text .= "<tr><td class='w' colspan='2'>".$this->iconTag['info']."&nbsp;".FR_LAN_27."</td></tr>";
+			$text .= "<tr><td class='w' colspan='2'><div class='alert alert-warning'>".FR_LAN_27."</div></td></tr>";
 
 		}
 		if ($_POST['integrity'] && $_POST['core'] != 'none')
