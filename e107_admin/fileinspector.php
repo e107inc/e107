@@ -139,35 +139,38 @@ class file_inspector {
 	var $totalFiles = 0;
 	var $coredir = array();
 	var $progress_units = 0;
+	private $langs = array();
+	private $lang_short = array();
+
+
+	private $excludeFiles = array( '.', '..','/','.svn', 'CVS' ,'Thumbs.db', '.git');
 
 //	private $icon = array();
 	private $iconTag = array();
 
 	function __construct()
-	{/*
-		$this->icon = array(
-			'folder_warning'    => 'folder_warning.png',
-			'folder_fail'       => 'folder_fail.png',
-			'folder_missing'    => 'folder_missing.png',
-			'folder_old'        => 'folder_old.png',
-			'folder_old_dir'    => 'folder_old_dir.png',
-			'folder_unknown'    => 'folder_unknown.png',
-			'folder_check'      => 'folder_check.png',
+	{
 
-			'file_old'          => 'file_old.png',
-			'file_unknown'      => 'file_unknown.png',
-			'file_warning'      => 'file_warning.png',
-			'file_missing'      => 'file_missing.png',
-			'file_check'        => 'file_check.png',
-			'file_fail'         => 'file_fail.png',
-			'file_core'         => 'file_core.png',
-			'file_uncalc'         => 'file_uncalc.png',
+		$lng    = e107::getLanguage();
+		$langs  = $lng->installed();
 
-			'warning'           => 'warning.png',
-			'info'              => 'info.png',
-			'fileinspector'     => 'fileinspector.png',
-			'folder'            => 'folder.png',
-		);*/
+		foreach($langs as $k=>$val)
+		 {
+		     if($val == "English") // Core release language, so ignore it.
+		     {
+				unset($langs[$k]);
+				continue;
+			}
+
+			 $lang_short[] = $lng->convert($val);
+		 }
+
+		 $this->langs = $langs;
+		 $this->lang_short = $lang_short;
+
+
+
+
 
 		//TODO LAN
 
@@ -286,9 +289,13 @@ class file_inspector {
 	
 	function scan_config() 
 	{
-		global $rs, $pref;
+
 		$frm = e107::getForm();
 		$ns = e107::getRender();
+		$pref = e107::pref('core');
+
+
+
 		
 		if($_GET['mode'] == 'run')
 		{
@@ -296,12 +303,18 @@ class file_inspector {
 		}
 		
 
-		$text = "<div>
-		<form action='".e_SELF."?mode=run' method='post' id='scanform'>
-		<table class='table table-striped adminform'>
+		$tab = array();
+
+		$head = "<div>
+		<form action='".e_SELF."?mode=run' method='post' id='scanform'>";
+
+		$text = "
+		<table class='table  adminform'>";
+
+	/*	$text .= "
 		<tr>
 		<td class='fcaption' colspan='2'>".FC_LAN_2."</td>
-		</tr>";
+		</tr>";*/
 		
 		$coreOpts = array('full'=>FC_LAN_6, 'all'=>FC_LAN_4, 'none'=> FC_LAN_12);
 		
@@ -367,17 +380,20 @@ class file_inspector {
 		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrity'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
 		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td></tr>";
-		
+
+		$text .= "</table>";
 	
-		
+		$tab['basic'] = array('caption'=>FC_LAN_2, 'text'=>$text);
 
 		
 		if ($pref['developer']) {
-			$text .= "<tr>
+
+			$text2 = "<table class='table adminlist'>";
+		/*	$text2 .= "<tr>
 			<td class='fcaption' colspan='2'>".FC_LAN_17."</td>
-			</tr>";
+			</tr>";*/
 			
-			$text .= "<tr>
+			$text2 .= "<tr>
 			<td style='width: 35%'>
 			".FC_LAN_18.":
 			</td>
@@ -386,7 +402,7 @@ class file_inspector {
 			</td>
 			</tr>";
 			
-			$text .= "<tr>
+			$text2 .= "<tr>
 			<td style='width: 35%'>
 			".FC_LAN_19.":
 			</td>
@@ -395,7 +411,7 @@ class file_inspector {
 			</td>
 			</tr>";
 			
-			$text .= "<tr>
+			$text2 .= "<tr>
 			<td style='width: 35%'>
 			".FC_LAN_20.":
 			</td>
@@ -403,15 +419,28 @@ class file_inspector {
 			<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
 			</td>
 			</tr>";
+
+			$text2 .= "
+			</table>";
+
+			$tab['advanced'] = array('caption'=>FC_LAN_17, 'text'=>$text2);
 		}
-		
-		$text .= "
-		</table>
+
+
+		$tabText = e107::getForm()->tabs($tab);
+
+
+
+
+
+		$foot = "
 		<div class='buttons-bar center'>
 		".$frm->admin_button('scan', FC_LAN_11, 'other')."
 		</div>
 		</form>
 		</div>";
+
+		$text = $head.$tabText.$foot;
 
 		$ns -> tablerender(FC_LAN_1, $text);
 		
@@ -496,23 +525,12 @@ class file_inspector {
 	//	&$parent_expand
 	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand)
 	{
-	  global $coredir,$lng;
+	  global $coredir;
 
 	  $sub_text = '';
+	  $langs = $this->langs;
+	  $lang_short = $this->lang_short;
 
-	  $langs = explode(",",e_LANLIST);
-	  $lang_short = array();
-	  
-	  foreach($langs as $k=>$val)
-	  {
-	 		if($val == "English") // Core release language. 
-			{
-				unset($langs[$k]);
-				continue;
-			}
-			$lang_short[] = $lng->convert($val);
-	  }
-	  	
 	
 	  unset ($childOut);
 	  $parent_expand = false;
@@ -679,6 +697,9 @@ class file_inspector {
 		
 		if (!empty($_POST['noncore']) || !empty($_POST['oldcore']))
 		{
+
+
+
 			if(!$handle = opendir($dir.'/'))
 			{
 				//e107::getMessage()->addInfo("Couldn't Open : ".$dir);
@@ -686,11 +707,12 @@ class file_inspector {
 
 			while (is_resource($handle) && false !== ($readdir = readdir($handle)))
 			{
-				$prog_count = $this->count['unknown']['num'] + $this->count['deprecated']['num'];
-				$this->sendProgress($prog_count,$this->totalFiles,FR_LAN_1);	
+				// $prog_count = $this->count['unknown']['num'] + $this->count['deprecated']['num'];
+			//	$this->sendProgress($prog_count,$this->totalFiles,FR_LAN_1);
 				
-				if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != '.svn' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE))
+				if (!in_array($readdir,$this->excludeFiles) && (strpos('._', $readdir) === false))
 				{
+
 					if (is_dir($dir.'/'.$readdir))
 					{
 						if (!isset($list[$readdir]) && ($level > 1 || $readdir == 'e107_install'))
@@ -705,44 +727,48 @@ class file_inspector {
 								$last_expand = true;
 							}
 						}
+
+
 					}
 					else 
 					{
-												
-						if($_POST['nolang']) // Hide Non-core Languages. 
+
+
+
+						if($_POST['nolang'] && !empty($langs) && !empty($lang_short)) // Hide Non-core Languages.
 						{
 							
 							// PHP Lang files. 		
 							$lreg = "/[\/_](".implode("|",$langs).")/";						
 							if(preg_match($lreg, $dir.'/'.$readdir))
-							{								
+							{
 								continue;
 							}
 							
 							// TinyMce Lang files. 									
 							$lregs = "/[\/_](".implode("|",$lang_short).")_dlg\.js/";
 							if(preg_match($lregs, $dir.'/'.$readdir))
-							{								
+							{
 								continue;
 							}	
 							
 							// PhpMailer Lang Files. 
 							$lregsm = "/[\/_]phpmailer\.lang-(".implode("|",$lang_short).")\.php/";
 							if(preg_match($lregsm, $dir.'/'.$readdir))
-							{								
+							{
 								continue;
 							}	
 						}
 						
 						$aid = strtolower($readdir);
 
-												
 						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid])
 						{
 							if (strpos($dir.'/'.$readdir, 'htmlarea') === false) {
 								if (isset($deprecated[$readdir]))
 								 {
-									if ($_POST['oldcore']) {
+									if ($_POST['oldcore'])
+									{
 										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
 										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
 										$this -> files[$dir_id][$aid]['icon'] = 'file_old';
@@ -1454,7 +1480,7 @@ if (vartrue($_POST['regex'])) {
 } else {
 	$text .= ".f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }\n";
 }
-$text .= ".d { margin: 2px 0px 1px 8px; cursor: pointer; white-space: nowrap }
+$text .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
 .s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
 .t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
 .w { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }
