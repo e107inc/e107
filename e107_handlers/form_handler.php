@@ -1270,9 +1270,13 @@ class e_form
 		$target = $this->name2id($name);
 		
 		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
-		
+
+		$percVal = number_format($value,0).'%';
+
 		$text =	"<div class='progress ".$class."{$striped}' >
-   		 	<div id='".$target."' class='progress-bar bar' style='width: ".number_format($value,1)."%'></div>
+   		 	<div id='".$target."' class='progress-bar bar' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
+   		$text .= $percVal;
+   		 	$text .= "</div>
     	</div>";
 		
 		$loading = vartrue($options['loading'],'Please wait...');
