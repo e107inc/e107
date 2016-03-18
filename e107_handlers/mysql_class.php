@@ -859,6 +859,16 @@ class e_db_mysql
 	}
 
 
+	/**
+	 * Return the total number of results on the last query regardless of the LIMIT value. 
+	 * @return bool
+	 */
+	public function totalResults()
+	{
+		return $this->total_results;
+	}
+
+
 	public function rowCount($result=null)
 	{
 
@@ -875,6 +885,9 @@ class e_db_mysql
 		$this->dbError('db_Rows');
 		return $rows;	
 	}
+
+
+
 
 
 	
