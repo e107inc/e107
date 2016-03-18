@@ -504,7 +504,7 @@ $(document).ready(function()
 	        // General settings
 		        runtimes : "html5,html4",
 		        url : upath,
-		        max_file_size : "10mb",
+		        max_file_size : "20mb",
 		        chunk_size : "1mb",
 		        unique_names : false,
 		 
@@ -514,8 +514,10 @@ $(document).ready(function()
 		        // Specify what files to browse for
 		        filters : [
 		            {title : "Image files", extensions : extImg || "jpg,gif,png,jpeg"},
-		            {title : "Zip files", extensions : extArchive || "zip,gz"},
-		            {title : "Document files", extensions : extDoc || "pdf,doc,docx,xls,xlsm"}
+		            {title : "Zip files", extensions : extArchive || "zip,gz,rar"},
+		            {title : "Document files", extensions : extDoc || "pdf,doc,docx,xls,xlsm,xml"},
+					{title : "Media files", extensions: 'mp3,mp4,wav,ogg,webm,mid,midi,'},
+					{title : "Other files", extensions: 'torrent,txt'}
 		        ],
 		        preinit : {
             		Init: function(up, info) {
