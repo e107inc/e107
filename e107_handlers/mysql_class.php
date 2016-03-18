@@ -860,7 +860,7 @@ class e_db_mysql
 
 
 	/**
-	 * Return the total number of results on the last query regardless of the LIMIT value. 
+	 * Return the total number of results on the last query regardless of the LIMIT value.
 	 * @return bool
 	 */
 	public function totalResults()
