@@ -209,11 +209,11 @@ class adminstyle_infopanel
 	//  ------------------------------- e107 News --------------------------------
 
 		$newsTabs = array();
-		$newsTabs['core'] = array('caption'=>'General','text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
-		$newsTabs['plugin'] = array('caption'=>'Plugins','text'=>"<div id='e-adminfeed-plugin'></div>");
-		$newsTabs['theme'] = array('caption'=>'Themes','text'=>"<div id='e-adminfeed-theme'></div>");
+		$newsTabs['coreFeed'] = array('caption'=>'General','text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
+		$newsTabs['pluginFeed'] = array('caption'=>'Plugins','text'=>"<div id='e-adminfeed-plugin'></div>");
+		$newsTabs['themeFeed'] = array('caption'=>'Themes','text'=>"<div id='e-adminfeed-theme'></div>");
 
-		$text2 = $ns->tablerender("Latest e107 News",e107::getForm()->tabs($newsTabs, array('active'=>'core')),"core-infopanel_news",true);
+		$text2 = $ns->tablerender("Latest e107 News",e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
 	
 	
 	
