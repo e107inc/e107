@@ -332,7 +332,7 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 	<div class="container">	
 	{ALERTS}
 <!-- Start Menu 1 --> 
-	{MENU=1}
+	{MENU=10}
 <!-- End Menu 1 --> 
 	</div>
 	
