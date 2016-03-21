@@ -113,12 +113,15 @@ $output = str_replace("{e_PLUGIN_ABS}", e_PLUGIN_ABS, $text);
 
 $wy = new wysiwyg();
 
-$gen = $wy->renderConfig();
+
+$config = varset($_GET['config'],false); // e_QUERY;
+
+$gen = $wy->renderConfig($config);
 
 define('USE_GZIP', true);
 
 
-if(ADMIN && e_QUERY == 'debug')
+if(ADMIN && e_QUERY == 'debug' || !empty($_GET['debug']))
 {
 	define('e_IFRAME', true); 
 	require_once(HEADERF);
@@ -309,23 +312,37 @@ class wysiwyg
 		$tp = e107::getParser();	
 		$fl = e107::getFile();
 
-				
-		if(getperms('0'))
+		if($config !== false)
 		{
-			$template = "mainadmin.xml";		
-		}
-		elseif(ADMIN)
-		{
-			$template = "admin.xml";			
-		}
-		elseif(USER)
-		{
-			$template = "member.xml";			
+			$template = $tp->filter($config).".xml";
 		}
 		else
 		{
-			$template = "public.xml";			
+			if(getperms('0'))
+			{
+				$template = "mainadmin.xml";
+			}
+			elseif(ADMIN)
+			{
+				$template = "admin.xml";
+			}
+			elseif(USER)
+			{
+				$template = "member.xml";
+			}
+			else
+			{
+				$template = "public.xml";
+			}
+
+
 		}
+
+		if(($template == 'mainadmin.xml' && !getperms('0')) || ($template == 'admin.xml' && !ADMIN))
+		{
+			$template = 'public.xml';
+		}
+
 		
 		$configPath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
 		$config 	= e107::getXml()->loadXMLfile($configPath, true); 

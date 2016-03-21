@@ -17,7 +17,7 @@ if(!defined('e107_INIT'))
 }
 
 
-
+define('e_TINYMCE_TEMPLATE', 'public');
 define('NAVIGATION_ACTIVE','forum'); // ??
 
 $tp = e107::getParser();

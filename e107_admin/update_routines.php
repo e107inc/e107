@@ -1274,7 +1274,7 @@ function update_706_to_800($type='')
 	{
 		$data = '<?xml version="1.0" encoding="utf-8"?>
 <e107Filetypes>
-	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml" maxupload="2M" />
+	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
 </e107Filetypes>';	
 					
 		file_put_contents(e_SYSTEM."filetypes.xml",$data);
