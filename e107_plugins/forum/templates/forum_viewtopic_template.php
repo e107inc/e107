@@ -363,7 +363,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 											<div class='col-xs-12 col-md-9 span9 forum-thread-text '>
 												{POLL}
 												{THREAD_TEXT}
-												{ATTACHMENTS}
+												{ATTACHMENTS: modal=1}
 											</div>
 										</div>
 										

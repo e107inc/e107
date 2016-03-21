@@ -137,8 +137,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 								$thumb = $tp->thumbUrl($baseDir.$file,'x=1',true);
 								$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
 							
-								$inc = (vartrue($parm['modal'])) ? "data-toggle='modal' data-target='#".$parm['modal']."' " : "";
-								$images[] = "<a  {$inc} rel='external' href='{$full}' class='forum-attachment-image' ><img class='thumbnail' src='{$thumb}' alt='' /></a>";
+								$inc = (vartrue($parm['modal'])) ? "data-modal-caption=\"".$file."\" data-target='#uiModal' " : "";
+								$images[] = "<a  {$inc} rel='external' href='{$full}' class='forum-attachment-image e-modal' ><img class='thumbnail' src='{$thumb}' alt='' /></a>";
 							}
 							elseif(ADMIN)
 							{
