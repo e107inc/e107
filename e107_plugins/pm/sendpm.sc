@@ -23,14 +23,24 @@ $pm_prefs = e107::getPlugPref('pm');
 
 if(check_class($pm_prefs['pm_class']))
 {
-	if(file_exists(THEME.'forum/pm.png'))
-	{
-		$img = "<img src='".THEME_ABS."forum/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
-	}
-	else
-	{
-		$img = "<img src='".e_PLUGIN_ABS."pm/images/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
-	}
+    if(deftrue('FONTAWESOME') && deftrue('BOOTSTRAP'))
+    {
+        $img =  e107::getParser()->toGlyph('fa-paper-plane','');
+     	return  "<a class='btn btn-sm btn-default' href='".e_PLUGIN_ABS."pm/pm.php?send.{$parm}'>{$img} ".LAN_PM_35."</a>";
+    }
+
+
+    if(file_exists(THEME.'forum/pm.png'))
+    {
+           $img = "<img src='".THEME_ABS."forum/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
+     }
+     else
+     {
+          $img = "<img src='".e_PLUGIN_ABS."pm/images/pm.png' alt='".LAN_PM."' title='".LAN_PM."' style='border:0' />";
+     }
+
+
+
 	return  "<a href='".e_PLUGIN_ABS."pm/pm.php?send.{$parm}'>{$img}</a>";
 }
 else

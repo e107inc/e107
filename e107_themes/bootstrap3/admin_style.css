@@ -1230,9 +1230,9 @@ li.rssRow > div {
 
 #e-online table                { margin-top:10px; margin-left:auto; margin-right:auto }
 #core-plugin-list img.icon    { width: 32px; height:32px }
-.tab-content #core,
-.tab-content #plugin,
-.tab-content #theme             { padding-top:20px }
+.tab-content #coreFeed,
+.tab-content #pluginFeed,
+.tab-content #themeFeed             { padding-top:20px }
 
 .alert-warning pre          { color: white }
 

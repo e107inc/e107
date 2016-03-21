@@ -148,11 +148,12 @@ class admin_shortcodes
 	
 		$ns = e107::getRender();
 		$pref = e107::getPref();
+		$help_text = '';
 
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
-			return $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 		
 		$helpfile = '';
@@ -185,7 +186,7 @@ class admin_shortcodes
 
 		ob_start();
 		include_once($helpfile);
-		$help_text = ob_get_contents();
+		$help_text .= ob_get_contents();
 		ob_end_clean();
 		return $help_text;
 	}

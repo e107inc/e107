@@ -412,11 +412,21 @@ class notify_config
 		}
 
 
+
 		$highlight = varset($_GET['type']) == $id ? " class='text-warning'" : '';
 
 		$text = "
 			<tr>
-				<td title='".$id."'><span{$highlight}>".$description.":</span></td>
+				<td title='".$id."'><span{$highlight}>".$description.":</span></td>";
+
+
+
+		if(e_DEBUG)
+		{
+			$text .= "<td>".$id."</td>";
+		}
+
+				$text .= "
 				<td  class='form-inline nowrap'>
 				".$uc->uc_dropdown('event['.$id.'][class]', varset($this->notify_prefs['event'][$id]['class'], e_UC_NOBODY), "nobody,main,admin,member,classes,email","onchange=\"mail_field(this.value,'event_".$id."');\" ");
 
@@ -442,7 +452,12 @@ class notify_config
 		}
 
 
-		$text .= "</td>
+		$text .= "</td>";
+
+
+
+
+		$text .= "
 		</tr>";
 		return $text;
 	}

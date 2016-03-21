@@ -411,18 +411,35 @@ if($tmp1)
 
 // Shutdown
 $e107->destruct();
-
+/*
 if($tmp)
 {
 	$page = str_replace($tmp['search'], $tmp['replace'], ob_get_clean());
 }
 else
-{
-	$page = ob_get_clean();
-}
+{*/
+
+//$length = ob_get_length();
+// $page = ob_get_clean();
+// }
 unset($tmp1, $tmp1);
 
 
+
+// $page = ob_get_clean();
+
+// New - see class2.php
+$ehd = new e_http_header;
+$ehd->setContent('buffer');
+$ehd->send();
+$page = $ehd->getOutput();
+// $ehd->debug();
+
+// real output
+echo $page;
+
+
+/*
 
 
 $etag = md5($page);
@@ -454,11 +471,11 @@ if(!defined('e_NOCACHE'))
 $pref['compression_level'] = 6;
 if (strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"], ""), "gzip"))
 {
-	$browser_support = true;
+//	$browser_support = true;
 }
 if (ini_get("zlib.output_compression") == false && function_exists("gzencode"))
 {
-	$server_support = true;
+//	$server_support = true;
 }
 if (varset($pref['compress_output'], false) && $server_support == true && $browser_support == true)
 {
@@ -482,7 +499,7 @@ else
 	
 	header("Content-Length: ".strlen($page), true);
 	echo $page;
-}
+}*/
 
 unset($In_e107_Footer);
 $e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!

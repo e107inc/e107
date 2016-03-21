@@ -743,7 +743,12 @@ class e107forum
 		{
 		  	e107::getEvent()->trigger('user_forum_topic_created', $info);
 			$postInfo['post_thread'] = $newThreadId;
-			$newPostId = $this->postAdd($postInfo, false);
+
+			if(!$newPostId = $this->postAdd($postInfo, false))
+			{
+				e107::getMessage()->addDebug("There was a problem: ".print_a($postInfo,true));
+			}
+
 			$this->threadMarkAsRead($newThreadId);
 			$threadInfo['thread_sef'] = $this->getThreadsef($threadInfo);
 
@@ -931,7 +936,7 @@ class e107forum
 		}
 		else
 		{
-			e107::getMessage()->addDebug("Query Failed: ".$qry);
+			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.str_replace('#', MPREFIX,$qry));
 
 		}
 		if('post' === $start) { return $ret[0]; }
