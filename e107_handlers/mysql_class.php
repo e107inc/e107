@@ -183,6 +183,7 @@ class e_db_mysql
 			try
 			{
 				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+
 			}
 			catch(PDOException $ex)
 			{
@@ -223,6 +224,10 @@ class e_db_mysql
 			return 'e2';
 		}
 
+		if($this->pdo == true)
+		{
+		//	$this->mySQLaccess->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		}
 		$this->dbError('dbConnect/SelectDB');
 
 		// Save the connection resource
@@ -1032,9 +1037,19 @@ class e_db_mysql
 			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
-				$new_data .= ($this->pdo == true) ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
-				$bind[$fn] = array('value'=>$this->_getPDOValue($fieldTypes[$fn],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fn]));
+				$ftype =  $fieldTypes[$fn];
 
+				$new_data .= ($this->pdo == true && $ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
+
+				if($fv == '_NULL_')
+				{
+					$ftype = 'null';
+				}
+
+				if($ftype != 'cmd')
+				{
+					$bind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype));
+				}
 			}
 
 			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
@@ -1177,13 +1192,7 @@ class e_db_mysql
 				return (int) $fieldValue;
 				break;
 
-			case 'cmd':
-			case 'safestr':
-			case 'str':
-			case 'string':
-			case 'escape':
-				return $fieldValue;
-				break;
+
 
 			case 'float':
 				// fix - convert localized float numbers
@@ -1195,7 +1204,7 @@ class e_db_mysql
 			break;
 
 			case 'null':
-				return $fieldValue;
+				return null;
 				break;
 
 			case 'array':
@@ -1210,6 +1219,16 @@ class e_db_mysql
 				if($fieldValue == '') { return ''; }
 				return e107::getParser()->toDB($fieldValue);
 			break;
+
+				case 'cmd':
+			case 'safestr':
+			case 'str':
+			case 'string':
+			case 'escape':
+			default:
+
+				return $fieldValue;
+				break;
 
 		}
 
@@ -1231,6 +1250,10 @@ class e_db_mysql
 				return PDO::PARAM_INT;
 				break;
 
+			case 'null':
+				return PDO::PARAM_NULL;
+				break;
+
 			case 'cmd':
 			case 'safestr':
 			case 'str':
@@ -1242,14 +1265,11 @@ class e_db_mysql
 				return PDO::PARAM_STR;
 				break;
 
-
-			case 'null':
-				return PDO::PARAM_NULL;
-				break;
-
 		}
 
-		return false;
+
+		e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
+		return PDO::PARAM_STR;
 	}
 
 
