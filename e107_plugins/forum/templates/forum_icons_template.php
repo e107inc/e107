@@ -17,7 +17,7 @@ if(deftrue("FONTAWESOME", 4)) {
 
 define('IMAGE_e', 					'e');
 define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
-define('IMAGE_nonew', 				$tp->toGlyph('fa-comment', 'size=2x'));
+define('IMAGE_nonew', 				$tp->toGlyph('fa-comment-o', 'size=2x'));
 define('IMAGE_new_small',  			$tp->toGlyph('fa-star'));
 define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment-o'));
 define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));

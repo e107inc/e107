@@ -239,7 +239,8 @@ elseif ($action == 'forums')
 
 		$vars->emptyVars();
 
-		$ftotal = $sql->total_results;
+		$ftotal = $sqlp->totalResults();
+
 		$parms = $ftotal.",10,".$from.",".e_REQUEST_SELF."?[FROM].forums.".$id;
 		$vars->NEXTPREV = $ftotal ? $tp->parseTemplate("{NEXTPREV={$parms}}") : '';
 		if($vars->NEXTPREV) $vars->NEXTPREV =  str_replace('{USERPOSTS_NEXTPREV}', $vars->NEXTPREV, $USERPOSTS_TEMPLATE['np_table']);

@@ -2295,6 +2295,7 @@ class e_http_header
 	private $compression_browser_support = false;
 	private $compression_server_support = false;
 	private $headers = array();
+	private $length = 0;
 
 	
 	function __construct()
@@ -2304,20 +2305,55 @@ class e_http_header
 			$this->compression_browser_support = true;
 		}
 		
-		if(ini_get("zlib.output_compression") == '' && function_exists("gzencode")) 
+		if(ini_get("zlib.output_compression")=='' && function_exists("gzencode"))
 		{
 			$this->compression_server_support = true;
 		}	
-		
-		$this->compress_output = varset(e107::getPref('compress_output'),false);
+
+		if($this->compression_server_support == true && $this->compression_browser_support == true)
+		{
+			$this->compress_output = varset(e107::getPref('compress_output'),false);
+		}
+		else
+		{
+			$this->compress_output = false;
+		}
+
 
 	}
 	
 	
 	function setContent($content)
 	{
-		$this->etag = md5($content);
-		$this->content = $content;
+
+		if($content == 'buffer')
+		{
+			$this->length = ob_get_length();
+			$this->content = ob_get_clean();
+
+		}
+		else
+		{
+			$this->content = $content;
+			$this->length = strlen($content);
+		}
+
+		$this->etag = md5($this->content);
+
+	//print_a($this->length);
+
+	//	return $this->content;
+
+	}
+
+
+	/**
+	 * Return Content (with or without encoding)
+	 * @return mixed
+	 */
+	function getOutput()
+	{
+		return $this->content;
 	}
 	
 	function setHeader($header, $force=false, $response_code=null)
@@ -2327,17 +2363,23 @@ class e_http_header
 		header($header, $force, $response_code);
 	}
 			
-	function debug()
+	function debug() // needs to be disabled if PHP gzip is to work
 	{
+		if(!ADMIN)
+		{
+			return null;
+		}
+
 		
-		echo "<h3>Server Headers</h3>";
+		$text = "<h3>Server Headers</h3>";
 		$server = getallheaders();
 		ksort($server);
-		print_a($server);
-		echo "<h3>e107 Headers</h3>";
+		$text .= print_a($server,true);
+		$text .= "<h3>e107 Headers</h3>";
 		ksort($this->headers);
-		print_a($this->headers);
-		var_dump($this->compress_output);
+		$text .= print_a($this->headers,true);
+		$text .= "<h4>Compress Output</h4>";
+		$text .= print_a($this->compress_output,true);
 		
 		$server = array();
 		foreach($_SERVER as $k=>$v)
@@ -2347,8 +2389,21 @@ class e_http_header
 				$server[$k] = $v;	
 			}	
 		}
-		echo "<h3>_SERVER</h3>";
-		print_a($server);
+
+		$text .= "<h3>_SERVER</h3>";
+		$text .= "<h4>zlib.output_compression</h4>";
+		$text .= print_a(ini_get("zlib.output_compression"),true);
+
+
+		$text .=print_a($server,true);
+
+		if($this->compress_output == true)
+		{
+
+			$text = gzencode($text, $this->compression_level);
+		}
+
+		echo $text;
 		
 	}			
 		
@@ -2390,27 +2445,29 @@ class e_http_header
 		}
 		
 
-		if($this->compress_out != false && $this->compression_server_support == true && $this->compression_browser_support == true) 
+		if($this->compress_output != false)
 		{
 		//	$this->setHeader("ETag: \"{$this->etag}-gzip\"");
 			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
-			$page = gzencode($this->content, $this->compression_level);
-			$this->setHeader("Content-Encoding: gzip", true);
-			$this->setHeader("Content-Length: ".strlen($page), true);
+			$this->content = gzencode($this->content, $this->compression_level);
+			$this->setHeader('Content-Encoding: gzip', true);
+			$this->setHeader("Content-Length: ".$this->length, true);
 
 		} 
 		else 
 		{
+
+/*
 			if($this->compression_browser_support ==true) 
 			{
 				$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
 			}
 			else
-			{
+			{*/
 				$this->setHeader('ETag: "'.$this->etag.'"', true);	
-			}
+		//	}
 			
-			$this->setHeader("Content-Length: ".strlen($this->content), true);
+			$this->setHeader("Content-Length: ".$this->length, true);
 		}
 		
 		if(defset('X-POWERED-BY') !== false)
@@ -2422,9 +2479,9 @@ class e_http_header
 		{
 			$this->setHeader('Vary: Accept-Encoding');	
 		}
-		else 
+		else
 		{
-			$this->setHeader('Vary: Accept');	
+			$this->setHeader('Vary: Accept');
 		}
 		
 		// should come after the Etag header

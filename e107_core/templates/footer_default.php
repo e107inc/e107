@@ -380,13 +380,21 @@ $e107->destruct();
 //
 // I Send the buffered page data, along with appropriate headers
 //
-$page = ob_get_clean();
+//$length = ob_get_length();
+//$page = ob_get_clean();
+
+
 
 // New - see class2.php 
 $ehd = new e_http_header;
-$ehd->setContent($page);
+$ehd->setContent('buffer');
 $ehd->send();
 // $ehd->debug();
+
+$page = $ehd->getOutput();
+//$ehd->setContent($page);
+//$ehd->send($length);
+
 
 // real output
 echo $page;
