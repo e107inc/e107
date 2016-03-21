@@ -219,7 +219,9 @@ class forum_post_handler
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			require_once(HEADERF);
+
 			e107::getRender()->tablerender('Debug', "Redirecting to: <a href='".$url."'>".$url."</a>");
+			echo e107::getMessage()->render();
 			require_once(FOOTERF);
 			exit;
 
@@ -781,18 +783,11 @@ class forum_post_handler
 			{
 				foreach($uploadResult as $ur)
 				{
-					//$postInfo['post_entry'] .= $ur['txt'];
-					//	$_tmp = $ur['type'].'*'.$ur['file'];
-					//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
-					//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
-
 					$type = $ur['type'];
-					$newValues[$type][] = $ur['file'];
-					// $attachments[] = $_tmp;
+					$newValues[$type][] = array('file'=>$ur['file'], 'name'=>$ur['fname'], 'size'=>$ur['size']);
 				}
 
-				//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array';
-				$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME XXX - broken encoding when saved to DB.
+				$postInfo['post_attachments'] = e107::serialize($newValues);
 			}
 //		var_dump($uploadResult);
 
@@ -998,7 +993,7 @@ class forum_post_handler
 				//	$attachments[] = $_tmp;
 
 					$type = $ur['type'];
-					$newValues[$type][] = $ur['file'];
+					$newValues[$type][] = array('file'=>$ur['file'], 'name'=>$ur['fname'], 'size'=>$ur['size']);
 				}
 				$postVals['post_attachments'] = e107::serialize($newValues);
 				// $postVals['post_attachments'] = implode(',', $attachments);
@@ -1051,9 +1046,25 @@ class forum_post_handler
 			return;
 		}
 
+		e107::getMessage()->addDebug(print_a($this->data,true));
+
 		$postVals['post_edit_datestamp']    = time();
 		$postVals['post_edit_user']         = USERID;
 		$postVals['post_entry']             = $_POST['post'];
+
+		if($uploadResult = $this->processAttachments())
+		{
+			$newValues   = e107::unserialize($this->data['post_attachments']);
+
+			foreach($uploadResult as $ur)
+			{
+				$type = $ur['type'];
+				$newValues[$type][] = array('file'=>$ur['file'], 'name'=>$ur['fname'], 'size'=>$ur['size']);
+			}
+
+			$postVals['post_attachments'] = e107::serialize($newValues);
+		}
+
 
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
@@ -1100,7 +1111,7 @@ class forum_post_handler
 
 			e107::getMessage()->addDebug("Attachment Directory: ".$attachmentDir);
 
-			if($uploaded = e107::getFile()->getUploaded($attachmentDir, 'attachment', ''))
+			if($uploaded = e107::getFile()->getUploaded($attachmentDir, 'attachment', array( 'max_file_count' => 5)))
 			{
 
 				e107::getMessage()->addDebug("Uploaded Data: ".print_a($uploaded,true));
@@ -1178,7 +1189,7 @@ class forum_post_handler
 						}
 						if($_txt && $_file)
 						{
-							$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $_fname);
+							$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $upload['origname'], 'size'=>$upload['size']);
 						}
 					}
 					else

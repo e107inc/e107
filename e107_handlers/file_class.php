@@ -1040,8 +1040,42 @@ class e_file
 		return process_uploaded_files($uploaddir, $fileinfo, $options);	
 
 	}
-	
-	
+
+
+	/**
+	 * Quickly scan and return a list of files in a directory.
+	 * @param $dir
+	 * @return array
+	 */
+	public function scandir($dir, $extensions=null)
+	{
+		$list = array();
+
+		$ext = str_replace(",","|",$extensions);
+
+		$tmp = scandir($dir);
+		foreach($tmp as $v)
+		{
+			if($v == '.' || $v == '..')
+			{
+				continue;
+			}
+
+			if(!empty($ext) && !preg_match("/\.(".$ext.")$/i", $v))
+			{
+
+				continue;
+			}
+
+			$list[] = $v;
+		}
+
+		return $list ;
+	}
+
+
+
+
 	/**
 	 * Unzip Plugin or Theme zip file and move to plugin or theme folder. 
 	 * @param string $localfile - filename located in e_TEMP

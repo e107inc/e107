@@ -197,7 +197,7 @@ define("LAN_FORUM_3008", "Unauthorised"); // LAN_95
 define("LAN_FORUM_3009", "You are not authorised to edit this forum post."); //LAN_96
 define("LAN_FORUM_3010", "Your name"); // LAN_61
 define("LAN_FORUM_3011", "Subject"); // LAN_62
-define("LAN_FORUM_3012", "Attach file / image"); // LAN_390
+define("LAN_FORUM_3012", "Attach file(s) / image(s)"); // LAN_390
 define("LAN_FORUM_3013", "Attach file"); // LAN_416
 define("LAN_FORUM_3014", "File to attach"); // LAN_392
 define("LAN_FORUM_3015", "[Please note]"); // LAN_393 1st half - [ and ] are replaced by <b> </b>
