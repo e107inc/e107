@@ -256,14 +256,14 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			<div>	
 				<div id='fiupsection'>
 				<span id='fiupopt'>
-					<input class='tbox e-tip' title=\"".$tp->toAttribute($tooltip)."\" name='file_userfile[]' type='file' size='47' />
+					<input class='tbox e-tip' title=\"".$tp->toAttribute($tooltip)."\" name='file_userfile[]' type='file' size='47'  multiple='multiple' />
 				</span>
 				</div>
-				<input class='btn btn-default button' type='button' name='addoption' value=".LAN_FORUM_3020." onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+
 			</div>
 		
 		";	
-		
+		//<input class='btn btn-default button' type='button' name='addoption' value=".LAN_FORUM_3020."  />
 		if( $this->forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 		{
 			return $fileattach;

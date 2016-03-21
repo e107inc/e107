@@ -150,7 +150,10 @@ class e107forum
 
         $array 	= $sql->retrieve('forum_post','post_user,post_attachments','post_id='.$post_id);
         $attach = e107::unserialize($array['post_attachments']);
-        $file 	= $this->getAttachmentPath($array['post_user']).varset($attach['file'][$file_id]);
+
+        $filename = is_array($attach['file'][$file_id]) ? $attach['file'][$file_id]['file'] : $attach['file'][$file_id];
+
+        $file 	= $this->getAttachmentPath($array['post_user']).varset($filename);
 
         // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
  		if(file_exists($file))
@@ -162,6 +165,7 @@ class e107forum
  		    if(E107_DEBUG_LEVEL > 0)
 	        {
 	            echo "Couldn't find file: ".$file;
+	            print_a($attach);
 	            return;
 	        }
 
@@ -665,7 +669,15 @@ class e107forum
 				$forumInfo['forum_lastpost_user'] = 0;
 				$forumInfo['forum_lastpost_user_anon'] = $postInfo['post_user_anon'];
 			}
-			$threadInfo['thread_lastpost'] = $postInfo['post_datestamp'];
+
+			$threadInfo['thread_lastpost'] = !empty($postInfo['post_edit_datestamp']) ? $postInfo['post_edit_datestamp'] : $postInfo['post_datestamp'];
+
+			if(!empty($postInfo['post_edit_user']))
+			{
+				$threadInfo['thread_lastuser'] = $postInfo['post_edit_user'];
+			}
+
+
 			$threadInfo['thread_total_replies'] = 'thread_total_replies + 1';
 
 			$info = array();
@@ -675,6 +687,10 @@ class e107forum
 			$info['_FIELD_TYPES']['thread_total_replies'] = 'cmd';
 
 			$result = $sql->update('forum_thread', $info);
+
+			e107::getMessage()->addDebug("Updating Thread with: ".print_a($info,true));
+
+
 		  	e107::getEvent()->trigger('user_forum_topic_updated', $info);
 		}
 
