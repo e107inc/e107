@@ -988,15 +988,20 @@ class forum_post_handler
 
 			if($uploadResult = $this->processAttachments())
 			{
-				$attachments = explode(',', $this->data['post_attachments']);
+				// $attachments = explode(',', $this->data['post_attachments']);
+				$newValues   = e107::unserialize($this->data['post_attachments']);
 				foreach($uploadResult as $ur)
 				{
-					$_tmp = $ur['type'].'*'.$ur['file'];
-					if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
-					if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
-					$attachments[] = $_tmp;
+				//	$_tmp = $ur['type'].'*'.$ur['file'];
+				//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+				//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
+				//	$attachments[] = $_tmp;
+
+					$type = $ur['type'];
+					$newValues[$type][] = $ur['file'];
 				}
-				$postVals['post_attachments'] = implode(',', $attachments);
+				$postVals['post_attachments'] = e107::serialize($newValues);
+				// $postVals['post_attachments'] = implode(',', $attachments);
 			}
 
 			$postVals['post_edit_datestamp']    = time();
@@ -1074,23 +1079,33 @@ class forum_post_handler
 	}
 
 
-
-
-
+	/**
+	 * @return array
+	 */
 	function processAttachments()
 	{
 
 		$ret = array();
 
+		e107::getMessage()->addDebug("Processing Attachments");
+
+
 		if (isset($_FILES['file_userfile']['error']))
 		{
-			require_once(e_HANDLER.'upload_handler.php');
+
+				e107::getMessage()->addDebug("Attachment Detected");
 
 			// retrieve and create attachment directory if needed
 			$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
 
-			if($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
+			e107::getMessage()->addDebug("Attachment Directory: ".$attachmentDir);
+
+			if($uploaded = e107::getFile()->getUploaded($attachmentDir, 'attachment', ''))
 			{
+
+				e107::getMessage()->addDebug("Uploaded Data: ".print_a($uploaded,true));
+
+
 				foreach($uploaded as $upload)
 				{
 					//print_a($upload); exit;
@@ -1175,6 +1190,11 @@ class forum_post_handler
 				}
 
 				return $ret;
+			}
+			else
+			{
+				// e107::getMessage()->addError('There was a problem with the attachment.');
+				// e107::getMessage()->addDebug(print_a($_FILES['file_userfile'],true));
 			}
 		}
 		/* no file uploaded at all, proceed with creating the topic or reply
