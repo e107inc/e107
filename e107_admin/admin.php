@@ -153,7 +153,15 @@ class admin_start
 		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
 			$mes->addWarning("The folder ".e_SYSTEM." is not writable. Please correct before proceeding.");			
-		}			
+		}
+
+		$files = e107::getFile()->scandir(e_IMAGE."avatars",'jpg,gif,png,jpeg');
+
+
+		if(is_dir(e_IMAGE."avatars") && !is_writable(e_IMAGE."avatars") && !empty($files))
+		{
+			$mes->addWarning("Legacy avatars folder detected. Please make sure ".e_IMAGE."avatars/ is writable. Please correct before proceeding.");
+		}
 		
 	}
 
@@ -165,7 +173,7 @@ class admin_start
 		$mes = e107::getMessage();
 		if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 		{
-			$mes->addWarning($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/");
+			$mes->addWarning(e_HANDLER_ABS."htmlarea/<br />".e_ADMIN_ABS."htmlarea/");
 		}	
 	}		
 	
@@ -195,6 +203,11 @@ class admin_start
 		}	
 		
 	}
+
+
+
+
+
 
 
 	function checkDeprecated()
@@ -244,7 +257,7 @@ class admin_start
 		$this->allowed_types = get_filetypes();			// Get allowed types according to filetypes.xml or filetypes.php
 		if (count($this->allowed_types) == 0)
 		{
-			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1);
+			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1, 'pdf'=>1);
 			$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
 		
 		}	
