@@ -403,7 +403,9 @@ class e_db_mysql
 	* This is the 'core' routine which handles much of the interface between other functions and the DB
 	*
 	* If a SELECT query includes SQL_CALC_FOUND_ROWS, the value of FOUND_ROWS() is retrieved and stored in $this->total_results
-	* @param string $query
+	* @param string|array $query
+	* @param string $query['PREPARE'] PDO Format query.
+	 *@param array $query['BIND'] eg. array['my_field'] = array('value'=>'whatever', 'type'=>'str');
 	* @param unknown $rli
 	* @return boolean | resource - as mysql_query() function.
 	*			FALSE indicates an error
@@ -440,20 +442,36 @@ class e_db_mysql
 		
 		if($this->pdo)
 		{
-		//	print_a($query);
-		//	$prep = $this->mySQLaccess->prepare($query);
-		//	print_a($query);
-		//	print_a($prep);
-		//	echo "<hr>";
-		//	$sQryRes = $prep->execute($query);
 
-			try
+			if(is_array($query) && !empty($query['PREPARE']) && !empty($query['BIND']))
 			{
-				$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+				$prep = $this->mySQLaccess->prepare($query['PREPARE']);
+				foreach($query['BIND'] as $k=>$v)
+				{
+					$prep->bindValue(':'.$k, $v['value'],$v['type']);
+
+				}
+
+				try
+				{
+					$prep->execute();
+					$sQryRes = $prep->rowCount();
+				}
+				catch(PDOException $ex)
+				{
+					$sQryRes = false;
+				}
 			}
-			catch(PDOException $ex)
+			else
 			{
-				$sQryRes = false;
+				try
+				{
+					$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+				}
+				catch(PDOException $ex)
+				{
+					$sQryRes = false;
+				}
 			}
 
 		}
@@ -469,12 +487,11 @@ class e_db_mysql
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 
-
 		$this->total_results = false;
 
 		// Need to get the total record count as well. Return code is a resource identifier
 		// Have to do this before any debug action, otherwise this bit gets messed up
-		if ((strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
+		if (!is_array($query) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
 		{
 			if($this->pdo)
 			{
@@ -491,7 +508,6 @@ class e_db_mysql
 
 		}
 
-
 		if (E107_DEBUG_LEVEL)
 		{
 
@@ -506,6 +522,12 @@ class e_db_mysql
 			if(is_object($db_debug))
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
+
+				if(is_array($query))
+				{
+					$query = "PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
+				}
+
 			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
 			else
@@ -513,6 +535,7 @@ class e_db_mysql
 				echo "what happened to db_debug??!!<br />";
 			}
 		}
+
 		return $sQryRes;
 	}
 
@@ -783,6 +806,7 @@ class e_db_mysql
 			}
 
 
+
 			// Handle 'NOT NULL' fields without a default value
 			if (isset($arg['_NOTNULL']))
 			{
@@ -795,19 +819,24 @@ class e_db_mysql
 				}
 			}
 
+
 			$fieldTypes = $this->_getTypes($arg);
 			$keyList= '`'.implode('`,`', array_keys($arg['data'])).'`';
 			$tmp = array();
+			$bind = array();
+
 			foreach($arg['data'] as $fk => $fv)
 			{
-				$tmp[] = $this->_getFieldValue($fk, $fv, $fieldTypes);
+				$tmp[] = ($this->pdo == true) ? ':'.$fk : $this->_getFieldValue($fk, $fv, $fieldTypes);
+				$bind[$fk] = array('value'=>$this->_getPDOValue($fieldTypes[$fk],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fk]));
 			}
+
 			$valList= implode(', ', $tmp);
-			
-			
+
+
 			unset($tmp);
 
-			if($REPLACE === FALSE)
+			if($REPLACE === false)
 			{
 				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
 			}
@@ -815,6 +844,16 @@ class e_db_mysql
 			{
 				$query = "REPLACE INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
 			}
+
+
+			if($this->pdo == true)
+			{
+				$query = array(
+					'PREPARE' => $query,
+					'BIND'  => $bind,
+				);
+			}
+
 
 		}
 		else
@@ -829,18 +868,22 @@ class e_db_mysql
 		}
 
 		$this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+
 		if ($this->mySQLresult)
 		{
 			if(true === $REPLACE)
 			{
-				$tmp = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
+				$tmp = ($this->pdo) ? $this->mySQLresult : mysql_affected_rows($this->mySQLaccess);
 				$this->dbError('db_Replace');
 				// $tmp == -1 (error), $tmp == 0 (not modified), $tmp == 1 (added), greater (replaced)
 				if ($tmp == -1) { return false; } // mysql_affected_rows error
 				return $tmp;
 			}
 
-			$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
+		//	$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
+
+			$tmp = $this->lastInsertId();
+
 			$this->dbError('db_Insert');
 			return ($tmp) ? $tmp : TRUE; // return true even if table doesn't have auto-increment.
 		}
@@ -985,18 +1028,33 @@ class e_db_mysql
 
 
 			$new_data = '';
+			$bind = array();
 			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
-				$new_data .= "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes); 
+				$new_data .= ($this->pdo == true) ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
+				$bind[$fn] = array('value'=>$this->_getPDOValue($fieldTypes[$fn],$fv), 'type'=> $this->_getPDOType($fieldTypes[$fn]));
+
 			}
+
 			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
+
 		}
 
 		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
+
+		if($this->pdo == true && !empty($bind))
+		{
+			$query = array(
+					'PREPARE' => $query,
+					'BIND'  => $bind,
+			);
+		}
+
+
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark))
 		{
-			$result = ($this->pdo) ? $this->mySQLresult->rowCount() : mysql_affected_rows($this->mySQLaccess);
+			$result = ($this->pdo) ? $result : mysql_affected_rows($this->mySQLaccess);
 			$this->dbError('db_Update');
 			if ($result == -1) { return false; }	// Error return from mysql_affected_rows
 			return $result;
@@ -1102,6 +1160,100 @@ class e_db_mysql
 			break;
 	  	}
 	}
+
+
+	/**
+	 * Return a value for use in PDO bindValue() - based on field-type.
+	 * @param $type
+	 * @param $fieldValue
+	 * @return int|string
+	 */
+	private function _getPDOValue($type, $fieldValue)
+	{
+		switch($type)
+		{
+			case "int":
+			case "integer":
+				return (int) $fieldValue;
+				break;
+
+			case 'cmd':
+			case 'safestr':
+			case 'str':
+			case 'string':
+			case 'escape':
+				return $fieldValue;
+				break;
+
+			case 'float':
+				// fix - convert localized float numbers
+				$larr = localeconv();
+				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				$replace = array('.', '.', '', '', '', '');
+
+				return str_replace($search, $replace, floatval($fieldValue));
+			break;
+
+			case 'null':
+				return $fieldValue;
+				break;
+
+			case 'array':
+				if(is_array($fieldValue))
+				{
+					return e107::serialize($fieldValue, true);
+				}
+				return $fieldValue;
+			break;
+
+			case 'todb': // using as default causes serious BC issues.
+				if($fieldValue == '') { return ''; }
+				return e107::getParser()->toDB($fieldValue);
+			break;
+
+		}
+
+
+	}
+
+
+	/**
+	 * Convert FIELD_TYPE to PDO compatible Field-Type
+	 * @param $type
+	 * @return int
+	 */
+	private function _getPDOType($type)
+	{
+		switch($type)
+		{
+			case "int":
+			case "integer":
+				return PDO::PARAM_INT;
+				break;
+
+			case 'cmd':
+			case 'safestr':
+			case 'str':
+			case 'string':
+			case 'escape':
+			case 'array':
+			case 'todb':
+			case 'float':
+				return PDO::PARAM_STR;
+				break;
+
+
+			case 'null':
+				return PDO::PARAM_NULL;
+				break;
+
+		}
+
+		return false;
+	}
+
+
+
 
 	/**
 	 *  @DEPRECATED
@@ -2297,7 +2449,7 @@ class e_db_mysql
 
 	/**
 	* @return text string relating to error (empty string if no error)
-	* @param unknown $from
+	* @param string $from
 	* @desc Calling method from within this class
 	* @access private
 	*/
