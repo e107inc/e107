@@ -300,7 +300,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 			if (!$first_error)  // All tests passed - can store it somewhere
 			{
-				$uploaded[$c] = e107::getFile()->get_file_info($uploadfile,true);
+				// File upload broken - temp file renamed.
+				// FIXME - method starting with 'get' shouldn't do system file changes.
+				$uploaded[$c] = e107::getFile()->get_file_info($uploadfile, true, false);
 
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
