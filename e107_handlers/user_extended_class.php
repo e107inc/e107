@@ -772,7 +772,10 @@ class e107_user_extended
         case EUF_CHECKBOX : //checkboxes
 
 		//	print_a($choices);
-			$curval = e107::unserialize($curval);
+			if(!is_array($curval))
+			{
+				$curval = e107::unserialize($curval);
+			}
 
 			return e107::getForm()->checkboxes($fname.'[]',$choices, $curval, array('useLabelValues'=>1));
 /*
@@ -1106,6 +1109,55 @@ class e107_user_extended
 		$temp = new $className();
 		if (!method_exists($className, 'getValue')) return '???-???';
 		return $temp->getValue($value);
+	}
+
+
+	/**
+	 * Render Extended User Field Data in a read-only fashion.
+	 * @param $value
+	 * @param $type
+	 * @return array|string
+	 */
+	function renderValue($value, $type)
+	{
+
+		//TODO FIXME Add more types.
+
+		switch($type)
+		{
+			case EUF_CHECKBOX:
+					$value = e107::unserialize($value);
+
+					if(!empty($value))
+					{
+
+						sort($value);
+						return implode('<br />',$value);
+
+					/*
+						$text = '<ul>';
+						foreach($uVal as $v)
+						{
+							$text .= "<li>".$v."</li>";
+
+						}
+						$text .= "</ul>";
+						$ret_data = $text;*/
+					}
+				break;
+
+			case EUF_DATE :		//check for 0000-00-00 in date field
+					if($value == '0000-00-00') { $value = ''; }
+					return $value;
+					break;
+
+
+			default:
+				return $value;
+				// code to be executed if n is different from all labels;
+		}
+
+
 	}
 
 }
