@@ -660,8 +660,27 @@ class user_shortcodes extends e_shortcode
 			";
 		}
 	}
-	
-	
+
+	// v2.x extended user field data.
+	/**
+	 * Usage {USER_EUF: field=xxxx} (excluding the 'user_' )
+	 * @param string $parm
+	 * @return string
+	 */
+	function sc_user_euf($parm='')
+	{
+
+		if(!empty($parm['field']))
+		{
+			$fld = 'user_'.$parm['field'];
+			$val = $this->var[$fld];
+			return e107::getUserExt()->renderValue($val); //TODO auto-detect type, from within the user-extended class.
+
+		}
+
+		return ' ';
+
+	}
 
 	function sc_user_extended_all($parm) 
 	{

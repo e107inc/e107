@@ -235,30 +235,52 @@ if (isset($id))
 	exit;
 }
 
-$users_total = $sql->count("user","(*)", "WHERE user_ban = 0");
+// $users_total = $sql->count("user","(*)", "WHERE user_ban = 0");
 
-if (!$sql->select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
-{
-	echo "<div style='text-align:center'><b>".LAN_USER_53."</b></div>";
-}
-else
-{
-	$userList = $sql->db_getList();
 
-	$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
-	foreach ($userList as $row)
+
+	// --------------------- List Users ------------------------  //TODO Put all of this into a class.
+
+	$users_total= 0;
+	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON u.user_id = ue.user_extended_id WHERE u.user_ban = 0 ORDER BY u.user_id ".$order." LIMIT ".intval($from).",".intval($records);
+
+	if (!$data = $sql->retrieve($query,true))
+
+	// if (!$sql->select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
 	{
-		$loop_uid = $row['user_id'];
-		
-		$text .= renderuser($row, "short");
+		echo "<div style='text-align:center'><b>".LAN_USER_53."</b></div>";
 	}
-	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
-}
+	else
+	{
+		$users_total = count($data);
+		// $userList = $sql->db_getList();
 
-$ns->tablerender(LAN_USER_52, $text);
+		$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
+		foreach ($data as $row)
+		{
+			$loop_uid = $row['user_id'];
 
-$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
-echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+		//	$text .= renderuser($row, "short");
+			e107::getScBatch('user')->setVars($row);
+
+			$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE, TRUE, $user_shortcodes);
+		}
+		$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
+	}
+
+	$ns->tablerender(LAN_USER_52, $text);
+
+	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
+	echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+
+
+
+
+
+
+
+
+
 
 
 function renderuser($uid, $mode = "verbose")
@@ -281,7 +303,7 @@ function renderuser($uid, $mode = "verbose")
 		}
 	}
 	
-	e107::getScBatch('user')->setVars($user);
+
 
 	if($mode == 'verbose')
 	{
