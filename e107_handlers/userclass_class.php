@@ -141,12 +141,12 @@ class user_class
         
 		if ($temp = $e107->ecache->retrieve_sys(UC_CACHE_TAG))
 		{
-			$this->class_tree = e107::getArrayStorage()->read($temp);
+			$this->class_tree = e107::unserialize($temp);
 			unset($temp);
 		}
 		else
 		{
-			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent', 'nowhere')) // The order statement should give a consistent return
+			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent,userclass_name', 'nowhere')) // The order statement should give a consistent return
 			{
 				while ($row = $this->sql_r->fetch())
 				{
@@ -221,6 +221,9 @@ class user_class
 	{
 		$is = array();
 		$start_array = explode(',', $startList);
+
+
+
 		foreach ($start_array as $sa)
 		{	// Merge in latest values - should eliminate duplicates as it goes
 			$is[] = $sa; // add parent to the flat list first

@@ -189,6 +189,7 @@
     'link' => 'blogcalendar_menu/config.php',
   ),
 )]]></core>
+		<core name="membersonly_redirect">login</core>
 		<core name="meta_tag"></core>
 		<core name="multilanguage">0</core>
 		<core name="nbr_cols">1</core>
