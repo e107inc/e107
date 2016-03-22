@@ -331,7 +331,7 @@ if(deftrue('BOOTSTRAP'))
 	                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}</h5>
 	            </div>
 	            <div class="panel-body text-center">
-	                {SETIMAGE: w=200}
+	                {SETIMAGE: w=200&h=200&crop=1}
 	                {USER_PICTURE: shape=circle&link=1}
 	                <div class="profile-header">
 	                    <h4>{USER_NAME}</h4>
