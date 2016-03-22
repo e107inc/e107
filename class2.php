@@ -2323,13 +2323,19 @@ class e_http_header
 	}
 	
 	
-	function setContent($content)
+	function setContent($content,$search=null,$replace=null)
 	{
 
 		if($content == 'buffer')
 		{
 			$this->length = ob_get_length();
-			$this->content = ob_get_clean();
+			$this->content =  ob_get_clean();
+
+			if(!empty($search) && !empty($replace))
+			{
+				$this->content = str_replace($search, $replace, $this->content);
+				$this->length = strlen($this->content);
+			}
 
 		}
 		else
