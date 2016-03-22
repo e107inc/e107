@@ -255,8 +255,8 @@ if(deftrue('BOOTSTRAP'))
 
 	$USER_TEMPLATE['addon']  = '
 		<p class="row">
-			<span class="col-xs-12 col-md-6">{USER_ADDON_LABEL}</span>
-			<span class="col-xs-12 col-md-6">{USER_ADDON_TEXT}</span>
+			<span class="col-xs-12 col-md-4">{USER_ADDON_LABEL}</span>
+			<span class="col-xs-12 col-md-8">{USER_ADDON_TEXT}</span>
 		 </p>
 		';
 
@@ -265,8 +265,8 @@ if(deftrue('BOOTSTRAP'))
 
 	$USER_TEMPLATE['extended']['item'] = '
 		<p class="row">
-		    <span class="col-xs-12 col-md-6">{EXTENDED_NAME}</span>
-		    <span class="col-xs-12 col-md-6">{EXTENDED_VALUE}</span>
+		    <span class="col-xs-12 col-md-4">{EXTENDED_NAME}</span>
+		    <span class="col-xs-12 col-md-8">{EXTENDED_VALUE}</span>
 		<p>
 		';
 
@@ -316,7 +316,7 @@ if(deftrue('BOOTSTRAP'))
 
 
 	// View shortcode wrappers.
-	$USER_WRAPPER['view']['USER_COMMENTPOSTS']  = '<span class="col-xs-12 col-md-6">'.LAN_USER_68.'</span><span class="col-xs-12 col-md-6">{---}';
+	$USER_WRAPPER['view']['USER_COMMENTPOSTS']  = '<span class="col-xs-12 col-md-4">'.LAN_USER_68.'</span><span class="col-xs-12 col-md-8">{---}';
 	$USER_WRAPPER['view']['USER_COMMENTPER']    = ' ( {---}% )</span>';
 	$USER_WRAPPER['view']['USER_SIGNATURE']     = '<div>{---}</div>';
 	$USER_WRAPPER['view']['USER_RATING']        = '<div>{---}</div>';
@@ -341,13 +341,13 @@ if(deftrue('BOOTSTRAP'))
 	                </div>
 	            </div>
 	            <div class="panel-body">
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_63.'</span><span class="col-xs-12 col-md-6">{USER_REALNAME}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_02.'</span><span class="col-xs-12 col-md-6">{USER_LOGINNAME}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_60.'</span><span class="col-xs-12 col-md-6">{USER_EMAIL}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_54.'</span><span class="col-xs-12 col-md-6">{USER_LEVEL}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_65.'</span><span class="col-xs-12 col-md-6">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_59.'</span><span class="col-xs-12 col-md-6">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_66.'</span><span class="col-xs-12 col-md-6">{USER_VISITS}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_63.'</span><span class="col-xs-12 col-md-8">{USER_REALNAME}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_02.'</span><span class="col-xs-12 col-md-8">{USER_LOGINNAME}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_60.'</span><span class="col-xs-12 col-md-8">{USER_EMAIL}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_54.'</span><span class="col-xs-12 col-md-8">{USER_LEVEL}</span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_65.'</span><span class="col-xs-12 col-md-8">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_59.'</span><span class="col-xs-12 col-md-8">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></span></p>
+	                <p class="row"><span class="col-xs-12 col-md-4">'.LAN_USER_66.'</span><span class="col-xs-12 col-md-8">{USER_VISITS}</span></p>
 	                {USER_ADDONS}
 	                <p class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
 	                {USER_EXTENDED_ALL}
