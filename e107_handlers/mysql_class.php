@@ -227,6 +227,7 @@ class e_db_mysql
 		if($this->pdo == true)
 		{
 		//	$this->mySQLaccess->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		//	$this->mySQLaccess->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		}
 		$this->dbError('dbConnect/SelectDB');
 
@@ -472,6 +473,7 @@ class e_db_mysql
 				try
 				{
 					$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+
 				}
 				catch(PDOException $ex)
 				{
@@ -1069,7 +1071,19 @@ class e_db_mysql
 
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark))
 		{
-			$result = ($this->pdo) ? $result : mysql_affected_rows($this->mySQLaccess);
+			if($this->pdo == true)
+			{
+				if(is_object($result))
+				{
+					$result = $this->rowCount();
+				}
+			}
+			else
+			{
+				$result = mysql_affected_rows($this->mySQLaccess);
+			}
+
+		//	$result = ($this->pdo) ? $result : mysql_affected_rows($this->mySQLaccess);
 			$this->dbError('db_Update');
 			if ($result == -1) { return false; }	// Error return from mysql_affected_rows
 			return $result;
