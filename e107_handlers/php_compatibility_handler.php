@@ -55,3 +55,17 @@ if (!function_exists('json_encode'))
         return $json->decode($json_obj);
     }
 }
+
+// Fix for exim missing.
+if(!function_exists('exif_imagetype'))
+{
+    function exif_imagetype($filename)
+    {
+        if((list($width, $height, $type, $attr) = getimagesize( $filename ) ) !== false)
+        {
+            return $type;
+        }
+
+         return false;
+    }
+}
