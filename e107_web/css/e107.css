@@ -147,6 +147,7 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 /* User Profile css */
 .panel-profile .user-avatar {
 	max-width: 150px;
+	max-height: 150px;
 	margin-top: -90px;
 	margin-bottom: 15px;
 	border: 5px solid #fff;
