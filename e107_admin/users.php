@@ -350,22 +350,23 @@ class users_admin_ui extends e_admin_ui
 		
 		// Extended fields - FIXME - better field types
 		
-		if($sql->select('user_extended_struct', '*', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
+		if($rows = $sql->retrieve('user_extended_struct', '*', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC",true))
 		{
 			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
 			e107::coreLan('user_extended'); 	
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				$field = "user_".$row['user_extended_struct_name'];
 				// $title = ucfirst(str_replace("user_","",$field));
 				$label = $tp->toHtml($row['user_extended_struct_text'],false,'defs');
-				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'type'=>'method', 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
+				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
 			
 				$this->extended[] = $field;
 				$this->extendedData[$field] = $row;
 			}
 		}
+
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
 		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto');
@@ -2315,6 +2316,13 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			$field = $att['field'];
 			$data =  $this->getController()->getListModel()->get($field); // ($att['field']);
+
+
+			return e107::getUserExt()->renderValue($data, $att['ueType']);
+
+			return print_a($att,true);
+
+
 			return $data;
 
 		}

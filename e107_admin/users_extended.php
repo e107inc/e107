@@ -570,6 +570,12 @@ if (isset($_POST['add_field']))
 		{
 			$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 		}
+
+		if(!empty($_POST['sort_user_values']))
+		{
+			sort($_POST['user_values']);
+		}
+
 		$new_values = $user->make_delimited($_POST['user_values']);
 		$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 
@@ -611,6 +617,12 @@ if (isset($_POST['update_field']))
 	{
     	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
+
+	if(!empty($_POST['sort_user_values']))
+	{
+		sort($_POST['user_values']);
+	}
+
 	$upd_values = $user->make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	$result = $mes->addAuto($ue->user_extended_modify($sub_action, $tp->toDB($_POST['user_field']), $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $upd_parms, $upd_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), intval($_POST['user_parent'])), 'update', EXTLAN_29, false, false);
@@ -1071,7 +1083,12 @@ class users_ext
 			$text .= "
 			</div>
 			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
-			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
+			<br /><span class='field-help'>".EXTLAN_17."</span>
+
+
+			<div style='margin-top:10px'>".$frm->checkbox('sort_user_values',1, false, "Sort values")."</div>
+
+			</div>";
 // End of Values. --------------------------------------
 
 

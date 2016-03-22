@@ -144,6 +144,29 @@
 			$uVal = str_replace(chr(1), '', $udata['user_'.$parms[0]]);
 			switch ($ueStruct["user_".$parms[0]]['user_extended_struct_type'])
 			{
+
+				case EUF_CHECKBOX:
+
+					$uVal = e107::unserialize($uVal);
+
+					if(!empty($uVal))
+					{
+						return implode(', ',$uVal);
+
+					/*
+						$text = '<ul>';
+						foreach($uVal as $v)
+						{
+							$text .= "<li>".$v."</li>";
+
+						}
+						$text .= "</ul>";
+						$ret_data = $text;*/
+					}
+
+				break;
+
+
 				case EUF_DB_FIELD :		// check for db_lookup type
 					$tmp = explode(',',$ueStruct['user_'.$parms[0]]['user_extended_struct_values']);
 					$sql_ue = new db;			// Use our own DB object to avoid conflicts

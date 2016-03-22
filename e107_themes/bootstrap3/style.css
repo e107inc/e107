@@ -130,6 +130,22 @@ img.featurebox { border-radius: 5px }
 #login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
 
 .modal-lg { width: 70% }
+
+
+table label.checkbox {
+    margin-left: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
 /* CUSTOM Responsive Styles */
 
 
