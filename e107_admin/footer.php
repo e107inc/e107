@@ -422,7 +422,7 @@ else
 //$length = ob_get_length();
 // $page = ob_get_clean();
 // }
-unset($tmp1, $tmp1);
+
 
 
 
@@ -430,7 +430,15 @@ unset($tmp1, $tmp1);
 
 // New - see class2.php
 $ehd = new e_http_header;
-$ehd->setContent('buffer');
+if($tmp)
+{
+	$ehd->setContent('buffer',$tmp['search'],$tmp['replace']);
+}
+else
+{
+	$ehd->setContent('buffer');
+}
+unset($tmp1, $tmp1);
 $ehd->send();
 $page = $ehd->getOutput();
 // $ehd->debug();
