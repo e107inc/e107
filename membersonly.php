@@ -61,7 +61,7 @@ class membersonly
 
 	function sc_membersonly_returntohome()
 	{
-		return "<a href='".e_HTTP."index.php'>".LAN_MEMBERS_4."</a>";
+		return "<a class='alert-link' href='".e_HTTP."index.php'>".LAN_MEMBERS_4."</a>";
 	}
 
 	function sc_membersonly_restricted_area()

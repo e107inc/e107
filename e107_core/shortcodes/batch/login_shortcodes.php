@@ -177,6 +177,28 @@ class login_shortcodes extends e_shortcode
 		return $text;
 
 	}
+
+	function sc_login_table_signup_link($parm='')
+	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
+		return "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
+
+
+	}
+
+	function sc_login_table_fpw_link($parm='')
+	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
+		return "<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
+	}
 	
 
 }

@@ -50,9 +50,11 @@ class redirection
 	 */
 	function __construct()
 	{
-		$this->self_exceptions = array(e_SIGNUP, SITEURL, SITEURL.'index.php', SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
-		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN);
+		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
+		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
 		$this->query_exceptions = array('logout');
+
+		// Remove from self_exceptions:  SITEURL, SITEURL.'index.php', // allows a custom frontpage to be viewed while logged out and membersonly active.
 	}
 	
 	/**
@@ -280,7 +282,12 @@ class redirection
 		*/
 		
 		$this->saveMembersOnlyUrl();
-		$this->redirect(e_HTTP.'membersonly.php');
+
+		$redirectType = e107::getPref('membersonly_redirect');
+
+		$redirectURL = ($redirectType == 'splash') ? 'membersonly.php' : 'login.php';
+
+		$this->redirect(e_HTTP.$redirectURL);
 	}
 
 	
