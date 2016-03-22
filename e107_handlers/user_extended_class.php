@@ -173,10 +173,15 @@ class e107_user_extended
 					case EUF_DATE :
 					case EUF_LANGUAGE :
 					case EUF_PREDEFINED :
-					case EUF_CHECKBOX :
+
 					case EUF_RADIO :
 						$target['_FIELD_TYPES'][$k] = 'todb';
 						break;
+
+					case EUF_CHECKBOX :
+						$target['_FIELD_TYPES'][$k] = 'array';
+						break;
+
 					
 					case EUF_INTEGER :
 						$target['_FIELD_TYPES'][$k] = 'int';
@@ -477,6 +482,7 @@ class e107_user_extended
 		  break;
 
 		case EUF_TEXTAREA:
+		case EUF_CHECKBOX :
 		  $db_type = 'TEXT';
 		 break;
 
@@ -486,7 +492,7 @@ class e107_user_extended
 		case EUF_DB_FIELD :
 		case EUF_LANGUAGE :
 		case EUF_PREDEFINED :
-		case EUF_CHECKBOX :
+
 		  $db_type = 'VARCHAR(255)';
 		 break;
 		 
@@ -764,6 +770,13 @@ class e107_user_extended
 		  break;
 
         case EUF_CHECKBOX : //checkboxes
+
+		//	print_a($choices);
+			$curval = e107::unserialize($curval);
+
+			return e107::getForm()->checkboxes($fname.'[]',$choices, $curval, array('useLabelValues'=>1));
+/*
+
 			foreach($choices as $choice)
 			{
 				$choice = trim($choice);
@@ -785,7 +798,7 @@ class e107_user_extended
 				
 				if(deftrue('BOOTSTRAP'))
 				{
-					$ret .= $frm->checkbox($fname,$val,($curval == $val),array('label'=>$label, 'required'=> $struct['user_extended_struct_required']));	
+					$ret .= $frm->checkbox($fname.'[]',$val,($curval == $val), array('label'=>$label));
 				}
 				else 
 				{
@@ -793,8 +806,13 @@ class e107_user_extended
 					$ret .= "<input {$include} type='checkbox' name='{$fname}[]' value='{$val}' {$chk} /> {$label}<br />";
 				}
 			}
+
+
 			
 			return $ret;
+
+*/
+
 		break;
 
 		case EUF_DROPDOWN : //dropdown

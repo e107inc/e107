@@ -358,13 +358,14 @@ if(E107_DEBUG_LEVEL > 0)
 			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
 			$text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
             <option value='' class='caption'>".EXTLAN_61."</option>\n";
-			$result = mysql_list_tables($mySQLdefaultdb);
 
-			while ($row2 = mysql_fetch_row($result))
+			$result = e107::getDb()->tables();
+
+			foreach($result as $row2)
 			{
-				$fld = str_replace(MPREFIX,"",$row2[0]);
+				$fld = $row2;
 				$selected =  (varset($_POST['table_db'],'') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
-				if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
+			//	if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
 				{
 					$text .= "<option value=\"".$fld."\" $selected>".$fld."</option>\n";
 				}
@@ -1082,12 +1083,15 @@ class users_ext
 			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
             $text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
             <option value='' class='caption'>".EXTLAN_61."</option>\n";
-			$result = mysql_list_tables($mySQLdefaultdb);
-			while ($row2 = mysql_fetch_row($result))
+
+
+			$result = e107::getDb()->tables();
+			foreach ($result as $row2)
 			{
-			  $fld = str_replace(MPREFIX,"",$row2[0]);
+		//	  $fld = str_replace(MPREFIX,"",$row2[0]);
+			  $fld = $row2;
 			  $selected =  (varset($_POST['table_db'],'') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
-			  if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
+			//  if (MPREFIX!='' && strpos($row2[0], MPREFIX)!==FALSE)
 			  {
 				$text .= "<option value=\"".$fld."\" $selected>".$fld."</option>\n";
 			  }

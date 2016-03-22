@@ -1505,6 +1505,7 @@ class e_form
 	function checkboxes($name, $option_array, $checked, $options=array())
 	{
 		$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
+
 		if(!is_array($checked)) $checked = explode(",",$checked);
 		
 		$text = "";
@@ -1517,6 +1518,11 @@ class e_form
 			{
 				$key = $k;
 				$c = in_array($k, $checked) ? true : false;
+			}
+			elseif(!empty($options['useLabelValues']))
+			{
+				$key = $label;
+				$c = in_array($label, $checked) ? true : false;
 			}
 			else
 			{
