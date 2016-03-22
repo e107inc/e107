@@ -944,7 +944,7 @@ $text .= "
 					</tr>";
 
 					*/
-
+					$membersOnlyRedirectOptions = array( 'login'=>PRFLAN_264, 'splash'=>PRFLAN_265);
 
 					$text .= "
 
@@ -956,9 +956,16 @@ $text .= "
 						
 					$text .= $frm->radio_switch('membersonly_enabled', $pref['membersonly_enabled'],'', '', 'class=e-expandit')."
 							<div class='field-help'>".PRFLAN_59."</div>
-							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>".
+							<div class='e-expandit-container {$memDisp}' style='padding-top:10px'>
+							<div class='form-group clearfix'>
+							".
+							$frm->select('membersonly_redirect',$membersOnlyRedirectOptions,$pref['membersonly_redirect'], array('size'=>'xxlarge'))."
+							<div class='field-help'>".PRFLAN_266."</div>
+								</div>
+							<div class='form-group clearfix'>".
 							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'placeholder='.PRFLAN_206)."
-							<div class='field-help'>".PRFLAN_207."</div>
+							<div class='field-help'>".PRFLAN_207."</div></div>
+
 							</div>
 						</td>
 					</tr>

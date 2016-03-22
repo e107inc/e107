@@ -958,6 +958,11 @@ class e107_user_extended
 	}
 
 
+	/**
+	 * @param $contents
+	 * @param bool|false $no_cache
+	 * @return array
+	 */
 	function parse_extended_xml($contents, $no_cache = FALSE)
 	{
 		if($no_cache == FALSE && $this->extended_xml)

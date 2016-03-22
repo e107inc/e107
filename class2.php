@@ -1737,6 +1737,7 @@ function init_session()
 		define('USERCLASS', '');
 		define('USEREMAIL', '');
 		define('USERSIGNATURE', '');
+		define('ADMINPERMS', false);
 
 		if($user->hasSessionError())
 		{

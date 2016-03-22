@@ -91,7 +91,7 @@ $LOGIN_TEMPLATE['page']['header'] = "
 $LOGIN_TEMPLATE['page']['body'] = '
 
         <h2 class="form-signin-heading">'.LAN_LOGIN_4.'</h2>';
-	if ($pref['password_CHAP'] == 2)
+	if (e107::pref('core', 'password_CHAP') == 2)
 	{
 		$LOGIN_TEMPLATE['page']['body'] .= "
     	<div style='text-align: center' id='nologinmenuchap'>"."Javascript must be enabled in your browser if you wish to log into this site"."
@@ -110,6 +110,7 @@ $LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_TEXTBOC'] = "<div class='form-group'>
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_REMEMBERME'] = "<div class='form-group checkbox'>{---}</div>";
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_SUBMIT'] = "<div class='form-group'>{---}</div>";
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_FOOTER_USERREG'] = "<div class='form-group'>{---}</div>";
+// $LOGIN_WRAPPER['page']['LOGIN_TABLE_FPW_LINK'] = "<div class='form-group'>{---}</div>";
 
 $LOGIN_TEMPLATE['page']['body'] .= '
         {LOGIN_TABLE_USERNAME}
@@ -122,8 +123,9 @@ $LOGIN_TEMPLATE['page']['body'] .= '
  ';
 
 $LOGIN_TEMPLATE['page']['footer'] =  "
-			<div style='margin-bottom:100px; width:70%;margin-right:auto;margin-left:auto'>
-				<div style='text-align:center'>{LOGIN_TABLE_FOOTER_USERREG}</div>
+			<div style='margin-bottom:100px; margin-right:auto;margin-left:auto'>
+				<div style='text-align:right'><p>{LOGIN_TABLE_SIGNUP_LINK}</p></div>
+				<div style='text-align:right'><p>{LOGIN_TABLE_FPW_LINK}</p></div>
 			</div>
 	</div>";
 	

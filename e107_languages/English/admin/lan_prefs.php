@@ -280,4 +280,10 @@ define("PRFLAN_261", "Field options");
 define("PRFLAN_262", "Password in Email Confirmation");
 define("PRFLAN_263", "Should be unique to this website");
 
+define("PRFLAN_264", "Frontpage is login page (login.php)");
+define("PRFLAN_265", "Frontpage is splash page (membersonly.php)");
+define("PRFLAN_266", "When logged out, which page should the user be directed to?");
+
+
+
 ?>
