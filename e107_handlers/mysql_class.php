@@ -531,10 +531,24 @@ class e_db_mysql
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
 
-				if(is_array($query) && is_object($ex))
+				if($this->pdo == true && isset($ex) && is_object($ex))
 				{
-					$query = "ERROR: ".$ex->errorInfo[2]."<br />PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
+					if(is_array($query))
+					{
+						$query = "ERROR: ".$ex->errorInfo[2]."<br />PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
+
+					}
+					else
+					{
+						$query = $ex->getMessage();
+						$query .= print_a( $ex->getTrace(),true);
+
+
+
+
+					}
 				}
+
 
 			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
@@ -1040,7 +1054,7 @@ class e_db_mysql
 			foreach ($arg['data'] as $fn => $fv)
 			{
 				$new_data .= ($new_data ? ', ' : '');
-				$ftype =  $fieldTypes[$fn];
+				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
 
 				$new_data .= ($this->pdo == true && $ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
 

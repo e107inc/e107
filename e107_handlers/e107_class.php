@@ -2244,7 +2244,7 @@ class e107
 		
 		if(ADMIN && E107_DBG_INCLUDES)
 		{
-			e107::getMessage()->addDebug( "template path=".$path );	
+			e107::getMessage()->addDebug( "Attempting to load Template File: ".$path );
 		}
 		
 		$id = str_replace('/', '_', $id);

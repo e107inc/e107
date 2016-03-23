@@ -179,7 +179,7 @@ if($thread->message)
 //{
 if(e107::isInstalled('poll'))
 {
-	$_qry = 'SELECT * FROM `#polls` WHERE `poll_datestamp` = ' . $thread->threadId;
+	$_qry = 'SELECT p.*, u.user_id, u.user_name FROM `#polls` AS p LEFT JOIN `#user` AS u ON p.poll_admin_id = u.user_id WHERE p.poll_datestamp = ' . $thread->threadId;
 	if($sql->gen($_qry))
 	{
 		if (!defined('POLLCLASS'))

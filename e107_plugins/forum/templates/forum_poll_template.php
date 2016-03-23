@@ -60,6 +60,16 @@ $FORUM_POLL_TEMPLATE['results']['end'] = "
 ";
 
 
+/*	v2.x template for polls when user HAS been denied the ability to vote (userclass)	*/
+
+$FORUM_POLL_TEMPLATE['denied']['start'] = $FORUM_POLL_TEMPLATE['results']['start'];
+$FORUM_POLL_TEMPLATE['denied']['item'] = $FORUM_POLL_TEMPLATE['results']['item'];
+$FORUM_POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{DISALLOWMESSAGE}</div>
+		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		 {COMMENTS} {OLDPOLLS}
+	</div>
+</div>
+";
 
 
 
