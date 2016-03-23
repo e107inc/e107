@@ -36,6 +36,8 @@ $(document).ready(function()
 		var _float 			= $('#float').val();
 		var alt             = $('#alt').val();
 
+		var target 		    = $(e).attr('data-target');
+
 
         if(margin_right !='' && margin_right !== undefined)
 		{				
@@ -105,7 +107,31 @@ $(document).ready(function()
 			bb = bb + ']';
 			bb = bb + path;
 			bb = bb + '[/img]';
-			$('#bbcode_holder').val(bb); // Set the BBcode Value. 
+
+			if(target && target.charAt(0) != "#" && target.charAt(0) != ".")
+			{
+				target = "#" + target;
+			}
+
+			var $target = $(target);
+
+			if($target.length > 0)
+			{
+				$target.val($target.val() + bb);
+			}
+			else
+			{
+				var $parentTarget = parent.$(target); // From iframe.
+
+				if($parentTarget.length > 0)
+				{
+					$parentTarget.val($parentTarget.val() + bb);
+				}
+				else
+				{
+					$('#bbcode_holder').val(bb); // Set the BBcode Value.
+				}
+			}
 		}		
 		
 		
