@@ -341,8 +341,8 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th>".LAN_FORUM_0003."</th><th class='hidden-xs'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th >".LAN_FORUM_0003."</th><th class='hidden-xs'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row row-fluid'>
@@ -370,7 +370,7 @@ $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 												<div class='row' >
 													<div class='col-sm-3 col-xs-6'>".IMAGE_new_popular_small." ".LAN_FORUM_0039." ".LAN_FORUM_1010."</div>
 													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_popular_small." ".LAN_FORUM_0040." ".LAN_FORUM_1010."</div>
-													<div class='col-sm-3 col-xs-6'>".IMAGE_stickyclosed_small." ".LAN_FORUM_1012."</div>
+													<div class='col-sm-3 col-xs-6'>".IMAGE_noreplies_small." ".LAN_FORUM_1021."</div>
 													<div class='col-sm-3 col-xs-6'>".IMAGE_closed_small." ".LAN_FORUM_1014."</div>
 												</div>
 												";

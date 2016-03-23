@@ -133,6 +133,7 @@ define("LAN_FORUM_1017", "Go to"); // LAN_401 (p?)
 define("LAN_FORUM_1018", "New topic");
 // define("LAN_FORUM_1019", "Are you sure?"); // new
 define("LAN_FORUM_1020", "Modify");
+define("LAN_FORUM_1021", "No Replies");
 
 
 // starting at LAN_FORUM_2xxx => forum_viewtopic.php

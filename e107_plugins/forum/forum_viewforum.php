@@ -447,6 +447,7 @@ echo "<script type=\"text/javascript\">
 require_once(FOOTERF);
 
 
+
 function parse_thread($thread_info)
 {
 	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, $threadsViewed;
@@ -506,11 +507,19 @@ function parse_thread($thread_info)
 	$tVars->THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	
 	$tVars->THREADTIMELAPSE = $gen->computeLapse($thread_info['thread_datestamp'],time(), false, false, 'short'); //  convert_date($thread_info['thread_datestamp'], 'forum');
-	
+
+
+
+	/// ---------- Icon ----------------
+
 	$tVars->ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
 	if ($tVars->REPLIES >= $forum->prefs->get('popular', 10))
 	{
 	  $tVars->ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
+	}
+	elseif(empty($tVars->REPLIES) && defined('IMAGE_noreplies'))
+	{
+		 $tVars->ICON = IMAGE_noreplies;
 	}
 
 	$tVars->THREADTYPE = '';
@@ -528,6 +537,16 @@ function parse_thread($thread_info)
 	{
 		$tVars->ICON = IMAGE_closed;
 	}
+
+// $tVars->ICON = $tVars->REPLIES;
+
+	// ------------------------------------------------------
+
+
+
+
+
+
 
 	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
 	if(isset($thread_info['thread_options']['poll']))
