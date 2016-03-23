@@ -1290,6 +1290,9 @@ class e_shortcode
 	 */
 	protected $scVars = null;
 
+	/**
+	 * e_shortcode constructor.
+	 */
 	public function __construct()
 	{
 		$this->scVars = new e_vars();

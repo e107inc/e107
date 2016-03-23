@@ -43,7 +43,7 @@ class poll
 		$arr_polls_cookies = array();
 		foreach($_COOKIE as $cookie_name => $cookie_val)
 		{	// Collect poll cookies
-			list($str, $int) = explode('_', $cookie_name);
+			list($str, $int) = explode('_', $cookie_name, 2);
 			if (($str == 'poll') && is_numeric($int)) 
 			{	// Yes, its poll's cookie
 				$arr_polls_cookies[] = $int;
@@ -310,6 +310,12 @@ class poll
 	}
 
 
+
+
+
+
+
+
 	function render_poll($pollArray = "", $type = "menu", $POLLMODE = "", $returnMethod=FALSE)
 	{
 		$ns = e107::getRender();
@@ -321,6 +327,7 @@ class poll
 		switch ($POLLMODE)
 		{
 			case 'query' :	// Show poll, register any vote
+
 				if ($this->get_poll($pollArray) === FALSE)
 				{
 					return '';		// No display if no poll
@@ -328,12 +335,24 @@ class poll
 				$pollArray = $this->pollRow;
 				$POLLMODE = $this->pollmode;
 				break;
+
 			case 'results' :
 				if ($sql->gen($pollArray))
 				{
 					$pollArray = $sql->fetch();
 				}
 				break;
+
+			case 'oldpolls':
+				$POLLMODE = 'results';
+			break;
+
+			default:
+			if(ADMIN)
+			{
+				return "<div class='alert alert-danger'>No \$POLLMODE set</div>";
+			}
+
 		}
 
 		
@@ -385,181 +404,149 @@ class poll
 				}
 			}
 		}
-		/* get template */
-		if (file_exists(THEME.'poll_template.php'))
-		{
-			require(THEME.'poll_template.php');
-		}
-		else if (!isset($POLL_NOTVOTED_START))
-		{
-		   	require(e_PLUGIN.'poll/templates/poll_template.php');
-		}
-		
-	
-		
+
+
+
+
+		$template = array();
+
 		if(deftrue('BOOTSTRAP'))
 		{
-	
-			if($type == 'forum')
+			$template = ($type == 'forum') ? e107::getTemplate('forum','forum_poll') : e107::getTemplate('poll');
+		}
+		else
+		{
+				/* get template */
+			if (file_exists(THEME.'poll_template.php'))
 			{
-				require_once(e_PLUGIN."forum/templates/forum_poll_template.php");
-				
-				$POLL_FORUM_NOTVOTED_START = $FORUM_POLL_TEMPLATE['form']['start'];
-				$POLL_FORUM_NOTVOTED_LOOP = $FORUM_POLL_TEMPLATE['form']['item'];
-				$POLL_FORUM_NOTVOTED_END = $FORUM_POLL_TEMPLATE['form']['end'];
-				
-				$POLL_FORUM_VOTED_START = $FORUM_POLL_TEMPLATE['results']['start'];
-				$POLL_FORUM_VOTED_LOOP = $FORUM_POLL_TEMPLATE['results']['item'];
-				$POLL_FORUM_VOTED_END = $FORUM_POLL_TEMPLATE['results']['end'];	
+				require(THEME.'poll_template.php');
 			}
-			
-				$POLL_NOTVOTED_START = $POLL_TEMPLATE['form']['start'];
-				$POLL_NOTVOTED_LOOP = $POLL_TEMPLATE['form']['item'];
-				$POLL_NOTVOTED_END = $POLL_TEMPLATE['form']['end'];
-				
-				$POLL_VOTED_START = $POLL_TEMPLATE['results']['start'];
-				$POLL_VOTED_LOOP = $POLL_TEMPLATE['results']['item'];
-				$POLL_VOTED_END = $POLL_TEMPLATE['results']['end'];			
-			
-		}
-		
-		
+			else if (!isset($POLL_NOTVOTED_START))
+			{
+			    require(e_PLUGIN.'poll/templates/poll_template.php');
+			}
 
-		$preview = FALSE;
-		if ($type == 'preview')
-		{
-			$POLLMODE = 'notvoted';
-		}
-		elseif ($type == 'forum') 
-		{
-			$preview = TRUE;
+			$template['form']['start'] = $POLL_NOTVOTED_START ;
+			$template['form']['item'] = $POLL_NOTVOTED_LOOP;
+			$template['form']['end'] = 	$POLL_NOTVOTED_END;
+			$template['results']['start'] = $POLL_VOTED_START;
+			$template['results']['item'] = $POLL_VOTED_LOOP;
+			$template['results']['end'] = $POLL_VOTED_END;
+			$template['denied']['start'] = $POLL_DISALLOWED_START;
+			$template['denied']['item'] = $POLL_DISALLOWED_LOOP ;
+			$template['denied']['end'] = $POLL_DISALLOWED_END ;
 		}
 
-		$comment_total = 0;
-		if ($pollArray['poll_comment'])
-		{	// Only get comments if they're allowed on poll. And we only need the count ATM
-			$comment_total = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
-		}
 
 		$sc = e107::getScBatch('poll');
 		$sc->setVars($pollArray);
 
-
-
-		$QUESTION 		= $tp->toHTML($pollArray['poll_title'], TRUE, "emotes_off, defs");
-		
-		
-		$VOTE_TOTAL 	= POLLAN_31.": ".$voteTotal;
-		$COMMENTS 		= ($pollArray['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".LAN_COMMENTS.": ".$comment_total."</a>" : "");
-		
-		
-		$poll_count 	= $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
-		$OLDPOLLS = '';
-		
-		if ($poll_count > 1)
-		{		
-			$OLDPOLLS = ($type == 'menu' ? "<a href='".e_PLUGIN_ABS."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
+		if ($pollArray['poll_comment']) // Only get comments if they're allowed on poll. And we only need the count ATM
+		{
+			$sc->pollCommentTotal = $sql->count("comments", "(*)", "WHERE `comment_item_id`='".intval($pollArray['poll_id'])."' AND `comment_type`=4");
 		}
-		
-		//"<a href='".e_HTTP."user.php?id.".$pollArray['poll_admin_id']."'>".$pollArray['user_name']."</a>"
-		$uparams = array('id' => $pollArray['poll_admin_id'], 'name' => $pollArray['user_name']);
-		$link = e107::getUrl()->create('user/profile/view', $uparams);
-		$userlink = "<a href='".$link."'>".$pollArray['user_name']."</a>";
-		$AUTHOR 		= POLLAN_35." ".($type == 'preview' || $type == 'forum' ? USERNAME : $userlink);
 
-	
-		
+		$sc->pollCount 	    = $sql->count("polls", "(*)", "WHERE poll_id <= '".$pollArray['poll_id']."'");
+		$sc->pollRenderMode = $type;
+		$sc->pollVoteTotal  = $voteTotal;
+		$sc->pollRenderType = $type;
+
+
+		if ($type == 'preview')
+		{
+			$POLLMODE = 'notvoted';
+		}
+		elseif ($type == 'forum')
+		{
+			$sc->pollPreview = true;
+		}
+
+
+		$text = '';
 
 		switch ($POLLMODE)
 		{
+
 			case 'notvoted':
-				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
+
+				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n";
+				$text .= $tp->parseTemplate($template['form']['start'],true, $sc);
 				$count = 1;
 				$sc->answerCount = 1;
-				$alt = 0; // alternate style.
-				
-				$template = ($type == "forum") ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP;
-				
-				foreach ($optionArray as $option) 
+
+				foreach ($optionArray as $option)
 				{
 					$sc->answerOption = $option; 
-					//	$MODE = ($mode) ? $mode : "";		/* debug */
-				//	$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
-				//	$OPTION = $tp->toHTML($option, TRUE);
-				
-			//		$OPTIONBUTTON = $tp->parseTemplate("{OPTIONBUTTON}",true);
-					
-				//	$OPTION = $tp->parseTemplate("{OPTION}",true);
-					
-			//		$OPTION = $tp->parseTemplate("{ANSWER}",true);
-						
-					$text .= $tp->parseTemplate($template, true, $sc);	
+					$text .= $tp->parseTemplate($template['form']['item'], true, $sc);
 						
 					$count ++;
 					$sc->answerCount++;
 				}
 				
-				
-				$SUBMITBUTTON = "<input class='button btn btn-primary' type='submit' name='pollvote' value='".POLLAN_30."' />";
-				// disable submit when previewing the poll or when NOT viewing the poll in the forum
-				if (('preview' == $type || $preview == TRUE) && strpos(e_REQUEST_SELF, "forum") === FALSE)
-				{
-					$SUBMITBUTTON = "<input class='button btn btn-default e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
-				}
+				$text .= $tp->parseTemplate($template['form']['end'], true, $sc);
 
-				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
+				$text .= "</form>";
 				break;
+
+
+
+
 
 			case 'voted':
 			case 'results' :
+
 				if ($pollArray['poll_result_type'] && !strstr(e_SELF, "comment.php"))
 				{
 					$text = "<div style='text-align: center;'><br /><br />".POLLAN_39."<br /><br /><a href='".e_HTTP."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_40."</a></div><br /><br />";
 				}
 				else
 				{
-					$text = preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_START : $POLL_VOTED_START));
+
+					$text = $tp->parseTemplate( $template['results']['start'], true, $sc);
 					$count = 0;
+					$sc->answerCount = 0;
+
 					foreach ($optionArray as $option)
 					{
-						$OPTION = $tp->toHTML($option, TRUE);
-						$BAR = $this->generateBar($percentage[$count]);
-				//		$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".min(intval($percentage[$count]), 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
-						$PERCENTAGE = $percentage[$count]."%";
-						$VOTES = POLLAN_31.": ".$voteArray[$count];
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_LOOP : $POLL_VOTED_LOOP));
+						$sc->pollPercentage = $percentage[$count];
+						$sc->answerOption   = $option;
+						$sc->pollVotes      = $voteArray[$count];
+
+						$text .= $tp->parseTemplate($template['results']['item'], true, $sc);
+
 						$count ++;
+						$sc->answerCount++;
 					}
 						
-					$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_VOTED_END : $POLL_VOTED_END));
+					$text .= $tp->parseTemplate($template['results']['end'], true, $sc);
 				}
 			
 				break;
 
+
+
+
+
 			case 'disallowed':
-				$text = preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_START);
+
+				$text = $tp->parseTemplate($template['denied']['start'], true, $sc);
+				$count = 0;
+
 				foreach ($optionArray as $option)
 				{
-					$MODE = $mode;		/* debug */
-					$OPTION = $tp->toHTML($option, TRUE);
-					$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_LOOP);
+					$sc->pollPercentage = $percentage[$count];
+					$sc->answerOption   = $option;
+					$sc->pollVotes      = $voteArray[$count];
+
+					$text .= $tp->parseTemplate($template['denied']['item'], true, $sc);
 					$count ++;
 				}
-				if ($pollArray['poll_vote_userclass'] == 253)
-				{
-					$DISALLOWMESSAGE = POLLAN_41;
-				}
-				elseif ($pollArray['poll_vote_userclass'] == 254)
-				{
-					$DISALLOWMESSAGE = POLLAN_42;
-				}
-				else
-				{
-					$DISALLOWMESSAGE = POLLAN_43;
-				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_END);
+
+				$text .= $tp->parseTemplate($template['denied']['end'], true, $sc);
+
 				break;
 		}
+
 
 		if (!defined("POLLRENDERED")) define("POLLRENDERED", TRUE);
 		
@@ -567,7 +554,7 @@ class poll
 		
 		if ($type == 'preview')
 		{
-			$caption = POLLAN_23.SEP."Preview"; // TODO LAN
+			$caption = POLLAN_23.SEP.LAN_PREVIEW; // "Preview"; // TODO LAN
 			$text = "<div class='clearfix'>\n<div class='well span3'>".$text."</div></div>";
 		}
 		elseif ($type == 'forum')
@@ -682,7 +669,7 @@ class poll
 			$opts = array(1 => LAN_YES, 0=> LAN_NO);
 				
 			// Set to IP address.. Can add a pref to Poll admin for 'default front-end storage method' if demand is there for it. 
-		
+
 		$text .= "<br />
 			 <div class='form-horizontal control-group'>
 				<label class='control-label'>".LAN_FORUM_3033."</label>
@@ -898,34 +885,173 @@ class poll
 
 class poll_shortcodes extends e_shortcode
 {
-	var $answerOption = array();
-	var $answerCount;
+	public $answerOption    = array();
+	public $answerCount     = 0;
+	public $pollRenderType  = null; // type
+	public $pollPreview     = false;
+	public $pollVoteTotal   = 0;
+	public $pollCommentTotal = 0;
+	public $pollPercentage  = 0;
+	public $pollVotes       = 0;
+	public $pollCount       = 0; // total polls in the system
+
+	private $barl = null;
+	private $barr = null;
+	private $bar = null;
+
+	public function __construct()
+	{
+		$this->barl = (file_exists(THEME.'images/barl.png') ? THEME_ABS.'images/barl.png' : e_PLUGIN_ABS.'poll/images/barl.png');
+		$this->barr = (file_exists(THEME.'images/barr.png') ? THEME_ABS.'images/barr.png' : e_PLUGIN_ABS.'poll/images/barr.png');
+		$this->bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_PLUGIN_ABS.'poll/images/bar.png');
+	}
 
 	function sc_option($parm='')
 	{
-	 	return $this->answerOption;
+		if(!empty($this->answerOption))
+		{
+			return $this->answerOption;
+		}
+
+	}
+
+
+	function sc_percentage($parm=null)
+	{
+		return $this->pollPercentage."%";
+	}
+
+
+	function sc_author($parm=null)
+	{
+		$uparams = array('id' => $this->var['poll_admin_id'], 'name' => $this->var['user_name']);
+		$link = e107::getUrl()->create('user/profile/view', $uparams);
+		$userlink = "<a href='".$link."'>".$this->var['user_name']."</a>";
+
+	//	return print_a($this->var,true);
+		return POLLAN_35." ".(($this->pollType == 'preview' || $this->pollType == 'forum') ? USERNAME : $userlink);
+	}
+
+
+	function sc_oldpolls($parm=null)
+	{
+		// return 'type: '.$this->pollCount;
+
+		if (intval($this->pollCount) > 1 && ($this->pollRenderType == 'menu'))
+		{
+			return "<a href='".e_PLUGIN_ABS."poll/oldpolls.php'>".POLLAN_28."</a>" ;
+		}
+
+	}
+
+
+	function sc_disallowmessage($parm=null)
+	{
+		if ($this->var['poll_vote_userclass'] == 253)
+		{
+			return POLLAN_41;
+		}
+		elseif ($this->var['poll_vote_userclass'] == 254)
+		{
+			return POLLAN_42;
+		}
+		else
+		{
+			return POLLAN_43;
+		}
+
+	}
+
+
+	function sc_votes($parm=null)
+	{
+		return POLLAN_31.": ".$this->pollVotes;
+	}
+
+
+	function sc_bar($parm=null)
+	{
+
+		$perc = $this->pollPercentage;
+
+		if(deftrue('BOOTSTRAP',false))
+		{
+
+		//	return "<span class='label label-danger'>".$perc."</span>";
+			$val = intval($perc);
+			 return '
+			 <div class="progress">
+			 <div class="bar progress-bar" role="progressbar" aria-valuenow="'.$val.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$val.'%;">
+			   <span class="sr-only">'.$val.'%</span>
+			 </div>
+			 </div>';
+
+		}
+		else
+		{
+			$barl = $this->barl;
+			$barr = $this->barr;
+			$bar = $this->bar;
+			return ($perc ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".min(intval($perc), 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
+		}
 	}
 
 
 	function sc_optionbutton($parm='')
 	{
-		return ($this->var['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='".$this->answerCount."' />");		
+		return ($this->var['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$this->answerCount' />" : "<input type='radio' name='votea' value='".$this->answerCount."' />");
 	}
+
 
 	function sc_question($parm = "")
 	{
 		$tp = e107::getParser();
-		return $tp->toHTML($this->var['poll_title'], TRUE, "emotes_off, defs");		
+		return $tp->toHTML($this->var['poll_title'], true, "TITLE");
 	}
-	
+
+
 	function sc_answer($parm='')
 	{
 		$frm = e107::getForm();
 		$opt = array('label'=> $this->answerOption);
-		return $frm->radio('votea', $this->answerCount,false, $opt);	
-	//	$this->answerOption
+
+		if(empty($this->var['poll_allow_multiple']))
+		{
+			return $frm->radio('votea', $this->answerCount,false, $opt);
+		}
+		else
+		{
+			return $frm->checkbox('votea[]', $this->answerCount,false, $opt);
+		}
+
 	}
-		
+
+
+	function sc_submitbutton($parm=null)
+	{
+
+		if (('preview' == $this->pollType || $this->pollPreview == true) && strpos(e_REQUEST_SELF, "forum") === false)
+		{
+			return "<input class='button btn btn-default e-tip' type='button' name='null' title='Disabled' value='".POLLAN_30."' />";
+		}
+
+		return "<input class='button btn btn-primary' type='submit' name='pollvote' value='".POLLAN_30."' />";
+				// disable submit when previewing the poll or when NOT viewing the poll in the forum
+	}
+
+
+	function sc_vote_total($parm=null)
+	{
+
+		return POLLAN_31.": ".intval($this->pollVoteTotal);
+	}
+
+
+	function sc_comments($parm=null)
+	{
+		return ($this->var['poll_comment'] ? " <a href='".e_HTTP."comment.php?comment.poll.".$this->var['poll_id']."'>".LAN_COMMENTS.": ".$this->pollCommentTotal."</a>" : "");
+
+	}
 }
 
 

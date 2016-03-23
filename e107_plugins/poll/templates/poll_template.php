@@ -233,8 +233,16 @@ $POLL_TEMPLATE['results']['end'] = "
 </div>
 ";
 
+/*	v2.x template for polls when user HAS been denied the ability to vote (userclass)	*/
 
-
+$POLL_TEMPLATE['denied']['start'] = $POLL_TEMPLATE['results']['start'];
+$POLL_TEMPLATE['denied']['item'] = $POLL_TEMPLATE['results']['item'];
+$POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{DISALLOWMESSAGE}</div>
+		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		 {COMMENTS} {OLDPOLLS}
+	</div>
+</div>
+";
 
 
 ?>
