@@ -447,8 +447,13 @@ class e_array {
              $ArrayData = stripslashes($ArrayData);
 		}
 
+	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
+
+
         $data = "";
         $ArrayData = '$data = '.$ArrayData.';';
+
+
         @eval($ArrayData);
         if (!isset($data) || !is_array($data))
         {
