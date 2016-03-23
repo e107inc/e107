@@ -391,6 +391,10 @@ function parse_forum($f, $restricted_string = '')
 
 		$fVars->NEWFLAG = "<a href='".$e107->url->create('forum/forum/mfar', $f)."'>".IMAGE_new.'</a>';
 	}
+	elseif(empty($f['forum_replies']) && defined('IMAGE_noreplies'))
+	{
+		$fVars->NEWFLAG = IMAGE_noreplies;
+	}
 	else
 	{
 		$fVars->NEWFLAG = IMAGE_nonew;
