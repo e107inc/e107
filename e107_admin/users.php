@@ -495,16 +495,16 @@ class users_admin_ui extends e_admin_ui
 	}
 	
 
-
 	function saveExtended($new_data)
 	{
 		$update = array();
+		$fieldtype = array();
 		foreach($this->extended as $key) // Grab Extended field data.
 		{
-			$update[$key] = vartrue($new_data['ue'][$key],'_NULL_');
+			$update['data'][$key] = vartrue($new_data['ue'][$key],'_NULL_');
 		}
 
-		e107::getMessage()->addDebug(print_a($update,true));
+		e107::getUserExt()->addFieldTypes($update);
 
 		if(!empty($update))
 		{

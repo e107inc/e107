@@ -1522,7 +1522,8 @@ class e_form
 			elseif(!empty($options['useLabelValues']))
 			{
 				$key = $label;
-				$c = in_array($label, $checked) ? true : false;
+				//print_a($label);
+				$c = in_array($label, e107::getParser()->toDB($checked)) ? true : false;
 			}
 			else
 			{
@@ -1534,6 +1535,8 @@ class e_form
 
 			$text .= $this->checkbox($cname, $key, $c, $label);
 		}
+
+	//	return print_a($checked,true);
 
 		if(!empty($text))
 		{

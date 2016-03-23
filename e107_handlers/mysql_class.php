@@ -1224,7 +1224,7 @@ class e_db_mysql
 			case 'array':
 				if(is_array($fieldValue))
 				{
-					return e107::serialize($fieldValue, true);
+					return e107::serialize($fieldValue);
 				}
 				return $fieldValue;
 			break;
