@@ -370,16 +370,18 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	
 
 	function sc_poll($parm='')
-	{		
-		if(is_readable(e_PLUGIN."poll/poll_class.php"))
+	{
+
+		if(!e107::isInstalled('poll'))
 		{
-			require_once(e_PLUGIN."poll/poll_class.php");
-			$pollo = new poll;
-			$type = ($parm == 'front') ? 'front' : 'forum';
-			
-			$poll_form = $pollo -> renderPollForm($type);
+			return null;
 		}
 
+		require_once(e_PLUGIN."poll/poll_class.php");
+		$pollo = new poll;
+		$type = ($parm == 'front') ? 'front' : 'forum';
+			
+		$poll_form = $pollo -> renderPollForm($type);
 
 		if ($this->var['action'] == 'nt' && check_class($this->forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
 		{

@@ -477,6 +477,7 @@ class e_db_mysql
 				}
 				catch(PDOException $ex)
 				{
+
 					$sQryRes = false;
 				}
 			}
@@ -530,9 +531,9 @@ class e_db_mysql
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
 
-				if(is_array($query))
+				if(is_array($query) && is_object($ex))
 				{
-					$query = "PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
+					$query = "ERROR: ".$ex->errorInfo[2]."<br />PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
 				}
 
 			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
