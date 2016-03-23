@@ -337,14 +337,14 @@ class e_menuManager {
 							'menu_name' 	=> $val['menu_name'],
 							'menu_location'	=> $val['menu_location'],
 							'menu_order'	=> $val['menu_order'],
-							'menu_class'	=> $val['menu_class'],
+							'menu_class'	=> intval($val['menu_class']),
 							'menu_pages'	=> '',
                             'menu_path'		=> $row['menu_path'],
 							'menu_layout'  	=> $this->dbLayout,
 							'menu_parms'	=> ''
 						);
 
-					$sql->db_Insert("menus",$insert);
+					$sql->insert("menus",$insert);
 				  	e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 
 				}
@@ -756,14 +756,14 @@ class e_menuManager {
 							'menu_name' 	=> $row['menu_name'],
 							'menu_location'	=> $location,
 							'menu_order'	=> $menu_count,
-							'menu_class'	=> $row['menu_class'],
+							'menu_class'	=> intval($row['menu_class']),
 							'menu_pages'	=> '',
                             'menu_path'		=> $row['menu_path'],
 							'menu_layout'  	=> $this->dbLayout,
 							'menu_parms'	=> ''
 				   );
 
-					$sql->db_Insert("menus",$insert, $this->debug);
+					$sql->insert("menus",$insert, $this->debug);
 
 					e107::getLog()->add('MENU_01',$row['menu_name'].'[!br!]'.$location.'[!br!]'.$menu_count.'[!br!]'.$row['menu_path'],E_LOG_INFORMATIVE,'');
 					$menu_count++;
@@ -1697,7 +1697,7 @@ class e_menuManager {
 		}
 		elseif($_POST['mode'] == 'update')
 		{
-			$sql->db_Update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)."",$this->debug);	
+			$sql->update("menus","menu_location = ".intval($area)." WHERE menu_id = ".intval($insertID)."",$this->debug);
 		}
 		
 		$c = 0;
@@ -1712,7 +1712,7 @@ class e_menuManager {
 		{
 			list($b,$id) = explode("-",$val);
 			$order[] = $id;
-			$sql->db_Update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)."",$this->debug);
+			$sql->update("menus","menu_order = ".$c." WHERE menu_id = ".intval($id)."",$this->debug);
        		$c++;
 		}
 
