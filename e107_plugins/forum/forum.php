@@ -330,7 +330,8 @@ foreach ($forumList['parents'] as $parent)
 	$status = parse_parent($parent);
 	$pVars->PARENTSTATUS = $status;
 
-	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
+//	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
+	$pVars->PARENTNAME = $parent['forum_name'];
 	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
@@ -338,7 +339,7 @@ foreach ($forumList['parents'] as $parent)
 	}
 	else
 	{
-//TODO: Rework the restricted string
+			//TODO: Rework the restricted string
 		foreach($forumList['forums'][$parent['forum_id']] as $f)
 		{
 			if ($f['forum_class'] == e_UC_ADMIN && ADMIN)
