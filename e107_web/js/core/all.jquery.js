@@ -1206,12 +1206,15 @@ $(document).ready(function()
 				$(this).attr("target",'_blank');	
 			}					
 		});
-		
-		
-		
-	
-		
-		
+
+
+
+
+
+	// Store selected textarea.
+	$('.tbox.bbarea').click(function() {
+		storeCaret(this);
+	});
 		
 			
 		
@@ -1443,6 +1446,8 @@ function SyncWithServerTime(serverTime, path, domain)
 	var colord = window.screen.colorDepth;
 	var res = window.screen.width + "x" + window.screen.height;
 	var eself = document.location;
+
+var e107_selectedInputArea;
 
 /* TODO: @SecretR - Object of removal
 // From http://phpbb.com
