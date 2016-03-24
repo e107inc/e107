@@ -188,32 +188,31 @@ if(E107_DEBUG_LEVEL > 0 )
 		protected $listOrder		= 'user_extended_struct_order ASC';
 
 		protected $fields 		= array (
-		 'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'tdClassRight=form-inline&pre=user_ ', 'class' => 'left', 'thclass' => 'left',  ),
-		             'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		             'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		             'user_extended_struct_values' =>   array ( 'title' => "Values", 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-                     'user_extended_struct_default' =>   array ( 'title' => LAN_DEFAULT, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		    'user_extended_struct_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'user_extended_struct_name' =>   array ( 'title' => LAN_NAME, 'type' => 'text', 'data' => 'str', 'readonly'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'tdClassRight=form-inline&pre=user_ ', 'class' => 'left', 'thclass' => 'left',  ),
+		    'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'user_extended_struct_values' =>   array ( 'title' => "Values", 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'user_extended_struct_default' =>   array ( 'title' => LAN_DEFAULT, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
-			'field_include'     => array('title'=> EXTLAN_15, 'tab'=>1, 'type'=>'textarea', 'data'=>false, 'help'=>EXTLAN_51),
-			'field_regex'       => array('title'=> EXTLAN_52, 'tab'=>1, 'type'=>'text', 'data'=>false, 'help'=> EXTLAN_53),
-			'field_regexfail'   => array('title'=> EXTLAN_54, 'tab'=>1,  'type'=>'text', 'data'=>false, 'help'=>EXTLAN_55),
+            'field_include'     => array('title'=> EXTLAN_15, 'tab'=>1, 'type'=>'textarea', 'data'=>false, 'help'=>EXTLAN_51, 'writeParms'=>array()),
+			'field_regex'       => array('title'=> EXTLAN_52, 'tab'=>1, 'type'=>'text', 'data'=>false, 'help'=> EXTLAN_53, 'writeParms'=>array()),
+			'field_regexfail'   => array('title'=> EXTLAN_54, 'tab'=>1,  'type'=>'text', 'data'=>false, 'help'=>EXTLAN_55, 'writeParms'=>array()),
+			'field_userhide' => array('title'=> EXTLAN_49, 'tab'=>1, 'type'=>'boolean', 'data'=>false, 'help'=>EXTLAN_50, 'writeParms'=>array()),
 		    'field_placeholder' => array('title'=>'Placeholder', 'tab'=>1, 'type'=>'text', 'data'=>false, 'writeParms'=>array('size'=>'xlarge')),
+            'field_helptip' => array('title'=>'Help Tip', 'tab'=>1, 'type'=>'text', 'data'=>false, 'writeParms'=>array('size'=>'xlarge')),
 
 
-
-
-		             'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-		             'user_extended_struct_required' =>   array ( 'title' => EXTLAN_4, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		             'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-
-		             'user_extended_struct_parms' =>   array ( 'title' => "Params", 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		              'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		              'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		              'user_extended_struct_signup' =>   array ( 'title' => 'Signup', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		               'user_extended_struct_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		               'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
+		     'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'tab'=>1, 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		     'user_extended_struct_required' =>   array ( 'title' => EXTLAN_18, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		     'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_parms' =>   array ( 'title' => "Params", 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_signup' =>   array ( 'title' => 'Signup', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
 		);
 
 		protected $fieldpref = array('user_extended_struct_name', 'user_extended_struct_text', 'user_extended_struct_type', 'user_extended_struct_read', 'user_extended_struct_write', 'user_extended_struct_required', 'user_extended_struct_applicable');
@@ -223,25 +222,47 @@ if(E107_DEBUG_LEVEL > 0 )
 		);
 
 
+
+		private function make_delimited($var)
+		{
+			$tp = e107::getParser();
+			foreach($var as $k => $v)
+			{
+				$var[$k] = trim($v);
+				$var[$k] = str_replace(",", "[E_COMMA]", $var[$k]);
+				if($var[$k] == "")
+				{
+					unset($var[$k]);
+				}
+			}
+			$ret = implode(",", $var);
+			return $ret;
+		}
+
+
+
 		public function init()
 		{
-			// Set drop-down values (if any).
 
 			if($this->getAction() == 'edit' || $this->getAction() == 'create')
 			{
 				$this->fields['user_extended_struct_type']['title'] = LAN_TYPE;
 			}
 
+			if($this->getAction() == 'edit')
+			{
+				$parms = e107::getDb()->retrieve('user_extended_struct', 'user_extended_struct_parms',"user_extended_struct_id = ".intval($_GET['id']));
+				$tmp = explode('^,^', $parms);
 
+				$this->fields['field_include']['writeParms']['default']     =  $tmp[0];
+				$this->fields['field_regex']['writeParms']['default']       =  $tmp[1];
+				$this->fields['field_regexfail']['writeParms']['default']   =  $tmp[2];
+				$this->fields['field_userhide']['writeParms']['default']    =  $tmp[3];
+				$this->fields['field_placeholder']['writeParms']['default'] =  $tmp[4];
+				$this->fields['field_helptip']['writeParms']['default']     =  $tmp[5];
+			}
 
-
-
-
-
-
-		//	$this->fields['user_extended_struct_parent']['writeParms']['optArray'] = array('user_extended_struct_parent_0','user_extended_struct_parent_1', 'user_extended_struct_parent_2'); // Example Drop-down array.
 			$data = e107::getDb()->retrieve("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC", true);
-		//	$catList = e107::getUserExt()->user_extended_get_categories();
 
 			$opts = array();
 			$opts[0] = EXTLAN_36;
@@ -259,10 +280,41 @@ if(E107_DEBUG_LEVEL > 0 )
 		}
 
 
+		private function compileData($new_data)
+		{
+			$parms = array(
+				$new_data['field_include'],
+				$new_data['field_regex'],
+				$new_data['field_regexfail'],
+				$new_data['field_userhide'],
+				$new_data['field_placeholder'],
+				$new_data['field_helptip'],
+			);
+
+			$new_data['user_extended_struct_parms'] = implode('^,^', $parms);
+
+			if($new_data['user_extended_struct_values']==EUF_DB_FIELD)
+			{
+		        $new_data['user_extended_struct_values'] = array($new_data['table_db'],$new_data['field_id'],$new_data['field_value'],$new_data['field_order']);
+			}
+
+			$new_data['user_extended_struct_values'] = implode(',',$new_data['user_extended_struct_values']);
+
+
+			e107::getMessage()->addInfo(print_a($new_data,true),'default', true);
+
+			return $new_data;
+		}
+
+
 		// ------- Customize Create --------
 
 		public function beforeCreate($new_data, $old_data)
 		{
+			$new_data = $this->compileData($new_data);
+
+
+
 			return $new_data;
 		}
 
@@ -281,6 +333,8 @@ if(E107_DEBUG_LEVEL > 0 )
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
+			$new_data = $this->compileData($new_data);
+
 			return $new_data;
 		}
 
@@ -581,7 +635,7 @@ if(E107_DEBUG_LEVEL > 0 )
 				$i++;
 				$text .= "
 				<span {$id}>
-				<input class='tbox' type='text' name='user_values[]' size='40' value='{$v}' /></span><br />";
+				<input class='tbox' type='text' name='user_extended_struct_values[]' size='40' value='{$v}' /></span><br />";
 			}
 			$text .= "
 			</div>
@@ -1125,7 +1179,7 @@ class users_ext
     protected $catList;
 	protected $catNums;
 
-	function users_ext()
+	function __construct()
 	{
         global $action,$ue;
 
