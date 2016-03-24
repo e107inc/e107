@@ -92,7 +92,7 @@ if(isset($_GET['f']))
 $fVars = new e_vars;
 $gen = new convert;
 
-$fVars->FORUMTITLE = LAN_PLUGIN_FORUM_NAME;
+$fVars->FORUMTITLE = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
 $fVars->THREADTITLE = LAN_FORUM_0002;
 $fVars->REPLYTITLE = LAN_FORUM_0003;
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
@@ -417,7 +417,7 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->FORUMSUBFORUMS = '';
 	
 	
-	
+
 	
 	
 	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
