@@ -1971,6 +1971,8 @@ class e107forum
 
 		$tp = e107::getParser();
 		$frm = e107::getForm();
+
+		$forumTitle = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
 		
 		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
 		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
@@ -1985,7 +1987,7 @@ class e107forum
 			$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
 
 			$search 	= array('{FORUMS_TITLE}', '{FORUMS_HREF}');
-			$replace 	= array(LAN_PLUGIN_FORUM_NAME, e107::url('forum','index'));
+			$replace 	= array($forumTitle, e107::url('forum','index'));
 			$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
 
 			$search 	= array('{PARENT_TITLE}', '{PARENT_HREF}');
@@ -2023,7 +2025,7 @@ class e107forum
 
 			$dfltsep = ' :: ';
 			$BREADCRUMB = "<a class='forumlink' href='".e_HTTP."index.php'>".SITENAME."</a>".$dfltsep.
-			"<a class='forumlink' href='". e107::url('forum','index')."'>".LAN_PLUGIN_FORUM_NAME."</a>".$dfltsep;
+			"<a class='forumlink' href='". e107::url('forum','index')."'>".$forumTitle."</a>".$dfltsep;
 
 			if($forumInfo['sub_parent'])
 			{
@@ -2057,7 +2059,7 @@ class e107forum
 
 		$breadcrumb = array();
 		
-		$breadcrumb[]	= array('text'=> LAN_PLUGIN_FORUM_NAME		, 'url'=> e107::url('forum','index'));
+		$breadcrumb[]	= array('text'=> $forumTitle	, 'url'=> e107::url('forum','index'));
 		
 		if($forumInfo['sub_parent'])
 		{

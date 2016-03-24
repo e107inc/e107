@@ -118,7 +118,7 @@ define("LAN_FORUM_1004", "Starter"); // LAN_54
 define("LAN_FORUM_1005", "Views"); // LAN_56
 
 define("LAN_FORUM_1006", "Important Topics"); // LAN_411 (vf)
-define("LAN_FORUM_1007", "Forum Topics"); // LAN_412 (vf)
+define("LAN_FORUM_1007", "Topics"); // LAN_412 (vf)
 define("LAN_FORUM_1008", "There are no topics in this forum yet."); // LAN_58
 define("LAN_FORUM_1009", "This forum is moderated by"); // LAN_404
 define("LAN_FORUM_1010", "[popular]"); // LAN_395 (vf)
