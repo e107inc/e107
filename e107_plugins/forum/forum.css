@@ -17,6 +17,7 @@
 ul.newforumposts-menu                                    { padding-left: 10px; }
 ul.newforumposts-menu li                                 { margin-bottom: 15px;  }
 
+div.forum-poll-results                                  { padding-left:0 }
 
 @media all and (min-height: 800px) {
     #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }

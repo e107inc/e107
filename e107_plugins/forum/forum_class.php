@@ -1337,13 +1337,15 @@ class e107forum
 			$sql->select('user', 'user_id, user_name','user_admin = 1 ORDER BY user_name ASC');
 			while($row = $sql->fetch())
 			{
-				$this->modArray[$row['user_id']] = $row['user_name'];
+				$this->modArray[$row['user_id']] = $row;
 			}
 		}
 		else
 		{
-			$this->modArray = $this->e107->user_class->get_users_in_class($uclass, 'user_name', true);
+			$this->modArray = e107::getUserClass()->get_users_in_class($uclass, 'user_name', true);
 		}
+
+
 		return $this->modArray;
 	}
 
