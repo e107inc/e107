@@ -71,7 +71,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 		if($results = $sql->gen($qry))
 		{
-			$text = "<ul>";
+			$text = "<ul class='newforumposts-menu'>";
 
 			while($row = $sql->fetch())
 			{
@@ -99,7 +99,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 				}
 
 				$post = strip_tags($tp->toHTML($row['post_entry'], true, 'emotes_off, no_make_clickable', '', $pref['menu_wordwrap']));
-				$post = $tp->text_truncate($post, $this->menuPref['characters'], $this->menuPref['postfix']);
+				$post = $tp->text_truncate($post, varset($this->menuPref['characters'],120), varset($this->menuPref['postfix'],'...'));
 
 				// Count previous posts for calculating proper (topic) page number for the current post.
 				//	$postNum = $sql2->count('forum_post', '(*)', "WHERE post_id <= " . $row['post_id'] . " AND post_thread = " . $row['thread_id'] . " ORDER BY post_id ASC");
@@ -138,7 +138,16 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 			$text = LAN_FORUM_MENU_002;
 		}
 
-		$caption = varset($this->menuPref['caption'][e_LANGUAGE], $this->menuPref['caption']);
+
+		if(isset($this->menuPref['caption']))
+		{
+			$caption = varset($this->menuPref['caption'][e_LANGUAGE], $this->menuPref['caption']);
+		}
+		else
+		{
+			$caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
+		}
+
 		e107::getRender()->tablerender($caption, $text, 'nfp_menu');
 
 	}

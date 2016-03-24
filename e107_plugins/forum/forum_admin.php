@@ -80,7 +80,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 			'opt2'              => array('divider'=>true),
 			'report/list'         => array('caption'=> FORLAN_116, 'perm'=>'P'),
-			'post/list'         => array('caption'=>FORLAN_188, 'perm'=>'P'),
+			'post/list'         => array('caption'=>LAN_PLUGIN_FORUM_LATESTPOSTS, 'perm'=>'P'),
 			'main/prune'		=> array('caption'=> LAN_PRUNE, 'perm' => 'P'),
 			'main/tools'        => array('caption'=>FORLAN_153, 'perm'=>'p')
 

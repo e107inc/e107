@@ -13,6 +13,11 @@
 .forum-attachment-file                                  { margin-top:15px; }
 .forum-user-combo                                       { padding-bottom:5px }
 
+
+ul.newforumposts-menu                                    { padding-left: 10px; }
+ul.newforumposts-menu li                                 { margin-bottom: 15px;  }
+
+
 @media all and (min-height: 800px) {
     #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }
 }
