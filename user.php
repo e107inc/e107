@@ -241,7 +241,7 @@ if (isset($id))
 
 	// --------------------- List Users ------------------------  //TODO Put all of this into a class.
 
-	$users_total= 0;
+	$users_total=  $sql->count("user","(*)", "WHERE user_ban = 0");
 	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON u.user_id = ue.user_extended_id WHERE u.user_ban = 0 ORDER BY u.user_id ".$order." LIMIT ".intval($from).",".intval($records);
 
 	if (!$data = $sql->retrieve($query,true))
@@ -252,7 +252,6 @@ if (isset($id))
 	}
 	else
 	{
-		$users_total = count($data);
 		// $userList = $sql->db_getList();
 
 		$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
