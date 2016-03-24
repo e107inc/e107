@@ -61,7 +61,8 @@ if(isset($_GET['scan']))
 	 echo "<!DOCTYPE html>
 	 <html> 
 	 <head>  	
-	 <title>Results</title>  
+	 <title>Results</title>
+	 <script type='text/javascript' src='https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js'></script>
 	 ".$fi->headerCss()." ".headerjs()."
 	 <body style='height:100%;background-color:#2F2F2F'>\n";
 
@@ -903,12 +904,39 @@ class file_inspector {
 
 		$icon = $this->iconTag[$dir_icon];
 
+		$tp = e107::getParser();
+
+		$imgBlank = $tp->toImage('{e_IMAGE}fileinspector/blank.png', array(
+			'alt'    => '',
+			'legacy' => '{e_IMAGE}fileinspector/',
+			'w'      => 9,
+			'h'      => 9,
+			'class'  => 'c',
+		));
+
+		$imgExpand = $tp->toImage('{e_IMAGE}fileinspector/expand.png', array(
+			'alt'    => '',
+			'legacy' => '{e_IMAGE}fileinspector/',
+			'w'      => 15,
+			'class'  => 'e',
+			'id'     => 'e_' . $dir_id,
+		));
+
+		$imgContract = $tp->toImage('{e_IMAGE}fileinspector/contract.png', array(
+			'alt'    => '',
+			'legacy' => '{e_IMAGE}fileinspector/',
+			'w'      => 15,
+			'class'  => 'e',
+			'id'     => 'e_' . $dir_id,
+		));
+
 		$hide = ($last_expand && $dir_icon != 'folder_core') ? "" : "style='display: none'";
-		$text = "<div class='d' title=\"".$this->getDiz($dir_icon)."\" style='margin-left: ".($level * 8)."px'>";
-		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"ec('".$dir_id."')\"><img src='".e_IMAGE."fileinspector/".($hide ? 'expand.png' : 'contract.png')."' class='e' alt='' id='e_".$dir_id."' /></span>";
-		$text .= "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
-		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$sub_text."</div>";
-		$text .= "</div>";
+
+		$text = '<div class="d" title="' . $this->getDiz($dir_icon) . '" style="margin-left: ' . ($level * 8) . 'px">';
+		$text .= $tree_end ? $imgBlank : '<span onclick="ec(\'' . $dir_id . '\')">' . ($hide ? $imgExpand : $imgContract) . '</span>';
+		$text .= '&nbsp;<span onclick="sh(\'f_' . $dir_id . '\')">' . $icon . '&nbsp;' . $directory . '</span>';
+		$text .= $tree_end ? '' : '<div ' . $hide . ' id="d_' . $dir_id . '">' . $sub_text . '</div>';
+		$text .= '</div>';
 		
 		$this -> files[$dir_id]['.']['icon'] = $dir_icon;
 		
@@ -1555,40 +1583,28 @@ function e_help()
 
 require_once(e_ADMIN.'footer.php');
 
-function headerjs() {
-global $e107;
-$text = "<script type='text/javascript'>
-<!--
-c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
-e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';
-function ec(ecid) {
-	icon = document.getElementById('e_' + ecid).src;
-	if (icon == e) {
-		document.getElementById('e_' + ecid).src = c;
-	} else {
-		document.getElementById('e_' + ecid).src = e;
-	}
+function headerjs()
+{
+	$c = e_IMAGE_ABS . 'fileinspector/contract.png';
+	$e = e_IMAGE_ABS . 'fileinspector/expand.png';
 
-	div = document.getElementById('d_' + ecid).style;
-	if (div.display == 'none') {
-		div.display = '';
-	} else {
-		div.display = 'none';
-	}
+	$text = '<script type="text/javascript">
+function ec(element) {
+	$("#d_"+element).stop().animate({"height": "toggle"}, { duration: 500 });
+	var $img = $("#e_"+element);
+    if ($img.attr("src") == "' . $e . '") {
+        $img.attr("src", "' . $c . '");
+    } else {
+       $img.attr("src", "' . $e . '");
+    }
 }
 
-var hideid = 'initial';
-function sh(showid) {
-	if (hideid != showid) {
-		show = document.getElementById(showid).style;
-		hide = document.getElementById(hideid).style;
-		show.display = '';
-		hide.display = 'none';
-		hideid = showid;
-	}
+function sh(element) {
+	$("#"+element).stop().animate({"height": "toggle"}, { duration: 500 });
 }
-//-->
-</script>
+</script>';
+
+	$text .= "
 <style type='text/css'>
 <!--\n";
 if (vartrue($_POST['regex'])) {
