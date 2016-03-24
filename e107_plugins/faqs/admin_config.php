@@ -74,7 +74,7 @@ class faq_admin extends e_admin_dispatcher
 			'main/create'   => varset($pref['admin_faq_create'],   e_UC_ADMIN),
 			'main/edit'     => varset($pref['admin_faq_edit'],     e_UC_ADMIN),
 			'main/delete'   => varset($pref['admin_faq_delete'],   e_UC_ADMIN),
-			'cat/list'      => check_class($pref['admin_cat_create']) || check_class($pref['admin_cat_edit']) ? e_UC_ADMIN : e_UC_NOBODY,
+			'cat/list'      => check_class($pref['admin_cat_create']) || check_class($pref['admin_cat_edit']) ? e_UC_ADMIN : e_UC_MAINADMIN,
 			'cat/create'    => varset($pref['admin_cat_create'],   e_UC_ADMIN),
 			'cat/edit'      => varset($pref['admin_cat_edit'],     e_UC_ADMIN),
 			'cat/delete'    => varset($pref['admin_cat_delete'],   e_UC_ADMIN),

@@ -234,7 +234,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						if($(this).is(':visible'))
 						{
-							$(this).css('display', 'initial');
+							$(this).css('display', 'block'); //XXX 'initial' broke the default behavior. 
 						}
 					});
 
