@@ -532,7 +532,7 @@ require_once (HEADERF);
 if ($forum->prefs->get('enclose'))
 {
 	$forumTitle = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
-	$ns->tablerender($forumTitle, $forumstring, $mes->render(). array('forum_viewtopic', 'main'));
+	$ns->tablerender($forumTitle, $mes->render().$forumstring,  array('forum_viewtopic', 'main'));
 }
 else
 {
