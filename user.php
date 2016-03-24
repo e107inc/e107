@@ -303,6 +303,7 @@ function renderuser($uid, $mode = "verbose")
 		}
 	}
 	
+	$user_shortcodes->setVars($user);
 
 
 	if($mode == 'verbose')

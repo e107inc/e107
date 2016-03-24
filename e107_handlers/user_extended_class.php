@@ -1123,7 +1123,7 @@ class e107_user_extended
 	 * @param $type
 	 * @return array|string
 	 */
-	function renderValue($value, $type)
+	function renderValue($value, $type='')
 	{
 
 		//TODO FIXME Add more types.
