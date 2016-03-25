@@ -9,32 +9,152 @@
  */
 
 require_once('../class2.php');
+
 if (!getperms('4'))
 {
 	e107::redirect('admin');
 	exit;
 }
+
+
+include_lan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_' . e_PAGE);
+
+if(varset($_GET['mode']) == "ajax")
+{
+	// Construct action string.
+	$action = varset($_GET['mode']) . '/' . varset($_GET['action']);
+
+	switch($action)
+	{
+		case 'ajax/changeTable':
+			$tableName = varset($_POST['table_db'], null);
+
+			if($tableName)
+			{
+				$sql = e107::getDb();
+
+				$sub_action = '';
+
+				if(e_QUERY)
+				{
+					$tmp = explode(".", e_QUERY);
+					$action = $tmp[0];
+					$sub_action = varset($tmp[1], '');
+					$id = varset($tmp[2], 0);
+					unset($tmp);
+				}
+
+				if($sql->select('user_extended_struct', '*', "user_extended_struct_id = '{$sub_action}'"))
+				{
+					$current = $sql->fetch();
+				}
+				else
+				{
+					$current = 'new';
+				}
+
+				$currVal = $current['user_extended_struct_values'];
+				$curVals = explode(",", varset($currVal));
+
+				// Ajax URL for "Table" dropdown.
+				$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
+
+				$text = "<table style='width:70%;margin-left:0;'><tr><td>";
+				$text .= EXTLAN_62 . "</td><td style='70%'>\n";
+				$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
+				$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+				$result = e107::getDb()->tables();
+				foreach($result as $row2)
+				{
+					$fld = $row2;
+					$selected = (varset($_POST['table_db'], '') == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+					$text .= "<option value=\"" . $fld . "\" $selected>" . $fld . "</option>\n";
+				}
+				$text .= "</select></td></tr>";
+
+				if($_POST['table_db'] || $curVals[0])
+				{
+					// Field ID.
+					$text .= "<tr><td>" . EXTLAN_63 . "</td><td>";
+					$text .= "<select style='width:99%' class='tbox e-select' name='field_id'>";
+					$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
+					{
+						while($row3 = $sql->fetch())
+						{
+							$field_name = $row3['Field'];
+							$selected = ($curVals[1] == $field_name) ? " selected='selected' " : "";
+							$text .= "<option value=\"$field_name\" $selected>" . $field_name . "</option>";
+						}
+					}
+					$text .= "</select></td></tr><tr><td>";
+
+					// Display Value.
+					$text .= EXTLAN_64 . "</td><td>";
+					$text .= "<select style='width:99%' class='tbox e-select' name='field_value'>";
+					$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
+					{
+						while($row3 = $sql->fetch())
+						{
+							$field_name = $row3['Field'];
+							$selected = ($curVals[2] == $field_name) ? " selected='selected' " : "";
+							$text .= "<option value=\"$field_name\" $selected>" . $field_name . "</option>";
+						}
+					}
+					$text .= "</select></td></tr><tr><td>";
+
+					// Order.
+					$text .= LAN_ORDER . "</td><td>";
+					$text .= "<select style='width:99%' class='tbox e-select' name='field_order'>";
+					$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
+					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
+					{
+						while($row3 = $sql->fetch())
+						{
+							$field_name = $row3['Field'];
+							$selected = ($curVals[3] == $field_name) ? " selected='selected' " : "";
+							$text .= "<option value=\"$field_name\" $selected>" . $field_name . "</option>";
+						}
+					}
+					$text .= "</select></td></tr>";
+				}
+
+				$text .= "</table>";
+
+
+				$ajax = e107::getAjax();
+				$commands = array();
+				$commands[] = $ajax->commandInsert('#db_mode', 'html', $text);
+				$ajax->response($commands);
+				exit;
+			}
+
+			break;
+	}
+}
+
 if (isset($_POST['cancel']))
 {
 	header('location:'.e_SELF);
 	exit;
 }
+
 if (isset($_POST['cancel_cat']))
 {
 	header("location:".e_SELF."?cat");
 	exit;
 }
 
+function js()
+{
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-
-	function js()
-	{
-
-		//FIXME
-		include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
-		$text = "
+	//FIXME
+	include_once(e_LANGUAGEDIR . e_LANGUAGE . "/lan_user_extended.php");
+	$text = "
 
 
 		function changeHelp(type) {
@@ -44,19 +164,19 @@ if (isset($_POST['cancel_cat']))
 
 
 		";
-		for($i=1; $i<=9; $i++)
-		{
-			$type_const = "UE_LAN_{$i}";
-			$help_const = "\"".str_replace("/","\/","EXTLAN_HELP_{$i}")."\"";
-			$text .= "
+	for($i = 1; $i <= 9; $i++)
+	{
+		$type_const = "UE_LAN_{$i}";
+		$help_const = "\"" . str_replace("/", "\/", "EXTLAN_HELP_{$i}") . "\"";
+		$text .= "
 				if(type == \"{$i}\")
 				{
-					xtype=\"".defset($type_const)."\";
-					what=\"".defset($help_const)."\";
+					xtype=\"" . defset($type_const) . "\";
+					what=\"" . defset($help_const) . "\";
 				}";
-		}
+	}
 
-		$text .= "
+	$text .= "
 		//	document.getElementById('ue_type').innerHTML=''+xtype+'';
 		//	document.getElementById('ue_help').innerHTML=''+what+'';
 
@@ -69,15 +189,12 @@ if (isset($_POST['cancel_cat']))
 			}
 			   // ]]>
 		}
+	";
 
+	return $text;
+}
 
-";
-
-		return $text;
-	}
-
-
-	e107::js('inline', js());
+e107::js('inline', js());
 
 
 
@@ -630,12 +747,16 @@ if(E107_DEBUG_LEVEL > 0 )
 
 
 
-			$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
+			$db_hide = ($current['user_extended_struct_type'] == 4) ? "block" : "none";
 
-			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
-			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
-			$text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
-            <option value='' class='caption'>".EXTLAN_61."</option>\n";
+			// Ajax URL for "Table" dropdown.
+			$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
+
+			$text .= "<div id='db_mode' style='display:{$db_hide}'>";
+			$text .= "<table style='width:70%;margin-left:0;'><tr><td>";
+			$text .= EXTLAN_62 . "</td><td style='70%'>";
+			$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
+			$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
 
 			$result = e107::getDb()->tables();
 
@@ -876,7 +997,7 @@ if ($tmp)
 	$qs = explode(".", $tmp[0]);
 	$_id = intval($qs[0]);
 	$_order = intval($qs[1]);
-	$_parent = intval($qs[2]); 
+	$_parent = intval($qs[2]);
 	if (($_id > 0) && ($_order > 0) /*&& ($_parent > 0)*/)
 	{
 		$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
@@ -962,9 +1083,9 @@ if (isset($_POST['add_field']))
 		}
 		else
 		{
-		
+
 				$result = $mes->addAuto($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
-		
+
 		//	$result = $mes->addAuto($ue->user_extended_add($ue_field_name, $tp->toDB($_POST['user_text']), intval($_POST['user_type']), $new_parms, $new_values, $tp->toDB($_POST['user_default']), intval($_POST['user_required']), intval($_POST['user_read']), intval($_POST['user_write']), intval($_POST['user_applicable']), 0, intval($_POST['user_parent'])), 'insert', EXTLAN_29, false, false);
 			if(!$result)
 			{
@@ -1018,9 +1139,9 @@ if (isset($_POST['update_category']))
 			$sql->db_Update(
 				"user_extended_struct",
 				"user_extended_struct_name = '{$name}', user_extended_struct_text='".$tp->toDB($_POST['user_text'])."', user_extended_struct_read = '".intval($_POST['user_read'])."', user_extended_struct_write = '".intval($_POST['user_write'])."', user_extended_struct_applicable = '".intval($_POST['user_applicable'])."' WHERE user_extended_struct_id = '{$sub_action}'"),
-				'update', 
+				'update',
 				EXTLAN_43,
-				false, 
+				false,
 				false
 		);
 		if($result)
@@ -1029,7 +1150,7 @@ if (isset($_POST['update_category']))
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 	}
-	else 
+	else
 	{
 		$message = EXTLAN_80;
 		$message_type = E_MESSAGE_ERROR;
@@ -1049,7 +1170,7 @@ if (isset($_POST['add_category']))
 			e107::getCache()->clear_sys('user_extended_struct', true);
 		}
 	}
-	else 
+	else
 	{
 		$message = EXTLAN_80;
 		$message_type = E_MESSAGE_ERROR;
@@ -1248,7 +1369,7 @@ class users_ext
         $ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 		$extendedList = $ue->user_extended_get_fields();
 
         $emessage = e107::getMessage();
@@ -1317,10 +1438,10 @@ class users_ext
 							$text .= "
 						  	</td>
 							<td class='center' style='width:10%;white-space:nowrap'>
-							
+
 							<a class='btn btn-default' style='text-decoration:none' href='".e_SELF."?editext.".$id."'>".ADMIN_EDIT_ICON."</a>
 							".$frm->submit_image('eudel['.$name.']',$id, 'delete',  LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
-		 					
+
 		 					// ."<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='eudel[".$name."]' src='".ADMIN_DELETE_ICON_PATH."' value='".$id."' onclick='return confirm(\"".EXTLAN_27."\")' />
 							$text .= "</td>
 								</tr>
@@ -1351,13 +1472,13 @@ class users_ext
 	function show_extended($current = '')  // Show Add fields List.
 	{
         global $ue, $curtype,$mySQLdefaultdb, $action, $sub_action;
-        
+
 		$sql = e107::getDb();
 		$frm = e107::getForm();
 		$ns = e107::getRender();
 		$tp = e107::getParser();
-		
-		
+
+
  			if($current == 'new')
 			{
 					$mode = 'new';
@@ -1469,12 +1590,16 @@ class users_ext
 
 
 
-       		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
+		$db_hide = ($current['user_extended_struct_type'] == 4) ? "block" : "none";
 
-			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
-			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
-            $text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox e-select' name='table_db' onchange=\"this.form.submit()\" >
-            <option value='' class='caption'>".EXTLAN_61."</option>\n";
+		// Ajax URL for "Table" dropdown.
+		$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
+
+		$text .= "<div id='db_mode' style='display:{$db_hide}'>";
+		$text .= "<table style='width:70%;margin-left:0;'><tr><td>";
+		$text .= EXTLAN_62 . "</td><td style='70%'>";
+		$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
+		$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
 
 
 			$result = e107::getDb()->tables();
@@ -1495,7 +1620,7 @@ class users_ext
 			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
-			
+
 			if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 			{
 		   		while($row3 = $sql->fetch())
@@ -1510,7 +1635,7 @@ class users_ext
 			$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
-			
+
 			if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 			{
 		   		while($row3 = $sql->fetch())
@@ -1525,7 +1650,7 @@ class users_ext
 			$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
 			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
-			
+
 			if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
 			{
 		   		while($row3 = $sql->fetch())
@@ -1803,7 +1928,7 @@ class users_ext
 		<br /><span class='field-help'>".EXTLAN_11."</span>
 		</td>
 		</tr>
-		
+
 		<tr>
 		<td>".EXTLAN_31.":</td>
 		<td colspan='3'>
@@ -1811,7 +1936,7 @@ class users_ext
 		<br /><span class='field-help'>".EXTLAN_32."</span>
 		</td>
 		</tr>
-		
+
 		<tr>
 		<td>".EXTLAN_5."</td>
 		<td colspan='3'>
@@ -1861,7 +1986,7 @@ class users_ext
 		}
 		$var['main']['text'] = EXTLAN_34;
 		$var['main']['link'] = e_SELF;
-		
+
 		$var['pre']['text'] = EXTLAN_45;
 		$var['pre']['link'] = e_SELF."?pre";
 
@@ -1871,7 +1996,7 @@ class users_ext
 		$var['cat']['text'] = EXTLAN_35;
 		$var['cat']['link'] = e_SELF."?cat";
 
-	
+
 
 		show_admin_menu(EXTLAN_9, $action, $var);
 	}
@@ -1905,7 +2030,7 @@ class users_ext
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
+
 
 		// Get list of current extended fields
 		$curList = $ue->user_extended_get_fieldlist();
@@ -1993,7 +2118,7 @@ class users_ext
 		$val = (!$active) ? EXTLAN_59 : EXTLAN_60;
 		$type = (!$active) ? 'activate' : 'deactivate';
 		$style = (!$active) ? 'other' : 'delete';
-     
+
 		$txt .= "
 		<td class='center last'>";
         $txt .= $frm->admin_button($type."[".$var['user_extended_struct_name']."]", $val, $style );
@@ -2102,7 +2227,7 @@ class users_ext
 		// $user->show_options($action);
 		$ac = e_QUERY;
 		$action = vartrue($ac,'main');
-		
+
 		users_ext::show_options($action);
 		if($action == 'editext' || $action == 'continue')
 		{

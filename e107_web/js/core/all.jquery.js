@@ -234,7 +234,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						if($(this).is(':visible'))
 						{
-							$(this).css('display', 'block'); //XXX 'initial' broke the default behavior. 
+							if($this.hasClass('e-expandit-inline'))
+							{
+								$(this).css('display', 'initial');
+							}
+							else
+							{
+								$(this).css('display', 'block'); //XXX 'initial' broke the default behavior.
+							}
 						}
 					});
 
@@ -402,13 +409,13 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			options.target = "#" + options.target;
 		}
 
-		var form = $element.closest("form").attr('id');
-		var data = $('#' + form).serialize();
+		var form = $element.closest("form");
+		var data = form.serialize() || '';
 
 		$.ajax({
 			type: options.type || 'POST',
 			url: options.url,
-			data: data || '',
+			data: data,
 			complete: function ()
 			{
 				if($loadingImage)
