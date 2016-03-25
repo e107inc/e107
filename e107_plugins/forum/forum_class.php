@@ -536,6 +536,9 @@ class e107forum
 				$this->permList[$key.'_list'] = implode(',', array_keys($tmp));
 			}
 		}
+
+
+		// print_a($this->permList);
 	}
 
 	

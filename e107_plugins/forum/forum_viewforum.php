@@ -244,13 +244,11 @@ if ($pages)
 	}
 }
 
-if($forum->checkPerm($forumId, 'post'))
+if($forum->checkPerm($forumId, 'thread')) //new thread access only.
 {
-
 	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $forumId;
-//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $forumId));
 	$fVars->NEWTHREADBUTTON = "<a href='".$ntUrl."'>".IMAGE_newthread.'</a>';
-	$fVars->NEWTHREADBUTTONX = newthreadjump($ntUrl); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
+	$fVars->NEWTHREADBUTTONX = newthreadjump($ntUrl);
 }
 
 if(!BOOTSTRAP)
@@ -927,7 +925,9 @@ function fpages($thread_info, $replies)
 function newthreadjump($url)
 {
 	global $forum;
-	$jumpList = $forum->forumGetAllowed('view');	
+	$jumpList = $forum->forumGetAllowed('view');
+
+
 	$text = '<div class="btn-group">
     <a href="'.$url.'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
