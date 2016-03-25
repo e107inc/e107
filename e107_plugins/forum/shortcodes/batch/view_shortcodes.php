@@ -11,12 +11,15 @@ if (!defined('e107_INIT')) { exit; }
 class plugin_forum_view_shortcodes extends e_shortcode
 {
 	protected $e107;
+	protected $defaultImgAttachSize = false;
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->e107 = e107::getInstance();
 		$this->forum = 	new e107forum();
+
+		$this->defaultImgAttachSize = e107::pref('forum','maxwidth',false); // don't resize here if set to 0.
 	}
 
 	function sc_top($parm='')
@@ -105,6 +108,12 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$txt = '';
 		
 			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+
+
+			if(!empty($this->defaultImgAttachSize))
+			{
+				$tp->thumbWidth($this->defaultImgAttachSize); // set the attachment size.
+			}
 			//print_a($attachArray);
 
 			foreach($attachArray as $type=>$vals)

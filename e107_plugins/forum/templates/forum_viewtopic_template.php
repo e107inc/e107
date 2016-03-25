@@ -331,7 +331,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									<li id='post-{POSTID}' class='forum-viewtopic-post'>
 										<div class='hidden-xs row row-fluid btn-navbar navbar-btn'>
 
-
+												{SETIMAGE: w=100&h=0&crop=0}
 												<div class='col-xs-2 span2 left text-left'>
 													<div class='row'>
 														<div class='col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
