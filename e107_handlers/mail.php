@@ -210,6 +210,7 @@ class e107Email extends PHPMailer
 
 		$this->CharSet = 'utf-8';
 		$this->SetLanguage(CORE_LC);
+		$smtpPort = 465;
 
 		if (($overrides === FALSE) || !is_array($overrides))
 		{
@@ -220,8 +221,15 @@ class e107Email extends PHPMailer
 		{
 			if (!isset($overrides[$k])) $overrides[$k] = $pref[$k];
 		}
-		
-		
+
+
+		if(strpos($overrides['smtp_server'],':')!== false)
+		{
+			list($smtpServer,$smtpPort) = explode(":", $overrides['smtp_server']);
+			$overrides['smtp_server'] = $smtpServer;
+		}
+
+
 		$this->pause_amount = varset($pref['mail_pause'], 10);
 		$this->pause_time =  varset($pref['mail_pausetime'], 1);
 		$this->allow_html = varset($pref['mail_sendstyle'],'textonly') == 'texthtml' ? true : 1;
@@ -285,11 +293,11 @@ class e107Email extends PHPMailer
 					{
 						case 'TLS' :
 							$this->SMTPSecure = 'tls';
-							$this->Port = 465;		// Can also use port 587, and maybe even 25
+							$this->Port = $smtpPort;		// Can also use port 587, and maybe even 25
 							break;
 						case 'SSL' :
 							$this->SMTPSecure = 'ssl';
-							$this->Port = 465;
+							$this->Port = $smtpPort;
 							break;
 						default :
 							if ($this->debug) echo "Invalid option: {$smtp_options['secure']}<br />";
@@ -1027,8 +1035,9 @@ class e107Email extends PHPMailer
 
 		$this->logLine('Error info: '.$this->ErrorInfo);
 		// Error sending email
-		$e107 = e107::getInstance();
-		$e107->admin_log->e_log_event(3,debug_backtrace(),"MAIL","Send Failed",$this->ErrorInfo,FALSE,LOG_TO_ROLLING);
+
+
+		e107::getLog()->e_log_event(3,debug_backtrace(),"MAIL","Send Failed",$this->ErrorInfo,FALSE,LOG_TO_ROLLING);
 		$this->TotalErrors++;
 		$this->closeLog();
 		return $this->ErrorInfo;
@@ -1211,8 +1220,8 @@ class e107Exception extends Exception
     public function __construct($message = '', $code = 0) 
 	{
         parent::__construct($message, $code);
-		$e107 = e107::getInstance();
-		$e107->admin_log->e_log_event(10,
+
+		e107::getLog()->e_log_event(10,
 									$this->getFile().'|@'.$this->getLine(),
 									'EXCEPT',
 									$this->getCode().':'.$this->getMessage(),
