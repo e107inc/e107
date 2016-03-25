@@ -59,7 +59,7 @@ if(varset($_GET['mode']) == "ajax")
 				// Ajax URL for "Table" dropdown.
 				$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
 
-				$text = "<table style='width:70%;margin-left:0;'><tr><td>";
+				$text = "<table class='table table-striped table-bordered' style='width:70%;margin-left:0;'><tr><td>";
 				$text .= EXTLAN_62 . "</td><td style='70%'>\n";
 				$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
 				$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
@@ -151,13 +151,64 @@ if (isset($_POST['cancel_cat']))
 
 function js()
 {
-
-	//FIXME
 	include_once(e_LANGUAGEDIR . e_LANGUAGE . "/lan_user_extended.php");
-	$text = "
+
+	$text =  "
+
+	$('.e-select').change(function(e){
+			var type = $(this).val();
+
+			if(type == 4)
+			{
+				$('#db_mode').show();
+				$('#values').hide();
+			}
+			else if(type == 2 || type == 3 || type == 9 || type == 10)
+			{
+				$('#db_mode').hide();
+	            $('#values').show();
+			}
+			else
+			{
+
+	            $('#db_mode').hide();
+	            $('#values').hide();
+
+			}
+
+		 	";
+
+	for($i = 1; $i <= 9; $i++)
+	{
+		$type_const = "UE_LAN_{$i}";
+		$help_const = "\"" . str_replace("/", "\/", "EXTLAN_HELP_{$i}") . "\"";
+		$text .= "
+				if(type == \"{$i}\")
+				{
+					xtype=\"" . defset($type_const) . "\";
+					what=\"" . defset($help_const) . "\";
+				}";
+	}
+
+
+	$text .= "
+	//	$('#ue_type').innerHTML=''+xtype+'';
+	//	$('#ue_help').innerHTML=''+what+''
+
+		 	console.log(type);
+		 	return false;
+		});
+	";
+
+	return $text;
+	//FIXME
+/*
+	$text .= "
 
 
 		function changeHelp(type) {
+
+			return;
 	 //<![CDATA[
 		var ftype;
 		var helptext;
@@ -191,10 +242,10 @@ function js()
 		}
 	";
 
-	return $text;
+	return $text;*/
 }
 
-e107::js('inline', js());
+e107::js('footer-inline', js());
 
 
 
@@ -210,13 +261,6 @@ e107::js('inline', js());
 
 
 
-
-
-
-if(E107_DEBUG_LEVEL > 0 )
-{
-
-	e107::getMessage()->addDebug("DEBUG is active. These pages are experimental");
 
 
 	class user_extended_adminArea extends e_admin_dispatcher
@@ -325,10 +369,10 @@ if(E107_DEBUG_LEVEL > 0 )
 
 
 		      'user_extended_struct_required' =>   array ( 'title' => EXTLAN_18, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		     'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		     'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'filter'=>true, 'batch'=>true, 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_parms' =>   array ( 'title' => "Params", 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-             'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-             'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int',  'filter'=>true, 'batch'=>true,'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'filter'=>true, 'batch'=>true, 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_signup' =>   array ( 'title' => 'Signup', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
@@ -392,15 +436,20 @@ if(E107_DEBUG_LEVEL > 0 )
 				$new_data['field_helptip'],
 			);
 
-			$new_data['user_extended_struct_parms'] = implode('^,^', $parms);
+			if(isset($new_data['field_include']))
+			{
+				$new_data['user_extended_struct_parms'] = implode('^,^', $parms);
+			}
 
 			if($new_data['user_extended_struct_values']==EUF_DB_FIELD)
 			{
 		        $new_data['user_extended_struct_values'] = array($new_data['table_db'],$new_data['field_id'],$new_data['field_value'],$new_data['field_order']);
 			}
 
-			$new_data['user_extended_struct_values'] = implode(',',$new_data['user_extended_struct_values']);
-
+			if(isset($new_data['user_extended_struct_values']))
+			{
+				$new_data['user_extended_struct_values'] = implode(',',$new_data['user_extended_struct_values']);
+			}
 
 		//	e107::getMessage()->addInfo(print_a($new_data,true),'default', true);
 
@@ -551,7 +600,7 @@ if(E107_DEBUG_LEVEL > 0 )
 
 
 			return $txt;
-			$ns->tablerender(EXTLAN_9.SEP.EXTLAN_56,$emessage->render(). $txt);
+		//	$ns->tablerender(EXTLAN_9.SEP.EXTLAN_56,$emessage->render(). $txt);
 
 		}
 
@@ -633,12 +682,15 @@ if(E107_DEBUG_LEVEL > 0 )
 				case 'read': // List Page
 					$ext = $this->getController()->getListModel()->getData();
 
+
+				//	return print_a($ext,true);
+					$ext['user_extended_struct_required'] = 0; // so the form can be posted.
 					return e107::getUserExt()->user_extended_edit($ext,$ext['user_extended_struct_default']);
 				//	reutrn e107::getParser()>toHTML(deftrue($ext['user_extended_struct_text'], $ext['user_extended_struct_text']), FALSE, "defs")
 					break;
 
 				case 'write': // Edit Page
-					$text = "<select onchange='changeHelp(this.value)' class='tbox e-select' name='user_type' id='user_type'>";
+					$text = "<select class='tbox e-select' name='user_type' id='user_type'>";
 					foreach(e107::getUserExt()->user_extended_types as $key => $val)
 					{
 						$selected = ($curVal == $key) ? " selected='selected'": "";
@@ -720,7 +772,15 @@ if(E107_DEBUG_LEVEL > 0 )
 
 			$current = $this->getController()->getModel()->getData();
 
-			$val_hide = ($current['user_extended_struct_type'] != 4) ? "visible" : "none";
+			$type = intval($current['user_extended_struct_type']);
+
+			$val_hide = ($type != 4 && $type !=1 ) ? "visible" : "none";
+
+			if($type == 0)
+			{
+				$val_hide = 'none';
+			}
+// return print_a($type,true);		//	return print_a($current,true);
 
 			$text = "<div id='values' style='display:$val_hide'>\n";
 			$text .= "<div id='value_container' >\n";
@@ -741,7 +801,14 @@ if(E107_DEBUG_LEVEL > 0 )
 			$text .= "
 			</div>
 			<input type='button' class='btn btn-primary' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
-			<br /><span class='field-help'>".EXTLAN_17."</span></div>";
+			<br /><span class='field-help'>".EXTLAN_17."</span>";
+
+				$text .= "<div style='margin-top:10px'>".$frm->checkbox('sort_user_values',1, false, "Sort values")."</div>";
+			$text .= "</div>";
+
+
+
+
 // End of Values. --------------------------------------
 
 
@@ -753,7 +820,7 @@ if(E107_DEBUG_LEVEL > 0 )
 			$ajaxGetTableSrc = e_SELF . '?mode=ajax&action=changeTable';
 
 			$text .= "<div id='db_mode' style='display:{$db_hide}'>";
-			$text .= "<table style='width:70%;margin-left:0;'><tr><td>";
+			$text .= "<table class='table table-striped table-bordered' style='width:70%;margin-left:0;'><tr><td>";
 			$text .= EXTLAN_62 . "</td><td style='70%'>";
 			$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
 			$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
@@ -823,7 +890,7 @@ if(E107_DEBUG_LEVEL > 0 )
 			$text .= "</table></div>";
 // ---------------------------------------------------------
 
-			$text .= "<div style='margin-top:10px'>".$frm->checkbox('sort_user_values',1, false, "Sort values")."</div>";
+
 
 			return $text;
 
@@ -953,7 +1020,7 @@ if(E107_DEBUG_LEVEL > 0 )
 
 	exit;
 
-}
+
 
 
 // -------------------------------------- Old Code --------------------------------------
