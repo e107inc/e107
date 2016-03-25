@@ -450,6 +450,14 @@ class e_array {
 	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
 
 
+	    if(trim($ArrayData) == 'Array') // Something went wrong with storage.
+        {
+            $debug = debug_backtrace(false);
+            e107::getMessage()->addDebug("Bad Array Storage found: ". print_a($debug,true));
+
+            return array();
+        }
+
         $data = "";
         $ArrayData = '$data = '.$ArrayData.';';
 
