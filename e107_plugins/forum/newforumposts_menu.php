@@ -139,9 +139,9 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		}
 
 
-		if(isset($this->menuPref['caption']))
+		if(!empty($this->menuPref['caption']))
 		{
-			$caption = varset($this->menuPref['caption'][e_LANGUAGE], $this->menuPref['caption']);
+			$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
 		}
 		else
 		{

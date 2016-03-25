@@ -946,8 +946,14 @@ class e_media
 		{
 		    $icons[] = $prefix.substr($match[1],3);
 		}
-			
+
+		if(empty($icons)) // failed to produce a result so don't cache it. .
+		{
+			return array();
+		}
+
 		$data = e107::serialize($icons);
+
 		$cache->set($type,$data,true);		
 		return $icons; 
 	
