@@ -153,7 +153,7 @@ define("FORLAN_131", "to set max file size, allowed types etc");
 define("FORLAN_132", "Emphasize Sticky Threads");
 define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
 define("FORLAN_134", "Maximum width of uploaded image");
-define("FORLAN_135", "Leave blank to disable auto resizing of images");
+define("FORLAN_135", "Leave blank to let the theme template decide.");
 define("FORLAN_136", "Create link to full size image");
 define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image. If disabled, original image will be discarded");
 define("FORLAN_138", "Prune these forums");
