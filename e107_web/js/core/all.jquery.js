@@ -234,7 +234,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						if($(this).is(':visible'))
 						{
-							$(this).css('display', 'block'); //XXX 'initial' broke the default behavior. 
+							if($this.hasClass('e-expandit-inline'))
+							{
+								$(this).css('display', 'initial');
+							}
+							else
+							{
+								$(this).css('display', 'block'); //XXX 'initial' broke the default behavior.
+							}
 						}
 					});
 
