@@ -194,18 +194,20 @@ if(E107_DEBUG_LEVEL > 0 )
 		    'user_extended_struct_text' =>   array ( 'title' => EXTLAN_79, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_type' =>   array ( 'title' => EXTLAN_2, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'user_extended_struct_values' =>   array ( 'title' => "Values", 'type' => 'method', 'nolist'=>true, 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-            'user_extended_struct_default' =>   array ( 'title' => LAN_DEFAULT, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+            'user_extended_struct_default' =>   array ( 'title' => EXTLAN_16, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+             'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'tab'=>1, 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 
-            'field_include'     => array('title'=> EXTLAN_15, 'tab'=>1, 'type'=>'textarea', 'data'=>false, 'help'=>EXTLAN_51, 'writeParms'=>array()),
-			'field_regex'       => array('title'=> EXTLAN_52, 'tab'=>1, 'type'=>'text', 'data'=>false, 'help'=> EXTLAN_53, 'writeParms'=>array()),
-			'field_regexfail'   => array('title'=> EXTLAN_54, 'tab'=>1,  'type'=>'text', 'data'=>false, 'help'=>EXTLAN_55, 'writeParms'=>array()),
-			'field_userhide' => array('title'=> EXTLAN_49, 'tab'=>1, 'type'=>'boolean', 'data'=>false, 'help'=>EXTLAN_50, 'writeParms'=>array()),
-		    'field_placeholder' => array('title'=>'Placeholder', 'tab'=>1, 'type'=>'text', 'data'=>false, 'writeParms'=>array('size'=>'xlarge')),
-            'field_helptip' => array('title'=>'Help Tip', 'tab'=>1, 'type'=>'text', 'data'=>false, 'writeParms'=>array('size'=>'xlarge')),
+			// These are combined into user_extended_struct_parms on submit.
+             'field_placeholder' => array('title'=>'Placeholder', 'tab'=>1, 'type'=>'text', 'data'=>false, 'writeParms'=>array('size'=>'xxlarge')),
+            'field_helptip'     => array('title'=>'Help Tip', 'tab'=>1, 'type'=>'text', 'data'=>false, 'writeParms'=>array('size'=>'xxlarge')),
+
+            'field_include'     => array('title'=> EXTLAN_15, 'tab'=>1, 'type'=>'textarea', 'data'=>false, 'help'=>EXTLAN_51, 'writeParms'=>array('size'=>'xxlarge')),
+			'field_regex'       => array('title'=> EXTLAN_52, 'tab'=>1, 'type'=>'text', 'data'=>false, 'help'=> EXTLAN_53, 'writeParms'=>array('size'=>'xxlarge')),
+			'field_regexfail'   => array('title'=> EXTLAN_54, 'tab'=>1,  'type'=>'text', 'data'=>false, 'help'=>EXTLAN_55, 'writeParms'=>array('size'=>'xxlarge')),
+			'field_userhide'    => array('title'=> EXTLAN_49, 'tab'=>1, 'type'=>'boolean', 'data'=>false, 'help'=>EXTLAN_50, 'writeParms'=>array('size'=>'xxlarge')),
 
 
-		     'user_extended_struct_parent' =>   array ( 'title' => LAN_CATEGORY, 'type' => 'dropdown', 'tab'=>1, 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-		     'user_extended_struct_required' =>   array ( 'title' => EXTLAN_18, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		      'user_extended_struct_required' =>   array ( 'title' => EXTLAN_18, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		     'user_extended_struct_applicable' =>   array ( 'title' => EXTLAN_5, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_parms' =>   array ( 'title' => "Params", 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_read' =>   array ( 'title' =>EXTLAN_6, 'type' => 'userclass', 'data' => 'int', 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -220,24 +222,6 @@ if(E107_DEBUG_LEVEL > 0 )
 
 		protected $prefs = array(
 		);
-
-
-
-		private function make_delimited($var)
-		{
-			$tp = e107::getParser();
-			foreach($var as $k => $v)
-			{
-				$var[$k] = trim($v);
-				$var[$k] = str_replace(",", "[E_COMMA]", $var[$k]);
-				if($var[$k] == "")
-				{
-					unset($var[$k]);
-				}
-			}
-			$ret = implode(",", $var);
-			return $ret;
-		}
 
 
 
@@ -301,7 +285,7 @@ if(E107_DEBUG_LEVEL > 0 )
 			$new_data['user_extended_struct_values'] = implode(',',$new_data['user_extended_struct_values']);
 
 
-			e107::getMessage()->addInfo(print_a($new_data,true),'default', true);
+		//	e107::getMessage()->addInfo(print_a($new_data,true),'default', true);
 
 			return $new_data;
 		}

@@ -714,10 +714,23 @@ class e107_user_extended
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
 		$required	= vartrue($struct['user_extended_struct_required']) == 1 ? "required"  : "";
 		$fid		= $frm->name2id($fname);
-		
+		$placeholder = (!empty($parms[4])) ? "placeholder=\"".$tp->toAttribute($parms[4])."\"" : "";
+
+		$class = "form-control tbox";
+
+		if(!empty($parms[5]))
+		{
+			$class .= " e-tip";
+			$title = "title=\"".$tp->toAttribute($parms[5])."\"";
+		}
+		else
+		{
+			$title = '';
+		}
+
 		if(strpos($include, 'class') === FALSE)
 		{
-			$include .= " class='form-control tbox' ";
+			$include .= " class='".$class."' ";
 		}
 
 
@@ -725,7 +738,7 @@ class e107_user_extended
 		{
 			case EUF_TEXT :  //textbox
 			case EUF_INTEGER :  //integer
-		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' value='{$curval}' {$include} {$required} />";
+		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' {$title} value='{$curval}' {$include} {$required} {$placeholder} />";
 			
 		  		return $ret;
 		  	break;
@@ -777,6 +790,8 @@ class e107_user_extended
 				$curval = e107::unserialize($curval);
 			}
 
+
+
 			return e107::getForm()->checkboxes($fname.'[]',$choices, $curval, array('useLabelValues'=>1));
 /*
 
@@ -819,7 +834,7 @@ class e107_user_extended
 		break;
 
 		case EUF_DROPDOWN : //dropdown
-		  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} >\n";
+		  $ret = "<select {$include} id='{$fid}' name='{$fname}' {$required} {$title} >\n";
 		  $ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 		  foreach($choices as $choice)
 		  {
@@ -880,7 +895,7 @@ class e107_user_extended
 				break;
 
 			case EUF_TEXTAREA : //textarea
-				return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} >{$curval}</textarea>";
+				return "<textarea id='{$fid}' {$include} name='{$fname}'  {$required} {$title}>{$curval}</textarea>";
 				break;
 
 			case EUF_DATE : //date
