@@ -1863,6 +1863,99 @@ class e107
 		$jshandler->resetDependency();
 	}
 
+
+	/**
+	 * Throw log/info/warnings/errors to the Chrome/Firefox Console.
+	 * @param $name
+	 * @param null $var
+	 * @param string $type
+	 */
+	public static function debug($name, $var = null, $type = 'log', $js = false)
+	{
+
+	    $nl = "\r\n";
+	//	echo "alert('hi');";
+
+		if($js != true)
+		{
+	         echo '<script type="text/javascript">'.$nl;
+		}
+
+	    switch($type) {
+	        case 'log':
+	            echo 'console.log("'.$name.'");'.$nl;
+	        break;
+	        case 'info':
+	            echo 'console.info("'.$name.'");'.$nl;
+	        break;
+	        case 'warning':
+	            echo 'console.warn("'.$name.'");'.$nl;
+	        break;
+	        case 'error':
+	            echo 'console.error("'.$name.'");'.$nl;
+	        break;
+	    }
+
+	    if (!empty($var))
+	    {
+	        if (is_object($var) || is_array($var))
+	        {
+	            $object = json_encode($var);
+
+	            echo 'var object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = \''.str_replace("'","\'",$object).'\';'.$nl;
+	            echo 'var val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = eval("(" + object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' + ")" );'.$nl;
+
+	            switch($type)
+	            {
+	                case 'log':
+	                    echo 'console.debug(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                break;
+	                case 'info':
+	                    echo 'console.info(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                break;
+	                case 'warning':
+	                    echo 'console.warn(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                break;
+	                case 'error':
+	                    echo 'console.error(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                break;
+	            }
+	        }
+	        else
+	        {
+	            switch($type)
+	            {
+	                case 'log':
+	                    echo 'console.debug("'.str_replace('"','\\"',$var).'");'.$nl;
+	                break;
+	                case 'info':
+	                    echo 'console.info("'.str_replace('"','\\"',$var).'");'.$nl;
+	                break;
+	                case 'warning':
+	                    echo 'console.warn("'.str_replace('"','\\"',$var).'");'.$nl;
+	                break;
+	                case 'error':
+	                    echo 'console.error("'.str_replace('"','\\"',$var).'");'.$nl;
+	                break;
+	            }
+	        }
+	    }
+
+		if($js != true)
+		{
+	        echo '</script>'.$nl;
+		}
+
+	}
+
+
+
+
+
+
+
+
+
 	/**
 	 * Retrieve JS Helper object
 	 *

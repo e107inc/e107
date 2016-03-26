@@ -117,7 +117,14 @@ TEMPL;
 				//	alert(target);
 						$.post(target, data ,function(ret)
 						{
-						//	alert('Posted: '+ret);
+					//	alert('Posted: '+ret);
+						//	console.log('Posted: '+ ret);
+
+							if(ret == '')
+							{
+								return false;
+							}
+
 						  	var a = $.parseJSON(ret);
 
 							if(a.error)

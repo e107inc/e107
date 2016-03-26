@@ -56,6 +56,8 @@ define("UE_LAN_GENDER","Gender");
 define("UE_LAN_GENDER_DESC","Gender");
 define("UE_LAN_MALE","Male");
 define("UE_LAN_FEMALE","Female");
+define("UE_LAN_COMMENT", "Comments");
+define("UE_LAN_COMMENT_DESC", "Comment Box");
 
 
 

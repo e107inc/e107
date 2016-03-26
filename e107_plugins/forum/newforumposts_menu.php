@@ -38,7 +38,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 	function getQuery()
 	{
 		$max_age = vartrue($this->menuPref['maxage'], 0);
-		$max_age = ($max_age == 0) ? '' : '(t.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
+		$max_age = ($max_age == 0) ? '' : '(p.post_datestamp > '.(time()-(int)$max_age*86400).') AND ';
 
 		$forumList = implode(',', $this->forumObj->getForumPermList('view'));
 
@@ -147,6 +147,8 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		{
 			$caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
 		}
+
+	//	e107::debug('menuPref', $this->menuPref);
 
 		e107::getRender()->tablerender($caption, $text, 'nfp_menu');
 
