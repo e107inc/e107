@@ -49,6 +49,7 @@ class e107forum
 //	var $fieldTypes = array();
 	private $userViewed, $permList;
 	public $modArray, $prefs;
+	private $forumData = array();
 
 	public function __construct($update= false)
 	{
@@ -75,7 +76,7 @@ class e107forum
 			$this->setDefaults();
 		}
 		
-	
+		$this->getForumData();
 //		var_dump($this->prefs);
 
 /*
@@ -102,6 +103,41 @@ class e107forum
 		$this->fieldTypes['forum']['forum_lastpost_user']	 	= 'int';
 */
 	}
+
+		/**
+		 * Grab the forum data up front to reduce LEFT JOIN usage. Currently only forum_id and forum_sef but may be expanded as needed.
+		 */
+		function getForumData()
+	{
+		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef FROM `#forum`", true); // no ordering for better performance.
+
+		$newData = array();
+		foreach($data as $row)
+		{
+			$id = $row['forum_id'];
+			$newData[$id ] = $row;
+		}
+		$this->forumData = $newData;
+	}
+
+	function getForumSef($threadInfo)
+	{
+
+		$forumId = !empty($threadInfo['post_forum']) ? $threadInfo['post_forum'] : $threadInfo['thread_forum_id'];
+
+		if(!empty($this->forumData[$forumId]['forum_sef']))
+		{
+				$ret =  $this->forumData[$forumId]['forum_sef'];
+		}
+		else
+		{
+			$ret = null;
+		}
+	
+		return $ret;
+
+	}
+
 
 	/**
 	 * @param $user integer userid (if empty "anon" will be used)
@@ -949,7 +985,9 @@ class e107forum
 			$ret = array();
 			while($row = $sql->fetch())
 			{
-				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
+
+				$row['thread_sef'] = $this->getThreadSef($row); // eHelper::title2sef($row['thread_name'],'dashl');
+
 				$ret[] = $row;
 			}
 		}
@@ -958,7 +996,18 @@ class e107forum
 			e107::getMessage()->addDebug('Query failed ('.__METHOD__.' ): '.str_replace('#', MPREFIX,$qry));
 
 		}
-		if('post' === $start) { return $ret[0]; }
+
+	//	print_a($ret);
+
+		if($start == 'post')
+		{
+			$ret[0]['forum_sef']= $this->getForumSef($ret[0]);
+			$ret[0]['thread_sef'] = $this->getThreadSef($ret[0]);
+
+			return $ret[0];
+		}
+
+
 		return $ret;
 	}
 
