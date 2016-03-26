@@ -339,6 +339,55 @@ else // v1.x
 }
 
 
+// ----------------- { VIEWABLE_BY } ---------------------------
+
+if($users = $forum->getForumClassMembers($forumId))
+{
+	$userList = array();
+	if(is_array($users))
+	{
+		foreach($users as $user)
+		{
+				$userList[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
+		}
+
+		$viewable = implode(', ', $userList);;
+	}
+	elseif($users == 0)
+	{
+		$viewable = '';
+	}
+	else
+	{
+		$viewable =  e107::getUserClass()->getFixedClassDescription($users);
+	}
+
+}
+
+if(!empty($viewable))
+{
+
+	$fVars->VIEWABLE_BY = "
+
+						<div class='panel panel-default' style='margin-top:10px'>
+							<div class='panel-heading'>Viewable by</div>
+								<div class='panel-body'>
+									".$viewable."
+								</div>
+							</div>
+						</div>
+				";
+}
+else
+{
+	$fVars->VIEWABLE_BY = '';
+}
+
+
+// ------------------------------------------------------------
+///TODO  XXX All these $fVars items need to be put into a shortcode class so they can be parsed with parms and wrappers. Big Job!
+
+
 
 $fVars->SEARCH = "
 	<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>

@@ -104,12 +104,12 @@ class e107forum
 */
 	}
 
-		/**
-		 * Grab the forum data up front to reduce LEFT JOIN usage. Currently only forum_id and forum_sef but may be expanded as needed.
-		 */
-		function getForumData()
+	/**
+	 * Grab the forum data up front to reduce LEFT JOIN usage. Currently only forum_id and forum_sef but may be expanded as needed.
+	 */
+	private function getForumData()
 	{
-		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef FROM `#forum`", true); // no ordering for better performance.
+		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef, forum_class FROM `#forum`", true); // no ordering for better performance.
 
 		$newData = array();
 		foreach($data as $row)
@@ -135,6 +135,32 @@ class e107forum
 		}
 	
 		return $ret;
+
+	}
+
+	function getForumClassMembers($forumId, $type='view')
+	{
+
+		$fieldTypes = array('view' => 'forum_class');
+		$field = $fieldTypes[$type];
+
+		if(isset($this->forumData[$forumId][$field]))
+		{
+			$class = $this->forumData[$forumId]['forum_class'];
+
+			if($class == 0 || ($class > 250 && $class < 256))
+			{
+				return $class;
+			}
+
+
+			$qry = "SELECT user_id, user_name, user_class FROM `#user` WHERE FIND_IN_SET(".$class.", user_class) OR user_class = ".$class." ORDER by user_name LIMIT 50"; // FIND_IN_SET(user_class, ".$class.")
+			$users = e107::getDb()->retrieve($qry, true);
+
+			return $users;
+		}
+
+		return false;
 
 	}
 

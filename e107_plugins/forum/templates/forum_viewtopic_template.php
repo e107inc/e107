@@ -413,6 +413,66 @@ $FORUM_VIEWTOPIC_TEMPLATE['end'] = "</ul>
 
 
 $FORUM_VIEWTOPIC_TEMPLATE['replies'] = $FORUM_VIEWTOPIC_TEMPLATE['thread'];
+
+
+$FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
+									<li id='post-{POSTID}' class='forum-viewtopic-deleted forum-viewtopic-post'>
+										<div class='hidden-xs row row-fluid btn-navbar navbar-btn'>
+
+												{SETIMAGE: w=100&h=0&crop=0}
+												<div class='col-xs-2 span2 left text-left'>
+													<div class='row'>
+														<div class='col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
+													</div>
+
+												{NEWFLAG} {ANON_IP}</div>
+												<div class='col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
+												<div class='col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
+												<div class='col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
+
+										</div>
+
+										<div class='row row-fluid'  >
+
+											<div class='col-xs-12 col-md-2 span2 left'>
+													<div class='row'>
+
+													<div class='col-xs-3 col-md-12 text-center'>{AVATAR: shape=rounded}</div>
+													<div class='col-xs-6 visible-xs'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
+														<div class='col-xs-6 col-md-12 hidden-xs'>
+															<small>
+																{LEVEL=badge} {LEVEL=glyph}
+															</small>
+														</div>
+														<div class='visible-xs col-xs-3'><div class='clearfix'>{POSTOPTIONS}</div><div class='pull-right '><br /><small class='text-muted'>{THREADDATESTAMP=relative}</small></div></div>
+													</div>
+											</div>
+											<div class='visible-xs col-xs-12'><hr /></div>
+											<div class='col-xs-12 col-md-9 span9 forum-thread-text '>
+												{POSTDELETED}
+											</div>
+										</div>
+
+
+										<div class='row row-fluid'>
+											<div class='col-xs-2 span2 finfobar'>
+												&nbsp;
+											</div>
+											<div class='col-xs-9 span9  finfobar' >
+												<small> {SIGNATURE=clean}</small>
+											</div>
+
+											<div class='col-xs-3 span3'>
+											</div>
+										</div>
+
+
+									</li>
+
+									";
+
+
+
 	
 $FORUM_VIEWTOPIC_WRAPPER['ATTACHMENTS'] = "<div class='alert alert-default alert-block'>{---}</div>";
 
