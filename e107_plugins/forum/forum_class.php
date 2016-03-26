@@ -999,7 +999,7 @@ class e107forum
 
 	//	print_a($ret);
 
-		if($start == 'post')
+		if($start === 'post')
 		{
 			$ret[0]['forum_sef']= $this->getForumSef($ret[0]);
 			$ret[0]['thread_sef'] = $this->getThreadSef($ret[0]);
