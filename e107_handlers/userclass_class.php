@@ -95,6 +95,17 @@ class user_class
 	}
 
 
+	public function getFixedClassDescription($id)
+	{
+		if(isset($this->fixed_classes[$id]))
+		{
+			return $this->fixed_classes[$id];
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * Take a key value such as 'member' and return it's numerical value.
 	 * @param $text

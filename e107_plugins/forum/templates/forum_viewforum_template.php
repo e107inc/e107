@@ -350,11 +350,18 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='col-md-5 span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
 
 												</div>
-												<div class='panel panel-default' style='margin-top:50px'>
-												<div class='panel-body'>
-												{ICONKEY}
+
+												<div>
+													<div class='panel panel-default' style='margin-top:50px'>
+													<div class='panel-heading'>Status Keys</div>
+													<div class='panel-body'>
+													{ICONKEY}
+
+													</div>
+													</div>
 												</div>
-												</div>
+												{VIEWABLE_BY}
+
 												";
 $FORUM_VIEWFORUM_TEMPLATE['end'] 					= "<!--- END --> \n";
 
