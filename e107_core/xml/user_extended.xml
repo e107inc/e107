@@ -78,6 +78,13 @@
 		<read>253</read>
 		<write>253</write>
 	</item>
+		<item name="comment">
+		<type>textarea</type>
+		<include_text>class='form-control tbox' col='80' maxlength='254'</include_text>
+		<applicable>253</applicable>
+		<read>253</read>
+		<write>253</write>
+	</item>
 	<item name="timezone">
 		<type>list</type>
 		<values>timezones</values>

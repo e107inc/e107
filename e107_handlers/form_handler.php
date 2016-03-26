@@ -1624,7 +1624,7 @@ class e_form
 	 */
 	function radio($name, $value, $checked = false, $options = null)
 	{
-		
+
 		if(!is_array($options)) parse_str($options, $options);
 		
 		if(is_array($value))
@@ -1665,6 +1665,8 @@ class e_form
 		{
 			$text .= "<span>".$labelFound."</span></label>";
 		}
+
+
 		
 		return $text;
 	}
@@ -1683,6 +1685,12 @@ class e_form
 		
 		$options_on = varset($options['enabled'],array());
 		$options_off = varset($options['disabled'],array());
+
+		unset($options['enabled'],$options['disabled']);
+
+		$options_on = array_merge($options_on, $options);
+		$options_off = array_merge($options_off, $options);
+
 		
 		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
 		{
@@ -1707,6 +1715,8 @@ class e_form
 			
 			$text = $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);	
 		}
+
+
 
 		return $text;
 		
@@ -2639,6 +2649,7 @@ class e_form
 
 			case 'radio':
 				//$def_options['class'] = ' ';
+				$def_options = array('class' => '');
 				unset($def_options['size'], $def_options['selected']);
 				break;
 

@@ -484,10 +484,14 @@ class e_array {
         if (!is_array($ArrayData)) {
             return false;
         }
+
         $Array = var_export($ArrayData, true);
-        if ($AddSlashes == true) {
+
+        if ($AddSlashes == true)
+        {
             $Array = addslashes($Array);
         }
+
         return $Array;        
     }
 
