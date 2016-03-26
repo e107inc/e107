@@ -204,12 +204,27 @@ if(e_AJAX_REQUEST && MODERATOR) // see javascript above.
 
 if(varset($pref['track_online']))
 {
-	$member_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
-	$guest_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
+//	$member_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
+//	$guest_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
+	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id != 0");
+	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id = 0");
+
+
 	$users = $member_users+$guest_users;
+
+}
+else
+{
+	$users = 0;
+	$member_users= 0;
+	$guest_users = 0;
+
+
 }
 
 require_once(HEADERF);
+
+
 $text='';
 // TODO - message batch shortcode
 if ($message)
@@ -273,10 +288,17 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 }
 
 $forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
-
+$modUser = array();
+foreach ( $modArray as $user)
+{
+	$modUser[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
+}
 $fVars->FORUMTITLE = $forumInfo['forum_name'];
-$fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modArray);
+$fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modUser);
 $fVars->BROWSERS = '';
+
+
+
 if(varset($pref['track_online']))
 {
 	$fVars->BROWSERS = $users.' '.($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060).' ('.$member_users.' '.($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).')';
@@ -328,14 +350,29 @@ $fVars->SEARCH = "
 	</p>
 	</form>";
 
-if($forum->checkPerm($forumId, 'post'))
-{
-	$fVars->PERMS = LAN_FORUM_0043.' - '.LAN_FORUM_0045.' - '.LAN_FORUM_0047;
-}
-else
-{
-	$fVars->PERMS = LAN_FORUM_0044.' - '.LAN_FORUM_0046.' - '.LAN_FORUM_0048;
-}
+
+	// ----- Perm Display ---
+
+	$permDisplay = array();
+
+	$permDisplay['topics'] = ($forum->checkPerm($forumId, 'thread')) ? LAN_FORUM_0043 : LAN_FORUM_0044;
+	if($forum->checkPerm($forumId, 'post'))
+	{
+		$permDisplay['post'] =LAN_FORUM_0045;
+		$permDisplay['edit'] = LAN_FORUM_0047;
+	}
+	else
+	{
+		$permDisplay['post'] =LAN_FORUM_0046;
+		$permDisplay['edit'] = LAN_FORUM_0048;
+	}
+
+
+	$fVars->PERMS = implode(' - '.$permDisplay);
+
+
+	// -------------------------------
+
 
 $sticky_threads = 0;
 $stuck = false;
@@ -695,11 +732,11 @@ function parse_thread($thread_info)
 		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
 	}
 	
-	if(!BOOTSTRAP)
+	if(!deftrue('BOOTSTRAP'))
 	{
-		$tVars->REPLIESX = 	$tVars->REPLIES;
-		$tVars->VIEWSX	 = $tVars->VIEWS;
-		$tVars->ADMINOPTIONS = $tVars->ADMIN_ICONS;
+		$tVars->REPLIESX        = 	$tVars->REPLIES;
+		$tVars->VIEWSX	        = $tVars->VIEWS;
+		$tVars->ADMINOPTIONS    = $tVars->ADMIN_ICONS;
 	}
 	
 	

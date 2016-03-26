@@ -262,7 +262,7 @@ if (USER && vartrue($allread) != TRUE && $total_new_threads && $total_new_thread
 $trackPref = $forum->prefs->get('track');
 if (USER && vartrue($trackPref) && e_QUERY != 'track')
 {
-	$fVars->INFO .= "<br /><a href='".e_SELF."?track'>".LAN_FORUM_0030.'</a>';
+	$fVars->INFO .= "<br /><a href='".e107::url('forum','track')."'>".LAN_FORUM_0030.'</a>';
 }
 
 $fVars->FORUMINFO = 
