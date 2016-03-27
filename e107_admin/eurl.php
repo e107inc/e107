@@ -13,7 +13,7 @@
 */
 
 require_once('../class2.php');
-if (!ADMIN || !getperms('L'))
+if (!getperms('K'))
 {
 	e107::redirect('admin');
 	exit;
