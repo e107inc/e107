@@ -409,7 +409,7 @@ class e_parse_shortcode
 		}
 		elseif(E107_DBG_BBSC || E107_DBG_SC)
 		{
-			echo "<h3>Couldn't Load: <b>".$path." with class-name: {$className} and pluginName {$pluginName}</b></h3>";
+			echo "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>";
 			
 		}
 
