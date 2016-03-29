@@ -165,8 +165,11 @@ class plugin_gallery_index_controller extends eControllerFront
 		$sc->amount = e107::getPlugPref('gallery','perpage', 12); // TODO Add Pref. amount per page. 
 		$sc->curCat = $cid;
 		$sc->from 	= $request->getRequestParam('frm', 0);
-		
-		$list 		= e107::getMedia()->getImages($cid,$sc->from,$sc->amount);
+
+		$plugPrefs  = e107::getPlugConfig('gallery')->getPref();
+		$orderBy    = varset($plugPrefs['orderby'], 'media_id DESC');
+
+		$list 		= e107::getMedia()->getImages($cid,$sc->from,$sc->amount,null,$orderBy);
 		$catname	= $tp->toHtml($this->catList[$cid]['media_cat_title'],false,'defs');
 		$cat = $this->catList[$cid];
 		

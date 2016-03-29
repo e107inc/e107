@@ -99,8 +99,11 @@ class gallery
 		$sc->amount = 12; // TODO Add Pref. amount per page. 
 		$sc->curCat = $cat;
 		$sc->from 	= ($_GET['frm']) ? intval($_GET['frm']) : 0;
-		
-		$list 		= e107::getMedia()->getImages($cat,$sc->from,$sc->amount);
+
+		$plugPrefs  = e107::getPlugConfig('gallery')->getPref();
+		$orderBy    = varset($plugPrefs['orderby'], 'media_id DESC');
+
+		$list 		= e107::getMedia()->getImages($cat, $sc->from, $sc->amount, null, $orderBy);
 		$catname	= $tp->toHtml($this->catList[$cat]['media_cat_title'],false,'defs');
 	
 		$inner = "";	
