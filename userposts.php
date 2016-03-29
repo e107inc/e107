@@ -239,7 +239,7 @@ elseif ($action == 'forums')
 
 		$vars->emptyVars();
 
-		$ftotal = $sqlp->totalResults();
+		$ftotal = $sqlp->foundRows();
 
 		$parms = $ftotal.",10,".$from.",".e_REQUEST_SELF."?[FROM].forums.".$id;
 		$vars->NEXTPREV = $ftotal ? $tp->parseTemplate("{NEXTPREV={$parms}}") : '';

@@ -495,17 +495,23 @@ class e_db_mysql
 		$db_time += $mytime;
 		$this->mySQLresult = $sQryRes;
 
-		$this->total_results = false;
 
+		if (!E107_DEBUG_LEVEL)
+		{
+			$this->total_results = false;
+		}
 		// Need to get the total record count as well. Return code is a resource identifier
 		// Have to do this before any debug action, otherwise this bit gets messed up
-		if (!is_array($query) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
+
+
+
+		if (!is_array($query) && (strpos($query,'EXPLAIN') !==0) && (strpos($query,'SQL_CALC_FOUND_ROWS') !== false) && (strpos($query,'SELECT') !== false))
 		{
+
 			if($this->pdo)
 			{
-				$fr =  $this->mySQLaccess->query('SELECT FOUND_ROWS()');
-				$rc = $fr->fetchColumn();
-				$this->total_results = (int) $rc;
+				$rc = $this->mySQLaccess->query('SELECT FOUND_ROWS();')->fetch(PDO::FETCH_COLUMN);
+				$this->total_results = intval($rc);
 			}
 			else /* @XXX Subject of Removal. */
 			{
@@ -925,10 +931,10 @@ class e_db_mysql
 
 
 	/**
-	 * Return the total number of results on the last query regardless of the LIMIT value.
+	 * Return the total number of results on the last query regardless of the LIMIT value when SELECT SQL_CALC_FOUND_ROWS is used.
 	 * @return bool
 	 */
-	public function totalResults()
+	public function foundRows()
 	{
 		return $this->total_results;
 	}

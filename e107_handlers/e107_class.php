@@ -1870,29 +1870,25 @@ class e107
 	 * @param null $var
 	 * @param string $type
 	 */
-	public static function debug($name, $var = null, $type = 'log', $js = false)
+	public static function debug($name, $var = null, $type = 'log')
 	{
 
 	    $nl = "\r\n";
 	//	echo "alert('hi');";
-
-		if($js != true)
-		{
-	         echo '<script type="text/javascript">'.$nl;
-		}
+		$text = '';
 
 	    switch($type) {
 	        case 'log':
-	            echo 'console.log("'.$name.'");'.$nl;
+	           $text .= 'console.log("'.$name.'");'.$nl;
 	        break;
 	        case 'info':
-	            echo 'console.info("'.$name.'");'.$nl;
+	           $text .= 'console.info("'.$name.'");'.$nl;
 	        break;
 	        case 'warning':
-	            echo 'console.warn("'.$name.'");'.$nl;
+	           $text .= 'console.warn("'.$name.'");'.$nl;
 	        break;
 	        case 'error':
-	            echo 'console.error("'.$name.'");'.$nl;
+	           $text .= 'console.error("'.$name.'");'.$nl;
 	        break;
 	    }
 
@@ -1902,22 +1898,22 @@ class e107
 	        {
 	            $object = json_encode($var);
 
-	            echo 'var object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = \''.str_replace("'","\'",$object).'\';'.$nl;
-	            echo 'var val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = eval("(" + object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' + ")" );'.$nl;
+	           $text .= 'var object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = \''.str_replace("'","\'",$object).'\';'.$nl;
+	           $text .= 'var val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' = eval("(" + object'.preg_replace('~[^A-Z|0-9]~i',"_",$name).' + ")" );'.$nl;
 
 	            switch($type)
 	            {
 	                case 'log':
-	                    echo 'console.debug(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.debug(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
 	                break;
 	                case 'info':
-	                    echo 'console.info(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.info(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
 	                break;
 	                case 'warning':
-	                    echo 'console.warn(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.warn(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
 	                break;
 	                case 'error':
-	                    echo 'console.error(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
+	                   $text .= 'console.error(val'.preg_replace('~[^A-Z|0-9]~i',"_",$name).');'.$nl;
 	                break;
 	            }
 	        }
@@ -1926,25 +1922,23 @@ class e107
 	            switch($type)
 	            {
 	                case 'log':
-	                    echo 'console.debug("'.str_replace('"','\\"',$var).'");'.$nl;
+	                   $text .= 'console.debug("'.str_replace('"','\\"',$var).'");'.$nl;
 	                break;
 	                case 'info':
-	                    echo 'console.info("'.str_replace('"','\\"',$var).'");'.$nl;
+	                   $text .= 'console.info("'.str_replace('"','\\"',$var).'");'.$nl;
 	                break;
 	                case 'warning':
-	                    echo 'console.warn("'.str_replace('"','\\"',$var).'");'.$nl;
+	                   $text .= 'console.warn("'.str_replace('"','\\"',$var).'");'.$nl;
 	                break;
 	                case 'error':
-	                    echo 'console.error("'.str_replace('"','\\"',$var).'");'.$nl;
+	                   $text .= 'console.error("'.str_replace('"','\\"',$var).'");'.$nl;
 	                break;
 	            }
 	        }
 	    }
 
-		if($js != true)
-		{
-	        echo '</script>'.$nl;
-		}
+
+		e107::js('footer-inline', $text);
 
 	}
 
