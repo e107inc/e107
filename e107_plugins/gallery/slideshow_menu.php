@@ -31,6 +31,6 @@ $settings = array(
 e107::js('settings', array('gallery' => $settings));
 
 $text = e107::getParser()->parseTemplate("{GALLERY_SLIDESHOW}");
-e107::getRender()->tablerender("Gallery", $text, 'gallery_slideshow');
+e107::getRender()->tablerender(LAN_PLUGIN_GALLERY_TITLE, $text, 'gallery_slideshow');
 unset($text);
 unset($gp);
