@@ -30,24 +30,8 @@ class gallery_shortcodes extends e_shortcode
 		$pop_h 				= vartrue($prefH, 768);
 		$this->attFull 		= array('w'=>$pop_w, 'h'=>$pop_h, 'x'=>1, 'crop'=>0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
 
-		e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
-		e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
-
-
-	$prettyPhoto = <<<JS
-$(document).ready(function(){
-    $("a[data-gal^='prettyPhoto']").prettyPhoto(
-	    {
-	    	hook: 'data-gal',
-	    	theme: 'pp_default',
-	    	overlay_gallery: false,
-	    	deeplinking: false
-	    }
-    );
-  });
-JS;
-
-	e107::js('footer-inline',$prettyPhoto,'jquery');
+		e107::library('load', 'jquery.prettyPhoto');
+		e107::js('gallery', 'js/gallery.js');
 	}
 			
 	function sc_gallery_caption($parm='')
