@@ -20,47 +20,21 @@
  * @version     $Id: cron.php 12492 2011-12-30 16:09:10Z e107steved $
  *	Ultra-simple Image-Gallery
  */
- 
 
 require_once("../../class2.php");
+
 if (!e107::isInstalled('gallery'))
 {
 	e107::redirect();
 	exit;
 }
 
-
-e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
-e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
-e107::css('gallery', 'gallery_style.css');
-
-// Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890
-e107::css('inline', "
-/* Gallery CSS */
-.thumbnails .span2:nth-child(6n+1) {
-margin-left:0;
-}",'jquery');
-
-
-
-	$prettyPhoto = <<<JS
-$(document).ready(function(){
-    $("a[data-gal^='prettyPhoto']").prettyPhoto(
-	    {
-	    	hook: 'data-gal',
-	    	theme: 'pp_default', /* pp_default , light_rounded , dark_rounded , light_square , dark_square ,facebook */
-	    	overlay_gallery: false,
-	    	deeplinking: false
-	    }
-    );
-  });
-JS;
-
-e107::js('inline',$prettyPhoto,'jquery');
-
-
+e107::library('load', 'jquery.prettyPhoto');
+e107::css('gallery', 'css/gallery.css');
+e107::js('gallery', 'js/gallery.js');
 
 require_once(HEADERF);
+
 
 class gallery
 {

@@ -66,24 +66,11 @@ class plugin_gallery_index_controller extends eControllerFront
 	public function init()
 	{
 		e107::plugLan('gallery', 'front');
-		e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
-		e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
-		e107::css('gallery', 'gallery_style.css');
 
-		$prettyPhoto = <<<JS
-$(document).ready(function(){
-    $("a[data-gal^='prettyPhoto']").prettyPhoto(
-	    {
-	    	hook: 'data-gal',
-	    	theme: 'pp_default',
-	    	overlay_gallery: false,
-	    	deeplinking: false
-	    }
-    );
-  });
-JS;
+		e107::library('load', 'jquery.prettyPhoto');
+		e107::css('gallery', 'css/gallery.css');
+		e107::js('gallery', 'js/gallery.js');
 
-		e107::js('footer-inline',$prettyPhoto,'jquery');
 		$this->catList = e107::getMedia()->getCategories('gallery');
 	}
 	
