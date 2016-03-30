@@ -1,24 +1,14 @@
 <?php
-/*
+
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2012 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Cron Administration
- *
- * $URL: https://e107.svn.sourceforge.net/svnroot/e107/trunk/e107_0.8/e107_admin/cron.php $
- * $Id: cron.php 12492 2011-12-30 16:09:10Z e107steved $
- *
- */
-
-/**
- *
- * @package     e107
- * @subpackage    frontend
- * @version     $Id: cron.php 12492 2011-12-30 16:09:10Z e107steved $
- *    Ultra-simple Image-Gallery
+ * @file
+ * Render gallery pages.
  */
 
 require_once("../../class2.php");
@@ -29,16 +19,22 @@ if(!e107::isInstalled('gallery'))
 	exit;
 }
 
+e107_require_once(e_PLUGIN . 'gallery/includes/gallery_load.php');
+
 // [PLUGINS]/gallery/languages/[LANGUAGE]/[LANGUAGE]_front.php
 e107::lan('gallery', false, true);
 
-e107::library('load', 'jquery.prettyPhoto');
 e107::css('gallery', 'css/gallery.css');
-e107::js('gallery', 'js/gallery.js');
+
+// Load prettyPhoto settings and files.
+gallery_load_prettyphoto();
 
 require_once(HEADERF);
 
 
+/**
+ * Class gallery.
+ */
 class gallery
 {
 

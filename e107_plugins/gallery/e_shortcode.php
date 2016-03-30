@@ -25,26 +25,23 @@ class gallery_shortcodes extends e_shortcode
 	public  $sliderCat    = 1;
 	public  $slideMode    = false;
 	public  $slideCount   = 1;
-	private $downloadable = false;
 	private $attFull      = null;
 
 	function init()
 	{
-		$this->downloadable = e107::getPlugPref('gallery', 'downloadable');
 		$prefW = e107::getPlugPref('gallery', 'pop_w');
 		$prefH = e107::getPlugPref('gallery', 'pop_h');
 		$pop_w = vartrue($prefW, 1024);
 		$pop_h = vartrue($prefH, 768);
 		$this->attFull = array('w' => $pop_w, 'h' => $pop_h, 'x' => 1, 'crop' => 0); // 'w='.$pop_w.'&h='.$pop_h.'&x=1';
-
-		e107::library('load', 'jquery.prettyPhoto');
-		e107::js('gallery', 'js/gallery.js');
 	}
 
 	function sc_gallery_caption($parm = '')
 	{
+		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+		$hook = varset($plugPrefs['pp_hook'], 'data-gal');
 		$tp = e107::getParser();
-		$text = "<a class='gallery-caption' title='" . $tp->toAttribute($this->var['media_caption']) . "' href='" . $tp->thumbUrl($this->var['media_url'], $this->attFull) . "' data-gal='prettyPhoto[slide]' >";     // Erase  rel"lightbox.Gallery2"  - Write "prettyPhoto[slide]"
+		$text = "<a class='gallery-caption' title='" . $tp->toAttribute($this->var['media_caption']) . "' href='" . $tp->thumbUrl($this->var['media_url'], $this->attFull) . "' " . $hook . "='prettyPhoto[slide]' >";     // Erase  rel"lightbox.Gallery2"  - Write "prettyPhoto[slide]"
 		$text .= $this->var['media_caption'];
 		$text .= "</a>";
 		return $text;
@@ -81,6 +78,9 @@ class gallery_shortcodes extends e_shortcode
 	 */
 	function sc_gallery_thumb($parm = '')
 	{
+		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+		$hook = varset($plugPrefs['pp_hook'], 'data-gal');
+
 		$tp = e107::getParser();
 		$parms = eHelper::scParams($parm);
 
@@ -88,8 +88,7 @@ class gallery_shortcodes extends e_shortcode
 		$h = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight(); // 130;
 
 		$class = ($this->slideMode == true) ? 'gallery-slideshow-thumb img-responsive img-rounded' : varset($parms['class'], 'gallery-thumb img-responsive');
-		//	$rel 		= ($this->slideMode == TRUE) ? 'lightbox.SlideGallery' : 'lightbox.Gallery';
-		$rel = ($this->slideMode == true) ? 'prettyPhoto[slide]' : 'prettyPhoto[gal]';
+		$rel = ($this->slideMode == true) ? 'prettyPhoto[pp_gal]' : 'prettyPhoto[pp_gal]';
 
 		//$att        = array('aw'=>$w, 'ah'=>$h, 'x'=>1, 'crop'=>1);
 		$caption = $tp->toAttribute($this->var['media_caption']);
@@ -116,12 +115,9 @@ class gallery_shortcodes extends e_shortcode
 			return $tp->replaceConstants($this->var['media_url'], 'full');
 		}
 
+		$description = $tp->toAttribute($this->var['media_description']);
 
-		$description = ($this->downloadable) ? " <a class='btn btn-xs btn-default btn-mini e-tip' title='" . LAN_GALLERY_FRONT_01 . "' href='" . $srcFull . "'>" . LAN_DOWNLOAD . "</a>" : "";
-		$description .= $tp->toAttribute($this->var['media_description']);
-
-		$text = "<a class='" . $class . "' title=\"" . $description . "\" href='" . $srcFull . "'  data-gal='{$rel}'  >";
-
+		$text = "<a class='" . $class . "' title='" . $description . "' href='" . $srcFull . "' " . $hook . "='" . $rel . "'>";
 		$text .= $tp->toImage($this->var['media_url'], $att);
 		$text .= "</a>";
 
@@ -295,7 +291,7 @@ class gallery_shortcodes extends e_shortcode
 
 	function sc_gallery_jumper($parm)
 	{
-		// echo "SlideCount=".$this->slideCount;
+		// echo "SlideCount=".$this->slideCount; 
 		if($this->slideCount == 1 && deftrue('E107_DBG_BASIC'))
 		{
 			return "gallery-jumper must be loaded after Gallery-Slides";

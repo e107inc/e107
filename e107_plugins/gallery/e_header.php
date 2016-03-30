@@ -20,3 +20,12 @@ if(USER_AREA)
 margin-left:0;
 }", 'jquery');
 }
+
+$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+
+if(vartrue($plugPrefs['pp_global'], false))
+{
+	e107_require_once(e_PLUGIN . 'gallery/includes/gallery_load.php');
+	// Load prettyPhoto settings and files.
+	gallery_load_prettyphoto();
+}
