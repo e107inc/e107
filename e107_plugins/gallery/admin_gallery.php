@@ -366,9 +366,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'title'      => LAN_GALLERY_ADMIN_70,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 		'pp_hook'                    => array(
@@ -406,9 +403,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'title'      => LAN_GALLERY_ADMIN_35,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 0,
-			),
 			'tab'        => 2,
 		),
 		'pp_opacity'                 => array(
@@ -425,9 +419,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'title'      => LAN_GALLERY_ADMIN_38,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 		'pp_allow_resize'            => array(
@@ -435,9 +426,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'help'       => LAN_GALLERY_ADMIN_40,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 		'pp_default_width'           => array(
@@ -499,9 +487,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'help'       => LAN_GALLERY_ADMIN_49,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 0,
-			),
 			'tab'        => 2,
 		),
 		'pp_wmode'                   => array(
@@ -518,9 +503,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'title'      => LAN_GALLERY_ADMIN_52,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 		'pp_modal'                   => array(
@@ -528,9 +510,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'help'       => LAN_GALLERY_ADMIN_54,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 0,
-			),
 			'tab'        => 2,
 		),
 		'pp_deeplinking'             => array(
@@ -538,9 +517,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'help'       => LAN_GALLERY_ADMIN_56,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 0,
-			),
 			'tab'        => 2,
 		),
 		'pp_overlay_gallery'         => array(
@@ -548,9 +524,6 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'help'       => LAN_GALLERY_ADMIN_58,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 		'pp_keyboard_shortcuts'      => array(
@@ -558,18 +531,12 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'help'       => LAN_GALLERY_ADMIN_60,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 		'pp_ie6_fallback'            => array(
 			'title'      => LAN_GALLERY_ADMIN_61,
 			'type'       => 'boolean',
 			'data'       => 'int',
-			'writeParms' => array(
-				'default' => 1,
-			),
 			'tab'        => 2,
 		),
 	);
