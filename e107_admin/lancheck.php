@@ -1285,7 +1285,7 @@ class lancheck
 	{
 		$tp = e107::getParser();
 	//	$sql->db_Mark_Time('Start Get Core Lan Phrases English');
-		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
+		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,"English");
 		
 	//	$sql->db_Mark_Time('End Get Core Lan Phrases English');
 		$check = $this->get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
@@ -1544,7 +1544,7 @@ class lancheck
 
 		foreach($lang_array as $k=> $f)
 		{
-			$path = str_replace(e_LANGUAGEDIR.e_LANGUAGE."/", "", $f['path'].$f['fname']);
+			$path = str_replace(e_LANGUAGEDIR.$lang."/", "", $f['path'].$f['fname']);
 
 			if(in_array($path, $this->deprecatedFiles))
 			{
