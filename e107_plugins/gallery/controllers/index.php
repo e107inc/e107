@@ -22,10 +22,12 @@
  */
 /*
  * THIS SCRIPT IS HIGHLY EXPERIMENTAL. USE AT OWN RISK.
- *
  */
 
 
+/**
+ * Class plugin_gallery_index_controller.
+ */
 class plugin_gallery_index_controller extends eControllerFront
 {
 
@@ -65,11 +67,6 @@ class plugin_gallery_index_controller extends eControllerFront
 	public function init()
 	{
 		e107::plugLan('gallery', 'front');
-
-		e107::library('load', 'jquery.prettyPhoto');
-		e107::css('gallery', 'css/gallery.css');
-		e107::js('gallery', 'js/gallery.js');
-
 		$this->catList = e107::getMedia()->getCategories('gallery');
 	}
 

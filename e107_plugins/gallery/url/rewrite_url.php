@@ -4,7 +4,7 @@
 /*
  * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
- * 
+ *
  * System routing config
  */
 
@@ -31,7 +31,7 @@ class plugin_gallery_rewrite_url extends eUrlConfig
 			// rule set array
 			'rules'  => array(
 				'/'                  => 'index/category',
-				// allow only mapped vars - cat and frm parameters to be passed 
+				// allow only mapped vars - cat and frm parameters to be passed
 				'<cat:{galleryCat}>' => array('index/list', 'mapVars' => array('media_cat_sef' => 'cat', 'from' => 'frm')),
 			)
 		);
