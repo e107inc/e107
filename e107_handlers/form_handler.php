@@ -1125,11 +1125,14 @@ class e_form
 		
 		return e107::getRate()->renderLike($table,$id,$options); 	
 	}
-		
-	
-	
-	
 
+
+	/**
+	 * File Upload form element.
+	 * @param $name
+	 * @param array $options (optional)  array('multiple'=>1)
+	 * @return string
+	 */
 	function file($name, $options = array())
 	{
 		$options = $this->format_options('file', $name, $options);
@@ -2611,7 +2614,8 @@ class e_form
 			'autocomplete' 	=> '',
 			'maxlength'		=> '',
 			'wrap'          => '',
-			'maxlength'     => ''
+			'multiple'      => '',
+
 			//	'multiple' => false, - see case 'select'
 		);
 
