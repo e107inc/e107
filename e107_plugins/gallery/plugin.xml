@@ -42,7 +42,7 @@
 		<pref name="pp_autoplay">1</pref>
 		<pref name="pp_modal">0</pref>
 		<pref name="pp_deeplinking">0</pref>
-		<pref name="pp_overlay_gallery">1</pref>
+		<pref name="pp_overlay_gallery">0</pref>
 		<pref name="pp_keyboard_shortcuts">1</pref>
 		<pref name="pp_ie6_fallback">1</pref>
 	</pluginPrefs>
