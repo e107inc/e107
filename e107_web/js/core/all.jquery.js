@@ -252,6 +252,24 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Check if the selector is valid.
+	 *
+	 * @param selector
+	 * @returns {boolean}
+	 */
+	e107.callbacks.isValidSelector = function (selector)
+	{
+		try
+		{
+			var $element = $(selector);
+		} catch(error)
+		{
+			return false;
+		}
+		return true;
+	};
+
+	/**
 	 * Dynamic next/prev.
 	 *
 	 * @param e object (eg. from selector)
