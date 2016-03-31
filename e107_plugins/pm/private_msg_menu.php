@@ -90,7 +90,7 @@ require_once(e_PLUGIN.'pm/pm_func.php');
 
 e107::getScParser();
 
-require_once(e_PLUGIN.'pm/pm_shortcodes.php');
+require_once(e_PLUGIN.'pm/shortcodes/batch/pm_shortcodes.php');
 
 //setScVar('pm_handler_shortcodes','pmPrefs', $pm_prefs);
 $pmManager = new pmbox_manager($pm_prefs);
@@ -157,7 +157,7 @@ if(!isset($pm_menu_template))
 if(check_class($pm_prefs['pm_class']))
 {
 	$tp = e107::getParser();
-	$sc = e107::getScBatch('pm',TRUE);
+	$sc = e107::getScBatch('pm',TRUE, 'pm');
 	
 	$pm_inbox = $pmManager->pm_getInfo('inbox');
 

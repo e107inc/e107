@@ -455,7 +455,7 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
  *	This is the 'legacy' interface, which handles various special cases etc.
  *	It was the only option in E107 0.7.8 and earlier, and is still used in some places in core.
  *	It also attempts to return in the same way as the original, especially when any errors occur
- *
+ *  @deprecated
  *	@param string $uploaddir - target directory for file. Defaults to e_FILE/public
  *	@param boolean|string $avatar - sets the 'type' or destination of the file:
  * 				FALSE 			- its a 'general' file
@@ -473,7 +473,14 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
  *  								otherwise returns an array with per-file error codes as appropriate.
  *	 On exit, F_MESSAGE is defined with the success/failure message(s) that have been displayed - one file per line
  */
-
+/**
+ * @Deprecated use e107::getFile()->getUploaded();
+ * @param $uploaddir
+ * @param bool|false $avatar
+ * @param string $fileinfo
+ * @param string $overwrite
+ * @return array|bool
+ */
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "")
 {
 	$admin_log = e107::getAdminLog();

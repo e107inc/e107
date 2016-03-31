@@ -813,7 +813,7 @@ class e_file
 
 	/**
 	 * File retrieval function. by Cam.
-	 * @param $file actual path or {e_xxxx} path to file. 
+	 * @param $file string actual path or {e_xxxx} path to file.
 	 * 
 	 */
 	function send($file) 
@@ -927,9 +927,39 @@ class e_file
 				}
 			}
 		}
-	}	
+	}
 
 
+	/**
+	 * Return a user specific file directory for the current plugin with the option to create one if it does not exist.
+	 * @param $baseDir
+	 * @param $user - user_id
+	 * @param bool|false $create
+	 * @return bool|string
+	 */
+	public function getUserDir($user, $create = false, $subDir = null)
+	{
+		$user = intval($user);
+		$tp = e107::getParser();
+
+		$baseDir = e_MEDIA.'plugins/'.e_CURRENT_PLUGIN.'/';
+
+		if(!empty($subDir))
+		{
+			$baseDir .= rtrim($subDir,'/').'/';
+		}
+
+		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+
+		if($create == true && !is_dir($baseDir))
+		{
+			mkdir($baseDir, 0755, true); // recursively
+		}
+
+		$baseDir .= "/";
+
+		return $baseDir;
+	}
 		
 		
 	/**
@@ -1033,11 +1063,89 @@ class e_file
 	/**
 	 * File-class wrapper for upload handler. (Preferred for v2.x) 
 	 * Process files uploaded in a form post. ie. $_FILES. 
+	 * Routine processes the array of uploaded files according to both specific options set by the caller,
+	 * and	system options configured by the main admin.
+	 *
+	 *		@param string $uploaddir Target directory (checked that it exists, but path not otherwise changed)
+	 *
+	 *		@param string $fileinfo Determines any special handling of file name (combines previous $fileinfo and $avatar parameters):
+	 *			FALSE - default option; no processing
+	 *          @param string $fileinfo = 'attachment+extra_text' Indicates an attachment (related to forum post or PM), and specifies some optional text which is
+	 *				incorporated into the final file name (the original $fileinfo parameter).
+	 *		    @param string  $fileinfo = 'prefix+extra_text' - indicates an attachment or file, and specifies some optional text which is prefixed to the file name
+	 *			@param string  $fileinfo = 'unique'
+	 *				- if the proposed destination file doesn't exist, saved under given name
+	 *				- if the proposed destination file does exist, prepends time() to the file name to make it unique
+	 *			@param string  $fileinfo =  'avatar'
+	 *				- indicates an avatar is being uploaded (not used - options must be set elsewhere)
+	 *
+	 *		@param array $options An array of supplementary options, all of which will be given appropriate defaults if not defined:
+	 *          @param $options['filetypes'] Name of file containing list of valid file types
+	 *				- Always looks in the admin directory
+	 *				- defaults to e_ADMIN.filetypes.xml, else e_ADMIN.admin_filetypes.php for admins (if file exists), otherwise e_ADMIN.filetypes.php for users.
+	 *				- FALSE disables this option (which implies that 'extra_file_types' is used)
+	 *		    @param string $options['file_mask'] Comma-separated list of file types which if defined limits the allowed file types to those which are in both this list and the
+	 *				file specified by the 'filetypes' option. Enables restriction to, for example, image files.
+	 *		    @param bool $options['extra_file_types'] - if is FALSE or undefined, rejects totally unknown file extensions (even if in $options['filetypes'] file).
+	 *				if TRUE, accepts totally unknown file extensions which are in $options['filetypes'] file.
+	 *				otherwise specifies a comma-separated list of additional permitted file extensions
+	 *		    @param int 	$options['final_chmod'] - chmod() to be applied to uploaded files (0644 default)  (This routine expects an integer value, so watch formatting/decoding - its normally
+	 *				specified in octal. Typically use intval($permissions,8) to convert)
+	 *		    @param int 	$options['max_upload_size'] - maximum size of uploaded files in bytes, or as a string with a 'multiplier' letter (e.g. 16M) at the end.
+	 *				- otherwise uses $pref['upload_maxfilesize'] if set
+	 *				- overriding limit of the smaller of 'post_max_size' and 'upload_max_size' if set in php.ini
+	 *				(Note: other parts of E107 don't understand strings with a multiplier letter yet)
+	 *		@param string 	$options['file_array_name'] - the name of the 'input' array - defaults to file_userfile[] - otherwise as set.
+	 *		@param int 	$options['max_file_count'] - maximum number of files which can be uploaded - default is 'unlimited' if this is zero or not set.
+	 *		@param bool $options['overwrite'] - if TRUE, existing file of the same name is overwritten; otherwise returns 'duplicate file' error (default FALSE)
+	 *		@param int 	$options['save_to_db'] - [obsolete] storage type - if set and TRUE, uploaded files were saved in the database (rather than as flat files)
+	 *
+	 *	@return boolean|array
+	 *		Returns FALSE if the upload directory doesn't exist, or various other errors occurred which restrict the amount of meaningful information.
+	 *		Returns an array, with one set of entries per uploaded file, regardless of whether saved or
+	 *		discarded (not all fields always present) - $c is array index:
+	 *		 	$uploaded[$c]['name'] - file name - as saved to disc
+	 *			$uploaded[$c]['rawname'] - original file name, prior to any addition of identifiers etc (useful for display purposes)
+	 *			$uploaded[$c]['type'] - mime type (if set - as sent by browser)
+	 *			$uploaded[$c]['size'] - size in bytes (should be zero if error)
+	 *			$uploaded[$c]['error'] - numeric error code (zero = OK)
+	 *			$uploaded[$c]['index'] - if upload successful, the index position from the file_userfile[] array - usually numeric, but may be alphanumeric if coded
+	 *			$uploaded[$c]['message'] - text of displayed message relating to file
+	 *			$uploaded[$c]['line'] - only if an error occurred, has line number (from __LINE__)
+	 *			$uploaded[$c]['file'] - only if an error occurred, has file name (from __FILE__)
+	 *
+	 *	On exit, uploaded files should all have been removed from the temporary directory.
+	 *	No messages displayed - its caller's responsibility to handle errors and display info to
+	 *	user (or can use handle_upload_messages() from this module)
+	 *
+	 *	Details of uploaded files are in $_FILES['file_userfile'] (or other array name as set) on entry.
+	 *	Elements passed (from PHP) relating to each file:
+	 *		['name']	- the original name
+	 *		['type']	- mime type (if provided - not checked by PHP)
+	 *		['size']	- file size in bytes
+	 *		['tmp_name'] - temporary file name on server
+	 *		['error']	- error code. 0 = 'good'. 1..4 main others, although up to 8 defined for later PHP versions
+	 *	Files stored in server's temporary directory, unless another set
 	 */
 	public function getUploaded($uploaddir, $fileinfo = false, $options = null)
 	{
 		require_once(e_HANDLER."upload_handler.php");
-		return process_uploaded_files($uploaddir, $fileinfo, $options);	
+
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP)
+		{
+			$path = $uploaddir;
+		}
+		elseif(defined('e_CURRENT_PLUGIN'))
+		{
+			$path = $this->getUserDir(USERID, true, str_replace("../",'',$uploaddir)); // .$this->get;
+		}
+		else
+		{
+			return false;
+		}
+
+
+		return process_uploaded_files($path, $fileinfo, $options);
 
 	}
 
