@@ -409,7 +409,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'title'      => LAN_GALLERY_ADMIN_36,
 			'help'       => LAN_GALLERY_ADMIN_37,
 			'type'       => 'text',
-			'data'       => 'int',
+			'data'       => 'float',
 			'writeParms' => array(
 				'default' => 0.80,
 			),
