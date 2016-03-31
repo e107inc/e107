@@ -1114,11 +1114,11 @@ class forum_post_handler
 				e107::getMessage()->addDebug("Attachment Detected");
 
 			// retrieve and create attachment directory if needed
-			$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
+			//$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
 
-			e107::getMessage()->addDebug("Attachment Directory: ".$attachmentDir);
+		//	e107::getMessage()->addDebug("Attachment Directory: ".$attachmentDir);
 
-			if($uploaded = e107::getFile()->getUploaded($attachmentDir, 'attachment', array( 'max_file_count' => 5)))
+			if($uploaded = e107::getFile()->getUploaded('attachments', 'attachment', array( 'max_file_count' => 5)))
 			{
 
 				e107::getMessage()->addDebug("Uploaded Data: ".print_a($uploaded,true));
