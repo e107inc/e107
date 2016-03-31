@@ -79,7 +79,7 @@ $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 
 $GALLERY_TEMPLATE['slideshow_slide_item'] = '<span class="gallery-slide-item">{GALLERY_THUMB: w=150&h=120}</span>';
 
-$GALLERY_TEMPLATE['prettyphoto']['markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['content'] = '
 <div class="pp_pic_holder">
 	<div class="ppt">&nbsp;</div>
 	<div class="pp_top">
@@ -123,7 +123,7 @@ $GALLERY_TEMPLATE['prettyphoto']['markup'] = '
 <div class="pp_overlay"></div>
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['gallery_markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['gallery_item'] = '
 <div class="pp_gallery">
 	<a href="#" class="pp_arrow_previous">' . LAN_PREVIOUS . '</a>
 	<div>
@@ -135,11 +135,11 @@ $GALLERY_TEMPLATE['prettyphoto']['gallery_markup'] = '
 </div>
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['image_markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['image_item'] = '
 <img id="fullResImage" src="{path}" />
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['flash_markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['flash_item'] = '
 <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="{width}" height="{height}">
 	<param name="wmode" value="{wmode}" />
 	<param name="allowfullscreen" value="true" />
@@ -149,7 +149,7 @@ $GALLERY_TEMPLATE['prettyphoto']['flash_markup'] = '
 </object>
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['quicktime_markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['quicktime_item'] = '
 <object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" codebase="http://www.apple.com/qtactivex/qtplugin.cab" height="{height}" width="{width}">
 	<param name="src" value="{path}">
 	<param name="autoplay" value="{autoplay}">
@@ -158,17 +158,17 @@ $GALLERY_TEMPLATE['prettyphoto']['quicktime_markup'] = '
 </object>
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['iframe_markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['iframe_item'] = '
 <iframe src ="{path}" width="{width}" height="{height}" frameborder="no"></iframe>
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['inline_markup'] = '
+$GALLERY_TEMPLATE['prettyphoto']['inline_item'] = '
 <div class="pp_inline">{content}</div>
 ';
 
-$GALLERY_TEMPLATE['prettyphoto']['custom_markup'] = '';
+$GALLERY_TEMPLATE['prettyphoto']['custom_item'] = '';
 
-$GALLERY_TEMPLATE['prettyphoto']['social_tools'] = '
+$GALLERY_TEMPLATE['prettyphoto']['social_item'] = '
 <div class="pp_social">
 	<div class="twitter">
 		<a href="http://twitter.com/share" class="twitter-share-button" data-count="none">' . LAN_SHARE . '</a>
