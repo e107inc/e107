@@ -38,6 +38,10 @@ class gallery_shortcodes extends e_shortcode
 
 	function sc_gallery_caption($parm = '')
 	{
+		e107_require_once(e_PLUGIN . 'gallery/includes/gallery_load.php');
+		// Load prettyPhoto settings and files.
+		gallery_load_prettyphoto();
+
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$hook = varset($plugPrefs['pp_hook'], 'data-gal');
 		$tp = e107::getParser();
@@ -78,6 +82,10 @@ class gallery_shortcodes extends e_shortcode
 	 */
 	function sc_gallery_thumb($parm = '')
 	{
+		e107_require_once(e_PLUGIN . 'gallery/includes/gallery_load.php');
+		// Load prettyPhoto settings and files.
+		gallery_load_prettyphoto();
+		
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$hook = varset($plugPrefs['pp_hook'], 'data-gal');
 
