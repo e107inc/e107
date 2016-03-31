@@ -78,9 +78,9 @@ PM_BLOCKED_DELETE
 DELETE_BLOCKED_SELECTED
 */
 
-if(!class_exists('pm_shortcodes'))
+if(!class_exists('plugin_pm_pm_shortcodes'))
 {
-	class pm_shortcodes extends e_shortcode // class pm_handler_shortcodes
+	class plugin_pm_pm_shortcodes extends e_shortcode // class pm_handler_shortcodes
 	{
 		public		$pmPrefs;		// PM system options
 		public		$pmInfo;		// Data relating to current PM being displayed - replaced by $var.
@@ -89,6 +89,7 @@ if(!class_exists('pm_shortcodes'))
 		public		$nextPrev = array();	//XXX In USE ?? // Variables used by nextprev
 		public		$pmManager = NULL;		// Pointer to pmbox_manager class instance
 		public		$pmNextPrev = array();
+		public      $pmMode = null;
 		//public 		$var = array();
 
 		public function __construct()
@@ -98,7 +99,9 @@ if(!class_exists('pm_shortcodes'))
 			$this->pmPrefs = $pm_prefs;
 			// print_a($pm_prefs);
 			require_once(e_PLUGIN."pm/pm_class.php");
+
 			$pmClass = new private_message($pm_prefs);
+
 			$blocks = $pmClass->block_get_user();
 
 			foreach($blocks as $usr)
@@ -225,16 +228,22 @@ if(!class_exists('pm_shortcodes'))
 			{
 				$ret = "
 				<div id='up_container' >
-				<span id='upline' style='white-space:nowrap'>
-				<input class='tbox' type='file' name='file_userfile[]' size='40' />
-				</span>
-				</div>
+					<span id='upline' style='white-space:nowrap'>
+					".e107::getForm()->file('file_userfile[]', array('size'=>40, 'multiple'=>'multiple'))."
+					</span>
+				</div>";
+				/*
+				$ret .= "
 				<input type='button' class='btn btn-default button' value='".LAN_PM_11."' onclick=\"duplicateHTML('upline','up_container');\"  />
-				";
+				";*/
 				return $ret;
 			}
 			return '';
 		}
+
+
+
+
 
 
 		public function sc_pm_attachment_icon()
@@ -248,6 +257,8 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_attachments()
 		{
+			$tp = e107::getParser();
+
 			if($this->var['pm_attachments'] != '')
 			{
 				$attachments = explode(chr(0), $this->var['pm_attachments']);
@@ -257,7 +268,7 @@ if(!class_exists('pm_shortcodes'))
 				{
 					list($timestamp, $fromid, $rand, $filename) = explode("_", $a, 4);
 					$url = $this->url('action/get', array('id' => $this->var['pm_id'], 'index' => $i));
-					$ret .= "<a href='".$url."'>{$filename}</a><br />";
+					$ret .= $tp->toGlyph('fa-paperclip')."<a href='".$url."'>{$filename}</a><br />";
 					$i++;
 				}
 				$ret = substr($ret, 0, -3);
@@ -335,6 +346,11 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_read($parm = '')
 		{
+			if($this->pmMode == 'inbox')
+			{
+				return;
+			}
+
 			if($this->var['pm_read'] == 0)
 			{
 				return LAN_PM_27;
@@ -343,14 +359,14 @@ if(!class_exists('pm_shortcodes'))
 			{
 				return LAN_PM_28;
 			}
-			require_once(e_HANDLER.'date_handler.php');
+
 			if('lapse' != $parm)
 			{
-				return convert::convert_date($this->var['pm_read'], $parm);
+				return e107::getDate()->convert_date($this->var['pm_read'], $parm);
 			}
 			else
 			{
-				return convert::computeLapse($this->var['pm_read']);
+				return e107::getDate()->computeLapse($this->var['pm_read']);
 			}
 		}
 
@@ -358,19 +374,19 @@ if(!class_exists('pm_shortcodes'))
 		public function sc_pm_from_to()
 		{
 			$tp = e107::getParser();
-			$sc = e107::getScBatch('pm',TRUE);
+		//	$sc = e107::getScBatch('pm',TRUE);
 
-			if($this->var['pm_from'] == USERID)
+			if($this->pmMode == 'outbox')
 			{
-				$ret = LAN_PM_2.': <br />';
+				$ret = LAN_PM_2.': ';
 				$this->var['user_name'] = $this->var['sent_name'];
-				$ret .= $tp->parseTemplate("{PM_TO=link}", false, $sc);
+				$ret .= $this->sc_pm_to('link'); // $tp->parseTemplate("{PM_TO=link}", false, $sc);
 			}
 			else
 			{
-				$ret = LAN_PM_31.': <br />';
+				$ret = LAN_PM_31.': ';
 				$this->var['user_name'] = $this->var['from_name'];
-				$ret .= $tp->parseTemplate("{PM_FROM=link}", false, $sc);
+				$ret .= $this->sc_pm_from('link');// $tp->parseTemplate("{PM_FROM=link}", false, $sc);
 			}
 			return $ret;
 		}
@@ -380,7 +396,9 @@ if(!class_exists('pm_shortcodes'))
 		{
 			$tp = e107::getParser();
 			$ret = $tp->toHTML($this->var['pm_subject'], true, 'USER_TITLE');
+
 			$prm = explode(',',$parm);
+
 			if('link' == $prm[0])
 			{
 				$extra = '';
@@ -395,7 +413,9 @@ if(!class_exists('pm_shortcodes'))
 				$ret = "<a href='".$ret."'>".$ret."</a>";
 				*/
 
-				$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$this->var['pm_id']}{$extra}'>".$ret."</a>";
+				$url = e107::url('pm','index')."?show.{$this->var['pm_id']}{$extra}";
+
+				$ret = "<a href='".$url."'>".$ret."</a>";
 			}
 			return $ret;
 		}
@@ -434,6 +454,20 @@ if(!class_exists('pm_shortcodes'))
 			}
 		}
 
+		public function sc_pm_status_class()
+		{
+
+			if($this->var['pm_read'] > 0 )
+			{
+				return 'pm-read';
+			}
+			else
+			{
+				return 'pm-unread';
+			}
+
+		}
+
 
 		public function sc_pm_avatar()
 		{
@@ -463,23 +497,32 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_delete($parm = '')
 		{
+			if($this->pmMode !== 'inbox' && $this->pmMode !== 'outbox' && empty($parm))
+			{
+				 return '';
+			}
+
+
 			if($parm != '')
 			{
 				$extra = '.'.$parm;
 			}
 			else
 			{
-				$extra = '.'.($this->var['pm_from'] == USERID ? 'outbox' : 'inbox');
+				$extra = '.'.($this->pmMode == 'outbox' ? 'outbox' : 'inbox');
 			}
-			if($extra !== 'inbox' && $extra !== 'outbox') return '';
+
+
 			$action = $extra == 'outbox' ? 'delete-out' : 'delete-in';
-			return "<a href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_DELETE."' alt='".LAN_DELETE."' class='icon S16' /></a>";
+			return "<a class='btn btn-default' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
 		}
 
 
 		public function sc_pm_delete_selected()
 		{
-			return "<input type='submit' name='pm_delete_selected' class='button btn btn-danger' value='".LAN_PM_53."' />";
+			$tp = e107::getParser();
+			return e107::getForm()->button('pm_delete_selected',1,'delete',$tp->toGlyph('fa-trash').LAN_PM_53);
+		//	return "<input type='submit' name='pm_delete_selected' class='button btn btn-sm btn-danger' value='".LAN_PM_53."' />";
 		}
 
 
@@ -609,16 +652,93 @@ if(!class_exists('pm_shortcodes'))
 			return "<input type='submit' name='pm_delete_blocked_selected' class='btn btn-default button' value='".LAN_PM_53."' />";
 		}
 
-		/**
-		 * Convinient url assembling shortcut
-		 */
-		public function url($action, $params = array(), $options = array())
-		{
-			if(strpos($action, '/') === false) $action = 'view/'.$action;
 
-			return e107::getUrl()->create('pm/'.$action, $params, $options);
+
+		private function url($route, $params = array(), $options)
+		{
+
+			if(is_string($params))
+			{
+				parse_str($params,$params);
+			}
+
+			if(!isset($params['id']) && isset($params['pm_id'])) $params['id'] = $params['pm_id'];
+
+			if(is_string($route))
+			{
+				$route = explode('/', $route, 2);
+			}
+
+
+
+				$base = e107::url('pm','index').'?';
+
+				switch($route[1])
+				{
+					case 'index':
+					case 'inbox':
+						return $base.'inbox';
+						break;
+
+					case 'outbox':
+						return $base.'outbox';
+						break;
+
+					// we could just remove them all and let only 'message' live
+					case 'show':
+						return $base.'show.'.$params['id'];
+						break;
+
+					case 'message':
+						return $base.'show.'.$params['id'].'.inbox';
+						break;
+
+					case 'sent':
+						return $base.'show.'.$params['id'].'.outbox';
+						break;
+
+					case 'reply':
+						return $base.'reply.'.$params['id'];
+						break;
+
+					case 'new':
+						return $base.'send';
+						break;
+				}
+
+
+
+				switch($route[1])
+				{
+					case 'delete-in':
+						return $base.'del.'.$params['id'].'.inbox';
+						break;
+
+					case 'delete-out':
+						return $base.'del.'.$params['id'].'.outbox';
+						break;
+
+					case 'delete-blocked':
+						return $base.'delblocked.'.$params['id'];
+						break;
+
+					case 'block':
+						return $base.'block.'.$params['id'];
+						break;
+
+					case 'unblock':
+						return $base.'unblock.'.$params['id'];
+						break;
+
+					case 'get':
+						return $base.'get.'.$params['id'].'.'.$params['index'];
+						break;
+				}
+
+
+			}
+
 		}
-	}
 
 }
 

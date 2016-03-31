@@ -560,7 +560,7 @@ class e_db_mysql
 			}
 			else
 			{
-				echo "what happened to db_debug??!!<br />";
+				// echo "what happened to db_debug??!!<br />";
 			}
 		}
 

@@ -42,10 +42,11 @@ class user_select
 				break;
 		}
 				
-		$text = "<select class='tbox' id='user' name='user' onchange=\"uc_switch('class')\">";
+		$text = "<select class='tbox form-control' id='user' name='user' onchange=\"uc_switch('class')\">";
 		$text .= "<option value=''>".US_LAN_1."</option>";
-		$sql -> db_Select("user", "user_name", $where." ORDER BY user_name");
-		while ($row = $sql -> db_Fetch()) {
+		$sql ->select("user", "user_name", $where." ORDER BY user_name");
+		while ($row = $sql ->fetch())
+		{
 			$text .= "<option value='".$row['user_name']."'>".$row['user_name']."</option>";
 		}
 		$text .= "</select>";
@@ -134,7 +135,7 @@ class user_select
 			}
 			else
 			{
-				$text .= "<input class='tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$tp -> post_toForm($user_value)."'>&nbsp;";
+				$text .= "<input class='form-control tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$tp -> post_toForm($user_value)."'>&nbsp;";
 			}
 			$text .= "<img src='".e_IMAGE_ABS."generic/user_select.png'
 			style='width: 16px; height: 16px; vertical-align: top' alt='".US_LAN_4."...' 

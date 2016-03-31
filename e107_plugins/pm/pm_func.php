@@ -22,7 +22,14 @@ class pmbox_manager
 		$this->pmDB = e107::getDb();
 		// $this->pmPrefs = $prefs;
 		
-		$this->pmPrefs = e107::getPlugPref('pm');
+		$this->pmPrefs = e107::pref('pm');
+	}
+
+
+	public function prefs()
+	{
+		return $this->pmPrefs;
+
 	}
 
 
