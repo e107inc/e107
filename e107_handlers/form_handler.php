@@ -1059,6 +1059,96 @@ class e_form
 
 	}
 
+
+	/**
+	 * Render a simple user dropdown list.
+	 * @param string $name - form field name
+	 * @param null $val - current value
+	 * @param array $options
+	 * @param string $options['group'] if == 'class' then users will be sorted into userclass groups.
+	 * @param string $options['fields']
+	 * @param string $options['classes']
+	 * @return string select form element.
+	 */
+	public function userlist($name, $val=null, $options=array())
+	{
+
+		$fields = (!empty($options['fields']))  ? $options['fields'] :  "user_id,user_name,user_class";
+		$class =  (!empty($options['classes']))   ? $options['classes'] : e_UC_MEMBER ; // all users sharing the same class as the logged-in user.
+
+		$class = str_replace(" ","",$class);
+
+		switch ($class)
+		{
+			case e_UC_ADMIN:
+				$where = "user_admin = 1";
+				$classList = e_UC_ADMIN;
+				break;
+
+			case e_UC_MEMBER:
+				$where = "user_ban = 0";
+				$classList = e_UC_MEMBER;
+				break;
+
+			case e_UC_NOBODY:
+				return "";
+				break;
+
+			case 'matchclass':
+				$where = "user_class REGEXP '(^|,)(".str_replace(",","|", USERCLASS).")(,|$)'";
+				$classList = USERCLASS;
+			break;
+
+			default:
+				$where = "user_class REGEXP '(^|,)(".str_replace(",","|", $class).")(,|$)'";
+				$classList = $class;
+				break;
+		}
+
+
+		$users =   e107::getDb()->retrieve("user",$fields, "WHERE ".$where." ORDER BY user_name LIMIT 1000",true);
+
+		$opt = array();
+
+		if(!empty($options['group']) && $options['group'] == 'class')
+		{
+			$classes = explode(',',$classList);
+
+			foreach($classes as $cls)
+			{
+				$cname = e107::getUserClass()->getName($cls);
+
+				$cname = str_replace('_',' ', trim($cname));
+				foreach($users as $u)
+				{
+					$uclass = explode(',',$u['user_class']);
+					if(($classList == e_UC_ADMIN) || ($classList = e_UC_MEMBER) || in_array($cls,$uclass))
+					{
+						$id = $u['user_id'];
+						$opt[$cname][$id] = $u['user_name'];
+					}
+				}
+
+
+			}
+
+		}
+		else
+		{
+			foreach($users as $u)
+			{
+				$id = $u['user_id'];
+				$opt[$id] = $u['user_name'];
+			}
+
+		}
+
+		return $this->select($name,$opt,$val,$options, varset($options['default'],null));
+
+	}
+
+
+
 	/**
 	 * User auto-complete search
 	 *
