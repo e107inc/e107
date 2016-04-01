@@ -4408,36 +4408,37 @@ return;
 
 		// Disable Shortcodes in pre/code
 
-       foreach($this->nodesToDisableSC as $node)
+       foreach($this->nodesToDisableSC as $key => $node)
        {
-			$value = $node->C14N();
+		    $value = $node->C14N();
 
-			if(empty($value))
-			{
-				continue;
-			}
+		    if(empty($value))
+		    {
+		        continue;
+		    }
 
-			$value = str_replace("&#xD;","\r",$value);
+		    $value = str_replace("&#xD;", "\r", $value);
 
-	        if($node->nodeName == 'pre')
-            {
-                $value = preg_replace('/^<pre[^>]*>/','',$value);
-                $value = str_replace("</pre>", "", $value);
-            }
+		    if($node->nodeName == 'pre')
+		    {
+		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
+		        $value = str_replace("</pre>", "", $value);
+		    }
 
-            if($node->nodeName == 'code')
-            {
-                $value = preg_replace('/^<code[^>]*>/','',$value);
-                $value = str_replace("</code>", "", $value);
-            }
+		    if($node->nodeName == 'code')
+		    {
+		        $value = preg_replace('/^<code[^>]*>/', '', $value);
+		        $value = str_replace("</code>", "", $value);
+		    }
 
-			$value = str_replace('{','{{{',$value); // temporarily change {e_XXX} to {{{e_XXX}}}
-			$value = str_replace('}','}}}',$value); // temporarily change {e_XXX} to {{{e_XXX}}}
+		    $value = str_replace('{', '{{{', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
+		    $value = str_replace('}', '}}}', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
 
-	     //  $value = htmlentities(htmlentities($value)); // Crashes apache.
-	        $node->nodeValue =  $value; // Crashes apache sometimes FIXME! .
+		    $newNode = $doc->createElement($node->nodeName);
+		    $newNode->nodeValue = $value;
 
-        }
+		    $node->parentNode->replaceChild($newNode, $node);
+       }
 
 
 
