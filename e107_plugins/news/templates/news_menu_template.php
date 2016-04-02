@@ -44,9 +44,10 @@ $NEWS_MENU_TEMPLATE['months']['item']        = '
 
 
 // latest menu
-$NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="nav nav-list news-menu-latest">';
-$NEWS_MENU_TEMPLATE['latest']['end']         = '</ul>'; // Example: $NEWS_MENU_TEMPLATE['latest']['end']  '<br />{currentTotal} from {total}';
-$NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE} {NEWSCOMMENTCOUNT}</a></li>';
+$NEWS_MENU_TEMPLATE['latest']['start']       = '<div class="row">';
+$NEWS_MENU_TEMPLATE['latest']['end']         = '</div>'; // Example: $NEWS_MENU_TEMPLATE['latest']['end']  '<br />{currentTotal} from {total}';
+$NEWS_MENU_TEMPLATE['latest']['item']        = '<div class="col-md-3"><a class="e-menu-link newsmonths" href="{NEWSURL}">
+												{SETIMAGE: w=400&h=400&crop=1}{NEWSIMAGE}<br />{NEWSTITLE} {NEWSCOMMENTCOUNT}</a></div>';
 
 $NEWS_MENU_WRAPPER['latest']['NEWSCOMMENTCOUNT']	= "({---})";
 
