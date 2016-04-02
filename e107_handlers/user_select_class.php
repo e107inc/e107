@@ -19,7 +19,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 class user_select 
 {
-	function user_list($class, $form_name) 
+
+	/**
+	 * @deprecated use e107::getForm()->userlist() instead.
+	 * @param $class
+	 * @param $form_name
+	 * @return string
+	 */
+	function user_list($class, $form_name)
 	{
 		global $sql, $tp;
 		if($class === FALSE) { $class = e_UC_MEMBER;}
@@ -41,15 +48,22 @@ class user_select
 				$where = "user_class REGEXP '(^|,)(".$tp -> toDB($class, true).")(,|$)'";
 				break;
 		}
-				
+
+
+
+
 		$text = "<select class='tbox form-control' id='user' name='user' onchange=\"uc_switch('class')\">";
 		$text .= "<option value=''>".US_LAN_1."</option>";
 		$sql ->select("user", "user_name", $where." ORDER BY user_name");
+
 		while ($row = $sql ->fetch())
 		{
 			$text .= "<option value='".$row['user_name']."'>".$row['user_name']."</option>";
 		}
+
 		$text .= "</select>";
+
+		$text .= $where;
 		return $text;
 	}
 
@@ -57,10 +71,11 @@ class user_select
 	/**
 	 *    Display selection dropdown of all user classes
 	 *
+	 * @deprecated
 	 * @param int $class - if its e_UC_MEMBER, all classes are shown. Otherwise only the class matching the value is shown.
 	 * @return string
 	 */
-	function class_list($class, $form_name) 
+	function class_list($class, $form_name)  //TODO Find all instances of use and replace.
 	{
 		global $sql;
 		$text = "<select class='tbox' id='class' name='class' onchange=\"uc_switch('user')\">";

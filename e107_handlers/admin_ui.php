@@ -6198,7 +6198,13 @@ class e_admin_form_ui extends e_form
 		return $text;
 	}
 
-	// TODO - do more
+
+	/**
+	 * Render Batch and Filter Dropdown options.
+	 * @param string $type
+	 * @param string $selected
+	 * @return string
+	 */
 	function renderBatchFilter($type='batch', $selected = '') // Common function used for both batches and filters.
 	{
 		$optdiz = array('batch' => LAN_BATCH_LABEL_PREFIX.'&nbsp;', 'filter'=> LAN_FILTER_LABEL_PREFIX.'&nbsp;');

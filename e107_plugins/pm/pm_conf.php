@@ -288,6 +288,30 @@ function show_options($pm_prefs)
 		<td>".$frm->text('pm_option-title', $pm_prefs['title'], '50')."</td>
 	</tr>
 	<tr>
+		<td>".ADLAN_PM_23."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', $pm_prefs['pm_class'], 'member,admin,classes')."</td>
+	</tr>
+	<tr>
+		<td>".ADLAN_PM_29."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
+	</tr>
+	<tr>
+		<td>User may send PMs to</td>
+		<td>"; //TODO LAN
+
+	$list = e107::getUserClass()->getClassList('nobody,main,admin,member,classes');
+	$list['matchclass'] = "(Any user with the same class)"; //TODO LAN
+
+	//$txt .= print_a($list,true);
+	$txt .= $frm->select('pm_option-send_to_class', $list, varset($pm_prefs['send_to_class'], e_UC_MEMBER));
+
+	//$text .= ".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
+
+	$txt .= "</td>
+	</tr>
+
+
+	<tr>
 		<td>".ADLAN_PM_17."</td>
 		<td>".$frm->radio_switch('pm_option-animate', $pm_prefs['animate'], LAN_YES, LAN_NO)."</td>
 	</tr>
@@ -309,12 +333,9 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_22."</td>
-		<td>".$frm->text('pm_option-popup_delay', $pm_prefs['popup_delay'], '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
+		<td class='form-inline'>".$frm->text('pm_option-popup_delay', $pm_prefs['popup_delay'], '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
 	</tr>
-	<tr>
-		<td>".ADLAN_PM_23."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', $pm_prefs['pm_class'], 'member,admin,classes')."</td>
-	</tr>
+
 	<tr>
 		<td>".ADLAN_PM_24."</td>
 		<td>".$frm->text('pm_option-perpage', $pm_prefs['perpage'], '5', array('class' => 'tbox input-text'))."</td>
@@ -333,12 +354,9 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_28."</td>
-		<td>".$frm->text('pm_option-attach_size', $pm_prefs['attach_size'], '8', array('class' => 'tbox input-text'))." kB</td>
+		<td class='form-inline'>".$frm->text('pm_option-attach_size', $pm_prefs['attach_size'], '8', array('class' => 'tbox input-text'))." kB</td>
 	</tr>
-	<tr>
-		<td>".ADLAN_PM_29."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
-	</tr>
+
 	<tr>
 		<td>".ADLAN_PM_30."</td>
 		<td>".e107::getUserClass()->uc_dropdown('pm_option-multi_class', $pm_prefs['multi_class'], 'nobody,member,admin,classes')."</td>
@@ -349,7 +367,7 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_81."</td>
-		<td>".$frm->text('pm_option-pm_max_send', $pm_prefs['pm_max_send'], '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
+		<td class='form-inline'>".$frm->text('pm_option-v', $pm_prefs['pm_max_send'], '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
 	</tbody>
 	</table>

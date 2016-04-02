@@ -392,6 +392,26 @@ class user_class
 	}
 
 
+	/**
+	 * @param string $optlist - comma-separated list of classes/class types to be included in the list
+			It allows selection of the classes to be shown in the dropdown. All or none can be included, separated by comma. Valid options are:
+			public
+			guest
+			nobody
+			member
+			readonly
+			admin
+			main - main admin
+			new - new users
+			bots - search bot class
+			classes - shows all classes
+			matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
+	 * @return array
+	 */
+	public function getClassList($optlist)
+	{
+		return $this->uc_required_class_list($optlist);
+	}
 
 
 	/** 
