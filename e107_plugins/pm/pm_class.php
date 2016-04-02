@@ -172,8 +172,8 @@ class private_message
 				'pm_size' => $pmsize
 				);
 
-			print_a($info);
-			print_a($vars);
+		//	print_a($info);
+		//	print_a($vars);
 		}
 
 		if(isset($vars['to_userclass']) || isset($vars['to_array']))

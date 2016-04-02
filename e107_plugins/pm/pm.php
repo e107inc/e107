@@ -226,7 +226,8 @@ class pm_extended extends private_message
 		
 		$txt .= $tp->parseTemplate($PM_INBOX_FOOTER, true, $sc);
 		$txt .= "</form>";
-		
+
+
 		return $txt;
 	}
 

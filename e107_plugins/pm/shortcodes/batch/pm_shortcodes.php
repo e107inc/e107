@@ -124,6 +124,8 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			require_once(e_HANDLER.'user_select_class.php');
 			$us = new user_select;
 			$type = ($this->pmPrefs['dropdown'] == TRUE ? 'list' : 'popup');
+
+
 			if(check_class($this->pmPrefs['multi_class']))
 			{
 				$ret = $us->select_form($type, 'textarea.pm_to', '', $this->pmPrefs['pm_class']);
@@ -132,6 +134,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			{
 				$frm = e107::getForm();
 				//TODO Use $frm->userpicker();
+				return $frm->userlist('pm_to',null,array('default'=>'blank'));
 				return $frm->text('pm_to','',20,'typeahead=users');
 
 				// $ret = $us->select_form($type, 'pm_to', '', $this->pmPrefs['pm_class']);
@@ -559,7 +562,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			{
 				// pm_id is mapped insisde the config to id key
 				$ret = "
-				<form method='post' action='".$this->url('reply', $this->var)."'>
+				<form method='post' action='".$this->url('action/reply', $this->var)."'>
 				<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
 				</form>
 				";
@@ -573,7 +576,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 			if($pm_outbox['outbox']['filled'] < 100)
 			{
-				$link = $this->url('new');
+				$link = $this->url('action/new');
 				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".PM_SEND_LINK."</a>";
 			}
 			return '';
@@ -603,7 +606,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		public function sc_pm_blocked_senders_manage()
 		{
 			$sql = e107::getDb();
-			$count = $sql->db_Count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
+			$count = $sql->count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
 			if (!$count) return '';
 			return LAN_PM_66;
 		}
@@ -636,8 +639,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 		public function sc_pm_blocked_date($parm='')
 		{
-			require_once(e_HANDLER.'date_handler.php');
-			return convert::convert_date($this->pmBlocked['pm_block_datestamp'], $parm);
+			return e107::getDate()->convert_date($this->pmBlocked['pm_block_datestamp'], $parm);
 		}
 
 
@@ -654,7 +656,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 
 
-		private function url($route, $params = array(), $options)
+		private function url($route, $params = array())
 		{
 
 			if(is_string($params))
@@ -669,76 +671,56 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				$route = explode('/', $route, 2);
 			}
 
+			$base = e107::url('pm','index').'?';
 
-
-				$base = e107::url('pm','index').'?';
-
-				switch($route[1])
-				{
-					case 'index':
-					case 'inbox':
-						return $base.'inbox';
-						break;
-
-					case 'outbox':
-						return $base.'outbox';
-						break;
-
+			switch($route[1])
+			{
+				case 'index':
+				case 'inbox':
+					return $base.'inbox';
+					break;
+				case 'outbox':
+					return $base.'outbox';
+					break;
 					// we could just remove them all and let only 'message' live
-					case 'show':
-						return $base.'show.'.$params['id'];
-						break;
-
-					case 'message':
-						return $base.'show.'.$params['id'].'.inbox';
-						break;
-
-					case 'sent':
-						return $base.'show.'.$params['id'].'.outbox';
-						break;
-
-					case 'reply':
-						return $base.'reply.'.$params['id'];
-						break;
-
-					case 'new':
-						return $base.'send';
-						break;
-				}
-
-
-
-				switch($route[1])
-				{
-					case 'delete-in':
-						return $base.'del.'.$params['id'].'.inbox';
-						break;
-
-					case 'delete-out':
-						return $base.'del.'.$params['id'].'.outbox';
-						break;
-
-					case 'delete-blocked':
-						return $base.'delblocked.'.$params['id'];
-						break;
-
-					case 'block':
-						return $base.'block.'.$params['id'];
-						break;
-
-					case 'unblock':
-						return $base.'unblock.'.$params['id'];
-						break;
-
-					case 'get':
-						return $base.'get.'.$params['id'].'.'.$params['index'];
-						break;
-				}
-
-
+				case 'show':
+					return $base.'show.'.$params['id'];
+					break;
+				case 'message':
+					return $base.'show.'.$params['id'].'.inbox';
+					break;
+				case 'sent':
+					return $base.'show.'.$params['id'].'.outbox';
+					break;
+				case 'reply':
+					return $base.'reply.'.$params['id'];
+					break;
+				case 'new':
+					return $base.'send';
+					break;
+				case 'delete-in':
+					return $base.'del.'.$params['id'].'.inbox';
+					break;
+				case 'delete-out':
+					return $base.'del.'.$params['id'].'.outbox';
+					break;
+				case 'delete-blocked':
+					return $base.'delblocked.'.$params['id'];
+					break;
+				case 'block':
+					return $base.'block.'.$params['id'];
+					break;
+				case 'unblock':
+					return $base.'unblock.'.$params['id'];
+					break;
+				case 'get':
+					return $base.'get.'.$params['id'].'.'.$params['index'];
+					break;
 			}
 
 		}
+
+	}
 
 }
 
