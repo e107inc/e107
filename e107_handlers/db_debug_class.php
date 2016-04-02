@@ -517,10 +517,16 @@ class e107_db_debug {
 			</thead>
 			<tbody>\n";
 
+		$description = array(1=>'Bbcode',2=>'Shortcode',3=>'Wrapper');
+		$style = array(1 => 'label-info', 2=>'label-primary', 3=>'label-warning');
+
  		foreach($this -> scbbcodes as $codes)
 		{
+
+			$type = $codes['type'];
+
 			$text .= "<tr>
-				<td class='forumheader3' style='width: 10%;'>".($codes['type'] == 1 ? "BBCode" : "Shortcode")."</td>
+				<td class='forumheader3' style='width: 10%;'><span class='label ".$style[$type]."'>".($description[$type])."</span></td>
 				<td class='forumheader3' style='width: auto;'>".(isset($codes['code']) ? $codes['code'] : "&nbsp;")."</td>
 				<td class='forumheader3' style='width: auto;'>".($codes['parm'] ? $codes['parm'] : "&nbsp;")."</td>
 				<td class='forumheader3' style='width: 40%;'>".($codes['details'] ? $codes['details'] : "&nbsp;")."</td>
