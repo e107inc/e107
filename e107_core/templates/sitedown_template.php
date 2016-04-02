@@ -28,8 +28,8 @@ if(!isset($SITEDOWN_TABLE))
 		<meta http-equiv='content-style-type' content='text/css' />\n
 		<link rel='stylesheet' href='{SITEDOWN_E107_CSS}' type='text/css' media='all' />
 		<link rel='stylesheet' href='{SITEDOWN_THEME_CSS}' type='text/css' media='all' />
-		<link rel='stylesheet' media='all' property='stylesheet' type='text/css' href='http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' />
-		<link rel='stylesheet' media='all' property='stylesheet' type='text/css' href='http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' />
+		<link rel='stylesheet' media='all' property='stylesheet' type='text/css' href='https://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' />
+		<link rel='stylesheet' media='all' property='stylesheet' type='text/css' href='https://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' />
 		<title>{SITEDOWN_TABLE_PAGENAME}</title>
 		<style type='text/css'>
 			.img-responsive { display: inline }
