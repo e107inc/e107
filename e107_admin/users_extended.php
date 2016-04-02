@@ -461,12 +461,57 @@ e107::js('footer-inline', js());
 
 		public function beforeCreate($new_data, $old_data)
 		{
+
+			$ue = e107::getUserExt();
+			$mes = e107::getMessage();
+
+
+			if($ue->user_extended_field_exist($new_data['user_extended_struct_name']))
+			{
+				$mes->addError("Field name already exists");
+				return false;
+			}
+
+			if($ue->user_extended_reserved($new_data['user_extended_struct_name']))
+			{
+				$mes->addError("Field name is reserved. Please try a different name.");
+				return false;
+			}
+
 			$new_data = $this->compileData($new_data);
 
+			$field_info = $ue->user_extended_type_text($new_data['user_extended_struct_type'], $new_data['user_extended_struct_default']);
 
+			// wrong type
+			if(false === $field_info)
+			{
+				e107::getMessage()->addDebug("\$field_info is false ".__METHOD__." ".__LINE__);
+				return false;
+			}
+			else
+			{
+				if(e107::getDb()->gen('ALTER TABLE #user_extended ADD user_'.e107::getParser()->toDB($new_data['user_extended_struct_name'], true).' '.$field_info)===false)
+				{
+					$mes->addError("Unable to alter table user_extended.");
+				}
+			}
+
+			if(empty($new_data['user_extended_struct_order']))
+			{
+			    if($max = e107::getDb()->retrieve('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
+			    {
+					if(is_numeric($max))
+					{
+				        $new_data['user_extended_struct_order'] = ($max + 1);
+					}
+			    }
+			}
 
 			return $new_data;
+
 		}
+
+
 
 		public function afterCreate($new_data, $old_data, $id)
 		{
@@ -478,12 +523,59 @@ e107::js('footer-inline', js());
 			// do something
 		}
 
+		public function beforeDelete($data,$id)
+		{
+			$mes = e107::getMessage();
+
+			if(!e107::getUserExt()->user_extended_remove($id, $data['user_extended_struct_name']))
+			{
+				$mes->addError("Unable to delete column from user_extended table.");
+				return false;
+			}
+			else
+			{
+				$mes->addDebug("User Extended Column deleted from table");
+			}
+
+		}
+
+
+		public function afterDelete($data,$id)
+		{
+
+
+		}
+
 
 		// ------- Customize Update --------
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
+
+			$ue = e107::getUserExt();
+			$mes = e107::getMessage();
+
+			if ($ue->user_extended_field_exist($new_data['user_extended_struct_name']))
+			{
+				$field_info = $ue->user_extended_type_text($new_data['user_extended_struct_type'], $new_data['user_extended_struct_default']);
+
+				if(false === $field_info) 	// wrong type
+				{
+					 return false;
+				}
+				else
+				{
+					if(e107::getDb()->gen("ALTER TABLE #user_extended MODIFY user_".e107::getParser()->toDB($new_data['user_extended_struct_name'], true)." ".$field_info)===false)
+					{
+						$mes->addError("Unable to alter table user_extended.");
+					}
+				}
+
+
+			}
+
 			$new_data = $this->compileData($new_data);
+
 
 			return $new_data;
 		}
@@ -717,12 +809,12 @@ e107::js('footer-inline', js());
 				case 'write': // Edit Page
 
 
-					return $this->select('user_required',$opts, varset($curVal,1),'size=xxlarge');
+					return $this->select('user_extended_struct_required',$opts, varset($curVal,1),'size=xxlarge');
 					break;
 
 				case 'filter':
 				case 'batch':
-					return  array();
+					return  $opts;
 					break;
 			}
 
