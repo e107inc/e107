@@ -375,7 +375,7 @@ e107::js('footer-inline', js());
              'user_extended_struct_write' =>   array ( 'title' => 'Write Access', 'type' => 'userclass', 'data' => 'int', 'filter'=>true, 'batch'=>true, 'width' => '10%', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_signup' =>   array ( 'title' => 'Signup', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
              'user_extended_struct_order' =>   array ( 'title' => LAN_ORDER, 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-             'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
+             'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'sort=1' ),
 		);
 
 		protected $fieldpref = array('user_extended_struct_name', 'user_extended_struct_text', 'user_extended_struct_type', 'user_extended_struct_read', 'user_extended_struct_write', 'user_extended_struct_required', 'user_extended_struct_applicable');
@@ -388,6 +388,9 @@ e107::js('footer-inline', js());
 
 		public function init()
 		{
+
+
+
 
 			if($this->getAction() == 'edit' || $this->getAction() == 'create')
 			{
@@ -763,6 +766,29 @@ e107::js('footer-inline', js());
 
 	class user_extended_struct_form_ui extends e_admin_form_ui
 	{
+
+
+		function options($parms, $value, $id, $attributes)
+		{
+
+			if($attributes['mode'] == 'read')
+			{
+
+				$name = $this->getController()->getListModel()->get('user_extended_struct_name');
+
+				if(strpos($name, 'plugin_') === 0)
+				{
+					$attributes['readParms']['deleteClass'] = e_UC_NOBODY;
+				}
+
+				$text = "<div class='btn-group'>";
+				$text .= $this->renderValue('options',$value,$attributes, $id);
+				$text .= "</div>";
+
+				return $text;
+			}
+		}
+
 
 
 		// Custom Method/Function

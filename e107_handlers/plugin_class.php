@@ -665,7 +665,7 @@ class e107plugin
 		$type_name = $this->ue_field_type_name($type);
 		
 		$mes->addDebug("Extended Field: ".$action.": ".$field_name." : ".$type_name);
-		
+
 		// predefined
 		if($type == EUF_PREFIELD)
 		{
@@ -748,6 +748,7 @@ class e107plugin
 			}
 			
 			//var_dump($field_attrib, $field_name, $type);
+			$mes->addDebug("Extended Field: ".print_a($field_attrib,true));
 			
 			$status = $this->module['ue']->user_extended_add(
 				$field_name, 
@@ -2264,7 +2265,7 @@ class e107plugin
 			switch ($function)
 			{
 				case 'install': // Add all active extended fields
-					case 'upgrade':
+				case 'upgrade':
 
 					if (!$remove)
 					{

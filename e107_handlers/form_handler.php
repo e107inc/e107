@@ -3306,7 +3306,8 @@ class e_form
 					{
 						//return  $this->options($field, $value, $attributes, $id); 
 						// consistent method arguments, fixed in admin cron administration
-						 return $this->options($parms, $value, $id, $attributes); // OLD breaks admin->cron 'options' column
+						$attributes['type'] = null; // prevent infinite loop.
+						return $this->options($parms, $value, $id, $attributes);
 					}
 				}
 
