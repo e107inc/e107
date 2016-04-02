@@ -654,6 +654,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	// 3. Now do what we can based on file extension
 	switch ($file_ext)
 	{
+	
 		case 'jpg':
 		case 'gif':
 		case 'png':
@@ -661,8 +662,13 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		case 'pjpeg':
 		case 'bmp':
 		case 'swf':
+		case 'fla':
+		case 'flv':
 		case 'swc':
 		case 'psd':
+		case 'ai':
+		case 'eps':
+		case 'svg':
 		case 'tiff':
 		case 'jpc': // http://fileinfo.com/extension/jpc
 		case 'jpx': // http://fileinfo.com/extension/jpx
@@ -687,9 +693,19 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		case 'tar':
 		case 'bzip':
 		case 'pdf':
+		case 'doc':
+		case 'docx':
+		case 'xls':
+		case 'xlsx':
 		case 'rar':
 		case '7z':
 		case 'csv':
+		case 'mp3':
+		case 'wav':
+		case 'mp4':
+		case 'mpg':
+		case 'mpa':
+		case 'wma':
 		case 'wmv':
 		case 'flv': //Flash stream
 		case 'f4v': //Flash stream
