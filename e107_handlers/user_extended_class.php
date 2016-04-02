@@ -470,7 +470,7 @@ class e107_user_extended
 	  {
 	  	return false;
 	  }
-	  
+
 	  switch ($type)
 	  {
 		case EUF_INTEGER :
@@ -506,7 +506,7 @@ class e107_user_extended
 		break;
 
 	  }
-	  if($type != EUF_DB_FIELD && $type != EUF_TEXTAREA && $default != '')
+	  if($type != EUF_DB_FIELD && ($type != EUF_TEXTAREA) && ($type != EUF_CHECKBOX) && !empty($default))
 	  {
 		$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
 	  }

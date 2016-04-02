@@ -2223,6 +2223,7 @@ class pluginBuilder
 			$frm = e107::getForm();
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
+			$tp = e107::getParser();
 			
 			$plugFolders = $fl->get_dirs(e_PLUGIN);	
 			foreach($plugFolders as $dir)
@@ -2243,7 +2244,7 @@ class pluginBuilder
 			$info .= "<li>".EPL_ADLAN_106."</li>";
 			$info .= "</ul>";
 
-			$mes->addInfo($info);
+			$mes->addInfo($tp->toHtml($info,true));
 			
 			$text = $frm->open('createPlugin','get');
 			$text .= "<table class='table adminform'>
