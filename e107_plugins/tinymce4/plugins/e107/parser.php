@@ -17,6 +17,7 @@ if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'
 $_E107['no_online'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
+$_E107['no_maintenance'] = true;
 
 if(!defined('TINYMCE_DEBUG'))
 {
