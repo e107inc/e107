@@ -690,26 +690,16 @@ e107::js('footer-inline', js());
 					break;
 
 				case 'write': // Edit Page
-					$text = "<select class='tbox e-select' name='user_type' id='user_type'>";
-					foreach(e107::getUserExt()->user_extended_types as $key => $val)
-					{
-						$selected = ($curVal == $key) ? " selected='selected'": "";
-						$text .= "<option value='".$key."' $selected>".$val."</option>";
-					}
 
 					if(empty($curVal))
 					{
-						$curtype = '1';
+						$curVal = '1';
 					}
-					$text .= "
-				</select>";
-					return $text;
-					break;
 
-				case 'filter':
-				case 'batch':
-					return  array();
-					break;
+					$types = e107::getUserExt()->user_extended_types;
+
+					return $this->select('user_extended_struct_type', $types, $curVal, array('class'=>'tbox e-select'));
+
 			}
 		}
 
