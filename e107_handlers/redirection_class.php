@@ -56,6 +56,13 @@ class redirection
 
 		// Remove from self_exceptions:  SITEURL, SITEURL.'index.php', // allows a custom frontpage to be viewed while logged out and membersonly active.
 	}
+
+
+
+	function getSelfExceptions()
+	{
+		return $this->self_exceptions;
+	}
 	
 	/**
 	 * FIXME - build self_exceptions dynamically - use URL assembling to match the proper URLs later
