@@ -2423,7 +2423,7 @@ class e107
 	 * @param boolean $merge
 	 * @return array
 	 */
-	public function getTemplateInfo($plug_name = null, $id, $key = null, $override = true, $merge = false)
+	public static function getTemplateInfo($plug_name = null, $id, $key = null, $override = true, $merge = false)
 	{
 		if($plug_name)
 		{
