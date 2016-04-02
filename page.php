@@ -103,6 +103,7 @@ class pageClass
 
     public $pageOutput = array();   // Output storage - text and caption
     protected $renderMode;          // Page render mode to be used on view page
+    protected $templateID = null;
 	
 	function __construct($debug=FALSE)
 	{
@@ -578,8 +579,8 @@ class pageClass
 			$this->template = e107::getCoreTemplate('page', 'default');
 		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///Upgraded to setVars() array. (not using '$this->page')
 			
-			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page); 
-		
+			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
+
 			
 			
 			define("e_PAGETITLE", $this->page['page_title']);
@@ -589,21 +590,27 @@ class pageClass
 
 		$this->page = $sql->fetch();
 
-		// setting override to true breaks default. 
-		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), true, true); 
+		// setting override to true breaks default.
+
+		$this->templateID = vartrue($this->page['page_template'], 'default');
+
+		$this->template = e107::getCoreTemplate('page', $this->templateID, true, true);
 		
 		if(!$this->template)
 		{
 			// switch to default
 			$this->template = e107::getCoreTemplate('page', 'default', false, false);
+			$this->templateID = 'default';
 		}
 
 		if(empty($this->template))
 		{
 			 $this->template = e107::getCoreTemplate('page', 'default');
+			 $this->templateID = 'default';
 		}
 		
 		$this->batch = e107::getScBatch('page',null,'cpage');
+		$this->batch->wrapper('page/'.$this->templateID );
 
 		$this->pageText = $this->page['page_text'];
 
@@ -804,7 +811,7 @@ class pageClass
 	
 	public function renderPage($template, $vars = null)
 	{
-		
+
 		if(null === $vars) 
 		{
 			$ret = e107::getParser()->parseTemplate($template, true, $this->batch);

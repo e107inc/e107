@@ -9,7 +9,8 @@
 */
  
 if (!defined('e107_INIT')) { exit; }
- 
+$PAGE_WRAPPER = array();
+
 global $sc_style;
 
 $sc_style['CPAGEAUTHOR|default']['pre'] = '';
@@ -49,8 +50,11 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 		
 		<div class="clear"><!-- --></div>
 		{CPAGERATING|default}
+		{CPAGEEDIT}
 	'; 
-	
+
+	$PAGE_WRAPPER['default']['CPAGEEDIT'] = "<div class='text-right'>{---}</div>";
+
 	// used only when password authorization is required
 	$PAGE_TEMPLATE['default']['authorize'] = '
 		<div class="cpage-restrict ">
