@@ -680,7 +680,7 @@ class page_admin_ui extends e_admin_ui
 		function beforeCreate($newdata,$olddata)
 		{
 			$newdata['menu_name'] = preg_replace('/[^\w-*]/','-',$newdata['menu_name']);
-			
+
 			if(empty($newdata['page_sef']))
 			{
 				if(!empty($newdata['page_title']))
@@ -693,13 +693,20 @@ class page_admin_ui extends e_admin_ui
 				}
 		
 			}
-			else 
+			else
 			{
 				$newdata['page_sef'] = eHelper::secureSef($newdata['page_sef']);
 			}
+
 			
 			$sef = e107::getParser()->toDB($newdata['page_sef']);
-			
+
+			if(isset($newdata['page_title']) && isset($newdata['page_title']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
+			{
+				e107::getMessage()->addError(CUSLAN_79);
+				return false;
+			}
+
 			if(e107::getDb()->count('page', '(*)', "page_sef='{$sef}'"))
 			{
 				e107::getMessage()->addError(CUSLAN_57);
