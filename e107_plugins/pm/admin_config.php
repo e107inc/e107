@@ -9,13 +9,20 @@ if (!getperms('P'))
 	exit;
 }
 
-
+e107::lan('pm',true);
+// e107::css('inline', "div.tab-content { margin-top:10px } ");
 
 class pm_admin extends e_admin_dispatcher
 {
 
 	protected $modes = array(	
-	
+
+		'main'	=> array(
+			'controller' 	=> 'private_msg_ui',
+			'path' 			=> null,
+			'ui' 			=> 'private_msg_form_ui',
+			'uipath' 		=> null
+		),
 		'inbox'	=> array(
 			'controller' 	=> 'private_msg_ui',
 			'path' 			=> null,
@@ -41,17 +48,21 @@ class pm_admin extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 
-		'inbox/list'			=> array('caption'=> "Inbox", 'perm' => 'P'),
-		'outbox/list'			=> array('caption'=> "Outbox", 'perm' => 'P'),
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+		'main/limits'		=> array('caption'=> ADLAN_PM_55, 'perm' => 'P'),
+		'main/maint'		=> array('caption'=> ADLAN_PM_59, 'perm' => 'P'),
+
+		'main/null'		    => array('divider'=> true),
+		'inbox/list'		=> array('caption'=> "Inbox", 'perm' => 'P'),
+		'outbox/list'		=> array('caption'=> "Outbox", 'perm' => 'P'),
 		'outbox/create'		=> array('caption'=> "Compose", 'perm' => 'P'),
 
 	//	'block/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 	//	'block/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 			
-	/*
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
-	*/	
+
+
+
 
 	);
 
@@ -59,7 +70,7 @@ class pm_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'pm';
+	protected $menuTitle = LAN_PLUGIN_PM_NAME;
 }
 
 
@@ -69,7 +80,7 @@ class pm_admin extends e_admin_dispatcher
 class private_msg_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Private Messaging';
+		protected $pluginTitle		= LAN_PLUGIN_PM_NAME;
 		protected $pluginName		= 'pm';
 		protected $table			= 'private_msg';
 		protected $pid				= 'pm_id';
@@ -95,7 +106,668 @@ class private_msg_ui extends e_admin_ui
 		);		
 		
 		protected $fieldpref = array('pm_id', 'pm_from', 'pm_to', 'pm_sent', 'pm_read', 'pm_subject', 'pm_text');
-		
+
+		protected $preftabs = array(LAN_BASIC, LAN_ADVANCED);
+
+		protected $prefs = array(
+			'title'	        => array('title'=> ADLAN_PM_16,         'tab'=>0, 'type' => 'text', 'data' => 'str', 'help'=>''),
+			'pm_class'	    => array('title'=> ADLAN_PM_23,      'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'sendall_class'	=> array('title'=> ADLAN_PM_29,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'send_to_class'	=> array('title'=> "'Send to' user selection",  'tab'=>0, 'type' => 'method', 'data' => 'int', 'help'=>''),
+			'opt_userclass' => array('title'=> ADLAN_PM_31,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'animate'	    => array('title'=> ADLAN_PM_17,     'tab'=>0, 'type' => 'boolean', 'data' => 'str', 'help'=>''),
+			'dropdown'	    => array('title'=> ADLAN_PM_18,     'tab'=>0, 'type' => 'boolean', 'data' => 'str', 'help'=>''),
+			'read_timeout'	=> array('title'=> ADLAN_PM_19, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>''),
+			'unread_timeout'=> array('title'=> ADLAN_PM_20,         'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>''),
+			'popup'	        => array('title'=> ADLAN_PM_21,  'tab'=>0, 'type' => 'boolean', 'data' => 'int', 'help'=>''),
+			'popup_delay'	=> array('title'=> ADLAN_PM_22,  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>'', 'writeParms'=>array('post'=>ADLAN_PM_44, 'tdClassRight'=>'form-inline')),
+			'perpage'	    => array('title'=> ADLAN_PM_24,  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>''),
+			'notify_class'  => array('title'=> ADLAN_PM_25,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'receipt_class' => array('title'=> ADLAN_PM_26,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'attach_class'  => array('title'=> ADLAN_PM_27,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'attach_size'   => array('title'=> ADLAN_PM_28,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'', 'writeParms'=>'tdClassRight=form-inline&post=Kb'),
+			'multi_class'   => array('title'=> ADLAN_PM_30,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+			'pm_max_send'   => array('title'=> ADLAN_PM_81,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('classlist'=>'nobody,member,admin,classes')),
+		);
+
+
+
+		private function limitsPageAdd()
+		{
+			$sql = e107::getDb();
+			$mes = e107::getMessage();
+
+			$id = intval($_POST['newlimit_class']);
+			if($sql->select('generic','gen_id',"gen_type = 'pm_limit' AND gen_datestamp = ".$id))
+			{
+				$mes->addInfo(ADLAN_PM_5); // 'Limit for selected user class already exists'
+			}
+			else
+			{
+				$limArray = array(			// Strange field names because we use the 'generic' table. But at least it documents the correlation
+					'gen_type' => 'pm_limit',
+					'gen_datestamp' => intval($_POST['newlimit_class']),
+					'gen_user_id' => intval($_POST['new_inbox_count']),
+					'gen_ip' => intval($_POST['new_outbox_count']),
+					'gen_intdata' => intval($_POST['new_inbox_size']),
+					'gen_chardata' => intval($_POST['new_outbox_size'])
+					);
+
+				if($sql->insert('generic', $limArray))
+				{
+					e107::getLog()->logArrayAll('PM_ADM_05', $limArray);
+					$mes->addSuccess(ADLAN_PM_6);
+				}
+				else
+				{
+					e107::getLog()->log_event('PM_ADM_08', '');
+					$mes->addError(ADLAN_PM_7);
+				}
+			}
+
+
+		}
+
+
+		private function limitsPageUpdate()
+		{
+			$sql = e107::getDb();
+			$mes = e107::getMessage();
+			$pm_prefs = e107::pref('pm');
+
+			$limitVal = intval($_POST['pm_limits']);
+
+
+			if($pm_prefs['pm_limits'] != $limitVal)
+			{
+				$pm_prefs['pm_limits'] = $limitVal;
+
+				$mes->addSuccess(ADLAN_PM_8);
+			}
+			foreach(array_keys($_POST['inbox_count']) as $id)
+			{
+				$id = intval($id);
+				if($_POST['inbox_count'][$id] == '' && $_POST['outbox_count'][$id] == '' && $_POST['inbox_size'][$id] == '' && $_POST['outbox_size'][$id] == '')
+				{
+					//All entries empty - Remove record
+					if($sql->delete('generic','gen_id = '.$id))
+					{
+						e107::getLog()->log_event('PM_ADM_07', 'ID: '.$id);
+						$mes->addSuccess($id.ADLAN_PM_9);
+					}
+					else
+					{
+						e107::getLog()->log_event('PM_ADM_10', '');
+						$mes->addError($id.ADLAN_PM_10);
+					}
+				}
+				else
+				{
+					$limArray = array(			// Strange field names because we use the 'generic' table. But at least it documents the correlation
+						'gen_user_id' => intval($_POST['inbox_count'][$id]),
+						'gen_ip' => intval($_POST['outbox_count'][$id]),
+						'gen_intdata' => intval($_POST['inbox_size'][$id]),
+						'gen_chardata' => intval($_POST['outbox_size'][$id])
+						);
+
+
+					if ($sql->update('generic',array('data' => $limArray, 'WHERE' => 'gen_id = '.$id)))
+					{
+						e107::getLog()->logArrayAll('PM_ADM_06', $limArray);
+						$mes->addSuccess($id.ADLAN_PM_11);
+					}
+					else
+					{
+						e107::getLog()->log_event('PM_ADM_09', '');
+						$mes->addError($id.ADLAN_PM_7);
+					}
+				}
+			}
+
+
+		}
+
+
+
+
+		public function limitsPage()
+		{
+
+			if(isset($_POST['addlimit']))
+			{
+				$this->limitsPageAdd();
+			}
+
+			if(isset($_POST['updatelimits']))
+			{
+				$this->limitsPageUpdate();
+			}
+
+			// ---------------------
+
+
+			$sql = e107::getDb();
+			$frm = e107::getForm();
+			$pm_prefs = e107::pref('pm');
+
+			if (!isset($pm_prefs['pm_limits'])) { $pm_prefs['pm_limits'] = 0; }
+
+			if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+			{
+				while($row = $sql->fetch())
+				{
+					$limitList[$row['limit_classnum']] = $row;
+				}
+			}
+
+			$txt = "
+				<fieldset id='plugin-pm-showlimits'>
+				<form method='post' action='".e_SELF.'?'.e_QUERY."'>
+				<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+					<col class='col-control' />
+				</colgroup>
+				<thead>
+					<tr>
+					<th>".ADLAN_PM_36."</th>
+					<th>".ADLAN_PM_37."</th>
+					<th>".ADLAN_PM_38."</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td colspan='3' style='text-align:left'>".ADLAN_PM_45."
+					<select name='pm_limits' class='tbox'>
+				";
+
+
+				$sel = ($pm_prefs['pm_limits'] == 0 ? "selected='selected'" : "");
+				$txt .= "<option value='0' {$sel}>".ADLAN_PM_33."</option>\n";
+
+				$sel = ($pm_prefs['pm_limits'] == 1 ? "selected='selected'" : "");
+				$txt .= "<option value='1' {$sel}>".ADLAN_PM_34."</option>\n";
+
+				$sel = ($pm_prefs['pm_limits'] == 2 ? "selected='selected'" : "");
+				$txt .= "<option value='2' {$sel}>".ADLAN_PM_35."</option>\n";
+
+				$txt .= "</select>\n";
+
+				$txt .= '&nbsp;&nbsp;'.ADLAN_PM_77."
+					</td>
+				</tr>
+
+			";
+
+			if (isset($limitList))
+			{
+				foreach($limitList as $row)
+				{
+					$txt .= "
+					<tr>
+					<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
+					<td>
+						<div class='row'>
+							<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /></div>
+							<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /></div>
+						</div>
+					</td>
+					<td>
+						<div class='row'>
+							<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /></div>
+							<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /></div>
+						</div>
+					</td>
+					</tr>
+					";
+				}
+			}
+			else
+			{
+				$txt .= "
+				<tr>
+				<td colspan='3' style='text-align: center'>".ADLAN_PM_41."</td>
+				</tr>
+				";
+			}
+
+			$txt .= '
+			</tbody>
+			</table>
+			<div class="buttons-bar center">
+			'.$frm->admin_button('updatelimits','no-value','update', LAN_UPDATE).'
+			</div>
+			</form>
+			</fieldset>';
+
+			$tabs = array();
+			$tabs[] = array('caption'=>ADLAN_PM_14, 'text'=>$txt);
+			$tabs[] = array('caption'=>ADLAN_PM_15, 'text'=>$this->addLimitPage());
+
+			return e107::getForm()->tabs($tabs);
+		}
+
+
+
+		function addLimitPage()
+		{
+			$sql = e107::getDb();
+			$frm = e107::getForm();
+			$pm_prefs = e107::pref('pm');
+
+			if($sql->select('generic', "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+			{
+				while($row = $sql->fetch())
+				{
+					$limitList[$row['limit_classnum']] = $row;
+				}
+			}
+
+			$txt = "
+				<fieldset id='plugin-pm-addlimit'>
+				<form method='post' action='".e_SELF.'?'.e_QUERY."'>
+				<table class='table adminform'>
+				<colgroup>
+					<col class='col-label' />
+					<col class='col-control' />
+					<col class='col-control' />
+				</colgroup>
+				<thead>
+				<tr>
+					<th>".ADLAN_PM_36."</th>
+					<th>".ADLAN_PM_37."</th>
+					<th>".ADLAN_PM_38."</th>
+					</tr>
+				</thead>
+				<tbody>
+			";
+
+			$txt .= "
+			<tr>
+			<td>".e107::getUserClass()->uc_dropdown('newlimit_class', 0, 'guest,member,admin,classes')."</td>
+			<td>
+				<div class='row'>
+				<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_inbox_count' value='' /></div>
+				<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_outbox_count' value='' /></div>
+				</div>
+			</td>
+			<td>
+				<div class='row'>
+				<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_inbox_size' value='' /></div>
+				<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_outbox_size' value='' /></div>
+				</div>
+			</td>
+			</tr>
+
+			";
+
+			$txt .= '
+			</tbody>
+			</table>
+			<div class="buttons-bar center">
+			'.$frm->admin_button('addlimit','no-value','update', LAN_ADD).'
+			</div>
+			</form>
+			</fieldset>';
+			return $txt;
+		}
+
+
+
+
+
+		public function mainPageProcess()
+		{
+			$pm_prefs = e107::pref('pm');
+			$mes = e107::getMessage();
+
+			$maintOpts = array();
+
+			if (vartrue($_POST['pm_maint_sent']))
+			{
+				$maintOpts['sent'] = 1;
+			}
+
+			if (vartrue($_POST['pm_maint_rec']))
+			{
+				$maintOpts['rec'] = 1;
+			}
+
+			if (vartrue($_POST['pm_maint_blocked']))
+			{
+				$maintOpts['blocked'] = 1;
+			}
+
+			if (vartrue($_POST['pm_maint_expired']))
+			{
+				$maintOpts['expired'] = 1;
+			}
+
+			if (vartrue($_POST['pm_maint_attach']))
+			{
+				$maintOpts['attach'] = 1;
+			}
+
+			$result = $this->doMaint($maintOpts, $pm_prefs);
+
+			if (is_array($result))
+			{
+				foreach ($result as $k => $ma)
+				{
+					foreach ($ma as $m)
+					{
+						$mes->add($m, $k);
+					}
+				}
+			}
+
+
+		}
+
+
+
+
+		public function maintPage()
+		{
+			if(isset($_POST['pm_maint_execute']))
+			{
+				$this->mainPageProcess();
+			}
+
+
+
+			$frm = e107::getForm();
+			$pmPrefs = e107::pref('pm');
+
+			$txt = "
+			<fieldset id='plugin-pm-maint'>
+			<legend>".ADLAN_PM_62."</legend>
+			<form method='post' action='".e_SELF."?maint'>
+			<table class='table adminform'>
+			<colgroup>
+				<col class='col-label' />
+				<col class='col-control' />
+			</colgroup>
+			<tbody>
+			<tr>
+				<td>".ADLAN_PM_63."</td>
+				<td>".$frm->radio_switch('pm_maint_sent', '', LAN_YES, LAN_NO)."</td>
+			</tr>
+			<tr>
+				<td>".ADLAN_PM_64."</td>
+				<td>".$frm->radio_switch('pm_maint_rec', '', LAN_YES, LAN_NO)."</td>
+			</tr>
+			<tr>
+				<td>".ADLAN_PM_65."</td>
+				<td>".$frm->radio_switch('pm_maint_blocked', '', LAN_YES, LAN_NO)."</td>
+			</tr>
+			";
+
+			if ($pmPrefs['read_timeout'] || $pmPrefs['unread_timeout'])
+			{
+				$txt .= "
+				<tr>
+					<td>".ADLAN_PM_71."</td>
+					<td>".$frm->radio_switch('pm_maint_expired', '', LAN_YES, LAN_NO)."</td>
+				</tr>";
+			}
+
+			$txt .= "
+			<tr>
+				<td>".ADLAN_PM_78."</td>
+				<td>".$frm->radio_switch('pm_maint_attach', '', LAN_YES, LAN_NO)."</td>
+			</tr>
+			</tbody>
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('pm_maint_execute','no-value','delete', LAN_GO)."
+			</div>
+			</form>
+			</fieldset>
+			";
+
+
+			return $txt;
+
+
+		}
+
+
+
+
+		/**
+		 * 	Do PM DB maintenance
+		 *	@param array $opts of tasks key = sent|rec|blocked|expired  (one or more present). ATM value not used
+		 *	@return array where key is message type (E_MESSAGE_SUCCESS|E_MESSAGE_ERROR|E_MESSAGE_INFO etc), data is array of messages of that type (key = timestamp)
+		 */
+		private function doMaint($opts, $pmPrefs)
+		{
+			if (!count($opts))
+			{
+				return array(E_MESSAGE_ERROR => array(ADLAN_PM_66));
+			}
+
+
+
+			$results = array(E_MESSAGE_INFO => array(ADLAN_PM_67));		// 'Maintenance started' - primarily for a log entry to mark start time
+			$logResults = array();
+			$e107 = e107::getInstance();
+			e107::getLog()->log_event('PM_ADM_04', implode(', ',array_keys($opts)));
+			$pmHandler = new private_message($pmPrefs);
+			$db2 =e107::getDb('sql2');							// Will usually need a second DB object to avoid over load
+			$start = 0;						// Use to ensure we get different log times
+
+
+			if (isset($opts['sent']))		// Want pm_from = deleted user and pm_read_del = 1
+			{
+				$cnt = 0;
+				if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
+							WHERE (pm.`pm_read_del = 1) AND `#user`.`user_id` IS NULL"))
+				{
+					while ($row = $db2->fetch())
+					{
+						if ($pmHandler->del($row['pm_id']) !== FALSE)
+						{
+							$cnt++;
+						}
+					}
+				}
+				$start = time();
+				$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_74);
+			}
+			if (isset($opts['rec']))		// Want pm_to = deleted user and pm_sent_del = 1
+			{
+				$cnt = 0;
+				if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
+							WHERE (pm.`pm_sent_del = 1) AND `#user`.`user_id` IS NULL"))
+				{
+					while ($row = $db2->fetch())
+					{
+						if ($pmHandler->del($row['pm_id']) !== FALSE)
+						{
+							$cnt++;
+						}
+					}
+				}
+				$start = max($start + 1, time());
+				$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_75);
+			}
+
+
+			if (isset($opts['blocked']))
+			{
+				if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_from` = `#user`.`user_id`
+							WHERE `#user`.`user_id` IS NULL"))
+				{
+					$start = max($start + 1, time());
+					$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+				}
+				else
+				{
+					$start = max($start + 1, time());
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
+				}
+				if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
+							WHERE `#user`.`user_id` IS NULL"))
+				{
+					$start = max($start + 1, time());
+					$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+				}
+				else
+				{
+					$start = max($start + 1, time());
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_68);
+				}
+			}
+
+
+			if (isset($opts['expired']))
+			{
+				$del_qry = array();
+				$read_timeout = intval($pmPrefs['read_timeout']);
+				$unread_timeout = intval($pmPrefs['unread_timeout']);
+				if($read_timeout > 0)
+				{
+					$timeout = time()-($read_timeout * 86400);
+					$del_qry[] = "(pm_sent < {$timeout} AND pm_read > 0)";
+				}
+				if($unread_timeout > 0)
+				{
+					$timeout = time()-($unread_timeout * 86400);
+					$del_qry[] = "(pm_sent < {$timeout} AND pm_read = 0)";
+				}
+				if(count($del_qry) > 0)
+				{
+					$qry = implode(' OR ', $del_qry);
+					$cnt = 0;
+					if($db2->db_Select('private_msg', 'pm_id', $qry))
+					{
+						while ($row = $db2->db_Fetch())
+						{
+							if ($pmHandler->del($row['pm_id']) !== FALSE)
+							{
+								$cnt++;
+							}
+						}
+					}
+					$start = max($start + 1, time());
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_73);
+				}
+				else
+				{
+					$start = max($start + 1, time());
+					$results[E_MESSAGE_ERROR][$start] = ADLAN_PM_72;
+				}
+			}
+
+
+			if (isset($opts['attach']))
+			{	// Check for orphaned and missing attachments
+
+				$fl = e107::getFile();
+				$missing = array();
+				$orphans = array();
+				$fileArray = $fl->get_files(e_PLUGIN.'pm/attachments'); //FIXME wrong path.
+				if ($db2->select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
+				{
+					while ($row = $db2->fetch())
+					{
+						$attachList = explode(chr(0), $row['pm_attachments']);
+						foreach ($attachList as $a)
+						{
+							$found = FALSE;
+							foreach ($fileArray as $k => $fd)
+							{
+								if ($fd['fname'] == $a)
+								{
+									$found = TRUE;
+									unset($fileArray[$k]);
+									break;
+								}
+							}
+							if (!$found)
+							{
+								$missing[] = $row['pm_id'].':'.$a;
+							}
+						}
+					}
+				}
+				// Any files left in $fileArray now are unused
+				if (count($fileArray))
+				{
+					foreach ($fileArray as $k => $fd)
+					{
+						unlink($fd['path'].$fd['fname']);
+						$orphans[] = $fd['fname'];
+					}
+				}
+				$attachMessage = str_replace(array('--ORPHANS--', '--MISSING--'), array(count($orphans), count($missing)), ADLAN_PM_79);
+				if (TRUE)
+				{	// Mostly for testing - probably disable this
+					if (count($orphans))
+					{
+						$attachMessage .= '[!br!]Orphans:[!br!]'.implode('[!br!]', $orphans);
+					}
+					if (count($missing))
+					{
+						$attachMessage .= '[!br!]Missing:[!br!]'.implode('[!br!]', $missing);
+					}
+				}
+				$start = max($start + 1, time());
+				$results[E_MESSAGE_SUCCESS][$start] = $attachMessage;
+			}
+
+
+			e107::getLog()->logArrayAll('PM_ADM_03', $this->makeLogEntry($results));
+
+			foreach ($results as $k => $r)
+			{
+				foreach ($r as $sk => $s)
+				{
+					$results[$k][$sk] = str_replace('[!br!]','<br />',$s);
+				}
+			}
+			return $results;
+		}
+
+
+
+		/**
+		 *	Turn the array produced by doMaint for message display into an array of log strings.
+		 *	Data is sorted into time stamp order
+		 *
+		 *	@param array $results - array of arrays as returned from doMaint()
+		 *	@param array|boolean $extra - optional additional information which is sorted into the main result according to keys - so use low numbers
+		 *	to make the entry appear at the beginning, and text strings to add to the end.
+		 */
+		function makeLogEntry($results, $extra = FALSE)
+		{
+			$logPrefixes = array(E_MESSAGE_SUCCESS => 'Pass - ', E_MESSAGE_ERROR => 'Fail - ', E_MESSAGE_INFO => 'Info - ', E_MESSAGE_DEBUG => 'Debug - ');
+
+			$res = array();
+
+			foreach ($results as $k => $ma)
+			{
+				foreach ($ma as $ts => $m)
+				{
+					$res[$ts] = $logPrefixes[$k].$m;
+				}
+			}
+
+			if (is_array($extra))
+			{
+				$res = array_merge($res, $extra);
+			}
+
+			ksort($res);		// Sort in ascending order of timestamp
+
+			return $res;
+		}
+
+
+
+
 
         public function init()
         {
@@ -137,13 +809,6 @@ class private_msg_ui extends e_admin_ui
 
 			}
 
-
-            if(vartrue($_GET['iframe']))
-            {
-                define('e_IFRAME', true);   
-            }
-     
- 		
 
 
         
@@ -190,6 +855,18 @@ class private_msg_ui extends e_admin_ui
 
 class private_msg_form_ui extends e_admin_form_ui
 {
+
+	function send_to_class($parms, $value, $id)
+	{
+		$list = e107::getUserClass()->getClassList('main,admin,member,classes');
+		$list['matchclass'] = "(Any user with the same class)"; //TODO LAN
+
+		return $this->select('pm_option-send_to_class', $list, vartrue($value, e_UC_MEMBER));
+
+	}
+
+
+
 
 	function options($parms, $value, $id, $attributes)
 	{
