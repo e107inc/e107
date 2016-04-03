@@ -318,11 +318,11 @@ class pm_extended extends private_message
 
 		if($comeFrom == 'outbox')
 		{
-			 $bread = array('text'=> LAN_PM_26, 'url'=>e107::url('pm','index').'?mode=outbox');
+			 $bread = array('text'=> LAN_PLUGIN_PM_OUTBOX, 'url'=>e107::url('pm','index').'?mode=outbox');
 		}
 		else
 		{
-			 $bread = array('text'=> LAN_PM_25, 'url'=>e107::url('pm','index').'?mode=inbox');
+			 $bread = array('text'=> LAN_PLUGIN_PM_INBOX, 'url'=>e107::url('pm','index').'?mode=inbox');
 		}
 
 		$ns->tablerender(LAN_PM, $this->breadcrumb($bread ,'#'.$pmid).$txt);
@@ -337,13 +337,13 @@ class pm_extended extends private_message
 		{	// Show Outbox
 
 			$caption = '';
-			if(!deftrue('BOOTSTRAP')){  $caption .= LAN_PM." - ".LAN_PM_26; }
+			if(!deftrue('BOOTSTRAP')){  $caption .= LAN_PM." - ".LAN_PLUGIN_PM_OUTBOX; }
 			$ns->tablerender($caption, $this->show_outbox(), 'PM');
 		} 
 		else
 		{	// Show Inbox
 			$caption = '';
-			if(!deftrue('BOOTSTRAP')){  $caption .= LAN_PM." - ".LAN_PM_25; }
+			if(!deftrue('BOOTSTRAP')){  $caption .= LAN_PM." - ".LAN_PLUGIN_PM_INBOX; }
 			$ns->tablerender($caption, $this->show_inbox(), 'PM');
 		}
 	}
@@ -784,15 +784,15 @@ switch ($action)
 
 	case 'inbox' :
 		$caption  = LAN_PM;
-		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PM_25; }
+		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PLUGIN_PM_INBOX; }
 
-		$ns->tablerender($caption, $pm->breadcrumb(LAN_PM_25). $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
+		$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_INBOX). $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
 		break;
 
 	case 'outbox' :
 		$caption  = LAN_PM;
-		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PM_26; }
-		$ns->tablerender($caption, $pm->breadcrumb(LAN_PM_26).$mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
+		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PLUGIN_PM_OUTBOX; }
+		$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_OUTBOX).$mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
 		break;
 
 	case 'show' :

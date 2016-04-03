@@ -273,7 +273,7 @@ class private_msg_ui extends e_admin_ui
 				</colgroup>
 				<thead>
 					<tr>
-					<th>".ADLAN_PM_36."</th>
+					<th>".LAN_USERCLASS."</th>
 					<th>".ADLAN_PM_37."</th>
 					<th>".ADLAN_PM_38."</th>
 				</tr>
@@ -311,14 +311,14 @@ class private_msg_ui extends e_admin_ui
 					<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
 					<td>
 						<div class='row'>
-							<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /></div>
-							<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /></div>
+							<div class='col-md-2'>".LAN_PLUGIN_PM_INBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /></div>
+							<div class='col-md-2'>".LAN_PLUGIN_PM_OUTBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /></div>
 						</div>
 					</td>
 					<td>
 						<div class='row'>
-							<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /></div>
-							<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /></div>
+							<div class='col-md-2'>".LAN_PLUGIN_PM_INBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /></div>
+							<div class='col-md-2'>".LAN_PLUGIN_PM_OUTBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /></div>
 						</div>
 					</td>
 					</tr>
@@ -377,7 +377,7 @@ class private_msg_ui extends e_admin_ui
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".ADLAN_PM_36."</th>
+					<th>".LAN_USERCLASS."</th>
 					<th>".ADLAN_PM_37."</th>
 					<th>".ADLAN_PM_38."</th>
 					</tr>
@@ -390,14 +390,14 @@ class private_msg_ui extends e_admin_ui
 			<td>".e107::getUserClass()->uc_dropdown('newlimit_class', 0, 'guest,member,admin,classes')."</td>
 			<td>
 				<div class='row'>
-				<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_inbox_count' value='' /></div>
-				<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_outbox_count' value='' /></div>
+				<div class='col-md-2'>".LAN_PLUGIN_PM_INBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_inbox_count' value='' /></div>
+				<div class='col-md-2'>".LAN_PLUGIN_PM_OUTBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_outbox_count' value='' /></div>
 				</div>
 			</td>
 			<td>
 				<div class='row'>
-				<div class='col-md-2'>".ADLAN_PM_39.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_inbox_size' value='' /></div>
-				<div class='col-md-2'>".ADLAN_PM_40.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_outbox_size' value='' /></div>
+				<div class='col-md-2'>".LAN_PLUGIN_PM_INBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_inbox_size' value='' /></div>
+				<div class='col-md-2'>".LAN_PLUGIN_PM_OUTBOX.":</div><div class='col-md-10'><input type='text' class='tbox' size='5' name='new_outbox_size' value='' /></div>
 				</div>
 			</td>
 			</tr>
