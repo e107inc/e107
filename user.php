@@ -52,7 +52,12 @@ if(e_AJAX_REQUEST)
 
 		$db = e107::getDb();
 
-		if($db->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT " . $l))
+		$where = "user_name LIKE '". $q."%' ";
+
+		//TODO FIXME Filter by userclass.  - see $frm->userlist().
+
+
+		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . $l))
 		{
 			$data = array();
 			while($row = $db->fetch())

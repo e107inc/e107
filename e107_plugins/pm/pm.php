@@ -59,7 +59,7 @@ if(!defined('ATTACHMENT_ICON'))
 
 if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
 {
-	define('PM_DELETE_ICON', $tp->toGlyph('fa-trash'));
+	define('PM_DELETE_ICON', $tp->toGlyph('fa-trash', 'fw=1'));
 }
 else
 {
@@ -74,7 +74,7 @@ if(!empty($_GET['mode']))
 {
 	$action = $tp->filter($_GET['mode']);
 }
-
+/*
 if($action == 'textarea' || $action == 'input')
 {
 	if($qs[1] == 'pm_to') {
@@ -83,7 +83,7 @@ if($action == 'textarea' || $action == 'input')
 		$us->popup();
 		exit;
 	}
-}
+}*/
 
 $pm_proc_id = intval(varset($qs[1],0));
 
@@ -407,19 +407,26 @@ class pm_extended extends private_message
 		}
 
 		$pm_info = $this->pmManager->pm_getInfo('outbox');
+
 		if($pm_info['outbox']['total'] != $_POST['numsent'])
 		{
 			return LAN_PM_14;
+		}
+
+		if(isset($_POST['pm_userclass']) && ($_POST['pm_userclass'] == e_UC_NOBODY))
+		{
+			$_POST['pm_userclass'] = false;
 		}
 
 		if(isset($_POST['user']))
 		{
 			$_POST['pm_to'] = $_POST['user'];
 		}
+
 		if(isset($_POST['pm_to']))
 		{
 			$msg = '';
-			if(isset($_POST['to_userclass']) && $_POST['to_userclass'])
+			if(!empty($_POST['pm_userclass']))
 			{
 				if(!check_class($this->pmPrefs['opt_userclass']))
 				{
@@ -432,11 +439,7 @@ class pm_extended extends private_message
 			}
 			else
 			{
-				$to_array = explode("\n", trim($_POST['pm_to']));
-				foreach($to_array as $k => $v)
-				{
-					$to_array[$k] = trim($v);
-				}
+				$to_array = explode(",", str_replace(" ", "", $_POST['pm_to']));
 				$to_array = array_unique($to_array);
 
 				if(count($to_array) == 1)
@@ -487,12 +490,6 @@ class pm_extended extends private_message
 
 			$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
 
-
-
-
-
-
-
 			foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
 			{
 				if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
@@ -542,31 +539,7 @@ class pm_extended extends private_message
 
 			}
 
-
-/*
-			if($_FILES['file_userfile']['name'][0])
-			{
-				if(check_class($this->pmPrefs['attach_class']))
-				{
-					require_once(e_HANDLER.'upload_handler.php');
-					$randnum = rand(1000, 9999);			
-					$_POST['uploaded'] = file_upload(e_PLUGIN.'pm/attachments', 'attachment', $randnum.'_');
-					if($_POST['uploaded'] == FALSE)
-					{
-						unset($_POST['uploaded']);
-						$msg .= LAN_PM_22."<br />";
-					}
-				}
-				else
-				{
-					$msg .= LAN_PM_23.'<br />';
-					unset($_POST['uploaded']);
-				}
-			}
-*/
-
 			$_POST['from_id'] = USERID;
-
 
 			return $msg.$this->add($_POST);
 		}

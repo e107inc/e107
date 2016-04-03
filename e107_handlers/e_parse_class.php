@@ -3426,6 +3426,10 @@ class e_parser
 
 		$spin = null;
 		$rotate = null;
+		$fixedW = null;
+		$prefix = null;
+		$size = null;
+		$tag = 'span';
 
 	//	return print_r($fa4,true);
 		
@@ -3436,6 +3440,7 @@ class e_parser
 			$tag 	= 'i';
 			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
 			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
+			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
 		}
 		elseif(deftrue("BOOTSTRAP")) 
 		{
@@ -3456,7 +3461,7 @@ class e_parser
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		
-		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate."'></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate.$fixedW."'></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;

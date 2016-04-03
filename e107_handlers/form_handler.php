@@ -1097,6 +1097,11 @@ class e_form
 			case 'matchclass':
 				$where = "user_class REGEXP '(^|,)(".str_replace(",","|", USERCLASS).")(,|$)'";
 				$classList = USERCLASS;
+				$clist = explode(",",USERCLASS);
+				if(count($clist) > 1 && !isset($options['group'])) // group classes by default if more than one found.
+				{
+					$options['group'] = 'class';
+				}
 			break;
 
 			default:
@@ -1106,7 +1111,13 @@ class e_form
 		}
 
 
+
 		$users =   e107::getDb()->retrieve("user",$fields, "WHERE ".$where." ORDER BY user_name LIMIT 1000",true);
+
+		if(empty($users))
+		{
+			return "Unavailable";
+		}
 
 		$opt = array();
 
@@ -1159,7 +1170,7 @@ class e_form
 	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name)
 	 * @return string HTML text for display
 	 */
-	function userpicker($name_fld, $id_fld, $default_name, $default_id, $options = array())
+	function userpicker($name_fld, $id_fld='', $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options))
 		{
@@ -1187,6 +1198,8 @@ class e_form
 			'mode'     => 'multi',
 			'options'  => $default_options,
 		);
+
+		//TODO FIXME Filter by userclass.  - see $frm->userlist().
 
 		$options = array_replace_recursive($defaults, $options);
 
