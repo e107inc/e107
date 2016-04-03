@@ -127,7 +127,7 @@ class private_msg_ui extends e_admin_ui
 			'receipt_class' => array('title'=> ADLAN_PM_26,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
 			'attach_class'  => array('title'=> ADLAN_PM_27,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
 			'attach_size'   => array('title'=> ADLAN_PM_28,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'', 'writeParms'=>'tdClassRight=form-inline&post=Kb'),
-			'pm_max_send'   => array('title'=> ADLAN_PM_81,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
+			'pm_max_send'   => array('title'=> ADLAN_PM_81,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>''),
 			'perpage'	    => array('title'=> ADLAN_PM_24,  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>''),
 
 		);
