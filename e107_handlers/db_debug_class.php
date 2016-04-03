@@ -691,7 +691,7 @@ class e107_db_debug {
 		// Dump the debug log
 		//
 
-		$text .= "\n<table class='fborder table table-striped'>\n";
+		$text = "\n<table class='fborder table table-striped'>\n";
 
 		$bRowHeaders=FALSE;
 		

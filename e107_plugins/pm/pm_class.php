@@ -176,14 +176,15 @@ class private_message
 		//	print_a($vars);
 		}
 
-		if(isset($vars['to_userclass']) || isset($vars['to_array']))
+		if(!empty($vars['pm_userclass']) || isset($vars['to_array']))
 		{
-			if(isset($vars['to_userclass']))
+			if(!empty($vars['pm_userclass']))
 			{
 				$toclass = e107::getUserClass()->uc_get_classname($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
 				$ret .= LAN_PM_38.": {$toclass}<br />";
 				$class = TRUE;
+				$info['pm_sent_del'] = 1; // keep the outbox clean and limited to 1 entry when sending to an entire class.
 			}
 			else
 			{
@@ -361,7 +362,7 @@ class private_message
 	 *
 	 *	@return none
 	 */
-	function pm_send_notify($uid, $pmInfo, $pmid, $attach_count = 0)
+	function pm_send_notify($uid, $pmInfo, $pmid, $attach_count = 0) //TODO Add Template.
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_100.SITENAME;
@@ -372,11 +373,14 @@ class private_message
 		$txt = LAN_PM_101.SITENAME."\n\n";
 		$txt .= LAN_PM_102.USERNAME."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
+
 		if($attach_count > 0)
 		{
 			$txt .= LAN_PM_104.$attach_count."\n";
 		}
+
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
+
 		sendemail($pmInfo['to_info']['user_email'], $subject, $txt, $pmInfo['to_info']['user_name']);
 	}
 
@@ -388,7 +392,7 @@ class private_message
 	 *
 	 * 	@return none
 	 */
-	function pm_send_receipt($pmInfo)
+	function pm_send_receipt($pmInfo) //TODO Add Template.
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_106.$pmInfo['sent_name'];
@@ -398,6 +402,7 @@ class private_message
 		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
+
 		sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']);
 	}
 
@@ -545,14 +550,26 @@ class private_message
 	function pm_getuid($var)
 	{
 		$sql = e107::getDb();
-		$var = strip_if_magic($var);
-		$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
-		if($sql->select('user', 'user_id, user_name, user_class, user_email', "user_name LIKE '".$sql->escape($var, FALSE)."'"))
+
+		if(is_numeric($var))
+		{
+			$where = "user_id = ".intval($var);
+		}
+		else
+		{
+			$var = strip_if_magic($var);
+			$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
+			$where = "user_name LIKE '".$sql->escape($var, FALSE)."'";
+		}
+
+		if($sql->select('user', 'user_id, user_name, user_class, user_email', $where))
 		{
 			$row = $sql->fetch();
 			return $row;
 		}
-		return FALSE;
+
+		return false;
+
 	}
 
 
@@ -647,6 +664,7 @@ class private_message
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
 		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del = '0'
+
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
 		

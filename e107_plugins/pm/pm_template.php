@@ -76,13 +76,14 @@ $sc_style['PM_REPLY']['post'] = "</td>
 
 $PM_SEND_PM = "<div id='pm-send-pm'>
 <table class='table fborder'>
+<thead>
 <tr>
-	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
+	<th colspan='2' class='fcaption'>".LAN_PM_1.": </th>
 </tr>
+</thead>
 <tr>
 	<td class='forumheader3' style='width: 30%'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />
-	<div class='form-inline'>{PM_FORM_TOCLASS}</div></td>
+	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TO}</td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>
@@ -108,21 +109,22 @@ $PM_INBOX_HEADER = "
 <tr>
 	<th class='fcaption' style='width:1%'>&nbsp;</th>
 	<th class='fcaption' style='width:1%'>&nbsp;</th>
-	<th class='fcaption' style='width:38%'>".LAN_PM_5."</th>
-	<th class='fcaption' style='width:22%'>".LAN_PM_31."</th>
-	<th class='fcaption' style='width:30%'>".LAN_PM_32."</th>
-	<th class='fcaption' style='width:8%'>&nbsp;</th>
+	<th class='fcaption' style='width:25%'>".LAN_PM_31."</th>
+	<th class='fcaption' style='width:auto'>".LAN_PM_5."</th>
+	<th class='fcaption' style='width:auto'>".LAN_PM_32."</th>
+	<th class='fcaption' style='width:100px'>{PM_COMPOSE: class=block-level}</th>
 </tr>
 </thead>
 	<tbody>
 ";
 
-$PM_INBOX_TABLE = "
+$PM_INBOX_TABLE = "{SETIMAGE: w=30&h=30&crop=1}
 <tr class='{PM_STATUS_CLASS}'>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
+	<td class='forumheader3'>{PM_AVATAR: shape=circle} {PM_FROM=link}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link,inbox}</td>
-	<td class='forumheader3'>{PM_FROM=link}</td>
+
 	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3' style='text-align: center; white-space: nowrap'>{PM_DELETE=inbox}&nbsp;{PM_BLOCK_USER}</td>
 </tr>

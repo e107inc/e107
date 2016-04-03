@@ -114,36 +114,76 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 		}
 
-		// TODO rewrite $frm->userpicker(), etc. Get rid of e107_handlers/user_select_class.php
+
+		public function sc_pm_form_to($parm)
+		{
+			$userTo = $this->sc_pm_form_touser();
+			$classTo = $this->sc_pm_form_toclass();
+
+			if(deftrue('BOOTSTRAP'))
+			{
+
+				if(check_class($this->pmPrefs['opt_userclass']) )
+				{
+					$tab = array();
+
+					$userDiz = (check_class($this->pmPrefs['multi_class'])) ? LAN_PM_112 : LAN_USER;
+
+					$tab['user'] = array('caption'=> $userDiz, 'text'=>$userTo);
+					$tab['class'] = array('caption'=>LAN_PM_4, 'text'=>$classTo);
+
+					return e107::getForm()->tabs($tab);
+				}
+				else
+				{
+					return $userTo;
+				}
+
+
+
+			}
+
+			return $userTo."<br />".$classTo; // Legacy Layout.
+
+
+		}
+
+
+
+		// TODO  Get rid of e107_handlers/user_select_class.php
 		public function sc_pm_form_touser()
 		{
-			if(vartrue($this->var['from_name']))
+			if(vartrue($this->var['from_name'])) //TODO What's this?
 			{
-				return "<input type='hidden' name='pm_to' value='{$this->var['from_name']}' />{$this->var['from_name']}";
+			//	return "<input type='hidden' name='pm_to' value='{$this->var['from_name']}' />{$this->var['from_name']}";
 			}
-			require_once(e_HANDLER.'user_select_class.php');
-			$us = new user_select;
-			$type = ($this->pmPrefs['dropdown'] == TRUE ? 'list' : 'popup');
+
+		//	require_once(e_HANDLER.'user_select_class.php');
+		//	$us = new user_select;
+		//	$type = ($this->pmPrefs['dropdown'] == TRUE ? 'list' : 'popup');
 
 
 			if(check_class($this->pmPrefs['multi_class']))
 			{
-				$ret = $us->select_form($type, 'textarea.pm_to', '', $this->pmPrefs['pm_class']);
+				$selectize = array('maxItems'=>10);
+				$ret = e107::getForm()->userpicker('pm_to', null, null, null, array('selectize'=>$selectize));
 			}
 			else
 			{
 				$frm = e107::getForm();
-				//TODO Use $frm->userpicker();
-				return $frm->userlist('pm_to',null,array('default'=>'blank'));
-				return $frm->text('pm_to','',20,'typeahead=users');
-
-				// $ret = $us->select_form($type, 'pm_to', '', $this->pmPrefs['pm_class']);
+				$ret = $frm->userlist('pm_to',null,array('default'=>'blank', 'classes'=>varset($this->pmPrefs['send_to_class'], e_UC_MEMBER)));
 			}
+
+
 			return $ret;
 		}
 
+
+
 		public function sc_pm_form_toclass($parm = '')
 		{
+
+
 			if(vartrue($this->var['from_name']))
 			{
 				return '';
@@ -151,23 +191,27 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			$ret = "";
 
-			if(check_class($this->pmPrefs['opt_userclass']) && check_class($this->pmPrefs['multi_class']))
+			if(check_class($this->pmPrefs['opt_userclass']) )
 			{
 				//$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
 
-				$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
+		//		$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
 
 				// Option show by visibility
 				$filterVisible = $parm == 'visible' ? 'matchclass, filter' : 'matchclass';
 
-				$args = (ADMIN ? 'admin, classes' : 'classes, '.$filterVisible);
+				$args = (ADMIN ? 'nobody, admin, classes' : 'nobody,classes, '.$filterVisible);
 				if(check_class($this->pmPrefs['sendall_class']))
 				{
 					$args = 'member, '.$args;
 				}
 
-				$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', '', $args)."</div>";
+				$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', e_UC_NOBODY, $args)."</div>";
 				if (strpos($ret,'option') === FALSE)  $ret = '';
+			}
+			else
+			{
+				return false;
 			}
 			return $ret;
 		}
@@ -185,7 +229,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				}
 			}
 
-			return e107::getForm()->text('pm_subject',$value,255);
+			return e107::getForm()->text('pm_subject',$value,255, array('size'=>80));
 
 			// return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
 		}
@@ -472,9 +516,9 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		}
 
 
-		public function sc_pm_avatar()
+		public function sc_pm_avatar($parm)
 		{
-			return e107::getParser()->toAvatar($this->var);
+			return e107::getParser()->toAvatar($this->var, $parm);
 		}
 
 
@@ -485,15 +529,15 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			if(in_array($this->var['pm_from'], $this->pmBlocks))
 			{
-				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
+				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus','fw=1') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
 
-				return "<a class='btn btn-sm btn-default btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
+				return "<a class='btn  btn-default btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
 			}
 			else
 			{
-				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times') : "<img src='".e_PLUGIN_ABS."pm/images/mail_block.png'  alt='".LAN_PM_50."' class='icon S16' />";
+				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times','fw=1') : "<img src='".e_PLUGIN_ABS."pm/images/mail_block.png'  alt='".LAN_PM_50."' class='icon S16' />";
 
-				return "<a class='btn btn-sm btn-default' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
+				return "<a class='btn  btn-default' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
 			}
 		}
 
@@ -652,6 +696,17 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		public function sc_pm_delete_blocked_selected()
 		{
 			return "<input type='submit' name='pm_delete_blocked_selected' class='btn btn-default button' value='".LAN_PM_53."' />";
+		}
+
+
+		public function sc_pm_compose()
+		{
+			$tp = e107::getParser();
+			$urlCompose = e107::url('pm','index','', array('query'=>array('mode'=>'send')));
+
+			$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-sm btn-primary btn-block-level';
+
+			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ')."Compose</a>";
 		}
 
 

@@ -28,6 +28,9 @@ class user_select
 	 */
 	function user_list($class, $form_name)
 	{
+
+	//	e107::getMessage()->addDebug("Deprecated user_list Method used ".debug_backtrace());
+
 		global $sql, $tp;
 		if($class === FALSE) { $class = e_UC_MEMBER;}
 		switch ($class)
@@ -63,7 +66,11 @@ class user_select
 
 		$text .= "</select>";
 
-		$text .= $where;
+		if(ADMIN)
+		{
+			$text .= "user_list method is deprecated. ".print_a(debug_backtrace(),true);
+		}
+
 		return $text;
 	}
 
