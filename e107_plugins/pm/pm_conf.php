@@ -406,7 +406,7 @@ function show_limits($pm_prefs)
 		</colgroup>
 		<thead>
 			<tr>
-			<th>".ADLAN_PM_36."</th>
+			<th>".LAN_USERCLASS."</th>
 			<th>".ADLAN_PM_37."</th>
 			<th>".ADLAN_PM_38."</th>
 		</tr>
@@ -441,12 +441,12 @@ function show_limits($pm_prefs)
 			<tr>
 			<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
 			<td>
-			".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
-			".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /> 
+			".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
+			".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' />
 			</td>
 			<td>
-			".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> <br />
-			".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
+			".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> <br />
+			".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' />
 			</td>
 			</tr>
 			";
@@ -498,7 +498,7 @@ function add_limit($pm_prefs)
 		</colgroup>
 		<thead>
 		<tr>
-			<th>".ADLAN_PM_36."</th>
+			<th>".LAN_USERCLASS."</th>
 			<th>".ADLAN_PM_37."</th>
 			<th>".ADLAN_PM_38."</th>
 			</tr>
@@ -510,12 +510,12 @@ function add_limit($pm_prefs)
 	<tr>
 	<td>".e107::getUserClass()->uc_dropdown('newlimit_class', 0, 'guest,member,admin,classes')."</td>
 	<td>
-		".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> <br />
-		".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
+		".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> <br />
+		".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='new_outbox_count' value='' />
 	</td>
 	<td>
-		".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> <br />
-		".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='new_outbox_size' value='' /> 
+		".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> <br />
+		".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='new_outbox_size' value='' />
 	</td>
 	</tr>
 

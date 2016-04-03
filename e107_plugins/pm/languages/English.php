@@ -24,8 +24,8 @@ define("LAN_PM_21", "Adding this PM will exceed your maximum outbox size, PM not
 define("LAN_PM_22", "File upload failed");
 define("LAN_PM_23", "You are not allowed to send attachments");
 define("LAN_PM_24", "Deleting PM");
-define("LAN_PM_25", "Inbox");
-define("LAN_PM_26", "Outbox");
+// define("LAN_PM_25", "Inbox");
+// define("LAN_PM_26", "Outbox");
 define("LAN_PM_27", "Unread");
 define("LAN_PM_28", "N/A");
 define("LAN_PM_29", "Message Sent");

@@ -229,7 +229,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				}
 			}
 
-			return e107::getForm()->text('pm_subject',$value,255, array('size'=>80));
+			return e107::getForm()->text('pm_subject',$value,255, array('size'=>80, 'required'=>1));
 
 			// return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
 		}

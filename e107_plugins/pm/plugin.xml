@@ -4,7 +4,7 @@
 	<description lan="LAN_PLUGIN_PM_DESCRIPTION">This plugin is a fully featured Private Messaging system.</description>
 	<category>users</category>
 	<adminLinks>
-		<link url='admin_config.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
+		<link url='admin_config.php' description='LAN_CONFIGURE' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
 	</adminLinks>
 	<pluginPrefs>
 		<pref name="title">PMLAN_PM</pref>
