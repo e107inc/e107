@@ -1012,12 +1012,28 @@ class comment
 
 
 	/**
+	 * Returns a rendered commenting area. (html) v2.x
+	 * This is the only method a plugin developer should require in order to include user comments.
+	 * @param string $plugin - directory of the plugin that will own these comments.
+	 * @param int $id - unique id for this page/item. Usually the primary ID of your plugin's database table.
+	 * @param string $subject
+	 * @param bool|false $rate true = will rendered rating buttons, false will not.
+	 * @return null|string
+	 */
+	public function render($plugin, $id, $subject, $rate=false)
+	{
+		return $this->compose_comment($plugin, 'comment', $id, 0, $subject, $rate, 'html');
+	}
+
+
+
+	/**
 	 * Displays existing comments, and a comment entry form
 	 *
 	 * @param string $table - the source table for the associated item
 	 * @param string $action - usually 'comment' or 'reply'
 	 * @param integer $id - ID of item associated with comments (e.g. news ID)
-	 * @param unknown_type $width - appears to not be used
+	 * @param int $width - appears to not be used
 	 * @param string $subject
 	 * @param boolean $rate
 	 */
@@ -1144,7 +1160,11 @@ class comment
 			{
 				echo $TEMPL;	
 			}
-		}		
+		}
+		elseif($return === 'html')
+		{
+			return $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
+		}
 			//echo $modcomment.$comment;
 			//echo $text;
 
