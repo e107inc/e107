@@ -120,6 +120,11 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			$userTo = $this->sc_pm_form_touser();
 			$classTo = $this->sc_pm_form_toclass();
 
+			if(!empty($this->var['pm_from']))
+			{
+				return e107::getForm()->hidden('pm_to', $this->var['pm_from']).$this->var['from_name'];
+			}
+
 			if(deftrue('BOOTSTRAP'))
 			{
 
@@ -153,9 +158,9 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		// TODO  Get rid of e107_handlers/user_select_class.php
 		public function sc_pm_form_touser()
 		{
-			if(vartrue($this->var['from_name'])) //TODO What's this?
+			if(vartrue($this->var['from_name']))
 			{
-			//	return "<input type='hidden' name='pm_to' value='{$this->var['from_name']}' />{$this->var['from_name']}";
+				return "<input type='hidden' name='pm_to' value='{$this->var['pm_from']}' />{$this->var['from_name']}";
 			}
 
 		//	require_once(e_HANDLER.'user_select_class.php');
@@ -243,7 +248,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				if(isset($_POST['quote']))
 				{
 					$t = time();
-					$value = "[quote{$t}={$this->var['from_name']}]\n{$this->var['pm_text']}\n[/quote{$t}]\n\n";
+					$value = "\n\n\n\n\n\n\n[quote{$t}={$this->var['from_name']}]\n".trim($this->var['pm_text'])."[/quote{$t}]";
 				}
 			}
 			return "<textarea class='tbox form-control' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
@@ -252,7 +257,13 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 		public function sc_pm_emotes()
 		{
-			// require_once(e_HANDLER.'emote.php');
+			$active = e107::pref('core','smiley_activate');
+
+			if(empty($active))
+			{
+				return null;
+			}
+
 			return r_emote();
 		}
 
