@@ -4428,12 +4428,14 @@ return;
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
+		        $value = str_replace("<br></br>", PHP_EOL, $value);
 		    }
 
 		    if($node->nodeName == 'code')
 		    {
 		        $value = preg_replace('/^<code[^>]*>/', '', $value);
 		        $value = str_replace("</code>", "", $value);
+		        $value = str_replace("<br></br>", PHP_EOL, $value);
 		    }
 
 		    $value = str_replace('{', '{{{', $value); // temporarily change {e_XXX} to {{{e_XXX}}}
