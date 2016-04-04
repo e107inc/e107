@@ -1182,6 +1182,17 @@ class e_file
 	}
 
 
+	/**
+	 * Returns true is the URL is valid and false if it is not.
+	 * @param $url
+	 * @return bool
+	 */
+	public function isValidURL($url)
+	{
+	   $headers = get_headers($url);
+	//   print_a($headers);
+	   return (stripos($headers[0],"200 OK") || stripos($headers[0],"302")) ? true : false;
+	}
 
 
 	/**
