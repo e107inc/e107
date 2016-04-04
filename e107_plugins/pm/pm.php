@@ -166,7 +166,7 @@ class pm_extended extends private_message
 		$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
 	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
 		
-		$sc = e107::getScBatch('pm',true, true);
+		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->setVars($pm_info);
 		
 		$PM_SEND_PM = $this->updateTemplate($PM_SEND_PM);
