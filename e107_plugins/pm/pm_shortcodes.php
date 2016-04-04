@@ -158,7 +158,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		// TODO  Get rid of e107_handlers/user_select_class.php
 		public function sc_pm_form_touser()
 		{
-			if(vartrue($this->var['from_name']))
+			if(vartrue($this->var['pm_from']))
 			{
 				return "<input type='hidden' name='pm_to' value='{$this->var['pm_from']}' />{$this->var['from_name']}";
 			}
