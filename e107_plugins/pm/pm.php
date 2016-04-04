@@ -141,18 +141,25 @@ class pm_extended extends private_message
 	{
 		$pm_info = array();
 		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
+
 		if (is_array($to_uid))
 		{
 			$pm_info = $to_uid;		// We've been passed a 'reply to' PM
 			$to_uid = $pm_info['pm_from'];
 		}
-		if($to_uid)
+
+		if(!empty($to_uid))
 		{
-			$sql2 = new db;
-			if($sql2->select('user', 'user_name', 'user_id = '.intval($to_uid)))
+			$sql2 = e107::getDb('sql2');
+			if($sql2->select('user', 'user_name', 'user_id = '.intval($to_uid))) //TODO add a check for userclass.
 			{
 				$row = $sql2->fetch();
 				$pm_info['from_name'] = $row['user_name'];
+				$pm_info['pm_from'] = intval($to_uid);
+			}
+			else
+			{
+				return "<div class='alert alert-danger'>User Not Found</div>";
 			}
 		}
 		//echo "Show_send: {$to_uid} from {$pm_info['from_name']} is happening<br />";
