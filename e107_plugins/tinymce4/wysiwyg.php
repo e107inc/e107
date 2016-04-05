@@ -11,7 +11,7 @@ $_E107['no_online'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_maintenance'] = true;
-require_once("../../class2.php");
+require_once("../../class2.php"); //TODO Prevent Theme loading.
 
 /*
 echo '
@@ -120,28 +120,39 @@ $gen = $wy->renderConfig($config);
 
 define('USE_GZIP', true);
 
+if(strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
+{
+	$compression_browser_support = true;
+}
+
+if(ini_get("zlib.output_compression")=='' && function_exists("gzencode"))
+{
+	$compression_server_support = true;
+}
+
 
 if(ADMIN && e_QUERY == 'debug' || !empty($_GET['debug']))
 {
 	define('e_IFRAME', true); 
 	require_once(HEADERF);
 
-	echo "<table class='table'><tr><td>";
-
-	print_a($output);
-
-	echo "</td>
+	echo "<table class='table'><tr>";
+	echo "
 	<td>
 	".print_a($gen,true)."
 	</td>
 	</tr></table>";
+
+	echo "<br />Browser gZip support: ".$compression_browser_support;
+	echo "<br />Server gZip support: ". $compression_server_support;
 	
 	require_once(FOOTERF);
 
 }
-elseif(USE_GZIP === true)
+elseif((USE_GZIP === true) && $compression_browser_support && $compression_server_support)
 {
-	header('Content-type: text/javascript', TRUE);
+	while (@ob_end_clean()); // clear out anything that may have been echoed from class2.php or theme
+	header('Content-type: text/javascript;charset=UTF-8', true);
 	header('Content-Encoding: gzip');
 
 	$minified = e107::minify($gen);
@@ -152,6 +163,7 @@ elseif(USE_GZIP === true)
 }
 else
 {
+	while (@ob_end_clean()); // clear out anything that may have been echoed from class2.php or theme.
 	ob_start();
 	ob_implicit_flush(0);
 	header('Content-type: text/javascript', TRUE);
