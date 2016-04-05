@@ -56,7 +56,7 @@ class download
 		$this->qry['from']			= 0;
 			
 		// v2.x 
-		if(varset($_GET['action']))
+		if(!empty($_GET['action']))
 		{
 			$this->qry['action'] 	= (string) $_GET['action'];
 			$this->qry['view'] 		= varset($_GET['view']) ? intval($_GET['view']) : $this->qry['view'];
@@ -64,6 +64,11 @@ class download
 			$this->qry['order'] 	= vartrue($_GET['order']) && in_array("download_".$_GET['order'],$this->orderOptions) ? $_GET['order'] : $this->qry['order'];
 			$this->qry['sort'] 		= (varset($_GET['sort']) == 'asc') ? "asc" : 'desc';	
 			$this->qry['from']		= vartrue($_GET['from'],0);
+
+			if($this->qry['action'] == 'error')
+			{
+				$this->qry['error'] = intval($this->qry['id']);
+			}
 		}
 		else // v1.x Legacy URL support. 
 		{
@@ -84,9 +89,7 @@ class download
 			
 		}	
 		
-		
-		
-		// v1.x 
+		// v1.x
 		if(varset($_POST['view'])) 
 		{
 			$this->qry['view'] 		= varset($_POST['view']) ? intval($_POST['view']) : 10;
@@ -94,7 +97,7 @@ class download
 			$this->qry['sort'] 		= (strtolower($_POST['sort']) == 'asc') ? "asc" : 'desc';	
 		}	
 		
-		
+
 	}  
 
 
@@ -894,7 +897,7 @@ class download
 	   	     $errmsg = LAN_ERROR." ".$this->qry['error'];		
 		}
 		
-		return $ns->tablerender(LAN_ERROR, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
+		return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
 		
 	}
    
