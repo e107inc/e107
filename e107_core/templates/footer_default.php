@@ -20,8 +20,8 @@ $In_e107_Footer = TRUE; // For registered shutdown function
 
 global $error_handler,$db_time,$FOOTER;
 
-// Clean session shutdown
-e107::getSession()->shutdown();
+
+
 
 
 // System browser CACHE control - defaults to no cache; override in e107_config or on the fly
@@ -374,8 +374,6 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 unset($show);
 echo "\n</body>\n</html>";
 
-// Shutdown
-$e107->destruct();
 
 //
 // I Send the buffered page data, along with appropriate headers
@@ -400,5 +398,11 @@ $page = $ehd->getOutput();
 echo $page;
 
 unset($In_e107_Footer);
-$e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
+
+
+// Clean session shutdown
+e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
+// Shutdown
+$e107->destruct();
+$e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
 ?>
