@@ -213,4 +213,11 @@ define("FORLAN_186", "Threads per page");
 define("FORLAN_187", "Number of threads displayed per page");
 // define("FORLAN_188", "Latest Posts");
 define("FORLAN_189", "Click the 'delete' button to delete the report.<br /><br />Click the 'view' button to view the topic/thread");
+
+define("FORLAN_200", "Topic tracking");
+define("FORLAN_201", "Enable this to allow your users to track topics.");
+define("FORLAN_202", "Topic tracking email notifications");
+define("FORLAN_203", "Enable this option to allow your users to receive email notifications when others reply to a tracked topic.");
+
+
 ?>

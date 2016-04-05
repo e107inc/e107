@@ -218,6 +218,7 @@ define("LAN_FORUM_3028", "Add Poll"); // new // poll - partly in e107_plugins/po
 define("LAN_FORUM_3038", "Normal"); // LAN_1
 define("LAN_FORUM_3039", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
 define("LAN_FORUM_3040", "Enable/disable email tracking (email sent when reply is posted)"); // LAN_380
+define("LAN_FORUM_3041", "Enable/disable tracking of this topic");
 // missing 41-21
 
 // forum_posted_template
@@ -310,7 +311,8 @@ define("LAN_FORUM_8001", "A new post has been made by [x] under the topic [y] at
 define("LAN_FORUM_8002", "Please click the following link to view the full post ...");
 define("LAN_FORUM_8003", "Email notifications for this topic are now turned on.");
 define("LAN_FORUM_8004", "Email notifications for this topic are now turned off.");
-
+define("LAN_FORUM_8005", "You are now tracking this topic.");
+define("LAN_FORUM_8006", "You are no longer tracking this topic.");
 
 
 
