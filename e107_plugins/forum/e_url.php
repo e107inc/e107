@@ -55,8 +55,8 @@ class forum_url // plugin-folder + '_url'
 		);
 
 		$config['topic'] = array(
-			'regex'			=> '^forum/(.*)/(\d*)-([\w-]*)/?\??(.*)',
-			'sef'			=> 'forum/{forum_sef}/{thread_id}-{thread_sef}/',
+			'regex'			=> '^forum/(.*)/(\d*)(?:-|/)([\w-]*)/?\??(.*)',
+			'sef'			=> 'forum/{forum_sef}/{thread_id}/{thread_sef}/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
 		);
 /*

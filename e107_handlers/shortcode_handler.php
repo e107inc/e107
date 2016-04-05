@@ -762,12 +762,17 @@ class e_parse_shortcode
 			{
 				// $cname = get_class($this->addedCodes);
 
+
 				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
 				if(!empty($tmpWrap)) // FIX for #3 above.
 				{
 					$this->wrappers = array_merge($this->wrappers,$tmpWrap);
 					$this->wrapper = $this->addedCodes->getWrapperID();
 
+				}
+				elseif(E107_DBG_BBSC)
+				{
+				//	e107::getMessage()->addDebug("Wrapper Empty: ".$this->addedCodes->wrapper());
 				}
 
 			}

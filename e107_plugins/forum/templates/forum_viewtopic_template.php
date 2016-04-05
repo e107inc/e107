@@ -474,7 +474,9 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 
 
 	
-$FORUM_VIEWTOPIC_WRAPPER['ATTACHMENTS'] = "<div class='alert alert-default alert-block'>{---}</div>";
+$FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'] = "<div class='forum-viewtopic-attachments'>{---}</div>";
+$FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'] = "<span class='forum-viewtopic-customtitle'><small>{---}</small></span>";
+
 
 //$FORUMDELETEDSTYLE		= "<br />DELETED";
 

@@ -18,6 +18,17 @@ ul.newforumposts-menu                                    { padding-left: 10px; }
 ul.newforumposts-menu li                                 { margin-bottom: 15px;  }
 
 div.forum-poll-results                                  { padding-left:0 }
+.forum-viewtopic-customtitle                            {
+display: block;
+background-color: #E0E0E0;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+margin-top: -3px;
+border: 1px solid #ccc;
+padding: 5px 15px;
+text-align: center;
+    }
+
 
 @media all and (min-height: 800px) {
     #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }

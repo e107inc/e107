@@ -272,7 +272,7 @@ class users_admin_ui extends e_admin_ui
 		'user_name' 		=> array('title' => LAN_USER_01,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto','thclass' => 'left first'), // Display name
  		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
  		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
- 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // No real vetting
+ 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
  		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'str', 'width' => 'auto'), //TODO add md5 option to form handler?
 		'user_sess' 		=> array('title' => 'Session',		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
