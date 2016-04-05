@@ -1067,7 +1067,9 @@ class e_form
 	 * @param array $options
 	 * @param string $options['group'] if == 'class' then users will be sorted into userclass groups.
 	 * @param string $options['fields']
-	 * @param string $options['classes']
+	 * @param string $options['classes'] - single or comma-separated list of user-classes members to include.
+	 * @param string $options['excludeSelf'] = exlude logged in user from list.
+	 * @param string $options['return'] if == 'array' an array is returned.
 	 * @return string select form element.
 	 */
 	public function userlist($name, $val=null, $options=array())
@@ -1133,9 +1135,16 @@ class e_form
 				foreach($users as $u)
 				{
 					$uclass = explode(',',$u['user_class']);
-					if(($classList == e_UC_ADMIN) || ($classList = e_UC_MEMBER) || in_array($cls,$uclass))
+
+					if(($classList == e_UC_ADMIN) || ($classList == e_UC_MEMBER) || in_array($cls,$uclass))
 					{
 						$id = $u['user_id'];
+
+						if(!empty($options['excludeSelf']) && ($id == USERID))
+						{
+							continue;
+						}
+
 						$opt[$cname][$id] = $u['user_name'];
 					}
 				}
@@ -1152,6 +1161,15 @@ class e_form
 				$opt[$id] = $u['user_name'];
 			}
 
+		}
+
+
+		ksort($opt);
+
+
+		if(!empty($options['return']) && $options['return'] == 'array') // can be used by user.php ajax method..
+		{
+			return $opt;
 		}
 
 		return $this->select($name,$opt,$val,$options, varset($options['default'],null));
