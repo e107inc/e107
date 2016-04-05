@@ -176,7 +176,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			else
 			{
 				$frm = e107::getForm();
-				$ret = $frm->userlist('pm_to',null,array('default'=>'blank', 'classes'=>varset($this->pmPrefs['send_to_class'], e_UC_MEMBER)));
+				$ret = $frm->userlist('pm_to',null,array('excludeSelf'=>true, 'default'=>'blank', 'classes'=>varset($this->pmPrefs['send_to_class'], e_UC_MEMBER)));
 			}
 
 
