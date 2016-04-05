@@ -739,7 +739,7 @@ class lancheck
 	 * @param string $filter
 	 * @return array|bool
 	 */
-	private function getFilePaths($path, $language, $restrict=array())
+	public function getFilePaths($path, $language, $restrict=array())
 	{
 		$fl = e107::getFile();
 
@@ -773,7 +773,7 @@ class lancheck
 			{
 				foreach($restrict as $accept)
 				{
-					if(strpos($p, $accept)!==false)
+					if(strpos($p, '/'.$accept.'/')!==false)
 					{
 
 						$newlist[] = $p;
