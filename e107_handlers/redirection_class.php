@@ -372,10 +372,13 @@ class redirection
 		if(defset('e_DEBUG') === 'redirect')
 		{
 			$error = debug_backtrace();
-		
-			e107::getLog()->addDebug("URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n");
-			e107::getLog()->toFile('redirect.log',true); 
-			echo "debug active";
+
+			$message = "URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n";
+			e107::getLog()->addDebug($message, true);
+			echo "Debug active";
+			print_a($message);
+			echo "Go to : <a href='".$url."'>".$url."</a>";
+			e107::getLog()->toFile('redirect.log',true);
 			return; 
 		}
 		
