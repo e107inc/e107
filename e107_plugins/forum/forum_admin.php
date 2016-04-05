@@ -171,14 +171,15 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		protected $prefs = array(
 			'enclose'		        => array('title'=> FORLAN_44, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_45),
-			'title'		            => array('title'=> FORLAN_65, 'type'=>'text', 'data' => 'str','help'=>'Help Text goes here'),
+			'title'		            => array('title'=> FORLAN_65, 'type'=>'text', 'data' => 'str','help'=>''),
 			'notify'		        => array('title'=> FORLAN_47, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_48),
 			'notify_on'	            => array('title'=> FORLAN_177, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_178),
 			'poll'		            => array('title'=> FORLAN_49, 'type'=>'userclass', 'data' => 'int','help'=>FORLAN_50),
 			'attach'		        => array('title'=> FORLAN_70, 'type'=>'boolean', 'data' => 'str','help'=>FORLAN_71),
 			'maxwidth'	            => array('title'=> FORLAN_134, 'type'=>'number', 'data' => 'str','help'=>FORLAN_135),
 			'linkimg'		        => array('title'=> FORLAN_136, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_137),
-			'track'		            => array('title'=> FORLAN_51, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_52),
+			'track'		            => array('title'=> FORLAN_200, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_201),
+			'trackemail'		    => array('title'=> FORLAN_202, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_203),
 			'redirect'	            => array('title'=> FORLAN_112, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_113),
 			'reported_post_email'	=> array('title'=> FORLAN_116, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_122),
 			'tooltip'	            => array('title'=> FORLAN_126, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_127),

@@ -653,6 +653,9 @@ function forum_track()
 	global $forum;
 
 	$trackPref = $forum->prefs->get('track');
+	$trackEmailPref = $forum->prefs->get('trackemail',true);
+
+
 	if(empty($trackPref))
 	{
 		echo "Disabled";
@@ -691,6 +694,9 @@ function forum_track()
 	$sql = e107::getDb();
 	$tp = e107::getParser();
 
+	$trackDiz = ($trackEmailPref) ? LAN_FORUM_3040 : LAN_FORUM_3041;
+
+
 	if($trackedThreadList = $forum->getTrackedThreadList(USERID, 'list'))
 	{
 
@@ -723,7 +729,7 @@ function forum_track()
 			//	$data['UNTRACK'] = "<a class='btn btn-default' href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_FORUM_0070."</a>";
 
 
-				$data['UNTRACK'] = "<a id='".$buttonId."' href='#' title=\"".LAN_FORUM_3040."\" data-token='".e_TOKEN."' data-forum-insert='".$buttonId."'  data-forum-post='".$row['thread_forum_id']."' data-forum-thread='".$row['thread_id']."' data-forum-action='track' name='track' class='btn btn-primary' >".IMAGE_track."</a>";
+				$data['UNTRACK'] = "<a id='".$buttonId."' href='#' title=\"".$trackDiz."\" data-token='".e_TOKEN."' data-forum-insert='".$buttonId."'  data-forum-post='".$row['thread_forum_id']."' data-forum-thread='".$row['thread_id']."' data-forum-action='track' name='track' class='btn btn-primary' >".IMAGE_track."</a>";
 
 				$forum_trackstring .= $tp->simpleParse($FORUM_TRACK_MAIN, $data);
 			}

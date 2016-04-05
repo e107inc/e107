@@ -327,6 +327,8 @@ class e107forum
 			exit;
 		}
 
+		$trackByEmail = ($this->prefs->get('trackemail',true)) ? true : false;
+
 		$sql = e107::getDb();
 
 		if($sql->select('forum_track', '*', "track_userid=".USERID." AND track_thread=".$threadID))
@@ -334,7 +336,7 @@ class e107forum
 			if($this->track('del', USERID, $threadID))
 			{
 				$ret['html'] = IMAGE_untrack;
-				$ret['msg'] = LAN_FORUM_8004; // "Email notifications for this topic are now turned off. ";
+				$ret['msg'] = ($trackByEmail) ? LAN_FORUM_8004 : LAN_FORUM_8006 ; // "Email notifications for this topic are now turned off. ";
 				$ret['status'] = 'info';
 			}
 			else
@@ -348,7 +350,7 @@ class e107forum
 		{
 			if($this->track('add', USERID, $threadID))
 			{
-				$ret['msg'] = LAN_FORUM_8003; // "Email notifications for this topic are now turned on. ";
+				$ret['msg'] = ($trackByEmail) ? LAN_FORUM_8003 : LAN_FORUM_8005; // "Email notifications for this topic are now turned on. ";
 				$ret['html']  = IMAGE_track;
 				$ret['status'] = 'ok';
 			}
@@ -1646,8 +1648,9 @@ class e107forum
 		$tp = e107::getParser();
 
 		$trackingPref = $this->prefs->get('track');
+		$trackingEmailPref = $this->prefs->get('trackemail',true);
 
-		if(empty($trackingPref))
+		if(empty($trackingPref) || empty($trackingEmailPref))
 		{
 			return false;
 		}

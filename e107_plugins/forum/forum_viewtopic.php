@@ -305,7 +305,10 @@ if ($forum->prefs->get('track') && USER)
 			</script>
 	";*/
 
-	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".LAN_FORUM_3040."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>
+
+	$trackDiz = ($forum->prefs->get('trackemail',true)) ? LAN_FORUM_3040 : LAN_FORUM_3041;
+
+	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".$trackDiz."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>
 ";
 
 }
