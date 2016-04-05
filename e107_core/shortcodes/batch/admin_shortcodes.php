@@ -155,7 +155,7 @@ class admin_shortcodes
 		{
 			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
-		
+
 		$helpfile = '';
 		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
@@ -182,12 +182,15 @@ class admin_shortcodes
 				$helpfile = $plugpath;
 			}
 		}
-		if (!$helpfile) { return ''; }
 
-		ob_start();
-		include_once($helpfile);
-		$help_text .= ob_get_contents();
-		ob_end_clean();
+		if(!empty($helpfile))
+		{
+			ob_start();
+			include_once($helpfile);
+			$help_text .= ob_get_contents();
+			ob_end_clean();
+		}
+
 		return $help_text;
 	}
 
