@@ -2541,12 +2541,20 @@ class e107
             {
                 if(isset($SC_WRAPPER))
                 {
+                    if(E107_DBG_BBSC)
+                    {
+                        e107::getMessage()->addDebug("Found wrapper: ".$SC_WRAPPER);
+                    }
                     self::scStyle($SC_WRAPPER);
                 }
 
                 // ID_WRAPPER support
                 if(isset($$wrapper) && !empty($$wrapper) && is_array($$wrapper))
                 {
+                    if(E107_DBG_BBSC)
+                    {
+                        e107::getMessage()->addDebug("Found ID wrapper: ".$wrapper);
+                    }
                     self::setRegistry($wrapperRegPath, $$wrapper);
                 }
             }

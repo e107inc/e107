@@ -199,35 +199,43 @@ if(file_exists(THEME.'forum_design.php')) // legacy file
 	include_once (THEME.'forum_design.php');
 }
 
-if (!vartrue($FORUMSTART))
-{
-	if(file_exists(THEME.'forum_viewtopic_template.php'))
-	{
-		require_once(THEME.'forum_viewtopic_template.php');
-	}
-	elseif(file_exists(THEME.'templates/forum/forum_viewtopic_template.php'))
-	{
-		require_once(THEME.'templates/forum/forum_viewtopic_template.php'); 
-	}
-	elseif(file_exists(THEME.'forum_template.php'))
-	{
-		require_once(THEME.'forum_template.php');
-	}
-	else
-	{
-		require_once(e_PLUGIN.'forum/templates/forum_viewtopic_template.php');
-	}
-}
 
 
 // New in v2.x
-if(is_array($FORUM_VIEWTOPIC_TEMPLATE) && deftrue('BOOTSTRAP',false))
+if(deftrue('BOOTSTRAP',false))
 {
+	$FORUM_VIEWTOPIC_TEMPLATE = e107::getTemplate('forum','forum_viewtopic');
+
+	// print_a($FORUM_VIEWTOPIC_TEMPLATE);
+
 	$FORUMSTART 			= $FORUM_VIEWTOPIC_TEMPLATE['start'];
 	$FORUMTHREADSTYLE		= $FORUM_VIEWTOPIC_TEMPLATE['thread'];
 	$FORUMEND				= $FORUM_VIEWTOPIC_TEMPLATE['end'];
 	$FORUMREPLYSTYLE 		= $FORUM_VIEWTOPIC_TEMPLATE['replies'];
 	$FORUMDELETEDSTYLE      = $FORUM_VIEWTOPIC_TEMPLATE['deleted'];
+}
+else
+{
+	if (!vartrue($FORUMSTART))
+	{
+		if(file_exists(THEME.'forum_viewtopic_template.php'))
+		{
+			require_once(THEME.'forum_viewtopic_template.php');
+		}
+		elseif(file_exists(THEME.'templates/forum/forum_viewtopic_template.php'))
+		{
+			require_once(THEME.'templates/forum/forum_viewtopic_template.php');
+		}
+		elseif(file_exists(THEME.'forum_template.php'))
+		{
+			require_once(THEME.'forum_template.php');
+		}
+		else
+		{
+			require_once(e_PLUGIN.'forum/templates/forum_viewtopic_template.php');
+		}
+	}
+
 }
 
 //TODO Clean up this mess!!
@@ -441,6 +449,9 @@ if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
 $alt = false;
 
 $i = $thread->page;
+
+$sc = e107::getScBatch('view', 'forum');
+
 foreach ($postList as $postInfo)
 {
 	if($postInfo['post_options'])
@@ -462,23 +473,29 @@ foreach ($postList as $postInfo)
 		$postInfo['thread_start'] = false;
 		$alt = !$alt;
 
+		$sc->setScVar('postInfo', $postInfo);
+
 		if($postInfo['post_status'])
 		{
 			$_style = (isset($FORUMDELETEDSTYLE_ALT) && $alt ? $FORUMDELETEDSTYLE_ALT : $FORUMDELETEDSTYLE);
+			$sc->wrapper('forum_viewtopic/deleted');
 		}
 		else
 		{
 			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
+			$sc->wrapper('forum_viewtopic/replies');
 		}
-
-		$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
-		$forrep .= $tp->parseTemplate($_style, true, $forum_shortcodes) . "\n";
+		
+	//	$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo)->wrapper('forum/viewtopic');
+		$forrep .= $tp->parseTemplate($_style, true, $sc) . "\n";
 	}
 	else
 	{
 		$postInfo['thread_start'] = true;
-		$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo);
-		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($forum_shortcodes)) . "\n";
+		$sc->setScVar('postInfo', $postInfo);
+		$sc->wrapper('forum_viewtopic/thread');
+	//	$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo)->wrapper('forum/viewtopic');
+		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($sc)) . "\n";
 	}
 }
 unset($loop_uid);
