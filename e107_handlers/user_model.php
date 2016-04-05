@@ -1247,14 +1247,17 @@ class e_system_user extends e_user_model
 			return array();
 		}
 
-		$pass_show = varset($userInfo['user_password']);
+
+
+	//
 		
 		// signup email only
 		if($type == 'signup')
 		{
 			$HEAD = '';
 			$FOOT = '';
-			
+
+			$pass_show = e107::pref('core','user_reg_secureveri', false);
 			
 			$ret['e107_header'] = $userInfo['user_id'];
 			
@@ -1275,7 +1278,7 @@ class e_system_user extends e_user_model
 			$sc = array();
 			
 			$sc['LOGINNAME'] 		= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-			$sc['PASSWORD']			= $pass_show ? $pass_show : '******';
+			$sc['PASSWORD']			= ($pass_show && !empty($userInfo['user_password'])) ?  '*************' : $userInfo['user_password'];
 			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
 		//	$sc['SITENAME']			= SITENAME;
 			$sc['SITEURL']			= "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
@@ -1348,7 +1351,7 @@ class e_system_user extends e_user_model
 			return array();
 		}
 		
-		
+
 		$templateName = $ret['template'];
 		
 		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
@@ -1364,8 +1367,8 @@ class e_system_user extends e_user_model
 		$sc['DISPLAYNAME']			= $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
 		$sc['SITEURL']				= "<a href='".SITEURL."'>".SITEURL."</a>";
 		$sc['USERNAME']				= $userInfo['user_name'];
-		$sc['USERURL']				= vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
-		$sc['PASSWORD']				= $pass_show ? $pass_show : '******';
+		$sc['USERURL']				= vartrue($userInfo['user_website'], '');
+		$sc['PASSWORD']				= vartrue($userInfo['user_password'], '***********');
 		$sc['SUBJECT']				= $userInfo['mail_subject'];
 
 		

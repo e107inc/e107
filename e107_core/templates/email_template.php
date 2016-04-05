@@ -178,7 +178,7 @@ $EMAIL_TEMPLATE['signup']['body'] 			= "
 												<br />
 												".LAN_SIGNUP_18."<br />
 												<br />
-												".LAN_LOGINNAME.": <b> {LOGINNAME} </b><br />
+												".LAN_LOGIN.": <b> {LOGINNAME} </b><br />
 												".LAN_PASSWORD.": <b> {PASSWORD} </b><br />
 												<br />
 												".LAN_EMAIL_04."<br />
