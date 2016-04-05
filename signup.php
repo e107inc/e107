@@ -505,7 +505,7 @@ class signup
 			$userInfo['user_password'] = "test-password";
 			$userInfo['user_loginname'] = "test-loginname";
 			$userInfo['user_name'] = "test-username";
-			$userInfo['user_email'] = "test-username@email";
+			$userInfo['user_email'] = "test-username@email.com";
 			$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
 			$userInfo['user_id'] = 0;
 			$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
