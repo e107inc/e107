@@ -560,7 +560,7 @@ class page_admin_ui extends e_admin_ui
 			  		'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'forced'=> TRUE, 	'type' => 'text', 		'inline'=>true,		'width'=>'20%'),
 			
 				
-				  	'menu_name' 		=> array('title'=> CUSLAN_64, 	    'type' => 'text', 	'inline'=>true,	'width' => '10%','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name. Must use ASCII characters only."),
+				  	'menu_name' 		=> array('title'=> CUSLAN_64, 	    'type' => 'text', 	'inline'=>false,	'width' => '10%','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name. Must use ASCII characters only."),
 					'menu_template' 	=> array('title'=> CUSLAN_67,  	    'type' => 'dropdown', 	'width' => '15%', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
           			'menu_class' 		=> array('title'=> LAN_USERCLASS,   'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
 		
@@ -588,7 +588,7 @@ class page_admin_ui extends e_admin_ui
 			
 			$this->fields['page_template']['writeParms'] = $this->templates;			
 			$this->fields['menu_template']['writeParms'] = e107::getLayouts('', 'menu', 'front', '', true, false); 
-			$this->fields['menu_name']['writeParms'] 	= array('pattern'=>'^[\w-]*'); 
+			$this->fields['menu_name']['writeParms'] 	= array('pattern'=>'^[a-z0-9-]*');
 			
 			
 			$tmp = e107::getLayouts('', 'chapter', 'front', '', true, false);
