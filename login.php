@@ -36,7 +36,7 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && empty($pref['soci
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-define('e_IFRAME',true);
+if(!defined('e_IFRAME')) define('e_IFRAME',true);
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 
