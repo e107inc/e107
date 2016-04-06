@@ -437,7 +437,7 @@ class e_media
 	 * @param $search
 	 * @return array
 	 */
-	public function getImages($cat='', $from=0, $amount=null,$search=null)
+	public function getImages($cat='', $from=0, $amount=null, $search=null, $orderby=null)
 	{
 		$inc 		= array();
 		$searchinc 	= array();
@@ -490,8 +490,15 @@ class e_media
 		{
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
 		}
-		
-		$query .= " ORDER BY media_id DESC";
+
+		if($orderby)
+		{
+			$query .= " ORDER BY " . $orderby;
+		}
+		else
+		{
+			$query .= " ORDER BY media_id DESC";
+		}
 
 		if($amount == 'all')
 		{

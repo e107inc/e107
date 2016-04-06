@@ -48,3 +48,8 @@ ul.gallery-cat > li > div > h3 		{ text-align: center }
 .row-fluid .gallery-cat div.span4:nth-child(3n + 4) { margin-left : 0px; }
 .row-fluid .gallery-cat div.span3:nth-child(4n + 5) { margin-left : 0px; }
 .row-fluid .gallery-cat div.span2:nth-child(6n + 7) { margin-left : 0px; }
+
+/* Work-around for indent issue. see: https://github.com/twitter/bootstrap/issues/4890 */
+.thumbnails .span2:nth-child(6n+1) {
+    margin-left:0;
+}

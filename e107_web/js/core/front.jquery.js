@@ -23,7 +23,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.initializeSmoothScrolling = {
 		attach: function (context, settings)
 		{
-			if(window.location.hash)
+			if(window.location.hash && e107.callbacks.isValidSelector(window.location.hash))
 			{
 				$(context).find('body').once('initialize-smooth-scrolling').each(function ()
 				{
