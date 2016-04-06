@@ -5,13 +5,11 @@
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
-if (!defined('e107_INIT')) { exit; }
 
-//e107::js('gallery', 'jslib/lightbox/js/lightbox.js','jquery');
-//e107::css('gallery', 'jslib/lightbox/css/lightbox.css','jquery');
-
-// See: http://www.no-margin-for-errors.com/projects/prettyPhoto-jquery-lightbox-clone
-
+if(!defined('e107_INIT'))
+{
+	exit;
+}
 
 if(USER_AREA)
 {
@@ -20,43 +18,14 @@ if(USER_AREA)
 /* Gallery CSS */
 .thumbnails .span2:nth-child(6n+1) {
 margin-left:0;
-}",'jquery');
-
-
-/*
-e107::js('gallery', 'jslib/prettyPhoto/js/jquery.prettyPhoto.js','jquery');
-
-e107::css('gallery', 'jslib/prettyPhoto/css/prettyPhoto.css','jquery');
-
-
-e107::css('gallery', 'gallery_style.css');
-
-
-
-
-
-$prettyPhoto = <<<JS
-$(document).ready(function(){
-    $("a[data-gal^='prettyPhoto']").prettyPhoto(
-	    {
-	    	hook: 'data-gal',
-	    	theme: 'pp_default',
-	    	overlay_gallery: false,
-	    	deeplinking: false
-	    }
-    );
-  });
-JS;
-
-e107::js('footer-inline',$prettyPhoto,'jquery');
-
-
-
-
-
-	
-unset($gp);
-*/
+}", 'jquery');
 }
 
-?>
+$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+
+if(vartrue($plugPrefs['pp_global'], false))
+{
+	e107_require_once(e_PLUGIN . 'gallery/includes/gallery_load.php');
+	// Load prettyPhoto settings and files.
+	gallery_load_prettyphoto();
+}

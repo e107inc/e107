@@ -47,10 +47,11 @@ if(e_AJAX_REQUEST)
 {
 	if(vartrue($_POST['q']))
 	{
-		$q = filter_var($_POST['q'], FILTER_SANITIZE_STRING);
-		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
-
 		$db = e107::getDb();
+		$tp = e107::getParser();
+
+		$q = $tp->filter($_POST['q']);
+		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
 		$where = "user_name LIKE '". $q."%' ";
 
@@ -70,8 +71,8 @@ if(e_AJAX_REQUEST)
 
 			if(count($data))
 			{
-				header('Content-type: application/json');
-				echo json_encode($data);
+				$ajax = e107::getAjax();
+				$ajax->response($data);
 			}
 		}
 	}
