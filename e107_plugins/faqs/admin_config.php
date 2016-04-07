@@ -19,6 +19,8 @@
 
 require_once("../../class2.php");
 
+e107::lan('faqs', 'admin',true);
+
 class faq_admin extends e_admin_dispatcher
 {
 
