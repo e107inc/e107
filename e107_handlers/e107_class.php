@@ -2064,7 +2064,7 @@ class e107
 
 		$elist = self::getPref($filename.'_list');
 		
-		if($elist)
+		if(!empty($elist))
 		{
 			foreach(array_keys($elist) as $key)
 			{
@@ -2117,6 +2117,7 @@ class e107
 			{
 				if(E107_DBG_INCLUDES)
 				{
+					//$debug_backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6);
 					$mes->addDebug('Executing <strong>'.$class_name.' :: '.$method_name.'()</strong>');
 				}
 				return call_user_func(array($obj, $method_name),$param, $param2);
@@ -2856,7 +2857,12 @@ class e107
 			$key = $tmp[1];
 		}
 
-		$tmp = e107::getAddonConfig('e_url');
+		if(!$tmp = self::getRegistry('core/e107/addons/e_url'))
+		{
+			$tmp = e107::getAddonConfig('e_url');
+			self::setRegistry('core/e107/addons/e_url',$tmp);
+		}
+
 		$tp = e107::getParser();
 
 		$pref = self::getPref('e_url_alias');
@@ -3866,7 +3872,7 @@ class e107
 		{
 			define('e_LOGIN', SITEURL.(file_exists(e_BASE.'customlogin.php') ? 'customlogin.php' : 'login.php'));	
 		}
-		
+
 		return $this;
 	}
 

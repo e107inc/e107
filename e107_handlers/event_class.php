@@ -36,6 +36,26 @@ class e107_event
 	function __construct()
 	{
 
+		$temp = e107::getAddonConfig('e_event');
+
+		if(!empty($temp))
+		{
+			foreach($temp as $plug=>$data)
+			{
+				foreach($data as $event)
+				{
+					$name = $event['name'];
+					$class = array($plug."_event", $event['function']);
+
+					if(!empty($name) && !empty($event['function']))
+					{
+						$this->register($name, $class);
+					}
+				}
+
+			}
+
+		}
 
 	}
 	
