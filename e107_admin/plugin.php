@@ -3294,6 +3294,7 @@ if (!getperms('P'))
 	exit;
 }
 
+// e107::lan('".$thePlugin."',true);
 
 
 class ".$thePlugin."_adminArea extends e_admin_dispatcher
