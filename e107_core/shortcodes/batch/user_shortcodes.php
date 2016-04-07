@@ -686,6 +686,7 @@ class user_shortcodes extends e_shortcode
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+		$frm = e107::getForm();
 		
 		$template = e107::getCoreTemplate('user','extended');
 		
@@ -733,14 +734,19 @@ class user_shortcodes extends e_shortcode
 				{
 					
 					$key = $f['user_extended_struct_name'];
+
 					if($ue_name = $tp->parseTemplate("{USER_EXTENDED={$key}.text.{$this->var['user_id']}}", TRUE))
 					{
+
 						$extended_record = str_replace("EXTENDED_ICON","USER_EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
 					 	$extended_record = str_replace("{EXTENDED_NAME}", $tp->toHTML($ue_name,"","defs"), $extended_record);
 						$extended_record = str_replace("EXTENDED_VALUE","USER_EXTENDED={$key}.value.{$this->var['user_id']}", $extended_record);
+						$extended_record = str_replace('{EXTENDED_ID}',$frm->name2id('user_'.$key), $extended_record);
+
 						if(HIDE_EMPTY_FIELDS === TRUE)
 						{
 							$this_value = $tp->parseTemplate("{USER_EXTENDED={$key}.value.{$this->var['user_id']}}", TRUE);
+
 							if($this_value != "")
 							{
 								$ret .= $tp->parseTemplate($extended_record, TRUE);
