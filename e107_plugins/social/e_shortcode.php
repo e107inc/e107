@@ -107,7 +107,7 @@ class social_shortcodes extends e_shortcode
 			if($data['href'] != '')
 			{
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-'.$id.' '.$class.'"></span></a>';
+				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-fw fa-'.$id.' '.$class.'"></span></a>';
 				 $text .= "\n";
 			}
 		}
@@ -288,7 +288,7 @@ class social_shortcodes extends e_shortcode
 
 
 			
-			$opt[$k] = "<a class='".$tooltip." btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"])."</a>";
+			$opt[$k] = "<a class='".$tooltip." btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
 		}
 		
 		// Show only Email, Facebook, Twitter and Google. 
