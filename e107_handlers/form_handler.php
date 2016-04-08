@@ -1970,12 +1970,13 @@ class e_form
 
 	/**
 	 *
-	 * @param string $name
-	 * @param array $option_array
-	 * @param boolean $selected [optional]
-	 * @param string|array $options [optional]
-	 * @param boolean|string $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description. 
-	 * @return string HTML text for display
+	 * @param string        $name
+	 * @param array         $option_array
+	 * @param boolean       $selected [optional]
+	 * @param string|array  $options [optional]
+	 * @param bool          $options['useValues']   when true uses array values as the key.
+	 * @param bool|string   $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description.
+	 * @return string       HTML text for display
 	 */
 	function select($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
 	{

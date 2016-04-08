@@ -178,6 +178,10 @@ if($_GET['mode']=="process")
 */
 
 
+
+
+
+
 class mailout_admin extends e_admin_dispatcher
 {
 
@@ -1061,84 +1065,19 @@ class mailout_main_ui extends e_admin_ui
 			//	$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
 			}
 		}
-			  
-	$text .= "</td></tr>	
+
+
+
+
+		$text .= "</td></tr>
 		
 		
 		<tr>
 		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
-		<td>
-		<select class='tbox input-xxlarge' name='mailer' onchange='disp(this.value)'>\n";
-	$mailers = array('php','smtp','sendmail');
-	foreach($mailers as $opt)
-	{
-		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
-		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-	}
-	$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
+		<td>";
 
 
-
-// SMTP. -------------->
-	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
-	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
-	$text .= "<div id='smtp' {$smtpdisp}>
-		<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
-		<colgroup>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		";
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%;' >
-		<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_90."</td><td>
-		<select class='tbox' name='smtp_options'>\n
-		
-		<option value=''>".LAN_MAILOUT_96."</option>\n";
-		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-		$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-		$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-		$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
-
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_57."</td><td>
-		";
-	$checked = (vartrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
-		</td>
-		</tr>";
-
-	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_95."</td><td>
-		<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
-		</td>
-		</tr>
-		</table></div>";
+		$text .= mailoutAdminClass::mailerPrefsTable($pref);
 		
 	
 	/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
@@ -1402,6 +1341,7 @@ class mailout_main_ui extends e_admin_ui
 		$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
 		$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
 		$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
+		$temp['smtp_port'] 	    = intval($_POST['smtp_port']);
 	
 		$smtp_opts = array();
 		switch (trim($_POST['smtp_options']))
@@ -2385,114 +2325,8 @@ function sendImmediately($id)
 //		MAILER OPTIONS
 //----------------------------------------------------
 /*
-function show_prefs($mailAdmin)
-{
-	return;
-	
-	$pref = e107::getPref();
-	$e107 = e107::getInstance();
-	$frm = e107::getForm();
-	$mes = e107::getMessage();
-	$ns = e107::getRender();
 
 
-	e107::getCache()->CachePageMD5 = '_';
-	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
-	$lastBounce = round((time() - $lastload) / 60);
-	
-	$lastBounceText = ($lastBounce > 1256474) ? "<b>Never</b>" : "<b>".$lastBounce . " minutes </b>ago."; 
-
-	$text = "
-		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
-		<fieldset id='mail'>
-		<legend>".LAN_MAILOUT_110."</legend>
-		<table class='table adminform'>
-		<colgroup>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		<tbody>
-		<tr>
-			<td>".LAN_MAILOUT_110."<br /></td>
-			<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
-			</td>
-		</tr>
-
-		<tr>
-		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
-		<td>
-		<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
-	$mailers = array('php','smtp','sendmail');
-	foreach($mailers as $opt)
-	{
-		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
-		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-	}
-	$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
-
-
-
-// SMTP. -------------->
-	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
-	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
-	$text .= "<div id='smtp' {$smtpdisp}>
-		<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
-		<colgroup>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		";
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%;' >
-		<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_90."</td><td>
-		<select class='tbox' name='smtp_options'>\n
-		<option value=''>".LAN_MAILOUT_96."</option>\n";
-	$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-	$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-	$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-	$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
-
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_57."</td><td>
-		";
-	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
-		</td>
-		</tr>";
-
-	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_95."</td><td>
-		<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
-		</td>
-		</tr>
-		</table></div>";
-*/
 /* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 // Sendmail. -------------->
 	$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
@@ -2747,25 +2581,6 @@ function headerjs()
 	$text = "
 	<script type='text/javascript'>
 		
-	function disp(type) 
-	{
-		if(type == 'smtp')
-		{
-			document.getElementById('smtp').style.display = '';
-			document.getElementById('sendmail').style.display = 'none';
-			return;
-		}
-
-		if(type =='sendmail')
-		{
-            document.getElementById('smtp').style.display = 'none';
-			document.getElementById('sendmail').style.display = '';
-			return;
-		}
-
-		document.getElementById('smtp').style.display = 'none';
-		document.getElementById('sendmail').style.display = 'none';
-	}
 
 	function bouncedisp(type)
 	{
