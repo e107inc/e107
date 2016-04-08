@@ -15,7 +15,9 @@ if (!defined('e107_INIT')) { exit; }
  *
  *	Shortcodes for custom page display
  */
- 
+
+
+
  
 class cpage_shortcodes extends e_shortcode
 {
@@ -246,12 +248,14 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagebutton($parm)
 	{
 		$tp = e107::getParser();
-		
-		if(empty($this->var['menu_button_url']) && !check_class($this->var['page_class'])) // ignore when custom url used. 
+
+		$pgClass = intval($this->var['page_class']);
+
+		if(empty($this->var['menu_button_url']) && !check_class($pgClass)) // ignore when custom url used.
 		{
 			return "<!-- Button Removed: Page check_class() returned false. -->";	
 		}
-		
+
 		$url = $this->sc_cpageurl();
 		
 		if($parm == 'href' || !$url)
@@ -263,7 +267,7 @@ class cpage_shortcodes extends e_shortcode
 		{
 			return "<!-- Button Removed: No page text exists! -->";	
 		}
-		
+
 		parse_str($parm,$options);
 		
 		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
