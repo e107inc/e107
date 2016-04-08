@@ -229,7 +229,7 @@ class e107Email extends PHPMailer
 		}
 		else
 		{
-			$smtpPort = varset($overrides['smtp_post'], 25);
+			$smtpPort = varset($overrides['smtp_port'], 25);
 		}
 
 
