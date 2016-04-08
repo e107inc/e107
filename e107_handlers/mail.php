@@ -180,7 +180,7 @@ class e107Email extends PHPMailer
 									'smtp_server'			=> 'smtp_server',
 									'smtp_username'			=> 'smtp_username',
 									'smtp_password'			=> 'smtp_password',
-									
+									'smtp_port'			    => 'smtp_port',
 								);
 	/**
 	 * Constructor sets up all the global options, and sensible defaults - it should be the only place the prefs are accessed
@@ -210,23 +210,26 @@ class e107Email extends PHPMailer
 
 		$this->CharSet = 'utf-8';
 		$this->SetLanguage(CORE_LC);
-		$smtpPort = 465;
+
 
 		if (($overrides === FALSE) || !is_array($overrides))
 		{
 			$overrides = array();
 		}
 		
-		foreach (array('mailer', 'smtp_server', 'smtp_username', 'smtp_password', 'sendmail', 'siteadminemail', 'siteadmin') as $k)
+		foreach (array('mailer', 'smtp_server', 'smtp_username', 'smtp_password', 'smtp_port', 'sendmail', 'siteadminemail', 'siteadmin') as $k)
 		{
 			if (!isset($overrides[$k])) $overrides[$k] = $pref[$k];
 		}
-
 
 		if(strpos($overrides['smtp_server'],':')!== false)
 		{
 			list($smtpServer,$smtpPort) = explode(":", $overrides['smtp_server']);
 			$overrides['smtp_server'] = $smtpServer;
+		}
+		else
+		{
+			$smtpPort = varset($overrides['smtp_post'], 25);
 		}
 
 
@@ -913,35 +916,37 @@ class e107Email extends PHPMailer
 		Some of these parameters have been made compatible with the array calculated by render_email() in signup.php
 	 *
 		Possible array parameters:
-		$eml['subject']
-		$eml['sender_email']	- 'From' email address
-		$eml['sender_name']		- 'From' name
-		$eml['replyto']			- Optional 'reply to' field 
-		$eml['replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
-		$eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
-		$eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
-		$eml['body']			- message body. May be HTML or text. Added according to the current state of the HTML enable flag
-		$eml['attach']			- string if one file, array of filenames if one or more.
-		$eml['copy_to']			- comma-separated list of cc addresses.
-		$eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
-		$eml['bcopy_to']		- comma-separated list
-		$eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
-		$eml['bouncepath']		- Sender field (used for bounces)
-		$eml['returnreceipt']	- email address for notification of receipt (reading)
-		$eml['inline_images']	- array of files for inline images
-		$eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
-		$eml['e107_header']		- Adds specific 'X-e107-id:' header
-		$eml['extra_header']	- additional headers (format is name: value
-		$eml['wordwrap']		- Set wordwrap value
-		$eml['split']			- If true, sends an individual email to each recipient
-	    $eml['template']		- template to use. 'default'
-	    $eml['shortcodes']		- array of shortcode values. eg. array('MY_SHORTCODE'=>'12345'); 
+
 
 	 *	@param string $send_to - recipient email address
 	 *	@param string $to_name - recipient name
-	 *	@param array $eml - optional array of additional parameters (see above)
-	 *	@param boolean $bulkmail - set TRUE if this email is one of a bulk send; FALSE if an isolated email
+	 *	@param array $eml - optional array of additional parameters (see BELOW)
 	 *
+	 *  @param string $eml['subject']           - Email Subject
+	 * 	@param string $eml['sender_email']	    - 'From' email address
+	 * 	@param string $eml['sender_name']		- 'From' name
+	 * 	@param string $eml['replyto']			- Optional 'reply to' field
+	 * 	@param string $eml['replytonames']	    - Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+	 * 	@param bool $eml['send_html']		    - if TRUE, includes HTML part in messages (only those added after this flag)
+	 * 	@param bool $eml['add_html_header']     - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
+	 * 	@param string $eml['body']			    - message body. May be HTML or text. Added according to the current state of the HTML enable flag
+	 * 	@param string|array $eml['attach']		- string if one file, array of filenames if one or more.
+	 * 	@param string $eml['copy_to']			- comma-separated list of cc addresses.
+	 * 	@param string $eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
+	 * 	@param string $eml['bcopy_to']		    - comma-separated list
+	 * 	@param string $eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
+	 * 	@param string $eml['bouncepath']		- Sender field (used for bounces)
+	 * 	@param string $eml['returnreceipt']	    - email address for notification of receipt (reading)
+	 * 	@param array $eml['inline_images']	    - array of files for inline images
+	 * 	@param int $eml['priority']		        - Email priority (1 = High, 3 = Normal, 5 = low)
+	 * 	@param string $eml['e107_header']		- Adds specific 'X-e107-id:' header
+	 * 	@param string $eml['extra_header']	    - additional headers (format is name: value
+	 * 	@param string $eml['wordwrap']		    - Set wordwrap value
+	 * 	@param bool $eml['split']			    - If true, sends an individual email to each recipient
+	 *  @param string $eml['template']		    - template to use. 'default'
+	 *  @param array $eml['shortcodes']		    - array of shortcode values. eg. array('MY_SHORTCODE'=>'12345');
+	 *
+	 *  @param boolean $bulkmail - set TRUE if this email is one of a bulk send; FALSE if an isolated email
 	 *	@return boolean|string - TRUE if success, error message if failure
 	 */
 	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = false)
@@ -1209,7 +1214,8 @@ class e107MailerException extends phpmailerException
 // Called by PHPMailer when SMTP debug is active. 
 function handlePHPMailerDebug($str,$other)
 {
-	e107::getMessage()->addInfo($str);		
+	$text = print_a($str,true);
+	e107::getMessage()->addInfo($text);
 }
 //--------------------------------------
 //		Generic e107 Exception handler

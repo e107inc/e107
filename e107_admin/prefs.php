@@ -27,33 +27,14 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'prefs';
 e107::lan('core','mailout','admin');
 
-e107::js('inline',"
-	function disp(type) 
-	{
-		if(type == 'smtp')
-		{
-			$('#smtp').show('slow');
-			$('#sendmail').hide('slow');
-			return;
-		}
 
-		if(type =='sendmail')
-		{
-            $('#smtp').hide('slow');
-			$('#sendmail').show('slow');
-			return;
-		}
-
-		$('#smtp').hide('slow');
-		$('#sendmail').hide('slow');
-	}
-",'jquery');
 
 
 require_once (e_ADMIN."auth.php");
 
 $e_userclass = e107::getUserClass(); 
 require_once (e_HANDLER."user_extended_class.php");
+require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 $ue = new e107_user_extended();
 $core_pref = e107::getConfig();
 
@@ -459,114 +440,12 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 		
 					<tr>
 						<td style='vertical-align:top'><label for='mailer'>".LAN_MAILOUT_115."</label><br /></td>
-						<td>
-						<select class='tbox' name='mailer' id='mailer' onchange='disp(this.value)'>\n";
-						$mailers = array('php','smtp','sendmail');
-						foreach($mailers as $opt)
-						{
-							$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
-							$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-						}
-						$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
-		
+						<td>";
 
 
-			// SMTP. -------------->
-			$smtp_opts = explode(',',varset($pref['smtp_options'],''));
+				$text .= mailoutAdminClass::mailerPrefsTable($pref);
 
 
-			$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
-			$text .= "<div id='smtp' {$smtpdisp}>
-			<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
-			<colgroup>
-				<col class='col-label' />
-				<col class='col-control' />
-			</colgroup>
-			";
-			$text .= "
-			<tr>
-				<td><label for='smtp_server'>".LAN_MAILOUT_87.":&nbsp;&nbsp;</label></td>
-				<td>
-				<input class='tbox' type='text' name='smtp_server' id='smtp_server'  size='40' value='".vartrue($pref['smtp_server'])."' maxlength='50' autocomplete='off' />
-				</td>
-			</tr>
-	
-			<tr>
-				<td><label for='smtp_username'>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</label></td>
-				<td style='width:50%;' >
-				<input class='tbox' type='text' name='smtp_username' id='smtp_username' size='40' value=\"".vartrue($pref['smtp_username'])."\" maxlength='50' autocomplete='off' />
-				</td>
-			</tr>
-	
-			<tr>
-				<td><label for='smtp_password'>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</label></td>
-				<td>
-				<input class='tbox' type='password' name='smtp_password' id='smtp_password' size='40' value='".vartrue($pref['smtp_password'])."' maxlength='50' autocomplete='off' />
-				</td>
-			</tr>
-
-			<tr>
-				<td><label for='smtp_options'>".LAN_MAILOUT_90."</label></td><td>
-				";
-
-		$sslOpts = array(
-				'smtp_ssl' 		=> LAN_MAILOUT_92,
-				'smtp_tls'		=> LAN_MAILOUT_93,
-				'smtp_pop3auth'	=> LAN_MAILOUT_91
-		);
-
-	//	$text .= $frm->select('smtp_options', $sslOpts, $smtp_opts, '', LAN_MAILOUT_96);
-
-
-			$text .="<select class='tbox' name='smtp_options' id='smtp_options'>\n
-				<option value=''>".LAN_MAILOUT_96."</option>\n";
-			$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-			$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-			$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-			$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-			$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-			$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-			$text .= "</select>";
-
-
-			$text .= "<span class='field-help'>".LAN_MAILOUT_94."</span></td></tr>";
-		
-			$text .= "<tr>
-				<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>\n";
-
-			$text .= $frm->radio_switch('smtp_keepalive', $pref['smtp_keepalive'])."
-				</td>
-				</tr>";
-
-
-			$text .= "<tr>
-				<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>".$frm->radio_switch('smtp_useVERP',(in_array('useVERP',$smtp_opts)))."
-
-				</td>
-				</tr>
-				</table></div>";
-
-
-			/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
-			// Sendmail. -------------->
-				
-				$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
-				$text .= "
-				<tr>
-				<td>".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
-				<td>
-				<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
-				</td>
-				</tr>
-			
-				</table></div>";
-			*/
-				$senddisp = (varset($pref['mailer']) != 'sendmail') ? "e-hideme" : '';
-				$text .= "<div class='s-message info {$senddisp}' id='sendmail' >
-							Not available in this release
-						</div>";
-						
-						
 				$text .="</td>
 				</tr>
 			
