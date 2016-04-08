@@ -569,12 +569,21 @@ class mailout_main_ui extends e_admin_ui
 		else
 		{
 
-			$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
+			$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).") " : ' (PHP)';
+
+			if($pref['mailer'] == 'smtp')
+			{
+				$add .= "Port: ".varset($pref['smtp_port'],25);
+				$add .= " - ".str_replace("secure=", "", $pref['smtp_options']);
+			}
+
 			$sendto = trim($_POST['testaddress']);
+
+			$subjectSitename = ($_POST['testtemplate'] == 'textonly') ? SITENAME : '';
 			
 			$eml = array(
 				'e107_header'	=> USERID,
-				'subject'		=> LAN_MAILOUT_113." ".$add,
+				'subject'		=> LAN_MAILOUT_113." ".$subjectSitename.$add,
 				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
 				'template'		=> vartrue($_POST['testtemplate'],null),
 				'shortcodes'	=> $this->getExampleShortcodes(),

@@ -240,13 +240,21 @@ function sendTest()
 		$mailheader_e107id = USERID;
 		$pref = e107::pref('core');
 
-		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
+		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).") " : ' (PHP)';
+
+		if($pref['mailer'] == 'smtp')
+		{
+			$add .= "Port: ".varset($pref['smtp_port'],25);
+			$add .= " - ".str_replace("secure=", "", $pref['smtp_options']);
+		}
+
+
 		$sendto = trim($_POST['testaddress']);
 		
 		
 		$eml = array(); 
 		
-		$eml['email_subject']		= LAN_MAILOUT_113." ".SITENAME.$add;
+		$eml['email_subject']		= LAN_MAILOUT_113." ".$add;
 		$eml['email_sender_email']	= null; 
 		$eml['email_sender_name']	= null;
 		$eml['email_replyto']		= null;
