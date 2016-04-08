@@ -36,6 +36,14 @@ class e107_event
 	function __construct()
 	{
 
+
+
+	}
+
+
+	public function init()
+	{
+
 		$temp = e107::getAddonConfig('e_event');
 
 		if(!empty($temp))
@@ -56,6 +64,7 @@ class e107_event
 			}
 
 		}
+
 
 	}
 	
