@@ -29,7 +29,17 @@ if(false === $cached)
 
 	$ntree = e107::getObject('e_news_tree', null, e_HANDLER.'news_class.php');
 
-	$template = e107::getTemplate('news', vartrue($parms['tmpl'], 'news_menu'), vartrue($parms['tmpl_key'], 'latest'));
+	if(empty($parms['tmpl']))
+	{
+		$parms['tmpl'] = 'news_menu';
+	}
+
+	if(empty($parms['tmpl_key']))
+	{
+		$parms['tmpl_key'] = 'latest';
+	}
+
+	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key']);
 
 	$treeparm = array();
 	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);

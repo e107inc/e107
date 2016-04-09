@@ -60,6 +60,12 @@ class news_shortcodes extends e_shortcode
 			$text = e107::getParser()->toAttribute($text);
 		}
 
+		if(!empty($parm['limit']))
+		{
+			$text = e107::getParser()->text_truncate($text, $parm['limit']);
+		}
+
+
 		return $text;
 	}
 
@@ -485,12 +491,13 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newssummary($parm=null)
 	{
+		$text = '';
+
 		if($this->news_item['news_summary'])
 		{
-			return $this->news_item['news_summary'].'<br />';
+			$text = $this->news_item['news_summary'];
 		}
-		
-		if($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
+		elseif($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
 			$text = $tp->toHtml($this->news_item['news_body'],true);
@@ -501,9 +508,17 @@ class news_shortcodes extends e_shortcode
 			
 			if($tmp[0])
 			{
-				return trim($tmp[0]);	
+				$text = trim($tmp[0]);
 			}
 		}
+
+		if(!empty($parm['limit']))
+		{
+			$text = e107::getParser()->text_truncate($text, $parm['limit']);
+		}
+
+
+		return $text;
 	}
 
 	/**

@@ -25,7 +25,10 @@ if(false === $cached)
 
 	$ctree = e107::getObject('e_news_category_tree', null, e_HANDLER.'news_class.php');
 
-	$template = e107::getTemplate('news', 'news_menu', 'category');
+	$parms['tmpl']      = 'news_menu';
+	$parms['tmpl_key']  = 'category';
+
+	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key']);
 
 	$cached = $ctree->loadActive()->render($template, $parms, true);
 	e107::getCache()->set($cacheString, $cached);

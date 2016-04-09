@@ -684,9 +684,11 @@ class e_news_tree extends e_front_tree_model
 		$parser = e107::getParser();
 		$batch = e107::getScBatch('news')
 			->setScVar('param', $param);
-			
-		$batch->wrapper('news_menu/latest'); //@SecretR - Please FIXME, I'm lost in here. (Cam) 
+
+		$wrapperKey = ($parms['tmpl'].'/'.$parms['tmpl_key']);
+		$batch->wrapper($wrapperKey);
 		$i = 1;
+
 
 		$items = $this->getTree();
 
