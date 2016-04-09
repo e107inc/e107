@@ -81,7 +81,7 @@ class e_parse_shortcode
 	 */
 	protected $wrappers = array();
 	protected $wrapper = null;  // current wrapper being processed.
-	protected $wrapperDebugDone = false;
+	protected $wrapperDebugDone = array();
 	
 	/**
 	 * Former $sc_style global variable. Internally used - performance reasons
@@ -772,6 +772,7 @@ class e_parse_shortcode
 				}
 				elseif(E107_DBG_BBSC)
 				{
+					$this->wrapper = $this->addedCodes->getWrapperID();
 				//	e107::getMessage()->addDebug("Wrapper Empty: ".$this->addedCodes->wrapper());
 				}
 
@@ -1101,7 +1102,7 @@ class e_parse_shortcode
 			}
 		}
 
-		if(E107_DBG_BBSC && $this->wrapperDebugDone==false && !empty($this->wrappers))
+		if(E107_DBG_BBSC && $this->wrapperDebugDone[$this->wrapper]==false && !empty($this->wrapper))
 		{
 			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',$this->wrapper,3);
 
@@ -1112,10 +1113,10 @@ class e_parse_shortcode
 			}
 
 		//	e107::getMessage()->addDebug("Active Wrapper: \$".$wrapActive);
-			$this->wrapperDebugDone = true;
+			$this->wrapperDebugDone[$this->wrapper] = true;
 			global $db_debug;
 
-			$db_debug->logCode(3, $this->wrapper,null,  '<pre>To use, add to the '.$wrapTmpl.' template:<br />$'.$wrapActive.'[\'SHORTCODE_NAME\'] = "(html before){---}(html after)";</pre>');
+			$db_debug->logCode(3, $this->wrapper,null,  '<pre>To use, add to the file '.$wrapTmpl.'_template.php:<br />$'.$wrapActive.'[\'SHORTCODE_NAME\'] = "(html before){---}(html after)";</pre>');
 		}
 
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))

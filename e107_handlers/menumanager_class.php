@@ -1605,7 +1605,7 @@ class e_menuManager {
 		if(!$this->dragDrop)
 		{
 				
-			return "<b class='muted' style='color:#2F2F2F;text-align:left'>".$caption."</b><br />". $text;
+			return "<span class='muted'>".$caption."</span><br />". $text;
 		//	return;
 	
 

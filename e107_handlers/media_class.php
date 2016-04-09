@@ -1101,9 +1101,9 @@ class e_media
 		
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
 		$img_data['media_name'] 		= $tp->toDB(basename($newpath));
-		$img_data['media_caption'] 		= $new_data['media_caption'];
+		$img_data['media_caption'] 		= vartrue($new_data['media_caption']);
 		$img_data['media_category'] 	= vartrue($category,'_common_image');
-		$img_data['media_description'] 	= $new_data['media_description'];
+		$img_data['media_description'] 	= vartrue($new_data['media_description']);
 		$img_data['media_userclass'] 	= '0';	
 
 		if($sql->insert("core_media",$img_data))
@@ -1114,7 +1114,7 @@ class e_media
 		}
 		else
 		{
-			$this->log("Db Insert Failed ");
+			$this->log("Db Insert Failed: ".var_export($img_data,true));
 			rename($newpath,$oldpath);	//move it back.
 			return FALSE;
 		}

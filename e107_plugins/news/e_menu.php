@@ -26,7 +26,7 @@ class news_menu
 	 * Configuration Fields.
 	 * @return array
 	 */
-	public function config($menu='')
+	public function config($menu='') //TODO LAN
 	{
 		$fields = array();
 		$categories = array();
@@ -45,6 +45,16 @@ class news_menu
 					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 					$fields['count']        = array('title'=> LAN_LIMIT, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*', 'size'=>'mini'));
 					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>'blank'));
+			break;
+
+			case "news_grid":
+					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
+					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>'blank'));
+					$fields['layout']       = array('title'=> "Layout", 'type'=>'method', 'writeParms'=>'');
+					$fields['count']        = array('title'=> "Number of Items", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
+					$fields['titleLimit']   = array('title'=> "Title Character Limit", 'type'=>'number', 'writeParms'=>'');
+					$fields['summaryLimit'] = array('title'=> "Summary Character Limit", 'type'=>'number', 'writeParms'=>'');
+					// TODO Add a field for 'latest' vs 'sticky' vs 'assigned by news item (news_render_type)'
 			break;
 
 
@@ -72,5 +82,33 @@ class news_menu
 
 	}
 
+
+}
+
+// optional
+class news_menu_form extends e_form
+{
+
+	public function layout($curVal)
+	{
+
+		$arr = array(
+		"col-md-6" => "<div class='row'><div class='col-md-6'><div class='alert alert-info'>1/2</div></div><div class='col-md-6'><div class='alert alert-info'>1/2</div></div></div>",
+		"col-md-4" => "<div class='row'><div class='col-md-4'><div class='alert alert-info'>1/3</div></div><div class='col-md-4'><div class='alert alert-info'>1/3</div></div><div class='col-md-4'><div class='alert alert-info'>1/3</div></div></div>",
+		"col-md-3" => "<div class='row'><div class='col-md-3 '><div class='alert alert-info'>1/4</div></div><div class='col-md-3'><div class='alert alert-info'>1/4</div></div><div class='col-md-3'><div class='alert alert-info'>1/4</div></div><div class='col-md-3'><div class='alert alert-info'>1/4</div></div></div>",
+		);
+
+		$text = '<table class="table news-menu-shade">';
+
+		foreach($arr as $k=>$v)
+		{
+
+			$text .= "<tr><td>".$this->radio('layout', $k, $curVal, array('label'=>$k))."</td><td>".$v."</td></tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+	}
 
 }
