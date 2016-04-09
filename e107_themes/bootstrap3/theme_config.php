@@ -2,6 +2,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::lan('theme', 'admin',true); // e_PLUGIN.'tinymce4/languages/'.e_LANGUAGE.'_admin.php'
+
 // Dummy Theme Configuration File.
 class theme_bootstrap3 implements e_theme_config
 {
@@ -23,18 +25,18 @@ class theme_bootstrap3 implements e_theme_config
 	{
 		$frm = e107::getForm();
 
-		$brandingOpts = array('sitename'=>'Site Name', 'logo' => 'Logo', 'sitenamelogo'=>'Logo &amp; Site Name');
+		$brandingOpts = array('sitename'=>LAN_THEMEPREF_04, 'logo' => LAN_THEMEPREF_05, 'sitenamelogo'=>LAN_THEMEPREF_06);
 
-		$var[0]['caption'] 	= "Branding";
+		$var[0]['caption'] 	= LAN_THEMEPREF_00;
 		$var[0]['html'] 	= $frm->select('branding', $brandingOpts, e107::pref('theme', 'branding', 'sitename'));
 		$var[0]['help']		= "";
 
-		$var[1]['caption'] 	= "Navbar Alignment";
-		$var[1]['html'] 	= $frm->select('nav_alignment', array('left', 'right'), e107::pref('theme', 'nav_alignment', 'left'),'useValues=1' );
+		$var[1]['caption'] 	= LAN_THEMEPREF_01;
+		$var[1]['html'] 	= $frm->select('nav_alignment', array(LAN_THEMEPREF_07, LAN_THEMEPREF_08), e107::pref('theme', 'nav_alignment', 'left'),'useValues=1' );
 		$var[1]['help']		= "";
 
-		$var[2]['caption'] 	= "Signup/Login Placement";
-		$var[2]['html'] 	= $frm->select('usernav_placement', array('top', 'bottom'), e107::pref('theme', 'usernav_placement', 'top'),'useValues=1' );
+		$var[2]['caption'] 	= LAN_THEMEPREF_02;
+		$var[2]['html'] 	= $frm->select('usernav_placement', array(LAN_THEMEPREF_09, LAN_THEMEPREF_10), e107::pref('theme', 'usernav_placement', 'top'),'useValues=1' );
 		$var[2]['help']		= "";
 
 
@@ -61,7 +63,7 @@ class theme_bootstrap3 implements e_theme_config
 
 		$previewLink = " <a class='btn btn-default e-modal' data-modal-caption=\"Use the 'Themes' menu to view the selection.\" href='http://bootswatch.com/default/'>".LAN_PREVIEW."</a>";
 
-		$var[3]['caption'] 	= "Bootswatch Styles";
+		$var[3]['caption'] 	= LAN_THEMEPREF_03;
 		$var[3]['html'] 	= "<div class='form-inline'>".$frm->select('bootswatch', $bootswatch, e107::pref('theme', 'bootswatch', ''),null,LAN_DEFAULT ).$previewLink."</div>";
 		$var[3]['help']		= "";
 
