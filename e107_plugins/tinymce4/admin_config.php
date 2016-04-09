@@ -15,7 +15,7 @@ if( !e107::isInstalled('tinymce4'))
 	exit();
 }
 
-
+e107::lan('tinymce4', true); // e_PLUGIN.'tinymce4/languages/'.e_LANGUAGE.'_admin.php'
 
 
 	class tinymce4_admin extends e_admin_dispatcher
@@ -57,9 +57,9 @@ if( !e107::isInstalled('tinymce4'))
 
 
 		protected $prefs = array(
-			'paste_as_text'		=> array('title'=> 'Paste as text by default', 'type'=>'boolean', 'data' => 'int','help'=> ''),
-			'browser_spellcheck' =>  array('title'=> 'Browser spellcheck', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable this if the browser internal spellchecker should be used.'),
-			'visualblocks' =>  array('title'=> 'Visual Blocks', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable to make html blocks visible during editing.'),
+			'paste_as_text'		=> array('title'=> TINY_PREF_00, 'type'=>'boolean', 'data' => 'int','help'=> ''),
+			'browser_spellcheck' =>  array('title'=> TINY_PREF_01, 'type'=>'boolean', 'data' => 'int','help'=> 'Enable this if the browser internal spellchecker should be used.'),
+			'visualblocks' =>  array('title'=> TINY_PREF_02, 'type'=>'boolean', 'data' => 'int','help'=> 'Enable to make html blocks visible during editing.'),
 
 		);
 
