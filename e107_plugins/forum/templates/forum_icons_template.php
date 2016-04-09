@@ -13,7 +13,7 @@
 if (!defined('e107_INIT')) { exit(); }
 
 $tp = e107::getParser();
-if(deftrue("FONTAWESOME", 4)) {
+if(deftrue("FONTAWESOME", false)) {
 
 define('IMAGE_e', 					'e');
 define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
