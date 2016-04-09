@@ -30,6 +30,10 @@ text-align: center;
     }
 
 
+/* v1.x icon fix */
+.forum-viewforum-admin-icons a                          { vertical-align:top;  width:16px; height:16px; display:inline-block; line-height:14px }
+.forum-viewforum-admin-icons input                      { vertical-align:top;  width:16px; height:16px}
+
 @media all and (min-height: 800px) {
     #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }
 }
