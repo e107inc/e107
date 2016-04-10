@@ -20,6 +20,7 @@ class news_menu
 	function __construct()
 	{
 		// e107::lan('news','admin', 'true');
+
 	}
 
 	/**
@@ -92,10 +93,12 @@ class news_menu_form extends e_form
 	public function layout($curVal)
 	{
 
+		// class='alert alert-info'
+
 		$arr = array(
-		"col-md-6" => "<div class='row'><div class='col-md-6'><div class='alert alert-info'>1/2</div></div><div class='col-md-6'><div class='alert alert-info'>1/2</div></div></div>",
-		"col-md-4" => "<div class='row'><div class='col-md-4'><div class='alert alert-info'>1/3</div></div><div class='col-md-4'><div class='alert alert-info'>1/3</div></div><div class='col-md-4'><div class='alert alert-info'>1/3</div></div></div>",
-		"col-md-3" => "<div class='row'><div class='col-md-3 '><div class='alert alert-info'>1/4</div></div><div class='col-md-3'><div class='alert alert-info'>1/4</div></div><div class='col-md-3'><div class='alert alert-info'>1/4</div></div><div class='col-md-3'><div class='alert alert-info'>1/4</div></div></div>",
+		"col-md-6" => "<div class='row'><div class='col-md-6'><div {STYLE}>1/2</div></div><div class='col-md-6'><div {STYLE}>1/2</div></div></div>",
+		"col-md-4" => "<div class='row'><div class='col-md-4'><div {STYLE}>1/3</div></div><div class='col-md-4'><div {STYLE}>1/3</div></div><div class='col-md-4'><div {STYLE}>1/3</div></div></div>",
+		"col-md-3" => "<div class='row'><div class='col-md-3 '><div {STYLE}>1/4</div></div><div class='col-md-3'><div {STYLE}>1/4</div></div><div class='col-md-3'><div {STYLE}>1/4</div></div><div class='col-md-3'><div {STYLE}>1/4</div></div></div>",
 		);
 
 		$text = '<table class="table news-menu-shade">';
@@ -103,7 +106,7 @@ class news_menu_form extends e_form
 		foreach($arr as $k=>$v)
 		{
 
-			$text .= "<tr><td>".$this->radio('layout', $k, $curVal, array('label'=>$k))."</td><td>".$v."</td></tr>";
+			$text .= "<tr><td>".$this->radio('layout', $k, $curVal, array('label'=>$k))."</td><td>".str_replace('{STYLE}',"class='alert alert-info' style='margin-bottom:0;text-align:center' ",$v)."</td></tr>";
 		}
 
 		$text .= "</table>";
