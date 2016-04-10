@@ -57,4 +57,4 @@ If you find the menus are not updating correctly, clicking the refresh button be
 ";
 
 $text = $tp->toHtml($text, true);
-$ns->tablerender("Menus Help", $text);
+$ns->tablerender("Menu Manager Help", $text);

@@ -704,6 +704,19 @@ class admin_shortcodes
 		return $ret;
 	}
 
+
+	function sc_admin_debug()
+	{
+		if(e_DEBUG !== false)
+		{
+			return "<div class='navbar-right navbar-text'><span class='label label-warning'>DEBUG MODE</span>&nbsp;</div>";
+		}
+
+	}
+
+
+
+
 	// FIXME - make it work
 	function sc_admin_pm($parm)
 	{
@@ -1812,13 +1825,20 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-	function sc_admin_menumanager()  // List all menu-configs for easy-navigation
+
+
+
+	function sc_admin_menumanager($parm=null)  // List all menu-configs for easy-navigation
 	{
 		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php")===false)
 		{
 			return false;
 		}
 
+		if($parm == 'selection')
+		{
+			return $this->menuManagerSelection();
+		}
 
 		$pref = e107::getPref();
 
@@ -1852,50 +1872,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$var = array($defLayout => $var[$defLayout]) + $var;
 
-		e107::getNav()->admin(ADLAN_6,$action, $var);
-
-		return null;
-
-		// TODO: Move to another shortcode.
-		// TODO: Get drag-n-drop working.
-
-		$sql = e107::getDb();
+	    e107::getNav()->admin(ADLAN_6,$action, $var);
 
 
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
-
-		while ($row = $sql->fetch())
-		{
-			if(is_numeric($row['menu_path']))
-			{
-				$pageMenu[] = $row;
-			}
-			else
-			{
-				$pluginMenu[] = $row;
-			}
-
-		}
-
-		$text = "<div class='menu-manager-items' style='height:700px;overflow-y:scroll'>";
-		$text .= "<h4>Your Menus</h4>";
-
-		foreach($pageMenu as $row)
-		{
-			$text .= "<div class='item' >".$row['menu_name']."</div>";
-
-		}
-
-		$text .= "<h4>Plugin Menus</h4>";
-		foreach($pluginMenu as $row)
-		{
-			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5)."</div>";
-		}
-
-		$text .=  "</div>";
-
-
-		return e107::getRender()->tablerender("Menus", $text, null, true);
 
 /*
 
@@ -1935,6 +1914,73 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 	}
+
+
+	private function menuManagerSelection()
+	{
+
+		 if(e_DEBUG === false)
+	    {
+	        return null;
+	    }
+
+
+		// TODO: Move to another shortcode?
+		// TODO: Get drag-n-drop working.
+
+
+		$sql = e107::getDb();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+
+		while ($row = $sql->fetch())
+		{
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$text = "<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
+		$text .= "<h4>Your Menus</h4>";
+
+		foreach($pageMenu as $row)
+		{
+			if(!empty($row['menu_name']))
+			{
+				$text .= "<div class='item' >".$row['menu_name']."</div>";
+			}
+		}
+
+		$text .= "<h4>Plugin Menus</h4>";
+		foreach($pluginMenu as $row)
+		{
+			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5)."</div>";
+		}
+
+		$text .=  "</div>";
+
+
+
+
+
+
+
+		return e107::getRender()->tablerender("Drag-N-Drop Menus", $text, null, true);
+
+
+
+
+	}
+
 
 }
 
