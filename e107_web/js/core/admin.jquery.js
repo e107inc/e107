@@ -623,7 +623,22 @@ $(document).ready(function()
 
 
 
+		$("a.menuManagerSelect").click(function(e){
 
+
+			var link = $(this).attr('data-url');
+			var text = $(this).text();
+			$(this).html(text + ' <i class="e-mm-select-loading fa fa-spin fa-spinner"></i>');
+
+			$("#menu_iframe").attr("src",link);
+
+			$("#menu_iframe").on("load", function () {
+				$('.e-mm-select-loading').hide();
+			});
+
+			$(this).preventDefault();
+			return false;
+		});
 
 
     // Menu Manager Layout drop-down options

@@ -31,6 +31,14 @@ if (!getperms("2"))
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
+e107::css('inline',"
+
+.menu-manager-items          { padding-right:15px}
+.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
+
+");
+
+
 
 
 if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
@@ -383,7 +391,10 @@ TEMPL;
 	.regularMenu { cursor:move; border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px;background-color: #E0EBF1; border-radius: 5px; }
 	.regularMenu span {padding:3px; font-weight:bold; color:#2F2F2F;text-align:left; }
 	.ui-draggable	{  background-color: rgb(245, 245, 245); min-width:100px;}
-	
+
+	.regularMenu:hover { background-color: #B1D7EA; }
+
+
 	",'jquery');
 	
 	
@@ -1397,11 +1408,12 @@ if($_POST)
 		{
 //			$men->menuScanMenus();   // - Runs 2x - Is already called by menuModify() in menumanager_class.php
             $text = $men->menuRenderMessage();
-            $text .= $men->menuSelectLayout();
+         //   $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();
 			$text .= $men->menuInstanceParameters();
             $text .= $men->menuRenderIframe();
-            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, e107::getMessage()->render(). $text, 'menus_config');
+            echo $text;
+         //   $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, e107::getMessage()->render(). $text, 'menus_config');
 		}
 		else // Within the IFrame.
 		{

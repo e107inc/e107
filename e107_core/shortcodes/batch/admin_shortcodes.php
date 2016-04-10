@@ -1814,10 +1814,90 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	function sc_admin_menumanager()  // List all menu-configs for easy-navigation
 	{
-    	global $pref;
-        $action = "";
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php")===false)
+		{
+			return false;
+		}
 
-        return ;
+
+		$pref = e107::getPref();
+
+
+
+		$search = array("_","legacyDefault","legacyCustom");
+		$replace = array(" ",MENLAN_31,MENLAN_33);
+
+		$var = array();
+
+		foreach($pref['sitetheme_layouts'] as $key=>$val)
+		{
+			$layoutName = str_replace($search,$replace,$key);
+			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".LAN_DEFAULT.")" : "";
+		//	$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
+
+
+			//$url = e_SELF."?configure=".$key;
+			$url = e_SELF."?configure=".$key;
+
+		//	$text .= "<option value='".$url."' {$selected}>".$layoutName."</option>";
+			$var[$key]['text'] = str_replace(":"," / ",$layoutName);
+			$var[$key]['link'] = '#'.$key;
+			$var[$key]['link_class'] = ' menuManagerSelect';
+			$var[$key]['active'] = ($key==$pref['sitetheme_deflayout']) ? true: false;
+			$var[$key]['include'] = "data-url='".$url = e_SELF."?configure=".$key."'";
+		}
+		$action = $pref['sitetheme_deflayout'];
+
+		$defLayout = $pref['sitetheme_deflayout'];
+
+		$var = array($defLayout => $var[$defLayout]) + $var;
+
+		e107::getNav()->admin(ADLAN_6,$action, $var);
+
+		return null;
+
+		// TODO: Move to another shortcode.
+		// TODO: Get drag-n-drop working.
+
+		$sql = e107::getDb();
+
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+
+		while ($row = $sql->fetch())
+		{
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$text = "<div class='menu-manager-items' style='height:700px;overflow-y:scroll'>";
+		$text .= "<h4>Your Menus</h4>";
+
+		foreach($pageMenu as $row)
+		{
+			$text .= "<div class='item' >".$row['menu_name']."</div>";
+
+		}
+
+		$text .= "<h4>Plugin Menus</h4>";
+		foreach($pluginMenu as $row)
+		{
+			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5)."</div>";
+		}
+
+		$text .=  "</div>";
+
+
+		return e107::getRender()->tablerender("Menus", $text, null, true);
+
+/*
 
         $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
@@ -1850,7 +1930,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
 
 		e107::getNav()->admin("Menu Manager",$action, $var);
-	 //  e_admin/_menu(ADLAN_6,$action, $var);
+
+*/
+
 
 	}
 

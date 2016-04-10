@@ -418,7 +418,7 @@ $E_ADMIN_MENU['button'] = '
 ';
 $E_ADMIN_MENU['button_active'] = '
 	<li class="active">
-		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}><i class="fa fa-chevron-right"></i>&nbsp;{LINK_TEXT}</a>
+		<a class="link-active{LINK_CLASS}" href="{LINK_URL}"{ID}{ONCLICK}>&nbsp;{LINK_TEXT}</a>
 		{SUB_MENU}
 	</li>
 ';
