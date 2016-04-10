@@ -369,7 +369,9 @@ class e_menuManager {
 
 			$fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
 			
-			$this->menuAddMessage('Scanning for new menus', E_MESSAGE_DEBUG);
+		//	$this->menuAddMessage('Scanning for new menus', E_MESSAGE_DEBUG);
+
+			e107::getDebug()->log("Scanning for new menus",E107_DBG_BASIC);
 
 			$menuList = array(); // existing menus in table. 
 			if($result = $sql->retrieve('menus', 'menu_name', null, true))

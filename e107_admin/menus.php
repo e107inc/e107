@@ -16,6 +16,15 @@ if(isset($_GET['configure']))
 	define("USER_AREA", true);
 	//Switch to desired layout
 	define('THEME_LAYOUT', $_GET['configure']);
+	define('e_DEBUG', false);
+	define('E107_DEBUG_LEVEL', 0);
+	if(function_exists('xdebug_disable'))
+	{
+		xdebug_disable();
+	}
+	@ini_set('display_errors', 0);
+	error_reporting(0);
+
 }
 
 require_once("../class2.php");
@@ -25,7 +34,7 @@ if (!getperms("2"))
 	exit;
 }
 
-
+define('e_DEBUG', false);
 
 
 e107::coreLan('menus', true);
@@ -35,15 +44,30 @@ e107::css('inline',"
 
 .menu-manager-items          { padding-right:15px}
 .menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
+.menu-manager-sticky {
+	position: fixed;
+padding-left: 15px;
+padding-right: 15px;
+left: 0;
+top: 60px;
+	z-index: 100;
+	border-top: 0;
+    -moz-transition: fadeIn .4s;
+    -o-transition: fadeIn .4s;
+    -webkit-transition: fadeIn .4s;
+    transition: fadeIn .4s;
+}
 
 ");
 
 
 
 
+
 if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 {
-	
+
+
 	
 	//e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
 	
@@ -65,6 +89,9 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	// e107::css('core', 	'core/admin.css', 'jquery');
 //	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
  e107::js('core','bootstrap/js/bootstrap-tooltip.js');
+
+
+
 //	e107::css('core','bootstrap/css/bootstrap.min.css');
 
 $JSMODAL = <<<TEMPL
@@ -402,7 +429,46 @@ TEMPL;
 	
 }
 
+else
+{
 
+
+		e107::js('footer-inline', "
+
+
+		$(document).ready(function() {
+
+   	    var stickyNavTop = $('.e-scroll-fixed').offset().top - 60; // grab the initial top offset of the navigation
+
+    	var stickyNav = function(){
+
+		    var scrollTop = $(window).scrollTop(); // our current vertical position from the top
+
+		    if (scrollTop > stickyNavTop) {
+	            $('.e-scroll-fixed').addClass('menu-manager-sticky visible col-lg-2 col-md-3');
+		    } else {
+	            $('.e-scroll-fixed').removeClass('menu-manager-sticky visible col-lg-2 col-md-3');
+		    }
+		};
+
+	stickyNav();
+
+	$(window).scroll(function() { // and run it again every time you scroll
+		stickyNav();
+	});
+});
+
+
+
+		");
+
+
+
+
+
+
+
+}
 		
 	
 
@@ -428,10 +494,10 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 //{
 	function e_help()
 	{
-		if($_SERVER['E_DEV_MENU'] != 'true')	
+		if(e_DEBUG === false)
 		{
-			return false;		
-		}	
+			return null;
+		}
 			
 	
 		
@@ -447,13 +513,13 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 		
 				$text .= "
 				<div class='active tab-pane' id='plugins'>
-				<ul>";
+				<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
 				
 				$c = 500; // start high to prevent overwriting of keys after we drag and drop. 
 				
 				foreach($p as $menu => $folder)
 				{
-					$text .= "<li id='{$menu}' class='draggable regularMenu' style='cursor:move'>";
+					$text .= "<div id='{$menu}' class='item draggable regularMenu' style='cursor:move'>";
 				//	$text .= str_replace("_menu","",$menu);
 				
 					$defaults = array(
@@ -464,22 +530,22 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 					
 					$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
 					
-					$text .= "</li>";
+					$text .= "</div>";
 					$c++;
 					
 				}
 				
-				$text .= "</ul>
+				$text .= "</div>
 				</div>
 				
 				<div class='tab-pane' id='custom'>";
 	
 				if($sql->select('page','*',"menu_name !='' ORDER BY menu_name"))
 				{
-					$text .= "<ul>";
+					$text .= "<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
 					while($row = $sql->fetch())
 					{
-						$text .= "<li id='".$row['page_id']."' class='draggable regularMenu' style='cursor:move'>";
+						$text .= "<div id='".$row['page_id']."' class='item draggable regularMenu' style='cursor:move'>";
 					//	$text .= $row['menu_name'];
 						
 						$defaults = array(
@@ -490,17 +556,17 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 						
 						$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
 						
-						$text .= "</li>";	
+						$text .= "</div>";
 					}
 						
-					$text .= "</ul>";			
+					$text .= "</div>";
 				}
 					
 				$text .= "</div>
 				
 			</div>";
 
-		return array('caption'=>'Menu Items','text'=>$text); 
+		return array('caption'=>'DragNDrop Items','text'=>$text);
 	}
 //}
 

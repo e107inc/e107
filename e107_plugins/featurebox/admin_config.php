@@ -16,7 +16,7 @@ if (!getperms("P") || !e107::isInstalled('featurebox'))
 	exit;
 }
 
-// e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php');
+e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php');
 // e107::lan('plugin','featurebox',true);
 
 class fb_admin extends e_admin_dispatcher
