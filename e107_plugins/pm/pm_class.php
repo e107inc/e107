@@ -263,9 +263,11 @@ class private_message
 			{
 				$info['pm_id'] = $pmid;
 				e107::getEvent()->trigger('user_pm_sent', $info);
-				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
+
+
+				if(check_class($this->pmPrefs['notify_class'], null, $vars['to_info']['user_id']))
 				{
-					set_time_limit(30);
+					set_time_limit(20);
 					$this->pm_send_notify($vars['to_info']['user_id'], $vars, $pmid, count($a_list));
 				}
 				$ret .= LAN_PM_40.": {$vars['to_info']['user_name']}<br />";

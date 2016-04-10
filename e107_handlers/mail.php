@@ -949,7 +949,7 @@ class e107Email extends PHPMailer
 	 *  @param boolean $bulkmail - set TRUE if this email is one of a bulk send; FALSE if an isolated email
 	 *	@return boolean|string - TRUE if success, error message if failure
 	 */
-	public function sendEmail($send_to, $to_name, $eml = '', $bulkmail = false)
+	public function sendEmail($send_to, $to_name, $eml = array(), $bulkmail = false)
 	{
 		if (count($eml))
 		{	
@@ -1081,7 +1081,7 @@ class e107Email extends PHPMailer
 	 *	
 	 *	@return string none (message saved ready to send)
 	 */
-	public function MsgHTML($message, $basedir = '') 
+	public function MsgHTML($message, $basedir = '', $advanced=false)
 	{
 		$tp = e107::getParser();
 
