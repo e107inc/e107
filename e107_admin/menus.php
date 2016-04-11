@@ -425,7 +425,105 @@ TEMPL;
 	",'jquery');
 	
 	
-	
+	e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
+	e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
+
+			e107::js('footer-inline','
+			 $(function()
+			 {
+			 		// post the form back to this script.
+			 		var saveData = function(areaid)
+			 		{
+
+			 			var formid 	= "#form-" + areaid;
+						var form 	= $(formid);
+						var data 	= form.serialize();
+
+						$.ajax({
+						  type: "POST",
+						  url: "menus.php",
+						  data: data
+						}).done(function( msg )
+						{
+							$(".menuOption").show();
+						//	 alert("POSTED: "+ msg );
+						});
+
+			 		}
+
+
+
+
+
+				 	$(".sortable").sortable({
+				 		connectWith: $("#area-1,#area-2,#area-3,#area-4,#area-5"),
+						revert: true,
+						cursor: "move",
+						distance: 20,
+					//	containment: $(".sortable"),
+						update: function(ev,ui)
+				        {
+				        	var areaid = $(this).attr("id");
+							saveData(areaid);
+				        }
+					});
+
+
+/*
+
+				$( ".draggable", window.top.document).click(function()
+					{
+						alert("hi there");
+					});*/
+
+				// http://jsfiddle.net/DT764/2/
+/*
+
+					$(".draggable", window.top.document).draggable({
+					//	connectToSortable: ".sortable",
+						helper: "clone",
+					//	appendTo: $(this), // ".sortable", // "#area-1", //FIXME Needs to be a specific area.
+					//	revert: "invalid",
+						containment: "parent",
+					//	delay: 0,
+					//	revertDuration: 100,
+						cursor: "move",
+						iframeFix: true,
+					//	containment: false,
+						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped.
+                        	// Figure out positioning magic to determine if e.ui.position is in the iframe
+                      	//	var what = $(this).parent().attr("id");
+						//	$(".sortable").draggable( "disable" );
+                       	alert(what);
+                    	}
+
+					});*/
+
+				//	$( "ul, li", window.top.document ).disableSelection();
+
+
+					$( ".deleteMenu").on("click", function()
+					{
+						var deleteId = $(this).attr("data-delete");
+						var area 	= $(this).attr("data-area");
+						$("#"+deleteId).hide("slow", function(){
+							 $("#"+deleteId).remove();
+						});
+
+
+					//	$("#"+deleteId).remove();
+					//	alert(deleteId + " " + area);
+
+
+						saveData(area);
+					});
+
+
+
+
+			 });
+		 ');
+
 	
 }
 
@@ -457,6 +555,9 @@ else
 		stickyNav();
 	});
 });
+
+
+
 
 
 
@@ -652,105 +753,7 @@ class e_layout
 			
 			require_once(e_CORE."templates/admin_icons_template.php");
 
-			e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
-			e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
-			e107::js('inline','
-			 $(function() 
-			 {
-			 		// post the form back to this script. 		
-			 		var saveData = function(areaid)
-			 		{
-			 						
-			 			var formid 	= "#form-" + areaid;
-						var form 	= $(formid);
-						var data 	= form.serialize();
-							
-						$.ajax({
-						  type: "POST",
-						  url: "menus.php",
-						  data: data
-						}).done(function( msg ) 
-						{
-							$(".menuOption").show();
-						//	 alert("POSTED: "+ msg );
-						});			
-			 			
-			 		}
-			 				
-			 				
-			 		
-			 	
-					
-				 	$(".sortable").sortable({
-				 		connectWith: $("#area-1,#area-2,#area-3,#area-4,#area-5"),
-						revert: true,
-						cursor: "move",
-						distance: 20,
-					//	containment: $(".sortable"),
-						update: function(ev,ui)
-				        {
-				        	var areaid = $(this).attr("id");
-							saveData(areaid);
-				        }
-					});
-					
-					
-					
-					
-			//		$( ".draggable", window.top.document).click(function()
-			//		{
-			//			alert("hi there");	
-			//		});
-				
-				// http://jsfiddle.net/DT764/2/	
-					
-			
-					$( ".draggable", window.top.document).draggable({
-						connectToSortable: ".sortable",
-						helper: "clone",
-						appendTo: $(this), // ".sortable", // "#area-1", //FIXME Needs to be a specific area. 
-						revert: "invalid",
-						containment: "parent",
-						delay: 0,
-						revertDuration: 100,
-						cursor: "move",
-						iframeFix: true,
-						containment: false,
-						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped. 
-                        	// Figure out positioning magic to determine if e.ui.position is in the iframe
-                      	//	var what = $(this).parent().attr("id");
-						//	$(".sortable").draggable( "disable" );
-                        //	alert(what);
-                    	}
-			       
-					});
-				
-				//	$( "ul, li", window.top.document ).disableSelection();
-				
-				
-					$( ".deleteMenu").on("click", function()
-					{
-						var deleteId = $(this).attr("data-delete");
-						var area 	= $(this).attr("data-area");
-						$("#"+deleteId).hide("slow", function(){
-							 $("#"+deleteId).remove();
-						});
-						
-						
-					//	$("#"+deleteId).remove();
-					//	alert(deleteId + " " + area);
-					
-					
-						saveData(area);
-					});
-					
-				
-					
-				
-			 });
-		 ');
-		 	
 			
 		 /*
 		
