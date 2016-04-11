@@ -867,6 +867,7 @@ class e_db_mysql
 			if($REPLACE === false)
 			{
 				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+
 			}
 			else
 			{
@@ -1220,6 +1221,12 @@ class e_db_mysql
 	 */
 	private function _getPDOValue($type, $fieldValue)
 	{
+
+		if($fieldValue == '_NULL_')
+		{
+			$type = 'null';
+		}
+
 		switch($type)
 		{
 			case "int":

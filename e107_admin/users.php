@@ -506,11 +506,14 @@ class users_admin_ui extends e_admin_ui
 
 		e107::getUserExt()->addFieldTypes($update);
 
+
+		e107::getMessage()->addDebug(print_a($new_data,true));
+
 		if(!empty($update))
 		{
 			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
 			{
-				$update['user_extended_id'] = intval($new_data['submit_value']);
+				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
 				if(e107::getDb()->insert('user_extended', $update))
 				{
 					e107::getMessage()->addSuccess('Extended Fields Updated');	//TODO Replace with Generic or existing LAN.
@@ -1399,6 +1402,8 @@ class users_admin_ui extends e_admin_ui
 		$userid = $sql->insert('user', $allData);
 		if ($userid)
 		{
+			$this->saveExtended(array('submit_value'=>$userid));
+
 			$sysuser = e107::getSystemUser(false, false);
 			$sysuser->setData($allData['data']);
 			$sysuser->setId($userid);
