@@ -39,7 +39,7 @@ class e107plugin
 		'e_frontpage',
 		'e_latest', // @Deprecated  - see e_dashboard
 		'e_status', //@Deprecated  - see e_dashboard
-		'e_menu', // experimental.
+		'e_menu',
 		'e_search',
 		'e_shortcode',
 		'e_module',
@@ -62,6 +62,52 @@ class e107plugin
 		'e_upload',
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
+	);
+
+
+	/** Deprecated or non-v2.x standards */
+	private $plugin_addons_deprecated = array(
+		'e_bb',     // @deprecated
+		'e_list',
+		'e_meta',   // @deprecated
+		'e_latest', // @deprecated
+		'e_status', // @deprecated
+		'e_tagwords',
+		'e_sql.php',
+		'e_linkgen',
+		'e_frontpage',
+		'e_tohtml', // @deprecated rename to e_parser ?
+		'e_sql',
+		'e_emailprint',
+	);
+
+
+
+	private $plugin_addons_diz = array(
+		'e_admin'       => "Add form elements to existing core admin areas.",
+		'e_cron'        => "Include your plugin's cron in the 'Scheduled Tasks' admin area.",
+		'e_notify'      => "Include your plugin's notification to the Notify admin area.",
+		'e_linkgen'     => "Add link generation into the sitelinks area.",
+		'e_frontpage'   => "Add your plugin as a frontpage option.",
+		'e_menu'        => "Gives your plugin's menu(s) configuration options in the Menu Manager.",
+		'e_featurebox'  => "Allow your plugin to generate content for the featurebox plugin.",
+		'e_search'      => "Add your plugin to the search page.",
+		'e_shortcode'   => "Add a global shortcode which can be used site-wide. (use sparingly)",
+		'e_module'      => "Include a file within class2.php (every page of the site).",
+		'e_event'       => "Hook into core events and process them with custom functions.",
+		'e_comment'     => "Override the core commenting system.",
+		'e_dashboard'   => "Add something to the default admin dashboard panel.", // Admin Front-Page addon.
+		'e_header'      => "Have your plugin include code in the head of every page of the site. eg. css", // loaded in header prior to javascript manager.
+		'e_footer'      => "Have your plugin include code in the foot of every page of the site. eg. javascript", // Loaded in footer prior to javascript manager.
+		'e_url'         => "Give your plugin search-engine-friendly URLs", // simple mod-rewrite.
+		'e_mailout'     => "Allow the mailing engine to use data from your plugin's database tables.",
+		'e_sitelink'    => "Create dynamic navigation links for your plugin.", // sitelinks generator.
+		'e_related'     => "Allow your plugin to be included in the 'related' links.",
+		'e_rss'         => "Give your plugin an rss feed.",
+		'e_upload'      => "Use data from your plugin in the user upload form.",
+		'e_user'        => "Have your plugin include data on the user-profile page.",
+		'e_library'     => "Include a third-party library"
+
 	);
 
 
@@ -2868,6 +2914,26 @@ class e107plugin
 		return;
 	}
 
+	public function getAddonsList()
+	{
+		$list = array_diff($this->plugin_addons,$this->plugin_addons_deprecated);
+		sort($list);
+
+		return $list;
+	}
+
+	public function getAddonsDiz($v)
+	{
+		if(!empty($this->plugin_addons_diz[$v]))
+		{
+			return $this->plugin_addons_diz[$v];
+		}
+
+		return null;
+
+	}
+
+
 	// return a list of available plugin addons for the specified plugin. e_xxx etc.
 	// $debug = TRUE - prints diagnostics
 	// $debug = 'check' - checks each file found for php tags - prints 'pass' or 'fail'
@@ -2877,6 +2943,7 @@ class e107plugin
 		$mes = e107::getMessage();
 
 		$p_addons = array();
+
 
 		foreach ($this->plugin_addons as $addon) //Find exact matches only.
 		{

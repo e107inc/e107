@@ -2514,7 +2514,7 @@ class e_form
 
 		$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
 
-		
+
 		return "
 			<button ".$include." type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
 		";
