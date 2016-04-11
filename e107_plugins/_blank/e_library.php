@@ -10,7 +10,7 @@
 /**
  * Class PLUGIN_library.
  */
-class PLUGIN_library
+class _blank_library
 {
 
 	/**
