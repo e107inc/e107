@@ -2177,10 +2177,17 @@ class pluginBuilder
 		var $special = array();
 		var $tableCount = 0;
 		var $tableList = array();
-		var $createFiles = false; 
+		var $createFiles = false;
+		private $debug = false;
 	
 		function __construct()
 		{
+
+			if(e_DEBUG == true)
+			{
+				$this->debug = true;
+			}
+
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
@@ -2347,6 +2354,11 @@ class pluginBuilder
 				$this->tableList[] = $table;
 			}
 			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
+
+			if($this->debug == true)
+			{
+				$text .= "<li><a data-toggle='tab'  href='#addons'>Addons</a></li>";
+			}
 			
 			$text .= "</ul>";
 			
@@ -2369,7 +2381,15 @@ class pluginBuilder
 			$text .= "<div class='tab-pane' id='preferences'>\n";
 			$text .= $this->prefs(); 
 			$text .= "</div>";
-			
+
+
+			if($this->debug == true)
+			{
+				$text .= "<div class='tab-pane' id='addons'>\n";
+				$text .= $this->addons();
+				$text .= "</div>";
+			}
+
 			if(empty($ret['tables']))
 			{
 				$text .= $frm->hidden($this->pluginName.'_ui[mode]','main');
@@ -2393,6 +2413,42 @@ class pluginBuilder
 			
 			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115, $mes->render() . $text);
 		}
+
+
+
+
+
+
+
+		private function addons()
+		{
+			$plg = e107::getPlugin();
+
+			$list = $plg->getAddonsList();
+			$frm = e107::getForm();
+			$text = "<table class='table table-striped' >";
+
+			$setupDiz = "Create default table data during install, upgrade, uninstall etc";
+
+			array_unshift($list,$this->pluginName.'_setup');
+
+			foreach($list as $v)
+			{
+
+				$diz = ($v == $this->pluginName.'_setup') ? $setupDiz : $plg->getAddonsDiz($v);
+
+				$text .= "<tr>";
+				$text .= "<td>".$frm->checkbox('addons[]',$v,false, $v)."</td>";
+				$text .= "<td><label for='".$frm->name2id('addons-'.$v)."'>".$diz."</label></td>";
+				$text .= "</tr>";
+			}
+
+			$text .= "</table>";
+
+			return $text;
+
+		}
+
 
 
 		function prefs()
@@ -2421,16 +2477,20 @@ class pluginBuilder
 	
 				);
 						
-			
+
+			$text = "<table class='table table-striped'>";
+
 			for ($i=0; $i < 10; $i++) 
 			{ 		
-				$text .= "<div class='form-inline'>".
-				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder='.EPL_ADLAN_129)." ".
-				$frm->text("pluginPrefs[".$i."][value]", '',40,'placeholder='.EPL_ADLAN_130)." ".
-				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', EPL_ADLAN_131).
-				"</div>";		
+				$text .= "<tr><td>".
+				$frm->text("pluginPrefs[".$i."][index]", '',40,'placeholder='.EPL_ADLAN_129)."</td><td>".
+				$frm->text("pluginPrefs[".$i."][value]", '',50,'placeholder='.EPL_ADLAN_130)."</td><td>".
+				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', EPL_ADLAN_131)."</td><td>".
+				$frm->text("pluginPrefs[".$i."][help]", '',80,'size=xxlarge&placeholder='.EPL_ADLAN_174)."</td>".
+				"</td></tr>";
 			}
-			
+
+			$text .= "</table>";
 			return $text;
 		}
 
