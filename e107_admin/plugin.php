@@ -2347,18 +2347,19 @@ class pluginBuilder
 			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>".EPL_ADLAN_109."</a></li>";
 			
 			$this->tableCount = count($ret['tables']);
-			
-			foreach($ret['tables'] as $key=>$table)
-			{
-				$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
-				$this->tableList[] = $table;
-			}
-			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
 
-			if($this->debug == true)
+			if(!empty($ret['tables']))
 			{
-				$text .= "<li><a data-toggle='tab'  href='#addons'>Addons</a></li>";
+				foreach($ret['tables'] as $key=>$table)
+				{
+					$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
+					$this->tableList[] = $table;
+				}
 			}
+
+			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
+			$text .= "<li><a data-toggle='tab'  href='#addons'>Addons</a></li>"; //TODO LAN
+
 			
 			$text .= "</ul>";
 			
@@ -2383,12 +2384,10 @@ class pluginBuilder
 			$text .= "</div>";
 
 
-			if($this->debug == true)
-			{
-				$text .= "<div class='tab-pane' id='addons'>\n";
-				$text .= $this->addons();
-				$text .= "</div>";
-			}
+			$text .= "<div class='tab-pane' id='addons'>\n";
+			$text .= $this->addons();
+			$text .= "</div>";
+
 
 			if(empty($ret['tables']))
 			{
@@ -2415,7 +2414,41 @@ class pluginBuilder
 		}
 
 
+		private function createAddons($list)
+		{
 
+			$srch = array('_blank','blank');
+			$result = array();
+
+			foreach($list as $addon)
+			{
+
+				$source         = e_PLUGIN."_blank/".$addon.".php";
+				$destination    = e_PLUGIN.$this->pluginName. "/".$addon.".php";
+
+				if(file_exists($destination))
+				{
+					$result[] = "Skipped (already exists) : ".$addon;
+					continue;
+				}
+
+				if($content = file_get_contents($source))
+				{
+					$content = str_replace($srch, $this->pluginName, $content);
+					if(file_put_contents($destination,$content))
+					{
+						$result[] = LAN_CREATED." : ".$addon;
+					}
+				}
+				else
+				{
+					//$mes->addError("Addon source-file was empty: ".$addon);
+				}
+
+			}
+
+			return $result;
+		}
 
 
 
@@ -2426,14 +2459,22 @@ class pluginBuilder
 
 			$list = $plg->getAddonsList();
 			$frm = e107::getForm();
-			$text = "<table class='table table-striped' >";
+			$text = "<table class='table table-striped adminlist' >";
 
 			$setupDiz = "Create default table data during install, upgrade, uninstall etc";
 
 			array_unshift($list,$this->pluginName.'_setup');
 
+			$templateFiles = scandir(e_PLUGIN."_blank");
+
 			foreach($list as $v)
 			{
+
+				if(!in_array($v.".php", $templateFiles))
+				{
+					continue;
+				}
+
 
 				$diz = ($v == $this->pluginName.'_setup') ? $setupDiz : $plg->getAddonsDiz($v);
 
@@ -3337,11 +3378,14 @@ TEMPLATE;
 				$xmlText =	$this->createXml($_POST['xml']);
 			}
 					
+			if(!empty($_POST['addons']))
+			{
+				$addonResults = $this->createAddons($_POST['addons']);
+			}
 			
 			
 			
-			
-			unset($_POST['step'],$_POST['xml']);
+			unset($_POST['step'],$_POST['xml'], $_POST['addons']);
 		$thePlugin = $_POST['newplugin'];
 
 $text = "\n
@@ -3539,8 +3583,9 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 			{
 				$index = $val['index'];
 				$type = vartrue($val['type'],'text');
+				$help = str_replace("'",'', vartrue($val['help']));
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$type."', 'data' => 'str', 'help'=>'Help Text goes here'),\n";
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$type."', 'data' => 'str', 'help'=>'".$help."'),\n";
 			}	
 	
 		}
@@ -3690,7 +3735,15 @@ exit;
 			
 			$startPHP = chr(60)."?php";		
 			$endPHP =  "?>";
-			
+
+			if(!empty($addonResults))
+			{
+				foreach($addonResults as $v)
+				{
+					$mes->addSuccess($v);
+				}
+			}
+
 			if($this->createFiles == true)
 			{
 				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
@@ -3707,11 +3760,17 @@ exit;
 			{
 				$mes->addInfo(EPL_ADLAN_219);
 			}
+
+
+
+
 			
 			echo $mes->render();
 			
 			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");
-	
+
+
+
 			
 			$ns->tablerender("admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
 			
