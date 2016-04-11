@@ -741,7 +741,31 @@ $(document).ready(function()
 			return false;
 		}); 
 		
-		
+
+
+		$('button[type=submit]').on('click', function()
+		{
+				var caption  = $(this).text();
+				var type 	= $(this).attr('data-loading-icon');
+
+				if(type === undefined)
+				{
+					return true;
+				}
+
+				caption = "<i class='fa fa-spin " + type + " fa-fw'></i><span>" + caption + "</span>";
+
+				$(this).html(caption);
+
+				if($(this).attr('data-disable') == 'true')
+				{
+					$(this).addClass('disabled');
+				}
+				return true;
+			}
+		);
+
+
 		
 		// Dates --------------------------------------------------
 		

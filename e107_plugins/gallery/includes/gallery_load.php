@@ -14,8 +14,9 @@
 /**
  * Helper function to load prettyPhoto library's settings and files.
  */
-function gallery_load_prettyphoto()
+function gallery_load_prettyphoto() // @lonalore FIXME Stop loading this on every page.
 {
+
 	// Re-use the statically cached value to save memory. Load settings and files only once!!!
 	static $gallery_load_prettyphoto;
 
