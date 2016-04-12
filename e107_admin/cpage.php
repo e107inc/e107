@@ -498,7 +498,7 @@ class page_admin_ui extends e_admin_ui
 			'menu_name' 		=> array('title'=> CUSLAN_64, 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme. Must use ASCII characters only."),
 		   	'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item.", 'writeParms'=>'size=xxlarge'),
 			'menu_text' 		=> array('title'=> CUSLAN_66,		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ),
-			'menu_template' 	=> array('title'=> CUSLAN_66,       'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
+			'menu_template' 	=> array('title'=> CUSLAN_67,       'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
             'menu_class' 		=> array('title'=> LAN_VISIBILITY, 	'tab' => 3,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
 			'menu_button_text'	=> array('title'=> CUSLAN_68, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Leave blank to use the default"),
 		
