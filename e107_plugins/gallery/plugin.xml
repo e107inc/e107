@@ -24,7 +24,7 @@
 		<pref name="slideshow_effect">scrollHorz</pref>	
 		<pref name="perpage">12</pref>
 		<pref name="orderby">media_id DESC</pref>
-		<pref name="pp_global">1</pref>
+		<pref name="pp_global">0</pref>
 		<pref name="pp_hook">data-gal</pref>
 		<pref name="pp_animation_speed">fast</pref>
 		<pref name="pp_slideshow">5000</pref>
