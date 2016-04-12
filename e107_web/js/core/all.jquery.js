@@ -745,22 +745,31 @@ $(document).ready(function()
 
 		$('button[type=submit]').on('click', function()
 		{
-				var caption  = $(this).text();
+				var caption = $(this).text();
 				var type 	= $(this).attr('data-loading-icon');
+				var formid 	=  $(this).closest('form').attr('id');
+				var but		= $(this);
 
-				if(type === undefined)
+				if(type === undefined || (formid === undefined))
 				{
 					return true;
 				}
 
-				caption = "<i class='fa fa-spin " + type + " fa-fw'></i><span>" + caption + "</span>";
+				$('#'+formid).submit(function(){ // only animate on successful submission.
 
-				$(this).html(caption);
+					caption = "<i class='fa fa-spin " + type + " fa-fw'></i><span>" + caption + "</span>";
 
-				if($(this).attr('data-disable') == 'true')
-				{
-					$(this).addClass('disabled');
-				}
+					$(but).html(caption);
+
+					if( $(but).attr('data-disable') == 'true')
+					{
+
+						$(but).addClass('disabled');
+					}
+
+				});
+
+
 				return true;
 			}
 		);
