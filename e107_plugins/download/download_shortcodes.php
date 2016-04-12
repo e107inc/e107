@@ -918,9 +918,10 @@ class download_shortcodes extends e_shortcode
 			
 		$text .= '
               <span class="input-group-btn">
-              <button class="btn btn-default" type="submit" name="s"  value="1">
-              <span class="glyphicon glyphicon-search"></span>
-             </button>
+              <button class="btn btn-default" type="submit" name="s"  value="1">';
+              
+              $text .= '<span class="'.((deftrue('BOOTSTRAP') && deftrue('FONTAWESOME') ? "fa fa" : "glyphicon glyphicon").'-search"></span>';
+             $text .= '</button>
              </span>
              </div><!-- /input-group -->
         </div></form>';
