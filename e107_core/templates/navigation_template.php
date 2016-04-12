@@ -3,7 +3,7 @@
 * Copyright (c) 2012 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 * $Id: e_shortcode.php 12438 2011-12-05 15:12:56Z secretr $
 *
-* Gallery Template 
+* Navigation Template 
 */
 
  
@@ -19,53 +19,63 @@ $NAVIGATION_TEMPLATE['main']['item'] = '
 	</li>
 ';
 
-// Main Link which has a sub menu. 
-$NAVIGATION_TEMPLATE['main']['item_submenu'] = '
-	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
-		 {LINK_ICON}{LINK_NAME} 
-		<b class="caret"></b>
-		</a> 
-		{LINK_SUB}
-	</li>
-';
-
-$NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
-	<li class="dropdown active">
-		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		 {LINK_ICON}{LINK_NAME}
-		<b class="caret"></b>
-		</a>
-		{LINK_SUB}
-	</li>
-';	
-
+// Main Link - active state
 $NAVIGATION_TEMPLATE['main']['item_active'] = '
 	<li class="active">
 		<a class="e-tip" role="button"  data-target="#" href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">
 		 {LINK_ICON} {LINK_NAME}
 		</a>
 	</li>
+';
+
+// Main Link which has a sub menu. 
+$NAVIGATION_TEMPLATE['main']['item_submenu'] = '
+	<li class="dropdown">
+		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
+		 {LINK_ICON}{LINK_NAME} 
+		 <span class="caret"></span>
+		</a> 
+		{LINK_SUB}
+	</li>
+';
+
+// Main Link which has a sub menu - active state.
+$NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
+	<li class="dropdown active">
+		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
+		 {LINK_ICON}{LINK_NAME}
+		 <span class="caret"></span>
+		</a>
+		{LINK_SUB}
+	</li>
 ';	
 
 $NAVIGATION_TEMPLATE['main']['end'] = '</ul>';	
 
-
+// Sub menu 
 $NAVIGATION_TEMPLATE['main']['submenu_start'] = '
 		<ul class="dropdown-menu" role="menu" >
 ';
 
-
+// Sub menu Link 
 $NAVIGATION_TEMPLATE['main']['submenu_item'] = '
 			<li role="menuitem" >
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
-				{LINK_SUB}
 			</li>
 ';
 
+// Sub menu Link - active state
+$NAVIGATION_TEMPLATE['main']['submenu_item_active'] = '
+			<li role="menuitem" class="active">
+				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
+			</li>
+';
+
+// Sub Menu Link which has a sub menu. 
 $NAVIGATION_TEMPLATE['main']['submenu_loweritem'] = '
 			<li role="menuitem" class="dropdown-submenu">
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
+				<span class="caret"></span>
 				{LINK_SUB}
 			</li>
 ';
@@ -73,16 +83,11 @@ $NAVIGATION_TEMPLATE['main']['submenu_loweritem'] = '
 $NAVIGATION_TEMPLATE['main']['submenu_loweritem_active'] = '
 			<li role="menuitem" class="dropdown-submenu active">
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
+				<span class="caret"></span>
 				{LINK_SUB}
 			</li>
 ';
 
-$NAVIGATION_TEMPLATE['main']['submenu_item_active'] = '
-			<li role="menuitem" class="active">
-				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
-				{LINK_SUB}
-			</li>
-';
 
 $NAVIGATION_TEMPLATE['main']['submenu_end'] = '</ul>';
 
