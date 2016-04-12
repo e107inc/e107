@@ -317,7 +317,7 @@ class faq_main_ui extends e_admin_ui
 
 	}
 	
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		// trim spaces
 		if(!empty($new_data['faq_tags']))

@@ -544,16 +544,18 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$pref = e107::getPref();
 
+		$pref['mailout_enabled'] = str_replace('core','user',$pref['mailout_enabled']); // BC fix.
+
 		$ret = 0;
 		$toLoad = explode(',', $options);
 		
-		$active_mailers = explode(',', varset($pref['mailout_enabled'], 'core'));
+		$active_mailers = explode(',', varset($pref['mailout_enabled'], 'user'));
 		
 		if((in_array('core', $toLoad) || ($options == 'all')) && in_array('core', $active_mailers))
 		{
-			require_once (e_HANDLER . 'mailout_class.php');
-			$this->mailHandlers['core'] = new core_mailout; // Start by loading the core mailout class
-			$ret++;
+		//	require_once (e_HANDLER . 'mailout_class.php');
+		//	$this->mailHandlers['core'] = new core_mailout; // Start by loading the core mailout class
+		//	$ret++;
 		}
 		
 		if(empty($pref['e_mailout_list']))
@@ -627,7 +629,7 @@ class mailoutAdminClass extends e107MailManager
 
 				if(is_array($content))
 				{
-					$text = "<table class='table ' style='width:100%;margin-left:0px'>
+					$text = "<table class='table table-bordered table-striped ' style='margin-bottom:0;margin-left:0; margin-top:10px'>
 					<colgroup span='2'>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -638,7 +640,7 @@ class mailoutAdminClass extends e107MailManager
 					{
 						$text .= "
 						<tr>
-							<td style='padding-left:0px'>" . $var['caption'] . "</td>
+							<td>" . $var['caption'] . "</td>
 							<td class='form-inline'>" . $var['html'] . "</td>
 						</tr>";
 					}

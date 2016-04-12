@@ -8,20 +8,10 @@
  *
  * Mailout handling - selector for 'core' users
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 11315 $
- * $Date: 2010-02-10 18:18:01 +0000 (Wed, 10 Feb 2010) $
- * $Author: secretr $
+
  *
 */
 
-/**
- *	e107 Mail handling - core selector for users
- *
- *	@package	e107
- *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_class.php 11315 2010-02-10 18:18:01Z secretr $;
- */
 
 if (!defined('e107_INIT')) { exit; }
 

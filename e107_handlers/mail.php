@@ -697,9 +697,16 @@ class e107Email extends PHPMailer
 			} 
 			
 		}	
-		
+
+
+
 		$text = $this->Body;
-		
+
+		if($eml['template'] == 'textonly')
+		{
+			$text = strip_tags($text);
+		}
+
 		if(!empty($this->previewAttachments))
 		{
 			$text .= "<hr />Attachments:";
@@ -710,7 +717,12 @@ class e107Email extends PHPMailer
 				$text .= "</div>";	
 			}	
 		}
-		
+
+		if($eml['template'] == 'texthtml' || $eml['template'] == 'textonly' )
+		{
+			$text = "<body style='background-color:#FFFFFF'>".$text."</body>";
+		}
+
 		return $text;
 		
 	}
@@ -1191,6 +1203,9 @@ class e107Email extends PHPMailer
 
 
 	}
+
+
+
 
 }		// End of e107Mailer class
 
