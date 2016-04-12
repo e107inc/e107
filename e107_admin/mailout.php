@@ -81,7 +81,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
 require_once(e_HANDLER.'ren_help.php');
 
 require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
+// require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
 require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 
@@ -291,9 +291,9 @@ class mailout_main_ui extends e_admin_ui
 			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
 			
 			'mail_selectors'		=> array('title' => LAN_MAILOUT_03, 'type'=>'method', 'data'=>false, 'nolist' => true, 'writeParms'=>'nolabel=0'),
-			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>'whatever'),
+			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>''),
 			'mail_sender_name'		=> array('title' => LAN_MAILOUT_150, 'type'=>'method', 'data'=>false),
-			'mail_sender_email' 	=> array('title' => LAN_ID,'type'=>'method','data'=>false),
+			'mail_sender_email' 	=> array('title' => LAN_MAILOUT_149,'type'=>'method','data'=>false),
 			'mail_copy_to'			=> array('title' => LAN_MAILOUT_151,'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_bcopy_to'			=> array('title' => LAN_MAILOUT_152,'tab'=>1, 'type'=>'method','data'=>false),	
 			'mail_subject' 			=> array('title' => LAN_MAILOUT_06, 'type'=>'text', 'forced' => TRUE,'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1'),
@@ -1063,15 +1063,16 @@ class mailout_main_ui extends e_admin_ui
 		$mail_enable = explode(',',vartrue($pref['mailout_enabled'],'core'));
 		
 		$coreCheck = (in_array('core',$mail_enable)) ? "checked='checked'" : "";
-		$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
-	 
+	//	$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
+
 		if(!empty($pref['e_mailout_list']))
 		{
 			foreach ($pref['e_mailout_list'] as $mailer => $v)	 
 			 {
+			    $addon = e107::getAddon($v,'e_mailout');
+			    $name = $addon->mailerName;
 				$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
-				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$mailer);
-			//	$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
+				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$name);
 			}
 		}
 
@@ -1398,6 +1399,12 @@ class mailout_main_ui extends e_admin_ui
 	
 		$temp['mailout_enabled'] = implode(',', varset($_POST['mail_mailer_enabled'], ''));
 		$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
+
+		if(empty($temp['mailout_enabled']))
+		{
+			$temp['mailout_enabled'] = 'user';
+		}
+
 	
 		foreach ($temp as &$t)
 		{
@@ -1434,6 +1441,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			break;
 
 			case 'write':
+
 				return $this->getController()->mailAdmin->emailSelector('all', varset($data['mail_selectors'], FALSE));	
 			break;
 

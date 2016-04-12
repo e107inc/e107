@@ -1309,8 +1309,7 @@ class e_db_mysql
 
 		}
 
-
-		e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
+		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
 		return PDO::PARAM_STR;
 	}
 

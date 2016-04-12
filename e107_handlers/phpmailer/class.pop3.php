@@ -368,11 +368,11 @@ class POP3
     {
         $this->errors[] = $error;
         if ($this->do_debug >= 1) {
-            echo '<pre>';
+        //    echo '<pre>';
             foreach ($this->errors as $error) {
-                print_r($error);
+         //       print_r($error);
             }
-            echo '</pre>';
+        //    echo '</pre>';
         }
     }
 
