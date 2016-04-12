@@ -222,7 +222,7 @@ class e_form
 
 			if(is_numeric($key))
 			{
-				$key = 'tab-'.$this->name2id($tab['caption']);
+				$key = 'tab-'.$key;
 			}
 
 			if($c == 0 & $initTab == false)
@@ -252,7 +252,7 @@ class e_form
 
 			if(is_numeric($key))
 			{
-				$key = 'tab-'.$this->name2id($tab['caption']);
+				$key = 'tab-'.$key;
 			}
 
 			if($c == 0 & $initTab == false)
