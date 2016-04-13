@@ -2347,34 +2347,43 @@ class e_parse extends e_parser
 
 	//	e107::getDebug()->log("Thumb: ".basename($url). print_a($options,true), E107_DBG_BASIC);
 
-		if(isset($options['crop']))
+		if(!empty($options))
 		{
-			$this->thumbCrop = intval($options['crop']);
-		}
-
-		if(isset($options['x']))
-		{
-			$this->thumbEncode($options['x']);
-		}
-				
-		if(vartrue($options['aw']) || vartrue($options['ah']) || ($this->thumbCrop == 1))
-		{
-			if($this->thumbCrop == 1 && !vartrue($options['aw']) && !vartrue($options['ah'])) // Allow templates to determine dimensions. See {SETIMAGE}
-			{
-				$options['aw']	= $this->thumbWidth;
-				$options['ah']	 = $this->thumbHeight;
-			}
-			
-			$thurl .= 'aw='.((integer) vartrue($options['aw'], 0)).'&amp;ah='.((integer) vartrue($options['ah'], 0));
+			$options['w']       = varset($options['w']);
+			$options['h']       = varset($options['h']);
+			$options['crop']    = (isset($options['aw']) || isset($options['ah'])) ? 1 : varset($options['crop']);
+			$options['aw']      = varset($options['aw']);
+			$options['ah']      = varset($options['ah']);
+			$options['x']       = varset($options['x']);
 		}
 		else
 		{
-			if(!vartrue($options['w']) && !vartrue($options['h'])) // Allow templates to determine dimensions. See {SETIMAGE}
+			$options['w']       = $this->thumbWidth;
+			$options['h']       = $this->thumbHeight;
+			$options['crop']    = $this->thumbCrop;
+			$options['aw']      = null;
+			$options['ah']      = null;
+			$options['x']       = $this->thumbEncode;
+
+		}
+
+
+		if(!empty($options['crop']))
+		{
+			if(!empty($options['aw']) || !empty($options['ah']))
 			{
-				 $options['w'] = $this->thumbWidth;
-				 $options['h'] = $this->thumbHeight;
+				$options['w']	= $options['aw'] ;
+				$options['h']	= $options['ah'] ;
 			}
-			$thurl .= 'w='.((integer) vartrue($options['w'], 0)).'&amp;h='.((integer) vartrue($options['h'], 0));
+
+			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.intval($options['h']);
+
+		}
+		else
+		{
+
+			$thurl .= 'w='.intval($options['w']).'&amp;h='.intval($options['h']);
+
 		}
 
 
@@ -2383,7 +2392,7 @@ class e_parse extends e_parser
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
 			$options['thurl'] = $thurl;
-			$options['x'] = $this->thumbEncode();
+		//	$options['x'] = $this->thumbEncode();
 
 			if($sefUrl = $this->thumbUrlSEF($url,$options))
 			{
@@ -2391,7 +2400,7 @@ class e_parse extends e_parser
 			}
 		}
 
-		if(!empty($this->thumbEncode))//base64 encode url
+		if(!empty($options['x'] ))//base64 encode url
 		{
 			$thurl = 'id='.base64_encode($thurl);
 		}
@@ -2411,27 +2420,13 @@ class e_parse extends e_parser
 		if(is_array($width))
 		{
 			$parm = $width;
+			$multiply = $width['size'];
+			$encode = $width['x'];
 			$width = $width['size'];
-
-			if(!empty($parm['aw']) || !empty($parm['aw']) )
-			{
-				$this->thumbWidth($parm['aw']);
-				$this->thumbHeight($parm['ah']);
-				$this->thumbCrop = 1;
-			}
-			elseif(!empty($parm['w']) || !empty($parm['w']) )
-			{
-				$this->thumbWidth($parm['w']);
-				if(isset($parm['h']))
-				{
-					$this->thumbHeight($parm['h']);
-				}
-
-			}
-
 		}
 
-		$encode =  $this->thumbEncode();;
+
+	//	$encode =  $this->thumbEncode();;
 		if($width == null || $width=='all')
 		{
 			$links = array();
@@ -2451,30 +2446,31 @@ class e_parse extends e_parser
 			return implode(", ",$links);
 
 		}
-		elseif($width == '2x')
+		elseif($multiply == '2x' || $multiply == '3x' || $multiply == '4x')
 		{
-			$width = ($this->thumbWidth * 2);
-			$height = ($this->thumbHeight * 2);
-		}
-		elseif($width == '3x')
-		{
-			$width = (!empty($parm['w'])) ? ($parm['w'] * 3) : ($this->thumbWidth * 3);
-			$height = (!empty($parm['h'])) ? ($parm['h'] * 3) : ($this->thumbHeight * 3);
-		}
-		elseif($width == '4x')
-		{
-			$width = (!empty($parm['w'])) ? ($parm['w'] * 4) : ($this->thumbWidth * 4);
-			$height = (!empty($parm['h'])) ? ($parm['h'] * 4) : ($this->thumbHeight * 4);
+
+			if(empty($parm['w']) && isset($parm['h']))
+			{
+				$parm['h'] = ($parm['h'] * $multiply) ;
+				return $this->thumbUrl($src, $parm)." ".$multiply;
+			}
+
+			$width = (!empty($parm['w'])) ? ($parm['w'] * $multiply) : ($this->thumbWidth * $multiply);
+			$height = (!empty($parm['h'])) ? ($parm['h'] * $multiply) : ($this->thumbHeight * $multiply);
 		}
 		else
 		{
 			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
 		}
 
-		$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height) : array('w'  => $width,	'h'  => $height	);
+		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
 
-		$parms['x'] = $encode;
+	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
+
+		// $parms['x'] = $encode;
+
 		return $this->thumbUrl($src, $parms)." ".$width."w";
+
 
 	}
 
@@ -2519,6 +2515,7 @@ class e_parse extends e_parser
 		}
 		else
 		{
+			// e107::getDebug()->log("SEF URL False: ".$url);
 			return false;
 		}
 
@@ -2528,6 +2525,10 @@ class e_parse extends e_parser
 		if(vartrue($options['aw']) || vartrue($options['ah']))
 		{
 			$sefUrl .= 'a'.intval($options['aw']) .'xa'. intval($options['ah']);
+		}
+		elseif(!empty($options['crop']))
+		{
+			$sefUrl .= 'a'.intval($options['w']) .'xa'. intval($options['h']);
 		}
 		else
 		{
@@ -3660,46 +3661,23 @@ class e_parser
 			return null;
 		}
 
-		if(!empty($parm['aw']) || !empty($parm['ah']))
-		{
-			$parm['w'] = $parm['aw'];
-			$parm['h'] = $parm['ah'];
-			$parm['crop'] = 1;
-			unset($parm['aw'],$parm['ah']);
-		}
-
-		if(!empty($parm['w']))
-		{
-			$tp->thumbWidth($parm['w']);
-		}
-
-		if(!empty($parm['h']))
-		{
-			$tp->thumbHeight($parm['h']);
-		}
-
-		if(!empty($parm['crop']))
-		{
-			$tp->thumbCrop(true);
-		}
-
-		if(!empty($parm['x']))
-		{
-			$tp->thumbEncode(true);
-		}
-
-		if(empty($parm['w']))
-		{
-			$parm['w'] = $tp->thumbWidth();
-		}
-
 
 		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false) //v2.x path.
 		{
 
-			$path = $tp->thumbUrl($file);
+			if(!isset($parm['w']) && !isset($parm['h']))
+			{
+				$parm['w']      = $tp->thumbWidth();
+				$parm['h']      = $tp->thumbHeight();
+				$parm['crop']   = $tp->thumbCrop();
+				$parm['x']      = $tp->thumbEncode();
+			}
+
+			unset($parm['src']);
+			$path = $tp->thumbUrl($file,$parm);
 			$srcSetParm = $parm;
 			$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+
 			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
 
 		}

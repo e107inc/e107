@@ -405,7 +405,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   line-height: 20px;
   text-align: left;
   vertical-align: top;
-  border-top: 1px solid #dddddd;
+  border-top: 1px solid #0a0a0a;
 }
 .fborder th , .fcaption {
   font-weight: bold;
@@ -1240,6 +1240,17 @@ li.rssRow > div {
 .alert-warning pre          { color: white }
 
 .xdebug-error { color: black; font-size:1.5em }
+
+
+
+/* Legacy Styling  */
+.fborder .forumheader3    { padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #0a0a0a; }
+
+
+
+
+
+
 
 /*
 

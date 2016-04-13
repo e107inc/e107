@@ -159,7 +159,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 
 			if(empty($parm['noresize']) && !empty($logopref)) // resize by default - avoiding large files.
 			{
-				 $logo = $tp->thumbUrl($logopref,$parm);
+				 $logo = $logopref;
 			}
 		}
 		elseif(!deftrue('BOOTSTRAP'))
@@ -167,11 +167,25 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$dimensions = getimagesize($path);
 		}
 
-		$imageStyle = (empty($dimensions)) ? '' : " style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' ";
+		$opts = array('alt'=>SITENAME, 'class'=>'logo img-responsive');
 
-		$image = "<img class='logo img-responsive' src='".$logo."' ".$imageStyle." alt='".SITENAME."' />\n";
-	
+		if(!empty($dimensions[0]))
+		{
+			$opts['w'] = $dimensions[0];
 
+		}
+
+		if(!empty($dimensions[1]))
+		{
+			$opts['h'] = $dimensions[1];
+		}
+
+	//	$imageStyle = (empty($dimensions)) ? '' : " style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' ";
+	//	$image = "<img class='logo img-responsive' src='".$logo."' ".$imageStyle." alt='".SITENAME."' />\n";
+
+
+
+		$image = $tp->toImage($logo,$opts);
 		
 
 		if (isset($link) && $link)
