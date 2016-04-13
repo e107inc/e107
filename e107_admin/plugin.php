@@ -2547,7 +2547,7 @@ class pluginBuilder
 				'author' 		=> array('name','url'),
 				'summary' 		=> array('summary'),
 				'description' 	=> array('description'),
-				'keywords' 		=> array('one','two'),
+				'keywords' 		=> array('one','two','three'),
 				'category'		=> array('category'),
 				'copyright'		=> array('copyright'),
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
@@ -2622,6 +2622,7 @@ class pluginBuilder
 					"category-category"			=> varset($p['category']),
 					"keywords-one"				=> varset($p['keywords']['word'][0]),
 					"keywords-two"				=> varset($p['keywords']['word'][1]),
+					"keywords-three"			=> varset($p['keywords']['word'][2]),
 				);
 				
 				unset($p);
@@ -2729,8 +2730,14 @@ class pluginBuilder
 					$pattern	= "[A-Za-z \.0-9]*";
 					$xsize		= 'block-level';
 				break;	
-				
+
 				case 'keywords-one':
+					$type = 'keywordDropDown';
+					$required = true;
+					$help 		= EPL_ADLAN_144;
+				break;
+
+				case 'keywords-three':
 				case 'keywords-two':
 					$help 		= EPL_ADLAN_144."<br />".EPL_ADLAN_143;
 					$required 	= true;
@@ -2790,6 +2797,37 @@ class pluginBuilder
 					);
 				
 					$text = $frm->select($name, $options, $default,'required=1&class=null', true);	
+				break;
+
+				case 'keywordDropDown':
+
+					$options = array(
+
+						'generic',
+						'admin',
+					    'messaging',
+					    'enhancement',
+					    'date',
+					    'commerce',
+					    'form',
+					    'gaming',
+					    'intranet',
+					    'multimedia',
+					    'information',
+					    'mail',
+					    'search',
+						'stats',
+						'files',
+						'security',
+						'generic',
+						'language'
+					);
+
+					sort($options);
+
+					$text = $frm->select($name, $options, $default,'required=1&class=null&useValues=1', true);
+
+
 				break;
 				
 				
@@ -2855,6 +2893,7 @@ $template = <<<TEMPLATE
 	<keywords>
 		<word>{KEYWORDS_ONE}</word>
 		<word>{KEYWORDS_TWO}</word>
+		<word>{KEYWORDS_THREE}</word>
 	</keywords>
 	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
