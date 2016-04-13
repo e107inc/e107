@@ -1222,7 +1222,8 @@ class e_db_mysql
 	private function _getPDOValue($type, $fieldValue)
 	{
 
-		if($fieldValue == '_NULL_')
+
+		if(is_string($fieldValue) && ($fieldValue == '_NULL_'))
 		{
 			$type = 'null';
 		}
@@ -2800,6 +2801,7 @@ class e_db_mysql
 			$mes = e107::getMessage();
 			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade. 
 			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
+		}
 		}
 	}
 
