@@ -364,26 +364,51 @@ class private_message
 	 *
 	 *	@return none
 	 */
-	function pm_send_notify($uid, $pmInfo, $pmid, $attach_count = 0) //TODO Add Template.
+	function pm_send_notify($uid, $pmInfo, $pmid, $attach_count = 0)
 	{
 		require_once(e_HANDLER.'mail.php');
-		$subject = LAN_PM_100.SITENAME;
 
-	//	$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmid;
+		$tpl_file = THEME.'pm_template.php';
 
-		$pmlink = e107::url('pm','index').'?show.'.$pmid;
-		$txt = LAN_PM_101.SITENAME."\n\n";
-		$txt .= LAN_PM_102.USERNAME."\n";
-		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
+		$PM_NOTIFY = null; // loaded in template below.
 
-		if($attach_count > 0)
+		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+
+		$template = $PM_NOTIFY;
+
+		if(empty($template)) // BC Fallback.
 		{
-			$txt .= LAN_PM_104.$attach_count."\n";
+
+			$template =
+			"<div>
+			<h4>".LAN_PM_101."{SITENAME}</h4>
+			<table class='table table-striped'>
+			<tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
+			<tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>
+			<tr><td>".LAN_PM_108."</td><td>{PM_DATE}</td></tr>
+			<tr><td>".LAN_PM_104."</td><td>{PM_ATTACHMENTS}</td></tr>
+
+			</table>
+			<div>".LAN_PM_105.": {PM_URL}</div>
+			</div>
+			";
+
 		}
 
-		$txt .= LAN_PM_105."\n".$pmlink."\n";
 
-		sendemail($pmInfo['to_info']['user_email'], $subject, $txt, $pmInfo['to_info']['user_name']);
+		$data = array();
+		$data['PM_SUBJECT']     = $pmInfo['pm_subject'];
+		$data['PM_ATTACHMENTS'] = intval($attach_count);
+		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
+		$data['SITENAME']       = SITENAME;
+		$data['USERNAME']       = USERNAME;
+		$data['PM_URL']         = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;;
+
+		$text = e107::getParser()->simpleParse($template, $data);
+
+		$subject = LAN_PM_100.SITENAME;
+
+		sendemail($pmInfo['to_info']['user_email'], $subject, $text, $pmInfo['to_info']['user_name']);
 	}
 
 
@@ -394,12 +419,13 @@ class private_message
 	 *
 	 * 	@return none
 	 */
-	function pm_send_receipt($pmInfo) //TODO Add Template.
+	function pm_send_receipt($pmInfo) //TODO Add Template and combine with method above..
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_106.$pmInfo['sent_name'];
-	//	$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
-		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmInfo['pm_id'];
+
+		$pmlink = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmInfo['pm_id'];
+
 		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
 		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
