@@ -88,7 +88,7 @@ if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
 	
 	// e107::css('core', 	'core/admin.css', 'jquery');
 //	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
- e107::js('core','bootstrap/js/bootstrap-tooltip.js');
+// e107::js('core','bootstrap/js/bootstrap-tooltip.js');
 
 
 
@@ -143,8 +143,8 @@ TEMPL;
 				window.parent.$('#uiModal .modal-caption').text(caption);	
 				window.parent.$('#uiModal .modal-body').load(link, function(){
 				 					   
-				 	window.parent.$('.modal-body .e-save').on('change', function(){
-					
+				 	window.parent.$('.modal-body :input').on('change', function(){
+
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
 

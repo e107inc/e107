@@ -106,7 +106,7 @@ class news_menu_form extends e_form
 		foreach($arr as $k=>$v)
 		{
 
-			$text .= "<tr><td>".$this->radio('layout', $k, $curVal, array('label'=>$k))."</td><td>".str_replace('{STYLE}',"class='alert alert-info' style='margin-bottom:0;text-align:center' ",$v)."</td></tr>";
+			$text .= "<tr><td>".$this->radio('layout', $k, ($curVal == $k), array('label'=>$k)."</td><td>".str_replace('{STYLE}',"class='alert alert-info' style='margin-bottom:0;text-align:center' ",$v)."</td></tr>";
 		}
 
 		$text .= "</table>";
