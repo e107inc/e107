@@ -26,7 +26,7 @@ class pm_shortcodes extends e_shortcode
 		include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 		require_once(e_PLUGIN."pm/pm_func.php");
 
-		$this->pm = new pmbox_manager;
+		$this->pm = new pmbox_manager();
 
 		$this->prefs = $this->pm->prefs();
 
