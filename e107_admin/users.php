@@ -2320,7 +2320,16 @@ class users_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			$field = $att['field'];
-			$data =  $this->getController()->getListModel()->get($field); // ($att['field']);
+
+			if($this->getController()->getAction() == 'list')
+			{
+				$data =  $this->getController()->getListModel()->get($field); // ($att['field']);
+			}
+			else
+			{
+				$data =  $this->getController()->getModel()->get($field); // ($att['field']);
+			}
+
 
 
 			return e107::getUserExt()->renderValue($data, $att['ueType']);
