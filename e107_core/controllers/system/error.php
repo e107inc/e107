@@ -36,13 +36,32 @@ class core_system_error_controller extends eController
 		$template = e107::getCoreTemplate('error', 404);
 		
 		$vars = new e_vars(array(
-			'siteUrl' => SITEURL,
-			'searchUrl' => e107::getUrl()->create('search'),
+			'SITEURL' => SITEURL,
+			'SEARCHURL' => e107::getUrl()->create('search'),
 		));
-		
-		$body = e107::getParser()->parseTemplate($template['start'].$template['body'].$template['end'], true, null, $vars);
+
+
+		$body = e107::getParser()->parseTemplate(
+				$this->updateTemplate($template['start']).
+				$this->updateTemplate($template['body']).
+				$this->updateTemplate($template['end'])
+				, true, null, $vars);
 		
 		$this->addBody($body);
+	}
+
+
+	/**
+	 * Update template to v2.x spec. ALL CAPS shortcodes only.
+	 * @param $template
+	 * @return mixed
+	 */
+	private function updateTemplate($template)
+	{
+		$srch = array('{siteUrl}','{searchUrl}');
+		$repl = array('{SITEURL}','{SEARCHURL}');
+
+		return str_replace($srch,$repl,$template);
 	}
 	
 	/**
@@ -63,10 +82,14 @@ class core_system_error_controller extends eController
 		$template = e107::getCoreTemplate('error', 403);
 		
 		$vars = new e_vars(array(
-			'siteUrl' => SITEURL,
+			'SITEURL' => SITEURL,
 		));
 		
-		$body = e107::getParser()->parseTemplate($template['start'].$template['body'].$template['end'], true, null, $vars);
+		$body = e107::getParser()->parseTemplate(
+			$this->updateTemplate($template['start']).
+			$this->updateTemplate($template['body']).
+			$this->updateTemplate($template['end'])
+			, true, null, $vars);
 		
 		$this->addBody($body);
 	}
