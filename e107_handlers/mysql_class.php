@@ -2802,7 +2802,7 @@ class e_db_mysql
 			$mes->addDebug("Error writing file: ".e_CACHE_DB.$tableName.'.php'); //Fix for during v1.x -> 2.x upgrade. 
 			// echo "Error writing file: ".e_CACHE_DB.$tableName.'.php'.'<br />';
 		}
-		}
+		
 	}
 
 }
