@@ -29,8 +29,8 @@ $ERROR_TEMPLATE['404']['body'] = '
 	<p>
 		'.LAN_ERROR_21.'<br />'.LAN_ERROR_9.'
 	</p>
-	<a href="{siteUrl}">'.LAN_ERROR_20.'</a><br />
-	<a href="{searchUrl}">'.LAN_ERROR_22.'</a>
+	<a href="{SITEURL}">'.LAN_ERROR_20.'</a><br />
+	<a href="{SEARCHURL}">'.LAN_ERROR_22.'</a>
 ';
 $ERROR_TEMPLATE['404']['end'] = '</div>';
 
@@ -41,7 +41,7 @@ $ERROR_TEMPLATE['403']['body'] = '
 	<p>
 		'.LAN_ERROR_5.'<br />'.LAN_ERROR_6.'<br /><br />'.LAN_ERROR_2.'
 	</p>
-	<a href="{siteUrl}">'.LAN_ERROR_20.'</a><br />
+	<a href="{SITEURL}">'.LAN_ERROR_20.'</a><br />
 ';
 $ERROR_TEMPLATE['403']['end'] = '</div>';
 
