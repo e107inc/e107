@@ -2345,6 +2345,8 @@ class e_parse extends e_parser
         
 		$thurl = 'src='.urlencode($url).'&amp;';
 
+	//	e107::getDebug()->log("Thumb: ".basename($url). print_a($options,true), E107_DBG_BASIC);
+
 		if(isset($options['crop']))
 		{
 			$this->thumbCrop = intval($options['crop']);
@@ -2355,7 +2357,7 @@ class e_parse extends e_parser
 			$this->thumbEncode($options['x']);
 		}
 				
-		if(vartrue($options['aw']) || vartrue($options['ah']) || $this->thumbCrop == 1)
+		if(vartrue($options['aw']) || vartrue($options['ah']) || ($this->thumbCrop == 1))
 		{
 			if($this->thumbCrop == 1 && !vartrue($options['aw']) && !vartrue($options['ah'])) // Allow templates to determine dimensions. See {SETIMAGE}
 			{
