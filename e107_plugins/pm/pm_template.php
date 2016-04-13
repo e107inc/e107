@@ -267,4 +267,19 @@ $PM_SHOW =
 <hr />
 ";
 
+
+$PM_NOTIFY =
+"<div>
+<h4>".LAN_PM_101."{SITENAME}</h4>
+<table class='table table-striped'>
+<tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
+<tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>
+<tr><td>".LAN_PM_108."</td><td>{PM_DATE}</td></tr>
+<tr><td>".LAN_PM_104."</td><td>{PM_ATTACHMENTS}</td></tr>
+
+</table>
+<div>".LAN_PM_105.": {PM_URL}</div>
+</div>
+";
+
 ?>
