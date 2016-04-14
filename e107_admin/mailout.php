@@ -564,52 +564,57 @@ class mailout_main_ui extends e_admin_ui
 		if(trim($_POST['testaddress']) == '')
 		{
 			$mes->addError(LAN_MAILOUT_19);
-			$subAction = 'error';
+			return null;
+		}
+
+		if(empty($pref['bulkmailer']))
+		{
+			$pref['bulkmailer'] = $pref['mailer'];
+		}
+
+		$add = ($pref['bulkmailer']) ? " (".strtoupper($pref['bulkmailer']).") " : ' (PHP)';
+
+		if($pref['bulkmailer'] == 'smtp')
+		{
+			$add .= "Port: ".varset($pref['smtp_port'],25);
+			$add .= " - ".str_replace("secure=", "", $pref['smtp_options']);
+		}
+
+		$sendto = trim($_POST['testaddress']);
+
+		$subjectSitename = ($_POST['testtemplate'] == 'textonly') ? SITENAME : '';
+			
+		$eml = array(
+			'e107_header'	=> USERID,
+			'subject'		=> LAN_MAILOUT_113." ".$subjectSitename.$add,
+			'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
+			'template'		=> vartrue($_POST['testtemplate'],null),
+			'shortcodes'	=> $this->getExampleShortcodes(),
+			'media'			=>  array(
+				0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+				1 => array('path' => 'h-v880sXEOQ.youtube'),
+				)
+			);
+			
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$eml['SMTPDebug'] = true;
+		}
+
+
+		$options = array('mailer'=>$pref['bulkmailer']);
+
+			
+		if (!e107::getEmail($options)->sendEmail($sendto, LAN_MAILOUT_189, $eml))
+		{
+			$mes->addError(($pref['bulkmailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		}
 		else
 		{
+			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
+			e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
+		}
 
-			$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).") " : ' (PHP)';
-
-			if($pref['mailer'] == 'smtp')
-			{
-				$add .= "Port: ".varset($pref['smtp_port'],25);
-				$add .= " - ".str_replace("secure=", "", $pref['smtp_options']);
-			}
-
-			$sendto = trim($_POST['testaddress']);
-
-			$subjectSitename = ($_POST['testtemplate'] == 'textonly') ? SITENAME : '';
-			
-			$eml = array(
-				'e107_header'	=> USERID,
-				'subject'		=> LAN_MAILOUT_113." ".$subjectSitename.$add,
-				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
-				'template'		=> vartrue($_POST['testtemplate'],null),
-				'shortcodes'	=> $this->getExampleShortcodes(),
-				'media'			=>  array(
-					0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
-					1 => array('path' => 'h-v880sXEOQ.youtube'),
-
-				)
-
-				);
-			
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				$eml['SMTPDebug'] = true; 	
-			}
-			
-			if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 	
-			{
-				$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
-			} 
-			else 
-			{
-				$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-				e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
-			}
-		}	
 		
 		
 	}
@@ -1087,7 +1092,7 @@ class mailout_main_ui extends e_admin_ui
 		<td>";
 
 
-		$text .= mailoutAdminClass::mailerPrefsTable($pref);
+		$text .= mailoutAdminClass::mailerPrefsTable($pref, 'bulkmailer');
 		
 	
 	/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 

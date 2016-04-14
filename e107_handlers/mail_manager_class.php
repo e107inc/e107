@@ -216,9 +216,19 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function __construct($overrides = FALSE)
+	public function __construct($overrides = false)
 	{
 		$this->e107 = e107::getInstance();
+
+		$pref = e107::pref('core');
+
+		$bulkmailer = (!empty($pref['bulkmailer'])) ? $pref['bulkmailer'] : $pref['mailer'];
+
+		if($overrides === false)
+		{
+			$overrides =  array('mailer'=>$bulkmailer);
+		}
+
 		$this->mailOverrides = $overrides;
 		
 		if(deftrue('e_DEBUG'))
@@ -247,7 +257,7 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function mailToDb(&$data, $addMissing = FALSE)
+	public function mailToDb(&$data, $addMissing = false)
 	{
 		$res = array();
 		$res1 = array();
@@ -745,10 +755,9 @@ class e107MailManager
 
 		}
 
-	//	else
-		{
-			$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
-		}
+
+		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
+
 
 		if($this->debugMode)
 		{
@@ -1310,7 +1319,7 @@ class e107MailManager
 		
 		if (!$this->db->update('mail_content',$query))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		
@@ -1319,7 +1328,7 @@ class e107MailManager
 		//	echo "Update individual emails: {$query}<br />";
 		if (FALSE === $this->db->update('mail_recipients',$query))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		return TRUE;

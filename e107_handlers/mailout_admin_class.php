@@ -2102,7 +2102,7 @@ class mailoutAdminClass extends e107MailManager
 
 
 
-	public static function mailerPrefsTable($pref)
+	public static function mailerPrefsTable($pref, $id='mailer')
 	{
 
 		$frm = e107::getForm();
@@ -2110,9 +2110,9 @@ class mailoutAdminClass extends e107MailManager
 		$mailers = array('php'=>'php','smtp'=>'smtp','sendmail'=>'sendmail');
 
 		$smtp_opts = explode(',',varset($pref['smtp_options'],''));
-		$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
+		$smtpdisp = ($pref[$id] != 'smtp') ? "style='display:none;'" : '';
 
-		$text = $frm->select('mailer', $mailers, $pref['mailer'])."
+		$text = $frm->select($id, $mailers, $pref[$id])."
 		<span class='field-help'>".LAN_MAILOUT_116."</span>";
 
 		$text .= "<div id='smtp' {$smtpdisp}>
@@ -2193,7 +2193,7 @@ class mailoutAdminClass extends e107MailManager
 
 		e107::js('footer-inline', "
 
-			$('#mailer').on('change', function() {
+			$('#".$id."').on('change', function() {
 
 				var type = $(this).val();
 
