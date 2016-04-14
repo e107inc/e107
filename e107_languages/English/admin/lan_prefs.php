@@ -283,7 +283,7 @@ define("PRFLAN_263", "Should be unique to this website");
 define("PRFLAN_264", "Frontpage is login page (login.php)");
 define("PRFLAN_265", "Frontpage is splash page (membersonly.php)");
 define("PRFLAN_266", "When logged out, which page should the user be directed to?");
-
+define("PRFLAN_267", "Emailing method");
 
 
 ?>
