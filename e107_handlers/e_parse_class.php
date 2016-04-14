@@ -1984,7 +1984,6 @@ class e_parse extends e_parser
 		// Xhtml compliance.
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 
-
 		if(!preg_match('/&#|\'|"|<|>/s', $text))
 		{
 			$text = $this->replaceConstants($text);
@@ -1992,7 +1991,7 @@ class e_parse extends e_parser
 		}
 		else
 		{
-			return '';
+			return $text;
 		}
 	}
 
