@@ -1938,6 +1938,8 @@ class e_form
 	function select_open($name, $options = array())
 	{
 		if(!is_array($options)) parse_str($options, $options);
+
+
 		
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
@@ -1952,6 +1954,8 @@ class e_form
 
 			unset($options['size']); // don't include in html 'size='. 	
 		}
+
+
 		$options = $this->format_options('select', $name, $options);
 	
 		return "<select name='{$name}'".$this->get_attributes($options, $name).">";
@@ -1962,7 +1966,7 @@ class e_form
 	 * @DEPRECATED - use select() instead. 
 	 */
 	function selectbox($name, $option_array, $selected = false, $options = array(), $defaultBlank= false)
-	{	
+	{
 		return $this->select($name, $option_array, $selected, $options, $defaultBlank);	
 	}
 
@@ -4309,6 +4313,8 @@ class e_form
 			}
 		}
 
+
+
 		// XXX Fixes For the above.  - use optArray variable. eg. $field['key']['writeParms']['optArray'] = array('one','two','three');
 		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio' || $attributes['type'] == 'checkboxes') && !empty($parms['optArray']))
 		{
@@ -4576,12 +4582,24 @@ class e_form
 
 
 			case 'dropdown':
-			case 'comma':	
-				$eloptions  = vartrue($parms['__options'], array());
+			case 'comma':
+
+				if(!empty($attributes['writeParms']['optArray']))
+				{
+					$eloptions = $attributes['writeParms'];
+					unset($eloptions['optArray']);
+				}
+				else
+				{
+					$eloptions  = vartrue($parms['__options'], array());
+				}
+
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
+
+
 
 				// Allow Ajax API.
 				if(!empty($ajaxParms))
@@ -4589,6 +4607,7 @@ class e_form
 					$eloptions = array_merge_recursive($eloptions, $ajaxParms);
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
+
 
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
