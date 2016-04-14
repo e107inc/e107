@@ -425,6 +425,7 @@ define("LAN_CAPTION", "Caption");
 define("LAN_LIMIT", "Limit");
 define("LAN_BASIC", "Basic");
 define("LAN_ADVANCED", "Advanced");
+define("LAN_FOLDER", "Folder");
 
 
 // TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
