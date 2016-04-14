@@ -473,6 +473,7 @@ class news_admin_ui extends e_admin_ui
 		'2' =>	LAN_NEWS_72,
 		'3' =>	LAN_NEWS_73,
 		'5' =>	LAN_NEWS_74,
+		'6' =>	"News Grid Menu",
 		//'5' =>  LAN_NEWS_75
 	);
 

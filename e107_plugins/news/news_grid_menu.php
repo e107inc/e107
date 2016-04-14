@@ -31,8 +31,17 @@ if(false === $cached)
 	$template       = e107::getTemplate('news', 'news_menu', 'grid');
 	$gridSize       = vartrue($parms['layout'],'col-md-4');
 
-	$parmSrch       = array('{NEWSGRID}', '_titleLimit_', '_summaryLimit_');
-	$parmReplace    = array($gridSize, vartrue($parms['titleLimit'],0),vartrue($parms['summaryLimit'],0));
+	$parmSrch       = array(
+						'{NEWSGRID}',
+						'_titleLimit_',
+						'_summaryLimit_'
+					);
+
+	$parmReplace    = array(
+						$gridSize,
+						vartrue($parms['titleLimit'],0),
+						vartrue($parms['summaryLimit'],0)
+					);
 
 	$template = str_replace($parmSrch , $parmReplace, $template);
 
@@ -48,11 +57,21 @@ if(false === $cached)
 
 	$parms['order']     = 'n.news_datestamp DESC';
 
+
 	$treeparm = array();
 	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);
 	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
 	$parms['return'] = true;
 
+	if(varset($parms['source']) == 'template')
+	{
+		$treeparm['db_where']     = 'FIND_IN_SET(6, n.news_render_type)';
+	}
+
+	if(varset($parms['source']) == 'sticky')
+	{
+		$treeparm['db_where']     = 'n.news_sticky=1';
+	}
 
 	$cached = $ntree->loadJoinActive(vartrue($parms['category'], 0), false, $treeparm)->render($template, $parms, $render);
 	e107::getCache()->set($cacheString, $cached);
