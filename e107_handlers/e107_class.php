@@ -775,10 +775,16 @@ class e107
 	 * @param string $regpath additional registry path
 	 * @return Object
 	 */
-	public static function getSingleton($class_name, $path = true, $regpath = '')
+	public static function getSingleton($class_name, $path = true, $regpath = '',$vars=null)
 	{
 
 		$id = 'core/e107/singleton/'.$class_name.$regpath;
+
+		if(!empty($vars))
+		{
+			$id .= '/';
+			$id .= is_array($vars) ? crc32(serialize($vars)): crc32($vars);
+		}
 
 		//singleton object found - overload not possible
 		if(self::getRegistry($id))
@@ -821,7 +827,7 @@ class e107
 		}
 		if(class_exists($class_name, false))
 		{
-			e107::setRegistry($id, new $class_name());
+			e107::setRegistry($id, new $class_name($vars));
 		}
 
 		return self::getRegistry($id);
@@ -1225,9 +1231,9 @@ class e107
 	 *
 	 * @return e107Email
 	 */
-	public static function getEmail()
+	public static function getEmail($overrides=null)
 	{
-		return self::getSingleton('e107Email', true);
+		return self::getSingleton('e107Email', true, null, $overrides);
 	}
 
 

@@ -196,6 +196,8 @@ class e107Email extends PHPMailer
 		$e107 = e107::getInstance();
 		$pref = e107::pref('core');
 		$tp = e107::getParser();
+
+		print_a($overrides);
 		
 		if(defined('MAIL_DEBUG'))
 		{

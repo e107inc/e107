@@ -125,7 +125,7 @@ define("LAN_MAILOUT_111", "Email Title (not sent)");
 define("LAN_MAILOUT_112", "Send test email to");
 define("LAN_MAILOUT_113", "Test email from");
 define("LAN_MAILOUT_114", "This is a test email, it appears that your email settings are working ok! [br][br] Regards [br] from the e107 website system.");
-define("LAN_MAILOUT_115", "Emailing method");
+define("LAN_MAILOUT_115", "Bulk Emailing method");
 define("LAN_MAILOUT_116", "If unsure, leave as php");
 define("LAN_MAILOUT_117", "complete");
 define("LAN_MAILOUT_118", "Click on proceed' to start sending emails. Click on 'cancel' to stop the run. Once complete, select another page. Unsent emails cal be viewed through the 'Mailshot status' screen");
