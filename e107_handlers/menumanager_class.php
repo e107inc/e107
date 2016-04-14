@@ -586,7 +586,7 @@ class e_menuManager {
 				foreach($fields as $k=>$v)
 				{
 					$text .= "<tr><td class='text-left'>".$v['title']."</td>";
-					$v['writeParms']['class'] = 'e-save';
+				//	$v['writeParms']['class'] = 'e-save';
 					$i = $k;
 					if(!empty($v['multilan']))
 					{
@@ -599,7 +599,15 @@ class e_menuManager {
 
 					}
 
-					$text .= "<td class='text-left'>".$form->renderElement($i, $value[$k], $v)."</td></tr>";
+					if(!empty($v['help']))
+					{
+						$v['writeParms']['title'] = e107::getParser()->toAttribute($v['help']);
+					}
+
+					$text .= "<td class='text-left'>".$form->renderElement($i, $value[$k], $v);
+
+
+					$text .= "</td></tr>";
 				}
 			}
 			else
