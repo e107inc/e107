@@ -2452,7 +2452,7 @@ class e_parse extends e_parser
 			if(empty($parm['w']) && isset($parm['h']))
 			{
 				$parm['h'] = ($parm['h'] * $multiply) ;
-				return $this->thumbUrl($src, $parm)." ".$multiply;
+				return $this->thumbUrl($src, $parm)." h".$parm['h']." ".$multiply;
 			}
 
 			$width = (!empty($parm['w'])) ? ($parm['w'] * $multiply) : ($this->thumbWidth * $multiply);
