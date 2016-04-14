@@ -447,7 +447,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					</tr>
 		
 					<tr>
-						<td style='vertical-align:top'><label for='mailer'>".LAN_MAILOUT_115."</label><br /></td>
+						<td style='vertical-align:top'><label for='mailer'>".PRFLAN_267."</label><br /></td>
 						<td>";
 
 
