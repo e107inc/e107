@@ -292,6 +292,17 @@ class e_menu
 	}
 
 
+	protected function isFrontPage()
+	{
+		if(e_REQUEST_SELF == SITEURL)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
 
 	/**
 	 * Check visibility of a menu against URL
@@ -324,6 +335,12 @@ class e_menu
 
 					foreach($pagelist as $p)
 					{
+						if($p == 'FRONTPAGE' && $this->isFrontPage())
+						{
+							$show_menu = true;
+							break;
+						}
+
 						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)==='!')
 						{
@@ -345,6 +362,13 @@ class e_menu
 					$show_menu = true;
 					foreach($pagelist as $p)
 					{
+						if($p == 'FRONTPAGE' && $this->isFrontPage())
+						{
+							$show_menu = false;
+							break;
+						}
+
+
 						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)=='!')
 						{
