@@ -78,7 +78,9 @@ class gallery
 
 		$text .= e107::getParser()->parseTemplate($template['cat_end'], true, $sc);
 
-		e107::getRender()->tablerender(LAN_PLUGIN_GALLERY_TITLE, $text);
+		$caption = $tp->parseTemplate($template['cat_caption'], true, $sc);
+
+		e107::getRender()->tablerender($caption, $text);
 	}
 
 
@@ -117,7 +119,9 @@ class gallery
 		$text .= $inner;
 		$text .= $tp->parseTemplate($template['list_end'], true, $sc);
 
-		e107::getRender()->tablerender(LAN_PLUGIN_GALLERY_TITLE, $mes->render() . $text);
+		$caption = $tp->parseTemplate($template['list_caption'], true, $sc);
+
+		e107::getRender()->tablerender($caption, $mes->render() . $text);
 
 	}
 
