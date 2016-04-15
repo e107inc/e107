@@ -115,7 +115,7 @@ $FORUM_TEMPLATE['main']['forum']			= 	"<tr>
 											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											</tr>";
 
-$FORUM_TEMPLATE['main']['end']				= "</table><div class='center'><small>{USERINFOX}</small></div></div>";
+$FORUM_TEMPLATE['main']['end']				= "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
 
 
 
