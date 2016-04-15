@@ -314,6 +314,11 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsavatar($parm);
 	}
 
+	public function sc_news_image($parm=null)
+	{
+		return $this->sc_newsimage($parm);
+	}
+
 // ----------------------------------- BC compatible Shortcodes ------------------------------------------- //
 
 	function sc_newscategory($parm=null)
@@ -328,23 +333,28 @@ class news_shortcodes extends e_shortcode
 	{
 	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
 		$con = e107::getDate();
+		$tp = e107::getParser();
+
 		if($parm == '')
 		{
-			return  $con->convert_date($date, 'long');
+			return  $tp->toDate($date, 'long');
 		}
+
+
 		switch($parm)
 		{
 			case 'long':
-			return  $con->convert_date($date, 'long');
+			return  $tp->toDate($date, 'long');
 			break;
 			case 'short':
-			return  $con->convert_date($date, 'short');
+			return  $tp->toDate($date, 'short');
 			break;
 			case 'forum':
 			return  $con->convert_date($date, 'forum');
 			break;
 			default :
-			return date($parm, $date);
+			return $tp->toDate($date,$parm);
+		//	return date($parm, $date);
 			break;
 		}
 	}
@@ -722,6 +732,7 @@ class news_shortcodes extends e_shortcode
 	 * Display News Images (but not video thumbnails )
 	 * @param $parm array
 	 * @example {NEWSIMAGE: type=src&placeholder=true}
+	 * @example {NEWSIMAGE: class=img-responsive}
 	 */
 	function sc_newsimage($parm = null)
 	{
@@ -735,7 +746,7 @@ class news_shortcodes extends e_shortcode
 		$tmp = $this->handleMultiple($parm);
 		$srcPath = $tmp['file'];
 		
-		$class = "news_image news-image img-responsive img-rounded";
+		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-rounded";
 		$class .= ' news-image-'.$tmp['count'];
 		$dimensions = null;
 		$srcset = null;

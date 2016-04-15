@@ -103,3 +103,40 @@ $NEWS_MENU_TEMPLATE['grid']['end']      = '</div>';
 
 
 // $NEWS_MENU_WRAPPER['grid']['NEWSTITLE'] = "<span style='color:red'>{---}</span>"; // example
+
+
+/* Carousel Menu */
+
+$NEWS_MENU_TEMPLATE['carousel']['start'] = '
+										    <div id="news-carousel" class="carousel slide" data-ride="carousel">
+										        <div class="row">
+										      <!-- Wrapper for slides -->
+										      <div id="news-carousel-images" class="col-md-8">
+										      <div class="carousel-inner">';
+
+
+$NEWS_MENU_TEMPLATE['carousel']['end'] = '
+
+										      </div><!-- End Carousel Inner -->
+											</div>
+												<div id="news-carousel-titles" class="col-md-4 ">
+													<ul id="news-carousel-nav" class="nav nav-inverse nav-stacked pull-right ">{NAV}</ul>
+												</div>
+											</div><!-- End Carousel -->
+											</div>
+										 ';
+
+
+$NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
+											<div class="item {ACTIVE}">{SETIMAGE: w=800&h=370&crop=1}
+									          {NEWS_IMAGE: class=img-responsive}
+									           <div class="carousel-caption">
+									            <small>{NEWS_DATE=dd MM, yyyy}</small>
+									            <h1>{NEWS_TITLE}</h1>
+
+									          </div>
+									        </div><!-- End Item -->';
+
+
+
+$NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-slide-to="{COUNT}" class="{ACTIVE}"><a href="#">{NEWS_SUMMARY}</a></li>';
