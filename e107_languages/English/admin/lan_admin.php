@@ -232,6 +232,7 @@ define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 
 define("LAN_OPTIONS","Options");
+define("LAN_BASIC_OPTIONS","Basic Options");
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");
 define("LAN_UPDATED","Successfully updated");

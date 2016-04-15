@@ -1907,6 +1907,6 @@ function prefs_adminmenu()
 	$var['core-prefs-javascript']['text'] = PRFLAN_257;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
 	
-	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
+	e107::getNav()->admin(LAN_BASIC_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
