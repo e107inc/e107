@@ -3565,7 +3565,7 @@ class e_parser
 	 */
 	public function toIcon($icon='',$parm = array())
 	{
-		
+
 		if(!vartrue($icon))
 		{
 			return;
@@ -3598,20 +3598,29 @@ class e_parser
 		{
 			$path = $this->replaceConstants($icon,'full');		
 		}
-		elseif(vartrue($parm['legacy']))
+		elseif(!empty($parm['legacy']))
 		{
-			
-			$legacyPath = $parm['legacy'].$icon;
-			$filePath = $this->replaceConstants($legacyPath,'rel');
-			
-			if(is_readable($filePath))
+			$legacyList = (!is_array($parm['legacy'])) ? array($parm['legacy']) : $parm['legacy'];
+
+			foreach($legacyList as $legPath)
 			{
-				$path = $this->replaceConstants($legacyPath,'full');	
+				$legacyPath = $legPath.$icon;
+				$filePath = $this->replaceConstants($legacyPath);
+
+				if(is_readable($filePath))
+				{
+					$path = $this->replaceConstants($legacyPath,'full');
+					break;
+				}
+
 			}
-			else
+
+			if(empty($path))
 			{
 				$log = e107::getAdminLog();
-				$log->addDebug('Broken Icon Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+				$log->addDebug('Broken Icon Path: '.$icon."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+				e107::getDebug()->log('Broken Icon Path: '.$icon);
+				return null;
 			}
 			
 		}
@@ -3621,9 +3630,10 @@ class e_parser
 		}
 
 
-
+		$alt = (!empty($parm['alt'])) ? $this->toAttribute($parm['alt']) : basename($path);
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'icon';
 		
-		return "<img class='icon' src='".$path."' alt='".basename($path)."' ".$dimensions." />";
+		return "<img class='".$class."' src='".$path."' alt='".$alt."' ".$dimensions." />";
 	}
 
 

@@ -994,7 +994,19 @@ class pluginManager{
 		}
 		else
 		{
+			$eplug_folder = null;
+			$upgrade_alter_tables = null;
+			$upgrade_add_prefs = null;
+			$upgrade_remove_prefs = null;
+			$upgrade_add_array_pref = null;
+			$upgrade_remove_array_pref = null;
+			$eplug_version = null;
+
+
+
 			include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+
+			$text = '';
 
 			$func = $eplug_folder.'_upgrade';
 			if (function_exists($func))
@@ -2178,6 +2190,7 @@ class pluginBuilder
 		var $tableCount = 0;
 		var $tableList = array();
 		var $createFiles = false;
+		private $buildTable = false;
 		private $debug = false;
 	
 		function __construct()
@@ -2321,6 +2334,7 @@ class pluginBuilder
 			$frm = e107::getForm();
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
+
 			
 			$newplug = $_GET['newplugin'];
 			$this->pluginName = $newplug;
@@ -2340,6 +2354,12 @@ class pluginBuilder
 				$data = file_get_contents($sqlFile);
 				$ret =  $dv->getTables($data);
 			}
+			else
+			{
+
+			//	$ret = $this->buildTables();
+			//	$this->buildTable = true;
+			}
 		
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
 			
@@ -2352,7 +2372,16 @@ class pluginBuilder
 			{
 				foreach($ret['tables'] as $key=>$table)
 				{
-					$text .= "<li><a data-toggle='tab'  href='#".$table."'>Table: ".$table."</a></li>";
+					if($this->buildTable == true)
+					{
+						$label = "<span class='form-inline'>".$frm->checkbox('buildTable',1,false)." Build Table</span>";
+					}
+					else
+					{
+						$label = "Table: ".$table;
+					}
+
+					$text .= "<li><a data-toggle='tab'  href='#".$table."'>".$label."</a></li>";
 					$this->tableList[] = $table;
 				}
 			}
@@ -2412,6 +2441,40 @@ class pluginBuilder
 			
 			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115, $mes->render() . $text);
 		}
+
+
+
+		private function buildTables()
+		{
+
+			$template = "plugin_id int(10) unsigned NOT NULL auto_increment,
+						plugin_datestamp int(10) unsigned NOT NULL default '0',
+					    plugin_name varchar(255)  NOT NULL default '',
+					    plugin_text text NOT NULL,
+					    plugin_boolean tinyint(1) unsigned NOT NULL default '0',
+					    plugin_author int(10) unsigned default NULL,
+					    plugin_visibility int(4) NOT NULL default '0',
+					    plugin_tags varchar(255)  NOT NULL default '',
+					    plugin_order int(6) unsigned NOT NULL default '0',
+					    PRIMARY KEY  (plugin_id)";
+
+			$ret = array();
+
+			$ret['tables'] = array($this->pluginName);
+
+			$ret['data'] = array(0=> str_replace("plugin", $this->pluginName, $template)	);
+
+			$ret['engine'] = array('0'=> 'InnoDB');
+
+			return $ret;
+
+		}
+
+
+
+
+
+
 
 
 		private function createAddons($list)

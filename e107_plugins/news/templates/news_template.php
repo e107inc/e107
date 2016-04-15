@@ -37,7 +37,7 @@ $NEWS_TEMPLATE['list']['item']	= '
 				<div class="span9 col-md-9">
                    <h3 class="media-heading">{NEWSTITLELINK}</h3>
                       <p>
-                       	{NEWSSUMMARY}
+                       	{NEWS_SUMMARY}
 					</p>
                     <p>
                        <a href="{NEWSURL}" class="btn btn-small btn-primary">'.LAN_READ_MORE.'</a>
@@ -96,7 +96,7 @@ $NEWS_TEMPLATE['default']['item'] = '
           {NEWSIMAGE: item=1}
 
 
-          <p class="lead">{NEWSSUMMARY}</p>
+          <p class="lead">{NEWS_SUMMARY}</p>
           {NEWSVIDEO: item=1}
           <div class="text-justify">
           {NEWSBODY}
