@@ -40,5 +40,5 @@ define("LAN_LOGIN_28", "Email");
 define("LAN_LOGIN_29", "Username or Email");
 define("LAN_LOGIN_30", "Error adding new alt_auth user to DB");
 define("LAN_LOGIN_31", "Your credentials could not be added to the system");
-
+define("LAN_LOGIN_32", "You are currently logged in.");
 ?>
