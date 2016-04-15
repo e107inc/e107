@@ -165,7 +165,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_signup_link($parm='')
 			{
 				$pref = e107::getPref();
-				if ($pref['user_reg'])
+				if (intval($pref['user_reg'])===1)
 				{
 					if (!$pref['auth_method'] || $pref['auth_method'] == 'e107')
 					{
@@ -189,7 +189,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				$pref = e107::getPref();
 
-				if ($pref['user_reg'])
+				if (intval($pref['user_reg'])===1)
 				{
 					if(isset($pref['user_reg_veri']) && $pref['user_reg_veri'] == 1)
 					{
