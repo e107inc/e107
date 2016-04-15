@@ -61,6 +61,13 @@ class news_menu
 
 			break;
 
+			case "news_carousel":
+					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'), 'help'=>LAN_OPTIONAL);
+					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>"(".LAN_ALL.")"), 'help'=>"Limit news items to a specific category");
+					$fields['source']       = array('title'=> "Source", 'type'=>'dropdown','writeParms'=>array('optArray'=>$sources), 'help'=>"Assigned items are those with a template assigned to 'News Carousel' ");
+					$fields['count']        = array('title'=> "Number of Items to Display", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
+			break;
+
 
 			case "news_categories":
 					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
