@@ -54,7 +54,7 @@ e107::js('footer-inline',"
           {NEWSIMAGE}
            <div class="carousel-caption">
             <small>{NEWSDATE}</small>
-            <h1>{NEWSTITLE}</h1>
+            <h4>{NEWSTITLE}</h4>
            
           </div>
         </div><!-- End Item -->';;
@@ -127,6 +127,7 @@ foreach($data as $row)
 	
 	$footer = str_replace("{NAV}", implode("\n",$nav), $NEWS_MENU_TEMPLATE['carousel']['end']); 
 
-	e107::getRender()->tablerender('',$header.$text.$footer,'news-carousel'); //TODO Tablerender(). 
+	$caption = '';
+	e107::getRender()->tablerender($caption,$header.$text.$footer,'news-carousel'); //TODO Tablerender(). 
 
 
