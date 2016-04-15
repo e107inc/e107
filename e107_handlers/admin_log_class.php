@@ -72,7 +72,7 @@ class e_admin_log
 				$this->_options[$key] = $val;
 			}
 		}
-		
+
 		define("E_LOG_INFORMATIVE", 0); // Minimal Log Level, including really minor stuff
 		define("E_LOG_NOTICE", 1); // More important than informative, but less important than notice
 		define("E_LOG_WARNING", 2); // Not anything serious, but important information
