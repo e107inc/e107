@@ -833,7 +833,8 @@ class news_shortcodes extends e_shortcode
 		return e107::getUrl()->create('news/view/item', $this->news_item);
 	}
 
-	function sc_newscaticon($parm = '')
+	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
+	function sc_newscaticon($parm = array())
 	{
 		// BC
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
@@ -850,23 +851,29 @@ class news_shortcodes extends e_shortcode
 			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
 		}
 		
-		$alt_text = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		//TODO - remove inline styles
-		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
+
+	//	if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
+
+		$parm['alt']       = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
+		$parm['legacy']    = array('{e_IMAGE}newspost_images/', '{e_IMAGE}icons/');
+		$parm['class']     = 'icon news_image news-category-icon';
+
+		$icon = e107::getParser()->toIcon($category_icon, $parm);
 
 		switch($parm)
 		{
+			/* @deprecated - Will cause issues with glyphs */
 			case 'src':
 				return $src;
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='{$src}' alt='$alt_text' style='".$this->param['caticon']."' />";
+				return $icon;
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img class='img-rounded' style='".$this->param['caticon']."' src='".$src."' alt='$alt_text' /></a>";
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
 			break;
 		}
 	}

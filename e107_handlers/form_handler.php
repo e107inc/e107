@@ -3775,8 +3775,9 @@ class e_form
 			break;
 
 			case 'icon':
-				
-				$value = $tp->toIcon($value,array('size'=>'2x'));
+
+				$parms['size'] = '2x';
+				$value = $tp->toIcon($value,$parms);
 				
 			break;
 			

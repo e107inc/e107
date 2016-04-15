@@ -311,13 +311,37 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	require_once(HEADERF);
 	$action = $currentNewsAction;
 
-	if(vartrue($NEWSLISTSTYLE)) // Legacy v1.x
-	{
-		 $template =  array('start'=>'', 'item'=>$NEWSLISTSTYLE, 'end'=>'');
-	}
-	else  // v2.x
+	if(deftrue('BOOTSTRAP'))  // v2.x
 	{
 		$template = e107::getTemplate('news', 'news', 'list');
+	}
+	else  // v1.x
+	{
+		if(empty($NEWSLISTSTYLE))
+		{
+			$NEWSLISTSTYLE = "
+			<div style='padding:3px;width:100%'>
+			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+			<tr>
+			<td style='vertical-align:top;padding:3px;width:20px'>
+			{NEWS_CATEGORY_ICON}
+			</td><td style='text-align:left;padding:3px'>
+			{NEWSTITLELINK=extend}
+			<br />
+			{NEWS_SUMMARY}
+			<span class='smalltext'>
+			{NEWS_DATE}
+			{NEWSCOMMENTS}
+			</span>
+			</td><td style='width:55px'>
+			{SETIMAGE: w=55&h=55&crop=1}
+			{NEWSTHUMBNAIL}
+			</td></tr></table>
+			</div>\n";
+		}
+
+		$template =  array('start'=>'', 'item'=>$NEWSLISTSTYLE, 'end'=>'');
+
 	}
 
 	// Legacy Styling.. 
