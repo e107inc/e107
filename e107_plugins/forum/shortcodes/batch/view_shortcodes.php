@@ -109,11 +109,8 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		
 			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
 
+			$thumbAtt = (!empty($this->defaultImgAttachSize)) ? array('w'=>$this->defaultImgAttachSize, 'x'=>1) : null;
 
-			if(!empty($this->defaultImgAttachSize))
-			{
-				$tp->thumbWidth($this->defaultImgAttachSize); // set the attachment size.
-			}
 			//print_a($attachArray);
 
 			foreach($attachArray as $type=>$vals)
@@ -157,7 +154,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 						//	return $baseDir.$file; 
 							if(file_exists($baseDir.$file))
 							{
-								$thumb = $tp->thumbUrl($baseDir.$file,'x=1',true);
+								$thumb = $tp->thumbUrl($baseDir.$file,$thumbAtt,true);
 								$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
 
 								//TODO Use jQuery zoom instead.
