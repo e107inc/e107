@@ -1155,11 +1155,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'post_entry' 				=> array ( 'title' => "Post", 'type' => 'bbarea', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		//	'gen_chardata' 		=> array ( 'title' => "Issue", 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'post_user' 		=> array ( 'title' => LAN_USER, 'type' => 'user', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
-		//	'gen_intdata' 		=> array ( 'title' =>  "Topic", 'type' => 'method', 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-			'options'				=> array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+			'post_attachments' 		=> array ( 'title' =>  "Attachments", 'type' => 'method', 'batch'=>false, 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'options'				=> array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '2%', 'thclass' => 'right last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
 		);
 
-		protected $fieldpref = array('post_datestamp', 'post_entry', 'post_user');
+		protected $fieldpref = array('post_datestamp', 'post_entry', 'post_user', 'post_attachments');
 
 
 		// optional
@@ -1192,8 +1192,56 @@ if(!deftrue('OLD_FORUMADMIN'))
 	class post_form_ui extends e_admin_form_ui
 	{
 
+		function post_attachments($curVal,$mode)
+		{
 
 
+			switch($mode)
+			{
+				case 'read': // List Page
+					$data = e107::unserialize($curVal);
+					$tp = e107::getParser();
+					$fl = e107::getFile();
+
+
+					$text = '';
+
+					if(!empty($data['img']))
+					{
+						$text .= "<ul class='list-unstyled'>";
+						foreach($data['img'] as $v)
+						{
+							$text .= "<li><span class='label label-primary'>".$tp->toGlyph('fa-file-image-o').$v['name']."</span> <small>".$fl->file_size_encode($v['size'])."</small></li>";
+						}
+
+						$text .= "</ul>";
+					}
+
+					if(!empty($data['file']))
+					{
+						$text .= "<ul class='list-unstyled'>";
+						foreach($data['file'] as $v)
+						{
+							$text .= "<li><span class='label label-primary'>".$tp->toGlyph('fa-file-text-o').$v['name']."</span> <small>".$fl->file_size_encode($v['size'])."</small></li>";
+						}
+
+						$text .= "</ul>";
+					}
+
+					return $text;
+					break;
+
+				case 'write': // Edit Page
+					$data = e107::unserialize($curVal);
+					return print_a($data,true);
+					break;
+
+				case 'filter':
+				case 'batch':
+				//	return  $array;
+					break;
+			}
+		}
 
 
 
