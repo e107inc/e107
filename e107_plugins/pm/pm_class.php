@@ -232,7 +232,7 @@ class private_message
 					{
 						$toclass .= $u['user_name'].', ';
 					}
-					if(check_class($this->pmPrefs['notify_class'], $u['user_class']))
+					if(check_class($this->pmPrefs['notify_class'], null, $u['user_id']))
 					{
 						$vars['to_info'] = $u;
 						$this->pm_send_notify($u['user_id'], $vars, $pmid, count($a_list));
