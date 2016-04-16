@@ -425,7 +425,7 @@ TEMPL;
 	",'jquery');
 	
 	
-	e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
+	e107::js('footer',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
 	e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
 			e107::js('footer-inline','
@@ -477,14 +477,14 @@ TEMPL;
 					});*/
 
 				// http://jsfiddle.net/DT764/2/
-/*
+
 
 					$(".draggable", window.top.document).draggable({
 					//	connectToSortable: ".sortable",
 						helper: "clone",
 					//	appendTo: $(this), // ".sortable", // "#area-1", //FIXME Needs to be a specific area.
 					//	revert: "invalid",
-						containment: "parent",
+						containment: "document",
 					//	delay: 0,
 					//	revertDuration: 100,
 						cursor: "move",
@@ -497,7 +497,7 @@ TEMPL;
                        	alert(what);
                     	}
 
-					});*/
+					});
 
 				//	$( "ul, li", window.top.document ).disableSelection();
 
