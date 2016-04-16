@@ -997,6 +997,12 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 require_once(HEADERF);
 
 $qs = ($error ? "stage" : e_QUERY);
+
+if(getperms('0'))
+{
+	echo "<div class='alert alert-block alert-error alert-danger center'>".LAN_LOGGED_IN."</div>";	
+}
+
 if ($pref['use_coppa'] == 1 && strpos($qs, "stage") === FALSE)
 {
 	$text = $tp->parseTemplate($COPPA_TEMPLATE, TRUE, $signup_shortcodes);
