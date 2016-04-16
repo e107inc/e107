@@ -1325,7 +1325,6 @@ class e_menuManager {
 	//	}
 		if(strstr($str, "SETSTYLE"))
 		{
-			$tmp = explode("=", $str);
 			$style = preg_replace("/\{SETSTYLE=(.*?)\}/si", "\\1", $str);
 
 			$this->style = $style;
@@ -1346,7 +1345,9 @@ class e_menuManager {
 	//	}
 		elseif(strstr($str, "NAVIGATION"))
 		{
-			echo "<span class='label label-info'>Navigation Area</span>";
+			$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+			$tp->parseTemplate("{NAVIGATION".$cust."}",true);
+		//	echo "<span class='label label-info'>Navigation Area</span>";
 		}
 		elseif(strstr($str, "ALERT"))
 		{
@@ -1374,12 +1375,12 @@ class e_menuManager {
 			echo $tp->parseTemplate("{SETIMAGE".$cust."}",true);
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
-		elseif(strstr($str, "{WMESSAGE"))
+		/*elseif(strstr($str, "{WMESSAGE"))
 		{
 			echo "<div class=text style='padding: 30px; text-align: center'>[Welcome Message Area]</div>";
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
-		}
-			elseif(strstr($str, "{FEATUREBOX"))
+		}*/
+		elseif(strstr($str, "{FEATUREBOX"))
 		{
 			echo "<div class=text style='padding: 80px; text-align: center'>[Featurebox Area]</div>";
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
