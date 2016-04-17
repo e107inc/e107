@@ -134,6 +134,10 @@ class private_msg_ui extends e_admin_ui
 
 
 
+
+
+
+
 		private function limitsPageAdd()
 		{
 			$sql = e107::getDb();
@@ -768,12 +772,48 @@ class private_msg_ui extends e_admin_ui
 		}
 
 
+		function sendTestNotify()
+		{
+			e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+			require_once(e_PLUGIN."pm/pm_class.php");
 
+			$pmInfo = array ( 'numsent' => '1', 'pm_to' => USERID, 'pm_sent'=>time(), 'pm_userclass' => false, 'pm_subject' => 'Test Subject Random:'.md5(time()), 'pm_message' => 'Test Message '.md5(time()), 'postpm' => 'Send Private Message', 'keyword' => NULL,
+			'to_info' => array (
+				'user_id'       => USERID,
+				'user_name'     => USERNAME,
+				'user_class'    => USERCLASS,
+				'user_email'    => USEREMAIL,
+			),
+			'uploaded' => array ( ), 'from_id' => 1, 'options' => '', );
+
+			$pm = new private_message;
+
+			if($pm->pm_send_notify(null,$pmInfo, 1) === true)
+			{
+				e107::getMessage()->addSuccess("Test Email Sent");
+			}
+			else
+			{
+				e107::getMessage()->addError("Test Email Failed");
+			}
+
+
+		}
 
 
         public function init()
         {
           //  $this->listQry = "SELECT p.*,u.user_name FROM #private_msg AS p LEFT JOIN #user AS u ON p.pm_from = u.user_id  ";
+
+			if(deftrue('e_DEVELOPER') || deftrue('e_DEBUG'))
+			{
+	            $this->prefs['notify_class']['writeParms']['post']= e107::getForm()->button('testNotify', 1, 'primary', "Test");
+
+				if(!empty($_POST['testNotify']))
+				{
+					$this->sendTestNotify();
+				}
+			}
 
 			if($this->getMode() == 'inbox')
 			{
