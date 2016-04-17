@@ -909,6 +909,7 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_cat_search()
    {
+		$tp = e107::getParser();
    		$text = "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>";
    		$text .= '<div><div class="input-group">';
 		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_SEARCH."\" maxlength='50' />
@@ -918,9 +919,11 @@ class download_shortcodes extends e_shortcode
 			
 		$text .= '
               <span class="input-group-btn">
-              <button class="btn btn-default" type="submit" name="s"  value="1">
-              <span class="glyphicon glyphicon-search"></span>
-             </button>
+              <button class="btn btn-default" type="submit" name="s"  value="1">';
+              
+              $text .= $tp->toIcon('glyphicon-search.glyph');
+
+             $text .= '</button>
              </span>
              </div><!-- /input-group -->
         </div></form>';
