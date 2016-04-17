@@ -383,7 +383,10 @@ $FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
 $text = $tp->parseTemplate($FPW_TABLE, true, $sc);
 
 // $text = $tp->simpleParse($FPW_TABLE, $sc);
-
+if(getperms('0'))
+{
+	echo "<div class='alert alert-block alert-error alert-danger center'>".LAN_LOGGED_IN."</div>";	
+}
 $ns->tablerender($caption, $text);
 require_once(FOOTERF);
 

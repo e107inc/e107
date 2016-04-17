@@ -33,7 +33,7 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && empty($pref['soci
 	e107::redirect();
 	exit();
 }
-
+      
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 if(!defined('e_IFRAME')) define('e_IFRAME',true);
@@ -96,7 +96,7 @@ if (!USER || getperms('0'))
 
 	if(getperms('0'))
 	{
-		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in.</div>";	
+		echo "<div class='alert alert-block alert-error alert-danger center'>".LAN_LOGGED_IN."</div>";	
 	}
 	
 

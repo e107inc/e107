@@ -91,6 +91,7 @@ define("LAN_GUEST", "Guest");
 define("LAN_NEXT", "Next");
 define("LAN_PREVIOUS", "Previous");
 define("LAN_LOGIN", "Login");
+define("LAN_LOGGED_IN", "You are currently logged in.");
 define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
