@@ -510,23 +510,38 @@ class news_shortcodes extends e_shortcode
 		elseif($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
-			$text = $tp->toHtml($this->news_item['news_body'],true);
-			$text = str_replace("<br />","\n",$text);
-			$text = strip_tags($text);	
-			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text));	
-			$tmp = array_filter($tmp);
+
+			$ellipses = ($parm['ellipses']?$parm['ellipses']:true);
+			$readmorelink = ($parm['readmorelink']?$parm['readmorelink']:true);
+			$strip_html = ($parm['strip_html']?$parm['strip_html']:true);
+    			$length = ($parm['length']?$parm['length']:500);
+			$merge = ($parm['merge']?$parm['merge']:false);
 			
-			if($tmp[0])
-			{
-				$text = trim($tmp[0]);
-			}
-		}
+    			//merge summary & body texts, if desired; Default only returns body text
+			$text = $tp->toHtml((($this->news_item['news_summary'] & $merge)?$this->news_item['news_summary'].". ":"").$this->news_item['news_body'],true, 'BODY, fromadmin');
 
-		if(!empty($parm['limit']))
-		{
-			$text = e107::getParser()->text_truncate($text, $parm['limit']);
-		}
+    			//strip tags, if desired
+			if ($strip_html) {
+			        $text = strip_tags($text);
+    			}
+			
+			//no need to trim, already shorter than trim length
+			if (mb_strlen($text) > $length) {
+				//find last space within length
+				$last_space = mb_strrpos(substr($text, 0, $length), ' ');
+    				$text = ($last_space === false) ? mb_substr($text, 0, $length, 'UTF-8') : mb_substr($text, 0, $last_space, 'UTF-8');
+    			}
 
+			//add ellipses (...), if desired
+    			if ($ellipses) {
+        			$text .= '...';
+    			}
+    			//add readmore link, if desired
+    			if ($readmorelink) {
+        			$text .= '&nbsp;&nbsp;&nbsp;<a href="{NEWSURL}">'.LAN_READ_MORE.'</a>';
+    			}
+
+		}
 
 		return $text;
 	}
