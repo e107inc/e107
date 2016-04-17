@@ -3175,7 +3175,7 @@ class e_parser
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
                                         'small', 'caption', 'noscript', 'hr', 'section', 'iframe'
                                    );
-    protected $scriptTags 		= array('script','applet','form','input','button'); //allowed when $pref['post_script'] is enabled.
+    protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
 
