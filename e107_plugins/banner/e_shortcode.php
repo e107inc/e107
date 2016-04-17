@@ -26,6 +26,7 @@ class banner_shortcodes extends e_shortcode
 		
 	function sc_banner($parm='')
 	{
+// $parm now can be array, old campaign $parm still allowed....
 		
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -34,7 +35,16 @@ class banner_shortcodes extends e_shortcode
 		$seed = mt_rand(1,2000000000);
 		$time = time();
 	
-		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '')."
+		if(is_array($parm))
+		{
+			$parms = eHelper::scParams($parm);
+			$campaign = $parms['campaign'];	
+		}
+		else
+		{
+			$campaign = $parm;	
+		}
+		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($campaign ? " AND banner_campaign='".$tp->toDB($campaign)."'" : '')."
 		AND banner_active IN (".USERCLASS_LIST.") ";
 
 		if($tags = e107::getRegistry('core/form/related'))
@@ -50,7 +60,7 @@ class banner_shortcodes extends e_shortcode
 		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
 		{
 			$row = $sql->fetch();
-			return $this->renderBanner($row);
+			return $this->renderBanner($row, $parm);
 			
 		}
 		else
@@ -60,10 +70,14 @@ class banner_shortcodes extends e_shortcode
 	}
 
 	// Also used by banner_menu.php 
-	public function renderBanner($row)
+	public function renderBanner($row, $parm = '')
 	{
 		$sql = e107::getDb('banner');
 		$tp = e107::getParser();
+		if(is_array($parm))
+		{
+			$parms = eHelper::scParams($parm);
+		}
 
 		if(!$row['banner_image'])
 		{
@@ -99,15 +113,14 @@ class banner_shortcodes extends e_shortcode
 					if($row['banner_image'][0] == '{')
 					{
 						$src = $row['banner_image'];
-						$ban_ret = $tp->toImage($src,   array('class'=>'e-banner img-responsive img-rounded', 'alt'=>$row['banner_clickurl']));
 					}
 					else
 					{
 						$src = e_IMAGE_ABS.'banners/'.$row['banner_image'];
-						$ban_ret = "<img class='e-banner img-responsive img-rounded' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
+						$style = "'border:0'";
 					}
-
-
+						$class = vartrue($parms['class']) ? $parms['class'] : "e-banner img-responsive img-rounded";
+						$ban_ret = $tp->toImage($src,   array('class'=>$class, 'alt'=>$row['banner_clickurl'], 'style'=>$style));
 
 				break;
 			}
