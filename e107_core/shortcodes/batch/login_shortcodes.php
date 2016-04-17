@@ -68,8 +68,11 @@ class login_shortcodes extends e_shortcode
 			return null;
 		}
 
+		$parms = eHelper::scParams($parm);
+		$class = vartrue($parms['class']) ? "class='".$parms['class']."'" : "class='tbox form-control input-block-level'";
+
 		$pref = e107::getPref();
-		$text = "<input class='tbox form-control input-block-level' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
+		$text = "<input ".$class." type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
 		
 		if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) 
 		{
