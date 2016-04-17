@@ -56,6 +56,7 @@ class login_shortcodes extends e_shortcode
 		$placeholder =  $ulabel[$allowEmailLogin];	
 		
 		$parms = eHelper::scParams($parm);
+		$class = vartrue($parms['class']) ? "class='".$parms['class']."'" : "class='tbox form-control input-block-level'";
 		return "<input ".$class." type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
 
 	}
