@@ -32,7 +32,7 @@ class private_message
 	 *	@param array $prefs - pref settings for PM plugin
 	 *	@return none
 	 */
-	public	function __construct($prefs)
+	public	function __construct($prefs=null)
 	{
 		$this->e107 = e107::getInstance();
 		$this->pmPrefs = $prefs;	}
@@ -117,6 +117,8 @@ class private_message
 		$pm_options = '';
 		$ret = '';
 		$addOutbox = TRUE;
+		$timestamp = time();
+
 		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
 		if (isset($vars['pm_from']))
 		{	// Doing bulk send off cron task
@@ -161,7 +163,7 @@ class private_message
 			// Most of the pm info is fixed - just need to set the 'to' user on each send
 			$info = array(
 				'pm_from' => $vars['from_id'],
-				'pm_sent' => time(),					/* Date sent */
+				'pm_sent' => $timestamp,					/* Date sent */
 				'pm_read' => 0,							/* Date read */
 				'pm_subject' => $pm_subject,
 				'pm_text' => $pm_message,
@@ -235,6 +237,7 @@ class private_message
 					if(check_class($this->pmPrefs['notify_class'], null, $u['user_id']))
 					{
 						$vars['to_info'] = $u;
+						$vars['pm_sent'] = $timestamp;
 						$this->pm_send_notify($u['user_id'], $vars, $pmid, count($a_list));
 					}
 				}
@@ -262,6 +265,7 @@ class private_message
 			if($pmid = $sql->insert('private_msg', $info))
 			{
 				$info['pm_id'] = $pmid;
+				$info['pm_sent'] = $timestamp;
 				e107::getEvent()->trigger('user_pm_sent', $info);
 
 
@@ -366,7 +370,7 @@ class private_message
 	 */
 	function pm_send_notify($uid, $pmInfo, $pmid, $attach_count = 0)
 	{
-		require_once(e_HANDLER.'mail.php');
+	//	require_once(e_HANDLER.'mail.php');
 
 		$tpl_file = THEME.'pm_template.php';
 
@@ -388,13 +392,14 @@ class private_message
 			<tr><td>".LAN_PM_108."</td><td>{PM_DATE}</td></tr>
 			<tr><td>".LAN_PM_104."</td><td>{PM_ATTACHMENTS}</td></tr>
 
-			</table>
+			</table><br />
 			<div>".LAN_PM_105.": {PM_URL}</div>
 			</div>
 			";
 
 		}
 
+		$url = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
 		$data = array();
 		$data['PM_SUBJECT']     = $pmInfo['pm_subject'];
@@ -402,13 +407,26 @@ class private_message
 		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
 		$data['SITENAME']       = SITENAME;
 		$data['USERNAME']       = USERNAME;
-		$data['PM_URL']         = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;;
+		$data['PM_URL']         = "<a href='".$url."'>".$url."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
 		$text = e107::getParser()->simpleParse($template, $data);
 
-		$subject = LAN_PM_100.SITENAME;
+		$eml = array();
+		$eml['email_subject']		= LAN_PM_100.USERNAME;
+		$eml['send_html']			= true;
+		$eml['email_body']			= $text;
+		$eml['template']			= 'default';
+		$eml['e107_header']			= $pmInfo['to_info']['user_id'];
 
-		sendemail($pmInfo['to_info']['user_email'], $subject, $text, $pmInfo['to_info']['user_name']);
+		if(e107::getEmail()->sendEmail($pmInfo['to_info']['user_email'], $pmInfo['to_info']['user_name'], $eml))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
 	}
 
 
