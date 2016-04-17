@@ -1637,7 +1637,7 @@ class e_parse extends e_parser
 						case 'html' : // This overrides and deprecates html.bb
 							$proc_funcs = TRUE;
 
-							$noBreak = TRUE;
+
 						//	$code_text = str_replace("\r\n", " ", $code_text);
 						//	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
 						//	$code_text = str_replace('&','&amp;',$code_text); // validation safe.
@@ -1697,17 +1697,15 @@ class e_parse extends e_parser
 			// Do the 'normal' processing - in principle, as previously - but think about the order.
 			if ($proc_funcs && !empty($full_text)) // some more speed
 			{
-
 				// Split out and ignore any scripts and style blocks. With just two choices we can match the closing tag in the regex
 				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 				foreach ($subcon as $sub_blk)
 				{
-					if(substr($sub_blk, 0, 7) == '<script')
+					if(substr($sub_blk, 0, 7) == '<script') // Strip scripts unless permitted
 					{
 						if($opts['scripts'])
 						{
-							// Strip scripts unless permitted
-							$ret_parser .= $sub_blk;
+							$ret_parser .= html_entity_decode($sub_blk, ENT_QUOTES);
 						}
 					}
 					elseif(substr($sub_blk, 0, 6) == '<style')
