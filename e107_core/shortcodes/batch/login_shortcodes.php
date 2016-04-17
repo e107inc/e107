@@ -55,8 +55,9 @@ class login_shortcodes extends e_shortcode
 		$ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
 		$placeholder =  $ulabel[$allowEmailLogin];	
 		
-		
-		return "<input class='tbox form-control input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
+		$parms = eHelper::scParams($parm);
+		return "<input ".$class." type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
+
 	}
 	
 	function sc_login_table_password($parm='') //FIXME use $frm
