@@ -1,4 +1,4 @@
-## e107 [Content Management System][1] (CMS) - v2
+## e107 [Content Management System][1] (CMS) - v2.1
 
 [![Join the chat at https://gitter.im/e107inc/e107](https://badges.gitter.im/e107inc/e107.svg)](https://gitter.im/e107inc/e107?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
