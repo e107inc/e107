@@ -25,9 +25,6 @@ class banner_shortcodes extends e_shortcode
 // $parm now can be array, old campaign $parm still allowed....
 	function sc_banner($parm='')
 	{
-
-    var_dump($parm);
-		
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		mt_srand ((double) microtime() * 1000000);
@@ -65,7 +62,6 @@ class banner_shortcodes extends e_shortcode
 		{
 			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
 		}
-	
 		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
 		
 		$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
