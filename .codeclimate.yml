@@ -19,4 +19,10 @@ ratings:
   - "**.css"
   - "**.js"
   - "**.php"
-exclude_paths: []
+exclude_paths:
+- e107_handlers/hybridauth/**/*
+- e107_handlers/jsshrink/**/*
+- e107_handlers/phpmailer/**/*
+- e107_handlers/phpthumb/**/*
+- e107_web/**/*
+
