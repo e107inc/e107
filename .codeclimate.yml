@@ -14,6 +14,13 @@ engines:
     enabled: false
   phpmd:
     enabled: true
+    checks:
+      CleanCode/StaticAccess:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+      UnusedFormalParameter:
+        enabled: false
     config:
       file_extensions: "php"
       rulesets: "cleancode,unusedcode,codesize"
