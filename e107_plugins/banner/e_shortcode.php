@@ -104,7 +104,6 @@ class banner_shortcodes extends e_shortcode
 						$ban_ret = $tp->toImage($src, array('class'=>($parm['class'] == ''?"e-banner img-responsive img-rounded":$parm['class']) , 'alt'=>$row['banner_clickurl'], 'style'=>$style));
 				break;
 			}
-//			$tooltip = varset($row['banner_tooltip'],'');
 			$text = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute(varset($row['banner_tooltip'],''))."\">";
 			$text .= $ban_ret;
 			$text .= '</a>';
