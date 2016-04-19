@@ -9,7 +9,6 @@
  * Banner shortcode
  *
 */
-
 /**
  *	e107 Banner management plugin
  *
@@ -18,45 +17,33 @@
  *	@package	e107_plugins
  *	@subpackage	banner
  */
-
 class banner_shortcodes extends e_shortcode
 {
 	
 	
 		
+// $parm now can be array, old campaign $parm still allowed....
 	function sc_banner($parm='')
 	{
-// $parm now can be array, old campaign $parm still allowed....
+
+    var_dump($parm);
 		
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-
 		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
 		$time = time();
 	
-		if(is_array($parm))
-		{
-			$parms = eHelper::scParams($parm);
-			$campaign = $parms['campaign'];	
-		}
-		else
-		{
-			$campaign = $parm;	
-		}
+		$campaign = (is_array($parm)?$parm['campaign']:$parm);
+
 		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($campaign ? " AND banner_campaign='".$tp->toDB($campaign)."'" : '')."
 		AND banner_active IN (".USERCLASS_LIST.") ";
-
 		if($tags = e107::getRegistry('core/form/related'))
 		{
 			$tags_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
 			$query .= " AND banner_keywords REGEXP ".$tags_regexp;
 		}
-
 		$query .= "	ORDER BY RAND($seed) LIMIT 1";
-
-
-
 		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
 		{
 			$row = $sql->fetch();
@@ -68,16 +55,11 @@ class banner_shortcodes extends e_shortcode
 			return '&nbsp;';
 		}
 	}
-
 	// Also used by banner_menu.php 
 	public function renderBanner($row, $parm = '')
 	{
 		$sql = e107::getDb('banner');
 		$tp = e107::getParser();
-		if(is_array($parm))
-		{
-			$parms = eHelper::scParams($parm);
-		}
 
 		if(!$row['banner_image'])
 		{
@@ -109,7 +91,6 @@ class banner_shortcodes extends e_shortcode
 				break;
 				
 				default:
-
 					if($row['banner_image'][0] == '{')
 					{
 						$src = $row['banner_image'];
@@ -119,31 +100,19 @@ class banner_shortcodes extends e_shortcode
 						$src = e_IMAGE_ABS.'banners/'.$row['banner_image'];
 						$style = "'border:0'";
 					}
-						$class = vartrue($parms['class']) ? $parms['class'] : "e-banner img-responsive img-rounded";
-						$ban_ret = $tp->toImage($src,   array('class'=>$class, 'alt'=>$row['banner_clickurl'], 'style'=>$style));
-
+// Somehow, can't use vartrue core function when referencing $parm['class'], gives bug....
+						$ban_ret = $tp->toImage($src, array('class'=>($parm['class'] == ''?"e-banner img-responsive img-rounded":$parm['class']) , 'alt'=>$row['banner_clickurl'], 'style'=>$style));
 				break;
 			}
-
-			$tooltip = varset($row['banner_tooltip'],'');
-
-			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($tooltip)."\">";
-			$item = $ban_ret;
-			$end = '</a>';
-
-			$text = $start.$item.$end;
-
+//			$tooltip = varset($row['banner_tooltip'],'');
+			$text = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute(varset($row['banner_tooltip'],''))."\">";
+			$text .= $ban_ret;
+			$text .= '</a>';
 			if(!empty($row['banner_description']))
 			{
 				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
 			}
-
-
-
-
 			return $text;
-
 	}
-
 }
 ?>
