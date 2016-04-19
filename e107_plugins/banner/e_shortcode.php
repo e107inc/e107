@@ -96,10 +96,10 @@ class banner_shortcodes extends e_shortcode
 
 				break;
 			}
-			$text = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute(varset($row['banner_tooltip'],''))."\">";
-			$text .= $ban_ret;
-			$text .= '</a>';
-
+			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute(varset($row['banner_tooltip'],''))."\">";
+			$end = '</a>';
+			$text = $start.$ban_ret.$end;
+	
 			if(!empty($row['banner_description']))
 			{
 				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
