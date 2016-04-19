@@ -31,9 +31,11 @@ ie. [branch "master"]
 ### Donations
 If you like e107 and wish to help it to improve - please consider making a small donation.
 
-Bitcoin address: 18C7W2YvkzSjvPoW1y46PjkTdCr9UzC3F7
-Paypal: donate (at) e107.org
+* Bitcoin address: 18C7W2YvkzSjvPoW1y46PjkTdCr9UzC3F7
+* Paypal: donate (at) e107.org
 
+### Support
+* http://e107help.org 
 
 ### License
 
