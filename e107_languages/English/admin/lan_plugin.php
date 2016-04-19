@@ -120,7 +120,7 @@ define ('EPL_ADLAN_101',"No plugins installed - [x].");
 define ('EPL_ADLAN_102',"This Wizard will build an admin area for your plugin and generate a plugin.xml meta file. Before you start:");
 define ('EPL_ADLAN_103',"Create a new writable folder in the [x] directory eg. [b]myplugin[/b]");
 // define ('EPL_ADLAN_104',"If your plugin will use sql tables, create a new file in this folder and name it the same as the directory but with [b]_sql.php[/b] as a sufix eg. [b]myplugin_sql.php[/b]");
-define ('EPL_ADLAN_105',"Create your table in phpMyAdmin in the same database as e107 and with the same table prefix.");
+define ('EPL_ADLAN_105',"Create your table using phpMyAdmin in the same database as e107 and with the same table prefix. eg. [b]e107_myplugin[/b]");
 define ('EPL_ADLAN_106',"Select your plugin's folder to begin.");
 define ('EPL_ADLAN_107',"Build an admin-area and xml file for:");
 define ('EPL_ADLAN_108',"Check language files:");
