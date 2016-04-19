@@ -24,12 +24,18 @@ You may report any bugs or feature requests on GitHub (https://github.com/e107in
 
 * Please submit 1 pull-request for each Github #issue you may work on. 
 * Make sure that only the lines you have changed actually show up in a file-comparison (diff) ie. some text-editors alter every line so this should be avoided. 
+* Make sure you are using rebase on your local .git/config file. 
+ie. [branch "master"]
+	rebase = true`
 
 ### Donations
 If you like e107 and wish to help it to improve - please consider making a small donation.
 
-Bitcoin address: 18C7W2YvkzSjvPoW1y46PjkTdCr9UzC3F7
+* Bitcoin address: 18C7W2YvkzSjvPoW1y46PjkTdCr9UzC3F7
+* Paypal: donate (at) e107.org
 
+### Support
+* http://e107help.org 
 
 ### License
 
