@@ -19,6 +19,24 @@ if (!e107::isInstalled('download'))
 }
 
 	e107::lan('download',false, true); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/English_front.php'
+
+	$bcList = array(
+		'LAN_dl_19' => 'LAN_CATEGORY',
+		'LAN_dl_17' => 'LAN_FILES',
+		"LAN_dl_20" => "LAN_FILES",
+		"LAN_dl_21" => "LAN_SIZE",
+		"LAN_dl_22" => "LAN_DATE",
+		"LAN_dl_23" => "LAN_FILE",
+		"LAN_dl_24" => "LAN_AUTHOR",
+		"LAN_dl_25" => "LAN_ASCENDING",
+		"LAN_dl_26" => "LAN_DESCENDING",
+		"LAN_dl_27" => "LAN_GO",
+		"LAN_dl_28" => "LAN_NAME"
+	);
+
+	e107::getLanguage()->bcDefs($bcList);
+
+
 	
 	require_once(e_PLUGIN.'download/handlers/download_class.php');
 	require_once(e_PLUGIN.'download/handlers/category_class.php');

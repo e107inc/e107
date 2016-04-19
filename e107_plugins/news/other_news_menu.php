@@ -51,7 +51,10 @@ if(!$OTHERNEWS_STYLE)
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		define("OTHERNEWS_COLS",false);
+		if(!defined("OTHERNEWS_COLS"))
+		{
+			define("OTHERNEWS_COLS",false);
+		}
 		$template = e107::getTemplate('news', 'news_menu', 'other');
 		
 		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
