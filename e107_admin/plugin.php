@@ -2215,14 +2215,19 @@ class pluginBuilder
 			}
 				
 			
-			if(vartrue($_POST['step']) == 3)
+			if(vartrue($_GET['step']) == 3)
 			{
 		
 				$this->step3();	
-				
-				
-				return;
+				return null;
 			}
+
+			if(vartrue($_POST['step']) == 4)
+			{
+				$this->step4();
+				return null;
+			}
+
 			
 			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
 			{
@@ -2231,7 +2236,7 @@ class pluginBuilder
 			
 		
 		
-			return $this->step1();
+			 $this->step1();
 		}
 
 
@@ -2259,7 +2264,7 @@ class pluginBuilder
 			$info = EPL_ADLAN_102;
 			$info .= "<ul>";
 			$info .= "<li>".str_replace('[x]', e_PLUGIN, EPL_ADLAN_103)."</li>";
-			$info .= "<li>".EPL_ADLAN_104."</li>";
+		//	$info .= "<li>".EPL_ADLAN_104."</li>";
 			$info .= "<li>".EPL_ADLAN_105."</li>";
 			$info .= "<li>".EPL_ADLAN_106."</li>";
 			$info .= "</ul>";
@@ -2323,9 +2328,31 @@ class pluginBuilder
 		}
 
 
+		/**
+		 * @param string $table
+		 * @param string $file
+		 */
+		private function buildSQLFile($table, $file)
+		{
+
+			$table = e107::getParser()->filter($table);
+
+			e107::getDb()->gen("SHOW CREATE TABLE `#".$table."`");
+			$data = e107::getDb()->fetch('num');
+
+			if(!empty($data[1]))
+			{
+				$createData = str_replace("`".MPREFIX, '`', $data[1]);
+				$createData .= ";";
+				file_put_contents($file,$createData);
+			}
+
+		}
 
 
-		function step2()
+
+
+		function step3()
 		{
 			
 			require_once(e_HANDLER."db_verify_class.php");
@@ -2334,19 +2361,19 @@ class pluginBuilder
 			$frm = e107::getForm();
 			$ns = e107::getRender();
 			$mes = e107::getMessage();
+			$tp = e107::getParser();
 
 			
-			$newplug = $_GET['newplugin'];
+			$newplug = $tp->filter($_GET['newplugin']);
 			$this->pluginName = $newplug;
-			
-		
-			
-		//	$data = e107::getXml()->loadXMLfile(e_PLUGIN.'links_page/plugin.xml', 'advanced');
-		//	print_a($data);
-		//	echo "<pre>".var_export($data,true)."</pre>";
-			
+
 			$sqlFile = e_PLUGIN.$newplug."/".$newplug."_sql.php";
-			
+
+			if(!empty($_GET['build']) && !file_exists($sqlFile))
+			{
+				$this->buildSQLFile($_GET['build'], $sqlFile);
+			}
+
 			$ret = array();
 			
 			if(file_exists($sqlFile))
@@ -2356,9 +2383,8 @@ class pluginBuilder
 			}
 			else
 			{
-
-			//	$ret = $this->buildTables();
-			//	$this->buildTable = true;
+				e107::getDebug()->log("SQL File Not Found");
+		//		$this->buildTable = true;
 			}
 		
 			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
@@ -2372,19 +2398,12 @@ class pluginBuilder
 			{
 				foreach($ret['tables'] as $key=>$table)
 				{
-					if($this->buildTable == true)
-					{
-						$label = "<span class='form-inline'>".$frm->checkbox('buildTable',1,false)." Build Table</span>";
-					}
-					else
-					{
-						$label = "Table: ".$table;
-					}
-
+					$label = "Table: ".$table;
 					$text .= "<li><a data-toggle='tab'  href='#".$table."'>".$label."</a></li>";
 					$this->tableList[] = $table;
 				}
 			}
+
 
 			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
 			$text .= "<li><a data-toggle='tab'  href='#addons'>Addons</a></li>"; //TODO LAN
@@ -2408,6 +2427,10 @@ class pluginBuilder
 					$text .= "</div>";
 				}
 			}
+
+
+
+
 			$text .= "<div class='tab-pane' id='preferences'>\n";
 			$text .= $this->prefs(); 
 			$text .= "</div>";
@@ -2429,7 +2452,7 @@ class pluginBuilder
 			$text .= "
 			<div class='buttons-bar center'>
 			".$frm->hidden('newplugin', $this->pluginName)."
-			".$frm->admin_button('step', 3,'other', LAN_GENERATE)."
+			".$frm->admin_button('step', 4,'other', LAN_GENERATE)."
 			</div>";
 			
 			$text .= $frm->close();
@@ -2444,29 +2467,74 @@ class pluginBuilder
 
 
 
-		private function buildTables()
+		private function step2()
 		{
 
-			$template = "plugin_id int(10) unsigned NOT NULL auto_increment,
-						plugin_datestamp int(10) unsigned NOT NULL default '0',
-					    plugin_name varchar(255)  NOT NULL default '',
-					    plugin_text text NOT NULL,
-					    plugin_boolean tinyint(1) unsigned NOT NULL default '0',
-					    plugin_author int(10) unsigned default NULL,
-					    plugin_visibility int(4) NOT NULL default '0',
-					    plugin_tags varchar(255)  NOT NULL default '',
-					    plugin_order int(6) unsigned NOT NULL default '0',
-					    PRIMARY KEY  (plugin_id)";
 
-			$ret = array();
+			$frm = e107::getForm();
 
-			$ret['tables'] = array($this->pluginName);
+			$tables = e107::getDb()->tables();
 
-			$ret['data'] = array(0=> str_replace("plugin", $this->pluginName, $template)	);
 
-			$ret['engine'] = array('0'=> 'InnoDB');
+			$text = $frm->open('buildTab', 'get', e_REQUEST_SELF);
 
-			return $ret;
+			$text .= "<table class='table adminform'>
+				<tr><td colspan='2'><h4>".ucfirst(LAN_OPTIONAL)."</h4></td></tr>
+
+				<tr>
+				<td class='col-label'>To generate your <em>".$this->pluginName."_sql.php</em> table creation file, please select your sql table then click 'Refresh'</td>
+				<td class='form-inline'>";
+
+			$text .= $frm->select('build', $tables, null, array('useValues'=>1), "(".LAN_OPTIONAL.")");
+
+
+		//	$text .= "<a href='#' id='build-table-submit' class='btn btn-success'>Refresh</a>";
+		//	$text .= $frm->button('step', 3, 'submit', "Continue");
+				unset($_GET['step']);
+			foreach($_GET as $k=>$v)
+			{
+				$text .= $frm->hidden($k,$v);
+
+			}
+		//	$text .= $frm->hidden("build_table_url", e_REQUEST_SELF.'?'.$qry, array('id'=>'build-table-url'));
+
+
+			$text .= "</td></tr>
+			<tr><td>&nbsp;</td><td>
+			".$frm->button('step', 3, 'submit', LAN_CONTINUE)."
+			</td></tr></table>";
+
+			$text .=  $frm->close();
+
+/*
+			e107::js('footer-inline','
+
+				  $(document).on("click", "#build-table-submit", function(e){
+
+					e.preventDefault();
+
+					$(this).addClass("disabled");
+
+                    var url = $("#build-table-url").val();
+                    var sel = $("#build-table-tbl").val();
+
+                    url = url + "&build=" + sel;
+
+					window.location.href = url;
+
+					return false;
+				});
+
+
+
+
+
+			');*/
+			$ns = e107::getRender();
+			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115,  $text);
+
+
+			return $text;
 
 		}
 
@@ -3470,7 +3538,7 @@ TEMPLATE;
 
 // ******************************** CODE GENERATION AREA *************************************************
 
-		function step3()
+		function step4()
 		{
 			
 			$pluginTitle = $_POST['xml']['main-name'] ;
