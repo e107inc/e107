@@ -857,7 +857,7 @@ class e_parse_shortcode
 		}
 
 
-		if(preg_match('/^([A-Z_]*):(.*)/', $matches[1], $newMatch))
+		if(preg_match('/^([A-Z_]*\d?):(.*)/', $matches[1], $newMatch))
 		{
 			$fullShortcodeKey = $newMatch[0];
 			$code = $newMatch[1];
