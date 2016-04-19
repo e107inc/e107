@@ -60,13 +60,10 @@ class gallery
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
-		$text = "";
-
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootstrap3 to bootstrap2 compat.
 		{
 			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']);
 		}
-
 
 		$text = e107::getParser()->parseTemplate($template['cat_start'], true, $sc);
 
@@ -78,7 +75,7 @@ class gallery
 
 		$text .= e107::getParser()->parseTemplate($template['cat_end'], true, $sc);
 
-		$caption = $tp->parseTemplate($template['cat_caption'], true, $sc);
+		$caption = e107::getParser()->parseTemplate($template['cat_caption'], true, $sc);
 
 		e107::getRender()->tablerender($caption, $text);
 	}

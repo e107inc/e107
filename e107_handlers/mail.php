@@ -577,7 +577,10 @@ class e107Email extends PHPMailer
 				$message = 	"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n
 				<html xmlns='http://www.w3.org/1999/xhtml' >\n".$message;
 			}
-			if ($this->legacyBody && !preg_match('/<(font|br|a|img|b)/i', $message)) // Assume html if it includes one of these tags
+
+			;
+			//  !preg_match('/<(table|div|font|br|a|img|b)/i', $message)
+			if ($this->legacyBody && e107::getParser()->isHtml($message) != true) // Assume html if it includes one of these tags
 			{	// Otherwise assume its a plain text message which needs some conversion to render in HTML
 			
 				if($this->debug == true)

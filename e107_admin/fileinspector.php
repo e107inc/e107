@@ -191,7 +191,7 @@ class file_inspector {
 			$this->setOptions($_GET);
 		}
 
-
+		$lang_short = array();
 		foreach($langs as $k=>$val)
 		 {
 		     if($val == "English") // Core release language, so ignore it.
@@ -853,7 +853,8 @@ class file_inspector {
 								$parent_expand = TRUE;
 							}
 
-							if (!empty($this->opt('regex')))
+							$regexOpt = $this->opt('regex');
+							if (!empty($regexOpt))
 							{
 								$file_content = file($dir.'/'.$readdir);
 								if ($this -> files[$dir_id][$aid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content))
@@ -1398,7 +1399,7 @@ class file_inspector {
 		
 		
 		
-		echo "<div class='{$disp}' style='display:block;position:absolute;top:20px;width:100%;'>
+		echo "<div  style='display:block;position:absolute;top:20px;width:100%;'>
 		<div style='width:700px;position:relative;margin-left:auto;margin-right:auto;text-align:center'>";
 		
 		$active = "active";
@@ -1428,7 +1429,7 @@ class file_inspector {
 		<img src='".THEME."images/bar.jpg' style='width:".$inc."%;height:20px;vertical-align:top' />
 		</div>";
 		*/
-		
+		/*
 		
 		echo "<div style='width:100%;background-color:#EEEEEE'>".$diz."</div>";
 		
@@ -1440,7 +1441,7 @@ class file_inspector {
 		
 		echo "</div>
 		</div>";
-		
+		*/
 	}
 	
 	
@@ -1585,26 +1586,107 @@ require_once(e_ADMIN.'footer.php');
 
 function headerjs()
 {
-	$c = e_IMAGE_ABS . 'fileinspector/contract.png';
+	/*$c = e_IMAGE_ABS . 'fileinspector/contract.png';
 	$e = e_IMAGE_ABS . 'fileinspector/expand.png';
 
 	$text = '<script type="text/javascript">
-function ec(element) {
-	$("#d_"+element).stop().animate({"height": "toggle"}, { duration: 500 });
-	var $img = $("#e_"+element);
-    if ($img.attr("src") == "' . $e . '") {
-        $img.attr("src", "' . $c . '");
-    } else {
-       $img.attr("src", "' . $e . '");
-    }
+	function ec(element) {
+		$("#d_"+element).stop().animate({"height": "toggle"}, { duration: 500 });
+		var $img = $("#e_"+element);
+	    if ($img.attr("src") == "' . $e . '") {
+	        $img.attr("src", "' . $c . '");
+	    } else {
+	       $img.attr("src", "' . $e . '");
+	    }
+	}
+
+	function sh(element) {
+		$("#"+element).stop().animate({"height": "toggle"}, { duration: 500 });
+	}
+
+
+
+
+</script>';*/
+
+/*
+ * // Start of rework
+e107::js('footer-inline', "
+
+c = new Image();
+c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
+e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';
+
+function ec(ecid) {
+	icon = $('#e_' + ecid).src;
+	if (icon == e) {
+		$('#e_' + ecid).src = c;
+	} else {
+		$('#e_' + ecid).src = e;
+	}
+	div = $('#d_' + ecid).style;
+	if (div.display == 'none')
+	{
+		div.display = '';
+	}
+	else
+	{
+		div.display = 'none';
+	}
 }
 
-function sh(element) {
-	$("#"+element).stop().animate({"height": "toggle"}, { duration: 500 });
+var hideid = 'initial';
+function sh(showid)
+{
+	if (hideid != showid)
+	{
+		show = $('#'+showid).style;
+		hide = $('#'+hideid).style;
+		show.display = '';
+		hide.display = 'none';
+		hideid = showid;
+	}
 }
-</script>';
 
-	$text .= "
+
+
+
+");*/
+
+
+global $e107;
+$text = "<script type='text/javascript'>
+<!--
+c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
+e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';
+function ec(ecid) {
+	icon = document.getElementById('e_' + ecid).src;
+	if (icon == e) {
+		document.getElementById('e_' + ecid).src = c;
+	} else {
+		document.getElementById('e_' + ecid).src = e;
+	}
+	div = document.getElementById('d_' + ecid).style;
+	if (div.display == 'none') {
+		div.display = '';
+	} else {
+		div.display = 'none';
+	}
+}
+var hideid = 'initial';
+function sh(showid) {
+	if (hideid != showid) {
+		show = document.getElementById(showid).style;
+		hide = document.getElementById(hideid).style;
+		show.display = '';
+		hide.display = 'none';
+		hideid = showid;
+	}
+}
+//-->
+</script>";
+
+$text .= "
 <style type='text/css'>
 <!--\n";
 if (vartrue($_POST['regex'])) {
