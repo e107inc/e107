@@ -39,7 +39,11 @@ if(!$OTHERNEWS2_STYLE)
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		define("OTHERNEWS_COLS",false);
+		if(!defined("OTHERNEWS_COLS"))
+		{
+			define("OTHERNEWS_COLS",false);
+		}
+
 		$template = e107::getTemplate('news', 'news_menu', 'other2');
 		$OTHERNEWS2_STYLE = $template['item'];
 

@@ -387,7 +387,7 @@ class newsfeedClass
 
 		if($which == 'all')
 		{
-			$ret['title'] = $NEWSFEED_MENU_CAPTION;
+			$ret['title'] = (!empty($NEWSFEED_MENU_CAPTION)) ? $NEWSFEED_MENU_CAPTION : '';
 		}
 		else
 		{

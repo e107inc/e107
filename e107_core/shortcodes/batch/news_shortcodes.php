@@ -34,6 +34,8 @@ class news_shortcodes extends e_shortcode
 	protected $commentsEngine = 'e107';
 	
 	private $imageItem;
+
+	public $param = array();
 	
 	
 	function __construct($eVars = null)
@@ -80,7 +82,10 @@ class news_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
-		
+
+
+		$news_body = '';
+
 		if($parm != 'extended')
 		{
 			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
@@ -90,7 +95,9 @@ class news_shortcodes extends e_shortcode
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
+
 		e107::getBB()->clearClass();
+
 		return $news_body;
 	}
 
@@ -511,7 +518,8 @@ class news_shortcodes extends e_shortcode
 		{
 			$tp = e107::getParser();
 			$text = $tp->toHtml($this->news_item['news_body'],true);
-			$text = str_replace("<br />","\n",$text);
+			$breaks = array('<br />','<br>');
+			$text = str_replace($breaks,"\n",$text);
 			$text = strip_tags($text);	
 			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text));	
 			$tmp = array_filter($tmp);
@@ -597,18 +605,23 @@ class news_shortcodes extends e_shortcode
 			$_src = $src = ($newsThumb[0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
 		
 		
-			if($parms[2] || $parms[1] == 'placeholder')
+			if(!empty($parms[2]) || $parms[1] == 'placeholder')
 			{
 				//  $srcset = "srcset='".$tp->thumbSrcSet($src,'all')."' size='100vw' ";
-				  $src = e107::getParser()->thumbUrl($src, $parms[2]);
+				  $attr = !empty($parms[2]) ? $parms[2] : null;
+				  $src = e107::getParser()->thumbUrl($src, $attr);
 				  $dimensions = e107::getParser()->thumbDimensions();
 
 			}
 		}
 		
-		
-		
-				
+
+		if(empty($parms[1]))
+		{
+			$parms = array(1 => null);
+		}
+
+
 		switch($parms[1])
 		{
 			case 'src':
