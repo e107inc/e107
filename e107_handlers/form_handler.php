@@ -2454,6 +2454,18 @@ class e_form
 	{
 		$btype = 'submit';
 		if(strpos($action, 'action') === 0) $btype = 'button';
+
+
+		if(isset($options['loading']) && ($options['loading'] == false))
+		{
+			unset($options['loading']);
+			$include = '';
+		}
+		else
+		{
+			$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
+		}
+
 		$options = $this->format_options('admin_button', $name, $options);
 		
 		$options['class'] = vartrue($options['class']);
@@ -2516,7 +2528,6 @@ class e_form
 			break;
 		}	
 
-		$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
 
 
 		return "
