@@ -1,0 +1,47 @@
+---
+engines:
+  csslint:
+    enabled: false
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+      - php
+  eslint:
+    enabled: false
+  fixme:
+    enabled: false
+  phpmd:
+    enabled: true
+    checks:
+      Identical code:
+        enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+      UnusedFormalParameter:
+        enabled: false
+      Design/TooManyFields:
+        enabled: false
+    config:
+      file_extensions: "php"
+      rulesets: "cleancode,unusedcode,codesize"
+ratings:
+  paths:
+  - "**.css"
+  - "**.js"
+  - "**.php"
+exclude_paths:
+- e107_admin/core_image.php
+- e107_plugins/log/js/awesomechart.js
+- e107_docs/**/*
+- e107_images/**/*
+- e107_handlers/hybridauth/**/*
+- e107_handlers/jsshrink/**/*
+- e107_handlers/phpmailer/**/*
+- e107_handlers/phpthumb/**/*
+- e107_handlers/xmlrpc/**/*
+- e107_web/**/*
+
