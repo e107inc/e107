@@ -41,14 +41,23 @@ class poll
 	function remove_poll_cookies()
 	{ 
 		$arr_polls_cookies = array();
-		foreach($_COOKIE as $cookie_name => $cookie_val)
-		{	// Collect poll cookies
-			list($str, $int) = explode('_', $cookie_name, 2);
-			if (($str == 'poll') && is_numeric($int)) 
-			{	// Yes, its poll's cookie
-				$arr_polls_cookies[] = $int;
+		if(!empty($_COOKIE))
+		{
+			foreach($_COOKIE as $cookie_name => $cookie_val)
+			{	// Collect poll cookies
+
+				if(substr($cookie_name,0,5) == 'poll_')
+				{
+					// e107::getDebug()->log("Poll: ".$cookie_name);
+					list($str, $int) = explode('_', $cookie_name, 2);
+					if (($str == 'poll') && is_numeric($int))
+					{	// Yes, its poll's cookie
+						$arr_polls_cookies[] = $int;
+					}
+				}
 			}
 		}
+		
 		if (count($arr_polls_cookies) > 1) 
 		{	// Remove all except first (assumption: there is always only one active poll)
 			rsort($arr_polls_cookies);
