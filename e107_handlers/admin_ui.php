@@ -3693,6 +3693,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$tableSJoinArr = array(); // FROM for join tables
 		$filter = array();
 
+
 		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		
@@ -3703,7 +3704,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if($searchFilter && is_array($searchFilter))
 		{
-			
+
 			list($filterField, $filterValue) = $searchFilter;
 			
 			if($filterField && $filterValue !== '' && isset($this->fields[$filterField]))
@@ -3711,7 +3712,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$_dataType = $this->fields[$filterField]['data'];
 				$_fieldType = $this->fields[$filterField]['type'];
 
-				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType == 'userclasses')
+				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType == 'userclasses' || ($_fieldType == 'dropdown' && !empty($this->fields[$filterField]['writeParms']['multiple'])))
 				{
 					 $_dataType = 'set';
 				}
@@ -6328,6 +6329,9 @@ class e_admin_form_ui extends e_form
 
 					case 'dropdown': // use the array $parm;
 
+
+
+
 						if(!empty($parms['optArray']))
 						{
 							$fopts = $parms;
@@ -6339,12 +6343,16 @@ class e_admin_form_ui extends e_form
 
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple']))
+						if(vartrue($opts['multiple']) && $type == 'batch')
 						{
 							// no batch support for multiple, should have some for filters soon
 							continue;
 						}
+
 						unset($parms['__options']); //remove element options if any
+
+
+
 						foreach($parms as $k => $name)
 						{
 							$option[$key.'__'.$k] = $name;
