@@ -7,6 +7,8 @@ engines:
     checks:
       Identical code:
         enabled: false
+      Design/TooManyPublicMethods:
+        enabled: false
     config:
       languages:
       - javascript
