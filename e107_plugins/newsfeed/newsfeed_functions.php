@@ -120,20 +120,18 @@ class newsfeedClass
 
 		$this->readFeedList();				// Make sure we've got the feed data.
 
-	//	$force = true;
-
 		if (!isset($this->feedList[$feedID]))
 		{
 			if (NEWSFEED_DEBUG) echo "Invalid feed number: {$feedID}<br />";
 			return FALSE;
 		}
-		
-		if(strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec. 
+
+		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($this->newsList[$feedID]['newsfeed_data']) || strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec.
 		{
 			$force = true;
 		}
-		
-		if ($force || !isset($this->newsList[$feedID]['newsfeed_data']) || !$this->newsList[$feedID]['newsfeed_data']) // No data already in memory
+
+		if($force) // No data already in memory
 		{
 			if ($force || !($this->newsList[$feedID]['newsfeed_data'] = e107::getCache()->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID, $this->feedList[$feedID]['newsfeed_updateint']/60)))
 			{	// Need to re-read from source - either no cached data yet, or cache expired

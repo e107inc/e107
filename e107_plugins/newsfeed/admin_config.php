@@ -81,7 +81,7 @@ class newsfeed_ui extends e_admin_ui
 		  'newsfeed_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'required'=>true,  'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_url' =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'required'=>true, 'inline'=>true, 'width' => 'auto',  'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_data' =>   array ( 'title' => 'Data', 'type' => 'hidden', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_data' =>   array ( 'title' => 'Data', 'type' => 'hidden', 'noedit'=>true, 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_timestamp' =>   array ( 'title' => 'Timestamp', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_image' =>   array ( 'title' => NFLAN_11, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => LAN_OPTIONAL, 'readParms' => 'thumb=80x80', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -124,6 +124,8 @@ class newsfeed_ui extends e_admin_ui
 			    $new_data['newsfeed_image'] = e107::getParser()->toDB($new_data['newsfeed_image'])."::".intval($new_data['newsfeed_showmenu'])."::".intval($new_data['newsfeed_showmain']);
 			}
 
+			$new_data['newsfeed_timestamp'] = 0;
+
 			return $new_data;
 		}
 
@@ -147,7 +149,11 @@ class newsfeed_ui extends e_admin_ui
 			if(isset($new_data['newsfeed_showmenu']))
 			{
 			    $new_data['newsfeed_image'] = e107::getParser()->toDB($new_data['newsfeed_image'])."::".intval($new_data['newsfeed_showmenu'])."::".intval($new_data['newsfeed_showmain']);
+
 			}
+
+			$new_data['newsfeed_timestamp'] = 0; // reset so the feed data refreshes.
+
 
 			return $new_data;
 		}
