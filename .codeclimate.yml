@@ -2,8 +2,11 @@
 engines:
   csslint:
     enabled: false
-  duplication:
+    duplication:
     enabled: true
+    checks:
+      Identical code:
+        enabled: false
     config:
       languages:
       - javascript
