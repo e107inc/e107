@@ -72,25 +72,22 @@ class e107_db_debug {
 		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
 		$this->ShowIf('Paths', $this->Show_PATH());
 		$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
+
         if(E107_DBG_INCLUDES)
         {
             $this->aIncList = get_included_files(); 
-        }   
+        }
+
 		$this->ShowIf('Included Files: '.count($this->aIncList), $this->Show_Includes());
 	}
 	
 	function ShowIf($title,$str)
 	{
-		global $ns,$style;
-		$style='debug';
-		
-		if (!isset($ns)) {
-			echo "Why did ns go away?<br />";
-			$ns = new e107table;
-		}
-		
-		if (strlen($str)) {
-			$ns->tablerender($title, $str);
+
+		if(!empty($str))
+		{
+			e107::getRender()->setStyle('debug');
+			e107::getRender()->tablerender($title, $str);
 		}
 	}
 
@@ -683,8 +680,10 @@ class e107_db_debug {
 		}
 	}
 
-	function Show_Log(){
-		if (!E107_DBG_BASIC || !count($this->aLog)){
+	function Show_Log()
+	{
+		if (empty($this->aLog))
+		{
 			return FALSE;
 		}
 		//
@@ -697,8 +696,9 @@ class e107_db_debug {
 		
 		foreach ($this->aLog as $curLog) 
 		{
-			if (!$bRowHeaders) {
-				$bRowHeaders=TRUE;
+			if (!$bRowHeaders)
+			{
+				$bRowHeaders = true;
 				$text .= "<tr class='fcaption'><td><b>".implode("</b></td><td><b>", array_keys($curLog))."</b></td></tr>\n";
 			}
 
