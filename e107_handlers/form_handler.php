@@ -3570,7 +3570,18 @@ class e_form
 				}
 
 				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
-				$value = vartrue($attributes['writeParms']['__options']['pre']).vartrue($attributes['writeParms'][$value]).vartrue($attributes['writeParms']['__options']['post']);
+
+				if(!empty($attributes['writeParms']['optArray']))
+				{
+					$radioValue = $attributes['writeParms']['optArray'][$value];
+				}
+				else
+				{
+					$radioValue = vartrue($attributes['writeParms'][$value]);
+				}
+
+
+				$value = vartrue($attributes['writeParms']['__options']['pre']).$radioValue.vartrue($attributes['writeParms']['__options']['post']);
 			break;
 
 			case 'tags':

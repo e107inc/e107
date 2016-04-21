@@ -1,217 +1,310 @@
 <?php
-/*
- * e107 website system
- *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * Plugin administration - newsfeeds
- *
- *
-*/
-require_once("../../class2.php");
-if (!getperms("P") || !e107::isInstalled('newsfeed')) 
+	/**
+	 * e107 website system
+	 *
+	 * Copyright (C) 2008-2016 e107 Inc (e107.org)
+	 * Released under the terms and conditions of the
+	 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+	 *
+	 */
+
+// Generated e107 Plugin Admin Area
+
+require_once('../../class2.php');
+if (!getperms('P') || !e107::isInstalled('newsfeed'))
 {
 	e107::redirect('admin');
 	exit;
 }
 
-require_once(e_ADMIN."auth.php");
+e107::lan('newsfeed',true);
 
 define('NEWSFEED_LIST_CACHE_TAG', 'nomd5_newsfeeds');
+define('NEWSFEED_NEWS_CACHE_TAG', 'nomd5_newsfeeds_news_');
 
-$frm = e107::getForm();
-$mes = e107::getMessage();
 
-if (e_QUERY) 
+class newsfeed_adminArea extends e_admin_dispatcher
 {
-	list($action, $id) = explode(".", e_QUERY);
-	$id = intval($id);
+
+	protected $modes = array(
+
+		'main'	=> array(
+			'controller' 	=> 'newsfeed_ui',
+			'path' 			=> null,
+			'ui' 			=> 'newsfeed_form_ui',
+			'uipath' 		=> null
+		),
+
+
+	);
+
+
+	protected $adminMenu = array(
+
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+
+		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'
+	);
+
+	protected $menuTitle = LAN_PLUGIN_NEWSFEEDS_NAME;
 }
-else
-{
-	$action = FALSE;
-	$id = FALSE;
-}
 
-if (isset($_POST['createFeed']) || isset($_POST['updateFeed']))
+
+
+
+
+class newsfeed_ui extends e_admin_ui
 {
-	if ($_POST['newsfeed_url'] && $_POST['newsfeed_name']) 
-	{
-		$feed['newsfeed_name'] 			= $tp->toDB($_POST['newsfeed_name']);
-		$feed['newsfeed_description'] 	= $tp->toDB($_POST['newsfeed_description']);
-		$feed['newsfeed_image'] 		= $tp->toDB($_POST['newsfeed_image'])."::".intval($_POST['newsfeed_showmenu'])."::".intval($_POST['newsfeed_showmain']);
-		$feed['newsfeed_url'] 			= $tp->toDB($_POST['newsfeed_url']);
-		$feed['newsfeed_active'] 		= intval($_POST['newsfeed_active']);
-		$feed['newsfeed_updateint'] 	= intval($_POST['newsfeed_updateint']);
-		$feed['newsfeed_data'] 			= ''; 	// Start with blank data feed
-		$feed['newsfeed_timestamp'] 	= 0;	// This should force an immediate update
-		
-		if (isset($_POST['createFeed']))
+
+		protected $pluginTitle		= LAN_PLUGIN_NEWSFEEDS_NAME;
+		protected $pluginName		= 'newsfeed';
+	//	protected $eventName		= 'newsfeed-newsfeed'; // remove comment to enable event triggers in admin.
+		protected $table			= 'newsfeed';
+		protected $pid				= 'newsfeed_id';
+		protected $perPage			= 10;
+		protected $batchDelete		= true;
+		protected $batchCopy		= true;
+	//	protected $sortField		= 'somefield_order';
+	//	protected $orderStep		= 10;
+	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+
+	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+		protected $listOrder		= 'newsfeed_id DESC';
+
+		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'newsfeed_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'required'=>true,  'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_url' =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'required'=>true, 'inline'=>true, 'width' => 'auto',  'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_data' =>   array ( 'title' => 'Data', 'type' => 'hidden', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_timestamp' =>   array ( 'title' => 'Timestamp', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_image' =>   array ( 'title' => NFLAN_11, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => LAN_OPTIONAL, 'readParms' => 'thumb=80x80', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+		   'newsfeed_updateint' =>   array ( 'title' => NFLAN_18, 'type' => 'text', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3600), 'class' => 'left', 'thclass' => 'left',  ),
+
+  	  	  'newsfeed_active' =>   array ( 'title' => NFLAN_12, 'type' => 'radio', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3, 'optArray'=>array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21)), 'class' => 'left', 'thclass' => 'left',  ),
+
+		  'newsfeed_showmenu'   => array('title'=>NFLAN_45, 'type'=>'method', 'data'=>false, 'class'=>'center', 'thclass'=>'center' ),
+		  'newsfeed_showmain'   => array('title'=>NFLAN_46, 'type'=>'method', 'data'=>false, 'class'=>'center', 'thclass'=>'center'),
+
+		    'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '8%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		);
+
+		protected $fieldpref = array('newsfeed_name', 'newsfeed_url', 'newsfeed_updateint', 'newsfeed_active', 'newsfeed_showmenu', 'newsfeed_showmain');
+
+
+	//	protected $preftabs        = array('General', 'Other' );
+		protected $prefs = array(
+		);
+
+
+		public function init()
 		{
-			if ($sql->insert('newsfeed',$feed))
+			if($this->getAction() == 'edit' || $this->getAction() == 'create')
 			{
-				$admin_log->logArrayAll('NEWSFD_01', $feed);
-				$mes->addSuccess(LAN_CREATED);
+				$this->fields['newsfeed_updateint']['type'] = 'number';
 			}
-			else
-			{
-				$mes->addError(LAN_CREATED_FAILED.': '.$sql->mySQLerror); 
-			}
+			// Set drop-down values (if any).
+
 		}
-		elseif (isset($_POST['updateFeed']))
+
+
+		// ------- Customize Create --------
+
+		public function beforeCreate($new_data)
 		{
-			$feed['WHERE'] = "newsfeed_id=".intval($_POST['newsfeed_id']);
-			
-			if($sql->update('newsfeed',$feed))
+			if(isset($new_data['newsfeed_showmenu']))
 			{
-				$admin_log->logArrayAll('NEWSFD_02', $feed);
-				$mes->addSuccess(LAN_UPDATED);
+			    $new_data['newsfeed_image'] = e107::getParser()->toDB($new_data['newsfeed_image'])."::".intval($new_data['newsfeed_showmenu'])."::".intval($new_data['newsfeed_showmain']);
 			}
-			else
-			{
-				$mes->addInfo(LAN_NO_CHANGE.': '.$sql->mySQLerror); 
-			}
+
+			return $new_data;
 		}
-		e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);		// This should actually clear all the newsfeed data in one go
-	} 
-	else 
+
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			// do something
+			e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);
+			e107::getCache()->clear(NEWSFEED_NEWS_CACHE_TAG);
+		}
+
+		public function onCreateError($new_data, $old_data)
+		{
+			// do something
+		}
+
+
+		// ------- Customize Update --------
+
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+			if(isset($new_data['newsfeed_showmenu']))
+			{
+			    $new_data['newsfeed_image'] = e107::getParser()->toDB($new_data['newsfeed_image'])."::".intval($new_data['newsfeed_showmenu'])."::".intval($new_data['newsfeed_showmain']);
+			}
+
+			return $new_data;
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			// do something
+			e107::getCache()->clear(NEWSFEED_LIST_CACHE_TAG);
+			e107::getCache()->clear(NEWSFEED_NEWS_CACHE_TAG);
+		}
+
+		public function onUpdateError($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+
+	/*
+		// optional - a custom page.
+		public function customPage()
+		{
+			$text = 'Hello World!';
+			return $text;
+
+		}
+	*/
+
+}
+
+
+
+class newsfeed_form_ui extends e_admin_form_ui
+{
+
+
+	// Custom Method/Function
+	function newsfeed_active($curVal,$mode)
 	{
-		$mes->addError(LAN_REQUIRED_BLANK);
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return $curVal;
+			break;
+
+			case 'write': // Edit Page
+				return $frm->text('newsfeed_active',$curVal, 255, 'size=large');
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
+
+
+	function newsfeed_image($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return $curVal;
+			break;
+
+			case 'write': // Edit Page
+
+				$tmp = explode('::',$curVal);
+
+				return $frm->text('newsfeed_image',$tmp[0], 255, 'size=large');
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
+
+
+
+	function newsfeed_showmain($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				$data = $this->getController()->getListModel()->get('newsfeed_image');
+				list($image,$menu,$main) = explode('::',$data);
+
+				return intval($main);
+			break;
+
+			case 'write': // Edit Page
+
+				$data = $this->getController()->getModel()->get('newsfeed_image');
+				list($image,$menu,$main) = explode('::',$data);
+
+				if(empty($main))
+				{
+					$main = 10;
+				}
+
+				return $frm->number('newsfeed_showmain',$main, 3);
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
+
+
+
+	function newsfeed_showmenu($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				$data = $this->getController()->getListModel()->get('newsfeed_image');
+				list($image,$menu,$main) = explode('::',$data);
+
+				return intval($menu);
+			break;
+
+			case 'write': // Edit Page
+				$data = $this->getController()->getModel()->get('newsfeed_image');
+				list($image,$menu,$main) = explode('::',$data);
+
+				if(empty($menu))
+				{
+					$menu = 10;
+				}
+
+				return $frm->number('newsfeed_showmenu',$menu, 3);
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
 	}
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
 
-if($action == "delete") 
-{
-	$sql->db_Delete('newsfeed', 'newsfeed_id='.$id);
-	e107::getLog()->add('NEWSFD_03','ID: '.$id,E_LOG_INFORMATIVE,'');
-	$mes->addSuccess(LAN_DELETED);
-}
+new newsfeed_adminArea();
 
-$ns->tablerender($caption, $mes->render() . $text);
-
-
-if($headline_total = $sql->db_Select("newsfeed"))
-{
-	$nfArray = $sql->rows();
-
-	$text = "
-	<table class='table table-striped'>
-	<colgroup>
-		<col style='width: 5%; text-align: center;' />
-		<col style='width: 40%;' />
-		<col style='width: 10%; text-align: center;' />
-		<col style='width: 25%; text-align: center;' />
-		<col style='width: 10%; text-align: center;' />
-	</colgroup>
-	<thead>
-	<tr>
-		<th>".LAN_ID."</th>
-		<th>".LAN_NAME."</th>
-		<th>".NFLAN_26."</th>
-		<th>".NFLAN_12."</th>
-		<th class='center options'>".LAN_OPTIONS."</th>
-	</tr>
-	</thead>\n";
-
-	$active = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
-
-	foreach($nfArray as $newsfeed)
-	{
-		extract($newsfeed); // FIXME
-
-		$text .= "
-		<tr>
-			<td>$newsfeed_id</td>
-			<td><a href='$newsfeed_url' rel='external'>$newsfeed_name</a></td>
-			<td>".($newsfeed_updateint ? $newsfeed_updateint : "3600")."</td>
-			<td>".$active[$newsfeed_active]."</td>
-			<td>
-				<a class='btn btn-default btn-large' href='".e_SELF."?edit.".$newsfeed_id."'>".ADMIN_EDIT_ICON."</a>
-	            <a class='btn btn-default btn-large action delete' href='".e_SELF."?delete.".$newsfeed_id."' rel='no-confirm' title='".LAN_CONFDELETE."'>".ADMIN_DELETE_ICON."</a>
-			</td>
-		</tr>";
-	}
-
-	$text .= "</table>";
-}
-else
-{
-	$mes->addInfo(NFLAN_41);
-}
-
-$ns->tablerender(NFLAN_07, $mes->render(). $text);
-
-if($action == "edit")
-{
-	if($sql->select("newsfeed", "*", "newsfeed_id=$id"))
-	{
-		$row = $sql->fetch();
-		extract($row); // FIX
-		list($newsfeed_image, $newsfeed_showmenu, $newsfeed_showmain) = explode("::", $newsfeed_image);
-	}
-}
-else
-{
-	unset($newsfeed_showmenu, $newsfeed_showmain, $newsfeed_name, $newsfeed_url, $newsfeed_image, $newsfeed_description, $newsfeed_updateint, $newsfeed_active);
-}
-
-	$text = "
-	<form method='post' action='".e_SELF."'>\n
-	<table class='table'>
-	<colgroup>
-		<col class='col-label' />
-		<col style='col-control' />
-	</colgroup>
-	<tr>
-		<td>".LAN_NAME."</td>
-		<td>".$frm->text('newsfeed_name', $newsfeed_name, '200')."</td>
-	</tr>
-	
-	<tr>
-		<td>".LAN_URL."</td>
-		<td>".$frm->text('newsfeed_url', $newsfeed_url, '250', 'size=xxlarge')."<span class='field-help'>".NFLAN_10."</span></td>
-	</tr>
-	<tr>
-		<td>".NFLAN_11."</td>
-		<td>".$frm->text('newsfeed_image', $newsfeed_image, '200') /* TODO imagepicker? */."<span class='field-help'>".NFLAN_17."</span></td>
-	</tr>
-	<tr>
-		<td>".LAN_DESCRIPTION."</td>
-		<td>".$frm->text('newsfeed_description', $newsfeed_description, '200')."<span class='field-help'>".NFLAN_37."</span></td>
-	</tr>
-	<tr>
-		<td>".NFLAN_18."</td>
-		<td>".$frm->number('newsfeed_updateint',($newsfeed_updateint ? $newsfeed_updateint : 3600),5)."<span class='field-help'>".NFLAN_19."</span></td>
-	</tr>
-	<tr>
-		<td>".NFLAN_12."</td>
-		<td>"; 
-		$array = array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21);
-		$text .= 
-		$frm->radio('newsfeed_active', $array, ($newsfeed_active ? $newsfeed_active : 0), true, NFLAN_22)."
-		</td>
-	</tr>
-	<tr>
-		<td>".NFLAN_45."</td>
-		<td>".$frm->number('newsfeed_showmenu', $newsfeed_showmenu ,5)."<span class='field-help'>".NFLAN_47."</span></td>
-	</tr>
-	<tr>
-		<td>".NFLAN_46."</td>
-		<td>".$frm->number('newsfeed_showmain', $newsfeed_showmain ,5)."<span class='field-help'>".NFLAN_47."</span></td>
-	</tr>
-	</table>
-	<div class='buttons-bar center'>
-		".$frm->admin_button(($action == "edit" ? "updateFeed" : "createFeed"),($action == "edit" ? LAN_UPDATE : LAN_CREATE),'update')."
-	</div>
-		".($action == "edit" ? "<input type='hidden' name='newsfeed_id' value='$newsfeed_id' />" : "")."
-	</form>
-	";
-
-$ns->tablerender(NFLAN_09, $mes->render() . $text);
+require_once(e_ADMIN."auth.php");
+e107::getAdminUI()->runPage();
 
 require_once(e_ADMIN."footer.php");
-?>
+exit;
