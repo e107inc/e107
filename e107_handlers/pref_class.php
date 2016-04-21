@@ -440,7 +440,7 @@ class e_pref extends e_front_model
 	 * @param boolean $force
 	 * @return e_pref
 	 */
-	public function load($force = false)
+	public function load($id=null, $force = false)
 	{
 		global $pref;
 		if($force || !$this->hasData())
