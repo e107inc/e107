@@ -57,7 +57,7 @@ class poll
 				}
 			}
 		}
-		
+
 		if (count($arr_polls_cookies) > 1) 
 		{	// Remove all except first (assumption: there is always only one active poll)
 			rsort($arr_polls_cookies);
