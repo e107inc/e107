@@ -23,7 +23,7 @@ if(isset($parms['caption'][e_LANGUAGE]))
 
 $limit      = vartrue($parms['count'],5);
 $tp         = e107::getParser();
-$template   = e107::getTemplate('news', 'news_menu', 'carousel', false, true);
+$template   = e107::getTemplate('news', 'news_menu', 'carousel', true, true);
 
 $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 

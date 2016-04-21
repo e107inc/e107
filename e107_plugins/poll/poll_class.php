@@ -888,6 +888,7 @@ class poll_shortcodes extends e_shortcode
 	public $answerOption    = array();
 	public $answerCount     = 0;
 	public $pollRenderType  = null; // type
+	public $pollRenderMode  = null;
 	public $pollPreview     = false;
 	public $pollVoteTotal   = 0;
 	public $pollCommentTotal = 0;

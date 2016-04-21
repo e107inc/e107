@@ -2213,8 +2213,13 @@ class pluginBuilder
 			{
 				$this->createFiles	= true; 
 			}
-				
-			
+
+			if(vartrue($_POST['step']) == 4)
+			{
+				$this->step4();
+				return null;
+			}
+
 			if(vartrue($_GET['step']) == 3)
 			{
 		
@@ -2222,11 +2227,7 @@ class pluginBuilder
 				return null;
 			}
 
-			if(vartrue($_POST['step']) == 4)
-			{
-				$this->step4();
-				return null;
-			}
+
 
 			
 			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
@@ -2856,7 +2857,7 @@ class pluginBuilder
 				case 'summary-summary':
 					$help 		= EPL_ADLAN_142."<br />".EPL_ADLAN_143;
 					$required 	= true;
-					$size 		= 100;
+					$size 		= 130;
 					$placeholder= " ";
 					$pattern	= "[A-Za-z \.0-9]*";
 					$xsize		= 'block-level';
