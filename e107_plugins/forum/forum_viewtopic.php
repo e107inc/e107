@@ -474,6 +474,7 @@ foreach ($postList as $postInfo)
 		$alt = !$alt;
 
 		$sc->setScVar('postInfo', $postInfo);
+		$sc->setVars($postInfo); // compatibility
 
 		if($postInfo['post_status'])
 		{
@@ -493,6 +494,7 @@ foreach ($postList as $postInfo)
 	{
 		$postInfo['thread_start'] = true;
 		$sc->setScVar('postInfo', $postInfo);
+		$sc->setVars($postInfo); // compatibility
 		$sc->wrapper('forum_viewtopic/thread');
 	//	$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo)->wrapper('forum/viewtopic');
 		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($sc)) . "\n";

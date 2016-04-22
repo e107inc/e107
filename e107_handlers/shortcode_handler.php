@@ -1366,7 +1366,8 @@ class e_shortcode
 	}
 	
 	/**
-	 * Alias of setParserVars - Preferred use by Plugins. 
+	 * Alias of setParserVars - Preferred use by Plugins.
+	 * Sets the value of $sc->var
 	 */
 	public function setVars($eVars) // Alias of setParserVars();
 	{
