@@ -15,6 +15,7 @@ if(!defined('e107_INIT'))
 
 class _blank_shortcodes extends e_shortcode
 {
+	public $override = false; // when set to true, existing core/plugin shortcodes matching methods below will be overridden. 
 
 	// Example: {_BLANK_CUSTOM} shortcode - available site-wide.
 	function sc__blank_custom($parm = null)  // Naming:  "sc_" + [plugin-directory] + '_uniquename'
