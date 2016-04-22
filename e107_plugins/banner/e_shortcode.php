@@ -108,4 +108,4 @@ class banner_shortcodes extends e_shortcode
 			return $text;
 	}
 }
-?>
+
