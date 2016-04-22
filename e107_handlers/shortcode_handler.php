@@ -70,6 +70,7 @@ class e_parse_shortcode
 	protected $scOverride = array(); // Array of codes found in override/shortcodes dir
 	protected $scBatchOverride = array(); // Array of codes found in override/shortcodes/batch dir
 	protected $ignoreCodes = array(); // Shortcodes to be ignored and remain unchanged. (ie. {THEME}, {e_PLUGIN} etc. )
+	protected $addonOverride = array(); // Overrides coming from e_shortcode.php
 	/**
 	 * @var e_vars
 	 */
@@ -161,7 +162,7 @@ class e_parse_shortcode
 		else
 		{
 			$codes = strtoupper($codes);
-			if ((!$this->isRegistered($code) || $force == true) && !$this->isOverride($code))
+			if ((!$this->isRegistered($codes) || $force == true) && !$this->isOverride($codes))
 			{
 				$this->registered_codes[$codes] = array('type' => 'func', 'path' => $path, 'function' => $classFunc);
 			}
@@ -245,12 +246,29 @@ class e_parse_shortcode
 		if (class_exists($class, false) && ($force || !$this->isScClass($class)))
 		{
 			$this->scClasses[$class] = new $class();
+
 			if(method_exists($this->scClasses[$class], 'init'))
 			{
 				$this->scClasses[$class]->init();
 			}
+
+			if(!empty($this->scClasses[$class]->override))
+			{
+				$methods = get_class_methods($class);
+				foreach($methods as $meth)
+				{
+					if(substr($meth,0,3) == 'sc_')
+					{
+						$this->addonOverride[$meth] = $class;
+
+
+					}
+				}
+			}
+
 			return $this->scClasses[$class];
 		}
+
 		return null;
 	}
 
@@ -754,6 +772,8 @@ class e_parse_shortcode
 
 	
 			$this->addedCodes = &$extraCodes;
+
+		//	e107::getDebug()->log("Codes".print_a($this->addedCodes,true));
 			
 			// TEMPLATEID_WRAPPER support - see contact template
 			// must be registered in e_shortcode object (batch) via () method before parsing
@@ -918,15 +938,26 @@ class e_parse_shortcode
 		$_path = '';
 		$ret = '';
 		$_method = 'sc_'.strtolower($code);
-		if (is_object($this->addedCodes) && method_exists($this->addedCodes, $_method)) //It is class-based batch shortcode.  Class already loaded; call the method
+
+		// Display e_shortcode.php override info.
+		if((E107_DBG_BBSC || E107_DBG_SC) && isset($this->addonOverride[$_method]) && is_object($this->addedCodes) && method_exists($this->addedCodes, $_method))
+		{
+			$debugArr = array('class_original'=>get_class($this->addedCodes), 'class_override'=>$this->addonOverride[$_method], 'function'=>$_method);
+			e107::getDebug()->logCode(4, $code, null, print_a($debugArr,true));
+		}
+
+
+		if (!isset($this->addonOverride[$_method]) && is_object($this->addedCodes) && method_exists($this->addedCodes, $_method)) //It is class-based batch shortcode.  Class already loaded; call the method
 		{
 			
 			$ret = $this->addedCodes->$_method($parm, $sc_mode);
+
 			if(E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 			{
 				$_class = get_class($this->addedCodes); // "(class loaded)"; // debug. 
 				$_function = $_method;
 				$_path = "(already loaded)";
+
 			}
 		}
 		elseif (is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes)) // Its array-based shortcode. Load the code for evaluation later.
@@ -1308,7 +1339,8 @@ class e_shortcode
 	protected $mode = 'view'; // or edit. Used within shortcodes for form elements vs values only.   
 
 	protected $wrapper = null; // holds template/key value of the currently used wrapper (if any) - see contact_template.php for an example. 	
-	
+
+	protected $override = false;
 	/**
 	 * Storage for shortcode values
 	 * @var e_vars
@@ -1327,7 +1359,8 @@ class e_shortcode
 	 * Startup code for child class
 	 */
 	public function init() {}
-	
+
+
 	/**
 	 * Sets wrapper id (to be retrieved from the registry while parsing)
 	 * Example e107::getScBatch('contact')->wrapper('contact/form');
