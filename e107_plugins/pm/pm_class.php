@@ -407,7 +407,8 @@ class private_message
 		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
 		$data['SITENAME']       = SITENAME;
 		$data['USERNAME']       = USERNAME;
-		$data['PM_URL']         = "<a href='".$url."'>".$url."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+		$data['PM_URL']         = $url;// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+		$data['PM_BUTTON']      = "<a class='btn btn-primary' href='".$url."'>".LAN_PM_113."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
 		$text = e107::getParser()->simpleParse($template, $data);
 

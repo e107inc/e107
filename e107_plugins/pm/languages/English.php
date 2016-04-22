@@ -86,4 +86,6 @@ define("LAN_PM_108", "Message sent on: ");
 define("LAN_PM_109", "New Message(s)");
 define("LAN_PM_111", "Read");
 define("LAN_PM_112", "User(s)");
+
+define("LAN_PM_113", "Read Message");
 ?>
