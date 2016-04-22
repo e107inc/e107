@@ -370,7 +370,7 @@ class faq
 
 		$query = "SELECT f.*,cat.* FROM #faqs AS f LEFT JOIN #faqs_info AS cat ON f.faq_parent = cat.faq_info_id WHERE cat.faq_info_class IN (".USERCLASS_LIST.") ".$insert." ORDER BY cat.faq_info_order, f.".$orderBy." ".$ascdesc." ";
 		
-		if(!$sql->gen($query))
+		if(!$data = $sql->retrieve($query, true))
 		{
 			$message = 	(!empty($srch)) ? "<b>".$srch."</b> was not found in search results. <a class='e-tip' title='Reset' href='".$removeUrl."'>Reset</a>" : LAN_FAQS_NONE_AVAILABLE;
 			return "<div class='alert alert-warning alert-block'>".$message."</div>" ; //TODO LAN
@@ -416,7 +416,7 @@ class faq
 		}
 
 
-		while ($rw = $sql->fetch())
+		foreach ($data as $rw)
 		{
 			$rw['faq_sef'] = eHelper::title2sef($tp->toText($rw['faq_question']),'dashl');
 
