@@ -710,8 +710,8 @@ class e107forum
 		$info['data']['post_id'] = $postId; // Append last inserted ID to data array for passing it to event callbacks.
 
 
-
-	  	e107::getEvent()->trigger('user_forum_post_created', $info);
+		$triggerData = $info['data'];
+	  	e107::getEvent()->trigger('user_forum_post_created', $triggerData);
 
 	  	ob_start(); // precaution so json doesn't break.
 		$this->trackEmail($info['data']);
@@ -757,8 +757,8 @@ class e107forum
 
 			e107::getMessage()->addDebug("Updating Thread with: ".print_a($info,true));
 
-
-		  	e107::getEvent()->trigger('user_forum_topic_updated', $info);
+			$triggerData = $info['data'];
+		  	e107::getEvent()->trigger('user_forum_topic_updated', $triggerData);
 		}
 
 		if(($result || !$updateThread) && $updateForum)
@@ -824,7 +824,7 @@ class e107forum
 
 		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
-		  	e107::getEvent()->trigger('user_forum_topic_created', $info);
+
 			$postInfo['post_thread'] = $newThreadId;
 
 			if(!$newPostId = $this->postAdd($postInfo, false))
@@ -834,6 +834,13 @@ class e107forum
 
 			$this->threadMarkAsRead($newThreadId);
 			$threadInfo['thread_sef'] = $this->getThreadsef($threadInfo);
+
+			$triggerData                = $info['data'];
+			$triggerData['thread_id']   = $newThreadId;
+			$triggerData['thread_sef']  = $threadInfo['thread_sef'];
+			$triggerData['post_id']     = $newPostId;
+
+			e107::getEvent()->trigger('user_forum_topic_created', $triggerData);
 
 			return array('postid' => $newPostId, 'threadid' => $newThreadId, 'threadsef'=>$threadInfo['thread_sef']);
 		}
@@ -902,7 +909,9 @@ class e107forum
 			e107::getMessage()->addDebug("Thread Update Failed: ".print_a($info,true));
 		}
 
-	  	e107::getEvent()->trigger('user_forum_topic_updated', $info);
+		$triggerData = $threadInfo;
+		$triggerData['thread_id'] = intval($threadId);
+	  	e107::getEvent()->trigger('user_forum_topic_updated', $triggerData);
 	}
 
 	
@@ -919,6 +928,8 @@ class e107forum
 			e107::getMessage()->addDebug("Post Update Failed: ".print_a($info,true));
 		}
 
+		$triggerData = $postInfo;
+		$triggerData['post_id'] = intval($postId);
 	  	e107::getEvent()->trigger('user_forum_post_updated', $info);
 	}
 

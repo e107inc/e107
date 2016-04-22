@@ -261,6 +261,11 @@ $THREADTOPIC_REPLY = "
 								";
 
 
+$js = <<<TMPL
+	// javascript here.
+TMPL;
+
+e107::js('footer-inline', $js);
 
 
 $FORUM_POST_TEMPLATE['reply']	= "";
