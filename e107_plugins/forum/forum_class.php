@@ -758,6 +758,7 @@ class e107forum
 			e107::getMessage()->addDebug("Updating Thread with: ".print_a($info,true));
 
 			$triggerData = $info['data'];
+			$triggerData['thread_id'] = $postInfo['post_thread'];
 		  	e107::getEvent()->trigger('user_forum_topic_updated', $triggerData);
 		}
 

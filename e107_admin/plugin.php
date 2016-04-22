@@ -3792,7 +3792,7 @@ $text .= "
 		
 		// ------- Customize Create --------
 		
-		public function beforeCreate(\$new_data)
+		public function beforeCreate(\$new_data,\$old_data)
 		{
 			return \$new_data;
 		}
