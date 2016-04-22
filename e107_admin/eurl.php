@@ -204,7 +204,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	}
 
 	//TODO Checkbox for each plugin to enable/disable
-	public function simplePage()
+	protected function simplePage()
 	{
 		// $this->addTitle("Simple Redirects");
 		$eUrl =e107::getAddonConfig('e_url');
@@ -320,7 +320,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function SettingsPage()
+	protected function SettingsPage()
 	{
 		//$this->addTitle(LAN_EURL_NAME_SETTINGS);
 		return $this->getUI()->urlSettings();
@@ -356,7 +356,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function AliasPage()
+	protected function AliasPage()
 	{
 	//	$this->addTitle(LAN_EURL_NAME_ALIASES);
 		
@@ -411,7 +411,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function ConfigPage()
+	protected function ConfigPage()
 	{
 		// $this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');

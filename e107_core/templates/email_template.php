@@ -112,6 +112,8 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													.sitebutton img { max-height: 100px; border-radius:4px; margin-right:5px }
 													h4.sitename  { font-size: 20px; margin-bottom:5px; margin-top:0; text-decoration:none }
 													h4.sitename a { text-decoration:none }
+													.text-right { text-align: right }
+													.text-center { text-align: center }
 													a.siteurl { font-size: 14px }
 													a 			{ color: #428BCA }
 
@@ -133,7 +135,39 @@ $EMAIL_TEMPLATE['default']['header']		= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHT
 													    vertical-align: top;
 													    border-top: 1px solid #DDD;
 													}
-
+													.alert {  padding: 15px;  margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; 	}
+													.alert-info {  color: #31708f; background-color: #d9edf7; border-color: #bce8f1; }
+													.alert-warning { color: #8a6d3b; background-color: #fcf8e3; border-color: #faebcc; }
+													.alert-danger { color: #a94442; background-color: #f2dede; border-color: #ebccd1; }
+													.alert-success { color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6; }
+													a.btn {  text-decoration: none; }
+													.btn {
+													    display: inline-block;
+													    padding: 6px 12px;
+													    margin-bottom: 0;
+													    font-size: 14px;
+													    font-weight: 400;
+													    line-height: 1.42857143;
+													    text-align: center;
+													    white-space: nowrap;
+													    vertical-align: middle;
+													    -ms-touch-action: manipulation;
+													    touch-action: manipulation;
+													    cursor: pointer;
+													    -webkit-user-select: none;
+													    -moz-user-select: none;
+													    -ms-user-select: none;
+													    user-select: none;
+													    background-image: none;
+													    border: 1px solid transparent;
+													    border-radius: 4px;
+													}
+													.btn-primary 	{ color: #fff; background-color: #337ab7; border-color: #2e6da4; }
+													.btn-success 	{ color: #fff; background-color: #5cb85c; border-color: #4cae4c; }
+													.btn-warning 	{ color: #fff; background-color: #f0ad4e; border-color: #eea236; }
+													.btn-danger  	{ color: #fff; background-color: #d9534f; border-color: #d43f3a; }
+													.btn-lg 		{ padding: 10px 16px; font-size: 18px; line-height: 1.3333333; border-radius: 6px; }
+													.btn-sm 		{ padding: 5px 10px; font-size: 12px; line-height: 1.5; border-radius: 3px; }
 												</style>
 												</head>
 												
@@ -146,7 +180,7 @@ $EMAIL_TEMPLATE['default']['body']			= "{BODY}<br />{MEDIA1}{MEDIA2}{MEDIA3}{MED
 $EMAIL_TEMPLATE['default']['footer']		= "<br /><br /><table cellspacing='4'>
 												<tr><td>{SITEBUTTON: type=email&h=60}</td>
 												<td><h4 class='sitename'>{SITENAME=link}</h4>
-												{SITEURL}</td></tr>
+												<small>{SITEURL}</small></td></tr>
 												</table>
 												</div>
 												</body>
