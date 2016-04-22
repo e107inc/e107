@@ -2625,8 +2625,11 @@ class e_form
 					if($optval) $ret .= " autofocus='autofocus'";
 					break;
 					
-				case 'placeholder':
-					if($optval) $ret .= " placeholder='{$optval}'";
+				case 'placeholder':				   
+					if($optval) { 
+					  $optval = constant($optval);
+					  $ret .= " placeholder='{$optval}'";
+					}
 					break;
 
 				case 'wrap':
