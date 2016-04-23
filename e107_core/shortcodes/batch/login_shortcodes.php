@@ -44,7 +44,6 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_username($parm='') //FIXME use $frm
 	{
-
 		if(empty($this->userReg))
 		{
 			return null;
@@ -54,9 +53,16 @@ class login_shortcodes extends e_shortcode
 		$allowEmailLogin = varset($pref['allowEmailLogin'],0);
 		$ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
 		$placeholder =  $ulabel[$allowEmailLogin];	
-		
-		
-		return "<input class='tbox form-control input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
+
+		$log_name_length = varset($pref['loginname_maxlength'],40);
+		$options = array('size'=>30,'required'=>1);
+		$options['title'] = str_replace("[x]",$log_name_length,LAN_SIGNUP_109);
+		$options['pattern'] = '[\S]*';
+		$options['class'] = vartrue($parm['class']) ?  $parm['class']  : '';
+		$options['placeholder'] = vartrue($parm['placeholder']) ? $parm['placeholder']  : $placeholder;
+ 
+		// return "<input class='tbox form-control input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";		
+		return e107::getForm()->text('username', ($_POST['username'] ? $_POST['username'] : ''), $log_name_length, $options);				
 	}
 	
 	function sc_login_table_password($parm='') //FIXME use $frm
