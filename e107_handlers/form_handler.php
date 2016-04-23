@@ -1180,7 +1180,7 @@ class e_form
 
 	/**
 	 * User auto-complete search
-	 *
+	 * XXX EXPERIMENTAL - subject to change.
 	 * @param string $name_fld field name for user name
 	 * @param string $id_fld field name for user id
 	 * @param string $default_name default user name value
@@ -4667,7 +4667,7 @@ class e_form
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
-				if((empty($value) && varset($parms['currentInit'],USERID)!=0) || vartrue($parms['current'])) // include current user by default.
+				if((empty($value) && varset($parms['currentInit'],USERID)!=0 && varset($parms['default']) !=0) || vartrue($parms['current'])) // include current user by default.
 				{
 					$value = USERID;
 					if(vartrue($parms['current']))
@@ -4687,6 +4687,14 @@ class e_form
 				if(!$value) $value = array();
 				$uname = varset($value[$colname]);
 				$value = varset($value['user_id'], 0);
+
+				if(!empty($parms['max']))
+				{
+					$parms['__options']['selectize']['maxItems'] = intval($parms['max']);
+				}
+
+
+
 				$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
 			break;
 
