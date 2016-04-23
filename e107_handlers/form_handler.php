@@ -2626,7 +2626,10 @@ class e_form
 					break;
 					
 				case 'placeholder':
-					if($optval) $ret .= " placeholder='{$optval}'";
+					if($optval) {  
+					  $optval = deftrue($optval, $optval);  
+					  $ret .= " placeholder='{$optval}'";
+					}
 					break;
 
 				case 'wrap':
