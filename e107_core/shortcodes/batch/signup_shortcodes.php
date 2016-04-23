@@ -186,7 +186,12 @@ class signup_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_signup_loginname()
+	/* example {SIGNUP_LOGINNAME} */
+	/* example {SIGNUP_LOGINNAME: class=btn input-lg} */
+	/* example {SIGNUP_LOGINNAME: placeholder=LAN_LOGINNAME} */
+	/* example {SIGNUP_LOGINNAME: class=input-lg&placeholder=LAN_LOGINNAME} */
+
+	function sc_signup_loginname($parm)
 	{
 
 		$pref = e107::getPref();
@@ -194,20 +199,26 @@ class signup_shortcodes extends e_shortcode
 		{
 		  return LAN_SIGNUP_67;
 		}
-
+ 
 	//	if ($pref['signup_option_loginname'])
 		{
 			$log_name_length = varset($pref['loginname_maxlength'],30);
 			$options = array('size'=>30,'required'=>1);
 			$options['title'] = str_replace("[x]",$log_name_length,LAN_SIGNUP_109); // Password must be at least
 			$options['pattern'] = '[\S]*';
-	
+			$options['class'] = vartrue($parm['class']) ?  $parm['class']  : '';
+			$options['placeholder'] = vartrue($parm['placeholder']) ? $parm['placeholder']  : '';
+		
 			return e107::getForm()->text('loginname', ($_POST['loginname'] ? $_POST['loginname'] : ''), $log_name_length, $options);
 		}
-	}
+	}	
 	
+	/* example {SIGNUP_REALNAME} */
+	/* example {SIGNUP_REALNAME: class=btn input-lg} */
+	/* example {SIGNUP_REALNAME: placeholder=LAN_SIGNUP_91} */
+	/* example {SIGNUP_REALNAME: class=input-lg&placeholder=LAN_SIGNUP_91} */
 	
-	function sc_signup_realname()
+	function sc_signup_realname($parm)
 	{
 		$pref = e107::getPref('signup_option_realname');
 		if($pref < 1){ return; }
@@ -215,13 +226,19 @@ class signup_shortcodes extends e_shortcode
 		$options 				= array('size'=>30);
 		$options['required'] 	= ($pref==2) ? 1 : 0;
 		$options['title']		= LAN_SIGNUP_110;
-
+		$options['class'] = vartrue($parm['class']) ?  $parm['class']  : '';
+		$options['placeholder'] = vartrue($parm['placeholder']) ?   vartrue($parm['placeholder'])   : '';
+				
 		return e107::getForm()->text('realname', ($_POST['realname'] ? $_POST['realname'] : ''), 100, $options);
 
-	}
+	}	
 	
-	
-	function sc_signup_password1()
+	/* example {SIGNUP_PASSWORD1} */
+	/* example {SIGNUP_PASSWORD1: class=btn input-lg} */
+	/* example {SIGNUP_PASSWORD1: placeholder=LAN_PASSWORD} */
+	/* example {SIGNUP_PASSWORD1: class=input-lg&placeholder=LAN_PASSWORD} */
+		
+	function sc_signup_password1($parm)
 	{
 
 		$pref = e107::getPref('signup_option_password', 2);
@@ -239,14 +256,21 @@ class signup_shortcodes extends e_shortcode
 		$options['required'] = true;
 		$options['pattern'] = '(?=^.{'.$len.',}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
 		$options['autocomplete'] = 'off';
+		$options['class'] = vartrue($parm['class']) ?  $parm['class']  : '';
+		$options['placeholder'] = vartrue($parm['placeholder']) ?   vartrue($parm['placeholder'])   : '';
 		
 	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
-		
+	
 		return e107::getForm()->password('password1', '', 20, $options);
 	}
 	
 	
-	function sc_signup_password2()
+	/* example {SIGNUP_PASSWORD2} */
+	/* example {SIGNUP_PASSWORD2: class=btn input-lg} */
+	/* example {SIGNUP_PASSWORD2: placeholder=LAN_SIGNUP_84} */
+	/* example {SIGNUP_PASSWORD2: class=input-lg&placeholder=LAN_SIGNUP_84} */	
+	
+	function sc_signup_password2($parm)
 	{
 
 		$pref = e107::getPref('signup_option_password', 2);
@@ -255,8 +279,11 @@ class signup_shortcodes extends e_shortcode
 		{
 			return false;
 		}
-
-		return e107::getForm()->password('password2', '', 20, array('size'=>30,'class'=>'tbox','required'=>1));
+		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
+		$options['class'] = vartrue($parm['class']) ?  $parm['class']  : '';
+		$options['placeholder'] = vartrue($parm['placeholder']) ?   vartrue($parm['placeholder'])   : '';
+				
+		return e107::getForm()->password('password2', '', 20, $options);
 	}
 	
 	
