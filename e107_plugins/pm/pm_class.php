@@ -272,6 +272,7 @@ class private_message
 				if(check_class($this->pmPrefs['notify_class'], null, $vars['to_info']['user_id']))
 				{
 					set_time_limit(20);
+					$vars['pm_sent'] = $timestamp;
 					$this->pm_send_notify($vars['to_info']['user_id'], $vars, $pmid, count($a_list));
 				}
 				$ret .= LAN_PM_40.": {$vars['to_info']['user_name']}<br />";
@@ -435,8 +436,7 @@ class private_message
 	 *	Send PM read receipt
 	 *
 	 *	@param array $pmInfo - PM details
-	 *
-	 * 	@return none
+	 * 	@return boolean
 	 */
 	function pm_send_receipt($pmInfo) //TODO Add Template and combine with method above..
 	{
@@ -450,16 +450,20 @@ class private_message
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
 
-		sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']);
+		if(sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 
 	/**
-	 *	Get list of users blocked from sending to a specific user ID.
+	 *    Get list of users blocked from sending to a specific user ID.
 	 *
-	 *	@param integer $to - user ID
-	 *
-	 *	@return array of blocked users as user IDs
+	 * @param int|mixed $to - user ID
+	 * @return array of blocked users as user IDs
 	 */
 	function block_get($to = USERID)
 	{
@@ -643,7 +647,9 @@ class private_message
 			$regex = "(^|,)(".e107::getParser()->toDB($class).")(,|$)";
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE user_class REGEXP '{$regex}'";
 		}
-		if($sql->gen($qry))
+
+
+		if(!empty($qry) && $sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
 			return $ret;
