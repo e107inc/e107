@@ -10,6 +10,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+e107::coreLan('signup');
 
 class login_shortcodes extends e_shortcode
 {
