@@ -621,6 +621,8 @@ class news_shortcodes extends e_shortcode
 			$parms = array(1 => null);
 		}
 
+		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+
 
 		switch($parms[1])
 		{
@@ -629,15 +631,15 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} />";
+				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'img':
-				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
@@ -813,6 +815,8 @@ class news_shortcodes extends e_shortcode
 			$parm['type'] = 'tag';
 		}
 
+		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
@@ -820,12 +824,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} />";
+				return "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
