@@ -190,14 +190,27 @@ class login_shortcodes extends e_shortcode
 
 	}
 
+	/* example    {LOGIN_TABLE_FPW_LINK: class=btn btn-warning} */
+	
 	function sc_login_table_fpw_link($parm='')
 	{
 		if(empty($this->userReg))
 		{
 			return null;
 		}
-
-		return "<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
+		 
+	//	return "<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";  
+	
+	  $type  = vartrue($parm['type'])  ?  vartrue($parm['type'])  : 'tag';    
+    $class = vartrue($parm['class']) ? "class='".$parm['class']."'" : ' ';
+    $title = vartrue($parm['title']) ? vartrue($parm['title'])."'" : LAN_LOGIN_12;
+		 
+		if (!$this->pref['auth_method'] || $this->pref['auth_method'] == 'e107')
+		{
+			return $type == 'link' ? SITEURL.'fpw.php' : 
+      "<a ".$class." id='login_menu_link_fpw' href='".SITEURL."fpw.php' title=\"".$title."\">".$title."</a>";
+		}
+		return '';
 	}
 	
 
