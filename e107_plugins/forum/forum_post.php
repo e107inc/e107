@@ -796,6 +796,18 @@ class forum_post_handler
 
 				$postInfo['post_attachments'] = e107::serialize($newValues);
 			}
+			
+			//Allows directly overriding the method of adding files (or other data) as attachments
+			if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+			{
+				$posted_attachments = json_decode($_POST['post_attachments_json'], true);
+				$attachments_json_errors = json_last_error();
+				if($attachments_json_errors === JSON_ERROR_NONE)
+				{
+				  $postInfo['post_attachments'] = e107::serialize($posted_attachments);
+				}
+			}
+			
 //		var_dump($uploadResult);
 
 			switch($this->action)
@@ -1005,7 +1017,19 @@ class forum_post_handler
 				$postVals['post_attachments'] = e107::serialize($newValues);
 				// $postVals['post_attachments'] = implode(',', $attachments);
 			}
-
+			
+			//Allows directly overriding the method of adding files (or other data) as attachments
+			if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+			{
+				$existingValues   = e107::unserialize($this->data['post_attachments']);
+				$posted_attachments = json_decode($_POST['post_attachments_json'], true);
+				$attachments_json_errors = json_last_error();
+				if($attachments_json_errors === JSON_ERROR_NONE)
+				{
+				  $postVals['post_attachments'] =  e107::serialize(array_merge_recursive($existingValues,$posted_attachments));
+				}
+			}
+      
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
@@ -1071,7 +1095,18 @@ class forum_post_handler
 
 			$postVals['post_attachments'] = e107::serialize($newValues);
 		}
-
+		
+		//Allows directly overriding the method of adding files (or other data) as attachments
+		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+		{
+			$existingValues   = e107::unserialize($this->data['post_attachments']);
+			$posted_attachments = json_decode($_POST['post_attachments_json'], true);
+			$attachments_json_errors = json_last_error();
+			if($attachments_json_errors === JSON_ERROR_NONE)
+			{
+				$postVals['post_attachments'] =  e107::serialize(array_merge_recursive($existingValues,$posted_attachments));
+			}
+		}
 
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
