@@ -658,6 +658,12 @@ class e107_db_debug {
 //
 	function log($message,$TraceLev=1)
 	{
+
+		if(is_array($message))
+		{
+			$message = "<pre>".print_r($message,true)."</pre>";
+		}
+
 		if (!E107_DBG_BASIC){
 			return FALSE;
 		}
