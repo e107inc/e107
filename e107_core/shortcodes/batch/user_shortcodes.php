@@ -672,15 +672,29 @@ class user_shortcodes extends e_shortcode
 
 		if(!empty($parm['field']))
 		{
+
+			$ext = e107::getUserExt();
+
 			$fld = 'user_'.$parm['field'];
+
+			if(!$ext->hasPermission($fld,'read'))
+			{
+				return false;
+			}
+
 			$val = $this->var[$fld];
-			return e107::getUserExt()->renderValue($val); //TODO auto-detect type, from within the user-extended class.
+
+		//	e107::getDebug()->log(print_a($ext,true));
+
+			return $ext->renderValue($val); //TODO auto-detect type, from within the user-extended class.
 
 		}
 
-		return ' ';
+		return false;
 
 	}
+
+
 
 	function sc_user_extended_all($parm) 
 	{

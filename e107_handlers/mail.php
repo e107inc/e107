@@ -947,10 +947,10 @@ class e107Email extends PHPMailer
 	 * 	@param bool $eml['add_html_header']     - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
 	 * 	@param string $eml['body']			    - message body. May be HTML or text. Added according to the current state of the HTML enable flag
 	 * 	@param string|array $eml['attach']		- string if one file, array of filenames if one or more.
-	 * 	@param string $eml['copy_to']			- comma-separated list of cc addresses.
-	 * 	@param string $eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
-	 * 	@param string $eml['bcopy_to']		    - comma-separated list
-	 * 	@param string $eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
+	 * 	@param string $eml['cc']			- comma-separated list of cc addresses.
+	 * 	@param string $eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['cc'] specified
+	 * 	@param string $eml['bcc']		    - comma-separated list
+	 * 	@param string $eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['bcc'] specified
 	 * 	@param string $eml['bouncepath']		- Sender field (used for bounces)
 	 * 	@param string $eml['returnreceipt']	    - email address for notification of receipt (reading)
 	 * 	@param array $eml['inline_images']	    - array of files for inline images

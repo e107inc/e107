@@ -45,11 +45,12 @@ class e107_user_extended
 	private $extended_xml = FALSE;
 	public $typeArray;				// Cross-reference between names of field types, and numeric ID (must be public)
 	private $reserved_names;		// List of field names used in main user DB - not allowed in extended DB
-	public $fieldDefinitions;		// Array initialised from DB by constructor - currently all fields
+	public $fieldDefinitions    = array();	// Array initialised from DB by constructor - currently all fields
 	public $catDefinitions;			// Categories
-	private $nameIndex;				// Array for field name lookup - initialised by constructor
-	public $systemCount = 0;		// Count of system fields - always zero ATM
-	public $userCount = 0;			// Count of non-system fields
+	private $nameIndex          = array();	// Array for field name lookup - initialised by constructor
+	public $systemCount         = 0;		// Count of system fields - always zero ATM
+	public $userCount           = 0;			// Count of non-system fields
+	private $fieldPermissions   = array(); // Field Permissionss with field name as key.
 
 	public function __construct()
 	{
@@ -109,7 +110,6 @@ class e107_user_extended
 		// Read in all the field and category fields
 		// At present we load all fields into common array - may want to split system and non-system
 		$this ->catDefinitions = array();		// Categories array
-		$this->fieldDefinitions = array();		// Field definitions array
 		$this->nameIndex = array();				// Index of names => field IDs
 		$this->systemCount = 0;
 		$this->userCount = 0;
@@ -125,6 +125,8 @@ class e107_user_extended
 				else
 				{	// Its a field definition
 					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
+					$id = 'user_'.$row['user_extended_struct_name'];
+					$this->fieldPermissions[$id] = array('read'=>$row['user_extended_struct_read'], 'write'=>$row['user_extended_struct_write']);
 					$this->nameIndex['user_'.$row['user_extended_struct_name']] = $row['user_extended_struct_id'];			// Create name to ID index
 					if ($row['user_extended_struct_text'] == '_system_')
 					{
@@ -139,14 +141,24 @@ class e107_user_extended
 		}
 	}
 
+	/**
+	 * Check read/write access on extended user-fields
+	 * @param string $field eg. user_something
+	 * @param string $type read|write
+	 * @return boolean true if
+	 */
+	public function hasPermission($field, $type='read')
+	{
+		$class = ($type == 'read') ? $this->fieldPermissions[$field]['read'] : $this->fieldPermissions[$field]['write'];
+		return check_class($class);
+	}
+
 
 
 	/**
 	 *	Check for reserved field names.
 	 *	(Names which clash with the 'normal' user table aren't allowed)
-	 *
 	 *	@param string $name - name of field bweing checked (no 'user_' prefix)
-	 *
 	 *	@return boolean TRUE if disallowed name
 	 */
 	public function user_extended_reserved($name)
