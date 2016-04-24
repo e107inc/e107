@@ -170,8 +170,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			if(check_class($this->pmPrefs['multi_class']))
 			{
-				$selectize = array('maxItems'=>10);
-				$ret = e107::getForm()->userpicker('pm_to', null, null, null, array('selectize'=>$selectize));
+				$ret = e107::getForm()->userpicker('pm_to', null, array('limit'=>10));
 			}
 			else
 			{
