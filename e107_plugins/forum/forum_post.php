@@ -798,15 +798,10 @@ class forum_post_handler
 			}
 			
 			//Allows directly overriding the method of adding files (or other data) as attachments
-			if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+			if($attachmentsPosted = $this->processAttachmentsPosted())
 			{
-				$posted_attachments = json_decode($_POST['post_attachments_json'], true);
-				$attachments_json_errors = json_last_error();
-				if($attachments_json_errors === JSON_ERROR_NONE)
-				{
-				  $postInfo['post_attachments'] = e107::serialize($posted_attachments);
-				}
-			}
+				$postInfo['post_attachments'] = $attachmentsPosted;
+			}	
 			
 //		var_dump($uploadResult);
 
@@ -1019,16 +1014,10 @@ class forum_post_handler
 			}
 			
 			//Allows directly overriding the method of adding files (or other data) as attachments
-			if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
 			{
-				$existingValues   = e107::unserialize($this->data['post_attachments']);
-				$posted_attachments = json_decode($_POST['post_attachments_json'], true);
-				$attachments_json_errors = json_last_error();
-				if($attachments_json_errors === JSON_ERROR_NONE)
-				{
-				  $postVals['post_attachments'] =  e107::serialize(array_merge_recursive($existingValues,$posted_attachments));
-				}
-			}
+				$postVals['post_attachments'] = $attachmentsPosted;
+			}	
       
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
@@ -1097,16 +1086,10 @@ class forum_post_handler
 		}
 		
 		//Allows directly overriding the method of adding files (or other data) as attachments
-		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+		if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
 		{
-			$existingValues   = e107::unserialize($this->data['post_attachments']);
-			$posted_attachments = json_decode($_POST['post_attachments_json'], true);
-			$attachments_json_errors = json_last_error();
-			if($attachments_json_errors === JSON_ERROR_NONE)
-			{
-				$postVals['post_attachments'] =  e107::serialize(array_merge_recursive($existingValues,$posted_attachments));
-			}
-		}
+			$postVals['post_attachments'] = $attachmentsPosted;
+		}		
 
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
@@ -1257,6 +1240,31 @@ class forum_post_handler
 			e107::getMessage()->addError('Something went wrong during the attachment uploading process.');
 		}
 		*/
+	}
+	
+	
+	//Allows directly overriding the method of adding files (or other data) as attachments
+	function processAttachmentsPosted($existingValues = false)
+	{		
+		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+		{
+			$postedAttachments = json_decode($_POST['post_attachments_json'], true);
+			$attachmentsJsonErrors = json_last_error();
+			if($attachmentsJsonErrors === JSON_ERROR_NONE)
+			{
+		        if($existingValues)
+		        {
+		          $existingValues = e107::unserialize($existingValues);
+		          return e107::serialize(array_merge_recursive($existingValues,$postedAttachments));
+		        }
+		        else
+		        {
+				  return e107::serialize($postedAttachments);
+				}
+			}
+		}
+
+    	return false;
 	}
 
 }
