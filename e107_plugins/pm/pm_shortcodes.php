@@ -245,6 +245,9 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 		public function sc_pm_form_message()
 		{
 			$value = '';
+			$maxlength = '';
+			$placeholder = '';
+
 			if(vartrue($this->var['pm_text']))
 			{
 				if(isset($_POST['quote']))
@@ -253,7 +256,16 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 					$value = "\n\n\n\n\n\n\n[quote{$t}={$this->var['from_name']}]\n".trim($this->var['pm_text'])."[/quote{$t}]";
 				}
 			}
-			return "<textarea class='tbox form-control' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
+
+
+			if(!empty($this->pmPrefs['maxlength']))
+			{
+				$length = intval($this->pmPrefs['maxlength']);
+				$maxlength = "maxlength=".$length;
+				$placeholder = "placeholder='Max. ".$length." chars.'"; // TODO LAN
+			}
+
+			return "<textarea class='tbox form-control' ".$placeholder." name='pm_message' cols='60' rows='10' ".$maxlength." onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
 		}
 
 

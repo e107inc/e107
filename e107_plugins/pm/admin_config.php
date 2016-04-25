@@ -142,7 +142,7 @@ class private_msg_ui extends e_admin_ui
 			'attach_size'   => array('title'=> ADLAN_PM_28,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'', 'writeParms'=>'tdClassRight=form-inline&post=Kb'),
 			'pm_max_send'   => array('title'=> ADLAN_PM_81,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>''),
 			'perpage'	    => array('title'=> ADLAN_PM_24,  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>''),
-
+			'maxlength'     => array('title'=> ADLAN_PM_84,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>ADLAN_PM_85, 'writeParms'=>array('post'=>'chars.')),
 		);
 
 
