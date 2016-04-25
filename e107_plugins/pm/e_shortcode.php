@@ -75,8 +75,10 @@ class pm_shortcodes extends e_shortcode
 	}
 
 
-
-
+	/**
+	 * @param int $parm - User ID.
+	 * @return null|string
+	 */
 	function sc_sendpm($parm='')
 	{
 
@@ -86,8 +88,12 @@ class pm_shortcodes extends e_shortcode
 
 		$url = e107::url('pm','index').'?send.'.$parm;
 
+		require_once(e_PLUGIN."pm/pm_class.php");
 
-		if(check_class($pm_prefs['pm_class']))
+		$pm = new private_message;
+
+
+		if(check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm)) // check $this->pmPrefs['send_to_class'].
 		{
 		    if(deftrue('FONTAWESOME') && deftrue('BOOTSTRAP'))
 		    {
