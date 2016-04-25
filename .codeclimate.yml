@@ -9,6 +9,7 @@ engines:
         enabled: false
       Design/TooManyPublicMethods:
         enabled: false
+
     config:
       languages:
       - javascript
@@ -29,6 +30,8 @@ engines:
       UnusedFormalParameter:
         enabled: false
       Design/TooManyFields:
+        enabled: false
+      CleanCode/BooleanArgumentFlag:
         enabled: false
     config:
       file_extensions: "php"
