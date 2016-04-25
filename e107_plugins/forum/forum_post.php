@@ -1244,7 +1244,7 @@ class forum_post_handler
 	
 	
 	//Allows directly overriding the method of adding files (or other data) as attachments
-	function processAttachmentsPosted($existingValues = false)
+	function processAttachmentsPosted($existingValues = '')
 	{		
 		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
 		{
