@@ -35,7 +35,8 @@ class private_message
 	public	function __construct($prefs=null)
 	{
 		$this->e107 = e107::getInstance();
-		$this->pmPrefs = $prefs;	}
+		$this->pmPrefs = e107::pref('pm');
+	}
 
 
 	/**
@@ -262,6 +263,10 @@ class private_message
 		else
 		{	// Sending to a single person
 			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
+
+
+
+
 			if($pmid = $sql->insert('private_msg', $info))
 			{
 				$info['pm_id'] = $pmid;
@@ -634,6 +639,7 @@ class private_message
 	function get_users_inclass($class)
 	{
 		$sql = e107::getDb();
+
 		if($class == e_UC_MEMBER)
 		{
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE 1";
@@ -656,6 +662,37 @@ class private_message
 		}
 		return FALSE;
 	}
+
+
+	/**
+	 * Check permission to send a PM to someone.
+	 * @param int $uid user_id of the person to send to
+	 * @return bool
+	 */
+	function canSendTo($uid)
+	{
+		if(empty($uid))
+		{
+			return false;
+		}
+
+		$user = e107::user($uid);
+
+		$uclass = explode(",", $user['user_class']);
+
+		if($this->pmPrefs['send_to_class'] == 'matchclass')
+		{
+			$tmp = explode(",", USERCLASS);
+			$result = array_intersect($uclass, $tmp);
+
+			return !empty($result);
+		}
+
+		return in_array($this->pmPrefs['send_to_class'], $uclass);
+
+	}
+
+
 
 
 	/**
