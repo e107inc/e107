@@ -217,7 +217,7 @@ class wysiwyg
 
 	function tinymce_lang()
 	{
-		$lang = 'English'; //Quick Fix e_LANGUAGE
+		$lang = e_LANGUAGE; // 'English'; //Quick Fix e_LANGUAGE
 		$tinylang = array(
 			"Arabic" 	=> "ar",
 			"Bulgarian"	=> "bg",
