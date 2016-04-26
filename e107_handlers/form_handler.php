@@ -2134,11 +2134,15 @@ class e_form
 
 	/**
 	 * Universal Userclass selector - checkboxes, dropdown, everything. 
-	 * @param $name - form element name
-	 * @param $curval - current userclass value(s) as array or comma separated. 
-	 * @param $type - 'checkbox', 'dropdown', 
-	 * @param options - query string or array. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc. 
-	 * @return the userclass form element 
+	 * @param string $name - form element name
+	 * @param int $curval - current userclass value(s) as array or comma separated.
+	 * @param string $type - checkbox|dropdown  default is dropdown.
+	 * @param string|array $options - classlist or query string or key=value pair.
+	 * @param string $options['options'] comma-separated list of display options. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc.
+	 *
+	 * @example $frm->userclass('name', 0, 'dropdown', 'classes'); // display all userclasses
+	 * @example $frm->userclass('name', 0, 'dropdown', 'classes,matchclass'); // display only classes to which the user belongs.
+	 * @return string form element(s)
 	 */
 	function userclass($name, $curval=255, $type=null, $options=null)
 	{
@@ -2148,9 +2152,13 @@ class e_form
 			{
 				$opt = $options;
 			}
-			else
+			elseif(strpos($options,'=')!==false)
 			{
 				parse_str($options,$opt);
+			}
+			else
+			{
+				$opt = array('options'=>$options);
 			}
 
 		}
