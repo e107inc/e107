@@ -384,31 +384,47 @@ e107::getLanguage()->bcDefs($bcDefs);
 			function sc_lm_plugin_stats($parm='')
 			{
 				global $tp, $menu_pref, $new_total, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR;
+
 				if(!vartrue($menu_pref['login_menu']['external_stats'])) return '';
+
 				$lbox_infos = login_menu_class::parse_external_list(true, false);
+
 				if(!vartrue($lbox_infos['stats'])) return '';
+
 				$lbox_active_sorted = $menu_pref['login_menu']['external_stats'] ? explode(',', $menu_pref['login_menu']['external_stats']) : array();
+
 				$ret = array();
+
 				$sep = varset($LM_STATITEM_SEPARATOR, '<br />');
-				foreach ($lbox_active_sorted as $stackid) {
+
+				foreach ($lbox_active_sorted as $stackid)
+				{
 				    if(!varset($lbox_infos['stats'][$stackid])) continue;
-				    foreach ($lbox_infos['stats'][$stackid] as $lbox_item) {
+
+				    foreach ($lbox_infos['stats'][$stackid] as $lbox_item)
+				    {
 				        $tmp = array();
-				        if($lbox_item['stat_new']){
-				            $tmp['LM_STAT_NEW'] = "return '{$lbox_item['stat_new']}';";
-				            $tmp['LM_STAT_LABEL'] = $lbox_item["stat_new"] == 1 ? "return '{$lbox_item['stat_item']}';" : "return '{$lbox_item['stat_items']}';";
+				        if($lbox_item['stat_new'])
+				        {
+				            $tmp['LM_STAT_NEW'] = $lbox_item['stat_new'];
+				            $tmp['LM_STAT_LABEL'] = $lbox_item["stat_new"] == 1 ? $lbox_item['stat_item'] : $lbox_item['stat_items'];
 				            $tmp['LM_STAT_EMPTY'] = '';
 				            $new_total += $lbox_item['stat_new'];
-				        } else {
+				        }
+				        else
+				        {
 				            //if(empty($lbox_item['stat_nonew'])) continue;
 				            $tmp['LM_STAT_NEW'] = '';
 				            $tmp['LM_STAT_LABEL'] = '';
-				            $tmp['LM_STAT_EMPTY'] = "return '{$lbox_item['stat_nonew']}';";
+				            $tmp['LM_STAT_EMPTY'] = $lbox_item['stat_nonew'];
 				        }
-				        $ret[] = $tp -> parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
+
+				        $ret[] = $tp->parseTemplate($LOGIN_MENU_STATITEM, false, $tmp);
 				    }
 				}
+
 				return $ret ? implode($sep, $ret) : '';
+
 			}
 
 
