@@ -35,16 +35,30 @@ if (!is_object($newsFeed))
 {
 	$newsFeed = new newsfeedClass;
 }
+
+e107::css('inline', "
+
+.newsfeed ul { max-width:100% }
+.newsfeed img { max-width:100% }
+
+
+");
+
+
 require_once(HEADERF);
 
 /* get template */
-if (file_exists(THEME."newsfeed_template.php"))
+if(file_exists(THEME."templates/newsfeed/newsfeed_template.php"))
 {
-	require_once(THEME."newsfeed_template.php");
+	include(THEME."templates/newsfeed/newsfeed_template.php");
+}
+elseif (file_exists(THEME."newsfeed_template.php"))
+{
+	include(THEME."newsfeed_template.php");
 }
 else if(!varset($NEWSFEED_LIST_START, FALSE))
 {
-	require_once(e_PLUGIN."newsfeed/templates/newsfeed_template.php");
+	include(e_PLUGIN."newsfeed/templates/newsfeed_template.php");
 }
 
 $action = FALSE;
@@ -55,12 +69,18 @@ if(e_QUERY)
 	$id = intval(varset($qs[1], 0));
 }
 
+if(!empty($_GET['id'])) //v2.x
+{
+	$id = intval($_GET['id']);
+	$action = 'show';
+}
+
 if($action == "show")
 {
 	/* 'show' action - show feed */
 
 	$data = $newsFeed->newsfeedInfo($id == 0 ? 'all' : $id, 'main');
-	$ns->tablerender($data['title'], $data['text']);  
+	$ns->tablerender($data['title'], $data['text']);
 	require_once(FOOTERF);
 	exit;
 }
@@ -68,6 +88,7 @@ if($action == "show")
 	
 /* no action - display feed list ... */
 $newsFeed->readFeedList();
+$vars = array();
 if (count($newsFeed->feedList))
 {
 	$data = "";
@@ -75,10 +96,15 @@ if (count($newsFeed->feedList))
 	{
 		if (($feed['newsfeed_active'] == 2) || ($feed['newsfeed_active'] == 3))
 		{
-			$FEEDNAME = "<a href='".e_SELF."?show.{$feed['newsfeed_id']}'>{$feed['newsfeed_name']}</a>";
-			$FEEDDESCRIPTION = ((!$feed['newsfeed_description'] || $feed['newsfeed_description'] == "default") ? "&nbsp;" : $feed['newsfeed_description']);
+
+			$feed['newsfeed_sef'] = eHelper::title2sef($feed['newsfeed_name'], 'dashl');
+
+			$url = e107::url('newsfeed', 'source', $feed); // e_SELF."?show.{$feed['newsfeed_id']}
+
+			$vars['FEEDNAME'] = "<a href='".$url."'>{$feed['newsfeed_name']}</a>";
+			$vars['FEEDDESCRIPTION'] = ((!$feed['newsfeed_description'] || $feed['newsfeed_description'] == "default") ? "&nbsp;" : $feed['newsfeed_description']);
 //			$FEEDIMAGE = $feed['newsfeed_image'];	// This needs splitting up. Not used ATM anyway, so disable for now
-			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_LIST);
+			$data .= $tp->simpleParse($NEWSFEED_LIST, $vars);
 		}
 	}
 }
@@ -87,4 +113,3 @@ $text = $NEWSFEED_LIST_START . vartrue($data) . $NEWSFEED_LIST_END;
 $ns->tablerender(NFLAN_29, $text);
 require_once(FOOTERF);
 
-?>

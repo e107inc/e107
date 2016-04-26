@@ -952,7 +952,7 @@ class e_user_model extends e_admin_model
 		
 		if(false !== $ret && null !== $this->_extended_model) // don't load extended fields if not already used
 		{
-			$ret_e = $this->_extended_model->save($force, $session);
+			$ret_e = $this->_extended_model->save(true, $force, $session);
 			if(false !== $ret_e)
 			{
 				return ($ret_e + $ret);
@@ -2290,7 +2290,7 @@ class e_user_extended_model extends e_admin_model
 	 * @see e_model#load($id, $force)
 	 * @return e_user_extended_model
 	 */
-	public function load($force = false)
+	public function load($id=null, $force = false)
 	{
 		if ($this->getId() && !$force)
 			return $this;
@@ -2434,7 +2434,7 @@ class e_user_extended_model extends e_admin_model
 	 * Build data types and rules on the fly and save
 	 * @see e_front_model::save()
 	 */
-	public function save($force = false, $session = false)
+	public function save($from_post = true, $force = false, $session = false)
 	{
 		// when not loaded from db, see the construct check
 		if(!$this->getId()) 
@@ -2730,7 +2730,7 @@ class e_user_pref extends e_front_model
 	 * @param boolean $force
 	 * @return e_user_pref
 	 */
-	public function load($force = false)
+	public function load($id = null, $force = false)
 	{
 		if($force || !$this->hasData())
 		{
@@ -2785,13 +2785,13 @@ class e_user_pref extends e_front_model
 	}
 
 	/**
-	 * Remove & apply user prefeferences, optionally - save to DB
+	 * Remove & apply user preferences, optionally - save to DB
 	 * @return boolean success
 	 */
-	public function delete($save = false)
+	public function delete($ids, $destroy = true, $session_messages = false) // replaced $save = false for PHP7 fix.
 	{
 		$this->removeData()->apply();
-		if($save) return $this->save();
+	//	if($save) return $this->save(); //FIXME adjust within the context of the variables in the method.
 		return true;
 	}
 }

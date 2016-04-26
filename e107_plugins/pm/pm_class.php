@@ -35,7 +35,8 @@ class private_message
 	public	function __construct($prefs=null)
 	{
 		$this->e107 = e107::getInstance();
-		$this->pmPrefs = $prefs;	}
+		$this->pmPrefs = e107::pref('pm');
+	}
 
 
 	/**
@@ -262,6 +263,10 @@ class private_message
 		else
 		{	// Sending to a single person
 			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
+
+
+
+
 			if($pmid = $sql->insert('private_msg', $info))
 			{
 				$info['pm_id'] = $pmid;
@@ -272,6 +277,7 @@ class private_message
 				if(check_class($this->pmPrefs['notify_class'], null, $vars['to_info']['user_id']))
 				{
 					set_time_limit(20);
+					$vars['pm_sent'] = $timestamp;
 					$this->pm_send_notify($vars['to_info']['user_id'], $vars, $pmid, count($a_list));
 				}
 				$ret .= LAN_PM_40.": {$vars['to_info']['user_name']}<br />";
@@ -407,7 +413,8 @@ class private_message
 		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
 		$data['SITENAME']       = SITENAME;
 		$data['USERNAME']       = USERNAME;
-		$data['PM_URL']         = "<a href='".$url."'>".$url."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+		$data['PM_URL']         = $url;// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+		$data['PM_BUTTON']      = "<a class='btn btn-primary' href='".$url."'>".LAN_PM_113."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
 		$text = e107::getParser()->simpleParse($template, $data);
 
@@ -434,8 +441,7 @@ class private_message
 	 *	Send PM read receipt
 	 *
 	 *	@param array $pmInfo - PM details
-	 *
-	 * 	@return none
+	 * 	@return boolean
 	 */
 	function pm_send_receipt($pmInfo) //TODO Add Template and combine with method above..
 	{
@@ -449,16 +455,20 @@ class private_message
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
 
-		sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']);
+		if(sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 
 	/**
-	 *	Get list of users blocked from sending to a specific user ID.
+	 *    Get list of users blocked from sending to a specific user ID.
 	 *
-	 *	@param integer $to - user ID
-	 *
-	 *	@return array of blocked users as user IDs
+	 * @param int|mixed $to - user ID
+	 * @return array of blocked users as user IDs
 	 */
 	function block_get($to = USERID)
 	{
@@ -629,6 +639,7 @@ class private_message
 	function get_users_inclass($class)
 	{
 		$sql = e107::getDb();
+
 		if($class == e_UC_MEMBER)
 		{
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE 1";
@@ -642,13 +653,46 @@ class private_message
 			$regex = "(^|,)(".e107::getParser()->toDB($class).")(,|$)";
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE user_class REGEXP '{$regex}'";
 		}
-		if($sql->gen($qry))
+
+
+		if(!empty($qry) && $sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
 			return $ret;
 		}
 		return FALSE;
 	}
+
+
+	/**
+	 * Check permission to send a PM to someone.
+	 * @param int $uid user_id of the person to send to
+	 * @return bool
+	 */
+	function canSendTo($uid)
+	{
+		if(empty($uid))
+		{
+			return false;
+		}
+
+		$user = e107::user($uid);
+
+		$uclass = explode(",", $user['user_class']);
+
+		if($this->pmPrefs['send_to_class'] == 'matchclass')
+		{
+			$tmp = explode(",", USERCLASS);
+			$result = array_intersect($uclass, $tmp);
+
+			return !empty($result);
+		}
+
+		return in_array($this->pmPrefs['send_to_class'], $uclass);
+
+	}
+
+
 
 
 	/**

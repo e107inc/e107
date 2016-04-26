@@ -1472,6 +1472,11 @@ class e_media
 		$src = $tp->replaceConstants($src);
 		$dest =  $tp->replaceConstants($dest);
 
+		if(!file_exists($src))
+		{
+			return false;
+		}
+
 		$maxWidth = varset($opts['w'], 800);
 		$maxHeight = varset($opts['h'], 800);
 

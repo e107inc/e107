@@ -76,6 +76,8 @@ define("ADLAN_PM_80", "Preference formats updated");
 define("ADLAN_PM_81", "Maximum number of PMs to send immediately");
 define("ADLAN_PM_82", "If sending more than this, they are added to a queue and sent out using the cron task");
 define("ADLAN_PM_83", "Users may only send messages to users in this class");
+define("ADLAN_PM_84", "Maximum message length");
+define("ADLAN_PM_85", "0 = unlimited");
 
 
 ?>

@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 $NEWSFEED_MAIN_CAPTION = NFLAN_38;
 
 $NEWSFEED_LIST_START = "
-<table style='width: 100%;' class='table fborder'>\n";
+<table style='width: 100%;' class='newsfeed-list table fborder'>\n";
 
 $NEWSFEED_LIST = "
 <tr>
@@ -32,16 +32,16 @@ $NEWSFEED_LIST_END = "
 </table>\n";
 
 $NEWSFEED_MAIN_START = "
-<table style='width: 100%;' class='table fborder'>
+<table style='width: 100%;' class='newsfeed table fborder'>
 <tr>
-<td class='forumheader'>{FEEDIMAGE} {FEEDTITLE}</td>
+<td class='forumheader'><h3>{FEEDIMAGE} {FEEDTITLE}</h3></td>
 </tr>
 <tr>
 <td class='forumheader3'>
 <ul>\n";
 
 $NEWSFEED_MAIN = "
-<li><b>{FEEDITEMLINK}</b> <span class='smalltext'>{FEEDITEMCREATOR}</span><br />{FEEDITEMTEXT}<br /><br /></li>\n";
+<li><h4>{FEEDITEMLINK}</h4><small class='smalltext'>{FEEDITEMCREATOR}</small><div>{FEEDITEMTEXT}</div></li>\n";
 
 
 $NEWSFEED_MAIN_END = "
