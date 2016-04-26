@@ -531,7 +531,7 @@ class user_class
 
 		if (count($opt_arr) == 0)
 		{
-			$opt_arr = array('public' => 1, 'guest' => 1, 'new'=>1, 'nobody' => 1, 'member' => 1, 'classes' => 1);
+			$opt_arr = array('public' => 1, 'guest' => 1, 'nobody' => 1, 'member' => 1, 'classes' => 1);
 		}
 
 		if (isset($opt_arr['all']))
