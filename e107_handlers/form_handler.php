@@ -1180,7 +1180,7 @@ class e_form
 
 	/**
 	 * User auto-complete search
-	 *
+	 * XXX EXPERIMENTAL - subject to change.
 	 * @param string $name_fld field name for user name
 	 * @param string $id_fld field name for user id
 	 * @param string $default_name default user name value
@@ -1188,6 +1188,7 @@ class e_form
 	 * @param array|string $options [optional] 'readonly' (make field read only), 'name' (db field name, default user_name)
 	 * @return string HTML text for display
 	 */
+	 /*
 	function userpicker($name_fld, $id_fld='', $default_name, $default_id, $options = array())
 	{
 		if(!is_array($options))
@@ -1225,7 +1226,106 @@ class e_form
 
 		return $ret;
 	}
-	
+	*/
+
+
+	/**
+	 * User Field - auto-complete search
+	 * @param string $name form element name
+	 * @param string|array $value comma separated list of user ids or array of userid=>username pairs.
+	 * @param array|string $options [optional]
+	 * @param int $options['limit'] Maximum number of users
+	 * @param string $options['id'] Custom id
+	 * @param string $options['inline'] Inline ID.
+	 *
+	 * @example $frm->userpicker('author', 1);
+	 * @example $frm->userpicker('authors', "1,2,3");
+	 * @example $frm->userpicker('author', array('user_id'=>1, 'user_name'=>'Admin');
+	 * @example $frm->userpicker('authors', array(0=>array('user_id'=>1, 'user_name'=>'Admin', 1=>array('user_id'=>2, 'user_name'=>'John'));
+	 *
+	 * @todo    $options['type'] = 'select' - dropdown selections box with data returned as array instead of comma-separated.
+	 * @return string HTML text for display
+	 */
+	function userpicker($name, $value, $options = array())
+	{
+		if(!is_array($options))
+		{
+			parse_str($options, $options);
+		}
+
+		$defaultItems = array();
+
+		if(is_array($value))
+		{
+			if(isset($value[0]))// multiple users.
+			{
+				foreach($value as $val)
+				{
+					$defaultItems[] = array('value'=>$val['user_id'], 'label'=>$val['user_name']);
+				}
+
+			}
+			else // single user
+			{
+				$defaultItems[] = array('value'=>$value['user_id'], 'label'=>$value['user_name']);
+			}
+
+		}
+		elseif(!empty($value)) /// comma separated with user-id lookup.
+		{
+			$tmp = explode(",", $value);
+			foreach($tmp as $uid)
+			{
+				if($user = e107::user($uid))
+				{
+					$defaultItems[] = array('value'=>$user['user_id'], 'label'=>$user['user_name']);
+				}
+			}
+		}
+
+		$parms = array(
+			'selectize' => array(
+				'loadPath' => e_BASE . 'user.php',
+				'create'   => false,
+				'maxItems' => 1,
+				'mode'     => 'multi',
+				'options'  => $defaultItems
+			)
+		);
+
+		if(!empty($options['limit']))
+		{
+			$parms['selectize']['maxItems'] = intval($options['limit']);
+		}
+
+		if(!empty($options['id']))
+		{
+			$parms['id'] = $options['id'];
+		}
+
+		if(!empty($options['inline']))
+		{
+			$parms['selectize']['e_editable'] = $options['inline'];
+		}
+
+		//TODO FIXME Filter by userclass.  - see $frm->userlist().
+
+		$defValues = array();
+
+		foreach($defaultItems as $val)
+		{
+			$defValues[] = $val['value'];
+		}
+
+		$ret = $this->text($name, implode(",",$defValues), 100, $parms);
+
+		return $ret;
+	}
+
+
+
+
+
 	
 	/**
 	 * A Rating element
@@ -2034,11 +2134,15 @@ class e_form
 
 	/**
 	 * Universal Userclass selector - checkboxes, dropdown, everything. 
-	 * @param $name - form element name
-	 * @param $curval - current userclass value(s) as array or comma separated. 
-	 * @param $type - 'checkbox', 'dropdown', 
-	 * @param options - query string or array. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc. 
-	 * @return the userclass form element 
+	 * @param string $name - form element name
+	 * @param int $curval - current userclass value(s) as array or comma separated.
+	 * @param string $type - checkbox|dropdown  default is dropdown.
+	 * @param string|array $options - classlist or query string or key=value pair.
+	 * @param string $options['options'] comma-separated list of display options. 'options=admin,mainadmin,classes&vetted=1&exclusions=0' etc.
+	 *
+	 * @example $frm->userclass('name', 0, 'dropdown', 'classes'); // display all userclasses
+	 * @example $frm->userclass('name', 0, 'dropdown', 'classes,matchclass'); // display only classes to which the user belongs.
+	 * @return string form element(s)
 	 */
 	function userclass($name, $curval=255, $type=null, $options=null)
 	{
@@ -2048,9 +2152,13 @@ class e_form
 			{
 				$opt = $options;
 			}
-			else
+			elseif(strpos($options,'=')!==false)
 			{
 				parse_str($options,$opt);
+			}
+			else
+			{
+				$opt = array('options'=>$options);
 			}
 
 		}
@@ -2626,7 +2734,10 @@ class e_form
 					break;
 					
 				case 'placeholder':
-					if($optval) $ret .= " placeholder='{$optval}'";
+					if($optval) {  
+					  $optval = deftrue($optval, $optval);  
+					  $ret .= " placeholder='{$optval}'";
+					}
 					break;
 
 				case 'wrap':
@@ -3570,7 +3681,18 @@ class e_form
 				}
 
 				if(!is_array($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
-				$value = vartrue($attributes['writeParms']['__options']['pre']).vartrue($attributes['writeParms'][$value]).vartrue($attributes['writeParms']['__options']['post']);
+
+				if(!empty($attributes['writeParms']['optArray']))
+				{
+					$radioValue = $attributes['writeParms']['optArray'][$value];
+				}
+				else
+				{
+					$radioValue = vartrue($attributes['writeParms'][$value]);
+				}
+
+
+				$value = vartrue($attributes['writeParms']['__options']['pre']).$radioValue.vartrue($attributes['writeParms']['__options']['post']);
 			break;
 
 			case 'tags':
@@ -4034,7 +4156,9 @@ class e_form
 					$fieldID = $this->name2id($field . '_' . microtime(true));
 					// Unique ID for each rows.
 					$eEditableID = $this->name2id($fieldID . '_' . $row_id);
-					$tpl = $this->userpicker($field, '', $ttl, $id, array('id' => $fieldID, 'selectize' => array('e_editable' => $eEditableID)));
+				//	$tpl = $this->userpicker($field, '', $ttl, $id, array('id' => $fieldID, 'selectize' => array('e_editable' => $eEditableID)));
+
+					$tpl = $this->userpicker($fieldID, array('user_id'=>$id, 'user_name'=>$ttl),  array('id' => $fieldID, 'inline' => $eEditableID));
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$value = "<a id='" . $eEditableID . "' class='e-tip e-editable editable-click editable-userpicker' data-clear='false' data-tpl='" . str_replace("'", '"', $tpl) . "' data-name='" . $field . "' title=\"" . LAN_EDIT . " " . $attributes['title'] . "\" data-type='text' data-pk='" . $row_id . "' data-value='" . $id . "' data-url='" . e_SELF . "?mode={$mode}&amp;action=inline&amp;id={$row_id}&amp;ajax_used=1' href='#'>" . $ttl . "</a>";
 				}
@@ -4650,30 +4774,41 @@ class e_form
 			case 'user':
 				//user_id expected
 				// Just temporary solution, could be changed soon
+
+
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
-				if((empty($value) && varset($parms['currentInit'],USERID)!=0) || vartrue($parms['current'])) // include current user by default.
+				if((empty($value) && !empty($parms['currentInit']) && !isset($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
 				{
 					$value = USERID;
 					if(vartrue($parms['current']))
 					{
 						$parms['__options']['readonly'] = true;
 					}
+
 				}
 
-				if(!is_array($value))
-				{
-					$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// e107::user($value);
-				}
+		//		if(!is_array($value))
+		//		{
+			//		$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// e107::user($value);
+		//		}
 
 				$colname = vartrue($parms['nameType'], 'user_name');
 				$parms['__options']['name'] = $colname;
 
-				if(!$value) $value = array();
-				$uname = varset($value[$colname]);
-				$value = varset($value['user_id'], 0);
-				$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
+		//		if(!$value) $value = array();
+		//		$uname = varset($value[$colname]);
+		//		$value = varset($value['user_id'], 0);
+
+				if(!empty($parms['limit']))
+				{
+					$parms['__options']['limit'] = intval($parms['limit']);
+				}
+
+				$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options']));
+
+			//	$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
 			break;
 
 			case 'bool':

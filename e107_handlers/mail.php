@@ -566,7 +566,7 @@ class e107Email extends PHPMailer
 		}
 		
 		$message = str_replace("\t", "", $message); // filter out tabs from templates; 
-		
+
 		if ($want_HTML !== FALSE)
 		{
 			// $message = e107::getParser()->toHtml("[html]".$message."[/html]",true); // using toHtml will break media attachment links. (need to retain {e_XXXX )
@@ -598,7 +598,7 @@ class e107Email extends PHPMailer
 				$message = str_replace("\n", "<br />\n", $message);
 			}
 			
-	
+
 			$this->MsgHTML($message);		// Theoretically this should do everything, including handling of inline images.
 
 		}
@@ -863,11 +863,11 @@ class e107Email extends PHPMailer
 
 
 		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');	
-		
-		if (isset($eml['SMTPDebug']))		{ $this->SMTPDebug = $eml['SMTPDebug'];	}		// 'FALSE' is a valid value!	
+
+		if (isset($eml['SMTPDebug']))		{ $this->SMTPDebug = $eml['SMTPDebug'];	}		// 'FALSE' is a valid value!
 		if (!empty($eml['sender_email']))	{ $this->From = $eml['sender_email']; }
 		if (!empty($eml['sender_name']))	{ $this->FromName = $eml['sender_name']; }
-		if (!empty($eml['replyto']))		{ $this->AddAddressList('replyto',$eml['replyto'],vartrue($eml['replytonames'],'')); }	
+		if (!empty($eml['replyto']))		{ $this->AddAddressList('replyto',$eml['replyto'],vartrue($eml['replytonames'],'')); }
 		if (isset($eml['html']))			{ $this->allow_html = $eml['html'];	}				// 'FALSE' is a valid value!
 		if (isset($eml['html_header']))		{ $this->add_HTML_header = $eml['html_header'];	}	// 'FALSE' is a valid value!
 		if (!empty($eml['body']))			{ $this->makeBody($eml['body'], $this->allow_html, $this->add_HTML_header); }
@@ -882,7 +882,7 @@ class e107Email extends PHPMailer
 		if (!empty($eml['split'])) 			{ $this->SingleTo = ($eml['split'] != FALSE); }
 		if (!empty($eml['smtp_username'])) 	{ $this->Username = $eml['smtp_username']; }
 		if (!empty($eml['smtp_password'])) 	{ $this->Password = $eml['smtp_password']; }
-						
+
 		if (!empty($eml['bouncepath'])) 
 		{
 			$this->Sender = $eml['bouncepath'];				// Bounce path
@@ -947,10 +947,10 @@ class e107Email extends PHPMailer
 	 * 	@param bool $eml['add_html_header']     - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
 	 * 	@param string $eml['body']			    - message body. May be HTML or text. Added according to the current state of the HTML enable flag
 	 * 	@param string|array $eml['attach']		- string if one file, array of filenames if one or more.
-	 * 	@param string $eml['copy_to']			- comma-separated list of cc addresses.
-	 * 	@param string $eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
-	 * 	@param string $eml['bcopy_to']		    - comma-separated list
-	 * 	@param string $eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
+	 * 	@param string $eml['cc']			- comma-separated list of cc addresses.
+	 * 	@param string $eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['cc'] specified
+	 * 	@param string $eml['bcc']		    - comma-separated list
+	 * 	@param string $eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['bcc'] specified
 	 * 	@param string $eml['bouncepath']		- Sender field (used for bounces)
 	 * 	@param string $eml['returnreceipt']	    - email address for notification of receipt (reading)
 	 * 	@param array $eml['inline_images']	    - array of files for inline images
@@ -968,12 +968,12 @@ class e107Email extends PHPMailer
 	public function sendEmail($send_to, $to_name, $eml = array(), $bulkmail = false)
 	{
 		if (count($eml))
-		{	
+		{
 			if($error = $this->arraySet($eml))  // Set parameters from list
 			{
 				return $error;
 			} 
-			
+
 		}
 
 		if (($bulkmail == true) && $this->localUseVerp && $this->save_bouncepath && (strpos($this->save_bouncepath,'@') !== false))
@@ -1002,7 +1002,7 @@ class e107Email extends PHPMailer
 			$_SERVER['REMOTE_ADDR'] 		= $_SERVER['SERVER_ADDR']; 
 			$_SERVER["HTTP_X_FORWARDED_FOR"] = $_SERVER['SERVER_ADDR'];
 			$_SERVER["HTTP_CF_CONNECTING_IP"] = $_SERVER['SERVER_ADDR'];
-			
+
 			$result = $this->Send();		// Actually send email
 
 			
@@ -1122,9 +1122,17 @@ class e107Email extends PHPMailer
 					$url = $tp->replaceConstants($url);
 
 					// resize on the fly.
+					if($this->debug)
+					{
+						echo "<br />Attempting Resize...".$url;
+					}
 					if($resized = e107::getMedia()->resizeImage($url, e_TEMP.basename($url),'w=800'))
 					{
 						$url = $resized;
+					}
+					elseif($this->debug)
+					{
+						echo "<br />Couldn't resize ".$url;
 					}
 
 					$delim = $images[2][$i];			// Will be single or double quote
@@ -1139,7 +1147,7 @@ class e107Email extends PHPMailer
 					
 					if ($this->debug)
 					{ 
-						echo "<br />CID file {$filename} in {$directory}. Base = ".SERVERBASE."<   BaseDir = {$basedir}<br />";
+						echo "<br />CID file {$filename} in {$directory}. Base = ".SERVERBASE."<br />BaseDir = {$basedir}<br />";
 					}
 					
 					$cid = 'cid:' . md5($filename);

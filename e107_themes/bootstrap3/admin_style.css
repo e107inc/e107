@@ -1011,6 +1011,10 @@ span.tag button.close {
 .selectize-control.multi .selectize-input > div { cursor: pointer; margin: 1px 5px 0 0; padding: 1px 3px; background: #3a87ad; color: #ffffff; border: 0 solid rgba(0, 0, 0, 0); text-shadow: 1px 1px 0 black; box-shadow: 1px 1px 0 black; font-size: 12px; font-weight: bold; }
 .selectize-control.single .selectize-input, .selectize-control.single .selectize-input.input-active, .selectize-control.single .selectize-input.input-active:hover, .selectize-control.single .selectize-input.focus, .selectize-control.multi .selectize-input, .selectize-control.multi .selectize-input.input-active, .selectize-control.multi .selectize-input.input-active:hover, .selectize-control.multi .selectize-input.focus { padding: 5px 5px 5px 5px !important; }
 
+div.selectize-control .form-control { background-color: #212121; border: none; box-shadow: 2px 2px 2px rgba(0, 0, 0,0.5);   }
+div.selectize-dropdown .option.active { color: #fff; background-color: #337ab7;  }
+
+
 /* Theme Manager - Find online */
 .form-search > div > div > div > i.icon-search
 {
@@ -1254,9 +1258,6 @@ li.rssRow > div {
 
 /* Legacy Styling  */
 .fborder .forumheader3    { padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #0a0a0a; }
-
-
-
 
 
 

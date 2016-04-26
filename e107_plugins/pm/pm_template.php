@@ -276,10 +276,9 @@ $PM_NOTIFY =
 <tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>
 <tr><td>".LAN_PM_108."</td><td>{PM_DATE}</td></tr>
 <tr><td>".LAN_PM_104."</td><td>{PM_ATTACHMENTS}</td></tr>
-
-</table><br />
-<div>".LAN_PM_105.": {PM_URL}</div>
-</div>
+</table>
+<table class='table'><tr><td class='text-center'><br />
+<a class='btn btn-primary btn-lg' href='{PM_URL}'>".LAN_PM_113."</a></td></tr>
+</table>
 ";
 
-?>

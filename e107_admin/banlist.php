@@ -269,7 +269,7 @@ class banlist_ui extends e_admin_ui
 
 
 		
-		public function timesPage()
+		protected function timesPage()
 		{
 			if (!getperms('0'))
 			{
@@ -349,12 +349,12 @@ class banlist_ui extends e_admin_ui
 		}		
 
 		
-		public function optionsPage()
+		protected function optionsPage()
 		{
 			//FIXME Put Options code in here. 
 		}				
 
-		public function banlogPage()
+		protected function banlogPage()
 		{
 			//FIXME Put LogPage code in here. 
 		}	

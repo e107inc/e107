@@ -172,7 +172,7 @@ class ecache {
 	/**
 	 *
 	 * @param string $CacheTag - name of tag for future retrieval - should NOT contain an MD5. 
-	 * @param data $Data - data to be cached
+	 * @param string $Data - data to be cached
 	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled in admin prefs. 
 	 * @param boolean $bRaw [optional] if TRUE, writes data exactly as provided instead of prefacing with php leadin
 	 * @param boolean $syscache [optional]

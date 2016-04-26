@@ -148,8 +148,16 @@ class pm_extended extends private_message
 			$to_uid = $pm_info['pm_from'];
 		}
 
+
+
 		if(!empty($to_uid))
 		{
+
+			if($this->canSendTo($to_uid) == false)
+			{
+				return "<div class='alert alert-danger'>".LAN_PM_114."</div>";// sending to this user is not permitted.
+			}
+
 			$sql2 = e107::getDb('sql2');
 			if($sql2->select('user', 'user_name', 'user_id = '.intval($to_uid))) //TODO add a check for userclass.
 			{

@@ -23,9 +23,11 @@ if(isset($parms['caption'][e_LANGUAGE]))
 
 $limit      = vartrue($parms['count'],5);
 $tp         = e107::getParser();
-$template   = e107::getTemplate('news', 'news_menu', 'carousel');
+$template   = e107::getTemplate('news', 'news_menu', 'carousel', true, true);
 
 $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
+
+e107::getDebug()->log("News Carousel Menu ".print_a($parms,true));
 	
 $query = "
 		SELECT n.*, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,

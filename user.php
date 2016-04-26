@@ -261,12 +261,14 @@ if (isset($id))
 		// $userList = $sql->db_getList();
 
 		$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
+		$sc = e107::getScBatch('user');
 		foreach ($data as $row)
 		{
 			$loop_uid = $row['user_id'];
 
 		//	$text .= renderuser($row, "short");
-			e107::getScBatch('user')->setVars($row);
+			$sc->setVars($row);
+			$sc->wrapper('user/list');
 
 			$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE, TRUE, $user_shortcodes);
 		}

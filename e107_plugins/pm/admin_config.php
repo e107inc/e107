@@ -35,6 +35,7 @@ class pm_admin extends e_admin_dispatcher
 			'ui' 			=> 'private_msg_form_ui',
 			'uipath' 		=> null
 		),
+
     /*
 		'block'	=> array(
 			'controller' 	=> 'private_msg_block_ui',
@@ -51,6 +52,7 @@ class pm_admin extends e_admin_dispatcher
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 		'main/limits'		=> array('caption'=> ADLAN_PM_55, 'perm' => 'P'),
 		'main/maint'		=> array('caption'=> ADLAN_PM_59, 'perm' => 'P'),
+
 
 		'main/null'		    => array('divider'=> true),
 		'inbox/list'		=> array('caption'=> "Inbox", 'perm' => 'P'),
@@ -71,6 +73,17 @@ class pm_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = LAN_PLUGIN_PM_NAME;
+
+	function init()
+	{
+
+		if(e_DEBUG == true)
+		{
+			$this->adminMenu['main/null2']	= array('divider'=> true);
+			$this->adminMenu['main/list']   = array('caption'=> "Log", 'perm' => 'P');
+		}
+
+	}
 }
 
 
@@ -129,7 +142,7 @@ class private_msg_ui extends e_admin_ui
 			'attach_size'   => array('title'=> ADLAN_PM_28,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>'', 'writeParms'=>'tdClassRight=form-inline&post=Kb'),
 			'pm_max_send'   => array('title'=> ADLAN_PM_81,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>''),
 			'perpage'	    => array('title'=> ADLAN_PM_24,  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>''),
-
+			'maxlength'     => array('title'=> ADLAN_PM_84,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>ADLAN_PM_85, 'writeParms'=>array('post'=>'chars.')),
 		);
 
 
@@ -829,6 +842,15 @@ class private_msg_ui extends e_admin_ui
 					LEFT JOIN #user as f on f.user_id = p.pm_from WHERE p.pm_from = '.USERID;
 				$this->fields['pm_from']['nolist'] = true;
 				$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBODY;
+			}
+
+	        if($this->getMode() == 'main')
+			{
+				$this->listQry = 'SELECT  p.*, u.user_name, f.user_name AS fromuser FROM #private_msg AS p LEFT JOIN  #user AS u ON u.user_id = p.pm_to
+					LEFT JOIN #user as f on f.user_id = p.pm_from WHERE 1 ';
+			//	$this->fields['pm_from']['nolist'] = true;
+				$this->fields['options']['readParms'] = 'editClass='.e_UC_NOBODY;
+				$this->perPage = 20;
 			}
 
 			if($this->getAction() == 'create')
