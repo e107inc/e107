@@ -363,13 +363,15 @@ class wysiwyg
 
 		$this->configName = $config['@attributes']['name'];
 
+		$tinyMceLanguage    = $this->tinymce_lang();
+
 		unset($config['@attributes']);
 
 		$ret = array(
 			'selector' 			=> '.e-wysiwyg',
 		//	'editor_selector'   => 'advancedEditor',
-			'language'			=> $this->tinymce_lang()
-			
+			'language'			=> $tinyMceLanguage,
+			'language_url'      => SITEURLBASE.e_PLUGIN_ABS."tinymce4/langs/" . $tinyMceLanguage . ".js"
 		);
 
 	//	if(e_ADMIN_AREA)
