@@ -426,14 +426,11 @@ class e_parse_shortcode
 			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)
 			{
-				echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
+			// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
+				echo "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>";
 			}
 		}
-		elseif(E107_DBG_BBSC || E107_DBG_SC)
-		{
-			echo "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>";
-			
-		}
+
 
 		// TODO - throw exception?
 		return null;
