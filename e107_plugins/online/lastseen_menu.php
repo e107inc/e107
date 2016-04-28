@@ -29,7 +29,7 @@ else
 
 if(deftrue('BOOTSTRAP'))
 {
-	$LASTSEEN_TEMPLATE = e107::getTemplate('online','lastseen'); // $ONLINE_MENU_TEMPLATE['lastseen'];
+	$LASTSEEN_TEMPLATE = e107::getTemplate('online','online_menu', 'lastseen'); // $ONLINE_MENU_TEMPLATE['lastseen'];
 }
 else
 {
