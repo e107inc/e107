@@ -214,9 +214,9 @@ class online_shortcodes extends e_shortcode
 					{
 						continue;
 					}
-					$pinfo = $row['user_location'];
+					$pinfo = "forum/introductions/11/introducing-ourselves/&p=3"; // $row['user_location'];
 
-					$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
+					$online_location_page = basename($pinfo); // /str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
 					if ($pinfo == 'log.php' || $pinfo == 'error.php')
 					{
 						$pinfo = 'news.php';
@@ -242,6 +242,11 @@ class online_shortcodes extends e_shortcode
 						$pinfo = 'comment.php';
 						$online_location_page = 'comment';
 					}
+
+
+
+
+
 					list($oid, $oname) = explode('.', $uinfo, 2);
 
 
