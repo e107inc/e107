@@ -24,24 +24,12 @@ require_once(e_ADMIN.'auth.php');
 $mes = e107::getMessage();
 $frm = e107::getForm();
 
-$menu_pref = e107::getConfig('menu')->getPref('');
-
-if (!isset($menu_pref['online_ls_caption'])) 
-{	// Assume that if one isn't set, none are set
-	$menu_pref['online_ls_caption'] = 'LAN_LASTSEEN_1';		//caption for the lastseen_menu
-	$menu_pref['online_ls_amount'] = 10;					//amount of records to show in the lastseen_menu
-	$menu_pref['online_caption'] = 'LAN_ONLINE_10';			//caption for the online_menu
-	$menu_pref['online_show_memberlist'] = true;			//toggle whether to show a simple member list of online members (shwoing user1, user2, user3)
-	$menu_pref['online_show_memberlist_extended'] = false;	//toggle whether to show the extended member list of online members (showing 'user viewing page')
-}
-
-
-if (isset($_POST['update_menu'])) 
+if (isset($_POST['update_menu']))
 {
 	$temp = array();
-	while (list($key, $value) = each($_POST)) 
+	while (list($key, $value) = each($_POST))
 	{
-		if ($value != LAN_UPDATE) 
+		if ($value != LAN_UPDATE)
 		{
 			$temp[$key] = $value;
 		}
@@ -56,13 +44,31 @@ if (isset($_POST['update_menu']))
 			$menuPref->setPref($k, $v);
 		}
 		$menuPref->save(false, true, false);
+		$mes->addSuccess(LAN_SAVED);
 	}
 	//$ns->tablerender('', "<div style='text-align:center'><b>".LAN_UPDATED.'</b></div>');
 	$ns->tablerender($caption, $mes->render() . $text);
+
+	echo $mes->render();
 }
 
+$menu_pref = e107::getConfig('menu')->getPref('');
+
+if (!isset($menu_pref['online_ls_caption'])) 
+{	// Assume that if one isn't set, none are set
+	$menu_pref['online_ls_caption'] = 'LAN_LASTSEEN_1';		//caption for the lastseen_menu
+	$menu_pref['online_ls_amount'] = 10;					//amount of records to show in the lastseen_menu
+	$menu_pref['online_caption'] = 'LAN_ONLINE_4';			//caption for the online_menu
+	$menu_pref['online_show_memberlist'] = true;			//toggle whether to show a simple member list of online members (shwoing user1, user2, user3)
+	$menu_pref['online_show_memberlist_extended'] = false;	//toggle whether to show the extended member list of online members (showing 'user viewing page')
+	$menu_pref['online_show_guests'] = true;
+}
+
+
+
+
 $text = "
-<form method='post' action='".e_SELF."' id='menu_form'>
+<form method='post' action='".e_REQUEST_URI."' id='menu_form'>
 <fieldset id='core-menu-config-lastseen'>
 <legend>".LAN_ONLINE_ADMIN_1."</legend>
 <table class='table adminform'>
@@ -97,6 +103,10 @@ $text = "
 <tr>
 	<td>".LAN_ONLINE_ADMIN_5.":</td>
 	<td><input class='tbox' type='text' name='online_caption' size='30' value='".$tp->toHTML($menu_pref['online_caption'],"","defs")."' maxlength='200' /></td>
+</tr>
+<tr>
+	<td>".LAN_ONLINE_ADMIN_10."</td>
+	<td>".$frm->radio_switch('online_show_guests', $menu_pref['online_show_guests'])."</td>
 </tr>
 <tr>
 	<td>".LAN_ONLINE_ADMIN_6."</td>
