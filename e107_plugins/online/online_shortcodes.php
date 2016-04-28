@@ -132,7 +132,7 @@ class online_shortcodes extends e_shortcode
 	{
 
 		$sql = e107::getDb();
-	//	$ret =e107::getCache()->retrieve('online_menu_member_newest', 120);
+		$ret =e107::getCache()->retrieve('online_menu_member_newest', 120);
 		if($ret == false) 
 		{
 
@@ -214,9 +214,10 @@ class online_shortcodes extends e_shortcode
 					{
 						continue;
 					}
-					$pinfo = "forum/introductions/11/introducing-ourselves/&p=3"; // $row['user_location'];
 
-					$online_location_page = basename($pinfo); // /str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
+					$pinfo = $row['user_location'];
+
+					$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
 					if ($pinfo == 'log.php' || $pinfo == 'error.php')
 					{
 						$pinfo = 'news.php';
@@ -243,12 +244,7 @@ class online_shortcodes extends e_shortcode
 						$online_location_page = 'comment';
 					}
 
-
-
-
-
 					list($oid, $oname) = explode('.', $uinfo, 2);
-
 
 					$data = array(
 						'oid' 	=> $row['user_id'],
@@ -258,18 +254,11 @@ class online_shortcodes extends e_shortcode
 						'oimage' => $row['user_image']
 					);
 
-				//	setScVar('online_shortcodes', 'currentMember', $data);
-					//$online_shortcodes->setScVar('currentMember',$data);
 					$this->currentMember = $data;
-					$text .= e107::getParser()->parseTemplate($this->memberTemplate, TRUE, $this);
-
-				//	print_a($ONLINE_TEMPLATE['online_members_list_extended']);
+					$text .= e107::getParser()->parseTemplate($this->memberTemplate, true, $this);
 
 				}
 
-			//	$online_shortcodes->onlineMembersList = $ret; // setScVar('onlineMembersList', $ret);
-
-				//setScVar('online_shortcodes', 'onlineMembersList', $ret);
 			}
 
 
@@ -311,17 +300,27 @@ class online_shortcodes extends e_shortcode
 	function sc_online_member_user()
 	{
 		//return "<a href='".e_HTTP."user.php?id.{$this->currentMember['oid']}'>{$this->currentMember['oname']}</a>";
+
+
+
 		$uparams = array('id' => $this->currentMember['oid'], 'name' => $this->currentMember['oname']);
 		$link = e107::getUrl()->create('user/profile/view', $uparams);
+
+
+
 		return "<a href='".$link."'>".$this->currentMember['oname']."</a>";
 	}
 
 
 	function sc_online_member_page()
 	{
+		if(empty($this->currentMember['page']))
+		{
+			return null;
+		}
+
 		global $ADMIN_DIRECTORY;
 		return (!strstr($this->currentMember['pinfo'], $ADMIN_DIRECTORY) ? "<a href='".$this->currentMember['pinfo']."'>".$this->currentMember['page']."</a>" : $this->currentMember['page']);
 	}
 }
 
-?>
