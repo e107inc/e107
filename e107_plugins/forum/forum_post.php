@@ -353,6 +353,7 @@ class forum_post_handler
 	 */
 	function getTemplate($type = 'post')
 	{
+		$pref = e107::pref('core');
 
 		global $FORUMPOST, $subjectbox, $userbox, $poll_form, $fileattach, $fileattach_alert; // needed for BC.
 
@@ -380,9 +381,217 @@ class forum_post_handler
 			}
 		}
 
+		// ----------------- Legacy -------------------------
+
+		if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+
+		if(empty($userbox))
+		{
+			$userbox = "<tr>
+			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3010."</td>
+			<td class='forumheader2' style='width:80%'>
+			<input class='tbox form-control' type='text' name='anonname' size='71' value='".vartrue($anonname)."' maxlength='20' style='width:95%' />
+			</td>
+			</tr>";
+		}
+
+		if(empty($subjectbox))
+		{
+			$subjectbox = "<tr>
+			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3011."</td>
+			<td class='forumheader2' style='width:80%'>
+			<input class='tbox form-control' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
+			</td>
+			</tr>";
+		}
+
+		if(empty($fileattach))
+		{
+			$fileattach = "
+			<tr>
+				<td colspan='2' class='nforumcaption2 fcaption'>".($pref['image_post'] ? LAN_FORUM_3012 : LAN_FORUM_3013)."</td>
+			</tr>
+			<tr>
+				<td style='width:20%' class='forumheader3'>".LAN_FORUM_3014."</td>
+				<td style='width:80%' class='forumheader3'>".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_3015)."<br>".LAN_FORUM_3016.": ".vartrue($allowed_filetypes)." <br />".LAN_FORUM_3017."<br />".LAN_FORUM_3018.": ".(vartrue($max_upload_size) ? $max_upload_size." ".LAN_FORUM_3019 : ini_get('upload_max_filesize'))."
+					<br />
+					<div id='fiupsection'>
+					<span id='fiupopt'>
+						<input class='tbox' name='file_userfile[]' type='file' size='47' />
+					</span>
+					</div>
+					<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+				</td>
+			</tr>
+			";
+
+		}
+		// If the upload directory is not writable, we need to alert the user about this.
+		if(empty($fileattach_alert))
+		{
+			$fileattach_alert = "
+			<tr>
+				<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_FORUM_3012 : LAN_FORUM_3013)."</td>
+			</tr>
+			<tr>
+				<td colspan='2' class='forumheader3'>".str_replace('[x]', e_FILE."public", LAN_FORUM_3021)."</td>
+			</tr>\n";
+		}
+		// ------------
+
+		if(empty($FORUMPOST))
+		{
+			$FORUMPOST = "
+			<div style='text-align:center'>
+			<div class='spacer'>
+			{FORMSTART}
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+			<td colspan='2' class='fcaption'>{BACKLINK}
+			</td>
+			</tr>
+			{USERBOX}
+			{SUBJECTBOX}
+			<tr>
+			<td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
+			<td class='forumheader2' style='width:80%'>
+			{POSTBOX}<br />
+			{EMAILNOTIFY}<br />
+			{NOEMOTES}<br />
+			{POSTTHREADAS}
+			</td>
+			</tr>
+			{POLL}
+			{FILEATTACH}
+
+			<tr style='vertical-align:top'>
+			<td colspan='2' class='forumheader' style='text-align:center'>
+			{BUTTONS}
+			</td>
+			</tr>
+			</table>
+			{FORMEND}
+
+			<table style='".USER_WIDTH."'>
+			<tr>
+			<td>
+			{FORUMJUMP}
+			</td>
+			</tr>
+			</table>
+			</div></div>
+			";
+		}
+
+		if(empty($FORUMPOST_REPLY))
+		{
+			$FORUMPOST_REPLY = "
+			<div style='text-align:center'>
+			<div class='spacer'>
+			{FORMSTART}
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+			<td colspan='2' class='fcaption'>{BACKLINK}
+			</td>
+			</tr>
+			{USERBOX}
+			{SUBJECTBOX}
+			<tr>
+			<td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
+			<td class='forumheader2' style='width:80%'>
+			{POSTBOX}<br />
+			{EMAILNOTIFY}<br />
+			{NOEMOTES}<br />
+			{POSTTHREADAS}
+			</td>
+			</tr>
+
+			{POLL}
+
+			{FILEATTACH}
+
+			<tr style='vertical-align:top'>
+			<td colspan='2' class='forumheader' style='text-align:center'>
+			{BUTTONS}
+			</td>
+			</tr>
+			</table>
+			{FORMEND}
+
+			<table style='".USER_WIDTH."'>
+			<tr>
+			<td>
+			{FORUMJUMP}
+			</td>
+			</tr>
+			</table>
+			</div></div>
+			<div style='text-align:center'>
+			{THREADTOPIC}
+			{LATESTPOSTS}
+			</div>
+			";
+		}
+
+		if(empty($LATESTPOSTS_START))
+		{
+			$LATESTPOSTS_START = "
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+			<td colspan='2' class='fcaption' style='vertical-align:top'>".str_replace('[y]', "{LATESTPOSTSCOUNT}", LAN_FORUM_3022)."</td>
+			</tr>";
+		}
+
+		if(empty($LATESTPOSTS_POST))
+		{
+			$LATESTPOSTS_POST = "
+			<tr>
+			<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
+			<td class='forumheader3' style='width:80%'>
+				<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {THREADDATESTAMP}</div>
+				{POST}
+			</td>
+			</tr>
+			";
+		}
+
+		if(empty($LATESTPOSTS_END))
+		{
+			$LATESTPOSTS_END = "
+			</table>
+			";
+		}
+
+		if(empty($THREADTOPIC_REPLY))
+		{
+			$THREADTOPIC_REPLY = "
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+				<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_FORUM_1003."</td>
+			</tr>
+			<tr>
+				<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
+				<td class='forumheader3' style='width:80%'>
+					<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {THREADDATESTAMP}</div>
+					{POST}
+				</td>
+			</tr>
+			</table>
+			";
+		}
+
+
+		// -------------------------------- End Legacy Code ----------------------------------//
+
+
+
+
+
 		if($type == 'post')
 		{
-			return (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+			$template= (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+		//	print_a($template);
+			return $this->upgradeTemplate($template);
 		}
 		else
 		{
@@ -404,6 +613,39 @@ class forum_post_handler
 		}
 
 
+
+	}
+
+
+	private function upgradeTemplate($template)
+	{
+		$arr = array(
+			'POSTOPTIONS'       => "FORUM_POST_OPTIONS",
+			'POSTOPTIONS_LABEL' => "FORUM_POST_OPTIONS_LABEL",
+			'POLL'              => 'FORUM_POST_POLL',
+			'FORUM_AUTHOR'      => 'FORUM_POST_AUTHOR',
+			'FORUM_SUBJECT'     => 'FORUM_POST_SUBJECT',
+			'BUTTONS'           => 'FORUM_POST_BUTTONS',
+			'FORMSTART'         => 'FORUM_POST_FORM_START',
+			'FORMEND'           => 'FORUM_POST_FORM_END',
+			'POSTBOX'           => 'FORUM_POST_TEXTAREA',
+			'EMAILNOTIFY'       => 'FORUM_POST_EMAIL_NOTIFY',
+			'BACKLINK'          => 'FORUM_POST_BREADCRUMB',
+			'POSTTYPE'          => 'FORUM_POST_TEXTAREA_LABEL'
+		);
+
+		foreach($arr as $old => $new)
+		{
+			//$template = str_replace("{".$old."}", "{".$new."}", $template);
+			$reg = '/\{'.$old.'((?:=|:)?[^\}]*)\}/';  // handle variations.
+			$repl = '{'.$new.'$1}';
+			$template = preg_replace($reg,$repl, $template);
+
+		}
+
+	//	print_a($template);
+
+		return $template;
 
 	}
 

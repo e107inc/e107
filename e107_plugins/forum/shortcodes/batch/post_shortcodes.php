@@ -18,7 +18,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$this->e107 = e107::getInstance();
 	}
 
-	function sc_latestposts($parm)
+	function sc_latestposts($parm) //TODO  move elsewhere?
 	{
 		$parm = ($parm ? $parm : 10);
 		global $LATESTPOSTS_START, $LATESTPOSTS_END, $LATESTPOSTS_POST;
@@ -48,12 +48,12 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return e107::getParser()->parseTemplate($THREADTOPIC_REPLY, true);
 	}
 
-	function sc_formstart()
+	function sc_forum_post_form_start()
 	{
 		return "<form class='form-horizontal' enctype='multipart/form-data' method='post' action='".e_REQUEST_URL."' id='dataform'>";
 	}
 
-	function sc_formend()
+	function sc_forum_post_form_end()
 	{
 		$frm = e107::getForm();
 		return $frm->hidden('action',$this->var['action']).$frm->close();
@@ -81,7 +81,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return (USER == false ? $userbox : '');
 	}
 
-	function sc_forum_author()
+	function sc_forum_post_author()
 	{
 		$opts = array('size' => 'xlarge');
 		$tp = e107::getParser();
@@ -110,7 +110,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return ($this->var['action'] == 'nt' ? $subjectbox : '');
 	}
 
-	function sc_forum_subject()
+	function sc_forum_post_subject()
 	{
 		$opts = array('size' => 'xlarge');
 
@@ -144,12 +144,12 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	}
 
-	function sc_posttype()
+	function sc_forum_post_textarea_label()
 	{
 		return ($this->var['action'] == 'nt' ? LAN_FORUM_2015 : LAN_FORUM_2006);
 	}
 
-	function sc_postbox()
+	function sc_forum_post_textarea()
 	{
 		$tp = e107::getParser();
 
@@ -181,7 +181,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	}
 
-	function sc_buttons()
+	function sc_forum_post_buttons()
 	{
 
 		$ret = "<input class='btn btn-default button' type='submit' name='fpreview' value='".LAN_FORUM_3005."' /> ";
@@ -272,10 +272,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	}
 
 
-	function sc_postoptions_label()
+	function sc_forum_post_options_label()
 	{
 		$type = $this->sc_postthreadas();
-		$poll 	= $this->sc_poll('front');
+		$poll 	= $this->sc_forum_post_poll('front');
 		$attach = $this->sc_forumattachment();
 
 		if(empty($type) && empty($poll) && empty($attach))
@@ -288,10 +288,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 
 
-	function sc_postoptions($parm='')
+	function sc_forum_post_options($parm='')
 	{
 		$type = $this->sc_postthreadas();
-		$poll 	= $this->sc_poll('front');
+		$poll 	= $this->sc_forum_post_poll('front');
 		$attach = $this->sc_forumattachment();
 
 		$tabs = array();
@@ -369,7 +369,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	}
 	
 
-	function sc_poll($parm='')
+	function sc_forum_post_poll($parm=null)
 	{
 
 		if(!e107::isInstalled('poll'))
@@ -390,11 +390,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 				return $poll_form;	
 			}
 			
-			
-			return "<tr><td><a href='#pollform' class='e-expandit'>".LAN_FORUM_3028."</a></td><td>
+			//BC Code below.
+			return "<tr><td class='forumheader3' style='vertical-align:top'><a href='#pollform' class='e-expandit' >".LAN_FORUM_3028."</a></td>
+			<td class='forumheader3'>
 			<div id='pollform' style='display:none'>
-			<table class='table table-striped'>".$poll_form."</table></div></td></tr>";
+			<table class='table table-striped' style='margin-left:0'>".$poll_form."</table></div></td></tr>";
 		}
+
 		return '';
 	}
 
@@ -416,7 +418,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return '';
 	}
 
-	function sc_backlink()
+	function sc_forum_post_breadcrumb()
 	{
 		global $forum, $threadInfo, $eaction, $action,$forumInfo;
 
@@ -432,11 +434,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 
 	function sc_noemotes()
 	{
-		if(vartrue($eaction) == true) { return ; }
+		if(vartrue($eaction) == true) { return null; }
 		return "<input type='checkbox' name='no_emote' value='1' />&nbsp;<span class='defaulttext'>".LAN_FORUM_3039.'</span>';
 	}
 
-	function sc_emailnotify()
+	function sc_forum_post_email_notify()
 	{
 
 		

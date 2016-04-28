@@ -28,6 +28,8 @@ class db_verify
 	var $results = array();
 	var $indices = array(); // array(0) - Issue?
 	var $fixList = array();
+	private $currentTable = null;
+	private $internalError = false;
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
@@ -50,11 +52,9 @@ class db_verify
 	function __construct()
 	{
 				
-		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
-			
+
 		$this->backUrl = e_SELF;	
 			
 		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
@@ -70,6 +70,7 @@ class db_verify
 				{
 					$id = str_replace('_sql','',$file);
 					$data = file_get_contents($filename);
+					$this->currentTable = $id;
 					$this->tables[$id] = $this->getTables($data);
 			      	unset($data);				
 				}
@@ -112,11 +113,8 @@ class db_verify
 		
 	function runComparison($fileArray)
 	{
-	
-		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
-		
+
 		foreach($fileArray as $tab)
 		{			
 			$this->compare($tab);	
@@ -134,12 +132,18 @@ class db_verify
 		}
 		else
 		{
-			$mes->addSuccess(DBLAN_111); 
-			$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
+			if($this->internalError === false)
+			{
+				$mes->addSuccess(DBLAN_111);
+				$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
+			}
+
+
 			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
 			//$mes->add($debug,E_MESSAGE_DEBUG);	
 			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
-			$ns->tablerender("Okay",$mes->render().$text);
+			echo $mes->render();
+		//	$ns->tablerender("Okay",$mes->render().$text);
 		}	
 			
 	}	
@@ -194,10 +198,14 @@ class db_verify
 	
 	function compare($selection,$language='')
 	{
-		
+
+		$this->currentTable = $selection;
+
 		if(empty($this->tables[$selection]['tables']))
 		{
-			return; 	
+			//$this->internalError = true;
+			e107::getMessage()->addDebug("Couldn't read table data for ".$selection);
+			return false;
 		}
 	
 		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
@@ -207,8 +215,8 @@ class db_verify
 			$rawSqlData = $this->getSqlData($tbl,$language);
 			
 			
-			
-			if($rawSqlData === FALSE)
+
+			if($rawSqlData === false)
 			{
 				if($language) continue;
 				
@@ -222,6 +230,7 @@ class db_verify
 
 		//	echo "<h4>RAW</h4>";
 		//	print_a($rawSqlData);
+					//	$this->currentTable = $tbl;v
 
 			$sqlDataArr     = $this->getTables($rawSqlData);
 		//	echo "<h4>PARSED</h4>";
@@ -736,7 +745,8 @@ class db_verify
 	{
 		if(!$sql_data)
 		{
-			return;
+			e107::getMessage()->addError("No SQL Data found in file");
+			return false;
 		}
 		
 		$ret = array();
@@ -770,7 +780,11 @@ class db_verify
 		$ret['data'] = $match[2];
 		$ret['engine'] = $match[4];
 		
-		
+		if(empty($ret['tables']))
+		{
+			e107::getMessage()->addDebug("Unable to parse ".$this->currentTable."_sql.php file data. Possibly missing a ';' at the end?");
+			e107::getMessage()->addDebug(print_a($regex,true));
+		}
 		
 		return $ret;
 	}
@@ -927,6 +941,7 @@ class db_verify
 		else
 		{
 			$mes->addDebug('Failed: '.$qry);
+			$this->internalError = true;
 			return FALSE;
 		}
 	
