@@ -948,12 +948,15 @@ class news_shortcodes extends e_shortcode
 		return $info;
 	}
 
-	function sc_newstags($parm='')
+	/* example {NEWSTAGS} */
+	/* example {NEWSTAGS: separator=</li> <li>} */
+	/* example {NEWSTAGS: type=label&separator=</li><li>} */
+	function sc_newstags($parm=null)
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
-		
-		if($parm == 'label')
+
+		if($parm['type']=='label')
 		{
 			$start = "<span class='label label-default'>";
 			$end	= "</span>";	
@@ -965,7 +968,7 @@ class news_shortcodes extends e_shortcode
 			$end = "";
 			$sep = ", ";
 		}
-		
+		$sep = vartrue($parm['separator'],$sep);
 		foreach($tmp as $val)
 		{
 			if(trim($val))
