@@ -1357,9 +1357,9 @@ class e_shortcode
 	/**
 	 * e_shortcode constructor.
 	 */
-	public function __construct()
+	public function __construct($eVars = null)
 	{
-		$this->scVars = new e_vars();
+		$this->scVars = !empty($eVars) ? $eVars : new e_vars();
 	}
 	
 	/**
