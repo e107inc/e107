@@ -32,11 +32,11 @@ class theme_bootstrap3 implements e_theme_config
 		$var[0]['help']		= "";
 
 		$var[1]['caption'] 	= LAN_THEMEPREF_01;
-		$var[1]['html'] 	= $frm->select('nav_alignment', array(LAN_THEMEPREF_07, LAN_THEMEPREF_08), e107::pref('theme', 'nav_alignment', 'left'),'useValues=1' );
+		$var[1]['html'] 	= $frm->select('nav_alignment', array('left'=>LAN_THEMEPREF_07,'right'=> LAN_THEMEPREF_08), e107::pref('theme', 'nav_alignment', 'left'));
 		$var[1]['help']		= "";
 
 		$var[2]['caption'] 	= LAN_THEMEPREF_02;
-		$var[2]['html'] 	= $frm->select('usernav_placement', array(LAN_THEMEPREF_09, LAN_THEMEPREF_10), e107::pref('theme', 'usernav_placement', 'top'),'useValues=1' );
+		$var[2]['html'] 	= $frm->select('usernav_placement', array('top'=>LAN_THEMEPREF_09, 'bottom'=>LAN_THEMEPREF_10), e107::pref('theme', 'usernav_placement', 'top'));
 		$var[2]['help']		= "";
 
 
