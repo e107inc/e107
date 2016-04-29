@@ -76,29 +76,42 @@ class pm_shortcodes extends e_shortcode
 
 
 	/**
-	 * @param int $parm - User ID.
+	 * @param array|string $parm - User ID or array of values (see below)
+	 * @param int $parm['user']
+	 * @param string $parm['glyph']
+	 * @param string $parm['class']
+	 *
 	 * @return null|string
 	 */
-	function sc_sendpm($parm='')
+	function sc_sendpm($parm=null)
 	{
 
 		// global $sysprefs, $pm_prefs;
 		// $pm_prefs = $sysprefs->getArray("pm_prefs");
+
+		if(is_string($parm))
+		{
+			$parm = array('user'=>$parm);
+		}
+		
 		$pm_prefs = e107::getPlugPref('pm');
 
-		$url = e107::url('pm','index').'?send.'.$parm;
+		$url = e107::url('pm','index').'?send.'.$parm['user'];
 
 		require_once(e_PLUGIN."pm/pm_class.php");
 
 		$pm = new private_message;
 
+		$glyph  = empty($parm['glyph']) ? 'fa-paper-plane' : $parm['glyph'];
+		$class  = empty($parm['class']) ? 'btn btn-sm btn-default' : $parm['class'];
 
-		if(check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm)) // check $this->pmPrefs['send_to_class'].
+
+		if(check_class($pm_prefs['pm_class']) && $pm->canSendTo($parm['user'])) // check $this->pmPrefs['send_to_class'].
 		{
 		    if(deftrue('FONTAWESOME') && deftrue('BOOTSTRAP'))
 		    {
-		        $img =  e107::getParser()->toGlyph('fa-paper-plane','');
-		        return  "<a class='btn btn-sm btn-default' href='".$url ."'>{$img} ".LAN_PM_35."</a>";
+		        $img =  e107::getParser()->toGlyph($glyph,'');
+		        return  "<a class='".$class."' href='".$url ."'>{$img} ".LAN_PM_35."</a>";
 		    }
 
 
