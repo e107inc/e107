@@ -858,7 +858,7 @@ class news_shortcodes extends e_shortcode
 		{
 			return $url;
 		}
-		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$this->news_item['news_title'].'</a>';
+		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".e107::getParser()->toHTML($this->news_item['news_title'], TRUE, "TITLE").'</a>';
 	}
 
 	function sc_newsurl()
