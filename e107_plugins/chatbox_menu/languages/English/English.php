@@ -16,7 +16,8 @@
 
 define("CHATBOX_L1", "Unable to accept post as that username is registered - if it is your username please login to post.");
 // define("CHATBOX_L2", "Chatbox");
-define("CHATBOX_L3", "You must be logged in to post comments on this site - please either log in or if you are not registered click <a href='".e_SIGNUP."'>here</a> to signup");
+define("CHATBOX_L3", "You must be logged in to post comments on this site - please either log in from the Login box or from [here].");
+define("CHATBOX_L3b", "If you are not registered click [here] to signup. ");
 define("CHATBOX_L4", "Post new message");
 define("CHATBOX_L5", "Reset");
 define("CHATBOX_L6", "[blocked by admin]");
