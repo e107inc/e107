@@ -164,7 +164,7 @@ class pluginmanager_form extends e_form
 
 		if ($this->plug['plugin_installflag'] && e_DEBUG == true)
 		{
-				$text .= "<a class='btn btn-default' href='".e_SELF."?refresh.".$this->plug['plugin_id']."' title='".'Repair plugin settings'."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
+				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='".'Repair plugin settings'."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
 		}
 
 
@@ -344,6 +344,12 @@ class pluginManager{
         	$this -> pluginUninstall();
 			$this -> pluginCheck(true); // forced
 		}
+
+		if($this->action == "repair")
+		{
+        	$this -> pluginRepair();
+        	$this->action = 'refresh';
+		}
 		
 		if($this->action == "refresh")
 		{
@@ -376,10 +382,8 @@ class pluginManager{
       		$this -> action = "installed";
 		}
 
-		if($this->action == "refresh")
-		{
-        	$this -> pluginRefresh();
-		}
+
+
 		if($this->action == "upload")
 		{
         	$this -> pluginUpload();
@@ -1084,9 +1088,9 @@ class pluginManager{
 
 // -----------------------------------------------------------------------------
 
-   function pluginRefresh()
+   function pluginRepair()
    {
-       global $plug;
+      // global $plug;
 
 			$plug = e107::getSingleton('e107plugin')->getinfo($this->id);
 
@@ -2345,7 +2349,10 @@ class pluginBuilder
 			{
 				$createData = str_replace("`".MPREFIX, '`', $data[1]);
 				$createData .= ";";
-				file_put_contents($file,$createData);
+				if(!file_exists($file))
+				{
+					file_put_contents($file,$createData);
+				}
 			}
 
 		}
@@ -2567,9 +2574,17 @@ class pluginBuilder
 				if($content = file_get_contents($source))
 				{
 					$content = str_replace($srch, $this->pluginName, $content);
-					if(file_put_contents($destination,$content))
+
+					if(!file_exists($destination))
 					{
-						$result[] = LAN_CREATED." : ".$addon;
+						if(file_put_contents($destination,$content))
+						{
+							$result[] = LAN_CREATED." : ".$addon;
+						}
+					}
+					else
+					{
+						$result[] = "Skipped (already exists) : ".$addon;
 					}
 				}
 				else

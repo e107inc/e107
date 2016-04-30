@@ -838,14 +838,16 @@ class e_parse_shortcode
 		// XXX remove all globals, $sc_style removed
 		global $pref, $e107cache, $menu_pref, $parm, $sql;
 		
-		$parmArray = false;
-		$fullShortcodeKey = null;
+		$parmArray          = false;
+		$fullShortcodeKey   = null;
+		$noDebugLog            = false;
 
 		if ($this->eVars)
 		{
 			if ($this->eVars->isVar($matches[1]))
 			{
 				$match1 = $matches[1]; // php7 fix.
+			//	e107::getDebug()->log("Using eVars ".$match1);
 				return $this->eVars->$match1;
 			}
 		}
@@ -923,6 +925,7 @@ class e_parse_shortcode
 		{
 			$debugArr = array('class_original'=>get_class($this->addedCodes), 'class_override'=>$this->addonOverride[$_method], 'function'=>$_method);
 			e107::getDebug()->logCode(4, $code, null, print_a($debugArr,true));
+			$noDebugLog = true;
 		}
 
 
@@ -1201,7 +1204,7 @@ class e_parse_shortcode
 			$sql->db_Mark_Time("(After SC {$code})");
 		}
 		
-		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
+		if (($noDebugLog != true) && (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS))
 		{
 			global $db_debug;
 			

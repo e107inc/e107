@@ -180,15 +180,14 @@ class login_shortcodes extends e_shortcode
 
 	function sc_login_table_signup_link($parm='')
 	{
-		if(empty($this->userReg))
+		if($this->userReg === 1)
 		{
-			return null;
+			return "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
 		}
 
-		return "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
-
-
+		return null;
 	}
+
 
 	function sc_login_table_fpw_link($parm='')
 	{
