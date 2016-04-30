@@ -326,11 +326,10 @@ class e107Email extends PHPMailer
 		}
 
 
-		if (vartrue($pref['mail_bounce_email'])) $this->Sender = $pref['mail_bounce_email'];
-
 		$this->FromName 	= $tp->toHTML(vartrue($pref['replyto_name'],$overrides['siteadmin']),'','RAWTEXT');
 		$this->From 		= $tp->toHTML(vartrue($pref['replyto_email'],$overrides['siteadminemail']),'','RAWTEXT');
 		$this->WordWrap 	= 76;			// Set a sensible default
+		$this->Sender       = (!empty($pref['mail_bounce_email'])) ? $pref['mail_bounce_email'] : $this->From;
 
 		$pref['mail_dkim'] = 1;
 
