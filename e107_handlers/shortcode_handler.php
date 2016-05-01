@@ -28,79 +28,84 @@ if (!defined('e107_INIT'))
  * e_shortcode - abstract batch class
  */
 
-/**
- * FIXME: to be removed
- */
-function register_shortcode($classFunc, $codes, $path = '', $force = false)
-{
-	return e107::getScParser()->registerShortcode($classFunc, $codes, $path, $force);
-}
+	/**
+	 * @deprecated
+	 * @param $classFunc
+	 * @param $codes
+	 * @param string $path
+	 * @param bool $force
+	 * @return e_parse_shortcode
+	 */
+	function register_shortcode($classFunc, $codes, $path = '', $force = false)
+	{
+		return e107::getScParser()->registerShortcode($classFunc, $codes, $path, $force);
+	}
 
-/**
- * FIXME: to be removed
- */
-function setScVar($className, $scVarName, $value)
-{
-	return e107::getScParser()->setScVar($className, $scVarName, $value);
-}
+	/**
+	 *  @deprecated
+	 * @param $className
+	 * @param $scVarName
+	 * @param $value
+	 * @return e_parse_shortcode
+	 */
+	function setScVar($className, $scVarName, $value)
+	{
+		return e107::getScParser()->setScVar($className, $scVarName, $value);
+	}
 
-/**
- * FIXME: to be removed (once event calendar changed)
- */
-function callScFunc($className, $scFuncName, $param = '')
-{
-	return e107::getScParser()->callScFunc($className, $scFuncName, $param);
-}
+	/**
+	 *  @deprecated FIXME: to be removed (once event calendar changed)
+	 * @param $className
+	 * @param $scFuncName
+	 * @param string $param
+	 * @return bool|mixed
+	 */
+	function callScFunc($className, $scFuncName, $param = '')
+	{
+		return e107::getScParser()->callScFunc($className, $scFuncName, $param);
+	}
 
-/**
- * FIXME: to be removed
- */
-function initShortcodeClass($class, $force = false, $eVars = null)
-{
-	return e107::getScParser()->initShortcodeClass($class, $eVars, $force);
-}
+	/**
+	 *  @deprecated FIXME: to be removed
+	 * @param $class
+	 * @param bool $force
+	 * @param null $eVars
+	 * @return e_shortcode
+	 */
+	function initShortcodeClass($class, $force = false, $eVars = null)
+	{
+		return e107::getScParser()->initShortcodeClass($class, $eVars, $force);
+	}
+
+
 
 class e_parse_shortcode
 {
-	protected $scList = array(); // The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
-	protected $parseSCFiles; // True if individual shortcode files are to be used
-	protected $addedCodes = NULL; 		// Pointer to a class or array to be used on a single call
-	protected $registered_codes = array(); // Shortcodes added by plugins TODO make it private
-	protected $scClasses = array(); // Batch shortcode classes - TODO make it private
-	protected $scOverride = array(); // Array of codes found in override/shortcodes dir
-	protected $scBatchOverride = array(); // Array of codes found in override/shortcodes/batch dir
-	protected $ignoreCodes = array(); // Shortcodes to be ignored and remain unchanged. (ie. {THEME}, {e_PLUGIN} etc. )
-	protected $addonOverride = array(); // Overrides coming from e_shortcode.php
-	/**
-	 * @var e_vars
-	 */
-	protected $eVars = null;
-	
-	/**
-	 * Wrappers array for the current parsing cycle, see contact_template.php and $CONTACT_WRAPPER variable
-	 * @var array
-	 */
-	protected $wrappers = array();
-	protected $wrapper = null;  // current wrapper being processed.
-	protected $wrapperDebugDone = array();
-	
-	/**
-	 * Former $sc_style global variable. Internally used - performance reasons
-	 * @var array
-	 */
-	protected $sc_style = array();
+	protected $scList               = array();  // The actual code - added by parsing files or when plugin codes encountered. Array key is the shortcode name.
+	protected $parseSCFiles         = true;     // True if individual shortcode files are to be used
+	protected $addedCodes           = null;     // Pointer to a class or array to be used on a single call
+	protected $registered_codes     = array();  // Shortcodes added by plugins TODO make it private
+	protected $scClasses            = array();  // Batch shortcode classes - TODO make it private
+	protected $scOverride           = array();  // Array of codes found in override/shortcodes dir
+	protected $scBatchOverride      = array();  // Array of codes found in override/shortcodes/batch dir
+	protected $ignoreCodes          = array();  // Shortcodes to be ignored and remain unchanged. (ie. {THEME}, {e_PLUGIN} etc. )
+	protected $addonOverride        = array();  // Overrides coming from e_shortcode.php
+	private   $legacyBatch          = array();  // List of legacy batch file codes. eg. using SC_BEGIN etc.
+	private   $debug_legacy         = array();
+	protected $eVars                = null;
+	protected $wrappers             = array();  // Wrappers array for the current parsing cycle, see contact_template.php and $CONTACT_WRAPPER variable
+	protected $wrapper              = null;     // current wrapper being processed.
+	protected $wrapperDebugDone     = array();  // Flag to avoid repetition of debug info.
+	protected $sc_style             = array();  // Former $sc_style global variable. Internally used - performance reasons
 
 	function __construct()
 	{
-		$this->parseSCFiles = true; // Default probably never used, but make sure its defined.
-		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN} 
+		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN}
 		$this->loadOverrideShortcodes();
 		$this->loadThemeShortcodes();
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
 		//$this->loadCoreShortcodes(); DEPRECATED
-
-
 
 	}
 
@@ -172,6 +177,8 @@ class e_parse_shortcode
 		return $this;
 	}
 
+
+
 	/**
 	 * Add value to already registered SC object
 	 *
@@ -222,9 +229,10 @@ class e_parse_shortcode
 	 *
 	 * @param string $className
 	 * @param string $scFuncName
-	 * @param array $param - arguments passed to function
+	 * @param array $args
+	 * @return bool|mixed - NULL if class/method doesn't exist; otherwise whatever the function returns.
+	 * @internal param array $param - arguments passed to function
 	 *
-	 * @return mixed|boolean - NULL if class/method doesn't exist; otherwise whatever the function returns.
 	 */
 	protected function callScFuncA($className, $scFuncName, $args = array())
 	{
@@ -235,6 +243,8 @@ class e_parse_shortcode
 		}
 		return null;
 	}
+
+
 
 	/**
 	 * Create shortcode object - don't forget you still can use e_shortcode.php
@@ -279,22 +289,22 @@ class e_parse_shortcode
 	 * Normally you would use the proxy of this method - e107::getScBatch()
 	 * Global File Override ClassName/Path examples:
 	 * 1. Core signup shortcodes
-	 * 	- Origin ClassName: signup_shortcodes
-	 * 	- Origin Location: core/shortcodes/batch/signup_shortcodes.php
-	 * 	- File Override ClassName: override_signup_shortcodes
-	 * 	- File Override Location: core/override/shortcodes/batch/signup_shortcodes.php
-	 * 
-	 * 2. Plugin 'gallery' global shortcode batch (e_shortcode.php) 
-	 * 	- Origin ClassName: gallery_shortcodes //FIXME Should be gallery_shortcode? (more below)
-	 * 	- Origin Location: plugins/gallery/e_shortcode.php
-	 * 	- File Override ClassName: override_gallery_shortcodes
-	 * 	- File Override Location: core/override/shortcodes/batch/gallery_shortcodes.php
-	 * 
+	 *    - Origin ClassName: signup_shortcodes
+	 *    - Origin Location: core/shortcodes/batch/signup_shortcodes.php
+	 *    - File Override ClassName: override_signup_shortcodes
+	 *    - File Override Location: core/override/shortcodes/batch/signup_shortcodes.php
+	 *
+	 * 2. Plugin 'gallery' global shortcode batch (e_shortcode.php)
+	 *    - Origin ClassName: gallery_shortcodes //FIXME Should be gallery_shortcode? (more below)
+	 *    - Origin Location: plugins/gallery/e_shortcode.php
+	 *    - File Override ClassName: override_gallery_shortcodes
+	 *    - File Override Location: core/override/shortcodes/batch/gallery_shortcodes.php
+	 *
 	 * 3. Plugin 'forum' regular shortcode batch
-	 * 	- Origin ClassName: plugin_forum_view_shortcodes //FIXME Should be forum_shortcodes? (more below)
-	 * 	- Origin Location: plugins/forum/shortcodes/batch/view_shortcodes.php
-	 * 	- File Override ClassName: override_plugin_forum_view_shortcodes
-	 * 	- File Override Location: core/override/shortcodes/batch/forum_view_shortcodes.php
+	 *    - Origin ClassName: plugin_forum_view_shortcodes //FIXME Should be forum_shortcodes? (more below)
+	 *    - Origin Location: plugins/forum/shortcodes/batch/view_shortcodes.php
+	 *    - File Override ClassName: override_plugin_forum_view_shortcodes
+	 *    - File Override Location: core/override/shortcodes/batch/forum_view_shortcodes.php
 	 *
 	 * <code><?php
 	 * // simple use
@@ -308,9 +318,10 @@ class e_parse_shortcode
 	 * e107::getScParser()->getScObject('news_shortcodes', 'myplug', 'news2_shortcodes');
 	 * </code>
 	 * @param string $className
-	 * @param string $plugName if true className is used., if string, string value is used.  
+	 * @param null $pluginName
 	 * @param string $overrideClass if true, $className is used
 	 * @return e_shortcode
+	 * @internal param string $plugName if true className is used., if string, string value is used.
 	 */
 	public function getScObject($className, $pluginName = null, $overrideClass = null)
 	{
@@ -320,8 +331,10 @@ class e_parse_shortcode
 			e_shortcode.php 			 = {plugin}_shortcode 
 		  	{plugin}_shortcodes.php 	= {plugin}_shortcodes
 		*/
+
+		$path = null;
 		
-		if(trim($className)==""){ return; }
+		if(trim($className)==""){ return null; }
 
 		$_class_fname = $className;
 		if($pluginName === TRUE) //XXX When called manually by a plugin, not e_shortcode.php  eg. $sc = e107::getScBatch('faqs',TRUE); for faqs_shortcode.php with class faqs_shortcode
@@ -625,6 +638,9 @@ class e_parse_shortcode
 
 	/**
 	 * Common Auto-Register function for class methods.
+	 * @param $class
+	 * @param $path
+	 * @param bool $force
 	 * @return e_parse_shortcode
 	 */
 	protected function registerClassMethods($class, $path, $force = false)
@@ -735,8 +751,7 @@ class e_parse_shortcode
 		 * ONLY globally register shortcodes when they are declared in e_shortcode.php - this is consistent with the logic of e_xxxx which affect e107 Outside of the plugin/sript. (gallery plugin follows this logic)
 		 * 
 		 */
-		
-	
+
 		if(isset($sc_style) && is_array($sc_style))
 		{
 			$this->sc_style = array_merge($sc_style, $this->sc_style); // XXX Commenting this out will fix #2 above. 
@@ -814,8 +829,8 @@ class e_parse_shortcode
 		$this->addedCodes = $saveCodes;
 		$this->eVars = $saveVars; // restore eVars
 		$this->debug_legacy = null;
-		
-		
+		$this->legacyBatch = array();
+
 			//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
 
 		
@@ -824,12 +839,14 @@ class e_parse_shortcode
 
 
 	/**
-	 *		Callback looks up and substitutes a shortcode
+	 * Callback looks up and substitutes a shortcode
+	 * @param $matches
+	 * @return bool|int|mixed|string
 	 */
 	function doCode($matches)
 	{
 		// print_a($matches);
-		
+
 		if(in_array($matches[0],$this->ignoreCodes)) // Ignore all {e_PLUGIN}, {THEME} etc. otherwise it will just return blank for these items. 
 		{
 			return $matches[0];	
@@ -896,7 +913,7 @@ class e_parse_shortcode
 		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
-			$sql->db_Mark_Time("SC $code");
+			$sql->db_Mark_Time("SC ".$code);
 		}
 
 		if (E107_DBG_SC)
@@ -942,10 +959,22 @@ class e_parse_shortcode
 
 			}
 		}
-		elseif (is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes)) // Its array-based shortcode. Load the code for evaluation later.
+		elseif(is_array($this->addedCodes) && array_key_exists($code, $this->addedCodes)) // Its array-based shortcode. Load the code for evaluation later.
 		{
-			
-			$ret = $this->addedCodes[$code];
+
+		//	$ret = $this->addedCodes[$code];
+
+		//$this->legacyBatch
+			if(in_array($code,$this->legacyBatch))
+			{
+				$scCode =  $this->addedCodes[$code];
+			}
+			else
+			{
+				$ret = $this->addedCodes[$code];
+			}
+
+
 		//	$_class = "n/a";
 		//	$_function = "n/a";
 			$_type = 'array';
@@ -1079,11 +1108,14 @@ class e_parse_shortcode
 
 				if(!empty($scFile))
 				{
+					$_type = 'file';
+
 					if(file_exists($scFile))
 					{
 						$scCode = file_get_contents($scFile);
 						$this->scList[$code] = $scCode;
 						$_path = $scFile;
+
 					}
 					else
 					{
@@ -1111,28 +1143,31 @@ class e_parse_shortcode
 
 		if ($scCode) // legacy shortode to be evaluated.
 		{
+
 			try
 			{
 			    $ret = @eval($scCode);
 			}
 			catch (Throwable $t) {    // Executed only in PHP 7, will not match in PHP 5.x
 
-                $string = print_a($scCode,true);
-                $string .= "<h4>Added Coded</h4>";
-                $string .= print_a($this->addedCodes,true);
-                e107::getMessage()->addDebug('Could not parse Shortcode '.$scFile.' :: {'.$code .'} '.$string);
+				$error              = $this->debug_legacy;
+				$error['code']      = $code;
+				$error['problem']   = $scCode;
+
+                e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
 
 			}
-			catch (Exception $e)
-			{
-			    echo  $e->getMessage();
-			}
 
-			
-			if($ret === false && E107_DEBUG_LEVEL > 0) // Error in Code. 
+			if($ret === false && E107_DEBUG_LEVEL > 0 ) // Error in Code.
 			{
-			//	$string = print_a($scCode,true);
-			//	e107::getMessage()->addDebug('Could not parse Shortcode '.$scFile.' :: {'.$code .'} '.$string);
+
+				$error              = $this->debug_legacy;
+				$error['code']      = $code;
+				$error['problem']   = $scCode;
+				$error['error']     = error_get_last();
+
+                e107::getDebug()->logCode(-2, $code, null, print_a($error,true));
+
 			}
 		}
 
@@ -1262,15 +1297,23 @@ class e_parse_shortcode
 		return isset($ret) ? $ret : '';
 	}
 
+
+
+
+	/**
+	 * @param $fname
+	 * @param string $type
+	 * @return array
+	 */
 	function parse_scbatch($fname, $type = 'file')
 	{
-		global $e107cache, $eArrayStorage;
+	//	global $e107cache, $eArrayStorage;
 		$cur_shortcodes = array();
 		if ($type == 'file')
 		{
 			$batch_cachefile = 'nomd5_scbatch_'.md5($fname);
 			//			$cache_filename = $e107cache->cache_fname("nomd5_{$batchfile_md5}");
-			$sc_cache = $e107cache->retrieve_sys($batch_cachefile);
+			$sc_cache = e107::getCache()->retrieve_sys($batch_cachefile);
 			if (!$sc_cache)
 			{
 				$sc_batch = file($fname);
@@ -1309,8 +1352,8 @@ class e_parse_shortcode
 			}
 			if ($type == 'file')
 			{
-				$sc_cache = $eArrayStorage->WriteArray($cur_shortcodes, false);
-				$e107cache->set_sys($batch_cachefile, $sc_cache);
+				$sc_cache = e107::serialize($cur_shortcodes, false);
+				e107::getCache()->set_sys($batch_cachefile, $sc_cache);
 			}
 		}
 
@@ -1332,6 +1375,10 @@ class e_parse_shortcode
 				}
 			}
 		}
+
+
+		$this->legacyBatch = array_keys($cur_shortcodes);
+
 		return $cur_shortcodes;
 	}
 }
@@ -1377,6 +1424,8 @@ class e_shortcode
 	 * which results in using the $CONTACT_WRAPPER['form'] wrapper in the parsing phase
 	 * Template cannot be loaded via include, only by getTemplate or getCoreTemplate
 	 * e107::getScBatch() must be used also.
+	 * @param string $id
+	 * @return $this|null
 	 */
 	public function wrapper($id = null)
 	{
@@ -1407,10 +1456,12 @@ class e_shortcode
 		$this->var = $eVars;
 		return $this;
 	}
-	
+
 	/**
 	 * Alias of setParserVars - Preferred use by Plugins.
 	 * Sets the value of $sc->var
+	 * @param $eVars
+	 * @return e_shortcode
 	 */
 	public function setVars($eVars) // Alias of setParserVars();
 	{
