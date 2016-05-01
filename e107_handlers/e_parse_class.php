@@ -829,10 +829,6 @@ class e_parse extends e_parser
 	 */
 	function parseTemplate($text, $parseSCFiles = true, $extraCodes = null, $eVars = null)
 	{
-		if(!empty($extraCodes) && $this->isSimpleParse($extraCodes)) // support for a combined simple and standard template parse. - (eg. used by signup email template.) 
-		{
-			$text = $this->simpleParse($text, $extraCodes, false);
-		}
 
 		if(!is_bool($parseSCFiles))
 		{

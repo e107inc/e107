@@ -316,6 +316,7 @@ class e_bbcode
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList))
 		{	// Check the bbcode 'cache'
 			$bbcode = $this->bbList[$code];
+			$debugFile = "(cached)";
 		}
 		else
 		{	// Find the file
@@ -355,14 +356,13 @@ class e_bbcode
 		
 		if (E107_DEBUG_LEVEL)
 		{
-			global $db_debug;
-			
 			$info = array(
 				'class' =>$className,
-				'path'	=> $debugFile
+				'path'	=> $debugFile,
+			//	'text' => $full_text
 			);
 			
-			$db_debug->logCode(1, $code, $parm, print_a($info,true));
+			e107::getDebug()->logCode(1, $code, $parm, print_a($info,true));
 		}
 		
 		global $e107_debug;
