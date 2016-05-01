@@ -130,9 +130,15 @@ if ($pref['membersonly_enabled'])
 	{
 		require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
 	}
-	
-	$HEADER = $tp->simpleParse($FPW_TABLE_HEADER, $sc);
-	$FOOTER = $tp->simpleParse($FPW_TABLE_FOOTER, $sc);
+
+	define('e_IFRAME', true);
+	$HEAD = $tp->simpleParse($FPW_TABLE_HEADER, $sc);
+	$FOOT = $tp->simpleParse($FPW_TABLE_FOOTER, $sc);
+
+	define('e_IFRAME_HEADER', $HEAD);
+	define('e_IFRAME_FOOTER' , $FOOT);
+
+
 }
 
 $user_info = e107::getUserSession();

@@ -3942,7 +3942,7 @@ class e_parser
 	 */
 	public function toDate($datestamp = null, $format='short')
 	{
-		if(!is_numeric($datestamp)){ return; }
+		if(!is_numeric($datestamp)){ return null; }
 
 		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
 	}
