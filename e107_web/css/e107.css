@@ -317,3 +317,8 @@ optgroup.level-2 { padding-left:0.7em }
 optgroup.level-3 { padding-left:2em }
 optgroup.level-4 { padding-left:3em }
 optgroup.level-5 { padding-left:4em }
+
+.online-menu-extended li, .online-menu li ul li { min-height: 40px; padding-top:8px}
+.online-menu-extended ul { padding-bottom:20px}
+.online-menu-extended span.online-menu-user { display:block; font-size:1.1em;margin-top:4px; line-height:1}
+.online-menu-extended-label { font-size:1.2em; }

@@ -221,6 +221,8 @@ TEMPL;
 			$text = e107::getBB()->htmltoBBcode($content);   // not reliable enough yet.
 		}
 
+		$text = str_replace('[html]<p></p>[/html]','',$text); // cleanup.
+
 		return $text;
 
 	}

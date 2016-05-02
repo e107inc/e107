@@ -13,10 +13,21 @@
 
 class theme_shortcodes extends e_shortcode
 {
+	// public $override = true;
+
 	function __construct()
 	{
 		
 	}
+
+/*
+	function sc_news_summary()
+	{
+		$sc = e107::getScBatch('news');
+		$data = $sc->getScVar('news_item');
+
+		return "<span class='label label-danger'>".e107::getParser()->toHTML($data['news_summary'],'BODY')."</span>";
+	}*/
 
 
 	function sc_bootstrap_branding()

@@ -503,11 +503,17 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	}
 	$text .= "<li><a href='#'>".$this->sc_posts()."</a></li>";
 	
-	$text .= "<li class='divider'></li>";
+
 	
 	if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
 	{
-		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".$tp->toGlyph('envelope')." ".LAN_FORUM_2036." </a></li>";
+		if($pmButton = $tp->parseTemplate("{SENDPM: user=".$this->postInfo['post_user']."&glyph=envelope&class=pm-send}",true))
+		{
+			$text .= "<li class='divider'></li>";
+			$text .= "<li>".$pmButton."</li>";
+		}
+
+		// $text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".$tp->toGlyph('envelope')." ".LAN_FORUM_2036." </a></li>";
 	}
 	
 	if($website = $this->sc_website())

@@ -13,16 +13,19 @@ if (!defined('e107_INIT')) { exit; }
 
 
 register_shortcode('online_shortcodes', true);
-initShortcodeClass('online_shortcodes');
+$online_shortcodes = initShortcodeClass('online_shortcodes');
 
-class online_shortcodes
+class online_shortcodes extends e_shortcode
 {
 	protected $e107;
 	public $memberInfo = array();				// Site stats
 	public $currentMember = array('oid' => '0', 'oname' => '??', 'page' => 'lost');
 	public $currentUser = array();				// Information about current user (for last seen)
 	public $onlineMembersList = '';
+	private $extendedMode;
+	public $memberTemplate = '';
 	protected $gen;
+	private $menuPref = array();
 	
 	
 	public function __construct()
@@ -30,6 +33,20 @@ class online_shortcodes
 		$this->e107 = e107::getInstance();
 		$this->memberInfo = e107::getConfig('history');
 		$this->gen = e107::getDateConvert();
+		$this->menuPref = e107::getConfig('menu')->getPref();
+
+		$this->extendedMode = e107::getConfig('menu')->get('online_show_memberlist_extended');
+
+	}
+
+
+	function sc_online_style($parm=null)
+	{
+		if($this->extendedMode)
+		{
+			return 'list-unstyled online-menu-extended';
+		}
+
 	}
 
 	// Last Seen Menu
@@ -67,7 +84,16 @@ class online_shortcodes
 	// Online Menu
 	function sc_online_guests()
 	{
-		return GUESTS_ONLINE;
+		//var_dump($this->menuPref['online_show_guests']);
+
+		if(!isset($this->menuPref['online_show_guests']) || !empty($this->menuPref['online_show_guests']))
+		{
+			return GUESTS_ONLINE;
+		}
+
+
+
+
 	}
 
 	function sc_online_members()
@@ -77,7 +103,7 @@ class online_shortcodes
 
 	function sc_online_members_list()
 	{
-		if(e107::getConfig('menu')->get('online_show_memberlist', FALSE))
+		if(!empty($this->menuPref['online_show_memberlist']))
 		{
 			return (MEMBERS_ONLINE ? MEMBER_LIST : '');
 		}
@@ -92,30 +118,49 @@ class online_shortcodes
 
 	function sc_online_members_total()
 	{
-		$total_members = $this->e107->ecache->retrieve("online_menu_member_total", 120);
+		$total_members = e107::getCache()->retrieve("online_menu_member_total", 120);
 		if($total_members == false) 
 		{
 			$total_members = e107::getDb()->count('user','(*)',"where user_ban='0'");
-			$this->e107->ecache->set("online_menu_member_total", $total_members);
+			e107::getCache()->set("online_menu_member_total", $total_members);
 		}
 		return $total_members;
 	}
 
 
-	function sc_online_member_newest()
+	function sc_online_member_newest($parm=null)
 	{
+
 		$sql = e107::getDb();
-		$ret = $this->e107->ecache->retrieve('online_menu_member_newest', 120);
+		$ret =e107::getCache()->retrieve('online_menu_member_newest', 120);
 		if($ret == false) 
 		{
-			$newest_member_sql = $sql->select('user', 'user_id, user_name', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
+
+			$newest_member_sql = $sql->select('user', 'user_id, user_name,user_image', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
 			$row = $sql->fetch();
 			//$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
-			$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
-			$link = e107::getUrl()->create('user/profile/view', $uparams);
-			$ret = "<a href='".$link."'>".$row['user_name']."</a>";
-			$this->e107->ecache->set('online_menu_member_newest', $ret);
+
+			if($parm['type'] == 'avatar')
+			{
+				$this->currentMember =  array('oid'	=> $row['user_id'], 'oname'=> $row['user_name'], 'page' => null, 'pinfo' => null,'oimage' => $row['user_image']	);
+				$ret =  e107::getParser()->parseTemplate($this->newestTemplate, TRUE, $this);
+
+			}
+			else
+			{
+				$uparams = array('id' => $row['user_id'], 'name' => $row['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$ret = "<a href='".$link."'>".$row['user_name']."</a>";
+			}
+
+
+
+			e107::getCache()->set('online_menu_member_newest', $ret);
 		}
+
+
+
+
 		return $ret;
 	}
 
@@ -138,9 +183,9 @@ class online_shortcodes
 	}
 
 
-	function sc_online_most_datestamp()
+	function sc_online_most_datestamp($parm='short')
 	{
-		return $this->gen->convert_date($this->memberInfo->get('most_online_datestamp'), 'short');
+		return $this->gen->convert_date($this->memberInfo->get('most_online_datestamp'), $parm);
 	}
 
 
@@ -148,20 +193,102 @@ class online_shortcodes
 	//##### ONLINE MEMBER LIST EXTENDED 
 	function sc_online_members_list_extended()
 	{
-		return $this->onlineMembersList;
+		//display list of 'member viewing page'
+		if($this->extendedMode == false)
+		{
+			return null;
+		}
+
+		$text = '';
+
+		if (MEMBERS_ONLINE)
+		{
+			//	global $listuserson;
+
+				$listuserson = e107::getOnline()->userList();
+
+				$ret='';
+				foreach($listuserson as $uinfo => $row)
+				{
+					if($row['user_active'] != 1)
+					{
+						continue;
+					}
+
+					$pinfo = $row['user_location'];
+
+					$online_location_page = str_replace('.php', '', substr(strrchr($pinfo, '/'), 1));
+					if ($pinfo == 'log.php' || $pinfo == 'error.php')
+					{
+						$pinfo = 'news.php';
+						$online_location_page = 'news';
+					}
+					elseif ($online_location_page == 'request.php')
+					{
+						$pinfo = 'download.php';
+						$online_location_page = 'download';
+					}
+					elseif (strstr($online_location_page, 'forum'))
+					{
+						$pinfo = e_PLUGIN.'forum/forum.php';
+						$online_location_page = 'forum';
+					}
+					elseif (strstr($online_location_page, 'content'))
+					{
+						$pinfo = 'content.php';
+						$online_location_page = 'content';
+					}
+					elseif (strstr($online_location_page, 'comment'))
+					{
+						$pinfo = 'comment.php';
+						$online_location_page = 'comment';
+					}
+
+					list($oid, $oname) = explode('.', $uinfo, 2);
+
+					$data = array(
+						'oid' 	=> $row['user_id'],
+						'oname' =>$row['user_name'],
+						'page' 	=> $online_location_page,
+						'pinfo' => $pinfo,
+						'oimage' => $row['user_image']
+					);
+
+					$this->currentMember = $data;
+					$text .= e107::getParser()->parseTemplate($this->memberTemplate, true, $this);
+
+				}
+
+			}
+
+
+		return $text;
+
+	}
+
+	function sc_online_members_registered()
+	{
+		return e107::getDb()->count('user','(*)','user_ban = 0');
+
 	}
 
 
-	function sc_online_member_image($parm='')
+
+	function sc_online_member_image($parm=null)
 	{
-		if($parm == 'avatar')
+		if(is_string($parm))
+		{
+			$parm= array('type'=> $parm);
+		}
+
+		if($parm['type'] == 'avatar')
 		{
 			$userData = array(
 				'user_image' => $this->currentMember['oimage'],
 				'user_name'	=> $this->currentMember['oname']
-			); 
-			
-			return e107::getParser()->toAvatar($userData); 
+			);
+
+			return e107::getParser()->toAvatar($userData, $parm);
 			
 		//	return e107::getParser()->parseTemplate("{USER_AVATAR=".$this->currentMember['oimage']."}",true);	
 		}
@@ -173,17 +300,27 @@ class online_shortcodes
 	function sc_online_member_user()
 	{
 		//return "<a href='".e_HTTP."user.php?id.{$this->currentMember['oid']}'>{$this->currentMember['oname']}</a>";
+
+
+
 		$uparams = array('id' => $this->currentMember['oid'], 'name' => $this->currentMember['oname']);
 		$link = e107::getUrl()->create('user/profile/view', $uparams);
+
+
+
 		return "<a href='".$link."'>".$this->currentMember['oname']."</a>";
 	}
 
 
 	function sc_online_member_page()
 	{
+		if(empty($this->currentMember['page']))
+		{
+			return null;
+		}
+
 		global $ADMIN_DIRECTORY;
 		return (!strstr($this->currentMember['pinfo'], $ADMIN_DIRECTORY) ? "<a href='".$this->currentMember['pinfo']."'>".$this->currentMember['page']."</a>" : $this->currentMember['page']);
 	}
 }
 
-?>

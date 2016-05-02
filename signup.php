@@ -976,7 +976,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			else
 			{
 				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />";
-				$text .= str_replace(array('[',']'), array("<a href='".e_BASE."login.php'>", "</a>"), LAN_SIGNUP_13);
+				$text .= str_replace(array('[',']'), array("<a href='".e_LOGIN."'>", "</a>"), LAN_SIGNUP_13);
 			}
 			
 			$ns->tablerender(LAN_SIGNUP_8,$text);

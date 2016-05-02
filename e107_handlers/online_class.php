@@ -321,8 +321,20 @@ class e_online
 	}
 
 
-	function userList()
+	function userList($debug=false)
 	{
+
+		if($debug === true)
+		{
+			//print_a($this->users);
+			$data = e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
+
+		//	print_a($data);
+
+			return $data;
+		}
+
+
 		return $this->users;
 	}
 

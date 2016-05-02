@@ -93,8 +93,8 @@ $FPW_TEMPLATE['form'] = '
 						</div>
 					</div>
 					';
-$FPW_TEMPLATE['header'] = '';
-$FPW_TEMPLATE['footer'] = '';
+$FPW_TEMPLATE['header'] = '<div id="fpw-page" class="container">';
+$FPW_TEMPLATE['footer'] = '</div>';
 
 
 

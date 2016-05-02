@@ -17,33 +17,53 @@
 if (!defined('e107_INIT')) { exit; }
 
 include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
-require_once(e_PLUGIN.'online/online_shortcodes.php');
-if (is_readable(THEME.'online_menu_template.php')) 
+
+if(class_exists('online_shortcodes'))
 {
-	require(THEME.'online_menu_template.php');
-} 
-else 
+	$online_shortcodes = new online_shortcodes;
+}
+else
 {
-	require(e_PLUGIN.'online/online_menu_template.php');
+	require_once(e_PLUGIN.'online/online_shortcodes.php');
 }
 
-$menu_pref = e107::getConfig('menu')->getPref('');
+if(deftrue('BOOTSTRAP'))
+{
+	$LASTSEEN_TEMPLATE = e107::getTemplate('online','online_menu', 'lastseen'); // $ONLINE_MENU_TEMPLATE['lastseen'];
+}
+else
+{
+	if (is_readable(THEME.'online_menu_template.php'))
+	{
+		require(THEME.'online_menu_template.php');
+	}
+	else
+	{
+		require(e_PLUGIN.'online/templates/online_menu_template.php');
+		$LASTSEEN_TEMPLATE = $ONLINE_MENU_TEMPLATE['lastseen'];
+	}
+
+}
+
+$menu_pref = e107::getConfig('menu')->getPref();
 $tp = e107::getParser();
 
 $num = intval(vartrue($menu_pref['online_ls_amount'],10));
 
-$sql -> db_Select('user', 'user_id, user_name, user_currentvisit', 'ORDER BY user_currentvisit DESC LIMIT 0,'.$num, 'nowhere');
+$sql->select('user', 'user_id, user_name, user_currentvisit', 'ORDER BY user_currentvisit DESC LIMIT 0,'.$num, 'nowhere');
 $lslist = $sql -> db_getList();
 
-$text = $tp -> parseTemplate($LASTSEEN_TEMPLATE['start'], TRUE);
+$text = $tp -> parseTemplate($LASTSEEN_TEMPLATE['start'], true);
 foreach($lslist as $row)
 {
-	setScVar('online_shortcodes', 'currentUser', $row);
-	$text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['item'],TRUE);
+// 	setScVar('online_shortcodes', 'currentUser', $row);
+	$online_shortcodes->currentUser = $row;
+	$text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['item'],true, $online_shortcodes);
 }
-$text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['end'], TRUE);
+$text .= $tp -> parseTemplate($LASTSEEN_TEMPLATE['end'], true, $online_shortcodes);
 
 $caption = vartrue($menu_pref['online_ls_caption'],LAN_LASTSEEN_1);
-$ns->tablerender($caption, $text, 'lastseen');
+
+e107::getRender()->tablerender($caption, $text, 'lastseen');
 
 ?>
