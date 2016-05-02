@@ -251,7 +251,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 	elseif(vartrue($_GET['tag']))
 	{
-		$tagsearch = preg_replace('#[^a-zA-Z0-9 \-]#','', $_GET['tag']);
+		$tagsearch = e107::getParser()->filter($_GET['tag']);
 
 		$query = "
 		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,

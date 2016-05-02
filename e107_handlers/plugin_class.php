@@ -1423,6 +1423,8 @@ class e107plugin
 		$mes = e107::getMessage();
 	  	$event = e107::getEvent();
 
+	  	$mes->addDebug("Running ".$function);
+
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
 
@@ -1563,7 +1565,7 @@ class e107plugin
 			$this->XmlAdminLinks($function, $plug_vars['adminLinks']);
 		}
 
-		if (varset($plug_vars['siteLinks']))
+		if (!empty($plug_vars['siteLinks']))
 		{
 			$this->XmlSiteLinks($function, $plug_vars);
 		}
@@ -2024,8 +2026,13 @@ class e107plugin
 		{
 			return;	
 		}
-		
-	//	print_a($plug_vars); 
+
+		if($function == 'refresh')
+		{
+			$mes->addDebug("Checking Plugin Site-links");
+			$mes->addDebug(print_a($plug_vars['siteLinks'],true));
+		}
+
 		
 		$array = $plug_vars['siteLinks']; 
 
@@ -2050,9 +2057,17 @@ class e107plugin
 			{
 				case 'upgrade':
 				case 'install':
+				case 'refresh':
 
 					if (!$remove) // Add any non-deprecated link
 					{
+
+						if($function == 'refresh')
+						{
+							$perm = 'nobody';
+
+						}
+
 						$result = $this->manage_link('add', $url, $linkName, $perm, $options);
 						if($result !== NULL)
 						{
@@ -2068,8 +2083,6 @@ class e107plugin
 					}
 					break;
 
-				case 'refresh': // Probably best to leave well alone
-					break;
 
 				case 'uninstall': //remove all links
 
@@ -2705,14 +2718,17 @@ class e107plugin
 		
 		if (file_exists($_path.'plugin.xml'))
 		{
-			$text = $this->install_plugin_xml($plug, 'refresh');
+			$this->install_plugin_xml($plug, 'refresh');
 		}
 		else
 		{
+			e107::getMessage()->addDebug("Missing xml file at : ".$_path."plugin.xml");
 			$text = EPL_ADLAN_21;
 			
 		}
-		
+
+		e107::getMessage()->addDebug("Running Refresh of ".$_path);
+
 		$this->save_addon_prefs();
 		
 		return $text;

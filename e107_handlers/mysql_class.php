@@ -361,7 +361,7 @@ class e_db_mysql
 
 	/**
 	* @return void
-	* @param unknown $sMarker
+	* @param string $sMarker
 	* @desc Enter description here...
 	* @access private
 	*/

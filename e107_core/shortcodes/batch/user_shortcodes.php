@@ -175,7 +175,7 @@ class user_shortcodes extends e_shortcode
 		}
 		else
 		{
-			return $USER_LEVEL = $ldata[1];
+			return $ldata[1];
 		}
 	}
 	

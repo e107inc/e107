@@ -35,7 +35,7 @@ class news_shortcodes extends e_shortcode
 	
 	private $imageItem;
 
-	public $param = array();
+	// protected $param; // do not enable - erases param. .
 	
 	
 	function __construct($eVars = null)
@@ -381,10 +381,15 @@ class news_shortcodes extends e_shortcode
 
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;	
+			return null;
 		}
 
 		$class = varset($parm['class']) ? " ".$parm['class'] : "";
+
+		if(empty($this->param['commentlink']))
+		{
+			$this->param['commentlink'] = e107::getParser()->toGlyph('fa-comment');
+		}
 
 		// When news_allow_comments = 1 then it is disabled. Backward, but that's how it is in v1.x
 		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
@@ -398,7 +403,7 @@ class news_shortcodes extends e_shortcode
 	{
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;
+			return null;
 		}
 		
 		$text = varset($parm['glyph']) ? e107::getParser()->toGlyph($parm['glyph']) : "";
@@ -853,7 +858,7 @@ class news_shortcodes extends e_shortcode
 		{
 			return $url;
 		}
-		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$this->news_item['news_title'].'</a>';
+		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".e107::getParser()->toHTML($this->news_item['news_title'], TRUE, "TITLE").'</a>';
 	}
 
 	function sc_newsurl()

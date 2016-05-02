@@ -514,8 +514,8 @@ class e107_db_debug {
 			</thead>
 			<tbody>\n";
 
-		$description = array(1=>'Bbcode',2=>'Shortcode',3=>'Wrapper', 4=>'Shortcode Override');
-		$style = array(1 => 'label-info', 2=>'label-primary', 3=>'label-warning', 'label-danger');
+		$description = array(1=>'Bbcode',2=>'Shortcode',3=>'Wrapper', 4=>'Shortcode Override', -2 => 'Shortcode Failure');
+		$style = array(1 => 'label-info', 2=>'label-primary', 3=>'label-warning', 'label-danger', -2 => 'label-danger');
 
  		foreach($this -> scbbcodes as $codes)
 		{
