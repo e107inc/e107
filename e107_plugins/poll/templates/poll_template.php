@@ -189,20 +189,18 @@ $POLL_TEMPLATE = array();
 $POLL_TEMPLATE['form']['start'] = "
 <div class='clearfix'>
 	<div>
-		<div class='control-group'>
-			<ul class='nav nav-list'>
-				<li class='nav-header'>
-					Poll: {QUESTION}
-				</li>
+		<div class='form-group control-group'>
+			Poll: {QUESTION}
+			
 ";
 
 $POLL_TEMPLATE['form']['item'] = "
-			<li>
+			<div class='radio'>
 				{ANSWER} 
-			</li>";
+			</div>";
 
 $POLL_TEMPLATE['form']['end'] = "
-			</ul>
+			
 		</div>
 		<div class='control-group'>
 			 <div class='controls text-center'>
@@ -235,8 +233,16 @@ $POLL_TEMPLATE['results']['end'] = "
 </div>
 ";
 
+/*	v2.x template for polls when user HAS been denied the ability to vote (userclass)	*/
 
-
+$POLL_TEMPLATE['denied']['start'] = $POLL_TEMPLATE['results']['start'];
+$POLL_TEMPLATE['denied']['item'] = $POLL_TEMPLATE['results']['item'];
+$POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{DISALLOWMESSAGE}</div>
+		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		 {COMMENTS} {OLDPOLLS}
+	</div>
+</div>
+";
 
 
 ?>

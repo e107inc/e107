@@ -8,8 +8,6 @@
  *
  * Language handler
  *
- * $URL$
- * $Id$
  */
 
 /**
@@ -23,7 +21,7 @@ class language{
 // http://www.loc.gov/standards/iso639-2/php/code_list.php
 
 // Valid Language Pack Names are shown directly below on the right. 
-	public $detect = FALSE;
+	public $detect = false;
 	public $e_language = 'English'; // replaced later with $pref
 	public $_cookie_domain = '';
 	
@@ -52,19 +50,23 @@ class language{
             "bs" => "Bosnian",
             "br" => "Breton",
             "bg" => "Bulgarian",
+            "my" => "Burmese",
             "ca" => "Catalan",
             "cs" => "Czech",
             "ch" => "Chamorro",
             "ce" => "Chechen",
             "cn" => "ChineseSimp",
+            "tw" => "ChineseTrad",
             "cv" => "Chuvash",
             "kw" => "Cornish",
             "co" => "Corsican",
-            "cy" => "Welsh",
+
             "da" => "Danish",
-            "de" => "German",
+            "nl" => "Dutch",
             "dz" => "Dzongkha",
-            "el" => "Greek",
+            "de" => "German",
+
+
             "en" => "English",
             "eo" => "Esperanto",
             "et" => "Estonian",
@@ -76,9 +78,10 @@ class language{
             "fr" => "French",
             "fy" => "Frisian",
             "gd" => "Gaelic",
+            "el" => "Greek",
             "ga" => "Irish",
             "gl" => "Gallegan",
-            "gv" => "Manx",
+
             "gn" => "Guarani",
             "gu" => "Gujarati",
             "ha" => "Hausa",
@@ -125,13 +128,14 @@ class language{
             "mn" => "Mongolian",
             "mi" => "Maori",
             "ms" => "Malay",
-            "my" => "Burmese",
+            "gv" => "Manx",
+
             "na" => "Nauru",
             "nv" => "Navajo",
 
             "ng" => "Ndonga",
             "ne" => "Nepali",
-            "nl" => "Dutch",
+
 	        "no" => "Norwegian",
 
             "ny" => "Chichewa",
@@ -148,7 +152,7 @@ class language{
             "ru" => "Russian",
             "sg" => "Sango",
             "sa" => "Sanskrit",
-            "si" => "Sinhalese",
+            "si" => "Sinhala",
             "sk" => "Slovak",
             "sl" => "Slovenian",
 
@@ -178,13 +182,14 @@ class language{
             "ts" => "Tsonga",
             "tk" => "Turkmen",
             "tr" => "Turkish",
-            "tw" => "ChineseTrad",
+
             "ug" => "Uighur",
             "uk" => "Ukrainian",
             "ur" => "Urdu",
             "uz" => "Uzbek",
             "vi" => "Vietnamese",
 
+            "cy" => "Welsh",
             "wo" => "Wolof",
             "xh" => "Xhosa",
             "yi" => "Yiddish",
@@ -196,32 +201,40 @@ class language{
 
 		protected $names = array(
 			"Arabic" 		=> "العربية",
+			"Bengali"		=> "বাংলা",
 			"Bosnian"		=> "Bosanski",
 			"Bulgarian"		=> "Български",
 			"Croatian"		=> "Hrvatski",
 			"ChineseTrad"  	=> "繁体中文",
 			"ChineseSimp"  	=> "简体中文",
+			"Czech"			=> "Čeština",
 			"Dutch"			=> "Nederlands",
 			"English"		=> "English",
 			"Estonian"		=> "Eesti",
 			"French"		=> "Français",
+			"Finnish"		=> "Suomi",
 			"German"		=> "Deutsch",
 			"Greek"			=> "Ελληνικά",
 			"Hebrew"		=> "עִבְרִית",
+			"Hindi"			=> "हिन्दी",
 			"Hungarian"		=> "Magyar",
+			"Icelandic"		=> "íslenska",
 			"Indonesian"	=> "Bahasa Indonesia",
 			"Italian"		=> "Italiano",
 			"Japanese"		=> "日本語",
+			"Khmer"			=> "ខ្មែរ",
 			"Korean"		=> "한국어",
 			"Lithuanian"	=> "Lietuvių",
-			"Mongolian"		=> "монгол",
+			"Mongolian"		=> "Монгол",
 			"Nepali"		=> "नेपाली",
+			"Norwegian"		=> "Norsk",
 			"Persian"	   	=> "فارسي",
 		    "Portuguese"	=> "Português",
 			"Polish"		=> "Polski",
-			"Romanian"		=> "Romanesc",
+			"Romanian"		=> "Română",
 			"Russian"		=> "Pусский",
-			"Serbian"		=> "Srpski",
+			"Serbian"		=> "Српски",
+			"Sinhala"		=> "සිංහල",
 			"Spanish"		=> "Español",
 			"Slovenian"		=> "Slovensko",
 			"Slovakian"		=> "Slovensky",
@@ -229,7 +242,8 @@ class language{
 			"Swedish"		=> "Svenska",
 			"Thai"			=> "ภาษาไทย",
 			"Turkish"		=> "Türkçe",
-			"Vietnamese"	=> "Tiếng Việt"
+			"Vietnamese"	=> "Tiếng Việt",
+			"Welsh"         => "Cymraeg"
 		);
 
 	/**
@@ -242,11 +256,11 @@ class language{
 		if(strlen($data) > 2)
 		{
         	$tmp = array_flip($this->list);
-			return isset($tmp[$data]) ? $tmp[$data] : FALSE;
+			return isset($tmp[$data]) ? $tmp[$data] : false;
 		}
 		else
 		{
-			return (isset($this->list[$data])) ? $this->list[$data] : FALSE;
+			return (isset($this->list[$data])) ? $this->list[$data] : false;
 		}
 	}
 
@@ -254,22 +268,37 @@ class language{
 	/**
 	 * Check if a Language is installed and valid
 	 * @param object $lang - Language to check. eg. 'es' or 'Spanish'
-	 * @return FALSE or the name of the valid Language
+	 * @return false or the name of the valid Language
 	 */
 	function isValid($lang='')
-	{	
+	{
+		if(empty($lang))
+		{
+			return false;
+		}
+
 		global $pref;
-				
+
 		if(!$lang)
 		{
-			return $pref['sitelanguage'];
+			return (ADMIN_AREA &&  vartrue($pref['adminlanguage'])) ? $pref['adminlanguage'] : $pref['sitelanguage'];
 		}
-		
-		if(strpos($lang,"debug")!==FALSE)
+
+		if(strpos($lang,"debug")!==false)
 		{
-			 return FALSE;			
+			 return false;
 		}
-		
+
+		if($lang == 'E_SITELANGUAGE') // allows for overriding language using a scripted 'define' before class2.php is loaded.
+		{
+			$lang = $pref['sitelanguage'];
+		}
+
+		if($lang == 'E_ADMINLANGUAGE')
+		{
+			$lang = $pref['adminlanguage'];
+		}
+
 		if(strlen($lang)== 2)
 		{
 			$iso = $lang;
@@ -280,11 +309,11 @@ class language{
 			$iso = $this->convert($lang);
 		}
 			
-		if($iso==FALSE || $lang==FALSE)
+		if($iso==false || $lang==false)
 		{
 			$diz = ($lang) ? $lang : $iso;
 			trigger_error("The selected language (".$diz.") is invalid. See e107_handlers/language_class.php for a list of valid languages. ", E_USER_ERROR);
-			return FALSE;
+			return false;
 		}
 		
 		if(is_readable(e_LANGUAGEDIR.$lang.'/'.$lang.'.php'))
@@ -294,10 +323,9 @@ class language{
 		else
 		{
 			trigger_error("The selected language (".$lang.") was not found.", E_USER_ERROR);
-			return FALSE;	
+			return false;
 		}
-		
-		return FALSE;	
+
 	}
 	
 	/**
@@ -308,7 +336,7 @@ class language{
 	{
 		if(!$domain)
 		{
-			return FALSE;
+			return false;
 		}
 		
 		global $pref;
@@ -317,11 +345,23 @@ class language{
 		{
         	if($domain == trim($val))
 			{
-            	return TRUE;
+            	return true;
 			}
 		}
+
+		if(!empty($pref['multilanguage_domain']) && is_array($pref['multilanguage_domain']))
+		{
+			foreach($pref['multilanguage_domain'] as $lng=>$val)
+			{
+				if($domain == trim($val))
+				{
+					return $lng;
+				}
+			}
+
+		}
 		
-		return FALSE;
+		return false;
 		
 	}
 
@@ -329,6 +369,7 @@ class language{
 	/**
 	 * Generic variable translator for LAN definitions. 
 	 * @example $lng->translate("My name is [x] and I own a [y]", array('x'=>"John", 'y'=>"Cat")); 
+	 * @deprecated Use $tp->lanVars() instead. 
 	 */
 	function translate($lan, $array= array())
 	{
@@ -348,10 +389,12 @@ class language{
 
 	/**
 	 * Return a list of Installed Language Packs
-	 * 
+	 * @param str $type - English or Native.
+	 * @example type = english: array(0=>'English', 1=>'French' ...)
+	 * @example type = native: array('English'=>'English', 'French'=>'Francais'...)
 	 * @return array
 	 */
-	function installed()
+	function installed($type='english')
 	{
 		if(null == $this->lanlist)
 		{
@@ -371,6 +414,19 @@ class language{
 			
 			$this->lanlist = array_intersect($lanlist,$this->list);
 		}
+
+		if($type == 'native')
+		{
+			$natList = array();
+			foreach($this->lanlist as $lang)
+			{
+				$natList[$lang] = $this->toNative($lang);
+			}
+
+			natsort($natList);
+
+			return $natList;
+		}
 		
 		return $this->lanlist;
 	}
@@ -383,7 +439,7 @@ class language{
 	 */
 	function toNative($lang)
 	{
-		return ($this->names[$lang]) ? $this->names[$lang] : $lang;
+		return (!empty($this->names[$lang])) ? $this->names[$lang] : $lang;
 	}
 
 	/**
@@ -392,27 +448,43 @@ class language{
 	 * @param string $language eg. 'Spanish'
 	 * @return URL
 	 */
-	function subdomainUrl($language)
+	function subdomainUrl($language, $url=e_REQUEST_URL)
 	{
 		global $pref;
-		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $this->convert($language);
+
+		$iso = (strlen($language) == 2) ? $language : $this->convert($language);
+
+		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $iso;
+		
+		if($codelnk == '')
+		{
+			$codelnk = 'www';	
+		}
 		
       //  $urlval = str_replace($_SERVER['HTTP_HOST'],$codelnk.".".e_DOMAIN,e_SELF);
 		
-		$urlval = (e_QUERY)
-		        ? str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
-		        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
+		/*	$urlval = (e_QUERY)
+			        ? str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF).'?'.e_QUERY
+			        : str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.e_DOMAIN, e_SELF);
+		*/
+
+
+		$domain = deftrue('e_DOMAIN','example.com');
+
+		$urlval = str_replace($_SERVER['HTTP_HOST'], $codelnk.'.'.$domain, $url) ;
 		
-        return $urlval;
+        return (string) $urlval;
 	}
 	
 	/**
  	* Detect a Language Change
- 	* 1. Parked (sub)Domain		eg. http://es.mydomain.com (Preferred for SEO)
- 	* 2. e_MENU Query			eg. /index.php?[es]
- 	* 3. $_GET['elan']			eg. /index.php?elan=es
- 	* 4. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' /> 
- 	* 5. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated) 
+	* 1. Scripted Definition    eg. define('e_PAGE_LANGUAGE', 'English');
+	* 2. Parked Domain          eg. http://mylanguagedomain.com
+ 	* 3. Parked subDomain		eg. http://es.mydomain.com (Preferred for SEO)
+ 	* 4. e_MENU Query			eg. /index.php?[es]
+ 	* 5. $_GET['elan']			eg. /index.php?elan=es
+ 	* 6. $_POST['sitelanguage']	eg. <input type='hidden' name='sitelanguage' value='Spanish' />
+ 	* 7. $GLOBALS['elan']		eg. <?php $GLOBALS['elan']='es' (deprecated)
  	* 
  	* @param boolean $force force detection, don't use cached value
  	*/
@@ -423,17 +495,27 @@ class language{
 		
 		if(false !== $this->detect && !$force) return $this->detect;
 		$this->_cookie_domain = '';
-		if(varsettrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== FALSE)) 
+
+		if(defined('e_PAGE_LANGUAGE') && ($detect_language = $this->isValid(e_PAGE_LANGUAGE))) // page specific override.
+		{
+			// Do nothing as $detect_language is set.
+		}
+		elseif(vartrue($pref['multilanguage_subdomain']) && $this->isLangDomain(e_DOMAIN) && (defset('MULTILANG_SUBDOMAIN') !== false))
 		{
 			$detect_language = (e_SUBDOMAIN) ? $this->isValid(e_SUBDOMAIN) : $pref['sitelanguage'];
 			// Done in session handler now, based on MULTILANG_SUBDOMAIN value
 			//e107_ini_set("session.cookie_domain", ".".e_DOMAIN); // Must be before session_start()
 			$this->_cookie_domain = ".".e_DOMAIN;
-			define('MULTILANG_SUBDOMAIN',TRUE);
+			define('MULTILANG_SUBDOMAIN',true);
+		}
+		elseif(!empty($pref['multilanguage_domain']) &&  ($newLang = $this->isLangDomain(e_DOMAIN)))
+		{
+			$detect_language = $this->isValid($newLang);
+			$this->_cookie_domain = ".".e_DOMAIN;
 		}
 		elseif(e_MENU && ($detect_language = $this->isValid(e_MENU))) // 
 		{
-			define("e_LANCODE",TRUE);	
+			define("e_LANCODE",true);
 
 		}
 		elseif(isset($_GET['elan']) && ($detect_language = $this->isValid($_GET['elan']))) // eg: /index.php?elan=Spanish
@@ -451,7 +533,7 @@ class language{
 		}
 		else
 		{
-			$detect_language = FALSE; // ie. No Change. 
+			$detect_language = false; // ie. No Change.
 		}
 		
 		// Done in session handler now
@@ -489,7 +571,8 @@ class language{
 		{
 			// new - e_language moved to e107 namespace - $_SESSION['e107']['e_language']
 			$oldlan = $session->get('e_language');
-			if(!$session->has('e_language') || (($session->get('e_language') != $this->detect) && $this->isValid($session->get('e_language'))))
+			
+			if(!$session->has('e_language') || (($session->get('e_language') != $this->detect) && $this->isValid($this->detect)))
 			{
 				$session->set('e_language', $this->detect);	
 			}
@@ -515,7 +598,8 @@ class language{
 			}
 		}
 		else // No Language-change Trigger Detected. 
-		{	
+		{
+							
 			if($session->has('e_language'))
 			{
 				$user_language = $session->get('e_language');
@@ -525,7 +609,8 @@ class language{
 				$session->set('e_language', $user_language);	 		
 			}
 			else
-			{	
+			{
+								
 				$user_language = $pref['sitelanguage'];	
 				
 				if($session->is('e_language'))
@@ -584,7 +669,7 @@ class language{
 		else
 		{
 			define("e_LANCODE", '');		
-			define("e_LANQRY", FALSE);	
+			define("e_LANQRY", false);
 		} 	
 	}
 	
@@ -601,4 +686,39 @@ class language{
 		}
 		return $this->_select_array;
 	}
+
+	/**
+	 * Return an array of all language types. 
+	 */
+	public function getList()
+	{
+		return $this->list;
+	}
+
+
+	/**
+	 * Define Legacy LAN constants based on a supplied array.
+	 * @param null $bcList
+	 */
+	public function bcDefs($bcList = null)
+	{
+
+		if(empty($bcList))
+		{
+			$bcList = array(
+				'LAN_180'   => 'LAN_SEARCH'
+			);
+		}
+
+		foreach($bcList as $old => $new)
+		{
+			if(!defined($old) && defined($new))
+			{
+				define($old, constant($new));
+			}
+
+		}
+
+	}
+
 }

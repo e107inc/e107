@@ -15,27 +15,14 @@
 |
 | Released under the terms and conditions of the
 | GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/clock_menu/clock_menu.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
 +---------------------------------------------------------------+
 */
 
-/**
- *	e107 Clock display menu plugin
- *
- *	Handles the display of a clock/calendar in a menu
- *
- *	@package	e107_plugins
- *	@subpackage	clock
- *	@version 	$Id$;
- */
-
 //FIXME looks pretty much to be 0.6 compatible
 if (!defined('e107_INIT')) { exit(); }
-include_lan(e_PLUGIN.'/clock_menu/languages/'.e_LANGUAGE.'.php');
+
+e107::lan('clock_menu',e_LANGUAGE);
+
 $menu_pref = e107::getConfig('menu')->getPref('');
 
 $indexArray = array('clock_dateprefix','clock_format','clock_datesuffix1','clock_datesuffix2','clock_datesuffix3','clock_datesuffix4');
@@ -66,7 +53,7 @@ var MnthNam = new Array(
 </script>
 <?php
 echo "
-<script type='text/javascript' src='".e_PLUGIN."clock_menu/clock.js'></script>
+<script type='text/javascript' src='".e_PLUGIN_ABS."clock_menu/clock.js'></script>
 
 <script type=\"text/javascript\">\nwindow.setTimeout(\"tick('".$menu_pref['clock_dateprefix']."', '".$menu_pref['clock_format']."', '".$menu_pref['clock_datesuffix1']."', '".$menu_pref['clock_datesuffix2']."', '".$menu_pref['clock_datesuffix3']."', '".$menu_pref['clock_datesuffix4']."')\",150);\n</script>
 <!-- ### end clock ### //-->\n\n";

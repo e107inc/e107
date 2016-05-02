@@ -11,7 +11,9 @@
 
 // HTTP headers for no cache etc
 
-
+$_E107['no_online'] = true;
+define('e_MINIMAL', true);
+define('FLOODPROTECT', false);
 require_once("../../../class2.php");
 
 if(!ADMIN)
@@ -43,6 +45,8 @@ $maxFileAge = 5 * 3600; // Temp file age in seconds
 $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+
+
 
 // Clean the fileName for security reasons
 $fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
@@ -136,11 +140,22 @@ if (!$chunks || $chunk == $chunks - 1) {
 }
 
 
+
+
 // rename($targetDir.$fileName,e_MEDIA."images/2012-05/",$fileName);
 if($_GET['for'] !='') // leave in upload directory if no category given. 
 {
 	$result = e107::getMedia()->importFile($fileName,$_GET['for']);
 }
+
+
+$log = $_GET; 
+$log['filepath'] = $filePath; 
+$log['filename'] = $fileName; 
+$log['status'] = ($result) ? 'ok' : 'failed'; 
+$type = ($result) ? E_LOG_INFORMATIVE : E_LOG_WARNING; 
+
+e107::getLog()->add('Media Upload', print_r($log,true), $type, MEDIA_01); 
 
 $array = array("jsonrpc"=>"2.0", "result"=>$result,"id"=>"id");
 

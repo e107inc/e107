@@ -15,19 +15,28 @@ a.media-select-none 		{ margin:5px; text-decoration:none; width:80px; height:80p
 	a.media-select-none 		{  width:120px; height:120px; }
 } 
 
-a.media-select-icon			{ text-align:center; vertical-align:middle; margin:1px; border:1px solid white; width:48px; height:48px;}
+a.media-select-icon			{ text-align:center; vertical-align:middle; margin:4px;  width:48px; height:48px;}
 a.media-select-icon:hover	{ border:1px solid red; }
 .media-select-container 	{ padding:10px; }
 
- .media-select-active		{ border: 1px solid silver; }
+ .media-select-active		{ opacity: .5; }
 
-.e-moving 					{ background-color: silver; }
+.e-moving 					    { background-color: silver; }
 
-legend 						{ display: none; }
-.chzn-choices				{ width: 350px; }
-.e-autocomplete				{ display: none }
-.e-expandit-container		{ margin-top:10px }
+legend 						    { display: none; }
+.chzn-choices				    { width: 350px; }
+.e-autocomplete				    { display: none }
+.e-expandit-container		    { margin-top:10px }
 
-input.helpbox				{ display:none; } /* legacy BBcode helper box - deprecated and hidden if found in v2.x */
+input.helpbox				        { display:none; } /* legacy BBcode helper box - deprecated and hidden if found in v2.x */
 
-.col-selection 				{ padding:5px; text-align:left; background-color: #FCFDFF; border: 1px outset black; width:200px; margin-right:0px;overflow:visible; position:absolute; z-index:101; right:0px;}
+a.media-select-none                 { text-align:center; text-decoration: none }
+a.media-select-image-none span      { font-size:50px }
+a.media-select-icon-none span       { font-size:30px  }
+
+@media (min-height: 500px){
+	a.media-select-image-none span  { font-size:80px }
+}
+
+
+

@@ -10,28 +10,66 @@
 *
 */
 
-require_once('../../class2.php');
-$e107 = e107::getInstance();
-if (!$e107->isInstalled('forum'))
+if(!defined('e107_INIT'))
 {
-	header('Location: '.SITEURL);
+	require_once('../../class2.php');
+}
+$e107 = e107::getInstance();
+if (!e107::isInstalled('forum'))
+{
+	e107::redirect();
 	exit;
 }
+e107::lan('forum', "front", true);
 //include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php'); // now uses English_front.php
+
+if(!deftrue('BOOTSTRAP'))
+{
+	$bcDefs = array(
+		'FORLAN_11' => 'LAN_FORUM_0039',
+		'FORLAN_12' => 'LAN_FORUM_0040',
+		'FORLAN_13' => 'LAN_FORUM_0040',
+		'FORLAN_14' => 'LAN_FORUM_0040',
+		'FORLAN_16' => 'LAN_FORUM_1012',
+		'FORLAN_17' => 'LAN_FORUM_1013',
+		'FORLAN_18' => 'LAN_FORUM_1014',
+		'LAN_435'   => 'LAN_DELETE',
+		'LAN_401'   => 'LAN_FORUM_4011',
+		'LAN_398'   => 'LAN_FORUM_4012',
+		'LAN_399'   => 'LAN_FORUM_4013',
+		'LAN_400'   => 'LAN_FORUM_4014',
+		'LAN_402'   => 'LAN_FORUM_5019',
+
+	);
+
+	e107::getLanguage()->bcDefs($bcDefs);
+}
+
+
 define('NAVIGATION_ACTIVE','forum');
 
 
-if (isset($_POST['fjsubmit']))
+
+
+if (!e_QUERY && empty($_GET))
 {
-	// TODO - load from DB and find forum_name
-	header('location:'.e107::getUrl()->create('forum/forum/view', array('id'=>(int) $_POST['forumjump']), '', 'full=1&encode=0'));
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		echo __FILE__ .' Line: '.__LINE__;
+		exit;
+	}
+	$url = e107::url('forum','index','full');
+	e107::getRedirect()->go($url);
+	//header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
 	exit;
 }
 
-if (!e_QUERY)
+if(!empty($_GET['sef']))
 {
-	header('Location:'.e107::getUrl()->create('forum/forum/main', array(), 'full=1&encode=0'));
-	exit;
+	if($newID =  $sql->retrieve('forum', 'forum_id', "forum_sef= '".$tp->toDB($_GET['sef'])."' LIMIT 1"))
+	{
+		$_REQUEST['id'] = $newID;
+	}
 }
 
 require_once(e_PLUGIN.'forum/forum_class.php');
@@ -52,9 +90,10 @@ $fVars->REPLYTITLE = LAN_FORUM_0003;
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
 $fVars->VIEWTITLE = LAN_FORUM_1005;
 
+
 $forumId = (int)$_REQUEST['id'];
 
-if(!$forumId && e_QUERY) // BC Fix for old links. 
+if(!$forumId && e_QUERY) // BC Fix for old links.
 {
 	list($id,$from) = explode(".",e_QUERY);
 	$forumId = intval($id);		
@@ -64,7 +103,22 @@ if(!$forumId && e_QUERY) // BC Fix for old links.
 
 if (!$forum->checkPerm($forumId, 'view'))
 {
-	header('Location:'.e107::getUrl()->create('forum/forum/main'));
+	// header('Location:'.e107::getUrl()->create('forum/forum/main'));
+
+	$url = e107::url('forum','index','full');
+
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		print_a($_REQUEST);
+		print_a($_GET);
+		echo __FILE__ .' Line: '.__LINE__;
+		echo "   forumId: ".$forumId;
+		exit;
+	}
+
+
+	e107::getRedirect()->go($url);
+
 	exit;
 }
 
@@ -73,7 +127,11 @@ $threadsViewed = $forum->threadGetUserViewed();
 
 if (!vartrue($FORUM_VIEW_START))
 {
-	if (file_exists(THEME.'forum_viewforum_template.php'))
+	if(file_exists(THEME.'templates/forum/forum_viewforum_template.php'))
+	{
+		require_once(THEME.'templates/forum/forum_viewforum_template.php');
+	}
+	elseif (file_exists(THEME.'forum_viewforum_template.php'))
 	{
 		require_once(THEME.'forum_viewforum_template.php');
 	}
@@ -88,7 +146,7 @@ if (!vartrue($FORUM_VIEW_START))
 }
 
 
-if(is_array($FORUM_VIEWFORUM_TEMPLATE) && (BOOTSTRAP === true)) // New v2.x bootstrap Template. 
+if(is_array($FORUM_VIEWFORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // New v2.x bootstrap Template. 
 {
 	
 	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
@@ -146,12 +204,27 @@ if(e_AJAX_REQUEST && MODERATOR) // see javascript above.
 
 if(varset($pref['track_online']))
 {
-	$member_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
-	$guest_users = $sql->db_Count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
+//	$member_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
+//	$guest_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
+	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id != 0");
+	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id = 0");
+
+
 	$users = $member_users+$guest_users;
+
+}
+else
+{
+	$users = 0;
+	$member_users= 0;
+	$guest_users = 0;
+
+
 }
 
 require_once(HEADERF);
+
+
 $text='';
 // TODO - message batch shortcode
 if ($message)
@@ -186,13 +259,14 @@ if ($pages)
 	}
 }
 
-if($forum->checkPerm($forumId, 'post'))
+if($forum->checkPerm($forumId, 'thread')) //new thread access only.
 {
-	$fVars->NEWTHREADBUTTON = "<a href='".e107::getUrl()->create('forum/thread/new', array('id' => $forumId))."'>".IMAGE_newthread.'</a>';
-	$fVars->NEWTHREADBUTTONX = newthreadjump(e107::getUrl()->create('forum/thread/new', array('id' => $forumId))); // "<a class='btn btn-primary' href='".."'>New Thread</a>";
+	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $forumId;
+	$fVars->NEWTHREADBUTTON = "<a href='".$ntUrl."'>".IMAGE_newthread.'</a>';
+	$fVars->NEWTHREADBUTTONX = newthreadjump($ntUrl);
 }
 
-if(BOOTSTRAP !== true)
+if(!BOOTSTRAP)
 {
 	$fVars->NEWTHREADBUTTONX = $fVars->NEWTHREADBUTTON;
 }
@@ -214,18 +288,32 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 }
 
 $forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
-
+$modUser = array();
+foreach ( $modArray as $user)
+{
+	$modUser[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
+}
 $fVars->FORUMTITLE = $forumInfo['forum_name'];
-$fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modArray);
+$fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modUser);
 $fVars->BROWSERS = '';
+
+
+
 if(varset($pref['track_online']))
 {
 	$fVars->BROWSERS = $users.' '.($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060).' ('.$member_users.' '.($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).')';
 }
 
 
-$fVars->ICONKEY = "
-	<table class='table' style='width:100%'>
+
+if(defset('BOOTSTRAP')==3 && !empty($FORUM_VIEWFORUM_TEMPLATE['iconkey'])) // v2.x
+{
+	$fVars->ICONKEY = $tp->parseTemplate($FORUM_VIEWFORUM_TEMPLATE['iconkey'],true);
+}
+else // v1.x
+{
+	$fVars->ICONKEY = "
+	<table class='table table-bordered' style='width:100%'>
 	<tr>
 	<td style='vertical-align:middle; text-align:center; width:2%'>".IMAGE_new_small."</td>
 	<td style='width:10%' class='smallblacktext'>".LAN_FORUM_0039."</td>
@@ -248,24 +336,92 @@ $fVars->ICONKEY = "
 	</tr>
 	</table>";
 
+}
+
+
+// ----------------- { VIEWABLE_BY } ---------------------------
+
+if($users = $forum->getForumClassMembers($forumId))
+{
+	$userList = array();
+	if(is_array($users))
+	{
+		foreach($users as $user)
+		{
+				$userList[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
+		}
+
+		$viewable = implode(', ', $userList);;
+	}
+	elseif($users == 0)
+	{
+		$viewable = '';
+	}
+	else
+	{
+		$viewable =  e107::getUserClass()->getFixedClassDescription($users);
+	}
+
+}
+
+if(!empty($viewable))
+{
+
+	$fVars->VIEWABLE_BY = "
+
+						<div class='panel panel-default' style='margin-top:10px'>
+							<div class='panel-heading'>Viewable by</div>
+								<div class='panel-body'>
+									".$viewable."
+								</div>
+							</div>
+						</div>
+				";
+}
+else
+{
+	$fVars->VIEWABLE_BY = '';
+}
+
+
+// ------------------------------------------------------------
+///TODO  XXX All these $fVars items need to be put into a shortcode class so they can be parsed with parms and wrappers. Big Job!
+
+
+
 $fVars->SEARCH = "
 	<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 	<p>
 	<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-	<button class='btn button' type='submit' name='s' >".LAN_SEARCH."</button>
+	<button class='btn btn-default button' type='submit' name='s' >".LAN_SEARCH."</button>
 	<input type='hidden' name='r' value='0' />
 	<input type='hidden' name='ref' value='forum' />	
 	</p>
 	</form>";
 
-if($forum->checkPerm($forumId, 'post'))
-{
-	$fVars->PERMS = LAN_FORUM_0043.' - '.LAN_FORUM_0045.' - '.LAN_FORUM_0047;
-}
-else
-{
-	$fVars->PERMS = LAN_FORUM_0044.' - '.LAN_FORUM_0046.' - '.LAN_FORUM_0048;
-}
+
+	// ----- Perm Display ---
+
+	$permDisplay = array();
+
+	$permDisplay['topics'] = ($forum->checkPerm($forumId, 'thread')) ? LAN_FORUM_0043 : LAN_FORUM_0044;
+	if($forum->checkPerm($forumId, 'post'))
+	{
+		$permDisplay['post'] =LAN_FORUM_0045;
+		$permDisplay['edit'] = LAN_FORUM_0047;
+	}
+	else
+	{
+		$permDisplay['post'] =LAN_FORUM_0046;
+		$permDisplay['edit'] = LAN_FORUM_0048;
+	}
+
+
+	$fVars->PERMS = implode(' - '.$permDisplay);
+
+
+	// -------------------------------
+
 
 $sticky_threads = 0;
 $stuck = false;
@@ -337,11 +493,11 @@ if (count($threadList) )
 }
 else
 {
-	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_FORUM_1008."</td></tr>";
+	$forum_view_forum .= "<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
 $fVars->FORUMJUMP = forumjump();
-$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GOTO.'</a>'; // FIXME - TOPLINK not used anymore?
+$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GO.'</a>'; // FIXME - TOPLINK not used anymore?
 
 if($container_only)
 {
@@ -352,6 +508,9 @@ if($container_only)
 
 $forum_view_start = $tp->simpleParse($FORUM_VIEW_START, $fVars);
 $forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
+
+
+
 
 if ($forum->prefs->get('enclose'))
 {	
@@ -365,11 +524,12 @@ else
 echo "<script type=\"text/javascript\">
 	function confirm_(thread_id)
 	{
-		return confirm(\"".$tp->toJS(LAN_FORUM_1019)."\");
+		return confirm(\"".$tp->toJS(LAN_JSCONFIRM)."\");
 	}
 	</script>";
 
 require_once(FOOTERF);
+
 
 
 function parse_thread($thread_info)
@@ -377,8 +537,6 @@ function parse_thread($thread_info)
 	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, $threadsViewed;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
-	$e107 = e107::getInstance();
-	$text = '';
 
 	$threadId = $thread_info['thread_id'];
 	$forumId = $thread_info['thread_forum_id'];
@@ -415,7 +573,17 @@ function parse_thread($thread_info)
 			}
 		}
 		$tVars->LASTPOST .= '<br />'.$lastpost_datestamp;
-		$tVars->LASTPOSTDATE .=  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short');
+
+		$tVars->LASTPOSTUSER = $thread_info['lastpost_username']; // $lastpost_name;
+
+		$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
+
+		$urlData = array('forum_sef'=>$thread_info['forum_sef'], 'thread_id'=>$thread_info['thread_id'],'thread_sef'=>$thread_info['thread_sef']);
+		$url = e107::url('forum', 'topic', $urlData);
+		$url .= (strpos($url,'?')!==false) ? '&' : '?';
+		$url .= "last=1#post-".$thread_info['lastpost_id'];
+
+		$tVars->LASTPOSTDATE .= "<a href='".$url."'>".  $gen->computeLapse($thread_info['thread_lastpost'],time(), false, false, 'short')."</a>";
 	}
 
 	$newflag = (USER && $thread_info['thread_lastpost'] > USERLV && !in_array($thread_info['thread_id'], $threadsViewed));
@@ -423,11 +591,19 @@ function parse_thread($thread_info)
 	$tVars->THREADDATE = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
 	
 	$tVars->THREADTIMELAPSE = $gen->computeLapse($thread_info['thread_datestamp'],time(), false, false, 'short'); //  convert_date($thread_info['thread_datestamp'], 'forum');
-	
+
+
+
+	/// ---------- Icon ----------------
+
 	$tVars->ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
 	if ($tVars->REPLIES >= $forum->prefs->get('popular', 10))
 	{
 	  $tVars->ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
+	}
+	elseif(empty($tVars->REPLIES) && defined('IMAGE_noreplies'))
+	{
+		 $tVars->ICON = IMAGE_noreplies;
 	}
 
 	$tVars->THREADTYPE = '';
@@ -445,6 +621,16 @@ function parse_thread($thread_info)
 	{
 		$tVars->ICON = IMAGE_closed;
 	}
+
+// $tVars->ICON = $tVars->REPLIES;
+
+	// ------------------------------------------------------
+
+
+
+
+
+
 
 	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook, emotes_off'));
 	if(isset($thread_info['thread_options']['poll']))
@@ -471,8 +657,17 @@ function parse_thread($thread_info)
 	{
 		$title = '';
 	}
-	$tVars->THREADNAME = "<a {$title} href='".e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name))."'>{$thread_name}</a>";
+	// $tVars->THREADNAME = "<a {$title} href='".e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name))."'>{$thread_name}</a>";
+
+//	$url = e107::getUrl()->create('forum/thread/view', array('id' => $threadId, 'name' => $thread_name));
+
+	$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
+	$url = e107::url('forum','topic', $thread_info);
+	$tVars->THREADNAME = "<a {$title} href='".$url."'>{$thread_name}</a>";
+
+
 	// FIXME - pages -> convert to nextprev shortcode
+	/*
 	$pages = ceil(($tVars->REPLIES)/$forum->prefs->get('postspage'));
 	$urlparms = $thread_info;
 	if ($pages > 1)
@@ -514,7 +709,10 @@ function parse_thread($thread_info)
 	{
 		$tVars->PAGES = '';
 	}
-	
+	*/
+
+
+	$tVars->PAGES = fpages($thread_info, $tVars->REPLIES);
 	$tVars->PAGESX = fpages($thread_info, $tVars->REPLIES);
 
 	if (MODERATOR)
@@ -522,21 +720,21 @@ function parse_thread($thread_info)
 		// FIXME _URL_ thread name
 		// e107::getUrl()->create('forum/forum/view', "id={$thread_info['thread_forum_id']}")
 		// USED self instead
+
+		$moveUrl        = e107::url('forum','move', $thread_info);
+
 		$tVars->ADMIN_ICONS = "
-		<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div>
+		<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'><div class='forum-viewforum-admin-icons'>
 		<input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" />
 		".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> ")."
 		".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> " : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> "). "
-		<a href='".e107::getUrl()->create('forum/thread/move', "id={$threadId}")."'>".IMAGE_admin_move.'</a>
+		<a class='e-tip' title=\"".LAN_FORUM_5019."\" href='".$moveUrl."'>".IMAGE_admin_move.'</a>
 		</div></form>
 		';
 		
 		$tVars->ADMINOPTIONS = fadminoptions($thread_info);
 	}
 
-	$text .= "</td>
-		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE.'<br />';
-//	$tmp = explode('.', $thread_info['thread_user'], 2);
 
 	if($thread_info['user_name'])
 	{
@@ -583,11 +781,11 @@ function parse_thread($thread_info)
 		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
 	}
 	
-	if(BOOTSTRAP !== true)
+	if(!deftrue('BOOTSTRAP'))
 	{
-		$tVars->REPLIESX = 	$tVars->REPLIES;
-		$tVars->VIEWSX	 = $tVars->VIEWS;
-		$tVars->ADMINOPTIONS = $tVars->ADMIN_ICONS;
+		$tVars->REPLIESX        = 	$tVars->REPLIES;
+		$tVars->VIEWSX	        = $tVars->VIEWS;
+		$tVars->ADMINOPTIONS    = $tVars->ADMIN_ICONS;
 	}
 	
 	
@@ -595,12 +793,13 @@ function parse_thread($thread_info)
 	return $tp->simpleParse($_TEMPLATE, $tVars);
 }
 
+
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $newflag_list;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
-	$e107 = e107::getInstance();
+
 	$forumName = $tp->toHTML($subInfo['forum_name'], true);
 	$tVars->SUB_FORUMTITLE = "<a href='".e107::getUrl()->create('forum/forum/view', $subInfo)."'>{$forumName}</a>";
 	$tVars->SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
@@ -661,9 +860,9 @@ function forumjump()
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
 	foreach($jumpList as $key => $val)
 	{
-		$text .= "\n<option value='".$key."'>".$val."</option>";
+		$text .= "\n<option value='".e107::url('forum','forum',$val, 'full')."'>".$val['forum_name']."</option>";
 	}
-	$text .= "</select> <input class='btn button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
+	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
 	return $text;
 }
 
@@ -672,36 +871,38 @@ function fadminoptions($thread_info)
 {
 	$tVars = new e_vars;
 	$e107 = e107::getInstance();
+	$tp = e107::getParser();
 	
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-	$text .= '<div class="btn-group"><button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+	$text = '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu pull-right">	
    ';
    
 	//FIXME - not fully working. 
-	
-	$moveUrl 		= e107::getUrl()->create('forum/thread/move', "id=".$thread_info['thread_id']);
+
+	$moveUrl        = e107::url('forum','move', $thread_info);
+
 	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
 	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
 	$id = intval($thread_info['thread_id']);
 	
 	$lan = array('stick'=>'Stick','unstick'=>'Unstick','lock'=>"Lock", 'unlock'=>"Unlock");
 	$icon = array(
-		'unstick'	=>	"<i class='icon-chevron-down'></i>",
-		'stick'	=>	"<i class='icon-chevron-up'></i>",
-		'lock'	=>	"<i class='icon-lock'></i>",
-		'unlock'	=>	"<i class='icon-unlock'></i>",
+		'unstick'	=>	$tp->toGlyph('chevron-down'),
+		'stick'		=>	$tp->toGlyph('chevron-up'),
+		'lock'		=>	$tp->toGlyph('lock'),
+		'unlock'	=>	$tp->toGlyph('unlock'),
 	);
 	
 
 
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete <i class='icon-trash'></i></a></li>";
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
-	$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete ".$tp->toGlyph('trash');
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
 	
-	$text .= "<li><a href='{$moveUrl}'>Move <i class='icon-move'></i></a></li>";
+	$text .= "<li class='text-right'><a href='{$moveUrl}'>Move ".$tp->toGlyph('move')."</i></a></li>";
 
 /*
 	$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
@@ -723,10 +924,13 @@ function fadminoptions($thread_info)
 	
 function fpages($thread_info, $replies)
 {
-	global $forum; 
+	global $forum;
+	$tp = e107::getParser();
 	
 	$pages = ceil(($replies)/$forum->prefs->get('postspage'));
+	$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
 	$urlparms = $thread_info;
+	$text = '';
 
 	if ($pages > 1)
 	{
@@ -736,40 +940,47 @@ function fpages($thread_info, $replies)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
-				$urlparms['page'] = $aa;
-				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+			//	$urlparms['page'] = $aa;
+
+			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+				$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+				$url = e107::url('forum','topic',$urlparms).'&amp;p='.$aa;
+				$opts[] = "<a data-toggle='tooltip' title=\"".$title."\" href='{$url}'>{$aa}</a>";
 			}
 			$text .= ' ... ';
 			for($a = $pages-3; $a <= $pages-1; $a++)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
-				$urlparms['page'] = $aa;
-				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] = "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+			//	$urlparms['page'] = $aa;
+			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+				$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+				$url = e107::url('forum','topic',$urlparms).'&amp;p='.$aa;
+				$opts[] = "<a data-toggle='tooltip' title=\"".$title."\" href='{$url}'>{$aa}</a>";
 			}
 		}
 		else
 		{
+
 			for($a = 0; $a <= ($pages-1); $a++)
 			{
 				$aa = $a + 1;
 				$text .= $text ? ' ' : '';
-				$urlparms['page'] = $aa;
-				$url = e107::getUrl()->create('forum/thread/view', $urlparms);
-				$opts[] =  "<a data-toggle='tooltip' title=\"Go to Page $aa\" href='{$url}'>{$aa}</a>"; //FIXME LAN_GOPAGE syntax?
+			//	$urlparms['page'] = $aa;
+			//	$url = e107::getUrl()->create('forum/thread/view', $urlparms);
+				$title = $tp->lanVars(LAN_GOTOPAGEX, $aa);
+				$url = e107::url('forum','topic',$urlparms).'&amp;p='.$aa;
+				$opts[] =  "<a data-toggle='tooltip' title=\"".$title."\" href='{$url}'>{$aa}</a>";
 			}
 		}
-	
+
 		if(deftrue('BOOTSTRAP'))
 		{
-			$text = "<div class='pagination pagination-mini' style='margin:0px'>
-					<ul>
+			$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
 						<li>";
 			
 			$text .= implode("</li><li>",$opts); // ."</div>";	
-			$text .= "</li></ul></div>";				
+			$text .= "</li></ul>";
 		}
 		else 
 		{
@@ -800,7 +1011,9 @@ function fpages($thread_info, $replies)
 function newthreadjump($url)
 {
 	global $forum;
-	$jumpList = $forum->forumGetAllowed('view');	
+	$jumpList = $forum->forumGetAllowed('view');
+
+
 	$text = '<div class="btn-group">
     <a href="'.$url.'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -811,7 +1024,7 @@ function newthreadjump($url)
 	
 	foreach($jumpList as $key => $val)
 	{
-		$text .= '<li><a href="'.$key.'">'.LAN_FORUM_1017.': '.$val.'</a></li>';
+		$text .= '<li><a href="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017.': '.$val['forum_name'].'</a></li>';
 	}
 	
 	$text .= '

@@ -118,6 +118,7 @@ class e_session
 	
 	protected $_namespace;
 	protected $_name;
+	protected $_sessionStarted = false; // Fixes lost $_SESSION value problem. 
 
 	/**
 	 * Validation options
@@ -207,6 +208,20 @@ class e_session
 				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
 				$options['secure'] = e107::getPref('ssl_enabled', false); // FIXME - new pref
 			}
+
+			if(defined('SESSION_SAVE_PATH')) // safer than a pref.
+			{
+				$config['SavePath'] = e_BASE. SESSION_SAVE_PATH;
+			}
+
+			$hashes = hash_algos();
+
+			if((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512',$hashes))
+			{
+				ini_set('session.hash_function', 'sha512');
+				ini_set('session.hash_bits_per_character', 5);
+			}
+
 			
 			$this->setConfig($config)
 				->setOptions($options);
@@ -415,7 +430,8 @@ class e_session
 	 */
 	public function start($sessionName = null)
 	{
-		if (isset($_SESSION))
+	
+		if (isset($_SESSION) && ($this->_sessionStarted == true)) 
 		{
 			return $this;
 		}
@@ -424,7 +440,7 @@ class e_session
 		{
 			session_save_path($this->_sessionSavePath);
 		}
-
+	
 		switch ($this->_sessionSaveMethod)
 		{
 			case 'db': // TODO session db handling, more methods (e.g. memcache)
@@ -441,7 +457,7 @@ class e_session
 		if (empty($this->_options['domain']))
 		{
 			// MULTILANG_SUBDOMAIN set during initial language detection in language handler
-			$doma = ((!e_SUBDOMAIN || defsettrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
+			$doma = ((deftrue('e_SUBDOMAIN') || deftrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
 			$this->_options['domain'] = $doma;
 		}
 
@@ -465,15 +481,12 @@ class e_session
 
 		if ($this->_sessionCacheLimiter)
 		{
-			session_cache_limiter((string) $this->_sessionCacheLimiter);
-		}
-		elseif(!defined('e_NOCACHE') || !e_NOCACHE)
-		{
-			session_cache_limiter('private'); 
+			session_cache_limiter((string) $this->_sessionCacheLimiter); //XXX Remove and have e_headers class handle it?
 		}
 		
+	
 		session_start();
-
+		$this->_sessionStarted = true;
 		return $this;
 	}
 
@@ -499,6 +512,15 @@ class e_session
 	public function getSessionId()
 	{
 		return session_id();
+	}
+	
+	/**
+	 * Retrieve current session save method. 
+	 * @return string
+	 */
+	public function getSaveMethod()
+	{
+		return $this->_sessionSaveMethod;	
 	}
 
 	/**

@@ -12,19 +12,25 @@
  * $Id$
  */
 
-if (!defined("e_THEME")) {
-	require_once('../class2.php');
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
-	$us = new user_select;
-	$us -> popup();
-}
+// DEPRECATED - SUBJECT TO REMOVAL
+// Possible replacements: $frm->userpicker();
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 class user_select 
 {
-	function user_list($class, $form_name) 
+
+	/**
+	 * @deprecated use e107::getForm()->userlist() instead.
+	 * @param $class
+	 * @param $form_name
+	 * @return string
+	 */
+	function user_list($class, $form_name)
 	{
+
+	//	e107::getMessage()->addDebug("Deprecated user_list Method used ".debug_backtrace());
+
 		global $sql, $tp;
 		if($class === FALSE) { $class = e_UC_MEMBER;}
 		switch ($class)
@@ -45,24 +51,38 @@ class user_select
 				$where = "user_class REGEXP '(^|,)(".$tp -> toDB($class, true).")(,|$)'";
 				break;
 		}
-				
-		$text = "<select class='tbox' id='user' name='user' onchange=\"uc_switch('class')\">";
+
+
+
+
+		$text = "<select class='tbox form-control' id='user' name='user' onchange=\"uc_switch('class')\">";
 		$text .= "<option value=''>".US_LAN_1."</option>";
-		$sql -> db_Select("user", "user_name", $where." ORDER BY user_name");
-		while ($row = $sql -> db_Fetch()) {
+		$sql ->select("user", "user_name", $where." ORDER BY user_name");
+
+		while ($row = $sql ->fetch())
+		{
 			$text .= "<option value='".$row['user_name']."'>".$row['user_name']."</option>";
 		}
+
 		$text .= "</select>";
+
+		if(ADMIN)
+		{
+			$text .= "user_list method is deprecated. ".print_a(debug_backtrace(),true);
+		}
+
 		return $text;
 	}
-	
+
 
 	/**
-	 *	Display selection dropdown of all user classes
+	 *    Display selection dropdown of all user classes
 	 *
-	 *	@param int $class - if its e_UC_MEMBER, all classes are shown. Otherwise only the class matching the value is shown.
+	 * @deprecated
+	 * @param int $class - if its e_UC_MEMBER, all classes are shown. Otherwise only the class matching the value is shown.
+	 * @return string
 	 */
-	function class_list($class, $form_name) 
+	function class_list($class, $form_name)  //TODO Find all instances of use and replace.
 	{
 		global $sql;
 		$text = "<select class='tbox' id='class' name='class' onchange=\"uc_switch('user')\">";
@@ -137,12 +157,11 @@ class user_select
 			}
 			else
 			{
-				$text .= "<input class='tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$tp -> post_toForm($user_value)."'>&nbsp;";
+				$text .= "<input class='form-control tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$tp -> post_toForm($user_value)."'>&nbsp;";
 			}
-			// @todo popup doesn't work ATM because e_HANDLER_ABS not valid
-			$text .= "<img src='".e_IMAGE_ABS."generic/user_select.png' 
+			$text .= "<img src='".e_IMAGE_ABS."generic/user_select.png'
 			style='width: 16px; height: 16px; vertical-align: top' alt='".US_LAN_4."...' 
-			title='".US_LAN_4."...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
+			title='".US_LAN_4."...' onclick=\"window.open('".e_PLUGIN_ABS."pm/pm.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
 		}
 		
 		/*
@@ -197,13 +216,16 @@ class user_select
 		
 		// send the charset to the browser - overrides spurious server settings with the lan pack settings.
 		header("Content-type: text/html; charset=utf-8", TRUE);
-		echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-		echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+		//echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+		//echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">
+		echo "<!doctype html>
+		<html lang='".CORE_LC."'>
 		<head>
 		<title>".SITENAME."</title>\n";
 
 		
-		echo "<link rel=stylesheet href='".THEME_ABS."style.css'>
+		echo "<link rel=stylesheet href='".e_WEB_ABS."js/bootstrap/css/bootstrap.min.css'>
+		<link rel=stylesheet href='".THEME_ABS."style.css'>
 		<script language='JavaScript' type='text/javascript'>
 		<!--
 		function SelectUser() {
@@ -217,14 +239,19 @@ class user_select
 		<body>
 		";
 
-		$text = "<form action='".e_SELF."?".e_QUERY."' method='POST'>
-			<table style='width:100%' class='fborder'>
-			<tr>
-			<td class='forumheader3' style='text-align: center'><input type='text' name='srch' class='tbox' value='".$tp -> post_toForm(varset($_POST['srch'],''))."' size='40'>
-			<input class='btn button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."' /></td>
-			</tr>
-			</table>
-			</form>
+		$text = "
+					<div class='col-sm-12'>
+						<h1 class='text-center'>".US_LAN_4."</h1>
+						<form action='".e_SELF."?".e_QUERY."' method='POST' role='form'>
+							<div class='form-group text-center'>
+								<label for='srch'>Search</label>
+								<input type='text' name='srch' id='srch' class='tbox form-control' value='".$tp -> post_toForm(varset($_POST['srch'],''))."' size='40'>
+							</div>
+							<div class='form-group text-center'>
+								<button class='btn btn-default button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'>".US_LAN_6."</button>
+							</div>
+						</form>
+					</div>
 			";
 
 		if (isset($_POST['dosrch'])) 
@@ -238,27 +265,30 @@ class user_select
 			{
 				$fcount = count($userlist);
 			}
-			$text .= "<br /><form name='results' action='".e_SELF."?".e_QUERY."' method='POST'>
-			<table style='width:100%' class='fborder'>
-			<tr><td class='fcaption'>{$fcount} ".US_LAN_5."</td></tr>
-			<tr>
-			<td class='forumheader3'>
-			<select class='tbox' name='usersel' width='60' ondblclick='SelectUser()'>
+			$text .= "<br />
+			<div class='col-sm-12'>
+				<form name='results' action='".e_SELF."?".e_QUERY."' method='POST'>
+					<div class='form-group text-center'>
+						<label for='usersel'>{$fcount} ".US_LAN_5."</label>
+						<select class='tbox' name='usersel' id='usersel' width='60' ondblclick='SelectUser()'>
+
+
 			";
 			foreach($userlist as $u) {
 				$text .= "<option value='{$u}'>{$u}";
 			}
 			$text .= "
-			</select>
-			<input type='button' class='btn button' value='".US_LAN_1."' onClick='SelectUser()' />
-			</td>
-
-			</tr>
-			</table>
-			</form>
+						</select>
+					</div>
+					<div class='form-group text-center'>
+						<input type='button' class='btn btn-default button' value='".US_LAN_1."' onClick='SelectUser()' />
+					</div>
+				</form>
+			</div>
 			";
 		}
-		$ns -> tablerender(US_LAN_4, $text);
+		//$ns -> tablerender(US_LAN_4, $text);
+		echo $text;
 		echo "\n</body>\n</html>";
 	}
 
@@ -278,5 +308,3 @@ class user_select
 	}
 
 }
-
-?>

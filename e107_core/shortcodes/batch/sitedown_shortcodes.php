@@ -15,23 +15,43 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-include_once(e_HANDLER.'shortcode_handler.php');
-$sitedown_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
-/*
 
-SC_BEGIN SITEDOWN_TABLE_MAINTAINANCETEXT
-global $pref,$tp;
-if($pref['maintainance_text']) {
-	return $tp->toHTML($pref['maintainance_text'], TRUE, 'parse_sc', 'admin');
-} else {
-	return "<b>- ".SITENAME." ".LAN_SITEDOWN_00." -</b><br /><br />".LAN_SITEDOWN_01 ;
+
+class sitedown_shortcodes extends e_shortcode
+{
+	function sc_sitedown_table_maintainancetext($parm=null)
+	{
+		$pref = e107::pref('core');
+		$tp = e107::getParser();
+
+		if(!empty($pref['maintainance_text']))
+		{
+			return $tp->toHTML($pref['maintainance_text'], true, 'BODY', 'admin');
+		}
+		else
+		{
+			return "<b>- ".SITENAME." ".LAN_SITEDOWN_00." -</b><br /><br />".LAN_SITEDOWN_01 ;
+		}
+	}
+
+
+	function sc_sitedown_table_pagename($parm=null)
+	{
+		return PAGE_NAME;
+	}
+
+
+	function sc_sitedown_theme_css($parm=null)
+	{
+		return THEME_ABS."style.css";
+	}
+
+	function sc_sitedown_e107_css($parm=null)
+	{
+		return e_WEB_ABS."css/e107.css";
+	}
+
 }
-SC_END
 
 
-SC_BEGIN SITEDOWN_TABLE_PAGENAME
-return PAGE_NAME;
-SC_END
-
-*/
 ?>

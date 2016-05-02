@@ -39,6 +39,7 @@ class e_marketplace
 		{
 			$this->_adapter_name = 'wsdl';
 		}
+
 	}
 	
 	/**
@@ -167,10 +168,11 @@ class e_marketplace
 		
 		return $text;
 	}
-	
+
 	/**
 	 * Retrieve currently used adapter
 	 * @param e_marketplace_adapter_abstract
+	 * @return \e_marketplace_adapter_abstract
 	 */
 	public function adapter()
 	{
@@ -188,6 +190,10 @@ class e_marketplace
 	 */
 	public function call($method, $data, $apply = true)
 	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addDebug("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
+		}
 		return $this->adapter()->call($method, $data, $apply);
 	}
 	
@@ -225,7 +231,7 @@ abstract class e_marketplace_adapter_abstract
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://e107.org/request';	
+	protected $downloadUrl = 'http://e107.org/request/';	
 	
 	/**
 	 * e107.org service URL [adapter implementation required]
@@ -239,6 +245,7 @@ abstract class e_marketplace_adapter_abstract
 	 */
 	public $requestMethod = null;
 	
+
 	/**
 	 * @var eAuth
 	 */
@@ -252,7 +259,8 @@ abstract class e_marketplace_adapter_abstract
 	protected $authKey = null;
 	
 	abstract public function test($input);
-	abstract public function call($method, $data, $apply);
+	//abstract public function call($method, $data, $apply);
+	abstract public function call($method, $data, $apply = true); // Fix issue #490
 	abstract public function fetch($method, &$result);
 	
 	/**
@@ -309,108 +317,68 @@ abstract class e_marketplace_adapter_abstract
 	public function download($id, $mode, $type)
 	{
 		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		$fl = e107::getFile();
+		
 		$id = intval($id);
 		$qry = 'id='.$id.'&type='.$type.'&mode='.$mode;
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		echo "Downloading...<br />"; 
-		flush(); 
+		$mes->addSuccess("Downloading..."); 
+	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
 		$result 	= $this->getRemoteFile($remotefile, $localfile);
 		
 		if(!$result)
 		{
-			echo "Download Error.<br />"; flush(); 
 			if(filesize(e_TEMP.$localfile))
 			{
 				$contents = file_get_contents(e_TEMP.$localfile);
 				$contents = explode('REQ_', $contents);
-				echo '[#'.trim($contents[1]).'] '.trim($contents[0]); flush(); 
+				$mes->addError('[#'.trim($contents[1]).'] '.trim($contents[0])); flush(); 
 			}
+			
 			@unlink(e_TEMP.$localfile);
-			return;
+			return false;
 		}
+
+		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			//ADMIN_FALSE_ICON
-			echo "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"; flush();
+			$mes->addError( "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"); 
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
-				echo '<br />local='.$localfile; flush(); 
+				$mes->addDebug('local='.$localfile); // ; flush(); 
 			}
 
-			return;
+			return false;
 		}
-		/*
-		else 
-				{
-					$contents = file_get_contents(e_TEMP.$localfile);
-					if(strlen($contents) < 400)
-					{
-						echo "<script>alert('".$tp->toJS($contents)."')</script>";
-						return;	
-					}
-		}*/
 		
 		
-		chmod(e_TEMP.$localfile, 0755);
-		require_once(e_HANDLER."pclzip.lib.php");
-		
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= e107::getFile(true)->getRootFolder($unarc);	
-		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
-		$typeDiz 	= ucfirst($type);
-		
-		@copy(e_TEMP.$localfile, e_BACKUP.$dir.".zip"); // Make a Backup in the system folder. 
-		
-		if($dir && is_dir($destpath.$dir))
+		if($fl->unzipArchive($localfile,$type))
 		{
-			echo "(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir; flush(); 
-			@unlink(e_TEMP.$localfile);
-			return;
-		}
-	
-		if($dir == '')
-		{
-			echo "Couldn't detect the root folder in the zip."; flush();
-			@unlink(e_TEMP.$localfile);
-			return;		
-		}
-	
-		if(is_dir(e_TEMP.$dir)) 
-		{
-			echo "Unzipping...<br />";
-			if(!rename(e_TEMP.$dir,$destpath.$dir))
-			{
-				echo "Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"; flush(); usleep(50000);
-				@unlink(e_TEMP.$localfile);
-				return;
-			}	
-			
-			echo "Download Complete!<br />"; flush();
-			
-		//	$dir 		= basename($unarc[0]['filename']);
-		//	$plugPath	= preg_replace("/[^a-z0-9-\._]/", "-", strtolower($dir));	
-			//$status = "Done"; // ADMIN_TRUE_ICON;		
-			@unlink(e_TEMP.$localfile);	
-			return;
+			$mes->addSuccess("Download Complete!"); 
+			return true; 
 		}
 		else 
 		{
-			//ADMIN_FALSE_ICON.
-			echo "<a href='".$remotefile."'>Download Manually</a>"; flush(); usleep(50000);
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				echo print_a($unarc, true); flush();
-			}
+			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
 		}
 		
-		@unlink(e_TEMP.$localfile);
+		return false; 
 	}
+
+	
+	
+	
+	
+	
+	
+			
+		
 
 	// Grab a remote file and save it in the /temp directory. requires CURL
 	function getRemoteFile($remote_url, $local_file, $type='temp')
@@ -632,14 +600,21 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	public function call($method, $data, $apply = true)
 	{
 		$client = $this->client();
-		
+
 		// settings based on current method
 		$this->prepareClient($method, $client);
 		
 		// authorization data
 		$data['auth'] = $this->getAuthKey();
 		$data['action'] = $method;
-		
+
+		foreach($data['params'] as $k=>$v)
+		{
+			$data[$k] = $v;
+		}
+		unset($data['params']);
+
+
 		// build the request query
 		$qry = str_replace(array('s%5B', '%5D'), array('[', ']'), http_build_query($data, null, '&'));
 		$url = $this->serviceUrl.'?'.$qry;
@@ -688,6 +663,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * XXX replace xmlClass::xml2array() after this one passes all tests
 	 * @param SimpleXmlIterator $xml
 	 * @param string $parentName parent node name - used currently for debug only
+	 * @return array|string
 	 */
 	public function parse($xml, $parentName = null)
 	{
@@ -724,7 +700,10 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 			foreach ($xml as $name => $node) 
 			{
 				$_res = $this->parse($node, $name);
-				if(is_string($_res)) $_res = trim($res);
+				if(is_string($_res))
+				{
+					 $_res = trim($_res);
+				}
 				
 				$ret[$name][] = $this->parse($node, $name);
 			}
@@ -771,7 +750,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 		{
 			if($tag === 'params')
 			{
-				foreach ($data['param'] as $param) 
+				foreach ($data['param'] as $i => $param)
 				{
 					$result[$tag][$param['@attributes']['name']] = $param['@value'];
 					unset($result[$tag]['param'][$i]);

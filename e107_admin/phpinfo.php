@@ -15,8 +15,9 @@
  */
 
 require_once("../class2.php");
-if (!getperms("0")) {
-    header("location:".e_BASE."index.php");
+if (!getperms("0"))
+{
+	e107::redirect('admin');
     exit;
 }
 $e_sub_cat = 'phpinfo';
@@ -24,17 +25,20 @@ require_once("auth.php");
 
 ob_start();
 phpinfo();
-$phpinfo .= ob_get_contents();
+$phpinfo = ob_get_contents();
+
 $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 $phpinfo = str_replace("font","span",$phpinfo);
 $phpinfo = str_replace("</body></html>","",$phpinfo);
 $phpinfo = str_replace('border="0"','',$phpinfo);
-$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
+//$phpinfo = str_replace('<table ','<table class="table table-striped adminlist" ',$phpinfo);
 $phpinfo = str_replace('name=','id=',$phpinfo);
-$phpinfo = str_replace('class="e"','class="forumheader2"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3"',$phpinfo);
-$phpinfo = str_replace('class="v"','class="forumheader3"',$phpinfo);
+$phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
+$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
+$phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
+$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+
 
 $mes = e107::getMessage();
 
@@ -50,8 +54,8 @@ $security_risks = array(
     {
         if(ini_get($risk))
         {
-            $srch = '<tr><td class="forumheader2">'.$risk.'</td><td class="forumheader3">';
-            $repl = '<tr><td class="forumheader2">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3" style="background-color:red">';
+            $srch = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td class="forumheader3">';
+            $repl = '<tr><td class="forumheader2 text-left">'.$risk.'</td><td  title="'.$tp->toAttribute($diz).'" class="forumheader3 alert alert-danger">';
             $phpinfo = str_replace($srch,$repl,$phpinfo);   
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
@@ -68,6 +72,13 @@ $security_risks = array(
 
 // $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 ob_end_clean();
+
+
+if(deftrue('e_DEBUG'))
+{
+	$mes->addDebug("Session ID: ".session_id());
+}
+
 $ns->tablerender("PHPInfo", $mes->render(). $phpinfo);
 require_once("footer.php");
 ?>

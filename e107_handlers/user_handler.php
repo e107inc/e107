@@ -64,7 +64,7 @@ class UserHandler
 	public function __construct()
 	{
 		$pref = e107::getPref();
-
+		e107::lan('core','user');
 /**
 	Table of vetting methods for user data - lists every field whose value could be set manually.
 	Valid 'vetMethod' values (use comma separated list for multiple vetting):
@@ -88,17 +88,17 @@ class UserHandler
 		'enablePref'	- value is processed only if the named $pref evaluates to true; otherwise any input is discarded without error
 */
 	$this->userVettingInfo = array(
-		'user_name' => array('niceName'=> LAN_USER_01, 'fieldType' => 'string', 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', fixedBlock => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
+		'user_name' => array('niceName'=> LAN_USER_01, 'fieldType' => 'string', 'vetMethod' => '1,2', 'vetParam' => 'signup_disallow_text', 'srcName' => 'username', 'stripTags' => TRUE, 'stripChars' => '/&nbsp;|\#|\=|\$/', 'fixedBlock' => 'anonymous', 'minLength' => 2, 'maxLength' => varset($pref['displayname_maxlength'],15)),				// Display name
 		'user_loginname' => array('niceName'=> LAN_USER_02, 'fieldType' => 'string', 'vetMethod' => '1', 'vetParam' => '', 'srcName' => 'loginname', 'stripTags' => TRUE, 'stripChars' => '#[^a-z0-9_\.]#i', 'minLength' => 2, 'maxLength' => varset($pref['loginname_maxlength'],30)),			// User name
-		'user_login' => array('niceName'=> LAN_USER_03, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB'),				// Real name (no real vetting)
-		'user_customtitle' => array('niceName'=> LAN_USER_04, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle'),		// No real vetting
-		'user_password' => array('niceName'=> LAN_USER_05, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
+		'user_login' => array('niceName'=> LAN_USER_03, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'realname', 'dbClean' => 'toDB', 'stripTags' => TRUE, 'stripChars' => '#<|>#i'),				// Real name (no real vetting)
+		'user_customtitle' => array('niceName'=> LAN_USER_04, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'customtitle', 'dbClean' => 'toDB', 'enablePref' => 'signup_option_customtitle', 'stripTags' => TRUE, 'stripChars' => '#<|>#i'),		// No real vetting
+		'user_password' => array('niceName'=> LAN_PASSWORD, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'password1', 'dataType' => 2, 'minLength' => varset($pref['signup_pass_len'],1)),
 		'user_sess' => array('niceName'=> LAN_USER_06, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'image', 'imagePath' => e_AVATAR_UPLOAD, 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120)),				// Photo
 		'user_image' => array('niceName'=> LAN_USER_07, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'image', 'stripChars' => "#\"|'|(|)#", 'dbClean' => 'avatar'),	//, 'maxHeight' => varset($pref['im_height'], 100), 'maxWidth' => varset($pref['im_width'], 120) resized on-the-fly			// Avatar
-		'user_email' => array('niceName'=> LAN_USER_08, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'fieldOptional' => varset($pref['disable_emailcheck'],0), 'srcName' => 'email', 'dbClean' => 'toDB'),
+		'user_email' => array('niceName'=> LAN_EMAIL, 'fieldType' => 'string', 'vetMethod' => '1,3', 'vetParam' => '', 'fieldOptional' => varset($pref['disable_emailcheck'],0), 'srcName' => 'email', 'dbClean' => 'toDB'),
 		'user_signature' => array('niceName'=> LAN_USER_09, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'signature', 'dbClean' => 'toDB'),
 		'user_hideemail' => array('niceName'=> LAN_USER_10, 'fieldType' => 'int', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'hideemail', 'dbClean' => 'intval'),
-		'user_xup' => array('niceName'=> LAN_USER_11, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
+		'user_xup' => array('niceName'=> "XUP File", 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'user_xup', 'dbClean' => 'toDB'),
 		'user_class' => array('niceName'=> LAN_USER_12, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
 	);
 
@@ -106,7 +106,7 @@ class UserHandler
 			'user_join'			=> LAN_USER_14,
 			'user_lastvisit'	=> LAN_USER_15,
 			'user_currentvisit'	=> LAN_USER_16,
-			'user_comments'		=> LAN_USER_17,
+			'user_comments'		=> LAN_COMMENTS,
 			'user_ip'			=> LAN_USER_18,
 			'user_ban'			=> LAN_USER_19,
 			'user_prefs'		=> LAN_USER_20,
@@ -157,7 +157,7 @@ class UserHandler
 	 *
 	 *	@return string|boolean - FALSE if invalid emcoding method, else encoded password to store in DB
 	 */
-	public function HashPassword($password, $login_name, $force='')
+	public function HashPassword($password, $login_name='', $force='')
 	{
 	  if ($force == '') $force = $this->preferred;
 	  switch ($force)
@@ -205,6 +205,42 @@ class UserHandler
 		}
 		return PASSWORD_INVALID;
 	}
+
+
+	/**
+	 * Reset the user's password with an auto-generated string.
+	 * @param $uid
+	 * @param string $loginName (optional)
+	 * @return bool|string rawPassword
+	 */
+	public function resetPassword($uid, $loginName='')
+	{
+		if(empty($uid))
+		{
+			return false;
+		}
+
+		$rawPassword    = $this->generateRandomString('********');
+	//	$sessKey        = e_user_model::randomKey();
+
+		$updateQry = array(
+			'user_password' => $this->HashPassword($rawPassword, $loginName),
+			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1"
+		);
+
+		if(e107::getDb()->update('user', $updateQry))
+		{
+			return $rawPassword;
+		}
+		else
+		{
+			return false;
+		}
+
+
+
+	}
+
 
 
 	/**
@@ -330,38 +366,40 @@ class UserHandler
 	 *		# - an alpha character
 	 *		. - a numeric character
 	 *		* - an alphanumeric character
+	 *      ! - symbol character
+	 *      ? - alpha, numeric or symbol character.
 	 *		^ - next character from seed
 	 *		alphanumerics are included 'as is'
 	 *	@param int $seed - may be used with the random pattern generator
 	 *
 	 *	@return string - the required random string
 	 */
-	public function generateRandomString($pattern, $seed = '')
+	public function generateRandomString($pattern='', $seed = '')
 	{
-		if (strlen($pattern) < 6)
+		if (empty($pattern))
+		{
 			$pattern = '##....';
+		}
 
 		$newname = '';
 
 		// Create alpha [A-Z][a-z]
-		$alpha = '';
-		for($i = 65; $i < 91; $i++)
-		{
-			$alpha .= chr($i).chr($i+32);
-		}
+		$alpha = 'AaBbCcDdEeFfGgHhIiJjKkLMmNnPpQqRrSsTtUuVvWwXxYyZz'; // O, o and l removed to avoid possible confusion with numbers.
 		$alphaLength = strlen($alpha) - 1;
 
 		// Create digit [0-9]
-		$digit = '';
-		for($i = 48; $i < 57; $i++)
-		{
-			$digit .= chr($i);
-		}
+		$digit = '0123456789';
 		$digitLength = strlen($digit) - 1;
 
 		// Create alpha numeric [A-Z][a-z]
 		$alphaNum = $alpha.$digit.chr(45).chr(95); // add support for - and _	
 		$alphaNumLength = strlen($alphaNum) - 1;
+
+		$symbols = "~!@#$%^*-+?;:"; // avoid < > and quotes.
+		$symbolsLength = strlen($symbols) - 1;
+
+		$alphaNumSymbol = $alphaNum.$symbols;
+		$alphaNumSymbolLength =  strlen($alphaNumSymbol) - 1;
 
 		// Next character of seed (if used)
 		$seed_ptr = 0;
@@ -370,7 +408,18 @@ class UserHandler
 			$c = $pattern[$i];
 			switch ($c)
 			{
-				// Alpha only (upper and lower case)
+				// Symbols only.
+				case '!':
+					$t = rand(0, $symbolsLength);
+					$newname .= $symbols[$t];
+					break;
+
+				// Alphanumeric + Symbols (most secure)
+				case '?':
+					$t = rand(0, $alphaNumSymbolLength);
+					$newname .= $alphaNumSymbol[$t];
+					break;
+
 				case '#' :
 					$t = rand(0, $alphaLength);
 					$newname .= $alpha[$t];
@@ -488,7 +537,7 @@ class UserHandler
 	{
 		if ($incInherited)
 		{
-			$classList = e107::getUserClass()->get_all_user_classes($var['user_class']);
+			$classList = e107::getUserClass()->get_all_user_classes($userData['user_class']);
 		}
 		else
 		{
@@ -514,13 +563,10 @@ class UserHandler
 	}
 
 
-
 	/**
-	 *	Return an array of descriptive names for each field in the user DB.
-	 *
-	 *	@param bool $all if false, just returns modifiable fields. Else returns all
-	 *
-	 *	$return array - key is field name, value is 'nice name' (descriptive name)
+	 * Return an array of descriptive names for each field in the user DB.
+	 * @param bool $all if false, just returns modifiable fields. Else returns all
+	 * @return array - key is field name, value is 'nice name' (descriptive name)
 	 */
 	public function getNiceNames($all = FALSE)
 	{
@@ -685,16 +731,21 @@ Following fields auto-filled in code as required:
 		$sql = e107::getDb();
 		
 		$temp1 = 0;
-		if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2)
+		if (isset($pref['del_unv']) && $pref['del_unv'] && intval($pref['user_reg_veri']) != 2)
 		{
 			$threshold= intval(time() - ($pref['del_unv'] * 60));
-			if (($temp1 = $sql->db_Delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0) { $force = TRUE; }
+			if(($temp1 = $sql->delete('user', 'user_ban = 2 AND user_join < '.$threshold)) > 0)
+			{
+				$force = true;
+			}
 		}
-		if ($force)
-		{	// Remove 'orphaned' extended user field records
+
+		if ($force) // Remove 'orphaned' extended user field records
+		{
 			$sql->gen("DELETE `#user_extended` FROM `#user_extended` LEFT JOIN `#user` ON `#user_extended`.`user_extended_id` = `#user`.`user_id`
 					WHERE `#user`.`user_id` IS NULL");
 		}
+
 		return $temp1;
 	}
 
@@ -708,53 +759,63 @@ Following fields auto-filled in code as required:
 	 *
 	 *	@return boolean - true if $user['user_class'] updated, false otherwise
 	 */
-	public function userClassUpdate(&$user, $event='userveri')
+	public function userClassUpdate($user, $event='userfull')
 	{
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
 		$initClasses = array();
-		$doClasses = FALSE;
-		$doProbation = FALSE;
-		$ret = FALSE;
-		switch ($event)
+		$doClasses = false;
+		$doProbation = false;
+		$ret = false;
+
+		switch($event)
 		{
-			case 'userall' :
-				$doClasses = TRUE;
-				$doProbation = TRUE;
+			case 'userall':
+				$doClasses = true;
+				$doProbation = true;
 				break;
-			case 'userfull' :		// A 'fully fledged' user
-				if (!$pref['user_reg_veri'] || ($pref['init_class_stage'] == '2'))
+			case 'userfull':
+				if(!$pref['user_reg_veri'] || (intval($pref['init_class_stage']) == 2))
 				{
-					$doClasses = TRUE;
+					$doClasses = true;
 				}
-				$doProbation = TRUE;
+				$doProbation = true;
 				break;
 			case 'userpartial' :
-				if ($pref['init_class_stage'] == '1')
-				{	// Set initial classes if to be done on partial signup, or if selected to add them now
-					$doClasses = TRUE;
+				if(intval($pref['init_class_stage']) === 1)
+				{
+					// Set initial classes if to be done on partial signup, or if selected to add them now
+					$doClasses = true;
 				}
-				$doProbation = TRUE;
+				$doProbation = true;
 				break;
 		}
-		if ($doClasses)
+
+		if($doClasses)
 		{
-			if (isset($pref['initial_user_classes'])) { $initClasses = explode(',',$pref['initial_user_classes']); }	 // Any initial user classes to be set at some stage
-			if ($doProbation && (varset($pref['user_new_period'], 0) > 0))
+			if(isset($pref['initial_user_classes']))   // Any initial user classes to be set at some stage
 			{
-				$initClasses[] = e_UC_NEWUSER;		// Probationary user class
+				$initClasses = explode(',', $pref['initial_user_classes']);
 			}
-			if (count($initClasses))
-			{	// Update the user classes
-				if ($user['user_class'])
+
+			if($doProbation && (varset($pref['user_new_period'], 0) > 0))
+			{
+				$initClasses[] = e_UC_NEWUSER;        // Probationary user class
+			}
+
+			if(count($initClasses))
+			{    // Update the user classes
+				if($user['user_class'])
 				{
-					$initClasses = array_unique(array_merge($initClasses, explode(',',$user['user_class'])));
+					$initClasses = array_unique(array_merge($initClasses, explode(',', $user['user_class'])));
 				}
-				$user['user_class'] = $tp->toDB(implode(',',$initClasses));
-				$ret = TRUE;
+				$user['user_class'] = $tp->toDB(implode(',', $initClasses));
+				//$ret = TRUE;
+				$ret = $user['user_class'];
 			}
 		}
+
 		return $ret;
 	}
 
@@ -771,7 +832,7 @@ Following fields auto-filled in code as required:
 	 */
 	public function userStatusUpdate($action, $uid, $emailAddress = '')
 	{
-		$db = e107::getDb();
+		$db = e107::getDb('user');
 		$qry = '';
 		$error = FALSE;				// Assume no error to start with
 		$uid = intval($uid);		// Precautionary - should have already been done
@@ -804,7 +865,7 @@ Following fields auto-filled in code as required:
 		}
 		else
 		{
-			$row = $db->db_Fetch(MYSQL_ASSOC);
+			$row = $db->db_Fetch();
 			if ($uid && ($uid != $row['user_id']))
 			{
 				$error = 'UID mismatch: '.$uid.'/'.$row['user_id'];
@@ -817,7 +878,7 @@ Following fields auto-filled in code as required:
 			{	// Valid user!
 				if ($row['user_ban'] != $newVal)		// We could implement a hierarchy here, so that an important status isn't overridden by a lesser one
 				{	// Only update if needed
-					$db->db_Update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
+					$db->update('user', '`user_ban` = '.$newVal.', `user_email` = \'\' WHERE `user_id` = '.$row['user_id'].' LIMIT 1');
 					// Add to user audit log		TODO: Should we log to admin log as well?
 					$adminLog = e107::getAdminLog();
 					$adminLog->user_audit($logEvent, array('user_ban' => $newVal, 'user_email' => $row['user_email']), $row['user_id'], $row['user_loginname']);
@@ -857,8 +918,10 @@ class e_user_provider
 		else 
 		{
 			$this->_config = array(
-				"base_url" => e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
-				"providers" => e107::getPref('social_login', array())	
+				"base_url" 		=> e107::getUrl()->create('system/xup/endpoint', array(), array('full' => true)), 
+				"providers" 	=> e107::getPref('social_login', array()),
+				"debug_mode" 	=> 'error', 
+				"debug_file"	=> e_LOG."hybridAuth.log"	
 			);
 			
 		}
@@ -884,7 +947,13 @@ class e_user_provider
 			}
 		}
 	}
-	
+
+	private function log($class,$method,$line)
+	{
+	//	e107::getLog()->add('XUP Debug', ($class.':'.$method.'-'.$line), E_LOG_INFORMATIVE, "XUP_DEBUG");
+	}
+
+
 	public function setBackUrl($url)
 	{
 		# system/xup/endpoint by default
@@ -893,6 +962,7 @@ class e_user_provider
 	
 	public function getProvider()
 	{
+		// $this->log(__CLASS__, __METHOD__, __LINE__);
 		return $this->_provider;
 	}
 	
@@ -912,6 +982,7 @@ class e_user_provider
 	
 	public function userId()
 	{
+
 		if($this->adapter && $this->adapter->getUserProfile()->identifier)
 		{
 			return $this->getProvider().'_'.$this->adapter->getUserProfile()->identifier;
@@ -919,6 +990,10 @@ class e_user_provider
 		return null;
 	}
 	
+	/**
+	 * XUP Signup Method (falls-back to XUP login when existing user is detected). 
+	 * May be used as a simple XUP login link for existing and non-existing users.  
+	 */
 	public function signup($redirectUrl = true, $loginAfterSuccess = true, $emailAfterSuccess = true)
 	{
 		if(!e107::getPref('social_login_active', false))
@@ -942,46 +1017,86 @@ class e_user_provider
 				$redirectUrl = e107::getUrl()->create($redirectUrl);
 			}
 		}
-		
+
+
 		if(e107::getUser()->isUser())
 		{
-			throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
+			if($redirectUrl)
+			{
+				e107::getRedirect()->redirect($redirectUrl);
+			}
+			return false;
+		//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
 		}
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$profile = $this->adapter->getUserProfile();
-		
+
+		$this->log(__CLASS__, __METHOD__, __LINE__);
 		// returned back, if success...
 		if($profile->identifier)
 		{
+
 			$sql = e107::getDb();
 			$userMethods = e107::getUserSession();
 			
 			$plainPwd = $userMethods->generateRandomString('************'); // auto plain passwords
+
 			
 			// TODO - auto login name, shouldn't be used if system set to user_email login...
-			$userdata['user_loginname'] = $this->getProvider().$userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#')); 
-			$userdata['user_email'] = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
-			$userdata['user_name'] = $sql->escape($profile->displayName);
-			$userdata['user_login'] = $userdata['user_name'];
-			$userdata['user_customtitle'] = ''; // not used
-			$userdata['user_password'] = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
-			$userdata['user_sess'] = ''; // 
-			$userdata['user_image'] = $profile->photoURL; // avatar
-			$userdata['user_signature'] = ''; // not used
-			$userdata['user_hideemail'] = 1; // hide it by default
-			$userdata['user_xup'] = $sql->escape($this->userId());
-			$userdata['user_class'] = ''; // TODO - check (with Steve) initial class for new users feature...
+			$userdata['user_loginname']     = $this->getProvider().$userMethods->generateUserLogin(e107::getPref('predefinedLoginName', '_..#..#..#'));
+			$userdata['user_email']         = $sql->escape($profile->emailVerified ? $profile->emailVerified : $profile->email);
+			$userdata['user_name']          = $sql->escape($profile->displayName);
+			$userdata['user_login']         = $userdata['user_name'];
+			$userdata['user_customtitle']   = ''; // not used
+			$userdata['user_password']      = $userMethods->HashPassword($plainPwd, $userdata['user_loginname']); // pwd
+			$userdata['user_sess']          = ''; //
+			$userdata['user_image']         = $profile->photoURL; // avatar
+			$userdata['user_signature']     = ''; // not used
+			$userdata['user_hideemail']     = 1; // hide it by default
+			$userdata['user_xup']           = $sql->escape($this->userId());
+
+			$pref = e107::pref('core');
+
+			if(!empty($pref['initial_user_classes']))
+			{
+				$userdata['user_class'] = $pref['initial_user_classes'];
+			}
+			elseif(!empty($pref['user_new_period']))
+			{
+				$userdata['user_class'] = e_UC_NEWUSER;
+			}
+			else
+			{
+				$userdata['user_class'] = '';
+			}
+
+	//		print_a($userdata);
+		
 			
 			// user_name, user_xup, user_email and user_loginname shouldn't match
-			if($sql->db_Count("user", "(*)", "user_xup='".$sql->escape($this->userId())."' OR user_email='{$userdata['user_email']}' OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
+			$insert = (!empty($userdata['user_email'])) ? "OR user_email='".$userdata['user_email']."' " : "";
+
+			$this->log(__CLASS__, __METHOD__, __LINE__);
+			
+			if($uid = $sql->retrieve("user", "user_id", "user_xup='".$sql->escape($this->userId())."' ".$insert." OR user_loginname='{$userdata['user_loginname']}' OR user_name='{$userdata['user_name']}'"))
 			{
-				throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3); // TODO lan
+				// $this->login($redirectUrl); // auto-login
+				e107::getUser()->loginProvider($this->userId());
+
+				if($redirectUrl) 
+				{
+					e107::getRedirect()->redirect($redirectUrl);
+				}
+				
+				return false;
+				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3);
 			}
 			
-			if(empty($userdata['user_email']))
+			if(empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0)==0) // Allow it if set-up that way. 
 			{
-				throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.", 4); // TODO lan
+				// Twitter will not provide email addresses.
+			//	throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4); // TODO lan
 			}
 			
 			// other fields
@@ -1009,21 +1124,26 @@ class e_user_provider
 			// user model error
 			if($user->hasError())
 			{
+				e107::getLog()->add('XUP Signup Failure', $userdata, E_LOG_WARNING, "XUP_SIGNUP");
 				throw new Exception($user->renderMessages(), 5); 
 			}
-			
+
+
 			### Successful signup!
-			
-			// FIXME documentation of new signup trigger - usersupprov
 			//$user->set('provider', $this->getProvider());
 			$userdata = $user->getData();
 			$userdata['provider'] = $this->getProvider();
 			
-			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array? 
+		//	e107::getEvent()->trigger('userveri', $userdata);	 // Trigger New verified user.
+			
+			e107::getEvent()->trigger('user_xup_signup', $userdata); 
+			
+			$ret = e107::getEvent()->trigger('usersupprov', $userdata);	// XXX - it's time to pass objects instead of array?
+
 			if(true === $ret) return $this;
 			
 			// send email
-			if($emailAfterSuccess)
+			if($emailAfterSuccess && !empty($userdata['user_email']))
 			{
 				$user->set('user_password', $plainPwd)->email('signup'); 
 			}
@@ -1035,7 +1155,7 @@ class e_user_provider
 			{
 				e107::getUser()->loginProvider($this->userId()); // if not proper after-login, return true so user can see login screen
 			}
-			
+						
 			if($redirectUrl)
 			{
 				e107::getRedirect()->redirect($redirectUrl);
@@ -1044,11 +1164,16 @@ class e_user_provider
 			return true;
 		}
 
+		$this->log(__CLASS__, __METHOD__, __LINE__);
+
 		return false;
 	}
-	
+
+
+
 	public function login($redirectUrl = true)
 	{
+
 		if(!e107::getPref('social_login_active', false))
 		{
 			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
@@ -1070,7 +1195,8 @@ class e_user_provider
 				$redirectUrl = e107::getUrl()->create($redirectUrl);
 			}
 		}
-		
+
+
 		if(e107::getUser()->isUser())
 		{
 			if($redirectUrl)
@@ -1082,7 +1208,8 @@ class e_user_provider
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
 		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId(), false);
-		
+
+
 		if($redirectUrl)
 		{
 			e107::getRedirect()->redirect($redirectUrl);
@@ -1090,7 +1217,9 @@ class e_user_provider
 		
 		return $check;
 	}
-	
+
+
+
 	public function init()
 	{
 		if(!e107::getPref('social_login_active', false))
@@ -1139,7 +1268,7 @@ class e_userperms
 	protected $full_perms = array();
 
 	protected $permSectionDiz = array(
-		'core'		=> ADMSLAN_74,
+		'core'		=> LAN_GENERAL,
 		'plugin'	=> ADLAN_CL_7,
 		'language'	=> ADLAN_132,
 		'main'		=> ADMSLAN_58
@@ -1150,58 +1279,66 @@ class e_userperms
 
 	function __construct()
 	{
-	//	require_once(e_ADMIN."ad_links.php");
+
 		$this->core_perms = array(
 
-		// In the same order as admin navigation! 
+		// In the same order as admin navigation! Plus same labels.
 		
 		// Settings
-		"C"	=> array(ADMSLAN_64,E_16_CACHE, E_32_CACHE),		// Clear the system cache
-		"F"	=> array(ADMSLAN_31,E_16_EMOTE, E_32_EMOTE),		// Emoticons
-		"G"	=> array(ADMSLAN_32,E_16_FRONT, E_32_FRONT),		// Front-Page Configuration
-		"L"	=> array(ADMSLAN_76,E_16_LANGUAGE, E_32_LANGUAGE),			// Meta tags
-		"T"	=> array(ADMSLAN_34,E_16_META, E_32_META),			// Meta tags
+		"C"	=> array(ADLAN_74,E_16_CACHE, E_32_CACHE),		    // Clear the system cache
+		"F"	=> array(ADLAN_58,E_16_EMOTE, E_32_EMOTE),	        // Emoticons
+		"G"	=> array(ADLAN_60,E_16_FRONT, E_32_FRONT),		    // Front-Page Configuration
+		"L"	=> array(ADLAN_132,E_16_LANGUAGE, E_32_LANGUAGE),	// Language Packs
+		"T"	=> array(ADLAN_66,E_16_META, E_32_META),			// Meta tags
 		
-		"1"	=> array(ADMSLAN_19,E_16_PREFS, E_32_PREFS),		// Alter Site Preferences
-		"X"	=> array(ADMSLAN_66,E_16_SEARCH, E_32_SEARCH),		// Search
-		"I"	=> array(ADMSLAN_40,E_16_LINKS, E_32_LINKS),		// Post SiteLinks 
+		"1"	=> array(LAN_PREFS,E_16_PREFS, E_32_PREFS),			// Alter Site Preferences
+		"X"	=> array(LAN_SEARCH,E_16_SEARCH, E_32_SEARCH),		// Search
+		"I"	=> array(ADLAN_138,E_16_LINKS, E_32_LINKS),			// Post SiteLinks 
 		"8"	=> array(ADMSLAN_27,E_16_LINKS, E_32_LINKS),		// Oversee SiteLink Categories
-		"K"	=> array(ADMSLAN_43,E_16_EURL, E_32_EURL),			// Configure URLs
+		"K"	=> array(ADLAN_159,E_16_EURL, E_32_EURL),			// Configure URLs
 				
 		// Users 
-		"3"	=> array(ADMSLAN_21,E_16_ADMIN, E_32_ADMIN),		// Modify Admin perms
+		"3"	=> array(ADLAN_8,E_16_ADMIN, E_32_ADMIN),			// Modify Admin perms
 		"4"	=> array(LAN_USER_MANAGEALL,E_16_USER, E_32_USER),	// Manage all user access and settings etc
-		"U0" => array(ADMSLAN_22,E_16_USER, E_32_USER), 		// moderate users/bans but not userclasses or extended fields,
+		"U0" => array(ADLAN_34,E_16_USER, E_32_USER), 		    // moderate users/bans but not userclasses or extended fields,
 		"U1" => array(LAN_USER_QUICKADD,E_16_USER, E_32_USER),	// "User: Quick Add User",
 		"U2" => array(LAN_USER_OPTIONS,E_16_USER, E_32_USER),	// Manage only user-options
 		"U3" => array(LAN_USER_RANKS,E_16_USER, E_32_USER),		// Manage only user-ranks
-		"W"	=> array(ADMSLAN_65,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
+		"W"	=> array(ADLAN_136,E_16_MAIL, E_32_MAIL),			// Configure mail settings and mailout		
 		
 		
 		// Content 			
-		"5"	=> array(ADMSLAN_23,E_16_CUST, E_32_CUST),			// create/edit custom PAGES
-		"J"	=> array(ADMSLAN_41,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
-		"H"	=> array(ADMSLAN_39,E_16_NEWS, E_32_NEWS),			// Post News
-		"N"	=> array(ADMSLAN_47,E_16_NEWS, E_32_NEWS),			// Moderate submitted news
-		"V"	=> array(ADMSLAN_35,E_16_UPLOADS, E_32_UPLOADS),	// Configure public file uploads
-		"M"	=> array(ADMSLAN_46,E_16_WELCOME, E_32_WELCOME),	// Welcome Messages
+		"5"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom PAGES 
+		"J"	=> array(ADLAN_42,E_16_CUST, E_32_CUST),			// create/edit custom MENUS
+
+		"H"	=> array(ADLAN_0,E_16_NEWS, E_32_NEWS),								// Post News - All Areas except settings.
+		"H0" => array(ADLAN_0." (".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),					// Create News Items
+		"H1" => array(ADLAN_0." (".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),						// Edit News Items
+		"H2" => array(ADLAN_0." (".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),					// Delete News Items
+		"H3" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_CREATE.")",E_16_NEWS, E_32_NEWS),			// Create News Category
+		"H4" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_EDIT.")",E_16_NEWS, E_32_NEWS),			// Edit News Category
+		"H5" => array(ADLAN_0." (".LAN_CATEGORY." - ".LAN_DELETE.")",E_16_NEWS, E_32_NEWS),			// Delete News Category
+
+		"N"	=> array(ADLAN_0." (".LAN_SUBMITTED.")",E_16_NEWS, E_32_NEWS),			// Moderate submitted news
+		"V"	=> array(ADLAN_31,E_16_UPLOADS, E_32_UPLOADS),							// Configure public file uploads
+		"M"	=> array(ADLAN_28,E_16_WELCOME, E_32_WELCOME),							// Welcome Messages
 				
 		// Tools 
-		"Y"	=> array(ADMSLAN_67,E_16_INSPECT, E_32_INSPECT),	// File inspector
-		"9"	=> array(ADMSLAN_28, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
-		"O"	=> array(ADMSLAN_68,E_16_NOTIFY, E_32_NOTIFY),		// Notify
-		"U"	=> array(ADMSLAN_45,E_16_CRON, E_32_CRON),			// Schedule Tasks
-		"S"	=> array(ADMSLAN_33,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
+		"Y"	=> array(ADLAN_147,E_16_INSPECT, E_32_INSPECT),	    // File inspector
+		"9"	=> array(ADLAN_40, E_16_MAINTAIN, E_32_MAINTAIN),	// Take Down site for Maintenance
+		"O"	=> array(ADLAN_149,E_16_NOTIFY, E_32_NOTIFY),		// Notify
+		"U"	=> array(ADLAN_157,E_16_CRON, E_32_CRON),			// Schedule Tasks
+		"S"	=> array(ADLAN_155,E_16_ADMINLOG, E_32_ADMINLOG),	// System Logging
 		
 		// Manage
-		"B"	=> array(ADMSLAN_37,E_16_COMMENT, E_32_COMMENT),	// Moderate Comments
-		"6"	=> array(ADMSLAN_25,E_16_FILE, E_32_FILE),			// File-Manager  - Upload /manage files - 
-		"A"	=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager All Areas. 
-		"A1"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Add/Import)
-		"A2"=> array(ADMSLAN_36,E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media-Categories)
+		"B"	=> array(LAN_COMMENTMAN,E_16_COMMENT, E_32_COMMENT),	    								// Moderate Comments
+		"6"	=> array(LAN_MEDIAMANAGER,E_16_FILE, E_32_FILE),											// File-Manager  - Upload /manage files - 
+		"A"	=> array(LAN_MEDIAMANAGER." (".LAN_ALL.")",E_16_IMAGES, E_32_IMAGES),						// Media-Manager All Areas. 
+		"A1"=> array(LAN_MEDIAMANAGER." (".LAN_UPLOAD."/".LAN_IMPORT.")",E_16_IMAGES, E_32_IMAGES),		// Media-Manager (Media Upload/Add/Import)
+		"A2"=> array(LAN_MEDIAMANAGER." (".LAN_CATEGORIES.")",E_16_IMAGES, E_32_IMAGES),				// Media-Manager (Media-Categories)
 		
 		
-		"2"	=> array(ADMSLAN_20,E_16_MENUS, E_32_MENUS),		// Alter Menus
+		"2"	=> array(ADLAN_6,E_16_MENUS, E_32_MENUS),		// Alter Menus
 		
 		
 		//	"D"=> ADMSLAN_29,	// Manage Banners 				(deprecated - now a plugin)
@@ -1246,7 +1383,7 @@ class e_userperms
 
 		asort($this->plugin_perms);
 
-		$this->plugin_perms = array("Z"=> array('0'=>ADMSLAN_62)) + $this->plugin_perms;
+		$this->plugin_perms = array("Z"=> array('0'=>ADLAN_98)) + $this->plugin_perms;
 
 		if(e107::getConfig()->getPref('multilanguage'))
 		{
@@ -1332,8 +1469,10 @@ class e_userperms
 			$icon_16	= "";
 			$icon_32	= "";
 		}
-		
-		$par = "<tr>
+
+		$class = getperms($arg, $perms) ? 'active' : '';
+
+		$par = "<tr class='{$class}'>
 			<td style='text-align:center'>".$icon_16."</td>
 			<td style='text-align:center'>".$frm->checkbox('perms[]', $arg, getperms($arg, $perms))."</td>
 			<td>".$frm->label($label,'perms[]', $arg)."</td>
@@ -1504,6 +1643,40 @@ class e_userperms
 	
 	function renderPermTable($type,$a_perms='')
 	{
+
+
+
+		if($type == 'tabs')
+		{
+			$groupedList = $this->getPermList('grouped');
+			$tab = array();
+			foreach($groupedList as $section=>$list)
+			{
+				$text = '';
+				//	$text .= "\t\t<div class='field-section'><h4>".$prm->renderSectionDiz($section)."</h4>"; //XXX Lan - General
+				$text .= "\t\t<table class='table adminlist'>
+				<colgroup>
+					<col class='center' style='width:50px' />
+					<col style='width:50px' />
+					<col  />
+				</colgroup>
+				<tbody>";
+
+				foreach($list as $key=>$diz)
+				{
+					$text .= $this->checkb($key, $a_perms, $diz);
+				}
+
+				$text .= "</tbody></table>";
+
+				$tab[] = array('caption'=>$this->renderSectionDiz($section), 'text'=>$text);
+
+			}
+
+		//	return print_a($groupedList);
+			return e107::getForm()->tabs($tab);
+		}
+
 		$groupedList = $this->getPermList($type);
 			
 		if($type != 'grouped')
@@ -1594,9 +1767,16 @@ class e_userperms
 	 	}
 		
 		//$sql->db_Update("user", "user_perms='{$perm}' WHERE user_id='{$modID}' ") 
+		if(!$sysuser->isAdmin())
+		{
+			$sysuser->set('user_admin', 1)->save();
+			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
+		}
+		
 		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(LAN_UPDATED, $tp->toDB($_POST['ad_name'])), false, false);
 		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
-		$admin_log->log_event('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
+		e107::getLog()->add('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
 
 }

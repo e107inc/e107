@@ -9,6 +9,9 @@
 |     $Author$
 +----------------------------------------------------------------------------+
 */
+
+// DEPRECATED - SUBJECT TO REMOVAL
+
 define("US_LAN_1", "Select user");
 define("US_LAN_2", "Select user class");
 define("US_LAN_3", "All users");

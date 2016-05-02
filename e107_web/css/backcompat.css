@@ -1,0 +1,24 @@
+/* Backwards Compatibility Stylesheet for v1.x */
+
+/* Bootstrap Alerts */
+.alert          { padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px; }
+.alert-success  { color: #3C763D; background-color: #DFF0D8; border-color: #D6E9C6; 	}
+.alert-info     { color: #31708F; background-color: #D9EDF7; border-color: #BCE8F1; }
+.alert-warning  { color: #8A6D3B; background-color: #FCF8E3; border-color: #FAEBCC; 	}
+.alert-danger   { color: #A94442; background-color: #F2DEDE; 	border-color: #EBCCD1; 	}
+.alert
+.alert-link     { font-weight: 700; 	}
+
+.alert .close   { color: #000; }
+.alert .close, .alert a.btn
+				{ text-decoration: none; 	}
+.close          { float: right; font-size: 21px; line-height: 1; color: #000; text-shadow: 0 1px 0 #FFF; opacity: 0.2; 	}
+a.btn           {  }
+.s-message .s-message-title
+				{ margin-top: 0; background: transparent none no-repeat scroll 0 50%; font-size:150%	}
+
+mark            { text-decoration: underline; color:#FF0000; font-weight:bold; } /* .searchhighlight */
+.list-unstyled  { list-style: outside none none; }
+
+#login-template { width:60%; max-width:350px; margin-right:auto;margin-left:auto; }
+div.form-group  { padding-top: 5px }

@@ -1,6 +1,6 @@
 /*table { margin-left:auto; margin-right:auto; }*/
 
-.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
+
 
 /*
  * e107 v0.800 - new class definitions
@@ -13,33 +13,33 @@
 .justify { text-align: justify }
 .f-left { float: left }
 .f-right { float: right }
-.top { vertical-align: top }
-.middle { vertical-align: middle }
-.bottom { vertical-align: bottom }
-.clear { clear: both }
-.clear-l { clear: right }
-.clear-r { clear: left }
+.top 			{ vertical-align: top }
+.middle 		{ vertical-align: middle }
+.bottom 		{ vertical-align: bottom }
+.clear 			{ clear: both }
+.clear-l 		{ clear: right }
+.clear-r 		{ clear: left }
 
 i.icon-download	{ font-size:200%;  }
 
 
 .e-footer-info	{ margin-top:10px; padding:20px; text-align: center }
 
-td.text-center { text-align:center; }
+td.text-center	{ text-align:center; }
 
 /* Core Icons */
-.icon { border: 0 }
-.icon.action { vertical-align: middle }
-.S16 { width: 16px; height: 16px }
-.S32 { width: 32px; height: 32px }
-.S64 { width: 64px; height: 64px }
-.S128 { width: 128px; height: 128px }
+.icon 			{ border: 0px; display: inline-block; margin-right: .3em;}
+.icon.action 	{ vertical-align: middle }
+.S16 			{ width: 16px; height: 16px }
+.S32 			{ width: 32px; height: 32px }
+.S64 			{ width: 64px; height: 64px }
+.S128 			{ width: 128px; height: 128px }
 
 /* Decorate JS - see core/decorate.js */
-.odd {  }
-.even { background-color: #F5F5F5 }
-.first, .last {  }
-.e-list { /* core selector - can be used per theme (JS) to decorate list blocks */ }
+.odd 			{  }
+.even 			{ background-color: #F5F5F5 }
+.first, .last 	{  }
+.e-list 		{ /* core selector - can be used per theme (JS) to decorate list blocks */ }
 
 /* e107 Tabs - see core/tabs.js */
 ul.e-tabs { list-style-type: none; }
@@ -108,9 +108,9 @@ a.cpage-np.current { text-decoration: none; }
 /* message text (overall) */
 .warning { color: #FF6600 }
 .success { color: green; }
-.error { color: #FF0000 }
+.error { color: #A94442; }
 .info {}
-.required { color:red }
+.required { color:#A94442; }
 
 /******** Tooltip info */
 .e-info {}
@@ -119,9 +119,12 @@ a.cpage-np.current { text-decoration: none; }
 .image-preview {}
 
 /* BBcode textareas */
-div.bbarea.large, .tbox.large, .helpbox.large { width: 95% !important; }
+div.bbarea.large, .tbox.large, .helpbox.large { width: 95% }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
+
+.bbcode-panel { width: 100% }
+.input-block-level { width: 100% !important }
 
 /******** bbcodes && typgoraphy */
 p {  }
@@ -136,6 +139,57 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 #comments-container { list-style: none outside none; margin:0px }
 #comments-container > li { padding: 5px 0px }
+.comment-text           { padding: 8px 0 }
+
+.e-email:before {    content: attr(data-user);    }
+.e-email:after {  	content: attr(data-dom)	}
+
+/* User Profile css */
+.panel-profile .user-avatar {
+	max-width: 150px;
+	max-height: 150px;
+	margin-top: -90px;
+	margin-bottom: 15px;
+	border: 5px solid #fff;
+	border-radius: 100%;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	margin-left:auto;
+	margin-right:auto;
+}
+.panel-profile .panel-heading h5.user-id {
+	color:#ffffff;
+}
+.panel-profile .panel-body span.padding-left {
+	display:block;
+}
+.panel-profile .panel-body p {
+	clear: both;
+    float: none;
+    display: block;
+}
+.panel-profile .profile-header {
+ 	max-width:300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.panel-profile .profile-header h4 {
+    padding-bottom: 30px;
+}
+.panel-profile .panel-body p.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding-top: 10px;
+}
+.panel-profile .panel-body div.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding: 10px 0;
+}
+
+
+
+
+
+
+
 /* default comments layout   */
 
 
@@ -190,8 +244,8 @@ a.comment-edit										{ }
 */
 div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-comment-edit-active								{ -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;}
-.e-comment-edit-success								{ padding:5px; text-align:center; background-color:#DFFFDF; border: 1px solid #009900; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
-.e-comment-edit-error								{ padding:5px; text-align:center; background-color:#FFCECE; border: 1px solid #CC0000;  -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
+.e-comment-edit-success								{ padding:8px; text-align:center; }
+.e-comment-edit-error								{ padding:8px; text-align:center; }
 
 .e-rate-up img										{ opacity: 0.4 }
 .e-rate-down img									{ opacity: 0.4 }
@@ -219,6 +273,52 @@ div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
    span.e-hide-if-js,
    button.e-hide-if-js { display: inline; }
 */
+.video-responsive {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px; height: 0; overflow: hidden;
+    margin-bottom:20px;
+}
+
+.video-responsive iframe,
+.video-responsive object,
+.video-responsive embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+div.bbcode-panel {
+	
+	background-color: rgb(245, 245, 245);
+background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgb(230, 230, 230));
+background-repeat: repeat-x;
+border-width: 1px;
+border-style: solid;
+-moz-border-top-colors: none;
+-moz-border-right-colors: none;
+-moz-border-bottom-colors: none;
+-moz-border-left-colors: none;
+border-image: none;
+border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgb(179, 179, 179);
+border-radius: 4px;
+box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px rgba(0, 0, 0, 0.05);
+	
+}
+
+#search-results li { margin-top:5px; padding: 10px 0; }
+#search-results li h4 { margin-bottom:0 !important }
 
 
+optgroup.level-1 { padding-left:0.1em }
+optgroup.level-2 { padding-left:0.7em }
+optgroup.level-3 { padding-left:2em }
+optgroup.level-4 { padding-left:3em }
+optgroup.level-5 { padding-left:4em }
 
+.online-menu-extended li, .online-menu li ul li { min-height: 40px; padding-top:8px}
+.online-menu-extended ul { padding-bottom:20px}
+.online-menu-extended span.online-menu-user { display:block; font-size:1.1em;margin-top:4px; line-height:1}
+.online-menu-extended-label { font-size:1.2em; }

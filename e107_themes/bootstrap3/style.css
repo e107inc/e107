@@ -1,0 +1,177 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+
+#sidebar {
+	padding-top:20px;	
+}
+
+.alert { 
+	margin-top:20px 
+}
+
+img.logo {
+    margin-top: -5px;
+    margin-right: 5px;
+}
+
+/* Make posted content images responsive too */
+.bbcode-img { display: block; 	max-width: 100%; 	height: auto; }
+
+/* Sign in Page */
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+
+/* Page Sections */
+.section,
+.section-colored {
+  padding: 50px 0;
+}
+
+.section-colored {
+  background-color: #e1e1e1; /* change this to change the background color of a colored section */
+  color: #000;
+}
+
+.img-home-portfolio, .img-customer, .portfolio-item {
+    margin-bottom: 30px;
+}
+
+
+.row > .col-md-4:nth-child(4n+1) {  clear:both; }  /* fix wrapping in gallery portfolio */
+
+
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+
+.featurebox.carousel {
+ 	min-height:460px;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.featurebox.carousel .item {
+  min-height:460px;
+  background-color: #CCCCCC;
+}
+
+.featurebox-item-image.pull-left, .featurebox-item-image.pull-right {
+
+  margin-top: 25px;
+}
+
+img.featurebox { border-radius: 5px }
+
+.xurl-social-icons a {
+    color: inherit;
+    text-decoration: none;
+    opacity: .7;
+    padding-left:15px;
+    transition: opacity .5s ease-out;
+    -moz-transition: opacity .5s ease-out;
+    -webkit-transition: opacity .5s ease-out;
+    -o-transition: opacity .5s ease-out;
+}
+
+.xurl-social-icons a:hover {
+	opacity: 1;
+}
+
+.btn-featurebox, .btn-cpage { margin-top:10px  }
+
+.tab-pane { padding-top:15px }
+
+#login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
+#login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
+#login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
+
+.modal-lg { width: 70% }
+
+
+table label.checkbox {
+    margin-left: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* CUSTOM Responsive Styles */
+
+
+/* Extra small devices Phones (<768px)  .col-xs */
+@media all and (max-width: 767px) { 
+	
+	.featurebox .carousel-indicators 										{ top:10px; }	
+	.featurebox-item-image.pull-left, .featurebox-item-image.pull-right 	{ margin-top: 30px; }
+	.news-images-main                                                       { padding-left: 0; padding-bottom:15px; padding-right:0}
+}
+
+/* Small devices Tablets .col-sm */
+@media all and (min-width: 768px) and (max-width: 991px)  {
+	.news-images-main       { padding-left: 0; padding-bottom:5px }
+}
+
+/* Medium devices Desktops (≥992px)  .col-md */
+@media all and (min-width: 992px) and (max-width: 1199px)  {
+	.news-images-main { padding-left: 0; padding-bottom:5px}
+	
+ }
+
+/* Large devices (large desktops, 1200px and up).col-lg  */
+@media all and (min-width: 1200px) {
+
+	.news-images-main { padding-left: 0; padding-bottom:5px}
+}
+
+

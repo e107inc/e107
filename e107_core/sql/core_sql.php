@@ -8,8 +8,6 @@
  *
  * Core SQL
  *
- * $URL$
- * $Id$
 */
 
 header("location:../index.php");
@@ -18,11 +16,9 @@ exit;
 #
 # +---------------------------------------------------------------+
 # |        e107 website system
-# |        /files/sql.php
 # |
-# |        Copyright (C) 2008-2009 e107 Inc (e107.org)
+# |        Copyright (C) 2008-2015 e107 Inc (e107.org)
 # |        http://e107.org
-# |        jalist@e107.org
 # |
 # |        Released under the terms and conditions of the
 # |        GNU General Public License (http://gnu.org).
@@ -72,6 +68,7 @@ CREATE TABLE audit_log (
 #
 
 CREATE TABLE banlist (
+  banlist_id int(10) unsigned NOT NULL auto_increment,
   banlist_ip varchar(100) NOT NULL default '',
   banlist_bantype tinyint(3) signed NOT NULL default '0',
   banlist_datestamp int(10) unsigned NOT NULL default '0',
@@ -79,7 +76,8 @@ CREATE TABLE banlist (
   banlist_admin smallint(5) unsigned NOT NULL default '0',
   banlist_reason tinytext NOT NULL,
   banlist_notes tinytext NOT NULL,
-  PRIMARY KEY  (banlist_ip),
+  PRIMARY KEY  (banlist_id),
+  KEY banlist_ip (banlist_ip),
   KEY banlist_datestamp (banlist_datestamp),
   KEY banlist_banexpires (banlist_banexpires)
 ) ENGINE=MyISAM;
@@ -194,7 +192,7 @@ CREATE TABLE dblog (
 # --------------------------------------------------------
 
 #
-# Table structure for table `generic`
+# Table structure for table `generic` (includes Welcome Messages)
 #
 CREATE TABLE generic (
   gen_id int(10) unsigned NOT NULL auto_increment,
@@ -210,7 +208,7 @@ CREATE TABLE generic (
 # --------------------------------------------------------
 
 #
-# Table structure for table `links`
+# Table structure for table `links` (navigation)
 #
 
 CREATE TABLE links (
@@ -226,6 +224,7 @@ CREATE TABLE links (
   link_class varchar(255) NOT NULL default '0',
   link_function varchar(100) NOT NULL default '',
   link_sefurl varchar(255) NOT NULL,
+  link_owner varchar(50) NOT NULL default '',
   PRIMARY KEY  (link_id)
 ) ENGINE=MyISAM;
 
@@ -253,6 +252,7 @@ CREATE TABLE mail_recipients (
 CREATE TABLE mail_content (
 	mail_source_id int(10) unsigned NOT NULL auto_increment,
 	mail_content_status tinyint(1) unsigned NOT NULL default '0',
+	mail_total_count int(10) unsigned NOT NULL default '0',
 	mail_togo_count int(10) unsigned NOT NULL default '0',
 	mail_sent_count int(10) unsigned NOT NULL default '0',
 	mail_fail_count int(10) unsigned NOT NULL default '0',
@@ -270,6 +270,7 @@ CREATE TABLE mail_content (
 	mail_body text,
 	mail_body_templated text,
 	mail_other text,
+	mail_media text,
 	PRIMARY KEY (mail_source_id),
 	KEY mail_content_status (mail_content_status)
 ) ENGINE=MyISAM;
@@ -299,10 +300,10 @@ CREATE TABLE menus (
 
 CREATE TABLE news (
   news_id int(10) unsigned NOT NULL auto_increment,
-  news_title varchar(200) NOT NULL default '',
+  news_title varchar(255) NOT NULL default '',
   news_sef varchar(200) NOT NULL default '',
-  news_body text NOT NULL,
-  news_extended text NOT NULL,
+  news_body longtext NOT NULL,
+  news_extended longtext NOT NULL,
   news_meta_keywords  varchar(255) NOT NULL default '',
   news_meta_description text NOT NULL,
   news_datestamp int(10) unsigned NOT NULL default '0',
@@ -360,6 +361,7 @@ CREATE TABLE online (
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
+  online_language varchar(2) NOT NULL default '',
   KEY online_ip (online_ip)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
@@ -374,22 +376,26 @@ CREATE TABLE page (
   page_sef varchar (250) NOT NULL default '',
   page_chapter int(10) unsigned NOT NULL default '0',
   page_metakeys varchar (250) NOT NULL default '',
-  page_metadscr mediumtext NOT NULL,
-  page_text mediumtext NOT NULL,
+  page_metadscr mediumtext,
+  page_text mediumtext,
   page_author int(10) unsigned NOT NULL default '0',
   page_datestamp int(10) unsigned NOT NULL default '0',
   page_rating_flag tinyint(1) unsigned NOT NULL default '0',
   page_comment_flag tinyint(1) unsigned NOT NULL default '0',
   page_password varchar(50) NOT NULL default '',
-  page_class varchar(250) NOT NULL default '',
-  page_ip_restrict text NOT NULL,
+  page_class varchar(250) NOT NULL default '0',
+  page_ip_restrict text,
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
   menu_name varchar(50) NOT NULL default '',  
-  menu_title varchar(50) NOT NULL default '',  
-  menu_text mediumtext NOT NULL,
+  menu_title varchar(250) NOT NULL default '',  
+  menu_text mediumtext,
   menu_image varchar(250) NOT NULL default '',
+  menu_icon varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
+  menu_class varchar(250) NOT NULL default '0',
+  menu_button_url varchar(250) NOT NULL default '', 
+  menu_button_text varchar(250) NOT NULL default '',   
   
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
@@ -401,7 +407,7 @@ CREATE TABLE page (
 #
 
 CREATE TABLE page_chapters (
-  chapter_id tinyint(3) unsigned NOT NULL auto_increment,
+  chapter_id int(4) unsigned NOT NULL auto_increment,
   chapter_parent int(4) unsigned NOT NULL default '0',
   chapter_name varchar(200) NOT NULL default '',
   chapter_sef varchar(200) NOT NULL default '',
@@ -409,8 +415,9 @@ CREATE TABLE page_chapters (
   chapter_meta_keywords  varchar(255) NOT NULL default '',
   chapter_manager tinyint(3) unsigned NOT NULL default '254',
   chapter_icon varchar(250) NOT NULL default '',
-  chapter_order tinyint(3) unsigned NOT NULL default '0',
+  chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
+  chapter_visibility tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (chapter_id),
   KEY chapter_order (chapter_order)
 ) ENGINE=MyISAM;
@@ -496,13 +503,14 @@ CREATE TABLE upload (
   upload_datestamp int(10) unsigned NOT NULL default '0',
   upload_name varchar(100) NOT NULL default '',
   upload_version varchar(10) NOT NULL default '',
-  upload_file varchar(100) NOT NULL default '',
+  upload_file varchar(180) NOT NULL default '',
   upload_ss varchar(100) NOT NULL default '',
   upload_description text NOT NULL,
   upload_demo varchar(100) NOT NULL default '',
   upload_filesize int(10) unsigned NOT NULL default '0',
   upload_active tinyint(3) unsigned NOT NULL default '0',
   upload_category tinyint(3) unsigned NOT NULL default '0',
+  upload_owner varchar(50) NOT NULL default '',
   PRIMARY KEY  (upload_id),
   KEY upload_active (upload_active)
 ) ENGINE=MyISAM;
@@ -540,7 +548,7 @@ CREATE TABLE user (
   user_perms text NOT NULL,
   user_realm text NOT NULL,
   user_pwchange int(10) unsigned NOT NULL default '0',
-  user_xup text NOT NULL,
+  user_xup text,
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name),
   UNIQUE KEY user_loginname (user_loginname),
@@ -561,6 +569,7 @@ CREATE TABLE userclass_classes (
   userclass_visibility smallint(5) signed NOT NULL default '0',
   userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
+  userclass_perms text NOT NULL,
   PRIMARY KEY  (userclass_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
@@ -571,7 +580,7 @@ CREATE TABLE userclass_classes (
 
 CREATE TABLE user_extended (
   user_extended_id int(10) unsigned NOT NULL default '0',
-  user_hidden_fields text NOT NULL,
+  user_hidden_fields text,
   PRIMARY KEY  (user_extended_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------

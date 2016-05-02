@@ -10,6 +10,7 @@ if (!defined('e107_INIT')){ exit; }
  
 class core_news_sef_noid_url extends eUrlConfig
 {
+		
 	public function config()
 	{
 		return array(
@@ -39,6 +40,8 @@ class core_news_sef_noid_url extends eUrlConfig
 	 * - list/month?id=xxx -> news/Month-id
 	 * - list/year?id=xxx -> news/Year-id
 	 * - list/nextprev?route=xxx -> PARSED_ROUTE?page=[FROM] (recursive parse() call)
+	 * - list/all
+	 * - list/tag
 	 */
 	public function create($route, $params = array(), $options = array())
 	{
@@ -97,6 +100,11 @@ class core_news_sef_noid_url extends eUrlConfig
 						if($page) $parm = array('page' => $page); // news/All?page=xxx
 				break;
 				
+				case 'tag':				// news/tag/xxxx
+					$r[0] = 'tag';
+					$r[1] = $params['tag']; 
+				break;
+				
 				case 'category':
 				case 'short':
 					if(!vartrue($params['id']))
@@ -129,6 +137,15 @@ class core_news_sef_noid_url extends eUrlConfig
 		
 		if(empty($r)) return false;
 			
+			
+		//XXX TODO Find a better place to put this check. 	
+		$urlFormat = e107::getConfig()->get('url_sef_translate');
+		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
+		{
+			$r[0] = strtolower($r[0]);	
+		}	
+			
+			
 		return array($r, $parm);
 	}
 	
@@ -143,7 +160,7 @@ class core_news_sef_noid_url extends eUrlConfig
 	 */
 	public function parse($pathInfo, $params, $request, $router, $config)
 	{
-		$page = $params['page'] ? intval($params['page']) : '0';
+		$page = !empty($params['page']) ? intval($params['page']) : '0';
 		if(!$pathInfo) 
 		{
 			## this var is used by default from legacy() method
@@ -154,8 +171,9 @@ class core_news_sef_noid_url extends eUrlConfig
 		}
 		
 		## no controller/action pair - news item view - map to extend.xxx
-		if(strpos($pathInfo, '/') === false)
+		if(strpos($pathInfo, '/') === false && strtolower($pathInfo) != 'all')
 		{
+			
 			$route = 'view/item';
 			$id = is_numeric($pathInfo) ? intval($pathInfo) : $this->itemIdByTitle($pathInfo);
 			if(!$id) 
@@ -223,6 +241,16 @@ class core_news_sef_noid_url extends eUrlConfig
 				//return 'list/year';
 			break;
 			
+			case 'all':
+				$this->legacyQueryString = 'all.0.'.$page;
+				return 'list/all';
+			break;
+			
+			case 'tag': // url: news/tag/xxxxx
+				$this->legacyQueryString = 'tag='.$parts[1];
+				return 'list/tag';
+			break;
+			
 			# force not found
 			default:
 				return false;
@@ -246,6 +274,7 @@ class core_news_sef_noid_url extends eUrlConfig
 				'description' => LAN_EURL_NEWS_REWRITE_DESCR, //
 				'examples'  => array("{SITEURL}news/news-title")
 			),
+			'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);
@@ -261,9 +290,9 @@ class core_news_sef_noid_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->db_Select('news', 'news_id', "news_sef='{$id}'")) 
+		if($sql->select('news', 'news_id', "news_sef='{$id}'"))
 		{
-			$id = $sql->db_Fetch();
+			$id = $sql->fetch();
 			return $id['news_id'];
 		}
 		return false;
@@ -275,9 +304,9 @@ class core_news_sef_noid_url extends eUrlConfig
 		$sql = e107::getDb('url');
 		$tp = e107::getParser();
 		$id = $tp->toDB($id);
-		if($sql->db_Select('news_category', 'category_id', "category_sef='{$id}'")) 
+		if($sql->select('news_category', 'category_id', "category_sef='{$id}'"))
 		{
-			$id = $sql->db_Fetch();
+			$id = $sql->fetch();
 			return $id['category_id'];
 		}
 		return false;

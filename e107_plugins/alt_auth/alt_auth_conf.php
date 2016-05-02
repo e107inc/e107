@@ -31,7 +31,7 @@ $eplug_admin = true;
 require_once('../../class2.php');
 if(!getperms('P') || !e107::isInstalled('alt_auth'))
 {
-	header('location:'.e_BASE.'index.php'); 
+	e107::redirect('admin');
 	exit(); 
 }
 require_once(e_HANDLER.'form_handler.php');
@@ -55,7 +55,7 @@ if(isset($_POST['updateprefs']))
 	$temp['auth_badpassword'] = intval($_POST['auth_badpassword']);
 	if ($admin_log->logArrayDiffs($temp, $pref, 'AUTH_01'))
 	{
-		save_prefs();		// Only save if changes  @TODO:
+		e107::getConfig('core')->setPref($temp)->save(false);
 		header('location:'.e_SELF);
 		exit;
 	}
@@ -74,7 +74,7 @@ if(isset($_POST['updateeufs']))
 	{
 		$pref['auth_extended'] = $au;				// @TODO:
 		save_prefs();
-		$admin_log->log_event('AUTH_02',$au,'');
+		e107::getLog()->add('AUTH_02',$au,'');
 	}
 }
 

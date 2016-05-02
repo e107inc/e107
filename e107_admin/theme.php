@@ -15,8 +15,9 @@
  */
 
 require_once("../class2.php");
-if (!getperms("1")) {
-	header("location:".e_BASE."index.php");
+if (!getperms("1"))
+{
+	e107::redirect('admin');
 	exit;
 }
 
@@ -25,38 +26,9 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 $e_sub_cat = 'theme_manage';
 
 e107::css("inline","
+.block-text h2.caption 		{ text-align: right; margin-bottom: -30px; padding-right: 10px; }
 .hide						{ display: none }
-.admin-theme-thumb			{ height:130px;overflow:hidden;border:1px solid black; margin:0px; margin-bottom:10px; padding:0px;   }
-.admin-theme-thumb:hover	{ opacity:0.4 }
 
-.admin-theme-options		{ transition: opacity .20s ease-in-out;
-							 -moz-transition: opacity .20s ease-in-out;
-							 -webkit-transition: opacity .20s ease-in-out;
-							 opacity:0; 
-							 width:100%;
-							 height:80px;
-							 padding-top:50px;
-							 white-space:nowrap;
-							 background-color:black;
-							 display:block;position:relative; text-align:center; vertical-align:middle; top:-141px;}
-
-.admin-theme-options:hover	{ opacity:0.8; }
-
-.admin-theme-title			{ line-height: 18px; overflow:hidden; padding-left:5px; white-space:no-wrap; width:200px; position:relative; top:-132px; }
-
-.admin-theme-select			{border:1px dotted silver;background-color:#DDDDDD;float:left }
-
-.admin-theme-select-active	{ background-color:red;float:left }
-
-.admin-theme-cell			{ width:202px; height:160px; padding:10px; -moz-border-radius: 5px; border-radius: 5px; margin:10px 10px 5px 0px}
-
-.admin-theme-cell-default   { border:1px dotted silver; background-color:#DDDDDD }
-
-
-
-.admin-theme-cell-site		{ background-color: #d9edf7;  border: 1px solid #bce8f1; }
-
-.admin-theme-cell-admin	 	{ background-color:#FFFFD5; border: 1px solid #FFCC00; }
 
 
 ");
@@ -64,13 +36,20 @@ e107::css("inline","
 
 require_once(e_HANDLER."theme_handler.php");
 $themec = new themeHandler;
-if(e_AJAX_REQUEST)
+
+// print_a($_GET);
+
+$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
+
+
+if(!empty($_GET['action']))
 {
 	define('e_IFRAME',true);
 }
 
-if(e_AJAX_REQUEST)
+if(!empty($_GET['action']))
 {
+	require_once("auth.php");
 	switch ($_GET['action']) 
 	{
 		case 'login':	
@@ -78,25 +57,27 @@ if(e_AJAX_REQUEST)
 			echo $mp->renderLoginForm();
 			exit;	
 		break;
-		
+
+		/*
 		case 'download':
 			$string =  base64_decode($_GET['src']);	
 			parse_str($string, $p);
 			$mp = $themec->getMarketplace();
 			$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
 			// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
-			echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
+			echo "<pre>Connecting...\n"; flush();
 			// download and flush
 			$mp->download($p['id'], $p['mode'], $p['type']);
 			echo "</pre>"; flush();
 			exit;
 		break;	
-		
+		*/
+
 		case 'info':
-			$string =  base64_decode($_GET['src']);	
+			$string =  base64_decode($_GET['src']);
 			parse_str($string,$p);
 			echo $themec->renderThemeInfo($p);
-			exit;
+
 		break;
 		
 		case 'preview':
@@ -104,7 +85,7 @@ if(e_AJAX_REQUEST)
 			$tm = (string) $_GET['id'];	
 			$data = $themec->getThemeInfo($tm);
 			echo $themec->renderThemeInfo($data);
-			exit;	
+		//	exit;
 		break;
 
 	}
@@ -130,10 +111,14 @@ if(e_AJAX_REQUEST)
 */
 	// Theme Info Ajax 
 	// FIXME  addd action=preview to the url, remove this block
-	$tm = (string) $_GET['id'];	
-	$data = $themec->getThemeInfo($tm);
-	echo $themec->renderThemeInfo($data);
-	
+	if(!empty($_GET['id']))
+	{
+		$tm = (string) $_GET['id'];
+		$data = $themec->getThemeInfo($tm);
+		echo $themec->renderThemeInfo($data);
+	}
+
+	require_once(e_ADMIN."footer.php");
 	exit;	
 
 }
@@ -162,19 +147,52 @@ else
 
 
 
-$mode = varset($_GET['mode'],'main'); // (e_QUERY) ? e_QUERY :"main" ;
 
-if(vartrue($_POST['selectadmin']))
+
+
+if($mode == 'download' && !empty($_GET['src']))
+{
+		define('e_IFRAME', true);
+		$frm = e107::getForm();
+		$mes = e107::getMessage();		
+		$string =  base64_decode($_GET['src']);	
+		parse_str($string, $data);
+
+		if(!empty($data['price']))
+		{
+			e107::getRedirect()->go($data['url']);
+			return true;
+		}
+
+		
+		$mp = $themec->getMarketplace();	
+	 	$mes->addSuccess("Connecting...");   
+
+		if($mp->download($data['id'], $data['mode'], 'theme')) // download and unzip theme.
+		{
+			// Auto install?
+		//	$text = e107::getPlugin()->install($data['plugin_folder']); 
+		//	$mes->addInfo($text); 
+			echo $mes->render('default', 'success'); 
+		}
+		else
+		{
+			echo $mes->addError('Unable to continue')->render('default', 'error'); 
+		}
+		
+		echo $mes->render('default', 'debug'); 
+	
+}
+elseif(vartrue($_POST['selectadmin']))
 {
 	$mode = "admin";
 }
 
 if(vartrue($_POST['upload']))
 {
-	$mode = "choose";
+	$mode = "upload";
 }
-
-if(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
+elseif(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
 {
 	$mode = "main";
 }
@@ -214,13 +232,13 @@ function theme_adminmenu()
 		$var['choose']['text'] = TPVLAN_51;
 		$var['choose']['link'] = e_SELF."?mode=choose";
 		
-		$var['online']['text'] = "Find Themes";
+		$var['online']['text'] = TPVLAN_62;
 		$var['online']['link'] = e_SELF."?mode=online";
 
 		$var['upload']['text'] = TPVLAN_38;
 		$var['upload']['link'] = e_SELF."?mode=upload";
 		
-		$var['convert']['text'] = "Convert";
+		$var['convert']['text'] = TPVLAN_63;
 		$var['convert']['link'] = e_SELF."?mode=convert";
 
       //  $selected = (e_QUERY) ? e_QUERY : "main";
@@ -273,12 +291,13 @@ class theme_builder
 				$newDir[$dir] = $dir;
 			}
 			
-			$mes->addInfo("This Wizard will build a theme.xml meta file for your theme.<br />
-				Before you start: <ul>
-						<li>Make sure your theme's directory is writable</b></li>
-						<li>Select your theme's folder to begin.</li>
+			$mes->addInfo(' '.TPVLAN_64.' <br />
+       '.TPVLAN_65.' 
+            <ul> 
+						<li> '.TPVLAN_66.'</li>
+						<li> '.TPVLAN_67.'</li>
 				</ul>
-			");
+	');
 			
 			$text = $frm->open('createPlugin','get',e_SELF."?mode=convert");
 			$text .= "<table class='table adminform'>
@@ -287,7 +306,7 @@ class theme_builder
 							<col class='col-control' />
 						</colgroup>
 				<tr>
-					<td>Select your theme's folder</td>
+					<td> ".TPVLAN_68."</td>
 					<td>".$frm->select("newtheme",$newDir)."</td>
 				</tr>";
 				
@@ -302,12 +321,12 @@ class theme_builder
 			$text .= "				
 				</table>
 				<div class='buttons-bar center'>
-				".$frm->admin_button('step', 2,'other','Go')."
+				".$frm->admin_button('step', 2,'other',LAN_GO)."
 				</div>";
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP."Step 1", $mes->render() . $text);			
+			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_1, $mes->render() . $text);			
 			
 		}	
 
@@ -322,12 +341,12 @@ class theme_builder
 			
 			$data = array(
 				'main' 			=> array('name','lang','version','date', 'compatibility'),
-				'author' 		=> array('name','url'),
-				'summary' 		=> array('summary'),
+			  'author' 		=> array('name','url'),
+				'summary'		=> array('summary'),
 				'description' 	=> array('description'),
 				'keywords' 		=> array('one','two'),
 				'category'		=> array('category'),
-				'copyright'		=> array('copyright'),
+				'copyright' 	=> array('copyright'),
 				'stylesheets' 	=> array('stylesheets')
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
 		//		'sitelinks'		=> array('url','description','icon','iconSmall')
@@ -379,7 +398,7 @@ class theme_builder
 				{
 					$nm = $key.'-'.$type;
 					$name = "xml[$nm]";	
-					$size = (count($val)==1) ? 'span7' : 'span2';
+					$size = (count($val)==1) ? 'col-md-7' : 'col-md-2';
 					$text .= "<div class='{$size}'>".$this->xmlInput($name, $key."-". $type, vartrue($defaults[$nm]))."</div>";	
 				}	
 			
@@ -394,12 +413,12 @@ class theme_builder
 			<div class='buttons-bar center'>"
 			.$frm->hidden('newtheme', $this->themeName)
 			.$frm->hidden('xml[custompages]', trim(vartrue($leg['CUSTOMPAGES'])))
-			.$frm->admin_button('step', 3,'other','Generate')."
+			.$frm->admin_button('step', 3,'other',LAN_GENERATE)."
 			</div>";
 			
 			$text .= $frm->close();
 
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP."Step 2", $mes->render() . $text);		
+			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_2, $mes->render() . $text);		
 		}
 					
 				
@@ -569,52 +588,53 @@ TEMPLATE;
 			
 			$size 		= 30;
 			$help		= '';
-			
+			$sizex      = '';
+
 			switch ($info)
 			{
 				
 				case 'main-name':
-					$help 		= "The name of your theme. (Must be written in English)";
+					$help 		= TPVLAN_CONV_3;
 					$required 	= true;
 					$pattern 	= "[A-Za-z ]*";
 				break;
 		
 				case 'main-lang':
-					$help 		= "If you have a language file, enter the LAN_XXX value for the theme's name";
+					$help 		= TPVLAN_CONV_4;
 					$required 	= false;
-					$placeholder= " ";
+					$placeholder= "LAN equivalent";
 					$pattern 	= "[A-Z0-9_]*";
 				break;
 				
 				case 'main-date':
-					$help 		= "Creation date of your theme";
+					$help 		= TPVLAN_CONV_6;
 					$required 	= true;
 				break;
 				
 				case 'main-version':
 					$default 	= '1.0';
 					$required 	= true;
-					$help 		= "The version of your theme. Format: x.x";
+					$help 		= TPVLAN_CONV_5;
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 
 				case 'main-compatibility':
 					$default 	= '2.0';
 					$required 	= true;
-					$help 		= "Compatible with this version of e107";
+					$help 		= TPVLAN_CONV_7;
 					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
 				break;
 				
 				case 'author-name':
 					$default 	= (vartrue($default)) ? $default : USERNAME;
 					$required 	= true;
-					$help 		= "Author Name";
+					$help 		= TPVLAN_CONV_8;
 					$pattern	= "[A-Za-z \.0-9]*";
 				break;
 				
 				case 'author-url':
 					$required 	= true;
-					$help 		= "Author Website Url";
+					$help 		= TPVLAN_CONV_9;
 				//	$pattern	= "https?://.+";
 				break;
 				
@@ -623,16 +643,16 @@ TEMPLATE;
 				//break;	
 				
 				case 'summary-summary':
-					$help 		= "A short one-line description of the plugin. (!@#$%^&* characters not permitted) <br />(Must be written in English)";
+					$help 		= TPVLAN_CONV_10;
 					$required 	= true;
-					$size 		= 100;
+					$size 		= 200;
 					$placeholder= " ";
 					$pattern	= "[A-Za-z,() \.0-9]*";
 				break;	
 				
 				case 'keywords-one':
 				case 'keywords-two':
-					$help 		= "Keyword/Tag for this theme<br />(Must be written in English)";
+					$help 		= TPVLAN_CONV_11;
 					$required 	= true;
 					$size 		= 20;
 					$placeholder= " ";
@@ -640,7 +660,7 @@ TEMPLATE;
 				break;	
 				
 				case 'description-description':
-					$help 		= "A full description of the theme<br />(Must be written in English)";
+					$help 		= TPVLAN_CONV_12;
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
@@ -649,7 +669,7 @@ TEMPLATE;
 				
 					
 				case 'category-category':
-					$help 		= "What category of theme is this?";
+					$help 		= TPVLAN_CONV_13;
 					$required 	= true;
 					$size 		= 20;
 				break;
@@ -662,7 +682,8 @@ TEMPLATE;
 			$req = ($required == true) ? "&required=1" : "";	
 			$placeholder = (varset($placeholder)) ? $placeholder : $type;
 			$pat = ($pattern) ? "&pattern=".$pattern : "";
-			
+			$text = '';
+
 			switch ($type) 
 			{
 				
@@ -676,10 +697,10 @@ TEMPLATE;
 						$file = str_replace(e_THEME.$this->themeName."/",'',$path);
 						$text .= "<div class='row-fluid'>";
 						$text .= "<div class='controls'>";
-						$text .= "<div class='span3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
-						<div class='field-help'>Enable this stylesheet as a selectable option in the Theme Manager.</div></div>";
-						$text .= "<div class='span3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
-						<div class='field-help'>Give this stylesheet a name</div></div>";
+						$text .= "<div class='col-md-3'>".$frm->checkbox($name.'['.$key.'][file]',$file, false, array('label'=>$file))."
+						<div class='field-help'>".TPVLAN_CONV_14."</div></div>";
+						$text .= "<div class='col-md-3'>".$frm->text($name.'['.$key.'][name]', $default, $size, 'placeholder='.$file . $req. $pat)."
+						<div class='field-help'>".TPVLAN_CONV_15."</div></div>";
 					//	$text .= "<div class='span2'>".$frm->checkbox('css['.$key.'][file]',$file, false, array('label'=>$file))."</div>";
 					//	$text .= "<div class='span2'>".$frm->text('css['.$key.'][name]', $default, $size, 'placeholder='.$placeholder . $req. $pat)."</div>";	
 						$text .= "</div>";
@@ -692,11 +713,11 @@ TEMPLATE;
 				
 				
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req);		
+					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req.'&size=block-level');
 				break;
 				
 				case 'description':
-					$text = $frm->textarea($name,$default, 3, 100, $req);	// pattern not supported. 	
+					$text = $frm->textarea($name,$default, 3, 100, $req,'&size=block-level');	// pattern not supported.
 				break;
 								
 						
@@ -714,7 +735,7 @@ TEMPLATE;
 				
 				
 				default:
-					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat);	
+					$text = $frm->text($name, $default, $size, 'placeholder='.$placeholder . $req. $pat.'&size=block-level');
 				break;
 			}
 	

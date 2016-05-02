@@ -1,9 +1,610 @@
-// handle secured json string - the Prototype implementation
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
+// Allow other JavaScript libraries to use $.
+// TODO: Use jQuery.noConflict(), but for this, need to rewrite all e107 javascript to use wrapper: (function ($) { ... })(jQuery);
+// jQuery.noConflict();
+
+(function ($) {
+
+	e107.callbacks = e107.callbacks || {};
+
+	/**
+	 * Attach all registered behaviors to a page element.
+	 *
+	 * Behaviors are event-triggered actions that attach to page elements, enhancing
+	 * default non-JavaScript UIs. Behaviors are registered in the e107.behaviors
+	 * object using the method 'attach' and optionally also 'detach' as follows:
+	 * @code
+	 *    e107.behaviors.behaviorName = {
+	 *      attach: function (context, settings) {
+	 *        ...
+	 *      },
+	 *      detach: function (context, settings, trigger) {
+	 *        ...
+	 *      }
+	 *    };
+	 * @endcode
+	 *
+	 * e107.attachBehaviors is added below to the jQuery ready event and so
+	 * runs on initial page load. Developers implementing Ajax in their
+	 * solutions should also call this function after new page content has been
+	 * loaded, feeding in an element to be processed, in order to attach all
+	 * behaviors to the new content.
+	 *
+	 * Behaviors should use
+	 * @code
+	 *   $(selector).once('behavior-name', function () {
+	 *     ...
+	 *   });
+	 * @endcode
+	 * to ensure the behavior is attached only once to a given element. (Doing so
+	 * enables the reprocessing of given elements, which may be needed on occasion
+	 * despite the ability to limit behavior attachment to a particular element.)
+	 *
+	 * @param context
+	 *   An element to attach behaviors to. If none is given, the document element
+	 *   is used.
+	 * @param settings
+	 *   An object containing settings for the current context. If none given, the
+	 *   global e107.settings object is used.
+	 */
+	e107.attachBehaviors = function (context, settings) {
+		context = context || document;
+		settings = settings || e107.settings;
+		// Execute all of them.
+		$.each(e107.behaviors, function () {
+			if ($.isFunction(this.attach)) {
+				this.attach(context, settings);
+			}
+		});
+	};
+
+	/**
+	 * Detach registered behaviors from a page element.
+	 *
+	 * Developers implementing AHAH/Ajax in their solutions should call this
+	 * function before page content is about to be removed, feeding in an element
+	 * to be processed, in order to allow special behaviors to detach from the
+	 * content.
+	 *
+	 * Such implementations should look for the class name that was added in their
+	 * corresponding e107.behaviors.behaviorName.attach implementation, i.e.
+	 * behaviorName-processed, to ensure the behavior is detached only from
+	 * previously processed elements.
+	 *
+	 * @param context
+	 *   An element to detach behaviors from. If none is given, the document element
+	 *   is used.
+	 * @param settings
+	 *   An object containing settings for the current context. If none given, the
+	 *   global e107.settings object is used.
+	 * @param trigger
+	 *   A string containing what's causing the behaviors to be detached. The
+	 *   possible triggers are:
+	 *   - unload: (default) The context element is being removed from the DOM.
+	 *   - move: The element is about to be moved within the DOM (for example,
+	 *     during a tabledrag row swap). After the move is completed,
+	 *     e107.attachBehaviors() is called, so that the behavior can undo
+	 *     whatever it did in response to the move. Many behaviors won't need to
+	 *     do anything simply in response to the element being moved, but because
+	 *     IFRAME elements reload their "src" when being moved within the DOM,
+	 *     behaviors bound to IFRAME elements (like WYSIWYG editors) may need to
+	 *     take some action.
+	 *   - serialize: E.g. when an Ajax form is submitted, this is called with the
+	 *     form as the context. This provides every behavior within the form an
+	 *     opportunity to ensure that the field elements have correct content
+	 *     in them before the form is serialized. The canonical use-case is so
+	 *     that WYSIWYG editors can update the hidden textarea to which they are
+	 *     bound.
+	 *
+	 * @see e107.attachBehaviors
+	 */
+	e107.detachBehaviors = function (context, settings, trigger) {
+		context = context || document;
+		settings = settings || e107.settings;
+		trigger = trigger || 'unload';
+		// Execute all of them.
+		$.each(e107.behaviors, function () {
+			if ($.isFunction(this.detach)) {
+				this.detach(context, settings, trigger);
+			}
+		});
+	};
+
+	// Attach all behaviors.
+	$(function () {
+		e107.attachBehaviors(document, e107.settings);
+	});
+
+	/**
+	 * Attaches the AJAX behavior to each AJAX form/page elements. E107 uses
+	 * this behavior to enhance form/page elements with .e-ajax class.
+	 */
+	e107.behaviors.eAJAX = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-ajax').once('e-ajax').each(function ()
+			{
+				var $this = $(this);
+				var event = $this.attr('data-event') || e107.callbacks.getDefaultEventHandler($this);
+
+				$this.on(event, function ()
+				{
+					var $element = $(this);
+
+					var ajaxOptions = {
+						// URL for Ajax request.
+						url: $element.attr('data-src'),
+						// Ajax type: POST or GET.
+						type: $element.attr('data-ajax-type'),
+						// Target container for result.
+						target: $element.attr("data-target"),
+						// Method: 'replaceWith', 'append', 'prepend', 'before', 'after', 'html' (default).
+						method: $element.attr('data-method'),
+						// Image to show loading.
+						loading: $element.attr('data-loading'),
+						// If this is a navigation controller, e.g. pager.
+						nav: $element.attr('data-nav-inc'),
+						// Old way - href='myscript.php#id-to-target.
+						href: $element.attr("href")
+					};
+
+					// If this is a navigation controller, e.g. pager.
+					if(ajaxOptions.nav != null)
+					{
+						// Modify data-src value for next/prev. 'from='
+						e107.callbacks.eNav(this, '.e-ajax');
+						// Update URL for Ajax request.
+						ajaxOptions.url = $element.attr('data-src');
+						// Set Ajax type to "GET".
+						ajaxOptions.type = 'GET';
+					}
+
+					e107.callbacks.ajaxRequestHandler($element, ajaxOptions);
+
+					return false;
+				});
+			});
+		}
+	};
+
+	/**
+	 * Behavior to attach a click event to elements with .e-expandit class.
+	 *
+	 * @type {{attach: Function}}
+	 */
+	e107.behaviors.eExpandIt = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-expandit').once('e-expandit').each(function ()
+			{
+				// default 'toggle'.
+				$(this).click(function ()
+				{
+					var $this = $(this);
+					var href = ($this.is("a")) ? $this.attr("href") : '';
+					var $button = $this.find('button');
+
+					if($button.length > 0)
+					{
+						var textMore = $button.attr('data-text-more');
+						var textLess = $button.attr('data-text-less');
+
+						if(textLess && textMore)
+						{
+							if($button.html() == textMore)
+							{
+								$this.find('.e-expandit-ellipsis').hide();
+								$button.html(textLess);
+							}
+							else
+							{
+								$this.find('.e-expandit-ellipsis').show();
+								$button.html(textMore);
+							}
+						}
+					}
+
+					if((href === "#" || href == "") && $this.attr("data-target"))
+					{
+						var select = $this.attr("data-target").split(','); // support multiple targets (comma separated)
+
+						$(select).each(function ()
+						{
+							$('#' + this).slideToggle("slow");
+						});
+
+						if($this.attr("data-return") === 'true')
+						{
+							return true;
+						}
+
+						return false;
+					}
+
+
+					if(href === "#" || href == "")
+					{
+						var idt = $(this).nextAll("div");
+						$(idt).slideToggle("slow");
+						return true;
+					}
+
+					$(href).slideToggle('slow', function ()
+					{
+						if($(this).is(':visible'))
+						{
+							if($this.hasClass('e-expandit-inline'))
+							{
+								$(this).css('display', 'initial');
+							}
+							else
+							{
+								$(this).css('display', 'block'); //XXX 'initial' broke the default behavior.
+							}
+						}
+					});
+
+					return false;
+				});
+			});
+		}
+	};
+
+	/**
+	 * Check if the selector is valid.
+	 *
+	 * @param selector
+	 * @returns {boolean}
+	 */
+	e107.callbacks.isValidSelector = function (selector)
+	{
+		try
+		{
+			var $element = $(selector);
+		} catch(error)
+		{
+			return false;
+		}
+		return true;
+	};
+
+	/**
+	 * Dynamic next/prev.
+	 *
+	 * @param e object (eg. from selector)
+	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
+	 */
+	e107.callbacks.eNav = function (e, navid)
+	{
+		var src = $(e).attr("data-src");
+		var inc = parseInt($(e).attr("data-nav-inc"));
+		var dir = $(e).attr("data-nav-dir");
+		var tot = parseInt($(e).attr("data-nav-total"));
+		var val = src.match(/from=(\d+)/);
+		var amt = parseInt(val[1]);
+
+		var oldVal = 'from=' + amt;
+		var newVal = null;
+
+		var sub = amt - inc;
+		var add = amt + inc;
+
+		$(e).show();
+
+		if(add > tot)
+		{
+			add = amt;
+			// $(e).hide();
+		}
+
+		if(sub < 0)
+		{
+			sub = 0
+		}
+
+		if(dir == 'down')
+		{
+			newVal = 'from=' + sub;
+		}
+		else
+		{
+			newVal = 'from=' + add;
+		}
+
+		if(newVal)
+		{
+			src = src.replace(oldVal, newVal);
+			$(navid).attr("data-src", src);
+		}
+	};
+
+	/**
+	 * Get a reasonable default event handler for a (jQuery) element.
+	 *
+	 * @param $element
+	 *  JQuery element.
+	 */
+	e107.callbacks.getDefaultEventHandler = function ($element)
+	{
+		var event = 'click'; // Default event handler.
+		var tag = $element.prop("tagName").toLowerCase();
+
+		if(tag == 'input')
+		{
+			var type = $element.attr('type').toLowerCase();
+
+			switch(type)
+			{
+				case 'submit':
+				case 'button':
+					// Pressing the ENTER key within a textfield triggers the click event of
+					// the form's first submit button. Triggering Ajax in this situation
+					// leads to problems, like breaking autocomplete textfields, so we bind
+					// to mousedown instead of click.
+					event = 'mousedown';
+					break;
+
+				case 'radio':
+				case 'checkbox':
+					event = 'change';
+					break;
+
+				// text, number, password, date, datetime, datetime-local, month, week, time,
+				// email, search, tel, url, color, range
+				default:
+					event = 'blur';
+					break;
+			}
+		}
+		else
+		{
+			switch(tag)
+			{
+				case 'button':
+					// Pressing the ENTER key within a textfield triggers the click event of
+					// the form's first submit button. Triggering Ajax in this situation
+					// leads to problems, like breaking autocomplete textfields, so we bind
+					// to mousedown instead of click.
+					event = 'mousedown';
+					break;
+
+				case 'select':
+					event = 'change';
+					break;
+
+				case 'textarea':
+					event = 'blur';
+					break;
+			}
+		}
+
+		return event;
+	};
+
+	/**
+	 * Handler fo Ajax requests.
+	 *
+	 * @param $element
+	 *  JQuery element which fired the event.
+	 * @param options
+	 *  An object with Ajax request options.
+	 */
+	e107.callbacks.ajaxRequestHandler = function ($element, options)
+	{
+		var $loadingImage = null;
+
+		// Loading image.
+		if(options.loading != null)
+		{
+			$loadingImage = $(options.loading);
+			$element.after($loadingImage);
+		}
+
+		// Old way - href='myscript.php#id-to-target.
+		if(options.target == null || options.url == null)
+		{
+			if(options.href != null)
+			{
+				var tmp = options.href.split('#');
+				var id = tmp[1];
+
+				if(options.url == null)
+				{
+					options.url = tmp[0];
+				}
+
+				if(options.target == null)
+				{
+					options.target = id;
+				}
+			}
+		}
+
+		// BC.
+		if(options.target && options.target.charAt(0) != "#" && options.target.charAt(0) != ".")
+		{
+			options.target = "#" + options.target;
+		}
+
+		var form = $element.closest("form");
+		var data = form.serialize() || '';
+
+		$.ajax({
+			type: options.type || 'POST',
+			url: options.url,
+			data: data,
+			complete: function ()
+			{
+				if($loadingImage)
+				{
+					$loadingImage.remove();
+				}
+			},
+			success: function (response)
+			{
+				var $target = $(options.target);
+				var jsonObject = response;
+
+				if(typeof response == 'string')
+				{
+					try
+					{
+						jsonObject = $.parseJSON(response);
+					} catch(e)
+					{
+						// Not JSON.
+					}
+				}
+
+				if(typeof jsonObject == 'object')
+				{
+					// If result is JSON.
+					e107.callbacks.ajaxJsonResponseHandler($target, options, jsonObject);
+				}
+				else
+				{
+					// If result is a simple text/html.
+					e107.callbacks.ajaxResponseHandler($target, options, response);
+				}
+			}
+		});
+	};
+
+	/**
+	 * Handler for JSON responses. Provides a series of commands that the server
+	 * can request the client perform.
+	 *
+	 * @param $target
+	 *  JQuery (target) object.
+	 * @param options
+	 *  Object with options for Ajax request.
+	 * @param commands
+	 *  JSON object with commands.
+	 */
+	e107.callbacks.ajaxJsonResponseHandler = function ($target, options, commands)
+	{
+		$(commands).each(function ()
+		{
+			var command = this;
+			// Get target selector from the response. If it is not there, default to our presets.
+			var $newtarget = command.target ? $(command.target) : $target;
+
+			switch(command.command)
+			{
+				// Command to insert new content into the DOM.
+				case 'insert':
+					var newOptions = options;
+					newOptions.method = command.method;
+					e107.callbacks.ajaxResponseHandler($newtarget, newOptions, command.data);
+					break;
+
+				// Command to remove a chunk from the page.
+				case 'remove':
+					e107.detachBehaviors($(command.target));
+					$(command.target).remove();
+					break;
+
+				// Command to provide an alert.
+				case 'alert':
+					alert(command.text, command.title);
+					break;
+
+				// Command to provide the jQuery css() function.
+				case 'css':
+					$(command.target).css(command.arguments);
+					break;
+
+				// Command to set the settings that will be used for other commands in this response.
+				case 'settings':
+					if(typeof command.settings == 'object')
+					{
+						$.extend(true, e107.settings, command.settings);
+					}
+					break;
+
+				// Command to attach data using jQuery's data API.
+				case 'data':
+					$(command.target).data(command.name, command.value);
+					break;
+
+				// Command to apply a jQuery method.
+				case 'invoke':
+					var $element = $(command.target);
+					$element[command.method].apply($element, command.arguments);
+					break;
+			}
+		});
+	};
+
+	/**
+	 * Handler for text/html responses. Inserting new content into the DOM.
+	 *
+	 * @param $target
+	 *  JQuery (target) object.
+	 * @param options
+	 *  An object with Ajax request options.
+	 * @param data
+	 *  Text/HTML content.
+	 */
+	e107.callbacks.ajaxResponseHandler = function ($target, options, data)
+	{
+		var html = null;
+
+		// If removing content from the wrapper, detach behaviors first.
+		switch(options.method)
+		{
+			case 'html':
+			case 'replaceWith':
+				e107.detachBehaviors($target);
+				break;
+		}
+
+		// Inserting content.
+		switch(options.method)
+		{
+			case 'replaceWith':
+				html = $.parseHTML(data);
+				$target.replaceWith(html);
+				break;
+
+			case 'append':
+				html = $.parseHTML(data);
+				$target.append(html);
+				break;
+
+			case 'prepend':
+				html = $.parseHTML(data);
+				$target.prepend(html);
+				break;
+
+			case 'before':
+				html = $.parseHTML(data);
+				$target.before(html);
+				break;
+
+			case 'after':
+				html = $.parseHTML(data);
+				$target.after(html);
+				break;
+
+			case 'html':
+			default:
+				$target.html(data).hide().show("slow");
+				break;
+		}
+
+		// Attach all registered behaviors to the new content.
+		e107.attachBehaviors();
+	};
+
+})(jQuery);
 
 $.ajaxSetup({
-	dataFilter: function(data, type) {
-		if(type != 'json' || !data) return data;
+	dataFilter: function (data, type) {
+		if (type != 'json' || !data) {
+			return data;
+		}
 		return data.replace(/^\/\*-secure-([\s\S]*)\*\/\s*$/, '$1');
 	},
 	cache: false // Was Really NEeded!
@@ -11,11 +612,11 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
-    	 $(".e-hideme").hide();
-    	 $(".e-expandit").show();   	 
+		$(".e-hideme").hide();
+		$(".e-expandit").show();   	
+	
     //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-    	 
-
+	 
 
     	 
 		 //check all
@@ -36,10 +637,10 @@ $(document).ready(function()
 		 		{
 				    $(selector).each( function() {
 						$(this).children(":checkbox").attr("checked",true);
-					 })
+					 });
 		 		}
 
-		 })
+		 });
 		 
 		 $("#uncheck-all").click(function(event) {
 		 		var val = $(this).val(), selector = '.field-spacer';
@@ -50,7 +651,7 @@ $(document).ready(function()
 		 			selector = 'input:checkbox[name^=' + val.split(':')[1] + ']';
 				    $(selector).each( function() {
 						$(this).attr("checked",false);
-					 })
+					 });
 		 		}
 		 		// checkboxes children of .field-spacer
 		 		else 
@@ -59,39 +660,22 @@ $(document).ready(function()
 						$(this).children(":checkbox").attr("checked",false);
 					});
 				}
-		 })
-		     		
-    		
-    	// default 'toggle'. 	
-       	$(".e-expandit").click(function () {
-       		
-       		var href = ($(this).is("a")) ? $(this).attr("href") : '';
-       		
-       		if(href == '' && $(this).attr("data-target"))
-       		{
-       			href = '#' + $(this).attr("data-target");	
-       		}
-       	
-						
-			if(href === "#" || href == "") 
-			{
-				idt = $(this).nextAll("div");	
-				$(idt).toggle("slow");
-				 return true;			
-			}
+		 });
 
-			      		    		
-       		//var id = $(this).attr("href");   		
-			$(href).toggle("slow");
-			return false;
-		}); 
-		
 		// On 
 		$(".e-expandit-on").click(function () {
        		
        		if($(this).is("input") && $(this).attr("type")=='radio')
        		{
-       			idt = $(this).parent().nextAll("div.e-expandit-container");	
+       			if($(this).attr("data-target"))
+				{
+					idt = '#' + $(this).attr("data-target");	
+				}
+       			else
+       			{
+       				idt = $(this).parent().nextAll("div.e-expandit-container");		
+       			}
+       			
        			$(idt).show("slow");	
        			return true;
        		}
@@ -122,7 +706,15 @@ $(document).ready(function()
        		
 			if($(this).is("input") && $(this).attr("type")=='radio')
        		{
-       			idt = $(this).parent().nextAll("div.e-expandit-container");	
+       			if($(this).attr("data-target"))
+				{
+					idt = '#' + $(this).attr("data-target");	
+				}
+       			else
+       			{
+       				idt = $(this).parent().nextAll("div.e-expandit-container");	
+       			}
+       			
        			$(idt).hide("slow");	
        			return true;
        		}
@@ -149,31 +741,46 @@ $(document).ready(function()
 			return false;
 		}); 
 		
-		
+
+
+		$('button[type=submit]').on('click', function()
+		{
+				var caption = $(this).text();
+				var type 	= $(this).attr('data-loading-icon');
+				var formid 	=  $(this).closest('form').attr('id');
+				var but		= $(this);
+
+				if(type === undefined || (formid === undefined))
+				{
+					return true;
+				}
+
+				$('#'+formid).submit(function(){ // only animate on successful submission.
+
+					caption = "<i class='fa fa-spin " + type + " fa-fw'></i><span>" + caption + "</span>";
+
+					$(but).html(caption);
+
+					if( $(but).attr('data-disable') == 'true')
+					{
+
+						$(but).addClass('disabled');
+					}
+
+				});
+
+
+				return true;
+			}
+		);
+
+
 		
 		// Dates --------------------------------------------------
 		
 			// https://github.com/smalot/bootstrap-datetimepicker
 				
-			$("input.e-date").each(function() {
-				
-        		$(this).datetimepicker({
-        			minView: 'month',
-        			maxView: 'decade',
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday")
-        		 });    		 
-    		});
-    	
-    		$("input.e-datetime").each(function() {
-        		$(this).datetimepicker({
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			showMeridian: $(this).attr("data-date-ampm")
-        		 });    		 
-    		});
+
 		
 		
 		/*	
@@ -270,16 +877,22 @@ $(document).ready(function()
 		$('.e-email').on('blur', function() {
 			// alert('hello');
 		  $(this).mailcheck({
-		    
+
+
 		    suggested: function(element, suggestion) {
-		    	var id = $(element);
-		    	var hint = $(element).next('div').attr('data-hint');
+
+		    	var id = $(element).nextAll('div.e-email-hint');
+             //   console.log("Hint obj", id);
+
+                var hint = id.attr('data-hint');
+
 		    	var mes = hint.replace('[x]',suggestion.full);
-		    	$(element).next('div').html(mes);
-		    	$(element).next('div').show('slow');
+
+                id.html(mes);
+                id.show('slow');
 		    },
 		    empty: function(element) {
-		      $(element).next('div').hide('slow');
+		      $(element).nextAll('div.e-email-hint').hide('slow');
 		    }
 	  		});
 		});
@@ -296,8 +909,30 @@ $(document).ready(function()
 		
 
 		
-		// 	Tooltips for bbarea. 
-		$(".bbcode_buttons").tooltip({placement: 'top',opacity: 1.0, fade: true,html: true});
+		// 	Tooltips for bbarea.
+
+		$(".bbcode_buttons, a.e-tip").each(function() {
+
+			var tip = $(this).attr('title');
+
+			if(tip === undefined)
+			{
+				return;
+			}
+
+			var pos = $(this).attr('data-tooltip-position');
+
+			if(pos === undefined)
+			{
+				pos = 'top';
+			}
+
+			$(this).tooltip({opacity:1.0, fade:true, placement: pos, container: 'body'});
+			// $(this).css( 'cursor', 'pointer' )
+		});
+
+		
+	//	$(".bbcode_buttons, a.e-tip").tooltip({placement: 'top',opacity: 1.0, fade: true,html: true, container:'body'});
 	//	$("a.e-tip").tipsy({gravity: 'w',opacity: 1.0, fade: true,html: true});
 	//	var tabs = $('#tab-container').clone(true);
 	//	$('#htmlEditor').append(tabs);
@@ -388,7 +1023,7 @@ $(document).ready(function()
 			var max = 100;
 			var el = "#" + $(this).attr("name") + "-remainingCharacters";
     		var valLen=$(this).val().length;
-    		$(el).text( valLen + " characters")
+    		$(el).text( valLen + " characters");
 		});
 		
 
@@ -411,13 +1046,16 @@ $(document).ready(function()
 
 		});
 		*/
-		
-				
-		$(".e-dialog-close").live("click", function(){
+
+
+    $(document).on("click", ".e-dialog-close", function(){
 			parent.$('.modal').modal('hide');
-			
+            $('.modal').modal('hide');
+			parent.$('[data-dismiss=modal]').trigger({ type: 'click' });
+
+         //   $('#modal').modal('hide');
 			// parent.$.colorbox.close()	
-		}); 
+	});
 		
 		
 		
@@ -468,7 +1106,7 @@ $(document).ready(function()
 			var readonly	= parseInt($(this).attr("data-readonly"));
 			var tmp 		= $(this).attr('id');
 			var hint		= $(this).attr("data-hint");
-			var hintArray	= hint.split(',')
+			var hintArray	= hint.split(',');
 			var t	 		= tmp.split('-');
 			var table 		= t[0];
 			var id 			= t[1];
@@ -616,57 +1254,7 @@ $(document).ready(function()
 	
 
 
-		$(".e-ajax").click(function(){
-			
-			
-  			var id 			= $(this).attr("href");
-  			
-  			var target 		= $(this).attr("data-target"); // support for input buttons etc. 
-  			var loading 	= $(this).attr('data-loading'); // image to show loading. 
-  			var nav			= $(this).attr('data-nav-inc');
-  			  			
-  			if(nav != null)
-  			{
-  				eNav(this,'.e-ajax');	//modify data-src value for next/prev. 'from=' 
-  			}
-  			
-  			var src 		= $(this).attr("data-src");
-		
-  			if(target != null)
-  			{			
-  				id = '#' + target; 
-  			}
-  						
-  			if(loading != null)
-  			{
-  				$(id).html("<img src='"+loading+"' alt='' />");
-  			}
-  					
-  			if(src === null) // old way - href='myscript.php#id-to-target
-  			{
-  				var tmp = src.split('#');
-  				id = tmp[1];
-  				src = tmp[0];	
-  			}
-  		//	var effect = $(this).attr("data-effect");
-  		//	alert(id);
-  			
-  			$(id).load(src,function() {
-  				// alert(src);
-  				//$(this).hide();
-    			// $(this).fadeIn();
-			});
-			
-			return false;
-			
-		});
-		
-		
 
-		
-		
-
-		
 		// Does the same as externalLinks(); 
 		$('a').each(function() {
 			var href = $(this).attr("href");
@@ -676,19 +1264,26 @@ $(document).ready(function()
 				$(this).attr("target",'_blank');	
 			}					
 		});
-		
-		
-		
-	
-		
-		
+
+
+
+
+
+	// Store selected textarea.
+	$('.tbox.bbarea').click(function() {
+		storeCaret(this);
+	});
 		
 			
 		
-})
+});
 
 
 	/**
+	 * TODO:
+	 * This function is only used by mediaNav() in mediaManager.js. So need to rewrite mediaManager.js to use
+	 * e107.behaviors, and e107.callbacks.eNav() could be used instead of this function.
+	 *
 	 * dynamic next/prev  
 	 * @param e object (eg. from selector)
 	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
@@ -742,27 +1337,35 @@ $(document).ready(function()
 
 	
 	function expandit(e) {
-				
+
+
+
 		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
 			if($(e).is("a"))
 			{
 				var href = $(e).attr("href");	
+						
 			}
-				
-			if(href === "#" || e === null) 
+			else
+            {
+                var href = '';
+            }
+
+			if(href === "#" || e === null || href === undefined) 
 			{
 				idt = $(e).next("div");	
-				
+								
 				$(idt).toggle("slow");
-				return false;;			
+				return false;
 			}
 			
-			var id = "#" + e; 		
-			
+			var id = "#" + e;
+
+
 			
 			$(id).toggle("slow");
 			return false;
-	};
+	}
 		
 
 	var addinput = function(text,rep) {
@@ -780,7 +1383,7 @@ $(document).ready(function()
 		emote = '';
 	    addtext(newtext, emote);
 	     return;
-	}
+	};
 
 		
 		
@@ -901,6 +1504,8 @@ function SyncWithServerTime(serverTime, path, domain)
 	var colord = window.screen.colorDepth;
 	var res = window.screen.width + "x" + window.screen.height;
 	var eself = document.location;
+
+var e107_selectedInputArea;
 
 /* TODO: @SecretR - Object of removal
 // From http://phpbb.com
@@ -1055,7 +1660,7 @@ function duplicateHTML(copy,paste,baseid){
 			but.type = 'button';
 			but.innerHTML = 'x';
 			but.value = 'x';
-			but.className = 'btn button';
+			but.className = 'btn btn-default button';
 			but.onclick = function(){ this.parentNode.parentNode.removeChild(this.parentNode); };
 
 			var destination = document.getElementById(paste);
@@ -1105,7 +1710,7 @@ function sendInfo(handler, container, form)
 		 success: function(data) 
 		 {
 		// 	console.log(data);
-			$("#"+container).html(data).hide().show("slow");;
+			$("#"+container).html(data).hide().show("slow");
 		 }
 	});
 	

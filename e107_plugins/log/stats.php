@@ -2,47 +2,40 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Id$
  */
 
-/**
- *	e107 Stats logging plugin
- *
- *	@package	e107_plugins
- *	@subpackage	log
- *	@version 	$Id$;
- */
 
-require_once('../../class2.php');
+if (!defined('e107_INIT'))
+{
+	require_once("../../class2.php");
+}
+
 if (!e107::isInstalled('log')) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
-include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
 
 $bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_IMAGE_ABS.'generic/bar.png');
+$mes = e107::getMessage();
 
 e107::css('inline', "
 /* Site Stats */
 .b { background-image: url('".$bar."'); border: 1px solid #999; height: 10px; font-size: 0px }
 ");
 
-
-
 require_once(HEADERF);
 
 if(!check_class(e107::getPref('statUserclass'))) 
 {
-	$text = "<div style='text-align: center;'>".ADSTAT_L4."</div>";
-	$ns->tablerender(ADSTAT_L6, $text);
+	$mes->addError(ADSTAT_L4); 
+	$ns->tablerender(ADSTAT_L6, $mes->render());
 	require_once(FOOTERF);
 	exit;
 }
@@ -67,9 +60,9 @@ $order = intval($order);
 
 $stat = new siteStats($order);
 
-if($stat -> error) 
+if($stat->error) 
 {
-	$ns->tablerender(ADSTAT_L6, $stat -> error);
+	$ns->tablerender(ADSTAT_L6, $stat->error);
 	require_once(FOOTERF);
 	exit;
 }
@@ -333,6 +326,7 @@ class siteStats
 
 	protected $order;
 	protected $bar;
+	protected $plugFolder;
 
 	protected $filesiteTotal;
 	protected $filesiteUnique;
@@ -744,12 +738,17 @@ class siteStats
 		}
 
 		$this -> bar = (file_exists(THEME.'images/bar.png') ? THEME.'images/bar.png' : e_IMAGE.'generic/bar.png');
+
+
+		$this->plugFolder = e107::getFolder('plugins');
+
 		/* end constructor */
 	}
 
 	function renderNav($action)
 	{
-		$path = e_PLUGIN_ABS.'log/stats.php';
+	//	$path = e_PLUGIN_ABS.'log/stats.php';
+		$path = e_REQUEST_SELF;
 		
 		$links = array(
 			1	=> array('label' 	=> ADSTAT_L8, 	'pref' 	=> null),
@@ -811,6 +810,21 @@ class siteStats
 	}
 	
 
+	function getLabel($key,$truncate=false)
+	{
+		list($url,$language) = explode("|",$key);
+
+		$url = str_replace($this->plugFolder,'',$url);
+
+		if($truncate)
+		{
+			return e107::getParser()->text_truncate($url,50);
+		}
+
+		return $url;
+	}
+
+
 
 
 	/**
@@ -857,7 +871,7 @@ class siteStats
 			if($info['ttl'])
 			{
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
-				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$this->getLabel($key)."</a>
 				</td>\n<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 			}
 		}
@@ -879,10 +893,11 @@ class siteStats
 	function renderAlltimeVisits($action, $do_errors = FALSE) 
 	{
 		$sql = e107::getDB();
+		$tp = e107::getParser();
 
 		$text = '';
 		$sql->select("logstats", "*", "log_id='pageTotal' ");
-		$row = $sql -> db_Fetch();
+		$row = $sql->fetch();
 		$pageTotal = unserialize($row['log_data']);
 		$total = 0;
 
@@ -932,7 +947,7 @@ class siteStats
 				$text .= "<tr>
 				<td class='forumheader3' >
 				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN_ABS."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
-				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' title=\"".$this->getLabel($key)."\" >".$this->getLabel($key,true)."</a>
 				";
 				$text .= "</td>
 				<td class='forumheader3' >".$this->bar($percentage, $info['ttlv'])."</td>
@@ -940,7 +955,7 @@ class siteStats
 				</tr>\n";
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'></td></tr>\n</table>";
+		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>".number_format($total)."</td><td class='forumheader'></td></tr>\n</table>";
 
 
 		$uniqueArray = array();
@@ -957,7 +972,13 @@ class siteStats
 		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
 
 		$text .= "<br />
-		<table class='table table-striped fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>Page</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+		<table class='table table-striped fborder' style='width: 100%;'>
+		<tr>
+			<th class='fcaption' style='width: 20%;'>".ADSTAT_L19."</th>
+			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</th>
+			<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
+		</tr>\n";
+
 		foreach($uniqueArray as $key => $info) 
 		{
 			if ($info['ttlv'])
@@ -965,13 +986,13 @@ class siteStats
 			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['unqv']/$totalv) * 100, 2);
 				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
+				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$tp->text_truncate($key, 50)."</a></td>
 				<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['unqv'])."</td>
 				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>$totalv</td><td class='forumheader'></td></tr>\n</table>";
+		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>".number_format($totalv)."</td><td class='forumheader'></td></tr>\n</table>";
 		return $text;
 	}
 
@@ -1971,7 +1992,7 @@ class siteStats
 	 *
 	 *	@return string text to be displayed
 	 */
-	function bar($percen, $val,$name)
+	function bar($percen, $val,$name='')
 	{
 		if(deftrue('BOOTSTRAP'))
 		{
@@ -1986,7 +2007,7 @@ class siteStats
 		
 		$text .= "
 		</td>
-		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
+		<td style='width:10%; text-align:right' class='forumheader3'>".number_format($val);
 		
 		return $text;
 	}

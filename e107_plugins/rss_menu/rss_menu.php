@@ -2,87 +2,102 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2015 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/rss_menu/rss_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
+
  */
 
-if (!defined('e107_INIT')) { exit; }
-if (!plugInstalled('rss_menu')) 
-{
-	return '';
-}
+	if (!defined('e107_INIT')) { exit; }
 
-$FILES_DIRECTORY = e107::getInstance()->getFolder('files');
-$sql = e107::getDb();
-$path = e_PLUGIN_ABS."rss_menu/";
-include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
-
-$des = "";
-$topic = "";
-
-if(strstr(e_SELF, "comment.php") && $sql -> db_Select("rss", "rss_path", " rss_path = 'comments' LIMIT 1")) 
-{
-	$type = 5;
-	$des = RSS_MENU_L4;
-}
-if(strstr(e_SELF, "/forum")&& $sql -> db_Select("rss", "rss_path", " rss_path = 'forum|name' LIMIT 1") ) 
-{
-	$type = 6;
-	$des = RSS_MENU_L5;
-}
-if(strstr(e_SELF, "forum_viewtopic") && $sql -> db_Select("rss", "rss_path", " rss_path = 'forum|topic' LIMIT 1")) 
-{
-	$type = 7;
-	$des = RSS_MENU_L6;
-}
-if(strstr(e_SELF, "chat.php")&& $sql -> db_Select("rss", "rss_path", " rss_path = 'chatbox_menu' LIMIT 1")) 
-{
-	$type = 9;
-	$des = RSS_MENU_L7;
-}
-if(strstr(e_SELF, "/bugtracker")) 
-{
-	$type = 10;
-	$des = RSS_MENU_L8;
-}
-if(strstr(e_SELF, "download.php") && $sql -> db_Select("rss", "rss_path", " rss_path = 'download' LIMIT 1")) 
-{
-	$type = 12;
-	$des = RSS_MENU_L9;
-}
-if(!$des) 
-{
-	$type = 1;
-	$des = RSS_MENU_L3;
-}
-if(e_PAGE == "news.php" && e107::getPref('rss_newscats'))
-{
-
-	$qry = explode(".",e_QUERY);
-	if($qry[0] == "cat" || $qry[0] == "list")
+	if (!e107::isInstalled('rss_menu'))
 	{
-		$topic = intval($qry[1]);
+		return '';
 	}
-}
 
-$text = "
-<div>
-	".$des.RSS_MENU_L1."<br />
-	<div class='spacer'><a href='".$path."rss.php?$type.1".($topic ? ".".$topic : "")."'><img src='".$path."images/rss1.png' alt='rss1.0' /></a></div>
-	<div class='spacer'><a href='".$path."rss.php?$type.2".($topic ? ".".$topic : "")."'><img src='".$path."images/rss2.png' alt='rss2.0' /></a></div>
-	<div class='spacer'><a href='".$path."rss.php?$type.3".($topic ? ".".$topic : "")."'><img src='".$path."images/rss3.png' alt='rdf' /></a></div>
-	<div class='spacer'><a href='".$path."rss.php?$type.4".($topic ? ".".$topic : "")."'><img src='".$path."images/rss4.png' alt='atom' /></a></div>
-</div>";
+	$sql = e107::getDb();
 
-// Deprecated - can be controlled within tablestyle (theme) - case mod == 'rss_menu'
-//$caption = (file_exists(THEME."images/RSS_menu.png") ? "<img src='".THEME_ABS."images/RSS_menu.png' alt='' style='vertical-align:middle' /> ".RSS_MENU_L2 : RSS_MENU_L2);
-e107::getRender()->tablerender(RSS_MENU_L2, $text, 'rss_menu');
+	e107::includeLan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
+
+	$topic = "";
+	$caption = "";
+
+
+	if(e_PAGE == "news.php" && e107::getPref('rss_newscats'))
+	{
+
+		$qry = explode(".",e_QUERY);
+		if($qry[0] == "cat" || $qry[0] == "list")
+		{
+			$topic = intval($qry[1]);
+		}
+	}
+
+
+	if(deftrue('e_CURRENT_PLUGIN')  && $res = $sql->retrieve("rss", "rss_path,rss_url", " rss_path = '".e_CURRENT_PLUGIN."' LIMIT 1"))
+	{
+		$caption = e107::getParser()->lanVars(LAN_PLUGIN_RSS_SUBSCRIBE_TO, deftrue('LAN_PLUGIN_'.strtoupper(e_CURRENT_PLUGIN).'_NAME'));
+		$type = $res['rss_url'];
+		$plug = $res['rss_path'];
+	}
+	elseif($sql->select("rss", "rss_path", " rss_path = 'news' LIMIT 1")) // Fall back to news, if available.
+	{
+		$caption = LAN_PLUGIN_RSS_SUBSCRIBE;
+		$type = 'news';
+		$plug = 'news';
+	}
+
+
+
+	if(!empty($type))
+	{
+		$arr = array('rss_topicid'=> $topic, 'rss_url'=>$type);
+
+
+		if(deftrue('BOOTSTRAP') === 3) // v2.x
+		{
+			$text = "
+			<div>
+				<a class='btn btn-sm btn-default'  href='".e107::url('rss_menu', 'rss', $arr)."'>".$tp->toGlyph('fa-rss')." RSS</a>
+				<a class='btn btn-sm btn-default'  href='".e107::url('rss_menu', 'atom', $arr)."'>".$tp->toGlyph('fa-rss')." Atom</a>
+			</div>";
+
+		}
+		else // v1.x
+		{
+			$path = e_PLUGIN_ABS."rss_menu/";
+
+			$description = array(
+
+				'chatbox'       => RSS_MENU_L7,
+				'download'      => RSS_MENU_L9,
+				'bugtracker'    => RSS_MENU_L8,
+				'forumtopic'    => RSS_MENU_L6,
+				'forumname'     => RSS_MENU_L5,
+				'forumposts'   => '',
+				'comments'     => RSS_MENU_L4,
+				5              => RSS_MENU_L4,
+				6               => RSS_MENU_L5,
+				7               => RSS_MENU_L6,
+				9               => RSS_MENU_L7,
+				10             => RSS_MENU_L8,
+				12              => RSS_MENU_L9,
+
+			);
+			
+
+			$text = "
+			<div>
+				".varset($description[$type]).RSS_MENU_L1."<br />
+
+				<div class='spacer'><a href='".e107::url('rss_menu', 'rss', $arr)."'><img src='".$path."images/rss2.png' alt='rss2.0' /></a></div>
+				<div class='spacer'><a href='".e107::url('rss_menu', 'atom', $arr)."'><img src='".$path."images/rss4.png' alt='atom' /></a></div>
+			</div>";
+
+			$caption = RSS_MENU_L2;
+
+		}
+
+		e107::getRender()->tablerender($caption, $text, 'rss_menu');
+	}
 ?>

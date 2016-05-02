@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,19 +10,10 @@
  *
 */
 
-
-/**
- *	e107 Newsletter plugin
- *
- *	@package	e107_plugins
- *	@subpackage	newsletter
- */
-
-
 require_once('../../class2.php');
-if (!$e107->isInstalled('newsletter') || !ADMIN) 
+if (!e107::isInstalled('newsletter') || !ADMIN)
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit(); 
 }
 include_lan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
@@ -103,7 +94,7 @@ else
 			if($limit_start + $page_size < $nl_count)
 			{
 				$text .= "<form id='nl' method='post' action='".e_PLUGIN."newsletter/nl_archive.php?showp.".$action_parent_id."'>
-				<br /><input class='btn button' name='submit' type='submit' value='View older newsletters in archive'/>
+				<br /><input class='btn btn-default button' name='submit' type='submit' value='View older newsletters in archive'/>
 				<input type='hidden' name='limit_start' value='".$limit_start."'/></form>";
 			}
 		}
@@ -125,7 +116,7 @@ else
 				// Display parent footer
 				$text .= "$parent_newsletter_footer<br />";
 				// Display back to newsletter overview button
-				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn button' type='submit' value='".NLLAN_71."'</a>";
+				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default button' type='submit' value='".NLLAN_71."'</a>";
 			}
 			else
 			{

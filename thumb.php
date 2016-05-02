@@ -68,6 +68,10 @@ class e_thumbpage
 	/** Stores watermark prefs 
 	 */
 	protected $_watermark = array();
+	
+	private $_placeholder = false;
+	
+	protected $_thumbQuality = null;
 
 	/**
 	 * Constructor - init paths
@@ -82,6 +86,13 @@ class e_thumbpage
 
 		// Config
 		include($self.'/e107_config.php');
+
+		// support early include feature
+		if(isset($CLASS2_INCLUDE) && !empty($CLASS2_INCLUDE))
+		{
+			 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
+		}
+
 		$tmp = $self.'/'.$HANDLERS_DIRECTORY;
 
 		//Core functions - now API independent
@@ -107,7 +118,7 @@ class e_thumbpage
 			'SYSTEM_DIRECTORY',
 			'CORE_DIRECTORY'
 		);
-		$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
+	//	$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
 		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
 		$e107 = e107::getInstance();
 		
@@ -140,6 +151,9 @@ class e_thumbpage
 			'shadowcolor'	=> vartrue($pref['watermark_shadowcolor'], '000000'),		
 			'opacity'		=> vartrue($pref['watermark_opacity'], 20)		
 		);	
+		
+		$this->_thumbQuality = vartrue($pref['thumbnail_quality'],65);
+		
 				
 		// parse request
 		$this->parseRequest();
@@ -163,9 +177,10 @@ class e_thumbpage
 
 	function checkSrc()
 	{
-		if(!vartrue($this->_request['src']))
+		if(!vartrue($this->_request['src'])) // display placeholder when src is missing. 
 		{
-			return false;
+			$this->_placeholder = true;
+			return true;
 		}
 
 		$tp = e107::getParser();
@@ -195,6 +210,11 @@ class e_thumbpage
 			$this->_src_path = $path;
 			return true;
 		}
+		else
+		{
+			$this->_placeholder = true;
+			return true;	
+		}
 		
 		// echo "path=".$path."<br />";
 		return false;
@@ -203,6 +223,18 @@ class e_thumbpage
 	function sendImage()
 	{
 		//global $bench;
+	
+		if($this->_placeholder == true)
+		{
+			$width = ($this->_request['aw']) ? $this->_request['aw'] : $this->_request['w'];
+			$height = ($this->_request['ah']) ? $this->_request['ah'] : $this->_request['h'];
+			
+			$parm = array('size' => $width."x".$height);
+			
+			$this->placeholder($parm);
+			return;
+		}
+		
 		if(!$this->_src_path)
 		{
 			return $this;
@@ -211,8 +243,10 @@ class e_thumbpage
 		$thumbnfo = pathinfo($this->_src_path);
 		$options = $this->getRequestOptions();
 
-		$cache_str = md5(serialize($options).$this->_src_path);
+		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
 		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
+
+	
 
 		if(is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname))
 		{
@@ -224,6 +258,8 @@ class e_thumbpage
 			$this->sendHeaders($thumbnfo);
 		
 
+				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
+			// 	exit;
 			// check browser cache
 			if (@$_SERVER['HTTP_IF_MODIFIED_SINCE'] && ($thumbnfo['lmodified'] <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) && (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $thumbnfo['md5s']))
 			{
@@ -237,6 +273,7 @@ class e_thumbpage
 
 			@readfile(e_CACHE_IMAGE.$fname);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
+			
 			exit;
 		}
 
@@ -245,7 +282,14 @@ class e_thumbpage
 		try
 		{
 		    $thumb = PhpThumbFactory::create($this->_src_path);
-		    $thumb->setOptions(array('correctPermissions' => true));
+			$sizeUp = ($this->_request['w'] > 110) ? true : false; // don't resizeUp the icon images. 
+		   	$thumb->setOptions(array(
+		   	    'correctPermissions'    => true,
+		   	    'resizeUp'              => $sizeUp,
+		   	    'jpegQuality'           => $this->_thumbQuality,
+			    'interlace'             => true // improves performance
+		    ));
+			
 		}
 		catch (Exception $e)
 		{
@@ -257,18 +301,24 @@ class e_thumbpage
 		{
 			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
 		}
-		else
+		elseif(vartrue($this->_request['ah']))
 		{
-			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
+			//Typically gives a better result with images of people than adaptiveResize().
+			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center? 
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');	
 		}
-	
+		else 
+		{
+			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));	
+		}
+
 		// Watermark Option - See admin->MediaManager->prefs for details. 
 		
-		if($this->_watermark['activate'] < $options['w'] 
+		if(($this->_watermark['activate'] < $options['w'] 
 		|| $this->_watermark['activate'] < $options['aw']
 		|| $this->_watermark['activate'] < $options['h']
 		|| $this->_watermark['activate'] < $options['ah']
-		)
+		) && $this->_watermark['activate'] > 0 && $this->_watermark['font'] !='')
 		{
 			$tp = e107::getParser();
 			$this->_watermark['font'] = $tp->createConstants($this->_watermark['font'], 'mix');
@@ -276,11 +326,15 @@ class e_thumbpage
 			
 			$thumb->WatermarkText($this->_watermark);			
 		}
-	
-	
+		//	echo "hello";
+			
+			
+	//exit;
+
 		// set cache
 		$thumb->save(e_CACHE_IMAGE.$fname);
 
+		
 		// show thumb
 		$thumb->show();
 	}
@@ -310,6 +364,7 @@ class e_thumbpage
 		}
 		//header('Pragma:');
 		header('Cache-Control: must-revalidate');
+	//	header('Cache-Control: public, max-age=3600');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
 		header('Content-Length: '.$thumbnfo['fsize']);
 		header('Content-Disposition: filename='.$thumbnfo['basename']); // important for right-click save-as. 
@@ -326,6 +381,8 @@ class e_thumbpage
 		header("Etag: ".$thumbnfo['md5s']);
 		
 	}
+
+
 
 	public static function ctype($ftype)
 	{
@@ -344,6 +401,19 @@ class e_thumbpage
 		}
 		return null;
 	}
+	
+	
+	// Display a placeholder image. 
+	function placeholder($parm)
+	{
+		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
+
+		header('location: http://placehold.it/'.$getsize);
+		header('Content-Length: 0');
+		exit();		
+	}
+	
+	
 }
 
 ?>

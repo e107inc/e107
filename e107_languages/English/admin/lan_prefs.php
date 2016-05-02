@@ -9,7 +9,7 @@
 define("PRFLAN_1", "Site Information");
 define("PRFLAN_2", "Site Name");
 define("PRFLAN_3", "Site URL");
-define("PRFLAN_4", "Site Link Button");
+define("PRFLAN_4", "Site Link Icon/Button");
 define("PRFLAN_5", "Site Tagline");
 define("PRFLAN_6", "Site Description");
 define("PRFLAN_7", "Main site admin");
@@ -54,7 +54,7 @@ define("PRFLAN_49", "Cookies");
 define("PRFLAN_50", "Sessions");
 define("PRFLAN_52", "Save Changes");
 define("PRFLAN_53", "Site Preferences");
-define("PRFLAN_55", "Cookie name (if cookies selected)");
+define("PRFLAN_55", "Cookie/Session name");
 define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
@@ -88,6 +88,8 @@ define("CUSTSIG_17", "Subscribe to content/mailouts");
 define("CUSTSIG_18", "Disallow usernames");
 define("CUSTSIG_19", "usernames containing the following text will be rejected, separate entries by commas");
 define("CUSTSIG_20", "User Custom Title");
+define("CUSTSIG_21", "Email Confirmation");
+define("CUSTSIG_22", "Option to hide email");
 
 define("PRFLAN_91", "If someone is attacking your site by multiple requests to your server, his IP will be automatically banned ! Best done with server config if possible!!!");
 define("PRFLAN_92", "Secure signup verification -- hide password in email?");
@@ -198,7 +200,7 @@ define("PRFLAN_198", "If disabled, user has to explicitly log in after signup");
 //define("PRFLAN_199", "");
 
 //0.8
-define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='.e_ADMIN.'notify.php'>here</a>."); //FIXME HMTL
+define("PRFLAN_154a", "If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup [here].");
 define("PRFLAN_196a", "Log directory:");
 
 define("PRFLAN_199", "Show Admin Sub-links");
@@ -229,5 +231,59 @@ define("PRFLAN_222", "Display CAPTCHA on admin-area login page.");
 define("PRFLAN_223", "Completely Automated Public Turing test to tell Computers and Humans Apart");
 // define("PRFLAN_222", "Moderate Comments made by");
 // define("PRFLAN_223", "Comments will require manual approval by an admin prior to being visible to other users");
+
+define("PRFLAN_224", "User registration system");
+
+define("PRFLAN_225", "Used by Facebook and others. Should be a square image of at least 144px in width and height.");
+define("PRFLAN_226", "Used by some themes as the header image on some pages.");
+define("PRFLAN_227", "Used by some themes. Place 'SITETAG' in your theme to use this value.");
+define("PRFLAN_228", "Used by some themes. Place 'SITEDESCRIPTION' in your theme to use this value.");
+define("PRFLAN_229", "Used by some themes. Place 'SITEDISCLAIMER' in your theme to use this value.");
+define("PRFLAN_230", "Date/Time Input-Field format");
+
+define("PRFLAN_231", "Maximum failed logins before ban:");
+define("PRFLAN_232", "Failed logins from the same IP will be banned after this many attempts.");
+define("PRFLAN_233", "Moderate Comments made by:");
+define("PRFLAN_234", "Comments will require manual approval by an admin prior to being visible to other users");
+define("PRFLAN_235", "Comment Sorting:");
+define("PRFLAN_236", "Most recent comments first");
+define("PRFLAN_237", "Most recent comments last");
+
+define("PRFLAN_238", "File Uploading");
+define("PRFLAN_239", "The maximum upload size imposed by your php.ini settings is:");
+define("PRFLAN_240", "Filetype upload limits");
+define("PRFLAN_241", "** For security reasons these values may only be changed manually in the following file:");
+
+define("PRFLAN_242", "Javascript Frameworks (for testing purposes only)");
+define("PRFLAN_243", "Auto (on-demand)");
+define("PRFLAN_244", "Admin Area");
+define("PRFLAN_245", "Front-End");
+define("PRFLAN_246", "Both");
+define("PRFLAN_247", "Disabled");
+
+define("PRFLAN_248", "Disable scripts consolidation");
+define("PRFLAN_249", "If disabled, scripts will be loaded in one consolidated file");
+define("PRFLAN_250", "Enable consolidated scripts zlib compression:");
+define("PRFLAN_251", "Used only when script consolidation is enabled");
+define("PRFLAN_252", "Disable consolidated scripts server cache:");
+define("PRFLAN_253", "Disable consolidated scripts browser cache:");
+
+define("PRFLAN_254", "Email &amp; Contact Info");
+define("PRFLAN_255", "File Uploading");
+define("PRFLAN_256", "Advanced Options");
+define("PRFLAN_257", "Javascript Framework");
+
+define("PRFLAN_258", "Contact Form Visibility");
+define("PRFLAN_259", "Register & Login");
+define("PRFLAN_260", "Login Only");
+define("PRFLAN_261", "Field options");
+define("PRFLAN_262", "Password in Email Confirmation");
+define("PRFLAN_263", "Should be unique to this website");
+
+define("PRFLAN_264", "Frontpage is login page (login.php)");
+define("PRFLAN_265", "Frontpage is splash page (membersonly.php)");
+define("PRFLAN_266", "When logged out, which page should the user be directed to?");
+define("PRFLAN_267", "Emailing method");
+
 
 ?>

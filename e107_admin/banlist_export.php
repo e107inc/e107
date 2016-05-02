@@ -23,7 +23,7 @@
 require_once('../class2.php');
 if (!getperms('4')) 
 {
-	header('location:../index.php');
+	e107::redirect('admin');
 	exit;
 }
 
@@ -88,7 +88,7 @@ function do_export($filename, $type_list='',$format_array, $sep = ',', $quot = '
 	$export_text = '';
 	$qry = "SELECT * FROM `#banlist` ";
 	if ($type_list != '') $qry .= " WHERE`banlist_bantype` IN ({$type_list})";
-	if (!$sql->db_Select_gen($qry)) return 'No data: '.$qry;
+	if (!$sql->gen($qry)) return 'No data: '.$qry;
 	while ($row = $sql->db_Fetch())
 	{
 		$line = '';

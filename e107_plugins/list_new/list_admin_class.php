@@ -42,15 +42,23 @@ class list_admin
 	 */
 	function db_update_menu()
 	{
-		$sql = e107::getDb();
-		$tp = e107::getParser();
+	//	$sql = e107::getDb();
+	//	$tp = e107::getParser();
 		// Get the preferences so we've got a reference for changes
-		$list_pref = $this->parent->getListPrefs();
-		$temp = array();
-		while(list($key, $value) = each($_POST))
-		{
-			if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
-		}
+	//	$list_pref = $this->parent->getListPrefs();
+	//	$temp = array();
+	//	while(list($key, $value) = each($_POST))
+	//	{
+	//		if($value != LIST_ADMIN_2){ $temp[$tp->toDB($key)] = $tp->toDB($value); }
+	//	}
+		
+		e107::getPlugConfig('list_new')->reset()->setPref($_POST)->save(true);
+
+	//	retrieve with e107::pref('list_new');
+		
+		return;
+		
+		/*
 		if ($this->e107->admin_log->logArrayDiffs($temp, $list_pref, 'LISTNEW_01'))
 		{
 			$tmp = $this->e107->arrayStorage->WriteArray($list_pref);
@@ -62,6 +70,7 @@ class list_admin
 			$message = LIST_ADMIN_17;
 		}
 		return $message;
+		 */
 	}
 
 	/**
@@ -108,7 +117,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_display", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_display", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_display"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -120,7 +129,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_open", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_open", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_open"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -132,7 +141,7 @@ class list_admin
 		$this->row['FIELD'] = "";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_author", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_author", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_author"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -144,7 +153,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-category";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_category", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_category", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_category"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -156,7 +165,7 @@ class list_admin
 		$this->row['CONTID'] = "list-new-{$type}-expandable-date";
 		for($i=0;$i<count($this->parent->sections);$i++)
 		{
-			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_date", 1, (varsettrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
+			$this->row['FIELD'] .= $rs->form_checkbox($this->parent->sections[$i]."_".$type."_date", 1, (vartrue($this->parent->list_pref[$this->parent->sections[$i]."_".$type."_date"]) ? "1" : "0"))." ".$this->parent->titles[$i]."<br />";
 		}
 		$text .= $this->parseTemplate('TOPIC_ROW');
 
@@ -179,7 +188,7 @@ class list_admin
 		//	$this->row['FIELD_ITEM'] = $frm->iconpicker($this->parent->sections[$i]."_".$type."_icon",$this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"]).
 		//	$this->row['FIELD_ITEM'] = $rs->form_text($this->parent->sections[$i]."_".$type."_icon", 15, $this->parent->list_pref[$this->parent->sections[$i]."_".$type."_icon"], 100)."
 			
-		//		<input class='btn button' type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$this->parent->sections[$i]."_".$type."_icon'); return false;\" />
+		//		<input  type='button' style='cursor:pointer' size='30' value='".LIST_ADMIN_12."' onclick=\"e107Helper.toggle('div_".$this->parent->sections[$i]."_".$type."_icon'); return false;\" />
 		//	$this->row['FIELD_ITEM'] .= div id='div_".$this->parent->sections[$i]."_".$type."_icon' style='display:none;'>";
 				
 				

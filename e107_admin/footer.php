@@ -96,7 +96,7 @@ if (varset($e107_popup) != 1)
 	// B.2 Send footer template, stop timing, send simple page stats
 	//
 	//NEW - Iframe mod
-	if (!defsettrue('e_IFRAME'))
+	if (!deftrue('e_IFRAME'))
 	{
 		parse_admin($ADMIN_FOOTER);
 	}
@@ -172,7 +172,11 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
+
+		if(!deftrue('e_IFRAME'))
+		{
+			echo($rinfo ? "\n<div class='e-footer-info muted center' style='padding-bottom:20px; margin-top:10px'><small>{$rinfo}</small></div>\n" : "");
+		}
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)
@@ -199,9 +203,10 @@ if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
-	echo "<div class='e-debug query-notice'><table class='fborder' style='width: 100%;'>
+	echo "<div class='e-debug query-notice'>
+		<table class='fborder table table-bordered table-striped' style='width: 100%;'>
 		<tr>
-		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
+		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
 		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
@@ -275,7 +280,7 @@ if (function_exists('theme_foot'))
 
 //
 // F any included JS footer scripts
-// DEPRECATED - use  e107::getJs()->footerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
+// DEPRECATED - use  e107::js('footer', '{e_PLUGIN}myplug/js/my.js', $zone = 2)
 //
 global $footer_js;
 if (isset($footer_js) && is_array($footer_js))
@@ -287,6 +292,32 @@ if (isset($footer_js) && is_array($footer_js))
 		$js_included[] = $fname;
 	}
 }
+
+
+// Load e_footer.php files. 
+if (is_array($pref['e_footer_list']))
+{
+//	ob_start();
+	
+	foreach($pref['e_footer_list'] as $val)
+	{		
+		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			
+			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}	
+	}
+
+//	$e_footer_ouput = ob_get_contents(); // Don't use. 
+//	ob_end_clean();
+	unset($ret);
+}
+
+
+
+
 
 // [JSManager] Load JS Footer Includes by priority
 e107::getJs()->renderJs('footer', true);
@@ -317,6 +348,10 @@ if (abs($_serverTime - $lastSet) > 120)
 	//echo "SyncWithServerTime('{$_serverTime}', '{$_serverPath}', '{$_serverDomain}');
      //  </script>\n";
 }
+
+// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear
+// afterwards.
+e107::getJs()->renderJs('settings');
 
 e107::getJs()->renderJs('footer_inline', true);
 
@@ -376,18 +411,43 @@ if($tmp1)
 
 // Shutdown
 $e107->destruct();
-
+/*
 if($tmp)
 {
 	$page = str_replace($tmp['search'], $tmp['replace'], ob_get_clean());
 }
 else
+{*/
+
+//$length = ob_get_length();
+// $page = ob_get_clean();
+// }
+
+
+
+
+// $page = ob_get_clean();
+
+// New - see class2.php
+$ehd = new e_http_header;
+if($tmp)
 {
-	$page = ob_get_clean();
+	$ehd->setContent('buffer',$tmp['search'],$tmp['replace']);
+}
+else
+{
+	$ehd->setContent('buffer');
 }
 unset($tmp1, $tmp1);
+$ehd->send();
+$page = $ehd->getOutput();
+// $ehd->debug();
+
+// real output
+echo $page;
 
 
+/*
 
 
 $etag = md5($page);
@@ -419,11 +479,11 @@ if(!defined('e_NOCACHE'))
 $pref['compression_level'] = 6;
 if (strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"], ""), "gzip"))
 {
-	$browser_support = true;
+//	$browser_support = true;
 }
 if (ini_get("zlib.output_compression") == false && function_exists("gzencode"))
 {
-	$server_support = true;
+//	$server_support = true;
 }
 if (varset($pref['compress_output'], false) && $server_support == true && $browser_support == true)
 {
@@ -447,7 +507,7 @@ else
 	
 	header("Content-Length: ".strlen($page), true);
 	echo $page;
-}
+}*/
 
 unset($In_e107_Footer);
 $e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!

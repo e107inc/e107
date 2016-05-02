@@ -11,16 +11,177 @@
 require_once("../class2.php");
 if (!getperms("M")) 
 {
-	header("location:".e_BASE."index.php");
-	 exit;
+	e107::redirect('admin');
+	exit;
 }
 
-// include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 e107::lan('core','wmessage',true);
 
-$e_sub_cat = 'wmessage';
 
-require_once("auth.php");
+class wmessage_admin extends e_admin_dispatcher
+{
+
+	protected $modes = array(	
+	
+		'main'	=> array(
+			'controller' 	=> 'generic_ui',
+			'path' 			=> null,
+			'ui' 			=> 'generic_form_ui',
+			'uipath' 		=> null
+		),
+		
+
+	);	
+	
+	
+	protected $adminMenu = array(
+
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
+
+		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'				
+	);	
+	
+	protected $menuTitle = WMLAN_00;
+}
+
+
+
+
+				
+class generic_ui extends e_admin_ui
+{
+			
+		protected $pluginTitle		= WMLAN_00;
+		protected $pluginName		= 'core';
+		protected $eventName		= 'wmessage';
+		protected $table			= 'generic';
+		protected $pid				= 'gen_id';
+		protected $perPage			= 10; 
+		protected $batchDelete		= true;
+		protected $batchCopy		= true;		
+		
+	//	protected $sortField		= 'somefield_order';
+	//	protected $orderStep		= 10;
+	//	protected $tabs			= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
+		
+		protected $listQry      	= "SELECT * FROM `#generic` WHERE gen_type='wmessage'  "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+	
+		protected $listOrder		= 'gen_id DESC';
+	
+		protected $fields 		= array (  
+		  'checkboxes' 		=>   array ( 'title' => '', 			'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'gen_id' 			=>   array ( 'title' => LAN_ID, 		'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_type' 		=>   array ( 'title' => LAN_TYPE, 		'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'default=wmessage', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 	'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_user_id' 	=>   array ( 'title' => LAN_ID, 		'type' => 'hidden', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_ip' 			=>   array ( 'title' => WMLAN_10,	 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_intdata' 	=>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_chardata' 	=>   array ( 'title' => WMLAN_04, 		'type' => 'bbarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'options' 		=>   array ( 'title' => LAN_OPTIONS, 	'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		);		
+		
+		protected $fieldpref = array('gen_ip', 'gen_intdata');
+		
+		
+		protected $prefs = array(
+			'wm_enclose'		=> array('title'=> WMLAN_05, 'type'=>'radio', 'data' => 'int','help'=> WMLAN_06, 'writeParms'=>array('optArray'=>array(0=> LAN_DISABLED, 1=> LAN_ENABLED, 2=> "Enclosed with Carousel"))),
+		);
+
+	
+		public function init()
+		{
+
+	
+		}
+	
+		public function beforeCreate($new_data)
+		{
+			return $new_data;
+		}
+	
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+			return $new_data;
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			e107::getCache()->clear("wmessage");
+		}
+		
+		public function onCreateError($new_data, $old_data)
+		{
+			// do something		
+		}
+
+		public function onUpdateError($new_data, $old_data, $id)
+		{
+			// do something		
+		}
+		
+		
+	/*	
+		// optional - override edit page. 
+		public function customPage()
+		{
+			$ns = e107::getRender();
+			$text = 'Hello World!';
+			$ns->tablerender('Hello',$text);	
+			
+		}
+	*/
+			
+}
+				
+
+
+class generic_form_ui extends e_admin_form_ui
+{
+
+}		
+		
+		
+new wmessage_admin();
+
+require_once(e_ADMIN."auth.php");
+
+e107::getAdminUI()->runPage();
+
+require_once(e_ADMIN."footer.php");
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+
+
+
+
 
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER."ren_help.php");
@@ -45,14 +206,24 @@ if($_POST)
 
 if (isset($_POST['wm_update'])) 
 {
-	$data = $tp->toDB($_POST['data']);
-	$wm_title = $tp->toDB($_POST['wm_caption']);
-	$wmId = intval($_POST['wm_id']);
-	welcome_adminlog('02', $wmId, $wm_title);
+	$data 		= $_POST['data']; // $tp->toDB($_POST['data']) causes issues with ':'
+	$wm_title 	= $tp->toDB($_POST['wm_caption']);
+	$wmId 		= intval($_POST['wm_id']);
+	
+	$updateArray = array(
+		'gen_chardata'	=> $data,
+		'gen_ip'		=> $wm_title,
+		'gen_intdata'	=>  $_POST['wm_active'],
+		'WHERE'			=> "gen_id=".$wmId
+	); 
+	
 	//$message = ($sql->db_Update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." ")) ? LAN_UPDATED : LAN_UPDATED_FAILED;
-	if ($sql->update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
+	// if ($sql->update("generic", "gen_chardata ='{$data}',gen_ip ='{$wm_title}', gen_intdata='".$_POST['wm_active']."' WHERE gen_id=".$wmId." "))
+	
+	if ($sql->update("generic", $updateArray))
 	{
 		$mes->addSuccess(LAN_UPDATED);
+		welcome_adminlog('02', $wmId, $wm_title);
 	}
 	else 
 	{
@@ -62,9 +233,10 @@ if (isset($_POST['wm_update']))
 
 if (isset($_POST['wm_insert'])) 
 {
-	$wmtext = $tp->toDB($_POST['data']);
-	$wmtitle = $tp->toDB($_POST['wm_caption']);
+	$wmtext 	= $tp->toDB($_POST['data']);
+	$wmtitle 	= $tp->toDB($_POST['wm_caption']);
 	welcome_adminlog('01', 0, $wmtitle);
+		
 	//$message = ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' ")) ? LAN_CREATED :  LAN_CREATED_FAILED ;
 	if ($sql->db_Insert("generic", "0, 'wmessage', '".time()."', ".USERID.", '{$wmtitle}', '{$_POST['wm_active']}', '{$wmtext}' "))
 	{
@@ -150,7 +322,7 @@ if ($action == "main" || $action == "")
 				<td>".r_userclass_name($row['gen_intdata'])."</td>
             	<td class='center nowrap'>
             		<a class='btn btn-large' href='".e_SELF."?create.edit.{$row['gen_id']}'>".ADMIN_EDIT_ICON."</a>
-            		<input class='btn btn-large' type='image' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]')\"/>
+            		<button class='btn btn-large action delete' type='submit' title='".LAN_DELETE."' name='main_delete[".$row['gen_id']."]' data-confirm=\"".LAN_CONFIRMDEL." [ID: {$row['gen_id']} ]\" >".ADMIN_DELETE_ICON."</button>
 				</td>
 			</tr>";
 		}
@@ -244,13 +416,13 @@ if ($action == "opt") {
 			<td>".$frm->radio_switch('wm_enclose', varset($pref['wm_enclose']))."<span class='field-help'>".WMLAN_06."</span></td>
 		</tr>";
 	
-	/*	DEPRECATED - see header_default.php {WMESSAGE}
-	$text .= "
-		<tr>
-			<td>".WMLAN_07."</td>
-			<td>".$frm->checkbox('wmessage_sc', 1, varset($pref['wmessage_sc'],0))."</td>
-		</tr>";
-	*/	
+	//	DEPRECATED - see header_default.php {WMESSAGE}
+	// $text .= "
+	// 	<tr>
+	// 		<td>".WMLAN_07."</td>
+	// 		<td>".$frm->checkbox('wmessage_sc', 1, varset($pref['wmessage_sc'],0))."</td>
+	// 	</tr>";
+	
 	
 	$text .= "
 		</table>
@@ -297,6 +469,8 @@ function welcome_adminlog($msg_num='00', $id=0, $woffle='')
 		if ($msg) $msg .= '[!br!]';
 		$msg .= $woffle;
 	}
-	$admin_log->log_event('WELCOME_'.$msg_num,$msg,E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('WELCOME_'.$msg_num,$msg,E_LOG_INFORMATIVE,'');
 }
+ */
+
 ?>

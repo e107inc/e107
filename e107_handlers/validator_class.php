@@ -771,6 +771,13 @@ class e_validator
 	 */
 	function addValidateMessage($field_title, $err_code = 0, $err_message = '', $custom = '')
 	{
+		$tp = e107::getParser();
+		$lanVars = array(
+			'x' => $field_title,
+			'y' => $err_code,
+			'z' => $this->getErrorByCode($err_code)
+		);
+		
 		if($custom)
 		{
 			e107::getMessage()->addStack(sprintf($err_message, $err_code, $field_title), $this->_message_stack, (true === $custom ? E_MESSAGE_ERROR : $custom));
@@ -782,26 +789,36 @@ class e_validator
 		$dbgmsg = false;
 		if($err_message)
 		{
-			$lan = (!$field_title || strpos($err_message, '%1$s') !== false ? '' : '<strong>&quot;%1$s&quot;</strong> - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
+			$lan = (!$field_title || strpos($err_message, '[x]') !== false ? '' : '[x] - ').$err_message; // custom, e.g. // default '<strong>&quot;%1$s&quot;</strong> field error: Custom error message. '
 			$dbgmsg = LAN_VALIDATE_FAILMSG;
 		}
 		
 		//Core message
+		/*
 		$msg = sprintf(
 			$lan, // default '<strong>&quot;%1$s&quot;</strong> validation error: [#%2$d] %3$s. '
 			$field_title,
 			$err_code,
 			$this->getErrorByCode($err_code)
 		);
+		 */
+		
+		//NEW - removes need for using sprintf() 
+		$msg = $tp->lanVars($lan,$lanVars,true); // '[x] validation error: [y] [z].'
 
 		if($dbgmsg && defset('e107_DEBUG_LEVEL'))
 		{
+			
+			e107::getMessage()->addDebug($tp->lanVars($dbgmsg,$lanVars));
+			
+			/*
 			e107::getMessage()->addDebug(sprintf(
 				$dbgmsg, 
 				$field_title,
 				$err_code,
 				$this->getErrorByCode($err_code)
 			));
+			 */
 		}
 
 		e107::getMessage()->addStack($msg, $this->_message_stack, E_MESSAGE_ERROR);
@@ -993,7 +1010,7 @@ class validatorClass
 				}
 				else
 				{
-					if (!varsettrue($defs['fieldOptional']))
+					if (!vartrue($defs['fieldOptional']))
 					{
 						$ret['errors'][$dest] = ERR_MISSING_VALUE;		// No source value
 					}
@@ -1004,7 +1021,7 @@ class validatorClass
 				$value = $sourceFields[$src];
 				if (!$errNum && isset($defs['enablePref']))
 				{	// Only process this field if a specified pref enables it
-					if (!varsettrue($pref[$defs['enablePref']]))
+					if (!vartrue($pref[$defs['enablePref']]))
 					{
 						continue;			// Just loop to the next field - ignore this one.
 					}
@@ -1032,7 +1049,7 @@ class validatorClass
 				{
 					if ($value == '')
 					{
-						if (!varsettrue($defs['fieldOptional']))
+						if (!vartrue($defs['fieldOptional']))
 						{
 							$errNum = ERR_MISSING_VALUE;
 						}
@@ -1044,7 +1061,7 @@ class validatorClass
 				}
 				if (!$errNum && isset($defs['maxLength']) && $tp->ustrlen($value) > $defs['maxLength'])
 				{
-					if (varsettrue($defs['longtrim']))
+					if (vartrue($defs['longtrim']))
 					{
 						$value = substr($value,0,$defs['maxLength']);
 					}
@@ -1127,7 +1144,7 @@ class validatorClass
 									{
 										$img = e_AVATAR_UPLOAD.str_replace('-upload-', '', $value);		// Its a user-uploaded image
 									}
-									elseif (strpos($avName, '/') !== FALSE)
+									elseif (strpos($value, '//') !== false)
 									{
 										$img = $value;			// Its a remote image
 									}
@@ -1223,7 +1240,7 @@ class validatorClass
 			if (isset($definitions[$f]))
 			{
 				$options = $definitions[$f];			// Validation options to use
-				if (!varsettrue($options['fieldOptional']) || ($v != ''))
+				if (!vartrue($options['fieldOptional']) || ($v != ''))
 				{
 					$toDo = explode(',',$options['vetMethod']);
 					foreach ($toDo as $vm)
@@ -1264,7 +1281,8 @@ class validatorClass
 								}
 								break;
 							case 3 :			// Check email address against remote server
-								if (varsettrue($pref['signup_remote_emailcheck']))
+
+							/*	if (vartrue($pref['signup_remote_emailcheck']))
 								{
 									require_once(e_HANDLER."mail_validation_class.php");
 									list($adminuser,$adminhost) = split ("@", SITEADMINEMAIL);
@@ -1279,6 +1297,7 @@ class validatorClass
 										$errMsg = ERR_INVALID_EMAIL;
 									}
 								}
+							*/
 								break;
 							default :
 								echo 'Invalid vetMethod: '.$options['vetMethod'].'<br />';	// Really a debug aid - should never get here
@@ -1386,6 +1405,7 @@ class validatorClass
 			if(empty($vars['failed'][$f]))
 			{
 				$vars['failed'][$f] = LAN_VALIDATE_191; 
+		//		print_a($vars['failed']);
 			}
 			$curLine = str_replace('%v', filter_var($vars['failed'][$f], FILTER_SANITIZE_SPECIAL_CHARS), $curLine);
 			$curLine = str_replace('%f', $f, $curLine);

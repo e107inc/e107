@@ -17,8 +17,9 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-define ('CRON_MAIL_DEBUG', TRUE);
-define ('CRON_RETRIGGER_DEBUG', TRUE);
+define ('CRON_MAIL_DEBUG', false);
+define ('CRON_RETRIGGER_DEBUG', false);
+
 class _system_cron 
 {
 	
@@ -29,6 +30,53 @@ class _system_cron
 	{
 	    // Whatever code you wish.
 	}
+	
+	/**
+	 * Update the current Repo. of this e107 installation.  (eg. e107 on github)
+	 */
+	function gitrepo()
+	{
+		$mes = e107::getMessage();
+		$fl = e107::getFile();
+		
+		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
+		{
+
+			$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
+				
+			// Change Dir. 
+			$cmd = 'cd '.e_ROOT;
+			$mes->addDebug($cmd);
+			$text = `$cmd 2>&1`;
+			
+			// Remove any local changes. 
+			$cmd = $gitPath.' reset --hard';
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+			
+			// Run Pull request
+			$cmd = $gitPath.' pull';
+			$mes->addDebug($cmd);
+			$text .= `$cmd 2>&1`;
+
+			$return = print_a($text,true);
+			$mes->addSuccess($return);
+			
+			if(unlink(e_BASE."install.php"))
+			{
+				$mes->addDebug("Removed install.php");	
+			}
+		}
+		else
+		{
+			$mes->addError("No git repo found");	//TODO LAN
+		}
+		
+		$fl->chmod(e_BASE."cron.php",0755);
+		$fl->chmod(e_HANDLER."bounce_handler.php",0755);
+	}
+	
+	
 	
 	/**
 	 * Burnsy - This is just a test
@@ -119,26 +167,96 @@ class _system_cron
 		global $pref, $_E107;
 		if($_E107['debug'])	{ 	echo "<br />sendEmail() executed"; }
 		
-	    require_once(e_HANDLER.'mail.php');
-		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
+	  //  require_once(e_HANDLER.'mail.php');
+		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
 
-	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
-	}
-	
-	function procEmailQueue()
-	{
-		//global $pref;
-		if (CRON_MAIL_DEBUG)
+		$message .= "<h2>Environment Variables</h2>";
+
+		$userCon = get_defined_constants(true);
+		ksort($userCon['user']);
+
+		$userVars = array();
+		foreach($userCon['user'] as $k=>$v)
 		{
-			$e107 = e107::getInstance();
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
+			if(substr($k,0,2) == 'e_')
+			{
+				$userVars[$k] = $v;
+			}
 		}
-		require_once(e_HANDLER.'mail_manager_class.php');
-		$mailManager = new e107MailManager();
-		$mailManager->doEmailTask(varset($pref['mail_workpertick'],5));
+
+		$message .= "<h3>e107 PATHS</h3>";
+		$message .= $this->renderTable($userVars);
+
+		$message .= "<h3>_SERVER</h3>";
+		$message .= $this->renderTable($_SERVER);
+		$message .= "<h3>_ENV</h3>";
+		$message .= $this->renderTable($_ENV);
+
+		$eml = array(
+					'subject' 		=> "TEST Email Sent by cron. ".date("r"),
+				//	'sender_email'	=> $email,
+					'sender_name'	=> SITENAME . " Automation",
+			//		'replyto'		=> $email,
+					'html'			=> true,
+					'template'		=> 'default',
+					'body'			=> $message
+				);
+
+		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
+
+	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);
+	}
+
+	private function renderTable($array)
+	{
+		$text = "<table class='table table-striped table-bordered' style='width:600px'>";
+
+		foreach($array as $k=>$v)
+		{
+			$text .= "<tr>
+				<td>".$k."</td>
+				<td>".print_a($v,true)."</td>
+				</tr>
+				";
+
+		}
+
+		$text .= "</table>";
+		return $text;
+	}
+
+	/**
+	 * Process the Mail Queue
+	 * First create a mail queue then debug with the following:
+	   require_once(e_HANDLER."cron_class.php");
+	   $cron = new _system_cron;
+	   $cron->procEmailQueue(true);
+	 * @param bool $debug
+	 */
+	function procEmailQueue($debug= false)
+	{
+
+		$sendPerHit = e107::getConfig()->get('mail_workpertick',5);
+		$pauseCount =  e107::getConfig()->get('mail_pause',5);
+		$pauseTime =  e107::getConfig()->get('mail_pausetime',2);
+			
 		if (CRON_MAIL_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run started',FALSE,LOG_TO_ROLLING);
+		}
+
+		$mailManager = e107::getBulkEmail();
+
+		if($debug === true)
+		{
+			$mailManager->controlDebug(1);
+		}
+
+		$mailManager->doEmailTask($sendPerHit,$pauseCount,$pauseTime);
+		
+		if (CRON_MAIL_DEBUG)
+		{
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Email','Email run completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -172,7 +290,7 @@ class _system_cron
 		$ipManager->banRetriggerAction();
 		if (CRON_RETRIGGER_DEBUG)
 		{
-			$e107->admin_log->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,debug_backtrace(),'DEBUG','CRON Ban Retrigger','Retrigger processing completed',FALSE,LOG_TO_ROLLING);
 		}
 	}
 	
@@ -181,17 +299,34 @@ class _system_cron
 	{
 		
 		$sql = e107::getDb();
-		$sql->backup('*');
-		
-		
+		$file = $sql->backup('*');
+
+		if(empty($file))
+		{
+			e107::getLog()->addError('Database Backup Failed:'.basename($file))->save('BACKUP');
+			return;
+		}
+
+		$zipFile = $file.".zip";
+		e107::getFile()->zip(array($file),$zipFile, array('remove_path'=>e_BACKUP));
+
+		if(file_exists($zipFile))
+		{
+			e107::getLog()->addSuccess('Database Backup Complete: '.basename($zipFile))->save('BACKUP');
+
+			if(is_file($file))
+			{
+				unlink($file);
+			}
+		}
 		
 		return;
 		
-		
+		/*
 		require(e_BASE."e107_config.php");
 
 		$sql = e107::getDb();
-		$dbtable = $mySQLdefaultdb; // TODO - retrieve this in a better way. (without including e107_config) 
+		$dbtable = $mySQLdefaultdb; //
 	
 		$backupFile = e_BACKUP.SITENAME."_".date("Y-m-d-H-i-s").".sql";
 		$result = mysql_list_tables($dbtable);
@@ -201,14 +336,14 @@ class _system_cron
 			$table = $tab[0];
 			$text = "";
 			
-			$sql->db_Select_gen("SHOW CREATE TABLE `".$table."`");
+			$sql->gen("SHOW CREATE TABLE `".$table."`");
 			$row2 = $sql->db_Fetch();
 			$text .= $row2['Create Table'];
 			$text .= ";\n\n";
 			
 			ob_end_clean(); // prevent memory exhaustian 
 			
-			$count = $sql->db_Select_gen("SELECT * FROM `".$table."`");
+			$count = $sql->gen("SELECT * FROM `".$table."`");
 			$data_array = "";
 		
 			while($row = $sql->db_Fetch())
@@ -239,7 +374,7 @@ class _system_cron
 			
 		}
 				
-		
+		*/
 		
 	}
 	

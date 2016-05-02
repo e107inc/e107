@@ -95,6 +95,7 @@ class core_news_url extends eUrlConfig
 			$route[1] = 'items';
 		}
 		
+	//	return print_a($route,true);
 		## news are passing array as it is retrieved from the DB, map vars to proper values
 		if(isset($params['news_id']) && !empty($params['news_id'])) $params['id'] = $params['news_id'];
 		//if(isset($params['news_sef']) && !empty($params['news_sef'])) $params['id'] = $params['news_sef'];
@@ -128,12 +129,22 @@ class core_news_url extends eUrlConfig
 				break;
 				
 				case 'category':
-					if(!vartrue($params['id'])) $url .= 'default.0.'.$page;
-					else $url .= 'list.'.$params['id'].'.'.$page;
+					if(!vartrue($params['id']))
+					{
+						 $url .= 'default.0.'.$page;
+					}
+					else 
+					{
+						$url .= 'list.'.$params['id'].'.'.$page;	// 'category_id' would break news_categories_menu. 
+					}
 				break;
 					
 				case 'all':
 					$url .= 'all.'.$params['id'].'.'.$page;
+				break;
+				
+				case 'tag':
+					$url .= 'tag='.$params['tag'].'&page='.$page;
 				break;
 				
 				case 'short':
@@ -152,7 +163,10 @@ class core_news_url extends eUrlConfig
 				break;
 			}
 		}
-		else $url = 'news.php';
+		else 
+		{
+			$url = 'news.php';
+		}
 		
 		return $url;
 	}
@@ -179,6 +193,7 @@ class core_news_url extends eUrlConfig
 				'description' => LAN_EURL_LEGACY, //
 				'examples'  => array("{SITEURL}news.php?extend.1")
 			),
+		//	'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);

@@ -21,12 +21,12 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
 
 class emailprint 
 {
-	function render_emailprint($mode, $id, $look = 0) 
+	function render_emailprint($mode, $id, $look = 0,$parm=array()) 
 	{
 		// $look = 0  --->display all icons
 		// $look = 1  --->display email icon only
 		// $look = 2  --->display print icon only
-		
+		$tp = e107::getParser();
 
 		$text_emailprint = "";
 
@@ -60,13 +60,15 @@ class emailprint
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$genericMail = "<i class='icon-envelope'></i>"; 
-			$genericPrint = "<i class='icon-print'></i>"; 
+			$genericMail = $tp->toGlyph('icon-envelope',false); // "<i class='icon-envelope'></i>"; 
+			$genericPrint = $tp->toGlyph('fa-print',false); // "<i class='icon-print'></i>"; 
+			$class = varset($parm['class']) ? $parm['class'] : "";
 		}
 		else // BC
 		{
 			$genericMail = "<img src='".e_IMAGE_ABS."generic/email.png'  alt='".LAN_EMAIL_7."'  />";
 			$genericPrint = "<img src='".e_IMAGE_ABS."generic/printer.png'  alt='".LAN_PRINT_1."'  />";	
+			$class = "";
 		}
 		
 
@@ -74,13 +76,13 @@ class emailprint
 		{
 			$ico_mail = (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL) ? "<img src='".THEME_ABS."images/".ICONMAIL."'  alt='".LAN_EMAIL_7."'  />" : $genericMail);
 			//TDOD CSS class
-			$text_emailprint .= "<a href='".e_HTTP."email.php?".$email.".".$id."' title='".LAN_EMAIL_7."'>".$ico_mail."</a> ";
+			$text_emailprint .= "<a class='e-tip hidden-print".$class."' href='".e_HTTP."email.php?".$email.".".$id."' title='".LAN_EMAIL_7."'>".$ico_mail."</a> ";
 		}
 		if ($look == 0 || $look == 2) 
 		{
 			$ico_print = (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT) ? "<img src='".THEME_ABS."images/".ICONPRINT."' alt='".LAN_PRINT_1."'  />" : $genericPrint);
 			//TODO CSS class
-			$text_emailprint .= "<a href='".e_HTTP."print.php?".$print.".".$id."' title='".LAN_PRINT_1."'>".$ico_print."</a>";
+			$text_emailprint .= "<a class='e-tip ".$class." hidden-print' href='".e_HTTP."print.php?".$print.".".$id."' title='".LAN_PRINT_1."'>".$ico_print."</a>";
 		}
 		return $text_emailprint;
 	}

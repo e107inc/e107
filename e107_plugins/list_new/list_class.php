@@ -100,6 +100,9 @@ class listclass
 	 */
 	function getListPrefs()
 	{
+		return e107::pref('list_new'); //TODO Convert from old format to new. 
+		
+		/*
 		$sql = e107::getDb();
 		//check preferences from database
 		$num_rows = $sql->gen("SELECT * FROM #core WHERE e107_name='list' ");
@@ -118,6 +121,7 @@ class listclass
 
 		$this->list_pref = $this->e107->arrayStorage->ReadArray($row['e107_value']);
 		return $this->list_pref;
+		*/
 	}
 
 	/**
@@ -156,17 +160,17 @@ class listclass
 		for($i=0;$i<count($this->sections);$i++)
 		{
 			$s = $this->sections[$i];
-			if(varsettrue($this->list_pref[$s."_".$mode."_display"]) == '1')
+			if(vartrue($this->list_pref[$s."_".$mode."_display"]) == '1')
 			{
-				$arr[$s]['caption'] 	= varsettrue($this->list_pref[$s."_".$mode."_caption"]);
-				$arr[$s]['display'] 	= varsettrue($this->list_pref[$s."_".$mode."_display"]);
-				$arr[$s]['open'] 		= varsettrue($this->list_pref[$s."_".$mode."_open"]);
-				$arr[$s]['author'] 		= varsettrue($this->list_pref[$s."_".$mode."_author"]);
-				$arr[$s]['category'] 	= varsettrue($this->list_pref[$s."_".$mode."_category"]);
-				$arr[$s]['date'] 		= varsettrue($this->list_pref[$s."_".$mode."_date"]);
-				$arr[$s]['icon'] 		= varsettrue($this->list_pref[$s."_".$mode."_icon"]);
-				$arr[$s]['amount'] 		= varsettrue($this->list_pref[$s."_".$mode."_amount"]);
-				$arr[$s]['order'] 		= varsettrue($this->list_pref[$s."_".$mode."_order"]);
+				$arr[$s]['caption'] 	= vartrue($this->list_pref[$s."_".$mode."_caption"]);
+				$arr[$s]['display'] 	= vartrue($this->list_pref[$s."_".$mode."_display"]);
+				$arr[$s]['open'] 		= vartrue($this->list_pref[$s."_".$mode."_open"]);
+				$arr[$s]['author'] 		= vartrue($this->list_pref[$s."_".$mode."_author"]);
+				$arr[$s]['category'] 	= vartrue($this->list_pref[$s."_".$mode."_category"]);
+				$arr[$s]['date'] 		= vartrue($this->list_pref[$s."_".$mode."_date"]);
+				$arr[$s]['icon'] 		= vartrue($this->list_pref[$s."_".$mode."_icon"]);
+				$arr[$s]['amount'] 		= vartrue($this->list_pref[$s."_".$mode."_amount"]);
+				$arr[$s]['order'] 		= vartrue($this->list_pref[$s."_".$mode."_order"]);
 				$arr[$s]['section'] 	= $s;
 			}
 		}
@@ -220,7 +224,7 @@ class listclass
 			while($row = $sql->fetch())
 			{
 				$content_types[] = "content_".$row['content_id'];
-				if(varsettrue($mode) == "add")
+				if(vartrue($mode) == "add")
 				{
 					$this->sections[] = "content_".$row['content_id'];
 					$this->titles[] = $content_name." : ".$row['content_heading'];
@@ -523,7 +527,7 @@ class listclass
 			}
 			else
 			{
-				if (plugInstalled($file))
+				if (e107::isInstalled($file))
 				{
 					if(is_readable(e_PLUGIN.$file."/e_list.php"))
 					{
@@ -598,11 +602,11 @@ class listclass
 		global $qs;
 
 		$lvisit = defined('USERLV') ? USERLV : time() + 1000;			// Set default value
-		if(varsettrue($qs[0]) == "new")
+		if(vartrue($qs[0]) == "new")
 		{
-			if(varsettrue($this->list_pref['new_page_timelapse']))
+			if(vartrue($this->list_pref['new_page_timelapse']))
 			{
-				if(varsettrue($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
+				if(vartrue($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
 				{
 					$days = $this->list_pref['new_page_timelapse_days'];
 				}
@@ -656,7 +660,7 @@ class listclass
 				}
 			}
 		}
-		$bullet = varsettrue($bullet, $default_bullet);
+		$bullet = vartrue($bullet, $default_bullet);
 
 		return $bullet;
 	}
@@ -778,7 +782,7 @@ class listclass
 		$arr = $this->prepareSectionArray($this->mode);
 
 		//timelapse
-		if(varsettrue($qs[0]) == "new")
+		if(vartrue($qs[0]) == "new")
 		{
 			$text .= $this->displayTimelapse();
 		}

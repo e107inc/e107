@@ -105,7 +105,7 @@ class e_online
 			// FIXME parse url, trigger registered e_online callbacks
 			$page = e107::getParser()->toDB($page, true);								/// @todo - try not to use toDB() - triggers prefilter
 			$ip = e107::getIPHandler()->getIP(FALSE);
-			$udata = ($user->isUser() ? $user->getId().'.'.$user->getName() : '0');
+			$udata = ($user->isUser() && USER ? $user->getId().'.'.$user->getName() : '0'); // USER check required to make sure they logged in without an error.
 			$agent = $_SERVER['HTTP_USER_AGENT'];
 
 			// XXX - more exceptions, e.g. hide online location for admins/users (pref), e_jlsib.php, etc
@@ -120,13 +120,14 @@ class e_online
 				'online_location'	=> $page,
 				'online_pagecount'	=> 1,
 				'online_active'		=> 0,
-				'online_agent'		=> $agent
+				'online_agent'		=> $agent,
+				'online_language'   => e_LAN
 			);
 
 			// !deftrue('e_AJAX_REQUEST')
 			// TODO add option to hide users from online list? boolean online_hide field?
 			// don't do anything if main admin logged in as another user
-			if ($user->isUser() && !$user->getParentId())
+			if ($user->isUser()  && !$user->getParentId())
 			{
 				// Find record that matches IP or visitor, or matches user info
 				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'"))
@@ -140,7 +141,7 @@ class e_online
 						{
 							//It has been at least 'online_timeout' seconds since this user's info last logged
 							//Update user record with timestamp, current IP, current page and set pagecount to 1
-							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1 WHERE online_user_id='{$row['online_user_id']}'";
+							$query = "online_timestamp='".time()."', online_ip='{$ip}'{$update_page}, online_pagecount=1, `online_active` = 1 WHERE online_user_id='{$row['online_user_id']}'";
 						}
 						else
 						{
@@ -149,7 +150,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							// Update user record with current IP, current page and increment pagecount
-							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."' WHERE `online_user_id` = '{$row['online_user_id']}'";
+							$query = "online_ip='{$ip}'{$update_page}, `online_pagecount` = '".intval($row['online_pagecount'])."', `online_active` = 1 WHERE `online_user_id` = '{$row['online_user_id']}'";
 						}
 					}
 					else
@@ -159,7 +160,7 @@ class e_online
 						{
 							// It has been at least 'timeout' seconds since this user has connected
 							// Update record with timestamp, current IP, current page and set pagecount to 1
-							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+							$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = 1,  `online_active` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 						}
 						else
 						{	// Another visit within the timeout period
@@ -168,7 +169,7 @@ class e_online
 								$row['online_pagecount'] ++;
 							}
 							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
+							$query = "`online_user_id` = '{$udata}'{$update_page}, `online_pagecount` = ".intval($row['online_pagecount']).", `online_active` =1  WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 						}
 					}
 					$sql->update('online', $query);
@@ -182,7 +183,7 @@ class e_online
 			elseif(!$user->getParentId())
 			{
 				//Current page request is from a guest
-				if ($sql->db_Select('online', '*', "`online_ip` = '{$ip}' AND `online_user_id` = '0'"))
+				if ($sql->select('online', '*', "`online_ip` = '{$ip}' AND `online_user_id` = '0'"))
 				{	// Recent visitor
 					$row = $sql->fetch();
 
@@ -212,15 +213,18 @@ class e_online
 			}
 
 			// Always allow localhost - any problems are usually semi-intentional!
-			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP))
+			if ((varset($row['online_ip']) != '127.0.0.1') && (varset($row['online_ip']) != e107::LOCALHOST_IP)  && (varset($row['online_ip']) != e107::LOCALHOST_IP2))
 			{
 				// Check for excessive access
 				if ($row['online_pagecount'] > $online_bancount)
 				{
-					include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php');
-					if (TRUE === e107::getIPHandler()->add_ban(2,str_replace('--HITS--',$row['online_pagecount'],BANLAN_78),$ip,0))
+					e107::lan('core','banlist',true);//e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_banlist.php'
+					$reason = e107::getParser()->lanVars(BANLAN_78,$row['online_pagecount']); //  str_replace('--HITS--',$row['online_pagecount'], BANLAN_78)
+
+					if (true === e107::getIPHandler()->add_ban(2, $reason, $ip,0))
 					{
-						e107::getEvent()->trigger('flood', $ip);
+						e107::getEvent()->trigger('flood', $ip); //BC
+						e107::getEvent()->trigger('user_ban_flood', $ip);
 						exit;
 					}
 				}
@@ -261,19 +265,21 @@ class e_online
 							'user_pagecount'	=> $row['online_pagecount'],
 							'user_active'		=> $row['online_active'],
 							'user_image'		=> vartrue($row['user_image'],false),
-							'online_user_id'	=> $row['online_user_id']
+							'online_user_id'	=> $row['online_user_id'],
+							'user_language'     => $row['online_language']
 						);	
 		
-						if($row['online_user_id'] != 0)
+						if($row['online_user_id'] != 0 )
 						{
 							$vals = explode('.', $row['online_user_id'], 2);
 							$user['user_id'] = $vals[0];
 							$user['user_name'] = $vals[1];
 							$member_list .= "<a href='".SITEURL."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
 							$listuserson[$row['online_user_id']] = $row['online_location'];
-		
-							$this->users[] = $user;		
+
+							$this->users[] = $user;
 							$members_online++;
+
 						}
 						else 
 						{
@@ -315,10 +321,21 @@ class e_online
 	}
 
 
-	function userList()
+	function userList($debug=false)
 	{
-		return $this->users;		
-		
+
+		if($debug === true)
+		{
+			//print_a($this->users);
+			$data = e107::getDb()->retrieve('user', 'user_id,user_name,user_image, 1 as user_active, CONCAT_WS(".",user_id,user_name) as online_user_id', "LIMIT 7", true);
+
+		//	print_a($data);
+
+			return $data;
+		}
+
+
+		return $this->users;
 	}
 
 	function guestList()

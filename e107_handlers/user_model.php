@@ -69,8 +69,8 @@ class e_user_model extends e_admin_model
 	protected $_validation_rules = array(
 		'user_name' => array('string', '1', 'LAN_USER_01', 'LAN_USER_HELP_01'), // TODO - regex
 		'user_loginname' => array('string', '1', 'LAN_USER_02', 'LAN_USER_HELP_02'), // TODO - regex
-		'user_password' => array('compare', '5', 'LAN_USER_05', 'LAN_USER_HELP_05'), // TODO - pref - modify it somewhere below - prepare_rules()?
-		'user_email' => array('email', '', 'LAN_USER_08', 'LAN_USER_HELP_08'),
+		'user_password' => array('compare', '5', 'LAN_PASSWORD', 'LAN_USER_HELP_05'), // TODO - pref - modify it somewhere below - prepare_rules()?
+		'user_email' => array('email', '', 'LAN_EMAIL', 'LAN_USER_HELP_08'),
 	);
 
 	/**
@@ -182,10 +182,11 @@ class e_user_model extends e_admin_model
 	{
 		return $this->get('user_loginname');
 	}
-	
+
 	/**
 	 * Real name getter. Use it as DB field name will be changed soon.
 	 * @param bool $strict if false, fall back to Display name when empty
+	 * @return mixed
 	 */
 	final public function getRealName($strict = false)
 	{
@@ -889,7 +890,7 @@ class e_user_model extends e_admin_model
 	 */
 	public function load($user_id = 0, $force = false)
 	{
-		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE user_id={ID}";
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE u.user_id={ID}";
 		$this->setParam('db_query', $qry);
 		parent::load($user_id, $force);
 		if ($this->getId())
@@ -905,7 +906,7 @@ class e_user_model extends e_admin_model
 	 * data to user model
 	 * @return e_user_model
 	 */
-	public function mergePostedData()
+	public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
     	$posted = $this->getPostedData();
     	foreach ($posted as $key => $value)
@@ -951,7 +952,7 @@ class e_user_model extends e_admin_model
 		
 		if(false !== $ret && null !== $this->_extended_model) // don't load extended fields if not already used
 		{
-			$ret_e = $this->_extended_model->save($force, $session);
+			$ret_e = $this->_extended_model->save(true, $force, $session);
 			if(false !== $ret_e)
 			{
 				return ($ret_e + $ret);
@@ -990,11 +991,75 @@ class e_user_model extends e_admin_model
 			 $this->_extended_model = null;
 		}
 	}
+
+
+	/**
+	 * Add userclass to user and save.
+	 * @param null $userClassId
+	 * @return bool
+	 */
+	public function addClass($userClassId=null)
+	{
+		if(empty($userClassId))
+		{
+			return false;
+		}
+
+		$curClasses = explode(",", $this->getData('user_class'));
+		$curClasses[] = $userClassId;
+		$curClasses = array_unique($curClasses);
+
+		$insert = implode(",", $curClasses);
+
+		//FIXME - @SecretR - I'm missing something here with setCore() etc.
+	//	$this->setCore('user_class',$insert );
+	//	$this->saveDebug(false);
+
+		$uid = $this->getData('user_id');
+
+		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
+
+	}
+
+
+	/**
+	 * Remove a userclass from the user.
+	 * @param null $userClassId
+	 * @return bool
+	 */
+	public function removeClass($userClassId=null)
+	{
+		if(empty($userClassId))
+		{
+			return false;
+		}
+
+		$curClasses = explode(",", $this->getData('user_class'));
+
+		foreach($curClasses as $k=>$v)
+		{
+			if($v == $userClassId)
+			{
+				unset($curClasses[$k]);
+			}
+		}
+
+		$uid = $this->getData('user_id');
+
+		$insert = implode(",", $curClasses);
+
+		return e107::getDb()->update('user',"user_class='".$insert."' WHERE user_id = ".$uid." LIMIT 1");
+
+
+	}
+
+
 }
 
 // TODO - add some more useful methods, sc_* methods support
 class e_system_user extends e_user_model
 {
+	public $debug = false;
 	/**
 	 * Constructor
 	 *
@@ -1047,18 +1112,47 @@ class e_system_user extends e_user_model
 		}
 		
 		$eml = $this->renderEmail($type, $userInfo);
-		if(empty($eml)) return false;
+		
+		
+		
+		if(empty($eml))
+		{
+			if($this->debug)
+			{
+				echo '$eml returned nothing on Line 1050 of user_model.php using $type = '.$type;
+				print_a($userInfo);
+			}
+			 return false;
+		}
+		else
+		{
+			if($this->debug)
+			{
+				echo '<h3>$eml array</h3>';
+				print_a($eml);
+			}	
+		}
 		
 		$mailer = e107::getEmail();
 		
 		$mailer->template = $eml['template'];
-		unset($eml['template']);
+
 		
 		// Custom e107 Header
 		if($userInfo['user_id'])
 		{
-			$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
+			$eml['e107_header'] = $userInfo['user_id']; 
+		//	$mailer->AddCustomHeader("X-e107-id: {$userInfo['user_id']}");
 		}
+
+
+		if(getperms('0') && E107_DEBUG_LEVEL > 0)
+		{
+			e107::getMessage()->addDebug("Email Debugger active. <b>Simulation Only!</b>");
+			e107::getMessage()->addDebug($mailer->preview($eml));
+			return true;
+		}
+
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}
@@ -1082,7 +1176,10 @@ class e_system_user extends e_user_model
 	{	
 		$pref = e107::getPref();
 		$ret = array();
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
 		
+	
 		// mailer options
 		if(isset($userInfo['mail_options']) && is_array($userInfo['mail_options']))
 		{
@@ -1092,132 +1189,190 @@ class e_system_user extends e_user_model
 		// required for signup and quickadd email type
 		e107::coreLan('signup');
 
-		// FIXME convert to the new template to avoid include on every call
-		// BC
-		if (file_exists(THEME.'email_template.php'))
+		$EMAIL_TEMPLATE = e107::getCoreTemplate('email');
+		
+		if(!is_array($EMAIL_TEMPLATE)) //BC Fixes. pre v2 alpha3. 
 		{
-			include(THEME.'email_template.php');
-		}
-		else
-		{
-			// new standards
-			include(e107::coreTemplatePath('email'));
+			// load from old location. (root of theme folder if it exists)
+			if (file_exists(THEME.'email_template.php'))
+			{
+				include(THEME.'email_template.php');
+			}
+			else
+			{
+				// include core default. 
+				include(e107::coreTemplatePath('email'));
+			}
+			
+			// BC Fixes. 
+			$EMAIL_TEMPLATE['signup']['subject'] 		= $SIGNUPEMAIL_SUBJECT;
+			$EMAIL_TEMPLATE['signup']['cc']				= $SIGNUPEMAIL_CC;
+			$EMAIL_TEMPLATE['signup']['bcc']			= $SIGNUPEMAIL_BCC;
+			$EMAIL_TEMPLATE['signup']['attachments']	= $SIGNUPEMAIL_ATTACHMENTS;		
+			$EMAIL_TEMPLATE['signup']['body']			= $SIGNUPEMAIL_TEMPLATE;
+			
+			$EMAIL_TEMPLATE['quickadduser']['body']		= $QUICKADDUSER_TEMPLATE['email_body'];
+			$EMAIL_TEMPLATE['notify']['body']			= $NOTIFY_TEMPLATE['email_body'];
+			
 		}
 		
-		// FIXME by SecretR - email template mess - there are changes to emails and templates that need to be implemented here
 		$template = '';
 		switch ($type) 
 		{
 			case 'signup':
-				if(vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) $template = $SIGNUPPROVIDEREMAIL_TEMPLATE; 
-				else $template = $SIGNUPEMAIL_TEMPLATE;
-				$ret['template'] = false; // Don't allow additional headers (mailer)
+				$template = (vartrue($SIGNUPPROVIDEREMAIL_TEMPLATE)) ? $SIGNUPPROVIDEREMAIL_TEMPLATE :  $EMAIL_TEMPLATE['signup']['body'];
+				$ret['template'] = 'signup'; //  // false Don't allow additional headers (mailer) ??
 			break;
 			
 			case 'quickadd':
-				$template = $QUICKADDUSER_TEMPLATE['email_body']; // XXX quick fix - add the email templating engine
-				$ret['template'] = 'email'; // Don't allow additional headers (mailer)
+				$template = $EMAIL_TEMPLATE['quickadduser']['body']; 
+				$ret['template'] = 'quickadduser'; // Don't allow additional headers (mailer)
 			break;
 				
-			case 'notify': //emailer changes
-				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body'];//$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
+			case 'notify': 
+				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$NOTIFY_HEADER.$userInfo['mail_body'].$NOTIFY_FOOTER; 
 				$ret['template'] = 'notify';
 			break;
 				
-			case 'email'://emailer changes
+			case 'email':
+			case 'default':
 				if(vartrue($userInfo['mail_body'])) $template = $userInfo['mail_body']; //$EMAIL_HEADER.$userInfo['mail_body'].$EMAIL_FOOTER; 
-				$ret['template'] = 'email';
+				$ret['template'] = 'default';
 			break;
 		}
 		
-		if(!$template) return array();
+		if(!$template)
+		{
+			$mes->addDebug('$template is empty in user_model.php line 1171.'); // Debug only, do not translate. 
+			return array();
+		}
 
-		$pass_show = varset($userInfo['user_password']);
+
+
+	//
 		
 		// signup email only
 		if($type == 'signup')
 		{
+			$HEAD = '';
+			$FOOT = '';
+
+			$pass_show = e107::pref('core','user_reg_secureveri', false);
+			
 			$ret['e107_header'] = $userInfo['user_id'];
-			if (vartrue($SIGNUPEMAIL_CC)) { $ret['email_copy_to'] = $SIGNUPEMAIL_CC; }
-			if (vartrue($SIGNUPEMAIL_BCC)) { $ret['email_bcopy_to'] = $SIGNUPEMAIL_BCC; }
+			
+			if (vartrue($EMAIL_TEMPLATE['signup']['cc'])) { $ret['email_copy_to'] = $EMAIL_TEMPLATE['signup']['cc']; }
+			if (vartrue($EMAIL_TEMPLATE['signup']['bcc'])) { $ret['email_bcopy_to'] = $EMAIL_TEMPLATE['signup']['bcc']; }
 			if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['mail_attach']; }
-			elseif (vartrue($SIGNUPEMAIL_ATTACHMENTS)) { $ret['email_attach'] = $SIGNUPEMAIL_ATTACHMENTS; }
+			elseif (vartrue($EMAIL_TEMPLATE['signup']['attachments'])) { $ret['email_attach'] = $EMAIL_TEMPLATE['signup']['attachments']; }
 			
 			$style = vartrue($SIGNUPEMAIL_LINKSTYLE) ? "style='{$SIGNUPEMAIL_LINKSTYLE}'" : "";
-		
-			$search[0] = '{LOGINNAME}';
-			$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-		
-			$search[1] = '{PASSWORD}';
-			$replace[1] = $pass_show ? $pass_show : '******';
 
-			$search[2] = '{ACTIVATION_LINK}';
-			$replace[2] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
-		
-			$search[3] = '{SITENAME}';
-			$replace[3] = SITENAME;
-		
-			$search[4] = '{SITEURL}';
-			$replace[4] = "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
-		
-			$search[5] = '{USERNAME}';
-			$replace[5] = $userInfo['user_name'];
-		
-			$search[6] = '{USERURL}';
-			$replace[6] = varsettrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
-			
-			$search[7] = '{DISPLAYNAME}';
-			$replace[7] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
-			
-			$search[8] = '{EMAIL}';
-			$replace[8] = $userInfo['user_email'];
-			
-			$search[9] = '{ACTIVATION_URL}';
-			$replace[9] = $userInfo['activation_url'];
-		
-			$subject = str_replace($search, $replace, $SIGNUPEMAIL_SUBJECT);
-			$ret['email_subject'] =  $subject;
-			$ret['send_html'] = TRUE;
-		
-			$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-			$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
-			$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-			$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURLBASE.THEME_ABS."style.css\" type=\"text/css\" />\n" : "";
-		    $HEAD .= "<title>".LAN_SIGNUP_58."</title>\n";
-			
-			if($SIGNUPEMAIL_USETHEME == 2)
+
+			if(empty($userInfo['activation_url']) && !empty($userInfo['user_sess']) && !empty($userInfo['user_id']))
 			{
-				$CSS = file_get_contents(THEME."style.css");
-				$HEAD .= "<style>\n".$CSS."\n</style>";
+				$userInfo['activation_url'] = SITEURL."signup.php?activate.".$userInfo['user_id'].".".$userInfo['user_sess'];
 			}
+
+			
+			$sc = array();
+			
+			$sc['LOGINNAME'] 		= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
+			$sc['PASSWORD']			= ($pass_show && !empty($userInfo['user_password'])) ?  '*************' : $userInfo['user_password'];
+			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+		//	$sc['SITENAME']			= SITENAME;
+			$sc['SITEURL']			= "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
+			$sc['USERNAME']			= $userInfo['user_name'];
+			$sc['USERURL']			= vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
+			$sc['DISPLAYNAME']		= $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
+			$sc['EMAIL']			= $userInfo['user_email'];
+			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
+			
+			$ret['email_subject'] =  $EMAIL_TEMPLATE['signup']['subject']; // $subject;
+			$ret['send_html'] = TRUE;
+			$ret['shortcodes'] = $sc;
 		
-			$HEAD .= "</head>\n";
-			if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE))
+			if(!varset($EMAIL_TEMPLATE['signup']['header']))
 			{
-				$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
+		
+				$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+				$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
+				$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
+				$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURLBASE.THEME_ABS."style.css\" type=\"text/css\" />\n" : "";
+			    $HEAD .= "<title>".LAN_SIGNUP_58."</title>\n";
+				
+				if($SIGNUPEMAIL_USETHEME == 2) // @deprecated in favor of {STYLESHEET}
+				{ 
+					$CSS = file_get_contents(THEME."style.css");
+					$HEAD .= "<style>\n".$CSS."\n</style>";
+				}
+			
+				$HEAD .= "</head>\n";
+				if(vartrue($SIGNUPEMAIL_BACKGROUNDIMAGE)) // @deprecated. 
+				{
+					$HEAD .= "<body background=\"".$SIGNUPEMAIL_BACKGROUNDIMAGE."\" >\n";
+				}
+				else
+				{
+					$HEAD .= "<body>\n";
+				}
+			
 			}
 			else
 			{
-				$HEAD .= "<body>\n";
+				$HEAD = ""; // $tp->parseTemplate($EMAIL_TEMPLATE['signup']['header'], true);	
 			}
-			$FOOT = "\n</body>\n</html>\n";
+			
+			if(!varset($EMAIL_TEMPLATE['signup']['footer']))
+			{
+				$FOOT = "\n</body>\n</html>\n";
+			}
+			else
+			{
+				$FOOT = ""; // $tp->parseTemplate($EMAIL_TEMPLATE['signup']['footer'], true);
+			}
 		
-			$ret['send_html'] = TRUE;
-			$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
-			$ret['preview'] = $ret['email_body'];// Non-standard field
+			$ret['send_html'] 		= TRUE;
+			$ret['email_body'] 		= $HEAD.$template.$FOOT; // e107::getParser()->parseTemplate(str_replace($search,$replace,$HEAD.$template.$FOOT), true);
+			$ret['preview'] 		= $tp->parseTemplate($ret['email_body'],true, $sc);// Non-standard field
+			$ret['shortcodes'] 		= $sc;
+			
+			
 			return $ret;
 		}
 
-		// all other email types
-		$subject = $userInfo['email_subject'];
 		
-		if(!$subject) return array();
+
+
+		// all other email types		
+		if(!$userInfo['mail_subject'])
+		{
+			$mes->addDebug('No Email subject provided to renderEmail() method.'); // Debug only, do not translate. 
+			return array();
+		}
 		
-		$ret['e107_header'] = $userInfo['user_id'];
-		if (vartrue($userInfo['email_copy_to'])) { $ret['email_copy_to'] = $userInfo['email_copy_to']; }
-		if (vartrue($userInfo['email_bcopy_to'])) { $ret['email_bcopy_to'] = $userInfo['email_bcopy_to']; }
-		if (vartrue($userInfo['email_attach'])) { $ret['email_attach'] = $userInfo['email_attach']; }
+
+		$templateName = $ret['template'];
 		
+		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
+		$ret['e107_header'] 	= $userInfo['user_id'];
+		
+		if (vartrue($userInfo['email_copy_to'])) 	{ 	$ret['email_copy_to']	= $userInfo['email_copy_to']; }
+		if (vartrue($userInfo['email_bcopy_to'])) 	{ 	$ret['email_bcopy_to'] 	= $userInfo['email_bcopy_to']; }
+		if (vartrue($userInfo['email_attach']))		{ 	$ret['email_attach'] 	= $userInfo['email_attach']; }
+		
+		$sc = array();
+		
+		$sc['LOGINNAME']			= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
+		$sc['DISPLAYNAME']			= $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
+		$sc['SITEURL']				= "<a href='".SITEURL."'>".SITEURL."</a>";
+		$sc['USERNAME']				= $userInfo['user_name'];
+		$sc['USERURL']				= vartrue($userInfo['user_website'], '');
+		$sc['PASSWORD']				= vartrue($userInfo['user_password'], '***********');
+		$sc['SUBJECT']				= $userInfo['mail_subject'];
+
+		
+		/*
 		$search[0] = '{LOGINNAME}';
 		$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
 		
@@ -1239,23 +1394,31 @@ class e_system_user extends e_user_model
 		$search[6] = '{USERURL}';
 		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
 	
-		$ret['email_subject'] =  str_replace($search, $replace, $subject);
+		$ret['email_subject'] =  $subject; // str_replace($search, $replace, $subject); - performed in mail handler. 
 		
 		$search[7] = '{PASSWORD}';
 		$replace[7] = $pass_show ? $pass_show : '******';
+		*/
+		
 		
 		if(isset($userInfo['activation_url']))
 		{
+			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
+			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+			
+			/*
 			$search[8] = '{ACTIVATION_URL}';
 			$replace[8] = $userInfo['activation_url'];
 			
 			$search[9] = '{ACTIVATION_LINK}';
 			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
+			*/
 		}
 		
-		$ret['send_html'] = TRUE;
-		$ret['email_body'] = e107::getParser()->parseTemplate(str_replace($search, $replace, $template));
-		$ret['preview'] = $ret['mail_body']; // Non-standard field
+		$ret['send_html'] 		= TRUE;
+		$ret['email_body'] 		= $template; // e107::getParser()->parseTemplate(str_replace($search, $replace, $template)); - performed in mail handler. 
+		$ret['preview'] 		= $ret['mail_body']; // Non-standard field
+		$ret['shortcodes'] 		= $sc;
 		
 		return $ret;
 	}
@@ -1374,8 +1537,11 @@ class e_user extends e_user_model
 		$userlogin = new userlogin();
 		$userlogin->login($uname, $upass_plain, $uauto, $uchallange, $noredirect);
 		
-		$this->setSessionData(true)
-			->setData($userlogin->getUserData());
+		$userdata  = $userlogin->getUserData(); 
+		
+		$this->setSessionData(true)->setData($userdata);
+		
+		e107::getEvent()->trigger('user_login', $userdata); 	
 
 		return $this->isUser();
 	}
@@ -1394,8 +1560,13 @@ class e_user extends e_user_model
 		$userlogin = new userlogin();
 		$userlogin->login($xup, '', 'provider', false, true);
 		
-		$this->setSessionData(true)
-			->setData($userlogin->getUserData());
+		$userdata  = $userlogin->getUserData();
+
+		e107::getLog()->add('XUP Debug', (__CLASS__.':'.__METHOD__.'-'.__LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		
+		$this->setSessionData(true)->setData($userdata);
+			
+		e107::getEvent()->trigger('user_xup_login', $userdata); 	
 
 		return $this->isUser();
 	}
@@ -1515,21 +1686,49 @@ class e_user extends e_user_model
 		// query DB
 		$sql = e107::getDb();
 		$where = array();
+		$userdata = array();
+
 		foreach ($connected as $providerId) 
 		{
 			$adapter = Hybrid_Auth::getAdapter($providerId);
 			
 			if(!$adapter->getUserProfile()->identifier) continue;
-			
-			$id = $providerId.'_'.$adapter->getUserProfile()->identifier;
+
+			$profile = $adapter->getUserProfile();
+
+			$userdata['user_name']  = $sql->escape($profile->displayName);
+			$userdata['user_image'] = $profile->photoURL; // avatar
+
+			$id = $providerId.'_'.$profile->identifier;
 			$where[] = "user_xup='".$sql->escape($id)."'";
 		}
+
+
 		$where = implode(' OR ', $where);
-		if($sql->db_Select('user', 'user_id, user_password, user_xup', $where))
+		if($sql->select('user', 'user_id, user_name, user_image, user_password, user_xup', $where))
 		{
-			$user = $sql->db_Fetch();
+
+			$user = $sql->fetch();
 			e107::getUserSession()->makeUserCookie($user);
 			$this->setSessionData();
+
+			// Update display name or avatar image if they have changed.
+			if(($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
+			{
+
+				if($sql->update('user', "user_name='".$userdata['user_name']."', user_image='".$userdata['user_image']."' WHERE user_id=".$user['user_id']." LIMIT 1")!==false)
+				{
+					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
+				}
+				else
+				{
+					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
+				}
+			}
+
+			unset($user['user_password']);
+			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $user['user_id'], $user['user_name']);
+			// e107::getLog()->add('XUP Login', $user, E_LOG_INFORMATIVE, "LOGIN", LOG_TO_ROLLING, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 		}
 		
 		return $this;
@@ -1746,10 +1945,10 @@ class e_user extends e_user_model
 
 	final protected function _load($user_id)
 	{
-		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE user_id='.intval($user_id);
-		if(e107::getDb()->db_Select_gen($qry))
+		$qry = 'SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended as ue ON u.user_id=ue.user_extended_id WHERE u.user_id='.intval($user_id);
+		if(e107::getDb()->gen($qry))
 		{
-			return e107::getDb()->db_Fetch();
+			return e107::getDb()->fetch();
 		}
 		return array();
 	}
@@ -2091,7 +2290,7 @@ class e_user_extended_model extends e_admin_model
 	 * @see e_model#load($id, $force)
 	 * @return e_user_extended_model
 	 */
-	public function load($force = false)
+	public function load($id=null, $force = false)
 	{
 		if ($this->getId() && !$force)
 			return $this;
@@ -2217,7 +2416,7 @@ class e_user_extended_model extends e_admin_model
 	 * data to user extended model
 	 * @return e_user_extended_model
 	 */
-	public function mergePostedData()
+	public function mergePostedData($strict = true, $sanitize = true, $validate = true)
     {
     	$posted = $this->getPostedData();
     	foreach ($posted as $key => $value)
@@ -2235,7 +2434,7 @@ class e_user_extended_model extends e_admin_model
 	 * Build data types and rules on the fly and save
 	 * @see e_front_model::save()
 	 */
-	public function save($force = false, $session = false)
+	public function save($from_post = true, $force = false, $session = false)
 	{
 		// when not loaded from db, see the construct check
 		if(!$this->getId()) 
@@ -2327,7 +2526,7 @@ class e_user_extended_structure_model extends e_model
 	/**
 	 * Loading of single structure row not allowed for front model
 	 */
-	public function load()
+	public function load($id = null, $force = false)
 	{
 		return $this;
 	}
@@ -2531,7 +2730,7 @@ class e_user_pref extends e_front_model
 	 * @param boolean $force
 	 * @return e_user_pref
 	 */
-	public function load($force = false)
+	public function load($id = null, $force = false)
 	{
 		if($force || !$this->hasData())
 		{
@@ -2539,7 +2738,7 @@ class e_user_pref extends e_front_model
 			if(!empty($data))
 			{
 				// BC
-				$data = substr($data, 0, 5) == "array" ? e107::getArrayStorage()->ReadArray($data) : unserialize($data);
+				$data = substr($data, 0, 5) == "array" ? e107::unserialize($data) : unserialize($data);
 				if(!$data) $data = array();
 			}
 			else $data = array();
@@ -2566,7 +2765,7 @@ class e_user_pref extends e_front_model
 	 * @param boolean $force
 	 * @return boolean success
 	 */
-	public function save($from_post = false, $force = false)
+	public function save($from_post = false, $force = false, $session_messages = false)
 	{
 		if($this->_user->getId())
 		{
@@ -2586,13 +2785,13 @@ class e_user_pref extends e_front_model
 	}
 
 	/**
-	 * Remove & apply user prefeferences, optionally - save to DB
+	 * Remove & apply user preferences, optionally - save to DB
 	 * @return boolean success
 	 */
-	public function delete($save = false)
+	public function delete($ids, $destroy = true, $session_messages = false) // replaced $save = false for PHP7 fix.
 	{
 		$this->removeData()->apply();
-		if($save) return $this->save();
+	//	if($save) return $this->save(); //FIXME adjust within the context of the variables in the method.
 		return true;
 	}
 }

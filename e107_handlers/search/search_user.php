@@ -12,6 +12,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+
+//TODO Move to e107_plugins/user/e_search.php and upgrade to v2.x spec.
 // advanced 
 $advanced_where = "";
 if (isset($_GET['time']) && is_numeric($_GET['time'])) {
@@ -31,12 +33,13 @@ $text .= $ps['text'];
 $results = $ps['results'];
 
 function search_user($row) {
-	global $con;
+
+	$tp = e107::getParser();
 	$res['link'] = e107::getUrl()->create('user/profile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//"user.php?id.".$row['user_id'];
 	$res['pre_title'] = $row['user_id']." | ";
 	$res['title'] = $row['user_name'];
 	$res['summary'] = $row['user_signature'] ?  LAN_SEARCH_72.": ".$row['user_signature'] : LAN_SEARCH_73;
-	$res['detail'] = LAN_SEARCH_74.": ".$con -> convert_date($row['user_join'], "long");
+	$res['detail'] = LAN_SEARCH_74.": ".$tp->toDate($row['user_join'], "long");
 	return $res;
 }
 

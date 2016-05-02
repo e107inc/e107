@@ -33,6 +33,7 @@ class news {
 
 	//FIXME - LANs
 	//TODO - synch WIKI docs, add rewrite data to the event data
+	//@Deprecated and no longer used by newspost.php 
 	function submit_item($news, $smessages = false)
 	{
 		$tp = e107::getParser();
@@ -171,6 +172,7 @@ class news {
 				$data['data']['news_id'] = $news['news_id'];
 	
 				e107::getEvent()->trigger('newsupd', $data['data']);
+				e107::getEvent()->trigger('admin_news_updated', $data['data']);
 				$message = LAN_UPDATED;
 				$emessage->add(LAN_UPDATED, E_MESSAGE_SUCCESS, $smessages);
 				e107::getCache()->clear('news.php');
@@ -220,6 +222,7 @@ class news {
 				//moved down - prevent wrong mysql_insert_id
 				e107::getAdminLog()->logArrayAll('NEWS_08', $logData);
 				e107::getEvent()->trigger('newspost', $data['data']);
+				e107::getEvent()->trigger('admin_news_created', $data['data']);
 
 				//XXX - triggerHook after trigger?
 				$evdata = array('method'=>'create', 'table'=>'news', 'id'=>$data['data']['news_id'], 'plugin'=>'news', 'function'=>'submit_item');
@@ -233,64 +236,7 @@ class news {
 			}
 		}
 
-		/* FIXME - trackback should be hooked!	*/
-		if($news['news_id'] && $pref['trackbackEnabled'])
-		{
 
-			$excerpt = e107::getParser()->text_truncate(strip_tags(e107::getParser()->post_toHTML($news['news_body'])), 100, '...');
-
-//			$id=mysql_insert_id();
-			$permLink = $e107->base_path."comment.php?comment.news.".intval($news['news_id']);
-
-			require_once(e_PLUGIN."trackback/trackbackClass.php");
-			$trackback = new trackbackClass();
-
-			if($_POST['trackback_urls'])
-			{
-				$urlArray = explode("\n", $_POST['trackback_urls']);
-				foreach($urlArray as $pingurl)
-				{
-					if(!$terror = $trackback->sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
-					{
-						$message .= "<br />successfully pinged {$pingurl}.";
-						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
-					}
-					else
-					{
-						$message .= "<br />was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]";
-						$emessage->add("was unable to ping {$pingurl}<br />[ Error message returned was : '{$terror}'. ]", E_MESSAGE_ERROR, $smessages);
-					}
-				}
-			}
-
-			if(isset($_POST['pingback_urls']))
-			{
-				if ($urlArray = $trackback->getPingUrls($news['news_body'])) //FIXME - missing method!!!
-				{
-					foreach($urlArray as $pingurl)
-					{
-
-						if ($trackback -> sendTrackback($permLink, $pingurl, $news['news_title'], $excerpt))
-						{
-	 						$message .= "<br />successfully pinged {$pingurl}.";
-	 						$emessage->add("Successfully pinged {$pingurl}.", E_MESSAGE_SUCCESS, $smessages);
-						}
-						else
-						{
-							$message .= "Pingback to {$pingurl} failed ...";
-							$emessage->add("Pingback to {$pingurl} failed ...", E_MESSAGE_ERROR, $smessages);
-						}
-					}
-				}
-				else
-				{
-					$message .= "<br />No pingback addresses were discovered";
-					$emessage->add("No pingback addresses were discovered", E_MESSAGE_INFO, $smessages);
-				}
-			}
-		}
-
-		/* end trackback */
 
 		//return $message;
 		$data['message'] = $message;
@@ -414,11 +360,28 @@ class news {
 		setScVar('news_shortcodes', 'news_item', $news);
 		setScVar('news_shortcodes', 'param', $param);
 		*/
+
+		// Set the Values for the social shortcode usage.
+		$tp = e107::getParser();
+		$socialArray = array('url'=>e107::getUrl()->create('news/view/item', $news, 'full=1'), 'title'=>$tp->toText($news['news_title']), 'tags'=>$news['news_meta_keywords']);
+		$socialObj = e107::getScBatch('social');
+
+		if(is_object($socialObj))
+		{
+			$socialObj->setVars($socialArray);
+		}
+
+
 		// Retrieve batch sc object, set required vars
+
+		$wrapperKey = (!empty($param['template_key'])) ? 'news/'.$param['template_key'].'/item' : 'news/view/item';
+
 		$sc = e107::getScBatch('news')
+			->wrapper($wrapperKey)
 			->setScVar('news_item', $news)
 			->setScVar('param', $param);
-			
+
+
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
 
 		if ($mode == 'return')
@@ -474,7 +437,7 @@ class e_news_item extends e_front_model
 		$val = $this->field($field, '');
 
 		//do more with $parm array, just an example here
-		if(varsettrue($parm['format']))
+		if(vartrue($parm['format']))
 		{
 			switch ($parm['format'])
 			{
@@ -483,7 +446,7 @@ class e_news_item extends e_front_model
 					$method = 'toHTML';
 					$callback = e107::getParser();
 					$parm['arg'] = explode(',', varset($parm['arg']));
-					$parm['arg'][0] = varsettrue($parm['arg'][0]) ? true : false; //to boolean
+					$parm['arg'][0] = vartrue($parm['arg'][0]) ? true : false; //to boolean
 					$params = array($val); //value is always the first callback argument
 					$params += $parm['arg'];
 				break;
@@ -541,7 +504,7 @@ class e_news_item extends e_front_model
 	 * @param boolean $force
 	 * @return e_news_item
 	 */
-	public function load($id, $force = false)
+	public function load($id=null, $force = false)
 	{
 		
 		$id = intval($id);
@@ -569,14 +532,14 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Current tree news category id
 	 *
-	 * @var integer
+	 * @var integer|array
 	 */
 	protected $_current_category_id;
 
 	/**
 	 * Set current category Id
 	 *
-	 * @param integer $category_id
+	 * @param mixed $category_id
 	 * @return e_news_tree
 	 */
 	function setCurrentCategoryId($category_id)
@@ -620,20 +583,33 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Load joined tree by category id
 	 *
-	 * @param integer $category_id
+	 * @param mixed $category_id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
 	 * @return e_news_tree
 	 */
 	public function loadJoin($category_id = 0, $force = false, $params = array())
 	{
-		$category_id = intval($category_id);
+        if(is_string($category_id) && strpos($category_id, ','))
+        {
+            $category_id = array_map('trim', explode(',', $category_id));
+        }
+        if(is_array($category_id))
+        {
+            $category_id = array_map('intval', $category_id);
+        }
+		else $category_id = intval($category_id);
+
 		if(!$this->hasCurrentCategoryId() || $force) $this->setCurrentCategoryId($category_id);
 		
 		$where = vartrue($params['db_where']);
 		if($category_id)
 		{
-			$where .= ($where ? ' AND ' : '').' n.news_category='.intval($category_id);
+            if(is_array($category_id))
+            {
+                $where .= ($where ? ' AND ' : '').' n.news_category IN ('.implode(',', $category_id).')';
+            }
+			else $where .= ($where ? ' AND ' : '').' n.news_category='.$category_id;
 		}
 		if($where) $where = 'WHERE '.$where;
 		
@@ -657,7 +633,7 @@ class e_news_tree extends e_front_tree_model
 	/**
 	 * Load active joined tree by category id
 	 *
-	 * @param integer $category_id
+	 * @param mixed $category_id
 	 * @param boolean $force
 	 * @param array $params DB query parameters
 	 * @return e_news_tree
@@ -669,7 +645,7 @@ class e_news_tree extends e_front_tree_model
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$time = time();
 		
-		$where = ($where ? ' AND ' : '')."n.news_start < {$time} AND (n.news_end=0 || n.news_end>{$time})
+		$where .= ($where ? ' AND ' : '')."n.news_start < {$time} AND (n.news_end=0 || n.news_end>{$time})
 			AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		";
 		
@@ -708,9 +684,20 @@ class e_news_tree extends e_front_tree_model
 		$parser = e107::getParser();
 		$batch = e107::getScBatch('news')
 			->setScVar('param', $param);
-		
+
+		$wrapperKey = ($parms['tmpl'].'/'.$parms['tmpl_key']);
+		$batch->wrapper($wrapperKey);
 		$i = 1;
-		foreach ($this->getTree() as $news)
+
+
+		$items = $this->getTree();
+
+		if(!empty($items))
+		{
+			$start = $parser->parseTemplate($template['start'], true, $vars); // must be here in case {SETIMAGE} is present and used for items below.
+		}
+
+		foreach ($items as $news)
 		{
 			$vars->counter = $i;
 			$batch->setScVar('news_item', $news->getData());
@@ -718,10 +705,15 @@ class e_news_tree extends e_front_tree_model
 			$i++;
 		}
 
+		if(!empty($items))
+		{
+			$end = $parser->parseTemplate($template['end'], true, $vars);
+		}
 		if($ret)
 		{
+
 			$separator = varset($template['separator'], '');
-			$ret = $parser->simpleParse($template['start'], $vars).implode($separator, $ret).$parser->simpleParse($template['end'], $vars);
+			$ret = $start.implode($separator, $ret).$end;
 			$return = isset($parms['return']) ? true : false;
 
 			if($tablerender)
@@ -758,8 +750,12 @@ class e_news_category_item extends e_front_model
 
 	public function sc_news_category_title($parm = '')
 	{
-		if('attribute' == $parm) return e107::getParser()->toAttribute($this->cat('name'));
-		return $this->cat('name');
+		if('attribute' == $parm)
+		{
+			 return e107::getParser()->toAttribute($this->cat('name'));
+		}
+
+		return e107::getParser()->toHtml($this->cat('name'),true,'TITLE_PLAIN');
 	}
 
 	public function sc_news_category_url($parm = '')

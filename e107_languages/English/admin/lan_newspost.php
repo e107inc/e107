@@ -19,7 +19,7 @@ define("NWSLAN_10", "No news categories");
 //define("NWSLAN_12", "Title");
 define("NWSLAN_13", "Body");
 define("NWSLAN_14", "Extended");
-define("NWSLAN_15", "Comments");
+// define("NWSLAN_15", "Comments");
 // define("NWSLAN_16", "Enabled"); // deprecated see lan_admin.php
 // define("NWSLAN_17", "Disabled"); // deprecated see lan_admin.php
 define("NWSLAN_18", "Allow comments to be posted to this news item");
@@ -72,7 +72,7 @@ define("NWSLAN_59", "No submitted news");
 define("NWSLAN_63", "Search newsposts");
 
 define("NWSLAN_66", "Upload");
-define("NWSLAN_67", "Image");
+define("NWSLAN_67", "Image/Video");
 // define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
 // define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");  // deprecated see lan_admin.php
@@ -90,9 +90,9 @@ define("NWSLAN_77", "Post to other news menu");
 define("NWSLAN_83","Extended news post");
 define("NWSLAN_84","Choose which visitors will see news item");
 
-define("NWSLAN_86", "Show News-Category Footer Menu");
-define("NWSLAN_87", "News Category Columns?");
-define("NWSLAN_88", "News posts to display per page?");
+define("NWSLAN_86", "News-category footer menu");
+define("NWSLAN_87", "News-category columns");
+define("NWSLAN_88", "Default-view limit per page");
 //define("NWSLAN_89", "Save News Preferences");
 define("NWSLAN_90", "News Preferences");
 define("NWSLAN_100", "Enable Image uploading on Submit News page");
@@ -111,7 +111,7 @@ define("NWSLAN_112", "If this box is ticked, a box containing the date will be d
 define("NWSLAN_113", "Use non-standard template for news layout");
 define("NWSLAN_114", "if the theme you're using has a news layout template, use this instead of the generic layout");
 
-define("NWSLAN_115", "News posts to display in archive ?");
+define("NWSLAN_115", "Archive limit");
 define("NWSLAN_116", "First update the preferences with the changed display per page setting, then update again after setting the news archive preference. (0 is un-activated)");
 define("NWSLAN_117", "Set the title for the news archive");
 // define("NWSLAN_118", "View Images"); already defined above.
@@ -126,7 +126,7 @@ define("NWSLAN_123", "Posted");
 // define("NWSLAN_125", "Email");
 // define("NWSLAN_126", "IP");
 
-define("NWSLAN_127", "URL identifier");
+define("NWSLAN_127", "Default template");
 define("NWSLAN_128", "Set a string to be used in news pages URL. This will only work proper .htaccess rules and <a href='%s'>eURL config</a><br />Resolved URL based on current value: "); //FIXME HTML
 
 // define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
@@ -146,11 +146,11 @@ define("NWSLAN_128", "Set a string to be used in news pages URL. This will only 
 // define("LAN_NEWS_21", "News updated in database.");
 
 // define("LAN_NEWS_22", "Thumbnail");
-define("LAN_NEWS_23", "Choose an image for this news item");
+define("LAN_NEWS_23", "Choose an image or video for this news item");
 // define("LAN_NEWS_24", "Image + Auto-Thumbnail");
 // define("LAN_NEWS_25", "Auto-Thumbnail size");
 // define("LAN_NEWS_26", "add new upload field");
-define("LAN_NEWS_27", "Summary");
+//define("LAN_NEWS_27", "Summary");
 
 define("LAN_NEWS_28", "Sticky");
 define("LAN_NEWS_29", "Select if news item will be sticky");
@@ -193,5 +193,31 @@ define("LAN_NEWS_59", "News Maintenance");
 define("LAN_NEWS_60", "Comment Total");
 define("LAN_NEWS_61", "Also delete disallowed comments");
 define("LAN_NEWS_62", "Error accessing database, or no news items found");
+
+define("LAN_NEWS_63", "Create Category");
+define("LAN_NEWS_64", "Old Submitted");
+define("LAN_NEWS_65", "Please choose unique SEF URL string for this category");
+define("LAN_NEWS_66", ""); // Unused
+define("LAN_NEWS_67", "Close");
+define("LAN_NEWS_68", "Submitted Item");
+
+// News render-types
+define("LAN_NEWS_69", "Default Area");
+define("LAN_NEWS_70", "Default Area - Title");
+define("LAN_NEWS_71", "Default Area - Title/Summary");
+define("LAN_NEWS_72", "Sidebar - Othernews");
+define("LAN_NEWS_73", "Sidebar - Othernews 2");
+define("LAN_NEWS_74", "Carousel");
+define("LAN_NEWS_75", "Featurebox");
+
+define("LAN_NEWS_87", "eg. blogsearch.google.com/ping/RPC2");
+define("LAN_NEWS_88", "Determines how the default news page should appear.");
+define("LAN_NEWS_89", "Notify these services when you create/update news items.");
+define("LAN_NEWS_90", "One per line.");
+define("LAN_NEWS_91", "List-view limit per page");
+define("LAN_NEWS_92", "eg. news.php?all or news.php?cat.1 or news.php?tag=xxx");
+define("LAN_NEWS_93", "List-view content");
+define("LAN_NEWS_94", "Items assigned to these templates will be displayed in the list.");
+define("LAN_NEWS_95", "Another news item is using the SEF URL: [x]");
 
 ?>

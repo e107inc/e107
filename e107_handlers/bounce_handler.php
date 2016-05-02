@@ -3,63 +3,140 @@
 
 
  // WARNING, any echoed output from this script will be returned to the sender as a bounce message. 
- 
- $_E107['debug'] = FALSE;
- 
- 
+  
+ $_E107['debug'] = true;  
+  
 if (!defined('e107_INIT'))
 { 
-	$_E107['cli'] = TRUE;	
+	$_E107['cli'] = true;	
+	$_E107['allow_guest'] = true; // allow to run while in members-only mode. 	
+	$_E107['no_forceuserupdate'] = true;
+	$_E107['no_maintenance'] = true;
+
 	$class2 = realpath(dirname(__FILE__)."/../")."/class2.php";
-	require_once($class2);
+
+	@require_once($class2);
 }
 
-
 $bnc = new e107Bounce;
-$process = (varset($_GET['eml']) && $_E107['debug']) ? $_GET['eml'].".eml" : FALSE;
-$bnc->process($process);
+$bnc->process();
+
 
 
 class e107Bounce
 {
+	private $debug = false;
+	private $source = false;
+	
+	function __construct()
+	{
+		if(ADMIN && vartrue($_GET['eml']))
+		{
+			$this->debug = 2; // mode2  - via browser for admin.
+			$this->source = $_GET['eml'].".eml";		
+		}			
+	}
+	
 	function process($source='')
 	{
-		global $_E107,$pref;
-		
+	
+		$pref = e107::getPref();
+
 		e107::getCache()->CachePageMD5 = '_';
 		e107::getCache()->set('emailLastBounce',time(),TRUE,FALSE,TRUE);
 		
-		$strEmail= (!$source) ? $this->mailRead(-1) : file_get_contents(e_HANDLER."eml/".$source);
+		$strEmail= ($this->source == false) ? $this->mailRead(-1) : file_get_contents(e_HANDLER."eml/".$this->source);
 		
-		if(!$strEmail)
+		file_put_contents(e_LOG."bounce.log",date('r')."\n\n".$strEmail."\n\n", FILE_APPEND);
+		
+		
+		if(strpos($strEmail,'X-Bounce-Test: true')!==false) // Bounce Test from Admin Area. 
 		{
-			return;
+			$this->debug = true;	// mode 1 - for email test.
+		}
+				
+		if(empty($strEmail)) // Failed. 
+		{
+			if($this->debug === true && !empty($this->source))
+			{
+				echo "Couldn't get email data";
+			}
+			else
+			{
+				$message = "Empty Email!";	
+			}
+					
+		}
+		else
+		{
+			$multiArray = Bouncehandler::get_the_facts($strEmail);
+			$head 		= BounceHandler::parse_head($strEmail); 
+			$message 	= null;
+			$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+	 		$e107_userid = (isset($head[$identifier])) ? $head[$identifier] : $this->getHeader($strEmail, $identifier);
 		}
 		
-		$multiArray = Bouncehandler::get_the_facts($strEmail);
-		$head 		= BounceHandler::parse_head($strEmail); 
-
-	 	$e107_userid = (isset($head['X-e107-id'])) ? intval($head['X-e107-id']) : $this->getHeader($strEmail,'X-e107-id');
 		
-		if($_E107['debug'])
+		
+		if($this->debug === true)
 		{
 			require_once(e_HANDLER."mail.php");
 			$message = "Your Bounce Handler is working. The data of the email you sent is displayed below.<br />";
+			
 			if($e107_userid)
 			{
 				$message .= "A user-id was detected in the email you sent: <b>".$e107_userid."</b><br />";
 			}
-			$message .= "<br />";
-			$message .= "<pre>".print_r($multiArray,TRUE). "</pre>";
-			$message .= "<pre>".$strEmail. "</pre>";						
-	    	sendemail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);	
+			
+		//	$message .= "<br /><h4>Head</h4>";
+		//	$message .= print_a($head,true);
+		//	$message .= "<h4>Emails Found</h4><pre>".print_r($multiArray,TRUE). "</pre>";
+			
+			$message .= "<pre>".$strEmail. "</pre>";		
+							
+	    	if(!empty($this->source ))
+			{
+				echo $message;	
+			}
+			else
+			{
+			}
 		}	
 		
-		if($e107_userid && ($this->setUser_Bounced($e107_userid)==TRUE))
+		
+		
+		if(!empty($e107_userid))
 		{
-			return;	
+			if($errors = $this->setUser_Bounced($e107_userid))
+			{
+				if($this->debug === 2)
+				{
+					echo "<h3>Errors</h3>";
+					print_a($errors);
+				}
+
+			}
+
 		}
-				
+		
+		if(!empty($message))
+		{
+
+			$eml = array(
+				'subject' 		=> "Bounce-Handler : ",
+				'sender_email'	=> $pref['siteadminemail'],
+				'sender_name'	=> $pref['siteadmin'],
+			//	'replyto'		=> $email,
+				'html'			=> true,
+				'template'		=> 'default',
+				'body'			=> $message
+			);
+
+			e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $eml);
+		//	e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+		}
+		
+		return;		
 /*		echo "<pre>";
 		print_r($multiArray);
 		echo "</pre>"; 
@@ -68,24 +145,24 @@ class e107Bounce
 		
 		foreach($multiArray as $the)
 		{
-			$the['user_id'] = $head['X-e107-id'];
+			$the['user_id'] = $head[$identifier];
 			$the['user_email'] = $the['recipient'];
 			unset($the['recipient']);
 
 	        switch($the['action'])
 			{
 	            case 'failed':
-					e107::getEvent()->trigger('email-bounce-failed', $the);
-					$this->setUser_Bounced($the['user_email']);
+					e107::getEvent()->trigger('email_bounce_failed', $the);
+					$this->setUser_Bounced(null, $the['user_email']);
 					break;
 					
 	            case 'transient':
 	               
 	            //    $num_attempts  = delivery_attempts($the['user_email']);
-					e107::getEvent()->trigger('email-bounce-transient', $the);
+					e107::getEvent()->trigger('email_bounce_transient', $the);
 	                if($num_attempts  > 10)
 					{
-	                    $this->setUser_Bounced($the['user_email'], $the['user_id']);
+	                    $this->setUser_Bounced($the['user_id'], $the['user_email']);
 	                }
 	                else
 					{
@@ -94,7 +171,7 @@ class e107Bounce
 	                break;
 					
 	            case 'autoreply':
-	            	e107::getEvent()->trigger('email-bounce-autoreply', $the);    
+	            	e107::getEvent()->trigger('email_bounce_autoreply', $the);    
 	              //  postpone($the['user_email'], '7 days');
 	                break;
 					
@@ -111,27 +188,35 @@ class e107Bounce
 		$tmp = explode("\n",$message); 
 		foreach($tmp as $val)
 		{
-			if(strpos($val,$id.":")!==FALSE)
+			if(strpos($val,$id.":")!== false)
 			{
-	            return intval(str_replace($id.":","",$val));
+	            return str_replace($id.":","",$val);
 			}
 		}   
 	}
 
 
 	
-	function setUser_Bounced($email, $bounceString = '')
+	function setUser_Bounced($bounceString = '', $email='' )
 	{
-		if(!$email && !$bounceString){ return; }
-	//	echo "Email bounced ID: ".$id_or_email;	
-		require_once(e_HANDLER.'mail_manager_class.php');
-		$mailHandler = new e107MailManager();
-		if ($mailManager->markBounce($bounceString, $email))
-		{	// Success
+		if(!$email && !$bounceString)
+		{
+			 return false;
 		}
-		// Failure
-	//	$query = (is_numeric($id_or_email)) ? "user_ban = 3 WHERE user_id = ".intval($id_or_email)." LIMIT 1" : "user_ban = 3 WHERE user_email = '".$id_or_email."' ";
-	//	return e107::getDb()->db_Update('user',$query);
+	//	echo "Email bounced ID: ".$id_or_email;	
+
+		$mailManager = e107::getBulkEmail();
+
+		$debug = ($this->debug === 2) ? true : false;
+
+		$mailManager->controlDebug($debug);
+
+		if ($errors = $mailManager->markBounce($bounceString, $email))
+		{
+			return $errors;  // Failure
+		}
+		
+
 	}
 
 	
@@ -144,25 +229,41 @@ class e107Bounce
 	 */
 	function mailRead($iKlimit = 4096)
     {
-
-		$sErrorSTDINFail = "Error - failed to read mail from STDIN!";
 		$fp = fopen("php://stdin", "r");
 
         if (!$fp)
 		{
-			mail("adminaddress@something.com","Bounce-Processing - Bounce-Processing",$sErrorSTDINFail,$headers);
+			$pref = e107::getPref();
+
+			$eml = array(
+				'subject' 		=> "Bounce-Handler-Error :",
+				'sender_email'	=> $pref['siteadminemail'],
+				'sender_name'	=> $pref['siteadmin'],
+				//	'replyto'		=> $email,
+				'html'			=> true,
+				'template'		=> 'default',
+				'body'			=>  "Error - failed to read mail from STDIN! : ".__FILE__." (".__LINE__.")"
+			);
+
+			e107::getEmail()->sendEmail($pref['siteadminemail'], SITENAME." :: Bounce-Handler.", $eml);
             exit();
         }
 
         // Create empty string for storing message
         $sEmail = "";
+        $i_limit = 0;
 
-        if ($iKlimit == -1) {
-            while (!feof($fp)) {
+        if ($iKlimit == -1)
+        {
+            while (!feof($fp))
+            {
                 $sEmail .= fread($fp, 1024);
             }
-        } else {
-            while (!feof($fp) && $i_limit < $iKlimit) {
+        }
+        else
+        {
+            while (!feof($fp) && $i_limit < $iKlimit)
+            {
                 $sEmail .= fread($fp, 1024);
                 $i_limit++;
             }
@@ -378,7 +479,7 @@ class BounceHandler{
 	// this is the most commonly used public method
 	// quick and dirty
 	// useage: $multiArray = Bouncehandler::get_the_facts($strEmail);
-	function get_the_facts($eml){
+	static function get_the_facts($eml){
 		// fluff up the email
 		$bounce = BounceHandler::init_bouncehandler($eml);
 		list($head, $body) = preg_split("/\r\n\r\n/", $bounce, 2);
@@ -598,7 +699,7 @@ class BounceHandler{
 	       && $head_hash['Content-type']['boundary']!=='';
 	}
 
-	function parse_head($headers){
+	static function parse_head($headers){
 	    if(!is_array($headers)) $headers = explode("\r\n", $headers);
 	    $hash = BounceHandler::standard_parser($headers);
 	    // get a little more complex

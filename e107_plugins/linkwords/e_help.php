@@ -25,7 +25,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN."linkwords/languages/".e_LANGUAGE."_admin_linkwords.php");
+
+e107::lan('linkwords',e_LANGUAGE."_admin_linkwords.php"); 
 
 if (e_QUERY) list($action,$junk) = explode('.',e_QUERY.'.'); else $action = 'words';
 

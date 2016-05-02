@@ -32,8 +32,8 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	$pref = e107::getPref();
 	 
 	// prepare the day array
-	$darray = array(BLOGCAL_D1, BLOGCAL_D2, BLOGCAL_D3, BLOGCAL_D4,	BLOGCAL_D5, BLOGCAL_D6, BLOGCAL_D7);
-	$marray = array('',BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,	BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,	BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
+	$darray = e107::getDate()->terms('day-shortest');
+	$marray = e107::getDate()->terms('month');
 	 
 	// what day does the week start on?
 	switch($ws) 
@@ -140,9 +140,9 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 
 	if(deftrue('BOOTSTRAP'))
 	{
-		$active = date("n") == $req_month ? 'active' : '';
+		$active = date("n-Y") == ($req_month."-".$req_year)  ? 'active' : '';
 		$text = "<div class='item {$active}'>";
-		$text .= "<h5>".$marray[$req_month]." ".$req_year."</h5>";
+		$text .= "<h5>".$marray[$req_month - 1]." ".$req_year."</h5>";
 		$text .= $calendar;
 		$text .= "</div>";
 	}

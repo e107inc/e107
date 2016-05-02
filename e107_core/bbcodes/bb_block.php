@@ -31,9 +31,9 @@ class bb_block extends e_bb_base
 		$parms = eHelper::scParams($parm);
 		$safe = array();
 		
-		if(varsettrue($parms['class'])) $safe['class'] = eHelper::secureClassAttr($parms['class']);
-		if(varsettrue($parms['id'])) $safe['id'] = eHelper::secureIdAttr($parms['id']);
-		if(varsettrue($parms['style'])) $safe['style'] = eHelper::secureStyleAttr($parms['style']);
+		if(vartrue($parms['class'])) $safe['class'] = eHelper::secureClassAttr($parms['class']);
+		if(vartrue($parms['id'])) $safe['id'] = eHelper::secureIdAttr($parms['id']);
+		if(vartrue($parms['style'])) $safe['style'] = eHelper::secureStyleAttr($parms['style']);
 		if($safe)
 		{
 			return '[block='.eHelper::buildAttr($safe).']'.$code_text.'[/block]';
@@ -50,10 +50,12 @@ class bb_block extends e_bb_base
 		if($parm && !strpos($parm, '=')) $parm = 'class='.$parm;
 		$parms = eHelper::scParams($parm);
 		
-		$class = " ".e107::getBB()->getClass('block');
+		// add auto-generated class name and parameter class if available
+		$class = e107::getBB()->getClass('block').(varset($parms['class']) ? ' '.$parms['class'] : '');
+		$class = ' class="'.$class.'"';
 		
-		$id = varsettrue($parms['id']) ? ' id='.eHelper::secureIdAttr($parms['id']) : '';
-		$style = varsettrue($parms['style']) ? ' style="'.eHelper::secureStyleAttr($parms['style']).'"' : '';
+		$id = vartrue($parms['id']) ? ' id="'.eHelper::secureIdAttr($parms['id']).'"' : '';
+		$style = vartrue($parms['style']) ? ' style="'.eHelper::secureStyleAttr($parms['style']).'"' : '';
 		
 		if(empty($code_text)) $code_text = '<!-- -->';
 		return '<div'.$id.$class.$style.'>'.$code_text.'</div>';

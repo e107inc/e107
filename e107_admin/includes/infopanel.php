@@ -18,6 +18,12 @@ if (!defined('e107_INIT'))
 }
 
 
+define('ADMINFEEDMORE', 'http://e107.org/blog');
+
+
+
+
+
 class adminstyle_infopanel
 {
 	
@@ -25,33 +31,21 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
-		e107::js('core','tweet/jquery.tweet.js');
-	//	e107::css('core','tweet/jquery.tweet.css');
+	//	e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
 		
-		$code = <<<EOF
+		$code = "
+		
+		
 		jQuery(function($){
-	        $("#e-tweet").tweet({
-	            username: "e107",
-	            join_text: "auto",
-	            avatar_size: 16,
-	 			retweets: false,     
-	            count: 4,
-	            fetch: 5,
-	            template: "{text}<br />- {time} » {retweet_action}",
-	            filter: function(t){ return ! /^@\w+/.test(t.tweet_raw_text); },
-                auto_join_text_default: "",
-	            auto_join_text_ed: "",
-	            auto_join_text_ing: "",
-	            auto_join_text_reply: "",
-	            auto_join_text_url: "",
-	            loading_text: " Loading news...",
-	            refresh_interval: 60
-	        });
-    	});
-EOF;
-	
-		
-	 
+
+  			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
+
+  		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
+
+  		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+
+		});
+";
 		
 		global $user_pref; // quick fix. 
 		$pref = e107::getPref();  
@@ -89,8 +83,9 @@ EOF;
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 		
-		/*
-		XXX Check Bootstrap bug is fixed. 
+		
+	//	XXX Check Bootstrap bug is fixed. 
+	/*
 		echo '
           <ul class="thumbnails">
             <li class="span4">
@@ -126,8 +121,7 @@ EOF;
           </ul>
 
 		';
-		*/
-	
+	*/	
 		//TODO LANs throughout.
 		
 		global $style, $user_pref;
@@ -193,7 +187,7 @@ EOF;
 		
 		
 			
-				<div class='left' style='padding:32px'>";
+				<div class='left'>";
 			
 			foreach ($this->iconlist as $key=>$val)
 			{
@@ -203,17 +197,23 @@ EOF;
 				}
 			}
 	
-			$mainPanel .= "<div class='clear'>&nbsp;</div>";
+			// $mainPanel .= "<div class='clear'>&nbsp;</div>";
 			$mainPanel .= "</div>
 	      
 			</div>";
-	
-		$text = $ns->tablerender(ucwords(USERNAME)."'s Control Panel", $mainPanel, "core-infopanel_mye107",true);
+
+		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
+		$text = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107",true);
 		
 	
 	//  ------------------------------- e107 News --------------------------------
-		
-		$text2 = $ns->tablerender("e107 News","<div id='e-tweet'></div>","core-infopanel_news",true); 
+
+		$newsTabs = array();
+		$newsTabs['coreFeed'] = array('caption'=>'General','text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
+		$newsTabs['pluginFeed'] = array('caption'=>'Plugins','text'=>"<div id='e-adminfeed-plugin'></div>");
+		$newsTabs['themeFeed'] = array('caption'=>'Themes','text'=>"<div id='e-adminfeed-theme'></div>");
+
+		$text2 = $ns->tablerender("Latest e107 News",e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
 	
 	
 	
@@ -284,14 +284,15 @@ EOF;
 			echo $mes->render().'
 
 			<!-- INFOPANEL -->
-			<div class="span6">
-			 <ul class="thumbnails">'.$text.'</ul>
-			 </div>
-			 
-			 <div class="span6">
-			 <ul class="thumbnails">'.$text2.'</ul>
-			 </div>
-						 
+			<div class="row">
+				<div class="span6 col-md-6">
+				    '.$text.'
+				 </div>
+
+				 <div class="span6 col-md-6">
+				    '.$text2.'
+				 </div>
+			</div>
 			<!--  -->  
 			 
 			 
@@ -329,6 +330,7 @@ EOF;
 
 	function renderWebsiteStatus()
 	{
+		$tp = e107::getParser();
 		/* 
 		 // Settings button if needed. 
 		<div class="tab-header">
@@ -349,52 +351,59 @@ EOF;
 		  </div>
 		 */
 		
+		$tab = array();
+		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' Stats', 'text'=>$this->renderChart());
+		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
 		
-		
-		$dashboard = '
-		  <ul class="nav nav-tabs">
-		    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-signal"></i> Stats</a></li>
-		    <li ><a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Online</a></li>
-		  </ul>
-		  
-		  <div class="tab-content" style="min-height:300px">
-		
-			<div class="tab-pane active" id="tab1">
-		      <div class="separator">
-			'.$this->renderChart().'		
-		      </div>		
-		    </div>
-		
-		    <div class="tab-pane" id="tab2">
-		      <div class="separator">
-		        '.$this->renderOnlineUsers().'
-		      </div>
-			</div>
-			
-		  </div>';	
 
-		return $dashboard;
+
+		if($plugs = e107::getAddonConfig('e_dashboard',null, 'chart'))
+		{
+			foreach($plugs as $plug => $val)
+			{
+				foreach($val as $item)
+				{
+					if(!empty($item))
+					{
+						$tab[] = $item;	
+					}	
+				}			
+			}
+		}
+
+		return e107::getForm()->tabs($tab);
+		
+
 	}
 
 
 
 
 
-	function renderOnlineUsers()
+	function renderOnlineUsers($data=false)
 	{
 		
 		$ol = e107::getOnline();
 		$tp = e107::getParser();
+		$multilan = e107::getPref('multilanguage');
 
 		$panelOnline = "
 				
-				<table class='table table-condensed table-striped' style='width:96%;margin-left:auto;margin-right:auto'>
+				<table class='table table-condensed table-striped' >
 				<colgroup>
 					<col style='width: 10%' />
 		            <col style='width: 25%' />
 					<col style='width: 10%' />
 					<col style='width: 40%' />
-					<col style='width: auto' />
+					<col style='width: auto' />";
+
+
+		$panelOnline .= (!empty($multilan)) ? "<col style='width: auto' />" : "";
+
+
+		// TODO LAN
+		$panelOnline .= "
+
 				</colgroup>
 				<thead>
 					<tr class='first'>
@@ -402,15 +411,28 @@ EOF;
 						<th>Username</th>
 						<th>IP</th>
 						<th>Page</th>
-						<th class='center'>Agent</th>
+						<th class='center'>Agent</th>";
+
+		$panelOnline .= (!empty($multilan)) ? "<th class='center'>Lang.</th>" : "";
+
+		$panelOnline .= "
 					</tr>
 				</thead>
-				<tbody>";	
+				<tbody>";
+
+
 
 		$online = $ol->userList() + $ol->guestList();
-				
-		//	echo "Users: ".print_a($online);
 		
+		if($data == 'count')
+		{
+			return count($online);	
+		}
+				
+	//		echo "Users: ".print_a($online);
+
+		$lng = e107::getLanguage();
+
 		foreach ($online as $val)
 		{
 			$panelOnline .= "
@@ -419,7 +441,12 @@ EOF;
 				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
 				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
 				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
-				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>
+				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>";
+
+			$panelOnline .= (!empty($multilan)) ? "<td class='center'><a class='e-tip' href='#' title=\"".$lng->convert($val['user_language'])."\">".$val['user_language']."</a></td>" : "";
+
+
+			$panelOnline .= "
 			</tr>
 			";
 		}
@@ -466,7 +493,7 @@ EOF;
 	{
 		if($val==0)
 		{
-			return "Guest";
+			return LAN_GUEST;
 		}
 		return $val;
 	}
@@ -484,14 +511,14 @@ EOF;
 				
 		if(!$rows = $sql->retrieve('comments','*','comment_blocked=2 ORDER BY comment_id DESC LIMIT 25',true) )
 		{
-			return;
+			return null;
 		}
 		
 
 		$sc = e107::getScBatch('comment');
 				
 		$text = '
-		  <ul class="media-list unstyled">';
+		  <ul class="media-list unstyled list-unstyled">';
 		// <button class='btn btn-mini'><i class='icon-pencil'></i> Edit</button> 
 		
 		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
@@ -500,18 +527,19 @@ EOF;
 		{
 			$hide = ($count > 3) ? ' hide' : '';
 
-			$TEMPLATE = "{SETIMAGE: w=40}
+			$TEMPLATE = "{SETIMAGE: w=40&h=40}
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
 	            </div>
 				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
-			
+
+			//TODO LAN for 'Posted by [x] ';
 			
 			$sc->setVars($row);  
 		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
@@ -522,7 +550,7 @@ EOF;
     	$text .= '
      		</ul>
 		    <div class="right">
-		      <a class="btn btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
 		    </div>
 		 ';		
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
@@ -549,7 +577,7 @@ EOF;
 	
 	
 		
-	function render_infopanel_options($render = false)
+	function render_infopanel_options($render = false) //TODO LAN
 	{
 		// $frm = e107::getSingleton('e_form');
 		$frm = e107::getForm();
@@ -582,7 +610,7 @@ EOF;
 	//	$end = "</div>";
 			
 		
-		return $mes->render().$text2.$end;
+		return $mes->render().$text2;
 	}
 
 
@@ -591,8 +619,8 @@ EOF;
 	
 		$frm = e107::getForm();
 		global  $user_pref;
-			
-		$text = "";
+
+		$text = "<div style='padding-left:20px'>";
         
      
 	
@@ -602,7 +630,7 @@ EOF;
 			if (getperms($icon['perms']))
 			{
 				$checked = (varset($user_pref['core-infopanel-mye107']) && in_array($key, $user_pref['core-infopanel-mye107'])) ? true : false;
-				$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+				$text .= "<div class='left f-left list field-spacer form-inline' style='display:block;height:24px;width:200px;'>
 		                        ".$icon['icon'].' '.$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 								
 			}
@@ -615,12 +643,12 @@ EOF;
 				if (getperms($icon['perms']))
 				{
 					$checked = (in_array('p-'.$key, $user_pref['core-infopanel-mye107'])) ? true : false;
-					$text .= "<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>
+					$text .= "<div class='left f-left list field-spacer form-inline' style='display:block;height:24px;width:200px;'>
 			                         ".$icon['icon'].$frm->checkbox_label($icon['title'], 'e-mye107[]', $key, $checked)."</div>";
 				}
 			}
 		}
-		$text .= "<div class='clear'>&nbsp;</div>";
+		$text .= "</div><div class='clear'>&nbsp;</div>";
 		return $text;
 	}
 
@@ -638,11 +666,11 @@ EOF;
 		$pref = e107::getPref();
 		
 	
-		$text = "";
+		$text = "<div style='padding-left:20px'>";
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
 		$settings = varset($pref['core-infopanel-menus'],array());
 	
-		if (e107::getDb()->db_Select_gen($menu_qry))
+		if (e107::getDb()->gen($menu_qry))
 		{
 			while ($row = e107::getDb()->db_Fetch())
 			{
@@ -658,7 +686,7 @@ EOF;
 			}
 		}
 		
-		$text .= "<div class='clear'>&nbsp;</div>";
+		$text .= "</div><div class='clear'>&nbsp;</div>";
 		return $text;
 	}
 	
@@ -692,7 +720,8 @@ EOF;
 								'strokeColor'  		=>  "rgba(220,220,220,1)",
 								'pointColor '  		=>  "rgba(220,220,220,1)",
 								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(65,59,90,81,56,55,40)	
+								'data'				=> array(65,59,90,81,56,55,40),
+								'title'				=> "Visits"
 				
 			);
 			
@@ -701,7 +730,8 @@ EOF;
 								'strokeColor'  		=>  "rgba(151,187,205,1)",
 								'pointColor '  		=>  "rgba(151,187,205,1)",
 								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(28,48,40,19,96,27,100)		
+								'data'				=> array(28,48,40,19,96,27,100),
+								'title'				=> "Unique Visits"		
 			);	
 			
 			return $data;
@@ -731,6 +761,7 @@ EOF;
 			foreach($array as $key => $value) 
 			{
 				extract($value);
+				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
 				if(is_array($log_data)) {
 					$entries[0] = $log_data['host'];
 					$entries[1] = $log_data['date'];
@@ -855,13 +886,17 @@ EOF;
 		
 		$cht = e107::getChart();
 		$cht->setType('line');
+		$cht->setOptions(array(
+			'annotateDisplay' => true,
+			'annotateFontSize' => 8
+		));
 		$cht->setData($data,'canvas');
 		$text = $cht->render('canvas');
 	
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
 		}
 		else
 		{

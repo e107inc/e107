@@ -2,28 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/login_menu/login_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
-
-/**
- *	e107 Login menu plugin
- *
- *	Handles the login menu options
- *
- *	@package	e107_plugins
- *	@subpackage	login
- *	@version 	$Id$;
- */
-
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -35,48 +18,49 @@ if(defined('FPW_ACTIVE'))
 }
 
 global $eMenuActive, $pref, $e107, $sql, $tp, $ns, $use_imagecode, $ADMIN_DIRECTORY, $LOGIN_MENU_MESSAGE, $LOGIN_MENU_STATITEM, $LM_STATITEM_SEPARATOR,
-       $login_menu_shortcodes, $LOGIN_MENU_FORM, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK;
+       $login_menu_shortcodes, $LOGIN_MENU_FORM, $LOGIN_MENU_LOGGED, $LOGIN_MENU_STATS, $LOGIN_MENU_EXTERNAL_LINK; //FIXME
+
 $ip = e107::getIPHandler()->getIP(FALSE);
 
 //shortcodes
-    require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
+$login_menu_shortcodes = e107::getScBatch('login_menu',TRUE);
 
 //Bullet
-	if(defined("BULLET"))
-	{
-   		$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' class='icon' />";
-   		$bullet_src = THEME_ABS."images/".BULLET;
-	}
-	elseif(file_exists(THEME."images/bullet2.gif"))
-	{
-		$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' class='icon' />";
-		$bullet_src = THEME_ABS."images/bullet2.gif";
-	}
-	else
-	{
-		$bullet = "";
-		$bullet_src = "";
-	}
+if(defined("BULLET"))
+{
+	$bullet = "<img src='".THEME_ABS."images/".BULLET."' alt='' class='icon' />";
+	$bullet_src = THEME_ABS."images/".BULLET;
+}
+elseif(file_exists(THEME."images/bullet2.gif"))
+{
+	$bullet = "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' class='icon' />";
+	$bullet_src = THEME_ABS."images/bullet2.gif";
+}
+else
+{
+	$bullet = "";
+	$bullet_src = "";
+}
 
 //Corrup cookie - template? - TODO
-    if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
-    {
-    	$text = "<div class='core-sysmsg loginbox'>".LOGIN_MENU_L7."<br /><br />
-    	{$bullet} <a href='".SITEURL."index.php?logout'>".LOGIN_MENU_L8."</a></div>";
-    	$ns->tablerender(LOGIN_MENU_L9, $text, 'loginbox_error');
-    }
+if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE)
+{
+	$text = "<div class='core-sysmsg loginbox'>".LAN_LOGINMENU_7."<br /><br />
+	{$bullet} <a href='".SITEURL."index.php?logout'>".LAN_LOGOUT."</a></div>";
+	$ns->tablerender(LAN_LOGINMENU_9, $text, 'login_error');
+}
     
 //Image code
-    $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
-    
-    if ($use_imagecode)
-    {
-    	global $sec_img;
-    	include_once(e_HANDLER.'secure_img_handler.php');
-    	$sec_img = new secure_image;
-    }
+$use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
 
-    $text = '';
+if ($use_imagecode)
+{
+	global $sec_img;
+	include_once(e_HANDLER.'secure_img_handler.php');
+	$sec_img = new secure_image;
+}
+
+$text = '';
     
 // START LOGGED CODE
 if (USER == TRUE || ADMIN == TRUE)
@@ -85,19 +69,22 @@ if (USER == TRUE || ADMIN == TRUE)
 	$loginClass = new login_menu_class();
 
     //login class ??? - TODO
-	if ($sql->db_Select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
+	if ($sql->select('online', 'online_ip', "`online_ip` = '{$ip}' AND `online_user_id` = '0' "))
 	{	// User now logged in - delete 'guest' record (tough if several users on same IP)
-		$sql->db_Delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
+		$sql->delete('online', "`online_ip` = '{$ip}' AND `online_user_id` = '0' ");
 	}
 
 	//get templates
     if (!isset($LOGIN_MENU_LOGGED)) 
 	{
-		if (file_exists(THEME.'login_menu_template.php'))
+		if (file_exists(THEME.'templates/login_menu/login_menu_template.php')) // Preferred v2.x location. 
+		{
+	   		require(THEME.'templates/login_menu/login_menu_template.php');
+		}
+		elseif(file_exists(THEME.'login_menu_template.php')) 
 		{
 	   		require(THEME.'login_menu_template.php');
 		}
-		else
 		{
 			require(e_PLUGIN.'login_menu/login_menu_template.php');
 		}
@@ -107,6 +94,7 @@ if (USER == TRUE || ADMIN == TRUE)
     	require(e_PLUGIN.'login_menu/login_menu_template.php');
 	}
 
+
     //prepare
 	$new_total = 0;
 	$time = USERLV;
@@ -114,32 +102,32 @@ if (USER == TRUE || ADMIN == TRUE)
 
 		// ------------ News Stats -----------
 
-		if (varsettrue($loginPrefs['new_news']))
+		if (vartrue($loginPrefs['new_news']))
 		{
 			$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
-            $menu_data['new_news'] = $sql->db_Count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.")");
+            $menu_data['new_news'] = $sql->count("news", "(*)", "WHERE `news_datestamp` > {$time} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.")");
 			$new_total += $menu_data['new_news'];
 		}
 
 		// ------------ Comments Stats -----------
 
-		if (varsettrue($loginPrefs['new_comments']))
+		if (vartrue($loginPrefs['new_comments']))
 		{
-			$menu_data['new_comments'] = $sql->db_Count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
+			$menu_data['new_comments'] = $sql->count('comments', '(*)', 'WHERE `comment_datestamp` > '.$time);
 			$new_total += $menu_data['new_comments'];
 		}
 
 		// ------------ Member Stats -----------
 
-		if (varsettrue($loginPrefs['new_members'])) 
+		if (vartrue($loginPrefs['new_members']))
         {
-			$menu_data['new_users'] = $sql->db_Count('user', '(user_join)', 'WHERE user_join > '.$time);
+			$menu_data['new_users'] = $sql->count('user', '(user_join)', 'WHERE user_join > '.$time);
 			$new_total += $menu_data['new_users'];
 		}
 		
 		// ------------ Enable stats / other ---------------
 		
-		$menu_data['enable_stats'] = $menu_data || varsettrue($loginPrefs['external_stats']) ? true : false;
+		$menu_data['enable_stats'] = $menu_data || vartrue($loginPrefs['external_stats']) ? true : false;
 		$menu_data['new_total'] = $new_total + $loginClass->get_stats_total();
 		$menu_data['link_bullet'] = $bullet;
 		$menu_data['link_bullet_src'] = $bullet_src;
@@ -158,13 +146,13 @@ if (USER == TRUE || ADMIN == TRUE)
     
     //menu caption
 	if (file_exists(THEME.'images/login_menu.png')) {
-		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
+		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LAN_LOGINMENU_5.' '.USERNAME;
 	} else {
-		$caption = LOGIN_MENU_L5.' '.USERNAME;
+		$caption = LAN_LOGINMENU_5.' '.USERNAME;
 	}
 	
 	//render
-	$ns->tablerender($caption, $text, 'loginbox');
+	$ns->tablerender($caption, $text, 'login');
 
 // END LOGGED CODE	
 } 
@@ -173,7 +161,11 @@ else
 {
     //get templates
 	if (!$LOGIN_MENU_FORM || !$LOGIN_MENU_MESSAGE) {
-		if (file_exists(THEME."login_menu_template.php")){
+		if (file_exists(THEME.'templates/login_menu/login_menu_template.php')) // Preferred v2.x location. 
+		{
+	   		require(THEME.'templates/login_menu/login_menu_template.php');
+		}
+		elseif (file_exists(THEME."login_menu_template.php")){
 	   		require_once(THEME."login_menu_template.php");
 		}else{
 			require_once(e_PLUGIN."login_menu/login_menu_template.php");
@@ -184,7 +176,7 @@ else
 	}
 
 	$text = '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '');
-	if (varsettrue($pref['password_CHAP'],0))
+	if (vartrue($pref['password_CHAP'],0))
 	{
 	  $text .= '" onsubmit="hashLoginPassword(this)';
 	}
@@ -192,9 +184,9 @@ else
 	$text .= '</form>';
 
 	if (file_exists(THEME.'images/login_menu.png')) {
-		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
+		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LAN_LOGINMENU_5;
 	} else {
-		$caption = LOGIN_MENU_L5;
+		$caption = LAN_LOGINMENU_5;
 	}
 	$ns->tablerender($caption, $text, 'login');
 }

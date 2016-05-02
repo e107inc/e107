@@ -25,7 +25,7 @@
 require_once("../class2.php");
 if (!getperms("C"))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
 
@@ -45,7 +45,8 @@ if (e107::getPref('cachestatus') == '2')
 
 if(!is_writable(e_CACHE_CONTENT))
 {
-	e107::getRender()->tablerender(CACLAN_3, CACLAN_10."<br />(".$CACHE_DIRECTORY.")");
+	$mes->addError(CACLAN_10." (".e_CACHE.")");
+	e107::getRender()->tablerender(CACLAN_3, $mes->render());
 	require_once("footer.php");
 	exit;
 }
@@ -54,6 +55,7 @@ if (isset($_POST['submit_cache']))
 {
 	e107::getConfig()->set('cachestatus', intval($_POST['cachestatus']))
 		->set('syscachestatus', intval($_POST['syscachestatus']))
+		->set('jscsscachestatus', intval($_POST['jscsscachestatus']))
 		->save(false);
 }
 
@@ -88,6 +90,12 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getAdminLog()->flushMessages(CACLAN_25);
 		break;
 
+		case 'empty_jscss':
+			e107::getCache()->clearAll('js');
+			e107::getCache()->clearAll('css');
+		//	e107::getAdminLog()->flushMessages(CACLAN_5);
+		break;
+
 		// all
 		default:
 			e107::getCache()->clearAll('content');
@@ -104,16 +112,19 @@ $syscache_files = glob(e_CACHE_CONTENT.'S_*.*');
 $cache_files = glob(e_CACHE_CONTENT.'C_*.*');
 $imgcache_files = glob(e_CACHE_IMAGE.'*.cache.bin');
 $dbcache_files = glob(e_CACHE_DB.'*.php');
+$jscsscache_files = glob(e_WEB.'cache/*.{css,js}',GLOB_BRACE);
 
 $syscache_files_num = count($syscache_files);
 $cache_files_num = count($cache_files);
 $imgcache_files_num = count($imgcache_files);
 $dbcache_files_num = count($dbcache_files);
+$jscsscache_files_num    = count($jscsscache_files);
 
 $syscache_label = $syscache_files_num.' '.($syscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $contentcache_label = $cache_files_num.' '.($cache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $imgcache_label = $imgcache_files_num.' '.($imgcache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 $dbcache_label = $dbcache_files_num.' '.($dbcache_files_num != 1 ? CACLAN_19 : CACLAN_18);
+$jscsscache_label = $jscsscache_files_num.' '.($jscsscache_files_num != 1 ? CACLAN_19 : CACLAN_18);
 
 $text = "
 	<form method='post' action='".e_SELF."'>
@@ -129,7 +140,7 @@ $text = "
 					<tr>
 						<th><!-- --></th>
 						<th class='left'>".CACLAN_17."</th>
-						<th class='center last'>".CACLAN_1."</th>
+						<th class='left last'>".CACLAN_1."</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -139,7 +150,7 @@ $text = "
 							<div class='field-help'>".CACLAN_13."</div>
 						</td>
 						<td>{$contentcache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".$frm->radio_switch('cachestatus', e107::getPref('cachestatus'))."
 						</td>
 					</tr>
@@ -149,17 +160,30 @@ $text = "
 							<div class='field-help'>".CACLAN_14."</div>
 						</td>
 						<td>{$syscache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".$frm->radio_switch('syscachestatus', e107::getPref('syscachestatus'))."
 						</td>
 					</tr>
+
+						<tr>
+						<td>
+							<strong class='e-tip'>".CACLAN_28."</strong>
+							<div class='field-help'>".CACLAN_29."</div>
+						</td>
+						<td>{$jscsscache_label}</td>
+						<td class='left middle'>
+							".$frm->radio_switch('jscsscachestatus', e107::getPref('jscsscachestatus'))."
+						</td>
+					</tr>
+
+
 					<tr>
 						<td>
 							<strong class='e-tip'>".CACLAN_20."</strong>
 							<div class='field-help'>".CACLAN_21."</div>
 						</td>
 						<td>{$dbcache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".LAN_ENABLED."
 						</td>
 					</tr>
@@ -169,18 +193,22 @@ $text = "
 							<div class='field-help'>".CACLAN_23."</div>
 						</td>
 						<td>{$imgcache_label}</td>
-						<td class='center middle'>
+						<td class='left middle'>
 							".LAN_ENABLED."
 						</td>
 					</tr>
+
+
+
 				</tbody>
 			</table>
-			<div class='buttons-bar'>
+			<div class='buttons-bar form-inline'>
 				<div class='f-right'>".$frm->admin_button('submit_cache', CACLAN_2, 'update')."</div>
 				".$frm->select('option_clear_cache', array(
 					'empty_all' => CACLAN_26,
 					'empty_contentcache' => CACLAN_5,
 					'empty_syscache' => CACLAN_16,
+					'empty_jscss' => CACLAN_30,
 					'empty_dbcache' => CACLAN_24,
 					'empty_imgcache' => CACLAN_25,
 					'empty_browsercache' => CACLAN_27,

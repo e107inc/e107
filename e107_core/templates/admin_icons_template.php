@@ -9,68 +9,6 @@
  * Administration Icons, should handle all icons in the future (somehow)
  *
 */
-/*
-	define("ADMIN_TRUE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/true_16.png' alt='' />");
-	define("ADMIN_TRUE_ICON_PATH", e_IMAGE_ABS."admin_images/true_16.png");
-
-	define("ADMIN_FALSE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/false_16.png' alt='' />");
-	define("ADMIN_FALSE_ICON_PATH", e_IMAGE_ABS."admin_images/false_16.png");
-
-	define("ADMIN_EDIT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' />");
-	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_16.png");
-
-	define("ADMIN_DELETE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_16.png");
-
-	define("ADMIN_UP_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_16.png");
-
-	define("ADMIN_DOWN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/down_16.png' alt='' title='".LAN_DELETE."' />");
-	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_16.png");
-
-	define("ADMIN_WARNING_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/warning_16.png' alt='' />");
-	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_16.png");
-
-	define("ADMIN_INFO_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/info_16.png' alt='' />");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_16.png");
-
-	define("ADMIN_CONFIGURE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/configure_16.png' alt='' />");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_16.png");
-
-	define("ADMIN_ADD_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/add_16.png' alt='' />");
-	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_16.png");
-
-	define("ADMIN_VIEW_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/search_16.png' alt='' />");
-	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_16.png");
-
-	define("ADMIN_URL_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/forums_16.png' alt='' />");
-	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_16.png");
-
-	define("ADMIN_INSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_install_16.png' alt='' />");
-	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_16.png");
-
-	define("ADMIN_UNINSTALLPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/plugin_uninstall_16.png' alt='' />");
-	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_16.png");
-
-	define("ADMIN_UPGRADEPLUGIN_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/up_16.png' alt='' />");
-	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_16.png");
-	
-	define("ADMIN_EXECUTE_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/execute_16.png' alt='' title='Run' />");//TODO LAN
-	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_16.png");
-	
-	define("ADMIN_SORT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/sort_16.png' alt='' title='Sort' />"); //TODO LAN
-	define("ADMIN_SORT_ICON_PATH", e_IMAGE."admin_images/sort_16.png");
- 
- 	define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
-
-	
-*/
-
-
-
-
-	
-
 
 	
 if (!defined('E_16_FACEBOOK')) {
@@ -205,9 +143,6 @@ if (!defined('E_32_PLUGIN')) {
 if (!defined('E_32_PLUGMANAGER')) {
 	define('E_32_PLUGMANAGER', "<i class='S32 e-plugmanager-32'></i> ");
 }
-if (!defined('E_32_DOCS')) {
-	define('E_32_DOCS', "<i class='S32 e-docs-32'></i> ");
-}
 if (!defined('E_32_MAIN')) {
 	define('E_32_MAIN', "<i class='S32 e-main-32'></i> ");
 }
@@ -242,6 +177,9 @@ if (!defined('E_32_SYSINFO')) {
 
 
 // Small Category Images
+/**
+ * 
+// @DEPRECATED 
 if (!defined('E_16_CAT_SETT')) {
 	define('E_16_CAT_SETT', e_IMAGE.'admin_images/cat_settings_16.png');
 }
@@ -269,7 +207,7 @@ if (!defined('E_16_CAT_MISC')) {
 if (!defined('E_16_CAT_ABOUT')) {
 	define('E_16_CAT_ABOUT', e_IMAGE.'admin_images/info_16.png');
 }
-
+*/
 // Large Category Images
 if (!defined('E_32_CAT_SETT')) {
 	define('E_32_CAT_SETT', "<i class='S32 e-cat_settings-32'></i> ");
@@ -300,6 +238,9 @@ if (!defined('E_32_CAT_ABOUT')) {
 }
 
 // Small Nav Images
+/**
+ * @DEPRECATED 
+
 if (!defined('E_16_NAV_MAIN')) {
 	define('E_16_NAV_MAIN', e_IMAGE.'admin_images/main_16.png');
 }
@@ -319,6 +260,8 @@ if (!defined('E_16_NAV_ARROW')) {
 if (!defined('E_16_NAV_ARROW_OVER')) {
 	define('E_16_NAV_ARROW_OVER', e_IMAGE.'admin_images/arrow_over_16.png');
 }
+*/
+
 
 // Large Nav Images
 if (!defined('E_32_NAV_MAIN')) {
@@ -465,17 +408,11 @@ if (!defined('E_16_PLUGIN')) {
 if (!defined('E_16_PLUGMANAGER')) {
 	define('E_16_PLUGMANAGER', "<i class='S16 e-plugmanager-16'></i>");
 }
-if (!defined('E_16_DOCS')) {
-	define('E_16_DOCS', "<i class='S16 e-docs-16'></i>");
-}
 if (!defined('E_16_THEMEMANAGER')) {
 	define('E_16_THEMEMANAGER', "<i class='S16 e-themes-16'></i>");
 }
 
 // Small Admin Other Images
-if (!defined('E_16_COMMENT')) {
-	define('E_16_COMMENT', "<i class='S16 e-comments-16'></i>");
-}
 if (!defined('E_16_ADMINLOG')) {
 	define('E_16_ADMINLOG', "<i class='S16 e-adminlogs-16'></i>");
 }
@@ -506,18 +443,20 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 	define("ADMIN_TRUE_ICON", "<i class='S16 e-true-16'></i>");
 	define("ADMIN_FALSE_ICON", "<i class='S16 e-false-16'></i>");
-	
+	define("ADMIN_WARNING_ICON", "<i class='S16 e-warning-16'></i>");
+
 	define("ADMIN_EDIT_ICON", "<i class='S32 e-edit-32'></i>");
 	define("ADMIN_DELETE_ICON", "<i class='S32 e-delete-32'></i>");
-	define("ADMIN_WARNING_ICON", "<i class='S32 e-warning-32'></i>");
+
 	define("ADMIN_ADD_ICON", "<i class='S32 e-add-32'></i>");
 	define("ADMIN_INFO_ICON", "<i class='S16 e-info-16'></i>");
-	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-configure-32'></i>");	
+	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-settings-32'></i>");
 	define("ADMIN_VIEW_ICON", "<i class='S32 e-search-32'></i>");	
 	define("ADMIN_URL_ICON", "<i class='S16 e-forums-16'></i>");
 	define("ADMIN_INSTALLPLUGIN_ICON", "<i class='S32 e-plugin_install-32'></i>");
 	define("ADMIN_UNINSTALLPLUGIN_ICON", "<i class='S32 e-plugin_uninstall-32'></i>");
 	define("ADMIN_UPGRADEPLUGIN_ICON", "<i class='S32 e-up-32'></i>");
+	define("ADMIN_REPAIRPLUGIN_ICON", "<i class='S32 e-configure-32'></i>");
 	define("ADMIN_UP_ICON", "<i class='S32 e-up-32'></i>");
 	define("ADMIN_DOWN_ICON", "<i class='S32 e-down-32'></i>");
 	define("ADMIN_SORT_ICON", "<i class='S32 e-sort-32'></i>");
@@ -529,18 +468,18 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_32.png");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_32.png");
 	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_32.png");
-	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_32.png");
-	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_32.png");
-	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_32.png");
-	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_32.png");
-	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_32.png");
-	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_32.png");
-	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_32.png");
-	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
-	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
-	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_32.png");
-	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE_ABS."admin_images/execute_32.png");
-	define("ADMIN_SORT_ICON_PATH", e_IMAGE_ABS."admin_images/sort_32.png");
+//	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_32.png");
+//	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_32.png");
+//	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_32.png");
+//	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_32.png");
+//	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_32.png");
+//	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_32.png");
+//	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_32.png");
+//	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
+//	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_32.png");
+//	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_32.png");
+//	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE_ABS."admin_images/execute_32.png");
+//	define("ADMIN_SORT_ICON_PATH", e_IMAGE_ABS."admin_images/sort_32.png");
 	
 	
 
@@ -549,7 +488,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 	
 	if(!defined('ADMIN_EDIT_ICON') && !defined('ADMIN_TRUE_ICON'))
-	{
+	{/*
 		define("ADMIN_TRUE_ICON", 			"<i class='S16 e-true-16'></i>");
 		define("ADMIN_FALSE_ICON", 			"<i class='S16 e-false-16'></i>");
 		define("ADMIN_EDIT_ICON", 			"<i class='S16 e-edit-16' ></i>"); 	
@@ -567,28 +506,15 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 		define("ADMIN_UPGRADEPLUGIN_ICON", 	"<i class='S16 e-up-16'></i>");
 		define("ADMIN_EXECUTE_ICON",  		"<i class='S16 e-execute-16'></i>");
 		define("ADMIN_SORT_ICON", 			"<i class='S16 e-sort'></i>"); 
-		
+		*/
 		define("ADMIN_TRUE_ICON_PATH", e_IMAGE_ABS."admin_images/true_16.png"); 		//XXX DEPRECATED but used in v1.x
 		define("ADMIN_FALSE_ICON_PATH", e_IMAGE_ABS."admin_images/false_16.png"); 		//XXX DEPRECATED but used in v1.x
-		define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_16.png");			//XXX DEPRECATED but used in v1.x
-		define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_16.png"); 	//XXX DEPRECATED but used in v1.x
-		define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_16.png"); 	//XXX DEPRECATED but used in v1.x
+	//	define("ADMIN_EDIT_ICON_PATH", e_IMAGE_ABS."admin_images/edit_16.png");			//XXX DEPRECATED but used in v1.x
+	//	define("ADMIN_DELETE_ICON_PATH", e_IMAGE_ABS."admin_images/delete_16.png"); 	//XXX DEPRECATED but used in v1.x
+	//	define("ADMIN_WARNING_ICON_PATH", e_IMAGE_ABS."admin_images/warning_16.png"); 	//XXX DEPRECATED but used in v1.x
 	}	
 	
 
-//	define("ADMIN_UP_ICON_PATH", e_IMAGE_ABS."admin_images/up_16.png"); //XXX DEPRECATED
 
-//	define("ADMIN_DOWN_ICON_PATH", e_IMAGE_ABS."admin_images/down_16.png"); //XXX DEPRECATED
-//	define("ADMIN_INFO_ICON_PATH", e_IMAGE_ABS."admin_images/info_16.png"); //XXX DEPRECATED
-//	define("ADMIN_CONFIGURE_ICON_PATH", e_IMAGE_ABS."admin_images/configure_16.png"); //XXX DEPRECATED
-//	define("ADMIN_ADD_ICON_PATH", e_IMAGE_ABS."admin_images/add_16.png"); //XXX DEPRECATED
-//	define("ADMIN_VIEW_ICON_PATH", e_IMAGE_ABS."admin_images/admin_images/search_16.png"); //XXX DEPRECATED
-//	define("ADMIN_URL_ICON_PATH", e_IMAGE_ABS."admin_images/forums_16.png"); //XXX DEPRECATED
-//	define("ADMIN_INSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_install_16.png"); //XXX DEPRECATED
-//	define("ADMIN_UNINSTALLPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/plugin_unstall_16.png"); //XXX DEPRECATED
-//	define("ADMIN_UPGRADEPLUGIN_ICON_PATH", e_IMAGE_ABS."admin_images/up_16.png"); //XXX DEPRECATED
-//	define("ADMIN_EXECUTE_ICON",  "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/execute_16.png' alt='' title='Run' />");
-//	define("ADMIN_EXECUTE_ICON_PATH", e_IMAGE."admin_images/execute_16.png");  //XXX DEPRECATED
-//	define("ADMIN_SORT_ICON", "<img class='icon action S16' src='".e_IMAGE_ABS."admin_images/sort_16.png' alt='' title='Sort' />");
 
 	

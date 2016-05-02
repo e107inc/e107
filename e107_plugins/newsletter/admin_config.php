@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,18 +10,11 @@
  *
 */
 
-/**
- *	e107 Newsletter plugin
- *
- *	@package	e107_plugins
- *	@subpackage	newsletter
- */
-
 
 require_once('../../class2.php');
 if (!getperms('P')) 
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 $e_sub_cat = 'newsletter';
@@ -112,10 +105,11 @@ class newsletter
 			$this->createIssue();
 		}
 
-		if($mes)
+		echo $mes->render();
+		/*if($mes)
 		{
 			$ns->tablerender($caption, $mes->render() . $text);
-		}
+		}*/
 	}
 
 
@@ -157,8 +151,8 @@ class newsletter
 					<td>".$data['newsletter_title']."</td>
 					<td>".((substr_count($data['newsletter_subscribers'], chr(1))!= 0)?"<a href='".e_SELF."?vs.".$data['newsletter_id']."'>".substr_count($data['newsletter_subscribers'], chr(1))."</a>":substr_count($data['newsletter_subscribers'], chr(1)))."</td>
 					<td>
-						<a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
-						<input type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/>
+						<a class='btn btn-default btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
+						<input class='btn btn-default btn-large' type='image' title='".LAN_DELETE."' name='delete[newsletter_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [ID: ".$data['newsletter_id']." ]")."') \"/>
 
 					</td>
 				</tr>
@@ -206,7 +200,7 @@ class newsletter
 					<td>".$data['newsletter_id']."</td>
 					<td>".$data['newsletter_issue']."</td>
 					<td>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
-					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
+					<td>".($data['newsletter_flag'] ? LAN_YES : "<input class='btn btn-default button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
 					<td><a class='btn btn-large' href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a><input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
 				
 				</td>
@@ -238,7 +232,7 @@ class newsletter
 			$newsletter_header	= $tp->toFORM($edit['newsletter_header']);
 		}
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -296,13 +290,13 @@ class newsletter
 
 		if(isset($_POST['editid']))
 		{
-			$sql -> db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
+			$sql ->update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_header='{$letter['newsletter_header']}', newsletter_footer='{$letter['newsletter_footer']}' WHERE newsletter_id=".intval($_POST['editid']));
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->db_Insert('newsletter', $letter);
+			$sql->insert('newsletter', $letter);
 			$mes->addSuccess(LAN_CREATED);
 		}
 	}
@@ -324,7 +318,7 @@ class newsletter
 			$newsletter_issue = $tp->toFORM($edit['newsletter_issue']);
 		}
 
-		if(!$sql->db_Select('newsletter', '*', "newsletter_parent='0' "))
+		if(!$sql->select('newsletter', '*', "newsletter_parent='0' "))
 		{
 			//$this -> message = NLLAN_05;
 			$mes->addInfo(NLLAN_05);
@@ -333,7 +327,7 @@ class newsletter
 		{
 		$nlArray = $sql -> db_getList();
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -395,17 +389,18 @@ class newsletter
 
 		if (isset($_POST['editid']))
 		{
-			$sql->db_Update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
+			$sql->update('newsletter', "newsletter_title='{$letter['newsletter_title']}', newsletter_text='{$letter['newsletter_text']}', newsletter_parent='".$letter['newsletter_parent']."', newsletter_issue='".$letter['newsletter_issue']."' WHERE newsletter_id=".intval($_POST['editid']));
 			$mes->addSuccess(LAN_UPDATED);
 		}
 		else
 		{
 			$letter['newsletter_datestamp'] = time();
-			$sql->db_Insert('newsletter', $letter);
+			$sql->insert('newsletter', $letter);
 			$mes->addSuccess(NLLAN_39);
 		}
 
-		$ns->tablerender($caption, $mes->render() . $text);
+		echo $mes->render();
+	//	$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 
@@ -422,6 +417,7 @@ class newsletter
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$ns = e107::getRender();
 
 		$issue = intval(str_replace('nlmailnow_', '', $issue));
 
@@ -430,14 +426,14 @@ class newsletter
 		{
 			return FALSE;
 		}
-		$newsletterInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterInfo = $sql->fetch();
 
 		// Get parent details - has header/footer and subscriber list
 		if(!$sql->select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
 		{
 			return FALSE;
 		}
-		$newsletterParentInfo = $sql->db_Fetch(MYSQL_ASSOC);
+		$newsletterParentInfo = $sql->fetch();
 		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
@@ -482,9 +478,9 @@ class newsletter
 		{
 			if ($memberID = intval($memberID))
 			{
-				if($sql->db_Select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
+				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch(MYSQL_ASSOC);
+					$row = $sql->db_Fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -514,7 +510,7 @@ class newsletter
 			//$this->message = str_replace('--COUNT--', $counters['add'],NLLAN_40);
 			$mes->addSuccess(str_replace('--COUNT--', $counters['add'], NLLAN_40));
 		}
-		$sql->db_Update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
+		$sql->update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
 
 		$ns->tablerender($caption, $mes->render() . $text);
 	}
@@ -608,12 +604,14 @@ class newsletter
 
 		$nl_sql = new db;
 		$_nl_sanatized = '';
+		$vs_text = '';
+
 
 		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
 			$mes->addError(NLLAN_56);
 			$vs_text .= "<div class='buttons-bar center'>
-							<input class='btn button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
+							<input class='btn btn-default button' type=button value='".LAN_BACK."' onClick=\"window.location='".e_SELF."'\">
 						</div>";
 			$ns -> tablerender(NLLAN_65.' '.$p_id, $mes->render() . $vs_text);
 			return;
@@ -657,13 +655,17 @@ class newsletter
 				{
 					if ($val != $_last_subscriber)
 					{
-						$nl_sql -> db_Select("user", "*", "user_id=".$val);
-						if($nl_row = $nl_sql-> db_Fetch())
+						$nl_sql -> select("user", "*", "user_id=".$val);
+						if($nl_row = $nl_sql-> fetch())
 						{
+							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
+							$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
+							$link = e107::getUrl()->create('user/profile/view', $uparams);
+							$userlink = "<a href='".$link."'>".$nl_row['user_name']."</a>";
 							$vs_text .= "
 							<tr>
 								<td>".$val."</td>
-								<td><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a></td>
+								<td>".$userlink."</td>
 								<td>".$nl_row['user_email']."</td>
 								<td><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
 							</tr>";
@@ -674,7 +676,7 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
+						$nl_sql -> update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
 					}
@@ -706,12 +708,12 @@ class newsletter
 	{
 		$sql = e107::getDb();
 		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
-		if($nl_row = $sql->fetch(MYSQL_ASSOC))
+		if($nl_row = $sql->fetch())
 		{
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);
 			$new_subscriber_list = implode(chr(1), array_keys($subscribers_list));
-			$sql->db_Update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");
+			$sql->update('newsletter', "newsletter_subscribers='{$new_subscriber_list}' WHERE newsletter_id='".$p_id."'");
 		}
 	}
 }

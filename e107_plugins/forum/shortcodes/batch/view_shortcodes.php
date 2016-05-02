@@ -11,12 +11,15 @@ if (!defined('e107_INIT')) { exit; }
 class plugin_forum_view_shortcodes extends e_shortcode
 {
 	protected $e107;
+	protected $defaultImgAttachSize = false;
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->e107 = e107::getInstance();
 		$this->forum = 	new e107forum();
+
+		$this->defaultImgAttachSize = e107::pref('forum','maxwidth',false); // don't resize here if set to 0.
 	}
 
 	function sc_top($parm='')
@@ -71,7 +74,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 	//	return print_a($this->postInfo['post_entry'],true);
 		$emote = (isset($this->postInfo['post_options']['no_emote']) ? ',emotes_off' : '');
-		return e107::getParser()->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$this->postInfo['user_class']);
+
+		$uclass = (!empty($this->postInfo['user_class'])) ? $this->postInfo['user_class'] : 0;
+
+		return e107::getParser()->toHTML($this->postInfo['post_entry'], true, 'USER_BODY'.$emote, 'class:'.$uclass);
 	}
 
 	function sc_postdeleted()
@@ -83,14 +89,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			".LAN_FORUM_2037.": {$info['deldate']}<br />
 			".LAN_FORUM_2038.": {$info['delreason']}
 			";
-			$ret = '<pre>'.print_r($info, true).'</pre>';
+		//	$ret = '<pre>'.print_r($info, true).'</pre>';
 		}
 	}
 	
 
 	
 
-	function sc_attachments()
+	function sc_attachments($parm=array())
 	{
 		$tp = e107::getParser();
 		
@@ -99,34 +105,64 @@ class plugin_forum_view_shortcodes extends e_shortcode
 			$baseDir = $this->forum->getAttachmentPath($this->postInfo['post_user']);
 
 			$images = array();
-
-			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+			$txt = '';
 		
+			$attachArray = e107::unserialize($this->postInfo['post_attachments']);
+
+			$thumbAtt = (!empty($this->defaultImgAttachSize)) ? array('w'=>$this->defaultImgAttachSize, 'x'=>1) : null;
+
+			//print_a($attachArray);
+
 			foreach($attachArray as $type=>$vals)
 			{
 				foreach($vals as $key=>$file)
 				{
-					list($date,$user,$tmp,$name) = explode("_",$file,4);
+					if(is_array($file))
+					{
+
+						$name = !empty($file['name']) ? $file['name'] : $file['file'];
+
+						$file = $file['file'];
+					}
+					else
+					{
+							list($date,$user, $name) = explode("_", $file, 3);
+					}
 
 					switch($type)
 					{
-						case 'file':
-						
-							$url = e_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
-							$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
-							
+						case "file":
+					
+							$url = e_REQUEST_SELF."?id=".$this->postInfo['post_id']."&amp;dl=".$key;
+
+							if(defset("BOOTSTRAP") == 3)
+							{
+								$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='".$url."'>".$tp->toGlyph('glyphicon-save')." {$name}</a><br />";
+							}
+							else
+							{
+								$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
+							}
+
 						break;
 
-						case 'img': //Always use thumb to hide the hash. 
-						
+						case 'img': //Always use thumb to hide the hash.
+
+
+
+
 						//	return $baseDir.$file; 
 							if(file_exists($baseDir.$file))
 							{
-								$thumb = $tp->thumbUrl($baseDir.$file,'x=1',true);
+								$thumb = $tp->thumbUrl($baseDir.$file,$thumbAtt,true);
 								$full = $tp->thumbUrl($baseDir.$file,'w=1000&x=1', true);
-							
-								$inc = (vartrue($parm['modal'])) ? "data-toggle='modal' data-target='#".$parm['modal']."' " : "";
-								$images[] = "<a  {$inc} rel='external' href='{$full}'><img class='thumbnail' src='{$thumb}' alt='' /></a>";	
+
+								//TODO Use jQuery zoom instead.
+
+								$caption = $name;
+
+								$inc = (vartrue($parm['modal'])) ? "data-modal-caption=\"".$caption."\" data-target='#uiModal' " : "";
+								$images[] = "<a  {$inc} rel='external' href='{$full}' class='forum-attachment-image e-modal' ><img class='thumbnail' src='{$thumb}' alt='' /></a>";
 							}
 							elseif(ADMIN)
 							{
@@ -142,31 +178,36 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				
 			}
 			
-			if(count($images) )
+			if(count($images))
 			{
-				return (deftrue('BOOTSTRAP')) ? "<ul class='thumbnails'><li>".implode("</li><li>",$images)."</li></ul>" : implode("<br />",$images);	
+				if(deftrue('BOOTSTRAP')) 
+				{
+
+					return "<ul class='thumbnails list-unstyled list-inline'><li>".implode("</li><li>",$images)."</li></ul>".vartrue($txt); 
+				}
+				else
+				{
+					return implode("<br />",$images)."<br />".vartrue($txt);	
+				}
 			}
-			
-			
+						
 			return $txt;
-			
-			
 		}
 
 	}
 
 	function sc_privmessage()
 	{
-		if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
+		if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
 		{
 			return e107::getParser()->parseTemplate("{SENDPM={$this->postInfo['post_user']}}");
 		}
 	}
 
-	function sc_avatar()
+	function sc_avatar($opts)
 	{
-		$tp = e107::getParser();
-		return $tp->parseTemplate("{USER_AVATAR=".$this->postInfo['user_image']."}", true);
+		return e107::getParser()->toAvatar($this->postInfo,$opts);
+		// return $tp->parseTemplate("{USER_AVATAR=".$this->postInfo['user_image']."}", true);
 	}
 
 	function sc_anon_ip()
@@ -190,7 +231,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->postInfo['user_name'])
 		{
-			return "<a href='".$this->e107->url->create('user/profile/view', array('name' => $this->postInfo['user_name'], 'id' => $this->postInfo['post_user']))."'>{$this->postInfo['user_name']}</a>";
+			return "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $this->postInfo['user_name'], 'id' => $this->postInfo['post_user']))."'>{$this->postInfo['user_name']}</a>";
 		}
 		else
 		{
@@ -281,7 +322,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_website()
 	{
-		if ($this->postInfo['user_homepage']) {
+		if (!empty($this->postInfo['user_homepage'])) {
 			return LAN_FORUM_2034.': '.$this->postInfo['user_homepage'].'<br />';
 		}
 	}
@@ -298,7 +339,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active'])
 		{
-			return "<a href='".$this->e107->url->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".IMAGE_edit.'</a> ';
+			$qry =  array('f'=>'edit', 'id'=>$this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']);
+			$editURL = e107::url('forum','post', null, array('query'=> $qry));
+
+			return "<a class='e-tip' href='".$editURL."' title=\"".LAN_EDIT."\">".IMAGE_edit.'</a> ';
 		}
 	}
 
@@ -306,15 +350,21 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	{
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			return "<a href='".$this->e107->url->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".IMAGE_quote.'</a> ';
+			$qry =  array('f'=>'quote', 'id'=>$this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']);
+			$quoteURL = e107::url('forum','post', null, array('query'=> $qry));
+
+			return "<a class='e-tip' href='".$quoteURL."' title=\"".LAN_FORUM_2041."\">".IMAGE_quote.'</a> ';
 		}
 	}
 
 	function sc_reportimg()
 	{
-		global $page;
-		if (USER) {
-			return "<a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".IMAGE_report.'</a> ';
+		if (USER)
+		{
+			$qry =  array('f'=>'report', 'id'=>$this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']);
+			$reportURL = e107::url('forum','post', null, array('query'=> $qry));
+
+			return "<a class='e-tip' href='".$reportURL."' title=\"".LAN_FORUM_2046."\">".IMAGE_report.'</a> ';
 		}
 	}
 
@@ -335,7 +385,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
 		// FIXME - level handler!!!
-		
+
+	//	print_a($rankInfo);
+
 		if($parm == 'badge')
 		{
 			return "<span class='label label-info'>".$rankInfo['name']."</span>";	
@@ -358,6 +410,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 					return "<div class='spacer'>".IMAGE_rank_moderator_image.'</div>';
 				}
 				return '';
+				break;
+
+			case 'glyph':
+				$text = "";
+				$tp = e107::getParser();
+				for($i=0; $i< $rankInfo['value']; $i++)
+				{
+					$text .= $tp->toGlyph('fa-star');
+				}
+				return $text;
 				break;
 
 			default:
@@ -383,13 +445,13 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_lasteditby()
-	{		if(isset($this->postInfo['edit_name']))
+	function sc_lasteditby($parm='')
+	{
+		if(isset($this->postInfo['edit_name']))
 		{
 			if($parm == 'link')
 			{
-				$e107 = e107::getInstance();
-				$url = $e107->url->create('user/profile/view', array('name' => $this->postInfo['edit_name'], 'id' => $this->postInfo['post_edit_user']));
+				$url = e107::getUrl()->create('user/profile/view', array('name' => $this->postInfo['edit_name'], 'id' => $this->postInfo['post_edit_user']));
 				return "<a href='{$url}'>{$this->postInfo['edit_name']}</a>";
 			}
 			return $this->postInfo['edit_name'];
@@ -420,12 +482,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	//	$text .= $this->sc_level('pic');
 		
 		$ue = $tp->parseTemplate("{USER_EXTENDED=location.text_value}",true);	
-		$username = $this->postInfo['user_name'];
-								
-		$text = '<div class="btn-group">
+		$username = (empty($this->postInfo['user_name'])) ? LAN_ANONYMOUS : $this->postInfo['user_name'];
 
-    <a class="btn btn-small" href="'.e_BASE.'user.php?id.'.$this->postInfo['post_user'].'">'.$username.'</a>
-    <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+		$userUrl = empty($this->postInfo['post_user']) ? '#' : e107::getUrl()->create('user/profile/view', array('user_id'=>$this->postInfo['post_user'], 'user_name'=>$username));
+		// e_HTTP.'user.php?id.'.$this->postInfo['post_user']
+		$text = '<div class="btn-group btn-block ">
+
+    <a class="btn btn-default btn-sm col-sm-9  btn-small" href="'.$userUrl.'">'.$username.'</a>
+    <button class="btn btn-default btn-sm col-sm-3  btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu left">
@@ -439,11 +503,17 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	}
 	$text .= "<li><a href='#'>".$this->sc_posts()."</a></li>";
 	
-	$text .= "<li class='divider'></li>";
+
 	
-	if(plugInstalled('pm') && ($this->postInfo['post_user'] > 0))
+	if(e107::isInstalled('pm') && ($this->postInfo['post_user'] > 0))
 	{
-		$text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".LAN_FORUM_2036."</a></li>";
+		if($pmButton = $tp->parseTemplate("{SENDPM: user=".$this->postInfo['post_user']."&glyph=envelope&class=pm-send}",true))
+		{
+			$text .= "<li class='divider'></li>";
+			$text .= "<li>".$pmButton."</li>";
+		}
+
+		// $text .= "<li><a href='".e_PLUGIN_ABS."pm/pm.php?send.{$this->postInfo['post_user']}'>".$tp->toGlyph('envelope')." ".LAN_FORUM_2036." </a></li>";
 	}
 	
 	if($website = $this->sc_website())
@@ -464,57 +534,79 @@ class plugin_forum_view_shortcodes extends e_shortcode
 	
 	function sc_postoptions()
 	{
-		
+		$tp = e107::getParser();
 		// {EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}
 		
-		$text = '<div class="btn-group">
-    	<button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+		$text = '<div class="btn-group pull-right">
+    	<button class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
     	Options
     	<span class="caret"></span>
     	</button>
-    	<ul class="dropdown-menu pull-right">';
+    	<ul class="dropdown-menu pull-right text-right">';
 			
     	
-		$text .= "<li><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".LAN_FORUM_2044." <i class='icon-envelope'></i></a></li>"; 
-		$text .= "<li><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>".LAN_FORUM_2045." <i class='icon-print'></i></a></li>"; // FIXME
+		$text .= "<li class='text-right'><a href='".e_HTTP."email.php?plugin:forum.".$this->postInfo['post_thread']."'>".LAN_FORUM_2044." ".$tp->toGlyph('envelope')."</a></li>"; 
+		$text .= "<li class='text-right'><a href='".e_HTTP."print.php?plugin:forum.".$this->postInfo['post_thread']."'>".LAN_FORUM_2045." ".$tp->toGlyph('print')."</a></li>"; // FIXME
 	
 		if (USER) // Report
 		{
-			$text .= "<li><a href='".$this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}")."'>".LAN_FORUM_2046." <i class='icon-flag'></i></a></li>";
+			$urlReport = e107::url('forum','post')."?f=report&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+		//	$urlReport = $this->e107->url->create('forum/thread/report', "id={$this->postInfo['post_thread']}&post={$this->postInfo['post_id']}");
+			$text .= "<li class='text-right'><a href='".$urlReport."'>".LAN_FORUM_2046." ".$tp->toGlyph('flag')."</a></li>";
 		}
 	
 		// Edit
 		if ( (USER && $this->postInfo['post_user'] == USERID && $this->thread->threadInfo['thread_active']))
 		{
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." <i class='icon-edit'></i></a></li>";
+
+
+			$url = e107::url('forum','post')."?f=edit&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+			//$url = e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
+			$text .= "<li class='text-right'><a href='".$url."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
 			
 		}
 	
 		if($this->forum->checkperm($this->postInfo['post_forum'], 'post'))
 		{
-			$text .= "<li><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2041." <i class='icon-share-alt'></i></a></li>";
+			$url = e107::url('forum','post')."?f=quote&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+			//$url = e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
+			$text .= "<li class='text-right'><a href='".$url."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
+
+			//	$text .= "<li class='text-right'><a href='".e107::getUrl()->create('forum/thread/quote', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2041." ".$tp->toGlyph('share-alt')."</a></li>";
 		}
 	
 	
 		if (MODERATOR)
 		{
-			$text .= "<li class='divider'> </li>";
+			$text .= "<li role='presentation' class='divider'> </li>";
 			$type = ($this->postInfo['thread_start']) ? 'thread' : 'Post';
+
+		//	print_a($this->postInfo);
 
 			if ((USER && $this->postInfo['post_user'] != USERID && $this->thread->threadInfo['thread_active']))
 			{
-				$text .= "<li><a href='".e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2039." <i class='icon-edit'></i></a></li>";
+
+				$url = e107::url('forum','post')."?f=edit&amp;id=".$this->postInfo['post_thread']."&amp;post=".$this->postInfo['post_id'];
+				// $url = e107::getUrl()->create('forum/thread/edit', array('id' => $this->postInfo['post_thread'], 'post'=>$this->postInfo['post_id']));
+
+				$text .= "<li class='text-right'><a href='".$url."'>".LAN_EDIT." ".$tp->toGlyph('edit')."</a></li>";
 			}
 			
-			$text .= "<li><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_FORUM_2040." <i class='icon-trash'></i></a></li>"; 
-
+			// only show delete button when post is not the initial post of the topic
+		//	if(!$this->forum->threadDetermineInitialPost($this->postInfo['post_id']))
+			if(empty($this->postInfo['thread_start']))
+			{
+				$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='deletepost' data-forum-post='".$this->postInfo['post_id']."'>".LAN_DELETE." ".$tp->toGlyph('trash')."</a></li>"; 
+			}
+		
 			if ($type == 'thread')
 			{
-				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/move', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2042." <i class='icon-move'></i></a></a></li>"; 
+				$url     = e107::url('forum','move', array('thread_id'=>$this->postInfo['post_thread']));
+				$text .= "<li class='text-right'><a href='" . $url."'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></a></li>";
 			}
-			else
+			else //TODO
 			{
-				$text .= "<li><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2043." <i class='icon-cut'></i></a></li>";
+				// $text .= "<li class='text-right'><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id'], 'post'=>$this->postInfo['post_id']))."'>".LAN_FORUM_2043." ".$tp->toGlyph('cut')."</a></li>";
 		
 			}
 		}

@@ -9,12 +9,12 @@
  */
 
 $FAQS_TEMPLATE['start']	= "
-<div class='faq-start'>
+<div class='faq-start'>{FAQ_SUBMIT_QUESTION: expand=1}
+{FAQ_SUBMIT_QUESTION_LIST}
 ";
 
 $FAQS_TEMPLATE['end']	= "
-	<div class='faq-submit-question'>{FAQ_SUBMIT_QUESTION}</div>
-	<div class='faq-search'>{FAQ_SEARCH}</div>
+	<div class='faq-submit-question'></div>
 </div>
 ";
 
@@ -24,10 +24,13 @@ $FAQS_TEMPLATE['all']['start'] = "
 	<ul class='faq-listall'>
 ";
 $FAQS_TEMPLATE['all']['item'] = "
-		<li class='faq-listall'>{FAQ_QUESTION=expand|tags=1}</li>
+		<li class='faq-listall'>{FAQ_QUESTION=expand|tags=1|share=1}</li>
 ";
 $FAQS_TEMPLATE['all']['end'] = "
 	</ul>
 </div>
 ";
+
+$FAQS_TEMPLATE['caption'] = "{FAQ_CAPTION} <small>{FAQ_COUNT}</small>";
+
 

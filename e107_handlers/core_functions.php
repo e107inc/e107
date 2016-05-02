@@ -63,8 +63,7 @@ function defset($str, $default='')
  */
 function varsettrue(&$val, $default='')
 {
-	if (isset($val) && $val) { return $val; }
-	return $default;
+	return vartrue($val, $default);
 }
 
 /**
@@ -76,7 +75,9 @@ function varsettrue(&$val, $default='')
  */
 function vartrue(&$val, $default='')
 {
-	return varsettrue($val, $default);
+
+	if (isset($val) && $val) { return $val; }
+	return $default;
 }
 
 /**
@@ -191,6 +192,49 @@ function strip_if_magic($data)
 }
 
 /**
+ * Return an array with changes between 2 arrays. 
+ */
+function array_diff_recursive($array1, $array2) 
+{
+	$ret = array();
+
+	foreach($array1 as $key => $val) 
+	{
+    	if(array_key_exists($key, $array2)) 
+    	{
+      		if(is_array($val)) 
+      		{
+        		$diff = array_diff_recursive($val, $array2[$key]);
+
+				if(count($diff)) 
+	        	{
+	        	 	$ret[$key] = $diff; 
+				}
+			} 
+			else 
+			{
+				if($val != $array2[$key]) 
+	        	{
+					$ret[$key] = $val;
+				}
+			}
+		} 
+    	else 
+    	{
+    	  $ret[$key] = $val;
+		}
+	}
+	
+  return $ret;
+} 
+
+
+
+
+
+
+
+/**
  * Strips slashes from a string or an array
  *
  * @param mixed $value
@@ -263,7 +307,7 @@ if (!function_exists('asortbyindex'))
 if (!function_exists('r_emote')) 
 {
 	/**
-	 * @DEPRECATED
+	 * Still in use.
 	 */
 	function r_emote()
 	{
@@ -281,16 +325,30 @@ if (!function_exists('r_emote'))
 		{
 			$key = str_replace("!", ".", $key);					// Usually '.' was replaced by '!' when saving
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);	// '_' followed by exactly 3 chars is file extension
-			$key = e_IMAGE."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
+			$key = e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" .$key;		// Add in the file path
 	
 			$value2 = substr($value, 0, strpos($value, " "));
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value == '&|') ? ':((' : $value;
 			$value = " ".$value." ";
-			//TODO CSS class
-			$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+
+		//	$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+			$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"#\"><img src='$key' alt='' /></a> ";
 		}
-	
+
+		$JS = "
+
+		$('.addEmote').click(function(){
+
+			val = $(this).attr('data-emote')
+			addtext(val,true);
+			return false;
+		});
+		";
+
+		e107::js('footer-inline',$JS);
+
+
 		return "<div class='spacer'>".$str."</div>";
 	}
 }
@@ -364,6 +422,11 @@ class e_array {
         if ($ArrayData == ""){
             return false;
         }
+
+        if(is_array($ArrayData))
+        {
+            return false;
+        }
         
         // Saftety mechanism for 0.7 -> 0.8 transition. 
         if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:')
@@ -371,12 +434,37 @@ class e_array {
             $dat = unserialize($ArrayData);
             $ArrayData = $this->WriteArray($dat,FALSE);
         }
-        
-        
+
+        $ArrayData = trim($ArrayData);
+
+        if(strtolower(substr($ArrayData,0,5)) != 'array')
+        {
+            return false;
+        }
+
+		if(strpos($ArrayData,"0 => \'")!=false)
+		{
+             $ArrayData = stripslashes($ArrayData);
+		}
+
+	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
+
+
+	    if(trim($ArrayData) == 'Array') // Something went wrong with storage.
+        {
+            $debug = debug_backtrace(false);
+            e107::getMessage()->addDebug("Bad Array Storage found: ". print_a($debug,true));
+
+            return array();
+        }
+
         $data = "";
-        $ArrayData = '$data = '.trim($ArrayData).';';
+        $ArrayData = '$data = '.$ArrayData.';';
+
+
         @eval($ArrayData);
-        if (!isset($data) || !is_array($data)) {
+        if (!isset($data) || !is_array($data))
+        {
             trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
             return false;
         }
@@ -396,10 +484,14 @@ class e_array {
         if (!is_array($ArrayData)) {
             return false;
         }
+
         $Array = var_export($ArrayData, true);
-        if ($AddSlashes == true) {
+
+        if ($AddSlashes == true)
+        {
             $Array = addslashes($Array);
         }
+
         return $Array;        
     }
 
@@ -425,7 +517,7 @@ class e_array {
     /**
     * @DEPRECATED: Use e107::unserialize(); instead. 
     * Returns an array from stored array data.
-    *
+    * @deprecated
     * @param string $ArrayData
     * @return array stored data
     */

@@ -50,9 +50,18 @@ class redirection
 	 */
 	function __construct()
 	{
-		$this->self_exceptions = array(SITEURL.e_SIGNUP, SITEURL, SITEURL.'index.php', SITEURL.'fpw.php', SITEURL.e_LOGIN, SITEURL.'membersonly.php');
-		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php');
+		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
+		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
 		$this->query_exceptions = array('logout');
+
+		// Remove from self_exceptions:  SITEURL, SITEURL.'index.php', // allows a custom frontpage to be viewed while logged out and membersonly active.
+	}
+
+
+
+	function getSelfExceptions()
+	{
+		return $this->self_exceptions;
 	}
 	
 	/**
@@ -201,12 +210,22 @@ class redirection
 			return;
 		}
 		
+		if(deftrue('NO_MAINTENANCE')) // per-page disable option. 
+		{
+			return;	
+		}
+		
 		if(e107::getPref('maintainance_flag') && defset('e_PAGE') != 'secure_img_render.php')
 		{
 			// if not admin
-			if(!ADMIN 
+			
+			$allowed = e107::getPref('maintainance_flag'); 
+			
+	//		if(!ADMIN 
 			// or if not mainadmin - ie e_UC_MAINADMIN
-			|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
+	//		|| (e_UC_MAINADMIN == e107::getPref('maintainance_flag') && !getperms('0')))
+			
+			if(!check_class($allowed)  && !getperms('0'))
 			{
 				// 307 Temporary Redirect
 				$this->redirect(SITEURL.'sitedown.php', TRUE, 307);
@@ -262,8 +281,20 @@ class redirection
 			}
 		}
 		
+		/*
+		echo "e_SELF=".e_SELF;
+		echo "<br />e_PAGE=".e_PAGE;
+		print_a( $this->self_exceptions);
+		print_a($this->page_exceptions);
+		*/
+		
 		$this->saveMembersOnlyUrl();
-		$this->redirect(e_HTTP.'membersonly.php');
+
+		$redirectType = e107::getPref('membersonly_redirect');
+
+		$redirectURL = ($redirectType == 'splash') ? 'membersonly.php' : 'login.php';
+
+		$this->redirect(e_HTTP.$redirectURL);
 	}
 
 	
@@ -306,25 +337,59 @@ class redirection
 	}
 
 
-	public function redirect($url, $replace = TRUE, $http_response_code = NULL)
+	public function redirect($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
-		return $this->go($url, $replace, $http_response_code);	
+		$this->go($url, $replace, $http_response_code, $preventCache);
+		exit; 	
 	}
 
 	
 	/**
 	 * Redirect to the given URI
 	 *
-	 * @param string $url
+	 * @param string $url or error code number. eg. 404 = Not Found. If left empty SITEURL will be used.
 	 * @param boolean $replace - default TRUE
 	 * @param integer|null $http_response_code - default NULL
+	 * @param boolean $preventCache
 	 * @return void
 	 */
-	public function go($url, $replace = TRUE, $http_response_code = NULL)
+	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
+		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url;
+
+		if(empty($url))
+		{
+			$url = SITEURL;
+		}
+
+		if($url == 'admin')
+		{
+			$url = SITEURLBASE. e_ADMIN_ABS;
+		}
+
+
+					
+		if(defset('e_DEBUG') === 'redirect')
+		{
+			$error = debug_backtrace();
+
+			$message = "URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n";
+			e107::getLog()->addDebug($message, true);
+			echo "Debug active";
+			print_a($message);
+			echo "Go to : <a href='".$url."'>".$url."</a>";
+			e107::getLog()->toFile('redirect.log',true);
+			return; 
+		}
+		
 		if(session_id())
 		{
 			e107::getSession()->end();
+		}
+		if($preventCache)
+		{
+			header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0', true);
+			header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true); 
 		}
 		if(null === $http_response_code)
 		{

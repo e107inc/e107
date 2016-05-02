@@ -105,7 +105,10 @@ class core_news_sef_url extends eUrlConfig
 				// fallback if news sef is missing
 				'View/<id:{number}>/<name:{sefsecure}>' 		=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{id}'),
 				
-				'View/<id:{number}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
+				'View/<id:{number}>' 		=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
+				
+				'Tag/<tag:{secure}>' 	=> array('list/tag', 'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}'),
+			
 				
 			) 
 		);
@@ -113,7 +116,7 @@ class core_news_sef_url extends eUrlConfig
 	
 	/**
 	 * Query mapping in format route?params:
-	 * - item/vew?id=xxx -> ?extend.id
+	 * - item/view?id=xxx -> ?extend.id
 	 * - list/items[?page=xxx] -> default.0.page
 	 * - list/category?id=xxx[&page=xxx] -> list.id.page
 	 * - list/category?id=0[&page=xxx] -> default.0.page
@@ -139,6 +142,7 @@ class core_news_sef_url extends eUrlConfig
 				'description' => LAN_EURL_NEWS_REWRITEX_DESCR, //
 				'examples'  => array('{SITEURL}news/1/news-title')
 			),
+			'generate' => array('table'=> 'news', 'primary'=>'news_id', 'input'=>'news_title', 'output'=>'news_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);

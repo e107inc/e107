@@ -1,61 +1,65 @@
 $(document).ready(function()
 {
+		$('form').h5Validate(
+			{ errorClass: 'has-error' }
+		); // allow older browsers to use html5 validation. 
+	
 		// Change hash when a tab changes
 		$('.nav-tabs a').on('shown', function (event) {
 			var hash = event.target.href.toString().split('#')[1], form = $(event.target).parents('form')[0];
 		    window.location.hash = '/' + hash;
 		    if(form) {
-		    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#/' + hash);
+				$(form).attr('action', $(form).attr('action').split('#')[0] + '#/' + hash);
 		    }
 		});
 		
 		// tabs hash
 		if(/^#\/\w+/.test(window.location.hash)) {
 			var hash = window.location.hash.substr(2);
-			if(hash.match('^tab')) $('.nav-tabs a[href=#' + hash + ']').tab('show');
+			if(hash.match('^tab')){ $('.nav-tabs a[href=#' + hash + ']').tab('show'); }
 		}
 	
-		$('.e-typeahead').each(function() { 		
-	 		
+		$('.e-typeahead').each( function(){ 		
+	
 			var id = $(this).attr("id");
 			var name = '#' + id.replace('-usersearch', '');
 			var newval = $(this).attr("data-value");
-	 		$(this).typeahead({
-	 		source: $(this).attr("data-source"), 
-	 		updater: function(text, type){
-		 		if(type == 'value')
-		 		{
-		 			$(name).val(text);	
-		 		}
-	 			return text;	
-	 			}
-	 		})
-	 	});
+			
+			$(this).typeahead({
+			source: $(this).attr("data-source"), 
+			updater: function(text, type){
+				if(type === 'value')
+				{
+					$(name).val(text);	
+				}
+				return text;	
+				}
+			});
+		});
 	
 		/* Switch to Tab containing invalid form field. */
 		$('input[type=submit],button[type=submit]').on('click', function() {
 			
 			var id 		= $(this).closest('form').attr('id');
 			var found 	= false;
-		          
-            $('#'+id).find(':invalid').each(function(index, node) {
+		       
+			 $('#'+id).find('input:invalid,select:invalid,textarea:invalid').each(function(index, node) {
 			
 				var tab = $('#'+node.id).closest('.tab-pane').attr('id');
-		
-				if(tab && (found == false))
+			
+				if(tab && (found === false))
 				{
 					$('a[href="#'+tab+'"]').tab('show');
 					found = true;
-					//alert(node.id+' : '+tab);
+				//	alert(node.id+' : '+tab + ' '.index);
 				}
-             	//   var label = $('label[for=' + node.id + ']');
-            })
+			//   var label = $('label[for=' + node.id + ']');
+            });
             
             return true;
 		});
 	
-	 	
-		 	
+	
 
 		// run tips on title attribute. 
 		$(".e-tip").each(function() {
@@ -85,7 +89,7 @@ $(document).ready(function()
 	
 		$('div.e-container').editable({
 			selector: '.e-editable'
-		});
+         });
 		
 //		$('.e-editable').editable();
 		
@@ -124,7 +128,8 @@ $(document).ready(function()
 		$('button[data-loading-text],a[data-loading-text]').on('click', function()
 			{
 				var caption  = $(this).attr('data-loading-text');
-				$(this).removeClass('btn-success');		
+				$(this).removeClass('btn-success');	
+				$(this).removeClass('btn-primary');		
 				$(this).html(caption);
 				if($(this).attr('data-disable') == 'true')
 				{	
@@ -139,14 +144,26 @@ $(document).ready(function()
 				var caption  = $(this).attr('data-loading-text');	
 				$(this).val(caption);
 				$(this).removeClass('btn-success');	
+				$(this).removeClass('btn-primary');		
 				//$(this).attr('disabled', 'disabled').val(caption);
 				return true;
 			}
 		);
 
 
+		$('a[data-toggle-sidebar]').on('click', function(e)
+        {
+            e.preventDefault();
+            
+            $("#left-panel").toggle(1000);
+            $("#right-panel").toggleClass("col-md-10 col-md-12"); //XXX Control animation direction?
+
+        });
+
+
+
 		/* InfoPanel Comment approval and deletion */
-		$("button[data-comment-action]").live("click", function(){
+		$(document).on("click", "button[data-comment-action]", function(){
 				
 				var url 	= $(this).attr("data-target");
 				var action 	= $(this).attr('data-comment-action');	
@@ -179,11 +196,7 @@ $(document).ready(function()
 
 
 
-
-
-
-
-
+	
 
 
 		
@@ -191,26 +204,52 @@ $(document).ready(function()
 		/*  Bootstrap Modal window within an iFrame */
 		$('.e-modal').on('click', function(e) 
 		{
-    		e.preventDefault();
-    		var url 		= $(this).attr('href');
-    		var caption  	= $(this).attr('data-modal-caption');
-			var height 		= ($(window).height() * 0.7) - 50;
-			
-    		$('.modal-body').html('<div class="well"><iframe width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
-    		$('.modal-caption').text(caption);
+
+			e.preventDefault();
+
+            if($(this).attr('data-cache') == 'false')
+            {
+                $('#uiModal').on('shown.bs.modal', function () {
+                    $(this).removeData('bs.modal');
+                });
+            }
+            
+			var url 		= $(this).attr('href');
+			var caption  	= $(this).attr('data-modal-caption');
+			var height 		= ($(window).height() * 0.7) - 120;
+
+            if(caption === undefined)
+            {
+                caption = '';
+            }
+
+    		$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+    		$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
     		$('.modal').modal('show');
+    		
+    		$("#e-modal-iframe").on("load", function () {
+				 $('#e-modal-loading').hide(); 
+			});
     	});	
 
 		
 
+		var progresspump = null;
 
+		$('.e-progress-cancel').on('click', function(e) 
+		{
+			clearInterval(progresspump);
+			var target	= $(this).attr('data-progress-target');
+			$("#"+target).closest('.progress').removeClass("active");
+			progresspump = null;
+			alert('stopped');
+		});
 
-		
 		$('.e-progress').on('click', function(e) 
 		{
 		//	alert('Process Started');
-			
-			var target 	= 'progress';
+
+			var target	= $(this).attr('data-progress-target');
 			var script 	= $(this).attr('data-progress');
 			var show 	= $(this).attr('data-progress-show');
 			var hide 	= $(this).attr('data-progress-hide');
@@ -224,33 +263,36 @@ $(document).ready(function()
 			
 			$("#"+target).css('width','1%'); // so we know it's running.   
 			
-			var progresspump = setInterval(function(){
-		  				
+			progresspump = setInterval(function(){
+		
 			$.get(script, { mode: mode }).done( function(data){		  	  	
 		  
-		  	//	alert(data);
-		 		$("#"+target).css('width',data+'%');   	// update the progress bar width */
-		 		$("#"+target).html(data+'%');     		// display the numeric value */
-		    
+				//	alert(data);
+				$("#"+target).css('width', data+'%');   	// update the progress bar width */
+				$("#"+target).html(data+'%');     		// display the numeric value */
+
+
+		        data = parseInt(data);
+
 				if(data > 99.999) {
-		      	
-			   		clearInterval(progresspump);
-			        
-			        $("#progressouter").removeClass("active");
+				
+					clearInterval(progresspump);
+			        $("#"+target).closest('.progress').removeClass("active");
+
 			        $("#"+target).html("Done");
 			        
 			        if(hide !== 'undefined')
 			        {
-			        	$('#'+hide).hide();	
+						$('#'+hide).hide();	
 			        }
 			        
 			        if(show !== 'undefined')
 			        {
-			        	$('#'+show).show('slow');	
+						$('#'+show).show('slow');	
 			        }
 			      
 		        
-		      	}
+					}
 		    
 		     });  
 
@@ -308,26 +350,34 @@ $(document).ready(function()
 			
 			if(multi === undefined)
 			{
-				$(this).selectpicker();	
+			//	 $(this).selectpicker();	// causes HTML5 validation alert to be hidden. 
+				return;
 			}
 			else
 			{
-				$(this).multiselect();	
+				$(this).multiselect({ buttonClass: 'btn btn-default'} );
 			}
 			
 		});
 		
 			// run tips on .field-help 
-		$("div.tbox,input,textarea,select,label,.e-tip").each(function(c) {
+		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip").each(function(c) {
 						
 			var t = $(this).nextAll(".field-help");
+
+			var placement = 'top';
 			
-			var placement = 'right';	
-			
-			if($(this).is("textarea"))
+		/*	if($(this).is("textarea"))
 			{
 				var placement = 'top';	
-			}
+			}*/
+
+            var custplace = $(t).attr('data-placement'); // ie top|left|bottom|right
+
+            if(custplace !== undefined)
+            {
+                placement = custplace;
+            }
 			
 			
 			t.hide();
@@ -347,9 +397,9 @@ $(document).ready(function()
 		});
 	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
-	
-	
-		$(".e-alert").live("click", function(){
+
+
+    $(document).on("click", ".e-alert", function(){
 			
 			var message = $(this).html();
 			alert(message);
@@ -370,7 +420,7 @@ $(document).ready(function()
 			
 		});
 		
-		$(".e-tags").tag();
+	//	$(".e-tags").tag();
 		
 		
 
@@ -414,12 +464,13 @@ $(document).ready(function()
 		}
 		
 		// backend 
-		$(".e-password").pwdMeter({
+	/*
+	    $(".e-password").pwdMeter({
 	            minLength: 6,
 	            displayGeneratePassword: true,
 	            generatePassText: "Generate",
 	            randomPassLength: 12
-	    });
+	    });*/
 		
 		
 		
@@ -492,15 +543,18 @@ $(document).ready(function()
 		// Check-All checkbox toggle
 		$("input.toggle-all").click(function(evt) {
 			var selector = 'input[type="checkbox"].checkbox';
+
 			if($(this).val().indexOf('jstarget:') === 0) {
 				selector = 'input[type="checkbox"][name^="' + $(this).val().split(/jstarget\:/)[1] + '"]';
 			}
-			
-			if($(this).is(":checked")){
-				$(selector).attr("checked", "checked");
+
+ 			if($(this).is(":checked")){
+				//$(selector).attr("checked", "checked");
+                $(selector).prop('checked', true);
 			}
 			else{
-				$(selector).removeAttr("checked");
+                $(selector).prop('checked',false);
+			//	$(selector).removeAttr("checked");
 			}
 		});
 		
@@ -524,19 +578,70 @@ $(document).ready(function()
 		
 	
 		// Basic Delete Confirmation	
-		$("input.delete,button.delete").click(function(){
-  			var answer = confirm($(this).attr("data-confirm"));
-  			return answer // answer is a boolean
+		$('input.delete,button.delete,a[data-confirm]').click(function(){
+  			answer = confirm($(this).attr("data-confirm"));
+  			return answer; // answer is a boolean
 		});
 		
-		$("e-confirm").click(function(){
-  			var answer = confirm($(this).attr("title"));
-  			return answer // answer is a boolean
-		});    
-		
+		$(".e-confirm").click(function(){
+  			answer = confirm($(this).attr("title"));
+  			return answer; // answer is a boolean
+		});
 
-		
-		// Menu Manager Layout drop-down options
+
+        // see boot.php for main processing. (works only in admin)
+        $(".e-sef-generate").click(function(){
+
+            src         = $(this).attr("data-src");
+            target      = $(this).attr("data-target");
+            toconvert   = $('#'+src).val();
+            script      = window.location;
+
+            $.ajax({
+                type: "POST",
+                url: script,
+                data: { source: toconvert, mode: 'sef' }
+
+            }).done(function( data ) {
+
+                var a = $.parseJSON(data);
+          //      alert(a.converted);
+                if(a.converted)
+                {
+                    $('#'+target).val(a.converted);
+
+                    //	$('#uiAlert').notify({
+                    //		type: 'success',
+                    //       message: { text: 'Completed' },
+                    //        fadeOut: { enabled: true, delay: 2000 }
+                    //    }).show();
+
+                }
+            });
+
+        });
+
+
+
+		$("a.menuManagerSelect").click(function(e){
+
+
+			var link = $(this).attr('data-url');
+			var text = $(this).text();
+			$(this).html(text + ' <i class="e-mm-select-loading fa fa-spin fa-spinner"></i>');
+
+			$("#menu_iframe").attr("src",link);
+
+			$("#menu_iframe").on("load", function () {
+				$('.e-mm-select-loading').hide();
+			});
+
+			$(this).preventDefault();
+			return false;
+		});
+
+
+    // Menu Manager Layout drop-down options
 		$("#menuManagerSelect").change(function(){
 			var link = $(this).val();
 			$("#menu_iframe").attr("src",link);			
@@ -695,7 +800,7 @@ $(document).ready(function()
 
 				// Text-area AutoGrow
 	//	$("textarea.e-autoheight").elastic();
-})
+});
 
 
 

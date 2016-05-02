@@ -30,7 +30,7 @@ $BBCODE_TEMPLATE_COMMENT = ""; // no buttons on comments by default.
 
 $BBCODE_TEMPLATE_SIGNATURE = "
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}
+	{BB=list}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -45,7 +45,7 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 	{BB_HELP}
 	<div class='field-spacer'><!-- --></div>
     {BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
+	{BB=list}{BB=nobr}{BB=br}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}{BB=youtube}
 	<div class='field-spacer'><!-- --></div>
 ";
 
@@ -53,39 +53,39 @@ $BBCODE_TEMPLATE_SUBMITNEWS = "
 // --------   Admin Templates ----------------------
 
 $BBCODE_TEMPLATE_ADMIN = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
-	{BB_PREIMAGEDIR}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB_PREIMAGEDIR}{BB=flash}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
 
 $BBCODE_TEMPLATE_MAILOUT = "
-	<div class='btn-group inline-text'>
-	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=bq}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
-	{BB_PREIMAGEDIR}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=shortcode}
+	<div class='btn-toolbar'>
+	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=left}{BB=center}{BB=right}{BB=justify}{BB=list}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB_PREIMAGEDIR}{BB=flash}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=shortcode}</div>
 	</div>
 ";
 
 // $BBCODE_TEMPLATE_ADMIN .= "{BB=blank}";
 
 $BBCODE_TEMPLATE_NEWSPOST = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
 	{BB_PREIMAGEDIR=news}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
 
 $BBCODE_TEMPLATE_CPAGE = "
-	<div class='btn-group inline-text'>
+	<div class='btn-toolbar'>
 	{BB=link}{BB=b}{BB=i}{BB=u}{BB=img}{BB=format}{BB=left}{BB=center}{BB=right}{BB=justify}
-	{BB=bq}{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}
+	{BB=list}{BB=table}{BB=fontcol}{BB=fontsize}{BB=emotes}{BB=flash}
 	{BB_PREIMAGEDIR=page}
-	{BB=preimage}{BB=prefile}{BB=flash}{BB=youtube}
+	<div class='btn-group'>{BB=preimage}{BB=prefile}{BB=youtube}</div>
 	</div>
 ";
 ?>

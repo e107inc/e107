@@ -54,7 +54,7 @@ define("POLLAN_30", "Submit");
 define("POLLAN_31", "Votes");
 define("POLLAN_32", "Click here to see results");
 define("POLLAN_33", "No previous polls yet.");
-define("POLLAN_34", "Title");
+//define("POLLAN_34", "Title");//LAN_TITLE
 define("POLLAN_35", "Posted by");
 define("POLLAN_36", "Active");
 define("POLLAN_37", "active from");
@@ -70,9 +70,9 @@ define("POLLAN_44", "Delete this poll?");
 //define("POLLAN_46", "Field(s) left blank");
 
 // Log messages
-define('LAN_AL_POLL_01','Poll deleted');
-define('LAN_AL_POLL_02','Poll updated');
-define('LAN_AL_POLL_03','Poll added');
-define('LAN_AL_POLL_04','');
-define('LAN_AL_POLL_05','');
+define("LAN_AL_POLL_01","Poll deleted");
+define("LAN_AL_POLL_02","Poll updated");
+define("LAN_AL_POLL_03","Poll added");
+define("LAN_AL_POLL_04","");
+define("LAN_AL_POLL_05","");
 

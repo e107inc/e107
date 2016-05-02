@@ -9,7 +9,8 @@
 */
  
 if (!defined('e107_INIT')) { exit; }
- 
+$PAGE_WRAPPER = array();
+
 global $sc_style;
 
 $sc_style['CPAGEAUTHOR|default']['pre'] = '';
@@ -21,25 +22,26 @@ $sc_style['CPAGESUBTITLE|default']['post'] = '</h2>';
 $sc_style['CPAGEMESSAGE|default']['pre'] = '';
 $sc_style['CPAGEMESSAGE|default']['post'] = '<div class="clear"><!-- --></div>';
 
-$sc_style['CPAGENAV|default']['pre'] = '<div class="f-right">';
+$sc_style['CPAGENAV|default']['pre'] = '<div class="f-right pull-right col-md-3">';
 $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 #### default template - BC ####
 	// used only for parsing comment outside of the page tablerender-ed content
 	// leave empty if you integrate page comments inside the main page template
+	
+	
 	$PAGE_TEMPLATE['default']['page'] = '
 		{PAGE}
 		{PAGECOMMENTS}
 	'; 
 	
 	// always used - it's inside the {PAGE} sc from 'page' template
-	$PAGE_TEMPLATE['default']['start'] = '<div class="cpage_body">'; 
+	$PAGE_TEMPLATE['default']['start'] = '<div id="{CPAGESEF}" class="cpage_body cpage-body">{CHAPTER_BREADCRUMB}'; 
 	
 	// page body
 	$PAGE_TEMPLATE['default']['body'] = '
 		{CPAGEMESSAGE|default}
 		
-		<div class="f-right">{CPAGEAUTHOR|default}{CPAGEDATE|default}</div>
 		{CPAGESUBTITLE|default}
 		<div class="clear"><!-- --></div>
 		
@@ -48,15 +50,27 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 		
 		<div class="clear"><!-- --></div>
 		{CPAGERATING|default}
+		{CPAGEEDIT}
 	'; 
-	
+
+	$PAGE_WRAPPER['default']['CPAGEEDIT'] = "<div class='text-right'>{---}</div>";
+
 	// used only when password authorization is required
 	$PAGE_TEMPLATE['default']['authorize'] = '
-		<div class="cpage-restrict">
+		<div class="cpage-restrict ">
 			{message}
 			{form_open}
-				<h2>{caption}</h2>
-				<div clas="center">{label} {password} {submit}</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">{caption}</div>
+					<div class="panel-body">
+					    <div class="form-group">
+				       		 <label class="col-sm-3 control-label">{label}</label>
+					        <div class="col-sm-9">
+					               {password} {submit} 
+					        </div>
+			     		</div>
+					</div>
+      			</div>
 			{form_close}
 		</div>
 	';
@@ -72,7 +86,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	';
 	
 	// always used
-	$PAGE_TEMPLATE['default']['end'] = '</div>'; 
+	$PAGE_TEMPLATE['default']['end'] = '{CPAGERELATED: types=page,news}</div>'; 
 	
 	// options per template - disable table render
 //	$PAGE_TEMPLATE['default']['noTableRender'] = false; //XXX Deprecated
@@ -82,7 +96,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 
 	
 #### No table render example template ####
-	$PAGE_TEMPLATE['custom']['start'] 			= '<div class="cpage_body">'; 
+	$PAGE_TEMPLATE['custom']['start'] 			= '<div id="{CPAGESEF}" class="cpage-body">'; 
 	$PAGE_TEMPLATE['custom']['body'] 			= ''; 
 	$PAGE_TEMPLATE['custom']['authorize'] 		= '
 	';
@@ -91,7 +105,6 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	';
 	
 	$PAGE_TEMPLATE['custom']['end'] 			= '</div>'; 
-//	$PAGE_TEMPLATE['custom']['noTableRender'] 	= true;  //XXX Deprecated
 	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
 	

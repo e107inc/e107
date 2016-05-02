@@ -28,6 +28,8 @@ class db_verify
 	var $results = array();
 	var $indices = array(); // array(0) - Issue?
 	var $fixList = array();
+	private $currentTable = null;
+	private $internalError = false;
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
@@ -50,11 +52,9 @@ class db_verify
 	function __construct()
 	{
 				
-		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
-			
+
 		$this->backUrl = e_SELF;	
 			
 		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
@@ -70,6 +70,7 @@ class db_verify
 				{
 					$id = str_replace('_sql','',$file);
 					$data = file_get_contents($filename);
+					$this->currentTable = $id;
 					$this->tables[$id] = $this->getTables($data);
 			      	unset($data);				
 				}
@@ -90,7 +91,7 @@ class db_verify
 	 */
 	function verify()
 	{
-					
+		
 		if(vartrue($_POST['verify_table']))
 		{			
 			$this->runComparison($_POST['verify_table']);
@@ -112,11 +113,8 @@ class db_verify
 		
 	function runComparison($fileArray)
 	{
-		
-		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
-		
+
 		foreach($fileArray as $tab)
 		{			
 			$this->compare($tab);	
@@ -134,12 +132,18 @@ class db_verify
 		}
 		else
 		{
-			$mes->addSuccess("Tables appear to be okay!"); //TODO LAN
-			$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
+			if($this->internalError === false)
+			{
+				$mes->addSuccess(DBLAN_111);
+				$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
+			}
+
+
 			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
 			//$mes->add($debug,E_MESSAGE_DEBUG);	
 			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
-			$ns->tablerender("Okay",$mes->render().$text);
+			echo $mes->render();
+		//	$ns->tablerender("Okay",$mes->render().$text);
 		}	
 			
 	}	
@@ -175,12 +179,15 @@ class db_verify
 			$this->compare($tb);	
 		}
 			
-		foreach($this->sqlLanguageTables as $lng=>$lantab) // language tables. 
+		if(!empty($this->sqlLanguageTables)) // language tables. 
 		{
-			foreach($dtables as $tb)
+			foreach($this->sqlLanguageTables as $lng=>$lantab) 
 			{
-				$this->compare($tb,$lng);	
-			}			
+				foreach($dtables as $tb)
+				{
+					$this->compare($tb,$lng);	
+				}			
+			}
 		}
 	}
 	
@@ -191,7 +198,15 @@ class db_verify
 	
 	function compare($selection,$language='')
 	{
-		
+
+		$this->currentTable = $selection;
+
+		if(empty($this->tables[$selection]['tables']))
+		{
+			//$this->internalError = true;
+			e107::getMessage()->addDebug("Couldn't read table data for ".$selection);
+			return false;
+		}
 	
 		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
 		{
@@ -200,8 +215,8 @@ class db_verify
 			$rawSqlData = $this->getSqlData($tbl,$language);
 			
 			
-			
-			if($rawSqlData === FALSE)
+
+			if($rawSqlData === false)
 			{
 				if($language) continue;
 				
@@ -212,9 +227,15 @@ class db_verify
 				// echo "missing table: $tbl";
 				continue;
 			}
-			
+
+		//	echo "<h4>RAW</h4>";
+		//	print_a($rawSqlData);
+					//	$this->currentTable = $tbl;v
+
 			$sqlDataArr     = $this->getTables($rawSqlData);
-			
+		//	echo "<h4>PARSED</h4>";
+		//	print_a($sqlDataArr);
+
 			$fileFieldData	= $this->getFields($this->tables[$selection]['data'][$key]);
 			$sqlFieldData	= $this->getFields($sqlDataArr['data'][0]);	
 			
@@ -366,6 +387,15 @@ class db_verify
 		}
 	
 	}
+
+	/** 
+	 * Returns the number of errors
+	 */
+	public function errors()
+	{
+		return count($this->errors);	
+	}
+
 	
 	
 	function renderResults()
@@ -515,7 +545,7 @@ class db_verify
 	function fixForm($file,$table,$field, $newvalue,$mode,$after ='')
 	{
 		$frm = e107::getForm();
-		$text .= $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
+		$text = $frm->checkbox("fix[$file][$table][$field][]", $mode, false, array('id'=>false));
 		
 		return $text;
 	}
@@ -685,17 +715,18 @@ class db_verify
 						// continue;	
 						 
 						 
-						if(mysql_query($query))
+						if(e107::getDb()->gen($query) !== false)
 						{
 							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
 						} 
 						else 
 						{
 							$log->addWarning(LAN_UPDATED_FAILED.'  ['.$query.']');
-							if(mysql_errno())
+							$log->addWarning(e107::getDb()->getLastErrorText()); // PDO compatible.
+							/*if(mysql_errno())
 							{
 								$log->addWarning('SQL #'.mysql_errno().': '.mysql_error());
-							}
+							}*/
 						}
 					}	
 				}
@@ -703,7 +734,7 @@ class db_verify
 			}	// 
 		}
 
-		$log->flushMessages();
+		$log->flushMessages("Database Table(s) Modified");
 				
 	}	
 	
@@ -714,19 +745,22 @@ class db_verify
 	{
 		if(!$sql_data)
 		{
-			return;
+			e107::getMessage()->addError("No SQL Data found in file");
+			return false;
 		}
 		
 		$ret = array();
-		
+
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
-		
+	//	echo "<h4>SqlData</h4>";
+	//	print_a($sql_data);
 	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-	
-		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+
+		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 	 			
 		$table = preg_match_all($regex,$sql_data,$match);
 		
+
 
 			
 		$tables = array();
@@ -744,9 +778,13 @@ class db_verify
 				
 		$ret['tables'] = $tables;
 		$ret['data'] = $match[2];
+		$ret['engine'] = $match[4];
 		
-		
-		
+		if(empty($ret['tables']))
+		{
+			e107::getMessage()->addDebug("Unable to parse ".$this->currentTable."_sql.php file data. Possibly missing a ';' at the end?");
+			e107::getMessage()->addDebug(print_a($regex,true));
+		}
 		
 		return $ret;
 	}
@@ -773,8 +811,15 @@ class db_verify
 		$mes = e107::getMessage();
 			
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-	
+		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+
+		if(e_DEBUG)
+		{
+		//	e107::getMessage()->addDebug("Regex: ".print_a($data,true));
+		//	e107::getMessage()->addDebug("Regex: ".$regex);
+
+		}
+
 	//	echo $regex."<br /><br />";
 	
 		//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
@@ -856,9 +901,7 @@ class db_verify
 	function getSqlData($tbl,$language='')
 	{
 		
-		
 		$mes = e107::getMessage();
-		
 		$prefix = MPREFIX;
 		
 		if($language)
@@ -873,6 +916,13 @@ class db_verify
 		}
 		
 		$sql = e107::getDb();
+
+		if(!$sql->isTable($tbl))
+		{
+			$mes->addDebug('Missing table on db-verify: '.$tbl);
+			return false;
+		}
+
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');	
 	//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
@@ -883,7 +933,7 @@ class db_verify
 		if($z)
 		{
 		//	$row = mysql_fetch_row($z);
-			$row = $sql->fetch(MYSQL_NUM);
+			$row = $sql->fetch('num');
 			//return $row[1];
 			return stripslashes($row[1]).';'; // backticks needed. 
 			// return str_replace("`", "", stripslashes($row[1])).';';
@@ -891,6 +941,7 @@ class db_verify
 		else
 		{
 			$mes->addDebug('Failed: '.$qry);
+			$this->internalError = true;
 			return FALSE;
 		}
 	
@@ -925,23 +976,23 @@ class db_verify
 		<form method='post' action='".e_SELF.(e_QUERY ? '?'.e_QUERY : '')."' id='core-db-verify-sql-tables-form'>
 			<fieldset id='core-db-verify-sql-tables'>
 				<legend>".DBVLAN_14."</legend>
-				<table class='table adminlist'>
+				<table class='table table-striped adminlist'>
 					<colgroup>
 						<col style='width: 100%'></col>
 					</colgroup>
 					<thead>
 						<tr>
-							<th class='last'>".$frm->checkbox_toggle('check-all-verify', 'verify_table',false,LAN_CHECKALL.' | '.LAN_UNCHECKALL)."</th>
+							<th class='first form-inline'><label for='check-all-verify-jstarget-verify-table'>".$frm->checkbox_toggle('check-all-verify', 'verify_table', false )." ".LAN_CHECKALL.' | '.LAN_UNCHECKALL."</label></th>
 						</tr>
 					</thead>
 					<tbody>
 		";
 	
-		foreach(array_keys($this->tables) as $x)
+		foreach(array_keys($this->tables) as $t=>$x)
 		{
 			$text .= "
 				<tr>
-					<td>".$frm->checkbox('verify_table[]', $x,false,'label='.$x)."</td>
+					<td>".$frm->checkbox('verify_table['.$t.']', $x, false, array('label'=>$x))."</td>
 				</tr>
 			";
 		}

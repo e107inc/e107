@@ -13,3 +13,9 @@ A>	It's your choice, if your site is working ok with cookies (the default) then 
 
 Q>	Why should I run my site in standards mode?
 A>	If your developing a theme and having trouble getting it to render correctly in Firefox/Mozilla and IE, try ticking this box. IE will then be run in standards mode and use the correct box model.
+
+Q>  What is meant with PLAINTEXT?
+A>  A string of text that is displayed with one value for each text attribute.
+
+Q>  What is meant with CHAP?
+A>  Challenge-Handshake Authentication Protocol (CHAP) authenticates a user or network host to an authenticating entity. That entity may be, for example, an Internet service provider.

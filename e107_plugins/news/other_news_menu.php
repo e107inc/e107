@@ -15,7 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-// FIXME full rewrite
+
 // Load Data
 if($cacheData = e107::getCache()->retrieve("nq_othernews"))
 {
@@ -24,23 +24,77 @@ if($cacheData = e107::getCache()->retrieve("nq_othernews"))
 }
 
 
+
+
+
 require_once(e_HANDLER."news_class.php");
 unset($text);
 global $OTHERNEWS_STYLE;
 $ix = new news;
 
+
+$caption = TD_MENU_L1;
+
+if(!empty($parm))
+{
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
+}
+
 if(!$OTHERNEWS_STYLE)
 {
-	$OTHERNEWS_STYLE = "
-	<div style='padding:3px;width:100%'>
-	<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
-	<tr>
-	<td style='vertical-align:top;padding:3px;width:20px'>
-	{NEWSCATICON}
-	</td><td style='text-align:left;padding:3px;vertical-align:top'>
-	{NEWSTITLELINK}
-	</td></tr></table>
-	</div>\n";
+	if(deftrue('BOOTSTRAP')) // v2.x
+	{
+		if(!defined("OTHERNEWS_COLS"))
+		{
+			define("OTHERNEWS_COLS",false);
+		}
+		$template = e107::getTemplate('news', 'news_menu', 'other');
+		
+		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
+ 		<a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="next">›</a></div>';
+
+		if(!empty($parms['caption']))
+		{
+			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+		}
+
+		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";		
+				
+		$OTHERNEWS_STYLE = $template['item']; 
+	}
+	else //v1.x
+	{
+
+		if(!empty($parms['caption']))
+		{
+			$caption =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+		}
+			
+		$template['start'] = '';
+		$template['end'] = '';	
+			
+		$OTHERNEWS_STYLE = "
+		<div style='padding:3px;width:100%'>
+		<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+		<tr>
+		<td style='vertical-align:top;padding:3px;width:20px'>
+		{NEWSCATICON}
+		</td><td style='text-align:left;padding:3px;vertical-align:top'>
+		{NEWSTITLELINK}
+		</td></tr></table>
+		</div>\n";
+	 
+	}
+	
+	
+
 }
 
 
@@ -78,6 +132,7 @@ $param['itemlink'] 		= defset('OTHERNEWS_ITEMLINK');
 $param['thumbnail'] 	= defset('OTHERNEWS_THUMB');
 $param['catlink'] 		= defset('OTHERNEWS_CATLINK');
 $param['caticon'] 		= defset('OTHERNEWS_CATICON');
+$param['template_key']  = 'news_menu/other/item';
 
 $style 					= defset('OTHERNEWS_CELL');
 $nbr_cols 				= defset('OTHERNEWS_COLS');
@@ -88,9 +143,9 @@ LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".$_t." AND (n.news_end=0 || n.news_end>".$_t.") AND FIND_IN_SET(2, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,".OTHERNEWS_LIMIT;
 
-if ($sql->db_Select_gen($query))
+if ($sql->gen($query))
 {
-	$text = "";
+	$text = $tp->parseTemplate($template['start'],true);
 		
 	if(OTHERNEWS_COLS !== false)
 	{
@@ -98,7 +153,7 @@ if ($sql->db_Select_gen($query))
 		$t = 0;		
 		
 		$wid = floor(100/$nbr_cols);
-		while ($row = $sql->db_Fetch()) 
+		while ($row = $sql->fetch()) 
 		{
 			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 			$text .= "\n<td style='$style ; width:$wid%;'>\n";
@@ -127,18 +182,24 @@ if ($sql->db_Select_gen($query))
 	}
 	else // perfect for divs. 
 	{
-		while ($row = $sql->db_Fetch()) 
+		$loop = 0;
+		while ($row = $sql->fetch()) 
 		{
-			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
+			$active = ($loop == 0) ? 'active' : '';		
+			
+			$TMPL = str_replace("{ACTIVE}", $active, $OTHERNEWS_STYLE);	
+			
+			$text .= $ix->render_newsitem($row, 'return', '', $TMPL, $param);
+			$loop++;
 		}				
 	}
 
-
+	$text .= $tp->parseTemplate($template['end'], true);
 
 	// Save Data
 	ob_start();
 
-	$ns->tablerender(TD_MENU_L1, $text, 'other_news');
+	$ns->tablerender($caption, $text, 'other_news');
 
 	$cache_data = ob_get_flush();
 	e107::getCache()->set("nq_othernews", $cache_data);

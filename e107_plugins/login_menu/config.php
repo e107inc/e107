@@ -28,7 +28,7 @@ $eplug_admin = TRUE;
 require_once('../../class2.php');
 if (!getperms('4')) 
 { 
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit() ;
 }
 
@@ -91,15 +91,17 @@ if (isset($_POST['update_menu']))
 	if (!isset($loginPrefs['new_news']))	{ $loginPrefs['new_news'] = '0';   }
 	if (!isset($loginPrefs['new_comments']))	{ $loginPrefs['new_comments'] = '0';  }
 	if (!isset($loginPrefs['new_members']))	{ $loginPrefs['new_members'] = '0'; }
+
+    $menuPref->reset();
 	foreach($loginPrefs as $k => $v)
 	{
 		$menuPref->setPref('login_menu/'.$k, $v);
 	}
 	//$menuPref->setPref('login_menu', $loginPrefs);
 	$menuPref->save(false, true, false);
-	$admin_log->log_event('MISC_03','', E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('MISC_03','', E_LOG_INFORMATIVE,'');
 	//$ns->tablerender("", '<div style=\'text-align:center\'><b>'.LAN_SETSAVED.'</b></div>');
-	$mes->addSuccess();
+	$mes->addSuccess(LAN_SAVED);
 	$ns->tablerender("", $mes->render() . $text); 
 }
 
@@ -125,23 +127,23 @@ $text = "
     
   /*
     <tr>
-   	 <td colspan="2">'.LOGIN_MENU_L42.'</td>
+   	 <td colspan="2">'.LAN_LOGINMENU_42.'</td>
     </tr>
   */
 
  $text .= "
 	<tr>
-		<td>".LOGIN_MENU_L31."</td>
+		<td>".LAN_LOGINMENU_31."</td>
 		<td>".$frm->checkbox('pref[new_news]', 1, varset($loginPrefs['new_news'],0))."</td>
 	</tr>
 
 	<tr>
-		<td>".LOGIN_MENU_L34."</td>
+		<td>".LAN_LOGINMENU_34."</td>
 		<td>".$frm->checkbox('pref[new_comments]', 1, varset($loginPrefs['new_comments'],0))."</td>
 	</tr>
 
 	<tr>
-		<td>".LOGIN_MENU_L36."</td>
+		<td>".LAN_LOGINMENU_36."</td>
 		<td>".$frm->checkbox('pref[new_members]', 1, varset($loginPrefs['new_members'],0))."</td>
 	</tr>
 	
@@ -155,7 +157,7 @@ $text = "
 	</form>
 	";
 
-$ns->tablerender(LOGIN_MENU_L41, $text);
+$ns->tablerender(LAN_LOGINMENU_41, $text);
 
 require_once(e_ADMIN."footer.php");
 

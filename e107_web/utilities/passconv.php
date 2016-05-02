@@ -138,7 +138,7 @@ if (isset($_POST['GetOnWithIt']))
 	}
 	if (!$error && $pc_db->db_Select('user_backup','*'))
 	{
-	  while ($row = $pc_db->db_Fetch(MYSQL_ASSOC))
+	  while ($row = $pc_db->db_Fetch())
 	  {
 		$uid = $row['user_id'];
 		unset($row['user_id']);
@@ -177,8 +177,9 @@ if (isset($_POST['GetOnWithIt']))
 	    $recordCount++;
 	    $newData = array();
 		$newPrefs = '';
-		$user_prefs = unserialize($row['user_prefs']);
-		if ($saltConvert)
+		$user_prefs = e107::getArrayStorage()->unserialize($row['user_prefs']);
+          if(!$user_prefs && $row['user_prefs']) $user_prefs = unserialize($row['user_prefs']);
+          if ($saltConvert)
 		{
 		  if ($user_info->canConvert($row['user_password']))
 		  {
@@ -204,7 +205,7 @@ if (isset($_POST['GetOnWithIt']))
 		  unset($user_prefs['email_password']);
 		  $emailProcess++;
 		}
-		if (count($user_prefs)) $newPrefs = serialize($user_prefs); else $newPrefs = '';
+		if (count($user_prefs)) $newPrefs = e107::getArrayStorage()->serialize($user_prefs); else $newPrefs = '';
 		if($newPrefs != $user_prefs)
 		{
 		  $newData['user_prefs'] = $newPrefs;
@@ -276,7 +277,7 @@ $text =
   $text .= "
 	<tr>
 	  <td class='forumheader3' colspan='3' style='text-align:center'>
-		<input class='btn button' type='submit' name='GetOnWithIt' value='".LAN_PCONV_04."' />
+		<input class='btn btn-default button' type='submit' name='GetOnWithIt' value='".LAN_PCONV_04."' />
 	  </td>
 	</tr>";
 

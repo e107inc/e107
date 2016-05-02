@@ -15,10 +15,28 @@ if (!defined('e107_INIT'))
 
 if (!e107::isInstalled('download'))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect();
 }
 
-	include_lan(e_PLUGIN.'download/languages/'.e_LANGUAGE.'/download.php');
+	e107::lan('download',false, true); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/English_front.php'
+
+	$bcList = array(
+		'LAN_dl_19' => 'LAN_CATEGORY',
+		'LAN_dl_17' => 'LAN_FILES',
+		"LAN_dl_20" => "LAN_FILES",
+		"LAN_dl_21" => "LAN_SIZE",
+		"LAN_dl_22" => "LAN_DATE",
+		"LAN_dl_23" => "LAN_FILE",
+		"LAN_dl_24" => "LAN_AUTHOR",
+		"LAN_dl_25" => "LAN_ASCENDING",
+		"LAN_dl_26" => "LAN_DESCENDING",
+		"LAN_dl_27" => "LAN_GO",
+		"LAN_dl_28" => "LAN_NAME"
+	);
+
+	e107::getLanguage()->bcDefs($bcList);
+
+
 	
 	require_once(e_PLUGIN.'download/handlers/download_class.php');
 	require_once(e_PLUGIN.'download/handlers/category_class.php');
@@ -34,7 +52,7 @@ if (!e107::isInstalled('download'))
 	if(deftrue('BOOTSTRAP'))
 	{
 		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/download.png"));
-		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : '<i class="icon-star"></i>'));	
+		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : 'icon-star.glyph'));	
 	}
 	else 
 	{
@@ -51,7 +69,7 @@ if (!e107::isInstalled('download'))
 	{
 		if (!$sql->select("download", "download_comment", "download_id = '{$id}' "))
 		{
-			header("location:".e_BASE."index.php");
+			e107::redirect();
 			exit;
 		}
 		else
@@ -65,14 +83,17 @@ if (!e107::isInstalled('download'))
 	
 				e107::getComment()->enter_comment($clean_authorname, $clean_comment, "download", $id, $pid, $clean_subject);
 	//			$e107cache->clear("comment.download.{$sub_action}");	$sub_action not used here
-				$e107cache->clear("comment.download");
+				e107::getCache()->clear("comment.download");
 			}
 		}
 	}
 
+
 	$texts = $dl->render(); // Load before header. 
 
 	require_once (HEADERF);
+	
+	
 	
 	echo $texts;
 	

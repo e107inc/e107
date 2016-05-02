@@ -45,7 +45,7 @@ class list_news
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
 		$list_caption = $this->parent->settings['caption'];
-		$list_display = (varsettrue($this->parent->settings['open']) ? '' : 'none');
+		$list_display = (vartrue($this->parent->settings['open']) ? '' : LAN_NONE);
 
 		$qry = "
 		SELECT n.*, c.category_id AS news_category_id, c.category_name AS news_category_name, u.user_id AS news_author_id, u.user_name AS news_author_name
@@ -72,7 +72,7 @@ class list_news
 				$record['heading'] = "<a href='".e_BASE."news.php?item.".$row['news_id']."'>".$rowheading."</a>";
 
 				$record['author'] = '';
-				if(varsettrue($this->parent->settings['author']))
+				if(vartrue($this->parent->settings['author']))
 				{
 					if($row['news_author'] == 0)
 					{
@@ -80,21 +80,24 @@ class list_news
 					}
 					else
 					{
-						if(varsettrue($row['news_author_name']))
+						if(vartrue($row['news_author_name']))
 						{
-							$record['author'] = "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>";
+							//$record['author'] = "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>";
+							$uparams = array('id' => $row['news_author_id'], 'name' => $row['news_author_name']);
+							$link = e107::getUrl()->create('user/profile/view', $uparams);
+							$record['author'] = "<a href='".$link."'>".$row['news_author_name']."</a>";
 						}
 					}
 				}
 
 				$record['category'] = '';
-				if(varsettrue($this->parent->settings['category']))
+				if(vartrue($this->parent->settings['category']))
 				{
 					$record['category'] = "<a href='".e_BASE."news.php?cat.".$row['news_category_id']."'>".$row['news_category_name']."</a>";
 				}
 
 				$record['date'] = '';
-				if(varsettrue($this->parent->settings['date']))
+				if(vartrue($this->parent->settings['date']))
 				{
 					$record['date'] = $this->parent->getListDate($row['news_datestamp']);
 				}

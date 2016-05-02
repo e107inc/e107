@@ -8,20 +8,10 @@
  *
  * Mailout handling - selector for 'core' users
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 11315 $
- * $Date: 2010-02-10 18:18:01 +0000 (Wed, 10 Feb 2010) $
- * $Author: secretr $
+
  *
 */
 
-/**
- *	e107 Mail handling - core selector for users
- *
- *	@package	e107
- *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_class.php 11315 2010-02-10 18:18:01Z secretr $;
- */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -89,7 +79,7 @@ class core_mailout
 		$res = array();
 		foreach ($this->selectFields as $k)
 		{
-			if (varsettrue($_POST[$k]))
+			if (vartrue($_POST[$k]))
 			{
 				$res[$k] = $tp->toDB($_POST[$k]);
 			}
@@ -113,11 +103,10 @@ class core_mailout
 
 		$where = array();
 		$incExtended = array();
-		if ($selectVals === FALSE)
-		{
-			$selectVals = array('email_to' => 'all');
-		}
-		switch (varset($selectVals['email_to'], 'all'))
+				
+		$emailTo = vartrue($selectVals['email_to'], false);
+		
+		switch ($emailTo)
 		{
 			// Build the query for the user database
 			case 'all' :
@@ -137,7 +126,7 @@ class core_mailout
 				{
 					$where[] = "u.`user_class` REGEXP concat('(^|,)',{$selectVals['email_to']},'(,|$)')";
 				}
-				$where[] = "u.`user_ban`=0";
+			
 		}
 
 		if (vartrue($selectVals['extended_1_name']) && vartrue($selectVals['extended_1_value']))
@@ -183,8 +172,19 @@ class core_mailout
 				}
 			}
 		}
+
+		if(empty($where) && empty($incExtended))
+		{
+			$this->mail_read = 0;
+			$this->mail_count = 0;	
+			return $this->mail_count;
+		}
+
+
 		$where[] = "u.`user_email` != ''";			// Ignore all records with empty email address
 
+		
+		
 		// Now assemble the query from the pieces
 		// Determine which fields we actually need (u.user_sess is the signup link)
 		$qry = 'SELECT u.user_id, u.user_name, u.user_email, u.user_loginname, u.user_sess, u.user_lastvisit';
@@ -203,7 +203,10 @@ class core_mailout
 
 		$qry .= ' WHERE '.implode(' AND ',$where).' ORDER BY u.user_name';
 //		echo "Selector query: ".$qry.'<br />';
-		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
+		
+		e107::getMessage()->addDebug("Selector query: ".$qry);
+
+		if (!( $this->mail_count = $sql->gen($qry))) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
 	}
@@ -224,7 +227,7 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 		
-		if (!($row = $sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
+		if (!($row = $sql->db_Fetch())) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],
@@ -268,7 +271,7 @@ class core_mailout
 		
 		$var = array();
 	
-		$var[0]['caption'] 	= LAN_MAILOUT_03;	// User class select
+		$var[0]['caption'] 	= LAN_MAILOUT_260; // LAN_MAILOUT_03;	// User class select
 		
 		if ($allow_edit)
 		{  

@@ -26,7 +26,7 @@ Notes:
 require_once("../../class2.php");
 if(!getperms("P") || !e107::isInstalled('rss_menu'))
 { 
-	header("location:".e_BASE."index.php"); 
+	e107::redirect('admin');
 	exit;
 }
 
@@ -55,10 +55,10 @@ class rss_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-			
-	/*
+		'main/import'		=> array('caption'=> "Add New Feed", 'perm' => 'P'),
+
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+		/*
 		'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 	*/	
 
@@ -69,6 +69,15 @@ class rss_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = 'RSS';
+
+
+	function init()
+	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->adminMenu['main/create'] = array('caption'=> "Add Custom Feed", 'perm' => 'P');
+		}
+	}
 }
 
 
@@ -79,51 +88,265 @@ class rss_ui extends e_admin_ui
 {
 			
 		protected $pluginTitle		= 'RSS';
-		protected $pluginName		= 'myplugin';
+		protected $pluginName		= 'core';
 		protected $table			= 'rss';
 		protected $pid				= 'rss_id';
 		protected $perPage 			= 10; 
 			
-		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => '', 'data' => '', 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'rss_id' =>   array ( 'title' => 'LAN_ID', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_name' =>   array ( 'title' => 'LAN_TITLE', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_url' =>   array ( 'title' => 'LAN_URL', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '.{Type}.{Topic id}', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_topicid' =>   array ( 'title' => 'Topic id', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'rss_path' =>   array ( 'title' => 'Path', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_text' =>   array ( 'title' => 'Text', 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'rss_datestamp' =>   array ( 'title' => 'LAN_DATESTAMP', 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_class' =>   array ( 'title' => 'LAN_VISIBILITY', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_limit' =>   array ( 'title' => 'Limit', 'type' => 'number', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' =>   array ( 'title' => 'LAN_OPTIONS', 'type' => null, 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		protected $fields 		= array (
+			'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => false, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'rss_id'          =>   array ( 'title' => LAN_ID,         'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_name'        =>   array ( 'title' => LAN_TITLE,      'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_path'        =>   array ( 'title' => 'Plugin-Dir',   'type' => 'text', 'data' => 'str', 'readonly'=>1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_url'         =>   array ( 'title' => LAN_URL,        'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_topicid'     =>   array ( 'title' => 'Topic id',     'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+
+		  'rss_text'        =>   array ( 'title' => 'Text',         'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'rss_datestamp'   =>   array ( 'title' => LAN_DATESTAMP,  'type' => 'datestamp', 'data' => 'int', 'readonly'=>true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_class'       =>   array ( 'title' => LAN_VISIBILITY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('optArray'=> array(RSS_LAN_ADMIN_21,RSS_LAN_ADMIN_22,RSS_LAN_ADMIN_23),'size'=>'xlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_limit'       =>   array ( 'title' => 'Limit',        'type' => 'number', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'options'         =>   array ( 'title' => LAN_OPTIONS,    'type' => null, 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
-		protected $fieldpref = array('checkboxes', 'rss_name','rss_url', 'rss_topicid', 'rss_path', 'rss_class', 'options');
-		
-		
-		
-		/*
-		protected  = array(
-			'pref_type'	   				=> array('title'=> 'type', 'type'=>'text', 'data' => 'string', 'validate' => true),
-			'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
-			'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
+		protected $fieldpref = array('checkboxes', 'rss_name','rss_url', 'rss_topicid', 'rss_limit', 'rss_class', 'options');
+
+
+		protected $prefs = array(
+			'rss_othernews'	   		=> array('title'=> RSS_LAN_ADMIN_13, 'type' => 'boolean', 'data' => 'int'),
+			'rss_summarydiz' 		=> array('title'=> RSS_LAN_ADMIN_19, 'type' => 'boolean', 'data' => 'integer'),
+			'rss_shownewsimage' 	=> array('title'=> RSS_LAN_ADMIN_33, 'type' => 'boolean', 'data' => 'int')
 		);
 
-		
-		// optional
-		public function init()
+
+	// optional
+	public function init()
+	{
+
+		if(!empty($_POST['importid']))
 		{
-			
+			$this->dbrssImport();
 		}
-	
-		
-		public function customPage()
+	}
+
+
+	function dbrssImport()
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+
+
+		foreach($_POST['importid'] as $key=>$value)
 		{
+			$rssVals = array();
+			$rssVals['rss_topicid']		= $tp -> toDB(varset($_POST['topic_id'][$key], ''));
+			$rssVals['rss_url']			= $tp -> toDB(varset($_POST['url'][$key], ''));
+			$rssVals['rss_path']		= $tp -> toDB(varset($_POST['path'][$key], ''));
+			$rssVals['rss_name']		= $tp -> toDB(varset($_POST['name'][$key], ''));
+			$rssVals['rss_text']		= $tp -> toDB(varset($_POST['text'][$key], ''));
+			$rssVals['rss_datestamp']	= time();
+			$rssVals['rss_class']		= intval(varset($_POST['class'][$key], '0'));
+			$rssVals['rss_limit']		= intval(varset($_POST['limit'][$key], '0'));
+
+			$sql->insert("rss", $rssVals);
+			e107::getLog()->logArrayAll('RSS_04',$rssVals);
+		}
+		$message = count($_POST['importid'])." ".RSS_LAN_ADMIN_18;
+		return $message;
+	}
+
+
+	public function importPage()
+	{
+		// Import - put up the list of possible feeds to import
+
+
+			$sql = e107::getDb();
 			$ns = e107::getRender();
-			$text = 'Hello World!';
-			$ns->tablerender('Hello',$text);	
-			
+			$mes = e107::getMessage();
+			$tp = e107::getParser();
+			$frm = e107::getForm();
+
+		global $i,$rss_shortcodes, $feed, $pref;
+
+		require_once(e_PLUGIN.'rss_menu/rss_shortcodes.php');
+
+		if(!isset($RSS_ADMIN_IMPORT_HEADER))
+		{
+			$RSS_ADMIN_IMPORT_HEADER = "
+			<form action='".e_SELF."' id='imlistform' method='post' >
+			<table class='table table-striped adminlist'>
+			<thead>
+			<tr>
+				<th class='center' style='width:5%'>Add</td>
+				<th>".LAN_NAME."</td>
+				<th>".RSS_LAN_ADMIN_3."</td>
+
+				<th>".RSS_LAN_ADMIN_5."</td>
+				<th>".RSS_LAN_ADMIN_12."</td>
+			</tr>
+			</thead><tbody>";
+				}
+				if(!isset($RSS_ADMIN_IMPORT_TABLE))
+				{
+					$RSS_ADMIN_IMPORT_TABLE = "
+			<tr>
+				<td class='first center'>{RSS_ADMIN_IMPORT_CHECK}</td>
+					<td>{RSS_ADMIN_IMPORT_NAME}<small>{RSS_ADMIN_IMPORT_TEXT}</small></td>
+				<td>{RSS_ADMIN_IMPORT_PATH}</td>
+
+				<td>{RSS_ADMIN_IMPORT_URL}</td>
+				<td>{RSS_ADMIN_IMPORT_TOPICID}</td>
+			</tr>";
+				}
+
+				if(!isset($RSS_ADMIN_IMPORT_FOOTER))
+				{
+					$RSS_ADMIN_IMPORT_FOOTER = "</tbody>
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('import_rss',LAN_ADD,'submit')."
+			</div>
+			</form>
+			";
 		}
-		*/
+
+
+
+
+		//	global $RSS_ADMIN_IMPORT_HEADER, $RSS_ADMIN_IMPORT_TABLE, $RSS_ADMIN_IMPORT_FOOTER;
+
+			$sqli = new db;
+			$feedlist = array();
+
+			// @see e107_plugins/news/e_rss.php
+			/*
+			// News
+			$feed['name']		= ADLAN_0;
+			$feed['url']		= 'news';	// The identifier for the rss feed url
+			$feed['topic_id']	= '';		// The topic_id, empty on default (to select a certain category)
+			$feed['path']		= 'news';	// This is the plugin path location
+			$feed['text']		= RSS_PLUGIN_LAN_7;
+			$feed['class']		= '0';
+			$feed['limit']		= '9';
+			$feedlist[]			= $feed;
+
+			// News categories
+			if($sqli -> db_Select("news_category", "*","category_id!='' ORDER BY category_name "))
+			{
+				while($rowi = $sqli -> db_Fetch())
+				{
+					$feed['name']		= ADLAN_0.' > '.$rowi['category_name'];
+					$feed['url']		= 'news';
+					$feed['topic_id']	= $rowi['category_id'];
+					$feed['path']		= 'news';
+					$feed['text']		= RSS_PLUGIN_LAN_10.' '.$rowi['category_name'];
+					$feed['class']		= '0';
+					$feed['limit']		= '9';
+					//	$feed['exclude_class'] = '';
+					$feedlist[]			= $feed;
+				}
+			}*/
+
+			/*		// Download
+					$feed['name']		= ADLAN_24;
+					$feed['url']		= 'download';
+					$feed['topic_id']	= '';
+					$feed['path']		= 'download';
+					$feed['text']		= RSS_PLUGIN_LAN_8;
+					$feed['class']		= '0';
+					$feed['limit']		= '9';
+					$feedlist[]			= $feed;
+
+					// Download categories
+					if($sqli -> db_Select("download_category", "*","download_category_id!='' ORDER BY download_category_order "))
+					{
+						while($rowi = $sqli -> db_Fetch())
+						{
+							$feed['name']		= ADLAN_24.' > '.$rowi['download_category_name'];
+							$feed['url']		= 'download';
+							$feed['topic_id']	= $rowi['download_category_id'];
+							$feed['path']		= 'download';
+							$feed['text']		= RSS_PLUGIN_LAN_11.' '.$rowi['download_category_name'];
+							$feed['class']		= '0';
+							$feed['limit']		= '9';
+							$feedlist[]			= $feed;
+						}
+					}
+			*/
+
+
+			//
+			// Comments
+			$feed['name']		= LAN_COMMENTS;
+			$feed['url']		= 'comments';
+			$feed['topic_id']	= '';
+			$feed['path']		= 'comments';
+			$feed['text']		= RSS_PLUGIN_LAN_9;
+			$feed['class']		= '0';
+			$feed['limit']		= '9';
+			$feedlist[]			= $feed;
+
+			// Plugin rss feed, using e_rss.php in plugin folder
+			$plugin_feedlist = array();
+			foreach($pref['e_rss_list'] as $val)
+			{
+				$eplug_rss_feed = array();
+				if (is_readable(e_PLUGIN.$val."/e_rss.php"))
+				{
+					require_once(e_PLUGIN.$val."/e_rss.php");
+
+					$className = $val."_rss";
+					$data = false;
+
+					if(!$data = e107::callMethod($className,'config'))
+					{
+						$data = $eplug_rss_feed;
+					}
+
+					foreach($data as $v)
+					{
+						$v['path'] = $val;
+						array_push($plugin_feedlist,$v);
+					}
+
+				}
+			}
+
+			$feedlist = array_merge($feedlist, $plugin_feedlist);
+
+//		print_a($feedlist);
+
+			$render=FALSE;
+			$i=0;
+			$text = $RSS_ADMIN_IMPORT_HEADER;
+			foreach($feedlist as $k=>$feed)
+			{
+				$feed['topic_id']		= $tp -> toDB($feed['topic_id']);
+				$feed['url']			= $tp -> toDB($feed['url']);
+
+				// Check if feed is not yet present
+				if(!$sql->select("rss", "*", "rss_path='".$feed['path']."' AND rss_url='".$feed['url']."' AND rss_topicid='".$feed['topic_id']."' "))
+				{
+					$render=TRUE;
+					$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_TABLE, FALSE, $rss_shortcodes);
+					$i++;
+				}
+			}
+			$text .= $tp -> parseTemplate($RSS_ADMIN_IMPORT_FOOTER, FALSE, $rss_shortcodes);
+
+			if(!$render)
+			{
+				$this->show_message(RSS_LAN_ADMIN_11, RSS_LAN_ERROR_6);
+			}
+			else
+			{
+		//		$ns->tablerender(RSS_LAN_ADMIN_11, $mes->render(). $text);
+
+				return $text;
+			}
+		}
+
 			
 }
 				
@@ -134,41 +357,44 @@ class rss_form_ui extends e_admin_form_ui
 
 	
 	// Custom Method/Function 
-	function rss_class($curVal,$mode)
+	function rss_url($curVal,$mode)
 	{
-		$frm = e107::getForm();		
-		$array = array(RSS_LAN_ADMIN_21,RSS_LAN_ADMIN_22,RSS_LAN_ADMIN_23);
-		 		
+
+
+
 		switch($mode)
 		{
 			case 'read': // List Page
-				return vartrue($array[$curVal]);
+
+				$type = $this->getController()->getListModel()->get('rss_type');
+				$topic = $this->getController()->getListModel()->get('rss_topicid');
+
+				$link = e107::url('rss_menu', 'rss', array('rss_type'=>$type, 'rss_url'=>$curVal, 'rss_topicid'=>$topic));
+				return "<a href='".$link."'>".$curVal."</a>";
 			break;
 			
 			case 'write': // Edit Page
-				return $frm->select('rss_class',$array, $curVal);		
+				$link = SITEURL."feed/"; // e107::url('rss_menu','index').'/';
+				return "<div class='form-inline'>".$link.e107::getForm()->text('rss_url', $curVal,255, 'size=small')."/rss/{Topic id}</div>";
 			break;
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return  null;
 			break;
 		}
 	}
 
 }		
 		
-/*
-new rss_admin();
 
-require_once(e_ADMIN."auth.php");
-e107::getAdminUI()->runPage();
+	new rss_admin();
 
-require_once(e_ADMIN."footer.php");
-exit;
+	require_once(e_ADMIN."auth.php");
+	e107::getAdminUI()->runPage();
 
-
-*/
+	require_once(e_ADMIN."footer.php");
+	exit;
 
 
 
@@ -177,6 +403,9 @@ exit;
 
 
 
+
+
+/// ------------------------------- Legacy Code -------------------------------
 
 
 
@@ -200,8 +429,8 @@ if(isset($_POST['delete']))
 {
 	$d_idt = array_keys($_POST['delete']);
 	$message = ($sql -> db_Delete("rss", "rss_id=".intval($d_idt[0]))) ? LAN_DELETED : LAN_DELETED_FAILED;
-	$admin_log->log_event('RSS_01','ID: '.intval($d_idt[0]).' - '.$message,E_LOG_INFORMATIVE,'');
-    $e107cache->clear("rss");
+	e107::getLog()->add('RSS_01','ID: '.intval($d_idt[0]).' - '.$message,E_LOG_INFORMATIVE,'');
+    e107::getCache()->clear("rss");
 }
 
 // Create rss feed
@@ -315,7 +544,7 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 	<form action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."' id='dataform' method='post' >
 	<table class='table adminform'>
 	<tr>
-		<td style='width:12%'>".RSS_LAN_ADMIN_4."</td>
+		<td style='width:12%'>".LAN_NAME."</td>
 		<td>{RSS_ADMIN_FORM_NAME}</td>
 	</tr>
 	<tr>
@@ -623,7 +852,7 @@ class rss
 		}
 */
 		// Comments
-		$feed['name']		= RSS_PLUGIN_LAN_14;
+		$feed['name']		= LAN_COMMENTS;
 		$feed['url']		= 'comments';
 		$feed['topic_id']	= '';
 		$feed['path']		= 'comments';
@@ -801,7 +1030,9 @@ class rss
 	// Update options
 	function dboptions()
 	{
-		global $tp, $pref, $admin_log;
+		global $tp, $pref;
+
+		$admin_log = e107::getLog();
 
 		$temp = array();
 		$temp['rss_othernews'] = $_POST['rss_othernews'];

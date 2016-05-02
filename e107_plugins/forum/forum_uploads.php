@@ -12,17 +12,19 @@ require_once("../../class2.php");
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum')) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
 if(!USER)
 {
-	header("location:".e_BASE.$PLUGINS_DIRECTORY."forum/forum.php");
+	header("location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_uploads.php');
+e107::lan('forum', "front", true);
+
+
 
 if(is_array($_POST['delete']))
 {
@@ -34,11 +36,11 @@ if(is_array($_POST['delete']))
 			$path = e_UPLOAD.$fname;
 			if(unlink($path) == TRUE)
 			{
-				$msg = FRMUP_2.": $path";
+				$msg = LAN_FORUM_7002.": $path";
 			}
 			else
 			{
-				$msg = FRMUP_3.": $path";
+				$msg = LAN_FORUM_7003.": $path";
 			}
 		}
 	}
@@ -48,7 +50,7 @@ include_once(e_HANDLER."file_class.php");
 include_once(HEADERF);
 if($msg)
 {
-	$ns->tablerender(FRMUP_4, $msg);
+	$ns->tablerender(LAN_FORUM_7004, $msg);
 }
 
 $fi = new e_file;
@@ -67,7 +69,7 @@ if(is_array($fileList))
 	<table style='width:98%'>
 	<tr>
 		<td class='fcaption'>".FRMUP_5."</td>
-		<td class='fcaption'>".FRMUP_6."</td>
+		<td class='fcaption'>".LAN_FORUM_7006."</td>
 	</tr>";
 	foreach($fileList as $finfo)
 	{
@@ -91,17 +93,17 @@ if(is_array($fileList))
 			{
 				if($tinfo['thread_parent'])
 				{
-					$txt .= "<td class='forumheader3'>".FRMUP_7.": <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tinfo['thread_id']}.post'>{$tinfo['thread_parent']}</a></td>";
+					$txt .= "<td class='forumheader3'>".LAN_FORUM_7007.": <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tinfo['thread_id']}.post'>{$tinfo['thread_parent']}</a></td>";
 				}
 				else
 				{
-					$txt .= "<td class='forumheader3'>".FRMUP_7.": <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tinfo['thread_id']}'>{$tinfo['thread_id']}</a></td>";
+					$txt .= "<td class='forumheader3'>".LAN_FORUM_7007.": <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tinfo['thread_id']}'>{$tinfo['thread_id']}</a></td>";
 				}
 			
 			}
 			else
 			{
-				$txt .= "<td class='forumheader3'>".FRMUP_8." <input class='btn button' type='submit' name='delete[{$finfo['fname']}]' value='".FRMUP_10."' /></td>";
+				$txt .= "<td class='forumheader3'>".LAN_FORUM_7008." <input class='btn btn-default button' type='submit' name='delete[{$finfo['fname']}]' value='".LAN_DELETE."' /></td>";
 			}
 			$txt .= "</tr>";
 		}
@@ -109,12 +111,12 @@ if(is_array($fileList))
 	$txt .= "</table>";
 }
 if(!$filecount) {
-	$ns->tablerender(FRMUP_1,FRMUP_9);
+	$ns->tablerender(LAN_FORUM_7001,LAN_FORUM_7009);
 	include_once(FOOTERF);
 	exit;
 }
 
-$ns->tablerender(FRMUP_1, $txt);
+$ns->tablerender(LAN_FORUM_7001, $txt);
 include_once(FOOTERF);
 
 ?>

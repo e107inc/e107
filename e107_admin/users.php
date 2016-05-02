@@ -10,7 +10,12 @@
 * Administration Area - Users
 *
 */
-require_once ('../class2.php');
+
+if (!defined('e107_INIT'))
+{
+	require_once("../class2.php");
+}
+
 
 e107::coreLan('user');
 e107::coreLan('users', true);
@@ -22,6 +27,11 @@ e107::coreLan('date');
 // "ranks" - getperms('4|U3')
 // "default" - getperms('4|U1|U0')
 
+e107::css('inline', "
+
+ .label-status { width:100%; display:block; padding-bottom:5px; padding-top:5px }
+");
+
 class users_admin extends e_admin_dispatcher
 {
 	protected $modes = array(
@@ -31,7 +41,14 @@ class users_admin extends e_admin_dispatcher
 			'ui' 			=> 'users_admin_form_ui',
 			'uipath' 		=> null,
 			//'perm'			=> '0',
-		)				
+		),
+		'ranks'		=> array(
+			'controller' 	=> 'users_ranks_ui',
+			'path' 			=> null,
+			'ui' 			=> 'users_ranks_ui_form',
+			'uipath' 		=> null,
+			//'perm'			=> '0',
+		)
 	);	
 
 
@@ -39,7 +56,9 @@ class users_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
-		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')		
+		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
+		'main/maintenance'  => array('caption'=>'Maintenance', 'perms'=>'4')
+	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
 	/*
@@ -56,7 +75,45 @@ class users_admin extends e_admin_dispatcher
 		'main/test'		=> 'main/list',					
 	);	
 	
-	protected $menuTitle = 'users';
+	protected $menuTitle = ADLAN_36;  // 'Users'
+
+
+	function init()
+	{
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$this->adminMenu['ranks/list']	= array('caption'=> LAN_USER_RANKS. " (experimental)", 'perm' => '4|U3');
+		}
+
+
+		$JS = <<<JS
+
+			//	$('#user-action-indicator-'+user).html('<i class="fa fa-cog"></i>'); //
+
+			$(document).on('click', ".user-action", function(e){
+				// e.stopPropagation();
+
+				var action = $(this).attr('data-action-type');
+				var user = $(this).attr('data-action-user');
+
+			//	$('#user-action-indicator-'+user).html('<i class="fa fa-spin fa-spinner"></i>'); //
+
+				$('.user-action-hidden').val(''); // clear all, incase of back-button or auto-fill.
+				$('#user-action-'+ user).val(action);
+				$('#core-user-list-form').submit();
+
+
+				});
+JS;
+
+		e107::js('footer-inline', $JS);
+		e107::css('inline', '
+			.user-action { cursor: pointer }
+			.btn-user-action { margin-right:15px}
+
+		');
+
+	}
 	
 	/**
 	 * Run observers/headers override
@@ -94,8 +151,10 @@ class users_admin extends e_admin_dispatcher
 						$id = $_POST['userid'];
 						$_POST['etrigger_delete'] = array($id => $id);
 						$user = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id='.$id);
-						// TODO lan
-						$this->getController()->deleteConfirmMessage = "You are about to delete {$user['user_name']} ({$user['user_email']}) with ID #{$id}. Are you sure?";//
+						$rplc_from = array('[x]', '[y]', '[z]');
+						$rplc_to = array($user['user_name'], $user['user_email'], $id);
+						$message = str_replace($rplc_from, $rplc_to, USRLAN_222);
+						$this->getController()->deleteConfirmMessage = $message;
 					}
 				break;
 				
@@ -146,8 +205,16 @@ class users_admin extends e_admin_dispatcher
 				
 				// redirect to TestObserver/TestPage
 				case 'usersettings':
-					header('location:'.e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
-					exit;
+					$this->getRequest()
+						->setQuery(array())
+						->setMode('main')
+						->setAction('edit')
+						->setId($_POST['userid']);
+					$this->getController()->redirect();
+					
+					
+					//XXX Broken to the point of being unusable. //header('location:'.e107::getUrl()->create('user/profile/edit', 'id='.(int) $_POST['userid'], 'full=1&encode=0'));
+					// exit;
 				break;
 			}
 			
@@ -163,12 +230,13 @@ class users_admin_ui extends e_admin_ui
 		
 	protected $pluginTitle = LAN_USER;
 	protected $pluginName = 'core';
+	protected $eventName = 'user';
 	protected $table = "user";
 		
 //	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS * FROM #users"; // without any Order or Limit. 
-	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS u.*,ue.* from #user AS u left join #user_extended AS ue ON u.user_id = ue.user_extended_id  "; // without any Order or Limit.
+	protected $listQry = "SELECT SQL_CALC_FOUND_ROWS u.*,ue.* from #user AS u LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id  "; // without any Order or Limit.
 			
-	//protected $editQry = "SELECT * FROM #users WHERE comment_id = {ID}";
+	protected $editQry = "SELECT u.*,ue.* FROM #user AS u left join #user_extended AS ue ON u.user_id = ue.user_extended_id  WHERE user_id = {ID}";
 	
 	protected $pid 			= "user_id";
 	protected $perPage 		= 10;
@@ -189,39 +257,40 @@ class users_admin_ui extends e_admin_ui
 	/**
 	 * List (numerical array) of only disallowed for this controller actions
 	 */
-	protected $disallow = array('edit', 'create');
+	protected $disallow = array('create');
 
+	protected $tabs		= array('Basic', 'Extended');
 	
 	//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
 	protected $fields = array(
 		'checkboxes'		=> array('title'=> '',				'type' => null, 'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 	
-		'user_id' 			=> array('title' => LAN_ID,			'type' =>'integer',		'width' => '5%','forced' => true),
+		'user_id' 			=> array('title' => LAN_ID,			'tab'=>0, 'type' =>'integer',		'width' => '5%','forced' => true),
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
-		'user_ban' 			=> array('title' => LAN_STATUS,		'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
+		'user_ban' 			=> array('title' => LAN_STATUS,		'tab'=>0, 'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
-		'user_name' 		=> array('title' => LAN_USER_01,	'type' => 'text',	'width' => 'auto','thclass' => 'left first'), // Display name
- 		'user_loginname' 	=> array('title' => LAN_USER_02,	'type' => 'text',	'width' => 'auto'), // User name
- 		'user_login' 		=> array('title' => LAN_USER_03,	'type' => 'text',	'width' => 'auto'), // Real name (no real vetting)
- 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'type' => 'text',	'width' => 'auto'), // No real vetting
- 		'user_password' 	=> array('title' => LAN_USER_05,	'type' => 'password',	'width' => 'auto'), //TODO add md5 option to form handler? 
-		'user_sess' 		=> array('title' => 'Session',		'type' => 'text',	'width' => 'auto'), // Photo
- 		'user_image' 		=> array('title' => LAN_USER_07,	'type' => 'text',	'width' => 'auto'), // Avatar
- 		'user_email' 		=> array('title' => LAN_EMAIL,		'type' => 'text',	'width' => 'auto'),
-		'user_hideemail' 	=> array('title' => LAN_USER_10,	'type' => 'boolean',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
-		'user_xup' 			=> array('title' => 'Xup',			'type' => 'text',	'width' => 'auto'),
-		'user_class' 		=> array('title' => LAN_USER_12,	'type' => 'userclasses' , 'writeParms' => 'classlist=classes', 'inline'=>true, 'filter'=>true, 'batch'=>true),
-		'user_join' 		=> array('title' => LAN_USER_14,	'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
-		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'type' => 'datestamp', 	'width' => 'auto'),
-		'user_currentvisit' => array('title' => LAN_USER_16,	'type' => 'datestamp', 	'width' => 'auto'),
-		'user_comments' 	=> array('title' => LAN_USER_17,	'type' => 'int', 	'width' => 'auto','thclass'=>'right','class'=>'right'),
-		'user_lastpost' 	=> array('title' => 'Last Post',	'type' => 'datestamp', 	'width' => 'auto'),
-		'user_ip' 			=> array('title' => LAN_USER_18,	'type' => 'ip',		'width' => 'auto'),
+		'user_name' 		=> array('title' => LAN_USER_01,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto','thclass' => 'left first'), // Display name
+ 		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
+ 		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
+ 		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
+ 		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'str', 'width' => 'auto'), //TODO add md5 option to form handler?
+		'user_sess' 		=> array('title' => 'Session',		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
+ 		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
+ 		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
+		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
+		'user_xup' 			=> array('title' => 'Xup',			'tab'=>0, 'noedit'=>true, 'type' => 'text', 'data'=>'str',	'width' => 'auto'),
+		'user_class' 		=> array('title' => LAN_USER_12,	'tab'=>0, 'type' => 'userclasses' , 'data'=>'str', 'inline'=>true, 'writeParms' => 'classlist=classes,new', 'readParms'=>'classlist=classes,new&defaultLabel=--', 'filter'=>true, 'batch'=>true),
+		'user_join' 		=> array('title' => LAN_USER_14,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto', 'writeParms'=>'readonly=1'),
+		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_comments' 	=> array('title' => LAN_COMMENTS,	'tab'=>0, 'noedit'=>true, 'type' => 'int', 	'width' => 'auto','thclass'=>'right','class'=>'right'),
+		'user_lastpost' 	=> array('title' => 'Last Post',	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_ip' 			=> array('title' => LAN_USER_18,	'tab'=>0, 'noedit'=>true, 'type' => 'ip',		'width' => 'auto'),
 		//	'user_prefs' 		=> array('title' => LAN_USER_20,	'type' => 'text', 	'width' => 'auto'),
-		'user_visits' 		=> array('title' => LAN_USER_21,	'type' => 'int', 'width' => 'auto','thclass'=>'right','class'=>'right'),
-		'user_admin' 		=> array('title' => LAN_USER_22,	'type' => 'boolean', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
-		'user_perms' 		=> array('title' => LAN_USER_23,	'type' => 'method', 	'width' => 'auto'),
-		'user_pwchange'		=> array('title' => LAN_USER_24,	'type'=>'datestamp' , 'width' => 'auto'),
+		'user_visits' 		=> array('title' => LAN_USER_21,	'tab'=>0, 'noedit'=>true, 'type' => 'int', 'width' => 'auto','thclass'=>'right','class'=>'right'),
+		'user_admin' 		=> array('title' => LAN_USER_22,	'tab'=>0, 'type' => 'method', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
+		'user_perms' 		=> array('title' => LAN_USER_23,	'tab'=>0, 'type' => 'method', 'data'=>'str',	'width' => 'auto'),
+		'user_pwchange'		=> array('title' => LAN_USER_24,	'tab'=>0, 'noedit'=>true, 'type'=>'datestamp' , 'width' => 'auto'),
 					
 	);
 	
@@ -243,29 +312,64 @@ class users_admin_ui extends e_admin_ui
 		'user_new_period'			=> array('title' => USRLAN_190,  'type' => 'number',  'writeParms' => array('maxlength' => 3, 'post' => LANDT_04s), 'help' => USRLAN_191, 'data' => 'int',),
 	);
 	
+	public $extended = array();
+	public $extendedData = array();
+
+
+
+	function getExtended()
+	{
+		return $this->extendedData;
+	}
+
 	function init()
 	{
 	
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+
+
+		if(!empty($_POST['resendToAll']))
+		{
+			$resetPasswords = !empty($_POST['resetPasswords']);
+			$age = vartrue($_POST['resendAge'], 24);
+			$class = vartrue($_POST['resendClass'], false);
+			$this->resend_to_all($resetPasswords, $age, $class);
+		}
+
+		
+		if($this->getAction() == 'edit')
+		{
+			$this->fields['user_class']['noedit'] = true;
+		}
+
+
+
+
+
 		
 		// Extended fields - FIXME - better field types
-		if($sql->db_Select('user_extended_struct', 'user_extended_struct_name,user_extended_struct_text', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC"))
+		
+		if($rows = $sql->retrieve('user_extended_struct', '*', "user_extended_struct_type > 0 AND user_extended_struct_text != '_system_' ORDER BY user_extended_struct_parent ASC",true))
 		{
-			// FIXME use the handler to build fields and field attributes
+			// TODO FIXME use the handler to build fields and field attributes
 			// FIXME a way to load 3rd party language files for extended user fields
 			e107::coreLan('user_extended'); 	
-			while ($row = $sql->fetch())
+			foreach ($rows as $row)
 			{
 				$field = "user_".$row['user_extended_struct_name'];
-				$title = ucfirst(str_replace("user_","",$field));
+				// $title = ucfirst(str_replace("user_","",$field));
 				$label = $tp->toHtml($row['user_extended_struct_text'],false,'defs');
-				$this->fields[$field] = array('title' => $label,'width' => 'auto','type'=>'text', 'noedit'=>true);
+				$this->fields[$field] = array('title' => $label,'width' => 'auto', 'type'=>'method', 'readParms'=>array('ueType'=>$row['user_extended_struct_type']), 'method'=>'user_extended', 'data'=>false, 'tab'=>1, 'noedit'=>false);
+			
+				$this->extended[] = $field;
+				$this->extendedData[$field] = $row;
 			}
 		}
+
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
-		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'bbarea',	'width' => 'auto');
+		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto');
 		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'left');
 
 				
@@ -274,7 +378,29 @@ class users_admin_ui extends e_admin_ui
 			unset($this->fields['checkboxes']);
 			unset($this->fields['options']);			
 		}	
-		
+				
+		$this->fields['user_image']['writeParms'] = $this->getAvatarList();
+
+		if(!empty($_GET['readonly']))
+		{
+			foreach($this->fields as $key=>$v)
+			{
+				if($key == 'options' || $key == 'checkboxes')
+				{
+					continue;
+				}
+
+				$this->fields[$key]['readonly'] = 2;
+
+			}
+		}
+	//	print_a($this->fields);
+		if(!empty($_GET['iframe']))
+		{
+			define('e_IFRAME', true);
+		}
+
+
 		//FIXME - handle user extended search...
 		//$this->_alias_parsed = false;
 		//$this->parseAliases();
@@ -283,8 +409,148 @@ class users_admin_ui extends e_admin_ui
 		// {
 			// addUser();		
 		// }	
+		
+
 
 	}
+
+
+
+	protected function getAvatarList()
+	{
+		$avs = array(''=>LAN_NONE);
+		$upload = array();
+		$sys = array();
+		$uploaded = e107::getFile()->get_files(e_AVATAR_UPLOAD);
+		foreach($uploaded as $f)
+		{
+			$id = '-upload-'.$f['fname'];
+			$upload[$id] = $f['fname'];	
+		}
+		$system = e107::getFile()->get_files(e_AVATAR_DEFAULT);
+		foreach($system as $f)
+		{
+			$id = $f['fname'];
+			$sys[$id] = $f['fname'];	
+		}
+		
+		$avs['uploaded'] = $upload;
+		$avs['system'] = $sys;	
+		
+		return $avs;
+	}
+
+
+	public function afterDelete($deletedData,$id=null)
+	{
+		if(!empty($id))
+		{
+			$sql = e107::getDb();
+			$sql->delete('user_extended',"user_extended_id = ".$id);
+
+			e107::getCache()->clear('online_menu_member_newest');
+			e107::getCache()->clear('online_menu_member_total');
+		}
+
+	}
+
+
+
+
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+		$tp = e107::getParser();
+
+		$pwdField = 'user_password_'.$id;
+
+		if(!empty($new_data[$pwdField]))
+		{
+			$new_data['user_password'] = $new_data[$pwdField];
+			unset($new_data[$pwdField]);
+		}
+
+	//	e107::getMessage()->addInfo(print_a($new_data,true));
+
+		if(empty($new_data['user_password']))
+		{
+			$new_data['user_password'] = $old_data['user_password'];
+		}
+		else 
+		{
+			$new_data['user_password']	= md5($new_data['user_password']); //TODO add support for salted passwords etc. 
+		}
+		
+		if(!empty($new_data['perms']))
+		{
+			$new_data['user_perms']	= implode(".",$new_data['perms']);
+		}
+		
+		// Handle the Extended Fields. 
+		$this->saveExtended($new_data);
+
+		
+	
+		
+		return $new_data;
+	}
+	
+
+	function saveExtended($new_data)
+	{
+		$update = array();
+		$fieldtype = array();
+		foreach($this->extended as $key) // Grab Extended field data.
+		{
+			$update['data'][$key] = vartrue($new_data['ue'][$key],'_NULL_');
+		}
+
+		e107::getUserExt()->addFieldTypes($update);
+
+
+		e107::getMessage()->addDebug(print_a($new_data,true));
+
+		if(!empty($update))
+		{
+			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
+			{
+				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
+				if(e107::getDb()->insert('user_extended', $update))
+				{
+					e107::getMessage()->addSuccess('Extended Fields Updated');	//TODO Replace with Generic or existing LAN.
+				}
+				else
+				{
+					e107::getMessage()->addError('Extended Fields Insert Failed');	 	//TODO Replace with Generic or existing LAN.
+					$error = e107::getDb()->getLastErrorText();
+					e107::getMessage()->addDebug($error);
+					e107::getMessage()->addDebug(print_a($update,true));
+
+
+					e107::getDb()->getLastErrorText();
+				}
+			}
+			else
+			{
+				$update['WHERE'] = 'user_extended_id='. intval($new_data['submit_value']);
+
+				if(e107::getDb()->update('user_extended',$update)===false)
+				{
+					e107::getMessage()->addError('Extended Fields Update Failed');	//TODO Replace with Generic or existing LAN.
+					$error = e107::getDb()->getLastErrorText();
+					e107::getMessage()->addDebug($error);
+					e107::getMessage()->addDebug(print_a($update,true));
+
+				}
+				else
+				{
+					// 	e107::getMessage()->addSuccess('Extended Fields Updated'); 	//TODO Replace with Generic or existing LAN.
+				}
+			}
+		}
+
+
+	}
+
 
 	/**
 	 * Unban user trigger
@@ -298,13 +564,14 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			e107::getMessage()->addError('User not found.');
+			e107::getMessage()->addError(USRLAN_223);
 			return;
 		}
+
+		$row = e107::user($userid);
 		
-		$sql->db_Update("user", "user_ban='0' WHERE user_id='".$userid."' ");
-		$sql->db_Delete("banlist"," banlist_ip='{$row['user_ip']}' ");
+		$sql->update("user", "user_ban='0' WHERE user_id='".$userid."' ");
+		$sql->delete("banlist"," banlist_ip='{$row['user_ip']}' ");
 		
 		e107::getAdminLog()->log_event('USET_06', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_162), E_LOG_INFORMATIVE);
 		e107::getMessage()->addSuccess("(".$sysuser->getId().".".$sysuser->getName()." - ".$sysuser->getValue('email').") ".USRLAN_9);
@@ -328,8 +595,7 @@ class users_admin_ui extends e_admin_ui
 		$sysuser = e107::getSystemUser($userid, false);
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return;
 		}
 		$row = $sysuser->getData();
@@ -342,7 +608,7 @@ class users_admin_ui extends e_admin_ui
 		{
 			if ($sql->update("user","user_ban='1' WHERE user_id='".$userid."' "))
 			{
-				$admin_log->log_event('USET_05', str_replace(array('--UID--','--NAME--'), array($row['user_id'], $row['user_name']), USRLAN_161), E_LOG_INFORMATIVE);
+				e107::getLog()->add('USET_05', str_replace(array('--UID--','--NAME--'), array($row['user_id'], $row['user_name']), USRLAN_161), E_LOG_INFORMATIVE);
 				$mes->addSuccess("(".$userid.".".$row['user_name']." - {$row['user_email']}) ".USRLAN_8);
 			}
 			if (trim($row['user_ip']) == "")
@@ -401,8 +667,10 @@ class users_admin_ui extends e_admin_ui
 			$userMethods->addNonDefaulted($row);
 			$sysuser->setData($row)->save();
 			
-			$admin_log->log_event('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
-			$e_event->trigger('userfull', $row);
+			e107::getLog()->add('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
+			e107::getEvent()->trigger('userfull', $row); //BC
+			e107::getEvent()->trigger('admin_user_activated', $row);
+			
 			$mes->addSuccess(USRLAN_86." (#".$sysuser->getId()." : ".$sysuser->getName().' - '.$sysuser->getValue('email').")");
 			
 			$this->getTreeModel()->load(true);
@@ -418,19 +686,17 @@ class users_admin_ui extends e_admin_ui
 				);
 				if($sysuser->email('email', $options))
 				{
-					// TODO lan
-					$mes->addSuccess("Email sent to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+					$mes->addSuccess(USRLAN_224." ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
 				else 
 				{
-					$mes->addError("Failed to send email to: ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
+					$mes->addError(USRLAN_225." ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
 			}
 		}
 		else
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return;
 		}
 	}
@@ -461,9 +727,12 @@ class users_admin_ui extends e_admin_ui
 			 // TODO - lan
 			$lan = 'Administrator --ADMIN_EMAIL-- (#--ADMIN_UID--, --ADMIN_NAME--) has logged in as the user --EMAIL-- (#--UID--, --NAME--)';
 			
-			e107::getAdminLog()->log_event('USET_100', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getLog()->log_event('USET_100', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
-			e107::getEvent()->trigger('loginas', array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId()));
+			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('loginas', $eventData); // BC
+			e107::getEvent()->trigger('admin_user_loginas', $eventData); 
+			
 	  	}
 	}
 
@@ -488,7 +757,9 @@ class users_admin_ui extends e_admin_ui
 			
 			e107::getAdminLog()->log_event('USET_101', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
 			
-			e107::getEvent()->trigger('logoutas', array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId()));
+			$eventData = array('user_id' => $sysuser->getId(), 'admin_id' => $user->getId());
+			e107::getEvent()->trigger('logoutas', $eventData); //BC 
+			e107::getEvent()->trigger('admin_user_logoutas', $eventData); 
 			$this->redirect('list', 'main', true);
 	  	}
 		
@@ -512,15 +783,12 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$user->checkAdminPerms('3'))
 		{
-			// TODO lan
-			$mes->addError("You don't have enough permissions to do this.", 'default', true);
+			$mes->addError(USRLAN_226, 'default', true);
 			
-			// TODO lan
-			$lan = 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)';
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
 			$replace = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'), $user->getId(), $user->getName(), $user->getValue('email'));
 			
-			e107::getAdminLog()->log_event('USET_08', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getAdminLog()->log_event('USET_08', str_replace($search, $replace, USRLAN_244), E_LOG_INFORMATIVE);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -538,8 +806,7 @@ class users_admin_ui extends e_admin_ui
 			}
 			else
 			{
-				// TODO lan
-				$mes->addError('Unknown error. Action failed.');
+				$mes->addError(USRLAN_227);
 			}
 		}
 	}
@@ -564,34 +831,42 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$user->checkAdminPerms('3'))
 		{
-			// TODO lan
-			$mes->addError("You don't have enough permissions to do this.", 'default', true);
-			// TODO lan
-			$lan = 'Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin';
+			$mes->addError(USRLAN_226, 'default', true);
 			$search = array('--UID--', '--NAME--', '--EMAIL--', '--ADMIN_UID--', '--ADMIN_NAME--', '--ADMIN_EMAIL--');
 			$replace = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'), $user->getId(), $user->getName(), $user->getValue('email'));
 			
-			$admin_log->log_event('USET_08', str_replace($search, $replace, $lan), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_08', str_replace($search, $replace, USRLAN_245), E_LOG_INFORMATIVE);
 			
 			$this->redirect('list', 'main', true);
 		}
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError("User not found.", 'default', true);
+			$mes->addError(USRLAN_223, 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 		
-		if(!$sysuser->isAdmin())
+	
+		if($this->getPosted('update_admin'))
 		{
-			$sysuser->set('user_admin', 1)->save(); //"user","user_admin='1' WHERE user_id={$userid}"
-			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
-			$admin_log->log_event('USET_08', $lan, E_LOG_INFORMATIVE);
-			$mes->addSuccess($lan);
+			 e107::getUserPerms()->updatePerms($userid, $_POST['perms']);
+			 $this->redirect('list', 'main', true);
 		}
 		
-		if($this->getPosted('update_admin')) e107::getUserPerms()->updatePerms($userid, $_POST['perms']);
+		if(!$sysuser->isAdmin()) // Security Check Only. Admin status check is added during 'updatePerms'. 
+		{
+		//	$sysuser->set('user_admin', 1)->save(); //"user","user_admin='1' WHERE user_id={$userid}"
+		//	$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+		//	e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
+		//	$mes->addSuccess($lan);
+			$rplc_from = array('[x]', '[y]', '[z]');
+			$rplc_to = array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email'));
+			$message = str_replace($rplc_from, $rplc_to, USRLAN_228);
+			$message = e107::getParser()->toHtml($message,true);
+			$mes->addWarning($message);
+			$mes->addWarning(e107::getParser()->toHtml(USRLAN_229,true));
+		}
+		
 	}
 	
 	/**
@@ -612,8 +887,7 @@ class users_admin_ui extends e_admin_ui
 			->appendBody($prm->renderSubmitButtons())
 			->appendBody($frm->close());
 		
-		// TODO lan
-		$this->addTitle(str_replace(array('{NAME}', '{EMAIL}'), array($sysuser->getName(), $sysuser->getValue('email')), 'Update administrator {NAME} ({EMAIL})'));
+		$this->addTitle(str_replace(array('[x]', '[y]'), array($sysuser->getName(), $sysuser->getValue('email')), USRLAN_230));
 	}
 	
 	protected function checkAllowed($class_id) // check userclass change is permitted.
@@ -645,8 +919,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return false;
 		}
 
@@ -661,8 +934,7 @@ class users_admin_ui extends e_admin_ui
 			$a = intval($a);
 			if(!$this->checkAllowed($a)) 
 			{
-				// TODO lan
-				$mes->addError('Insufficient permissions, operation aborted.');
+				$mes->addError(USRLAN_231);
 				return false;
 			}
 			
@@ -713,7 +985,7 @@ class users_admin_ui extends e_admin_ui
 				$sysuser->email('email', $options);
 				//sendemail($send_to,$subject,$message);
 			}
-			$admin_log->log_event('USET_14', str_replace(array('--UID--','--CLASSES--'), array($id, $svar), UCSLAN_11), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_14', str_replace(array('--UID--','--CLASSES--'), array($id, $svar), UCSLAN_11), E_LOG_INFORMATIVE);
 
             $mes->addSuccess(nl2br($message));
 		}
@@ -809,22 +1081,20 @@ class users_admin_ui extends e_admin_ui
 	 */
 	protected function resendActivation($id, $lfile = '')
 	{
-		$admin_log = e107::getAdminLog();
+
 		$sysuser = e107::getSystemUser($id, false);
 		$key = $sysuser->getValue('sess');
 		$mes = e107::getMessage();
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.');
+			$mes->addError(USRLAN_223);
 			return false;
 		}
 
 		if(!$key || !$sysuser->getValue('ban'))
 		{
-			// TODO lan
-			$mes->addError('Missing activation key.');
+			$mes->addError(USRLAN_232);
 			return false;
 		}
 		
@@ -852,20 +1122,41 @@ class users_admin_ui extends e_admin_ui
 		// FIXME switch to e107::getUrl()->create(), use email content templates
 		//$return_address = (substr(SITEURL,- 1) == "/") ? SITEURL."signup.php?activate.".$sysuser->getId().".".$key : SITEURL."/signup.php?activate.".$sysuser->getId().".".$key;
 		$return_address = SITEURL."signup.php?activate.".$sysuser->getId().".".$key;
-		$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
-		$message .= "<a href='".$return_address."'>".$return_address."</a>";
+	//	$message = LAN_EMAIL_01." ".$sysuser->getName()."\n\n".LAN_SIGNUP_24." ".SITENAME.".\n".LAN_SIGNUP_21."\n\n";
+	//	$message .= "<a href='".$return_address."'>".$return_address."</a>";
 		
-		// custom header now auto-added in email() method 
-		//$mailheader_e107id = $id;
+
+		$userInfo = array(
+			'user_id'       =>  $sysuser->getId(),
+			'user_name'     => $sysuser->getName(),
+			'user_email'    =>  $sysuser->getValue('email'),
+			'user_sess'     =>  $key,
+			'user_loginname' =>  $sysuser->getValue('loginname'),
+			);
+
+
+		$passwordInput = e107::getPref('signup_option_password', 2);
+
+		if(empty($passwordInput)) // auto-generated password at signup.
+		{
+			$newPwd = e107::getUserSession()->resetPassword($userInfo['user_id']);
+		}
+		else
+		{
+			$newPwd = '**********';
+		}
+
+		$message = 'null';
 		
-		$check = $sysuser->email('email', array(
-			'mail_subject' => LAN_SIGNUP_96." ".SITENAME,
+		$check = $sysuser->email('signup', array(
+			'mail_subject' => LAN_SIGNUP_98,
 			'mail_body' => nl2br($message),
-		));
+			'user_password' => $newPwd
+		), $userInfo);
 		
 		if ($check)
 		{
-			$admin_log->log_event('USET_11', str_replace(array('--ID--','--NAME--','--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_167), E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_11', str_replace(array('--ID--','--NAME--','--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_167), E_LOG_INFORMATIVE);
 			$mes->addSuccess(USRLAN_140.": <a href='mailto:".$sysuser->getValue('email')."?body=".$return_address."' title=\"".LAN_USER_08."\" >".$sysuser->getName()." (".$sysuser->getValue('email').")</a> ({$lan}) ");
 		}
 		else
@@ -886,22 +1177,19 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.', 'default', true);
+			$mes->addError(USRLAN_223, 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 		
 		$result = $this->testEmail($email);
 		if($result)
 		{
-			// TODO lan
 			$this->setParam('testSucces', $result);
-			$mes->addSuccess($email.' - Valid');
+			$mes->addSuccess($email.' - '.USRLAN_233);
 		}
 		else
 		{
-			// TODO lan
-			$mes->addError($email.' - Invalid', 'default', true);
+			$mes->addError($email.' - '.USRLAN_234, 'default', true);
 			$this->redirect('list', 'main', true);
 		}
 
@@ -923,8 +1211,7 @@ class users_admin_ui extends e_admin_ui
 		$email = $sysuser->getValue('email');
 		$frm = e107::getForm();
 		
-		// TODO lan
-		$caption = "Test ".$email;
+		$caption = str_replace('[x]', $email, USRLAN_119);
 		$this->addTitle($caption);
 		
 		$text = "<a href='".e_REQUEST_HTTP."?mode=main&amp;action=list'>".LAN_BACK."</a>";
@@ -981,8 +1268,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if(!$sysuser->getId())
 		{
-			// TODO lan
-			$mes->addError('User not found.', 'default', true);
+			e107::getMessage()->addError(USRLAN_223, 'default', true);
 			return;
 		}
 		
@@ -991,8 +1277,7 @@ class users_admin_ui extends e_admin_ui
 		
 		if($sysuser->save())
 		{
-			// TODO lan
-			e107::getMessage()->addSuccess('User now has to verify.');
+			e107::getMessage()->addSuccess(USRLAN_235);
 			
 			// TODO - auto-send email or not - discuss
 			$this->resendActivation($userid);
@@ -1004,8 +1289,7 @@ class users_admin_ui extends e_admin_ui
 			return;
 		}
 		
-		// TODO lan
-		e107::getMessage()->addError('Action failed.');
+		e107::getMessage()->addError(USRLAN_236);
 	}
 
 	/**
@@ -1045,8 +1329,7 @@ class users_admin_ui extends e_admin_ui
 			if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
 			{
 				$allData['data']['user_name'] = $allData['data']['user_loginname'];
-				// TODO lan
-				$mes->addWarning(str_replace('--NAME--', $allData['data']['user_loginname'], 'User name and display name cannot be different (based on the site configuration). Display name set to <strong>--NAME--</strong>.'));
+				$mes->addWarning(str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237));
 				//$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 			}
 		}
@@ -1101,7 +1384,10 @@ class users_admin_ui extends e_admin_ui
 		if ($userMethods->needEmailPassword())
 		{
 			// Save separate password encryption for use with email address
-			$user_data['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $user_data['user_email'])));
+            $user_prefs = e107::getArrayStorage()->unserialize($user_data['user_prefs']);
+            $user_prefs['email_password'] = $userMethods->HashPassword($savePassword, $user_data['user_email']);
+			$user_data['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
+            unset($user_prefs);
 		}
 		
 		$userMethods->userClassUpdate($allData['data'], 'userall');
@@ -1113,20 +1399,23 @@ class users_admin_ui extends e_admin_ui
 		$userMethods->addNonDefaulted($user_data);
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
 		
-		$userid = $sql->db_Insert('user', $allData);
+		$userid = $sql->insert('user', $allData);
 		if ($userid)
 		{
+			$this->saveExtended(array('submit_value'=>$userid));
+
 			$sysuser = e107::getSystemUser(false, false);
 			$sysuser->setData($allData['data']);
 			$sysuser->setId($userid);
 			$user_data['user_id'] = $userid;
 			
 			// Add to admin log
-			$admin_log->log_event('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}", E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_02',"UName: {$user_data['user_name']}; Email: {$user_data['user_email']}", E_LOG_INFORMATIVE);
 			
 			// Add to user audit trail
-			$admin_log->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
-			$e_event->trigger('userfull', $user_data);
+			e107::getLog()->user_audit(USER_AUDIT_ADD_ADMIN, $user_data, 0, $user_data['user_loginname']);
+			e107::getEvent()->trigger('userfull', $user_data);
+			e107::getEvent()->trigger('admin_user_created', $user_data); 
 			
 			// send everything available for user data - bit sparse compared with user-generated signup
 			if(isset($_POST['sendconfemail']))
@@ -1145,9 +1434,8 @@ class users_admin_ui extends e_admin_ui
 						// activate and send password
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'email_subject' => USRLAN_187.SITENAME,
-							// TODO lan
-							'activation_url' => 'Your current status is <strong>Active</strong>',
+							'mail_subject' => USRLAN_187.SITENAME,
+							'activation_url' => USRLAN_238,
 						));
 					break;
 					
@@ -1159,7 +1447,7 @@ class users_admin_ui extends e_admin_ui
 							
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'email_subject' => USRLAN_187.SITENAME,
+							'mail_subject' => USRLAN_187.SITENAME,
 							'activation_url' => SITEURL."signup.php?activate.".$sysuser->getId().".".$sysuser->getValue('sess'),
 						));
 					break;
@@ -1175,21 +1463,26 @@ class users_admin_ui extends e_admin_ui
 				}
 			}
 			
-			$message = str_replace('--NAME--', htmlspecialchars($user_data['user_name'], ENT_QUOTES, CHARSET), USRLAN_174);
+		//	$message = str_replace('--NAME--', htmlspecialchars($user_data['user_name'], ENT_QUOTES, CHARSET), USRLAN_174);
+			$message = USRLAN_172; // "User account has been created with the following:" ie. keep it simple so it can easily be copied and pasted. 
 			
 			// Always show Login name and password
 			//if (isset($_POST['generateloginname']))
 			{
 				$mes->addSuccess($message)
-					->addSuccess(USRLAN_173.': <strong>'.htmlspecialchars($user_data['user_loginname'], ENT_QUOTES, CHARSET).'</strong>');	
+					->addSuccess(USRLAN_128.': <strong>'.htmlspecialchars($user_data['user_loginname'], ENT_QUOTES, CHARSET).'</strong>');	
 			}
 				
 			//if (isset($_POST['generatepassword']))
 			{
-				$mes->addSuccess($message)
-					->addSuccess(USRLAN_172.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
+				$mes->addSuccess(LAN_PASSWORD.': <strong>'.htmlspecialchars($savePassword, ENT_QUOTES, CHARSET).'</strong>');	
 			}
 			return;
+		}
+		else
+		{
+			$mes->addError(LAN_CREATED_FAILED);
+			$mes->addError($sql->getLastErrorText());
 		}
 	}
 	
@@ -1205,7 +1498,7 @@ class users_admin_ui extends e_admin_ui
 		$pref = e107::getPref();
 		$user_data = $this->getParam('user_data');
 		
-		$this->addTitle(LAN_USER_QUICKADD);
+	// 	$this->addTitle(LAN_USER_QUICKADD);
 		
 		$text = "<div>".$frm->open("core-user-adduser-form",null,null,'autocomplete=0')."
 		<fieldset id='core-user-adduser'>
@@ -1237,7 +1530,7 @@ class users_admin_ui extends e_admin_ui
 		</tr>
 
 		<tr>
-			<td>".USRLAN_62."</td>
+			<td>".LAN_PASSWORD."</td>
 			<td>".$frm->password('password', '', 20, array('size' => 40, 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
 			</td>
 		</tr>";
@@ -1253,13 +1546,12 @@ class users_admin_ui extends e_admin_ui
 			</tr>
 	
 			<tr>
-				<td>Notification and user status</td>
+				<td>".USRLAN_239."</td>
 				<td>
-					".$frm->select('sendconfemail', array('0' => "Activate, Don't Notify", '1' => 'Activate, Notify (password)', '2' => 'Require Activation, Notify (password and activation link)'), (int) varset($_POST['sendconfemail'], 0))."
+					".$frm->select('sendconfemail', array('0' => USRLAN_240, '1' => USRLAN_241, '2' => USRLAN_242), (int) varset($_POST['sendconfemail'], 0))."
 					<div class='field-help'>".USRLAN_181."</div>
 				</td>
 			</tr>";
-			// TODO lan above
 
 		if (!isset ($user_data['user_class'])) $user_data['user_class'] = varset($pref['initial_user_classes']);
 		$temp = $e_userclass->vetted_tree('class', array($e_userclass, 'checkbox_desc'), $user_data['user_class'], 'classes, no-excludes');
@@ -1271,7 +1563,7 @@ class users_admin_ui extends e_admin_ui
 				".USRLAN_120."
 			</td>
 			<td>
-				<a href='#set_class' class='btn e-expandit'>".USRLAN_120."</a>
+				<a href='#set_class' class='btn btn-default e-expandit'>".USRLAN_120."</a>
 				<div class='e-hideme' id='set_class'>
 				{$temp}
 				</div>
@@ -1284,7 +1576,7 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_35."</td>
 			<td>
-				<a href='#set_perms' class='btn e-expandit'>Set Permissions</a>
+				<a href='#set_perms' class='btn btn-default e-expandit'>".USRLAN_243."</a>
 				<div class='e-hideme' id='set_perms'>
 		";
 			
@@ -1435,7 +1727,7 @@ class users_admin_ui extends e_admin_ui
 		$ranks = e107::getRank()->getRankData();
 		$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
 		
-		$this->addTitle(LAN_USER_RANKS);
+	//	$this->addTitle(LAN_USER_RANKS);
 		
 		foreach($tmp as $k => $v)
 		{
@@ -1601,43 +1893,180 @@ class users_admin_ui extends e_admin_ui
 		$ns->tablerender(USFLAN_7, $text);
 	}
 
-	// It might be used in the future - batch options
-	function resend_to_all()
+
+
+
+	function maintenancePage()
 	{
-		global $sql,$pref,$sql3,$admin_log;
-		$count = 0;
-		$pause_count = 1;
-		$pause_amount = ($pref['mail_pause']) ? $pref['mail_pause'] : 10;
-		$pause_time = ($pref['mail_pausetime']) ? $pref['mail_pausetime'] : 1;
-		if ($sql->db_Select_gen('SELECT user_language FROM `#user_extended` LIMIT 1'))
+		$frm = e107::getForm();
+		$ns = e107::getRender();
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		$age = array(
+			1=>'1 hour', 3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
+		);
+
+		$count = $sql->count('user','(*)',"user_ban = 2 ");
+		$caption = $tp->lanVars('Resend account activation email to unactivated users.',$count);
+
+		$text = $frm->open('userMaintenance','post');
+
+		$text .= "
+        <table class='table adminform'>
+		<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+		<tr><td>".$caption."<td>
+		<td>
+		<div class='form-inline'>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
+		" <div class='input-group'>".$frm->userclass('resendClass',false, null )."<span class='input-group-btn'>".
+		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
+
+
+		</span></div></div></td></tr>
+		</table>";
+
+		$text .= $frm->close();
+
+		return $text;
+
+
+
+
+	}
+
+
+	/**
+	 * Send an activation email to all unactivated users older than so many hours.
+	 * @param bool $resetPasswords
+	 * @param int $age in hours. ie. older than 24 hours will be sent an email.
+	 */
+	function resend_to_all($resetPasswords=false, $age=24, $class='')
+	{
+		global $sql,$pref;
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$sql2 = e107::getDb('toall');
+
+		$emailLogin = e107::getPref('allowEmailLogin');
+
+		e107::lan('core','signup');
+
+		$ageOpt = intval($age)." hours ago";
+		$age = strtotime($ageOpt);
+
+	//	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ORDER BY u.user_id DESC";
+
+
+		$query = "SELECT u.* FROM `#user` AS u WHERE u.user_ban = 2 AND u.user_email != '' AND u.user_join < ".$age." ";
+
+		if(!empty($class))
 		{
-			$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON ue.user_extended_id = u.user_id WHERE u.user_ban = 2 ORDER BY u.user_id DESC";
-		}
-		else
-		{
-			$query = 'SELECT * FROM `#user` WHERE user_ban=2';
+			$query .= " AND FIND_IN_SET( ".intval($class).", u.user_class) ";
 		}
 
-		$sql3 = e107::getDb('sql3');
+		$query .= " ORDER BY u.user_id DESC";
 
-		$sql3->db_Select_gen($query);
-		while ($row = $sql3->db_Fetch())
+		$sql->gen($query);
+
+		$recipients = array();
+
+		$usr = e107::getUserSession();
+
+		while ($row = $sql->fetch())
 		{
-			echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
-			$this->resend($row['user_id'],$row['user_sess'],$row['user_name'],$row['user_email'],$row['user_language']);
-			if ($pause_count > $pause_amount)
+
+			if($resetPasswords === true)
 			{
-				sleep($pause_time);
-				$pause_count = 1;
+				$rawPassword    = $usr->generateRandomString('********');
+				$sessKey        = e_user_model::randomKey();
+
+				$updateQry = array(
+					'user_sess'     => $sessKey,
+					'user_password' => $usr->HashPassword($rawPassword, $row['user_loginname']),
+					'WHERE'         => 'user_id = '.$row['user_id']." LIMIT 1"
+				);
+
+				if(!$sql2->update('user',$updateQry))
+				{
+
+					e107::getMessage()->addError("Error updating user's password. #".$row['user_id']." : ".$row['user_email']);
+					e107::getMessage()->addDebug(print_a($updateQry,true));
+
+				//	break;
+				}
+				else
+				{
+					e107::getMessage()->addInfo("Updated ".$row['user_id']." : ".$row['user_email']);
+				}
+
+
+				$row['user_sess'] = $sessKey;
+
 			}
-			sleep(1);
-			$pause_count++;
-			$count++;
+			else
+			{
+				$rawPassword = '(*** hidden ***)';
+			}
+
+			$activationUrl = SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'];
+
+
+
+			$recipients[] = array(
+				'mail_recipient_id'     => $row['user_id'],
+				'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
+				'mail_recipient_email'  => $row['user_email'],
+				'mail_target_info'		=> array(
+					'USERID'		        => $row['user_id'],
+					'LOGINNAME'             => (intval($emailLogin) === 1) ? $row['user_email'] : $row['user_loginname'],
+					'PASSWORD'              => $rawPassword,
+					'DISPLAYNAME' 	        => $tp->toDB($row['user_name']),
+					'SUBJECT'               => LAN_SIGNUP_98,
+					'USERNAME' 		        => $row['user_name'],
+					'USERLASTVISIT'         => $row['user_lastvisit'],
+					'ACTIVATION_LINK'       => '<a href="'.$activationUrl.'">'.$activationUrl.'</a>', // Warning: switching the quotes on this will break the template.
+					'ACTIVATION_URL'        => $activationUrl,
+					'DATE_SHORT'            => $tp->toDate(time(),'short'),
+					'DATE_LONG'             => $tp->toDate(time(),'long'),
+					'SITEURL'               => SITEURL
+				)
+			);
+
+		//	echo $row['user_id']." ".$row['user_sess']." ".$row['user_name']." ".$row['user_email']."<br />";
+
 		}
-		if ($count)
-		{
-			$admin_log->log_event('USET_12',str_replace('--COUNT--',$count,USRLAN_168),E_LOG_INFORMATIVE);
-		}
+
+		$siteadminemail = e107::getPref('siteadminemail');
+		$siteadmin = e107::getPref('siteadmin');
+
+		$mailer = e107::getBulkEmail();
+
+		// Create the mail body
+		$mailData = array(
+			'mail_total_count'      => count($recipients),
+			'mail_content_status' 	=> MAIL_STATUS_TEMP,
+			'mail_create_app' 		=> 'core',
+			'mail_title' 			=> 'RESEND ACTIVATION',
+			'mail_subject' 			=> LAN_SIGNUP_98,
+			'mail_sender_email' 	=> e107::getPref('replyto_email',$siteadminemail),
+			'mail_sender_name'		=> e107::getPref('replyto_name',$siteadmin),
+			'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
+			'mail_body' 			=> 'null',
+			'template'				=> 'signup',
+			'mail_send_style'       => 'signup'
+		);
+
+
+		$mailer->sendEmails('signup', $mailData, $recipients, array('mail_force_queue'=>1));
+		$totalMails = count($recipients);
+
+		$url = e_ADMIN."mailout.php?mode=pending&action=list";
+
+		e107::getMessage()->addSuccess("Total emails added to <a href='".$url."'>mail queue</a>: ".$totalMails);
+
 	}
 
 	// ---------------------------------------------------------------------
@@ -1743,13 +2172,16 @@ class users_admin_ui extends e_admin_ui
 		$DEL = ($pref['mail_bounce_delete']) ? true : false;
 		$text = "<br /><div><form  method='post' action='".e_SELF.$qry."'><table>
 		<tr><td style='width:5%'>#</td><td>e107-id</td><td>email</td><td>Subject</td><td>Bounce</td></tr>\n";
+		
+		$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
+		
 		for ($i = 1; $i <= $tot; $i++)
 		{
 			$head = $obj->getHeaders($i);
 			if ($head['bounce'])
 			{
 			// Its a 'bounce' email
-				if (preg_match('/.*X-e107-id:(.*)MIME/',$obj->getBody($i),$result))
+				if (preg_match('/.*'.$identifier.':(.*)MIME/',$obj->getBody($i),$result))
 				{
 					if ($result[1])
 					{
@@ -1798,16 +2230,16 @@ class users_admin_ui extends e_admin_ui
 		}
 		if ($del_count)
 		{
-			$admin_log->log_event('USET_13',str_replace('--COUNT--',$del_count,USRLAN_169),E_LOG_INFORMATIVE);
+			e107::getLog()->add('USET_13',str_replace('--COUNT--',$del_count,USRLAN_169),E_LOG_INFORMATIVE);
 		}
 		if ($tot)
 		{
 		// Option to delete emails - only if there are some in the list
 			$text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td style='text-align: center;'><input class='btn button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
-			<td style='text-align: center;'><input class='btn button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
-			<td style='text-align: center;'><input class='btn button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
-			<td style='text-align: center;'><input class='btn button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
 			</td></tr>";
 		}
 		$text .= "</table></form></div>";
@@ -1850,7 +2282,7 @@ class users_admin_ui extends e_admin_ui
 			// $sql->db_Delete("user","user_id='{$u['user_id']}' ");
 			// $sql->db_Delete("user_extended","user_extended_id='{$u['user_id']}' ");
 		// }
-		// $admin_log->log_event('USET_04',str_replace(array('--COUNT--','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE);
+		// e107::getLog()->add('USET_04',str_replace(array('--COUNT--','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE);
 	// }
 	// $ns->tablerender(USRLAN_57,"<div style='text-align:center'><b>".$text."</b></div>");
 	// unset ($text);
@@ -1860,12 +2292,82 @@ class users_admin_ui extends e_admin_ui
 
 class users_admin_form_ui extends e_admin_form_ui
 {
-						
-	function user_perms($curval,$mode)
+
+
+	function user_admin($curval,$mode, $att)
+	{
+		$att['type'] = 'boolean';
+
+//		$uid = $this->getController()->getModel()->get('user_id');
+		$perms = $this->getController()->getModel()->get('user_perms');
+
+		if($mode == 'read'  || (str_replace(".","",$perms) == '0'))
+		{
+			return $this->renderValue('user_admin',$curval,$att);
+		}
+
+		if($mode == 'write')
+		{
+			return $this->renderElement('user_admin',$curval,$att);
+		}
+
+
+	}
+
+
+	function user_extended($curval,$mode, $att)
 	{
 		if($mode == 'read')
 		{
-			$uid = $this->getController()->getListModel()->get('user_id');	
+			$field = $att['field'];
+
+			if($this->getController()->getAction() == 'list')
+			{
+				$data =  $this->getController()->getListModel()->get($field); // ($att['field']);
+			}
+			else
+			{
+				$data =  $this->getController()->getModel()->get($field); // ($att['field']);
+			}
+
+
+
+			return e107::getUserExt()->renderValue($data, $att['ueType']);
+
+			return print_a($att,true);
+
+
+			return $data;
+
+		}
+		if($mode == 'write')
+		{
+			// e107::getUserExt()->user_extended_edit
+		//	return 'hello';
+			$field = $att['field'];
+			$extData = $this->getController()->getExtended();
+			$extData[$field]['user_extended_struct_required'] = 0;
+
+			return e107::getUserExt()->user_extended_edit($extData[$field],$curval);
+
+		//	return print_a($att,true);
+		}
+
+
+	}
+
+
+
+
+
+	function user_perms($curval,$mode)
+	{
+		$perms = $this->getController()->getModel()->get('user_perms');
+		$uid = $this->getController()->getModel()->get('user_id');
+
+		if($mode == 'read' || (str_replace(".","",$perms) == '0' && $uid == USERID))
+		{
+
 			return e107::getUserPerms()->renderPerms($curval,$uid);		
 		}
 		if($mode == 'write')
@@ -1879,23 +2381,56 @@ class users_admin_form_ui extends e_admin_form_ui
 		
 	}
 	
+	function user_password($curval,$mode)
+	{
+		if($mode == 'read')
+		{
+			if(empty($curVal))
+			{
+				return "No password!";	
+			}
+		}
+		if($mode == 'write')
+		{
+			$fieldName = 'user_password_'. $this->getController()->getId();
+
+			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
+			";			
+		}
+			
+		
+	}
+	
+	
+	
+	
+	
+	
 	function user_ban($curval,$mode)
 	{
 		$bo = array(
-			'<span class="label label-success">Active</span>',
-			"<span class='label label-important'>".LAN_BANNED."</span>",
-			"<span class='label'>".LAN_NOTVERIFIED."</span>",
-			"<span class='label label-inverse'>".LAN_BOUNCED."</span>"
+			'<span class="label label-success label-status">Active</span>',
+			"<span class='label label-important label-danger label-status'>".LAN_BANNED."</span>",
+			"<span class='label label-default label-status'>".LAN_NOTVERIFIED."</span>",
+			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>"
 		);
 		
 		if($mode == 'filter' || $mode == 'batch')
 		{
 			return 	$bo;
 		}
+
+		$perms = $this->getController()->getModel()->get('user_perms');
+
 		if($mode == 'write')
 		{
-			$frm = e107::getForm();
-			return $frm->select('user_ban',$bo,$curval);	
+
+			if(str_replace(".","",$perms) == '0')
+			{
+				return "<div style='width:120px'>".vartrue($bo[$curval],' ')."</div>";
+			}
+
+			return $this->select('user_ban',$bo,$curval);
 		}	
 			
 		return vartrue($bo[$curval],' '); // ($curval == 1) ? ADMIN_TRUE_ICON : '';	
@@ -1994,80 +2529,161 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 		
 		extract($row);
+
+		$user_id = $row['user_id'];
+		$user_ip = $row['user_ip'];
+		$user_admin = $row['user_admin'];
+
 		$text = "";
 		$head = "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
 				<input type='hidden' name='userip[{$user_id}]' value='{$user_ip}' />
-				<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' title='Modify' style='text-align:left;width:75%'>
-				<option selected='selected' value=''>&nbsp;</option>";
-				
-		if ($user_perms != "0")
+				<input type='hidden'  class='user-action-hidden' id='user-action-".$user_id."' name='useraction[{$user_id}]' value='' />
+				";
+
+		//		<select name='useraction[{$user_id}]' onchange='this.form.submit()' class='e-select tbox' data-placement='left' title='Modify' style='text-align:left;width:75%'>
+		//		<option selected='selected' value=''>&nbsp;</option>";
+
+
+		$opts = array();
+
+		$opts['usersettings'] = LAN_EDIT;
+
+		if ($row['user_perms'] != "0")
 		{
 			// disabled user info <option value='userinfo'>".USRLAN_80."</option>
-			$text .= "
-					<option value='usersettings'>".LAN_EDIT."</option>
-					";
+		//	$text .= "<option value='usersettings'>".LAN_EDIT."</option>";
+
+
+
+
 			// login/logout As
 			if(getperms('0') && !($row['user_admin'] && getperms('0', $row['user_perms'])))
 			{
-				if(e107::getUser()->getSessionDataAs() == $row['user_id']) $text .= "<option value='logoutas'>".sprintf(USRLAN_AS_2, $row['user_name'])."</option>";
-				else $text .= "<option value='loginas'>".sprintf(USRLAN_AS_1, $row['user_name'])."</option>";
+				if(e107::getUser()->getSessionDataAs() == $row['user_id'])
+				{
+		//		    $text .= "<option value='logoutas'>".sprintf(USRLAN_AS_2, $row['user_name'])."</option>";
+				    $opts['logoutas'] = e107::getParser()->lanVars(USRLAN_AS_2, $row['user_name']);
+				}
+				else
+				{
+		//		    $text .= "<option value='loginas'>".sprintf(USRLAN_AS_1, $row['user_name'])."</option>";
+				    $opts['loginas'] = e107::getParser()->lanVars(USRLAN_AS_1, $row['user_name']);
+				}
 			}
-			switch ($user_ban)
+			switch ($row['user_ban'])
 			{
 				case 0 :
-					$text .= "<option value='ban'>".USRLAN_30."</option>\n";
+		//			$text .= "<option value='ban'>".USRLAN_30."</option>\n";
+					$opts['ban'] = USRLAN_30;
 					break;
 				case 1 :
 					// Banned user
-					$text .= "<option value='unban'>".USRLAN_33."</option>\n";
+			//		$text .= "<option value='unban'>".USRLAN_33."</option>\n";
+					$opts['unban'] = USRLAN_33;
 					break;
 				case 2 :
 					// Unverified
-					$text .= "<option value='ban'>".USRLAN_30."</option>
+			/*		$text .= "<option value='ban'>".USRLAN_30."</option>
 						<option value='verify'>".USRLAN_32."</option>
 						<option value='resend'>".USRLAN_112."</option>
-						<option value='test'>".USRLAN_118."</option>";
+						<option value='test'>".USRLAN_118."</option>";*/
+
+						$opts['ban'] = USRLAN_30;
+						$opts['verify'] = USRLAN_32;
+						$opts['resend'] = USRLAN_112;
+						$opts['test'] = USRLAN_118;
 					break;
 				case 3 :
 					// Bounced
 					// FIXME wrong lan for 'reqverify' - USRLAN_181, wrong lan for 'verify' (USRLAN_182), changed to USRLAN_32
-					$text .= "<option value='ban'>".USRLAN_30."</option>
+				/*	$text .= "<option value='ban'>".USRLAN_30."</option>
 						<option value='reqverify'>Make not verified</option>
-						<option value='verify'>".USRLAN_32/*USRLAN_182*/."</option>
+						<option value='verify'>".USRLAN_32."</option>
 						<option value='test'>".USRLAN_118."</option>";
+						*/
+
+						$opts['ban']        = USRLAN_30;
+						$opts['reqverify'] = "Make not verified";
+						$opts['verify']     = USRLAN_32;
+						$opts['test']       = USRLAN_118;
+
+
 					break;
 				default :
 			}
-			if (!$user_admin && !$user_ban && $user_ban != 2 && getperms('3'))
+			if (!$user_admin && !$row['user_ban'] && $row['user_ban'] != 2 && getperms('3'))
 			{
-				$text .= "<option value='admin'>".USRLAN_35."</option>\n";
+		//		$text .= "<option value='admin'>".USRLAN_35."</option>\n";
+				$opts['admin'] = USRLAN_35;
 			}
 			else
-				if ($user_admin && $user_perms != "0" && getperms('3'))
+				if ($user_admin && $row['user_perms'] != "0" && getperms('3'))
 				{
-					$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
-					$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
+			//		$text .= "<option value='adminperms'>".USRLAN_221."</option>\n";
+			//		$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
+
+					$opts['adminperms'] = USRLAN_221;
+					$opts['uadmin']     = USRLAN_34;
 				}
 		}
-		if ($user_perms == "0" && !getperms("0"))
+		if ($row['user_perms'] == "0" && !getperms("0"))
 		{
-			$text .= "";
+		//	$text .= "";
 		}
 		elseif ($user_id != USERID || getperms("0"))
 		{
 		//	$text .= "<option value='userclass'>".USRLAN_36."</option>\n"; // DEPRECATED. inline & batch should be enough. 
 		}
-		if ($user_perms != "0")
+		if ($row['user_perms'] != "0")
 		{
-			$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
+		//	$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
+			$opts['deldiv'] = 'divider';
+			$opts['deluser'] = LAN_DELETE;
 		}
 		
-		$foot = "</select></div>";
+	//	$foot = "</select>";
+	//	$foot = "</div>";
 
+		$btn =  '<div class="btn-group pull-right">
+
+		<button aria-expanded="false" class="btn btn-default btn-user-action dropdown-toggle" data-toggle="dropdown">
+		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('cog').'</span>
+		<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+
+		<!-- dropdown menu links -->
+		';
+		//<li class="dropdown-header text-right"><strong>'.$row['user_name'].'</strong></li>
+		foreach($opts as $k=>$v)
+		{
+			if($v == 'divider')
+			{
+				$btn .= '<li class="divider" ></li>';
+			}
+			else
+			{
+				$btn .= '<li class="danger user-action-'.$k.'"><a class="user-action text-right"  data-action-user="'.$user_id.'" data-action-type="'.$k.'" >'.$v.'</a></li>';
+			}
+		}
+
+
+
+		$btn .= '
+		</ul></div>';
+
+		if(!empty($opts))
+		{
+			return $head.$btn;
+		}
+		else
+		{
+			return '';
+		}
 		
-		return ($text) ? $head.$text.$foot : "";	
+		// return ($text) ? $head.$text.$foot . $btn : "";
 	}
 
 	
@@ -2088,6 +2704,159 @@ class users_admin_form_ui extends e_admin_form_ui
 	
 	
 }
+
+
+	class users_ranks_ui extends e_admin_ui
+	{
+		protected $pluginTitle		= LAN_USER;
+		protected $pluginName		= 'user_ranks';
+		protected $table			= 'generic';
+		protected $pid				= 'gen_id';
+		protected $perPage 			= 15;
+		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='user_rank_data' ";
+		protected $listOrder     = " CASE gen_datestamp WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3  WHEN 0 THEN 4 END, gen_intdata ";
+
+		protected $fields 		= array (
+		    'checkboxes'        =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		    'gen_id' 			=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'value=user_rank_data', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_ip' 			=> array ( 'title' => USRLAN_208, 'type' => 'text', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_intdata' 		=> array ( 'title' => USRLAN_209, 'type' => 'text', 'batch'=>false, 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'default=-', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+
+		    'gen_datestamp' 	=> array ( 'title' => 'Special', 'type' => 'hidden', 'nolist'=>true, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'gen_user_id' 		=> array ( 'title' => USRLAN_210, 'type' => 'boolean', 'batch'=>true, 'data' => 'int', 'inline'=>true, 'width' => '15%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'gen_chardata' 		=> array ( 'title' => LAN_ICON, 'type' => 'dropdown', 'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',  ),
+
+
+		    'options'			=> array ( 'title' => LAN_OPTIONS, 'type' =>'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
+		);
+
+		protected $fieldpref = array('gen_datestamp', 'gen_type', 'gen_ip', 'gen_intdata', 'gen_user_id', 'gen_chardata');
+
+
+		// optional
+		public function init()
+		{
+			$tmp = e107::getFile()->get_files(e_IMAGE.'ranks', '.*?\.(png|gif|jpg)');
+
+			$mode = $this->getMode();
+			$action = $this->getAction();
+
+			$existing = e107::getDb()->gen("SELECT gen_id FROM #generic WHERE gen_type='user_rank_data' LIMIT 1 ");
+
+			if($mode == 'ranks' && ($action == 'list') && !$existing)
+			{
+				$this->createDefaultRecords();
+			}
+
+			//	$this->addTitle(LAN_USER_RANKS);
+
+			foreach($tmp as $k => $v)
+			{
+				$id = $v['fname'];
+				$this->fields['gen_chardata']['writeParms']['optArray'][$id] = $v['fname'];
+			}
+
+			unset($tmp);
+			natsort($imageList);
+		}
+
+		public function afterDelete($data)
+		{
+			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			e107::getCache()->clear_sys('nomd5_user_ranks');
+		}
+
+		private function createDefaultRecords()
+		{
+
+			$tmp = array();
+			$tmp['_FIELD_TYPES']['gen_datestamp'] = 'int';
+			$tmp['_FIELD_TYPES']['gen_ip'] = 'todb';
+			$tmp['_FIELD_TYPES']['gen_user_id'] = 'int';
+			$tmp['_FIELD_TYPES']['gen_chardata'] = 'todb';
+			$tmp['_FIELD_TYPES']['gen_intdata'] = 'int';
+
+
+			//Add main site admin info
+			$tmp['data']['gen_datestamp']   = 1;
+			$tmp['data']['gen_type']        = 'user_rank_data';
+			$tmp['data']['gen_ip']          = LAN_MAINADMIN;
+			$tmp['data']['gen_user_id']     = 1;
+			$tmp['data']['gen_chardata']    = 'English_main_admin.png';
+			$tmp['data']['gen_intdata']     = 0;
+			e107::getDb()->insert('generic',$tmp);
+			unset ($tmp['data']);
+
+
+			//Add site admin info
+			$tmp['data']['gen_type']        = 'user_rank_data';
+			$tmp['data']['gen_datestamp']   = 2;
+			$tmp['data']['gen_ip']          = LAN_ADMIN;
+			$tmp['data']['gen_user_id']     = 1;
+			$tmp['data']['gen_chardata']    = 'English_admin.png';
+			$tmp['data']['gen_intdata']     = 0;
+
+
+			e107::getDb()->insert('generic', $tmp);
+
+			for($i=1; $i < 11; $i++)
+			{
+				unset ($tmp['data']);
+				$tmp['data']['gen_type']        = 'user_rank_data';
+				$tmp['data']['gen_datestamp']   = 0;
+				$tmp['data']['gen_ip']          = "Level ".$i;
+				$tmp['data']['gen_user_id']     = 0;
+				$tmp['data']['gen_chardata']    = "lev".$i.".png";
+				$tmp['data']['gen_intdata']     = ($i * 150);
+
+				e107::getDb()->insert('generic', $tmp);
+			}
+
+
+
+		}
+
+	}
+
+
+
+	class users_ranks_ui_form extends e_admin_form_ui
+	{
+		// Override the default Options field.
+		function options($parms, $value, $id, $attributes)
+		{
+
+			if($attributes['mode'] == 'read')
+			{
+				parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+				$query['action'] = 'edit';
+				$query['id'] = $id;
+				$query = http_build_query($query);
+
+				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+						".ADMIN_EDIT_ICON."</a>";
+
+				$special = $this->getController()->getListModel()->get('gen_datestamp');
+
+				if($special == 0)
+				{
+					$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+				}
+
+				return $text;
+			}
+		}
+
+
+
+	}
+
+
 
 new users_admin();
 require_once ('auth.php');

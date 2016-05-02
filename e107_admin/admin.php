@@ -22,6 +22,8 @@ if(vartrue($_GET['iframe']) == 1)
 	define('e_IFRAME', true);
 }
 
+
+
 $e_sub_cat = 'main';
 
 if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='beginner') // Deprecated Admin-include. 
@@ -69,41 +71,97 @@ class admin_start
 			'unanswered'	=> 1.4,
 			'lightwindow'	=> '1.0b',
 			'aa_jquery'		=> 1.2,
+			'aa_jquery'		=> 1.4,
 			'who'			=> 1.0,
 			'ratings'		=> 4.2,
-			'e107slider'	=> 0.1
+			'lightbox'		=> 1.5,
+			'e107slider'	=> 0.1,
+			'forumthanks'   => 0.5
+
 	);
 
 
 	private $allowed_types = null;
+	private $refresh  = false;
 
 	
 	
 	
 	function __construct()
 	{
+		$this->checkPaths();
+		$this->checkTimezone();
 		$this->checkWritable();
 		$this->checkHtmlarea();	
 		$this->checkIncompatiblePlugins();
 		$this->checkFileTypes();
 		$this->checkSuspiciousFiles();
-		
+		$this->checkDeprecated();
+
+		if($this->refresh == true)
+		{
+			e107::getRedirect()->go(e_SELF);
+		}
+
 	}	
+
+	function checkPaths()
+	{
+		$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
+
+		$refresh = false;
+
+		foreach($create_dir as $dr)
+		{
+			if(!is_dir($dr))
+			{
+				if(mkdir($dr, 0755))
+				{
+					$this->refresh = true;
+				}
+			}
+		}
+
+	}
+
+
+
+	function checkTimezone()
+	{
+		$mes = e107::getMessage();
+		$timezone = e107::pref('core','timezone');
+
+		if(e107::getDate()->isValidTimezone($timezone) == false)
+		{
+			$mes->addWarning("Your timezone setting (".$timezone.") is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.", 'default', true);
+			e107::getConfig()->set('timezone','UTC')->save(false,true,false);
+			$this->refresh = true;
+		}
+
+	}
 
 
 	function checkWritable()
 	{
 		$mes = e107::getMessage();
 		
-		if(deftrue('e_MEDIA') && !is_writable(e_MEDIA))
+		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
 			$mes->addWarning("The folder ".e_MEDIA." is not writable. Please correct before proceeding.");			
 		}	
 		
-		if(deftrue('e_SYSTEM') && !is_writable(e_SYSTEM))
+		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
 		{
 			$mes->addWarning("The folder ".e_SYSTEM." is not writable. Please correct before proceeding.");			
-		}			
+		}
+
+		$files = e107::getFile()->scandir(e_IMAGE."avatars",'jpg,gif,png,jpeg');
+
+
+		if(is_dir(e_IMAGE."avatars") && !is_writable(e_IMAGE."avatars") && !empty($files))
+		{
+			$mes->addWarning("Legacy avatars folder detected. Please make sure ".e_IMAGE."avatars/ is writable. Please correct before proceeding.");
+		}
 		
 	}
 
@@ -115,7 +173,7 @@ class admin_start
 		$mes = e107::getMessage();
 		if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
 		{
-			$mes->addWarning($HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/");
+			$mes->addWarning(e_HANDLER_ABS."htmlarea/<br />".e_ADMIN_ABS."htmlarea/");
 		}	
 	}		
 	
@@ -141,9 +199,54 @@ class admin_start
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn' href='".e_ADMIN."plugin.php'>uninstall</a>");	
+			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>");
 		}	
 		
+	}
+
+
+
+
+
+
+
+	function checkDeprecated()
+	{
+		$deprecated = array(
+			e_ADMIN."ad_links.php",
+			e_PLUGIN."tinymce4/e_meta.php",
+			e_THEME."bootstrap3/css/bootstrap_dark.css",
+			e_PLUGIN."search_menu/languages/English.php",
+			e_LANGUAGEDIR."English/lan_parser_functions.php",
+			e_HANDLER."np_class.php",
+			e_CORE."shortcodes/single/user_extended.sc",
+			e_ADMIN."download.php",
+			e_PLUGIN."banner/config.php",
+			e_PLUGIN."forum/newforumposts_menu_config.php",
+			e_PLUGIN."forum/e_latest.php",
+			e_PLUGIN."forum/e_status.php"
+
+		);
+
+		$found = array();
+		foreach($deprecated as $path)
+		{
+			if(file_exists($path))
+			{
+				$found[] = $path;
+			}
+
+
+		}
+
+		if(!empty($found))
+		{
+			$text = "The following old files can be safely deleted from your system: ";
+			$text .= "<ul><li>".implode("</li><li>", $found)."</li></ul>";
+
+			e107::getMessage()->addWarning($text);
+		}
+
 	}
 
 	
@@ -154,7 +257,7 @@ class admin_start
 		$this->allowed_types = get_filetypes();			// Get allowed types according to filetypes.xml or filetypes.php
 		if (count($this->allowed_types) == 0)
 		{
-			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1);
+			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1, 'pdf'=>1);
 			$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
 		
 		}	
@@ -166,6 +269,7 @@ class admin_start
 	{
 		$mes = e107::getMessage();
 		$public = array(e_UPLOAD, e_AVATAR_UPLOAD);
+		$tp = e107::getParser();
 		$exceptions = array(".","..","/","CVS","avatars","Thumbs.db",".ftpquota",".htaccess","php.ini",".cvsignore",'e107.htaccess');
 		
 		//TODO use $file-class to grab list and perform this check. 
@@ -204,7 +308,7 @@ class admin_start
 		if (isset($potential))
 		{
 			//$text = ADLAN_ERR_3."<br /><br />";
-			$mes->addWarning(ADLAN_ERR_3);
+			$mes->addWarning($tp->toHtml(ADLAN_ERR_3, true));
 			$text = '<ul>';
 			foreach ($potential as $p_file)
 			{

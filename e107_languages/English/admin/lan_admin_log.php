@@ -71,6 +71,7 @@ define("RL_LAN_069", "Download Name");
 define("RL_LAN_071", "User registration (ignores class setting above)");
 define("RL_LAN_072", "Signup email acknowledgement (ignores class setting above)");
 define("RL_LAN_073", "Login/Logout");
+
 define("RL_LAN_075", "Change display name");
 define("RL_LAN_076", "Change password");
 define("RL_LAN_077", "Change email address");
@@ -91,10 +92,10 @@ define("RL_LAN_094", "Detailed timing analysis");
 define("RL_LAN_096", "Diff (s)");
 // define("RL_LAN_097", "Time");
 define("RL_LAN_098", "Source");
-define("RL_LAN_099", "Comments");
+// define("RL_LAN_099", "Comments");
 define("RL_LAN_100", "CID");			// Comment ID field
 define("RL_LAN_101", "PID");
-define("RL_LAN_102", "ID");
+//define("RL_LAN_102", "ID");//LAN_ID
 define("RL_LAN_103", "Subject");
 define("RL_LAN_104", "UID");
 // define("RL_LAN_105", "Author");

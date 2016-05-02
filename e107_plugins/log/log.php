@@ -29,52 +29,75 @@ require_once("../../class2.php"); // More secure to include it.
 header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 
+define('LOG_DEBUG', false);
+
+// @example url: e107_plugins/log/log.php?lv=cmVmZXJlcj1odHRwJTNBLy9sb2NhbGhvc3QlM0E4MDgwL2UxMDdfMi4wL3N0YXRzJmNvbG91cj0yNCZlc2VsZj1odHRwJTNBLy9sb2NhbGhvc3QlM0E4MDgwL2UxMDdfMi4wL2UxMDdfcGx1Z2lucy9sb2cvc3RhdHMucGhwJTNGMiZyZXM9MTkyMHgxMjAw
+
+if(LOG_DEBUG == true)
+{
+	echo "Debug is Active";
+}
+
 if (!vartrue($pref['statActivate']))
 {
+	if(LOG_DEBUG == true)
+	{
+		echo "Stats log is inactive";
+	}
+
 	exit();
 }
 
-/**
- *	Set up path to log files.
- *	The log file directory contains a flag file which defines whether logging is enabled.
- */
- /*
-function setLogPath()
-{
-	$siteRoot = realpath(dirname(__FILE__).'./../../').'/';
-	@include_once($siteRoot.'e107_config.php');
-	if (!isset($mySQLdefaultdb)) return FALSE;
-	if (!isset($mySQLprefix)) return FALSE;
 
-	$hash = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);	
-	$logDir = $siteRoot.$SYSTEM_DIRECTORY.$hash.'/logs/';
-	$logEnable = 0;
-	@include_once($logDir.'LogFlag.php');		// See if logging enabled
-	define('e_LOG', $logDir);
-	return $logEnable;
-}
-*/
-
-// if (!setLogPath()) exit();				// Could be logging disabled, missing files, all sorts of things. Just do nothing.
 //print_r(base64_decode($_GET['lv']));
 define('log_INIT', TRUE);
-
-
 
 // Array of page names which should have individual query values recorded.
 // The top level array index is the page name.
 // If the top level value is an array, it must be an array of query string beginnings to match.
 $pageUnique = array('page' => 1, 'content' => array('content'));
 
-
 //$logVals = urldecode(base64_decode($_SERVER['QUERY_STRING']));
-$logVals = urldecode(base64_decode($_GET['lv']));
+//$logVals = urldecode(base64_decode($_GET['lv']));
+
+
+// --------------- Reworked for v2.x ------------------------
+
+
+$logVals = base64_decode($_GET['lv']);
+
+
+$logVals .= "&ip=".USERIP;
+$logVals .= "&iphost=". @gethostbyaddr(USERIP);
+$logVals .= "&lan=".e_LAN;
+$logVals .= "&agent=".$_SERVER['HTTP_USER_AGENT'];
+
+parse_str($logVals, $vals);
+
+$vals['referer'] = urldecode($vals['referer']);
+$vals['eself'] = urldecode($vals['eself']);
+
+if(empty($_SESSION['log_userLoggedPages']) || !in_array($vals['eself'],$_SESSION['log_userLoggedPages']))
+{
+	$_SESSION['log_userLoggedPages'][] = $vals['eself'];
+	$logVals .= "&unique=1";
+}
+else
+{
+	$logVals .= "&unique=0";
+}
+
+
+$logVals = str_replace('%3A',':',$logVals); // make the URLs a bit cleaner, while keeping any urlqueries encoded.
 
 $lg = e107::getAdminLog();
 $lg->addDebug(print_r($logVals, true));
 $lg->toFile('SiteStats','Statistics Log', true);
 
-parse_str($logVals, $vals);
+e107::getEvent()->trigger('user_log_stats',$vals);
+
+
+// ------------------------------------ ---------------------
 
 // We MUST have a timezone set in PHP >= 5.3. This should work for PHP >= 5.1:
 // @todo may be able to remove this check once minimum PHP version finalised
@@ -82,7 +105,6 @@ if (function_exists('date_default_timezone_get'))
 {
 	date_default_timezone_set(@date_default_timezone_get()); // Just set a default - it should default to UTC if no timezone set
 }
-
 
 
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $logVals."\n"); fclose($logfp);
@@ -136,7 +158,7 @@ if(strstr($ref, 'admin'))
 
 $screenstats = $res.'@'.$colour;
 $agent = $_SERVER['HTTP_USER_AGENT'];
-$ip = getip();
+$ip = e107::getIPHandler()->ipDecode(USERIP);
 
 $oldref = $ref; // backup for search string being stripped off for referer
 if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) 
@@ -152,21 +174,55 @@ $pageDisallow = "cache|file|eself|admin";
 $tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
 $tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
-preg_match("#/(.*?)(\?|$)(.*)#si", $self, $match);
-$match[1] = isset($match[1]) ? $match[1] : '';
-$pageName = substr($match[1], (strrpos($match[1], "/")+1));
-$PN = $pageName;
-$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
-if($pageName == "") $pageName = "index";
-
-if(preg_match("/".$pageDisallow."/i", $pageName)) return;
-
-
-if ($logQry)
+/*
+function logGetPageKey($url,$logQry=false,$err_code='')
 {
-	$pageName .= '+'.$match[3];			// All queries match
+	global $pageDisallow, $tagRemove;
+
+	preg_match("#/(.*?)(\?|$)(.*)#si", $url, $match);
+	$match[1] = isset($match[1]) ? $match[1] : '';
+	$pageName = substr($match[1], (strrpos($match[1], "/")+1));
+
+	$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
+	if($pageName == "")
+	{
+		return "index";
+	}
+
+	if(preg_match("/".$pageDisallow."/i", $pageName))
+	{
+		return false;
+	}
+
+	if ($logQry)
+	{
+		$pageName .= '+'.$match[3];			// All queries match
+	}
+
+	$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+
+
+	return $pageName;
+}*/
+
+require_once(e_PLUGIN."log/consolidate.php");
+$lgc = new logConsolidate;
+
+
+if(!$pageName = $lgc->getPageKey($self,false,$err_code,e_LAN))
+{
+	if(LOG_DEBUG == true)
+	{
+		echo 'pageName was empty';
+	}
+	return;
 }
-$pageName = $err_code.$pageName;			// Add the error code at the beginning, so its treated uniquely
+
+if(LOG_DEBUG == true)
+{
+	echo "<br />File: ".$logPfile;
+}
+
 //$logfp = fopen(e_LOG.'rcvstring.txt', 'a+'); fwrite($logfp, $pageName."\n"); fclose($logfp);
 
 $p_handle = fopen($logPfile, 'r+');
@@ -203,6 +259,8 @@ else
 	$flag = TRUE;
 }
 
+
+
 if(!strstr($ipAddresses, $ip)) 
 {	/* unique visit */
 	if(!$flag) 
@@ -213,6 +271,10 @@ if(!strstr($ipAddresses, $ip))
 	$ipAddresses .= $ip.".";		// IP address is stored as hex string
 	require_once('loginfo.php');
 }
+
+
+
+
 
 
 $siteTotal ++;
@@ -239,66 +301,10 @@ if ($p_handle)
 	fclose($p_handle);
 }
 
-
-// Get current IP address - return as a hex-encoded string
-/*
-function getip() 
+if(LOG_DEBUG == true)
 {
-	$ip = $_SERVER['REMOTE_ADDR'];
-	if (getenv('HTTP_X_FORWARDED_FOR')) 
-	{
-		if (preg_match("#^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})#", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) 
-		{  
-			$ip2 = array('#^0\..*#', 
-				   '#^127\..*#', 							// Local loopbacks
-				   '#^192\.168\..*#', 						// RFC1918 - Private Network
-				   '#^172\.(?:1[6789]|2\d|3[01])\..*#', 	// RFC1918 - Private network
-				   '#^10\..*#', 							// RFC1918 - Private Network
-				   '#^169\.254\..*#', 						// RFC3330 - Link-local, auto-DHCP 
-				   '#^2(?:2[456789]|[345][0-9])\..*#'		// Single check for Class D and Class E
-				   );
-			$ip = preg_replace($ip2, $ip, $ip3[1]);
-		}
-	}
-	if ($ip == "") 
-	{
-		$ip = "x.x.x.x";
-	}
-	if (strpos($ip, ':') === FALSE)
-	{	// Its an IPV4 address - return it as 32-character packed hex string
-		$ipa = explode(".", $ip);
-		return str_repeat('0000',5).'ffff'.sprintf('%02x%02x%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-	}
-	else
-	{	// Its IPV6
-		if (strpos($ip,'.') !== FALSE)
-		{  // IPV4 'tail' to deal with
-			$temp = strrpos($ip,':') +1;
-			$ipa = explode('.',substr($ip,$temp));
-			$ip = substr($ip,0, $temp).sprintf('%02x%02x:%02x%02x', $ipa[0], $ipa[1], $ipa[2], $ipa[3]);
-		}
-		// Now 'normalise' the address
-		$temp = explode(':',$ip);
-		$s = 8 - count($temp);		// One element will of course be the blank
-		foreach ($temp as $f)
-		{
-			if ($f == '')
-			{
-				$ret .= '0000';		// Always put in one set of zeros for the blank
-				if ($s > 0)
-				{
-					$ret .= str_repeat('0000',$s);
-					$s = 0;
-				}
-			}
-			else
-			{
-				$ret .= sprintf('%04x',hexdec($f));
-			}
-		}
-		return $ret;
-	}
+	echo '<br />Script Completed';
 }
-*/
+
 
 ?>

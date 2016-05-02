@@ -28,7 +28,7 @@ class e_ranks
 		//Check to see if we can get it from cache
 		if($force == false && ($ranks = $e107->ecache->retrieve_sys('nomd5_user_ranks')))
 		{
-			$this->ranks = $e107->arrayStorage->ReadArray($ranks);
+			$this->ranks = e107::unserialize($ranks);
 		}
 		else
 		{
@@ -36,7 +36,7 @@ class e_ranks
 			$this->ranks = array();
 			if($sql->select('generic', '*', "gen_type = 'user_rank_data' ORDER BY gen_intdata ASC"))
 			{
-				$i=0;
+				$i=1;
 				while($row = $sql->fetch())
 				{
 					$tmp = array();
@@ -206,7 +206,7 @@ class e_ranks
 		}
 		else
 		{
-			$userData = e107::getSystemUser($userId)->getData(); //get_user_data($userId);
+			$userData = e107::getSystemUser($userId)->getData(); //get_usXer_data($userId);
 		}
 
 		if($userData['user_admin'])
@@ -263,6 +263,9 @@ class e_ranks
 			$img_title = ($this->ranks['data'][$rank]['name'] ? " alt='{$data['name']}' title='{$data['name']}'" : ' alt = ""');
 			$data['pic'] = "<img {$img_title} src='".$this->_getImage($this->ranks['data'][$rank])."'{$img_title} />";
 		}
+
+		$data['value'] = $rank;
+
 		$this->userRanks[$userId] = $data;
 
 		return $data;

@@ -19,47 +19,88 @@ if (!defined('e107_INIT')) { exit; }
 
 class notify
 {
-	var $notify_prefs;
+	public $notify_prefs;
 
-	function notify()
+	function __construct()
 	{
-		global $e_event;
-		
-		$this->notify_prefs = e107::getConfig('notify')->getPref();
-	
+		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+
+		if(empty($this->notify_prefs))
+		{
+			$this->notify_prefs = e107::getConfig('notify')->getPref();
+		}
+
+	}
+
+
+	/**
+	 * Register core and plugin notification events.
+	 */
+	public function registerEvents()
+	{
+		$active = e107::getConfig()->get('notify');
+
+		if(empty($active) && defset('e_PAGE') == 'notify.php')
+		{
+			e107::getMessage()->addDebug('Notify is disabled!');
+			return false;
+		}
+
+		$e_event = e107::getEvent();
+
 		if(varset($this->notify_prefs['event']))
 		{
 			foreach ($this->notify_prefs['event'] as $id => $status)
 			{
-				if ($status['class'] != 255)
+				$include = null;
+
+				if ($status['class'] != e_UC_NOBODY) // 255;
 				{
-					if($status['include']) // Plugin 
+					if(varset($status['include'])) // Plugin
 					{
 						$include 	= e_PLUGIN.$status['include']."/e_notify.php";
-						
-						if($status['legacy'] != 1)
+
+						if(varset($status['legacy']) != 1)
 						{
 							$class 		= $status['include']."_notify";
 							$method 	= $id;
-							$e_event->register($id, array($class, $method), $include);	
+							$e_event->register($id, array($class, $method), $include);
 						}
 						else
 						{
-							$e_event->register($id, 'notify_'.$id, $include);			
+							$e_event->register($id, 'notify_'.$id, $include);
 						}
 					}
-					else // core   
+					else // core
 					{
-						$e_event->register($id, 'notify_'.$id);			
+						if(method_exists($this, 'notify_'.$id)) // as found below.
+						{
+							$e_event->register($id, array('notify', 'notify_'.$id));
+						}
+						else
+						{
+							$e_event->register($id, array('notify', 'generic')); // use generic notification.
+						}
 					}
-					
-				
+
+
 				}
 			}
 		}
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+	//	e107::getEvent()->debug();
 	}
+
+
+	/**
+	 * Generic Notification method when none defined. 
+	 */
+	function generic($data,$id)
+	{
+		$message = print_a($data,true); 
+		$this->send($id, 'Event Triggered: '.$id, $message);	
+	}
+
 
 
 
@@ -71,38 +112,46 @@ class notify
 	 * @param string $id - identifies event actions
 	 * @param string $subject - subject for email
 	 * @param string $message - email message body
-	 * @return none
+	 * @return void
 	 *
 	 *	@todo handle 'everyone except' clauses (email address filter done)
 	 *	@todo set up pref to not notify originator of event which caused notify (see $blockOriginator)
 	 */
-	function send($id, $subject, $message)
+	function send($id, $subject, $message, $media=array())
 	{
-		$e107 = e107::getInstance();
+
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		$subject = $tp->toEmail(SITENAME.': '.$subject);
-		$message = $tp->toEmail($message);
+		$subject = $tp->toEmail($subject);
+		$message = $tp->replaceConstants($message, "full");
+	//	$message = $tp->toEmail($message);
 		$emailFilter = '';
 		$notifyTarget = $this->notify_prefs['event'][$id]['class'];
+
 		if ($notifyTarget == '-email')
 		{
 			$emailFilter = $this->notify_prefs['event'][$id]['email'];
 		}
+
 		$blockOriginator = FALSE;		// TODO: set this using a pref
 		$recipients = array();
 
-		if ($notifyTarget == 'email')
-		{	// Single email address - that can always go immediately
+		if ($notifyTarget == 'email') // Single email address - that can always go immediately
+		{
 			if (!$blockOriginator || ($this->notify_prefs['event'][$id]['email'] != USEREMAIL))
 			{
 				$recipients[] = array(
-								 'mail_recipient_email' => $this->notify_prefs['event'][$id]['email']
-								 );	
+					'mail_recipient_email' => $this->notify_prefs['event'][$id]['email'],
+					'mail_target_info'		=> array(
+						'SUBJECT'               => $subject,
+						'DATE_SHORT'            => $tp->toDate(time(),'short'),
+						'DATE_LONG'             => $tp->toDate(time(),'long'),
+					)
+				 );
 			}
 		}
-		elseif (is_numeric($this->notify_prefs['event'][$id]['class']))
+		elseif (is_numeric($notifyTarget))
 		{
 			switch ($notifyTarget)
 			{
@@ -116,29 +165,69 @@ class notify
 					$qry = "`user_ban` = 0";
 					break;
 				default :
-					$qry = "user_ban = 0 AND user_class REGEXP '(^|,)(".$this->notify_prefs['event'][$id]['class'].")(,|$)'";
+					$qry = "user_ban = 0 AND user_class REGEXP '(^|,)(".$notifyTarget.")(,|$)'";
 					break;
 			}
-			$qry = 'SELECT user_id,user_name,user_email FROM `#user` WHERE '.$qry;
+
+			$qry = 'SELECT user_id,user_name,user_email,user_join,user_lastvisit FROM `#user` WHERE '.$qry;
+
 			if ($blockOriginator)
 			{
 				$qry .= ' AND `user_id` != '.USERID;
 			}
-			if (FALSE !== ($count = $sql->gen($qry)))
+
+			if (false !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
-				while ($row = $sql->fetch(MYSQL_ASSOC))
+				while ($row = $sql->fetch())
 				{
 					if ($row['user_email'] != $emailFilter)
 					{
-						$recipients[] = array('mail_recipient_id' => $row['user_id'],
-										 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
-										 'mail_recipient_email' => $row['user_email']
-										 );	
+
+						$unsubscribe = array('date'=>$row['user_join'],'email'=>$row['user_email'],'id'=>$row['user_id'], 'plugin'=>'user', 'userclass'=>$notifyTarget);
+						$urlQuery = http_build_query($unsubscribe,null,'&');
+						$exclude  = array(e_UC_MEMBER,e_UC_ADMIN, e_UC_MAINADMIN); // no unsubscribing from these classes.
+						$unsubUrl   = SITEURL."unsubscribe.php?id=".base64_encode($urlQuery);
+						$unsubMessage =  "This message was sent to ".$row['user_email'].". If you don't want to receive these emails in the future, please <a href='".$unsubUrl."'>unsubscribe</a>.";
+
+
+						$recipients[] = array(
+							'mail_recipient_id'     => $row['user_id'],
+							'mail_recipient_name'   => $row['user_name'],		// Should this use realname?
+							'mail_recipient_email'  => $row['user_email'],
+							'mail_target_info'		=> array(
+								'USERID'		        => $row['user_id'],
+								'DISPLAYNAME' 	        => $row['user_name'],
+								'SUBJECT'               => $subject,
+								'USERNAME' 		        => $row['user_name'],
+								'USERLASTVISIT'         => $row['user_lastvisit'],
+								'UNSUBSCRIBE'	        => (!in_array($notifyTarget, $exclude)) ? $unsubUrl : '',
+								'UNSUBSCRIBE_MESSAGE'   => (!in_array($notifyTarget, $exclude)) ? $unsubMessage : '',
+								'USERCLASS'             => $notifyTarget,
+								'DATE_SHORT'            => $tp->toDate(time(),'short'),
+								'DATE_LONG'             => $tp->toDate(time(),'long'),
+
+
+							)
+						);
 					}
 				}
 			}
+
 		}
+
+		if(E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
+		{
+			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
+
+			e107::getMessage()->addDebug("<b>Mailing is simulated only while in DEBUG mode.</b>");
+			e107::getMessage()->addDebug(print_a($data,true));
+			e107::getLog()->add('Notify Debug', $data, E_LOG_INFORMATIVE, "NOTIFY_DBG");
+			return;
+		}
+
+		$siteadminemail = e107::getPref('siteadminemail');
+		$siteadmin = e107::getPref('siteadmin');
 
 		if (count($recipients))
 		{
@@ -147,141 +236,206 @@ class notify
 
 			// Create the mail body
 			$mailData = array(
-				'mail_content_status' => MAIL_STATUS_TEMP,
-				'mail_create_app' => 'notify',
-				'mail_title' => 'NOTIFY',
-				'mail_subject' => $subject,
-				'mail_sender_email' => e107::getPref('siteadminemail'),
-				'mail_sender_name'	=> e107::getPref('siteadmin'),
-				'mail_send_style'	=> 'textonly',
-				'mail_notify_complete' => 0,			// NEVER notify when this email sent!!!!!
-				'mail_body' => $message
+				'mail_total_count'      => count($recipients),
+				'mail_content_status' 	=> MAIL_STATUS_TEMP,
+				'mail_create_app' 		=> 'core',
+				'mail_title' 			=> 'NOTIFY',
+				'mail_subject' 			=> $subject,
+				'mail_sender_email' 	=> e107::getPref('replyto_email',$siteadminemail),
+				'mail_sender_name'		=> e107::getPref('replyto_name',$siteadmin),
+				'mail_notify_complete' 	=> 0,			// NEVER notify when this email sent!!!!!
+				'mail_body' 			=> $message,
+				'template'				=> 'notify',
+				'mail_send_style'       => 'notify'
 			);
-			$result = $mailer->sendEmails('NOTIFY_TEMPLATE', $mailData, $recipients);
-			$e107->admin_log->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
-		}
-	}
-}
 
-
-
-
-//DEPRECATED, BC, call the method only when needed, $e107->notify caught by __get()
-global $nt;
-$nt = e107::getNotify(); //TODO - find & replace $nt, $e107->notify
-
-
-function notify_usersup($data)
-{
-	global $nt;
-	foreach ($data as $key => $value)
-	{
-		if($key != "password1" && $key != "password2" && $key != "email_confirm" && $key != "register")
-		{
-			if(is_array($value))  // show user-extended values.
+			if(!empty($media) && is_array($media))
 			{
-				foreach($value as $k => $v)
+				foreach($media as $k=>$v)
 				{
-					$message .= str_replace("user_","",$k).': '.$v.'<br />';
+					$mailData['mail_media'][$k] = array('path'=>$v);
 				}
 			}
-			else
+			
+			$result = $mailer->sendEmails('notify', $mailData, $recipients);
+
+			e107::getLog()->e_log_event(10,-1,'NOTIFY',$subject,$message,FALSE,LOG_TO_ROLLING);
+		}
+		else
+		{
+			$data = array('qry'=>$qry, 'error'=>'No recipients');
+			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING_, "NOTIFY_DBG");
+		}
+	}
+
+
+
+
+
+	// ---------------------------------------
+
+
+
+	function notify_usersup($data)
+	{
+		$message = "";
+		foreach ($data as $key => $value)
+		{
+			if($key != "password1" && $key != "password2" && $key != "email_confirm" && $key != "register")
 			{
-				$message .=  $key.': '.$value.'<br />';
+				if(is_array($value))  // show user-extended values.
+				{
+					foreach($value as $k => $v)
+					{
+						$message .= str_replace("user_","",$k).': '.$v.'<br />';
+					}
+				}
+				else
+				{
+					$message .=  $key.': '.$value.'<br />';
+				}
 			}
 		}
+
+		$this->send('usersup', NT_LAN_US_1, $message);
 	}
-	$nt->send('usersup', NT_LAN_US_1, $message);
-}
 
-function notify_userveri($data)
-{
-	global $nt, $e107;
-	$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
-	$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
-	$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
-	$nt->send('userveri', NT_LAN_UV_1, $msgtext);
-}
+	/**
+	 * @param $data
+	 */
+	function notify_userveri($data)
+	{
+		$msgtext = NT_LAN_UV_2.$data['user_id']."\n";
+		$msgtext .= NT_LAN_UV_3.$data['user_loginname']."\n";
+		$msgtext .= NT_LAN_UV_4.e107::getIPHandler()->getIP(FALSE);
 
-function notify_login($data)
-{
-	global $nt;
-	foreach ($data as $key => $value) {
-		$message .= $key.': '.$value.'<br />';
+		$this->send('userveri', NT_LAN_UV_1, $msgtext);
 	}
-	$nt->send('login', NT_LAN_LI_1, $message);
-}
 
-function notify_logout()
-{
-	global $nt;
-	$nt->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
-}
 
-function notify_flood($data)
-{
-	global $nt;
-	$nt->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data));
-}
+	function notify_login($data)
+	{
+		$message = "";
+		foreach ($data as $key => $value)
+		{
+			$message .= $key.': '.$value.'<br />';
+		}
 
-function notify_subnews($data)
-{
-	global $nt,$tp;
-	foreach ($data as $key => $value) {
-		$message .= $key.': '.$value.'<br />';
+		$this->send('login', NT_LAN_LI_1, $message);
 	}
-	$nt->send('subnews', NT_LAN_SN_1, $message);
+
+	function notify_logout()
+	{
+		$this->send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
+	}
+
+	function notify_flood($data)
+	{
+		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
+	}
+
+	function notify_subnews($data)
+	{
+		$message = "";
+		foreach ($data as $key => $value)
+		{
+			$message .= $key.': '.$value.'<br />';
+		}
+
+		$this->send('subnews', NT_LAN_SN_1, $message);
+	}
+
+	function notify_newspost($data)
+	{
+		$message = '<b>'.$data['news_title'].'</b>';
+		if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
+		if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
+		if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
+		$this->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
+	}
+
+	function notify_newsupd($data)
+	{
+		$message = '<b>'.$data['news_title'].'</b>';
+		if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
+		if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
+		if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
+		$this->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
+	}
+
+	function notify_newsdel($data)
+	{
+		$this->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
+	}
+
+
+	function notify_maildone($data)
+	{
+		$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
+		$this->send('maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
+	}
+
+
+	function notify_fileupload($data)
+	{
+		$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
+		$this->send('fileupload', $data['upload_name'], $message);
+	}
+
+
+
+	function notify_admin_news_created($data)
+	{
+		$this->notify_newspost($data);
+	}
+
+
+	function notify_admin_news_notify($data)
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+
+		$author = $sql->retrieve('user','user_name','user_id = '.intval($data['news_author'])." LIMIT 1");
+
+
+		$template = "<h4><a href='{NEWS_URL}'>{NEWS_TITLE}</a></h4>
+					<div class='summary'>{NEWS_SUMMARY}</div>
+					<div class='author'>by {NEWS_AUTHOR}</div>
+					<div><a class='btn btn-primary' href='{NEWS_URL}'>View now</a></div>
+					";
+
+		$shortcodes = array(
+			'NEWS_URL'      => e107::getUrl()->create('news/view/item', $data,'full=1&encode=0'),
+			'NEWS_TITLE'    => $tp->toHtml($data['news_title']),
+			'NEWS_SUMMARY'  => $tp->toEmail($data['news_summary']),
+			'NEWS_AUTHOR'   => $tp->toHtml($author)
+		);
+
+		$img = explode(",",$data['news_thumbnail']);
+
+		$message = $tp->simpleParse($template, $shortcodes);
+
+		$this->send('admin_news_notify', $data['news_title'], $message, $img);
+
+	//	print_a($message);
+	}
+
+
+
+
 }
 
-function notify_newspost($data)
-{
-	$message = '<b>'.$data['news_title'].'</b>';
-	if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
-	if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
-	if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
-	e107::getNotify()->send('newspost', $data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
-}
-
-function notify_newsupd($data)
-{
-	$message = '<b>'.$data['news_title'].'</b>';
-	if (vartrue($data['news_summary'])) $message .= '<br /><br />'.$data['news_summary'];
-	if (vartrue($data['news_body'])) $message .= '<br /><br />'.$data['news_body'];
-	if (vartrue($data['news_extended'])) $message.= '<br /><br />'.$data['news_extended'];
-	e107::getNotify()->send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], e107::getParser()->text_truncate(e107::getParser()->toDB($message), 400, '...'));
-}
-
-function notify_newsdel($data)
-{
-	global $nt;
-	$nt->send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
-}
-
-
-function notify_maildone($data)
-{
-	$message = '<b>'.$data['mail_subject'].'</b><br /><br />'.$data['mail_body'];
-	e107::getNotify()->send('maildone', NT_LAN_ML_1.': '.$data['mail_subject'], $message);
-}
-
-
-function notify_fileupload($data)
-{
-	global $nt;
-	$message = '<b>'.$data['upload_name'].'</b><br /><br />'.$data['upload_description'].'<br /><br />'.$data['upload_size'].'<br /><br />'.$data['upload_user'];
-	$nt->send('fileupload', $data['upload_name'], $message);
-}
-
-
-if (isset($nt->notify_prefs['plugins']) && e_PAGE != 'notify.php')
-{
+	/*
+	if (isset($nt->notify_prefs['plugins']) && e_PAGE != 'notify.php')
+	{
 	foreach ($nt->notify_prefs['plugins'] as $plugin_id => $plugin_settings)
 	{
-		if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
-		{
-			require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
-		}
+	if(is_readable(e_PLUGIN.$plugin_id.'/e_notify.php'))
+	{
+	require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
 	}
-}
+		}
+		}
 
-?>
+	*/
+

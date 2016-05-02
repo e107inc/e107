@@ -60,9 +60,9 @@ class list_download
 				$rowheading = $this->parent->parse_heading($row['download_name']);
 				$record['icon'] = $bullet;
 				$record['heading'] = "<a href='".e_BASE."download.php?view.".$row['download_id']."'>".$rowheading."</a>";
-				$record['author'] = (varsettrue($this->parent->settings['author']) ? $row['download_author'] : "");
-				$record['category'] = (varsettrue($this->parent->settings['category']) ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
-				$record['date'] = (varsettrue($this->parent->settings['date']) ? $this->parent->getListDate($row['download_datestamp']) : "");
+				$record['author'] = (vartrue($this->parent->settings['author']) ? $row['download_author'] : "");
+				$record['category'] = (vartrue($this->parent->settings['category']) ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
+				$record['date'] = (vartrue($this->parent->settings['date']) ? $this->parent->getListDate($row['download_datestamp']) : "");
 				$record['info'] = "";
 
 				$list_data[] = $record;

@@ -123,7 +123,7 @@ class e107MailManager
 	const	E107_EMAIL_MAX_TRIES = 3;			// Maximum number of tries by us (mail server may do more)
 												// - max allowable value is MAIL_STATUS_MAX_ACTIVE - MAIL_STATUS_PENDING 
 
-	private		$debugMode = 0;
+	private		$debugMode = false;
 	protected	$e107;
 	protected	$db = NULL;					// Use our own database object - this one for reading data
 	protected	$db2 = NULL;				// Use our own database object - this one for updates
@@ -154,6 +154,7 @@ class e107MailManager
 		'mail_content' => array(
 			'mail_source_id' 	=> 'int',
 			'mail_content_status' => 'int',
+			'mail_total_count' 	=> 'int',
 			'mail_togo_count' 	=> 'int',
 			'mail_sent_count' 	=> 'int',
 			'mail_fail_count' 	=> 'int',
@@ -170,7 +171,8 @@ class e107MailManager
 			'mail_subject' 		=> 'todb',
 			'mail_body' 		=> 'todb',
 			'mail_body_templated' => 'todb',
-			'mail_other' 		=> 'string'			// Don't want entities here!
+			'mail_other' 		=> 'string',		// Don't want entities here!
+			'mail_media'        => 'string'
 		)
 	);
 	
@@ -214,10 +216,32 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function __construct($overrides = FALSE)
+	public function __construct($overrides = false)
 	{
 		$this->e107 = e107::getInstance();
+
+		$pref = e107::pref('core');
+
+		$bulkmailer = (!empty($pref['bulkmailer'])) ? $pref['bulkmailer'] : $pref['mailer'];
+
+		if($overrides === false)
+		{
+			$overrides =  array('mailer'=>$bulkmailer);
+		}
+
 		$this->mailOverrides = $overrides;
+		
+		if(deftrue('e_DEBUG'))
+		{
+			$this->debugMode = true;
+		}
+		
+		if($this->debugMode === true)
+		{
+			e107::getMessage()->addWarning('Debug Mode is active. Emailing will only be simulated!');	
+		}
+		
+		
 	}
 
 
@@ -233,7 +257,7 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function mailToDb(&$data, $addMissing = FALSE)
+	public function mailToDb(&$data, $addMissing = false)
 	{
 		$res = array();
 		$res1 = array();
@@ -262,8 +286,14 @@ class e107MailManager
 				$res[$f] = '';
 			}
 		}
-		$array = new ArrayData;
-		$res['mail_other'] = $array->WriteArray($res1, TRUE);	// Ready to write to DB
+
+		$res['mail_other'] = e107::serialize($res1,false);	// Ready to write to DB
+
+		if (!empty($res['mail_media']))
+		{
+			$res['mail_media'] = e107::serialize($res['mail_media']);
+		}
+
 		return $res;
 	}
 
@@ -296,8 +326,8 @@ class e107MailManager
 		}
 		if (isset($data['mail_other']))
 		{
-			$array = new ArrayData;
-			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
+			
+			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
 			if (is_array($tmp))
 			{
 				$res = array_merge($res,$tmp);
@@ -315,6 +345,12 @@ class e107MailManager
 				$res[$f] = '';
 			}
 		}
+		
+		if (isset($data['mail_media']))
+		{
+			$res['mail_media'] = e107::unserialize($data['mail_media']);	
+		}
+		
 		return $res;
 	}
 
@@ -348,8 +384,7 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']) && is_array($data['mail_target_info']))
 		{
-			$array = new ArrayData;
-			$tmp = $array->WriteArray($data['mail_target_info'], TRUE);
+			$tmp = e107::serialize($data['mail_target_info'], TRUE);
 			$res['mail_target_info'] = $tmp;
 		}
 		return $res;
@@ -384,8 +419,7 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']))
 		{
-			$array = new ArrayData;
-			$tmp = $array->ReadArray($data['mail_target_info']);
+			$tmp = e107::unserialize($data['mail_target_info']);
 			$res['mail_target_info'] = $tmp;
 		}
 		return $res;
@@ -402,12 +436,13 @@ class e107MailManager
 	 * @param $data - array of DB-sourced target-related data
 	 * @param $addMissing - if TRUE, undefined fields are added
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function dbToBoth(&$data, $addMissing = FALSE)
 	{	
 		$res = array();
 		$oneToOne = array_merge($this->dbTypes['mail_content'], $this->dbTypes['mail_recipients']);		// List of valid elements
+
 
 		// Start with simple 'one to one' fields
 		foreach ($oneToOne as $f => $v)
@@ -423,10 +458,9 @@ class e107MailManager
 		}
 
 		// Now array fields
-		$array = new ArrayData;
 		if (isset($data['mail_other']))
 		{
-			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
+			$tmp = e107::unserialize(str_replace('\\\'', '\'',$data['mail_other']));	// May have escaped data
 			if (is_array($tmp))
 			{
 				$res = array_merge($res,$tmp);
@@ -442,9 +476,17 @@ class e107MailManager
 		}
 		if (isset($data['mail_target_info']))
 		{
-			$tmp = $array->ReadArray(str_replace('\\\'', '\'',$data['mail_target_info']));	// May have escaped data
+			$clean = stripslashes($data['mail_target_info']);
+			$tmp = e107::unserialize($clean);	// May have escaped data
+
 			$res['mail_target_info'] = $tmp;
 		}
+		
+		if (isset($data['mail_media']))
+		{
+			$res['mail_media'] = e107::unserialize($data['mail_media']);	
+		}
+		
 		return $res;
 	}
 
@@ -468,13 +510,13 @@ class e107MailManager
 	 */
 	protected function checkDB($which = 1)
 	{
-		if (($which == 1) && ($this->db == NULL))
+		if (($which == 1) && ($this->db == null))
 		{
-			$this->db = new db;
+			$this->db = e107::getDb('mail1');
 		}
-		if (($which == 2) && ($this->db2 == NULL))
+		if (($which == 2) && ($this->db2 == null))
 		{
-			$this->db2 = new db;
+			$this->db2 = e107::getDb('mail2');;
 		}
 	}
 
@@ -569,9 +611,10 @@ class e107MailManager
 							AND mt.`mail_status` <= ".MAIL_STATUS_MAX_ACTIVE." 
 							AND mt.`mail_send_date` <= ".time()." 
 							AND (ms.`mail_last_date` >= ".time()." OR ms.`mail_last_date`=0)
-							ORDER BY ms.`mail_e107_priority` DESC {$count}";
+							ORDER BY ms.`mail_e107_priority` DESC, mt.mail_target_id ASC {$count}";
 //		echo $query.'<br />';
-		$result = $this->db->db_Select_gen($query);
+		$result = $this->db->gen($query);
+		
 		if ($result !== FALSE)
 		{
 			$this->queryActive = $result;		// Note number of emails to go
@@ -588,17 +631,17 @@ class e107MailManager
 	{
 		if (!$this->queryActive)
 		{
-			return FALSE;
+			return false;
 		}
-		if ($result = $this->db->db_Fetch(MYSQL_ASSOC))
+		if ($result = $this->db->fetch())
 		{
 			$this->queryActive--;
 			return $this->dbToBoth($result);
 		}
 		else
 		{
-			$this->queryActive = FALSE;		// Make sure no further attempts to read emails
-			return FALSE;
+			$this->queryActive = false;		// Make sure no further attempts to read emails
+			return false;
 		}
 	}
 
@@ -624,10 +667,11 @@ class e107MailManager
 	{
 		$counterList = array('mail_source_id','mail_togo_count', 'mail_sent_count', 'mail_fail_count', 'mail_start_send');
 
-		if (($email = $this->getNextEmail()) === FALSE)
+		if (($email = $this->getNextEmail()) === false)
 		{
-			return FALSE;
+			return false;
 		}
+
 
 		/**
 		 *	The $email variable has all the email data in 'flat' form, including that of the current recipient.
@@ -670,7 +714,7 @@ class e107MailManager
 
 		if (!$this->currentMailBody)
 		{
-			if (isset($email['mail_body_templated']))
+			if (!empty($email['mail_body_templated']))
 			{
 				$this->currentMailBody = $email['mail_body_templated'];
 			}
@@ -678,17 +722,75 @@ class e107MailManager
 			{
 				$this->currentMailBody = $email['mail_body'];
 			}
+
 			$this->currentTextBody = $email['mail_body_alt'];		// May be null
 		}
-		
+
+
 		$mailToSend = $this->makeEmailBlock($email);			// Substitute mail-specific variables, attachments etc
 
-//		print_a($email);
 
-		// Try and send
+
+		if($this->debugMode)
+		{
+
+			echo "<h3>Preview</h3>";
+			$preview = $this->mailer->preview($mailToSend);
+			echo $preview;
+			echo "<h3>Preview (HTML)</h3>";
+			print_a($preview);
+			$logName = "mailout_simulation_".$email['mail_source_id'];
+			e107::getLog()->addDebug("Sending Email to <".$email['mail_recipient_name']."> ".$email['mail_recipient_email'])->toFile($logName,'Mailout Simulation Log',true);	
+			$result = true;
+
+
+			$this->mailer->setDebug(true);
+			echo "<h2>SendEmail()->Body</h2>";
+			print_a($this->mailer->Body);
+			echo "<h2>SendEmail()->AltBody</h2>";
+			print_a($this->mailer->AltBody);
+			echo "<h1>_________________________________________________________________________</h1>";
+			return;
+
+
+		}
+
+
 		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
 
+
+		if($this->debugMode)
+		{
+			return true;
+		}
+
+		// Try and send
+		
+
 //		return;			// ************************************************** Temporarily stop DB being updated when line active *****************************
+		
+		$addons = array_keys($email['mail_selectors']); // trigger e_mailout.php addons. 'sent' method. 
+	
+		foreach($addons as $plug)
+		{
+			if($plug === 'core')
+			{
+				continue;
+			}
+			
+			if($cls = e107::getAddon($plug,'e_mailout'))
+			{
+				$email['status'] = $result;
+				
+				if(e107::callMethod($cls, 'sent', $email) === false)
+				{
+					e107::getAdminLog()->add($plug.' sent process failed', $email, E_LOG_FATAL, 'SENT');	
+				}
+			}		
+		}
+		// --------------------------
+		
+		
 		
 		$this->checkDB(2);			// Make sure DB object created
 
@@ -727,22 +829,21 @@ class e107MailManager
 		if (count($targetData))
 		{
 			//print_a($targetData);
-			$this->db2->db_Update('mail_recipients', array('data' => $targetData, 
-														'_FIELD_TYPES' => $this->dbTypes['mail_recipients'], 
-														'WHERE' => '`mail_target_id` = '.intval($email['mail_target_id'])));
+			$this->db2->update('mail_recipients', array('data' => $targetData, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'], 'WHERE' => '`mail_target_id` = '.intval($email['mail_target_id'])));
 		}
+		
 		if (count($this->currentBatchInfo))
 		{
 			//print_a($this->currentBatchInfo);
-			$this->db2->db_Update('mail_content', array('data' => $this->currentBatchInfo, 
+			$this->db2->update('mail_content', array('data' => $this->currentBatchInfo, 
 														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
 														'WHERE' => '`mail_source_id` = '.intval($email['mail_source_id'])));
 		}
 
-		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0))
-		{	// Need to notify completion
+		if (($this->currentBatchInfo['mail_togo_count'] == 0) && ($email['mail_notify_complete'] > 0)) // Need to notify completion
+		{	
 			$email = array_merge($email, $this->currentBatchInfo);		// This should ensure the counters are up to date
-			$mailInfo = LAN_MAILOUT_247.'<br />'.LAN_MAILOUT_135.': '.$email['mail_title'].'<br />'.LAN_MAILOUT_248.$this->statusToText($email['mail_content_status']).'<br />';
+			$mailInfo = LAN_MAILOUT_247.'<br />'.LAN_TITLE.': '.$email['mail_title'].'<br />'.LAN_MAILOUT_248.$this->statusToText($email['mail_content_status']).'<br />';
 			$mailInfo .= '<br />'.LAN_MAILOUT_249.'<br />';
 			foreach ($this->mailCountFields as $f => $t)
 			{
@@ -754,20 +855,18 @@ class e107MailManager
 					'mail_body' => $mailInfo.'<br />'
 				);
 
-			if ($email['mail_notify_complete'] & 1)
-			{	// Notify email initiator
-				if ($this->db2->db_Select('user', 'user_name, user_email', '`user_id`='.intval($email['mail_creator'])))
+			if ($email['mail_notify_complete'] & 1) // Notify email initiator
+			{	
+				if ($this->db2->select('user', 'user_name, user_email', '`user_id`='.intval($email['mail_creator'])))
 				{
-					$row = $this->db2->db_Fetch(MYSQL_ASSOC);
-					require_once(e_HANDLER.'mail.php');
-					$mailer = new e107Email();
-					$mailer->sendEmail($row['user_name'], $row['user_email'], $message,FALSE);
+					$row = $this->db2->fetch();
+					e107::getEmail()->sendEmail($row['user_name'], $row['user_email'], $message,FALSE);
 				}
 			}
-			if ($email['mail_notify_complete'] & 2)
-			{	// Do e107 notify
+			if ($email['mail_notify_complete'] & 2) // Do e107 notify
+			{	
 				require_once(e_HANDLER."notify_class.php");
-				notify_maildone($message);
+			//	notify_maildone($message); // FIXME
 			}
 			e107::getEvent()->trigger('maildone', $email);
 		}
@@ -779,18 +878,41 @@ class e107MailManager
 
 	/**
 	 *	Given an email block, creates an array of data compatible with PHPMailer, including any necessary substitutions
+	 * $eml['subject']
+		$eml['sender_email']	- 'From' email address
+		$eml['sender_name']		- 'From' name
+		$eml['replyto']			- Optional 'reply to' field
+		$eml['replytonames']	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
+		$eml['send_html']		- if TRUE, includes HTML part in messages (only those added after this flag)
+		$eml['add_html_header'] - if TRUE, adds the 2-line DOCTYPE declaration to the front of the HTML part (but doesn't add <head>...</head>)
+		$eml['body']			- message body. May be HTML or text. Added according to the current state of the HTML enable flag
+		$eml['attach']			- string if one file, array of filenames if one or more.
+		$eml['copy_to']			- comma-separated list of cc addresses.
+		$eml['cc_names']  		- comma-separated list of cc names. Optional, used only if $eml['copy_to'] specified
+		$eml['bcopy_to']		- comma-separated list
+		$eml['bcc_names'] 		- comma-separated list of bcc names. Optional, used only if $eml['copy_to'] specified
+		$eml['bouncepath']		- Sender field (used for bounces)
+		$eml['returnreceipt']	- email address for notification of receipt (reading)
+		$eml['inline_images']	- array of files for inline images
+		$eml['priority']		- Email priority (1 = High, 3 = Normal, 5 = low)
+		$eml['e107_header']		- Adds specific 'X-e107-id:' header
+		$eml['extra_header']	- additional headers (format is name: value
+		$eml['wordwrap']		- Set wordwrap value
+		$eml['split']			- If true, sends an individual email to each recipient
+		$eml['template']		- template to use. 'default'
+		$eml['shortcodes']		- array of shortcode values. eg. array('MY_SHORTCODE'=>'12345');
 	 */
 	protected function makeEmailBlock($email)
 	{
 		$mailSubsInfo = array(
-	 		'email_subject' => 'mail_subject',
-			'email_sender_email' => 'mail_sender_email',
-			'email_sender_name' => 'mail_sender_name',
+	 		'subject'       => 'mail_subject',
+			'sender_email'  => 'mail_sender_email',
+			'sender_name'   => 'mail_sender_name',
 			// 'email_replyto'		- Optional 'reply to' field 
 			// 'email_replytonames'	- Name(s) corresponding to 'reply to' field  - only used if 'replyto' used
-			'email_copy_to'	=> 'mail_copy_to', 		// - comma-separated list of cc addresses.
+			'copy_to'	    => 'mail_copy_to', 		// - comma-separated list of cc addresses.
 			//'email_cc_names' - comma-separated list of cc names. Optional, used only if $eml['email_copy_to'] specified
-			'email_bcopy_to' => 'mail_bcopy_to',
+			'bcopy_to'      => 'mail_bcopy_to',
 			// 'email_bcc_names' - comma-separated list of bcc names. Optional, used only if $eml['email_copy_to'] specified
 			//'bouncepath'		- Sender field (used for bounces)
 			//'returnreceipt'	- email address for notification of receipt (reading)
@@ -799,18 +921,35 @@ class e107MailManager
 			//'extra_header'	- additional headers (format is name: value
 			//'wordwrap'		- Set wordwrap value
 			//'split'			- If true, sends an individual email to each recipient
+			'template'		=> 'mail_send_style', // required
+			'shortcodes'	=> 'mail_target_info', // required
+			'e107_header'   => 'mail_recipient_id'
+
 			);
+
+
+
+
 		$result = array();
+
+
 		if (!isset($email['mail_source_id'])) $email['mail_source_id'] = 0;
 		if (!isset($email['mail_target_id'])) $email['mail_target_id'] = 0;
 		if (!isset($email['mail_recipient_id'])) $email['mail_recipient_id'] = 0;
+
+
+
+
+
 		foreach ($mailSubsInfo as $k => $v)
 		{
 			if (isset($email[$v]))
 			{
 				$result[$k] = $email[$v];
+				//unset($email[$v]);
 			}
 		}
+
 
 		// Do any substitutions
 		$search = array();
@@ -820,13 +959,18 @@ class e107MailManager
 			$search[] = '|'.$k.'|';
 			$replace[] = $v;
 		}
+
 		$result['email_body'] = str_replace($search, $replace, $this->currentMailBody);
+
 		if ($this->currentTextBody)
 		{
 			$result['mail_body_alt'] = str_replace($search, $replace, $this->currentTextBody);
 		}
+
 		$result['send_html'] = ($email['mail_send_style'] != 'textonly');
 		$result['add_html_header'] = FALSE;				// We look after our own headers
+
+
 		
 		// Set up any extra mailer parameters that need it
 		if (!vartrue($email['e107_header']))
@@ -834,22 +978,51 @@ class e107MailManager
 			$temp = intval($email['mail_recipient_id']).'/'.intval($email['mail_source_id']).'/'.intval($email['mail_target_id']).'/';
 			$result['e107_header'] = $temp.md5($temp);		// Set up an ID
 		}
+		
 		if (isset($email['mail_attach']) && (trim($email['mail_attach']) || is_array($email['mail_attach'])))
 		{
-			$downDir = realpath(e_ROOT.$this->e107->getFolder('downloads'));
+			$tp = e107::getParser();
+			
 			if (is_array($email['mail_attach']))
 			{
 				foreach ($email['mail_attach'] as $k => $v)
 				{
-					$result['email_attach'][$k] = $downDir.$v;
+					$result['email_attach'][$k] = $tp->replaceConstants($v);
 				}
 			}
 			else
 			{
-				$result['email_attach'] = $downDir.trim($email['mail_attach']);
+				$result['email_attach'] = $tp->replaceConstants(trim($email['mail_attach']));
 			}
 		}
-		if (isset($email['mail_overrides']) && is_array($email['mail_overrides'])) $result = array_merge($result, $email['mail_overrides']);
+		
+		if (isset($email['mail_overrides']) && is_array($email['mail_overrides']))
+		{
+			 $result = array_merge($result, $email['mail_overrides']);
+		}
+		
+	//	$title = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+	//	e107::getAdminLog()->addDebug($title.print_a($email,true),true);
+		
+		if(!empty($email['mail_media']))
+		{
+			$result['media'] = $email['mail_media'];
+		}
+				
+	//	$title2 = "<h4>".__METHOD__." Line: ".__LINE__."</h4>";
+	//	e107::getAdminLog()->addDebug($title2.print_a($result,true),true);
+	
+		$result['shortcodes']['MAILREF'] = $email['mail_source_id'];
+
+		if($this->debugMode)
+		{
+			echo "<h3>makeEmailBlock() : Incoming</h3>";
+			print_a($email);
+
+			echo "<h3>makeEmailBlock(): Outgoing</h3>";
+			print_a($result);
+		}
+
 		return $result;
 	}
 
@@ -859,21 +1032,36 @@ class e107MailManager
 	 * Call to do a number of 'units' of email processing - from a cron job, for example
 	 * Each 'unit' sends one email from the queue - potentially it could do some other task.
 	 * @param $limit - number of units of work to do - zero to clear the queue (or do maximum allowed by a hard-coded limit)
+	 * @param $pauseCount - pause after so many emails
+	 * @param $pauseTime - time in seconds to pause after 'pauseCount' number of emails. 
 	 * @return None
 	 */
-	public function doEmailTask($limit = 0)
+	public function doEmailTask($limit = 0, $pauseCount=null, $pauseTime=1)
 	{
 		if ($count = $this->selectEmails($limit))
 		{
+			$c=1;
 			while ($count > 0)
 			{
 				$this->sendNextEmail();
 				$count--;
+				
+				if(!empty($pauseCount) && ($c === $pauseCount))
+				{
+					sleep($pauseTime);
+					$c=1;
+				}
+					
 			}
 			if ($this->mailer)
 			{
 				$this->mailer->allSent();		// Tidy up on completion
 			}
+		}
+		else 
+		{
+
+			// e107::getAdminLog()->addDebug("Couldn't select emails", true);
 		}
 	}
 
@@ -892,20 +1080,20 @@ class e107MailManager
 		$this->checkDB(2);						// Make sure we have a DB object to use
 
 		$dbData = $this->mailToDB($emailData, FALSE);		// Convert array formats
-//		print_a($dbData);
+	//	print_a($dbData);
 
-		if ($isNew)
+
+		if ($isNew === true)
 		{
 			unset($dbData['mail_source_id']);				// Just in case - there are circumstances where might be set
-			$result = $this->db2->db_Insert('mail_content', array('data' => $dbData, 
-														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
-														'_NOTNULL' => $this->dbNull['mail_content']));
+			$result = $this->db2->insert('mail_content', array('data' => $dbData, 
+														'_FIELD_TYPES' => $this->dbTypes['mail_content'], 												'_NOTNULL' => $this->dbNull['mail_content']));
 		}
 		else
 		{
 			if (isset($dbData['mail_source_id']))
 			{
-				$result = $this->db2->db_Update('mail_content', array('data' => $dbData, 
+				$result = $this->db2->update('mail_content', array('data' => $dbData, 
 																	'_FIELD_TYPES' => $this->dbTypes['mail_content'], 
 																	'WHERE' => '`mail_source_id` = '.intval($dbData['mail_source_id'])));
 				if ($result !== FALSE) { $result = $dbData['mail_source_id']; }
@@ -934,11 +1122,11 @@ class e107MailManager
 			return FALSE;
 		}
 		$this->checkDB(2);						// Make sure we have a DB object to use
-		if ($this->db2->db_Select('mail_content', '*', '`mail_source_id`='.$mailID) === FALSE)
+		if ($this->db2->select('mail_content', '*', '`mail_source_id`='.$mailID) === FALSE)
 		{
 			return FALSE;
 		}
-		$mailData = $this->db2->db_Fetch(MYSQL_ASSOC);
+		$mailData = $this->db2->fetch();
 		return $this->dbToMail($mailData, $addMissing);				// Convert to 'flat array' format
 	}
 
@@ -955,20 +1143,23 @@ class e107MailManager
 		$result = array();
 		if ($actions == 'all') $actions = 'content,recipients';
 		$actArray = explode(',', $actions);
+		
 		if (!is_numeric($mailID) || ($mailID == 0))
 		{
 			return FALSE;
 		}
 
 		$this->checkDB(2);						// Make sure we have a DB object to use
+		
 		if (isset($actArray['content']))
 		{
-			$result['content'] = $this->db2->db_Delete('mail_content', '`mail_source_id`='.$mailID);
+			$result['content'] = $this->db2->delete('mail_content', '`mail_source_id`='.$mailID);
 		}
 		if (isset($actArray['recipients']))
 		{
-			$result['recipients'] = $this->db2->db_Delete('mail_recipients', '`mail_detail_id`='.$mailID);
+			$result['recipients'] = $this->db2->delete('mail_recipients', '`mail_detail_id`='.$mailID);
 		}
+		
 		return $result;
 	}
 
@@ -1037,12 +1228,33 @@ class e107MailManager
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		if (!isset($this->mailCounters[$handle])) return 'nocounter';
 		$this->checkDB(2);			// Make sure DB object created
+		
+		
+		
+		
+		
 		$query = '`mail_togo_count`='.intval($this->mailCounters[$handle]['add']).' WHERE `mail_source_id`='.$handle;
 		if ($this->db2->db_Update('mail_content', $query))
 		{
 			return $this->mailCounters[$handle]['add'];
 		}
 		return FALSE;
+	}
+	
+	
+	public function updateCounter($id, $type, $count)
+	{
+		if(empty($id) || empty($type))
+		{
+			return false; 	
+		}
+		
+		$update = array(
+			'mail_'.$type.'_count'	=> intval($count),
+			'WHERE'					=> "mail_source_id=".intval($id)
+		);
+		
+		return e107::getDb('mail')->update('mail_content', $update) ? $count : false;
 	}
 	
 	
@@ -1104,17 +1316,19 @@ class e107MailManager
 		$query .= '`mail_notify_complete`='.intval($notify).', `mail_content_status` = '.($hold ? MAIL_STATUS_HELD : MAIL_STATUS_PENDING).$lt.' WHERE `mail_source_id` = '.intval($handle);
 		//	echo "Update mail body: {$query}<br />";
 		// Set status of email body first
-		if (!$this->db->db_Update('mail_content',$query))
+		
+		if (!$this->db->update('mail_content',$query))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
+		
 		// Now set status of individual emails
 		$query = '`mail_status` = '.($hold ? MAIL_STATUS_HELD : (MAIL_STATUS_PENDING + e107MailManager::E107_EMAIL_MAX_TRIES)).$ft.' WHERE `mail_detail_id` = '.intval($handle);
 		//	echo "Update individual emails: {$query}<br />";
-		if (FALSE === $this->db->db_Update('mail_recipients',$query))
+		if (FALSE === $this->db->update('mail_recipients',$query))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		return TRUE;
@@ -1131,12 +1345,12 @@ class e107MailManager
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		$this->checkDB(1);			// Make sure DB object created
 		// Set status of individual emails first, so we can get a count
-		if (FALSE === ($count = $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_CANCELLED.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
+		if (FALSE === ($count = $this->db->update('mail_recipients','`mail_status` = '.MAIL_STATUS_CANCELLED.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
 		{
 			return FALSE;
 		}
 		// Now do status of email body - no emails to go, add those not sent to fail count
-		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_PARTIAL.', `mail_togo_count`=0, `mail_fail_count` = `mail_fail_count` + '.intval($count).' WHERE `mail_source_id` = '.intval($handle)))
+		if (!$this->db->update('mail_content','`mail_content_status` = '.MAIL_STATUS_PARTIAL.', `mail_togo_count`=0, `mail_fail_count` = `mail_fail_count` + '.intval($count).' WHERE `mail_source_id` = '.intval($handle)))
 		{
 			return FALSE;
 		}
@@ -1154,13 +1368,13 @@ class e107MailManager
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		$this->checkDB(1);			// Make sure DB object created
 		// Set status of individual emails first, so we can get a count
-		if (FALSE === ($count = $this->db->db_Update('mail_recipients','`mail_status` = '.MAIL_STATUS_HELD.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
+		if (FALSE === ($count = $this->db->update('mail_recipients','`mail_status` = '.MAIL_STATUS_HELD.' WHERE `mail_detail_id` = '.intval($handle).' AND `mail_status` >'.MAIL_STATUS_FAILED)))
 		{
 			return FALSE;
 		}
 		if ($count == 0) return TRUE;		// If zero count, must have held email just as queue being emptied, so don't touch main status
 
-		if (!$this->db->db_Update('mail_content','`mail_content_status` = '.MAIL_STATUS_HELD.' WHERE `mail_source_id` = '.intval($handle)))
+		if (!$this->db->update('mail_content','`mail_content_status` = '.MAIL_STATUS_HELD.' WHERE `mail_source_id` = '.intval($handle)))
 		{
 			return FALSE;
 		}
@@ -1176,83 +1390,175 @@ class e107MailManager
 	 */
 	public function markBounce($bounceString, $emailAddress = '')
 	{
-		$bounceInfo = array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
-		$errors = array();						// Log all errors, at least until proven
-		$vals = explode('/',$bounceString);		// Should get one or four fields
+	
+		$bounceString = trim($bounceString);
+	
+		$bounceInfo 	= array('mail_bounce_string' => $bounceString, 'mail_recipient_email' => $emailAddress);		// Ready for event data
+		$errors 		= array();						// Log all errors, at least until proven
+		$vals 			= explode('/', $bounceString);		// Should get one or four fields
+
+		if($this->debugMode)
+		{
+			echo "<h4>Bounce String</h4>";
+			print_a($bounceString);
+			echo "<h4>Vals</h4>";
+			print_a($vals);
+		}
+		
 		if (!is_numeric($vals[0])) 				// Email recipient user id number (may be zero)
 		{
 			$errors[] = 'Bad user ID: '.$vals[0];
 		}
+		
 		$uid = intval($vals[0]);				// User ID (zero is valid)
-		if (count($vals) == 4) 
+		
+		if (count($vals) == 4) // Admin->Mailout format. 
 		{
-			if (md5($vals[0].'/'.$vals[1].'/'.$vals[2].'/') != $vals[3])
-			{		// 'Extended' ID has md5 validation
-				$errors[] = 'Bad md5';
-			}
+			
 			if (!is_numeric($vals[1])) 		// Email body record number
 			{
 				$errors[] = 'Bad body record: '.$vals[1];
 			}
+			
 			if (!is_numeric($vals[2])) 		// Email recipient table record number
 			{
 				$errors[] = 'Bad recipient record: '.$vals[2];
 			}
+			
+			$vals[0] = intval($vals[0]);
 			$vals[1] = intval($vals[1]);
 			$vals[2] = intval($vals[2]);
-			if (count($errors) == 0)
-			{	// Look up in mailer DB if no errors so far
-				$this->checkDB(1);
-				if (FALSE === ($this->db->db_Select_gen(
-					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name` FROM `#mail_recipients` AS mr 
-						LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
+			$vals[3] = trim($vals[3]);
+
+
+			$hash = ($vals[0].'/'.$vals[1].'/'.$vals[2].'/');
+			
+			if (md5($hash) != $vals[3]) // 'Extended' ID has md5 validation
+			{		
+				$errors[] = 'Bad md5';
+				$errors[] = print_r($vals,true);
+				$errors[] = 'hash:'.md5($hash);
+			}
+			
+			if (empty($errors))
+			{	
+				$this->checkDB(1); // Look up in mailer DB if no errors so far
+				
+				if (false === ($this->db->gen(
+					"SELECT mr.`mail_recipient_id`, mr.`mail_recipient_email`, mr.`mail_recipient_name`, mr.mail_target_info, 
+					mc.mail_create_date, mc.mail_start_send, mc.mail_end_send, mc.`mail_title`, mc.`mail_subject`, mc.`mail_creator`, mc.`mail_other` FROM `#mail_recipients` AS mr 
+					LEFT JOIN `#mail_content` as mc ON mr.`mail_detail_id` = mc.`mail_source_id`
 						WHERE mr.`mail_target_id` = {$vals[2]} AND mc.`mail_source_id` = {$vals[1]}")))
 				{	// Invalid mailer record
 					$errors[] = 'Not found in DB: '.$vals[1].'/'.$vals[2];
 				}
-				$row = $this->db->db_Fetch(MYSQL_ASSOC);
-				if ($emailAddress && ($emailAddress != $row['mail_recipient_email']))
-				{	// Email address mismatch
+				
+				$row = $this->db->fetch();
+				
+				$row = $this->dbToBoth($row);
+				
+				$bounceInfo = $row;
+
+				if ($emailAddress && ($emailAddress != $row['mail_recipient_email'])) // Email address mismatch
+				{	
 					$errors[] = 'Email address mismatch: '.$emailAddress.'/'.$row['mail_recipient_email'];
 				}
-				if ($uid != $row['mail_recipient_id'])
-				{	// User ID mismatch
+				
+				if ($uid != $row['mail_recipient_id']) 	// User ID mismatch
+				{
 					$errors[] = 'User ID mismatch: '.$uid.'/'.$row['mail_recipient_id'];
 				}
-				if (count($errors) == 0)
-				{	// All passed - can update mailout databases
-					$this->db->db_Update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]);
-					$this->db->db_Update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]);
-					$bounceInfo['mail_source_id'] = $vals[1];
-					$bounceInfo['mail_target_id'] = $vals[2];
-					$bounceInfo['mail_recipient_id'] = $uid;
-					$bounceInfo['mail_recipient_name'] = $row['mail_recipient_name'];
+				
+				if (count($errors) == 0) // All passed - can update mailout databases
+				{
+					$bounceInfo['mail_source_id'] 		= $vals[1];
+					$bounceInfo['mail_target_id'] 		= $vals[2];
+					$bounceInfo['mail_recipient_id'] 	= $uid;
+					$bounceInfo['mail_recipient_name'] 	= $row['mail_recipient_name'];		
+						
+						
+					if(!$this->db->update('mail_content', '`mail_bounce_count` = `mail_bounce_count` + 1 WHERE `mail_source_id` = '.$vals[1]))
+					{
+						e107::getAdminLog()->add('Unable to increment bounce-count on mail_source_id='.$vals[1],$bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
+					}
+					
+					
+					if(!$this->db->update('mail_recipients', '`mail_status` = '.MAIL_STATUS_BOUNCED.' WHERE `mail_target_id` = '.$vals[2]))
+					{
+						e107::getAdminLog()->add('Unable to update recipient mail_status to bounce on mail_target_id = '.$vals[2],$bounceInfo, E_LOG_FATAL, 'BOUNCE', LOG_TO_ROLLING);
+					}
+				
+					$addons = array_keys($row['mail_selectors']); // trigger e_mailout.php addons. 'bounce' method. 
+					foreach($addons as $plug)
+					{
+						if($plug == 'core')
+						{
+							require_once(e_HANDLER.'user_handler.php');
+							if($err = userHandler::userStatusUpdate('bounce', $uid, $emailAddress));
+							{
+								$errors[] = $err;
+							}	
+							
+						}
+						else 
+						{
+							if($cls = e107::getAddon($plug,'e_mailout'))
+							{
+								if(e107::callMethod($cls, 'bounce', $bounceInfo)===false)
+								{
+									e107::getAdminLog()->add($plug.' bounce process failed',$bounceInfo, E_LOG_FATAL, 'BOUNCE',LOG_TO_ROLLING);	
+								}
+							}
+							
+						}	
+					}
 				}
+				
+				
+			//	echo e107::getMessage()->render();
+			//	print_a($bounceInfo);
+				
+				
 			}
 		}
-
-		if ((count($vals) != 1) && (count($vals) != 4))
+		elseif ((count($vals) != 1) && (count($vals) != 4)) // invalid e107-id header. 
 		{
 			$errors[] = 'Bad element count: '.count($vals);
 		}
-		elseif ($uid || $emailAddress)
-		{	// Now log the bounce against the user  (user handler will do any required logging)
-			require_once(e_HANDLER.'user_handler.php');
-			$result = userHandler::userStatusUpdate('bounce', $uid, $emailAddress);
-			if ($result)	// Returns FALSE if update successful
+		elseif (!empty($uid) || !empty($emailAddress)) // Update the user table for user_id = $uid;
+		{	
+			// require_once(e_HANDLER.'user_handler.php');
+			$err = e107::getUserSession()->userStatusUpdate('bounce', $uid, $emailAddress);
+			if($err)
 			{
-				$errors[] = $result;
+				$errors[] = $err;
 			}
 		}
-		if (count($errors))
+
+		if (!empty($errors))
 		{
-			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors);
-			$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString,FALSE,LOG_TO_ROLLING);
-			return FALSE;
+			$logErrors =$bounceInfo;
+			$logErrors['user_id'] = $uid;
+			$logErrors['mailshot'] = $vals[1];
+			$logErrors['mailshot_recipient'] = $vals[2];
+			$logErrors['errors'] = $errors;
+			$logErrors['email'] = $emailAddress;
+			$logErrors['bounceString'] = $bounceString;
+			$logString = $bounceString.' ('.$emailAddress.')[!br!]'.implode('[!br!]',$errors).implode('[!br!]',$bounceInfo);
+		//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce receive error',$logString, FALSE,LOG_TO_ROLLING);
+			e107::getAdminLog()->add('Bounce receive error',$logErrors, E_LOG_WARNING, 'BOUNCE', LOG_TO_ROLLING);
+			return $errors;
 		}
-		$this->e107->admin_log->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceString.' ('.$emailAddress.')',FALSE,LOG_TO_ROLLING);
+		else 
+		{
+			//	e107::getAdminLog()->e_log_event(10,-1,'BOUNCE','Bounce received/logged',$bounceInfo, FALSE,LOG_TO_ROLLING);
+			e107::getAdminLog()->add('Bounce received/logged',$bounceInfo, E_LOG_INFORMATIVE, 'BOUNCE',LOG_TO_ROLLING);	
+		}
+		
+		
 		e107::getEvent()->trigger('mailbounce', $bounceInfo);
-		return TRUE;
+		
+		return false;
 	}
 
 
@@ -1318,7 +1624,7 @@ class e107MailManager
 			$query .= " LIMIT {$start}, {$count}";
 		}
 		//echo "{$start}, {$count} Mail query: {$query}<br />";
-		$result = $this->db->db_Select_gen($query);
+		$result = $this->db->gen($query);
 		if ($result !== FALSE)
 		{
 			$this->queryCount[1] = $this->db->total_results;			// Save number of records found
@@ -1387,7 +1693,7 @@ class e107MailManager
 			$query .= " LIMIT {$start}, {$count}";
 		}
 //		echo "{$start}, {$count} Target query: {$query}<br />";
-		$result = $this->db2->db_Select_gen($query);
+		$result = $this->db2->gen($query);
 		if ($result !== FALSE)
 		{
 			$this->queryCount[2] = $this->db2->total_results;			// Save number of records found
@@ -1418,7 +1724,7 @@ class e107MailManager
 	 */
 	public function getNextTargetStatus()
 	{
-		$result = $this->db2->db_Fetch(MYSQL_ASSOC);
+		$result = $this->db2->db_Fetch();
 		if (is_array($result)) { return $this->dbToTarget($result); }
 		return FALSE;
 	}
@@ -1469,51 +1775,77 @@ class e107MailManager
 											 'mail_recipient_email' => $row['user_email']
 											 );	
  *						....and other data as appropriate
- *	@param boolean|array $extra - any additional parameters to be passed to the mailer - as accepted by arraySet method.
+ *	@param boolean|array $options - any additional parameters to be passed to the mailer - as accepted by arraySet method.
  *			These parameters will override any defaults, and any set in the template
- *	if ($extra['mail_force_queue'] is TRUE, the mail will be added to the queue regardless of the number of recipients
+ *	if ($options['mail_force_queue'] is TRUE, the mail will be added to the queue regardless of the number of recipients
  *
  *	@return boolean TRUE if either added to queue, or sent, successfully (does NOT indicate receipt). FALSE on any error
  *		(Note that with a small number of recipients FALSE indicates that one or more emails weren't sent - some may have been sent successfully)
  */
 
-	public function sendEmails($templateName, $emailData, $recipientData, $extra = FALSE)
+	public function sendEmails($templateName, $emailData, $recipientData, $options = false)
 	{
-		if (!is_array($emailData)) return FALSE;
+		$log = e107::getAdminLog();
+		$log->addDebug(print_r($emailData, true),true);
+		$log->addDebug(print_r($recipientData, true),true);
+		$log->toFile('mail_manager','Mail Manager Log', true);
+
+		if (!is_array($emailData)) 
+		{
+			return false;
+		}
+		
 		if (!is_array($recipientData))
 		{
 			$recipientData = array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData);
 		}
+
 		$emailData['mail_content_status'] = MAIL_STATUS_TEMP;
 
 		if ($templateName == '')
 		{
-			$templateName = varset($email['mail_send_style'], 'textonly');		// Safest default if nothing specified
+			$templateName = varset($emailData['mail_send_style'], 'textonly');		// Safest default if nothing specified
 		}
+
 		$templateName = trim($templateName);
-		if ($templateName == '') return FALSE;
+		if ($templateName == '') return false;
 
+		$this->currentMailBody 				= $emailData['mail_body'];			// In case we send immediately
+		$this->currentTextBody 				= strip_tags($emailData['mail_body']);
 
-		// Get template data, override email settings as appropriate
-		require_once(e_HANDLER.'mail_template_class.php');
-		$ourTemplate = new e107MailTemplate();
-		if (!$ourTemplate->setNewTemplate($templateName)) return FALSE;		// Probably template not found if error
-		if (!$ourTemplate->makeEmailBody($emailData['mail_body'], varset($emailData['mail_include_images'], TRUE))) return FALSE;		// Create body text
-		$emailData['mail_body_templated'] = $ourTemplate->mainBodyText;
-		$this->currentMailBody = $emailData['mail_body_templated'];			// In case we send immediately
-		$emailData['mail_body_alt'] = $ourTemplate->altBodyText;
-		$this->currentTextBody = $emailData['mail_body_alt'];
+		//		$emailData['mail_body_templated'] 	= $ourTemplate->mainBodyText;
+		//		$emailData['mail_body_alt'] 		= $ourTemplate->altBodyText;
+		
 		if (!isset($emailData['mail_overrides']))
 		{
 			$emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
 		}
-	
-
-		$forceQueue = FALSE;
-		if (is_array($extra) && isset($extra['mail_force_queue']))
+		
+		if(!empty($emailData['template'])) // Quick Fix for new email template standards. 
 		{
-			$forceQueue = $extra['mail_force_queue'];
-			unset($extra['mail_force_queue']);
+			$this->currentMailBody = $emailData['mail_body'];
+			unset($emailData['mail_body_templated']);
+			
+			if($this->debugMode)
+			{
+				echo "<h4>".$emailData['template']." Template detected</h4>";
+			}
+		}
+		
+
+		if (is_array($options) && isset($options['mail_force_queue']))
+		{
+			$forceQueue = $options['mail_force_queue'];
+			unset($options['mail_force_queue']);
+		}
+
+		if($this->debugMode)
+		{
+			 
+			echo "<h4>".__CLASS__." :: ".__METHOD__." - Line ".__LINE__."</h4>";
+			print_a($emailData);
+			print_a($recipientData);	
+
 		}
 
 		if ((count($recipientData) <= 5) && !$forceQueue)	// Arbitrary upper limit for sending multiple emails immediately
@@ -1521,25 +1853,46 @@ class e107MailManager
 			if ($this->mailer == NULL)
 			{
 				e107_require_once(e_HANDLER.'mail.php');
-				$this->mailer = new e107Email($extra);
+				$this->mailer = new e107Email($options);
 			}
 			$tempResult = TRUE;
 			$eCount = 0;
 			
 			// @TODO: Generate alt text etc
+
 			
 
 			foreach ($recipientData as $recip)
 			{
 				// Fill in other bits of email
-				$emailData['mail_target_info'] = $recip;
-				$mailToSend = $this->makeEmailBlock($emailData);			// Substitute mail-specific variables, attachments etc
-				if (FALSE == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, TRUE))
+			//	$emailData['mail_target_info'] = $recip	;
+				$merged     = array_merge($emailData,$recip);
+				$mailToSend = $this->makeEmailBlock($merged);			// Substitute mail-specific variables, attachments etc
+/*
+				echo "<h2>MERGED</h2>";
+				print_a($merged);
+				echo "<h2>RETURNED</h2>";
+				print_a($mailToSend);
+				echo "<hr />";
+				continue;
+
+		*/
+				if (false == $this->mailer->sendEmail($recip['mail_recipient_email'], $recip['mail_recipient_name'], $mailToSend, true))
 				{
 					$tempResult = FALSE;
+					if($this->debugMode)
+					{
+						echo "<h4>Failed to send to: ".$recip['mail_recipient_email']." [". $recip['mail_recipient_name'] ."]</h4>";
+						print_a($mailToSend);
+					}
 				}
 				else
 				{	// Success here
+					if($this->debugMode)
+					{
+						echo "<h4>Mail Sent successfully to: ".$recip['mail_recipient_email']." [". $recip['mail_recipient_name'] ."]</h4>";
+						print_a($mailToSend);
+					}
 					if ($eCount == 0)
 					{	// Only send these on first email - otherwise someone could get inundated!
 						unset($emailData['mail_copy_to']);
@@ -1551,9 +1904,15 @@ class e107MailManager
 			return $tempResult;
 		}
 
-		// To many recipients to send at once - add to the emailing queue
-		// @TODO - handle any other relevant $extra fields
+
+		// ----------- Too many recipients to send at once - add to the emailing queue ---------------- //
+
+
+		// @TODO - handle any other relevant $options fields
+		$emailData['mail_total_count'] = count($recipientData);
+
 		$result = $this->saveEmail($emailData, TRUE);
+
 		if ($result === FALSE)
 		{
 			// TODO: Handle error

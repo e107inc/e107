@@ -2,7 +2,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
+//FIXME TODO - Use v2 method. See chatbox_menu/e_rss.php
 
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
 $feed = get_forum_rss();
@@ -127,7 +127,7 @@ switch($this->parm){ //FIXME use v2.x standard and replace this with $parm['url'
 			}
 
 			$rss[$i]['title'] = $value['thread_name'];
-			$rss[$i]['link'] = $e107->base_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
+			$rss[$i]['link'] = SITEURLBASE.e_PLUGIN_ABS."forum/forum_viewtopic.php?".$value['thread_id'];
 			$rss[$i]['description'] = $value['thread_thread'];
 			$rss[$i]['datestamp'] = $value['thread_datestamp'];
 

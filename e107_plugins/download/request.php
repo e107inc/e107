@@ -1,11 +1,20 @@
 <?php
-require_once("../../class2.php");
+if (!defined('e107_INIT'))
+{
+	require_once("../../class2.php");
+}
 
-include_lan(e_PLUGIN."download/languages/".e_LANGUAGE."/download.php");
+
+e107::lan('download','download');
+
+
 $log = e107::getAdminLog(); 
 $id = FALSE;
 
-if (!is_numeric(e_QUERY)) 
+
+
+
+if (!is_numeric(e_QUERY) && empty($_GET['id'])) 
 {
 	if ($sql->select('download', 'download_id', "download_url='".$tp->toDB(e_QUERY)."'")) 
 	{
@@ -66,7 +75,10 @@ if(strstr(e_QUERY, "mirror"))
 			header("Location: {$gaddress}");
 			exit();
 		}
-		header("Location: ".e_BASE."download.php?error.{$download_id}.1");
+
+		$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$download_id;
+		e107::redirect($goUrl);
+		//header("Location: ".e_BASE."download.php?error.{$download_id}.1");
 		exit;
 	}
 }
@@ -83,6 +95,14 @@ else
 	$id = intval($tmp[1]);
 	$type = "image";
 }
+
+if(vartrue($_GET['id'])) // SEF URL 
+{
+	$id = intval($_GET['id']);	
+	$type = 'file';
+}
+
+
 
 
 if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) 
@@ -105,7 +125,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY))
 	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
 	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+	$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."\n<br /><br />\n<a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -121,10 +141,13 @@ if ($type == "file")
 
 		if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
 		{
-			if ($row['download_active'] == 0)
-			{  // Inactive download - don't allow
+			if ($row['download_active'] == 0) // Inactive download - don't allow
+			{
 				require_once(HEADERF);
-				$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".str_replace('--LINK--',"<a href='".e_HTTP.'download.php'."'>",LAN_dl_78).'</div>');
+				$search = array("[","]");
+				$replace = array("<a href='".e_HTTP."download.php'>", "</a>");
+
+				$ns->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>".str_replace($search, $replace, LAN_dl_78).'</div>');
 				require_once(FOOTERF);
 				exit();
 			}
@@ -226,12 +249,13 @@ if ($type == "file")
 				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
 				))
 			{
-				header("Location: ".e_BASE."download.php?error.{$id}.1");
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$id;
+				e107::redirect($goUrl);
 				exit();
 			}
 			else
 			{
-				header("Location: ".trim($pref['download_denied']));
+				e107::redirect(trim($pref['download_denied']));
 				exit();
 			}
 		}
@@ -253,8 +277,12 @@ if ($type == "file")
 			exit();
 		}
 	}
+	
+	
+	$log->addError("Line".__LINE__.": Couldn't find ".e_DOWNLOAD.e_QUERY);
+	$log->toFile('download_requests','Download Requests', true); // Create a log file and add the log messages
 	require_once(HEADERF);
-	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+	$ns -> tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 	require_once(FOOTERF);
 	exit();
 }
@@ -281,7 +309,7 @@ $image = ($table == "upload" ? $upload_ss : $download_image);
 
 if (strpos($image, "http") !== FALSE) 
 {
-	header("Location: {$image}");
+	e107::redirect($image);
 	exit();
 } 
 else 
@@ -289,6 +317,7 @@ else
 	if ($table == "download") 
 	{
 		require_once(HEADERF);
+    $imagecaption = ''; // TODO ?name or text Screenshot
 		if (file_exists(e_FILE."download/{$image}")) 
 		{
 			$disp = "<div style='text-align:center'><img src='".e_FILE."download/{$image}' alt='' /></div>";
@@ -299,10 +328,11 @@ else
 		} 
 		else 
 		{
-			$disp = "<div style='text-align:center'><img src='".e_UPLOAD.$image."' alt='' /></div>";
+      $image = $tp->replaceConstants($image);
+			$disp = "<div style='text-align:center'><img src='".$image."' alt='' /></div>";
 		}
-		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>";
-		$ns->tablerender($image, $disp);
+		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>";
+		$ns->tablerender($imagecaption, $disp);
 
 		require_once(FOOTERF);
 	} else 
@@ -318,7 +348,7 @@ else
 		else 
 		{
 			require_once(HEADERF);
-			$ns->tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
+			$ns->tablerender(LAN_ERROR, "<div style='text-align:center'>".LAN_FILE_NOT_FOUND."<br /><br /><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>");
 			require_once(FOOTERF);
 			exit;
 		}
@@ -353,9 +383,11 @@ function check_download_limits()
 			if($row['count'] >= $limits['gen_intdata']) 
 			{
 				// Exceeded download count limit
-			  	header("Location: ".e_BASE."download.php?error.{$cutoff}.2");
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$cutoff;
+				e107::redirect($goUrl);
+			 // 	e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require_once(HEADERF);
-				$ns->tablerender(LAN_dl_61, LAN_dl_62);
+				$ns->tablerender(LAN_ERROR, LAN_dl_62);
 				require(FOOTERF);  */
 				exit();
 			}
@@ -383,9 +415,11 @@ function check_download_limits()
 			
 			if($row['total_bw'] / 1024 > $limit['gen_user_id']) 
 			{	//Exceed bandwith limit
-			  header("Location: ".e_BASE."download.php?error.{$cutoff}.2");
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$cutoff;
+				 e107::redirect($goUrl);
+			 // e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require(HEADERF);
-				$ns->tablerender(LAN_dl_61, LAN_dl_62);
+				$ns->tablerender(LAN_ERROR, LAN_dl_62);
 				require(FOOTERF); */
 				exit();
 			}

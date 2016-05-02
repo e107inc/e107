@@ -8,9 +8,6 @@
  *
  * Banner shortcode
  *
-*/
-
-/**
  *	e107 Banner management plugin
  *
  *	Handles the display and sequencing of banners on web pages, including counting impressions
@@ -19,37 +16,52 @@
  *	@subpackage	banner
  */
 
-class banner_shortcodes
-{	
-	function sc_banner($parm)
+class banner_shortcodes extends e_shortcode
+{
+
+// $parm now can be array, old campaign $parm still allowed....
+	function sc_banner($parm='')
 	{
-		$e107 = e107::getInstance();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-			
-		$ret = '';
-	
-		$text = '';
 		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
 		$time = time();
-	
-		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '')."
-		AND banner_active IN (".USERCLASS_LIST.")
-		ORDER BY RAND($seed) LIMIT 1";
-	
-		if($sql->db_Select('banner', 'banner_id, banner_image, banner_clickurl', $query))
+		$campaign = (is_array($parm)?$parm['campaign']:$parm);
+		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($campaign ? " AND banner_campaign='".$tp->toDB($campaign)."'" : '')."
+		AND banner_active IN (".USERCLASS_LIST.") ";
+		if($tags = e107::getRegistry('core/form/related'))
 		{
-			$row = $sql->db_Fetch();
+			$tags_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
+			$query .= " AND banner_keywords REGEXP ".$tags_regexp;
+		}
+		$query .= "	ORDER BY RAND($seed) LIMIT 1";
+		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
+		{
+			$row = $sql->fetch();
+			return $this->renderBanner($row, $parm);
+		}
+		else
+		{
+			return '&nbsp;';
+		}
+	}
+
+	// Also used by banner_menu.php 
+	public function renderBanner($row, $parm = '')
+	{
+		$sql = e107::getDb('banner');
+		$tp = e107::getParser();
+		if(!$row['banner_image'])
+		{
+			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+		}
 	
-			if(!$row['banner_image'])
-			{
-				return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
-			}
-	
-			$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
-			$sql->db_Update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
-			switch ($fileext1)
+		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
+		
+		$sql->update('banner', 'banner_impressions=banner_impressions+1 WHERE banner_id='.(int)$row['banner_id']);
+		
+		switch ($fileext1)
 			{
 				case 'swf':
 					return  "
@@ -60,23 +72,40 @@ class banner_shortcodes
 					<embed src=\"".e_IMAGE_ABS."banners/".$row['banner_image']."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed>
 					</object>
 					";
-					break;
+				break;
+					
 				case 'html':
 				case 'js':
 				case 'php':			// Code - may 'echo' text, or may return it as a value
 					$file_data = file_get_contents(e_IMAGE.'banners/'.$row['banner_image']);
 					return $file_data;
-					break;
+				break;
+				
 				default:
-					$ban_ret = "<img src='".e_IMAGE_ABS.'banners/'.$row['banner_image']."' alt='".$row['banner_clickurl']."' style='border:0' />";
-					break;
+					if($row['banner_image'][0] == '{')
+					{
+						$src = $row['banner_image'];
+					}
+					else
+					{
+						$src = e_IMAGE_ABS.'banners/'.$row['banner_image'];
+						$style = "'border:0'";
+					}
+						// Somehow, can't use vartrue core function when referencing $parm['class'], gives bug....
+						$ban_ret = $tp->toImage($src, array('class'=>($parm['class'] == ''?"e-banner img-responsive img-rounded":$parm['class']) , 'alt'=>$row['banner_clickurl'], 'style'=>$style));
+
+				break;
 			}
-			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".$ban_ret.'</a>';
-		}
-		else
-		{
-			return '&nbsp;';
-		}
+			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute(varset($row['banner_tooltip'],''))."\">";
+			$end = '</a>';
+			$text = $start.$ban_ret.$end;
+	
+			if(!empty($row['banner_description']))
+			{
+				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
+			}
+
+			return $text;
 	}
 }
-?>
+

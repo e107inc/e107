@@ -15,21 +15,33 @@
  *
 */
 require_once("class2.php");
-if(!plugInstalled('gsitemap'))
+if(!e107::isInstalled('gsitemap'))
 { 
-	header("location:".e_BASE."index.php"); 
+	e107::redirect();
 	exit();
 }
 
-include_lan(e_PLUGIN."gsitemap/languages/gsitemap_".e_LANGUAGE.".php");
+e107::lan('gsitemap'); 
 
-if(e_QUERY == "show")
+if(e_QUERY == "show" || !empty($_GET['show']))
 {
 	require_once(HEADERF);
 
-	$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ");
-	$nfArray = $sql -> db_getList();
-	$text = "<div style='text-align:left'><ul>";
+	$nfArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
+
+	if(deftrue('BOOTSTRAP'))
+	{
+		$bread = array(
+			0 => array('text' => $tp->toHtml(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
+		);
+		$text = e107::getForm()->breadcrumb($bread);
+	}
+	else
+	{
+		$text = '';
+	}
+
+	$text .= "<div style='text-align:left'><ul>";
 
 	foreach($nfArray as $nfa)
 	{
@@ -38,20 +50,20 @@ if(e_QUERY == "show")
 	}
 	$text .= "</ul></div>";
 
-	$ns -> tablerender(SITENAME." : ".GSLAN_Name."", $text);
+	$ns -> tablerender(GSLAN_Name."", $text);
 
 	require_once(FOOTERF);
 	exit;
 }
 
-
+header('Content-type: application/xml', TRUE);
 $xml = "<?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.google.com/schemas/sitemap/0.84'
 xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'	xsi:schemaLocation='http://www.google.com/schemas/sitemap/0.84
 http://www.google.com/schemas/sitemap/0.84/sitemap.xsd'>";
 
-$sql -> db_Select("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ");
-$smArray = $sql -> db_getList();
+$smArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
+
 foreach($smArray as $sm)
 {
 	if($sm['gsitemap_url'][0] == '/') $sm['gsitemap_url'] = ltrim($sm['gsitemap_url'], '/');

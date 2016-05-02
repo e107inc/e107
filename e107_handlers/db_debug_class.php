@@ -72,25 +72,22 @@ class e107_db_debug {
 		$this->ShowIf('Shortcodes / BBCode',$this->Show_SC_BB());
 		$this->ShowIf('Paths', $this->Show_PATH());
 		$this->ShowIf('Deprecated Function Usage', $this->Show_DEPRECATED());
+
         if(E107_DBG_INCLUDES)
         {
             $this->aIncList = get_included_files(); 
-        }   
+        }
+
 		$this->ShowIf('Included Files: '.count($this->aIncList), $this->Show_Includes());
 	}
 	
 	function ShowIf($title,$str)
 	{
-		global $ns,$style;
-		$style='debug';
-		
-		if (!isset($ns)) {
-			echo "Why did ns go away?<br />";
-			$ns = new e107table;
-		}
-		
-		if (strlen($str)) {
-			$ns->tablerender($title, $str);
+
+		if(!empty($str))
+		{
+			e107::getRender()->setStyle('debug');
+			e107::getRender()->tablerender($title, $str);
 		}
 	}
 
@@ -123,7 +120,15 @@ class e107_db_debug {
 	}
 
 
-	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable) 
+	/**
+	 * @param $query
+	 * @param $rli
+	 * @param $origQryRes
+	 * @param $aTrace
+	 * @param $mytime
+	 * @param $curtable
+	 */
+	function Mark_Query($query, $rli, $origQryRes, $aTrace, $mytime, $curtable)
 	{
 	//  global $sql;
 		$sql = e107::getDb( $rli);
@@ -155,15 +160,15 @@ class e107_db_debug {
 		}
 
 		// Record Basic query info
-		$sCallingFile	= varset($aTrace[1]['file']);
-		$sCallingLine	= varset($aTrace[1]['line']);
+		$sCallingFile	= varset($aTrace[2]['file']);
+		$sCallingLine	= varset($aTrace[2]['line']);
 
 		$t 				= &$this->aSQLdetails[$sql->db_QueryCount()];
 		$t['marker']	= $this->curTimeMark;
 		$t['caller']	= "$sCallingFile($sCallingLine)";
 		$t['query']		= $query;
 		$t['ok']		= $sQryRes ? TRUE : FALSE;
-		$t['error']		= $sQryRes ? '' : mysql_error();
+		$t['error']		= $sQryRes ? '' : $sql->getLastErrorText(); // mysql_error();
 		$t['nFields']	= $nFields;
 		$t['time']		= $mytime;
 
@@ -206,14 +211,14 @@ class e107_db_debug {
 
 
 
-	function Show_SQL_Details() {
+	function Show_SQL_Details($force=false) {
 		global $sql;
 		//
 		// Show stats from aSQLdetails array
 		//
-		if (!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS)
+		if (!E107_DBG_SQLQUERIES && !E107_DBG_SQLDETAILS  && ($force === false))
 		{
-			return FALSE;
+			return false;
 		}
 
 
@@ -228,21 +233,26 @@ class e107_db_debug {
 		$badCount=0;
 		$okCount=0;
 
-		foreach ($this->aSQLdetails as $cQuery) {
-			if ($cQuery['ok']) {
+		foreach ($this->aSQLdetails as $cQuery) 
+		{
+			if ($cQuery['ok']==1) 
+			{
 				$okCount++;
-			} else {
+			} 
+			else 
+			{
 				$badCount++;
 			}
 		}
 
 		if ($badCount) {
-			$text .= "\n<table class='fborder table table-striped'>\n";
+			$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
 			$text .= "<tr><td class='fcaption' colspan='2'><b>$badCount Query Errors!</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Query / Error</b></td></tr>\n";
 
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
-				if (!$cQuery['ok']) {
+				if (!$cQuery['ok']) 
+				{
 					$text .= "<tr><td class='forumheader3' rowspan='2' style='text-align:right'>{$idx}&nbsp;</td>
     	       	        <td class='forumheader3'>".$cQuery['query']."</td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
@@ -253,20 +263,23 @@ class e107_db_debug {
 		//
 		// Optionally list good queries
 		//
+		
 		if ($okCount && E107_DBG_SQLDETAILS) {
-			$text .= "\n<table class='fborder table table-striped'>\n";
-			$text .= "<tr><td class='fcaption' colspan='3'><b>{$okCount[TRUE]} Good Queries</b></td></tr>\n";
+			$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
+			$text .= "<tr><td class='fcaption' colspan='3'><b>".$this->countLabel($okCount)." Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
 				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
 				 ";
 
-			foreach ($this->aSQLdetails as $idx => $cQuery) {
+			foreach ($this->aSQLdetails as $idx => $cQuery) 
+			{
 				if ($cQuery['ok']) {
 					$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
-	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td><td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
+	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td>
+	       	        <td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
 				}
 			}
-			$text .= "\n</table><br />\n";
+				$text .= "\n</table><br />\n";
 		}
 
 
@@ -275,7 +288,7 @@ class e107_db_debug {
 		//
 		if (E107_DBG_SQLDETAILS) {
 			foreach ($this->aSQLdetails as $idx => $cQuery) {
-				$text .= "\n<table class='fborder' style='width: 100%;'>\n";
+				$text .= "\n<table class='fborder table table-striped table-bordered' style='width: 100%;'>\n";
 				$text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br />".$cQuery['query']."</td></tr>\n";
 				if (isset($cQuery['explain'])) {
 					$text .= $cQuery['explain'];
@@ -284,12 +297,33 @@ class e107_db_debug {
 					$text .= "<tr><td class='forumheader3' ><b>Error in query:</b></td></tr>\n<tr><td class='forumheader3'>".$cQuery['error']."</td></tr>\n";
 				}
 
-				$text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' (ms)</td></tr></table><br />'."\n";
+				$text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' (ms)</td></tr>';
+			
+				$text .= '</table><br />'."\n";
 			}
 		}
 
 		return $text;
 	}
+	
+	function countLabel($amount)
+	{
+		if($amount < 30)
+		{
+			$inc = 'label-success';
+		}
+		elseif($amount < 50)
+		{
+			$inc = 'label-warning';	
+		}	
+		elseif($amount > 49)
+		{
+			$inc = 'label-danger label-important';		
+		}
+		
+		return "<span class='label ".$inc."'>".$amount."</span>";
+	}
+	
 
 	function Show_Performance() {
 		//
@@ -461,11 +495,11 @@ class e107_db_debug {
 		$this->scbcount ++;
 	}
 
-	function Show_SC_BB()
+	function Show_SC_BB($force=false)
 	{
-		if (!E107_DBG_BBSC)
+		if (!E107_DBG_BBSC  && ($force === false))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$text = "<table class='fborder table table-striped table-condensed' style='width: 100%'>
@@ -480,10 +514,16 @@ class e107_db_debug {
 			</thead>
 			<tbody>\n";
 
+		$description = array(1=>'Bbcode',2=>'Shortcode',3=>'Wrapper', 4=>'Shortcode Override', -2 => 'Shortcode Failure');
+		$style = array(1 => 'label-info', 2=>'label-primary', 3=>'label-warning', 'label-danger', -2 => 'label-danger');
+
  		foreach($this -> scbbcodes as $codes)
 		{
+
+			$type = $codes['type'];
+
 			$text .= "<tr>
-				<td class='forumheader3' style='width: 10%;'>".($codes['type'] == 1 ? "BBCode" : "Shortcode")."</td>
+				<td class='forumheader3' style='width: 10%;'><span class='label ".$style[$type]."'>".($description[$type])."</span></td>
 				<td class='forumheader3' style='width: auto;'>".(isset($codes['code']) ? $codes['code'] : "&nbsp;")."</td>
 				<td class='forumheader3' style='width: auto;'>".($codes['parm'] ? $codes['parm'] : "&nbsp;")."</td>
 				<td class='forumheader3' style='width: 40%;'>".($codes['details'] ? $codes['details'] : "&nbsp;")."</td>
@@ -493,9 +533,9 @@ class e107_db_debug {
 		return $text;
 	}
 
-	function Show_PATH()
+	function Show_PATH($force=false)
 	{
-		if (!E107_DBG_PATH)
+		if (!E107_DBG_PATH && ($force === false))
 		{
 			return FALSE;
 		}
@@ -537,7 +577,7 @@ class e107_db_debug {
 			}
 		}
 				
-			
+		$sess = e107::getSession();
 					
 		$text .= "
 			
@@ -554,6 +594,21 @@ class e107_db_debug {
 				<td class='fcaption' colspan='2'><h2>Session</h2></td>
 			</tr>
 			<tr>
+				<td class='forumheader3'>Session lifetime</td>
+				<td class='forumheader3'>".$sess->getOption('lifetime')." seconds</td>
+			</tr>
+			<tr>
+				<td class='forumheader3'>Session domain</td>
+				<td class='forumheader3'>".$sess->getOption('domain')."</td>
+			</tr>
+			<tr>
+				<td class='forumheader3'>Session save method</td>
+				<td class='forumheader3'>".$sess->getSaveMethod()."</td>
+			</tr>
+			
+			
+			
+			<tr>
 				<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($_SESSION,TRUE))."</pre></td>
 			</tr>
 			
@@ -564,10 +619,11 @@ class e107_db_debug {
 	}
 
 
-	function Show_DEPRECATED(){
-		if (!E107_DBG_DEPRECATED)
+	function Show_DEPRECATED($force=false)
+	{
+		if (!E107_DBG_DEPRECATED  && ($force === false))
 		{
-			return FALSE;
+			return false;
 		} 
 		else 
 		{
@@ -602,6 +658,12 @@ class e107_db_debug {
 //
 	function log($message,$TraceLev=1)
 	{
+
+		if(is_array($message))
+		{
+			$message = "<pre>".print_r($message,true)."</pre>";
+		}
+
 		if (!E107_DBG_BASIC){
 			return FALSE;
 		}
@@ -624,22 +686,25 @@ class e107_db_debug {
 		}
 	}
 
-	function Show_Log(){
-		if (!E107_DBG_BASIC || !count($this->aLog)){
+	function Show_Log()
+	{
+		if (empty($this->aLog))
+		{
 			return FALSE;
 		}
 		//
 		// Dump the debug log
 		//
 
-		$text .= "\n<table class='fborder table table-striped'>\n";
+		$text = "\n<table class='fborder table table-striped'>\n";
 
 		$bRowHeaders=FALSE;
 		
 		foreach ($this->aLog as $curLog) 
 		{
-			if (!$bRowHeaders) {
-				$bRowHeaders=TRUE;
+			if (!$bRowHeaders)
+			{
+				$bRowHeaders = true;
 				$text .= "<tr class='fcaption'><td><b>".implode("</b></td><td><b>", array_keys($curLog))."</b></td></tr>\n";
 			}
 
@@ -651,9 +716,9 @@ class e107_db_debug {
 		return $text;
 	}
 	
-	function Show_Includes()
+	function Show_Includes($force=false)
 	{
-		if (!E107_DBG_INCLUDES) return FALSE;
+		if (!E107_DBG_INCLUDES  && ($force === false)) return false;
 
 		
         

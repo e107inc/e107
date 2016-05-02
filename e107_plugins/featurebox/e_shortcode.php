@@ -1,7 +1,6 @@
 <?php
 /*
 * Copyright (c) e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
-* $Id$
 *
 * Featurebox shortcode batch class - shortcodes available site-wide. ie. equivalent to multiple .sc files.
 */
@@ -28,8 +27,16 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 * @param string $mod category template
 	 * @example {FEATUREBOX=cols=2|tabs}
 	 */
-	function sc_featurebox($parm, $mod = '')
+	function sc_featurebox($parm=null, $mod = '')
 	{
+		
+		if($parm == null && $mod == '') // ie {FEATUREBOX}
+		{
+			$type 	= vartrue(e107::getPlugPref('featurebox','menu_category'),'bootstrap_carousel');
+			$text = e107::getParser()->parseTemplate("{FEATUREBOX|".$type."}");
+			
+			return $text;
+		}
 		
 		// TODO cache
 		if(!e107::isInstalled('featurebox')) //just in case
@@ -64,11 +71,12 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 
 		if(!$category->hasData())
 		{
+			
 			return '';
 		}
 		
 		$tmpl = $this->getFboxTemplate($ctemplate);
-	
+		
 		
 		$type = vartrue($tmpl['js_type'],''); // Legacy support (prototype.js)
 		
@@ -95,15 +103,19 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		
 		// Fix - don't use tablerender if no result (category could contain hidden items)
 		$ret = $this->render($category, $ctemplate, $parm);
-		if(empty($ret)) return '';
-
+		if(empty($ret))
+		{
+			e107::getMessage()->addDebug('Featurebox returned nothing.')->addDebug('Category: '.print_a($category,true))->addDebug('Template: '.$ctemplate)->addDebug('Param: '.print_a($parm,true));
+			return '';
+		}
+		
 		$ret = $tp->parseTemplate($tmpl['list_start'], true, $category).$ret.$tp->parseTemplate($tmpl['list_end'], true, $category);
 		if(isset($parm['notablestyle']))
 		{
 			return $ret;
 		}
 		
-		return e107::getRender()->tablerender(FBLAN_01, $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
+		return e107::getRender()->tablerender(LAN_PLUGIN_FEATUREBOX_NAME, $ret, vartrue($parm['tablestyle'], 'featurebox'), true);
 	}
 	
 	/**
@@ -158,6 +170,8 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		$base = vartrue($parm['base'], 'nav').'_';
 		$tree_ids = array_keys($tree->getTree()); //all available item ids
 		
+		
+		
 		$ret = $category->toHTML(varset($tmpl[$base.'start']), true); 
 		$cols = $category->getParam('cols', 1);
 		
@@ -168,6 +182,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			{
 				$total = $tree->getTotal();
 			}
+		
 			// loop for limit number
 			elseif(isset($parm['uselimit'])) 
 			{
@@ -186,14 +201,19 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 			{
 				$total = ceil($total / $cols);
 			}
+				
+
 			$model = clone $category;
 			$item = new plugin_featurebox_item();
 			$tmp = array();
+			
 			for ($index = 1; $index <= $total; $index++)
 			{
+				
 				$nodeid = varset($tree_ids[($index - 1) * $cols], 0); 
 				if($nodeid && $tree->hasNode($nodeid))
 				{
+					
 					$model->setParam('counter', $index)
 						->setParam('total', $total)
 						->setParam('active', $index == varset($parm['from'], 1));

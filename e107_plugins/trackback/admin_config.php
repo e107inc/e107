@@ -13,9 +13,9 @@
  *
 */
 require_once("../../class2.php");
-if (!getperms("P") || !plugInstalled('trackback')) 
+if (!getperms("P") || !e107::isInstalled('trackback')) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit() ;
 }
 
@@ -34,16 +34,9 @@ if (isset($_POST['updatesettings']))
 		$e107cache->clear('news.php');
 	}
 	$temp['trackbackString'] = $tp->toDB($_POST['trackbackString']);
-	if ($admin_log->logArrayDiffs($temp, $pref, 'TRACK_01'))
-	{
-		save_prefs();		// Only save if changes
-		//$message = TRACKBACK_L4;
-	}
-	else
-	{
-		//$message = TRACKBACK_L17;
-		$mes->addInfo(LAN_NO_CHANGE);
-	}
+	
+	e107::getConfig('core')->setPref($temp)->save(false);
+	
 }
 	
 $ns->tablerender($caption, $mes->render() . $text);

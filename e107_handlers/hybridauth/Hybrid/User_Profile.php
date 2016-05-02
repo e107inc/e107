@@ -1,84 +1,152 @@
 <?php
-/*!
-* HybridAuth
-* http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
-* (c) 2009-2012, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
-*/
 
 /**
- * Hybrid_User_Profile object represents the current logged in user profile. 
- * The list of fields available in the normalized user profile structure used by HybridAuth.  
+ * HybridAuth
+ * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
+ * (c) 2009-2015, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
+ */
+
+/**
+ * Hybrid_User_Profile object represents the current logged in user profile.
+ * The list of fields available in the normalized user profile structure used by HybridAuth.
  *
- * The Hybrid_User_Profile object is populated with as much information about the user as 
+ * The Hybrid_User_Profile object is populated with as much information about the user as
  * HybridAuth was able to pull from the given API or authentication provider.
- * 
+ *
  * http://hybridauth.sourceforge.net/userguide/Profile_Data_User_Profile.html
  */
-class Hybrid_User_Profile
-{
-	/* The Unique user's ID on the connected provider */
-	public $identifier = NULL;
+class Hybrid_User_Profile {
 
-	/* User website, blog, web page */
-	public $webSiteURL = NULL;
+	/**
+	 * The Unique user's ID on the connected provider
+	 * @var mixed
+	 */
+	public $identifier = null;
 
-	/* URL link to profile page on the IDp web site */
-	public $profileURL = NULL;
+	/**
+	 * User website, blog, web page
+	 * @var string
+	 */
+	public $webSiteURL = null;
 
-	/* URL link to user photo or avatar */
-	public $photoURL = NULL;
+	/**
+	 * URL link to profile page on the IDp web site
+	 * @var string
+	 */
+	public $profileURL = null;
 
-	/* User dispalyName provided by the IDp or a concatenation of first and last name. */
-	public $displayName = NULL;
+	/**
+	 * URL link to user photo or avatar
+	 * @var string
+	 */
+	public $photoURL = null;
 
-	/* A short about_me */
-	public $description = NULL;
+	/**
+	 * User displayName provided by the IDp or a concatenation of first and last name.
+	 * @var string
+	 */
+	public $displayName = null;
 
-	/* User's first name */
-	public $firstName = NULL;
+	/**
+	 * A short about_me
+	 * @var string
+	 */
+	public $description = null;
 
-	/* User's last name */
-	public $lastName = NULL;
+	/**
+	 * User's first name
+	 * @var string
+	 */
+	public $firstName = null;
 
-	/* male or female */
-	public $gender = NULL;
+	/**
+	 * User's last name
+	 * @var string
+	 */
+	public $lastName = null;
 
-	/* language */
-	public $language = NULL;
+	/**
+	 * Male or female
+	 * @var string
+	 */
+	public $gender = null;
 
-	/* User age, we dont calculate it. we return it as is if the IDp provide it. */
-	public $age = NULL;
+	/**
+	 * Language
+	 * @var string
+	 */
+	public $language = null;
 
-	/* User birth Day */
-	public $birthDay = NULL;
+	/**
+	 * User age, we don't calculate it. we return it as is if the IDp provide it.
+	 * @var int
+	 */
+	public $age = null;
 
-	/* User birth Month */
-	public $birthMonth = NULL;
+	/**
+	 * User birth Day
+	 * @var int
+	 */
+	public $birthDay = null;
 
-	/* User birth Year */
-	public $birthYear = NULL;
+	/**
+	 * User birth Month
+	 * @var int
+	 */
+	public $birthMonth = null;
 
-	/* User email. Note: not all of IDp garant access to the user email */
-	public $email = NULL;
-	
-	/* Verified user email. Note: not all of IDp garant access to verified user email */
-	public $emailVerified = NULL;
+	/**
+	 * User birth Year
+	 * @var int
+	 */
+	public $birthYear = null;
 
-	/* phone number */
-	public $phone = NULL;
+	/**
+	 * User email. Note: not all of IDp grant access to the user email
+	 * @var string
+	 */
+	public $email = null;
 
-	/* complete user address */
-	public $address = NULL;
+	/**
+	 * Verified user email. Note: not all of IDp grant access to verified user email
+	 * @var string
+	 */
+	public $emailVerified = null;
 
-	/* user country */
-	public $country = NULL;
+	/**
+	 * Phone number
+	 * @var string
+	 */
+	public $phone = null;
 
-	/* region */
-	public $region = NULL;
+	/**
+	 * Complete user address
+	 * @var string
+	 */
+	public $address = null;
 
-	/** city */
-	public $city = NULL;
+	/**
+	 * User country
+	 * @var string
+	 */
+	public $country = null;
 
-	/* Postal code  */
-	public $zip = NULL;
+	/**
+	 * Region
+	 * @var string
+	 */
+	public $region = null;
+
+	/**
+	 * City
+	 * @var string
+	 */
+	public $city = null;
+
+	/**
+	 * Postal code
+	 * @var string
+	 */
+	public $zip = null;
+
 }

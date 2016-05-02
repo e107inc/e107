@@ -6,7 +6,7 @@
 		global $style;  // BC
 		$style = $parm; // BC
 
-		e107::getRender()->eSetStyle = $parm;
+		e107::getRender()->setStyle($parm);
 	}
 
 ?>

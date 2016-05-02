@@ -36,24 +36,29 @@ if (isset($_POST['update_settings']))
 			$userData['data']['user_password'] = $sql->escape($userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
-			if (varsettrue($pref['allowEmailLogin']))
+			if (vartrue($pref['allowEmailLogin']))
 			{
-				$user_prefs = unserialize($currentUser['user_prefs']);
+				$user_prefs = e107::getArrayStorage()->unserialize($currentUser['user_prefs']);
 				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, $email);
-				$userData['data']['user_prefs'] = serialize($user_prefs);
+				$userData['data']['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
 			}
 
 			$userData['data']['user_pwchange'] = time();
 			$userData['WHERE'] = 'user_id='.USERID;
 			validatorClass::addFieldTypes($userMethods->userVettingInfo,$userData, $userMethods->otherFieldTypes);
 	
-			$check = $sql -> db_Update('user',$userData);
+			$check = $sql->update('user',$userData);
 			if ($check) 
 			{
-				$admin_log->log_event('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
+				e107::getLog()->add('ADMINPW_01', '', E_LOG_INFORMATIVE, '');
 				$userMethods->makeUserCookie(array('user_id' => USERID,'user_password' => $userData['data']['user_password']), FALSE);		// Can't handle autologin ATM
 				$mes->addSuccess(UDALAN_3." ".ADMINNAME);
-				$e_event -> trigger('adpword');
+				
+				e107::getEvent()->trigger('adpword'); //@deprecated
+				
+				$eventData = array('user_id'=> USERID, 'user_pwchange'=> $userData['data']['user_pwchange']); 
+				e107::getEvent()->trigger('admin_password_update',$eventData ); 
+				 
 				$ns->tablerender(UDALAN_2, $mes->render());
 			}
 			else 
@@ -88,7 +93,7 @@ else
 						</td>
 					</tr>
 					<tr>
-						<td>".UDALAN_5.":</td>
+						<td>".LAN_PASSWORD.":</td>
 						<td>".$frm->password('a_password','',20,'generate=1&strength=1')."
 							
 						</td>

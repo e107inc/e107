@@ -40,9 +40,7 @@ require_once("../../class2.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-include_lan(e_PLUGIN.'import/languages/'.e_LANGUAGE.'_admin_import.php');
-
-
+e107::lan('import', true, true);
 
 //XXX A Fresh Start 
 class import_admin extends e_admin_dispatcher
@@ -105,7 +103,7 @@ class import_main_ui extends e_admin_ui
 		'forumpost' 	=> array('message' => "Forum Posts", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumpost_import', 'nolist'=>true),
 		'forumtrack' 	=> array('message' => "Forum Track", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumtrack_import', 'nolist'=>true),
 	//	'forumpost' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
-		'comments' 		=> array('message'=> "Comments"),
+		'comments' 		=> array('message'=> LAN_COMMENTS),
 	//	'forumdefs' 	=> array('message' => LAN_CONVERT_26),
 	//	'forumposts' 	=> array('message' => LAN_CONVERT_48), 
 	//	'polls' 		=> array('message' => LAN_CONVERT_27)
@@ -150,7 +148,7 @@ class import_main_ui extends e_admin_ui
 	function help()
 	{
 		
-		return "Some help text from admin-ui";	
+		return "Some help text for admin-ui";	
 		
 	}
 	
@@ -182,25 +180,27 @@ class import_main_ui extends e_admin_ui
 		
 	//	print_a($_POST);
 	
+		if(!empty($_POST['import_delete_existing_data']))
+		{
+			$this->deleteExisting = varset($_POST['import_delete_existing_data'],0);
+		}
 		
-		$this->deleteExisting = varset($_POST['import_delete_existing_data'],0);
-		
-		if(varset($_POST['classes_select']))
+		if(!empty($_POST['classes_select']))
 		{
 			$this->checked_class_list = implode(',',$_POST['classes_select']);
 		}
 		
-		if(vartrue($_POST['createUserExtended'])) //TODO 
+		if(!empty($_POST['createUserExtended'])) //TODO 
 		{
 			$this->createUserExtended = true; 
 		}
 		
-		if(vartrue($_POST['selectedTables']))
+		if(!empty($_POST['selectedTables']))
 		{
 			$this->selectedTables = $_POST['selectedTables'];
 		}
 			
-		if(vartrue($_POST['runConversion'])) // default method. 
+		if(!empty($_POST['runConversion'])) // default method. 
 		{
 			$this->runConversion($_POST['import_source']);
 			return;	
@@ -482,7 +482,7 @@ class import_main_ui extends e_admin_ui
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_22."</td>
-			<td ><input class='tbox' type='text' name='dbParamDatabase' size='30' value='".varset($_POST['dbParamDatabase'])."' maxlength='100' /></td>
+			<td ><input class='tbox' type='text' name='dbParamDatabase' size='30' value='".varset($_POST['dbParamDatabase'])."' maxlength='100' required /></td>
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_23."</td>
@@ -586,8 +586,11 @@ class import_main_ui extends e_admin_ui
 	//  	if(varset($import_source)) { $temp .=  "disp('{$import_source}');"; }
 	//  	if (varset($current_db_type)) $temp .= " flagbits('{$current_db_type}');";
 	//  	if (varset($temp)) $text .= "<script type=\"text/javascript\"> {$temp}</script>";
-	
-	  	$ns -> tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$importType, $mes->render().$text);
+		
+		$this->addTitle($importType); 
+		echo $mes->render().$text; 
+		
+	//  	$ns -> tablerender(LAN_PLUGIN_IMPORT_NAME.SEP.$importType, $mes->render().$text);
 	
 	}
 	

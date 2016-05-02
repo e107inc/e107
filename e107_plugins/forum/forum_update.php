@@ -15,7 +15,7 @@ require_once ('../../class2.php');
 
 if (!getperms('P'))
 {
-	header('location:' . e_BASE . 'index.php');
+	e107::redirect();
 	exit ;
 }
 
@@ -190,11 +190,18 @@ function step2()
 	$ret = '';
 	$failed = false;
 	$text = '';
+	$sql = e107::getDb();
 	foreach ($tabList as $name => $rename)
 	{
 		$message = 'Creating table ' . ($rename ? $rename : $name);
 
-		$result = $db -> createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
+		if($sql->isTable($name) && $sql->isEmpty($name))
+		{
+			$mes -> addSuccess("Skipping table ".$name." (already exists)");
+			continue;
+		}
+
+		$result = $db->createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
 		if ($result === true)
 		{
 			$mes -> addSuccess($message);
@@ -215,15 +222,15 @@ function step2()
 	else
 	{
 		$text = "<form method='post' action='" . e_SELF . "?step=3'>
-			<input class='btn' type='submit' name='nextStep[3]' value='Proceed to step 3' />
+			<input class='btn btn-success' type='submit' name='nextStep[3]' value='Proceed to step 3' />
 			</form>";
 	}
 	$ns -> tablerender('Step 2: Forum table creation', $mes -> render() . $text);
 }
 
-// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib,
-// $source)
 
+
+// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib, $source)
 function step3()
 {
 	$ns = e107::getRender();
@@ -248,19 +255,19 @@ function step3()
 		return;
 	}
 
-	require_once (e_HANDLER . 'user_extended_class.php');
-	$ue = new e107_user_extended;
 
 	$fieldList = array(
-		'plugin_forum_posts' => EUF_INTEGER,
-		'plugin_forum_viewed' => EUF_TEXTAREA
+		'plugin_forum_posts' => 'integer',
+		'plugin_forum_viewed' => 'radio'
 	);
 
 	$failed = false;
+	$ext = e107::getUserExt();
+
 	foreach ($fieldList as $fieldName => $fieldType)
 	{
 
-		$result = $ue -> user_extended_add_system($fieldName, $fieldType);
+		$result = $ext->user_extended_add_system($fieldName, $fieldType);
 
 		if ($result === true)
 		{
@@ -269,6 +276,7 @@ function step3()
 		else
 		{
 			$mes -> addError('Creating extended user field user_' . $fieldName);
+			$mes->addDebug(print_a($result,true));
 			$failed = true;
 		}
 	}
@@ -280,7 +288,7 @@ function step3()
 	}
 	else
 	{
-		$text .= "
+		$text = "
 			<form method='post' action='" . e_SELF . "?step=4'>
 			<input class='btn btn-success' type='submit' name='nextStep[4]' value='Proceed to step 4' />
 			</form>
@@ -345,6 +353,15 @@ function step4()
 	$fconf -> setPref($old_prefs) -> save(false, true);
 	$coreConfig -> save(false, true);
 
+
+	// -----Upgrade old menu prefs ----------------
+	global $forum;
+	$forum->upgradeLegacyPrefs();
+
+	// --------------------
+
+
+
 	$result = array(
 		'usercount' => 0,
 		'viewcount' => 0,
@@ -356,7 +373,7 @@ function step4()
 		require_once (e_HANDLER . 'user_extended_class.php');
 		$ue = new e107_user_extended;
 
-		while ($row = $db -> fetch(MYSQL_ASSOC))
+		while ($row = $db -> fetch())
 		{
 			$result['usercount']++;
 			$userId = (int)$row['user_id'];
@@ -468,6 +485,9 @@ function step5()
 			$tmp = $forum;
 			$tmp['forum_threadclass'] = $tmp['forum_postclass'];
 			$tmp['forum_options'] = '_NULL_';
+			$tmp['forum_sef'] = eHelper::title2sef($forum['forum_name'],'dashl');
+
+
 			//			$tmp['_FIELD_TYPES'] = $ftypes['_FIELD_TYPES'];
 			if ($sql -> insert('forum_new', $tmp))
 			{
@@ -479,7 +499,11 @@ function step5()
 			}
 
 		}
-
+	}
+	else
+	{
+		$counts = array('parents'=>'n/a', 'forums'=>'n/a', 'subs'=>'n/a');
+	}
 		$mes -> addSuccess("
 		Forum data move results:
 		<ul>
@@ -489,10 +513,10 @@ function step5()
 		</ul>
 		");
 
-		$result = $sql -> gen('RENAME TABLE `#forum`  TO `#forum_old` ') ? e_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$result = $sql -> gen('RENAME TABLE `#forum`  TO `#forum_old` ') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes -> add("Renaming forum to forum_old", $result);
 
-		$result = $sql -> gen('RENAME TABLE `#forum_new`  TO `#forum` ') ? e_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+		$result = $sql -> gen('RENAME TABLE `#forum_new`  TO `#forum` ') ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 		$mes -> add("Renaming forum_new to forum", $result);
 
 		$text = "
@@ -503,7 +527,8 @@ function step5()
 
 		$ns -> tablerender($stepCaption, $mes -> render() . $text);
 
-	}
+
+
 }
 
 
@@ -544,10 +569,10 @@ function renderProgress($caption, $step)
 		<div class="row-fluid">
 			<div class="span9 well">
 				<div class="progress progress-success progress-striped active" id="progressouter">
-	   				<div class="bar" id="progress"></div>
+	   				<div class="progress-bar bar" role="progressbar" id="progress"></div>
 				</div>
 			
-			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '" data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
+			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '"  data-progress-target="progress"  data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
 			</div>
 		</div>';
 
@@ -596,6 +621,11 @@ function step6_ajax()
 		}
 
 	}
+	else
+	{
+		echo 100;
+		exit;
+	}
 
 	echo round(($_SESSION['forumupdate']['thread_count'] / $_SESSION['forumupdate']['thread_total']) * 100, 1);
 
@@ -634,7 +664,7 @@ function step7()
 
 	//	var_dump($counts);
 
-	$text .= "
+	$text = "
 	Successfully recalculated forum posts for " . count($counts) . " users.
 	<br /><br />
 	<form method='post' action='" . e_SELF . "?step=8'>
@@ -686,7 +716,7 @@ function step8_ajax()
 
 	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$parentList[] = $row['forum_id'];
 		}
@@ -698,6 +728,11 @@ function step8_ajax()
 			$_SESSION['forumupdate']['lastpost_last'] = $id;
 			$_SESSION['forumupdate']['lastpost_count']++;
 		}
+	}
+	else
+	{
+		echo 100;
+		exit;
 	}
 
 	echo round(($_SESSION['forumupdate']['lastpost_count'] / $_SESSION['forumupdate']['lastpost_total']) * 100);
@@ -731,7 +766,7 @@ function step9()
 	";
 	if ($sql -> gen($qry))
 	{
-		while ($row = $sql -> fetch(MYSQL_ASSOC))
+		while ($row = $sql -> fetch())
 		{
 			$threadList[] = $row['thread_id'];
 		}
@@ -739,7 +774,7 @@ function step9()
 		{
 			if ($sql -> select('forum_thread', 'thread_options', 'thread_id = ' . $threadId, 'default'))
 			{
-				$row = $sql -> fetch(MYSQL_ASSOC);
+				$row = $sql -> fetch();
 				if ($row['thread_options'])
 				{
 					$opts = unserialize($row['thread_options']);
@@ -791,11 +826,11 @@ function step10()
 
 	if ($_SESSION['forumupdate']['attachment_total'] == 0)
 	{
-		$text .= "
+		$text = "
 		No forum attachments found. 
 		<br /><br />
 		<form method='post' action='" . e_SELF . "?step=11'>
-		<input class='btn' type='submit' name='nextStep[11]' value='Proceed to step 11' />
+		<input class='btn btn-success' type='submit' name='nextStep[11]' value='Proceed to step 11' />
 		</form>
 		";
 		$ns -> tablerender($stepCaption, $text);
@@ -845,7 +880,7 @@ function step10_ajax()//TODO
 	
 	if ($sql->gen($qry))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$postList[] = $row;
 		}
@@ -1242,7 +1277,7 @@ function step12()
 
 class forumUpgrade
 {
-	var $newVersion = '2.0';
+	private $newVersion = '2.0';
 	var $error = array();
 	public $updateInfo;
 	private $attachmentData;
@@ -1319,7 +1354,7 @@ class forumUpgrade
 		/*
 		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
-			$row = $sql -> fetch(MYSQL_ASSOC);
+			$row = $sql -> fetch();
 			$this -> updateInfo = unserialize($row['gen_chardata']);
 		}
 		else
@@ -1339,12 +1374,13 @@ class forumUpgrade
 
 	function setNewVersion()
 	{
-		$pref = e107::getPref();
-		$sql = e107::getDb();
+		// $sql = e107::getDb();
 
-		$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
-		$pref['plug_installed']['forum'] = $this -> newVersion;
-		save_prefs();
+	//	$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum' OR plugin_name = 'LAN_PLUGIN_FORUM_NAME'");
+	//	e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+
+		e107::getPlugin()->refresh('forum');
+
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}
 
@@ -1414,6 +1450,7 @@ class forumUpgrade
 		 * thread_lastuser_anon
 		 * thread_total_replies
 		 * thread_options
+		 * thread_sef
 		 */
 
 		$detected 	= mb_detect_encoding($post['thread_name']); // 'ISO-8859-1'
@@ -1446,6 +1483,7 @@ class forumUpgrade
 		//		$thread['_FIELD_TYPES'] = $forum->fieldTypes['forum_thread'];
 		//		$thread['_FIELD_TYPES']['thread_name'] = 'escape'; //use escape to prevent
 		// double entities
+
 
 		$result = e107::getDb() -> insert('forum_thread', $thread);
 		return $result;
@@ -1720,13 +1758,19 @@ function forum_update_adminmenu()
 		$var[13]['divider'] = true;
 		
 		$var[14]['text'] = 'Reset';
-		$var[14]['link'] = e_SELF . "?reset";	
+		$var[14]['link'] = e_SELF . "?reset";
+
+		$var[15]['text'] = 'Reset to 3';
+		$var[15]['link'] = e_SELF . "?step=3&reset=3";
+
+		$var[16]['text'] = 'Reset to 6';
+		$var[16]['link'] = e_SELF . "?step=6&reset=6";
+
+		$var[17]['text'] = 'Reset to 7';
+		$var[17]['link'] = e_SELF . "?step=7&reset=7";
 		
-		$var[15]['text'] = 'Reset to 7';
-		$var[15]['link'] = e_SELF . "?step=7&reset=7";	
-		
-		$var[16]['text'] = 'Reset to 10';
-		$var[16]['link'] = e_SELF . "?step=10&reset=10";	
+		$var[18]['text'] = 'Reset to 10';
+		$var[18]['link'] = e_SELF . "?step=10&reset=10";
 		
 	}
 	

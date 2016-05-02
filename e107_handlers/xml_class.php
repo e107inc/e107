@@ -17,6 +17,19 @@ if (!defined('e107_INIT')) { exit; }
 
 class parseXml extends xmlClass // BC with v1.x
 {
+	private $xmlData = array();
+	private $counterArray = array();
+	
+	function __construct()
+	{
+		$data = debug_backtrace(true);
+		$log = e107::getAdminLog();
+		$log->addDebug('Deprecated XML Parser Used');
+		
+		$log->addArray($data);
+		$log->save('DEPRECATED',E_LOG_NOTICE,'',false, LOG_TO_ROLLING);
+		
+	}
 	
 	function setUrl($feed)
 	{
@@ -25,8 +38,109 @@ class parseXml extends xmlClass // BC with v1.x
 	
 	function getRemoteXmlFile($address, $timeout = 10)
 	{	
-		return $this->getRemoteFile($address, $timeout);		
+	//	$data = $this->getRemoteFile($address, $timeout);	
+		$fl = e107::getFile();
+		$data = $fl->getRemoteContent($address);
+
+		$this->xmlLegacyContents = $data;
+
+		return $data;	
 	}
+	
+	function parseXmlContents ()
+	{
+		$log = e107::getAdminLog();
+		
+		foreach($this -> xmlData as $key => $value)
+		{
+			unset($this -> xmlData[$key]);
+		}
+		foreach($this -> counterArray as $key => $value)
+		{
+			unset($this -> counterArray[$key]);
+		}
+
+		if(!function_exists('xml_parser_create'))
+		{
+			$log->addDebug("No XML source specified")->save('XML',E_LOG_WARNING);
+			return FALSE;
+		}
+
+		if(!$this -> xmlLegacyContents)
+        {
+            
+			$log->addDebug("No XML source specified")->save('XML');
+            return FALSE;
+        }
+
+		$this->parser = xml_parser_create('');
+
+		xml_set_object($this->parser, $this);
+		xml_set_element_handler($this->parser, 'startElement', 'endElement');
+		xml_set_character_data_handler( $this->parser, 'characterData' );
+
+		$array = explode("\n", $this -> xmlLegacyContents);
+
+
+		foreach($array as $data)
+		{
+
+			if(strlen($data == 4096))
+			{
+				$log->addDebug("The XML cannot be parsed as it is badly formed.")->save('XML');
+				return FALSE;
+			}
+
+            if (!xml_parse($this->parser, $data))
+            {
+				$error = sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->parser)), xml_get_current_line_number($this->parser),xml_get_current_column_number($this->parser));
+				$log->addDebug($error)->save('XML');
+				return FALSE;
+            }
+        }
+		xml_parser_free( $this->parser );
+		return $this -> xmlData;
+	}
+	
+	
+	
+	function startElement ($p, $element, &$attrs)
+	{
+		$this -> start_tag = $element;
+		$this -> current_tag = strtolower($element);
+		if(!array_key_exists($this -> current_tag, $this -> counterArray))
+		{
+			$this -> counterArray[$this -> current_tag] = 0;
+			$this -> xmlData[$this -> current_tag][$this -> counterArray[$this -> current_tag]] = "";
+		}
+	}
+
+	function endElement ($p, $element)
+	{
+		if($this -> start_tag == $element)
+		{
+			$this -> counterArray[$this -> current_tag] ++;
+		}
+	}
+
+	function characterData ($p, $data)
+	{
+		$data = trim ( chop ( $data ));
+		$data = preg_replace('/&(?!amp;)/', '&amp;', $data);
+		if(!array_key_exists($this -> current_tag, $this -> xmlData))
+		{
+			$this -> xmlData [$this -> current_tag] = array();
+		}
+		if(array_key_exists($this -> counterArray[$this -> current_tag], $this -> xmlData [$this -> current_tag]))
+		{
+			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] .= $data;
+		}
+		else
+		{
+			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] = $data;
+		}
+	}
+	
 	
 }
 
@@ -221,7 +335,7 @@ class xmlClass
 	/**
 	 * Set Xml tags that should always return arrays.
 	 *
-	 * @param object $string (comma separated)
+	 * @param string $string (comma separated)
 	 * @return xmlClass
 	 */
 	public function setOptArrayTags($string)
@@ -304,20 +418,19 @@ class xmlClass
 		if($feed)
 		{
 			$this->_feedUrl = $feed;
-		}	
+		}
+		return $this;	
 	}
 
 	/**
-	 * DEPRECATED
-	 * Get Remote file contents
+	 * Get Remote XML file contents
 	 * use setOptArrayTags above if you require a consistent array result by in 1 item or many. 
-	 * @deprecated use e_file::getRemoteContent() instead
 	 * @param string $address
 	 * @param integer $timeout [optional] seconds
 	 * @return string
 	 */
 	function getRemoteFile($address, $timeout = 10, $postData=null)
-	{
+	{		
 		$_file = e107::getFile();
 		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
 		$this->error = $_file->error;
@@ -465,10 +578,18 @@ class xmlClass
 		{
 			return FALSE;
 		}
+
+		$extendedTypes = array(
+			'content:encoded'   => 'content_encoded',
+			'<media:'     => '<media_',
+			'</media:'    => '</media_',
+			'<opensearch:'  => '<opensearch_',
+			'</opensearch:' => '</opensearch_'
+		);
+
+		$xmlData = str_replace(array_keys($extendedTypes), array_values($extendedTypes), $xmlData);
 		
-		$xmlData = str_replace('content:encoded', 'content_encoded', $xmlData);
-		
-		if(!$xml = simplexml_load_string($xmlData))
+		if(!$xml = simplexml_load_string($xmlData, 'SimpleXMLElement', LIBXML_NOCDATA))
 		{
 			$this->errors = $this->getErrors($xmlData);
 			return FALSE;
@@ -768,6 +889,7 @@ class xmlClass
 		if (strpos($fname, '://') !== false)
 		{
 			$this->getRemoteFile($fname);
+			$this->_feedUrl = false; // clear it to avoid conflicts. 
 		}
 		else
 		{
@@ -778,6 +900,8 @@ class xmlClass
 		}
 		if ($this->xmlFileContents)
 		{
+	
+			
 			if ($replace_constants == true)
 			{
 				$this->xmlFileContents = $tp->replaceConstants($this->xmlFileContents, '', true);
@@ -887,7 +1011,7 @@ class xmlClass
 			foreach($tables as $tbl)
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
-				e107::getDB()->db_Select($eTable, "*");
+				e107::getDB()->select($eTable, "*");
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 				while($row = e107::getDB()-> db_Fetch())
 				{
@@ -965,7 +1089,7 @@ class xmlClass
 				// var_dump(e107::getArrayStorage()->ReadArray($val['@value']));
 				// echo $val['@value'].'</pre>';
 			// }
-			$value = strpos($val['@value'], 'array (') === 0 ? e107::getArrayStorage()->ReadArray($val['@value']) : $val['@value'];
+			$value = strpos($val['@value'], 'array (') === 0 ? e107::unserialize($val['@value']) : $val['@value'];
 			$pref[$name] = $value;
 
 			// $mes->add("Setting up ".$prefType." Pref [".$name."] => ".$value, E_MESSAGE_DEBUG);
@@ -984,8 +1108,13 @@ class xmlClass
 	 * @param boolean $debug [optional]
 	 * @return array with keys 'success' and 'failed' - DB table entry status.
 	 */
-	public function e107Import($file, $mode='replace', $noLogs = false, $debug=FALSE)
+	public function e107Import($file, $mode='replace', $noLogs = false, $debug=FALSE, $sql = null)
 	{
+
+		if($sql == null)
+		{
+			$sql = e107::getDB();	
+		}
 
 		$xmlArray = $this->loadXMLfile($file, 'advanced');
 
@@ -1046,18 +1175,21 @@ class xmlClass
 						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
 
 						$insert_array[$fieldkey] = $fieldval;
+
 					}
-					if(($mode == "replace") && e107::getDB()->db_Replace($table, $insert_array)!==FALSE)
+					if(($mode == "replace") && $sql->replace($table, $insert_array)!==FALSE)
 					{
 						$ret['success'][] = $table;
 					}
-					elseif(($mode == "add") && e107::getDB()->db_Insert($table, $insert_array)!==FALSE)
+					elseif(($mode == "add") && $sql->insert($table, $insert_array)!==FALSE)
 					{
 						$ret['success'][] = $table;
 					}
 					else
 					{
-						$ret['failed'][] = $table;
+						$error = $sql->getLastErrorText();
+						$lastQry = $sql->getLastQuery();
+						$ret['failed'][] = $table. "\n[".$error."]\n".$lastQry."\n\n";
 					}
 				}
 			}
@@ -1110,7 +1242,7 @@ class XMLParse
     var $isError = false;
     var $error = '';
 
-    function XMLParse($xml = NULL)
+    function __construct($xml = NULL)
     {
         $this->rawXML = $xml;
 		$mes = e107::getMessage();

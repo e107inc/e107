@@ -86,7 +86,7 @@ define("DOWLAN_63",  "Descending");
 define("DOWLAN_64",  "Update Options");
 define("DOWLAN_65",  "Options Updated");
 define("DOWLAN_66",  "Filesize");
-define("DOWLAN_67",  "ID"); //FIXME Use Generic
+//define("DOWLAN_67",  "ID"); //FIXME Use Generic // LAN_ID
 define("DOWLAN_68",  "File Missing!");
 // define("DOWLAN_69",  "Downloads handled by PHP");
 // define("DOWLAN_70",  "Checking this will send all download requests through PHP.");

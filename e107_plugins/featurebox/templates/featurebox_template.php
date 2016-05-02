@@ -11,18 +11,33 @@ global $sc_style;
 
 // e107 v2.x Defaults. 
 
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_default'] = '{SETIMAGE: w=2205&h=510&crop=1}
+		<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
+			{FEATUREBOX_IMAGE}		
+           <div class="container">
+            <div class="carousel-caption">
+              <h1>{FEATUREBOX_TITLE}</h1>
+              <p>{FEATUREBOX_TEXT}</p>
+            </div>
+          </div>
+        </div>';
+
+
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
-   <!-- slide -->
+   <!-- slide -->			 {SETIMAGE: w=600&h=450&crop=1}
                             <div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-                                <div class="row">
-                                    <div class="span6">
-                                    	{FEATUREBOX_IMAGE}
+                                <div class="container">
+                                    <div class="featurebox-item-image col-xs-12 col-md-6 col-sm-6 pull-left ">
+                                    	{FEATUREBOX_IMAGE=placeholder}
                                      </div>
-                                    <div class="span4">
+                                    <div class="featurebox-item-text col-xs-12 col-md-6 col-sm-6 span4">
                                         <h1>
                                             {FEATUREBOX_TITLE}
                                         </h1>
                                         {FEATUREBOX_TEXT}
+										
+										 <p>{FEATUREBOX_BUTTON}</p>
+										
                                     </div>
                                 </div>
                             </div>
@@ -31,25 +46,33 @@ $FEATUREBOX_TEMPLATE['bootstrap_carousel_left'] = '
 ';
 
 $FEATUREBOX_TEMPLATE['bootstrap_carousel_right'] = '
+							{SETIMAGE: w=600&h=450&crop=1}
  							<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">
-                                <div class="row">
-                                    <div class="span4 animated fadeInUpBig">
+                                <div class="container">
+                                 <div class="featurebox-item-image pull-right col-xs-12 col-sm-6 col-md-6 span6">
+                                         {FEATUREBOX_IMAGE=placeholder}
+                                    </div>
+                                    <div class="featurebox-item-text col-xs-12 col-md-6 col-sm-6">
                                         <h1>{FEATUREBOX_TITLE}</h1>
                                         {FEATUREBOX_TEXT}
-                                    </div>
-                                    <div class="span6 animated fadeInDownBig">
-                                         {FEATUREBOX_IMAGE}
+										
+                                        <p>{FEATUREBOX_BUTTON}</p>
+										
                                     </div>
                                 </div>
                             </div>
 ';
 
 
-$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '
- 							<div class="item slide3 animated fadeInUpBig">
-                               {FEATUREBOX_IMAGE}
-                            </div>
+$FEATUREBOX_TEMPLATE['bootstrap_carousel_image'] = '{SETIMAGE: w=1905&h=500&crop=1}
+
+									<div class="{FEATUREBOX_ACTIVE} item slide{FEATUREBOX_COUNTER}">			
+									{FEATUREBOX_IMAGE=placeholder}		
+									</div>
 ';
+
+
+
 
 
 // ----------------------------
@@ -95,7 +118,7 @@ $FEATUREBOX_TEMPLATE['image_right'] = '
 	</div>
 ';
 
-
+/*
 
 $FEATUREBOX_TEMPLATE['camera'] = '
 	<div class="featurebox-item" data-thumb="{FEATUREBOX_THUMB=src}" data-src="{FEATUREBOX_IMAGE|camera=src}" data-link="{FEATUREBOX_URL}">
@@ -115,7 +138,7 @@ $FEATUREBOX_TEMPLATE['camera_caption'] = '
 			{FEATUREBOX_TEXT|camera}
 		</div>
 	</div>
-';
+';*/
 
 $FEATUREBOX_TEMPLATE['accordion'] = '
 	<h3 class="featurebox-title-accordion"><a href="#">{FEATUREBOX_TITLE|accordion}</a></h3>
@@ -147,8 +170,8 @@ $FEATUREBOX_INFO = array(
 	'image_left'					=> array('title' => 'Generic - (Image-left)'	, 			'description' => 'Left floated image'),
 	'image_right' 					=> array('title' => 'Generic - (Image-right)',				'description' => 'Right floated image'),
 
-	'camera'						=> array('title' => 'Camera item',							'description' => 'For use with the "camera" category'),
-	'camera_caption' 				=> array('title' => 'Camera item with caption',				'description' => 'For use with the "camera" category'),
+	// 'camera'						=> array('title' => 'Camera item',							'description' => 'For use with the "camera" category'),
+	// 'camera_caption' 				=> array('title' => 'Camera item with caption',				'description' => 'For use with the "camera" category'),
 	'accordion' 					=> array('title' => 'Accordion Item',						'description' => 'For use with accordion'),
 	'tabs' 							=> array('title' => 'Tab Item',								'description' => 'For use with tabs')
 );

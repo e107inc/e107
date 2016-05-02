@@ -16,30 +16,34 @@
 /**
  *
  * @package     e107
- * @subpackage	frontend
+ * @subpackage    frontend
  * @version     $Id$
- *	Ultra-simple Image-Gallery
+ *    Ultra-simple Image-Gallery
  */
- 
- /*
-  * THIS SCRIPT IS HIGHLY EXPERIMENTAL. USE AT OWN RISK. 
-  * 
-  */
+/*
+ * THIS SCRIPT IS HIGHLY EXPERIMENTAL. USE AT OWN RISK.
+ */
+
+
+/**
+ * Class plugin_gallery_index_controller.
+ */
 class plugin_gallery_index_controller extends eControllerFront
 {
+
 	/**
 	 * Plugin name - used to check if plugin is installed
 	 * Set this only if plugin requires installation
 	 * @var string
 	 */
 	protected $plugin = 'gallery';
-	
+
 	/**
 	 * Default controller access
 	 * @var integer
 	 */
 	protected $userclass = e_UC_PUBLIC;
-	
+
 	/**
 	 * User input filter
 	 * Format 'action' => array(var => validationArray)
@@ -49,23 +53,23 @@ class plugin_gallery_index_controller extends eControllerFront
 		'category' => array(
 			'cat' => array('regex', '/[\w\pL\s\-+.,]+/u'),
 		),
-		'list' => array(
+		'list'     => array(
 			'cat' => array('regex', '/[\w\pL\s\-+.,]+/u'),
 			'frm' => array('int'),
 		),
 	);
-	
+
 	/**
 	 * @var array
 	 */
 	protected $catList;
-	
+
 	public function init()
 	{
 		e107::plugLan('gallery', 'front');
 		$this->catList = e107::getMedia()->getCategories('gallery');
 	}
-	
+
 	public function actionIndex()
 	{
 		if(isset($_GET['cat']) && !empty($_GET['cat']))
@@ -74,45 +78,61 @@ class plugin_gallery_index_controller extends eControllerFront
 		}
 		else
 		{
-			$this->_forward('category');	
+			$this->_forward('category');
 		}
 	}
-	
+
 	public function actionCategory()
 	{
-		$template 	= e107::getTemplate('gallery');	
-		$sc 		= e107::getScBatch('gallery',TRUE);
-		
-		$text = "";		
-		
-		$text = e107::getParser()->parseTemplate($template['CAT_START'],TRUE, $sc);
-		
+		$template = e107::getTemplate('gallery');
+		$template = array_change_key_case($template);
+		$sc = e107::getScBatch('gallery', true);
+
+		$text = "";
+
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
+		{
+			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']);
+		}
+
+		$text = e107::getParser()->parseTemplate($template['cat_start'], true, $sc);
+
 		foreach($this->catList as $val)
 		{
-			$sc->setVars($val);	
-			$text .= e107::getParser()->parseTemplate($template['CAT_ITEM'],TRUE);
-		}	
-		
-		$text .= e107::getParser()->parseTemplate($template['CAT_END'],TRUE, $sc);
-		
-		
-	//	$text = $template['CAT_START'].$text.$template['CAT_END'];
-		$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)
-			->addBody($text);
+			$sc->setVars($val);
+			$text .= e107::getParser()->parseTemplate($template['cat_item'], true);
+		}
+
+		$text .= e107::getParser()->parseTemplate($template['cat_end'], true, $sc);
+
+		if(isset($template['cat_caption']))
+		{
+			$title = e107::getParser()->parseTemplate($template['cat_caption'], true, $sc);
+
+			$this->addTitle($title)->addBody($text);
+		}
+		else
+		{
+			$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)->addBody($text);
+		}
+
+
 	}
-	
+
 	public function actionList()
 	{
+		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
+
 		$request = $this->getRequest();
-		
+
 		// use only filtered variables
 		$cid = $request->getRequestParam('cat');
-		
+
 		if($cid && !isset($this->catList[$cid]))
 		{
 			// get ID by SEF
 			$_cid = null;
-			foreach ($this->catList as $id => $row) 
+			foreach($this->catList as $id => $row)
 			{
 				if($cid === $row['media_cat_sef'])
 				{
@@ -122,43 +142,60 @@ class plugin_gallery_index_controller extends eControllerFront
 			}
 			$cid = $_cid;
 		}
-		
+
 		if(empty($cid) || !isset($this->catList[$cid]))
 		{
 			$this->_forward('category');
 			return;
 		}
-		
-		$tp			= e107::getParser();			
-		$template 	= e107::getTemplate('gallery');
-		$sc 		= e107::getScBatch('gallery',TRUE);
-					
-		$sc->total 	= e107::getMedia()->countImages($cid);
-		$sc->amount = e107::getPlugPref('gallery','perpage', 12); // TODO Add Pref. amount per page. 
+
+		$tp = e107::getParser();
+		$template = e107::getTemplate('gallery');
+		$template = array_change_key_case($template);
+		$sc = e107::getScBatch('gallery', true);
+
+		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
+		{
+			$template['list_start'] = str_replace('row', 'row-fluid', $template['list_start']);
+		}
+
+		$sc->total = e107::getMedia()->countImages($cid);
+		$sc->amount = varset($plugPrefs['perpage'], 12);
 		$sc->curCat = $cid;
-		$sc->from 	= $request->getRequestParam('frm', 0);
-		
-		$list 		= e107::getMedia()->getImages($cid,$sc->from,$sc->amount);
-		$catname	= $tp->toHtml($this->catList[$cid]['media_cat_title'],false,'defs');
+		$sc->from = $request->getRequestParam('frm', 0);
+
+		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
+
+		$list = e107::getMedia()->getImages($cid, $sc->from, $sc->amount, null, $orderBy);
+		$catname = $tp->toHtml($this->catList[$cid]['media_cat_title'], false, 'defs');
 		$cat = $this->catList[$cid];
-		
-		$inner = "";	
-		
+
+		$inner = "";
+
 		foreach($list as $row)
 		{
 			$sc->setVars($row)
-				->addVars($cat);	
+				->addVars($cat);
 
-			$inner .= $tp->parseTemplate($template['LIST_ITEM'],TRUE, $sc);
+			$inner .= $tp->parseTemplate($template['list_item'], true, $sc);
 		}
-					
-		$text = $tp->parseTemplate($template['LIST_START'],TRUE, $sc);
-		$text .= $inner; 	
-		$text .= $tp->parseTemplate($template['LIST_END'],TRUE, $sc);
-		
-		$this->addTitle($catname)
-			->addTitle(LAN_PLUGIN_GALLERY_TITLE)
-			->addBody($text);
+
+		$text = $tp->parseTemplate($template['list_start'], true, $sc);
+		$text .= $inner;
+		$text .= $tp->parseTemplate($template['list_end'], true, $sc);
+
+		if(isset($template['list_caption']))
+		{
+			$title = $tp->parseTemplate($template['list_caption'], true, $sc);
+			$this->addTitle($title)->addBody($text);
+		}
+		else
+		{
+			$this->addTitle($catname)
+				->addTitle(LAN_PLUGIN_GALLERY_TITLE)
+				->addBody($text);
+		}
+
 	}
 }
  

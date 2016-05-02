@@ -41,6 +41,11 @@ class e_menu
 	 */
 	protected $_visibility_cache = array();
 
+
+	protected $_current_menu = null;
+
+	protected $_current_parms = array();
+
 	/**
 	 * Constructor
 	 *
@@ -64,7 +69,7 @@ class e_menu
 		}
 		
 		//	print_a($eMenuArea);
-		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x
+		if(varset($_SERVER['E_DEV_MENU']) == 'true') // New in v2.x Experimental
 		{
 			$layouts = e107::getPref('menu_layouts');
 			if(!is_array($layouts))
@@ -76,7 +81,7 @@ class e_menu
 			$eMenuArea = $this->getData(THEME_LAYOUT);
 			//print_a($eMenuArea);
 		}
-		else // the old v1.x way. 
+		else // standard DB 'table' method.
 		{
 			$eMenuArea = $this->getDataLegacy();
 		}
@@ -126,14 +131,21 @@ class e_menu
 		}
 		
 		return $data;		
-	}	
-	
-	
-	
+	}
 
 
 	/**
-	 * V2 Menu Re-Write - retrieve Menu data from $pref['menu_layouts']
+	 * Return the preferences/parms for the current menu.
+	 * @return array
+	 */
+	public function pref()
+	{
+		return $this->_current_parms;
+	}
+
+
+	/**
+	 * Experimental V2 Menu Re-Write - retrieve Menu data from $pref['menu_layouts']
 	 */
 	protected function getData($layout)
 	{
@@ -184,11 +196,25 @@ class e_menu
 	}
 
 
+	/**
+	 * Set Parms for a specific menu.
+	 * @param string $plugin ie. plugin folder name.
+	 * @param string $menu menu name. including the _menu but not the .php
+	 * @param array $parms
+	 * @param string|int $location default 'all' or  a menu area number..
+	 * @return int|boolean number of records updated or false.
+	 */
+	public function setParms($plugin, $menu, $parms=array(), $location = 'all')
+	{
+		$qry = 'menu_parms="'.e107::serialize($parms).'" WHERE menu_parms="" AND menu_path="'.$plugin.'/" AND menu_name="'.$menu.'" ';
+		$qry .= ($location != 'all') ? 'menu_location='.intval($location) : '';
+
+		return  e107::getDb()->update('menus', $qry);
+	}
 
 	
 	/** 
-	 * @DEPRECATED 
-	 * Legacy Function to retrieve Menu data from tables. - ie. the old v1.x method. 
+	 * Function to retrieve Menu data from tables.
 	 */
 	private function getDataLegacy()
 	{
@@ -201,6 +227,7 @@ class e_menu
 		$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST."_".md5(e_LANGUAGE.$menu_layout_field));
 	//	$menu_data = e107::getCache()->retrieve_sys("menus_".USERCLASS_LIST);
 		$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
+	//	$menu_data = e107::getArrayStorage()->ReadArray($menu_data);
 		
 		$eMenuArea = array();
 		// $eMenuList = array();
@@ -237,8 +264,43 @@ class e_menu
 		return $eMenuArea;
 	}
 
+	/**
+	 * Returns true if a menu is currently active. 
+	 * @param string $menuname (without the '_menu.php' )
+	 */
+	function isLoaded($menuname)
+	{
+		if(empty($menuname))
+		{
+			return false;	
+		}
+		
+		foreach($this->eMenuActive as $area)
+		{
+			foreach($area as $menu)
+			{
+				if($menu['menu_name'] == $menuname."_menu")
+				{
+					return true;	
+				}
+				
+			}
+		
+		}	
+		
+		return false;
+	}
 
 
+	protected function isFrontPage()
+	{
+		if(e_REQUEST_SELF == SITEURL)
+		{
+			return true;
+		}
+
+		return false;
+	}
 
 
 
@@ -273,6 +335,12 @@ class e_menu
 
 					foreach($pagelist as $p)
 					{
+						if($p == 'FRONTPAGE' && $this->isFrontPage())
+						{
+							$show_menu = true;
+							break;
+						}
+
 						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)==='!')
 						{
@@ -294,6 +362,13 @@ class e_menu
 					$show_menu = true;
 					foreach($pagelist as $p)
 					{
+						if($p == 'FRONTPAGE' && $this->isFrontPage())
+						{
+							$show_menu = false;
+							break;
+						}
+
+
 						$p = $tp->replaceConstants($p, 'full');
 						if(substr($p, -1)=='!')
 						{
@@ -379,17 +454,27 @@ class e_menu
 	//	global $sql; // required at the moment.
 		global $sc_style, $e107_debug;
 				
-		$e107 = e107::getInstance();		
+
 		$sql = e107::getDb();
 		$ns = e107::getRender();
-		$tp = e107::getParser();		
+		$tp = e107::getParser();
+
+		if($tmp = e107::unserialize($parm)) // support e_menu.php e107 serialized parm.
+		{
+			$parm = $tmp;
+			unset($tmp);
+		}
+
+		$this->_current_parms = $parm;
+		$this->_current_menu = $mname;
+
 
 		if($return)
 		{
 			ob_start();
 		}
 
-		if(vartrue($error_handler->debug))
+		if(e_DEBUG === true)
 		{
 			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
@@ -402,19 +487,31 @@ class e_menu
 			$sql->select("page", "*", $query);
 			$page = $sql->fetch();
 			
-			$caption = $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
+			if(!empty($page['menu_class']) && !check_class($page['menu_class']))
+			{
+				echo "\n<!-- Menu not rendered due to userclass settings -->\n";
+				return;	
+			}
+			
+			$caption = (vartrue($page['menu_icon'])) ? $tp->toIcon($page['menu_icon']) : '';
+			$caption .= $tp->toHTML($page['menu_title'], true, 'parse_sc, constants');
 			
 			if(vartrue($page['menu_template'])) // New v2.x templates. see core/menu_template.php 
 			{
-				$template = e107::getCoreTemplate('menu',$page['menu_template']);	
+				$template = e107::getCoreTemplate('menu',$page['menu_template'],true,true);	// override and merge required. ie. when menu template is not in the theme, but only in the core. 
 				$page_shortcodes = e107::getScBatch('page',null,'cpage');  
-				$page_shortcodes->page = $page;
+				$page_shortcodes->setVars($page);
+				  
+				$head = $tp->parseTemplate($template['start'], true, $page_shortcodes);
+				$foot = $tp->parseTemplate($template['end'], true, $page_shortcodes);
 				  
 			// 	print_a($template['body']);           
-				$text = $tp->parseTemplate($template['body'], true, $page_shortcodes);
+				$text = $head.$tp->parseTemplate($template['body'], true, $page_shortcodes).$foot;
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
 				
-			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. 
+				
+				
+			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. use {SETSTYLE=none} instead. 
 			//	{
 					$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
 			//	}
@@ -448,7 +545,8 @@ class e_menu
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
 		e107::getDB()->db_Mark_Time("(After ".$mname.")");
-		if($error_handler->debug==true)
+
+		if(e_DEBUG === true)
 		{
 			echo "\n<!-- Menu End: ".$mname." -->\n";
 		}

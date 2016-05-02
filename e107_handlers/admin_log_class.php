@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2010 e107 Inc (e107.org)
@@ -7,9 +7,13 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Log Handler
- *
- * $URL$
- * $Id$
+ * 
+ * USAGE: 
+ * 
+ * @example Log and Add to Message Handler: e107::getAdminLog()->addSuccess("Successfully executed")->save('PREF_01');
+ * @example Log Only: e107::getAdminLog()->addSuccess("Successfully executed",false)->save('PREF_01');
+ * @example Log Array Diff: e107::getAdminLog()->addArray($array1, $array2)->save('PREF_01');
+ * @example Log Array Diff and Add to Message Handler: e107::getAdminLog()->addArray($array1, $array2, E_MESSAGE_ERROR )->save('PREF_01');
  *
 */
 
@@ -61,9 +65,12 @@ class e_admin_log
 	 */
 	public function __construct($options = array())
 	{
-		foreach ($options as $key=>$val)
+		if(!empty($options))
 		{
-			$this->_options[$key] = $val;
+			foreach ($options as $key=>$val)
+			{
+				$this->_options[$key] = $val;
+			}
 		}
 
 		define("E_LOG_INFORMATIVE", 0); // Minimal Log Level, including really minor stuff
@@ -115,6 +122,33 @@ class e_admin_log
 
 
 	/**
+	 * Save all logs in the queue to the database and render any unhidden messages with the message handler.
+	 * @see alias flushMessages() method below.
+	 * @param string $logTitle - title for log entry eg. 'PREF_01'
+	 * @param int $logImportance [optional] default E_LOG_INFORMATIVE - passed directly to admin log
+	 * @param string $logEventCode [optional] - passed directly to admin log
+	 * @param string $mstack [optional] message stack passed to message handler
+	 * @param int LOG_TO_ADMIN|LOG_TO_ROLLING|LOG_TO_AUDIT
+	 * @return \e_admin_log
+	 */
+	public function save($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false, $target = LOG_TO_ADMIN)
+	{
+		return $this->flushMessages($logTitle, $logImportance, $logEventCode, $mstack, $target);
+	}
+	
+	
+	
+
+	/**
+	 * Add and Save an event into the admin, rolling or user log. 
+	 * @param string $event_title
+	 * @param mixed $event_details
+	 * @param integer $event_type [optional] Log level eg. E_LOG_INFORMATIVE, E_LOG_NOTICE, E_LOG_WARNING, E_LOG_FATAL
+	 * @param string $event_code [optional] - eg. 'BOUNCE'
+	 * @param integer $target [optional]  LOG_TO_ADMIN, LOG_TO_AUDIT, LOG_TO_ROLLING
+	 * @param array $user - user to attribute the log to. array('user_id'=>2, 'user_name'=>'whoever');
+	 * @return e_admin_log
+	 * 
 	 * Alternative admin log entry point - compatible with legacy calls, and a bit simpler to use than the generic entry point.
 	 * ($eventcode has been added - give it a reference to identify the source module, such as 'NEWS_12' or 'ECAL_03')
 	 * We also log everything (unlike 0.7, where admin log and debug stuff were all mixed up together)
@@ -125,17 +159,13 @@ class e_admin_log
 	 * Typically the 'STRING' part of the name defines the area originating the log event, and the 'nn' is a numeric code
 	 * This is stored as 'LAN_AL_STRING_NN', and must be defined in a language file which is loaded during log display.
 	 *
-	 * @param string $event_title
-	 * @param mixed $event_details
-	 * @param integer $event_type [optional] Log level
-	 * @param unknown $event_code [optional]
-	 * @return e_admin_log
+
 	 */
-	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '')
+	public function add($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE , $event_code = '', $target = LOG_TO_ADMIN, $userData=null )
 	{
 		if ($event_code == '')
 		{
-			if (strlen($event_title) <= 10)
+			if (strlen($event_title) <= 12)
 			{ // Assume the title is actually a reference to the event
 				$event_code = $event_title;
 				$event_title = 'LAN_AL_'.$event_title;
@@ -148,17 +178,22 @@ class e_admin_log
 		//SecretR - now supports DB array as event_detail (see e.g. db::db_Insert())
 		if (is_array($event_detail))
 		{
+			// handled inside e_log_event(); 
+			
+			/*
 			$tmp = array();
-			if (isset($event_detail['data']))
-			{
-				$event_detail = $event_detail['data'];
-			}
-			foreach ($event_detail as $k => $v)
-			{
-				$tmp[] = $k.'=>'.$v;
-			}
-			$event_detail = implode("[!br!]\n", $tmp);
-			unset($tmp);
+				if (isset($event_detail['data']))
+				{
+					$event_detail = $event_detail['data'];
+				}
+				foreach ($event_detail as $k => $v)
+				{
+					$tmp[] = $k.'=>'.$v;
+				}
+				$event_detail = implode("[!br!]\n", $tmp);
+				unset($tmp);
+			*/
+			
 		}
 		else
 		{
@@ -168,9 +203,11 @@ class e_admin_log
 
 		if ($this->_options['backtrace'] == true)
 		{
-			$event_detail .= "\n\n".debug_backtrace();
+			$event_detail .= "\n\n".debug_backtrace(false);
 		}
-		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, LOG_TO_ADMIN);
+		
+		
+		$this->e_log_event($event_type, -1, $event_code, $event_title, $event_detail, FALSE, $target, $userData);
 
 		return $this;
 	}
@@ -198,12 +235,13 @@ class e_admin_log
 	 *		 LOG_TO_ADMIN		- admin log
 	 *		 LOG_TO_AUDIT		- audit log
 	 *		 LOG_TO_ROLLING		- rolling log
-	 *
+	 * @param array $userData - attribute user to log entry. array('user_id'=>2, 'user_name'=>'whatever');
 	 *	@return none
 
 	 * @todo - check microtime() call
+	 * @deprecated - use add() method instead.
 	 */
-	public function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT )
+	public function e_log_event($importance, $source_call, $eventcode = "GEN", $event_title = "Untitled", $explain = "", $finished = FALSE, $target_logs = LOG_TO_AUDIT, $userData=null )
 	{
 		$e107 = e107::getInstance();
 		$pref = e107::getPref();
@@ -223,15 +261,32 @@ class e_admin_log
 		//---------------------------------------
 		// Calculations common to all logs
 		//---------------------------------------
+
 		$userid 		= deftrue('USER') ? USERID : 0;
 		$userstring 	= deftrue('USER') ? USERNAME : 'LAN_ANONYMOUS';
 		$userIP 		= e107::getIPHandler()->getIP(FALSE);
+
+		if(!empty($userData['user_id']))
+		{
+			$userid = $userData['user_id'];
+		}
+
+		if(!empty($userData['user_name']))
+		{
+			$userstring  = $userData['user_name'];
+		}
+
+		if(!empty($userData['user_ip']))
+		{
+			$userIP  = $userData['user_ip'];
+		}
 
 		$importance 	= $tp->toDB($importance, true, false, 'no_html');
 		$eventcode 		= $tp->toDB($eventcode, true, false, 'no_html');
 
 		if (is_array($explain))
 		{
+			/*
 			$line = '';
 			$spacer = '';
 			foreach ($explain as $k=>$v)
@@ -241,10 +296,13 @@ class e_admin_log
 			}
 			$explain = $line;
 			unset($line);
+			*/
+			$explain = str_replace("\n",'[!br!]',print_r($explain,true));
+			
 		}
 		
 		
-		$explain = mysql_real_escape_string($tp->toDB($explain, true, false, 'no_html'));
+		$explain = e107::getDb()->escape($tp->toDB($explain, true, false, 'no_html'));
 		$event_title = $tp->toDB($event_title, true, false, 'no_html');
 
 		//---------------------------------------
@@ -266,7 +324,7 @@ class e_admin_log
 				'dblog_remarks'		=> $explain
 			);
 			
-			$this->rldb->db_Insert("admin_log", $adminLogInsert);
+			$this->rldb->insert("admin_log", $adminLogInsert);
 		}
 
 		//---------------------------------------
@@ -277,7 +335,7 @@ class e_admin_log
 		//---------------------------------------
 		// 			Rolling Log
 		//---------------------------------------
-		if (($target_logs & LOG_TO_ROLLING) && varsettrue($pref['roll_log_active']))
+		if (($target_logs & LOG_TO_ROLLING) && vartrue($pref['roll_log_active']))
 		{ //	Rolling log
 
 			// 	Process source_call info
@@ -323,10 +381,14 @@ class e_admin_log
 			// else $source_call is a string
 
 			// Save new rolling log record
-			$this->rldb->db_Insert("dblog", "0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
+			$this->rldb->insert("dblog", "0, ".intval($time_sec).', '.intval($time_usec).", '{$importance}', '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$source_call}', '{$event_title}', '{$explain}' ");
 
 			// Now delete any old stuff
-			$this->rldb->db_Delete("dblog", "dblog_datestamp < '".intval(time() - (varset($pref['roll_log_days'], 7) * 86400))."' ");
+			if(!empty($pref['roll_log_days']))
+			{
+				$days = intval($pref['roll_log_days']);
+				$this->rldb->delete("dblog", "dblog_datestamp < '".intval(time() - ($days * 86400))."' ");
+			}
 		}
 
 		if ($finished)
@@ -349,34 +411,71 @@ class e_admin_log
 	 */
 	function user_audit($event_type, $event_data, $id = '', $u_name = '')
 	{
-		global $e107,$tp,$pref;
 		list($time_usec, $time_sec) = explode(" ", microtime()); // Log event time immediately to minimise uncertainty
+
 		$time_usec = $time_usec * 1000000;
 
 		// See whether we should log this
-		$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
-		if (!isset($user_logging_opts[$event_type]))
-			return; // Finished if not set to log this event type
+		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
+		
+		if (!isset($user_logging_opts[$event_type]))  // Finished if not set to log this event type
+		{
+			return;
+		}
 
-		if ($this->rldb == NULL)
-			$this->rldb = new db; // Better use our own db - don't know what else is going on
+		if($this->rldb == null)
+		{
+			$this->rldb = e107::getDb('rldb'); // Better use our own db - don't know what else is going on
+		}
 
-		if ($id) $userid = $id;
-		else $userid = (USER === TRUE) ? USERID : 0;
-		if ($u_name) $userstring = $u_name;
-		else $userstring = (USER === true ? USERNAME : "LAN_ANONYMOUS");
-		$userIP = e107::getIPHandler()->getIP(FALSE);
+		if(!empty($id))
+		{
+			 $userid = $id;
+		}
+		else
+		{
+			 $userid = (USER === true) ? USERID : 0;
+		}
+
+		if(!empty($u_name))
+		{
+			 $userstring = $u_name;
+		}
+		else
+		{
+			$userstring = (USER === true ? USERNAME : "LAN_ANONYMOUS");
+		}
+
+		$userIP = e107::getIPHandler()->getIP(false);
+
 		$eventcode = 'USER_'.$event_type;
 
 		$title = 'LAN_AUDIT_LOG_0'.$event_type; // This creates a string which will be displayed as a constant
-		$spacer = '';
+	/*	$spacer = '';
 		$detail = '';
+
 		foreach ($event_data as $k=>$v)
 		{
 			$detail .= $spacer.$k.'=>'.$v;
 			$spacer = '<br />';
 		}
-		$this->rldb->db_Insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
+	*/
+
+		$insertQry = array(
+			'dblog_id'          => 0,
+			'dblog_datestamp'   => intval($time_sec),
+			'dblog_microtime'   => intval($time_usec),
+			'dblog_eventcode'   => $eventcode,
+			'dblog_user_id'     => $userid,
+			'dblog_user_name'   => $userstring,
+			'dblog_ip'          => $userIP,
+			'dblog_title'       => $title,
+			'dblog_remarks'     => print_r($event_data,true),
+		);
+
+		$this->rldb->insert("audit_log", $insertQry);
+
+		// $this->rldb->insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
 	}
 
 
@@ -402,7 +501,7 @@ class e_admin_log
 		global $sql;
 		if ($days == false)
 		{ // $days is false, so truncate the log table
-			$sql->db_Select_gen("TRUNCATE TABLE #dblog ");
+			$sql->gen("TRUNCATE TABLE #dblog ");
 		}
 		else
 		{ // $days is set, so remove all entries older than that.
@@ -425,31 +524,33 @@ class e_admin_log
 	 *
 	 *	@return bool true if changes found and logged, false otherwise.
 	 */
-	function logArrayDiffs(&$new, &$old, $event, $logNow = true)
+	function logArrayDiffs($new, $old, $event, $logNow = true)
 	{
-		$changes = array();
-		foreach ($new as $k=>$v)
-		{
-			// FIXME - what about '' == '0'?
-			if ($v != varset($old[$k], ''))
-			{
-				$old[$k] = $v;
-				$changes[] = $k.'=>'.$v;
-			}
-		}
+		// $changes = array();
+				
+		$changes = array_diff_recursive($new,$old);
+		
 		if (count($changes))
 		{
-			if($logNow) $this->add($event, implode('[!br!]', $changes), E_LOG_INFORMATIVE, '');
-			else $this->logMessage(implode('[!br!]', $changes), LOG_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+			if($logNow) 
+			{
+				$this->add($event, print_r($changes,true), E_LOG_INFORMATIVE, '');
+			}
+			else
+			{
+				$this->logMessage($changes, LOG_MESSAGE_NODISPLAY, E_MESSAGE_INFO);
+			}
+
 			return TRUE;
 		}
+		
 		return FALSE;
 	}
 
 
 	/**
 	 *	Logs an entry with all the data from an array, one field per line.
-	 *
+	 *  @deprecated 
 	 *	@param string $event - LAN define or string used as title in log
 	 *	@param array $target - data to be logged
 	 *	@param string $extra - if non-empty, it goes on the first line.
@@ -460,6 +561,14 @@ class e_admin_log
 	 */
 	public function logArrayAll($event, $target, $extra = '', $niceNames = NULL)
 	{
+		
+		if($extra == '' && $niceNames == null)
+		{
+			return $this->add($event, $target, E_LOG_INFORMATIVE, '');	// supports arrays
+			
+		}
+		
+		
 		$logString = '';
 		if ($extra)
 		{
@@ -500,7 +609,18 @@ class e_admin_log
 	 */
 	public function logMessage($text, $type = '', $logLevel = TRUE, $session = FALSE)
 	{
-		if(empty($text)) return;
+		
+		if(is_array($text))
+		{
+			$text = print_r($text,true);	
+		}
+		elseif(empty($text))
+		{
+			$bt = debug_backtrace(true);
+			e107::getMessage()->addDebug("Log Message was empty: ".print_a($bt[1],true));
+			return $this;	// changing to text will break chained methods. 
+		} 
+		
 		if(!$type) $type = E_MESSAGE_INFO;
 		if($logLevel === TRUE) $logLevel = $type;
 		
@@ -508,9 +628,9 @@ class e_admin_log
 		
 		$this->_messages[] = $logArray;
 		$this->_allMessages[] = $logArray;
+		
 		return $this;
 	}
-
 
 
 
@@ -536,7 +656,7 @@ class e_admin_log
 
 
 	/**
-	 * Log success
+	 * Add a success message to the log queue
 	 *
 	 * @param string $text
 	 * @param boolean $message if true - register with eMessage handler
@@ -550,10 +670,10 @@ class e_admin_log
 
 
 	/**
-	 * Log error
+	 * Add an error message to the log queue
 	 *
 	 * @param string $text
-	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $message if true (default) - register with eMessage handler, set to false to hide. 
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
@@ -564,30 +684,56 @@ class e_admin_log
 
 
 	/**
-	 * Log Debug
+	 * Add an Debug message to the log queue
 	 *
 	 * @param string $text
-	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $message if true (default) - register with eMessage handler, set to false to hide . 
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
 	public function addDebug($text, $message = true, $session = false)
 	{
-		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_NOTICE, $session);
+		return $this->logMessage($text, ($message ? E_MESSAGE_DEBUG : LOG_MESSAGE_NODISPLAY), E_MESSAGE_DEBUG, $session);
 	}
 
 
 	/**
-	 * Log Warning
+	 * Add an Warning message to the log queue
 	 *
 	 * @param string $text
-	 * @param boolean $message if true - register with eMessage handler
+	 * @param boolean $message if true (default) - register with eMessage handler, set to false to hide. 
 	 * @param boolean $session add session message
 	 * @return e_admin_log
 	 */
 	public function addWarning($text, $message = true, $session = false)
 	{
 		return $this->logMessage($text, ($message ? E_MESSAGE_WARNING : LOG_MESSAGE_NODISPLAY), E_MESSAGE_WARNING, $session);
+	}
+	
+	
+	/**
+	 * Add an array to the log queue
+	 * @param $array
+	 * @param $oldArray (optional) - when included, only the changes between the arrays is saved. 
+	 * @param $type (optional) default: LOG_MESSAGE_NODISPLAY. or E_MESSAGE_WARNING, E_MESSAGE_DEBUG, E_MESSAGE_SUCCESS
+	 */
+	public function addArray($array, $oldArray= null, $type = LOG_MESSAGE_NODISPLAY , $session = false)
+	{
+		if(is_array($oldArray)) 
+		{
+			$text = array_diff_recursive($array,$oldArray); // Located in core_functions.php 
+			if(count($text) < 1)
+			{
+				$text = "No differences found";	
+			}
+			
+		}
+		else
+		{
+			$text = $array;	
+		}
+			
+		return $this->logMessage($text, $type, $type, $session);	
 	}
 
 	/**
@@ -599,7 +745,7 @@ class e_admin_log
 	 *	@param string $mstack [optional] message stack passed to message handler
 	 *	@return e_admin_log
 	 */
-	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false)
+	public function flushMessages($logTitle, $logImportance = E_LOG_INFORMATIVE, $logEventCode = '', $mstack = false, $target =LOG_TO_ADMIN)
 	{
 		$mes = e107::getMessage();
 				
@@ -630,10 +776,24 @@ class e_admin_log
 				else $mes->add($m['message'], $m['dislevel'], $m['session']);
 			}
 		}
-		e107::getAdminLog()->add($logTitle, $logString, $logImportance, $logEventCode);
+		$this->add($logTitle, $logString, $logImportance, $logEventCode, $target);
 		$this->_messages = array();		// Clear the memory for reuse
 
 		return $this;
+	}
+
+
+
+
+
+	/**
+	 * Clear all messages in 'memory'. 
+	 */
+	public function clear()
+	{
+		$this->_messages = array();	
+		
+		return $this;		
 	}
 
 	
@@ -656,17 +816,19 @@ class e_admin_log
 		{
 			return; 	
 		}		
-		
+
+		$text = '';
+
 		foreach($this->_allMessages as $m)
 		{
-			$text .= date('Y-m-d H:i:s', $m['time'])."  \t".str_pad($m['dislevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
+			$text .= date('Y-m-d H:i:s', $m['time'])."  \t".str_pad($m['loglevel'],10," ",STR_PAD_RIGHT)."\t".strip_tags($m['message'])."\n";
 		}
 		
 		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s').'_'.crc32($text);
 		
 		$dir = e_LOG;
 		
-		if(e_CURRENT_PLUGIN) // If it's a plugin, create a subfolder. 
+		if(deftrue('e_CURRENT_PLUGIN')) // If it's a plugin, create a subfolder.
 		{
 			$dir = e_LOG.e_CURRENT_PLUGIN."/";
 			

@@ -108,7 +108,7 @@ class plugin_forum_url extends eUrlConfig
 					break;
 		
 				case 'edit':
-					return $base."forum_post.php?f=edit{$amp}id={$params['id']}";
+					return $base."forum_post.php?f=edit{$amp}id={$params['id']}{$amp}post={$params['post']}";
 					break;
 		
 				case 'move':
@@ -120,7 +120,7 @@ class plugin_forum_url extends eUrlConfig
 					break;
 		
 				case 'quote':
-					return $base."forum_post.php?f=quote{$amp}id={$params['id']}";
+					return $base."forum_post.php?f=quote{$amp}id={$params['id']}{$amp}post={$params['post']}";
 					break;
 		
 				case 'next':
@@ -154,11 +154,13 @@ class plugin_forum_url extends eUrlConfig
 	 */
 	public function admin()
 	{
+		return false; // whole file deprecated.
+	/*
 		// static may be used for performance
 		e107::plugLan('forum', 'lan_forum_url');
 		static $admin = array(
 			'labels' => array(
-				'name' => FORUM_LAN_URL_NAME, // Module name
+				'name' => LAN_PLUGIN_FORUM_NAME, // Module name
 				'label' => FORUM_LAN_URL_DEFAULT_LABEL, // Current profile name
 				'description' => FORUM_LAN_URL_DEFAULT_DESCR, //
 				'examples'  => array("{e_PLUGIN_ABS}forum/forum_viewtopic.php?id=3&p=2")
@@ -166,7 +168,7 @@ class plugin_forum_url extends eUrlConfig
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);
-		
+		*/
 		return $admin;
 	}
 }

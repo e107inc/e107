@@ -15,6 +15,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
+if (!defined('USER_WIDTH')) { define('USER_WIDTH', 'display:block'); } // v1.x compat.
 
 
 // ##### CAT TABLE --------------------------------------------------------------------------------
@@ -37,9 +38,9 @@ if(!isset($DOWNLOAD_CAT_TABLE_START))
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th class='fcaption' colspan='2'>".LAN_dl_19."</th>
-                  <th class='fcaption'>".LAN_dl_20."</th>
-                  <th class='fcaption'>".LAN_dl_21."</th>
+                  <th class='fcaption' colspan='2'>".LAN_CATEGORY."</th>
+                  <th class='fcaption'>".LAN_FILES."</th>
+                  <th class='fcaption'>".LAN_SIZE."</th>
                   <th class='fcaption'>".LAN_dl_77."</th>
                </tr>
             </thead>
@@ -148,12 +149,12 @@ if(!isset($DOWNLOAD_LIST_TABLE_START))
                </colgroup>
                <tr>
                   <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=name}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=date}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=size}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=downloads}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
-                  <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=get}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=datestamp}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=author}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=filesize}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=requested}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=rating}</th>
+	              <th class='fcaption'>{DOWNLOAD_LIST_CAPTION=link}</th>
                </tr>";
 }
 if(!isset($DOWNLOAD_LIST_TABLE))
@@ -195,7 +196,7 @@ if(!isset($DOWNLOAD_LIST_TABLE_END))
 		</div>\n";
 }
 // ##### VIEW TABLE -------------------------------------------------------------------------------
-$DL_VIEW_PAGETITLE = PAGE_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+$DL_VIEW_PAGETITLE = LAN_PLUGIN_DOWNLOAD_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
 
 $DL_VIEW_NEXTPREV = "
 <div style='text-align:center'>
@@ -306,10 +307,10 @@ if(!isset($DOWNLOAD_MIRROR_START))
 	      </tr>
 	      <tr>
 	         <th class='forumheader' colspan='2'>".LAN_dl_68."</th>
-	         <th class='forumheader'>".LAN_dl_71."</th>
-	         <th class='forumheader'>".LAN_dl_70."</th>
-	         <th class='forumheader'>".LAN_dl_21."</th>
-	         <th class='forumheader'>".LAN_dl_32."</th>
+	         <th class='forumheader'>".LAN_ABOUT."</th>
+	         <th class='forumheader'>".LAN_LOCATION."</th>
+	         <th class='forumheader'>".LAN_SIZE."</th>
+	         <th class='forumheader'>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";
 }
@@ -349,6 +350,7 @@ if(!isset($DOWNLOAD_MIRROR_END))
 
 
 $DOWNLOAD_TEMPLATE['categories']['start'] = "
+	<div class='table-responsive'>
          <table id='download' class='table table-striped fborder'>
 		      <colgroup>
 		         <col style='width:3%'/>
@@ -359,9 +361,9 @@ $DOWNLOAD_TEMPLATE['categories']['start'] = "
 		      </colgroup>
 		      <thead>
                <tr>
-                  <th colspan='2'>".LAN_dl_19."</th>
-                  <th>".LAN_dl_20."</th>
-                  <th>".LAN_dl_21."</th>
+                  <th colspan='2'>".LAN_CATEGORY."</th>
+                  <th>".LAN_FILES."</th>
+                  <th>".LAN_SIZE."</th>
                   <th>".LAN_dl_77."</th>
                </tr>
             </thead>
@@ -375,7 +377,7 @@ $DOWNLOAD_TEMPLATE['categories']['parent'] = "
                   </td>
                   <td colspan='4'>
                      {DOWNLOAD_CAT_MAIN_NAME}<br/>
-                     <span class='smalltext'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</span>
+                     <small class='muted text-muted'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</small>
                   </td>
                </tr>";
 
@@ -416,10 +418,11 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 $DOWNLOAD_TEMPLATE['categories']['end'] = "
             </tbody>
          </table>
-         <div class='clearfix'>
-         <div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
+	</div>
+	<div class='clearfix'>
+		<div class='pull-left'><small>{DOWNLOAD_CAT_NEWDOWNLOAD_TEXT}</small></div>
 		<div class='pull-right'>{DOWNLOAD_CAT_SEARCH}</div>
-		</div>";
+	</div>";
 
 // ##### ------------------------------------------------------------------------------------------
 
@@ -435,11 +438,11 @@ $DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:8
 $DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' colspan='2'>{---}</td></tr>";
 
 
-$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_dl_18;
+$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_PLUGIN_DOWNLOAD_NAME;
 $DOWNLOAD_TEMPLATE['view']['start'] = " ";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
-      <div id='download' style='text-align:center'>
+      <div id='download'>
 		   <table class='table table-striped'>
 		      <colgroup>
 		         <col style='width:30%;'>
@@ -478,7 +481,7 @@ $DOWNLOAD_TEMPLATE['view']['item'] = "
 		      </tr>
 		      <tr>
    		      <td>{DOWNLOAD_VIEW_LINK_LAN}</td>
-	   	      <td>{DOWNLOAD_VIEW_LINK}</td>
+	   	      <td>{DOWNLOAD_VIEW_LINK: size=2x}</td>
 		      </tr>
 		      <tr>
 		         <td>{DOWNLOAD_VIEW_RATING_LAN}</td>
@@ -491,7 +494,7 @@ $DOWNLOAD_TEMPLATE['view']['item'] = "
 
 $DOWNLOAD_TEMPLATE['view']['end'] = "";
 
-
+/*
 $DOWNLOAD_TEMPLATE['view']['nextprev'] = "
 <div style='text-align:center'>
 	<table style='".USER_WIDTH."'>
@@ -502,23 +505,28 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = "
 	</tr>
 	</table>
 </div>\n";
+*/
 
 $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
-    <ul class="pager">
+    <ul class="pager download-view-nextprev">
     <li class="previous">
-    {DOWNLOAD_VIEW_PREV}
+    	{DOWNLOAD_VIEW_PREV}
+    </li>
+	<li>
+    	{DOWNLOAD_BACK_TO_LIST}
     </li>
     <li class="next">
-    {DOWNLOAD_VIEW_NEXT}
+    	{DOWNLOAD_VIEW_NEXT}
     </li>
     </ul>
-    <div class="text-center">{DOWNLOAD_BACK_TO_LIST}</div>
+
 ';
 
 // ##### ------------------------------------------------------------------------------------------
 
 $DOWNLOAD_TEMPLATE['list']['start'] = "
-         <form method='post' action='".e_SELF."?".e_QUERY."'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<div class='table-responsive'>
             <table id='download' class='table table-striped'>\n
                <colgroup>
                   <col style='width:35%;'/>
@@ -570,20 +578,19 @@ $DOWNLOAD_TEMPLATE['list']['item'] = "
 		         
 $DOWNLOAD_TEMPLATE['list']['end'] = "
 		         <tr>
-		            <td colspan='7' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
+		         	<td colspan='3'>{DOWNLOAD_BACK_TO_CATEGORY_LIST}</td>
+		            <td colspan='4' style='text-align:right;'><small class='muted text-muted'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</small></td>
 		         </tr>
 		      </table>
-		   </form>
+		</div>
+	</form>
 		\n";
 
 
 
 $DOWNLOAD_TEMPLATE['list']['nextprev'] = "		
 			<div class='text-center'>
-				{DOWNLOAD_BACK_TO_CATEGORY_LIST}
-				<br />
-				<br />
-				{DOWNLOAD_LIST_NEXTPREV}
+			{DOWNLOAD_LIST_NEXTPREV}					
 			</div>";
 
 /*	
@@ -595,6 +602,7 @@ $sc_style['DOWNLOAD_LIST_NEXTPREV']['post'] = "	</div>";
 			
 			
 $DOWNLOAD_TEMPLATE['mirror']['start'] = "
+	<div class='table-responsive'>
 	   <table id='download' class='table table-striped'>
 	      <colgroup>
 	         <col style='width:1%'/>
@@ -609,10 +617,10 @@ $DOWNLOAD_TEMPLATE['mirror']['start'] = "
 	      </tr>
 	      <tr>
 	         <th colspan='2'>".LAN_dl_68."</th>
-	         <th>".LAN_dl_71."</th>
-	         <th>".LAN_dl_70."</th>
-	         <th>".LAN_dl_21."</th>
-	         <th>".LAN_dl_32."</th>
+	         <th>".LAN_ABOUT."</th>
+	         <th>".LAN_LOCATION."</th>
+	         <th>".LAN_SIZE."</th>
+	         <th>".LAN_DOWNLOAD."</th>
 	      </tr>
 	";			
 			
@@ -636,6 +644,7 @@ $DOWNLOAD_TEMPLATE['mirror']['item']  = "
 
 $DOWNLOAD_TEMPLATE['mirror']['end'] = "
 	   </table>
+	</div>
 	";			
 
 	

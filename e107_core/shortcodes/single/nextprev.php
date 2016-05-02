@@ -59,6 +59,7 @@ function nextprev_shortcode($parm = '')
 {
 	$e107 = e107::getInstance();
 	$pref = e107::getPref();
+	$tp = e107::getParser();
 
 	e107::coreLan('np');
 
@@ -75,12 +76,12 @@ function nextprev_shortcode($parm = '')
 		$total_items = intval($parm['total']);
 		$check_render = true;
 
-		if(vartrue($parm['glyphs']) && (BOOTSTRAP === true))
+		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))
 		{
-			$LAN_NP_FIRST 		= "<i class='icon-fast-backward'></i>";
-			$LAN_NP_PREVIOUS 	= "<i class='icon-backward'></i>";
-			$LAN_NP_NEXT 		= "<i class='icon-forward'></i>";
-			$LAN_NP_LAST 		= "<i class='icon-fast-forward'></i>";
+			$LAN_NP_FIRST 		= $tp->toGlyph("icon-fast-backward.glyph",false);
+			$LAN_NP_PREVIOUS 	= $tp->toGlyph("icon-backward.glyph",false);
+			$LAN_NP_NEXT 		= $tp->toGlyph("icon-forward.glyph",false);
+			$LAN_NP_LAST 		= $tp->toGlyph("icon-fast-forward",false);
 		}
 		else
 		{
@@ -196,8 +197,10 @@ function nextprev_shortcode($parm = '')
 		{
 			$e_vars->caption = 'LAN_NP_CAPTION';
 		}
-		// Advanced multilingual support: 'Page %1$d of %2$d' -> match the exact argument, result would be 'Page 1 of 20'
-		$e_vars->caption = sprintf(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
+		
+		// Advanced multilingual support: 'Page [x] of [y]' -> match the exact argument, result would be 'Page 1 of 20'		
+		$e_vars->caption = $tp->lanVars(defset($e_vars->caption, $e_vars->caption), array('x'=>$current_page, 'y'=>$total_pages));
+		// sprintXX(defset($e_vars->caption, $e_vars->caption), $current_page, $total_pages);
 
 		// urldecoded by parse_str()
 		$pagetitle = explode('|', vartrue($parm['pagetitle']));
@@ -321,7 +324,7 @@ function nextprev_shortcode($parm = '')
 			else
 			{
 				$e_vars_loop->url_label = $label ? $tp->toAttribute($label) : LAN_NP_GOTO;
-				$e_vars_loop->url_label = sprintf($e_vars_loop->url_label, ($c + 1));
+				$e_vars_loop->url_label = str_replace("[x]", ($c + 1), $e_vars_loop->url_label);
 				$ret_items[] = $tp->simpleParse($tmpl[$tprefix.'item'], $e_vars_loop);
 			}
 		}
@@ -395,7 +398,7 @@ function nextprev_shortcode($parm = '')
 		$caption = trim($p[4]);
 		$pagetitle = explode('|',trim($p[5]));
 
-		$caption = (!$caption || $caption == 'off') ? NP_3.'&nbsp;' : $caption;
+		$caption = (!$caption || $caption == 'off') ? LAN_GOPAGE.'&nbsp;' : $caption;
 
 		while(substr($url, -1) == '.')
 		{
@@ -406,7 +409,7 @@ function nextprev_shortcode($parm = '')
 
 	if($total_pages > 1)
 	{
-		if(varsettrue($pref['old_np']))
+		if(vartrue($pref['old_np']))
 		{
 
 			$NP_PRE_ACTIVE = '';
@@ -517,11 +520,14 @@ function nextprev_shortcode($parm = '')
 		}
 
 		// Use NEW nextprev method
-		$np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
+		$np_parm['template'] = "<span class='form-group form-inline'>[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]<span>";
 		$np_parms['prev'] = '&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;';
 		$np_parms['next'] = '&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;';
-		$np_parms['np_class'] = 'tbox npbutton btn';
-		$np_parms['dropdown_class'] = 'tbox npdropdown';
+		$np_parms['np_class'] = 'tbox npbutton btn btn-default';
+		$np_parms['dropdown_class'] = 'tbox npdropdown form-control';
+		$caption = ''; // legacy has no caption.
+
+
 
 		if($cached_parms = getcachedvars('nextprev'))
 		{
@@ -590,10 +596,12 @@ function nextprev_shortcode($parm = '')
 		}
 		$dropdown .= '</select>';
 		$ret = $np_parm['template'];		// Set default
+
 		if (isset($np_parms['template']) && $np_parms['template'])
 		{
 			$ret = $np_parms['template'];				// Use override
 		}
+
 		$ret = str_replace('[DROPDOWN]', $dropdown, $ret);
 		$ret = str_replace('[PREV]', $prev, $ret);
 		$ret = str_replace('[NEXT]', $next, $ret);

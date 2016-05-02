@@ -27,7 +27,7 @@ class themeHandler
 	var $themeConfigObj = null;
 	var $noLog = FALSE;
 	
-	private $approvedAdminThemes = array('bootstrap');
+	private $approvedAdminThemes = array('bootstrap','bootstrap3');
 	
 	public $allowedCategories = array('generic',
 		 'adult',
@@ -56,22 +56,47 @@ class themeHandler
 		
 		global $e107cache,$pref;
 		$mes = e107::getMessage();
-		
+
+/*
+		if(deftrue('e_BOOTSTRAP3_ADMIN'))
+		{
+			$this->approvedAdminThemes[] = 'bootstrap3';
+		}
+		*/
 		require_once (e_HANDLER."form_handler.php");
 
 		
 		//enable inner tabindex counter
-		$this->frm = new e_form();
-		
-		$this->fl = e107::getFile();
+		if(!deftrue("E107_INSTALL"))
+		{
+			 $this->frm = new e_form();
+		}
 
 		
-		if(isset($_POST['upload']))
+		$this->fl = e107::getFile();
+		
+		if(!empty($_POST['upload']))
 		{
-			$this->themeUpload();
+			$unzippedTheme = $this->themeUpload();
 		}
 		
-		if(vartrue($_POST['installContent']))
+		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme)) 
+		{
+			$themeArray = $this->getThemes();
+			$this->id = $themeArray[$unzippedTheme]['id'];
+			
+			if($this->setTheme())
+			{
+				$mes->addSuccess(TPVLAN_3);
+			}
+			else
+			{
+				$mes->addError("Could not change site theme."); // TODO LAN
+			}
+			
+		}
+		
+		if(!empty($_POST['installContent']))
 		{
 			$this->installContent($_POST['installContent']);		
 		}
@@ -126,6 +151,7 @@ class themeHandler
 		{
 			$this->id = $_POST['curTheme'];
 			
+			$this->setLayouts(); // Update the layouts in case they have been manually changed. 
 			$this->SetCustomPages($_POST['custompages']);
 			$this->setStyle();
 			
@@ -242,7 +268,10 @@ class themeHandler
 					$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
 					preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
 					$match[1] = varset($match[1], '');
-					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "nonadmin"=>$nonadmin);
+					$scope = ($nonadmin == true) ? 'front' : '';
+
+
+					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "scope"=>$scope, "nonadmin"=>$nonadmin);
 					
 				}
 				else
@@ -265,10 +294,12 @@ class themeHandler
 			$themeArray[$file] = array_merge($themeArray[$file], $this->parse_theme_php($file));
 		}
 
-		if(count($themeArray[$file]['css']) > 1)
+		if(!empty($themeArray[$file]['css']) && count($themeArray[$file]['css']) > 1)
 		{
 			$themeArray[$file]['multipleStylesheets'] = TRUE;	
 		}
+
+
 
 		return $themeArray[$file];
 
@@ -318,15 +349,33 @@ class themeHandler
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		
-		extract($_FILES);
+	//	extract($_FILES);
 		//print_a($_FILES);
 
-		if(!is_writable(e_THEME))
+		if(!is_writable(e_TEMP))
 		{
 			$mes->addInfo(TPVLAN_20);
 			return FALSE;
 		}
-		else
+		
+		
+		$fl = e107::getFile();
+		$mp = $this->getMarketplace(); 
+		$status = $fl->getUploaded(e_TEMP); 
+		
+		if(!empty($status[0]['error']))
+		{
+			$mes->addError($status[0]['message']);
+			return; 	
+		}
+		
+		$mes->addSuccess($status[0]['message']); 
+		
+		return $fl->unzipArchive($status[0]['name'],'theme');
+
+		
+	//	else
+	/*
 		{
 			// FIXME - temporary fixes to upload process, check required. 
 			// Probably in need of a rewrite to use process_uploaded_files();
@@ -409,12 +458,16 @@ class themeHandler
 				@unlink(e_THEME.$archiveName);
 			}
 		}
+	 * 
+	 */
 	}
 	
 
 	private function search($name, $searchVal, $submitName, $filterName='', $filterArray=false, $filterVal=false)
 	{
 		$frm = e107::getForm();
+		
+		return $frm->search($name, $searchVal, $submitName, $filterName, $filterArray, $filterVal);
 		
 		$text = '<span class="input-append e-search"><i class="icon-search"></i>
     		'.$frm->text($name, $searchVal,20,'class=search-query').'
@@ -532,7 +585,7 @@ class themeHandler
 						'date'			=> $r['date'],
 						'version'		=> $r['version'],
 						'thumbnail'		=> $r['thumbnail'],
-						//'url'			=> $r['url'],
+						'url'			=> $r['urlView'],
 						'author'		=> $r['author'],
 						'website'		=> $r['authorUrl'],
 						'compatibility'	=> $r['compatibility'],
@@ -540,7 +593,8 @@ class themeHandler
 						'price'			=> $r['price'],
 						'livedemo'		=> $r['livedemo'],
 					);
-					
+
+
 					$text .= $this->renderTheme(FALSE, $theme);
 					
 					$c++;
@@ -605,7 +659,7 @@ class themeHandler
 				$mes->addInfo("No Themes found which match your search criteria");		
 			}	
 				
-			 $indicators = '<ol class="carousel-indicators span6">
+			 $indicators = '<ol class="carousel-indicators col-md-6 span6">
 				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>';
 				
 			foreach($slides as $key=>$v)
@@ -620,7 +674,7 @@ class themeHandler
 
 			$text .= "</form>";
 
-			$ns->tablerender(TPVLAN_26.SEP."Available for Download", $mes->render().$text);
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_69, $mes->render().$text);
 
 	}
 	
@@ -751,7 +805,7 @@ class themeHandler
 				</tr>
 				</table>
 			
-			<div class='buttons-bar center'>".$frm->admin_button('upload', TPVLAN_14, 'submit')."</div>
+			<div class='buttons-bar center'>".$frm->admin_button('upload', 1, 'submit', LAN_UPLOAD)."</div>
 			</form>
 			";
 		}
@@ -769,13 +823,13 @@ class themeHandler
 		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description'],'');
 		$compat			= (intval($theme['compatibility']) == 2) ? "<span class='label label-warning'>".number_format($theme['compatibility'], 1, '.','')."</span><span class='text-warning'> Recommended!</span>": vartrue(number_format($theme['compatibility'], 1, '.',''),'1.0');
-		$price 			= ($theme['price'] > 0) ? "<span class='label label-info'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".Free."</span>";
+		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>Free</span>";
 	
 	
 		$text = "<table class='table table-striped'>";
 	//	$text .= "<tr><th colspan='2'><h3>".$theme['name']." ".$theme['version']."</h3></th></tr>";
 
-		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
+		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".LAN_AUTHOR."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
 		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
 		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
 		$text .= $compat ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_57."</b>:</td><td style='vertical-align:top'>".$compat."</td></tr>" : "";
@@ -806,7 +860,7 @@ class themeHandler
 			$itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td class='well' style='vertical-align:top'>
-					<table class='table' style='margin-left:0px;margin-right:auto' >
+					<table class='table table-striped table-bordered' style='margin-left:0px;margin-right:auto' >
 						<tr>";
 			$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>Default</td>" : "";
 			$itext .= "
@@ -866,19 +920,20 @@ class themeHandler
 		
 		if(count($theme['preview']))
 			{
-				$text .= "<tr><td colspan='2'>";
+				$text .= "<div class='clearfix'>";
 				foreach($theme['preview'] as $pic)
 				{
 					
 					$picFull = (substr($pic,0,4) == 'http') ? $pic : e_THEME.$theme['path']."/".$pic;
 					
 					
-					$text .= "<div style='padding:5px;width:700px'>
-						<img src='".$picFull."' alt=\"".$theme['name']."\" />
+					$text .= "<div class='col-md-6'>
+						<img class='img-responsive' src='".$picFull."' alt=\"".$theme['name']."\" />
 						</div>";	
 					
 				}
-				
+
+				$text .= "</div>";
 			//	$text .= "</td>
 				// 		</tr>";	
 				
@@ -942,7 +997,6 @@ class themeHandler
 	{
 		
 		$mes = e107::getMessage();
-		
 		$mes->addDebug("Rendering Theme Config"); 
 		
 		$this->loadThemeConfig();
@@ -950,10 +1004,14 @@ class themeHandler
 		if($this->themeConfigObj)
 		{
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
+			vartrue($text); // avoid notice
+			
 			foreach ($var as $val)
 			{
-				$text = "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."</td></tr>";
+				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
+</td></tr>";
 			}
+
 			return $text;
 		}
 	
@@ -988,15 +1046,16 @@ class themeHandler
 		$ns = e107::getRender();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
+		$tp = e107::getParser();
 		
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
-		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<input class='top' type='image' src='".e_IMAGE_ABS."admin_images/main_32.png'  name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" />" : E_32_TRUE;
+		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		$info_icon 		= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?id=".$theme['path']."' data-target='#uiModal'  title='".TPVLAN_7."'>".E_32_CAT_ABOUT."</a>";
+		$info_icon 		= "<a class='btn btn-default btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
-		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<input class='top' type='image' src='".e_IMAGE_ABS."e107_icon_32.png'  name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" />\n" : E_32_TRUE;
+		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 		$price 			= '';
 		
 		if(substr($theme['thumbnail'],0,4) == 'http')
@@ -1015,7 +1074,7 @@ class themeHandler
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style='width:200px; height:130px;'  alt='' />";
+		$thumbnail = "<img src='".$thumbPath."' style='width:100%; max-height:200px;'  alt='' />";
 		
 
 		if($_GET['mode'] == 'online')
@@ -1026,6 +1085,7 @@ class themeHandler
 			$id = $frm->name2id($theme['name']);
 			$LAN_DOWNLOAD = ($theme['price'] > 0) ? "Buy/Download" : "Download";
 			
+			/*
 			if($this->mp->hasAuthKey())
 			{
 				$action = 'download';	
@@ -1036,26 +1096,37 @@ class themeHandler
 				$action = 'login';
 				$caption = "Please login to your e107.org account to proceed..";
 			}
+			*/
 			
-			
-			$downloadUrl = e_SELF.'?action='.$action.'&amp;src='.base64_encode($d);//$url.'&amp;action=download';
+			$downloadUrl = e_SELF.'?mode=download&amp;action='.$action.'&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 			$infoUrl = $url.'&amp;action=info';
 			
+			$viewUrl = $theme['url'];
+			
 			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
-			$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
-			$info_icon 	= "<a data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false' data-target='#uiModal'  title='".TPVLAN_7."'>".trim(E_32_CAT_ABOUT)."</a>";
+		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
+			
+			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWN_THEME.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
+			$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+		
+			
+		
+			// Temporary Pop-up version. 
+		//	$main_icon = "<a class='e-modal btn btn-small btn-inverse' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='{$viewUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
+		
+			
+			$info_icon 	= "<a class='btn btn-default btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 			
 			if($theme['livedemo'])
 			{
 				$previewPath = $theme['livedemo'];	
 			}
-			//XXX modal-Cache is currently enabled by default. Awaiting inclusion of data-cache feature. 
-			// See here: https://github.com/twitter/bootstrap/pull/4224
-			$price = ($theme['price'] > 0) ? "<span class='label label-info pull-right'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success pull-right'>".Free."</span>";
+
+			$price = (!empty($theme['price'])) ? "<span class='label label-primary pull-right'>".$theme['price']."</span>" : "<span class='label label-success pull-right'>".Free."</span>";
 	
 		}
 		
-		$preview_icon 	= "<a title='Preview/Live-Demo : ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external' class='e-modal' href='".$previewPath."'>".E_32_SEARCH."</a>";
+		$preview_icon 	= "<a class='e-modal btn btn-default btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 		
 		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))
@@ -1104,7 +1175,7 @@ class themeHandler
 				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
 					<div class='well admin-theme-thumb'>".$thumbnail."</div>
 					<div id='".$frm->name2id($theme['name'])."' class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
-					<div class='admin-theme-title'><small style='white-space:nowrap;display:inline-block;width:160px;overflow:hidden'>".$theme['name']." ".$theme['version']."</small>
+					<div class='admin-theme-title'><small>".$theme['name']." ".$theme['version']."</small>
 					".$price."
 					</div>	
 				</div>";
@@ -1121,6 +1192,12 @@ class themeHandler
         
         <ul class='nav nav-tabs'>
         <li class='active'><a data-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
+		
+
+		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == 1)
+		{
+			$text .= "<li><a data-toggle='tab' href='#core-thememanager-customconfig'>".LAN_PREFS."</a></li>\n";
+		}
 		
 		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'help')))
 		{
@@ -1139,19 +1216,21 @@ class themeHandler
 				<tr>
 					<td><b>".TPVLAN_11."</b></td>
 					<td>".$theme['version']."</td>
-					<td class='well center middle' rowspan='6' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
+					<td class='well center middle' rowspan='7' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
 					</tr>";
 		
-					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_AUTHOR."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>";
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>";
 					
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".strip_tags($theme['info'],'b')."</td></tr>";
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_CATEGORY."</b>:</td><td style='vertical-align:top'>".$theme['category']."</td></tr>";
-			//		$text .= "<tr><td style='vertical-align:top; width:25%'><b>Price</b>:</td><td style='vertical-align:top'>".$price."</td></tr>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_FOLDER."</b>:</td><td style='vertical-align:top'>".$theme['path']."</td></tr>";
+
+				//		$text .= "<tr><td style='vertical-align:top; width:25%'><b>Price</b>:</td><td style='vertical-align:top'>".$price."</td></tr>";
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
 						<td style='vertical-align:top' colspan='2'>";
-					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : "Not Specified";
+					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : TPVLAN_71;
 					$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
 					$text .= "</td></tr>";
 		
@@ -1176,14 +1255,14 @@ class themeHandler
 						$text .= "&nbsp;</td>
 							</tr>";
 						
-						$text .= "
+						/*$text .= "
 							<tr>
 			                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_30."</b></td>
 								<td colspan='2' style='vertical-align:top width:auto;'>
 								<input type='radio' name='image_preload' value='1'".($pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_28."&nbsp;&nbsp;
 								<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
 								</td>
-							</tr>";
+							</tr>";*/
 					}
 		
 					// New in 0.8   ----   site theme.
@@ -1193,19 +1272,19 @@ class themeHandler
 						$itext = "<tr>
 								<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 								<td colspan='2' style='vertical-align:top'>
-			                    <table class='table adminlist'>
+			                    <table class='table table-bordered table-striped'>
 			                      	<colgroup>
 			                      		<col class='col-tm-layout-default' style='width:10%' />
-			                      		<col class='col-tm-layout-name' style='width:20%' />
-										<col class='col-tm-layout-visibility' style='width:35%' />
-										<col class='col-tm-layout-preset' style='width:35%' />
+			                      		<col class='col-tm-layout-name' style='width:40%' />
+										<col class='col-tm-layout-visibility' style='width:30%' />
+										<col class='col-tm-layout-preset' style='width:20%' />
 			                      	</colgroup>
 									<tr>";
-						$itext .= ($mode == 1) ? "<td class='center top'>".TPVLAN_55."</td>" : "";
+						$itext .= ($mode == 1) ? "<th class='center top'>".TPVLAN_55."</th>" : "";
 						$itext .= "
-										<td>".TPVLAN_52."</td>
-										<td>".TPVLAN_56."</td>
-										<td>".TPVLAN_54."</td>
+										<th>".TPVLAN_52."</th>
+										<th>".TPVLAN_56."</th>
+										<th class='text-right' style='text-align:right'>".TPVLAN_54."</th>
 			
 									</tr>\n";
 			
@@ -1228,7 +1307,7 @@ class themeHandler
 							
 							$itext .= "<td style='vertical-align:top'><label for='".$frm->name2id($key)."'>";
 						//	$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
-							$itext .= $val['@attributes']['title'];
+							$itext .= $val['@attributes']['title']."</label><div class='field-help'>".$key."</div>"; 
 						//	$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
 							
 							$custompage_count = (isset($pref['sitetheme_custompages'][$key])) ? " [".count($pref['sitetheme_custompages'][$key])."]" : "";
@@ -1238,7 +1317,7 @@ class themeHandler
 							{
 								foreach ($pref['sitetheme_custompages'][$key] as $cp)
 								{
-									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' class='btn btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-default btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 									if($count > 4)
 									{
 										$custompage_diz .= "...";
@@ -1249,11 +1328,11 @@ class themeHandler
 							}
 							else
 							{
-								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title='Set pages which should automatically use this layout. One per line.' class='e-tip btn btn-mini e-expandit'>None</a> ";
+								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-xs btn-default btn-mini e-expandit'>".LAN_NONE."</a> ";
 							}
 			
 							
-							$itext .= "</label></td>
+							$itext .= "</td>
 											<td style='vertical-align:top'>";
 							// Default
 							$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
@@ -1262,7 +1341,12 @@ class themeHandler
 							
 							$itext .= "<td>";
 							
-							$itext .= (varset($val['menuPresets'])) ? $this->frm->admin_button("setMenuPreset[".$key."]", "Use Preset") : "";
+							if(varset($val['menuPresets'])) 
+							{
+								$itext .= $this->renderPresets($key);
+							}
+							
+							
 							$itext .= "</td>
 			
 										</tr>";
@@ -1301,13 +1385,17 @@ class themeHandler
 
 		
 					$text .= $itext;
+
+
+					$theme['css'] = $this->filterStylesheets($mode, $theme);
+
 					
-					if(array_key_exists("multipleStylesheets", $theme) && $mode)
+					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']))
 					{
 						$text .= "
 							<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
 							<td colspan='2' style='vertical-align:top'>
-							<table class='table adminlist' >
+							<table class='table table-bordered table-striped' >
 							<tr>
 			                	<td class='center' style='width:10%'>".TPVLAN_55."</td>
 						  		<td style='width:20%'>".TPVLAN_52."</td>
@@ -1319,44 +1407,34 @@ class themeHandler
 						{
 								
 							$text2 = "";
-							
-							
-							
-							if($mode == 2) // ADMIN MODE
+
+							switch($mode)
 							{
-								if($css['name'] == "style.css" || !vartrue($css['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
-								{
-									continue;
-								}
-												
-								if(!$css['nonadmin'])
-								{
+								case 2: // admin mode.
+
 									$for = $frm->name2id("admincss-".$css['name']);
 									$text2 = "
 										<td class='center'>".
 										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'])."
 										</td>
 										<td><label for='".$for."'>".$css['info']."</label></td>";
-										
+
 									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
-								}
-							}
-							
-							if($mode == 1) // SITE-THEME Mode
-							{
-								if(substr($css['name'], 0, 6) == "admin_")
-								{
-									continue;
-								}
-								
-								$text2 = "
+
+									break;
+
+								case 1: // front 'sitetheme' mode.
+
+									$text2 = "
 									<td class='center'>
 									<input id='".$frm->name2id($css['name'])."' type='radio' name='themecss' value='".$css['name']."' ".($pref['themecss'] == $css['name'] || (!$pref['themecss'] && $css['name'] == "style.css") ? " checked='checked'" : "")." />
 									</td>
 									<td><label for='".$frm->name2id($css['name'])."' >".$css['name']."</lable></td>
 									<td>".($css['info'] ? $css['info'] : ($css['name'] == "style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+								break;
+
 							}
-							
+
 							$text .= ($text2) ? "<tr>".$text2."</tr>" : "";
 						
 						}
@@ -1364,12 +1442,7 @@ class themeHandler
 						$text .= "</table></td></tr>";
 					}
 
-		
-					if($mode == 1)
-					{
-						$text .= $this->renderThemeConfig();
-					}
-					
+
 					$text .= "</table>
 
 
@@ -1395,11 +1468,189 @@ class themeHandler
 			</div>
 			
 			 <div class='tab-pane' id='core-thememanager-help'>".$this->renderThemeHelp()."</div>
+			 
+			 <div class='tab-pane' id='core-thememanager-customconfig'>
+			 	<table class='table adminform'>
+		        	<colgroup>
+		        		<col class='col-label' />
+		        		<col class='col-control' />
+						<col class='col-control' />
+		        	</colgroup>
+	
+					".$this->renderThemeConfig()."
+
+				</table>
+
+				<div class='center buttons-bar'>";
+		
+				if($mode == 2) // admin
+				{
+					$mainid = "selectmain[".$theme['id']."]";
+					$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
+					//$text .= $this->frm->admin_button($mainid, TPVLAN_10, 'other');
+				
+				}
+				else // main
+				{
+					$adminid = "selectadmin[".$theme['id']."]";
+					$text .= $this->frm->admin_button('submit_style', TPVLAN_35, 'update');
+					//$text .= $this->frm->admin_button($adminid, TPVLAN_32, 'other');
+				}
+				
+				$text .= "<input type='hidden' name='curTheme' value='".$theme['path']."' />";
+		
+				$text .= "</div>
+			</div>
         </div>
 		\n";
 		
 		return $text;
 	}
+
+
+
+	private function filterStylesheets($mode, $theme)
+	{
+
+		$remove = array();
+		$detected = array();
+
+		if($mode == 1)
+		{
+			foreach($theme['css'] as $k=>$v) // check if wildcard is present.
+			{
+				if($v['name'] == '*')
+				{
+					foreach($theme['files'] as $val) // get wildcard list of css files.
+					{
+						if(substr($val,-4) == '.css' && substr($val, 0, 6) != "admin_")
+						{
+							$detected[$val] = array('name'=>$val, 'info'=>'User-added Stylesheet', 'nonadmin'=>1);
+						}
+					}
+					break;
+				}
+			}
+		}
+
+
+		foreach($theme['css'] as $k=>$vl) // as defined.
+		{
+			if(!empty($detected[$vl['name']])) // remove any detected files which are listed
+			{
+				unset($detected[$vl['name']]);
+			}
+
+			switch($mode)
+			{
+				case 1: // frontend
+
+					if(substr($vl['name'], 0, 6) == "admin_")
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['scope'] == 'admin')
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['name'] == '*' )
+					{
+						$remove[$k] = $vl['name'];
+
+						$wildcard = true;
+						continue;
+					}
+
+				break;
+
+				case 2: // admin
+
+					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['name'] == '*' )
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if($vl['scope'] == 'front')
+					{
+						$remove[$k] = $vl['name'];
+					}
+
+					if(!empty($vl['nonadmin']))
+					{
+						$remove[$k] = $vl['name'];
+					}
+				break;
+
+
+			}
+
+		}
+
+		foreach($remove as $k=>$file)
+		{
+			unset($theme['css'][$k]);
+		//	unset($detected[$file]);
+		}
+
+		foreach($detected as $k=>$v)
+		{
+			$theme['css'][] = $v;
+		}
+
+	//	print_a($detected);
+	//	print_a($remove);
+
+		return $theme['css'];
+
+	}
+
+
+	function renderPresets($key)
+	{
+		require_once (e_HANDLER."menumanager_class.php");
+		$frm = e107::getForm();
+		
+		
+		$men = new e_menuManager();
+		$men->curLayout = $key;
+		$preset = $men->getMenuPreset();
+		
+// 		print_a($preset); 
+		//TODO LAN
+		$text = "<div class='btn-group pull-right'>".$frm->admin_button("setMenuPreset[".$key."]", TPVLAN_73,'other');
+		$text .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu col-selection">
+		<!-- dropdown menu links -->
+		<li class="dropdown-header">'.TPVLAN_74.'</li>
+		';
+										
+		foreach($preset as $val)
+		{
+			$text .= "<li><a title='".$val['menu_name']."'>".str_replace("_menu","",$val['menu_name'])."</a></li>";	
+			
+		}					
+
+		$text .= "</ul></div>";
+		return $text;
+		
+	}
+
+
+
+
+
+
+
+
 	
 	function renderPlugins($pluginOpts)
 	{
@@ -1413,7 +1664,7 @@ class themeHandler
 		{
 			$plug = trim($p['@attributes']['name']);
 			
-			if(plugInstalled($plug))
+			if(e107::isInstalled($plug))
 			{
 				$text .= $plug." ".ADMIN_TRUE_ICON;
 			}
@@ -1422,7 +1673,7 @@ class themeHandler
 				//	echo $plug;
 				if($sql->db_Select("plugin", "plugin_id", " plugin_path = '".$plug."' LIMIT 1 "))
 				{
-					$row = $sql->db_Fetch(MYSQL_ASSOC);
+					$row = $sql->db_Fetch();
 					$name = "installplugin[".$row['plugin_id']."]";
 					$text .= $this->frm->admin_button($name, ADLAN_121." ".$plug."", 'delete');
 				}
@@ -1487,15 +1738,24 @@ class themeHandler
 		$core->set('sitetheme_custompages', $customPages);
 		
 		$core->set('sitetheme_version', $version);
+				
+		if(!empty($this->themeArray[$name]['preferences']))
+		{
+			 $core->set('sitetheme_pref', $this->themeArray[$name]['preferences']);	
+		}
+		
+		
 	//	$core->set('sitetheme_releaseUrl', $this->themeArray[$name]['releaseUrl']);
 		
 		
 		if($contentCheck === true)
 		{
-			$sql->db_Delete("menus", "menu_layout !='' ");
+			$sql->delete("menus", "menu_layout !='' ");
 		}
 		
-		e107::getCache()->clear_sys();
+		e107::getCache()->clear();
+		e107::getCache()->clearAll('js');
+		e107::getCache()->clearAll('css');
 		
 		if($core->save())
 		{
@@ -1532,50 +1792,56 @@ class themeHandler
 	}
 
 
-
+	/**
+	 * @param $name
+	 */
 	function installContentCheck($name)
 	{
 		$file = e_THEME.$name."/install/install.xml";
 		$frm = e107::getForm();
-		
+		$tp = e107::getParser();
+
 		if(!is_readable($file))
 		{
-			return false;		
-		}		
-		
+			return false;
+		}
+
 		$mes = e107::getMessage();
-		
-		$xmlArray = e107::getXml()-> loadXMLfile($file, 'advanced');
-		
+
+		$xmlArray = e107::getXml()->loadXMLfile($file, 'advanced');
+
 		$text = "
 		<form action='".e_SELF."' method='post'>
-		<div>This theme would like to make the following changes to your database:
+		<div>
+		<p>".TPVLAN_58."<br />
+		".$tp->toHTML(TPVLAN_59, true).":<br />
+		</p>
+
 		<ul>";
-		
+
 		$lng = e107::getLanguage();
-		
+
 		foreach($xmlArray['database']['dbTable'] as $key=>$val)
 		{
 			$count = count($val['item']);
-			$data = array('x'=> $count, 'y' => $val['@attributes']['name']); 	
-			$lan = "Replace/Overwrite [x] record(s) in your [y] table. ";
-	
-			$text .= "<li>".$lng->translate($lan, $data)."</li>";
-				
+			$data = array('x'=> $count, 'y' => $val['@attributes']['name']);
+			$text .= "<li>".$tp->lanVars(TPVLAN_60, $data)."</li>";
 		}
+
 		$text .= "</ul>
-		".$frm->admin_button('installContent',$name, 'warning', "Agree")."
-		".$frm->admin_button('dismiss',0, 'cancel', 'Dismiss')."
+
+		<p>".$tp->toHTML(TPVLAN_61, true)."</p>
+
+		".$frm->admin_button('installContent',$name, 'warning', LAN_YES)."
+		".$frm->admin_button('dismiss',0, 'cancel', LAN_NO)."
 		</div>
 		</form>
 		";
 	//	$text .= print_a($xmlArray, true);
-		$mes->addWarning($text);
-	
-
+		$mes->addInfo($text);
 	}
-		
-		
+
+
 	function installContent($name)
 	{
 		$mes = e107::getMessage();
@@ -1583,19 +1849,12 @@ class themeHandler
 		e107::getXml()->e107Import($file, 'replace', true, false); // Overwrite specific core pref and tables entries. 
 		$mes->addSuccess(LAN_UPDATED);
 	}
-				
-			
-			
-		
 
 
-
-
-
-
-
-
-	
+	/**
+	 * @param $theme
+	 * @return int|string
+	 */
 	function findDefault($theme)
 	{
 		if(varset($_POST['layout_default']))
@@ -1638,6 +1897,7 @@ class themeHandler
 		$pref['admintheme'] = $themeArray[$this->id];
 		$pref['admincss'] = file_exists(e_THEME.$pref['admintheme'].'/admin_dark.css') ? 'admin_dark.css' : 'admin_light.css';
 		$e107cache->clear_sys();
+		
 		if(save_prefs())
 		{
 			// Default Message
@@ -1657,8 +1917,7 @@ class themeHandler
 		$mes = e107::getMessage();
 		
 		//TODO adminlog
-		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('image_preload', $_POST['image_preload'])->setPosted('sitetheme_deflayout',
-			 $_POST['layout_default']);
+		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('sitetheme_deflayout', $_POST['layout_default']);
 		
 		$msg = $this->setThemeConfig();
 		if($msg)
@@ -1719,6 +1978,20 @@ class themeHandler
 		e107::getConfig()->set('sitetheme_custompages', e107::getParser()->toDB($newprefs));
 	}
 
+	/**
+	 * Set the Theme layouts, as found in theme.xml
+	 */
+	function setLayouts($name='')
+	{
+		$name = $this->id;
+		$layout = is_array($this->themeArray[$name]['layouts']) ? $this->themeArray[$name]['layouts'] : array();	
+		
+		e107::getConfig()->set('sitetheme_layouts', $layout);
+		
+	}
+
+
+
 	
 	// Log event to admin log
 	function theme_adminlog($msg_num = '00', $woffle = '')
@@ -1729,7 +2002,7 @@ class themeHandler
 		}
 		global $pref,$admin_log;
 		//  if (!varset($pref['admin_log_log']['admin_banlist'],0)) return;
-		$admin_log->log_event('THEME_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
+		e107::getLog()->add('THEME_'.$msg_num, $woffle, E_LOG_INFORMATIVE, '');
 	}
 	
 	function parse_theme_php($path)
@@ -1851,10 +2124,20 @@ class themeHandler
 				//	loadLanFiles($path, 'admin');     // Look for LAN files on default paths
 		// layout should always be an array.
 		$xml->setOptArrayTags('layout,screenshots/image');
-		$xml->setOptStringTags('menuPresets,customPages');
+		$xml->setOptStringTags('menuPresets,customPages,custompages');
 	
 			
-		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
+	//	$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
+	//	$oldvars = 
+		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', 'advanced', true); // must be 'advanced' 
+		
+		if($path == "bootstrap3" )
+		{
+	//		echo "<table class='table table-bordered'>
+	//		<tr><th>old</th><th>new parser</th></tr>
+	//	<tr><td>".print_a($oldvars,true)."</td><td>".print_a($vars,true)."</td></tr></table>";
+		}
+		
 		
 		$vars['name'] 			= varset($vars['@attributes']['name']);
 		$vars['version'] 		= varset($vars['@attributes']['version']);
@@ -1872,6 +2155,17 @@ class themeHandler
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= varset($vars['preview'][0]);
+		
+		if(!empty($vars['themePrefs']))
+		{
+			
+			foreach($vars['themePrefs']['pref'] as $k=>$val)
+			{
+				$name = $val['@attributes']['name'];
+				$vars['preferences'][$name] = $val['@value']; 
+			}	
+		}
+
 		
 		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
 		
@@ -1936,7 +2230,7 @@ class themeHandler
 			{
 				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
 				
-				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin);
+				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=> vartrue($val['@attributes']['scope']));
 			}
 
 			unset($vars['stylesheets']);
@@ -1952,6 +2246,12 @@ class themeHandler
 		//	$mes->addDebug("<h2>".$path."</h2>");
 		//	$mes->addDebug(print_a($vars,true));
 		//	$mes->addDebug("<hr />");
+		}
+
+		if($path == "bootstrap3" )
+		{
+	//		print_a($vars);
+		//	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
 		}
 
 	

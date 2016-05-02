@@ -13,7 +13,7 @@
 require_once('../class2.php');
 if (!getperms('3'))
 {
-	header('Location:'.SITEURL.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 
@@ -83,7 +83,7 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 	{	// Can't delete main admin
 		$text = $row['user_name']." ".ADMSLAN_6."
 		<br /><br />
-		<a href='".e_ADMIN_ABS."administrator.php'>".ADMSLAN_4."</a>";
+		<a href='".e_ADMIN_ABS."administrator.php'>".LAN_CONTINUE."</a>";
 
 		$mes->addError($text);
 		$ns->tablerender(LAN_ERROR, $mes->render());
@@ -94,7 +94,7 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 
 	$mes->addAuto($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
 	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
-	$admin_log->log_event('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
+	e107::getLog()->add('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }
 
 
@@ -144,7 +144,7 @@ function show_admins()
 
 	";
 
-	while ($row = $sql->db_Fetch())
+	while ($row = $sql->fetch())
 	{
 		//$permtxt = "";
 		$text .= "
@@ -196,6 +196,8 @@ require_once("footer.php");
  */
 function headerjs()
 {
+	return '';
+/*
 	require_once(e_HANDLER.'js_helper.php');
 	$ret = "
 		<script type='text/javascript'>
@@ -205,6 +207,6 @@ function headerjs()
 		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
 
-	return $ret;
+	return $ret;*/
 }
 ?>

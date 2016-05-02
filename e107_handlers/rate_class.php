@@ -24,8 +24,11 @@ class rater {
 		
 	//	return "Table=".$table." itmeId=".$id." Votes=".$votes." score=".$score;
 		
-		parse_str($options,$options);
-	//	
+		if(is_string($options))
+		{
+			parse_str($options,$options);
+		}
+		
 		$label = varset($options['label'],RATELAN_5);
 			
 		$readonly = $this->checkrated($table, $id) ? '1' : '0';
@@ -33,7 +36,7 @@ class rater {
 		$hintArray = array(RATELAN_POOR,RATELAN_FAIR,RATELAN_GOOD,RATELAN_VERYGOOD,RATELAN_EXCELLENT);
 
 		$datahint = implode(",",$hintArray);
-		$path = e_WEB_JS."rate/img/";
+		$path = e_JS_ABS."rate/img/";
 		
 		$score = ($score / 2);
 	//	var_dump($readonly);
@@ -62,8 +65,8 @@ class rater {
 		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
 		
 		$TEMPLATE['STATUS'] 	= "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}' style='display:none'>".$label."</span>";
-		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_BASE."rate.php' data-path='{$path}'></div>";
-		$TEMPLATE['VOTES'] 	= "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><smalll>".$this->renderVotes($votes,$score)."</small></div>";
+		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
+		$TEMPLATE['VOTES'] 	= "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><small>".$this->renderVotes($votes,$score)."</small></div>";
 
 		$tmp = explode("|",$template);
 		
@@ -255,7 +258,9 @@ class rater {
 	 * @param $perc: optional percentage mode. Displays percentages instead of totals. 
 	 */
 	function renderLike($table,$itemid,$curVal=false,$perc=false)
-	{	
+	{
+		$tp = e107::getParser();
+			
 		$id = "rate-".$table."-".$itemid;	 // "-up or -down is appended to the ID by jquery as both value will need updating. 
 		
 		if($curVal == false)
@@ -270,8 +275,8 @@ class rater {
 		
 		if(deftrue('BOOTSTRAP'))
 		{
-			$upImg = "<i class='icon-thumbs-up'></i>";
-			$upDown = "<i class='icon-thumbs-down'></i>";
+			$upImg = $tp->toGlyph('icon-thumbs-up',false); // "<i class='icon-thumbs-up'></i>";
+			$upDown = $tp->toGlyph('icon-thumbs-down',false); // "<i class='icon-thumbs-down'></i>";
 		}
 			
 		$text = "<span id='{$id}-up'>".intval($curVal['up'])."{$p}</span>

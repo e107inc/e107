@@ -31,9 +31,12 @@ class core_page_sef_url extends eUrlConfig
 			),
 
 			'rules' => array(
-				### using only title for pages is risky enough (non-unique title, possible bad characters)
-				'<id:{number}>/<name:{sefsecureOptional}>' => array('view/index', 'legacyQuery' => '{id}.{page}', ),
-				
+				'<id:{number}>/<name:{sefsecureOptional}>'			=> array('view/index', 		'legacyQuery' => '{id}.{page}', ),
+                ### Used for assembling only
+                '<id:{number}>/<other:{sefsecureOptional}>'			=> array('view/other', 		'mapVars' => array('page_id'=>'id', 'page_sef'=>'other'), 'legacyQuery' => '{id}.{page}', ),
+				'chapter/<id:{number}>/<name:{sefsecureOptional}>' 	=> array('chapter/index', 	'allowVars' => false, 'mapVars' => array('chapter_id'=>'id','chapter_sef'=>'name'), 'legacyQuery' => 'ch={id}' ),
+				'book/<id:{number}>/<name:{sefsecureOptional}>' 	=> array('book/index', 		'allowVars' => false, 'mapVars' => array('chapter_id'=>'id','chapter_sef'=>'name'), 'legacyQuery' => 'bk={id}' ),
+			
 				### page list
 				'/' => array('list/index', 'legacyQuery' => '', ),
 			) // rule set array
@@ -54,6 +57,7 @@ class core_page_sef_url extends eUrlConfig
 				'description' => LAN_EURL_PAGE_SEF_DESCR, //
 				'examples'  => array("{SITEURL}page/1/page-name")
 			),
+			'generate' => array('table'=> 'page', 'primary'=>'page_id', 'input'=>'page_title', 'output'=>'page_sef'),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity
 		);

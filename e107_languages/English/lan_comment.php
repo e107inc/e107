@@ -13,7 +13,7 @@
 define("COMLAN_0", "[blocked by admin]");
 define("COMLAN_1", "Unblock");
 define("COMLAN_2", "Block");
-define("COMLAN_3", "Delete");
+//define("COMLAN_3", "Delete"); //new > LAN_DELETE
 define("COMLAN_4", "Info");
 define("COMLAN_5", "Comments ...");
 define("COMLAN_6", "You must be logged in to make comments on this site - please log in, or if you are not registered click");
@@ -24,7 +24,7 @@ define("COMLAN_10", "Administrator");
 define("COMLAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
 define("COMLAN_12", "User");
 define("COMLAN_16", "Username: ");
-define("COMLAN_99", "Comments");
+// define("COMLAN_99", "Comments");
 define("COMLAN_100", "News");
 define("COMLAN_101", "Poll");
 define("COMLAN_102", "Replying to: ");
@@ -51,17 +51,24 @@ define("COMLAN_323", "Error!");
 define("COMLAN_324", "Subject");
 define("COMLAN_325", "Re:");
 define("COMLAN_326", "Reply to this");
-define("COMLAN_327", "Rating");
+//define("COMLAN_327", "Rating");//LAN_RATING
 define("COMLAN_328", "Comments are locked");
 define("COMLAN_329", "Unauthorized");
 define("COMLAN_330", "IP:");
-define("COMLAN_331", "Pending Approval");
+define("COMLAN_331", "Awaiting Approval");
 define("COMLAN_332", "Couldn't delete comment");
 define("COMLAN_333", "Comment approved");
 define("COMLAN_334", "Couldn't approve comment");
 define("COMLAN_335", "Approved");
 define("COMLAN_336", "Please write something first.");
 define("COMLAN_337", "Updated successfully.");
+
+define("COMLAN_400", "approved");
+define("COMLAN_401", "blocked");
+define("COMLAN_402", "pending");
+
+define("COMLAN_403", "Leave a message...");
+define("COMLAN_404", "Approve");
 
 define("COMLAN_TYPE_1", "news");
 define("COMLAN_TYPE_2", "download");
@@ -72,4 +79,11 @@ define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideas");
 define("COMLAN_TYPE_8", "userprofile");
 define("COMLAN_TYPE_PAGE", "Content");		// Really custom page, but use a 'non-technical' description
+
+define("COMLAN_500", "Please [sign in] to leave a comment.");
+define("COMLAN_501", "If you are not yet registered, you may [click here to register].");
+
+
+
+
 ?>

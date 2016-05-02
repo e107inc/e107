@@ -29,13 +29,14 @@ require_once(HEADERF);
 // initialize some cruft
 // ---------------------
 $bcSql = new db;
-$prefix = e_PLUGIN."blogcalendar_menu";
-$marray = array(BLOGCAL_M1, BLOGCAL_M2, BLOGCAL_M3, BLOGCAL_M4,
-	BLOGCAL_M5, BLOGCAL_M6, BLOGCAL_M7, BLOGCAL_M8,
-	BLOGCAL_M9, BLOGCAL_M10, BLOGCAL_M11, BLOGCAL_M12);
+$prefix = e_PLUGIN_ABS."blogcalendar_menu";
+$marray = e107::getDate()->terms('month');
+
+
+	
 // if nr of rows per month is not set, default to 3
-$months_per_row = $pref['blogcal_mpr']?$pref['blogcal_mpr']:
-"3";
+$months_per_row = (!empty($pref['blogcal_mpr'])) ? $pref['blogcal_mpr']: "3";
+
 $pref['blogcal_ws'] = "monday";
 	
 // -------------------------------------
@@ -113,25 +114,31 @@ $archive = "<div style='text-align:center'>
 $archive .= "<td colspan='{$months_per_row}'>{$year_selector}</td></tr><tr>";
 for($i = 1; $i <= 12; $i++) 
 {
-	if (++$newline == $months_per_row+1) 
+	if (++$newline == $months_per_row + 1)
 	{
 		$archive .= "</tr><tr>";
 		$newline = 1;
 	}
 	$archive .= "<td style='vertical-align:top'>";
-	$archive .= "<div class='fcaption' style='text-align:center; margin-bottom:2px;'>";
-	 
-	// href the current month regardless of newsposts or any month with news
-	if (($req_year == $cur_year && $i == $cur_month) || $day_links[$i]) 
+	
+	if(!deftrue('BOOTSTRAP'))
 	{
-		$archive .= "<a class='forumlink' href='".e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $i))."'>".$marray[$i-1]."</a>";
-	} 
-	else 
-	{
-		$archive .= $marray[$i-1];
+	
+		$archive .= "<div class='fcaption' style='text-align:center; margin-bottom:2px;'>";
+		 
+		// href the current month regardless of newsposts or any month with news
+		if (($req_year == $cur_year && $i == $cur_month) || $day_links[$i]) 
+		{
+			$archive .= "<a class='forumlink' href='".e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $i))."'>".$marray[$i-1]."</a>";
+		} 
+		else 
+		{
+			$archive .= $marray[$i-1];
+		}
+		 
+		$archive .= "</div>";
 	}
-	 
-	$archive .= "</div>";
+	
 	if (($req_year == $cur_year) && ($i == $cur_month)) 
 	{
 		$req_day = $cur_day;
@@ -143,6 +150,7 @@ for($i = 1; $i <= 12; $i++)
 	$archive .= "<div>".calendar($req_day, $i, $req_year, $day_links[$i], $pref['blogcal_ws'])."</div></td>\n";
 }
 $archive .= "</tr></table></div>";
+
 $ns->tablerender(BLOGCAL_L2 ."&nbsp;$req_year", $archive);
 	
 require_once(FOOTERF);

@@ -18,17 +18,40 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
+
+define('e_CAPTCHA_FONTCOLOR','#F9A533');
+
+
 // Required for a clean v1.x -> v2 upgrade. 
 $core = e107::getConfig('core'); 		
-if($core->get('admintheme') != 'bootstrap')
+if($core->get('admintheme') != 'bootstrap3')
 {
-	$core->update('admintheme','bootstrap');
+	$core->update('admintheme','bootstrap3');
 	$core->update('adminstyle','infopanel');
 	$core->update('admincss','admin_dark.css');
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
 	$core->save();	
 	e107::getRedirect()->redirect(e_SELF);		
 }
+
+// Check Admin-Perms for current language and redirect if necessary. 
+if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE) && empty($_E107['no_language_perm_check']))
+{
+	$lng = e107::getLanguage();
+
+	$tmp = explode(".",ADMINPERMS);
+	foreach($tmp as $ln)
+	{
+		if($lng->isValid($ln))
+		{
+			$redirect = deftrue("MULTILANG_SUBDOMAIN") ? $lng->subdomainUrl($ln) : e_SELF."?elan=".$ln;
+			//		echo "redirect to: ".$redirect;
+			e107::getRedirect()->go($redirect);
+		//	break;
+		}	
+	}
+}
+
 
 /* done in class2
  @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
@@ -104,7 +127,7 @@ else
 		{
 			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-		//	header("location: ../index.php");
+
 			e107::getRedirect()->redirect('admin.php?failed');
 			exit;
 		}
@@ -129,7 +152,8 @@ else
 			$class_list[] = e_UC_MEMBER;
 			$class_list[] = e_UC_PUBLIC;
 
-			$user_logging_opts = array_flip(explode(',', varset($pref['user_audit_opts'], '')));
+			
+			$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 			if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'], ''), $class_list))
 			{ // Need to note in user audit trail
 				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, '', $user_id, $user_name);
@@ -184,13 +208,14 @@ else
 			.field input:hover	{
 									
 								}
-			#logo				{ background-image: url(".e_IMAGE."logo_template_large.png); 
-									height:140px; 
-									width:310px;
+			#logo				{
+									height:140px;
+									max-width:310px;
 									padding-right:5px;
 									margin-left:auto;
 									margin-right:auto;
 									margin-top:2%;
+									width:95%;
 									
 								}
 			
@@ -198,24 +223,28 @@ else
 									margin-left:auto;
 									margin-right:auto;
 									margin-top:2%;
-									width:400px; 
-									padding: 10px 20px 0 20px;
-					
+									min-width:250px;
+									width:30%;
+									padding: 0px;
+									max-width:100%;
 								
 									/*	
 									
 									*/
 								}
+
+			#login-admin div.panel { padding: 0 }
 			
 			#login-admin label 	{ 	display: none; text-align: right	}
 				
 			
-			.admin-submit 		{ 	text-align: center; 	padding:20px;	}
+			.admin-submit 		{ 	text-align: center; 	padding-top:20px;	}
 			
 			.submit				{  }
-			
+
+
 		
-			.placeholder 		{	color: #bbb; font-style:italic	}
+			.placeholder 		{ color: #646667; font-style:italic	}
 	
 			::-webkit-input-placeholder { font-style:italic;	color: #bbb; 	}
 		
@@ -223,14 +252,16 @@ else
 			
 			h2					{ text-align: center; color: #FAAD3D;  }
 			
-			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:218px; }
-				 
-			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:218px; }
-			
-			input[disabled] 	{	color: silver;	}
+			#username			{background: url(".e_IMAGE."admin_images/admins_16.png) no-repeat scroll 7px 9px; padding:7px; padding-left:30px; width:80%; max-width:218px; }
+
+			#userpass			{background: url(".e_IMAGE."admin_images/lock_16.png) no-repeat scroll 7px 9px; padding:7px;padding-left:30px; width:80%; max-width:218px; }
+
+			#code-verify		{ width: 220px; padding: 7px; margin-left: auto; margin-right: auto; }
+
+			input[disabled] 	{ color: silver;	}
 			button[disabled] span	{	color: silver;	}
 			.title_clean		{ display:none; }
-		
+
 		");
 		
 	
@@ -263,31 +294,52 @@ class auth
 	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	
 		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
-			
+
+
+
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
-		<div id='logo' ></div>
-		<div id='login-admin' class='well center'>
-		<div {$class}>
-		<div class='navbar navbar-inner'>
-		<h4>admin area</h4>
-        </div>
+		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='login' /></div>
+		<div id='login-admin' class='center'>
+		<div>";
+
+		if(e_QUERY == 'failed')
+		{
+			e107::lan('core', 'login');
+			$text .= "<div class='alert alert-danger'>".LAN_LOGIN_21."</div>";
+			$text .= "<script type='text/javascript'>
+				window.setTimeout(function() {
+			    $('.alert').fadeTo(500, 0).slideUp(500, function(){
+			        $(this).remove();
+			    });
+			}, 5000);
+			</script>";
+
+		}
+
+
+
+		$text .= "
+		<div class='panel well panel-primary'>
+			<div class='panel-heading'><h3 class='panel-title'>".LAN_HEADER_04."</h3></div>
+
+        <div class='panel-body'>
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
-		    	<div class='field-help'>Please enter your username or email</div>
+		    	<div class='field-help' data-placement='right'>".LAN_ENTER_USRNAME_EMAIL."</div>
 		   	</div>			
 		
 		    <div class='field'>
 		    	<label for='userpass'>".ADLAN_90."</label>
-		    	<input class='tbox e-tip' type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
-		    	<div class='field-help'>Password is required</div>
+		    	<input class='tbox e-tip'  type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
+		    	<div class='field-help' data-placement='right'>".LAN_PWD_REQUIRED."</div>
 		    </div>";
 		
 		if ($use_imagecode)
 		{
 			$text .= "
 			<div class='field'>
-				<label for='code_verify'>".ADLAN_152."</label>"
+				<label for='code-verify'>".LAN_ENTER_CODE."</label>"
 				.$sec_img->renderImage().
 				$sec_img->renderInput()."	
 			</div>";
@@ -301,13 +353,16 @@ class auth
 				$text .= "<input type='hidden' name='hashchallenge' id='hashchallenge' value='".e107::getSession()->get('challenge')."' />\n\n";		
 			}
 								
-		$text .= "</div>
+		$text .= "</div></div>
 		</div>
 		</div>
+		 </div>
 		</form>";
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
-		echo "<div class='center' style='margin-top:30%; color:silver'><span style='padding:0 40px 0 40px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>";
+		echo "<div class='row-fluid'>
+			<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>
+			</div>";
 	}
 
 
@@ -389,6 +444,7 @@ class auth
 				{
 					return $row;
 				}
+
 			}
 		}
 		return array("authfail", "reason"=>$reason);

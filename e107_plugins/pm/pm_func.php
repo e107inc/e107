@@ -2,42 +2,34 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2014 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  *	Private messenger plugin - utility functions
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/pm/pm_func.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
-
-
-/**
- *	e107 Private messenger plugin
- *
- *	@package	e107_plugins
- *	@subpackage	pm
- *	@version 	$Id$;
  */
 
 if (!defined('e107_INIT')) { exit; }
-
-
 
 class pmbox_manager
 {
 	protected	$pmPrefs = array();
 	protected 	$pmDB;
 
-	public function __construct($prefs)
+	public function __construct($prefs='')
 	{
 		$this->pmDB = e107::getDb();
 		// $this->pmPrefs = $prefs;
 		
-		$this->pmPrefs = e107::getPlugPref('pm');
+		$this->pmPrefs = e107::pref('pm');
+	}
+
+
+	public function prefs()
+	{
+		return $this->pmPrefs;
+
 	}
 
 
@@ -72,8 +64,8 @@ class pmbox_manager
 
 		if(!isset($pm_info[$which]['total']))
 		{
-			$this->pmDB->db_Select_gen($qry);
-			$pm_info[$which] = $this->pmDB->db_Fetch();
+			$this->pmDB->gen($qry);
+			$pm_info[$which] = $this->pmDB->fetch();
 			if ($which == 'inbox' && ($this->pmPrefs['animate'] == 1 || $this->pmPrefs['popup'] == 1))
 			{
 				if($new = $this->pmDB->db_Count('private_msg', '(*)', "WHERE pm_sent > '".USERLV."' AND pm_read = 0 AND pm_to = '".USERID."' AND pm_read_del != 1"))
@@ -99,9 +91,9 @@ class pmbox_manager
 				{
 					$qry = "SELECT MAX(gen_intdata) AS inbox_limit, MAX(gen_chardata) as outbox_limit FROM `#generic` WHERE gen_type='pm_limit' AND gen_datestamp IN (".USERCLASS_LIST.")";
 				}
-				if($this->pmDB->db_Select_gen($qry))
+				if($this->pmDB->gen($qry))
 				{
-					$row = $this->pmDB->db_Fetch();
+					$row = $this->pmDB->fetch();
 					$pm_info['inbox']['limit'] =  $row['inbox_limit'];
 					$pm_info['outbox']['limit'] =  $row['outbox_limit'];
 				}

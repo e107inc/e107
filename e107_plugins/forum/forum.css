@@ -1,0 +1,39 @@
+/* Forum Styling */
+
+.forum-viewforum-pagination                             { margin:0 }
+
+#poll.tab-pane .form-group                              { margin-left: 0; margin-right:0}
+
+#forum-viewtopic                                        { margin-top: 15px }
+#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid #EEE;  padding:15px 10px }
+#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: #F5F5F5 }
+#forum-viewtopic li ul.thumbnails                       { margin-top:15px }
+#forum-viewtopic li img.user-avatar                     { margin-bottom:10px; display:inline-block }
+
+.forum-attachment-file                                  { margin-top:15px; }
+.forum-user-combo                                       { padding-bottom:5px }
+
+
+ul.newforumposts-menu                                    { padding-left: 10px; }
+ul.newforumposts-menu li                                 { margin-bottom: 15px;  }
+
+div.forum-poll-results                                  { padding-left:0 }
+.forum-viewtopic-customtitle                            {
+display: block;
+background-color: #E0E0E0;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+margin-top: -3px;
+border: 1px solid #ccc;
+padding: 5px 15px;
+text-align: center;
+    }
+
+
+/* v1.x icon fix */
+.forum-viewforum-admin-icons a                          { vertical-align:top;  width:16px; height:16px; display:inline-block; line-height:14px }
+.forum-viewforum-admin-icons input                      { vertical-align:top;  width:16px; height:16px}
+
+@media all and (min-height: 800px) {
+    #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }
+}

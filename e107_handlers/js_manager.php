@@ -43,7 +43,12 @@ class e_jsmanager
 		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
 		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"	
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
+		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
+		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
+			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+			// jQuery Once filters out all elements that had the same filter applied on them before. It can be used to
+			// ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
+			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js"
 	//		,
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
 	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
@@ -54,8 +59,25 @@ class e_jsmanager
 			)	
 			
 	);
-	
+
+	/**
+	 * Dynamic List of files to be cached.
+	 * @var array
+	 */
+	protected $_cache_list = array();
+
+
+
 	protected $_core_prefs = array();
+
+	/**
+	 * Array to store JavaScript options will be rendered in footer as JSON object.
+	 *
+	 * @var array
+	 */
+	protected $_e_js_settings = array(
+		'basePath' => e_HTTP,
+	);
 	
     /**
      * Core JS library files, loaded via e_jslib.php
@@ -128,6 +150,14 @@ class e_jsmanager
      */
     protected $_index_all = array();
 
+   /**
+     * Registered link tags files by type (core|theme|plugin|other)
+     *
+     * @var array
+     */
+	protected $_e_link = array();
+
+
     /**
      * Registered CSS files by type (core|theme|plugin|other)
      *
@@ -184,6 +214,12 @@ class e_jsmanager
 	 */
 	protected $_dependenceLoaded = array();
 
+
+	protected $_cache_enabled = false;
+
+
+	protected $_sep = '#|#';
+
 	/**
 	 * Constructor
 	 *
@@ -232,13 +268,28 @@ class e_jsmanager
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
 			$this->_libraries['jquery'] = array(
-				"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js",
-				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
-				"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
+				"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+				// jQuery Once filters out all elements that had the same filter applied on them before. It can be used
+				// to ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
+				"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
+				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js",
+				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/smoothness/jquery-ui.min.css"
+			);
+
+			//		"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
+			//	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
+			//https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css
+		}
+		
+		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true') // Test with Local JS Framework files. 
+		{
+			$this->_libraries['jquery'] = array(
+				"jquery/jquery.min.js"
 			);
 		}
 		
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
+		$this->_cache_enabled = e107::getPref('jscsscachestatus',false);
 		
 		if(vartrue($customJqueryUrls) && $this->_in_admin === false)
 		{
@@ -489,9 +540,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerFile($file_path, $zone = 5)
+	public function headerFile($file_path, $zone = 5, $pre = '', $post = '')
 	{
-		$this->addJs('header', $file_path, $zone);
+		$this->addJs('header', $file_path, $zone, $pre, $post);
 		return $this;
 	}
 
@@ -502,9 +553,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerCore($file_path, $zone = 2)
+	public function headerCore($file_path, $zone = 2, $pre = '', $post = '')
 	{
-		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone);
+		$this->headerFile('{e_WEB_JS}'.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -515,9 +566,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php)
 	 * @return e_jsmanager
 	 */
-	public function headerTheme($file_path, $zone = 5)
+	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '')
 	{
-		$this->headerFile(THEME.trim($file_path, '/'), $zone);
+		$this->headerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -529,9 +580,9 @@ class e_jsmanager
 	 * @param integer $zone 1-5 (see header.php) - REMOVED, actually we need to prevent zone change
 	 * @return e_jsmanager
 	 */
-	public function headerPlugin($plugname, $file_path)
+	public function headerPlugin($plugname, $file_path, $pre, $post)
 	{
-		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2);	// Zone 2 - after libraries
+		$this->headerFile('{e_PLUGIN}'.$plugname.'/'.trim($file_path, '/'), 2, $pre, $post);	// Zone 2 - after libraries
 		return $this;
 	}
 
@@ -562,9 +613,9 @@ class e_jsmanager
 	 * @param integer $priority 1-5 (see footer.php)
 	 * @return e_jsmanager
 	 */
-	public function footerFile($file_path, $priority = 5)
+	public function footerFile($file_path, $priority = 5, $pre = '', $post = '')
 	{
-		$this->addJs('footer', $file_path, $priority);
+		$this->addJs('footer', $file_path, $priority, $pre, $post);
 		return $this;
 	}
 
@@ -611,6 +662,18 @@ class e_jsmanager
 	public function footerInline($js_content, $priority = 5)
 	{
 		$this->addJs('footer_inline', $js_content, $priority);
+		return $this;
+	}
+
+	/**
+	 * Add JS settings to site footer
+	 *
+	 * @param array $js_settings
+	 * @return e_jsmanager
+	 */
+	public function jsSettings(array $js_settings)
+	{
+		$this->addJs('settings', $js_settings);
 		return $this;
 	}
 	
@@ -731,6 +794,62 @@ class e_jsmanager
 		}
 	}
 
+
+	/**
+	 * Add a <link> tag to the head.
+	 * @param array $attributes key>value pairs
+	 * @example addLink(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
+	 */
+	public function addLink($attributes=array())
+	{
+		if(!empty($attributes))
+		{
+			$this->_e_link[] = $attributes;
+		}
+	}
+
+
+	/**
+	 * Render all link tags. (other than css)
+	 * @return null
+	 */
+	public function renderLinks()
+	{
+
+		if(empty($this->_e_link))
+		{
+			return null;
+		}
+
+		$text = '';
+
+		foreach($this->_e_link as $v)
+		{
+			if(!empty($v['type']))
+			{
+				if($v['type'] == 'text/css' || $v['rel'] == 'stylesheet') // not for this purpose. use e107::css();
+				{
+					continue;
+				}
+			}
+
+
+			$text .= "\n<link";
+			foreach($v as $key=>$val)
+			{
+				if(!empty($val))
+				{
+					$text .= " ".$key."=\"".$val."\"";
+				}
+			}
+			$text .= " />";
+
+		}
+
+		echo $text;
+	}
+
+
 	/**
 	 * Require JS file(s). Used by corresponding public proxy methods.
 	 *
@@ -754,9 +873,7 @@ class e_jsmanager
 		// e107 Core Minimum should function independently of framework. 
 		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded  "e_js.php" (no framwork dependency) 
 		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
-		
-	
-			
+
 		if(empty($file_path))
 		{
 			return $this;
@@ -795,7 +912,7 @@ class e_jsmanager
 		// FIXME - this could break something after CSS support was added, move it to separate method(s), recursion by type!
 		// Causes the css error on jquery-ui as a css file is loaded as a js. 
 		 
-		if(is_array($file_path) )
+		if(is_array($file_path) && $type != 'settings')
 		{
 		// 	print_a($file_path);
 			foreach ($file_path as $fp => $loc)
@@ -835,25 +952,25 @@ class e_jsmanager
 		{
 			case 'core':
 				// added direct CDN support
-				$file_path = (strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/');
+				$file_path = (strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
 				$registry = &$this->_e_jslib_core;
 			break;
 
 			case 'plugin':
 				$file_path = explode(':', $file_path);
-				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/');
+				$file_path = '{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
 				$registry = &$this->_e_jslib_plugin;
 			break;
 
 			case 'theme':
-				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/');
-				echo "file-Path = ".$file_path;
+				$file_path = '{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/').$this->_sep.$pre.$this->_sep.$post;
+				//echo "file-Path = ".$file_path;
 				$registry = &$this->_e_jslib_theme;
 			break;
 
 			case 'core_css': //FIXME - core CSS should point to new e_WEB/css; add one more case - js_css -> e_WEB/jslib/
 				// added direct CDN support
-				$file_path = $runtime_location.'|'.(strpos($file_path, 'http') !== 0 ? '{e_WEB_JS}' : '').trim($file_path, '/')."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.(strpos($file_path, 'http') !== 0 && strpos($file_path, '//') !== 0 ? '{e_WEB_JS}'.trim($file_path, '/') : $file_path).$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['core'])) $this->_e_css['core'] = array();
 				$registry = &$this->_e_css['core'];
 				$runtime = true;
@@ -861,21 +978,21 @@ class e_jsmanager
 
 			case 'plugin_css':
 				$file_path = explode(':', $file_path);
-				$file_path = $runtime_location.'|{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/')."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
 			break;
 
 			case 'theme_css':
-				$file_path = $runtime_location.'|{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/')."|{$pre}|{$post}";
+				$file_path = $runtime_location.$this->_sep.'{e_THEME}'.$this->getCurrentTheme().'/'.trim($file_path, '/').$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['theme'])) $this->_e_css['theme'] = array();
 				$registry = &$this->_e_css['theme'];
 				$runtime = true;
 			break;
 
 			case 'other_css':
-				$file_path = $runtime_location.'|'.$tp->createConstants($file_path, 'mix');
+				$file_path = $runtime_location.$this->_sep.$tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
 				if(!isset($this->_e_css['other'])) $this->_e_css['other'] = array();
 				$registry = &$this->_e_css['other'];
 				$runtime = true;
@@ -889,7 +1006,7 @@ class e_jsmanager
 
 
 			case 'header':
-				$file_path = $tp->createConstants($file_path, 'mix');
+				$file_path = $tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -904,7 +1021,7 @@ class e_jsmanager
 			break;
 
 			case 'footer':
-				$file_path = $tp->createConstants($file_path, 'mix');
+				$file_path = $tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
 				$zone = intval($runtime_location);
 				if($zone > 5 || $zone < 1)
 				{
@@ -939,6 +1056,11 @@ class e_jsmanager
 				return $this;
 			break;
 
+			case 'settings':
+				$this->_e_js_settings = array_merge_recursive($this->_e_js_settings, $file_path);
+				return $this;
+			break;
+
 			default:
 				return $this;
 			break;
@@ -964,7 +1086,7 @@ class e_jsmanager
 	 * @param boolean $return
 	 * @return string JS content - only if $return is true
 	 */
-	public function renderJs($mod, $zone, $external = true, $return = false)
+	public function renderJs($mod, $zone = null, $external = true, $return = false)
 	{
 		if($return)
 		{
@@ -973,6 +1095,16 @@ class e_jsmanager
 
 		switch($mod)
 		{
+			case 'settings':
+				$tp = e107::getParser();
+				$options = $this->arrayMergeDeepArray(array($this->_e_js_settings));
+				$json = $tp->toJSON($options);
+				echo "<script>\n";
+				echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
+				echo "jQuery.extend(e107.settings, " . $json . ");\n";
+				echo "</script>\n";
+			break;
+
 			case 'framework': // CDN frameworks - rendered before consolidation script (if enabled)
 				$fw = array();
 				foreach ($this->_libraries as $lib) 
@@ -1010,7 +1142,7 @@ class e_jsmanager
 			break;
 
 			case 'header':
-				$this->renderFile(varsettrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
+				$this->renderFile(vartrue($this->_runtime_header[$zone], array()), $external, 'Header JS include - zone #'.$zone, $mod);
 				unset($this->_runtime_header[$zone]);
 			break;
 
@@ -1052,13 +1184,13 @@ class e_jsmanager
 				}
 				else
 				{
-					$this->renderFile(varsettrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
+					$this->renderFile(vartrue($this->_runtime_footer[$zone], array()), $external, 'Footer JS include - priority #'.$zone, $mod);
 					unset($this->_runtime_footer[$zone]);
 				}
 			break;
 
 			case 'header_inline':
-				$this->renderInline(varsettrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
+				$this->renderInline(vartrue($this->_runtime_header_src[$zone], array()), 'Header JS - zone #'.$zone);
 				unset($this->_runtime_header_src[$zone]);
 			break;
 
@@ -1074,7 +1206,7 @@ class e_jsmanager
 				}
 				else
 				{
-					$this->renderInline(varsettrue($this->_runtime_footer_src[$zone], array()), 'Footer JS - priority #'.$zone);
+					$this->renderInline(vartrue($this->_runtime_footer_src[$zone], array()), 'Footer JS - priority #'.$zone);
 					unset($this->_runtime_footer_src[$zone]);
 				}
 			break;
@@ -1087,6 +1219,36 @@ class e_jsmanager
 			return $ret;
 		}
 	}
+
+
+	/**
+	 * Merges multiple arrays, recursively, and returns the merged array.
+	 */
+	public function arrayMergeDeepArray($arrays) {
+		$result = array();
+
+		foreach ($arrays as $array) {
+			foreach ($array as $key => $value) {
+				// Renumber integer keys as array_merge_recursive() does. Note that PHP
+				// automatically converts array keys that are integer strings (e.g., '1')
+				// to integers.
+				if (is_integer($key)) {
+					$result[] = $value;
+				}
+				// Recurse when both values are arrays.
+				elseif (isset($result[$key]) && is_array($result[$key]) && is_array($value)) {
+					$result[$key] = $this->arrayMergeDeepArray(array($result[$key], $value));
+				}
+				// Otherwise, use the latter value, overriding any previous value.
+				else {
+					$result[$key] = $value;
+				}
+			}
+		}
+
+		return $result;
+	}
+
 
 	/**
 	 * Render JS/CSS file array
@@ -1102,9 +1264,11 @@ class e_jsmanager
 		{
 			return '';
 		}
+
+
 		$tp = e107::getParser();
 		echo "\n";
-		if($label) //TODO - print comments only if site debug is on
+		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
 		}
@@ -1116,24 +1280,35 @@ class e_jsmanager
             {
             	if('css' === $external)
 				{
-					$path = explode('|', $path, 4);
+					$path = explode($this->_sep, $path, 4);
 					$media = $path[0] ? $path[0] : 'all';
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					if(strpos($path, 'http') !== 0)
+					{
+						$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					}
 					
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
+				//	$this->cacheList['css'][] = $path;
 					continue;
 				}
 				elseif($external) //true or 'js'
 				{
-
-					if(strpos($path, 'http') === 0) continue; // not allowed
+					if(strpos($path, 'http') === 0 || strpos($path, '//') === 0) continue; // not allowed
+					
+					$path = explode($this->_sep, $path, 3);
+					$pre = varset($path[1], '');
+					if($pre) $pre .= "\n";
+					$post = varset($path[2], '');
+					if($post) $post = "\n".$post;
+					$path = $path[0];
+					
 					$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
-					echo '<script type="text/javascript" src="'.$path.'"></script>';
+					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
 					echo "\n";
 					continue;
 				}
@@ -1147,7 +1322,7 @@ class e_jsmanager
             {
             	// CDN fix, ignore URLs inside consolidation script, render as external scripts
             	$isExternal = false;
-				if(strpos($path, 'http') === 0) 
+				if(strpos($path, 'http') === 0 || strpos($path, '//') === 0)
 				{
 					if($external !== 'css') $isExternal = true;
 				}
@@ -1155,18 +1330,42 @@ class e_jsmanager
 				            	
 				if('css' === $external)
 				{
-					$path = explode('|', $path, 4);
+					$path = explode($this->_sep, $path, 4);
 					$media = $path[0];
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
-					if(strpos($path, 'http') !== 0) $path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					if(strpos($path, 'http') !== 0) // local file.
+					{
+						if($this->addCache($external,$path) === true) // if cache enabled, then skip and continue.
+						{
+							continue;
+						}
+						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+					}
 					
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
+					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
+
 					continue;
 				}
+
+				$path = explode($this->_sep, $path, 4);
+				$pre = varset($path[1], '');
+				if($pre) $pre .= "\n";
+				$post = varset($path[2], '');
+				if($post) $post = "\n".$post;
+				$inline = isset($path[3]) ? $path[3] : '';
+				if($inline) $inline = " ".$inline;
+				$path = $path[0];
+
+	            if(!$isExternal && $this->addCache('js',$path)===true)
+	            {
+		            continue;
+	            }
+
+
             	if($external)
 				{
 					// Never use CacheID on a CDN script, always render if it's CDN
@@ -1175,15 +1374,24 @@ class e_jsmanager
 						// don't render non CDN libs as external script calls when script consolidation is enabled
 						if($mod === 'core' || $mod === 'plugin' || $mod === 'theme')
 						{
+
+
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
-					echo '<script type="text/javascript" src="'.$path.'"></script>';
+
+
+
+					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
 					continue;
 				}
-				
+
+
+
+
+
 				// never try to consolidate external scripts
 				if($isExternal) continue;
 				$path = $tp->replaceConstants($path, '');
@@ -1193,7 +1401,241 @@ class e_jsmanager
             }
 		}
 
+
+
 		return $lmodified;
+	}
+
+
+
+
+	/**
+	 * @param $type string css|js
+	 * @param $path
+	 * @return bool
+	 */
+	private function addCache($type,$path)
+	{
+		if($this->_cache_enabled != true  || $this->isInAdmin() || substr($path,0,2) == '//' )
+		{
+			return false;
+		}
+
+		if(e_REQUEST_HTTP == e_ADMIN_ABS."menus.php") // disabled in menu-manager.
+		{
+			return false;
+		}
+
+
+		$localPath = e107::getParser()->replaceConstants($path);
+		$this->_cache_list[$type][] = $localPath;
+
+		return true;
+	}
+
+
+
+
+	/**
+	 * Render Cached JS or CSS file.
+	 * @param $type
+	 */
+	public function renderCached($type)
+	{
+		if($this->_cache_enabled != true || $this->isInAdmin())
+		{
+			return false;
+		}
+
+		if(!empty($this->_cache_list[$type]))
+		{
+			$content = '';
+			$cacheId = $this->getCacheFileId($this->_cache_list[$type]);
+
+			$fileName = $cacheId.".".$type;
+			$saveFilePath = e_WEB.'cache/'.$fileName;
+
+			if(!is_readable($saveFilePath))
+			{
+
+				foreach($this->_cache_list[$type] as $k=>$path)
+				{
+					$content .= "/* File: ".str_replace("../",'',$path)." */\n";
+					$content .= $this->getCacheFileContent($path, $type);
+					$content .= "\n\n";
+				}
+
+				if(!@file_put_contents($saveFilePath, $content))
+				{
+					e107::getMessage()->addDebug("Couldn't save js/css cache file: ".$saveFilePath);
+				}
+
+			}
+
+			echo "\n\n<!-- Cached ".$type." -->\n";
+
+			if($type == 'js')
+			{
+				echo "<script type='text/javascript' src='".e_WEB_ABS."cache/".$fileName."'></script>\n\n";
+			}
+			else
+			{
+				echo "<link type='text/css' href='".e_WEB_ABS."cache/".$fileName."' rel='stylesheet' property='stylesheet'  />\n\n";
+			}
+
+			// Remove from list, anything we have added.
+			foreach($this->_cache_list[$type] as $k=>$path)
+			{
+				unset($this->_cache_list[$type][$k]);
+			}
+
+
+		}
+
+
+
+	}
+
+
+	/**
+	 * Get js/css file to be cached and update url links.
+	 * @param $path string
+	 * @param $type string (js|css)
+	 * @return mixed|string
+	 */
+	private function getCacheFileContent($path, $type)
+	{
+		$content = @file_get_contents($path);
+
+		if($type == 'js')
+		{
+			return $this->compress($content, 'js');
+		}
+
+		// Correct relative paths in css files.
+		preg_match_all('/url\([\'"]?([^\'"\) ]*)[\'"]?\)/',$content, $match);
+		$newpath = array();
+
+		if(empty($match[0]))
+		{
+			return $this->compress($content, 'css');
+		}
+
+		$path = str_replace("../",'',$path);
+
+		$basePath = dirname($path)."/";
+
+		foreach($match[1] as $k=>$v)
+		{
+			if(substr($v,5) == 'data:' || substr($v,4) == 'http')
+			{
+				unset($match[0][$k]);
+				continue;
+			}
+
+			$path = $this->normalizePath($basePath.$v);
+			$dir = "url(".SITEURL.$path.")"; // relative to e_WEB_ABS."cache/";
+
+		//	print_a($dir);
+
+			$newpath[$k] = $dir;
+		}
+
+		$result = str_replace($match[0], $newpath, $content);
+
+		return $this->compress($result, 'css');
+	}
+
+
+	/**
+	 * Normalize a path.
+	 * Replacement for realpath (move to core functions?)
+	 * It will _only_ normalize the path and resolve indirections (.. and .)
+	 * Normalization includes:
+	 * - directiory separator is always /
+	 * - there is never a trailing directory separator
+	 * @param  $path
+	 * @return String
+	 */
+	private function normalizePath($path)
+	{
+	    $parts = preg_split(":[\\\/]:", $path); // split on known directory separators
+
+	    // resolve relative paths
+	    for ($i = 0; $i < count($parts); $i +=1)
+	    {
+	        if ($parts[$i] === "..")   // resolve ..
+	        {
+	            if ($i === 0)
+	            {
+	                throw new Exception("Cannot resolve path, path seems invalid: `" . $path . "`");
+	            }
+
+	            unset($parts[$i - 1]);
+	            unset($parts[$i]);
+	            $parts = array_values($parts);
+	            $i -= 2;
+	        }
+	        elseif ($parts[$i] === ".")   // resolve .
+	        {
+	            unset($parts[$i]);
+	            $parts = array_values($parts);
+	            $i -= 1;
+	        }
+
+	        if ($i > 0 && $parts[$i] === "")  // remove empty parts
+	        {
+	            unset($parts[$i]);
+	            $parts = array_values($parts);
+	        }
+	    }
+
+	    return implode("/", $parts);
+	}
+
+
+
+	/**
+	 * Minify JS/CSS for output
+	 * @param string $minify
+	 * @param string $type (js|css)
+	 * @return string
+	 */
+	private function compress($minify, $type = 'js' )
+    {
+
+        if($type == 'js')
+        {
+            return e107::minify($minify);
+        }
+
+		// css
+
+		/* remove comments */
+    	$minify = preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $minify );
+
+        /* remove tabs, spaces, newlines, etc. */
+    	$minify = str_replace( array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $minify );
+
+        return $minify;
+    }
+
+
+	/**
+	 * Generate a Cache-File ID from path list.
+	 * @param array $paths
+	 * @return string
+	 */
+	private function getCacheFileId($paths)
+	{
+		$id = '';
+		foreach($paths as $p)
+		{
+			$id .= str_replace("../","",$p);
+		}
+
+		return hash('crc32', $id) ;
+
 	}
 
 	/**
@@ -1213,10 +1655,32 @@ class e_jsmanager
 		$content_array = array_unique($content_array); //TODO quick fix, we need better control!
 		echo "\n";
 
+		$raw = array();
+
+		if($type == 'js') // support for raw html as inline code. (eg. google/bing/yahoo analytics)
+		{
+			$script = array();
+			foreach($content_array as $code)
+			{
+				$start = substr($code,0,7);
+				if($start == '<script' || $start == '<iframe')
+				{
+					$raw[] = $code;	
+				}
+				else 
+				{
+					$script[] = $code;	
+				}
+			}
+			
+			$content_array = $script;
+		}
+
+
 		switch ($type)
 		{
 			case 'js':
-				if($label) //TODO - print comments only if site debug is on
+				if($label && E107_DEBUG_LEVEL > 0) 
 				{
 					echo "<!-- [JSManager] ".$label." -->\n";
 				}
@@ -1226,14 +1690,24 @@ class e_jsmanager
 				echo "\n//]]>\n";
 				echo '</script>';
 				echo "\n";
+				
+				if(!empty($raw))
+				{
+					if($label) //TODO - print comments only if site debug is on
+					{
+						echo "\n<!-- [JSManager] (Raw) ".$label." -->\n";
+					}
+					echo implode("\n\n", $raw);	
+					echo "\n\n";
+				}
 			break;
 
 			case 'css':
-				if($label) //TODO - print comments only if site debug is on
+				if($label && E107_DEBUG_LEVEL > 0) 
 				{
 					echo "<!-- [CSSManager] ".$label." -->\n";
 				}
-				echo '<style type="text/css">';
+				echo '<style rel="stylesheet" type="text/css" property="stylesheet">';
 				echo implode("\n\n", $content_array);
 				echo '</style>';
 				echo "\n";
@@ -1282,7 +1756,7 @@ class e_jsmanager
 	public function getCurrentTheme()
 	{
 		// XXX - USERTHEME is defined only on user session init
-		return ($this->isInAdmin() ? e107::getPref('admintheme') : defsettrue('USERTHEME', e107::getPref('sitetheme')));
+		return ($this->isInAdmin() ? e107::getPref('admintheme') : deftrue('USERTHEME', e107::getPref('sitetheme')));
 	}
 
 	/**
