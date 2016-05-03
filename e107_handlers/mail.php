@@ -812,9 +812,7 @@ class e107Email extends PHPMailer
 				
 				$eml['shortcodes'] = $this->processShortcodes($eml);
 
-			//	print_a($eml);
-						
-				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
+				$emailBody = $tmpl['header']. str_replace('{BODY}', $eml['body'], $tmpl['body']) . $tmpl['footer'];
 				
 				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
 				
