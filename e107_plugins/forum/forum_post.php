@@ -666,6 +666,14 @@ class forum_post_handler
 	}
 
 
+	private function renderBreadcrumb()
+	{
+		$sc  = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
+		return  e107::getParser()->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
+
+	}
+
+
 	private function renderFormSplit()
 	{
 		if(!deftrue('MODERATOR'))
@@ -679,9 +687,8 @@ class forum_post_handler
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 
-		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
-		$text = $tp->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
 
+		$text = $this->renderBreadcrumb();
 
 
 		$text .= e107::getMessage()->setTitle("Warning!",E_MESSAGE_ERROR)->addError("This post, and every post below it will be moved into a new thread/topic.")->render();
@@ -792,11 +799,12 @@ class forum_post_handler
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 
+		$text = $this->renderBreadcrumb();
 
-		$text = "
+		$text .= "
 		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
 		<div>
-		<table class='table table-striped' style='".ADMIN_WIDTH."'>
+		<table class='table table-striped'>
 		<tr>
 		<td>".LAN_FORUM_3011.": </td>
 		<td>
@@ -882,7 +890,9 @@ class forum_post_handler
 
 		if(deftrue('BOOTSTRAP')) //v2.x
 		{
-			$text = $frm->open('forum-report-thread','post');
+			$text = $this->renderBreadcrumb();
+
+			$text .= $frm->open('forum-report-thread','post');
 			$text .= "
 							<div>
 								<div class='alert alert-block alert-warning'>
@@ -895,7 +905,7 @@ class forum_post_handler
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
-								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge'))."
+								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge', 'placeholder'=>LAN_FORUM_2038))."
 									</div>
 								</div>
 								<div class='form-group'>

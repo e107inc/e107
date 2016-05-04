@@ -507,7 +507,7 @@ class e107forum
 	{
 		if($tmp = e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->retrieve('forum_perms'))
 		{
-			e107::getMessage()->addDebug("Using Permlist cache: True");
+			e107::getDebug()->log("Using Permlist cache: True");
 
 			$this->permList = e107::unserialize($tmp);
 
@@ -516,7 +516,7 @@ class e107forum
 		}
 		else
 		{
-			e107::getMessage()->addDebug("Using Permlist cache: False");
+			e107::getDebug()->log("Using Permlist cache: False");
 			$this->_getForumPermList();
 			$tmp = e107::serialize($this->permList, false);
 			e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', $tmp);
