@@ -184,13 +184,13 @@ if(!$srchIcon = $tp->toGlyph('fa-search'))
 $fVars->SEARCH = "
 <form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 <div class='input-group'>
+<input type='hidden' name='r' value='0' />
+<input type='hidden' name='t' value='forum' />
+<input type='hidden' name='forum' value='all' />
 <input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
 <span class='input-group-btn'>
 <button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
 </span>
-<input type='hidden' name='r' value='0' />
-<input type='hidden' name='t' value='forum' />
-<input type='hidden' name='forum' value='all' />
 </div>
 
 </form>\n";
