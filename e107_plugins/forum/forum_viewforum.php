@@ -883,6 +883,7 @@ function fadminoptions($thread_info)
 	//FIXME - not fully working. 
 
 	$moveUrl        = e107::url('forum','move', $thread_info);
+	$splitUrl        = e107::url('forum','split', $thread_info);
 
 	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
 	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
@@ -903,6 +904,12 @@ function fadminoptions($thread_info)
 	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
 	
 	$text .= "<li class='text-right'><a href='{$moveUrl}'>Move ".$tp->toGlyph('move')."</i></a></li>";
+
+	if(e_DEVELOPER)
+	{
+//		$text .= "<li class='text-right'><a href='{$splitUrl}'>Split ".$tp->toGlyph('scissors')."</i></a></li>";
+//		print_a($thread_info);
+	}
 
 /*
 	$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";

@@ -219,6 +219,7 @@ define("LAN_FORUM_3038", "Normal"); // LAN_1
 define("LAN_FORUM_3039", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
 define("LAN_FORUM_3040", "Enable/disable email tracking (email sent when reply is posted)"); // LAN_380
 define("LAN_FORUM_3041", "Enable/disable tracking of this topic");
+define("LAN_FORUM_3042", "New Topic/Subject");
 // missing 41-21
 
 // forum_posted_template
@@ -229,7 +230,9 @@ define("LAN_FORUM_3046", "Click here to view your poll"); // LAN_414
 define("LAN_FORUM_3047", "Your message has been successfully posted."); // LAN_324
 define("LAN_FORUM_3048", "Click here to view your message"); // LAN_325
 define("LAN_FORUM_3049", "Your reply has been successfully posted."); // LAN_415
-
+define("LAN_FORUM_3050", "Split point");
+define("LAN_FORUM_3051", "New location");
+define("LAN_FORUM_3052", "Split Thread");
 
 
 // forum_icons_template
