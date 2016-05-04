@@ -134,7 +134,8 @@ define("LAN_FORUM_1018", "New topic");
 // define("LAN_FORUM_1019", "Are you sure?"); // new
 define("LAN_FORUM_1020", "Modify");
 define("LAN_FORUM_1021", "No Replies");
-
+define("LAN_FORUM_1022", "Status Keys");
+define("LAN_FORUM_1023", "Viewable by");
 
 // starting at LAN_FORUM_2xxx => forum_viewtopic.php
 define("LAN_FORUM_2001", "Previous topic"); // LAN_389 
