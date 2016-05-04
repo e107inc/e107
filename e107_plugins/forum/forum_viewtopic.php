@@ -452,14 +452,18 @@ $i = $thread->page;
 
 $sc = e107::getScBatch('view', 'forum');
 
-foreach ($postList as $postInfo)
+
+
+foreach ($postList as $c => $postInfo)
 {
 	if($postInfo['post_options'])
 	{
 		$postInfo['post_options'] = unserialize($postInfo['post_options']);
 	}
 	$loop_uid = (int)$postInfo['post_user'];
+
 	$tnum = $i;
+
 	$i++;
 
 	//TODO: Look into fixing this, to limit to a single query per pageload
@@ -467,9 +471,24 @@ foreach ($postList as $postInfo)
 	$e_hide_query = "SELECT post_id FROM `#forum_post` WHERE (`post_thread` = {$threadId} AND post_user= " . USERID . ' LIMIT 1';
 	$e_hide_hidden = LAN_FORUM_2008;
 	$e_hide_allowed = USER;
-	
-	if ($tnum > 1)
+
+
+	$sc->wrapper('forum_viewtopic/replies'); // default.
+
+	if($thread->page ==1 && $c == 0)
 	{
+		$postInfo['thread_start'] = true;
+		$sc->setScVar('postInfo', $postInfo);
+		$sc->setVars($postInfo); // compatibility
+		$sc->wrapper('forum_viewtopic/thread');
+
+	//	$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo)->wrapper('forum/viewtopic');
+		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, $sc) . "\n";
+
+	}
+	else
+	{
+
 		$postInfo['thread_start'] = false;
 		$alt = !$alt;
 
@@ -486,19 +505,14 @@ foreach ($postList as $postInfo)
 			$_style = (isset($FORUMREPLYSTYLE_ALT) && $alt ? $FORUMREPLYSTYLE_ALT : $FORUMREPLYSTYLE);
 			$sc->wrapper('forum_viewtopic/replies');
 		}
-		
+
 	//	$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo)->wrapper('forum/viewtopic');
 		$forrep .= $tp->parseTemplate($_style, true, $sc) . "\n";
+
 	}
-	else
-	{
-		$postInfo['thread_start'] = true;
-		$sc->setScVar('postInfo', $postInfo);
-		$sc->setVars($postInfo); // compatibility
-		$sc->wrapper('forum_viewtopic/thread');
-	//	$forum_shortcodes = e107::getScBatch('view', 'forum')->setScVar('postInfo', $postInfo)->wrapper('forum/viewtopic');
-		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, true, vartrue($sc)) . "\n";
-	}
+
+
+
 }
 unset($loop_uid);
 
