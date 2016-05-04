@@ -813,6 +813,14 @@ class e_parse_shortcode
 		{
 			$this->addedCodes = &$extraCodes;
 
+			if(isset($extraCodes['_WRAPPER_']))
+			{
+				$tmpWrap = e107::templateWrapper($extraCodes['_WRAPPER_']);
+				$this->wrappers = array_merge($this->wrappers,$tmpWrap);
+				$this->wrapper = $extraCodes['_WRAPPER_'];
+				unset($extraCodes['_WRAPPER_']);
+			}
+
 			/*
 			foreach ($extraCodes as $sc => $code)
 			{
@@ -1177,7 +1185,13 @@ class e_parse_shortcode
 		{
 			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',$this->wrapper,3);
 
-			$wrapActive = strtoupper($wrapTmpl)."_WRAPPER['".$wrapID1."']";
+			$wrapActive = strtoupper($wrapTmpl)."_WRAPPER";
+
+			if(!empty($wrapID1))
+			{
+				$wrapActive .= "['".$wrapID1."']";
+			}
+
 			if(!empty($wrapID2))
 			{
 				$wrapActive .= "['".$wrapID2."']";
