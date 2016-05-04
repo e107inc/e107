@@ -825,12 +825,18 @@ class e107forum
 
 		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
-
-			$postInfo['post_thread'] = $newThreadId;
-
-			if(!$newPostId = $this->postAdd($postInfo, false))
+			if($postInfo !== false)
 			{
-				e107::getMessage()->addDebug("There was a problem: ".print_a($postInfo,true));
+				$postInfo['post_thread'] = $newThreadId;
+
+				if(!$newPostId = $this->postAdd($postInfo, false))
+				{
+					e107::getMessage()->addDebug("There was a problem: ".print_a($postInfo,true));
+				}
+			}
+			else
+			{
+				$newPostId = 0;
 			}
 
 			$this->threadMarkAsRead($newThreadId);
@@ -1020,7 +1026,8 @@ class e107forum
 				LIMIT {$start}, {$num}
 			";
 		}
-		if($sql->gen($qry))
+
+		if($sql->gen($qry)!==false)
 		{
 			$ret = array();
 			while($row = $sql->fetch())
@@ -1269,7 +1276,9 @@ class e107forum
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		$sql2 = new db;
+		$sql2 = e107::getDb('sql2');
+
+
 		if ($type == 'thread')
 		{
 			$id = (int)$id;
@@ -1285,15 +1294,20 @@ class e107forum
 				$tmp['thread_lastuser'] = 0;
 				$tmp['thread_lastuser_anon'] = ($lpInfo['post_user_anon'] ? $lpInfo['post_user_anon'] : 'Anonymous');
 			}
+
 			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
 			$info = array();
 			$info['data'] = $tmp;
 //			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 			$info['WHERE'] = 'thread_id = '.$id;
+
 			$sql->update('forum_thread', $info);
 
 			return $lpInfo;
 		}
+
+
+
 		if ($type == 'forum')
 		{
 			if ($id == 'all')
@@ -2030,6 +2044,22 @@ class e107forum
 			}
 		}
 	}
+
+
+	/**
+	 * @param $threadID
+	 * @return int
+	 */
+	function threadUpdateCounts($threadID)
+	{
+		$sql = e107::getDb();
+
+		$replies = $sql->count('forum_post', '(*)', 'WHERE post_thread='.$threadID);
+
+		return $sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id=".$threadID);
+
+	}
+
 
 
 
