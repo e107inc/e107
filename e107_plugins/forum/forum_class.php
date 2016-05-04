@@ -814,7 +814,7 @@ class e107forum
 
 	function threadAdd($threadInfo, $postInfo)
 	{
-		$e107 = e107::getInstance();
+
 		$info = array();
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 
@@ -1059,14 +1059,15 @@ class e107forum
 	}
 
 	/**
-	* Checks if post is the initial post which started the topic. 
-	* Retrieves list of post_id's belonging to one post_thread. When lowest value is equal to input param, return true. 
-	* Used to prevent deleting of the initial post (so topic shows empty does not get hidden accidently while posts remain in database)
-    *
-	* @param int id of the post
-	* @return boolean true if post is the initial post of the topic (false, if not) 
-    *
-	*/
+	 * Checks if post is the initial post which started the topic.
+	 * Retrieves list of post_id's belonging to one post_thread. When lowest value is equal to input param, return true.
+	 * Used to prevent deleting of the initial post (so topic shows empty does not get hidden accidently while posts remain in database)
+	 *
+	 * @param $postId
+	 * @return bool true if post is the initial post of the topic (false, if not)
+	 *
+	 * @internal param int $postid
+	 */
 	function threadDetermineInitialPost($postId)
 	{
 		$sql = e107::getDb();
@@ -1089,6 +1090,8 @@ class e107forum
 		}
 		return false;
 	}
+
+
 
 	function threadGetUserPostcount($threadId)
 	{

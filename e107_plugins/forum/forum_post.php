@@ -675,7 +675,7 @@ class forum_post_handler
 
 
 		$frm = e107::getForm();
-		$sql = e107::getDb();
+
 		$tp = e107::getParser();
 		$ns = e107::getRender();
 
@@ -1308,7 +1308,7 @@ class forum_post_handler
 
 
 
-	function splitThread($post)
+	private function splitThread($post)
 	{
 		if(!deftrue('MODERATOR'))
 		{
@@ -1325,11 +1325,19 @@ class forum_post_handler
 		$threadInfo['thread_user']       = $this->data['post_user'];
 
 
-		print_a($this->data);
+	//	print_a($this->data);
 
 		if($ret = $this->forumObj->threadAdd($threadInfo, false))
 		{
-			e107::getMessage()->addSuccess("Created new thread #".$ret['threadid']);
+
+			$urlInfo = $threadInfo;
+			$urlInfo['thread_sef'] = $ret['threadsef'];
+			$urlInfo['thread_id'] = $ret['threadid'];
+			$urlInfo['forum_sef'] = $this->forumObj->getForumSef($threadInfo);
+
+			$newUrl = e107::url('forum','topic', $urlInfo);
+
+			e107::getMessage()->addSuccess("Created new thread <a class='alert-link' href='".$newUrl."'>#".$ret['threadid']."</a>");
 			$update = array(
 				'post_thread' => $ret['threadid'],
 				'post_forum'  => $threadInfo['thread_forum_id'],
@@ -1372,6 +1380,13 @@ class forum_post_handler
 			}
 
 		}
+
+		$sc   = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
+		$text = e107::getParser()->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
+		$text .= e107::getMessage()->render();
+
+
+		e107::getRender()->tablerender(LAN_FORUM_3052, $text);
 	}
 
 
