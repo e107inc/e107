@@ -370,7 +370,7 @@ if(!empty($viewable))
 	$fVars->VIEWABLE_BY = "
 
 						<div class='panel panel-default' style='margin-top:10px'>
-							<div class='panel-heading'>Viewable by</div>
+							<div class='panel-heading'>".LAN_FORUM_1023."</div>
 								<div class='panel-body'>
 									".$viewable."
 								</div>

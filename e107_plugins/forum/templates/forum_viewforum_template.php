@@ -353,7 +353,7 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 
 												<div>
 													<div class='panel panel-default' style='margin-top:50px'>
-													<div class='panel-heading'>Status Keys</div>
+													<div class='panel-heading'>".LAN_FORUM_1022."</div>
 													<div class='panel-body'>
 													{ICONKEY}
 
