@@ -37,3 +37,6 @@ text-align: center;
 @media all and (min-height: 800px) {
     #forum, #forum-stats, #forum-rules                  { min-height: 500px;  }
 }
+
+.forum-perms                                             { text-align: center; padding:10px }
+.forum-perms-separator:before                            { margin:0 10px; content: '·' }

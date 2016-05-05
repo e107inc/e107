@@ -365,7 +365,7 @@ if($users = $forum->getForumClassMembers($forumId))
 	}
 	elseif($users == 0)
 	{
-		$viewable = '';
+		$viewable = '' ;
 	}
 	else
 	{
@@ -427,7 +427,8 @@ $fVars->SEARCH = "
 	}
 
 
-	$fVars->PERMS = implode(' - '.$permDisplay);
+	$fVars->PERMS = implode("<span class='forum-perms-separator'><!-- --></span>", $permDisplay);
+
 
 
 	// -------------------------------
@@ -518,7 +519,6 @@ if($container_only)
 
 $forum_view_start = $tp->simpleParse($FORUM_VIEW_START, $fVars);
 $forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
-
 
 
 
