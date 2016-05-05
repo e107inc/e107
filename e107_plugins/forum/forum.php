@@ -411,7 +411,7 @@ function parse_forum($f, $restricted_string = '')
 	//$url= $e107->url->create('forum/forum/view', $f);
 	$url = e107::url('forum', 'forum', $f);
 	$fVars->FORUMNAME = "<a href='".$url."'>{$f['forum_name']}</a>";
-	$fVars->FORUMDESCRIPTION = e107::getParser()->toHTML($f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : ""), TRUE, "TITLE");
+	$fVars->FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? e107::getParser()->toHTML("<br /><span class='smalltext'><i>$restricted_string</i></span>", TRUE, "TITLE") : "");
 	$fVars->THREADS = $f['forum_threads'];
 	$fVars->REPLIES = $f['forum_replies'];
 	$fVars->FORUMSUBFORUMS = '';
