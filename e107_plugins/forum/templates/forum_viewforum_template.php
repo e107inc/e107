@@ -359,6 +359,8 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 													</div>
 													</div>
 												</div>
+												<div class='forum-perms'>{PERMS}</div>
+
 												{VIEWABLE_BY}
 
 												";
