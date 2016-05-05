@@ -405,7 +405,7 @@ function parse_forum($f, $restricted_string = '')
 		$f['forum_name'] = substr($f['forum_name'], 1);
 	}
 	$f['forum_name'] = $tp->toHTML($f['forum_name'], true, 'no_hook');
-	$f['forum_description'] = $tp->toHTML($f['forum_description'], TRUE, "TITLE");
+	$f['forum_description'] = $tp->toHTML($f['forum_description'], TRUE, "BODY");
 
 
 	//$url= $e107->url->create('forum/forum/view', $f);
