@@ -31,6 +31,6 @@ if(deftrue('SOCIAL_FACEBOOK_INIT') )
 
 }elseif(ADMIN)
 {
-	$text = "<div class='alert alert-danger'>Unable to display feed. Facebook App ID has not been defined in preferences.</div>";
+	$text = "<div class='alert alert-danger'>".LAN_SOC_FB_UNABLE."</div>";
 	e107::getRender()->tablerender('Facebook',$text,'twitter-menu');
 }
