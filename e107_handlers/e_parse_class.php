@@ -4650,7 +4650,7 @@ class e_emotefilter
 
 			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
 			// Next two probably to sort out legacy issues - may not be required any more
-		//	$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
+			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 
 			  $key = str_replace("!", "_", $key);
 
@@ -4666,7 +4666,7 @@ class e_emotefilter
 					foreach($tmp as $code)
 					{
 						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  />";
-			    	    $this->regSearch[]  = "/(^|[\s>])(".quotemeta($code).")($|[\s<])/";
+			    	    $this->regSearch[]  = "#(^|[\s>])(".$this->buildRegex($code).")($|[\s<])#";
 				        $this->regReplace[] ="$1".$img."$3";
 				        $this->search[]     = $code;
 				        $this->replace[]    = $img;
@@ -4708,7 +4708,17 @@ class e_emotefilter
 
 		}
 
+	//	print_a($this->regSearch);
+	//	print_a($this->regReplace);
 
+	}
+
+	function buildRegex($code)
+	{
+
+		$code = quotemeta($code);
+		$code = str_replace('|','\|',$code);
+		return $code;
 	}
 
 
