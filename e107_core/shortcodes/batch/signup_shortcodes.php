@@ -77,7 +77,7 @@ class signup_shortcodes extends e_shortcode
 				if($v['enabled'] == 1)
 				{
 					
-				//		$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='".$tp->lanVars(LAN_XUP_REG, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
+				//		$text .= "<a href='".e107::getUrl()->create('system/xup/login?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'><img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' /></a>";		
 				
 					$ic = strtolower($p);
 					

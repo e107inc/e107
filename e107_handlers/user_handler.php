@@ -1026,7 +1026,7 @@ class e_user_provider
 				e107::getRedirect()->redirect($redirectUrl);
 			}
 			return false;
-		//	throw new Exception( LAN_XUP_ERRM_04 , 1); // plug soc
+		//	throw new Exception( "Signup failed! User already signed in. ", 1);
 		}
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
@@ -1090,13 +1090,13 @@ class e_user_provider
 				}
 				
 				return false;
-				// throw new Exception( LAN_XUP_ERRM_05, 3); //plug soc
+				// throw new Exception( "Signup failed! User already exists. Please use 'login' instead.", 3);
 			}
 			
 			if(empty($userdata['user_email']) && e107::getPref('disable_emailcheck', 0)==0) // Allow it if set-up that way. 
 			{
 				// Twitter will not provide email addresses.
-			//	throw new Exception( LAN_XUP_ERRM_06.print_a($userdata,true), 4); // plug soc
+			//	throw new Exception( "Signup failed! Can't access user email - registration without an email is impossible.".print_a($userdata,true), 4);
 			}
 			
 			// other fields
