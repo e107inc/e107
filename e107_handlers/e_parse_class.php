@@ -4619,7 +4619,7 @@ class e_emotefilter
 {
 	private $search;
 	private $replace;
-	private $emotes;
+	public $emotes;
 	 
 	function __construct()
 	{		
@@ -4713,7 +4713,7 @@ class e_emotefilter
 
 	}
 
-	function buildRegex($code)
+	private function buildRegex($code)
 	{
 
 		$code = quotemeta($code);
