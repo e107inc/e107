@@ -79,5 +79,5 @@ define("ADLAN_PM_83", "Users may only send messages to users in this class");
 define("ADLAN_PM_84", "Maximum message length");
 define("ADLAN_PM_85", "0 = unlimited");
 
-
-?>
+define("ADLAN_PM_86", "VIP Class");
+define("ADLAN_PM_87", "Users in this class can only receive messages from others in this class. Overrides the above preference.");
