@@ -4615,12 +4615,13 @@ return $html;
 
 
 
-class e_emotefilter {
-	var $search;
-	var $replace;
-	var $emotes;
+class e_emotefilter
+{
+	private $search;
+	private $replace;
+	private $emotes;
 	 
-	function __construct() /* constructor */
+	function __construct()
 	{		
 		$pref = e107::getPref();
 		
@@ -4633,28 +4634,46 @@ class e_emotefilter {
 
 		$this->emotes = e107::getConfig("emote")->getPref();
 
-		if(!vartrue($this->emotes))
+		if(empty($this->emotes))
 		{
 			return;
 		}
 
 		foreach($this->emotes as $key => $value)
 		{
+
 		  $value = trim($value);
 
 		  if ($value)
 		  {	// Only 'activate' emote if there's a substitution string set
+
+
 			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
 			// Next two probably to sort out legacy issues - may not be required any more
-			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
-			$key = str_replace("!", "_", $key);
+		//	$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
+
+			  $key = str_replace("!", "_", $key);
 
 			  $filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
 			  
 			  $fileloc = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
 
+			  $alt = str_replace(array('.png','.gif', '.jpg'),'', $key);
+
 			  if(file_exists($filename))
 			  {
+			        $tmp = explode(" ", $value);
+					foreach($tmp as $code)
+					{
+						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  />";
+			    	    $this->regSearch[]  = "/(^|[\s>])(".quotemeta($code).")($|[\s<])/";
+				        $this->regReplace[] ="$1".$img."$3";
+				        $this->search[]     = $code;
+				        $this->replace[]    = $img;
+					}
+
+
+			  /*
 				if(strstr($value, " "))
 				{
 					$tmp = explode(" ", $value);
@@ -4662,9 +4681,9 @@ class e_emotefilter {
 					{
 						$this->search[] = " ".$code;
 						$this->search[] = "\n".$code;
-						//TODO CSS class?
-						$this->replace[] = " <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
-						$this->replace[] = "\n <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+
+						$this->replace[] = " <img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  /> ";
+						$this->replace[] = "\n <img class='e-emoticon' src='".$fileloc."'alt=\"".$alt."\"   /> ";
 					}
 					unset($tmp);
 				}
@@ -4674,32 +4693,36 @@ class e_emotefilter {
 					{
 						$this->search[] = " ".$value;
 						$this->search[] = "\n".$value;
-						//TODO CSS class?
-						$this->replace[] = " <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
-						$this->replace[] = "\n <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+
+						$this->replace[] = " <img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"   /> ";
+						$this->replace[] = "\n <img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"   /> ";
 					}
-				}
+				}*/
 			  }
 		  }
 		  else
 		  {
 			unset($this->emotes[$key]);
 		  }
+
+
 		}
+
+
 	}
 
 
 	function filterEmotes($text)
-	{	 
-		$text = str_replace($this->search, $this->replace, $text);
-		return $text;
+	{
+		return preg_replace($this->regSearch,$this->regReplace,$text);
+		//$text = str_replace($this->search, $this->replace, $text);
+		//return $text;
 	}
 
 	 
 	function filterEmotesRev($text)
 	{
-		$text = str_replace($this->replace, $this->search, $text);
-		return $text;
+		return str_replace($this->replace, $this->search, $text);
 	}
 }
 

@@ -322,3 +322,6 @@ optgroup.level-5 { padding-left:4em }
 .online-menu-extended ul { padding-bottom:20px}
 .online-menu-extended span.online-menu-user { display:block; font-size:1.1em;margin-top:4px; line-height:1}
 .online-menu-extended-label { font-size:1.2em; }
+
+/* Emoticons */
+img.e-emoticon { vertical-align:middle; border:0; width:24px }
