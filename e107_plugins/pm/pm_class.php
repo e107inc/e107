@@ -676,6 +676,15 @@ class private_message
 			return false;
 		}
 
+		if(!empty($this->pmPrefs['vip_class']))
+		{
+			if(check_class($this->pmPrefs['vip_class'],null,$uid) && !check_class($this->pmPrefs['vip_class']))
+			{
+				return false;
+			}
+
+		}
+
 		$user = e107::user($uid);
 
 		$uclass = explode(",", $user['user_class']);
