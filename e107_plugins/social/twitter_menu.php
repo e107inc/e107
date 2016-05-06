@@ -30,14 +30,14 @@ if(deftrue('XURL_TWITTER'))
 
 
 
-	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">Tweets by @'.$screenName.'</a>';
+	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">'.LAN_SOC_TWIT_BY.'@'.$screenName.'</a>';
 
 
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');
 
 }elseif(ADMIN)
 {
-	$text = "<div class='alert alert-danger'>Unable to display feed. Twitter URL has not been defined in preferences.</div>";
+	$text = "<div class='alert alert-danger'>". LAN_SOC_TWIT_UNABLE."</div>";
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');
 
 }
