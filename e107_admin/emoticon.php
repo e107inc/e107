@@ -664,8 +664,15 @@ class emotec
 		{
 		   	foreach ($pack_local as $p => $d)
 			{
-		    	$mes->addInfo(EMOLAN_34.":".$p.EMOLAN_35);
-		  		$sql->db_Delete("core","`e107_name` = 'emote_{$p}'");
+				if($p == '0')
+				{
+					$p = '';
+				}
+
+		  		if($sql->delete("core","`e107_name` = 'emote_{$p}'"))
+			    {
+			        $mes->addInfo(EMOLAN_34.":".$p.EMOLAN_35);
+			    }
 			}
 		}
 
