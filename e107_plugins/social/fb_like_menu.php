@@ -9,7 +9,7 @@
 */
 
 //@see https://developers.facebook.com/docs/plugins/like-button
-
+e107::lan('social','menu',true);
 if(deftrue('SOCIAL_FACEBOOK_INIT') )
 {
 	e107::js('footer-inline', SOCIAL_FACEBOOK_INIT); // defined in e_header.php
@@ -31,6 +31,6 @@ if(deftrue('SOCIAL_FACEBOOK_INIT') )
 
 }elseif(ADMIN)
 {
-	$text = "<div class='alert alert-danger'>Unable to display feed. Facebook App ID has not been defined in preferences.</div>";
+	$text = "<div class='alert alert-danger'>".LAN_SOC_FB_UNABLE."</div>";
 	e107::getRender()->tablerender('Facebook',$text,'twitter-menu');
 }

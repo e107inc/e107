@@ -3,7 +3,7 @@
 	<category>settings</category>
     <author name="e107 Inc." email="devs@e107.org" />
     <summary lan="">Adds Facebook, Twitter and other social media widgets to e107.</summary>
-    <description lan="">Adds options to replace the e107 comment engine with Facebook. Add Twitter feeds to your site. etc.</description>
+    <description lan="LAN_PLUG_SOCIAL_DESCR">Adds options to replace the e107 comment engine with Facebook. Add Twitter feeds to your site. etc.</description>
     <keywords>
         <word>facebook</word>
         <word>twitter</word>
