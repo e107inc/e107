@@ -1499,13 +1499,20 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 */
 	public function compile(&$inArray, &$outArray, $pid = 0) 
 	{
-	    if(!is_array($inArray) || !is_array($outArray)){ return; }
+	    if(!is_array($inArray) || !is_array($outArray)){ return null; }
+
+	    $frm = e107::getForm();
 		
 	    foreach($inArray as $key => $val) 
 	    {
 	        if($val['link_parent'] == $pid) 
 	        {
 	            $val['link_sub'] = $this->isDynamic($val);
+
+	            if(empty($val['link_identifier']) && !empty($val['link_function']))
+	            {
+	                $val['link_identifier'] = $frm->name2id($val['link_function']);
+	            }
 				// prevent loop of death
 	            if( $val['link_id'] != $pid) $this->compile($inArray, $val['link_sub'], $val['link_id']);
 	            $outArray[] = $val;   
@@ -1829,13 +1836,23 @@ class navigation_shortcodes extends e_shortcode
 	 */	
 	function sc_link_sub($parm='')
 	{
-		if(!varset($this->var['link_sub']))
+		if(empty($this->var['link_sub']))
 		{
-			return;	
-		}	
+			return false;
+		}
+
+		if(is_string($this->var['link_sub'])) // html override option.
+		{
+
+			e107::getDebug()->log($this->var);
+
+			return $this->var['link_sub'];
+		}
+
+		// Assume it's an array.
 		
 		$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_start']), true, $this);
-			
+
 		foreach($this->var['link_sub'] as $val)
 		{
 			$active	= (e107::getNav()->isActive($val, $this->activeSubFound, true)) ? "_active" : "";
