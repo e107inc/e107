@@ -16,7 +16,7 @@
 */
 
 if (!defined('e107_INIT')) { exit; }
-/*if(!e107::isInstalled('gsitemap'))
+/*if(!e107::isInstalled('_blank'))
 { 
 	return;
 }*/
@@ -78,20 +78,20 @@ class _blank_sitelink // include plugin-folder in the name.
 		$tp = e107::getParser();
 		$sublinks = array();
 		
-		$sql->select("_blank_info","*","faq_info_id != '' ORDER BY faq_info_order");
+		$sql->select("blank","*","blank_id != '' ");
 		
 		while($row = $sql->fetch())
 		{
 			$sublinks[] = array(
-				'link_name'			=> $tp->toHtml($row['faq_info_title'],'','TITLE'),
-				'link_url'			=> e107::url('_blank', 'category', $row),
-				'link_description'	=> $row['faq_info_about'],
-				'link_button'		=> $row['faq_info_icon'],
+				'link_name'			=> $tp->toHtml($row['blank_name'],'','TITLE'),
+				'link_url'			=> e107::url('_blank', 'other', $row),
+				'link_description'	=> '',
+				'link_button'		=> $row['blank_icon'],
 				'link_category'		=> '',
 				'link_order'		=> '',
 				'link_parent'		=> '',
 				'link_open'			=> '',
-				'link_class'		=> intval($row['faq_info_class'])
+				'link_class'		=> e_UC_PUBLIC
 			);
 		}
 		
