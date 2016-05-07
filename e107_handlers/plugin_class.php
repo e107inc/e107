@@ -3171,6 +3171,8 @@ class e107plugin
 	{
 		$tp = e107::getParser();
 
+		$PLUGINS_FOLDER = '{e_PLUGIN}'; // Could be used in plugin.php file.
+
 		$eplug_conffile     = null;
 		$eplug_table_names  = null;
 		$eplug_prefs        = null;
