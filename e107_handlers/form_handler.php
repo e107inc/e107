@@ -1549,7 +1549,7 @@ class e_form
 		}
 		elseif(!vartrue($options['noresize']))
 		{
-			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox col-md-7 span7 e-autoheight';
+			$options['class'] = (isset($options['class']) && $options['class']) ? $options['class'].' e-autoheight' : 'tbox col-md-7 span7 e-autoheight form-control';
 		}
 
 		$options = $this->format_options('textarea', $name, $options);
@@ -2424,7 +2424,7 @@ class e_form
 			break;
 
 			case 'delete':
-				$icon = "e-delete-32";
+				$icon = (e_ADMIN_AREA === true) ? "e-delete-32" : 'fa-trash.glyph';
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
@@ -3516,7 +3516,7 @@ class e_form
 						$query = http_build_query($query);
 
 						$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
-						".ADMIN_EDIT_ICON."</a>";
+						".deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'))."</a>";
 					}
 
 					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
@@ -4811,6 +4811,9 @@ class e_form
 			//	$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
 			break;
 
+
+
+
 			case 'bool':
 			case 'boolean':
 
@@ -5045,8 +5048,8 @@ class e_form
 	 * 		'id'  => 'myplugin',
 	 * 		'url' => '{e_PLUGIN}myplug/admin_config.php', //if not set, e_SELF is used
 	 * 		'query' => 'mode=main&amp;action=edit&id=1', //or e_QUERY if not set
-	 * 		'tabs' => true, // TODO - NOT IMPLEMENTED YET - enable tabs (only if fieldset count is > 1) //XXX Multiple triggers in a single form?
-	 * 		'fieldsets' => array(
+	 * 		'tabs' => true, 	 *
+	 *      'fieldsets' => array(
 	 * 			'general' => array(
 	 * 				'legend' => 'Fieldset Legend',
 	 * 				'fields' => array(...), //see e_admin_ui::$fields
@@ -5079,6 +5082,12 @@ class e_form
 		foreach ($forms as $fid => $form)
 		{
 			$model = $models[$fid];
+
+			if(!is_object($model))
+			{
+				e107::getDebug()->log("No model object found with key ".$fid);
+			}
+
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
 			$curTab = varset($_GET['tab'],0);
@@ -5147,7 +5156,7 @@ class e_form
 	 *
 	 * @param string $id field id
 	 * @param array $fdata fieldset data
-	 * @param e_admin_model $model
+	 * @param object $model
 	 * @return string
 	 */
 	function renderCreateFieldset($id, $fdata, $model, $tab=0)
@@ -5169,7 +5178,6 @@ class e_form
 		$model_required = $model->getValidationRules();
 		$required_help = false;
 		$hidden_fields = array();
-
 
 		foreach($fdata['fields'] as $key => $att)
 		{
