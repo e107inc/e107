@@ -4620,6 +4620,8 @@ class e_emotefilter
 	private $search;
 	private $replace;
 	public $emotes;
+	private $singleSearch;
+	private $singleReplace;
 	 
 	function __construct()
 	{		
@@ -4666,8 +4668,6 @@ class e_emotefilter
 					foreach($tmp as $code)
 					{
 						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  />";
-			    	//    $this->regSearch[]  = "#(^|[\s>])(".$this->buildRegex($code).")($|[\s<])#";
-				    //    $this->regReplace[] ="$1".$img."$3";
 
 				        $this->search[]     = "\n".$code;
 				        $this->replace[]    = "\n".$img;
@@ -4678,8 +4678,9 @@ class e_emotefilter
 				        $this->search[]     = ">".$code; // Fix for emote within html.
 				        $this->replace[]    = ">".$img;
 
-					//	$this->search[]     = $code."<"; // Fix for emote within html.
-				    //    $this->replace[]    = $img."<";
+				        $this->singleSearch[] = $code;
+				        $this->singleReplace[] = $img;
+
 					}
 
 
@@ -4723,19 +4724,22 @@ class e_emotefilter
 
 	}
 
-	private function buildRegex($code)
-	{
-
-		$code = quotemeta($code);
-		$code = str_replace('|','\|',$code);
-		return $code;
-	}
-
 
 	function filterEmotes($text)
 	{
-	//	return preg_replace($this->regSearch,$this->regReplace,$text);
+
+		if(empty($text))
+		{
+			return '';
+		}
+
+		if((strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
+		{
+			return str_replace($this->singleSearch,$this->singleReplace,$text);
+		}
+
 		return str_replace($this->search, $this->replace, $text);
+
 	}
 
 	 

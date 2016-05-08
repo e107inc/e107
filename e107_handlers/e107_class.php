@@ -4376,7 +4376,8 @@ class e107
 		if(null === self::$_instance) return;
 		
 		$print = defined('E107_DBG_TIMEDETAILS') && E107_DBG_TIMEDETAILS;
-		!$print || print('Destructing $e107: <br />');
+
+		!$print || print('<table class="table table-striped table-condensed"><tr><td colspan="3"><b>Destructing $e107</b></td></tr>');
 		$vars = get_object_vars($this);
 		foreach ($vars as $name => $value) 
 		{
@@ -4384,10 +4385,10 @@ class e107
 			{
 				if(method_exists($value, '__destruct'))
 				{
-					!$print || print('object [property] using __destruct(): '.$path.' - '.get_class($value).'<br />');
+					!$print || print('<tr><td>object [property] using __destruct()</td><td>'.$name.'</td><td>'.get_class($value).'</td></tr>');
 					$value->__destruct();
 				}
-				else !$print || print('object [property]: '.$name.' - '.get_class($value).'<br />');
+				else !$print || print('<tr><td>object [property]</td><td>'.$name.'</td><td>'.get_class($value).'</td></tr>');
 				$this->$name = null;
 			}
 		}
@@ -4397,14 +4398,21 @@ class e107
 			{
 				if(method_exists($reg, '__destruct'))
 				{
-					!$print || print('object [registry] using __destruct(): '.$path.' - '.get_class($reg).'<br />');
+					!$print || print('<tr><td>object [registry] using __destruct()</td><td>'.$path.'</td><td>'.get_class($reg).'</td></tr>');
 					$reg->__destruct();
 				}
-				else !$print || print('object [registry]: '.$path.' - '.get_class($reg).'<br />');
+				else !$print || print('<tr><td>object [registry]</td><td>'.$path.'</td><td>'.get_class($reg).'</td></tr>');
 				unset(self::$_registry[$path]);
 			}
-			
+
+
 		}
+
+		if($print)
+		{
+			echo "</table>";
+		}
+
 		self::$_registry = null;
 		self::$_instance = null;
 	}
