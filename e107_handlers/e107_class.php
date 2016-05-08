@@ -152,6 +152,7 @@ class e107
 		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_form_ui'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_log'					 => '{e_HANDLER}admin_log_class.php',
+		'e_front_model'					 => '{e_HANDLER}model_class.php',
 		'e_admin_model'					 => '{e_HANDLER}model_class.php',
 		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_response'				 => '{e_HANDLER}admin_ui.php',
@@ -1551,6 +1552,22 @@ class e107
 			self::setRegistry('core/e107/current_user', $user);
 		}
 		return $user;
+	}
+
+
+	/**
+	 * Retrieve front or admin Model.
+	 * @param string $type
+	 * @return object e_front_model or e_admin_model;
+	 */
+	public static function getModel($type='front')
+	{
+		if($type === 'front')
+		{
+			return self::getObject('e_front_model');
+		}
+
+		return self::getObject('e_admin_model');
 	}
 
 	/**
