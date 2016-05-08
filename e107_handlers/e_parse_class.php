@@ -4650,7 +4650,7 @@ class e_emotefilter
 
 			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
 			// Next two probably to sort out legacy issues - may not be required any more
-			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
+		//	$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 
 			  $key = str_replace("!", "_", $key);
 
@@ -4666,10 +4666,20 @@ class e_emotefilter
 					foreach($tmp as $code)
 					{
 						$img                = "<img class='e-emoticon' src='".$fileloc."' alt=\"".$alt."\"  />";
-			    	    $this->regSearch[]  = "#(^|[\s>])(".$this->buildRegex($code).")($|[\s<])#";
-				        $this->regReplace[] ="$1".$img."$3";
-				        $this->search[]     = $code;
-				        $this->replace[]    = $img;
+			    	//    $this->regSearch[]  = "#(^|[\s>])(".$this->buildRegex($code).")($|[\s<])#";
+				    //    $this->regReplace[] ="$1".$img."$3";
+
+				        $this->search[]     = "\n".$code;
+				        $this->replace[]    = "\n".$img;
+
+						$this->search[]     = " ".$code;
+				        $this->replace[]    = " ".$img;
+
+				        $this->search[]     = ">".$code; // Fix for emote within html.
+				        $this->replace[]    = ">".$img;
+
+					//	$this->search[]     = $code."<"; // Fix for emote within html.
+				    //    $this->replace[]    = $img."<";
 					}
 
 
@@ -4724,9 +4734,8 @@ class e_emotefilter
 
 	function filterEmotes($text)
 	{
-		return preg_replace($this->regSearch,$this->regReplace,$text);
-		//$text = str_replace($this->search, $this->replace, $text);
-		//return $text;
+	//	return preg_replace($this->regSearch,$this->regReplace,$text);
+		return str_replace($this->search, $this->replace, $text);
 	}
 
 	 
