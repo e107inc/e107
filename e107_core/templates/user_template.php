@@ -316,11 +316,13 @@ if(deftrue('BOOTSTRAP'))
 
 
 	// View shortcode wrappers.
-	$USER_WRAPPER['view']['USER_COMMENTPOSTS']  = '<div class="col-xs-12 col-md-4">'.LAN_USER_68.'</div><div class="col-xs-12 col-md-8">{---}';
-	$USER_WRAPPER['view']['USER_COMMENTPER']    = ' ( {---}% )</div>';
-	$USER_WRAPPER['view']['USER_SIGNATURE']     = '<div>{---}</div>';
-	$USER_WRAPPER['view']['USER_RATING']        = '<div>{---}</div>';
-	$USER_WRAPPER['view']['USER_SENDPM']         = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_COMMENTPOSTS']      = '<div class="col-xs-12 col-md-4">'.LAN_USER_68.'</div><div class="col-xs-12 col-md-8">{---}';
+	$USER_WRAPPER['view']['USER_COMMENTPER']        = ' ( {---}% )</div>';
+	$USER_WRAPPER['view']['USER_SIGNATURE']         = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_RATING']            = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_SENDPM']            = '<div>{---}</div>';
+	$USER_WRAPPER['view']['PROFILE_COMMENTS']       = '<div class="panel panel-default clearfix">{---}';
+	$USER_WRAPPER['view']['PROFILE_COMMENT_FORM']   = '{---} </div>';
 
 	$USER_TEMPLATE['view'] 				= '
 	{SETIMAGE: w=600}
@@ -370,10 +372,10 @@ if(deftrue('BOOTSTRAP'))
 	                </ul>
 	            </div>
 	        </div>
-	        <div class="panel panel-default clearfix">
+
 	            {PROFILE_COMMENTS}
 	            {PROFILE_COMMENT_FORM}
-	        </div>
+
 	    </div>
 	</div>
 	';

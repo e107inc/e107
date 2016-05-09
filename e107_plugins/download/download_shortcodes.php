@@ -443,7 +443,7 @@ class download_shortcodes extends e_shortcode
 	
 		$url = e_PLUGIN_ABS."download/admin_download.php?action=edit&id=".$this->var['download_id'];
 	
-		return (ADMIN && getperms('6')) ? "<a class='pull-right e-tip' href='".$url."' title='edit'>".$icon."</a>" : "";
+		return (ADMIN && getperms('6')) ? "<a class='e-tip btn btn-default hidden-print' href='".$url."' title='".LAN_EDIT."'>".$icon."</a>" : "";
    }
    
    function sc_download_category()

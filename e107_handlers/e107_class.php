@@ -152,6 +152,7 @@ class e107
 		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
 		'e_admin_form_ui'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_log'					 => '{e_HANDLER}admin_log_class.php',
+		'e_front_model'					 => '{e_HANDLER}model_class.php',
 		'e_admin_model'					 => '{e_HANDLER}model_class.php',
 		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
 		'e_admin_response'				 => '{e_HANDLER}admin_ui.php',
@@ -1551,6 +1552,22 @@ class e107
 			self::setRegistry('core/e107/current_user', $user);
 		}
 		return $user;
+	}
+
+
+	/**
+	 * Retrieve front or admin Model.
+	 * @param string $type
+	 * @return object e_front_model or e_admin_model;
+	 */
+	public static function getModel($type='front')
+	{
+		if($type === 'front')
+		{
+			return self::getObject('e_front_model');
+		}
+
+		return self::getObject('e_admin_model');
 	}
 
 	/**
@@ -3831,6 +3848,8 @@ class e107
 			  || ($isPluginDir && (strpos(e_PAGE,'_admin.php') !== false || strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
 			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
+			  || ($isPluginDir && e_PAGE == 'prefs.php') //BC Fix for old plugins
+			  || ($isPluginDir && e_PAGE == 'config.php') // BC Fix for old plugins
 			)
 		{
 			$inAdminDir = TRUE;
@@ -4357,7 +4376,8 @@ class e107
 		if(null === self::$_instance) return;
 		
 		$print = defined('E107_DBG_TIMEDETAILS') && E107_DBG_TIMEDETAILS;
-		!$print || print('Destructing $e107: <br />');
+
+		!$print || print('<table class="table table-striped table-condensed"><tr><td colspan="3"><b>Destructing $e107</b></td></tr>');
 		$vars = get_object_vars($this);
 		foreach ($vars as $name => $value) 
 		{
@@ -4365,10 +4385,10 @@ class e107
 			{
 				if(method_exists($value, '__destruct'))
 				{
-					!$print || print('object [property] using __destruct(): '.$path.' - '.get_class($value).'<br />');
+					!$print || print('<tr><td>object [property] using __destruct()</td><td>'.$name.'</td><td>'.get_class($value).'</td></tr>');
 					$value->__destruct();
 				}
-				else !$print || print('object [property]: '.$name.' - '.get_class($value).'<br />');
+				else !$print || print('<tr><td>object [property]</td><td>'.$name.'</td><td>'.get_class($value).'</td></tr>');
 				$this->$name = null;
 			}
 		}
@@ -4378,14 +4398,21 @@ class e107
 			{
 				if(method_exists($reg, '__destruct'))
 				{
-					!$print || print('object [registry] using __destruct(): '.$path.' - '.get_class($reg).'<br />');
+					!$print || print('<tr><td>object [registry] using __destruct()</td><td>'.$path.'</td><td>'.get_class($reg).'</td></tr>');
 					$reg->__destruct();
 				}
-				else !$print || print('object [registry]: '.$path.' - '.get_class($reg).'<br />');
+				else !$print || print('<tr><td>object [registry]</td><td>'.$path.'</td><td>'.get_class($reg).'</td></tr>');
 				unset(self::$_registry[$path]);
 			}
-			
+
+
 		}
+
+		if($print)
+		{
+			echo "</table>";
+		}
+
 		self::$_registry = null;
 		self::$_instance = null;
 	}

@@ -121,11 +121,10 @@ else
 	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
 }
 
-$TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $TEMPLATE); // BC Fix
+$USER_FULL_TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $USER_FULL_TEMPLATE); // BC Fix
 
 $user_shortcodes = e107::getScBatch('user');
 $user_shortcodes->wrapper('user/view');
-
 
 
 

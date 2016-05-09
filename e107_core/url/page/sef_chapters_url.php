@@ -157,14 +157,14 @@ class core_page_sef_chapters_url extends eUrlConfig
 			$name = $sql->fetch();
 			$request->setRequestParam('id', $name['chapter_id']);
 			$request->setRequestParam('type', 'bk');
-			e107::getMessage()->addDebug("Set CHAPTER ID =  '".$name['chapter_id']."'");
+			e107::getDebug()->log("Set CHAPTER ID =  '".$name['chapter_id']."'");
 		}
 		elseif($sql->select('page', 'page_id', "page_sef='{$name}'")) // fall back to pages. 
 		{
 			$name = $sql->fetch();
 			$request->setRequestParam('id', $name['page_id']);
 			$request->setRequestParam('type', 'id');
-			e107::getMessage()->addDebug("Set PAGE ID =  '".$name['page_id']."'");
+			e107::getDebug()->log("Set PAGE ID =  '".$name['page_id']."'");
 		}
 		else 
 		{

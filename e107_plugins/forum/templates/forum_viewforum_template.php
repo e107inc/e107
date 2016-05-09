@@ -284,11 +284,10 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 // New in v2.x - requires a bootstrap theme be loaded.  
 
-// <small>{BREADCRUMB}</small>  //FIXME Breadcrumb looks crummy
-//TODO Find a good place to put a {SEARCH} dropdown. 
+//TODO Find a good place to put a {SEARCH} dropdown.
 
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
-$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BACKLINK}</div>	</div>
+$FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
 													<div class='col-md-9 span9 pull-left'><h3>{FORUMTITLE}</h3></div>
 													<div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div></div>
@@ -360,6 +359,8 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 													</div>
 													</div>
 												</div>
+												<div class='forum-perms'>{PERMS}</div>
+
 												{VIEWABLE_BY}
 
 												";
@@ -384,21 +385,9 @@ $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 
 
 
+// $FORUM_VIEWFORUM_WRAPPER['THREADNAME']          = "<span class='label label-info'>{---}</span>";
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-?>

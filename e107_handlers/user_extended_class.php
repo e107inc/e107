@@ -66,6 +66,7 @@ class e107_user_extended
 		define('EUF_PREDEFINED',9); // should be EUF_LIST IMO
 		define('EUF_CHECKBOX',10);
 		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
+		define('EUF_ADDON', 12);  // defined within e_user.php addon
 
 		$this->typeArray = array(
 			'text' => 1,
@@ -79,6 +80,7 @@ class e107_user_extended
 			'list' => 9,
 			'checkbox'	=> 10,
 			'predefined' => 11, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
+			'addon'     => 12
 		);
 
 		$this->user_extended_types = array(
@@ -92,6 +94,7 @@ class e107_user_extended
 			8 => UE_LAN_8,
 			9 => UE_LAN_9,
 			10=> UE_LAN_10
+		//	12=> UE_LAN_10
 		);
 
 		//load array with field names from main user table, so we can disallow these
