@@ -415,8 +415,10 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->THREADS = $f['forum_threads'];
 	$fVars->REPLIES = $f['forum_replies'];
 	$fVars->FORUMSUBFORUMS = '';
-	
-	
+	$imagesize=getimagesize($f['forum_img']);
+	$FORUMIMG= ( $f['forum_img'] != NULL ) ? "<img src='{$f['forum_img']}' title='{$f['forum_name']}' height='".$forum->prefs->get('maxheight')."px'/>" :  "";
+	$fVars->FORUMIMG = ( $f['forum_img'] != NULL ) ? "<img src='{$f['forum_img']}' height='".$forum->prefs->get('maxheight')."px'/>" :  "";   
+	$fVars->FORUMIMGTXT = "<a href='".$url."'>".$FORUMIMG." {$f['forum_name']}</a>";
 
 	
 	

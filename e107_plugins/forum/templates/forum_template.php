@@ -107,13 +107,13 @@ $FORUM_TEMPLATE['main']['parent']			= 	"<tr>
 											</tr>";
 
 
-$FORUM_TEMPLATE['main']['forum']			= 	"<tr>
-											<td>{NEWFLAG}</td>
-											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
-											<td class='hidden-xs text-center'>{REPLIESX}</td>
-											<td class='text-center'>{THREADSX}</td>
-											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
-											</tr>";
+$FORUM_TEMPLATE['main']['forum']            =   "<tr>
+                                            <td>{NEWFLAG}</td>
+                                            <td>{FORUMIMGTXT}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
+                                            <td class='hidden-xs text-center'>{REPLIESX}</td>
+                                            <td class='text-center'>{THREADSX}</td>
+                                            <td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
+                                            </tr>";
 
 $FORUM_TEMPLATE['main']['end']				= "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
 

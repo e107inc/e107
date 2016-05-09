@@ -161,6 +161,7 @@ define("FORLAN_139", "To use this setting you also need to tick 'Enable image po
 define("FORLAN_140", "View");
 // define("FORLAN_141", "Post");
 define("FORLAN_142", "Post permission");
+
 define("FORLAN_143", "Indicates who can post to the forum");
 //define("FORLAN_144", "Moderators set");
 define("FORLAN_145", "Configure sub-forums");
@@ -213,6 +214,9 @@ define("FORLAN_186", "Threads per page");
 define("FORLAN_187", "Number of threads displayed per page");
 // define("FORLAN_188", "Latest Posts");
 define("FORLAN_189", "Click the 'delete' button to delete the report.<br /><br />Click the 'view' button to view the topic/thread");
+
+define("FORLAN_190", "Max height:");
+define("FORLAN_191", "Max height(px) for image in forum title");
 
 define("FORLAN_200", "Topic tracking");
 define("FORLAN_201", "Enable this to allow your users to track topics.");
