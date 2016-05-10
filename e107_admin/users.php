@@ -2528,13 +2528,12 @@ class users_admin_form_ui extends e_admin_form_ui
 		}
 	
 		
-		extract($row);
+	//	extract($row);
 
-		$user_id = $row['user_id'];
+		$user_id = intval($row['user_id']);
 		$user_ip = $row['user_ip'];
 		$user_admin = $row['user_admin'];
 
-		$text = "";
 		$head = "<div>
 
 				<input type='hidden' name='userid[{$user_id}]' value='{$user_id}' />
@@ -2548,13 +2547,13 @@ class users_admin_form_ui extends e_admin_form_ui
 
 		$opts = array();
 
-		$opts['usersettings'] = LAN_EDIT;
+
 
 		if ($row['user_perms'] != "0")
 		{
 			// disabled user info <option value='userinfo'>".USRLAN_80."</option>
 		//	$text .= "<option value='usersettings'>".LAN_EDIT."</option>";
-
+			$opts['usersettings'] = LAN_EDIT;
 
 
 
@@ -2628,6 +2627,11 @@ class users_admin_form_ui extends e_admin_form_ui
 					$opts['uadmin']     = USRLAN_34;
 				}
 		}
+		elseif(USERID ===  $user_id ||  $user_id > USERID)
+		{
+			$opts['usersettings'] = LAN_EDIT;
+		}
+
 		if ($row['user_perms'] == "0" && !getperms("0"))
 		{
 		//	$text .= "";
