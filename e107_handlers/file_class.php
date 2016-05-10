@@ -845,7 +845,7 @@ class e_file
 		$path_downloads = realpath($DOWNLOADS_DIRECTORY);
 		$path_public = realpath($FILES_DIRECTORY."public/");
 		
-		if(strstr($path, $SYSTEM_DIRECTORY) && !ADMIN)
+		if(strstr($path, $SYSTEM_DIRECTORY) && !strstr($path, e_IMPORT) && !ADMIN)
 		{
 			header("location: {$e107->base_path}");
 			exit();
