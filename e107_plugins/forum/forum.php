@@ -330,7 +330,14 @@ foreach ($forumList['parents'] as $parent)
 	$status = parse_parent($parent);
 	$pVars->PARENTSTATUS = $status;
 
-//	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
+	$PARENTIMG ='';
+	if($parent['forum_img'] != NULL)
+	{
+		$imagesize=getimagesize($parent['forum_img']);
+		if( $imagesize[1] > $forum->prefs->get('maxheight') ) $alto="height='".$forum->prefs->get('maxheight')."'";
+		$PARENTIMG = "<img src='{$parent['forum_img']}' title='{$parent['forum_name']}' ".$alto."/>";
+	}
+	$pVars->PARENTIMG = $PARENTIMG;
 	$pVars->PARENTNAME = $parent['forum_name'];
 	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
 	if (!count($forumList['forums'][$parent['forum_id']]))
@@ -415,12 +422,16 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->THREADS = $f['forum_threads'];
 	$fVars->REPLIES = $f['forum_replies'];
 	$fVars->FORUMSUBFORUMS = '';
-	$imagesize=getimagesize($f['forum_img']);
-	$FORUMIMG= ( $f['forum_img'] != NULL ) ? "<img src='{$f['forum_img']}' title='{$f['forum_name']}' height='".$forum->prefs->get('maxheight')."px'/>" :  "";
-	$fVars->FORUMIMG = ( $f['forum_img'] != NULL ) ? "<img src='{$f['forum_img']}' height='".$forum->prefs->get('maxheight')."px'/>" :  "";   
-	$fVars->FORUMIMGTXT = "<a href='".$url."'>".$FORUMIMG." {$f['forum_name']}</a>";
-
-	
+	$fVars->FORUMIMG = '';
+	$FORUMIMG='';
+	if($f['forum_img'] != NULL)
+	{
+		$imagesize=getimagesize($f['forum_img']);
+		if( $imagesize[1] > $forum->prefs->get('maxheight') ) $alto="height='".$forum->prefs->get('maxheight')."'";
+		$FORUMIMG= "<img src='{$f['forum_img']}' title='{$f['forum_name']}' ".$alto."/>";
+		$fVars->FORUMIMG = "<img src='{$f['forum_img']}' ".$alto."/>" ;
+	}
+	$fVars->FORUMIMGTXT = "<a href='".$url."'>".$FORUMIMG." {$f['forum_name']}</a>";	
 	
 	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
 	$badgeThreads = ($f['forum_threads']) ? "badge-info" : "";
