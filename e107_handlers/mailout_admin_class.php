@@ -582,6 +582,7 @@ class mailoutAdminClass extends e107MailManager
 					// Definitely need this plugin
 					$mailClass = $mailer . '_mailout';
 					$temp = new $mailClass;
+				//	$temp = e107::getSingleton($mailClass);
 					if($temp->mailerEnabled)
 					{
 						$this->mailHandlers[$mailer] = $temp;
@@ -966,7 +967,7 @@ class mailoutAdminClass extends e107MailManager
 			$tList = self::getEmailTemplateNames('user');
 			foreach($tList as $key => $val)
 			{
-				$emFormat[$key] = LAN_TEMPLATE . $val;
+				$emFormat[$key] = LAN_TEMPLATE .": ". $val;
 			}	
 		}
 		
@@ -1517,7 +1518,8 @@ class mailoutAdminClass extends e107MailManager
 				{
 					
 					$mailerCount = $m->selectInit($mailData['mail_selectors'][$key]); // Initialise
-					if($mailerCount > 0)
+
+					if(!empty($mailerCount))
 					{
 						
 						while($row = $m->selectAdd()) // Get email addresses - add to list, strip duplicates
@@ -1531,6 +1533,13 @@ class mailoutAdminClass extends e107MailManager
 							}
 						}
 					}
+					else
+					{
+						e107::getMessage()->addWarning($key.": no matching recipients");
+					}
+
+
+
 					$m->select_close();
 					// Close
 					// Update the stats after each handler
@@ -1582,7 +1591,10 @@ class mailoutAdminClass extends e107MailManager
 		$text .= '</td></tr>';
 		
 		// Figures - number of emails to send, number of duplicates stripped
-		$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . ($mailData['mail_togo_count']) . "<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
+
+		$totalRecipients = !empty($mailData['mail_togo_count']) ? $mailData['mail_togo_count'] : $counters['add'];
+
+		$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . $totalRecipients . "<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
 		$text .= '<tr><td>' . LAN_MAILOUT_71 . '</td><td> ' . $counters['add'] . ' ' . LAN_MAILOUT_69 . $counters['dups'] . LAN_MAILOUT_70 . '</td></tr>';
 		$text .= "</tbody></table>\n</fieldset>";
 

@@ -216,7 +216,7 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function __construct($overrides = false)
+	public function __construct($overrides = array())
 	{
 		$this->e107 = e107::getInstance();
 
@@ -224,10 +224,10 @@ class e107MailManager
 
 		$bulkmailer = (!empty($pref['bulkmailer'])) ? $pref['bulkmailer'] : $pref['mailer'];
 
-		if($overrides === false)
-		{
-			$overrides =  array('mailer'=>$bulkmailer);
-		}
+	//	if($overrides === false)
+	//	{
+			$overrides['mailer'] = $bulkmailer;
+	//	}
 
 		$this->mailOverrides = $overrides;
 		
@@ -1188,13 +1188,25 @@ class e107MailManager
 	 */
 	public function mailAddNoDup($handle, $mailRecip, $initStatus = MAIL_STATUS_TEMP, $priority = self::E107_EMAIL_PRIORITY_LOW)
 	{
+
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		if (!isset($this->mailCounters[$handle])) return 'nocounter';
+
 		$this->checkDB(1);			// Make sure DB object created
-		$result = $this->db->db_Select('mail_recipients', 'mail_target_id', "`mail_detail_id`={$handle} AND `mail_recipient_email`='{$mailRecip['mail_recipient_email']}'");
-		if ($result === FALSE)
+
+		if(empty($mailRecip['mail_recipient_email']))
 		{
-			return FALSE;
+			e107::getMessage()->addError("Empty Recipient Email");
+			return false;
+		}
+
+
+		$result = $this->db->select('mail_recipients', 'mail_target_id', "`mail_detail_id`={$handle} AND `mail_recipient_email`='{$mailRecip['mail_recipient_email']}'");
+
+
+		if ($result === false)
+		{
+			return false;
 		}
 		elseif ($result != 0)
 		{
@@ -1204,8 +1216,10 @@ class e107MailManager
 		$mailRecip['mail_status'] = $initStatus;
 		$mailRecip['mail_detail_id'] = $handle;
 		$mailRecip['mail_send_date'] = time();
-		$data = $this->targetToDb($mailRecip);							// Convert internal types
-		if ($this->db->db_Insert('mail_recipients', array('data' => $data, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'])))
+
+		$data = $this->targetToDb($mailRecip);
+							// Convert internal types
+		if ($this->db->insert('mail_recipients', array('data' => $data, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'])))
 		{
 			$this->mailCounters[$handle]['add']++;
 		}
