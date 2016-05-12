@@ -48,6 +48,10 @@ exit;
 
 class e_thumbpage
 {
+	private $_debug = false;
+
+	private $_cache = true;
+
 	/**
 	 * Page request
 	 * @var array
@@ -232,7 +236,13 @@ class e_thumbpage
 			$parm = array('size' => $width."x".$height);
 			
 			$this->placeholder($parm);
-			return;
+			return false;
+		}
+
+		if($this->_debug === true)
+		{
+			var_dump($this->_request);
+		//	return false;
 		}
 		
 		if(!$this->_src_path)
@@ -246,17 +256,19 @@ class e_thumbpage
 		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
 		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
-	
 
-		if(is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname))
+
+		if($this->_cache = true && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
 		{
 			$thumbnfo['lmodified'] = filemtime(e_CACHE_IMAGE.$fname);
 			$thumbnfo['md5s'] = md5_file(e_CACHE_IMAGE.$fname);
 			$thumbnfo['fsize'] = filesize(e_CACHE_IMAGE.$fname);
 			
 			// Send required headers
-			$this->sendHeaders($thumbnfo);
-		
+			if($this->_debug !== true)
+			{
+				$this->sendHeaders($thumbnfo);
+			}
 
 				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
 			// 	exit;
@@ -278,11 +290,15 @@ class e_thumbpage
 		}
 
 		// TODO - wrap it around generic e107 thumb handler
+		if($this->_debug === true)
+		{
+			$start = microtime(true);
+		}
 		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
 		{
 		    $thumb = PhpThumbFactory::create($this->_src_path);
-			$sizeUp = ($this->_request['w'] > 110) ? true : false; // don't resizeUp the icon images. 
+			$sizeUp = ($this->_request['w'] > 110 || $this->_request['aw'] > 110) ? true : false; // don't resizeUp the icon images.
 		   	$thumb->setOptions(array(
 		   	    'correctPermissions'    => true,
 		   	    'resizeUp'              => $sizeUp,
@@ -300,16 +316,26 @@ class e_thumbpage
 		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
 			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
+			echo __LINE__;
 		}
-		elseif(vartrue($this->_request['ah']))
+		elseif(!empty($this->_request['ah']))
 		{
 			//Typically gives a better result with images of people than adaptiveResize().
-			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center? 
-			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');	
+			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center?
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');
 		}
 		else 
 		{
-			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));	
+			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
+		}
+
+
+		if($this->_debug === true)
+		{
+			echo "time: ".round((microtime(true) - $start),4);
+
+			var_dump($thumb);
+			return false;
 		}
 
 		// Watermark Option - See admin->MediaManager->prefs for details. 
@@ -327,12 +353,14 @@ class e_thumbpage
 			$thumb->WatermarkText($this->_watermark);			
 		}
 		//	echo "hello";
-			
+
+
 			
 	//exit;
 
 		// set cache
 		$thumb->save(e_CACHE_IMAGE.$fname);
+
 
 		
 		// show thumb

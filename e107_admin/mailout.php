@@ -591,8 +591,11 @@ class mailout_main_ui extends e_admin_ui
 			'template'		=> vartrue($_POST['testtemplate'],null),
 			'shortcodes'	=> $this->getExampleShortcodes(),
 			'media'			=>  array(
-				0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
-				1 => array('path' => 'h-v880sXEOQ.youtube'),
+					0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					1 => array('path' => 'h-v880sXEOQ.youtube'),
+					2 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
+					3 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					4 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
 				)
 			);
 			
@@ -952,7 +955,7 @@ class mailout_main_ui extends e_admin_ui
 			$pause = e107::getConfig()->get('mail_pausetime',1);
 			$interval = ($pause * 1000);
 			
-			$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
+			$text = e107::getForm()->progressBar('mail-progress',0, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
 		}
 	
 		return $text;	
