@@ -23,5 +23,21 @@ class _blank_user // plugin-folder + '_user'
 		
 		return $var;
 	}
+
+
+
+	function fields()
+	{
+
+		$fields = array(
+
+
+
+		);
+
+
+	}
+
+
 	
 }

@@ -507,7 +507,7 @@ class e107forum
 	{
 		if($tmp = e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->retrieve('forum_perms'))
 		{
-			e107::getMessage()->addDebug("Using Permlist cache: True");
+			e107::getDebug()->log("Using Permlist cache: True");
 
 			$this->permList = e107::unserialize($tmp);
 
@@ -516,7 +516,7 @@ class e107forum
 		}
 		else
 		{
-			e107::getMessage()->addDebug("Using Permlist cache: False");
+			e107::getDebug()->log("Using Permlist cache: False");
 			$this->_getForumPermList();
 			$tmp = e107::serialize($this->permList, false);
 			e107::getCache()->setMD5(e_LANGUAGE.USERCLASS_LIST)->set('forum_perms', $tmp);
@@ -814,7 +814,7 @@ class e107forum
 
 	function threadAdd($threadInfo, $postInfo)
 	{
-		$e107 = e107::getInstance();
+
 		$info = array();
 //		$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 
@@ -825,12 +825,18 @@ class e107forum
 
 		if($newThreadId = e107::getDb()->insert('forum_thread', $info))
 		{
-
-			$postInfo['post_thread'] = $newThreadId;
-
-			if(!$newPostId = $this->postAdd($postInfo, false))
+			if($postInfo !== false)
 			{
-				e107::getMessage()->addDebug("There was a problem: ".print_a($postInfo,true));
+				$postInfo['post_thread'] = $newThreadId;
+
+				if(!$newPostId = $this->postAdd($postInfo, false))
+				{
+					e107::getMessage()->addDebug("There was a problem: ".print_a($postInfo,true));
+				}
+			}
+			else
+			{
+				$newPostId = 0;
 			}
 
 			$this->threadMarkAsRead($newThreadId);
@@ -1020,7 +1026,8 @@ class e107forum
 				LIMIT {$start}, {$num}
 			";
 		}
-		if($sql->gen($qry))
+
+		if($sql->gen($qry)!==false)
 		{
 			$ret = array();
 			while($row = $sql->fetch())
@@ -1052,14 +1059,15 @@ class e107forum
 	}
 
 	/**
-	* Checks if post is the initial post which started the topic. 
-	* Retrieves list of post_id's belonging to one post_thread. When lowest value is equal to input param, return true. 
-	* Used to prevent deleting of the initial post (so topic shows empty does not get hidden accidently while posts remain in database)
-    *
-	* @param int id of the post
-	* @return boolean true if post is the initial post of the topic (false, if not) 
-    *
-	*/
+	 * Checks if post is the initial post which started the topic.
+	 * Retrieves list of post_id's belonging to one post_thread. When lowest value is equal to input param, return true.
+	 * Used to prevent deleting of the initial post (so topic shows empty does not get hidden accidently while posts remain in database)
+	 *
+	 * @param $postId
+	 * @return bool true if post is the initial post of the topic (false, if not)
+	 *
+	 * @internal param int $postid
+	 */
 	function threadDetermineInitialPost($postId)
 	{
 		$sql = e107::getDb();
@@ -1082,6 +1090,8 @@ class e107forum
 		}
 		return false;
 	}
+
+
 
 	function threadGetUserPostcount($threadId)
 	{
@@ -1269,7 +1279,9 @@ class e107forum
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
-		$sql2 = new db;
+		$sql2 = e107::getDb('sql2');
+
+
 		if ($type == 'thread')
 		{
 			$id = (int)$id;
@@ -1285,15 +1297,20 @@ class e107forum
 				$tmp['thread_lastuser'] = 0;
 				$tmp['thread_lastuser_anon'] = ($lpInfo['post_user_anon'] ? $lpInfo['post_user_anon'] : 'Anonymous');
 			}
+
 			$tmp['thread_lastpost'] = $lpInfo['post_datestamp'];
 			$info = array();
 			$info['data'] = $tmp;
 //			$info['_FIELD_TYPES'] = $this->fieldTypes['forum_thread'];
 			$info['WHERE'] = 'thread_id = '.$id;
+
 			$sql->update('forum_thread', $info);
 
 			return $lpInfo;
 		}
+
+
+
 		if ($type == 'forum')
 		{
 			if ($id == 'all')
@@ -2030,6 +2047,22 @@ class e107forum
 			}
 		}
 	}
+
+
+	/**
+	 * @param $threadID
+	 * @return int
+	 */
+	function threadUpdateCounts($threadID)
+	{
+		$sql = e107::getDb();
+
+		$replies = $sql->count('forum_post', '(*)', 'WHERE post_thread='.$threadID);
+
+		return $sql->update('forum_thread', "thread_total_replies={$replies} WHERE thread_id=".$threadID);
+
+	}
+
 
 
 

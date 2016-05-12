@@ -91,6 +91,7 @@ class e_parse_shortcode
 	protected $ignoreCodes          = array();  // Shortcodes to be ignored and remain unchanged. (ie. {THEME}, {e_PLUGIN} etc. )
 	protected $addonOverride        = array();  // Overrides coming from e_shortcode.php
 	private   $legacyBatch          = array();  // List of legacy batch file codes. eg. using SC_BEGIN etc.
+	private   $legacyBatchFile       = null;
 	private   $debug_legacy         = array();
 	protected $eVars                = null;
 	protected $wrappers             = array();  // Wrappers array for the current parsing cycle, see contact_template.php and $CONTACT_WRAPPER variable
@@ -812,6 +813,14 @@ class e_parse_shortcode
 		{
 			$this->addedCodes = &$extraCodes;
 
+			if(isset($extraCodes['_WRAPPER_']))
+			{
+				$tmpWrap = e107::templateWrapper($extraCodes['_WRAPPER_']);
+				$this->wrappers = array_merge($this->wrappers,$tmpWrap);
+				$this->wrapper = $extraCodes['_WRAPPER_'];
+				unset($extraCodes['_WRAPPER_']);
+			}
+
 			/*
 			foreach ($extraCodes as $sc => $code)
 			{
@@ -829,7 +838,7 @@ class e_parse_shortcode
 		$this->addedCodes = $saveCodes;
 		$this->eVars = $saveVars; // restore eVars
 		$this->debug_legacy = null;
-		$this->legacyBatch = array();
+	
 
 			//	$this->sc_style = array();	 //XXX Adding this will also fix #2 above. 
 
@@ -967,18 +976,19 @@ class e_parse_shortcode
 		//$this->legacyBatch
 			if(in_array($code,$this->legacyBatch))
 			{
+				$_type = 'legacy batch';
+				$_path = $this->legacyBatchFile;
 				$scCode =  $this->addedCodes[$code];
 			}
 			else
 			{
+				$_type = 'array';
+				$_path = "(direct to parser)";
 				$ret = $this->addedCodes[$code];
+
 			}
 
 
-		//	$_class = "n/a";
-		//	$_function = "n/a";
-			$_type = 'array';
-			$_path = "(direct to parser)";
 
 		}
 		elseif (array_key_exists($code, $this->scList)) // Check to see if we've already loaded the .sc file contents
@@ -1175,7 +1185,13 @@ class e_parse_shortcode
 		{
 			list($wrapTmpl, $wrapID1, $wrapID2) = explode('/',$this->wrapper,3);
 
-			$wrapActive = strtoupper($wrapTmpl)."_WRAPPER['".$wrapID1."']";
+			$wrapActive = strtoupper($wrapTmpl)."_WRAPPER";
+
+			if(!empty($wrapID1))
+			{
+				$wrapActive .= "['".$wrapID1."']";
+			}
+
 			if(!empty($wrapID2))
 			{
 				$wrapActive .= "['".$wrapID2."']";
@@ -1378,6 +1394,7 @@ class e_parse_shortcode
 
 
 		$this->legacyBatch = array_keys($cur_shortcodes);
+		$this->legacyBatchFile = str_replace(e_ROOT, '', $fname);
 
 		return $cur_shortcodes;
 	}

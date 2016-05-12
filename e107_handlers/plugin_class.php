@@ -856,6 +856,10 @@ class e107plugin
 		// FIXME - use sql parse handler
 		$error = FALSE;
 		$count = 0;
+
+		$sql = e107::getDb();
+
+
 		if($action == 'add')
 		{
 			$sql_data = file_get_contents($f);
@@ -867,7 +871,7 @@ class e107plugin
 		    foreach($creation[0] as $tab)
 		    {
 				$query = str_replace($search,$replace,$tab);
-		      	if(!mysql_query($query))
+		      	if(!$sql->gen($query))
 		      	{
 		        	$error = TRUE;
 				}
@@ -878,7 +882,7 @@ class e107plugin
 			foreach($inserts[0] as $ins)
 			{
 				$qry = str_replace($search,$replace,$ins);
-				if(!mysql_query($qry))
+				if(!$sql->gen($qry))
 				{
 				  	$error = TRUE;
 				}
@@ -894,7 +898,7 @@ class e107plugin
 		if($action == 'remove')
 		{
 			// executed only if the sql file exists!
-			return mysql_query("DROP TABLE ".MPREFIX."user_extended_".$field_name) ? true : false;
+			return $sql->gen("DROP TABLE ".MPREFIX."user_extended_".$field_name) ? true : false;
 		}
 	}
 
@@ -3166,6 +3170,8 @@ class e107plugin
 	function parse_plugin_php($plugName)
 	{
 		$tp = e107::getParser();
+
+		$PLUGINS_FOLDER = '{e_PLUGIN}'; // Could be used in plugin.php file.
 
 		$eplug_conffile     = null;
 		$eplug_table_names  = null;

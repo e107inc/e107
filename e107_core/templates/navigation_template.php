@@ -30,7 +30,7 @@ $NAVIGATION_TEMPLATE['main']['item_active'] = '
 
 // Main Link which has a sub menu. 
 $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
-	<li class="dropdown">
+	<li class="dropdown {LINK_IDENTIFIER}">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_DESCRIPTION}">
 		 {LINK_ICON}{LINK_NAME} 
 		 <span class="caret"></span>
@@ -41,7 +41,7 @@ $NAVIGATION_TEMPLATE['main']['item_submenu'] = '
 
 // Main Link which has a sub menu - active state.
 $NAVIGATION_TEMPLATE['main']['item_submenu_active'] = '
-	<li class="dropdown active">
+	<li class="dropdown active {LINK_IDENTIFIER}">
 		<a class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_ICON}{LINK_NAME}
 		 <span class="caret"></span>

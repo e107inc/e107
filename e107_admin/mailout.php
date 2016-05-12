@@ -591,8 +591,11 @@ class mailout_main_ui extends e_admin_ui
 			'template'		=> vartrue($_POST['testtemplate'],null),
 			'shortcodes'	=> $this->getExampleShortcodes(),
 			'media'			=>  array(
-				0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
-				1 => array('path' => 'h-v880sXEOQ.youtube'),
+					0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					1 => array('path' => 'h-v880sXEOQ.youtube'),
+					2 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
+					3 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					4 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
 				)
 			);
 			
@@ -952,7 +955,7 @@ class mailout_main_ui extends e_admin_ui
 			$pause = e107::getConfig()->get('mail_pausetime',1);
 			$interval = ($pause * 1000);
 			
-			$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
+			$text = e107::getForm()->progressBar('mail-progress',0, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
 		}
 	
 		return $text;	
@@ -1645,7 +1648,7 @@ class mailout_recipients_ui extends e_admin_ui
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'type'=>'email', 'data'=>'str', 'thclass' => 'left', 'forced' => TRUE),
 			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'filter'=>true, 'data'=>'int', 'thclass' => 'left', 'class'=>'left', 'writeParms'=>''),
 			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
-			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),
+			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139,  'type'=>'datestamp', 'proc' => 'sdatetime'),
 			'mail_target_info'		=> array('title' => LAN_MAILOUT_148, 'proc' => 'array'),
 			'options' 				=> array('title' => LAN_OPTIONS, 'type'=>'method',  'width'=>'10%', 'forced' => TRUE)
 		);
@@ -1726,6 +1729,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 			 MAIL_STATUS_PENDING 	=> LAN_MAILOUT_214,
 		//	 MAIL_STATUS_SAVED 		=> LAN_MAILOUT_215,
 		//	 MAIL_STATUS_HELD		=> LAN_MAILOUT_217
+		//	MAIL_STATUS_TEMP        => ",
 		);	
 		
 		
@@ -1742,7 +1746,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 			$stat[13] = 'label-warning';
 			$stat[5] = 'label-error'; // MAIL_STATUS_FAILED
 			
-			return "<span class='label ".varset($stat[$curVal])."'>".$this->getController()->mailManager->statusToText($curVal)."</span>";
+			return "<span class='label ".varset($stat[$curVal])."'>#".$curVal." ".$this->getController()->mailManager->statusToText($curVal)."</span>";
 		}
 		
 		if($mode == 'write')

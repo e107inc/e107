@@ -734,7 +734,27 @@ class e107Email extends PHPMailer
 	function processShortcodes($eml)
 	{
 		$tp = e107::getParser();
-		
+
+		$mediaParms = array();
+
+
+
+		if(strpos($eml['templateHTML']['body'], '{MEDIA') !==false )
+		{
+			// check for media sizing.
+
+			if(preg_match_all('/\{MEDIA([\d]): w=([\d]*)\}/', $eml['templateHTML']['body'], $match))
+			{
+
+				foreach($match[1] as $k=>$num)
+				{
+					//$key = $match[1][$k];
+					$mediaParms[$num]['w'] = $match[2][$k];
+
+				}
+			}
+		}
+
 		if(!empty($eml['html']) || strip_tags($eml['template']) != $eml['template']) // HTML Email. 
 		{
 			$eml['shortcodes']['BODY'] 	= !empty($eml['body']) ? $eml['body'] : ''; // using toEmail() on html templates adds unnecessary <br /> to code. 
@@ -747,15 +767,17 @@ class e107Email extends PHPMailer
 		$eml['shortcodes']['BODY'] 		= !empty($eml['body']) ? $eml['body'] : ''; // $tp->toEmail($eml['body']) : '';
 		$eml['shortcodes']['SUBJECT'] 	= !empty($eml['subject']) ?$eml['subject'] : '';
 		$eml['shortcodes']['THEME'] 	= ($this->previewMode == true) ? e_THEME_ABS.$this->pref['sitetheme'].'/' :  e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
-				
-				
+
+
+
 		if(!empty($eml['media']) && is_array($eml['media']))
 		{
 			foreach($eml['media'] as $k=>$val)
 			{
 				if(vartrue($val['path']))
 				{
-					$id = 'MEDIA'.($k+1);
+					$nk = ($k+1);
+					$id = 'MEDIA'.$nk;
 					
 					if($tp->isVideo($val['path']))
 					{
@@ -763,7 +785,9 @@ class e107Email extends PHPMailer
 					}
 					else
 					{
-						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive' src='".$val['path']."' alt='' /></div>";		
+						$size = isset($mediaParms[$nk]) ? "?w=".$mediaParms[$nk]['w'] : '';
+						//echo $nk.": ".$val['path'].$size."<br />";
+						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive ".strtolower($id)."' src='".$val['path'].$size."' alt='' /></div>";
 					}
 					
 				}	
@@ -809,12 +833,10 @@ class e107Email extends PHPMailer
 					
 			if($tmpl = e107::getCoreTemplate('email', $eml['template'], 'front', true))  //FIXME - Core template is failing with template 'notify'. Works with theme template. Issue with core template registry?
 			{				
-				
+				$eml['templateHTML'] = $tmpl;
 				$eml['shortcodes'] = $this->processShortcodes($eml);
 
-			//	print_a($eml);
-						
-				$emailBody = $tmpl['header']. $tmpl['body'] . $tmpl['footer']; 
+				$emailBody = $tmpl['header']. str_replace('{BODY}', $eml['body'], $tmpl['body']) . $tmpl['footer'];
 				
 				$eml['body'] = $tp->parseTemplate($emailBody, true, $eml['shortcodes']);
 				
@@ -1120,12 +1142,21 @@ class e107Email extends PHPMailer
 				{
 					$url = $tp->replaceConstants($url);
 
+					$size = 'w=800';
+
+					if(strpos($url, '?w=')!==false)
+					{
+						list($url,$size) = explode('?', $url);
+					}
+
 					// resize on the fly.
 					if($this->debug)
 					{
 						echo "<br />Attempting Resize...".$url;
+
 					}
-					if($resized = e107::getMedia()->resizeImage($url, e_TEMP.basename($url),'w=800'))
+					// e107::getMessage()->addInfo("Resizing: ".$url." to ".$size);
+					if($resized = e107::getMedia()->resizeImage($url, e_TEMP.basename($url), $size))
 					{
 						$url = $resized;
 					}

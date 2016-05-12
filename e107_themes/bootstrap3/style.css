@@ -76,7 +76,7 @@ img.logo {
 }
 
 
-.row > .col-md-4:nth-child(4n+1) {  clear:both; }  /* fix wrapping in gallery portfolio */
+.row > .col-md-4:nth-child(4n+1) {  clear:right; }  /* fix wrapping in gallery portfolio */
 
 
 

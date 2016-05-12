@@ -54,6 +54,10 @@ class forum_url // plugin-folder + '_url'
 			'sef'           => 'forum/post/?f=move&amp;id={thread_id}',
 		);
 
+		$config['split'] = array(
+			'sef'           => 'forum/post/?f=split&amp;id={thread_id}&amp;post={post_id}',
+		);
+
 		$config['topic'] = array(
 			'regex'         => 'forum\/([^\/]*)\/([\d]*)(?:\/|-)([\w-]*)/?\??(.*)',
 		//	'regex'			=> '^forum/(.*)/(\d*)(?:-|/)([\w-]*)/?\??(.*)',

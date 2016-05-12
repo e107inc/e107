@@ -331,7 +331,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 									<li id='post-{POSTID}' class='forum-viewtopic-post'>
 										<div class='hidden-xs row row-fluid btn-navbar navbar-btn'>
 
-												{SETIMAGE: w=100&h=0&crop=0}
+												{SETIMAGE: w=100&h=100&crop=1}
 												<div class='col-xs-2 span2 left text-left'>
 													<div class='row'>
 														<div class='col-xs-12 col-md-12 forum-user-combo'>{USERCOMBO}<br />{CUSTOMTITLE}</div>
@@ -477,7 +477,6 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 $FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'] = "<div class='forum-viewtopic-attachments'>{---}</div>";
 $FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'] = "<span class='forum-viewtopic-customtitle'><small>{---}</small></span>";
 
+$FORUM_VIEWTOPIC_WRAPPER['replies']['ATTACHMENTS'] = $FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'];
+$FORUM_VIEWTOPIC_WRAPPER['replies']['CUSTOMTITLE'] = $FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'];
 
-//$FORUMDELETEDSTYLE		= "<br />DELETED";
-
-?>

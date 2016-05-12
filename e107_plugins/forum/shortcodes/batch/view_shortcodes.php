@@ -604,9 +604,9 @@ class plugin_forum_view_shortcodes extends e_shortcode
 				$url     = e107::url('forum','move', array('thread_id'=>$this->postInfo['post_thread']));
 				$text .= "<li class='text-right'><a href='" . $url."'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</a></a></li>";
 			}
-			else //TODO
+			elseif(e_DEVELOPER ===true) //TODO
 			{
-				// $text .= "<li class='text-right'><a href='" . e107::getUrl()->create('forum/thread/split', array('id' => $this->postInfo['post_id'], 'post'=>$this->postInfo['post_id']))."'>".LAN_FORUM_2043." ".$tp->toGlyph('cut')."</a></li>";
+				$text .= "<li class='text-right'><a href='" . e107::url('forum','split', array('thread_id'=>$this->postInfo['post_thread'], 'post_id' => $this->postInfo['post_id']))."'>".LAN_FORUM_2043." ".$tp->toGlyph('cut')."</a></li>";
 		
 			}
 		}
