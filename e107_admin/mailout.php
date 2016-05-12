@@ -789,20 +789,27 @@ class mailout_main_ui extends e_admin_ui
 			$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id)." LIMIT 1");
 			
 			$shortcodes = array(
-			'USERNAME'=>'John Example',
-			 'DISPLAYNAME'=> 'John Example',
-			 'USERID'=>'555', 'MAILREF'=>$_GET['id'],
-			 'LOGINNAME' => 'johnE',
-			 'ACTIVATION_LINK' => SITEURL.'signup.php?testing-activation',
-			 'PASSWORD' => 'MyPass123',
-			 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567",
-			  'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567");
-			
+				'USERNAME'          => 'John Example',
+			    'DISPLAYNAME'       => 'John Example',
+			    'USERID'            => '555',
+				'LOGINNAME'         => 'johnE',
+			    'ACTIVATION_LINK'   => SITEURL.'signup.php?testing-activation',
+			    'PASSWORD'          => 'MyPass123',
+			    'NEWSLETTER'        => SITEURL."newsletter/?id=example1234567",
+			    'UNSUBSCRIBE'       => SITEURL."unsubscribe/?id=example1234567"
+			);
+
 			if(!empty($user))
 			{
 				$userData = e107::getDb()->retrieve('mail_recipients','*', 'mail_detail_id = '.intval($id).' AND mail_recipient_id = '.intval($user).' LIMIT 1');
 				$shortcodes = e107::unserialize(stripslashes($userData['mail_target_info']));
 			}
+
+			if(!isset($shortcodes['MAILREF']))
+			{
+				$shortcodes['MAILREF'] =  intval($_GET['id']);
+			}
+
 						
 			$data = $this->mailAdmin->dbToMail($mailData);
 	
@@ -839,7 +846,7 @@ class mailout_main_ui extends e_admin_ui
 		}
 			
 		return e107::getEmail()->preview($eml);
-		exit;
+
 
 	}
 
