@@ -298,7 +298,7 @@ class e_tohtml_linkwords
 
 
 		}
-		
+
 		if (!count($lwClass))
 		{
 	//		return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
@@ -309,7 +309,7 @@ class e_tohtml_linkwords
 		}
 
 		// This splits the text into blocks, some of which will precisely contain a linkword
-		$split_line = preg_split('#\b('.$lw.')(?:\s|\b)#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
+		$split_line = preg_split('#\b('.$lw.')(\s|\b)#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
 	//	$class = "".implode(' ',$lwClass)."' ";
 		$class = implode(' ',$lwClass);
 
