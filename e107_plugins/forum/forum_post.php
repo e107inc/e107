@@ -71,8 +71,13 @@ class forum_post_handler
 
 
 		$this->data = $this->processGet();
+
 		$this->checkPerms($this->data['forum_id']);
-		$this->processPosted();
+
+		if($this->processPosted() === false)
+		{
+			return false;
+		}
 
 		if($this->action == 'report')
 		{
@@ -81,6 +86,10 @@ class forum_post_handler
 		elseif($this->action == 'move')
 		{
 			$this->renderFormMove();
+		}
+		elseif($this->action == 'split')
+		{
+			$this->renderFormSplit();
 		}
 		else
 		{
@@ -141,6 +150,7 @@ class forum_post_handler
 			case 'edit':
 			case "quote":
 			case "report":
+			case 'split':
 				$postInfo               = $this->forumObj->postGet($this->post, 'post');
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
@@ -193,6 +203,12 @@ class forum_post_handler
 			$this->moveThread($_POST);
 		}
 
+		if(!empty($_POST['split_thread']))
+		{
+			$this->splitThread($_POST);
+			return false;
+		}
+
 		if(isset($_POST['update_reply']))
 		{
 			$this->updateReply();
@@ -213,7 +229,7 @@ class forum_post_handler
 			$this->submitReport();
 		}
 
-
+		return true;
 	}
 
 
@@ -650,7 +666,15 @@ class forum_post_handler
 	}
 
 
-	function renderFormMove()
+	private function renderBreadcrumb()
+	{
+		$sc  = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
+		return  e107::getParser()->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
+
+	}
+
+
+	private function renderFormSplit()
 	{
 		if(!deftrue('MODERATOR'))
 		{
@@ -659,9 +683,67 @@ class forum_post_handler
 
 
 		$frm = e107::getForm();
-		$sql = e107::getDb();
+
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+
+
+		$text = $this->renderBreadcrumb();
+
+
+		$text .= e107::getMessage()->setTitle("Warning!",E_MESSAGE_ERROR)->addError("This post, and every post below it will be moved into a new thread/topic.")->render();
+
+			$text .= "
+		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
+		<div>
+		<table class='table table-striped'>
+		<tr><td>".LAN_FORUM_3050."</td>
+		<td><div class='alert alert-warning' style='margin:0'>".$tp->toHTML($this->data['post_entry'], true)."</div></td>
+		</tr>
+
+		<tr>
+		<td>".LAN_FORUM_3051.": </td>
+		<td>".$this->forumSelect('forum_split',$this->data['forum_id'], 'required=1')."
+
+		</td>
+		</tr>
+		<tr>
+		<td >".LAN_FORUM_3042."</td>
+		<td>
+
+		".$frm->text('new_thread_title', $tp->toForm($this->data['thread_name'], 250))."
+
+		</div></td>
+		</tr>
+		</table>
+		<div class='center'>
+		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
+		<a class='btn btn-default button'  href='".e_REFERER_SELF."' >".LAN_CANCEL."</a>
+		</div>
+
+		</div>
+		</form>";
+
+
+		$ns->tablerender(LAN_FORUM_3052, $text);
+
+
+	}
+
+
+
+
+
+	/**
+	 * Render a drop-down list of forums.
+	 * @param $name
+	 * @param mixed $curVal
+	 * @param string|array $opts
+	 * @return string
+	 */
+	private function forumSelect($name, $curVal=null, $opts=null)
+	{
+		$sql = e107::getDb();
 
 		$qry = "
 		SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
@@ -673,7 +755,6 @@ class forum_post_handler
 		";
 
 		$fList = $sql->retrieve($qry,true);
-
 
 		$opts = array();
 		$currentName = "";
@@ -700,10 +781,30 @@ class forum_post_handler
 		}
 
 
-		$text = "
+		return e107::getForm()->select($name, $opts, $curVal, $opts, $currentName);
+	}
+
+
+	/**
+	 * Render Move Form.
+	 */
+	private function renderFormMove()
+	{
+		if(!deftrue('MODERATOR'))
+		{
+			return;
+		}
+
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+
+		$text = $this->renderBreadcrumb();
+
+		$text .= "
 		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
 		<div>
-		<table class='table table-striped' style='".ADMIN_WIDTH."'>
+		<table class='table table-striped'>
 		<tr>
 		<td>".LAN_FORUM_3011.": </td>
 		<td>
@@ -715,7 +816,7 @@ class forum_post_handler
 
 		<tr>
 		<td>".LAN_FORUM_5019.": </td>
-		<td>".$frm->select('forum_move', $opts, $this->data['forum_id'], 'required=1', $currentName)."
+		<td>".$this->forumSelect('forum_move', $this->data['forum_id'], 'required=1')."
 
 		</td>
 		</tr>
@@ -789,7 +890,9 @@ class forum_post_handler
 
 		if(deftrue('BOOTSTRAP')) //v2.x
 		{
-			$text = $frm->open('forum-report-thread','post');
+			$text = $this->renderBreadcrumb();
+
+			$text .= $frm->open('forum-report-thread','post');
 			$text .= "
 							<div>
 								<div class='alert alert-block alert-warning'>
@@ -802,7 +905,7 @@ class forum_post_handler
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
-								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge'))."
+								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge', 'placeholder'=>LAN_FORUM_2038))."
 									</div>
 								</div>
 								<div class='form-group'>
@@ -1171,12 +1274,12 @@ class forum_post_handler
 	}
 
 
-	function moveThread($posted)
+	private function moveThread($posted)
 	{
 
 		if(!deftrue('MODERATOR'))
 		{
-			return;
+			return false;
 		}
 
 		$tp = e107::getParser();
@@ -1213,6 +1316,88 @@ class forum_post_handler
 
 	}
 
+
+
+	private function splitThread($post)
+	{
+		if(!deftrue('MODERATOR'))
+		{
+			return false;
+		}
+
+		$threadInfo = array();
+		$threadInfo['thread_sticky']    = 0;
+		$threadInfo['thread_name']      = $post['new_thread_title'];
+		$threadInfo['thread_forum_id']  = (!empty($post['forum_split'])) ? intval($post['forum_split']) : $this->data['post_forum'];
+		$threadInfo['thread_active']    = 1;
+		$threadInfo['thread_datestamp'] = $this->data['post_datestamp'];
+		$threadInfo['thread_views']      = 0;
+		$threadInfo['thread_user']       = $this->data['post_user'];
+
+
+	//	print_a($this->data);
+
+		if($ret = $this->forumObj->threadAdd($threadInfo, false))
+		{
+
+			$urlInfo = $threadInfo;
+			$urlInfo['thread_sef'] = $ret['threadsef'];
+			$urlInfo['thread_id'] = $ret['threadid'];
+			$urlInfo['forum_sef'] = $this->forumObj->getForumSef($threadInfo);
+
+			$newUrl = e107::url('forum','topic', $urlInfo);
+
+			e107::getMessage()->addSuccess("Created new thread <a class='alert-link' href='".$newUrl."'>#".$ret['threadid']."</a>");
+			$update = array(
+				'post_thread' => $ret['threadid'],
+				'post_forum'  => $threadInfo['thread_forum_id'],
+				 'WHERE'   => "post_thread = ".$this->data['post_thread']." AND post_id >= ".$this->data['post_id']
+
+			);
+
+			if($result = e107::getDb()->update('forum_post', $update))
+			{
+
+				e107::getMessage()->addSuccess("Moved ".$result." posts to topic #". $ret['threadid']);
+
+
+				// Update old thread.
+
+				if(!$this->forumObj->threadUpdateCounts($this->data['post_thread']))
+				{
+					e107::getMessage()->addError("Couldn't update thread replies for original topic #". $this->data['post_thread']);
+				}
+
+				if(!$this->forumObj->forumUpdateLastpost('thread',$this->data['post_thread']))
+				{
+					e107::getMessage()->addError("Couldn't update last post user for original topic #". $this->data['post_thread']);
+
+				}
+
+				// Update new thread.
+
+				if(!$this->forumObj->threadUpdateCounts($ret['threadid']))
+				{
+					e107::getMessage()->addError("Couldn't update thread replies for #". $ret['threadid']);
+				}
+
+				if(!$this->forumObj->forumUpdateLastpost('thread',$ret['threadid']))
+				{
+					e107::getMessage()->addError("Couldn't update last post user for #". $ret['threadid']);
+
+				}
+
+			}
+
+		}
+
+		$sc   = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
+		$text = e107::getParser()->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
+		$text .= e107::getMessage()->render();
+
+
+		e107::getRender()->tablerender(LAN_FORUM_3052, $text);
+	}
 
 
 

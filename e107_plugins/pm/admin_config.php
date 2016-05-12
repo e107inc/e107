@@ -127,6 +127,7 @@ class private_msg_ui extends e_admin_ui
 			'pm_class'	    => array('title'=> ADLAN_PM_23,      'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
 			'sendall_class'	=> array('title'=> ADLAN_PM_29,  'tab'=>1, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
 			'send_to_class'	=> array('title'=> ADLAN_PM_83,  'tab'=>0, 'type' => 'method', 'data' => 'str', 'help'=>''),
+			'vip_class'     =>  array('title'=> ADLAN_PM_86,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>ADLAN_PM_87, 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,admin,classes')),
 			'multi_class'   => array('title'=> ADLAN_PM_30,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
 			'opt_userclass' => array('title'=> ADLAN_PM_31,  'tab'=>0, 'type' => 'userclass', 'data' => 'int', 'help'=>'', 'writeParms'=>array('size'=>'xlarge', 'classlist'=>'nobody,main,member,admin,classes')),
 
@@ -143,6 +144,8 @@ class private_msg_ui extends e_admin_ui
 			'pm_max_send'   => array('title'=> ADLAN_PM_81,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>''),
 			'perpage'	    => array('title'=> ADLAN_PM_24,  'tab'=>0, 'type' => 'number', 'data' => 'int', 'help'=>''),
 			'maxlength'     => array('title'=> ADLAN_PM_84,  'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>ADLAN_PM_85, 'writeParms'=>array('post'=>'chars.')),
+
+
 		);
 
 

@@ -67,6 +67,7 @@ class plugin_gallery_index_controller extends eControllerFront
 	public function init()
 	{
 		e107::plugLan('gallery', 'front');
+		e107::css('gallery', 'css/gallery.css');
 		$this->catList = e107::getMedia()->getCategories('gallery');
 	}
 
