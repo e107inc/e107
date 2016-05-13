@@ -949,7 +949,7 @@ class e_form
 
 	/**
 	 *	Date field with popup calendar // NEW in 0.8/2.0
-	 *
+	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
 	 * @param array or str 
@@ -957,8 +957,10 @@ class e_form
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
 	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&format=MM, dd, yyyy hh:ii');
+	 * @example $frm->datepicker('my_field',time(),'type=datetime&return=string');
 	 * 
 	 * @url http://trentrichardson.com/examples/timepicker/
+	 * @return string
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
@@ -972,6 +974,7 @@ class e_form
 		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
 		$value		= null;
+		$useUnix    = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
 				
 		if($type == 'datetime' && !varset($options['format']))
 		{
@@ -1015,7 +1018,8 @@ class e_form
 		}
 		else
 		{			
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}'  id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
+			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$datestamp}' />";
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
@@ -1040,7 +1044,25 @@ class e_form
         			format: $(this).attr("data-date-format"),
         			weekStart: $(this).attr("data-date-firstday"),
         			language: $(this).attr("data-date-language")
-        		 });
+        		 }).on("changeDate", function(ev){
+
+					var useUnix = $(this).attr("data-date-unix");
+					var newValue = "";
+
+					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
+
+					if(useUnix === "true")
+					{
+						newValue = parseInt(ev.date.getTime() / 1000);
+					}
+					else
+					{
+						newValue = $("#"+ ev.target.id).val();
+					}
+
+			        $(newTarget).val(newValue);
+
+				})
     		});
 
     		$("input.e-datetime").each(function() {
@@ -1050,7 +1072,25 @@ class e_form
         			weekStart: $(this).attr("data-date-firstday"),
         			showMeridian: $(this).attr("data-date-ampm"),
         			language: $(this).attr("data-date-language")
-        		 });
+        		 }).on("changeDate", function(ev){
+
+					var useUnix = $(this).attr("data-date-unix");
+					var newValue = "";
+
+					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
+
+					if(useUnix === "true")
+					{
+						newValue = parseInt(ev.date.getTime() / 1000);
+					}
+					else
+					{
+						newValue = $("#"+ ev.target.id).val();
+					}
+
+			        $(newTarget).val(newValue);
+
+				})
     		});
     		');
 

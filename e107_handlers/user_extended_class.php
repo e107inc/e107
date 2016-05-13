@@ -920,7 +920,7 @@ class e107_user_extended
 					$curval = '';
 				}
 			
-				return e107::getForm()->datepicker($fname,$curval,'format=yyyy-mm-dd');	
+				return e107::getForm()->datepicker($fname,$curval,array('format'=>'yyyy-mm-dd','return'=>'string'));
 				break;
 
 			case EUF_LANGUAGE : // language
