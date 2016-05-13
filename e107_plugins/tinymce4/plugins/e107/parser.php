@@ -193,9 +193,9 @@ TEMPL;
 
 			$content = trim($content);
 
-			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
-			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
-			$content 	= str_replace($srch, $repl, $content);
+		//	$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+		//	$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
+		//	$content 	= str_replace($srch, $repl, $content);
 
 			// resize the thumbnail to match wysiwyg width/height.
 
