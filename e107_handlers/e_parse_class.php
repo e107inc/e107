@@ -4617,11 +4617,11 @@ return $html;
 
 class e_emotefilter
 {
-	private $search;
-	private $replace;
+	private $search         = array();
+	private $replace        = array();
 	public $emotes;
-	private $singleSearch;
-	private $singleReplace;
+	private $singleSearch   = array();
+	private $singleReplace  = array();
 	 
 	function __construct()
 	{		
@@ -4733,7 +4733,7 @@ class e_emotefilter
 			return '';
 		}
 
-		if((strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
+		if(!empty($this->singleSearch) && (strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
 		{
 			return str_replace($this->singleSearch,$this->singleReplace,$text);
 		}
