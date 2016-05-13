@@ -2456,6 +2456,16 @@ class e_parse extends e_parser
 			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
 		}
 
+		if(!isset($parm['aw']))
+		{
+			$parm['aw'] = null;
+		}
+
+		if(!isset($parm['ah']))
+		{
+			$parm['ah'] = null;
+		}
+
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
 
 	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
