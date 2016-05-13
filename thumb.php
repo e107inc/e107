@@ -16,7 +16,6 @@
  * @package e107
  * @subpackage core
  * @author secretr
- * @version $Id$
  *
  * @todo cache management - max age, max size, image cache manager (?), cron (?)
  *
@@ -87,6 +86,10 @@ class e_thumbpage
 	{
 		// initial path
 		$self = realpath(dirname(__FILE__));
+
+		$mySQLdefaultdb = '';
+		$HANDLERS_DIRECTORY = '';
+		$mySQLprefix = '';
 
 		// Config
 		include($self.'/e107_config.php');
@@ -214,15 +217,12 @@ class e_thumbpage
 			$this->_src_path = $path;
 			return true;
 		}
-		else
-		{
-			$this->_placeholder = true;
-			return true;	
-		}
-		
-		// echo "path=".$path."<br />";
-		return false;
+
+		$this->_placeholder = true;
+		return true;
+
 	}
+
 
 	function sendImage()
 	{
@@ -258,7 +258,7 @@ class e_thumbpage
 
 
 
-		if($this->_cache = true && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
+		if(($this->_cache === true) && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
 		{
 			$thumbnfo['lmodified'] = filemtime(e_CACHE_IMAGE.$fname);
 			$thumbnfo['md5s'] = md5_file(e_CACHE_IMAGE.$fname);
