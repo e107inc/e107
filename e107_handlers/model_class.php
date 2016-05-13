@@ -2855,7 +2855,7 @@ class e_admin_model extends e_front_model
 			$this->mergePostedData(false, true, true);
 		}
 
-		if($this->getId() && $this->getPostedData('etrigger_submit') !='Create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
+		if($this->getId() && $this->getPostedData('etrigger_submit') !='create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
 		{
 			return $this->dbUpdate($force, $session_messages);
 		}

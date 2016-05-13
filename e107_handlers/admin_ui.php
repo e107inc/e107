@@ -4057,7 +4057,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		// - Autoincrement sortField on 'Create'.
 
-		if(($_posted['etrigger_submit'] == 'Create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
+		if(($_posted['etrigger_submit'] == 'create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
 		{
 
 			$incVal = e107::getDb()->max($this->table, $this->sortField) + 1;
