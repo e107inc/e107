@@ -316,7 +316,6 @@ class e_thumbpage
 		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
 			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
-			echo __LINE__;
 		}
 		elseif(!empty($this->_request['ah']))
 		{
