@@ -145,7 +145,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		                     'forum_sef'        =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
 
 		                     'forum_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-
+							'forum_img'        =>   array ( 'title' => "Imagen", 'type' => 'text', 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
 		                     'forum_parent'      =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'forum_sub'         =>   array ( 'title' => 'SubForum of', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		                                    'forum_moderators' =>   array ( 'title' => 'Moderators', 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,mods,classes", 'class' => 'left', 'thclass' => 'left',  ),
@@ -177,6 +177,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'poll'		            => array('title'=> FORLAN_49, 'type'=>'userclass', 'data' => 'int','help'=>FORLAN_50),
 			'attach'		        => array('title'=> FORLAN_70, 'type'=>'boolean', 'data' => 'str','help'=>FORLAN_71),
 			'maxwidth'	            => array('title'=> FORLAN_134, 'type'=>'number', 'data' => 'str','help'=>FORLAN_135),
+			'maxheight'              => array('title'=> FORLAN_190, 'type'=>'text', 'data' => 'str','help'=>FORLAN_191),
 			'linkimg'		        => array('title'=> FORLAN_136, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_137),
 			'track'		            => array('title'=> FORLAN_200, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_201),
 			'trackemail'		    => array('title'=> FORLAN_202, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_203),
