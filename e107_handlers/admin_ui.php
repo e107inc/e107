@@ -2101,7 +2101,10 @@ class e_admin_controller
 		{
 			$this->addTitle(); 	
 		}
-		
+
+
+	//	e107::getDebug()->log("Admin-ui Action: <b>".$action."</b>");
+
 		if($action == 'Edit')
 		{
 			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
@@ -3918,6 +3921,9 @@ class e_admin_controller_ui extends e_admin_controller
 				'search' => $searchQry,
 				'tableFromName' => $tableFrom,
 			);
+
+			$orderField = $request->getQuery('field', $this->getDefaultOrderField());
+
 			$rawData['tableFrom'] = $tableSFieldsArr;
 			$rawData['joinsFrom'] = $tableSJoinArr;
 			$rawData['joins'] = $joins;
@@ -4069,7 +4075,7 @@ class e_admin_controller_ui extends e_admin_controller
 		// Trigger Admin-ui event.  'pre'
 		if($triggerName = $this->getEventTriggerName($_posted['etrigger_submit'])) // 'create' or 'update'; 
 		{
-
+			$id = $model->getId();
 			$eventData = array('newData'=>$_posted,'oldData'=>$old_data,'id'=> $id);
 			$model->addMessageDebug('Admin-ui Trigger fired: <b>'.$triggerName.'</b>');
 			if(E107_DBG_ALLERRORS >0 )
@@ -5740,7 +5746,7 @@ class e_admin_form_ui extends e_form
 	function getSettings()
 	{
 		$controller = $this->getController();
-		$request = $controller->getRequest();
+	//	$request = $controller->getRequest();
 		$legend = LAN_UI_PREF_LABEL;
 		$forms = $models = array();
 		$forms[] = array(
