@@ -3534,7 +3534,7 @@ class e_parser
 			$img = $genericImg;
 		}
 
-		if(($img == $genericImg) && ($userData['user_id'] == USERID) && !empty($options['link']))
+		if(($img == $genericImg) && !empty($userData['user_id'] ) && (($userData['user_id'] == USERID)) && !empty($options['link']))
 		{
 			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit')."'>";
 			$linkEnd = "</a>";
