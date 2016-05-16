@@ -12,12 +12,14 @@ class plugin_forum_view_shortcodes extends e_shortcode
 {
 	protected $e107;
 	protected $defaultImgAttachSize = false;
+	protected $pref;
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->e107 = e107::getInstance();
 		$this->forum = 	new e107forum();
+		$this->pref = e107::pref('forum');
 
 		$this->defaultImgAttachSize = e107::pref('forum','maxwidth',false); // don't resize here if set to 0.
 	}
@@ -381,10 +383,18 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 	function sc_level($parm)
 	{
+
+		if(isset($this->pref['ranks']) && empty($this->pref['ranks']))
+		{
+			return false;
+		}
+
+
 		if (!$this->postInfo['post_user']) { return ''; }
 
 		$rankInfo = e107::getRank()->getRanks($this->postInfo['post_user']);
 		// FIXME - level handler!!!
+
 
 	//	print_a($rankInfo);
 
