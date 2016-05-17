@@ -1110,6 +1110,7 @@ class e_form
 	 * @param string $options['classes'] - single or comma-separated list of user-classes members to include.
 	 * @param string $options['excludeSelf'] = exlude logged in user from list.
 	 * @param string $options['return'] if == 'array' an array is returned.
+	 * @param string $options['return'] if == 'sqlWhere' an sql query is returned.
 	 * @return string select form element.
 	 */
 	public function userlist($name, $val=null, $options=array())
@@ -1153,6 +1154,10 @@ class e_form
 		}
 
 
+		if(!empty($options['return']) && $options['return'] == 'sqlWhere') // can be used by user.php ajax method..
+		{
+			return $where;
+		}
 
 		$users =   e107::getDb()->retrieve("user",$fields, "WHERE ".$where." ORDER BY user_name LIMIT 1000",true);
 
