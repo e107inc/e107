@@ -89,20 +89,45 @@ if(isset($_GET['f']))
 			break;
 	}
 }
-$fVars = new e_vars;
+
+//echo "<hr><hr><hr>";
+				$sc = e107::getScBatch('forum', true);
+//echo "<hr>";
+//var_dump ($sc);
+//				$sc->forum = $forum;
+//var_dump ($sc);
+//echo $tp->parseTemplate("====>{FORUMTITLE}<====", false, $sc);
+//echo "<hr>";
+//var_dump (is_object($sc));
+//var_dump (is_array($sc));
+
+//--$fVars = new e_vars;
 $gen = new convert;
 
+/*--
+// Gonne directly to shortcode file
 $fVars->FORUMTITLE = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
+// Gonne directly to template file
 $fVars->THREADTITLE = LAN_FORUM_0002;
+// Gonne directly to template file
 $fVars->REPLYTITLE = LAN_FORUM_0003;
+// Gonne directly to template file
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
+// Gonne directly to template file
 $fVars->INFOTITLE = LAN_FORUM_0009;
+// Gonne directly to shortcode file
 $fVars->LOGO = IMAGE_e;
+// Gonne directly to template file
 $fVars->NEWTHREADTITLE = LAN_FORUM_0075;
+// Gonne directly to template file
 $fVars->POSTEDTITLE = LAN_FORUM_0074; 
+// Gonne directly to shortcode file
 $fVars->NEWIMAGE = IMAGE_new_small;
+// Gonne directly to template file
 $fVars->TRACKTITLE = LAN_FORUM_0073;
-
+--*/
+/*--
+// Gonne directly to shortcode file
 $rules_text = forum_rules('check');
 
 $fVars->USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
@@ -136,10 +161,11 @@ if(!empty($trackPref))
 }
 $fVars->USERINFOX = implode(" | ",$uInfo);
 // -----------
+--*/
 
 
-
-
+/*--
+// Gonne to foruminfo shortcode
 $total_topics = $sql->count("forum_thread", "(*)");
 $total_replies = $sql->count("forum_post", "(*)");
 $total_members = $sql->count("user");
@@ -151,6 +177,8 @@ if(!defined('e_TRACKING_DISABLED'))
 	$member_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
 	$guest_users = $sql->select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
 	$users = $member_users+$guest_users;
+// Gonne to shortcode file
+/*--
 	$fVars->USERLIST = LAN_FORUM_0036.": ";
 	global $listuserson;
 	$c = 0;
@@ -165,6 +193,9 @@ if(!defined('e_TRACKING_DISABLED'))
 	}
 	$fVars->USERLIST .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_FORUM_0037."</a> ".LAN_FORUM_0038;
 }
+--*/
+// Gonne directly to shortcode file
+/*--
 $fVars->STATLINK = "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
 $fVars->ICONKEY = "
 <table class='table table-bordered' style='width:100%'>\n<tr>
@@ -184,13 +215,13 @@ if(!$srchIcon = $tp->toGlyph('fa-search'))
 $fVars->SEARCH = "
 <form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 <div class='input-group'>
-<input type='hidden' name='r' value='0' />
-<input type='hidden' name='t' value='forum' />
-<input type='hidden' name='forum' value='all' />
 <input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
 <span class='input-group-btn'>
 <button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
 </span>
+<input type='hidden' name='r' value='0' />
+<input type='hidden' name='t' value='forum' />
+<input type='hidden' name='forum' value='all' />
 </div>
 
 </form>\n";
@@ -268,6 +299,7 @@ if (USER && vartrue($trackPref) && e_QUERY != 'track')
 $fVars->FORUMINFO = 
 str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
 ".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
+--*/
 
 // FIX - core template always override theme template
 // Include core template
@@ -282,9 +314,6 @@ elseif(file_exists(THEME.'templates/forum/forum_template.php'))
 {
 	require_once(THEME.'templates/forum/forum_template.php');
 }
-
-
-
 
 if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format. 
 {
@@ -305,10 +334,7 @@ if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format.
 	$FORUM_NEWPOSTS_START	= $FORUM_TEMPLATE['main']['start']; // $FORUM_TEMPLATE['new-start'];
 	$FORUM_NEWPOSTS_MAIN 	= $FORUM_TEMPLATE['main']['forum']; // $FORUM_TEMPLATE['new-main'];
 	$FORUM_NEWPOSTS_END 	= $FORUM_TEMPLATE['main']['end']; // $FORUM_TEMPLATE['new-end'];
-
-		
 }
-
 
 require_once(HEADERF);
 
@@ -323,16 +349,21 @@ if (!$forumList)
 }
 
 $forum_string = '';
-$pVars = new e_vars;
-$frm = e107::getForm();
+//--$pVars = new e_vars;
+//--$frm = e107::getForm();
 foreach ($forumList['parents'] as $parent)
 {
-	$status = parse_parent($parent);
-	$pVars->PARENTSTATUS = $status;
+// Gonne directly to shortcode file
+//--	$status = parse_parent($parent);
+//--	$pVars->PARENTSTATUS = $status;
+				$sc->parentstatus = parse_parent($parent);
 
+// Gonne directly to shortcode file
 //	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
-	$pVars->PARENTNAME = $parent['forum_name'];
-	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
+//	$pVars->PARENTNAME = $parent['forum_name'];
+				$sc->parentname = $parent['forum_name'];
+//--	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
+	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, false, $sc);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
 		$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_FORUM_0068."</td>";
@@ -365,7 +396,8 @@ foreach ($forumList['parents'] as $parent)
 		}
 		if (isset($FORUM_MAIN_PARENT_END))
 		{
-			$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
+//--			$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
+    	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT_END, false, $sc);
 		}
 	}
 }
@@ -381,11 +413,13 @@ function parse_parent($parent)
 
 function parse_forum($f, $restricted_string = '')
 {
-	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList;
-	$fVars = new e_vars;
+	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList, $sc;
+//--	$fVars = new e_vars;
 	$e107 = e107::getInstance();
 	$tp = e107::getParser();
 
+// Gonne directly to shortcode file
+/*--
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
 
@@ -399,32 +433,34 @@ function parse_forum($f, $restricted_string = '')
 	{
 		$fVars->NEWFLAG = IMAGE_nonew;
 	}
+--*/
 
+// Gonne directly to shortcode file
+/*--
 	if(substr($f['forum_name'], 0, 1) == '*')
 	{
 		$f['forum_name'] = substr($f['forum_name'], 1);
 	}
 	$f['forum_name'] = $tp->toHTML($f['forum_name'], true, 'no_hook');
-	$f['forum_description'] = $tp->toHTML($f['forum_description'], TRUE, "BODY");
+	$f['forum_description'] = $tp->toHTML($f['forum_description'], true, 'no_hook');
 
 
 	//$url= $e107->url->create('forum/forum/view', $f);
 	$url = e107::url('forum', 'forum', $f);
 	$fVars->FORUMNAME = "<a href='".$url."'>{$f['forum_name']}</a>";
 	$fVars->FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
-	$fVars->THREADS = $f['forum_threads'];
-	$fVars->REPLIES = $f['forum_replies'];
-	$fVars->FORUMSUBFORUMS = '';
+--*/
+//--	$fVars->THREADS = $f['forum_threads'];
+	$sc->threads = $f['forum_threads'];
+//--	$fVars->REPLIES = $f['forum_replies'];
+	$sc->replies = $f['forum_replies'];
+//--	$fVars->FORUMSUBFORUMS = '';
 	
+//--	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
+//--	$badgeThreads = ($f['forum_threads']) ? "badge-info" : "";
 	
-
-	
-	
-	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
-	$badgeThreads = ($f['forum_threads']) ? "badge-info" : "";
-	
-	$fVars->THREADSX = "<span class='badge {$badgeThreads}'>".$f['forum_threads']."</span>";
-	$fVars->REPLIESX = "<span class='badge {$badgeReplies}'>".$f['forum_replies']."</span>";
+//--	$fVars->THREADSX = "<span class='badge {$badgeThreads}'>".$f['forum_threads']."</span>";
+//--	$fVars->REPLIESX = "<span class='badge {$badgeReplies}'>".$f['forum_replies']."</span>";
 
 
 	$subId = $f['forum_id'];
@@ -432,9 +468,12 @@ function parse_forum($f, $restricted_string = '')
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
 		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
-		$fVars->FORUMSUBFORUMS = "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$ret['text']}</div>";
-		$fVars->THREADS += $ret['threads'];
-		$fVars->REPLIES += $ret['replies'];
+    $sc->ret = $ret;
+//		$fVars->FORUMSUBFORUMS = "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$ret['text']}</div>";
+//--		$fVars->THREADS += $ret['threads'];
+//--		$fVars->REPLIES += $ret['replies'];
+		$sc->threads += $ret['threads'];
+		$sc->replies += $ret['replies'];
 		if(isset($ret['lastpost_info']))
 		{
 			$f['forum_lastpost_info'] = $ret['lastpost_info'];
@@ -444,6 +483,7 @@ function parse_forum($f, $restricted_string = '')
 		}
 	}
 
+/*--
 	if ($f['forum_lastpost_info'])
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
@@ -475,9 +515,10 @@ function parse_forum($f, $restricted_string = '')
 		$fVars->LASTPOSTDATE = "-";
 		$fVars->LASTPOST = '-';
 	}
+--*/
 
-
-	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
+//--	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
+	return $tp->parseTemplate($FORUM_MAIN_FORUM, false, $sc);
 }
 
 
@@ -534,13 +575,16 @@ if (e_QUERY == 'track')
 
 if (e_QUERY == 'new')
 {
-	$nVars = new e_vars;
+//--	$nVars = new e_vars;
 	$newThreadList = $forum->threadGetNew(10);
 	foreach($newThreadList as $thread)
 	{
-		$author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
+//--		$author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
+		$sc->author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
 
-		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
+//--		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
+		$sc->datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
+/*--
 		if(!$thread['user_name'])
 		{
 			$nVars->STARTERTITLE = $author_name.'<br />'.$datestamp;
@@ -549,19 +593,25 @@ if (e_QUERY == 'new')
 		{
 			$nVars->STARTERTITLE = "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $author_name))."'>{$author_name}</a><br />".$datestamp;
 		}
-		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 
-		$forum_newstring .= $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+		$nVars->NEWSPOSTNAME = "<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+--*/
+
+//--		$forum_newstring .= $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+		$forum_newstring .= $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, false, $sc);
 	}
 
 	if (empty($newThreadList))
 	{
-		$nVars->NEWSPOSTNAME = LAN_FORUM_0029;
-		$forum_newstring = $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+//--		$nVars->NEWSPOSTNAME = LAN_FORUM_0029;
+//--		$forum_newstring = $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+		$forum_newstring = $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, false, $sc);
 
 	}
-	$forum_new_start = $tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
-	$forum_new_end = $tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
+//--	$forum_new_start = $tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
+//--	$forum_new_end = $tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
+	$forum_new_start = $tp->parseTemplate($FORUM_NEWPOSTS_START, false, $sc);
+	$forum_new_end = $tp->parseTemplate($FORUM_NEWPOSTS_END, false, $sc);
 
 	if ($forum->prefs->get('enclose'))
 	{
@@ -573,16 +623,18 @@ if (e_QUERY == 'new')
 	}
 }
 
-$frm = e107::getForm();
+//$frm = e107::getForm();
 
 $breadarray = array(
 					array('text'=> $forum->prefs->get('title'), 'url' => e107::url('forum','index') )
 );
 
-$fVars->FORUM_BREADCRUMB = $frm->breadcrumb($breadarray);
+//--  $fVars->FORUM_BREADCRUMB = $frm->breadcrumb($breadarray);
 
-$forum_main_start = $tp->simpleParse($FORUM_MAIN_START, $fVars);
-$forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
+//--  $forum_main_start = $tp->simpleParse($FORUM_MAIN_START, $fVars);
+$forum_main_start = $tp->parseTemplate($FORUM_MAIN_START, false, $sc);
+//--  $forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
+$forum_main_end = $tp->parseTemplate($FORUM_MAIN_END, false, $sc);
 
 if ($forum->prefs->get('enclose'))
 {
