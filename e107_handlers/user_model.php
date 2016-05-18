@@ -257,6 +257,32 @@ class e_user_model extends e_admin_model
 		return (($this->get('user_join') > strtotime($new_user_period." days ago")) ? true : false);
 	}
 
+	final public function isBot()
+	{
+		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+		if(empty($userAgent))
+		{
+			return false;
+		}
+
+		$botlist = array( "googlebot", "Bingbot", 'slurp', 'baidu', 'ichiro','nutch','yacy', "Teoma",
+		"alexa", "froogle", "Gigabot", "inktomi",
+		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
+		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
+		"crawler", "www.galaxy.com", "Scooter", "msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
+		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
+		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
+		"Butterfly","Twitturls","Me.dium","Twiceler");
+
+		foreach($botlist as $bot)
+		{
+			if(stripos($userAgent, $bot) !== false){ return true; }
+		}
+
+		return false;
+	}
+
 	final public function isMainAdmin()
 	{
 		return $this->checkAdminPerms('0');
@@ -318,6 +344,12 @@ class e_user_model extends e_admin_model
 		else
 		{
 			$this->_class_list[] = e_UC_GUEST;
+
+			if($this->isBot())
+			{
+				$this->_class_list[] = e_UC_BOTS;
+			}
+
 		}
 
 		$this->_class_list[] = e_UC_READONLY;
