@@ -248,6 +248,15 @@ class e_user_model extends e_admin_model
 		return ($this->get('user_admin') ? true : false);
 	}
 
+	final public function isNewUser()
+	{
+		$new_user_period = e107::getPref('user_new_period', 0);
+
+		if(empty($new_user_period))	{ return false; }
+
+		return (($this->get('user_join') > strtotime($new_user_period." days ago")) ? true : false);
+	}
+
 	final public function isMainAdmin()
 	{
 		return $this->checkAdminPerms('0');
@@ -288,11 +297,19 @@ class e_user_model extends e_admin_model
 				// list of all 'inherited' user classes, convert elements to integer
 				$this->_class_list = array_map('intval', e107::getUserClass()->get_all_user_classes($this->get('user_class'), true));
 			}
+
 			$this->_class_list[] = e_UC_MEMBER;
+
+			if($this->isNewUser())
+			{
+				$this->_class_list[] = e_UC_NEWUSER;
+			}
+
 			if ($this->isAdmin())
 			{
 				$this->_class_list[] = e_UC_ADMIN;
 			}
+
 			if ($this->isMainAdmin())
 			{
 				$this->_class_list[] = e_UC_MAINADMIN;
@@ -302,6 +319,7 @@ class e_user_model extends e_admin_model
 		{
 			$this->_class_list[] = e_UC_GUEST;
 		}
+
 		$this->_class_list[] = e_UC_READONLY;
 		$this->_class_list[] = e_UC_PUBLIC;
 
