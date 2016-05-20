@@ -146,6 +146,10 @@ class core_news_url extends eUrlConfig
 				case 'tag':
 					$url .= 'tag='.$params['tag'].'&page='.$page;
 				break;
+
+				case 'author':
+					$url .= 'author='.$params['author'].'&page='.$page;
+				break;
 				
 				case 'short':
 					$url .= 'cat.'.$params['id'].'.'.$page;
