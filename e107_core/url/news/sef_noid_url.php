@@ -102,7 +102,14 @@ class core_news_sef_noid_url extends eUrlConfig
 				
 				case 'tag':				// news/tag/xxxx
 					$r[0] = 'tag';
-					$r[1] = $params['tag']; 
+					$r[1] = $params['tag'];
+					if($page) $parm = array('page' => $page);
+				break;
+
+				case 'author':				// news/author/xxxx
+					$r[0] = 'author';
+					$r[1] = $params['author'];
+					if($page) $parm = array('page' => $page);
 				break;
 				
 				case 'category':
@@ -249,6 +256,11 @@ class core_news_sef_noid_url extends eUrlConfig
 			case 'tag': // url: news/tag/xxxxx
 				$this->legacyQueryString = 'tag='.$parts[1];
 				return 'list/tag';
+			break;
+
+			case 'author': // url: news/author/xxxxx
+				$this->legacyQueryString = 'author='.$parts[1].'&page='.$page;
+				return 'list/author';
 			break;
 			
 			# force not found

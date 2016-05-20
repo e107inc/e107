@@ -39,8 +39,9 @@ class core_news_sef_full_url extends eUrlConfig
 				'Short/<id:{number}>' 						=> array('list/short', 	'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id'), 'legacyQuery' => 'cat.{id}.{page}'),				
 				'Day/<id:{number}>' 						=> array('list/day', 	'allowVars' => array('page'), 'legacyQuery' => 'day.{id}.{page}'),
 				'Month/<id:{number}>' 						=> array('list/month', 	'allowVars' => array('page'), 'legacyQuery' => 'month.{id}.{page}'),
-				'Tag/<tag:{secure}>' 						=> array('list/tag', 	'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}'),
-				
+				'Tag/<tag:{secure}>' 						=> array('list/tag', 	'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}&page={page}'),
+				'Author/<author:{secure}>' 					=> array('list/author', 'allowVars' => array('page'), 'legacyQuery' => 'author={author}&page={$page}'),
+
 				'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_sef' => 'category', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				'<id:{number}>' 							=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
