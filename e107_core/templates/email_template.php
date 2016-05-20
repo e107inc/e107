@@ -342,7 +342,7 @@ $EMAIL_TEMPLATE['monthly']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 $EMAIL_TEMPLATE['whatsnew']['name']				= "What's New";												
 $EMAIL_TEMPLATE['whatsnew']['subject']			= '{SITENAME}: {SUBJECT} ';
 $EMAIL_TEMPLATE['whatsnew']['header']			= $EMAIL_TEMPLATE['default']['header']; // will use default header above. 	
-$EMAIL_TEMPLATE['whatsnew']['body']				= "All the latest news and updates.<br />{BODY}<br />To find out more, simply click on the links!";
+$EMAIL_TEMPLATE['whatsnew']['body']				= "Hi {USERNAME},<br />{BODY}";
 $EMAIL_TEMPLATE['whatsnew']['footer']			= $EMAIL_TEMPLATE['default']['footer'];
 
 

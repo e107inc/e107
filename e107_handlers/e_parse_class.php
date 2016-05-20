@@ -247,11 +247,12 @@ class e_parse extends e_parser
 	 * Constructor - keep it public for backward compatibility
 	 still some new e_parse() in the core
 	 *
-	 * @return void
 	 */
 	public function __construct()
 	{
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
+		parent::__construct();
+
 
 		$this->init();
 		$this->initCharset();
@@ -3188,7 +3189,10 @@ class e_parser
 
     private $scriptAccess      = false; // nobody.
 
-    public function __construct()
+	/**
+	 * e_parser constructor.
+	 */
+	public function __construct()
     {
 
 		$this->init();
@@ -4421,7 +4425,7 @@ return;
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
-		        $value = str_replace("<br></br>", PHP_EOL, $value);
+		        $value = str_replace('<br></br>', PHP_EOL, $value);
 		    }
 
 		    if($node->nodeName == 'code')

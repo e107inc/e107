@@ -1844,7 +1844,7 @@ class navigation_shortcodes extends e_shortcode
 		if(is_string($this->var['link_sub'])) // html override option.
 		{
 
-			e107::getDebug()->log($this->var);
+		//	e107::getDebug()->log($this->var);
 
 			return $this->var['link_sub'];
 		}
