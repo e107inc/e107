@@ -620,6 +620,12 @@ class convert
 		  }
 		  if($format == 'short' && count($outputArray) == 1) { break; }
 		}
+
+		if(empty($outputArray[1]) && ($outputArray[0] == "0 ".$mins))
+		{
+			return deftrue('LANDT_10',"Just now");
+		}
+
 		return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);
 	}
 

@@ -144,16 +144,16 @@ class newsfeedClass
 
 		if($cachedData !== false && $force === false)
 		{
-			// e107::getDebug()->log("NewsFeed Cache Used");
+			e107::getDebug()->log("NewsFeed Cache Used");
 			$this->newsList[$feedID]['newsfeed_data'] = $cachedData;
 		}
 
 		if ($force === true) // Need to re-read from source - either no cached data yet, or cache expired
 		{
-			
+				e107::getDebug()->log("NewsFeed Update: Item #".$feedID." ".NEWSFEED_NEWS_CACHE_TAG);
+
 				if (NEWSFEED_DEBUG)
 				{
-					e107::getDebug()->log("NewsFeed Update: Item #".$feedID." ".NEWSFEED_NEWS_CACHE_TAG);
 					 e107::getLog()->e_log_event(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
 				}
 				
