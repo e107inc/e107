@@ -31,5 +31,7 @@ define("LANDT_09", "sec");
 define("LANDT_09s", "secs");
 define("LANDT_AGO", "ago");
 
+define("LANDT_10", "Just now");
+
 
 ?>

@@ -19,8 +19,9 @@ if (!getperms('P') || !e107::isInstalled('newsfeed'))
 
 e107::lan('newsfeed',true);
 
-define('NEWSFEED_LIST_CACHE_TAG', 'nomd5_newsfeeds');
-define('NEWSFEED_NEWS_CACHE_TAG', 'nomd5_newsfeeds_news_');
+
+define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
+define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
 
 
 class newsfeed_adminArea extends e_admin_dispatcher
@@ -82,11 +83,11 @@ class newsfeed_ui extends e_admin_ui
 		  'newsfeed_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'required'=>true,  'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_url' =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'required'=>true, 'inline'=>true, 'width' => 'auto',  'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_data' =>   array ( 'title' => 'Data', 'type' => null,  'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_timestamp' =>   array ( 'title' => 'Timestamp', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'newsfeed_image' =>   array ( 'title' => NFLAN_11, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => LAN_OPTIONAL, 'readParms' => 'thumb=80x80', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
 		   'newsfeed_updateint' =>   array ( 'title' => NFLAN_18, 'type' => 'text', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3600), 'class' => 'left', 'thclass' => 'left',  ),
+	        'newsfeed_timestamp' =>   array ( 'title' => NFLAN_50, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
   	  	  'newsfeed_active' =>   array ( 'title' => NFLAN_12, 'type' => 'radio', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3, 'optArray'=>array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21)), 'class' => 'left', 'thclass' => 'left',  ),
 
@@ -96,7 +97,7 @@ class newsfeed_ui extends e_admin_ui
 		    'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '8%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);
 
-		protected $fieldpref = array('newsfeed_name', 'newsfeed_url', 'newsfeed_updateint', 'newsfeed_active', 'newsfeed_showmenu', 'newsfeed_showmain');
+		protected $fieldpref = array('newsfeed_name', 'newsfeed_url', 'newsfeed_updateint', 'newsfeed_timestamp', 'newsfeed_active', 'newsfeed_showmenu', 'newsfeed_showmain');
 
 
 	//	protected $preftabs        = array('General', 'Other' );
@@ -237,6 +238,34 @@ class newsfeed_form_ui extends e_admin_form_ui
 	}
 
 
+	function newsfeed_timestamp($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				if($curVal == 0)
+				{
+					return '-';
+				}
+
+				return e107::getParser()->toDate($curVal, 'relative');
+			break;
+
+			case 'write': // Edit Page
+
+				// $tmp = explode('::',$curVal);
+
+				return  e107::getParser()->toDate($curVal, 'relative').$this->hidden('newsfeed_timestamp',0);
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
 
 	function newsfeed_showmain($curVal,$mode)
 	{
