@@ -14,4 +14,3 @@ define("LAN_PLUGIN_SOCIAL_XUP_SIGNUP", "Sign-in with your [x] account");
 define("LAN_PLUGIN_SOCIAL_XUP_REG", "Register with your [x] account");
 
 
-?>
