@@ -29,7 +29,7 @@ if (!getperms("I"))
 
 e107::coreLan('links', true);
 
-
+e107::css('inline', " td .label-warning { margin-left:30px } ");
 
 
 class links_admin extends e_admin_dispatcher
@@ -720,12 +720,13 @@ class links_admin_form_ui extends e_admin_form_ui
 
 			foreach($config as $k=>$v)
 			{
-				if(strpos($v['regex'],')')===false) // only provide urls without dynamic elements.
+				if($k == 'index') // only provide urls without dynamic elements.
 				{
 					$opts[] = $k;
 				}
 			}
 
+			sort($opts);
 
 			return $this->select('link_sefurl', $opts, $curVal, array('useValues'=>true,'defaultValue'=>'','default'=>'('.LAN_DISABLED.')'));
 		}
