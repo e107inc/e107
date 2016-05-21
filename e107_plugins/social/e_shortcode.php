@@ -20,21 +20,23 @@ class social_shortcodes extends e_shortcode
 
 		$emailMessage = LAN_SOCIAL_LINK_CHK;
 
+		$tp = e107::getParser();
+
 			
 		$providers = array( 
-			'email'				=> array('icon'	=> 'e-social-mail',			'title'=>" ".LAN_SOCIAL_002." ",	'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".rawurlencode($emailMessage)."[u]"),
-			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=>" ".LAN_SOCIAL_001." Facebook",	'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
-			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=>" ".LAN_SOCIAL_000." Facebook",	'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
-			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=>"".LAN_SOCIAL_000."  Twitter",	'url' => "http://twitter.com/share?url=[u]&text=[t]"),
-			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=>" ".LAN_SOCIAL_003." ",		'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
+			'email'				=> array('icon'	=> 'e-social-mail',			'title'=> LAN_SOCIAL_002,	                            'url' => "mailto:EMAIL_RECIPIENT?subject=[t]&body=".rawurlencode($emailMessage)."[u]"),
+			'facebook-like'		=> array('icon' => 'e-social-thumbs-up',	'title'=> $tp->lanVars(LAN_SOCIAL_001, "Facebook"),	    'url' => "http://www.facebook.com/plugins/like.php?href=[u]"),
+			'facebook-share'	=> array('icon' => 'e-social-facebook',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Facebook"),	    'url' => "http://www.facebook.com/sharer.php?u=[u]&t=[t]"),
+			'twitter'			=> array('icon' => 'e-social-twitter',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Twitter"),	    'url' => "http://twitter.com/share?url=[u]&text=[t]"),
+			'google-plus1'		=> array('icon' => 'e-social-gplus',		'title'=> LAN_SOCIAL_003,		                        'url' => "https://apis.google.com/_/+1/fastbutton?usegapi=1&size=large&hl=en&url=[u]"),
 
 			//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
-			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=>"".LAN_SOCIAL_000."  LinkedIn",	'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
-			'pinterest'			=> array('icon'	=> 'e-social-pinterest',	'title'=>"".LAN_SOCIAL_000."  Pinterest",	'url' => "http://www.pinterest.com/pin/create/button/?url=[u]&description=[t]&media=[m]"),
+			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "LinkedIn"),	    'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
+			'pinterest'			=> array('icon'	=> 'e-social-pinterest',	'title'=> $tp->lanVars(LAN_SOCIAL_000, "Pinterest"),	'url' => "http://www.pinterest.com/pin/create/button/?url=[u]&description=[t]&media=[m]"),
 			//	'thumblr'			=> array('icon'	=>	'fa-tumblr',			'title'=>"On Tumblr",			'url' => "http://www.tumblr.com/share/link?url=[u]&name=[t]&description=[d]"),
-			'stumbleupon'		=> array('icon'	=> 'e-social-stumbleupon',	'title'=>"".LAN_SOCIAL_000."  StumbleUpon",'url' => "http://www.stumbleupon.com/submit?url=[u]&title=[t]"),
-			'reddit'			=> array('icon'	=> 'e-social-reddit',		'title'=>"".LAN_SOCIAL_000."  Reddit",		'url' => "http://reddit.com/submit?url=[u]&title=[t]"),
-			'digg'				=> array('icon'	=> 'e-social-digg',			'title'=>"".LAN_SOCIAL_000."  Digg",		'url' => "http://www.digg.com/submit?url=[u]"),
+			'stumbleupon'		=> array('icon'	=> 'e-social-stumbleupon',	'title'=> $tp->lanVars(LAN_SOCIAL_000, "StumbleUpon"),  'url' => "http://www.stumbleupon.com/submit?url=[u]&title=[t]"),
+			'reddit'			=> array('icon'	=> 'e-social-reddit',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Reddit"),		'url' => "http://reddit.com/submit?url=[u]&title=[t]"),
+			'digg'				=> array('icon'	=> 'e-social-digg',			'title'=> $tp->lanVars(LAN_SOCIAL_000, "Digg"),		    'url' => "http://www.digg.com/submit?url=[u]"),
        
 			//http://reddit.com/submit?url=http%3A%2F%2Fwebsite.com&title=Website%20Title  // no fa icon available
 			//http://www.digg.com/submit?url=http%3A%2F%2Fwebsite.com	  // no fa icon available
