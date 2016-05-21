@@ -301,6 +301,9 @@ class newsfeedClass
 
 		foreach($this->feedList as $nfID => $feed)
 		{
+
+			$feed['newsfeed_sef'] = eHelper::title2sef($feed['newsfeed_name'], 'dashl');
+
 			if (($filter == 0) || ($filter == $feed['newsfeed_id']))
 			{
 				if (($rss = $this->getFeed($nfID)))	// Call ensures that feed is updated if necessary
@@ -310,11 +313,14 @@ class newsfeedClass
 					$numtoshow = intval($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 					$numtoshow = ($numtoshow > 0 ? $numtoshow : 999);
 
-					$vars['FEEDNAME'] = "<a href='".e_SELF."?show.{$feed['newsfeed_id']}'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
+					// $url = e_PLUGIN_ABS."newsfeed/newsfeed.php?show.".$feed['newsfeed_id'];
+					$url = e107::url('newsfeed','source',$feed);
+
+					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
 					$vars['FEEDDESCRIPTION'] = $feed['newsfeed_description'];
 					$vars['FEEDIMAGE'] = $rss['newsfeed_image_link'];
 					$vars['FEEDLANGUAGE'] = $rss['channel']['language'];
-	
+					
 					if($rss['channel']['lastbuilddate'])
 					{
 						$pubbed = $rss['channel']['lastbuilddate'];
@@ -327,15 +333,21 @@ class newsfeedClass
 					{
 						$pubbed = NFLAN_34;
 					}
-	
+
+					if(empty($rss['channel']['link']) || ($rss['channel']['link'] === '/'))
+					{
+					    $rss['channel']['link'] = $feed['newsfeed_url'];
+					}
+
 					$vars['FEEDLASTBUILDDATE']  = NFLAN_33.$pubbed;
 					$vars['FEEDCOPYRIGHT']      = $tp -> toHTML(vartrue($rss['channel']['copyright']), FALSE);
 					$vars['FEEDTITLE']          = "<a href='".$rss['channel']['link']."' rel='external'>".vartrue($rss['channel']['title'])."</a>";
-					$vars['FEEDLINK']           = $rss['channel']['link'];
-					
+					$vars['FEEDLINK']           = $rss['channel']['link'] ;
+
+
 					if($feed['newsfeed_active'] == 2 or $feed['newsfeed_active'] == 3)
 					{
-						$vars['LINKTOMAIN'] = "<a href='".e_PLUGIN."newsfeed/newsfeed.php?show.".$feed['newsfeed_id']."'>".NFLAN_39."</a>";
+						$vars['LINKTOMAIN'] = "<a href='".$url."'>".NFLAN_39."</a>";
 					}
 					else
 					{
@@ -349,6 +361,8 @@ class newsfeedClass
 					while($i < $numtoshow)
 					{
 						$item = $rss['items'][$i];
+
+
 						
 						$vars['FEEDITEMLINK']       = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], FALSE)."</a>\n";
 						$vars['FEEDITEMLINK']       = str_replace('&', '&amp;', $vars['FEEDITEMLINK']);
