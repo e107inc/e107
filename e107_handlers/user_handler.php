@@ -50,7 +50,7 @@ define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_MD5);
 //define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_SALT);
 
 // Required language file - if not loaded elsewhere, uncomment next line
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
 class UserHandler
 {
