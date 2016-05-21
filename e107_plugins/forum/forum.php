@@ -330,6 +330,7 @@ foreach ($forumList['parents'] as $parent)
 	$status = parse_parent($parent);
 	$pVars->PARENTSTATUS = $status;
 
+	$pVars->PARENTID = $parent['forum_id'];
 //	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
 	$pVars->PARENTNAME = $parent['forum_name'];
 	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
