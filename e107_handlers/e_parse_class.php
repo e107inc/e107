@@ -1314,25 +1314,31 @@ class e_parse extends e_parser
 	public function text_truncate($text, $len = 200, $more = ' ... ')
 	{
 		// Always valid
+
 		if($this->ustrlen($text) <= $len)
 		{
 			return $text;
 		}
+
+		$text = html_entity_decode($text,ENT_QUOTES,'utf-8');
+
+		return mb_strimwidth($text, 0, $len, $more);
 		
-		$ret = $this->usubstr($text, 0, $len);
+	//	$ret = $this->usubstr($text, 0, $len);
 
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
 		// it should work for any characters encoding
-		
-		// FIXME - INVESTIGATE this one, switch to utf8 aware methods
+
+/*
+
 		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
 		if($leftAmp)
 		{
 			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
 		}
 
-		return $ret.$more;
+		return $ret.$more;*/
 	}
 
 
