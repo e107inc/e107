@@ -9,8 +9,9 @@
 */
 
 //@see https://dev.twitter.com/web/embedded-timelines
+e107::lan('social',false, true);
 
-if(deftrue('XURL_TWITTER'))
+if(deftrue('XURL_TWITTER'))	
 {
 
 	e107::js('footer-inline',	'
@@ -30,14 +31,14 @@ if(deftrue('XURL_TWITTER'))
 
 
 
-	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">Tweets by @'.$screenName.'</a>';
+	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">'.LAN_SOCIAL_201."@".$screenName.'</a>';
 
 
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');
 
 }elseif(ADMIN)
 {
-	$text = "<div class='alert alert-danger'>Unable to display feed. Twitter URL has not been defined in preferences.</div>";
+	$text = "<div class='alert alert-danger'>".LAN_SOCIAL_200."</div>";
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');
 
 }
