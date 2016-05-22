@@ -298,6 +298,12 @@ TEMPL;
 
 		foreach($arr['img'] as $img)
 		{
+			if(substr($img['src'],0,4) == 'http')
+			{
+				continue;
+			}
+
+
 			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
 
 			$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
@@ -316,7 +322,8 @@ TEMPL;
 				$qr['h'] = $img['height'];
 			}
 
-			$qr['ebase'] = true; 
+			$qr['ebase'] = true;
+
 			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
 			$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';
