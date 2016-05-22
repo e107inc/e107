@@ -439,7 +439,14 @@ $stuck = false;
 $reg_threads = 0;
 $unstuck = false;
 
-$threadList = $forum->forumGetThreads($forumId, $threadFrom, $view);
+$threadFilter = null;
+
+if(!empty($_GET['srch']))
+{
+	$threadFilter = "t.thread_name LIKE '%".$tp->filter($_GET['srch'])."%'";
+}
+
+$threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilter);
 $subList = $forum->forumGetSubs(vartrue($forum_id));
 $gen = new convert;
 
