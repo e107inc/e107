@@ -74,9 +74,9 @@ class forum_url // plugin-folder + '_url'
 */
 
 		$config['forum'] = array(
-			'regex'			=> '^forum/(.*)$',
+			'regex'			=> '^forum/([^\/]*)/?\??([^\/]*)?$',
 			'sef'			=> 'forum/{forum_sef}',
-			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1&$2',
 			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
 		);
 

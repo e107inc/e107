@@ -1818,7 +1818,7 @@ class e107forum
 	 * @param $view
 	 * @return array
 	 */
-	function forumGetThreads($forumId, $from, $view)
+	function forumGetThreads($forumId, $from, $view, $filter = null)
 	{
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
@@ -1830,6 +1830,14 @@ class e107forum
 		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
 		LEFT JOIN `#user` AS lpu ON t.thread_lastuser = lpu.user_id
 		WHERE t.thread_forum_id = {$forumId}
+		";
+
+		if(!empty($filter))
+		{
+			$qry .= " AND ".$filter;
+		}
+
+		$qry .= "
 		GROUP BY thread_id
 		ORDER BY
 		t.thread_sticky DESC,
