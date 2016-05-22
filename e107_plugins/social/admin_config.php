@@ -73,7 +73,7 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array(" ".LAN_SOCIAL_ADMIN_14." ", LAN_SOCIAL_ADMIN_15,  LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17, );
+		protected $preftabs        = array(LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17);
 
 		protected $prefs = array(
 
