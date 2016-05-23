@@ -36,7 +36,8 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_userinfo()
 	{
-  global $forum;
+//---- Pass globals via $sc?????
+  global $forum, $pref;
 
 $text = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_FORUM_0010."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_FORUM_0011."</a>";
 if(USER)
@@ -83,11 +84,14 @@ if(!empty($trackPref))
 {
 // String candidate for USERLIST wrapper
 	$text = LAN_FORUM_0036.": ";
+
 	global $listuserson;
 	$c = 0;
 	if(is_array($listuserson))
 	{
-	foreach($listuserson as $uinfo => $pinfo)
+//----	foreach($listuserson as $uinfo => $pinfo)
+//----  foreach(array_keys($listuserson) as $uinfo)
+	foreach($listuserson as $uinfo => &$pinfo)
 	{
 		list($oid, $oname) = explode(".", $uinfo, 2);
 		$c ++;
@@ -231,7 +235,7 @@ $sql = e107::getDb();
 $total_topics = $sql->count("forum_thread", "(*)");
 $total_replies = $sql->count("forum_post", "(*)");
 $total_members = $sql->count("user");
-$newest_member = $sql->select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
+//----$newest_member = $sql->select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 list($nuser_id, $nuser_name) = $sql->fetch('num'); // FIXME $nuser_id & $user_name return empty even though print_a($newest_member); returns proper result.
 
 if(!defined('e_TRACKING_DISABLED'))
@@ -249,13 +253,25 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 // START OF $PVARS
 	function sc_parentstatus()
 	{
-		return $this->parentstatus;	
+//----		return $this->parentstatus;	
+  	if(!check_class($this->fparent['forum_postclass']))
+  	{
+  		$status = '('.LAN_FORUM_0056.')';
+  	}
+  	return vartrue($status);
 	}
 	function sc_parentname()
 	{
-		return $this->parentname;	
+//----		return $this->parentname;	
+		return $this->fparent['forum_name'];	
 	}
 // END OF $PVARS
+// Function to show the retrieval of parent ID, not really needed by core template
+	function sc_parentid()
+	{
+//----		return $this->parentname;	
+		return $this->fparent['forum_id'];	
+	}
 
 // START OF parse_forum function $FVARS
 
@@ -273,10 +289,10 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 	{
 		return IMAGE_noreplies;
 	}
-	else
-	{
+//----	else
+//----	{
 		return IMAGE_nonew;
-	}
+//----	}
 }
 	function sc_forumname()
 	{
@@ -329,15 +345,17 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 	if ($f['forum_lastpost_info'])
 	{
 //		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
+
 		if ($f['user_name'])
 		{
 
 			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
 		}
-		else
-		{
-			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-		}
+//----		else
+//----		{
+//----			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
+//----		}
 
 //		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
 
@@ -351,12 +369,12 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 //		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 		
 	}
-	else
-	{
+//----	else
+//----	{
 		return "";
 //		$fVars->LASTPOSTDATE = "-";
 //		$fVars->LASTPOST = '-';
-	}
+//----	}
 }
 	function sc_lastpostdate()
 	{
@@ -390,31 +408,33 @@ $gen = new convert;
 //		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 		
 	}
-	else
-	{
+//----	else
+//----	{
 //		$fVars->LASTPOSTUSER = "";
 		return "-";
 //		$fVars->LASTPOST = '-';
-	}
+//----	}
 }
 	function sc_lastpost()
 	{
     global $f;
 	$e107 = e107::getInstance();
 	$tp = e107::getParser();
+$gen = new convert;
 
 	if ($f['forum_lastpost_info'])
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
 		if ($f['user_name'])
 		{
 
 			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
 		}
-		else
-		{
-			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-		}
+//----		else
+//----		{
+//----			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
+//----		}
 
 //		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
 
@@ -428,12 +448,12 @@ $gen = new convert;
 		return $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 		
 	}
-	else
-	{
+//----	else
+//----	{
 //		$fVars->LASTPOSTUSER = "";
 //		$fVars->LASTPOSTDATE = "-";
 		return '-';
-	}
+//----	}
 }
 // END OF parse_forum function $FVARS
 
@@ -447,10 +467,10 @@ $gen = new convert;
 		{
 			return $sc->author_name.'<br />'.$sc->datestamp;
 		}
-		else
-		{
+//----		else
+//----		{
 			return "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $sc->author_name))."'>{$sc->author_name}</a><br />".$sc->datestamp;
-		}
+//----		}
 	}
 	function sc_newspostname()
 	{
@@ -465,6 +485,7 @@ $gen = new convert;
 
 	function sc_forum_breadcrumb()
 	{
+  global $breadarray;
 $frm = e107::getForm();
 return $frm->breadcrumb($breadarray);
   }
