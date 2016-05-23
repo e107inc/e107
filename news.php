@@ -341,11 +341,11 @@ if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET
 	{
 		setNewsFrontMeta($newsList[1], 'category');
 	}
-	elseif($category_name)
-	{
-		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
-	}
-
+//	elseif($category_name)
+//	{
+//		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
+//	}
+e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 	$currentNewsAction = $action;
 	require_once(HEADERF);
 	$action = $currentNewsAction;
