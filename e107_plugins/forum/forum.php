@@ -356,13 +356,14 @@ foreach ($forumList['parents'] as $parent)
 // Gonne directly to shortcode file
 //--	$status = parse_parent($parent);
 //--	$pVars->PARENTSTATUS = $status;
-				$sc->parentstatus = parse_parent($parent);
+//----				$sc->parentstatus = parse_parent($parent);
 
 // Gonne directly to shortcode file
 //	$pVars->PARENTNAME = "<a id='".$frm->name2id($parent['forum_name'])."'>".$parent['forum_name']."</a>";
 //	$pVars->PARENTNAME = $parent['forum_name'];
-				$sc->parentname = $parent['forum_name'];
+//----				$sc->parentname = $parent['forum_name'];
 //--	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
+				$sc->fparent = $parent;
 	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, false, $sc);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
@@ -402,6 +403,7 @@ foreach ($forumList['parents'] as $parent)
 	}
 }
 
+/*----
 function parse_parent($parent)
 {
 	if(!check_class($parent['forum_postclass']))
@@ -410,12 +412,13 @@ function parse_parent($parent)
 	}
 	return vartrue($status);
 }
-
+*/
 function parse_forum($f, $restricted_string = '')
 {
-	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList, $sc;
+//----	global $FORUM_MAIN_FORUM, $gen, $forum, $newflag_list, $forumList, $sc;
+	global $FORUM_MAIN_FORUM, $forumList, $sc;
 //--	$fVars = new e_vars;
-	$e107 = e107::getInstance();
+//----	$e107 = e107::getInstance();
 	$tp = e107::getParser();
 
 // Gonne directly to shortcode file
@@ -466,7 +469,8 @@ function parse_forum($f, $restricted_string = '')
 	$subId = $f['forum_id'];
 	if(!empty($forumList['subs']) && is_array($forumList['subs'][$subId]))
 	{
-		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+//----		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+		$lastpost_datestamp = reset(explode('.', $f['forum_lastpost_info']));
 		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
     $sc->ret = $ret;
 //		$fVars->FORUMSUBFORUMS = "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$ret['text']}</div>";
