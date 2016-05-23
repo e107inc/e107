@@ -8,7 +8,7 @@
 </FilesMatch>
 
 ### Performance
-	AddDefaultCharset utf-8
+### AddDefaultCharset utf-8
 
 ### Security
 	ServerSignature Off
@@ -45,7 +45,7 @@
     </IfModule>
 
 ### enable rewrites
-	Options +FollowSymLinks 
+###	Options +FollowSymLinks 
 	RewriteEngine On
 
 
