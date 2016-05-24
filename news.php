@@ -807,7 +807,7 @@ switch($action)
 	
 	case 'list':
 	default:
-		setNewsFrontMeta($newsAr[1], 'category');
+		setNewsFrontMeta($newsAr[1], 'list');
 		break;
 }
 
@@ -1265,7 +1265,7 @@ function setNewsFrontMeta($news, $type='news')
 
 
 
-	if($news['category_name'] && !defined('e_PAGETITLE'))
+	if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'category')
 	{
 		define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
 	}
