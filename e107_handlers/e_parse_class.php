@@ -824,7 +824,7 @@ class e_parse extends e_parser
 	/**
 	 * @param $text - template to parse.
 	 * @param boolean $parseSCFiles - parse core 'single' shortcodes
-	 * @param array $extraCodes - support legacy shortcode content (eg. content within .sc) as well as simpleParse array format.
+	 * @param object|array $extraCodes - shortcode class containing sc_xxxxx methods or an array of key/value pairs or legacy shortcode content (eg. content within .sc)
 	 * @param object $eVars - XXX more info needed.
 	 * @return string
 	 */
