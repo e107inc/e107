@@ -73,19 +73,21 @@ class forum_url // plugin-folder + '_url'
 		);
 */
 
-		$config['forum'] = array(
-			'regex'			=> '^forum/([^\/]*)/?\??([^\/]*)?$',
-			'sef'			=> 'forum/{forum_sef}',
-			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1&$2',
-			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
-		);
-
 		$config['index'] = array(
-			'regex'			=> '^forum/?$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'regex'			=> '^forum\/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> 'forum', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}forum/forum.php', 		// file-path of what to load when the regex returns true.
 
 		);
+
+
+		$config['forum'] = array(
+			'regex'			=> '^forum\/([^\/]*)\/?\??([^\/]*)?$',
+			'sef'			=> 'forum/{forum_sef}/',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1&$2',
+			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
+		);
+
 
 
 
