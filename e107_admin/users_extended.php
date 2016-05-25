@@ -451,6 +451,7 @@ e107::js('footer-inline', js());
 
 			if(isset($new_data['user_extended_struct_values']))
 			{
+				$new_data['user_extended_struct_values'] = array_filter($new_data['user_extended_struct_values']);
 				$new_data['user_extended_struct_values'] = implode(',',$new_data['user_extended_struct_values']);
 			}
 

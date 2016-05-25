@@ -3613,7 +3613,7 @@ class e_form
 
 			case 'ip':
 				//$e107 = e107::getInstance();
-				$value = e107::getIPHandler()->ipDecode($value);
+				$value = "<span title='".$value."'>".e107::getIPHandler()->ipDecode($value).'</span>';;
 				// else same
 			break;
 

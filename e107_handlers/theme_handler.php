@@ -1344,8 +1344,11 @@ class themeHandler
 
 
 								//TODO Later.
-							//	$itext .= e107::getForm()->userclass('layoutUserclass['.$key.']',null, null, array('options'=>'public,member,admin,classes,no-excludes','size'=>'xxlarge'));
-
+								if(e_DEBUG === true)
+								{
+									$itext .= "<small>(Not functional yet)</small>";
+									$itext .= e107::getForm()->userclass('layoutUserclass['.$key.']',null, null, array('options'=>'public,member,admin,classes,no-excludes','size'=>'xxlarge'));
+								}
 
 								$itext .= "
 								</div>\n";

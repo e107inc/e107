@@ -530,7 +530,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		$url = e107::url('forum','post', null, array('query'=>$urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
 
 		$tVars->QUICKREPLY = "
-		<form action='" . $e107->url->create('forum/thread/reply', array('id' => $thread->threadId)) . "' method='post'>
+		<form action='" . $url . "' method='post'>
 		<div class='form-group'>
 			<textarea cols='80' placeholder='".LAN_FORUM_2007."' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
 		</div>
