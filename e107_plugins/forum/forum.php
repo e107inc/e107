@@ -327,6 +327,7 @@ if (!$forumList)
 $forum_string = '';
 $pVars = new e_vars;
 $frm = e107::getForm();
+
 foreach ($forumList['parents'] as $parent)
 {
 	$status = parse_parent($parent);
@@ -391,7 +392,6 @@ function parse_forum($f, $restricted_string = '')
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
-
 		$fVars->NEWFLAG = "<a href='".$e107->url->create('forum/forum/mfar', $f)."'>".IMAGE_new.'</a>';
 	}
 	elseif(empty($f['forum_replies']) && defined('IMAGE_noreplies'))

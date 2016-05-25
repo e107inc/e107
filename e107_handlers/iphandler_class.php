@@ -100,7 +100,7 @@ class eIPHandler
 	 */
 	private $ourIP = '';
 
-
+	private $debug = false;
 	/**
 	 *	Host name of current user
 	 *	Initialised when requested
@@ -156,6 +156,7 @@ class eIPHandler
 	public function __construct($configDir = '')
 	{
 		$configDir = trim($configDir);
+
 		if ($configDir)
 		{
 			$this->ourConfigDir = realpath($configDir);
@@ -164,6 +165,8 @@ class eIPHandler
 		{
 			$this->ourConfigDir = e_SYSTEM.eIPHandler::BAN_FILE_DIRECTORY;
 		}
+
+
 		$this->ourIP = $this->ipEncode($this->getCurrentIP());
 		$this->makeUserToken();
 		$ipStatus = $this->checkIP($this->ourIP);
@@ -180,6 +183,19 @@ class eIPHandler
 		}
 		// Continue here - user not banned (so far)
 	}
+
+	public function setIP($ip)
+	{
+		$this->ourIP = $this->ipEncode($ip);
+
+	}
+
+
+	public function debug($value)
+	{
+		$this->debug = ($value === true) ? true: false;
+	}
+
 
 
 
@@ -401,7 +417,13 @@ class eIPHandler
 					exit();
 				}
 				// Otherwise just display any message and die
+				if($this->debug)
+				{
+					print_a("User Banned");
+				}
+
 				echo $line;
+
 				die();
 			}
 		}
@@ -471,10 +493,25 @@ class eIPHandler
 	{
 		$now = time();
 		$checkLists = $this->getWhiteBlackList();
+
+		if($this->debug)
+		{
+			echo "<h4>Banlist.php</h4>";
+			print_a($checkLists);
+			print_a("Now: ".$now. "   ".date('r',$now));
+		}
+
+
 		foreach ($checkLists as $val)
 		{
 			if (strpos($addr, $val['ip']) === 0)	// See if our address begins with an entry - handles wildcards
 			{	// Match found
+
+				if($this->debug)
+				{
+					print_a("Found ".$addr." in file.  TimeLimit: ".date('r',$val['time_limit']));
+				}
+
 				if (($val['time_limit'] == 0) || ($val['time_limit'] > $now))
 				{	// Indefinite ban, or timed ban (not expired) or whitelist entry
 					if ($val['action']== eIPHandler::BAN_TYPE_LEGACY) return eIPHandler::BAN_TYPE_MANUAL;		// Precautionary
@@ -485,6 +522,7 @@ class eIPHandler
 				$this->clearBan = $val['ip'];	// Note what triggered the match - it could be a wildcard (although timed ban unlikely!)
 				return 0;						// Can just return - shouldn't be another entry
 			}
+
 		}
 		return 0;
 	}
@@ -832,11 +870,14 @@ class eIPHandler
 			}
 		}
 
+
+		// do other checks - main IP check is in _construct()
 		if($this->actionCount)
 		{
 			$ip = $this->getip(); // This will be in normalised IPV6 form
-			if ($ip != e107::LOCALHOST_IP && $ip != e107::LOCALHOST_IP2)
-			{	// Check host name, user email to see if banned
+
+			if ($ip != e107::LOCALHOST_IP && $ip != e107::LOCALHOST_IP2) // Check host name, user email to see if banned
+			{
 				$vals = array();
 				if (e107::getPref('enable_rdns'))
 				{
@@ -850,9 +891,20 @@ class eIPHandler
 				if (count($vals))
 				{
 					$vals = array_unique($vals);			// Could get identical values from domain name check and email check
+
+					if($this->debug)
+					{
+						print_a($vals);
+					}
+
+
 					$match = "`banlist_ip`='".implode("' OR `banlist_ip`='", $vals)."'";
 					$this->checkBan($match);
 				}
+			}
+			elseif($this->debug)
+			{
+				print_a("IP is LocalHost -  skipping ban-check");
 			}
 		}
 	}
@@ -917,8 +969,23 @@ class eIPHandler
 				echo $tp->toHTML(varset($pref['ban_messages'][$row['banlist_bantype']])); 	// Show message if one set
 			}
 			//$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, 'BAN_03', 'LAN_AUDIT_LOG_003', $query, FALSE, LOG_TO_ROLLING);
+
+			if($this->debug)
+			{
+				echo "<pre>query: ".$query;
+				echo "\nBanned</pre>";
+			}
+
 			exit();
 		}
+
+		if($this->debug)
+		{
+			echo "query: ".$query;
+			echo "<br />Not Banned ";
+		}
+
+
 		//$admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","No ban found",$query,FALSE,LOG_TO_ROLLING);
 		return TRUE; 		// Email address OK
 	}
