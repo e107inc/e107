@@ -382,7 +382,7 @@ require_once(e_HANDLER.'debug_handler.php');
 
 if(E107_DEBUG_LEVEL && isset($db_debug) && is_object($db_debug))
 {
-	$db_debug->Mark_Time('Start: Init ErrHandler');
+	$db_debug->Mark_Time('Init ErrHandler');
 }
 
 //
@@ -616,13 +616,13 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 /**
  * Set the User's Language
  */
-$sql->db_Mark_Time('Start: Set User Language');
 // SESSION Needs to be started after:
 // - Site preferences are available
 // - Language detection (because of session.cookie_domain)
 // to avoid multi-language 'access-denied' issues.
 //session_start(); see e107::getSession() above
 e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
+$sql->db_Mark_Time('Start: Set User Language Session');
 e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;
 
 if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
@@ -635,7 +635,7 @@ if(varset($pref['multilanguage']) && (e_LANGUAGE != $pref['sitelanguage']))
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'.php');
 // e107_include_once(e_LANGUAGEDIR.e_LANGUAGE.'/'.e_LANGUAGE.'_custom.php');
 // v1 Custom language File Path.
-
+$sql->db_Mark_Time('Start: Include Global Core Language Files');
 if((e_ADMIN_AREA === true) && !empty($pref['adminlanguage']))
 {
 	include(e_LANGUAGEDIR.$pref['adminlanguage'].'/'.$pref['adminlanguage'].'.php');
@@ -662,7 +662,7 @@ unset($customLan, $customLan2);
 
 $lng->bcDefs(); // defined v1.x definitions for old templates.
 
-$sql->db_Mark_Time('Start: Global Language Files');
+$sql->db_Mark_Time('Start: Include Global Plugin Language Files');
 if(isset($pref['lan_global_list']))
 {
 	foreach($pref['lan_global_list'] as $path)
@@ -698,14 +698,15 @@ $override = e107::getSingleton('override', true); //TODO - find & replace $overr
 //DEPRECATED, BC, call the method only when needed, $e107->user_class caught by __get()
 $e_userclass = e107::getUserClass();  //TODO - find & replace $e_userclass, $e107->user_class
 
-
+$sql->db_Mark_Time('Start: Init Event Handler');
 e107::getEvent()->init();
+$sql->db_Mark_Time('Start: Register Core Events');
 e107::getNotify()->registerEvents();
 
 //
 // O: Start user session
 //
-$sql -> db_Mark_Time('Start: Init session');
+$sql -> db_Mark_Time('Start: User session');
 init_session();			// Set up a lot of the user-related constants
 
 
@@ -1016,6 +1017,7 @@ $ns = e107::getRender(); //TODO - find & replace $ns, $e107->ns
 
 // EONE-134 - bad e_module could destroy e107 instance
 $e107 = e107::getInstance();		// Is this needed now?
+$sql->db_Mark_Time('Start: IP Handler and Ban Check');
 e107::getIPHandler()->ban();
 
 if(varset($pref['force_userupdate']) && USER && !isset($_E107['no_forceuserupdate']) && $_SERVER['QUERY_STRING'] !== 'logout')
@@ -1045,7 +1047,7 @@ if(!isset($_E107['no_prunetmp']))
 }
 
 
-$sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
+$sql->db_Mark_Time('Start: Login/logout/ban/tz');
 
 
 if (isset($_POST['userlogin']) || isset($_POST['userlogin_x']))
@@ -1137,7 +1139,7 @@ define('TIMEOFFSET', $e_deltaTime);
 
 
 // ----------------------------------------------------------------------------
-$sql->db_Mark_Time('(Start: Find/Load Theme)');
+$sql->db_Mark_Time('Start: Find/Load Theme');
 
 if(e_ADMIN_AREA) // Load admin phrases ASAP
 {
@@ -1173,7 +1175,7 @@ if(!defined('THEME'))
 
 $theme_pref = varset($pref['sitetheme_pref']);
 // --------------------------------------------------------------
-$sql->db_Mark_Time('(Start: Find/Load Theme-Layout)'); // needs to run after checkvalidtheme() (for theme previewing).
+$sql->db_Mark_Time('Start: Find/Load Theme-Layout'); // needs to run after checkvalidtheme() (for theme previewing).
 
 if(!defined("THEME_LAYOUT"))
 {
