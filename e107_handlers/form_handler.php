@@ -5136,9 +5136,10 @@ class e_form
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
 			$curTab = varset($_GET['tab'],0);
-			
+
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
+				<div style='display:none'><input type='password' id='_no_autocomplete_' /></div>
 				<div id='admin-ui-edit'>
 				".vartrue($form['header'])."
 				".$this->token()."
