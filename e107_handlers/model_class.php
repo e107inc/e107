@@ -2920,7 +2920,8 @@ class e_admin_model extends e_front_model
 			$this->_db_errmsg = $sql->getLastErrorText();
 
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$this->_db_errmsg);
+			$this->addMessageDebug('SQL QRY Error '.print_a($sqlQry,true));
 
 			return false;
 		}

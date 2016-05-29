@@ -466,6 +466,8 @@ class e_db_mysql
 				catch(PDOException $ex)
 				{
 					$sQryRes = false;
+					$this->mySQLlastErrText = $ex->getMessage();
+					$this->mySQLlastErrNum = $ex->getCode();
 				}
 			}
 			else
@@ -477,8 +479,9 @@ class e_db_mysql
 				}
 				catch(PDOException $ex)
 				{
-
 					$sQryRes = false;
+					$this->mySQLlastErrText = $ex->getMessage();
+					$this->mySQLlastErrNum = $ex->getCode();
 				}
 			}
 
@@ -918,7 +921,7 @@ class e_db_mysql
 		}
 		else
 		{
-			$this->dbError("db_Insert ({$query})");
+		//	$this->dbError("db_Insert ({$query})");
 			return FALSE;
 		}
 	}
@@ -2522,14 +2525,8 @@ class e_db_mysql
 
 		if($this->pdo)
 		{
-		//	$this->mySQLlastErrNum =;
 			$this->mySQLerror = true;
-			if(is_object($this->mySQLaccess))
-			{
-				$errInfo= $this->mySQLaccess->errorInfo();
-				$this->mySQLlastErrNum = $errInfo[1];
-				$this->mySQLlastErrText = $errInfo[2]; //  $ex->getMessage();
-			}
+
 			if($this->mySQLlastErrNum == 0)
 			{
 				return null;
