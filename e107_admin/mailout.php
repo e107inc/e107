@@ -1363,6 +1363,8 @@ class mailout_main_ui extends e_admin_ui
 		{
 			$temp['sendmail'] = '';
 		}
+
+		$temp['bulkmailer']     = $_POST['bulkmailer'];
 		$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
 		$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
 		$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
