@@ -1451,7 +1451,7 @@ class e_parse_shortcode
 		$pid        = $this->editableCodes['pid'];
 		$id         = intval($var[$pid]);
 
-		$attributes = "contenteditable='true' class='e-editable-front' data-edit-id='".$id."' data-edit-sc='".$lcode."' ";
+		$attributes = "title='".LAN_EDIT."' contenteditable='true' class='e-editable-front' data-edit-id='".$id."' data-edit-sc='".$lcode."' ";
 
 		return ($container == 'div') ? "<div ".$attributes." >".$text."</div>" : "<span  ".$attributes."  >".$text."</span>";
 

@@ -241,7 +241,7 @@ class e_install
 			$this->debug = true;
 		}
 
-		if(defined('PDO::ATTR_DRIVER_NAME')) // TODO Uncomment when ready. 
+		if(defined('PDO::ATTR_DRIVER_NAME'))
 		{
 			 $this->pdo = true;
 			 define('e_PDO', true);

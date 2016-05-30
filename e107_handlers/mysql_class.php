@@ -188,7 +188,8 @@ class e_db_mysql
 			catch(PDOException $ex)
 			{
 				$this->mySQLlastErrText = $ex->getMessage();
-				//	echo "<pre>".print_r($ex,true)."</pre>";	// Useful for Debug. 
+				$this->mySQLlastErrNum = $ex->getCode();
+
 				return 'e1';
 			}
 
@@ -275,7 +276,8 @@ class e_db_mysql
 			catch(PDOException $ex)
 			{
 				$this->mySQLlastErrText = $ex->getMessage();
-					echo "<pre>".print_r($ex,true)."</pre>";	// Useful for Debug.
+				$this->mySQLLastErrNum = $ex->getCode();
+				e107::getDebug()->log($ex);	// Useful for Debug.
 				return false;
 			}
 			
@@ -334,6 +336,7 @@ class e_db_mysql
 			catch (PDOException $e) 
 			{
 				$this->mySQLlastErrText = $e->getMessage();
+				$this->mySQLlastErrNum = $e->getCode();
 				return false;
 		    }
 		    
@@ -474,6 +477,8 @@ class e_db_mysql
 			{
 				try
 				{
+				//	var_dump($rli);
+				//	var_dump($this->mySQLaccess);
 					$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
 
 				}

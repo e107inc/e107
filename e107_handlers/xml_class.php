@@ -209,6 +209,8 @@ class xmlClass
 
 	public $convertFilePaths = FALSE;
 
+	public $modifiedPrefsOnly = false;
+
 	public $filePathDestination = FALSE;
 
 	public $convertFileTypes = array("jpg", "gif", "png", "jpeg");
@@ -951,16 +953,19 @@ class xmlClass
 			$val = $this->filePathPrepend[$key].$val;
 		}
 
+		if(is_array($val))
+		{
+		//	$val = "<![CDATA[".e107::serialize($val,false)."]]>";
+			$val = e107::serialize($val,false);
+		}
+
 		if($this->convertFilePaths)
 		{
 			$types = implode("|",$this->convertFileTypes);
 			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
 		}
 
-		if(is_array($val))
-		{
-			return "<![CDATA[".e107::getArrayStorage()->WriteArray($val,FALSE)."]]>";
-		}
+
 
 		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
 		{
@@ -982,10 +987,21 @@ class xmlClass
 	public function e107Export($xmlprefs, $tables, $debug = FALSE)
 	{
 		error_reporting(0);
+		$e107info = array();
 		require_once(e_ADMIN."ver.php");
 
 		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
 		$text .= "<e107Export version=\"".$e107info['e107_version']."\" timestamp=\"".time()."\" >\n";
+
+		$default = array();
+		$excludes = array();
+
+		if($this->modifiedPrefsOnly == true)
+		{
+			$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
+			$default = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
+			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','lan_global_list','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date');
+		}
 
 		if(varset($xmlprefs)) // Export Core Preferences.
 		{
@@ -993,9 +1009,21 @@ class xmlClass
 			foreach($xmlprefs as $type)
 			{
 				$theprefs = e107::getConfig($type)->getPref();
-				$prefsorted = ksort($theprefs);
+				ksort($theprefs);
 				foreach($theprefs as $key=>$val)
 				{
+					if($type == 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || substr($key,0,2) == 'e_'))
+					{
+						continue;
+					}
+					elseif($debug == true)
+					{
+						echo "<div>Original/Modiied <b>".$key."</b>";
+						var_dump($default[$key],$val);
+						echo "</div>";
+
+					}
+
 					if(isset($val))
 					{
 						$text .= "\t\t<".$type." name=\"".$key."\">".$this->e107ExportValue($val)."</".$type.">\n";
@@ -1013,8 +1041,16 @@ class xmlClass
 				$eTable= str_replace(MPREFIX,"",$tbl);
 				e107::getDB()->select($eTable, "*");
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
-				while($row = e107::getDB()-> db_Fetch())
+				$count = 1;
+				while($row = e107::getDB()->fetch())
 				{
+
+					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
+					{
+						continue;
+					}
+
+
 					$text .= "\t\t<item>\n";
 					foreach($row as $key=>$val)
 					{
@@ -1022,6 +1058,7 @@ class xmlClass
 					}
 
 					$text .= "\t\t</item>\n";
+					$count++;
 				}
 				$text .= "\t</dbTable>\n";
 
