@@ -32,7 +32,14 @@ $ix = new news;
 
 if(!empty($parm))
 {
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
 }
 
 if(!$OTHERNEWS2_STYLE) 
@@ -49,7 +56,16 @@ if(!$OTHERNEWS2_STYLE)
 
 		if(!empty($parms['caption']))
 		{
-			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+			if(isset($parms['caption'][e_LANGUAGE]))
+			{
+				$template['caption'] =  e107::getParser()->toHtml($parms['caption'][e_LANGUAGE], true,'TITLE');
+			}
+			else
+			{
+				$template['caption'] =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+			}
+
+
 		}
 	}
 	else //v1.x
