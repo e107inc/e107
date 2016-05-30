@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="The Voux" version="1.0" date="2016-05-30" compatibility="2.0">
+	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
+	<summary>Simple modern blog theme.</summary>
+	<description>Based on the blogger theme by ThemeExpose</description>
+	<category>blog</category>
+	<plugins>
+        <plugin name='rss_menu' url='core' />
+		<plugin name='social' url='core' />
+	</plugins>
+	<keywords>
+		<word>bootstrap</word>
+		<word>blog</word>
+		<word>responsive</word>
+	</keywords>
+	<screenshots>
+		<image>preview.png</image>
+		<image>preview_full.png</image>
+	</screenshots>
+	<stylesheets>
+		<css file="style.css" name="Default"  />
+        <css file="*" name="*"  />
+	</stylesheets>
+	<layouts>
+		<layout name='jumbotron_home' title='Jumbotron (home)' default='false' />
+		<layout name='modern_business_home' title='Modern Business: Home page carousel with fixed custom-menus' />
+		<layout name='jumbotron_full' title='Jumbotron (full-width)'  >
+            <custompages>forum</custompages>
+		</layout>
+		<layout name='jumbotron_sidebar_right' title='Jumbotron (sidebar-right)' default='true' >
+			<custompages>/news</custompages>
+			<menuPresets>
+				<area id='1'>
+					<menu name='search' />
+					<menu name='news_categories' />
+					<menu name='other_news' />
+					<menu name='other_news2' />
+					<menu name='blogcalendar' />
+				</area>
+			</menuPresets>	
+		</layout>
+	</layouts>
+</e107Theme>
