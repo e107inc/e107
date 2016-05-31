@@ -10,27 +10,72 @@ if (!defined('e107_INIT')) { exit; }
 
 class forum_shortcodes extends e_shortcode
 {
-  private $rules_text;
+  private $forum_rules;
 
 	function __construct()
 	{
-    $this->rules_text = forum_rules('check');
+    $this->forum_rules = forum_rules('check');
 	}
 
 // START OF $FVARS
 	function sc_forumtitle()
 	{
-//var_dump($this->forumtitle);
 		return e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);	
 	}
+
+// LEGACY shortcodes, to be deprecated & directly handled in template file???
+	function sc_threadtitle()
+	{
+		return LAN_FORUM_0002;	
+	}
+	function sc_replytitle()
+	{
+		return LAN_FORUM_0003;	
+	}
+	function sc_lastpostitle()
+	{
+		return LAN_FORUM_0004;	
+	}
+	function sc_infotitle()
+	{
+		return LAN_FORUM_0009;	
+	}
+	function sc_newthreadtitle()
+	{
+		return LAN_FORUM_0075;	
+	}
+	function sc_postedtitle()
+	{
+		return LAN_FORUM_0074;	
+	}
+	function sc_tracktitle()
+	{
+		return LAN_FORUM_0073;	
+	}
+	function sc_statlink()
+	{
+ return "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
+  }
+	function sc_iconkey()
+	{
+  return "
+<table class='table table-bordered' style='width:100%'>\n<tr>
+<td style='width:2%'>".IMAGE_new_small."</td>
+<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
+<td style='width:2%'>".IMAGE_nonew_small."</td>
+<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0040."</span></td>
+<td style='width:2%'>".IMAGE_closed_small."</td>
+<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0041."</span></td>
+</tr>\n</table>\n";
+  }
+// End of LEGACY shortcodes...
+
 	function sc_logo()
 	{
-//var_dump($this->forumtitle);
 		return IMAGE_e;	
 	}
 	function sc_newimage()
 	{
-//var_dump($this->forumtitle);
 		return IMAGE_new_small;	
 	}
 
@@ -49,7 +94,7 @@ if(USER)
 		$text .= " | <a href='".e_PLUGIN."forum/forum_uploads.php'>".LAN_FORUM_0015."</a>";
 	}
 }
-if(!empty($this->rules_text))
+if(!empty($this->forum_rules))
 {
 	$text .= " | <a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
 }
@@ -64,7 +109,7 @@ if(!empty($this->rules_text))
       $uInfo = array();
 $uInfo[0] = "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_6013.'</a>';
 
-if(!empty($this->rules_text))
+  if(!empty($this->forum_rules))
 {
 	$uInfo[1] = "<a href='".e107::url('forum','rules')."'>".LAN_FORUM_0016.'</a>';
 }
@@ -104,30 +149,10 @@ if(!empty($trackPref))
   return $text;
   }
 
-	function sc_statlink()
-	{
-// Rework to go to template???
- return "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
-  }
-
-	function sc_iconkey()
-	{
-// Rework to go to template???
-  return "
-<table class='table table-bordered' style='width:100%'>\n<tr>
-<td style='width:2%'>".IMAGE_new_small."</td>
-<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0039."</span></td>
-<td style='width:2%'>".IMAGE_nonew_small."</td>
-<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0040."</span></td>
-<td style='width:2%'>".IMAGE_closed_small."</td>
-<td style='width:10%'><span class='smallblacktext'>".LAN_FORUM_0041."</span></td>
-</tr>\n</table>\n";
-  }
-
 	function sc_search()
 	{
-  $tp = e107::getParser();
-  if(!$srchIcon = $tp->toGlyph('fa-search'))
+//  $tp = e107::getParser();
+  if(!$srchIcon = e107::getParser()->toGlyph('fa-search'))
 {
 	$srchIcon = LAN_SEARCH; 	
 }
@@ -157,11 +182,11 @@ return (USER == TRUE || ANON == TRUE ? LAN_FORUM_0043." - ".LAN_FORUM_0045." - "
 	{
 //$fVars->INFO = "";
   global $forum;
-$sql = e107::getDb();
+//$sql = e107::getDb();
 $gen = new convert;
 if (USER == TRUE)
 {
-	$total_new_threads = $sql->count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
+	$total_new_threads = e107::getDb()->count('forum_thread', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
 	if (USERVIEWED != "")
 	{
 		$tmp = explode(".", USERVIEWED); // List of numbers, separated by single period
@@ -254,7 +279,8 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 	function sc_parentstatus()
 	{
 //----		return $this->parentstatus;	
-  	if(!check_class($this->fparent['forum_postclass']))
+//  	if(!check_class($this->fparent['forum_postclass']))
+  	if(!check_class($this->var['forum_postclass']))
   	{
   		$status = '('.LAN_FORUM_0056.')';
   	}
@@ -263,29 +289,31 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 	function sc_parentname()
 	{
 //----		return $this->parentname;	
-		return $this->fparent['forum_name'];	
+//		return $this->fparent['forum_name'];	
+		return $this->var['forum_name'];	
 	}
 // END OF $PVARS
 // Function to show the retrieval of parent ID, not really needed by core template
 	function sc_parentid()
 	{
 //----		return $this->parentname;	
-		return $this->fparent['forum_id'];	
+//		return $this->fparent['forum_id'];	
+		return $this->var['forum_id'];	
 	}
 
 // START OF parse_forum function $FVARS
 
 	function sc_newflag()
 	{
-    global $f, $newflag_list;
-	$e107 = e107::getInstance();
+    global $newflag_list;
+//	$e107 = e107::getInstance();
 
-	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
+	if(USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list))
 	{
 
-		return "<a href='".$e107->url->create('forum/forum/mfar', $f)."'>".IMAGE_new.'</a>';
+		return "<a href='".e107::getInstance()->url->create('forum/forum/mfar', $this->var)."'>".IMAGE_new.'</a>';
 	}
-	elseif(empty($f['forum_replies']) && defined('IMAGE_noreplies'))
+	elseif(empty($this->var['forum_replies']) && defined('IMAGE_noreplies'))
 	{
 		return IMAGE_noreplies;
 	}
@@ -296,61 +324,71 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 }
 	function sc_forumname()
 	{
-    global $f;
-	$tp = e107::getParser();
-	if(substr($f['forum_name'], 0, 1) == '*')
+//    global $f;
+//	$tp = e107::getParser();
+	if(substr($this->var['forum_name'], 0, 1) == '*')
 	{
-		$f['forum_name'] = substr($f['forum_name'], 1);
+		$this->var['forum_name'] = substr($this->var['forum_name'], 1);
 	}
-	$f['forum_name'] = $tp->toHTML($f['forum_name'], true, 'no_hook');
+	$this->var['forum_name'] = e107::getParser()->toHTML($this->var['forum_name'], true, 'no_hook');
 
-	$url = e107::url('forum', 'forum', $f);
-	return "<a href='".$url."'>{$f['forum_name']}</a>";
+	$url = e107::url('forum', 'forum', $this->var);
+	return "<a href='".$url."'>{$this->var['forum_name']}</a>";
   }
 	function sc_forumdescription()
 	{
-    global $f, $restricted_string;
-	$tp = e107::getParser();
-	$f['forum_description'] = $tp->toHTML($f['forum_description'], true, 'no_hook');
-	return $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
+//    global $f, $restricted_string;
+    global $restricted_string;
+//	$tp = e107::getParser();
+	$this->var['forum_description'] = e107::getParser()->toHTML($this->var['forum_description'], true, 'no_hook');
+	return $this->var['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
   }
 	function sc_threads()
 	{
-		return $this->threads;	
+		return $this->var['forum_threads'];	
 	}
 	function sc_replies()
 	{
-		return $this->replies;	
+		return $this->var['forum_replies'];	
 	}
 	function sc_threadsx()
 	{
-    global $f;
-		return "<span class='badge ".(($f['forum_threads']) ? "badge-info" : "")."'>".$f['forum_threads']."</span>";	
+//    global $f;
+//		return "<span class='badge ".(($f['forum_threads']) ? "badge-info" : "")."'>".$f['forum_threads']."</span>";	
+		return "<span class='badge ".(($this->var['forum_threads']) ? "badge-info" : "")."'>".$this->var['forum_threads']."</span>";	
 	}
 	function sc_repliesx()
 	{
-    global $f;
-		return "<span class='badge ".(($f['forum_replies']) ? "badge-info" : "")."'>".$f['forum_replies']."</span>";	
+//    global $f;
+//		return "<span class='badge ".(($f['forum_replies']) ? "badge-info" : "")."'>".$f['forum_replies']."</span>";	
+		return "<span class='badge ".(($this->var['forum_replies']) ? "badge-info" : "")."'>".$this->var['forum_replies']."</span>";	
 	}
 	function sc_forumsubforums()
 	{
-  		return ($this->ret)?"<br /><div class='smalltext'>".LAN_FORUM_0069.": {$this->ret['text']}</div>":"";
+//      VAR_DUMP ($this->ret);
+//  		return ($this->ret)?"<br /><div class='smalltext'>".LAN_FORUM_0069.": {$this->ret['text']}</div>":"";
+  		return ($this->var['text'])?"<br /><div class='smalltext'>".LAN_FORUM_0069.": {$this->var['text']}</div>":"";
 	}
 	function sc_lastpostuser()
 	{
-    global $f;
-	$e107 = e107::getInstance();
-	$tp = e107::getParser();
+//    global $f;
+//	$e107 = e107::getInstance();
+//	$tp = e107::getParser();
 
-	if ($f['forum_lastpost_info'])
+//	if ($f['forum_lastpost_info'])
+	if ($this->var['forum_lastpost_info'])
 	{
 //		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
+//			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
 
-		if ($f['user_name'])
+//		if ($f['user_name'])
+			$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
+
+		if ($this->var['user_name'])
 		{
 
-			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
+//			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
+			$lastpost_name = "<a href='".e107::getInstance()->url->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
 		}
 //----		else
 //----		{
@@ -378,14 +416,17 @@ return str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($to
 }
 	function sc_lastpostdate()
 	{
-    global $f, $forum;
+//    global $f, $forum;
+    global $forum;
 //	$e107 = e107::getInstance();
 //	$tp = e107::getParser();
 $gen = new convert;
 
-	if ($f['forum_lastpost_info'])
+//	if ($f['forum_lastpost_info'])
+	if ($this->var['forum_lastpost_info'])
 	{
-		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+//		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
 //		if ($f['user_name'])
 //		{
 
@@ -401,7 +442,8 @@ $gen = new convert;
 //		$fVars->LASTPOSTUSER = $lastpost_name;
 		// {forum_sef}/{thread_id}-{thread_sef}
 
-		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
+//		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
+		$urlData = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
 		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
 		return "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
 //		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
@@ -417,19 +459,25 @@ $gen = new convert;
 }
 	function sc_lastpost()
 	{
-    global $f;
+//    global $f;
 	$e107 = e107::getInstance();
-	$tp = e107::getParser();
+//	$tp = e107::getParser();
 $gen = new convert;
 
-	if ($f['forum_lastpost_info'])
+//	if ($f['forum_lastpost_info'])
+	if ($this->var['forum_lastpost_info'])
 	{
-		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-		if ($f['user_name'])
+//		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
+//			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
+//			$lastpost_name = e107::getParser()->toHTML($f['forum_lastpost_user_anon']);
+//		if ($f['user_name'])
+			$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
+		if ($this->var['user_name'])
 		{
 
-			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
+//			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
+			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
 		}
 //----		else
 //----		{
@@ -460,25 +508,35 @@ $gen = new convert;
 // START OF $NVARS
 	function sc_startertitle()
 	{
-  global $thread;
-	$e107 = e107::getInstance();
+//  global $thread;
+$gen = new convert;
+
+		$author_name = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['lastuser_anon']);
+
+//--		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
+		$datestamp = $gen->convert_date($this->var['thread_lastpost'], 'forum');
+
   
-		if(!$thread['user_name'])
+		if(!$this->var['user_name'])
 		{
-			return $sc->author_name.'<br />'.$sc->datestamp;
+			return $author_name.'<br />'.$datestamp;
 		}
 //----		else
 //----		{
-			return "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $sc->author_name))."'>{$sc->author_name}</a><br />".$sc->datestamp;
+//	$e107 = e107::getInstance();
+//			return "<a href='".$e107->url->create('user/profile/view', array('id' => $thread['thread_lastuser'], 'name' => $sc->author_name))."'>{$sc->author_name}</a><br />".$sc->datestamp;
+			return "<a href='".e107::getInstance()->url->create('user/profile/view', array('id' => $this->var['thread_lastuser'], 'name' => $author_name))."'>{$author_name}</a><br />".$datestamp;
 //----		}
 	}
 	function sc_newspostname()
 	{
-  global $thread;
-	$e107 = e107::getInstance();
-	$tp = e107::getParser();
+//  global $thread;
+//	$e107 = e107::getInstance();
+//	$tp = e107::getParser();
 
-		return empty($thread)?LAN_FORUM_0029:"<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+//		return empty($thread)?LAN_FORUM_0029:"<a href='".$e107->url->create('forum/thread/last', $thread)."'>".$tp->toHTML($thread['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
+// Only $this->var???'
+		return empty($this->var)?LAN_FORUM_0029:"<a href='".e107::getInstance()->url->create('forum/thread/last', $this->var)."'>".e107::getParser()->toHTML($this->var['thread_name'], TRUE, 'no_make_clickable, no_hook').'</a>';
 	}
 // END OF $NVARS
 
