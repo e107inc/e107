@@ -9,12 +9,13 @@
 */
 
 //@see https://developers.facebook.com/docs/plugins/like-button
-
+e107::lan('social',false, true);
+$pref = e107::pref('social');
 if(deftrue('SOCIAL_FACEBOOK_INIT') )
 {
 	e107::js('footer-inline', SOCIAL_FACEBOOK_INIT); // defined in e_header.php
 
-	$pref = e107::pref('social');
+
 
 	$action = vartrue($pref['facebook_like_menu_action'],   'like'); // or 'recommend';
 	$layout = vartrue($pref['facebook_like_menu_layout'],   'standard'); // standard, button_count, button or box_count.
@@ -29,8 +30,15 @@ if(deftrue('SOCIAL_FACEBOOK_INIT') )
 
 	e107::getRender()->tablerender('Facebook',$text,'facebook-like-menu');
 
-}elseif(ADMIN)
+}
+elseif(deftrue('XURL_FACEBOOK'))
 {
-	$text = "<div class='alert alert-danger'>Unable to display feed. Facebook App ID has not been defined in preferences.</div>";
-	e107::getRender()->tablerender('Facebook',$text,'twitter-menu');
+	$width = vartrue($pref['facebook_like_menu_width'],     350);
+	$text .= '<iframe src="//www.facebook.com/plugins/likebox.php?href='.urlencode(XURL_FACEBOOK).'&amp;width='.$width.'&amp;height=200&amp;colorscheme=light&amp;show_faces=true&amp;header=false&amp;stream=false&amp;show_border=false" scrolling="no" style="border:none; overflow:hidden; width:350px;height:200px;" allowtransparency="true" frameborder="0"></iframe>';
+	e107::getRender()->tablerender('Facebook',$text,'facebook-like-menu');
+}
+elseif(ADMIN)
+{
+	$text = "<div class='alert alert-danger'>".LAN_SOCIAL_100."</div>";
+	e107::getRender()->tablerender('Facebook',$text,'facebook-like-menu');
 }

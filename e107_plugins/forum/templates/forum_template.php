@@ -125,12 +125,14 @@ $FORUM_TEMPLATE['track']['start']       = "{FORUM_BREADCRUMB}<div id='forum-trac
 											<colgroup>
 											<col style='width:5%' />
 											<col />
-											<col style='width:10%' />
+											<col style='width:15%' />
+											<col style='width:5%' />
 											</colgroup>
 											<thead>
 											<tr>
 
 												<th colspan='2'>".LAN_FORUM_1003."</th>
+												<th class='hidden-xs text-center'>".LAN_FORUM_0004."</th>
 												<th class='text-center'>".LAN_FORUM_1020."</th>
 												</tr>
 											</thead>
@@ -139,6 +141,7 @@ $FORUM_TEMPLATE['track']['start']       = "{FORUM_BREADCRUMB}<div id='forum-trac
 $FORUM_TEMPLATE['track']['item']        = "<tr>
 											<td class='text-center'>{NEWIMAGE}</td>
 											<td>{TRACKPOSTNAME}</td>
+											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
 											<td class='text-center'>{UNTRACK}</td>
 											</tr>";
 

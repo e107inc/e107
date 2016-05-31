@@ -66,7 +66,7 @@ define("LAN_MAILOUT_52", "Last mod");
 define("LAN_MAILOUT_53", "Admins");
 define("LAN_MAILOUT_54", "Self");
 define("LAN_MAILOUT_55", "Userclass");
-define("LAN_MAILOUT_56", "Last Visit (dd-mm-yy)");
+define("LAN_MAILOUT_56", "Last Visit");
 define("LAN_MAILOUT_57", "Send bulk SMTP emails in blocks");			// SMTP KeepAlive option
 //define("LAN_MAILOUT_58", "There is a problem with the attachment:");
 //define("LAN_MAILOUT_59", "Mailing Progress");

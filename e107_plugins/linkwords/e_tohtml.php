@@ -35,10 +35,10 @@ define('LW_CACHE_ENABLE', FALSE);
 
 class e_tohtml_linkwords
 {
-	var $lw_enabled = FALSE;		// Default to disabled to start
+	protected $lw_enabled = FALSE;		// Default to disabled to start
 	var $lwAjaxEnabled = FALSE;		// Adds in Ajax-compatible links
 	var $utfMode	= '';			// Flag to enable utf-8 on regex
-	var $word_list 	= array();		// List of link words/phrases
+	protected $word_list 	= array();		// List of link words/phrases
 	var $link_list	= array();		// Corresponding list of links to apply
 	var $ext_list	= array();		// Flags to determine 'open in new window' for link
 	var $tip_list 	= array();		// Store for tooltips
@@ -46,9 +46,11 @@ class e_tohtml_linkwords
 	var $area_opts	= array();		// Process flags for the various contexts
 	var $block_list = array();		// Array of 'blocked' pages
 
+	protected $word_class = array();
+
 	protected $customClass  = '';
 	protected $wordCount    = array();
-	protected $maxPerWord   = 3;
+//	protected $maxPerWord   = 3;
 
 	
 	/* constructor */
@@ -57,8 +59,9 @@ class e_tohtml_linkwords
 
 		$tp = e107::getParser();
 	    $pref = e107::pref('core');
+	    $frm = e107::getForm();
 
-		$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
+	//	$this->maxPerWord       = vartrue($pref['lw_max_per_word'], 25);
 		$this->customClass      = vartrue($pref['lw_custom_class'],'');
 		$this->area_opts        = $pref['lw_context_visibility'];
 		$this->utfMode          = (strtolower(CHARSET) == 'utf-8') ? 'u' : '';		// Flag to enable utf-8 on regex //@TODO utfMode probably obsolete
@@ -110,8 +113,9 @@ class e_tohtml_linkwords
 
 			if($link_sql->select("linkwords", "*", "linkword_active!=1"))
 			{
-				$this->lw_enabled = TRUE;
-				while($row = $link_sql->db_Fetch())
+				$this->lw_enabled = true;
+
+				while($row = $link_sql->fetch())
 				{
 
 					$lw = $tp->uStrToLower($row['linkword_word']);					// It was trimmed when saved		*utf
@@ -134,19 +138,26 @@ class e_tohtml_linkwords
 						$lwlist = explode(',',$lw);
 						foreach ($lwlist as $lw)
 						{
-							$this->word_list[]  = trim($lw);
-							$this->link_list[]  = $row['linkword_link'];
-							$this->tip_list[]   = $row['linkword_tooltip'];
-							$this->ext_list[]   = $row['linkword_newwindow'];
-							$this->LinkID[]     = $lwID;
+							$this->word_list[]      = trim($lw);
+							$this->word_class[]     = 'lw-'.$frm->name2id($lw);
+							$this->word_limit[]     = vartrue($row['linkword_limit'],3);
+
+							$this->link_list[]      = $row['linkword_link'];
+							$this->tip_list[]       = $row['linkword_tooltip'];
+							$this->ext_list[]       = $row['linkword_newwindow'];
+
+							$this->LinkID[]         = $lwID;
 						}
 					}
 					else
 					{
 						$this->word_list[]      = $lw;
+						$this->word_class[]     = 'lw-'.$frm->name2id($lw);
+						$this->word_limit[]     = vartrue($row['linkword_limit'],3);
 						$this->link_list[]      = $row['linkword_link'];
 						$this->tip_list[]       = $row['linkword_tooltip'];
 						$this->ext_list[]       = $row['linkword_newwindow'];
+
 						$this->LinkID[]         = $lwID;
 					}
 				}
@@ -233,8 +244,15 @@ class e_tohtml_linkwords
 
 		// Consider next line - stripos is PHP5, and mb_stripos is PHP >= 5.2 - so may well often require handling
 //		while (($first < $limit) && (stripos($text,$this->word_list[$first]) === FALSE))   { $first++; };		// *utf   (stripos is PHP5 - compatibility handler implements)
-		while (($first < $limit) && (strpos($tp->ustrtolower($text),$this->word_list[$first]) === FALSE))   { $first++; };		// *utf  
-		if ($first == $limit) return $text;		// Return if no linkword found
+		while (($first < $limit) && (strpos($tp->ustrtolower($text), $this->word_list[$first]) === false))
+		{
+			$first++;
+		}		// *utf
+
+		if ($first == $limit)
+		{
+			 return $text;		// Return if no linkword found
+		}
 
 		// There's at least one occurrence of the linkword in the text
 		// Prepare all info once only
@@ -263,6 +281,7 @@ class e_tohtml_linkwords
 				$lwClass[] = 'lw-tip '.$this->customClass;
 			}
 		}
+
 		if ($this->link_list[$first])  // Got link
 		{
 			$newLink = $tp->replaceConstants($this->link_list[$first], 'full');
@@ -273,11 +292,16 @@ class e_tohtml_linkwords
 				$lwClass[] = 'lw-link '.$this->customClass;
 			}
 		}
+		elseif(!empty($this->word_class[$first]))
+		{
+			$lwClass[] = $this->word_class[$first];
 
+
+		}
 
 		if (!count($lwClass))
 		{
-			return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
+	//		return $this->linksproc($sl,$first+1,$limit);		// Nothing to do - move on to next word (shouldn't really get here)
 		}
 		if (count($linkrel))
 		{
@@ -285,8 +309,9 @@ class e_tohtml_linkwords
 		}
 
 		// This splits the text into blocks, some of which will precisely contain a linkword
-		$split_line = preg_split('#\b('.$lw.')\b#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
-		$class = "class='".implode(' ',$lwClass)."' ";
+		$split_line = preg_split('#\b('.$lw.')(\s|\b)#i'.$this->utfMode, $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );		// *utf (selected)
+	//	$class = "".implode(' ',$lwClass)."' ";
+		$class = implode(' ',$lwClass);
 
 		$hash = md5($lw);
 
@@ -295,14 +320,24 @@ class e_tohtml_linkwords
 			$this->wordCount[$hash] = 0;
 		}
 
-		foreach ($split_line as $sl)
+		foreach ($split_line as $count=>$sl)
 		{
 
-			if ($tp->uStrToLower($sl) == $lw && $this->wordCount[$hash] < $this->maxPerWord)	// Do linkword replace		// We know the linkword is already lower case							// *utf
+			if ($tp->uStrToLower($sl) == $lw && $this->wordCount[$hash] < $this->word_limit[$first])	// Do linkword replace		// We know the linkword is already lower case							// *utf
 			{
 				$this->wordCount[$hash]++;
 
-				$ret .= '<a '.$class.$linkwd.$tooltip.'>'.$sl.'</a>';
+				$classCount = " lw-".$this->wordCount[$hash];
+
+				if(empty($linkwd))
+				{
+					$ret .= '<span class="'.$class.$classCount.'" '.$tooltip.'>'.$sl.'</span>';
+				}
+				else
+				{
+					$ret .= '<a class="'.$class.$classCount.'" '.$linkwd.$tooltip.'>'.$sl.'</a>';
+				}
+
 			}
 			elseif (trim($sl)) // Something worthwhile left - look for more linkwords in it
 			{
@@ -320,4 +355,3 @@ class e_tohtml_linkwords
 
 
 
-?>

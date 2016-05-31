@@ -258,9 +258,9 @@ if (isset($id))
 	else
 	{
 		// $userList = $sql->db_getList();
-
-		$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
 		$sc = e107::getScBatch('user');
+		$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $sc);
+
 		foreach ($data as $row)
 		{
 			$loop_uid = $row['user_id'];
@@ -269,9 +269,10 @@ if (isset($id))
 			$sc->setVars($row);
 			$sc->wrapper('user/list');
 
-			$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE, TRUE, $user_shortcodes);
+			$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE, TRUE, $sc);
 		}
-		$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
+
+		$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $sc);
 	}
 
 	$ns->tablerender(LAN_USER_52, $text);

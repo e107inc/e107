@@ -94,5 +94,4 @@ define("LAN_AL_NEWSFD_03","News Feed deleted");
 define("LAN_AL_NEWSFD_04","");
 define("LAN_AL_NEWSFD_05","");
 
-
-?>
+define("NFLAN_50", "Last Refresh");

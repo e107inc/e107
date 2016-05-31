@@ -255,14 +255,13 @@ else
 	$pages = false;
 }
 
+
+
 if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
-		//if(!$page) $page = 1;
-		$urlparms = $forumInfo;
-		$urlparms['page'] = '[FROM]';
-		$url = rawurlencode(e107::getUrl()->create('forum/forum/view', $urlparms));
+		$url = e107::url('forum','forum',$forumInfo, array('query'=>array('p'=>'[FROM]')));
 		$parms = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 		$fVars->THREADPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 		unset($urlparms);
@@ -439,7 +438,14 @@ $stuck = false;
 $reg_threads = 0;
 $unstuck = false;
 
-$threadList = $forum->forumGetThreads($forumId, $threadFrom, $view);
+$threadFilter = null;
+
+if(!empty($_GET['srch']))
+{
+	$threadFilter = "t.thread_name LIKE '%".$tp->filter($_GET['srch'])."%'";
+}
+
+$threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilter);
 $subList = $forum->forumGetSubs(vartrue($forum_id));
 $gen = new convert;
 

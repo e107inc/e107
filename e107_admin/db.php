@@ -1639,6 +1639,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 	{
 
 		$xml->convertFilePaths = TRUE;
+		$xml->modifiedPrefsOnly = true;
 		$xml->filePathDestination = EXPORT_PATH;
 		$xml->filePathPrepend = array(
 			'news_thumbnail'	=> "{e_IMAGE}newspost_images/"
@@ -1669,7 +1670,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 				{
 					$mes->add(DBLAN_109." ".$newfile, E_MESSAGE_SUCCESS);
 				}
-				else
+				elseif(!file_exists($newfile))
 				{
 					$mes->add(DBLAN_110." ".$newfile, E_MESSAGE_ERROR);
 				}

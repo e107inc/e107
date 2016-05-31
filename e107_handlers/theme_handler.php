@@ -852,7 +852,8 @@ class themeHandler
 		
 		
 	
-		
+		$itext = '';
+
 		
 		// New in 0.8    WORK IN PROGRESS ----
 		if($theme['layouts'])
@@ -1335,9 +1336,33 @@ class themeHandler
 							$itext .= "</td>
 											<td style='vertical-align:top'>";
 							// Default
-							$itext .= ($pref['sitetheme_deflayout'] != $key) ? $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'><textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea></div>\n" : TPVLAN_55;
+
+							if($pref['sitetheme_deflayout'] != $key)
+							{
+								$itext .= $custompage_diz."<div class='e-hideme' id='element-to-be-shown-{$key}'>
+										<textarea style='width:97%' rows='6' placeholder='usersettings.php' cols='20' name='custompages[".$key."]' >".(isset($pref['sitetheme_custompages'][$key]) ? implode("\n", $pref['sitetheme_custompages'][$key]) : "")."</textarea>";
+
+
+								//TODO Later.
+								if(e_DEBUG === true)
+								{
+									$itext .= "<small>(Not functional yet)</small>";
+									$itext .= e107::getForm()->userclass('layoutUserclass['.$key.']',null, null, array('options'=>'public,member,admin,classes,no-excludes','size'=>'xxlarge'));
+								}
+
+								$itext .= "
+								</div>\n";
+							}
+							else
+							{
+								$itext .= TPVLAN_55;
+							}
+
+
 							
 							$itext .= "</td>";
+
+
 							
 							$itext .= "<td>";
 							

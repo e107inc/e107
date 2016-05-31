@@ -107,9 +107,9 @@ class core_news_sef_url extends eUrlConfig
 				
 				'View/<id:{number}>' 		=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
 				
-				'Tag/<tag:{secure}>' 	=> array('list/tag', 'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}'),
+				'Tag/<tag:{secure}>' 	=> array('list/tag', 'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}&page={page}'),
 			
-				
+				'Author/<author:{secure}>' 	=> array('list/author', 'allowVars' => array('page'), 'legacyQuery' => 'author={author}&page={page}'),
 			) 
 		);
 	}

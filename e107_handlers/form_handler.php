@@ -949,7 +949,7 @@ class e_form
 
 	/**
 	 *	Date field with popup calendar // NEW in 0.8/2.0
-	 *
+	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
 	 * @param array or str 
@@ -957,8 +957,10 @@ class e_form
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
 	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&format=MM, dd, yyyy hh:ii');
+	 * @example $frm->datepicker('my_field',time(),'type=datetime&return=string');
 	 * 
 	 * @url http://trentrichardson.com/examples/timepicker/
+	 * @return string
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
@@ -972,6 +974,7 @@ class e_form
 		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
 		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
 		$value		= null;
+		$useUnix    = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
 				
 		if($type == 'datetime' && !varset($options['format']))
 		{
@@ -1015,7 +1018,8 @@ class e_form
 		}
 		else
 		{			
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}'  id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
+			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$datestamp}' />";
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
@@ -1040,7 +1044,25 @@ class e_form
         			format: $(this).attr("data-date-format"),
         			weekStart: $(this).attr("data-date-firstday"),
         			language: $(this).attr("data-date-language")
-        		 });
+        		 }).on("changeDate", function(ev){
+
+					var useUnix = $(this).attr("data-date-unix");
+					var newValue = "";
+
+					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
+
+					if(useUnix === "true")
+					{
+						newValue = parseInt(ev.date.getTime() / 1000);
+					}
+					else
+					{
+						newValue = $("#"+ ev.target.id).val();
+					}
+
+			        $(newTarget).val(newValue);
+
+				})
     		});
 
     		$("input.e-datetime").each(function() {
@@ -1050,7 +1072,25 @@ class e_form
         			weekStart: $(this).attr("data-date-firstday"),
         			showMeridian: $(this).attr("data-date-ampm"),
         			language: $(this).attr("data-date-language")
-        		 });
+        		 }).on("changeDate", function(ev){
+
+					var useUnix = $(this).attr("data-date-unix");
+					var newValue = "";
+
+					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
+
+					if(useUnix === "true")
+					{
+						newValue = parseInt(ev.date.getTime() / 1000);
+					}
+					else
+					{
+						newValue = $("#"+ ev.target.id).val();
+					}
+
+			        $(newTarget).val(newValue);
+
+				})
     		});
     		');
 
@@ -1070,6 +1110,7 @@ class e_form
 	 * @param string $options['classes'] - single or comma-separated list of user-classes members to include.
 	 * @param string $options['excludeSelf'] = exlude logged in user from list.
 	 * @param string $options['return'] if == 'array' an array is returned.
+	 * @param string $options['return'] if == 'sqlWhere' an sql query is returned.
 	 * @return string select form element.
 	 */
 	public function userlist($name, $val=null, $options=array())
@@ -1113,6 +1154,10 @@ class e_form
 		}
 
 
+		if(!empty($options['return']) && $options['return'] == 'sqlWhere') // can be used by user.php ajax method..
+		{
+			return $where;
+		}
 
 		$users =   e107::getDb()->retrieve("user",$fields, "WHERE ".$where." ORDER BY user_name LIMIT 1000",true);
 
@@ -1385,7 +1430,7 @@ class e_form
 		
 		if(vartrue($options['strength']))
 		{
-			$addon .= "<div style='margin-top:4px'><div  class='progress' style='float:left;display:inline-block;width:218px'><div class='progress-bar bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";
+			$addon .= "<div style='margin-top:4px'><div  class='progress' style='float:left;display:inline-block;width:218px;margin-bottom:0'><div class='progress-bar bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";
 		}
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
@@ -2797,7 +2842,7 @@ class e_form
 	function name2id($name)
 	{
 		$name = strtolower($name);
-		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::'), array('-', '-', '', '-', '-', '-', '-','','','-'), $name), '-');
+		return rtrim(str_replace(array('[]', '[', ']', '_', '/', ' ','.', '(', ')', '::', ':'), array('-', '-', '', '-', '-', '-', '-','','','-',''), $name), '-');
 	}
 
 	/**
@@ -3568,7 +3613,7 @@ class e_form
 
 			case 'ip':
 				//$e107 = e107::getInstance();
-				$value = e107::getIPHandler()->ipDecode($value);
+				$value = "<span title='".$value."'>".e107::getIPHandler()->ipDecode($value).'</span>';;
 				// else same
 			break;
 
@@ -5091,9 +5136,10 @@ class e_form
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
 			$curTab = varset($_GET['tab'],0);
-			
+
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
+				<div style='display:none'><input type='password' id='_no_autocomplete_' /></div>
 				<div id='admin-ui-edit'>
 				".vartrue($form['header'])."
 				".$this->token()."
@@ -5594,7 +5640,7 @@ class e_form
 					foreach ($triggers as $trigger => $tdata)
 					{
 						$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
-						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[0], $tdata[1]);
+						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[1], $tdata[1], $tdata[0]);
 						
 						if($trigger == 'submit' && $submitopt)
 						{

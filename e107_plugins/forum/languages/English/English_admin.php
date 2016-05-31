@@ -71,7 +71,7 @@ define("FORLAN_58", "Number of posts displayed per page");
 define("FORLAN_60", "This will delete all threads that have not received a reply in the number of days you enter. <br /><b>Please be careful using this function!</b>");
 //define("FORLAN_61", "Update Options");
 // define("FORLAN_62", "Forum Options");
-// define("FORLAN_63", "Ranks");
+define("FORLAN_63", "Display Ranks");
 // define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Separate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
 define("FORLAN_66", "Not installed");

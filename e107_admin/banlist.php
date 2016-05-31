@@ -328,7 +328,7 @@ class banlist_ui extends e_admin_ui
 								<div class='field-help'>".$ipAdministrator->getBanTypeString($bt, TRUE)."</div>
 							</td>
 							<td class='left'>
-								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120)."
+								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120, array('size'=>'xxlarge'))."
 							</td>
 							<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_'.($i))."</td>
 						</tr>

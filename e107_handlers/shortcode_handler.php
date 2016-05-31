@@ -98,9 +98,12 @@ class e_parse_shortcode
 	protected $wrapper              = null;     // current wrapper being processed.
 	protected $wrapperDebugDone     = array();  // Flag to avoid repetition of debug info.
 	protected $sc_style             = array();  // Former $sc_style global variable. Internally used - performance reasons
+	protected $editableCodes        = array(); // Array of editable shortcode data.
 
 	function __construct()
 	{
+		// $_SESSION['editable'] = array();
+
 		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN}
 		$this->loadOverrideShortcodes();
 		$this->loadThemeShortcodes();
@@ -494,7 +497,7 @@ class e_parse_shortcode
 	 *
 	 * @return e_parse_shortcode
 	 */
-	protected function loadThemeShortcodes()
+	public function loadThemeShortcodes()
 	{
 		global $register_sc;
 		
@@ -763,8 +766,6 @@ class e_parse_shortcode
 		if (is_object($extraCodes))
 		{
 
-
-	
 			$this->addedCodes = &$extraCodes;
 
 		//	e107::getDebug()->log("Codes".print_a($this->addedCodes,true));
@@ -775,7 +776,6 @@ class e_parse_shortcode
 			if(method_exists($this->addedCodes, 'wrapper'))
 			{
 				// $cname = get_class($this->addedCodes);
-
 
 				$tmpWrap = e107::templateWrapper($this->addedCodes->wrapper());
 				if(!empty($tmpWrap)) // FIX for #3 above.
@@ -790,6 +790,86 @@ class e_parse_shortcode
 				//	e107::getMessage()->addDebug("Wrapper Empty: ".$this->addedCodes->wrapper());
 				}
 
+			}
+
+			if(method_exists($this->addedCodes, 'editable'))
+			{
+				$this->editableCodes = $this->addedCodes->editable();
+
+				if(isset($this->editableCodes['perms']) && getperms($this->editableCodes['perms']))
+				{
+					e107::js('core', 'jquery.contenteditable.js', 'jquery');
+
+					$_SESSION['editable'][e_TOKEN] = $this->editableCodes;
+
+					e107::js('footer-inline', '$(".e-editable-front").each(function ()
+					{
+
+						var sc   = $(this).attr("data-edit-sc");
+						var id      = $(this).attr("data-edit-id");
+						var token    = "'.e_TOKEN.'";
+
+						$(this).contentEditable({
+							"placeholder" : "",
+							"onBlur" : function(element){
+								var edited_content = element.content;
+
+								$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data){
+									console.log(data);
+							        try
+									{
+										var d = $.parseJSON(data);
+									} catch(e)
+									{
+										// Not JSON.
+										return;
+									}
+
+
+									 console.log(d);
+
+
+
+							// Show pop-up message.
+							if(d.msg)
+							{
+								var alertType = "info";
+
+								if(d.status == "ok")
+								{
+									alertType = "success";
+								}
+
+								if(d.status == "error")
+								{
+									alertType = "danger";
+								}
+
+								if(jQuery().notify)
+								{
+									$("#uiAlert").notify({
+										type: alertType,
+										message: {text: d.msg},
+										fadeOut: {enabled: true, delay: 3000}
+									}).show();
+								}
+								else
+								{
+									alert(d.msg);
+								//	location.reload();
+									return;
+								}
+							}
+
+								});
+							}
+						});
+
+					});
+
+
+					');
+				}
 			}
 
 
@@ -1206,50 +1286,11 @@ class e_parse_shortcode
 
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
-			// Wrapper support - see contact_template.php
-			if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
-			{
-				list($pre, $post) = explode("{---}", $this->wrappers[$code], 2); 
-				$ret = $pre.$ret.$post;
-
-			}
-			elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
-			{
-				list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
-				$ret = $pre.$ret.$post;
-			}
-			else
-			{
-				//if $sc_mode exists, we need it to parse $sc_style
-				if ($sc_mode)
-				{
-					$code = $code.'|'.$sc_mode;
-				}
-				if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
-				{
-					$pre = $post = '';
-					// old way - pre/post keys
-					if(is_array($this->sc_style[$code]))
-					{
-						if (isset($this->sc_style[$code]['pre']))
-						{
-							$pre = $this->sc_style[$code]['pre'];
-						}
-						if (isset($this->sc_style[$code]['post']))
-						{
-							$post = $this->sc_style[$code]['post'];
-						}
-					}
-					// new way - same format as wrapper
-					else
-					{
-						list($pre, $post) = explode("{---}", $this->sc_style[$code], 2); 
-					}
-					
-					$ret = $pre.$ret.$post;
-				}
-			}
+			$ret = $this->makeEditable($ret, $code);
+			$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
 		}
+
+
 		if (E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
 			$sql->db_Mark_Time("(After SC {$code})");
@@ -1279,8 +1320,6 @@ class e_parse_shortcode
 				$other['path'] = str_replace('../','',$_path);		
 			}
 
-
-			
 			if($this->debug_legacy)
 			{
 				$other = $this->debug_legacy;
@@ -1288,7 +1327,7 @@ class e_parse_shortcode
 
 			if(!empty($this->wrappers[$code]))
 			{
-				$other['wrapper'] = $this->wrappers[$code];
+				$other['wrapper'] = str_replace(array("\n","\t")," ",$this->wrappers[$code]);
 			}
 			elseif(!empty($this->wrappers[$fullShortcodeKey]) )
 			{
@@ -1305,15 +1344,118 @@ class e_parse_shortcode
 
 			
 		}
-		
-		
-		
-		
-		
-		return isset($ret) ? $ret : '';
+
+
+
+
+		return isset($ret) ? $ret: '';
+
 	}
 
 
+	/**
+	 * Add Wrapper to Shortcode (when detected)
+	 * @param mixed $ret
+	 * @param string $code
+	 * @param string $fullShortcodeKey
+	 * @param string $sc_mode
+	 * // Wrapper support - see contact_template.php
+	 * @return string
+	 */
+	private function makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode)
+	{
+
+		if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
+		{
+			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
+			return $pre.$ret.$post;
+		}
+
+		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+		{
+			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
+			return $pre.$ret.$post;
+		}
+
+		//if $sc_mode exists, we need it to parse $sc_style
+		if ($sc_mode)
+		{
+			$code = $code.'|'.$sc_mode;
+		}
+
+		if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
+		{
+			$pre = $post = '';
+			// old way - pre/post keys
+			if(is_array($this->sc_style[$code]))
+			{
+				if (isset($this->sc_style[$code]['pre']))
+				{
+					$pre = $this->sc_style[$code]['pre'];
+				}
+				if (isset($this->sc_style[$code]['post']))
+				{
+					$post = $this->sc_style[$code]['post'];
+				}
+			}
+			else // new way - same format as wrapper
+			{
+				list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+			}
+
+			$ret = $pre.$ret.$post;
+		}
+
+
+		return $ret;
+
+	}
+
+
+	/**
+	 * Add Editable Container to shortcode (when detected)
+	 * @param string $text
+	 * @param string $code
+	 * @return string
+	 */
+	private function makeEditable($text, $code)
+	{
+		$lcode = strtolower($code);
+
+		if(empty($code)
+		|| empty($this->editableCodes)
+		|| empty($this->editableCodes['shortcodes'][$lcode])
+		|| !isset($this->editableCodes['perms'])
+		|| empty($this->editableCodes['table'])
+		|| empty($this->editableCodes['pid'])
+		|| !getperms($this->editableCodes['perms'])
+		|| empty($this->editableCodes['shortcodes'][$lcode]['field'])
+		)
+		{
+
+			return $text;
+		}
+
+		if(!empty($this->editableCodes['vars']))
+		{
+			$varID = $this->editableCodes['vars'];
+			$var = $this->addedCodes->getScVar($varID);
+		}
+		else
+		{
+			$var = $this->addedCodes->getVars();
+		}
+
+
+		$container  = empty($this->editableCodes['shortcodes'][$lcode]['container']) ? 'span' : $this->editableCodes['shortcodes'][$lcode]['container'];
+		$pid        = $this->editableCodes['pid'];
+		$id         = intval($var[$pid]);
+
+		$attributes = "title='".LAN_EDIT."' contenteditable='true' class='e-editable-front' data-edit-id='".$id."' data-edit-sc='".$lcode."' ";
+
+		return ($container == 'div') ? "<div ".$attributes." >".$text."</div>" : "<span  ".$attributes."  >".$text."</span>";
+
+	}
 
 
 	/**
@@ -1415,6 +1557,8 @@ class e_shortcode
 	protected $wrapper = null; // holds template/key value of the currently used wrapper (if any) - see contact_template.php for an example. 	
 
 	protected $override = false;
+
+	protected $editable = null;
 	/**
 	 * Storage for shortcode values
 	 * @var e_vars
@@ -1458,6 +1602,15 @@ class e_shortcode
 	public function getWrapperID()
 	{
 		return $this->wrapper;
+	}
+
+
+	public function editable($data=null)
+	{
+		if(null === $data) return $this->editable;
+		$this->editable = $data;
+
+		return $this;
 	}
 
 
