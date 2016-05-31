@@ -363,7 +363,8 @@ foreach ($forumList['parents'] as $parent)
 //	$pVars->PARENTNAME = $parent['forum_name'];
 //----				$sc->parentname = $parent['forum_name'];
 //--	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
-				$sc->fparent = $parent;
+//				$sc->fparent = $parent;
+				$sc->setVars($parent);
 	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, false, $sc);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
@@ -454,9 +455,9 @@ function parse_forum($f, $restricted_string = '')
 	$fVars->FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 --*/
 //--	$fVars->THREADS = $f['forum_threads'];
-	$sc->threads = $f['forum_threads'];
+//----	$sc->threads = $f['forum_threads'];
 //--	$fVars->REPLIES = $f['forum_replies'];
-	$sc->replies = $f['forum_replies'];
+//----	$sc->replies = $f['forum_replies'];
 //--	$fVars->FORUMSUBFORUMS = '';
 	
 //--	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
@@ -466,18 +467,18 @@ function parse_forum($f, $restricted_string = '')
 //--	$fVars->REPLIESX = "<span class='badge {$badgeReplies}'>".$f['forum_replies']."</span>";
 
 
-	$subId = $f['forum_id'];
-	if(!empty($forumList['subs']) && is_array($forumList['subs'][$subId]))
+//----	$subId = $f['forum_id'];
+//----	if(!empty($forumList['subs']) && is_array($forumList['subs'][$subId]))
+	if(!empty($forumList['subs']) && is_array($forumList['subs'][$f['forum_id']]))
 	{
 //----		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
 		$lastpost_datestamp = reset(explode('.', $f['forum_lastpost_info']));
 		$ret = parse_subs($forumList, $f['forum_id'], $lastpost_datestamp);
-    $sc->ret = $ret;
 //		$fVars->FORUMSUBFORUMS = "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$ret['text']}</div>";
 //--		$fVars->THREADS += $ret['threads'];
 //--		$fVars->REPLIES += $ret['replies'];
-		$sc->threads += $ret['threads'];
-		$sc->replies += $ret['replies'];
+		$f['forum_threads'] += $ret['threads'];
+		$f['forum_replies'] += $ret['replies'];
 		if(isset($ret['lastpost_info']))
 		{
 			$f['forum_lastpost_info'] = $ret['lastpost_info'];
@@ -485,8 +486,10 @@ function parse_forum($f, $restricted_string = '')
 			$f['forum_lastpost_user_anon'] = $ret['lastpost_user_anon'];
 			$f['user_name'] = $ret['user_name'];
 		}
+      $f['text'] = $ret['text'];
 	}
 
+				$sc->setVars($f);
 /*--
 	if ($f['forum_lastpost_info'])
 	{
@@ -568,14 +571,10 @@ function parse_subs($forumList, $id ='', $lastpost_datestamp)
 	return $ret;
 }
 
-
-
 if (e_QUERY == 'track')
 {
 
 }
-
-
 
 if (e_QUERY == 'new')
 {
@@ -584,10 +583,10 @@ if (e_QUERY == 'new')
 	foreach($newThreadList as $thread)
 	{
 //--		$author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
-		$sc->author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
+//----		$sc->author_name = ($thread['user_name'] ? $thread['user_name'] : $thread['lastuser_anon']);
 
 //--		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
-		$sc->datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
+//----		$sc->datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
 /*--
 		if(!$thread['user_name'])
 		{
@@ -602,6 +601,7 @@ if (e_QUERY == 'new')
 --*/
 
 //--		$forum_newstring .= $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
+				$sc->setVars($thread);
 		$forum_newstring .= $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, false, $sc);
 	}
 
