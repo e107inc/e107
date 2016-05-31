@@ -50,12 +50,14 @@ if(e_AJAX_REQUEST)
 
 }
 
+/*
 if ($untrackId = varset($_REQUEST['untrack']))
 {
 	$forum->track('del', USERID, $untrackId);
 	header('location:'.$e107->url->create('forum/thread/track', array(), 'full=1&encode=0'));
 	exit;
 }
+*/
 
 if(isset($_GET['f']))
 {
@@ -758,9 +760,10 @@ function forum_track()
 
 		$viewed = $forum->threadGetUserViewed();
 
-		$qry = "SELECT t.*,th.*, f.* FROM `#forum_track` AS t
+		$qry = "SELECT t.*,th.*, f.*,u.user_name FROM `#forum_track` AS t
 		LEFT JOIN `#forum_thread` AS th ON t.track_thread = th.thread_id
 		LEFT JOIN `#forum` AS f ON th.thread_forum_id = f.forum_id
+		LEFT JOIN `#user` AS u ON th.thread_lastuser = u.user_id
 		WHERE t.track_userid = ".USERID." ORDER BY th.thread_lastpost DESC";
 
 		$forum_trackstring = '';
@@ -769,19 +772,24 @@ function forum_track()
 		{
 			while($row = $sql->fetch())
 			{
+			//	e107::getDebug()->log($row);
 				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 
 				$data['NEWIMAGE'] = $IMAGE_nonew_small;
+				
 				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))
 				{
 					$data['NEWIMAGE'] = $IMAGE_new_small;
 				}
 
+				$data['LASTPOSTUSER'] = !empty($row['user_name']) ? "<a href='".e107::url('user/profile/view', array('name' => $row['user_name'], 'id' => $row['thread_lastuser']))."'>".$row['user_name']."</a>" : LAN_ANONYMOUS;
+				$data['LASTPOSTDATE'] = $tp->toDate($row['thread_lastpost'],'relative');
+				
 				$buttonId = "forum-track-button-".intval($row['thread_id']);
 
 				$forumUrl = e107::url('forum','forum',$row);
 				$threadUrl = e107::url('forum','topic',$row, array('query'=>array('last'=>1))); // ('forum/thread/view', $row); // configs will be able to map thread_* vars to the url
-				$data['TRACKPOSTNAME'] = "<a href='".$forumUrl."'>". $row['forum_name']."</a> / <a href='".$threadUrl."'>".$tp->toHTML($row['thread_name']).'</a>';
+				$data['TRACKPOSTNAME'] = "<a href='".$forumUrl."'>". $row['forum_name']."</a> / <a href='".$threadUrl."'>".$tp->toHTML($row['thread_name'], false, 'TITLE').'</a>';
 			//	$data['UNTRACK'] = "<a class='btn btn-default' href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_FORUM_0070."</a>";
 
 
