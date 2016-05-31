@@ -291,6 +291,27 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsauthor($parm);
 	}
 
+	public function sc_news_author_avatar($parm=null)
+	{
+		return $this->sc_newsavatar($parm);
+	}
+
+	public function sc_news_author_signature($parm=null)
+	{
+
+		$user = e107::user($this->news_item['user_id']);
+
+		if(!empty($user['user_signature']))
+		{
+			return e107::getParser()->toHtml($user['user_signature'], true, 'DESCRIPTION');
+		}
+	}
+
+	public function sc_news_author_items_url($parm=null)
+	{
+		return e107::getUrl()->create('news/list/author',array('author'=>$this->news_item['user_name'])); // e_BASE."news.php?author=".$val
+	}
+
 	public function sc_news_summary($parm=null)
 	{
 		return $this->sc_newssummary($parm);
@@ -369,7 +390,10 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsavatar($parm=null)
 	{
-		return vartrue($this->news_item['user_id']) ? e107::getParser()->parseTemplate("{USER_AVATAR=".$this->news_item['user_id']."}",true) : '';
+		if(!empty($this->news_item['user_id']))
+		{
+			return e107::getParser()->toAvatar($this->news_item['user_id'], $parm);
+		}
 	} 
 
 	/**

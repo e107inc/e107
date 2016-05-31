@@ -155,17 +155,35 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
 if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
 {
-	
-	$newsRoute = 'news/list/tag';	
+
+	$newsRoute = 'news/list/tag';
 	if(!vartrue($_GET['tag']))
 	{
-		list($action,$word) = explode("=",$action,2);	
+		list($action,$word) = explode("=",$action,2);
 		$_GET['tag'] = $word;
 		unset($word,$tmp);
 	}
 
+	$newsUrlparms['tag'] = $tp->filter($_GET['tag']);
 	$newsfrom = intval(varset($_GET['page'],0));
 }
+
+if(!empty($_GET['author']) || substr($action,0,4) == 'author=')
+{
+
+	$newsRoute = 'news/list/author';
+	if(!vartrue($_GET['author']))
+	{
+		list($action,$author) = explode("=",$action,2);
+		$_GET['author'] = $author;
+		unset($author,$tmp);
+	}
+
+	$newsUrlparms['author'] = $tp->filter($_GET['author']);
+	$newsfrom = intval(varset($_GET['page'],0));
+
+}
+
 
 if(E107_DBG_PATH)
 {
@@ -184,7 +202,7 @@ if(E107_DBG_PATH)
 //------------------------------------------------------
 // Just title and a few other details
 
-if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
+if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET['author']))
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
@@ -214,9 +232,9 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 			$renTypeQry = " AND (n.news_render_type REGEXP '(^|,)(".implode("|", $pref['news_list_templates']).")(,|$)')";
 		}
 		
-		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
+	//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -235,10 +253,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	elseif ($action == 'cat') // show archive of all news items in a particular category using list-style template.
 	{
 		
-		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
+	//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
 		
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -254,7 +272,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$tagsearch = e107::getParser()->filter($_GET['tag']);
 
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -267,11 +285,32 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$category_name = 'Tag: "'.$tagsearch.'"';
 		
 	}
+	elseif(!empty($_GET['author']))
+	{
+		$authorSearch = e107::getParser()->filter($_GET['author']);
+
+		$query = "
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		nc.category_meta_description
+		FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE u.user_name = '".$authorSearch."'
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+		AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		ORDER BY n.news_datestamp DESC
+		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
+		$category_name = 'Author: "'.$authorSearch.'"';
+
+
+
+	}
 
 	$newsList = array();
 	
 	if($sql->gen($query))
 	{
+		$news_total = $sql->foundRows();
 		$newsList = $sql->db_getList();
 		$ogImageCount = 0;
 		foreach($newsList as $row)
@@ -302,11 +341,11 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	{
 		setNewsFrontMeta($newsList[1], 'category');
 	}
-	elseif($category_name)
-	{
-		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
-	}
-
+//	elseif($category_name)
+//	{
+//		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
+//	}
+e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 	$currentNewsAction = $action;
 	require_once(HEADERF);
 	$action = $currentNewsAction;
@@ -392,7 +431,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 	$url 		= rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
 	$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
-	
+
+
+	// e107::getDebug()->log($newsUrlparms);
+
 	$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 	if(varset($template['caption'])) // v2.x
@@ -765,7 +807,7 @@ switch($action)
 	
 	case 'list':
 	default:
-		setNewsFrontMeta($newsAr[1], 'category');
+		setNewsFrontMeta($newsAr[1], 'list');
 		break;
 }
 
@@ -1223,7 +1265,7 @@ function setNewsFrontMeta($news, $type='news')
 
 
 
-	if($news['category_name'] && !defined('e_PAGETITLE'))
+	if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'category')
 	{
 		define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
 	}

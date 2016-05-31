@@ -578,7 +578,11 @@ class pageClass
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
 		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///Upgraded to setVars() array. (not using '$this->page')
-			
+
+
+
+
+
 			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
 
 			
@@ -608,9 +612,21 @@ class pageClass
 			 $this->template = e107::getCoreTemplate('page', 'default');
 			 $this->templateID = 'default';
 		}
-		
+
+		$editable = array(
+				'table' => 'page',
+				'pid'   => 'page_id',
+				'perms' => '5',
+				'shortcodes' => array(
+					'cpagetitle' => array('field'=>'page_subtitle','type'=>'text', 'container'=>'span'),
+					'cpagebody' => array('field'=>'page_text','type'=>'html', 'container'=>'div'),
+				)
+		);
+
+
 		$this->batch = e107::getScBatch('page',null,'cpage');
 		$this->batch->wrapper('page/'.$this->templateID );
+		$this->batch->editable($editable);
 
 		$this->pageText = $this->page['page_text'];
 
@@ -773,6 +789,7 @@ class pageClass
 		$extend->title = $vars->page_title;
 		$extend->message = e107::getMessage()->render();
         $tp = e107::getParser();
+
 
 		switch ($this->authorized) 
 		{

@@ -193,9 +193,9 @@ TEMPL;
 
 			$content = trim($content);
 
-			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
-			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
-			$content 	= str_replace($srch, $repl, $content);
+		//	$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+		//	$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
+		//	$content 	= str_replace($srch, $repl, $content);
 
 			// resize the thumbnail to match wysiwyg width/height.
 
@@ -298,6 +298,12 @@ TEMPL;
 
 		foreach($arr['img'] as $img)
 		{
+			if(substr($img['src'],0,4) == 'http')
+			{
+				continue;
+			}
+
+
 			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
 
 			$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
@@ -316,7 +322,8 @@ TEMPL;
 				$qr['h'] = $img['height'];
 			}
 
-			$qr['ebase'] = true; 
+			$qr['ebase'] = true;
+
 			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
 			$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';

@@ -1625,7 +1625,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 		// XXX Temporary Fix - TBD. 
 		// Set the URL matching in the page itself. see: forum_viewforum.php and forum_viewtopic.php 
-		if(defined("NAVIGATION_ACTIVE") && !$data['link_sub']) 
+		if(defined("NAVIGATION_ACTIVE") && empty($data['link_sub']))
 		{
 			if(strpos($data['link_url'], NAVIGATION_ACTIVE)!==false)
 			{
@@ -1844,7 +1844,7 @@ class navigation_shortcodes extends e_shortcode
 		if(is_string($this->var['link_sub'])) // html override option.
 		{
 
-			e107::getDebug()->log($this->var);
+		//	e107::getDebug()->log($this->var);
 
 			return $this->var['link_sub'];
 		}

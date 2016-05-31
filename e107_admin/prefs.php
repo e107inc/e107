@@ -382,14 +382,14 @@ $text .= "
 					<tr>
 						<td><label for='sitetag'>".PRFLAN_5."</label></td>
 						<td>
-							".$frm->textarea('sitetag', $tp->toForm($pref['sitetag']), 3, 59)."
+							".$frm->textarea('sitetag', $tp->toForm($pref['sitetag']), 3, 59, array('size'=>'xxlarge'))."
 							<div class='field-help'>".PRFLAN_227."</div>
 						</td>
 					</tr>
 					<tr>
 						<td><label for='sitedescription'>".PRFLAN_6."</label></td>
 						<td>
-							".$frm->textarea('sitedescription', $tp->toForm($pref['sitedescription']), 3, 80)."
+							".$frm->textarea('sitedescription', $tp->toForm($pref['sitedescription']), 3, 80, array('size'=>'xxlarge'))."
 							<div class='field-help'>".PRFLAN_228."</div>
 						</td>
 					</tr>
@@ -397,7 +397,7 @@ $text .= "
 					<tr>
 						<td><label for='sitedisclaimer'>".PRFLAN_9."</label></td>
 						<td>
-							".$frm->textarea('sitedisclaimer',$tp->toForm( $pref['sitedisclaimer']), 3, 80)."
+							".$frm->textarea('sitedisclaimer',$tp->toForm( $pref['sitedisclaimer']), 3, 80, array('size'=>'xxlarge'))."
 							<div class='field-help'>".PRFLAN_229."</div>
 						</td>
 					</tr>
@@ -421,26 +421,26 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 				<tr>
 					<td><label for='siteadmin'>".PRFLAN_7."</label></td>
 					<td>
-						".$frm->text('siteadmin', SITEADMIN, 100)."
+						".$frm->text('siteadmin', SITEADMIN, 100, array('size'=>'xlarge'))."
 					</td>
 					</tr>
 					<tr>
 						<td><label for='siteadminemail'>".PRFLAN_8."</label></td>
 						<td>
-							".$frm->text('siteadminemail', SITEADMINEMAIL, 100)."
+							".$frm->text('siteadminemail', SITEADMINEMAIL, 100, array('size'=>'xlarge'))."
 						</td>
 					</tr>
 					<tr>
 						<td><label for='replyto-name'>".PRFLAN_174."</label></td>
 						<td>
-							".$frm->text('replyto_name', $pref['replyto_name'], 100)."
+							".$frm->text('replyto_name', $pref['replyto_name'], 100, array('size'=>'xlarge'))."
 							<div class='smalltext field-help'>".PRFLAN_175."</div>
 						</td>
 					</tr>
 					<tr>
 						<td><label for='replyto-email'>".PRFLAN_176."</label></td>
 						<td>
-							".$frm->text('replyto_email', $pref['replyto_email'], 100)."
+							".$frm->text('replyto_email', $pref['replyto_email'], 100, array('size'=>'xlarge'))."
 							<div class='smalltext field-help'>".PRFLAN_177."</div>
 						</td>
 					</tr>
@@ -483,7 +483,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					<tr>
 						<td><label for='sitecontactinfo'>".PRFLAN_162."</label></td>
 						<td>
-							".$frm->textarea('sitecontactinfo', $pref['sitecontactinfo'], 6, 59)."
+							".$frm->textarea('sitecontactinfo', $pref['sitecontactinfo'], 6, 59, array('size'=>'xxlarge'))."
 							<div class='smalltext field-help'>".PRFLAN_163."</div>
 						</td>
 					</tr>
@@ -789,7 +789,7 @@ $text .= "
 					<tr>
 						<td><label for='user-reg-veri'>".PRFLAN_154."</label></td>
 						<td>
-							".$frm->select_open('user_reg_veri');
+							".$frm->select_open('user_reg_veri', array('size'=>'xlarge'));
                             $veri_list = array(PRFLAN_152,PRFLAN_31,PRFLAN_153);
 
 							foreach($veri_list as $v => $v_title)
@@ -810,7 +810,7 @@ $text .= "
 					
 					 <tr>
 						<td><label for='allowemaillogin'>".PRFLAN_184."</label></td>
-						<td>".$frm->select_open('allowEmailLogin');
+						<td>".$frm->select_open('allowEmailLogin', array('size'=>'xlarge'));
                      //   $login_list = array(PRFLAN_201,PRFLAN_202,PRFLAN_203);
                         $login_list = array(
 	                        2 => PRFLAN_203,
@@ -857,7 +857,7 @@ $text .= "
 							<div class='field-help'>".PRFLAN_266."</div>
 								</div>
 							<div class='form-group clearfix'>".
-							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'placeholder='.PRFLAN_206)."
+							$frm->textarea('membersonly_exceptions', $pref['membersonly_exceptions'], 3, 1, 'size=xxlarge&placeholder='.PRFLAN_206)."
 							<div class='field-help'>".PRFLAN_207."</div></div>
 
 							</div>
@@ -1021,14 +1021,14 @@ $text .= "
 					<tr>
 						<td><label for='signup-text'>".PRFLAN_126."</label></td>
 						<td>
-							".$frm->textarea('signup_text', $pref['signup_text'], 3, 80)."
+							".$frm->textarea('signup_text', $pref['signup_text'], 3, 80, array('size'=>'xxlarge'))."
 						</td>
 					</tr>
 
 					<tr>
 						<td><label for='signup-text-after'>".PRFLAN_140."</label></td>
 						<td>
-							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 80)."
+							".$frm->textarea('signup_text_after', $pref['signup_text_after'], 3, 80, array('size'=>'xxlarge'))."
 						</td>
 					</tr>
 					
@@ -1520,7 +1520,7 @@ $text .= "
 							'asc'	=> PRFLAN_237
 						);
 					
-					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_moderate'])."
+					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_moderate'], array('size'=>'xlarge'))."
 						</td>
 					</tr>
 					

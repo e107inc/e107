@@ -169,18 +169,43 @@ $NEWS_TEMPLATE['view']['item'] = '
 			
 			
 		</div>
+
+
+
+
 		<hr>
 		
 		<div class="options hidden-print ">
 			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
 		</div>
-			
+
+
+
+
+
 	</div>
+
+	<hr />
 	{NEWSRELATED}
 	<hr>
 	{NEWSNAVLINK}
 
 ';
+
+/*
+ * 	<hr />
+	<h3>About the Author</h3>
+	<div class="media">
+			<div class="media-left">{SETIMAGE: w=80&h=80&crop=1}{NEWS_AUTHOR_AVATAR: shape=circle}</div>
+			<div class="media-body">
+				<h4>{NEWS_AUTHOR}</h4>
+					{NEWS_AUTHOR_SIGNATURE}
+					<a class="btn btn-xs btn-primary" href="{NEWS_AUTHOR_ITEMS_URL}">My Articles</a>
+			</div>
+	</div>
+ */
+
+
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
 
@@ -215,6 +240,6 @@ $NEWS_TEMPLATE['related']['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')
 $NEWS_TEMPLATE['related']['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
 $NEWS_TEMPLATE['related']['end'] = "</ul>";*/
 
-$NEWS_TEMPLATE['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">YOU MIGHT ALSO LIKE</h2><div class="row">';
+$NEWS_TEMPLATE['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">You Might Also Like</h2><div class="row">';
 $NEWS_TEMPLATE['related']['item'] = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
 $NEWS_TEMPLATE['related']['end'] = '</div>';

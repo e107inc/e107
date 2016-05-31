@@ -113,7 +113,7 @@ class banner_ui extends e_admin_ui
 	
 		protected $fields 		= array (
 		  'checkboxes'				=>   array ( 'title' => '', 		'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'banner_id' 				=>   array ( 'title' => LAN_ID, 	'data' => 'int', 'width' => '2%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_id' 				=>   array ( 'title' => LAN_ID, 	'type' => null, 'data' => 'int', 'width' => '2%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_campaign' 		=>   array ( 'title' => 'Campaign', 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array( 'tdClassRight'=>'form-inline'), 'class' => 'left', 'thclass' => 'left',  ),
 
 		  'banner_clientname'		=>   array ( 'title' => 'Clientname', 'type' => 'method', 'tab'=>1, 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -170,7 +170,7 @@ class banner_ui extends e_admin_ui
 				$new_data['banner_clientname'] = $new_data['banner_clientname_sel'];
 					
 			}
-			
+
 			if(!empty($new_data['banner_campaign_sel']) && $new_data['banner_campaign_sel'] != '_new_')
 			{
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
@@ -187,7 +187,8 @@ class banner_ui extends e_admin_ui
 
 		public function onCreateError($new_data, $old_data)
 		{
-			// do something		
+			// do something
+			exit;
 		}		
 		
 		
@@ -446,7 +447,7 @@ class banner_form_ui extends e_admin_form_ui
 				else
 				{
 					
-					$text .= $frm->text('client_name',$curVal);	
+					$text .= $frm->text('banner_clientname',$curVal);
 					$text .= "<span class='field-help'>".BNRLAN_29."</span>";
 				}
 				

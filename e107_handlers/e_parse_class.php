@@ -247,11 +247,12 @@ class e_parse extends e_parser
 	 * Constructor - keep it public for backward compatibility
 	 still some new e_parse() in the core
 	 *
-	 * @return void
 	 */
 	public function __construct()
 	{
 		// initialise the type of UTF-8 processing methods depending on PHP version and mb string extension
+		parent::__construct();
+
 
 		$this->init();
 		$this->initCharset();
@@ -823,7 +824,7 @@ class e_parse extends e_parser
 	/**
 	 * @param $text - template to parse.
 	 * @param boolean $parseSCFiles - parse core 'single' shortcodes
-	 * @param array $extraCodes - support legacy shortcode content (eg. content within .sc) as well as simpleParse array format.
+	 * @param object|array $extraCodes - shortcode class containing sc_xxxxx methods or an array of key/value pairs or legacy shortcode content (eg. content within .sc)
 	 * @param object $eVars - XXX more info needed.
 	 * @return string
 	 */
@@ -1313,25 +1314,31 @@ class e_parse extends e_parser
 	public function text_truncate($text, $len = 200, $more = ' ... ')
 	{
 		// Always valid
+
 		if($this->ustrlen($text) <= $len)
 		{
 			return $text;
 		}
+
+		$text = html_entity_decode($text,ENT_QUOTES,'utf-8');
+
+		return mb_strimwidth($text, 0, $len, $more);
 		
-		$ret = $this->usubstr($text, 0, $len);
+	//	$ret = $this->usubstr($text, 0, $len);
 
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
 		// it should work for any characters encoding
-		
-		// FIXME - INVESTIGATE this one, switch to utf8 aware methods
+
+/*
+
 		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
 		if($leftAmp)
 		{
 			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
 		}
 
-		return $ret.$more;
+		return $ret.$more;*/
 	}
 
 
@@ -2456,6 +2463,16 @@ class e_parse extends e_parser
 			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
 		}
 
+		if(!isset($parm['aw']))
+		{
+			$parm['aw'] = null;
+		}
+
+		if(!isset($parm['ah']))
+		{
+			$parm['ah'] = null;
+		}
+
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
 
 	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
@@ -3178,7 +3195,10 @@ class e_parser
 
     private $scriptAccess      = false; // nobody.
 
-    public function __construct()
+	/**
+	 * e_parser constructor.
+	 */
+	public function __construct()
     {
 
 		$this->init();
@@ -3524,7 +3544,7 @@ class e_parser
 			$img = $genericImg;
 		}
 
-		if(($img == $genericImg) && ($userData['user_id'] == USERID) && !empty($options['link']))
+		if(($img == $genericImg) && !empty($userData['user_id'] ) && (($userData['user_id'] == USERID)) && !empty($options['link']))
 		{
 			$linkStart = "<a class='e-tip' title=\"".LAN_EDIT."\" href='".e107::getUrl()->create('user/myprofile/edit')."'>";
 			$linkEnd = "</a>";
@@ -4411,7 +4431,7 @@ return;
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
-		        $value = str_replace("<br></br>", PHP_EOL, $value);
+		        $value = str_replace('<br></br>', PHP_EOL, $value);
 		    }
 
 		    if($node->nodeName == 'code')
@@ -4617,11 +4637,11 @@ return $html;
 
 class e_emotefilter
 {
-	private $search;
-	private $replace;
+	private $search         = array();
+	private $replace        = array();
 	public $emotes;
-	private $singleSearch;
-	private $singleReplace;
+	private $singleSearch   = array();
+	private $singleReplace  = array();
 	 
 	function __construct()
 	{		
@@ -4733,7 +4753,7 @@ class e_emotefilter
 			return '';
 		}
 
-		if((strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
+		if(!empty($this->singleSearch) && (strlen($text) < 12) && in_array($text, $this->singleSearch)) // just one emoticon with no space, line-break or html tags around it.
 		{
 			return str_replace($this->singleSearch,$this->singleReplace,$text);
 		}

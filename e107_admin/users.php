@@ -1501,6 +1501,7 @@ class users_admin_ui extends e_admin_ui
 	// 	$this->addTitle(LAN_USER_QUICKADD);
 		
 		$text = "<div>".$frm->open("core-user-adduser-form",null,null,'autocomplete=0')."
+		<div style='display:none'><input type='password' id='_no_autocomplete_' /></div>
 		<fieldset id='core-user-adduser'>
         <table class='table adminform'>
 		<colgroup>
@@ -1510,14 +1511,14 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_61."</td>
 			<td>
-			".$frm->text('username', varset($user_data['user_name']), varset($pref['displayname_maxlength'], 15))."
+			".$frm->text('username', varset($user_data['user_name']), varset($pref['displayname_maxlength'], 15), array('size'=>'xlarge'))."
 			</td>
 		</tr>
 
 		<tr>
 			<td>".USRLAN_128."</td>
 			<td ><div class='form-inline'>
-			".$frm->text('loginname', varset($user_data['user_loginname']), varset($pref['loginname_maxlength'], 30))."&nbsp;&nbsp;
+			".$frm->text('loginname', varset($user_data['user_loginname']), varset($pref['loginname_maxlength'], 30), array('size'=>'xlarge'))."&nbsp;&nbsp;
 			".$frm->checkbox_label(USRLAN_170, 'generateloginname', 1, varset($pref['predefinedLoginName'], false))."
 			</div></td>
 		</tr>
@@ -1525,13 +1526,13 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_129."</td>
 			<td>
-			".$frm->text('realname', varset($user_data['user_login']), 30)."
+			".$frm->text('realname', varset($user_data['user_login']), 30, array('size'=>'xlarge'))."
 			</td>
 		</tr>
 
 		<tr>
 			<td>".LAN_PASSWORD."</td>
-			<td>".$frm->password('password', '', 20, array('size' => 40, 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
+			<td>".$frm->password('password', '', 20, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
 			</td>
 		</tr>";
 		
@@ -1541,14 +1542,14 @@ class users_admin_ui extends e_admin_ui
 			<tr>
 				<td>".USRLAN_64."</td>
 				<td>
-				".$frm->text('email', varset($user_data['user_email']), 100)."
+				".$frm->text('email', varset($user_data['user_email']), 100, array('size'=>'xlarge'))."
 				</td>
 			</tr>
 	
 			<tr>
 				<td>".USRLAN_239."</td>
 				<td>
-					".$frm->select('sendconfemail', array('0' => USRLAN_240, '1' => USRLAN_241, '2' => USRLAN_242), (int) varset($_POST['sendconfemail'], 0))."
+					".$frm->select('sendconfemail', array('0' => USRLAN_240, '1' => USRLAN_241, '2' => USRLAN_242), (int) varset($_POST['sendconfemail'], 0), array('size'=>'xlarge'))."
 					<div class='field-help'>".USRLAN_181."</div>
 				</td>
 			</tr>";

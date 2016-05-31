@@ -169,28 +169,23 @@ class user_mailout
 			$where[]= "u.`".$selectVals['user_search_name']."` LIKE '%".$selectVals['user_search_value']."%' ";
 		}
 
-		if (vartrue($selectVals['last_visit_match']) && vartrue($selectVals['last_visit_date']))
+		if (!empty($selectVals['last_visit_match']) && !empty($selectVals['last_visit_date']))
 		{
-			foreach(array(':', '-', ',') as $sep)
-			{
-				if (strpos($selectVals['last_visit_date'], ':'))
-				{
-					$tmp = explode($sep, $selectVals['last_visit_date']);
-					break;
-				}
-			}
-			$lvDate = gmmktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);	// Require dd-mm-yy for now
+			$lvDate = $selectVals['last_visit_date'];
+
+			e107::getDebug()->log(date('r',$lvDate));
+
 			if (($lvDate > 0) && ($lvDate <= time()))
 			{
 				switch ($selectVals['last_visit_match'])
 				{
 					case '<' :
 					case '>' :
-						$where[]= "u.`user_lastvisit`".$selectVals['last_visit_match'].$lvDate;
+						$where[]= "u.`user_lastvisit` ".$selectVals['last_visit_match']." ".$lvDate;
 						break;
 					case '=' :
-						$where[]= "u.`user_lastvisit`>=".$lvDate;
-						$where[]= "u.`user_lastvisit`<=".intval($lvDate + 86400);
+						$where[]= "u.`user_lastvisit` >= ".$lvDate;
+						$where[]= "u.`user_lastvisit` <= ".intval($lvDate + 86400);
 						break;
 				}
 			}
@@ -219,6 +214,7 @@ class user_mailout
 			}
 		}
 		$qry .= " FROM `#user` AS u ";
+
 		if (count($incExtended))
 		{
 			$qry .= "LEFT JOIN `#user_extended` AS ue ON ue.`user_extended_id` = u.`user_id`";
@@ -229,9 +225,12 @@ class user_mailout
 
 		e107::getMessage()->addDebug("Selector query: ".$qry);
 
-		if (!( $this->mail_count = $sql->gen($qry))) return FALSE;
+		if (!( $this->mailCount = $sql->gen($qry))) return FALSE;
+
+		e107::getDebug()->log($this->mailCount);
+
 		$this->mail_read = 0;
-		return $this->mail_count;
+		return $this->mailCount;
 	}
 
 
@@ -303,7 +302,7 @@ class user_mailout
 			$var[0]['html'] 	= $admin->userClassesTotals('email_to', varset($selectVals['email_to'], ''));
 			$var[1]['html'] 	= $frm->select('user_search_name', $u_array, varset($selectVals['user_search_name'], ''),'',TRUE)."  ".LAN_MAILOUT_47." ".$frm->text('user_search_value', varset($selectVals['user_search_value'], ''));
 			//$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$frm->text('last_visit_date', varset($selectVals['last_visit_date'], 0));
-			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".$admin->makeCalendar('last_visit_date', varset($selectVals['last_visit_date'], 0));
+			$var[2]['html'] 	= $admin->comparisonSelect('last_visit_match', varset($selectVals['last_visit_match'], ''))."  ".e107::getForm()->datepicker('last_visit_date', varset($selectVals['last_visit_date'], 0), array('type'=>'datetime'));
 			$var[1]['caption'] 	= LAN_MAILOUT_46;   // User Search Field.
 			$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
 
@@ -347,7 +346,7 @@ class user_mailout
 			}
 			if (vartrue($selectVals['last_visit_match']) && vartrue($selectVals['last_visit_date']))
 			{
-				$var[2]['html'] = $selectVals['last_visit_match'].' '.gmstrftime("%D-%M-%Y",$selectVals['last_visit_date']); //FIXME use e107 date function.
+				$var[2]['html'] = $selectVals['last_visit_match'].' '.e107::getParser()->toDate($selectVals['last_visit_date'],'long'); //FIXME use e107 date function.
 				$var[2]['caption'] 	= LAN_MAILOUT_56;	// User last visit
 			}
 			$extFields	= $admin->ret_extended_field_list('extended_1_name', varset($selectVals['extended_1_name'], ''), TRUE);

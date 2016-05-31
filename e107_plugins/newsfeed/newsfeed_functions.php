@@ -29,10 +29,10 @@ if (!e107::isInstalled('newsfeed'))
 	return;
 }
 
-define('NEWSFEED_LIST_CACHE_TAG', 'nomd5_newsfeeds');
-define('NEWSFEED_NEWS_CACHE_TAG', 'nomd5_newsfeeds_news_');
+define('NEWSFEED_LIST_CACHE_TAG', 'newsfeeds'.e_LAN."_");
+define('NEWSFEED_NEWS_CACHE_TAG', 'newsfeeds_news_'.e_LAN."_");
 
-define('NEWSFEED_DEBUG', FALSE);
+define('NEWSFEED_DEBUG', false);
 
 
 class newsfeedClass
@@ -56,7 +56,7 @@ class newsfeedClass
 		$this->lastProcessed = 0;
 		$this->truncateCount = 150;			// Set a pref for these two later
 		$this->truncateMore = '...';
-		$this->useCache = e107::getCache()->UserCacheActive;		// Have our own local copy - should be faster to access
+		$this->useCache = true; // e107::getCache()->UserCacheActive;		// Have our own local copy - should be faster to access
 	}
 
 	// Ensures the feed list is loaded - uses cache if available
@@ -94,10 +94,12 @@ class newsfeedClass
 				if (!empty($row['newsfeed_data']))
 				{
 					$this->newsList[$nfID]['newsfeed_data'] = $row['newsfeed_data'];		// Pull out the actual news - might as well since we're here
-					$this->newsList[$nfID]['newsfeed_timestamp'] = $row['newsfeed_timestamp'];	
+
 					
 					unset($row['newsfeed_data']);			// Don't keep this in memory twice!
 				}
+
+				$this->newsList[$nfID]['newsfeed_timestamp'] = $row['newsfeed_timestamp'];
 				
 				$this->feedList[$nfID] = $row;						// Put the rest into the feed data
 			}
@@ -126,16 +128,30 @@ class newsfeedClass
 			return FALSE;
 		}
 
-		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($this->newsList[$feedID]['newsfeed_data']) || strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec.
+		$maxAge =  ($this->feedList[$feedID]['newsfeed_updateint']/60);
+
+		if($maxAge < 1){ $maxAge = 1; }
+
+	//	e107::getDebug()->log("NewsFeed #".$feedID." MaxAge: ".$maxAge);
+
+		$cachedData  = e107::getCache()->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID,$maxAge, true);
+
+		if(empty($this->newsList[$feedID]['newsfeed_timestamp']) || empty($cachedData) || strpos($this->newsList[$feedID]['newsfeed_data'],'MagpieRSS')) //BC Fix to update newsfeed_data from v1 to v2 spec.
 		{
 			$force = true;
+			// e107::getDebug()->log("NewsFeed Force");
 		}
 
-		if($force) // No data already in memory
+		if($cachedData !== false && $force === false)
 		{
-			if ($force || !($this->newsList[$feedID]['newsfeed_data'] = e107::getCache()->retrieve(NEWSFEED_NEWS_CACHE_TAG.$feedID, $this->feedList[$feedID]['newsfeed_updateint']/60)))
-			{	// Need to re-read from source - either no cached data yet, or cache expired
-			
+			e107::getDebug()->log("NewsFeed Cache Used");
+			$this->newsList[$feedID]['newsfeed_data'] = $cachedData;
+		}
+
+		if ($force === true) // Need to re-read from source - either no cached data yet, or cache expired
+		{
+				e107::getDebug()->log("NewsFeed Update: Item #".$feedID." ".NEWSFEED_NEWS_CACHE_TAG);
+
 				if (NEWSFEED_DEBUG)
 				{
 					 e107::getLog()->e_log_event(10,debug_backtrace(),"DEBUG","Newsfeed update","Refresh item: ".$feedID,FALSE,LOG_TO_ROLLING);
@@ -208,21 +224,24 @@ class newsfeedClass
 
 					if ($this->useCache)
 					{
-						e107::getCache()->set(NEWSFEED_NEWS_CACHE_TAG.$feedID, $serializedArray);
+					//	e107::getDebug()->log("Saving Cache");
+						e107::getCache()->set(NEWSFEED_NEWS_CACHE_TAG.$feedID, $serializedArray, true);
 					}
-					else
-					{
-						$dbData['newsfeed_data'] = $serializedArray;
-						$dbData['newsfeed_timestamp'] = $now;
-					}
+
+					$dbData['newsfeed_data'] = $serializedArray;
+					$dbData['newsfeed_timestamp'] = $now;
+
 					
 					if (count($dbData)) // Only write the feed data to DB if not using cache. Write description if changed
 					{
 
 						$dbData['WHERE'] = "newsfeed_id=".$feedID;
 
+
+
 						if(FALSE === $sql->update('newsfeed', $dbData))
 						{
+							// e107::getDebug()->log("NewsFeed DB Update Failed");
 							if (NEWSFEED_DEBUG) echo NFLAN_48."<br /><br />".var_dump($dbData);
 						}
 					}
@@ -233,7 +252,6 @@ class newsfeedClass
 					if (NEWSFEED_DEBUG) echo $xml -> error;
 					return FALSE;
 				}
-			}
 		}
 
 		return  e107::unserialize($this->newsList[$feedID]['newsfeed_data']);
@@ -283,6 +301,9 @@ class newsfeedClass
 
 		foreach($this->feedList as $nfID => $feed)
 		{
+
+			$feed['newsfeed_sef'] = eHelper::title2sef($feed['newsfeed_name'], 'dashl');
+
 			if (($filter == 0) || ($filter == $feed['newsfeed_id']))
 			{
 				if (($rss = $this->getFeed($nfID)))	// Call ensures that feed is updated if necessary
@@ -292,11 +313,14 @@ class newsfeedClass
 					$numtoshow = intval($where == 'main' ? $newsfeed_showmain : $newsfeed_showmenu);
 					$numtoshow = ($numtoshow > 0 ? $numtoshow : 999);
 
-					$vars['FEEDNAME'] = "<a href='".e_SELF."?show.{$feed['newsfeed_id']}'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
+					// $url = e_PLUGIN_ABS."newsfeed/newsfeed.php?show.".$feed['newsfeed_id'];
+					$url = e107::url('newsfeed','source',$feed);
+
+					$vars['FEEDNAME'] = "<a href='".$url."'>".$tp->toHtml($feed['newsfeed_name'],false,'TITLE')."</a>";
 					$vars['FEEDDESCRIPTION'] = $feed['newsfeed_description'];
 					$vars['FEEDIMAGE'] = $rss['newsfeed_image_link'];
 					$vars['FEEDLANGUAGE'] = $rss['channel']['language'];
-	
+					
 					if($rss['channel']['lastbuilddate'])
 					{
 						$pubbed = $rss['channel']['lastbuilddate'];
@@ -309,15 +333,21 @@ class newsfeedClass
 					{
 						$pubbed = NFLAN_34;
 					}
-	
+
+					if(empty($rss['channel']['link']) || ($rss['channel']['link'] === '/'))
+					{
+					    $rss['channel']['link'] = $feed['newsfeed_url'];
+					}
+
 					$vars['FEEDLASTBUILDDATE']  = NFLAN_33.$pubbed;
 					$vars['FEEDCOPYRIGHT']      = $tp -> toHTML(vartrue($rss['channel']['copyright']), FALSE);
 					$vars['FEEDTITLE']          = "<a href='".$rss['channel']['link']."' rel='external'>".vartrue($rss['channel']['title'])."</a>";
-					$vars['FEEDLINK']           = $rss['channel']['link'];
-					
+					$vars['FEEDLINK']           = $rss['channel']['link'] ;
+
+
 					if($feed['newsfeed_active'] == 2 or $feed['newsfeed_active'] == 3)
 					{
-						$vars['LINKTOMAIN'] = "<a href='".e_PLUGIN."newsfeed/newsfeed.php?show.".$feed['newsfeed_id']."'>".NFLAN_39."</a>";
+						$vars['LINKTOMAIN'] = "<a href='".$url."'>".NFLAN_39."</a>";
 					}
 					else
 					{
@@ -331,6 +361,8 @@ class newsfeedClass
 					while($i < $numtoshow)
 					{
 						$item = $rss['items'][$i];
+
+
 						
 						$vars['FEEDITEMLINK']       = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], FALSE)."</a>\n";
 						$vars['FEEDITEMLINK']       = str_replace('&', '&amp;', $vars['FEEDITEMLINK']);
