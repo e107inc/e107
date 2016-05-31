@@ -376,10 +376,30 @@ class news {
 
 		$wrapperKey = (!empty($param['template_key'])) ? 'news/'.$param['template_key'].'/item' : 'news/view/item';
 
+		$editable = array(
+			'table' => 'news',
+			'pid'   => 'news_id',
+			'vars'  => 'news_item',
+			'perms' => '0',
+			'shortcodes'    => array(
+					'newstitle' => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
+					'newsmetadiz' => array('field'=>'news_meta_description','type'=>'text', 'container'=>'div'),
+					'newsbody' => array('field'=>'news_body', 'type'=>'html', 'container'=>'div'),
+			)
+
+		);
+
+		// Aliases
+		$editable['shortcodes']['newstitlelink']    = $editable['shortcodes']['newstitle'];
+		$editable['shortcodes']['news_title']       = $editable['shortcodes']['newstitle'];
+		$editable['shortcodes']['news_body']       = $editable['shortcodes']['newsbody'];
+
+
 		$sc = e107::getScBatch('news')
 			->wrapper($wrapperKey)
 			->setScVar('news_item', $news)
-			->setScVar('param', $param);
+			->setScVar('param', $param)
+			->editable($editable);
 
 
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
