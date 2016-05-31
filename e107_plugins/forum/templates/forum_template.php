@@ -7,12 +7,16 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  */
-
 if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 if (!isset($FORUM_MAIN_START))
 {
+// How it should be??? (LAN Shortcodes replaced by their outputed LANS...)
+/*
+	$FORUM_MAIN_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<th colspan='2' style='width:60%; text-align:center' class='fcaption'>{FORUMTITLE}</th>\n<th style='width:10%; text-align:center' class='fcaption'>".LAN_FORUM_0002."</th>\n<th style='width:10%; text-align:center' class='fcaption'>".LAN_FORUM_0003."</th>\n<th style='width:20%; text-align:center' class='fcaption'>".LAN_FORUM_0004."</th>\n</tr>";
+*/
+// LEGACY definition with LAN Shortcodes ({THREADTITLE}, {REPLYTITLE}, {LASTPOSTITLE}).....
 	$FORUM_MAIN_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<th colspan='2' style='width:60%; text-align:center' class='fcaption'>{FORUMTITLE}</th>\n<th style='width:10%; text-align:center' class='fcaption'>{THREADTITLE}</th>\n<th style='width:10%; text-align:center' class='fcaption'>{REPLYTITLE}</th>\n<th style='width:20%; text-align:center' class='fcaption'>{LASTPOSTITLE}</th>\n</tr>";
 }
 if (!isset($FORUM_MAIN_PARENT))
@@ -25,11 +29,21 @@ if (!isset($FORUM_MAIN_FORUM))
 }
 if (!isset($FORUM_MAIN_END))
 {
-	$FORUM_MAIN_END = "</table></div>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td colspan='2' style='width:60%' class='fcaption'>{INFOTITLE}</td>\n</tr>\n<tr>\n<td rowspan='4' style='width:5%; text-align:center' class='forumheader3'>{LOGO}</td>\n<td style='width:auto' class='forumheader3'>{USERINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='forumheader3'>{INFO}</td>\n</tr><tr>\n<td style='width:95%' class='forumheader3'>{FORUMINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='forumheader3'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>\n</div>\n<div class='spacer'>\n<table class='fborder table' style='".USER_WIDTH."'>\n<tr>\n<td class='forumheader3' style='text-align:center; width:33%'>{ICONKEY}</td>\n<td style='text-align:center; width:33%' class='forumheader3'>{SEARCH}</td>\n<td style='width:33%; text-align:center; vertical-align:middle' class='forumheader3'><span class='smallblacktext'>{PERMS}</span>\n</td>\n</tr>\n</table>\n</div>\n</div>";
+// How it should be??? (LAN Shortcodes replaced by their outputed LANS...)
+/*
+	$FORUM_MAIN_END = "</table></div>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td colspan='2' style='width:60%' class='fcaption'>".LAN_FORUM_0009."</td>\n</tr>\n<tr>\n<td rowspan='4' style='width:5%; text-align:center' class='forumheader3'>{LOGO}</td>\n<td style='width:auto' class='forumheader3'>{USERINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='forumheader3'>{INFO}</td>\n</tr><tr>\n<td style='width:95%' class='forumheader3'>{FORUMINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='forumheader3'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>\n</div>\n<div class='spacer'>\n<table class='fborder table' style='".USER_WIDTH."'>\n<tr>\n<td class='forumheader3' style='text-align:center; width:33%'>{ICONKEY}</td>\n<td style='text-align:center; width:33%' class='forumheader3'>{SEARCH}</td>\n<td style='width:33%; text-align:center; vertical-align:middle' class='forumheader3'><span class='smallblacktext'>{PERMS}</span>\n</td>\n</tr>\n</table>\n</div>\n</div>";
+*/
+// LEGACY definition with LAN Shortcodes ({INFOTITLE}).....
+$FORUM_MAIN_END = "</table></div>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td colspan='2' style='width:60%' class='fcaption'>{INFOTITLE}</td>\n</tr>\n<tr>\n<td rowspan='4' style='width:5%; text-align:center' class='forumheader3'>{LOGO}</td>\n<td style='width:auto' class='forumheader3'>{USERINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='forumheader3'>{INFO}</td>\n</tr><tr>\n<td style='width:95%' class='forumheader3'>{FORUMINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='forumheader3'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>\n</div>\n<div class='spacer'>\n<table class='fborder table' style='".USER_WIDTH."'>\n<tr>\n<td class='forumheader3' style='text-align:center; width:33%'>{ICONKEY}</td>\n<td style='text-align:center; width:33%' class='forumheader3'>{SEARCH}</td>\n<td style='width:33%; text-align:center; vertical-align:middle' class='forumheader3'><span class='smallblacktext'>{PERMS}</span>\n</td>\n</tr>\n</table>\n</div>\n</div>";
 }
 
 if (!isset($FORUM_NEWPOSTS_START))
 {
+// How it should be??? (LAN Shortcodes replaced by their outputed LANS...)
+/*
+	$FORUM_NEWPOSTS_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td style='width:3%' class='fcaption'>&nbsp;</td>\n<td style='width:60%' class='fcaption'>".LAN_FORUM_0075."</td>\n<td style='width:27%; text-align:center' class='fcaption'>".LAN_FORUM_0074."</td>\n</tr>";
+*/
+// LEGACY definition with LAN Shortcodes ({NEWTHREADTITLE}, {POSTEDTITLE}).....
 	$FORUM_NEWPOSTS_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td style='width:3%' class='fcaption'>&nbsp;</td>\n<td style='width:60%' class='fcaption'>{NEWTHREADTITLE}</td>\n<td style='width:27%; text-align:center' class='fcaption'>{POSTEDTITLE}</td>\n</tr>";
 }
 
@@ -45,7 +59,12 @@ if (!isset($FORUM_NEWPOSTS_END))
 
 if (!isset($FORUM_TRACK_START))
 {
-	$FORUM_TRACK_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td colspan='3' style='width:60%' class='fcaption'>{TRACKTITLE}</td>\n</tr>\n";
+// How it should be??? (LAN Shortcodes replaced by their outputed LANS...)
+/*
+	$FORUM_TRACK_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td colspan='3' style='width:60%' class='fcaption'>".LAN_FORUM_0073."</td>\n</tr>\n";
+*/
+// LEGACY definition with LAN Shortcodes ({TRACKTITLE}).....
+$FORUM_TRACK_START = "<div style='text-align:center'>\n<div class='spacer'>\n<table style='".USER_WIDTH."' class='fborder table'>\n<tr>\n<td colspan='3' style='width:60%' class='fcaption'>{TRACKTITLE}</td>\n</tr>\n";
 
 	if (!isset($FORUM_TRACK_MAIN))
 	{
@@ -166,16 +185,4 @@ $FORUM_TEMPLATE['main-end']				.= "
 <tr>\n<td style='width:95%' class='forumheader3'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>
 ";
 */
-
-
-
-
-
-
-
-
-
-
-
-
 ?>
