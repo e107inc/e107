@@ -1,6 +1,10 @@
 <?php
 /**
- * Voux Blog Theme for e107 v2.x
+ * The Voux Blog Theme for e107 v2.x
+ * "The Voux" is Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ * All Rights Reserved
  * @see : http://voux-with-out-slider-themexpose.blogspot.in/
  */
 if (!defined('e107_INIT')) { exit; }
@@ -263,8 +267,9 @@ $LAYOUT['_footer_'] = '
 
 	<div id="footer-copyright" class="container">
 		<div class="row">
-			<div id="sitedisclaimer" class="col-lg-8">
-				<small>{SITEDISCLAIMER}</small>
+			<div class="col-lg-8">
+				<!-- Under the terms of the GNU GPL, this may not be removed or modified -->
+				<small>e107 Theme based on &quot;Voux&quot; by <a href="http://www.themexpose.com/">ThemeXpose</a> which is realeased under the terms of the GNU General Public license. </small>
 			</div>
 			<div class="col-lg-4">
 				{BOOTSTRAP_USERNAV: placement=bottom&dir=up}
