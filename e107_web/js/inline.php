@@ -66,6 +66,7 @@ class e107InlineEdit
 
 		$srch 	= array("<!-- bbcode-html-start -->","<!-- bbcode-html-end -->","[html]","[/html]");
 		$content = str_replace($srch,'',$content);
+		$content = trim($content);
 
 		if($type == 'html')
 		{
