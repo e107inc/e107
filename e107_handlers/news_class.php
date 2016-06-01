@@ -382,17 +382,15 @@ class news {
 			'vars'  => 'news_item',
 			'perms' => '0',
 			'shortcodes'    => array(
-					'newstitle' => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
-					'newsmetadiz' => array('field'=>'news_meta_description','type'=>'text', 'container'=>'div'),
-					'newsbody' => array('field'=>'news_body', 'type'=>'html', 'container'=>'div'),
+					'news_title'        => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
+					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'div'),
+					'news_body'         => array('field'=>'news_body', 'type'=>'html', 'container'=>'div'),
+					'news_summary'      => array('field'=>'news_summary', 'type'=>'text', 'container'=>'span'),
 			)
 
 		);
 
-		// Aliases
-		$editable['shortcodes']['newstitlelink']    = $editable['shortcodes']['newstitle'];
-		$editable['shortcodes']['news_title']       = $editable['shortcodes']['newstitle'];
-		$editable['shortcodes']['news_body']       = $editable['shortcodes']['newsbody'];
+
 
 
 		$sc = e107::getScBatch('news')
