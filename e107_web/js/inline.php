@@ -66,6 +66,7 @@ class e107InlineEdit
 
 		$srch 	= array("<!-- bbcode-html-start -->","<!-- bbcode-html-end -->","[html]","[/html]");
 		$content = str_replace($srch,'',$content);
+		$content = trim($content);
 
 		if($type == 'html')
 		{
@@ -89,10 +90,11 @@ class e107InlineEdit
 			$ret['msg'] = "Saved"; // LAN_UPDATED; or LAN_SAVED
 			$ret['status'] = 'ok';
 		}
-		else
+		else //FIXME only display error when query fails..
 		{
 			$ret['msg'] = "Saving Failed"; // LAN_UPDATED_FAILED;
 			$ret['status'] = 'error';
+			return false;
 		}
 
 
