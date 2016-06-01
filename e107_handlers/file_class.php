@@ -437,14 +437,18 @@ class e_file
 		}
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
-       
-        $cp = curl_init($remote_url);
-		curl_setopt($cp, CURLOPT_FILE, $fp);
+
+        $cp = $this->initCurl($remote_url);
+
+       	/*
+       	$cp = curl_init($remote_url);
+       	curl_setopt($cp, CURLOPT_FILE, $fp);
 		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
 		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
 		curl_setopt($cp, CURLOPT_SSL_VERIFYPEER, FALSE);
+       	*/
 
         $buffer = curl_exec($cp);
        
@@ -453,7 +457,76 @@ class e_file
        
         return ($buffer) ? true : false;
     }
-	
+
+	/**
+	 * @param string $address
+	 * @param array|null $options
+	 */
+	function initCurl($address, $options =null)
+	{
+		$cu = curl_init();
+
+		$timeout = (integer) vartrue($options['timeout'], 10);
+		$timeout = min($timeout, 120);
+		$timeout = max($timeout, 3);
+
+		$urlData = parse_url($address);
+		$referer = $urlData['scheme']."://".$urlData['host'];
+
+		if(empty($referer))
+		{
+			$referer = e_REQUEST_HTTP;
+		}
+
+		curl_setopt($cu, CURLOPT_URL, $address);
+		curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($cu, CURLOPT_HEADER, 0);
+		curl_setopt($cu, CURLOPT_REFERER, $referer);
+		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0);
+		curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+		curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+		curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
+
+		if(defined('e_CURL_PROXY'))
+		{
+			curl_setopt($cu, CURLOPT_PROXY, e_CURL_PROXY);     // PROXY details with port
+		}
+
+		if(defined('e_CURL_PROXYUSERPWD'))
+		{
+			curl_setopt($cu, CURLOPT_PROXYUSERPWD, e_CURL_PROXYUSERPWD);   // Use if proxy have username and password
+		}
+
+		if(defined('e_CURL_PROXYTYPE'))
+		{
+			curl_setopt($cu, CURLOPT_PROXYTYPE, e_CURL_PROXYTYPE); // If expected to cal
+		}
+
+		if(!empty($options['post']))
+		{
+			curl_setopt($cu, CURLOPT_POST, true);
+				// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
+			curl_setopt($cu, CURLOPT_POSTFIELDS, $options['post']);
+		}
+
+		if(isset($options['header']) && is_array($options['header']))
+		{
+			curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
+		}
+
+		if(!file_exists(e_SYSTEM.'cookies.txt'))
+		{
+			file_put_contents(e_SYSTEM.'cookies.txt','');
+		}
+
+		return $cu;
+
+	}
+
+
+
 	/**
 	 * FIXME add POST support
 	 * Get Remote contents
@@ -468,10 +541,7 @@ class e_file
 	function getRemoteContent($address, $options = array())
 	{
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
-		$postData = varset($options['post'], null);
-		$timeout = (integer) vartrue($options['timeout'], 10);
-		$timeout = min($timeout, 120);
-		$timeout = max($timeout, 3);
+
 		$fileContents = '';
 		$this->error = '';
 		$this->errornum = null;
@@ -484,63 +554,12 @@ class e_file
 		
 		if(vartrue($options['decode'], false)) $address = urldecode($address);
 
-		$urlData = parse_url($address);
-		$referer = $urlData['scheme']."://".$urlData['host'];
-
-		if(empty($referer))
-		{
-			$referer = e_REQUEST_HTTP;
-		}
-
-
-		// Keep this in first position. 
+		// Keep this in first position.
 		if (function_exists("curl_init")) // Preferred. 
 		{
-			$cu = curl_init();
-			curl_setopt($cu, CURLOPT_URL, $address);
-			curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($cu, CURLOPT_HEADER, 0);
-			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
-			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE); 
-			curl_setopt($cu, CURLOPT_REFERER, $referer);
-			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0); 
-			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
-			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
 
-			if(defined('e_CURL_PROXY'))
-			{
-				curl_setopt($cu, CURLOPT_PROXY, e_CURL_PROXY);     // PROXY details with port
-			}
+			$cu = $this->initCurl($address, $options);
 
-			if(defined('e_CURL_PROXYUSERPWD'))
-			{
-				curl_setopt($cu, CURLOPT_PROXYUSERPWD, e_CURL_PROXYUSERPWD);   // Use if proxy have username and password
-			}
-
-			if(defined('e_CURL_PROXYTYPE'))
-			{
-				curl_setopt($cu, CURLOPT_PROXYTYPE, e_CURL_PROXYTYPE); // If expected to cal
-			}
-
-			if($postData !== null)
-			{
-				curl_setopt($cu, CURLOPT_POST, true);
-				// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
-				curl_setopt($cu, CURLOPT_POSTFIELDS, $postData);
-				$requireCurl = true;
-			}
-			if(isset($options['header']) && is_array($options['header']))
-			{
-				curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
-				$requireCurl = true;
-			}
-	
-			if(!file_exists(e_SYSTEM.'cookies.txt'))
-			{
-				file_put_contents(e_SYSTEM.'cookies.txt','');	
-			}
-			
 			$fileContents = curl_exec($cu);
 			if (curl_error($cu))
 			{
@@ -554,6 +573,8 @@ class e_file
 		
 		// CURL is required, abort...
 		if($requireCurl == true) return false;
+
+		$timeout = 5;
 
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{

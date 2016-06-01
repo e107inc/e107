@@ -392,8 +392,10 @@ abstract class e_marketplace_adapter_abstract
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
         //$fp1 = fopen(e_TEMP.'/curllog.txt', 'w'); 
-       
-        $cp = curl_init($remote_url);
+
+
+        $cp = e107::getFile()->initCurl($remote_url);
+     /*   $cp = curl_init($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
 		
 		//curl_setopt($ch, CURLOPT_VERBOSE, 1);
@@ -402,7 +404,7 @@ abstract class e_marketplace_adapter_abstract
 		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');*/
 
         $buffer = curl_exec($cp);
        	
