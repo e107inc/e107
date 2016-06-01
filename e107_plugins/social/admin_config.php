@@ -73,31 +73,37 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array(LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17);
+		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17);
 
 		protected $prefs = array(
 
 
-			'facebook_comments_limit'		=> array('title'=> LAN_SOCIAL_ADMIN_18, 'type'=>'number', 'tab'=>1, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_29),
-			'facebook_comments_theme'		=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str','help'=>''),
-			'facebook_comments_loadingtext'		=> array('title'=> LAN_SOCIAL_ADMIN_21, 'type'=>'text', 'tab'=>1, 'data' => 'str', 'writeParms'=>array('placeholder'=>LAN_SOCIAL_ADMIN_30), 'help'=>''),
+			'facebook_comments_limit'		=> array('title'=> LAN_SOCIAL_ADMIN_18, 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_29),
+			'facebook_comments_theme'		=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str','help'=>''),
+			'facebook_comments_loadingtext'		=> array('title'=> LAN_SOCIAL_ADMIN_21, 'type'=>'text', 'tab'=>2, 'data' => 'str', 'writeParms'=>array('placeholder'=>LAN_SOCIAL_ADMIN_30), 'help'=>''),
 
-			'facebook_like_menu_theme'	=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
-			'facebook_like_menu_action'	=> array('title'=> LAN_SOCIAL_ADMIN_20, 'type'=>'dropdown', 'tab'=>2, 'writeParms'=>array('optArray'=>array('like'=>'Like','recommend'=>LAN_SOCIAL_ADMIN_32)), 'data' => 'str'),
-			'facebook_like_menu_width'	=> array('title'=> LAN_SOCIAL_ADMIN_22, 'type'=>'number', 'tab'=>2, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_31),
+			'facebook_like_menu_theme'	=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
+			'facebook_like_menu_action'	=> array('title'=> LAN_SOCIAL_ADMIN_20, 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('like'=>'Like','recommend'=>LAN_SOCIAL_ADMIN_32)), 'data' => 'str'),
+			'facebook_like_menu_width'	=> array('title'=> LAN_SOCIAL_ADMIN_22, 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_31),
 		//	'facebook_like_menu_ref'	=> array('title'=> "Referrer", 'type'=>'text', 'tab'=>2, 'data' => 'str', 'writeParms'=>'size=xxlarge', 'help'=>'Leave blank to use Site Url'),
 
 
 
-			'twitter_menu_theme'	=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>3, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
-			'twitter_menu_height'		=> array('title'=> LAN_SOCIAL_ADMIN_23, 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_33),
-			'twitter_menu_limit'		=> array('title'=> LAN_SOCIAL_ADMIN_18, 'type'=>'number', 'tab'=>3, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_34),
+			'twitter_menu_theme'	=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>4, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
+			'twitter_menu_height'		=> array('title'=> LAN_SOCIAL_ADMIN_23, 'type'=>'number', 'tab'=>4, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_33),
+			'twitter_menu_limit'		=> array('title'=> LAN_SOCIAL_ADMIN_18, 'type'=>'number', 'tab'=>4, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_34),
 
 
-			'sharing_mode'              => array('title'=> LAN_SOCIAL_ADMIN_24, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>array('normal'=>LAN_SOCIAL_ADMIN_25,'dropdown'=>LAN_SOCIAL_ADMIN_26,'off'=>LAN_SOCIAL_ADMIN_27)), 'data' => 'str','help'=>''),
-			'sharing_hashtags'		    => array('title'=> 'Hashtags', 'type'=>'tags', 'tab'=>0, 'data' => 'str','help'=>LAN_SOCIAL_ADMIN_28),
-			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
-		);
+			'sharing_mode'              => array('title'=> LAN_SOCIAL_ADMIN_24, 'type'=>'dropdown', 'tab'=>1, 'writeParms'=>array('optArray'=>array('normal'=>LAN_SOCIAL_ADMIN_25,'dropdown'=>LAN_SOCIAL_ADMIN_26,'off'=>LAN_SOCIAL_ADMIN_27)), 'data' => 'str','help'=>''),
+			'sharing_hashtags'		    => array('title'=> 'Hashtags', 'type'=>'tags', 'tab'=>1, 'data' => 'str','help'=>LAN_SOCIAL_ADMIN_28),
+			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>1, 'writeParms'=>array(), 'data' => 'str','help'=>''),
+
+			'xup_login_update_username'  => array('title'=> 'Update User Display Name ', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
+			'xup_login_update_avatar'  => array('title'=> 'Update User Avatar', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
+
+
+
+			);
 
 		protected $social_logins = array();
 
