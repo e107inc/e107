@@ -99,7 +99,12 @@ class e_file
 	
 	
 	
-	private $authKey = false; // Used when retrieving files from e107.org. 
+	private $authKey = false; // Used when retrieving files from e107.org.
+
+
+	private $error = null;
+
+	private $errornum = null;
 
 	/**
 	 * Constructor
@@ -169,8 +174,19 @@ class e_file
 		$this->mode= $mode; 
 	}
 			
-		
-	
+
+	public function getErrorMessage()
+	{
+		return $this->error;
+	}
+
+
+	public function getErrorCode()
+	{
+		return $this->errornum;
+	}
+
+
 	/**
 	 * Read files from given path
 	 *
