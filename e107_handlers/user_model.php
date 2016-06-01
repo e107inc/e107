@@ -1244,6 +1244,14 @@ class e_system_user extends e_user_model
 		if(!is_array($EMAIL_TEMPLATE)) //BC Fixes. pre v2 alpha3. 
 		{
 			// load from old location. (root of theme folder if it exists)
+
+			$SIGNUPEMAIL_SUBJECT = '';
+			$SIGNUPEMAIL_CC = '';
+			$SIGNUPEMAIL_BCC = '';
+			$SIGNUPEMAIL_ATTACHMENTS = '';
+			$SIGNUPEMAIL_TEMPLATE = '';
+
+
 			if (file_exists(THEME.'email_template.php'))
 			{
 				include(THEME.'email_template.php');
@@ -1762,11 +1770,26 @@ class e_user extends e_user_model
 			e107::getUserSession()->makeUserCookie($user);
 			$this->setSessionData();
 
-			// Update display name or avatar image if they have changed.
-			if(($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
-			{
+			$spref = e107::pref('social');
 
-				if($sql->update('user', "user_name='".$userdata['user_name']."', user_image='".$userdata['user_image']."' WHERE user_id=".$user['user_id']." LIMIT 1")!==false)
+			// Update display name or avatar image if they have changed.
+			if(!empty($spref['xup_login_update_username']) || !empty($spref['xup_login_update_avatar']) || ($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
+			{
+				$updateQry = array();
+
+				if(!empty($spref['xup_login_update_username']))
+				{
+					$updateQry['user_name'] = $userdata['user_name'];
+				}
+
+				if(!empty($spref['xup_login_update_avatar']))
+				{
+					$updateQry['user_image'] = $userdata['user_image'];
+				}
+
+				$updateQry['WHERE'] = "WHERE user_id=".$user['user_id']." LIMIT 1";
+
+				if($sql->update('user', $updateQry) !==false)
 				{
 					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 				}
