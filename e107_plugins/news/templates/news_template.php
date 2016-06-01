@@ -35,7 +35,7 @@ $NEWS_TEMPLATE['list']['item']	= '
                     </div>
 				</div>
 				<div class="span9 col-md-9">
-                   <h3 class="media-heading">{NEWSTITLELINK}</h3>
+                   <h3 class="media-heading">{NEWS_TITLE: link=1}</h3>
                       <p>
                        	{NEWS_SUMMARY}
 					</p>
@@ -85,7 +85,7 @@ $NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-image
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=400&h=400}
 		<div class="default-item">
-		<h2 class="news-title">{NEWSTITLELINK}</h2>
+		<h2 class="news-title">{NEWS_TITLE: link=1}</h2>
 
         <hr class="news-heading-sep">
          	<div class="row">
@@ -95,11 +95,10 @@ $NEWS_TEMPLATE['default']['item'] = '
         <hr>
           {NEWSIMAGE: item=1}
 
-
           <p class="lead">{NEWS_SUMMARY}</p>
           {NEWSVIDEO: item=1}
           <div class="text-justify">
-          {NEWSBODY}
+          {NEWS_BODY}
           </div>
           <div class="text-right">
           {EXTENDED}
@@ -125,7 +124,7 @@ $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-m
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
-		<h2 class="news-title">{NEWSTITLELINK}</h2>
+		<h2 class="news-title">{NEWS_TITLE: link=1}</h2>
 
         <hr class="news-heading-sep">
          	<div class="row">
@@ -137,9 +136,9 @@ $NEWS_TEMPLATE['view']['item'] = '
 
 		<div class="body">
 			{NEWSIMAGE: item=1}
-			 <p class="lead">{NEWSSUMMARY}</p>
+			 <p class="lead">{NEWS_SUMMARY}</p>
 			  <div class="text-justify">
-			{NEWSBODY=body}
+			{NEWS_BODY=body}
 			</div>
 			<div class="news-videos-1">
 			{NEWSVIDEO: item=1}
@@ -164,7 +163,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 			{NEWSVIDEO: item=5}
 			
            <div class="body-extended text-justify">
-				{NEWSBODY=extended}
+				{NEWS_BODY=extended}
 			</div>
 			
 			

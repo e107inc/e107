@@ -202,6 +202,8 @@ class convert
 
 
 	/**
+	 * @deprecated - for internal use only.
+	 * @see $tp->toDate() as a replacement. 
 	 * Converts between unix timestamp and human-readable date-time OR vice-versa. (auto-detected)
 	 * @param string $string unix timestamp OR human-readable date-time.
 	 * @param string $mask (optional) long | short | input

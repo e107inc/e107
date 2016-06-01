@@ -7,7 +7,6 @@
 )]]></core>
 		<core name="newsposts">3</core>
 		<core name="shortdate">%d %b %Y</core>
-		<core name="sitedisclaimer"><![CDATA[e107 Theme based on &quot;The Voux&quot; by [link=http://www.themexpose.com/]ThemeXpose[/link] which is realeased under the terms of the GNU General Public license.]]></core>
 		<core name="sitelogo">{e_THEME}voux/install/logo2B252832529.png</core>
 		<core name="sitetheme_custompages"><![CDATA[array (
   'jumbotron_full' => 

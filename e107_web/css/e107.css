@@ -327,3 +327,9 @@ optgroup.level-5 { padding-left:4em }
 img.e-emoticon { vertical-align:middle; border:0; width:24px }
 
 .e-editable-front:hover { background-color:#FCF8E3 }
+.e-editable-front a:hover { background-color:#FCF8E3 }
+.e-editable-front:hover:after { content: "\f044"; z-index:10000; position:relative; top:0; right:-5px; margin-right:4px; padding-right:5px; font-family:'FontAwesome'; font-size:0.8em }
+
+
+#uiAlert    { z-index: 10001 }
+#uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
