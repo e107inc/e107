@@ -1811,7 +1811,7 @@ class e107MailManager
 		
 		if (!is_array($recipientData))
 		{
-			$recipientData = array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData);
+			$recipientData = array(array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData));
 		}
 
 		$emailData['mail_content_status'] = MAIL_STATUS_TEMP;
@@ -1832,7 +1832,7 @@ class e107MailManager
 		
 		if (!isset($emailData['mail_overrides']))
 		{
-			$emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
+			// $emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
 		}
 		
 		if(!empty($emailData['template'])) // Quick Fix for new email template standards. 
