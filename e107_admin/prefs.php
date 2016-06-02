@@ -377,7 +377,7 @@ $text .= "
 					</tr>
 					<tr>
 						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','help='.PRFLAN_226)."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','w=200&help='.PRFLAN_226)."</td>
 					</tr>
 					<tr>
 						<td><label for='sitetag'>".PRFLAN_5."</label></td>

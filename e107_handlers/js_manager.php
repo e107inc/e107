@@ -572,6 +572,20 @@ class e_jsmanager
 		return $this;
 	}
 
+
+	/**
+	 * Add Theme JS file for inclusion in site footer (preferred), shorthand of footerFile() method
+	 *
+	 * @param string $file_path relative to theme root folder
+	 * @param integer $zone 1-5 (see header.php)
+	 * @return e_jsmanager
+	 */
+	public function footerTheme($file_path, $zone = 5, $pre = '', $post = '')
+	{
+		$this->footerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
+		return $this;
+	}
+
 	/**
 	 * Add Plugin JS file for inclusion in site header, shorthand of headerFile() method
 	 *
