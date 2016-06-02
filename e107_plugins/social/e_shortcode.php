@@ -259,6 +259,7 @@ class social_shortcodes extends e_shortcode
 
 
 		$twitterAccount = basename(XURL_TWITTER);
+		$btnClass = varset($parm['btnClass'], 'btn btn-default social-share');
 
 	//	return print_a($hashtags,true);
 		foreach($providers as $k=>$val)
@@ -289,7 +290,7 @@ class social_shortcodes extends e_shortcode
 
 
 			
-			$opt[$k] = "<a class='".$tooltip." btn ".$butSize." btn-default social-share'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
+			$opt[$k] = "<a class='".$btnClass." ".$tooltip." ".$butSize."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
 		}
 		
 		// Show only Email, Facebook, Twitter and Google. 
@@ -335,9 +336,9 @@ class social_shortcodes extends e_shortcode
 		else
 		{
 			
-			$class = varset($parm['class'],'btn-group social-share');
+			$class = varset($parm['class'],'text-center btn-group social-share');
 
-			return '<div class="'.$class.' text-center hidden-print">'.implode("\n",$opt)."</div>";
+			return '<div class="'.$class.'  hidden-print">'.implode("\n",$opt)."</div>";
 		
 		}	
 		

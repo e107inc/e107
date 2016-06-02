@@ -332,6 +332,11 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newscommentcount($parm);
 	}
 
+	public function sc_news_comment_label($parm=null)
+	{
+		return ($this->news_item['news_comment_total'] == 1) ? COMLAN_8 : LAN_COMMENTS;
+	}
+
 	public function sc_news_date($parm=null)
 	{
 		return $this->sc_newsdate($parm);
@@ -340,6 +345,11 @@ class news_shortcodes extends e_shortcode
 	public function sc_news_user_avatar($parm=null)
 	{
 		return $this->sc_newsavatar($parm);
+	}
+
+	public function sc_news_url($parm=null)
+	{
+		return $this->sc_newsurl($parm);
 	}
 
 	public function sc_news_image($parm=null)
@@ -885,7 +895,7 @@ class news_shortcodes extends e_shortcode
 		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".e107::getParser()->toHTML($this->news_item['news_title'], TRUE, "TITLE").'</a>';
 	}
 
-	function sc_newsurl()
+	function sc_newsurl($parm=null)
 	{
 		return e107::getUrl()->create('news/view/item', $this->news_item);
 	}
@@ -976,6 +986,8 @@ class news_shortcodes extends e_shortcode
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'news-tag';
+		$separator = (isset($parm['separator'])) ? $parm['separator'] : ', ';
 		
 		if($parm == 'label')
 		{
@@ -987,7 +999,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$start = "";
 			$end = "";
-			$sep = ", ";
+			$sep = $separator;
 		}
 		
 		foreach($tmp as $val)
@@ -995,10 +1007,11 @@ class news_shortcodes extends e_shortcode
 			if(trim($val))
 			{
 				$url = e107::getUrl()->create('news/list/tag',array('tag'=>$val)); // e_BASE."news.php?tag=".$val
-				$words[] = "<a class='news-tag' href='".$url."'>".$start.$val.$end."</a>";	
+				$words[] = "<a class='".$class."' href='".$url."'>".$start.$val.$end."</a>";
 			}
 		}
-		
+
+
 		if(count($words))
 		{
 			return implode($sep,$words);

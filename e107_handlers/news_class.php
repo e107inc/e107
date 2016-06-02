@@ -383,7 +383,7 @@ class news {
 			'perms' => '0',
 			'shortcodes'    => array(
 					'news_title'        => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
-					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'div'),
+					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'span'),
 					'news_body'         => array('field'=>'news_body', 'type'=>'html', 'container'=>'div'),
 					'news_summary'      => array('field'=>'news_summary', 'type'=>'text', 'container'=>'span'),
 			)

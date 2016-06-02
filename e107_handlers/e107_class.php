@@ -1777,7 +1777,7 @@ class e107
 			case 'theme':
 				// data is e.g. 'jslib/mytheme.js'
 				if(null !== $zone) $jshandler->headerTheme($data, $zone, $pre, $post);
-				else $jshandler->headerTheme($data, 5, $pre, $post);
+				else $jshandler->footerTheme($data, 5, $pre, $post);
 			break;
 				
 			case 'inline':
