@@ -49,7 +49,7 @@ class e_thumbpage
 {
 	private $_debug = false;
 
-	private $_cache = false;
+	private $_cache = true;
 
 	/**
 	 * Page request
