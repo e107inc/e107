@@ -49,7 +49,7 @@ class e_thumbpage
 {
 	private $_debug = false;
 
-	private $_cache = true;
+	private $_cache = false;
 
 	/**
 	 * Page request
@@ -92,6 +92,7 @@ class e_thumbpage
 		$mySQLprefix = '';
 
 		// Config
+
 		include($self.'/e107_config.php');
 
 		// support early include feature
@@ -99,6 +100,8 @@ class e_thumbpage
 		{
 			 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
 		}
+
+		ob_clean(); // Precaution - clearout utf-8 BOM or any other garbage in e107_config.php
 
 		$tmp = $self.'/'.$HANDLERS_DIRECTORY;
 
