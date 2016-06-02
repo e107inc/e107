@@ -1252,8 +1252,10 @@ class e_file
 	 */
 	public function isValidURL($url)
 	{
+		ini_set('default_socket_timeout', 1);
 	   $headers = get_headers($url);
 	//   print_a($headers);
+
 	   return (stripos($headers[0],"200 OK") || stripos($headers[0],"302")) ? true : false;
 	}
 
