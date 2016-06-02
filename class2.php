@@ -405,7 +405,7 @@ e107::getSingleton('e107_traffic'); // We start traffic counting ASAP
 
 //DEPRECATED, BC, $e107->sql caught by __get()
 $sql = e107::getDb(); //TODO - find & replace $sql, $e107->sql
-$sql->db_SetErrorReporting(FALSE);
+$sql->db_SetErrorReporting(false);
 
 $sql->db_Mark_Time('SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
