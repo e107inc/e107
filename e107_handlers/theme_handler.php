@@ -158,6 +158,12 @@ class themeHandler
 			e107::getConfig()->save(true);
 		
 		}
+
+		if(!empty($_POST['git_pull']))
+		{
+			$return = e107::getFile()->gitPull($_POST['curTheme'], 'theme');
+			$mes->addSuccess($return);
+		}
 		
 		if(isset($_POST['installplugin']))
 		{
@@ -1217,7 +1223,7 @@ class themeHandler
 				<tr>
 					<td><b>".TPVLAN_11."</b></td>
 					<td>".$theme['version']."</td>
-					<td class='well center middle' rowspan='7' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
+					<td class='well center middle' rowspan='9' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
 					</tr>";
 		
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_AUTHOR."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
@@ -1234,6 +1240,14 @@ class themeHandler
 					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : TPVLAN_71;
 					$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
 					$text .= "</td></tr>";
+
+
+						if(is_dir(e_THEME.$this->id."/.git"))
+						{
+							$text .= "<tr><td><b>Developer</b></td>
+								<td >".$this->frm->admin_button('git_pull', 1, 'primary', $tp->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
+						}
+
 		
 					// site theme..
 					if($mode == 1)
@@ -1376,6 +1390,9 @@ class themeHandler
 			
 										</tr>";
 						}
+
+
+
 						
 						$itext .= "</table></td></tr>";
 					}

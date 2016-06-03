@@ -1245,6 +1245,54 @@ class e_file
 	}
 
 
+
+	public function gitPull($folder='', $type=null)
+	{
+		$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
+		$mes = e107::getMessage();
+
+		// Change Dir.
+
+		switch($type)
+		{
+			case "plugin":
+				$dir = realpath(e_PLUGIN.basename($folder));
+				break;
+
+			case "theme":
+				$dir = realpath(e_THEME.basename($folder));
+				break;
+
+			default:
+				$dir = e_ROOT;
+
+		}
+
+		$cmd = 'cd '.$dir;
+
+	//	return $cmd;
+
+		$mes->addDebug($cmd);
+
+		$mes->addDebug($cmd);
+		$text = `$cmd 2>&1`;
+
+		// Remove any local changes.
+		$cmd = $gitPath.' reset --hard';
+		$mes->addDebug($cmd);
+		$text .= `$cmd 2>&1`;
+
+		// Run Pull request
+		$cmd = $gitPath.' pull';
+		$mes->addDebug($cmd);
+		$text .= `$cmd 2>&1`;
+
+		return print_a($text,true);
+
+	}
+
+
+
 	/**
 	 * Returns true is the URL is valid and false if it is not.
 	 * @param $url
