@@ -23,6 +23,8 @@ $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
 define('PLUGIN_SCAN_INTERVAL', !empty($_SERVER['E_DEV']) ? 0 : 360);
+define("ADMIN_GITSYNC_ICON", $tp->toGlyph('fa-refresh', array('size'=>'2x', 'fw'=>1)));
+
 
 global $user_pref;
 
@@ -151,7 +153,7 @@ class pluginmanager_form extends e_form
 				$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$this->plug['plugin_path'])."/ ".EPL_DIRECTORY;
 				if($this->plug['plugin_installflag'] == false)
 				{					
-					e107::getDb()->db_Delete('plugin', "plugin_installflag=0 AND (plugin_path='{$this->plug['plugin_path']}' OR plugin_path='{$this->plug['plugin_path']}/' )  ");
+					e107::getDb()->delete('plugin', "plugin_installflag=0 AND (plugin_path='{$this->plug['plugin_path']}' OR plugin_path='{$this->plug['plugin_path']}/' )  ");
 				}
 			}
 		}
@@ -164,9 +166,13 @@ class pluginmanager_form extends e_form
 
 		if ($this->plug['plugin_installflag'] && e_DEBUG == true)
 		{
-				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='".'Repair plugin settings'."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
+				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='Repair plugin settings'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
 		}
 
+		if($this->plug['plugin_installflag'] && is_dir($_path.".git"))
+		{
+			$text .=  "<a class='plugin-manager btn btn-default' href='".e_SELF."?pull.".$this->plug['plugin_id']."' title='Sync with Git Repo'> ".ADMIN_GITSYNC_ICON."</a>";
+		}
 
 
 		$text .="</div>	";
@@ -246,8 +252,9 @@ class pluginManager{
         global $user_pref,$admin_log;
 
         $tmp = explode('.', e_QUERY);
-	  	$this -> action = ($tmp[0]) ? $tmp[0] : "installed";
-		$this -> id = varset($tmp[1]) ? intval($tmp[1]) : "";
+
+	  	$this -> action     = ($tmp[0]) ? $tmp[0] : "installed";
+		$this -> id         = !empty($tmp[1]) ? intval($tmp[1]) : "";
 		$this -> titlearray = array('installed'=>EPL_ADLAN_22,'avail'=>EPL_ADLAN_23, 'upload'=>EPL_ADLAN_38);
 		
 		if(isset($_GET['mode']))
@@ -332,7 +339,26 @@ class pluginManager{
 			return; 	
 			
 		}
-	
+
+
+		if($this->action == 'pull' && !empty($this->id))
+		{
+			$info = e107::getPlugin()->getInfo($this->id);
+
+			if(!empty($info['plugin_path']))
+			{
+				$return = e107::getFile()->gitPull($info['plugin_path'], 'plugin');
+				e107::getMessage()->addSuccess($return);
+				$this->action = 'refresh';
+			}
+			else
+			{
+				$this->action = 'avail';
+			}
+
+		}
+
+
 
         if($this->action == 'avail' || $this->action == 'installed')   // Plugin Check is done during upgrade_routine.
 		{
@@ -345,11 +371,15 @@ class pluginManager{
 			$this -> pluginCheck(true); // forced
 		}
 
+
+
 		if($this->action == "repair")
 		{
         	$this -> pluginRepair();
         	$this->action = 'refresh';
 		}
+
+
 		
 		if($this->action == "refresh")
 		{
