@@ -576,6 +576,14 @@ class page_admin_ui extends e_admin_ui
 	
 				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');
 
+
+				if(e_DEBUG)
+				{
+					$this->fields['menu_name']['inline'] = true;
+				}
+
+
+
                 ### Parse aliases again or all filters shall fail due to the menu hack!
                 $this->_alias_parsed = false;
                 $this->parseAliases();
