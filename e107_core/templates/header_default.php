@@ -93,6 +93,7 @@ if (!function_exists("parseheader"))
 		{
 			if (preg_match("/{.+?}/", $line))
 			{
+				$line = str_replace('{THEME}',THEME_ABS, $line); // Quick-fix allow for use of {THEME} shortcode.
 				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
 			} 
 			else 
@@ -661,7 +662,10 @@ echo "</head>\n";
     }
 
 	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
-	
+
+	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
+
+
 
 if(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
