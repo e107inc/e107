@@ -991,14 +991,24 @@ class e_form
 		if ($datestamp)
 		{
 			// Create timestamp.
-			if(!is_numeric($datestamp))
+			if($useUnix == 'true')
 			{
-				$datestamp = strtotime($datestamp);
+				if(!is_numeric($datestamp))
+				{
+					$datestamp = strtotime($datestamp);
+				}
+
+				// Convert date to proper format.
+				$value = e107::getDate()->convert_date($datestamp, $dateFormat);
+			}
+			else
+			{
+				$value= $datestamp;
 			}
 
-			// Convert date to proper format.
-			$value = e107::getDate()->convert_date($datestamp, $dateFormat);
 		}
+
+
 
 		$text = "";
 	//	$text .= 'dformat='.$dformat.'  defdisp='.$dateFormat;
@@ -1036,6 +1046,25 @@ class e_form
 		}
 
 		e107::js('footer-inline', '
+
+
+			// Fix for changeDate() not being fired when value manually altered.
+			$("input.e-date,input.e-datetime").on("change", function(){
+
+				var useUnix = $(this).attr("data-date-unix");
+
+				if(useUnix !== "true")
+				{
+					var id = $(this).attr("id");
+					var newTarget = "#"+ id.replace("e-datepicker-","");
+					var newValue = $(this).val();
+					 $(newTarget).val(newValue);
+				}
+
+
+			});
+
+
 			$("input.e-date").each(function() {
         		$(this).datetimepicker({
         			minView: "month",
