@@ -346,10 +346,9 @@ class signup_shortcodes extends e_shortcode
 	}
 
 
-	function sc_signup_userclass_subscribe()
+	public function sc_signup_userclass_subscribe()
 	{
 		$pref = e107::pref('core');
-	//	global $pref, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END, $signupData;
 
 		if(empty($pref['signup_option_class']))
 		{
@@ -362,7 +361,6 @@ class signup_shortcodes extends e_shortcode
 
 		if(empty($ucList)) return false;
 
-
 		$text = '';
 		foreach($ucList as $classNum)
 		{
@@ -370,13 +368,9 @@ class signup_shortcodes extends e_shortcode
 		}
 
 		return $text;
-
-
-
-	//	return $uc->vetted_tree('class', array($this,'show_signup_class'), varset($signupData['user_class'],''),'editable, no-excludes');
-
-
 	}
+
+
 
 	private function show_signup_class( $classnum, $current_value='', $nest_level=0)
 	{

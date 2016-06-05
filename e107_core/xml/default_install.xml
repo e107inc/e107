@@ -1211,6 +1211,18 @@ City, State, Country
 				<field name="userclass_perms"></field>
 			</item>
 			<item>
+				<field name="userclass_id">3</field>
+				<field name="userclass_name">NEWSLETTER</field>
+				<field name="userclass_description">Subscribe to Newsletter</field>
+				<field name="userclass_editclass">0</field>
+				<field name="userclass_parent">255</field>
+				<field name="userclass_accum">3</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
 				<field name="userclass_id">253</field>
 				<field name="userclass_name">Members</field>
 				<field name="userclass_description">Registered and logged in members</field>
