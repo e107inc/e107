@@ -367,9 +367,17 @@ class users_admin_ui extends e_admin_ui
 			}
 		}
 
+
+		if(empty($this->extended))
+		{
+			$this->tabs = false;
+		}
+
+
+
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
-		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto');
+		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'));
 		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'left');
 
 				
@@ -504,13 +512,12 @@ class users_admin_ui extends e_admin_ui
 			$update['data'][$key] = vartrue($new_data['ue'][$key],'_NULL_');
 		}
 
-		e107::getUserExt()->addFieldTypes($update);
-
-
-		e107::getMessage()->addDebug(print_a($new_data,true));
+		e107::getMessage()->addDebug(print_a($update,true));
 
 		if(!empty($update))
 		{
+			e107::getUserExt()->addFieldTypes($update);
+
 			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
 			{
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
