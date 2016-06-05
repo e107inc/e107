@@ -17,13 +17,16 @@ a:hover { color: #000000; }
 
 .btn-primary { background: #FFF1F3; color: black; border-color:silver }
 .btn-primary:hover,.btn-primary.focus, .btn-primary:focus {
+    background: #444;
     color: #fff;
-  background-color: #E8839E;
-    border-color: #E8839E;
 }
 
 
 
+
+table label.checkbox {
+    margin-left: 20px;
+}
 
 #sidebar {
 	padding-top:20px;
@@ -432,7 +435,7 @@ nav  { text-align: center }
 .footer-xurl .xurl-social-icons a:hover span { background-color: black }
 .footer-xurl .xurl-social-icons a:hover { color: black }
 
-footer { background-color: #F8F8F8; padding:50px 0; margin-top:50px }
+footer { background-color: #F8F8F8; padding:20px 0; margin-top:50px }
 
 
 .tagcloud-menu span {
@@ -468,6 +471,18 @@ display: inline-block;
     box-shadow: none;
 }
 
+.subscribe-box .block {
+    padding: 20px 30px;
+    border: 1px solid #f0f0f0;
+    margin: 20px auto;
+    width: 1080px;
+}
+
+form#newsletter { padding-top:30px }
+form#newsletter #email {   width: 70%; height:43px; margin-right:-3px;border:none; font-size: 15px; font-family: Playfair Display;
+font-style: italic; }
+
+
 
 
 div.comments-form-login { text-align: center }
@@ -492,7 +507,7 @@ img.news-image-1 { margin-bottom:15px }
 
 }
 
-#footer-copyright { padding-top: 12px; padding-bottom:12px;  font-family: "Open Sans", sans-serif;     }
+#footer-copyright { padding-top: 20px; padding-bottom:12px;  font-family: "Open Sans", sans-serif;     }
 
 
 .btn {
