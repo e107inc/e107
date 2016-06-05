@@ -848,14 +848,16 @@ class e_form
 			
 			$title = (vartrue($sc_parameters['help'])) ? "title='".$sc_parameters['help']."'" : "";
 			$width = vartrue($sc_parameters['w'], 120);
-			$height = vartrue($sc_parameters['h'], 100);
+			$height = vartrue($sc_parameters['h'], 0);
+
+
 
 			$ret = "<div class='imgselector-container e-tip' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
-			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
-			
-			
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
+			$thpath = empty($default) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
+			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
+
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
