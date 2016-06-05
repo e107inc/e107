@@ -348,40 +348,37 @@ class signup_shortcodes extends e_shortcode
 
 	function sc_signup_userclass_subscribe()
 	{
-		global $pref, $e_userclass, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END, $signupData;
-		$ret = "";
+		$pref = e107::pref('core');
+	//	global $pref, $USERCLASS_SUBSCRIBE_START, $USERCLASS_SUBSCRIBE_END, $signupData;
 
-		if($pref['signup_option_class'])
+		if(empty($pref['signup_option_class']))
 		{
-		  if (!is_object($e_userclass))
-		  {
-			require_once(e_HANDLER.'userclass_class.php');
-			$e_userclass = new user_class;
-		  }
-		  $ucList = $e_userclass->get_editable_classes();			// List of classes which this user can edit
-		  $ret = '';
-		  if(!$ucList) return;
-		
-/*
-		  function show_signup_class($treename, $classnum, $current_value, $nest_level)
-		  {
-			global $USERCLASS_SUBSCRIBE_ROW, $e_userclass, $tp;
-			$tmp = explode(',',$current_value);
-			$search = array('{USERCLASS_ID}', '{USERCLASS_NAME}', '{USERCLASS_DESCRIPTION}', '{USERCLASS_INDENT}', '{USERCLASS_CHECKED}');
-			$replace = array($classnum, $tp->toHTML($e_userclass->uc_get_classname($classnum), FALSE, 'defs'), 
-							$tp->toHTML($e_userclass->uc_get_classdescription($classnum), FALSE, 'defs'), " style='text-indent:".(1.2*$nest_level)."em'",
-							( in_array($classnum, $tmp) ? " checked='checked'" : ''));
-			return str_replace($search, $replace, $USERCLASS_SUBSCRIBE_ROW);
-		  }*/
-
-		  $ret = $USERCLASS_SUBSCRIBE_START;
-		  $ret .= $e_userclass->vetted_tree('class',array($this,'show_signup_class'),varset($signupData['user_class'],''),'editable, no-excludes');
-			$ret .= $USERCLASS_SUBSCRIBE_END;
-			return $ret;
+			return false;
 		}
+
+		$uc = e107::getUserClass();
+
+		$ucList = $uc->get_editable_classes(e_UC_PUBLIC, true);	// This is signup so display only 'editable by public' classes.
+
+		if(empty($ucList)) return false;
+
+
+		$text = '';
+		foreach($ucList as $classNum)
+		{
+			$text .= $this->show_signup_class($classNum, 1); // checked by default.
+		}
+
+		return $text;
+
+
+
+	//	return $uc->vetted_tree('class', array($this,'show_signup_class'), varset($signupData['user_class'],''),'editable, no-excludes');
+
+
 	}
 
-	function show_signup_class($treename, $classnum, $current_value, $nest_level)
+	private function show_signup_class( $classnum, $current_value='', $nest_level=0)
 	{
 		$tp = e107::getParser();
 		$uc = e107::getUserClass();
@@ -390,7 +387,7 @@ class signup_shortcodes extends e_shortcode
 		if(deftrue('BOOTSTRAP'))
 		{
 
-			$text   = "<div class='checkbox'>";
+			$text   = "<div class='checkboxes'>";
 			$label  = $tp->toHTML($uc->getName($classnum),false, 'defs');
 			$diz    = $tp->toHTML($uc->getDescription($classnum),false,'defs');
 			$text   .= $frm->checkbox('class[]', $classnum, $current_value, array('label'=>$label,'title'=> $diz, 'class'=>'e-tip'));
