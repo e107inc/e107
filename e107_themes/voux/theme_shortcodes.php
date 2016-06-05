@@ -19,6 +19,29 @@ class theme_shortcodes extends e_shortcode
 	}
 
 
+
+	function sc_voux_newsletter_form()
+	{
+		$pref = e107::pref('core');
+
+		if(empty($pref['signup_option_class']))
+		{
+			return false;
+		}
+
+		$frm = e107::getForm();
+		$text = $frm->open('newsletter','post', e_SIGNUP, array('class'=>'form-inline'));
+		$text .= $frm->text('email','', null, array('placeholder'=>"Enter your email"));
+		$text .= $frm->button('subscribe', 1, 'primary', "Subscribe");
+		$text .= $frm->close();
+
+		return $text;
+	}
+
+
+
+
+
 	function sc_bootstrap_branding()
 	{
 		$pref = e107::pref('theme', 'branding');

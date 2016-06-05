@@ -254,6 +254,31 @@ $LAYOUT['_footer_'] = '
 				</div>
 		</div>
 	</div>
+
+
+	<div class="subscribe-box">
+  <div class="container">
+  <div class="block">
+		<div class="row">
+      		<div class="col-lg-6">
+		         <div class="caption">
+		            <img src="'.THEME_ABS.'install/sketch-subscribe.png">
+		         </div>
+            </div>
+            <div class="col-lg-6">
+		         {VOUX_NEWSLETTER_FORM}
+		         </div>
+            </div>
+         <!--block-->
+      </div>
+   </div>
+   </div>
+</div>
+
+
+
+
+
 	<div id="footer-social">
 		<div class="container">
 			<div class="row">
