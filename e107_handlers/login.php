@@ -449,7 +449,18 @@ class userlogin
 			else
 			{
 				// Plaintext password
-			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login",$aLogVal, FALSE,LOG_TO_ROLLING);
+			  	$auditLog = array(
+
+					'lookEmail'         => $this->lookEmail,
+					'user_loginname'    => $this->userData['user_loginname'],
+					'userpass'          => $userpass,
+					'username'      => $username,
+					'pwdHash'       => $requiredPassword
+
+				);
+
+				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
+
 				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_BAD_PW);
