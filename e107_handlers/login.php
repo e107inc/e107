@@ -344,16 +344,20 @@ class userlogin
 		}
 
 		// Check username general format
-		if (!$forceLogin && (strlen($username) > $maxLength))
-		{  // Error - invalid username
+		if (!$forceLogin && (strlen($username) > $maxLength)) // Error - invalid username
+		{
+			$auditLog = array('reason'=>'username longer than maxlength', 'maxlength'=> $maxLength, 'username'=>$username);
+			e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			$this->invalidLogin($username,LOGIN_BAD_USERNAME);
 			return FALSE;
 		}
 
 		$query = $this->getLookupQuery($username, $forceLogin);
 
-		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
-		{	// Invalid user
+		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well // Invalid user
+		{
+			$auditLog = array('reason'=>'query failed to return a result', 'query'=>$query, 'username'=>$username);
+			e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
 
