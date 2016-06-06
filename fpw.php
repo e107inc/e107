@@ -206,11 +206,17 @@ if(e_QUERY)
 		//$do_log['user_name'] = $tp -> toDB($username, true);
 		$do_log['user_loginname'] = $loginName;
 		$do_log['activation_code'] = $tmpinfo;
-		$do_log['user_password'] = $mdnewpw;
+		$do_log['user_password'] = $newpw;
+		$do_log['user_password_hash'] = $mdnewpw;
 		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
 
 		// Update password in database
 		$sql->update('user', "`user_password`='{$mdnewpw}' WHERE `user_loginname`='".$loginName."' ");
+
+		if(getperms('0'))
+		{
+			echo "<div class='alert alert-danger'>".print_a($do_log, true)."</div>";
+		}
 		
 		// Prepare new information to display to user
 		if((integer) e107::getPref('allowEmailLogin') > 0)
@@ -297,7 +303,7 @@ if (isset($_POST['pwsubmit']))
 		// Check if password reset was already requested
 		if ($result = $sql->select('tmp', '*', "`tmp_ip` = 'pwreset' AND `tmp_info` LIKE '".$row['user_loginname'].FPW_SEPARATOR."%'"))
 		{
-			fpw_error(LAN_FPW4);		
+			fpw_error(LAN_FPW4);
 			exit;
 		}
 
@@ -369,6 +375,13 @@ if(deftrue('BOOTSTRAP'))
 {
 	// TODO do we want the <form> element outside the template?
 	$FPW_TABLE = "<form method='post' action='".SITEURL."fpw.php' autocomplete='off'>";
+
+	if(getperms('0'))
+	{
+		$FPW_TABLE.= "<div class='alert alert-danger'>Logged in as admin</div>";
+	}
+
+
 	$FPW_TABLE .= e107::getCoreTemplate('fpw','form');	
 	$FPW_TABLE .= "</form>"; 
 	$caption = deftrue('LAN_FPW_100',"Forgot your password?");	
