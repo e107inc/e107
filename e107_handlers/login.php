@@ -253,10 +253,11 @@ class userlogin
 
 	//	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 
-		if (in_array(varset($pref['user_audit_class'],''), $class_list))
+	/*	if (in_array(varset($pref['user_audit_class'],''), $class_list))
 		{  // Need to note in user audit trail
-			e107::getLog()->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
-		}
+			$log = e107::getLog();
+			$log->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
+		}*/
 
 		$edata_li = array('user_id' => $user_id, 'user_name' => $user_name, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin, 'user_admin'=>$user_admin, 'user_email'=> $user_email);
 		e107::getEvent()->trigger("login", $edata_li);
@@ -434,9 +435,7 @@ class userlogin
 			$requiredPassword = $this->userData['user_password'];
 		}
 
-		// FIXME - [SecretR] $username is not set and I really can't get the idea.
-		//$username = $this->userData['user_loginname']; // TODO for Steve - temporary fix, where $username comes from?
-		
+
 		// Now check password
 		if ($forceLogin)
 		{
@@ -458,29 +457,34 @@ class userlogin
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
 				}
 			}
-			else
+			else // Plaintext password
 			{
-				// Plaintext password
+
+				$login_name = ($this->lookEmail) ? $this->userData['user_loginname'] : $username;
+
 			  	$auditLog = array(
-
-					'lookEmail'         => $this->lookEmail,
-					'user_loginname'    => $this->userData['user_loginname'],
+					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
+					'login_name'         => $login_name,
 					'userpass'          => $userpass,
-					'username'      => $username,
-					'pwdHash'       => $requiredPassword
-
+					'pwdHash'           => $requiredPassword
 				);
 
-				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
-
-				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
+				if (($pass_result = $this->userMethods->CheckPassword($userpass, $login_name, $requiredPassword)) === PASSWORD_INVALID)
 				{
+					$auditLog['result'] = $pass_result;
+					$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 					return $this->invalidLogin($username,LOGIN_BAD_PW);
 				}
+
+				$auditLog['result'] = $pass_result;
+				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 			}
+
+
 			$this->passResult = $pass_result;
 		}
-		return TRUE;
+
+		return true;
 	}
 
 

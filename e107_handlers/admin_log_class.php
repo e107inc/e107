@@ -434,6 +434,13 @@ class e_admin_log
 			return false;
 		}
 
+		if(empty($event_data))
+		{
+			$backt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
+			$event_data = $backt;
+		}
+
+
 		if($this->rldb == null)
 		{
 			$this->rldb = e107::getDb('rldb'); // Better use our own db - don't know what else is going on
