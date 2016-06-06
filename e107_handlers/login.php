@@ -336,6 +336,8 @@ class userlogin
 	protected function lookupUser($username, $forceLogin)
 	{
 		$pref = e107::getPref();
+		$log = e107::getLog();
+
 		$maxLength = varset($pref['loginname_maxlength'],30);
 
 		if(varset($pref['allowEmailLogin'])==1) // Email login only
@@ -347,7 +349,7 @@ class userlogin
 		if (!$forceLogin && (strlen($username) > $maxLength)) // Error - invalid username
 		{
 			$auditLog = array('reason'=>'username longer than maxlength', 'maxlength'=> $maxLength, 'username'=>$username);
-			e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
+			$log->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			$this->invalidLogin($username,LOGIN_BAD_USERNAME);
 			return FALSE;
 		}
@@ -357,7 +359,7 @@ class userlogin
 		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well // Invalid user
 		{
 			$auditLog = array('reason'=>'query failed to return a result', 'query'=>$query, 'username'=>$username);
-			e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
+			$log->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
 
@@ -411,6 +413,7 @@ class userlogin
 	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
 	{
 		$pref = e107::getPref();
+		$log = e107::getAdminLog();
 		
 		if($forceLogin === 'provider') return true;
 		
@@ -463,7 +466,7 @@ class userlogin
 
 				);
 
-				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
+				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 
 				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
 				{
