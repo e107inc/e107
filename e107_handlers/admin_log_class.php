@@ -486,7 +486,7 @@ class e_admin_log
 
 		$this->rldb->insert("audit_log", $insertQry);
 
-		return true; 
+		return true;
 		// $this->rldb->insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
 	}
 
