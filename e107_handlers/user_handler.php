@@ -180,7 +180,7 @@ class UserHandler
 	 *	@param string $login_name - string used to log in (could actually be email address)
 	 *	@param string $stored_hash - required value for password to match
 	 *
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string
+	 *	@return string PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match
 	 *		PASSWORD_VALID if valid password
 	 *		Return a new hash to store if valid password but non-preferred encoding
