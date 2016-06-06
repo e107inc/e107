@@ -340,7 +340,12 @@ class userlogin
 
 		$maxLength = varset($pref['loginname_maxlength'],30);
 
-		if(varset($pref['allowEmailLogin'])==1) // Email login only
+		/*
+		 * 2: Username/Email and Password
+		 * 1: Email and Password
+		 * 0: Username and Password
+		 */
+		if(!empty($pref['allowEmailLogin'])) // Email login only
 		{
 			$maxLength = 254; // Maximum email length	
 		}
