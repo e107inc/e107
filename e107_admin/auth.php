@@ -152,11 +152,10 @@ else
 			$class_list[] = e_UC_MEMBER;
 			$class_list[] = e_UC_PUBLIC;
 
-			
-			$user_logging_opts = e107::getConfig()->get('user_audit_opts');
-			if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'], ''), $class_list))
-			{ // Need to note in user audit trail
-				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, '', $user_id, $user_name);
+
+			if (in_array(varset($pref['user_audit_class'], ''), $class_list))
+			{
+				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, 'Login via admin page', $row['user_id'], $row['user_name']);
 			}
 
 			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
