@@ -213,6 +213,12 @@ class userlogin
 		{  // May want to rewrite password using salted hash (or whatever the preferred method is) - $pass_result has the value to write
 			// If login by email address also allowed, will have to write that value too
 //		  	$sql->update('user',"`user_password` = '{$pass_result}' WHERE `user_id`=".intval($this->userData['user_id']));
+			if($this->userMethods->rehashPassword($this->userData,$userpass)!==false)
+			{
+				$log = e107::getLog();
+				$auditLog = "User Password ReHashed";
+				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
+			}
 		}
 
 
@@ -396,7 +402,7 @@ class userlogin
 
         $qry[0] = "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'";  // username only  (default)
 		$qry[1] = "{$dbAlias}`user_email` = '".$tp->toDB($username)."'";   // email only
-		$qry[2] = (strpos($username,'@') !== FALSE ) ? "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$tp->toDB($username)."'" : $qry[0];  //username or email
+		$qry[2] = (strpos($username,'@') !== false ) ? "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$tp->toDB($username)."'" : $qry[0];  //username or email
 		
 
 		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
@@ -464,7 +470,7 @@ class userlogin
 
 			  	$auditLog = array(
 					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
-					'login_name'         => $login_name,
+					'login_name'        => $login_name,
 					'userpass'          => $userpass,
 					'pwdHash'           => $requiredPassword
 				);
@@ -477,6 +483,7 @@ class userlogin
 				}
 
 				$auditLog['result'] = $pass_result;
+
 				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 			}
 
