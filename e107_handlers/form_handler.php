@@ -4855,15 +4855,19 @@ class e_form
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
-				if((empty($value) && !empty($parms['currentInit']) && !isset($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
+				if((empty($value) || !empty($parms['currentInit']) && empty($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
 				{
-					$value = USERID;
+					$value = array('user_id'=>USERID, 'user_name'=>USERNAME);
 					if(vartrue($parms['current']))
 					{
 						$parms['__options']['readonly'] = true;
 					}
 
 				}
+
+
+
+
 
 		//		if(!is_array($value))
 		//		{
