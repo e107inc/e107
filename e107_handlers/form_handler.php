@@ -992,22 +992,22 @@ class e_form
 		// If default value is set.
 		if ($datestamp)
 		{
+			if(!is_numeric($datestamp))
+			{
+				$datestamp = strtotime($datestamp);
+			}
+
 			// Create timestamp.
 			if($useUnix == 'true')
 			{
-				if(!is_numeric($datestamp))
-				{
-					$datestamp = strtotime($datestamp);
-				}
-
-				// Convert date to proper format.
-				$value = e107::getDate()->convert_date($datestamp, $dateFormat);
+				// Use date value as timestamp.
+				$value = $datestamp;
 			}
 			else
 			{
-				$value= $datestamp;
+				// Convert date to proper (selected) format.
+				$value = e107::getDate()->convert_date($datestamp, $dateFormat);
 			}
-
 		}
 
 
@@ -1031,7 +1031,7 @@ class e_form
 		else
 		{			
 			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}'  id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
-			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$datestamp}' />";
+			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$value}' />";
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
