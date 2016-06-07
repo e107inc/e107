@@ -273,7 +273,7 @@ class users_admin_ui extends e_admin_ui
  		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
  		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
  		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
- 		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'str', 'width' => 'auto'), //TODO add md5 option to form handler?
+ 		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
 		'user_sess' 		=> array('title' => 'Session',		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
@@ -485,7 +485,9 @@ class users_admin_ui extends e_admin_ui
 		}
 		else 
 		{
-			$new_data['user_password']	= md5($new_data['user_password']); //TODO add support for salted passwords etc. 
+
+			$new_data['user_password']	= e107::getUserSession()->HashPassword($new_data['user_password'], $new_data['user_login']);
+			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
 		
 		if(!empty($new_data['perms']))
@@ -1385,8 +1387,11 @@ class users_admin_ui extends e_admin_ui
 		}
 
 
+
 		$user_data['user_password'] = $userMethods->HashPassword($savePassword, $user_data['user_login']);
 		$user_data['user_join'] = time();
+
+		e107::getMessage()->addDebug("Password Hash: ".$user_data['user_password']);
 		
 		if ($userMethods->needEmailPassword())
 		{

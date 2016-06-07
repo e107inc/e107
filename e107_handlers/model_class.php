@@ -2299,7 +2299,7 @@ class e_front_model extends e_model
 			}
 			else //no db field types, use toDB()
 			{
-				$src_data = $tp->toDB($src_data);
+				$src_data = e107::getParser()->toDB($src_data);
 			}
 		}
 
@@ -2645,6 +2645,10 @@ class e_front_model extends e_model
 			case 'int':
 			case 'integer':
 				return intval($this->toNumber($value));
+			break;
+
+			case 'safestr':
+				return $tp->filter($value);
 			break;
 
 			case 'str':
