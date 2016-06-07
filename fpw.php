@@ -188,7 +188,7 @@ if(e_QUERY)
 		// Delete the record 
 		$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
 
-		list($loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
+		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
 
 		// This should never happen! 
@@ -198,39 +198,49 @@ if(e_QUERY)
 		}
 
 		// Generate new temporary password
-		$newpw 		= $user_info->generateRandomString(str_repeat('*', rand(8, 12)));		
-		$mdnewpw 	= $user_info->HashPassword($newpw, $loginName);
+		$pwdArray = e107::getUserSession()->resetPassword($uid,$loginName, array('return'=>'array'));
+
+		if($pwdArray === false)
+		{
+			fpw_error(LAN_214);
+		}
+
+		$newpw = $pwdArray['password'];
+
+
 
 		// Details for admin log
-		$do_log['password_action'] = LAN_FPW21;
-		//$do_log['user_name'] = $tp -> toDB($username, true);
-		$do_log['user_loginname'] = $loginName;
-		$do_log['activation_code'] = $tmpinfo;
-		$do_log['user_password'] = $newpw;
-		$do_log['user_password_hash'] = $mdnewpw;
-		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
+		$do_log = array();
+		$do_log['password_action']      = LAN_FPW21;
+		$do_log['user_loginname']       = $loginName;
+		$do_log['activation_code']      = $tmpinfo;
+		$do_log['user_password']        = $newpw;
+		$do_log['user_password_hash']   = $pwdArray['hash'];
 
-		// Update password in database
-		$sql->update('user', "`user_password`='{$mdnewpw}' WHERE `user_loginname`='".$loginName."' ");
 
-		if(getperms('0'))
-		{
-			echo "<div class='alert alert-danger'>".print_a($do_log, true)."</div>";
-		}
-		
 		// Prepare new information to display to user
 		if((integer) e107::getPref('allowEmailLogin') > 0)
 		{
 			// always show email when possible
-			$sql->select('user', 'user_email', "user_loginname='{$loginName}'");
+			$sql->select('user', 'user_email', "user_id=".intval($uid));
 			$tmp = $sql->fetch();
 			$loginName = $tmp['user_email'];
+			$do_log['user_email'] =  $tmp['user_email'];
 			unset($tmp);
 		}
 
-		// Reset login cookie/session (?)
-		cookie($pref['cookie_name'], '', (time()-2592000));
-		$_SESSION[$pref['cookie_name']] = '';
+		$admin_log->user_audit(USER_AUDIT_PW_RES,$do_log,0,$do_log['user_name']);
+
+		if(getperms('0')) // Test Mode.
+		{
+			echo "<div class='alert alert-danger'>".print_a($do_log, true)."</div>";
+		}
+		else
+		{
+			// Reset login cookie/session (?)
+			cookie($pref['cookie_name'], '', (time()-2592000));
+			$_SESSION[$pref['cookie_name']] = '';
+		}
 
 		// Display success message containing new login information
 		$txt = "<div class='fpw-message'>".LAN_FPW8."</div>
@@ -238,7 +248,7 @@ if(e_QUERY)
 		<tr><td>".LAN_218."</td><td style='font-weight:bold'>{$loginName}</td></tr>
 		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'>{$newpw}</td></tr>
 		</table>
-		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_FPW11."</a> ".LAN_FPW12;
+		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_LOGIN."</a>. "; // .LAN_FPW12;
 		
 		e107::getMessage()->addSuccess($txt);
 		e107::getRender()->tablerender(LAN_03, e107::getMessage()->render());
@@ -321,8 +331,15 @@ if (isset($_POST['pwsubmit']))
 		// Set timestamp two days ahead so it doesn't get auto-deleted
 		$deltime = time()+86400 * 2;			
 		
-		// Insert the password reset request into the database 
-		$sql->insert('tmp', "'pwreset',{$deltime},'".$row['user_loginname'].FPW_SEPARATOR.$rcode."'");
+		// Insert the password reset request into the database
+
+		$insertQry = array(
+			'tmp_ip'    => 'pwreset',
+			'tmp_time'  => $deltime,
+			'tmp_info'  => ($row['user_id'].FPW_SEPARATOR.$row['user_loginname'].FPW_SEPARATOR.$rcode)
+		);
+
+		$sql->insert('tmp', $insertQry);
 
 		// Setup the information to log
 		$do_log['password_action'] 	= LAN_FPW18;
@@ -333,7 +350,9 @@ if (isset($_POST['pwsubmit']))
 
 		if(getperms('0'))
 		{
-			$ns->tablerender("Testing Mode", print_a($message,true));
+			$message .= "\n\n<a class='btn btn-primary' href='".$link."'>Click to Continue with test</a>";
+
+			$ns->tablerender("Testing Mode", nl2br($message));
 			require_once(FOOTERF);
 			exit;
 		}

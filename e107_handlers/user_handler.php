@@ -324,23 +324,30 @@ class UserHandler
 	 * @param string $loginName (optional)
 	 * @return bool|string rawPassword
 	 */
-	public function resetPassword($uid, $loginName='')
+	public function resetPassword($uid, $loginName='', $options=array())
 	{
 		if(empty($uid))
 		{
 			return false;
 		}
 
-		$rawPassword    = $this->generateRandomString('********');
-	//	$sessKey        = e_user_model::randomKey();
+		$rawPassword    = $this->generateRandomString(str_repeat('*', rand(8, 12)));
+		$hash           = $this->HashPassword($rawPassword, $loginName);
 
 		$updateQry = array(
-			'user_password' => $this->HashPassword($rawPassword, $loginName),
-			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1"
+			'data'          => array( 'user_password' => $hash ),
+			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1",
+			'_FIELD_TYPES'  => array( 'user_password' => 'safestr' 	)
 		);
 
 		if(e107::getDb()->update('user', $updateQry))
 		{
+			if(!empty($options['return']) && $options['return'] == 'array')
+			{
+				return array('password'=>$rawPassword, 'hash'=>$hash);
+			}
+
+
 			return $rawPassword;
 		}
 		else
