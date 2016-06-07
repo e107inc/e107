@@ -211,7 +211,7 @@ class page_chapters_ui extends e_admin_ui
 		}
 		
 		
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			if(empty($new_data['chapter_sef']))
 			{
@@ -725,7 +725,7 @@ class page_admin_ui extends e_admin_ui
 			return $newdata;	
 		}
 		
-		function beforeUpdate($newdata,$olddata)
+		function beforeUpdate($newdata,$olddata, $id)
 		{
 			if(isset($newdata['menu_name']))
 			{
