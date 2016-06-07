@@ -213,11 +213,13 @@ class userlogin
 		{  // May want to rewrite password using salted hash (or whatever the preferred method is) - $pass_result has the value to write
 			// If login by email address also allowed, will have to write that value too
 //		  	$sql->update('user',"`user_password` = '{$pass_result}' WHERE `user_id`=".intval($this->userData['user_id']));
-			if($this->userMethods->rehashPassword($this->userData,$userpass)!==false)
+			$reHashedPass = $this->userMethods->rehashPassword($this->userData,$userpass);
+			if($reHashedPass !==false)
 			{
 				$log = e107::getLog();
 				$auditLog = "User Password ReHashed";
 				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
+				$this->userData['user_password'] = $reHashedPass;
 			}
 		}
 
