@@ -1557,8 +1557,11 @@ if($this->pdo == true)
 		$this->logLine('Core prefs set to install choices');
 
 		// Create the admin user - replacing any that may be been included in the XML.
+		$us = e107::getUserSession();
+		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'],PASSWORD_E107_PHP);
+
 		$ip = $_SERVER['REMOTE_ADDR'];
-		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".md5($this->previous_steps['admin']['password'])."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
+		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".$hash."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";
 		$qry = "REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})";
 		$this->dbqry("REPLACE INTO {$this->previous_steps['mysql']['prefix']}user VALUES ({$userp})" );
 		$this->logLine('Admin user created');

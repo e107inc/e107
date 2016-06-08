@@ -175,6 +175,11 @@ class UserHandler
 			$force = $this->preferred;
 		}
 
+		if(($force == PASSWORD_E107_PHP) && $this->passwordAPI === false)
+		{
+			$force = PASSWORD_E107_SALT; // fallback.
+		}
+
 		switch ($force)
 		{
 			case PASSWORD_E107_MD5 :
@@ -185,10 +190,7 @@ class UserHandler
 		        break;
 
 			case PASSWORD_E107_PHP :
-				if($this->passwordAPI)
-				{
-		            return password_hash($password, PASSWORD_DEFAULT);
-				}
+	            return password_hash($password, PASSWORD_DEFAULT);
 		        break;
 		}
 
