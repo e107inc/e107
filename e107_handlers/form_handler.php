@@ -966,28 +966,26 @@ class e_form
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
-		
 		if(vartrue($options) && is_string($options))
 		{
-			parse_str($options,$options);	
-		} 
-		
-		$type		= varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
-		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
-		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
-		$value		= null;
-		$useUnix    = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
-				
+			parse_str($options,$options);
+		}
+
+		$type		 = varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
+		$dateFormat  = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$ampm		 = (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';
+		$value		 = null;
+		$hiddenValue = null;
+		$useUnix     = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
+		$id          = $this->name2id($name);
+		$classes     = array('date' => 'e-date', 'datetime' => 'e-datetime');
+
 		if($type == 'datetime' && !varset($options['format']))
 		{
-			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');		
+			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');
 		}
 
 		$dformat = e107::getDate()->toMask($dateFormat);
-
-		$id = $this->name2id($name);
-
-		$classes = array('date'	=> 'e-date', 'datetime'	=> 'e-datetime');
 
 		// If default value is set.
 		if ($datestamp)
@@ -997,22 +995,24 @@ class e_form
 				$datestamp = strtotime($datestamp);
 			}
 
-		  	// Convert date to proper (selected) format.
-		  	$value = e107::getDate()->convert_date($datestamp, $dformat);
+			// Convert date to proper (selected) format.
+			$hiddenValue = $value = e107::getDate()->convert_date($datestamp, $dformat);
+
+			if ($useUnix === 'true')
+			{
+				$hiddenValue = $datestamp;
+			}
 		}
 
-
-
 		$text = "";
-	//	$text .= 'dformat='.$dformat.'  defdisp='.$dateFormat;
-		
+
 		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
 		$required 	= vartrue($options['required']) ? "required" : "";
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
-		
+
 		if(vartrue($options['inline']))
 		{
 			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
@@ -1020,11 +1020,11 @@ class e_form
 			";
 		}
 		else
-		{			
+		{
 			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}'  id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
 
 			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
-			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$value}' />";
+			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
 
 	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
