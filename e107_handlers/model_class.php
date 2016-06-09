@@ -647,7 +647,7 @@ class e_model extends e_object
 	 * @param boolean $extended [optional] if true, method will return an array containing url, title and description of the url
      * @return mixed URL string or extended array data
      */
-    public function url($options = array(), $extended = false)
+    public function url($ids, $options = array(), $extended = false)
     {
         $urldata = $this->getUrl();
 		if(empty($urldata) || !vartrue($urldata['route'])) return ($extended ? array() : null);
@@ -2885,7 +2885,7 @@ class e_admin_model extends e_front_model
 		return $this->dbInsert($session_messages);
     }
 
-	public function delete($destroy = true, $session_messages = false)
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = $this->dbDelete();
 		if($ret)
@@ -3688,7 +3688,7 @@ class e_admin_tree_model extends e_front_tree_model
 
 			$model = $this->getNode($id);
 			if($this->getUrl()) $model->setUrl($this->getUrl()); // copy url config data if available
-			$ret[$id] = $model->url($options, $extended);
+			$ret[$id] = $model->url(null, $options, $extended);
 		}
 		return $ret;
     }
