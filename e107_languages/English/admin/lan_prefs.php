@@ -285,5 +285,6 @@ define("PRFLAN_265", "Frontpage is splash page (membersonly.php)");
 define("PRFLAN_266", "When logged out, which page should the user be directed to?");
 define("PRFLAN_267", "Emailing method");
 
+define("PRFLAN_268", "Frontend Inline-Editing");
+define("PRFLAN_269", "Admins with this userclass (and the appropriate admin permissions) will be able to edit html directly via the frontend area.");
 
-?>

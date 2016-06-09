@@ -1190,6 +1190,13 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_216."</div>
 						</td>
 					</tr>
+						<tr>
+						<td><label for='inline-editing'>".PRFLAN_268.":</label></td>
+						<td>
+							".$frm->userclass('inline_editing',$pref['inline_editing'],'off','nobody,admin,main,classes,no-excludes')."
+							<div class='smalltext field-help'>".PRFLAN_269."</div>
+						</td>
+					</tr>
 					<tr>
 						<td><label for='filter-script'>".PRFLAN_217.":</label></td>
 						<td>
