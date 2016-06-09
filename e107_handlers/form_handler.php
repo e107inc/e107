@@ -3885,7 +3885,7 @@ class e_form
 						// copy url config
 						if(!$model->getUrl()) $model->setUrl($this->getController()->getUrl());
 						// assemble the url
-                    	$link = $model->url();
+                    	$link = $model->url(null);
                     }
                     elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url. 
                     {
