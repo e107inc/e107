@@ -150,6 +150,7 @@
 		<core name="image_post_class">0</core>
 		<core name="image_preload">0</core>
 		<core name="img_import_resize">1200x800</core>
+		<core name="inline_editing">255</core>
 		<core name="inputdate">%A, %d %b, %Y</core>
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>

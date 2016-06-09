@@ -924,7 +924,7 @@ $(document).ready(function()
 
 			if(pos === undefined)
 			{
-				pos = 'top';
+				pos = 'bottom';
 			}
 
 			$(this).tooltip({opacity:1.0, fade:true, placement: pos, container: 'body'});
