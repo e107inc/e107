@@ -2849,14 +2849,15 @@ class e107
 
 	/**
 	 * Static (easy) sef-url creation method (works with e_url.php @see /index.php)
-	 * @param string $plugin
-	 * @param $key
-	 * @param array $row
-	 * @param array $options
-	 *  (optional) An associative array of additional options, with the following elements:
-	 *   - 'mode': abs | full
-	 *   - 'query': An array of query key/value-pairs (without any URL-encoding) to append to the URL.
-	 *   - 'fragment': A fragment identifier (named anchor) to append to the URL. Do not include the leading '#' character.
+	 *
+	 * @param string    $plugin - plugin folder name
+	 * @param string    $key assigned in e_url.php configuration.
+	 * @param array     $row Array of variables in url config.
+	 * @param array     $options  (optional) An associative array of additional options, with the following elements:
+	 * @param string    $options['mode']  abs | full
+	 * @param array     $options['query']  An array of query key/value-pairs (without any URL-encoding) to append to the URL.
+	 * @param string    $options['fragment'] A fragment identifier (named anchor) to append to the URL. Do not include the leading '#' character.
+	 * @param bool      $options['legacy'] When true legacy urls will be generated regardless of mod-rewrite status.
 	 * @return string
 	 */
 	public static function url($plugin='',$key, $row=array(), $options = array())
@@ -2933,7 +2934,7 @@ class e107
 			}
 
 
-			if(deftrue('e_MOD_REWRITE') && ($active == true))  // Search-Engine-Friendly URLs active.
+			if(deftrue('e_MOD_REWRITE') && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.
 			{
 				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 
