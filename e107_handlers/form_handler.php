@@ -997,17 +997,8 @@ class e_form
 				$datestamp = strtotime($datestamp);
 			}
 
-			// Create timestamp.
-			if($useUnix == 'true')
-			{
-				// Use date value as timestamp.
-				$value = $datestamp;
-			}
-			else
-			{
-				// Convert date to proper (selected) format.
-				$value = e107::getDate()->convert_date($datestamp, $dateFormat);
-			}
+		  	// Convert date to proper (selected) format.
+		  	$value = e107::getDate()->convert_date($datestamp, $dformat);
 		}
 
 
