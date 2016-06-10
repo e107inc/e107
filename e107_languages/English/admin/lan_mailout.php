@@ -274,13 +274,12 @@ define("LAN_MAILOUT_255", "Templated Email, ID: ");
 define("LAN_MAILOUT_256", "Return");
 define("LAN_MAILOUT_257", "Generated template");
 //define("LAN_MAILOUT_258", "Template: ");//LAN_TEMPLATE
-define("LAN_MAILOUT_260", "SMTP Port");
-
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
-define("LAN_MAILOUT_260", "User-Type");
 
+define("LAN_MAILOUT_260", "User-Type");
+define("LAN_MAILOUT_261", "SMTP Port");
 
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
