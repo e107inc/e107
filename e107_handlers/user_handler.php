@@ -259,7 +259,7 @@ class UserHandler
 	{
 		$type = $this->getHashType($user['user_password']);
 
-		if($type == $this->preferred || empty($user['user_id'] || empty($user['user_password']) || empty($user['user_loginname'])))
+		if($type == $this->preferred || empty($user['user_id']) || empty($user['user_password']) || empty($user['user_loginname']))
 		{
 			return false;
 		}
