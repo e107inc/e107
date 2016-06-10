@@ -2156,7 +2156,7 @@ class mailoutAdminClass extends e107MailManager
 		</tr>
 
 		<tr>
-		<td>".LAN_MAILOUT_260."</td>
+		<td>".LAN_MAILOUT_261."</td>
 		<td>".$frm->select('smtp_port',$ports, $pref['smtp_port'])."
 		</td>
 		</tr>
