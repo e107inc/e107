@@ -224,9 +224,9 @@ class UserHandler
 
 		switch($type)
 		{
-			case PASSWORD_E107_MD5:
+			case PASSWORD_E107_MD5://  &&
 				if (md5($password) !== $stored_hash) return PASSWORD_INVALID;
-				if ($this->preferred == PASSWORD_E107_MD5) return PASSWORD_VALID;
+				if ($this->preferred == PASSWORD_E107_MD5 && ($this->passwordOpts <= 1)) return PASSWORD_VALID;
 				return $this->HashPassword($password);		// Valid password, but non-preferred encoding; return the new hash
 				break;
 
@@ -288,35 +288,48 @@ class UserHandler
 	/**
 	 * Detect Password Hash Algorythm type
 	 * @param string $hash - Password hash to analyse
+	 * @param string $mode - (optional) set to 'text' for a plain-text description.
 	 * @return bool|int
 	 */
-	public function getHashType($hash)
+	public function getHashType($hash, $mode='constant')
 	{
 		if(empty($hash))
 		{
 			return false;
 		}
 
-		if(($this->passwordOpts <= 1) && (strlen($hash) === 32))
-		{
-			return PASSWORD_E107_MD5;
-		}
+		$num = false;
+		$name = '';
 
-		if ((strlen($hash) === 35) && (substr($hash,0,3) == PASSWORD_E107_ID))
+		if((strlen($hash) === 32))
 		{
-			return PASSWORD_E107_SALT;
+			$num = PASSWORD_E107_MD5;
+			$name = 'md5';
 		}
-
-		if($this->passwordAPI)
+		elseif ((strlen($hash) === 35) && (substr($hash,0,3) == PASSWORD_E107_ID))
+		{
+			$num = PASSWORD_E107_SALT;
+			$name = 'md5-salt';
+		}
+		elseif($this->passwordAPI)
 		{
 			$info = password_get_info($hash);
 			if(!empty($info['algo']))
 			{
-				return PASSWORD_E107_PHP;
+				$num = PASSWORD_E107_PHP;
+				$name = $info['algoName'];
 			}
 		}
 
-		return false;
+		if($mode == 'array' && !empty($name))
+		{
+			return array($num,$name);
+		}
+
+		return $num;
+
+
+
 	}
 
 

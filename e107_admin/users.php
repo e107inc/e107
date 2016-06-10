@@ -29,7 +29,7 @@ e107::coreLan('date');
 
 e107::css('inline', "
 
- .label-status { width:100%; display:block; padding-bottom:5px; padding-top:5px }
+ .label-status, .label-password { width:100%; display:block; padding-bottom:5px; padding-top:5px }
 ");
 
 class users_admin extends e_admin_dispatcher
@@ -2398,9 +2398,20 @@ class users_admin_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read')
 		{
-			if(empty($curVal))
+			if(empty($curval))
 			{
 				return "No password!";	
+			}
+
+			// if(getperms('0'))
+			{
+
+				$type = e107::getUserSession()->getHashType($curval, 'array');
+				$num = $type[0];
+
+				$styles= array(0=>'label-danger',1=>'label-warning', 3=>'label-success');
+
+				return "<span class='label label-password ".$styles[$num]."'>".$type[1]."</span>";
 			}
 		}
 		if($mode == 'write')
