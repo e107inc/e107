@@ -213,8 +213,9 @@ class UserHandler
 	 */
 	public function CheckPassword($password, $login_name, $stored_hash)
 	{
+		$password = trim($password);
 
-		if(empty(trim($password)))
+		if(empty($password))
 		{
 			return PASSWORD_INVALID;
 		}
