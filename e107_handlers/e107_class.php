@@ -2942,6 +2942,10 @@ class e107
 				{
 					$sefUrl = SITEURL.$rawUrl;
 				}
+				elseif($options['mode'] == 'raw')
+				{
+					$sefUrl = $rawUrl;
+				}
 				else
 				{
 					$sefUrl = e_HTTP.$rawUrl;

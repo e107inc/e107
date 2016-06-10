@@ -692,15 +692,9 @@ class links_admin_form_ui extends e_admin_form_ui
 		{
 			$linkUrl = $this->getController()->getListModel()->get('link_url');
 
-		/*
-*/
 
 
-
-		//
-
-
-			$url = $this->link_url($linkUrl,$mode);
+			$url = $this->link_url($linkUrl,'link_id');
 
 
 
@@ -746,23 +740,25 @@ class links_admin_form_ui extends e_admin_form_ui
 
 	function link_url($curVal,$mode)
 	{
-		if($mode == 'read')
+		if($mode == 'read' || $mode == 'link_id') // read = display mode, link_id = actual absolute URL
 		{
 			$owner = $this->getController()->getListModel()->get('link_owner');
 			$sef =  $this->getController()->getListModel()->get('link_sefurl');
 
-			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http')
+			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
 			{
 				$curVal = '{e_BASE}'.$curVal;
 			}
 
 			if(!empty($owner) && !empty($sef))
 			{
-				$curVal = e107::url($owner,$sef, null);
+				$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
+				$curVal = e107::url($owner,$sef, null, $opt);
 			}
 			else
 			{
-				$curVal = e107::getParser()->replaceConstants($curVal,'abs');
+				$opt = ($mode == 'read') ? 'rel' : 'abs';
+				$curVal = e107::getParser()->replaceConstants($curVal,$opt);
 			}
 
 			e107::getDebug()->log($curVal);
