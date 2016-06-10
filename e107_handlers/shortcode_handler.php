@@ -1432,7 +1432,7 @@ class e_parse_shortcode
 		{
 			return $text; // unchanged.
 		}
-	
+
 
 		$lcode = strtolower($code);
 
