@@ -691,8 +691,19 @@ class links_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			$linkUrl = $this->getController()->getListModel()->get('link_url');
-			$linkUrl = e107::getParser()->replaceConstants($linkUrl,'abs');
+
+		/*
+*/
+
+
+
+		//
+
+
 			$url = $this->link_url($linkUrl,$mode);
+
+
+
 			return "<a href='".$url."' rel='external'>".$curVal."</a>"; //  $this->linkFunctions[$curVal];
 		}
 	}
@@ -740,10 +751,21 @@ class links_admin_form_ui extends e_admin_form_ui
 			$owner = $this->getController()->getListModel()->get('link_owner');
 			$sef =  $this->getController()->getListModel()->get('link_sefurl');
 
+			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http')
+			{
+				$curVal = '{e_BASE}'.$curVal;
+			}
+
 			if(!empty($owner) && !empty($sef))
 			{
-				$curVal = str_replace(e_HTTP,'',e107::url($owner,$sef));
+				$curVal = e107::url($owner,$sef, null);
 			}
+			else
+			{
+				$curVal = e107::getParser()->replaceConstants($curVal,'abs');
+			}
+
+			e107::getDebug()->log($curVal);
 
 			return $curVal; //  $this->linkFunctions[$curVal];
 		}
