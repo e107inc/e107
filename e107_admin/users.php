@@ -1446,7 +1446,7 @@ class users_admin_ui extends e_admin_ui
 						// activate and send password
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'mail_subject' => USRLAN_187.SITENAME,
+							'mail_subject' => USRLAN_187,
 							'activation_url' => USRLAN_246,
 						));
 					break;
@@ -1459,7 +1459,7 @@ class users_admin_ui extends e_admin_ui
 							
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'mail_subject' => USRLAN_187.SITENAME,
+							'mail_subject' => USRLAN_187,
 							'activation_url' => SITEURL."signup.php?activate.".$sysuser->getId().".".$sysuser->getValue('sess'),
 						));
 					break;
