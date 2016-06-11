@@ -765,7 +765,7 @@ class e107Email extends PHPMailer
 		}
 		
 		$eml['shortcodes']['BODY'] 		= !empty($eml['body']) ? $eml['body'] : ''; // $tp->toEmail($eml['body']) : '';
-		$eml['shortcodes']['SUBJECT'] 	= !empty($eml['subject']) ?$eml['subject'] : '';
+		$eml['shortcodes']['SUBJECT'] 	= !empty($eml['subject']) ? $eml['subject'] : '';
 		$eml['shortcodes']['THEME'] 	= ($this->previewMode == true) ? e_THEME_ABS.$this->pref['sitetheme'].'/' :  e_THEME.$this->pref['sitetheme'].'/'; // Always use front-end theme path. 
 
 
@@ -845,12 +845,20 @@ class e107Email extends PHPMailer
 				if($this->debug)
 				{
 				//	echo "<h4>e107Email::arraySet() - line ".__LINE__."</h4>";
+
+					var_dump($eml['shortcodes']);
+					var_dump($this->Subject);
 				//	print_a($tmpl);
 				}
 				
 				unset($eml['add_html_header']); // disable other headers when template is used. 
 				
-				$this->Subject = $tp->parseTemplate($tmpl['subject'], true, varset($eml['shortcodes'],null)); 
+				$this->Subject = $tp->parseTemplate($tmpl['subject'], true, varset($eml['shortcodes'],null));
+
+				if($this->debug)
+				{
+					var_dump($this->Subject);
+				}
 			}
 			else
 			{
@@ -1037,6 +1045,7 @@ class e107Email extends PHPMailer
 		else
 		{	// Debug
 			$result = true;
+			echo "<h2>Subject: ".$this->Subject."</h2>";
 		//	echo "<h2>SendEmail()->Body</h2>";
 		//	print_a($this->Body);
 		//	echo "<h2>SendEmail()->AltBody</h2>";
