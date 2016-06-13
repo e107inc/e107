@@ -966,28 +966,26 @@ class e_form
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
-		
 		if(vartrue($options) && is_string($options))
 		{
-			parse_str($options,$options);	
-		} 
-		
-		$type		= varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
-		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
-		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
-		$value		= null;
-		$useUnix    = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
-				
+			parse_str($options,$options);
+		}
+
+		$type		 = varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
+		$dateFormat  = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$ampm		 = (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';
+		$value		 = null;
+		$hiddenValue = null;
+		$useUnix     = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
+		$id          = $this->name2id($name);
+		$classes     = array('date' => 'e-date', 'datetime' => 'e-datetime');
+
 		if($type == 'datetime' && !varset($options['format']))
 		{
-			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');		
+			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');
 		}
 
 		$dformat = e107::getDate()->toMask($dateFormat);
-
-		$id = $this->name2id($name);
-
-		$classes = array('date'	=> 'e-date', 'datetime'	=> 'e-datetime');
 
 		// If default value is set.
 		if ($datestamp)
@@ -997,130 +995,48 @@ class e_form
 				$datestamp = strtotime($datestamp);
 			}
 
-		  	// Convert date to proper (selected) format.
-		  	$value = e107::getDate()->convert_date($datestamp, $dformat);
+			// Convert date to proper (selected) format.
+			$hiddenValue = $value = e107::getDate()->convert_date($datestamp, $dformat);
+
+			if ($useUnix === 'true')
+			{
+				$hiddenValue = $datestamp;
+			}
 		}
 
-
-
-		$text = "";
-	//	$text .= 'dformat='.$dformat.'  defdisp='.$dateFormat;
-		
 		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
 		$required 	= vartrue($options['required']) ? "required" : "";
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
-		
+
+		$text = "";
+
 		if(vartrue($options['inline']))
 		{
-			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
-				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
-			";
+			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}'></div>";
+			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />";
 		}
 		else
-		{			
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}'  id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
-
+		{
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
 			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
-			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$value}' />";
+			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
 
-	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
-	//	$text .= " ({$dformat}) type:".$dateFormat." ".$value;
-
 		// Load it in the footer.
-		e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
-
-		e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+		// FIXME use Library Manager (e107::library()) instead?
+		e107::css('core', 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
+		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.init.js', 'jquery', 2);
 
 		if(e_LANGUAGE !== 'English')
 		{
 			e107::js('footer-inline', e107::getDate()->buildDateLocale());
 		}
 
-		e107::js('footer-inline', '
-
-
-			// Fix for changeDate() not being fired when value manually altered.
-			$("input.e-date,input.e-datetime").on("change", function(){
-
-				var useUnix = $(this).attr("data-date-unix");
-
-				if(useUnix !== "true")
-				{
-					var id = $(this).attr("id");
-					var newTarget = "#"+ id.replace("e-datepicker-","");
-					var newValue = $(this).val();
-					 $(newTarget).val(newValue);
-				}
-
-
-			});
-
-
-			$("input.e-date").each(function() {
-        		$(this).datetimepicker({
-        			minView: "month",
-        			maxView: "decade",
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			language: $(this).attr("data-date-language")
-        		 }).on("changeDate", function(ev){
-
-					var useUnix = $(this).attr("data-date-unix");
-					var newValue = "";
-
-					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
-
-					if(useUnix === "true")
-					{
-						newValue = parseInt(ev.date.getTime() / 1000);
-					}
-					else
-					{
-						newValue = $("#"+ ev.target.id).val();
-					}
-
-			        $(newTarget).val(newValue);
-
-				})
-    		});
-
-    		$("input.e-datetime").each(function() {
-        		$(this).datetimepicker({
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			showMeridian: $(this).attr("data-date-ampm"),
-        			language: $(this).attr("data-date-language")
-        		 }).on("changeDate", function(ev){
-
-					var useUnix = $(this).attr("data-date-unix");
-					var newValue = "";
-
-					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
-
-					if(useUnix === "true")
-					{
-						newValue = parseInt(ev.date.getTime() / 1000);
-					}
-					else
-					{
-						newValue = $("#"+ ev.target.id).val();
-					}
-
-			        $(newTarget).val(newValue);
-
-				})
-    		});
-    		');
-
 		return $text;
-
-
 	}
 
 
