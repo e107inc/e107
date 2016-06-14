@@ -29,7 +29,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 */
 	function sc_featurebox($parm=null, $mod = '')
 	{
-		
+
 		if($parm == null && $mod == '') // ie {FEATUREBOX}
 		{
 			$type 	= vartrue(e107::getPlugPref('featurebox','menu_category'),'bootstrap_carousel');

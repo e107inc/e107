@@ -1169,7 +1169,7 @@ class e_system_user extends e_user_model
 		{
 			if($this->debug)
 			{
-				echo '$eml returned nothing on Line 1050 of user_model.php using $type = '.$type;
+				echo '$eml returned nothing on Line '.__LINE__.' of user_model.php using $type = '.$type;
 				print_a($userInfo);
 			}
 			 return false;
@@ -1180,6 +1180,8 @@ class e_system_user extends e_user_model
 			{
 				echo '<h3>$eml array</h3>';
 				print_a($eml);
+				$temp = var_export($eml, true);
+				print_a($temp);
 			}	
 		}
 		
@@ -1244,6 +1246,14 @@ class e_system_user extends e_user_model
 		if(!is_array($EMAIL_TEMPLATE)) //BC Fixes. pre v2 alpha3. 
 		{
 			// load from old location. (root of theme folder if it exists)
+
+			$SIGNUPEMAIL_SUBJECT = '';
+			$SIGNUPEMAIL_CC = '';
+			$SIGNUPEMAIL_BCC = '';
+			$SIGNUPEMAIL_ATTACHMENTS = '';
+			$SIGNUPEMAIL_TEMPLATE = '';
+
+
 			if (file_exists(THEME.'email_template.php'))
 			{
 				include(THEME.'email_template.php');
@@ -1338,7 +1348,7 @@ class e_system_user extends e_user_model
 			$sc['EMAIL']			= $userInfo['user_email'];
 			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
 			
-			$ret['email_subject'] =  $EMAIL_TEMPLATE['signup']['subject']; // $subject;
+			$ret['subject'] =  $EMAIL_TEMPLATE['signup']['subject']; // $subject;
 			$ret['send_html'] = TRUE;
 			$ret['shortcodes'] = $sc;
 		
@@ -1404,7 +1414,8 @@ class e_system_user extends e_user_model
 
 		$templateName = $ret['template'];
 		
-		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
+//		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
+		$ret['subject']         = $userInfo['mail_subject'];
 		$ret['e107_header'] 	= $userInfo['user_id'];
 		
 		if (vartrue($userInfo['email_copy_to'])) 	{ 	$ret['email_copy_to']	= $userInfo['email_copy_to']; }
@@ -1421,51 +1432,14 @@ class e_system_user extends e_user_model
 		$sc['PASSWORD']				= vartrue($userInfo['user_password'], '***********');
 		$sc['SUBJECT']				= $userInfo['mail_subject'];
 
-		
-		/*
-		$search[0] = '{LOGINNAME}';
-		$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-		
-		$search[1] = '{DISPLAYNAME}';
-		$replace[1] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
-		
-		$search[2] = '{EMAIL}';
-		$replace[2] = $userInfo['user_email'];
-	
-		$search[3] = '{SITENAME}';
-		$replace[3] = SITENAME;
-	
-		$search[4] = '{SITEURL}';
-		$replace[4] = "<a href='".SITEURL."'>".SITEURL."</a>";
-	
-		$search[5] = '{USERNAME}';
-		$replace[5] = $userInfo['user_name'];
-	
-		$search[6] = '{USERURL}';
-		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
-	
-		$ret['email_subject'] =  $subject; // str_replace($search, $replace, $subject); - performed in mail handler. 
-		
-		$search[7] = '{PASSWORD}';
-		$replace[7] = $pass_show ? $pass_show : '******';
-		*/
-		
-		
+
 		if(isset($userInfo['activation_url']))
 		{
 			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
 			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
-			
-			/*
-			$search[8] = '{ACTIVATION_URL}';
-			$replace[8] = $userInfo['activation_url'];
-			
-			$search[9] = '{ACTIVATION_LINK}';
-			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
-			*/
 		}
 		
-		$ret['send_html'] 		= TRUE;
+		$ret['send_html'] 		= true;
 		$ret['email_body'] 		= $template; // e107::getParser()->parseTemplate(str_replace($search, $replace, $template)); - performed in mail handler. 
 		$ret['preview'] 		= $ret['mail_body']; // Non-standard field
 		$ret['shortcodes'] 		= $sc;
@@ -1762,11 +1736,26 @@ class e_user extends e_user_model
 			e107::getUserSession()->makeUserCookie($user);
 			$this->setSessionData();
 
-			// Update display name or avatar image if they have changed.
-			if(($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
-			{
+			$spref = e107::pref('social');
 
-				if($sql->update('user', "user_name='".$userdata['user_name']."', user_image='".$userdata['user_image']."' WHERE user_id=".$user['user_id']." LIMIT 1")!==false)
+			// Update display name or avatar image if they have changed.
+			if(!empty($spref['xup_login_update_username']) || !empty($spref['xup_login_update_avatar']) || ($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
+			{
+				$updateQry = array();
+
+				if(!empty($spref['xup_login_update_username']))
+				{
+					$updateQry['user_name'] = $userdata['user_name'];
+				}
+
+				if(!empty($spref['xup_login_update_avatar']))
+				{
+					$updateQry['user_image'] = $userdata['user_image'];
+				}
+
+				$updateQry['WHERE'] = "WHERE user_id=".$user['user_id']." LIMIT 1";
+
+				if($sql->update('user', $updateQry) !==false)
 				{
 					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 				}

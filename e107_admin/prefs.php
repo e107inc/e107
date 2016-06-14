@@ -377,7 +377,7 @@ $text .= "
 					</tr>
 					<tr>
 						<td><label for='sitelogo'>".PRFLAN_214."</label></td>
-						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','help='.PRFLAN_226)."</td>
+						<td>".$frm->imagepicker('sitelogo',$pref['sitelogo'],'','w=200&help='.PRFLAN_226)."</td>
 					</tr>
 					<tr>
 						<td><label for='sitetag'>".PRFLAN_5."</label></td>
@@ -1190,6 +1190,13 @@ $text .= "
 							<div class='smalltext field-help'>".PRFLAN_216."</div>
 						</td>
 					</tr>
+						<tr>
+						<td><label for='inline-editing'>".PRFLAN_268.":</label></td>
+						<td>
+							".$frm->userclass('inline_editing',$pref['inline_editing'],'off','nobody,admin,main,classes,no-excludes')."
+							<div class='smalltext field-help'>".PRFLAN_269."</div>
+						</td>
+					</tr>
 					<tr>
 						<td><label for='filter-script'>".PRFLAN_217.":</label></td>
 						<td>
@@ -1375,7 +1382,23 @@ $text .= "
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
 						<td>
-							".$frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189)."
+							";
+
+						$pwdEncodeOpts = array();
+
+						if(function_exists('password_verify')) // ie. php 5.5 or higher
+						{
+							$pwdEncodeOpts[3]	 = "PHP Default (Preferred)";
+						}
+
+						$pwdEncodeOpts[1] = PRFLAN_190;
+						$pwdEncodeOpts[0] = PRFLAN_189;
+
+						$text .= $frm->select('passwordEncoding', $pwdEncodeOpts,  varset($pref['passwordEncoding'], 0));
+
+				//	$text .= $frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189);
+
+						$text .= "
 							<div class='smalltext field-help'>".PRFLAN_191."</div>
 						</td>
 					</tr>

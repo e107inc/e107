@@ -281,7 +281,7 @@ class e_jsmanager
 			//https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css
 		}
 		
-		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true') // Test with Local JS Framework files. 
+		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN',true)) // Test with Local JS Framework files.
 		{
 			$this->_libraries['jquery'] = array(
 				"jquery/jquery.min.js"
@@ -569,6 +569,20 @@ class e_jsmanager
 	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '')
 	{
 		$this->headerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
+		return $this;
+	}
+
+
+	/**
+	 * Add Theme JS file for inclusion in site footer (preferred), shorthand of footerFile() method
+	 *
+	 * @param string $file_path relative to theme root folder
+	 * @param integer $zone 1-5 (see header.php)
+	 * @return e_jsmanager
+	 */
+	public function footerTheme($file_path, $zone = 5, $pre = '', $post = '')
+	{
+		$this->footerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -1271,7 +1285,11 @@ class e_jsmanager
 		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
+			e107::getDb()->db_Mark_Time("Load JS/CSS: ".$label);
 		}
+
+
+
 
 		$lmodified = 0;
 		foreach ($file_path_array as $path)
@@ -1326,7 +1344,11 @@ class e_jsmanager
 				{
 					if($external !== 'css') $isExternal = true;
 				}
-				
+
+
+
+
+
 				            	
 				if('css' === $external)
 				{
@@ -1344,7 +1366,11 @@ class e_jsmanager
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
-					
+					elseif($this->isValidUrl($path) === false)
+					{
+						continue;
+					}
+
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 
@@ -1374,14 +1400,16 @@ class e_jsmanager
 						// don't render non CDN libs as external script calls when script consolidation is enabled
 						if($mod === 'core' || $mod === 'plugin' || $mod === 'theme')
 						{
-
-
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
+
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
 
-
+					if($isExternal === true && $this->isValidUrl($path) == false)
+					{
+						continue;
+					}
 
 					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
@@ -1402,11 +1430,33 @@ class e_jsmanager
 		}
 
 
-
 		return $lmodified;
 	}
 
 
+	/**
+	 * Check CDN Url is valid.
+	 * Experimental.
+	 * @param $url
+	 * @return resource
+	 */
+	private function isValidUrl($url)
+	{
+		return true;
+		/*
+
+
+		$connected = e107::getFile()->isValidURL($url);
+
+		if($connected == false)
+		{
+		//	echo "<br />Skipping: ".$url ." : ".$port;
+			e107::getDebug()->log("Couldn't reach ".$url);
+		}
+
+		return $connected;
+		*/
+	}
 
 
 	/**

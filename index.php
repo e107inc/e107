@@ -141,6 +141,7 @@
 					{
 						define('e_CURRENT_PLUGIN', $plug);
 						define('e_QUERY', $query); // do not add to e107_class.php
+						define('e_URL_LEGACY', $redirect);
 						include_once($file);
 						exit;
 					}

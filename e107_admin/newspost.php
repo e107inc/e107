@@ -148,7 +148,7 @@ class news_cat_ui extends e_admin_ui
 		//	$this->newspost->show_categories();
 	//	}
 		
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			if(empty($new_data['category_sef']))
 			{
@@ -260,7 +260,7 @@ class news_sub_ui extends e_admin_ui
 		//	$this->newspost->show_categories();
 	//	}
 		
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 	
 		}
@@ -477,7 +477,7 @@ class news_admin_ui extends e_admin_ui
 		//'5' =>  LAN_NEWS_75
 	);
 
-	public function beforeCreate($new_data)
+	public function beforeCreate($new_data, $old_data)
 	{
 		if(!empty($new_data['news_thumbnail']) && !empty($_GET['sub'])) // From SubmitNews.
 		{
@@ -661,7 +661,7 @@ class news_admin_ui extends e_admin_ui
 
 
 
-	public function afterDelete()
+	public function afterDelete($deleted_data, $id, $deleted_check)
 	{
 		$this->clearCache();
 	}

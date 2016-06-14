@@ -43,9 +43,9 @@ class ecache {
 	/**
 	 * Set the MD5 Hash
 	 */
-	public function setMD5($text)
+	public function setMD5($text, $hash=true)
 	{
-		$this->CachePageMD5 = md5($text);
+		$this->CachePageMD5 = ($hash === true) ? md5($text) : $text;
 		return $this;
 	}
 

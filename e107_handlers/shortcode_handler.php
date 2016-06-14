@@ -99,6 +99,7 @@ class e_parse_shortcode
 	protected $wrapperDebugDone     = array();  // Flag to avoid repetition of debug info.
 	protected $sc_style             = array();  // Former $sc_style global variable. Internally used - performance reasons
 	protected $editableCodes        = array(); // Array of editable shortcode data.
+	protected $editableActive       = false;
 
 	function __construct()
 	{
@@ -110,6 +111,13 @@ class e_parse_shortcode
 		$this->loadPluginShortcodes();
 		$this->loadPluginSCFiles();
 		//$this->loadCoreShortcodes(); DEPRECATED
+
+		$editableActivePref = e107::getPref('inline_editing',255);
+
+		if(check_class($editableActivePref))
+		{
+			$this->editableActive = true;
+		}
 
 	}
 
@@ -1420,6 +1428,12 @@ class e_parse_shortcode
 	 */
 	private function makeEditable($text, $code)
 	{
+		if($this->editableActive === false)
+		{
+			return $text; // unchanged.
+		}
+
+
 		$lcode = strtolower($code);
 
 		if(empty($code)

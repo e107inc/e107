@@ -74,7 +74,7 @@ $(document).ready(function()
 			var pos = $(this).attr('data-placement'); 
 			if(!pos)
 			{
-				pos = 'top';	
+				pos = 'top';
 			}
 			
 			$(this).tooltip({opacity:1.0,fade:true, placement: pos});
@@ -365,12 +365,12 @@ $(document).ready(function()
 						
 			var t = $(this).nextAll(".field-help");
 
-			var placement = 'top';
+			var placement = 'bottom';
 			
-		/*	if($(this).is("textarea"))
+			if($(this).is("textarea"))
 			{
 				var placement = 'top';	
-			}*/
+			}
 
             var custplace = $(t).attr('data-placement'); // ie top|left|bottom|right
 

@@ -12,7 +12,7 @@
  * $Id$
  */
 
-// DEPRECATED - SUBJECT TO REMOVAL
+/* @DEPRECATED - SUBJECT TO REMOVAL */
 // Possible replacements: $frm->userpicker();
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");

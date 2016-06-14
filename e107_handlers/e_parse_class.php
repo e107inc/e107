@@ -3506,6 +3506,7 @@ class e_parser
 		
 		if(!isset($userData['user_image']) && USERID)
 		{
+			$userData = array();
 			$userData['user_id']    = USERID;
 			$userData['user_image']	= USERIMAGE;
 			$userData['user_name']	= USERNAME; 

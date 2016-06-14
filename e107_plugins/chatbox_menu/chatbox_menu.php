@@ -279,7 +279,11 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	{
 		$pref['cb_mod'] = e_UC_ADMIN;
 	}
-	define("CB_MOD", check_class($pref['cb_mod']));
+
+	if(!defined('CB_MOD'))
+	{
+		define("CB_MOD", check_class($pref['cb_mod']));
+	}
 
 	$qry = "
 	SELECT c.*, u.user_name, u.user_image FROM #chatbox AS c

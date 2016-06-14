@@ -1,13 +1,14 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<e107Export version="2.1.2 (git)" timestamp="1464646050" >
+<e107Export version="2.1.2 (git)" timestamp="1465161865" >
 	<prefs>
 		<core name="fb_active">1</core>
 		<core name="frontpage"><![CDATA[array (
   0 => 'news.php',
 )]]></core>
+
 		<core name="newsposts">3</core>
 		<core name="shortdate">%d %b %Y</core>
-		<core name="sitelogo">{e_THEME}voux/install/logo2B252832529.png</core>
+		<core name="signup_option_class">1</core>
 		<core name="sitetheme_custompages"><![CDATA[array (
   'jumbotron_full' => 
   array (
@@ -162,6 +163,7 @@
   ),
 )]]></core>
 		<core name="url_main_module">page</core>
+		<core name="use_coppa">0</core>
 		<core name="xurl"><![CDATA[array (
   'facebook' => 'http://facebook.com/themexpose',
   'twitter' => '#',
@@ -493,7 +495,7 @@
 		<item>
 			<field name="link_id">11</field>
 			<field name="link_name">About</field>
-			<field name="link_url">about</field>
+			<field name="link_url">page.php?id=1</field>
 			<field name="link_description"></field>
 			<field name="link_button"></field>
 			<field name="link_category">1</field>
@@ -1282,5 +1284,19 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="menu_button_text"></field>
 		</item>
 	</dbTable>
+		<dbTable name="userclass_classes">
+			<item>
+				<field name="userclass_id">3</field>
+				<field name="userclass_name">NEWSLETTER</field>
+				<field name="userclass_description">Subscribe to Newsletter</field>
+				<field name="userclass_editclass">0</field>
+				<field name="userclass_parent">255</field>
+				<field name="userclass_accum">3</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+		</dbTable>
 	</database>
 </e107Export>

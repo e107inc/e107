@@ -29,7 +29,7 @@ e107::coreLan('date');
 
 e107::css('inline', "
 
- .label-status { width:100%; display:block; padding-bottom:5px; padding-top:5px }
+ .label-status, .label-password { width:100%; display:block; padding-bottom:5px; padding-top:5px }
 ");
 
 class users_admin extends e_admin_dispatcher
@@ -273,7 +273,7 @@ class users_admin_ui extends e_admin_ui
  		'user_loginname' 	=> array('title' => LAN_USER_02,	'tab'=>0, 'type' => 'text',	'data'=>'str', 'width' => 'auto'), // User name
  		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
  		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
- 		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'str', 'width' => 'auto'), //TODO add md5 option to form handler?
+ 		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
 		'user_sess' 		=> array('title' => 'Session',		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
@@ -367,9 +367,17 @@ class users_admin_ui extends e_admin_ui
 			}
 		}
 
+
+		if(empty($this->extended))
+		{
+			$this->tabs = false;
+		}
+
+
+
 		$this->fields['user_signature']['writeParms']['data'] = e107::getUserClass()->uc_required_class_list("classes");
 		
-		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto');
+		$this->fields['user_signature'] = array('title' => LAN_USER_09,	'type' => 'textarea', 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge'));
 		$this->fields['options'] = array('title'=> LAN_OPTIONS,	'type' => 'method',	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'left');
 
 				
@@ -477,7 +485,9 @@ class users_admin_ui extends e_admin_ui
 		}
 		else 
 		{
-			$new_data['user_password']	= md5($new_data['user_password']); //TODO add support for salted passwords etc. 
+
+			$new_data['user_password']	= e107::getUserSession()->HashPassword($new_data['user_password'], $new_data['user_login']);
+			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
 		
 		if(!empty($new_data['perms']))
@@ -504,13 +514,12 @@ class users_admin_ui extends e_admin_ui
 			$update['data'][$key] = vartrue($new_data['ue'][$key],'_NULL_');
 		}
 
-		e107::getUserExt()->addFieldTypes($update);
-
-
-		e107::getMessage()->addDebug(print_a($new_data,true));
+		e107::getMessage()->addDebug(print_a($update,true));
 
 		if(!empty($update))
 		{
+			e107::getUserExt()->addFieldTypes($update);
+
 			if(!e107::getDb()->count('user_extended', '(user_extended_id)', "user_extended_id=".intval($new_data['submit_value'])))
 			{
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
@@ -1378,8 +1387,11 @@ class users_admin_ui extends e_admin_ui
 		}
 
 
+
 		$user_data['user_password'] = $userMethods->HashPassword($savePassword, $user_data['user_login']);
 		$user_data['user_join'] = time();
+
+		e107::getMessage()->addDebug("Password Hash: ".$user_data['user_password']);
 		
 		if ($userMethods->needEmailPassword())
 		{
@@ -1434,8 +1446,8 @@ class users_admin_ui extends e_admin_ui
 						// activate and send password
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'mail_subject' => USRLAN_187.SITENAME,
-							'activation_url' => USRLAN_238,
+							'mail_subject' => USRLAN_187,
+							'activation_url' => USRLAN_246,
 						));
 					break;
 					
@@ -1447,7 +1459,7 @@ class users_admin_ui extends e_admin_ui
 							
 						$check = $sysuser->email('quickadd', array(
 							'user_password' => $savePassword, 
-							'mail_subject' => USRLAN_187.SITENAME,
+							'mail_subject' => USRLAN_187,
 							'activation_url' => SITEURL."signup.php?activate.".$sysuser->getId().".".$sysuser->getValue('sess'),
 						));
 					break;
@@ -2386,9 +2398,20 @@ class users_admin_form_ui extends e_admin_form_ui
 	{
 		if($mode == 'read')
 		{
-			if(empty($curVal))
+			if(empty($curval))
 			{
 				return "No password!";	
+			}
+
+			// if(getperms('0'))
+			{
+
+				$type = e107::getUserSession()->getHashType($curval, 'array');
+				$num = $type[0];
+
+				$styles= array(0=>'label-danger',1=>'label-warning', 3=>'label-success');
+
+				return "<span class='label label-password ".$styles[$num]."'>".$type[1]."</span>";
 			}
 		}
 		if($mode == 'write')

@@ -453,8 +453,8 @@ class wysiwyg
                 {title: 'Blocks', items: [
                     {title: 'Paragraph', block: 'p'},
                     {title: 'Blockquote', block: 'blockquote'},
+                    {title: 'Blockquote alt.', block: 'blockquote', classes: 'blockquote-alt blockquote__alternative'},
                     {title: 'Div', block: 'div'},
-
                     {title: 'Pre', block: 'pre'},
                     {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
                 ]},

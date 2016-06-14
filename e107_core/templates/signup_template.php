@@ -181,6 +181,12 @@ $sc_style['SIGNUP_PASSWORD2']['pre'] = "<tr>
 $sc_style['SIGNUP_PASSWORD2']['post'] = "</td>
 		</tr>";
 
+$sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['pre'] = "<tr>
+			<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_113."</td>
+			<td class='forumheader3' style='width:70%'>";
+$sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['post'] = "</td>
+		</tr>";
+
 
 if(!defined($COPPA_TEMPLATE))
 {

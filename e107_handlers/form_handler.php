@@ -848,14 +848,16 @@ class e_form
 			
 			$title = (vartrue($sc_parameters['help'])) ? "title='".$sc_parameters['help']."'" : "";
 			$width = vartrue($sc_parameters['w'], 120);
-			$height = vartrue($sc_parameters['h'], 100);
+			$height = vartrue($sc_parameters['h'], 0);
+
+
 
 			$ret = "<div class='imgselector-container e-tip' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
-			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $tp->thumbUrl($default_thumb, $att, true);
-			
-			
-			$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
+			$thpath = empty($default) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
+			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
+
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
@@ -964,139 +966,77 @@ class e_form
 	 */
 	function datepicker($name, $datestamp = false, $options = null)
 	{
-		
 		if(vartrue($options) && is_string($options))
 		{
-			parse_str($options,$options);	
-		} 
-		
-		$type		= varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
-		$dateFormat = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
-		$ampm		= (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';	
-		$value		= null;
-		$useUnix    = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
-				
+			parse_str($options,$options);
+		}
+
+		$type		 = varset($options['type']) ? trim($options['type']) : "date"; // OR  'datetime'
+		$dateFormat  = varset($options['format']) ? trim($options['format']) :e107::getPref('inputdate', '%Y-%m-%d');
+		$ampm		 = (preg_match("/%l|%I|%p|%P/",$dateFormat)) ? 'true' : 'false';
+		$value		 = null;
+		$hiddenValue = null;
+		$useUnix     = (isset($options['return']) && ($options['return'] === 'string')) ? 'false' : 'true';
+		$id          = $this->name2id($name);
+		$classes     = array('date' => 'e-date', 'datetime' => 'e-datetime');
+
 		if($type == 'datetime' && !varset($options['format']))
 		{
-			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');		
+			$dateFormat .= " ".e107::getPref('inputtime', '%H:%M:%S');
 		}
 
 		$dformat = e107::getDate()->toMask($dateFormat);
 
-		$id = $this->name2id($name);
-
-		$classes = array('date'	=> 'e-date', 'datetime'	=> 'e-datetime');
-
 		// If default value is set.
 		if ($datestamp)
 		{
-			// Create timestamp.
 			if(!is_numeric($datestamp))
 			{
 				$datestamp = strtotime($datestamp);
 			}
 
-			// Convert date to proper format.
-			$value = e107::getDate()->convert_date($datestamp, $dateFormat);
+			// Convert date to proper (selected) format.
+			$hiddenValue = $value = e107::getDate()->convert_date($datestamp, $dformat);
+
+			if ($useUnix === 'true')
+			{
+				$hiddenValue = $datestamp;
+			}
 		}
 
-		$text = "";
-	//	$text .= 'dformat='.$dformat.'  defdisp='.$dateFormat;
-		
 		$class 		= (isset($classes[$type])) ? $classes[$type] : "tbox e-date";
 		$size 		= vartrue($options['size']) ? intval($options['size']) : 40;
 		$required 	= vartrue($options['required']) ? "required" : "";
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
-		
+
+		$text = "";
+
 		if(vartrue($options['inline']))
 		{
-			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' ></div>
-				<input  type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}'  data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />
-			";
+			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}'></div>";
+			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />";
 		}
 		else
-		{			
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}'  id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}'  data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
-			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$datestamp}' />";
+		{
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
+			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
+			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
 
-	//	$text .= "ValueFormat: ".$dateFormat."  Value: ".$value;
-	//	$text .= " ({$dformat}) type:".$dateFormat." ".$value;
-
 		// Load it in the footer.
-		e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
-
-		e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+		// FIXME use Library Manager (e107::library()) instead?
+		e107::css('core', 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
+		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.init.js', 'jquery', 2);
 
 		if(e_LANGUAGE !== 'English')
 		{
 			e107::js('footer-inline', e107::getDate()->buildDateLocale());
 		}
 
-		e107::js('footer-inline', '
-			$("input.e-date").each(function() {
-        		$(this).datetimepicker({
-        			minView: "month",
-        			maxView: "decade",
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			language: $(this).attr("data-date-language")
-        		 }).on("changeDate", function(ev){
-
-					var useUnix = $(this).attr("data-date-unix");
-					var newValue = "";
-
-					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
-
-					if(useUnix === "true")
-					{
-						newValue = parseInt(ev.date.getTime() / 1000);
-					}
-					else
-					{
-						newValue = $("#"+ ev.target.id).val();
-					}
-
-			        $(newTarget).val(newValue);
-
-				})
-    		});
-
-    		$("input.e-datetime").each(function() {
-        		$(this).datetimepicker({
-        			autoclose: true,
-        			format: $(this).attr("data-date-format"),
-        			weekStart: $(this).attr("data-date-firstday"),
-        			showMeridian: $(this).attr("data-date-ampm"),
-        			language: $(this).attr("data-date-language")
-        		 }).on("changeDate", function(ev){
-
-					var useUnix = $(this).attr("data-date-unix");
-					var newValue = "";
-
-					var newTarget = "#"+ ev.target.id.replace("e-datepicker-","");
-
-					if(useUnix === "true")
-					{
-						newValue = parseInt(ev.date.getTime() / 1000);
-					}
-					else
-					{
-						newValue = $("#"+ ev.target.id).val();
-					}
-
-			        $(newTarget).val(newValue);
-
-				})
-    		});
-    		');
-
 		return $text;
-
-
 	}
 
 
@@ -3861,7 +3801,7 @@ class e_form
 						// copy url config
 						if(!$model->getUrl()) $model->setUrl($this->getController()->getUrl());
 						// assemble the url
-                    	$link = $model->url();
+                    	$link = $model->url(null);
                     }
                     elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url. 
                     {
@@ -4824,15 +4764,19 @@ class e_form
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
-				if((empty($value) && !empty($parms['currentInit']) && !isset($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
+				if((empty($value) || !empty($parms['currentInit']) && empty($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
 				{
-					$value = USERID;
+					$value = array('user_id'=>USERID, 'user_name'=>USERNAME);
 					if(vartrue($parms['current']))
 					{
 						$parms['__options']['readonly'] = true;
 					}
 
 				}
+
+
+
+
 
 		//		if(!is_array($value))
 		//		{

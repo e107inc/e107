@@ -320,7 +320,9 @@ class cpage_shortcodes extends e_shortcode
 
 		$dimensions = $tp->thumbDimensions();
 
-		return "<img class='img-responsive img-rounded' src='".$img."' alt='' ".$dimensions." />";
+		$class = vartrue($parm['class'],'img-responsive img-rounded');
+
+		return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
 	}
 	
 	function sc_cmenuicon($parm='')
