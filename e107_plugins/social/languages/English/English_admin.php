@@ -21,7 +21,7 @@ define("LAN_SOCIAL_ADMIN_10", "Get a key from the provider");
 define("LAN_SOCIAL_ADMIN_11", "Your");
 define("LAN_SOCIAL_ADMIN_12", "page");
 define("LAN_SOCIAL_ADMIN_13", "Used by some themes to provide a link to your ");
-define("LAN_SOCIAL_ADMIN_14", "Sharing");
+define("LAN_SOCIAL_ADMIN_14", "Share Buttons");
 define("LAN_SOCIAL_ADMIN_15", "Facebook Comments");
 define("LAN_SOCIAL_ADMIN_16", "Facebook Menu");
 define("LAN_SOCIAL_ADMIN_17", "Twitter Menu");

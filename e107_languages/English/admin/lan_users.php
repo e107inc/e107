@@ -263,11 +263,12 @@ define("USRLAN_242", "Require Activation, Notify (password and activation link)"
 define("USRLAN_243", "Set Permissions");
 define("USRLAN_244", "Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)");
 define("USRLAN_245", "Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin");
-define("USRLAN_246", "Us");
+define("USRLAN_246", "(Not required)");
 define("USRLAN_247", "Us");
 define("USRLAN_248", "Us");
 define("USRLAN_249", "Us");
 define("USRLAN_250", "Us");
+
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");

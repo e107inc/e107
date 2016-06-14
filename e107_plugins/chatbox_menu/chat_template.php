@@ -3,13 +3,17 @@
 if (!defined('e107_INIT')) { exit; }
 
 // ##### CHAT TABLE -----------------------------------------------------------------------------
-if(!$CHAT_TABLE_START){
+
+
+if(empty($CHAT_TABLE_START))
+{
 		$CHAT_TABLE_START = "
 		<br /><table class='table table-striped' style='width:100%'>";
 }
-if(!$CHAT_TABLE)
+
+if(empty($CHAT_TABLE))
 {
-//TODO review bullet
+		//TODO review bullet
 		$CHAT_TABLE = "<tr><td>
 		<div class='spacer'>
 			<div class='{CHAT_TABLE_FLAG}'>
@@ -20,11 +24,13 @@ if(!$CHAT_TABLE)
 		</div></td></tr>";
 
 }
-if(!$CHAT_TABLE_END){
+
+
+
+if(empty($CHAT_TABLE_END))
+{
 		$CHAT_TABLE_END = "
 		</table>";
 }
-// ##### ------------------------------------------------------------------------------------------
 
 
-?>

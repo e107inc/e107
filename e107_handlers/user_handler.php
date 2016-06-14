@@ -2,14 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2011 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Handler - user-related functions
- *
- * $URL$
- * $Id$
  *
 */
 
@@ -18,11 +15,9 @@
  *
  *	@package     e107
  *	@subpackage	e107_handlers
- *	@version 	$Id$;
  *
  *	USER HANDLER CLASS - manages login and various user functions
  *
- *	@todo - consider vetting of user_xup (if we keep it)
  */
 
 
@@ -40,11 +35,12 @@ define('USER_TEMPORARY_ACCOUNT', 5);
 
 define('PASSWORD_E107_MD5',0);
 define('PASSWORD_E107_SALT',1);
+define('PASSWORD_E107_PHP', 3); // PHP Default - Using the bcrypt algorithm (default as of PHP 5.5.0).
 
 define('PASSWORD_E107_ID','$E$');			// E107 salted
 
 
-define('PASSWORD_INVALID', FALSE);
+define('PASSWORD_INVALID', false);
 define('PASSWORD_VALID',TRUE);
 define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_MD5);
 //define ('PASSWORD_DEFAULT_TYPE',PASSWORD_E107_SALT);
@@ -57,14 +53,21 @@ class UserHandler
 	var $userVettingInfo = array();
 	var $preferred = PASSWORD_DEFAULT_TYPE;			// Preferred password format
 	var $passwordOpts = 0;							// Copy of pref
-	var $passwordEmail = FALSE;						// True if can use email address to log in
+	var $passwordEmail = false;						// True if can use email address to log in
 	var $otherFields = array();
+	private $passwordAPI = false;
 
 	// Constructor
 	public function __construct()
 	{
 		$pref = e107::getPref();
 		e107::lan('core','user');
+
+		if(function_exists('password_verify'))
+		{
+			$this->passwordAPI = true;
+		}
+
 /**
 	Table of vetting methods for user data - lists every field whose value could be set manually.
 	Valid 'vetMethod' values (use comma separated list for multiple vetting):
@@ -102,7 +105,7 @@ class UserHandler
 		'user_class' => array('niceName'=> LAN_USER_12, 'fieldType' => 'string', 'vetMethod' => '0', 'vetParam' => '', 'srcName' => 'class', 'dataType' => '1')
 	);
 
-		$this->otherFields = array(
+	$this->otherFields = array(
 			'user_join'			=> LAN_USER_14,
 			'user_lastvisit'	=> LAN_USER_15,
 			'user_currentvisit'	=> LAN_USER_16,
@@ -116,7 +119,8 @@ class UserHandler
 			'user_pwchange'		=> LAN_USER_24
 //			user_chats int(10) unsigned NOT NULL default '0',
 			);
-		$this->otherFieldTypes = array(
+
+	$this->otherFieldTypes = array(
 			'user_join'			=> 'int',
 			'user_lastvisit'	=> 'int',
 			'user_currentvisit'	=> 'int',
@@ -130,21 +134,28 @@ class UserHandler
 			'user_pwchange'		=> 'int'
 			);
 
-	  $this->passwordOpts = varset($pref['passwordEncoding'],0);
-	  $this->passwordEmail = varset($pref['allowEmailLogin'],FALSE);
-	  switch ($this->passwordOpts)
-	  {
-	    case 1 :
-		case 2 :
-		  $this->preferred = PASSWORD_E107_SALT;
-		  break;
-		case 0 :
-		default :
-		  $this->preferred = PASSWORD_E107_MD5;
-		  $this->passwordOpts = 0;		// In case it got set to some stupid value
-		  break;
-	  }
-	  return FALSE;
+	  $this->passwordOpts = varset($pref['passwordEncoding'], 0);
+	  $this->passwordEmail = varset($pref['allowEmailLogin'], false);
+
+		switch ($this->passwordOpts)
+		{
+			case 3 :
+				$this->preferred = PASSWORD_E107_PHP;
+		        break;
+
+			case 1 :
+			case 2 :
+				$this->preferred = PASSWORD_E107_SALT;
+			break;
+
+			case 0 :
+			default :
+				$this->preferred = PASSWORD_E107_MD5;
+				$this->passwordOpts = 0;		// In case it got set to some stupid value
+			break;
+		}
+
+		return false;
 	}
 
 
@@ -153,23 +164,38 @@ class UserHandler
 	 *
 	 *	@param string $password - plaintext password as entered by user
 	 *	@param string $login_name - string used to log in (could actually be email address)
-	 *	@param empty|PASSWORD_E107_MD5|PASSWORD_E107_SALT $force - if non-empty, forces a particular type of password
+	 *	@param string $force empty| PASSWORD_E107_MD 5| PASSWORD_E107_SALT | PASSWORD_E107_PHP $force - if non-empty, forces a particular type of password
 	 *
-	 *	@return string|boolean - FALSE if invalid emcoding method, else encoded password to store in DB
+	 *	@return string|boolean - false if invalid emcoding method, else encoded password to store in DB
 	 */
-	public function HashPassword($password, $login_name='', $force='')
+	public function HashPassword($password, $login_name='', $force=false)
 	{
-	  if ($force == '') $force = $this->preferred;
-	  switch ($force)
-	  {
-		case PASSWORD_E107_MD5 :
-		  return md5($password);
+		if($force === false)
+		{
+			$force = $this->preferred;
+		}
 
-		case PASSWORD_E107_SALT :
-		  return PASSWORD_E107_ID.md5(md5($password).$login_name);
-		  break;
-	  }
-	  return FALSE;
+		if(($force == PASSWORD_E107_PHP) && $this->passwordAPI === false)
+		{
+			$force = PASSWORD_E107_SALT; // fallback.
+		}
+
+		switch ($force)
+		{
+			case PASSWORD_E107_MD5 :
+				return md5($password);
+
+			case PASSWORD_E107_SALT :
+		        return PASSWORD_E107_ID.md5(md5($password).$login_name);
+		        break;
+
+			case PASSWORD_E107_PHP :
+	            return password_hash($password, PASSWORD_DEFAULT);
+		        break;
+		}
+
+		return false;
+
 	}
 
 
@@ -180,31 +206,132 @@ class UserHandler
 	 *	@param string $login_name - string used to log in (could actually be email address)
 	 *	@param string $stored_hash - required value for password to match
 	 *
-	 *	@return PASSWORD_INVALID|PASSWORD_VALID|string
+	 *	@return string PASSWORD_INVALID|PASSWORD_VALID|string
 	 *		PASSWORD_INVALID if no match
 	 *		PASSWORD_VALID if valid password
 	 *		Return a new hash to store if valid password but non-preferred encoding
 	 */
 	public function CheckPassword($password, $login_name, $stored_hash)
 	{
-		if (strlen(trim($password)) == 0) return PASSWORD_INVALID;
-		if (($this->passwordOpts <= 1) && (strlen($stored_hash) == 32))
-		{	// Its simple md5 encoding
-			if (md5($password) !== $stored_hash) return PASSWORD_INVALID;
-			if ($this->preferred == PASSWORD_E107_MD5) return PASSWORD_VALID;
-			return $this->HashPassword($password);		// Valid password, but non-preferred encoding; return the new hash
+		$password = trim($password);
+
+		if(empty($password))
+		{
+			return PASSWORD_INVALID;
 		}
 
-		// Allow the salted password even if disabled - for those that do try to go back!
-		//  if (($this->passwordOpts >= 1) && (strlen($stored_hash) == 35) && (substr($stored_hash,0,3) == PASSWORD_E107_ID))
-		if ((strlen($stored_hash) == 35) && (substr($stored_hash,0,3) == PASSWORD_E107_ID))
-		{	// Its the standard E107 salted hash
-			$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
-			if ($hash === FALSE) return PASSWORD_INVALID;
-			return ($hash == $stored_hash) ? PASSWORD_VALID : PASSWORD_INVALID;
+		$type = $this->getHashType($stored_hash);
+
+		switch($type)
+		{
+			case PASSWORD_E107_MD5://  &&
+				if (md5($password) !== $stored_hash) return PASSWORD_INVALID;
+				if ($this->preferred == PASSWORD_E107_MD5 && ($this->passwordOpts <= 1)) return PASSWORD_VALID;
+				return $this->HashPassword($password);		// Valid password, but non-preferred encoding; return the new hash
+				break;
+
+			case PASSWORD_E107_SALT:
+				$hash = $this->HashPassword($password, $login_name, PASSWORD_E107_SALT);
+				if ($hash === false) return PASSWORD_INVALID;
+				return ($hash == $stored_hash) ? PASSWORD_VALID : PASSWORD_INVALID;
+				break;
+
+			case PASSWORD_E107_PHP: // PHP 5.5+ Blowfish+
+				if($this->passwordAPI === true && password_verify($password,$stored_hash))
+				{
+					return PASSWORD_VALID;
+				}
+				break;
+
 		}
+
 		return PASSWORD_INVALID;
 	}
+
+
+	/**
+	 * If necessary, rehash the user password to the currently set algorythm.
+	 * @param array $user - user fields. required: user_id, user_loginname, user_password
+	 * @param string $password - plain text password.
+	 * @return bool|int
+	 */
+	public function rehashPassword($user, $password)
+	{
+		$type = $this->getHashType($user['user_password']);
+
+		if($type == $this->preferred || empty($user['user_id']) || empty($user['user_password']) || empty($user['user_loginname']))
+		{
+			return false;
+		}
+
+		$sql = e107::getDb();
+		$update = array(
+
+			'data' => array(
+				'user_password' => $this->HashPassword($password, $user['user_loginname']),
+
+			),
+			'WHERE' => "user_id = ".intval($user['user_id'])." LIMIT 1",
+			'_FIELD_TYPES' => array('user_password' => 'safestr'),
+
+		);
+
+
+
+
+		return $sql->update('user', $update);
+
+	}
+
+
+
+	/**
+	 * Detect Password Hash Algorythm type
+	 * @param string $hash - Password hash to analyse
+	 * @param string $mode - (optional) set to 'text' for a plain-text description.
+	 * @return bool|int
+	 */
+	public function getHashType($hash, $mode='constant')
+	{
+		if(empty($hash))
+		{
+			return false;
+		}
+
+		$num = false;
+		$name = '';
+
+		if((strlen($hash) === 32))
+		{
+			$num = PASSWORD_E107_MD5;
+			$name = 'md5';
+		}
+		elseif ((strlen($hash) === 35) && (substr($hash,0,3) == PASSWORD_E107_ID))
+		{
+			$num = PASSWORD_E107_SALT;
+			$name = 'md5-salt';
+		}
+		elseif($this->passwordAPI)
+		{
+			$info = password_get_info($hash);
+			if(!empty($info['algo']))
+			{
+				$num = PASSWORD_E107_PHP;
+				$name = $info['algoName'];
+			}
+		}
+
+		if($mode == 'array' && !empty($name))
+		{
+			return array($num,$name);
+		}
+
+		return $num;
+
+
+
+	}
+
 
 
 	/**
@@ -213,23 +340,30 @@ class UserHandler
 	 * @param string $loginName (optional)
 	 * @return bool|string rawPassword
 	 */
-	public function resetPassword($uid, $loginName='')
+	public function resetPassword($uid, $loginName='', $options=array())
 	{
 		if(empty($uid))
 		{
 			return false;
 		}
 
-		$rawPassword    = $this->generateRandomString('********');
-	//	$sessKey        = e_user_model::randomKey();
+		$rawPassword    = $this->generateRandomString(str_repeat('*', rand(8, 12)));
+		$hash           = $this->HashPassword($rawPassword, $loginName);
 
 		$updateQry = array(
-			'user_password' => $this->HashPassword($rawPassword, $loginName),
-			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1"
+			'data'          => array( 'user_password' => $hash ),
+			'WHERE'         => 'user_id = '.intval($uid)." LIMIT 1",
+			'_FIELD_TYPES'  => array( 'user_password' => 'safestr' 	)
 		);
 
 		if(e107::getDb()->update('user', $updateQry))
 		{
+			if(!empty($options['return']) && $options['return'] == 'array')
+			{
+				return array('password'=>$rawPassword, 'hash'=>$hash);
+			}
+
+
 			return $rawPassword;
 		}
 		else
@@ -261,7 +395,7 @@ class UserHandler
 		if (strlen($stored_hash) == 32)
 		{	// Its simple md5 password storage
 			$stored_hash = PASSWORD_E107_ID.md5($stored_hash.$login_name);			// Convert to the salted format always used by CHAP
-			if ($this->passwordOpts != PASSWORD_E107_MD5) $valid_ret = $stored_response;
+			if ($this->passwordOpts != PASSWORD_E107_MD5) $valid_ret = $stored_hash;
 		}
 		$testval = md5(substr($stored_hash,strlen(PASSWORD_E107_ID)).$challenge);
 		if ($testval == $response) return $valid_ret;
@@ -276,11 +410,11 @@ class UserHandler
 	 *
 	 *	@param string $fieldName - name of field being changed
 	 *
-	 *	@return bool TRUE if change required, FALSE otherwise
+	 *	@return bool TRUE if change required, false otherwise
 	 */
 	public function isPasswordRequired($fieldName)
 	{
-		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
+		if ($this->preferred == PASSWORD_E107_MD5) return false;
 		switch ($fieldName)
 		{
 			case 'user_email' :
@@ -288,7 +422,7 @@ class UserHandler
 			case 'user_loginname' :
 				return TRUE;
 		}
-		return FALSE;
+		return false;
 	}
 
 
@@ -300,9 +434,9 @@ class UserHandler
 	 */
 	public function needEmailPassword()
 	{
-		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
+		if ($this->preferred == PASSWORD_E107_MD5) return false;
 		if ($this->passwordEmail) return TRUE;
-		return FALSE;
+		return false;
 	}
 
 
@@ -311,13 +445,13 @@ class UserHandler
 	 *	Checks whether the password value can be converted to the current default
 	 *
 	 *	@param string $password - hashed password
-	 *	@return bool TRUE if conversion possible, FALSE if not possible, or not needed.
+	 *	@return bool TRUE if conversion possible, false if not possible, or not needed.
 	 */
 	public function canConvert($password)
 	{
-		if ($this->preferred == PASSWORD_E107_MD5) return FALSE;
+		if ($this->preferred == PASSWORD_E107_MD5) return false;
 		if (strlen($password) == 32) return TRUE;		// Can convert from md5 to salted
-		return FALSE;
+		return false;
 	}
 
 
@@ -332,7 +466,7 @@ class UserHandler
 	 */
 	public function ConvertPassword($password, $login_name)
 	{
-		if ($this->canConvert($password) === FALSE) return $password;
+		if ($this->canConvert($password) === false) return $password;
 		return PASSWORD_E107_ID.md5($password.$login_name);
 	}
 
@@ -448,7 +582,7 @@ class UserHandler
 
 				// (else just ignore other characters in pattern)
 				default :
-					if (strrpos($alphaNum, $c) !== FALSE)
+					if (strrpos($alphaNum, $c) !== false)
 					{
 						$newname .= $c;
 					}
@@ -474,8 +608,8 @@ class UserHandler
 
 		$tp = e107::getParser();
 		$tmp = strtolower($tp -> toDB(trim(substr($email, strrpos($email, "@")+1))));	// Pull out the domain name
-		if ($tmp == '') return FALSE;
-		if (strpos($tmp,'.') === FALSE) return FALSE;
+		if ($tmp == '') return false;
+		if (strpos($tmp,'.') === false) return false;
 		$em = array_reverse(explode('.',$tmp));
 		$line = '';
 		$out = array($fieldname."='*@{$tmp}'");		// First element looks for domain as email address
@@ -498,7 +632,7 @@ class UserHandler
 	 *
 	 *	@return void
 	 */
-	public function makeUserCookie($lode,$autologin = FALSE)
+	public function makeUserCookie($lode,$autologin = false)
 	{
 		$cookieval = $lode['user_id'].'.'.md5($lode['user_password']);		// (Use extra md5 on cookie value to obscure hashed value for password)
 		if (e107::getPref('user_tracking') == 'session')
@@ -533,7 +667,7 @@ class UserHandler
 	 *
 	 *	@return array|string of userclass information according to $asArray
 	 */
-	public function addCommonClasses($userData, $asArray = FALSE, $incInherited = FALSE, $fromAdmin = FALSE)
+	public function addCommonClasses($userData, $asArray = false, $incInherited = false, $fromAdmin = false)
 	{
 		if ($incInherited)
 		{
@@ -568,7 +702,7 @@ class UserHandler
 	 * @param bool $all if false, just returns modifiable fields. Else returns all
 	 * @return array - key is field name, value is 'nice name' (descriptive name)
 	 */
-	public function getNiceNames($all = FALSE)
+	public function getNiceNames($all = false)
 	{
 //		$ret = array('user_id' => LAN_USER_13);
 		foreach ($this->userVettingInfo as $k => $v)
@@ -633,7 +767,7 @@ Following fields auto-filled in code as required:
 	 *
 	 *	@param array $targetData - user data generated from earlier vetting stages - only the data in $targetData['data'] is checked
 	 *
-	 *	@return bool TRUE if nothing updated; FALSE if errors found
+	 *	@return bool TRUE if nothing updated; false if errors found
 	 */
 	public function userValidation(&$targetData)
 	{
@@ -662,7 +796,7 @@ Following fields auto-filled in code as required:
 			{	// See if email address banned
 				$wc = e107::getIPHandler()->makeEmailQuery($v);		// Generate the query for the ban list
 				if ($wc) { $wc = "`banlist_ip`='{$v}' OR ".$wc;  }
-				if (($wc === FALSE) || !e107::getIPHandler()->checkBan($wc, FALSE, TRUE))
+				if (($wc === false) || !e107::getIPHandler()->checkBan($wc, false, TRUE))
 				{
 //					echo "Email banned<br />";
 					$errMsg = ERR_BANNED_EMAIL;
@@ -684,7 +818,7 @@ Following fields auto-filled in code as required:
 		{	// Update the error
 			$targetData['errors']['user_email'] = $errMsg;
 			$targetData['failed']['user_email'] = $v;
-			$ret = FALSE;
+			$ret = false;
 		}
 		return $ret;
 	}
@@ -697,7 +831,7 @@ Following fields auto-filled in code as required:
 	 *
 	 *	@param array $userInfo - user data destined for the database
 	 *
-	 *	@return bool TRUE if additions made, FALSE if no change.
+	 *	@return bool TRUE if additions made, false if no change.
 	 *
 	 *	@todo - may be unnecessary with auto-generation of _NOTNULL array in db handler
 	 */
@@ -705,7 +839,7 @@ Following fields auto-filled in code as required:
 	{
 //		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '');
 		$nonDefaulted = array('user_signature' => '', 'user_prefs' => '', 'user_class' => '', 'user_perms' => '', 'user_realm' => '');	// Delete when McFly finished
-		$ret = FALSE;
+		$ret = false;
 		foreach ($nonDefaulted as $k => $v)
 		{
 			if (!isset($userInfo[$k]))
@@ -725,7 +859,7 @@ Following fields auto-filled in code as required:
 	 *
 	 *	@return int number of user records deleted
 	 */
-	public function deleteExpired($force = FALSE)
+	public function deleteExpired($force = false)
 	{
 		$pref = e107::getPref();
 		$sql = e107::getDb();
@@ -828,13 +962,13 @@ Following fields auto-filled in code as required:
 	 * @param integer $uid - internal user ID, zero if not known
 	 * @param string $emailAddress - email address (optional)
 	 *
-	 * @return boolean | string - FALSE if user found, error message if not
+	 * @return boolean | string - false if user found, error message if not
 	 */
 	public function userStatusUpdate($action, $uid, $emailAddress = '')
 	{
 		$db = e107::getDb('user');
 		$qry = '';
-		$error = FALSE;				// Assume no error to start with
+		$error = false;				// Assume no error to start with
 		$uid = intval($uid);		// Precautionary - should have already been done
 		switch ($action)
 		{
@@ -859,7 +993,7 @@ Following fields auto-filled in code as required:
 		}
 		if ($uid) { $qry = '`user_id`='.$uid; }
 		if ($emailAddress) { if ($qry) $qry .= ' OR '; $qry .= "`user_email` = '{$emailAddress}'"; }
-		if (FALSE === $db->select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
+		if (false === $db->select('user', 'user_id, user_email, user_ban, user_loginname', $qry.' LIMIT 1'))
 		{
 			$error = 'User not found: '.$uid.'/'.$emailAddress;
 		}
@@ -1106,7 +1240,7 @@ class e_user_provider
 			$userdata['user_lastvisit'] = 0;
 			$userdata['user_currentvisit'] = 0;
 			$userdata['user_comments'] = 0;
-			$userdata['user_ip'] = e107::getIPHandler()->getIP(FALSE);
+			$userdata['user_ip'] = e107::getIPHandler()->getIP(false);
 			$userdata['user_ban'] = USER_VALIDATED;
 			$userdata['user_prefs'] = '';
 			$userdata['user_visits'] = 0;
@@ -1366,7 +1500,7 @@ class e_userperms
 			if($plg->parse_plugin($row2['plugin_path']))
 			{
 				$plug_vars = $plg->plug_vars;
-				$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs'));
+				$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], false, 'RAWTEXT,defs'));
 				$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon($row2['plugin_path'],16);
 				$this->plugin_perms[("P".$row2['plugin_id'])][2] = $plg->getIcon($row2['plugin_path'],32);
 			}
@@ -1377,7 +1511,7 @@ class e_userperms
 	//	$sql->db_Select("plugin", "*", "plugin_installflag='1'");
 	//	while ($row2 = $sql->db_Fetch())
 	//	{
-	//		$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], FALSE, 'RAWTEXT,defs'));
+	//		$this->plugin_perms[("P".$row2['plugin_id'])] = array($tp->toHTML($row2['plugin_name'], false, 'RAWTEXT,defs'));
 		//	$this->plugin_perms[("P".$row2['plugin_id'])][1] = $plg->getIcon('forum')
 	//	}
 

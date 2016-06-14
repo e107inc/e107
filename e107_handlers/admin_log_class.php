@@ -415,13 +415,31 @@ class e_admin_log
 
 		$time_usec = $time_usec * 1000000;
 
+		if(!is_numeric($event_type))
+		{
+			$title = "User Audit Event-Type Failure: ";
+			$title .= (string) $event_type;
+			$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
+			$debug[0] = e_REQUEST_URI;
+
+			$this->e_log_event(4, $debug[1]['file']."|".$debug[1]['function']."@".$debug[1]['line'], "USERAUDIT", $title, $debug, FALSE);
+			return false;
+		}
+
 		// See whether we should log this
 		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
 		
 		if (!isset($user_logging_opts[$event_type]))  // Finished if not set to log this event type
 		{
-			return;
+			return false;
 		}
+
+		if(empty($event_data))
+		{
+			$backt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
+			$event_data = $backt;
+		}
+
 
 		if($this->rldb == null)
 		{
@@ -475,6 +493,7 @@ class e_admin_log
 
 		$this->rldb->insert("audit_log", $insertQry);
 
+		return true;
 		// $this->rldb->insert("audit_log", "0, ".intval($time_sec).', '.intval($time_usec).", '{$eventcode}', {$userid}, '{$userstring}', '{$userIP}', '{$title}', '{$detail}' ");
 	}
 

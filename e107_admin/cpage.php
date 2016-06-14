@@ -211,7 +211,7 @@ class page_chapters_ui extends e_admin_ui
 		}
 		
 		
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			if(empty($new_data['chapter_sef']))
 			{
@@ -576,6 +576,14 @@ class page_admin_ui extends e_admin_ui
 	
 				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');
 
+
+				if(e_DEBUG)
+				{
+					$this->fields['menu_name']['inline'] = true;
+				}
+
+
+
                 ### Parse aliases again or all filters shall fail due to the menu hack!
                 $this->_alias_parsed = false;
                 $this->parseAliases();
@@ -717,7 +725,7 @@ class page_admin_ui extends e_admin_ui
 			return $newdata;	
 		}
 		
-		function beforeUpdate($newdata,$olddata)
+		function beforeUpdate($newdata,$olddata, $id)
 		{
 			if(isset($newdata['menu_name']))
 			{

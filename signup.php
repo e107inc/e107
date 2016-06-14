@@ -636,6 +636,14 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			$_POST['password2'] = $_POST['password1'];
 		}
 
+		// posted class subscription - check it's only from the public classes.
+		if(!empty($_POST['class']))
+		{
+			$publicClasses = e107::getUserClass()->get_editable_classes(e_UC_PUBLIC, true);
+			$_POST['class'] = array_intersect($publicClasses, $_POST['class']);
+			unset($publicClasses);
+		}
+
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
 		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
@@ -815,7 +823,12 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		
 		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
 		//   so we put apropriate ones, otherwise - broken DB Insert
-		$allData['data']['user_class'] = '';
+
+		if(empty($allData['data']['user_class']))
+		{
+			$allData['data']['user_class'] = '';
+		}
+
 		$allData['data']['user_perms'] = '';
 		$allData['data']['user_prefs'] = '';
 		$allData['data']['user_realm'] = '';

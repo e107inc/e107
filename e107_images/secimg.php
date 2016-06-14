@@ -65,7 +65,7 @@ else
 	$color = "cccccc";		
 }
 
-
+ob_clean(); // Precaution - clearout utf-8 BOM or any other garbage in e107_config.php
 $sim->render($code,$color);
 
 exit;

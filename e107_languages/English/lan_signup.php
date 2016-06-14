@@ -152,5 +152,5 @@ define("LAN_SIGNUP_110", "Your full name");
 define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar.");
 define("LAN_SIGNUP_112", "You are currently logged in as Main Admin.");
 
+define("LAN_SIGNUP_113", "Subscription(s)");
 
-?>

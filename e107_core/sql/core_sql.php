@@ -526,7 +526,7 @@ CREATE TABLE user (
   user_name varchar(100) NOT NULL default '',
   user_loginname varchar(100) NOT NULL default '',
   user_customtitle varchar(100) NOT NULL default '',
-  user_password varchar(50) NOT NULL default '',
+  user_password varchar(255) NOT NULL default '',
   user_sess varchar(100) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,

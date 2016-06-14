@@ -1639,7 +1639,7 @@ class e_db_mysql
 
 	/**
 	* @return void
-	* @param unknown $mode
+	* @param bool $mode
 	* @desc Enter description here...
 	* @access private
 	*/

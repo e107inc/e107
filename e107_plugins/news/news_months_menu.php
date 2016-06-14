@@ -23,7 +23,7 @@ if(!empty($parm))
 	}
 
 }
-
+$cached = false;
 
 if(false === $cached)
 {
@@ -87,12 +87,12 @@ if(false === $cached)
 	$month_links = array();
 	
 	$sql->db_Mark_Time('News months menu');
-	if(!$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
+	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
 	{
 		e107::getCache()->set($cString, '');
 		return '';
 	}
-	while ($news = $sql->db_Fetch())
+	while ($news = $sql->fetch())
 	{	
 		$xmonth = date("n", $news['news_datestamp']);
 		if ((!isset($month_links[$xmonth]) || !$month_links[$xmonth]))
@@ -102,7 +102,10 @@ if(false === $cached)
 		}
 		$xmonth_cnt[$xmonth]++;
 	}
-	
+
+
+	e107::getDebug()->log($month_links);
+
 	// go over the link array and create the option fields
 	$menu_text = array();
 	$template = e107::getTemplate('news', 'news_menu', 'months');

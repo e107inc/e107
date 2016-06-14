@@ -925,7 +925,8 @@ class e_media
 		}
 		
 		$cache = e107::getCache();
-		$cache->setMD5('_'.$prefix.$type);
+		$cachTag = !empty($prefix) ? "glyphs_".$prefix : "glyphs";
+		$cache->setMD5($cachTag, false);
 		
 		if($data = $cache->retrieve($type,360,true))
 		{
