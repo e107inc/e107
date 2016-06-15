@@ -2111,8 +2111,9 @@ class e107forum
 
 		$forumTitle = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
 		
-		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
-		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
+//--		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
+//--		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
+		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread, $BREADCRUMB;
 
 		if(!$forumInfo && $thread) { $forumInfo = $thread->threadInfo; }
 
