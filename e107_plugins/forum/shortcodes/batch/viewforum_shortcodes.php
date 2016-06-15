@@ -574,7 +574,7 @@ class plugin_forum_viewforumthread_shortcodes extends plugin_forum_viewforum_sho
 	return "<span class='badge {$badge}'>".$this->sc_views."</span>";
 --*/
 	$badge = ($this->var['thread_views'] > 0) ? "badge-info" : "";
-	return deftrue('BOOTSTRAP')?"<span class='badge {$badge}'>".$this->sc_views."</span>":$this->sc_views;
+	return deftrue('BOOTSTRAP')?"<span class='badge {$badge}'>".$this->sc_views()."</span>":$this->sc_views();
   }
 
 	function sc_repliesx()
@@ -588,7 +588,7 @@ class plugin_forum_viewforumthread_shortcodes extends plugin_forum_viewforum_sho
 	return "<span class='badge {$badge}'>".$this->sc_replies."</span>";
 --*/
   $badge = ($this->var['thread_total_replies'] > 0) ? "badge-info" : "";
-	return deftrue('BOOTSTRAP')?"<span class='badge {$badge}'>".$this->sc_replies."</span>":$this->sc_replies;
+	return deftrue('BOOTSTRAP')?"<span class='badge {$badge}'>".$this->sc_replies()."</span>":$this->sc_replies();
   }
 
 //	function sc__wrapper_()	{	return 'forum_viewforum';}
@@ -782,13 +782,13 @@ $LASTPOSTUSER = $this->var['lastpost_username'];
 	function sc_pages()
 	{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-	return fpages($this->var, $this->sc_replies);
+	return fpages($this->var, $this->sc_replies());
   }
 
 	function sc_pagesx()
 	{
 //	$tVars['PAGESX'] = fpages($thread_info, $tVars['REPLIES']);
-	return $this->sc_pages;
+	return $this->sc_pages();
   }
 
 	function sc_admin_icons()
@@ -829,7 +829,7 @@ $LASTPOSTUSER = $this->var['lastpost_username'];
   }
   return '';
 --*/
-  return (!deftrue('BOOTSTRAP')?$this->sc_admin_icons:((MODERATOR)?fadminoptions($this->var):''));
+  return (!deftrue('BOOTSTRAP')?$this->sc_admin_icons():((MODERATOR)?fadminoptions($this->var):''));
   }
 
 	function sc_poster()
