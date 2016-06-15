@@ -860,7 +860,8 @@ function sc_forumjump()
 	global $forum;
 	$jumpList = $forum->forumGetAllowed();
 	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
-	foreach ($jumpList as $key => $val)
+//--	foreach ($jumpList as $key => $val)
+	foreach ($jumpList as $val)
 	{
 		$text .= "\n<option value='" . e107::url('forum','forum',$val) . "'>" . $val['forum_name'] . "</option>";
 	}

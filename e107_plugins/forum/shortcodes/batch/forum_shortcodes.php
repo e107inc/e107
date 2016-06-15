@@ -558,6 +558,7 @@ $gen = new convert;
     global $forum;
 
 		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
+/*--
 		if ($this->var['user_name'])
 		{
 
@@ -567,6 +568,8 @@ $gen = new convert;
 		{
 			$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
 		}
+--*/
+			$lastpost_name = ($this->var['user_name'])?"<a href='".$e107->url->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>":e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
 
 		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
 
