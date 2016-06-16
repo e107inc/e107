@@ -97,6 +97,7 @@ class admin_start
 		$this->checkFileTypes();
 		$this->checkSuspiciousFiles();
 		$this->checkDeprecated();
+		$this->checkPasswordEncryption();
 
 		if($this->refresh == true)
 		{
@@ -205,7 +206,20 @@ class admin_start
 	}
 
 
+	function checkPasswordEncryption()
+	{
+		$us = e107::getUserSession();
+		$mes = e107::getMessage();
 
+		if($us->passwordAPIExists() === true && $us->getDefaultHashType() !== PASSWORD_E107_PHP && e107::pref('core','password_CHAP')==0)
+		{
+			$message = "It is HIGHLY recommended that you [change your password encoding] to the PHP Default. (Password hashes will be automatically upgraded during user login.)";
+			$srch = array('[',']');
+			$repl = array("<a class='alert-link' href='".e_ADMIN."prefs.php#nav-core-prefs-security'>","</a>");
+			$mes->addWarning(str_replace($srch,$repl,$message));
+		}
+
+	}
 
 
 

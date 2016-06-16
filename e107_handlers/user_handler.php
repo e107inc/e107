@@ -160,6 +160,26 @@ class UserHandler
 
 
 	/**
+	 * Return the code for the current default password hash-type
+	 * @return int
+	 */
+	public function getDefaultHashType()
+	{
+		return $this->preferred;
+	}
+
+
+	/**
+	 * Returns true if PHP5.5+ password API is found, otherwise return false.
+	 * @return bool
+	 */
+	public function passwordAPIExists()
+	{
+		return $this->passwordAPI;
+	}
+
+
+	/**
 	 * 	Given plaintext password and login name, generate password string to store in DB
 	 *
 	 *	@param string $password - plaintext password as entered by user
@@ -250,10 +270,10 @@ class UserHandler
 
 
 	/**
-	 * If necessary, rehash the user password to the currently set algorythm.
+	 * If necessary, rehash the user password to the currently set algorythm and updated database. .
 	 * @param array $user - user fields. required: user_id, user_loginname, user_password
 	 * @param string $password - plain text password.
-	 * @return bool|int
+	 * @return bool|str returns new password hash on success or false.
 	 */
 	public function rehashPassword($user, $password)
 	{
@@ -265,10 +285,13 @@ class UserHandler
 		}
 
 		$sql = e107::getDb();
+
+		$newPasswordHash = $this->HashPassword($password, $user['user_loginname']);
+
 		$update = array(
 
 			'data' => array(
-				'user_password' => $this->HashPassword($password, $user['user_loginname']),
+				'user_password' => $newPasswordHash,
 
 			),
 			'WHERE' => "user_id = ".intval($user['user_id'])." LIMIT 1",
@@ -276,10 +299,12 @@ class UserHandler
 
 		);
 
+		if($sql->update('user', $update)!==false)
+		{
+			return $newPasswordHash;
+		}
 
-
-
-		return $sql->update('user', $update);
+		return false;
 
 	}
 
@@ -366,12 +391,9 @@ class UserHandler
 
 			return $rawPassword;
 		}
-		else
-		{
-			return false;
-		}
 
 
+		return false;
 
 	}
 
@@ -652,6 +674,10 @@ class UserHandler
 				$_COOKIE[e107::getPref('cookie_name')] = $cookieval; // make it available to the global scope before the page is reloaded
 			}
 		}
+
+
+	//	echo "Debug: making cookie: ".$cookieval ." from ".print_a($lode,true);
+	//	exit;
 	}
 
 
