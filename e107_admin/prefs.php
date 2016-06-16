@@ -1381,7 +1381,7 @@ $text .= "
 					
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
-						<td>
+
 							";
 
 						$pwdEncodeOpts = array();
@@ -1389,17 +1389,19 @@ $text .= "
 						if(function_exists('password_verify')) // ie. php 5.5 or higher
 						{
 							$pwdEncodeOpts[3]	 = "PHP Default (Preferred)";
+
 						}
 
 						$pwdEncodeOpts[1] = PRFLAN_190;
 						$pwdEncodeOpts[0] = PRFLAN_189;
 
+						$text .= (isset($pwdEncodeOpts[3]) && $pref['passwordEncoding']!=3) ? "<td class='has-warning'>" : "<td>";
 						$text .= $frm->select('passwordEncoding', $pwdEncodeOpts,  varset($pref['passwordEncoding'], 0));
 
 				//	$text .= $frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189);
 
 						$text .= "
-							<div class='smalltext field-help'>".PRFLAN_191."</div>
+							<div class='smalltext field-help'></div>
 						</td>
 					</tr>
 					<tr>";
