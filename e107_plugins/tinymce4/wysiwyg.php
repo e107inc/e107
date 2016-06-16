@@ -217,33 +217,40 @@ class wysiwyg
 
 	function tinymce_lang()
 	{
-		$lang = e_LANGUAGE; // 'English'; //Quick Fix e_LANGUAGE
+		$lang = e_LANGUAGE;
 		$tinylang = array(
-			"Arabic" 	=> "ar",
-			"Bulgarian"	=> "bg",
-			"Danish" 	=> "da",
-			"Dutch" 	=> "nl",
-			"English" 	=> "en",
-			"Persian" 	=> "fa",
-			"French" 	=> "fr",
-			"German"	=> "de",
-			"Greek" 	=> "el",
-			"Hebrew" 	=> " ",
-			"Hungarian" => "hu",
-			"Italian" 	=> "it",
-			"Japanese" 	=> "ja",
-			"Korean" 	=> "ko",
-			"Norwegian" => "nb",
-			"Polish" 	=> "pl",
-			"Russian" 	=> "ru",
-			"Slovak" 	=> "sk",
-			"Spanish" 	=> "es",
-			"Swedish" 	=> "sv"
+			"Arabic"    => "ar",
+			"Bulgarian" => "bg_BG",
+			"Danish"    => "da",
+			"Dutch"     => "nl",
+			"English"   => "en",
+			"Persian"   => "fa",
+			"French"    => "fr_FR",
+			"German"    => "de",
+			"Greek"     => "el",
+			"Hebrew"    => "he_IL",
+			"Hungarian" => "hu_HU",
+			"Italian"   => "it",
+			"Japanese"  => "ja",
+			"Korean"    => "ko",
+			"Norwegian" => "nb_NO",
+			"Polish"    => "pl",
+			"Russian"   => "ru",
+			"Slovak"    => "sk",
+			"Spanish"   => "es",
+			"Swedish"   => "sv_SE",
 		);
 
-		if(!$tinylang[$lang])
+		if(!isset($tinylang[$lang]))
 		{
-		 	$tinylang[$lang] = "en";
+			$tinylang[$lang] = "en";
+		}
+
+		// If language file is not present, use default.
+		$jsFile = e_PLUGIN . 'tinymce4/langs/' . $tinylang[$lang] . '.js';
+		if($tinylang[$lang] != 'en' && !file_exists($jsFile))
+		{
+			$tinylang[$lang] = "en";
 		}
 
 		return $tinylang[$lang];
