@@ -232,8 +232,8 @@ class wysiwyg
 			'Bosnian'       => 'bs',
 			'Bulgarian'     => 'bg_BG',
 			'Catalan'       => 'ca',
-			// 'Chinese (China)' => 'zh_CN',
-			// 'Chinese (Taiwan)' => 'zh_TW',
+			'ChineseSimp'   => 'zh_CN',
+			'ChineseTrad'   => 'zh_TW',
 			'Croatian'      => 'hr',
 			'Czech'         => 'cs',
 			// 'Czech (Czech Republic)' => 'cs_CZ',
@@ -913,7 +913,7 @@ class wysiwyg
 
 	function getTemplates()
 	{
-		$templatePath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
+	//	$templatePath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
 		
 		
 		
