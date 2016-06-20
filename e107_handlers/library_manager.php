@@ -433,7 +433,7 @@ class e_library_manager
 	 *   An associative array containing registered information for all libraries, the registered information for the
 	 *   library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	private function &info($library = null)
+	public function &info($library = null)
 	{
 		// This static cache is re-used by detect() to save memory.
 		static $libraries;

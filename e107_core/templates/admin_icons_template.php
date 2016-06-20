@@ -146,6 +146,9 @@ if (!defined('E_32_PLUGMANAGER')) {
 if (!defined('E_32_MAIN')) {
 	define('E_32_MAIN', "<i class='S32 e-main-32'></i> ");
 }
+if (!defined('E_32_LIBMANAGER')) {
+	define('E_32_LIBMANAGER', "<i class='S32 e-plugmanager-32'></i> "); // TODO CSS class.
+}
 
 if (!defined('E_32_THEMEMANAGER')) {
 	define('E_32_THEMEMANAGER', "<i class='S32 e-themes-32'></i> ");
@@ -410,6 +413,9 @@ if (!defined('E_16_PLUGMANAGER')) {
 }
 if (!defined('E_16_THEMEMANAGER')) {
 	define('E_16_THEMEMANAGER', "<i class='S16 e-themes-16'></i>");
+}
+if (!defined('E_16_LIBMANAGER')) {
+	define('E_16_LIBMANAGER', "<i class='S16 e-plugmanager-16'></i>"); // TODO CSS class.
 }
 
 // Small Admin Other Images
