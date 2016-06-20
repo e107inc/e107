@@ -95,8 +95,7 @@ class library_list_ui extends e_admin_ui
 
 			$provider = $this->getProvider($details);
 			$status = $this->getStatus($details);
-			$homepage = $this->getHomepage($details);
-			$download = $this->getDownload($details);
+			$links = $this->getLinks($details);
 
 			$html .= '<tr>';
 			$html .= '<td>' . $details['name'] . '</td>';
@@ -104,7 +103,7 @@ class library_list_ui extends e_admin_ui
 			$html .= '<td>' . $details['version'] . '</td>';
 			$html .= '<td>' . $status . '</td>';
 			$html .= '<td>' . $details['error_message'] . '</td>';
-			$html .= '<td>' . $homepage . ' | ' . $download . '</td>';
+			$html .= '<td>' . $links . '</td>';
 			$html .= '</tr>';
 		}
 
@@ -115,10 +114,39 @@ class library_list_ui extends e_admin_ui
 	}
 
 	/**
+	 * Helper function to get links.
+	 */
+	private function getLinks($details)
+	{
+		$homepage = $this->getHomepage($details);
+		$download = $this->getDownload($details);
+
+		if ($homepage && $download)
+		{
+			return $homepage . ' | ' . $download;
+		}
+
+		if($homepage)
+		{
+			return $homepage;
+		}
+
+		if($download)
+		{
+			return $download;
+		}
+	}
+
+	/**
 	 * Helper function to get homepage link.
 	 */
 	private function getHomepage($details)
 	{
+		if (empty($details['vendor_url']))
+		{
+			return false;
+		}
+
 		$href = $details['vendor_url'];
 		$title = $details['name'];
 
@@ -130,6 +158,11 @@ class library_list_ui extends e_admin_ui
 	 */
 	private function getDownload($details)
 	{
+		if (empty($details['download_url']))
+		{
+			return false;
+		}
+
 		$href = $details['download_url'];
 		$title = $details['name'];
 
