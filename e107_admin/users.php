@@ -167,7 +167,15 @@ JS;
 				case 'loginas':
 				case 'unadmin':
 					$_POST['etrigger_'.$_POST['useraction']] = $_POST['userid'];
-				break;	
+				break;
+
+
+				case 'logoutas':
+					$this->getRequest()
+						->setQuery(array())
+						->setMode('main')
+						->setAction('logoutas');
+				break;
 				
 				// redirect to AdminObserver/AdminPage()
 				case 'admin':
