@@ -830,8 +830,6 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			36 => array(e_ADMIN_ABS.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_E107, E_32_E107),
 		//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
 			38 => array(e_ADMIN_ABS.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT),
-
-			39 => array(e_ADMIN_ABS.'library.php', 		ADLAN_164,	ADLAN_165,	'Z', 5 , E_16_LIBMANAGER, E_32_LIBMANAGER),
 		);	
 		
 		if($mode == 'legacy')

@@ -184,9 +184,6 @@ define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");
 
-define("ADLAN_164", "Library Manager");
-define("ADLAN_165", "Click here to see externally developed and distributed libraries.");
-
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
 define("ADLAN_CL_3", "Content");

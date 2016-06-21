@@ -89,7 +89,7 @@ class e_library_manager
 			$library['error'] = LAN_LIBRARY_MANAGER_09;
 
 			$replace_with = array($library['name']);
-			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with);
+			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
 
 			return $library;
 		}
@@ -165,7 +165,7 @@ class e_library_manager
 				$library['error'] = LAN_LIBRARY_MANAGER_10;
 
 				$replace_with = array($library['name']);
-				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with);
+				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with, true);
 
 				return $library;
 			}
@@ -188,7 +188,7 @@ class e_library_manager
 				$library['error'] = LAN_LIBRARY_MANAGER_11;
 
 				$replace_with = array($library['version'], $library['name']);
-				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_05, $replace_with);
+				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_05, $replace_with, true);
 
 				return $library;
 			}
@@ -258,7 +258,7 @@ class e_library_manager
 						$variant['error'] = LAN_LIBRARY_MANAGER_09;
 
 						$replace_with = array($variant_name, $library['name']);
-						$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with);
+						$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with, true);
 					}
 				}
 			}
@@ -680,7 +680,7 @@ class e_library_manager
 					$library['error'] = LAN_LIBRARY_MANAGER_07;
 
 					$replace_with = array($dependency['name'], $library['name']);
-					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_01, $replace_with);
+					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_01, $replace_with, true);
 				}
 				elseif($this->checkIncompatibility($dependency_info, $dependency['version']))
 				{
@@ -688,7 +688,7 @@ class e_library_manager
 					$library['error'] = LAN_LIBRARY_MANAGER_08;
 
 					$replace_with = array($dependency['version'], $library['name'], $library['name']);
-					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_02, $replace_with);
+					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_02, $replace_with, true);
 				}
 
 				// Remove the version string from the dependency, so load() can load the libraries directly.

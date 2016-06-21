@@ -169,6 +169,24 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Behavior to initialize tooltips on elements with data-toggle="tooltip" attribute.
+	 *
+	 * @type {{attach: e107.behaviors.bootstrapTooltip.attach}}
+	 */
+	e107.behaviors.bootstrapTooltip = {
+		attach: function (context, settings)
+		{
+			if(typeof $.fn.tooltip !== 'undefined')
+			{
+				$(context).find('[data-toggle="tooltip"]').once('bootstrap-tooltip').each(function ()
+				{
+					$(this).tooltip();
+				});
+			}
+		}
+	};
+
+	/**
 	 * Behavior to attach a click event to elements with .e-expandit class.
 	 *
 	 * @type {{attach: Function}}
