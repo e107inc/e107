@@ -1713,7 +1713,7 @@ class e107
 	 *    $name, or FALSE if the library $name is not registered.
 	 *  - In case of 'load': An associative array of the library information.
 	 */
-	public static function library($action = '', $library = '')
+	public static function library($action = '', $library = null)
 	{
 		$libraryHandler = e107::getLibrary();
 
@@ -1728,7 +1728,7 @@ class e107
 				break;
 
 			case 'info':
-				return $libraryHandler->info();
+				return $libraryHandler->info($library);
 				break;
 		}
 	}
