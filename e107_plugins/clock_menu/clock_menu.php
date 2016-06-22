@@ -21,7 +21,7 @@
 //FIXME looks pretty much to be 0.6 compatible
 if (!defined('e107_INIT')) { exit(); }
 
-e107::lan('clock_menu',e_LANGUAGE);
+e107::lan('clock_menu',false);
 
 $menu_pref = e107::getConfig('menu')->getPref('');
 
