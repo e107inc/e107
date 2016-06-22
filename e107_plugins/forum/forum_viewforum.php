@@ -82,23 +82,27 @@ $page = (varset($_GET['p']) ? $_GET['p'] : 1);
 $threadFrom = ($page - 1) * $view;
 
 global $forum_info, $FORUM_CRUMB;
-$fVars = new e_vars;
 
+				$sc = e107::getScBatch('viewforum', 'forum');
+
+//----$fVars = new e_vars;
+
+/*--
 $fVars->STARTERTITLE = LAN_FORUM_1004;
 $fVars->THREADTITLE = LAN_FORUM_1003;
 $fVars->REPLYTITLE = LAN_FORUM_0003;
 $fVars->LASTPOSTITLE = LAN_FORUM_0004;
 $fVars->VIEWTITLE = LAN_FORUM_1005;
-
+--*/
 
 $forumId = (int)$_REQUEST['id'];
 
 if(!$forumId && e_QUERY) // BC Fix for old links.
 {
 	list($id,$from) = explode(".",e_QUERY);
-	$forumId = intval($id);		
+	$forumId = intval($id);
 	$threadFrom = intval($from);
-	unset($id,$from);		
+	unset($id,$from);
 }
 
 if (!$forum->checkPerm($forumId, 'view'))
@@ -123,7 +127,7 @@ if (!$forum->checkPerm($forumId, 'view'))
 }
 
 $forumInfo = $forum->forumGet($forumId);
-$threadsViewed = $forum->threadGetUserViewed();
+//----$threadsViewed = $forum->threadGetUserViewed();
 
 if (empty($FORUM_VIEW_START))
 {
@@ -194,16 +198,18 @@ if(!empty($forumInfo['forum_description']))
 //define('MODERATOR', $forum_info['forum_moderators'] != '' && check_class($forum_info['forum_moderators']));
 //$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 
+// $thread???
 $modArray = $forum->forumGetMods($thread->forum_info['forum_moderators']);
 define('MODERATOR', (USER && is_array($modArray) && in_array(USERID, array_keys($modArray))));
 
-$message = '';
+//----$message = '';
 if (MODERATOR)
 {
 	if ($_POST)
 	{
 		require_once(e_PLUGIN.'forum/forum_mod.php');
-		$message = forum_thread_moderate($_POST);
+//--		$message = forum_thread_moderate($_POST);
+    $forumSCvars['message']=forum_thread_moderate($_POST);
 	}
 }
 
@@ -237,12 +243,14 @@ require_once(HEADERF);
 
 $text='';
 // TODO - message batch shortcode
+/*--
 if ($message)
 {
 	//$ns->tablerender('', $message, array('forum_viewforum', 'msg'));
 	//e107::getMessage()->add($thread->message);
 	$fVars->MESSAGE = $message;
 }
+--*/
 
 $threadCount = $forumInfo['forum_threads'];
 
@@ -262,24 +270,32 @@ if ($pages)
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
 		$url = e107::url('forum','forum',$forumInfo, array('query'=>array('p'=>'[FROM]')));
+/*--
 		$parms = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 		$fVars->THREADPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+--*/
+		$forumSCvars['parms'] = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
+//-- ?????????? unset $ulrparms????
 		unset($urlparms);
 	}
 }
 
 if($forum->checkPerm($forumId, 'thread')) //new thread access only.
 {
+		$forumSCvars['ntUrl']= e107::url('forum','post')."?f=nt&amp;id=". $forumId;
+/*--
 	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $forumId;
 	$fVars->NEWTHREADBUTTON = "<a href='".$ntUrl."'>".IMAGE_newthread.'</a>';
 	$fVars->NEWTHREADBUTTONX = newthreadjump($ntUrl);
+
 }
 
 if(!BOOTSTRAP)
 {
 	$fVars->NEWTHREADBUTTONX = $fVars->NEWTHREADBUTTON;
 }
-
+--*/
+}
 
 if(substr($forumInfo['forum_name'], 0, 1) == '*')
 {
@@ -296,18 +312,26 @@ if(substr($forum_info['sub_parent'], 0, 1) == '*')
 	$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
 }
 
-$forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
+//----$forum->set_crumb(true, '', $fVars); // set $BREADCRUMB (and $BACKLINK)
+
+//-- Function eventually to be reworked (move full function to shortcode file, or make a new breadcrumb function, like in downloads, maybe?)
+$forum->set_crumb(true, '', $forumSCvars); // set $BREADCRUMB (and $BACKLINK)
+
 $modUser = array();
 foreach ( $modArray as $user)
 {
 	$modUser[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
 }
+/*--
 $fVars->FORUMTITLE = $forumInfo['forum_name'];
 $fVars->MODERATORS = LAN_FORUM_1009.': '.implode(', ', $modUser);
 $fVars->BROWSERS = '';
+--*/
+		$forumSCvars['forum_name']= $forumInfo['forum_name'];
+		$forumSCvars['modUser']= $modUser;
+		$forumSCvars['track_online']= varset($pref['track_online']);
 
-
-
+/*--
 if(varset($pref['track_online']))
 {
 	$fVars->BROWSERS = $users.' '.($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060).' ('.$member_users.' '.($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).')';
@@ -346,10 +370,10 @@ else // v1.x
 	</table>";
 
 }
-
+--*/
 
 // ----------------- { VIEWABLE_BY } ---------------------------
-
+/*--
 if($users = $forum->getForumClassMembers($forumId))
 {
 	$userList = array();
@@ -391,13 +415,12 @@ else
 {
 	$fVars->VIEWABLE_BY = '';
 }
-
+--*/
 
 // ------------------------------------------------------------
 ///TODO  XXX All these $fVars items need to be put into a shortcode class so they can be parsed with parms and wrappers. Big Job!
 
-
-
+/*--
 $fVars->SEARCH = "
 	<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
 	<p>
@@ -407,8 +430,9 @@ $fVars->SEARCH = "
 	<input type='hidden' name='ref' value='forum' />	
 	</p>
 	</form>";
+--*/
 
-
+/*--
 	// ----- Perm Display ---
 
 	$permDisplay = array();
@@ -427,11 +451,10 @@ $fVars->SEARCH = "
 
 
 	$fVars->PERMS = implode("<span class='forum-perms-separator'><!-- --></span>", $permDisplay);
-
+--*/
 
 
 	// -------------------------------
-
 
 $sticky_threads = 0;
 $stuck = false;
@@ -446,9 +469,12 @@ if(!empty($_GET['srch']))
 }
 
 $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilter);
+/*--
 $subList = $forum->forumGetSubs(vartrue($forum_id));
-$gen = new convert;
-
+--*/
+//------$gen = new convert;
+		$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
+/*--
 $fVars->SUBFORUMS = '';
 if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 {
@@ -460,7 +486,7 @@ if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 	}
 	$fVars->SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
 }
-
+--*/
 if (count($threadList) )
 {
 	foreach($threadList as $thread_info)
@@ -513,8 +539,8 @@ else
 	$forum_view_forum .= "<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
-$fVars->FORUMJUMP = forumjump();
-$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GO.'</a>'; // FIXME - TOPLINK not used anymore?
+//--$fVars->FORUMJUMP = forumjump();
+//--$fVars->TOPLINK = "<a href='".e_SELF.'?'.e_QUERY."#top' onclick=\"window.scrollTo(0,0);\">".LAN_GO.'</a>'; // FIXME - TOPLINK not used anymore?
 
 if($container_only)
 {
@@ -523,13 +549,21 @@ if($container_only)
 	$forum_view_forum = '';
 }
 
-$forum_view_start = $tp->simpleParse($FORUM_VIEW_START, $fVars);
-$forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
 
 
+				$sc->setVars($forumSCvars);
+
+//var_dump ($FORUM_VIEW_START);
+//  	var_dump ($FORUM_VIEW_SUB);
+$forum_view_start = $tp->parseTemplate($FORUM_VIEW_START, false, $sc);
+$forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
+
+//$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
+//$forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
 
 if ($forum->prefs->get('enclose'))
 {	
+// $forum_view_subs????
 	$ns->tablerender($forum->prefs->get('title'), $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
 }
 else
@@ -546,10 +580,10 @@ echo "<script type=\"text/javascript\">
 
 require_once(FOOTERF);
 
-
-
 function parse_thread($thread_info)
 {
+//var_dump ($thread_info);
+/* OLD CODE
 	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, $threadsViewed;
 	$tp = e107::getParser();
 	$tVars = new e_vars;
@@ -728,7 +762,7 @@ function parse_thread($thread_info)
 		$tVars['PAGES'] = '';
 	}
 	*/
-
+/* OLD CODE
 
 	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
 	$tVars['PAGESX'] = fpages($thread_info, $tVars['REPLIES']);
@@ -809,9 +843,45 @@ function parse_thread($thread_info)
 	$tVars['_WRAPPER_'] = 'forum_viewforum';
 
 	return $tp->parseTemplate($_TEMPLATE, true, $tVars);
+*/
+// NEW REWRITTEN CODE
+	global $sc, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE;
+	$tp = e107::getParser();
+
+// Initial ideia, to have a separate shortcode var ($threadsc)....
+//  $threadsc = e107::getScBatch('viewforum', 'forum', 'viewforumthread');
+//				$threadsc->setVars($thread_info);
+				$sc->setVars($thread_info);
+
+	switch($thread_info['thread_sticky'])
+	{
+		case 1:
+			$_TEMPLATE = ($FORUM_VIEW_FORUM_STICKY ? $FORUM_VIEW_FORUM_STICKY : $FORUM_VIEW_FORUM);
+			break;
+
+		case 2:
+			$_TEMPLATE = ($FORUM_VIEW_FORUM_ANNOUNCE ? $FORUM_VIEW_FORUM_ANNOUNCE : $FORUM_VIEW_FORUM);
+			break;
+
+		default:
+			$_TEMPLATE = $FORUM_VIEW_FORUM;
+			break;
+	}
+	
+	
+	if(substr($_TEMPLATE,0,4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. . 
+	{
+
+	$threadId = $thread_info['thread_id'];
+
+		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
+	}
+
+	return $tp->parseTemplate($_TEMPLATE, true, $sc);
+
 }
 
-
+/*----
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $newflag_list;
@@ -873,6 +943,7 @@ function parse_sub($subInfo)
 
 	return $tp->parseTemplate($FORUM_VIEW_SUB, true,  $tVars);
 }
+----*/
 
 function forumjump()
 {
@@ -887,10 +958,10 @@ function forumjump()
 	return $text;
 }
 
-
 function fadminoptions($thread_info)
 {
-	$tVars = new e_vars;
+//-- $tVars here???
+//----	$tVars = new e_vars;
 	$e107 = e107::getInstance();
 	$tp = e107::getParser();
 	
@@ -904,6 +975,7 @@ function fadminoptions($thread_info)
 	//FIXME - not fully working. 
 
 	$moveUrl        = e107::url('forum','move', $thread_info);
+// What's the use of $splitUrl?????
 	$splitUrl        = e107::url('forum','split', $thread_info);
 
 	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
@@ -1014,9 +1086,6 @@ function fpages($thread_info, $replies)
 		{
 			$text = implode("",$opts); // ."</div>";
 		}
-	
-		
-		
 		
 	}
 	else
@@ -1024,23 +1093,13 @@ function fpages($thread_info, $replies)
 		$text = '';
 	}	
 	
-
-	
-	
-	
-	
 	return $text; 
 }	
-	
-
-
-
 
 function newthreadjump($url)
 {
 	global $forum;
 	$jumpList = $forum->forumGetAllowed('view');
-
 
 	$text = '<div class="btn-group">
     <a href="'.$url.'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>
@@ -1060,7 +1119,5 @@ function newthreadjump($url)
     </div>';
 	
 	return $text;
-	
 }
-
 ?>

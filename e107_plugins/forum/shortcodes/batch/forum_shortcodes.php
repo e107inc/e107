@@ -10,11 +10,12 @@ if (!defined('e107_INIT')) { exit; }
 
 class forum_shortcodes extends e_shortcode
 {
-  private $forum_rules;
+  private $forum_rules, $gen;
 
 	function __construct()
 	{
 		$this->forum_rules = forum_rules('check');
+    $this->gen = new convert;
 	}
 
 	// START OF $FVARS
@@ -220,10 +221,10 @@ class forum_shortcodes extends e_shortcode
 			}
 		*/
 
-		$gen = new convert;
+//		$gen = new convert;
 			$text = LAN_FORUM_0018." ".USERNAME."<br />";
-			$lastvisit_datestamp = $gen->convert_date(USERLV, 'long');
-			$datestamp = $gen->convert_date(time(), "long");
+			$lastvisit_datestamp = $this->gen->convert_date(USERLV, 'long');
+			$datestamp = $this->gen->convert_date(time(), "long");
 
 		/*
 			if (!$total_new_threads)
@@ -408,6 +409,10 @@ class forum_shortcodes extends e_shortcode
   		return ($this->var['text'])?"<br /><div class='smalltext'>".LAN_FORUM_0069.": {$this->var['text']}</div>":"";
 	}
 
+//----- ########################################################
+//----- Functions sc_latspostuser, sc_lastpostdate & sc_lastpost to be rewritten, since they pratically use the same code???
+//----- Also, viewforum_shortcodes uses similar shortcodes definitions......
+/*-----
 	function sc_lastpostuser()
 	{
 //    global $f;
@@ -541,17 +546,86 @@ $gen = new convert;
 		return '-';
 		//----	}
 	}
+-----*/
 
+  function lastpostdata ()
+  {
+  $caller = debug_backtrace()[1]['function'];
+	if ($this->var['forum_lastpost_info'])
+	{
+		$e107 = e107::getInstance();
+//		$gen = new convert;
+    global $forum;
 
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
+/*--
+		if ($this->var['user_name'])
+		{
+
+			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
+		}
+		else
+		{
+			$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
+		}
+--*/
+			$lastpost_name = ($this->var['user_name'])?"<a href='".$e107->url->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>":e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
+
+		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
+
+//		$fVars->LASTPOSTUSER = $lastpost_name;
+		// {forum_sef}/{thread_id}-{thread_sef}
+
+		$urlData = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
+		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
+//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
+		$lastpost_datestamp = $this->gen->convert_date($lastpost_datestamp, 'forum');
+//		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
+
+/*----
+		$fVars->LASTPOSTUSER = $lastpost_name;
+		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
+		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
+-----*/
+		
+    return ($caller == 'sc_lastpostuser'?$lastpost_name:($caller == 'sc_lastpostdate'?"<a href='".$url."'>". $this->gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>":($caller == 'sc_lastpost'?$lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>':'')));
+	}
+/*----
+	else
+	{
+		$fVars->LASTPOSTUSER = "";
+		$fVars->LASTPOSTDATE = "-";
+		$fVars->LASTPOST = '-';
+	}
+----*/
+    return ($caller == 'sc_lastpostuser'?'':'-');
+//  echo debug_backtrace()[1]['function'];
+  }
+
+	function sc_lastpostuser()
+	{
+    return $this->lastpostdata();
+  }
+
+	function sc_lastpostdate()
+	{
+    return $this->lastpostdata();
+  }
+
+	function sc_lastpost()
+	{
+    return $this->lastpostdata();
+  }
+  
 	function sc_startertitle()
 	{
 //  global $thread;
-		$gen = new convert;
+//		$gen = new convert;
 
 		$author_name = ($this->var['user_name'] ? $this->var['user_name'] : $this->var['lastuser_anon']);
 
 //--		$datestamp = $gen->convert_date($thread['thread_lastpost'], 'forum');
-		$datestamp = $gen->convert_date($this->var['thread_lastpost'], 'forum');
+		$datestamp = $this->gen->convert_date($this->var['thread_lastpost'], 'forum');
 
   
 		if(!$this->var['user_name'])
