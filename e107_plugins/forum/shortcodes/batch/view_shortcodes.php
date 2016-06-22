@@ -24,6 +24,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$this->defaultImgAttachSize = e107::pref('forum','maxwidth',false); // don't resize here if set to 0.
 	}
 
+	function sc_breadcrumb()
+	{
+        return $this->var['breadcrumb'];
+	}
+
+	function sc_backlink()
+	{
+		return $this->var['breadcrumb'];
+	}
+
 	function sc_top($parm='')
 	{
 		$text = ($parm == 'caret') ?  "<span class='caret'></span>" : LAN_FORUM_2030;
