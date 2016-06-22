@@ -425,11 +425,13 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$forumInfo = $this->var;
 
 	//	return print_a($forumInfo,true);
-		$_tmp = new e_vars();
+//----		$_tmp = new e_vars();
+      $_tmp = array();
 		// no reference of 'head' $threadInfo['head']['thread_name']
 		$eaction = ($this->var['action'] == 'edit');
 		$this->forum->set_crumb(true, ($this->var['action'] == 'nt' ? ($eaction ? LAN_FORUM_3023 : LAN_FORUM_1018) : ($eaction ? LAN_FORUM_3024 : $this->var['thread_name'])), $_tmp);
-		return $_tmp->BREADCRUMB;
+//----		return $_tmp->BREADCRUMB;
+		return $_tmp['breadcrumb'];
 	}
 
 	function sc_noemotes()

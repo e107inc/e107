@@ -2097,6 +2097,7 @@ class e107forum
 
 
 
+// Function eventually to be reworked (move full function to shortcode file, or make a new breadcrumb function, like in downloads, maybe?)
 	/*
 	 * set bread crumb
 	 * $forum_href override ONLY applies when template is missing FORUM_CRUMB
@@ -2110,8 +2111,9 @@ class e107forum
 
 		$forumTitle = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
 		
-		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
-		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
+//--		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
+//--		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
+		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread, $BREADCRUMB;
 
 		if(!$forumInfo && $thread) { $forumInfo = $thread->threadInfo; }
 
@@ -2229,12 +2231,20 @@ class e107forum
 		
 		
 		
+/*
 		$BACKLINK = $BREADCRUMB;
+
 		$templateVar->BREADCRUMB = $BREADCRUMB;
 	
 	
 		$templateVar->BACKLINK = $BACKLINK;
 		$templateVar->FORUM_CRUMB = $FORUM_CRUMB;
+*/
+    // Backlink shortcode is defined inside shortcode file....
+//---- var_dump ($templateVar);
+//---- echo "<hr>";
+		$templateVar['breadcrumb'] = $BREADCRUMB;
+		$templateVar['forum_crumb'] = $FORUM_CRUMB;
 	}
 
 
