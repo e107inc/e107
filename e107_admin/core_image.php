@@ -1230,10 +1230,10 @@ $core_image = array (
         array (
           'English.php' => '5f81da7166965e4a08f4bf4de060f409',
         ),
-        'English.php' => 'c8c59cc8ea0426757eeb737f3a7f8754',
+        'English_front.php' => 'c8c59cc8ea0426757eeb737f3a7f8754',
       ),
       'clock.js' => '98871f097e7b77f981df163421edb721',
-      'clock_menu.php' => '3168321679773a9b312516a5f68ebeb9',
+      'clock_menu.php' => '093e3d29e611974b9425713014cda36b',
       'config.php' => '990e7bff8e3cfee87d7bdbb9738fb80b',
     ),
     'comment_menu' => 
