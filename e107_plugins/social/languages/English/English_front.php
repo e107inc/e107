@@ -11,6 +11,8 @@ define("LAN_SOCIAL_000", "Share On [x]");
 define("LAN_SOCIAL_001", "Like on [x]");
 define("LAN_SOCIAL_002", "Email to someone");
 define("LAN_SOCIAL_003", "+1 on Google");
+define("LAN_SOCIAL_004", "Add to [x]");
+
 
 //LAN_SOCIAL_100 to LAN_SOCIAL_199 // Facebook specific
 define("LAN_SOCIAL_100",  "Unable to display feed. Facebook App ID has not been defined in preferences.");
