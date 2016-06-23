@@ -14,7 +14,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                 var $item = $(this);
 
                 // Fix for changeDate() not being fired when value manually altered.
-                $item.on("change", function () {
+                $item.on("change keyup", function () {
                     var $this = $(this);
                     var useUnix = $this.attr("data-date-unix");
 
@@ -53,7 +53,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                 });
             });
 
-            $(context).find('input.e-date').once('datetimepicker-init').each(function () {
+            $(context).find('input.e-datetime').once('datetimepicker-init').each(function () {
                 var $item = $(this);
 
                 $item.datetimepicker({

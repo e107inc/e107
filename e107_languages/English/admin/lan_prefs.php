@@ -271,7 +271,7 @@ define("PRFLAN_253", "Disable consolidated scripts browser cache:");
 define("PRFLAN_254", "Email &amp; Contact Info");
 define("PRFLAN_255", "File Uploading");
 define("PRFLAN_256", "Advanced Options");
-define("PRFLAN_257", "Javascript Framework");
+define("PRFLAN_257", "Libraries");
 
 define("PRFLAN_258", "Contact Form Visibility");
 define("PRFLAN_259", "Register & Login");

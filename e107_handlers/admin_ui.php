@@ -2241,7 +2241,7 @@ class e_admin_controller
 		if(!$path && $this->getParam('modes'))
 		{
 			$modes = $this->getParam('modes');
-			if(vartue($modes[$mode]) && vartrue($modes[$mode]['url']))
+			if(vartrue($modes[$mode]) && vartrue($modes[$mode]['url']))
 			{
 				$path = e107::getParser()->replaceConstants($modes[$mode]['url'], 'abs');
 			}

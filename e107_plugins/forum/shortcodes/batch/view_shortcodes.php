@@ -24,6 +24,16 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		$this->defaultImgAttachSize = e107::pref('forum','maxwidth',false); // don't resize here if set to 0.
 	}
 
+	function sc_breadcrumb()
+	{
+        return $this->var['breadcrumb'];
+	}
+
+	function sc_backlink()
+	{
+		return $this->var['breadcrumb'];
+	}
+
 	function sc_top($parm='')
 	{
 		$text = ($parm == 'caret') ?  "<span class='caret'></span>" : LAN_FORUM_2030;
@@ -632,7 +642,248 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		
 	}
 	
+//---- SHORTCODES CONVERTED FROM $tVars....
+	function sc_threadname()
+	{
+    return e107::getParser()->toHTML($this->var['thread_name'], true, 'no_hook, emotes_off');
+  }	
+
+	function sc_nextprev()
+	{
+  global $forum, $thread;
+	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$this->var['forum_id'], $this->var['thread_lastpost']);
+	$next = $forum->threadGetNextPrev('next', $thread->threadId,$this->var['forum_id'], $this->var['thread_lastpost']);
+
+	$options = array();
+
+	if($prev !== false)
+	{
+		$options[] = "<a class='btn btn-default btn-sm btn-small' href='" . e107::url('forum','topic', $prev) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
+	}
+	if($next !== false)
+	{
+		$options[] = "<a class='btn btn-default btn-sm btn-small' href='" .  e107::url('forum','topic', $next) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
+	}
+
+//----	$tVars->NEXTPREV = implode(" | ", $options);
+	return implode(" | ", $options);
+}
+
+
+	function sc_track()
+	{
+  global $forum;
+if ($forum->prefs->get('track') && USER)
+{
+	// BC Fix for old template.
+	if(!defined('IMAGE_track'))
+	{
+		define('IMAGE_track', 		'<img src="'.img_path('track.png').'" alt="'.LAN_FORUM_4009.'" title="'.LAN_FORUM_4009.'" class="icon S16 action" />');
+	}
+
+	if(!defined('IMAGE_untrack'))
+	{
+		define('IMAGE_untrack', 	'<img src="'.img_path('untrack.png').'" alt="'.LAN_FORUM_4010.'" title="'.LAN_FORUM_4010.'" class="icon S16 action" />');
+	}
+
+
+	$img = ($this->var['track_userid'] ? IMAGE_track : IMAGE_untrack);
+
+
+/*
+	$url = $e107->url->create('forum/thread/view', array('id' => $thread->threadId), 'encode=0'); // encoding could break AJAX call
+
+	$url = e107::url('forum','index');
+
+	$tVars->TRACK .= "
+			<span id='forum-track-trigger-container'>
+			<a class='btn btn-default btn-sm btn-small e-ajax' data-target='forum-track-trigger' href='{$url}' id='forum-track-trigger'>{$img}</a>
+			</span>
+			<script type='text/javascript'>
+			e107.runOnLoad(function(){
+				$('forum-track-trigger').observe('click', function(e) {
+					e.stop();
+					new e107Ajax.Updater('forum-track-trigger-container', '{$url}', {
+						method: 'post',
+						parameters: { //send query parameters here
+							'track_toggle': 1
+						},
+						overlayPage: $(document.body)
+					});
+				});
+			}, document, true);
+			</script>
+	";*/
+
+
+	$trackDiz = ($forum->prefs->get('trackemail',true)) ? LAN_FORUM_3040 : LAN_FORUM_3041;
+
+//	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".$trackDiz."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>";
+	return "<a id='forum-track-button' href='#' title=\"".$trackDiz."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$this->var['thread_forum_id']."' data-forum-thread='".$this->var['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>";
+
+}
+  return '';
+}
+
+	function sc_moderators()
+	{
+  global $forum;
+
+$modUser = array();
+foreach ( $forum->modArray as $user)
+{
+	$modUser[] = "<a href='".e107::getUrl()->create('user/profile/view', $user)."'>".$user['user_name']."</a>";
+}
+
+//$tVars->MODERATORS = LAN_FORUM_2003.": ". implode(', ', $modUser);
+return LAN_FORUM_2003.": ". implode(', ', $modUser);
+//unset($modUser);
+}
+
+	function sc_threadstatus()
+	{
+//$tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_FORUM_2004 : '');
+return (!$this->var['thread_active'] ? LAN_FORUM_2004 : '');
+}
+
+
+	function sc_gotopages()
+	{
+  global $thread;
+if ($thread->pages > 1)
+{
+	if(!$thread->page) $thread->page = 1;
+//	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
+
+//	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
+	$url = e107::url('forum','topic', $this->var)."&amp;p=[FROM]";
+
+	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".urlencode($url)."&caption=off&tmpl=default&navcount=4&glyphs=1";
+	
+	//XXX FIXME - pull-down template not practical here. Can we force another?
+
+//	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+	return e107::getParser()->parseTemplate("{NEXTPREV={$parms}}");
+/*
+	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
+	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");*/
+}
+}
+
+
+	function sc_buttons()
+	{
+  global $forum, $thread;
+//----$tVars->BUTTONS = '';
+if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
+{
+	// print_a($thread->threadInfo);
+	$url = e107::url('forum','post')."?f=rp&amp;id=".$this->var['thread_id']."&amp;post=".$thread->threadId;
+//	$url = $e107->url->create('forum/thread/reply', array('id' => $thread->threadId));
+	return "<a href='" . $url . "'>" . IMAGE_reply . "</a>";
+}
+if ($forum->checkPerm($this->var['thread_forum_id'], 'thread'))
+{
+	$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $this->var['thread_forum_id'];
+//	$ntUrl = $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
+	return "<a href='" . $ntUrl . "'>" . IMAGE_newthread . "</a>";
+}
+return '';
+}
+
+//$tVars->BUTTONSX = forumbuttons($thread);
+
+function sc_buttonsx()
+{
+	global $forum, $thread; 
+
+	
+	if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
+	{
+		$url = e107::url('forum','post')."?f=rp&amp;id=".$this->var['thread_id']."&amp;post=".$thread->threadId;
+	//	$url = e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId));
+		$replyUrl = "<a class='btn btn-primary' href='".$url."'>".LAN_FORUM_2006."</a>";
+	}
+	if ($forum->checkPerm($this->var['thread_forum_id'], 'thread'))
+	{
+		$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $this->var['thread_forum_id'];
+	//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
+		$options[] = " <a  href='".$ntUrl."'>".LAN_FORUM_2005."</a>";
+	}	
+	
+//	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
+//	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
+
+//---- SIMILAR CODE AS SC_NEXTPREV!!!!!!!
+	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$this->var['forum_id'], $this->var['thread_lastpost']);
+	$next = $forum->threadGetNextPrev('next', $thread->threadId,$this->var['forum_id'], $this->var['thread_lastpost']);
+
+	if($prev !== false)
+	{
+		$options[] = "<a href='" . e107::url('forum','topic', $prev) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
+	}
+	if($next !== false)
+	{
+		$options[] = "<a href='" .  e107::url('forum','topic', $next) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
+	}
+
+
+	$text = '<div class="btn-group">
+   '.$replyUrl.'
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu pull-right">
+    ';
+	
+	foreach($options as $key => $val)
+	{
+		$text .= '<li>'.$val.'</li>';
+	}
+	
+	$jumpList = $forum->forumGetAllowed();
+	
+	$text .= "<li class='divider'></li>";
+	
+	foreach($jumpList as $key=>$val)
+	{
+		$text .= '<li><a href ="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017." ".$val['forum_name'].'</a></li>';
+	}
+	
+	$text .= '
+    </ul>
+    </div>';
 	
 	
+	return $text;
+}
+
+/*---- Function redeclared, this one came directly from forum_viewtopic.php.....
+function sc_poll()
+{
+	global $pollstr;
+return vartrue($pollstr);
+}
+----*/
+function sc_forumjump()
+{
+	global $forum;
+	$jumpList = $forum->forumGetAllowed();
+	$text = "<form method='post' action='".e_SELF."'><p>".LAN_FORUM_1017.": <select name='forumjump' class='tbox'>";
+//--	foreach ($jumpList as $key => $val)
+	foreach ($jumpList as $val)
+	{
+		$text .= "\n<option value='" . e107::url('forum','forum',$val) . "'>" . $val['forum_name'] . "</option>";
+	}
+	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
+	return $text;
+}
+
+function sc_message()
+{
+	global $thread;
+return $thread->message;
+}
+
 }
 ?>

@@ -53,9 +53,9 @@ if(!empty($_GET['iframe']))
 
 		protected $adminMenu = array(
 
-			'main/prefs'			=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-			'main/db'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-			'main/tools'     => array('caption'=>LANG_LAN_21, 'perm'=>'P')
+			'main/prefs'	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
+			'main/db'		=> array('caption'=> LAN_CREATE, 'perm' => 'L'),
+			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L')
 		//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 
 			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')

@@ -395,8 +395,9 @@ abstract class e_marketplace_adapter_abstract
 
 
         $cp = e107::getFile()->initCurl($remote_url);
+        curl_setopt($cp, CURLOPT_FILE, $fp);
      /*   $cp = curl_init($remote_url);
-		curl_setopt($cp, CURLOPT_FILE, $fp);
+
 		
 		//curl_setopt($ch, CURLOPT_VERBOSE, 1);
 		//curl_setopt($ch, CURLOPT_STDERR, $fp1);

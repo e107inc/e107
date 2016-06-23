@@ -104,7 +104,7 @@ if(isset($_GET['f']))
 //var_dump (is_array($sc));
 
 //--$fVars = new e_vars;
-$gen = new convert;
+//--$gen = new convert;
 
 /*--
 // Gonne directly to shortcode file
