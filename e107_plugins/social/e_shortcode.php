@@ -33,13 +33,15 @@ class social_shortcodes extends e_shortcode
 			//	'google-plus'		=> array('icon' => 'fa-google-plus',		'title'=>"On Google Plus",		'url' => "https://plusone.google.com/_/+1/confirm?hl=en&url=[u]"),
 			'linkedin'			=> array('icon' => 'e-social-linkedin',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "LinkedIn"),	    'url' => "http://www.linkedin.com/shareArticle?mini=true&url=[u]"),
 			'pinterest'			=> array('icon'	=> 'e-social-pinterest',	'title'=> $tp->lanVars(LAN_SOCIAL_000, "Pinterest"),	'url' => "http://www.pinterest.com/pin/create/button/?url=[u]&description=[t]&media=[m]"),
-			//	'thumblr'			=> array('icon'	=>	'fa-tumblr',			'title'=>"On Tumblr",			'url' => "http://www.tumblr.com/share/link?url=[u]&name=[t]&description=[d]"),
 			'stumbleupon'		=> array('icon'	=> 'e-social-stumbleupon',	'title'=> $tp->lanVars(LAN_SOCIAL_000, "StumbleUpon"),  'url' => "http://www.stumbleupon.com/submit?url=[u]&title=[t]"),
 			'reddit'			=> array('icon'	=> 'e-social-reddit',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Reddit"),		'url' => "http://reddit.com/submit?url=[u]&title=[t]"),
 			'digg'				=> array('icon'	=> 'e-social-digg',			'title'=> $tp->lanVars(LAN_SOCIAL_000, "Digg"),		    'url' => "http://www.digg.com/submit?url=[u]"),
-       
-			//http://reddit.com/submit?url=http%3A%2F%2Fwebsite.com&title=Website%20Title  // no fa icon available
-			//http://www.digg.com/submit?url=http%3A%2F%2Fwebsite.com	  // no fa icon available
+
+			'tumblr'			=> array('icon'	=> 'e-social-tumblr',		'title'=> $tp->lanVars(LAN_SOCIAL_000, "Tumblr"),		'url' => "http://www.tumblr.com/share?v=3&u=[u]&t=[t]&s="),
+			'pocket'            => array('icon' => 'e-social-pocket',       'title'=> $tp->lanVars(LAN_SOCIAL_004, "Pocket"),       'url' => "https://getpocket.com/save?url=[u]&title=[t]"),
+			'wordpress'         => array('icon' => 'e-social-wordpress',    'title'=> $tp->lanVars(LAN_SOCIAL_000, "Wordpress"),    'url' => "http://wordpress.com/press-this.php?u=[u]&t=[t]&s=[t]"),
+			'pinboard'          => array('icon' => 'e-social-pinboard',     'title'=> $tp->lanVars(LAN_SOCIAL_004, "Pinboard"),     'url' => "https://pinboard.in/popup_login/?url=[u]&title=[t]&description=[t]"),
+
 		);
 
 		return $providers;
@@ -176,7 +178,8 @@ class social_shortcodes extends e_shortcode
 	/**
 	 * {SOCIALSHARE: url=x&title=y}
 	 * @example {SOCIALSHARE: type=basic} - Show only Email, Facebook, Twitter and Google. 
-	 * @example {SOCIALSHARE: dropdown=1&type=basic} - Show only Email, Facebook, Twitter and Google in a drop-down button 
+	 * @example {SOCIALSHARE: dropdown=1&type=basic} - Show only Email, Facebook, Twitter and Google in a drop-down button
+	 * @example {SOCIALSHARE: providers=twitter,pinterest&tip=false} - override provider preferences and disable tooltips.
 	 * @example for plugin developers:  send 'var' values for use by the social shortcode. (useful for loops where the value must change regularly) 
 	 * 	$socialArray = array('url'=>'your-url-here', 'title'=>'your-title-here');
 		e107::getScBatch('social')->setVars($socialArray);
@@ -208,7 +211,7 @@ class social_shortcodes extends e_shortcode
 		}
 		else
 		{
-			$parm['providers']  = array_keys($providers);
+			$parm['providers']  = explode(",",$parm['providers']);
 		}
 
 		if(empty($parm['dropdown']))
@@ -299,7 +302,7 @@ class social_shortcodes extends e_shortcode
 		// Show only Email, Facebook, Twitter and Google. 
 		if(varset($parm['type']) == 'basic')
 		{
-			$remove = array('linkedi','pinterest', 'stumbleupon', 'digg', 'reddit', 'linkedin');
+			$remove = array('linkedi','pinterest', 'stumbleupon', 'digg', 'reddit', 'linkedin', 'tumblr','pocket','wordpress','pinboard');
 			foreach($remove as $v)
 			{
 				unset($opt[$v]);	
