@@ -46,7 +46,7 @@ if (!e107::isInstalled('forum'))
 	exit;
 }
 
-
+//---- orphan $highlight_search??????
 $highlight_search = isset($_POST['highlight_search']);
 
 if (!e_QUERY)
@@ -129,8 +129,10 @@ if(!empty($_GET['f']))
 }
 
 
+//---- getScBatch here??????
 e107::getScBatch('view', 'forum')->setScVar('thread', $thread);
 
+//---- orphan $pm_installed??????
 $pm_installed = e107::isInstalled('pm');
 
 //Only increment thread views if not being viewed by thread starter
@@ -166,6 +168,7 @@ if(count($postList))
 	), 250, '...'));
 }
 
+//---- Orphan $gen????
 $gen = new convert;
 if($thread->message)
 {
@@ -241,14 +244,19 @@ else
 //TODO Clean up this mess!!
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-$tVars = new e_vars;
-$forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
+//---- Moved here to enclose $tVars.....
+$sc = e107::getScBatch('view', 'forum');
+
+//---- $tVars = new e_vars;
+//---- $forum->set_crumb(true, '', $tVars); // Set $BREADCRUMB (and BACKLINK)
+$forum->set_crumb(true, '', $thread->threadInfo); // Set $BREADCRUMB (and BACKLINK)
 //$tVars->BREADCRUMB = $crumbs['breadcrumb'];
 //$tVars->BACKLINK = $tVars->BREADCRUMB;
 //$tVars->FORUM_CRUMB = $crumbs['forum_crumb'];
-$tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
+//---- $tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_hook, emotes_off');
 
 
+/*----
 	$prev = $forum->threadGetNextPrev('prev', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
 	$next = $forum->threadGetNextPrev('next', $thread->threadId,$thread->threadInfo['forum_id'], $thread->threadInfo['thread_lastpost']);
 
@@ -264,6 +272,7 @@ $tVars->THREADNAME = $tp->toHTML($thread->threadInfo['thread_name'], true, 'no_h
 	}
 
 	$tVars->NEXTPREV = implode(" | ", $options);
+----*/
 
 /*
 $tVars->NEXTPREV = "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
@@ -271,6 +280,7 @@ $tVars->NEXTPREV .= ' | '; // enabled to make it look better on v1 templates
 $tVars->NEXTPREV .= "<a class='btn btn-default btn-sm btn-small' href='" . $e107->url->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
 */
 
+/*----
 if ($forum->prefs->get('track') && USER)
 {
 	// BC Fix for old template.
@@ -314,13 +324,16 @@ if ($forum->prefs->get('track') && USER)
 	";*/
 
 
+/*----
 	$trackDiz = ($forum->prefs->get('trackemail',true)) ? LAN_FORUM_3040 : LAN_FORUM_3041;
 
 	$tVars->TRACK = "<a id='forum-track-button' href='#' title=\"".$trackDiz."\" data-token='".deftrue('e_TOKEN','')."' data-forum-insert='forum-track-button'  data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$thread->threadInfo['thread_id']."' data-forum-action='track' name='track' class='e-tip btn btn-default' >".$img."</a>
 ";
 
 }
+----*/
 
+/*----
 $modUser = array();
 foreach ( $forum->modArray as $user)
 {
@@ -329,9 +342,11 @@ foreach ( $forum->modArray as $user)
 
 $tVars->MODERATORS = LAN_FORUM_2003.": ". implode(', ', $modUser);
 unset($modUser);
+----*/
 
-$tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_FORUM_2004 : '');
+//---- $tVars->THREADSTATUS = (!$thread->threadInfo['thread_active'] ? LAN_FORUM_2004 : '');
 
+/*----
 if ($thread->pages > 1)
 {
 	if(!$thread->page) $thread->page = 1;
@@ -347,9 +362,11 @@ if ($thread->pages > 1)
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 /*
 	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
-	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");*/
+	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
+----*/
 
+/*----
 $tVars->BUTTONS = '';
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
@@ -364,8 +381,8 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'thread'))
 //	$ntUrl = $e107->url->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
 	$tVars->BUTTONS .= "<a href='" . $ntUrl . "'>" . IMAGE_newthread . "</a>";
 }
-
-
+----*/
+/*----
 $tVars->BUTTONSX = forumbuttons($thread);
 
 function forumbuttons($thread)
@@ -432,17 +449,20 @@ function forumbuttons($thread)
 	return $text;
 	
 }
+----*/
 
 
+//---- $tVars->POLL = vartrue($pollstr);
 
-$tVars->POLL = vartrue($pollstr);
+//---- $tVars->FORUMJUMP = forumjump();
 
-$tVars->FORUMJUMP = forumjump();
+//---- $tVars->MESSAGE = $thread->message;
 
-$tVars->MESSAGE = $thread->message;
+		$sc->setVars($thread->threadInfo);
+//$forum->set_crumb(true, '', $sc); // Set $BREADCRUMB (and BACKLINK)
 
-
-$forstr = $tp->simpleParse($FORUMSTART, $tVars);
+//---- $forstr = $tp->simpleParse($FORUMSTART, $tVars);
+		$forstr = $tp->parseTemplate($FORUMSTART, true, $sc);
 
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
@@ -450,7 +470,8 @@ $alt = false;
 
 $i = $thread->page;
 
-$sc = e107::getScBatch('view', 'forum');
+//---- Moved upwards, to enclose $tVars...
+//---- $sc = e107::getScBatch('view', 'forum');
 
 
 
@@ -462,6 +483,7 @@ foreach ($postList as $c => $postInfo)
 	}
 	$loop_uid = (int)$postInfo['post_user'];
 
+//---- Orphan $tnum????
 	$tnum = $i;
 
 	$i++;
@@ -564,6 +586,7 @@ $forend = $tp->simpleParse($FORUMEND, $tVars);
 $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
+//---- Orphan $currentUser???
 $threadsViewed = explode(',', $currentUser['user_plugin_forum_viewed']);
 
 if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->threadId, $threadsViewed))
@@ -610,6 +633,7 @@ function showmodoptions()
 	global $thread, $postInfo;
 
 	$e107 = e107::getInstance();
+//---- Orphan  $forum_id????
 	$forum_id = $thread->threadInfo['forum_id'];
 	if ($postInfo['thread_start'])
 	{
@@ -650,6 +674,7 @@ function showmodoptions()
 	return $ret;
 }
 
+/*----
 function forumjump()
 {
 	global $forum;
@@ -662,7 +687,7 @@ function forumjump()
 	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
 	return $text;
 }
-
+----*/
 function rpg($user_join, $user_forums)
 {
 	global $FORUMTHREADSTYLE;

@@ -385,7 +385,7 @@ class eIPHandler
 		if (!is_readable($fileName)) return;		// @todo should we just die if no file - we know the IP is in the ban list.
 
 		$vals  = file($fileName);
-		if ($vals === FALSE) return;
+		if ($vals === FALSE || count($vals) == 0) return;
 		if (substr($vals[0], 0, 5) != '<?php')
 		{
 			echo 'Invalid message file';
@@ -455,7 +455,7 @@ class eIPHandler
 		if (!is_readable($fileName)) return $ret;
 
 		$vals  = file($fileName);
-		if ($vals === FALSE) return $ret;
+		if ($vals === FALSE || count($vals) == 0) return $ret;
 		if (substr($vals[0], 0, 5) != '<?php')
 		{
 			echo 'Invalid list file';

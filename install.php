@@ -40,7 +40,7 @@ define("e_UC_NOBODY", 255);*/
 
 if($_SERVER['QUERY_STRING'] != "debug")
 {
-	error_reporting(0); // suppress all errors unless debugging. 
+	error_reporting(0); // suppress all errors unless debugging.
 }
 else
 {
@@ -1400,8 +1400,10 @@ if($this->pdo == true)
 			}
 		}
 		elseif(file_exists("e107.htaccess"))
-		{		
-			$error = e107::getParser()->toHtml(LANINS_144,true);
+		{
+			$srch = array('[b]','[/b]');
+			$repl = array('<b>','</b>');
+			$error = str_replace($srch,$repl, LANINS_144); // too early to use e107::getParser() so use str_replace();
 		}		
 		return $error;	
 	}
@@ -1551,14 +1553,26 @@ if($this->pdo == true)
 		eRouter::clearCache();
 		$this->logLine('Core URL config set to default state');
 
+		$us = e107::getUserSession();
+
+		if($us->passwordAPIExists() === true)
+		{
+			$this->previous_steps['prefs']['passwordEncoding'] = PASSWORD_E107_PHP;
+			$pwdEncoding = PASSWORD_E107_PHP;
+		}
+		else
+		{
+			$pwdEncoding = PASSWORD_E107_MD5; // default already in default_install.xml
+		}
+
 		// Set prefs, save
 		e107::getConfig('core')->setPref($this->previous_steps['prefs']);
 		e107::getConfig('core')->save(FALSE,TRUE, FALSE); // save preferences made during install.
 		$this->logLine('Core prefs set to install choices');
 
 		// Create the admin user - replacing any that may be been included in the XML.
-		$us = e107::getUserSession();
-		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'],PASSWORD_E107_PHP);
+
+		$hash = $us->HashPassword($this->previous_steps['admin']['password'],$this->previous_steps['admin']['user'], $pwdEncoding);
 
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$userp = "1, '{$this->previous_steps['admin']['display']}', '{$this->previous_steps['admin']['user']}', '', '".$hash."', '', '{$this->previous_steps['admin']['email']}', '', '', 0, ".time().", 0, 0, 0, 0, 0, '{$ip}', 0, '', 0, 1, '', '', '0', '', ".time().", ''";

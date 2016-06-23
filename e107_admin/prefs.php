@@ -1381,7 +1381,7 @@ $text .= "
 					
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
-						<td>
+
 							";
 
 						$pwdEncodeOpts = array();
@@ -1389,17 +1389,19 @@ $text .= "
 						if(function_exists('password_verify')) // ie. php 5.5 or higher
 						{
 							$pwdEncodeOpts[3]	 = "PHP Default (Preferred)";
+
 						}
 
 						$pwdEncodeOpts[1] = PRFLAN_190;
 						$pwdEncodeOpts[0] = PRFLAN_189;
 
+						$text .= (isset($pwdEncodeOpts[3]) && $pref['passwordEncoding']!=3) ? "<td class='has-warning'>" : "<td>";
 						$text .= $frm->select('passwordEncoding', $pwdEncodeOpts,  varset($pref['passwordEncoding'], 0));
 
 				//	$text .= $frm->radio_switch('passwordEncoding', varset($pref['passwordEncoding'], 0), PRFLAN_190, PRFLAN_189);
 
 						$text .= "
-							<div class='smalltext field-help'>".PRFLAN_191."</div>
+							<div class='smalltext field-help'></div>
 						</td>
 					</tr>
 					<tr>";
@@ -1783,11 +1785,63 @@ $text .= "
 			"</div>";
 
 	}
-		$text .= "
-			".pref_submit('javascript')."
-					</fieldset>
-					
-					";
+
+$text .= pref_submit('javascript');
+
+// [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
+e107::lan('core', 'library_manager');
+
+$text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
+
+$text .= '<table width="100%" class="table table-striped" cellpadding="0" cellspacing="0">';
+$text .= '<thead>';
+$text .= '<tr>';
+$text .= '<th>' . LAN_LIBRARY_MANAGER_13 . '</th>';
+$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
+$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_14 . '</th>';
+$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_18 . '</th>';
+$text .= '<th>' . LAN_LIBRARY_MANAGER_19 . '</th>';
+$text .= '<th></th>';
+$text .= '</tr>';
+$text .= '</thead>';
+$text .= '<tbody>';
+
+$libraries = e107::library('info');
+foreach($libraries as $machineName => $library)
+{
+	$details = e107::library('detect', $machineName);
+
+	if(empty($details['name']))
+	{
+		continue;
+	}
+
+	$name = libraryGetName($machineName, $details);
+	$provider = libraryGetProvider($details);
+	$status = libraryGetStatus($details);
+	$links = libraryGetLinks($details);
+
+	$text .= '<tr>';
+	$text .= '<td>' . $name . '</td>';
+	$text .= '<td class="text-center">' . $provider . '</td>';
+	$text .= '<td class="text-center">' . $details['version'] . '</td>';
+	$text .= '<td class="text-center">' . $status . '</td>';
+	$text .= '<td>' . $details['error_message'] . '</td>';
+	$text .= '<td>' . $links . '</td>';
+	$text .= '</tr>';
+}
+
+if(empty($libraries))
+{
+	$text .= '<tr>';
+	$text .= '<td colspan="6">' . LAN_LIBRARY_MANAGER_26 . '</td>';
+	$text .= '</tr>';
+}
+
+$text .= '</tbody>';
+$text .= '</table>';
+
+$text .= "</fieldset>";
 					
 		/*			
 		e107::js('inline',"			
@@ -1940,3 +1994,109 @@ function prefs_adminmenu()
 	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
+/**
+ * Helper function to get library's name.
+ */
+function libraryGetName($machineName, $details)
+{
+	$text = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_27, array($machineName));
+	return '<span data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $details['name'] . '</span>';
+}
+
+/**
+ * Helper function to get links.
+ */
+function libraryGetLinks($details)
+{
+	$homepage = libraryGetHomepage($details);
+	$download = libraryGetDownload($details);
+
+	if ($homepage && $download)
+	{
+		return $homepage . ' | ' . $download;
+	}
+
+	if($homepage)
+	{
+		return $homepage;
+	}
+
+	if($download)
+	{
+		return $download;
+	}
+}
+
+/**
+ * Helper function to get homepage link.
+ */
+function libraryGetHomepage($details)
+{
+	if (empty($details['vendor_url']))
+	{
+		return false;
+	}
+
+	$href = $details['vendor_url'];
+	$title = $details['name'];
+
+	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_LIBRARY_MANAGER_15 . '</a>';
+}
+
+/**
+ * Helper function to get download link.
+ */
+function libraryGetDownload($details)
+{
+	if (empty($details['download_url']))
+	{
+		return false;
+	}
+
+	$href = $details['download_url'];
+	$title = $details['name'];
+
+	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_LIBRARY_MANAGER_16 . '</a>';
+}
+
+/**
+ * Helper function to get provider.
+ */
+function libraryGetProvider($details)
+{
+	$text = 'e107';
+	$provider = LAN_LIBRARY_MANAGER_24;
+
+	if(varset($details['plugin'], false) == true)
+	{
+		$text = $details['plugin'];
+		$provider = LAN_LIBRARY_MANAGER_22;
+	}
+
+	if(varset($details['theme'], false) == true)
+	{
+		$text = $details['theme'];
+		$provider = LAN_LIBRARY_MANAGER_23;
+	}
+
+	return '<span data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $provider . '</span>';
+}
+
+/**
+ * Helper function to get status.
+ */
+function libraryGetStatus($details)
+{
+	$tp = e107::getParser();
+
+	if($details['installed'] == true)
+	{
+		$icon = $tp->toGlyph('glyphicon-ok');
+		$text = LAN_OK;
+		return '<span class="text-success" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
+	}
+
+	$icon = $tp->toGlyph('glyphicon-remove');
+	$text = $details['error'];
+	return '<span class="text-danger" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
+}

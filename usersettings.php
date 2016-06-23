@@ -346,13 +346,15 @@ e107::getMessage()->addDebug("<h5>Posted Changes</h5>".print_a($changedUserData,
 		}
 	}
 }  // End - update setttings
-elseif (isset($_POST['SaveValidatedInfo']))
-{	// Next bit only valid if user editing their own data
+elseif (isset($_POST['SaveValidatedInfo'])) // Next bit only valid if user editing their own data
+{
 	if (!$adminEdit && !empty($_POST['updated_data']) && !empty($_POST['currentpassword']) && !empty($_POST['updated_key']))
 	{	// Got some data confirmed with password entry
 		$new_data = base64_decode($_POST['updated_data']);
-		if (md5($new_data) != $_POST['updated_key'])
-		{  // Should only happen if someone's fooling around
+
+		 // Should only happen if someone's fooling around
+		if (md5($new_data) != $_POST['updated_key'] || isset($new_data['user_admin']) || isset($new_data['user_perms']))
+		{
 			echo LAN_USET_42.'<br />';
 			exit();
 		}

@@ -259,6 +259,7 @@ class social_shortcodes extends e_shortcode
 
 
 		$twitterAccount = basename(XURL_TWITTER);
+
 		$btnClass = varset($parm['btnClass'], 'btn btn-default social-share');
 
 	//	return print_a($hashtags,true);
@@ -269,6 +270,8 @@ class social_shortcodes extends e_shortcode
 			{
 				continue;
 			}
+
+
 
 			$pUrl = str_replace("&","&amp;",$val['url']);
 
@@ -290,7 +293,7 @@ class social_shortcodes extends e_shortcode
 
 
 			
-			$opt[$k] = "<a class='".$btnClass." ".$tooltip." ".$butSize."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
+			$opt[$k] = "<a class='".$btnClass." ".$tooltip." ".$butSize." social-share-".$k."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
 		}
 		
 		// Show only Email, Facebook, Twitter and Google. 
