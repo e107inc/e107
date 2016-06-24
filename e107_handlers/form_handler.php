@@ -3454,9 +3454,11 @@ class e_form
 		}
 
 		$title = varset($options['title'] , (LAN_EDIT." ".$fieldName));
+		$class = varset($options['class'] ,'');
+
 		unset( $options['title']);
 
-		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
+		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
 		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\"   href='#' ";
 
@@ -4314,12 +4316,15 @@ class e_form
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
 
+					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
 
 					if(!empty($methodParms['inlineType']))
 					{
 						$attributes['inline'] = $methodParms['inlineType'];
 						$methodParms = (!empty($methodParms['inlineData'])) ? $methodParms['inlineData'] : null;
 					}
+
+
 
 					if(is_string($attributes['inline'])) // text, textarea, select, checklist. 
 					{
@@ -4342,18 +4347,16 @@ class e_form
 							
 							default:
 								$xtype = 'text';
-								$methodParms = null;
+								 $methodParms = null;
 							break;
 						}
 					}
 
 					if(!empty($xtype))
 					{
-						$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
+						$value = varset($inlineParms['pre'],'').$this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms,$inlineParms).varset($inlineParms['post'],'');
 					}
-				
 
-				
 				}
 							
 			break;
