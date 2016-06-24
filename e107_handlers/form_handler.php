@@ -2527,15 +2527,15 @@ class e_form
 		return $text;	
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	/**
-	 * Admin Button - for front-end, use button(); 
+	 * Admin Button - for front-end, use button();
 	 * @param string $name
 	 * @param string $value
 	 * @param string $action [optional] default is submit
@@ -2546,8 +2546,10 @@ class e_form
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$btype = 'submit';
-		if(strpos($action, 'action') === 0) $btype = 'button';
-
+		if(strpos($action, 'action') === 0)
+		{
+			$btype = 'button';
+		}
 
 		if(isset($options['loading']) && ($options['loading'] == false))
 		{
@@ -2560,72 +2562,145 @@ class e_form
 		}
 
 		$options = $this->format_options('admin_button', $name, $options);
-		
+
 		$options['class'] = vartrue($options['class']);
-		$options['class'] .= ' btn '.$action.' ';//shorthand
-		if(empty($label)) $label = $value;
-		
+		$options['class'] .= ' btn ' . $action;
+
+		if(empty($label))
+		{
+			$label = $value;
+		}
+
+		// Ability to use any kind of button class for the selected action.
+		if (!$this->defaultButtonClassExists($options['class']))
+		{
+			$options['class'] .= ' ' . $this->getDefaultButtonClassByAction($action);
+		}
+
 		switch ($action)
+		{
+			case 'checkall':
+				$options['class'] .= ' btn-mini btn-xs';
+				break;
+
+			case 'delete':
+			case 'danger':
+				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+				break;
+
+			case 'batch':
+			case 'batch e-hide-if-js':
+				// FIXME hide-js shouldn't be here.
+				break;
+
+			case 'filter':
+			case 'filter e-hide-if-js':
+				// FIXME hide-js shouldn't be here.
+				break;
+		}
+
+		return "<button " . $include . " type='{$btype}' name='{$name}' value='{$value}'" . $this->get_attributes($options, $name) . "><span>{$label}</span></button>";
+	}
+
+	/**
+	 * Helper function to check if a (CSS) class already contains a button class?
+	 *
+	 * @param string $class
+	 *  The class we want to check.
+	 *
+	 * @return bool
+	 *  True if $class already contains a button class. Otherwise false.
+	 */
+	function defaultButtonClassExists($class = '')
+	{
+		// Bootstrap button classes.
+		// @see http://getbootstrap.com/css/#buttons-options
+		$btnClasses = array(
+			'btn-default',
+			'btn-primary',
+			'btn-success',
+			'btn-info',
+			'btn-warning',
+			'btn-danger',
+			'btn-link',
+		);
+
+		foreach($btnClasses as $btnClass) {
+			if(strpos($class, $btnClass, 0) !== false)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Helper function to get default button class by action.
+	 *
+	 * @param string $action
+	 *  Action for a button. See button().
+	 *
+	 * @return string $class
+	 *  Default button class.
+	 */
+	function getDefaultButtonClassByAction($action)
+	{
+		switch($action)
 		{
 			case 'update':
 			case 'create':
 			case 'import':
 			case 'submit':
 			case 'success':
-				$options['class'] .= 'btn-success';
-			break;
-			
+				$class = 'btn-success';
+				break;
+
 			case 'checkall':
-				$options['class'] .= 'btn-default btn-mini btn-xs';
-			break;
-	
+				$class = 'btn-default';
+				break;
+
 			case 'cancel':
-				$options['class'] .= 'btn-default';
-				// use this for neutral colors. 
-			break;
+				$class = 'btn-default';
+				break;
 
 			case 'delete':
 			case 'danger':
-				$options['class'] .= 'btn-danger';
-				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
-			break;
+				$class = 'btn-danger';
+				break;
 
 			case 'execute':
-				$options['class'] .= 'btn-success';
-			break;
-			
+				$class = 'btn-success';
+				break;
+
 			case 'other':
-			case 'login':	
+			case 'login':
 			case 'primary':
-				$options['class'] .= 'btn-primary';
-			break;	
-			
+				$class = 'btn-primary';
+				break;
+
 			case 'warning':
-            case 'confirm':
-				$options['class'] .= 'btn-warning';
-			break;
-			
+			case 'confirm':
+				$class = 'btn-warning';
+				break;
+
 			case 'batch':
-			case 'batch e-hide-if-js': // FIXME hide-js shouldn't be here. 
-				$options['class'] .= 'btn-primary';
-			break;
-			
+			case 'batch e-hide-if-js':
+				$class = 'btn-primary';
+				break;
+
 			case 'filter':
-			case 'filter e-hide-if-js': // FIXME hide-js shouldn't be here. 
-				$options['class'] .= 'btn-primary';
-			break;
+			case 'filter e-hide-if-js':
+				$class = 'btn-primary';
+				break;
 
 			case 'default':
 			default:
-				$options['class'] .= 'btn-default';
-			break;
-		}	
+				$class = 'btn-default';
+				break;
+		}
 
-
-
-		return "
-			<button ".$include." type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
-		";
+		return $class;
 	}
 
 	function getNext()
