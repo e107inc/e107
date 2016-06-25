@@ -1251,6 +1251,8 @@ class e_file
 		$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
 		$mes = e107::getMessage();
 
+
+	//	$text = 'umask 0022'; //Could correct permissions issue with 0664 files. 
 		// Change Dir.
 
 		switch($type)
@@ -1272,18 +1274,17 @@ class e_file
 
 	//	return $cmd;
 
-		$mes->addDebug($cmd);
 
 		$mes->addDebug($cmd);
 		$text = `$cmd 2>&1`;
 
 		// Remove any local changes.
-		$cmd = $gitPath.' reset --hard';
+		$cmd = $gitPath.' --git-dir='.$dir.'/.git reset --hard';
 		$mes->addDebug($cmd);
 		$text .= `$cmd 2>&1`;
 
 		// Run Pull request
-		$cmd = $gitPath.' pull';
+		$cmd = $gitPath.' --git-dir='.$dir.'/.git pull';
 		$mes->addDebug($cmd);
 		$text .= `$cmd 2>&1`;
 
