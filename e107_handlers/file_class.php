@@ -1252,7 +1252,7 @@ class e_file
 		$mes = e107::getMessage();
 
 
-	//	$text = 'umask 0022'; //Could correct permissions issue with 0664 files. 
+	//	$text = 'umask 0022'; //Could correct permissions issue with 0664 files.
 		// Change Dir.
 
 		switch($type)
@@ -1267,26 +1267,28 @@ class e_file
 
 			default:
 				$dir = e_ROOT;
-
 		}
 
-		$cmd = 'cd '.$dir;
-
-	//	return $cmd;
 
 
-		$mes->addDebug($cmd);
-		$text = `$cmd 2>&1`;
+	//	$cmd1 = 'cd '.$dir;
+		$cmd2 = 'cd '.$dir.'; '.$gitPath.' reset --hard'; // Remove any local changes.
+		$cmd3 = 'cd '.$dir.'; '.$gitPath.' pull'; 	// Run Pull request
 
-		// Remove any local changes.
-		$cmd = $gitPath.' --git-dir='.$dir.'/.git reset --hard';
-		$mes->addDebug($cmd);
-		$text .= `$cmd 2>&1`;
 
-		// Run Pull request
-		$cmd = $gitPath.' --git-dir='.$dir.'/.git pull';
-		$mes->addDebug($cmd);
-		$text .= `$cmd 2>&1`;
+	//	$mes->addDebug($cmd1);
+		$mes->addDebug($cmd2);
+		$mes->addDebug($cmd3);
+
+	//	return false;
+
+	//	$text = `$cmd1 2>&1`;
+		$text = `$cmd2 2>&1`;
+		$text .= `$cmd3 2>&1`;
+
+	//	$text .= `$cmd4 2>&1`;
+
+	//	$text .= `$cmd5 2>&1`;
 
 		return print_a($text,true);
 
