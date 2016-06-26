@@ -988,7 +988,7 @@ class e_form
 		$dformat = e107::getDate()->toMask($dateFormat);
 
 		// If default value is set.
-		if ($datestamp)
+		if ($datestamp && $datestamp !='0000-00-00') // date-field support.
 		{
 			if(!is_numeric($datestamp))
 			{
