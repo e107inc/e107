@@ -29,18 +29,18 @@ require_once("../../class2.php"); // More secure to include it.
 header('Cache-Control: no-cache, must-revalidate');		// See if this discourages browser caching
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');		// Date in the past
 
-define('LOG_DEBUG', false);
+define('LOGSTATS_DEBUG', false);
 
 // @example url: e107_plugins/log/log.php?lv=cmVmZXJlcj1odHRwJTNBLy9sb2NhbGhvc3QlM0E4MDgwL2UxMDdfMi4wL3N0YXRzJmNvbG91cj0yNCZlc2VsZj1odHRwJTNBLy9sb2NhbGhvc3QlM0E4MDgwL2UxMDdfMi4wL2UxMDdfcGx1Z2lucy9sb2cvc3RhdHMucGhwJTNGMiZyZXM9MTkyMHgxMjAw
 
-if(LOG_DEBUG == true)
+if(LOGSTATS_DEBUG === true)
 {
 	echo "Debug is Active";
 }
 
 if (!vartrue($pref['statActivate']))
 {
-	if(LOG_DEBUG == true)
+	if(LOGSTATS_DEBUG === true)
 	{
 		echo "Stats log is inactive";
 	}
@@ -49,8 +49,9 @@ if (!vartrue($pref['statActivate']))
 }
 
 
+
 //print_r(base64_decode($_GET['lv']));
-define('log_INIT', TRUE);
+define('LOGSTATS_INIT', true);
 
 // Array of page names which should have individual query values recorded.
 // The top level array index is the page name.
@@ -211,14 +212,14 @@ $lgc = new logConsolidate;
 
 if(!$pageName = $lgc->getPageKey($self,false,$err_code,e_LAN))
 {
-	if(LOG_DEBUG == true)
+	if(LOGSTATS_DEBUG == true)
 	{
 		echo 'pageName was empty';
 	}
 	return;
 }
 
-if(LOG_DEBUG == true)
+if(LOGSTATS_DEBUG == true)
 {
 	echo "<br />File: ".$logPfile;
 }
@@ -301,7 +302,7 @@ if ($p_handle)
 	fclose($p_handle);
 }
 
-if(LOG_DEBUG == true)
+if(LOGSTATS_DEBUG == true)
 {
 	echo '<br />Script Completed';
 }
