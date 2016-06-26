@@ -5231,7 +5231,7 @@ class e_form
 	{
 		
 		$text = vartrue($fdata['fieldset_pre'])."
-			<fieldset id='{$id}'>
+			<fieldset id='{$id}-".$tab."'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
 				<table class='table adminform'>
@@ -5677,7 +5677,7 @@ class e_form
 							
 							foreach($defsubmitopt as $k=>$v)
 							{
-								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</a></li>";	
+								$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
 							}
 							
 							//$text .= '
