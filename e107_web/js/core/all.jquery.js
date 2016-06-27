@@ -531,6 +531,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				// Command to provide the jQuery css() function.
 				case 'css':
 					$(command.target).css(command.arguments);
+					// Attach all registered behaviors to the new content.
+					e107.attachBehaviors();
 					break;
 
 				// Command to set the settings that will be used for other commands in this response.
@@ -544,12 +546,16 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				// Command to attach data using jQuery's data API.
 				case 'data':
 					$(command.target).data(command.name, command.value);
+					// Attach all registered behaviors to the new content.
+					e107.attachBehaviors();
 					break;
 
 				// Command to apply a jQuery method.
 				case 'invoke':
 					var $element = $(command.target);
 					$element[command.method].apply($element, command.arguments);
+					// Attach all registered behaviors to the new content.
+					e107.attachBehaviors();
 					break;
 			}
 		});
