@@ -900,7 +900,6 @@ $LASTPOSTUSER = $this->var['lastpost_username'];
 		}
 		
 		return '';
-		// return print_r($this->var);
 	}
 }
 ?>
