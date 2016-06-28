@@ -26,4 +26,4 @@ define("NLLAN_70", "Selected newsletter does not exist");
 //define("NLLAN_71", "Back"); 
 define("NLLAN_72", "View archive");
 
-?>
+define("NLLAN_73", "Enter your Email");
