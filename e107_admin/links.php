@@ -725,7 +725,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 			foreach($config as $k=>$v)
 			{
-				if($k == 'index') // only provide urls without dynamic elements.
+				if($k == 'index' || (strpos($v['regex'],'(') === false)) // only provide urls without dynamic elements.
 				{
 					$opts[] = $k;
 				}
