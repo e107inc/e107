@@ -352,8 +352,9 @@ elseif (isset($_POST['SaveValidatedInfo'])) // Next bit only valid if user editi
 	{	// Got some data confirmed with password entry
 		$new_data = base64_decode($_POST['updated_data']);
 
+
 		 // Should only happen if someone's fooling around
-		if (md5($new_data) != $_POST['updated_key'] || isset($new_data['user_admin']) || isset($new_data['user_perms']))
+		if (md5($new_data) != $_POST['updated_key'] || ($userMethods->hasReadonlyField($new_data) !==false))
 		{
 			echo LAN_USET_42.'<br />';
 			exit();
@@ -810,7 +811,6 @@ function req($field)
 	}
 	return $ret;
 }
-
 
 
 // Delete a file from the public directories. Return TRUE on success, FALSE on failure.
