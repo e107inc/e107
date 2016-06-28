@@ -699,8 +699,4 @@ $gen = new convert;
 		return $frm->breadcrumb($breadarray);
 	}
 
-	function sc_avatar($opts)
-	{
-		return e107::getParser()->toAvatar(e107::user($this->var['forum_lastpost_user']),$opts);
-	}
 }
