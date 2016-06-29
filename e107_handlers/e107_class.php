@@ -1707,13 +1707,19 @@ class e107
 	 *  - 'load': Loads a library.
 	 * @param string $library
 	 *  The name of the library to detect/load.
+	 * @param string $variant
+	 *   (Optional for 'load') The name of the variant to load. Note that only one variant of a library can be loaded
+	 *   within a single request. The variant that has been passed first is used; different variant names in subsequent
+	 *   calls are ignored.
 	 *
 	 * @return array|boolean
 	 *  - In case of 'detect': An associative array containing registered information for the library specified by
 	 *    $name, or FALSE if the library $name is not registered.
 	 *  - In case of 'load': An associative array of the library information.
+	 *  - In case of 'info': An associative array containing registered information for all libraries, the registered
+	 *    information for the library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	public static function library($action = '', $library = null)
+	public static function library($action = '', $library = null, $variant = null)
 	{
 		$libraryHandler = e107::getLibrary();
 
@@ -1724,7 +1730,7 @@ class e107
 				break;
 
 			case 'load':
-				return $libraryHandler->load($library);
+				return $libraryHandler->load($library, $variant);
 				break;
 
 			case 'info':
