@@ -734,6 +734,17 @@ class pluginManager{
 			}
 
 			$plug = $plugin->getinfo($this->id);
+
+		// Check if plugin is being used by another plugin before uninstalling it.
+		if(isset($plug['plugin_path']))
+		{
+			if ($plugin->isUsedByAnotherPlugin($plug['plugin_path']))
+			{
+				$this->action = 'installed'; // Render plugin list.
+				return;
+			}
+		}
+
 			$text = '';
 			//Uninstall Plugin
 			if ($plug['plugin_installflag'] == TRUE )
