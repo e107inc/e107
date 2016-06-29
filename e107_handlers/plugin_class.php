@@ -1489,7 +1489,7 @@ class e107plugin
 		$this->XmlLanguageFiles($function, varset($plug_vars['languageFiles']), 'pre'); // First of all, see if there's a language file specific to install
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
-		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
+		if($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
 		{
 			$canContinue = $this->XmlDependencies($plug_vars['dependencies']);
 		}
@@ -1793,73 +1793,176 @@ class e107plugin
 			
 						
 	}
-				
-			
-		
-	
-	
-	
+
+
+	/**
+	 * Check if plugin is being used by another plugin before uninstalling it.
+	 *
+	 * @param array $plugin
+	 *  Plugin name.
+	 *
+	 * @return boolean
+	 *  TRUE if plugin is used, otherwise FALSE.
+	 */
+	function isUsedByAnotherPlugin($plugin)
+	{
+		$db = e107::getDb();
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		$xml = e107::getXml();
+
+		$pluginIsUsed = false;
+		$enPlugs = array();
+		$usedBy = array();
+
+		// Get list of enabled plugins.
+		$db->select("plugin", "*", "plugin_id !='' order by plugin_path ASC");
+		while($row = $db->fetch())
+		{
+			if($row['plugin_installflag'] == 1)
+			{
+				$enPlugs[] = $row['plugin_path'];
+			}
+		}
+
+		foreach($enPlugs as $enPlug)
+		{
+			if(!file_exists(e_PLUGIN . $enPlug . '/plugin.xml'))
+			{
+				continue;
+			}
+
+			$plugInfo = $xml->loadXMLfile(e_PLUGIN . $enPlug . '/plugin.xml', 'advanced');
+
+			if($plugInfo === false)
+			{
+				continue;
+			}
+
+			if (!isset($plugInfo['dependencies']))
+			{
+				continue;
+			}
+
+			// FIXME too many nested foreach, need refactoring.
+			foreach($plugInfo['dependencies'] as $dt => $da)
+			{
+				foreach($da as $dv)
+				{
+					if(isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+					{
+						switch($dt)
+						{
+							case 'plugin':
+								if ($dv['@attributes']['name'] == $plugin)
+								{
+									$usedBy[] = $enPlug;
+								}
+								break;
+						}
+					}
+				}
+			}
+		}
+
+		if(count($usedBy))
+		{
+			$pluginIsUsed = true;
+			$text = '<b>' . LAN_UNINSTALL_FAIL . '</b><br />';
+			$text .= $tp->lanVars(LAN_PLUGIN_IS_USED, array('x' => $plugin), true) . ' ';
+			$text .= implode(', ', $usedBy);
+			$mes->addError($text);
+		}
+
+		return $pluginIsUsed;
+	}
+
 	/**
 	 * Process XML Tag <dependencies> (deprecated 'depend' which is a brand of adult diapers)
-	 * @param array $tag
+	 *
+	 * @param array $tags
+	 *  Tags (in <dependencies> tag) from XML file.
+	 *
 	 * @return boolean
 	 */
-	function XmlDependencies($tag)
+	function XmlDependencies($tags)
 	{
-		$canContinue = TRUE;
+		$db = e107::getDb();
 		$mes = e107::getMessage();
+
+		$canContinue = true;
+		$enabledPlugins = array();
 		$error = array();
 
-		foreach ($tag as $dt => $da)
+		// Get list of enabled plugins.
+		$db->select("plugin", "*", "plugin_id !='' order by plugin_path ASC");
+		while($row = $db->fetch())
 		{
-			foreach ($da as $dv) {
-				if (isset($dv['@attributes']) && isset($dv['@attributes']['name'])) {
-					//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
-					switch ($dt) {
+			if($row['plugin_installflag'] == 1)
+			{
+				$enabledPlugins[$row['plugin_path']] = $row['plugin_version'];
+			}
+		}
+
+		// FIXME too many nested foreach, need refactoring.
+		foreach($tags as $dt => $da)
+		{
+			foreach($da as $dv)
+			{
+				if(isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+				{
+					switch($dt)
+					{
 						case 'plugin':
-							if (!isset($pref['plug_installed'][$dv['@attributes']['name']])) { // Plugin not installed
-								$canContinue = FALSE;
+							if(!isset($enabledPlugins[$dv['@attributes']['name']]))
+							{ // Plugin not installed
+								$canContinue = false;
 								$error[] = EPL_ADLAN_70 . $dv['@attributes']['name'];
 							}
-							elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $pref['plug_installed'][$dv['@attributes']['name']], '<=') === FALSE)) {
+							elseif(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $enabledPlugins[$dv['@attributes']['name']], '<=') === false))
+							{
 								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
-								$canContinue = FALSE;
+								$canContinue = false;
 							}
 							break;
 						case 'extension':
-							if (!extension_loaded($dv['@attributes']['name'])) {
-								$canContinue = FALSE;
+							if(!extension_loaded($dv['@attributes']['name']))
+							{
+								$canContinue = false;
 								$error[] = EPL_ADLAN_73 . $dv['@attributes']['name'];
 							}
-							elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === FALSE)) {
+							elseif(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === false))
+							{
 								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
-								$canContinue = FALSE;
+								$canContinue = false;
 							}
 							break;
 						case 'php': // all should be lowercase
-							if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === FALSE)) {
+							if(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === false))
+							{
 								$error[] = EPL_ADLAN_74 . $dv['@attributes']['min_version'];
-								$canContinue = FALSE;
+								$canContinue = false;
 							}
 							break;
 						case 'mysql': // all should be lowercase
-							if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], e107::getDb()
-										->mySqlServerInfo(), '<=') === FALSE)
-							) {
+							if(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $db->mySqlServerInfo(), '<=') === false)
+							)
+							{
 								$error[] = EPL_ADLAN_75 . $dv['@attributes']['min_version'];
-								$canContinue = FALSE;
+								$canContinue = false;
 							}
 							break;
 						default:
+							// TODO lan
 							echo "Unknown dependency: {$dt}<br />";
 					}
 				}
 			}
 		}
 
-		if (count($error))
+		if(count($error))
 		{
-			$text = '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />', $error);
+			$text = '<b>' . LAN_INSTALL_FAIL . '</b><br />' . implode('<br />', $error);
 			$mes->addError($text);
 		}
 
