@@ -797,11 +797,15 @@ class e_form
 		}
 	
 		$default_thumb = $default;
+		$class = '';
+
 		if($default)
 		{
 			if($video = $tp->toVideo($default, array('thumb'=>'src')))
 			{
-				$default_url = $video;	
+				$default_url = $video;
+				$class = 'image-selector-video';
+
 			}
 			else 
 			{
@@ -822,6 +826,7 @@ class e_form
 			//$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
 			$default_url = e_IMAGE_ABS."generic/nomedia.png";
 			$blank = TRUE;
+			$class = 'image-selector-empty';
 		}
 		
 		
@@ -850,14 +855,12 @@ class e_form
 			$width = vartrue($sc_parameters['w'], 120);
 			$height = vartrue($sc_parameters['h'], 0);
 
-
-
-			$ret = "<div class='imgselector-container e-tip' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
+			$ret = "<div class='imgselector-container e-tip ".$class."' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
-			$thpath = empty($default) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
+			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
 			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
 
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
