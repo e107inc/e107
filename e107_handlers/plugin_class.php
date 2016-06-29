@@ -1810,53 +1810,49 @@ class e107plugin
 		$mes = e107::getMessage();
 		$error = array();
 
-		foreach ($tag as $dt => $dv)
+		foreach ($tag as $dt => $da)
 		{
-			if (isset($dv['@attributes']) && isset($dv['@attributes']['name']))
-			{
-				//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
-				switch ($dt)
-				{
-					case 'plugin':
-						if (!isset($pref['plug_installed'][$dv['@attributes']['name']]))
-						{ // Plugin not installed
-							$canContinue = FALSE;
-							$error[] = EPL_ADLAN_70.$dv['@attributes']['name'];
-						}
-						elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $pref['plug_installed'][$dv['@attributes']['name']], '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					case 'extension':
-						if (!extension_loaded($dv['@attributes']['name']))
-						{
-							$canContinue = FALSE;
-							$error[] = EPL_ADLAN_73.$dv['@attributes']['name'];
-						}
-						elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					case 'php': // all should be lowercase
-						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_74.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					case 'mysql': // all should be lowercase
-						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], e107::getDb()->mySqlServerInfo(), '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					default:
-						echo "Unknown dependency: {$dt}<br />";
+			foreach ($da as $dv) {
+				if (isset($dv['@attributes']) && isset($dv['@attributes']['name'])) {
+					//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
+					switch ($dt) {
+						case 'plugin':
+							if (!isset($pref['plug_installed'][$dv['@attributes']['name']])) { // Plugin not installed
+								$canContinue = FALSE;
+								$error[] = EPL_ADLAN_70 . $dv['@attributes']['name'];
+							}
+							elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $pref['plug_installed'][$dv['@attributes']['name']], '<=') === FALSE)) {
+								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
+								$canContinue = FALSE;
+							}
+							break;
+						case 'extension':
+							if (!extension_loaded($dv['@attributes']['name'])) {
+								$canContinue = FALSE;
+								$error[] = EPL_ADLAN_73 . $dv['@attributes']['name'];
+							}
+							elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === FALSE)) {
+								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
+								$canContinue = FALSE;
+							}
+							break;
+						case 'php': // all should be lowercase
+							if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === FALSE)) {
+								$error[] = EPL_ADLAN_74 . $dv['@attributes']['min_version'];
+								$canContinue = FALSE;
+							}
+							break;
+						case 'mysql': // all should be lowercase
+							if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], e107::getDb()
+										->mySqlServerInfo(), '<=') === FALSE)
+							) {
+								$error[] = EPL_ADLAN_75 . $dv['@attributes']['min_version'];
+								$canContinue = FALSE;
+							}
+							break;
+						default:
+							echo "Unknown dependency: {$dt}<br />";
+					}
 				}
 			}
 		}
