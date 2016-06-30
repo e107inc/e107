@@ -473,6 +473,10 @@ $i = $thread->page;
 //---- Moved upwards, to enclose $tVars...
 //---- $sc = e107::getScBatch('view', 'forum');
 
+	$mes = e107::getMessage();
+//		$sc->setVars($thread->threadInfo);
+//--->$forend = $tp->simpleParse($FORUMEND, $tVars);
+$forend = $tp->parseTemplate($FORUMEND, true, $sc);
 
 
 foreach ($postList as $c => $postInfo)
@@ -538,6 +542,7 @@ foreach ($postList as $c => $postInfo)
 }
 unset($loop_uid);
 
+/*---->
 if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 {
 	//XXX Show only on the last page??
@@ -578,11 +583,14 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		$tVars->QUICKREPLY = $forum_quickreply;
 	}
 }
+<----*/
 
-
+/*--->
 	$mes = e107::getMessage();
-$forend = $tp->simpleParse($FORUMEND, $tVars);
-
+		$sc->setVars($thread->threadInfo);
+//--->$forend = $tp->simpleParse($FORUMEND, $tVars);
+$forend = $tp->parseTemplate($FORUMEND, true, $sc);
+<---*/
 $forumstring = $forstr . $forthr . vartrue($forrep) . $forend;
 
 //If last post came after USERLV and not yet marked as read, mark the thread id as read
@@ -899,7 +907,7 @@ class e107ForumThread
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		$frm = e107::getForm();
+//Orphan $frm variable????	$frm = e107::getForm();
 
 		if (empty($_GET['f']))
 		{
