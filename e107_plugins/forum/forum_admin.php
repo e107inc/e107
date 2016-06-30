@@ -22,6 +22,14 @@ e107::lan('forum','front', true);
 //e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
 //e107::lan('forum','', 'front');
 
+
+e107::css('inline',"
+
+	img.level-1 { margin:0 5px 0 25px; }
+	img.level-2 { margin:0 5px 0 50px; }
+
+");
+
 $legacy = false;
 
 if(E107_DEBUG_LEVEL > 0 && $legacy == true)
@@ -870,6 +878,8 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			if($mode == 'read')
 			{
+				return $curVal;
+
 				$parent 	= $this->getController()->getListModel()->get('forum_parent');
 				$id			= $this->getController()->getListModel()->get('forum_id');
 				$sub     = $this->getController()->getListModel()->get('forum_sub');
@@ -907,13 +917,26 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			if($mode == 'inline')
 			{
+				$ret = array('inlineType'=>'text');
+
 				$parent 	= $this->getController()->getListModel()->get('forum_parent');
-				if(empty($parent))
+				$sub     = $this->getController()->getListModel()->get('forum_sub');
+
+				if(!empty($parent))
 				{
-					return array('inlineType'=>'text');
+
+					$level = 1;
+
+					if(!empty($sub))
+					{
+						$level = 2;
+					}
+
+					$ret['inlineParms'] = array('pre'=>'<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="level-'.$level.' icon" alt="" />');
 				}
 
-				return false;
+
+				return $ret;
 			}
 		}
 

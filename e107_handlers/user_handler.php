@@ -54,7 +54,7 @@ class UserHandler
 	var $preferred = PASSWORD_DEFAULT_TYPE;			// Preferred password format
 	var $passwordOpts = 0;							// Copy of pref
 	var $passwordEmail = false;						// True if can use email address to log in
-	var $otherFields = array();
+	private $otherFields = array();
 	private $passwordAPI = false;
 
 	// Constructor
@@ -177,6 +177,36 @@ class UserHandler
 	{
 		return $this->passwordAPI;
 	}
+
+
+	/**
+	 * Check if a user posted field is readonly (should not be user-editable) - used in usersettings.php
+	 * @param array $posted
+	 * @return bool
+	 */
+	public function hasReadonlyField($posted)
+	{
+		$restricted = array_keys($this->otherFields);
+
+		$pref = e107::getPref();
+
+		if(empty($pref['signup_option_class']))
+		{
+			$restricted[] = 'user_class';
+		}
+
+		foreach($posted as $k=>$v)
+		{
+			if(in_array($k,$restricted))
+			{
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+
 
 
 	/**

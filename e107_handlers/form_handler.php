@@ -797,11 +797,15 @@ class e_form
 		}
 	
 		$default_thumb = $default;
+		$class = '';
+
 		if($default)
 		{
 			if($video = $tp->toVideo($default, array('thumb'=>'src')))
 			{
-				$default_url = $video;	
+				$default_url = $video;
+				$class = 'image-selector-video';
+
 			}
 			else 
 			{
@@ -822,6 +826,7 @@ class e_form
 			//$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
 			$default_url = e_IMAGE_ABS."generic/nomedia.png";
 			$blank = TRUE;
+			$class = 'image-selector-empty';
 		}
 		
 		
@@ -850,14 +855,12 @@ class e_form
 			$width = vartrue($sc_parameters['w'], 120);
 			$height = vartrue($sc_parameters['h'], 0);
 
-
-
-			$ret = "<div class='imgselector-container e-tip' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
+			$ret = "<div class='imgselector-container e-tip ".$class."' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
-			$thpath = empty($default) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
+			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
 			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
 
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='') 
 			{
@@ -988,7 +991,7 @@ class e_form
 		$dformat = e107::getDate()->toMask($dateFormat);
 
 		// If default value is set.
-		if ($datestamp)
+		if ($datestamp && $datestamp !='0000-00-00') // date-field support.
 		{
 			if(!is_numeric($datestamp))
 			{
@@ -2527,15 +2530,15 @@ class e_form
 		return $text;	
 
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	/**
-	 * Admin Button - for front-end, use button(); 
+	 * Admin Button - for front-end, use button();
 	 * @param string $name
 	 * @param string $value
 	 * @param string $action [optional] default is submit
@@ -2546,8 +2549,10 @@ class e_form
 	function admin_button($name, $value, $action = 'submit', $label = '', $options = array())
 	{
 		$btype = 'submit';
-		if(strpos($action, 'action') === 0) $btype = 'button';
-
+		if(strpos($action, 'action') === 0)
+		{
+			$btype = 'button';
+		}
 
 		if(isset($options['loading']) && ($options['loading'] == false))
 		{
@@ -2560,72 +2565,145 @@ class e_form
 		}
 
 		$options = $this->format_options('admin_button', $name, $options);
-		
+
 		$options['class'] = vartrue($options['class']);
-		$options['class'] .= ' btn '.$action.' ';//shorthand
-		if(empty($label)) $label = $value;
-		
+		$options['class'] .= ' btn ' . $action;
+
+		if(empty($label))
+		{
+			$label = $value;
+		}
+
+		// Ability to use any kind of button class for the selected action.
+		if (!$this->defaultButtonClassExists($options['class']))
+		{
+			$options['class'] .= ' ' . $this->getDefaultButtonClassByAction($action);
+		}
+
 		switch ($action)
+		{
+			case 'checkall':
+				$options['class'] .= ' btn-mini btn-xs';
+				break;
+
+			case 'delete':
+			case 'danger':
+				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+				break;
+
+			case 'batch':
+			case 'batch e-hide-if-js':
+				// FIXME hide-js shouldn't be here.
+				break;
+
+			case 'filter':
+			case 'filter e-hide-if-js':
+				// FIXME hide-js shouldn't be here.
+				break;
+		}
+
+		return "<button " . $include . " type='{$btype}' name='{$name}' value='{$value}'" . $this->get_attributes($options, $name) . "><span>{$label}</span></button>";
+	}
+
+	/**
+	 * Helper function to check if a (CSS) class already contains a button class?
+	 *
+	 * @param string $class
+	 *  The class we want to check.
+	 *
+	 * @return bool
+	 *  True if $class already contains a button class. Otherwise false.
+	 */
+	function defaultButtonClassExists($class = '')
+	{
+		// Bootstrap button classes.
+		// @see http://getbootstrap.com/css/#buttons-options
+		$btnClasses = array(
+			'btn-default',
+			'btn-primary',
+			'btn-success',
+			'btn-info',
+			'btn-warning',
+			'btn-danger',
+			'btn-link',
+		);
+
+		foreach($btnClasses as $btnClass) {
+			if(strpos($class, $btnClass, 0) !== false)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Helper function to get default button class by action.
+	 *
+	 * @param string $action
+	 *  Action for a button. See button().
+	 *
+	 * @return string $class
+	 *  Default button class.
+	 */
+	function getDefaultButtonClassByAction($action)
+	{
+		switch($action)
 		{
 			case 'update':
 			case 'create':
 			case 'import':
 			case 'submit':
 			case 'success':
-				$options['class'] .= 'btn-success';
-			break;
-			
+				$class = 'btn-success';
+				break;
+
 			case 'checkall':
-				$options['class'] .= 'btn-default btn-mini btn-xs';
-			break;
-	
+				$class = 'btn-default';
+				break;
+
 			case 'cancel':
-				$options['class'] .= 'btn-default';
-				// use this for neutral colors. 
-			break;
+				$class = 'btn-default';
+				break;
 
 			case 'delete':
 			case 'danger':
-				$options['class'] .= 'btn-danger';
-				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
-			break;
+				$class = 'btn-danger';
+				break;
 
 			case 'execute':
-				$options['class'] .= 'btn-success';
-			break;
-			
+				$class = 'btn-success';
+				break;
+
 			case 'other':
-			case 'login':	
+			case 'login':
 			case 'primary':
-				$options['class'] .= 'btn-primary';
-			break;	
-			
+				$class = 'btn-primary';
+				break;
+
 			case 'warning':
-            case 'confirm':
-				$options['class'] .= 'btn-warning';
-			break;
-			
+			case 'confirm':
+				$class = 'btn-warning';
+				break;
+
 			case 'batch':
-			case 'batch e-hide-if-js': // FIXME hide-js shouldn't be here. 
-				$options['class'] .= 'btn-primary';
-			break;
-			
+			case 'batch e-hide-if-js':
+				$class = 'btn-primary';
+				break;
+
 			case 'filter':
-			case 'filter e-hide-if-js': // FIXME hide-js shouldn't be here. 
-				$options['class'] .= 'btn-primary';
-			break;
+			case 'filter e-hide-if-js':
+				$class = 'btn-primary';
+				break;
 
 			case 'default':
 			default:
-				$options['class'] .= 'btn-default';
-			break;
-		}	
+				$class = 'btn-default';
+				break;
+		}
 
-
-
-		return "
-			<button ".$include." type='{$btype}' name='{$name}' value='{$value}'".$this->get_attributes($options, $name)."><span>{$label}</span></button>
-		";
+		return $class;
 	}
 
 	function getNext()
@@ -3379,9 +3457,11 @@ class e_form
 		}
 
 		$title = varset($options['title'] , (LAN_EDIT." ".$fieldName));
+		$class = varset($options['class'] ,'');
+
 		unset( $options['title']);
 
-		$text = "<a class='e-tip e-editable editable-click' data-name='".$dbField."' ";
+		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
 		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\"   href='#' ";
 
@@ -4239,12 +4319,15 @@ class e_form
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
 
+					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
 
 					if(!empty($methodParms['inlineType']))
 					{
 						$attributes['inline'] = $methodParms['inlineType'];
 						$methodParms = (!empty($methodParms['inlineData'])) ? $methodParms['inlineData'] : null;
 					}
+
+
 
 					if(is_string($attributes['inline'])) // text, textarea, select, checklist. 
 					{
@@ -4267,18 +4350,16 @@ class e_form
 							
 							default:
 								$xtype = 'text';
-								$methodParms = null;
+								 $methodParms = null;
 							break;
 						}
 					}
 
 					if(!empty($xtype))
 					{
-						$value = $this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms);
+						$value = varset($inlineParms['pre'],'').$this->renderInline($field, $id, $attributes['title'], $_value, $value, $xtype, $methodParms,$inlineParms).varset($inlineParms['post'],'');
 					}
-				
 
-				
 				}
 							
 			break;
@@ -5153,7 +5234,7 @@ class e_form
 	{
 		
 		$text = vartrue($fdata['fieldset_pre'])."
-			<fieldset id='{$id}'>
+			<fieldset id='{$id}-".$tab."'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
 				<table class='table adminform'>
@@ -5599,7 +5680,7 @@ class e_form
 							
 							foreach($defsubmitopt as $k=>$v)
 							{
-								$text .= "<li><a href='#' class='e-noclick'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</a></li>";	
+								$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
 							}
 							
 							//$text .= '

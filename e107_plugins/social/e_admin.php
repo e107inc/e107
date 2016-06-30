@@ -13,7 +13,7 @@ class social_admin
 	{
 		$pref = e107::pref('core','social_login');
 
-		if(!empty($pref) && is_array($pref['Twitter']))
+		if(!empty($pref) && !empty($pref['Twitter']) && is_array($pref['Twitter']))
 		{
 			$this->twitterActive = vartrue($pref['Twitter']['keys']['key']);
 		}

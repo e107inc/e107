@@ -252,12 +252,12 @@ a.brand:hover img 			{
 
 } 
 
-img.image-selector							{ margin-bottom:0px; }
+img.image-selector							{ margin-bottom:0; }
       
 .nav-collapse 								{ margin-top:8px; }
-.dropdown-menu 								{ box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); }
+.dropdown-menu 								{ box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); }
 .dropdown-menu i,
-.dropdown-menu img 							{ padding: 0px 0px; margin-right: 10px; }
+.dropdown-menu img 							{ padding: 0 0; margin-right: 10px; }
 
 ul.navbar-nav li ul.dropdown-menu > li a img,
 ul.navbar-nav li ul.dropdown-menu > li a i		{
@@ -1254,7 +1254,8 @@ li.rssRow > div {
 
 .xdebug-error { color: black; font-size:1.5em }
 
-
+li.after-submit { padding:5px; }
+li.after-submit:hover { background-color: #337AB7; color:white }
 
 /* Legacy Styling  */
 .fborder .forumheader3    { padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #0a0a0a; }
