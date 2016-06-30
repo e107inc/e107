@@ -897,7 +897,7 @@ if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thre
 		$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
 	//	$ajaxInsert = 1;
 	//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
-		$frm = e107::getForm();
+//Orphan $frm variable????		$frm = e107::getForm();
 
 		$urlParms = array('f'=>'rp','id'=>$this->var['thread_id'], 'post'=>$this->var['thread_id']);
 		$url = e107::url('forum','post', null, array('query'=>$urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
@@ -924,10 +924,10 @@ if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thre
 				
 		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 	}
-	else
-	{
+//----	else
+//----	{
 		return $forum_quickreply;
-	}
+//----	}
 }
 	}
 
