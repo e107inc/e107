@@ -907,7 +907,7 @@ class e107ForumThread
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		$frm = e107::getForm();
+//Orphan $frm variable????	$frm = e107::getForm();
 
 		if (empty($_GET['f']))
 		{
