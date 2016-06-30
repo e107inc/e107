@@ -4835,47 +4835,46 @@ class e_form
 			case 'user_customtitle':
 			case 'user_email':*/
 			case 'user':
-				//user_id expected
-				// Just temporary solution, could be changed soon
-
-
-				if(!isset($parms['__options'])) $parms['__options'] = array();
-				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
-
-				if((empty($value) || !empty($parms['currentInit']) && empty($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
+				if(!isset($parms['__options']))
 				{
-					$value = array('user_id'=>USERID, 'user_name'=>USERNAME);
-					if(vartrue($parms['current']))
-					{
-						$parms['__options']['readonly'] = true;
-					}
-
+					$parms['__options'] = array();
 				}
 
+				if(!is_array($parms['__options']))
+				{
+					parse_str($parms['__options'], $parms['__options']);
+				}
 
+				// If no default value is provided. Or default is 'USERID'.
+				if(empty($value) && (!isset($parms['default']) || vartrue($parms['default']) == 'USERID'))
+				{
+					// Include current user by default.
+					$value = array(
+						'user_id'   => USERID,
+						'user_name' => USERNAME,
+					);
+				}
 
+				// 'current' - use ALWAYS! current user (editor).
+				if(vartrue($parms['current']))
+				{
+					$value = array(
+						'user_id'   => USERID,
+						'user_name' => USERNAME,
+					);
 
-
-		//		if(!is_array($value))
-		//		{
-			//		$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// e107::user($value);
-		//		}
+					$parms['__options']['readonly'] = true;
+				}
 
 				$colname = vartrue($parms['nameType'], 'user_name');
 				$parms['__options']['name'] = $colname;
-
-		//		if(!$value) $value = array();
-		//		$uname = varset($value[$colname]);
-		//		$value = varset($value['user_id'], 0);
 
 				if(!empty($parms['limit']))
 				{
 					$parms['__options']['limit'] = intval($parms['limit']);
 				}
 
-				$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options']));
-
-			//	$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
+				$ret = $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options']));
 			break;
 
 
