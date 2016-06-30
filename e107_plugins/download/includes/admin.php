@@ -1699,7 +1699,7 @@ $columnInfo = array(
 	      	$dlInfo['download_comment']				= $tp->toDB($_POST['download_comment']);
 	      	$dlInfo['download_class']				= $tp->toDB($_POST['download_class']);
 	      	$dlInfo['download_visible']				= $tp->toDB($_POST['download_visible']);
-			$dlInfo['download_datestamp']			= e107::getDate()->convert($_POST['download_datestamp'],'inputdate');
+			$dlInfo['download_datestamp']			= intval($_POST['download_datestamp']);
 			
 	
 	      if($_POST['update_datestamp'])
