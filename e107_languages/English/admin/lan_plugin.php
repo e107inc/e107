@@ -272,5 +272,7 @@ define ('EPL_ADLAN_229',"Refresh");
 define('LAN_UPGRADE_SUCCESSFUL', "Upgrade successful");
 define('LAN_INSTALL_SUCCESSFUL', "Installation successful");
 define('LAN_INSTALL_FAIL', "Installation failed!");
+define('LAN_UNINSTALL_FAIL', "Unable to uninstall!");
+define('LAN_PLUGIN_IS_USED', "[x] plugin is used by:");
 
 ?>

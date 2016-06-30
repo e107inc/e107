@@ -530,7 +530,7 @@ CREATE TABLE user (
   user_sess varchar(100) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
-  user_image varchar(100) NOT NULL default '',
+  user_image varchar(255) NOT NULL default '',
   user_hideemail tinyint(3) unsigned NOT NULL default '0',
   user_join int(10) unsigned NOT NULL default '0',
   user_lastvisit int(10) unsigned NOT NULL default '0',

@@ -258,8 +258,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
 					$pid            = $plug."|".$k;
 
-					$v['regex'] = str_replace("^",$home,$v['regex']);
-					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." Only)", 'url'=>e_REQUEST_SELF));
+					$v['regex'] =   preg_replace("/^\^/",$home,$v['regex']);
+					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (Language-specific)", 'url'=>e_REQUEST_SELF));
 					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
 					$text .= "<tr>

@@ -430,7 +430,7 @@ class userlogin
 		$log = e107::getAdminLog();
 		
 		if($forceLogin === 'provider') return true;
-		
+		/*
 		if ($this->lookEmail && vartrue($pref['passwordEncoding']))
 		{
 			$tmp = e107::getArrayStorage()->unserialize($this->userData['user_prefs']);
@@ -442,7 +442,7 @@ class userlogin
 		{
 			$requiredPassword = $this->userData['user_password'];
 		}
-
+		*/
 
 		// Now check password
 		if ($forceLogin)
@@ -460,7 +460,7 @@ class userlogin
 			if ((($pref['password_CHAP'] > 0) && ($response && $gotChallenge) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
 			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
-				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $requiredPassword)) === PASSWORD_INVALID)
+				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $this->userData['user_password'])) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
 				}
@@ -474,17 +474,17 @@ class userlogin
 					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
 					'login_name'        => $login_name,
 					'userpass'          => $userpass,
-					'pwdHash'           => $requiredPassword
+					'pwdHash'           => $this->userData['user_password']
 				);
 
-				if (($pass_result = $this->userMethods->CheckPassword($userpass, $login_name, $requiredPassword)) === PASSWORD_INVALID)
+				if (($pass_result = $this->userMethods->CheckPassword($userpass, $login_name, $this->userData['user_password'])) === PASSWORD_INVALID)
 				{
-					$auditLog['result'] = $pass_result;
+					$auditLog['result'] = intval($pass_result);
 					$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 					return $this->invalidLogin($username,LOGIN_BAD_PW);
 				}
 
-				$auditLog['result'] = $pass_result;
+				$auditLog['result'] = intval($pass_result);
 
 				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 			}
