@@ -534,8 +534,13 @@ class cpage_shortcodes extends e_shortcode
 		{
 			$array['types'] = 'page,news';
 		}
-			
-		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']));	
+
+		$templateID = vartrue($this->var['page_template'],'default');
+
+		$template = e107::getCoreTemplate('page', $templateID);
+
+
+		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']), $template['related']);
 	}
 	
 	
