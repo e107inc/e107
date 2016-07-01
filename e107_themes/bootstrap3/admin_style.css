@@ -86,7 +86,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 }
 
 
-table input.form-control, table textarea.form-control,  table select.form-control {
+table input.form-control, table textarea.form-control, table select.form-control, table .form-control .selectize-input {
     width: 206px;
 }
 
