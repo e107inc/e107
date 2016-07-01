@@ -4892,7 +4892,10 @@ class e_form
 					$parms['__options']['limit'] = intval($parms['limit']);
 				}
 
-				$ret = $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options']));
+				$pre = vartrue($parms['pre']);
+				$post = vartrue($parms['post']);
+
+				$ret = $pre . $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options'])) . $post;
 			break;
 
 
