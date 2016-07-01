@@ -612,6 +612,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$src = $vThumb;
 			$_src = '#';
+			$dimensions = e107::getParser()->thumbDimensions();
 		}
 		else
 		{
