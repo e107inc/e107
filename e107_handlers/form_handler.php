@@ -4782,7 +4782,6 @@ class e_form
 
 			case 'dropdown':
 			case 'comma':
-
 				if(!empty($attributes['writeParms']['optArray']))
 				{
 					$eloptions = $attributes['writeParms'];
@@ -4793,12 +4792,22 @@ class e_form
 					$eloptions  = vartrue($parms['__options'], array());
 				}
 
-				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
-				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
+				if(is_string($eloptions))
+				{
+					parse_str($eloptions, $eloptions);
+				}
+
+				if($attributes['type'] === 'comma')
+				{
+					$eloptions['multiple'] = true;
+				}
+
 				unset($parms['__options']);
-				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 
-
+				if(vartrue($eloptions['multiple']) && !is_array($value))
+				{
+					$value = explode(',', $value);
+				}
 
 				// Allow Ajax API.
 				if(!empty($ajaxParms))
@@ -4807,8 +4816,17 @@ class e_form
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
 
+				if(isset($eloptions['default']))
+				{
+					// Avoid duplicate options. Need to remove default value from option array.
+					// @see https://github.com/e107inc/e107/issues/1753#issuecomment-229780936
+					unset($eloptions['default']);
+				}
 
-				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+				$pre = vartrue($eloptions['pre']);
+				$post = vartrue($eloptions['post']);
+
+				$ret =  $pre . $this->selectbox($key, $parms, $value, $eloptions) . $post;
 			break;
 
 			case 'radio':
