@@ -19,7 +19,7 @@ class tinymce4_setup
 	{
 		$list = e107::getConfig()->get('e_meta_list'); 
 			
-		if(in_array('tinymce4',$list))
+		if(!empty($list) && in_array('tinymce4',$list))
 		{
 			return true; 	
 		}	
