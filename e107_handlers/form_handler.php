@@ -4816,13 +4816,6 @@ class e_form
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
 
-				if(isset($eloptions['default']))
-				{
-					// Avoid duplicate options. Need to remove default value from option array.
-					// @see https://github.com/e107inc/e107/issues/1753#issuecomment-229780936
-					unset($eloptions['default']);
-				}
-
 				$pre = vartrue($eloptions['pre']);
 				$post = vartrue($eloptions['post']);
 
