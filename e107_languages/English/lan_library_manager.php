@@ -26,7 +26,7 @@ define('LAN_LIBRARY_MANAGER_17', 'Installed');
 define('LAN_LIBRARY_MANAGER_18', 'Status');
 define('LAN_LIBRARY_MANAGER_19', 'Message');
 define('LAN_LIBRARY_MANAGER_20', 'link');
-define('LAN_LIBRARY_MANAGER_21', 'Provider');
+define('LAN_LIBRARY_MANAGER_21', 'Machine name');
 define('LAN_LIBRARY_MANAGER_22', 'plugin');
 define('LAN_LIBRARY_MANAGER_23', 'theme');
 define('LAN_LIBRARY_MANAGER_24', 'core');

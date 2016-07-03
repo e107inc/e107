@@ -565,7 +565,7 @@ class e_library_manager
 			$siteTheme = e107::getPref('sitetheme');
 			$adminTheme = e107::getPref('admintheme');
 
-			foreach(array($siteTheme, $adminTheme) as $theme)
+			foreach(array($adminTheme, $siteTheme) as $theme)
 			{
 				if(is_readable(e_THEME . $theme . '/theme_library.php')) // we don't use e_XXXX for themes.
 				{

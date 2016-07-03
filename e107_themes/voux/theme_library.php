@@ -7,9 +7,9 @@
 
 
 /**
- * Class bootstrap3_library.
+ * Class voux_library.
  */
-class bootstrap3_library
+class voux_library
 {
 
 	/* @see https://www.cdnperf.com */
@@ -52,31 +52,6 @@ class bootstrap3_library
 			),
 		);
 
-		// Bootswatch.
-		$libraries['bootswatch'] = array(
-			'name'              => 'Bootswatch',
-			'vendor_url'        => 'http://bootswatch.com/',
-			'variants' => array(
-				'cdn' => array(
-					'version_arguments' => array(
-						'file'    => 'cerulean/bootstrap.min.css',
-						// bootswatch v3.3.6
-						'pattern' => '/bootswatch\s+v(3\.\d\.\d+)/',
-						'lines'   => 5,
-					),
-					// Override library path to CDN.
-					'library_path'      => 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/',
-					'files'             => array(
-						'css' => array(
-							// Selected CSS file is added in config_alter() method.
-							// @see theme_config.php
-							// @see theme.php
-						),
-					),
-				),
-			),
-		);
-
 		// Font-Awesome.
 		$libraries['fontawesome'] = array(
 			'name'              => 'Font-Awesome',
@@ -103,25 +78,6 @@ class bootstrap3_library
 		);
 
 		return $libraries;
-	}
-
-	/**
-	 * Alter the library information before detection and caching takes place.
-	 */
-	function config_alter(&$libraries)
-	{
-		$sitetheme = e107::getPref('sitetheme');
-		$bootswatch = e107::pref('theme', 'bootswatch', false);
-
-		if($bootswatch && $sitetheme == 'bootstrap3')
-		{
-			// Selected Bootswatch theme.
-			$cssFile = $bootswatch . '/bootstrap.min.css';
-			$libraries['bootswatch']['variants']['cdn']['files']['css'][] = $cssFile;
-
-			// Remove default bootstrap css.
-			unset($libraries['bootstrap']['variants']['cdn']['files']['css']);
-		}
 	}
 
 }
