@@ -30,6 +30,7 @@ define('LAN_LIBRARY_MANAGER_21', 'Provider');
 define('LAN_LIBRARY_MANAGER_22', 'plugin');
 define('LAN_LIBRARY_MANAGER_23', 'theme');
 define('LAN_LIBRARY_MANAGER_24', 'core');
-define('LAN_LIBRARY_MANAGER_25', 'Third-party libraries');
+define('LAN_LIBRARY_MANAGER_25', 'Third-party libraries (local)');
 define('LAN_LIBRARY_MANAGER_26', 'No library found');
 define('LAN_LIBRARY_MANAGER_27', 'Machine name: [x]');
+define('LAN_LIBRARY_MANAGER_28', 'Third-party libraries (CDN variants)');

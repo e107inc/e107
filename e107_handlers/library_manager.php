@@ -91,15 +91,21 @@ class e_library_manager
 			$replace_with = array($library['name']);
 			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
 
-			return $library;
+			if (!isset($library['variants']['cdn']))
+			{
+				return $library;
+			}
 		}
 
-		// TODO:
-		// Invoke callbacks in the 'pre_detect' group.
-		$this->invoke('pre_detect', $library);
+		if(empty($library['error']))
+		{
+			// TODO:
+			// Invoke callbacks in the 'pre_detect' group.
+			$this->invoke('pre_detect', $library);
+		}
 
 		// Detect library version, if not hardcoded.
-		if(!isset($library['version']))
+		if(empty($library['error']) && !isset($library['version']))
 		{
 			// If version_callback is a method in $this class.
 			if(method_exists($this, $library['version_callback']))
@@ -167,12 +173,15 @@ class e_library_manager
 				$replace_with = array($library['name']);
 				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with, true);
 
-				return $library;
+				if (!isset($library['variants']['cdn']))
+				{
+					return $library;
+				}
 			}
 		}
 
 		// Determine to which supported version the installed version maps.
-		if(!empty($library['versions']))
+		if(empty($library['error']) && !empty($library['versions']))
 		{
 			ksort($library['versions']);
 			$version = 0;
@@ -190,7 +199,10 @@ class e_library_manager
 				$replace_with = array($library['version'], $library['name']);
 				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_05, $replace_with, true);
 
-				return $library;
+				if (!isset($library['variants']['cdn']))
+				{
+					return $library;
+				}
 			}
 
 			// Apply version specific definitions and overrides.
@@ -203,8 +215,96 @@ class e_library_manager
 		{
 			foreach($library['variants'] as $variant_name => &$variant)
 			{
+				// Get CDN version.
+				if($variant_name == 'cdn')
+				{
+					// Set defaults from top level.
+					$variant += array(
+						'version_callback' => $library['version_callback'],
+						'version_arguments' => $library['version_arguments'],
+						'installed' => true,
+					);
+
+					// Detect CDN version, if not hardcoded.
+					if(!isset($variant['version']))
+					{
+						// If version_callback is a method in $this class.
+						if(method_exists($this, $variant['version_callback']))
+						{
+							// We support both a single parameter, which is an associative array, and an indexed array of multiple
+							// parameters.
+							if(isset($variant['version_arguments'][0]))
+							{
+								// Add the library as the first argument.
+								$classMethod = array($this, $variant['version_callback']);
+								$params = array_merge(array($variant), $variant['version_arguments']);
+								$variant['version'] = call_user_func_array($classMethod, $params);
+							}
+							else
+							{
+								$method = $variant['version_callback'];
+								$variant['version'] = $this->$method($variant, $variant['version_arguments']);
+							}
+						}
+						// If version_callback is a method in e_library.php file.
+						else
+						{
+							$variant['version'] = '';
+							$class = false;
+
+							if(varset($variant['plugin'], false))
+							{
+								$class = e107::getAddon($variant['plugin'], 'e_library');
+							}
+							elseif(varset($variant['theme'], false))
+							{
+								// e107::getAddon() does not support theme folders.
+								e107_require_once(e_THEME . $variant['theme'] . '/theme_library.php');
+								$addonClass = $variant['theme'] . '_library';
+
+								if(isset($addonClass) && class_exists($addonClass))
+								{
+									$class = new $addonClass();
+								}
+							}
+
+							// We support both a single parameter, which is an associative array, and an
+							// indexed array of multiple parameters.
+							if(isset($variant['version_arguments'][0]))
+							{
+								if($class)
+								{
+									$params = array_merge(array($variant), $variant['version_arguments']);
+									$variant['version'] = e107::callMethod($class, $variant['version_callback'], $params);
+								}
+							}
+							else
+							{
+								if($class)
+								{
+									$variant['version'] = e107::callMethod($class, $variant['version_callback'], $variant, $variant['version_arguments']);
+								}
+							}
+						}
+
+						if(empty($variant['version']))
+						{
+							$variant['installed'] = false;
+							$variant['error'] = LAN_LIBRARY_MANAGER_10;
+
+							$replace_with = array($variant['name']);
+							$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with, true);
+						}
+					}
+				}
+
+				if(isset($variant['installed']) && $variant['installed'] == true)
+				{
+					continue;
+				}
+
 				// If no variant callback has been set, assume the variant to be installed.
-				if(!isset($variant['variant callback']))
+				if(!isset($variant['variant_callback']))
 				{
 					$variant['installed'] = true;
 				}
@@ -231,12 +331,12 @@ class e_library_manager
 
 					// We support both a single parameter, which is an associative array, and an indexed array of
 					// multiple parameters.
-					if(isset($variant['variant arguments'][0]))
+					if(isset($variant['variant_arguments'][0]))
 					{
 						if($class)
 						{
-							$params = array_merge(array($library, $variant_name), $variant['variant arguments']);
-							$variant['installed'] = e107::callMethod($class, $library['variant callback'], $params);
+							$params = array_merge(array($library, $variant_name), $variant['variant_arguments']);
+							$variant['installed'] = e107::callMethod($class, $library['variant_callback'], $params);
 						}
 					}
 					else
@@ -244,11 +344,11 @@ class e_library_manager
 						if($class)
 						{
 							// Can't use e107::callMethod(), because it only supports 2 params.
-							if(method_exists($class, $variant['variant callback']))
+							if(method_exists($class, $variant['variant_callback']))
 							{
 								// Call PLUGIN/THEME_library::VARIANT_CALLBACK().
-								$method = $variant['variant callback'];
-								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant arguments']);
+								$method = $variant['variant_callback'];
+								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant_arguments']);
 							}
 						}
 					}
@@ -264,11 +364,14 @@ class e_library_manager
 			}
 		}
 
-		// If we end up here, the library should be usable.
-		$library['installed'] = true;
+		if(empty($library['error']))
+		{
+			// If we end up here, the library should be usable.
+			$library['installed'] = true;
 
-		// Invoke callbacks in the 'post_detect' group.
-		$this->invoke('post_detect', $library);
+			// Invoke callbacks in the 'post_detect' group.
+			$this->invoke('post_detect', $library);
+		}
 
 		return $library;
 	}

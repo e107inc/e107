@@ -357,6 +357,31 @@ class _blank_library
 			),
 		);
 
+		// Font-Awesome with CDN variant.
+		$libraries['fontawesome'] = array(
+			'name'              => 'Font-Awesome',
+			'vendor_url'        => 'http://fontawesome.io/',
+			'variants' => array(
+				'cdn' => array(
+					'version_arguments' => array(
+						'file'    => 'css/font-awesome.min.css',
+						// Font Awesome 4.6.3 by
+						'pattern' => '/Font\s+Awesome\s+(4\.\d\.\d+)/',
+						'lines'   => 5,
+					),
+					// Set library path to CDN.
+					'library_path'      => 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/',
+					'files'             => array(
+						'css' => array(
+							'css/font-awesome.min.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+		);
+
 		return $libraries;
 	}
 
