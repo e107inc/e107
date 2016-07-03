@@ -1792,16 +1792,15 @@ $text .= pref_submit('javascript');
 e107::lan('core', 'library_manager');
 
 $text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
-
 $text .= '<table width="100%" class="table table-striped" cellpadding="0" cellspacing="0">';
 $text .= '<thead>';
 $text .= '<tr>';
-$text .= '<th>' . LAN_LIBRARY_MANAGER_13 . '</th>';
-$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
-$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_14 . '</th>';
-$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_18 . '</th>';
-$text .= '<th>' . LAN_LIBRARY_MANAGER_19 . '</th>';
-$text .= '<th></th>';
+$text .= '<th width="20%">' . LAN_LIBRARY_MANAGER_13 . '</th>';
+$text .= '<th width="20%" class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
+$text .= '<th width="10%" class="text-center">' . LAN_LIBRARY_MANAGER_14 . '</th>';
+$text .= '<th width="10%" class="text-center">' . LAN_LIBRARY_MANAGER_18 . '</th>';
+$text .= '<th width="20%">' . LAN_LIBRARY_MANAGER_19 . '</th>';
+$text .= '<th width="20%"></th>';
 $text .= '</tr>';
 $text .= '</thead>';
 $text .= '<tbody>';
@@ -1811,23 +1810,22 @@ foreach($libraries as $machineName => $library)
 {
 	$details = e107::library('detect', $machineName);
 
-	if(empty($details['name']))
+	if(empty($details['name']) || empty($details['files']))
 	{
 		continue;
 	}
 
 	$name = libraryGetName($machineName, $details);
-	$provider = libraryGetProvider($details);
 	$status = libraryGetStatus($details);
 	$links = libraryGetLinks($details);
 
 	$text .= '<tr>';
 	$text .= '<td>' . $name . '</td>';
-	$text .= '<td class="text-center">' . $provider . '</td>';
+	$text .= '<td class="text-center">' . $machineName . '</td>';
 	$text .= '<td class="text-center">' . $details['version'] . '</td>';
 	$text .= '<td class="text-center">' . $status . '</td>';
 	$text .= '<td>' . $details['error_message'] . '</td>';
-	$text .= '<td>' . $links . '</td>';
+	$text .= '<td class="text-center">' . $links . '</td>';
 	$text .= '</tr>';
 }
 
@@ -1840,7 +1838,59 @@ if(empty($libraries))
 
 $text .= '</tbody>';
 $text .= '</table>';
+$text .= "</fieldset>";
 
+
+$text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_28 . '</h4>';
+$text .= '<table width="100%" class="table table-striped" cellpadding="0" cellspacing="0">';
+$text .= '<thead>';
+$text .= '<tr>';
+$text .= '<th width="20%">' . LAN_LIBRARY_MANAGER_13 . '</th>';
+$text .= '<th width="20%" class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
+$text .= '<th width="10%" class="text-center">' . LAN_LIBRARY_MANAGER_14 . '</th>';
+$text .= '<th width="10%" class="text-center">' . LAN_LIBRARY_MANAGER_18 . '</th>';
+$text .= '<th width="20%">' . LAN_LIBRARY_MANAGER_19 . '</th>';
+$text .= '<th width="20%"></th>';
+$text .= '</tr>';
+$text .= '</thead>';
+$text .= '<tbody>';
+
+$cdn = array();
+foreach($libraries as $machineName => $library)
+{
+	$details = e107::library('detect', $machineName);
+
+	if(empty($details['name']) || !isset($details['variants']['cdn']))
+	{
+		continue;
+	}
+
+	$cdnVariant = $details['variants']['cdn'];
+	$cdn[] = $machineName;
+
+	$name = libraryGetName($machineName, $details);
+	$status = libraryGetStatus($cdnVariant);
+	$homepage = libraryGetHomepage($details);
+
+	$text .= '<tr>';
+	$text .= '<td>' . $name . '</td>';
+	$text .= '<td class="text-center">' . $machineName . '</td>';
+	$text .= '<td class="text-center">' . $cdnVariant['version'] . '</td>';
+	$text .= '<td class="text-center">' . $status . '</td>';
+	$text .= '<td>' . $cdnVariant['error_message'] . '</td>';
+	$text .= '<td class="text-center">' . $homepage . '</td>';
+	$text .= '</tr>';
+}
+
+if(empty($cdn))
+{
+	$text .= '<tr>';
+	$text .= '<td colspan="6">' . LAN_LIBRARY_MANAGER_26 . '</td>';
+	$text .= '</tr>';
+}
+
+$text .= '</tbody>';
+$text .= '</table>';
 $text .= "</fieldset>";
 					
 		/*			
@@ -2057,29 +2107,6 @@ function libraryGetDownload($details)
 	$title = $details['name'];
 
 	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_LIBRARY_MANAGER_16 . '</a>';
-}
-
-/**
- * Helper function to get provider.
- */
-function libraryGetProvider($details)
-{
-	$text = 'e107';
-	$provider = LAN_LIBRARY_MANAGER_24;
-
-	if(varset($details['plugin'], false) == true)
-	{
-		$text = $details['plugin'];
-		$provider = LAN_LIBRARY_MANAGER_22;
-	}
-
-	if(varset($details['theme'], false) == true)
-	{
-		$text = $details['theme'];
-		$provider = LAN_LIBRARY_MANAGER_23;
-	}
-
-	return '<span data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $provider . '</span>';
 }
 
 /**

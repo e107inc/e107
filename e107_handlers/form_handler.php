@@ -4785,7 +4785,6 @@ class e_form
 
 			case 'dropdown':
 			case 'comma':
-
 				if(!empty($attributes['writeParms']['optArray']))
 				{
 					$eloptions = $attributes['writeParms'];
@@ -4796,12 +4795,22 @@ class e_form
 					$eloptions  = vartrue($parms['__options'], array());
 				}
 
-				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
-				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
+				if(is_string($eloptions))
+				{
+					parse_str($eloptions, $eloptions);
+				}
+
+				if($attributes['type'] === 'comma')
+				{
+					$eloptions['multiple'] = true;
+				}
+
 				unset($parms['__options']);
-				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 
-
+				if(vartrue($eloptions['multiple']) && !is_array($value))
+				{
+					$value = explode(',', $value);
+				}
 
 				// Allow Ajax API.
 				if(!empty($ajaxParms))
@@ -4810,8 +4819,10 @@ class e_form
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
 
+				$pre = vartrue($eloptions['pre']);
+				$post = vartrue($eloptions['post']);
 
-				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+				$ret =  $pre . $this->selectbox($key, $parms, $value, $eloptions) . $post;
 			break;
 
 			case 'radio':
@@ -4838,47 +4849,49 @@ class e_form
 			case 'user_customtitle':
 			case 'user_email':*/
 			case 'user':
-				//user_id expected
-				// Just temporary solution, could be changed soon
-
-
-				if(!isset($parms['__options'])) $parms['__options'] = array();
-				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
-
-				if((empty($value) || !empty($parms['currentInit']) && empty($parms['default']) ) || !empty($parms['current']) || (vartrue($parms['default']) == 'USERID')) // include current user by default.
+				if(!isset($parms['__options']))
 				{
-					$value = array('user_id'=>USERID, 'user_name'=>USERNAME);
-					if(vartrue($parms['current']))
-					{
-						$parms['__options']['readonly'] = true;
-					}
-
+					$parms['__options'] = array();
 				}
 
+				if(!is_array($parms['__options']))
+				{
+					parse_str($parms['__options'], $parms['__options']);
+				}
 
+				// If no default value is provided. Or default is 'USERID'.
+				if(empty($value) && (!isset($parms['default']) || vartrue($parms['default']) == 'USERID'))
+				{
+					// Include current user by default.
+					$value = array(
+						'user_id'   => USERID,
+						'user_name' => USERNAME,
+					);
+				}
 
+				// 'current' - use ALWAYS! current user (editor).
+				if(vartrue($parms['current']))
+				{
+					$value = array(
+						'user_id'   => USERID,
+						'user_name' => USERNAME,
+					);
 
-
-		//		if(!is_array($value))
-		//		{
-			//		$value = $value ? e107::getSystemUser($value, true)->getUserData() : array();// e107::user($value);
-		//		}
+					$parms['__options']['readonly'] = true;
+				}
 
 				$colname = vartrue($parms['nameType'], 'user_name');
 				$parms['__options']['name'] = $colname;
-
-		//		if(!$value) $value = array();
-		//		$uname = varset($value[$colname]);
-		//		$value = varset($value['user_id'], 0);
 
 				if(!empty($parms['limit']))
 				{
 					$parms['__options']['limit'] = intval($parms['limit']);
 				}
 
-				$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options']));
+				$pre = vartrue($parms['pre']);
+				$post = vartrue($parms['post']);
 
-			//	$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
+				$ret = $pre . $this->userpicker(vartrue($parms['nameField'], $key), $value, vartrue($parms['__options'])) . $post;
 			break;
 
 

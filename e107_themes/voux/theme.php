@@ -1,28 +1,32 @@
 <?php
+
 /**
- * The Voux Blog Theme for e107 v2.x
+ * @file
+ * The Voux Blog Theme for e107 v2.x.
+ *
  * "The Voux" is Copyright (C) 2008-2013 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  * All Rights Reserved
  * @see : http://voux-with-out-slider-themexpose.blogspot.in/
  */
+
 if (!defined('e107_INIT')) { exit; }
 
-define("BOOTSTRAP", 	3);
-define("FONTAWESOME", 	4);
-define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
+define('VIEWPORT', "width=device-width, initial-scale=1.0");
 
+// Load Bootstrap CDN variant.
+if(($library = e107::library('load', 'bootstrap', 'cdn')) && !empty($library['loaded']))
+{
+	define("BOOTSTRAP", 3);
+}
 
-//
+// Load Font-Awesome CDN variant.
+if(($library = e107::library('load', 'fontawesome', 'cdn')) && !empty($library['loaded']))
+{
+	define("FONTAWESOME", 4);
+}
 
-/* @see https://www.cdnperf.com */
-// Warning: Some bootstrap CDNs are not compiled with popup.js
-// use https if e107 is using https.
-
-e107::js("url",  "https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
-e107::css('url', 'https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css');
-e107::css('url', 'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
 e107::css('url', 'http://fonts.googleapis.com/css?family=Bad+Script|Raleway:400,500,600,700,300|Lora:400');
 // e107::css('theme','voux.css');
 e107::css('url', 'http://fonts.googleapis.com/css?family=Montserrat:400,700&ver=4.2.4');

@@ -17,6 +17,9 @@ class theme_bootstrap3 implements e_theme_config
 		$theme_pref['branding'] 	        = $_POST['branding'];
 		$theme_pref['bootswatch'] 	        = $_POST['bootswatch'];
 
+		// Clear cached library information.
+		e107::getCache()->clear('library_manager_', true);
+
 		$pref->set('sitetheme_pref', $theme_pref);
 		return $pref->dataHasChanged();
 	}
