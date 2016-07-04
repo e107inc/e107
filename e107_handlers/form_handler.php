@@ -158,6 +158,298 @@ class e_form
 
 
 	/**
+	 * Render a country drop-down list.
+	 * @param string $name
+	 * @param string $value
+	 * @param array $options
+	 * @return string
+	 */
+	public function country($name, $value, $options=array())
+	{
+
+		$arr = $this->getCountry();
+
+		$placeholder = isset($options['placeholder']) ? $options['placeholder'] : ' ';
+
+		return $this->select($name, $arr, $value, $options, $placeholder);
+	}
+
+
+	/**
+	 * Get a list of countries.
+	 * @param null $iso
+	 */
+	private function getCountry($iso=null)  // move to parser?
+	{
+
+		$c = array();
+
+		 $c['af'] = "Afghanistan";
+		 $c['al'] = "Albania";
+		 $c['dz'] = "Algeria";
+		 $c['as'] = "American Samoa";
+		 $c['ad'] = "Andorra";
+		 $c['ao'] = "Angola";
+		 $c['ai'] = "Anguilla";
+		 $c['aq'] = "Antarctica";
+		 $c['ag'] = "Antigua and Barbuda";
+		 $c['ar'] = "Argentina";
+		 $c['am'] = "Armenia";
+		 $c['aw'] = "Aruba";
+		 $c['au'] = "Australia";
+		 $c['at'] = "Austria";
+		 $c['az'] = "Azerbaijan";
+		 $c['bs'] = "Bahamas";
+		 $c['bh'] = "Bahrain";
+		 $c['bd'] = "Bangladesh";
+		 $c['bb'] = "Barbados";
+		 $c['by'] = "Belarus";
+		 $c['be'] = "Belgium";
+		 $c['bz'] = "Belize";
+		 $c['bj'] = "Benin";
+		 $c['bm'] = "Bermuda";
+		 $c['bt'] = "Bhutan";
+		 $c['bo'] = "Bolivia";
+		 $c['ba'] = "Bosnia-Herzegovina";
+		 $c['bw'] = "Botswana";
+		 $c['bv'] = "Bouvet Island";
+		 $c['br'] = "Brazil";
+		 $c['io'] = "British Indian Ocean Territory";
+		 $c['bn'] = "Brunei Darussalam";
+		 $c['bg'] = "Bulgaria";
+		 $c['bf'] = "Burkina Faso";
+		 $c['bi'] = "Burundi";
+		 $c['kh'] = "Cambodia";
+		 $c['cm'] = "Cameroon";
+		 $c['ca'] = "Canada";
+
+		 $c['cv'] = "Cape Verde";
+		 $c['ky'] = "Cayman Islands";
+		 $c['cf'] = "Central African Republic";
+		 $c['td'] = "Chad";
+		 $c['cl'] = "Chile";
+		 $c['cn'] = "China";
+		 $c['cx'] = "Christmas Island";
+		 $c['cc'] = "Cocos (Keeling) Islands";
+		 $c['co'] = "Colombia";
+		 $c['km'] = "Comoros";
+		 $c['cg'] = "Congo";
+		 $c['cd'] = "Congo (Dem.Rep)";
+		 $c['ck'] = "Cook Islands";
+		 $c['cr'] = "Costa Rica";
+		 $c['hr'] = "Croatia";
+		 $c['cu'] = "Cuba";
+		 $c['cy'] = "Cyprus";
+		 $c['cz'] = "Czech Republic";
+		 $c['dk'] = "Denmark";
+		 $c['dj'] = "Djibouti";
+		 $c['dm'] = "Dominica";
+		 $c['do'] = "Dominican Republic";
+		 $c['tp'] = "East Timor";
+		 $c['ec'] = "Ecuador";
+		 $c['eg'] = "Egypt";
+		 $c['sv'] = "El Salvador";
+		 $c['gq'] = "Equatorial Guinea";
+		 $c['er'] = "Eritrea";
+		 $c['ee'] = "Estonia";
+		 $c['et'] = "Ethiopia";
+		 $c['fk'] = "Falkland Islands";
+		 $c['fo'] = "Faroe Islands";
+		 $c['fj'] = "Fiji";
+		 $c['fi'] = "Finland";
+		// $c['cs'] = "Former Czechoslovakia";
+		// $c['su'] = "Former USSR";
+		 $c['fr'] = "France";
+		// $c['fx'] = "France (European Territory)";
+		 $c['gf'] = "French Guyana";
+		 $c['tf'] = "French Southern Territories";
+		 $c['ga'] = "Gabon";
+		 $c['gm'] = "Gambia";
+		 $c['ge'] = "Georgia";
+		 $c['de'] = "Germany";
+		 $c['gh'] = "Ghana";
+		 $c['gi'] = "Gibraltar";
+		 $c['gr'] = "Greece";
+		 $c['gl'] = "Greenland";
+		 $c['gd'] = "Grenada";
+		 $c['gp'] = "Guadeloupe (French)";
+		 $c['gu'] = "Guam (USA)";
+		 $c['gt'] = "Guatemala";
+		 $c['gn'] = "Guinea";
+		 $c['gw'] = "Guinea Bissau";
+		 $c['gy'] = "Guyana";
+		 $c['ht'] = "Haiti";
+		 $c['hm'] = "Heard and McDonald Islands";
+		 $c['hn'] = "Honduras";
+		 $c['hk'] = "Hong Kong";
+		 $c['hu'] = "Hungary";
+		 $c['is'] = "Iceland";
+		 $c['in'] = "India";
+		 $c['id'] = "Indonesia";
+		 $c['ir'] = "Iran";
+		 $c['iq'] = "Iraq";
+		 $c['ie'] = "Ireland";
+		 $c['il'] = "Israel";
+		 $c['it'] = "Italy";
+		 $c['ci'] = "Ivory Coast (Cote D'Ivoire)";
+		 $c['jm'] = "Jamaica";
+		 $c['jp'] = "Japan";
+		 $c['jo'] = "Jordan";
+		 $c['kz'] = "Kazakhstan";
+		 $c['ke'] = "Kenya";
+		 $c['ki'] = "Kiribati";
+		 $c['kp'] = "Korea (North)";
+		 $c['kr'] = "Korea (South)";
+		 $c['kw'] = "Kuwait";
+		 $c['kg'] = "Kyrgyzstan";
+		 $c['la'] = "Laos";
+		 $c['lv'] = "Latvia";
+		 $c['lb'] = "Lebanon";
+		 $c['ls'] = "Lesotho";
+		 $c['lr'] = "Liberia";
+		 $c['ly'] = "Libya";
+		 $c['li'] = "Liechtenstein";
+		 $c['lt'] = "Lithuania";
+		 $c['lu'] = "Luxembourg";
+		 $c['mo'] = "Macau";
+		 $c['mk'] = "Macedonia";
+		 $c['mg'] = "Madagascar";
+		 $c['mw'] = "Malawi";
+		 $c['my'] = "Malaysia";
+		 $c['mv'] = "Maldives";
+		 $c['ml'] = "Mali";
+		 $c['mt'] = "Malta";
+		 $c['mh'] = "Marshall Islands";
+		 $c['mq'] = "Martinique (French)";
+		 $c['mr'] = "Mauritania";
+		 $c['mu'] = "Mauritius";
+		 $c['yt'] = "Mayotte";
+		 $c['mx'] = "Mexico";
+		 $c['fm'] = "Micronesia";
+		 $c['md'] = "Moldavia";
+		 $c['mc'] = "Monaco";
+		 $c['mn'] = "Mongolia";
+		 $c['me'] = "Montenegro";
+		 $c['ms'] = "Montserrat";
+		 $c['ma'] = "Morocco";
+		 $c['mz'] = "Mozambique";
+		 $c['mm'] = "Myanmar";
+		 $c['na'] = "Namibia";
+		 $c['nr'] = "Nauru";
+		 $c['np'] = "Nepal";
+		 $c['nl'] = "Netherlands";
+		 $c['an'] = "Netherlands Antilles";
+		 // $c['net'] = "Network";
+
+		 $c['nc'] = "New Caledonia (French)";
+		 $c['nz'] = "New Zealand";
+		 $c['ni'] = "Nicaragua";
+		 $c['ne'] = "Niger";
+		 $c['ng'] = "Nigeria";
+		 $c['nu'] = "Niue";
+		 $c['nf'] = "Norfolk Island";
+
+		 $c['mp'] = "Northern Mariana Islands";
+		 $c['no'] = "Norway";
+		//  $c['arpa'] = "Old style Arpanet";
+		 $c['om'] = "Oman";
+		 $c['pk'] = "Pakistan";
+		 $c['pw'] = "Palau";
+		 $c['pa'] = "Panama";
+		 $c['pg'] = "Papua New Guinea";
+		 $c['py'] = "Paraguay";
+		 $c['pe'] = "Peru";
+		 $c['ph'] = "Philippines";
+		 $c['pn'] = "Pitcairn Island";
+		 $c['pl'] = "Poland";
+		 $c['pf'] = "Polynesia (French)";
+		 $c['pt'] = "Portugal";
+		 $c['pr'] = "Puerto Rico";
+		 $c['ps'] = "Palestine";
+		 $c['qa'] = "Qatar";
+		 $c['re'] = "Reunion (French)";
+		 $c['ro'] = "Romania";
+		 $c['ru'] = "Russia";
+		 $c['rw'] = "Rwanda";
+		 $c['gs'] = "S. Georgia &amp; S. Sandwich Isls.";
+		 $c['sh'] = "Saint Helena";
+		 $c['kn'] = "Saint Kitts &amp; Nevis";
+		 $c['lc'] = "Saint Lucia";
+		 $c['pm'] = "Saint Pierre and Miquelon";
+		 $c['st'] = "Saint Tome (Sao Tome) and Principe";
+		 $c['vc'] = "Saint Vincent &amp; Grenadines";
+		 $c['ws'] = "Samoa";
+		 $c['sm'] = "San Marino";
+		 $c['sa'] = "Saudi Arabia";
+		 $c['sn'] = "Senegal";
+		 $c['rs'] = "Serbia";
+		 $c['sc'] = "Seychelles";
+		 $c['sl'] = "Sierra Leone";
+		 $c['sg'] = "Singapore";
+		 $c['sk'] = "Slovak Republic";
+		 $c['si'] = "Slovenia";
+		 $c['sb'] = "Solomon Islands";
+		 $c['so'] = "Somalia";
+		 $c['za'] = "South Africa";
+
+		 $c['es'] = "Spain";
+		 $c['lk'] = "Sri Lanka";
+		 $c['sd'] = "Sudan";
+		 $c['sr'] = "Suriname";
+		 $c['sj'] = "Svalbard and Jan Mayen Islands";
+		 $c['sz'] = "Swaziland";
+		 $c['se'] = "Sweden";
+		 $c['ch'] = "Switzerland";
+		 $c['sy'] = "Syria";
+		 $c['tj'] = "Tadjikistan";
+		 $c['tw'] = "Taiwan";
+		 $c['tz'] = "Tanzania";
+		 $c['th'] = "Thailand";
+		 $c['ti'] = "Tibet";
+		 $c['tg'] = "Togo";
+		 $c['tk'] = "Tokelau";
+		 $c['to'] = "Tonga";
+		 $c['tt'] = "Trinidad and Tobago";
+		 $c['tn'] = "Tunisia";
+		 $c['tr'] = "Turkey";
+		 $c['tm'] = "Turkmenistan";
+		 $c['tc'] = "Turks and Caicos Islands";
+		 $c['tv'] = "Tuvalu";
+		 $c['ug'] = "Uganda";
+		 $c['ua'] = "Ukraine";
+		 $c['ae'] = "United Arab Emirates";
+		 $c['gb'] = "United Kingdom";
+		 $c['us'] = "United States";
+		 $c['uy'] = "Uruguay";
+		 $c['um'] = "US Minor Outlying Islands";
+		 $c['uz'] = "Uzbekistan";
+		 $c['vu'] = "Vanuatu";
+		 $c['va'] = "Vatican City State";
+		 $c['ve'] = "Venezuela";
+		 $c['vn'] = "Vietnam";
+		 $c['vg'] = "Virgin Islands (British)";
+		 $c['vi'] = "Virgin Islands (USA)";
+		 $c['wf'] = "Wallis and Futuna Islands";
+		 $c['eh'] = "Western Sahara";
+		 $c['ye'] = "Yemen";
+
+		// $c['zr'] = "(deprecated) Zaire";
+		 $c['zm'] = "Zambia";
+		 $c['zw'] = "Zimbabwe";
+
+
+        if(!empty($iso) && !empty($c[$iso]))
+        {
+            return $c[$iso];
+        }
+
+
+		return $c;
+
+	}
+
+
+	/**
 	 * Get required field markup string
 	 * @return string
 	 */
