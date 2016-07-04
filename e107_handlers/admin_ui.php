@@ -2770,6 +2770,12 @@ class e_admin_controller_ui extends e_admin_controller
 			$this->_setModel();
 		}
 
+		if($this->getQuery('action') == 'list') // allow for use of getModel() at all times.
+		{
+			return $this->getListModel();
+		}
+
+
 		return $this->_model;
 	}
 
