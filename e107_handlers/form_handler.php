@@ -179,7 +179,7 @@ class e_form
 	 * Get a list of countries.
 	 * @param null $iso
 	 */
-	private function getCountry($iso=null)  // move to parser?
+	public function getCountry($iso=null)  // move to parser?
 	{
 
 		$c = array();
