@@ -1478,7 +1478,7 @@ class media_admin_ui extends e_admin_ui
 
 				$data = array();
 				$data['items'][0]['id']['videoId'] = $searchQry;
-				$data['items'][0]['snippet']['thumbnails']['medium']['url'] = "http://i.ytimg.com/vi/".$searchQry."/mqdefault.jpg";
+				$data['items'][0]['snippet']['thumbnails']['medium']['url'] = "https://i.ytimg.com/vi/".$searchQry."/mqdefault.jpg";
 				$data['items'][0]['snippet']['title'] = 'Specified Video';
 			}
 			elseif(substr($searchQry,0,9) == 'playlist:') // playlist
