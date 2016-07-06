@@ -604,21 +604,28 @@ class e_form
 		$text  ='
 		<!-- Carousel -->
 		
-		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>
-  		<!-- Indicators -->
-  		<ol class="carousel-indicators">
-		';
+		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>';
 
-		$c = 0;
-		foreach($array as $key=>$tab)
+		if(count($array) > 1)
 		{
-			$active = ($c == $act) ? ' class="active"' : '';
-			$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
-			$c++;
+			$text .= '
+	        <!-- Indicators -->
+	        <ol class="carousel-indicators">
+			';
+
+			$c = 0;
+			foreach($array as $key=>$tab)
+			{
+				$active = ($c == $act) ? ' class="active"' : '';
+				$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
+				$c++;
+			}
+
+			$text .= '
+			</ol>';
 		}
-		
+
 		$text .= '
-		</ol>
 
 		<div class="carousel-inner">
 		';
@@ -642,15 +649,18 @@ class e_form
 		
 		$text .= '
 		</div>';
-		
-		$text .= '
-		<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
-    	<span class="glyphicon glyphicon-chevron-left"></span>
-		</a>
-		<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
-		<span class="glyphicon glyphicon-chevron-right"></span>
-		</a>';
-		
+
+		if(count($array) > 1)
+		{
+			$text .= '
+			<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
+	        <span class="glyphicon glyphicon-chevron-left"></span>
+			</a>
+			<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
+			<span class="glyphicon glyphicon-chevron-right"></span>
+			</a>';
+		}
+
 		$text .= '</div><!-- End Carousel -->';
 
 		return $text;
