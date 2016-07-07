@@ -1633,7 +1633,7 @@ class media_admin_ui extends e_admin_ui
 			}
 
 
-			$fileName = str_replace('%','',$fileName);
+			$fileName = str_replace(array('%','+'),'',$fileName);
 
 			// remove script extensions.
 			if(substr($fileName,-4) == ".php" || substr($fileName,-4) == ".htm" || substr($fileName,-5) == ".html" || substr($fileName,-4) == ".asp")
