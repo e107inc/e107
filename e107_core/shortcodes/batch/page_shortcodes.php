@@ -301,6 +301,21 @@ class cpage_shortcodes extends e_shortcode
 		// print_a($this);
 		return e107::getParser()->toHTML($this->var['menu_text'], true, 'BODY');
 	}
+
+	/**
+	 * @param null $parm
+	 * @example {CMENUURL}
+	 * @return string
+	 */
+	function sc_cmenuurl($parm=null)
+	{
+		if(empty($this->var['menu_button_url']))
+		{
+			return $this->sc_cpageurl();
+		}
+
+		return e107::getParser()->replaceConstants($this->var['menu_button_url']);
+	}
 	
 	
 	function sc_cmenuimage($parm='')

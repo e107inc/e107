@@ -3765,7 +3765,7 @@ class e_form
 
 		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
-		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\"   href='#' ";
+		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)." ".$class."' data-value=\"{$curVal}\"   href='#' ";
 
 		if(!empty($options))
 		{
@@ -4544,7 +4544,7 @@ class e_form
 					}
 					else
 					{	
-						$false = ($value === '') ? "&square;" : "&cross;";		
+						$false = ($value === '') ? "&square;" : "&cross;";
 					}
 					
 					$true = varset($parms['true'],'&check;'); // custom representation for 'true'. (supports font-awesome when set by css)
@@ -4555,7 +4555,7 @@ class e_form
 					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
 					$dispValue = $wparms[$value];
 
-					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms);
+					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean'));
 				}
 				
 				if(vartrue($parms['reverse']))
