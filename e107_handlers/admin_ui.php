@@ -2788,7 +2788,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return null;
 		}
 
-		if($this->getQuery('action') == 'list')
+		if($this->getAction() == 'list')
 		{
 			return $this->getListModel()->get($key);
 		}
