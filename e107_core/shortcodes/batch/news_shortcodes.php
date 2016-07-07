@@ -560,12 +560,12 @@ class news_shortcodes extends e_shortcode
 			$breaks = array('<br />','<br>');
 			$text = str_replace($breaks,"\n",$text);
 			$text = strip_tags($text);	
-			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text));	
+			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text), 2, PREG_SPLIT_DELIM_CAPTURE);
 			$tmp = array_filter($tmp);
-			
+
 			if($tmp[0])
 			{
-				$text = trim($tmp[0]);
+				$text = trim($tmp[0]).trim($tmp[1]);
 			}
 		}
 
