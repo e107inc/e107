@@ -273,6 +273,11 @@ class e_db_mysql
 		$this->mySQLuser 		= $mySQLuser;
 		$this->mySQLpassword 	= $mySQLpassword;
 		$this->mySQLerror 		= false;
+
+		if(strpos($mySQLserver,':')!==false)
+		{
+			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
+		}
 		
 		if($this->pdo) // PDO 
 		{		
