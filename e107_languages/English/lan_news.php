@@ -43,6 +43,7 @@ define("LAN_NEWS_85", "Back to category overview");
 define("LAN_NEWS_86", "Older News");
 define("LAN_NEWS_87", "Newer News");
 define("LAN_NEWS_462", "No news items for specified month");
+define("LAN_NEWS_463", "There are no news items for the specified category - please check back soon.");
 
 // Following used by alt_news
 // define("LAN_NEWS_99", "Comments");

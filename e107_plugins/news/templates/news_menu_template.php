@@ -19,7 +19,7 @@ global $sc_style;
 $NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="nav nav-list news-menu-category">';
 $NEWS_MENU_TEMPLATE['category']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['category']['item']        = '
-	<li><a class="e-menu-link newscats{active}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE} {NEWS_CATEGORY_NEWS_COUNT}</a></li>
+	<li><a class="e-menu-link newscats{active}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE} <span>{NEWS_CATEGORY_NEWS_COUNT}</span></a></li>
 ';
 
 $NEWS_MENU_WRAPPER['category']['NEWS_CATEGORY_NEWS_COUNT'] = "({---})"; // Wrap brackets around the news count when value is returned. 
@@ -34,7 +34,7 @@ $NEWS_MENU_WRAPPER['category']['NEWS_CATEGORY_NEWS_COUNT'] = "({---})"; // Wrap 
 $NEWS_MENU_TEMPLATE['months']['start']       = '<ul class="nav nav-list news-menu-months">';
 $NEWS_MENU_TEMPLATE['months']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['months']['item']        = '
-	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} ({count})</a></li>
+	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} <span>({count})</span></a></li>
 ';
 //$NEWS_MENU_TEMPLATE['months']['separator']   = '<br />';
 
@@ -46,7 +46,7 @@ $NEWS_MENU_TEMPLATE['months']['item']        = '
 // latest menu
 $NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="nav nav-list news-menu-latest">';
 $NEWS_MENU_TEMPLATE['latest']['end']         = '</ul>'; // Example: $NEWS_MENU_TEMPLATE['latest']['end']  '<br />{currentTotal} from {total}';
-$NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE} {NEWSCOMMENTCOUNT}</a></li>';
+$NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE} <span>{NEWSCOMMENTCOUNT}</span></a></li>';
 
 $NEWS_MENU_WRAPPER['latest']['NEWSCOMMENTCOUNT']	= "({---})";
 
