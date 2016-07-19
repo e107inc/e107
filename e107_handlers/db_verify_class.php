@@ -201,6 +201,13 @@ class db_verify
 
 		$this->currentTable = $selection;
 
+		if(!isset($this->tables[$selection])) // doesn't have an SQL file.
+		{
+		// e107::getMessage()->addDebug("No SQL File for ".$selection);
+			return false;
+		}
+
+
 		if(empty($this->tables[$selection]['tables']))
 		{
 			//$this->internalError = true;

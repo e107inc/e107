@@ -22,3 +22,5 @@ mark            { text-decoration: underline; color:#FF0000; font-weight:bold; }
 
 #login-template { width:60%; max-width:350px; margin-right:auto;margin-left:auto; }
 div.form-group  { padding-top: 5px }
+
+div.news-empty  { text-align:center; font-weight: bold }

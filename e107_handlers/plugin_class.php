@@ -2255,7 +2255,8 @@ class e107plugin
 		//print_a($tag);
 		switch ($function)
 		{
-			case 'install': 
+			case 'install':
+			case 'refresh':
 				$c = 1;
 				foreach($tag['mediaCategories']['category'] as $v)
 				{

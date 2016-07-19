@@ -79,7 +79,7 @@ $text = "
 					<tr>
 						<td>".LAN_DESCRIPTION."</td>
 						<td>";
-						$text .= $frm->textarea('meta_description',$tp->toForm(varset($meta_diz[e_LANGUAGE])),3);
+						$text .= $frm->textarea('meta_description',$tp->toForm(varset($meta_diz[e_LANGUAGE])),3,80, array('size'=>'xxlarge'));
 					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>";
 						$text .= "</td>
 					</tr>

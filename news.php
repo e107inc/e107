@@ -411,7 +411,7 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 	}
 	else // No News - empty.
 	{
-		$text .= "<div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div>";
+		$text .= "<div class='news-empty'><div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 	}
 
 	if(vartrue($template['end']))
@@ -624,6 +624,8 @@ $order = $tp -> toDB($order, true);			/// @todo - try not to use toDB() - trigge
 
 $interval = $pref['newsposts'];
 
+
+
 switch ($action)
 {
 	case "list" :
@@ -639,6 +641,8 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_category={$sub_action}
 		ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
+
+		$noNewsMessage = LAN_NEWS_463;
 		break;
 
 
@@ -669,7 +673,10 @@ switch ($action)
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
 		}
+
+		$noNewsMessage = LAN_NEWS_83;
 		break;
+
 
 	case "month" :
 	case "day" :
@@ -700,6 +707,9 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
+
+		$noNewsMessage = LAN_NEWS_462;
+
 		break;
 
 	case 'default' :
@@ -743,6 +753,8 @@ switch ($action)
 		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
 		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 		}
+
+		$noNewsMessage = LAN_NEWS_83;
 }	// END - switch($action)
 
 
@@ -780,10 +792,10 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 }
 
 
-if (!($news_total = $sql->db_Select_gen($query)))
+if (!($news_total = $sql->gen($query)))
 {  // No news items
 	require_once(HEADERF);
-	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
+	echo "<div class='news-empty'><div class='alert alert-info' style='text-align:center'>".$noNewsMessage."</div></div>";
 	require_once(FOOTERF);
 	exit;
 }
