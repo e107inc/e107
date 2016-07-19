@@ -3887,6 +3887,7 @@ $text .= "
 		public function customPage()
 		{
 			\$text = 'Hello World!';
+			\$otherField  = \$this->getController()->getFieldVar('other_field_name');
 			return \$text;
 			
 		}

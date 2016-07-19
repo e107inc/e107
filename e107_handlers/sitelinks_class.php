@@ -1826,6 +1826,14 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_description($parm='')
 	{
+		$toolTipEnabled = e107::pref('core', 'linkpage_screentip', false);
+
+		if($toolTipEnabled == false || empty($this->var['link_description']))
+		{
+			return null;
+		}
+
+
 		return e107::getParser()->toAttribute($this->var['link_description']);	
 	}
 

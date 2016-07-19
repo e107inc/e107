@@ -69,9 +69,10 @@ class e_db_mysql
 {
 	// TODO switch to protected vars where needed
 	public      $mySQLserver;
-	public       $mySQLuser;
+	public      $mySQLuser;
 	protected   $mySQLpassword;
 	protected   $mySQLdefaultdb;
+	protected   $mySQLport = 3306;
 	public      $mySQLPrefix;
 	protected   $mySQLaccess;
 	public      $mySQLresult;
@@ -83,7 +84,7 @@ class e_db_mysql
 	protected   $mySQLlastQuery = '';
 
 	public      $mySQLcurTable;
-	public       $mySQLlanguage;
+	public      $mySQLlanguage;
 	public      $mySQLinfo;
 	public      $tabset;
 	public      $mySQLtableList = array(); // list of all Db tables.
@@ -99,6 +100,7 @@ class e_db_mysql
 	
 	private     $pdo = false; // using PDO or not.
 
+
 	/**
 	* Constructor - gets language options from the cookie or session
 	* @access public
@@ -113,10 +115,15 @@ class e_db_mysql
 		{
 			$this->pdo = true;	
 		}
-		
+
 		e107::getSingleton('e107_traffic')->BumpWho('Create db object', 1);
 
 		$this->mySQLPrefix = MPREFIX;				// Set the default prefix - may be overridden
+
+		if($port = e107::getMySQLConfig('port'))
+		{
+			$this->mySQLport = intval($port);
+		}
 
 		/*$langid = (isset($pref['cookie_name'])) ? 'e107language_'.$pref['cookie_name'] : 'e107language_temp';
 		if (isset($pref['user_tracking']) && ($pref['user_tracking'] == 'session'))
@@ -182,7 +189,7 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
 			}
 			catch(PDOException $ex)
@@ -266,12 +273,17 @@ class e_db_mysql
 		$this->mySQLuser 		= $mySQLuser;
 		$this->mySQLpassword 	= $mySQLpassword;
 		$this->mySQLerror 		= false;
+
+		if(strpos($mySQLserver,':')!==false)
+		{
+			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
+		}
 		
 		if($this->pdo) // PDO 
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=3306", $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 			}
 			catch(PDOException $ex)
 			{

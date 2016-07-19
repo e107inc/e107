@@ -2773,6 +2773,31 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->_model;
 	}
 
+
+	/**
+	 * Alias for getModel()->get and getListModel()->get().
+	 * May be used inside field-method in read/write mode.
+	 *
+	 * @param string $key
+	 * @return mixed|null - current value of the chosen db field.
+	 */
+	public function getFieldVar($key = null)
+	{
+		if(empty($key))
+		{
+			return null;
+		}
+
+		if($this->getAction() == 'list')
+		{
+			return $this->getListModel()->get($key);
+		}
+
+		return $this->getModel()->get($key);
+
+	}
+
+
 	/**
 	 * Set controller model
 	 * @param e_admin_model $model
