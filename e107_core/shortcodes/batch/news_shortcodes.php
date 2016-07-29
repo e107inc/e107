@@ -705,14 +705,24 @@ class news_shortcodes extends e_shortcode
 		}
 			
 		$this->imageItem = varset($media[$parm['item']]); // Set the current Image for other image shortcodes. 
-		
+
+
 		if(vartrue($parm['placeholder']))
 		{
 			return $this->sc_newsimage('placeholder');	
 		}
+		elseif($video = e107::getParser()->toVideo($this->imageItem, array('class'=> 'news-media news-media-'.$parm['item'])))
+		{
+			return $video;
+		}
 		else
 		{
-			return $this->sc_newsimage();	
+			$parm['item'] = ($parm['item'] +1);
+			if(empty($parm['class']))
+			{
+				$parm['class'] = 'img-responsive news-media news-media-'.$parm['item'];
+			}
+			return $this->sc_newsimage($parm);
 		}
 			
 		
@@ -797,7 +807,8 @@ class news_shortcodes extends e_shortcode
 		{
 			$parm = array('type'=> $parm);
 		}
-			
+
+
 		$tmp = $this->handleMultiple($parm);
 		$srcPath = $tmp['file'];
 		

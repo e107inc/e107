@@ -686,7 +686,7 @@ class news_admin_ui extends e_admin_ui
 	{
 		if(is_array($postedImage))
 		{
-			return implode(",",array_filter($postedImage));
+			return implode(",", $postedImage);
 		}
 		else
 		{
