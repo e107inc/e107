@@ -2583,7 +2583,8 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->tabs;
 	}
-	
+
+
 	/**
 	 * Get Tab data
 	 * @return array
@@ -4321,11 +4322,38 @@ class e_admin_ui extends e_admin_controller_ui
 
 		foreach($tmp as $plug=>$config)
 		{
+
+			$form = e107::getAddon($plug, 'e_admin', $plug."_admin_form"); // class | false.
+
 			foreach($config['fields'] as $k=>$v)
 			{
 				$v['data'] = false; // disable data-saving to db table. .
-				$this->fields['x_'.$plug.'_'.$k] = $v; // ie. x_plugin_key
+
+				$fieldName = 'x_'.$plug.'_'.$k;
+
+				if($v['type'] == 'method' && method_exists($form,$fieldName))
+				{
+					$v['method'] = $plug."_admin_form::".$fieldName;
+					//echo "Found method ".$fieldName." in ".$plug."_menu_form";
+					//echo $form->$fieldName();
+				}
+
+
+				$this->fields[$fieldName] = $v; // ie. x_plugin_key
+
+
+
 			}
+
+			if(!empty($config['tabs']))
+			{
+				foreach($config['tabs'] as $t=>$tb)
+				{
+					$this->tabs[$t] = $tb;
+				}
+			}
+
+
 		}
 
 

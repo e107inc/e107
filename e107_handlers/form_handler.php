@@ -5213,7 +5213,17 @@ class e_form
 				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $key;
 				$parms['field'] = $key;
 
-				$ret =  call_user_func_array(array($this, $meth), array($value, 'write', $parms));
+				if(strpos($meth,'::')!==false)
+				{
+					list($className,$meth) = explode('::', $meth);
+					$cls = new $className;
+				}
+				else
+				{
+					$cls = $this;
+				}
+
+				$ret =  call_user_func_array(array($cls, $meth), array($value, 'write', $parms));
 			break;
 
 			case 'upload': //TODO - from method
@@ -5482,14 +5492,14 @@ class e_form
 					$text .= '<ul class="nav nav-tabs">';
 					foreach($data['tabs'] as $i=>$label)
 					{	
-						$class = ($i == $curTab) ? 'class="active" ' : '';
+						$class = ($i === $curTab) ? 'class="active" ' : '';
 						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab">'.$label.'</a></li>';
 					}
 					$text .= ' </ul><div class="tab-content">';	
 					
 					foreach($data['tabs'] as $tabId=>$label)
 					{
-						$active = ($tabId == $curTab) ? 'active' : '';
+						$active = ($tabId === $curTab) ? 'active' : '';
 						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
 						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
 						$text .= "</div>";	
