@@ -37,8 +37,8 @@ class e107plugin
 		'e_meta', // @Deprecated 
 		'e_emailprint',
 		'e_frontpage',
-		'e_latest', // @Deprecated  - see e_dashboard
-		'e_status', //@Deprecated  - see e_dashboard
+		'e_latest', /* @deprecated  - see e_dashboard */
+		'e_status', /* @deprecated  - see e_dashboard */
 		'e_menu',
 		'e_search',
 		'e_shortcode',
@@ -55,8 +55,9 @@ class e107plugin
 		'e_url', // simple mod-rewrite. 
 		'e_mailout',
 		'e_sitelink', // sitelinks generator. 
-		'e_tohtml',
+		'e_tohtml', /* @deprecated  - use e_parse */
 		'e_featurebox',
+		'e_parse',
 		'e_related',
 		'e_rss',
 		'e_upload',
