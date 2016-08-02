@@ -99,6 +99,7 @@ class e_db_mysql
 	public      $total_results = false;			// Total number of results
 	
 	private     $pdo = false; // using PDO or not.
+	private     $pdoBind= false;
 
 
 	/**
@@ -189,7 +190,7 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_FOUND_ROWS => true));
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
 			}
 			catch(PDOException $ex)
@@ -283,7 +284,7 @@ class e_db_mysql
 		{		
 			try
 			{
-				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_FOUND_ROWS => true));
+				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 			}
 			catch(PDOException $ex)
 			{
@@ -506,6 +507,8 @@ class e_db_mysql
 		else 
 		{
 			$sQryRes = is_null($rli) ? @mysql_query($query,$this->mySQLaccess) : @mysql_query($query, $rli);
+			$this->mySQLlastErrNum = mysql_errno();
+			$this->mySQLlastErrText = mysql_error();
 		}
 		
 		$e = microtime();
@@ -557,25 +560,21 @@ class e_db_mysql
 			{
 				$buglink = is_null($rli) ? $this->mySQLaccess : $rli;
 
-				if($this->pdo == true && isset($ex) && is_object($ex))
+				if($this->pdo == true)
 				{
 					if(is_array($query))
 					{
-						$query = "ERROR: ".$ex->errorInfo[2]."<br />PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
-
+						$query = "PREPARE: ".$query['PREPARE']."<br />BIND:".print_a($query['BIND'],true); // ,true);
 					}
-					else
+
+					if(isset($ex) && is_object($ex))
 					{
 						$query = $ex->getMessage();
-						$query .= print_a( $ex->getTrace(),true);
-
-
-
-
+						$query .= print_a($ex->getTrace(),true);
 					}
 				}
 
-
+			//	$query = var_export($query,true);
 			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
 			}
 			else
@@ -836,6 +835,16 @@ class e_db_mysql
 				$REPLACE = FALSE;
 			}
 
+			if(isset($arg['_DUPLICATE_KEY_UPDATE']))
+			{
+				$DUPEKEY_UPDATE = true;
+				unset($arg['_DUPLICATE_KEY_UPDATE']);
+			}
+			else
+			{
+				$DUPEKEY_UPDATE = false;
+			}
+
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
 			{
 		   	//Convert data if not using 'new' format
@@ -884,9 +893,17 @@ class e_db_mysql
 
 			unset($tmp);
 
+
+
 			if($REPLACE === false)
 			{
 				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+
+				if($DUPEKEY_UPDATE === true)
+				{
+					$query .= " ON DUPLICATE KEY UPDATE ";
+					$query .= $this->_prepareUpdateArg($tableName, $arg);
+				}
 
 			}
 			else
@@ -946,7 +963,7 @@ class e_db_mysql
 
 	public function lastInsertId()
 	{
-		$tmp = ($this->pdo) ? $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);	
+		$tmp = ($this->pdo) ? (int) $this->mySQLaccess->lastInsertId() : mysql_insert_id($this->mySQLaccess);
 		return ($tmp) ? $tmp : true; // return true even if table doesn't have auto-increment.
 	}
 
@@ -1020,6 +1037,65 @@ class e_db_mysql
 	}
 
 
+	private function _prepareUpdateArg($tableName, $arg)
+	{
+		if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
+	  	{
+
+			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
+		   	{
+			   	//Convert data if not using 'new' format
+		   		$_tmp = array();
+		   		if(isset($arg['WHERE']))
+		   		{
+		   			$_tmp['WHERE'] = $arg['WHERE'];
+		   			unset($arg['WHERE']);
+		   		}
+		   		$_tmp['data'] = $arg;
+		   		$arg = $_tmp;
+		   		unset($_tmp);
+		   	}
+
+	   		if(!isset($arg['data'])) { return false; }
+
+			// See if we need to auto-add field types array
+			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
+			{
+				$arg = array_merge($arg, $this->getFieldDefs($tableName));
+			}
+
+			$fieldTypes = $this->_getTypes($arg);
+
+
+			$new_data = '';
+			$this->pdoBind = array();
+			foreach ($arg['data'] as $fn => $fv)
+			{
+				$new_data .= ($new_data ? ', ' : '');
+				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
+
+				$new_data .= ($this->pdo == true && $ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
+
+				if($fv == '_NULL_')
+				{
+					$ftype = 'null';
+				}
+
+				if($ftype != 'cmd')
+				{
+					$this->pdoBind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype));
+				}
+			}
+
+			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
+
+		}
+
+		return $arg;
+
+	}
+
+
 	/**
 	* @return int number of affected rows, or false on error
 	* @param string $tableName - Name of table to access, without any language or general DB prefix
@@ -1049,75 +1125,28 @@ class e_db_mysql
 			$this->mySQLaccess = $db_ConnectionID;
 		}
 
-	  	if (is_array($arg))  // Remove the need for a separate db_UpdateArray() function.
-	  	{
-		   
-			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
-		   	{
-			   	//Convert data if not using 'new' format
-		   		$_tmp = array();
-		   		if(isset($arg['WHERE']))
-		   		{
-		   			$_tmp['WHERE'] = $arg['WHERE'];
-		   			unset($arg['WHERE']);
-		   		}
-		   		$_tmp['data'] = $arg;
-		   		$arg = $_tmp;
-		   		unset($_tmp);
-		   	}
-	   		if(!isset($arg['data'])) { return false; }
-
-			// See if we need to auto-add field types array
-			if(!isset($arg['_FIELD_TYPES']) && ALLOW_AUTO_FIELD_DEFS)
-			{
-				$arg = array_merge($arg, $this->getFieldDefs($tableName));
-			}
-
-			$fieldTypes = $this->_getTypes($arg);
-
-
-			$new_data = '';
-			$bind = array();
-			foreach ($arg['data'] as $fn => $fv)
-			{
-				$new_data .= ($new_data ? ', ' : '');
-				$ftype =  isset($fieldTypes[$fn]) ? $fieldTypes[$fn] : 'str';
-
-				$new_data .= ($this->pdo == true && $ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
-
-				if($fv == '_NULL_')
-				{
-					$ftype = 'null';
-				}
-
-				if($ftype != 'cmd')
-				{
-					$bind[$fn] = array('value'=>$this->_getPDOValue($ftype,$fv), 'type'=> $this->_getPDOType($ftype));
-				}
-			}
-
-			$arg = $new_data .(isset($arg['WHERE']) ? ' WHERE '. $arg['WHERE'] : '');
-
-		}
+		$arg = $this->_prepareUpdateArg($tableName, $arg);
 
 		$query = 'UPDATE '.$this->mySQLPrefix.$table.' SET '.$arg;
 
-		if($this->pdo == true && !empty($bind))
+		if($this->pdo == true && !empty($this->pdoBind))
 		{
 			$query = array(
 					'PREPARE' => $query,
-					'BIND'  => $bind,
+					'BIND'  => $this->pdoBind,
 			);
 		}
 
+		$result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark);
 
-		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Update', $debug, $log_type, $log_remark))
+		if ($result !==false)
 		{
+
 			if($this->pdo == true)
 			{
 				if(is_object($result))
 				{
-					$result = $this->rowCount();
+				//	$result = $this->rowCount();
 				}
 			}
 			else
