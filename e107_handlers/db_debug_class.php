@@ -167,7 +167,7 @@ class e107_db_debug {
 		$t['marker']	= $this->curTimeMark;
 		$t['caller']	= "$sCallingFile($sCallingLine)";
 		$t['query']		= $query;
-		$t['ok']		= $sQryRes ? TRUE : FALSE;
+		$t['ok']		= ($sQryRes !==false) ? true : false;
 		$t['error']		= $sQryRes ? '' : $sql->getLastErrorText(); // mysql_error();
 		$t['nFields']	= $nFields;
 		$t['time']		= $mytime;
