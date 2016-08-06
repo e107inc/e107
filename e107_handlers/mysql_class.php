@@ -1076,7 +1076,7 @@ class e_db_mysql
 
 				$new_data .= ($this->pdo == true && $ftype !='cmd') ? "`{$fn}`= :". $fn : "`{$fn}`=".$this->_getFieldValue($fn, $fv, $fieldTypes);
 
-				if($fv == '_NULL_')
+				if($fv === '_NULL_')
 				{
 					$ftype = 'null';
 				}
@@ -1272,7 +1272,7 @@ class e_db_mysql
 	{
 
 
-		if(is_string($fieldValue) && ($fieldValue == '_NULL_'))
+		if(is_string($fieldValue) && ($fieldValue === '_NULL_'))
 		{
 			$type = 'null';
 		}
