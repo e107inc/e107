@@ -1059,6 +1059,8 @@ class admin_shortcodes
 
 			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
 
+			$sqlMode = str_replace(",", ", ",e107::getDB()->getMode());
+
 			$text .= "<br /><br />
 			<b>".FOOTLAN_8."</b>
 			<br />
@@ -1075,8 +1077,9 @@ class admin_shortcodes
 			<b>".FOOTLAN_12."</b>
 			<br />
 			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
-			"<br />
-			".FOOTLAN_16.": ".$mySQLdefaultdb."
+
+			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
+			<br />Mode: <small>".$sqlMode."</small>
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
 			<br />utf-8
