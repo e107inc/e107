@@ -803,7 +803,7 @@ class e_db_mysql
 	}
 
 	/**
-	* @return int Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error. 
+	* @return int Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error.
 	* @param string $tableName - Name of table to access, without any language or general DB prefix
 	* @param string/array $arg
 	* @param string $debug
@@ -859,6 +859,7 @@ class e_db_mysql
 				$arg = array_merge($arg, $this->getFieldDefs($tableName));
 			}
 
+			$argUpdate = $arg;  // used when DUPLICATE_KEY_UPDATE is active;
 
 
 			// Handle 'NOT NULL' fields without a default value
@@ -899,7 +900,7 @@ class e_db_mysql
 				if($DUPEKEY_UPDATE === true)
 				{
 					$query .= " ON DUPLICATE KEY UPDATE ";
-					$query .= $this->_prepareUpdateArg($tableName, $arg);
+					$query .= $this->_prepareUpdateArg($tableName, $argUpdate);
 				}
 
 			}
