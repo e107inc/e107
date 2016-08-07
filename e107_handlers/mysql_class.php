@@ -803,7 +803,7 @@ class e_db_mysql
 	}
 
 	/**
-	* @return int Last insert ID or false on error
+	* @return int Last insert ID or false on error. When using '_DUPLICATE_KEY_UPDATE' return ID, true on update, 0 on no change and false on error. 
 	* @param string $tableName - Name of table to access, without any language or general DB prefix
 	* @param string/array $arg
 	* @param string $debug
@@ -819,30 +819,26 @@ class e_db_mysql
 		$table = $this->db_IsLang($tableName);
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
+		$DUPEKEY_UPDATE = false;
+
 		if(is_array($arg))
 		{
 			if(isset($arg['WHERE'])) // use same array for update and insert.
 			{
 				unset($arg['WHERE']);
 			}
+
 			if(isset($arg['_REPLACE']))
 			{
 				$REPLACE = TRUE;
 				unset($arg['_REPLACE']);
-			}
-			else
-			{
-				$REPLACE = FALSE;
 			}
 
 			if(isset($arg['_DUPLICATE_KEY_UPDATE']))
 			{
 				$DUPEKEY_UPDATE = true;
 				unset($arg['_DUPLICATE_KEY_UPDATE']);
-			}
-			else
-			{
-				$DUPEKEY_UPDATE = false;
+
 			}
 
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
@@ -853,6 +849,7 @@ class e_db_mysql
 				$arg = $_tmp;
 				unset($_tmp);
 			}
+
 			if(!isset($arg['data'])) { return false; }
 
 
@@ -934,6 +931,28 @@ class e_db_mysql
 		}
 
 		$this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark);
+
+		if($DUPEKEY_UPDATE === true)
+		{
+			$result = false; // ie. there was an error.
+
+			if($this->mySQLresult === 1) // insert.
+			{
+				$result = $this->lastInsertId();
+			}
+			elseif($this->mySQLresult === 2) // updated
+			{
+				$result = true;
+			}
+			elseif($this->mySQLresult === 0) // updated (no change)
+			{
+				$result = 0;
+			}
+
+			$this->dbError('db_Insert');
+			return $result;
+		}
+
 
 		if ($this->mySQLresult)
 		{
