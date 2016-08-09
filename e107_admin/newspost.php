@@ -1314,6 +1314,11 @@ class news_admin_ui extends e_admin_ui
 			{
 				$this->getModel()->setData($k, $v); // Override Table data.
 			}
+
+			if(e_DEBUG)
+			{
+				e107::getMessage()->addDebug(print_a($data,true));
+			}
 		}
 			
 

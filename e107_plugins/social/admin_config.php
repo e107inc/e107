@@ -73,7 +73,7 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17);
+		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17, LAN_SOCIAL_ADMIN_37);
 
 		protected $prefs = array(
 
@@ -89,7 +89,7 @@ class social_ui extends e_admin_ui
 
 
 
-			'twitter_menu_theme'	=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>4, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
+			'twitter_menu_theme'	    => array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>4, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
 			'twitter_menu_height'		=> array('title'=> LAN_SOCIAL_ADMIN_23, 'type'=>'number', 'tab'=>4, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_33),
 			'twitter_menu_limit'		=> array('title'=> LAN_SOCIAL_ADMIN_18, 'type'=>'number', 'tab'=>4, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_34),
 
@@ -99,8 +99,9 @@ class social_ui extends e_admin_ui
 			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>1, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 
 			'xup_login_update_username'  => array('title'=> 'Update User Display Name ', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
-			'xup_login_update_avatar'  => array('title'=> 'Update User Avatar', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
+			'xup_login_update_avatar'   => array('title'=> 'Update User Avatar', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 
+			'og_image'	                => array('title'=> "Custom Image", 'type'=>'image', 'tab'=>5, 'data' => 'str','help'=>'og:image'),
 
 
 			);
