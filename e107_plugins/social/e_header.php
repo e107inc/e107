@@ -12,6 +12,15 @@ if(USER_AREA)
 		$appID = vartrue($social['Facebook']['keys']['id']);
 	}
 
+	$ogImage = e107::pref('social','og_image', false);
+	if(!empty($ogImage))
+	{
+		e107::meta('og:image',e107::getParser()->thumbUrl($ogImage,'w=500',false,true));
+		unset($ogImage);
+	}
+
+
+
 	if(!empty($appID))
 	{
 		e107::meta('fb:app_id', $appID);
