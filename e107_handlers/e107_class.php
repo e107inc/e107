@@ -3797,12 +3797,14 @@ class e107
 		}
 		// FIXME - basic security - add url sanitize method to e_parse
 		$check = rawurldecode($requestUri); // urlencoded by default
+
 		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
 		$checkregx = $no_cbrace ? '[<>\{\}]' : '[<>]';
 		if(preg_match('/'.$checkregx.'/', $check))
 		{
-			header('HTTP/1.1 403 Forbidden');
-			exit;
+			// header('HTTP/1.1 403 Forbidden');
+			$requestUri = filter_var($requestUri, FILTER_SANITIZE_URL);
+			// exit;
 		}
 
 		// e_MENU fix
