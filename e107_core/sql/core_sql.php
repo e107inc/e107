@@ -474,6 +474,10 @@ CREATE TABLE submitnews (
   submitnews_ip varchar(45) NOT NULL default '',
   submitnews_auth tinyint(3) unsigned NOT NULL default '0',
   submitnews_file text NOT NULL,
+  submitnews_keywords  varchar(255) NOT NULL default '',
+  submitnews_description text,
+  submitnews_summary text,
+  submitnews_media text,
   PRIMARY KEY  (submitnews_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
