@@ -490,9 +490,21 @@ class e_db_mysql
 			{
 				try
 				{
-				//	var_dump($rli);
-				//	var_dump($this->mySQLaccess);
-					$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+
+					if(preg_match('#^(CREATE TABLE|DROP TABLE|ALTER TABLE|RENAME TABLE|CREATE DATABASE|CREATE INDEX)#',$query, $matches))
+					{
+						$sQryRes = is_null($rli) ? $this->mySQLaccess->exec($query) : $rli->exec($query);
+
+						if($sQryRes !==false)
+						{
+							$sQryRes = true; // match with non-PDO results.
+						}
+
+					}
+					else
+					{
+						$sQryRes = is_null($rli) ? $this->mySQLaccess->query($query) : $rli->query($query);
+					}
 
 				}
 				catch(PDOException $ex)
@@ -1741,7 +1753,6 @@ class e_db_mysql
 
 		//$query = str_replace("#",$this->mySQLPrefix,$query); //FIXME - quick fix for those that slip-thru - but destroys
 																// the point of requiring backticks round table names - wrecks &#039;, for example
-
 		if (($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) === FALSE)
 		{	// Failed query
 			$this->dbError('db_Select_gen('.$query.')');
@@ -2133,7 +2144,7 @@ class e_db_mysql
 	 *	@param string $table - table name (no prefix)
 	 *	@param string $fieldid - Numeric offset or field/key name
 	 *	@param string $key - PRIMARY|INDEX|UNIQUE - type of key when searching for key name
-	 *	@param boolean $retinfo = FALSE - just returns array of field names. TRUE - returns all field info
+	 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all field info
 	 *	@return array|boolean - FALSE on error, field information on success
 	 */
     function field($table,$fieldid="",$key="", $retinfo = FALSE)
@@ -2171,7 +2182,7 @@ class e_db_mysql
 					if(($fieldid == $row['Field']) && (($key == "OFF") || ($key == $row['Key'])))
 					{
 						if ($retinfo) return $row;
-						return TRUE;
+						return true;
 					}
 				}
 				$c++;
