@@ -327,17 +327,16 @@ class cpage_shortcodes extends e_shortcode
 			return $video;	
 		}
 		
-		$img = $tp->thumbUrl($this->var['menu_image']);
+
 		if($parm == 'url')
 		{
+			$img = $tp->thumbUrl($this->var['menu_image']);
 			return $img;	
 		}
 
-		$dimensions = $tp->thumbDimensions();
+		return $tp->toImage($this->var['menu_image'], $parm);
 
-		$class = vartrue($parm['class'],'img-responsive img-rounded');
-
-		return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
+		//return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
 	}
 	
 	function sc_cmenuicon($parm='')
