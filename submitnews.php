@@ -385,7 +385,9 @@ class submitNewsForm extends e_form
 		for($i = 0; $i <8; $i++)
 		{
 			$help = (isset($placeholders[$i])) ? $placeholders[$i] : '';
+			$text .= "<div class='form-group'>";
 			$text .= $this->text('submitnews_media['.$i.']', $_POST['submitnews_media'][$i], 255, array('placeholder'=>$help) );
+			$text .= "</div>";
 		}
 
 		return $text;
