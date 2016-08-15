@@ -525,6 +525,8 @@ class adminstyle_infopanel
 		$count = 1;
 		foreach($rows as $row) 
 		{
+			$row['comment_comment'] = filter_var($row['comment_comment'], FILTER_SANITIZE_STRING);
+			
 			$hide = ($count > 3) ? ' hide' : '';
 
 			$TEMPLATE = "{SETIMAGE: w=40&h=40}
