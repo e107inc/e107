@@ -75,9 +75,9 @@ class comments_admin_ui extends e_admin_ui
 			
 			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',	'readonly'=>2, 'data'=>'int',		'width' => '5%'),
          	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'writeParms'=>array('size'=>'xxlarge')), // Display name
-         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'textarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'size=xxlarge'), // Display name
 		 	'comment_author_id' 	=> array('title'=> LAN_AUTHOR,		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
-         	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
+         	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'text',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
          	'u.user_name' 			=> array('title'=> "System user",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',		'width' => 'auto'),	// User date
       		'comment_ip' 			=> array('title'=> LAN_IP,			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
@@ -145,6 +145,19 @@ class comments_admin_ui extends e_admin_ui
 			}
 		}
 
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+
+			if(is_numeric($new_data['comment_author_name']) && !empty($new_data['comment_author_name']))
+			{
+				$userData = e107::user($new_data['comment_author_name']);
+				$new_data['comment_author_id'] = $new_data['comment_author_name'];
+				$new_data['comment_author_name'] = $userData['user_name'];
+			}
+
+			return $new_data;
+
+		}
 
 				
 		public function beforeDelete($data, $id)
@@ -175,7 +188,7 @@ class comments_admin_form_ui extends e_admin_form_ui
 {
 	function comment_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
 	{ 
-		if($mode == 'read')
+		if($mode == 'read' || $mode == 'write')
 		{
 			return e107::getComment()->getTable($curVal);
 		//	return $curVal.' (custom!)';
