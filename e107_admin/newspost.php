@@ -228,7 +228,7 @@ class news_sub_ui extends e_admin_ui
 			'submitnews_title' 			=> array('title'=> LAN_TITLE,			'type' => 'method',			'width' => '35%', 'thclass' => 'left', 'readonly'=>TRUE),
 
 			'submitnews_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
-		//	'submitnews_item' 			=> array('title'=> LAN_DESCRIPTION,		'type' => 'method',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
+			'submitnews_description' 	=> array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
 			'submitnews_name' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
        		'submitnews_ip' 			=> array('title'=> LAN_IP,			'type' => 'ip',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
 			'submitnews_auth' 			=> array('title'=> " ",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'class'=> 'left', 'readParms'=>"link=1" ),
@@ -1292,7 +1292,29 @@ class news_admin_ui extends e_admin_ui
 		exit;
 	}
 	
-	
+
+	private function processSubmittedMedia($data)
+	{
+		if(empty($data))
+		{
+			return false;
+		}
+
+		$row = json_decode($data,true);
+		$text = '';
+		foreach($row as $k)
+		{
+			if(!empty($k))
+			{
+				$text .= $k."\n\n";
+			}
+		}
+
+		return $text;
+
+	}
+
+
 	function loadSubmitted($id)
 	{
 		$sql = e107::getDb();
@@ -1306,8 +1328,24 @@ class news_admin_ui extends e_admin_ui
 			$data['news_category'] = intval( $row['submitnews_category']);
 			$data['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
 
+			if($mediaData = $this->processSubmittedMedia($row['submitnews_media']))
+			{
+				$data['news_body'] .= "\n\n".$mediaData;
+			}
+
+			if(e107::getPref('wysiwyg',false)!==false)
+			{
+				$data['news_body'] = nl2br($data['news_body']);
+			}
+
+
 			$data['news_thumbnail'] = $row['submitnews_file']; // implode(",",$thumbs);
 			$data['news_sef']    = eHelper::dasherize($data['news_title']);
+
+			$data['news_meta_keywords'] = $row['submitnews_keywords'];
+			$data['news_summary'] = $row['submitnews_summary'];
+			$data['news_meta_description'] = $row['submitnews_description'];
+
 			$data['submitted_id']   = $id;
 
 			foreach($data as $k=>$v)
