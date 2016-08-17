@@ -949,11 +949,16 @@ class e_db_mysql
 		{
 			$result = false; // ie. there was an error.
 
-			if($this->mySQLresult === 1) // insert.
+			if($this->pdo !== true)
+			{
+				$this->mySQLresult = mysql_affected_rows($this->mySQLaccess);
+			}
+
+			if($this->mySQLresult === 1 ) // insert.
 			{
 				$result = $this->lastInsertId();
 			}
-			elseif($this->mySQLresult === 2) // updated
+			elseif($this->mySQLresult === 2 || $this->mySQLresult === true) // updated
 			{
 				$result = true;
 			}
