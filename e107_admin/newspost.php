@@ -464,6 +464,7 @@ class news_admin_ui extends e_admin_ui
 		
 	protected $cats = array();
 	protected $newspost;
+	protected $addons = array();
 	
 	protected $news_renderTypes = array( // TODO Placement location and template should be separate. 
 	
@@ -732,8 +733,8 @@ class news_admin_ui extends e_admin_ui
 		'options' );
 
 
-		$addons = e107::getAddonConfig('e_admin',null, 'config',$this);
-		foreach($addons as $plug=>$config)
+
+		foreach($this->addons as $plug=>$config)
 		{
 			foreach($config['fields'] as $field=>$tmp)
 			{
@@ -758,6 +759,9 @@ class news_admin_ui extends e_admin_ui
 
 	function init()
 	{
+
+		$this->addons = e107::getAddonConfig('e_admin',null, 'config', $this);
+
 		if(!empty($_POST['save_prefs']))
 		{
 			$this->saveSettings();
