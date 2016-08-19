@@ -1861,7 +1861,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
 	}	
 	
-	setcookie($name, $value, $expire, $path, $domain, $secure);
+	setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
 // generic function for retaining values across pages. ie. cookies or sessions.
@@ -1879,7 +1879,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
 		}	
 		
-		setcookie($name, $value, $expire, $path, $domain, $secure);
+		setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
 	}
 }

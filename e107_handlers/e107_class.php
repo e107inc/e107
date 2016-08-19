@@ -3292,7 +3292,7 @@ class e107
 			return array_walk($input, array('self', 'filter_request'), $type);
 		}
 
-				
+
 		if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
 		{
 			if($type == "_POST" && ($base64 == FALSE))
@@ -3357,14 +3357,29 @@ class e107
 			}
 		
 		}
+
+		if($type == '_GET') // Basic XSS check.
+		{
+			if(stripos($input, "<script")!==false || stripos($input, "%3Cscript")!==false)
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
+				exit();
+			}
+
+		}
 		
 		if($type == "_SERVER")
 		{
+
 			if(($key == "QUERY_STRING") && (
 				strpos(strtolower($input),"../../")!==FALSE 
-				|| strpos(strtolower($input),"php:")!==FALSE
-				|| strpos(strtolower($input),"data:")!==FALSE
-				|| strpos(strtolower($input),strtolower("%3Cscript"))!==FALSE
+				|| stripos($input,"php:")!==FALSE
+				|| stripos($input,"data:")!==FALSE
+				|| stripos($input,"%3cscript")!==FALSE
 				))
 			{
 	
@@ -3413,10 +3428,13 @@ class e107
 			exit();
 		} 
 		
-		if($base64 != TRUE)
+		if($base64 != true)
 		{
-			self::filter_request(base64_decode($input),$key,$type,TRUE);
+			self::filter_request(base64_decode($input),$key,$type,true);
 		}
+
+
+
 	}
 
 
