@@ -54,7 +54,7 @@ class banner_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if(!$row['banner_image'])
 		{
-			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".BANNERLAN_39."</a>";
 		}
 	
 		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
