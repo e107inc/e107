@@ -21,6 +21,11 @@ if (!getperms('H|N|H0|H1|H2|H3|H4|H5'))
 e107::coreLan('newspost', true);
 
 
+e107::css('inline', "
+
+.submitnews.modal-body {    height: 500px;  overflow-y: scroll; }
+
+");
 
 
 
@@ -304,7 +309,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
 			    </div>
-			    <div class="modal-body">
+			    <div class="submitnews modal-body">
 			    <p>';
 		
 		$text .= $tp->toHTML($submitnews_item,TRUE);
@@ -317,8 +322,13 @@ class news_sub_form_ui extends e_admin_form_ui
 			
 			
 			foreach($tmp as $imgfile)
-			{				
-				$url = $tp->thumbUrl(e_UPLOAD.$imgfile,array('aw'=>400),true);
+			{
+				if(strpos("{e_UPLOAD}",$imgfile) === false)
+				{
+					$imgfile = e_UPLOAD.$imgfile;
+				}
+
+				$url = $tp->thumbUrl($imgfile,array('aw'=>400),true);
 				$text .= "<br /><img src='".$url."' alt='".$imgfile."' />";					
 			}
 		}
@@ -366,7 +376,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			if($approved == 0)
 			{
 				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
-				$text .= "<a class='btn btn-default btn-large' href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
+				$text .= "<a class='btn btn-default btn-large' title=\"Approve\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
 				// NWSLAN_103;	
 			} 
 			else // Already submitted; 
@@ -513,30 +523,21 @@ class news_admin_ui extends e_admin_ui
 		$new = array();
 		foreach($row as $k=>$v)
 		{
-			$tmp = urldecode($v);
-			if(strpos($tmp,'{e_UPLOAD}')!==false)
+			if(empty($v))
 			{
-				list($root,$qry) = explode("?",$tmp);
-				parse_str($qry,$opt);
-				if(!empty($opt['src']))
-				{
-
-					$f = str_replace('{e_UPLOAD}','',$opt['src']);
-				//	e107::getMessage()->addInfo("<h3>Importing File</h3>".print_a($f,true));
-					if($bbpath = e107::getMedia()->importFile($f,'news', e_UPLOAD.$f))
-					{
-						$new[] = $bbpath;
-					}
-				}
-
+				continue;
 			}
-			elseif(!empty($v))
+
+			$f = str_replace('{e_UPLOAD}','',$v);
+
+			if($bbpath = e107::getMedia()->importFile($f,'news', e_UPLOAD.$f))
 			{
-				$new[] = $v;
+				$new[] = $bbpath;
 			}
 		}
 
-	//		e107::getMessage()->addInfo("<h3>Process SubNews Images</h3>".print_a($new,true));
+
+		e107::getMessage()->addDebug("<h3>Processing/importing SubNews Images</h3>".print_a($new,true));
 
 		return implode(",",$new);
 
@@ -1548,12 +1549,15 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode == 'read')
 		{
-			if(!vartrue($curval)) return;
-
 			if(strpos($curval, ",")!==false)
 			{
 				$tmp = explode(",",$curval);
 				$curval = $tmp[0];
+			}
+
+			if(empty($curval))
+			{
+				return '';
 			}
 
 			$vparm = array('thumb'=>'tag','w'=> 80);
@@ -1577,16 +1581,16 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
+			$paths = array();
+
 			if(!empty($_GET['sub']))
 			{
 				$thumbTmp = explode(",",$curval);
-				$paths = array();
 				foreach($thumbTmp as $key=>$path)
 				{
-					$paths[] = e107::getParser()->thumbUrl(e_TEMP.$path,'aw=800'); ;
+					$url = ($path[0] == '{') ? $path : e_TEMP.$path;
+					$paths[] = e107::getParser()->thumbUrl($url,'aw=800'); ;
 				}
-
-				$curval = implode(",", $paths);
 
 			}
 
@@ -1605,11 +1609,11 @@ class news_form_ui extends e_admin_form_ui
 				}
 			}
 
-			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]),'','media=news&video=1');
+			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]), varset($paths[1]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]), varset($paths[2]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]), varset($paths[3]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]), varset($paths[4]),'media=news&video=1');
 
 		//	$text .= "<div class='field-help'>Insert image/video into designated area of template.</div>";
 			return $text;
