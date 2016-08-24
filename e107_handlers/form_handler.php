@@ -1079,7 +1079,7 @@ class e_form
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
 	 */
-	function imagepicker($name, $default, $label = '', $sc_parameters = '')
+	function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
@@ -1132,8 +1132,7 @@ class e_form
 			$class = 'image-selector-empty';
 		}
 		
-		
-		
+
 		//$width = intval(vartrue($sc_parameters['width'], 150));
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));	
 		
@@ -1172,8 +1171,13 @@ class e_form
 
 
 		}
-		
-		
+
+		if(!empty($previewURL))
+		{
+			$default_url = $previewURL;
+		}
+
+
 		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 
 		if($cat != '_icon' && $blank == false) // ICONS
