@@ -533,11 +533,11 @@ class users_admin_ui extends e_admin_ui
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
 				if(e107::getDb()->insert('user_extended', $update))
 				{
-					e107::getMessage()->addSuccess('Extended Fields Updated');	//TODO Replace with Generic or existing LAN.
+					e107::getMessage()->addSuccess(LAN_UPDATED);
 				}
 				else
 				{
-					e107::getMessage()->addError('Extended Fields Insert Failed');	 	//TODO Replace with Generic or existing LAN.
+					e107::getMessage()->addError(LAN_UPDATED_FAILED);
 					$error = e107::getDb()->getLastErrorText();
 					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
@@ -552,7 +552,7 @@ class users_admin_ui extends e_admin_ui
 
 				if(e107::getDb()->update('user_extended',$update)===false)
 				{
-					e107::getMessage()->addError('Extended Fields Update Failed');	//TODO Replace with Generic or existing LAN.
+					e107::getMessage()->addError(LAN_UPDATED_FAILED);
 					$error = e107::getDb()->getLastErrorText();
 					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
@@ -780,8 +780,8 @@ class users_admin_ui extends e_admin_ui
 			$this->redirect('list', 'main', true);
 	  	}
 		
-  		 // TODO - lan
-  		 if(!$sysuser->getId()) e107::getMessage()->addError('User not found.');
+
+  		 if(!$sysuser->getId()) e107::getMessage()->addError(LAN_USER_NOT_FOUND);
 	}
 
 	public function LogoutasPage()
