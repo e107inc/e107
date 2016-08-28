@@ -420,6 +420,7 @@ define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
 define("LAN_USER_QUICKADD","Quick Add User");
+define("LAN_USER_NOT_FOUND","User Not Found.");
 define("LAN_USER_PRUNE", "Prune Users");
 define("LAN_USER_OPTIONS", "User Options");
 define("LAN_USER_RANKS", "User Ranks");
