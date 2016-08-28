@@ -501,6 +501,17 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 							<div class='smalltext field-help'>Contact form will only be visible to this userclass group.</div>
 						</td>
 					</tr>
+						<tr>
+						<td><label for='contact-filter'>".PRFLAN_270."</label></td>
+						<td>
+							".$frm->textarea('contact_filter', $pref['contact_filter'], 5, 59, array('size'=>'xxlarge'))."
+							<div class='smalltext field-help'>".PRFLAN_271."</div>
+						</td>
+					</tr>
+
+
+
+
 					<tr>
 						<td><label for='contact-emailcopy'>".PRFLAN_164."</label></td>
 						<td>";
@@ -517,6 +528,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 
 						</td>
 					</tr>
+
 						</tbody>
 			</table>
 			".pref_submit('email')."
