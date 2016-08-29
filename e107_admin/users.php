@@ -533,7 +533,8 @@ class users_admin_ui extends e_admin_ui
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
 				if(e107::getDb()->insert('user_extended', $update))
 				{
-					e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78);
+					// e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); // not needed see pull/1816
+					e107::getMessage()->addDebug(LAN_UPDATED.': '.ADLAN_78); // let's put it in debug instead
 				}
 				else
 				{
@@ -560,7 +561,8 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); 
+					// e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); // not needed pull/1816
+					e107::getMessage()->addDebug(LAN_UPDATED.': '.ADLAN_78); // let's put it in debug instead
 				}
 			}
 		}
@@ -1717,7 +1719,7 @@ class users_admin_ui extends e_admin_ui
 			e107::getDb()->insert('generic', $tmp);
 		}
 		
-		e107::getMessage()->addSuccess(LAN_UPDATED);
+		e107::getMessage()->addSuccess(LAN_UPDATED); //XXX maybe not needed see pull/1816
 		e107::getCache()->clear_sys('nomd5_user_ranks');
 	}
 
