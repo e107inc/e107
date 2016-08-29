@@ -27,7 +27,7 @@ if (!isset($pref['subnews_class']))
 
 if (!check_class($pref['subnews_class']))
 {
-	$ns->tablerender(LAN_UI_403_TITLE_ERROR, LAN_UI_403_BODY_ERROR);
+	$ns->tablerender(NWSLAN_12, NWSLAN_11);
 	require_once(FOOTERF);
 	exit;
 }
