@@ -3893,7 +3893,7 @@ class e107
 		{
 			$temp = substr($e107Path, strpos($e107Path, '/') +1);
 			$plugDir = substr($temp, 0, strpos($temp, '/'));
-			define('e_CURRENT_PLUGIN', $plugDir);
+			define('e_CURRENT_PLUGIN', rtrim($plugDir,'/'));
 			define('e_PLUGIN_DIR', e_PLUGIN.e_CURRENT_PLUGIN.'/');
 			define('e_PLUGIN_DIR_ABS', e_PLUGIN_ABS.e_CURRENT_PLUGIN.'/');
 		}
