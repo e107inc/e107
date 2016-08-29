@@ -19,7 +19,7 @@ define("LAN_135", "News Item: ");
 define("LAN_136", "Submit News Item");
 define("NWSLAN_6", "Category");
 define("NWSLAN_10", "No news categories");
-define("NWSLAN_11", "You don't have access to this area.");
+define("NWSLAN_11", "You do not have access to this area or you are currently not logged in.");
 define("NWSLAN_12", "Access Denied."); 
 
 define("SUBNEWSLAN_1", "You must include a title.\\n");
