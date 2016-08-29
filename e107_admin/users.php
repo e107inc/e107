@@ -533,11 +533,11 @@ class users_admin_ui extends e_admin_ui
 				$update['data']['user_extended_id'] = intval($new_data['submit_value']);
 				if(e107::getDb()->insert('user_extended', $update))
 				{
-					e107::getMessage()->addSuccess(LAN_UPDATED);
+					e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78);
 				}
 				else
 				{
-					e107::getMessage()->addError(LAN_UPDATED_FAILED);
+					e107::getMessage()->addError(LAN_UPDATED_FAILED.': '.ADLAN_78);
 					$error = e107::getDb()->getLastErrorText();
 					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
@@ -552,7 +552,7 @@ class users_admin_ui extends e_admin_ui
 
 				if(e107::getDb()->update('user_extended',$update)===false)
 				{
-					e107::getMessage()->addError(LAN_UPDATED_FAILED);
+					e107::getMessage()->addError(LAN_UPDATED_FAILED.': '.ADLAN_78);
 					$error = e107::getDb()->getLastErrorText();
 					e107::getMessage()->addDebug($error);
 					e107::getMessage()->addDebug(print_a($update,true));
@@ -560,7 +560,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					// 	e107::getMessage()->addSuccess('Extended Fields Updated'); 	//TODO Replace with Generic or existing LAN.
+					e107::getMessage()->addSuccess(LAN_UPDATED.': '.ADLAN_78); 
 				}
 			}
 		}
