@@ -1335,7 +1335,7 @@ class news_admin_ui extends e_admin_ui
 
 			if($mediaData = $this->processSubmittedMedia($row['submitnews_media']))
 			{
-				$data['news_body'] .= "\n\n".$mediaData;
+				$data['news_body'] .= "\n\n---\n\n".$mediaData;
 			}
 
 			if(e107::getPref('wysiwyg',false)!==false)
@@ -1343,6 +1343,7 @@ class news_admin_ui extends e_admin_ui
 				$data['news_body'] = nl2br($data['news_body']);
 			}
 
+			$data['news_author'] = $row['submitnews_user'];
 
 			$data['news_thumbnail'] = $row['submitnews_file']; // implode(",",$thumbs);
 			$data['news_sef']    = eHelper::dasherize($data['news_title']);
