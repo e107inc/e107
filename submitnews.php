@@ -178,6 +178,7 @@ class submitNews
 				'submitnews_id'             => 0,
 				'submitnews_name'           => $submitnews_user,
 				'submitnews_email'          => $submitnews_email,
+				'submitnews_user'           => USERID,
 				'submitnews_title'          => $submitnews_title,
 				'submitnews_category'       => intval($_POST['cat_id']),
 				'submitnews_item'           => $submitnews_item,
