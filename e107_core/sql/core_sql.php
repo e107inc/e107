@@ -467,6 +467,7 @@ CREATE TABLE submitnews (
   submitnews_id int(10) unsigned NOT NULL auto_increment,
   submitnews_name varchar(100) NOT NULL default '',
   submitnews_email varchar(100) NOT NULL default '',
+  submitnews_user int(10) unsigned NOT NULL default '0',
   submitnews_title varchar(200) NOT NULL default '',
   submitnews_category tinyint(3) unsigned NOT NULL default '0',
   submitnews_item text NOT NULL,
