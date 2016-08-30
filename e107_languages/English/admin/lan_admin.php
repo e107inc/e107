@@ -289,7 +289,7 @@ define("LAN_ACTIVE","Active");
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
-define("LAN_POSTED_BY_X","Posted by {USERNAME} {TIMEDATE=relative}");
+define("LAN_POSTED_BY_X","Posted by [x] [y]");
 define("LAN_VIEW_ALL","View All");
 
 define("LAN_BAN","Ban");
@@ -441,4 +441,4 @@ define("LAN_ADVANCED", "Advanced");
 define("LAN_FOLDER", "Folder");
 
 
-// TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
+

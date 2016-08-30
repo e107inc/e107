@@ -522,6 +522,9 @@ class adminstyle_infopanel
 		
 		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
 		$count = 1;
+
+		$lanVar = array('x' =>'{USERNAME}', 'y'=>'{TIMEDATE=relative}');
+				
 		foreach($rows as $row) 
 		{
 			$hide = ($count > 3) ? ' hide' : '';
@@ -534,7 +537,7 @@ class adminstyle_infopanel
 	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
 	            </div>
 				<div class='media-body'>
-					<small class='muted smalltext'>".LAN_POSTED_BY_X."</small><br />
+					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
