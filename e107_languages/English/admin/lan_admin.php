@@ -263,9 +263,13 @@ define("LAN_TIME","Time");
 define("LAN_EMPTY","There are no entries in the database yet");
 define("LAN_EXISTING","Existing Entries");
 
-
 define("LAN_CONFDELETE","Confirm Delete");
 define("LAN_PLUGIN","Plugin");
+define("LAN_THEMES","Themes");
+define("LAN_LATEST_e107_NEWS","Latest e107 News");
+define("LAN_WEBSITE_STATUS","Website Status");
+define("LAN_STATS","Stats");
+define("LAN_ONLINE","Online");
 define("LAN_ORDER","Order");
 
 define("LAN_SELECT","Select ...");
@@ -273,12 +277,20 @@ define("LAN_ADMIN","Admin");
 define("LAN_DISPLAYOPT", "Edit Display Options");
 // define("LAN_GOPAGE", "Go to page:");
 define("LAN_DATESTAMP","Date stamp");
+define("LAN_TIMESTAMP","Timestamp");
+define("LAN_IP","IP");
+define("LAN_PAGE","PAGE");
+define("LAN_AGENT","AGENT");
+define("LAN_LANG","Lang.");
+define("LAN_APPROVE","Approve");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
 define("LAN_ACTIVE","Active");
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
+define("LAN_POSTED_BY_X","Posted by {USERNAME} {TIMEDATE=relative}");
+define("LAN_VIEW_ALL","View All");
 
 define("LAN_BAN","Ban");
 
@@ -408,6 +420,7 @@ define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
 define("LAN_USER_QUICKADD","Quick Add User");
+define("LAN_USER_NOT_FOUND","User Not Found.");
 define("LAN_USER_PRUNE", "Prune Users");
 define("LAN_USER_OPTIONS", "User Options");
 define("LAN_USER_RANKS", "User Ranks");
