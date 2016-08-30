@@ -888,5 +888,18 @@ $LASTPOSTUSER = $this->var['lastpost_username'];
   }
 
 */
+	function sc_avatar($opts)
+	{
+		if (isset($this->var['thread_id']))
+		{
+			return e107::getParser()->toAvatar(e107::user($this->var['thread_lastuser']),$opts);
+		}
+		elseif (isset($this->var['forum_id']))
+		{
+			return e107::getParser()->toAvatar(e107::user($this->var['forum_lastpost_user']),$opts);
+		}
+		
+		return '';
+	}
 }
 ?>
