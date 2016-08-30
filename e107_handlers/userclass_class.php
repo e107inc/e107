@@ -935,6 +935,32 @@ class user_class
 
 
 
+	/**
+	 *	Return a key-name identifier for given class ID
+	 *	@param integer $id - class number. A negative number indicates 'not a member of...'
+	 *	@return string class name ke
+	 */
+	public function getIdentifier($id)
+	{
+		$cn = abs($id);
+
+		$ucString = '';
+
+		$fixedClasses = array_flip($this->text_class_link);
+
+		if(isset($fixedClasses[$cn]))
+		{
+			return $fixedClasses[$cn];
+		}
+
+		if(isset($this->class_tree[$cn]))
+		{
+			return e107::getForm()->name2id($this->class_tree[$cn]['userclass_name']);
+		}
+
+		return $ucString;
+	}
+
 
 	/**
 	 *	Return class description for given class ID
