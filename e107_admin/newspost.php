@@ -1431,7 +1431,6 @@ class news_form_ui extends e_admin_form_ui
 
 		$pref = e107::pref('core');
 		$sql = e107::getDb();
-		$frm = e107::getForm();
 
 
 		if($mode == 'read')
@@ -1456,25 +1455,32 @@ class news_form_ui extends e_admin_form_ui
 		}
 		else // allow master admin to
 		{
-			$text .= $frm->select_open('news_author');
-			$qry = "SELECT user_id,user_name FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
+			$text .= $this->select_open('news_author');
+			$qry = "SELECT user_id,user_name,user_admin FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
+
+			if(!empty($curVal))
+			{
+				$qry .= " OR user_id = ".intval($curVal); // make sure existing author is included.
+			}
+
 			if($pref['subnews_class'] && $pref['subnews_class']!= e_UC_GUEST && $pref['subnews_class']!= e_UC_NOBODY)
 			{
 				if($pref['subnews_class']== e_UC_MEMBER)
 				{
-					$qry .= " OR user_ban != 1";
+					$qry .= " OR user_ban != 1 ORDER BY user_class DESC, user_name";// limit to avoid long page loads.
 				}
 				elseif($pref['subnews_class']== e_UC_ADMIN)
 				{
-					$qry .= " OR user_admin = 1";
+					$qry .= " OR user_admin = 1 ORDER BY user_name";
 				}
 				else
 				{
-					$qry .= " OR FIND_IN_SET(".intval($pref['subnews_class']).", user_class) ";
+					$qry .= " OR FIND_IN_SET(".intval($pref['subnews_class']).", user_class) ORDER BY user_name";
 				}
 			}
 
 	//		print_a($pref['subnews_class']);
+
 
 			$sql->gen($qry);
 			while($row = $sql->fetch())
@@ -1487,11 +1493,22 @@ class news_form_ui extends e_admin_form_ui
 				{
 					$sel = (USERID == $row['user_id']);
 				}
-				$text .= $frm->option($row['user_name'], $row['user_id'].chr(35).$row['user_name'], $sel);
+
+				$username = $row['user_name'];
+
+				if(!empty($row['user_admin']))
+				{
+					$username .= " *";
+				}
+
+
+				$text .= $this->option($username, $row['user_id'].chr(35).$row['user_name'], $sel);
 			}
 
 			$text .= "</select>
 			";
+
+
 		}
 
 		return $text;
