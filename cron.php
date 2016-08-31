@@ -41,26 +41,31 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 		$pwd = str_replace('token=','',$pwd);
 	}
 		
-	if($pref['e_cron_pwd'] != $pwd)
+	if(($pref['e_cron_pwd'] != $pwd) || empty($pref['e_cron_pwd']))
 	{	
-		require_once(e_HANDLER."mail.php");
-		
-		$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
-		<br /><br /> 
-		Sent from cron: ".$pwd."<br />
-		Stored in e107: ".$pref['e_cron_pwd']."<br /><br />
-		You should regenerate the cron command in admin and enter it again in your server configuration. 
-		";
-		
-		$message .= "<h2>Debug Info</h2>";
-		$message .= "<h3>_SERVER</h3>";
-		$message .= print_a($_SERVER,true); 
-		$message .= "<h3>_ENV</h3>";
-		$message .= print_a($_ENV,true); 
-		$message .= "<h3>_GET</h3>";
-		$message .= print_a($_GET,true); 
-						
-	    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+
+		if(!empty($pwd))
+		{
+			require_once(e_HANDLER."mail.php");
+			
+			$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
+			<br /><br />
+			Sent from cron: ".$pwd."<br />
+			Stored in e107: ".$pref['e_cron_pwd']."<br /><br />
+			You should regenerate the cron command in admin and enter it again in your server configuration.
+			";
+
+			$message .= "<h2>Debug Info</h2>";
+			$message .= "<h3>_SERVER</h3>";
+			$message .= print_a($_SERVER,true);
+			$message .= "<h3>_ENV</h3>";
+			$message .= print_a($_ENV,true);
+			$message .= "<h3>_GET</h3>";
+			$message .= print_a($_GET,true);
+
+		    sendemail($pref['siteadminemail'], "e107 - Cron Schedule Misconfigured.", $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+		}
+
 		exit;
 	}
 
