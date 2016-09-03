@@ -148,7 +148,7 @@ class admin_start
 		
 		if(deftrue('e_MEDIA') && is_dir(e_MEDIA) && !is_writable(e_MEDIA))
 		{
-			$mes->addWarning("The folder ".e_MEDIA." is not writable. Please correct before proceeding.");			
+			$mes->addWarning(LAN_CHMOD_MEDIA);			
 		}	
 		
 		if(deftrue('e_SYSTEM') && is_dir(e_SYSTEM) && !is_writable(e_SYSTEM))
@@ -200,7 +200,7 @@ class admin_start
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>");
+			$mes->addWarning( LAN_INCOMP_PLUG .$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>".EPL_ADLAN_1."</a>");
 		}	
 		
 	}
@@ -213,7 +213,7 @@ class admin_start
 
 		if($us->passwordAPIExists() === true && $us->getDefaultHashType() !== PASSWORD_E107_PHP && e107::pref('core','password_CHAP')==0)
 		{
-			$message = "It is HIGHLY recommended that you [change your password encoding] to the PHP Default. (Password hashes will be automatically upgraded during user login.)";
+			$message = LAN_WARN_PASS_ENC;
 			$srch = array('[',']');
 			$repl = array("<a class='alert-link' href='".e_ADMIN."prefs.php#nav-core-prefs-security'>","</a>");
 			$mes->addWarning(str_replace($srch,$repl,$message));

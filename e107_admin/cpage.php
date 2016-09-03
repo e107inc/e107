@@ -495,14 +495,14 @@ class page_admin_ui extends e_admin_ui
 			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
 			
 			// Menu Tab  XXX 'menu_name' is 'menu_name' - not caption. 
-			'menu_name' 		=> array('title'=> CUSLAN_64, 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme. Must use ASCII characters only and be all lowercase."),
-		   	'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item.", 'writeParms'=>'size=xxlarge'),
+			'menu_name' 		=> array('title'=> CUSLAN_64, 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>CUSLAN_80),
+		   	'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>CUSLAN_81, 'writeParms'=>'size=xxlarge'),
 			'menu_text' 		=> array('title'=> CUSLAN_66,		'nolist'=>true, 'tab' => 2,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page' ),
 			'menu_template' 	=> array('title'=> CUSLAN_67,       'nolist'=>true, 'tab' => 2,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
             'menu_class' 		=> array('title'=> LAN_VISIBILITY, 	'tab' => 3,	'type' => 'userclass', 	'data'=>'int', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
-			'menu_button_text'	=> array('title'=> CUSLAN_68, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Leave blank to use the default"),
+			'menu_button_text'	=> array('title'=> CUSLAN_68, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>CUSLAN_82),
 		
-			'menu_button_url'	=> array('title'=> CUSLAN_69, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Leave blank to use the corresponding page", 'writeParms'=>'size=xxlarge'),
+			'menu_button_url'	=> array('title'=> CUSLAN_69, 	    'nolist'=>true, 'tab' => 3,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>CUSLAN_83, 'writeParms'=>'size=xxlarge'),
 		
 			'menu_icon'			=> array('title' =>CUSLAN_70,       'nolist'=>true, 'tab' => 2,	'type' => 'icon', 		'width' => '110px',	'thclass' => 'center', 			'class' => "center", 'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','writeParms'=>'media=page&glyphs=1', 'readonly'=>false),
 		
@@ -560,7 +560,7 @@ class page_admin_ui extends e_admin_ui
 			  		'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'forced'=> TRUE, 	'type' => 'text', 		'inline'=>true,		'width'=>'20%'),
 			
 				
-				  	'menu_name' 		=> array('title'=> CUSLAN_64, 	    'type' => 'text', 	'inline'=>false,	'width' => '10%','nolist'=>false, "help"=>"Will be listed in the Menu-Manager under this name. Must use ASCII characters only."),
+				  	'menu_name' 		=> array('title'=> CUSLAN_64, 	    'type' => 'text', 	'inline'=>false,	'width' => '10%','nolist'=>false, "help"=>CUSLAN_84),
 					'menu_template' 	=> array('title'=> CUSLAN_67,  	    'type' => 'dropdown', 	'width' => '15%', 'filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
           			'menu_class' 		=> array('title'=> LAN_USERCLASS,   'type' => 'userclass', 	'data'=>'str', 'inline'=>true, 'width' => 'auto',  'filter' => true, 'batch' => true),
 		
