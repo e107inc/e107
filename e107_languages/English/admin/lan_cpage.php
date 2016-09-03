@@ -44,6 +44,12 @@ define("CUSLAN_76", "Menu with path #");
 define("CUSLAN_77", "deleted");
 define("CUSLAN_78", "Couldn't delete menu with path ");
 define("CUSLAN_79", "You must enter either a page title or a menu name.");
+//hover help
+define("CUSLAN_80", "Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme. Must use ASCII characters only and be all lowercase.");
+define("CUSLAN_81", "Caption displayed on the menu item.");
+define("CUSLAN_82", "Leave blank to use the default");
+define("CUSLAN_83", "Leave blank to use the corresponding page");
+define("CUSLAN_84", "Will be listed in the Menu-Manager under this name. Must use ASCII characters only.");
 
 
 // define("CUSLAN_54", "Meta Keywords"); //LAN_KEYWORDS

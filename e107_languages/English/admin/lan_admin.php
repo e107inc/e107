@@ -439,6 +439,14 @@ define("LAN_LIMIT", "Limit");
 define("LAN_BASIC", "Basic");
 define("LAN_ADVANCED", "Advanced");
 define("LAN_FOLDER", "Folder");
+define("LAN_AVATAR_HELP", "Avatar Pre-selection Folder:");
+//messages
+define("LAN_WARN_PASS_ENC", "It is HIGHLY recommended that you [change your password] encoding to the PHP Default. (Password hashes will be automatically upgraded during user login.)");
+define("LAN_INCOMP_PLUG", "The following plugins are not compatible with this version of e107 and should be uninstalled:");
+define("LAN_SETT_SAVED_SUCCESS", "Settings successfully saved.");
+define("LAN_CHMOD_MEDIA", "The folder ".e_MEDIA." is not writable. Please correct before proceeding.");
+
+// TODO - move e_form related LANS below, add new lan_form.php file (for both front/back-end)
 
 
 
