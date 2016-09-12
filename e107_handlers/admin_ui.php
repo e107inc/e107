@@ -5403,8 +5403,17 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$data = $this->getPosted();
 
+		foreach($this->prefs as $k=>$v) // fix for empty checkboxes - need to save a value.
+		{
+			if(!isset($data[$k]) && $v['data'] !== false && ($v['type'] == 'checkboxes' || $v['type'] == 'checkbox'))
+			{
+				$data[$k] = null;
+			}
+		}
+
 		foreach($data as $key=>$val)
 		{
+
 			if(!empty($this->prefs[$key]['multilan']))
 			{
 
