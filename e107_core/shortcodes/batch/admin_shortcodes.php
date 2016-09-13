@@ -742,14 +742,14 @@ class admin_shortcodes
 
        $text = '<ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header dropdown-header">Private Messages</li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
+                <li class="nav-header navbar-header dropdown-header">'.LAN_PM.'</li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_INBOX.'" data-target="#uiModal" href="'.$inboxUrl.'" >'.LAN_PLUGIN_PM_INBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_OUTBOX.'" data-target="#uiModal" href="'.$outboxUrl.'">'.LAN_PLUGIN_PM_OUTBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PM_35.'" data-target="#uiModal" href="'.$composeUrl.'">'.LAN_PM_35.'</a></li>
                 </ul>
         </li>
         </ul>
