@@ -929,5 +929,4 @@ function newthreadjump($url)
 	return $text;
 	
 }
-
 ?>
