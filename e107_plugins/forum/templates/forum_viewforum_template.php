@@ -308,7 +308,7 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 													<div class='row'>
 														<div class='col-xs-12 col-md-9'>
 														{THREADNAME}
-														<div><small>by {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+														<div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
 														</div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
 														</div>
 														<div class='row'>
@@ -352,7 +352,7 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 
 												<div>
 													<div class='panel panel-default' style='margin-top:50px'>
-													<div class='panel-heading'>Status Keys</div>
+													<div class='panel-heading'>".LAN_FORUM_8011."</div>
 													<div class='panel-body'>
 													{ICONKEY}
 
