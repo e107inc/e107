@@ -559,7 +559,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 		
 		$text = '<div class="btn-group pull-right">
     	<button class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
-    	Options
+    	'.LAN_FORUM_8013.'
     	<span class="caret"></span>
     	</button>
     	<ul class="dropdown-menu pull-right text-right">';
