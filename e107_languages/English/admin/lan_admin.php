@@ -439,6 +439,8 @@ define("LAN_LIMIT", "Limit");
 define("LAN_BASIC", "Basic");
 define("LAN_ADVANCED", "Advanced");
 define("LAN_FOLDER", "Folder");
-
+define("LAN_P_ICONS", "Personalize Icons");
+define("LAN_P_MENUS", "Personalize Menus");
+define("LAN_LATEST_COMMENTS", "Latest Comments");
 
 
