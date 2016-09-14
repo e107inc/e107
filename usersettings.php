@@ -183,7 +183,7 @@ if (isset($_POST['updatesettings']))
 		require_once (e_HANDLER.'upload_handler.php');
 		require_once (e_HANDLER.'resize_handler.php');
 
-		if ($uploaded = process_uploaded_files(e_AVATAR_UPLOAD, 'prefix+ap_'.$tp->leadingZeros($udata['user_id'],7).'_', array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif', 'max_file_count' => 2)))
+		if ($uploaded = process_uploaded_files(e_AVATAR_UPLOAD, 'prefix+ap_'.$tp->leadingZeros($udata['user_id'],7).'_', array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif,jpeg', 'max_file_count' => 2)))
 		{
 			foreach ($uploaded as $upload)
 			{
