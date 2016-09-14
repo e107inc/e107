@@ -298,7 +298,7 @@ TEMPL;
 
 		foreach($arr['img'] as $img)
 		{
-			if(substr($img['src'],0,4) == 'http')
+			if(substr($img['src'],0,4) == 'http' || strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
 			{
 				continue;
 			}
