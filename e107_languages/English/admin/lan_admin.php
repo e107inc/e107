@@ -442,5 +442,4 @@ define("LAN_FOLDER", "Folder");
 define("LAN_P_ICONS", "Personalize Icons");
 define("LAN_P_MENUS", "Personalize Menus");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
-
-
+define("LAN_PERSONALIZE", "Personalize");
