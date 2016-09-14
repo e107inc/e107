@@ -595,9 +595,9 @@ class adminstyle_infopanel
 		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
 	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
 	    
-		$text2 .= $ns->tablerender(LAN_P_ICONS, $this->render_infopanel_icons(),'personalize',true); 
+		$text2 .= $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
 		$text2 .= "<div class='clear'>&nbsp;</div>";
-		$text2 .= $ns->tablerender(LAN_P_MENUS, $this->render_infopanel_menu_options(),'personalize',true); 
+		$text2 .= $ns->tablerender(LAN_PERSONALIZE_MENUS, $this->render_infopanel_menu_options(),'personalize',true);
 	//	$text2 .= render_infopanel_icons();
 		//$text2 .= "<div class='clear'>&nbsp;</div>";
 	//	$text2 .= "<h3>Menus</h3>";
