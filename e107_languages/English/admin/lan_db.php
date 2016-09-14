@@ -139,4 +139,6 @@ define("DBLAN_117", "and then unzip it, overwriting any existing files that it f
 define("DBLAN_118", "Couldn't download .zip file");
 define("DBLAN_119", "Backup");
 define("DBLAN_120", "Starting backup....");
+define("DBLAN_121", "Moving");
+define("DBLAN_122", " to");
 ?>
