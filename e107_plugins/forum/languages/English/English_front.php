@@ -317,7 +317,14 @@ define("LAN_FORUM_8004", "Email notifications for this topic are now turned off.
 define("LAN_FORUM_8005", "You are now tracking this topic.");
 define("LAN_FORUM_8006", "You are no longer tracking this topic.");
 
-
+// -------- View Forum ------------
+define("LAN_FORUM_8007", "Stick");
+define("LAN_FORUM_8008", "Unstick");
+define("LAN_FORUM_8009", "Lock");
+define("LAN_FORUM_8010", "Unlock");
+define("LAN_FORUM_8011", "Status Keys");
+define("LAN_FORUM_8012", "Viewable by");
+define("LAN_FORUM_8013", "Options");
 
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
