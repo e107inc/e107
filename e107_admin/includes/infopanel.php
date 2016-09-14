@@ -557,7 +557,7 @@ class adminstyle_infopanel
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
-		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
+		return $ns->tablerender(LAN_LATEST_COMMENTS,$text,'core-infopanel_online',true);		
 	}
 		
 		
@@ -595,16 +595,16 @@ class adminstyle_infopanel
 		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
 	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
 	    
-		$text2 .= $ns->tablerender("Personalize Icons", $this->render_infopanel_icons(),'personalize',true); 
+		$text2 .= $ns->tablerender(LAN_P_ICONS, $this->render_infopanel_icons(),'personalize',true); 
 		$text2 .= "<div class='clear'>&nbsp;</div>";
-		$text2 .= $ns->tablerender("Personalize Menus", $this->render_infopanel_menu_options(),'personalize',true); 
+		$text2 .= $ns->tablerender(LAN_P_MENUS, $this->render_infopanel_menu_options(),'personalize',true); 
 	//	$text2 .= render_infopanel_icons();
 		//$text2 .= "<div class='clear'>&nbsp;</div>";
 	//	$text2 .= "<h3>Menus</h3>";
 	//	$text2 .= render_infopanel_menu_options();
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= "<div id='button' class='buttons-bar center'>";
-		$text2 .= $frm->admin_button('submit-mye107', 'Save', 'create');
+		$text2 .= $frm->admin_button('submit-mye107', LAN_SAVE, 'create');
 		$text2 .= "</div></form>";
 	//	$text2 .= "</div>";
 		
