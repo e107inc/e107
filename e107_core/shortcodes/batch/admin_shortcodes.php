@@ -1682,7 +1682,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large_src'] = '';
 			
 						
-			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
+			$tmp[2]['text'] = LAN_PERSONALIZE;
 			$tmp[2]['description'] = "Customize administration panels";
 			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
 			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
