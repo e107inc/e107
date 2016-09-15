@@ -420,7 +420,7 @@ class system_tools
 			$oldPath = $v['filename'];
 			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
 
-			$message = DBLAN_121. $oldPath. DBLAN_122. $newPath;
+			$message = e107::getParser()->lanVars(DBLAN_121, array('x'=>$oldPath, 'y'=>$newPath));
 
 			if($v['folder'] ==1 && is_dir($newPath))
 			{
