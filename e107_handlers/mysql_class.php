@@ -1193,7 +1193,7 @@ class e_db_mysql
 
 		//	$result = ($this->pdo) ? $result : mysql_affected_rows($this->mySQLaccess);
 			$this->dbError('db_Update');
-			if ($result == -1) { return false; }	// Error return from mysql_affected_rows
+			if ($result === -1) { return false; }	// Error return from mysql_affected_rows
 			return $result;
 		}
 		else

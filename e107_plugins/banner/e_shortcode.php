@@ -85,6 +85,7 @@ class banner_shortcodes extends e_shortcode
 					if($row['banner_image'][0] == '{')
 					{
 						$src = $row['banner_image'];
+						$style = '';
 					}
 					else
 					{

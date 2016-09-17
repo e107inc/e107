@@ -2443,7 +2443,7 @@ class e_parse extends e_parser
 		{
 			$parm = $width;
 			$multiply = $width['size'];
-			$encode = $width['x'];
+			$encode = (!empty($width['x'])) ? $width['x'] : false;
 			$width = $width['size'];
 		}
 
@@ -2493,6 +2493,16 @@ class e_parse extends e_parser
 		if(!isset($parm['ah']))
 		{
 			$parm['ah'] = null;
+		}
+
+		if(!isset($parm['x']))
+		{
+			$parm['x'] = null;
+		}
+
+		if(!isset($parm['crop']))
+		{
+			$parm['crop'] = null;
 		}
 
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
