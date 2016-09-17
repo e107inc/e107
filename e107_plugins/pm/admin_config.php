@@ -806,11 +806,11 @@ class private_msg_ui extends e_admin_ui
 
 			if($pm->pm_send_notify(null,$pmInfo, 1) === true)
 			{
-				e107::getMessage()->addSuccess("Test Email Sent");
+				e107::getMessage()->addSuccess(ADLAN_PM_92);
 			}
 			else
 			{
-				e107::getMessage()->addError("Test Email Failed");
+				e107::getMessage()->addError(ADLAN_PM_93);
 			}
 
 
@@ -823,7 +823,7 @@ class private_msg_ui extends e_admin_ui
 
 			if(deftrue('e_DEVELOPER') || deftrue('e_DEBUG'))
 			{
-	            $this->prefs['notify_class']['writeParms']['post']= e107::getForm()->button('testNotify', 1, 'primary', "Test");
+	            $this->prefs['notify_class']['writeParms']['post']= e107::getForm()->button('testNotify', 1, 'primary', ADLAN_PM_91);
 
 				if(!empty($_POST['testNotify']))
 				{
@@ -886,7 +886,7 @@ class private_msg_ui extends e_admin_ui
 
 			if(empty($new_data['pm_to']))
 			{
-				e107::getMessage()->addError('Please enter a recipient in the "To" field.');
+				e107::getMessage()->addError(ADLAN_PM_90');
 				return false;
 			}
 
@@ -926,7 +926,7 @@ class private_msg_form_ui extends e_admin_form_ui
 	function send_to_class($value, $mode, $id)
 	{
 		$list = e107::getUserClass()->getClassList('main,admin,member,classes');
-		$list['matchclass'] = "(Any user with the same class)"; //TODO LAN
+		$list['matchclass'] = ADLAN_PM_89; 
 
 		return $this->select('send_to_class', $list, vartrue($value, e_UC_MEMBER), array('size'=>'xlarge'));
 
