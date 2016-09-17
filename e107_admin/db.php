@@ -84,7 +84,7 @@ if(e_AJAX_REQUEST )
 
 	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
 	{
-		echo "Starting file backup...<br />";
+		echo "".DBLAN_120."<br />";
 		
 		$data = array();
 		$data[] = e_MEDIA;
@@ -182,8 +182,8 @@ class system_tools
 		
 		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span>", 'label'=> 'Multi-Site' );
-			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span> Overwrite local files with the latest from github.", 'label'=> 'Sync with Github' );
+			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' );
+			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112 );
 		}
 
 
@@ -335,8 +335,8 @@ class system_tools
 	//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
 
 		$message = $frm->open('githubSync');
-		$message .= "<p>This will download the latest .zip file from github to <b>".e_SYSTEM."/temp</b> and then unzip it, overwriting any existing files that it finds on your server. It will take into account any custom folders you may have set in e107_config.php. </p>";
-		$message .= $frm->button('githubSyncProcess',1,'delete', "Overwrite Files");
+		$message .= "<p>".DBLAN_116." <b>".e_SYSTEM."temp</b> ".DBLAN_117." </p>";
+		$message .= $frm->button('githubSyncProcess',1,'delete', DBLAN_113);
 		$message .= $frm->close();
 
 
@@ -345,7 +345,7 @@ class system_tools
 	//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", $mes->render());
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 
 
 
@@ -369,7 +369,7 @@ class system_tools
 
 		if($result == false)
 		{
-			e107::getMessage()->addError( "Couldn't download .zip file");
+			e107::getMessage()->addError( DBLAN_118 );
 		}
 
 
@@ -420,7 +420,7 @@ class system_tools
 			$oldPath = $v['filename'];
 			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
 
-			$message = "Moving ".$oldPath." to ".$newPath;
+			$message = e107::getParser()->lanVars(DBLAN_121, array('x'=>$oldPath, 'y'=>$newPath));
 
 			if($v['folder'] ==1 && is_dir($newPath))
 			{
@@ -460,7 +460,7 @@ class system_tools
 
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", e107::getMessage()->render());
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
 
 	}
 
@@ -482,7 +482,7 @@ class system_tools
 		$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 		
 		
-		e107::getRender()->tablerender(DBLAN_10.SEP."Backup", $mes->render().$text);		
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_119, $mes->render().$text);		
 	}
 
 
@@ -849,7 +849,7 @@ class system_tools
 		}
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Check Charset".SEP.$config['mySQLdefaultdb'], $mes->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_65.SEP.$config['mySQLdefaultdb'], $mes->render().$text);
 
 	}
 
