@@ -297,7 +297,7 @@ class e107forum
 			}
 
 			$ret['status'] = 'ok';
-			$ret['msg'] = "Your post has been added"; // TODO lan.
+			$ret['msg'] = LAN_FORUM_3047; 
 		}
 
 		e107::getSession()->reset();
@@ -341,7 +341,7 @@ class e107forum
 			}
 			else
 			{
-				$ret['msg'] = 'There was a problem disabling the tracking.';  //TODO LAN
+				$ret['msg'] = LAN_FORUM_8017;  
 				$ret['status'] = 'error';
 			}
 
@@ -357,7 +357,7 @@ class e107forum
 			else
 			{
 				$ret['html'] = IMAGE_untrack;
-				$ret['msg'] = "There was a problem.";  //TODO LAN
+				$ret['msg'] = LAN_FORUM_8018;  
 				$ret['status'] = 'error';
 			}
 
@@ -395,13 +395,13 @@ class e107forum
 				case 'delete':
 					if($this->threadDelete($id))
 					{
-						$ret['msg'] 	= 'Deleted topic #'.$id;
+						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$id;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't delete the topic";
+						$ret['msg'] 	= LAN_FORUM_8019;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -411,19 +411,19 @@ class e107forum
 					{
 						// echo "No Post";
 						// exit;
-						$ret['msg'] 	= 'Post not found';
+						$ret['msg'] 	= LAN_FORUM_7008;
 						$ret['status'] 	= 'error';		
 					}
 					
 					if($this->postDelete($postId))
 					{
-						$ret['msg'] 	= 'Deleted post #'.$postId;
+						$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
 						$ret['hide'] 	= true; 
 						$ret['status'] 	= 'ok';	
 					}
 					else
 					{
-						$ret['msg'] 	= "Couldn't delete post #".$postId;
+						$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -436,7 +436,7 @@ class e107forum
 					}
 					else
 					{
-						$ret['msg'] 	= "Failed to close thread";
+						$ret['msg'] 	= LAN_FORUM_8023;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -449,7 +449,7 @@ class e107forum
 					}
 					else
 					{
-						$ret['msg'] = "failed to open thread";
+						$ret['msg'] = LAN_FORUM_8024;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -462,7 +462,7 @@ class e107forum
 					}
 					else
 					{
-						$ret['msg'] = "failed to stick thread";
+						$ret['msg'] = LAN_FORUM_8025;
 						$ret['status'] 	= 'error';	
 					}
 				break;
@@ -475,7 +475,7 @@ class e107forum
 					}
 					else
 					{
-						$ret['msg'] = "failed to unstick thread";
+						$ret['msg'] = LAN_FORUM_8026;
 						$ret['status'] 	= 'error';	
 					}
 				break;	
@@ -486,7 +486,7 @@ class e107forum
 				
 				default:
 					$ret['status'] 	= 'error';	
-					$ret['msg'] 	= 'No action selected';
+					$ret['msg'] 	= LAN_FORUM_8027;
 				break;
 			}
 						
