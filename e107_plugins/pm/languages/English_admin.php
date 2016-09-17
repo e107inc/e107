@@ -83,3 +83,7 @@ define("ADLAN_PM_86", "VIP Class");
 define("ADLAN_PM_87", "Users in this class can only receive messages from others in this class. Overrides the above preference.");
 define("ADLAN_PM_88", "User may send PMs to");
 define("ADLAN_PM_89", "(Any user with the same class)");
+define("ADLAN_PM_90", "Please enter a recipient in the 'To' field.");
+define("ADLAN_PM_91", "Test");
+define("ADLAN_PM_92", "Test Email Sent!");
+define("ADLAN_PM_93", "Test Email Failed!");
