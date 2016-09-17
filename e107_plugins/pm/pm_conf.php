@@ -296,11 +296,11 @@ function show_options($pm_prefs)
 		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
 	</tr>
 	<tr>
-		<td>User may send PMs to</td>
-		<td>"; //TODO LAN
+		<td>".ADLAN_PM_88."</td>
+		<td>"; 
 
 	$list = e107::getUserClass()->getClassList('nobody,main,admin,member,classes');
-	$list['matchclass'] = "(Any user with the same class)"; //TODO LAN
+	$list['matchclass'] = ADLAN_PM_89; 
 
 	//$txt .= print_a($list,true);
 	$txt .= $frm->select('pm_option-send_to_class', $list, varset($pm_prefs['send_to_class'], e_UC_MEMBER));
