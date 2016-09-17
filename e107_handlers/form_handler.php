@@ -808,7 +808,7 @@ class e_form
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 
-		$min = varset($options['min']) ? 'min="'.$options['min'].'"' : '';
+		$min = vartrue($options['min']) ? 'min="'.$options['min'].'"' : '';
 		$max = vartrue($options['max']) ? 'max="'.$options['max'].'"' : '';
 
 		$options = $this->format_options('text', $name, $options);
