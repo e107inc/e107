@@ -78,7 +78,7 @@ $PM_SEND_PM = "<div id='pm-send-pm'>
 <table class='table fborder'>
 <thead>
 <tr>
-	<th colspan='2' class='fcaption'>".LAN_PM_1.": </th>
+	<th colspan='2' class='fcaption'>".LAN_PLUGIN_PM_NEW.": </th>
 </tr>
 </thead>
 <tr>
