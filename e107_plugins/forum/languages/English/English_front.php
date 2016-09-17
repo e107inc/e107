@@ -326,6 +326,23 @@ define("LAN_FORUM_8011", "Status Keys");
 define("LAN_FORUM_8012", "Viewable by");
 define("LAN_FORUM_8013", "Options");
 
+// -------- Forum Post------------
+define("LAN_FORUM_8014", "This post, and every post below it will be moved into a new thread/topic.");
+define("LAN_FORUM_8015", "Warning!");
+define("LAN_FORUM_8016", "(Current)");
+
+// -------- Forum Class------------
+define("LAN_FORUM_8017", "There was a problem disabling the tracking.");
+define("LAN_FORUM_8018", "There was a problem.");
+define("LAN_FORUM_8019", "Couldn't delete the topic!");
+define("LAN_FORUM_8020", "Deleted topic");
+define("LAN_FORUM_8021", "Deleted post");
+define("LAN_FORUM_8022", "Couldn't delete post");
+define("LAN_FORUM_8023", "Failed to close thread");
+define("LAN_FORUM_8024", "Failed to open thread");
+define("LAN_FORUM_8025", "Failed to stick thread");
+define("LAN_FORUM_8026", "Failed to unstick thread");
+define("LAN_FORUM_8027", "No action selected");
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================
