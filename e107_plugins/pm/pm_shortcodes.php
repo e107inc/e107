@@ -731,7 +731,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-sm btn-primary btn-block-level';
 
-			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ')."".LAN_PM_35."</a>";
+			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ').LAN_PM_35."</a>";
 		}
 
 
