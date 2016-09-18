@@ -64,7 +64,8 @@ if(!isset($BANNER_TABLE))
 			<td colspan='2' class='forumheader3' style='text-align:center'>{BANNER_TABLE_ACTIVE}</td>
 			<td colspan='4' class='forumheader3' style='text-align:center'>{BANNER_TABLE_STARTDATE} {BANNER_TABLE_ENDDATE}</td>";
 
-			if($BANNER_TABLE_IP){
+			if(!empty($BANNER_TABLE_IP)) // review
+			{
 				$BANNER_TABLE .= "
 				</tr>
 				<tr>
@@ -104,7 +105,7 @@ if(!isset($BANNER_MENU_END))
 // ##### ------------------------------------ v2.x ------------------------------------------------------
 
 
-$BANNER_TEMPLATE['menu']['start'] =		"<div class='banner-menu text-center'>{SETIMAGE: w=800}"; 
+$BANNER_TEMPLATE['menu']['start'] =		"<div class='banner-menu text-center'>{SETIMAGE: w=800}";
 $BANNER_TEMPLATE['menu']['item'] =		"<div class='banner-menu-item'>{BANNER}<br /><br /></div>"; 
 $BANNER_TEMPLATE['menu']['end'] = 		"</div>"; 
 
