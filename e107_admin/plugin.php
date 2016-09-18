@@ -58,7 +58,7 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 	
 	
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
-		echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
+		echo "<pre>".EPL_ADLAN_94."\n"; flush(); // FIXME change the modal default label, default is Loading...
 		// download and flush
 	//	$mp->download($p['plugin_id'], $p['plugin_mode'], 'plugin');
 		
@@ -161,17 +161,17 @@ class pluginmanager_form extends e_form
 		if ($this->plug['plugin_version'] != $this->plug_vars['@attributes']['version'] && $this->plug['plugin_installflag'])
 		{
 		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
+			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 		}
 
 		if ($this->plug['plugin_installflag'] && e_DEBUG == true)
 		{
-				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='Repair plugin settings'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
+				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='".EPL_REPAIR_PLUGIN_SETTINGS."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
 		}
 
 		if($this->plug['plugin_installflag'] && is_dir($_path.".git"))
 		{
-			$text .=  "<a class='plugin-manager btn btn-default' href='".e_SELF."?pull.".$this->plug['plugin_id']."' title='Sync with Git Repo'> ".ADMIN_GITSYNC_ICON."</a>";
+			$text .=  "<a class='plugin-manager btn btn-default' href='".e_SELF."?pull.".$this->plug['plugin_id']."' title='".EPL_SYNC_WITH_GIT_REPO."'> ".ADMIN_GITSYNC_ICON."</a>";
 		}
 
 
@@ -228,7 +228,7 @@ class pluginManager{
 				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"icon", "width" => "5%", "thclass" => "middle center",'class'=>'center', "url" => ""),
 				"plugin_name"			=> array("title" => EPL_ADLAN_10, 'forced'=>true, "type"=>"text", "width" => "auto", 'class'=>'left', "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
-    			"plugin_date"			=> array("title" => "Released ", 	"type"=>"text", "width" => "8%", "thclass" => "middle"),
+    			"plugin_date"			=> array("title" => EPL_RELEASED, 	"type"=>"text", "width" => "8%", "thclass" => "middle"),
     			
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle"),
 				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "auto", "thclass" => "middle"),
@@ -641,10 +641,10 @@ class pluginManager{
 	//	$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
-		$modalCaption = (!empty($data['plugin_price'])) ? "Purchase ".$data['plugin_name']." ".$data['plugin_version'] : 'Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'];
+		$modalCaption = (!empty($data['plugin_price'])) ? EPL_ADLAN_92." ".$data['plugin_name']." ".$data['plugin_version'] : EPL_ADLAN_230." ".$data['plugin_name']." ".$data['plugin_version'];
 
 		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
-		$dicon = '<a title="Download and Install" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
+		$dicon = '<a title="'.EPL_ADLAN_0.'" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
 	
 	
 		// Temporary Pop-up version. 
@@ -1640,7 +1640,7 @@ class pluginManager{
 				}
 
 				$opts['delete_ipool'] = array(
-					'label'			=>'Remove icons from Media-Manager',
+					'label'			=> EPL_ADLAN_231,
 					'preview'		=> $iconText,
 					'helpText'		=> EPL_ADLAN_79,
 					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
@@ -2325,12 +2325,12 @@ class pluginBuilder
 						</colgroup>
 				<tr>
 					<td>".EPL_ADLAN_107."</td>
-					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_232).$frm->close()."</td>
 				</tr>
 				
 				<tr>
 					<td>".EPL_ADLAN_108."</td>
-					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->close()."</td>
 				</tr>";
 				
 					
