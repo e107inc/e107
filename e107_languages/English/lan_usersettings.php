@@ -103,11 +103,11 @@ define("LAN_USET_33", "Choose site-stored avatar");					// LAN_421
 define("LAN_USET_34", "Use remote avatar");							// LAN_422
 define("LAN_USET_35", "Please type full address to image");			// LAN_423
 define("LAN_USET_36", "Click button to see avatars stored on this site");	// LAN_424
-//define("LAN_USET_37", "Save settings");								// LAN_SAVE LAN_154 
+define("LAN_USET_37", "Save settings");								// LAN_154 //TODO common LAN?
 define("LAN_USET_38", "Choose avatar");								// LAN_403
 define("LAN_USET_39", "Update user settings");						// LAN_155
 define("LAN_USET_40", "The two passwords do not match");			// LAN_105
-//define("LAN_USET_41", "Settings updated and saved into database.");	// LAN_SETSAVED LAN_150  
+define("LAN_USET_41", "Settings updated and saved into database.");	// LAN_150 //TODO Common LAN?
 define("LAN_USET_42", "Mismatch on validation key");
 define("LAN_USET_43", "Error updating user data");
 

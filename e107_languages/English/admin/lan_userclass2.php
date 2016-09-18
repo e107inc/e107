@@ -52,7 +52,7 @@ define("UCSLAN_40", "Set initial classes");
 define("UCSLAN_41", "Settings updated");
 define("UCSLAN_42", "Nothing changed - not updated");
 define("UCSLAN_43", "Existing classes: ");
-//define("UCSLAN_44", "None");// LAN_NONE
+define("UCSLAN_44", "None");
 define("UCSLAN_45", "Point at which classes set:");
 define("UCSLAN_46", "(ignored if no verification)");
 define("UCSLAN_47", "Initial Signup");
@@ -103,7 +103,6 @@ define("UCSLAN_91", "");
 
 
 define("UCSLAN_UPDATE", "Update");
-define("UCSLAN_CLASS_STRUCTURE","Class Structure");
 
 
 ?>

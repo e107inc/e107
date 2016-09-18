@@ -461,7 +461,7 @@ if ($dataToSave && !$promptPassword)
 		}
 		else
 		{
-			$message = LAN_SETSAVED;
+			$message = LAN_USET_41;
 			if (isset($changedUserData['user_password']) && !$adminEdit)
 			{
 				//	echo "Make new cookie<br />";
