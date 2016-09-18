@@ -68,7 +68,10 @@ define("EPL_WEBSITE", "Website");
 define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
 define("EPL_DIRECTORY", "directory.");
 define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
-define("EPL_UPGRADE", "Upgrade");
+define("EPL_UPGRADE", "Upgrade to: ");
+define("EPL_RELEASED", "Released");
+define("EPL_REPAIR_PLUGIN_SETTINGS", "Repair plugin settings");
+define("EPL_SYNC_WITH_GIT_REPO", "Sync with Git Repo");
 
 define("EPL_ADLAN_50", "Comments successfully deleted");
 
@@ -268,6 +271,9 @@ define ('EPL_ADLAN_226',"Plugin Language-File Check");
 define ('EPL_ADLAN_227',"Scan for Changes");
 define ('EPL_ADLAN_228',"Plugin folders are scanned every [x] minutes for changes. Click the button below to scan now.");
 define ('EPL_ADLAN_229',"Refresh");
+define('EPL_ADLAN_230',"Downloading and Installing: ");
+define("EPL_ADLAN_231", "Remove icons from Media-Manager"); 
+define("EPL_ADLAN_232", "Create Files");
 
 define('LAN_UPGRADE_SUCCESSFUL', "Upgrade successful");
 define('LAN_INSTALL_SUCCESSFUL', "Installation successful");
