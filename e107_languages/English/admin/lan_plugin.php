@@ -274,6 +274,10 @@ define ('EPL_ADLAN_229',"Refresh");
 define('EPL_ADLAN_230',"Downloading and Installing: ");
 define("EPL_ADLAN_231", "Remove icons from Media-Manager"); 
 define("EPL_ADLAN_232", "Create Files");
+define("EPL_ADLAN_233","Downloading..."); 
+define("EPL_ADLAN_234","Download Complete!");
+define("EPL_ADLAN_235","Automated download not possible. Please");
+define("EPL_ADLAN_236","Download Manually");
 
 define('LAN_UPGRADE_SUCCESSFUL', "Upgrade successful");
 define('LAN_INSTALL_SUCCESSFUL', "Installation successful");
