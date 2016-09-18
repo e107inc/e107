@@ -124,7 +124,7 @@ class core_news_sef_noid_url extends eUrlConfig
 						// news/Category/Category-Name?page=xxx
 						// news/Short/Category-Name?page=xxx
 						$r[0] = $route[1] == 'category' ? 'Category' :  'Short';
-						$r[1] = $params['name'] ? $params['name'] : $params['id'];
+						$r[1] = !empty($params['name']) ? $params['name'] : $params['id'];
 						if($page) $parm = array('page' => $page);  
 					}
 				break;
