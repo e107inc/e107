@@ -886,7 +886,7 @@ class private_msg_ui extends e_admin_ui
 
 			if(empty($new_data['pm_to']))
 			{
-				e107::getMessage()->addError(ADLAN_PM_90');
+				e107::getMessage()->addError(ADLAN_PM_90);
 				return false;
 			}
 
