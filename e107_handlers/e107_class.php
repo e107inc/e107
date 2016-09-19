@@ -2186,7 +2186,16 @@ class e107
 			break;
 
 			case 'front':
-				$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : e107::getPref('sitetheme');
+
+				if(defined('USERTHEME') && USERTHEME !==false)
+				{
+					$for = USERTHEME;
+				}
+				else
+				{
+					$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : e107::getPref('sitetheme');
+				}
+
 			break;
 		}
 		if(!$path) return $for;
