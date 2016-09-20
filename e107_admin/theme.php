@@ -166,7 +166,7 @@ if($mode == 'download' && !empty($_GET['src']))
 
 		
 		$mp = $themec->getMarketplace();	
-	 	$mes->addSuccess("Connecting...");   
+	 	$mes->addSuccess(EPL_ADLAN_94);   
 
 		if($mp->download($data['id'], $data['mode'], 'theme')) // download and unzip theme.
 		{
