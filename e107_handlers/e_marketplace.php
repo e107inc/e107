@@ -347,7 +347,7 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$mes->addError( EPL_ADLAN_235" <a href='".$remotefile."'>".EPL_ADLAN_236."</a>"); 
+			$mes->addError( "".EPL_ADLAN_235." <a href='".$remotefile."'>".EPL_ADLAN_236."</a>"); 
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
