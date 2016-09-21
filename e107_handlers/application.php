@@ -388,7 +388,7 @@ class eDispatcher
 				//if($custom) $custom = 'url/'.$custom;
 				if(!defined('e_CURRENT_PLUGIN'))
 				{
-					define('e_CURRENT_PLUGIN', $module); // TODO Move to a better location.
+					define('e_CURRENT_PLUGIN', rtrim($module,'/')); // TODO Move to a better location.
 				}
 				return $sc ? '{e_PLUGIN}'.$module.'url/'.$custom.'url.php' : e_PLUGIN.$module.'url/'.$custom.'url.php';
 			break;

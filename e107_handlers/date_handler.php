@@ -197,7 +197,7 @@ class convert
 			break;
 		}
 	
-		return strftime($mask, $datestamp);
+		return utf8_encode(strftime($mask, $datestamp));
 	}
 
 

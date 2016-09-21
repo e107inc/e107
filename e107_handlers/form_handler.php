@@ -509,6 +509,7 @@ class e_form
 			<ul class="nav nav-tabs">';
 
 		$c = 0;
+
 		foreach($array as $key=>$tab)
 		{
 
@@ -1078,7 +1079,7 @@ class e_form
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
 	 */
-	function imagepicker($name, $default, $label = '', $sc_parameters = '')
+	function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
@@ -1131,8 +1132,7 @@ class e_form
 			$class = 'image-selector-empty';
 		}
 		
-		
-		
+
 		//$width = intval(vartrue($sc_parameters['width'], 150));
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));	
 		
@@ -1171,8 +1171,13 @@ class e_form
 
 
 		}
-		
-		
+
+		if(!empty($previewURL))
+		{
+			$default_url = $previewURL;
+		}
+
+
 		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 
 		if($cat != '_icon' && $blank == false) // ICONS
@@ -5213,7 +5218,17 @@ class e_form
 				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $key;
 				$parms['field'] = $key;
 
-				$ret =  call_user_func_array(array($this, $meth), array($value, 'write', $parms));
+				if(strpos($meth,'::')!==false)
+				{
+					list($className,$meth) = explode('::', $meth);
+					$cls = new $className;
+				}
+				else
+				{
+					$cls = $this;
+				}
+
+				$ret =  call_user_func_array(array($cls, $meth), array($value, 'write', $parms));
 			break;
 
 			case 'upload': //TODO - from method
@@ -5462,7 +5477,7 @@ class e_form
 
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
-			$curTab = varset($_GET['tab'],0);
+			$curTab = strval(varset($_GET['tab'],'0'));
 
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
@@ -5482,14 +5497,14 @@ class e_form
 					$text .= '<ul class="nav nav-tabs">';
 					foreach($data['tabs'] as $i=>$label)
 					{	
-						$class = ($i == $curTab) ? 'class="active" ' : '';
+						$class = (strval($i) === $curTab) ? 'class="active" ' : '';
 						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab">'.$label.'</a></li>';
 					}
 					$text .= ' </ul><div class="tab-content">';	
 					
 					foreach($data['tabs'] as $tabId=>$label)
 					{
-						$active = ($tabId == $curTab) ? 'active' : '';
+						$active = (strval($tabId) === $curTab) ? 'active' : '';
 						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
 						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
 						$text .= "</div>";	

@@ -21,6 +21,11 @@ if (!getperms('H|N|H0|H1|H2|H3|H4|H5'))
 e107::coreLan('newspost', true);
 
 
+e107::css('inline', "
+
+.submitnews.modal-body {    height: 500px;  overflow-y: scroll; }
+
+");
 
 
 
@@ -228,7 +233,7 @@ class news_sub_ui extends e_admin_ui
 			'submitnews_title' 			=> array('title'=> LAN_TITLE,			'type' => 'method',			'width' => '35%', 'thclass' => 'left', 'readonly'=>TRUE),
 
 			'submitnews_category' 		=> array('title'=> LAN_CATEGORY,		'type' => 'dropdown',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),		
-		//	'submitnews_item' 			=> array('title'=> LAN_DESCRIPTION,		'type' => 'method',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
+			'submitnews_description' 	=> array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',			'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>TRUE),
 			'submitnews_name' 			=> array('title'=> LAN_AUTHOR,			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
        		'submitnews_ip' 			=> array('title'=> LAN_IP,			'type' => 'ip',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),
 			'submitnews_auth' 			=> array('title'=> " ",			'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'class'=> 'left', 'readParms'=>"link=1" ),
@@ -304,7 +309,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 			   <h4>'.$tp->toHtml($submitnews_title,false,'TITLE').'</h4>
 			    </div>
-			    <div class="modal-body">
+			    <div class="submitnews modal-body">
 			    <p>';
 		
 		$text .= $tp->toHTML($submitnews_item,TRUE);
@@ -317,8 +322,13 @@ class news_sub_form_ui extends e_admin_form_ui
 			
 			
 			foreach($tmp as $imgfile)
-			{				
-				$url = $tp->thumbUrl(e_UPLOAD.$imgfile,array('aw'=>400),true);
+			{
+				if(strpos("{e_UPLOAD}",$imgfile) === false)
+				{
+					$imgfile = e_UPLOAD.$imgfile;
+				}
+
+				$url = $tp->thumbUrl($imgfile,array('aw'=>400),true);
 				$text .= "<br /><img src='".$url."' alt='".$imgfile."' />";					
 			}
 		}
@@ -366,7 +376,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			if($approved == 0)
 			{
 				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
-				$text .= "<a class='btn btn-default btn-large' href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
+				$text .= "<a class='btn btn-default btn-large' title=\"Approve\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
 				// NWSLAN_103;	
 			} 
 			else // Already submitted; 
@@ -464,6 +474,7 @@ class news_admin_ui extends e_admin_ui
 		
 	protected $cats = array();
 	protected $newspost;
+	protected $addons = array();
 	
 	protected $news_renderTypes = array( // TODO Placement location and template should be separate. 
 	
@@ -512,30 +523,21 @@ class news_admin_ui extends e_admin_ui
 		$new = array();
 		foreach($row as $k=>$v)
 		{
-			$tmp = urldecode($v);
-			if(strpos($tmp,'{e_UPLOAD}')!==false)
+			if(empty($v))
 			{
-				list($root,$qry) = explode("?",$tmp);
-				parse_str($qry,$opt);
-				if(!empty($opt['src']))
-				{
-
-					$f = str_replace('{e_UPLOAD}','',$opt['src']);
-				//	e107::getMessage()->addInfo("<h3>Importing File</h3>".print_a($f,true));
-					if($bbpath = e107::getMedia()->importFile($f,'news', e_UPLOAD.$f))
-					{
-						$new[] = $bbpath;
-					}
-				}
-
+				continue;
 			}
-			elseif(!empty($v))
+
+			$f = str_replace('{e_UPLOAD}','',$v);
+
+			if($bbpath = e107::getMedia()->importFile($f,'news', e_UPLOAD.$f))
 			{
-				$new[] = $v;
+				$new[] = $bbpath;
 			}
 		}
 
-	//		e107::getMessage()->addInfo("<h3>Process SubNews Images</h3>".print_a($new,true));
+
+		e107::getMessage()->addDebug("<h3>Processing/importing SubNews Images</h3>".print_a($new,true));
 
 		return implode(",",$new);
 
@@ -686,7 +688,7 @@ class news_admin_ui extends e_admin_ui
 	{
 		if(is_array($postedImage))
 		{
-			return implode(",",array_filter($postedImage));
+			return implode(",", $postedImage);
 		}
 		else
 		{
@@ -732,8 +734,8 @@ class news_admin_ui extends e_admin_ui
 		'options' );
 
 
-		$addons = e107::getAddonConfig('e_admin',null, 'config',$this);
-		foreach($addons as $plug=>$config)
+
+		foreach($this->addons as $plug=>$config)
 		{
 			foreach($config['fields'] as $field=>$tmp)
 			{
@@ -758,6 +760,9 @@ class news_admin_ui extends e_admin_ui
 
 	function init()
 	{
+
+		$this->addons = e107::getAddonConfig('e_admin',null, 'config', $this);
+
 		if(!empty($_POST['save_prefs']))
 		{
 			$this->saveSettings();
@@ -1175,10 +1180,10 @@ class news_admin_ui extends e_admin_ui
 				'640×480'   => '640x480',
 				'800×600'   => '800x600',
 				'1024×768'  => '1024x768',
-				'1600x1200' => '2 MP (1600×1200)',
-				'2272x1704' => '4 MP (2272×1704)',
-				'2816x2112' => '6 MP (2816×2112)',
-				'3264x2448' => '8 MP (3264×2448)',
+				'1600×1200' => '2 MP (1600×1200)',
+				'2272×1704' => '4 MP (2272×1704)',
+				'2816×2112' => '6 MP (2816×2112)',
+				'3264×2448' => '8 MP (3264×2448)',
 				// 10 MP (3648×2736)
 				// 12 MP (4096×3072)
 
@@ -1292,7 +1297,29 @@ class news_admin_ui extends e_admin_ui
 		exit;
 	}
 	
-	
+
+	private function processSubmittedMedia($data)
+	{
+		if(empty($data))
+		{
+			return false;
+		}
+
+		$row = json_decode($data,true);
+		$text = '';
+		foreach($row as $k)
+		{
+			if(!empty($k))
+			{
+				$text .= $k."\n\n";
+			}
+		}
+
+		return $text;
+
+	}
+
+
 	function loadSubmitted($id)
 	{
 		$sql = e107::getDb();
@@ -1306,13 +1333,35 @@ class news_admin_ui extends e_admin_ui
 			$data['news_category'] = intval( $row['submitnews_category']);
 			$data['news_body'] .= "\n[[b]".NWSLAN_49." {$row['submitnews_name']}[/b]]";
 
+			if($mediaData = $this->processSubmittedMedia($row['submitnews_media']))
+			{
+				$data['news_body'] .= "\n\n---\n\n".$mediaData;
+			}
+
+			if(e107::getPref('wysiwyg',false)!==false)
+			{
+				$data['news_body'] = nl2br($data['news_body']);
+			}
+
+			$data['news_author'] = $row['submitnews_user'];
+
 			$data['news_thumbnail'] = $row['submitnews_file']; // implode(",",$thumbs);
 			$data['news_sef']    = eHelper::dasherize($data['news_title']);
+
+			$data['news_meta_keywords'] = $row['submitnews_keywords'];
+			$data['news_summary'] = $row['submitnews_summary'];
+			$data['news_meta_description'] = $row['submitnews_description'];
+
 			$data['submitted_id']   = $id;
 
 			foreach($data as $k=>$v)
 			{
 				$this->getModel()->setData($k, $v); // Override Table data.
+			}
+
+			if(e_DEBUG)
+			{
+				e107::getMessage()->addDebug(print_a($data,true));
 			}
 		}
 			
@@ -1382,7 +1431,6 @@ class news_form_ui extends e_admin_form_ui
 
 		$pref = e107::pref('core');
 		$sql = e107::getDb();
-		$frm = e107::getForm();
 
 
 		if($mode == 'read')
@@ -1407,25 +1455,32 @@ class news_form_ui extends e_admin_form_ui
 		}
 		else // allow master admin to
 		{
-			$text .= $frm->select_open('news_author');
-			$qry = "SELECT user_id,user_name FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
+			$text .= $this->select_open('news_author');
+			$qry = "SELECT user_id,user_name,user_admin FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
+
+			if(!empty($curVal))
+			{
+				$qry .= " OR user_id = ".intval($curVal); // make sure existing author is included.
+			}
+
 			if($pref['subnews_class'] && $pref['subnews_class']!= e_UC_GUEST && $pref['subnews_class']!= e_UC_NOBODY)
 			{
 				if($pref['subnews_class']== e_UC_MEMBER)
 				{
-					$qry .= " OR user_ban != 1";
+					$qry .= " OR user_ban != 1 ORDER BY user_class DESC, user_name";// limit to avoid long page loads.
 				}
 				elseif($pref['subnews_class']== e_UC_ADMIN)
 				{
-					$qry .= " OR user_admin = 1";
+					$qry .= " OR user_admin = 1 ORDER BY user_name";
 				}
 				else
 				{
-					$qry .= " OR FIND_IN_SET(".intval($pref['subnews_class']).", user_class) ";
+					$qry .= " OR FIND_IN_SET(".intval($pref['subnews_class']).", user_class) ORDER BY user_name";
 				}
 			}
 
 	//		print_a($pref['subnews_class']);
+
 
 			$sql->gen($qry);
 			while($row = $sql->fetch())
@@ -1438,11 +1493,22 @@ class news_form_ui extends e_admin_form_ui
 				{
 					$sel = (USERID == $row['user_id']);
 				}
-				$text .= $frm->option($row['user_name'], $row['user_id'].chr(35).$row['user_name'], $sel);
+
+				$username = $row['user_name'];
+
+				if(!empty($row['user_admin']))
+				{
+					$username .= " *";
+				}
+
+
+				$text .= $this->option($username, $row['user_id'].chr(35).$row['user_name'], $sel);
 			}
 
 			$text .= "</select>
 			";
+
+
 		}
 
 		return $text;
@@ -1501,12 +1567,15 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode == 'read')
 		{
-			if(!vartrue($curval)) return;
-
 			if(strpos($curval, ",")!==false)
 			{
 				$tmp = explode(",",$curval);
 				$curval = $tmp[0];
+			}
+
+			if(empty($curval))
+			{
+				return '';
 			}
 
 			$vparm = array('thumb'=>'tag','w'=> 80);
@@ -1530,16 +1599,16 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
+			$paths = array();
+
 			if(!empty($_GET['sub']))
 			{
 				$thumbTmp = explode(",",$curval);
-				$paths = array();
 				foreach($thumbTmp as $key=>$path)
 				{
-					$paths[] = e107::getParser()->thumbUrl(e_TEMP.$path,'aw=800'); ;
+					$url = ($path[0] == '{') ? $path : e_TEMP.$path;
+					$paths[] = e107::getParser()->thumbUrl($url,'aw=800'); ;
 				}
-
-				$curval = implode(",", $paths);
 
 			}
 
@@ -1558,11 +1627,11 @@ class news_form_ui extends e_admin_form_ui
 				}
 			}
 
-			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]),'','media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]),'','media=news&video=1');
+			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]), varset($paths[1]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]), varset($paths[2]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]), varset($paths[3]),'media=news&video=1');
+			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]), varset($paths[4]),'media=news&video=1');
 
 		//	$text .= "<div class='field-help'>Insert image/video into designated area of template.</div>";
 			return $text;

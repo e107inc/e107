@@ -154,9 +154,10 @@ class e_parse extends e_parser
 					array(
 						'defs'=>TRUE, 'constants'=>'full', 'parse_sc'=>TRUE
 						),
+				// text is parsed by the Wysiwyg editor. eg. TinyMce
 				'WYSIWYG' =>
 					array(
-						'defs'=>FALSE, 'constants'=>'full', 'parse_sc'=>FALSE, 'wysiwyg'=>TRUE
+							'hook' => false, 'link_click' => false, 'link_replace' => false, 'retain_nl' => true
 						),
 				// text is user-entered (i.e. untrusted)'body' or 'bulk' text (e.g. custom page body, content body)
 				'USER_BODY' =>
@@ -1900,8 +1901,29 @@ class e_parse extends e_parser
 											$this->e_hook[$hook] = new $hook_class;
 										}
 									}
-									$sub_blk = $this->e_hook[$hook]->to_html($sub_blk, $opts['context']);
+
+									if(is_object( $this->e_hook[$hook]))
+									{
+										$sub_blk = $this->e_hook[$hook]->to_html($sub_blk, $opts['context']);
+									}
 								}
+							}
+
+
+							if(!empty($pref['e_parse_list']))
+							{
+								foreach($pref['e_parse_list'] as $plugin)
+								{
+									$hookObj = e107::getAddon($plugin,'e_parse');
+
+									if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
+									{
+										$sub_blk = $tmp;
+
+									}
+
+								}
+
 							}
 						}
 
@@ -2421,7 +2443,7 @@ class e_parse extends e_parser
 		{
 			$parm = $width;
 			$multiply = $width['size'];
-			$encode = $width['x'];
+			$encode = (!empty($width['x'])) ? $width['x'] : false;
 			$width = $width['size'];
 		}
 
@@ -2471,6 +2493,16 @@ class e_parse extends e_parser
 		if(!isset($parm['ah']))
 		{
 			$parm['ah'] = null;
+		}
+
+		if(!isset($parm['x']))
+		{
+			$parm['x'] = null;
+		}
+
+		if(!isset($parm['crop']))
+		{
+			$parm['crop'] = null;
 		}
 
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
@@ -3186,7 +3218,7 @@ class e_parser
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
-                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe'
+                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite'
                                    );
     protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object'); //allowed when $pref['post_script'] is enabled.
 	

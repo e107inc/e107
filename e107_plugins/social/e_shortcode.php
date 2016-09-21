@@ -42,6 +42,9 @@ class social_shortcodes extends e_shortcode
 			'wordpress'         => array('icon' => 'e-social-wordpress',    'title'=> $tp->lanVars(LAN_SOCIAL_000, "Wordpress"),    'url' => "http://wordpress.com/press-this.php?u=[u]&t=[t]&s=[t]"),
 			'pinboard'          => array('icon' => 'e-social-pinboard',     'title'=> $tp->lanVars(LAN_SOCIAL_004, "Pinboard"),     'url' => "https://pinboard.in/popup_login/?url=[u]&title=[t]&description=[t]"),
 
+		//	'whatsapp'          =>array('icon'  => 'e-social-whatsapp',    'mobile'=>true,  'title'=> $tp->lanVars(LAN_SOCIAL_000, "WhatsApp"),	    'url'=> "whatsapp://send?text=[u]", 'data-action' =>"share/whatsapp/share"),
+		//	'sms'               => array('icon' => 'e-social-sms',         'mobile'=>true,  'title'=>'sms', 'url'=> "sms://&body=[u]"),
+		//	'viber'             => array('icon' => 'e-social-viber',       'mobile'=>true,  'title'=>'viber',   'url'=>"viber://forward?text=[u]")
 		);
 
 		return $providers;
@@ -294,7 +297,10 @@ class social_shortcodes extends e_shortcode
 
 			}
 
-
+			if(!empty($val['mobile']))
+			{
+				$btnClass .= ' social-share-mobile';
+			}
 			
 			$opt[$k] = "<a class='".$btnClass." ".$tooltip." ".$butSize." social-share-".$k."'  target='_blank' title='".$val["title"]."' href='".$shareUrl."'>".$tp->toIcon($val["icon"], array('fw'=>1))."</a>";
 		}

@@ -397,7 +397,7 @@ function step4()
 
 			if ($viewed != '')
 			{
-				$ue -> user_extended_setvalue($userId, 'plugin_forum_viewed', mysql_real_escape_string($viewed));
+				$ue->user_extended_setvalue($userId, 'plugin_forum_viewed', ($viewed));
 				$result['viewcount']++;
 			}
 

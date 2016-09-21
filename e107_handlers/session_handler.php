@@ -147,7 +147,7 @@ class e_session
 		'path'		 => '',
 		'domain'	 => '',
 		'secure'	 => false,
-		'httponly'	 => false,
+		'httponly'	 => true,
 	);
 
 	/**
@@ -197,7 +197,8 @@ class e_session
 			);
 			
 			$options = array(
-				'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+		//		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+				'httponly' => true,
 			);
 			
 			if(!defined('E107_INSTALL'))
@@ -226,7 +227,7 @@ class e_session
 			$this->setConfig($config)
 				->setOptions($options);
 		}
-		
+
 		return $this;
 	}
 	

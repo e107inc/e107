@@ -81,7 +81,7 @@ class secure_image
 	//	$sql = e107::getDb();
 	//	$tp = e107::getParser();
 
-		if(!empty($_SESSION['secure_img'][$recnum]) && (intval($_SESSION['secure_img'][$recnum]) == $checkstr))
+		if(!empty($_SESSION['secure_img'][$recnum]) && $_SESSION['secure_img'][$recnum] === $checkstr )
 		{
 			unset($_SESSION['secure_img']);
 			return true;

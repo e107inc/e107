@@ -172,7 +172,7 @@ class news_shortcodes extends e_shortcode
 			$NEWIMAGE = "";		
 		}
 		
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title='Comments' href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title=\"".LAN_COMMENTS."\" href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
 	function sc_trackback($parm=null)
@@ -356,6 +356,14 @@ class news_shortcodes extends e_shortcode
 	{
 		return $this->sc_newsimage($parm);
 	}
+
+	public function sc_news_visibility($parm=null)
+	{
+		$string= e107::getUserClass()->getIdentifier($this->news_item['news_class']);
+		return $string;
+
+	}
+
 
 // ----------------------------------- BC compatible Shortcodes ------------------------------------------- //
 
@@ -705,14 +713,24 @@ class news_shortcodes extends e_shortcode
 		}
 			
 		$this->imageItem = varset($media[$parm['item']]); // Set the current Image for other image shortcodes. 
-		
+
+
 		if(vartrue($parm['placeholder']))
 		{
 			return $this->sc_newsimage('placeholder');	
 		}
+		elseif($video = e107::getParser()->toVideo($this->imageItem, array('class'=> 'news-media news-media-'.$parm['item'])))
+		{
+			return $video;
+		}
 		else
 		{
-			return $this->sc_newsimage();	
+			$parm['item'] = ($parm['item'] +1);
+			if(empty($parm['class']))
+			{
+				$parm['class'] = 'img-responsive news-media news-media-'.$parm['item'];
+			}
+			return $this->sc_newsimage($parm);
 		}
 			
 		
@@ -797,7 +815,8 @@ class news_shortcodes extends e_shortcode
 		{
 			$parm = array('type'=> $parm);
 		}
-			
+
+
 		$tmp = $this->handleMultiple($parm);
 		$srcPath = $tmp['file'];
 		

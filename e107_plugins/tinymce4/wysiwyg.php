@@ -693,7 +693,7 @@ class wysiwyg
 			foreach($emo as $path=>$co)
 			{
 				$codes = explode(" ",$co);
-				$url = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pack . "/" . str_replace("!",".",$path);
+				$url = e_IMAGE_ABS."emotes/" . $pack . "/" . str_replace("!",".",$path);
 				$emotes[$i][] = array('shortcut'=>$codes, 'url'=>$url, 'title'=>ucfirst($path));
 
 				if($c == 6)
