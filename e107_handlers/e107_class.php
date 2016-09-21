@@ -2186,7 +2186,16 @@ class e107
 			break;
 
 			case 'front':
-				$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : e107::getPref('sitetheme');
+
+				if(defined('USERTHEME') && USERTHEME !==false)
+				{
+					$for = USERTHEME;
+				}
+				else
+				{
+					$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : e107::getPref('sitetheme');
+				}
+
 			break;
 		}
 		if(!$path) return $for;
@@ -3292,7 +3301,7 @@ class e107
 			return array_walk($input, array('self', 'filter_request'), $type);
 		}
 
-				
+
 		if($type == "_POST" || ($type == "_SERVER" && ($key == "QUERY_STRING")))
 		{
 			if($type == "_POST" && ($base64 == FALSE))
@@ -3357,14 +3366,29 @@ class e107
 			}
 		
 		}
+
+		if($type == '_GET') // Basic XSS check.
+		{
+			if(stripos($input, "<script")!==false || stripos($input, "%3Cscript")!==false)
+			{
+				header('HTTP/1.0 400 Bad Request', true, 400);
+				if(deftrue('e_DEBUG'))
+				{
+					echo "Bad Request: ".__METHOD__." : ". __LINE__;
+				}
+				exit();
+			}
+
+		}
 		
 		if($type == "_SERVER")
 		{
+
 			if(($key == "QUERY_STRING") && (
 				strpos(strtolower($input),"../../")!==FALSE 
-				|| strpos(strtolower($input),"php:")!==FALSE
-				|| strpos(strtolower($input),"data:")!==FALSE
-				|| strpos(strtolower($input),strtolower("%3Cscript"))!==FALSE
+				|| stripos($input,"php:")!==FALSE
+				|| stripos($input,"data:")!==FALSE
+				|| stripos($input,"%3cscript")!==FALSE
 				))
 			{
 	
@@ -3413,10 +3437,13 @@ class e107
 			exit();
 		} 
 		
-		if($base64 != TRUE)
+		if($base64 != true)
 		{
-			self::filter_request(base64_decode($input),$key,$type,TRUE);
+			self::filter_request(base64_decode($input),$key,$type,true);
 		}
+
+
+
 	}
 
 
@@ -3797,12 +3824,14 @@ class e107
 		}
 		// FIXME - basic security - add url sanitize method to e_parse
 		$check = rawurldecode($requestUri); // urlencoded by default
+
 		// a bit aggressive XSS protection... convert to e.g. htmlentities if you are not a bad guy
 		$checkregx = $no_cbrace ? '[<>\{\}]' : '[<>]';
 		if(preg_match('/'.$checkregx.'/', $check))
 		{
-			header('HTTP/1.1 403 Forbidden');
-			exit;
+			// header('HTTP/1.1 403 Forbidden');
+			$requestUri = filter_var($requestUri, FILTER_SANITIZE_URL);
+			// exit;
 		}
 
 		// e_MENU fix
@@ -3873,7 +3902,7 @@ class e107
 		{
 			$temp = substr($e107Path, strpos($e107Path, '/') +1);
 			$plugDir = substr($temp, 0, strpos($temp, '/'));
-			define('e_CURRENT_PLUGIN', $plugDir);
+			define('e_CURRENT_PLUGIN', rtrim($plugDir,'/'));
 			define('e_PLUGIN_DIR', e_PLUGIN.e_CURRENT_PLUGIN.'/');
 			define('e_PLUGIN_DIR_ABS', e_PLUGIN_ABS.e_CURRENT_PLUGIN.'/');
 		}

@@ -99,7 +99,7 @@ $pmManager = new pmbox_manager($pm_prefs);
 
 define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PLUGIN_PM_INBOX."' title='".LAN_PLUGIN_PM_INBOX."' />");
 define('PM_OUTBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PLUGIN_PM_OUTBOX."' title='".LAN_PLUGIN_PM_OUTBOX."' />");
-define('PM_SEND_LINK', LAN_PM_35);
+define('PM_SEND_LINK', LAN_PLUGIN_PM_NEW);
 define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
 
 

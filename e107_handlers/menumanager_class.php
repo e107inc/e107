@@ -1122,10 +1122,20 @@ class e_menuManager {
 		
 		$pageMenu = array();
 		$pluginMenu = array();
+
+		$done = array();
 		
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
 		while ($row = $sql->fetch())
 		{
+
+			if(in_array($row['menu_name'],$done))
+			{
+				continue;
+			}
+
+			$done[] = $row['menu_name'];
+
 			if(is_numeric($row['menu_path']))
 			{
 				$pageMenu[] = $row;	

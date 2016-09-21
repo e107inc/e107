@@ -225,7 +225,7 @@ if(!empty($viewable))
 //else
 //{
 //-- Possible candidate for wrapper????
-	return empty($viewable)?'':"<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>Viewable by</div><div class='panel-body'>".$viewable."</div></div></div>";
+	return empty($viewable)?'':"<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>".$viewable."</div></div></div>";
 }
 
 	function sc_search()
@@ -888,5 +888,18 @@ $LASTPOSTUSER = $this->var['lastpost_username'];
   }
 
 */
+	function sc_avatar($opts)
+	{
+		if (isset($this->var['thread_id']))
+		{
+			return e107::getParser()->toAvatar(e107::user($this->var['thread_lastuser']),$opts);
+		}
+		elseif (isset($this->var['forum_id']))
+		{
+			return e107::getParser()->toAvatar(e107::user($this->var['forum_lastpost_user']),$opts);
+		}
+		
+		return '';
+	}
 }
 ?>

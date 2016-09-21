@@ -742,14 +742,14 @@ class admin_shortcodes
 
        $text = '<ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header dropdown-header">Private Messages</li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
+                <li class="nav-header navbar-header dropdown-header">'.LAN_PM.'</li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_INBOX.'" data-target="#uiModal" href="'.$inboxUrl.'" >'.LAN_PLUGIN_PM_INBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_OUTBOX.'" data-target="#uiModal" href="'.$outboxUrl.'">'.LAN_PLUGIN_PM_OUTBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PM_35.'" data-target="#uiModal" href="'.$composeUrl.'">'.LAN_PM_35.'</a></li>
                 </ul>
         </li>
         </ul>
@@ -1059,6 +1059,8 @@ class admin_shortcodes
 
 			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
 
+			$sqlMode = str_replace(",", ", ",e107::getDB()->getMode());
+
 			$text .= "<br /><br />
 			<b>".FOOTLAN_8."</b>
 			<br />
@@ -1075,8 +1077,9 @@ class admin_shortcodes
 			<b>".FOOTLAN_12."</b>
 			<br />
 			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
-			"<br />
-			".FOOTLAN_16.": ".$mySQLdefaultdb."
+
+			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
+			<br />Mode: <small>".$sqlMode."</small>
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
 			<br />utf-8
@@ -1679,7 +1682,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large_src'] = '';
 			
 						
-			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
+			$tmp[2]['text'] = LAN_PERSONALIZE;
 			$tmp[2]['description'] = "Customize administration panels";
 			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
 			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";

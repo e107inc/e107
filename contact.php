@@ -53,7 +53,33 @@ if (!vartrue($CONTACT_FORM))
 if(isset($_POST['send-contactus']))
 {
 
-	$error = "";
+	$error          = "";
+	$ignore         = false;
+
+
+	// Contact Form Filter -----
+
+	$contact_filter = e107::pref('core','contact_filter','');
+
+	if(!empty($contact_filter))
+	{
+		$tmp = explode("\n", $contact_filter);
+
+		if(!empty($tmp))
+		{
+			foreach($tmp as $filterItem)
+			{
+				if(strpos($_POST['body'], $filterItem)!==false)
+				{
+					$ignore = true;
+					break;
+				}
+
+			}
+		}
+	}
+
+	// ---------
 
 	$sender_name    = $tp->toEmail($_POST['author_name'], true,'RAWTEXT');
 	$sender         = check_email($_POST['email_send']);
@@ -108,7 +134,14 @@ if(isset($_POST['send-contactus']))
 	*/
 
 	// No errors - so proceed to email the admin and the user (if selected).
-    if(empty($error))
+	if($ignore === true)
+    {
+        $ns->tablerender('', "<div class='alert alert-success'>".LANCONTACT_09."</div>"); // ignore and leave them none the wiser.
+        e107::getDebug()->log("Contact form post ignored");
+        require_once(FOOTERF);
+		exit;
+    }
+    elseif(empty($error))
 	{
 		$body .= "<br /><br />
 		<table class='table'>
@@ -198,22 +231,23 @@ if(isset($_POST['send-contactus']))
 	    );
 
 
-    	$message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml, false)  ? LANCONTACT_09 : LANCONTACT_10;
 
- 	//	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+	    $message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml, false)  ? LANCONTACT_09 : LANCONTACT_10;
 
-    	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $email_copy == 1)
-    	{
+	    //	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+
+	    if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $email_copy == 1)
+	    {
 		    require_once(e_HANDLER."mail.php");
 			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
-    	}
+	    }
 
 
     	$ns->tablerender('', "<div class='alert alert-success'>".$message."</div>");
 		require_once(FOOTERF);
 		exit;
     }
-	else
+    else
 	{
 		message_handler("P_ALERT", $error);
 	}

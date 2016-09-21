@@ -68,10 +68,11 @@ class e_tohtml_linkwords
 		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
 
 		// See whether they should be active on this page - if not, no point doing anything!
-		if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
+		if(e_ADMIN_AREA === true) { return; }
+	//	if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
 
 		// Now see if disabled on specific pages
-		$check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
+		$check_url = e_SELF.(defined('e_QUERY') ? "?".e_QUERY : '');
 		$this->block_list = explode("|",substr(varset($pref['lw_page_visibility'],''),2));    // Knock off the 'show/hide' flag
 
 		foreach($this->block_list as $p)

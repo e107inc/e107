@@ -209,11 +209,11 @@ class adminstyle_infopanel
 	//  ------------------------------- e107 News --------------------------------
 
 		$newsTabs = array();
-		$newsTabs['coreFeed'] = array('caption'=>'General','text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
-		$newsTabs['pluginFeed'] = array('caption'=>'Plugins','text'=>"<div id='e-adminfeed-plugin'></div>");
-		$newsTabs['themeFeed'] = array('caption'=>'Themes','text'=>"<div id='e-adminfeed-theme'></div>");
+		$newsTabs['coreFeed'] = array('caption'=>LAN_GENERAL,'text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
+		$newsTabs['pluginFeed'] = array('caption'=>LAN_PLUGIN,'text'=>"<div id='e-adminfeed-plugin'></div>");
+		$newsTabs['themeFeed'] = array('caption'=>LAN_THEMES,'text'=>"<div id='e-adminfeed-theme'></div>");
 
-		$text2 = $ns->tablerender("Latest e107 News",e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
+		$text2 = $ns->tablerender(LAN_LATEST_e107_NEWS,e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
 	
 	
 	
@@ -226,7 +226,7 @@ class adminstyle_infopanel
 
 
 		
-		$text2 .= $ns->tablerender("Website Status", $this->renderWebsiteStatus(),"",true);	
+		$text2 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);	
 		
 		
 	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
@@ -352,8 +352,8 @@ class adminstyle_infopanel
 		 */
 		
 		$tab = array();
-		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' Stats', 'text'=>$this->renderChart());
-		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
+		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' '.LAN_STATS, 'text'=>$this->renderChart());
+		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
 		
 
 
@@ -401,19 +401,18 @@ class adminstyle_infopanel
 		$panelOnline .= (!empty($multilan)) ? "<col style='width: auto' />" : "";
 
 
-		// TODO LAN
 		$panelOnline .= "
 
 				</colgroup>
 				<thead>
 					<tr class='first'>
-						<th>Timestamp</th>
-						<th>Username</th>
-						<th>IP</th>
-						<th>Page</th>
-						<th class='center'>Agent</th>";
+						<th>".LAN_TIMESTAMP."</th>
+						<th>".LAN_USER."</th>
+						<th>".LAN_IP."</th>
+						<th>".LAN_PAGE."</th>
+						<th class='center'>".LAN_AGENT."</th>";
 
-		$panelOnline .= (!empty($multilan)) ? "<th class='center'>Lang.</th>" : "";
+		$panelOnline .= (!empty($multilan)) ? "<th class='center'>".LAN_LANG."</th>" : "";
 
 		$panelOnline .= "
 					</tr>
@@ -523,6 +522,9 @@ class adminstyle_infopanel
 		
 		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
 		$count = 1;
+
+		$lanVar = array('x' =>'{USERNAME}', 'y'=>'{TIMEDATE=relative}');
+				
 		foreach($rows as $row) 
 		{
 			$hide = ($count > 3) ? ' hide' : '';
@@ -531,15 +533,14 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
 	            </div>
-				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
+				<div class='media-body'>
+					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
-
-			//TODO LAN for 'Posted by [x] ';
 			
 			$sc->setVars($row);  
 		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
@@ -550,13 +551,13 @@ class adminstyle_infopanel
     	$text .= '
      		</ul>
 		    <div class="right">
-		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">'.LAN_VIEW_ALL.'</a>
 		    </div>
 		 ';		
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
-		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
+		return $ns->tablerender(LAN_LATEST_COMMENTS,$text,'core-infopanel_online',true);		
 	}
 		
 		
@@ -594,16 +595,16 @@ class adminstyle_infopanel
 		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
 	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
 	    
-		$text2 .= $ns->tablerender("Personalize Icons", $this->render_infopanel_icons(),'personalize',true); 
+		$text2 .= $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
 		$text2 .= "<div class='clear'>&nbsp;</div>";
-		$text2 .= $ns->tablerender("Personalize Menus", $this->render_infopanel_menu_options(),'personalize',true); 
+		$text2 .= $ns->tablerender(LAN_PERSONALIZE_MENUS, $this->render_infopanel_menu_options(),'personalize',true);
 	//	$text2 .= render_infopanel_icons();
 		//$text2 .= "<div class='clear'>&nbsp;</div>";
 	//	$text2 .= "<h3>Menus</h3>";
 	//	$text2 .= render_infopanel_menu_options();
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= "<div id='button' class='buttons-bar center'>";
-		$text2 .= $frm->admin_button('submit-mye107', 'Save', 'create');
+		$text2 .= $frm->admin_button('submit-mye107', LAN_SAVE, 'create');
 		$text2 .= "</div></form>";
 	//	$text2 .= "</div>";
 		

@@ -798,12 +798,16 @@ if(isset($pref['e_module_list']) && $pref['e_module_list'])
 }
 
 
-
 //
 // P: THEME LOADING
 //
 
 $sql->db_Mark_Time('Load Theme');
+
+if(!defined("USERTHEME"	))
+{
+	define('USERTHEME', (e107::getUser()->getPref('sitetheme') && file_exists(e_THEME.e107::getUser()->getPref('sitetheme')."/theme.php") ? e107::getUser()->getPref('sitetheme') : false));
+}
 
 //###########  Module redefinable functions ###############
 if (!function_exists('checkvalidtheme'))
@@ -1813,6 +1817,8 @@ function init_session()
 				$uconfig->save(true);
 				unset($ut);
 			}
+
+
    		}
    		elseif ($user->getPref('sitetheme'))
    		{
@@ -1822,12 +1828,10 @@ function init_session()
    				->remove('sitetheme_deflayout')
    				->save(false);
 		}
-		// XXX could go to e_user class as well END
-		if(!defined("USERTHEME"	))
-		{
-			define('USERTHEME', ($user->getPref('sitetheme') && file_exists(e_THEME.$user->getPref('sitetheme')."/theme.php") ? $user->getPref('sitetheme') : false));				
-		}
-		
+
+
+
+
 		$user_pref = $user->getPref();
 	}
 
@@ -1861,7 +1865,7 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 		$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
 	}	
 	
-	setcookie($name, $value, $expire, $path, $domain, $secure);
+	setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
 // generic function for retaining values across pages. ie. cookies or sessions.
@@ -1879,7 +1883,7 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
 		}	
 		
-		setcookie($name, $value, $expire, $path, $domain, $secure);
+		setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
 	}
 }

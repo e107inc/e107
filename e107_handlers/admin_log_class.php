@@ -880,7 +880,7 @@ class e_admin_log
 		}
 		elseif(getperms('0') && E107_DEBUG_LEVEL > 0)
 		{
-			echo "Could Save to Log File: ".$fileName;	
+			e107::getMessage()->addDebug("Couldn't Save to Log File: ".$fileName);
 		}	
 
 		return false;

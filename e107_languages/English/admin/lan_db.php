@@ -130,4 +130,14 @@ define("DBLAN_109", "Copied:");
 define("DBLAN_110", "Couldn't copy:");
 define("DBLAN_111", 		"Tables appear to be okay!");
 
+define("DBLAN_112", "Sync with Github");
+define("DBLAN_113", "Overwrite Files");
+define("DBLAN_114", "Developer Mode Only");
+define("DBLAN_115", "Overwrite local files with the latest from github.");
+define("DBLAN_116", "This will download the latest .zip file from github to");
+define("DBLAN_117", "and then unzip it, overwriting any existing files that it finds on your server. It will take into account any custom folders you may have set in e107_config.php.");
+define("DBLAN_118", "Couldn't download .zip file");
+define("DBLAN_119", "Backup");
+define("DBLAN_120", "Starting backup....");
+define("DBLAN_121", "Moving [x] to [y].");
 ?>

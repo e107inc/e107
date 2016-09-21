@@ -691,7 +691,7 @@ class forum_post_handler
 		$text = $this->renderBreadcrumb();
 
 
-		$text .= e107::getMessage()->setTitle("Warning!",E_MESSAGE_ERROR)->addError("This post, and every post below it will be moved into a new thread/topic.")->render();
+		$text .= e107::getMessage()->setTitle(LAN_FORUM_8015,E_MESSAGE_ERROR)->addError( LAN_FORUM_8014 )->render();
 
 			$text .= "
 		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
@@ -770,7 +770,7 @@ class forum_post_handler
 
 				if($this->data['forum_id'] == $f['forum_id'])
 				{
-					$for_name .= " (Current)";
+					$for_name .= LAN_FORUM_8016;
 					$currentName = $for_name;
 					continue;
 				}
