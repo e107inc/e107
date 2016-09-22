@@ -325,7 +325,7 @@ abstract class e_marketplace_adapter_abstract
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		$mes->addSuccess("Downloading..."); 
+		$mes->addSuccess(EPL_ADLAN_233"); 
 	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
@@ -347,7 +347,7 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$mes->addError( "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"); 
+			$mes->addError( "".EPL_ADLAN_235." <a href='".$remotefile."'>".EPL_ADLAN_236."</a>"); 
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
@@ -360,12 +360,12 @@ abstract class e_marketplace_adapter_abstract
 		
 		if($fl->unzipArchive($localfile,$type))
 		{
-			$mes->addSuccess("Download Complete!"); 
+			$mes->addSuccess(EPL_ADLAN_234); 
 			return true; 
 		}
 		else 
 		{
-			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
+			$mes->addSuccess( "<a href='".$remotefile."'>".EPL_ADLAN_236."</a>"); // flush(); usleep(50000);
 		}
 		
 		return false; 
