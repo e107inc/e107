@@ -6007,7 +6007,17 @@ class e_admin_form_ui extends e_form
 			$get = $this->getController()->getQuery();
 			foreach ($get as $key => $value) 
 			{
-				if($key == 'searchquery' || $key == 'filter_options' || $key == 'etrigger_filter') continue;
+				if($key == 'searchquery' || $key == 'filter_options' || $key == 'etrigger_filter')
+				{
+					continue;
+				}
+
+				// Reset pager after filtering.
+				if ($key == 'from')
+				{
+					continue;
+				}
+				
 				$key = preg_replace('/[^\w]/', '', $key);
 				$filter_preserve_var[] = $this->hidden($key, rawurlencode($value));
 			}
