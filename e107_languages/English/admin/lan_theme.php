@@ -116,7 +116,7 @@ define("TPVLAN_CONV_15", "Give this stylesheet a name");
 define("EPL_ADLAN_94","Connecting...");
 define("EPL_ADLAN_233","Downloading..."); 
 define("EPL_ADLAN_234","Download Complete!");
-define("EPL_ADLAN_235","Automated download not possible. Please");
-define("EPL_ADLAN_236","Download Manually");
+define("EPL_ADLAN_235","Automated download not possible.");
+define("EPL_ADLAN_236","Please Download Manually");
 
 ?>
