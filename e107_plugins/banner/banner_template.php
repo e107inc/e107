@@ -106,7 +106,7 @@ if(!isset($BANNER_MENU_END))
 
 
 $BANNER_TEMPLATE['menu']['start'] =		"<div class='banner-menu text-center'>{SETIMAGE: w=800}";
-$BANNER_TEMPLATE['menu']['item'] =		"<div class='banner-menu-item'>{BANNER}<br /><br /></div>"; 
+$BANNER_TEMPLATE['menu']['item'] =		"<div class='banner-menu-item'>{BANNER}</div>";
 $BANNER_TEMPLATE['menu']['end'] = 		"</div>"; 
 
 

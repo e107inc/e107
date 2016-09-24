@@ -18,7 +18,7 @@ class social_shortcodes extends e_shortcode
 	public function getProviders()
 	{
 
-		$emailMessage = LAN_SOCIAL_LINK_CHK;
+		$emailMessage = LAN_SOCIAL_005;
 
 		$tp = e107::getParser();
 
