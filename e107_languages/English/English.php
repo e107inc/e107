@@ -47,6 +47,8 @@ define("EMESSLAN_TITLE_WARNING", "Warning");
 define("EMESSLAN_TITLE_DEBUG", "System Debug");
 
 define("LAN_EDIT","Edit");
+define("LAN_SAVE","Save");//Moved to English.php for front end use eg user_handler
+define("LAN_SAVED","Saved");//Moved to English.php for front end use eg usersettings
 define("LAN_DELETE","Delete");
 define("LAN_DEFAULT","Default");
 define("LAN_MORE", "More..");

@@ -731,8 +731,8 @@ class UserHandler
 		}
 		else
 		{
-			if ($userData['user_class'] != '') $classList = explode(',',$userData['user_class']);
-		}
+			if ($userData['user_class'] != '') $classList = explode(',',$userData['user_class']); 
+		}//TODO Warning in_array param2 string (null) - Maybe there are no userclasses on the user profile
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
 			if (!in_array($c, vartrue($classList)))
@@ -1188,12 +1188,12 @@ class e_user_provider
 	{
 		if(!e107::getPref('social_login_active', false))
 		{
-			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
+			throw new Exception( LAN_XUP_ERRM_01, 100);
 		}
 		
 		if(!$this->getProvider()) 
 		{
-			throw new Exception( "Signup failed! Wrong provider.", 2); // TODO lan
+			throw new Exception( LAN_XUP_ERRM_02, 2); 
 		}
 		
 		if($redirectUrl)
@@ -1216,7 +1216,7 @@ class e_user_provider
 				e107::getRedirect()->redirect($redirectUrl);
 			}
 			return false;
-		//	throw new Exception( "Signup failed! User already signed in. ", 1); // TODO lan
+		//	throw new Exception( LAN_XUP_ERRM_04, 1); 
 		}
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
@@ -1366,12 +1366,12 @@ class e_user_provider
 
 		if(!e107::getPref('social_login_active', false))
 		{
-			throw new Exception( "Signup failed! This feature is disabled.", 100); // TODO lan
+			throw new Exception( LAN_XUP_ERRM_01, 100); 
 		}
 		
 		if(!$this->getProvider()) 
 		{
-			throw new Exception( "Login failed! Wrong provider.", 22); // TODO lan
+			throw new Exception( LAN_XUP_ERRM_03, 22); 
 		}
 		
 		if($redirectUrl)
