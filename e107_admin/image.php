@@ -257,7 +257,7 @@ class media_cat_ui extends e_admin_ui
 		// XXX temporary disable when there is no owners, discuss
 		if(!$new_data['media_cat_owner'])
 		{
-			e107::getMessage()->addError('No media owner found.'); // FIXME LAN
+			e107::getMessage()->addError(IMALAN_173); // FIXME LAN
 			return false;
 		}
 		//$replace = array("_"," ","'",'"',"."); //FIXME Improve
@@ -710,10 +710,10 @@ class media_admin_ui extends e_admin_ui
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
           	'media_size' 			=> array('title'=> LAN_SIZE,			'type' => 'number',		'data'=> 'int',		'width' => 'auto', 'readonly'=>2),
-			'media_dimensions' 		=> array('title'=> IMALAN_130,	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap','noedit'=>TRUE),
+			'media_dimensions' 		=> array('title'=> IMALAN_120,	'type' => 'text',		'data'=> 'str',		'width' => '5%', 'readonly'=>TRUE, 'class'=>'nowrap','noedit'=>TRUE),
 			'media_userclass' 		=> array('title'=> LAN_USERCLASS,	'type' => 'userclass',	'data'=> 'str',		'inline'=>true, 'width' => '10%', 'thclass' => 'center','filter'=>TRUE,'batch'=>TRUE ),
 			'media_tags' 			=> array('title'=> IMALAN_132,	'type' => 'tags',	'inline'=>true,	'data'=> 'str',		'width' => '10%',  'filter'=>TRUE,'batch'=>TRUE ),
-			'media_usedby' 			=> array('title'=> IMALAN_131,		'type' => 'hidden',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
+			'media_usedby' 			=> array('title'=> IMALAN_21,		'type' => 'hidden',		'data'=> 'text', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center', 'nolist'=>true, 'readonly'=>TRUE	),
 
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null,		'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center', 'batch'=>true, 'noedit'=>true)
 		);
@@ -760,7 +760,7 @@ class media_admin_ui extends e_admin_ui
 		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>" <a target='_blank' href='https://code.google.com/apis/console/'>More</a>")),
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>" <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>")),
 
 		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
 
@@ -1214,7 +1214,7 @@ class media_admin_ui extends e_admin_ui
 						</td>
 					</tr>
 					<tr>
-						<td>".IMALAN_130.": </td>
+						<td>".IMALAN_120.": </td>
 						<td>
 						<input type='text' class='e-media-attribute' id='width' name='width' size='4' style='width:50px' value='' /> px &nbsp;
 						&#10060; &nbsp;<input type='text' class='e-media-attribute' id='height' name='height' size='4' style='width:50px' value=''  /> px
