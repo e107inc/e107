@@ -5423,7 +5423,7 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				else
 				{
-					$this->getConfig()->setPref($key.'/'.e_LANGUAGE, $val);
+					$this->getConfig()->setPostedData($key.'/'.e_LANGUAGE, $val);
 				}
 
 			}
