@@ -164,8 +164,8 @@ define('IMALAN_126', "Please check at least one file.");
 define('IMALAN_127', "Couldn't get file info from:");
 define('IMALAN_128', "Importing Media:");
 define('IMALAN_129', "You are about to delete [x] records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!");
-define('IMALAN_130', "");
-define('IMALAN_131', "");
+define('IMALAN_130', "Previous page");
+define('IMALAN_131', "Next page");
 define('IMALAN_132', "Tags/Keywords");
 define('IMALAN_133', "Bottom Right");
 define('IMALAN_134', "Bottom Left");
@@ -196,9 +196,9 @@ define('IMALAN_158', "Margin-Left");
 define('IMALAN_159', "Margin-Right");
 define('IMALAN_160', "Margin-Top");
 define('IMALAN_161', "Margin-Bottom");
-define('IMALAN_162', "Images");
-define('IMALAN_163', "of");
-define('IMALAN_164', "images");
+define('IMALAN_162', "Displaying [x] - [y] of [z] images.");
+define('IMALAN_163', ""); // Unused
+define('IMALAN_164', ""); // Unused
 define('IMALAN_165', "No images");
 define('IMALAN_166', "Upload images or files");
 define('IMALAN_167', "Choose file");
