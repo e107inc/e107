@@ -62,7 +62,10 @@ class user_dashboard // plugin-folder + '_url'
 			$month_end = strtotime('last day of last month', mktime(23,59,59));	
 		}*/
 		
-		$sql->gen("SELECT user_id,user_ban,user_join FROM `#user` WHERE user_join BETWEEN ".$month_start." AND ".$month_end." AND user_ban = 0");
+		if(!$sql->gen("SELECT user_id,user_ban,user_join FROM `#user` WHERE user_join BETWEEN ".$month_start." AND ".$month_end." AND user_ban = 0"))
+		{
+			return false;
+		}
 
 		while($row = $sql->fetch())
 		{
