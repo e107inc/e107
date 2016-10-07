@@ -195,7 +195,7 @@ class media_cat_ui extends e_admin_ui
 		);
 		
 		// FIXME LAN
-		$this->fields['media_cat_type']['writeParms'] = array('image' => IMALAN_143, IMALAN_144 => 'File', 'video' => 'Video');
+		$this->fields['media_cat_type']['writeParms'] = array('image' => IMALAN_143, 'file' => IMALAN_144, 'video' => IMALAN_163);
 		
 		if($this->getAction() == 'list')
 		{	
