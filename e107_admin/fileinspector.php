@@ -120,7 +120,7 @@ else
 	elseif($_GET['mode'] == 'run')
 	{
 		$mes = e107::getMessage();
-		$mes->addInfo("You need to run a scan first!");	
+		$mes->addInfo(FR_LAN_32);//Run a Scan first	
 		echo $mes->render();
 	}
 	else 
@@ -219,22 +219,22 @@ class file_inspector {
 			'fileinspector'      => array('<i class="fa fa-folder text-success" style="color:#F6EDB0;"></i>'),
 
 			'folder'            => array('<i class="fa fa-folder text-success" style="color:#F6EDB0;"></i>'),
-			'folder_check'      => array('<i class="fa fa-folder text-success" style="color:#F6EDB0" ></i>', "Core Folder (Integrity Pass)"),
-			'folder_fail'       => array('<i class="fa fa-folder text-danger" ></i>', "Core Folder (Integrity Fail)"),
-			'folder_missing'    => array('<i class="fa fa-folder-o text-danger" ></i>', "Core Folder (Missing)"),
+			'folder_check'      => array('<i class="fa fa-folder text-success" style="color:#F6EDB0" ></i>', FC_LAN_24 ),
+			'folder_fail'       => array('<i class="fa fa-folder text-danger" ></i>', FC_LAN_25 ),
+			'folder_missing'    => array('<i class="fa fa-folder-o text-danger" ></i>', FC_LAN_26 ),
 			'folder_warning'    => array('<i class="fa fa-folder text-warning" ></i>'),
-			'folder_old'        => array('<i class="fa fa-folder-o text-warning" ></i>', "Core Folder (Old)"),
+			'folder_old'        => array('<i class="fa fa-folder-o text-warning" ></i>', FC_LAN_27 ),
 			'folder_old_dir'    => array('<i class="fa fa-folder-o text-warning" ></i>'),
-			'folder_unknown'    => array('<i class="fa fa-folder-o text-primary" ></i>', "Non-core Folder"),
+			'folder_unknown'    => array('<i class="fa fa-folder-o text-primary" ></i>', FC_LAN_28 ),
 
-			'file_check'        => array('<i class="fa fa-file text-success" style="color:#F6EDB0" ></i>', "Core File (Integrity Pass)"),
-			'file_core'        => array('<i class="fa fa-file-o text-success" style="color:#F6EDB0" ></i>', "Core File (Unchecked)"),
-			'file_fail'         => array('<i class="fa fa-file text-danger" ></i>', "Core File (Integrity Fail)"),
-			'file_missing'      => array('<i class="fa fa-file-o text-danger" ></i>', "Core File (Missing)"),
-			'file_old'          => array('<i class="fa fa-file-o text-warning" ></i>', "Core File (Old)"),
-			'file_uncalc'       => array('<i class="fa fa-file-o " ></i>',"Core File (Incalculable)"),
-			'file_warning'      => array('<i class="fa fa-file text-warning" ></i>', "Known Security issue"),
-			'file_unknown'      => array('<i class="fa fa-file-o text-primary" ></i>', "Non-core file"),
+			'file_check'        => array('<i class="fa fa-file text-success" style="color:#F6EDB0" ></i>', FC_LAN_29),
+			'file_core'        => array('<i class="fa fa-file-o text-success" style="color:#F6EDB0" ></i>', FC_LAN_30),
+			'file_fail'         => array('<i class="fa fa-file text-danger" ></i>', FC_LAN_31 ),
+			'file_missing'      => array('<i class="fa fa-file-o text-danger" ></i>', FC_LAN_32 ),
+			'file_old'          => array('<i class="fa fa-file-o text-warning" ></i>', FC_LAN_33 ),
+			'file_uncalc'       => array('<i class="fa fa-file-o " ></i>', FC_LAN_34 ),
+			'file_warning'      => array('<i class="fa fa-file text-warning" ></i>', FC_LAN_35 ),
+			'file_unknown'      => array('<i class="fa fa-file-o text-primary" ></i>', FC_LAN_36 ),
 
 
 
@@ -362,10 +362,10 @@ class file_inspector {
 
 	/*	$text .= "
 		<tr>
-		<td class='fcaption' colspan='2'>".FC_LAN_2."</td>
+		<td class='fcaption' colspan='2'>".LAN_OPTIONS."</td>
 		</tr>";*/
 		
-		$coreOpts = array('full'=>FC_LAN_6, 'all'=>FC_LAN_4, 'none'=> FC_LAN_12);
+		$coreOpts = array('full'=>FC_LAN_6, 'all'=>LAN_ALL, 'none'=> LAN_NONE);
 		
 		$text .= "<tr>
 		<td style='width: 35%'>
@@ -375,7 +375,7 @@ class file_inspector {
 		</tr>";
 		
 		
-		$dispOpt = array('tree'=>FC_LAN_15, 'list'=>FC_LAN_16);	
+		$dispOpt = array('tree'=>FC_LAN_15, 'list'=>LAN_LIST);	
 		$text .= "<tr>
 		<td style='width: 35%'>
 		".FC_LAN_14.":
@@ -391,8 +391,8 @@ class file_inspector {
 		".LAN_SHOW." ".FC_LAN_13.":
 		</td>
 		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='missing' value='1'".(($_POST['missing'] == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
-		<input type='radio' name='missing' value='0'".($_POST['missing'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
+		<input type='radio' name='missing' value='1'".(($_POST['missing'] == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='missing' value='0'".($_POST['missing'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td>
 		</tr>";
 		
@@ -401,10 +401,9 @@ class file_inspector {
 		".LAN_SHOW." ".FC_LAN_7.":
 		</td>
 		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
-		<input type='radio' name='noncore' value='0'".($_POST['noncore'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
-		<input type='checkbox' name='nolang' value='1'".(($_POST['nolang'] == '1' || !isset($_POST['nolang'])) ? " checked='checked'" : "")." /> Exclude Language-Files&nbsp;&nbsp;
-		
+		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='noncore' value='0'".($_POST['noncore'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
+		<input type='checkbox' name='nolang' value='1'".(($_POST['nolang'] == '1' || !isset($_POST['nolang'])) ? " checked='checked'" : "")." /> ".FC_LAN_23."&nbsp;&nbsp;
 		</td>
 		</tr>";
 		
@@ -413,8 +412,8 @@ class file_inspector {
 		".LAN_SHOW." ".FC_LAN_21.":
 		</td>
 		<td colspan='2' style='width: 65%'>
-		<input type='radio' name='oldcore' value='1'".(($_POST['oldcore'] == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
-		<input type='radio' name='oldcore' value='0'".($_POST['oldcore'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
+		<input type='radio' name='oldcore' value='1'".(($_POST['oldcore'] == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='oldcore' value='0'".($_POST['oldcore'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td>
 		</tr>";
 		
@@ -426,13 +425,13 @@ class file_inspector {
 		".FC_LAN_8.":
 		</td>
 		<td style='width: 65%; vertical-align: top'>
-		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrity'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
-		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
+		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrity'])) ? " checked='checked'" : "")." /> ".LAN_YES."&nbsp;&nbsp;
+		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".LAN_NO."&nbsp;&nbsp;
 		</td></tr>";
 
 		$text .= "</table>";
 	
-		$tab['basic'] = array('caption'=>FC_LAN_2, 'text'=>$text);
+		$tab['basic'] = array('caption'=>LAN_OPTIONS, 'text'=>$text);
 
 		
 		if ($pref['developer']) {
@@ -484,7 +483,7 @@ class file_inspector {
 
 		$foot = "
 		<div class='buttons-bar center'>
-		".$frm->admin_button('scan', FC_LAN_11, 'other')."
+		".$frm->admin_button('scan', LAN_GO, 'other')."
 		</div>
 		</form>
 		</div>";
@@ -634,7 +633,7 @@ class file_inspector {
 			  $this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
 
 			  if ($_POST['regex']) // Developer prefs activated - search file contents according to regex
-			  {
+			  {                    // TODO Max out of Memory when used
 				$file_content = file($path);		// Get contents of file
 
 				if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE)
@@ -1015,20 +1014,20 @@ class file_inspector {
 
 		if ($this->opt('core') != 'none')
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file_core']."&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td>
+			$text .= "<tr><td class='f'>".$this->iconTag['file_core']."&nbsp;".FC_LAN_5.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : LAN_NONE)."&nbsp;</td>
 			<td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
 		}
 		if ($this->opt('missing'))
 		{
-			$text .= "<tr><td class='f' colspan='2'>".$this->iconTag['file_missing']."&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
+			$text .= "<tr><td class='f' colspan='2'>".$this->iconTag['file_missing']."&nbsp;".FC_LAN_13.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : LAN_NONE)."&nbsp;</td></tr>";
 		}
 		if ($this->opt('noncore'))
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file_unknown']."&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_unknown']."&nbsp;".FC_LAN_7.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
 		}
 		if ($this->opt('oldcore'))
 		{
-			$text .= "<tr><td class='f'>".$this->iconTag['file_old']."&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['deprecated']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_old']."&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if ($this->opt('core') == 'all')
 		{
@@ -1041,7 +1040,7 @@ class file_inspector {
 			$text .= "<tr><td style='padding-left: 4px' colspan='2'>
 			".$this->iconTag['warning']."&nbsp;<b>".FR_LAN_26."</b></td></tr>";
 		
-			$text .= "<tr><td class='f'>".$this->iconTag['file_warning']." ".FR_LAN_28.": ".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['warning']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_warning']." ".FR_LAN_28.": ".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['warning']['size'], 2)."</td></tr>";
 			
 			$text .= "<tr><td class='w' colspan='2'><div class='alert alert-warning'>".FR_LAN_27."</div></td></tr>";
 
@@ -1053,9 +1052,9 @@ class file_inspector {
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 			$text .= "<tr><th class='f' colspan='2'>".FR_LAN_7." ".$integrity_text."</th></tr>";
 		
-			$text .= "<tr><td class='f'>".$this->iconTag['file_check']."&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'>".$this->iconTag['file_fail']."&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'>".$this->iconTag['file_uncalc']."&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['uncalculable']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_check']."&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_fail']."&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'>".$this->iconTag['file_uncalc']."&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : LAN_NONE)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['uncalculable']['size'], 2)."</td></tr>";
 		
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 
@@ -1284,7 +1283,7 @@ class file_inspector {
 		$ns = e107::getRender();
 		$frm = e107::getRender();
 		$text = "";
-		
+
 		if (isset($_POST['create_snapshot'])) 
 		{
 			$this -> create_image($_POST['snapshot_path']);
@@ -1359,13 +1358,13 @@ class file_inspector {
 		if ($size < $kb) {
 			return $size." b";
 		} else if($size < $mb) {
-			return round($size/$kb)." kb";
+			return round($size/$kb)." kB";
 		} else if($size < $gb) {
-			return round($size/$mb, $dec)." mb";
+			return round($size/$mb, $dec)." MB";
 		} else if($size < $tb) {
-			return round($size/$gb, $dec)." gb";
+			return round($size/$gb, $dec)." GB";
 		} else {
-			return round($size/$tb, $dec)." tb";
+			return round($size/$tb, $dec)." TB";
 		}
 	}
 	
@@ -1549,10 +1548,10 @@ class file_inspector {
 
 function fileinspector_adminmenu() //FIXME - has problems when navigation is on the LEFT instead of the right. 
 {
-	$var['setup']['text'] = "Setup";
+	$var['setup']['text'] = FC_LAN_11;
 	$var['setup']['link'] = e_SELF."?mode=setup";
 	
-	$var['run']['text'] = "Results";
+	$var['run']['text'] = FR_LAN_2;
 	$var['run']['link'] = e_SELF."?mode=run";
 
 	e107::getNav()->admin(FC_LAN_1, $_GET['mode'], $var);
@@ -1575,7 +1574,7 @@ function e_help()
 
 	}
 
-	return array('caption'=>'File Key', 'text'=>$text); //TODO LAN
+	return array('caption'=>FC_LAN_37, 'text'=>$text); 
 
 }
 
