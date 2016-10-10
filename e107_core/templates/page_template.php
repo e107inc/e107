@@ -118,7 +118,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
 	
-	$PAGE_WRAPPER['profile']['CMENUIMAGE: template=profile'] = '<span class="news-images-main pull-left col-xs-12 col-sm-4 col-md-4">{---}</span>';
+	$PAGE_WRAPPER['profile']['CMENUIMAGE: template=profile'] = '<span class="page-profile-image pull-left col-xs-12 col-sm-4 col-md-4">{---}</span>';
 	$PAGE_TEMPLATE['profile'] = $PAGE_TEMPLATE['default'];
 	$PAGE_TEMPLATE['profile']['body'] = '
 		{CPAGEMESSAGE}
