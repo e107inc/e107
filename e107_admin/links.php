@@ -55,12 +55,12 @@ class links_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = 'Links';
+	protected $menuTitle = ADLAN_138;
 }
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= "Site links";
+	protected $pluginTitle 	= ADLAN_138;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';

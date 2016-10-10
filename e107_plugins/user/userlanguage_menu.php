@@ -24,7 +24,7 @@ sort($languageList);
 
 if(varset($pref['multilanguage_subdomain']))
 {
-	$action = (e_QUERY) ? e_SELF.'?'.e_QUERY : e_SELF;
+	$action = e_REQUEST_URI;
 	$text = '
 		<div style="text-align:center">
 			<select class="tbox form-control" name="lang_select" style="width:95%" onchange="location.href=this.options[selectedIndex].value">';
@@ -42,7 +42,7 @@ if(varset($pref['multilanguage_subdomain']))
 else
 {
 	//FIXME may not work with session
-	$action = (e_QUERY && ! $_GET['elan']) ? e_SELF.'?'.e_QUERY : e_SELF;
+	$action = e_REQUEST_URI;
 	$text = '
 	<form method="post" action="'.$action.'">
 		<div class="center">

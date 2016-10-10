@@ -31,7 +31,7 @@ if (!getperms("A") && ($_GET['action'] != 'dialog'))
 
 e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
+e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.min.js', 'jquery', 2);
 e107::js('core', 'core/mediaManager.js',"jquery",5);
 e107::wysiwyg(true);
 /*
