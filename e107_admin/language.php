@@ -79,7 +79,7 @@ if(!empty($_GET['iframe']))
 
 			if(e_DEVELOPER == true)
 			{
-				$this->adminMenu['main/deprecated'] = array('caption'=>'Deprecated LANs', 'perm'=>'0');
+				$this->adminMenu['main/deprecated'] = array('caption'=>LANG_LAN_04, 'perm'=>'0');
 			}
 
 		}
@@ -986,14 +986,14 @@ class lanDeveloper
 			$new = $this->disableUnused($data);
 			if(file_put_contents($_POST['disable-unused-lanfile'],$new))
 			{
-				$mes->addSuccess("Overwriting ".$_POST['disable-unused-lanfile']);
+				$mes->addSuccess(LANG_LAN_135.$_POST['disable-unused-lanfile']);//Overwriting 
 			}
 			else
 			{
-				$mes->addError("Couldn't overwrite ".$_POST['disable-unused-lanfile']);
+				$mes->addError(LANG_LAN_136.$_POST['disable-unused-lanfile']);//Couldn't overwrite 
 			}
 
-			$ns->tablerender("Processed".SEP.$_POST['disable-unused-lanfile'],$mes->render()."<pre>".htmlentities($new)."</pre>");
+			$ns->tablerender(LANG_LAN_137.SEP.$_POST['disable-unused-lanfile'],$mes->render()."<pre>".htmlentities($new)."</pre>");//Processed
 		}
 
 
@@ -1019,14 +1019,14 @@ class lanDeveloper
 			{
 				if(strpos($scr,e_ADMIN)!==false) // CORE
 				{
-					$mes->addDebug("Mode: Core Admin Calculated");
+					$mes->addDebug(LANG_LAN_138);//Mode: Core Admin Calculated
 					//$scriptname = str_replace("lan_","",basename($lanfile));
 					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($scr);
 					$this->adminFile = true;
 				}
 				else  // Root
 				{
-					$mes->addDebug("Mode: Search Core Root lan calculated");
+					$mes->addDebug(LANG_LAN_139);//Mode: Search Core Root lan calculated
 					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/lan_".basename($scr);
 					$lanfile[$k] = str_replace("lan_install", "lan_installer", $lanfile[$k]); //quick fix.,
 
@@ -1035,7 +1035,7 @@ class lanDeveloper
 
 				if(!is_readable($scr))
 				{
-					$mes->addError("Not Readable: ".$scr);
+					$mes->addError(LAN_NOTREADABLE.$scr);
 					// $script = $scriptname; // matching files. lan_xxxx.php and xxxx.php
 				}
 			}
@@ -1158,10 +1158,10 @@ class lanDeveloper
 
 		$text .= "
 						<tr>
-							<td><div class='alert-info alert alert-block'>Hold down CTRL key to select multiple.<br />eg. To check <b>lan_signup.php</b> you'll want to also select <b>signup_shortcodes.php</b> and <b>signup_template.php</b>.</div></td>
+							<td><div class='alert-info alert alert-block'>".LANG_LAN_140."</div></td>
 							<td class='form-inline'>
 								<select name='deprecatedLans[]' multiple style='height:200px'>
-									<option value=''>Select Script...</option>";
+									<option value=''>".LANG_LAN_141."</option>";
 
 
 		$omit = array('languages','\.png','\.gif','handlers');
@@ -1176,7 +1176,7 @@ class lanDeveloper
 		$srch = array(e_ADMIN,e_PLUGIN, e_CORE, e_BASE );
 
 
-		$text .= "<optgroup label='Admin Area'>";
+		$text .= "<optgroup label='".LAN_ADMIN."'>";
 		foreach($lans as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1189,7 +1189,7 @@ class lanDeveloper
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='Root'>";
+		$text .= "<optgroup label='".LAN_ROOT."'>";
 		foreach($root as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1203,7 +1203,7 @@ class lanDeveloper
 		$text .= "</optgroup>";
 
 
-		$text .= "<optgroup label='Templates'>";
+		$text .= "<optgroup label='".LAN_TEMPLATES."'>";
 		foreach($templates as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1216,7 +1216,7 @@ class lanDeveloper
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='Shortcodes'>";
+		$text .= "<optgroup label='".LAN_SHORTCODES."'>";
 		foreach($shortcodes as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1228,7 +1228,8 @@ class lanDeveloper
 		}
 
 		$text .= "</optgroup>";
-
+		
+//TODO LANs - not sure if this can be replaced with LANS?
 		$depOptions = array(
 			1 => "Script > Lan File",
 			0 => "Script < Lan File"
@@ -1249,7 +1250,7 @@ class lanDeveloper
 								";
 
 		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" :"";
-		$text .= "<option value='auto' {$selected}>Auto-Detect</option><optgroup label='Specific LAN file:'>\n";
+		$text .= "<option value='auto' {$selected}>".LANG_LAN_142."</option><optgroup label='".LANG_LAN_143."'>\n";//Auto-Detect
 
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
@@ -1277,7 +1278,7 @@ class lanDeveloper
 		$text .= "</select>";
 
 		// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)').
-		$text .= $frm->admin_button('searchDeprecated',"Check",'other');
+		$text .= $frm->admin_button('searchDeprecated',LAN_GO,'other');
 		//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
 		$text .= "
 							</td>
@@ -1405,7 +1406,7 @@ class lanDeveloper
 				if($disabled)
 				{
 					$text .= ADMIN_WARNING_ICON;
-					$label = " <span class='label label-important label-danger'>Must be re-enabled</span>";
+					$label = " <span class='label label-important label-danger'>".LANG_LAN_144."</span>";//Must be re-enabled
 					$this->errors++;
 					// $text .= "blabla";
 					//	$class = 'alert alert-warning';
@@ -1413,7 +1414,7 @@ class lanDeveloper
 				elseif($reverse == true)
 				{
 					$value = ADMIN_TRUE_ICON;
-					$value .= " Line:<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
+					$value .= " ".LAN_LINE."<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
 					foreach($found[$file]['line'] as $defLine)
 					{
 						$text .= print_a($defLine, true);
@@ -1422,7 +1423,7 @@ class lanDeveloper
 				}
 				else
 				{
-					$text .= " Line:<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
+					$text .= " ".LAN_LINE.":<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
 				}
 
 			}
@@ -1450,7 +1451,7 @@ class lanDeveloper
 					else
 					{
 						//	$color = "background-color:yellow";
-						$value = "<a href='#' title=\"Missing\">".ADMIN_WARNING_ICON."</a>";
+						$value = "<a href='#' title=".LAN_MISSING.">".ADMIN_WARNING_ICON."</a>";
 						$this->errors++;
 						$label = "<span class='label label-important label-danger'>".LANG_LAN_131."</span>";
 				//		$class = "alert alert-warning";
@@ -1461,7 +1462,7 @@ class lanDeveloper
 				{
 					// $color = "background-color:pink";
 					$class = ' ';
-					$label = " <span class='label label-important label-danger'>Unused</span>";
+					$label = " <span class='label label-important label-danger'>".LAN_UNUSED."</span>";
 					$text .= "-";
 					$this->errors++; 
 				}
@@ -1496,7 +1497,7 @@ class lanDeveloper
 		{
 			$color = "font-style:italic";
 			$class = 'muted text-important ';
-			$label .= " <span class='label label-inverse'>Disabled</span>";
+			$label .= " <span class='label label-inverse'>".LAN_DISABLED."</span>";
 		}
 
 		if(empty($found) && $disabled === true)
@@ -1531,7 +1532,7 @@ class lanDeveloper
 
 		if($reverse == true)
 		{
-			$mes->addDebug("REVERSE MODE ");
+			$mes->addDebug(LANG_LAN_145); // Reverse Mode
 			$exclude = array("e_LANGUAGE","e_LANGUAGEDIR","e_LAN","e_LANLIST","e_LANCODE",  "LANGUAGES_DIRECTORY", "e_LANGUAGEDIR_ABS", "LAN");
 			$data = '';
 			foreach($script as $d)
@@ -1561,16 +1562,16 @@ class lanDeveloper
 			$tmp = is_array($lanfile) ? $lanfile : explode(",", $lanfile);
 			foreach($tmp as $scr)
 			{
-				$mes->addDebug("Script: ".$scr);
+				$mes->addDebug(LANG_LAN_146.": ".$scr);
 
 				if(!file_exists($scr))
 				{
-					$mes->addError("reverse Mode: ".LANG_LAN_121." ".$scr);
+					$mes->addError(LANG_LAN_146.": ".LANG_LAN_121." ".$scr);
 					continue;
 				}
 
 				$compare[$scr] = file_get_contents($scr);
-				$mes->addDebug("LanFile: ".$scr);
+				$mes->addDebug(LANG_LAN_147.": ".$scr);
 
 			}
 
@@ -1578,12 +1579,12 @@ class lanDeveloper
 		}
 		else
 		{
-			$mes->addDebug("NORMAL MODE ");
+			$mes->addDebug(LANG_LAN_148);//NORMAL MODE 
 			$lanDefines = '';
 			foreach($lanfile as $arr)
 			{
 				$lanDefines .= file_get_contents($arr);
-				$mes->addDebug("LanFile: ".$arr);
+				$mes->addDebug(LANG_LAN_147.": ".$arr);
 			}
 
 
@@ -1592,11 +1593,11 @@ class lanDeveloper
 			{
 				if(!file_exists($scr))
 				{
-					$mes->addError("Normal mode: ".LANG_LAN_121." ".$scr);
+					$mes->addError(LANG_LAN_148.": ".LANG_LAN_121." ".$scr);
 					continue;
 				}
 				$compare[$scr] = file_get_contents($scr);
-				$mes->addDebug("Script: ".$scr);
+				$mes->addDebug(LANG_LAN_146.": ".$scr);
 			}
 		}
 
@@ -1607,12 +1608,12 @@ class lanDeveloper
 
 		if(!$compare)
 		{
-			$mes->addError("Line ".__LINE__.": ".LANG_LAN_121." ".$script);
+			$mes->addError(LAN_LINE." ".__LINE__.": ".LANG_LAN_121." ".$script);
 		}
 
 		if(!$lanDefines)
 		{
-			$mes->addError("Line ".__LINE__.": ".LANG_LAN_121." ".$lanfile);
+			$mes->addError(LAN_LINE." ".__LINE__.": ".LANG_LAN_121." ".$lanfile);
 		}
 
 		$srch = array("<?php","<?","?>");
@@ -1642,7 +1643,7 @@ class lanDeveloper
 
 				if($reverse == false)
 				{
-					$text .= "<th>Value</th>";
+					$text .= "<th>".LANG_LAN_149."</th>";
 				}
 
 				foreach($compare as $k=>$val)
@@ -1695,11 +1696,11 @@ class lanDeveloper
 
 			if($reverse != true)
 			{
-				$mes->addInfo("<b>Search ENTIRE core before commenting out ANY LAN from ANY language file.</b>");
+				$mes->addInfo(LANG_LAN_150); //Search Everywhere before commenting out
 			}
 
 			$ret['text'] = $mes->render().$text;
-			$ret['caption'] = "Errors: ".intval($this->errors);
+			$ret['caption'] = LAN_ERRORS.": ".intval($this->errors);
 
 			return $ret;
 		}
