@@ -2400,6 +2400,12 @@ class e_parse extends e_parser
 
 			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.intval($options['h']);
 
+			if(is_string($options['crop']))
+			{
+				$thurl .= '&amp;c='.$options['crop'];
+				$options['nosef'] = true;
+			}
+
 		}
 		else
 		{
@@ -2409,7 +2415,7 @@ class e_parse extends e_parser
 		}
 
 
-		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']))// Experimental SEF URL support.
+		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']) )// Experimental SEF URL support.
 		{
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
@@ -2570,7 +2576,17 @@ class e_parse extends e_parser
 		}
 		elseif(!empty($options['crop']))
 		{
-			$sefUrl .= 'a'.intval($options['w']) .'xa'. intval($options['h']);
+
+			if(is_string($options['crop']))
+			{
+				$sefUrl .= strtolower($options['crop']).intval($options['w']) .'x'.strtolower($options['crop']). intval($options['h']);
+			}
+			else
+			{
+				$sefUrl .= 'a'.intval($options['w']) .'xa'. intval($options['h']);
+			}
+
+
 		}
 		else
 		{
