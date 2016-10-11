@@ -256,7 +256,13 @@ class e_thumbpage
 		$thumbnfo = pathinfo($this->_src_path);
 		$options = $this->getRequestOptions();
 
-		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
+		if($this->_debug === true)
+		{
+			var_dump($options);
+		//	return false;
+		}
+
+		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality. $options['c']);
 		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
 
@@ -317,7 +323,7 @@ class e_thumbpage
 		}
 
 		// Image Cropping by Quadrant.
-		if(!empty($this->_request['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
+		if(!empty($options['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
 		{
 			if(!empty($this->_request['ah']))
 			{
@@ -329,7 +335,9 @@ class e_thumbpage
 				$this->_request['w'] = $this->_request['aw'];
 			}
 
-			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0), $this->_request['c']);
+
+
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0), $options['c']);
 		}
 		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
@@ -393,6 +401,12 @@ class e_thumbpage
 		$ret['ah'] = isset($this->_request['ah']) ? intval($this->_request['ah']) : $ret['aw'];
 		$ret['c'] = isset($this->_request['c']) ? strtoupper(substr(filter_var($this->_request['c'],FILTER_SANITIZE_STRING),0,1)) : false;
 	//	$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
+
+		if($ret['c'] == 'A') // auto
+		{
+			$ret['c'] = 'T'; // default is 'Top';
+		}
+
 		return $ret;
 	}
 
