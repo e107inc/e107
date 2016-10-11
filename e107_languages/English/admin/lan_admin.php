@@ -225,8 +225,8 @@ define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
 define("LAN_ADD", "Add");
-define("LAN_SAVE","Save");
-define("LAN_SAVED","Saved");
+//define("LAN_SAVE","Save");//Moved to English.php for front end use eg usersettings sc
+//define("LAN_SAVED","Saved");//Moved to English.php for front end use eg usersettings
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
@@ -299,6 +299,7 @@ define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOADS","Uploads");
 define("LAN_UPLOAD_IMAGES","Upload Images");
 define("LAN_UPLOAD_FILES","Upload Files");
+define("LAN_PATHF","Path");
 define("LAN_UPLOAD_ADDFILE","Add Another File");
 define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Continue?");
 define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
@@ -370,9 +371,7 @@ define("LAN_MANAGER", "Manage Permissions");
 define("LAN_PING", "Ping");
 define("LAN_START", "Starting");
 define("LAN_END", "Ending");
-
 define("LAN_PREVIEW", "Preview");
-
 define("LAN_CREATE_CATEGORY", "Create Category");
 define("LAN_CREATE_ITEM",	"Create Item");
 

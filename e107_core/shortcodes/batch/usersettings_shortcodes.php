@@ -500,7 +500,7 @@ class usersettings_shortcodes extends e_shortcode
 	function sc_updatesettingsbutton($parm='')
 	{
 		
-		return "<input class='button btn btn-primary' type='submit' name='updatesettings' value='".LAN_USET_37."' />";	
+		return "<input class='button btn btn-primary' type='submit' name='updatesettings' value='".LAN_SAVE."' />"; 
 		
 	}
 
