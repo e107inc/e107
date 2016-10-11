@@ -27,7 +27,7 @@ define('e107_INIT', true);
 // error_reporting(E_ALL);
 
 
-error_reporting(0); // suppress all errors or image will be corrupted. 
+error_reporting(0); // suppress all errors or image will be corrupted.
 ini_set('gd.jpeg_ignore_warning', 1);
 //require_once './e107_handlers/benchmark.php';
 //$bench = new e_benchmark();
@@ -316,6 +316,21 @@ class e_thumbpage
 		     return $this;
 		}
 
+		// Image Cropping by Quadrant.
+		if(!empty($this->_request['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
+		{
+			if(!empty($this->_request['ah']))
+			{
+				$this->_request['h'] = $this->_request['ah'];
+			}
+
+			if(!empty($this->_request['aw']))
+			{
+				$this->_request['w'] = $this->_request['aw'];
+			}
+
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0), $this->_request['c']);
+		}
 		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
 			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
@@ -376,6 +391,7 @@ class e_thumbpage
 		$ret['h'] = isset($this->_request['h']) ? intval($this->_request['h']) : $ret['w'];
 		$ret['aw'] = isset($this->_request['aw']) ? intval($this->_request['aw']) : false;
 		$ret['ah'] = isset($this->_request['ah']) ? intval($this->_request['ah']) : $ret['aw'];
+		$ret['c'] = isset($this->_request['c']) ? strtoupper(substr(filter_var($this->_request['c'],FILTER_SANITIZE_STRING),0,1)) : false;
 	//	$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
 		return $ret;
 	}
