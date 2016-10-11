@@ -1019,14 +1019,14 @@ class lanDeveloper
 			{
 				if(strpos($scr,e_ADMIN)!==false) // CORE
 				{
-					$mes->addDebug(LANG_LAN_138);//Mode: Core Admin Calculated
+					$mes->addDebug("Mode: Core Admin Calculated");
 					//$scriptname = str_replace("lan_","",basename($lanfile));
 					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".basename($scr);
 					$this->adminFile = true;
 				}
 				else  // Root
 				{
-					$mes->addDebug(LANG_LAN_139);//Mode: Search Core Root lan calculated
+					$mes->addDebug("Mode: Search Core Root lan calculated");
 					$lanfile[$k] = e_LANGUAGEDIR.e_LANGUAGE."/lan_".basename($scr);
 					$lanfile[$k] = str_replace("lan_install", "lan_installer", $lanfile[$k]); //quick fix.,
 
@@ -1532,7 +1532,7 @@ class lanDeveloper
 
 		if($reverse == true)
 		{
-			$mes->addDebug(LANG_LAN_145); // Reverse Mode
+			$mes->addDebug("REVERSE MODE ");
 			$exclude = array("e_LANGUAGE","e_LANGUAGEDIR","e_LAN","e_LANLIST","e_LANCODE",  "LANGUAGES_DIRECTORY", "e_LANGUAGEDIR_ABS", "LAN");
 			$data = '';
 			foreach($script as $d)
@@ -1562,16 +1562,16 @@ class lanDeveloper
 			$tmp = is_array($lanfile) ? $lanfile : explode(",", $lanfile);
 			foreach($tmp as $scr)
 			{
-				$mes->addDebug(LANG_LAN_146.": ".$scr);
+				$mes->addDebug("Script : ".$scr);
 
 				if(!file_exists($scr))
 				{
-					$mes->addError(LANG_LAN_146.": ".LANG_LAN_121." ".$scr);
+					$mes->addError("Reverse Mode: ".LANG_LAN_121." ".$scr);
 					continue;
 				}
 
 				$compare[$scr] = file_get_contents($scr);
-				$mes->addDebug(LANG_LAN_147.": ".$scr);
+				$mes->addDebug("LanFile: ".$scr);
 
 			}
 
@@ -1579,12 +1579,12 @@ class lanDeveloper
 		}
 		else
 		{
-			$mes->addDebug(LANG_LAN_148);//NORMAL MODE 
+			$mes->addDebug("NORMAL MODE "); 
 			$lanDefines = '';
 			foreach($lanfile as $arr)
 			{
 				$lanDefines .= file_get_contents($arr);
-				$mes->addDebug(LANG_LAN_147.": ".$arr);
+				$mes->addDebug("LanFile: ".$arr);
 			}
 
 
@@ -1597,7 +1597,7 @@ class lanDeveloper
 					continue;
 				}
 				$compare[$scr] = file_get_contents($scr);
-				$mes->addDebug(LANG_LAN_146.": ".$scr);
+				$mes->addDebug("Script: ".$scr);
 			}
 		}
 

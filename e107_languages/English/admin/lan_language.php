@@ -56,17 +56,11 @@ define("LANG_LAN_134", "instead.");
 define("LANG_LAN_135", "Overwriting ");
 define("LANG_LAN_136", "Couldn't overwrite ");
 define("LANG_LAN_137", "Processed");
-define("LANG_LAN_138", "Mode: Core Admin Calculated");
-define("LANG_LAN_139", "Mode: Search Core Root lan calculated"); 
 define("LANG_LAN_140", "Hold down CTRL key to select multiple.[br]e.g. To check [b]lan_signup.php[/b] you'll want to also select [b]signup_shortcodes.php[/b] and [b]signup_template.php[/b].");
 define("LANG_LAN_141", "Select Script...");
 define("LANG_LAN_142", "Auto-Detect");
 define("LANG_LAN_143", "Specific LAN file:");
 define("LANG_LAN_144", "Must be re-enabled");
-define("LANG_LAN_145", "REVERSE MODE");
-define("LANG_LAN_146", "Script");
-define("LANG_LAN_147", "LanFile");
-define("LANG_LAN_148", "NORMAL MODE");
 define("LANG_LAN_149", "Value");
 define("LANG_LAN_150", "[b]Search ENTIRE core before commenting out ANY LAN from ANY language file.[/b]");
 ?>
