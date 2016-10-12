@@ -185,13 +185,15 @@ class e_db_mysql
 		$this->mySQLPrefix      = $mySQLPrefix;
 		$this->mySQLerror       = false;
 
-		if(strpos($mySQLserver,':')!==false)
-		{
-			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
-		}
 
 		if($this->pdo)
-		{		
+		{	
+		
+			if(strpos($mySQLserver,':')!==false)
+			{
+				list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
+			}
+	
 			try
 			{
 				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
