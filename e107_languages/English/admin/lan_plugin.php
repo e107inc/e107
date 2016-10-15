@@ -276,6 +276,13 @@ define ('TPVLAN_82', "Download Complete!");
 define ('EPL_ADLAN_235', "Automated download not possible.");
 define ('EPL_ADLAN_236', "Please Download Manually");
 define ('EPL_ADLAN_237', "Download");
+define ('EPL_ADLAN_238',"Installation Complete!");
+define ('EPL_ADLAN_239',"Adding Table:");
+define ('EPL_ADLAN_240',"Removing Table:");
+define ('EPL_ADLAN_241',"Adding Pref:"); 
+define ('EPL_ADLAN_242',"Removing Pref:");
+define ('EPL_ADLAN_243',"Updating Pref:");
+define ('EPL_ADLAN_244',"Only 3 Media Categories are permitted during install. One for images and one for files.");  
 
 define ('LAN_RELEASED', "Released");
 define ('LAN_REPAIR_PLUGIN_SETTINGS', "Repair plugin settings");
