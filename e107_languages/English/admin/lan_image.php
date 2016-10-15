@@ -208,5 +208,7 @@ define('IMALAN_170', "Choose this avatar");
 define('IMALAN_171', "Admin-Only Notice: The folder");
 define('IMALAN_172', "is empty. Upload some default avatars images to this folder for users to choose avatars from.");
 define('IMALAN_173', "No media owner found.");
-
+define('IMALAN_174', "Youtube search requires a (free) YouTube v3 api key.<br />This key is not required unless you wish to perform a keyword, playlist or channel search.<br />Entering a Youtube video URL directly into the box above will still work without having an api key. <br /><a style='color:black' target='_blank' href='".e_ADMIN."image.php?mode=main&action=prefs#/tab2'>Click here for more information and to enter your api key</a>");
+define('IMALAN_175', "Search Youtube. Paste any YouTube URL here for a specific video/playlist/channel");
+define('IMALAN_176', "There was a problem grabbing the file");
 ?>
