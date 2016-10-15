@@ -2510,7 +2510,7 @@ class e107plugin
 					$ret = $config->add($key, $value);
 					if($ret->data_has_changed == TRUE)
 					{
-						$mes->addSuccess(EPL_ADLAN_241." ".$key);	
+						$mes->addSuccess(EPL_ADLAN_241, $key);	
 					}								
 					break;
 
@@ -2520,19 +2520,19 @@ class e107plugin
 
 					{
 						$config->remove($key, $value);
-						$mes->addSuccess(EPL_ADLAN_242." ".$key);
+						$mes->addSuccess(EPL_ADLAN_242, $key);
 					}
 					else
 					{
 						$config->update($key, $value);
-						$mes->addSuccess(EPL_ADLAN_243." ".$key);
+						$mes->addSuccess(EPL_ADLAN_243, $key);
 					}
 
 					break;
 
 				case 'uninstall':
 					$config->remove($key, $value);
-					$mes->addSuccess(EPL_ADLAN_242." ".$key);
+					$mes->addSuccess(EPL_ADLAN_242, $key);
 					break;
 			}
 		}
