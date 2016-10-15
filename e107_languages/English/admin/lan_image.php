@@ -198,7 +198,7 @@ define('IMALAN_160', "Margin-Top");
 define('IMALAN_161', "Margin-Bottom");
 define('IMALAN_162', "Displaying [x] - [y] of [z] images.");
 define('IMALAN_163', "Video"); 
-define('IMALAN_164', ""); // Unused
+define('IMALAN_164', "Deleted Icons from Media-Manager");
 define('IMALAN_165', "No images");
 define('IMALAN_166', "Upload images or files");
 define('IMALAN_167', "Choose file");
