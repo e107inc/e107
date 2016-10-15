@@ -688,7 +688,7 @@ class media_admin_ui extends e_admin_ui
 	//	protected $defaultOrder = 'desc';
 		protected $listOrder = 'm.media_id desc'; // show newest images first. 
 		public $deleteConfirmScreen = true;
-		public $deleteConfirmMessage = 'You are about to delete [x] records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!';
+		public $deleteConfirmMessage = IMALAN_129;
 
 
     	protected $preftabs			= array('General',"Watermark", "Youtube"); 
@@ -760,7 +760,7 @@ class media_admin_ui extends e_admin_ui
 		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>"")),
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>" <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>")),
 
 		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
 
@@ -842,8 +842,6 @@ class media_admin_ui extends e_admin_ui
 
 	function init()
 	{
-		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>";
-
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			$this->fields['media_url']['inline'] = true;
@@ -1554,11 +1552,7 @@ class media_admin_ui extends e_admin_ui
 			}
 			else // empty key.
 			{
-				$items = "<div class='alert alert-info'><p>Youtube search requires a (free) YouTube v3 api key.<br />
-				This key is not required unless you wish to perform a keyword, playlist or channel search.<br />
-				Entering a Youtube video URL directly into the box above will still work without having an api key. <br />
-				<a style='color:black' target='_blank' href='".e_ADMIN."image.php?mode=main&action=prefs#/tab2'>Click here for more information and to enter your api key</a>.
-				</p>
+				$items = "<div class='alert alert-info'><p>".IMALAN_174."</p>
 				</div>";
 			}
 
@@ -1589,7 +1583,7 @@ class media_admin_ui extends e_admin_ui
 		}
 	//	return print_a($data,true);
 
-		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube. Paste any YouTube URL here for a specific video/playlist/channel' );
+		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>IMALAN_175 );
 		$text = e107::getMedia()->browserCarousel($items, $parms);
 		
 		if(E107_DEBUG_LEVEL > 0 && !empty($feed))
@@ -1645,7 +1639,7 @@ class media_admin_ui extends e_admin_ui
 
 			if(!$fl->getRemoteFile($_POST['upload_url'], $fileName, 'import'))
 			{
-				$mes->addError("There was a problem grabbing the file");
+				$mes->addError(IMALAN_176);
 			}
 			elseif($import == true)
  			{
