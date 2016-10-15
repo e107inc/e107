@@ -760,8 +760,7 @@ class media_admin_ui extends e_admin_ui
 		'watermark_opacity'				=> array('title'=> IMALAN_96, 'tab'=>1, 'type' => 'number', 'data' => 'int', 'help'=>IMALAN_97), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 
 		// https://developers.google.com/youtube/player_parameters
-		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>" <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>")),
-
+		'youtube_apikey'		        => array('title'=> "YouTube Public API key", 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99, 'writeParms'=>array('post'=>"")),              
 		'youtube_default_account'		=> array('title'=> IMALAN_98, 'tab'=>2, 'type' => 'text', 'data'=>'str', 'help'=>IMALAN_99),
 
 		'youtube_rel'					=> array('title'=> IMALAN_100, 'tab'=>2, 'type' => 'boolean', 'data'=>'int', 'help'=>''),
@@ -842,6 +841,8 @@ class media_admin_ui extends e_admin_ui
 
 	function init()
 	{
+		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>";
+		
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			$this->fields['media_url']['inline'] = true;
