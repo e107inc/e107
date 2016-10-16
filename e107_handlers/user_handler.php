@@ -731,7 +731,7 @@ class UserHandler
 		}
 		else
 		{
-			if ($userData['user_class'] != '') $classList = explode(',',$userData['user_class']);
+			if (!empty($userData['user_class'])) $classList = explode(',',$userData['user_class']);
 		}
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
