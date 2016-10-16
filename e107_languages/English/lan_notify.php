@@ -27,6 +27,11 @@ define("NT_LAN_FL_1", "Flood Ban");
 define("NT_LAN_FL_2", "IP address banned for flooding");
 
 define("NT_LAN_SN_1", "News Item Submitted");
+define("NT_LAN_SN_2", "by:");
+
+define("NT_LAN_VIEW_NOW", "View now");
+define("NT_LAN_NOTIFY_DISABLED", "Notify is disabled!");
+define("NT_LAN_NO_RECIPIENTS", "No recipients!");
 
 define("NT_LAN_ML_1", "Bulk email send complete");
 
