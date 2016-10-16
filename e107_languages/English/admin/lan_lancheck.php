@@ -25,7 +25,7 @@ define("LAN_CHECK_26", "Front");
 define("LAN_CHECK_PAGE_TITLE", "Languages");
 define("LAN_CHECK_27", "Number of language-pack errors found");
 define("LAN_CHECK_28", "Identical");
-define("LAN_CHECK_29", "Missing");
+//define("LAN_CHECK_29", "Missing");
 
 define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_30", "Release Date");
