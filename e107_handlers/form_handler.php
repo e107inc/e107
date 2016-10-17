@@ -4948,8 +4948,9 @@ class e_form
 			//	return print_a($value, true);
 				$ret = "";
 				$label = varset($parms['label'], 'LAN_EDIT');
+				$max = varset($parms['max'],5);
 
-				for ($i=0; $i < 5; $i++) 
+				for ($i=0; $i < $max; $i++)
 				{				
 					$k 		= $key.'['.$i.'][path]';
 					$ival 	= $value[$i]['path'];
