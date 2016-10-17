@@ -726,8 +726,8 @@ class e107_user_extended
 		
 		$parms 		= explode("^,^",$struct['user_extended_struct_parms']);
 		$include 	= preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
-		$regex 		= $tp->toText($parms[1]);
-		$regexfail 	= $tp->toText($parms[2]);
+		$regex 		= $tp->toText(varset($parms[1]));
+		$regexfail 	= $tp->toText(varset($parms[2]));
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
 		$required	= vartrue($struct['user_extended_struct_required']) == 1 ? "required"  : "";
 		$fid		= $frm->name2id($fname);
