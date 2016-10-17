@@ -2336,7 +2336,7 @@ class e_parse extends e_parser
 
 	/**
 	 * Generate an auto-sized Image URL.
-	 * @param $url - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg 
+	 * @param $url - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg
 	 * @param array $options - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
 	 * @param int $options ['w'] width (optional)
 	 * @param int $options ['h'] height (optional)
@@ -2385,7 +2385,7 @@ class e_parse extends e_parser
 
 	//	e107::getDebug()->log("Thumb: ".basename($url). print_a($options,true), E107_DBG_BASIC);
 
-		if(!empty($options))
+		if(!empty($options) && (isset($options['w']) || isset($options['aw']) || isset($options['h'])))
 		{
 			$options['w']       = varset($options['w']);
 			$options['h']       = varset($options['h']);
