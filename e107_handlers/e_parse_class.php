@@ -2332,15 +2332,21 @@ class e_parse extends e_parser
 		return $this->thumbHeight;	
 		
 	}
-	
-	
-	
+
+
 	/**
-	 * Generate an auto-sized Image URL. 
-	 * @param $url - path to image or leave blank for a placeholder. 
-	 * @param $options  - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
-	 * @param $raw ??
-	 * @param $full
+	 * Generate an auto-sized Image URL.
+	 * @param $url - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg 
+	 * @param array $options - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
+	 * @param int $options ['w'] width (optional)
+	 * @param int $options ['h'] height (optional)
+	 * @param bool|string $options ['crop'] true/false or A(auto) or T(op) or B(ottom) or C(enter) or L(eft) or R(right)
+	 * @param string $options ['scale'] '2x' (optional)
+	 * @param bool $options ['x'] encode/mask the url parms (optional)
+	 * @param bool $options ['nosef'] when set to true disabled SEF Url being returned (optional)
+	 * @param bool $raw set to true when the $url does not being with an e107 variable ie. "{e_XXXX}" eg. {e_MEDIA} (optional)
+	 * @param bool $full when true returns full http:// url. (optional)
+	 * @return string
 	 */
 	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
@@ -2355,6 +2361,16 @@ class e_parse extends e_parser
 		{
 			parse_str($options, $options);
 		}
+
+		if(!empty($options['scale'])) // eg. scale the width height 2x 3x 4x. etc.
+		{
+			$options['return'] = 'src';
+			$options['size'] = $options['scale'];
+			unset($options['scale']);
+			return $this->thumbSrcSet($url,$options);
+		}
+
+
 		
 		if(strstr($url,e_MEDIA) || strstr($url,e_SYSTEM)) // prevent disclosure of 'hashed' path. 
 		{
@@ -2517,11 +2533,23 @@ class e_parse extends e_parser
 
 		// $parms['x'] = $encode;
 
+		if(!empty($parm['return']) && $parm['return'] == 'src')
+		{
+			return $this->thumbUrl($src, $parms);
+		}
+
 		return $this->thumbUrl($src, $parms)." ".$width."w";
 
 
 	}
 
+
+	public function thumbUrlScale($src,$parm)
+	{
+
+
+
+	}
 
 	/**
 	 * Used by thumbUrl when SEF Image URLS is active. @see e107.htaccess
