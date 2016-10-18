@@ -2602,13 +2602,13 @@ class pluginBuilder
 
 			foreach($list as $addon)
 			{
-
+				$addonDest = str_replace("_blank",$this->pluginName,$addon);
 				$source         = e_PLUGIN."_blank/".$addon.".php";
-				$destination    = e_PLUGIN.$this->pluginName. "/".$addon.".php";
+				$destination    = e_PLUGIN.$this->pluginName. "/".$addonDest.".php";
 
 				if(file_exists($destination))
 				{
-					$result[] = "Skipped (already exists) : ".$addon;
+					$result[] = "Skipped (already exists) : ".$addonDest;
 					continue;
 				}
 
@@ -2620,12 +2620,12 @@ class pluginBuilder
 					{
 						if(file_put_contents($destination,$content))
 						{
-							$result[] = LAN_CREATED." : ".$addon;
+							$result[] = LAN_CREATED." : ".$addonDest;
 						}
 					}
 					else
 					{
-						$result[] = "Skipped (already exists) : ".$addon;
+						$result[] = "Skipped (already exists) : ".$addonDest;
 					}
 				}
 				else
@@ -2649,11 +2649,23 @@ class pluginBuilder
 			$frm = e107::getForm();
 			$text = "<table class='table table-striped adminlist' >";
 
-			$setupDiz = "Create default table data during install, upgrade, uninstall etc";
 
-			array_unshift($list,$this->pluginName.'_setup');
+		//Todo LANS
+			$dizOther = array(
+				'_blank' => "Simple frontend script",
+				'_blank_setup' => "Create default table data during install, upgrade, uninstall etc",
+				'_blank_menu' => "Menu item for use in the menu manager."
+			);
+
+			array_unshift($list,'_blank', '_blank_setup', '_blank_menu');
 
 			$templateFiles = scandir(e_PLUGIN."_blank");
+
+
+
+	//print_a($list);
+		//	$list[] = "_blank";
+		//	$list[] = "_blank_setup";
 
 			foreach($list as $v)
 			{
@@ -2663,12 +2675,13 @@ class pluginBuilder
 					continue;
 				}
 
-
-				$diz = ($v == $this->pluginName.'_setup') ? $setupDiz : $plg->getAddonsDiz($v);
+				$diz = !empty($dizOther[$v]) ? $dizOther[$v] : $plg->getAddonsDiz($v);
+				$label = str_replace("_blank", $this->pluginName, $v);
+				$id = str_replace('_blank', 'blank', $v);
 
 				$text .= "<tr>";
-				$text .= "<td>".$frm->checkbox('addons[]',$v,false, $v)."</td>";
-				$text .= "<td><label for='".$frm->name2id('addons-'.$v)."'>".$diz."</label></td>";
+				$text .= "<td>".$frm->checkbox('addons[]',$v,false,$label)."</td>";
+				$text .= "<td><label for='".$frm->name2id('addons-'.$id)."'>".$diz."</label></td>";
 				$text .= "</tr>";
 			}
 
@@ -2915,7 +2928,7 @@ class pluginBuilder
 					$required 	= true;
 					$size 		= 130;
 					$placeholder= " ";
-					$pattern	= "[A-Za-z \.0-9]*";
+					$pattern	= "[A-Za-z -\.0-9]*";
 					$xsize		= 'block-level';
 				break;	
 
@@ -2940,7 +2953,7 @@ class pluginBuilder
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
-					$pattern	= "[A-Za-z \.0-9]*";
+					$pattern	= "[A-Za-z -\.0-9]*";
 					$xsize		= 'block-level';
 				break;
 				
