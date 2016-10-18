@@ -1847,12 +1847,12 @@ class lancheck
 			$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
 			$hglt1=""; $hglt2="";
 			if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
-				$hglt1="<span class='label label-danger label-important e-tip' title=".LAN_MISSING.">";//Missing
+				$hglt1="<span class='label label-danger label-important e-tip' title='".LAN_MISSING."'>";//Missing
 				$hglt2="</span>";
 			}
 			elseif($trans['tran'][$sk] == $trans['orig'][$sk])
 			{
-				$hglt1="<span class='label label-warning e-tip' title=".LAN_CHECK_28." >";//Identical
+				$hglt1="<span class='label label-warning e-tip' title='".LAN_CHECK_28."'>";//Identical
 				$hglt2="</span>";
 			}
 			$text .="<tr>
