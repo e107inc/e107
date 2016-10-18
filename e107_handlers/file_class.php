@@ -788,7 +788,7 @@ class e_file
 	 *
 	 * @return string formatted size
 	 */
-	function file_size_encode($size, $retrieve = false)
+	function file_size_encode($size, $retrieve = false, $decimal =2)
 	{
 		if($retrieve)
 		{
@@ -808,15 +808,15 @@ class e_file
 		}
 		else if($size < $mb)
 		{
-			return round($size/$kb, 2)."&nbsp;".CORE_LAN_KB;
+			return round($size/$kb, $decimal)."&nbsp;".CORE_LAN_KB;
 		}
 		else if($size < $gb)
 		{
-			return round($size/$mb, 2)."&nbsp;".CORE_LAN_MB;
+			return round($size/$mb, $decimal)."&nbsp;".CORE_LAN_MB;
 		}
 		else if($size < $tb)
 		{
-			return round($size/$gb, 2)."&nbsp;".CORE_LAN_GB;
+			return round($size/$gb, $decimal)."&nbsp;".CORE_LAN_GB;
 		}
 		else
 		{

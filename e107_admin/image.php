@@ -175,18 +175,20 @@ class media_cat_ui extends e_admin_ui
          	'media_cat_type' 		=> array('title'=> LAN_TYPE,		'type' => 'radio',			'data'=>false,		'width' => 'auto', 'thclass' => 'left', 'validate' => true, 'nolist'=>true),
          	
 			'media_cat_category' 	=> array('title'=> LAN_CATEGORY,	'type' => 'text',			'data'=>'str',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>TRUE),		
-			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true),
-         	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),        
+			'media_cat_title' 		=> array('title'=> LAN_TITLE,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'validate' => true,'writeParms'=>array('size'=>'xxlarge')),
+         	'media_cat_sef' 		=> array('title'=> LAN_SEFURL,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'writeParms'=>array('size'=>'xxlarge','sef'=>'media_cat_title')),
          	'media_cat_diz' 		=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=150&bb=1','readonly'=>FALSE), // Display name
 			'media_cat_class' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'width' => 'auto', 'data' => 'int'),
 			'media_cat_order' 		=> array('title'=> LAN_ORDER,		'type' => 'text',			'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),										
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'noedit'=>true, 'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 		);
 
+	private $restricted = array();
+
 	function init()
 	{
 	
-		$restricted = array(
+		$this->restricted = array(
 			"_common" 	=> "_common",
 			"_icon"		=> "_icon",
 			"news"		=> "news",	
@@ -199,7 +201,7 @@ class media_cat_ui extends e_admin_ui
 		
 		if($this->getAction() == 'list')
 		{	
-			$this->fields['media_cat_owner']['writeParms'] = $restricted;
+			$this->fields['media_cat_owner']['writeParms'] = $this->restricted;
 		}
 		
 		if($this->getAction() == 'create')
@@ -220,7 +222,7 @@ class media_cat_ui extends e_admin_ui
 			{
 				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
 				$own = $row['media_cat_owner']; 
-				if(!in_array($own,$restricted))
+				if(!in_array($own,$this->restricted))
 				{		
 					$this->fields['media_cat_owner']['writeParms'][$own] = $own;	
 					
@@ -276,7 +278,7 @@ class media_cat_ui extends e_admin_ui
 	{
 		$mes = e107::getMessage();
 	
-		if($new_data['media_cat_owner']	!= "gallery")
+		if(in_array($new_data['media_cat_owner'], $this->restricted))
 		{
 			$mes->addError(LAN_IMA_001);
 			return FALSE;
@@ -702,10 +704,10 @@ class media_admin_ui extends e_admin_ui
 			
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
-			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto'),
-			'media_caption' 		=> array('title'=> LAN_CAPTION,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto'),
+			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
+			'media_caption' 		=> array('title'=> LAN_CAPTION,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
-         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'counter=0'),
+         	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'size=xxlarge&counter=0'),
          	'media_type' 			=> array('title'=> IMALAN_118,		'type' => 'dropdown',		'data'=> 'str',		'filter'=>true, 'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
 			'media_datestamp' 		=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',	'data'=> 'int',		'width' => '10%', 'noedit'=>TRUE),	// User date
@@ -858,6 +860,7 @@ class media_admin_ui extends e_admin_ui
 			$owner = $row['media_cat_owner'];
 			$this->owner[$owner] = $owner;
 			$this->ownercats[$owner.'|'.$cat] = $row['media_cat_title'];
+		//	$ownerLabel = (substr($owner,0,1) == '_') ? '' : $owner.": ";
 			$this->cats[$cat] = $row['media_cat_title'];
 		}
 		asort($this->cats);
