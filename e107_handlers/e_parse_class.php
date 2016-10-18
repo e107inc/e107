@@ -2416,7 +2416,7 @@ class e_parse extends e_parser
 
 			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.intval($options['h']);
 
-			if(is_string($options['crop']))
+			if(!is_numeric($options['crop']))
 			{
 				$thurl .= '&amp;c='.$options['crop'];
 				$options['nosef'] = true;
@@ -2605,7 +2605,7 @@ class e_parse extends e_parser
 		elseif(!empty($options['crop']))
 		{
 
-			if(is_string($options['crop']))
+			if(!is_numeric($options['crop']))
 			{
 				$sefUrl .= strtolower($options['crop']).intval($options['w']) .'x'.strtolower($options['crop']). intval($options['h']);
 			}
