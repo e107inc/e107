@@ -80,12 +80,15 @@ $(document).ready(function()
 
     $(document).on("click", ".e-comment-submit", function(){
 			
+			var commentsParent = $(this).parent().parent().parent().parent().parent().parent().parent();
 			var url		= $(this).attr("data-target");
 			var sort	= $(this).attr("data-sort");
 			var pid 	= parseInt($(this).attr("data-pid"));
-			var formid 	= (pid != '0') ? "#e-comment-form-reply" : "#e-comment-form";
-			var data 	= $('form'+formid).serialize() ;
-			var total 	= parseInt($("#e-comment-total").text());		
+			var formid 	= (pid != '0') ? ".e-comment-form-reply" : ".e-comment-form";
+			var data 	= $(commentsParent).find('form'+formid).serialize();
+			var total 	= parseInt($(commentsParent).find(".e-comment-total").text());
+			var commentsContainer = $(commentsParent).find(".comments-container");
+			
 				
 			$.ajax({
 			  type: 'POST',
@@ -99,7 +102,7 @@ $(document).ready(function()
 	
 				$("#comment").val('');
 				
-				if($('#comments-container').length){
+				if($(commentsContainer).length){
 				//	alert('true');
 				}else{
 			//		$("#e-comment-form").parent().prepend("<div id='comments-container'></div>");
@@ -111,17 +114,17 @@ $(document).ready(function()
 				}
 				else if(sort == 'desc')
 				{
-					$('#comments-container').prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
+					$(commentsContainer).prepend(a.html).hide().slideDown(800);	// FIXME - works in jquery 1.7, not 1.8
 				}
 				else
 				{
-					$('#comments-container').append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
+					$(commentsContainer).append(a.html).hide().slideDown(800); // FIXME - works in jquery 1.7, not 1.8
 					alert('Thank you for commenting'); // possibly needed as the submission may go unoticed	by the user
 				}  
 				
 				if(!a.error)
 				{
-					$("#e-comment-total").text(total + 1);
+					$(commentsParent).find(".e-comment-total").text(total + 1);
 					if(pid != '0')
 					{
 						$(formid).hide();		
@@ -152,7 +155,7 @@ $(document).ready(function()
 			var sp 		= $(this).attr('id').split("-");
 			var id 		= "#comment-" + sp[3];
 
-			var present = $('#e-comment-form-reply'); 
+			//var present = $('#e-comment-form-reply');  // NES: Not beign used?
 		//	console.log(present);
 			
 
@@ -270,10 +273,11 @@ $(document).ready(function()
 
     $(document).on("click", ".e-comment-delete", function(){
 			
+			var commentsParent = $(this).parent().parent().parent().parent().parent().parent().parent();
 			var url 	= $(this).attr("data-target");
 			var sp 		= $(this).attr('id').split("-");	
 			var id 		= "#comment-" + sp[3];
-			var total 	= parseInt($("#e-comment-total").text());
+			var total 	= parseInt($(commentsParent).find(".e-comment-total").text());
 	
 			$.ajax({
 			  type: 'POST',
@@ -285,7 +289,7 @@ $(document).ready(function()
 				if(!a.error)
 				{
 					$(id).hide('slow');
-					$("#e-comment-total").text(total - 1);	
+					$(commentsParent).find(".e-comment-total").text(total + 1);
 				}
 
 			  }
