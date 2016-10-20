@@ -5996,7 +5996,7 @@ class e_form
 									<li class="dropdown-header nav-header">After submit:</li>
 							';
 							
-							foreach($defsubmitopt as $k=>$v)
+							foreach($submitopt as $k=>$v)
 							{
 								$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
 							}
