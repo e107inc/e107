@@ -2513,6 +2513,16 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $_alias_parsed = false;
 
+	/**
+	 * @var bool
+	 */
+	protected $afterSubmitOptions = true;
+
+	public function getAfterSubmitOptions()
+	{
+		return $this->afterSubmitOptions;
+	}
+
 	public function getBatchDelete()
 	{
 		return $this->batchDelete;
@@ -5789,7 +5799,7 @@ class e_admin_form_ui extends e_form
 						'fields' => $controller->getFields(), //see e_admin_ui::$fields
 						'header' => $form_start, //XXX Unused?
 						'footer' => $form_end,  //XXX Unused?
-						'after_submit_options' => true, // or true for default redirect options
+						'after_submit_options' => $controller->getAfterSubmitOptions(), // or true for default redirect options
 						'after_submit_default' => $request->getPosted('__after_submit_action', $controller->getDefaultAction()), // or true for default redirect options
 						'triggers' => 'auto', // standard create/update-cancel triggers
 					)
