@@ -17,12 +17,15 @@ define("LAN_CHECK_18", "Language files in the standard format are NOT available 
 define("LAN_CHECK_19", "Non-UTF-8 characters found!");
 define("LAN_CHECK_20", "Generate Language Pack");
 define("LAN_CHECK_21", "Verify Again");
-define("LAN_CHECK_22", "Theme");
+//define("LAN_CHECK_22", "Theme");//LAN_THEME
 define("LAN_CHECK_23", "Errors Found");
-define("LAN_CHECK_24", "Summary");
-define("LAN_CHECK_25", "Themes");
+//define("LAN_CHECK_24", "Summary");//LAN_SUMMARY
+//define("LAN_CHECK_25", "Themes");//LAN_THEMES
+define("LAN_CHECK_26", "Front");
 define("LAN_CHECK_PAGE_TITLE", "Languages");
 define("LAN_CHECK_27", "Number of language-pack errors found");
+define("LAN_CHECK_28", "Identical");
+//define("LAN_CHECK_29", "Missing");
 
 define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_30", "Release Date");
