@@ -307,10 +307,10 @@ class submitNews
   submitnews_media text NOT NULL,
 			*/
 			$fields = array();
-			$fields['submitnews_keywords']      = array('title'=>"Keywords", 'type'=>'tags');
-			$fields['submitnews_summary']       = array('title'=>'Summary', 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
-			$fields['submitnews_description']   = array('title'=>'Meta Description', 'type'=>'textarea','writeParms'=>array('placeholder'=>'Used by Facebook etc.'));
-			$fields['submitnews_media']         = array('title'=>'Media URLs', 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
+			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
+			$fields['submitnews_summary']       = array('title'=>SUBNEWSLAN_10, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
+			$fields['submitnews_description']   = array('title'=>SUBNEWSLAN_11, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
+			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
 
 
 			foreach($fields as $key=>$fld)

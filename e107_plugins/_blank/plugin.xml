@@ -26,5 +26,8 @@
 	<extendedFields>
 		<field name="custom" type='EUF_TEXTAREA' default='0' active="true" />
 		<field name="custom2" type='EUF_ADDON' data="str" default='0' active="true" system="false" text="My Label" />
-	</extendedFields>		
+	</extendedFields>
+	<mediaCategories>
+		<category type="image">Blank Images</category>
+	</mediaCategories>
 </e107Plugin>

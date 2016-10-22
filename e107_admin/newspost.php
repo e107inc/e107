@@ -184,10 +184,11 @@ class news_cat_ui extends e_admin_ui
 		
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
-			if(empty($new_data['category_sef']))
+			if(isset($new_data['category_sef']) && empty($new_data['category_sef']))
 			{
 				$new_data['category_sef'] = eHelper::title2sef($new_data['category_name']);
 			}
+
 			$sef = e107::getParser()->toDB($new_data['category_sef']);
 			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id!=".intval($id)))
 			{

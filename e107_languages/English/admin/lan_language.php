@@ -10,7 +10,7 @@ define("LANG_LAN_00", "[x] could not be created (already exists).");
 define("LANG_LAN_01", "[x] was deleted (if existing) and created."); 
 define("LANG_LAN_02", "[x] couldn't be deleted."); 
 define("LANG_LAN_03", "Tables");
-
+define("LANG_LAN_04", "Deprecated LANs");
 define("LANG_LAN_05", "Not Installed");
 define("LANG_LAN_06", "Create tables");
 define("LANG_LAN_07", "Drop existing tables?");
@@ -31,6 +31,7 @@ define("LANG_LAN_21", "Language-Packs");
 define("LANG_LAN_25", "Language-Pack Creation Status");
 define("LANG_LAN_26", "Load language files only for current language");
 define("LANG_LAN_27", "If checked, and a required language cannot be found, there will be an error");
+define("LANG_LAN_28", "Check this box if you're an [e107 certified translator].");
 define("LANG_LAN_EML", "Please email your language pack to:");
 define("LANG_LAN_32", "Installed Languages");
 define("LANG_LAN_33", "Display only errors during verification");
@@ -52,5 +53,14 @@ define("LANG_LAN_131", "Missing from language file");
 define("LANG_LAN_132", "is a common phrase.");
 define("LANG_LAN_133", "Use");
 define("LANG_LAN_134", "instead.");
-
+define("LANG_LAN_135", "Overwriting ");
+define("LANG_LAN_136", "Couldn't overwrite ");
+define("LANG_LAN_137", "Processed");
+define("LANG_LAN_140", "Hold down CTRL key to select multiple.[br]e.g. To check [b]lan_signup.php[/b] you'll want to also select [b]signup_shortcodes.php[/b] and [b]signup_template.php[/b].");
+define("LANG_LAN_141", "Select Script...");
+define("LANG_LAN_142", "Auto-Detect");
+define("LANG_LAN_143", "Specific LAN file:");
+define("LANG_LAN_144", "Must be re-enabled");
+define("LANG_LAN_149", "Value");
+define("LANG_LAN_150", "[b]Search ENTIRE core before commenting out ANY LAN from ANY language file.[/b]");
 ?>

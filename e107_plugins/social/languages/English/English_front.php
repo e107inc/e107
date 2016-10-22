@@ -12,6 +12,7 @@ define("LAN_SOCIAL_001", "Like on [x]");
 define("LAN_SOCIAL_002", "Email to someone");
 define("LAN_SOCIAL_003", "+1 on Google");
 define("LAN_SOCIAL_004", "Add to [x]");
+define("LAN_SOCIAL_005", "Check out this link:");
 
 
 //LAN_SOCIAL_100 to LAN_SOCIAL_199 // Facebook specific
