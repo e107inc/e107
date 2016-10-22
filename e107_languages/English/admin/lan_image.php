@@ -112,7 +112,7 @@ define('IMALAN_74', "Set this as low as possible before quality loss is apparent
 define('IMALAN_75', "Avatar Width");
 define('IMALAN_76', "Avatar images will be constrained to these dimensions (in pixels)");
 define('IMALAN_77', "Avatar Height");
-define('IMALAN_78', ""); // Unused
+define('IMALAN_78', "General"); 
 define('IMALAN_79', "Resize-Image Dimensions");
 define('IMALAN_80', "Watermark Activation");
 define('IMALAN_81', "All images with a width or height greater than this value will be given a watermark during resizing.");
@@ -123,7 +123,7 @@ define('IMALAN_85', "Optional Watermark Font. Upload more .ttf fonts to the /fon
 define('IMALAN_86', "Watermark Size");
 define('IMALAN_87', "Size of the font in pts");
 define('IMALAN_88', "Watermark Position");
-define('IMALAN_89', ""); // Unused
+define('IMALAN_89', "Watermark"); 
 define('IMALAN_90', "Watermark Margin");
 define('IMALAN_91', "The distance that watermark will appear from the edge of the image.");
 define('IMALAN_92', "Watermark Color");
@@ -144,7 +144,7 @@ define('IMALAN_106', "Leave empty to disable");
 define('IMALAN_107', "Couldn't generated path from upload data");
 define('IMALAN_108', "Couldn't move file from [x] to [y]");
 define('IMALAN_109', "Couldn't get path");
-define('IMALAN_110', ""); // Unused
+define('IMALAN_110', "Path"); 
 define('IMALAN_111', "Couldn't detect mime-type([x]). Upload failed.");
 define('IMALAN_112', "Couldn't create folder ([x]).");
 define('IMALAN_113', "Scanning for new media (images, videos, files) in folder:");
@@ -163,5 +163,50 @@ define('IMALAN_125', "Delete Selected Files");
 define('IMALAN_126', "Please check at least one file.");
 define('IMALAN_127', "Couldn't get file info from:");
 define('IMALAN_128', "Importing Media:");
+define('IMALAN_129', "You are about to delete [x] records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!");
+define('IMALAN_130', "Previous page");
+define('IMALAN_131', "Next page");
+define('IMALAN_132', "Tags/Keywords");
+define('IMALAN_133', "Bottom Right");
+define('IMALAN_134', "Bottom Left");
+define('IMALAN_135', "Top Right");
+define('IMALAN_136', "Top Left");
+define('IMALAN_137', "Center");
+define('IMALAN_138', "Right");
+define('IMALAN_139', "Left");
+define('IMALAN_140', "Top");
+define('IMALAN_141', "Bottom");
+define('IMALAN_142', "Tile");
+define('IMALAN_143', "Image");
+define('IMALAN_144', "File");
+define('IMALAN_145', "<h4>From your computer</h4>");
+define('IMALAN_146', "No HTML5 support.");
+define('IMALAN_147', "<h4>From a remote location</h4>");
+define('IMALAN_148', "Image/File URL");
+define('IMALAN_149', "Start Upload");
+define('IMALAN_150', "Upload a File");
+define('IMALAN_151', "Choose from Library");
+define('IMALAN_152', "Appearance");
+define('IMALAN_153', "Image in use");
+define('IMALAN_154', "Not in use");
+define('IMALAN_155', "Avatar Pre-selection Folder");
+define('IMALAN_156', "Delete all unused images");
+define('IMALAN_157', "Text flow");
+define('IMALAN_158', "Margin-Left");
+define('IMALAN_159', "Margin-Right");
+define('IMALAN_160', "Margin-Top");
+define('IMALAN_161', "Margin-Bottom");
+define('IMALAN_162', "Displaying [x] - [y] of [z] images.");
+define('IMALAN_163', "Video"); 
+define('IMALAN_164', ""); // Unused
+define('IMALAN_165', "No images");
+define('IMALAN_166', "Upload images or files");
+define('IMALAN_167', "Choose file");
+define('IMALAN_168', "Click on the avatar to change it");
+define('IMALAN_169', "No Avatars Available");
+define('IMALAN_170', "Choose this avatar");
+define('IMALAN_171', "Admin-Only Notice: The folder");
+define('IMALAN_172', "is empty. Upload some default avatars images to this folder for users to choose avatars from.");
+define('IMALAN_173', "No media owner found.");
 
 ?>

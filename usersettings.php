@@ -178,7 +178,7 @@ if (isset($_POST['updatesettings']))
 	}
 
 	// Uploaded avatar and/or photo
-	if ($file_userfile['error'] != 4)
+	if (varset($file_userfile['error']) != 4)
 	{
 		require_once (e_HANDLER.'upload_handler.php');
 		require_once (e_HANDLER.'resize_handler.php');

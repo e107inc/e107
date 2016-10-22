@@ -198,7 +198,7 @@ class usersettings_shortcodes extends e_shortcode
 		  $inclass = implode(',',$is_checked);
 		
 	//	  $ret = "<table style='width:95%;margin-left:0px'><tr><td class='defaulttext'>";
-		  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,checkbox_desc),$inclass,'editable, no-excludes');
+		  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,'checkbox_desc'),$inclass,'editable, no-excludes');
 	//	  $ret .= "</td></tr></table>\n";
 		
 		return $ret;
@@ -473,7 +473,7 @@ class usersettings_shortcodes extends e_shortcode
 			$parms = explode("^,^",$fInfo['user_extended_struct_parms']);
 		
 			$fhide="";
-			if($parms[3])
+			if(varset($parms[3]))
 			{
 				$chk = (strpos($this->var['user_hidden_fields'], "^user_".$parm."^") === FALSE) ? FALSE : TRUE;
 				if(isset($_POST['updatesettings']))

@@ -2332,15 +2332,21 @@ class e_parse extends e_parser
 		return $this->thumbHeight;	
 		
 	}
-	
-	
-	
+
+
 	/**
-	 * Generate an auto-sized Image URL. 
-	 * @param $url - path to image or leave blank for a placeholder. 
-	 * @param $options  - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
-	 * @param $raw ??
-	 * @param $full
+	 * Generate an auto-sized Image URL.
+	 * @param $url - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg
+	 * @param array $options - width and height, but leaving this empty and using $this->thumbWidth() and $this->thumbHeight() is preferred. ie. {SETWIDTH: w=x&y=x}
+	 * @param int $options ['w'] width (optional)
+	 * @param int $options ['h'] height (optional)
+	 * @param bool|string $options ['crop'] true/false or A(auto) or T(op) or B(ottom) or C(enter) or L(eft) or R(right)
+	 * @param string $options ['scale'] '2x' (optional)
+	 * @param bool $options ['x'] encode/mask the url parms (optional)
+	 * @param bool $options ['nosef'] when set to true disabled SEF Url being returned (optional)
+	 * @param bool $raw set to true when the $url does not being with an e107 variable ie. "{e_XXXX}" eg. {e_MEDIA} (optional)
+	 * @param bool $full when true returns full http:// url. (optional)
+	 * @return string
 	 */
 	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
@@ -2355,6 +2361,16 @@ class e_parse extends e_parser
 		{
 			parse_str($options, $options);
 		}
+
+		if(!empty($options['scale'])) // eg. scale the width height 2x 3x 4x. etc.
+		{
+			$options['return'] = 'src';
+			$options['size'] = $options['scale'];
+			unset($options['scale']);
+			return $this->thumbSrcSet($url,$options);
+		}
+
+
 		
 		if(strstr($url,e_MEDIA) || strstr($url,e_SYSTEM)) // prevent disclosure of 'hashed' path. 
 		{
@@ -2369,7 +2385,7 @@ class e_parse extends e_parser
 
 	//	e107::getDebug()->log("Thumb: ".basename($url). print_a($options,true), E107_DBG_BASIC);
 
-		if(!empty($options))
+		if(!empty($options) && (isset($options['w']) || isset($options['aw']) || isset($options['h'])))
 		{
 			$options['w']       = varset($options['w']);
 			$options['h']       = varset($options['h']);
@@ -2400,6 +2416,12 @@ class e_parse extends e_parser
 
 			$thurl .= 'aw='.intval($options['w']).'&amp;ah='.intval($options['h']);
 
+			if(!is_numeric($options['crop']))
+			{
+				$thurl .= '&amp;c='.$options['crop'];
+				$options['nosef'] = true;
+			}
+
 		}
 		else
 		{
@@ -2409,7 +2431,7 @@ class e_parse extends e_parser
 		}
 
 
-		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']))// Experimental SEF URL support.
+		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']) )// Experimental SEF URL support.
 		{
 			$options['full'] = $full;
 			$options['ext'] = substr($url,-3);
@@ -2511,11 +2533,23 @@ class e_parse extends e_parser
 
 		// $parms['x'] = $encode;
 
+		if(!empty($parm['return']) && $parm['return'] == 'src')
+		{
+			return $this->thumbUrl($src, $parms);
+		}
+
 		return $this->thumbUrl($src, $parms)." ".$width."w";
 
 
 	}
 
+
+	public function thumbUrlScale($src,$parm)
+	{
+
+
+
+	}
 
 	/**
 	 * Used by thumbUrl when SEF Image URLS is active. @see e107.htaccess
@@ -2570,7 +2604,17 @@ class e_parse extends e_parser
 		}
 		elseif(!empty($options['crop']))
 		{
-			$sefUrl .= 'a'.intval($options['w']) .'xa'. intval($options['h']);
+
+			if(!is_numeric($options['crop']))
+			{
+				$sefUrl .= strtolower($options['crop']).intval($options['w']) .'x'.strtolower($options['crop']). intval($options['h']);
+			}
+			else
+			{
+				$sefUrl .= 'a'.intval($options['w']) .'xa'. intval($options['h']);
+			}
+
+
 		}
 		else
 		{
@@ -3815,6 +3859,48 @@ class e_parser
 		}
 
 	}
+
+
+
+
+	/**
+	 * Checks if string is valid UTF-8.
+	 *
+	 * Try to detect UTF-8 using mb_detect_encoding(). If mb string extension is
+	 * not installed, we try to use a simple UTF-8-ness checker using a regular
+	 * expression originally created by the W3C. But W3C's function scans the
+	 * entire strings and checks that it conforms to UTF-8.
+	 *
+	 * @see http://w3.org/International/questions/qa-forms-utf-8.html
+	 *
+	 * So this function is faster and less specific. It only looks for non-ascii
+	 * multibyte sequences in the UTF-8 range and also to stop once it finds at
+	 * least one multibytes string. This is quite a lot faster.
+	 *
+	 * @param $string string  string being checked.
+	 * @return bool  Returns true if $string is valid UTF-8 and false otherwise.
+	 */
+	public function isUTF8($string)
+	{
+		if (function_exists('mb_detect_encoding'))
+		{
+			return (mb_detect_encoding($string) == "UTF-8");
+		}
+
+		return (bool) preg_match('%(?:
+        [\xC2-\xDF][\x80-\xBF]        # non-overlong 2-byte
+        |\xE0[\xA0-\xBF][\x80-\xBF]               # excluding overlongs
+        |[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}      # straight 3-byte
+        |\xED[\x80-\x9F][\x80-\xBF]               # excluding surrogates
+        |\xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
+        |[\xF1-\xF3][\x80-\xBF]{3}                  # planes 4-15
+        |\xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+        )+%xs', $string);
+
+	}
+
+
+
 
 
 
