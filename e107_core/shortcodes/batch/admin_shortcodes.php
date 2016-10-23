@@ -1770,7 +1770,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				foreach($langSubs as $v)
 				{
-					$multiDoms[] = trim($v);	
+					if(!empty($v))
+					{
+						$multiDoms[] = trim($v);
+					}
 				}
 				
 			}
