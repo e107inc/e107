@@ -88,6 +88,12 @@ define("TPVLAN_71", "Not Specified");
 define("TPVLAN_72", "Set pages which should automatically use this layout. One per line.");
 define("TPVLAN_73", "Activate Menus");
 define("TPVLAN_74", "Activates the following:");
+define("TPVLAN_75", "Price");
+define("TPVLAN_76", "Free");
+define("TPVLAN_77", "Recommended!");
+define("TPVLAN_78", "Requirements");
+define("TPVLAN_79", "cURL is currently required to use this feature. Contact your webhosting provider to enable cURL");
+define("TPVLAN_80", "No Themes found which match your search criteria");
 
 // convert
 define("TPVLAN_CONV_1", "Step 1");
@@ -106,5 +112,14 @@ define("TPVLAN_CONV_13", "What category of theme is this?");
 define("TPVLAN_CONV_14", "Enable this stylesheet as a selectable option in the Theme Manager.");
 define("TPVLAN_CONV_15", "Give this stylesheet a name");
 
+//marketplace
+define("TPVLAN_81","Downloading..."); 
+define("TPVLAN_82","Download Complete!");
+define("TPVLAN_83","Automated download not possible.");
+define("TPVLAN_84","Please Download Manually");
+define("TPVLAN_85","Connecting...");
+define("TPVLAN_86","Could not change site theme.");
+define("TPVLAN_87","Rendering Theme Config");
+define("TPVLAN_88","Converter");
 
 ?>
