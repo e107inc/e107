@@ -68,7 +68,7 @@ define("EPL_WEBSITE", "Website");
 define("EPL_NOINSTALL", "No install required, just activate from your menus screen. To uninstall, delete the ");
 define("EPL_DIRECTORY", "directory.");
 define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
-define("EPL_UPGRADE", "Upgrade");
+define("EPL_UPGRADE", "Upgrade to:");
 
 define("EPL_ADLAN_50", "Comments successfully deleted");
 
@@ -268,6 +268,26 @@ define ('EPL_ADLAN_226',"Plugin Language-File Check");
 define ('EPL_ADLAN_227',"Scan for Changes");
 define ('EPL_ADLAN_228',"Plugin folders are scanned every [x] minutes for changes. Click the button below to scan now.");
 define ('EPL_ADLAN_229',"Refresh");
+define ('EPL_ADLAN_230', "Downloading and Installing: ");
+define ('EPL_ADLAN_231', "Remove icons from Media-Manager");
+define ('EPL_ADLAN_232', "Create Files");
+define ('TPVLAN_81', "Downloading...");
+define ('TPVLAN_82', "Download Complete!");
+define ('EPL_ADLAN_235', "Automated download not possible.");
+define ('EPL_ADLAN_236', "Please Download Manually");
+define ('EPL_ADLAN_237', "Download");
+define ('EPL_ADLAN_238',"Installation Complete!");
+define ('EPL_ADLAN_239',"Adding Table:");
+define ('EPL_ADLAN_240',"Removing Table:");
+define ('EPL_ADLAN_241',"Adding Pref:"); 
+define ('EPL_ADLAN_242',"Removing Pref:");
+define ('EPL_ADLAN_243',"Updating Pref:");
+define ('EPL_ADLAN_244',"Only 3 Media Categories are permitted during install. One for images and one for files.");  
+
+define ('LAN_RELEASED', "Released");
+define ('LAN_REPAIR_PLUGIN_SETTINGS', "Repair plugin settings");
+define ('LAN_SYNC_WITH_GIT_REPO', "Sync with Git Repo");
+define ('LAN_ADDONS', "Addons");
 
 define('LAN_UPGRADE_SUCCESSFUL', "Upgrade successful");
 define('LAN_INSTALL_SUCCESSFUL', "Installation successful");
