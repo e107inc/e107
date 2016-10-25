@@ -1158,7 +1158,7 @@ class lanDeveloper
 
 		$text .= "
 						<tr>
-							<td><div class='alert-info alert alert-block'>".LANG_LAN_140."</div></td>
+							<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
 							<td class='form-inline'>
 								<select name='deprecatedLans[]' multiple style='height:200px'>
 									<option value=''>".LANG_LAN_141."</option>";
@@ -1696,7 +1696,7 @@ class lanDeveloper
 
 			if($reverse != true)
 			{
-				$mes->addInfo(LANG_LAN_150); //Search Everywhere before commenting out
+				$mes->addInfo(e107::getParser()->toHTML(LANG_LAN_150, true)); //Search Everywhere before commenting out
 			}
 
 			$ret['text'] = $mes->render().$text;
