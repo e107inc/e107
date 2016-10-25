@@ -1322,11 +1322,50 @@ class e_file
 		$mes = e107::getMessage();
 		
 		chmod(e_TEMP.$localfile, 0755);
-		require_once(e_HANDLER."pclzip.lib.php");
+
+		$dir = false;
+
+		if(class_exists('ZipArchive') && e_DEBUG === true) // PHP7 compat. method.
+		{
+			$zip = new ZipArchive;
+
+			if($zip->open(e_TEMP.$localfile) === true)
+			{
+				for($i = 0; $i < $zip->numFiles; $i++ )
+				{
+					$filename = $zip->getNameIndex($i);
+                    $fileinfo = pathinfo($filename);
+
+                    if($fileinfo['dirname'] === '.')
+                    {
+                        $dir = $fileinfo['basename'];
+                        break;
+                    }
+
+			     //   $stat = $zip->statIndex( $i );
+			    //    print_a( $stat['name']  );
+				}
+
+
+				$zip->extractTo(e_TEMP);
+				chmod(e_TEMP.$dir, 0755);
+
+				$zip->close();
+			}
+
+
+		}
+		else // Legacy Method.
+		{
+			require_once(e_HANDLER."pclzip.lib.php");
 		
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= $this->getRootFolder($unarc);	
+			$archive 	= new PclZip(e_TEMP.$localfile);
+			$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+			$dir 		= $this->getRootFolder($unarc);
+		}
+
+
+
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
 		$typeDiz 	= ucfirst($type);
 		
@@ -1345,7 +1384,7 @@ class e_file
 			return false;
 		}
 	
-		if($dir == '')
+		if(empty($dir))
 		{
 			$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
 			@unlink(e_TEMP.$localfile);
@@ -1354,13 +1393,14 @@ class e_file
 	
 		if(is_dir(e_TEMP.$dir)) 
 		{
-			if(!rename(e_TEMP.$dir,$destpath.$dir))
+			$res = rename(e_TEMP.$dir,$destpath.$dir);
+			if($res === false)
 			{
 				$mes->addError("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"); //  flush(); usleep(50000);
 				@unlink(e_TEMP.$localfile);
 				return false;
 			}	
-			
+
 
 			
 		//	$dir 		= basename($unarc[0]['filename']);
