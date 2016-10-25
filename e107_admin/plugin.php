@@ -1224,6 +1224,9 @@ class pluginManager{
 
 // -----------------------------------------------------------------------------
 
+
+
+
 	function pluginRenderList() // Uninstall and Install sorting should be fixed once and for all now !
 	{
 
@@ -1235,8 +1238,14 @@ class pluginManager{
 		if($this->action == "" || $this->action == "installed")
 		{
 			$installed = $plugin->getall(1);
+
+			$mp = $this->getMarketplace();
+
+			$versions = $mp->getVersionList();
+
+		//	print_a($versions);
 			$caption = EPL_ADLAN_22;
-			$pluginRenderPlugin = $this->pluginRenderPlugin($installed);
+			$pluginRenderPlugin = $this->pluginRenderPlugin($installed, $versions);
 			$button_mode = "uninstall-selected";
 			$button_caption = EPL_ADLAN_85;
 			$button_action = "delete";
@@ -1292,7 +1301,7 @@ class pluginManager{
 
 // -----------------------------------------------------------------------------
 
-	function pluginRenderPlugin($pluginList)
+	function pluginRenderPlugin($pluginList, $versions = array())
 	{
 			global $plugin; 
 			
@@ -1405,106 +1414,14 @@ class pluginManager{
 					$text 			.= $pgf->renderTableRow($this->fields, $this->fieldpref, $data, 'plugin_id');
 
 
-/*
-
-					//LEGACY CODE 
-
-
-
-
-					$text .= "<tr>";
-
-					if(varset($this-> fields['checkboxes']))
+					$folder = $plug['plugin_path'];
+					if(!empty($versions[$folder]['version']) && version_compare( $plug['plugin_version'], $versions[$folder]['version'], '<'))
 					{
-                 		$rowid = "checkboxes[".$plug['plugin_id']."]";
-                		$text .= "<td class='center middle'>".$frm->checkbox($rowid, $plug['plugin_id'])."</td>\n";
+						$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+
+						$lan = "A newer version of [x] is available for download.";
+						e107::getMessage()->addInfo($tp->lanVars($lan,$link));
 					}
-
-				//	$text .= (in_array("plugin_status",$this->fieldpref)) ? "<td class='center'>".$img."</td>" : "";
-				
-			
-                    $text .= (in_array("plugin_icon",$this->fieldpref)) ? "<td class='center middle'>".$plugin_icon."</td>" : "";
-                    $text .= (in_array("plugin_name",$this->fieldpref)) ? "<td class='middle'>".$plugName."</td>" : "";
-                    $text .= (in_array("plugin_version",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_version']."</td>" : "";
-					$text .= (in_array("plugin_date",$this->fieldpref)) ? "<td class='middle'>".$plugDate."</td>" : "";
-					
-					$text .= (in_array("plugin_folder",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_path']."</td>" : "";
-					$text .= (in_array("plugin_category",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_category']."</td>" : "";
-                    $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
-                    $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "")."</td>" : "";
-
-                   	$text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".$this->compatibilityLabel($plug_vars['@attributes']['compatibility'])."</td>" : "";
-					
-					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$description."</td>" : "";
-                 	$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
-	     			$text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'>".ADMIN_INFO_ICON."</a>" : "&nbsp;")."</td>" : "";
-			
-
-
-				
-
-
-                	// Plugin options Column --------------
-
-   					$text .= "<td class='options center middle'>
-   					<div class='btn-group'>".$plugin_config_icon;
-
-
-						if ($plug_vars['@attributes']['installRequired'])
-						{
-							if ($plug['plugin_installflag'])
-							{
-						  		$text .= ($plug['plugin_installflag'] ? "<a class='btn' href=\"".e_SELF."?uninstall.{$plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a class='btn' href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
-
-                             //   $text .= ($plug['plugin_installflag'] ? "<button type='button' class='delete' value='no-value' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
-								if (PLUGIN_SHOW_REFRESH && !varsettrue($plug_vars['plugin_php']))
-								{
-									$text .= "<br /><br /><input type='button' class='btn button' onclick=\"location.href='".e_SELF."?refresh.{$plug['plugin_id']}'\" title='".'Refresh plugin settings'."' value='".'Refresh plugin settings'."' /> ";
-								}
-							}
-							else
-							{
-							  //	$text .=  "<input type='button' class='btn' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />";
-							  //	$text .= "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>";
-                            	$text .= "<a class='btn' href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>";
-							}
-						}
-						else
-						{
-							if ($plug_vars['menuName'])
-							{
-								$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
-							}
-							else
-							{
-								$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
-								if($plug['plugin_installflag'] == false)
-								{					
-									e107::getDb()->db_Delete('plugin', "plugin_installflag=0 AND (plugin_path='{$plug['plugin_path']}' OR plugin_path='{$plug['plugin_path']}/' )  ");
-								}
-							}
-						}
-
-						if ($plug['plugin_version'] != $plug_vars['@attributes']['version'] && $plug['plugin_installflag'])
-						{
-						  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-							$text .= "<a class='btn' href='".e_SELF."?upgrade.{$plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
-						}
-
-					$text .="</div></td>";
-              //      $text .= "</tr>";
-
-
-
-
-*/
-
-
-
-
-
-
-
 
 				}
 			}
