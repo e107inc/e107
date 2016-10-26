@@ -155,7 +155,7 @@ define ("EPL_ADLAN_134","Please create [b][x][/b] in your plugin directory with 
 define ("EPL_ADLAN_135","The name of your plugin. (Must be written in English)");
 define ("EPL_ADLAN_136","If you have a language file, enter the LAN_XXX value for the plugin's name");
 define ("EPL_ADLAN_137","Creation date of your plugin");
-define ("EPL_ADLAN_138","The version of your plugin. Format: x.x");
+define ("EPL_ADLAN_138","The version of your plugin. Format: x.x or x.x.x");
 define ("EPL_ADLAN_139","Compatible with this version of e107");
 define ("EPL_ADLAN_140","Author Name");
 define ("EPL_ADLAN_141","Author Website URL");

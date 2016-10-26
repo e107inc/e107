@@ -2809,7 +2809,7 @@ class pluginBuilder
 					$default 	= '1.0';
 					$required 	= true;
 					$help 		= EPL_ADLAN_138;
-					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
+					$pattern	= "^[\d]{1,2}\.[\d]{1,2}(\.[\d]{1,2})?$";
 					$xsize		= 'small';
 				break;
 
