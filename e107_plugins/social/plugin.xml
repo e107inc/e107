@@ -9,6 +9,6 @@
         <word>twitter</word>
     </keywords>
     <adminLinks>
-        <link url="admin_config.php" description="" icon="" iconSmall="" primary="true" >LAN_CONFIGURE</link>
+        <link url="admin_config.php" description="" icon="images/icon_32.png" iconSmall="images/icon_16.png" primary="true" >LAN_CONFIGURE</link>
     </adminLinks>
 </e107Plugin>
