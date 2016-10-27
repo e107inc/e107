@@ -4053,6 +4053,8 @@ class eResponse
 	public function renderMeta()
 	{
 		$attrData = '';
+
+		e107::getEvent()->trigger('system_meta_pre');
 		
 		foreach ($this->_meta as $attr) 
 		{
@@ -4063,6 +4065,7 @@ class eResponse
 			}
 			$attrData .= ' />'."\n";
 		}
+
 		return $attrData;
 	}
 
