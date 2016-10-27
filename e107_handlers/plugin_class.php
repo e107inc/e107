@@ -581,7 +581,7 @@ class e107plugin
 			if (vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
 				$status = ($med->removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add('Removing Icons from Media-Manager', $status);
+				$mes->add(IMALAN_164, $status);
 			}
 			return;
 		}
@@ -1643,6 +1643,9 @@ class e107plugin
 			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
+
+			$this->removeCrons($plug_vars);
+
 		}
 		
 		e107::getMessage()->addDebug("updated Installed plugins pref: ".print_a($p_installed,true));
@@ -1666,7 +1669,7 @@ class e107plugin
 		{
 			if ($function == 'install')
 			{
-				$text = "Installation Complete.";
+				$text = EPL_ADLAN_238;
 
 				if ($this->plugConfigFile)
 				{
@@ -1699,6 +1702,25 @@ class e107plugin
 		}
 
 	}
+
+
+	private function removeCrons($plug_vars)
+	{
+
+		if(!file_exists(e_PLUGIN. $plug_vars['folder']."/e_cron.php"))
+		{
+			return false;
+		}
+
+		if(e107::getDb()->delete('cron', 'cron_function LIKE "'. $plug_vars['folder'] . '::%"'))
+		{
+			e107::getMessage()->addDebug($plug_vars['folder']." crons removed successfully."); // No LAN necessary
+		}
+
+		return false;
+
+	}
+
 
 
 	/**
@@ -1750,7 +1772,7 @@ class e107plugin
 						$query .= $tableData['data'][$k];
 						$query .= "\n) ENGINE=". vartrue($tableData['engine'][$k],"InnoDB")." DEFAULT CHARSET=utf8 ";
 
-						$txt = "Adding Table: <b>{$v}</b> ";
+						$txt = EPL_ADLAN_239." <b>{$v}</b> ";
 						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						break;
 
@@ -1758,7 +1780,7 @@ class e107plugin
 						if (!empty($options['delete_tables']))
 						{
 							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
-							$txt = "Removing Table: {$v} <br />";
+							$txt = EPL_ADLAN_240." <b> {$v} </b><br />";
 							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						}
@@ -2270,7 +2292,7 @@ class e107plugin
 					
 					if($c == 4 || ($prevType == $type))
 					{
-						$mes->addDebug("Only 3 Media Categories are permitted during install. One for images and one for files.");
+						$mes->addDebug(EPL_ADLAN_244);
 						break;
 					}
 					
@@ -2510,7 +2532,7 @@ class e107plugin
 					$ret = $config->add($key, $value);
 					if($ret->data_has_changed == TRUE)
 					{
-						$mes->addSuccess("Adding Pref: ".$key);	
+						$mes->addSuccess(EPL_ADLAN_241, $key);	
 					}								
 					break;
 
@@ -2520,19 +2542,19 @@ class e107plugin
 
 					{
 						$config->remove($key, $value);
-						$mes->addSuccess("Removing Pref: ".$key);
+						$mes->addSuccess(EPL_ADLAN_242, $key);
 					}
 					else
 					{
 						$config->update($key, $value);
-						$mes->addSuccess("Updating Pref: ".$key);
+						$mes->addSuccess(EPL_ADLAN_243, $key);
 					}
 
 					break;
 
 				case 'uninstall':
 					$config->remove($key, $value);
-					$mes->addSuccess("Removing Pref: ".$key);
+					$mes->addSuccess(EPL_ADLAN_242, $key);
 					break;
 			}
 		}
