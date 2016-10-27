@@ -1643,6 +1643,9 @@ class e107plugin
 			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
+
+			$this->removeCrons($plug_vars);
+
 		}
 		
 		e107::getMessage()->addDebug("updated Installed plugins pref: ".print_a($p_installed,true));
@@ -1699,6 +1702,25 @@ class e107plugin
 		}
 
 	}
+
+
+	private function removeCrons($plug_vars)
+	{
+
+		if(!file_exists(e_PLUGIN. $plug_vars['folder']."/e_cron.php"))
+		{
+			return false;
+		}
+
+		if(e107::getDb()->delete('cron', 'cron_function LIKE "'. $plug_vars['folder'] . '::%"'))
+		{
+			e107::getMessage()->addDebug($plug_vars['folder']." crons removed successfully."); // No LAN necessary
+		}
+
+		return false;
+
+	}
+
 
 
 	/**
