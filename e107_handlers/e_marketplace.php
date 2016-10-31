@@ -503,7 +503,18 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		    'connection_timeout' 	=> 60,
 		);
 
-		$this->client = new SoapClient($this->serviceUrl, $options);
+
+		try
+		{
+            $this->client = new SoapClient($this->serviceUrl, $options);
+        }
+        catch (Exception $e)
+        {
+           e107::getMessage()->addError("Unable to connect. Please check firewall and/or internet connection.");
+           e107::getMessage()->addDebug($e->getMessage());
+        }
+
+
 
 		if(function_exists('xdebug_disable'))
 		{

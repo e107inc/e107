@@ -584,6 +584,9 @@ class page_admin_ui extends e_admin_ui
 
 
 
+
+
+
                 ### Parse aliases again or all filters shall fail due to the menu hack!
                 $this->_alias_parsed = false;
                 $this->parseAliases();
@@ -709,7 +712,7 @@ class page_admin_ui extends e_admin_ui
 			
 			$sef = e107::getParser()->toDB($newdata['page_sef']);
 
-			if(isset($newdata['page_title']) && isset($newdata['page_title']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
+			if(isset($newdata['page_title']) && isset($newdata['menu_name']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
 			{
 				e107::getMessage()->addError(CUSLAN_79);
 				return false;
