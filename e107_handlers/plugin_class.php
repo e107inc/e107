@@ -541,7 +541,7 @@ class e107plugin
 		{
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 			$this->rebuildUrlConfig();
-			e107::getConfig('core')->save();
+			e107::getConfig('core')->save(true,false,false);
 		}
 	}
 
@@ -1113,7 +1113,7 @@ class e107plugin
 			}
 		}
 
-		e107::getConfig('core')->setPref($pref)->save();
+		e107::getConfig('core')->setPref($pref)->save(true,false,false);
 
 		//	 e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
@@ -1246,7 +1246,7 @@ class e107plugin
 		}
 
 		e107::getConfig('core')->setPref($pref);
-		e107::getConfig('core')->save();
+		e107::getConfig('core')->save(true,false,false);
 
 	}
 
@@ -1311,7 +1311,7 @@ class e107plugin
 				unset($search_prefs['comments_handlers'][$eplug_folder]);
 			}
 
-		e107::getConfig('search')->setPref($search_prefs)->save();
+	//	e107::getConfig('search')->setPref($search_prefs)->save(true,false,false);
 
 	}
 
@@ -1370,7 +1370,7 @@ class e107plugin
 		//$s_prefs = $tp -> toDB($notify_prefs);
 		//$s_prefs = e107::getArrayStorage()->WriteArray($s_prefs);
 		//e107::getDb() -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
-		$notify_prefs->save(false);
+		$notify_prefs->save(false,false,false);
 	}
 
 	/**
@@ -1388,12 +1388,12 @@ class e107plugin
 		$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config); // rebuild aliases
 			
 		// set new values, changes should be saved outside this methods
-		e107::getConfig()
+	/*	e107::getConfig()
 			->set('url_aliases', $aliases)
 			->set('url_config', $config)
 			->set('url_modules', $modules)
 			->set('url_locations', $locations);
-				
+			*/
 		eRouter::clearCache();
 	}
 
@@ -2133,7 +2133,7 @@ class e107plugin
 	
 		if($updated === true)
 		{
-			$core->save();	//FIXME do this quietly without an s-message
+			$core->save(true,false,false);	//FIXME do this quietly without an s-message
 		}
 	
 	}
