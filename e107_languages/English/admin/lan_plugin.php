@@ -282,7 +282,7 @@ define ("EPL_ADLAN_240","Removing Table:");
 define ("EPL_ADLAN_241","Adding Pref:"); 
 define ("EPL_ADLAN_242","Removing Pref:");
 define ("EPL_ADLAN_243","Updating Pref:");
-define ("EPL_ADLAN_244","Only 3 Media Categories are permitted during install. One for images and one for files.");  
+define ("EPL_ADLAN_244","Only 5 Media Categories are permitted during installation.");
 
 define ("LAN_RELEASED", "Released");
 define ("LAN_REPAIR_PLUGIN_SETTINGS", "Repair plugin settings");

@@ -179,9 +179,9 @@ define('IMALAN_141', "Bottom");
 define('IMALAN_142', "Tile");
 define('IMALAN_143', "Image");
 define('IMALAN_144', "File");
-define('IMALAN_145', "<h4>From your computer</h4>");
+define('IMALAN_145', "From your computer");
 define('IMALAN_146', "No HTML5 support.");
-define('IMALAN_147', "<h4>From a remote location</h4>");
+define('IMALAN_147', "From a remote location");
 define('IMALAN_148', "Image/File URL");
 define('IMALAN_149', "Start Upload");
 define('IMALAN_150', "Upload a File");
@@ -201,12 +201,14 @@ define('IMALAN_163', "Video");
 define('IMALAN_164', ""); // Unused
 define('IMALAN_165', "No images");
 define('IMALAN_166', "Upload images or files");
-define('IMALAN_167', "Choose file");
+define('IMALAN_167', "No file");
 define('IMALAN_168', "Click on the avatar to change it");
 define('IMALAN_169', "No Avatars Available");
 define('IMALAN_170', "Choose this avatar");
 define('IMALAN_171', "Admin-Only Notice: The folder");
 define('IMALAN_172', "is empty. Upload some default avatars images to this folder for users to choose avatars from.");
 define('IMALAN_173', "No media owner found.");
+
+
 
 ?>

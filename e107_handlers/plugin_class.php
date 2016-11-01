@@ -2281,6 +2281,8 @@ class e107plugin
 			case 'install':
 			case 'refresh':
 				$c = 1;
+				$i = array('file'=>1, 'image'=>1, 'video'=>1);
+
 				foreach($tag['mediaCategories']['category'] as $v)
 				{
 					$type = $v['@attributes']['type'];
@@ -2290,17 +2292,23 @@ class e107plugin
 						continue; 	
 					}
 					
-					if($c == 4 || ($prevType == $type))
+					if($c == 4)
 					{
 						$mes->addDebug(EPL_ADLAN_244);
 						break;
 					}
 					
-					$prevType = $type;
+				//	$prevType = $type;
 									
 					$data['owner'] 		= $folder;
 					$data['image']		= vartrue($v['@attributes']['image']);
-					$data['category'] 	= $folder."_".$type;	
+					$data['category'] 	= $folder."_".$type;
+
+					if($i[$type] > 1)
+					{
+						$data['category'] 	.= "_".$i[$type];
+					}
+
 					$data['title'] 		= $v['@value'];
 					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
@@ -2309,7 +2317,8 @@ class e107plugin
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				
 					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
-					$c++;					
+					$c++;
+					$i[$type]++;
 				}	
 			
 			break;

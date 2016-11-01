@@ -530,7 +530,7 @@ class e_pref extends e_front_model
 
 		if(!$this->data_has_changed && !$force)
 		{
-			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages)->moveStack($this->prefid);
+			e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages)->moveStack($this->prefid);
 			return 0;
 		}
 
@@ -646,7 +646,7 @@ class e_pref extends e_front_model
 		}
 		else
 		{
-			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages);
+			e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
 			if(!$disallow_logs) $log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 			e107::getMessage()->moveStack($this->prefid);
 			return 0;

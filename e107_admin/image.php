@@ -585,7 +585,9 @@ class media_form_ui extends e_admin_form_ui
 	
 		$for = $this->getController()->getQuery('for');
 
-		if(strpos($for, '_file') !==false)
+
+
+		if(strpos($for, '_file') !==false )
 		{
 			$type = 'file';
 		}
@@ -1017,7 +1019,7 @@ class media_admin_ui extends e_admin_ui
 	function dialogPage() // Popup dialogPage for Image Selection. 
 	{
 		$cat = $this->getQuery('for');		
-		$file		= (substr($cat,-5) == "_file") ? TRUE : FALSE;
+		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? TRUE : FALSE;
 		$mes = e107::getMessage();
 		$mes->addDebug("For:".$cat);
 		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
@@ -1048,8 +1050,17 @@ class media_admin_ui extends e_admin_ui
 			{
 				$this->fields[$k]['filter'] = false;	
 			}	
-						
-			echo $this->mediaSelectUpload('file');	
+
+
+
+			echo $this->mediaSelectUpload('file');
+
+			$tagid = e107::getParser()->filter($this->getQuery('tagid'));
+
+			echo '<div class="media-select-file-footer"><a class="btn btn-danger e-media-select-file-none e-dialog-close" data-target="'.$tagid.'"  data-target-label="'.LAN_CHOOSE_FILE.'" href="#" ><span><i class="fa fa-ban"></i> '.IMALAN_167.'</span></a></div>';
+
+
+
 		}
 		else
 		{
@@ -1071,7 +1082,7 @@ class media_admin_ui extends e_admin_ui
 		}
 
 		// if 'for' has no value, files are placed in /temp and not added to the db.
-		$text = IMALAN_145;
+		$text = "<h4>".IMALAN_145."</h4>";
 		$text .= '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>'.IMALAN_146.'</p>
 		</div>';
@@ -1080,7 +1091,7 @@ class media_admin_ui extends e_admin_ui
 
 	    $text .= $frm->open('upload-url-form','post');
 		$text .= '<div class="plupload_header_content">';
-		$text .= IMALAN_147;
+		$text .= "<h4>".IMALAN_147."</h4>";
 		$text .= "<div class='plupload_header_text form-inline' style='padding-left:20px;padding-right:20px'>";
 		$text .= "<table class='table'>";
 

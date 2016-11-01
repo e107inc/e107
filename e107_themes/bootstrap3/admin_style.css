@@ -917,6 +917,8 @@ a.e-media-select
 	color: inherit
 }
 
+.media-select-file-footer { padding:30px; text-align:center }
+
 #cboxOverlay{ background-color:#000000;}
 
 #colorbox{ 

@@ -1238,7 +1238,7 @@ class e_form
 		}
 		
 		
-		$default_label 				= ($default) ? $default : "Choose a file";
+		$default_label 				= ($default) ? $default : LAN_CHOOSE_FILE;
 		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
 			
 		$sc_parameters['mode'] 		= 'main';
