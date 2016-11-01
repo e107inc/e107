@@ -530,7 +530,11 @@ class e_pref extends e_front_model
 
 		if(!$this->data_has_changed && !$force)
 		{
-			e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages)->moveStack($this->prefid);
+			if($session_messages !== false)
+			{
+				e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages)->moveStack($this->prefid);
+			}
+
 			return 0;
 		}
 

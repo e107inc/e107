@@ -1421,6 +1421,7 @@ class pluginManager{
 
 						$lan = "A newer version of [x] is available for download.";
 						e107::getMessage()->addInfo($tp->lanVars($lan,$link));
+						e107::getMessage()->addDebug("Local version: ".$plug['plugin_version']." Remote version: ".$versions[$folder]['version']);
 					}
 
 				}
