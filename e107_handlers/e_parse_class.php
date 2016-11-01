@@ -3497,8 +3497,14 @@ class e_parser
 
 		if(substr($text,0,2) == 'e-') 	// e107 admin icon. 
 		{
-			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';	
-			return "<i class='".$size." ".$text."'></i>";		
+			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';
+
+			if(substr($text,-3) == '-24')
+			{
+				$size = 'S24';
+			}
+
+			return "<i class='".$size." ".$text."'></i>";
 		}
 
 		// Get Glyph names. 

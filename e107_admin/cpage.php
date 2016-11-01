@@ -68,6 +68,8 @@ class page_admin extends e_admin_dispatcher
 	//	'menu/create' 	=> array('caption'=> CUSLAN_31, 'perm' => 'J', 'tab' => 2),
 		'page/prefs'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
 	);
+
+	protected $adminMenuIcon = 'e-custom-24';
 	
 
 	protected $adminMenuAliases = array(

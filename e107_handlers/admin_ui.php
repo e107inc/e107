@@ -1001,6 +1001,7 @@ class e_admin_dispatcher
 	protected $adminMenu = array();
 	
 
+	protected $adminMenuIcon = null;
 	/**
 	 * Optional (set by child class).
 	 * Page titles for pages not in adminMenu (e.g. main/edit)
@@ -1573,7 +1574,10 @@ class e_admin_dispatcher
 		$request = $this->getRequest();
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
-		return e107::getNav()->admin($this->menuTitle, $selected, $var);
+
+		$icon = (deftrue('e_CURRENT_PLUGIN')) ? e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '') : e107::getParser()->toIcon($this->adminMenuIcon);
+
+		return e107::getNav()->admin($icon."<span>".$this->menuTitle."</span>", $selected, $var);
 	}
 
 
