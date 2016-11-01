@@ -88,6 +88,7 @@ class news_admin extends e_admin_dispatcher
 	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
 	);
 
+	protected $adminMenuIcon = 'e-news-24';
 
 
 	protected $adminMenuAliases = array(

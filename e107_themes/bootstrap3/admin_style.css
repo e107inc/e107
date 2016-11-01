@@ -593,6 +593,8 @@ i.S16, li.plupload_done a {
 	line-height: 14px;
 	vertical-align: text-top;
 }
+
+
 i.e-add-16{ background-position: 0 0; width: 16px; height: 16px; } 
 i.e-adminlogs-16{ background-position: -21px 0; width: 16px; height: 16px; } 
 i.e-adminpass-16{ background-position: -42px 0; width: 16px; height: 16px; } 
@@ -685,6 +687,17 @@ i.S32 {
  	width:32px;
  	height:32px;
 }
+
+i.S24  {
+  background: url(images/adminicons_32.png) no-repeat top left;
+ 	display: inline-block;
+ 	background-size: 1522px;
+ 	width:24px;
+ 	height:24px;
+}
+
+i.e-news-24{ background-position: -1442px 0;  }
+i.e-custom-24{ background-position: -639px 0; }
 
 i.e-add-32{ background-position: 0 0; width: 32px; height: 32px; } 
 i.e-adminlogs-32{ background-position: -37px 0; width: 32px; height: 32px; } 
@@ -1264,6 +1277,10 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 
 
 .plugin-manager .fa-refresh { padding-top: 4px }
+
+#left-panel .panel-title span { display: inline-block; vertical-align: middle; color:white;text-shadow:0 1px 1px #000}
+#left-panel .panel-title .S24, #left-panel .panel-title img { margin-right:6px; width:24px; height:24px; vertical-align:middle}
+
 
 /*
 

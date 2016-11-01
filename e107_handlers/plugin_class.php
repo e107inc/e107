@@ -3264,22 +3264,23 @@ class e107plugin
 	}
 	
 	// return the Icon of the 
-	function getIcon($plugName='',$size=32)
+	function getIcon($plugName='',$size=32, $defaultOverride=false)
 	{
-		if(!$plugName) return;
+		if(!$plugName) return false;
 		
 		$tp = e107::getParser();
 		
 		if(!isset($this->parsed_plugin[$plugName]))
 		{
-			$plug_vars = $this->parse_plugin($plugName);	
+			 $this->parse_plugin($plugName,true);
+
 		}
-		else
-		{
-			$plug_vars = $this->parsed_plugin[$plugName];	
-		}
+
+		$plug_vars = $this->parsed_plugin[$plugName];
+
 			
-		//return print_r($plug_vars,TRUE);	
+		//return print_r($plug_vars,TRUE);
+
 			
 		$sizeArray = array(32=>'icon', 16=>'iconSmall');
 		$default = ($size == 32) ? $tp->toGlyph('e-cat_plugins-32') : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
@@ -3287,7 +3288,13 @@ class e107plugin
 		
 		$icon_src = e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
 		$plugin_icon = $plug_vars['administration'][$sz] ? "<img src='{$icon_src}' alt='' class='icon S".intval($size)."' />" : $default;
-     	
+
+     	if($defaultOverride !== false && $default === $plugin_icon)
+        {
+            return $defaultOverride;
+        }
+
+
 		if(!$plugin_icon)
 		{
 		//	
