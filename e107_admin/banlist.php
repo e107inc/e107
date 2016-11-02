@@ -198,19 +198,17 @@ class banlist_ui extends e_admin_ui
 
 		public function afterCreate($new_data, $old_data, $id)
 		{
-			$this->timesPageSave();
 			e107::getIPHandler()->regenerateFiles();
 		}
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
-			$this->timesPageSave();
 			e107::getIPHandler()->regenerateFiles();
 		}
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
-			$this->timesPageSave();
+
 			e107::getIPHandler()->regenerateFiles();
 		}
 
@@ -239,7 +237,8 @@ class banlist_ui extends e_admin_ui
 			$changed = false;
 
 			$pref = array();
-			
+
+			$reasonList = $ipAdministrator->getValidReasonList();
 			foreach ($ipAdministrator->getValidReasonList() as $bt)
 			{
 				$i = abs($bt) + 1;		// Forces a single-digit positive number for part of field name
