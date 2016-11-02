@@ -5,21 +5,17 @@
  * Admin Language File
  *
 */
-
 // Menu
 define("LAN_IMA_M_01", "Media Library"); 
 define("LAN_IMA_M_02", "Media Upload/Import"); 
 define("LAN_IMA_M_03", "Media Categories"); 
 define("LAN_IMA_M_04", "Create Category"); 
 define("LAN_IMA_M_05", "Avatars"); 
-
-
 // Errors / Info / Notices
 define("LAN_IMA_001", "Modification is not permitted.");
 define("LAN_IMA_002", "Not enough memory available to rotate");
 define("LAN_IMA_003", "Rotated");
 define("LAN_IMA_004", "Resizing");
-
 // Options
 define("LAN_IMA_O_001", "News Images");
 define("LAN_IMA_O_002", "News [img] bbcode");
@@ -27,9 +23,7 @@ define("LAN_IMA_O_003", "Page [img] bbcode");
 define("LAN_IMA_O_004", "Featurebox Images");
 define("LAN_IMA_O_005", "Featurebox [img] bbcode");
 define("LAN_IMA_O_006", "[img] bbcode");
-
 // Work in progress (Moc)
-
 define("IMALAN_1", "Enable image display");
 define("IMALAN_2", "Display images, this will apply sitewide (comments, chatbox etc) to images posted using the [img] bbcode");
 define("IMALAN_3", "Resize method");
@@ -56,7 +50,6 @@ define("IMALAN_23", "Avatars");
 define("IMALAN_24", "Photograph");
 define("IMALAN_25", "Click here to delete all unused images");
 define("IMALAN_26", "image(s) deleted");
-
 define("IMALAN_28", "deleted");
 define("IMALAN_29", "No images");
 // define("IMALAN_30", "Everyone (public)");
@@ -65,7 +58,6 @@ define("IMALAN_29", "No images");
 // define("IMALAN_33", "Admin only");
 //define("IMALAN_34", "Enable PNG Fix");
 //define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
-
 define("IMALAN_36", "Validate avatar size and access");
 define("IMALAN_37", "Avatar Validation");
 define("IMALAN_38", "Maximum allowable width");
@@ -82,31 +74,23 @@ define("IMALAN_48", "Total external avatars");
 define("IMALAN_49", "Users with avatars");
 define("IMALAN_50", "Total");
 define("IMALAN_51", "Avatar for ");
-
 define("IMALAN_52", "Path to ImageMagick appears to be incorrect");
 define("IMALAN_53", "Path to ImageMagick appears to be correct, but convert file may not be valid");
 define("IMALAN_54", "GD version installed:");
 define('IMALAN_55', "Not installed");
-
 //v0.8
-
 //uploaded avatar list
 define('IMALAN_56', "Click to select");
 define('IMALAN_57', "Image too big - click to enlarge");
-
 //avatar check
 // define('IMALAN_61', "Options");
 define('IMALAN_62', "Reason");
-
 define('IMALAN_65', "Nothing found");
-
 define('IMALAN_66', "Filename");
 define('IMALAN_68', "Close");
 define('IMALAN_69', "Folder");
 define('IMALAN_70', "Non-system folder is found!");
-
 // define("IMALAN_72", "Icons");
-
 define('IMALAN_73', "Thumbnail Quality");
 define('IMALAN_74', "Set this as low as possible before quality loss is apparent. Max. 100");
 define('IMALAN_75', "Avatar Width");
@@ -198,7 +182,7 @@ define('IMALAN_160', "Margin-Top");
 define('IMALAN_161', "Margin-Bottom");
 define('IMALAN_162', "Displaying [x] - [y] of [z] images.");
 define('IMALAN_163', "Video"); 
-define('IMALAN_164', ""); // Unused
+define('IMALAN_164', "Deleted Icons from Media-Manager"); 
 define('IMALAN_165', "No images");
 define('IMALAN_166', "Upload images or files");
 define('IMALAN_167', "No file");
@@ -208,7 +192,8 @@ define('IMALAN_170', "Choose this avatar");
 define('IMALAN_171', "Admin-Only Notice: The folder");
 define('IMALAN_172', "is empty. Upload some default avatars images to this folder for users to choose avatars from.");
 define('IMALAN_173', "No media owner found.");
-
-
-
+define('IMALAN_174', "Youtube search requires a (free) YouTube v3 api key.[br]This key is not required unless you wish to perform a keyword, playlist or channel search.[br]Entering a Youtube video URL directly into the box above will still work without having an api key.[br][x]");
+define('IMALAN_175', "Search Youtube. Paste any YouTube URL here for a specific video/playlist/channel");
+define('IMALAN_176', "There was a problem grabbing the file");
+define('IMALAN_177', "Click here for more information and to enter your api key");
 ?>
