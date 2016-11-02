@@ -603,7 +603,7 @@ class e_pref extends e_front_model
 					$logId = 'PREFS_01';	
 				}
 				
-				$log->addSuccess('Settings successfully saved.', ($session_messages === null || $session_messages === true));
+				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
 
 				$uid = USERID;
 
