@@ -861,7 +861,7 @@ class themeHandler
 						<tr>";
 			$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>".TPVLAN_55."</td>" : "";
 			$itext .= "
-							<th class='fcaption'>".TPVLAN_52."</th>
+							<th class='fcaption'>".LAN_TITLE."</th>
 							<th class='fcaption'>".TPVLAN_78."</th>
 							<th class='fcaption' style='text-align:center;width:100px'>".TPVLAN_54."</th>
 						</tr>\n";
