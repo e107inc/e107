@@ -372,7 +372,7 @@ class eIPHandler
 	 *
 	 *	@param int $code - integer value < 0 specifying the ban reason.
 	 *
-	 *	@return none (may not even return)
+	 *	@return void (may not even return)
 	 *
 	 *	Looks up the reason code, and extracts the corresponding text. 
 	 *	If this text begins with 'http://' or 'https://', assumed to be a link to a web page, and redirects.
@@ -382,7 +382,17 @@ class eIPHandler
 	{
 		$search = '['.$code.']';
 		$fileName = $this->ourConfigDir.eIPHandler::BAN_FILE_ACTION_NAME.eIPHandler::BAN_FILE_EXTENSION;
-		if (!is_readable($fileName)) return;		// @todo should we just die if no file - we know the IP is in the ban list.
+
+		if(!is_readable($fileName)) // Note readable, but the IP is still banned, so half further script execution.
+		{
+			if($this->debug === true || e_DEBUG === true)
+			{
+				echo "Your IP is banned!";
+			}
+
+			die();
+		    // return;		//
+		}
 
 		$vals  = file($fileName);
 		if ($vals === FALSE || count($vals) == 0) return;
