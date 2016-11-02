@@ -219,8 +219,8 @@ class cron_admin_ui extends e_admin_ui
 						'cron_category'		=> $val['category'],
 						'cron_description' 	=> $val['description'],
 						'cron_function'		=> $class."::".$val['function'],
-						'cron_tab'			=> '* * * * *',
-						'cron_active'		=> '0',
+						'cron_tab'			=> varset($val['tab'], '* * * * *'),
+						'cron_active'		=> varset($val['active'], '0'),
 					);	
 					
 					$this->cronInsert($insert);							
