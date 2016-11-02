@@ -198,16 +198,19 @@ class banlist_ui extends e_admin_ui
 
 		public function afterCreate($new_data, $old_data, $id)
 		{
+			$this->timesPageSave();
 			e107::getIPHandler()->regenerateFiles();
 		}
 
 		public function afterUpdate($new_data, $old_data, $id)
 		{
+			$this->timesPageSave();
 			e107::getIPHandler()->regenerateFiles();
 		}
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
+			$this->timesPageSave();
 			e107::getIPHandler()->regenerateFiles();
 		}
 
@@ -229,9 +232,13 @@ class banlist_ui extends e_admin_ui
 		
 		private function timesPageSave()
 		{
+
+
 			$ipAdministrator = new banlistManager;
 			$tp = e107::getParser();
-			$changed = FALSE;
+			$changed = false;
+
+			$pref = array();
 			
 			foreach ($ipAdministrator->getValidReasonList() as $bt)
 			{
@@ -249,7 +256,8 @@ class banlist_ui extends e_admin_ui
 					$changed = TRUE;
 				}
 			}
-			if ($changed)
+
+			if ($changed && !empty($pref))
 			{
 			// @todo write actual prefs changes to log file (different methods for prefs?)
 				e107::getConfig()->setPref($pref)->save(); 
