@@ -4612,7 +4612,8 @@ class e_form
 				if(method_exists($this,$meth))
 				{
 					$parms['field'] = $field;
-					$value = call_user_func_array(array($this, $meth), array($value, 'read', $parms));
+					$mode = (!empty($attributes['mode'])) ? $attributes['mode'] :'read';
+					$value = call_user_func_array(array($this, $meth), array($value, $mode, $parms));
 				}
 				else
 				{
