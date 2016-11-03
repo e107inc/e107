@@ -440,7 +440,7 @@ class e_file
 
         $cp = $this->initCurl($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
-
+		curl_setopt($cp, CURLOPT_TIMEOUT, 20);//FIXME Make Pref - avoids get file timeout on slow connections
        	/*
        	$cp = curl_init($remote_url);
 
@@ -452,6 +452,7 @@ class e_file
        	*/
 
         $buffer = curl_exec($cp);
+		//FIXME addDebug curl_error output - here see #1936
        
         curl_close($cp);
         fclose($fp);
