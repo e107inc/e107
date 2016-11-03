@@ -30,6 +30,9 @@ class online_shortcodes extends e_shortcode
 	
 	public function __construct()
 	{
+		// Need to set initial value for $scVars. Otherwise it results warning message.
+		parent::__construct();
+
 		$this->e107 = e107::getInstance();
 		$this->memberInfo = e107::getConfig('history');
 		$this->gen = e107::getDateConvert();
@@ -136,14 +139,14 @@ class online_shortcodes extends e_shortcode
 		if($ret == false) 
 		{
 
-			$newest_member_sql = $sql->select('user', 'user_id, user_name,user_image', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
+			$sql->select('user', 'user_id, user_name,user_image', "user_ban='0' ORDER BY user_join DESC LIMIT 1");
 			$row = $sql->fetch();
 			//$ret = "<a href='".e_HTTP."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>";
 
-			if($parm['type'] == 'avatar')
+			if(varset($parm['type']) == 'avatar')
 			{
 				$this->currentMember =  array('oid'	=> $row['user_id'], 'oname'=> $row['user_name'], 'page' => null, 'pinfo' => null,'oimage' => $row['user_image']	);
-				$ret =  e107::getParser()->parseTemplate($this->newestTemplate, TRUE, $this);
+				//$ret =  e107::getParser()->parseTemplate($this->newestTemplate, TRUE, $this);
 
 			}
 			else
