@@ -261,7 +261,7 @@ $ADMIN_HEADER_DASHBOARD = $ADMIN_HEADER = $ADMIN_MODAL . '
 $ADMIN_HEADER_DASHBOARD .= '
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-12 draggable-panels">
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
 			{ADMIN_PWORD}
