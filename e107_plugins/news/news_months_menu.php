@@ -46,7 +46,7 @@ if(false === $cached)
 
 		
 //	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
-	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/English.php');
+	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/'.e_LANGUAGE.'.php');
 
 	$tp = e107::getParser();
 	$sql = e107::getDb();
