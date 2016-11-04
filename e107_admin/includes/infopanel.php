@@ -281,22 +281,9 @@ class adminstyle_infopanel
 		if(vartrue($_GET['mode']) != 'customize')
 		{
 			// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
-			echo $mes->render().'
-
-			<!-- INFOPANEL -->
-			<div class="row">
-				<div class="span6 col-md-6">
-				    '.$text.'
-				 </div>
-
-				 <div class="span6 col-md-6">
-				    '.$text2.'
-				 </div>
-			</div>
-			<!--  -->  
-			 
-			 
-			 ';
+			// echo $mes->render(); // TODO
+			echo $text; // Control Panel
+			echo $text2; // Latest e107 News + Website Status
 		}
 		else
 		{

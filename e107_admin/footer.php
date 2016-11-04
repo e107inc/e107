@@ -19,7 +19,7 @@ if (!defined('e107_INIT'))
 }
 $In_e107_Footer = TRUE; // For registered shutdown function
 
-global $error_handler,$db_time,$ADMIN_FOOTER;
+global $error_handler,$db_time,$ADMIN_FOOTER,$ADMIN_FOOTER_DASHBOARD;
 
 // Legacy fix - call header if not already done, mainly fixing left side menus to work proper
 if(!deftrue('e_ADMIN_UI') && !deftrue('ADMIN_AREA'))
@@ -98,7 +98,15 @@ if (varset($e107_popup) != 1)
 	//NEW - Iframe mod
 	if (!deftrue('e_IFRAME'))
 	{
-		parse_admin($ADMIN_FOOTER);
+		// Dashboard uses its own template.
+		if (deftrue('e_DASHBOARD', false) === true)
+		{
+			parse_admin($ADMIN_FOOTER_DASHBOARD);
+		}
+		else
+		{
+			parse_admin($ADMIN_FOOTER);
+		}
 	}
 	
 	$eTimingStop = microtime();

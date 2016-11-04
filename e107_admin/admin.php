@@ -33,6 +33,9 @@ if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='begi
 
 if(strpos($pref['adminstyle'], 'infopanel') === 0)
 {
+	// Define constant for using custom template on the dashboard.
+	define('e_DASHBOARD', true);
+
 	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
 	$_class = 'adminstyle_'.$pref['adminstyle'];
 	if(class_exists($_class, false))
