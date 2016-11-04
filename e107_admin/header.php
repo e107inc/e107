@@ -588,7 +588,16 @@ if ($e107_popup != 1)
 	if (!deftrue('e_IFRAME'))
 	{
 		//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
-		parse_admin($ADMIN_HEADER);
+
+		// Dashboard uses its own template.
+		if (deftrue('e_DASHBOARD', false) === true)
+		{
+			parse_admin($ADMIN_HEADER_DASHBOARD);
+		}
+		else
+		{
+			parse_admin($ADMIN_HEADER);
+		}
 	}
 	elseif(!vartrue($_GET['configure'])) 
 	{
