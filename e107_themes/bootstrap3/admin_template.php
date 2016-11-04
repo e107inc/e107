@@ -260,28 +260,37 @@ $ADMIN_HEADER_DASHBOARD = $ADMIN_HEADER = $ADMIN_MODAL . '
 
 $ADMIN_HEADER_DASHBOARD .= '
 <div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12 draggable-panels">
-			{SETSTYLE=admin_menu}
-			{ADMIN_MENU}
-			{ADMIN_PWORD}
-			{ADMIN_MENUMANAGER}
-
-			{SETSTYLE=site_info}
-			{ADMINUI_HELP}
-			{ADMIN_HELP}
-
-			{ADMIN_SITEINFO=creditsonly}
-			{SETSTYLE=admin_menu}
-			{ADMIN_LATEST=infopanel}
-			{ADMIN_STATUS=infopanel}
-			{ADMIN_LOG=request}
-			{ADMIN_MSG=request}
-			{ADMIN_PLUGINS}
-			{SETSTYLE=default}
+	<div class="row">		
+		<div class="col-md-2" id="left-panel">
+			<div class="draggable-panels" id="droppable-area-sidebar">
+				{SETSTYLE=admin_menu}
+				{ADMIN_MENU}
+				{ADMIN_PWORD}
+				{ADMIN_MENUMANAGER}
+	
+				{SETSTYLE=site_info}
+				{ADMINUI_HELP}
+				{ADMIN_HELP}
+	
+				{ADMIN_SITEINFO=creditsonly}
+				{SETSTYLE=admin_menu}
+				{ADMIN_LATEST=infopanel}
+				{ADMIN_STATUS=infopanel}
+				{ADMIN_LOG=request}
+				{ADMIN_MSG=request}
+				{ADMIN_PLUGINS}
+				{SETSTYLE=default}
+			</div>
+		</div>
+		<div class="col-md-10" id="right-panel">
+			<div class="sidebar-toggle">
+				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
+			</div>
+			<div>
 ';
 
 $ADMIN_FOOTER_DASHBOARD = '
+			</div>
 		</div><!--/span-->
 	</div><!--/row-->
 </div><!--/.fluid-container-->

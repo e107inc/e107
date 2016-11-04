@@ -154,9 +154,21 @@ $(document).ready(function()
 		$('a[data-toggle-sidebar]').on('click', function(e)
         {
             e.preventDefault();
-            
-            $("#left-panel").toggle(1000);
-            $("#right-panel").toggleClass("col-md-10 col-md-12"); //XXX Control animation direction?
+
+	        var $leftPanel = $("#left-panel");
+	        var $rightPanel = $("#right-panel");
+
+	        if ($rightPanel.hasClass('col-md-12'))
+	        {
+		        $rightPanel.toggleClass("col-md-10 col-md-12");
+		        $leftPanel.toggle(1000);
+	        }
+	        else
+	        {
+		        $leftPanel.toggle(1000, function() {
+			        $rightPanel.toggleClass("col-md-10 col-md-12");
+		        });
+	        }
 
         });
 

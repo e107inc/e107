@@ -1176,7 +1176,7 @@ li.rssRow > div {
 
 .core-mainpanel-link-icon img { margin-bottom: 5px }
 
-.sidebar-toggle { width: 14px; height:300px; display: block; position: absolute; margin-left: -25px; margin-top:130px  }
+.sidebar-toggle { width: 14px; height:300px; display: block; position: absolute; margin-left: -25px; margin-top:130px; z-index: 1;  }
 .sidebar-toggle a {color:#C6C6C6; height:300px; display:block; width:100%; border-right:7px double #77ACD9; opacity: 0; transition:.5s; z-index:5000; outline:0 }
 .sidebar-toggle a:hover { opacity: .8; outline:0 }
 #left-panel.toggled { display: none }
@@ -1281,6 +1281,9 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 #left-panel .panel-title span { display: inline-block; vertical-align: middle; color:white;text-shadow:0 1px 1px #000}
 #left-panel .panel-title .S24, #left-panel .panel-title img { margin-right:6px; width:24px; height:24px; vertical-align:middle}
 
+
+/* Dashboard */
+.draggable-panels .panel-heading { cursor: move; }
 
 /*
 

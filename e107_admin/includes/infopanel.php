@@ -82,53 +82,23 @@ class adminstyle_infopanel
 		$mes = e107::getMessage();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
-		
-		
-	//	XXX Check Bootstrap bug is fixed. 
-	/*
-		echo '
-          <ul class="thumbnails">
-            <li class="span4">
-              <a href="#" class="thumbnail">
-                <img src="http://placehold.it/360x270" alt="">
-              </a>
-            </li>
-             <li class="span4">
-              <a href="#" class="thumbnail">
-                <img src="http://placehold.it/360x270" alt="">
-              </a>
-            </li>
-             <li class="span4">
-              <a href="#" class="thumbnail">
-                <img src="http://placehold.it/360x270" alt="">
-              </a>
-            </li>
-             <li class="span4">
-              <a href="#" class="thumbnail">
-                <img src="http://placehold.it/360x270" alt="">
-              </a>
-            </li>
-             <li class="span4">
-              <a href="#" class="thumbnail">
-                <img src="http://placehold.it/360x270" alt="">
-              </a>
-            </li>
-             <li class="span4">
-              <a href="#" class="thumbnail">
-                <img src="http://placehold.it/360x270" alt="">
-              </a>
-            </li>
-          </ul>
 
-		';
-	*/	
-		//TODO LANs throughout.
+		$droppableAreaContent1 = '';
+		$droppableAreaContent2 = '';
+		$droppableAreaContent3 = '';
+		$droppableAreaContent4 = '';
+		$droppableAreaContent5 = '';
+		$droppableAreaContent6 = '';
+		$droppableAreaContent7 = '';
+		$droppableAreaContent8 = '';
+		$droppableAreaContent9 = '';
+		$droppableAreaContent10 = '';
+
+		// TODO LANs throughout.
 		
 		global $style, $user_pref;
 
-		// ---------------------- Start Panel --------------------------------
-
-//		$text = "<div >";
+		// ---------------------- Start Panel -----------------------------
 		if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
 		{
 			$defArray = array (
@@ -147,143 +117,136 @@ class adminstyle_infopanel
 			    12 => 'e-userclass2',
 			    13 => 'e-users',
 			    14 => 'e-wmessage'
-			  );
+			);
+
 			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'],$defArray);
-			
 		}
-		
-       
-		
-	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
-		
+
 		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
-		
-		// Personalized Panel 
+
+		// --------------------- Personalized Panel -----------------------
 		// Rendering the saved configuration.
 		
-		$mainPanel = "
-		<div id='core-infopanel_mye107' >
-		";
-		
-		/*
-		$mainPanel .= '<span class="pull-right">
-		          <span class="options">
-		            <div class="btn-group">
-		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-		              <ul class="dropdown-menu black-box-dropdown dropdown-right">
-		                <li>'.$this->render_infopanel_icons().'</li>
-		              </ul>
-		            </div>
-		          </span>
-		        </span>';
-		
-		*/
-		
-	//	print_a($user_pref['core-infopanel-mye107']);
-        
-		$mainPanel .= "
-		
-		
-		
-		
-			
-				<div class='left'>";
-			
-			foreach ($this->iconlist as $key=>$val)
+		$mainPanel = "<div id='core-infopanel_mye107'>";
+		$mainPanel .= "<div class='left'>";
+		foreach ($this->iconlist as $key=>$val)
+		{
+			if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
 			{
-				if (!vartrue($user_pref['core-infopanel-mye107']) || in_array($key, $user_pref['core-infopanel-mye107']))
-				{
-					$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
-				}
+				$mainPanel .= e107::getNav()->renderAdminButton($val['link'], $val['title'], $val['caption'], $val['perms'], $val['icon_32'], "div");
 			}
-	
-			// $mainPanel .= "<div class='clear'>&nbsp;</div>";
-			$mainPanel .= "</div>
-	      
-			</div>";
+		}
+		$mainPanel .= "</div></div>";
 
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
-		$text = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107",true);
+		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107",true);
+		$droppableAreaContent1 .= $coreInfoPanelMyE107;
 		
 	
-	//  ------------------------------- e107 News --------------------------------
-
+		// --------------------- e107 News --------------------------------
 		$newsTabs = array();
 		$newsTabs['coreFeed'] = array('caption'=>LAN_GENERAL,'text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
 		$newsTabs['pluginFeed'] = array('caption'=>LAN_PLUGIN,'text'=>"<div id='e-adminfeed-plugin'></div>");
 		$newsTabs['themeFeed'] = array('caption'=>LAN_THEMES,'text'=>"<div id='e-adminfeed-theme'></div>");
 
-		$text2 = $ns->tablerender(LAN_LATEST_e107_NEWS,e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
-	
-	
-	
-	
-	// ---------------------Latest Stuff ---------------------------
-	
-		//require_once (e_CORE."shortcodes/batch/admin_shortcodes.php");
-		e107::getScBatch('admin');
-		
+		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS,e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
+		$droppableAreaContent2 .= $coreInfoPanelNews;
 
 
-		
-		$text2 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);	
-		
-		
-	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
-	//	$text .= $ns->tablerender(LAN_STATUS,$tp->parseTemplate("{ADMIN_STATUS=norender}"),"core-infopanel_latest",true);
-	/*
-	
-			$text .= "<li class='span6'>
-				".$tp->parseTemplate("{ADMIN_LATEST=norender}").
-				$tp->parseTemplate("{ADMIN_STATUS=norender}")."
-						</div>";
-		
-		*/
-	
-	
-	$text .= $this->renderLatestComments();
-	
-	
-	// ---------------------- Who's Online  ------------------------
-	// TODO Could use a new _menu item instead.
-	
-	
-	//	$text2 .= $ns->tablerender('Visitors Online : '.vartrue($nOnline), $panelOnline,'core-infopanel_online',true);
-		
-	// --------------------- User Selected Menus -------------------
-		
-	
+		// --------------------- Website Status ---------------------------
+		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);
+		$droppableAreaContent2 .= $coreInfoPanelWebsiteStatus;
+
+
+		// --------------------- Latest Comments --------------------------
+		$droppableAreaContent1 .= $this->renderLatestComments();
+
+
+		// --------------------- User Selected Menus ----------------------
 		if (varset($pref['core-infopanel-menus']))
 		{
 			foreach ($pref['core-infopanel-menus'] as $val)
 			{
 				$id = $frm->name2id('core-infopanel_'.$val);			
 				$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
-				$text .= $inc;
-				// $text .= $ns->tablerender("", $inc, $id,true);
+				$droppableAreaContent1 .= $inc;
 			}
 		}
-	
-	
-		
-		
-		
-		
-		
-	//	$text .= "<div class='clear'>&nbsp;</div>";
-		
-		$text .= $this->render_infopanel_options();
-		
-		
-		
-	//	$text .= "</div>";
+
+		$droppableAreaContent1 .= $this->render_infopanel_options();
 		
 		if(vartrue($_GET['mode']) != 'customize')
 		{
-			// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
-			// echo $mes->render(); // TODO
-			echo $text; // Control Panel
-			echo $text2; // Latest e107 News + Website Status
+			echo '<div class="row">';
+			echo '<div class="col-sm-12">';
+			echo $mes->render();
+			echo '</div>';
+			echo '</div>';
+
+			echo '<div class="row">';
+			echo '<div class="col-sm-12">';
+			echo '<div class="draggable-panels" id="droppable-area-content-4">';
+			echo $droppableAreaContent4;
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+
+			echo '<div class="row">';
+			echo '<div class="col-sm-4">';
+			echo '<div class="draggable-panels" id="droppable-area-content-5">';
+			echo $droppableAreaContent5;
+			echo '</div>';
+			echo '</div>';
+			echo '<div class="col-sm-4">';
+			echo '<div class="draggable-panels" id="droppable-area-content-6">';
+			echo $droppableAreaContent6;
+			echo '</div>';
+			echo '</div>';
+			echo '<div class="col-sm-4">';
+			echo '<div class="draggable-panels" id="droppable-area-content-7">';
+			echo $droppableAreaContent7;
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+
+			echo '<div class="row">';
+			echo '<div class="col-sm-6">';
+			echo '<div class="draggable-panels" id="droppable-area-content-1">';
+			echo $droppableAreaContent1; // Control Panel
+			echo '</div>';
+			echo '</div>';
+			echo '<div class="col-sm-6">';
+			echo '<div class="draggable-panels" id="droppable-area-content-2">';
+			echo $droppableAreaContent2; // Latest e107 News
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+
+			echo '<div class="row">';
+			echo '<div class="col-sm-4">';
+			echo '<div class="draggable-panels" id="droppable-area-content-8">';
+			echo $droppableAreaContent8;
+			echo '</div>';
+			echo '</div>';
+			echo '<div class="col-sm-4">';
+			echo '<div class="draggable-panels" id="droppable-area-content-9">';
+			echo $droppableAreaContent9;
+			echo '</div>';
+			echo '</div>';
+			echo '<div class="col-sm-4">';
+			echo '<div class="draggable-panels" id="droppable-area-content-10">';
+			echo $droppableAreaContent10;
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
+
+			echo '<div class="row">';
+			echo '<div class="col-sm-12">';
+			echo '<div class="draggable-panels" id="droppable-area-content-3">';
+			echo $droppableAreaContent3; // Website Status
+			echo '</div>';
+			echo '</div>';
+			echo '</div>';
 		}
 		else
 		{
