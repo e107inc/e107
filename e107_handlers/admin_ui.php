@@ -1488,7 +1488,7 @@ class e_admin_dispatcher
 			$tmp = explode('/', trim($key, '/'), 3);
 
 			// sync with mode/route access
-			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.$tmp[1]))
+			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.varset($tmp[1])))
 			{
 				continue;
 			}
