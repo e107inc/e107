@@ -4475,8 +4475,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess($tp->lanVars('[x] record(s) successfully deleted.', $delcount, true));
-			if($nfcount) e107::getMessage()->addError($tp->lanVars('[x] records not found and not deleted.', $nfcount,true));
+			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(RL_LAN_085, $delcount, true));
+			if($nfcount) e107::getMessage()->addError($tp->lanVars(RL_LAN_086, $nfcount,true));
 		}
 
 		//$this->redirect();
@@ -6052,7 +6052,7 @@ class e_admin_form_ui extends e_form
 								".$this->text('searchquery', $current_query[0], 50, $input_options)."
 								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
 							<span>
-							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
+							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>RL_LAN_088))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 								".$this->renderBatchFilter('filter', $current_query[1])."
@@ -6471,11 +6471,11 @@ class e_admin_form_ui extends e_form
 					    //TODO today, yesterday, this-month, last-month .
 					    
 					    $dateFilters = array (
-					    	'hour'		=> "Past Hour",
-					    	"day"		=> "Past 24 hours",
-					    	"week"		=> "Past Week",
-					    	"month"		=> "Past Month",
-					    	"year"		=> "Past Year"
+						'hour'		=> RL_LAN_127,
+					    	"day"		=> RL_LAN_128,
+					    	"week"		=> RL_LAN_129,
+					    	"month"		=> RL_LAN_130,
+					    	"year"		=> RL_LAN_131
 						);
 					    
 						foreach($dateFilters as $k => $name)
