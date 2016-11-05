@@ -692,10 +692,10 @@ class media_admin_ui extends e_admin_ui
 	//	protected $defaultOrder = 'desc';
 		protected $listOrder = 'm.media_id desc'; // show newest images first. 
 		public $deleteConfirmScreen = true;
-		public $deleteConfirmMessage = 'You are about to delete [x] records and <strong>ALL CORRESPONDING FILES</strong>! Please confirm to continue!';
+		public $deleteConfirmMessage = IMALAN_129;
 
 
-    	protected $preftabs			= array('General',"Watermark", "Youtube"); 
+    	protected $preftabs			= array(IMALAN_78,IMALAN_89, "Youtube"); 
     	 
 		protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null,			'data'=> null,		'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -1313,10 +1313,10 @@ class media_admin_ui extends e_admin_ui
 			$text .= "<div style='text-align:right;padding:5px'>
 			
 			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
-			<span>Save</span>
+			<span>".LAN_SAVE."</span>
 			</button>
 			<button type='submit' class=' btn btn-default submit e-dialog-close' name='cancel_image' value='Cancel' >
-			<span>Cancel</span>
+			<span>".LAN_CANCEL."</span>
 			</button>
 			</div>";
 
@@ -1568,12 +1568,10 @@ class media_admin_ui extends e_admin_ui
 			}
 			else // empty key.
 			{
-				$items = "<div class='alert alert-info'><p>Youtube search requires a (free) YouTube v3 api key.<br />
-				This key is not required unless you wish to perform a keyword, playlist or channel search.<br />
-				Entering a Youtube video URL directly into the box above will still work without having an api key. <br />
-				<a style='color:black' target='_blank' href='".e_ADMIN."image.php?mode=main&action=prefs#/tab2'>Click here for more information and to enter your api key</a>.
-				</p>
-				</div>";
+			    $link = '<a style="color:black" target="_blank" href="'.e_ADMIN.'image.php?mode=main&action=prefs#/tab2">'.IMALAN_177.'</a>';
+			    $items = "<div class='alert alert-info'><p>".e107::getParser()->lanVars(e107::getParser()->toHTML(IMALAN_174, true), array('x'=>$link))."</p></div>";
+				
+				
 			}
 
 		}
@@ -1603,7 +1601,7 @@ class media_admin_ui extends e_admin_ui
 		}
 	//	return print_a($data,true);
 
-		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>'Search Youtube. Paste any YouTube URL here for a specific video/playlist/channel' );
+		$parms = array('width' => 200, 'height'=>113, 'type'=>'image', 'bbcode'=>'video', 'tagid'=> $this->getQuery('tagid'), 'action'=>'youtube','searchPlaceholder'=>IMALAN_175 );
 		$text = e107::getMedia()->browserCarousel($items, $parms);
 		
 		if(E107_DEBUG_LEVEL > 0 && !empty($feed))
@@ -1659,7 +1657,7 @@ class media_admin_ui extends e_admin_ui
 
 			if(!$fl->getRemoteFile($_POST['upload_url'], $fileName, 'import'))
 			{
-				$mes->addError("There was a problem grabbing the file");
+				$mes->addError(IMALAN_176);
 			}
 			elseif($import == true)
  			{
@@ -2445,8 +2443,8 @@ class media_admin_ui extends e_admin_ui
 		// <td>".$frm->textarea('batch_import_diz['.$c.']', ($_POST['batch_import_diz'][$c] ? $_POST['batch_import_diz'][$c] : $default['description']))."</td>
 
 
-		$this->cats['_avatars_public'] = "Avatars Folder (user selectable)";
-		$this->cats['_avatars_private'] = "Avatars Folder (private)";
+		$this->cats['_avatars_public'] = IMALAN_178;
+		$this->cats['_avatars_private'] = IMALAN_179;
 
 		if(!isset($_POST['batch_category']) && substr($lastMime,0,5)=='image')
 		{
