@@ -5,7 +5,12 @@
  * Admin Language File
  *
 */
-
+define("RL_LAN_088", "Filter the results below"); 
+define("RL_LAN_127", "Past Hour"); 
+define("RL_LAN_128", "Past 24 hours");
+define("RL_LAN_129", "Past Week");
+define("RL_LAN_130", "Past Month");
+define("RL_LAN_131", "Past Year");
 define("ADLAN_0", "News");
 define("ADLAN_1", "Manage news items");
 define("ADLAN_2", "Create news item");
@@ -455,3 +460,14 @@ define("LAN_PERSONALIZE", "Personalize");
 define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
 define("LAN_DISPLAY_COLUMNS", "Display Columns");
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
+define("LAN_AFTER_SUBMIT", "After submit:");
+define("LAN_UNAVAILABLE", "Unavailable");
+define("LAN_READY_UP_FOLDER_FIELDS", "Ready to use upload form fields, optional - file list view");
+define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
+define("LAN_NOT_FOUND", "Not Found!");
+define("LAN_QUICK_VIEW", "Quick View");
+define("LAN_GO_TO_USER_PROFILE", "Go to user profile");
+define("LAN_MULTI_LANGUAGE_FIELD", "Multi-language field");
+define("LAN_GO_TO_LIST", "go to list");
+define("LAN_CREATE_ANOTHER", "create another");
+define("LAN_EDIT_CURRENT", "edit current");
