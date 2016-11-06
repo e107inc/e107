@@ -127,10 +127,10 @@ define("RL_LAN_124", "User audit trail actions");
 define("RL_LAN_125", "System Logs Maintenance");
 define("RL_LAN_126", "Total [x] entries matching search condition");
 /*define("RL_LAN_127", "Past Hour"); // Moved to lan_admin.php
-define("RL_LAN_128", "Past 24 hours");
-define("RL_LAN_129", "Past Week");
-define("RL_LAN_130", "Past Month");
-define("RL_LAN_131", "Past Year"); */
+define("RL_LAN_128", "Past 24 hours"); // Moved to lan_admin.php
+define("RL_LAN_129", "Past Week"); // Moved to lan_admin.php
+define("RL_LAN_130", "Past Month"); // Moved to lan_admin.php
+define("RL_LAN_131", "Past Year"); // Moved to lan_admin.php */
 define("RL_LAN_132", "Informative");
 define("RL_LAN_133", "Notice");
 define("RL_LAN_134", "Warning");
