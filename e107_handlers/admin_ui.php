@@ -3096,13 +3096,23 @@ class e_admin_controller_ui extends e_admin_controller
 				$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
 			}
 		}
-		
+
+		if(substr($batch_trigger, 0, 6) === 'batch_')
+		{
+			list($tmp,$plugin,$command) = explode("_",$batch_trigger,3);
+			$this->setPosted(array());
+			$this->getRequest()->setAction('batch');
+			$cls = e107::getAddon($plugin,'e_admin',true);
+			e107::callMethod($cls,'process',$this,array('cmd'=>$command,'ids'=>$selected));
+			return $this;
+		}
+
 
 		$this->setTriggersEnabled(false); //disable further triggering
 		
 		switch($trigger[0])
 		{
-			case 'delete': //FIXME - confirmation screen
+			case 'delete': //FIXME - confirmation popup
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
 				// don't check selected data - subclass need to check additional post variables(confirm screen)
