@@ -4359,6 +4359,22 @@ class e_admin_ui extends e_admin_controller_ui
 
 			}
 
+			if(!empty($config['batchOptions']))
+			{
+				$opts = array();
+				foreach($config['batchOptions'] as $k=>$v)
+				{
+					$fieldName = 'batch_'.$plug.'_'.$k;
+
+					$opts[$fieldName] = $v; // ie. x_plugin_key
+
+				}
+
+				$batchCat = deftrue('LAN_PLUGIN_'.strtoupper($plug).'_NAME', $plug);
+				$this->batchOptions[$batchCat] = $opts;
+
+			}
+
 			if(!empty($config['tabs']))
 			{
 				foreach($config['tabs'] as $t=>$tb)
@@ -6266,7 +6282,22 @@ class e_admin_form_ui extends e_form
 			{
 				foreach($customBatchOptions as $key=>$val)
 				{
-					$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+
+					if(is_array($val))
+					{
+						$text .= $this->optgroup_open($key);
+						foreach($val as $k=>$v)
+						{
+							$text .= $this->option($v, $k, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+						}
+						$text .= $this->optgroup_close();
+					}
+					else
+					{
+						$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+					}
+
+
 				}
 
 			}
