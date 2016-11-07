@@ -4349,24 +4349,25 @@ class e_admin_ui extends e_admin_controller_ui
 
 			$form = e107::getAddon($plug, 'e_admin', $plug."_admin_form"); // class | false.
 
-			foreach($config['fields'] as $k=>$v)
+			if(!empty($config['fields']))
 			{
-				$v['data'] = false; // disable data-saving to db table. .
-
-				$fieldName = 'x_'.$plug.'_'.$k;
-
-				if($v['type'] == 'method' && method_exists($form,$fieldName))
+				foreach($config['fields'] as $k=>$v)
 				{
-					$v['method'] = $plug."_admin_form::".$fieldName;
-					//echo "Found method ".$fieldName." in ".$plug."_menu_form";
-					//echo $form->$fieldName();
+					$v['data'] = false; // disable data-saving to db table. .
+
+					$fieldName = 'x_'.$plug.'_'.$k;
+
+					if($v['type'] == 'method' && method_exists($form,$fieldName))
+					{
+						$v['method'] = $plug."_admin_form::".$fieldName;
+						//echo "Found method ".$fieldName." in ".$plug."_menu_form";
+						//echo $form->$fieldName();
+					}
+
+
+					$this->fields[$fieldName] = $v; // ie. x_plugin_key
+
 				}
-
-
-				$this->fields[$fieldName] = $v; // ie. x_plugin_key
-
-
-
 			}
 
 			if(!empty($config['batchOptions']))
