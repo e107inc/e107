@@ -57,12 +57,9 @@ class adminstyle_infopanel
 		{
 			
 			$user_pref['core-infopanel-mye107'] = $_POST['e-mye107'];
-			
+			$user_pref['core-infopanel-menus'] = $_POST['e-mymenus'];
+
 			save_prefs('user');
-			
-			$pref['core-infopanel-menus'] = $_POST['e-mymenus'];
-			
-			save_prefs();
 		}
 		
 		
@@ -251,16 +248,24 @@ class adminstyle_infopanel
 	//	$text2 .= $ns->tablerender('Visitors Online : '.vartrue($nOnline), $panelOnline,'core-infopanel_online',true);
 		
 	// --------------------- User Selected Menus -------------------
-		
-	
-		if (varset($pref['core-infopanel-menus']))
+
+
+		if(varset($user_pref['core-infopanel-menus']))
 		{
-			foreach ($pref['core-infopanel-menus'] as $val)
+			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
-				$id = $frm->name2id('core-infopanel_'.$val);			
-				$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+				// Custom menu (core).
+				if(is_numeric($val))
+				{
+					$inc = e107::getMenu()->renderMenu($val, null, null, true);
+				}
+				// Plugin defined menu.
+				else
+				{
+					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+				}
+
 				$text .= $inc;
-				// $text .= $ns->tablerender("", $inc, $id,true);
 			}
 		}
 	
@@ -664,26 +669,33 @@ class adminstyle_infopanel
 		}
 
 		$frm = e107::getForm();
-		$pref = e107::getPref();
+		global  $user_pref;
 		
 	
 		$text = "<div style='padding-left:20px'>";
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
-		$settings = varset($pref['core-infopanel-menus'],array());
+		$settings = varset($user_pref['core-infopanel-menus'],array());
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
 			while ($row = e107::getDb()->db_Fetch())
 			{
-				// if(!is_numeric($row['menu_path']))
+				// Custom menu (core).
+				if(is_numeric($row['menu_path']))
 				{
-					$label = str_replace("_menu","",$row['menu_name']);
-					$path_to_menu = $row['menu_path'].$row['menu_name'];
-					$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
-					$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
-					$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
-					$text .= "</div>";
+					$path_to_menu = $row['menu_path'];
 				}
+				// Plugin defined menu.
+				else
+				{
+					$path_to_menu = $row['menu_path'].$row['menu_name'];
+				}
+
+				$label = str_replace("_menu","",$row['menu_name']);
+				$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
+				$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
+				$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
+				$text .= "</div>";
 			}
 		}
 		
