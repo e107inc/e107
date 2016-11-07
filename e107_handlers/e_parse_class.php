@@ -4181,6 +4181,11 @@ TMPL;
 		    echo "<h3>User-input &gg; toDb(\$text, true, false, 'no_html')</h3>";
 		    print_a($dbText2);
 
+		    echo "<div class='alert alert-warning'>";
+		    $dbText3 = $tp->toDB($text, false, false, 'pReFs');
+		    echo "<h3>User-input &gg; toDb(\$text, false, false, 'pReFs')</h3>";
+		    print_a($dbText3);
+
 		   // toClean
 		    $filter3 = $tp->filter($text, 'wds');
 		    echo "<h3>User-input &gg; filter(\$text, 'wds')</h3>";

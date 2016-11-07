@@ -13,18 +13,67 @@ define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 // Warning: Some bootstrap CDNs are not compiled with popup.js
 // use https if e107 is using https.
 
-e107::js("url", 			"https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
+/*
+ * jsdelivr
+https://cdn.jsdelivr.net/bootstrap/3.3.7/js/bootstrap.min.js
+https://cdn.jsdelivr.net/bootstrap/3.3.7/css/bootstrap-theme.min.css
+https://cdn.jsdelivr.net/bootstrap/3.3.7/css/bootstrap.min.css
+https://cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css
+https://cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.css
 
-if($bootswatch = e107::pref('theme', 'bootswatch',false))
-{
-	e107::css('url', 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/'.$bootswatch.'/bootstrap.min.css');
-}
-else
-{
-	e107::css('url', 'https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css');
-}
+https://cdn.jsdelivr.net/bootswatch/3.3.7/cerulean/bootstrap.min.css
 
-e107::css('url',    'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
+cdnjs
+https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js
+https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.css
+https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css
+https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css
+
+https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
+
+ */
+	$cndPref = e107::pref('theme', 'cdn','cdnjs');
+	$bootswatch = e107::pref('theme', 'bootswatch',false);
+
+
+	switch($cndPref)
+	{
+		case "jsdelivr":
+
+			e107::js("url", "https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
+
+			if($bootswatch)
+			{
+				e107::css('url', 'https://cdn.jsdelivr.net/bootswatch/3.3.7/'.$bootswatch.'/bootstrap.min.css');
+			}
+			else
+			{
+				e107::css('url', 'https://cdn.jsdelivr.net/bootstrap/3.3.7/css/bootstrap.min.css');
+			}
+
+			e107::css('url',    'https://cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css');
+			break;
+
+		case "cdnjs":
+		default:
+
+			e107::js("url", "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js", 'jquery', 2);
+
+			if($bootswatch)
+			{
+				e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/'.$bootswatch.'/bootstrap.min.css');
+			}
+			else
+			{
+				e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css');
+			}
+
+			e107::css('url',    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+	}
+
+
+
 
 
 

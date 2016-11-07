@@ -3923,7 +3923,7 @@ class e_form
 				if(!$value) $value = '0';
 				if($parms)
 				{
-					if(!isset($parms['sep'])) $value = number_format($value, $parms['decimals']);
+					if(!isset($parms['sep'])) $value = number_format($value, varset($parms['decimals'],0));
 					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
 				
