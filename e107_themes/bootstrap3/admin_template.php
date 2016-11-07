@@ -208,6 +208,7 @@ $ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="d
         </div>';*/
 
 
+// TODO - LANs
 $ADMIN_MODAL = '
 <div id="uiModal" class="modal fade">
 	<div id="admin-ui-modal" class="modal-dialog modal-lg">
@@ -224,12 +225,13 @@ $ADMIN_MODAL = '
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
 			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->';
+		</div>
+	</div>
+</div>
+';
 
-
-$ADMIN_HEADER_DASHBOARD = $ADMIN_HEADER = $ADMIN_MODAL . '
+// TODO - LANs
+$ADMIN_HEADER_FLEXPANEL = $ADMIN_HEADER = $ADMIN_MODAL . '
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
@@ -239,12 +241,12 @@ $ADMIN_HEADER_DASHBOARD = $ADMIN_HEADER = $ADMIN_MODAL . '
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="brand navbar-brand" href="' . e_ADMIN_ABS . 'admin.php" title="Return to Front Panel">
-				<img class="admin-logo" src="' . e_THEME_ABS . 'bootstrap3/images/e107_adminlogo.png" alt="e107"/>
+			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel">
+				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107"/>
 			</a>
 		</div>
 		<div class="navbar-collapse collapse">
-			{ADMIN_NAVIGATION=no-main}        	 
+			{ADMIN_NAVIGATION=no-main}
 			<div>
 				{ADMIN_NAVIGATION=logout}
 				{ADMIN_NAVIGATION=language}
@@ -252,88 +254,57 @@ $ADMIN_HEADER_DASHBOARD = $ADMIN_HEADER = $ADMIN_MODAL . '
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 			</div>
-		</div><!--/.navbar-collapse -->
+		</div>
 	</div>
 </div>
-';
-
-
-$ADMIN_HEADER_DASHBOARD .= '
-<div class="container-fluid">
-	<div class="row">		
-		<div class="col-md-2" id="left-panel">
-			<div class="draggable-panels" id="droppable-area-sidebar">
-				{SETSTYLE=admin_menu}
-				{ADMIN_MENU}
-				{ADMIN_PWORD}
-				{ADMIN_MENUMANAGER}
-	
-				{SETSTYLE=site_info}
-				{ADMINUI_HELP}
-				{ADMIN_HELP}
-	
-				{ADMIN_SITEINFO=creditsonly}
-				{SETSTYLE=admin_menu}
-				{ADMIN_LATEST=infopanel}
-				{ADMIN_STATUS=infopanel}
-				{ADMIN_LOG=request}
-				{ADMIN_MSG=request}
-				{ADMIN_PLUGINS}
-				{SETSTYLE=default}
-			</div>
-		</div>
-		<div class="col-md-10" id="right-panel">
-			<div class="sidebar-toggle">
-				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
-			</div>
-			<div>
-';
-
-$ADMIN_FOOTER_DASHBOARD = '
-			</div>
-		</div><!--/span-->
-	</div><!--/row-->
-</div><!--/.fluid-container-->
-
-<footer class="center mute"> 
-	Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
-</footer>
-';
-
-
-$ADMIN_HEADER .= '
 <div class="container-fluid">
 	<div class="row">
+';
+
+$ADMIN_HEADER_FLEXPANEL .= '
+		<div class="col-sm-12">
+			<div class="admin-main-content">
+';
+
+// TODO - LANs
+$ADMIN_HEADER .= '
 		<div class="col-md-3 col-lg-2" id="left-panel">
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
+	
 			{ADMIN_PWORD}
 			{ADMIN_MENUMANAGER}
+	
 			<div class="e-scroll-fixed">
 				{SETSTYLE=site_info}
 				{ADMINUI_HELP}
 				{ADMIN_HELP}
 			</div>
+	
 			{ADMIN_SITEINFO=creditsonly}
 			{SETSTYLE=admin_menu}
+	
 			{ADMIN_LATEST=infopanel}
 			{ADMIN_STATUS=infopanel}
+	
 			{ADMIN_LOG=request}
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
-			{SETSTYLE=default}
+	
+			{SETSTYLE=default}			
 		</div>
 		<div class="col-md-9 col-lg-10" id="right-panel">
 			<div class="sidebar-toggle">
 				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
 			</div>
-			<div>
+			<div class="admin-main-content">
 ';
 
+// TODO - LANs
 $ADMIN_FOOTER = '
-			</div><!--/row-->
-		</div><!--/span-->
-	</div><!--/row-->
+			</div>
+		</div>
+	</div><!--/.row-->
 </div><!--/.fluid-container-->
 
 <footer class="center mute"> 
