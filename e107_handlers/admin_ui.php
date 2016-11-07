@@ -1488,7 +1488,7 @@ class e_admin_dispatcher
 			$tmp = explode('/', trim($key, '/'), 3);
 
 			// sync with mode/route access
-			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.$tmp[1]))
+			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.varset($tmp[1])))
 			{
 				continue;
 			}
@@ -3096,13 +3096,23 @@ class e_admin_controller_ui extends e_admin_controller
 				$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
 			}
 		}
-		
+
+		if(substr($batch_trigger, 0, 6) === 'batch_')
+		{
+			list($tmp,$plugin,$command) = explode("_",$batch_trigger,3);
+			$this->setPosted(array());
+			$this->getRequest()->setAction('batch');
+			$cls = e107::getAddon($plugin,'e_admin',true);
+			e107::callMethod($cls,'process',$this,array('cmd'=>$command,'ids'=>$selected));
+			return $this;
+		}
+
 
 		$this->setTriggersEnabled(false); //disable further triggering
 		
 		switch($trigger[0])
 		{
-			case 'delete': //FIXME - confirmation screen
+			case 'delete': //FIXME - confirmation popup
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
 				// don't check selected data - subclass need to check additional post variables(confirm screen)
@@ -4359,6 +4369,22 @@ class e_admin_ui extends e_admin_controller_ui
 
 			}
 
+			if(!empty($config['batchOptions']))
+			{
+				$opts = array();
+				foreach($config['batchOptions'] as $k=>$v)
+				{
+					$fieldName = 'batch_'.$plug.'_'.$k;
+
+					$opts[$fieldName] = $v; // ie. x_plugin_key
+
+				}
+
+				$batchCat = deftrue('LAN_PLUGIN_'.strtoupper($plug).'_NAME', $plug);
+				$this->batchOptions[$batchCat] = $opts;
+
+			}
+
 			if(!empty($config['tabs']))
 			{
 				foreach($config['tabs'] as $t=>$tb)
@@ -4475,8 +4501,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess($tp->lanVars('[x] record(s) successfully deleted.', $delcount, true));
-			if($nfcount) e107::getMessage()->addError($tp->lanVars('[x] records not found and not deleted.', $nfcount,true));
+			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(RL_LAN_085, $delcount, true));
+			if($nfcount) e107::getMessage()->addError($tp->lanVars(RL_LAN_086, $nfcount,true));
 		}
 
 		//$this->redirect();
@@ -6052,7 +6078,7 @@ class e_admin_form_ui extends e_form
 								".$this->text('searchquery', $current_query[0], 50, $input_options)."
 								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
 							<span>
-							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
+							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>RL_LAN_088))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 								".$this->renderBatchFilter('filter', $current_query[1])."
@@ -6266,7 +6292,22 @@ class e_admin_form_ui extends e_form
 			{
 				foreach($customBatchOptions as $key=>$val)
 				{
-					$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+
+					if(is_array($val))
+					{
+						$text .= $this->optgroup_open($key);
+						foreach($val as $k=>$v)
+						{
+							$text .= $this->option($v, $k, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+						}
+						$text .= $this->optgroup_close();
+					}
+					else
+					{
+						$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+					}
+
+
 				}
 
 			}
@@ -6471,11 +6512,11 @@ class e_admin_form_ui extends e_form
 					    //TODO today, yesterday, this-month, last-month .
 					    
 					    $dateFilters = array (
-					    	'hour'		=> "Past Hour",
-					    	"day"		=> "Past 24 hours",
-					    	"week"		=> "Past Week",
-					    	"month"		=> "Past Month",
-					    	"year"		=> "Past Year"
+						'hour'		=> RL_LAN_127,
+					    	"day"		=> RL_LAN_128,
+					    	"week"		=> RL_LAN_129,
+					    	"month"		=> RL_LAN_130,
+					    	"year"		=> RL_LAN_131
 						);
 					    
 						foreach($dateFilters as $k => $name)
