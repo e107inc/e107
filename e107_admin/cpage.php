@@ -440,7 +440,7 @@ class page_admin_ui extends e_admin_ui
 		                               LEFT JOIN #user AS u ON p.page_author = u.user_id
 		                               LEFT JOIN #page_chapters AS pch ON p.page_chapter = pch.chapter_id
 		                               LEFT JOIN #page_chapters AS pbk ON pch.chapter_parent = pbk.chapter_id
-		                               WHERE p.page_title != '' "; // without any Order or Limit.
+		                               WHERE (p.page_title != '' OR p.page_text != '')   "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 				= "page_id";
