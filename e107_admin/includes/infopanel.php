@@ -669,12 +669,12 @@ class adminstyle_infopanel
 		}
 
 		$frm = e107::getForm();
-		$pref = e107::getPref();
+		global  $user_pref;
 		
 	
 		$text = "<div style='padding-left:20px'>";
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
-		$settings = varset($pref['core-infopanel-menus'],array());
+		$settings = varset($user_pref['core-infopanel-menus'],array());
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
