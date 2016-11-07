@@ -31,18 +31,19 @@ if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='begi
     $pref['adminstyle'] = 'infopanel'; 
 }
 
-if(strpos($pref['adminstyle'], 'infopanel') === 0)
+if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 {
-	// Define constant for using custom template on the dashboard.
-	define('e_DASHBOARD', true);
+	require_once(e_ADMIN . 'includes/' . $pref['adminstyle'] . '.php');
 
-	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
-	$_class = 'adminstyle_'.$pref['adminstyle'];
+	$_class = 'adminstyle_' . $pref['adminstyle'];
 	if(class_exists($_class, false))
 	{
-		$adp = new $_class;	
+		$adp = new $_class;
 	}
-	else $adp = new adminstyle_infopanel;	
+	else
+	{
+		$adp = new adminstyle_infopanel;
+	}
 }
 
 
@@ -399,7 +400,7 @@ function render_clean() // still used by classis, tabbed etc.
 
 if(is_object($adp))
 {
-	$adp->render();	
+	$adp->render();
 }
 else
 {

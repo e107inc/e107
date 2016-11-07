@@ -5,7 +5,7 @@ define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
 define("BOOTSTRAP", 	3);
 define('FONTAWESOME',	4);
 
-e107::js("theme", "js/bootstrap3.js", 'jquery');
+
 
 // e107::js("url", 		"https://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",'jquery', 2);
 // e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');

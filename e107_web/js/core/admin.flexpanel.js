@@ -4,7 +4,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 {
 	'use strict';
 
-	e107.settings.draggablePanels = {
+	e107.callbacks = e107.callbacks || {};
+
+	e107.settings.flexPanel = {
 		selector: '.draggable-panels',
 		items: '> .panel'
 	};
@@ -12,12 +14,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	/**
 	 * Behavior to initialize draggable panels on the dashboard.
 	 *
-	 * @type {{attach: e107.behaviors.adminDashboardDraggablePanels.attach}}
+	 * @type {{attach: e107.behaviors.flexPanelDraggablePanels.attach}}
 	 */
-	e107.behaviors.adminDashboardDraggablePanels = {
+	e107.behaviors.flexPanelDraggablePanels = {
 		attach: function (context, settings)
 		{
-			var selector = e107.settings.draggablePanels.selector;
+			var selector = e107.settings.flexPanel.selector;
 			var onceKey = 'admin-dashboard-draggable-panels';
 
 			$(context).find(selector).once(onceKey).each(function ()
@@ -26,9 +28,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 				$panel.sortable({
 					connectWith: selector,
-					items: e107.settings.draggablePanels.items,
+					items: e107.settings.flexPanel.items,
 					handle: '.panel-heading',
-					accept: e107.settings.draggablePanels.selector,
+					accept: e107.settings.flexPanel.selector,
 					cursor: 'move',
 					placeholder: 'draggable-placeholder',
 					forcePlaceholderSize: true,
@@ -39,7 +41,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					start: function (event, ui)
 					{
 						var $placeholders = $('.draggable-placeholder');
-						var $draggablePanels = $(e107.settings.draggablePanels.selector);
+						var $draggablePanels = $(e107.settings.flexPanel.selector);
 
 						$placeholders.css('margin', '15px');
 						$placeholders.css('background-color', '#337ab7');
@@ -52,21 +54,21 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					},
 					stop: function (event, ui)
 					{
-						var $draggablePanels = $(e107.settings.draggablePanels.selector);
+						var $draggablePanels = $(e107.settings.flexPanel.selector);
 						$draggablePanels.css('min-height', '0');
 						$draggablePanels.css('border', 'none');
 						$draggablePanels.css('margin-bottom', '0');
 
-						e107.callbacks.adminDashboardSavePanelOrder();
+						e107.callbacks.flexPanelSavePanelOrder();
 					}
 				});
 			});
 		}
 	};
 
-	e107.callbacks.adminDashboardSavePanelOrder = function ()
+	e107.callbacks.flexPanelSavePanelOrder = function ()
 	{
-		var selector = e107.settings.draggablePanels.selector;
+		var selector = e107.settings.flexPanel.selector;
 		var NewOrder = [];
 
 		$(selector).each(function ()
@@ -78,7 +80,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				NewOrder[key] = [];
 
-				$('#' + key + ' ' + e107.settings.draggablePanels.items).each(function ()
+				$('#' + key + ' ' + e107.settings.flexPanel.items).each(function ()
 				{
 					var $item = $(this);
 					var title = $item.find('.panel-title').eq(0).text();
@@ -89,6 +91,6 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		});
 
 		console.log(NewOrder);
-	}
+	};
 
 })(jQuery);

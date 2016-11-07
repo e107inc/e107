@@ -411,11 +411,10 @@ class admin_shortcodes
 
 	function sc_admin_latest($parm)
 	{
-		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
 		{
 			return;
 		}
-		
 		
 		if (ADMIN) {
 			if (!function_exists('admin_latest')) //XXX Is this still necessary?
@@ -1095,7 +1094,7 @@ class admin_shortcodes
 
 	function sc_admin_status($parm)
 	{
-		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
 		{
 			return;
 		}
