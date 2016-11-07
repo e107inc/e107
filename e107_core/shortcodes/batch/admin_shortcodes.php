@@ -405,7 +405,7 @@ class admin_shortcodes
 		if(isset($params['nomenu'])) { return $select; }
 		if($select) { $text .= "<div class='center'>{$select}</div>"; }
 
-		return $ns->tablerender(UTHEME_MENU_L2, $text, '', true);
+		return $ns->tablerender(UTHEME_MENU_L2, $text, 'core-menu-lang', true);
 
 	}
 
@@ -507,7 +507,7 @@ class admin_shortcodes
 				
 				//	$text .= "</div>";
 					
-					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;	
+					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, 'core-menu-latest', TRUE) : $text;
 
 				}
 			}
@@ -1208,7 +1208,7 @@ class admin_shortcodes
 				//	$text .= "\n\t\t\t\t\t</div>";
 					
 					
-					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
+					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, 'core-menu-status', TRUE) : $text;
 				}
 			}
 

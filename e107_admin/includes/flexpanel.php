@@ -66,12 +66,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// "Help" box.
-		$panels['Area01'] .= $tp->parseTemplate('{SETSTYLE=site_info}{ADMIN_HELP}', true, $admin_sc);
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$panels['Area01'] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
+		
 		// "Latest" box.
-		$panels['Area01'] .= $tp->parseTemplate('{SETSTYLE=admin_menu}{ADMIN_LATEST=infopanel}', true, $admin_sc);
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$panels['Area01'] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
+		
 		// "Status" box.
-		$panels['Area01'] .= $tp->parseTemplate('{SETSTYLE=admin_menu}{ADMIN_STATUS=infopanel}', true, $admin_sc);
-
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$panels['Area01'] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
+		
 
 		// --------------------- Personalized Panel -----------------------
 		if(getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
@@ -95,7 +100,9 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			);
 			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'], $defArray);
 		}
-		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
+		
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		
 		$mainPanel = "<div id='core-infopanel_mye107'>";
 		$mainPanel .= "<div class='left'>";
 		foreach($this->iconlist as $key => $val)
@@ -107,9 +114,11 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		}
 		$mainPanel .= "</div></div>";
 		// Rendering the saved configuration.
-		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
+
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
-		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107", true);
+		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-my-e107", true);
 		$panels['Area07'] .= $coreInfoPanelMyE107;
 
 
@@ -119,17 +128,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$newsTabs['pluginFeed'] = array('caption' => LAN_PLUGIN, 'text' => "<div id='e-adminfeed-plugin'></div>");
 		$newsTabs['themeFeed'] = array('caption' => LAN_THEMES, 'text' => "<div id='e-adminfeed-theme'></div>");
 
-		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-infopanel_news", true);
+		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-e107-news", true);
 		$panels['Area08'] .= $coreInfoPanelNews;
 
 
 		// --------------------- Website Status ---------------------------
-		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "", true);
+		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-website-status", true);
 		$panels['Area08'] .= $coreInfoPanelWebsiteStatus;
 
 
 		// --------------------- Latest Comments --------------------------
-		$panels['Area01'] .= $this->renderLatestComments();
+		// $panels['Area01'] .= $this->renderLatestComments(); // TODO
 
 
 		// --------------------- User Selected Menus ----------------------
@@ -137,7 +146,16 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		{
 			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
-				$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+				// Custom menu.
+				if(is_numeric($val))
+				{
+					$inc = e107::getMenu()->renderMenu($val, null, null, true);
+				}
+				else
+				{
+					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+				}
+
 				$panels['Area01'] .= $inc;
 			}
 		}
