@@ -263,11 +263,12 @@ class adminstyle_infopanel
 		{
 			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
-				// Custom menu.
+				// Custom menu (core).
 				if(is_numeric($val))
 				{
 					$inc = e107::getMenu()->renderMenu($val, null, null, true);
 				}
+				// Plugin defined menu.
 				else
 				{
 					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
@@ -688,12 +689,12 @@ class adminstyle_infopanel
 		{
 			while ($row = e107::getDb()->db_Fetch())
 			{
-				// Custom menu.
+				// Custom menu (core).
 				if(is_numeric($row['menu_path']))
 				{
 					$path_to_menu = $row['menu_path'];
 				}
-				// Plugin menu.
+				// Plugin defined menu.
 				else
 				{
 					$path_to_menu = $row['menu_path'].$row['menu_name'];
