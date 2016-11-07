@@ -5,12 +5,12 @@
  * Admin Language File
  *
 */
-define("RL_LAN_088", "Filter the results below"); 
-define("RL_LAN_127", "Past Hour"); 
-define("RL_LAN_128", "Past 24 hours");
-define("RL_LAN_129", "Past Week");
-define("RL_LAN_130", "Past Month");
-define("RL_LAN_131", "Past Year");
+define("LAN_FILTER_THE_RESULTS_BELOW", "Filter the results below"); 
+define("LAN_UI_PAST_HOUR", "Past Hour"); 
+define("LAN_UI_PAST_24_HOURS", "Past 24 hours");
+define("LAN_UI_PAST_WEEK", "Past Week");
+define("LAN_UI_PAST_MONTH", "Past Month");
+define("LAN_UI_PAST_YEAR", "Past Year");
 define("ADLAN_0", "News");
 define("ADLAN_1", "Manage news items");
 define("ADLAN_2", "Create news item");
