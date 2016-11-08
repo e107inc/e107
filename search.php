@@ -88,7 +88,7 @@ class search extends e_shortcode
 		{
 			if (file_exists(THEME."search_template.php")) 
 			{
-				require(THEME."search_template.php");
+				require(THEME."templates/search_template.php");
 			} 
 			else 
 			{
