@@ -27,7 +27,7 @@ if(!isset($SEARCH_SHORTCODE))
 if(!isset($SEARCH_TOP_TABLE)) 
 {
 	$SEARCH_TOP_TABLE = "<div>
-	<form id='searchform' method='get' action='".e_SELF."'>
+	<form id='searchform' method='get' action='{SEARCH_FORM_URL}'>
 	<table style='".USER_WIDTH."' class='table fborder'><tr>
 	<td class='forumheader3' style='width: 40%'>".LAN_199."</td>
 	<td class='forumheader3' style='width: 60%; white-space: nowrap'>
@@ -135,7 +135,7 @@ if(!isset($POST_CHECKBOXES))
 
 
 $SEARCH_TEMPLATE['form']['start'] = '
-<form class="form-horizontal" role="form" id="searchform" method="get" action="'.e_SELF.'">
+<form class="form-horizontal" role="form" id="searchform" method="get" action="{SEARCH_FORM_URL}">
 	<div class="form-group">
     	<label for="inputEmail3" class="col-sm-3 control-label">'.LAN_199.'</label>
 	    <div class="col-sm-9">{SEARCH_MAIN}

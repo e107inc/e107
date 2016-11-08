@@ -238,6 +238,17 @@ class search extends e_shortcode
 		return $this->message;	
 	}
 
+	function sc_search_form_url($parm='')
+	{
+		return e107::getUrl()->create('search');
+	}
+
+
+
+	// -----------------------
+
+
+
 	private function selectElement($parm)
 	{
 		// standard search config
