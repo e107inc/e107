@@ -268,7 +268,7 @@ define("USRLAN_247", "Us");
 define("USRLAN_248", "Us");
 define("USRLAN_249", "Us");
 define("USRLAN_250", "Us");
-
+define("USRLAN_251", "Leave blank for no change");
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
