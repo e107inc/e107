@@ -10,6 +10,17 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
+if(e_AJAX_REQUEST)
+{
+	if(varset($_POST['core-flexpanel-order'], false))
+	{
+		global $user_pref;
+		$user_pref['core-flexpanel-order'] = $_POST['core-flexpanel-order'];
+		save_prefs('user');
+		exit;
+	}
+}
+
 // Flexpanel uses infopanel's methods to avoid code duplication.
 e107_require_once(e_ADMIN . 'includes/infopanel.php');
 
@@ -48,35 +59,40 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 		global $user_pref;
 
+		// Default menu areas.
 		$panels = array(
-			'Area01' => '', // Sidebar.
-			'Area02' => '',
-			'Area03' => '',
-			'Area04' => '',
-			'Area05' => '',
-			'Area06' => '',
-			'Area07' => '', // Content left.
-			'Area08' => '', // Content right.
-			'Area09' => '',
-			'Area10' => '',
-			'Area11' => '',
-			'Area12' => '',
-			'Area13' => '',
+			'menu-area-01' => array(), // Sidebar.
+			'menu-area-02' => array(),
+			'menu-area-03' => array(),
+			'menu-area-04' => array(),
+			'menu-area-05' => array(),
+			'menu-area-06' => array(),
+			'menu-area-07' => array(), // Content left.
+			'menu-area-08' => array(), // Content right.
+			'menu-area-09' => array(),
+			'menu-area-10' => array(),
+			'menu-area-11' => array(),
+			'menu-area-12' => array(),
+			'menu-area-13' => array(),
 		);
 
 
 		// "Help" box.
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-		$panels['Area01'] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
-		
+		$ns->setUniqueId('core-infopanel_help');
+		$info = $this->getMenuPosition('core-infopanel_help');
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
+
 		// "Latest" box.
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-		$panels['Area01'] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
-		
+		$info = $this->getMenuPosition('e-latest-list');
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
+
 		// "Status" box.
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-		$panels['Area01'] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
-		
+		$info = $this->getMenuPosition('e-status-list');
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
+
 
 		// --------------------- Personalized Panel -----------------------
 		if(getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
@@ -100,9 +116,9 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			);
 			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'], $defArray);
 		}
-		
+
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-		
+
 		$mainPanel = "<div id='core-infopanel_mye107'>";
 		$mainPanel .= "<div class='left'>";
 		foreach($this->iconlist as $key => $val)
@@ -116,10 +132,12 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		// Rendering the saved configuration.
 
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-		
+
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
-		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-my-e107", true);
-		$panels['Area07'] .= $coreInfoPanelMyE107;
+		$ns->setUniqueId('core-infopanel_mye107');
+		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107", true);
+		$info = $this->getMenuPosition('core-infopanel_mye107');
+		$panels[$info['area']][$info['weight']] .= $coreInfoPanelMyE107;
 
 
 		// --------------------- e107 News --------------------------------
@@ -127,14 +145,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$newsTabs['coreFeed'] = array('caption' => LAN_GENERAL, 'text' => "<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='" . ADMINFEEDMORE . "'>" . LAN_MORE . "</a></div>");
 		$newsTabs['pluginFeed'] = array('caption' => LAN_PLUGIN, 'text' => "<div id='e-adminfeed-plugin'></div>");
 		$newsTabs['themeFeed'] = array('caption' => LAN_THEMES, 'text' => "<div id='e-adminfeed-theme'></div>");
-
-		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-e107-news", true);
-		$panels['Area08'] .= $coreInfoPanelNews;
+		$ns->setUniqueId('core-infopanel_news');
+		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-infopanel_news", true);
+		$info = $this->getMenuPosition('core-infopanel_news');
+		$panels[$info['area']][$info['weight']] .= $coreInfoPanelNews;
 
 
 		// --------------------- Website Status ---------------------------
-		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-website-status", true);
-		$panels['Area08'] .= $coreInfoPanelWebsiteStatus;
+		$ns->setUniqueId('core-infopanel_website_status');
+		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-infopanel_website_status", true);
+		$info = $this->getMenuPosition('core-infopanel_website_status');
+		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;
 
 
 		// --------------------- Latest Comments --------------------------
@@ -149,22 +170,40 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 				// Custom menu.
 				if(is_numeric($val))
 				{
+					$menu = e107::getDb()->retrieve('page', 'menu_name', 'page_id = ' . (int) $val);
+					$id = 'cmenu-' . $menu;
 					$inc = e107::getMenu()->renderMenu($val, null, null, true);
 				}
 				else
 				{
+					$id = $frm->name2id($val);
 					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
 				}
 
-				$panels['Area01'] .= $inc;
+				$info = $this->getMenuPosition($id);
+				$panels[$info['area']][$info['weight']] .= $inc;
 			}
 		}
+
+		ksort($panels['menu-area-01']);
+		ksort($panels['menu-area-02']);
+		ksort($panels['menu-area-03']);
+		ksort($panels['menu-area-04']);
+		ksort($panels['menu-area-05']);
+		ksort($panels['menu-area-06']);
+		ksort($panels['menu-area-07']);
+		ksort($panels['menu-area-08']);
+		ksort($panels['menu-area-09']);
+		ksort($panels['menu-area-10']);
+		ksort($panels['menu-area-11']);
+		ksort($panels['menu-area-12']);
+		ksort($panels['menu-area-13']);
 
 		// Sidebar.
 		echo '<div class="row">';
 		echo '<div class="col-md-3 col-lg-2" id="left-panel">';
 		echo '<div class="draggable-panels" id="menu-area-01">';
-		echo $panels['Area01'];
+		echo implode("\n", $panels['menu-area-01']);
 		echo '</div>';
 		echo '</div>';
 		echo '<div class="col-md-9 col-lg-10" id="right-panel">';
@@ -182,7 +221,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-12">';
 			echo '<div class="draggable-panels" id="menu-area-02">';
-			echo $panels['Area02'];
+			echo implode("\n", $panels['menu-area-02']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -191,17 +230,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-4">';
 			echo '<div class="draggable-panels" id="menu-area-03">';
-			echo $panels['Area03'];
+			echo implode("\n", $panels['menu-area-03']);
 			echo '</div>';
 			echo '</div>';
 			echo '<div class="col-sm-4">';
 			echo '<div class="draggable-panels" id="menu-area-04">';
-			echo $panels['Area04'];
+			echo implode("\n", $panels['menu-area-04']);
 			echo '</div>';
 			echo '</div>';
 			echo '<div class="col-sm-4">';
 			echo '<div class="draggable-panels" id="menu-area-05">';
-			echo $panels['Area05'];
+			echo implode("\n", $panels['menu-area-05']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -210,7 +249,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-12">';
 			echo '<div class="draggable-panels" id="menu-area-06">';
-			echo $panels['Area06'];
+			echo implode("\n", $panels['menu-area-06']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -219,12 +258,12 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-6">';
 			echo '<div class="draggable-panels" id="menu-area-07">';
-			echo $panels['Area07'];
+			echo implode("\n", $panels['menu-area-07']);
 			echo '</div>';
 			echo '</div>';
 			echo '<div class="col-sm-6">';
 			echo '<div class="draggable-panels" id="menu-area-08">';
-			echo $panels['Area08'];
+			echo implode("\n", $panels['menu-area-08']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -233,7 +272,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-12">';
 			echo '<div class="draggable-panels" id="menu-area-09">';
-			echo $panels['Area09'];
+			echo implode("\n", $panels['menu-area-09']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -242,17 +281,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-4">';
 			echo '<div class="draggable-panels" id="menu-area-10">';
-			echo $panels['Area10'];
+			echo implode("\n", $panels['menu-area-10']);
 			echo '</div>';
 			echo '</div>';
 			echo '<div class="col-sm-4">';
 			echo '<div class="draggable-panels" id="menu-area-11">';
-			echo $panels['Area11'];
+			echo implode("\n", $panels['menu-area-11']);
 			echo '</div>';
 			echo '</div>';
 			echo '<div class="col-sm-4">';
 			echo '<div class="draggable-panels" id="menu-area-12">';
-			echo $panels['Area12'];
+			echo implode("\n", $panels['menu-area-12']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -261,7 +300,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo '<div class="row">';
 			echo '<div class="col-sm-12">';
 			echo '<div class="draggable-panels" id="menu-area-13">';
-			echo $panels['Area13'];
+			echo implode("\n", $panels['menu-area-13']);
 			echo '</div>';
 			echo '</div>';
 			echo '</div>';
@@ -275,6 +314,60 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 		echo '</div>';
 		echo '</div>';
+	}
+
+
+	function getMenuPosition($id)
+	{
+		global $user_pref;
+		
+		if(varset($user_pref['core-flexpanel-order'][$id]))
+		{
+			return $user_pref['core-flexpanel-order'][$id];
+		}
+
+		$default = array(
+			'area'   => 'menu-area-01',
+			'weight' => 1000,
+		);
+
+		if($id == 'core-infopanel_help')
+		{
+			$default['area'] = 'menu-area-01';
+			$default['weight'] = 0;
+		}
+
+		if($id == 'e-latest-list')
+		{
+			$default['area'] = 'menu-area-01';
+			$default['weight'] = 1;
+		}
+
+		if($id == 'e-status-list')
+		{
+			$default['area'] = 'menu-area-01';
+			$default['weight'] = 2;
+		}
+
+		if($id == 'core-infopanel_mye107')
+		{
+			$default['area'] = 'menu-area-07';
+			$default['weight'] = 0;
+		}
+
+		if($id == 'core-infopanel_news')
+		{
+			$default['area'] = 'menu-area-08';
+			$default['weight'] = 0;
+		}
+
+		if($id == 'core-infopanel_website_status')
+		{
+			$default['area'] = 'menu-area-08';
+			$default['weight'] = 1;
+		}
+
+		return $default;
 	}
 
 }
