@@ -5,15 +5,6 @@
  * Admin Language File
  *
 */
-define("LAN_FILTER_THE_RESULTS_BELOW", "Filter the results below"); 
-define("LAN_UI_PAST_HOUR", "Past Hour"); 
-define("LAN_UI_PAST_24_HOURS", "Past 24 hours");
-define("LAN_UI_PAST_WEEK", "Past Week");
-define("LAN_UI_PAST_MONTH", "Past Month");
-define("LAN_UI_PAST_YEAR", "Past Year");
-define("ADLAN_0", "News");
-define("ADLAN_1", "Manage news items");
-define("ADLAN_2", "Create news item");
 define("ADLAN_0", "News");
 define("ADLAN_1", "Manage news items");
 define("ADLAN_2", "Create news item");
@@ -433,6 +424,11 @@ define("LAN_UI_BATCH_CREATELINK", "Create Link");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
 define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
+define("LAN_UI_PAST_HOUR", "Past Hour"); 
+define("LAN_UI_PAST_24_HOURS", "Past 24 hours");
+define("LAN_UI_PAST_WEEK", "Past Week");
+define("LAN_UI_PAST_MONTH", "Past Month");
+define("LAN_UI_PAST_YEAR", "Past Year");
 
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
