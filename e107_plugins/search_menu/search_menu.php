@@ -61,12 +61,12 @@ if (isset($custom_query[5]) && $custom_query[5]) {
 	$value_text = "value=''";
 }
 
-
+$search_form_url = e107::getUrl()->create('search');
 	
 if(deftrue('BOOTSTRAP'))
 {
 	$text = '
-	<form class="form-inline" method="get" action="'.e_HTTP.'search.php">
+	<form class="form-inline" method="get" action="'.$search_form_url.'">
 	<div class="input-group">
 		<input class="form-control search" type="text" name="q" size="20" maxlength="50" '.$value_text.' />
 		<input type="hidden" name="r" value="0" />';
@@ -85,7 +85,7 @@ if(deftrue('BOOTSTRAP'))
 }	
 else // Legacy v1 code. 
 {
-	$text = "<form class='form-inline' method='get' action='".e_HTTP."search.php'>";
+	$text = "<form class='form-inline' method='get' action='".$search_form_url."'>";
 
 	$text .= "
 	<div>
@@ -109,7 +109,10 @@ else // Legacy v1 code.
 if (isset($searchflat) && $searchflat)
 {
 	echo $text;
-} else {
+}
+else
+{
 	$ns->tablerender(LAN_SEARCH." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search');
 }
+
 ?>

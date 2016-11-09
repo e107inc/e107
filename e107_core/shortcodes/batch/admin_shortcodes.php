@@ -506,9 +506,8 @@ class admin_shortcodes
 
 				
 				//	$text .= "</div>";
-					
-					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, 'core-menu-latest', TRUE) : $text;
-
+					$ns->setUniqueId('e-latest-list');
+					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;
 				}
 			}
 
@@ -982,6 +981,7 @@ class admin_shortcodes
 			if ($pref['adminpwordchange'] && ((ADMINPWCHANGE+2592000) < time()))
 			{
 				$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN."updateadmin.php'>".ADLAN_103.'</a></div>';
+				$ns->setUniqueId('e-password-change');
 				return $ns -> tablerender(ADLAN_104, $text, '', true);
 			}
 		}
@@ -1207,8 +1207,8 @@ class admin_shortcodes
 					
 				//	$text .= "\n\t\t\t\t\t</div>";
 					
-					
-					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, 'core-menu-status', TRUE) : $text;
+					$ns->setUniqueId('e-status-list');
+					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
 				}
 			}
 
