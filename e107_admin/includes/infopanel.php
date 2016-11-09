@@ -594,37 +594,20 @@ class adminstyle_infopanel
 		
 	function render_infopanel_options($render = false) //TODO LAN
 	{
-		// $frm = e107::getSingleton('e_form');
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		
-		$start = "<div>
-		To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>click here</a>.
-		</div>
-	    ";
-	    
 	    if($render == false){ return ""; }
-	    
-		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
-	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
-	    
-		$text2 .= $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
+
+		$text2 = $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= $ns->tablerender(LAN_PERSONALIZE_MENUS, $this->render_infopanel_menu_options(),'personalize',true);
-	//	$text2 .= render_infopanel_icons();
-		//$text2 .= "<div class='clear'>&nbsp;</div>";
-	//	$text2 .= "<h3>Menus</h3>";
-	//	$text2 .= render_infopanel_menu_options();
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= "<div id='button' class='buttons-bar center'>";
 		$text2 .= $frm->admin_button('submit-mye107', LAN_SAVE, 'create');
-		$text2 .= "</div></form>";
-	//	$text2 .= "</div>";
-		
-	//	$end = "</div>";
-			
-		
+		$text2 .= "</div>";
+
 		return $mes->render().$text2;
 	}
 

@@ -268,7 +268,7 @@ $ADMIN_HEADER_FLEXPANEL .= '
 
 // TODO - LANs
 $ADMIN_HEADER .= '
-		<div class="col-md-3 col-lg-2" id="left-panel">
+		<div class="col-md-3 col-lg-2 admin-left-panel">
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
 	
@@ -293,7 +293,7 @@ $ADMIN_HEADER .= '
 	
 			{SETSTYLE=default}			
 		</div>
-		<div class="col-md-9 col-lg-10" id="right-panel">
+		<div class="col-md-9 col-lg-10 admin-right-panel">
 			<div class="sidebar-toggle">
 				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
 			</div>
