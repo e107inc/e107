@@ -236,7 +236,7 @@ JS;
 class users_admin_ui extends e_admin_ui
 {
 		
-	protected $pluginTitle = LAN_USER;
+	protected $pluginTitle = ADLAN_36;
 	protected $pluginName = 'core';
 	protected $eventName = 'user';
 	protected $table = "user";
@@ -1929,11 +1929,10 @@ class users_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 		$age = array(
-			1=>'1 hour', 3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
-		);
+			1=> LAN_UI_1_HOUR, 3=> LAN_UI_3_HOURS, 6=> LAN_UI_6_HOURS, 12=> LAN_UI_12_HOURS, 24 => LAN_UI_24_HOURS, 48 => LAN_UI_48_HOURS, 72 => LAN_UI_3_DAYS);
 
 		$count = $sql->count('user','(*)',"user_ban = 2 ");
-		$caption = $tp->lanVars('Resend account activation email to unactivated users.',$count);
+		$caption = $tp->lanVars(USRLAN_252,$count);
 
 		$text = $frm->open('userMaintenance','post');
 
@@ -1945,7 +1944,7 @@ class users_admin_ui extends e_admin_ui
 		</colgroup>
 		<tr><td>".$caption."<td>
 		<td>
-		<div class='form-inline'>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
+		<div class='form-inline'>".USRLAN_253." ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,USRLAN_254).
 		" <div class='input-group'>".$frm->userclass('resendClass',false, null )."<span class='input-group-btn'>".
 		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
 
@@ -2445,7 +2444,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	function user_ban($curval,$mode)
 	{
 		$bo = array(
-			'<span class="label label-success label-status">Active</span>',
+			'<span class="label label-success label-status">'.LAN_ACTIVE.'</span>',
 			"<span class='label label-important label-danger label-status'>".LAN_BANNED."</span>",
 			"<span class='label label-default label-status'>".LAN_NOTVERIFIED."</span>",
 			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>"
@@ -2748,7 +2747,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 	class users_ranks_ui extends e_admin_ui
 	{
-		protected $pluginTitle		= LAN_USER;
+		protected $pluginTitle		= ADLAN_36;
 		protected $pluginName		= 'user_ranks';
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
