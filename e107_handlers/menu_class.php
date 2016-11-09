@@ -513,6 +513,7 @@ class e_menu
 				
 			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. use {SETSTYLE=none} instead. 
 			//	{
+					$ns->setUniqueId('cmenu-'.$page['menu_name']);
 					$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
 			//	}
 			//	else
@@ -524,6 +525,7 @@ class e_menu
 			else 
 			{				
 				$text = $tp->toHTML($page['menu_text'], true, 'parse_sc, constants');
+				$ns->setUniqueId('cmenu-'.$page['menu_name']);
 				$ns->tablerender($caption, $text, 'cmenu');
 			}
 			
