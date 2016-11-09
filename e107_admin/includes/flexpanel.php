@@ -43,6 +43,21 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$this->iconlist = $this->getIconList();
 
 		e107::js('core', 'core/admin.flexpanel.js', 'jquery', 4);
+
+		if(varset($_GET['mode']) == 'customize')
+		{
+			e107::css('inline', '.layout-container label.radio { float: left; padding: 0; max-width: 100px; margin: 7px; cursor: pointer; text-align: center; }');
+			e107::css('inline', '.layout-container label.radio input { width: 100%; margin-left: auto; margin-right: auto; display: block; }');
+			e107::css('inline', '.layout-container label.radio p { width: 100%; text-align: center; display: block; margin: 20px 0 0 0; }');
+		}
+
+		// Save posted Layout type.
+		if(varset($_POST['e-flexpanel-layout']))
+		{
+			global $user_pref;
+			$user_pref['core-flexpanel-layout'] = $_POST['e-flexpanel-layout'];
+			save_prefs('user');
+		}
 	}
 
 	/**
@@ -56,6 +71,16 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$mes = e107::getMessage();
 		$pref = e107::getPref();
 		$frm = e107::getForm();
+
+		if(varset($_GET['mode']) == 'customize')
+		{
+			echo $frm->open('infopanel', 'post', e_SELF);
+			echo $ns->tablerender(LAN_DASHBOARD_LAYOUT, $this->renderLayoutPicker(), 'personalize', true);
+			echo '<div class="clear">&nbsp;</div>';
+			echo $this->render_infopanel_options(true);
+			echo $frm->close();
+			return;
+		}
 
 		global $user_pref;
 
@@ -116,9 +141,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			);
 			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'], $defArray);
 		}
-
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-
 		$mainPanel = "<div id='core-infopanel_mye107'>";
 		$mainPanel .= "<div class='left'>";
 		foreach($this->iconlist as $key => $val)
@@ -130,9 +153,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		}
 		$mainPanel .= "</div></div>";
 		// Rendering the saved configuration.
-
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
-
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
 		$ns->setUniqueId('core-infopanel_mye107');
 		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107", true);
@@ -145,6 +166,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$newsTabs['coreFeed'] = array('caption' => LAN_GENERAL, 'text' => "<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='" . ADMINFEEDMORE . "'>" . LAN_MORE . "</a></div>");
 		$newsTabs['pluginFeed'] = array('caption' => LAN_PLUGIN, 'text' => "<div id='e-adminfeed-plugin'></div>");
 		$newsTabs['themeFeed'] = array('caption' => LAN_THEMES, 'text' => "<div id='e-adminfeed-theme'></div>");
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
 		$ns->setUniqueId('core-infopanel_news');
 		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-infopanel_news", true);
 		$info = $this->getMenuPosition('core-infopanel_news');
@@ -152,6 +174,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// --------------------- Website Status ---------------------------
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
 		$ns->setUniqueId('core-infopanel_website_status');
 		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-infopanel_website_status", true);
 		$info = $this->getMenuPosition('core-infopanel_website_status');
@@ -165,6 +188,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		// --------------------- User Selected Menus ----------------------
 		if(varset($user_pref['core-infopanel-menus']))
 		{
+			$tp->parseTemplate("{SETSTYLE=flexpanel}");
 			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
 				// Custom menu.
@@ -179,148 +203,49 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					$id = $frm->name2id($val);
 					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
 				}
-
 				$info = $this->getMenuPosition($id);
 				$panels[$info['area']][$info['weight']] .= $inc;
 			}
 		}
 
-		ksort($panels['menu-area-01']);
-		ksort($panels['menu-area-02']);
-		ksort($panels['menu-area-03']);
-		ksort($panels['menu-area-04']);
-		ksort($panels['menu-area-05']);
-		ksort($panels['menu-area-06']);
-		ksort($panels['menu-area-07']);
-		ksort($panels['menu-area-08']);
-		ksort($panels['menu-area-09']);
-		ksort($panels['menu-area-10']);
-		ksort($panels['menu-area-11']);
-		ksort($panels['menu-area-12']);
-		ksort($panels['menu-area-13']);
-
-		// Sidebar.
-		echo '<div class="row">';
-		echo '<div class="col-md-3 col-lg-2" id="left-panel">';
-		echo '<div class="draggable-panels" id="menu-area-01">';
-		echo implode("\n", $panels['menu-area-01']);
-		echo '</div>';
-		echo '</div>';
-		echo '<div class="col-md-9 col-lg-10" id="right-panel">';
-
-
-		if(vartrue($_GET['mode']) != 'customize')
+		// Sorting panels.
+		foreach($panels as $key => $value)
 		{
-			echo '<div class="row">';
-			echo '<div class="col-sm-12">';
-			echo $mes->render();
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-12">';
-			echo '<div class="draggable-panels" id="menu-area-02">';
-			echo implode("\n", $panels['menu-area-02']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-4">';
-			echo '<div class="draggable-panels" id="menu-area-03">';
-			echo implode("\n", $panels['menu-area-03']);
-			echo '</div>';
-			echo '</div>';
-			echo '<div class="col-sm-4">';
-			echo '<div class="draggable-panels" id="menu-area-04">';
-			echo implode("\n", $panels['menu-area-04']);
-			echo '</div>';
-			echo '</div>';
-			echo '<div class="col-sm-4">';
-			echo '<div class="draggable-panels" id="menu-area-05">';
-			echo implode("\n", $panels['menu-area-05']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-12">';
-			echo '<div class="draggable-panels" id="menu-area-06">';
-			echo implode("\n", $panels['menu-area-06']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-6">';
-			echo '<div class="draggable-panels" id="menu-area-07">';
-			echo implode("\n", $panels['menu-area-07']);
-			echo '</div>';
-			echo '</div>';
-			echo '<div class="col-sm-6">';
-			echo '<div class="draggable-panels" id="menu-area-08">';
-			echo implode("\n", $panels['menu-area-08']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-12">';
-			echo '<div class="draggable-panels" id="menu-area-09">';
-			echo implode("\n", $panels['menu-area-09']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-4">';
-			echo '<div class="draggable-panels" id="menu-area-10">';
-			echo implode("\n", $panels['menu-area-10']);
-			echo '</div>';
-			echo '</div>';
-			echo '<div class="col-sm-4">';
-			echo '<div class="draggable-panels" id="menu-area-11">';
-			echo implode("\n", $panels['menu-area-11']);
-			echo '</div>';
-			echo '</div>';
-			echo '<div class="col-sm-4">';
-			echo '<div class="draggable-panels" id="menu-area-12">';
-			echo implode("\n", $panels['menu-area-12']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-
-
-			echo '<div class="row">';
-			echo '<div class="col-sm-12">';
-			echo '<div class="draggable-panels" id="menu-area-13">';
-			echo implode("\n", $panels['menu-area-13']);
-			echo '</div>';
-			echo '</div>';
-			echo '</div>';
-		}
-		else
-		{
-			echo $frm->open('infopanel', 'post', e_SELF);
-			echo $this->render_infopanel_options(true);
-			echo $frm->close();
+			ksort($panels[$key]);
 		}
 
-		echo '</div>';
-		echo '</div>';
+		$layout = varset($user_pref['core-flexpanel-layout'], 'default');
+		$layout_file = e_ADMIN . 'includes/layouts/flexpanel_' . $layout . '.php';
+
+		if(is_readable($layout_file))
+		{
+			include_once($layout_file);
+
+			$template = varset($FLEXPANEL_LAYOUT);
+			$template = str_replace('{MESSAGES}', $mes->render(), $template);
+
+			foreach($panels as $key => $value)
+			{
+				$token = '{' . strtoupper(str_replace('-', '_', $key)) . '}';
+				$template = str_replace($token, implode("\n", $value), $template);
+			}
+
+			echo $template;
+		}
 	}
 
-
+	/**
+	 * Get selected area and position for a menu item.
+	 *
+	 * @param $id
+	 *  Menu ID.
+	 * @return array
+	 *  Contains menu area and weight.
+	 */
 	function getMenuPosition($id)
 	{
 		global $user_pref;
-		
+
 		if(varset($user_pref['core-flexpanel-order'][$id]))
 		{
 			return $user_pref['core-flexpanel-order'][$id];
@@ -368,6 +293,40 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Render layout-picker widget.
+	 *
+	 * @return string
+	 */
+	function renderLayoutPicker()
+	{
+		$tp = e107::getParser();
+
+		global $user_pref;
+
+		$default = varset($user_pref['core-flexpanel-layout'], 'default');
+
+		$html = '<div class="layout-container">';
+
+		$html .= '<label class="radio">';
+		$html .= $tp->toImage('{e_ADMIN}includes/layouts/flexpanel_default.png', array('legacy' => '{e_ADMIN}includes/layouts/', 'w' => 100));
+		$html .= '<input type="radio" name="e-flexpanel-layout" value="default"' . ($default == 'default' ? ' checked' : '') . '/>';
+		$html .= '<p>Default</p>';
+		$html .= '</label>';
+
+		$html .= '<label class="radio">';
+		$html .= $tp->toImage('{e_ADMIN}includes/layouts/flexpanel_wider_sidebar.png', array('legacy' => '{e_ADMIN}includes/layouts/', 'w' => 100));
+		$html .= '<input type="radio" name="e-flexpanel-layout" value="wider_sidebar"' . ($default == 'wider_sidebar' ? ' checked' : '') . '/>';
+		$html .= '<p>Wider Sidebar</p>';
+		$html .= '</label>';
+
+		$html .= '<div class="clear"></div>';
+
+		$html .= '</div>';
+
+		return $html;
 	}
 
 }

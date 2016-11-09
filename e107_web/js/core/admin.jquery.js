@@ -155,18 +155,20 @@ $(document).ready(function()
         {
             e.preventDefault();
 
-	        var $leftPanel = $("#left-panel");
-	        var $rightPanel = $("#right-panel");
+	        var $leftPanel = $(".admin-left-panel");
+	        var $rightPanel = $(".admin-right-panel");
 
 	        if ($rightPanel.hasClass('col-md-12'))
 	        {
-		        $rightPanel.toggleClass("col-md-10 col-md-12");
+		        $rightPanel.toggleClass("col-md-9 col-md-12");
+		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
 		        $leftPanel.toggle(1000);
 	        }
 	        else
 	        {
 		        $leftPanel.toggle(1000, function() {
-			        $rightPanel.toggleClass("col-md-10 col-md-12");
+			        $rightPanel.toggleClass("col-md-9 col-md-12");
+			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
 		        });
 	        }
 
