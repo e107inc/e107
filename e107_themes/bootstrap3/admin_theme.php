@@ -102,6 +102,9 @@ class bootstrap3_admintheme
 		$style = $data['setStyle'];
 
 	//	echo "Style: ".$style;
+
+		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
+
 		$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
