@@ -55,6 +55,13 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		if(varset($_POST['e-flexpanel-layout']))
 		{
 			global $user_pref;
+
+			// If Layout has been changed, we clear previous arrangement in order to use defaults.
+			if($user_pref['core-flexpanel-layout'] != $_POST['e-flexpanel-layout'])
+			{
+				$user_pref['core-flexpanel-order'] = array();
+			}
+
 			$user_pref['core-flexpanel-layout'] = $_POST['e-flexpanel-layout'];
 			save_prefs('user');
 		}
@@ -256,40 +263,46 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			'weight' => 1000,
 		);
 
-		if($id == 'core-infopanel_help')
+		switch(varset($user_pref['core-flexpanel-layout'], 'default'))
 		{
-			$default['area'] = 'menu-area-01';
-			$default['weight'] = 0;
-		}
+			case 'wider_sidebar':
+			case 'default':
+				if($id == 'core-infopanel_help')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 0;
+				}
 
-		if($id == 'e-latest-list')
-		{
-			$default['area'] = 'menu-area-01';
-			$default['weight'] = 1;
-		}
+				if($id == 'e-latest-list')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 1;
+				}
 
-		if($id == 'e-status-list')
-		{
-			$default['area'] = 'menu-area-01';
-			$default['weight'] = 2;
-		}
+				if($id == 'e-status-list')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 2;
+				}
 
-		if($id == 'core-infopanel_mye107')
-		{
-			$default['area'] = 'menu-area-07';
-			$default['weight'] = 0;
-		}
+				if($id == 'core-infopanel_mye107')
+				{
+					$default['area'] = 'menu-area-07';
+					$default['weight'] = 0;
+				}
 
-		if($id == 'core-infopanel_news')
-		{
-			$default['area'] = 'menu-area-08';
-			$default['weight'] = 0;
-		}
+				if($id == 'core-infopanel_news')
+				{
+					$default['area'] = 'menu-area-08';
+					$default['weight'] = 0;
+				}
 
-		if($id == 'core-infopanel_website_status')
-		{
-			$default['area'] = 'menu-area-08';
-			$default['weight'] = 1;
+				if($id == 'core-infopanel_website_status')
+				{
+					$default['area'] = 'menu-area-08';
+					$default['weight'] = 1;
+				}
+				break;
 		}
 
 		return $default;
