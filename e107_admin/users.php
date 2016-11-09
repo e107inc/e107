@@ -57,7 +57,7 @@ class users_admin extends e_admin_dispatcher
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
-		'main/maintenance'  => array('caption'=>'Maintenance', 'perms'=>'4')
+		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perms'=>'4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
@@ -1348,7 +1348,9 @@ class users_admin_ui extends e_admin_ui
 			if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
 			{
 				$allData['data']['user_name'] = $allData['data']['user_loginname'];
-				$mes->addWarning(str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237));
+				$message = str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237);
+				$message = e107::getParser()->toHtml($message,true);
+				$mes->addWarning($message);
 				//$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 			}
 		}
@@ -2396,7 +2398,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		if($mode == 'write')
 		{
 			$prm = e107::getUserPerms();
-			$text = "<a class='e-expandit' href='#perms'>Admin Permissions</a>";
+			$text = "<a class='e-expandit' href='#perms'>".USRLAN_221."</a>";
 			$text .= "<div id='perms' style='display:none'>". $prm->renderPermTable('grouped',$curval).'</div>';				
 			return $text;
 		}
@@ -2428,7 +2430,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			$fieldName = 'user_password_'. $this->getController()->getId();
 
-			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
+			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => USRLAN_251, 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
 			";			
 		}
 			
