@@ -271,7 +271,7 @@ define("USRLAN_250", "Us");
 define("USRLAN_251", "Leave blank for no change");
 define("USRLAN_252", "Resend account activation email to unactivated users.");
 define("USRLAN_253", "Older than");
-define("USRLAN_254", "Reset all passwords");
+define("USRLAN_254", "  Reset all passwords");
 
 // These need review - there are duplicates above - they come from admin/lan_userclass.php.
 define("UCSLAN_1", "Sending notification email to");
