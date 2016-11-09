@@ -164,7 +164,7 @@ class bootstrap3_admintheme
 		switch(varset($style, 'admin_content'))
 		{
 			case 'flexpanel':
-				echo '<div class="panel ' . $panelType[$style] . '" id="' . $mode . '">
+				echo '<div class="panel ' . $panelType[$style] . '" id="' . $data['uniqueId'] . '">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>

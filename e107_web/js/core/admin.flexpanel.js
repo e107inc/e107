@@ -69,28 +69,32 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.callbacks.flexPanelSavePanelOrder = function ()
 	{
 		var selector = e107.settings.flexPanel.selector;
-		var NewOrder = [];
+		var NewOrder = {};
 
 		$(selector).each(function ()
 		{
 			var $this = $(this);
-			var key = $this.attr('id');
+			var area = $this.attr('id');
+			var weight = 0;
 
-			if(key)
+			if(area)
 			{
-				NewOrder[key] = [];
-
-				$('#' + key + ' ' + e107.settings.flexPanel.items).each(function ()
+				$('#' + area + ' ' + e107.settings.flexPanel.items).each(function ()
 				{
 					var $item = $(this);
-					var title = $item.find('.panel-title').eq(0).text();
+					var panelID = $item.attr('id');
 
-					NewOrder[key].push(title);
+					NewOrder[panelID] = {
+						area: area,
+						weight: weight
+					};
+
+					weight++;
 				});
 			}
 		});
-
-		console.log(NewOrder);
+		
+		$.post(window.location.href, {'core-flexpanel-order': NewOrder});
 	};
 
 })(jQuery);
