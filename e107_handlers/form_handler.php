@@ -1238,7 +1238,7 @@ class e_form
 		}
 		
 		
-		$default_label 				= ($default) ? $default : "Choose a file";
+		$default_label 				= ($default) ? $default : LAN_CHOOSE_FILE;
 		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
 			
 		$sc_parameters['mode'] 		= 'main';
@@ -3923,7 +3923,7 @@ class e_form
 				if(!$value) $value = '0';
 				if($parms)
 				{
-					if(!isset($parms['sep'])) $value = number_format($value, $parms['decimals']);
+					if(!isset($parms['sep'])) $value = number_format($value, varset($parms['decimals'],0));
 					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
 				
@@ -4612,7 +4612,8 @@ class e_form
 				if(method_exists($this,$meth))
 				{
 					$parms['field'] = $field;
-					$value = call_user_func_array(array($this, $meth), array($value, 'read', $parms));
+					$mode = (!empty($attributes['mode'])) ? $attributes['mode'] :'read';
+					$value = call_user_func_array(array($this, $meth), array($value, $mode, $parms));
 				}
 				else
 				{
@@ -5996,7 +5997,7 @@ class e_form
 									<li class="dropdown-header nav-header">After submit:</li>
 							';
 							
-							foreach($defsubmitopt as $k=>$v)
+							foreach($submitopt as $k=>$v)
 							{
 								$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
 							}

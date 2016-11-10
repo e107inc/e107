@@ -88,6 +88,7 @@ class news_admin extends e_admin_dispatcher
 	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
 	);
 
+	protected $adminMenuIcon = 'e-news-24';
 
 
 	protected $adminMenuAliases = array(
@@ -95,7 +96,7 @@ class news_admin extends e_admin_dispatcher
 		'cat/edit'	=> 'cat/list'
 	);
 
-	protected $menuTitle = "News";
+	protected $menuTitle = ADLAN_0;
 
 	function init()
 	{
@@ -377,7 +378,7 @@ class news_sub_form_ui extends e_admin_form_ui
 			if($approved == 0)
 			{
 				//$text = $this->submit_image('submitnews['.$id.']', 1, 'execute', NWSLAN_58);
-				$text .= "<a class='btn btn-default btn-large' title=\"Approve\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
+				$text .= "<a class='btn btn-default btn-large' title=\"".LAN_NEWS_96."\" href='".e_SELF."?mode=main&action=create&sub={$id}'>".ADMIN_EXECUTE_ICON."</a>";
 				// NWSLAN_103;	
 			} 
 			else // Already submitted; 
@@ -454,7 +455,7 @@ class news_admin_ui extends e_admin_ui
         'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',     'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
-		'news_email_notify'     => array('title' => "Email notification", 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1, 'tdClassRight'=>'form-inline'), 'help'=>'Trigger an email notification when you submit this form.'),
+		'news_email_notify'     => array('title' => LAN_NEWS_103, 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1, 'tdClassRight'=>'form-inline'), 'help'=>'Trigger an email notification when you submit this form.'),
 		'submitted_id'          => array('title' => LAN_NEWS_68, 'type' => 'hidden',  'tab'=>2,  'data'=>false, 'writeParms'=>'show=0'),
 		'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
@@ -485,7 +486,7 @@ class news_admin_ui extends e_admin_ui
 		'2' =>	LAN_NEWS_72,
 		'3' =>	LAN_NEWS_73,
 		'5' =>	LAN_NEWS_74,
-		'6' =>	"News Grid Menu",
+		'6' =>	LAN_NEWS_97,
 		//'5' =>  LAN_NEWS_75
 	);
 
@@ -652,11 +653,11 @@ class news_admin_ui extends e_admin_ui
 		if(in_array(e_UC_PUBLIC, $visibility))
 		{
 			e107::getEvent()->trigger('admin_news_notify',$new_data);
-			e107::getMessage()->addSuccess("Email notification triggered");
+			e107::getMessage()->addSuccess(LAN_NEWS_105);
 		}
 		else
 		{
-			e107::getMessage()->addWarning("News item visibility must include 'everyone' for email notifications to work.");
+			e107::getMessage()->addWarning(LAN_NEWS_106);
 		}
 
 
@@ -875,7 +876,7 @@ class news_admin_ui extends e_admin_ui
 
 		$mes = e107::getMessage();
 
-		$mes->addDebug('Checking for Ping Status','default',true);
+		$mes->addDebug(LAN_NEWS_107,'default',true);
 
 		if(!empty($_POST['news_ping']) && (count($pingServices)>0) && (in_array(e_UC_PUBLIC, $_POST['news_class'])))
 		{
@@ -1086,7 +1087,7 @@ class news_admin_ui extends e_admin_ui
 			$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
 			$pingOpt = array('placeholder'=>LAN_NEWS_87);
 			$pingVal = (!empty($pref['news_ping_services'])) ? implode("\n",$pref['news_ping_services']) : '';
-			$newsTemplates = array('default'=>'Default', 'list'=>'List'); //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
+			$newsTemplates = array('default'=>LAN_DEFAULT, 'list'=>LAN_LIST); //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
 
 
 
@@ -1132,7 +1133,7 @@ class news_admin_ui extends e_admin_ui
 								</td>
 							</tr>
 							<tr>
-								<td>Ping Services</td>
+								<td>".LAN_NEWS_98."</td>
 								<td>
 									".$frm->textarea('news_ping_services', $pingVal, 4, 100, $pingOpt)."
 									<div class='field-help'>".LAN_NEWS_89."<br />".LAN_NEWS_90."</div>
@@ -1220,9 +1221,9 @@ class news_admin_ui extends e_admin_ui
 								</td>
 							</tr>
 								<tr>
-								<td>Only accept images larger than</td>
+								<td>".LAN_NEWS_99."</td>
 								<td>
-									".$frm->select('subnews_attach_minsize', $imageSizes, $pref['subnews_attach_minsize'], null, 'Any Size')."
+									".$frm->select('subnews_attach_minsize', $imageSizes, $pref['subnews_attach_minsize'], null, LAN_NEWS_100)."
 								</td>
 							</tr>
 							<tr>
@@ -1266,8 +1267,8 @@ class news_admin_ui extends e_admin_ui
 					</table>";
 
 			$text .= $frm->tabs(array(
-				'general'	=> array('caption'=>'General', 'text'=>$tab1),
-				'subnews'	=> array('caption'=>'Submit News', 'text'=>$tab2)
+				'general'	=> array('caption'=>LAN_GENERAL, 'text'=>$tab1),
+				'subnews'	=> array('caption'=>LAN_NEWS_101, 'text'=>$tab2)
 			));
 
 
@@ -1651,7 +1652,7 @@ class news_form_ui extends e_admin_form_ui
 		{
 			$news_item = $this->getController()->getListModel()->toArray();
 			$url = e107::getUrl()->create('news/view/item', $news_item);
-			return "<a class='e-tip' href='{$url}' title='Open in new tab' rel='external'>".$value."</a>";
+			return "<a class='e-tip' href='{$url}' title='".LAN_NEWS_102."' rel='external'>".$value."</a>";
 		}
 		return $value;
 	}

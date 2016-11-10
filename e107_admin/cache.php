@@ -103,6 +103,8 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getCache()->clearAll('db');
 			e107::getCache()->clearAll('image');
 			e107::getCache()->clearAll('browser');
+			e107::getCache()->clearAll('js');
+			e107::getCache()->clearAll('css');
 			e107::getAdminLog()->flushMessages(CACLAN_26);
 		break;
 	}

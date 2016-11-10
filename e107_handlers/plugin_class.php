@@ -541,7 +541,7 @@ class e107plugin
 		{
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 			$this->rebuildUrlConfig();
-			e107::getConfig('core')->save();
+			e107::getConfig('core')->save(true,false,false);
 		}
 	}
 
@@ -581,7 +581,7 @@ class e107plugin
 			if (vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
 				$status = ($med->removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add('Removing Icons from Media-Manager', $status);
+				$mes->add(IMALAN_164, $status);
 			}
 			return;
 		}
@@ -1113,7 +1113,7 @@ class e107plugin
 			}
 		}
 
-		e107::getConfig('core')->setPref($pref)->save();
+		e107::getConfig('core')->setPref($pref)->save(true,false,false);
 
 		//	 e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
@@ -1246,7 +1246,7 @@ class e107plugin
 		}
 
 		e107::getConfig('core')->setPref($pref);
-		e107::getConfig('core')->save();
+		e107::getConfig('core')->save(true,false,false);
 
 	}
 
@@ -1311,7 +1311,7 @@ class e107plugin
 				unset($search_prefs['comments_handlers'][$eplug_folder]);
 			}
 
-		e107::getConfig('search')->setPref($search_prefs)->save();
+	//	e107::getConfig('search')->setPref($search_prefs)->save(true,false,false);
 
 	}
 
@@ -1370,7 +1370,7 @@ class e107plugin
 		//$s_prefs = $tp -> toDB($notify_prefs);
 		//$s_prefs = e107::getArrayStorage()->WriteArray($s_prefs);
 		//e107::getDb() -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
-		$notify_prefs->save(false);
+		$notify_prefs->save(false,false,false);
 	}
 
 	/**
@@ -1388,12 +1388,12 @@ class e107plugin
 		$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config); // rebuild aliases
 			
 		// set new values, changes should be saved outside this methods
-		e107::getConfig()
+	/*	e107::getConfig()
 			->set('url_aliases', $aliases)
 			->set('url_config', $config)
 			->set('url_modules', $modules)
 			->set('url_locations', $locations);
-				
+			*/
 		eRouter::clearCache();
 	}
 
@@ -1643,6 +1643,9 @@ class e107plugin
 			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
+
+			$this->removeCrons($plug_vars);
+
 		}
 		
 		e107::getMessage()->addDebug("updated Installed plugins pref: ".print_a($p_installed,true));
@@ -1666,7 +1669,7 @@ class e107plugin
 		{
 			if ($function == 'install')
 			{
-				$text = "Installation Complete.";
+				$text = EPL_ADLAN_238;
 
 				if ($this->plugConfigFile)
 				{
@@ -1699,6 +1702,25 @@ class e107plugin
 		}
 
 	}
+
+
+	private function removeCrons($plug_vars)
+	{
+
+		if(!file_exists(e_PLUGIN. $plug_vars['folder']."/e_cron.php"))
+		{
+			return false;
+		}
+
+		if(e107::getDb()->delete('cron', 'cron_function LIKE "'. $plug_vars['folder'] . '::%"'))
+		{
+			e107::getMessage()->addDebug($plug_vars['folder']." crons removed successfully."); // No LAN necessary
+		}
+
+		return false;
+
+	}
+
 
 
 	/**
@@ -1750,7 +1772,7 @@ class e107plugin
 						$query .= $tableData['data'][$k];
 						$query .= "\n) ENGINE=". vartrue($tableData['engine'][$k],"InnoDB")." DEFAULT CHARSET=utf8 ";
 
-						$txt = "Adding Table: <b>{$v}</b> ";
+						$txt = EPL_ADLAN_239." <b>{$v}</b> ";
 						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						break;
 
@@ -1758,7 +1780,7 @@ class e107plugin
 						if (!empty($options['delete_tables']))
 						{
 							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
-							$txt = "Removing Table: {$v} <br />";
+							$txt = EPL_ADLAN_240." <b> {$v} </b><br />";
 							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						}
@@ -2111,7 +2133,7 @@ class e107plugin
 	
 		if($updated === true)
 		{
-			$core->save();	//FIXME do this quietly without an s-message
+			$core->save(true,false,false);	//FIXME do this quietly without an s-message
 		}
 	
 	}
@@ -2259,6 +2281,8 @@ class e107plugin
 			case 'install':
 			case 'refresh':
 				$c = 1;
+				$i = array('file'=>1, 'image'=>1, 'video'=>1);
+
 				foreach($tag['mediaCategories']['category'] as $v)
 				{
 					$type = $v['@attributes']['type'];
@@ -2268,17 +2292,23 @@ class e107plugin
 						continue; 	
 					}
 					
-					if($c == 4 || ($prevType == $type))
+					if($c == 4)
 					{
-						$mes->addDebug("Only 3 Media Categories are permitted during install. One for images and one for files.");
+						$mes->addDebug(EPL_ADLAN_244);
 						break;
 					}
 					
-					$prevType = $type;
+				//	$prevType = $type;
 									
 					$data['owner'] 		= $folder;
 					$data['image']		= vartrue($v['@attributes']['image']);
-					$data['category'] 	= $folder."_".$type;	
+					$data['category'] 	= $folder."_".$type;
+
+					if($i[$type] > 1)
+					{
+						$data['category'] 	.= "_".$i[$type];
+					}
+
 					$data['title'] 		= $v['@value'];
 					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
@@ -2287,7 +2317,8 @@ class e107plugin
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 					$mes->add("Adding Media Category: {$data['category']}", $status);				
 					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
-					$c++;					
+					$c++;
+					$i[$type]++;
 				}	
 			
 			break;
@@ -2510,7 +2541,7 @@ class e107plugin
 					$ret = $config->add($key, $value);
 					if($ret->data_has_changed == TRUE)
 					{
-						$mes->addSuccess("Adding Pref: ".$key);	
+						$mes->addSuccess(EPL_ADLAN_241, $key);	
 					}								
 					break;
 
@@ -2520,19 +2551,19 @@ class e107plugin
 
 					{
 						$config->remove($key, $value);
-						$mes->addSuccess("Removing Pref: ".$key);
+						$mes->addSuccess(EPL_ADLAN_242, $key);
 					}
 					else
 					{
 						$config->update($key, $value);
-						$mes->addSuccess("Updating Pref: ".$key);
+						$mes->addSuccess(EPL_ADLAN_243, $key);
 					}
 
 					break;
 
 				case 'uninstall':
 					$config->remove($key, $value);
-					$mes->addSuccess("Removing Pref: ".$key);
+					$mes->addSuccess(EPL_ADLAN_242, $key);
 					break;
 			}
 		}
@@ -3233,22 +3264,23 @@ class e107plugin
 	}
 	
 	// return the Icon of the 
-	function getIcon($plugName='',$size=32)
+	function getIcon($plugName='',$size=32, $defaultOverride=false)
 	{
-		if(!$plugName) return;
+		if(!$plugName) return false;
 		
 		$tp = e107::getParser();
 		
 		if(!isset($this->parsed_plugin[$plugName]))
 		{
-			$plug_vars = $this->parse_plugin($plugName);	
+			 $this->parse_plugin($plugName,true);
+
 		}
-		else
-		{
-			$plug_vars = $this->parsed_plugin[$plugName];	
-		}
+
+		$plug_vars = $this->parsed_plugin[$plugName];
+
 			
-		//return print_r($plug_vars,TRUE);	
+		//return print_r($plug_vars,TRUE);
+
 			
 		$sizeArray = array(32=>'icon', 16=>'iconSmall');
 		$default = ($size == 32) ? $tp->toGlyph('e-cat_plugins-32') : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
@@ -3256,7 +3288,13 @@ class e107plugin
 		
 		$icon_src = e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
 		$plugin_icon = $plug_vars['administration'][$sz] ? "<img src='{$icon_src}' alt='' class='icon S".intval($size)."' />" : $default;
-     	
+
+     	if($defaultOverride !== false && $default === $plugin_icon)
+        {
+            return $defaultOverride;
+        }
+
+
 		if(!$plugin_icon)
 		{
 		//	
