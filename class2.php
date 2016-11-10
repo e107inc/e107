@@ -908,7 +908,8 @@ if (!class_exists('e107table', false))
 		private $themeClass = '';
 		private $adminThemeClass = '';
 		public  $frontend = null;
-		
+		private $uniqueId = null;
+
 		
 		function __construct()
 		{
@@ -918,11 +919,21 @@ if (!class_exists('e107table', false))
 
 
 		/**
-		 * @param $style
+		 * Set the style mode for use in tablestyle() method/function
+		 * @param string $style
 		 */
-		function setStyle($style)
+		public function setStyle($style)
 		{
 			$this->eSetStyle = $style;
+		}
+
+		/**
+		 * Set a unique id for use in tablestyle() method/function
+		 * @param string $id
+		 */
+		public function setUniqueId($id)
+		{
+			$this->uniqueId = $id;
 		}
 
 
@@ -947,6 +958,10 @@ if (!class_exists('e107table', false))
 				}
 				extract($result);
 			}
+
+
+
+
 
 			if ($return)
 			{
@@ -998,13 +1013,14 @@ if (!class_exists('e107table', false))
 			
 			if(is_object(vartrue($thm)))
 			{
-				$thm->tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
+				$thm->tablestyle($caption, $text, $mode, array('uniqueId'=>$this->uniqueId, 'menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
 			}
 			else 
 			{
-				tablestyle($caption, $text, $mode, array('menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]),'setStyle'=>$this->eSetStyle));	
+				tablestyle($caption, $text, $mode, array('uniqueId'=>$this->uniqueId, 'menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]),'setStyle'=>$this->eSetStyle));
 			}
 
+			$this->uniqueId = null;
 		}
 
 

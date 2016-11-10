@@ -68,6 +68,8 @@ class page_admin extends e_admin_dispatcher
 	//	'menu/create' 	=> array('caption'=> CUSLAN_31, 'perm' => 'J', 'tab' => 2),
 		'page/prefs'	=> array('caption'=> LAN_OPTIONS, 'perm' => '0')		
 	);
+
+	protected $adminMenuIcon = 'e-custom-24';
 	
 
 	protected $adminMenuAliases = array(
@@ -438,7 +440,7 @@ class page_admin_ui extends e_admin_ui
 		                               LEFT JOIN #user AS u ON p.page_author = u.user_id
 		                               LEFT JOIN #page_chapters AS pch ON p.page_chapter = pch.chapter_id
 		                               LEFT JOIN #page_chapters AS pbk ON pch.chapter_parent = pbk.chapter_id
-		                               WHERE p.page_title != '' "; // without any Order or Limit.
+		                               WHERE (p.page_title != '' OR p.page_text != '')   "; // without any Order or Limit.
 		//protected $editQry = "SELECT * FROM #comments WHERE comment_id = {ID}";
 		
 		protected $pid 				= "page_id";
@@ -584,6 +586,9 @@ class page_admin_ui extends e_admin_ui
 
 
 
+
+
+
                 ### Parse aliases again or all filters shall fail due to the menu hack!
                 $this->_alias_parsed = false;
                 $this->parseAliases();
@@ -709,7 +714,7 @@ class page_admin_ui extends e_admin_ui
 			
 			$sef = e107::getParser()->toDB($newdata['page_sef']);
 
-			if(isset($newdata['page_title']) && isset($newdata['page_title']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
+			if(isset($newdata['page_title']) && isset($newdata['menu_name']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
 			{
 				e107::getMessage()->addError(CUSLAN_79);
 				return false;

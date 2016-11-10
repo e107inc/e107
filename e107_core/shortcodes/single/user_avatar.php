@@ -1,14 +1,18 @@
 <?php
 // $Id$
-function user_avatar_shortcode($parm=null) //TODO new function $tp->toAvatar(); so full arrays can be passed to it. 
+function user_avatar_shortcode($parm=null)
 {
-	if(is_string($parm))
+	if(!empty($parm) && is_string($parm))
 	{
 		$data = array('user_image'=>$parm);
 	}
-	elseif(is_array($parm))
+	elseif(!empty($parm) && is_array($parm))
 	{
 		$data = $parm;
+	}
+	else
+	{
+		$data = null;
 	}
 
 	return e107::getParser()->toAvatar($data, $data);
@@ -100,4 +104,3 @@ function user_avatar_shortcode($parm=null) //TODO new function $tp->toAvatar(); 
 */
 
 }
-?>

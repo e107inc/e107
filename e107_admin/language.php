@@ -54,11 +54,8 @@ if(!empty($_GET['iframe']))
 		protected $adminMenu = array(
 
 			'main/prefs'	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-			'main/db'		=> array('caption'=> LAN_CREATE, 'perm' => 'L'),
 			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L')
-		//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 
-			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 		);
 
 		protected $adminMenuAliases = array(
@@ -71,10 +68,13 @@ if(!empty($_GET['iframe']))
 		{
 			$pref = e107::getPref();
 
-			if (isset($pref['multilanguage']) && $pref['multilanguage'])
+			if (!empty($pref['multilanguage']))
 			{
-				$this->adminMenu['main/db']		= array('caption'=> LANG_LAN_03, 'perm' => 'P');
-
+				$this->adminMenu = array(
+					'main/prefs'    => $this->adminMenu['main/prefs'],
+					'main/db'       => 	array('caption'=> LANG_LAN_03, 'perm' => 'P'),
+					'main/tools'    => $this->adminMenu['main/tools'],
+				);
 			}
 
 			if(e_DEVELOPER == true)
@@ -1158,7 +1158,7 @@ class lanDeveloper
 
 		$text .= "
 						<tr>
-							<td><div class='alert-info alert alert-block'>".LANG_LAN_140."</div></td>
+							<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
 							<td class='form-inline'>
 								<select name='deprecatedLans[]' multiple style='height:200px'>
 									<option value=''>".LANG_LAN_141."</option>";
@@ -1696,7 +1696,7 @@ class lanDeveloper
 
 			if($reverse != true)
 			{
-				$mes->addInfo(LANG_LAN_150); //Search Everywhere before commenting out
+				$mes->addInfo(e107::getParser()->toHTML(LANG_LAN_150, true)); //Search Everywhere before commenting out
 			}
 
 			$ret['text'] = $mes->render().$text;

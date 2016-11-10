@@ -1001,6 +1001,7 @@ class e_admin_dispatcher
 	protected $adminMenu = array();
 	
 
+	protected $adminMenuIcon = null;
 	/**
 	 * Optional (set by child class).
 	 * Page titles for pages not in adminMenu (e.g. main/edit)
@@ -1487,7 +1488,7 @@ class e_admin_dispatcher
 			$tmp = explode('/', trim($key, '/'), 3);
 
 			// sync with mode/route access
-			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.$tmp[1]))
+			if(!$this->checkModeAccess($tmp[0]) || !$this->checkRouteAccess($tmp[0].'/'.varset($tmp[1])))
 			{
 				continue;
 			}
@@ -1573,7 +1574,10 @@ class e_admin_dispatcher
 		$request = $this->getRequest();
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
-		return e107::getNav()->admin($this->menuTitle, $selected, $var);
+
+		$icon = (deftrue('e_CURRENT_PLUGIN')) ? e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '') : e107::getParser()->toIcon($this->adminMenuIcon);
+
+		return e107::getNav()->admin($icon."<span>".$this->menuTitle."</span>", $selected, $var);
 	}
 
 
@@ -2513,6 +2517,16 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $_alias_parsed = false;
 
+	/**
+	 * @var bool
+	 */
+	protected $afterSubmitOptions = true;
+
+	public function getAfterSubmitOptions()
+	{
+		return $this->afterSubmitOptions;
+	}
+
 	public function getBatchDelete()
 	{
 		return $this->batchDelete;
@@ -3082,13 +3096,23 @@ class e_admin_controller_ui extends e_admin_controller
 				$selected[$i] = preg_replace('/[^\w-:.]/', '', $_sel);
 			}
 		}
-		
+
+		if(substr($batch_trigger, 0, 6) === 'batch_')
+		{
+			list($tmp,$plugin,$command) = explode("_",$batch_trigger,3);
+			$this->setPosted(array());
+			$this->getRequest()->setAction('batch');
+			$cls = e107::getAddon($plugin,'e_admin',true);
+			e107::callMethod($cls,'process',$this,array('cmd'=>$command,'ids'=>$selected));
+			return $this;
+		}
+
 
 		$this->setTriggersEnabled(false); //disable further triggering
 		
 		switch($trigger[0])
 		{
-			case 'delete': //FIXME - confirmation screen
+			case 'delete': //FIXME - confirmation popup
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
 				// don't check selected data - subclass need to check additional post variables(confirm screen)
@@ -4325,23 +4349,40 @@ class e_admin_ui extends e_admin_controller_ui
 
 			$form = e107::getAddon($plug, 'e_admin', $plug."_admin_form"); // class | false.
 
-			foreach($config['fields'] as $k=>$v)
+			if(!empty($config['fields']))
 			{
-				$v['data'] = false; // disable data-saving to db table. .
-
-				$fieldName = 'x_'.$plug.'_'.$k;
-
-				if($v['type'] == 'method' && method_exists($form,$fieldName))
+				foreach($config['fields'] as $k=>$v)
 				{
-					$v['method'] = $plug."_admin_form::".$fieldName;
-					//echo "Found method ".$fieldName." in ".$plug."_menu_form";
-					//echo $form->$fieldName();
+					$v['data'] = false; // disable data-saving to db table. .
+
+					$fieldName = 'x_'.$plug.'_'.$k;
+
+					if($v['type'] == 'method' && method_exists($form,$fieldName))
+					{
+						$v['method'] = $plug."_admin_form::".$fieldName;
+						//echo "Found method ".$fieldName." in ".$plug."_menu_form";
+						//echo $form->$fieldName();
+					}
+
+
+					$this->fields[$fieldName] = $v; // ie. x_plugin_key
+
+				}
+			}
+
+			if(!empty($config['batchOptions']))
+			{
+				$opts = array();
+				foreach($config['batchOptions'] as $k=>$v)
+				{
+					$fieldName = 'batch_'.$plug.'_'.$k;
+
+					$opts[$fieldName] = $v; // ie. x_plugin_key
+
 				}
 
-
-				$this->fields[$fieldName] = $v; // ie. x_plugin_key
-
-
+				$batchCat = deftrue('LAN_PLUGIN_'.strtoupper($plug).'_NAME', $plug);
+				$this->batchOptions[$batchCat] = $opts;
 
 			}
 
@@ -4461,8 +4502,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess($tp->lanVars('[x] record(s) successfully deleted.', $delcount, true));
-			if($nfcount) e107::getMessage()->addError($tp->lanVars('[x] records not found and not deleted.', $nfcount,true));
+			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(RL_LAN_085, $delcount, true));
+			if($nfcount) e107::getMessage()->addError($tp->lanVars(RL_LAN_086, $nfcount,true));
 		}
 
 		//$this->redirect();
@@ -5789,7 +5830,7 @@ class e_admin_form_ui extends e_form
 						'fields' => $controller->getFields(), //see e_admin_ui::$fields
 						'header' => $form_start, //XXX Unused?
 						'footer' => $form_end,  //XXX Unused?
-						'after_submit_options' => true, // or true for default redirect options
+						'after_submit_options' => $controller->getAfterSubmitOptions(), // or true for default redirect options
 						'after_submit_default' => $request->getPosted('__after_submit_action', $controller->getDefaultAction()), // or true for default redirect options
 						'triggers' => 'auto', // standard create/update-cancel triggers
 					)
@@ -6038,7 +6079,7 @@ class e_admin_form_ui extends e_form
 								".$this->text('searchquery', $current_query[0], 50, $input_options)."
 								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
 							<span>
-							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>'Filter the results below'))."
+							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>RL_LAN_088))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 								".$this->renderBatchFilter('filter', $current_query[1])."
@@ -6252,7 +6293,22 @@ class e_admin_form_ui extends e_form
 			{
 				foreach($customBatchOptions as $key=>$val)
 				{
-					$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+
+					if(is_array($val))
+					{
+						$text .= $this->optgroup_open($key);
+						foreach($val as $k=>$v)
+						{
+							$text .= $this->option($v, $k, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+						}
+						$text .= $this->optgroup_close();
+					}
+					else
+					{
+						$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+					}
+
+
 				}
 
 			}
@@ -6457,11 +6513,11 @@ class e_admin_form_ui extends e_form
 					    //TODO today, yesterday, this-month, last-month .
 					    
 					    $dateFilters = array (
-					    	'hour'		=> "Past Hour",
-					    	"day"		=> "Past 24 hours",
-					    	"week"		=> "Past Week",
-					    	"month"		=> "Past Month",
-					    	"year"		=> "Past Year"
+						'hour'		=> RL_LAN_127,
+					    	"day"		=> RL_LAN_128,
+					    	"week"		=> RL_LAN_129,
+					    	"month"		=> RL_LAN_130,
+					    	"year"		=> RL_LAN_131
 						);
 					    
 						foreach($dateFilters as $k => $name)

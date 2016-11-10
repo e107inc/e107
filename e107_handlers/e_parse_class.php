@@ -3497,8 +3497,14 @@ class e_parser
 
 		if(substr($text,0,2) == 'e-') 	// e107 admin icon. 
 		{
-			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';	
-			return "<i class='".$size." ".$text."'></i>";		
+			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';
+
+			if(substr($text,-3) == '-24')
+			{
+				$size = 'S24';
+			}
+
+			return "<i class='".$size." ".$text."'></i>";
 		}
 
 		// Get Glyph names. 
@@ -4174,6 +4180,11 @@ TMPL;
 		    $dbText2 = $tp->toDB($text, true, false, 'no_html');
 		    echo "<h3>User-input &gg; toDb(\$text, true, false, 'no_html')</h3>";
 		    print_a($dbText2);
+
+		    echo "<div class='alert alert-warning'>";
+		    $dbText3 = $tp->toDB($text, false, false, 'pReFs');
+		    echo "<h3>User-input &gg; toDb(\$text, false, false, 'pReFs')</h3>";
+		    print_a($dbText3);
 
 		   // toClean
 		    $filter3 = $tp->filter($text, 'wds');

@@ -295,14 +295,16 @@ echo "\n<!-- footer_other_css -->\n";
 $e_js->renderJs('core_css', false, 'css', false);
 echo "\n<!-- footer_core_css -->\n";
 
-// Plugin CSS
-$e_js->renderJs('plugin_css', false, 'css', false);
-echo "\n<!-- footer_plugin_css -->\n";
+
 
 // Theme CSS
 //echo "<!-- Theme css -->\n";
 $e_js->renderJs('theme_css', false, 'css', false);
 echo "\n<!-- footer_theme_css -->\n";
+
+// Plugin CSS
+$e_js->renderJs('plugin_css', false, 'css', false);
+echo "\n<!-- footer_plugin_css -->\n";
 
 // Inline CSS - not sure if this should stay at all!
 $e_js->renderJs('inline_css', false, 'css', false);

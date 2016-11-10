@@ -166,7 +166,7 @@ if($mode == 'download' && !empty($_GET['src']))
 
 		
 		$mp = $themec->getMarketplace();	
-	 	$mes->addSuccess("Connecting...");   
+	 	$mes->addSuccess(TPVLAN_85);   
 
 		if($mp->download($data['id'], $data['mode'], 'theme')) // download and unzip theme.
 		{
@@ -326,7 +326,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_1, $mes->render() . $text);			
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);			
 			
 		}	
 
@@ -418,7 +418,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_2, $mes->render() . $text);		
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_2, $mes->render() . $text);		
 		}
 					
 				

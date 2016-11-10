@@ -3804,6 +3804,46 @@ class eResponse
 		$this->_body[$ns] = $body;
 		return $this;
 	}
+
+
+	/**
+	 * @param $name
+	 * @param $content
+	 * @return $this
+	 */
+	public function setMeta($name, $content)
+	{
+		foreach($this->_meta as $k=>$v)
+		{
+			if($v['name'] === $name)
+			{
+				$this->_meta[$k]['content'] = $content;
+			}
+		}
+
+		return $this;
+
+	}
+
+
+	/**
+	 * @param $name
+	 * @return $this
+	 */
+	public function removeMeta($name)
+	{
+		foreach($this->_meta as $k=>$v)
+		{
+			if($v['name'] === $name)
+			{
+				unset($this->_meta[$k]);
+			}
+		}
+
+		return $this;
+
+	}
+
 	
 	/**
 	 * Prepend content
@@ -4013,6 +4053,8 @@ class eResponse
 	public function renderMeta()
 	{
 		$attrData = '';
+
+		e107::getEvent()->trigger('system_meta_pre');
 		
 		foreach ($this->_meta as $attr) 
 		{
@@ -4023,6 +4065,7 @@ class eResponse
 			}
 			$attrData .= ' />'."\n";
 		}
+
 		return $attrData;
 	}
 
@@ -4059,6 +4102,18 @@ class eResponse
 		}
 		return '';
 	}
+
+
+
+	/**
+	 * Return an array of all meta data
+	 * @return array
+	 */
+	function getMeta()
+	{
+		return $this->_meta;
+	}
+
 
 	/**
 	 * @param string $title

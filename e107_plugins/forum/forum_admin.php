@@ -98,7 +98,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'main/edit'	=> 'main/list'
 		);
 
-		protected $menuTitle = 'Forum';
+		protected $menuTitle = LAN_PLUGIN_FORUM_NAME;
 
 
 		function init()
@@ -122,7 +122,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 	class forum_ui extends e_admin_ui
 	{
 
-		protected $pluginTitle		= 'Forum';
+		protected $pluginTitle		= LAN_PLUGIN_FORUM_NAME;
 		protected $pluginName		= 'forum';
 		//	protected $eventName		= 'forum-forum'; // remove comment to enable event triggers in admin.
 		protected $table			= 'forum';
@@ -153,21 +153,21 @@ if(!deftrue('OLD_FORUMADMIN'))
 		    'forum_name'                =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_sef'                 =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
             'forum_description'         =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'forum_parent'              =>   array ( 'title' => 'Parent', 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		    'forum_sub'                 =>   array ( 'title' => 'SubForum of', 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		    'forum_moderators'          =>   array ( 'title' => 'Moderators', 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,mods,classes", 'class' => 'left', 'thclass' => 'left',  ),
-		    'forum_threads'             =>   array ( 'title' => 'Threads', 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		    'forum_replies'             =>   array ( 'title' => 'Replies', 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+			'forum_parent'              =>   array ( 'title' => FORLAN_75, 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		    'forum_sub'                 =>   array ( 'title' => LAN_FORUM_1002, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_moderators'          =>   array ( 'title' => LAN_FORUM_2003, 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,mods,classes", 'class' => 'left', 'thclass' => 'left',  ),
+		    'forum_threads'             =>   array ( 'title' => LAN_FORUM_1003, 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_replies'             =>   array ( 'title' => LAN_FORUM_0003, 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		    'forum_lastpost_user'       =>   array ( 'title' => LAN_AUTHOR, 'type' => 'hidden', 'noedit'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		    'forum_lastpost_user_anon'  =>   array ( 'title' => 'User-Anon', 'type' => 'hidden','noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		    'forum_lastpost_info'       =>   array ( 'title' => 'LastPost', 'type' => 'hidden', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_lastpost_user_anon'  =>   array ( 'title' => FORLAN_204, 'type' => 'hidden','noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_lastpost_info'       =>   array ( 'title' => LAN_PLUGIN_FORUM_LATESTPOSTS, 'type' => 'hidden', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		    'forum_class'               =>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'writeParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_order'               =>   array ( 'title' => LAN_ORDER, 'type' => 'text', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		    'forum_postclass'           =>   array ( 'title' => 'Post Permission', 'type' => 'userclass', 'inline'=>true,'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'writeParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'class' => 'center', 'thclass' => 'center',  ),
-		    'forum_threadclass'         =>   array ( 'title' => 'Thread Creation Class', 'type' => 'userclass', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'writeParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_postclass'           =>   array ( 'title' => FORLAN_205, 'type' => 'userclass', 'inline'=>true,'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'writeParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_threadclass'         =>   array ( 'title' => FORLAN_206, 'type' => 'userclass', 'inline'=>true, 'filter'=>true, 'batch'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'writeParms' => array('classlist'=>'public,guest,nobody,member,admin,main,new,mods,classes'), 'class' => 'center', 'thclass' => 'center',  ),
 		    'forum_datestamp'           =>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'right', 'thclass' => 'center',  ),
 		                       //             'Sort' =>   array ( 'title' => 'Sort', 'type' => 'text', 'data' => 'str', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		    'forum_options'             =>   array ( 'title' => 'Options', 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_options'             =>   array ( 'title' => LAN_OPTIONS, 'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'options'                   =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'sort'=>1 ),
 		);
 
@@ -250,7 +250,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			if(e107::isInstalled('poll') == false)
 			{
-				$this->prefs['poll']['writeParms']['post'] = " <span class='label label-important label-danger'>Not installed</span>";
+				$this->prefs['poll']['writeParms']['post'] = " <span class='label label-important label-danger'>".FORLAN_215."</span>";
 			}
 
 
@@ -297,7 +297,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 
 			$data = e107::getDb()->retrieve('forum', 'forum_id,forum_name,forum_parent', 'forum_id != 0',true);
-			$this->forumParents[0] = "(New Parent)";
+			$this->forumParents[0] = FORLAN_216;
 			$forumSubParents = array();
 
 			foreach($data as $val)
@@ -832,7 +832,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			<td>".$frm->checkbox('lastpost', 1, false, LAN_ACTIVE).
 				"</td><td>".
-			$frm->select('lastpost_nothread', array(0=>"Forums and Threads", 1=>"Forums Only"))."
+			$frm->select('lastpost_nothread', array(0=>FORLAN_207, 1=>FORLAN_208))."
 
 			</td>
 		</tr>
@@ -1055,10 +1055,10 @@ if(!deftrue('OLD_FORUMADMIN'))
             'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			//	  'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
             'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '10%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'gen_ip' 				=> array ( 'title' => "Topic", 'type' => 'text', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'gen_chardata' 		=> array ( 'title' => "Issue", 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'gen_user_id' 		=> array ( 'title' => "Submitted by", 'type' => 'user', 'batch'=>true, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
-	      	'gen_intdata' 		=> array ( 'title' =>  "Topic", 'type' => 'number', 'nolist'=>true, 'batch'=>false, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+			'gen_ip' 				=> array ( 'title' => FORLAN_209, 'type' => 'text', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'gen_chardata' 		=> array ( 'title' => FORLAN_210, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'gen_user_id' 		=> array ( 'title' => FORLAN_211, 'type' => 'user', 'batch'=>true, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
+	      	'gen_intdata' 		=> array ( 'title' =>  FORLAN_209, 'type' => 'number', 'nolist'=>true, 'batch'=>false, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		     'options'				=> array ( 'title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1', 'readParms'=>'edit=0'  ),
 		);
 
@@ -1176,10 +1176,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'post_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			//	  'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'post_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '10%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-			'post_entry' 				=> array ( 'title' => "Post", 'type' => 'bbarea', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'post_entry' 				=> array ( 'title' => FORLAN_213, 'type' => 'bbarea', 'data' => 'str', 'width' => '20%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		//	'gen_chardata' 		=> array ( 'title' => "Issue", 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'post_user' 		=> array ( 'title' => LAN_USER, 'type' => 'user', 'batch'=>false, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left nowrap',  ),
-			'post_attachments' 		=> array ( 'title' =>  "Attachments", 'type' => 'method', 'batch'=>false, 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			'post_attachments' 		=> array ( 'title' =>  FORLAN_212, 'type' => 'method', 'batch'=>false, 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'options'				=> array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '2%', 'thclass' => 'right last', 'class' => 'right last', 'forced' => '1', 'readParms'=>'edit=0'  ),
 		);
 
