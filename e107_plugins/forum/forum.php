@@ -527,7 +527,7 @@ function parse_forum($f, $restricted_string = '')
 --*/
 
 //--	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
-	return $tp->parseTemplate($FORUM_MAIN_FORUM, false, $sc);
+	return $tp->parseTemplate($FORUM_MAIN_FORUM, true, $sc);
 }
 
 
