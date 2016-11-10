@@ -46,7 +46,9 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 		if(varset($_GET['mode']) == 'customize')
 		{
-			e107::css('inline', '.layout-container label.radio { float: left; padding: 0; max-width: 100px; margin: 7px; cursor: pointer; text-align: center; }');
+			e107::css('inline', '.layout-container { display: table; margin-left: auto; margin-right: auto; }');
+			e107::css('inline', '.layout-container label.radio { float: left; padding: 0; width: 120px; margin: 7px; cursor: pointer; text-align: center; }');
+			e107::css('inline', '.layout-container label.radio img { margin-left: auto; margin-right: auto; display: block; }');
 			e107::css('inline', '.layout-container label.radio input { width: 100%; margin-left: auto; margin-right: auto; display: block; }');
 			e107::css('inline', '.layout-container label.radio p { width: 100%; text-align: center; display: block; margin: 20px 0 0 0; }');
 		}
@@ -265,8 +267,199 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 		switch(varset($user_pref['core-flexpanel-layout'], 'default'))
 		{
+			case 'two_col_bricks':
+				if($id == 'core-infopanel_help')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-latest-list')
+				{
+					$default['area'] = 'menu-area-04';
+					$default['weight'] = 1;
+				}
+
+				if($id == 'e-status-list')
+				{
+					$default['area'] = 'menu-area-04';
+					$default['weight'] = 2;
+				}
+
+				if($id == 'core-infopanel_mye107')
+				{
+					$default['area'] = 'menu-area-02';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_news')
+				{
+					$default['area'] = 'menu-area-03';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_website_status')
+				{
+					$default['area'] = 'menu-area-03';
+					$default['weight'] = 1;
+				}
+				break;
+			
+			case 'two_col_stacked':
+				if($id == 'core-infopanel_help')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 1;
+				}
+
+				if($id == 'e-latest-list')
+				{
+					$default['area'] = 'menu-area-04';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-status-list')
+				{
+					$default['area'] = 'menu-area-05';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_mye107')
+				{
+					$default['area'] = 'menu-area-02';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_news')
+				{
+					$default['area'] = 'menu-area-03';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_website_status')
+				{
+					$default['area'] = 'menu-area-12';
+					$default['weight'] = 1;
+				}
+				break;
+
+			case 'three_col_bricks':
+				if($id == 'core-infopanel_help')
+				{
+					$default['area'] = 'menu-area-02';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-latest-list')
+				{
+					$default['area'] = 'menu-area-03';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-status-list')
+				{
+					$default['area'] = 'menu-area-04';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_mye107')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_news')
+				{
+					$default['area'] = 'menu-area-09';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_website_status')
+				{
+					$default['area'] = 'menu-area-13';
+					$default['weight'] = 0;
+				}
+				break;
+
+			case 'three_col_stacked':
+				if($id == 'core-infopanel_help')
+				{
+					$default['area'] = 'menu-area-03';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-latest-list')
+				{
+					$default['area'] = 'menu-area-04';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-status-list')
+				{
+					$default['area'] = 'menu-area-05';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_mye107')
+				{
+					$default['area'] = 'menu-area-02';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_news')
+				{
+					$default['area'] = 'menu-area-12';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_website_status')
+				{
+					$default['area'] = 'menu-area-13';
+					$default['weight'] = 0;
+				}
+				break;
+
+			case 'one_col':
+				if($id == 'core-infopanel_help')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-latest-list')
+				{
+					$default['area'] = 'menu-area-02';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'e-status-list')
+				{
+					$default['area'] = 'menu-area-03';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_mye107')
+				{
+					$default['area'] = 'menu-area-04';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_news')
+				{
+					$default['area'] = 'menu-area-05';
+					$default['weight'] = 0;
+				}
+
+				if($id == 'core-infopanel_website_status')
+				{
+					$default['area'] = 'menu-area-06';
+					$default['weight'] = 0;
+				}
+				break;
+
 			case 'wider_sidebar':
 			case 'default':
+			default:
 				if($id == 'core-infopanel_help')
 				{
 					$default['area'] = 'menu-area-01';
@@ -316,27 +509,52 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	function renderLayoutPicker()
 	{
 		$tp = e107::getParser();
+		$fr = e107::getForm();
+		$fl = e107::getFile();
 
 		global $user_pref;
-
 		$default = varset($user_pref['core-flexpanel-layout'], 'default');
 
 		$html = '<div class="layout-container">';
 
-		$html .= '<label class="radio">';
-		$html .= $tp->toImage('{e_ADMIN}includes/layouts/flexpanel_default.png', array('legacy' => '{e_ADMIN}includes/layouts/', 'w' => 100));
-		$html .= '<input type="radio" name="e-flexpanel-layout" value="default"' . ($default == 'default' ? ' checked' : '') . '/>';
-		$html .= '<p>Default</p>';
-		$html .= '</label>';
+		$layouts = array(
+			'default',
+			'wider_sidebar',
+			'two_col_bricks',
+			'two_col_stacked',
+			'three_col_bricks',
+			'three_col_stacked',
+			'one_col',
+		);
 
-		$html .= '<label class="radio">';
-		$html .= $tp->toImage('{e_ADMIN}includes/layouts/flexpanel_wider_sidebar.png', array('legacy' => '{e_ADMIN}includes/layouts/', 'w' => 100));
-		$html .= '<input type="radio" name="e-flexpanel-layout" value="wider_sidebar"' . ($default == 'wider_sidebar' ? ' checked' : '') . '/>';
-		$html .= '<p>Wider Sidebar</p>';
-		$html .= '</label>';
+		$files = $fl->get_files(e_ADMIN . 'includes/layouts/', "flexpanel_(.*).php", "standard", 1);
+		foreach($files as $num => $val)
+		{
+			$filename = basename($val['fname']);
+			$layout = str_replace('flexpanel_', '', $filename);
+			$layout = str_replace('.php', '', $layout);
+
+			if(!in_array($layout, $layouts))
+			{
+				$layouts[] = $layout;
+			}
+		}
+
+		foreach($layouts as $layout)
+		{
+			$html .= '<label class="radio">';
+			$html .= $tp->toImage('{e_ADMIN}includes/layouts/flexpanel_' . $layout . '.png', array(
+				'legacy' => '{e_ADMIN}includes/layouts/',
+				'w'      => 75,
+			));
+			$checked = ($default == $layout);
+			$html .= $fr->radio('e-flexpanel-layout', $layout, $checked);
+			$name = str_replace('_', ' ', $layout);
+			$html .= '<p>' . ucwords($name) . '</p>';
+			$html .= '</label>';
+		}
 
 		$html .= '<div class="clear"></div>';
-
 		$html .= '</div>';
 
 		return $html;
