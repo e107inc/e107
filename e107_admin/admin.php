@@ -15,6 +15,22 @@
  */
 
 require_once('../class2.php');
+
+
+if(varset($_GET['mode']) == 'customize')
+{
+	$adminPref = e107::getConfig()->get('adminpref', 0);
+
+	// If not Main Admin and "Apply dashboard preferences to all administrators"
+	// is checked in admin theme settings.
+	if(!getperms("1") && $adminPref == 1)
+	{
+		e107::redirect('admin');
+		exit;
+	}
+}
+
+
 include_once(e107::coreTemplatePath('admin_icons')); // Needs to be loaded before infopanel AND in boot.php 
 
 if(vartrue($_GET['iframe']) == 1)

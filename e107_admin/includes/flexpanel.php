@@ -2,7 +2,7 @@
 
 /**
  * @file
- *
+ * Flexpanel dashboard style.
  */
 
 if(!defined('e107_INIT'))
@@ -10,13 +10,38 @@ if(!defined('e107_INIT'))
 	exit;
 }
 
+// Get "Apply dashboard preferences to all administrators" setting.
+$adminPref = e107::getConfig()->get('adminpref', 0);
+$flepanelEnabled = true;
+
+// If not Main Admin and "Apply dashboard preferences to all administrators" is checked.
+if(!getperms('1') && $adminPref == 1)
+{
+	$flepanelEnabled = false;
+}
+
+define('FLEXPANEL_ENABLED', $flepanelEnabled);
+
+
+// Save rearranged menus to user.
 if(e_AJAX_REQUEST)
 {
-	if(varset($_POST['core-flexpanel-order'], false))
+	if(FLEXPANEL_ENABLED && varset($_POST['core-flexpanel-order'], false))
 	{
-		global $user_pref;
-		$user_pref['core-flexpanel-order'] = $_POST['core-flexpanel-order'];
-		save_prefs('user');
+		// If "Apply dashboard preferences to all administrators" is checked.
+		if($adminPref == 1)
+		{
+			e107::getConfig()
+				->setPosted('core-flexpanel-order', $_POST['core-flexpanel-order'])
+				->save();
+		}
+		else
+		{
+			e107::getUser()
+				->getConfig()
+				->set('core-flexpanel-order', $_POST['core-flexpanel-order'])
+				->save();
+		}
 		exit;
 	}
 }
@@ -42,30 +67,33 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 		$this->iconlist = $this->getIconList();
 
-		e107::js('core', 'core/admin.flexpanel.js', 'jquery', 4);
-
-		if(varset($_GET['mode']) == 'customize')
+		if(FLEXPANEL_ENABLED)
 		{
-			e107::css('inline', '.layout-container { display: table; margin-left: auto; margin-right: auto; }');
-			e107::css('inline', '.layout-container label.radio { float: left; padding: 0; width: 120px; margin: 7px; cursor: pointer; text-align: center; }');
-			e107::css('inline', '.layout-container label.radio img { margin-left: auto; margin-right: auto; display: block; }');
-			e107::css('inline', '.layout-container label.radio input { width: 100%; margin-left: auto; margin-right: auto; display: block; }');
-			e107::css('inline', '.layout-container label.radio p { width: 100%; text-align: center; display: block; margin: 20px 0 0 0; }');
-		}
+			e107::css('inline', '.draggable-panels .panel-heading { cursor: move; }');
+			e107::js('core', 'core/admin.flexpanel.js', 'jquery', 4);
 
-		// Save posted Layout type.
-		if(varset($_POST['e-flexpanel-layout']))
-		{
-			global $user_pref;
-
-			// If Layout has been changed, we clear previous arrangement in order to use defaults.
-			if($user_pref['core-flexpanel-layout'] != $_POST['e-flexpanel-layout'])
+			if(varset($_GET['mode']) == 'customize')
 			{
-				$user_pref['core-flexpanel-order'] = array();
+				e107::css('inline', '.layout-container { display: table; margin-left: auto; margin-right: auto; }');
+				e107::css('inline', '.layout-container label.radio { float: left; padding: 0; width: 120px; margin: 7px; cursor: pointer; text-align: center; }');
+				e107::css('inline', '.layout-container label.radio img { margin-left: auto; margin-right: auto; display: block; }');
+				e107::css('inline', '.layout-container label.radio input { width: 100%; margin-left: auto; margin-right: auto; display: block; }');
+				e107::css('inline', '.layout-container label.radio p { width: 100%; text-align: center; display: block; margin: 20px 0 0 0; }');
 			}
 
-			$user_pref['core-flexpanel-layout'] = $_POST['e-flexpanel-layout'];
-			save_prefs('user');
+			// Save posted Layout type.
+			if(varset($_POST['e-flexpanel-layout']))
+			{
+				$user_pref = $this->getUserPref();
+
+				// If Layout has been changed, we clear previous arrangement in order to use defaults.
+				if($user_pref['core-flexpanel-layout'] != $_POST['e-flexpanel-layout'])
+				{
+					$this->savePref('core-flexpanel-order', array());
+				}
+
+				$this->savePref('core-flexpanel-layout', $_POST['e-flexpanel-layout']);
+			}
 		}
 	}
 
@@ -81,6 +109,8 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$pref = e107::getPref();
 		$frm = e107::getForm();
 
+		$user_pref = $this->getUserPref();
+
 		if(varset($_GET['mode']) == 'customize')
 		{
 			echo $frm->open('infopanel', 'post', e_SELF);
@@ -90,8 +120,6 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			echo $frm->close();
 			return;
 		}
-
-		global $user_pref;
 
 		// Default menu areas.
 		$panels = array(
@@ -129,7 +157,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// --------------------- Personalized Panel -----------------------
-		if(getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
+		if(empty(varset($user_pref['core-infopanel-mye107'], array()))) // Set default icons.
 		{
 			$defArray = array(
 				0  => 'e-administrator',
@@ -148,7 +176,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 				13 => 'e-users',
 				14 => 'e-wmessage'
 			);
-			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'], $defArray);
+			$user_pref['core-infopanel-mye107'] = $defArray;
 		}
 		$tp->parseTemplate("{SETSTYLE=flexpanel}");
 		$mainPanel = "<div id='core-infopanel_mye107'>";
@@ -253,7 +281,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	 */
 	function getMenuPosition($id)
 	{
-		global $user_pref;
+		$user_pref = $this->getUserPref();
 
 		if(varset($user_pref['core-flexpanel-order'][$id]))
 		{
@@ -304,7 +332,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					$default['weight'] = 1;
 				}
 				break;
-			
+
 			case 'two_col_stacked':
 				if($id == 'core-infopanel_help')
 				{
@@ -512,7 +540,8 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$fr = e107::getForm();
 		$fl = e107::getFile();
 
-		global $user_pref;
+		$user_pref = $this->getUserPref();
+
 		$default = varset($user_pref['core-flexpanel-layout'], 'default');
 
 		$html = '<div class="layout-container">';

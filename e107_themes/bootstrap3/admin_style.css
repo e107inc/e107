@@ -1281,10 +1281,6 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 #left-panel .panel-title span { display: inline-block; vertical-align: middle; color:white;text-shadow:0 1px 1px #000}
 #left-panel .panel-title .S24, #left-panel .panel-title img { margin-right:6px; width:24px; height:24px; vertical-align:middle}
 
-
-/* Dashboard */
-.draggable-panels .panel-heading { cursor: move; }
-
 /*
 
 body { background-color: rgb(68, 68, 68); }
