@@ -706,7 +706,7 @@ class themeHandler
 					$text = $this->renderTheme(1, $theme);
 				}
 			}
-			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
+			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$mode."'>\n";
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_33, $mes->render().$text);
 			echo "</form>";
 		}
@@ -722,7 +722,7 @@ class themeHandler
 					$text = $this->renderTheme(2, $theme);
 				}
 			}
-			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";
+			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$mode."'>\n";
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_34, $mes->render().$text);
 			echo "</form>";
 		}
@@ -744,7 +744,7 @@ class themeHandler
 				// print_a($theme);
 			}
 			$text .= "<div class='clear'>&nbsp;</div>";
-			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".$mode."'>\n";	
+			echo "<form enctype='multipart/form-data' method='post' action='".e_SELF."?mode=".$mode."'>\n";	
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_39, $mes->render().$text);
 			$text .= "</form>";
 			
@@ -1210,10 +1210,10 @@ class themeHandler
 		        		<col class='col-control' />
 						<col class='col-control' />
 		        	</colgroup>
-				<tr>
-					<td><b>".TPVLAN_11."</b></td>
-					<td>".$theme['version']."</td>
-					<td class='well center middle' rowspan='9' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
+					<tr>
+						<td><b>".TPVLAN_11."</b></td>
+						<td>".$theme['version']."</td>
+						<td class='well center middle' rowspan='9' style='text-align:center; vertical-align:middle;width:25%'>".$thumbnail."</td>
 					</tr>";
 		
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_AUTHOR."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>";
@@ -1225,8 +1225,7 @@ class themeHandler
 					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".LAN_FOLDER."</b>:</td><td style='vertical-align:top'>".$theme['path']."</td></tr>";
 
 				//		$text .= "<tr><td style='vertical-align:top; width:25%'><b>Price</b>:</td><td style='vertical-align:top'>".$price."</td></tr>";
-					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td>
-						<td style='vertical-align:top' colspan='2'>";
+					$text .= "<tr><td style='vertical-align:top; width:25%'><b>".TPVLAN_49."</b>:</td><td style='vertical-align:top'>";
 					$text .= ($theme['xhtmlcompliant']) ? "W3C XHTML ".$theme['xhtmlcompliant'] : TPVLAN_71;
 					$text .= ($theme['csscompliant']) ? " &amp; CSS ".$theme['csscompliant'] : "";
 					$text .= "</td></tr>";
@@ -1246,7 +1245,7 @@ class themeHandler
 						$text .= "
 							<tr>
 			                    <td style='vertical-align:top; width:24%;'><b>".TPVLAN_53."</b></td>
-								<td colspan='2' style='vertical-align:top width:auto;'>";
+								<td style='vertical-align:top width:auto;'>";
 						
 						if(varset($theme['plugins']))
 						{
@@ -1410,13 +1409,24 @@ class themeHandler
 						$text .= "
 						<tr>
 							<td><b>".TPVLAN_41.":</b></td>
-							<td colspan='2'>".$astext."</td>
+							<td>".$astext."</td>
+						</tr>
+						\n";
+
+						$text .= "
+						<tr>
+							<td><b>" . TPVLAN_89 . "</b></td>
+							<td colspan='2'>
+								<label class='checkbox'>
+									" . $frm->checkbox('adminpref', 1, (varset($pref['adminpref'], 0) == 1)) . "
+								</label>
+							</td>
 						</tr>
 						\n";
 					}
 
 		
-					$text .= $itext;
+					$text .= varset($itext, '');
 
 
 					$theme['css'] = $this->filterStylesheets($mode, $theme);
@@ -1443,16 +1453,12 @@ class themeHandler
 							switch($mode)
 							{
 								case 2: // admin mode.
-
 									$for = $frm->name2id("admincss-".$css['name']);
-									$text2 = "
-										<td class='center'>".
-										$frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'])."
-										</td>
-										<td><label for='".$for."'>".$css['info']."</label></td>";
-
+									$text2 = "<td class='center'>";
+									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name']);
+									$text2 .= "</td>";
+									$text2 .= "<td><label for='".$for."'>".$css['info']."</label></td>";
 									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
-
 									break;
 
 								case 1: // front 'sitetheme' mode.
@@ -1981,9 +1987,14 @@ class themeHandler
 
 		
 		//TODO adminlog
-		e107::getConfig()->setPosted('admincss', $_POST['admincss'])->setPosted('adminstyle', $_POST['adminstyle']);
+		e107::getConfig()
+			->setPosted('admincss', $_POST['admincss'])
+			->setPosted('adminstyle', $_POST['adminstyle'])
+			->setPosted('adminpref', $_POST['adminpref']);
 		
-		return (e107::getConfig()->dataHasChangedFor('admincss') || e107::getConfig()->dataHasChangedFor('adminstyle'));
+		return (e107::getConfig()->dataHasChangedFor('admincss')
+			|| e107::getConfig()->dataHasChangedFor('adminstyle')
+			|| e107::getConfig()->dataHasChangedFor('adminpref'));
 	}
 	
 	function SetCustomPages($array)
