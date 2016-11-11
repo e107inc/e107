@@ -233,6 +233,13 @@ define("LAN_NOTVERIFIED","Not Verified");
 define("LAN_BANNED","Banned");
 define("LAN_BOUNCED","Bounced");
 
+define("LAN_UI_1_HOUR", "1 hour");
+define("LAN_UI_3_HOURS", "3 hours");
+define("LAN_UI_6_HOURS", "6 hours");
+define("LAN_UI_12_HOURS", "12 hours");
+define("LAN_UI_24_HOURS", "24 hours");
+define("LAN_UI_48_HOURS", "48 hours");
+define("LAN_UI_3_DAYS", "3 days");
 
 define("USRLAN_220", "All Userclasses");
 define("USRLAN_221", "Edit admin perms");
