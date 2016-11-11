@@ -1414,8 +1414,9 @@ class e_parse_shortcode
 			$ret = $pre.$ret.$post;
 		}
 
+return preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), $ret);
 
-		return $ret;
+//		return $ret;
 
 	}
 
