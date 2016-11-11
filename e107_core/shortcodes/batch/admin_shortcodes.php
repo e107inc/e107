@@ -1679,16 +1679,22 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large'] = '';
 			$tmp[1]['image_src'] = '';
 			$tmp[1]['image_large_src'] = '';
-			
-						
-			$tmp[2]['text'] = LAN_PERSONALIZE;
-			$tmp[2]['description'] = "Customize administration panels";
-			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
-			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$tmp[2]['image_large'] = '';
-			$tmp[2]['image_src'] = '';
-			$tmp[2]['image_large_src'] = '';
-		//	$tmp[2]['perm'] = '';	
+
+
+			// If not Main Admin and "Apply dashboard preferences to all administrators"
+			// is checked in admin theme settings.
+			$adminPref = e107::getConfig()->get('adminpref', 0);
+			if(getperms("1") || $adminPref == 0)
+			{
+				$tmp[2]['text'] = LAN_PERSONALIZE;
+				$tmp[2]['description'] = "Customize administration panels";
+				$tmp[2]['link'] = e_ADMIN . 'admin.php?mode=customize';
+				$tmp[2]['image'] = "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
+				$tmp[2]['image_large'] = '';
+				$tmp[2]['image_src'] = '';
+				$tmp[2]['image_large_src'] = '';
+				//	$tmp[2]['perm'] = '';
+			}
 			
 			
 			$tmp[3]['text'] = LAN_LOGOUT;

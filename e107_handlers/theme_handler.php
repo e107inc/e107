@@ -1990,7 +1990,7 @@ class themeHandler
 		e107::getConfig()
 			->setPosted('admincss', $_POST['admincss'])
 			->setPosted('adminstyle', $_POST['adminstyle'])
-			->setPosted('adminpref', $_POST['adminpref']);
+			->setPosted('adminpref', varset($_POST['adminpref'], 0));
 		
 		return (e107::getConfig()->dataHasChangedFor('admincss')
 			|| e107::getConfig()->dataHasChangedFor('adminstyle')
