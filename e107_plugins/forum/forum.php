@@ -366,7 +366,9 @@ foreach ($forumList['parents'] as $parent)
 //----				$sc->parentname = $parent['forum_name'];
 //--	$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT, $pVars);
 //				$sc->fparent = $parent;
-				$sc->setVars($parent);
+
+	$sc->setVars($parent);
+	$sc->wrapper('forum/main/parent');
 	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, false, $sc);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
@@ -527,6 +529,8 @@ function parse_forum($f, $restricted_string = '')
 --*/
 
 //--	return $tp->simpleParse($FORUM_MAIN_FORUM, $fVars);
+	$sc->wrapper('forum/main/forum');
+
 	return $tp->parseTemplate($FORUM_MAIN_FORUM, true, $sc);
 }
 
@@ -638,8 +642,11 @@ $breadarray = array(
 //--  $fVars->FORUM_BREADCRUMB = $frm->breadcrumb($breadarray);
 
 //--  $forum_main_start = $tp->simpleParse($FORUM_MAIN_START, $fVars);
+$sc->wrapper('forum/main/start');
 $forum_main_start = $tp->parseTemplate($FORUM_MAIN_START, false, $sc);
 //--  $forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
+
+$sc->wrapper('forum/main/end');
 $forum_main_end = $tp->parseTemplate($FORUM_MAIN_END, false, $sc);
 
 if ($forum->prefs->get('enclose'))
@@ -795,7 +802,8 @@ function forum_track()
 
 				$data['UNTRACK'] = "<a id='".$buttonId."' href='#' title=\"".$trackDiz."\" data-token='".e_TOKEN."' data-forum-insert='".$buttonId."'  data-forum-post='".$row['thread_forum_id']."' data-forum-thread='".$row['thread_id']."' data-forum-action='track' name='track' class='btn btn-primary' >".IMAGE_track."</a>";
 
-				$forum_trackstring .= $tp->simpleParse($FORUM_TRACK_MAIN, $data);
+				$data['_WRAPPER_'] = 'forum/track/item';
+				$forum_trackstring .= $tp->parseTemplate($FORUM_TRACK_MAIN, true, $data);
 			}
 		}
 	//	print_a($FORUM_TRACK_START);
@@ -811,9 +819,12 @@ function forum_track()
 			$data['FORUM_BREADCRUMB'] = e107::getForm()->breadcrumb($breadarray);
 		}
 
+		$data['_WRAPPER_'] = 'forum/track/start';
+		$forum_track_start = $tp->parseTemplate($FORUM_TRACK_START, true, $data);
 
-		$forum_track_start = $tp->simpleParse($FORUM_TRACK_START, $data);
-		$forum_track_end = $tp->simpleParse($FORUM_TRACK_END, $data);
+		$data['_WRAPPER_'] = 'forum/track/end';
+		$forum_track_end = $tp->parseTemplate($FORUM_TRACK_END, true, $data);
+
 
 	//	if ($forum->prefs->get('enclose'))
 		{
