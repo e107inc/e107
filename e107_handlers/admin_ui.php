@@ -6513,11 +6513,11 @@ class e_admin_form_ui extends e_form
 					    //TODO today, yesterday, this-month, last-month .
 					    
 					    $dateFilters = array (
-						'hour'		=> LAN_UI_PAST_HOUR,
-					    	"day"		=> LAN_UI_PAST_24_HOURS,
-					    	"week"		=> LAN_UI_PAST_WEEK,
-					    	"month"		=> LAN_UI_PAST_MONTH,
-					    	"year"		=> LAN_UI_PAST_YEAR
+							'hour'		=> LAN_UI_FILTER_PAST_HOUR,
+					    	"day"		=> LAN_UI_FILTER_PAST_24_HOURS,
+					    	"week"		=> LAN_UI_FILTER_PAST_WEEK,
+					    	"month"		=> LAN_UI_FILTER_PAST_MONTH,
+					    	"year"		=> LAN_UI_FILTER_PAST_YEAR
 						);
 					    
 						foreach($dateFilters as $k => $name)

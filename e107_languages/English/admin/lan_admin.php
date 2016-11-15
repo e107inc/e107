@@ -400,7 +400,6 @@ define("LAN_FILTER_LABEL_DISPLAYALL", "Display All");
 define("LAN_FILTER_LABEL_CLEAR", "Clear Filter");
 define("LAN_FILTER_LABEL_TYPED", "(typed)");
 
-//FIXME Remove html 
 define("LAN_UI_NOPID_ERROR", "There is no [b]Primary ID[/b] set");
 define("LAN_UI_BATCHDEL_ERROR", "Batch delete not allowed!");
 define("LAN_UI_404_BODY_ERROR", "Requested page was not found!");
@@ -424,11 +423,11 @@ define("LAN_UI_BATCH_CREATELINK", "Create Link");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
 define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
-define("LAN_UI_PAST_HOUR", "Past Hour"); 
-define("LAN_UI_PAST_24_HOURS", "Past 24 hours");
-define("LAN_UI_PAST_WEEK", "Past Week");
-define("LAN_UI_PAST_MONTH", "Past Month");
-define("LAN_UI_PAST_YEAR", "Past Year");
+define("LAN_UI_FILTER_PAST_HOUR", "Past Hour");
+define("LAN_UI_FILTER_PAST_24_HOURS", "Past 24 hours");
+define("LAN_UI_FILTER_PAST_WEEK", "Past Week");
+define("LAN_UI_FILTER_PAST_MONTH", "Past Month");
+define("LAN_UI_FILTER_PAST_YEAR", "Past Year");
 
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
