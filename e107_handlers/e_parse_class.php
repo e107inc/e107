@@ -792,6 +792,7 @@ class e_parse extends e_parser
 		if (e107::wysiwyg() !== true)
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
+			$text = urldecode($text);
 		//	$text = str_replace("&nbsp;", " ", $text);
 		}
 		return $text;
