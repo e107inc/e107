@@ -122,4 +122,4 @@ define("TPVLAN_86","Could not change site theme.");
 define("TPVLAN_87","Rendering Theme Config");
 define("TPVLAN_88","Converter");
 
-?>
+define("TPVLAN_89", "Apply dashboard preferences to all administrators");
