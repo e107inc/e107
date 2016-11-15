@@ -6079,7 +6079,7 @@ class e_admin_form_ui extends e_form
 								".$this->text('searchquery', $current_query[0], 50, $input_options)."
 								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
 							<span>
-							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>RL_LAN_088))."
+							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>LAN_FILTER))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
 								".$this->option(LAN_FILTER_LABEL_CLEAR, '___reset___')."
 								".$this->renderBatchFilter('filter', $current_query[1])."
@@ -6513,11 +6513,11 @@ class e_admin_form_ui extends e_form
 					    //TODO today, yesterday, this-month, last-month .
 					    
 					    $dateFilters = array (
-						'hour'		=> RL_LAN_127,
-					    	"day"		=> RL_LAN_128,
-					    	"week"		=> RL_LAN_129,
-					    	"month"		=> RL_LAN_130,
-					    	"year"		=> RL_LAN_131
+						'hour'		=> LAN_UI_PAST_HOUR,
+					    	"day"		=> LAN_UI_PAST_24_HOURS,
+					    	"week"		=> LAN_UI_PAST_WEEK,
+					    	"month"		=> LAN_UI_PAST_MONTH,
+					    	"year"		=> LAN_UI_PAST_YEAR
 						);
 					    
 						foreach($dateFilters as $k => $name)
