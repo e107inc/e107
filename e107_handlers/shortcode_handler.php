@@ -1372,50 +1372,59 @@ class e_parse_shortcode
 	 */
 	private function makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode)
 	{
+		$pre = $post = '';
 
 		if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
-			return $pre.$ret.$post;
 		}
-
-		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+		elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
-			return $pre.$ret.$post;
 		}
-
-		//if $sc_mode exists, we need it to parse $sc_style
-		if ($sc_mode)
+		else
 		{
-			$code = $code.'|'.$sc_mode;
-		}
-
-		if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
-		{
-			$pre = $post = '';
-			// old way - pre/post keys
-			if(is_array($this->sc_style[$code]))
+			//if $sc_mode exists, we need it to parse $sc_style
+			if($sc_mode)
 			{
-				if (isset($this->sc_style[$code]['pre']))
-				{
-					$pre = $this->sc_style[$code]['pre'];
-				}
-				if (isset($this->sc_style[$code]['post']))
-				{
-					$post = $this->sc_style[$code]['post'];
-				}
-			}
-			else // new way - same format as wrapper
-			{
-				list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+				$code = $code.'|'.$sc_mode;
 			}
 
-			$ret = $pre.$ret.$post;
+			if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
+			{
+
+				// old way - pre/post keys
+				if(is_array($this->sc_style[$code]))
+				{
+					if (isset($this->sc_style[$code]['pre']))
+					{
+						$pre = $this->sc_style[$code]['pre'];
+					}
+					if (isset($this->sc_style[$code]['post']))
+					{
+						$post = $this->sc_style[$code]['post'];
+					}
+				}
+				else // new way - same format as wrapper
+				{
+					list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+				}
+
+			}
+
 		}
 
+		if(strpos($pre, '{') !== false) // shortcode found in wrapper
+		{
+			$pre = $this->parseCodes($pre, true);
+		}
 
-		return $ret;
+		if(strpos($post, '{') !== false) // shortcode found in wrapper
+		{
+			$post = $this->parseCodes($post, true);
+		}
+
+		return $pre.$ret.$post;
 
 	}
 
