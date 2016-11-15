@@ -303,18 +303,24 @@ str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_top
 ".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
 --*/
 
-// FIX - core template always override theme template
-// Include core template
-include(e_PLUGIN.'forum/templates/forum_template.php');
 
-// Override with theme template
-if (file_exists(THEME.'forum_template.php'))
+
+
+$FORUM_TEMPLATE = e107::getTemplate('forum','forum'); // required to use v2.x wrapper shortcode wrappers.
+
+if(empty($FORUM_TEMPLATE)) //v1.x fallback.
 {
-	include_once(THEME.'forum_template.php');
-}
-elseif(file_exists(THEME.'templates/forum/forum_template.php'))
-{
-	require_once(THEME.'templates/forum/forum_template.php');
+	include(e_PLUGIN.'forum/templates/forum_template.php');
+
+	// Override with theme template
+	if (file_exists(THEME.'forum_template.php'))
+	{
+		include_once(THEME.'forum_template.php');
+	}
+	elseif(file_exists(THEME.'templates/forum/forum_template.php'))
+	{
+		require_once(THEME.'templates/forum/forum_template.php');
+	}
 }
 
 if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format. 
