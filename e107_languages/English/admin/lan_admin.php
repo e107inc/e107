@@ -458,6 +458,7 @@ define("LAN_PERSONALIZE", "Personalize");
 define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
 define("LAN_DISPLAY_COLUMNS", "Display Columns");
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
+define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
 define("LAN_AFTER_SUBMIT", "After submit:");
 define("LAN_UNAVAILABLE", "Unavailable");
 define("LAN_READY_UP_FOLDER_FIELDS", "Ready to use upload form fields, optional - file list view");
@@ -470,4 +471,3 @@ define("LAN_GO_TO_LIST", "go to list");
 define("LAN_CREATE_ANOTHER", "create another");
 define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
-
