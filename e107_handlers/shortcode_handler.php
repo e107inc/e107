@@ -1376,47 +1376,47 @@ class e_parse_shortcode
 		if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
-			return $pre.$ret.$post;
+//			return $pre.$ret.$post;
 		}
 
-		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+		elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
-			return $pre.$ret.$post;
+//			return $pre.$ret.$post;
 		}
 
 		//if $sc_mode exists, we need it to parse $sc_style
-		if ($sc_mode)
+		elseif ($sc_mode)
 		{
 			$code = $code.'|'.$sc_mode;
+//		}
+
+			if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
+			{
+				$pre = $post = '';
+				// old way - pre/post keys
+				if(is_array($this->sc_style[$code]))
+				{
+					if (isset($this->sc_style[$code]['pre']))
+					{
+						$pre = $this->sc_style[$code]['pre'];
+					}
+					if (isset($this->sc_style[$code]['post']))
+					{
+						$post = $this->sc_style[$code]['post'];
+					}
+				}
+				else // new way - same format as wrapper
+				{
+					list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+				}
+
+//			$ret = $pre.$ret.$post;
+			}
+//		return $ret;
 		}
 
-		if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
-		{
-			$pre = $post = '';
-			// old way - pre/post keys
-			if(is_array($this->sc_style[$code]))
-			{
-				if (isset($this->sc_style[$code]['pre']))
-				{
-					$pre = $this->sc_style[$code]['pre'];
-				}
-				if (isset($this->sc_style[$code]['post']))
-				{
-					$post = $this->sc_style[$code]['post'];
-				}
-			}
-			else // new way - same format as wrapper
-			{
-				list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
-			}
-
-			$ret = $pre.$ret.$post;
-		}
-
-
-		return $ret;
-
+		return preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), $pre).$ret.preg_replace_callback('#\{([A-Z][^\x02]*?\S)\}#', array(&$this, 'doCode'), $post);
 	}
 
 
