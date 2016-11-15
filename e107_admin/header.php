@@ -590,16 +590,7 @@ if ($e107_popup != 1)
 	if (!deftrue('e_IFRAME'))
 	{
 		//removed  check strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE
-
-		// "flexpanel" style uses its own template!!!
-		if(defset('e_PAGE') == 'admin.php' && varset($pref['adminstyle']) == 'flexpanel' && varset($_GET['mode']) != 'customize')
-		{
-			parse_admin($ADMIN_HEADER_FLEXPANEL);
-		}
-		else
-		{
-			parse_admin($ADMIN_HEADER);
-		}
+		parse_admin($ADMIN_HEADER);
 	}
 	elseif(!vartrue($_GET['configure'])) 
 	{

@@ -231,7 +231,7 @@ $ADMIN_MODAL = '
 ';
 
 // TODO - LANs
-$ADMIN_HEADER_FLEXPANEL = $ADMIN_HEADER = $ADMIN_MODAL . '
+$ADMIN_HEADER = $ADMIN_MODAL . '
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
@@ -261,13 +261,18 @@ $ADMIN_HEADER_FLEXPANEL = $ADMIN_HEADER = $ADMIN_MODAL . '
 	<div class="row">
 ';
 
-$ADMIN_HEADER_FLEXPANEL .= '
+$adminstyle = e107::getConfig()->get('adminstyle', 'infopanel');
+if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET['mode']) != 'customize')
+{
+	$ADMIN_HEADER .= '
 		<div class="col-sm-12">
 			<div class="admin-main-content">
-';
-
-// TODO - LANs
-$ADMIN_HEADER .= '
+	';
+}
+else
+{
+	// TODO - LANs
+	$ADMIN_HEADER .= '
 		<div class="col-md-3 col-lg-2 admin-left-panel">
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
@@ -298,7 +303,8 @@ $ADMIN_HEADER .= '
 				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
 			</div>
 			<div class="admin-main-content">
-';
+	';
+}
 
 // TODO - LANs
 $ADMIN_FOOTER = '
