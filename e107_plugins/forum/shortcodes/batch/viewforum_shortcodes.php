@@ -225,7 +225,11 @@ if(!empty($viewable))
 //else
 //{
 //-- Possible candidate for wrapper????
-	return empty($viewable)?'':"<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>".$viewable."</div></div></div>";
+/*	WORKING WRAPPER
+	$SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>{---}</div></div></div>";
+
+*/
+	return empty($viewable)?'':$viewable;
 }
 
 	function sc_search()

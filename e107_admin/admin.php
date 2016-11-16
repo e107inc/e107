@@ -15,6 +15,22 @@
  */
 
 require_once('../class2.php');
+
+
+if(varset($_GET['mode']) == 'customize')
+{
+	$adminPref = e107::getConfig()->get('adminpref', 0);
+
+	// If not Main Admin and "Apply dashboard preferences to all administrators"
+	// is checked in admin theme settings.
+	if(!getperms("1") && $adminPref == 1)
+	{
+		e107::redirect('admin');
+		exit;
+	}
+}
+
+
 include_once(e107::coreTemplatePath('admin_icons')); // Needs to be loaded before infopanel AND in boot.php 
 
 if(vartrue($_GET['iframe']) == 1)
@@ -31,15 +47,19 @@ if (varset($pref['adminstyle'])=='cascade' || varset($pref['adminstyle'])=='begi
     $pref['adminstyle'] = 'infopanel'; 
 }
 
-if(strpos($pref['adminstyle'], 'infopanel') === 0)
+if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 {
-	require_once(e_ADMIN.'includes/'.$pref['adminstyle'].'.php');
-	$_class = 'adminstyle_'.$pref['adminstyle'];
+	require_once(e_ADMIN . 'includes/' . $pref['adminstyle'] . '.php');
+
+	$_class = 'adminstyle_' . $pref['adminstyle'];
 	if(class_exists($_class, false))
 	{
-		$adp = new $_class;	
+		$adp = new $_class;
 	}
-	else $adp = new adminstyle_infopanel;	
+	else
+	{
+		$adp = new adminstyle_infopanel;
+	}
 }
 
 
@@ -396,7 +416,7 @@ function render_clean() // still used by classis, tabbed etc.
 
 if(is_object($adp))
 {
-	$adp->render();	
+	$adp->render();
 }
 else
 {
