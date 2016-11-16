@@ -1416,12 +1416,12 @@ class e_parse_shortcode
 
 		if(strpos($pre, '{') !== false) // shortcode found in wrapper
 		{
-			$pre = $this->parseCodes($pre, true);
+			$pre = $this->parseCodes($pre, true, $this->addedCodes);
 		}
 
 		if(strpos($post, '{') !== false) // shortcode found in wrapper
 		{
-			$post = $this->parseCodes($post, true);
+			$post = $this->parseCodes($post, true, $this->addedCodes);
 		}
 
 		return $pre.$ret.$post;
