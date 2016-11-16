@@ -25,7 +25,9 @@ if (!isset($FORUM_MAIN_PARENT))
 }
 if (!isset($FORUM_MAIN_FORUM))
 {
-	$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='forumheader2'>{NEWFLAG}</td>\n<td style='width:55%' class='forumheader2'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>{LASTPOSTDATEONLY}<br />{LASTPOSTUSER} <a href='{LASTPOSTURL}'>".IMAGE_post2."</a></span></td>\n</tr>";
+	$SC_WRAPPER['LASTPOSTDATEONLY'] = "{---}<br>";
+	$SC_WRAPPER['LASTPOSTURL'] = " <a href='{---}'>".IMAGE_post2."</a>";
+	$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='forumheader2'>{NEWFLAG}</td>\n<td style='width:55%' class='forumheader2'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>{LASTPOSTDATEONLY}{LASTPOSTUSER}{LASTPOSTURL}</span></td>\n</tr>";
 }
 if (!isset($FORUM_MAIN_END))
 {
