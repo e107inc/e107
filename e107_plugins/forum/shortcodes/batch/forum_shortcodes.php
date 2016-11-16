@@ -613,7 +613,9 @@ $gen = new convert;
 			case 'post':
 
 				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
-
+				// Variant with new shortcodes:
+				//return e107::getParser()->parseTemplate("{LASTPOSTDATEONLY}<br />{LASTPOSTUSER} <a href='{LASTPOSTURL}'>".IMAGE_post2."</a>", true, $this);
+				
 				// code to be executed if n is different from all labels;
 		}
 
