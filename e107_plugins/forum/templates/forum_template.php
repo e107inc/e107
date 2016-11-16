@@ -128,7 +128,10 @@ $FORUM_TEMPLATE['main']['parent']			= 	"<tr>
 											</tr>";
 
 
-$FORUM_TEMPLATE['main']['forum']			= 	"<tr>
+$SC_WRAPPER['REPLIESX'] = "<span class='badge badge-info'>{---}</span>";
+$SC_WRAPPER['THREADSX'] = "<span class='badge badge-info'>{---}</span>";
+	
+	$FORUM_TEMPLATE['main']['forum']			= 	"<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
 											<td class='hidden-xs text-center'>{REPLIESX}</td>
