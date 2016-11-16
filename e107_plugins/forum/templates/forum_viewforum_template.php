@@ -286,6 +286,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 //TODO Find a good place to put a {SEARCH} dropdown.
 
+$FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
