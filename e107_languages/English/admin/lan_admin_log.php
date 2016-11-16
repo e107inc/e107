@@ -85,7 +85,7 @@ define("RL_LAN_084", "Temporary accounts");
 define("RL_LAN_085", "[x] record(s) successfully deleted!");  
 define("RL_LAN_086", "[x] records not found and not deleted!");
 define("RL_LAN_087", "Details");
-define("RL_LAN_088", "Filter the results below"); 
+
 // Intentional gap
 define("RL_LAN_090", "Download ID");
 define("RL_LAN_091", "Detailed timings");
@@ -126,11 +126,7 @@ define("RL_LAN_123", "User audit trail class");
 define("RL_LAN_124", "User audit trail actions");
 define("RL_LAN_125", "System Logs Maintenance");
 define("RL_LAN_126", "Total [x] entries matching search condition");
-define("RL_LAN_127", "Past Hour"); 
-define("RL_LAN_128", "Past 24 hours");
-define("RL_LAN_129", "Past Week");
-define("RL_LAN_130", "Past Month");
-define("RL_LAN_131", "Past Year");
+
 define("RL_LAN_132", "Informative");
 define("RL_LAN_133", "Notice");
 define("RL_LAN_134", "Warning");

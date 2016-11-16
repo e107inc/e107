@@ -208,121 +208,115 @@ $ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="d
         </div>';*/
 
 
-	$ADMIN_MODAL =  '<div id="uiModal" class="modal fade">
-  <div id="admin-ui-modal" class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title modal-caption">&nbsp;</h4>
-      </div>
-      <div class="modal-body">
-        <p>Loading...</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+// TODO - LANs
+$ADMIN_MODAL = '
+<div id="uiModal" class="modal fade">
+	<div id="admin-ui-modal" class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title modal-caption">&nbsp;</h4>
+			</div>
+			<div class="modal-body">
+				<p>Loading...</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+';
 
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->';
-
-
-
-//	 <li>{ADMIN_COREUPDATE=icon}</li>
-
- $ADMIN_HEADER = $ADMIN_MODAL. '
-
+// TODO - LANs
+$ADMIN_HEADER = $ADMIN_MODAL . '
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container" >
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-         <a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107" /></a>
-        </div>
-        <div class="navbar-collapse collapse">
-
-				{ADMIN_NAVIGATION=no-main}        	 
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel">
+				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107"/>
+			</a>
+		</div>
+		<div class="navbar-collapse collapse">
+			{ADMIN_NAVIGATION=no-main}
 			<div>
 				{ADMIN_NAVIGATION=logout}
 				{ADMIN_NAVIGATION=language}
-				 {ADMIN_NAVIGATION=home}
-	            {ADMIN_PM}
-	            {ADMIN_DEBUG}
+				{ADMIN_NAVIGATION=home}
+				{ADMIN_PM}
+				{ADMIN_DEBUG}
 			</div>
+		</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row">
+';
 
-		  
-		  
-		  
-        </div><!--/.navbar-collapse -->
-      </div>
-    </div>';
- 
-    
-	
-	
-	
-	
-	
-$ADMIN_HEADER .= '<div class="container-fluid">
-
-      <div class="row">
-        <div class="col-md-3 col-lg-2" id="left-panel">
-        	{SETSTYLE=admin_menu}
-		
+$adminstyle = e107::getConfig()->get('adminstyle', 'infopanel');
+if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET['mode']) != 'customize')
+{
+	$ADMIN_HEADER .= '
+		<div class="col-sm-12">
+			<div class="admin-main-content">
+	';
+}
+else
+{
+	// TODO - LANs
+	$ADMIN_HEADER .= '
+		<div class="col-md-3 col-lg-2 admin-left-panel">
+			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
-
-			
-		
+	
 			{ADMIN_PWORD}
 			{ADMIN_MENUMANAGER}
-
+	
 			<div class="e-scroll-fixed">
-
-			
-			{SETSTYLE=site_info}
-			
-			{ADMINUI_HELP}
-			{ADMIN_HELP}
-
+				{SETSTYLE=site_info}
+				{ADMINUI_HELP}
+				{ADMIN_HELP}
 			</div>
-
+	
 			{ADMIN_SITEINFO=creditsonly}
 			{SETSTYLE=admin_menu}
-			
+	
 			{ADMIN_LATEST=infopanel}
 			{ADMIN_STATUS=infopanel}
 	
 			{ADMIN_LOG=request}
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
-			
-		
-			
-			{SETSTYLE=default}
-			
-         </div>
-        <div class="col-md-9 col-lg-10" id="right-panel" >
-         <div class="sidebar-toggle"><a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a></div>
-        	<div>
-        
-        ';
+	
+			{SETSTYLE=default}			
+		</div>
+		<div class="col-md-9 col-lg-10 admin-right-panel">
+			<div class="sidebar-toggle">
+				<a href="#" title="Toggle Sidebar" data-toggle-sidebar="true">&nbsp;</a>
+			</div>
+			<div class="admin-main-content">
+	';
+}
 
-
+// TODO - LANs
 $ADMIN_FOOTER = '
-		</div><!--/row-->
-        </div><!--/span-->
-      </div><!--/row-->
-     
+			</div>
+		</div>
+	</div><!--/.row-->
+</div><!--/.fluid-container-->
 
-    </div><!--/.fluid-container-->
-    <footer class="center mute"> 
-		Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
-      </footer>';
-
+<footer class="center mute"> 
+	Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
+</footer>
+';
 
 
 //{FS_ADMIN_ALT_NAV}

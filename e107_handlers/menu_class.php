@@ -542,8 +542,12 @@ class e_menu
 			//{
 			//	$mpath .= '/';
 			//}
-			
+
 			$mpath = trim($mpath, '/').'/'; // faster...
+
+			$id = e107::getForm()->name2id($mpath . $mname);
+			$ns->setUniqueId($id);
+
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
 		e107::getDB()->db_Mark_Time("(After ".$mname.")");

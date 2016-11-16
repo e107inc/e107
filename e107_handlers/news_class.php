@@ -380,7 +380,7 @@ class news {
 			'table' => 'news',
 			'pid'   => 'news_id',
 			'vars'  => 'news_item',
-			'perms' => '0',
+			'perms' => 'H|H4',
 			'shortcodes'    => array(
 					'news_title'        => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
 					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'span'),

@@ -31,45 +31,86 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
-	//	e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
-		
 		$code = "
-		
-		
 		jQuery(function($){
-
   			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
-
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
-
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
-
 		});
-";
-		
-		global $user_pref; // quick fix. 
-		$pref = e107::getPref();  
+		";
 		
 		e107::js('inline',$code,'jquery');
 		
-		
 		if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		{
-			
-			$user_pref['core-infopanel-mye107'] = $_POST['e-mye107'];
-			$user_pref['core-infopanel-menus'] = $_POST['e-mymenus'];
-
-			save_prefs('user');
+			$this->savePref('core-infopanel-mye107', $_POST['e-mye107']);
+			$this->savePref('core-infopanel-menus', $_POST['e-mymenus']);
 		}
-		
-		
-	//	$array_functions_assoc = e107::getNav()->adminLinks('assoc');
-	
-	//	$this->iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
+
 		$this->iconlist = e107::getNav()->adminLinks();
-		
 	}
-	
+
+	/**
+	 * Save preferences.
+	 *
+	 * @param $key
+	 * @param $value
+	 */
+	public function savePref($key, $value)
+	{
+		// Get "Apply dashboard preferences to all administrators" setting.
+		$adminPref = e107::getConfig()->get('adminpref', 0);
+
+		// If "Apply dashboard preferences to all administrators" is checked.
+		// Save as $pref.
+		if($adminPref == 1)
+		{
+			e107::getConfig()
+				->setPosted($key, $value)
+				->save();
+		}
+		// Save as $user_pref.
+		else
+		{
+			e107::getUser()
+				->getConfig()
+				->set($key, $value)
+				->save();
+		}
+	}
+
+	/**
+	 * Get preferences.
+	 *
+	 * @return mixed
+	 */
+	public function getUserPref()
+	{
+		// Get "Apply dashboard preferences to all administrators" setting.
+		$adminPref = e107::getConfig()->get('adminpref', 0);
+
+		// If "Apply dashboard preferences to all administrators" is checked.
+		// Get $pref.
+		if($adminPref == 1)
+		{
+			$user_pref = e107::getPref();
+		}
+		// Get $user_pref.
+		else
+		{
+			$user_pref = e107::getUser()->getPref();
+		}
+
+		return $user_pref;
+	}
+
+	/**
+	 * Allow to get Icon List.
+	 */
+	function getIconList()
+	{
+		return $this->iconlist;
+	}
 	
 	function render()
 	{
@@ -120,33 +161,32 @@ class adminstyle_infopanel
 		';
 	*/	
 		//TODO LANs throughout.
-		
-		global $style, $user_pref;
+
+		$user_pref = $this->getUserPref();
 
 		// ---------------------- Start Panel --------------------------------
 
 //		$text = "<div >";
-		if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
+		if(empty(varset($user_pref['core-infopanel-mye107'], array()))) // Set default icons.
 		{
-			$defArray = array (
-			  	0 => 'e-administrator',
-			    1 => 'e-cpage',
-			    2 => 'e-frontpage',
-			    3 => 'e-mailout',
-			    4 => 'e-image',
-			    5 => 'e-menus',
-			    6 => 'e-meta',
-			    7 => 'e-newspost',
-			    8 => 'e-plugin',
-			    9 => 'e-prefs',
-			    10 => 'e-links',
-			    11 => 'e-theme',
-			    12 => 'e-userclass2',
-			    13 => 'e-users',
-			    14 => 'e-wmessage'
-			  );
-			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'],$defArray);
-			
+			$defArray = array(
+				0  => 'e-administrator',
+				1  => 'e-cpage',
+				2  => 'e-frontpage',
+				3  => 'e-mailout',
+				4  => 'e-image',
+				5  => 'e-menus',
+				6  => 'e-meta',
+				7  => 'e-newspost',
+				8  => 'e-plugin',
+				9  => 'e-prefs',
+				10 => 'e-links',
+				11 => 'e-theme',
+				12 => 'e-userclass2',
+				13 => 'e-users',
+				14 => 'e-wmessage'
+			);
+			$user_pref['core-infopanel-mye107'] = $defArray;
 		}
 		
        
@@ -305,7 +345,7 @@ class adminstyle_infopanel
 		}
 		else
 		{
-			echo $frm->open('infopanel','post',e_SELF);
+			echo $frm->open('infopanel','post', e_SELF);
 			echo $this->render_infopanel_options(true);	
 			echo $frm->close();
 		}
@@ -585,37 +625,20 @@ class adminstyle_infopanel
 		
 	function render_infopanel_options($render = false) //TODO LAN
 	{
-		// $frm = e107::getSingleton('e_form');
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		
-		$start = "<div>
-		To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>click here</a>.
-		</div>
-	    ";
-	    
 	    if($render == false){ return ""; }
-	    
-		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
-	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
-	    
-		$text2 .= $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
+
+		$text2 = $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= $ns->tablerender(LAN_PERSONALIZE_MENUS, $this->render_infopanel_menu_options(),'personalize',true);
-	//	$text2 .= render_infopanel_icons();
-		//$text2 .= "<div class='clear'>&nbsp;</div>";
-	//	$text2 .= "<h3>Menus</h3>";
-	//	$text2 .= render_infopanel_menu_options();
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= "<div id='button' class='buttons-bar center'>";
 		$text2 .= $frm->admin_button('submit-mye107', LAN_SAVE, 'create');
-		$text2 .= "</div></form>";
-	//	$text2 .= "</div>";
-		
-	//	$end = "</div>";
-			
-		
+		$text2 .= "</div>";
+
 		return $mes->render().$text2;
 	}
 
@@ -624,11 +647,32 @@ class adminstyle_infopanel
 	{
 	
 		$frm = e107::getForm();
-		global  $user_pref;
+		$user_pref = $this->getUserPref();
 
 		$text = "<div style='padding-left:20px'>";
-        
-     
+
+
+		if(empty(varset($user_pref['core-infopanel-mye107'], array()))) // Set default icons.
+		{
+			$defArray = array(
+				0  => 'e-administrator',
+				1  => 'e-cpage',
+				2  => 'e-frontpage',
+				3  => 'e-mailout',
+				4  => 'e-image',
+				5  => 'e-menus',
+				6  => 'e-meta',
+				7  => 'e-newspost',
+				8  => 'e-plugin',
+				9  => 'e-prefs',
+				10 => 'e-links',
+				11 => 'e-theme',
+				12 => 'e-userclass2',
+				13 => 'e-users',
+				14 => 'e-wmessage'
+			);
+			$user_pref['core-infopanel-mye107'] = $defArray;
+		}
 	
 	
 		foreach ($this->iconlist as $key=>$icon)
@@ -642,7 +686,7 @@ class adminstyle_infopanel
 			}
 		}
 		
-		if (is_array($pluglist))
+		if (isset($pluglist) && is_array($pluglist))
 		{
 			foreach ($pluglist as $key=>$icon)
 			{
@@ -669,7 +713,7 @@ class adminstyle_infopanel
 		}
 
 		$frm = e107::getForm();
-		global  $user_pref;
+		$user_pref = $this->getUserPref();
 		
 	
 		$text = "<div style='padding-left:20px'>";
