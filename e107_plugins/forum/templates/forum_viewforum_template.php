@@ -72,6 +72,8 @@ if(empty($FORUM_VIEW_START_CONTAINER))
 
 
 if (empty($FORUM_VIEW_FORUM)) {
+	$SC_WRAPPER['LASTPOSTDATEONLY'] = "{---}<br>";
+	$SC_WRAPPER['LASTPOSTURL'] = " <a href='{---}'>".IMAGE_post2."</a>";
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
@@ -89,7 +91,7 @@ if (empty($FORUM_VIEW_FORUM)) {
 		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
 		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
 		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOSTDATEONLY}<br />{LASTPOSTUSER} <a href='{LASTPOSTURL}'>".IMAGE_post2."</a></td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOSTDATEONLY}{LASTPOSTUSER}{LASTPOSTURL}</td>
 		</tr>";
 }
 
