@@ -592,15 +592,24 @@ $gen = new convert;
 		{
 			//		$fVars->LASTPOSTUSER = $lastpost_name;
 			case "user":
-					return $lastpost_name;
-				break;
+				return $lastpost_name;
+//				break;
 
 				//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-				case "date":
-					return "<a href='".$url."'>". $relativeDate."</a>";
-				break;
+			case "date":
+				return "<a href='".$url."'>". $relativeDate."</a>";
+//				break;
+			case "dateonly":
+				return $relativeDate;
+
+			case "link":
+				return $url;
+
+			case "name":
+				return $lastpost['thread_name'];
 
 			// 	$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
+			// LEGACY? Leave for now?
 			case 'post':
 
 				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
@@ -658,6 +667,20 @@ $gen = new convert;
         return $this->lastpostdata('post');
 	}
 
+	function sc_lastpostdateonly()
+	{
+        return $this->lastpostdata('dateonly');
+	}
+
+	function sc_lastpostlink()
+	{
+        return $this->lastpostdata('link');
+	}
+
+	function sc_lastpostname()
+	{
+        return $this->lastpostdata('name');
+	}
 
 	function sc_startertitle()
 	{
