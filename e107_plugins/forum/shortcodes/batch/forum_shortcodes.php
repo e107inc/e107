@@ -402,7 +402,8 @@ class forum_shortcodes extends e_shortcode
 	{
 		//    global $f;
 		//		return "<span class='badge ".(($f['forum_threads']) ? "badge-info" : "")."'>".$f['forum_threads']."</span>";
-		return "<span class='badge ".(($this->var['forum_threads']) ? "badge-info" : "")."'>".$this->var['forum_threads']."</span>";	
+// EQUAL TO SC_THREADS.......................
+		return $this->var['forum_threads'];	
 	}
 
 
@@ -410,7 +411,8 @@ class forum_shortcodes extends e_shortcode
 	{
 		//    global $f;
 		//		return "<span class='badge ".(($f['forum_replies']) ? "badge-info" : "")."'>".$f['forum_replies']."</span>";
-		return "<span class='badge ".(($this->var['forum_replies']) ? "badge-info" : "")."'>".$this->var['forum_replies']."</span>";	
+// EQUAL TO SC_REPLIES.......................
+		return $this->var['forum_replies'];	
 	}
 
 
