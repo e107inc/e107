@@ -402,7 +402,8 @@ class forum_shortcodes extends e_shortcode
 	{
 		//    global $f;
 		//		return "<span class='badge ".(($f['forum_threads']) ? "badge-info" : "")."'>".$f['forum_threads']."</span>";
-		return "<span class='badge ".(($this->var['forum_threads']) ? "badge-info" : "")."'>".$this->var['forum_threads']."</span>";	
+// EQUAL TO SC_THREADS.......................
+		return $this->var['forum_threads'];	
 	}
 
 
@@ -410,7 +411,8 @@ class forum_shortcodes extends e_shortcode
 	{
 		//    global $f;
 		//		return "<span class='badge ".(($f['forum_replies']) ? "badge-info" : "")."'>".$f['forum_replies']."</span>";
-		return "<span class='badge ".(($this->var['forum_replies']) ? "badge-info" : "")."'>".$this->var['forum_replies']."</span>";	
+// EQUAL TO SC_REPLIES.......................
+		return $this->var['forum_replies'];	
 	}
 
 
@@ -592,19 +594,30 @@ $gen = new convert;
 		{
 			//		$fVars->LASTPOSTUSER = $lastpost_name;
 			case "user":
-					return $lastpost_name;
-				break;
+				return $lastpost_name;
+//				break;
 
 				//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-				case "date":
-					return "<a href='".$url."'>". $relativeDate."</a>";
-				break;
+			case "date":
+				return "<a href='".$url."'>". $relativeDate."</a>";
+//				break;
+			case "dateonly":
+				return $relativeDate;
+
+			case "link":
+				return $url;
+
+			case "name":
+				return $lastpost['thread_name'];
 
 			// 	$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
+			// LEGACY? Leave for now?
 			case 'post':
 
 				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
-
+				// Variant with new shortcodes:
+				//return e107::getParser()->parseTemplate("{LASTPOSTDATEONLY}<br />{LASTPOSTUSER} <a href='{LASTPOSTURL}'>".IMAGE_post2."</a>", true, $this);
+				
 				// code to be executed if n is different from all labels;
 		}
 
@@ -658,6 +671,20 @@ $gen = new convert;
         return $this->lastpostdata('post');
 	}
 
+	function sc_lastpostdateonly()
+	{
+        return $this->lastpostdata('dateonly');
+	}
+
+	function sc_lastpostlink()
+	{
+        return $this->lastpostdata('link');
+	}
+
+	function sc_lastpostname()
+	{
+        return $this->lastpostdata('name');
+	}
 
 	function sc_startertitle()
 	{
