@@ -104,7 +104,7 @@ define("TPVLAN_85","Connecting...");
 define("TPVLAN_86","Could not change site theme.");
 define("TPVLAN_87","Rendering Theme Config");
 define("TPVLAN_88","Converter");
-define("TPVLAN_89","Unable to connect. Please check firewall and/or internet connection.");
+define("TPVLAN_90","Unable to connect. Please check firewall and/or internet connection.");
 
 // convert
 define("TPVLAN_CONV_1", "Step 1");
