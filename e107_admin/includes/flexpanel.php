@@ -157,7 +157,8 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// --------------------- Personalized Panel -----------------------
-		if(empty(varset($user_pref['core-infopanel-mye107'], array()))) // Set default icons.
+		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
+		if(empty($myE107)) // Set default icons.
 		{
 			$defArray = array(
 				0  => 'e-administrator',
