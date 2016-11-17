@@ -540,7 +540,7 @@ $(document).ready(function()
 	        // General settings
 		        runtimes : "html5,html4",
 		        url : upath,
-		        max_file_size : "20mb",
+		        max_file_size : $("#uploader").attr("data-max-size"),
 		        chunk_size : "1mb",
 		        unique_names : false,
 		 
