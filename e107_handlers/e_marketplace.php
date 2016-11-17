@@ -503,7 +503,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
         }
         catch (Exception $e)
         {
-           e107::getMessage()->addError(TPVLAN_89);
+           e107::getMessage()->addError(TPVLAN_90);
            e107::getMessage()->addDebug($e->getMessage());
         }
 
