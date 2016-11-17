@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -182,10 +182,12 @@ class e107plugin
 	var $plugConfigFile;
 	var $unInstallOpts;
 	var $module = array();
+
 	private $options = array();
 
 	function __construct()
 	{
+		e107::getDebug()->log("Construct (nothing to do here).");
 		//$parsed_plugin = array();
 	}
 
@@ -196,6 +198,7 @@ class e107plugin
 	 */
 	function getall($flag)
 	{
+		e107::getDebug()->log("Get Plugin List from DB");
 		$sql = e107::getDb();
 
 		if($flag === 'all')
@@ -220,6 +223,7 @@ class e107plugin
 	*/
 	public function getCorePlugins()
 	{
+		e107::getDebug()->log("Get Core Plugins");
 		return $this->core_plugins;	
 	}
 
@@ -228,6 +232,7 @@ class e107plugin
 	*/
 	public function getOtherPlugins()
 	{
+		e107::getDebug()->log("Get Non-Core Plugins");
 		$allplugs = e107::getFile()->get_dirs(e_PLUGIN);
 		
 		return array_diff($allplugs,$this->core_plugins);		
@@ -242,6 +247,7 @@ class e107plugin
 	 */
 	function getId($path)
 	{
+		e107::getDebug()->log("Get Pluin Details: path: ".$path);
 		$sql = e107::getDb();
 
 		if ($sql->select("plugin", "plugin_id", "plugin_path = '".(string) $path."' LIMIT 1"))
@@ -260,6 +266,7 @@ class e107plugin
 	 */
 	function updateRequired($mode=null)
 	{
+		e107::getDebug()->log("List plugins in need of update.");
 		$xml 			= e107::getXml();
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
@@ -346,6 +353,7 @@ class e107plugin
 	 */
 	function update_plugins_table($mode = 'upgrade')
 	{
+		e107::getDebug()->log("Update Plugins Table - Maintain Current Plugin Data.");
 		
 		$sql 	= e107::getDb();
 		$sql2 	= e107::getDb('sql2');
@@ -392,7 +400,7 @@ class e107plugin
 
 			if (strpos($plugin_path, 'e107_') !== FALSE)
 			{
-				$mes->addWarning("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.");
+				$mes->addWarning("Folder error: <i>{$p['path']}</i>.  'e107_' is not permitted within plugin folder names.");//TODO LANS
 				continue;
 			}
 			
@@ -547,6 +555,7 @@ class e107plugin
 
 	function manage_category($cat)
 	{
+		e107::getDebug()->log("Manage Category.");
 		if (vartrue($cat) && in_array($cat, $this->accepted_categories))
 		{
 			return $cat;
@@ -559,6 +568,7 @@ class e107plugin
 
 	function manage_icons($plugin = '', $function = '')
 	{
+		e107::getDebug()->log("Manage Icon.");
 
 		if ($plugin == '')
 		{
@@ -596,6 +606,7 @@ class e107plugin
 	 */
 	function getinfo($id, $force = false)
 	{
+		e107::getDebug()->log("getInfo - Get Plugin Details. ID: ".$id);
 		$sql = e107::getDb();
 		static $getinfo_results;
 		if (!is_array($getinfo_results))
@@ -604,19 +615,24 @@ class e107plugin
 		}
 
 		$path = (!is_numeric($id)) ?  $id : false;
+		e107::getDebug()->log("Path: ".$path);
 		$id = (int) $id;
 		
 		$qry = "plugin_id = ".$id;
 		$qry .= ($path != false) ? " OR plugin_path = '".$path."' " : "";
 		
+		e107::getDebug()->log("qry : ".$qry);
 		if (!isset($getinfo_results[$id]) || $force == true)
 		{
+			e107::getDebug()->log("Results ID ".$getinfo_results[$id]);
 			if ($sql->select('plugin', '*', $qry))
 			{
 				$getinfo_results[$id] = $sql->fetch();
+				e107::getDebug()->log("qry found : ".$getinfo_results[$plugin_name]);
 			}
 			else
 			{
+				e107::getDebug()->log("qry not results found : ".$getinfo_results[$plugin_name]);
 				return false;
 			}
 		}
@@ -625,6 +641,7 @@ class e107plugin
 	
 	public function setUe()
 	{
+		e107::getDebug()->log("User Extended Fields.");
 		if (!isset($this->module['ue']))
 		{
 			include_once(e_HANDLER.'user_extended_class.php');
@@ -641,6 +658,7 @@ class e107plugin
 	 */
 	public function ue_field_name($folder, $type, $name)
 	{
+		e107::getDebug()->log("ue_field_name User Field Name and Category.");
 		if($type == EUF_PREFIELD || $type == EUF_CATEGORY)
 		{
 			return $name; // no plugin_plugname_ prefix
@@ -655,6 +673,7 @@ class e107plugin
 	 */
 	public function ue_field_type($attrib)
 	{
+		e107::getDebug()->log("ue_field_type User Field Type.");
 		$field_type = $attrib['type'];
 		$type = defined($field_type) ? constant($field_type) : $field_type;
 		if(!is_numeric($type))
@@ -673,6 +692,7 @@ class e107plugin
 	 */
 	public function ue_field_type_name($typeId)
 	{
+		e107::getDebug()->log("ue_field_type_name User Field Type To Number.");
 		if(is_numeric($typeId))
 		{
 			$this->setUe();
@@ -705,6 +725,7 @@ class e107plugin
 	 */
 	function manage_extended_field($action, $field_name, $field_attrib, $field_source = '')
 	{
+		e107::getDebug()->log("manage_extended_field Manage User Fields.");
 		$mes = e107::getMessage();
 		$this->setUe();
 
@@ -849,6 +870,7 @@ class e107plugin
 
 	function manage_extended_field_sql($action, $field_name)
 	{
+		e107::getDebug()->log("manage_extended_field_sql.");
 		$f = e_CORE.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
 		
 		if(!is_readable($f)) return false;
@@ -905,6 +927,7 @@ class e107plugin
 
 	function manage_userclass($action, $class_name, $class_description)
 	{
+		e107::getDebug()->log("manage_userclass.");
 		global $e107;
 		$tp = e107::getParser();
 		$sql = e107::getDb();
@@ -961,6 +984,7 @@ class e107plugin
 
 	function manage_link($action, $link_url, $link_name, $link_class = 0, $options=array())
 	{
+		e107::getDebug()->log("manage_links.");
 
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -1032,6 +1056,7 @@ class e107plugin
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
 	function manage_prefs($action, $var, $prefType = 'pref', $path = '', $unEscape = FALSE)
 	{
+		e107::getDebug()->log("manage_prefs.");
 		global $pref;
 		if (!is_array($var))
 			return;
@@ -1120,6 +1145,8 @@ class e107plugin
 
 	function manage_comments($action, $comment_id)
 	{
+		e107::getDebug()->log("manage_comments.");
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
@@ -1144,6 +1171,7 @@ class e107plugin
 	//  'upgrade' and 'remove' operate on all language variants of the same table
 	function manage_tables($action, $var)
 	{
+		e107::getDebug()->log("manage_tables.");
 		$sql = e107::getDB();
 		$mes = e107::getMessage();
 		
@@ -1204,7 +1232,9 @@ class e107plugin
 	// DEPRECATED for 0.8 xml files - See XmlPrefs();
 	// Handle prefs from arrays (mostly 0.7 stuff, possibly apart from the special cases)
 	function manage_plugin_prefs($action, $prefname, $plugin_folder, $varArray = '')
-	{ // These prefs are 'cumulative' - several plugins may contribute an array element
+	{ 
+		// These prefs are 'cumulative' - several plugins may contribute an array element
+		e107::getDebug()->log("manage_plugin_prefs - BC 0.7 + 0.8.");
 		//	global $pref;
 		/*
 		 if ($prefname == 'plug_sc' || $prefname == 'plug_bb')
@@ -1217,6 +1247,7 @@ class e107plugin
 		 else
 		 {
 		 */
+
 		$prefvals[] = $varArray;
 		//			$prefvals[] = $plugin_folder;
 		//		}
@@ -1252,6 +1283,7 @@ class e107plugin
 
 	function manage_search($action, $eplug_folder)
 	{
+		e107::getDebug()->log("manage_search.");
 		global $sysprefs;
 		$sql = e107::getDb();
 
@@ -1317,6 +1349,7 @@ class e107plugin
 
 	function manage_notify($action, $eplug_folder)
 	{
+		e107::getDebug()->log("manage_notify.");
 		$tp = e107::getParser();
 		//	$notify_prefs = $sysprefs -> get('notify_prefs');
 		//	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
@@ -1381,6 +1414,7 @@ class e107plugin
 	 */
 	public function rebuildUrlConfig()
 	{
+		e107::getDebug()->log("rebuildUrlConfig.");
 		
 		$modules = eRouter::adminReadModules(); // get all available locations, non installed plugins will be ignored
 		$config = eRouter::adminBuildConfig(e107::getPref('url_config'), $modules); // merge with current config
@@ -1399,6 +1433,7 @@ class e107plugin
 
 	function displayArray(&$array, $msg = '')
 	{
+		e107::getDebug()->log("displayArray.");
 		$txt = ($msg ? $msg.'<br />' : '');
 		foreach ($array as $_k => $_v)
 		{
@@ -1422,13 +1457,14 @@ class e107plugin
 	 */
 	function install_plugin_xml($id, $function = '', $options = null)
 	{	
+		e107::getDebug()->log("install_plugin_xml.");
 			
 		$pref = e107::getPref();
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 	  	$event = e107::getEvent();
 
-	  	$mes->addDebug("Running ".$function);
+	  	e107::getDebug()->log("Running ".$function);
 
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
@@ -1482,6 +1518,7 @@ class e107plugin
 		}
 		else
 		{
+			e107::getDebug()->log('Error in plugin.xml');
 			$error[] = EPL_ADLAN_76;
 			$canContinue = FALSE;
 		}
@@ -1706,6 +1743,7 @@ class e107plugin
 
 	private function removeCrons($plug_vars)
 	{
+		e107::getDebug()->log("removeCrons.");
 
 		if(!file_exists(e_PLUGIN. $plug_vars['folder']."/e_cron.php"))
 		{
@@ -1731,18 +1769,21 @@ class e107plugin
 	 */
 	function XmlTables($function, $plug, $options = array())
 	{
+		e107::getDebug()->log("XmlTables.");
 
 		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.str_replace("_menu","", $plug['plugin_path'])."_sql.php";
 
 		if(!file_exists($sqlFile)) // No File, so return;
 		{
 			e107::getMessage()->addDebug("No SQL File Found at: ".$sqlFile);
+			e107::getDebug()->log("XmlTables - No SQL File Found.");
 			return;
 		}
 
 		if(!is_readable($sqlFile)) // File Can't be read.
 		{
 			e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
+			e107::getDebug()->log("XmlTables - Cannot read SQL definition.");
 			return; 
 		}
 		
@@ -1758,6 +1799,7 @@ class e107plugin
 			if(empty($contents))
 			{
 				e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
+				e107::getDebug()->log("XmlTables - Cannot read SQL definition  - Add/remove table");
 				return;
 			}
 
@@ -1829,6 +1871,7 @@ class e107plugin
 	 */
 	function isUsedByAnotherPlugin($plugin)
 	{
+		e107::getDebug()->log("isUsedByAnotherPlugin - Check Plugin Dependency on Other Plugins.");
 		$db = e107::getDb();
 		$tp = e107::getParser();
 		$mes = e107::getMessage();
@@ -1910,6 +1953,7 @@ class e107plugin
 	 */
 	function XmlDependencies($tags)
 	{
+		e107::getDebug()->log("XmlDepencencies.");
 		$db = e107::getDb();
 		$mes = e107::getMessage();
 
@@ -2014,6 +2058,7 @@ class e107plugin
 	 */
 	public function XmlLanguageFileCheck($fileEnd, $prefName, $when, $isInstalled, $justPath = FALSE, $plugin = '')
 	{
+		e107::getDebug()->log("XmlLanguageFileCheck."); 
 		$core = e107::getConfig('core');
 		$mes = e107::getMessage();
 		
@@ -2075,6 +2120,7 @@ class e107plugin
 	 */
 	function XmlLanguageFiles($function, $tag='', $when = '')
 	{
+		e107::getDebug()->log("XmlLanguageFiles - Process LAN XML Files.");
 		$core = e107::getConfig('core');
 	
 		$updated = false;
@@ -2146,6 +2192,7 @@ class e107plugin
 	 */
 	function XmlSiteLinks($function, $plug_vars)
 	{
+		e107::getDebug()->log("XmlSiteLinks - Process Links XML Files.");
 		$mes = e107::getMessage();
 		
 		if(vartrue($this->options['nolinks']))
@@ -2225,6 +2272,7 @@ class e107plugin
 	 */
 	function XmlAdminLinks($function, $tag)
 	{
+		e107::getDebug()->log("XmlAdminLinks - Process Admin Links XML Files.");
 		foreach ($tag['link'] as $link)
 		{
 			$attrib = $link['@attributes'];
@@ -2242,6 +2290,7 @@ class e107plugin
 
 	function getPerm($type, $default = 'member')
 	{
+		e107::getDebug()->log("getPerm - Permissions Check.");
 		
 		if(empty($type))
 		{
@@ -2268,6 +2317,7 @@ class e107plugin
 	// Only 1 category per file-type allowed. ie. 1 for images, 1 for files. 
 	function XmlMediaCategories($function, $tag)
 	{
+		e107::getDebug()->log("XMLMediaCat.");
 		$mes = e107::getMessage();
 	//	print_a($tag);
 		
@@ -2342,6 +2392,7 @@ class e107plugin
 	 */
 	function XmlBBcodes($function, $tag)
 	{
+		e107::getDebug()->log("XmlBBcodes - Check for XML BBCodes.");
 		$mes = e107::getMessage();
 		//print_a($tag);
 		switch ($function)
@@ -2379,6 +2430,7 @@ class e107plugin
 	 */
 	function XmlUserClasses($function, $array)
 	{
+		e107::getDebug()->log("XmlUserClasses - Check for XML Userclasses.");
 		$mes = e107::getMessage();
 
 		foreach ($array['class'] as $uclass)
@@ -2439,6 +2491,7 @@ class e107plugin
 	 */
 	function XmlExtendedFields($function, $array)
 	{
+		e107::getDebug()->log("XmlExtendedFields - Process XML User Extd Fields.");
 		$mes = e107::getMessage();
 		$this->setUe();
 
@@ -2504,7 +2557,7 @@ class e107plugin
 	 */
 	function XmlPrefs($mode = 'core', $function, $prefArray)
 	{
-
+		e107::getDebug()->log("XmlPrefs - Check for Prefs.");
 		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
 		//TODO array support for prefs. <key>? or array() as used in xml site export?
 
@@ -2585,6 +2638,7 @@ class e107plugin
 	 */
 	function execute_function($path = null, $what = '', $when = '', $callbackData = null)
 	{
+		e107::getDebug()->log("execute_function.");
 		$mes = e107::getMessage();
 		
 		if($path == null)
@@ -2670,6 +2724,7 @@ class e107plugin
 	// DEPRECATED - See XMLPrefs();
 	function parse_prefs($pref_array, $mode = 'simple')
 	{
+		e107::getDebug()->log("parse_prefs.");
 		$ret = array();
 		if (!isset($pref_array[0]))
 		{
@@ -2707,6 +2762,7 @@ class e107plugin
 
 	function install_plugin_php($id)
 	{
+		e107::getDebug()->log("install_plugin_php - Install Plugin from php using ID: ".$id);
 		$function = 'install';
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
@@ -2818,6 +2874,7 @@ class e107plugin
 	 */
 	public function install_plugin($id)
 	{
+		e107::getDebug()->log("install_plugin redirect - Install Plugin .BC by Plugin ID: ".$id);
 		global $sysprefs, $mySQLprefix;
 		return $this->install($id);	
 		
@@ -2830,6 +2887,7 @@ class e107plugin
 	 */
 	function refresh($dir)
 	{
+		e107::getDebug()->log("refresh. Refresh Plugin Info. Dir ".$dir);
 		if(empty($dir))
 		{
 			return;	
@@ -2847,10 +2905,12 @@ class e107plugin
 		
 		if(!is_array($plug))
 		{
+			e107::getDebug()->log($id."is missing from the plugin db table");
 			return "'{$id}' is missing from the plugin db table";	
 		}
 		
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
+		e107::getDebug()->log("Path is ".$_path);
 		
 		if (file_exists($_path.'plugin.xml'))
 		{
@@ -2879,48 +2939,65 @@ class e107plugin
 	 */
 	function install($id, $options = array())
 	{
+		e107::getDebug()->log("install. Install Plugin by ID or Folder. ID: ".$id);
+//		print_a($options); //#1712 oh this is empty 
 		global $sysprefs, $mySQLprefix;
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 		
 		$this->options = $options;
-		
-
+		//print_a($this->options);//still empty?
 		$text = '';
 
 		// install plugin ...
+		e107::getDebug()->log("Call getInfo: ".$id);	
 		$plug = $this->getinfo($id);
+
+		e107::getDebug()->log("After getInfo : ID: ".$id);	
 		
 		if(!is_array($plug))
 		{
+			e107::getDebug()->log($id." found in the plugins table.");
 			return "'{$id}' is missing from the plugin db table";	
 		}
+		else 
+		{
+			$plug['plug_action'] = 'install';// #1712 manually set the details
+			$plug['plug_path'] = $id;
+			$plug['plugin_installflag'] = true;
+		}
 		
-		$plug['plug_action'] = 'install';
-
-		if (!vartrue($plug['plugin_installflag']))
+		e107::getDebug()->log("plug.plugin_path : ".$plug['plugin_path']);	
+		e107::getDebug()->log("install.plug.plug_action ".$plug['plug_action']);
+		
+		if (vartrue($plug['plugin_installflag'])) //#1712
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
-			
+			e107::getDebug()->log("_path ".$_path);
 			
 			if (file_exists($_path.'plugin.xml'))
 			{
+				e107::getDebug()->log("install.plug.plugin.xml exists");
 				
 				$text = $this->install_plugin_xml($plug, 'install');
 			}
 			elseif (file_exists($_path.'plugin.php'))
 			{
+				e107::getDebug()->log("install.plug.plugin.xml not found use plugin.php");
 				$text = $this->install_plugin_php($plug);
 			}
 		}
 		else
 		{
-			$text = EPL_ADLAN_21;
-			
+			e107::getDebug()->log("Not ready to install / already installed");
+			$text = EPL_ADLAN_21;//Plugin is already installed.	
 		}
+		e107::getDebug()->log("install finished");
 		return $text;
 	}
+
+
 
 
 	/*
@@ -2934,13 +3011,14 @@ class e107plugin
 	 */
 	function save_addon_prefs($mode = 'upgrade') 
 	{
+		e107::getDebug()->log("save_addon_prefs - Save Addon Prefs Mode = Upgrade");
+		
 		e107::getMessage()->addDebug('Running save_addon_prefs('.$mode.')'); 	
 		
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
 
 		foreach ($this->plugin_addons as $var) // clear all existing prefs.
-
 		{
 			$core->update($var.'_list', "");
 		}
@@ -3068,6 +3146,7 @@ class e107plugin
 
 	public function getAddonsList()
 	{
+		e107::getDebug()->log("getAddonsList.");
 		$list = array_diff($this->plugin_addons,$this->plugin_addons_deprecated);
 		sort($list);
 
@@ -3076,6 +3155,7 @@ class e107plugin
 
 	public function getAddonsDiz($v)
 	{
+		e107::getDebug()->log("getAddonsDiz.");
 		if(!empty($this->plugin_addons_diz[$v]))
 		{
 			return $this->plugin_addons_diz[$v];
@@ -3091,6 +3171,7 @@ class e107plugin
 	// $debug = 'check' - checks each file found for php tags - prints 'pass' or 'fail'
 	function getAddons($plugin_path, $debug = FALSE)
 	{
+		e107::getDebug()->log("getAddons for Plugins.");
 		$fl = e107::getFile();
 		$mes = e107::getMessage();
 
@@ -3186,6 +3267,7 @@ class e107plugin
 	 */
 	function checkAddon($plugin_path, $e_xxx) 
 	{ 
+		e107::getDebug()->log("checkAddon.");
 	
 		if (is_readable(e_PLUGIN.$plugin_path."/".$e_xxx.".php"))
 		{
@@ -3239,6 +3321,7 @@ class e107plugin
 	// Entry point to read plugin configuration data
 	function parse_plugin($plugName, $force = false)
 	{
+		e107::getDebug()->log("parse_plugin - read config data");
 		$ret = "";
 
 		if (isset($this->parsed_plugin[$plugName]) && $force != true)
@@ -3266,6 +3349,7 @@ class e107plugin
 	// return the Icon of the 
 	function getIcon($plugName='',$size=32, $defaultOverride=false)
 	{
+		e107::getDebug()->log("getIcon.");
 		if(!$plugName) return false;
 		
 		$tp = e107::getParser();
@@ -3308,6 +3392,7 @@ class e107plugin
 	// Called to parse the (deprecated) plugin.php file
 	function parse_plugin_php($plugName)
 	{
+		e107::getDebug()->log("parse_plugin_php - plugName: ".$plugName);
 		$tp = e107::getParser();
 
 		$PLUGINS_FOLDER = '{e_PLUGIN}'; // Could be used in plugin.php file.
@@ -3401,6 +3486,7 @@ class e107plugin
 	// Called to parse the plugin.xml file if it exists
 	function parse_plugin_xml($plugName, $where = null)
 	{
+		e107::getDebug()->log("parse_plugin_xml -  plugName: ".$plugName);
 
 		$tp = e107::getParser();
 		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths

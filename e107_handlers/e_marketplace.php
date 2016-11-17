@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -30,15 +30,21 @@ class e_marketplace
 	 */
 	public function __construct($force = null)
 	{
+		e107::getDebug()->log("Get Adapter");
+
 		if(null !== $force)
 		{
 			$this->_adapter_name = $force === 'wsdl' ? 'wsdl' : 'xmlrpc';
 		}
-		elseif(!class_exists('SoapClient')) $this->_adapter_name = 'xmlrpc';
+		elseif (!class_exists('SoapClient')) 
+		{ 
+			$this->_adapter_name = 'xmlrpc'; //#1712
+		}
 		else
 		{
 			$this->_adapter_name = 'wsdl';
 		}
+		e107::getDebug()->log("Selected: ".$this->_adapter_name." adapter");
 
 	}
 	
@@ -165,9 +171,12 @@ class e_marketplace
 		    </div>
 		    </div>
 		  ';	
+
+
 		
 		return $text;
 	}
+
 
 	/**
 	 * Retrieve currently used adapter
@@ -176,11 +185,18 @@ class e_marketplace
 	 */
 	public function adapter()
 	{
+		e107::getDebug()->log("Open the adapter class: ".$this->_adapter_name.".");
+
 		if(null === $this->adapter)
 		{
 			$className = 'e_marketplace_adapter_'.$this->_adapter_name; 
 			$this->adapter = new $className();
 		}
+		else 
+		{
+			e107::getDebug()->log("Adapter not found");
+		}
+
 		return $this->adapter;
 	}
 	
@@ -190,6 +206,8 @@ class e_marketplace
 	 */
 	public function call($method, $data, $apply = true)
 	{
+		e107::getDebug()->log("Call ");
+
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			e107::getMessage()->addDebug("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
@@ -202,6 +220,8 @@ class e_marketplace
 	 */
 	public function download($id, $mode, $type)
 	{
+		e107::getDebug()->log("Adapter: id:".$id." mode:".$mode." type:".$type.".");
+
 		return $this->adapter()->download($id, $mode, $type);
 	}
 	
@@ -210,6 +230,7 @@ class e_marketplace
 	 */
 	public function __call($method, $arguments)
 	{
+
 		if(strpos($method, 'get') === 0 || strpos($method, 'do') === 0)
 		{
 			return $this->adapter()->call($method, $arguments);
@@ -220,6 +241,8 @@ class e_marketplace
 
 	public function __destruct()
 	{
+		e107::getDebug()->log("Destroying Adapter");
+
 		$this->adapter = null;
 		//echo "Adapter destroyed", PHP_EOL;
 	}
@@ -227,6 +250,8 @@ class e_marketplace
 
 	public function getVersionList($type='plugin')
 	{
+		e107::getDebug()->log("Get Version List.");
+
 		$cache = e107::getCache();
 		$cache->setMD5('_', false);
 
@@ -367,11 +392,14 @@ abstract class e_marketplace_adapter_abstract
 		$mes = e107::getMessage();
 		$fl = e107::getFile();
 		
+		e107::getDebug()->log("Download: id:".$id." mode:".$mode." type:".$type.".");
+
 		$id = intval($id);
 		$qry = 'id='.$id.'&type='.$type.'&mode='.$mode;
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
+
 		$mes->addSuccess("Downloading..."); 
 	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
@@ -407,11 +435,15 @@ abstract class e_marketplace_adapter_abstract
 		
 		if($fl->unzipArchive($localfile,$type))
 		{
+			e107::getDebug()->log("Download complete / unzipping.");
+
 			$mes->addSuccess("Download Complete!"); 
 			return true; 
 		}
 		else 
 		{
+			e107::getDebug()->log("Please Download Manually.");
+
 			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
 		}
 		
@@ -430,29 +462,41 @@ abstract class e_marketplace_adapter_abstract
 	// Grab a remote file and save it in the /temp directory. requires CURL
 	function getRemoteFile($remote_url, $local_file, $type='temp')
 	{
+		e107::getDebug()->log("getRemoteFile");
+
 		// FIXME - different methods (see xml handler getRemoteFile()), error handling, appropriate error messages, 
 		if (!function_exists("curl_init")) 
 		{
+			e107::getDebug()->log("cURL not installed");
 			return false;
 		}
 		$path = ($type == 'media') ? e_MEDIA : e_TEMP; 
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
+
         //$fp1 = fopen(e_TEMP.'/curllog.txt', 'w'); 
 
 
-        $cp = e107::getFile()->initCurl($remote_url);
-        curl_setopt($cp, CURLOPT_FILE, $fp);
-     /*   $cp = curl_init($remote_url);
 
+        $cp = e107::getFile()->initCurl($remote_url);
 		
+		curl_setopt($cp, CURLOPT_FILE, $fp);
+		curl_setopt($cp, CURLOPT_TIMEOUT, 20); //#1712 // Later please FIXME Make Pref - avoids get file timeout on slow connections
+
+		sleep(3);//Hmm ignores above?
+
+	/*	$cp = curl_init($remote_url);
+
+
 		//curl_setopt($ch, CURLOPT_VERBOSE, 1);
 		//curl_setopt($ch, CURLOPT_STDERR, $fp1);
 		
 		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');*/
+		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+	*/
+
 
         $buffer = curl_exec($cp);
        	
@@ -466,6 +510,8 @@ abstract class e_marketplace_adapter_abstract
 			if($size < 400) $buffer = false;
 		}
 		
+		e107::getDebug()->log("getRemoteFile found file - size = ".$size);	
+
         return ($buffer) ? true : false;
     }
 }
@@ -492,16 +538,19 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	
 	public function __construct()
 	{
+
+
 		e107_ini_set('soap.wsdl_cache_enabled', 0);
 		e107_ini_set('soap.wsdl_cache_ttl', 0);
 		
 		$options = array(
-			"trace" 				=> true, 
-			'exception' 			=> true,
-		    "uri" 					=> "http://server.soap.e107.inc.com/",
-		    'cache_wsdl'			=> WSDL_CACHE_NONE,
-		    'connection_timeout' 	=> 60,
+			"trace"					=> true, 
+			'exception'				=> true,
+			"uri"					=> "http://server.soap.e107.inc.com/",
+			'cache_wsdl'			=> WSDL_CACHE_NONE,
+			'connection_timeout'	=> 60,
 		);
+
 
 
 		try
@@ -510,8 +559,9 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
         }
         catch (Exception $e)
         {
-           e107::getMessage()->addError("Unable to connect. Please check firewall and/or internet connection.");
-           e107::getMessage()->addDebug($e->getMessage());
+			e107::getDebug()->log("Unable to connect. Please check firewall and/or internet connection.");
+			e107::getMessage()->addError("Unable to connect. Please check firewall and/or internet connection.");
+			e107::getMessage()->addDebug($e->getMessage());
         }
 
 
@@ -541,10 +591,14 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	 */
 	public function _call($method, $args, $apply = true)
 	{
-		$result = array(
-			'data' => null,
-			//'error'=> array('code' => 0, 'message' => null)
+		e107::getDebug()->log("Call");
+		$result = array( 'data' => null,
+					//'error'=> array('code' => 0, 'message' => null)
 		);
+		
+
+
+
 		$ret = null;
 		
 		// authorize on every call, service class decides what to do on every method call
@@ -660,6 +714,8 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	
 	public function call($method, $data, $apply = true)
 	{
+		e107::getDebug()->log("Call xmlrpc.");
+
 		$client = $this->client();
 
 		// settings based on current method
@@ -728,6 +784,8 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 */
 	public function parse($xml, $parentName = null)
 	{
+		e107::getDebug()->log("Parse.");
+
 		$ret = array();
 		$tags = array_keys(get_object_vars($xml));
 		$count = $xml->count();
@@ -807,6 +865,8 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 */
 	public function fetchParams(&$result)
 	{
+		e107::getDebug()->log("fetchParams.");
+
 		foreach ($result as $tag => $data) 
 		{
 			if($tag === 'params')
