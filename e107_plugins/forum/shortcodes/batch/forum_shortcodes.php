@@ -657,9 +657,36 @@ $gen = new convert;
 	}
 
 
-	function sc_lastpost()
+	function sc_lastpost($parm = null)
 	{
-        return $this->lastpostdata('post');
+		if(!empty($parm['type']))
+		{
+			switch($parm['type'])
+			{
+				case "date": // date only
+					// code
+					break;
+
+				case "datelink": // date with link
+					return $this->lastpostdata('date');
+					break;
+
+				case "url": // url
+					return $this->lastpostdata('url');
+					break;
+
+				case "username": // username of last-post user.
+					return $this->lastpostdata('user');
+					break;
+
+				case "name": //thread name
+					//  code
+					break;
+
+			}
+		}
+
+		return $this->lastpostdata('post');
 	}
 
 
