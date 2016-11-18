@@ -12,6 +12,8 @@ class forum_shortcodes extends e_shortcode
 {
 	private $forum_rules, $gen;
 
+	public $newFlagList;
+
 	function __construct()
 	{
 		$this->forum_rules = forum_rules('check');
@@ -342,13 +344,11 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_newflag()
 	{
-        global $newflag_list;
 
-
-		if(USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list))
+		if(USER && is_array($this->newFlagList) && in_array($this->var['forum_id'], $this->newFlagList))
 		{
-
-			return "<a href='".e107::getInstance()->url->create('forum/forum/mfar', $this->var)."'>".IMAGE_new.'</a>';
+			$url = $this->lastpostdata('url');
+			return "<a href='".$url."'>".IMAGE_new.'</a>';
 		}
 		elseif(empty($this->var['forum_replies']) && defined('IMAGE_noreplies'))
 		{
@@ -596,9 +596,13 @@ $gen = new convert;
 				break;
 
 				//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-				case "date":
-					return "<a href='".$url."'>". $relativeDate."</a>";
+			case "date":
+				return "<a href='".$url."'>". $relativeDate."</a>";
 				break;
+
+			case "url":
+					return $url;
+					break;
 
 			// 	$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
 			case 'post':

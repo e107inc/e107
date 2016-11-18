@@ -805,9 +805,35 @@ class e107forum
 		}
 
 
-
+		$this->clearReadThreads($postInfo['post_thread']);
 
 		return $postId;
+	}
+
+	/**
+	 * Remove threadID from the 'viewed list' list of other users.
+	 * @param $threadId
+	*/
+	private function clearReadThreads($threadId)
+	{
+		if(empty($threadId))
+		{
+			return false;
+		}
+
+		$sql = e107::getDb();
+
+		$threadId = intval($threadId);
+
+		$query = "UPDATE `#user_extended`
+			SET
+			user_plugin_forum_viewed = TRIM(BOTH ',' FROM REPLACE(CONCAT(',', user_plugin_forum_viewed, ','), ',".$threadId.",', ','))
+			WHERE
+			FIND_IN_SET(".$threadId.", user_plugin_forum_viewed)
+		  ";
+
+		$sql->gen($query);
+
 	}
 
 
@@ -1592,6 +1618,11 @@ class e107forum
 		SELECT DISTINCT f.forum_sub, ft.thread_forum_id FROM `#forum_thread` AS ft
 		LEFT JOIN `#forum` AS f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_lastpost > '.USERLV.' '.$viewed;
+
+		$ret = array();
+
+	//	e107::getDebug()->log(e107::getParser()->toDate(USERLV,'relative'));
+
 		if($sql->gen($_newqry))
 		{
 			while($row = $sql->fetch())
