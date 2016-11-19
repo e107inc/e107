@@ -643,10 +643,16 @@ class pluginManager{
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
 		$modalCaption = (!empty($data['plugin_price'])) ? EPL_ADLAN_92." ".$data['plugin_name']." ".$data['plugin_version'] : EPL_ADLAN_230." ".$data['plugin_name']." ".$data['plugin_version'];
 
-		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
+		$url = e_SELF.'?mode=download&src='.base64_encode($d);
 		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
-	
-	
+
+
+	//	$base64 = base64_encode($d);
+	//	$tmp = base64_decode($base64);
+	//	parse_str($tmp, $data);
+
+	//	e107::getDebug()->log($data); //FIXME - enable when needed to debug.
+
 		// Temporary Pop-up version. 
 	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
 		
@@ -669,6 +675,18 @@ class pluginManager{
 		
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
+
+		if(e_DEBUG === true)
+		{
+			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
+			echo '$_GET[src]: ';
+			print_a($_GET['src']);
+
+			echo 'base64 decoded and parsed as $data:';
+			print_a($data);
+			return false;
+		}
+
 
 		if(!empty($data['plugin_price']))
 		{
