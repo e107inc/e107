@@ -487,7 +487,6 @@ if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 	$fVars->SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
 }
 --*/
-$sc->setVars($forumSCvars);
 if (count($threadList) )
 {
 	foreach($threadList as $thread_info)
@@ -508,8 +507,7 @@ if (count($threadList) )
 		{
 			if($FORUM_IMPORTANT_ROW)
 			{
-//				$forum_view_forum .= $FORUM_IMPORTANT_ROW;
-				$forum_view_forum .= $tp->parseTemplate($FORUM_IMPORTANT_ROW, false, $sc);
+				$forum_view_forum .= $FORUM_IMPORTANT_ROW;
 			}
 			else
 			{
@@ -525,8 +523,7 @@ if (count($threadList) )
 		{
 			if($FORUM_NORMAL_ROW)
 			{
-//				$forum_view_forum .= $FORUM_NORMAL_ROW;
-				$forum_view_forum .= $tp->parseTemplate($FORUM_NORMAL_ROW, false, $sc);
+				$forum_view_forum .= $FORUM_NORMAL_ROW;
 			}
 			else
 			{
@@ -553,11 +550,13 @@ if($container_only)
 }
 
 
+		$sc->setVars($forumSCvars);
 
 
 //var_dump ($FORUM_VIEW_START);
 //  	var_dump ($FORUM_VIEW_SUB);
 $forum_view_start = $tp->parseTemplate($FORUM_VIEW_START, false, $sc);
+$forum_view_forum = $tp->parseTemplate($forum_view_forum, false, $sc);
 $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
 
 //$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
