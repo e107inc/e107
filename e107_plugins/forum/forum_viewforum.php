@@ -474,7 +474,7 @@ $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilte
 $subList = $forum->forumGetSubs(vartrue($forum_id));
 --*/
 //------$gen = new convert;
-		$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
+$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
 /*--
 $fVars->SUBFORUMS = '';
 if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
@@ -551,12 +551,13 @@ if($container_only)
 }
 
 
+		$sc->setVars($forumSCvars);
 
-				$sc->setVars($forumSCvars);
 
 //var_dump ($FORUM_VIEW_START);
 //  	var_dump ($FORUM_VIEW_SUB);
 $forum_view_start = $tp->parseTemplate($FORUM_VIEW_START, false, $sc);
+$forum_view_forum = $tp->parseTemplate($forum_view_forum, false, $sc);
 $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
 
 //$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
