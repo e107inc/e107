@@ -2801,41 +2801,46 @@ class e_form
 	 */
 	function breadcrumb($array)
 	{
+	global $BREADCRUMB;
+
 		if(!is_array($array)){ return; }
 		
-		$opt = array();
+//--		$opt = array();
 		
-		$homeIcon = e107::getParser()->toGlyph('icon-home.glyph',false);
+//--		$homeIcon = e107::getParser()->toGlyph('icon-home.glyph',false);
 		
 		
-		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
+//--		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
-		$text = '<ul class="breadcrumb">
-			<li>';
-	
+//--		$text = '<ul class="breadcrumb">
+//--			<li>';
+		$text = $BREADCRUMB['start'];
+	  $text .= $BREADCRUMB['urlstart'].e_HTTP.$BREADCRUMB['urlmid'].e107::getParser()->toGlyph('icon-home.glyph',false).$BREADCRUMB['urlend']; // Add Site-Pref to disable?
+		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : $BREADCRUMB['divider'];
+
 		foreach($array as $val)
 		{
-			$ret = "";
-			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";			
+//--			$ret = "";
+			$ret = vartrue($val['url']) ? $BREADCRUMB['urlstart'].$val['url'].$BREADCRUMB['urlmid'] : "";			
 			$ret .= vartrue($val['text'],'');
-			$ret .= vartrue($val['url']) ? "</a>" : "";
+			$ret .= vartrue($val['url']) ? $BREADCRUMB['urlend'] : "";
 			
 			if($ret != '')
 			{
-				$opt[] = $ret;
+//--				$opt[] = $ret;
+    		$text .= $sep.$BREADCRUMB['separator'].$ret; 
 			}	
 		}
 	
-		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
+//--		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
 	
-		$text .= implode($sep."</li><li>",$opt); 
+//--		$text .= implode($sep."</li><li>",$opt); 
 	
-		$text .= "</li></ul>";
+//--		$text .= "</li></ul>";
 		
 	//	return print_a($opt,true);
 	
-		return $text;	
-
+		return $text.$BREADCRUMB['end'];	
 	}
 
 
