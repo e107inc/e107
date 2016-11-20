@@ -829,7 +829,7 @@ function sc_buttonsx()
 
 
 	$text = '<div class="btn-group">
-   '.$replyUrl.'
+   '.($replyUrl?:LAN_FORUM_1003." ".LAN_FORUM_8013).'
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
