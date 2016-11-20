@@ -930,4 +930,24 @@ $NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
 		</td></tr></table></div>
 ";
 
+
+// OLD BREADCRUMB STYLING - DEFAULT
+$BREADCRUMB['start']="<ul class='breadcrumb'><li>";
+$BREADCRUMB['urlstart']="<a href='";
+$BREADCRUMB['urlmid']="'>";
+$BREADCRUMB['urlend']="</a>";
+$BREADCRUMB['separator']="</li><li>";
+$BREADCRUMB['divider']="<span class='divider'>/</span>";
+$BREADCRUMB['end']="</li></ul>";
+
+// NEW BREADCRUMB STYLING - BUTONIZED
+/*
+$BREADCRUMB['start']="<div class='btn-group btn-breadcrumb'>";
+$BREADCRUMB['urlstart']="<a href='";
+$BREADCRUMB['urlmid']="' class='btn btn-default'><div>";
+$BREADCRUMB['urlend']="</div></a>";
+$BREADCRUMB['separator']="";
+$BREADCRUMB['divider']="";
+$BREADCRUMB['end']="</div>";
+*/
 ?>
