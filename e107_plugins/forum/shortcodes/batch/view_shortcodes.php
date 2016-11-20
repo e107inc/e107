@@ -804,7 +804,7 @@ function sc_buttonsx()
 	//	$url = e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId));
 		$replyUrl = "<a class='btn btn-primary' href='".$url."'>".LAN_FORUM_2006."</a>";
 	}
-	if ($forum->checkPerm($this->var['thread_forum_id'], 'thread'))
+	if ($forum->checkPerm($this->var['thread_forum_id'], 'post'))
 	{
 		$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $this->var['thread_forum_id'];
 	//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
