@@ -52,7 +52,7 @@ if(!BOOTSTRAP)
 
 
 	$text = '<div class="btn-group">'.
-	($this->var['ntUrl']?<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>:LAN_FORUM_1003." ".LAN_FORUM_8013).
+	($this->var['ntUrl']?<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>:LAN_FORUM_1001." ".LAN_FORUM_8013).
         '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
