@@ -1279,6 +1279,7 @@ class forum_post_handler
 
 		if(!deftrue('MODERATOR'))
 		{
+			e107::getDebug()->log("Move Thread attempted by non-moderator"); // No LAN necessary.
 			return false;
 		}
 
@@ -1322,6 +1323,7 @@ class forum_post_handler
 	{
 		if(!deftrue('MODERATOR'))
 		{
+			e107::getDebug()->log("Split Thread attempted by non-moderator"); // No LAN necessary.
 			return false;
 		}
 

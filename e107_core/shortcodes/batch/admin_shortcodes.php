@@ -791,20 +791,10 @@ class admin_shortcodes
 	{
 		if (ADMIN)
 		{
-			global $ns;
-			ob_start();
 			if(!FILE_UPLOADS)
 			{
-				echo message_handler('ADMIN_MESSAGE', LAN_HEADER_02, __LINE__, __FILE__);
+				return e107::getRender()->tablerender(LAN_WARNING,LAN_HEADER_02,'admin_msg',true);
 			}
-			/*
-			if(OPEN_BASEDIR){
-			echo message_handler('ADMIN_MESSAGE', LAN_HEADER_03, __LINE__, __FILE__);
-			}
-			*/
-			$message_text = ob_get_contents();
-			ob_end_clean();
-			return $message_text;
 		}
 	}
 
@@ -1078,7 +1068,9 @@ class admin_shortcodes
 			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
 
 			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
+			<br />PDO: ".((e107::getDB()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
 			<br />Mode: <small>".$sqlMode."</small>
+
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
 			<br />utf-8

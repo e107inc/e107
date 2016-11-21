@@ -163,6 +163,7 @@ if (empty($FORUM_VIEW_START))
 if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // New v2.x bootstrap Template.
 {
 	
+	$FORUM_VIEW_CAPTION				= $FORUM_VIEWFORUM_TEMPLATE['caption'];
 	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
 	$FORUM_VIEW_START				= $FORUM_VIEWFORUM_TEMPLATE['header'];
 	$FORUM_VIEW_FORUM				= $FORUM_VIEWFORUM_TEMPLATE['item'];
@@ -473,7 +474,7 @@ $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilte
 $subList = $forum->forumGetSubs(vartrue($forum_id));
 --*/
 //------$gen = new convert;
-		$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
+$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
 /*--
 $fVars->SUBFORUMS = '';
 if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
@@ -550,12 +551,13 @@ if($container_only)
 }
 
 
+		$sc->setVars($forumSCvars);
 
-				$sc->setVars($forumSCvars);
 
 //var_dump ($FORUM_VIEW_START);
 //  	var_dump ($FORUM_VIEW_SUB);
 $forum_view_start = $tp->parseTemplate($FORUM_VIEW_START, false, $sc);
+$forum_view_forum = $tp->parseTemplate($forum_view_forum, false, $sc);
 $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
 
 //$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
@@ -564,7 +566,9 @@ $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
 if ($forum->prefs->get('enclose'))
 {	
 // $forum_view_subs????
-	$ns->tablerender($forum->prefs->get('title'), $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
+	$caption = varset($FORUM_VIEW_CAPTION) ? $tp->parseTemplate($FORUM_VIEW_CAPTION, TRUE, $sc) : $forum->prefs->get('title');
+
+	$ns->tablerender($caption, $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
 }
 else
 {

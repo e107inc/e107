@@ -167,7 +167,8 @@ class adminstyle_infopanel
 		// ---------------------- Start Panel --------------------------------
 
 //		$text = "<div >";
-		if(empty(varset($user_pref['core-infopanel-mye107'], array()))) // Set default icons.
+		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
+		if(empty($myE107)) // Set default icons.
 		{
 			$defArray = array(
 				0  => 'e-administrator',
@@ -652,7 +653,8 @@ class adminstyle_infopanel
 		$text = "<div style='padding-left:20px'>";
 
 
-		if(empty(varset($user_pref['core-infopanel-mye107'], array()))) // Set default icons.
+		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
+		if(empty($myE107)) // Set default icons.
 		{
 			$defArray = array(
 				0  => 'e-administrator',
