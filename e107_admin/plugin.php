@@ -666,7 +666,7 @@ class pluginManager{
 	//  XXX Suhosin has a 512 char limit for $_GET strings.
 		e107::getDebug()->log($data['plugin_name'].' : '.strlen($base64)."<br />".print_a($data,true)); //FIXME - enable when needed to debug.
 		*/
-		
+
 		// Temporary Pop-up version. 
 	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
 		
@@ -718,6 +718,7 @@ class pluginManager{
 
 		if($mp->download($data['plugin_id'], $data['plugin_mode'], 'plugin'))
 		{
+			$this -> pluginCheck(true); // rescan the plugin directory
 			$text = e107::getPlugin()->install($data['plugin_folder']); 
 
 			$mes->addInfo($text); 

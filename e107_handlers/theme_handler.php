@@ -1076,9 +1076,17 @@ class themeHandler
 
 		if($_GET['mode'] == 'online')
 		{
+			$srcData = array(
+				'id'    => $theme['id'],
+				'url'   => $theme['url'],
+				'mode'  => $theme['mode'],
+				'price' => $theme['price']
+			);
 
-			$d = http_build_query($theme,false,'&');
-			$url = e_SELF."?src=".base64_encode($d);
+			$d = http_build_query($srcData,false,'&');
+			$base64 = base64_encode($d);
+		//	e107::getDebug()->log($theme['name'].': '.strlen($base64));
+			$url = e_SELF."?src=".$base64;
 			$id = $frm->name2id($theme['name']);
 			$LAN_DOWNLOAD = ($theme['price'] > 0) ? LAN_PURCHASE."/".LAN_DOWN_THEME : LAN_DOWN_THEME;
 			
@@ -1095,7 +1103,7 @@ class themeHandler
 			}
 			*/
 			
-			$downloadUrl = e_SELF.'?mode=download&amp;action='.$action.'&amp;src='.base64_encode($d);//$url.'&amp;action=download';
+			$downloadUrl = e_SELF.'?mode=download&src='.base64_encode($d);//$url.'&amp;action=download';
 			$infoUrl = $url.'&amp;action=info';
 			
 			$viewUrl = $theme['url'];
