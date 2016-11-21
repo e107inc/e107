@@ -349,6 +349,9 @@ require_once(HEADERF);
 $forumList = $forum->forumGetForumList();
 $newflag_list = $forum->forumGetUnreadForums();
 
+$sc->newFlagList = $newflag_list;
+
+
 if (!$forumList)
 {
 	$ns->tablerender(LAN_PLUGIN_FORUM_NAME, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));

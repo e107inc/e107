@@ -1082,8 +1082,11 @@ class media_admin_ui extends e_admin_ui
 		}
 
 		// if 'for' has no value, files are placed in /temp and not added to the db.
+
+		$maxFileSize = e107::pref('core', 'upload_maxfilesize','20M');
+
 		$text = "<h4>".IMALAN_145."</h4>";
-		$text .= '<div id="uploader" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
+		$text .= '<div id="uploader" data-max-size="'.str_replace('M','mb',$maxFileSize).'" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
 	        <p>'.IMALAN_146.'</p>
 		</div>';
 	    $text .= '<hr />';

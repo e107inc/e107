@@ -636,17 +636,37 @@ class pluginManager{
 		}
 		*/
 				
-		$d = http_build_query($data,false,'&');
+
 		//$url = e_SELF."?src=".base64_encode($d);
 	//	$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
 		$modalCaption = (!empty($data['plugin_price'])) ? EPL_ADLAN_92." ".$data['plugin_name']." ".$data['plugin_version'] : EPL_ADLAN_230." ".$data['plugin_name']." ".$data['plugin_version'];
 
-		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
+		$srcData = array(
+			'plugin_id'     => $data['plugin_id'],
+			'plugin_folder' => $data['plugin_folder'],
+			'plugin_price'  => $data['plugin_price'],
+			'plugin_mode'   => $data['plugin_mode'],
+			'plugin_url'    => $data['plugin_url'],
+		);
+
+
+		$d = http_build_query($srcData,false,'&');
+		$url = e_SELF.'?mode=download&src='.base64_encode($d);
 		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
-	
-	
+
+		/*
+
+		// DEBUGGER .
+		$base64 = base64_encode($d);
+		$tmp = base64_decode($base64);
+		parse_str($tmp, $data);
+
+	//  XXX Suhosin has a 512 char limit for $_GET strings.
+		e107::getDebug()->log($data['plugin_name'].' : '.strlen($base64)."<br />".print_a($data,true)); //FIXME - enable when needed to debug.
+		*/
+		
 		// Temporary Pop-up version. 
 	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
 		
@@ -669,6 +689,18 @@ class pluginManager{
 		
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
+
+		if(e_DEBUG === true)
+		{
+			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
+			echo '$_GET[src]: ';
+			print_a($_GET);
+
+			echo 'base64 decoded and parsed as $data:';
+			print_a($data);
+			return false;
+		}
+
 
 		if(!empty($data['plugin_price']))
 		{
