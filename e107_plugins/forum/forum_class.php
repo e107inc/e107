@@ -1009,6 +1009,11 @@ class e107forum
 
 				$tmp['thread_sef'] = eHelper::title2sef($tmp['thread_name'],'dashl');
 
+				if(empty($tmp['forum_sef']))
+				{
+					e107::getDebug()->log("Forum ".$tmp['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
+				}
+
 				return $tmp;
 			}
 		}
@@ -1510,6 +1515,7 @@ class e107forum
 			$ret = array();
 			while ($row = $sql->fetch())
 			{
+
 				if(!$row['forum_parent'])
 				{
 					$ret['parents'][] = $row;
@@ -1817,7 +1823,15 @@ class e107forum
 		";
 		if ($sql->gen($qry))
 		{
-			return $sql->fetch();
+
+			$row =  $sql->fetch();
+
+			if(empty($row['forum_sef']))
+			{
+				e107::getDebug()->log("Forum ".$row['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
+			}
+
+			return $row;
 		}
 		return FALSE;
 	}
@@ -1855,7 +1869,7 @@ class e107forum
 		$sql = e107::getDb();
 		$forumId = (int)$forumId;
 		$qry = "
-		SELECT t.*, f.forum_id, f.forum_sef, u.user_name, lpu.user_name AS lastpost_username, MAX(p.post_id) AS lastpost_id FROM `#forum_thread` as t
+		SELECT t.*, f.forum_id, f.forum_sef,f.forum_name, u.user_name, lpu.user_name AS lastpost_username, MAX(p.post_id) AS lastpost_id FROM `#forum_thread` as t
 		LEFT JOIN `#forum` AS f ON t.thread_forum_id = f.forum_id
 		LEFT JOIN `#forum_post` AS p ON t.thread_id = p.post_thread
 		LEFT JOIN `#user` AS u ON t.thread_user = u.user_id
@@ -1880,7 +1894,11 @@ class e107forum
 		{
 			while ($row = $sql->fetch())
 			{
-			//	$row['thread_sef'] = eHelper::title2sef($row['thread_name']);
+				if(empty($row['forum_sef']))
+				{
+					e107::getDebug()->log("Forum ".$row['forum_name']." is missing a SEF URL. Please add one via the admin area. ");
+				}
+
 				$ret[] = $row;
 			}
 		}
