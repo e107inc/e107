@@ -2047,7 +2047,8 @@ class e107plugin
 			case 'refresh':
 				if ($currentPref != $pathEntry)
 				{
-					$mes->addDebug('Adding '.$plugin.' to '.$prefName);
+					$message = e107::getParser()->lanVars(EPL_ADLAN_247, array('x'=> $plugin, 'y'=> $prefName));							
+					$mes->addDebug($message);
 					$core->setPref($prefName.'/'.$plugin, $pathEntry);
 					$updated = true;
 				}
@@ -2055,7 +2056,8 @@ class e107plugin
 			case 'uninstall':
 				if ($currentPref)
 				{
-					$mes->addDebug('Removing '.$plugin.' from '.$prefName);
+					$message = e107::getParser()->lanVars(EPL_ADLAN_248, array('x'=> $plugin, 'y'=> $prefName));							
+					$mes->addDebug($message);
 					$core->removePref($prefName.'/'.$plugin);
 					$updated = true;
 				}
@@ -2198,14 +2200,14 @@ class e107plugin
 						if($result !== NULL)
 						{
 							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
+							$mes->add(EPL_ADLAN_233." {$linkName} URL: [{$url}] ".EPL_ADLAN_252." {$perm} ", $status);
 						}					
 					}
 
 					if ($function == 'upgrade' && $remove) //remove inactive links on upgrade
 					{
 						$status = ($this->manage_link('remove', $url, $linkName,false, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
+						$mes->add(EPL_ADLAN_234." {$linkName} URL: [{$url}]", $status);
 					}
 					break;
 
@@ -2213,7 +2215,7 @@ class e107plugin
 				case 'uninstall': //remove all links
 
 					$status = ($this->manage_link('remove', $url, $linkName, $perm, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-					$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
+					$mes->add(EPL_ADLAN_234." {$linkName} URL: [{$url}]", $status);
 					break;
 			}
 		}
@@ -2315,7 +2317,8 @@ class e107plugin
 					$data['class'] 		= $this->getPerm(varset($v['@attributes']['perm']), 'member');
 					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-					$mes->add("Adding Media Category: {$data['category']}", $status);				
+					$message = str_replace('[x]', $data['category'], EPL_ADLAN_245);
+					$mes->add($message, $status); 				
 					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
 					$c++;
 					$i[$type]++;
@@ -2325,7 +2328,8 @@ class e107plugin
 			
 			case 'uninstall': // Probably best to leave well alone
 				$status = e107::getMedia()->deleteAllCategories($folder)? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add("Deleting All Media Categories owned by : {$folder}", $status);	
+				$message = str_replace('[x]', $folder, EPL_ADLAN_246);		
+				$mes->add($message, $status);	
 			break;
 		
 		
@@ -2467,14 +2471,14 @@ class e107plugin
 						//$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						$status = $this->manage_extended_field('add', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Adding Extended Field: '.$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_249 .$name.' ... ', $status);
 					}
 
 					if ($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
 
 					{
 						$status = $this->manage_extended_field('remove', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_250 .$name.' ... ', $status);
 					}
 					break;
 
@@ -2483,11 +2487,11 @@ class e107plugin
 					if (vartrue($this->unInstallOpts['delete_xfields'], FALSE))
 					{
 						$status = ($this->manage_extended_field('remove', $name, $attrib, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_250 .$name.' ... ', $status);
 					}
 					else
 					{
-						$mes->add('Extended Field: '.$name.' left in place', E_MESSAGE_SUCCESS);
+						$mes->add(EPL_ADLAN_251 .$name, E_MESSAGE_SUCCESS);
 					}
 					break;
 			}
