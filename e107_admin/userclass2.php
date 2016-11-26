@@ -201,7 +201,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 			$e_userclass->calc_tree();
 			$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
 
-			return array('caption'=>'Class Structure', 'text' => $text); //TODO LAN
+			return array('caption'=>UCSLAN_CLASS_STRUCTURE, 'text' => $text); 
 
 			// $text .= $e_userclass->show_graphical_tree();
 		}
@@ -376,7 +376,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 				}
 				else
 				{
-					$text .= UCSLAN_44;
+					$text .= LAN_NONE;
 				}
 
 
