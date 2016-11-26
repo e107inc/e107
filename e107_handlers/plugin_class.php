@@ -2047,8 +2047,7 @@ class e107plugin
 			case 'refresh':
 				if ($currentPref != $pathEntry)
 				{
-					$message = e107::getParser()->lanVars(EPL_ADLAN_247, array('x'=> $plugin, 'y'=> $prefName));							
-					$mes->addDebug($message);
+					$mes->addDebug('Adding '.$plugin.' to '.$prefName);
 					$core->setPref($prefName.'/'.$plugin, $pathEntry);
 					$updated = true;
 				}
@@ -2056,8 +2055,7 @@ class e107plugin
 			case 'uninstall':
 				if ($currentPref)
 				{
-					$message = e107::getParser()->lanVars(EPL_ADLAN_248, array('x'=> $plugin, 'y'=> $prefName));							
-					$mes->addDebug($message);
+					$mes->addDebug('Removing '.$plugin.' from '.$prefName);
 					$core->removePref($prefName.'/'.$plugin);
 					$updated = true;
 				}
