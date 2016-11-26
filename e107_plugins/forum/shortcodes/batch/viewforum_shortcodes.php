@@ -475,7 +475,7 @@
 		function sc_sub_forumtitle()
 		{
 			$forumName = e107::getParser()->toHTML($this->var['forum_name'], true);
-			return "<a href='" . e107::getUrl()->create('forum/forum/view', $this->var) . "'>{$forumName}</a>";
+			return "<a href='" .  e107::url('forum', 'forum', $this->var) . "'>".$forumName."</a>";
 		}
 
 
