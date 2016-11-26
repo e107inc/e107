@@ -523,7 +523,10 @@
 				}
 					return IMAGE_nonew;
 			--*/
-			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']) . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
+
+		//	$url = e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']);
+			$url = e107::url('forum', 'markread', $this->var);
+			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . $url . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
 
 		}
 
