@@ -322,7 +322,7 @@ $text = "
 					<tr>
 						<td><label for='siteurl'>".PRFLAN_3."</label></td>
 						<td>
-							".$frm->text('siteurl', $pref['siteurl'], 150, 'required=1&size=xxlarge')."
+							".$frm->text('siteurl', $pref['siteurl'], 150, 'size=xxlarge')."
 							".($pref['siteurl'] == SITEURL ? "" : "<div class='field-help'>".PRFLAN_159.": <strong>".SITEURL."</strong></div>")."
 						</td>
 					</tr>
