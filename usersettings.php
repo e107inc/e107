@@ -56,8 +56,6 @@ require_once(e_HANDLER.'validator_class.php');
 
 
 
-
-
 class usersettings_front // Begin Usersettings rewrite.
 {
 
@@ -86,7 +84,12 @@ class usersettings_front // Begin Usersettings rewrite.
 		else
 		{
 			global $sc_style;
-			include_once (e107::coreTemplatePath('usersettings')); //correct way to load a core template.
+			$USERSETTINGS_MESSAGE 				= '';
+			$USERSETTINGS_MESSAGE_CAPTION 		= '';
+			$USERSETTINGS_EDIT_CAPTION 			= '';
+			$USERSETTINGS_EDIT					= '';
+			$coreTemplatePath                   = e107::coreTemplatePath('usersettings');
+			include_once($coreTemplatePath); //correct way to load a core template.
 			e107::scStyle($sc_style);
 			$usersettings_shortcodes = e107::getScBatch('usersettings');
 		}
@@ -136,17 +139,25 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		$photo_to_delete    = '';
 		$avatar_to_delete   = '';
-		$ue_fields          = '';
+	//	$ue_fields          = '';
+		$caption            = '';
 		$promptPassword     = false;
 		$error              = FALSE;
 		$extraErrors        = array();
 		$eufVals            = array();
 		$savePassword       = '';
+		$changedUserData    = array();
+		$udata              = array();
+		$allData            = array();
+		$message            = '';
+		$changedEUFData     = array();
 
 		$inp                = USERID;			// Initially assume that user is modifying their own data.
 		$_uid               = false;			// FALSE if user modifying their own data; otherwise ID of data being modified
 		$adminEdit          = false; // @deprecated		// FALSE if editing own data. TRUE if admin edit
 
+
+		/* todo subject of removal */
 		if(is_numeric(e_QUERY))
 		{	// Trying to edit specific user record
 			if (ADMIN)
@@ -312,7 +323,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			}
 
 		    // Validate Extended User Fields.
-			$changedEUFData = array();
+
 			if (isset($_POST['ue']))
 			{
 				$eufVals = $ue->userExtendedValidateAll($_POST['ue'], varset($_POST['hide'],TRUE));		// Validate the extended user fields
@@ -687,7 +698,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			return false;
 		}
 
-		
+
 
 		if ($error)
 		{
@@ -732,6 +743,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		$this->renderForm($changedUserData);
 
+		return false;
 	}
 
 
@@ -940,7 +952,7 @@ class usersettings_front // Begin Usersettings rewrite.
 }
 
 $us = new usersettings_front;
-require_once (HEADERF);
+require_once(HEADERF);
 $us->init();
 require_once (FOOTERF);
 
