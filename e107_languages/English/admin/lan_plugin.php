@@ -285,11 +285,9 @@ define ("EPL_ADLAN_241","Adding Pref:");
 define ("EPL_ADLAN_242","Removing Pref:");
 define ("EPL_ADLAN_243","Updating Pref:");
 define ("EPL_ADLAN_244","Only 5 Media Categories are permitted during installation.");
-
 define ("EPL_ADLAN_245","Adding Media Category: [x]");  
 define ("EPL_ADLAN_246","Deleting All Media Categories owned by : [x]"); 
-define ("EPL_ADLAN_247","Adding [x] to: [y]"); 
-define ("EPL_ADLAN_248","Removing [x] from: [y]");  
+ 
 define ("EPL_ADLAN_249","Adding Extended Field: ");  
 define ("EPL_ADLAN_250","Removing Extended Field: ");  
 define ("EPL_ADLAN_251","Extended Field left in place: ");  
