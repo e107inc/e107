@@ -273,6 +273,8 @@ define ("EPL_ADLAN_231", "Remove icons from Media-Manager");
 define ("EPL_ADLAN_232", "Create Files");
 define ("TPVLAN_81", "Downloading...");
 define ("TPVLAN_82", "Download Complete!");
+define ("EPL_ADLAN_233", "Adding Link:"); 
+define ("EPL_ADLAN_234", "Removing Link:"); 
 define ("EPL_ADLAN_235", "Automated download not possible.");
 define ("EPL_ADLAN_236", "Please Download Manually");
 define ("EPL_ADLAN_237", "Download");
@@ -283,6 +285,14 @@ define ("EPL_ADLAN_241","Adding Pref:");
 define ("EPL_ADLAN_242","Removing Pref:");
 define ("EPL_ADLAN_243","Updating Pref:");
 define ("EPL_ADLAN_244","Only 5 Media Categories are permitted during installation.");
+
+define ("EPL_ADLAN_245","Adding Media Category: [x]");  
+define ("EPL_ADLAN_246","Deleting All Media Categories owned by : [x]"); 
+ 
+define ("EPL_ADLAN_249","Adding Extended Field: ");  
+define ("EPL_ADLAN_250","Removing Extended Field: ");  
+define ("EPL_ADLAN_251","Extended Field left in place: ");  
+define ("EPL_ADLAN_252","Perm: ");  
 
 define ("LAN_RELEASED", "Released");
 define ("LAN_REPAIR_PLUGIN_SETTINGS", "Repair plugin settings");
