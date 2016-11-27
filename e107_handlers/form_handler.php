@@ -2797,7 +2797,9 @@ class e_form
 
 	/**
 	 * Render a Breadcrumb in Bootstrap format. 
-	 * @param $array 
+	 * @param $array
+	 * @param $array[url]
+	 * @param $array[text]
 	 */
 	function breadcrumb($array)
 	{
