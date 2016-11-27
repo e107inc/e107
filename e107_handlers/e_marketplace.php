@@ -394,7 +394,10 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$mes->addError( TPVLAN_83." <a href='".$remotefile."'>".TPVLAN_84."</a>");
+			$srch = array("[", "]");
+			$repl = array("<a href='".$remotefile."'>", "</a>");
+
+			$mes->addError( TPVLAN_83." ".str_replace($srch, $repl, TPVLAN_84));
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
