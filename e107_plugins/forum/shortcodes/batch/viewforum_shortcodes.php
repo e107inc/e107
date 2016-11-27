@@ -80,20 +80,13 @@
 			global $forum;
 			$jumpList = $forum->forumGetAllowed('view');
 
-
-			$text = '<div class="btn-group">';
-
-			if(!empty($this->var['ntUrl']))
-			{
-				$text .= '<a href="' . $this->var['ntUrl'] . '" class="btn btn-primary">' . LAN_FORUM_1018 . '</a>';
-			}
-
-			$text .= '
-		    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    <span class="caret"></span>
-		    </button>
-		    <ul class="dropdown-menu pull-right">
-		    ';
+			$text = '<div class="btn-group">'.
+			($this->var['ntUrl']?<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>:LAN_FORUM_1001." ".LAN_FORUM_8013).
+		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    	<span class="caret"></span>
+		    	</button>
+		    	<ul class="dropdown-menu pull-right">
+		    	';
 
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
