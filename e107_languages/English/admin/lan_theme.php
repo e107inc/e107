@@ -115,8 +115,8 @@ define("TPVLAN_CONV_15", "Give this stylesheet a name");
 //marketplace
 define("TPVLAN_81","Downloading..."); 
 define("TPVLAN_82","Download Complete!");
-define("TPVLAN_83","Automated download not possible! Please [x]");
-define("TPVLAN_84","Please Download Manually");
+define("TPVLAN_83","Automated download not possible!");
+define("TPVLAN_84","[Please Download Manually]");
 define("TPVLAN_85","Connecting...");
 define("TPVLAN_86","Could not change site theme.");
 define("TPVLAN_87","Rendering Theme Config");
