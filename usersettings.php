@@ -716,7 +716,7 @@ class usersettings_front // Begin Usersettings rewrite.
 				}
 			}
 		}
-		else // --- User data has been updated here if appropriate ---
+		elseif($dataToSave === true) // --- User data has been updated here if appropriate ---
 		{
 
 			$testSessionMessage = e107::getMessage()->get(E_MESSAGE_SUCCESS, 'default', true); // only success in the session
