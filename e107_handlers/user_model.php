@@ -1753,7 +1753,7 @@ class e_user extends e_user_model
 					$updateQry['user_image'] = $userdata['user_image'];
 				}
 
-				$updateQry['WHERE'] = "WHERE user_id=".$user['user_id']." LIMIT 1";
+				$updateQry['WHERE'] = "user_id=".$user['user_id']." LIMIT 1";
 
 				if($sql->update('user', $updateQry) !==false)
 				{
