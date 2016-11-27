@@ -80,6 +80,11 @@ class usersettings_front // Begin Usersettings rewrite.
 			$usersettings_shortcodes 			= e107::getScBatch('usersettings');
 
 			$usersettings_shortcodes->wrapper('usersettings/edit');
+
+			e107::css('inline', "
+
+				.usersettings-form .col-sm-9 .checkboxes { margin-left:20px }
+			");
 		}
 		else
 		{
@@ -883,7 +888,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			}
 		}
 
-		$text = '<form method="post" action="'.vartrue($usersettings_form_action,e_REQUEST_URI).'" id="dataform" class="form-horizontal"  enctype="multipart/form-data" autocomplete="off">';
+		$text = '<form method="post" action="'.vartrue($usersettings_form_action,e_REQUEST_URI).'" id="dataform" class="usersettings-form form-horizontal"  enctype="multipart/form-data" autocomplete="off">';
 
 		//$text = (is_numeric($_uid) ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
 
