@@ -18,51 +18,62 @@ if (!defined('e107_INIT')) { exit; }
 class usersettings_shortcodes extends e_shortcode
 {
 	private $extendedTabs = false;
-	
+
 	function sc_username($parm) // This is the 'display name'
 	{
 		$pref = e107::getPref();
-		
-		if (check_class($pref['displayname_class']) || $pref['allowEmailLogin'] == 1) // display if email is used for login. 
+		$dis_name_len = varset($pref['displayname_maxlength'], 15);
+
+		if(check_class($pref['displayname_class']) || $pref['allowEmailLogin'] == 1) // display if email is used for login.
 		{
-		  	$dis_name_len 	= varset($pref['displayname_maxlength'],15);
-			$options 		= array('title'=> LAN_USER_80, 'size' => 40);
-		
-			return e107::getForm()->text('username',$this->var['user_name'], $dis_name_len, $options);
+			$options = array(
+				'title' => LAN_USER_80,
+				'size'  => 40,
+			);
+
+			return e107::getForm()->text('username', $this->var['user_name'], $dis_name_len, $options);
 		}
-		else
+
+		if($parm == 'show') // Show it, but as a readonly field.
 		{
-			return ($parm == 'show') ? $this->var['user_name'] : ''; // ; if it can't be changed then hide it. 
+			$options = array(
+				'title'    => LAN_USER_80,
+				'size'     => 40,
+				'readonly' => true,
+			);
+
+			return e107::getForm()->text('username', $this->var['user_name'], $dis_name_len, $options);
 		}
+
+		// Hide it!
+		return '';
 	}
-	
-	
-	
+
+
 	function sc_loginname($parm)
-	{ 
+	{
 		$pref = e107::getPref();
-		
+
 		if($pref['allowEmailLogin'] == 1) // email/password login only. 
 		{
 			return; // hide login name when email-login is being used. (may contain social login info)	
 		}
-				
-		if (ADMIN && getperms("4"))
+
+		$log_name_length = varset($pref['loginname_maxlength'], 30);
+
+		$options = array(
+			'title' => ($pref['allowEmailLogin'] == 1) ? LAN_USER_82 : LAN_USER_80,
+			'size'  => 40,
+		);
+
+		if(ADMIN && getperms("4")) // Has write permission.
 		{
-			 
-		  	$log_name_length = varset($pref['loginname_maxlength'],30);
-			
-		  	$options = array(
-		  		'title'=> ($pref['allowEmailLogin'] ==1 ) ? LAN_USER_82 : LAN_USER_80,
-		  		'size' => 40
-			);
-		
-			return e107::getForm()->text('loginname',$this->var['user_loginname'], $log_name_length, $options);	  
+			return e107::getForm()->text('loginname', $this->var['user_loginname'], $log_name_length, $options);
 		}
-		else
-		{
-			return $this->var['user_loginname'];
-		}
+
+		// No write permission.
+		$options['readonly'] = true;
+		return e107::getForm()->text('loginname', $this->var['user_loginname'], $log_name_length, $options);
 	}
 	
 	
@@ -75,20 +86,26 @@ class usersettings_shortcodes extends e_shortcode
 			return e107::getForm()->text('customtitle', $this->var['user_customtitle'], 100, $options);
 		}
 	}
-	
-	
-	
+
+
+
 	function sc_realname($parm)
 	{
-		if(!empty($this->var['user_xup'])) // social login active.
+		$pref = e107::getPref();
+		$sc = e107::getScBatch('usersettings');
+
+		$options = array(
+			'title'    => '',
+			'size'     => 40,
+			'required' => $pref['signup_option_realname'],
+		);
+
+		if(!empty($sc->var['user_login']) && !empty($sc->var['user_xup'])) // social login active.
 		{
-			return $this->var['user_login'];
+			$options['readonly'] = true;
 		}
 
-
-		$pref = e107::getPref();
-		$options = array('title'=> '', 'size' => 40,'required'=>$pref['signup_option_realname']);	
-		return e107::getForm()->text('realname',$this->var['user_login'], 100, $options);
+		return e107::getForm()->text('realname', $sc->var['user_login'], 100, $options);
 	}
 	
 	
@@ -142,18 +159,25 @@ class usersettings_shortcodes extends e_shortcode
 		}
 		return $pref['signup_pass_len'];
 	}
-	
-	
-	
+
+
+
 	function sc_email($parm)
 	{
-		if(!empty($this->var['user_xup'])) // social login active.
+		$sc = e107::getScBatch('usersettings');
+
+		$options = array(
+			'size'     => 40,
+			'title'    => '',
+			'required' => true,
+		);
+
+		if(!empty($sc->var['user_email']) && !empty($sc->var['user_xup'])) // social login active.
 		{
-			return $this->var['user_email'];
+			$options['readonly'] = true;
 		}
 
-		$options = array('size' => 40,'title'=>'','required'=>true); 
-		return e107::getForm()->email('email', $this->var['user_email'], 100, $options);
+		return e107::getForm()->email('email', $sc->var['user_email'], 100, $options);
 	}
 	
 	
