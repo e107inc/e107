@@ -1372,12 +1372,14 @@ $(document).ready(function()
 			}
 			else
             {
-                var href = '';
+                var href = undefined;
             }
+
+
 
 			if(href === "#" || e === null || href === undefined) 
 			{
-				idt = $(e).next("div");	
+				idt = $(e).next("div");
 								
 				$(idt).toggle("slow");
 				return false;
