@@ -258,7 +258,10 @@ class admin_start
 			e_PLUGIN."banner/config.php",
 			e_PLUGIN."forum/newforumposts_menu_config.php",
 			e_PLUGIN."forum/e_latest.php",
-			e_PLUGIN."forum/e_status.php"
+			e_PLUGIN."forum/e_status.php",
+			e_PLUGIN."online_extended_menu/online_extended_menu.php",
+			e_PLUGIN."online_extended_menu/images/user.png",
+			e_PLUGIN."online_extended_menu/languages/English.php"
 
 		);
 
