@@ -865,12 +865,14 @@ class forum_post_handler
 		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
 		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
 
+		$caption = null;
+
 		if(!empty($template['caption']))
 		{
-      			$this->forumObj->prefs->set('title', e107::getParser()->parseTemplate($template['caption'], true, $sc));
-    		}
+			$caption =  e107::getParser()->parseTemplate($template['caption'], true, $sc);
+		}
 
-		$this->render($text);
+		$this->render($text, $caption);
 
 		if(empty($data))
 		{
@@ -972,13 +974,15 @@ class forum_post_handler
 	/**
 	 * @param $text
 	 */
-	function render($text)
+	function render($text, $caption = false)
 	{
 		$ns = e107::getRender();
 
 		if ($this->forumObj->prefs->get('enclose'))
 		{
-			$ns->tablerender($this->forumObj->prefs->get('title'), $text);
+
+			$caption = (!empty($caption)) ? $caption : $this->forumObj->prefs->get('title');
+			$ns->tablerender($caption, $text);
 		}
 		else
 		{
