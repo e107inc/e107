@@ -13,21 +13,35 @@ if (!defined('e107_INIT')) { exit; }
 // New in v2.x - requires a bootstrap theme be loaded.  
 
 //$FORUM_POST_TEMPLATE['caption']		= "Custom caption";
+
+$SC_WRAPPER['FORUM_POST_AUTHOR'] = "<div class='form-group'>
+										<label for='name' class='col-sm-3 control-label'>".LAN_FORUM_3010."</label>
+										 <div class='col-sm-9'>{---}</div>
+									</div>
+";
+$SC_WRAPPER['FORUM_POST_SUBJECT'] = "<div class='form-group'>
+										<label for='name' class='col-sm-3 control-label'>".LAN_FORUM_3011."</label>
+										 <div class='col-sm-9'>{---}</div>
+									</div>
+";
+
+// Replaces legacy? {FORUM_POST_OPTIONS_LABEL} shortcode...
+$SC_WRAPPER['FORUM_POST_OPTIONS'] = "<div class='form-group'>
+										<label for='name' class='col-sm-3 control-label'>".LAN_FORUM_8013."</label>
+										 <div class='col-sm-9'>{---}</div>
+									</div>
+";
+
+	
 $FORUM_POST_TEMPLATE['form']		= "
 									{FORUM_POST_FORM_START}
 									<div class='row-fluid'>
 										<div>{FORUM_POST_BREADCRUMB}</div>
 									</div>
 
-									<div class='form-group'>
-										<label for='name' class='col-sm-3 control-label'>".LAN_FORUM_3010."</label>
-										 <div class='col-sm-9'>{FORUM_POST_AUTHOR}</div>
-									</div>
+									{FORUM_POST_AUTHOR}
 
-									<div class='form-group'>
-										<label for='subject' class='col-sm-3 control-label'>".LAN_FORUM_3011."</label>
-										 <div class='col-sm-9'>{FORUM_POST_SUBJECT}</div>
-									</div>
+									{FORUM_POST_SUBJECT}
 
 									<div class='form-group'>
 										<label class='col-sm-3 control-label'>{FORUM_POST_TEXTAREA_LABEL}</label>
@@ -37,10 +51,7 @@ $FORUM_POST_TEMPLATE['form']		= "
 										</div>
 									</div>
 
-									<div class='form-group'>
-										<label class='col-sm-3 control-label'>{FORUM_POST_OPTIONS_LABEL}</label>
-										 <div class='col-sm-9'>{FORUM_POST_OPTIONS}</div>
-									</div>
+									{FORUM_POST_OPTIONS}
 
 									<div class='form-group text-center'>
 										{FORUM_POST_BUTTONS}
