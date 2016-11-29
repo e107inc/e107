@@ -23,11 +23,21 @@ if (!defined('e107_INIT'))
 	require_once("../class2.php");
 }
 
-if (!getperms("A") && ($_GET['action'] != 'dialog')) 
+if (!getperms("A") && ($_GET['action'] != 'dialog') && ($_GET['action'] != 'youtube'))
 {
 	e107::redirect('admin');
 	exit;
 }
+
+if($_GET['action'] == 'youtube' )
+{
+	if(!getperms('A') && !getperms('A1'))
+	{
+		exit;
+	}
+
+}
+
 
 e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
@@ -120,9 +130,9 @@ class media_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 		'main/list'			=> array('caption'=> LAN_IMA_M_01, 'perm' => 'A'),
 	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
-		'main/import' 		=> array('caption'=> LAN_IMA_M_02, 'perm' => 'A|A2'),
-		'cat/list' 			=> array('caption'=> LAN_IMA_M_03, 'perm' => 'A'),
-		'cat/create' 		=> array('caption'=> LAN_IMA_M_04, 'perm' => 'A'), // is automatic.
+		'main/import' 		=> array('caption'=> LAN_IMA_M_02, 'perm' => 'A|A1'),
+		'cat/list' 			=> array('caption'=> LAN_IMA_M_03, 'perm' => 'A|A2'),
+		'cat/create' 		=> array('caption'=> LAN_IMA_M_04, 'perm' => 'A|A2'), // is automatic.
 	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
@@ -391,9 +401,9 @@ class media_form_ui extends e_admin_form_ui
 		
 		//TODO GIF and PNG rotation. 
 		
-		if($sql->db_Select("core_media","media_url","media_id IN (".$ids.") AND media_type = 'image/jpeg' "))
+		if($sql->select("core_media","media_url","media_id IN (".$ids.") AND media_type = 'image/jpeg' "))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$original = $tp->replaceConstants($row['media_url']);
 
@@ -479,9 +489,9 @@ class media_form_ui extends e_admin_form_ui
 		$img_import_w = 2816;
 		$img_import_h = 2112; 
 			
-		if($sql->db_Select("core_media","media_id,media_url","media_id IN (".$ids.") AND media_type = 'image/jpeg' "))
+		if($sql->select("core_media","media_id,media_url","media_id IN (".$ids.") AND media_type = 'image/jpeg' "))
 		{
-			while($row = $sql->db_Fetch())
+			while($row = $sql->fetch())
 			{
 				$path = $tp->replaceConstants($row['media_url']);
 

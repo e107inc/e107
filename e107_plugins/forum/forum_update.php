@@ -195,7 +195,9 @@ function step2()
 	{
 		$message = 'Creating table ' . ($rename ? $rename : $name);
 
-		if($sql->isTable($name) && $sql->isEmpty($name))
+		$curTable = ($rename ? $rename : $name);
+
+		if($sql->isTable($curTable) && $sql->isEmpty($curTable))
 		{
 			$mes -> addSuccess("Skipping table ".$name." (already exists)");
 			continue;

@@ -80,20 +80,14 @@
 			global $forum;
 			$jumpList = $forum->forumGetAllowed('view');
 
-
 			$text = '<div class="btn-group">';
-
-			if(!empty($this->var['ntUrl']))
-			{
-				$text .= '<a href="' . $this->var['ntUrl'] . '" class="btn btn-primary">' . LAN_FORUM_1018 . '</a>';
-			}
-
-			$text .= '
-		    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    <span class="caret"></span>
-		    </button>
-		    <ul class="dropdown-menu pull-right">
-		    ';
+			$text .=
+			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' : LAN_FORUM_1001." ".LAN_FORUM_8013).
+		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    	<span class="caret"></span>
+		    	</button>
+		    	<ul class="dropdown-menu pull-right">
+		    	';
 
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
@@ -475,7 +469,7 @@
 		function sc_sub_forumtitle()
 		{
 			$forumName = e107::getParser()->toHTML($this->var['forum_name'], true);
-			return "<a href='" . e107::getUrl()->create('forum/forum/view', $this->var) . "'>{$forumName}</a>";
+			return "<a href='" .  e107::url('forum', 'forum', $this->var) . "'>".$forumName."</a>";
 		}
 
 
@@ -523,7 +517,10 @@
 				}
 					return IMAGE_nonew;
 			--*/
-			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']) . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
+
+		//	$url = e107::getUrl()->create('forum/forum/mfar', 'id=' . $this->var['forum_id']);
+			$url = e107::url('forum', 'markread', $this->var);
+			return (USER && is_array($newflag_list) && in_array($this->var['forum_id'], $newflag_list)) ? "<a href='" . $url . "'>" . IMAGE_new . '</a>' : IMAGE_nonew;
 
 		}
 

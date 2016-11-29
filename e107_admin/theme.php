@@ -164,6 +164,17 @@ if($mode == 'download' && !empty($_GET['src']))
 			return true;
 		}
 
+		if(e_DEBUG === true)
+		{
+			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
+			echo '$_GET: ';
+			print_a($_GET);
+
+			echo 'base64 decoded and parsed as $data:';
+			print_a($data);
+			return false;
+		}
+
 		
 		$mp = $themec->getMarketplace();	
 	 	$mes->addSuccess(TPVLAN_85);   

@@ -45,7 +45,7 @@ class e_jsmanager
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
-			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+			"https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js",
 			// jQuery Once filters out all elements that had the same filter applied on them before. It can be used to
 			// ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
 			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js"
@@ -268,7 +268,7 @@ class e_jsmanager
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
 			$this->_libraries['jquery'] = array(
-				"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+				"https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js",
 				// jQuery Once filters out all elements that had the same filter applied on them before. It can be used
 				// to ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
 				"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
