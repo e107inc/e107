@@ -381,7 +381,11 @@ class forum_post_handler
 
 		$file = "forum_".$type."_template.php";
 
-		if (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+		if($template = e107::getTemplate('forum', 'forum_post'))
+		{
+			$FORUM_POST_TEMPLATE = $template;
+		}
+		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
 		{
 			if (is_readable(THEME.$file))
 			{
@@ -396,6 +400,8 @@ class forum_post_handler
 				include_once(e_PLUGIN.'forum/templates/'.$file);
 			}
 		}
+
+
 
 		// ----------------- Legacy -------------------------
 
@@ -859,7 +865,14 @@ class forum_post_handler
 		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
 		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
 
-		$this->render($text);
+		$caption = null;
+
+		if(!empty($template['caption']))
+		{
+			$caption =  e107::getParser()->parseTemplate($template['caption'], true, $sc);
+		}
+
+		$this->render($text, $caption);
 
 		if(empty($data))
 		{
@@ -961,13 +974,15 @@ class forum_post_handler
 	/**
 	 * @param $text
 	 */
-	function render($text)
+	function render($text, $caption = false)
 	{
 		$ns = e107::getRender();
 
 		if ($this->forumObj->prefs->get('enclose'))
 		{
-			$ns->tablerender($this->forumObj->prefs->get('title'), $text);
+
+			$caption = (!empty($caption)) ? $caption : $this->forumObj->prefs->get('title');
+			$ns->tablerender($caption, $text);
 		}
 		else
 		{
