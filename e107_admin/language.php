@@ -235,6 +235,11 @@ if(!empty($_GET['iframe']))
 
 			$message = '';
 
+			if(!empty($_POST['language']))
+			{
+				$_POST['language'] = e107::getParser()->filter($_POST['language']);
+			}
+
 			// ----------------- delete tables ---------------------------------------------
 			if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			{
@@ -246,7 +251,7 @@ if(!empty($_GET['iframe']))
 					{
 						//	echo $del_table." exists<br />";
 						$qry = "DROP TABLE ".MPREFIX."lan_".$lang."_".$del_table;
-						if (mysql_query($qry))
+						if ($sql->gen($qry))
 						{
 							$msg = $tp->lanVars(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table);
 							$message .= $msg.'[!br!]';
@@ -304,7 +309,7 @@ if(!empty($_GET['iframe']))
 						if ($_POST['remove'])
 						{
 							// Remove table.
-							if (mysql_query("DROP TABLE ".MPREFIX."lan_".$lang."_".$value))
+							if ($sql->gen("DROP TABLE ".MPREFIX."lan_".$lang."_".$value))
 							{
 								$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]'; // can be removed?
 								$mes->addSuccess($_POST['language'].' '.$value.' '.LAN_DELETED);

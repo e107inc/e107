@@ -1054,7 +1054,11 @@ class admin_shortcodes
 			<b>".FOOTLAN_8."</b>
 			<br />
 			".$install_date."
-			<br /><br />
+			<br />";
+
+			$text .= $this->getLastGitUpdate();
+
+			$text .= "<br />
 			<b>".FOOTLAN_9."</b>
 			<br />".
 			preg_replace("/PHP.*/i", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
@@ -1082,6 +1086,22 @@ class admin_shortcodes
 
 			return $ns->tablerender(FOOTLAN_13, $text, '', TRUE);
 		}
+	}
+
+	private function getLastGitUpdate()
+	{
+		$gitFetch = e_BASE.'.git/FETCH_HEAD';
+
+		if(file_exists($gitFetch))
+		{
+			$unix = filemtime($gitFetch);
+
+			$text = "<br /><b>Last Git Update</b><br />"; // NO LAN required. Developer-Only
+			$text.= ($unix) ? date('r',$unix)  : "Never";
+			$text .= "<br />";
+			return $text;
+		}
+
 	}
 
 	function sc_admin_status($parm)

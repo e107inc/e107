@@ -789,7 +789,7 @@ class e_parse extends e_parser
 		$search = array('&#036;', '&quot;', '<', '>');
 		$replace = array('$', '"', '&lt;', '&gt;');
 		$text = str_replace($search, $replace, $text);
-		if (e107::wysiwyg() !== true)
+		if (e107::wysiwyg() !== true && is_string($text))
 		{
 			// fix for utf-8 issue with html_entity_decode(); ???
 			$text = urldecode($text);
