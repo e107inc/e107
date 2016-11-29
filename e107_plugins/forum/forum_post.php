@@ -381,7 +381,11 @@ class forum_post_handler
 
 		$file = "forum_".$type."_template.php";
 
-		if (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+		if($template = e107::getTemplate('forum', 'forum_post'))
+		{
+			$FORUM_POST_TEMPLATE = $template;
+		}
+		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
 		{
 			if (is_readable(THEME.$file))
 			{
@@ -396,6 +400,8 @@ class forum_post_handler
 				include_once(e_PLUGIN.'forum/templates/'.$file);
 			}
 		}
+
+
 
 		// ----------------- Legacy -------------------------
 
