@@ -26,6 +26,7 @@ class themeHandler
 	var $fl;
 	var $themeConfigObj = null;
 	var $noLog = FALSE;
+	private $curTheme = null;
 	
 	private $approvedAdminThemes = array('bootstrap','bootstrap3');
 	
@@ -78,6 +79,11 @@ class themeHandler
 		if(!empty($_POST['upload']))
 		{
 			$unzippedTheme = $this->themeUpload();
+		}
+
+		if(!empty($_POST['curTheme']))
+		{
+			$this->curTheme = e107::getParser()->filter($_POST['curTheme']);
 		}
 		
 		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme)) 
@@ -139,7 +145,7 @@ class themeHandler
 		
 		if(isset($_POST['submit_adminstyle']))
 		{
-			$this->id = $_POST['curTheme'];
+			$this->id = $this->curTheme;
 			if($this->setAdminStyle())
 			{
 				eMessage::getInstance()->add(TPVLAN_43, E_MESSAGE_SUCCESS);
@@ -149,7 +155,7 @@ class themeHandler
 		
 		if(isset($_POST['submit_style']))
 		{
-			$this->id = $_POST['curTheme'];
+			$this->id = $this->curTheme;
 			
 			$this->setLayouts(); // Update the layouts in case they have been manually changed. 
 			$this->SetCustomPages($_POST['custompages']);
@@ -161,7 +167,7 @@ class themeHandler
 
 		if(!empty($_POST['git_pull']))
 		{
-			$return = e107::getFile()->gitPull($_POST['curTheme'], 'theme');
+			$return = e107::getFile()->gitPull($this->curTheme, 'theme');
 			$mes->addSuccess($return);
 		}
 		
