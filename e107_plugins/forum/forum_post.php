@@ -861,7 +861,7 @@ class forum_post_handler
 
 		if(!empty($template['caption']))
 		{
-      			$this->forumObj->prefs->set('title', $template['caption']);
+      			$this->forumObj->prefs->set('title', e107::getParser()->parseTemplate($template['caption'], true, $sc));
     		}
 
 		$this->render($text);
