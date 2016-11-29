@@ -2343,15 +2343,22 @@ class users_ext
 
 	function field_deactivate()
 	{
-		global $ue, $ns, $tp, $sql, $admin_log;
+
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$ue = e107::getUserExt();
+
 		$ret = "";
 		foreach(array_keys($_POST['deactivate']) as $f)
 		{
+			$f = $tp->filter($f);
+
 			if($ue->user_extended_remove($f, $f))
 			{
 				$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
-				if(is_readable(e_CORE."sql/extended_".$f.".php")){
-	             	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+				if(is_readable(e_CORE."sql/extended_".$f.".php"))
+				{
+	             	$ret .= ($sql->gen("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
 				}
 			}
 			else
@@ -2360,6 +2367,7 @@ class users_ext
 			}
 		}
 		e107::getLog()->add('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
+
 		return $ret;
 	}
 
@@ -2378,7 +2386,7 @@ class users_ext
 	    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
 	    foreach($creation[0] as $tab){
 			$query = str_replace($search,$replace,$tab);
-	      	if(!mysql_query($query)){
+	      	if(!$sql->gen($query)){
 	        	$error = TRUE;
 			}
 		}
@@ -2386,7 +2394,7 @@ class users_ext
 	    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
 		foreach($inserts[0] as $ins){
 			$qry = str_replace($search,$replace,$ins);
-			if(!mysql_query($qry)){
+			if(!$sql->gen($qry)){
 			  	$error = TRUE;
 			}
 	    }
