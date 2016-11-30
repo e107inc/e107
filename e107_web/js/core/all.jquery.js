@@ -642,10 +642,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 * Example usage:
 	 * @code
 	 *  $(window).resize(function () {
-     *      waitForFinalEvent(function(){
-     *          alert('Resize...');
-     *          //...
-     *      }, 500, "some unique string");
+	 *      waitForFinalEvent(function(){
+	 *          alert('Resize...');
+	 *          //...
+	 *      }, 500, "some unique string");
 	 *  });
 	 * @endcode
 	 */
