@@ -538,7 +538,8 @@ if (count($threadList) )
 }
 else
 {
-	$forum_view_forum .= "<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
+	$forum_view_forum .= deftrue('BOOTSTRAP')?"<div class='alert alert-warning'>".LAN_FORUM_1008."</div>":
+"<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
 //--$fVars->FORUMJUMP = forumjump();
