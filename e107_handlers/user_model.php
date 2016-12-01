@@ -1586,7 +1586,10 @@ class e_user extends e_user_model
 		
 		$userdata  = $userlogin->getUserData();
 
-		e107::getLog()->add('XUP Debug', (__CLASS__.':'.__METHOD__.'-'.__LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		if(defset('E107_DEBUG_LEVEL', 0) > 0)
+		{
+			e107::getLog()->add('XUP Debug', (__CLASS__ . ':' . __METHOD__ . '-' . __LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		}
 		
 		$this->setSessionData(true)->setData($userdata);
 			
