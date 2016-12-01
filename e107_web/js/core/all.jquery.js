@@ -1397,6 +1397,11 @@ $(document).ready(function()
 				
 	}
 
+
+
+
+
+
 // Legacy Stuff to be converted. 
 // BC Expandit() function 
 
@@ -1406,37 +1411,35 @@ $(document).ready(function()
 	
 	function expandit(e) {
 
+		if(typeof e === 'object')
+		{
 
-
-		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
 			if($(e).is("a"))
 			{
-				var href = $(e).attr("href");	
-						
+				var href = $(e).attr("href");						
 			}
-			else
-            {
-                var href = undefined;
-            }
 
-
-
-			if(href === "#" || e === null || href === undefined) 
+			if(href === "#" || e === null || href === undefined)
 			{
 				idt = $(e).next("div");
 								
 				$(idt).toggle("slow");
 				return false;
 			}
-			
-			var id = "#" + e;
+		}
 
 
-			
-			$(id).toggle("slow");
-			return false;
+		var id = "#" + e;
+
+		$(id).toggle("slow");
+
+		return false;
 	}
-		
+
+
+
+
+
 
 	var addinput = function(text,rep) {
 	
