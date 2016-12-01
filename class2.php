@@ -56,6 +56,12 @@ if(isset($_E107['cli']) && !isset($_E107['debug']) && isset($_SERVER["HTTP_USER_
 	exit();
 }
 
+if(function_exists('utf8_encode') === false)
+{
+	echo "e107 requires the PHP <a href='http://php.net/manual/en/book.xml.php'>XML parser</a> package. Please install it to use e107.  ";
+	exit();
+}
+
 if(!isset($_E107['cli']))
 {
 	while (@ob_end_clean());  // destroy all ouput buffering
