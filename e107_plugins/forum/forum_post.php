@@ -863,6 +863,9 @@ class forum_post_handler
 		$data       = $this->data;
 		$template   = $this->getTemplate();
 		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
+
+		$sc->wrapper('forum_post');
+
 		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
 
 		$caption = null;

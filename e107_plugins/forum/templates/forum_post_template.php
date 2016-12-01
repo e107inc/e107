@@ -54,6 +54,7 @@ $FORUM_POST_TEMPLATE['form']		= "
 
 $FORUM_POST_TEMPLATE['reply']	= "";
 
+// $FORUM_POST_WRAPPER['FORUM_POST_TEXTAREA'] = "(pre){---}(post)";  // Custom Wrapper. 
 
 
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
