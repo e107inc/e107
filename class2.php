@@ -58,7 +58,7 @@ if(isset($_E107['cli']) && !isset($_E107['debug']) && isset($_SERVER["HTTP_USER_
 
 if(function_exists('utf8_encode') === false)
 {
-	echo "e107 requires the PHP <a href='http://php.net/manual/en/book.xml.php'>XML parser</a> package. Please install it to use e107.  ";
+	echo "e107 requires the PHP <a href='http://php.net/manual/en/dom.setup.php'>XML</a> package. Please install it to use e107.  ";
 	exit();
 }
 
