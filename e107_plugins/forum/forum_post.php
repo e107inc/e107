@@ -1318,7 +1318,7 @@ class forum_post_handler
 		}
 
 		$threadId = intval($_GET['id']);
-		$toForum = $posted['forum_move'];
+		$toForum = intval($posted['forum_move']);
 
 		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
