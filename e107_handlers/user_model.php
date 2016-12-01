@@ -1760,7 +1760,8 @@ class e_user extends e_user_model
 
 				if($sql->update('user', $updateQry) !==false)
 				{
-					e107::getEvent()->trigger('user_xup_profile_updated', $userdata);
+					$updatedProfile = array_replace($user, $userdata);
+					e107::getEvent()->trigger('user_xup_profile_updated', $updatedProfile);
 					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 				}
 				else
