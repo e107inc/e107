@@ -1603,8 +1603,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		if(E107_DBG_PATH)
 		{
-			e107::getMessage()->addDebug("<h3>Sitelinks::isActive</h3>
-				db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
+		//	e107::getDebug()->log("db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
 		}
 	
 		if($exactMatch)
