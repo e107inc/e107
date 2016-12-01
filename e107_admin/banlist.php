@@ -543,6 +543,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata');
 
+		protected $batchOptions = array();
 
 		// optional
 		public function init()
@@ -551,6 +552,26 @@ class banlist_form_ui extends e_admin_form_ui
 			{
 				$dels = implode(',',$_POST['e-multiselect']);
 				//$e107::getDb()->insert('banlist',
+			}
+
+			$allFailedTotal = e107::getDB()->count('generic', '(*)', "gen_type='failed_login'");
+
+			$this->batchOptions = array('delete-all'=>"Delete all ".$allFailedTotal." failed logins from database");
+
+			if(!empty($_POST['etrigger_batch']) && $_POST['etrigger_batch'] == "delete-all")
+			{
+				$this->deleteAllFailed();
+			}
+
+		
+		}
+
+		private function deleteAllFailed()
+		{
+
+			if(e107::getDB()->delete('generic', "gen_type='failed_login'"))
+			{
+				e107::getMessage()->addSuccess(LAN_DELETED);
 			}
 		}
 
