@@ -358,15 +358,17 @@ class media_form_ui extends e_admin_form_ui
 		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
-			$ids = implode(",",$_POST['multiselect']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->rotateImages($ids,$type);
+
+
 		}
 		
 		
 		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
-			$ids = implode(",",$_POST['multiselect']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->resizeImages($ids,$type);
 		}
 		
@@ -2876,7 +2878,7 @@ if (isset($_POST['submit_avdelete_multi']))
 	$tmp = array();
 	$uids = array();
 	//Sanitize
-	$_POST['multiaction'] = $tp->toDB($_POST['multiaction']);
+	$_POST['multiaction'] = $tp->filter($_POST['multiaction'], 'int');
 
 	//sql queries significant reduced
 	if(!empty($_POST['multiaction']) && $sql->db_Select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $_POST['multiaction']).")"))

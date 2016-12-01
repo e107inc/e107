@@ -526,7 +526,7 @@ if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
 	{
 		// e_REQUEST_URL and e_REQUEST_URI introduced
 		$url = 'https://'.substr(e_REQUEST_URL, 7);
-		header('Location: '.$url);
+		e107::redirect($url);
 		exit;
 	}
 }
