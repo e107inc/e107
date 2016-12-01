@@ -310,6 +310,7 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 // New in v2.x - requires a bootstrap theme be loaded.  
 
+$FORUM_VIEWTOPIC_TEMPLATE['caption'] 	= "";
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 
 	<div class='row-fluid'>
