@@ -118,6 +118,7 @@ class admin_start
 		$this->checkSuspiciousFiles();
 		$this->checkDeprecated();
 		$this->checkPasswordEncryption();
+		$this->checkHtaccess();
 
 		if($this->refresh == true)
 		{
@@ -130,7 +131,7 @@ class admin_start
 	{
 		$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
 
-		$refresh = false;
+		$mes = e107::getMessage();
 
 		foreach($create_dir as $dr)
 		{
@@ -139,6 +140,10 @@ class admin_start
 				if(mkdir($dr, 0755))
 				{
 					$this->refresh = true;
+				}
+				else
+				{
+					$mes->addWarning("Unable to create <b>".$dr."</b>. Please check your folder permissions.");
 				}
 			}
 		}
@@ -242,6 +247,11 @@ class admin_start
 	}
 
 
+	private function checkDependencies()
+	{
+
+
+	}
 
 
 	function checkDeprecated()
@@ -285,6 +295,20 @@ class admin_start
 		}
 
 	}
+
+
+	function checkHtaccess() // upgrade scenario
+	{
+		if(!file_exists(e_BASE.".htaccess") && file_exists(e_BASE."e107.htaccess"))
+		{
+			if(rename(e_BASE."e107.htaccess", e_BASE.".htaccess")===false)
+			{
+				e107::getMessage()->addWarning("Please rename your <b>e107.htaccess</b> file to <b>.htaccess</b>");
+			}
+		}
+	}
+
+
 
 	
 	function checkFileTypes()
