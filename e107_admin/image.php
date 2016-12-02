@@ -1864,6 +1864,7 @@ class media_admin_ui extends e_admin_ui
 
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 
 			if(!empty($_POST['multiaction']))
 			{
@@ -1887,7 +1888,7 @@ class media_admin_ui extends e_admin_ui
 					}
 
 					//delete it from server
-					$deletePath = e_AVATAR.$path;
+					$deletePath = e_AVATAR.$tp->filter($path);
 					if(@unlink($deletePath))
 					{
 						$mes->addDebug('Deleted: '.$deletePath);
@@ -2619,7 +2620,7 @@ class media_admin_ui extends e_admin_ui
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
 
-			$oldpath = e_IMPORT.$file;
+			$oldpath = e_IMPORT.$tp->filter($file, 'w');
 
 			if($_POST['batch_category'] == '_avatars_public' || $_POST['batch_category'] == '_avatars_private')
 			{
