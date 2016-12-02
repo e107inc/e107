@@ -1,5 +1,14 @@
 <?php
 // $Id$
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Banner template 
+ */
 
 if (!defined('e107_INIT')) { exit; }
 if (!defined("USER_WIDTH")){ define("USER_WIDTH","width:98%"); }
@@ -13,11 +22,11 @@ if(!isset($BANNER_LOGIN_TABLE))
 		<form method='post' action='".e_SELF."'>\n
 		<table style='width:40%'>
 		<tr>
-			<td style='width:15%' class='defaulttext'>".BANNERLAN_16."</td>
+			<td style='width:15%' class='defaulttext'>".BANNERLAN_16." </td>
 			<td>{BANNER_LOGIN_TABLE_LOGIN}\n</td>
 		</tr>
 		<tr>
-			<td style='width:15%' class='defaulttext'>".BANNERLAN_17."</td>
+			<td style='width:15%' class='defaulttext'>".LAN_PASSWORD." </td>
 			<td>{BANNER_LOGIN_TABLE_PASSW}\n</td>
 		</tr>
 		<tr>
