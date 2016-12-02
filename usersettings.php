@@ -214,8 +214,11 @@ class usersettings_front // Begin Usersettings rewrite.
 		}
 
 
-		if (isset($_POST['updatesettings']))
+		if (!empty($_POST['updatesettings']))
 		{
+
+			$_POST = e107::getParser()->filter($_POST);
+
 			if (!vartrue($pref['auth_method']))
 			{
 				$pref['auth_method'] = 'e107';
@@ -433,12 +436,14 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 				$changedUserData = e107::unserialize($new_data);
+				$changedUserData = e107::getParser()->filter($changedUserData, 'str');
 
 				$savePassword = $_POST['currentpassword'];
 
 				if(!empty($new_extended))
 				{
 					$changedEUFData = e107::unserialize($new_extended);
+					$changedEUFData = e107::getParser()->filter($changedEUFData, 'str');
 				}
 
 				unset($new_data);
@@ -888,7 +893,9 @@ class usersettings_front // Begin Usersettings rewrite.
 			}
 		}
 
-		$text = '<form method="post" action="'.vartrue($usersettings_form_action,e_REQUEST_URI).'" id="dataform" class="usersettings-form form-horizontal"  enctype="multipart/form-data" autocomplete="off">';
+		$target = e107::getUrl()->create('user/myprofile/edit',array('id'=>USERID));
+
+		$text = '<form method="post" action="'.$target.'" id="dataform" class="usersettings-form form-horizontal"  enctype="multipart/form-data" autocomplete="off">';
 
 		//$text = (is_numeric($_uid) ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " class='form-horizontal' role='form' enctype='multipart/form-data'"));
 

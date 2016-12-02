@@ -599,7 +599,7 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 				$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
 				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
 				$location = implode('/',$aeSELF).($_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '');
-
+				$location = filter_var($location, FILTER_SANITIZE_URL);
 			//
 		//	header("Location: {$location}", true, 301); // send 301 header, not 302
 			if(defined('e_DEBUG') && e_DEBUG === true)
@@ -835,9 +835,10 @@ if (!function_exists('checkvalidtheme'))
 	   		require_once(e_HANDLER.'theme_handler.php');
 			$themeobj = new themeHandler;
             $themeArray = $themeobj->getThemes('id');
+
+            $id = intval($id);
+
  			$themeDef = $themeobj->findDefault($themeArray[$id]);
-		
-			$id = intval($id);
 			
             define('THEME_LAYOUT',$themeDef);
 
