@@ -3930,7 +3930,7 @@ class e107
 		}
 		else
 		{
-			define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
 			define('SITEURL', SITEURLBASE.e_HTTP);
 		}
 
@@ -3986,7 +3986,7 @@ class e107
 		// e_QUERY SHOULD NOT BE DEFINED IF IN SNIGLE ENTRY MODE OR ALL URLS WILL BE BROKEN - it's defined later within the the router
 		if(!deftrue("e_SINGLE_ENTRY"))
 		{
-			define('e_QUERY', $e_QUERY);	
+			define('e_QUERY', filter_var($e_QUERY, FILTER_SANITIZE_URL));
 			$_SERVER['QUERY_STRING'] = e_QUERY;	
 		}
 		else
