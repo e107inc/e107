@@ -255,8 +255,17 @@ class signup_shortcodes extends e_shortcode
 		$options['required'] = true;
 		$options['pattern'] = '(?=^.{'.$len.',}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
 		$options['autocomplete'] = 'off';
-		$options['class']   = vartrue($parm['class'],'');
-		$options['placeholder'] = vartrue($parm['placeholder'],'');
+
+		if(!empty($parm['class']))
+		{
+			$options['class'] = $parm['class'];
+		}
+
+		if(!empty($parm['placeholder']))
+		{
+			$options['placeholder'] = $parm['placeholder'];
+		}
+
 		
 	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
 	
@@ -277,9 +286,18 @@ class signup_shortcodes extends e_shortcode
 		{
 			return false;
 		}
-		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
-		$options['class']   = vartrue($parm['class'],'');
-		$options['placeholder'] = vartrue($parm['placeholder'],'');
+
+		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1); //defaults
+
+		if(!empty($parm['class']))
+		{
+			$options['class'] = $parm['class'];
+		}
+
+		if(!empty($parm['placeholder']))
+		{
+			$options['placeholder'] = $parm['placeholder'];
+		}
 				
 		return e107::getForm()->password('password2', '', 20, $options);
 	}
@@ -301,7 +319,7 @@ class signup_shortcodes extends e_shortcode
 		
 	function sc_signup_email($parm=null)
 	{	
-		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control input-text e-email');
+		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control e-email');
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
 		$options['class']   = vartrue($parm['class'],'');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');   
@@ -378,8 +396,8 @@ class signup_shortcodes extends e_shortcode
 		$uc = e107::getUserClass();
 		$frm = e107::getForm();
 
-		if(deftrue('BOOTSTRAP'))
-		{
+	//	if(deftrue('BOOTSTRAP'))
+	//	{
 
 			$text   = "<div class='checkboxes'>";
 			$label  = $tp->toHTML($uc->getName($classnum),false, 'defs');
@@ -389,11 +407,13 @@ class signup_shortcodes extends e_shortcode
 			$text .= "</div>";
 
 			return $text;
-		}
+	//	}
 
+		// code below is too unpredictable for reliable BC.
 
 		global $USERCLASS_SUBSCRIBE_ROW;
 
+		e107::getDebug()->log($USERCLASS_SUBSCRIBE_ROW);
 
 		$tmp = explode(',',$current_value);
 

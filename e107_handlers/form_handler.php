@@ -1010,7 +1010,7 @@ class e_form
 		foreach($avFiles as $fi)
 		{
 			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname']);	
-			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
+			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;return false\" /></a> ";
 			$count++;
 
 
@@ -1871,11 +1871,13 @@ class e_form
 		//width should be explicit set by current admin theme
 	//	$size = 'input-large';
 		$height = '';
+		$cols = 70;
 		
 		switch($size)
 		{
 			case 'tiny':
 				$rows = '3';
+				$cols = 50;
 			//	$height = "style='height:250px'"; // inline required for wysiwyg
 			break;
 			
@@ -1926,7 +1928,7 @@ class e_form
 
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
-		$ret .=	$this->textarea($name, $value, $rows, 70, $options, $counter); // higher thank 70 will break some layouts. 
+		$ret .=	$this->textarea($name, $value, $rows, $cols, $options, $counter); // higher thank 70 will break some layouts.
 			
 		$ret .= "</div>\n";
 		

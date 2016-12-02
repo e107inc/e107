@@ -53,7 +53,7 @@ if(!defined($USERCLASS_SUBSCRIBE_START))
 		<td class='forumheader3' style='width:70%;margin-left:0px'>
 			<table style='".USER_WIDTH."'>";
 }
-
+/*
 if(!defined($USERCLASS_SUBSCRIBE_ROW))
 {
 	$USERCLASS_SUBSCRIBE_ROW = "
@@ -68,7 +68,7 @@ if(!defined($USERCLASS_SUBSCRIBE_ROW))
 			<span class='smalltext'>{USERCLASS_DESCRIPTION}</span>
 		</td>
 	</tr>";
-}
+}*/
 
 if(!defined($USERCLASS_SUBSCRIBE_END))
 {
