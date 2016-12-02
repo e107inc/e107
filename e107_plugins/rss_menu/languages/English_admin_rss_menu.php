@@ -67,7 +67,7 @@ define("RSS_LAN_ADMIN_1", "Existing RSS feeds");
 //define("RSS_LAN_ADMIN_9", "Type");
 define("RSS_LAN_ADMIN_10", "rss feed create entry");
 define("RSS_LAN_ADMIN_11", "rss feed import feeds");
-//define("RSS_LAN_ADMIN_12", "Topic id");//LAN_ID
+define("RSS_LAN_ADMIN_12", "Topic ID");//LAN_ID
 
 define("RSS_LAN_ADMIN_13", "Include Other-news items in News Feed?");
 //define("RSS_LAN_ADMIN_14", "Enable");//LAN_ENABLE

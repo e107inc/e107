@@ -99,7 +99,7 @@ class rss_ui extends e_admin_ui
 		  'rss_name'        =>   array ( 'title' => LAN_TITLE,      'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_path'        =>   array ( 'title' => LAN_PLUGIN_FOLDER,'type' => 'text', 'data' => 'str', 'readonly'=>1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_url'         =>   array ( 'title' => LAN_URL,        'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_topicid'     =>   array ( 'title' => LAN_ID,         'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'rss_topicid'     =>   array ( 'title' => RSS_LAN_ADMIN_12,'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
 		  'rss_text'        =>   array ( 'title' => LAN_DESCRIPTION,'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'rss_datestamp'   =>   array ( 'title' => LAN_DATESTAMP,  'type' => 'datestamp', 'data' => 'int', 'readonly'=>true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -183,7 +183,7 @@ class rss_ui extends e_admin_ui
 				<th>".LAN_PLUGIN_FOLDER."</td>
 
 				<th>".LAN_URL."</td>
-				<th>".LAN_ID."</td>
+				<th>".RSS_LAN_ADMIN_12."</td>
 			</tr>
 			</thead><tbody>";
 				}
@@ -503,7 +503,7 @@ if(!isset($RSS_ADMIN_LIST_HEADER))
         <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=name,LAN_NAME}</th>
         <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=path,LAN_PLUGIN_FOLDER}</th>
         <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=url,LAN_URL}</th>
-        <th style='white-space:nowrap;'>".LAN_ID."</th>
+        <th style='white-space:nowrap;'>".RSS_LAN_ADMIN_12."</th>
         <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=limit,LAN_LIMIT}</th>
         <th style='white-space:nowrap;'>".LAN_OPTIONS."</th>
     </tr>
@@ -552,7 +552,7 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 		<td>{RSS_ADMIN_FORM_URL}</td>
 	</tr>
 	<tr>
-		<td>".LAN_ID."</td>
+		<td>".RSS_LAN_ADMIN_12."</td>
 		<td>{RSS_ADMIN_FORM_TOPICID}</td>
 	</tr>
 	<tr>
@@ -622,7 +622,7 @@ if(!isset($RSS_ADMIN_IMPORT_HEADER))
 		<th>".LAN_PLUGIN_FOLDER."</td>
 		<th>".LAN_NAME."</td>
 		<th>".LAN_URL."</td>
-		<th>".LAN_ID."</td>
+		<th>".RSS_LAN_ADMIN_12."</td>
 	</tr>";
 }
 if(!isset($RSS_ADMIN_IMPORT_TABLE))
