@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
  *
@@ -268,6 +268,7 @@ define("LAN_EXISTING","Existing Entries");
 
 define("LAN_CONFDELETE","Confirm Delete");
 define("LAN_PLUGIN","Plugin");
+define("LAN_PLUGIN_FOLDER","Plugin Folder");
 define("LAN_THEMES","Themes");
 define("LAN_THEME","Theme");
 define("LAN_LATEST_e107_NEWS","Latest e107 News");
