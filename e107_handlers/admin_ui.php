@@ -5090,9 +5090,11 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->convertToData($_POST);
 
-		$model->setPostedData($_POST, null, false)
-			->setParam('validateAvailable', true) // new param to control validate of available data only, reset on validate event
-			->update(true);
+		$model->setPostedData($_POST, null, false);
+		$model->setParam('validateAvailable', true); // new param to control validate of available data only, reset on validate event
+		// Do not update here! Because $old_data and $new_data will be the same in afterUpdate() methods.
+		// Data will be saved in _manageSubmit() method.
+		// $model->update(true);
 
 		if($model->hasError())
 		{
