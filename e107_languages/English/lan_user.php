@@ -114,6 +114,7 @@ define("LAN_USER_83", "Hide email address?: ");					// LAN_113
 define("LAN_USER_84", "This will prevent your email address from being displayed on site");	// LAN_114
 define("LAN_USER_85", "If you want to change your user name, you must ask a site administrator");
 define("LAN_USER_86", "Maximum avatar size is --WIDTH-- x --HEIGHT-- pixels");
+define("LAN_USER_87", "Login to rate this user!");
 
 // social plugin
 define("LAN_XUP_ERRM_01", "Signup failed! This feature is disabled.");
