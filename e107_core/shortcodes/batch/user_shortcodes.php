@@ -504,7 +504,7 @@ class user_shortcodes extends e_shortcode
 		$frm = e107::getForm();
 		
 		if(!vartrue($pref['profile_rate'])){ return; }
-		if(!USER){ return "Login to rate this user"; } // TODO LAN
+		if(!USER){ return LAN_USER_87; } 
 		else{
 		
 		switch ($parm) 
