@@ -4091,7 +4091,7 @@ class e_admin_controller_ui extends e_admin_controller
 			if(false === $data)
 			{
 				// we don't wanna loose posted data
-				$model->setPostedData($_posted, null, false, false);
+				$model->setPostedData($_posted, null, false);
 				return false;
 			}
 			if($data && is_array($data))
@@ -4142,7 +4142,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		// Scenario I - use request owned POST data - toForm already executed
-		$model->setPostedData($_posted, null, false, false) // insert() or update() dbInsert();
+		$model->setPostedData($_posted, null, false) // insert() or update() dbInsert();
 			->save(true);
 
 
@@ -5090,7 +5090,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		$this->convertToData($_POST);
 
-		$model->setPostedData($_POST, null, false, false)
+		$model->setPostedData($_POST, null, false)
 			->setParam('validateAvailable', true) // new param to control validate of available data only, reset on validate event
 			->update(true);
 
@@ -5480,7 +5480,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 /*
 		$this->getConfig()
-			->setPostedData($this->getPosted(), null, false, false)
+			->setPostedData($this->getPosted(), null, false)
 			//->setPosted('not_existing_pref_test', 1)
 			->save(true);
 */

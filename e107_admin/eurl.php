@@ -312,7 +312,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		if(isset($_POST['etrigger_save']))
 		{
 			$this->getConfig()
-						->setPostedData($this->getPosted(), null, false, false)
+						->setPostedData($this->getPosted(), null, false)
 						//->setPosted('not_existing_pref_test', 1)
 						->save(true);
 		
