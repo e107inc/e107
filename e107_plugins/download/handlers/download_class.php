@@ -211,7 +211,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div ".(deftrue('BOOTSTRAP')?"class='alert alert-warning' >":"")."style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
 				
 		$download_cat_table_string = "";
