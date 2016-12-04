@@ -49,7 +49,7 @@ define("BNRLAN_33", "Code"); //46
 // 34 - 35 extra space
 
 define("BNRLAN_35", "Banner menu"); // 61
-//define("BNRLAN_36", "Banner Menu Configuration"); //68
+define("BNRLAN_36", "Configure Menu"); //68
 
 //define("BNRLAN_37", "Caption"); // BANNER_MENU_L3 LAN_CAPTION
 define("BNRLAN_38", "Advertisement"); // BANNER_MENU_L1
