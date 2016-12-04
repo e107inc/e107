@@ -44,6 +44,7 @@ if (!e107::isInstalled('download'))
 
 	$dl = new download();
 
+	if(!defined("e_PAGETITLE")) {define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);}
 
 	if(!defined("USER_WIDTH") && !deftrue('BOOTSTRAP')) { define("USER_WIDTH","width:100%"); }
 
