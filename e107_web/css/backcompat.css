@@ -24,3 +24,7 @@ mark            { text-decoration: underline; color:#FF0000; font-weight:bold; }
 div.form-group  { padding-top: 5px }
 
 div.news-empty  { text-align:center; font-weight: bold }
+
+div.checkboxes label.checkbox { display: block }
+
+textarea.bbarea { margin:0;  }

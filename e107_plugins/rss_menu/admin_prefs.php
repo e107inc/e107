@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -55,7 +55,7 @@ class rss_admin extends e_admin_dispatcher
 	protected $adminMenu = array(
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/import'		=> array('caption'=> "Add New Feed", 'perm' => 'P'),
+		'main/import'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
 		/*
@@ -75,7 +75,7 @@ class rss_admin extends e_admin_dispatcher
 	{
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			$this->adminMenu['main/create'] = array('caption'=> "Add Custom Feed", 'perm' => 'P');
+			$this->adminMenu['main/create'] = array('caption'=> LAN_CREATE, 'perm' => 'P');
 		}
 	}
 }
@@ -94,19 +94,19 @@ class rss_ui extends e_admin_ui
 		protected $perPage 			= 10; 
 			
 		protected $fields 		= array (
-			'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => false, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'checkboxes'      =>   array ( 'title' => '',             'type' => null, 'data' => false, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'rss_id'          =>   array ( 'title' => LAN_ID,         'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_name'        =>   array ( 'title' => LAN_TITLE,      'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_path'        =>   array ( 'title' => 'Plugin-Dir',   'type' => 'text', 'data' => 'str', 'readonly'=>1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_path'        =>   array ( 'title' => LAN_PLUGIN_FOLDER,'type' => 'text', 'data' => 'str', 'readonly'=>1, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_url'         =>   array ( 'title' => LAN_URL,        'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_topicid'     =>   array ( 'title' => 'Topic id',     'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'rss_topicid'     =>   array ( 'title' => RSS_LAN_ADMIN_12,'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
-		  'rss_text'        =>   array ( 'title' => 'Text',         'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'rss_text'        =>   array ( 'title' => LAN_DESCRIPTION,'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'rss_datestamp'   =>   array ( 'title' => LAN_DATESTAMP,  'type' => 'datestamp', 'data' => 'int', 'readonly'=>true, 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'rss_class'       =>   array ( 'title' => LAN_VISIBILITY, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('optArray'=> array(RSS_LAN_ADMIN_21,RSS_LAN_ADMIN_22,RSS_LAN_ADMIN_23),'size'=>'xlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-		  'rss_limit'       =>   array ( 'title' => 'Limit',        'type' => 'number', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'rss_limit'       =>   array ( 'title' => LAN_LIMIT,      'type' => 'number', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options'         =>   array ( 'title' => LAN_OPTIONS,    'type' => null, 'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
-		);		
+		);
 		
 		protected $fieldpref = array('checkboxes', 'rss_name','rss_url', 'rss_topicid', 'rss_limit', 'rss_class', 'options');
 
@@ -178,11 +178,11 @@ class rss_ui extends e_admin_ui
 			<table class='table table-striped adminlist'>
 			<thead>
 			<tr>
-				<th class='center' style='width:5%'>Add</td>
+				<th class='center' style='width:5%'>".LAN_SELECT."</td>
 				<th>".LAN_NAME."</td>
-				<th>".RSS_LAN_ADMIN_3."</td>
+				<th>".LAN_PLUGIN_FOLDER."</td>
 
-				<th>".RSS_LAN_ADMIN_5."</td>
+				<th>".LAN_URL."</td>
 				<th>".RSS_LAN_ADMIN_12."</td>
 			</tr>
 			</thead><tbody>";
@@ -192,7 +192,7 @@ class rss_ui extends e_admin_ui
 					$RSS_ADMIN_IMPORT_TABLE = "
 			<tr>
 				<td class='first center'>{RSS_ADMIN_IMPORT_CHECK}</td>
-					<td>{RSS_ADMIN_IMPORT_NAME}<small>{RSS_ADMIN_IMPORT_TEXT}</small></td>
+					<td>{RSS_ADMIN_IMPORT_NAME} - {RSS_ADMIN_IMPORT_TEXT}</td>
 				<td>{RSS_ADMIN_IMPORT_PATH}</td>
 
 				<td>{RSS_ADMIN_IMPORT_URL}</td>
@@ -499,12 +499,12 @@ if(!isset($RSS_ADMIN_LIST_HEADER))
     <table class='table adminlist'>
 	<thead>
     <tr>
-        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=id,RSS_LAN_ADMIN_2}</th>
-        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=name,RSS_LAN_ADMIN_4}</th>
-        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=path,RSS_LAN_ADMIN_3}</th>
-        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=url,RSS_LAN_ADMIN_5}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=id,LAN_ID}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=name,LAN_NAME}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=path,LAN_PLUGIN_FOLDER}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=url,LAN_URL}</th>
         <th style='white-space:nowrap;'>".RSS_LAN_ADMIN_12."</th>
-        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=limit,RSS_LAN_ADMIN_7}</th>
+        <th style='white-space:nowrap;'>{RSS_ADMIN_CAPTION=limit,LAN_LIMIT}</th>
         <th style='white-space:nowrap;'>".LAN_OPTIONS."</th>
     </tr>
 	</thead>
@@ -548,7 +548,7 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 		<td>{RSS_ADMIN_FORM_NAME}</td>
 	</tr>
 	<tr>
-		<td>".RSS_LAN_ADMIN_5."</td>
+		<td>".LAN_URL."</td>
 		<td>{RSS_ADMIN_FORM_URL}</td>
 	</tr>
 	<tr>
@@ -556,19 +556,19 @@ if(!isset($RSS_ADMIN_CREATE_TABLE))
 		<td>{RSS_ADMIN_FORM_TOPICID}</td>
 	</tr>
 	<tr>
-		<td>".RSS_LAN_ADMIN_3."</td>
+		<td>".LAN_PLUGIN_FOLDER."</td>
 		<td>{RSS_ADMIN_FORM_PATH}</td>
 	</tr>
 	<tr>
-		<td>".RSS_LAN_ADMIN_6."</td>
+		<td>".LAN_DESCRIPTION."</td>
 		<td>{RSS_ADMIN_FORM_TEXT}</td>
 	</tr>
 	<tr>
-		<td>".RSS_LAN_ADMIN_7."</td>
+		<td>".LAN_LIMIT."</td>
 		<td>{RSS_ADMIN_FORM_LIMIT}</td>
 	</tr>
 	<tr>
-		<td>".RSS_LAN_ADMIN_8."</td>
+		<td>".LAN_VISIBILITY."</td>
 		<td>{RSS_ADMIN_FORM_CLASS}</td>
 	</tr>
 
@@ -619,9 +619,9 @@ if(!isset($RSS_ADMIN_IMPORT_HEADER))
 	<table class='table adminform'>
 	<tr>
 		<th>".RSS_LAN_ADMIN_16."</td>
-		<th>".RSS_LAN_ADMIN_3."</td>
+		<th>".LAN_PLUGIN_FOLDER."</td>
 		<th>".LAN_NAME."</td>
-		<th>".RSS_LAN_ADMIN_5."</td>
+		<th>".LAN_URL."</td>
 		<th>".RSS_LAN_ADMIN_12."</td>
 	</tr>";
 }
@@ -911,7 +911,7 @@ class rss
 
 		if(!$render)
 		{
-			$this->show_message(RSS_LAN_ADMIN_11, RSS_LAN_ERROR_6);
+			$this->show_message(RSS_LAN_ADMIN_11, LAN_DESCRIPTION);
 		}
 		else
 		{
@@ -1045,7 +1045,7 @@ class rss
 		}
 		else
 		{
-			return RSS_LAN_ADMIN_28;
+			return LAN_NOCHANGE_NOTSAVED;
 		}
 	}
 } // End class rss

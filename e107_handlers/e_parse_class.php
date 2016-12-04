@@ -3739,6 +3739,7 @@ class e_parser
 	 * Render an <img> tag.
 	 * @param string $file
 	 * @param array $parm  legacy|w|h|alt|class|id|crop
+	 * @param array $parm['legacy'] Usually a legacy path like {e_FILE}
 	 * @return string
 	 * @example $tp->toImage('welcome.png', array('legacy'=>{e_IMAGE}newspost_images/','w'=>200));
 	 */
@@ -3806,6 +3807,7 @@ class e_parser
 			{
 				$log = e107::getAdminLog();
 				$log->addDebug('Broken Image Path: '.$legacyPath."\n".print_r(debug_backtrace(null,2), true), false)->save('IMALAN_00');
+				e107::getDebug()->log("Broken Image Path: ".$legacyPath);
 			}
 
 		}

@@ -28,6 +28,7 @@ class list_shortcodes
 	var $e107;
 	var $row;
 	var $list_pref;
+	public $plugin;
 
 	function list_shortcodes()
 	{
@@ -45,6 +46,12 @@ class list_shortcodes
 //		$tp->e_sc->scClasses['list_shortcodes']->list_pref = $rc->list_pref;
 	}
 */
+
+
+	function sc_list_css_id()
+	{
+		return eHelper::title2sef('list-new-'.$this->plugin, 'dashl');
+	}
 
 	function sc_list_date()
 	{

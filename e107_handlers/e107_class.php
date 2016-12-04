@@ -3611,8 +3611,9 @@ class e107
 		define('e_ROOT',$e_ROOT);	
 
 		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
-		$this->http_path =  "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
-		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
+		$this->http_path =  filter_var("http://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
+		$this->https_path = filter_var("https://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
+
 		$this->file_path = $path;
 
 		if(!defined('e_HTTP') || !defined('e_ADMIN') )
@@ -3854,7 +3855,7 @@ class e107
 
 		// the last anti-XSS measure, XHTML compliant URL to be used in forms instead e_SELF
 
-		define('e_REQUEST_SELF', $requestSelf); // full URL without the QUERY string
+		define('e_REQUEST_SELF', filter_var($requestSelf, FILTER_SANITIZE_URL)); // full URL without the QUERY string
 		define('e_REQUEST_URI', str_replace(array("'", '"'), array('%27', '%22'), $requestUri)); // absolute http path + query string
 		$tmp2 = explode('?', e_REQUEST_URI);
 		define('e_REQUEST_HTTP', array_shift($tmp2)); // SELF URL without the QUERY string and leading domain part
@@ -3870,7 +3871,7 @@ class e107
 
 
 			define('e_PAGE', $page);
-			define('e_SELF', $_self);
+			define('e_SELF', filter_var($_self, FILTER_SANITIZE_URL));
 		}
 		else
 		{
@@ -3929,7 +3930,7 @@ class e107
 		}
 		else
 		{
-			define('SITEURLBASE', $this->HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+			define('SITEURLBASE', $this->HTTP_SCHEME.'://'. filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
 			define('SITEURL', SITEURLBASE.e_HTTP);
 		}
 
@@ -3985,7 +3986,7 @@ class e107
 		// e_QUERY SHOULD NOT BE DEFINED IF IN SNIGLE ENTRY MODE OR ALL URLS WILL BE BROKEN - it's defined later within the the router
 		if(!deftrue("e_SINGLE_ENTRY"))
 		{
-			define('e_QUERY', $e_QUERY);	
+			define('e_QUERY', filter_var($e_QUERY, FILTER_SANITIZE_URL));
 			$_SERVER['QUERY_STRING'] = e_QUERY;	
 		}
 		else

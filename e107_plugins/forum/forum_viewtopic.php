@@ -211,6 +211,7 @@ if(deftrue('BOOTSTRAP',false))
 
 	// print_a($FORUM_VIEWTOPIC_TEMPLATE);
 
+	$FORUMCAPTION 			= $FORUM_VIEWTOPIC_TEMPLATE['caption'];
 	$FORUMSTART 			= $FORUM_VIEWTOPIC_TEMPLATE['start'];
 	$FORUMTHREADSTYLE		= $FORUM_VIEWTOPIC_TEMPLATE['thread'];
 	$FORUMEND				= $FORUM_VIEWTOPIC_TEMPLATE['end'];
@@ -615,7 +616,7 @@ require_once (HEADERF);
 
 if ($forum->prefs->get('enclose'))
 {
-	$forumTitle = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
+	$forumTitle = empty($FORUMCAPTION) ? e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME) : $tp->parseTemplate($FORUMCAPTION, TRUE, $sc);
 	$ns->tablerender($forumTitle, $mes->render().$forumstring,  array('forum_viewtopic', 'main'));
 }
 else

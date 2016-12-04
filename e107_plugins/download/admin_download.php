@@ -158,9 +158,9 @@ if (isset($_POST['updateuploadoptions']))
 
 $targetFields = array('gen_datestamp', 'gen_user_id', 'gen_ip', 'gen_intdata', 'gen_chardata');		// Fields for download limits
 
-if (isset($_POST['addlimit']))
+if (!empty($_POST['addlimit']))
 {
-	if ($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}"))
+	if ($sql->select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = ".intval($_POST['newlimit_class'])))
 	{
 		$message = DOWLAN_116;
 	}
@@ -173,7 +173,7 @@ if (isset($_POST['addlimit']))
 			$vals[$targetFields[$k]] = intval($_POST[$lName]);
 		}
 		$valString = implode(',',$vals);
-		if ($sql->db_Insert('generic',$vals))
+		if ($sql->insert('generic',$vals))
 		{
 			$message = DOWLAN_117;
 			e107::getLog()->add('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
