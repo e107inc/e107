@@ -1397,7 +1397,7 @@ class e_user_provider
 		}
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
-		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId(), false);
+		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId());
 
 
 		if($redirectUrl)

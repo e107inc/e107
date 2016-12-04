@@ -358,15 +358,17 @@ class media_form_ui extends e_admin_form_ui
 		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
-			$ids = implode(",",$_POST['multiselect']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->rotateImages($ids,$type);
+
+
 		}
 		
 		
 		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
-			$ids = implode(",",$_POST['multiselect']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->resizeImages($ids,$type);
 		}
 		
@@ -1093,7 +1095,12 @@ class media_admin_ui extends e_admin_ui
 
 		// if 'for' has no value, files are placed in /temp and not added to the db.
 
-		$maxFileSize = e107::pref('core', 'upload_maxfilesize','20M');
+		$maxFileSize = e107::pref('core', 'upload_maxfilesize');
+
+		if(empty($maxFileSize))
+		{
+			$maxFileSize = "20M";
+		}
 
 		$text = "<h4>".IMALAN_145."</h4>";
 		$text .= '<div id="uploader" data-max-size="'.str_replace('M','mb',$maxFileSize).'" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
@@ -1862,6 +1869,7 @@ class media_admin_ui extends e_admin_ui
 
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 
 			if(!empty($_POST['multiaction']))
 			{
@@ -1885,7 +1893,7 @@ class media_admin_ui extends e_admin_ui
 					}
 
 					//delete it from server
-					$deletePath = e_AVATAR.$path;
+					$deletePath = e_AVATAR.$tp->filter($path);
 					if(@unlink($deletePath))
 					{
 						$mes->addDebug('Deleted: '.$deletePath);
@@ -2617,7 +2625,7 @@ class media_admin_ui extends e_admin_ui
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
 
-			$oldpath = e_IMPORT.$file;
+			$oldpath = e_IMPORT.$tp->filter($file, 'w');
 
 			if($_POST['batch_category'] == '_avatars_public' || $_POST['batch_category'] == '_avatars_private')
 			{
@@ -2876,7 +2884,7 @@ if (isset($_POST['submit_avdelete_multi']))
 	$tmp = array();
 	$uids = array();
 	//Sanitize
-	$_POST['multiaction'] = $tp->toDB($_POST['multiaction']);
+	$_POST['multiaction'] = $tp->filter($_POST['multiaction'], 'int');
 
 	//sql queries significant reduced
 	if(!empty($_POST['multiaction']) && $sql->db_Select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $_POST['multiaction']).")"))

@@ -223,8 +223,8 @@ if(varset($pref['track_online']))
 {
 //	$member_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
 //	$guest_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
-	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id != 0");
-	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id = 0");
+	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%', 'url') AND online_user_id != 0");
+	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%', 'url') AND online_user_id = 0");
 
 
 	$users = $member_users+$guest_users;
@@ -467,7 +467,7 @@ $threadFilter = null;
 
 if(!empty($_GET['srch']))
 {
-	$threadFilter = "t.thread_name LIKE '%".$tp->filter($_GET['srch'])."%'";
+	$threadFilter = "t.thread_name LIKE '%".$tp->filter($_GET['srch'], 'w')."%'";
 }
 
 $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilter);
@@ -538,7 +538,8 @@ if (count($threadList) )
 }
 else
 {
-	$forum_view_forum .= "<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
+	$forum_view_forum .= deftrue('BOOTSTRAP')?"<div class='alert alert-warning'>".LAN_FORUM_1008."</div>":
+"<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
 //--$fVars->FORUMJUMP = forumjump();

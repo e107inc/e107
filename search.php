@@ -892,14 +892,14 @@ class search extends e_shortcode
 				$_GET = $this->magic_search($_GET);
 			}
 			
-			$full_query = $_GET['q'];
+			$full_query = $tp->filter($_GET['q'],'w');
 			
 			if ($_GET['in']) 
 			{
 				$en_in = explode(' ', $_GET['in']);
 				foreach ($en_in as $en_in_key) 
 				{
-					$full_query .= " +".$en_in_key;
+					$full_query .= " +".$tp->filter($en_in_key);
 				}
 				$this->enhanced = true;
 			}
@@ -908,13 +908,13 @@ class search extends e_shortcode
 				$en_ex = explode(' ', $_GET['ex']);
 				foreach ($en_ex as $en_ex_key) 
 				{
-					$full_query .= " -".$en_ex_key;
+					$full_query .= " -".$tp->filter($en_ex_key);
 				}
 				$this->enhanced = true;
 			}
 			if ($_GET['ep']) 
 			{
-				$full_query .= " \"".$_GET['ep']."\"";
+				$full_query .= " \"".$tp->filter($_GET['ep'])."\"";
 				$this->enhanced = true;
 			}
 			if ($_GET['be']) 
@@ -922,7 +922,7 @@ class search extends e_shortcode
 				$en_be = explode(' ', $_GET['be']);
 				foreach ($en_be as $en_be_key) 
 				{
-					$full_query .= " ".$en_be_key."*";
+					$full_query .= " ".$tp->filter($en_be_key)."*";
 				}
 				$this->enhanced = true;
 			}

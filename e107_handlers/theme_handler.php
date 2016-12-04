@@ -1909,9 +1909,9 @@ class themeHandler
 	 */
 	function findDefault($theme)
 	{
-		if(varset($_POST['layout_default']))
+		if(!empty($_POST['layout_default']))
 		{
-			return $_POST['layout_default'];
+			return e107::getParser()->filter($_POST['layout_default'], 'w');
 		}
 		
 		$l = $this->themeArray[$theme];

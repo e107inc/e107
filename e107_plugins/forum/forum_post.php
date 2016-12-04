@@ -863,6 +863,9 @@ class forum_post_handler
 		$data       = $this->data;
 		$template   = $this->getTemplate();
 		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
+
+		$sc->wrapper('forum_post');
+
 		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
 
 		$caption = null;
@@ -1315,7 +1318,7 @@ class forum_post_handler
 		}
 
 		$threadId = intval($_GET['id']);
-		$toForum = $posted['forum_move'];
+		$toForum = intval($posted['forum_move']);
 
 		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 

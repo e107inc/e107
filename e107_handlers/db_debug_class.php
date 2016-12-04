@@ -664,9 +664,11 @@ class e107_db_debug {
 			$message = "<pre>".print_r($message,true)."</pre>";
 		}
 
-		if (!E107_DBG_BASIC){
-			return FALSE;
+		if (!E107_DBG_BASIC && !E107_DBG_ALLERRORS && !E107_DBG_SQLDETAILS && !E107_DBG_NOTICES)
+		{
+			return false;
 		}
+
 		if ($TraceLev)
 		{
 			$bt = debug_backtrace();

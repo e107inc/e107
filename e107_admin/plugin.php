@@ -1746,9 +1746,11 @@ class pluginLanguage
 	function __construct()
 		{
 		
-			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
+			if(!empty($_GET['newplugin']) && $_GET['step']==2)
 			{
-				return $this->step2($_GET['newplugin']);	
+				$plugin = e107::getParser()->filter($_GET['newplugin'],'w');
+				$this->step2($plugin);
+				return false;
 			}
 			
 		
@@ -1793,7 +1795,7 @@ class pluginLanguage
 		
 			$this->renderResults(); 
 
-			
+			return true;
 		}
 		
 		
@@ -2200,12 +2202,12 @@ class pluginBuilder
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
-			if(vartrue($_GET['newplugin']))
+			if(!empty($_GET['newplugin']))
 			{
-				$this->pluginName = $_GET['newplugin'];
+				$this->pluginName = e107::getParser()->filter($_GET['newplugin'],'w');
 			}
 			
-			if(vartrue($_GET['createFiles']))
+			if(!empty($_GET['createFiles']))
 			{
 				$this->createFiles	= true; 
 			}
@@ -2226,7 +2228,7 @@ class pluginBuilder
 
 
 			
-			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
+			if(!empty($_GET['newplugin']) && $_GET['step']==2)
 			{
 				return $this->step2();	
 			}
@@ -2364,7 +2366,7 @@ class pluginBuilder
 			$tp = e107::getParser();
 
 			
-			$newplug = $tp->filter($_GET['newplugin']);
+			$newplug = $tp->filter($_GET['newplugin'],'w');
 			$this->pluginName = $newplug;
 
 			$sqlFile = e_PLUGIN.$newplug."/".$newplug."_sql.php";
@@ -3561,7 +3563,7 @@ TEMPLATE;
 
 		function step4()
 		{
-			
+			$tp = e107::getParser();
 			$pluginTitle = $_POST['xml']['main-name'] ;
 			
 			if($_POST['xml'])
@@ -3577,7 +3579,7 @@ TEMPLATE;
 			
 			
 			unset($_POST['step'],$_POST['xml'], $_POST['addons']);
-		$thePlugin = $_POST['newplugin'];
+		$thePlugin = $tp->filter($_POST['newplugin']);
 
 $text = "\n
 // Generated e107 Plugin Admin Area 
@@ -3606,6 +3608,9 @@ class ".$thePlugin."_adminArea extends e_admin_dispatcher
 			{
 				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
 				{
+
+					$vars['mode'] = $tp->filter($vars['mode']);
+
 	$text .= "
 		'".$vars['mode']."'	=> array(
 			'controller' 	=> '".$table."',
@@ -3637,6 +3642,8 @@ $text .= "
 			{
 				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
 				{
+
+						$vars['mode'] = $tp->filter($vars['mode']);
 $text .= "
 		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'".$vars['mode']."/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
@@ -3659,7 +3666,7 @@ $text .= "
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected \$menuTitle = '".vartrue($vars['pluginName'], $pluginTitle)."';
+	protected \$menuTitle = '".vartrue($tp->filter($vars['pluginName']), $pluginTitle)."';
 }
 
 
@@ -3703,7 +3710,10 @@ $text .= "
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
 
-
+				$vars['mode'] = $tp->filter($vars['mode']);
+				$vars['pluginName'] = $tp->filter($vars['pluginName']);
+				$vars['table'] = $tp->filter($vars['table']);
+				$vars['pid'] = $tp->filter($vars['pid']);
 
 				if($table == 'pluginPrefs' || $vars['mode'] == 'exclude')
 				{

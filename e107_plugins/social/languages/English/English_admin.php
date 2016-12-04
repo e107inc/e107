@@ -45,6 +45,6 @@ define("LAN_SOCIAL_ADMIN_34", "Number of tweets to display.");
 define("LAN_SOCIAL_ADMIN_35", "Light");
 define("LAN_SOCIAL_ADMIN_36", "Dark");
 define("LAN_SOCIAL_ADMIN_37", "Open Graph Meta");
-
+define("LAN_SOCIAL_ADMIN_38", "Scope");
 
 

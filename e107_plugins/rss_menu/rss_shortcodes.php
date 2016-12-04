@@ -1,5 +1,14 @@
 <?php
 // $Id$
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ * 
+ *    e107 website system - Shortcodes
+ */
 if (!defined('e107_INIT')) { exit; }   
 
  include_once(e_HANDLER.'shortcode_handler.php');
@@ -148,7 +157,7 @@ class rss_menu_shortcodes extends e_shortcode
 		$delid = $row['rss_id'];
 		$options = "
 		<a href='".e_SELF."?create.edit.".$row['rss_id']."' >".ADMIN_EDIT_ICON."</a>
-		<input type='image' title=\"".LAN_DELETE."\" name='delete[{$delid}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL ." [".RSS_LAN_ADMIN_2.": ".$delid." : ".$delname."]\\n\\n")."')\"/>";
+		<input type='image' title=\"".LAN_DELETE."\" name='delete[{$delid}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL ." [".LAN_ID.": ".$delid." : ".$delname."]\\n\\n")."')\"/>";
 		return $options;
 	}
 

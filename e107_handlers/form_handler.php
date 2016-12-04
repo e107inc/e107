@@ -1010,7 +1010,7 @@ class e_form
 		foreach($avFiles as $fi)
 		{
 			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname']);	
-			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
+			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;return false\" /></a> ";
 			$count++;
 
 
@@ -1098,7 +1098,8 @@ class e_form
 		{
 			$sc_parameters['media'] = '_common';	
 		}
-	
+
+
 		$default_thumb = $default;
 		$class = '';
 
@@ -1112,14 +1113,25 @@ class e_form
 			}
 			else 
 			{
-				if('{' != $default[0])
+				if('{' != $default[0]) // legacy path or one without {}
 				{
-					// convert to sc path
-					$default_thumb = $tp->createConstants($default, 'nice');
-					$default = $tp->createConstants($default, 'mix');
+					list($default_thumb,$default) = $this->imagepickerDefault($default, $sc_parameters);
 				}
+
 				$default_url = $tp->replaceConstants($default, 'abs');
 			}
+
+
+			$debugInfo = "
+			<pre>
+			default-thumb: ".$default_thumb."
+			defautlt:   ".$default."
+			default-url: ".$default_url."
+			</pre>";
+
+		//	e107::getDebug()->log($debugInfo);
+
+
 			$blank = FALSE;
 			
 			
@@ -1198,7 +1210,35 @@ class e_form
 
 	}
 
+	private function imagepickerDefault($path, $parms=array())
+	{
+		$tp = e107::getParser();
 
+			if(!empty($parms['legacyPath'])) // look in a specific path.
+			{
+				$legacyDefault = rtrim($parms['legacyPath'],'/')."/".$path;
+				$legacyRel = $tp->replaceConstants($legacyDefault);
+
+				if(is_readable($legacyRel))
+				{
+					return array($legacyDefault, $legacyDefault);
+				}
+				else
+				{
+			//		e107::getDebug()->log("Legacy Default:".$legacyDefault);
+			//		e107::getDebug()->log("wasnt found:".$legacyRel);
+				}
+
+			}
+
+			$path = str_replace('e_MEDIA_IMAGE/','{e_MEDIA_IMAGE}',$path);
+
+			$default_thumb = $tp->createConstants($path, 'nice');
+			$default = $tp->createConstants($path, 'mix');
+
+			return array($default_thumb, $default);
+
+	}
 
 			
 	/**
@@ -1871,11 +1911,13 @@ class e_form
 		//width should be explicit set by current admin theme
 	//	$size = 'input-large';
 		$height = '';
+		$cols = 70;
 		
 		switch($size)
 		{
 			case 'tiny':
 				$rows = '3';
+				$cols = 50;
 			//	$height = "style='height:250px'"; // inline required for wysiwyg
 			break;
 			
@@ -1926,7 +1968,7 @@ class e_form
 
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
-		$ret .=	$this->textarea($name, $value, $rows, 70, $options, $counter); // higher thank 70 will break some layouts. 
+		$ret .=	$this->textarea($name, $value, $rows, $cols, $options, $counter); // higher thank 70 will break some layouts.
 			
 		$ret .= "</div>\n";
 		

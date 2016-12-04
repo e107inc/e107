@@ -216,7 +216,8 @@ class e_menuManager {
 		}
 
 		$file = urldecode($_GET['path']).".php";
-		$newurl = e_PLUGIN_ABS.$file."?id=".$_GET['id'].'&iframe=1';
+		$file = e107::getParser()->filter($file);
+		$newurl = e_PLUGIN_ABS.$file."?id=".intval($_GET['id']).'&iframe=1';
 
      /*
 

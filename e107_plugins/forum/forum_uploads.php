@@ -33,7 +33,7 @@ if(is_array($_POST['delete']))
 		$f = explode("_", $fname);
 		if($f[1] == USERID)
 		{
-			$path = e_UPLOAD.$fname;
+			$path = e_UPLOAD.e107::getParser()->filter($fname,'w');
 			if(unlink($path) == TRUE)
 			{
 				$msg = LAN_FORUM_7002.": $path";

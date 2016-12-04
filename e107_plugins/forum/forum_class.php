@@ -2039,8 +2039,10 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 		$prunedate = time() - (int)$days * 86400;
-		$forumList = implode(',', $forumArray);
+		$forumList = implode(',', $tp->filter($forumArray,'int'));
 
 		if($type == 'delete')
 		{

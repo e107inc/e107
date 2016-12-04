@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (c) 2008-2013 e107 Inc (e107.org)
+* Copyright (c) 2008-2016 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -40,7 +40,7 @@ class rss_menu_setup
 	//	$mes->addInfo(print_a($insert,true));
 
 		$status = ($sql->insert('rss', $insert)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add("Adding Default table data to table: rss",$status); //TODO Generic LAN "LAN_DEFAULT_TABLE_DATA"
+		$mes->add(LAN_DEFAULT_TABLE_DATA.": rss",$status);  
 
 
 	}

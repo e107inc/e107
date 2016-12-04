@@ -56,6 +56,12 @@ if(isset($_E107['cli']) && !isset($_E107['debug']) && isset($_SERVER["HTTP_USER_
 	exit();
 }
 
+if(function_exists('utf8_encode') === false)
+{
+	echo "e107 requires the PHP <a href='http://php.net/manual/en/dom.setup.php'>XML</a> package. Please install it to use e107.  ";
+	exit();
+}
+
 if(!isset($_E107['cli']))
 {
 	while (@ob_end_clean());  // destroy all ouput buffering
@@ -520,7 +526,7 @@ if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
 	{
 		// e_REQUEST_URL and e_REQUEST_URI introduced
 		$url = 'https://'.substr(e_REQUEST_URL, 7);
-		header('Location: '.$url);
+		e107::redirect($url);
 		exit;
 	}
 }
@@ -593,7 +599,7 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 				$aeSELF[1] = '';						// Defensive code: ensure http:// not http:/<garbage>/
 				$aeSELF[2] = $aPrefURL[2];  // Swap in correct domain and possibly port
 				$location = implode('/',$aeSELF).($_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : '');
-
+				$location = filter_var($location, FILTER_SANITIZE_URL);
 			//
 		//	header("Location: {$location}", true, 301); // send 301 header, not 302
 			if(defined('e_DEBUG') && e_DEBUG === true)
@@ -829,9 +835,10 @@ if (!function_exists('checkvalidtheme'))
 	   		require_once(e_HANDLER.'theme_handler.php');
 			$themeobj = new themeHandler;
             $themeArray = $themeobj->getThemes('id');
+
+            $id = intval($id);
+
  			$themeDef = $themeobj->findDefault($themeArray[$id]);
-		
-			$id = intval($id);
 			
             define('THEME_LAYOUT',$themeDef);
 

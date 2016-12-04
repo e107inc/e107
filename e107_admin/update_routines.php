@@ -1301,7 +1301,10 @@ function update_706_to_800($type='')
 		{
 			if(!is_dir(e_MEDIA.$md))
 			{
-				mkdir(e_MEDIA.$md);		
+				if(mkdir(e_MEDIA.$md)===false)
+				{
+					e107::getMessage()->addWarning("Unable to create ".e_MEDIA.$md.".");
+				}
 			}			
 		}	
 	}
@@ -1319,7 +1322,10 @@ function update_706_to_800($type='')
 		{
 			$apath = (strstr($av['path'],'public/')) ? e_AVATAR_UPLOAD : e_AVATAR_DEFAULT;
 			
-			@rename($av['path'].$av['fname'], $apath. $av['fname']);			
+			if(rename($av['path'].$av['fname'], $apath. $av['fname'])===false)
+			{
+				e107::getMessage()->addWarning("Unable to more ".$av['path'].$av['fname']." to ".$apath. $av['fname'].". Please move manually.");
+			}
 		}	
 	}
 	
