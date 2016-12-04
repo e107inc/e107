@@ -137,7 +137,7 @@ $override = array();
 if(isset($_POST['previous_steps']))
 {
 	$tmp = unserialize(base64_decode($_POST['previous_steps']));
-	$tmp = $tp->filter($tmp);
+	$tmp = filter_var_array($tmp, FILTER_SANITIZE_STRING);
 	$override = (isset($tmp['paths']['hash'])) ? array('site_path'=>$tmp['paths']['hash']) : array();
 	unset($tmp);
 }
