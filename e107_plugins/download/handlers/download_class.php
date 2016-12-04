@@ -579,6 +579,8 @@ class download
 		
 		if($filetotal)
 		{
+	  		$caption = varset($DOWNLOAD_LIST_CAPTION) ? $tp->parseTemplate($DOWNLOAD_LIST_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
+
 			// Only show list if some files in it
 			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $sc);
 			
@@ -611,8 +613,6 @@ class download
 			}
 
 			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
-			
-	  		$caption = varset($DOWNLOAD_LIST_CAPTION) ? $tp->parseTemplate($DOWNLOAD_LIST_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
 
 			$text .= $ns->tablerender($caption, $dl_text, 'download-list', true);
 		}
