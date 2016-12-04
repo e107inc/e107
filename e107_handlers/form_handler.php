@@ -1098,7 +1098,8 @@ class e_form
 		{
 			$sc_parameters['media'] = '_common';	
 		}
-	
+
+
 		$default_thumb = $default;
 		$class = '';
 
@@ -1112,14 +1113,25 @@ class e_form
 			}
 			else 
 			{
-				if('{' != $default[0])
+				if('{' != $default[0]) // legacy path or one without {}
 				{
-					// convert to sc path
-					$default_thumb = $tp->createConstants($default, 'nice');
-					$default = $tp->createConstants($default, 'mix');
+					list($default_thumb,$default) = $this->imagepickerDefault($default, $sc_parameters);
 				}
+
 				$default_url = $tp->replaceConstants($default, 'abs');
 			}
+
+
+			$debugInfo = "
+			<pre>
+			default-thumb: ".$default_thumb."
+			defautlt:   ".$default."
+			default-url: ".$default_url."
+			</pre>";
+
+		//	e107::getDebug()->log($debugInfo);
+
+
 			$blank = FALSE;
 			
 			
@@ -1198,7 +1210,35 @@ class e_form
 
 	}
 
+	private function imagepickerDefault($path, $parms=array())
+	{
+		$tp = e107::getParser();
 
+			if(!empty($parms['legacyPath'])) // look in a specific path.
+			{
+				$legacyDefault = rtrim($parms['legacyPath'],'/')."/".$path;
+				$legacyRel = $tp->replaceConstants($legacyDefault);
+
+				if(is_readable($legacyRel))
+				{
+					return array($legacyDefault, $legacyDefault);
+				}
+				else
+				{
+			//		e107::getDebug()->log("Legacy Default:".$legacyDefault);
+			//		e107::getDebug()->log("wasnt found:".$legacyRel);
+				}
+
+			}
+
+			$path = str_replace('e_MEDIA_IMAGE/','{e_MEDIA_IMAGE}',$path);
+
+			$default_thumb = $tp->createConstants($path, 'nice');
+			$default = $tp->createConstants($path, 'mix');
+
+			return array($default_thumb, $default);
+
+	}
 
 			
 	/**

@@ -118,7 +118,7 @@
 			if($out)
 			{
 				// Read binary input stream and append it to temp file
-				$tmpName = e107::getParser()->filter($_FILES['file']['tmp_name'],'w');
+				$tmpName = e107::getParser()->filter($_FILES['file']['tmp_name'],'str');
 				$in = fopen($tmpName, "rb");
 
 				if($in)
