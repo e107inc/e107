@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -92,8 +92,8 @@ class contact_shortcodes extends e_shortcode
 	{
 		$userName = deftrue('USERNAME');
 
-		return "<input type='text'   id='contactName' title='Your full name' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
-		
+		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
+
 	}
 
 
@@ -103,14 +103,14 @@ class contact_shortcodes extends e_shortcode
 		$userEmail = deftrue('USEREMAIL');
 		$disabled = (!empty($userEmail)) ? 'readonly' : ''; // don't allow change from a verified email address.
 
-		return "<input type='email'   ".$disabled." id='contactEmail' title='a valid email address' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
 	}
 	
 	
 	
 	function sc_contact_subject($parm='')
 	{
-		return "<input type='text' title='the subject of your enquiry' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
+		return "<input type='text' title='".LANCONTACT_19."' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
 	}
 	
 	
@@ -125,7 +125,7 @@ class contact_shortcodes extends e_shortcode
 			$size = 'input-xxlarge';	
 		}
 		
-		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' name='body' required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
 	}
 	
 	
