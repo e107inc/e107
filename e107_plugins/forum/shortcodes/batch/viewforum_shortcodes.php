@@ -533,7 +533,8 @@
 
 		function subinfo()
 		{
-			$caller = debug_backtrace()[1]['function'];
+			$backtrace = debug_backtrace();
+			$caller = $backtrace[1]['function'];
 			if($this->var['forum_lastpost_info'])
 			{
 				//	global $gen;
@@ -654,7 +655,8 @@
 
 		function threadlastpostdata()
 		{
-			$caller = debug_backtrace()[1]['function'];
+			$backtrace = debug_backtrace();
+			$caller = $backtrace[1]['function'];
 //	if($this->var['thread_views'])
 //($this->var['thread_total_replies']?:"0")
 			if($this->var['thread_views'] || $this->var['thread_total_replies'] > 0)
