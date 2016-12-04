@@ -4369,6 +4369,11 @@ return;
 			return preg_replace('/[^\w\d ]/',"",$text);
 		}
 
+		if($type == 'file')
+		{
+			return preg_replace('/[^\w\d_\.-]/',"",$text);
+		}
+
 
 		if($validate == false)
 		{

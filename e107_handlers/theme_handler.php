@@ -83,7 +83,7 @@ class themeHandler
 
 		if(!empty($_POST['curTheme']))
 		{
-			$this->curTheme = e107::getParser()->filter($_POST['curTheme']);
+			$this->curTheme = e107::getParser()->filter($_POST['curTheme'],'file');
 		}
 		
 		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme)) 
