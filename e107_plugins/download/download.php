@@ -51,7 +51,7 @@ if (!e107::isInstalled('download'))
 
 	if(deftrue('BOOTSTRAP'))
 	{
-		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/download.png"));
+		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : 'icon-download.glyph'));
 		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : 'icon-star.glyph'));	
 	}
 	else 
