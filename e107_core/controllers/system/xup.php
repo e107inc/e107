@@ -43,7 +43,7 @@ class core_system_xup_controller extends eController
 			$provider = new e_user_provider($_GET['provider']);
 			try
 			{
-				$provider->signup($this->backUrl); // redirect to test page is expected, if true - redirect to SITEURL
+				$provider->signup($this->backUrl, true, false); // redirect to test page is expected, if true - redirect to SITEURL
 			}
 			catch (Exception $e)
 			{
