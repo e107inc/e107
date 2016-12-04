@@ -419,6 +419,7 @@ class download
 		{
 			$template = e107::getTemplate('download','download');
 			
+			$DOWNLOAD_LIST_CAPTION 		= $template['list']['caption'];	
 			$DOWNLOAD_LIST_TABLE_START 	= $template['list']['start'];	
 			$DOWNLOAD_LIST_TABLE 		= $template['list']['item'];
 			$DOWNLOAD_LIST_TABLE_END 	= $template['list']['end'];		
@@ -611,7 +612,9 @@ class download
 
 			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
 			
-			$text .= $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $dl_text, 'download-list', true);
+	  		$caption = varset($DOWNLOAD_LIST_CAPTION) ? $tp->parseTemplate($DOWNLOAD_LIST_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
+
+			$text .= $ns->tablerender($caption, $dl_text, 'download-list', true);
 		}
 
 		if(!isset($DOWNLOAD_LIST_NEXTPREV))
