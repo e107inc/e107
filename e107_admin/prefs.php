@@ -370,7 +370,7 @@ if(!empty($pref['sitebutton']) && strpos($pref['sitebutton'],'{')===false && fil
 
 
 
-$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'','help='.PRFLAN_225);
+$text .= $frm->imagepicker('sitebutton',$pref['sitebutton'],'','help='.PRFLAN_225); //todo  use 'LegacyPath' option instead of code above.
 
 $text .= "
 						</td>

@@ -433,7 +433,7 @@ class news_admin_ui extends e_admin_ui
 	protected $fields = array(
 		'checkboxes'	   		=> array('title' => '', 			'type' => null, 		'width' => '3%', 	'thclass' => 'center first', 	'class' => 'center', 	'nosort' => true, 'toggle' => 'news_selected', 'forced' => TRUE),
 		'news_id'				=> array('title' => LAN_ID, 	    'type' => 'text', 	    'width' => '5%', 	'thclass' => 'center', 			'class' => 'center',  	'nosort' => false, 'readParms'=>'link=sef&target=blank'),
- 		'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'method', 	'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>false),
+ 		'news_thumbnail'		=> array('title' => NWSLAN_67, 		'type' => 'method', 	'width' => '110px',	'thclass' => 'center', 			'class' => "center", 		'nosort' => false, 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60',  'readonly'=>false),
  		'news_title'			=> array('title' => LAN_TITLE, 		'type' => 'text',       'tab'=>0, 'writeParms'=> array('required'=> 1, 'size'=>'block-level'), 'inline'=>true,		'width' => 'auto', 'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_summary'			=> array('title' => LAN_SUMMARY, 	'type' => 'text', 	    'tab'=>0, 'writeParms'=>'size=block-level',	'width' => 'auto', 	'thclass' => 'left', 				'class' => 'left', 		'nosort' => false),
 		'news_body'			    => array('title' => "", 	        'type' => 'method',     'tab'=>0,  'nolist'=>true, 'writeParms'=>'nolabel=1','data'=>'str',		'width' => 'auto', 	'thclass' => '',  'class' => null, 		'nosort' => false),
@@ -1629,11 +1629,11 @@ class news_form_ui extends e_admin_form_ui
 				}
 			}
 
-			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]),'media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]), varset($paths[1]),'media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]), varset($paths[2]),'media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]), varset($paths[3]),'media=news&video=1');
-			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]), varset($paths[4]),'media=news&video=1');
+			$text = $frm->imagepicker('news_thumbnail[0]', varset($thumbTmp[0]), varset($paths[0]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
+			$text .= $frm->imagepicker('news_thumbnail[1]', varset($thumbTmp[1]), varset($paths[1]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
+			$text .= $frm->imagepicker('news_thumbnail[2]', varset($thumbTmp[2]), varset($paths[2]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
+			$text .= $frm->imagepicker('news_thumbnail[3]', varset($thumbTmp[3]), varset($paths[3]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
+			$text .= $frm->imagepicker('news_thumbnail[4]', varset($thumbTmp[4]), varset($paths[4]),'media=news&video=1&legacyPath={e_IMAGE}newspost_images');
 
 		//	$text .= "<div class='field-help'>Insert image/video into designated area of template.</div>";
 			return $text;
