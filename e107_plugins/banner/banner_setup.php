@@ -38,7 +38,7 @@ class banner_setup
 			'banner_clicks'         => '0',
 			'banner_impressions'    => '0',
 			'banner_ip'             => '',
-			'banner_description'    => 'click to visit',
+			'banner_description'    => 'Learn more about e107 CMS.',
 			'banner_campaign'       => 'e107promo'
 		);
 
