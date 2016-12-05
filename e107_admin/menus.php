@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -607,8 +607,8 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 
 		$text = '
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#plugins" data-toggle="tab">Plugins</a></li>	
-				<li><a href="#custom" data-toggle="tab">Custom</a></li>	
+				<li class="active"><a href="#plugins" data-toggle="tab">'.ADLAN_CL_7.'</a></li>	
+				<li><a href="#custom" data-toggle="tab">'.LAN_CUSTOM.'</a></li>	
 			</ul>
 			<div class="tab-content">';	
 		
@@ -912,7 +912,7 @@ class e_layout
 		
 		// return print_a($this->menuData,true);
 		$text = "<div class='menu-panel'>";
-		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
+		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".MENLAN_14." ".$area."</div>\n";
 		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
 		$text .= "<ul id='area-".$area."' class='sortable unstyled list-unstyled'>
 			<li>&nbsp;</li>";
