@@ -306,7 +306,7 @@ class banner_ui extends e_admin_ui
 							</colgroup>
 							<tbody>
 								<tr>
-									<td>".BNRLAN_37."</td>
+									<td>".LAN_CAPTION."</td>
 									<td>".$frm->text('banner_caption', $menu_pref['banner_caption'],255,'size=xxlarge')."</td>
 								</tr>
 								<tr>
@@ -1186,7 +1186,7 @@ if ($action == "menu")
 					</colgroup>
 					<tbody>
 						<tr>
-							<td>".BNRLAN_37."</td>
+							<td>".LAN_CAPTION."</td>
 							<td>".$frm->text('banner_caption', $menu_pref['banner_caption'],255,'size=xxlarge')."</td>
 						</tr>
 						<tr>
