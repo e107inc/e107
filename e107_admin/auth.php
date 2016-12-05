@@ -66,11 +66,11 @@ if (ADMIN)
 		// XXX LOGIN AS Temporary solution, we need something smarter, e.g. reserved message stack 'admin' which will be always printed
 		// inside admin area
 		if(e107::getUser()->getSessionDataAs())
-		{ // TODO - lan [logout]?
+		{  
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
 			
 			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
-			e107::getMessage()->addInfo($tp->lanVars(ADLAN_164, $lanVar).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
+			e107::getMessage()->addInfo($tp->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
 			
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
