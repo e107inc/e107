@@ -79,12 +79,14 @@ class contact_shortcodes extends e_shortcode
 		return "<input type='hidden' name='rand_num' value='".e107::getSecureImg()->random_number."' />".e107::getSecureImg()->r_image();
 	}
 	
-	
+	function sc_contact_imagecode_label($parm='')
+	{
+		return e107::getSecureImg()->renderLabel();
+	}
 	
 	function sc_contact_imagecode_input($parm='') 
 	{
 		return e107::getSecureImg()->renderInput();
-		// return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";
 	}
 	
 	
