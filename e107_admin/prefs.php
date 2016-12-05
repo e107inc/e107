@@ -1836,9 +1836,9 @@ foreach($libraries as $machineName => $library)
 	$text .= '<tr>';
 	$text .= '<td>' . $name . '</td>';
 	$text .= '<td class="text-center">' . $provider . '</td>';
-	$text .= '<td class="text-center">' . $details['version'] . '</td>';
+	$text .= '<td class="text-center">' . varset($details['version']) . '</td>';
 	$text .= '<td class="text-center">' . $status . '</td>';
-	$text .= '<td>' . $details['error_message'] . '</td>';
+	$text .= '<td>' . varset($details['error_message']) . '</td>';
 	$text .= '<td>' . $links . '</td>';
 	$text .= '</tr>';
 }
