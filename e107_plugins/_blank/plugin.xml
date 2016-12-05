@@ -8,7 +8,10 @@
 		<word>blank</word>
 		<word>empty</word>
 		<word>template</word>
-	</keywords> 
+	</keywords>
+	<screenshots>
+		<image></image>
+	</screenshots>
 	<adminLinks>
 		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' icon128="" primary='true' >LAN_CONGIGURE</link>
 		<link url="admin_config.php?mode=options" description="Configure Blank Prefs" icon="manage" >Blank Prefs</link>

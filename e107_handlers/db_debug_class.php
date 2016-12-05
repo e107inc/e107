@@ -675,8 +675,8 @@ class e107_db_debug {
 			$this->aLog[] =	array (
 				'Message'   => $message,
 				'Function'	=> (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'].$bt[$TraceLev]['type'].$bt[$TraceLev]['function'].'()' : $bt[$TraceLev]['function']).'()',
-				'File'	=> $bt[$TraceLev]['file'],
-				'Line'	=> $bt[$TraceLev]['line']
+				'File'	=> varset($bt[$TraceLev]['file']),
+				'Line'	=> varset($bt[$TraceLev]['line'])
 			);
 		} else {
 			$this->aLog[] =	array (
