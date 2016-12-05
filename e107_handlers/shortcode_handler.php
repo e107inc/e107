@@ -1295,7 +1295,10 @@ class e_parse_shortcode
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
 			$ret = $this->makeEditable($ret, $code);
-			$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
+			if (!$this->nowrap == $code)
+			{
+				$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
+			}
 		}
 
 
@@ -1416,11 +1419,13 @@ class e_parse_shortcode
 
 		if(strpos($pre, '{') !== false) // shortcode found in wrapper
 		{
+			$this->nowrap = $code;
 			$pre = $this->parseCodes($pre, true, $this->addedCodes);
 		}
 
 		if(strpos($post, '{') !== false) // shortcode found in wrapper
 		{
+			$this->nowrap = $code;
 			$post = $this->parseCodes($post, true, $this->addedCodes);
 		}
 
