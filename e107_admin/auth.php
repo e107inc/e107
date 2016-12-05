@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -68,7 +68,10 @@ if (ADMIN)
 		if(e107::getUser()->getSessionDataAs())
 		{ // TODO - lan [logout]?
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
-			e107::getMessage()->addInfo(ADLAN_164.' '.($asuser->getId()  ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown'). ' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>');
+			
+			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
+			e107::getMessage()->addInfo($tp->lanVars(ADLAN_164, $lanVar).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
+			
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
 		if(deftrue('e_ADMIN_UI'))

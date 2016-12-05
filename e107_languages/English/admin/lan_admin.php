@@ -182,7 +182,7 @@ define("ADLAN_160", "Configure Site URLs");
 define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");
-define("ADLAN_164", "Successfully logged in as");
+define("ADLAN_164", "Successfully logged in as [x].");
 define("ADLAN_165", "Powered by e107");
 define("ADLAN_166", "Return to Website");
 
