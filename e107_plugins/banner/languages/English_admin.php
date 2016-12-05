@@ -49,7 +49,7 @@ define("BNRLAN_33", "Code"); //46
 // 34 - 35 extra space
 
 define("BNRLAN_35", "Banner menu"); // 61
-define("BNRLAN_36", "Configure Menu"); //68
+//define("BNRLAN_36", "Configure Menu"); //68
 
 //define("BNRLAN_37", "Caption"); // BANNER_MENU_L3 LAN_CAPTION
 define("BNRLAN_38", "Advertisement"); // BANNER_MENU_L1
@@ -68,4 +68,8 @@ define("BNRLAN_47", "All selected campaigns rendered in separate menus"); // BAN
 define("BNRLAN_48", "All selected campaigns (no box rendering)");
 
 //define("BNRLAN_49", "Tooltip");//LAN_TOOLTIP Linkwords also 
+
+define("BNRLAN_HELP_01", "Banner Help");
+define("BNRLAN_HELP_02", "Use this plugin to manage advertising on your website.<br /><br />When creating a new banner you can create a username and password for your client to login and check the progress of the campaign. <br /><br />You can enable the banner menu using the menu manager and perform further configuration from there.");
+
 ?>
