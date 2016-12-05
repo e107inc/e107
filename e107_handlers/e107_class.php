@@ -2240,11 +2240,11 @@ class e107
 		}
 		elseif($legacy_override_path && is_readable($legacy_override_path)) //v1 override template. 
 		{
-			return $legacy_override_path; 	
+			return $legacy_override_path;
 		}
 		elseif(is_readable($legacy_core_path)) //v1 core template. 
 		{
-			return $legacy_core_path;
+		//	return $legacy_core_path; // just asking for trouble.
 		}
 
 		return $core_path; 
