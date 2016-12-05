@@ -1124,7 +1124,8 @@ if(is_dir("remotefile")) {
 	}
 }
 
-if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
+{
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
