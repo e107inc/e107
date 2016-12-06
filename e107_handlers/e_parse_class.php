@@ -4092,7 +4092,7 @@ class e_parser
 	{
 		if(!is_numeric($datestamp)){ return null; }
 
-		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
+		return '<span data-livestamp="'.$datestamp.'">'.utf8_encode(e107::getDate()->convert($datestamp, $format)).'</span>';	
 	}
 	
 
