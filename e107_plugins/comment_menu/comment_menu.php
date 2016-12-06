@@ -33,6 +33,7 @@ else
 {
 	require_once(e_PLUGIN."comment_menu/comment_menu_template.php");
 }
+global $menu_pref;
 
 $data = $cobj->getCommentData(intval($menu_pref['comment_display']));
 
