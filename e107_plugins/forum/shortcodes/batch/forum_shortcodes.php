@@ -483,48 +483,37 @@ class forum_shortcodes extends e_shortcode
 		$lastpost       = $forum->threadGetLastpost($lastpost_thread); //FIXME TODO inefficient to have SQL query here.
 		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
 		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-
-		if (!empty($this->var['user_name']))
-		{
-			$lastpost_username = "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
-		}
-		else
-		{
-			$lastpost_username = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
-		}
-
+		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
 		$relativeDate = e107::getParser()->toDate($lastpost_datestamp,'relative');
 
 		if(!empty($parm['type']))
 		{
 			switch($parm['type'])
 //		switch($mode)
-		{
-			case "username":
+			{
+				case "username":
 					return $lastpost_username;
 //				break;
 
-			case "datelink":
-				return "<a href='".$url."'>". $relativeDate."</a>";
+				case "datelink":
+					return "<a href='".$url."'>". $relativeDate."</a>";
 //				break;
-			case "date":
-				return $relativeDate;
+				case "date":
+					return $relativeDate;
 
-			case "url":
-			  return $url;
+				case "url":
+					return $url;
 //					break;
-      case "name":
-			  return $lastpost['thread_name'];
+				case "name":
+					return $lastpost['thread_name'];
 //			default:
 
 //				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
 
 				// code to be executed if n is different from all labels;
-		}
-  }
+			}
+  		}
 				return $relativeDate.'<br />'.$lastpost_username." <a href='".$url."'>".IMAGE_post2.'</a>';
-//		return false;
-
 	}
 
 	function sc_startertitle()
