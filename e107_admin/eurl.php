@@ -211,6 +211,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 		$cfg = e107::getConfig();
+		$pref = e107::getPref();
+
 
 		if(!empty($_POST['saveSimpleSef']))
 		{
@@ -243,8 +245,15 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		foreach($eUrl as $plug=>$val)
 		{
-			$text .= "<h4>".$plug."</h4>";
-			$text .= "<table class='table table-striped table-bordered'>";
+			$active = !empty($pref['e_url_list'][$plug]) ? 1 : 0;
+			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:40px'>
+			<colgroup>
+				<col style='min-width:200px' />
+				<col style='width:45%' />
+				<col style='width:45%' />
+			</colgroup>";
+
+			$text .= "<tr class='active'><td ><h4>".$plug."</h4></td><td colspan='2'>".$frm->radio_switch($plug,$plug,$active)."</td></tr>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
 
@@ -263,10 +272,10 @@ class eurl_admin_ui extends e_admin_controller_ui
 					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
 					$text .= "<tr>
-					<td style='width:5%'>".$k."</td>
-					<td style='width:20%'>".$aliasRender."</td>
+					<td >".$k."</td>
+					<td >".$aliasRender."</td>
 
-					<td style='width:30%'>". $v['redirect']."</td>
+					<td >". $v['redirect']."</td>
 					</tr>";
 			}
 		
