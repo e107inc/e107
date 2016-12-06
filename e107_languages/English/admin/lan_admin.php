@@ -337,7 +337,7 @@ define("LAN_USERCLASS", "Userclass");
 
 
 define("LAN_HELP", "Help");
-define("LAN_CUSTOM", "Custom configuration");
+define("LAN_CUSTOM", "Custom");
 define("LAN_MENULAYOUT", "Menu Layout");
 define("LAN_MEDIAMANAGER", "Media Manager");
 
