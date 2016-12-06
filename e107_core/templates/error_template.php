@@ -23,9 +23,9 @@ if (!defined('e107_INIT')) { exit; }
 
 $ERROR_TEMPLATE = array();
 
-$ERROR_TEMPLATE['404']['start'] = '<div class="error-404">';
+$ERROR_TEMPLATE['404']['start'] = '<div class="error-404 alert-danger">';
 $ERROR_TEMPLATE['404']['body'] = '
-	<h3><i class="icon-exclamation-sign alert-danger" title="'.LAN_ERROR_45.'"></i> '.LAN_ERROR_45.'</h3>
+	<h3><i class="icon-exclamation-sign" title="'.LAN_ERROR_45.'"></i> '.LAN_ERROR_45.'</h3>
 	<p>
 		'.LAN_ERROR_21.'<br />'.LAN_ERROR_9.'
 	</p>
@@ -35,9 +35,9 @@ $ERROR_TEMPLATE['404']['body'] = '
 $ERROR_TEMPLATE['404']['end'] = '</div>';
 
 
-$ERROR_TEMPLATE['403']['start'] = '<div class="error-403">';
+$ERROR_TEMPLATE['403']['start'] = '<div class="error-403 alert-danger">';
 $ERROR_TEMPLATE['403']['body'] = '
-	<h3><i class="icon-exclamation-sign alert-danger" title="'.LAN_ERROR_4.'"></i> '.LAN_ERROR_4.'</h3>
+	<h3><i class="icon-exclamation-sign" title="'.LAN_ERROR_4.'"></i> '.LAN_ERROR_4.'</h3>
 	<p>
 		'.LAN_ERROR_5.'<br />'.LAN_ERROR_6.'<br /><br />'.LAN_ERROR_2.'
 	</p>
