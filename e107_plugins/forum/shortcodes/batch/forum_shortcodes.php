@@ -128,6 +128,7 @@ class forum_shortcodes extends e_shortcode
 
 		// To be reworked to get the $forum var
 		$trackPref = $forum->prefs->get('track');
+//var_dump($forum->checkPerm($this->var['forum_id'], 'post'));
 		if(!empty($trackPref) && $forum->checkPerm($this->var['forum_id'], 'post'))
 		{
 			$uInfo[2] = "<a href='".e107::url('forum','track')."'>".LAN_FORUM_0030."</a>";
@@ -347,7 +348,7 @@ class forum_shortcodes extends e_shortcode
 
 		if(USER && is_array($this->newFlagList) && in_array($this->var['forum_id'], $this->newFlagList))
 		{
-			$url = $this->lastpostdata('url');
+			$url = $this->sc_lastpost('url');
 			return "<a href='".$url."'>".IMAGE_new.'</a>';
 		}
 		elseif(empty($this->var['forum_replies']) && defined('IMAGE_noreplies'))
@@ -402,7 +403,8 @@ class forum_shortcodes extends e_shortcode
 	{
 		//    global $f;
 		//		return "<span class='badge ".(($f['forum_threads']) ? "badge-info" : "")."'>".$f['forum_threads']."</span>";
-		return "<span class='badge ".(($this->var['forum_threads']) ? "badge-info" : "")."'>".$this->var['forum_threads']."</span>";	
+// EQUAL TO SC_THREADS.......................
+		return $this->var['forum_threads'];	
 	}
 
 
@@ -410,7 +412,8 @@ class forum_shortcodes extends e_shortcode
 	{
 		//    global $f;
 		//		return "<span class='badge ".(($f['forum_replies']) ? "badge-info" : "")."'>".$f['forum_replies']."</span>";
-		return "<span class='badge ".(($this->var['forum_replies']) ? "badge-info" : "")."'>".$this->var['forum_replies']."</span>";	
+// EQUAL TO SC_REPLIES.......................
+		return $this->var['forum_replies'];	
 	}
 
 
@@ -419,246 +422,21 @@ class forum_shortcodes extends e_shortcode
   		return (!empty($this->var['text'])) ? "<br /><div class='smalltext'>".LAN_FORUM_0069.": {$this->var['text']}</div>":"";
 	}
 
-//----- ########################################################
-//----- Functions sc_latspostuser, sc_lastpostdate & sc_lastpost to be rewritten, since they pratically use the same code???
-//----- Also, viewforum_shortcodes uses similar shortcodes definitions......
-/*-----
 	function sc_lastpostuser()
 	{
-//    global $f;
-//	$e107 = e107::getInstance();
-//	$tp = e107::getParser();
-
-//	if ($f['forum_lastpost_info'])
-	if ($this->var['forum_lastpost_info'])
-	{
-//		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-//			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-
-//		if ($f['user_name'])
-			$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
-
-		if ($this->var['user_name'])
-		{
-
-//			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
-			$lastpost_name = "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
-		}
-//----		else
-//----		{
-//----			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-//----		}
-
-//		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
-
-		return $lastpost_name;
-		// {forum_sef}/{thread_id}-{thread_sef}
-
-//		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
-//		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-//		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-//		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-		
-	}
-//----	else
-//----	{
-		return "";
-//		$fVars->LASTPOSTDATE = "-";
-//		$fVars->LASTPOST = '-';
-//----	}
-}
-	function sc_lastpostdate()
-	{
-//    global $f, $forum;
-    global $forum;
-//	$e107 = e107::getInstance();
-//	$tp = e107::getParser();
-$gen = new convert;
-
-//	if ($f['forum_lastpost_info'])
-	if ($this->var['forum_lastpost_info'])
-	{
-//		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
-//		if ($f['user_name'])
-//		{
-
-//			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
-//		}
-//		else
-//		{
-//			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-//		}
-
-		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
-
-//		$fVars->LASTPOSTUSER = $lastpost_name;
-		// {forum_sef}/{thread_id}-{thread_sef}
-
-//		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
-		$urlData = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
-		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-		return "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-//		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-//		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-		
-	}
-//----	else
-//----	{
-//		$fVars->LASTPOSTUSER = "";
-		return "-";
-//		$fVars->LASTPOST = '-';
-//----	}
-}
-	function sc_lastpost()
-	{
-
-		$e107 = e107::getInstance();
-		$gen = new convert;
-
-		//	if ($f['forum_lastpost_info'])
-		if ($this->var['forum_lastpost_info'])
-			{
-		//		list($lastpost_datestamp, $lastpost_thread) = explode('.', $f['forum_lastpost_info']);
-				list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
-		//			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-		//			$lastpost_name = e107::getParser()->toHTML($f['forum_lastpost_user_anon']);
-		//		if ($f['user_name'])
-					$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
-
-				if ($this->var['user_name'])
-				{
-		//			$lastpost_name = "<a href='".$e107->url->create('user/profile/view', array('name' => $f['user_name'], 'id' => $f['forum_lastpost_user']))."'>{$f['user_name']}</a>";
-					$lastpost_name = "<a href='".e107::getUrl()->create('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
-				}
-		//----		else
-		//----		{
-		//----			$lastpost_name = $tp->toHTML($f['forum_lastpost_user_anon']);
-		//----		}
-
-		//		$lastpost = $forum->threadGetLastpost($lastpost_thread); //XXX TODO inefficient to have SQL query here.
-
-		//		$fVars->LASTPOSTUSER = $lastpost_name;
-				// {forum_sef}/{thread_id}-{thread_sef}
-
-		//		$urlData = array('forum_sef'=>$f['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
-		//		$url = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-		//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-				$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-				return $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-		
-			}
-		//----	else
-		//----	{
-		//		$fVars->LASTPOSTUSER = "";
-		//		$fVars->LASTPOSTDATE = "-";
-		return '-';
-		//----	}
-	}
------*/
-
-	function lastpostdata($mode='')
-	{
-
-		if (empty($this->var['forum_lastpost_info']))
-		{
-			return false;
-		}
-
-		global $forum;
-
-		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
-
-		// e107::getDebug()->log($this->var);
-
-
-		$lastpost       = $forum->threadGetLastpost($lastpost_thread); //FIXME TODO inefficient to have SQL query here.
-		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
-		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
-
-		if (!empty($this->var['user_name']))
-		{
-			$lastpost_name = "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
-		}
-		else
-		{
-			$lastpost_name = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
-		}
-
-		$relativeDate = e107::getParser()->toDate($lastpost_datestamp,'relative');
-
-		switch($mode)
-		{
-			//		$fVars->LASTPOSTUSER = $lastpost_name;
-			case "user":
-					return $lastpost_name;
-				break;
-
-				//		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-			case "date":
-				return "<a href='".$url."'>". $relativeDate."</a>";
-				break;
-
-			case "url":
-					return $url;
-					break;
-
-			// 	$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-			case 'post':
-
-				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
-
-				// code to be executed if n is different from all labels;
-		}
-
-
-		return false;
-
-			//	return $lastpost_datestamp;
-	/*--
-
-	--*/
-
-
-	//		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-
-	/*----
-			$fVars->LASTPOSTUSER = $lastpost_name;
-			$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
-			$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-	-----*/
-
-
-
-
-
-			/*----
-				else
-				{
-					$fVars->LASTPOSTUSER = "";
-					$fVars->LASTPOSTDATE = "-";
-					$fVars->LASTPOST = '-';
-				}
-			----*/
-
-	}
-
-
-	function sc_lastpostuser()
-	{
-        return $this->lastpostdata('user');
+        return $this->sc_lastpost('username');
 	}
 
 
 	function sc_lastpostdate()
 	{
-        return $this->lastpostdata('date');
+        return $this->sc_lastpost('datelink');
 	}
 
 
 	function sc_lastpost($parm = null)
 	{
+/*
 		if(!empty($parm['type']))
 		{
 			switch($parm['type'])
@@ -687,8 +465,67 @@ $gen = new convert;
 		}
 
 		return $this->lastpostdata('post');
-	}
+*/
 
+
+		if (empty($this->var['forum_lastpost_info']))
+		{
+			return false;
+		}
+
+		global $forum;
+
+		list($lastpost_datestamp, $lastpost_thread) = explode('.', $this->var['forum_lastpost_info']);
+
+		// e107::getDebug()->log($this->var);
+
+
+		$lastpost       = $forum->threadGetLastpost($lastpost_thread); //FIXME TODO inefficient to have SQL query here.
+		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
+		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
+
+		if (!empty($this->var['user_name']))
+		{
+			$lastpost_username = "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
+		}
+		else
+		{
+			$lastpost_username = e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']);
+		}
+
+		$relativeDate = e107::getParser()->toDate($lastpost_datestamp,'relative');
+
+		if(!empty($parm['type']))
+		{
+			switch($parm['type'])
+//		switch($mode)
+		{
+			case "username":
+					return $lastpost_username;
+//				break;
+
+			case "datelink":
+				return "<a href='".$url."'>". $relativeDate."</a>";
+//				break;
+			case "date":
+				return $relativeDate;
+
+			case "url":
+			  return $url;
+//					break;
+      case "name":
+			  return $lastpost['thread_name'];
+//			default:
+
+//				return $relativeDate.'<br />'.$lastpost_name." <a href='".$url."'>".IMAGE_post2.'</a>';
+
+				// code to be executed if n is different from all labels;
+		}
+  }
+				return $relativeDate.'<br />'.$lastpost_username." <a href='".$url."'>".IMAGE_post2.'</a>';
+//		return false;
+
+	}
 
 	function sc_startertitle()
 	{
