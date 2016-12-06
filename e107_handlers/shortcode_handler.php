@@ -1421,12 +1421,14 @@ class e_parse_shortcode
 		{
 			$this->nowrap = $code;
 			$pre = $this->parseCodes($pre, true, $this->addedCodes);
+			$this->nowrap = false;
 		}
 
 		if(strpos($post, '{') !== false) // shortcode found in wrapper
 		{
 			$this->nowrap = $code;
 			$post = $this->parseCodes($post, true, $this->addedCodes);
+			$this->nowrap = false;
 		}
 
 		return $pre.$ret.$post;
