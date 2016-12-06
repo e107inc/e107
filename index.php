@@ -98,7 +98,7 @@
 		{
 			if(empty($pref['e_url_list'][$plug])) // disabled.
 			{
-				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> disabled.');
+				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> is disabled.');
 				continue;
 			}
 
