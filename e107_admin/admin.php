@@ -104,7 +104,12 @@ class admin_start
 	private $allowed_types = null;
 	private $refresh  = false;
 
-	private $deprecated = array(
+	private $deprecated = array();
+	
+	function __construct()
+	{
+
+		$this->deprecated = array(
 			e_ADMIN."ad_links.php",
 			e_PLUGIN."tinymce4/e_meta.php",
 			e_THEME."bootstrap3/css/bootstrap_dark.css",
@@ -125,10 +130,8 @@ class admin_start
 			e_PLUGIN."online_extended_menu/languages/English.php"
 
 		);
-	
-	
-	function __construct()
-	{
+
+
 
 		if(!empty($_POST['delete-deprecated']))
 		{
