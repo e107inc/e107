@@ -211,18 +211,24 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 		$cfg = e107::getConfig();
-		$pref = e107::getPref();
+
 
 
 		if(!empty($_POST['saveSimpleSef']))
 		{
-			if(is_string($this->getConfig()->get('e_url_alias')))
+			/*if(is_string($this->getConfig()->get('e_url_alias')))
 			{
 				$cfg->setPostedData('e_url_alias', array(e_LAN => $_POST['e_url_alias']), false);
 			}
 			else
 			{
 				$cfg->setPref('e_url_alias/'.e_LAN, $_POST['e_url_alias']);
+			}*/
+
+			foreach($_POST['urlstatus'] as $k=>$v)
+			{
+				$val = (!empty($v)) ? $tp->filter($k,'w') : 0;
+				$cfg->setPref('e_url_list/'.$k, $val);
 			}
 
 			$cfg->save(true, true, true);
@@ -230,10 +236,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 
 		$pref = e107::getPref('e_url_alias');
+		$sefActive = e107::getPref('e_url_list');
 
 		if(empty($eUrl))
 		{
-			return; 		
+			return false;
 		}
 
 		$text = "<div class='e-container'>";
@@ -243,9 +250,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		$home = "<small>".SITEURL.'</small>';
 
+
+		//  e107::getDebug()->log($sefActive);
+
 		foreach($eUrl as $plug=>$val)
 		{
-			$active = !empty($pref['e_url_list'][$plug]) ? 1 : 0;
+			$active = !empty($sefActive[$plug]) ? true : false;
 			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:40px'>
 			<colgroup>
 				<col style='min-width:200px' />
@@ -253,7 +263,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 				<col style='width:45%' />
 			</colgroup>";
 
-			$text .= "<tr class='active'><td ><h4>".$plug."</h4></td><td colspan='2'>".$frm->radio_switch($plug,$plug,$active)."</td></tr>";
+			$name = 'urlstatus['.$plug.']';
+			$text .= "<tr class='active'><td ><h4>".$plug."</h4></td><td colspan='2'>".$frm->radio_switch($name,$active)."</td></tr>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
 
@@ -283,7 +294,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$text .= "</table>";
 		}	
 
-	//	$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
+		$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE, 'submit')."</div>";
 		$text .= $frm->close();
 		$text .= "</div>";
 		return $text;		
