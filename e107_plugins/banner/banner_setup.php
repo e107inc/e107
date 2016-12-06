@@ -38,12 +38,12 @@ class banner_setup
 			'banner_clicks'         => '0',
 			'banner_impressions'    => '0',
 			'banner_ip'             => '',
-			'banner_description'    => 'click to visit',
+			'banner_description'    => 'Learn more about e107 CMS.',
 			'banner_campaign'       => 'e107promo'
 		);
 
 		$status = ($sql->insert('banner', $insert)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-		$mes->add("Adding Default table data to table: banner", $status); //TODO Generic LAN "LAN_DEFAULT_TABLE_DATA"
+		$mes->add(LAN_DEFAULT_TABLE_DATA." banner", $status);
 
 
 	}

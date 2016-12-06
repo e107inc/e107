@@ -2240,11 +2240,11 @@ class e107
 		}
 		elseif($legacy_override_path && is_readable($legacy_override_path)) //v1 override template. 
 		{
-			return $legacy_override_path; 	
+			return $legacy_override_path;
 		}
 		elseif(is_readable($legacy_core_path)) //v1 core template. 
 		{
-			return $legacy_core_path;
+		//	return $legacy_core_path; // just asking for trouble.
 		}
 
 		return $core_path; 
@@ -2909,6 +2909,7 @@ class e107
 		$tp = e107::getParser();
 
 		$pref = self::getPref('e_url_alias');
+		$sefActive = self::getPref('e_url_list');
 
 		if(is_string($options)) // backwards compat.
 		{
@@ -2951,6 +2952,13 @@ class e107
 					break;
 				}
 			}
+
+			if(empty($sefActive[$plugin])) // SEF disabled.
+			{
+				self::getDebug()->log('SEF URL for <b>'.$plugin.'</b> disabled.');
+				$active = false;
+			}
+
 
 
 			if(deftrue('e_MOD_REWRITE') && ($active == true) && empty($options['legacy']))  // Search-Engine-Friendly URLs active.

@@ -1,5 +1,14 @@
 <?php
-// $Id$
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Contact Template
+ */
+ // $Id$
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -30,17 +39,17 @@ $CONTACT_TEMPLATE['info'] = "
 $CONTACT_TEMPLATE['menu'] =  '
 	<div class="contactMenuForm">
 		<div class="control-group form-group">
-			<label >Name</label>
-   			 {CONTACT_NAME}
+			<label for="contactName">'.LANCONTACT_03.'</label>
+				{CONTACT_NAME}
 		 </div>
 		 
 		<div class="control-group form-group">
-			<label class="control-label" for="contactEmail">Email</label>
+			<label class="control-label" for="contactEmail">'.LANCONTACT_04.'</label>
 				{CONTACT_EMAIL}
 		</div>
 		<div class="control-group form-group">
-			<label>Comments</label>
-			{CONTACT_BODY=rows=5&cols=30}							
+			<label for="contactBody" >'.LANCONTACT_06.'</label>
+				{CONTACT_BODY=rows=5&cols=30}
 		</div>
 		{CONTACT_SUBMIT_BUTTON}
 	</div>       
@@ -60,29 +69,29 @@ $CONTACT_TEMPLATE['menu'] =  '
 	// In this case (see contact.php) e107::getScBatch('contact')->wrapper('contact/form')
 	// Only one Option is used - WRAPPER > SC_STYLE
 
-	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<div class='control-group form-group'><label>".LAN_ENTER_CODE."</label> {---}";
+	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE'] 			= "<div class='control-group form-group'><label for='code-verify'>{CONTACT_IMAGECODE_LABEL}</label> {---}";
 	$CONTACT_WRAPPER['form']['CONTACT_IMAGECODE_INPUT'] 	= "{---}</div>";
 	$CONTACT_WRAPPER['form']['CONTACT_EMAIL_COPY'] 			= "<div class='control-group form-group'>{---}".LANCONTACT_07."</div>";
-	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<div class='control-group form-group'><label>".LANCONTACT_14."</label>{---}</div>";
+	$CONTACT_WRAPPER['form']['CONTACT_PERSON']				= "<div class='control-group form-group'><label for='contactPerson'>".LANCONTACT_14."</label>{---}</div>";
 
 	$CONTACT_TEMPLATE['form'] = "
 	<form action='".e_SELF."' method='post' id='contactForm' >
 
 	{CONTACT_PERSON}
-	<div class='control-group form-group'><label>".LANCONTACT_03."</label>
+	<div class='control-group form-group'><label for='contactName'>".LANCONTACT_03."</label>
 		{CONTACT_NAME}
 	</div>
-	<div class='control-group form-group'><label>".LANCONTACT_04."</label>
+	<div class='control-group form-group'><label for='contactEmail'>".LANCONTACT_04."</label>
 		{CONTACT_EMAIL}
 	</div>
-	<div class='control-group form-group'><label>".LANCONTACT_05."</label>
+	<div class='control-group form-group'><label for='contactSubject'>".LANCONTACT_05."</label>
 		{CONTACT_SUBJECT}
 	</div>
 
 		{CONTACT_EMAIL_COPY}
 
-	<div class='control-group form-group'><label>".LANCONTACT_06."</label>
-        {CONTACT_BODY}
+	<div class='control-group form-group'><label for='contactBody'>".LANCONTACT_06."</label>
+		{CONTACT_BODY}
 	</div>
 
 	{CONTACT_IMAGECODE}

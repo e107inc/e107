@@ -57,7 +57,7 @@ class users_admin extends e_admin_dispatcher
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
-		'main/maintenance'  => array('caption'=>'Maintenance', 'perms'=>'4')
+		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perms'=>'4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
 	
@@ -236,7 +236,7 @@ JS;
 class users_admin_ui extends e_admin_ui
 {
 		
-	protected $pluginTitle = LAN_USER;
+	protected $pluginTitle = ADLAN_36;
 	protected $pluginName = 'core';
 	protected $eventName = 'user';
 	protected $table = "user";
@@ -282,7 +282,7 @@ class users_admin_ui extends e_admin_ui
  		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
  		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
  		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
-		'user_sess' 		=> array('title' => 'Session',		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
+		'user_sess' 		=> array('title' => USRLAN_175,		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
@@ -292,7 +292,7 @@ class users_admin_ui extends e_admin_ui
 		'user_lastvisit' 	=> array('title' => LAN_USER_15,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_comments' 	=> array('title' => LAN_COMMENTS,	'tab'=>0, 'noedit'=>true, 'type' => 'int', 	'width' => 'auto','thclass'=>'right','class'=>'right'),
-		'user_lastpost' 	=> array('title' => 'Last Post',	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
+		'user_lastpost' 	=> array('title' => USRLAN_195,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_ip' 			=> array('title' => LAN_USER_18,	'tab'=>0, 'noedit'=>true, 'type' => 'ip',		'width' => 'auto'),
 		//	'user_prefs' 		=> array('title' => LAN_USER_20,	'type' => 'text', 	'width' => 'auto'),
 		'user_visits' 		=> array('title' => LAN_USER_21,	'tab'=>0, 'noedit'=>true, 'type' => 'int', 'width' => 'auto','thclass'=>'right','class'=>'right'),
@@ -1348,7 +1348,9 @@ class users_admin_ui extends e_admin_ui
 			if ($allData['data']['user_name'] != $allData['data']['user_loginname'])
 			{
 				$allData['data']['user_name'] = $allData['data']['user_loginname'];
-				$mes->addWarning(str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237));
+				$message = str_replace('[x]', $allData['data']['user_loginname'], USRLAN_237);
+				$message = e107::getParser()->toHtml($message,true);
+				$mes->addWarning($message);
 				//$allData['errors']['user_name'] = ERR_FIELDS_DIFFERENT;
 			}
 		}
@@ -1927,11 +1929,10 @@ class users_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 
 		$age = array(
-			1=>'1 hour', 3=>'3 hours', 6=> "6 hours", 12=>'12 hours', 24 => "24 hours", 48 => '48 hours', 72 => '3 days'
-		);
+			1=> LAN_UI_1_HOUR, 3=> LAN_UI_3_HOURS, 6=> LAN_UI_6_HOURS, 12=> LAN_UI_12_HOURS, 24 => LAN_UI_24_HOURS, 48 => LAN_UI_48_HOURS, 72 => LAN_UI_3_DAYS);
 
 		$count = $sql->count('user','(*)',"user_ban = 2 ");
-		$caption = $tp->lanVars('Resend account activation email to unactivated users.',$count);
+		$caption = $tp->lanVars(USRLAN_252,$count);
 
 		$text = $frm->open('userMaintenance','post');
 
@@ -1943,7 +1944,7 @@ class users_admin_ui extends e_admin_ui
 		</colgroup>
 		<tr><td>".$caption."<td>
 		<td>
-		<div class='form-inline'>Older than ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,'Reset all passwords').
+		<div class='form-inline'>".USRLAN_253." ".$frm->select('resendAge', $age, 24).$frm->checkbox('resetPasswords',1,false,USRLAN_254).
 		" <div class='input-group'>".$frm->userclass('resendClass',false, null )."<span class='input-group-btn'>".
 		$frm->button('resendToAll', 1, 'warning', LAN_GO)."
 
@@ -2396,7 +2397,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		if($mode == 'write')
 		{
 			$prm = e107::getUserPerms();
-			$text = "<a class='e-expandit' href='#perms'>Admin Permissions</a>";
+			$text = "<a class='e-expandit' href='#perms'>".USRLAN_221."</a>";
 			$text .= "<div id='perms' style='display:none'>". $prm->renderPermTable('grouped',$curval).'</div>';				
 			return $text;
 		}
@@ -2428,7 +2429,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			$fieldName = 'user_password_'. $this->getController()->getId();
 
-			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => 'Leave blank for no change', 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
+			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => USRLAN_251, 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
 			";			
 		}
 			
@@ -2443,7 +2444,7 @@ class users_admin_form_ui extends e_admin_form_ui
 	function user_ban($curval,$mode)
 	{
 		$bo = array(
-			'<span class="label label-success label-status">Active</span>',
+			'<span class="label label-success label-status">'.LAN_ACTIVE.'</span>',
 			"<span class='label label-important label-danger label-status'>".LAN_BANNED."</span>",
 			"<span class='label label-default label-status'>".LAN_NOTVERIFIED."</span>",
 			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>"
@@ -2746,7 +2747,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 	class users_ranks_ui extends e_admin_ui
 	{
-		protected $pluginTitle		= LAN_USER;
+		protected $pluginTitle		= ADLAN_36;
 		protected $pluginName		= 'user_ranks';
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';

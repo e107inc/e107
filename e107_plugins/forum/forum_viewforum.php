@@ -223,8 +223,8 @@ if(varset($pref['track_online']))
 {
 //	$member_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
 //	$guest_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
-	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%', 'url') AND online_user_id != 0");
-	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%', 'url') AND online_user_id = 0");
+	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI, 'url')."%') AND online_user_id != 0");
+	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI, 'url')."%') AND online_user_id = 0");
 
 
 	$users = $member_users+$guest_users;

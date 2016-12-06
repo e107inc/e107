@@ -792,6 +792,17 @@ class pluginManager{
 				}
 				else
 				{	// Deprecated - plugin uses plugin.php
+					$eplug_table_names = null;
+					$eplug_prefs = null;
+					$eplug_comment_ids= null;
+					$eplug_array_pref= null;
+					$eplug_menu_name = null;
+					$eplug_link = null;
+					$eplug_link_url = null;
+					$eplug_link_name = null;
+					$eplug_userclass = null;
+					$eplug_version = null;
+
 					include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 					$func = $eplug_folder.'_uninstall';
@@ -807,7 +818,7 @@ class pluginManager{
 							$result = $plugin->manage_tables('remove', $eplug_table_names);
 							if ($result !== TRUE)
 							{
-								$text .= EPL_ADLAN_27.' <b>'.$mySQLprefix.$result.'</b> - '.EPL_ADLAN_30.'<br />';
+								$text .= EPL_ADLAN_27.' <b>'.MPREFIX.$result.'</b> - '.EPL_ADLAN_30.'<br />';
 							}
 							else
 							{
@@ -841,7 +852,7 @@ class pluginManager{
 
 					if ($eplug_menu_name)
 					{
-						$sql->db_Delete('menus', "menu_name='{$eplug_menu_name}' ");
+						$sql->delete('menus', "menu_name='{$eplug_menu_name}' ");
 					}
 
 					if ($eplug_link)
@@ -890,7 +901,7 @@ class pluginManager{
 
 			$this->show_message($text, E_MESSAGE_SUCCESS);
 		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
-			$text = '';
+
 			$this->action = 'installed';
 			return;
 
@@ -924,12 +935,12 @@ class pluginManager{
 			
 			echo $mes->render(); 
 			
-			return; 
+			return true;
 
 			// ----------------- Everything below is unused. 
-			
+	/*
 			extract($_FILES);
-			/* check if e_PLUGIN dir is writable ... */
+
 			if(!is_writable(e_PLUGIN))
 			{
 				// still not writable - spawn error message 
@@ -993,7 +1004,7 @@ class pluginManager{
 						exit;
 					}
 
-					// ok it looks like the unarc succeeded - continue */
+					// ok it looks like the unarc succeeded - continue
 
 					// get folder name ...  
 					
@@ -1001,24 +1012,24 @@ class pluginManager{
 
 					if(file_exists(e_PLUGIN.$folderName."/plugin.php") || file_exists(e_PLUGIN.$folderName."/plugin.xml"))
 					{
-						/* upload is a plugin */
+
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
 					}
 					elseif(file_exists(e_PLUGIN.$folderName."/theme.php") || file_exists(e_PLUGIN.$folderName."/theme.xml"))
 					{
-						/* upload is a menu */
+
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_45);
 					}
 					else
 					{
-						/* upload is unlocatable */
+						// upload is unlocatable
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_98.' '.$fileList[0]['stored_filename']);
 					}
 
-					/* attempt to delete uploaded archive */
+					// attempt to delete uploaded archive
 					@unlink(e_PLUGIN.$archiveName);
 				}
-			}
+			}*/
    }
 
 
@@ -1027,7 +1038,7 @@ class pluginManager{
 
    function pluginInstall()
    {
-        global $plugin,$admin_log,$eplug_folder;
+        global $plugin;
 		$text = $plugin->install_plugin($this->id);
 		
 		$log = e107::getAdminLog();
@@ -1064,6 +1075,8 @@ class pluginManager{
 	  	$sql 		= e107::getDb();
    		$mes 		= e107::getMessage(); 
 		$plug 		= $plugin->getinfo($this->id);
+
+		$text = '';
 
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 		if(file_exists($_path.'plugin.xml'))
@@ -1218,7 +1231,7 @@ class pluginManager{
 
 			if(!is_writable(e_PLUGIN))
 			{
-			   	e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_44);
+			   	$text = EPL_ADLAN_44;
 			}
 			else
 			{
@@ -1265,7 +1278,6 @@ class pluginManager{
 
 		global $plugin;
 		$frm = e107::getForm();
-		$e107 = e107::getInstance();
 		$mes = e107::getMessage();
 
 		if($this->action == "" || $this->action == "installed")
@@ -1748,7 +1760,7 @@ class pluginLanguage
 		
 			if(!empty($_GET['newplugin']) && $_GET['step']==2)
 			{
-				$plugin = e107::getParser()->filter($_GET['newplugin'],'w');
+				$plugin = e107::getParser()->filter($_GET['newplugin'],'file');
 				$this->step2($plugin);
 				return false;
 			}
@@ -2204,7 +2216,7 @@ class pluginBuilder
 			
 			if(!empty($_GET['newplugin']))
 			{
-				$this->pluginName = e107::getParser()->filter($_GET['newplugin'],'w');
+				$this->pluginName = e107::getParser()->filter($_GET['newplugin'],'file');
 			}
 			
 			if(!empty($_GET['createFiles']))
@@ -2366,7 +2378,7 @@ class pluginBuilder
 			$tp = e107::getParser();
 
 			
-			$newplug = $tp->filter($_GET['newplugin'],'w');
+			$newplug = $tp->filter($_GET['newplugin'],'file');
 			$this->pluginName = $newplug;
 
 			$sqlFile = e_PLUGIN.$newplug."/".$newplug."_sql.php";
@@ -3579,7 +3591,7 @@ TEMPLATE;
 			
 			
 			unset($_POST['step'],$_POST['xml'], $_POST['addons']);
-		$thePlugin = $tp->filter($_POST['newplugin']);
+		$thePlugin = $tp->filter($_POST['newplugin'],'file');
 
 $text = "\n
 // Generated e107 Plugin Admin Area 

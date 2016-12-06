@@ -903,7 +903,7 @@ class e107plugin
 		}
 	}
 
-	function manage_userclass($action, $class_name, $class_description)
+	function manage_userclass($action, $class_name, $class_description='')
 	{
 		global $e107;
 		$tp = e107::getParser();
