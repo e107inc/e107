@@ -182,6 +182,9 @@ define("ADLAN_160", "Configure Site URLs");
 define("ADLAN_161", "Custom Fields?");
 define("ADLAN_162", "A newer version of your site-theme is available:");
 define("ADLAN_163", "A newer version of an installed plugin is available:");
+define("ADLAN_164", "Successfully logged in as [x].");
+define("ADLAN_165", "Powered by e107");
+define("ADLAN_166", "Return to Website");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
@@ -259,12 +262,14 @@ define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or fo
 define("LAN_NOTREADABLE", "Not Readable");
 define("LAN_MISSING", "Missing");
 define("LAN_UNUSED", "Unused");
+define("LAN_TOOLTIP", "Tooltip");
 
 define("LAN_TIME","Time");
 // define("LAN_YES","Yes");
 // define("LAN_NO","No");   // defined in e107_languages/English/English.php
 define("LAN_EMPTY","There are no entries in the database yet");
 define("LAN_EXISTING","Existing Entries");
+define("LAN_DEFAULT_TABLE_DATA","Adding default table data to table:");
 
 define("LAN_CONFDELETE","Confirm Delete");
 define("LAN_PLUGIN","Plugin");
@@ -287,6 +292,7 @@ define("LAN_DISPLAYOPT", "Edit Display Options");
 define("LAN_DATESTAMP","Date stamp");
 define("LAN_TIMESTAMP","Timestamp");
 define("LAN_IP","IP");
+define("LAN_IP_ADDRESS","IP Address");
 define("LAN_PAGE","PAGE");
 define("LAN_AGENT","AGENT");
 define("LAN_LANG","Lang.");
@@ -311,6 +317,7 @@ define("LAN_UPLOAD_ADDFILE","Add Another File");
 define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Continue?");
 define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
 define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
+define("LAN_WIDTH","Width");
 
 define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
@@ -337,7 +344,7 @@ define("LAN_USERCLASS", "Userclass");
 
 
 define("LAN_HELP", "Help");
-define("LAN_CUSTOM", "Custom configuration");
+define("LAN_CUSTOM", "Custom");
 define("LAN_MENULAYOUT", "Menu Layout");
 define("LAN_MEDIAMANAGER", "Media Manager");
 
@@ -377,8 +384,8 @@ define("LAN_DEMO_FORBIDDEN", "Changes on this page are not possible in demo mode
 define("LAN_COPYRIGHT", "Copyright");
 define("LAN_MANAGER", "Manage Permissions");
 define("LAN_PING", "Ping");
-define("LAN_START", "Starting");
-define("LAN_END", "Ending");
+define("LAN_START", "Start");
+define("LAN_END", "End");
 
 define("LAN_PREVIEW", "Preview");
 

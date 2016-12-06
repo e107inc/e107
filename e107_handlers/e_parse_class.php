@@ -1743,7 +1743,7 @@ class e_parse extends e_parser
 						// Convert URL's to clickable links, unless modifiers or prefs override
 						if ($opts['link_click'])
 						{
-							if ($opts['link_replace'] && ADMIN_AREA !== true)
+							if ($opts['link_replace'] && defset('ADMIN_AREA') !== true)
 							{
 
 								$link_text = $pref['link_text'];
@@ -3796,8 +3796,8 @@ class e_parser
 		elseif(!empty($parm['legacy'])) // Search legacy path for image in a specific folder. No path, only file name provided.
 		{
 
-			$legacyPath = $parm['legacy'].$file;
-			$filePath = $tp->replaceConstants($legacyPath,'rel');
+			$legacyPath = rtrim($parm['legacy'],'/').'/'.$file;
+			$filePath = $tp->replaceConstants($legacyPath);
 
 			if(is_readable($filePath))
 			{
@@ -4367,6 +4367,11 @@ return;
 		if($type == 'wds') // words, digits and spaces only.
 		{
 			return preg_replace('/[^\w\d ]/',"",$text);
+		}
+
+		if($type == 'file')
+		{
+			return preg_replace('/[^\w\d_\.-]/',"",$text);
 		}
 
 

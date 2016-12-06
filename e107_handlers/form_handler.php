@@ -4340,7 +4340,7 @@ class e_form
 				$value = '<a href="'.$url.'" title="Direct link to '.$name.'" rel="external">'.$name.'</a>';
 			break;
 
-			case 'image': //TODO - thumb, js tooltip...
+			case 'image': //js tooltip...
 				if($value)
 				{
 					
@@ -4396,13 +4396,27 @@ class e_form
 						{
 							$thparms['aw'] = intval($parms['thumb_aw']);
 						}
-						
+
+						if(!empty($parms['legacyPath']))
+						{
+							$thparms['legacy'] = $parms['legacyPath'];
+							$parms['pre'] = rtrim($parms['legacyPath'],'/').'/';
+						}
 					//	return print_a($thparms,true); 
 					
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
 						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
 						$alt = basename($src);
-						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
+					//	$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
+
+						$thparms['alt'] = $alt;
+						$thparms['class'] = "thumbnail e-thumb";
+
+						$ttl = $tp->toImage(vartrue($parms['pre']).$value, $thparms);
+
+						e107::getDebug()->log($value);
+						e107::getDebug()->log($thparms);
+
 						$value = '<a href="'.$src.'" data-modal-caption="'.$alt.'" data-target="#uiModal" class="e-modal e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
 					}
 					else
@@ -4419,7 +4433,7 @@ class e_form
 				$ret = '<ol>';
 				for ($i=0; $i < 5; $i++) 
 				{				
-					$k 		= $key.'['.$i.'][path]';
+					//$k 		= $key.'['.$i.'][path]';
 					$ival 	= $value[$i]['path'];
 					$ret .=  '<li>'.$ival.'</li>';		
 				}

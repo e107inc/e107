@@ -1175,6 +1175,7 @@ $core_image = array (
       'banner_sql.php' => '950a1eda9eed1f1d735db4231dafc09d',
       'banner_template.php' => '6cce6a757e0a9aa609ec52e04db9e527',
       'e_menu.php' => '8173c4db24ee86f28a6cc0416b7f42f1',
+      'e_help.php' => 'TODO-Newfile',
       'e_shortcode.php' => 'dd410b7adac946a6bdcc9fa27a01d536',
       'plugin.xml' => '3ee13c88f3d07cbd2bdfd68944a7b933',
     ),

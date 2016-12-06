@@ -109,7 +109,7 @@ class secure_image
 	 * @param $checkstr
 	 * @return bool|mixed|string
 	 */
-	function invalidCode($rec_num, $checkstr)
+	function invalidCode($rec_num=null, $checkstr=null)
 	{
 		if ($user_func = e107::getOverride()->check($this,'invalidCode'))
 		{
