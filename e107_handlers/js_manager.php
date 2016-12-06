@@ -1075,7 +1075,7 @@ class e_jsmanager
 			break;
 
 			case 'settings':
-				$this->_e_js_settings = array_merge_recursive($this->_e_js_settings, $file_path);
+				$this->_e_js_settings = $this->arrayMergeDeepArray(array($this->_e_js_settings, $file_path));
 				return $this;
 			break;
 
@@ -1115,8 +1115,7 @@ class e_jsmanager
 		{
 			case 'settings':
 				$tp = e107::getParser();
-				$options = $this->arrayMergeDeepArray(array($this->_e_js_settings));
-				$json = $tp->toJSON($options);
+				$json = $tp->toJSON($this->_e_js_settings);
 				echo "<script>\n";
 				echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
 				echo "jQuery.extend(e107.settings, " . $json . ");\n";
