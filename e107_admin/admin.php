@@ -104,11 +104,38 @@ class admin_start
 	private $allowed_types = null;
 	private $refresh  = false;
 
-	
+	private $deprecated = array(
+			e_ADMIN."ad_links.php",
+			e_PLUGIN."tinymce4/e_meta.php",
+			e_THEME."bootstrap3/css/bootstrap_dark.css",
+			e_PLUGIN."search_menu/languages/English.php",
+			e_LANGUAGEDIR."English/lan_parser_functions.php",
+			e_HANDLER."np_class.php",
+			e_CORE."shortcodes/single/user_extended.sc",
+			e_ADMIN."download.php",
+			e_PLUGIN."banner/config.php",
+			e_PLUGIN."forum/newforumposts_menu_config.php",
+			e_PLUGIN."forum/e_latest.php",
+			e_PLUGIN."forum/e_status.php",
+			e_PLUGIN."forum/forum_post_shortcodes.php",
+			e_PLUGIN."forum/forum_shortcodes.php",
+			e_PLUGIN."forum/forum_update_check.php",
+			e_PLUGIN."online_extended_menu/online_extended_menu.php",
+			e_PLUGIN."online_extended_menu/images/user.png",
+			e_PLUGIN."online_extended_menu/languages/English.php"
+
+		);
 	
 	
 	function __construct()
 	{
+
+		if(!empty($_POST['delete-deprecated']))
+		{
+			$this->deleteDeprecated();
+		}
+
+
 		$this->checkPaths();
 		$this->checkTimezone();
 		$this->checkWritable();
@@ -254,29 +281,12 @@ class admin_start
 	}
 
 
-	function checkDeprecated()
+	private function checkDeprecated()
 	{
-		$deprecated = array(
-			e_ADMIN."ad_links.php",
-			e_PLUGIN."tinymce4/e_meta.php",
-			e_THEME."bootstrap3/css/bootstrap_dark.css",
-			e_PLUGIN."search_menu/languages/English.php",
-			e_LANGUAGEDIR."English/lan_parser_functions.php",
-			e_HANDLER."np_class.php",
-			e_CORE."shortcodes/single/user_extended.sc",
-			e_ADMIN."download.php",
-			e_PLUGIN."banner/config.php",
-			e_PLUGIN."forum/newforumposts_menu_config.php",
-			e_PLUGIN."forum/e_latest.php",
-			e_PLUGIN."forum/e_status.php",
-			e_PLUGIN."online_extended_menu/online_extended_menu.php",
-			e_PLUGIN."online_extended_menu/images/user.png",
-			e_PLUGIN."online_extended_menu/languages/English.php"
 
-		);
 
 		$found = array();
-		foreach($deprecated as $path)
+		foreach($this->deprecated as $path)
 		{
 			if(file_exists($path))
 			{
@@ -288,10 +298,43 @@ class admin_start
 
 		if(!empty($found))
 		{
-			$text = "The following old files can be safely deleted from your system: ";
+			$frm = e107::getForm();
+
+			$text = $frm->open('deprecatedFiles', 'post');
+			$text .= "The following old files can be safely deleted from your system: ";
 			$text .= "<ul><li>".implode("</li><li>", $found)."</li></ul>";
 
+			$text .= $frm->button('delete-deprecated',LAN_DELETE,'delete');
+			$text .= $frm->close();
+
 			e107::getMessage()->addWarning($text);
+		}
+
+	}
+
+	private function deleteDeprecated()
+	{
+		$mes = e107::getMessage();
+
+
+
+
+		foreach($this->deprecated as $file)
+		{
+
+			if(!file_exists($file))
+			{
+				continue;
+			}
+
+			if(@unlink($file))
+			{
+				$mes->addSuccess("Deleted ".$file);
+			}
+			else
+			{
+				$mes->addError("Unable to delete ".$file.". Please remove the file manually.");
+			}
 		}
 
 	}
