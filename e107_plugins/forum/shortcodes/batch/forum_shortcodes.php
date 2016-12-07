@@ -389,31 +389,25 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_threads()
 	{
-		return $this->var['forum_threads'];	
+		return $this->sc_threadsx();
 	}
 
 
 	function sc_replies()
 	{
-		return $this->var['forum_replies'];	
+		return $this->sc_repliesx();
 	}
 
 
-	function sc_threadsx()
+	function sc_threadsx() // EQUAL TO SC_THREADS.......................
 	{
-		//    global $f;
-		//		return "<span class='badge ".(($f['forum_threads']) ? "badge-info" : "")."'>".$f['forum_threads']."</span>";
-// EQUAL TO SC_THREADS.......................
-		return $this->var['forum_threads'];	
+		return e107::getParser()->toBadge($this->var['forum_threads']);
 	}
 
 
-	function sc_repliesx()
+	function sc_repliesx() // EQUAL TO SC_REPLIES.......................
 	{
-		//    global $f;
-		//		return "<span class='badge ".(($f['forum_replies']) ? "badge-info" : "")."'>".$f['forum_replies']."</span>";
-// EQUAL TO SC_REPLIES.......................
-		return $this->var['forum_replies'];	
+		return e107::getParser()->toBadge($this->var['forum_replies']);
 	}
 
 
