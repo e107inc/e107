@@ -305,7 +305,7 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 												
 													{SUBFORUMS}";
 
-$SC_WRAPPER['REPLIESX'] = "<span class='badge badge-info'>{---}</span>";
+
 $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 													<td>{ICON}</td>
 													<td>
