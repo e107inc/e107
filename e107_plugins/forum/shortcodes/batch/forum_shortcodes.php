@@ -507,7 +507,7 @@ class forum_shortcodes extends e_shortcode
 				// code to be executed if n is different from all labels;
 			}
   		}
-				return $relativeDate.'<br />'.$lastpost_username." <a href='".$url."'>".IMAGE_post2.'</a>';
+				return $lastpost_username." <a href='".$url."'>".$relativeDate.'</a>';
 	}
 
 	function sc_startertitle()
