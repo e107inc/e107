@@ -136,6 +136,12 @@ table label.checkbox {
     margin-left: 20px;
 }
 
+/* Fix sidebar list alignments */
+#sidebar .panel-body span.badge { float:right}
+#sidebar .panel-body ul { padding-left:15px }
+#sidebar .panel-body ul li { padding-bottom:8px }
+#sidebar .panel-body ul.list-unstyled { padding-left:0}
+
 
 
 
