@@ -1107,7 +1107,7 @@ class e_media
 		}	
 			
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
-		
+
 		
 		if(!$typePath = $this->getPath($img_data['media_type'], $uploadPath))
 		{		
