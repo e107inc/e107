@@ -1103,7 +1103,7 @@ class media_admin_ui extends e_admin_ui
 		}
 
 		$text = "<h4>".IMALAN_145."</h4>";
-		$text .= '<div id="uploader" data-max-size="'.str_replace('M','mb',$maxFileSize).'" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'">
+		$text .= '<div id="uploader" data-max-size="'.str_replace('M','mb',$maxFileSize).'" rel="'.e_JS.'plupload/upload.php?for='.$this->getQuery('for').'&path='.$this->getQuery('path').'">
 	        <p>'.IMALAN_146.'</p>
 		</div>';
 	    $text .= '<hr />';

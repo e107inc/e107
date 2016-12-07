@@ -973,8 +973,7 @@ class e_media
 
 
 	
-	
-	function getPath($mime)
+	function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
 
@@ -988,11 +987,19 @@ class e_media
 			return FALSE;
 		}
 
-		$dir = $this->mimePaths[$pmime].date("Y-m");
+		if(!empty($path))
+		{
+			$dir = e_MEDIA."plugins/".e107::getParser()->filter($path,'w');
+		}
+		else
+		{
+			$dir = $this->mimePaths[$pmime].date("Y-m");
+		}
+
 
 		if(!is_dir($dir))
 		{
-			if(!mkdir($dir, 0755))
+			if(!mkdir($dir, 0755,true))
 			{
 
 				$this->log("Couldn't create folder ($dir).");
@@ -1054,19 +1061,38 @@ class e_media
 		$insert = "\n\n".date('r')."\n".$message;
 		file_put_contents(e_LOG."mediaUpload.log",$insert,FILE_APPEND | LOCK_EX);	
 	}
-	
-	
-	
-	
-	
-	public function importFile($file='',$category='_common_image', $oldpath = null, $new_data = array())
+
+
+	/**
+	 * Import a file into the Media Manager
+	 * @param string $file Path to file
+	 * @param string $category media-category to import into
+	 * @param null|array $opts
+	 * @param string $opts['path'] Custom Folder (optional)
+	 * @param array $new_data - Additional media info to save.
+	 * @param string $new_data['media_caption']
+	 * @param string $new_data['media_descrption']
+	 * @return bool|string
+	 */
+	public function importFile($file='', $category='_common_image', $opts = null, $new_data = array())
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
+		if(is_array($opts))
+        {
+            $uploadPath = varset($opts['path']);
+            $oldpath = null;
+        }
+        else
+        {
+	        $uploadPath = null;
+            $oldpath = $opts;
+        }
+
         if(empty($oldpath)) $oldpath = e_IMPORT.$file;
-		
+
 		if(!file_exists($oldpath))
 		{
 			// Check it hasn't been imported already. 	
@@ -1082,11 +1108,12 @@ class e_media
 			
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
 		
-		if(!$typePath = $this->getPath($img_data['media_type']))
+		
+		if(!$typePath = $this->getPath($img_data['media_type'], $uploadPath))
 		{		
 				$this->log("Line: ".__LINE__." Couldn't generate path from file info:".$oldpath);
 				$mes->addError("Couldn't generate path from file info:".$oldpath);
-				return FALSE;
+				return false;
 		}
 
 
@@ -1101,7 +1128,7 @@ class e_media
 		{
 			$this->log("Couldn't move file from ".realpath($oldpath)." to ".e_MEDIA.$newpath);
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
-			return FALSE;
+			return false;
 		};
 		
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
@@ -1121,7 +1148,7 @@ class e_media
 		{
 			$this->log("Db Insert Failed: ".var_export($img_data,true));
 			rename($newpath,$oldpath);	//move it back.
-			return FALSE;
+			return false;
 		}
 		
 		
