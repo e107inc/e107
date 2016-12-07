@@ -3569,8 +3569,16 @@ class e_parser
 		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
 		// return $text;	
 	}
-	
 
+
+	/**
+	 * @param $text
+	 * @return string
+	 */
+	public function toBadge($text)
+	{
+		return "<span class='badge'>".$text."</span>";
+	}
 
 
 

@@ -739,10 +739,13 @@ class news_admin_ui extends e_admin_ui
 
 		foreach($this->addons as $plug=>$config)
 		{
-			foreach($config['fields'] as $field=>$tmp)
+			if(!empty($config['fields']))
 			{
-				$newOrder[] = "x_".$plug."_".$field;
-			//	echo $field;
+				foreach($config['fields'] as $field=>$tmp)
+				{
+					$newOrder[] = "x_".$plug."_".$field;
+				//	echo $field;
+				}
 			}
 		}
 
