@@ -187,7 +187,8 @@
 // rename($targetDir.$fileName,e_MEDIA."images/2012-05/",$fileName);
 	if($_GET['for'] != '') // leave in upload directory if no category given.
 	{
-		$result = e107::getMedia()->importFile($fileName, $_GET['for']);
+		$uploadPath = varset($_GET['path'],null);
+		$result = e107::getMedia()->importFile($fileName, $_GET['for'], array('path'=>$uploadPath));
 	}
 
 

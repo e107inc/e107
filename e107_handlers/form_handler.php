@@ -890,15 +890,20 @@ class e_form
 			$url .= "&amp;w=".$extras['w'];	
 		}
 
-		if(vartrue($extras['glyphs']))
+		if(!empty($extras['glyphs']))
 		{
 			$url .= "&amp;glyphs=1";	
 		}	
 		
-		if(vartrue($extras['video']))
+		if(!empty($extras['video']))
 		{
 			$url .= "&amp;video=1";	
 		}			
+
+		if(!empty($extras['path']) && $extras['path'] == 'plugin')
+		{
+			$url .= "&amp;path=".deftrue('e_CURRENT_PLUGIN');
+		}
 
 		if(E107_DBG_BASIC)
 		{
