@@ -442,17 +442,17 @@ class plugin_forum_post_shortcodes extends e_shortcode
 //$this->forumObj->threadGet($this->id, false)		
     if ($this->var['action'] == "rp")
     {
-      $pre = LAN_FORUM_1003;
-			$name = strip_tags($tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off'));
-			$url = e107::url('forum', 'topic', $this->var);
-      $post = LAN_FORUM_2006;
+      	$pre = LAN_FORUM_1003;
+	$name = $this->var['thread_name'];
+	$url = e107::url('forum', 'topic', $this->var);
+      	$post = LAN_FORUM_2006;
     }
     if ($this->var['action'] == "nt")
     {
-      $pre = LAN_FORUM_1001;
-			$name = strip_tags($tp->toHTML($this->var['forum_name'], false, 'no_hook, emotes_off'));
-			$url = e107::url('forum', 'forum', $this->var);
-      $post = LAN_FORUM_2005;
+      	$pre = LAN_FORUM_1001;
+	$name = $this->var['forum_name'];
+	$url = e107::url('forum', 'forum', $this->var);
+      	$post = LAN_FORUM_2005;
     }
     return $pre.($url?": <a {$title} href='".$url."'>{$name}</a> - ":$name).$post;
 	}
