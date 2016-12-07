@@ -1097,13 +1097,13 @@ class e_form
 		}
 
 
-	//	print_a($sc_parameters);
-	
 		if(empty($sc_parameters['media']))
 		{
 			$sc_parameters['media'] = '_common';	
 		}
 
+
+e107::getDebug()->log($sc_parameters);
 
 		$default_thumb = $default;
 		$class = '';
@@ -1181,7 +1181,7 @@ class e_form
 
 			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
 			
-			if($cat != 'news' && $cat !='page' && $cat !='') 
+			if($cat != 'news' && $cat !='page' && $cat !='' && strpos($cat,'_image')===false)
 			{
 			 	$cat = $cat . "_image";		
 			}
