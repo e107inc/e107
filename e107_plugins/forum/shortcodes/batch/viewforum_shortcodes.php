@@ -612,43 +612,27 @@
 
 		function sc_views()
 		{
-			return $this->var['thread_views'];
+			$val = ($this->var['thread_views']) ? $this->var['thread_views'] : '0' ;
+			return e107::getParser()->toBadge($val);
 		}
 
 
 		function sc_replies()
 		{
-			return ($this->var['thread_total_replies'] ?: "0");
+			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+			return e107::getParser()->toBadge($val);
 		}
 
 
 		function sc_viewsx()
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_views;
-			  }
-				$badge = ($this->var['thread_views'] > 0) ? "badge-info" : "";
-				return "<span class='badge {$badge}'>".$this->sc_views."</span>";
-			--*/
-			$badge = ($this->var['thread_views'] > 0) ? "badge-info" : "";
-			return deftrue('BOOTSTRAP') ? "<span class='badge {$badge}'>" . $this->sc_views() . "</span>" : $this->sc_views();
+			return $this->sc_views();
 		}
 
 
 		function sc_repliesx()
 		{
-			/*--
-				if(!deftrue('BOOTSTRAP'))
-				{
-				return $this->sc_replies;
-			  }
-			  $badge = ($this->var['thread_total_replies'] > 0) ? "badge-info" : "";
-				return "<span class='badge {$badge}'>".$this->sc_replies."</span>";
-			--*/
-			$badge = ($this->var['thread_total_replies'] > 0) ? "badge-info" : "";
-			return deftrue('BOOTSTRAP') ? "<span class='badge {$badge}'>" . $this->sc_replies() . "</span>" : $this->sc_replies();
+			return $this->sc_replies();
 		}
 
 //	function sc__wrapper_()	{	return 'forum_viewforum';}
