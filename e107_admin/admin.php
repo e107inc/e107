@@ -197,14 +197,22 @@ class admin_start
 	}
 
 
-
+	/**
+	 *
+	 */
 	private function checkNewInstall()
 	{
+
+		$upgradeAlertFlag = e_CACHE.'dismiss.upgrade.alert.txt';
+
+		if(!empty($_GET['dismiss']) && $_GET['dismiss'] == 'upgrade')
+		{
+			file_put_contents($upgradeAlertFlag,'true');
+		}
+
 		$pref = e107::getPref('install_date');
 
 		$v2ReleaseDate = strtotime('August 27, 2015');
-
-	//	$pref = strtotime('yesterday');
 
 		$numDays = (abs($pref - time())/60/60/24);
 
@@ -212,9 +220,11 @@ class admin_start
 		{
 			echo e107::getMessage()->setTitle('Need Help?',E_MESSAGE_INFO)->addInfo("<p>Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any e107 issues you may encounter. </p>")->render();
 		}
-		elseif($pref < $v2ReleaseDate) // installed prior to v2 release.
+		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
 		{
-			echo e107::getMessage()->setTitle('Upgrading?',E_MESSAGE_INFO)->addInfo("<p>Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any upgrading issues you may encounter. </p>")->render();
+			$message = "Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any upgrading issues you may encounter.";
+			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>Don't show again</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
+			echo e107::getMessage()->setTitle('Upgrading?',E_MESSAGE_INFO)->addInfo($message)->render();
 		}
 
 		e107::getMessage()->setTitle(null,E_MESSAGE_INFO);
