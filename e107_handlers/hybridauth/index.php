@@ -8,7 +8,7 @@
 // ------------------------------------------------------------------------
 //	HybridAuth End Point
 // ------------------------------------------------------------------------
-
+require_once("../../class2.php"); 
 require_once( "Hybrid/Auth.php" );
 require_once( "Hybrid/Endpoint.php" );
 
