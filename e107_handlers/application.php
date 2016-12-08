@@ -2498,7 +2498,12 @@ class eUrlRule
 		
 		$url = strtr($this->template, $tr);
 
-		
+		// Work-around fix for lowercase username
+		if($urlFormat == 'dashl' && $this->route == 'profile/view')
+		{
+			$url = str_replace('%20','-', strtolower($url));
+		}
+
 		if(empty($params))
 		{
 			 return $url !== '' ? $url.$suffix : $url;
