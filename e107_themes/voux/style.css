@@ -529,6 +529,12 @@ img.news-image-1 { margin-bottom:15px }
 .othernews2-block a.btn { display: none; }
 .othernews2-block img { width:72px; }
 
+.menu span.badge { float:right}
+.menu ul { padding-left:15px; margin-left:15px }
+.menu ul li { padding-bottom:8px }
+.menu ul.list-unstyled { padding-left:0}
+
+
 
 
 /* Extra small devices Phones (<768px)  .col-xs */
