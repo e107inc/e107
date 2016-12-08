@@ -83,7 +83,7 @@ else
 		{ONLINE_MEMBER_NEWEST}
 		<li>
 		{ONLINE_MOST}
-		<small class='muted'>
+		<small class='text-muted muted'>
 		{ONLINE_MOST_GUESTS}
 		{ONLINE_MOST_MEMBERS}
 		{ONLINE_MOST_DATESTAMP}

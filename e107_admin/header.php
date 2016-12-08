@@ -336,12 +336,22 @@ $jslib->renderHeader('admin', false);
 e107::getJs()->renderJs('header', 2);
 e107::getJs()->renderJs('header_inline', 2);
 
-//DEPRECATED - use e107::getJs()->headerFile('{e_PLUGIN}myplug/js/my.js', $zone = 2)
-if (isset($eplug_js) && $eplug_js)
+/* @deprecated -use e107::js('myplug','js/my.js') instead; */
+if (!empty($eplug_js))
 {
-	e107::getMessage()->addDebug('Deprecated $eplug_js method detected. Use e107::js() function inside an e_header.php file instead.'.print_a($eplug_js,true)); 
+	e107::getMessage()->addDebug('Deprecated $eplug_js method detected. Use e107::js() function inside an e_header.php file instead.'.print_a($eplug_js,true));
 	echo "\n<!-- eplug_js -->\n";
-	echo "<script type='text/javascript' src='{$eplug_js}'></script>\n";
+
+	if(!is_array($eplug_js))
+	{
+		$eplug_js = array($eplug_js);
+	}
+
+	foreach($eplug_js as $vjss)
+	{
+		echo "<script type='text/javascript' src='{$vjss}'></script>\n";
+	}
+
 }
 
 //FIXME - theme.js/user.js should be registered/rendered through e_jsmanager
