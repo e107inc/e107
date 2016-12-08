@@ -42,7 +42,7 @@ class notify
 
 		if(empty($active) && defset('e_PAGE') == 'notify.php')
 		{
-			e107::getMessage()->addDebug('Notify is disabled!');
+			e107::getMessage()->addDebug(NT_LAN_NOTIFY_DISABLED);
 			return false;
 		}
 
@@ -263,7 +263,7 @@ class notify
 		}
 		else
 		{
-			$data = array('qry'=>$qry, 'error'=>'No recipients');
+			$data = array('qry'=>$qry, 'error'=>NT_LAN_NO_RECIPIENTS);
 			e107::getLog()->add('Notify Debug', $data,  E_LOG_WARNING_, "NOTIFY_DBG");
 		}
 	}
@@ -400,8 +400,8 @@ class notify
 
 		$template = "<h4><a href='{NEWS_URL}'>{NEWS_TITLE}</a></h4>
 					<div class='summary'>{NEWS_SUMMARY}</div>
-					<div class='author'>by {NEWS_AUTHOR}</div>
-					<div><a class='btn btn-primary' href='{NEWS_URL}'>View now</a></div>
+					<div class='author'>".NT_LAN_SN_2." {NEWS_AUTHOR}</div>
+					<div><a class='btn btn-primary' href='{NEWS_URL}'>".NT_LAN_VIEW_NOW."</a></div>
 					";
 
 		$shortcodes = array(
