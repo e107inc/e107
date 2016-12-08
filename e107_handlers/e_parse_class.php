@@ -1993,7 +1993,70 @@ class e_parse extends e_parser
 	}
 
 
+	function toASCII($text)
+	{
 
+	    $forn[] = utf8_encode("Ç");   $chg[] = "C";
+
+	    $forn[] = utf8_encode("È");   $chg[] = "E";
+	    $forn[] = utf8_encode("É");   $chg[] = "E";
+	    $forn[] = utf8_encode("Ê");   $chg[] = "E";
+	    $forn[] = utf8_encode("Ë");   $chg[] = "E";
+
+	    $forn[] = utf8_encode("Ó");   $chg[] = "O";
+	    $forn[] = utf8_encode("Ô");   $chg[] = "O";
+	    $forn[] = utf8_encode("Õ");   $chg[] = "O";
+	    $forn[] = utf8_encode("Ö");   $chg[] = "O";
+
+	    $forn[] = utf8_encode("Ù");   $chg[] = "U";
+	    $forn[] = utf8_encode("Ú");   $chg[] = "U";
+	    $forn[] = utf8_encode("Û");   $chg[] = "U";
+	    $forn[] = utf8_encode("Ü");   $chg[] = "U";
+
+	    $forn[] = utf8_encode("Í");   $chg[] = "I";
+	    $forn[] = utf8_encode("Á");   $chg[] = "A";
+	    $forn[] = utf8_encode("Ñ");   $chg[] = "N";
+
+
+	    $forn[] = utf8_encode("â");   $chg[] = "a";
+	    $forn[] = utf8_encode("ã");   $chg[] = "a";
+	    $forn[] = utf8_encode("ä");   $chg[] = "a";
+	    $forn[] = utf8_encode("å");   $chg[] = "a";
+	    $forn[] = utf8_encode("à");   $chg[] = "a";
+	    $forn[] = utf8_encode("á");   $chg[] = "a";
+
+	    $forn[] = utf8_encode("ç");   $chg[] = "c";
+
+	    $forn[] = utf8_encode("è");   $chg[] = "e";
+	    $forn[] = utf8_encode("é");   $chg[] = "e";
+	    $forn[] = utf8_encode("ê");   $chg[] = "e";
+	    $forn[] = utf8_encode("ë");   $chg[] = "e";
+
+	    $forn[] = utf8_encode("ì");   $chg[] = "i";
+	    $forn[] = utf8_encode("í");   $chg[] = "i";
+	    $forn[] = utf8_encode("î");   $chg[] = "i";
+	    $forn[] = utf8_encode("ï");   $chg[] = "i";
+	    $forn[] = utf8_encode("î");   $chg[] = "i";
+
+	    $forn[] = utf8_encode("ñ");   $chg[] = "n";
+
+	    $forn[] = utf8_encode("ð");   $chg[] = "o";
+	    $forn[] = utf8_encode("ò");   $chg[] = "o";
+	    $forn[] = utf8_encode("ó");   $chg[] = "o";
+	    $forn[] = utf8_encode("ô");   $chg[] = "o";
+	    $forn[] = utf8_encode("õ");   $chg[] = "o";
+	    $forn[] = utf8_encode("ö");   $chg[] = "o";
+
+	    $forn[] = utf8_encode("ü");   $chg[] = "u";
+	    $forn[] = utf8_encode("ú");   $chg[] = "u";
+	    $forn[] = utf8_encode("ù");   $chg[] = "u";
+	    $forn[] = utf8_encode("û");   $chg[] = "u";
+
+	    $text = str_replace($forn,$chg,$text);
+
+	    return $text;
+
+	}
 
 
 
