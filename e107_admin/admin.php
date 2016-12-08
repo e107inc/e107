@@ -138,7 +138,7 @@ class admin_start
 			$this->deleteDeprecated();
 		}
 
-
+		$this->checkNewInstall();
 		$this->checkPaths();
 		$this->checkTimezone();
 		$this->checkWritable();
@@ -195,6 +195,33 @@ class admin_start
 		}
 
 	}
+
+
+
+	private function checkNewInstall()
+	{
+		$pref = e107::getPref('install_date');
+
+		$v2ReleaseDate = strtotime('August 27, 2015');
+
+	//	$pref = strtotime('yesterday');
+
+		$numDays = (abs($pref - time())/60/60/24);
+
+		if($numDays < 3) // installed in the past 3 days.
+		{
+			echo e107::getMessage()->setTitle('Need Help?',E_MESSAGE_INFO)->addInfo("<p>Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any e107 issues you may encounter. </p>")->render();
+		}
+		elseif($pref < $v2ReleaseDate) // installed prior to v2 release.
+		{
+			echo e107::getMessage()->setTitle('Upgrading?',E_MESSAGE_INFO)->addInfo("<p>Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any upgrading issues you may encounter. </p>")->render();
+		}
+
+		e107::getMessage()->setTitle(null,E_MESSAGE_INFO);
+
+
+	}
+
 
 
 	function checkWritable()
