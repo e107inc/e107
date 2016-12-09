@@ -797,13 +797,15 @@ function sc_buttonsx()
 {
 	global $forum, $thread; 
 
-	
 	if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
 	{
 		$url = e107::url('forum','post')."?f=rp&amp;id=".$this->var['thread_id']."&amp;post=".$thread->threadId;
 	//	$url = e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId));
-		$replyUrl = "<a class='btn btn-primary' href='".$url."'>".LAN_FORUM_2006."</a>";
 	}
+		$replyUrl = "<a class='btn btn-primary".($url ?"":" disabled")."' "
+			.($url?"":" data-toggle='tooltip' title='Please login or register to be allowed'
+	style='cursor: not-allowed; pointer-events: all !important;'")." href='".($url ?:"#")."'>".LAN_FORUM_2006."</a>";
+
 	if ($forum->checkPerm($this->var['thread_forum_id'], 'post'))
 	{
 		$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $this->var['thread_forum_id'];
@@ -828,10 +830,20 @@ function sc_buttonsx()
 	}
 
 
-	$text = '<div class="btn-group">
+/*
+$text = '<div class="btn-group">
    '.($replyUrl?:"").'
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
     '.($replyUrl?"":LAN_FORUM_1003." ".LAN_FORUM_8013).'<span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu pull-right">
+    ';
+*/
+	$text = '<div class="btn-group">
+   '.$replyUrl.'
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
     <span class="sr-only">Toggle Dropdown</span>
     </button>
     <ul class="dropdown-menu pull-right">
