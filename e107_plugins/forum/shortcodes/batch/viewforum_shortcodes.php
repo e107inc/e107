@@ -81,6 +81,7 @@
 			$jumpList = $forum->forumGetAllowed('view');
 
 			$text = '<div class="btn-group">';
+/*
 			$text .=
 			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
 		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -89,7 +90,19 @@
 			</button>
 		    	<ul class="dropdown-menu pull-right">
 		    	';
-
+*/
+			$text .=
+			'<a href="'.($this->var['ntUrl'] ?:"#").
+			'" class="btn btn-primary'.($this->var['ntUrl'] ?"":" disabled").'"'
+			.($this->var['ntUrl'] ?"":" data-toggle='tooltip' title='Please login or register to be allowed'
+	style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>' :'').
+		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    	<span class="caret"></span>
+		    	<span class="sr-only">Toggle Dropdown</span>
+			</button>
+		    	<ul class="dropdown-menu pull-right">
+		    	';
+			
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
