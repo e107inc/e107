@@ -350,7 +350,7 @@
 
 			// Initial ideia, to have a separate shortcode var ($subsc)....
 			//global $forum, $forumId, $threadFrom, $view;
-						global $sc, $forum, $forumId;
+						global $forum, $forumId;
 			//  	var_dump ($forumId);
 			//  	var_dump (vartrue($forumId));
 			//var_dump ($forum->forumGetSubs(vartrue($forum_id)));
@@ -443,12 +443,12 @@
 				// Initial ideia, to have a separate shortcode var ($subsc)....
 				//				$subsc->setVars($subInfo);
 				// Use setVars or addVars???
-					$sc->setVars($subInfo);
+					$this->addVars($subInfo);
 			//echo "--------------------------------------";
 
 			// Initial ideia, to have a separate shortcode var ($subsc)....
 			//	$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false,  $subsc);
-					$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false, $sc);
+					$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false, $this);
 
 			//var_dump ($sc);
 
