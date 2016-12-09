@@ -836,7 +836,7 @@ class e_news_category_item extends e_front_model
 		{
 			return '';
 		}
-		return (string) $this->cat('news_count');
+		return (string) e107::getParser()->toBadge( $this->cat('news_count'));
 	}
 }
 

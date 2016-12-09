@@ -149,15 +149,4 @@ class Hybrid_User_Profile {
 	 */
 	public $zip = null;
 
-  /**
-   * Job title
-   * @var string
-   */
-  public $job_title = null;
-
-  /**
-   * Organization name
-   * @var string
-   */
-  public $organization_name = null;
 }

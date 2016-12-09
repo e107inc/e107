@@ -30,7 +30,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model {
 		}
 
 		if (empty($this->config['fields'])) {
-			$this->config['fields'] = array(
+			$this->config['fields'] = [
 				'id',
 				'first-name',
 				'last-name',
@@ -40,8 +40,7 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model {
 				'date-of-birth',
 				'phone-numbers',
 				'summary',
-				'positions'
-			);
+			];
 		}
 
 		if (!class_exists('OAuthConsumer', false)) {
@@ -132,11 +131,6 @@ class Hybrid_Providers_LinkedIn extends Hybrid_Provider_Model {
 
 			$this->user->profile->email = (string) $data->{'email-address'};
 			$this->user->profile->emailVerified = (string) $data->{'email-address'};
-
-			if ($data->{'positions'}) {
-        $this->user->profile->job_title = (string) $data->{'positions'}->{'position'}->{'title'};
-        $this->user->profile->organization_name = (string) $data->{'positions'}->{'position'}->{'company'}->{'name'};
-      }
 
 			if (isset($data->{'picture-url'})) {
 				$this->user->profile->photoURL = (string) $data->{'picture-url'};

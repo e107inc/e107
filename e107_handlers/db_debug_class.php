@@ -659,7 +659,7 @@ class e107_db_debug {
 	function log($message,$TraceLev=1)
 	{
 
-		if(is_array($message))
+		if(is_array($message) || is_object($message))
 		{
 			$message = "<pre>".print_r($message,true)."</pre>";
 		}
