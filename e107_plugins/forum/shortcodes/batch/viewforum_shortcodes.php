@@ -94,9 +94,9 @@
 			$text .=
 			'<a href="'.($this->var['ntUrl'] ?:"#").
 			'" class="btn btn-primary'.($this->var['ntUrl'] ?"":" disabled").'"'
-			.($this->var['ntUrl'] ?"":" data-toggle='tooltip' title='Please login or register to be allowed'
-	style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>' :'').
-		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+			.($this->var['ntUrl'] ?"":" data-toggle='tooltip' title='".LAN_FORUM_0006."'
+			style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>
+			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 		    	<span class="caret"></span>
 		    	<span class="sr-only">Toggle Dropdown</span>
 			</button>
