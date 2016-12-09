@@ -803,7 +803,7 @@ function sc_buttonsx()
 	//	$url = e107::getUrl()->create('forum/thread/reply', array('id' => $thread->threadId));
 	}
 		$replyUrl = "<a class='btn btn-primary".($url ?"":" disabled")."' "
-			.($url?"":" data-toggle='tooltip' title='Please login or register to be allowed'
+			.($url?"":" data-toggle='tooltip' title='".LAN_FORUM_0046."'
 	style='cursor: not-allowed; pointer-events: all !important;'")." href='".($url ?:"#")."'>".LAN_FORUM_2006."</a>";
 
 	if ($forum->checkPerm($this->var['thread_forum_id'], 'post'))
