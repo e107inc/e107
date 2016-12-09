@@ -82,10 +82,11 @@
 
 			$text = '<div class="btn-group">';
 			$text .=
-			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' : LAN_FORUM_1001." ".LAN_FORUM_8013).
+			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
 		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    	<span class="caret"></span>
-		    	</button>
+		    	'.($this->var['ntUrl'] ? '' : LAN_FORUM_1001." ".LAN_FORUM_8013).'<span class="caret"></span>
+		    	<span class="sr-only">Toggle Dropdown</span>
+			</button>
 		    	<ul class="dropdown-menu pull-right">
 		    	';
 
