@@ -190,12 +190,14 @@ class theme_shortcodes extends e_shortcode
 		
 		// Logged in. 
 		//TODO Generic LANS. (not theme LANs) 	
-		
+
+		$userNameLabel = !empty($parm['username']) ? USERNAME : '';
+
 		$text = '
 		
 		<ul class="nav navbar-nav navbar-right'.$direction.'">
 		<li class="dropdown">{PM_NAV}</li>
-		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20} {USER_AVATAR: shape=circle} '. USERNAME.' <b class="caret"></b></a>
+		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30} {USER_AVATAR: shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
 			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>

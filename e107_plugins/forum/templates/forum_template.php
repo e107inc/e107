@@ -134,8 +134,10 @@ $FORUM_TEMPLATE['main']['forum']			= 	"<tr>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
 											<td class='hidden-xs text-center'>{REPLIESX}</td>
 											<td class='text-center'>{THREADSX}</td>
-											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
+											<td class='hidden-xs text-center'><small>{LASTPOST:type=username} {LASTPOST:type=datelink}</small></td>
 											</tr>";
+
+//{LASTPOST:type=username} + {LASTPOST:type=datelink} can also be replaced by the legacy shortcodes {LASTPOST} or {LASTPOSTUSER} + {LASTPOSTDATE}
 
 $FORUM_TEMPLATE['main']['end']				= "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
 

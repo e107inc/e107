@@ -1415,7 +1415,7 @@ $columnInfo = array(
 									 $text .= "     </select>";
 										   */
 		   
-		$text .= $frm->imagepicker('download_image', $download_image,'',array('mode'=>'download_image', 'legacyPath'=>'{e_FILE}downloadimages'));
+		$text .= $frm->imagepicker('download_image', $download_image,'',array('media'=>'download_image', 'legacyPath'=>'{e_FILE}downloadimages'));
 		  
 	      if ($subAction == "dlm" && $download_image)
 	      {
@@ -1446,7 +1446,7 @@ $columnInfo = array(
 										 $text .= "        </select>";
 						   */
 				 
-				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'',array('mode'=>'download_thumb', 'legacyPath'=>'{e_FILE}downloadthumbs'));
+				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'',array('media'=>'download_thumb', 'legacyPath'=>'{e_FILE}downloadthumbs'));
 				 
 				 
 			    $text .= "
