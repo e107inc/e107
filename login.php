@@ -101,7 +101,11 @@ if (!USER || getperms('0'))
 	
 
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
-	echo LOGINMESSAGE;
+	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
+	{
+		echo LOGINMESSAGE;
+	}
+
 	echo $tp->parseTemplate($LOGIN_TABLE_HEADER,true, $sc);
 	$ns->tablerender($login_message, $text, 'login_page');
 	echo $tp->parseTemplate($LOGIN_TABLE_FOOTER, true, $sc);
