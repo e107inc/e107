@@ -100,6 +100,7 @@ class e_parse_shortcode
 	protected $sc_style             = array();  // Former $sc_style global variable. Internally used - performance reasons
 	protected $editableCodes        = array(); // Array of editable shortcode data.
 	protected $editableActive       = false;
+	protected $nowrap               = false;
 
 	function __construct()
 	{
@@ -460,7 +461,7 @@ class e_parse_shortcode
 		// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
 		}
 
-		e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
+	//	e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
 
 
 		// TODO - throw exception?
