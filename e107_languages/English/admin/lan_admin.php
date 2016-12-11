@@ -466,6 +466,13 @@ define("LAN_PERSONALIZE", "Personalize");
 define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
 define("LAN_DISPLAY_COLUMNS", "Display Columns");
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
+
+define("LAN_SUBJECT", "Subject");
+define("LAN_ITEM", "Item");
+define("LAN_LOCK", "Lock");
+define("LAN_SYSTEM_USER", "System user");
+define("LAN_ENGINE", "Engine");
+
 define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
 define("LAN_AFTER_SUBMIT", "After submit:");
 define("LAN_UNAVAILABLE", "Unavailable");
