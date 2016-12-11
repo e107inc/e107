@@ -1123,7 +1123,35 @@ class e_user_provider
 	
 	public function setProvider($provider)
 	{
-		$provider = ucfirst(strtolower($provider));
+		$provider = strtolower($provider);
+
+		switch($provider)
+		{
+			case 'aol':
+				$provider = 'AOL';
+				break;
+
+			case 'googleopenid':
+				$provider = 'GoogleOpenID';
+				break;
+
+			case 'linkedin':
+				$provider = 'LinkedIn';
+				break;
+
+			case 'myspace':
+				$provider = 'MySpace';
+				break;
+
+			case 'openid':
+				$provider = 'OpenID';
+				break;
+
+			default:
+				$provider = ucfirst($provider);
+				break;
+		}
+
 		if(isset($this->_config['providers'][$provider]) && $this->_config['providers'][$provider]['enabled'])
 		{
 			if($this->_config['providers'][$provider]['enabled'] && vartrue($this->_config['providers'][$provider]['keys']))
