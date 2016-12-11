@@ -28,3 +28,4 @@ div.news-empty  { text-align:center; font-weight: bold }
 div.checkboxes label.checkbox { display: block }
 
 textarea.bbarea { margin:0;  }
+#chatbox-input-block { text-align:center }
