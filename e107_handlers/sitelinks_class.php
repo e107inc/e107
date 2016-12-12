@@ -260,6 +260,8 @@ class sitelinks
 
 		}
 
+
+
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == TRUE) 
 		{
@@ -274,9 +276,13 @@ class sitelinks
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
 		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], TRUE, TRUE); // replace {e_xxxx}
 
-		if(strpos($linkInfo['link_url'],"{") !== FALSE)
+		if(strpos($linkInfo['link_url'],"{") !== false)
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
+		}
+		elseif($linkInfo['link_url'][0] != '/')
+		{
+			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
 		// By default links are not highlighted.
 		
@@ -306,7 +312,7 @@ class sitelinks
 		elseif ($linkInfo['link_url'])
 		{
 			// Only add the e_BASE if it actually has an URL.
-			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url']);
+			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? $linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) 
@@ -333,7 +339,7 @@ class sitelinks
 			// Open link in a new window.  (equivalent of target='_blank' )
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 		}
-
+e107::getDebug()->log($linkInfo['link_url']);
 		// Remove default images if its a button and add new image at the start.
 		if ($linkInfo['link_button'])
 		{
@@ -370,6 +376,8 @@ class sitelinks
 		}
 
 		$_link = $linkstart.$indent.$_link;
+
+			e107::getDebug()->log($linkInfo['link_url']);
 
 		global $SITELINKSTYLE;
 		if(!$SITELINKSTYLE)

@@ -1730,7 +1730,7 @@ e107::getDebug()->log($sc_parameters);
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = varset($options['required'], 1);
-		$options['class'] = vartrue($options['class'],'e-password');
+		$options['class'] = vartrue($options['class'],'e-password tbox');
 
 
 		e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);

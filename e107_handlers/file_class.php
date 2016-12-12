@@ -413,7 +413,7 @@ class e_file
 	/**
 	 *	 Grab a remote file and save it in the /temp directory. requires CURL
 	 *	@param $remote_url
-	 *	@param $local_file
+	 *	@param $local_file string filename to save as
 	 *	@param $type  media, temp, or import
 	 *	@return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
 	 */

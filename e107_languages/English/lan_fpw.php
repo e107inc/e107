@@ -41,10 +41,10 @@ define("LAN_FPW14", "has been submitted by someone with the IP of");
 define("LAN_FPW15", "This does not mean your password has yet been reset.  You must navigate to the link shown below to complete the reset process.");
 define("LAN_FPW16", "If you did not request to have your password reset and you do NOT want it reset, you may simply ignore this email");
 define("LAN_FPW17", "The link below will be valid for 48 hours.");
-define('LAN_FPW18', "Password reset requested");
-define('LAN_FPW19', "Email send failed");
-define('LAN_FPW20', "Email send succeeded");
-define('LAN_FPW21', "User clicked on password reset link");
+define("LAN_FPW18", "Password reset requested");
+define("LAN_FPW19", "Email send failed");
+define("LAN_FPW20", "Email send succeeded");
+define("LAN_FPW21", "User clicked on password reset link");
 
 
 define("LAN_FPW_100", "Forgot your password?");
