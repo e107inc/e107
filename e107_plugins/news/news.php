@@ -36,6 +36,7 @@ class news_front
 	private $newsUrlparms = array();
 	private $text = null;
 	private $pref = array();
+	private $debugInfo = array();
 
 	function __construct()
 	{
@@ -266,20 +267,38 @@ class news_front
 	public function debug()
 	{
 		echo "<div class='alert alert-info'>";
-		echo "<h4>SEF Debug Info</h4>";
-		echo "action= ".$this->action."  ";
-		echo "<br />subaction= ".$this->subAction."  ";
-		echo "<br />route= ".$this->route."  ";
-		echo "<br />e_QUERY= ".e_QUERY."  ";
+		echo "<h4>News Debug Info</h4>";
+		echo "<b>action:</b> ".$this->action."  ";
+		echo "<br /><b>subaction:</b> ".$this->subAction."  ";
+		echo "<br /><b>route</b> ".$this->route."  ";
+		echo "<br /><b>e_QUERY:</b> ".e_QUERY."  ";
 
-		echo "<br />_GET= ".print_r($_GET,true);
+		echo "<br /><b>_GET:</b> ".print_r($_GET,true);
+
+		foreach($this->debugInfo as $key=>$val)
+		{
+			echo "<br /><b>".$key.":</b> ".$val;
+		}
+
+
 		echo "</div>";
 
 
 	}
 
 
+	private function addDebug($key,$message)
+	{
+		if(is_array($message))
+		{
+			$this->debugInfo[$key] = print_a($message,true);
+		}
+		else
+		{
+			$this->debugInfo[$key] = $message;
+		}
 
+	}
 
 	// ----------- old functions ------------------------
 
@@ -553,7 +572,7 @@ class news_front
 
 	private function renderListTemplate()
 	{
-
+		$this->addDebug("Method",'renderListTemplate()');
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
@@ -823,11 +842,13 @@ class news_front
 
 	private function renderViewTemplate()
 	{
+		$this->addDebug("Method",'renderViewTemplate()');
+
 		if($newsCachedPage = checkCache($this->cacheString))
 		{
-			$rows = getNewsCache($this->cacheString,'rows');
+			$rows = $this->getNewsCache($this->cacheString,'rows');
 			e107::getEvent()->trigger('user_news_item_viewed', $rows);
-
+			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
 			return $this->renderCache($newsCachedPage, TRUE);		// This exits if cache used
 		}
 
@@ -870,6 +891,7 @@ class news_front
 			$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 
 			e107::getEvent()->trigger('user_news_item_viewed', $news);
+			$this->addDebug("Event-triggered:user_news_item_viewed", $news);
 
 			//***NEW [SecretR] - comments handled inside now
 			e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
@@ -978,6 +1000,7 @@ class news_front
 
 	private function renderDefaultTemplate()
 	{
+		$this->addDebug("Method",'renderDefaultTemplate()');
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
