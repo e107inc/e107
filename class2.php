@@ -1140,7 +1140,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 *
 */
 
-$tz = vartrue($pref['timezone'],'GMT'); //TODO Adjust on the front-end based on user timezone value. 
+$tz = vartrue($pref['timezone'], 'UTC'); //TODO Adjust on the front-end based on user timezone value.
 
 date_default_timezone_set($tz); // Must be set or PHP Warning thrown. 
 
