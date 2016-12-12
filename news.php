@@ -20,6 +20,13 @@
  */
 
 require_once("class2.php");
+
+if(e_DEBUG === 'news')
+{
+	require_once(e_PLUGIN."news/news.php");
+//	exit;
+}
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");
@@ -185,7 +192,7 @@ if(!empty($_GET['author']) || substr($action,0,4) == 'author=')
 }
 
 
-if(E107_DBG_PATH)
+if(e_DEBUG === 'news')
 {
 	echo "<div class='alert alert-info'>";
 	echo "<h4>SEF Debug Info</h4>";
