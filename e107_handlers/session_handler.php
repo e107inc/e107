@@ -333,8 +333,13 @@ class e_session
 	 * @param string $key
 	 * @return e_session
 	 */
-	public function clear($key)
+	public function clear($key=null)
 	{
+		if($key == null) // clear all under this namespace.
+		{
+			$this->_data = array(); // must be set to array() not unset.
+		}
+
 		unset($this->_data[$key]);
 		return $this;
 	}
@@ -451,7 +456,10 @@ class e_session
 			break;
 
 			default:
-				session_module_name('files');
+				if(!isset($_SESSION))
+				{
+					session_module_name('files');
+				}
 			break;
 		}
 

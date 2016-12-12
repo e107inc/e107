@@ -306,20 +306,27 @@ str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_top
 
 
 
-$FORUM_TEMPLATE = e107::getTemplate('forum','forum'); // required to use v2.x wrapper shortcode wrappers.
 
-if(empty($FORUM_TEMPLATE)) //v1.x fallback.
+
+
+if(empty($FORUM_TEMPLATE))
 {
-	include(e_PLUGIN.'forum/templates/forum_template.php');
+	// include(e_PLUGIN.'forum/templates/forum_template.php');
 
 	// Override with theme template
-	if (file_exists(THEME.'forum_template.php'))
+	if (file_exists(THEME.'forum_template.php')) //v1.x fallback.
 	{
+		include(e_PLUGIN.'forum/templates/forum_template.php');
 		include_once(THEME.'forum_template.php');
 	}
 	elseif(file_exists(THEME.'templates/forum/forum_template.php'))
 	{
+		$FORUM_TEMPLATE = e107::getTemplate('forum','forum');
 		require_once(THEME.'templates/forum/forum_template.php');
+	}
+	else //v2.x
+	{
+		$FORUM_TEMPLATE = e107::getTemplate('forum','forum'); // required to use v2.x wrapper shortcode wrappers.
 	}
 }
 

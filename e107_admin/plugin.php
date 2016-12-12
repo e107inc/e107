@@ -3678,7 +3678,7 @@ $text .= "
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected \$menuTitle = '".vartrue($tp->filter($vars['pluginName']), $pluginTitle)."';
+	protected \$menuTitle = '".vartrue($pluginTitle, $tp->filter($vars['pluginName']))."';
 }
 
 

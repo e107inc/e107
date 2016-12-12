@@ -816,12 +816,16 @@ class siteStats
 
 		$url = str_replace($this->plugFolder,'',$url);
 
+
+
 		if($truncate)
 		{
-			return e107::getParser()->text_truncate($url,50);
+			$result = e107::getParser()->text_truncate($url,50);
+
+			return $result;
 		}
 
-		return $url;
+		return trim($url);
 	}
 
 
@@ -842,6 +846,7 @@ class siteStats
 		$totalArray = array();
 		$totalv = 0;
 		$totalu = 0;
+		$total = 0;
 		foreach ($this -> fileInfo as $k => $v)
 		{
 			$found = (strpos($k,'error/') === 0);
@@ -871,7 +876,7 @@ class siteStats
 			if($info['ttl'])
 			{
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
-				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$this->getLabel($key)."</a>
+				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;text-align:left'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$this->getLabel($key)."</a>
 				</td>\n<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 			}
 		}

@@ -510,6 +510,8 @@ if ($action == 'extend')
 		$news = $sql->fetch();
 		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
 
+		e107::getEvent()->trigger('user_news_item_viewed', $news);
+
 		//***NEW [SecretR] - comments handled inside now
 		e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
 		if(!$news['news_allow_comments'] && isset($_POST['commentsubmit']))
@@ -1006,12 +1008,13 @@ else
 		if ($action == "item")
 		{
 			unset($news['news_render_type']);
+			e107::getEvent()->trigger('user_news_item_viewed', $news);
+			//e107::getDebug()->log($news);
 		}
 		// $template = false;
 		$ix->render_newsitem($news, 'default', '', $template, $param);
-		
-		
-		
+
+
 		$i++;
 	}
 
