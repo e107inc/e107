@@ -219,6 +219,11 @@ class e_user_model extends e_admin_model
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	final public function getTimezone()
+	{
+		return ($this->get('user_timezone') ? $this->get('user_timezone') : 'UTC');
+	}
+
 	/**
 	 * DEPRECATED - will be removed or changed soon (see e_session)
 	 * @return string

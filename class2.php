@@ -1127,24 +1127,12 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	exit();
 }
 
+
+
 /**
  * @addtogroup timezone
  * @{
  */
-
-$tzUser = e107::user(USERID);
-
-if (varset($tzUser['user_timezone'], false) && systemTimeZoneIsValid($tzUser['user_timezone']))
-{
-	date_default_timezone_set($tzUser['user_timezone']);
-	unset($tzUser);
-}
-else
-{
-	$tz = vartrue($pref['timezone'], 'UTC');
-	date_default_timezone_set($tz);
-	unset($tz);
-}
 
 /**
  * Generate an array of time zones.
@@ -1209,13 +1197,7 @@ function systemTimeZoneIsValid($zone = '')
 	return false;
 }
 
-/**
- * @} End of "addtogroup timezone".
- */
-
-
-
-$e_deltaTime=0;
+$e_deltaTime = 0;
 
 if (isset($_COOKIE['e107_tdOffset']))
 {
@@ -1230,6 +1212,10 @@ if (isset($_COOKIE['e107_tzOffset']))
 }
 
 define('TIMEOFFSET', $e_deltaTime);
+
+/**
+ * @} End of "addtogroup timezone".
+ */
 
 
 
@@ -1790,6 +1776,33 @@ function init_session()
 
 	// New user model
 	$user = e107::getUser();
+
+	// Get user timezone.
+	$tzUser = $user->getTimezone();
+
+	// If user timezone is valid.
+	if (varset($tzUser, false) && systemTimeZoneIsValid($tzUser))
+	{
+		// Sets the default timezone used by all date/time functions.
+		date_default_timezone_set($tzUser);
+		// Save timezone for later use.
+		define('USERTIMEZONE', $tzUser);
+
+		unset($tzUser);
+	}
+	else
+	{
+		// Use system default timezone.
+		$pref = e107::getPref();
+		$tz = vartrue($pref['timezone'], 'UTC');
+
+		// Sets the default timezone used by all date/time functions.
+		date_default_timezone_set($tz);
+		// Save timezone for later use.
+		define('USERTIMEZONE', $tz);
+
+		unset($tz);
+	}
 
 	define('USERIP', e107::getIPHandler()->getIP(FALSE));
 	define('POST_REFERER', md5($user->getToken()));
