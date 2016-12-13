@@ -373,20 +373,23 @@ class forum_post_handler
 
 		global $FORUMPOST, $subjectbox, $userbox, $poll_form, $fileattach, $fileattach_alert; // needed for BC.
 
-		$FORUM_POST_TEMPLATE        = array();
-		$FORUM_POSTED_TEMPLATE      = array();
+//--		$FORUM_POST_TEMPLATE        = array();
+//--		$FORUM_POSTED_TEMPLATE      = array();
 		$FORUMREPLYPOSTED           = '';
 		$FORUMTHREADPOSTED          = '';
 		$FORUMPOLLPOSTED            = '';
 
-		$file = "forum_".$type."_template.php";
+//		$file = "forum_".$type."_template.php";
 
-		if($template = e107::getTemplate('forum', 'forum_post'))
+//    var_dump ($type);
+//    var_dump (e107::getTemplate('forum', 'forum_'.$type));
+		if($template = e107::getTemplate('forum', 'forum_'.$type))
 		{
-			$FORUM_POST_TEMPLATE = $template;
+//--		  	$FORUM_POST_TEMPLATE = $template;
 		}
 		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
 		{
+  		$file = "forum_".$type."_template.php";
 			if (is_readable(THEME.$file))
 			{
 				include_once(THEME.$file);
@@ -609,27 +612,29 @@ class forum_post_handler
 
 
 
-		if($type == 'post')
+//--		if($type == 'post' || $type == 'posted')
+		if($template)
 		{
-			$template= (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+//--			$template= (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+			$template= (deftrue('BOOTSTRAP')) ? $template : array('form'=>$FORUMPOST);
 		//	print_a($template);
 			return $this->upgradeTemplate($template);
 		}
 		else
 		{
-			if (deftrue('BOOTSTRAP')) //v2.x
-			{
-				return $FORUM_POSTED_TEMPLATE;
-			}
-			else //v1.x
-			{
+//--			if (deftrue('BOOTSTRAP')) //v2.x
+//--			{
+//--				return $FORUM_POSTED_TEMPLATE;
+//--			}
+//--			else //v1.x
+//--			{
 				return array(
 					 "reply"    => $FORUMREPLYPOSTED,
 					 "thread"   => $FORUMTHREADPOSTED,
 					 "poll"     => $FORUMPOLLPOSTED
 				);
 
-			}
+//--			}
 
 
 		}
