@@ -418,13 +418,13 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_lastpostuser()
 	{
-        return $this->sc_lastpost('username');
+        return $this->sc_lastpost(['type'=>'username']);
 	}
 
 
 	function sc_lastpostdate()
 	{
-        return $this->sc_lastpost('datelink');
+        return $this->sc_lastpost(['type'=>'datelink']);
 	}
 
 
