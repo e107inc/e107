@@ -480,11 +480,13 @@ class news_front
 	private function setNewsCache($cache_tag, $cache_data, $rowData=array())
 	{
 		$e107cache = e107::getCache();
+		$e107cache->setMD5(null,true);
 
 		$e107cache->set($cache_tag, $cache_data);
 		$e107cache->set($cache_tag."_title", defined("e_PAGETITLE") ? e_PAGETITLE : '');
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
-		$e107cache->set($cache_tag."_rows", $rowData);
+
+		$e107cache->set($cache_tag."_rows", e107::serialize($rowData,'json'));
 
 	}
 
@@ -499,10 +501,17 @@ class news_front
 		{
 			$cachetag .= "_".$type;
 		}
+		$this->addDebug('CaheString lookup', $cachetag);
+		e107::getDebug()->log('Retrieving cache string:' . $cachetag);
 
-			e107::getDebug()->log('Retrieving cache string:' . $cachetag);
+		$ret =  e107::getCache()->setMD5(null)->retrieve($cachetag);
 
-		return e107::getCache()->retrieve($cachetag);
+		if($type == 'rows')
+		{
+			return e107::unserialize($ret);
+		}
+
+		return $ret;
 	}
 
 	/**
@@ -512,6 +521,8 @@ class news_front
 	private function checkCache($cacheString)
 	{
 		$e107cache = e107::getCache();
+		$this->addDebug("checkCache", 'true');
+		$e107cache->setMD5(null);
 
 		$cache_data = $e107cache->retrieve($cacheString);
 		$cache_title = $e107cache->retrieve($cacheString."_title");
@@ -844,12 +855,19 @@ class news_front
 	{
 		$this->addDebug("Method",'renderViewTemplate()');
 
-		if($newsCachedPage = checkCache($this->cacheString))
+		if($newsCachedPage = $this->checkCache($this->cacheString))
 		{
+			$this->addDebug("Cache",'active');
 			$rows = $this->getNewsCache($this->cacheString,'rows');
 			e107::getEvent()->trigger('user_news_item_viewed', $rows);
 			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
-			return $this->renderCache($newsCachedPage, TRUE);		// This exits if cache used
+			$text = $this->renderCache($newsCachedPage, TRUE);		// This exits if cache used
+			$text .= $this->renderComments($rows);
+			return $text;
+		}
+		else
+		{
+			$this->addDebug("Cache",'inactive');
 		}
 
 		$sql = e107::getDb();
@@ -968,20 +986,18 @@ class news_front
 				$template = $tmp['item'];
 				unset($tmp);
 			}
+
 			ob_start();
-			$this->ix->render_newsitem($news, 'extend', '', $template, $param);
-			if(e107::getRegistry('news/page_allow_comments'))
-			{
-				global $comment_edit_query; //FIXME - kill me
-				$comment_edit_query = 'comment.news.'.$news['news_id'];
-				e107::getSingleton('comment')->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], FALSE);
-			}
-			$cache_data = ob_get_contents();
+				$this->ix->render_newsitem($news, 'extend', '', $template, $param);
+				$cache_data = ob_get_contents();
 			ob_end_clean();
 
 			$this->setNewsCache($this->cacheString, $cache_data, $news);
 
-			return $cache_data;
+			$text = $cache_data;
+			$text .= $this->renderComments($news);
+
+			return $text;
 		}
 		else
 		{
@@ -995,6 +1011,31 @@ class news_front
 		}
 
 
+	}
+
+
+	private function renderComments($news)
+	{
+		$this->addDebug("Calling", "renderComments()");
+
+	//	if(e107::getRegistry('news/page_allow_comments'))
+		if(isset($news['news_allow_comments']) && empty($news['news_allow_comments'])) // ie. comments active
+		{
+			global $comment_edit_query; //FIXME - kill me
+			$comment_edit_query = 'comment.news.'.$news['news_id'];
+			$comments = e107::getComment()->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], false, true);
+
+
+			if(!empty($comments))
+			{
+				return e107::getRender()->tablerender($comments['caption'],$comments['comment_form'] . $comments['comment'],'comment', true);
+			}
+
+		}
+
+		$this->addDebug("Failed", "renderComments()");
+
+		return '';
 	}
 
 
@@ -1012,7 +1053,7 @@ class news_front
 
 		$interval = $this->pref['newsposts'];
 
-
+		global $NEWSSTYLE;
 
 		switch ($this->action)
 		{
@@ -1151,7 +1192,7 @@ class news_front
 		}	// END - switch($action)
 
 
-		if($newsCachedPage = checkCache($this->cacheString)) // normal news front-page - with cache.
+		if($newsCachedPage = $this->checkCache($this->cacheString)) // normal news front-page - with cache.
 		{
 
 
@@ -1297,7 +1338,7 @@ class news_front
 			// Deprecated
 			// $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".$e107->url->getUrl('core:news', 'main', "action=nextprev&to_action=".($action ? $action : 'default' )."&subaction=".($sub_action ? $sub_action : "0"));
 
-			$sub_action = intval($sub_action);
+		//	$sub_action = intval($sub_action);
 			//    $parms = $news_total.",".ITEMVIEW.",".$newsfrom.",".e_SELF.'?'.($action ? $action : 'default' ).($sub_action ? ".".$sub_action : ".0").".[FROM]";
 
 			$amount = ITEMVIEW;
@@ -1447,7 +1488,10 @@ class news_front
 $newsObj = new news_front;
 require_once(HEADERF);
 $newsObj->render();
-$newsObj->debug();
+if(E107_DBG_BASIC)
+{
+	$newsObj->debug();
+}
 require_once(FOOTERF);
 exit;
 
