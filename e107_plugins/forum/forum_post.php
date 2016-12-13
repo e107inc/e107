@@ -622,8 +622,8 @@ class forum_post_handler
 		//	print_a($template);
 			return $this->upgradeTemplate($template);
 		}
-		else
-		{
+//--		else
+//--		{
 //--			if (deftrue('BOOTSTRAP')) //v2.x
 //--			{
 //--				return $FORUM_POSTED_TEMPLATE;
@@ -635,14 +635,8 @@ class forum_post_handler
 					 "thread"   => $FORUMTHREADPOSTED,
 					 "poll"     => $FORUMPOLLPOSTED
 				);
-
 //--			}
-
-
-		}
-
-
-
+//--		}
 	}
 
 
