@@ -1028,7 +1028,8 @@ class news_front
 
 			if(!empty($comments))
 			{
-				return e107::getRender()->tablerender($comments['caption'],$comments['comment_form'] . $comments['comment'],'comment', true);
+				$text = $comments['comment_form'] . $comments['comment'] .$comments['moderate'];
+				return e107::getRender()->tablerender($comments['caption'], $text,'comment', true);
 			}
 
 		}
