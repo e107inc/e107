@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -205,9 +205,6 @@ class file_inspector {
 
 		 $this->langs = $langs;
 		 $this->lang_short = $lang_short;
-
-
-		//TODO LAN
 
 		$this->glyph = array(
 			'folder_close'      => array('<i class="fa fa-times-circle-o"></i>'),
@@ -1250,12 +1247,12 @@ class file_inspector {
 		$data .= "|     e107 website system\n";
 		$data .= "|\n";
 		$data .= "|     Copyright (C) 2001-2002 Steve Dunstan (jalist@e107.org)\n";
-		$data .= "|     Copyright (C) 2008-2010 e107 Inc (e107.org)\n";
+		$data .= "|     Copyright (C) 2008-2016 e107 Inc (e107.org)\n";
 		$data .= "|\n";
 		$data .= "|     Released under the terms and conditions of the\n";
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
-		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
+		$data .= "|  ";
 		$data .= "|     \$Revision$\n";
 		$data .= "|     \$Id$\n";
 		$data .= "|     \$Author$\n";
@@ -1356,15 +1353,15 @@ class file_inspector {
 		$gb = 1024 * $mb;
 		$tb = 1024 * $gb;
 		if ($size < $kb) {
-			return $size." b";
+			return $size." ".CORE_LAN_B;
 		} else if($size < $mb) {
-			return round($size/$kb)." kB";
+			return round($size/$kb)." ".CORE_LAN_KB;
 		} else if($size < $gb) {
-			return round($size/$mb, $dec)." MB";
+			return round($size/$mb, $dec)." ".CORE_LAN_MB;
 		} else if($size < $tb) {
-			return round($size/$gb, $dec)." GB";
+			return round($size/$gb, $dec)." ".CORE_LAN_GB;
 		} else {
-			return round($size/$tb, $dec)." TB";
+			return round($size/$tb, $dec)." ".CORE_LAN_TB;
 		}
 	}
 	
