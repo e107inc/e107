@@ -219,6 +219,13 @@ class e_user_model extends e_admin_model
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	final public function getTimezone()
+	{
+		// If timezone is not set, we return an empty string in order to use the
+		// default timezone is set for e107.
+		return ($this->get('user_timezone') ? $this->get('user_timezone') : '');
+	}
+
 	/**
 	 * DEPRECATED - will be removed or changed soon (see e_session)
 	 * @return string
