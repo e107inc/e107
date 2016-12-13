@@ -750,7 +750,7 @@ foreach($toffset as $o)
 
 
 
-					$timeZones = timezone_identifiers_list();
+					$timeZones = systemTimeZones();
 
 
 
@@ -763,7 +763,7 @@ $text .= "
 					<tr>
 						<td><label for='timezone'>".PRFLAN_56."</label></td>
 						<td>
-							".$frm->select('timezone', $timeZones, vartrue($pref['timezone'],'GMT'), 'useValues=1')."
+							".$frm->select('timezone', $timeZones, vartrue($pref['timezone'], 'UTC'))."
 						</td>
 					</tr>
 				</tbody>
@@ -771,6 +771,38 @@ $text .= "
 			".pref_submit('date')."
 		</fieldset>
 ";
+
+
+/**
+ * Generate an array of time zones.
+ */
+function systemTimeZones()
+{
+	$zonelist = timezone_identifiers_list();
+	$timeNow = date('m/d/Y H:i', $_SERVER['REQUEST_TIME']);
+
+	$zones = array();
+	foreach($zonelist as $zone)
+	{
+		// Because many time zones exist in PHP only for backward compatibility
+		// reasons and should not be used, the list is filtered by a regular
+		// expression.
+		if(preg_match('!^((Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific)/|UTC$)!', $zone))
+		{
+			$dateTimeZone = new DateTimeZone($zone);
+			$dateTime = new DateTime($timeNow, $dateTimeZone);
+			$offset = $dateTime->format('O');
+			$offset = chunk_split($offset, 3, ':');
+
+			$zones[$zone] = str_replace('_', ' ', $zone) . ' (' . rtrim($offset, ':') . ')';
+		}
+	}
+
+	// Sort time zones alphabetically.
+	asort($zones);
+	return $zones;
+}
+
 
 // =========== Registration Preferences. ==================
 
