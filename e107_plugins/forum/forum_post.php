@@ -383,11 +383,13 @@ class forum_post_handler
 
 //    var_dump ($type);
 //    var_dump (e107::getTemplate('forum', 'forum_'.$type));
-		if($template = e107::getTemplate('forum', 'forum_'.$type))
-		{
+		$template = e107::getTemplate('forum', 'forum_'.$type);
+//--		if($template = e107::getTemplate('forum', 'forum_'.$type))
+//--		{
 //--		  	$FORUM_POST_TEMPLATE = $template;
-		}
-		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+//--		}
+//--		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+		if (empty($template) && empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
 		{
   		$file = "forum_".$type."_template.php";
 			if (is_readable(THEME.$file))
