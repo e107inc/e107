@@ -45,6 +45,12 @@ class ecache {
 	 */
 	public function setMD5($text, $hash=true)
 	{
+		if($text === null)
+		{
+			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
+			return $this;
+		}
+
 		$this->CachePageMD5 = ($hash === true) ? md5($text) : $text;
 		return $this;
 	}
