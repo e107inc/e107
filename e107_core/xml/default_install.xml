@@ -310,7 +310,6 @@ City, State, Country
 		<core name="subnews_resize"></core>
 		<core name="themecss">style.css</core>
 		<core name="thumbnail_quality">75</core>
-		<core name="time_offset">0</core>
 		<core name="timezone">UTC</core>
 		<core name="track_online">1</core>
 		<core name="ue_upgrade">1</core>
