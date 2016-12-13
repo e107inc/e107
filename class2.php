@@ -1127,24 +1127,92 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	exit();
 }
 
-/*
-* Calculate time zone offset, based on session cookie set in e107.js.
-* (Buyer beware: this may be wrong for the first pageview in a session,
-* which is while the user is logged out, so not a problem...)
-*
-* Time offset is SECONDS. Seconds is much better than hours as a base,
-* as some places have 30 and 45 minute time zones.
-* It matches user clock time, instead of only time zones.
-* Add the offset to MySQL/server time to get user time.
-* Subtract the offset from user time to get server time.
-*
-*/
+/**
+ * @addtogroup timezone
+ * @{
+ */
 
-$tz = vartrue($pref['timezone'], 'UTC'); //TODO Adjust on the front-end based on user timezone value.
+$tzUser = e107::user(USERID);
 
-date_default_timezone_set($tz); // Must be set or PHP Warning thrown. 
+if (varset($tzUser['user_timezone'], false) && systemTimeZoneIsValid($tzUser['user_timezone']))
+{
+	date_default_timezone_set($tzUser['user_timezone']);
+	unset($tzUser);
+}
+else
+{
+	$tz = vartrue($pref['timezone'], 'UTC');
+	date_default_timezone_set($tz);
+	unset($tz);
+}
 
-unset($tz);
+/**
+ * Generate an array of time zones.
+ *
+ * @return array
+ *  Array of time zones.
+ */
+function systemTimeZones()
+{
+	// Never do something time consuming twice if you can hold onto the results
+	// and re-use them. So we re-use the statically cached value to save time
+	// and memory.
+	static $zones = array();
+
+	// If Timezone list is not populated yet.
+	if(empty($zones))
+	{
+		$zonelist = timezone_identifiers_list();
+		$timeNow = date('m/d/Y H:i', $_SERVER['REQUEST_TIME']);
+
+		foreach($zonelist as $zone)
+		{
+			// Because many time zones exist in PHP only for backward compatibility
+			// reasons and should not be used, the list is filtered by a regular
+			// expression.
+			if(preg_match('!^((Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific)/|UTC$)!', $zone))
+			{
+				$dateTimeZone = new DateTimeZone($zone);
+				$dateTime = new DateTime($timeNow, $dateTimeZone);
+				$offset = $dateTime->format('O');
+				$offset = chunk_split($offset, 3, ':');
+
+				$zones[$zone] = str_replace('_', ' ', $zone) . ' (' . rtrim($offset, ':') . ')';
+			}
+		}
+
+		// Sort time zones alphabetically.
+		asort($zones);
+	}
+
+	return $zones;
+}
+
+/**
+ * Validate a timezone.
+ *
+ * @param string $zone
+ *  Timezone.
+ *
+ * @return bool
+ */
+function systemTimeZoneIsValid($zone = '')
+{
+	$zones = systemTimeZones();
+	$zoneKeys = array_keys($zones);
+
+	if(in_array($zone, $zoneKeys))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * @} End of "addtogroup timezone".
+ */
+
 
 
 $e_deltaTime=0;
