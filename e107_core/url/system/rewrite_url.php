@@ -42,7 +42,7 @@ class core_system_rewrite_url extends eUrlConfig
 				'name' => LAN_EURL_CORE_SYSTEM, // Module name
 				'label' => LAN_EURL_SYSTEM_REWRITE_LABEL, // Current profile name
 				'description' => LAN_EURL_SYSTEM_REWRITE_DESCR, //
-				'examples'  => array("{SITEURL}system/error404")
+				'examples'  => array("{SITEURL}system/error/404")
 			),
 			'form' => array(), // Under construction - additional configuration options
 			'callbacks' => array(), // Under construction - could be used for e.g. URL generator functionallity

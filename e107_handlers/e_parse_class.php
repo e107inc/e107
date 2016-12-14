@@ -4060,7 +4060,7 @@ class e_parser
 		if($type == 'youtube')
 		{
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
-			$thumbSrc = "http://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
+			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
 			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
 
 		

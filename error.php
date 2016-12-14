@@ -1,115 +1,159 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/error.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * @file
+ * System error pages.
+ */
 
 define("ERR_PAGE_ACTIVE", 'error');
 
-//TODO - template(s)
+//We need minimal mod.
+$_E107 = array(
+	'no_forceuserupdate',
+	'no_online',
+	'no_prunetmp',
+);
 
-//We need minimal mod
-$_E107 = array('no_forceuserupdate', 'no_online', 'no_prunetmp');
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-//start session if required
-if(!session_id()) session_start();
-
-if (!defined('PAGE_NAME')) define('PAGE_NAME','Error page');
-$errorHeader = '';
-$errorText = '';
-$errorNumber = 999;
-$errFrom = isset($_SESSION['e107_http_referer']) ? $_SESSION['e107_http_referer'] : $_SERVER['HTTP_REFERER'];
-$errReturnTo = isset($_SESSION['e107_error_return']) ? $_SESSION['e107_error_return'] : array();
-unset($_SESSION['e107_http_referer'], $_SESSION['e107_error_return']);
-
-$errTo = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-$errorQuery = htmlentities($_SERVER['QUERY_STRING']);
-$base_path = e_HTTP;
-if (is_numeric(e_QUERY)) $errorNumber = intval(e_QUERY);
-
-switch($errorNumber) 
+// Start session if required.
+if(!session_id())
 {
-  case 400 :
-	$errorHeader = "HTTP/1.1 400 Bad Request";
-	$errorText = "<h1><img src='".e_IMAGE_ABS."generic/warning.png' alt='".LAN_ERROR_37."' /> ".LAN_ERROR_35."</h1><div class='installh'>".LAN_ERROR_36."</div><br /><div class='smalltext'>".LAN_ERROR_3."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
-    break;
-  case 401:
-	$errorHeader = "HTTP/1.1 401 Unauthorized";
-	$errorText = "<h1><img src='".e_IMAGE_ABS."generic/warning.png' alt='".LAN_ERROR_37."' /> ".LAN_ERROR_1."</h1><div class='installh'>".LAN_ERROR_2."</div><br /><div class='smalltext'>".LAN_ERROR_3."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
-	break;
-  case 403:
-	$errorHeader = "HTTP/1.1 403 Forbidden";
-	$errorText = "<h1><img src='".e_IMAGE_ABS."generic/warning.png' alt='".LAN_ERROR_37."' /> ".LAN_ERROR_4."</h1><div class='installh'>".LAN_ERROR_5."</div><br /><div class='smalltext'>".LAN_ERROR_6."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
-	break;
-  case 404:
-	$errorHeader = "HTTP/1.1 404 Not Found";
-	$errorText = "<h1><img src='".e_IMAGE_ABS."generic/warning.png' alt='".LAN_ERROR_37."' /> ".LAN_ERROR_7."</h1>".LAN_ERROR_21.'<br />'.LAN_ERROR_9."<br /><br />";
-	if (strlen($errFrom)) $errorText .= LAN_ERROR_23." <a href='{$errFrom}' rel='external'>{$errFrom}</a> ".LAN_ERROR_24." -- ".LAN_ERROR_19."<br /><br />";
-	//.LAN_ERROR_23."<b>{$errTo}</b>".LAN_ERROR_24."<br /><br />" ???
-
-	$errorText .= "<h3>".LAN_ERROR_45."</h3>";
-	if($errReturnTo) 
-	{
-		foreach ($errReturnTo as $url => $label)
-		{
-			$errorText .= "<a href='{$url}'>".$label."</a><br />";
-		}
-		$errorText .= '<br />';
-	}
-	$errorText .= "<a href='{$base_path}index.php'>".LAN_ERROR_20."</a><br />";
-	$errorText .= "<a href='{$base_path}search.php'>".LAN_ERROR_22."</a>";
-	break;
-  case 500:
-	$errorHeader = "HTTP/1.1 500 Internal Server Error";
-	$errorText = "<h1><img src='".e_IMAGE_ABS."generic/warning.png' alt='".LAN_ERROR_37."' /> ".LAN_ERROR_10."</h1><div class='installh'>".LAN_ERROR_11."</div><br /><div class='smalltext'>".LAN_ERROR_12."</div>
-		<br /><div class='installh'>".LAN_ERROR_2."<br /><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
-	break;
-  case 999:
-	if (E107_DEBUG_LEVEL)
-	{
-	  echo LAN_ERROR_33."<br/><pre>\n";
-	  print_r($_SERVER);
-	  print_r($_REQUEST);
-	  echo "\n</pre>\n";
-	}
-	else
-	{
-		header("location: ".e_HTTP."index.php");
-		exit;
-	}
-    break;
-
-  default :
-	$errorText = "<h1>".LAN_ERROR_13." (".$errorQuery.")</h1><div class='installh'>".LAN_ERROR_14."</div><br /><div class='smalltext'>".LAN_ERROR_15."</div>
-		<br /><div class='installh'><a href='{$base_path}index.php'>".LAN_ERROR_20."</a></div>";
-
-//	default:
-//	$errorText = LAN_ERROR_34." e_QUERY = '".e_QUERY."'<br/><a href='{$base_path}index.php'>".LAN_ERROR_20."</a>";
-//	break;
+	session_start();
 }
 
-if ($errorHeader) header($errorHeader);
+// Include language file.
+e107::coreLan('error');
+
+
+/**
+ * Class error_front.
+ */
+class error_front
+{
+
+	/**
+	 * @var
+	 */
+	private $errorNumber;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+		if(is_numeric(e_QUERY))
+		{
+			$this->errorNumber = intval(e_QUERY);
+		}
+
+		$this->renderErrorPage();
+	}
+
+	/**
+	 * Renders the error page.
+	 */
+	public function renderErrorPage()
+	{
+		switch($this->errorNumber)
+		{
+			case 400:
+				header('HTTP/1.1 400 Bad Request');
+
+				$subtitle = LAN_ERROR_35; // Error 400 - Bad Request
+				$caption = LAN_ERROR_45;
+				$content = LAN_ERROR_36 . '<br/>' . LAN_ERROR_3;
+				break;
+
+			case 401:
+				header('HTTP/1.1 401 Unauthorized');
+
+				$subtitle = LAN_ERROR_1; // Error 401 - Authentication Failed
+				$caption = LAN_ERROR_45;
+				$content = LAN_ERROR_2 . '<br/>' . LAN_ERROR_3;
+				break;
+
+			case 403:
+				header('HTTP/1.1 403 Forbidden');
+
+				$subtitle = LAN_ERROR_4; // Error 403 - Access forbidden
+				$caption = LAN_ERROR_45;
+				$content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_6 . '<br/><br/>' . LAN_ERROR_2;
+				break;
+
+			case 404:
+				header('HTTP/1.1 404 Not Found');
+
+				$subtitle = LAN_ERROR_7; // Error 404 - Document Not Found
+				$caption = LAN_ERROR_45;
+				$content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_9;
+
+				$errFrom = isset($_SESSION['e107_http_referer']) ? $_SESSION['e107_http_referer'] : $_SERVER['HTTP_REFERER'];
+
+				if(strlen($errFrom))
+				{
+					$content .= '<br/>';
+					$content .= '<br/>';
+					$content .= LAN_ERROR_23 . ' <a href="' . $errFrom . '" rel="external">' . $errFrom . '</a> ';
+					$content .= LAN_ERROR_24;
+				}
+
+				break;
+
+			case 500:
+				header('HTTP/1.1 500 Internal Server Error');
+
+				$subtitle = LAN_ERROR_10; // Error 500 - Internal server error
+				$caption = LAN_ERROR_14;
+				$content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_12;
+				break;
+
+			case 999:
+				if(!defset('E107_DEBUG_LEVEL', false))
+				{
+					e107::redirect();
+				}
+
+				$this->errorNumber = 'DEFAULT'; // Use default template.
+
+				$subtitle = LAN_ERROR_33;
+				$caption = LAN_ERROR_14;
+				$content = '<pre>' . print_r($_SERVER) . print_r($_REQUEST) . '</pre>';
+				break;
+
+			default:
+				$this->errorNumber = 'DEFAULT'; // Use default template.
+				$errorQuery = htmlentities($_SERVER['QUERY_STRING']);
+
+				$subtitle = LAN_ERROR_13 . ' (' . $errorQuery . ')'; // Error - Unknown
+				$caption = LAN_ERROR_14;
+				$content = LAN_ERROR_15;
+				break;
+		}
+
+		$tp = e107::getParser();
+		$tpl = e107::getCoreTemplate('error', $this->errorNumber);
+		$sc = e107::getScBatch('error');
+
+		$sc->setVars(array(
+			'title'    => LAN_ERROR_TITLE,
+			'subtitle' => $subtitle,
+			'caption'  => $caption,
+			'content'  => $content,
+		));
+
+		$body = $tp->parseTemplate($tpl, true, $sc);
+		e107::getRender()->tablerender('', $body);
+	}
+
+}
+
 
 require_once(HEADERF);
-
-e107::getRender()->tablerender(PAGE_NAME, $errorText);
+new error_front();
 require_once(FOOTERF);
-?>

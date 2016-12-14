@@ -348,7 +348,8 @@ class forum_shortcodes extends e_shortcode
 
 		if(USER && is_array($this->newFlagList) && in_array($this->var['forum_id'], $this->newFlagList))
 		{
-			$url = $this->sc_lastpost('url');
+
+			$url = $this->sc_lastpost(array('type'=>'url'));
 			return "<a href='".$url."'>".IMAGE_new.'</a>';
 		}
 		elseif(empty($this->var['forum_replies']) && defined('IMAGE_noreplies'))
@@ -418,13 +419,13 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_lastpostuser()
 	{
-        return $this->sc_lastpost('username');
+        return $this->sc_lastpost(array('type'=>'username'));
 	}
 
 
 	function sc_lastpostdate()
 	{
-        return $this->sc_lastpost('datelink');
+        return $this->sc_lastpost(array('type'=>'datelink'));
 	}
 
 

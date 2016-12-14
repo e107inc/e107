@@ -81,14 +81,28 @@
 			$jumpList = $forum->forumGetAllowed('view');
 
 			$text = '<div class="btn-group">';
+/*
 			$text .=
-			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' : LAN_FORUM_1001." ".LAN_FORUM_8013).
+			($this->var['ntUrl'] ? '<a href="'.$this->var['ntUrl'].'" class="btn btn-primary">'.LAN_FORUM_1018.'</a>' :'').
 		    	'<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-		    	<span class="caret"></span>
-		    	</button>
+		    	'.($this->var['ntUrl'] ? '' : LAN_FORUM_1001." ".LAN_FORUM_8013).'<span class="caret"></span>
+		    	<span class="sr-only">Toggle Dropdown</span>
+			</button>
 		    	<ul class="dropdown-menu pull-right">
 		    	';
-
+*/
+			$text .=
+			'<a href="'.($this->var['ntUrl'] ?:"#").
+			'" class="btn btn-primary'.($this->var['ntUrl'] ?"":" disabled").'"'
+			.($this->var['ntUrl'] ?"":" data-toggle='tooltip' title='".LAN_FORUM_0006."'
+			style='cursor: not-allowed; pointer-events: all !important;'").'>'.LAN_FORUM_1018.'</a>
+			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+		    	<span class="caret"></span>
+		    	<span class="sr-only">Toggle Dropdown</span>
+			</button>
+		    	<ul class="dropdown-menu pull-right">
+		    	';
+			
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
@@ -336,7 +350,7 @@
 
 			// Initial ideia, to have a separate shortcode var ($subsc)....
 			//global $forum, $forumId, $threadFrom, $view;
-						global $sc, $forum, $forumId;
+						global $forum, $forumId;
 			//  	var_dump ($forumId);
 			//  	var_dump (vartrue($forumId));
 			//var_dump ($forum->forumGetSubs(vartrue($forum_id)));
@@ -429,12 +443,12 @@
 				// Initial ideia, to have a separate shortcode var ($subsc)....
 				//				$subsc->setVars($subInfo);
 				// Use setVars or addVars???
-					$sc->setVars($subInfo);
+					$this->addVars($subInfo);
 			//echo "--------------------------------------";
 
 			// Initial ideia, to have a separate shortcode var ($subsc)....
 			//	$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false,  $subsc);
-					$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false, $sc);
+					$sub_info .= e107::getParser()->parseTemplate($FORUM_VIEW_SUB, false, $this);
 
 			//var_dump ($sc);
 
