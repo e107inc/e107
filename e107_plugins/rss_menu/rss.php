@@ -110,6 +110,8 @@ if (empty($rss_type))
 }
 
 
+while (@ob_end_clean());
+
 // Returning feeds here
 // Conversion table for old urls -------
 $conversion[1] = 'news';
