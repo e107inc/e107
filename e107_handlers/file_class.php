@@ -1255,6 +1255,7 @@ class e_file
 
 	//	$text = 'umask 0022'; //Could correct permissions issue with 0664 files.
 		// Change Dir.
+		$folder = e107::getParser()->filter($folder,'file'); // extra filter to keep RIPS happy.
 
 		switch($type)
 		{
