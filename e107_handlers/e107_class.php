@@ -3036,11 +3036,26 @@ class e107
 
 	/**
 	 * Simple redirect method for developers.
-	 * @param $url string : 'admin' to redirect to admin entry page or leave blank to go to home page (SITEURL)
+	 *
+	 * @param string $url
+	 *  'admin' to redirect to admin entry page or leave blank to go to home page
+	 *  (SITEURL).
+	 * @param int $http_response_code
+	 *  The HTTP status code to use for the redirection, defaults to 302.
+	 *  The valid values for 3xx redirection status codes are defined in RFC 2616
+	 *  and the draft for the new HTTP status codes:
+	 *  - 301: Moved Permanently (the recommended value for most redirects).
+	 *  - 302: Found (default in PHP, sometimes used for spamming search engines).
+	 *  - 303: See Other.
+	 *  - 304: Not Modified.
+	 *  - 305: Use Proxy.
+	 *  - 307: Temporary Redirect.
+	 * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3
+	 * @see https://tools.ietf.org/html/draft-reschke-http-status-308-07
 	 */
-	public static function redirect($url='')
+	public static function redirect($url = '', $http_response_code = 302)
 	{
-		self::getRedirect()->go($url);
+		self::getRedirect()->go($url, true, $http_response_code);
 	}
 
 

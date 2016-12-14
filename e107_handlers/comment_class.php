@@ -1177,7 +1177,7 @@ class comment
 		
 
 		$ret['comment'] = $text;
-		
+		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 

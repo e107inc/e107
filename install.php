@@ -220,7 +220,7 @@ class e_install
 	var $previous_steps;
 	var $stage;
 	var $post_data;
-	var $required = ""; 		//TODO - use for highlighting required fields with css/js.
+	var $required = array(); 		//TODO - use for highlighting required fields with css/js.
 	var $logFile;			// Name of log file, empty string if logging disabled
 	var	$dbLink = NULL;		// DB link - needed for PHP5.3 bug
 	var $session = null;
@@ -398,12 +398,12 @@ class e_install
 
 	function display_required()
 	{
-		if(!$this->required)
+		if(empty($this->required))
 		{
 			return;
 		}
 		$this->required = array_filter($this->required);
-		if(vartrue($this->required))
+		if(!empty($this->required))
 		{
 			$this->template->SetTag("required","<div class='message'>". implode("<br />",$this->required)."</div>");
 			$this->required = array();
@@ -1064,7 +1064,7 @@ class e_install
 			$this->required['u_name'] = LANINS_086; //
 		}
 
-		if(vartrue($this->required['u_name']) || vartrue($this->required['pass1']))
+		if(!empty($this->required['u_name']) || !empty($this->required['pass1']))
 		{
 			return $this->stage_5();
 		}
@@ -1220,7 +1220,7 @@ class e_install
 			 $this->required['sitetheme'] = LANINS_114; // 'Please select a theme.';
 		}
 
-		if(vartrue($this->required['sitetheme']) || vartrue($this->required['sitename']))
+		if(!empty($this->required['sitetheme']) || !empty($this->required['sitename']))
 		{
 			return $this->stage_6();
 		}
@@ -2019,7 +2019,7 @@ class SimpleTemplate
 	var $open_tag = "{";
 	var $close_tag = "}";
 
-	function SimpleTemplate()
+	function __construct()
 	{
 		define("TEMPLATE_TYPE_FILE", 0);
 		define("TEMPLATE_TYPE_DATA", 1);
