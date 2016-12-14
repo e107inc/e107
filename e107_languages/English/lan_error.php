@@ -10,6 +10,7 @@
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Error");
+define("LAN_ERROR_TITLE", "Oops!");
 
 define("LAN_ERROR_1", "Error 401 - Authentication Failed");
 define("LAN_ERROR_2", "The URL you've requested requires a correct username and password. Either you entered an incorrect username/password, or your browser doesn't support this feature.");
@@ -21,7 +22,7 @@ define("LAN_ERROR_6", "Please inform the administrator of the referring page if 
 
 define("LAN_ERROR_7", "Error 404 - Document Not Found");
 define("LAN_ERROR_9", "Please inform the administrator of the referring page if you think this error message has been shown by mistake.");
-define("LAN_ERROR_10", "Error 500 - Malformed Header");
+define("LAN_ERROR_10", "Error 500 - Internal server error");
 define("LAN_ERROR_11", "The server encountered an internal error or misconfiguration and was unable to complete your request");
 define("LAN_ERROR_12", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 define("LAN_ERROR_13", "Error - Unknown");
