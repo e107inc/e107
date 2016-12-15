@@ -717,6 +717,11 @@ class news_front
 
 			}
 		}
+		else
+		{
+
+			$this->addDebug("Query",str_replace('#',MPREFIX, $query));
+		}
 
 
 		if($this->action == 'cat')
@@ -1257,7 +1262,6 @@ class news_front
 
 		if (!($news_total = $sql->gen($query)))
 		{  // No news items
-
 			return "<div class='news-empty'><div class='alert alert-info' style='text-align:center'>".$noNewsMessage."</div></div>";
 
 		}
