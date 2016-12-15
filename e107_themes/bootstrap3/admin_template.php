@@ -314,7 +314,7 @@ $ADMIN_FOOTER = '
 </div><!--/.fluid-container-->
 
 <footer class="center mute"> 
-	'.LAN_COPYRIGHT.' '.date('Y').' e107 Inc (e107.org)<br />
+	'.LAN_E107_COPYRIGHT.' '.date('Y').' e107 Inc (e107.org)<br />
 </footer>
 ';
 
