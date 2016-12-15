@@ -37,6 +37,7 @@ class news_front
 	private $text = null;
 	private $pref = array();
 	private $debugInfo = array();
+//	private $interval = 1;
 
 	function __construct()
 	{
@@ -46,6 +47,8 @@ class news_front
 		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
 
 		$this->pref = e107::getPref();
+
+		// $this->interval = $this->pref['newsposts']-$this>pref['newsposts_archive'];
 
 		require_once(e_HANDLER."news_class.php");
 
@@ -58,11 +61,9 @@ class news_front
 		$this->ix = new news;
 
 		$this->setConstants();
+		$this->setActions();
+		$this->setRoute();
 		$this->detect();
-
-
-
-
 
 		return null;
 	}
@@ -70,28 +71,22 @@ class news_front
 
 	private function detect()
 	{
-		$this->setActions();
-		$this->setRoute();
-
 
 		if ($this->action == 'cat' || $this->action == 'all' || !empty($_GET['tag']) || !empty($_GET['author']))
 		{	// --> Cache
 			$this->text = $this->renderListTemplate();
+			$this->text .= $this->render_newscats();
 			return null;
 		}
 
 		if ($this->action == 'extend')
 		{	// --> Cache
 			$this->text = $this->renderViewTemplate();
+			$this->text .= $this->render_newscats();
 			return null;
 		}
 
-		if ($this->action != "item" && $this->action != 'list' && $this->pref['newsposts_archive'])
-		{
-			// return $this->show_newsarchive($newsAr,$interval);
-		}
-
-		$this->text = $this->renderDefaultTemplate();
+		$this->text .= $this->renderDefaultTemplate();
 
 		if(isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
 		{
@@ -101,6 +96,7 @@ class news_front
 			ob_end_clean();
 		}
 
+		$this->text .= $this->show_newsarchive();
 		$this->text .= $this->render_newscats();
 		return null;
 
@@ -157,10 +153,6 @@ class news_front
 
 		$this->action = $action;
 		$this->subAction= $sub_action;
-
-
-
-
 
 
 	}
@@ -303,46 +295,47 @@ class news_front
 	// ----------- old functions ------------------------
 
 
-	private function show_newsarchive($newsAr, $i = 1)
+	private function show_newsarchive()
 	{
-		global $ns, $gen, $tp, $news_archive_shortcodes, $NEWSARCHIVE, $news2;
 
-		$tp = e107::getParser();
 		// do not show the news archive on the news.php?item.X page (but only on the news mainpage)
-		require_once(e_CORE.'shortcodes/batch/news_archives.php');
+	    if(empty($this->defaultTemplate)  || !empty($this->action))
+	    {
+	        return null;
+	    }
 
-		$textnewsarchive = '';
-		ob_start();
 
-		$i++;			// First entry to show
-		while(isset($newsAr[$i]))
+		global $NEWSARCHIVE;
+
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+
+		$query = $this->getQuery();
+
+		if($newsarchive = $this->checkCache('newsarchive'))
 		{
-			$news2 = $newsAr[$i];
-			// Code from Lisa
-			// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
-			// instead of the actual hyperlink that may have been added to a newstitle on creation
-			$search = array();
-			$replace = array();
-			$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-			$replace[0] = '\\2';
-			$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-			$replace[1] = '\\2';
-			$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-			$replace[2] = '\\2';
-			$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
-			$replace[3] = '\\2';
-			$search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
-			$replace[4] = '\\2';
-			$news2['news_title'] = preg_replace($search, $replace, $news2['news_title']);
-			// End of code from Lisa
+			$this->addDebug("News Archive Cache", 'active');
+			return $newsarchive;
+		}
 
-			$gen = new convert;
-			$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
+		$newsAr = array();
+
+		if ($sql->gen($query))
+		{
+			$newsAr = $sql -> db_getList();
+		}
+
+		$i = $this->interval;
 
 
-			if(!$NEWSARCHIVE){
-				$NEWSARCHIVE ="<div>
-						<table style='width:98%;'>
+		// require_once(e_CORE.'shortcodes/batch/news_archives.php');
+		 $sc = e107::getScBatch('news_archive');
+
+		if(!$NEWSARCHIVE)
+		{
+			$NEWSARCHIVE ="<div>
+					<table  style='width:100%;'>
 						<tr>
 						<td>
 						<div>{ARCHIVE_BULLET} <b>{ARCHIVE_LINK}</b> <span class='smalltext'><i>{ARCHIVE_AUTHOR} @ ({ARCHIVE_DATESTAMP}) ({ARCHIVE_CATEGORY})</i></span></div>
@@ -350,17 +343,24 @@ class news_front
 						</tr>
 						</table>
 						</div>";
-			}
-
-			$textnewsarchive .= $tp->parseTemplate($NEWSARCHIVE, FALSE, $news_archive_shortcodes);
-			$i++;
 		}
 
-		$newsarchive = $ns->tablerender($this->pref['newsposts_archive_title'], $textnewsarchive, 'news_archive', true);
+		$text = '';
 
-		$this->setNewsCache('newsarchive', $newsarchive);
+		foreach($newsAr as $row)
+		{
+			$sc->setVars($row);
+			$text .= $tp->parseTemplate($NEWSARCHIVE, FALSE, $sc);
+		}
 
-		return $newsarchive;
+
+
+		$ret = $ns->tablerender($this->pref['newsposts_archive_title'], $text, 'news_archive', true);
+
+		$this->setNewsCache('newsarchive', $ret);
+
+		return $ret;
+
 	}
 
 
@@ -1048,17 +1048,33 @@ class news_front
 	}
 
 
+	private function getQuery()
+	{
+		$query = "
+				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+				nc.category_meta_keywords, nc.category_meta_description
+				FROM #news AS n
+				LEFT JOIN #user AS u ON n.news_author = u.user_id
+				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
+				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
+				ORDER BY n.news_sticky DESC, ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+
+		return $query;
+
+
+	}
+
+
+
 	private function renderDefaultTemplate()
 	{
 		$this->addDebug("Method",'renderDefaultTemplate()');
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-		if (empty($this->order))
-		{
-			$order = 'news_datestamp';
-		}
-		$order = $tp -> toDB($this->order, true);			/// @todo - try not to use toDB() - triggers prefilter
+
 
 		$interval = $this->pref['newsposts'];
 
@@ -1078,7 +1094,7 @@ class news_front
 				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND n.news_category={$sub_action}
-				ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+				ORDER BY n.news_sticky DESC,".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
 
 				$noNewsMessage = LAN_NEWS_463;
 				break;
@@ -1149,7 +1165,7 @@ class news_front
 				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
-				ORDER BY ".$order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+				ORDER BY ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
 
 				$noNewsMessage = LAN_NEWS_462;
 
@@ -1181,20 +1197,13 @@ class news_front
 				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
 				GROUP by n.news_id
-				ORDER BY news_sticky DESC, ".$order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+				ORDER BY news_sticky DESC, ".$this->order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
 				}
 				else
 				{
-					$query = "
-				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description
-				FROM #news AS n
-				LEFT JOIN #user AS u ON n.news_author = u.user_id
-				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$this->nobody_regexp.")
-				AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
-				AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
-				ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($this->from).",".ITEMVIEW;
+					$query = $this->getQuery();
+
+
 				}
 
 				$noNewsMessage = LAN_NEWS_83;
@@ -1227,6 +1236,9 @@ class news_front
 
 				if ($sql->gen($query))
 				{
+
+
+
 					$newsAr = $sql -> db_getList();
 
 					if($newsarchive = $this->checkCache('newsarchive'))
@@ -1235,7 +1247,7 @@ class news_front
 					}
 					else
 					{
-						$this->show_newsarchive($newsAr,$interval);
+					//	$this->show_newsarchive($newsAr,$interval);
 					}
 				}
 			}
