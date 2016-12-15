@@ -30,6 +30,8 @@ define('PAGE_NAME', LANCONTACT_00);
 
 require_once(HEADERF);
 
+$tp = e107::getParser();
+$ns = e107::getRender();
 
 if (!vartrue($CONTACT_FORM))
  {
@@ -52,7 +54,6 @@ if (!vartrue($CONTACT_FORM))
 
 if(isset($_POST['send-contactus']))
 {
-
 	$error          = "";
 	$ignore         = false;
 

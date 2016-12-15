@@ -47,7 +47,8 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 {
 	if($_GET['action'] == 'download')
 	{
-		$string =  base64_decode($_GET['src']);	
+		$string =  base64_decode($_GET['src']);
+		$string = $tp->filter($string);
 		parse_str($string, $p);
 		
 	//	print_a($p);
@@ -93,7 +94,7 @@ class pluginmanager_form extends e_form
 	//FIXME _ there's a problem with calling this. 
 	function plugin_website($parms, $value, $id, $attributes)
 	{
-		return ($plugURL) ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "";	
+		return (varset($plugURL, false)) ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "";	
 		
 	}
 	
@@ -113,7 +114,7 @@ class pluginmanager_form extends e_form
 		if ($this->plug_vars['administration']['configFile'] && $this->plug['plugin_installflag'] == true)
 		{
 			$conf_file = e_PLUGIN. $this->plug['plugin_path'].'/'.$this->plug_vars['administration']['configFile'];
-			$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($this->plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
+			$conf_title = LAN_CONFIGURE.' '.$tp->toHTML($this->plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 			$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
 			$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 		}
@@ -305,6 +306,7 @@ class pluginManager{
 
     function pluginObserver()
 	{
+		$tp = e107::getParser();
 
         global $user_pref,$admin_log;
         
@@ -316,7 +318,7 @@ class pluginManager{
 
         if(isset($_POST['etrigger_ecolumns']))
 		{
-			$user_pref['admin_pluginmanager_columns'] = $_POST['e-columns'];
+			$user_pref['admin_pluginmanager_columns'] = $tp->filter($_POST['e-columns']);
 			save_prefs('user');
 		}
 
@@ -343,7 +345,7 @@ class pluginManager{
 
 		if($this->action == 'pull' && !empty($this->id))
 		{
-			$info = e107::getPlugin()->getInfo($this->id);
+			$info = e107::getPlugin()->getinfo($this->id);
 
 			if(!empty($info['plugin_path']))
 			{
@@ -762,7 +764,7 @@ class pluginManager{
 			$eplug_folder = '';
 			if(!isset($_POST['uninstall_confirm']))
 			{	// $id is already an integer
-				$this->pluginConfirmUninstall($this->id);
+				$this->pluginConfirmUninstall();
    				return;
 			}
 
@@ -788,7 +790,7 @@ class pluginManager{
 				if(file_exists($_path.'plugin.xml'))
 				{
 					unset($_POST['uninstall_confirm']);
-					$text .= $plugin->install_plugin_xml($this->id, 'uninstall', $_POST); //$_POST must be used.
+					$plugin->install_plugin_xml($this->id, 'uninstall', $tp->filter($_POST)); //$_POST must be used.
 				}
 				else
 				{	// Deprecated - plugin uses plugin.php
@@ -1399,7 +1401,7 @@ class pluginManager{
 					if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 					{
 						$conf_file = e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile'];
-						$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
+						$conf_title = LAN_CONFIGURE.' '.$tp->toHTML($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 					//	$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
 						$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 					}
@@ -1448,7 +1450,7 @@ class pluginManager{
 					'plugin_description'	=> $description,
 					'plugin_compatible'		=> $this->compatibilityLabel($plug_vars['@attributes']['compatibility']),
 				
-					'plugin_website'		=> vartrue($row['authorUrl']),
+					'plugin_website'		=> vartrue($plug['authorUrl']),
 			//		'plugin_url'			=> vartrue($plugURL), // ; //  ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "",
 					'plugin_notes'			=> ''
 					);	
@@ -3022,8 +3024,10 @@ class pluginBuilder
 				
 			}
 			
-			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHtml($newArray['DESCRIPTION_DESCRIPTION'],true));
-			
+			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHTML($newArray['DESCRIPTION_DESCRIPTION'],true));
+
+			$_POST['pluginPrefs'] = $tp->filter($_POST['pluginPrefs']);
+
 			foreach($_POST['pluginPrefs'] as $val)
 			{
 				if(vartrue($val['index']))
@@ -3576,15 +3580,17 @@ TEMPLATE;
 		function step4()
 		{
 			$tp = e107::getParser();
-			$pluginTitle = $_POST['xml']['main-name'] ;
+			$pluginTitle = $tp->filter($_POST['xml']['main-name']);
 			
 			if($_POST['xml'])
 			{
+				$_POST['xml'] = $tp->filter($_POST['xml']);
 				$xmlText =	$this->createXml($_POST['xml']);
 			}
 					
 			if(!empty($_POST['addons']))
 			{
+				$_POST['addons'] = $tp->filter($_POST['addons']);
 				$addonResults = $this->createAddons($_POST['addons']);
 			}
 			
@@ -3794,11 +3800,11 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 		{
 			if(vartrue($val['index']))
 			{
-				$index = $val['index'];
+				$index = $tp->filter($val['index']);
 				$type = vartrue($val['type'],'text');
 				$help = str_replace("'",'', vartrue($val['help']));
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$type."', 'data' => 'str', 'help'=>'".$help."'),\n";
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$tp->filter($type)."', 'data' => 'str', 'help'=>'".$tp->filter($help)."'),\n";
 			}	
 	
 		}
