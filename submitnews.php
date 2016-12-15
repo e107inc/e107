@@ -27,7 +27,7 @@ if (!isset($pref['subnews_class']))
 
 if (!check_class($pref['subnews_class']))
 {
-	$ns->tablerender(NWSLAN_12, NWSLAN_11);
+	e107::getRender()->tablerender(NWSLAN_12, NWSLAN_11);
 	require_once(FOOTERF);
 	exit;
 }
