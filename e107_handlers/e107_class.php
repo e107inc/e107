@@ -3061,50 +3061,13 @@ class e107
 
 
 	/**
-	 * Sends error page contents to the browser as HTML.
+	 * Retrieve error page handler.
 	 *
-	 * @param int $status_code
-	 *  The HTTP status code to use for the error page, defaults to 404.
-	 *  Status codes are defined in RFC 2616.
-	 * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-	 *
-	 * @return void
+	 * @return error_page
 	 */
-	public static function setErrorPage($status_code = 404)
+	public static function getError()
 	{
-		if(!defined('ERR_PAGE_ACTIVE'))
-		{
-			define("ERR_PAGE_ACTIVE", true);
-		}
-
-		$errorPage = self::getSingleton('error_page', true);
-
-		switch ($status_code)
-		{
-			case 400:
-				$errorPage->deliverPageBadRequest();
-				break;
-
-			case 401:
-				$errorPage->deliverPageUnauthorized();
-				break;
-
-			case 403:
-				$errorPage->deliverPageForbidden();
-				break;
-
-			case 404:
-				$errorPage->deliverPageNotFound();
-				break;
-
-			case 500:
-				$errorPage->deliverPageInternalServerError();
-				break;
-			
-			default:
-				$errorPage->deliverPageUnknown();
-				break;
-		}
+		return self::getSingleton('error_page', true);
 	}
 	
 

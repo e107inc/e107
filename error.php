@@ -54,27 +54,27 @@ class error_front
 		switch($this->errorNumber)
 		{
 			case 400:
-				e107::setErrorPage(400);
+				e107::getError()->render(400);
 				break;
 
 			case 401:
-				e107::setErrorPage(401);
+				e107::getError()->render(401);
 				break;
 
 			case 403:
-				e107::setErrorPage(403);
+				e107::getError()->render(403);
 				break;
 
 			case 404:
-				e107::setErrorPage(404);
+				e107::getError()->render(404);
 				break;
 
 			case 500:
-				e107::setErrorPage(500);
+				e107::getError()->render(500);
 				break;
 
 			default:
-				e107::setErrorPage('unknown');
+				e107::getError()->render('unknown');
 				break;
 		}
 	}
