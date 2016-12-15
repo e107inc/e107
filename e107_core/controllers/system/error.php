@@ -48,7 +48,7 @@ class core_system_error_controller extends eController
 	 */
 	public function actionForbidden()
 	{
-		e107::setErrorPage(403);
+		e107::getError()->render(403);
 	}
 
 	/**
@@ -56,7 +56,7 @@ class core_system_error_controller extends eController
 	 */
 	public function actionNotfound()
 	{
-		e107::setErrorPage(404);
+		e107::getError()->render(404);
 	}
 
 }

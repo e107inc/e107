@@ -24,7 +24,22 @@ class error_page
 	/**
 	 * @var
 	 */
-	private $statusCode;
+	private $template = 'DEFAULT';
+
+	/**
+	 * @var
+	 */
+	private $title;
+
+	/**
+	 * @var
+	 */
+	private $caption;
+
+	/**
+	 * @var
+	 */
+	private $content;
 
 	/**
 	 * Constructor.
@@ -37,132 +52,162 @@ class error_page
 	}
 
 	/**
-	 * Cloning is not allowed.
+	 * Singleton is not required, we go for factory instead.
+	 *
+	 * @return error_page
 	 */
-	private function __clone()
+	public static function getInstance()
 	{
+		return e107::getError();
 	}
 
 	/**
-	 * @return void
+	 * Set a "Bad Request" error page.
 	 */
-	protected function _init()
-	{
-	}
-
-	/**
-	 * Delivers a "Bad Request" error page to the browser.
-	 */
-	public function deliverPageBadRequest()
+	private function setPageBadRequest()
 	{
 		header('HTTP/1.1 400 Bad Request', true, 400);
 
-		$title = LAN_ERROR_35; // Error 400 - Bad Request
-		$caption = LAN_ERROR_45;
-		$content = LAN_ERROR_36 . '<br/>' . LAN_ERROR_3;
-
-		$this->statusCode = 400;
-		$this->renderPage($title, $caption, $content);
+		$this->template = 400;
+		$this->title = LAN_ERROR_35;
+		$this->caption = LAN_ERROR_45;
+		$this->content = LAN_ERROR_36;
 	}
 
 	/**
-	 * Delivers a "Authentication Failed" error page to the browser.
+	 * Set a "Authentication Failed" error page.
 	 */
-	public function deliverPageUnauthorized()
+	private function setPageUnauthorized()
 	{
 		header('HTTP/1.1 401 Unauthorized', true, 401);
 
-		$title = LAN_ERROR_1; // Error 401 - Authentication Failed
-		$caption = LAN_ERROR_45;
-		$content = LAN_ERROR_2 . '<br/>' . LAN_ERROR_3;
-
-		$this->statusCode = 401;
-		$this->renderPage($title, $caption, $content);
+		$this->template = 401;
+		$this->title = LAN_ERROR_1;
+		$this->caption = LAN_ERROR_45;
+		$this->content = LAN_ERROR_2 . '<br/>' . LAN_ERROR_3;
 	}
 
 	/**
-	 * Delivers a "Access forbidden" error page to the browser.
+	 * Set a "Access forbidden" error page.
 	 */
-	public function deliverPageForbidden()
+	private function setPageForbidden()
 	{
 		header('HTTP/1.1 403 Forbidden', true, 403);
 
-		$title = LAN_ERROR_4; // Error 403 - Access forbidden
-		$caption = LAN_ERROR_45;
-		$content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_6 . '<br/><br/>' . LAN_ERROR_2;
-
-		$this->statusCode = 403;
-		$this->renderPage($title, $caption, $content);
+		$this->template = 403;
+		$this->title = LAN_ERROR_4;
+		$this->caption = LAN_ERROR_45;
+		$this->content = LAN_ERROR_5 . '<br/>' . LAN_ERROR_6 . '<br/><br/>' . LAN_ERROR_2;
 	}
 
 	/**
-	 * Delivers a "Not Found" error page to the browser.
+	 * Set a "Not Found" error page.
 	 */
-	public function deliverPageNotFound()
+	private function setPageNotFound()
 	{
 		header('HTTP/1.1 404 Not Found', true, 404);
 
-		$title = LAN_ERROR_7; // Error 404 - Document Not Found
-		$caption = LAN_ERROR_45;
-		$content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_9;
-
-		$this->statusCode = 404;
-		$this->renderPage($title, $caption, $content);
+		$this->template = 404;
+		$this->title = LAN_ERROR_7;
+		$this->caption = LAN_ERROR_45;
+		$this->content = LAN_ERROR_21 . '<br/>' . LAN_ERROR_9;
 	}
 
 	/**
-	 * Delivers a "Internal server error" error page to the browser.
+	 * Set a "Internal server error" error page.
 	 */
-	public function deliverPageInternalServerError()
+	private function setPageInternalServerError()
 	{
 		header('HTTP/1.1 500 Internal Server Error', true, 500);
 
-		$title = LAN_ERROR_10; // Error 500 - Internal server error
-		$caption = LAN_ERROR_14;
-		$content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_12;
-
-		$this->statusCode = 500;
-		$this->renderPage($title, $caption, $content);
+		$this->template = 500;
+		$this->title = LAN_ERROR_10;
+		$this->caption = LAN_ERROR_14;
+		$this->content = LAN_ERROR_11 . '<br/>' . LAN_ERROR_12;
 	}
 
 	/**
-	 * Delivers a "Unknown" error page to the browser.
+	 * Set a "Unknown" error page.
 	 */
-	public function deliverPageUnknown()
+	private function setPageUnknown()
 	{
 		header('HTTP/1.1 501 Not Implemented', true, 501);
 
 		$errorQuery = htmlentities($_SERVER['QUERY_STRING']);
 
-		$title = LAN_ERROR_13 . ' (' . $errorQuery . ')'; // Error - Unknown
-		$caption = LAN_ERROR_14;
-		$content = LAN_ERROR_15;
+		$this->template = 'DEFAULT';
+		$this->title = LAN_ERROR_13 . ' (' . $errorQuery . ')';
+		$this->caption = LAN_ERROR_14;
+		$this->content = LAN_ERROR_15;
+	}
 
-		$this->statusCode = 'DEFAULT'; // Use default template.
-		$this->renderPage($title, $caption, $content);
+	/**
+	 * Set error page.
+	 *
+	 * @param int $status_code
+	 *  The HTTP status code to use for the error page, defaults to 404.
+	 *  Status codes are defined in RFC 2616.
+	 * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+	 */
+	public function set($status_code = 404)
+	{
+		switch($status_code)
+		{
+			case 400:
+				$this->setPageBadRequest();
+				break;
+
+			case 401:
+				$this->setPageUnauthorized();
+				break;
+
+			case 403:
+				$this->setPageForbidden();
+				break;
+
+			case 404:
+				$this->setPageNotFound();
+				break;
+
+			case 500:
+				$this->setPageInternalServerError();
+				break;
+
+			default:
+				$this->setPageUnknown();
+				break;
+		}
 	}
 
 	/**
 	 * Renders and delivers an error page to the browser.
 	 *
-	 * @param $title
-	 *  Page title.
-	 * @param $caption
-	 *  Title for info panel.
-	 * @param $content
-	 *  Content for info panel.
+	 * @param int $status_code
+	 *  The HTTP status code to use for the error page, defaults to 404.
+	 *  Status codes are defined in RFC 2616.
+	 * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
 	 */
-	private function renderPage($title, $caption, $content)
+	public function render($status_code = null)
 	{
+		if(!defined('ERR_PAGE_ACTIVE'))
+		{
+			define("ERR_PAGE_ACTIVE", true);
+		}
+
+		if($status_code)
+		{
+			$this->set($status_code);
+		}
+
 		$tp = e107::getParser();
-		$tpl = e107::getCoreTemplate('error', $this->statusCode);
+		$tpl = e107::getCoreTemplate('error', $this->template);
 		$sc = e107::getScBatch('error');
 
 		$sc->setVars(array(
 			'title'    => LAN_ERROR_TITLE, // Oops!
-			'subtitle' => $title,
-			'caption'  => $caption,
-			'content'  => $content,
+			'subtitle' => $this->title,
+			'caption'  => $this->caption,
+			'content'  => $this->content,
 		));
 
 		$body = $tp->parseTemplate($tpl, true, $sc);
