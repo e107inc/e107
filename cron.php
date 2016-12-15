@@ -34,7 +34,7 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	
 	if(!empty($_GET['token']))
 	{
-		$pwd = $_GET['token'];	
+		$pwd = e107::getParser()->filter($_GET['token']);
 	}
 	else
 	{

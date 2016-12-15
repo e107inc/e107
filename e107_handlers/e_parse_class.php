@@ -4422,7 +4422,7 @@ return;
 	 * Filters/Validates using the PHP5 filter_var() method.
 	 * @param $text
 	 * @param $type string str|int|email|url|w|wds
-	 * @return string | boolean
+	 * @return string | boolean | array
 	 */
 	function filter($text, $type='str',$validate=false)
 	{

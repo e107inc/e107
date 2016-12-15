@@ -979,26 +979,29 @@ class lanDeveloper
 	{
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 
 	// ------------------------------ TODO -------------------------------
 
 		if(vartrue($_POST['disabled-unused']) && vartrue($_POST['disable-unused-lanfile']))
 		{
+			$disUnusedLanFile = $tp->filter($_POST['disable-unused-lanfile'], 'file');
+
 			$mes = e107::getMessage();
 
-			$data = file_get_contents($_POST['disable-unused-lanfile']);
+			$data = file_get_contents($disUnusedLanFile);
 
 			$new = $this->disableUnused($data);
-			if(file_put_contents($_POST['disable-unused-lanfile'],$new))
+			if(file_put_contents($disUnusedLanFile,$new))
 			{
-				$mes->addSuccess(LANG_LAN_135.$_POST['disable-unused-lanfile']);//Overwriting 
+				$mes->addSuccess(LANG_LAN_135.$disUnusedLanFile);//Overwriting
 			}
 			else
 			{
-				$mes->addError(LANG_LAN_136.$_POST['disable-unused-lanfile']);//Couldn't overwrite 
+				$mes->addError(LANG_LAN_136.$disUnusedLanFile);//Couldn't overwrite
 			}
 
-			$ns->tablerender(LANG_LAN_137.SEP.$_POST['disable-unused-lanfile'],$mes->render()."<pre>".htmlentities($new)."</pre>");//Processed
+			$ns->tablerender(LANG_LAN_137.SEP.$disUnusedLanFile,$mes->render()."<pre>".htmlentities($new)."</pre>");//Processed
 		}
 
 
@@ -1010,7 +1013,7 @@ class lanDeveloper
 
 	function run()
 	{
-
+		$tp = e107::getParser();
 		$mes = e107::getMessage();
 
 		if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
@@ -1018,7 +1021,7 @@ class lanDeveloper
 
 		//	print_a($_POST);
 			// $lanfile = $_POST['deprecatedLans'];
-			$script = $_POST['deprecatedLans'];
+			$script = $tp->filter($_POST['deprecatedLans']);
 
 			foreach($script as $k=>$scr)
 			{
@@ -1058,7 +1061,7 @@ class lanDeveloper
 
 			if($_POST['deprecatedLanFile'][0] !='auto') //override.
 			{
-				$lanfile = $_POST['deprecatedLanFile'];
+				$lanfile = $tp->filter($_POST['deprecatedLanFile'], 'file');
 			}
 
 
@@ -1068,8 +1071,10 @@ class lanDeveloper
 			$this->commonPhrases = $this->getCommon();
 
 			//	print_a($this->commonPhrases);
+			$reverse = vartrue($_POST['deprecatedLansReverse']);
+			$reverse = $tp->filter($reverse);
 
-			if($res = $this->unused($lanfile, $script, vartrue($_POST['deprecatedLansReverse'])))
+			if($res = $this->unused($lanfile, $script, $reverse))
 			{
 				return $res;
 			//	$ns->tablerender($res['caption'],$mes->render(). $res['text']);
@@ -1243,7 +1248,7 @@ class lanDeveloper
 
 		$text .= "
 								</select> ".
-			$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse'],'class=select')." ";
+			$frm->select('deprecatedLansReverse',$depOptions,e107::getParser()->filter($_POST['deprecatedLansReverse']),'class=select')." ";
 
 		$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR."English/",e_THEME);
 		$replace = array("Plugins ","Admin ","Core ","Themes ");

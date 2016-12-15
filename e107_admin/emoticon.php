@@ -54,17 +54,17 @@ if (isset($_POST['active']))
 
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+e107::getRender()->tablerender($caption, $mes->render() . $text);
 
 /* get packs */
 require_once(e_HANDLER."file_class.php");
 $fl = e107::getFile();
 $emote = new emotec;
 $one_pack = FALSE;
-
+$filtered = e107::getParser()->filter($_POST);
 
 // Check for pack-related buttons pressed
-foreach($_POST as $key => $value)
+foreach($filtered as $key => $value)
 {
 	if(strstr($key, "subPack_"))
 	{
