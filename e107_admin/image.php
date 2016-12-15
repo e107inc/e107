@@ -588,7 +588,8 @@ class media_form_ui extends e_admin_form_ui
 			return;
 		}	
 		
-		$tagid = vartrue($_GET['tagid']); 
+		$tagid = vartrue($_GET['tagid']);
+		$tagid = e107::getParser()->filter($tagid);
 		$path = $this->getController()->getListModel()->get('media_url');
 		$title = $this->getController()->getListModel()->get('media_name');
 		$id = $this->getController()->getListModel()->get('media_id');
@@ -935,14 +936,14 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getAction() == 'youtube')
 		{
-			$parm = array('search'=>$_GET['search']);	
+			$parm = array('search' => $tp->filter($_GET['search']));	
 			echo $this->videoTab($parm);
 			exit;
 		}
 		
 		if($this->getAction() == 'glyph')
 		{
-			$parm = array('search'=>$_GET['search']);	
+			$parm = array('search' => $tp->filter($_GET['search']));	
 			echo $this->glyphTab($parm);
 			exit;
 		}
