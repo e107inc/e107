@@ -385,7 +385,8 @@ class mailout_main_ui extends e_admin_ui
 
 		if($_GET['action'] == 'preview')
 		{
-			echo $this->previewPage($_GET['id'], $_GET['user']);
+			$tp = e107::getParser();
+			echo $this->previewPage($tp->filter($_GET['id']), $tp->filter($_GET['user']));
 			exit;
 		}
 		
@@ -480,7 +481,7 @@ class mailout_main_ui extends e_admin_ui
 
 			$text = $this->getDKIMPublicKey();
 			e107::getMessage()->addInfo("Add the following to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
-			e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+			e107::getMessage()->addInfo("Consider testing it using this website: http://dkimvalidator.com");
 
 			return false;
 		}
@@ -515,7 +516,7 @@ class mailout_main_ui extends e_admin_ui
 
 		$text = $tp->lanVars($dnsEntry, $pubString);
 		e107::getMessage()->addInfo("Add the following ".$keyLength." bit key to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
-		e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+		e107::getMessage()->addInfo("Consider testing it using this website: http://dkimvalidator.com");
 	}
 
 
@@ -1364,7 +1365,7 @@ class mailout_main_ui extends e_admin_ui
 			$temp['sendmail'] = '';
 		}
 
-		$temp['bulkmailer']     = $_POST['bulkmailer'];
+		$temp['bulkmailer']     = $tp->filter($_POST['bulkmailer']);
 		$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
 		$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
 		$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
@@ -1595,7 +1596,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$text .= "<a href='".$link."' class='btn btn-default' title='Send Mail'>".E_32_MAIL."</a>";
 			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
 
-			$text .= $this->renderValue('options',$value,$att,$id);
+			$text .= $this->renderValue('options',$value,$attributes,$id);
 
 			return $text;
 		}
@@ -1609,9 +1610,9 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$text = "<span class='btn-group'>";
 			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
 			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
-		
-			$att['readParms']['editClass'] = e_UC_NOBODY;
-			$text .= $this->renderValue('options',$value,$att,$id);
+
+			$attributes['readParms']['editClass'] = e_UC_NOBODY;
+			$text .= $this->renderValue('options',$value,$attributes,$id);
 			$text .= "</span>";
 			return $text;
 		}
@@ -1681,7 +1682,7 @@ class mailout_recipients_ui extends e_admin_ui
 			$id = $row['mail_detail_id'];
 			$array[$id] = $id." : ".vartrue($row['mail_title'], "(No Name)");	
 		}
-		$this->fields['mail_detail_id']['writeParms'] = $array;
+		$this->fields['mail_detail_id']['writeParms'] = varset($array, array());
 		
 		
 		$this->mailStatus = array(
