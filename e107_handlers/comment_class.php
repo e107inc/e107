@@ -1422,7 +1422,7 @@ class comment
 		 */
 
 
-		function getCommentData($amount = '', $from = '', $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
+		function getCommentData($amount = '', $from = 0, $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
 		{
 
 			if($this->engine != 'e107')
