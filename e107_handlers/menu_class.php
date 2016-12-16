@@ -140,7 +140,7 @@ class e_menu
 	 */
 	public function pref()
 	{
-		return $this->_current_parms;
+		return (empty($this->_current_parms)) ?  array() : $this->_current_parms;
 	}
 
 

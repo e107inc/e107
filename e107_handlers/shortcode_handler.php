@@ -1007,7 +1007,12 @@ class e_parse_shortcode
 			$parm = trim($parm);
 			$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 		}
-		
+
+		if(empty($parm))
+		{
+			$parm = array();
+		}
+
 		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{

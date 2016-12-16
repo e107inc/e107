@@ -512,10 +512,10 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_extended($parm='')
+	function sc_extended($parm=null)
 	{
 
-		$class = vartrue($parm['class']) ? "class='".$parm['class']."'" : '';
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
 
 		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
@@ -931,6 +931,10 @@ class news_shortcodes extends e_shortcode
 	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
 	function sc_newscaticon($parm = array())
 	{
+		if(is_string($parm))
+		{
+			$parm = array('type'=>$parm); 
+		}
 		// BC
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
 		if (!$category_icon) { return ''; }
@@ -955,7 +959,7 @@ class news_shortcodes extends e_shortcode
 
 		$icon = e107::getParser()->toIcon($category_icon, $parm);
 
-		switch($parm)
+		switch($parm['type'])
 		{
 			/* @deprecated - Will cause issues with glyphs */
 			case 'src':
