@@ -2072,6 +2072,7 @@ function template_data()
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="'.e_THEME.'bootstrap3/css/bootstrap-dark.min.css" rel="stylesheet">
 		<link href="'.e_THEME.'bootstrap3/admin_style.css" rel="stylesheet">
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<style type="text/css">
 		
 		body 					{  padding-top: 40px; padding-bottom: 40px; background-color: #181818; }
