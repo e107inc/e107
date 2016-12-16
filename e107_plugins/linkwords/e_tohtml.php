@@ -245,7 +245,9 @@ class e_tohtml_linkwords
 
 		// Consider next line - stripos is PHP5, and mb_stripos is PHP >= 5.2 - so may well often require handling
 //		while (($first < $limit) && (stripos($text,$this->word_list[$first]) === FALSE))   { $first++; };		// *utf   (stripos is PHP5 - compatibility handler implements)
-		while (($first < $limit) && (strpos($tp->ustrtolower($text), $this->word_list[$first]) === false))
+		$needle = $this->word_list[$first];
+
+		while (($first < $limit) && (strpos($tp->ustrtolower($text), $needle) === false))
 		{
 			$first++;
 		}		// *utf
