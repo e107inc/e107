@@ -62,6 +62,36 @@ class error_page
 	}
 
 	/**
+	 * Change title on the error page.
+	 *
+	 * @param $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
+
+	/**
+	 * Change panel caption on the error page.
+	 *
+	 * @param $caption
+	 */
+	public function setCaption($caption)
+	{
+		$this->caption = $caption;
+	}
+
+	/**
+	 * Change panel content on the error page.
+	 *
+	 * @param $content
+	 */
+	public function setContent($content)
+	{
+		$this->content = $content;
+	}
+
+	/**
 	 * Set a "Bad Request" error page.
 	 */
 	private function setPageBadRequest()
