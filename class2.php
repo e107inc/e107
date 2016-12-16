@@ -518,7 +518,7 @@ $pref = e107::getPref();
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
 // NEW - force ssl
-if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
+if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE') && empty($_E107['cli']))
 {
 	// NOTE: e_SSL_DISABLE check is here to help webmasters fix 'ssl_enabled'
 	// if set by accident on site with no SSL support - just define it in e107_config.php
