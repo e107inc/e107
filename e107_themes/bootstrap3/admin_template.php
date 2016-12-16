@@ -17,12 +17,7 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-
-
-
-// include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
-
-
+e107::lan('theme', 'admin',true);
 
 $E_ADMIN_NAVIGATION['start'] = '<ul class="nav navbar-nav navbar-left">';
 
