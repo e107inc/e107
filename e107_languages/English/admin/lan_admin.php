@@ -479,7 +479,4 @@ define("LAN_GO_TO_LIST", "go to list");
 define("LAN_CREATE_ANOTHER", "create another");
 define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
-define("LAN_CHANGE_LANGUAGE", "Change Language");
-define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
-define("LAN_E107_COPYRIGHT", "Copyright &copy; 2008 - ");
 
