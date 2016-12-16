@@ -396,13 +396,15 @@ class poll
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 
-		$voteTotal = array_sum($voteArray);
+		$voteTotal = intval(array_sum($voteArray));
 		$percentage = array();
 
 		if (count($voteArray))
 		{
 			foreach ($voteArray as $votes)
 			{
+				$votes = intval($votes);
+
 				if ($voteTotal > 0)
 				{
 					$percentage[] = round(($votes/$voteTotal) * 100, 2);
