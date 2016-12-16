@@ -291,8 +291,7 @@ define("LAN_DISPLAYOPT", "Edit Display Options");
 // define("LAN_GOPAGE", "Go to page:");
 define("LAN_DATESTAMP","Date stamp");
 define("LAN_TIMESTAMP","Timestamp");
-define("LAN_IP","IP");
-define("LAN_IP_ADDRESS","IP Address");
+
 define("LAN_PAGE","PAGE");
 define("LAN_AGENT","AGENT");
 define("LAN_LANG","Lang.");

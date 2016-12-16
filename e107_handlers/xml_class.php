@@ -1027,7 +1027,7 @@ class xmlClass
 	/**
 	 * Import an e107 XML file into site preferences and DB tables
 	 *
-	 * @param path $file - e107 XML file path
+	 * @param string $file - e107 XML file path
 	 * @param string $mode[optional] - add|replace
 	 * @param boolean $noLogs [optional] tells pref handler to disable admin logs when true (install issues)
 	 * @param boolean $debug [optional]
@@ -1114,6 +1114,12 @@ class xmlClass
 					{
 						$error = $sql->getLastErrorText();
 						$lastQry = $sql->getLastQuery();
+
+						if(is_array($lastQry))
+						{
+							$lastQry = $lastQry['PREPARE'];
+						}
+
 						$ret['failed'][] = $table. "\n[".$error."]\n".$lastQry."\n\n";
 					}
 				}
