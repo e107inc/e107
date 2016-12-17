@@ -1191,11 +1191,11 @@ class e_file
 	 *		['error']	- error code. 0 = 'good'. 1..4 main others, although up to 8 defined for later PHP versions
 	 *	Files stored in server's temporary directory, unless another set
 	 */
-	public function getUploaded($uploaddir, $fileinfo = false, $options = null)
+	public function getUploaded($uploaddir, $fileinfo = false, $options = array())
 	{
 		require_once(e_HANDLER."upload_handler.php");
 
-		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP)
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir = e_AVATAR_UPLOAD)
 		{
 			$path = $uploaddir;
 		}
@@ -1207,7 +1207,6 @@ class e_file
 		{
 			return false;
 		}
-
 
 		return process_uploaded_files($path, $fileinfo, $options);
 
