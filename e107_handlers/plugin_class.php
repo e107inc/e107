@@ -3326,12 +3326,12 @@ class e107plugin
 		$eplug_icon_small   = null;
 
 
-
+		ob_start();
 		if (include(e_PLUGIN.$plugName.'/plugin.php'))
 		{
 			//$mes->add("Loading ".e_PLUGIN.$plugName.'/plugin.php', E_MESSAGE_DEBUG);
 		}
-
+		ob_end_clean();
 		$ret = array();
 
 		//		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
