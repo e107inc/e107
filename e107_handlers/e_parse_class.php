@@ -3841,6 +3841,9 @@ class e_parser
 			return null;
 		}
 
+			e107::getDebug()->log($file);
+		e107::getDebug()->log($parm);
+
 
 		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false) //v2.x path.
 		{

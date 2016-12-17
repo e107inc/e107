@@ -1598,7 +1598,7 @@ class news_form_ui extends e_admin_form_ui
 			$url = e107::getParser()->thumbUrl($curval,'aw=80');
 			$link = e107::getParser()->replaceConstants($curval);
 
-			return "<a class='e-dialog' href='{$link}'><img src='{$url}' alt='{$curval}' /></a>";
+			return "<a class='e-modal' href='{$link}'><img src='{$url}' alt='".basename($curval)."' /></a>";
 		}
 
 

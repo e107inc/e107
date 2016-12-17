@@ -1892,8 +1892,13 @@ class e_admin_controller
 	 * @param string $title
 	 * @return e_admin_controller
 	 */
-	public function addMetaTitle($title)
+	public function addMetaTitle($title=null)
 	{
+		if($title === null)
+		{
+			return $this;
+		}
+
 		$this->getResponse()->addMetaTitle($title);
 		return $this;
 	}
@@ -1905,8 +1910,13 @@ class e_admin_controller
 	 * @param string $content
 	 * @return e_admin_controller
 	 */
-	public function addHeader($content)
+	public function addHeader($content=null)
 	{
+		if($content === null)
+		{
+			return $this;
+		}
+
 		$this->getResponse()->addHeaderContent(vartrue($content));
 		return $this;
 	}
@@ -3537,7 +3547,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	function getJoinField($field)
 	{
-		return vartrue($this->joinField[$field],false);	
+		return isset($this->joinField[$field]) ? $this->joinField[$field] : false; // vartrue($this->joinField[$field],false);
 	}
 
 	/**
@@ -3831,13 +3841,13 @@ class e_admin_controller_ui extends e_admin_controller
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
-			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || !vartrue($var['type']))
+			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']))
 			{
 				continue;
 			}
 
 			// select FROM... for main table
-			if(vartrue($var['alias']) && vartrue($var['__tableField']))
+			if(!empty($var['alias']) && !empty($var['__tableField']))
 			{
 				$tableSFieldsArr[] = $var['__tableField'];
 			}
