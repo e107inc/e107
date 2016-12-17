@@ -309,7 +309,7 @@ $ADMIN_FOOTER = '
 </div><!--/.fluid-container-->
 
 <footer class="center mute"> 
-	'.LAN_THEMEPREF_11.' '.date('Y').' e107 Inc (e107.org)<br />
+	Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
 </footer>
 ';
 
