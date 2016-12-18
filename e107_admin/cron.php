@@ -56,13 +56,13 @@ class cron_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = PAGE_NAME;
+	protected $menuTitle = LAN_CRON_RUNNING;
 }
 
 class cron_admin_ui extends e_admin_ui
 {
 		
-		protected $pluginTitle	= PAGE_NAME;
+		protected $pluginTitle	= LAN_CRON_RUNNING;
 		protected $pluginName	= 'core';
 		protected $table		= "cron";
 		protected $pid			= "cron_id";
@@ -575,7 +575,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		{
 			$text = "<div class='btn-group'>";
 			$text .= $this->renderValue('options',$value,'',$id);
-			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', 'Execute');
+			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', LAN_CRON_RUNNING);
 			$text .= "</div>";
 			return $text;
 		}
