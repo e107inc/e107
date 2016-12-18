@@ -42,13 +42,14 @@ class news_event // plugin-folder + '_event'
 	{
 		if($data['comment_type'] !== 'news' && !empty($data['comment_type']))
 		{
-			file_put_contents(e_LOG."news.event.log", print_r($data,true));
 			return false;
 		}
 
 		if(!empty($data['comment_item_id']))
 		{
-			e107::getDb()->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($data['comment_item_id']));
+			$id = intval($data['comment_item_id']);
+			e107::getDb()->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".$id);
+			e107::getCache()->clear('news_php_extend_'.$id.'_');
 		}
 
 	}
