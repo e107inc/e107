@@ -16,10 +16,6 @@ if (!defined('e107_INIT'))
 	require_once("../../class2.php");
 }
 
-if(e_DEBUG !== 'news')
-{
-	exit;
-}
 
 class news_front
 {
