@@ -55,6 +55,12 @@ class ecache {
 		return $this;
 	}
 
+
+	public function getMD5()
+	{
+		return $this->CachePageMD5;
+	}
+
 	/**
 	* @return string
 	* @param string $query

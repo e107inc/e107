@@ -934,6 +934,7 @@ class e_media
 		
 		if($data = $cache->retrieve($type,360,true))
 		{
+			$cache->setMD5(null);
 			return e107::unserialize($data);
 		}
 		
@@ -966,7 +967,8 @@ class e_media
 
 		$data = e107::serialize($icons);
 
-		$cache->set($type,$data,true);		
+		$cache->set($type,$data,true);
+		$cache->setMD5(null);
 		return $icons; 
 	
 	}
