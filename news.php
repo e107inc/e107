@@ -21,10 +21,10 @@
 
 require_once("class2.php");
 
-if(e_DEBUG === 'news')
+if(!deftrue('e_LEGACY_NEWS')) // subject to removal at any time.
 {
 	require_once(e_PLUGIN."news/news.php");
-//	exit;
+	exit;
 }
 
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
