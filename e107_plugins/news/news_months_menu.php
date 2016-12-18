@@ -23,7 +23,7 @@ if(!empty($parm))
 	}
 
 }
-$cached = false;
+
 
 if(false === $cached)
 {
