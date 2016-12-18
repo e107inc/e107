@@ -73,5 +73,10 @@ $text .= $tp->parseTemplate($TEMPLATE['end'], true, $comment_menu_shortcodes);
 
 $title = e107::getConfig('menu')->get('comment_caption');
 
+if(!empty($title[e_LANGUAGE]))
+{
+	$title = $title[e_LANGUAGE];
+}
+
 e107::getRender()->tablerender(defset($title, $title), $text, 'comment_menu');
 ?>
