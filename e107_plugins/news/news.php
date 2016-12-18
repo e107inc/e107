@@ -156,25 +156,25 @@ class news_front
 
 	private function setRoute()
 	{
-		$newsUrlparms = array('page' => '--FROM--');
+		$this->newsUrlparms = array('page' => '--FROM--');
 		if($this->subAction)
 		{
 
 			switch ($this->action)
 			{
 				case 'list':
-					$newsUrlparms['id'] = $this->subAction;
+					$this->newsUrlparms['id'] = $this->subAction;
 					$newsRoute = 'list/category';
 				break;
 
 				case 'cat':
-					$newsUrlparms['id'] = $this->subAction;
+					$this->newsUrlparms['id'] = $this->subAction;
 					$newsRoute = 'list/short';
 				break;
 
 				case 'day':
 				case 'month':
-					$newsUrlparms['id'] = $this->subAction;
+					$this->newsUrlparms['id'] = $this->subAction;
 					$newsRoute = 'list/'.$this->action;
 				break;
 
@@ -186,7 +186,7 @@ class news_front
 		elseif($this->action == 'all')
 		{
 			$newsRoute = 'list/all';
-			$newsUrlparms['id'] = $this->subAction;
+			$this->newsUrlparms['id'] = $this->subAction;
 		}
 		else
 		{
@@ -816,7 +816,7 @@ class news_front
 		$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
 
 
-		// e107::getDebug()->log($newsUrlparms);
+		$this->addDebug('newsUrlParms',$this->newsUrlparms);
 
 		$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
@@ -1509,7 +1509,7 @@ class news_front
 $newsObj = new news_front;
 require_once(HEADERF);
 $newsObj->render();
-if(E107_DBG_BASIC)
+if(E107_DBG_BASIC && ADMIN)
 {
 	$newsObj->debug();
 }
