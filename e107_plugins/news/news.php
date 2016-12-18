@@ -586,9 +586,14 @@ class news_front
 		global $NEWSLISTSTYLE, $NEWSLISTTITLE;
 
 
-		if($newsCachedPage = checkCache($this->cacheString))
+		if($newsCachedPage = $this->checkCache($this->cacheString))
 		{
+			$this->addDebug("Cache", 'active');
 			return $this->renderCache($newsCachedPage, TRUE);
+		}
+		else
+		{
+			$this->addDebug("Cache", 'inactive: '.$this->cacheString);
 		}
 
 		$category = intval($this->subAction);
@@ -862,6 +867,7 @@ class news_front
 			$rows = $this->getNewsCache($this->cacheString,'rows');
 			e107::getEvent()->trigger('user_news_item_viewed', $rows);
 			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
+			$this->setNewsFrontMeta($rows);
 			$text = $this->renderCache($newsCachedPage, TRUE);		// This exits if cache used
 			$text .= $this->renderComments($rows);
 			return $text;
@@ -1237,8 +1243,6 @@ class news_front
 
 				if ($sql->gen($query))
 				{
-
-
 
 					$newsAr = $sql -> db_getList();
 
