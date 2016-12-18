@@ -858,13 +858,16 @@ class comment
 						unset($edata_li['comment_ip']);*/
 
 						e107::getEvent()->trigger("postcomment", $edata_li);
+						e107::getEvent()->trigger('user_comment_posted', $edata_li);
 						e107::getCache()->clear("comment");
 
+						// Moved to e107_plugins/news/e_event.php
+/*
 
 						if ((empty($table) || $table == "news") && !$this->moderateComment($pref['comments_moderate']))
 						{
 							$sql->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
-						}
+						}*/
 
 						//if rateindex is posted, enter the rating from this user
 					//	if ($rateindex)
@@ -1521,7 +1524,7 @@ class comment
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;
-								$ret['comment_url'] = e107::getUrl()->create('user/pofile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('user/profile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
 							}
 							break;
 						case 'page': //	Custom Page
