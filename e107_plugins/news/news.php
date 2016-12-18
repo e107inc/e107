@@ -295,7 +295,7 @@ class news_front
 	{
 
 		// do not show the news archive on the news.php?item.X page (but only on the news mainpage)
-	    if(empty($this->defaultTemplate)  || !empty($this->action))
+	    if(empty($this->defaultTemplate)  || !empty($this->action) || empty($this->pref['newsposts_archive']))
 	    {
 	        return null;
 	    }
