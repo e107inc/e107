@@ -112,7 +112,7 @@ class contact_shortcodes extends e_shortcode
 	
 	function sc_contact_subject($parm='')
 	{
-		return "<input type='text' title='".LANCONTACT_19."' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
+		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
 	}
 	
 	
