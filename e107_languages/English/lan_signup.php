@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2015 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -50,7 +50,7 @@ define("LAN_SIGNUP_13", "You can now log in from the Login box, or from [here]."
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
-define("LAN_SIGNUP_17", "Please certify you are age 13 or over.");
+define("LAN_SIGNUP_17", "Please confirm that you are age 13 or over.");
 define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information:");
 //define("LAN_SIGNUP_19", "Username:"); // now LAN_LOGINNAME
 //define("LAN_SIGNUP_20", "Password:"); // now LAN_PASSWORD
