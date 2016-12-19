@@ -3864,6 +3864,10 @@ class e_parser
 			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
 
 		}
+		elseif(strpos($file,'http')===0)
+		{
+			$path = $file;
+		}
 		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
 			$path = $tp->replaceConstants($file,'abs');
@@ -3890,6 +3894,8 @@ class e_parser
 		{
 			$path = $file;
 		}
+
+
 
 		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
 		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive";
