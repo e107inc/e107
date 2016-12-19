@@ -691,8 +691,8 @@ require_once("footer.php");
  */
 function headerjs()
 {
-	require_once(e_HANDLER.'js_helper.php');
-	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
+/*	require_once(e_HANDLER.'js_helper.php');
+
 	$ret = "
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
@@ -700,6 +700,6 @@ function headerjs()
 		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
 
-	return $ret;
+	return $ret;*/
 }
 ?>
