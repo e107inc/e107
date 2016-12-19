@@ -449,7 +449,7 @@ class banner_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read': // List Page
-				return e107::getParser()->toImage($curVal);
+				return e107::getParser()->toImage($curVal, array('h'=>100));
 			break;
 
 			case 'write': // Edit Page

@@ -84,7 +84,7 @@ class banner_shortcodes extends e_shortcode
 				default:
 
 						$class = empty($parm['class']) ? "e-banner img-responsive" : $parm['class'];
-						$ban_ret = $tp->toImage($row['banner_image'], array('class'=> $class , 'alt'=>$row['banner_clickurl'], 'legacy'=>'{e_IMAGE}banners'));
+						$ban_ret = $tp->toImage($row['banner_image'], array('class'=> $class , 'alt'=>basename($row['banner_image']), 'legacy'=>'{e_IMAGE}banners'));
 
 				break;
 			}
