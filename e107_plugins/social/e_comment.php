@@ -49,7 +49,7 @@ class social_comment
 	function facebook($data)
 	{
 
-		if(!deftrue('SOCIAL_FACEBOOK_INIT'))
+		if(!deftrue('SOCIAL_FACEBOOK_INIT') && ADMIN)
 		{
 			return "<div class='alert alert-important alert-danger'>Unable to render comments. Missing Facebook appID.</div>";
 		}
