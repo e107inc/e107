@@ -38,7 +38,7 @@ if($_GET['action'] == 'youtube' )
 
 }
 
-
+// TODO use library manager
 e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
 e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.min.js', 'jquery', 2);
@@ -272,7 +272,7 @@ class media_cat_ui extends e_admin_ui
 		// XXX temporary disable when there is no owners, discuss
 		if(!$new_data['media_cat_owner'])
 		{
-			e107::getMessage()->addError(IMALAN_173); // FIXME LAN
+			e107::getMessage()->addError(IMALAN_173);
 			return false;
 		}
 		//$replace = array("_"," ","'",'"',"."); //FIXME Improve
@@ -1671,13 +1671,13 @@ class media_admin_ui extends e_admin_ui
 				list($fileName,$bla) = explode("?", $fileName);
 			}
 
-
+			$uploadCaption = !empty($_POST['upload_caption']) ? $tp->filter($_POST['upload_caption'],'str') : '';
 			$fileName = str_replace(array('%','+'),'',$fileName);
 
 			// remove script extensions.
 			if(substr($fileName,-4) == ".php" || substr($fileName,-4) == ".htm" || substr($fileName,-5) == ".html" || substr($fileName,-4) == ".asp")
 			{
-				$fileName = empty($_POST['upload_caption']) ? str_replace(array(".php",".html",".asp",".htm"),'',$fileName)."_".time() : eHelper::dasherize(strtolower($_POST['upload_caption']));
+				$fileName = empty($uploadCaption) ? str_replace(array(".php",".html",".asp",".htm"),'',$fileName)."_".time() : eHelper::dasherize(strtolower($uploadCaption));
 			}
 
 			if(!$fl->getRemoteFile($tp->filter($_POST['upload_url'], 'file'), $fileName, 'import'))
@@ -1686,8 +1686,8 @@ class media_admin_ui extends e_admin_ui
 			}
 			elseif($import == true)
  			{
- 			    $data = array('media_caption' => e107::getParser()->filter($_POST['upload_caption'],'str'));
-				$result = e107::getMedia()->importFile($fileName,$cat, null, $data);
+ 			    $data = array('media_caption' => $uploadCaption);
+				e107::getMedia()->importFile($fileName,$cat, null, $data);
 			}
 		}
 	}
@@ -2576,6 +2576,8 @@ class media_admin_ui extends e_admin_ui
 	
 	function batchDelete()
 	{
+		$tp = e107::getParser();
+
 		foreach($_POST['batch_selected'] as $key=>$file)
 		{
 			if(trim($file) == '')
@@ -2584,7 +2586,7 @@ class media_admin_ui extends e_admin_ui
 			}	
 			
 		//	$oldpath = e_MEDIA."temp/".$file;
-			$oldpath = e_IMPORT.e107::getParser()->filter($file, 'file');
+			$oldpath = e_IMPORT . $tp->filter($file, 'file');
 			if(file_exists($oldpath))
 			{
 				unlink($oldpath);
@@ -2890,14 +2892,18 @@ if (isset($_POST['submit_avdelete_multi']))
 	$avList = array();
 	$tmp = array();
 	$uids = array();
+
+	$tp = e107::getParser();
+	$sql = e107::getDb();
+
 	//Sanitize
-	$_POST['multiaction'] = $tp->filter($_POST['multiaction'], 'int');
+	$multiaction = $tp->filter($_POST['multiaction'], 'int');
 
 	//sql queries significant reduced
-	if(!empty($_POST['multiaction']) && $sql->db_Select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $_POST['multiaction']).")"))
+	if(!empty($multiaction) && $sql->db_Select("user", 'user_id, user_name, user_image', "user_id IN (".implode(',', $multiaction).")"))
 	{
 		$search_users = $sql->db_getList('ALL', FALSE, FALSE, 'user_id');
-		foreach($_POST['multiaction'] as $uid)
+		foreach($multiaction as $uid)
 		{
 			if (vartrue($search_users[$uid]))
 			{
