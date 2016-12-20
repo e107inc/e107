@@ -3507,12 +3507,12 @@ class e107
 
 		if(!defined('e_MOD_REWRITE')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On' ? true : false));
+			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On'||  getenv('REDIRECT_HTTP_MOD_REWRITE')=='On' ? true : false));
 		}
 
 		if(!defined('e_MOD_REWRITE_MEDIA')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA')=='On' ? true : false));
+			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA')=='On' || getenv('REDIRECT_HTTP_MOD_REWRITE_MEDIA')=='On'  ? true : false));
 		}
 
 		// Define the domain name and subdomain name.
