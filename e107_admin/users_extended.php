@@ -32,14 +32,16 @@ if(varset($_GET['mode']) == "ajax")
 			if($tableName)
 			{
 				$sql = e107::getDb();
+				$tp = e107::getParser();
 
 				$sub_action = '';
 
 				if(e_QUERY)
 				{
 					$tmp = explode(".", e_QUERY);
-					$action = $tmp[0];
+					$action = $tp->filter($tmp[0]);
 					$sub_action = varset($tmp[1], '');
+					$sub_action = $tp->filter($sub_action);
 					$id = varset($tmp[2], 0);
 					unset($tmp);
 				}
@@ -1147,6 +1149,7 @@ $user = new users_ext;
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
+$tp = e107::getParser();
 
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'userclass_class.php');
@@ -1159,15 +1162,17 @@ $message_type = E_MESSAGE_SUCCESS;
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
+	$action = $tp->filter($tmp[0]);
 	$sub_action = varset($tmp[1],'');
+	$sub_action = $tp->filter($sub_action);
 	$id = varset($tmp[2],0);
 	unset($tmp);
 }
 
 // TODO $_POST['up_x'] check for the evil IE
-$tmp = isset($_POST['up']) ? $_POST['up'] : false;
-if ($tmp)
+$tmp = isset($_POST['up']) ? $tp->filter($_POST['up']) : false;
+
+if (is_array($tmp))
 {
 	$tmp = array_values($tmp);
 	$qs = explode(".", $tmp[0]);
@@ -1184,8 +1189,9 @@ if ($tmp)
 }
 
 // TODO $_POST['down_x'] check for the evil IE
-$tmp = isset($_POST['down']) ? $_POST['down'] : false;
-if ($tmp)
+$tmp = isset($_POST['down']) ? $tp->filter($_POST['down']) : false;
+
+if (is_array($tmp))
 {
 	$tmp = array_values($tmp);
 	$qs = explode(".", $tmp[0]);
@@ -1240,7 +1246,12 @@ if (isset($_POST['add_field']))
 	{
 		if($_POST['user_type']==EUF_DB_FIELD)
 		{
-			$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+			$_POST['user_values'] = array(
+				$tp->filter($_POST['table_db']),
+				$tp->filter($_POST['field_id']),
+				$tp->filter($_POST['field_value']),
+				$tp->filter($_POST['field_order']),
+			);
 		}
 
 		if(!empty($_POST['sort_user_values']))
@@ -1287,7 +1298,12 @@ if (isset($_POST['update_field']))
 {
 	if($_POST['user_type']==EUF_DB_FIELD)
 	{
-    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+    	$_POST['user_values'] = array(
+		    $tp->filter($_POST['table_db']),
+		    $tp->filter($_POST['field_id']),
+			$tp->filter($_POST['field_value']),
+			$tp->filter($_POST['field_order']),
+	    );
 	}
 
 	if(!empty($_POST['sort_user_values']))
@@ -1412,10 +1428,10 @@ if($message)
 if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
 {
 	$action = "continue";
-	$current['user_extended_struct_name'] = $_POST['user_field'];
-    $current['user_extended_struct_parms'] = $_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide'];
-    $current['user_extended_struct_text'] = $_POST['user_text'];
-	$current['user_extended_struct_type'] = $_POST['user_type'];
+	$current['user_extended_struct_name'] = $tp->filter($_POST['user_field']);
+    $current['user_extended_struct_parms'] = $tp->filter($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
+    $current['user_extended_struct_text'] = $tp->filter($_POST['user_text']);
+	$current['user_extended_struct_type'] = $tp->filter($_POST['user_type']);
 	$user->show_extended($current);
 }
 
