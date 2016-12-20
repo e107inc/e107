@@ -686,6 +686,7 @@ class pluginManager{
 		define('e_IFRAME', true);
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 		
 	//	print_a($_GET); 	
 		
@@ -703,10 +704,14 @@ class pluginManager{
 			return false;
 		}
 
+		$pluginFolder = !empty($data['plugin_folder']) ? $tp->filter($data['plugin_folder']) : '';
+		$pluginUrl = !empty($data['plugin_url']) ? $tp->filter($data['plugin_url']) : '';
+		$pluginID = !empty($data['plugin_id']) ? $tp->filter($data['plugin_id']) : '';
+		$pluginMode = !empty($data['plugin_mode']) ? $tp->filter($data['plugin_mode']) : '';
 
 		if(!empty($data['plugin_price']))
 		{
-			e107::getRedirect()->go($data['plugin_url']);
+			e107::getRedirect()->go($pluginUrl);
 			return true;
 		}
 
@@ -718,10 +723,10 @@ class pluginManager{
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
 	 	$mes->addSuccess(EPL_ADLAN_94);
 
-		if($mp->download($data['plugin_id'], $data['plugin_mode'], 'plugin'))
+		if($mp->download($pluginID, $pluginMode, 'plugin'))
 		{
 			$this -> pluginCheck(true); // rescan the plugin directory
-			$text = e107::getPlugin()->install($data['plugin_folder']); 
+			$text = e107::getPlugin()->install($pluginFolder);
 
 			$mes->addInfo($text); 
 			echo $mes->render('default', 'success'); 
@@ -737,7 +742,7 @@ class pluginManager{
 		
 		
 		
-		$text ="<iframe src='".$data['plugin_url']."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";	
+		$text ="<iframe src='".$pluginUrl."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";
 	//	print_a($data); 
 		$text .= $frm->open('upload-url-form','post');
 		
