@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,7 +10,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-require_once(e_HANDLER."form_handler.php");
+$frm = e107::getForm();
 
 class e_menuManager {
 
@@ -562,7 +562,7 @@ class e_menuManager {
 
 			if(!is_object($obj))
 			{
-				$text .= "<tr><td colspan='2' class='alert alert-danger'>{$plug} object not found. Try re-scanning plugin directories in Tools > Database. </td></tr>";
+				$text .= "<tr><td colspan='2' class='alert alert-danger'>".$tp->lanVars(MENLAN_46, $plug)."</td></tr>";
 			}
 			else
 			{
@@ -610,7 +610,7 @@ class e_menuManager {
 			}
 			else
 			{
-				$text .= "<tr><td colspan='2' class='alert alert-danger'>No Fields Set in ".$row['menu_path']."e_menu.php</td></tr>";
+				$text .= "<tr><td colspan='2' class='alert alert-danger'>".MENLAN_47.": ".$row['menu_path']."e_menu.php</td></tr>";
 			}
 
 		}
@@ -661,7 +661,7 @@ class e_menuManager {
 		
 		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
 		{
-        	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
+        	$this->menuAddMessage(MENLAN_48,E_MESSAGE_ERROR);
             return;
 		}
 		
@@ -679,7 +679,7 @@ class e_menuManager {
 			<tr>
 			<td>
 			<input type='hidden' name='menuAct[{$row['menu_id']}]' value='sv.{$row['menu_id']}' />
-			".MENLAN_4." ".
+			".LAN_VISIBLE_TO." ".
 			$frm->userclass('menu_class', $row['menu_class'], 'dropdown', array('options'=>"public,member,guest,admin,main,classes,nobody", 'class'=>'e-save'))."
 			</td>
 			</tr>
@@ -1034,7 +1034,7 @@ class e_menuManager {
 	        $color = (varset($color) == "white") ? "#DDDDDD" : "white";
 			if($row['menu_pages'] == "dbcustom")
 			{
-				$pdeta = MENLAN_42;
+				$pdeta = LAN_CUSTOM;
 			}
 			else
 			{
@@ -1149,14 +1149,14 @@ class e_menuManager {
 						
 		}
 
-		$text .= "<tr><th colspan='2'>Your Menus</th></tr>";
+		$text .= "<tr><th colspan='2'>".MENLAN_49."</th></tr>";
 
 		foreach($pageMenu as $row)
 		{	
 			$text .= $this->renderOptionRow($row);	
 		}
 		
-		$text .= "<tr><th colspan='2' >Plugin Menus</th></tr>";
+		$text .= "<tr><th colspan='2' >".MENLAN_50."</th></tr>";
 		foreach($pluginMenu as $row)
 		{	
 			$text .= $this->renderOptionRow($row);	
@@ -1189,12 +1189,12 @@ class e_menuManager {
 		if(!count($this->menu_areas))
 		{
 			$text = "<div class='alert alert-block alert-warning text-left'>";
-			$text .= "This layout does NOT contain any dynamic {MENU} areas.<br />";
+			$text .= MENLAN_51."<br />";
 			
 			if(isset($this->customMenu) && count($this->customMenu))
 			{
-				$text .= "<p>It DOES contain the following custom menus: <ul ><li>".implode("</li><li>",$this->customMenu)."</li></ul></p>";	
-				$text .= "<p><a href='".e_ADMIN."cpage.php?mode=menu&action=list&tab=2' class='button btn btn-primary'>Go to Custom-Menu area</a></p>";
+				$text .= "<p>".MENLAN_52."<ul ><li>".implode("</li><li>",$this->customMenu)."</li></ul></p>";	
+				$text .= "<p><a href='".e_ADMIN."cpage.php?mode=menu&action=list&tab=2' class='button btn btn-primary'>".MENLAN_53."</a></p>";
 			}
 			
 			$text .= "</div>";
@@ -1226,7 +1226,7 @@ class e_menuManager {
 // onchange=\"urljump(this.options[selectedIndex].value);\"
 
 		$text = "<form class='form-inline' method='post' action='".e_SELF."?configure=".$this->curLayout."'>";
-		$text .= "<div class='buttons-bar'>Theme Layout: ";
+		$text .= "<div class='buttons-bar'>".MENLAN_54.": ";
         $text .= "<select name='custom_select' style='width:auto' id='menuManagerSelect'  >\n"; //tbox class will break links.  // window.frames['menu_iframe'].location=this.options[selectedIndex].value ???
 
 
@@ -1365,7 +1365,7 @@ class e_menuManager {
 		}
 		elseif(strstr($str, "LANGUAGELINKS"))
 		{
-			echo "<div class=text style='padding: 2px; text-align: center'>[Language]</div>";
+			echo "<div class=text style='padding: 2px; text-align: center'>[".LAN_LANGUAGE."]</div>";
 		}
 		elseif(strstr($str, "CUSTOM"))
 		{
@@ -1395,7 +1395,7 @@ class e_menuManager {
 		}*/
 		elseif(strstr($str, "{FEATUREBOX"))
 		{
-			echo "<div class=text style='padding: 80px; text-align: center'>[Featurebox Area]</div>";
+			echo "<div class=text style='padding: 80px; text-align: center'>[".LAN_PLUGIN_FEATUREBOX_NAME."]</div>";
 		//	echo $this->renderPanel('Embedded Custom Menu',$cust);
 		}
 		// Display embedded Plugin information.
@@ -1608,12 +1608,12 @@ class e_menuManager {
 
 		if($conf)
 		{
-			$text .= '<a data-modal-caption="Configure Menu" class="e-modal-menumanager menu-btn" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'&iframe=1"
-			title="Configure menu"><i class="S16 e-configure-16"></i></a>';
+			$text .= '<a data-modal-caption="'.LAN_OPTIONS.'" class="e-modal-menumanager menu-btn" target="_top" href="'.e_SELF.'?lay='.$this->curLayout.'&amp;mode=conf&amp;path='.urlencode($conf).'&amp;id='.$menu_id.'&iframe=1"
+			title="'.LAN_OPTIONS.'"><i class="S16 e-configure-16"></i></a>';
 		}
 		
 		$editLink = e_SELF."?enc=".base64_encode('lay='.$this->curLayout.'&parmsId='.$menu_id.'&iframe=1');
-		$text .= '<a data-modal-caption="Configure parameters" class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="Configure parameters"><i class="S16 e-edit-16" ></i></a>';
+		$text .= '<a data-modal-caption="'.LAN_CONFIGURE.'" class="e-menumanager-option menu-btn" target="_top" href="'.$editLink.'" title="'.LAN_CONFIGURE.'"><i class="S16 e-edit-16" ></i></a>';
 
 		$text .= '<a title="'.LAN_DELETE.'" id="remove-'.$menu_id.'-'.$menu_location.'" class="delete e-menumanager-delete menu-btn" href="'.e_SELF.'?configure='.$this->curLayout.'&amp;mode=deac&amp;id='.$menu_id.'"><i class="S16 e-delete-16"></i></a>
 		

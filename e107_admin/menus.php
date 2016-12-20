@@ -667,7 +667,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 				
 			</div>";
 
-		return array('caption'=>'DragNDrop Items','text'=>$text);
+		return array('caption'=>MENLAN_57,'text'=>$text);
 	}
 //}
 
@@ -1143,7 +1143,7 @@ class e_layout
 	        <table class='table adminform'>
 			<tr>
 			<td>
-			".MENLAN_4." ".
+			".LAN_VISIBLE_TO." ".
 			r_userclass('menu_class', intval($_GET['class']), "off", "public,member,guest,admin,main,classes,nobody")."
 			</td>
 			</tr>
@@ -1314,7 +1314,7 @@ class e_layout
 		
 	//	$ns->frontend = false;
 		
-		$ns->tablerender("Menu Layout",$text);		
+		$ns->tablerender(MENLAN_55,$text);		
 	}
 	
 	

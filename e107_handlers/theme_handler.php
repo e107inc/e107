@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1811,10 +1811,8 @@ class themeHandler
 		
 		if($core->save())
 		{
-			//TODO LANs
-			
-			$mes->addDebug("Default Layout: ".$deflayout);
-			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
+			$mes->addDebug(MENLAN_31.": ".$deflayout);
+			$mes->addDebug(MENLAN_56.": ".print_a($customPages,true));
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
