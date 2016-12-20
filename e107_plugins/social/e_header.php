@@ -1,15 +1,21 @@
 <?php
 
-if(USER_AREA)
+if(e_ADMIN_AREA !==true)
 {
 	e107::css('social', 'css/fontello.css');
 	e107::css('social' ,'css/social.css');
+
+	$appID = false;
 
 	$social = e107::pref('core','social_login');
 
 	if(!empty($social) && is_array($social))
 	{
-		$appID = vartrue($social['Facebook']['keys']['id']);
+		if(!empty($social['Facebook']['keys']['id']))
+		{
+			$appID = $social['Facebook']['keys']['id'];
+		}
+
 	}
 
 	$ogImage = e107::pref('social','og_image', false);
