@@ -365,6 +365,8 @@ define("LAN_ID", "ID");
 
 
 define("LAN_VISIBILITY", "Visibility");
+define("LAN_VISIBLE_TO", "Visible To");
+
 define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
 
