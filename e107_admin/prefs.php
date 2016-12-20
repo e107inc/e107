@@ -184,7 +184,7 @@ if(isset($_POST['updateprefs']))
 		}
 		else
 		{
-			$newValue = $tp->toDB($value);
+			$newValue = $tp->filter($value);
 		}
 		
 		$core_pref->update($key, $newValue);
