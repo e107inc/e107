@@ -29,11 +29,11 @@ class admin_shortcodes
 		
 		
             if($parm=='alert')
-            {
-            	$text = 'A new update is ready to install! Click to unzip and install  v'.$cacheData.'</a>.
-            	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
+            {	//TODO LANVARS
+				$text = ADLAN_122.'  v'.$cacheData.'</a>.
+					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
 				
-                 $mes->addInfo($text);
+				$mes->addInfo($text);
 				return; //  $mes->render(); 
 			}
             
@@ -41,17 +41,17 @@ class admin_shortcodes
             {
 				
 				return '<ul class="nav navbar pill navbar-nav">
-        			<li class="dropdown">
-            		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#">
-                	'.E_16_E107.' <b class="caret"></b>
-            	</a> 
-            	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header dropdown-header navbar-header">Update Available</li>
-                    <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
-	          	 </ul>
-	        	</li>
-	        	</ul>
-	        ';
+						<li class="dropdown">
+						<a class="dropdown-toggle" title="'.LAN_MESSAGES.'" role="button" data-toggle="dropdown" href="#">
+						'.E_16_E107.' <b class="caret"></b>
+						</a> 
+						<ul class="dropdown-menu" role="menu">
+						<li class="nav-header dropdown-header navbar-header">'.LAN_UPDATE_AVAILABLE.'</li>
+						<li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
+						</ul>
+						</li>
+						</ul>
+						';
 				
 				
 			} 
@@ -1162,7 +1162,7 @@ class admin_shortcodes
 					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
-						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>"Pending Mailshots", 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
+						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>ADLAN_167, 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
 					}
 					
 					
