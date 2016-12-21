@@ -357,6 +357,11 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsimage($parm);
 	}
 
+	public function sc_news_related($parm=null)
+	{
+		return $this->sc_newsrelated($parm);
+	}
+
 	public function sc_news_visibility($parm=null)
 	{
 		$string= e107::getUserClass()->getIdentifier($this->news_item['news_class']);
