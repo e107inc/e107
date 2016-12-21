@@ -543,6 +543,11 @@ class e107plugin
 			$this->rebuildUrlConfig();
 			e107::getConfig('core')->save(true,false,false);
 		}
+
+		// Triggering system (post) event.
+		e107::getEvent()->trigger('system_plugins_table_updated', array(
+			'mode' => $mode,
+		));
 	}
 
 	function manage_category($cat)
