@@ -4512,8 +4512,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(RL_LAN_085, $delcount, true));
-			if($nfcount) e107::getMessage()->addError($tp->lanVars(RL_LAN_086, $nfcount,true));
+			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(LAN_UI_DELETED, $delcount, true));
+			if($nfcount) e107::getMessage()->addError($tp->lanVars(LAN_UI_DELETED_FAILED, $nfcount,true));
 		}
 
 		//$this->redirect();
