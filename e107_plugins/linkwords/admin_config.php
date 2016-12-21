@@ -86,7 +86,7 @@
 		                                    'linkword_id'           =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'linkword_word'         =>   array ( 'title' => LWLAN_21, 'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'linkword_link'         =>   array ( 'title' => LWLAN_6, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'linkword_active'       =>   array ( 'title' => LAN_ACTIVE, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'left' => 'center', 'thclass' => 'left',  ),
+		                                    'linkword_active'       =>   array ( 'title' => LAN_ACTIVE, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array(), 'left' => 'center', 'thclass' => 'left',  ),
 
 		                                    'linkword_tooltip'      =>   array ( 'title' => LWLAN_50, 'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'linkword_limit'       =>   array ( 'title' => "Max. links/tips", 'type' => 'number', 'data' => 'int', 'width' => '10%', 'help' => LWLAN_63, 'readParms' => '', 'writeParms' => array('default'=>3), 'class' => 'right', 'thclass' => 'right',  ),
@@ -132,7 +132,7 @@
 
 		// ------- Customize Create --------
 
-		public function beforeCreate($new_data)
+		public function beforeCreate($new_data, $old_data)
 		{
 			return $new_data;
 		}
