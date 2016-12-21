@@ -853,6 +853,7 @@ class news_shortcodes extends e_shortcode
 			{
 				$src = $tp->thumbUrl($srcPath);
 				$dimensions = $tp->thumbDimensions();
+				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
 
 			}
 			else
@@ -881,6 +882,15 @@ class news_shortcodes extends e_shortcode
 
 		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
 
+		$imgParms = array(
+			'class'=>$class,
+			'alt'=>basename($src),
+			'style'=>$style
+		);
+
+
+		$imgTag = $tp->toImage($srcPath,$imgParms);
+
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
@@ -888,12 +898,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+				return ".$imgTag."; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
 			break;
 		}
 	}
