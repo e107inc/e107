@@ -2391,7 +2391,7 @@ class media_admin_ui extends e_admin_ui
 			$mes->add(IMALAN_113." <b> ".e_IMPORT."</b>", E_MESSAGE_INFO);
 		}
 
-		if(!count($files))
+		if(!count($files) )
 		{
 			if(!vartrue($_POST['batch_import_selected']))
 			{
@@ -2402,6 +2402,7 @@ class media_admin_ui extends e_admin_ui
 			echo $mes->render().$text;
 			return;
 		}
+
 
 			$text = "
 				<form method='post' action='".e_SELF."?".e_QUERY."' id='batch_import'>
@@ -2431,8 +2432,16 @@ class media_admin_ui extends e_admin_ui
 							<tbody>";
 		
 	//	$c = 0;
+
 		foreach($files as $f)
 		{
+			if(empty($f))
+			{
+				e107::getMessage()->addWarning("0 byte file found in: ".e_IMPORT."<br />Please remove before proceeding.");
+				////rename(e_IMPORT.$f['path'].$f['fname'],e_IMPOT.$f['path'].$f['fname']."-bad");
+				continue;
+			}
+
 			$default = $this->getFileXml($f['fname']);
 			$f = $fl->cleanFileName($f,true);
 			
