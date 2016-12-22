@@ -109,6 +109,11 @@ class admin_start
 	function __construct()
 	{
 
+		if(!getperms('0')) // don't display this tuff to regular admins only main admin.
+		{
+			return null;
+		}
+
 		$this->deprecated = array(
 			e_ADMIN."ad_links.php",
 			e_PLUGIN."tinymce4/e_meta.php",
