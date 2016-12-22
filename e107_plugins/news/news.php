@@ -1008,18 +1008,13 @@ class news_front
 		}
 		else
 		{
-		//	$action = 'default';
 
-			//XXX item not found, redirect to avoid messing up search-engine data.
-		//	e107::getRedirect()->go(null, true, 404);
 			header("HTTP/1.0 404 Not Found",true,404);
 			require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_error.php");
-			$text = e107::getMessage()->setTitle(LAN_ERROR_7, E_MESSAGE_INFO)->addInfo("Perhaps you're looking for one of the news items below?")->render();
+			$text = e107::getMessage()->setTitle(LAN_ERROR_7, E_MESSAGE_INFO)->addInfo(LAN_NEWS_308)->render(); // Perhaps you're looking for one of the news items below?
 
 			$this->action = 'all';
-		//	$defaultUrl = e107::getUrl()->create('news/list/items');
 			$text .= $this->renderListTemplate();
-
 
 			return $text;
 

@@ -246,7 +246,7 @@ class e107Update
 	{
 		if(!$list = e107::getPlugin()->updateRequired())
 		{
-			return;
+			return false;
 		}
 		
 		$frm = e107::getForm();
@@ -1961,5 +1961,18 @@ function convert_serialized($serializedData, $type='')
 	return $data;
 }
 
+function theme_foot()
+{
+	global $pref;
+
+	if(!empty($_POST['update_core']['706_to_800']))
+	{
+		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade');
+		$base = base64_encode(http_build_query($data, null, '&'));
+		$url = "https://e107.org/e-install/".$base;
+		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
+	}
+
+}
 
 ?>

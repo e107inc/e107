@@ -50,4 +50,6 @@ define("LAN_NEWS_463", "There are no news items for the specified category - ple
 define("LAN_NEWS_100", "On");
 define("LAN_NEWS_307", "Total posts in this category: ");
 
+define("LAN_NEWS_308", "Perhaps you're looking for one of the news items below?");
+
 ?>
