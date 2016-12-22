@@ -62,9 +62,9 @@ if(e_AJAX_REQUEST) // TODO improve security
 	}
 	
 	
-	if(varset($_GET['mode']) == 'delete' && vartrue($_POST['itemid']) && ADMIN)
+	if(varset($_GET['mode']) == 'delete' && !empty($_POST['id']) && ADMIN)
 	{
-		$status 		= e107::getComment()->deleteComment($_POST['itemid']);		
+		$status 		= e107::getComment()->deleteComment($_POST['id'],$_POST['table'],$_POST['itemid']);
 		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332; 
 		$ret['error'] 	= ($status) ? false : true;
 		echo json_encode($ret);

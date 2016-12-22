@@ -271,6 +271,8 @@ $(document).ready(function()
     $(document).on("click", ".e-comment-delete", function(){
 			
 			var url 	= $(this).attr("data-target");
+			var table 	= $(this).attr("data-type");
+			var itemid 	= $(this).attr("data-itemid");
 			var sp 		= $(this).attr('id').split("-");	
 			var id 		= "#comment-" + sp[3];
 			var total 	= parseInt($("#e-comment-total").text());
@@ -278,7 +280,7 @@ $(document).ready(function()
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=delete',
-			  data: { itemid: sp[3] },
+			  data: { id: sp[3], itemid: itemid, table: table },
 			  success: function(data) {
 			var a = $.parseJSON(data);
 			  

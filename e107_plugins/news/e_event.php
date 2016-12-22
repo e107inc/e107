@@ -30,7 +30,12 @@ class news_event // plugin-folder + '_event'
 
 		$event[] = array(
 			'name'	=> "user_comment_posted", // when this is triggered... (see http://e107.org/developer-manual/classes-and-methods#events)
-			'function'	=> "incrementComment", // ..run this function (see below).
+			'function'	=> "commentCountUp", // ..run this function (see below).
+		);
+
+		$event[] = array(
+			'name'	=> "user_comment_deleted", // when this is triggered... (see http://e107.org/developer-manual/classes-and-methods#events)
+			'function'	=> "commentCountDown", // ..run this function (see below).
 		);
 
 		return $event;
@@ -38,7 +43,7 @@ class news_event // plugin-folder + '_event'
 	}
 
 
-	function incrementComment($data) // the method to run.
+	function commentCountUp($data) // the method to run.
 	{
 		if($data['comment_type'] !== 'news' && !empty($data['comment_type']))
 		{
@@ -55,7 +60,22 @@ class news_event // plugin-folder + '_event'
 	}
 
 
+	function commentCountDown($data) // the method to run.
+	{
 
+		if($data['comment_type'] !== 'news' && !empty($data['comment_type']))
+		{
+			return false;
+		}
+
+		if(!empty($data['comment_item_id']))
+		{
+			$id = intval($data['comment_item_id']);
+			e107::getDb()->update("news", "news_comment_total=news_comment_total-1 WHERE news_id=".$id);
+			e107::getCache()->clear('news_php_extend_'.$id.'_');
+		}
+
+	}
 
 
 } //end class

@@ -598,8 +598,14 @@ class comment
 		return $text;
 	}
 
-	
-	function deleteComment($id) // delete a single comment by comment id.  
+
+	/**
+	 * @param $id - comment_id to delete
+	 * @param string $table - comment belongs to this table eg. 'news'
+	 * @param string $itemid - corresponding item from the table. eg. news_id
+	 * @return int|null|void
+	 */
+	function deleteComment($id, $table='', $itemid='') // delete a single comment by comment id.
 	{
 
 		if($this->engine != 'e107')
@@ -609,9 +615,18 @@ class comment
 
 		if(!getperms('0') && !getperms("B"))
 		{
-			return;	
+			return null;
 		}
-		return e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");	
+
+		$table = e107::getParser()->filter($table,'w');
+
+		$status = e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");
+
+		$data = array('comment_id'=>intval($id), 'comment_type'=>$table, 'comment_item_id'=> intval($itemid));
+		e107::getEvent()->trigger('user_comment_deleted', $data);
+
+
+		return $status;
 	}
 	
 	function approveComment($id) // appropve a single comment by comment id.  
