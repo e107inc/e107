@@ -22,42 +22,14 @@ class e_jsmanager
 			'prototype/prototype.js' ,
 			'scriptaculous/scriptaculous.js',
 			'scriptaculous/effects.js',
-			'e107.js'),
-		/*	
+			'e107.js',
+		),
 		'jquery'	=> array(
-			"http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css",
-			"http://code.jquery.com/jquery-1.8.2.js",
-			"http://code.jquery.com/ui/1.9.1/jquery-ui.js"		
-			),	
-		
-		
-		'jquery'	=> array(
-			"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"		
-			)
-		*/	
-		
-		
-		'jquery'	=> array(
-		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
-		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"	
-		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
-		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
-		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
 			"https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js",
 			// jQuery Once filters out all elements that had the same filter applied on them before. It can be used to
 			// ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
-			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js"
-	//		,
-	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
-	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
-		//	"http://code.jquery.com/jquery-1.8.3.js",
-	//		"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css",
-	//		"http://code.jquery.com/ui/1.9.2/jquery-ui.js"
-			
-			)	
-			
+			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
+		),
 	);
 
 	/**
@@ -267,18 +239,14 @@ class e_jsmanager
 		
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
-			$this->_libraries['jquery'] = array(
-				"https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js",
-				// jQuery Once filters out all elements that had the same filter applied on them before. It can be used
-				// to ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
-				"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
-				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js",
-				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/smoothness/jquery-ui.min.css"
-			);
+			$minified = deftrue('e_DEBUG') == true ? null : 'minified';
 
-			//		"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
-			//	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
-			//https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css
+			e107::library('load', 'cdn.jquery', $minified);
+			// jQuery Once is used in e107.behaviors.
+			e107::library('load', 'cdn.jquery.once', $minified);
+			e107::library('load', 'cdn.jquery.ui', $minified);
+
+			$this->_libraries['jquery'] = array();
 		}
 		
 		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN',true)) // Test with Local JS Framework files.
