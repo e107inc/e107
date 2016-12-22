@@ -234,22 +234,33 @@ class e_jsmanager
 
 		$minified = deftrue('e_DEBUG') == true ? null : 'minified';
 
-		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN',true)) // Test with Local JS Framework files.
+		// Use local files.
+		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN',true))
 		{
-			// TODO
+			if($this->isInAdmin()) // Admin Area.
+			{
+				// TODO
+			}
+			else // Front-End.
+			{
+				// TODO
+			}
 		}
-		elseif($this->isInAdmin())
+		else // Use CDN files.
 		{
-			e107::library('load', 'cdn.jquery', $minified);
-			// jQuery Once is used in e107.behaviors.
-			e107::library('load', 'cdn.jquery.once', $minified);
-			e107::library('load', 'cdn.jquery.ui', $minified);
-		}
-		else
-		{
-			e107::library('load', 'cdn.jquery', $minified);
-			// jQuery Once is used in e107.behaviors.
-			e107::library('load', 'cdn.jquery.once', $minified);
+			if($this->isInAdmin()) // Admin Area.
+			{
+				e107::library('load', 'cdn.jquery', $minified);
+				// jQuery Once is used in e107.behaviors.
+				e107::library('load', 'cdn.jquery.once', $minified);
+				e107::library('load', 'cdn.jquery.ui', $minified);
+			}
+			else // Front-End.
+			{
+				e107::library('load', 'cdn.jquery', $minified);
+				// jQuery Once is used in e107.behaviors.
+				e107::library('load', 'cdn.jquery.once', $minified);
+			}
 		}
 		
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
