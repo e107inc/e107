@@ -114,6 +114,7 @@ class admin_start
 			return null;
 		}
 
+		// Files that can cause comflicts and problems.
 		$this->deprecated = array(
 			e_ADMIN."ad_links.php",
 			e_PLUGIN."tinymce4/e_meta.php",
@@ -132,7 +133,8 @@ class admin_start
 			e_PLUGIN."forum/forum_update_check.php",
 			e_PLUGIN."online_extended_menu/online_extended_menu.php",
 			e_PLUGIN."online_extended_menu/images/user.png",
-			e_PLUGIN."online_extended_menu/languages/English.php"
+			e_PLUGIN."online_extended_menu/languages/English.php",
+			e_PLUGIN."pm/sendpm.sc"
 
 		);
 
