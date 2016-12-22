@@ -929,12 +929,10 @@ class e_media
 		}
 		
 		$cache = e107::getCache();
-		$cachTag = !empty($prefix) ? "glyphs_".$prefix : "glyphs";
-		$cache->setMD5($cachTag, false);
-		
-		if($data = $cache->retrieve($type,360,true))
+		$cachTag = !empty($prefix) ? "Glyphs_".$prefix."_".$type : "Glyphs_".$type;
+
+		if($data = $cache->retrieve($cachTag ,360,true,true))
 		{
-			$cache->setMD5(null);
 			return e107::unserialize($data);
 		}
 		
@@ -942,7 +940,7 @@ class e_media
 		if($type == 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css');
+			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
 		//	print_a($subject);
 		}
 		elseif($type == 'fa3')
@@ -967,8 +965,8 @@ class e_media
 
 		$data = e107::serialize($icons);
 
-		$cache->set($type,$data,true);
-		$cache->setMD5(null);
+		$cache->set_sys($cachTag ,$data,true);
+
 		return $icons; 
 	
 	}
