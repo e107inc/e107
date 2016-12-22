@@ -2220,13 +2220,15 @@ class error_handler
 
 		//
 		global $_E107;
-		if(isset($_E107['debug']))
+
+		if(!empty($_E107['debug']))
 		{
 			$this->debug = true;
 			error_reporting(E_ALL);
 			return;
 		}
-		if(isset($_E107['cli']))
+
+		if(!empty($_E107['cli']))
 		{
 			error_reporting(E_ALL ^ E_NOTICE);
 			return;
