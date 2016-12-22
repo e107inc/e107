@@ -134,7 +134,8 @@ class admin_start
 			e_PLUGIN."online_extended_menu/online_extended_menu.php",
 			e_PLUGIN."online_extended_menu/images/user.png",
 			e_PLUGIN."online_extended_menu/languages/English.php",
-			e_PLUGIN."pm/sendpm.sc"
+			e_PLUGIN."pm/sendpm.sc",
+			e_PLUGIN."pm/shortcodes/"
 
 		);
 
