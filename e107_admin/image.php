@@ -1405,7 +1405,9 @@ class media_admin_ui extends e_admin_ui
 			'close'		=> 'true'		
 		
 		);
-		
+
+		$items = array();
+
 		//TODO FIXME Upgrade to bs3 when Bootstrap3 Admin is ready. 
 
 		$bs2 = e107::getMedia()->getGlyphs('bs3','glyphicon-');
@@ -1426,6 +1428,7 @@ class media_admin_ui extends e_admin_ui
 		
 		$fa4 = e107::getMedia()->getGlyphs('fa4');
 
+
 		foreach($fa4 as $val)
 		{
 			$items[] = array( 
@@ -1442,16 +1445,18 @@ class media_admin_ui extends e_admin_ui
 		if(vartrue($parm['search']))
 		{
 			$filtered = array();
-			foreach($items as $v)
+			if(!empty($items))
 			{
-				if(strpos($v['title'], $parm['search'])!==false)
+				foreach($items as $v)
 				{
-					$v['slideCaption'] = '';
-					$filtered[] = $v;	
-					
-				}	
-			}	
-			
+					if(strpos($v['title'], $parm['search'])!==false)
+					{
+						$v['slideCaption'] = '';
+						$filtered[] = $v;
+
+					}
+				}
+			}
 			$items = $filtered;
 		}
 		
