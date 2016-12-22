@@ -19,7 +19,7 @@ if (!getperms('P'))
 	exit ;
 }
 
-error_reporting(E_ALL);
+
 require_once (e_PLUGIN . 'forum/forum_class.php');
 require_once (e_ADMIN . 'auth.php');
 
