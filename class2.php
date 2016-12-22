@@ -2230,7 +2230,7 @@ class error_handler
 
 		if(!empty($_E107['cli']))
 		{
-			error_reporting(E_ALL ^ E_NOTICE);
+			error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 			return;
 		}
 
