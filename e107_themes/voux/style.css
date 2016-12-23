@@ -421,7 +421,7 @@ nav  { text-align: center }
 
 
 
-.xurl-social-icons a  { color: #343434; font-size:1.5em; padding-left:15px; padding-top:5px; padding-bottom:0; margin:0; display:inline-block; }
+.xurl-social-icons a  { color: #343434; font-size:1.5em; padding-left:15px; padding-top:8px; padding-bottom:0; margin:0; display:inline-block; }
 .xurl-social-icons a:hover { color:#777777;; }
 
 .banner-menu-item   { text-align:center }
@@ -534,7 +534,7 @@ img.news-image-1 { margin-bottom:15px }
 .menu ul li { padding-bottom:8px }
 .menu ul.list-unstyled { padding-left:0}
 
-
+.nav > li > a:focus, .nav > li > a.voux-nav-avatar:hover { text-decoration:none}
 
 
 /* Extra small devices Phones (<768px)  .col-xs */

@@ -2564,13 +2564,17 @@ class e_parse extends e_parser
 				return $this->thumbUrl($src, $parm)." h".$parm['h']." ".$multiply;
 			}
 
-			$width = (!empty($parm['w'])) ? ($parm['w'] * $multiply) : ($this->thumbWidth * $multiply);
-			$height = (!empty($parm['h'])) ? ($parm['h'] * $multiply) : ($this->thumbHeight * $multiply);
+			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : ($this->thumbWidth * $multiply);
+			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : ($this->thumbHeight * $multiply);
+
 		}
 		else
 		{
 			$height = (($this->thumbHeight * $width) / $this->thumbWidth);
+
 		}
+
+
 
 		if(!isset($parm['aw']))
 		{
@@ -2597,6 +2601,8 @@ class e_parse extends e_parser
 	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
 
 		// $parms['x'] = $encode;
+
+
 
 		if(!empty($parm['return']) && $parm['return'] == 'src')
 		{
