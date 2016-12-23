@@ -1319,61 +1319,66 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	function sc_admin_update()
 	{
-		if (!ADMIN) { return ''; }
+		if (!ADMIN) { return null; }
 
-		global $e107cache,$ns, $pref;
-		if (!varset($pref['check_updates'], FALSE)) { return ''; }
+		$pref = e107::getPref();
 
-		if (is_readable(e_ADMIN.'ver.php'))
+		if(empty($pref['check_updates']))
 		{
-			include(e_ADMIN.'ver.php');
+			return null;
 		}
 
-		$feed = "http://sourceforge.net/export/rss2_projfiles.php?group_id=63748&rss_limit=5";
-		$e107cache->CachePageMD5 = md5($e107info['e107_version']);
+		$cacheTag = 'Update_core';
 
-		if($cacheData = $e107cache->retrieve('updatecheck', 3600, TRUE))
+		if(!$cached = e107::getCache()->retrieve($cacheTag, 1440, true, true))
 		{
-			return $ns -> tablerender(LAN_NEWVERSION, $cacheData);
+			e107::getDebug()->log("Checking for Core Update");
+			$status = e107::coreUpdateAvailable();
+
+			if($status === false)
+			{
+				$status = array('status'=>'not needed');
+			}
+
+			$cached =  e107::serialize($status,'json');
+			e107::getCache()->set_sys($cacheTag, $cached,true,true);
 		}
+		else
+		{
+			e107::getDebug()->log("Using Cached Core Update Data");
+
+		}
+
+		$data = e107::unserialize($cached);
+
+		if($data === false || isset($data['status']))
+		{
+			return null;
+		}
+
 
 		// Don't check for updates if running locally (comment out the next line to allow check - but
 		// remember it can cause delays/errors if its not possible to access the Internet
-		if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) { return ''; }
-
-		$xml = e107::getXml();
-
-		require_once(e_HANDLER."magpie_rss.php");
-
-		$ftext = '';
-		if($rawData = $xml -> getRemoteFile($feed))
+		if(e_DEBUG !== true)
 		{
-			$rss = new MagpieRSS( $rawData );
-			list($cur_version,$tag) = explode(" ",$e107info['e107_version']);
-			$c = 0;
-			foreach($rss->items as $val)
-			{
-				$search = array((strstr($val['title'], '(')), 'e107', 'released', ' v');
-				$version = trim(str_replace($search, '', $val['title']));
-
-				if(version_compare($version,$cur_version)==1)
-				{
-					$ftext = "<a rel='external' href='".$val['link']."' >e107 v".$version."</a><br />\n";
-					break;
-				}
-				$c++;
-			}
-		}
-		else
-		{  // Error getting data
-			$ftext = ADLAN_154;
+			if ((strpos(e_SELF,'localhost') !== false) || (strpos(e_SELF,'127.0.0.1') !== false)) { return null; }
 		}
 
-		$e107cache->set('updatecheck', $ftext, TRUE);
-		if($ftext)
-		{
-			return $ns -> tablerender(LAN_NEWVERSION, $ftext);
-		}
+
+		return '<ul class="core-update-available nav navbar-nav navbar-left">
+        <li class="dropdown open">
+            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" href="#" aria-expanded="true">
+                <i class="fa fa-cloud-download  text-success"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li class="nav-header navbar-header dropdown-header">'.e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']).'</li>
+                    <li><a href="'.$data['url'].'" rel="external"><i class="fa fa-download" ></i> '.LAN_DOWNLOAD.'</a></li>
+                    <li><a href="'.$data['infourl'].'" rel="external"><i class="fa fa-file-text-o "></i> Release Notes</a></li>
+                </ul>
+        </li>
+        </ul>';
+
+
 	}
 
 	// Does actually the same than ADMIN_SEL_LAN

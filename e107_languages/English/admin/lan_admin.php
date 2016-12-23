@@ -336,7 +336,7 @@ define("LAN_CONFIGURE", "Configure");
 define("LAN_NOPERMISSION", "no permissions");
 
 define("LAN_CREDITS","Credits");
-define("LAN_NEWVERSION","New Version Available");
+define("LAN_NEWVERSION","e107 v[x] Available");
 
 define("LAN_CHECKALL", "Check All");
 define("LAN_UNCHECKALL", "Uncheck All");

@@ -4495,4 +4495,66 @@ class e107
 		self::$_registry = null;
 		self::$_instance = null;
 	}
+
+
+	/**
+	 * Check if there's a core e107 release available
+	 * @return array|bool - return array of data or false if no update available.
+	 */
+	public static function coreUpdateAvailable()
+	{
+
+	    // Get site version
+	    $e107info= array();
+
+	    if(is_readable(e_ADMIN."ver.php"))
+	    {
+			include(e_ADMIN."ver.php"); // $e107info['e107_version'];
+	    }
+	    else
+	    {
+	        return false;
+	    }
+
+        $xml  = e107::getXml();
+        $file = "https://e107.org/releases.php";
+        if(!$xdata = $xml->loadXMLfile($file,true,false))
+        {
+            return false;
+        }
+
+		$curVersion = str_replace(' (git)', '', $e107info['e107_version']);
+
+		if(empty($xdata['core'][0]['@attributes']['version']))
+		{
+			return false;
+		}
+		else
+		{
+			$newVersion = $xdata['core'][0]['@attributes']['version'];
+		}
+
+
+		e107::getDebug()->log("New Version:".$newVersion);
+
+		if(version_compare($curVersion,$newVersion) === -1)
+		{
+			$data = array(
+				'name'          => $xdata['core'][0]['@attributes']['name'],
+				'url'           => $xdata['core'][0]['@attributes']['url'],
+				'date'          => $xdata['core'][0]['@attributes']['date'],
+				'version'       => $xdata['core'][0]['@attributes']['version'],
+				'infourl'       => $xdata['core'][0]['@attributes']['infourl'],
+				'description'   => $xdata['core'][0]['description'],
+			);
+
+			return $data;
+		}
+
+		return false;
+
+	}
+
+
+
 }
