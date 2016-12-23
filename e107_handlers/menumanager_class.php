@@ -562,7 +562,7 @@ class e_menuManager {
 
 			if(!is_object($obj))
 			{
-				$text .= "<tr><td colspan='2' class='alert alert-danger'>".$tp->lanVars(MENLAN_46, $plug)."</td></tr>";
+				$text .= "<tr><td colspan='2' class='alert alert-danger'>".e107::getParser()->lanVars(MENLAN_46, $plug)."</td></tr>";
 			}
 			else
 			{
