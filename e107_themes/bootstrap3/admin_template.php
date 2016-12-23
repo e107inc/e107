@@ -253,6 +253,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 				{ADMIN_NAVIGATION=home}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
+				{ADMIN_UPDATE}
 			</div>
 		</div>
 	</div>
@@ -276,7 +277,7 @@ else
 		<div class="col-md-3 col-lg-2 admin-left-panel">
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
-	
+
 			{ADMIN_PWORD}
 			{ADMIN_MENUMANAGER}
 	

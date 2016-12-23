@@ -601,9 +601,9 @@ function update_706_to_800($type='')
 	$sql2 	= e107::getDb('sql2');
 	$tp 	= e107::getParser();
 	$ns 	= e107::getRender();
-	
+
 	e107::getCache()->clearAll('db');
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 
 	e107::getMessage()->setUnique();
 
@@ -779,7 +779,7 @@ function update_706_to_800($type='')
 
 
 	// Move the maximum online counts from menu prefs to a separate pref - 'history'
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 	$menuConfig = e107::getConfig('menu',true,true); 
 	
 	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
@@ -1184,9 +1184,7 @@ function update_706_to_800($type='')
 	
 //	$notify_prefs = $sysprefs -> get('notify_prefs');
 //	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
-	e107::getCache()->clearAll('system');
-
-
+	e107::getCache()->clear_sys('Config');
 
 	$notify_prefs = e107::getConfig('notify',true,true)->getPref();
 
@@ -1969,7 +1967,7 @@ function theme_foot()
 	{
 		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade');
 		$base = base64_encode(http_build_query($data, null, '&'));
-		$url = "https://e107.org/e-install/".$base;
+		$url = "http://e107.org/e-install/".$base;
 		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
 	}
 
