@@ -426,7 +426,7 @@ TEMPL;
 	
 	
 	e107::js('footer',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
-	e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
+	e107::css('url', "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
 			e107::js('footer-inline','
 			 $(function()
