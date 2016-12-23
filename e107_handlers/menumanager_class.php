@@ -1517,6 +1517,9 @@ class e_menuManager {
 		$style = $this->style;
 		//      $menu_count is empty in here
 		//FIXME extract
+		$menu_location = '';
+		$menu_order = '';
+
 		extract($row);
 		if(empty($menu_id)){ return; }
 
@@ -1540,7 +1543,7 @@ class e_menuManager {
 		}
 		else $caption = $menu_name.$vis;
 		
-		$menu_info = varset($menu_location).varset($menu_order);
+		$menu_info = "{$menu_location}.{$menu_order}";
 
 		$text = "";
 		$conf = '';
