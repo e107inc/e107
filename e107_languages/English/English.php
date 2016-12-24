@@ -72,6 +72,7 @@ define("LAN_ENTER_CODE", "Enter code");
 define("LAN_INVALID_CODE", "Incorrect code entered.");
 define("LAN_SEARCH", "Search");
 define("LAN_VIEW", "View");
+define("LAN_CLICK_TO_VIEW", "Click to View");//TODO elsewhere
 define("LAN_SORT", "Sort");
 define("LAN_ORDER_BY", "Order By");
 define("LAN_ASCENDING", "Ascending");
