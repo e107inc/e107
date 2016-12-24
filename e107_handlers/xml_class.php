@@ -872,7 +872,7 @@ class xmlClass
 	 * @param boolean $debug [optional]
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $mode = false)
+	public function e107Export($xmlprefs, $tables, $plugPrefs, $mode = false)
 	{
 	//	error_reporting(0);
 		$e107info = array();
@@ -921,6 +921,32 @@ class xmlClass
 			$text .= "\t</prefs>\n";
 		}
 
+
+		if(!empty($plugPrefs))
+		{
+			$text .= "\t<pluginPrefs>\n";
+
+			foreach($plugPrefs as $plug)
+			{
+				$prefs = e107::getPlugConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</pluginPrefs>\n";
+		}
+
+
+
+
 		if(varset($tables))
 		{
 			$text .= "\t<database>\n";
@@ -967,7 +993,7 @@ class xmlClass
 		if($mode === 'debug')
 		{
 			echo "<pre>".htmlentities($text)."</pre>";
-			return TRUE;
+			return null;
 		}
 		else
 		{

@@ -68,7 +68,9 @@ if(isset($_POST['db_execute']))
 
 if(isset($_POST['exportXmlFile']))
 {
-	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['package_images']))
+
+
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'], $_POST['package_images'], false))
 	{
 		$mes = e107::getMessage();
 		$mes->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
@@ -1706,11 +1708,13 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
  * @param object $debug [optional]
  * @return none
  */
-function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
+function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=FALSE)
 {
 	$xml = e107::getXml();
 	$tp = e107::getParser();
 	$mes = e107::getMessage();
+
+	$desinationFolder = null;
 
 	if(vartrue($package))
 	{
@@ -1733,8 +1737,9 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 		}
 	}
 
+	$mode = ($debug === true) ? "debug" : false;
 
-	if($xml->e107Export($prefs,$tables,$debug))
+	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
 	{
 		$mes->add(DBLAN_108." ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))
