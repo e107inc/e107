@@ -872,9 +872,9 @@ class xmlClass
 	 * @param boolean $debug [optional]
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $debug = FALSE)
+	public function e107Export($xmlprefs, $tables, $mode = false)
 	{
-		error_reporting(0);
+	//	error_reporting(0);
 		$e107info = array();
 		require_once(e_ADMIN."ver.php");
 
@@ -904,7 +904,7 @@ class xmlClass
 					{
 						continue;
 					}
-					elseif($debug == true)
+					elseif($mode === 'debug')
 					{
 						echo "<div>Original/Modiied <b>".$key."</b>";
 						var_dump($default[$key],$val);
@@ -958,7 +958,13 @@ class xmlClass
 
 		$text .= "</e107Export>";
 
-		if($debug==TRUE)
+
+		if($mode === 'return')
+		{
+			return $text;
+		}
+
+		if($mode === 'debug')
 		{
 			echo "<pre>".htmlentities($text)."</pre>";
 			return TRUE;

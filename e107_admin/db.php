@@ -192,7 +192,7 @@ class system_tools
 				
 		if(isset($_POST['delplug']))
 		{
-			$this->delete_plugin_entry($_POST['pref_type']);
+			$this->delete_plugin_entry(); // $_POST['pref_type']
 		}
 
 		if(isset($_POST['upload']))
@@ -1057,6 +1057,8 @@ class system_tools
 			e107::getCache()->clear();
 		}
 
+		return null;
+
 	}
 
 	private function delete_plugin_entry()
@@ -1066,7 +1068,7 @@ class system_tools
 		$sql = e107::getDb();
 
 		$del = array_keys($_POST['delplug']);
-		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."'"))
+		if($sql->delete("plugin", "plugin_id='".intval($del[0])."'"))
 		{
 			$mes->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}
@@ -1080,11 +1082,11 @@ class system_tools
 
 	/**
 	 * Render Options
-	 * @return none
+	 * @return null
 	 */
 	private function render_options()
 	{
-		$frm = e107::getForm();	
+
 		$mes = e107::getMessage(); 
 		
 		$text = "
@@ -1124,12 +1126,14 @@ class system_tools
 		";
 */
 		e107::getRender()->tablerender(DBLAN_10, $mes->render().$text);
+
+		return null;
 	}
 
 
 	/**
 	 * Import XML Form
-	 * @return none
+	 * @return null
 	 */
 	private function importForm()
 	{
@@ -1173,11 +1177,12 @@ class system_tools
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_59, $mes->render().$text);
 
+		return null;
 	}
 
 	/**
 	 * Export XML Dump
-	 * @return  none
+	 * @return null
 	 */
 	private function exportXmlForm()
 	{
@@ -1202,7 +1207,6 @@ class system_tools
 				<tbody>
 
 				";
-				//TODO Add support for plugin Prefs.
 
 					$pref_types  = e107::getConfig()->aliases;
 					unset($pref_types['core_old'], $pref_types['core_backup']);
@@ -1211,17 +1215,58 @@ class system_tools
 
 					foreach($pref_types as $key=>$description)
 					{
+						$data = e107::getConfig($key)->getPref();
+
+						$rows = count($data);
+
 						$checked = (vartrue($_POST['xml_prefs'][$key]) == $key) ? 1: 0;
 
 						$text .= "<tr>
 							<td>
 								".$frm->checkbox("xml_prefs[".$key."]", $key, $checked, array('label'=>LAN_PREFS.": ".$key))."
 							</td>
-							<td>&nbsp;</td>
+							<td class='text-right'>".intval($rows)."</td>
 
 							</tr>";
 
 					}
+
+
+					// Plugin Preferences ----------------------------
+					$pluglist = e107::pref('core','plug_installed');
+
+					$text .= "</tbody><thead><tr>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_plugprefs')." &nbsp;Plugin ".LAN_PREFS."</th>
+					<th class='right'>".DBLAN_98."</th>
+
+					</tr></thead><tbody>";
+
+					ksort($pluglist);
+
+					foreach($pluglist as $plug=>$ver)
+					{
+						$data = e107::getPlugConfig($plug)->getPref();
+
+						$key = $plug;
+
+						$checked = false;
+
+						if(!empty($data))
+						{
+							$rows = count($data);
+
+							$text .= "<tr>
+							<td>
+								".$frm->checkbox("xml_plugprefs[".$key."]",$key, $checked, array('label'=>LAN_PREFS.": ".$key))."
+							</td>
+							<td class='text-right'>".$rows."</td>
+
+							</tr>";
+						}
+					}
+
+
+
 					$text .= "</tbody>
 				</table>
 				<table class='table adminlist'>
@@ -1284,14 +1329,40 @@ class system_tools
 		</form>	";
 
 
+		// display differences between default and core prefs.
+/*
+		$corePrefs = e107::pref('core');
+
+		$defaultArray = e107::getXml()->loadXMLfile(e_CORE."xml/default_install.xml", 'advanced');
+		$defaultPrefs = e107::getXml()->e107ImportPrefs($defaultArray);
+
+		$text .= "<table class='table'>";
+		foreach($defaultPrefs as $k=> $val)
+		{
+			if($val ==  $corePrefs[$k] || substr($k,-5) === '_list' || substr($k,0,9) == 'sitetheme')
+			{
+				continue;
+			}
+
+
+			$text .= "<tr>
+				<td>".$k."</td>
+				<td>".print_a($val,true)."<td><td>".print_a($corePrefs[$k],true)."</td>
+				</tr>";
+
+		}
+		$text .= "</table>";
+*/
+
+
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_102,$mes->render(). $text);
 
-
+		return null;
 	}
 
 	/**
 	 * Import XML Dump
-	 * @return none
+	 * @return null
 	 */
 	private function importXmlFile()
 	{
@@ -1306,11 +1377,14 @@ class system_tools
 		{
 			e107::getMessage()->addError(DBLAN_104." $table");
 		}
+
+		return null;
 	}
 
 	/**
 	 * Optimize SQL
-	 * @return none
+	 * @param $mySQLdefaultdb
+	 * @return null
 	 */
 	private function optimizesql($mySQLdefaultdb) 
 	{
@@ -1324,10 +1398,13 @@ class system_tools
 
 		$mes->addSuccess(e107::getParser()->lanVars(DBLAN_11, $mySQLdefaultdb));
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, $mes->render());
+
+		return null;
 	}
 
 	/**
 	 * Preferences Editor
+	 * @param string $type
 	 * @return string text for display
 	 */
 	private function pref_editor($type='core')
@@ -1652,7 +1729,7 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 		{
 			$message = str_replace('[folder]', $desinationFolder, DBLAN_107);
 			$mes->add($message, E_MESSAGE_ERROR);
-			return ;
+			return false ;
 		}
 	}
 
@@ -1676,8 +1753,10 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 				}
 			}
 		}
+
 	}
 
+	return null;
 }
 
 
@@ -1697,9 +1776,11 @@ function table_list()
 	$exclude[] = "user_extended_country";
 	$exclude[] = "plugin";
 
-	$coreTables = e107::getDb()->db_TableList('nolan');
+	$coreTables = e107::getDb()->tables('nolan');
 
 	$tables = array_diff($coreTables,$exclude);
+
+	$tabs = array();
 
 	foreach($tables as $e107tab)
 	{
