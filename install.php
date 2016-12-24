@@ -1112,42 +1112,46 @@ class e_install
 				<tr>
 					<td><label>".LANINS_109."</label></td>
 					<td style='padding-right:0'>
-						<table class='table table-striped' >
-							<thead>
-								<tr>
-									<th>".LANINS_115."</th>
-									<th>".LANINS_116."</th>
-								</tr>
-							</thead>
-							<tbody>";
+
+							";
 
 				$themes = $this->get_themes();
 
 				foreach($themes as $val)
 				{
-					if($val == 'bootstrap')
+
+					if($val != 'bootstrap3' && $val != 'voux')
 					{
 						continue; 
-					} 
-					
+					}
+
 					$themeInfo 	= $this->get_theme_xml($val);
 					$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
+					$preview    = e_THEME.$val."/".$themeInfo['thumbnail'];
+
+					if(!is_readable($preview))
+					{
+						continue;
+					}
+
+					$thumbnail = "<img class='img-responsive thumbnail'  src='".$preview ."' alt='".$val."' />";
+
 
 					$selected = ($val == 'bootstrap3') ? " checked" : "";
 
 					$output .= "
-								<tr>
-									<td>
-										<label class='radio-inline'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />{$title}</label>
-									</td>
-									<td>{$category}</td>
-								</tr>";
+									<div class='col-md-6 theme-cell' >
+										<label class='theme-selection'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />
+										<div>".$thumbnail."
+										<h5>".$title." <small>(".$category.")</small><span class='glyphicon glyphicon-ok text-success'></span></h5>
+										</div>
+										</label>
+									</div>";
 				}
 
 				$output .= "
-							</tbody>
-						</table>
+
 					</td>
 
 				</tr>
@@ -2093,7 +2097,19 @@ function template_data()
 		h4						{ margin-left:10px; margin-bottom:20px; color:#181818; }
 		#version				{ position:relative; left:50px; top:-20px; }
 		.well					{ border-radius: 12px }
-		
+
+		.theme-cell             { margin-bottom:15px; padding-left:0; padding-right:5px }
+		.theme-cell .thumbnail  { margin-bottom:5px; height:170px; width:auto }
+		.theme-cell h5          { padding-left:8px; margin-top:0; font-weight:bold }
+
+		label.theme-selection > input { visibility: hidden;  position: absolute; 	}
+		label.theme-selection > input + div{  cursor:pointer;  border:2px solid transparent; border-radius:6px }
+		label.theme-selection > input:checked + div {    border:2px solid #337ab7; 	}
+		label.theme-selection > input + div span { visibility: hidden; float:right; margin-right:10px; color:#337ab7	}
+		label.theme-selection > input:checked + div span { visibility: initial;	}
+
+
+
 		</style>
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
