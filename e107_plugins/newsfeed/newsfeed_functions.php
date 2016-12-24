@@ -378,7 +378,7 @@ class newsfeedClass
 								";
 
 								$vars['FEEDITEMTEXT'] = preg_replace("/&#091;.*]/", "", $tp -> toHTML($item['description'], FALSE))."
-								<br /><br /><a href='".$item['link']."' rel='external'>".NFLAN_44."</a><br /><br />
+								<br /><br /><a href='".$item['link']."' rel='external'>".LAN_CLICK_TO_VIEW."</a><br /><br />
 								</div>";
 							}
 							else

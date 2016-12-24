@@ -21,5 +21,5 @@ if (!e107::isInstalled('newsfeed'))
 }
 
 include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_admin_newsfeed.php');
-$ns->tablerender(NFLAN_43, NFLAN_42);
+$ns->tablerender(NFLAN_43, e107::getParser()->toHTML(NFLAN_42, true) );
 ?>
