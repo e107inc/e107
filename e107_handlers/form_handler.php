@@ -867,7 +867,7 @@ class e_form
 	{
 		
 		$cat = ($category) ? '&amp;for='.$category : "";
-		if(!$label) $label = IMALAN_166;
+		if(!$label) $label = PRFLAN_272;
 		if($tagid) $cat .= '&amp;tagid='.$tagid; 
 		
 		if(is_string($extras))
@@ -983,7 +983,7 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".IMALAN_168."' alt='Click on the avatar to change it' />"; // TODO LAN
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_USET_44."' alt='Click on the avatar to change it' />"; // TODO LAN
 		}
 		else
 		{			
