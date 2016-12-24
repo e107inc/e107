@@ -289,3 +289,4 @@ define("PRFLAN_268", "Frontend Inline-Editing");
 define("PRFLAN_269", "Admins with this userclass (and the appropriate admin permissions) will be able to edit html directly via the frontend area.");
 define("PRFLAN_270", "Contact Form Filtering");
 define("PRFLAN_271", "Ignore form submissions containing these words or phrases. One per line.");
+define("PRFLAN_272", "Upload an image or file");
