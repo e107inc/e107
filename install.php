@@ -1120,10 +1120,10 @@ class e_install
 				foreach($themes as $val)
 				{
 
-					if($val != 'bootstrap3' && $val != 'voux')
+					/*if($val != 'bootstrap3' && $val != 'voux')
 					{
-						continue; 
-					}
+						continue;
+					}*/
 
 					$themeInfo 	= $this->get_theme_xml($val);
 					$title 		= vartrue($themeInfo['@attributes']['name']);
