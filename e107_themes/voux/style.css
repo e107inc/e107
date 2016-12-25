@@ -524,7 +524,7 @@ img.news-image-1 { margin-bottom:15px }
 
 .btn-primary {  background-color: #0d0d0d;    border: none;  color: #fff;  }
 
-.navbar-nav.dropup li a.dropdown-toggle { padding-top:0; padding-bottom:0}
+.navbar-nav.dropup li a.dropdown-toggle { }
 
 .othernews2-block a.btn { display: none; }
 .othernews2-block img { width:72px; }
@@ -535,6 +535,8 @@ img.news-image-1 { margin-bottom:15px }
 .menu ul.list-unstyled { padding-left:0}
 
 .nav > li > a:focus, .nav > li > a.voux-nav-avatar:hover { text-decoration:none}
+
+.btn-sm { font-size: 0.8em }
 
 
 /* Extra small devices Phones (<768px)  .col-xs */
