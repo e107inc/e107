@@ -202,11 +202,26 @@ class theme_shortcodes extends e_shortcode
 		
 		// Logged in. 
 		//TODO Generic LANS. (not theme LANs) 	
-		
-		$text = '
-		
-		<ul class="nav navbar-nav navbar-right'.$direction.'">
-		<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20&h=20} {USER_AVATAR: shape=circle} <b class="caret"></b></a>
+
+
+
+		if($placement == 'bottom')
+		{
+			$text = '
+			<ul class="nav navbar-nav navbar-right'.$direction.'">
+			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30&h=30} {USER_AVATAR: shape=circle} '.USERNAME.' <b class="caret"></b></a>';
+		}
+		else
+		{
+
+			$text = '
+			<ul class="nav navbar-nav navbar-right'.$direction.'">
+			<li class="dropdown"><a href="#" class="voux-nav-avatar dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20&h=20} {USER_AVATAR: shape=circle} <b class="caret"></b></a>';
+
+		}
+
+
+		$text .= '
 		<ul class="dropdown-menu">
 		<li>
 			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>
