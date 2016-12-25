@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * e107 Main
+ * e107 Core Plugin - Online Menu
  *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/online/online_menu.php,v $
- * $Revision$
- * $Date$
- * $Author$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -77,6 +73,7 @@ else
 		<ul class='online-menu'>
 		{ONLINE_GUESTS}
 		{ONLINE_MEMBERS}
+		{ONLINE_MEMBERS_LIST}
 		{ONLINE_MEMBERS_LIST_EXTENDED}
 		{ONLINE_ONPAGE}
 		{ONLINE_MEMBER_TOTAL}
@@ -145,7 +142,7 @@ $caption = $img.' '.vartrue($menu_pref['online_caption'], LAN_ONLINE_4);
 if (getperms('1')) 
 {
 	$path = e_PLUGIN_ABS."online/config.php?iframe=1";
-	$caption .= "<a class='e-modal pull-right' href='".$path."' title='Configure'><i class='glyphicon glyphicon-cog'></i></a>";
+	$caption .= "<a class='e-modal pull-right' data-modal-caption='".LAN_SETTINGS."' href='".$path."' title='".LAN_SETTINGS."'><i class='glyphicon glyphicon-cog'></i></a>";
 }
 
 
