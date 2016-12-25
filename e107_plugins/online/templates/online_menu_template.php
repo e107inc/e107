@@ -24,6 +24,7 @@ $ONLINE_MENU_TEMPLATE['default']['enabled']                         = "
 																	<ul class='online-menu'>
 																	{ONLINE_GUESTS}
 																	{ONLINE_MEMBERS}
+																	{ONLINE_MEMBERS_LIST}
 																	{ONLINE_MEMBERS_LIST_EXTENDED}
 																	{ONLINE_ONPAGE}
 																	{ONLINE_MEMBER_TOTAL}
