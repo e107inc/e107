@@ -1023,12 +1023,16 @@ class xmlClass
 	 * Return an Array of core preferences from e107 XML Dump data
 	 *
 	 * @param array $XMLData Raw XML e107 Export Data
-	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc.
+	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc or plugin-folder name
+	 * @param string $mode core|plugin
 	 * @return array preference array equivalent to the old $pref global;
 	 */
-	public function e107ImportPrefs($XMLData, $prefType='core')
+	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
-		if(!vartrue($XMLData['prefs'][$prefType]))
+
+		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+
+		if(!vartrue($XMLData[$key][$prefType]))
 		{
 			return array();
 		}
@@ -1036,7 +1040,7 @@ class xmlClass
 		//$mes = eMessage::getInstance();
 
 		$pref = array();
-		foreach($XMLData['prefs'][$prefType] as $val)
+		foreach($XMLData[$key][$prefType] as $val)
 		{
 			$name = $val['@attributes']['name'];
 			// if(strpos($val['@value'], 'array (') === 0)
@@ -1083,8 +1087,10 @@ class xmlClass
 		}
 
 		$ret = array();
-		
-		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
+
+		// ----------------- Save Core Prefs ---------------------
+
+		if(!empty($xmlArray['prefs']))
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
@@ -1111,6 +1117,40 @@ class xmlClass
 				}
 			}
 		}
+
+
+		 // ---------------   Save Plugin Prefs  ---------------------
+
+		if(!empty($xmlArray['pluginPrefs']))
+		{
+			foreach($xmlArray['pluginPrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'plugin');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getPlugConfig($type)->setPref($pArray);
+				}
+				else // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getPlugConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getPlugConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
+
+
+
 
 		if(vartrue($xmlArray['database']))
 		{
