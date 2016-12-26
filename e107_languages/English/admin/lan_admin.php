@@ -485,3 +485,4 @@ define("LAN_GO_TO_LIST", "go to list");
 define("LAN_CREATE_ANOTHER", "create another");
 define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
+

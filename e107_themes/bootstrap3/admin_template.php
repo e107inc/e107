@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -17,12 +17,7 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-
-
-
-// include_lan(e_THEME."_blank/languages/".e_LANGUAGE.".php");
-
-
+e107::lan('theme', 'admin',true);
 
 $E_ADMIN_NAVIGATION['start'] = '<ul class="nav navbar-nav navbar-left">';
 
@@ -66,7 +61,7 @@ $E_ADMIN_NAVIGATION['button_home'] = '
 // Change Language
 $E_ADMIN_NAVIGATION['button_language'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="Change Language" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle" title="'.LAN_THEMEPREF_13.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -220,10 +215,10 @@ $ADMIN_MODAL = '
 				<h4 class="modal-title modal-caption">&nbsp;</h4>
 			</div>
 			<div class="modal-body">
-				<p>Loading...</p>
+				<p>'.LAN_LOADING.'</p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">'.LAN_CLOSE.'</button>
 			</div>
 		</div>
 	</div>
@@ -241,7 +236,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel">
+			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="'.LAN_THEMEPREF_12.'">
 				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107"/>
 			</a>
 		</div>

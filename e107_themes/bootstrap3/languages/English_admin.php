@@ -18,6 +18,8 @@ define("LAN_THEMEPREF_07", "left");
 define("LAN_THEMEPREF_08", "right");
 define("LAN_THEMEPREF_09", "top");
 define("LAN_THEMEPREF_10", "bottom");
- 
+define("LAN_THEMEPREF_11", ""); // unused
+define("LAN_THEMEPREF_12", "Return to Front Panel");
+define("LAN_THEMEPREF_13", "Change Language"); 
 
 ?>
