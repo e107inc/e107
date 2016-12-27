@@ -227,6 +227,7 @@ Below is the list of files that could potentially be malicious:");
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
+define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
 define("LAN_ADD", "Add");
 define("LAN_SAVE","Save");
@@ -236,6 +237,7 @@ define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 define("LAN_ERRORS", "Errors");
 define("LAN_MESSAGES", "Messages");
+define("LAN_DATA", "Data");
 
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
