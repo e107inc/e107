@@ -2,7 +2,7 @@
  /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -333,8 +333,8 @@ class e_chart
 
 			$fName = 'draw'.ucfirst($id);	
 				
-		      $js = " google.load('visualization', '1', {packages:['corechart']});
-			      google.setOnLoadCallback(".$fName.");
+		      $js = " google.charts.load('visualization', '1', {packages:['corechart']});
+			      google.charts.setOnLoadCallback(".$fName.");
 			      function ".$fName."() {
 			        var data = google.visualization.arrayToDataTable(".$this->getData().");
 			
@@ -387,7 +387,7 @@ class e_chart
 
 		      ";
 
-			e107::js('footer','https://www.google.com/jsapi');
+			e107::js('footer','https://www.gstatic.com/charts/loader.js');
 			e107::js('footer-inline', $js);
 
 			return "<div class='e-graph e-chart' id='".$id."' style='width: ".$width."; height: ".$height."px;'></div>";
