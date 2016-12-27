@@ -2,25 +2,13 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2011 e107 Inc (e107.org)
+* Copyright (C) 2008-2016 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
 * Text processing and parsing functions
 *
-* $URL$
-* $Id$
-*
 */
-
-/**
- * @package e107
- * @subpackage e107_handlers
- * @version $Id$
- *
- * Text processing and parsing functions.
- * Simple parse data model.
- */
 
 if (!defined('e107_INIT')) { exit(); }
 
@@ -4096,8 +4084,8 @@ class e_parser
 					e107::getFile()->getRemoteFile($thumbSrc, $filename,'media');	
 				}
 								
-				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='{e_MEDIA}".$filename."' alt='Youtube Video' title='Click to view on Youtube' />
-				<div class='video-thumbnail-caption'><small>Click to watch video</small></div></a>";	
+				return "<a href='".$url."'><img class='video-responsive video-thumbnail' src='{e_MEDIA}".$filename."' alt='".LAN_YOUTUBE_VIDEO."' title='".LAN_CLICK_TO_VIEW."' />
+				<div class='video-thumbnail-caption'><small>".LAN_CLICK_TO_VIEW."</small></div></a>";
 			}
 			
 			if($thumb == 'src')
@@ -4127,7 +4115,7 @@ class e_parser
 				{
 					$thumbSrc = e_IMAGE_ABS."generic/playlist_120.png";
 				}
-				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video Playlist' style='width:".vartrue($parm['w'],'80')."px'/>";
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='".LAN_YOUTUBE_PLAYLIST."' style='width:".vartrue($parm['w'],'80')."px'/>";
 
 			}
 
