@@ -1195,7 +1195,7 @@ class e_file
 	{
 		require_once(e_HANDLER."upload_handler.php");
 
-		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir = e_AVATAR_UPLOAD)
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir == e_AVATAR_UPLOAD)
 		{
 			$path = $uploaddir;
 		}
