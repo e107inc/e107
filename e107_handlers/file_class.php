@@ -1003,24 +1003,27 @@ class e_file
 	 */
 	public function getUserDir($user, $create = false, $subDir = null)
 	{
-		$user = intval($user);
 		$tp = e107::getParser();
 
 		$baseDir = e_MEDIA.'plugins/'.e_CURRENT_PLUGIN.'/';
 
 		if(!empty($subDir))
 		{
+			$subDir = e107::getParser()->filter($subDir,'w');
 			$baseDir .= rtrim($subDir,'/').'/';
 		}
 
-		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		if(is_numeric($user))
+		{
+			$baseDir .= ($user > 0) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		}
 
 		if($create == true && !is_dir($baseDir))
 		{
 			mkdir($baseDir, 0755, true); // recursively
 		}
 
-		$baseDir .= "/";
+		$baseDir = rtrim($baseDir,'/')."/";
 
 		return $baseDir;
 	}
