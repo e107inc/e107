@@ -210,7 +210,7 @@ class e107Email extends PHPMailer
 		$this->pref = $pref;
 
 		$this->CharSet = 'utf-8';
-		$this->SetLanguage(CORE_LC);
+		$this->setLanguage(CORE_LC);
 
 
 		if (($overrides === FALSE) || !is_array($overrides))
@@ -279,14 +279,14 @@ class e107Email extends PHPMailer
 				}
 				unset($temp_opts);
 
-				$this->IsSMTP();			// Enable SMTP functions
+				$this->isSMTP();			// Enable SMTP functions
 				if (vartrue($smtp_options['helo'])) $this->Helo = $smtp_options['helo'];
 
 				if (isset($smtp_options['pop3auth']))			// We've made sure this is set
 				{	// Need POP-before-SMTP authorisation
 					require_once(e_HANDLER.'phpmailer/class.pop3.php');
 					$pop = new POP3();
-					$pop->Authorise($overrides['smtp_server'], 110, 30, $overrides['smtp_username'], $overrides['smtp_password'], 1);
+					$pop->authorise($overrides['smtp_server'], 110, 30, $overrides['smtp_username'], $overrides['smtp_password'], 1);
 				}
 
 				$this->Mailer = 'smtp';
@@ -509,29 +509,29 @@ class e107Email extends PHPMailer
 			switch ($list)
 			{
 				case 'to' :
-					$this->AddAddress($adr, $to_name);
+					$this->addAddress($adr, $to_name);
 					break;
 				case 'replyto' :
-					$this->AddReplyTo($adr, $to_name);
+					$this->addReplyTo($adr, $to_name);
 					break;
 				case 'cc' :
 					if($this->Mailer == 'mail')
 					{
-						$this->AddCustomHeader('Cc: '.$adr);
+						$this->addCustomHeader('Cc: '.$adr);
 					}
 					else
 					{
-						$this->AddCC($adr, $to_name);
+						$this->addCC($adr, $to_name);
 					}
 					break;
 				case 'bcc' :
 					if($this->Mailer == 'mail')
 					{
-						$this->AddCustomHeader('Bcc: '.$adr);
+						$this->addCustomHeader('Bcc: '.$adr);
 					}
 					else
 					{
-						$this->AddBCC($adr, $to_name);
+						$this->addBCC($adr, $to_name);
 					}
 					break;
 				default :
@@ -650,7 +650,7 @@ class e107Email extends PHPMailer
 				else 
 				{
 					$ext = pathinfo($attach, PATHINFO_EXTENSION);
-					$this->AddAttachment($attach, $tempName,'base64',$this->_mime_types($ext));	
+					$this->addAttachment($attach, $tempName,'base64',$this->_mime_types($ext));	
 				}
 			
 			}
@@ -677,7 +677,7 @@ class e107Email extends PHPMailer
 			if(is_readable($inline_img) && !is_dir($inline_img))
 			{
 				$ext = pathinfo($inline_img, PATHINFO_EXTENSION);
-				$this->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),'base64',$this->_mime_types($ext));
+				$this->addEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),'base64',$this->_mime_types($ext));
 			}
 		}
 	}
@@ -906,7 +906,7 @@ class e107Email extends PHPMailer
 		if (!empty($eml['returnreceipt']))	{ $this->ConfirmReadingTo = $eml['returnreceipt']; }
 		if (!empty($eml['inline_images']))	{ $this->addInlineImages($eml['inline_images']); }
 		if (!empty($eml['priority']))		{ $this->Priority = $eml['priority']; }
-		if (!empty($eml['e107_header']))	{ $this->AddCustomHeader($identifier.": {$eml['e107_header']}"); }
+		if (!empty($eml['e107_header']))	{ $this->addCustomHeader($identifier.": {$eml['e107_header']}"); }
 		if (!empty($eml['wordwrap']))		{ $this->WordWrap = $eml['wordwrap']; }
 		if (!empty($eml['split'])) 			{ $this->SingleTo = ($eml['split'] != FALSE); }
 		if (!empty($eml['smtp_username'])) 	{ $this->Username = $eml['smtp_username']; }
@@ -1032,7 +1032,7 @@ class e107Email extends PHPMailer
 			$_SERVER["HTTP_X_FORWARDED_FOR"] = $_SERVER['SERVER_ADDR'];
 			$_SERVER["HTTP_CF_CONNECTING_IP"] = $_SERVER['SERVER_ADDR'];
 
-			$result = $this->Send();		// Actually send email
+			$result = $this->send();		// Actually send email
 
 			
 			$_SERVER['PHP_SELF'] = $oldphpself; 
@@ -1040,7 +1040,7 @@ class e107Email extends PHPMailer
 			$_SERVER["HTTP_X_FORWARDED_FOR"] = $oldremoteaddr;
 			$_SERVER["HTTP_CF_CONNECTING_IP"] = $oldremoteaddr;
 			
-			if (!$bulkmail && !$this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
+			if (!$bulkmail && !$this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->smtpClose();
 		}
 		else
 		{	// Debug
@@ -1057,7 +1057,7 @@ class e107Email extends PHPMailer
 		
 		if (($bulkmail == true) && ($this->pause_amount > 0) && ($this->SendCount >= $this->pause_amount))
 		{
-			if ($this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->SmtpClose();
+			if ($this->SMTPKeepAlive && ($this->Mailer == 'smtp')) $this->smtpClose();
 			sleep($this->pause_time);
 			$this->SendCount = 0;
 		}
@@ -1075,8 +1075,8 @@ class e107Email extends PHPMailer
 		}
 		
 		
-		$this->ClearAddresses();			// In case we send another email
-		$this->ClearCustomHeaders();
+		$this->clearAddresses();			// In case we send another email
+		$this->clearCustomHeaders();
 
 		if ($result)
 		{
@@ -1109,7 +1109,7 @@ class e107Email extends PHPMailer
 	{
 		if ($this->SMTPKeepAlive && ($this->Mailer == 'smtp') && ($this->SendCount > 0)) 
 		{
-			$this->SmtpClose();
+			$this->smtpClose();
 			$this->SendCount = 0;
 		}
 	}
@@ -1195,7 +1195,7 @@ class e107Email extends PHPMailer
 					if ( (strlen($basedir) > 1) && (substr($basedir,-1) != '/') && (substr($basedir,-1) != '\\')) { $basedir .= '/'; }
 					if ( strlen($directory) > 1 && substr($directory,-1) != '/' && substr($directory,-1) != '\\') { $directory .= '/'; }
 					//echo "Add image: {$basedir}|{$directory}|{$filename}<br />";
-					if ( $this->AddEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType) ) 
+					if ( $this->addEmbeddedImage($basedir.$directory.$filename, md5($filename), $filename, 'base64',$mimeType) ) 
 					{
 						// $images[1][$i] contains 'src' or 'background'
 						$message = preg_replace("/".$images[1][$i]."=".$delim.preg_quote($images[3][$i], '/').$delim."/Ui", $images[1][$i]."=".$delim.$cid.$delim, $message);
@@ -1226,7 +1226,7 @@ class e107Email extends PHPMailer
 		}
 
 
-		$this->IsHTML(true);
+		$this->isHTML(true);
 		$this->Body = $message;
 		//print_a($message);
 		$textMsg = str_replace("\n", "", $message);
@@ -1355,7 +1355,7 @@ function sendemail($send_to, $subject, $message, $to_name='', $send_from='', $fr
 	
 	$identifier = deftrue('MAIL_IDENTIFIER', 'X-e107-id');
 
-	if (vartrue($mailheader_e107id)) $mail->AddCustomHeader($identifier.": {$mailheader_e107id}");
+	if (vartrue($mailheader_e107id)) $mail->addCustomHeader($identifier.": {$mailheader_e107id}");
 
 	$mail->legacyBody = TRUE;				// Need to handle plain text email conversion to HTML
 	$mail->makeBody($message);				// Add body, with conversion if required
@@ -1366,7 +1366,7 @@ function sendemail($send_to, $subject, $message, $to_name='', $send_from='', $fr
 
 	if (trim($send_from))
 	{
-		$mail->SetFrom($send_from, $from_name);				// These have already been defaulted to sitewide options, so no need to set again if blank
+		$mail->setFrom($send_from, $from_name);				// These have already been defaulted to sitewide options, so no need to set again if blank
 	}
 
 	$mail->Subject = $subject;

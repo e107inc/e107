@@ -27,6 +27,7 @@ define('e107_INIT', true);
 // error_reporting(E_ALL);
 
 
+
 error_reporting(0); // suppress all errors or image will be corrupted.
 ini_set('gd.jpeg_ignore_warning', 1);
 //require_once './e107_handlers/benchmark.php';
@@ -101,7 +102,8 @@ class e_thumbpage
 			 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
 		}
 
-		ob_clean(); // Precaution - clearout utf-8 BOM or any other garbage in e107_config.php
+
+		ob_end_clean(); // Precaution - clearout utf-8 BOM or any other garbage in e107_config.php
 
 		$tmp = $self.'/'.$HANDLERS_DIRECTORY;
 
@@ -291,6 +293,8 @@ class e_thumbpage
 
 			// Send required headers
 			//$this->sendHeaders($thumbnfo);
+
+
 
 			@readfile(e_CACHE_IMAGE.$fname);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');

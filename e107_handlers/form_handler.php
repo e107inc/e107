@@ -854,6 +854,7 @@ class e_form
 
 
 		$options['media'] = '_icon';
+		$options['legacyPath'] = "{e_IMAGE}icons";
 		
 		return $this->imagepicker($name, $default, $label, $options);
 		
@@ -3859,9 +3860,11 @@ e107::getDebug()->log($sc_parameters);
 			if(!is_array($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
 			$parms = $attributes['readParms'];
 		}
+
+
 	
-		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
-		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
+		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
+		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
 		if(!empty($parms['type'])) // Allow the use of a different type in readMode. eg. type=method.
 		{
@@ -3875,7 +3878,7 @@ e107::getDebug()->log($sc_parameters);
 		{
 			case 'options':
 				
-				if(varset($attributes['type']) == "method") // Allow override with 'options' function.
+				if(!empty($attributes['type']) && ($attributes['type'] == "method")) // Allow override with 'options' function.
 				{
 					$attributes['mode'] = "read";
 					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))
@@ -3899,7 +3902,7 @@ e107::getDebug()->log($sc_parameters);
 					
 					$value = "<div class='btn-group'>";
 					
-					if(vartrue($parms['sort']))//FIXME use a global variable such as $fieldpref
+					if(!empty($parms['sort']))//FIXME use a global variable such as $fieldpref
 					{
 						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 						$from = intval(vartrue($_GET['from'],0));
@@ -3940,7 +3943,7 @@ e107::getDebug()->log($sc_parameters);
 						".deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'))."</a>";
 					}
 
-					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
+					$delcls = !empty($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']) && varset($parms['delete'],1) == 1)
 					{
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
@@ -4374,6 +4377,8 @@ e107::getDebug()->log($sc_parameters);
 						return e107::getParser()->toGlyph('fa-file','size=2x');
 				//		return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
+
+
 					
 					if(vartrue($parms['thumb']))
 					{
@@ -4417,10 +4422,9 @@ e107::getDebug()->log($sc_parameters);
 						$thparms['alt'] = $alt;
 						$thparms['class'] = "thumbnail e-thumb";
 
-						$ttl = $tp->toImage(vartrue($parms['pre']).$value, $thparms);
+						$ttl = $tp->toImage($value, $thparms);
 
-						e107::getDebug()->log($value);
-						e107::getDebug()->log($thparms);
+
 
 						$value = '<a href="'.$src.'" data-modal-caption="'.$alt.'" data-target="#uiModal" class="e-modal e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
 					}
@@ -5695,7 +5699,7 @@ e107::getDebug()->log($sc_parameters);
 			if('hidden' === $att['type'])
 			{
 				
-				if(!vartrue($writeParms['show']))
+				if(empty($writeParms['show']))
 				{
 					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
 
@@ -5742,8 +5746,8 @@ e107::getDebug()->log($sc_parameters);
 				 
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
-				 
-				if(vartrue($att['type']) == 'bbarea' || varset($writeParms['nolabel']) == true)
+
+				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
 				{
 					$text .= "
 					<tr><td colspan='2'>";

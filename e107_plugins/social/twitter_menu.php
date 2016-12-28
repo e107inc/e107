@@ -31,7 +31,7 @@ if(deftrue('XURL_TWITTER'))
 
 
 
-	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">'.LAN_SOCIAL_201."@".$screenName.'</a>';
+	$text = '<a class="twitter-timeline" data-theme="'.$theme.'" href="'.XURL_TWITTER.'" data-tweet-limit="'.$limit.'" data-widget-id="'.$widgetId.'" style="height:'.$height.'px;max-width:100%" data-screen-name="'.$screenName.'" data-chrome="noheader nofooter transparent noscrollbar">'.LAN_SOCIAL_201."@".$screenName.'</a>';
 
 
 	e107::getRender()->tablerender('Twitter',$text,'twitter-menu');

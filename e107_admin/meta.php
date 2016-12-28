@@ -66,6 +66,7 @@ $meta_keywords 	= vartrue($pref['meta_keywords']);
 $meta_copyright = vartrue($pref['meta_copyright']);
 $meta_author 	= vartrue($pref['meta_author']);
 
+
 $text = "
 	<form method='post' action='".e_SELF."' id='dataform'>
 		<fieldset id='core-meta-settings'>
@@ -79,14 +80,14 @@ $text = "
 					<tr>
 						<td>".LAN_DESCRIPTION."</td>
 						<td>";
-						$text .= $frm->textarea('meta_description',$tp->toForm(varset($meta_diz[e_LANGUAGE])),3,80, array('size'=>'xxlarge'));
+						$text .= $frm->textarea('meta_description',$tp->toForm($meta_diz[e_LANGUAGE]),3,80, array('size'=>'xxlarge'));
 					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_description' name='meta_description' cols='70' rows='4'>".$tp->toForm(varset($meta_diz[e_LANGUAGE]))."</textarea>";
 						$text .= "</td>
 					</tr>
 					<tr>
 						<td>".LAN_KEYWORDS."</td>
 						<td>";
-						$text .= $frm->tags('meta_keywords',$tp->toForm(varset($meta_keywords[e_LANGUAGE])));
+						$text .= $frm->tags('meta_keywords',$tp->toForm($meta_keywords[e_LANGUAGE]));
 					//	$text .= "<textarea class='tbox textarea e-autoheight' id='meta_keywords' name='meta_keywords' cols='70' rows='4'>".$tp->toForm(varset($meta_keywords[e_LANGUAGE]))."</textarea>";
 						
 						$text .= "</td>
@@ -104,7 +105,7 @@ $text = "
 					<tr>
 						<td>".METLAN_1."</td>
 						<td>";
-						$text .= $frm->textarea('meta',str_replace("<","&lt;",$tp->toForm(varset($meta[e_LANGUAGE]))),5,100,'size=block-level');
+						$text .= $frm->textarea('meta',str_replace("<","&lt;",$tp->toForm($meta[e_LANGUAGE])),5,100,'size=block-level');
 						
 						$text .= "<span class='field-help'>".METLAN_2."</span>";
 						

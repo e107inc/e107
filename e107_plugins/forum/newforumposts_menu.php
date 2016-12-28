@@ -118,7 +118,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 				$text .= "<li>";
 
-				if ($this->menuPref['title'])
+				if (!empty($this->menuPref['title']))
 				{
 					$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
 				}

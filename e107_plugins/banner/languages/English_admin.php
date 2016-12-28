@@ -67,7 +67,9 @@ define("BNRLAN_46", "All selected campaigns rendered in one single menu"); // BA
 define("BNRLAN_47", "All selected campaigns rendered in separate menus"); // BANNER_MENU_L14
 define("BNRLAN_48", "All selected campaigns (no box rendering)");
 
-//define("BNRLAN_49", "Tooltip");//LAN_TOOLTIP Linkwords also 
+//define("BNRLAN_49", "Tooltip");//LAN_TOOLTIP Linkwords also \
+define("BNRLAN_50", "Local");
+define("BNRLAN_51", "Remote");
 
 define("BNRLAN_HELP_01", "Banner Help");
 define("BNRLAN_HELP_02", "Use this plugin to manage advertising on your website.<br /><br />When creating a new banner you can create a username and password for your client to login and check the progress of the campaign. <br /><br />You can enable the banner menu using the menu manager and perform further configuration from there.");

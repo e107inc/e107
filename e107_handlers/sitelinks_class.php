@@ -1468,10 +1468,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		foreach ($data as $_data) 
 		{		
 			$active			= ($this->isActive($_data, $this->activeMainFound)) ? "_active" : ""; 
-			
+			$sc->setDepth(0);
 			$sc->setVars($_data); // isActive is allowed to alter data
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
-			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE, $sc);	
+			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, true, $sc);
 			$sc->active		= ($active) ? true : false;
 			if($sc->active)
 			{
@@ -1498,7 +1498,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$data 		= $sql->retrieve($query,true);
 
 
-		return $this->compile($data, $outArray);		
+		$ret = $this->compile($data, $outArray);
+
+		return $ret;
 	}
 
 
@@ -1510,8 +1512,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	    if(!is_array($inArray) || !is_array($outArray)){ return null; }
 
 	    $frm = e107::getForm();
-		
-	    foreach($inArray as $key => $val) 
+
+	    foreach($inArray as $key => $val)
 	    {
 	        if($val['link_parent'] == $pid) 
 	        {
@@ -1556,8 +1558,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
 				$class = $path."_sitelink";
-				if($sublinkArray = e107::callMethod($class,$method,$parm)) //TODO Cache it.
+				if($sublinkArray = e107::callMethod($class,$method,$parm,$row)) //TODO Cache it.
 				{
+
+
 					return $sublinkArray;
 				} 
 			}
@@ -1665,6 +1669,7 @@ class navigation_shortcodes extends e_shortcode
 	public $template;
 	public $counter;
 	public $active;
+	public $depth = 0;
 
 	
 	/**
@@ -1693,7 +1698,18 @@ class navigation_shortcodes extends e_shortcode
 		return intval($this->var['link_id']);		
 	}
 
-	
+	function sc_link_depth($parm='')
+	{
+		return $this->depth;
+	}
+
+
+	function setDepth($val)
+	{
+		$this->depth = intval($val);
+	}
+
+
 	/**
 	 * Return the name of the current link
 	 * @return string 
@@ -1864,9 +1880,13 @@ class navigation_shortcodes extends e_shortcode
 			return $this->var['link_sub'];
 		}
 
+		$this->depth++;
 		// Assume it's an array.
-		
-		$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_start']), true, $this);
+
+		$startTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerstart'] : $this->template['submenu_start'];
+		$endTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerend'] :  $this->template['submenu_end'];
+
+		$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $startTemplate), true, $this);
 
 		foreach($this->var['link_sub'] as $val)
 		{
@@ -1877,7 +1897,7 @@ class navigation_shortcodes extends e_shortcode
 			if($active) $this->activeSubFound = true;		
 		}
 
-		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_end']), true, $this);
+		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $endTemplate), true, $this);
 		
 		return $text;
 	}

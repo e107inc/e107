@@ -26,7 +26,7 @@ define("LANCONTACT_07", "Email a copy of this message to your own address ");
 define("LANCONTACT_08", "Send");
 define("LANCONTACT_09", "Your message was sent.");
 define("LANCONTACT_10", "There was a problem sending your message.");
-define("LANCONTACT_11", "Your email address does not appear to be valid.\\nPlease check it and try again.");
+define("LANCONTACT_11", "Please check your email address and resubmit the contact form.");
 define("LANCONTACT_12", "Your message is too short.");
 define("LANCONTACT_13", "Please include a subject.");
 

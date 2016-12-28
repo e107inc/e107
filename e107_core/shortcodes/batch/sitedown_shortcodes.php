@@ -51,6 +51,18 @@ class sitedown_shortcodes extends e_shortcode
 		return e_WEB_ABS."css/e107.css";
 	}
 
+	function sc_sitedown_favicon($parm=null)
+	{
+		if (file_exists(THEME."favicon.ico"))
+		{
+			return THEME_ABS."favicon.ico";
+		}
+		elseif (file_exists(e_BASE."favicon.ico"))
+		{
+			return SITEURL."favicon.ico";
+		}
+	}
+
 }
 
 

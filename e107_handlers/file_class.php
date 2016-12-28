@@ -485,8 +485,8 @@ class e_file
 		curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($cu, CURLOPT_HEADER, 0);
 		curl_setopt($cu, CURLOPT_REFERER, $referer);
-		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0);
+		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
 		curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
 		curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
@@ -1003,24 +1003,27 @@ class e_file
 	 */
 	public function getUserDir($user, $create = false, $subDir = null)
 	{
-		$user = intval($user);
 		$tp = e107::getParser();
 
 		$baseDir = e_MEDIA.'plugins/'.e_CURRENT_PLUGIN.'/';
 
 		if(!empty($subDir))
 		{
+			$subDir = e107::getParser()->filter($subDir,'w');
 			$baseDir .= rtrim($subDir,'/').'/';
 		}
 
-		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		if(is_numeric($user))
+		{
+			$baseDir .= ($user > 0) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		}
 
 		if($create == true && !is_dir($baseDir))
 		{
 			mkdir($baseDir, 0755, true); // recursively
 		}
 
-		$baseDir .= "/";
+		$baseDir = rtrim($baseDir,'/')."/";
 
 		return $baseDir;
 	}
@@ -1191,11 +1194,11 @@ class e_file
 	 *		['error']	- error code. 0 = 'good'. 1..4 main others, although up to 8 defined for later PHP versions
 	 *	Files stored in server's temporary directory, unless another set
 	 */
-	public function getUploaded($uploaddir, $fileinfo = false, $options = null)
+	public function getUploaded($uploaddir, $fileinfo = false, $options = array())
 	{
 		require_once(e_HANDLER."upload_handler.php");
 
-		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP)
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir == e_AVATAR_UPLOAD)
 		{
 			$path = $uploaddir;
 		}
@@ -1207,7 +1210,6 @@ class e_file
 		{
 			return false;
 		}
-
 
 		return process_uploaded_files($path, $fileinfo, $options);
 

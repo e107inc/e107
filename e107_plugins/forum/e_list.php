@@ -14,7 +14,7 @@ if (!defined('e107_INIT')) { exit; }
 //TODO: Investigate queries - needs some more sorting
 class list_forum
 {
-	function list_forum($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}

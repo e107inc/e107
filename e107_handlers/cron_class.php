@@ -67,80 +67,27 @@ class _system_cron
 	 */
 	function checkCoreUpdate () // Check if there is an e107 Core update and email Site Admin if so
 	{
-			// Check if there's a core e107 update available
-			
-	    // Get site version
-	    if (is_readable(e_ADMIN."ver.php"))
-	    {
-	      include (e_ADMIN."ver.php"); // $e107info['e107_version'];
-	    }
-	    else
-	    {
-	      // Find alternate way to get local site version or throw an error
-	    }
-	    
-	    // Check for updates for currently installed version
-	    $localVersion = (int) $e107info['e107_version'];
-	    
-	    switch ($localVersion) {
-	      case 0:
-	        // Local version is <= 0.7
-	        // Run update routine for 0.x
-	        break;
-	      case 1:
-	        // Local version is == 1.x
-	        // Run update routine for 1.x
-	        break;
-	      case 2:
-	        // Local version is == 2.x
-	        // Run update routine for 2.x
-	    
-	        // Get newest available release version
-	        $xml  = e107::getXml();
-	        $file = "http://e107.org/releases.php?mode=2";
-	        $xdata = $xml->loadXMLfile($file,true,false);
-	    
-	        // Check for update
-	        if ($e107info['e107_version'] < $xdata['core']['@attributes']['version'])
-	        {
-	        	// If there is a new version of e107 available, notify Site Admin by email, make a log entry, and notify Admin in Admin Area, $versionTest = false
-	        	
-	          $pref = e107::getPref();
-	          require_once(e_HANDLER.'mail.php');
-	          $message = "There is a new version of e107 available. Please visit http://www.e107.org for further details.";
-	          sendemail($pref['siteadminemail'], "e107 - Update(s) Available For " . $pref['sitename'], $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
-	    
-	          // Add entry to the log
-	          e107::getAdminLog()->add("Update(s) Available", "There is a new version of e107 available. Please visit http://www.e107.org for further details.", 3);
-	    
-	          $versionTest = $xdata['core']['@attributes']['version'];
-	    
-	        }
-	        else
-	        {
-	          // If there is not a new version of e107 available, $versionTest = false
-	        	$versionTest = false;
-	        }
-	    
-	        break;
-	    }
-	    
-	    //$versionTest = "{CHECK THE VERSION}"; // If out of date, return some text, if up-to-date , return false; 
-		
-	    $che = e107::getCache();
-	    $che->setMD5(e_LANGUAGE);
-	     
-			if($versionTest)
-			{
-				$che->set("releasecheck",$versionTest, TRUE);
-		        return $versionTest;
-			//	e107::getMessage()=>addInfo($versionTest);
-			}
-			else
-			{
-				$che->set("releasecheck", 'false', TRUE);
-		        return false;
-			}
+		if(!$data = e107::coreUpdateAvailable())
+		{
+			return false;
+		}
+
+		$pref = e107::getPref();
+
+		$message = "<p>There is a new version of e107 available.<br />
+		 Please visit ".$data['infourl']." for further details.</p>
+		 <a class='btn btn-primary' href=''>Download v".$data['version']."</a>";
+
+		$eml = array(
+					'subject' 		=> "e107 v".$data['version']." is now available.",
+					'sender_name'	=> SITENAME . " Automation",
+					'html'			=> true,
+					'template'		=> 'default',
+					'body'			=> $message
+				);
+
+		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
+
 	
 	}
 	

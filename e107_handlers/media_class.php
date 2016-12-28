@@ -2,20 +2,17 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Media Management Class
  *
- * $URL$
- * $Id$
- *
 */
 
 
 if (!defined('e107_INIT')) { exit; }
-
+//TODO LANS
 
 class e_media
 {
@@ -573,7 +570,7 @@ class e_media
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
 		$total = ($sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;
-		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
+		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='".LAN_CLOSE."' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
 		{
@@ -929,10 +926,9 @@ class e_media
 		}
 		
 		$cache = e107::getCache();
-		$cachTag = !empty($prefix) ? "glyphs_".$prefix : "glyphs";
-		$cache->setMD5($cachTag, false);
-		
-		if($data = $cache->retrieve($type,360,true))
+		$cachTag = !empty($prefix) ? "Glyphs_".$prefix."_".$type : "Glyphs_".$type;
+
+		if($data = $cache->retrieve($cachTag ,360,true,true))
 		{
 			return e107::unserialize($data);
 		}
@@ -941,7 +937,7 @@ class e_media
 		if($type == 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css');
+			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
 		//	print_a($subject);
 		}
 		elseif($type == 'fa3')
@@ -966,13 +962,14 @@ class e_media
 
 		$data = e107::serialize($icons);
 
-		$cache->set($type,$data,true);		
+		$cache->set_sys($cachTag ,$data,true);
+
 		return $icons; 
 	
 	}
 
 
-	
+
 	function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
@@ -982,7 +979,7 @@ class e_media
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
 			$this->log("Couldn't detect mime-type ($mime).");
-			$text = $text = str_replace('[x]',$mime,IMALAN_111);
+			$text = $text = str_replace('[x]',$mime,IMALAN_111); //FIXME LAN IMALAN_112 is not generic. This method can be called from anywhere, not only e107_admin/image.php.
 			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}

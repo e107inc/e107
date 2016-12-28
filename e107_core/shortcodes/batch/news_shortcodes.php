@@ -117,7 +117,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."{$parm}</a>";
+				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."</a>";
 			}
 		}
 		return "<a href='http://e107.org'>e107</a>";
@@ -357,6 +357,11 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsimage($parm);
 	}
 
+	public function sc_news_related($parm=null)
+	{
+		return $this->sc_newsrelated($parm);
+	}
+
 	public function sc_news_visibility($parm=null)
 	{
 		$string= e107::getUserClass()->getIdentifier($this->news_item['news_class']);
@@ -512,10 +517,10 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_extended($parm='')
+	function sc_extended($parm=null)
 	{
 
-		$class = vartrue($parm['class']) ? "class='".$parm['class']."'" : '';
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
 
 		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
@@ -848,6 +853,7 @@ class news_shortcodes extends e_shortcode
 			{
 				$src = $tp->thumbUrl($srcPath);
 				$dimensions = $tp->thumbDimensions();
+				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
 
 			}
 			else
@@ -876,6 +882,15 @@ class news_shortcodes extends e_shortcode
 
 		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
 
+		$imgParms = array(
+			'class'=>$class,
+			'alt'=>basename($src),
+			'style'=>$style
+		);
+
+
+		$imgTag = $tp->toImage($srcPath,$imgParms);
+
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
@@ -883,12 +898,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+				return ".$imgTag."; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
 			break;
 		}
 	}
@@ -931,6 +946,10 @@ class news_shortcodes extends e_shortcode
 	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
 	function sc_newscaticon($parm = array())
 	{
+		if(is_string($parm))
+		{
+			$parm = array('type'=>$parm); 
+		}
 		// BC
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
 		if (!$category_icon) { return ''; }
@@ -955,7 +974,7 @@ class news_shortcodes extends e_shortcode
 
 		$icon = e107::getParser()->toIcon($category_icon, $parm);
 
-		switch($parm)
+		switch($parm['type'])
 		{
 			/* @deprecated - Will cause issues with glyphs */
 			case 'src':

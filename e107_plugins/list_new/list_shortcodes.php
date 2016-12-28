@@ -30,7 +30,7 @@ class list_shortcodes
 	var $list_pref;
 	public $plugin;
 
-	function list_shortcodes()
+	function __construct()
 	{
 		$this->e107 = e107::getInstance();
 		$this->rc = '';

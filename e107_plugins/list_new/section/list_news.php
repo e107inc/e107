@@ -26,7 +26,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_news
 {
-	function list_news($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}

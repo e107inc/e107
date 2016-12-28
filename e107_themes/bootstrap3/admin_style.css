@@ -1282,6 +1282,12 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 .admin-left-panel .panel-title span { display: inline-block; vertical-align: middle; color:white;text-shadow:0 1px 1px #000}
 .admin-left-panel .panel-title .S24, .admin-left-panel .panel-title img { margin-right:6px; width:24px; height:24px; vertical-align:middle}
 
+
+ul.core-update-available li a.dropdown-toggle i  { opacity:1;  color:white; transition: none; !important}
+ul.core-update-available li { color: white }
+
+
+
 /*
 
 body { background-color: rgb(68, 68, 68); }

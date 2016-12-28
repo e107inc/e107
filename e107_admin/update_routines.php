@@ -133,13 +133,18 @@ if (!$dont_check_update)
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
 
+	// $dbupdate['212_to_213'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.2','2.1.3')), 'message'=> null, 'hide_when_complete'=>true);
 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>false);
+
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
 
 	// always run these last.
 	$dbupdate['core_database'] = array('master'=>false, 'title'=> $LAN_UPDATE_5);
 	$dbupdate['core_prefs'] = array('master'=>true, 'title'=> LAN_UPDATE_13);						// Prefs check
+
+
+
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
@@ -241,7 +246,7 @@ class e107Update
 	{
 		if(!$list = e107::getPlugin()->updateRequired())
 		{
-			return;
+			return false;
 		}
 		
 		$frm = e107::getForm();
@@ -542,7 +547,43 @@ function update_core_database($type = '')
 	return $just_check;
 }
 
+	/**
+	 * @param string $type
+	 * @return bool true = no update required, and false if update required.
+	 */
+	 function update_212_to_213($type='')
+	{
 
+		$sql = e107::getDb();
+		$log = e107::getLog();
+		$just_check = ($type == 'do') ? false : true;
+
+			// List of changed menu locations.
+			/*
+		$changeMenuPaths = array(
+
+			array('oldpath'	=> 'comment_menu',		'newpath' => 'comment',		'menu' => 'comment_menu'),
+		);
+
+		if(!empty($changeMenuPaths))
+		{
+			foreach($changeMenuPaths as $val)
+			{
+				$qry = "SELECT menu_path FROM `#menus` WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
+				if($sql->gen($qry))
+				{
+					if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
+					$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
+					$status = $sql->update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+					$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;
+					// catch_error($sql);
+				}
+			}
+		}*/
+
+		return true;
+
+	}
 
 
 //--------------------------------------------
@@ -560,9 +601,9 @@ function update_706_to_800($type='')
 	$sql2 	= e107::getDb('sql2');
 	$tp 	= e107::getParser();
 	$ns 	= e107::getRender();
-	
+
 	e107::getCache()->clearAll('db');
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 
 	e107::getMessage()->setUnique();
 
@@ -738,7 +779,7 @@ function update_706_to_800($type='')
 
 
 	// Move the maximum online counts from menu prefs to a separate pref - 'history'
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 	$menuConfig = e107::getConfig('menu',true,true); 
 	
 	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
@@ -1143,9 +1184,7 @@ function update_706_to_800($type='')
 	
 //	$notify_prefs = $sysprefs -> get('notify_prefs');
 //	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
-	e107::getCache()->clearAll('system');
-
-
+	e107::getCache()->clear_sys('Config');
 
 	$notify_prefs = e107::getConfig('notify',true,true)->getPref();
 
@@ -1920,5 +1959,18 @@ function convert_serialized($serializedData, $type='')
 	return $data;
 }
 
+function theme_foot()
+{
+	global $pref;
+
+	if(!empty($_POST['update_core']['706_to_800']))
+	{
+		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade');
+		$base = base64_encode(http_build_query($data, null, '&'));
+		$url = "http://e107.org/e-install/".$base;
+		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
+	}
+
+}
 
 ?>
