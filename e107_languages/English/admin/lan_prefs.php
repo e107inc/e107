@@ -58,8 +58,8 @@ define("PRFLAN_55", "Cookie/Session name");
 define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
-define("PRFLAN_60", "Enable SSL");
-define("PRFLAN_61", "Only enable SSL if you are sure you know what you are doing!");
+define("PRFLAN_60", "Use SSL only");
+define("PRFLAN_61", "Redirect all traffic through SSL (https)");
 define("PRFLAN_76", "Display CAPTCHA on signup page.");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
@@ -289,3 +289,6 @@ define("PRFLAN_268", "Frontend Inline-Editing");
 define("PRFLAN_269", "Admins with this userclass (and the appropriate admin permissions) will be able to edit html directly via the frontend area.");
 define("PRFLAN_270", "Contact Form Filtering");
 define("PRFLAN_271", "Ignore form submissions containing these words or phrases. One per line.");
+
+define("PRFLAN_272", "Session Lifetime");
+define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");
