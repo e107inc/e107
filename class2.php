@@ -518,7 +518,7 @@ $pref = e107::getPref();
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
 // NEW - force ssl
-if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE'))
+if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE') && empty($_E107['cli']))
 {
 	// NOTE: e_SSL_DISABLE check is here to help webmasters fix 'ssl_enabled'
 	// if set by accident on site with no SSL support - just define it in e107_config.php
@@ -2220,19 +2220,21 @@ class error_handler
 
 		//
 		global $_E107;
-		if(isset($_E107['debug']))
+
+		if(!empty($_E107['debug']))
 		{
 			$this->debug = true;
 			error_reporting(E_ALL);
 			return;
 		}
-		if(isset($_E107['cli']))
+
+		if(!empty($_E107['cli']))
 		{
-			error_reporting(E_ALL ^ E_NOTICE);
+			error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 			return;
 		}
 
-		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== FALSE) || isset($_COOKIE['e107_debug_level']) && strpos($_SERVER['QUERY_STRING'], 'debug=-') !== TRUE )
+		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== false) || isset($_COOKIE['e107_debug_level']) && strpos($_SERVER['QUERY_STRING'], 'debug=-') === false )
 		{
 		   	$this->debug = true;
 		  	error_reporting(E_ALL);

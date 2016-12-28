@@ -230,15 +230,19 @@ class usersettings_front // Begin Usersettings rewrite.
 				$_POST['password2'] = '';
 			}
 
+			e107::getMessage()->addDebug("_FILES".print_a($_FILES,true));
 			// Uploaded avatar and/or photo
-			if (varset($_FILES['file_userfile']['error']) != UPLOAD_ERR_NO_FILE)
+			if (varset($_FILES['file_userfile']['error']['avatar'], false) === UPLOAD_ERR_OK || varset($_FILES['file_userfile']['error']['photo'], false) == UPLOAD_ERR_OK)
 			{
+				e107::getMessage()->addDebug("Uploaded File Detected");
 				require_once (e_HANDLER.'resize_handler.php');
 
 				$opts = array('overwrite' => TRUE, 'file_mask'=>'jpg,png,gif,jpeg', 'max_file_count' => 2);
 
 				if ($uploaded = e107::getFile()->getUploaded(e_AVATAR_UPLOAD, 'prefix+ap_'.$tp->leadingZeros($udata['user_id'],7).'_', $opts))
 				{
+
+					e107::getMessage()->addDebug("Uploaded: ".print_a($uploaded,true));
 					foreach ($uploaded as $upload)
 					{
 						if ($upload['name'] && ($upload['index'] == 'avatar') && $pref['avatar_upload'])

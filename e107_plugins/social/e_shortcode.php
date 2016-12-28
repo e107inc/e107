@@ -187,9 +187,8 @@ class social_shortcodes extends e_shortcode
 	 * 	$socialArray = array('url'=>'your-url-here', 'title'=>'your-title-here');
 		e107::getScBatch('social')->setVars($socialArray);
 	 */
-	function sc_socialshare($parm='') // Designed so that no additional JS required. 
+	function sc_socialshare($parm=array()) // Designed so that no additional JS required.
 	{
-
 		$pref = e107::pref('social');
 
 		if(varset($pref['sharing_mode']) == 'off')

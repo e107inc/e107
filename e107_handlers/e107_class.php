@@ -135,88 +135,89 @@ class e107
 	 * @var array
 	 */
 	protected static $_known_handlers = array(
-		'UserHandler'					 => '{e_HANDLER}user_handler.php',
-		'comment'						 => '{e_HANDLER}comment_class.php',
-		'convert'						 => '{e_HANDLER}date_handler.php',
-		'db'							 => '{e_HANDLER}mysql_class.php',
-		'e107Email'						 => '{e_HANDLER}mail.php',
-		'e107_event'					 => '{e_HANDLER}event_class.php',
+		'UserHandler'                    => '{e_HANDLER}user_handler.php',
+		'comment'                        => '{e_HANDLER}comment_class.php',
+		'convert'                        => '{e_HANDLER}date_handler.php',
+		'db'                             => '{e_HANDLER}mysql_class.php',
+		'e107Email'                      => '{e_HANDLER}mail.php',
+		'e107_event'                     => '{e_HANDLER}event_class.php',
 		'e107_db_debug'                  => '{e_HANDLER}db_debug_class.php',
-		'e107_traffic'					 => '{e_HANDLER}traffic_class.php',
-		'e107_user_extended'			 => '{e_HANDLER}user_extended_class.php',
-		'e107plugin'					 => '{e_HANDLER}plugin_class.php',
-		'e_chart'				 		 => '{e_HANDLER}chart_class.php',
-		'e_core_session'				 => '{e_HANDLER}session_handler.php',
-		'e_admin_controller'			 => '{e_HANDLER}admin_ui.php',
-		'e_admin_controller_ui'			 => '{e_HANDLER}admin_ui.php',
-		'e_admin_dispatcher'			 => '{e_HANDLER}admin_ui.php',
-		'e_admin_form_ui'				 => '{e_HANDLER}admin_ui.php',
-		'e_admin_log'					 => '{e_HANDLER}admin_log_class.php',
-		'e_front_model'					 => '{e_HANDLER}model_class.php',
-		'e_admin_model'					 => '{e_HANDLER}model_class.php',
-		'e_admin_request'				 => '{e_HANDLER}admin_ui.php',
-		'e_admin_response'				 => '{e_HANDLER}admin_ui.php',
-		'e_admin_ui'					 => '{e_HANDLER}admin_ui.php',
+		'e107_traffic'                   => '{e_HANDLER}traffic_class.php',
+		'e107_user_extended'             => '{e_HANDLER}user_extended_class.php',
+		'e107plugin'                     => '{e_HANDLER}plugin_class.php',
+		'e_chart'                        => '{e_HANDLER}chart_class.php',
+		'e_core_session'                 => '{e_HANDLER}session_handler.php',
+		'e_admin_controller'             => '{e_HANDLER}admin_ui.php',
+		'e_admin_controller_ui'          => '{e_HANDLER}admin_ui.php',
+		'e_admin_dispatcher'             => '{e_HANDLER}admin_ui.php',
+		'e_admin_form_ui'                => '{e_HANDLER}admin_ui.php',
+		'e_admin_log'                    => '{e_HANDLER}admin_log_class.php',
+		'e_front_model'                  => '{e_HANDLER}model_class.php',
+		'e_admin_model'                  => '{e_HANDLER}model_class.php',
+		'e_admin_request'                => '{e_HANDLER}admin_ui.php',
+		'e_admin_response'               => '{e_HANDLER}admin_ui.php',
+		'e_admin_ui'                     => '{e_HANDLER}admin_ui.php',
 		'e_ajax_class'                   => '{e_HANDLER}e_ajax_class.php',
-        'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage. 
-		'e_bbcode'						 => '{e_HANDLER}bbcode_handler.php',
-		'e_bb_base'						 => '{e_HANDLER}bbcode_handler.php',
-		'e_file'						 => '{e_HANDLER}file_class.php',
-		'e_form'						 => '{e_HANDLER}form_handler.php',
-		'e_jshelper'					 => '{e_HANDLER}js_helper.php',
-		'e_media'						 => '{e_HANDLER}media_class.php',
-		'e_menu'						 => '{e_HANDLER}menu_class.php',
-		'e_model'						 => '{e_HANDLER}model_class.php',
-        'e_navigation'                   => '{e_HANDLER}sitelinks_class.php',
-		'e_news_item'					 => '{e_HANDLER}news_class.php',
-		'e_news_tree'					 => '{e_HANDLER}news_class.php',
-		'e_object'						 => '{e_HANDLER}model_class.php',
-		'e_online'						 => '{e_HANDLER}online_class.php',
-		'e_parse'						 => '{e_HANDLER}e_parse_class.php',
-		'e_parser'						 => '{e_HANDLER}e_parse_class.php',
-		'e_parse_shortcode'				 => '{e_HANDLER}shortcode_handler.php',
-		'e_ranks'						 => '{e_HANDLER}e_ranks_class.php',
-		'e_shortcode'					 => '{e_HANDLER}shortcode_handler.php',
-		'e_system_user'					 => '{e_HANDLER}user_model.php',
-		'e_upgrade'						 => '{e_HANDLER}e_upgrade_class.php',
-		'e_user_model'					 => '{e_HANDLER}user_model.php',
-		'e_user'					 	 => '{e_HANDLER}user_model.php',
+		'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage.
+		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
+		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
+		'e_file'                         => '{e_HANDLER}file_class.php',
+		'e_form'                         => '{e_HANDLER}form_handler.php',
+		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
+		'e_media'                        => '{e_HANDLER}media_class.php',
+		'e_menu'                         => '{e_HANDLER}menu_class.php',
+		'e_model'                        => '{e_HANDLER}model_class.php',
+		'e_navigation'                   => '{e_HANDLER}sitelinks_class.php',
+		'e_news_item'                    => '{e_HANDLER}news_class.php',
+		'e_news_tree'                    => '{e_HANDLER}news_class.php',
+		'e_object'                       => '{e_HANDLER}model_class.php',
+		'e_online'                       => '{e_HANDLER}online_class.php',
+		'e_parse'                        => '{e_HANDLER}e_parse_class.php',
+		'e_parser'                       => '{e_HANDLER}e_parse_class.php',
+		'e_parse_shortcode'              => '{e_HANDLER}shortcode_handler.php',
+		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
+		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
+		'e_system_user'                  => '{e_HANDLER}user_model.php',
+		'e_upgrade'                      => '{e_HANDLER}e_upgrade_class.php',
+		'e_user_model'                   => '{e_HANDLER}user_model.php',
+		'e_user'                         => '{e_HANDLER}user_model.php',
 		'e_user_extended_structure_tree' => '{e_HANDLER}user_model.php',
-		'e_userperms'					 => '{e_HANDLER}user_handler.php',
-		'e_validator'					 => '{e_HANDLER}validator_class.php',
-		'e_vars'						 => '{e_HANDLER}model_class.php',
-		'ecache'						 => '{e_HANDLER}cache_handler.php',
-		'eController'					 => '{e_HANDLER}application.php',
-		'eDispatcher'					 => '{e_HANDLER}application.php',
-		'eException'					 => '{e_HANDLER}application.php',
-		'eFront'						 => '{e_HANDLER}application.php',
-		'eHelper'						 => '{e_HANDLER}application.php',
-		'eIPHandler'					 => '{e_HANDLER}iphandler_class.php',
-		'email_validation_class'		 =>	'{e_HANDLER}mail_validation_class.php',
-		'eMessage'						 =>	'{e_HANDLER}message_handler.php',
-		'eRequest'						 => '{e_HANDLER}application.php',
-		'eResponse'						 => '{e_HANDLER}application.php',
-		'eRouter'						 => '{e_HANDLER}application.php',
-		'eUrl'							 => '{e_HANDLER}e107Url.php',
-		'eUrlConfig'					 => '{e_HANDLER}application.php',
-		'eUrlRule'						 => '{e_HANDLER}application.php',
-		'Hybrid_Auth'					 => '{e_HANDLER}hybridauth/Hybrid/Auth.php',
-		'language'						 => '{e_HANDLER}language_class.php',
-		'news'							 => '{e_HANDLER}news_class.php',
-		'notify'						 => '{e_HANDLER}notify_class.php',
-		'override'						 => '{e_HANDLER}override_class.php',
-		'rater'					 		 => '{e_HANDLER}rate_class.php',
-		'redirection'					 => '{e_HANDLER}redirection_class.php',
-		'secure_image'					 => '{e_HANDLER}secure_img_handler.php',
-		'sitelinks'						 => '{e_HANDLER}sitelinks_class.php',
-		'themeHandler'					 => '{e_HANDLER}theme_handler.php',
-		'user_class'					 => '{e_HANDLER}userclass_class.php',
+		'e_userperms'                    => '{e_HANDLER}user_handler.php',
+		'e_validator'                    => '{e_HANDLER}validator_class.php',
+		'e_vars'                         => '{e_HANDLER}model_class.php',
+		'ecache'                         => '{e_HANDLER}cache_handler.php',
+		'eController'                    => '{e_HANDLER}application.php',
+		'eDispatcher'                    => '{e_HANDLER}application.php',
+		'eException'                     => '{e_HANDLER}application.php',
+		'eFront'                         => '{e_HANDLER}application.php',
+		'eHelper'                        => '{e_HANDLER}application.php',
+		'eIPHandler'                     => '{e_HANDLER}iphandler_class.php',
+		'email_validation_class'         => '{e_HANDLER}mail_validation_class.php',
+		'eMessage'                       => '{e_HANDLER}message_handler.php',
+		'eRequest'                       => '{e_HANDLER}application.php',
+		'eResponse'                      => '{e_HANDLER}application.php',
+		'eRouter'                        => '{e_HANDLER}application.php',
+		'eUrl'                           => '{e_HANDLER}e107Url.php',
+		'eUrlConfig'                     => '{e_HANDLER}application.php',
+		'eUrlRule'                       => '{e_HANDLER}application.php',
+		'Hybrid_Auth'                    => '{e_HANDLER}hybridauth/Hybrid/Auth.php',
+		'language'                       => '{e_HANDLER}language_class.php',
+		'news'                           => '{e_HANDLER}news_class.php',
+		'notify'                         => '{e_HANDLER}notify_class.php',
+		'override'                       => '{e_HANDLER}override_class.php',
+		'rater'                          => '{e_HANDLER}rate_class.php',
+		'redirection'                    => '{e_HANDLER}redirection_class.php',
+		'secure_image'                   => '{e_HANDLER}secure_img_handler.php',
+		'sitelinks'                      => '{e_HANDLER}sitelinks_class.php',
+		'themeHandler'                   => '{e_HANDLER}theme_handler.php',
+		'user_class'                     => '{e_HANDLER}userclass_class.php',
 		'user_class_admin'               => '{e_HANDLER}userclass_class.php',
-		'userlogin'					 	 => '{e_HANDLER}login.php',
-		'validatorClass'				 => '{e_HANDLER}validator_class.php',
-		'xmlClass'						 => '{e_HANDLER}xml_class.php',
+		'userlogin'                      => '{e_HANDLER}login.php',
+		'validatorClass'                 => '{e_HANDLER}validator_class.php',
+		'xmlClass'                       => '{e_HANDLER}xml_class.php',
 		'e107MailManager'                => '{e_HANDLER}mail_manager_class.php',
-		'e_library_manager'              => '{e_HANDLER}library_manager.php'
+		'e_library_manager'              => '{e_HANDLER}library_manager.php',
+		'error_page'                     => '{e_HANDLER}error_page_class.php',
 	);
 
 	/**
@@ -814,7 +815,7 @@ class e107
 		{
 			global $e107_debug, $_E107;
 
-			if(($e107_debug || isset($_E107['debug']) || (defined('e_DEBUG') && e_DEBUG === true) ))
+			if(($e107_debug || !empty($_E107['debug']) || (defined('e_DEBUG') && e_DEBUG === true) ))
 			{
 				require_once($path);
 			}
@@ -3059,6 +3060,16 @@ class e107
 	}
 
 
+	/**
+	 * Retrieve error page handler.
+	 *
+	 * @return error_page
+	 */
+	public static function getError()
+	{
+		return self::getSingleton('error_page', true);
+	}
+	
 
 	/**
 	 * Parses an array into a valid, rawurlencoded query string. This differs from http_build_query() as we need to
@@ -3496,12 +3507,12 @@ class e107
 
 		if(!defined('e_MOD_REWRITE')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On' ? true : false));
+			define('e_MOD_REWRITE', (getenv('HTTP_MOD_REWRITE')=='On'||  getenv('REDIRECT_HTTP_MOD_REWRITE')=='On' ? true : false));
 		}
 
 		if(!defined('e_MOD_REWRITE_MEDIA')) // Allow e107_config.php to override.
 		{
-			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA')=='On' ? true : false));
+			define('e_MOD_REWRITE_MEDIA', (getenv('HTTP_MOD_REWRITE_MEDIA')=='On' || getenv('REDIRECT_HTTP_MOD_REWRITE_MEDIA')=='On'  ? true : false));
 		}
 
 		// Define the domain name and subdomain name.
@@ -4484,4 +4495,66 @@ class e107
 		self::$_registry = null;
 		self::$_instance = null;
 	}
+
+
+	/**
+	 * Check if there's a core e107 release available
+	 * @return array|bool - return array of data or false if no update available.
+	 */
+	public static function coreUpdateAvailable()
+	{
+
+	    // Get site version
+	    $e107info= array();
+
+	    if(is_readable(e_ADMIN."ver.php"))
+	    {
+			include(e_ADMIN."ver.php"); // $e107info['e107_version'];
+	    }
+	    else
+	    {
+	        return false;
+	    }
+
+        $xml  = e107::getXml();
+        $file = "https://e107.org/releases.php";
+        if(!$xdata = $xml->loadXMLfile($file,true,false))
+        {
+            return false;
+        }
+
+		$curVersion = str_replace(' (git)', '', $e107info['e107_version']);
+
+		if(empty($xdata['core'][0]['@attributes']['version']))
+		{
+			return false;
+		}
+		else
+		{
+			$newVersion = $xdata['core'][0]['@attributes']['version'];
+		}
+
+
+		e107::getDebug()->log("New Version:".$newVersion);
+
+		if(version_compare($curVersion,$newVersion) === -1)
+		{
+			$data = array(
+				'name'          => $xdata['core'][0]['@attributes']['name'],
+				'url'           => $xdata['core'][0]['@attributes']['url'],
+				'date'          => $xdata['core'][0]['@attributes']['date'],
+				'version'       => $xdata['core'][0]['@attributes']['version'],
+				'infourl'       => $xdata['core'][0]['@attributes']['infourl'],
+				'description'   => $xdata['core'][0]['description'],
+			);
+
+			return $data;
+		}
+
+		return false;
+
+	}
+
+
+
 }

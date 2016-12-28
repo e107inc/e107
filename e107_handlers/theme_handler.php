@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -818,14 +818,14 @@ class themeHandler
 	
 	function renderThemeInfo($theme)
 	{
-			
+
 		global $pref;
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
-		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
+//		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description'],'');
-		$compat			= (intval($theme['compatibility']) == 2) ? "<span class='label label-warning'>".number_format($theme['compatibility'], 1, '.','')."</span><span class='text-warning'> ".TPVLAN_78."</span>": vartrue(number_format($theme['compatibility'], 1, '.',''),'1.0');
-		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_77."</span>";
+		$compat			= (intval($theme['compatibility']) == 2) ? "<span class='label label-warning'>".number_format($theme['compatibility'], 1, '.','')."</span><span class='text-warning'> ".TPVLAN_77."</span>": vartrue(number_format($theme['compatibility'], 1, '.',''),'1.0');
+		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 	
 	
 		$text = "<table class='table table-striped'>";
@@ -1066,7 +1066,7 @@ class themeHandler
 			$thumbPath = $theme['thumbnail'];	
 			$previewPath = $theme['preview'][0];	
 		}
-		elseif(vartrue($theme['preview'][0]))
+		elseif(!empty($theme['preview'][0]))
 		{
 			$thumbPath = e_THEME.$theme['path'] ."/".$theme['preview'][0];	
 			$previewPath = e_THEME.$theme['path'] ."/".$theme['preview'][0];	
@@ -1088,6 +1088,9 @@ class themeHandler
 				'mode'  => $theme['mode'],
 				'price' => $theme['price']
 			);
+
+
+			e107::getSession()->set('thememanager/online/'.$theme['id'], $theme);
 
 			$d = http_build_query($srcData,false,'&');
 			$base64 = base64_encode($d);
@@ -1811,10 +1814,8 @@ class themeHandler
 		
 		if($core->save())
 		{
-			//TODO LANs
-			
-			$mes->addDebug("Default Layout: ".$deflayout);
-			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
+			$mes->addDebug(MENLAN_31.": ".$deflayout);
+			$mes->addDebug(MENLAN_56.": ".print_a($customPages,true));
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	

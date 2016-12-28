@@ -1892,8 +1892,13 @@ class e_admin_controller
 	 * @param string $title
 	 * @return e_admin_controller
 	 */
-	public function addMetaTitle($title)
+	public function addMetaTitle($title=null)
 	{
+		if($title === null)
+		{
+			return $this;
+		}
+
 		$this->getResponse()->addMetaTitle($title);
 		return $this;
 	}
@@ -1905,8 +1910,13 @@ class e_admin_controller
 	 * @param string $content
 	 * @return e_admin_controller
 	 */
-	public function addHeader($content)
+	public function addHeader($content=null)
 	{
+		if($content === null)
+		{
+			return $this;
+		}
+
 		$this->getResponse()->addHeaderContent(vartrue($content));
 		return $this;
 	}
@@ -3537,7 +3547,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	function getJoinField($field)
 	{
-		return vartrue($this->joinField[$field],false);	
+		return isset($this->joinField[$field]) ? $this->joinField[$field] : false; // vartrue($this->joinField[$field],false);
 	}
 
 	/**
@@ -3831,13 +3841,13 @@ class e_admin_controller_ui extends e_admin_controller
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
-			if((vartrue($var['nolist']) && !vartrue($var['filter'])) || !vartrue($var['type']))
+			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']))
 			{
 				continue;
 			}
 
 			// select FROM... for main table
-			if(vartrue($var['alias']) && vartrue($var['__tableField']))
+			if(!empty($var['alias']) && !empty($var['__tableField']))
 			{
 				$tableSFieldsArr[] = $var['__tableField'];
 			}
@@ -4502,8 +4512,8 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			$this->getTreeModel()->setMessages();
 			// FIXME lan
-			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(RL_LAN_085, $delcount, true));
-			if($nfcount) e107::getMessage()->addError($tp->lanVars(RL_LAN_086, $nfcount,true));
+			if($delcount) e107::getMessage()->addSuccess($tp->lanVars(LAN_UI_DELETED, $delcount, true));
+			if($nfcount) e107::getMessage()->addError($tp->lanVars(LAN_UI_DELETED_FAILED, $nfcount,true));
 		}
 
 		//$this->redirect();
@@ -6277,19 +6287,21 @@ class e_admin_form_ui extends e_form
 		$text = "
 			<div id='admin-ui-list-batch' class='navbar navbar-inner left' >
 				<div class='span6 col-md-6'>";
-				
-		if(!$this->getController()->getTreeModel()->isEmpty())
-		{		
-			$text .= "
-					<div class='form-inline input-inline'>
+
+		$selectStart = "<div class='form-inline input-inline'>
 	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action'  />
 	         		<div class='input-group input-append'>
 						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control input-large select batch e-autosubmit reset', 'id' => false))."
-						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false)."
-						".($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
-						".($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."					
-					    ".($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '')."   
-					  	".($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
+						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false);
+
+		$selectOpt = '';
+				
+		if(!$this->getController()->getTreeModel()->isEmpty())
+		{		
+			$selectOpt .= ($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
+			$selectOpt .= ($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
+			$selectOpt .= ($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
+			$selectOpt .= ($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
 
 			if(!empty($customBatchOptions))
 			{
@@ -6298,16 +6310,18 @@ class e_admin_form_ui extends e_form
 
 					if(is_array($val))
 					{
-						$text .= $this->optgroup_open($key);
+						$selectOpt .= $this->optgroup_open($key);
+
 						foreach($val as $k=>$v)
 						{
-							$text .= $this->option($v, $k, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+							$selectOpt .= $this->option($v, $k, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
 						}
-						$text .= $this->optgroup_close();
+
+						$selectOpt .= $this->optgroup_close();
 					}
 					else
 					{
-						$text .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
+						$selectOpt .= $this->option($val, $key, false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"'));
 					}
 
 
@@ -6316,12 +6330,23 @@ class e_admin_form_ui extends e_form
 			}
 
 
-			$text .= "
-				".$this->renderBatchFilter('batch')."
-				".$this->select_close()."
-				<div class='input-group-btn input-append'>
+			$selectOpt .= $this->renderBatchFilter('batch');
+
+			if(!empty($selectOpt))
+			{
+				$text .= $selectStart;
+
+				$text .= $selectOpt;
+
+				$text .= $this->select_close();
+
+				$text .= "<div class='input-group-btn input-append'>
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
-				</div></div></div>
+				</div>";
+			}
+
+
+			$text .= "</div></div>
 			";
 		}
 

@@ -41,8 +41,7 @@ class comment_menu_shortcodes extends e_shortcode
 
 	function sc_cm_datestamp()
 	{
-		$gen = new convert;
-		return $gen->convert_date($this->var['comment_datestamp'], "relative");
+		return e107::getParser()->toDate($this->var['comment_datestamp'], "relative");
 	}
 		
 	function sc_cm_heading()

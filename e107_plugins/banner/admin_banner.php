@@ -32,6 +32,13 @@ $e_sub_cat = 'banner';
 e107::lan('banner',false,'front'); 
 e107::lan('banner',true,true);
 
+e107::css('inline', "
+
+.banner-image .tab-content { padding-top:15px;}
+
+
+");
+
 e107::js('footer-inline','
 
 	$("#banner-campaign-sel").on("change", function() {
@@ -119,7 +126,7 @@ class banner_ui extends e_admin_ui
 		  'banner_clientname'		=>   array ( 'title' => BANNERLAN_22, 'type' => 'method', 'tab'=>1, 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clientlogin' 		=>   array ( 'title' => BNRLAN_12, 'type' => 'method',  'tab'=>1, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'banner_clientpassword' 	=>   array ( 'title' => LAN_PASSWORD, 'type' => 'text',  'tab'=>1,'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'strength=1&password=1&required=0&generate=1&nomask=1', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_image' 			=>   array ( 'title' => LAN_IMAGE, 	'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => 'thumb=0x50&legacyPath={e_IMAGE}banners', 'writeParms' => 'media=banner&w=600&legacyPath={e_IMAGE}banners', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_image' 			=>   array ( 'title' => LAN_IMAGE, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => 'thumb=0x50&legacyPath={e_IMAGE}banners', 'writeParms' => 'media=banner&w=600&legacyPath={e_IMAGE}banners', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clickurl' 		=>   array ( 'title' => BNRLAN_15, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge&required=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_impurchased' 		=>   array ( 'title' => BNRLAN_16, 	'type' => 'number', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'help'=>'0 = unlimited' ),
 		  'banner_tooltip' 		    =>   array ( 'title' => LAN_TOOLTIP, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'center', 'thclass' => 'center',  ),
@@ -129,7 +136,7 @@ class banner_ui extends e_admin_ui
 
 		  'banner_startdate' 		=>   array ( 'title' => LAN_START, 	'type' => 'datestamp',  'tab'=>1,'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'banner_enddate' 			=>   array ( 'title' => LAN_END, 	'type' => 'datestamp',  'tab'=>1, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_active' 			=>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_active' 			=>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clicks' 			=>   array ( 'title' => BANNERLAN_24, 		'type' => 'number', 'noedit'=>true, 'readonly'=>2, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 
 		  'click_percentage' 		=>   array ( 'title' => BANNERLAN_25, 	'type' => 'method', 'noedit'=>true, 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -176,6 +183,11 @@ class banner_ui extends e_admin_ui
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
 					
 			}
+
+			if(!empty($new_data['banner_image_remote']))
+			{
+				$new_data['banner_image'] = $new_data['banner_image_remote'];
+			}
 			
 			return $new_data;
 		}
@@ -207,6 +219,11 @@ class banner_ui extends e_admin_ui
 			if(!empty($new_data['banner_campaign_sel']))
 			{
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
+			}
+
+			if(!empty($new_data['banner_image_remote']))
+			{
+				$new_data['banner_image'] = $new_data['banner_image_remote'];
 			}
 				
 			return $new_data;
@@ -423,6 +440,76 @@ class banner_form_ui extends e_admin_form_ui
 		
 		
 	}
+
+
+	function banner_image($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return e107::getParser()->toImage($curVal, array('h'=>100));
+			break;
+
+			case 'write': // Edit Page
+
+				$opts =   'media=banner&w=600&legacyPath={e_IMAGE}banners';
+
+				if(strpos($curVal,'http') === 0)
+				{
+					$val1 = null;
+					$val2 = $curVal;
+				}
+				else
+				{
+					$val1 = $curVal;
+					$val2 = null;
+				}
+
+				$tab1 = $this->imagepicker('banner_image',$val1, null, $opts);
+
+
+				$tab2 = "<p>". $this->text('banner_image_remote',$val2, 255, array('size'=>'xxlarge', 'placeholder'=>'eg. http://some-website.com/banner-image.jpg', 'title'=>'This will override any local image you have set.'))."</p>";
+
+				if(!empty($val2))
+				{
+					$tab2 .= e107::getParser()->toImage($val2);
+				}
+
+				$tabText = array(
+					'local' => array('caption'=>BNRLAN_50, 'text'=>$tab1),
+					'remote' => array('caption'=>BNRLAN_51, 'text'=>$tab2),
+				);
+
+				return "<div class='banner-image'>".$this->tabs($tabText)."</div>";
+			//	return $frm->text('banner_clientname',$curVal);
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  $this->clients;
+			break;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	

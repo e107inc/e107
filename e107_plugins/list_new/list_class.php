@@ -41,7 +41,7 @@ class listclass
 	 * @return void
 	 *
 	 */
-	function listclass($mode='')
+	function __construct($mode='')
 	{
 		global $TEMPLATE_LIST_NEW, $list_shortcodes;
 

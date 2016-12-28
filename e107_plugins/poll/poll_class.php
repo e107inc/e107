@@ -131,11 +131,11 @@ class poll
 		$active_end		= (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options	= '';
 
-		$_POST['poll_option'] = array_filter($_POST['poll_option'], 'poll::clean_poll_array');
+		$pollOption = $tp->filter($_POST['poll_option']);
+		$pollOption = array_filter($pollOption, 'poll::clean_poll_array');
  
-		foreach ($_POST['poll_option'] as $key => $value)
+		foreach ($pollOption as $key => $value)
 		{
-
 			$poll_options .= $tp->toDB($value).chr(1);
 		}
 
@@ -156,6 +156,7 @@ class poll
 			$foo = $sql->fetch();
 			$voteA = explode(chr(1), $foo['poll_votes']);
 
+			$poll_option = varset($poll_option, 0);
 			$opt = count($poll_option) - count($voteA);
 
 			if ($opt)
@@ -197,7 +198,7 @@ class poll
 				$sql->insert("polls", "'0', ".intval($_POST['iid']).", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '".intval($multipleChoice)."', '0', '0', '".intval($storageMethod)."'");
 			}
 		}
-		return $message;
+		return varset($message);
 	}
 
 	function get_poll($query)
@@ -268,13 +269,14 @@ class poll
 		{
 			return FALSE;
 		}
-		if (isset($_POST['pollvote']) && $POLLMODE == 'notvoted' && ($POLLMODE != 'disallowed'))
+		if (isset($_POST['pollvote']) && isset($POLLMODE) && $POLLMODE == 'notvoted' && ($POLLMODE != 'disallowed'))
 		{
 			if ($_POST['votea'])
 			{
 //					$sql -> db_Select("polls", "*", "poll_vote_userclass!=255 AND poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
 				$row = $pollArray;
 				extract($row);
+				$poll_votes = varset($poll_votes);
 				$votes = explode(chr(1), $poll_votes);
 				if (is_array($_POST['votea']))
 				{
@@ -300,7 +302,8 @@ class poll
 				}
 				$votep = implode(chr(1), $votes);
 				$pollArray['poll_votes'] = $votep;
-				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip.$userid."^'" : '')." WHERE poll_id=".$poll_id);
+				$poll_ip = varset($poll_ip) . varset($userid);
+				$sql->update("polls", "poll_votes = '$votep'".($pollArray['poll_storage_method'] != POLL_MODE_COOKIE ? ", poll_ip='".$poll_ip."^'" : '')." WHERE poll_id=".varset($poll_id));
 				/*echo "
 				<script type='text/javascript'>
 				<!--
@@ -315,7 +318,7 @@ class poll
 			}
 		}
 		$this->pollRow = $pollArray;
-		$this->pollmode = $POLLMODE;
+		$this->pollmode = varset($POLLMODE);
 	}
 
 
@@ -396,13 +399,15 @@ class poll
 //			$voteArray = array_slice($voteArray, 0, -1);
 		}
 
-		$voteTotal = array_sum($voteArray);
+		$voteTotal = intval(array_sum($voteArray));
 		$percentage = array();
 
 		if (count($voteArray))
 		{
 			foreach ($voteArray as $votes)
 			{
+				$votes = intval($votes);
+
 				if ($voteTotal > 0)
 				{
 					$percentage[] = round(($votes/$voteTotal) * 100, 2);

@@ -13,7 +13,7 @@ define('FONTAWESOME',	4);
 
 e107::js("url", 			"https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
 // e107::css('url', 			'https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css');
-e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
+e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css');
 
 
 // Too slow.

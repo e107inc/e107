@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+
 ini_set("display_errors", 1); 
 //22/10/2009 9.58.12
 //general list of implementaion and 

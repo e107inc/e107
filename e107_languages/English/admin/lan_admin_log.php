@@ -82,8 +82,6 @@ define("RL_LAN_081", "Mail bounces");
 define("RL_LAN_082", "User bans");
 define("RL_LAN_083", "Mail bounce resets");
 define("RL_LAN_084", "Temporary accounts");
-define("RL_LAN_085", "[x] record(s) successfully deleted!");  
-define("RL_LAN_086", "[x] records not found and not deleted!");
 define("RL_LAN_087", "Details");
 
 // Intentional gap

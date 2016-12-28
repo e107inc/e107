@@ -82,19 +82,9 @@ class banner_shortcodes extends e_shortcode
 				break;
 				
 				default:
-					if($row['banner_image'][0] == '{')
-					{
-						$src = $row['banner_image'];
-						$style = '';
-					}
-					else
-					{
-						$src = e_IMAGE_ABS.'banners/'.$row['banner_image'];
-						$style = "'border:0'";
-					}
-						// Somehow, can't use vartrue core function when referencing $parm['class'], gives bug...
+
 						$class = empty($parm['class']) ? "e-banner img-responsive" : $parm['class'];
-						$ban_ret = $tp->toImage($src, array('class'=> $class , 'alt'=>$row['banner_clickurl'], 'style'=>$style));
+						$ban_ret = $tp->toImage($row['banner_image'], array('class'=> $class , 'alt'=>basename($row['banner_image']), 'legacy'=>'{e_IMAGE}banners'));
 
 				break;
 			}
