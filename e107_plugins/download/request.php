@@ -76,7 +76,7 @@ if(strstr(e_QUERY, "mirror"))
 			exit();
 		}
 
-		$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$download_id;
+		$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
 		e107::redirect($goUrl);
 		//header("Location: ".e_BASE."download.php?error.{$download_id}.1");
 		exit;
@@ -249,7 +249,7 @@ if ($type == "file")
 				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
 				))
 			{
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$id;
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
 				e107::redirect($goUrl);
 				exit();
 			}
@@ -386,7 +386,7 @@ function check_download_limits()
 			if($row['count'] >= $limits['gen_intdata']) 
 			{
 				// Exceeded download count limit
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$cutoff;
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
 				e107::redirect($goUrl);
 			 // 	e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require_once(HEADERF);
@@ -418,7 +418,7 @@ function check_download_limits()
 			
 			if($row['total_bw'] / 1024 > $limit['gen_user_id']) 
 			{	//Exceed bandwith limit
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$cutoff;
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
 				 e107::redirect($goUrl);
 			 // e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require(HEADERF);
