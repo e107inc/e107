@@ -3388,7 +3388,7 @@ class e107
 				exit();	
 			}
 			
-			$regex = "/(wget |curl -o |fetch |lwp-download|onmouse)/i";
+			$regex = "/(wget |curl -o |lwp-download|onmouse)/i";
 			if(preg_match($regex,$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);
