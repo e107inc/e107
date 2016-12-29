@@ -2,23 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Cron Administration
+ * Cron Administration - Scheduled Tasks 
  *
- * $URL$
- * $Id$
- *
- */
-
-/**
- *
- * @package     e107
- * @subpackage	admin
- * @version     $Id$
- *	Admin-related functions for cron (Scheduler) management
  */
 
 require_once('../class2.php');
@@ -194,7 +183,9 @@ class cron_admin_ui extends e_admin_ui
 				$this->cronImport(e107::getAddonConfig('e_cron'));	// Import plugin Crons
 				$this->cronImportLegacy(); // Import Legacy Cron Tab Settings	
 			}
-														
+
+			$this->renderHelp();
+
 		}
 		
 		
@@ -393,10 +384,10 @@ class cron_admin_ui extends e_admin_ui
 				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
 				{
-					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>Go to cPanel</a></div>";
+					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>".LAN_CRON_60."</a></div>";
 					
 				}
-				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', 'Generate new cron password',array('class'=>'btn btn-small'));
+				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', LAN_CRON_61 ,array('class'=>'btn btn-small'));
 				$setpwd_message .= $frm->close();	
 				
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
@@ -448,7 +439,7 @@ class cron_admin_ui extends e_admin_ui
 				$obj = new $class_name;
 				if (method_exists($obj, $method_name))
 				{
-					$message = str_replace('[x]', $class_name." : ".$method_name, "Executing config function [b][x][/b]");
+					$message = str_replace('[x]', $class_name." : ".$method_name, LAN_CRON_62);//Executing config function [b][x][/b]
 					$mes->add($message, E_MESSAGE_DEBUG);
 					if ($return == 'boolean')
 					{
@@ -462,12 +453,17 @@ class cron_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					$message = str_replace('[x]', $method_name."()", "Config function [b][x][/b] NOT found.");
+					$message = str_replace('[x]', $method_name."()", LAN_CRON_63 );//Config function [b][x][/b] NOT found.
 					$mes->add($message, E_MESSAGE_DEBUG);
 				}
 			}
 			return FALSE;
 		}		
+
+		function renderHelp()
+		{
+			return array('caption'=>LAN_HELP, 'text'=>e107::getParser()->toHTML(LAN_CRON_64, true));
+		}
 		
 }
 
@@ -575,7 +571,7 @@ class cron_admin_form_ui extends e_admin_form_ui
 		{
 			$text = "<div class='btn-group'>";
 			$text .= $this->renderValue('options',$value,'',$id);
-			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', 'Execute');
+			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', LAN_RUN);
 			$text .= "</div>";
 			return $text;
 		}
@@ -860,7 +856,7 @@ class cron
 
 	function cronExecute($class_func)
 	{
-		//TODO LANs
+		//TO/ DO L/ANs
 		list($class_name, $method_name) = explode("__", $class_func);
 		$mes = e107::getMessage();
 
