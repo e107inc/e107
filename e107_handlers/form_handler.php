@@ -867,7 +867,7 @@ class e_form
 	{
 		
 		$cat = ($category) ? '&amp;for='.$category : "";
-		if(!$label) $label = PRFLAN_272;
+		if(!$label) $label = ' Upload an image or file';
 		if($tagid) $cat .= '&amp;tagid='.$tagid; 
 		
 		if(is_string($extras))
