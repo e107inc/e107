@@ -17,7 +17,7 @@
 
 if (!defined('e107_INIT')) { exit(); }
 
-e107::lan('theme', 'admin',true);
+//e107::lan('theme', 'admin',true);
 
 
 $E_ADMIN_NAVIGATION['start'] = '<ul class="nav navbar-nav navbar-left">';
@@ -62,7 +62,7 @@ $E_ADMIN_NAVIGATION['button_home'] = '
 // Change Language
 $E_ADMIN_NAVIGATION['button_language'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="'.LAN_THEMEPREF_13.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -237,7 +237,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="'.LAN_THEMEPREF_12.'">
+			<a class="brand navbar-brand" href="'.e_ADMIN_ABS.'admin.php" title="'.LAN_RETURN_TO_FRONT_PANEL.'">
 				<img class="admin-logo" src="'.e_THEME_ABS.'bootstrap3/images/e107_adminlogo.png" alt="e107"/>
 			</a>
 		</div>
