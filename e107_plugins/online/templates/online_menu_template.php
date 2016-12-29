@@ -27,7 +27,7 @@ $ONLINE_MENU_TEMPLATE['default']['enabled']                         = "
 																	{ONLINE_MEMBERS_LIST}
 																	{ONLINE_MEMBERS_LIST_EXTENDED}
 																	{ONLINE_ONPAGE}
-																	{ONLINE_MEMBER_TOTAL}
+																	{ONLINE_MEMBERS_TOTAL}
 																	{ONLINE_MEMBER_NEWEST}
 																	<li>
 																	{ONLINE_MOST}
@@ -69,7 +69,7 @@ $ONLINE_MENU_TEMPLATE['extended']['enabled']                        = "
 																		{ONLINE_MEMBERS}
 																		{ONLINE_MEMBERS_LIST_EXTENDED}
 																		{ONLINE_ONPAGE}
-																		{ONLINE_MEMBER_TOTAL}
+																		{ONLINE_MEMBERS_TOTAL}
 																		{ONLINE_MEMBER_NEWEST: type=avatar}
 																		{ONLINE_MEMBERS_REGISTERED}
 																		<li class='online-menu-extended-label'>
