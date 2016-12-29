@@ -2889,7 +2889,22 @@ e107::getDebug()->log($sc_parameters);
 	}
 
 
+	/**
+	 * Render a direct link admin-edit button on the frontend.
+	 * @param $url
+	 * @param string $perms
+	 * @return string
+	 */
+	public function instantEditButton($url, $perms='0')
+	{
+		if(deftrue("BOOTSTRAP") && getperms($perms))
+		{
+			return "<span class='e-instant-edit hidden-print'><a target='_blank' title='".LAN_EDIT."' href='".$url."'>".e107::getParser()->toGlyph('fa-edit')."</a></span>";
+		}
 
+		return '';
+
+	}
 
 
 

@@ -85,12 +85,14 @@ $NEWS_TEMPLATE['default']['item'] = '
 		<article class="default-item">
 		<div class="news-header">
 			<span class="news-category">{NEWSCATEGORY}</span>
-			<h2 class="news-title">{NEWSTITLELINK}</h2>
+			<h2 class="news-title">{NEWSTITLELINK} </h2>
 		 </div>
 		 	{NEWSIMAGE: item=1}
 			<div class="news-description">
 				{NEWSMETADIZ}
+				{ADMINOPTIONS}
 				<p><a class="more-link" href="{NEWSURL}">Continue Reading <i class="fa fa-long-arrow-right"></i></a></p>
+
 			</div>
 
 
