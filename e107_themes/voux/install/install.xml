@@ -178,6 +178,15 @@
   'vimeo' => '',
 )]]></core>
 	</prefs>
+	<pluginPrefs>
+		<social name="sharing_providers"><![CDATA[array (
+  'email' => '1',
+  'facebook-like' => '1',
+  'twitter' => '1',
+  'google-plus1' => '1',
+  'pinterest' => '1',
+)]]></social>
+</pluginPrefs>
 	<database>
 	<dbTable name="core_media">
 		<item>
