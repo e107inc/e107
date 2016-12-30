@@ -1450,13 +1450,20 @@ class e_menuManager {
 						unset($text);
 						$menuText .= $rs->form_open("post", e_SELF . "?configure=" . $this->curLayout, "frm_menu_" . intval($menu));
 						
-						$sql9->select("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order");
-						$menu_count = $sql9->db_Rows();
-						
+						$rows = $sql9->retrieve("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order",true);
+					//	$menu_count = $sql9->db_Rows();
+						$menu_count = count($rows);
+
+						if(!empty($_GET['debug']))
+						{
+							print_a($rows);
+						}
+
 						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
 						
 						$menuText .= "\n<div class='column' id='area-".$menu."'>\n\n";
-						while($row = $sql9->fetch())
+					//	while($row = $sql9->fetch())
+						foreach($rows as $row)
 						{
 							$menuText .= "\n\n\n <!-- Menu Start ".$row['menu_name']. "-->\n";
 							$menuText .= "<div class='{$cl}' id='block-".$row['menu_id']."-".$menu."'>\n";
