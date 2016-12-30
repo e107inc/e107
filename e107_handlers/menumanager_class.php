@@ -24,6 +24,7 @@ class e_menuManager {
 		var $debug;
 		var $menuMessage;
 		var $style = 'default';
+		private $menuData = array();
 
 		function __construct($dragdrop=FALSE)
 		{
@@ -62,7 +63,7 @@ class e_menuManager {
 					$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 				}
 
-			$this->curLayout =  $tp->filter($this->curLayout);
+				$this->curLayout =  $tp->filter($this->curLayout);
 
 				$this->dbLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
 
@@ -70,6 +71,9 @@ class e_menuManager {
 				{
                 	$this->menuId = (isset($_POST['menu_id'])) ? intval($_POST['menu_id']) : intval($_GET['id']);
 				}
+
+
+
 
 				if (/*$menu_act == "sv" || */isset($_POST['class_submit']))
 				{
@@ -90,6 +94,8 @@ class e_menuManager {
 				 	$this->menuGoConfig();
 				}
 
+
+
 				$this->menuGrabLayout();
 
 	        	$menu_array = $this->parseheader($HEADER.$FOOTER, 'check');
@@ -109,6 +115,8 @@ class e_menuManager {
                 }
 
 				$this->menuModify();
+
+				$this->loadMenuData();
 
             	if(vartrue($_POST['menuActivate']))
 				{
@@ -133,6 +141,53 @@ class e_menuManager {
 				$this->menuSetConfigList(); // Update Active MenuConfig List.
 
 		}
+
+
+	/**
+	 * Load the Menu Table data for the current layout.
+	 */
+	private function loadMenuData()
+	{
+		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND  menu_layout = "'.$this->dbLayout.'" ORDER BY menu_location,menu_order';
+
+		$sql = e107::getDb();
+
+		$eMenuArea = array();
+
+		if($rows = $sql->retrieve($menu_qry, true))
+		{
+
+			$lastLoc = -1;
+			$c = 0;
+			foreach($rows as $row)
+			{
+				$loc = intval($row['menu_location']);
+
+				if($lastLoc != $loc)
+				{
+					$c = 1;
+				}
+
+				if($c !== intval($row['menu_order'])) // fix the order if it is off..
+				{
+					if($sql->update('menus', "menu_order= ".$c." WHERE menu_id = ".$row['menu_id']." LIMIT 1"))
+					{
+						$row['menu_order'] = $c;
+					}
+
+				}
+
+				$eMenuArea[$loc][] = $row;
+
+				$lastLoc = $loc;
+				$c++;
+			}
+		}
+
+		$this->menuData = $eMenuArea;
+
+	}
+
 
 // -------------------------------------------------------------------------
 
@@ -1008,11 +1063,11 @@ class e_menuManager {
 				if(!$sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$this->menuNewLoc." AND menu_layout='".$this->dbLayout ."' LIMIT 1"))
 				{
 					$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$this->menuNewLoc);
-					$sql->db_Update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
+					$sql->update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
 
 					if(isset($location) && isset($position))
 					{
-						$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
+						$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
 					}
 				}
 				e107::getLog()->add('MENU_03',$row['menu_name'].'[!br!]'.$this->menuNewLoc.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
@@ -1443,20 +1498,23 @@ class e_menuManager {
 
 					$menuText .= "<div class='menu-panel-header' >" . MENLAN_14 . "  " . $menu . "</div>\n\n";
 
-					$sql9 = new db();
+				//	$sql9 = new db();
 				//	$sql9 = e107::getDb('sql9');
-					if($sql9->count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
+				//	if($sql9->count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
+					if(!empty($this->menuData[$menu]))
 					{
 						unset($text);
 						$menuText .= $rs->form_open("post", e_SELF . "?configure=" . $this->curLayout, "frm_menu_" . intval($menu));
 						
-						$rows = $sql9->retrieve("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order",true);
+					//	$rows = $sql9->retrieve("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order",true);
+						$rows = $this->menuData[$menu];
 					//	$menu_count = $sql9->db_Rows();
 						$menu_count = count($rows);
 
 						if(!empty($_GET['debug']))
 						{
 							print_a($rows);
+					//		print_a($this->menuData[$menu]);
 						}
 
 						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
