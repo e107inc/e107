@@ -187,6 +187,18 @@ define("ADLAN_165", "Powered by e107");
 define("ADLAN_166", "Return to Website");
 define("ADLAN_167", "Pending Mailshots");
 
+define("ADLAN_168", "Visitors");//infopanel
+define("ADLAN_169", "Unique Visitors");
+define("ADLAN_170", "These stats are for demonstration purposes only.");
+define("ADLAN_171", "Install Site Stats Plugin");
+define("ADLAN_172", "January");
+define("ADLAN_173", "February");
+define("ADLAN_174", "March");
+define("ADLAN_175", "April");
+define("ADLAN_176", "May");
+define("ADLAN_177", "June");
+define("ADLAN_178", "July");
+
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
 define("ADLAN_CL_3", "Content");
