@@ -187,6 +187,9 @@ define("ADLAN_165", "Powered by e107");
 define("ADLAN_166", "Return to Website");
 define("ADLAN_167", "Pending Mailshots");
 
+
+define("ADLAN_185", "Toggle Sidebar");
+
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
 define("ADLAN_CL_3", "Content");
