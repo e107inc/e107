@@ -585,7 +585,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 
 
-			$action = $extra == 'outbox' ? 'delete-out' : 'delete-in';
+			$action = $extra == '.outbox' ? 'delete-out' : 'delete-in';
 			return "<a class='btn btn-default' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
 		}
 
