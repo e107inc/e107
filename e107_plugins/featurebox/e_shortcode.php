@@ -53,8 +53,11 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			$ctemplate = $mod;
 		}
-		
-		parse_str($parm, $parm);
+
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
 		
 		$category = $this->getCategoryModel($ctemplate, (vartrue($parm['force']) ? true : false));
 		$defopt = array(
