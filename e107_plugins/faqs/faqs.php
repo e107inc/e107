@@ -470,7 +470,7 @@ class faq
 		{
 			$sc->setVars($rw);
 			$text .= $tp->parseTemplate($FAQ_LIST_LOOP, true);
-			$caption = "&nbsp;Category: <b>".$rw['faq_info_title']."</b>";
+			$caption = "&nbsp;".LAN_CATEGORY.": <b>".$rw['faq_info_title']."</b>";
 		}
 
 		$text .= $tp->parseTemplate($FAQ_LIST_END, true);
@@ -617,7 +617,7 @@ class faq
         &nbsp;&nbsp;[&nbsp;<a href='".faqs.php?main."'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
 
         if(check_class($faqpref['add_faq'])){
-                $text_menu .="[&nbsp;<a href='".faqs.php?new.$id."'>".LAN_FAQS_SUBMIT_A_QUESTION."</a>&nbsp;]";
+                $text_menu .="[&nbsp;<a href='".faqs.php?new.$id."'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
         }
         $text_menu .="</div>";
 
