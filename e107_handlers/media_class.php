@@ -482,7 +482,9 @@ class e_media
 		
 		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
 	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
-			
+
+
+
 		if($search)
 		{
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
@@ -507,6 +509,9 @@ class e_media
 		{
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
+
+	//	e107::getDebug()->log($query);
+
 		e107::getDb()->gen($query);
 		while($row = e107::getDb()->fetch())
 		{

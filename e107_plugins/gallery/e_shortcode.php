@@ -211,7 +211,7 @@ class gallery_shortcodes extends e_shortcode
 	{
 		$ns = e107::getRender();
 		$parm = eHelper::scParams($parms);
-		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), 1); //TODO Separate pref?
+		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), false); //TODO Separate pref?
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
 		$limit = vartrue($parm['limit'], 6);
@@ -219,7 +219,9 @@ class gallery_shortcodes extends e_shortcode
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
-		$list = e107::getMedia()->getImages('gallery_image|gallery_' . $cat . '|gallery_image_' . $cat, 0, $limit, null, $orderBy);
+		$imageQry = (empty($cat)) ? "gallery_image|gallery_image_1|gallery_1" : 'gallery_' . $cat . '|gallery_image_' . $cat;
+
+		$list = e107::getMedia()->getImages($imageQry, 0, $limit, null, $orderBy);
 
 		if(count($list) < 1 && vartrue($parm['placeholder']))
 		{
