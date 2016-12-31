@@ -20,7 +20,7 @@ $FLEXPANEL_LAYOUT = '
 	</div>
 	<div class="col-md-9 col-lg-9 admin-right-panel">
 		<div class="sidebar-toggle">
-			<a href="#" title='.ADLAN_185.' data-toggle-sidebar="true">&nbsp;</a>
+			<a href="#" title="'.ADLAN_185.'" data-toggle-sidebar="true">&nbsp;</a>
 		</div>
 		
 		<div>
