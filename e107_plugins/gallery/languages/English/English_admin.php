@@ -1,12 +1,16 @@
 <?php
-
-/**
- * @file
+/*
+ * e107 website system
+ *
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * Language file for "gallery" plugin.
  */
 
 define("LAN_GALLERY_ADMIN_01", "[x] is active. Simply import and assign images to the gallery categories using the [y]");
-define("LAN_GALLERY_ADMIN_02", "General");
+//define("LAN_GALLERY_ADMIN_02", "General");//LAN_GENERAL
 define("LAN_GALLERY_ADMIN_03", "Slideshow Menu");
 define("LAN_GALLERY_ADMIN_04", "Image Max. Width");
 define("LAN_GALLERY_ADMIN_05", "Images will be auto-resized if greater than the width given here");
@@ -50,7 +54,7 @@ define("LAN_GALLERY_ADMIN_41", "Default width");
 define("LAN_GALLERY_ADMIN_42", "Default height");
 define("LAN_GALLERY_ADMIN_43", "Counter separator label");
 define("LAN_GALLERY_ADMIN_44", "The separator for the gallery counter 1 \"of\" 2");
-define("LAN_GALLERY_ADMIN_45", "Theme");
+//define("LAN_GALLERY_ADMIN_45", "Theme");//LAN_THEME
 define("LAN_GALLERY_ADMIN_46", "Horizontal padding");
 define("LAN_GALLERY_ADMIN_47", "The padding on each side of the picture.");
 define("LAN_GALLERY_ADMIN_48", "Hide flash");
