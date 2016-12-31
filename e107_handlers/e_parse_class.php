@@ -3309,7 +3309,9 @@ class e_parser
 	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
 	                                'td'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
 	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
-	                                'col'       => array('id', 'span', 'class','style')
+	                                'col'       => array('id', 'span', 'class','style'),
+		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
+
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
