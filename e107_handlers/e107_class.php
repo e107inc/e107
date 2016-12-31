@@ -121,6 +121,13 @@ class e107
 	protected static $_plug_config_arr = array();
 
 	/**
+	 * e107 theme config object storage
+	 *
+	 * @var array
+	 */
+	protected static $_theme_config_arr = array();
+
+	/**
 	 * Core handlers array
 	 * For new/missing handler add
 	 * 'class name' => 'path' pair
@@ -1027,6 +1034,45 @@ class e107
 		return self::getPlugConfig($plug_name)->getPref($pref_name, $default, $index);
 	}
 
+
+	/**
+	 * Retrieve theme config handlers.
+	 * Multiple theme preference DB rows are supported
+	 * Class overload is supported.
+	 * Examples:
+	 * - <code>e107::getTHemeConfig('mytheme');</code>
+	 * 	 will search for e107_plugins/myplug/e_pref/myplug_pref.php which
+	 * 	 should contain class 'e_plugin_myplug_pref' class (child of e_plugin_pref)
+	 * - <code>e107::getPluginConfig('myplug', 'row2');</code>
+	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
+	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
+	 *
+	 * @param string $theme_name
+	 * @param string $multi_row
+	 * @param boolean $load load from DB on startup
+	 * @return e_plugin_pref
+	 */
+	public static function getThemeConfig($theme_name=null, $multi_row = '', $load = true)
+	{
+
+		if(empty($theme_name))
+		{
+			$theme_name = self::getPref('sitetheme');
+		}
+
+		if(!isset(self::$_theme_config_arr[$theme_name.$multi_row]))
+		{
+			e107_require_once(e_HANDLER.'pref_class.php');
+
+			self::$_theme_config_arr[$theme_name.$multi_row] = new e_theme_pref($theme_name, $multi_row, $load);
+		}
+
+		return self::$_theme_config_arr[$theme_name.$multi_row];
+	}
+
+
+
+
 	/**
 	 * Get current theme preference. $pref_name is parsed,
 	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
@@ -1040,10 +1086,21 @@ class e107
 	 */
 	public static function getThemePref($pref_name = '', $default = null, $index = null)
 	{
+		// new storage method in it's own core table row. eg. theme_bootstrap3
+		$theme_name = self::getPref('sitetheme');
 
-		if($pref_name) $pref_name = '/'.$pref_name;
-		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$pref_name, $default, $index);
+		if(self::getThemeConfig($theme_name)->hasData() === true)
+		{
+			return  empty($pref_name) ? self::getThemeConfig($theme_name)->getPref() : self::getThemeConfig($theme_name)->get($pref_name, $default);
+		}
+
+		// old storage method in core prefs.
+
+		$legacy_pref_name = ($pref_name) ? $pref_name = '/'.$pref_name : '';
+		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$legacy_pref_name, $default, $index);
+
 		return !empty($tprefs) ? $tprefs : array();
+
 	}
 	
 	/**
