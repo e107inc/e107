@@ -145,4 +145,10 @@ define("LAN_CUSTOMTITLE", "Custom title");
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
 // define("LAN_USET_8", "Signature / Time zone");
+define("LAN_USET_44", "Click on the avatar to change it");
+define("LAN_USET_45", "OR");
+define("LAN_USET_46", "No Avatars Available");
+define("LAN_USET_47", "Admin-Only Notice: The folder");
+define("LAN_USET_48", "is empty. Upload some default avatars images to this folder for users to choose avatars from.");
+
 ?>
