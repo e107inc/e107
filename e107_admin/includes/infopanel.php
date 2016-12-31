@@ -768,14 +768,16 @@ class adminstyle_infopanel
 		{
 			$data = array();
 		
-			$data['labels']	= array(strftime("%B",mktime(0,0,0,01,01,16)), //"January",
-							strftime("%B",mktime(0,0,0,02,01,16)), //"February",
-							strftime("%B",mktime(0,0,0,03,01,16)), //"March",
-							strftime("%B",mktime(0,0,0,04,01,16)), //"April",
-							strftime("%B",mktime(0,0,0,05,01,16)), //"May",
-							strftime("%B",mktime(0,0,0,06,01,16)), //"June",
-							strftime("%B",mktime(0,0,0,07,01,16))  //"July"
-			);
+			$months = e107::getDate()->terms('month');
+		
+			$data['labels'] = array($months[0], //"January",
+ 						$months[1], //"February",
+ 						$months[2], //"March",
+ 						$months[3], //"April",
+ 						$months[4], //"May",
+ 						$months[5], //"June",
+ 						$months[6]  //"July"
+ 			);
 			
 			$data['datasets'][]	= array(
 							'fillColor'			=> "rgba(220,220,220,0.5)",
