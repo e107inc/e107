@@ -1117,6 +1117,38 @@ class e107
 		return e107::getConfig()->updatePref('sitetheme_pref/'.$pref_name, $pref_value, false);
 	}
 
+
+	public static function getThemeGlyphs()
+	{
+
+		$custom = self::getConfig()->getPref('sitetheme_glyphicons', false);
+		$theme = self::getConfig()->getPref('sitetheme', false);
+
+		$arr = array();
+
+		if(!empty($custom))
+		{
+
+			foreach($custom as $glyphConfig)
+			{
+
+				if(substr($glyphConfig['path'],0,4) !== 'http')
+				{
+					$glyphConfig['path'] = e_THEME."$theme/".$glyphConfig['path'];
+				}
+
+				$arr[] = $glyphConfig;
+			}
+
+		}
+
+		return $arr;
+
+	}
+
+
+
+
 	/**
 	 * Retrieve text parser singleton object
 	 *

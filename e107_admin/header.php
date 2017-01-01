@@ -99,7 +99,6 @@ loadJSAddons();
 
 
 
-
 // e107::js("core",	"core/admin.js","prototype",3); // Load all default functions.
 
 
@@ -196,6 +195,13 @@ if (!isset($no_core_css) || !$no_core_css)
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
+}
+
+
+$custom = e107::getThemeGlyphs();
+foreach($custom as $val)
+{
+	$e_js->otherCSS($val['path']);
 }
 
 // Register Plugin specific CSS
