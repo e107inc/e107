@@ -4348,8 +4348,7 @@ e107::getDebug()->log($sc_parameters);
 
 			case 'icon':
 
-				$parms['size'] = '2x';
-				$value = $tp->toIcon($value,$parms);
+				$value = "<span class='icon-preview'>".$tp->toIcon($value,$parms)."</span>";
 				
 			break;
 			

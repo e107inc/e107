@@ -316,6 +316,7 @@ input[type="radio"]:checked, input[type="radio"]:checked + span {  opacity:1.0; 
 label.legacy 						{ margin-left:5px;margin-right:10px;	display: inline-block;  }
 
 /* Core Icons & Image Buttons */
+.icon-preview               { font-size: 2em}
 img.icon					{ border: 0px; vertical-align: middle; }
 img.icon.list, 
 input.action				{ margin: 0px 3px }
