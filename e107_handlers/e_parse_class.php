@@ -3610,7 +3610,7 @@ class e_parser
 			}
 			else
 			{
-				$prefix = 'icon-';	
+		//		$prefix = 'icon-';
 				$tag = 'i';
 			}
 			

@@ -341,6 +341,11 @@ class cpage_shortcodes extends e_shortcode
 	
 	function sc_cmenuicon($parm='')
 	{
+		if($parm === 'css')
+		{
+			return str_replace(".glyph", "", $this->var['menu_icon']);
+		}
+
 		return e107::getParser()->toIcon($this->var['menu_icon'], array('space'=>' '));
 	}		
 
