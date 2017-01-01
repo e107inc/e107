@@ -179,3 +179,11 @@ $GALLERY_TEMPLATE['prettyphoto']['social_item'] = '
 	</div>
 </div>
 ';
+
+/*
+
+$GALLERY_TEMPLATE['portfolio']['start']     = '<-- start portfolio -->';
+$GALLERY_TEMPLATE['portfolio']['item']      = '<img src="{GALLERY_THUMB: w=1080&h=720&thumbsrc}" class="img-responsive" alt="{GALLERY_CAPTION=text}">';
+$GALLERY_TEMPLATE['portfolio']['end']       = '<-- end portfolio -->';
+
+*/

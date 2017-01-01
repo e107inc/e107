@@ -268,7 +268,14 @@ class cpage_shortcodes extends e_shortcode
 			return "<!-- Button Removed: No page text exists! -->";	
 		}
 
-		parse_str($parm,$options);
+		if(is_string($parm))
+		{
+			parse_str($parm,$options);
+		}
+		else
+		{
+			$options= $parm;
+		}
 		
 		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
 		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url']);
