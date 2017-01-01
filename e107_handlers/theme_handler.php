@@ -1785,12 +1785,14 @@ class themeHandler
 		$deflayout = $this->findDefault($name);
 		$customPages = $this->themeArray[$name]['custompages'];
 		$version = $this->themeArray[$name]['version'];
+		$glyphs = $this->themeArray[$name]['glyphs'];
 		
 		$core->set('sitetheme', $name);
 		$core->set('themecss', 'style.css');
 		$core->set('sitetheme_layouts', $layout);
 		$core->set('sitetheme_deflayout', $deflayout);
 		$core->set('sitetheme_custompages', $customPages);
+		$core->set('sitetheme_glyphicons', $glyphs);
 		
 		$core->set('sitetheme_version', $version);
 				
@@ -2293,7 +2295,29 @@ class themeHandler
 
 			unset($vars['stylesheets']);
 		}
-		
+
+
+		$vars['glyphs'] = array();
+		if(!empty($vars['glyphicons']['glyph']))
+		{
+
+			foreach($vars['glyphicons']['glyph'] as $val)
+			{
+				$vars['glyphs'][] = array(
+						'name'      => $val['@attributes']['name'],
+						'pattern'   => $val['@attributes']['pattern'],
+						'path'      => $val['@attributes']['path'],
+						'prefix'    => $val['@attributes']['prefix'],
+						'tag'       => $val['@attributes']['tag'],
+				);
+
+			}
+
+			unset($vars['glyphicons']);
+
+		}
+
+
 		//
 
 		$mes = e107::getMessage(); // DEBUG
@@ -2315,6 +2339,10 @@ class themeHandler
 	
 		return $vars;
 	}
+
+
+
+
 
 }
 
