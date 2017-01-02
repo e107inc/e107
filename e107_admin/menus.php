@@ -58,6 +58,17 @@ top: 60px;
     transition: fadeIn .4s;
 }
 
+
+	.menu-selector ul li {
+		background-color: rgba(255,255,255,0.1);
+		padding: 5px 30px;
+		margin-bottom:2px;
+	}
+
+	.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
+
+	.menu-selector { height:400px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+
 ");
 
 
@@ -383,7 +394,9 @@ TEMPL;
 	font-size: 13px;
 	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; 
 }
-	
+
+
+
 	.menu-panel-header
 	 {
     	display: block;
@@ -602,8 +615,110 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 			
 	
 		
-		$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list. 
+	//	$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list.
 		$sql = e107::getDb();
+		$frm = e107::getForm();
+
+		$done = array();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
+		while ($row = $sql->fetch())
+		{
+
+			if(in_array($row['menu_name'],$done))
+			{
+				continue;
+			}
+
+			$done[] = $row['menu_name'];
+
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$tab1 = '<div class="menu-selector"><ul class="list-unstyled">';
+
+		foreach($pageMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
+			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf))."</li>";
+		}
+
+		$tab1 .= '</ul></div>';
+
+		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
+		foreach($pluginMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
+			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
+		}
+
+		$tab2 .= '</ul></div>';
+
+		$tabs = array(
+			'custom' => array('caption'=>MENLAN_49, 'text'=>$tab1),
+			'plugin' => array('caption'=>ADLAN_CL_7, 'text'=>$tab2)
+
+		);
+
+
+		$text = '<form action="'.e_ADMIN_ABS.'menus.php?configure=sidebar_right" method="post" target="menu_iframe">';
+		$text .= $frm->tabs($tabs);
+
+
+		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
+
+		$text .= '
+
+		    <div class="dropdown">
+
+		        <a href="#" data-toggle="dropdown" class="dropdown-toggle">'.LAN_GO.' <b class="caret"></b></a>
+
+		        <ul class="dropdown-menu">';
+
+			//	foreach ($menu_areas as $menu_act)
+				{
+			//		$text .= "<li><input type='submit' class='menu-btn' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+				}
+
+
+		$text .= '
+
+		        </ul>
+
+		    </div>';
+
+
+
+		$text .= '</form>';
+
+		return array('caption'=>MENLAN_22,'text'=>$text);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		$text = '
 			<ul class="nav nav-tabs">
