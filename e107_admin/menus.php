@@ -673,30 +673,35 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 
 
 		$text = '<form action="'.e_ADMIN_ABS.'menus.php?configure=sidebar_right" method="post" target="menu_iframe">';
-		$text .= $frm->tabs($tabs);
 
 
 		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
 
 		$text .= '
 
-		    <div class="dropdown">
+		    <div class="dropdown pull-right">
 
-		        <a href="#" data-toggle="dropdown" class="dropdown-toggle">'.LAN_GO.' <b class="caret"></b></a>
+		        <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle">'.LAN_GO.' <b class="caret"></b></a>
 
 		        <ul class="dropdown-menu">';
 
-			//	foreach ($menu_areas as $menu_act)
-				{
-			//		$text .= "<li><input type='submit' class='menu-btn' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
-				}
+				$menu_areas = array("experimental");
 
+				foreach ($menu_areas as $menu_act)
+				{
+					$text .= "<li><input type='submit' class='btn btn-default menu-btn' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+				}
 
 		$text .= '
 
 		        </ul>
 
 		    </div>';
+
+
+		$text .= $frm->tabs($tabs);
+
+
 
 
 
