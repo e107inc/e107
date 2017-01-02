@@ -8,9 +8,6 @@
  *
  * Form Handler
  *
- * $URL$
- * $Id$
- *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -142,7 +139,7 @@ class e_form
 		else 
 		{
 			$target = str_replace("&", "&amp;", $target);
-			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
+			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method='{$method}'{$autoComplete}>\n";
 		}
 		return $text;	
 	}
