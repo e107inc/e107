@@ -116,9 +116,7 @@ class e_menuManager {
 
 				$this->menuModify();
 
-				$this->loadMenuData();
-
-            	if(vartrue($_POST['menuActivate']))
+            	if(!empty($_POST['menuActivate']))
 				{
 					$menuActivate = $tp->filter($_POST['menuActivate']);
                     $this->menuActivateLoc = key($menuActivate);
@@ -126,6 +124,8 @@ class e_menuManager {
 					$this->menuActivate();
 
 				}
+
+				$this->loadMenuData();
 
 				if(vartrue($_POST['menuSetCustomPages']))
 				{
@@ -204,7 +204,7 @@ class e_menuManager {
 	//	$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
 	//	$text = "<object class='well' type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
-		$text = "<iframe class='well' id='menu_iframe' src='".$url."' width='100%' scrolling='no' style='width: 100%; height: 800px; border: 0px' ></iframe>";
+		$text = "<iframe class='well' id='menu_iframe' name='e-mm-iframe' src='".$url."' width='100%' scrolling='no' style='width: 100%; height: 100vh; border: 0px' ></iframe>";
 	
 		return $text;
 	}
@@ -1140,7 +1140,7 @@ class e_menuManager {
 		$sql    = e107::getDb();     
 		$tp     = e107::getParser();
 		
-	
+
 		
 		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
 		echo "<div id='portal'>";
@@ -1255,7 +1255,16 @@ class e_menuManager {
 			$text .= "</div>";
 		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
-		echo $this->renderPanel(MENLAN_22, $text);
+		if(e_DEBUG_MENUMANAGER === true)
+		{
+			echo "<div class='menu-panel' style='padding:50px'>Main Content Area</div>";
+		}
+		else
+		{
+			echo $this->renderPanel(MENLAN_22, $text);
+		}
+
+	//
         echo $rs->form_close();
 		echo "</div>";
 
