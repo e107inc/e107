@@ -119,7 +119,7 @@ define("TPVLAN_83","Automated download not possible!");
 define("TPVLAN_84","[Please Download Manually]");
 define("TPVLAN_85","Connecting...");
 define("TPVLAN_86","Could not change site theme.");
-define("TPVLAN_87","Rendering Theme Config");
+// define("TPVLAN_87","Rendering Theme Config"); //XXX Debug info
 define("TPVLAN_88","Converter");
 define("TPVLAN_89", "Apply dashboard preferences to all administrators");
 
