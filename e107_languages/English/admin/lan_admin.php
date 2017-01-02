@@ -492,4 +492,8 @@ define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
 define("LAN_CHANGE_LANGUAGE", "Change Language");  
-
+define("LAN_SUBJECT", "Subject");
+define("LAN_ITEM", "Item");
+define("LAN_LOCK", "Lock");
+define("LAN_SYSTEM_USER", "System user");
+define("LAN_ENGINE", "Engine");
