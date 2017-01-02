@@ -122,7 +122,7 @@ if (isset($_POST['commentsubmit']))
 
 	$faqpref = e107::getPlugConfig('faqs')->getPref();
 
-	if ($action == "" || $action == "main")
+	if (varset($action) == "" || $action == "main")
 	{
 		if(vartrue($faqpref['classic_look']))
 		{
@@ -133,7 +133,7 @@ if (isset($_POST['commentsubmit']))
 		{
 			$srch = vartrue($_GET['srch']);
 			$ftmp = $faq->view_all($srch);
-			$caption = FAQLAN_FAQ;
+			$caption = LAN_FAQS_FAQ;
 
 		}
 
@@ -178,7 +178,7 @@ if (isset($_POST['commentsubmit']))
 	if($action == "cat" && $idx)
 	{
 		 $ftmp = $faq->view_faq($idx) ;
-		 define("e_PAGETITLE",FAQLAN_FAQ." - ". $ftmp['title']);
+		 define("e_PAGETITLE",LAN_FAQS_FAQ." - ". $ftmp['title']);
 		 require_once(HEADERF);
 		 $ns -> tablerender($ftmp['caption'], $ftmp['text']);
 	}
@@ -284,7 +284,7 @@ class faq
 	
 		$text .= $tp->parseTemplate($template['end'], true, $this->sc); // footer
 
-		$ret['title'] = FAQLAN_FAQ;
+		$ret['title'] = LAN_FAQS_FAQ;
 		$ret['text'] = $text;
 
 		if (!empty($this->pref['page_title'][e_LANGUAGE]))
@@ -379,8 +379,8 @@ class faq
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
 		$sc->counter = 1;
-		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
-		$sc->category = $category;
+		$sc->tag = htmlspecialchars(varset($tag), ENT_QUOTES, 'utf-8');
+		$sc->category = varset($category);
 
 		 if(!empty($_GET['id'])) // expand one specific FAQ.
 		{
@@ -475,7 +475,7 @@ class faq
 
 		$text .= $tp->parseTemplate($FAQ_LIST_END, true);
 
-		$ret['title'] = FAQLAN_FAQ." - ".$category_title;
+		$ret['title'] = LAN_FAQS_FAQ." - ".$category_title;
 		$ret['text'] = $text.$this->faq_footer($id);
 		$ret['caption'] = $caption;
 		return $ret;
