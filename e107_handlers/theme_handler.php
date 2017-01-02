@@ -961,11 +961,14 @@ class themeHandler
 		
 		$newConfile = e_THEME.$this->id."/theme_config.php";
 		
-		$legacyConfile = e_THEME.$this->id."/".$this->id."_config.php"; // @Deprecated 
+		$legacyConfile = e_THEME.$this->id."/".$this->id."_config.php"; // @Deprecated
+
+		$newConfig = false;
 		
 		if(is_readable($newConfile))
 		{
-			$confile = $newConfile;	
+			$confile = $newConfile;
+			$newConfig = true;
 		}
 		elseif(is_readable($legacyConfile))// TODO Eventually remove it. 
 		{
@@ -982,7 +985,7 @@ class themeHandler
 		{
 			$mes->addDebug("Loading : ".$confile);
 			include ($confile);
-			$className = 'theme_'.$this->id;
+			$className = ($newConfig === true) ? 'theme_config' : 'theme_'.$this->id;
 			if(class_exists($className))
 			{
 				$this->themeConfigObj = new $className();
@@ -1000,25 +1003,43 @@ class themeHandler
 	{
 		
 		$mes = e107::getMessage();
-		$mes->addDebug(TPVLAN_87); 
+		$frm = e107::getForm();
+		$mes->addDebug("Rendering Theme Config");
 		
 		$this->loadThemeConfig();
-		
+
+		$value = e107::getThemeConfig('landingzero')->getPref();
+
 		if($this->themeConfigObj)
 		{
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
-			vartrue($text); // avoid notice
+			$text = ''; // avoid notice
 			
-			foreach ($var as $val)
+			foreach ($var as $field=>$val)
 			{
-				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
+				if(is_numeric($field))
+				{
+					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
 </td></tr>";
+				}
+				else
+				{
+					if(!empty($v['multilan']) && isset($value[$field][e_LANGUAGE]))
+					{
+						$value[$field] = varset($value[$field][e_LANGUAGE],'');
+					}
+
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div>
+</td></tr>";
+				}
 			}
 
 			return $text;
 		}
 	
 	}
+
+
 
 	
 	function renderThemeHelp()
