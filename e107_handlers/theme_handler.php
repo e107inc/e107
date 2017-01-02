@@ -963,12 +963,9 @@ class themeHandler
 		
 		$legacyConfile = e_THEME.$this->id."/".$this->id."_config.php"; // @Deprecated
 
-		$newConfig = false;
-		
 		if(is_readable($newConfile))
 		{
 			$confile = $newConfile;
-			$newConfig = true;
 		}
 		elseif(is_readable($legacyConfile))// TODO Eventually remove it. 
 		{
@@ -985,14 +982,19 @@ class themeHandler
 		{
 			$mes->addDebug("Loading : ".$confile);
 			include ($confile);
-			$className = ($newConfig === true) ? 'theme_config' : 'theme_'.$this->id;
-			if(class_exists($className))
+			$className = 'theme_'.$this->id;
+
+			if(class_exists('theme_config')) // new v2.1.4 theme_config is the class name.
+			{
+				$this->themeConfigObj = new theme_config();
+			}
+			elseif(class_exists($className)) // old way.
 			{
 				$this->themeConfigObj = new $className();
 			}
 			else
 			{
-				$this->themeConfigObj = FALSE;
+				$this->themeConfigObj = false;
 			}
 		}
 	
@@ -1054,9 +1056,28 @@ class themeHandler
 	function setThemeConfig()
 	{
 		$this->loadThemeConfig();
+
 		if($this->themeConfigObj)
 		{
-			return call_user_func(array(&$this->themeConfigObj, 'process'));
+			$name = get_class($this->themeConfigObj);
+
+			if($name === 'theme_config') // v2.1.4 - don't use process() method.
+			{
+				$pref = e107::getThemeConfig();
+
+				$theme_pref = array();
+
+				$fields = call_user_func(array(&$this->themeConfigObj, 'config'));
+
+				foreach($fields as $field=>$data)
+				{
+					$theme_pref[$field] = $_POST[$field];
+				}
+
+				return $pref->setPref($theme_pref)->save(true,true,false);
+			}
+
+			return call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
 		}
 	}
 	
@@ -2373,17 +2394,17 @@ interface e_theme_config
 	 * Triggered on theme settings submit
 	 * Catch and save theme configuration
 	 */
-	public function process();
+//	public function process();
 	
 	/**
 	 * Theme configuration user interface
 	 * Print out config fields
 	 */
-	public function config();
+	public function config(); // only config() is absolutely required.
 	
 	/**
 	 * Theme help tab
 	 * Print out theme help content
 	 */
-	public function help();
+//	public function help();
 }
