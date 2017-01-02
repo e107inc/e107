@@ -26,6 +26,10 @@ if(isset($_GET['configure']))
 	error_reporting(0);
 
 }
+else
+{
+	define('e_ADMIN_AREA', true);
+}
 
 require_once("../class2.php");
 if (!getperms("2"))
@@ -68,6 +72,8 @@ top: 60px;
 	.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
 
 	.menu-selector { height:400px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+
+	ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
 
 ");
 
@@ -606,111 +612,30 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 
 // if($_SERVER['E_DEV_MENU'] == 'true')	
 //{
+
+	function countThemeMenus()
+	{
+
+
+
+
+
+	}
+
+
+
+
+
+
 	function e_help()
 	{
-		if(e_DEBUG === false)
+		if(e_DEBUG_MENUMANAGER !== true)
 		{
 			return null;
 		}
 			
 	
-		
-	//	$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list.
-		$sql = e107::getDb();
-		$frm = e107::getForm();
-
-		$done = array();
-
-		$pageMenu = array();
-		$pluginMenu = array();
-
-		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
-		while ($row = $sql->fetch())
-		{
-
-			if(in_array($row['menu_name'],$done))
-			{
-				continue;
-			}
-
-			$done[] = $row['menu_name'];
-
-			if(is_numeric($row['menu_path']))
-			{
-				$pageMenu[] = $row;
-			}
-			else
-			{
-				$pluginMenu[] = $row;
-			}
-
-		}
-
-		$tab1 = '<div class="menu-selector"><ul class="list-unstyled">';
-
-		foreach($pageMenu as $row)
-		{
-			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
-			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf))."</li>";
-		}
-
-		$tab1 .= '</ul></div>';
-
-		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
-		foreach($pluginMenu as $row)
-		{
-			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
-			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
-		}
-
-		$tab2 .= '</ul></div>';
-
-		$tabs = array(
-			'custom' => array('caption'=>MENLAN_49, 'text'=>$tab1),
-			'plugin' => array('caption'=>ADLAN_CL_7, 'text'=>$tab2)
-
-		);
-
-
-		$text = '<form action="'.e_ADMIN_ABS.'menus.php?configure=sidebar_right" method="post" target="menu_iframe">';
-
-
-		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
-
-		$text .= '
-
-		    <div class="dropdown pull-right">
-
-		        <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle">'.LAN_GO.' <b class="caret"></b></a>
-
-		        <ul class="dropdown-menu">';
-
-				$menu_areas = array("experimental");
-
-				foreach ($menu_areas as $menu_act)
-				{
-					$text .= "<li><input type='submit' class='btn btn-default menu-btn' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
-				}
-
-		$text .= '
-
-		        </ul>
-
-		    </div>';
-
-
-		$text .= $frm->tabs($tabs);
-
-
-
-
-
-		$text .= '</form>';
-
-		return array('caption'=>MENLAN_22,'text'=>$text);
-
-
-
+		return e_menu_layout::menuSelector();
 
 
 
@@ -790,6 +715,264 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 		return array('caption'=>MENLAN_57,'text'=>$text);
 	}
 //}
+
+// new v2.1.4
+class e_menu_layout
+{
+	function __construct()
+	{
+
+	}
+
+	static function getLayouts($theme=null)
+	{
+		if(empty($theme))
+		{
+			$theme = e107::pref('core','sitetheme');
+		}
+
+		$HEADER         = null;
+		$FOOTER         = null;
+		$LAYOUT         = null;
+		$CUSTOMHEADER   = null;
+		$CUSTOMFOOTER   = null;
+
+		$file = e_THEME.$theme."/theme.php";
+
+		if(!is_readable($file))
+		{
+			return false;
+		}
+
+		require($file);
+
+
+		$head = array();
+		$foot = array();
+
+
+		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
+		{
+			foreach($LAYOUT as $key=>$template)
+			{
+				if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
+				{
+					continue;
+				}
+
+				if(strpos($template,'{---}') !==false)
+				{
+					list($hd,$ft) = explode("{---}",$template);
+					$head[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
+					$foot[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;
+				}
+				else
+				{
+					e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["'.$key.'"] ');
+				}
+			}
+			unset($hd,$ft);
+		}
+
+
+        if(is_string($CUSTOMHEADER))
+        {
+			$head['legacyCustom'] = $CUSTOMHEADER;
+        }
+        elseif(is_array($CUSTOMHEADER))
+        {
+            foreach($CUSTOMHEADER as $k=>$v)
+            {
+                $head[$k] = $v;
+            }
+        }
+
+        if(is_string($HEADER))
+        {
+			$head['legacyDefault'] = $HEADER;
+        }
+        elseif(is_array($HEADER))
+        {
+			 foreach($HEADER as $k=>$v)
+            {
+                $head[$k] = $v;
+            }
+
+        }
+
+		if(is_string($CUSTOMFOOTER))
+        {
+			$foot['legacyCustom'] = $CUSTOMFOOTER;
+        }
+        elseif(is_array($CUSTOMFOOTER))
+        {
+	        foreach($CUSTOMFOOTER as $k=>$v)
+            {
+                $foot[$k] = $v;
+            }
+        }
+
+
+        if(is_string($FOOTER))
+        {
+			$foot['legacyDefault'] = $FOOTER;
+        }
+        elseif(is_array($FOOTER))
+        {
+	        foreach($FOOTER as $k=>$v)
+            {
+                $foot[$k] = $v;
+            }
+        }
+
+		$layout = array();
+
+		foreach($head as $k=>$v)
+		{
+			$template = $head[$k]."\n{---}".$foot[$k];
+			$layout['templates'][$k] = $template;
+			$layout['menus'][$k] = self::countMenus($template);
+		}
+
+
+		return $layout;
+
+
+	}
+
+
+	private static function countMenus($template)
+	{
+		if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
+		{
+			sort($matches[1]);
+			return $matches[1];
+		}
+
+		return array();
+	}
+
+
+
+	static function menuSelector()
+	{
+
+	//	$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list.
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+
+		$done = array();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
+		while ($row = $sql->fetch())
+		{
+
+			if(in_array($row['menu_name'],$done))
+			{
+				continue;
+			}
+
+			$done[] = $row['menu_name'];
+
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$tab1 = '<div class="menu-selector"><ul class="list-unstyled">';
+
+		foreach($pageMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
+			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf))."</li>";
+		}
+
+		$tab1 .= '</ul></div>';
+
+		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
+		foreach($pluginMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
+			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
+		}
+
+		$tab2 .= '</ul></div>';
+
+		$tabs = array(
+			'custom' => array('caption'=>MENLAN_49, 'text'=>$tab1),
+			'plugin' => array('caption'=>ADLAN_CL_7, 'text'=>$tab2)
+
+		);
+
+
+		$defLayout =e107::getRegistry('core/e107/menu-manager/curLayout');;
+
+		$text = '<form id="e-mm-selector" action="'.e_ADMIN_ABS.'menus.php?configure='.$defLayout.'" method="post" target="e-mm-iframe">';
+
+		$text .= "<input type='hidden' id='curLayout' value='".$defLayout."' />";
+
+
+		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
+
+		$layouts = self::getLayouts();
+
+	//	$text .= print_a($layouts['menus'],true);
+
+		$text .= '
+
+		    <div class="dropdown pull-right">
+
+		        <a class="btn btn-default btn-sm e-mm-selector " title="Activate">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
+
+
+		        foreach($layouts['menus'] as $name=>$areas)
+		        {
+					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >';
+
+					foreach ($areas as $menu_act)
+					{
+						$text .= "<li><input type='submit' class='btn btn-primary btn-block' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+					}
+
+					$text .= '</ul>';
+
+		        }
+
+		        $text .= '
+
+		    </div>';
+
+
+		$text .= $frm->tabs($tabs);
+
+
+
+
+
+		$text .= '</form>';
+
+		return array('caption'=>MENLAN_22,'text'=>$text);
+
+
+
+
+
+
+	}
+
+
+
+}
+
 
 
 // XXX Menu Manager Re-Write with drag and drop and multi-dimensional array as storage. ($pref)
@@ -890,7 +1073,7 @@ class e_layout
 		*/
 						
 			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
-			$this->renderLayout($this->curLayout);	
+			$this->renderLayout($this->curLayout);
 			
 		
 			
