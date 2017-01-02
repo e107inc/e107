@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -614,10 +614,10 @@ class faq
 	{
         global $faqpref,$timing_start,$tp,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
         $text_menu .= "<div style='text-align:center;' ><br />
-        &nbsp;&nbsp;[&nbsp;<a href='".faqs.php?main."'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
+        &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
 
         if(check_class($faqpref['add_faq'])){
-                $text_menu .="[&nbsp;<a href='".faqs.php?new.$id."'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
+                $text_menu .="[&nbsp;<a href='faqs.php?new.$id'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
         }
         $text_menu .="</div>";
 
