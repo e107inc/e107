@@ -667,14 +667,7 @@ $(document).ready(function()
 			$("#menu_iframe").attr("src",link);			
 			return false;		
 		});
-		
-		$('#menu_iframe').load(function() {
-		  this.style.height = this.contentWindow.document.body.offsetHeight + 400 + 'px';
 
-
-	//	  alert(this.style.height);
-		// this.style.height = '100vh';
-		});
 			
 
 		$("a.e-mm-selector").click(function(e){
