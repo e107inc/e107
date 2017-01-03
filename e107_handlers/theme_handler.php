@@ -1010,7 +1010,7 @@ class themeHandler
 		
 		$this->loadThemeConfig();
 
-		$value = e107::getThemeConfig('landingzero')->getPref();
+		$value = e107::getThemeConfig($this->id)->getPref();
 
 		if($this->themeConfigObj)
 		{
@@ -1026,7 +1026,7 @@ class themeHandler
 				}
 				else
 				{
-					if(!empty($v['multilan']) && isset($value[$field][e_LANGUAGE]))
+					if(!empty($val['multilan']) && isset($value[$field][e_LANGUAGE]))
 					{
 						$value[$field] = varset($value[$field][e_LANGUAGE],'');
 					}
