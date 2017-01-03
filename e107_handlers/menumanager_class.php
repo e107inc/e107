@@ -206,7 +206,7 @@ class e_menuManager {
 	//	$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
 	//	$text = "<object class='well' type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
-		$text = "<iframe class='well' id='menu_iframe' name='e-mm-iframe' src='".$url."' width='100'  style='width: 100%; height: 90vh; border: 0px' ></iframe>";
+		$text = "<iframe class='well' id='menu_iframe' name='e-mm-iframe' src='".$url."' width='100'  style='width: 100%; height: 90vh; border-width: 3px; padding:0' ></iframe>";
 	
 		return $text;
 	}
