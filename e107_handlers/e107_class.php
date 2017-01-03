@@ -127,6 +127,22 @@ class e107
 	 */
 	protected static $_theme_config_arr = array();
 
+
+
+	/**
+	 * e107 e107::css() on/off flag.
+	 *
+	 * @var bool
+	 */
+	protected static $_css_enabled = true;
+
+	/**
+	 * e107  e107::js() on/off flag.
+	 *
+	 * @var bool
+	 */
+	protected static $_js_enabled = true;
+
 	/**
 	 * Core handlers array
 	 * For new/missing handler add
@@ -1844,7 +1860,23 @@ class e107
 		}
 		return e_jsmanager::getInstance();
 	}
-	
+
+
+	public static function set($type=null, $val=true)
+	{
+		if($type === 'js_enabled')
+		{
+			self::$_js_enabled = (bool) $val;
+		}
+
+		if($type === 'css_enabled')
+		{
+			self::$_css_enabled = (bool) $val;
+		}
+	}
+
+
+
 	/**
 	 * JS Common Public Function. Prefered is shortcode script path
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
@@ -1854,6 +1886,11 @@ class e107
 	 */
 	public static function js($type, $data, $dep = null, $zone = null, $pre = '', $post = '')
 	{
+		if(self::$_js_enabled === false)
+		{
+			return null;
+		}
+
 		$jshandler = e107::getJs();
 		$jshandler->setDependency($dep);
 		
@@ -1945,6 +1982,11 @@ class e107
 		if((strstr($data,'bootstrap.css') || strstr($data,'bootstrap.min.css')) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently. 
 		{
 			define("BOOTSTRAP", true);	
+		}
+
+		if(self::$_css_enabled === false)
+		{
+			return null;
 		}
 		
 		$jshandler = e107::getJs();

@@ -792,8 +792,13 @@ class e_menu_layout
 			return false;
 		}
 
+		e107::set('css_enabled',false);
+		e107::set('js_enabled',false);
+
 		require($file);
 
+		e107::set('css_enabled',true);
+		e107::set('js_enabled',true);
 
 		$head = array();
 		$foot = array();
@@ -988,7 +993,7 @@ class e_menu_layout
 
 					foreach ($areas as $menu_act)
 					{
-						$text .= "<li><input type='submit' class='btn btn-primary btn-block' id='menuActivate_".trim($menu_act)."' name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+						$text .= "<li><input type='submit' class='btn btn-primary btn-block'  name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
 					}
 
 					$text .= '</ul>';
