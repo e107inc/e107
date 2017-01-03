@@ -4,7 +4,7 @@ function wmessage_shortcode($parm='')
 {
 	if($parm == 'hide')
 	{
-		return;
+		return null;
 	}
 	
 	$e107 		= e107::getInstance();
@@ -43,6 +43,8 @@ function wmessage_shortcode($parm='')
 
 	if (strpos($front_url, 'http') === FALSE) $front_url = SITEURL.$front_url;
 
+
+
 	if (deftrue('e_FRONTPAGE') || ($parm == 'force') || ((e_SELF == $front_url) && (($parm == 'ignore_query') || (e_QUERY == $front_qry))))
 	{
 		// Actually want to display a welcome message here
@@ -52,8 +54,7 @@ function wmessage_shortcode($parm='')
 
 		if($cacheData = $e107cache->retrieve('wmessage'))
 		{
-			echo $cacheData;
-			return;
+			return $cacheData;
 		}
 
 		if (!defined('WMFLAG'))
@@ -80,7 +81,7 @@ function wmessage_shortcode($parm='')
 
 			if (isset($wmessage) && $wmessage)
 			{
-				ob_start();
+				$cache_data = '';
 				if(intval($pref['wm_enclose']) === 2) // carousel
 				{
 					$carousel= array();
@@ -89,22 +90,24 @@ function wmessage_shortcode($parm='')
 						$carousel['slide-'.$k] = array('caption'=>$wmessageCaption[$k], 'text'=>$ns->tablerender($wmessageCaption[$k],$v, 'wm',true));
 					}
 
-					echo e107::getForm()->carousel('wmessage-carousel',$carousel);
+					$cache_data = e107::getForm()->carousel('wmessage-carousel',$carousel);
 				}
 				elseif(intval($pref['wm_enclose']) === 1)
 				{
-				 	$ns->tablerender($wmcaption, implode("<br />",$wmessage), 'wm');
+				 	$cache_data = $ns->tablerender($wmcaption, implode("<br />",$wmessage), 'wm', true);
 				}
 				else
 				{
-					echo "<div class='wmessage'>";
-				  	echo ($wmcaption) ? $wmcaption.'<br />' : '';
-					echo implode('<br />',$wmessage);
-					echo "</div>";
+					$text = "<div class='wmessage'>";
+				  	$text .= ($wmcaption) ? $wmcaption.'<br />' : '';
+					$text .= implode('<br />',$wmessage);
+					$text .= "</div>";
+					$cache_data = $text;
 				}
 
-				$cache_data = ob_get_flush();
+
 				$e107cache->set('wmessage', $cache_data);
+				return $cache_data;
 			}
 		}
 	}

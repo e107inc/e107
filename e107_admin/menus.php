@@ -32,6 +32,50 @@ else
 }
 
 require_once("../class2.php");
+
+
+if(empty($_GET['configure']) )
+{
+	if(e_DEBUG_MENUMANAGER === true)
+	{
+		e107::css('inline', '
+
+		body { overflow:hidden }
+
+
+
+
+
+
+		');
+	}
+	else
+	{
+		e107::js('footer-inline',"
+
+				$('#menu_iframe').attr('scrolling','no');
+			$('#menu_iframe').load(function() {
+		//	$('#menu_iframe').bind('load', function() {
+
+			  var height = this.contentWindow.document.body.offsetHeight + 400 + 'px';
+
+			//	$(this).css('overflow-y','visible');
+				$(this).css('height',height);
+			 // alert(this.style.height);
+
+			});
+
+
+		");
+
+	}
+
+
+}
+
+
+
+
 if (!getperms("2"))
 {
 	e107::redirect('admin');
@@ -45,6 +89,8 @@ e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
 e107::css('inline',"
+
+
 
 .menu-manager-items          { padding-right:15px}
 .menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
@@ -66,12 +112,18 @@ top: 60px;
 	.menu-selector ul li {
 		background-color: rgba(255,255,255,0.1);
 		padding: 5px 30px;
+		padding-right:2px;
 		margin-bottom:2px;
 	}
 
 	.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
 
-	.menu-selector { height:400px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+	.menu-selector { height:330px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+
+	@media all and (min-height: 1019px) {
+
+		.menu-selector { height:550px }
+	}
 
 	ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
 
@@ -573,6 +625,12 @@ else
 	$(window).scroll(function() { // and run it again every time you scroll
 		stickyNav();
 	});
+
+
+
+
+
+
 });
 
 
@@ -594,7 +652,7 @@ else
 
 
 
-
+/*
 if($_SERVER['E_DEV_MENU'] == 'true')
 {
 	if(isset($_GET['configure']) || isset($_GET['iframe']))
@@ -608,22 +666,10 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 	require_once("auth.php");
 	require_once("footer.php");
 	exit;
-}
+}*/
 
 // if($_SERVER['E_DEV_MENU'] == 'true')	
 //{
-
-	function countThemeMenus()
-	{
-
-
-
-
-
-	}
-
-
-
 
 
 
@@ -892,8 +938,8 @@ class e_menu_layout
 
 		foreach($pageMenu as $row)
 		{
-			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
-			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name'].$menuInf))."</li>";
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " (#".$row['menu_path'].")";
+			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
 		}
 
 		$tab1 .= '</ul></div>';
@@ -901,15 +947,15 @@ class e_menu_layout
 		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
 		foreach($pluginMenu as $row)
 		{
-			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " ( #".$row['menu_path']." )";
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " (#".$row['menu_path'].")";
 			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
 		}
 
 		$tab2 .= '</ul></div>';
 
 		$tabs = array(
-			'custom' => array('caption'=>MENLAN_49, 'text'=>$tab1),
-			'plugin' => array('caption'=>ADLAN_CL_7, 'text'=>$tab2)
+			'custom' => array('caption'=>'<i title="'.MENLAN_49.'" class="S16 e-custom-16"></i>', 'text'=>$tab1),
+			'plugin' => array('caption'=>'<i title="'.ADLAN_CL_7.'" class="S16 e-plugins-16"></i>', 'text'=>$tab2)
 
 		);
 
@@ -960,7 +1006,18 @@ class e_menu_layout
 
 		$text .= '</form>';
 
-		return array('caption'=>MENLAN_22,'text'=>$text);
+		$tp = e107::getParser();
+
+		$caption = MENLAN_22;
+
+		;
+
+		$diz = "The Menu-Manager allows you to place and arrange your menus within your theme template. Hover over the sub-areas to modify existing menu items. ";
+
+		$caption .= "<span class='pull-right'><a class='e-tip' title=\"".$tp->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
+
+
+		return array('caption'=>$caption,'text'=>$text);
 
 
 
@@ -1765,8 +1822,7 @@ if($_POST)
 		
 		
 		
-		
-		
+
 		
 		
 		
@@ -1789,6 +1845,7 @@ if($_POST)
 		}
 		else // Within the IFrame.
 		{
+
 		  	$men->menuRenderPage();
 
 		}
@@ -1808,7 +1865,7 @@ if($_POST)
 
 // -----------------------------------------------------------------------------
 
-require_once("footer.php");
+ require_once("footer.php");
 
  // -----------------------------------------------------------------------
 
