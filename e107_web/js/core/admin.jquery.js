@@ -656,7 +656,7 @@ $(document).ready(function()
 				$('.e-mm-select-loading').hide();
 			});
 
-			$(this).preventDefault();
+
 			return false;
 		});
 
@@ -679,7 +679,7 @@ $(document).ready(function()
 		
 			$(selector).toggle();
 
-			$(e).preventDefault();
+			return false; 
 		});
 
 
