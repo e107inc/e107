@@ -899,7 +899,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return ".$imgTag."; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
