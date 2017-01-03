@@ -120,7 +120,9 @@ top: 60px;
 
 	.menu-selector { height:330px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
 
-	@media all and (min-height: 1019px) {
+	.menu-selector input:checked + span {  color: white; }
+
+	@media all and (min-height: 1000px) {
 
 		.menu-selector { height:550px }
 	}
@@ -939,7 +941,7 @@ class e_menu_layout
 		foreach($pageMenu as $row)
 		{
 			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " (#".$row['menu_path'].")";
-			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
+			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>"<span>".$row['menu_name']."<small>".$menuInf."</small></span>"))."</li>";
 		}
 
 		$tab1 .= '</ul></div>';
@@ -948,7 +950,7 @@ class e_menu_layout
 		foreach($pluginMenu as $row)
 		{
 			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " (#".$row['menu_path'].")";
-			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>$row['menu_name']."<small>".$menuInf."</small>"))."</li>";
+			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>"<span>".$row['menu_name']."<small>".$menuInf."</small></span>"))."</li>";
 		}
 
 		$tab2 .= '</ul></div>';
