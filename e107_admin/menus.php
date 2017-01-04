@@ -91,6 +91,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 		    transition: fadeIn .4s;
 		}
 
+		iframe#menu_iframe { overflow-x:hidden; width: 100%; height: 90vh; border-width: 3px; padding:0 }
 
 			.menu-selector ul li {
 				background-color: rgba(255,255,255,0.1);
@@ -108,6 +109,13 @@ if(e_MENUMANAGER_ACTIVE === false )
 			@media all and (min-height: 1000px) {
 
 				.menu-selector { height:550px }
+			}
+
+			@media all and (max-height: 800px) {
+
+				.menu-selector { height:250px }
+				iframe#menu_iframe { height: 87vh }
+				.menu-selector ul li { font-size: 0.8em }
 			}
 
 			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
