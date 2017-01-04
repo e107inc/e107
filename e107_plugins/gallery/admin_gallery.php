@@ -1,13 +1,10 @@
 <?php
-
-/**
+/*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * @author e107coders
  *
  * @file
  * Class installations to handle configuration forms on Admin UI.
@@ -272,7 +269,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 	 *  Edit/create form tabs.
 	 */
 	protected $preftabs = array(
-		LAN_GALLERY_ADMIN_02,
+		LAN_GENERAL,
 		LAN_GALLERY_ADMIN_03,
 		LAN_GALLERY_ADMIN_32,
 	);
@@ -457,7 +454,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'tab'        => 2,
 		),
 		'pp_theme'                   => array(
-			'title'      => LAN_GALLERY_ADMIN_45,
+			'title'      => LAN_THEME,
 			'type'       => 'dropdown',
 			'data'       => 'str',
 			'writeParms' => array(
