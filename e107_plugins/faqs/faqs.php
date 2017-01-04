@@ -122,7 +122,7 @@ if (isset($_POST['commentsubmit']))
 
 	$faqpref = e107::getPlugConfig('faqs')->getPref();
 
-	if (varset($action) == "" || $action == "main")
+	if (empty($action) || $action == "main")
 	{
 		if(vartrue($faqpref['classic_look']))
 		{
