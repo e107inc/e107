@@ -1568,16 +1568,16 @@ class e_menuManager {
 					
 					
 				}
+
+				$ns->tablerender('', varset($menuText));
+			}
+			else
+			{
+				echo $tp->parseTemplate($str,true);
 			}
 
 
-			$ns->tablerender('', varset($menuText));
 		}
-
-	//.	else if(strstr($str, "SITEDISCLAIMER"))
-	//{
-	//		echo "[Sitedisclaimer]";
-	//	}
 		else
 		{
 			echo $tp->parseTemplate($str,true);
