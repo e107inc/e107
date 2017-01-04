@@ -616,7 +616,13 @@ class pluginManager{
 		
 		if($total > $amount)
 		{
-			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
+			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
+
+			if(!empty($srch))
+			{
+				$parms .= '&amp;srch='.$srch;
+			}
+
 			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
 		}
 		
