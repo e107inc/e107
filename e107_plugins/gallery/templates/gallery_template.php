@@ -1,12 +1,13 @@
 <?php
-
-/**
- * Copyright (c) 2012 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+/*
+ * e107 website system
  *
- * @file
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * Templates for "gallery" plugin.
  */
-
 
 $GALLERY_TEMPLATE['list']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
@@ -93,7 +94,7 @@ $GALLERY_TEMPLATE['prettyphoto']['content'] = '
 				<div class="pp_content">
 					<div class="pp_loaderIcon"></div>
 					<div class="pp_fade">
-						<a href="#" class="pp_expand" title="Expand the image">' . LAN_EXPAND . '</a>
+						<a href="#" class="pp_expand" title="'.LAN_GALLERY_FRONT_02.'">'.LAN_EXPAND.'</a>
 						<div class="pp_hoverContainer">
 							<a class="pp_next" href="#">' . LAN_NEXT . '</a>
 							<a class="pp_previous" href="#">' . LAN_PREVIOUS . '</a>
