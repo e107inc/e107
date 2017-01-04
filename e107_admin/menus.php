@@ -25,16 +25,19 @@ if(isset($_GET['configure']))
 	@ini_set('display_errors', 0);
 	error_reporting(0);
 
+	define('e_MENUMANAGER_ACTIVE', true);
+
 }
 else
 {
 	define('e_ADMIN_AREA', true);
+	define('e_MENUMANAGER_ACTIVE', false);
 }
 
 require_once("../class2.php");
 
 
-if(empty($_GET['configure']) )
+if(e_MENUMANAGER_ACTIVE === false )
 {
 	if(e_DEBUG_MENUMANAGER === true)
 	{
@@ -53,7 +56,7 @@ if(empty($_GET['configure']) )
 	{
 		e107::js('footer-inline',"
 
-				$('#menu_iframe').attr('scrolling','no');
+			$('#menu_iframe').attr('scrolling','no');
 			$('#menu_iframe').load(function() {
 		//	$('#menu_iframe').bind('load', function() {
 
@@ -70,6 +73,46 @@ if(empty($_GET['configure']) )
 
 	}
 
+	e107::css('inline',"
+
+		.menu-manager-items          { padding-right:15px}
+		.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
+		.menu-manager-sticky {
+			position: fixed;
+		padding-left: 15px;
+		padding-right: 15px;
+		left: 0;
+		top: 60px;
+			z-index: 100;
+			border-top: 0;
+		    -moz-transition: fadeIn .4s;
+		    -o-transition: fadeIn .4s;
+		    -webkit-transition: fadeIn .4s;
+		    transition: fadeIn .4s;
+		}
+
+
+			.menu-selector ul li {
+				background-color: rgba(255,255,255,0.1);
+				padding: 5px 30px;
+				padding-right:2px;
+				margin-bottom:2px;
+			}
+
+			.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
+
+			.menu-selector { height:330px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+
+			.menu-selector input:checked + span {  color: white; }
+
+			@media all and (min-height: 1000px) {
+
+				.menu-selector { height:550px }
+			}
+
+			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
+
+		");
 
 }
 
@@ -82,60 +125,19 @@ if (!getperms("2"))
 	exit;
 }
 
-define('e_DEBUG', false);
+
 
 
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
-e107::css('inline',"
-
-
-
-.menu-manager-items          { padding-right:15px}
-.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
-.menu-manager-sticky {
-	position: fixed;
-padding-left: 15px;
-padding-right: 15px;
-left: 0;
-top: 60px;
-	z-index: 100;
-	border-top: 0;
-    -moz-transition: fadeIn .4s;
-    -o-transition: fadeIn .4s;
-    -webkit-transition: fadeIn .4s;
-    transition: fadeIn .4s;
-}
-
-
-	.menu-selector ul li {
-		background-color: rgba(255,255,255,0.1);
-		padding: 5px 30px;
-		padding-right:2px;
-		margin-bottom:2px;
-	}
-
-	.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
-
-	.menu-selector { height:330px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
-
-	.menu-selector input:checked + span {  color: white; }
-
-	@media all and (min-height: 1000px) {
-
-		.menu-selector { height:550px }
-	}
-
-	ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
-
-");
 
 
 
 
 
-if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
+
+if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
 
 
@@ -303,7 +305,25 @@ TEMPL;
 	.portlet-content { padding: 7px; }
 	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 	.ui-sortable-placeholder * { visibility: hidden; }
-	
+
+	i.S16 {
+    background: url(".e_THEME."bootstrap3/images/adminicons_16.png) no-repeat top left;
+ 	display:inline-block;
+ 	width:17px;
+ 	height:16px;
+ 	*margin-right: .3em;
+	line-height: 14px;
+	vertical-align: text-top;
+	}
+
+	i.e-search-16 { background-position: -1344px 0; width: 16px; height: 16px; }
+	i.e-delete-16 { background-position: -525px 0; width: 16px; height: 16px; }
+	i.e-configure-16 { background-position: -378px 0; width: 16px; height: 16px; }
+	i.e-edit-16 { background-position: -609px 0; width: 16px; height: 16px; }
+
+
+
+
 	[class^='icon-'], [class*=' icon-'] {
 	    display: inline-block;
 	    width: 14px;
@@ -498,8 +518,8 @@ TEMPL;
 	",'jquery');
 	
 	
-	e107::js('footer',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
-	e107::css('url', "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
+//	e107::js('footer',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
+//	e107::css('url', "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
 			e107::js('footer-inline','
 			 $(function()
@@ -526,7 +546,7 @@ TEMPL;
 
 
 
-
+/*
 
 				 	$(".sortable").sortable({
 				 		connectWith: $("#area-1,#area-2,#area-3,#area-4,#area-5"),
@@ -542,12 +562,14 @@ TEMPL;
 					});
 
 
-/*
+
 
 				$( ".draggable", window.top.document).click(function()
 					{
 						alert("hi there");
-					});*/
+					});
+
+
 
 				// http://jsfiddle.net/DT764/2/
 
@@ -571,7 +593,7 @@ TEMPL;
                     	}
 
 					});
-
+*/
 				//	$( "ul, li", window.top.document ).disableSelection();
 
 
@@ -633,7 +655,7 @@ else
 
 
 
-});
+	});
 
 
 
@@ -1744,15 +1766,6 @@ class e_layout
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 
-// FIXME - quick temporarry fix for missing icons on menu administration. We need different core style to be included (forced) here - e.g. e107_web/css/admin/sprite.css
-if(e_IFRAME) //<-- Check config and delete buttons if modifying
-{
-
-//e107::js('core','bootstrap/js/bootstrap.min.js');
-//e107::css('core','bootstrap/css/bootstrap.min.css');
-	e107::css('url','{e_THEME}/bootstrap3/admin_style.css');
-
-}
 
 
 
