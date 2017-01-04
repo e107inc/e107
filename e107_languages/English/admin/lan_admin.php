@@ -191,6 +191,10 @@ define("ADLAN_165", "Powered by e107");
 define("ADLAN_166", "Return to Website");
 define("ADLAN_167", "Pending Mailshots");
 
+define("ADLAN_168", "Visitors");//infopanel
+define("ADLAN_169", "Unique Visitors");
+define("ADLAN_170", "These stats are for demonstration purposes only.");
+define("ADLAN_171", "Install Site Stats Plugin");
 
 define("ADLAN_185", "Toggle Sidebar");
 
