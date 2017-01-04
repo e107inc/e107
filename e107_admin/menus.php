@@ -316,9 +316,7 @@ TEMPL;
 
 	i.S16 {
     background: url(".e_THEME."bootstrap3/images/adminicons_16.png) no-repeat top left;
- 	display:inline-block;
- 	width:17px;
- 	height:16px;
+ 	display:inline-block;  	width:17px;  	height:16px;
  	*margin-right: .3em;
 	line-height: 14px;
 	vertical-align: text-top;
@@ -329,10 +327,7 @@ TEMPL;
 	i.e-configure-16 { background-position: -378px 0; width: 16px; height: 16px; }
 	i.e-edit-16 { background-position: -609px 0; width: 16px; height: 16px; }
 
-
-
-
-	[class^='icon-'], [class*=' icon-'] {
+	.e-mm-icon-search {
 	    display: inline-block;
 	    width: 14px;
 	    height: 14px;
@@ -344,13 +339,15 @@ TEMPL;
 	    background-repeat: no-repeat;
 	}
 	
-	.icon-search {
+	.e-mm-icon-search {
 	  background-position: -48px 0;
 	}
-	.icon-align-justify {
+
+	/*
+	.e-mm-icon-align-justify {
 	  background-position: -336px -48px;
 	}
-	
+	*/
 	
 	/* A little bit of bootstrap styling - loading /bootstrap.css could break some themes */
 	

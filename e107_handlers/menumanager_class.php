@@ -1602,7 +1602,7 @@ class e_menuManager {
 		$menu_name = varset($menu_name);
 		$menu_name = preg_replace("#_menu#i", "", $menu_name);
 		//TODO we need a CSS class for this
-		$vis = (varset($menu_class) || strlen(varset($menu_pages)) > 1) ? " <span class='required'><i class='icon-search'></i></span> " : "";
+		$vis = (varset($menu_class) || strlen(varset($menu_pages)) > 1) ? " <span class='required'><i class='e-mm-icon-search'></i></span> " : "";
 		//DEBUG div not allowed in final tags 	$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
 		// use theme render style instead
 		
