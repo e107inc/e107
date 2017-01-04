@@ -2549,7 +2549,7 @@ class e_parse extends e_parser
 			if(empty($parm['w']) && isset($parm['h']))
 			{
 				$parm['h'] = ($parm['h'] * $multiply) ;
-				return $this->thumbUrl($src, $parm)." h".$parm['h']." ".$multiply;
+				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
 			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : ($this->thumbWidth * $multiply);
@@ -3610,7 +3610,7 @@ class e_parser
 			}
 			else
 			{
-				$prefix = 'icon-';	
+		//		$prefix = 'icon-';
 				$tag = 'i';
 			}
 			

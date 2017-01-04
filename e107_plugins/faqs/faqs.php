@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -122,7 +122,7 @@ if (isset($_POST['commentsubmit']))
 
 	$faqpref = e107::getPlugConfig('faqs')->getPref();
 
-	if ($action == "" || $action == "main")
+	if (empty($action) || $action == "main")
 	{
 		if(vartrue($faqpref['classic_look']))
 		{
@@ -133,7 +133,7 @@ if (isset($_POST['commentsubmit']))
 		{
 			$srch = vartrue($_GET['srch']);
 			$ftmp = $faq->view_all($srch);
-			$caption = FAQLAN_FAQ;
+			$caption = LAN_FAQS_FAQ;
 
 		}
 
@@ -178,7 +178,7 @@ if (isset($_POST['commentsubmit']))
 	if($action == "cat" && $idx)
 	{
 		 $ftmp = $faq->view_faq($idx) ;
-		 define("e_PAGETITLE",FAQLAN_FAQ." - ". $ftmp['title']);
+		 define("e_PAGETITLE",LAN_FAQS_FAQ." - ". $ftmp['title']);
 		 require_once(HEADERF);
 		 $ns -> tablerender($ftmp['caption'], $ftmp['text']);
 	}
@@ -284,7 +284,7 @@ class faq
 	
 		$text .= $tp->parseTemplate($template['end'], true, $this->sc); // footer
 
-		$ret['title'] = FAQLAN_FAQ;
+		$ret['title'] = LAN_FAQS_FAQ;
 		$ret['text'] = $text;
 
 		if (!empty($this->pref['page_title'][e_LANGUAGE]))
@@ -379,8 +379,8 @@ class faq
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
 		$sc->counter = 1;
-		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
-		$sc->category = $category;
+		$sc->tag = htmlspecialchars(varset($tag), ENT_QUOTES, 'utf-8');
+		$sc->category = varset($category);
 
 		 if(!empty($_GET['id'])) // expand one specific FAQ.
 		{
@@ -475,7 +475,7 @@ class faq
 
 		$text .= $tp->parseTemplate($FAQ_LIST_END, true);
 
-		$ret['title'] = FAQLAN_FAQ." - ".$category_title;
+		$ret['title'] = LAN_FAQS_FAQ." - ".$category_title;
 		$ret['text'] = $text.$this->faq_footer($id);
 		$ret['caption'] = $caption;
 		return $ret;
@@ -614,10 +614,10 @@ class faq
 	{
         global $faqpref,$timing_start,$tp,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
         $text_menu .= "<div style='text-align:center;' ><br />
-        &nbsp;&nbsp;[&nbsp;<a href='".faqs.php?main."'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
+        &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
 
         if(check_class($faqpref['add_faq'])){
-                $text_menu .="[&nbsp;<a href='".faqs.php?new.$id."'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
+                $text_menu .="[&nbsp;<a href='faqs.php?new.$id'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
         }
         $text_menu .="</div>";
 

@@ -2,16 +2,10 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/oldpolls.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once("../../class2.php");
@@ -57,7 +51,7 @@ if(e_QUERY)
 
 		$text .= "
 		<div class='smalltext text-right'>
-		<small>".POLLAN_35." ".$userlink."<br /> ".POLLAN_37." ".$start_datestamp." ".POLLAN_38." ".$end_datestamp."</small></div>
+		<small>".LAN_POSTED_BY." ".$userlink."<br /> ".LAN_ACTIVE.": ".LAN_FROM." ".$start_datestamp." ".LAN_TO." ".$end_datestamp."</small></div>
 		";
 
 
@@ -80,7 +74,8 @@ if(e_QUERY)
 			</div>
 			<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'>
 			</div>
-			".$percentage[$count]."% [".POLLAN_31.": ".$voteArray[$count]."]
+			".$percentage[$count]."% [".POL
+			LAN_31.": ".$voteArray[$count]."]
 			</td>
 			</tr>\n";
 			$count++;
@@ -120,7 +115,7 @@ if(e_QUERY)
 
 	if(!$array = $sql->retrieve($query,true))
 	{
-		$ns->tablerender(POLLAN_28, "<div style='text-align:center'>".POLLAN_33."</div>");
+		$ns->tablerender(POLLAN_28, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
@@ -129,7 +124,7 @@ if(e_QUERY)
 
 	if(empty($array))
 	{
-		$ns->tablerender(POLLAN_28, "<div style='text-align:center'>".POLLAN_33."</div>");
+		$ns->tablerender(POLLAN_28, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>");
 		require_once(FOOTERF);
 		exit;
 	}
@@ -142,8 +137,8 @@ if(e_QUERY)
 	<thead>
 	<tr>
 	<th class='fcaption'>".LAN_TITLE."</th>
-	<th class='fcaption'>".POLLAN_35."</th>
-	<th class='fcaption'>".POLLAN_36."</th>
+	<th class='fcaption'>".LAN_POSTED_BY."</th>
+	<th class='fcaption'>".LAN_ACTIVE."</th>
 	</tr></thead><tbody>\n";
 
 
@@ -164,7 +159,7 @@ if(e_QUERY)
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?".$row['poll_id']."'>{$poll_title}</a></td>
 		<td class='forumheader3' style='width: 15%;'>".$userlink."</td>
-		<td class='forumheader3' style='width: 30%;'>".$from." ".POLLAN_38." ".$to."</td>
+		<td class='forumheader3' style='width: 30%;'>".$from." ".LAN_TO." ".$to."</td>
 		</tr>\n";
 	}
 

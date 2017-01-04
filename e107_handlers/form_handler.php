@@ -8,9 +8,6 @@
  *
  * Form Handler
  *
- * $URL$
- * $Id$
- *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -142,7 +139,7 @@ class e_form
 		else 
 		{
 			$target = str_replace("&", "&amp;", $target);
-			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
+			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method='{$method}'{$autoComplete}>\n";
 		}
 		return $text;	
 	}
@@ -4348,8 +4345,7 @@ e107::getDebug()->log($sc_parameters);
 
 			case 'icon':
 
-				$parms['size'] = '2x';
-				$value = $tp->toIcon($value,$parms);
+				$value = "<span class='icon-preview'>".$tp->toIcon($value,$parms)."</span>";
 				
 			break;
 			
