@@ -445,6 +445,12 @@ if (defined('THEME_ONLOAD')) $js_body_onload[] = THEME_ONLOAD;
 $body_onload='';
 if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onload)."\"";
 
+
+if(deftrue('e_MENUMANAGER_ACTIVE'))
+{
+	$body_onload .= " id=\"layout-".e107::getForm()->name2id(THEME_LAYOUT)."\" ";
+}
+
 //
 // J: Send end of <head> and start of <body>
 //
