@@ -116,9 +116,13 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_contact_body($parm='')
+	function sc_contact_body($parm=null)
 	{
-		parse_str($parm, $parm);
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$rows = vartrue($parm['rows'],10);
 		$cols = vartrue($parm['cols'],70);
 		$placeholder = !empty($parm['placeholder']) ? "placeholder=\"".$parm['placeholder']."\"" : "";
