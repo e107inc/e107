@@ -18,6 +18,5 @@ define("LAN_THEMEPREF_07", "left");
 define("LAN_THEMEPREF_08", "right");
 define("LAN_THEMEPREF_09", "top");
 define("LAN_THEMEPREF_10", "bottom");
- 
 
 ?>

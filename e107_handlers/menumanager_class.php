@@ -100,6 +100,8 @@ class e_menuManager {
 
 	        	$menu_array = $this->parseheader($HEADER.$FOOTER, 'check');
 
+
+
 				if($menu_array)
 				{
 					sort($menu_array, SORT_NUMERIC);
@@ -116,9 +118,7 @@ class e_menuManager {
 
 				$this->menuModify();
 
-				$this->loadMenuData();
-
-            	if(vartrue($_POST['menuActivate']))
+            	if(!empty($_POST['menuActivate']))
 				{
 					$menuActivate = $tp->filter($_POST['menuActivate']);
                     $this->menuActivateLoc = key($menuActivate);
@@ -126,6 +126,8 @@ class e_menuManager {
 					$this->menuActivate();
 
 				}
+
+				$this->loadMenuData();
 
 				if(vartrue($_POST['menuSetCustomPages']))
 				{
@@ -204,7 +206,7 @@ class e_menuManager {
 	//	$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
 	//	$text = "<object class='well' type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
-		$text = "<iframe class='well' id='menu_iframe' src='".$url."' width='100%' scrolling='no' style='width: 100%; height: 800px; border: 0px' ></iframe>";
+		$text = "<iframe class='well' id='menu_iframe' name='e-mm-iframe' src='".$url."' width='100'  style='overflow-x:hidden; width: 100%; height: 90vh; border-width: 3px; padding:0' ></iframe>";
 	
 		return $text;
 	}
@@ -1140,10 +1142,9 @@ class e_menuManager {
 		$sql    = e107::getDb();     
 		$tp     = e107::getParser();
 		
-	
-		
-		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
-		echo "<div id='portal'>";
+
+
+	//	echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
 		
 		$layout = ($this->curLayout);
@@ -1255,7 +1256,16 @@ class e_menuManager {
 			$text .= "</div>";
 		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
-		echo $this->renderPanel(MENLAN_22, $text);
+		if(e_DEBUG_MENUMANAGER === true)
+		{
+			echo "<div class='menu-panel' style='padding:50px'>Main Content Area</div>";
+		}
+		else
+		{
+			echo $this->renderPanel(MENLAN_22, $text);
+		}
+
+	//
         echo $rs->form_close();
 		echo "</div>";
 
@@ -1266,7 +1276,7 @@ class e_menuManager {
 		{
 	    	echo "<div id='debug' style='margin-left:0px;border:1px solid silver; overflow:scroll;height:250px'> &nbsp;</div>";
         }
-		echo "</div>"; 
+	//	echo "</div>";
 	}
 
 
@@ -1314,6 +1324,7 @@ class e_menuManager {
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function parseheader($LAYOUT, $check = FALSE)
 	{
+
 		//  $tmp = explode("\n", $LAYOUT);
 		// Split up using the same function as the shortcode handler
 		$tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -1408,12 +1419,12 @@ class e_menuManager {
 	//	{
 	//		echo "[SiteLinks]";
 	//	}
-		elseif(strstr($str, "NAVIGATION"))
-		{
-			$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
-			$tp->parseTemplate("{NAVIGATION".$cust."}",true);
+	//	elseif(strstr($str, "NAVIGATION"))
+	//	{
+	//		$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+	//		$tp->parseTemplate("{NAVIGATION".$cust."}",true);
 		//	echo "<span class='label label-info'>Navigation Area</span>";
-		}
+	//	}
 		elseif(strstr($str, "ALERT"))
 		{
 			//echo "[Navigation Area]";
@@ -1557,16 +1568,16 @@ class e_menuManager {
 					
 					
 				}
+
+				$ns->tablerender('', varset($menuText));
+			}
+			else
+			{
+				echo $tp->parseTemplate($str,true);
 			}
 
 
-			$ns->tablerender('', varset($menuText));
 		}
-
-	//.	else if(strstr($str, "SITEDISCLAIMER"))
-	//{
-	//		echo "[Sitedisclaimer]";
-	//	}
 		else
 		{
 			echo $tp->parseTemplate($str,true);

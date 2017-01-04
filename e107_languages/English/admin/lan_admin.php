@@ -1,6 +1,10 @@
 <?php
 /*
- * Copyright (C) 2008-2016 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
  *
@@ -187,6 +191,10 @@ define("ADLAN_165", "Powered by e107");
 define("ADLAN_166", "Return to Website");
 define("ADLAN_167", "Pending Mailshots");
 
+define("ADLAN_168", "Visitors");//infopanel
+define("ADLAN_169", "Unique Visitors");
+define("ADLAN_170", "These stats are for demonstration purposes only.");
+define("ADLAN_171", "Install Site Stats Plugin");
 
 define("ADLAN_185", "Toggle Sidebar");
 
@@ -233,6 +241,9 @@ define("LAN_UPDATE","Update");
 define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
 define("LAN_ADD", "Add");
+define("LAN_ADD_MORE", "Add More");
+define("LAN_MULTIPLE_CHOICE", "Multiple Choice");
+
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
@@ -306,7 +317,7 @@ define("LAN_LANG","Lang.");
 define("LAN_APPROVE","Approve");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
-define("LAN_ACTIVE","Active");
+//define("LAN_ACTIVE","Active");//English.php 
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
@@ -473,6 +484,7 @@ define("LAN_FOLDER", "Folder");
 define("LAN_PERSONALIZE_ICONS", "Personalize Icons");
 define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
+define("LAN_COMMENTS_ALLOWED", "Comments Allowed");
 define("LAN_PERSONALIZE", "Personalize");
 define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
 define("LAN_DISPLAY_COLUMNS", "Display Columns");
@@ -490,3 +502,6 @@ define("LAN_GO_TO_LIST", "go to list");
 define("LAN_CREATE_ANOTHER", "create another");
 define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
+define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
+define("LAN_CHANGE_LANGUAGE", "Change Language");  
+

@@ -961,11 +961,11 @@ class themeHandler
 		
 		$newConfile = e_THEME.$this->id."/theme_config.php";
 		
-		$legacyConfile = e_THEME.$this->id."/".$this->id."_config.php"; // @Deprecated 
-		
+		$legacyConfile = e_THEME.$this->id."/".$this->id."_config.php"; // @Deprecated
+
 		if(is_readable($newConfile))
 		{
-			$confile = $newConfile;	
+			$confile = $newConfile;
 		}
 		elseif(is_readable($legacyConfile))// TODO Eventually remove it. 
 		{
@@ -983,13 +983,18 @@ class themeHandler
 			$mes->addDebug("Loading : ".$confile);
 			include ($confile);
 			$className = 'theme_'.$this->id;
-			if(class_exists($className))
+
+			if(class_exists('theme_config')) // new v2.1.4 theme_config is the class name.
+			{
+				$this->themeConfigObj = new theme_config();
+			}
+			elseif(class_exists($className)) // old way.
 			{
 				$this->themeConfigObj = new $className();
 			}
 			else
 			{
-				$this->themeConfigObj = FALSE;
+				$this->themeConfigObj = false;
 			}
 		}
 	
@@ -1000,25 +1005,43 @@ class themeHandler
 	{
 		
 		$mes = e107::getMessage();
-		$mes->addDebug(TPVLAN_87); 
+		$frm = e107::getForm();
+		$mes->addDebug("Rendering Theme Config");
 		
 		$this->loadThemeConfig();
-		
+
+		$value = e107::getThemeConfig($this->id)->getPref();
+
 		if($this->themeConfigObj)
 		{
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
-			vartrue($text); // avoid notice
+			$text = ''; // avoid notice
 			
-			foreach ($var as $val)
+			foreach ($var as $field=>$val)
 			{
-				$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
+				if(is_numeric($field))
+				{
+					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
 </td></tr>";
+				}
+				else
+				{
+					if(!empty($val['multilan']) && isset($value[$field][e_LANGUAGE]))
+					{
+						$value[$field] = varset($value[$field][e_LANGUAGE],'');
+					}
+
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div>
+</td></tr>";
+				}
 			}
 
 			return $text;
 		}
 	
 	}
+
+
 
 	
 	function renderThemeHelp()
@@ -1033,9 +1056,28 @@ class themeHandler
 	function setThemeConfig()
 	{
 		$this->loadThemeConfig();
+
 		if($this->themeConfigObj)
 		{
-			return call_user_func(array(&$this->themeConfigObj, 'process'));
+			$name = get_class($this->themeConfigObj);
+
+			if($name === 'theme_config') // v2.1.4 - don't use process() method.
+			{
+				$pref = e107::getThemeConfig();
+
+				$theme_pref = array();
+
+				$fields = call_user_func(array(&$this->themeConfigObj, 'config'));
+
+				foreach($fields as $field=>$data)
+				{
+					$theme_pref[$field] = $_POST[$field];
+				}
+
+				return $pref->setPref($theme_pref)->save(true,true,false);
+			}
+
+			return call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
 		}
 	}
 	
@@ -1785,12 +1827,14 @@ class themeHandler
 		$deflayout = $this->findDefault($name);
 		$customPages = $this->themeArray[$name]['custompages'];
 		$version = $this->themeArray[$name]['version'];
+		$glyphs = $this->themeArray[$name]['glyphs'];
 		
 		$core->set('sitetheme', $name);
 		$core->set('themecss', 'style.css');
 		$core->set('sitetheme_layouts', $layout);
 		$core->set('sitetheme_deflayout', $deflayout);
 		$core->set('sitetheme_custompages', $customPages);
+		$core->set('sitetheme_glyphicons', $glyphs);
 		
 		$core->set('sitetheme_version', $version);
 				
@@ -2293,7 +2337,29 @@ class themeHandler
 
 			unset($vars['stylesheets']);
 		}
-		
+
+
+		$vars['glyphs'] = array();
+		if(!empty($vars['glyphicons']['glyph']))
+		{
+
+			foreach($vars['glyphicons']['glyph'] as $val)
+			{
+				$vars['glyphs'][] = array(
+						'name'      => $val['@attributes']['name'],
+						'pattern'   => $val['@attributes']['pattern'],
+						'path'      => $val['@attributes']['path'],
+						'prefix'    => $val['@attributes']['prefix'],
+						'tag'       => $val['@attributes']['tag'],
+				);
+
+			}
+
+			unset($vars['glyphicons']);
+
+		}
+
+
 		//
 
 		$mes = e107::getMessage(); // DEBUG
@@ -2316,6 +2382,10 @@ class themeHandler
 		return $vars;
 	}
 
+
+
+
+
 }
 
 interface e_theme_config
@@ -2324,17 +2394,17 @@ interface e_theme_config
 	 * Triggered on theme settings submit
 	 * Catch and save theme configuration
 	 */
-	public function process();
+//	public function process();
 	
 	/**
 	 * Theme configuration user interface
 	 * Print out config fields
 	 */
-	public function config();
+	public function config(); // only config() is absolutely required.
 	
 	/**
 	 * Theme help tab
 	 * Print out theme help content
 	 */
-	public function help();
+//	public function help();
 }

@@ -83,9 +83,39 @@ class plugin_gallery_index_controller extends eControllerFront
 		}
 	}
 
-	public function actionCategory()
+
+	private function getTemplate()
 	{
 		$template = e107::getTemplate('gallery');
+
+		$oldKeys = array(
+			'list_start', 'list_item', 'list_caption', 'list_end',
+			'cat_start', 'cat_item', 'cat_caption', 'cat_end'
+		);
+
+		if(isset($template['list_start']))
+		{
+			foreach($oldKeys as $k)
+			{
+				list($main,$sub) = explode("_",$k);
+				$template[$main][$sub] = $template[$k];
+				unset($template[$k]);
+
+			}
+
+
+		}
+
+		return $template;
+	}
+
+
+
+	public function actionCategory()
+	{
+		//	print_a("Hi there");
+
+		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
@@ -96,19 +126,19 @@ class plugin_gallery_index_controller extends eControllerFront
 			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']);
 		}
 
-		$text = e107::getParser()->parseTemplate($template['cat_start'], true, $sc);
+		$text = e107::getParser()->parseTemplate($template['cat']['start'], true, $sc);
 
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);
-			$text .= e107::getParser()->parseTemplate($template['cat_item'], true);
+			$text .= e107::getParser()->parseTemplate($template['cat']['item'], true);
 		}
 
-		$text .= e107::getParser()->parseTemplate($template['cat_end'], true, $sc);
+		$text .= e107::getParser()->parseTemplate($template['cat']['end'], true, $sc);
 
 		if(isset($template['cat_caption']))
 		{
-			$title = e107::getParser()->parseTemplate($template['cat_caption'], true, $sc);
+			$title = e107::getParser()->parseTemplate($template['cat']['caption'], true, $sc);
 
 			$this->addTitle($title)->addBody($text);
 		}
@@ -151,7 +181,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		}
 
 		$tp = e107::getParser();
-		$template = e107::getTemplate('gallery');
+		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
@@ -178,22 +208,22 @@ class plugin_gallery_index_controller extends eControllerFront
 			$sc->setVars($row)
 				->addVars($cat);
 
-			$inner .= $tp->parseTemplate($template['list_item'], true, $sc);
+			$inner .= $tp->parseTemplate($template['list']['item'], true, $sc);
 		}
 
-		$text = $tp->parseTemplate($template['list_start'], true, $sc);
+		$text = $tp->parseTemplate($template['list']['start'], true, $sc);
 		$text .= $inner;
-		$text .= $tp->parseTemplate($template['list_end'], true, $sc);
+		$text .= $tp->parseTemplate($template['list']['end'], true, $sc);
 
 		if(isset($template['list_caption']))
 		{
-			$title = $tp->parseTemplate($template['list_caption'], true, $sc);
+			$title = $tp->parseTemplate($template['list']['caption'], true, $sc);
 			$this->addTitle($title)->addBody($text);
 		}
 		else
 		{
-			$this->addTitle($catname)
-				->addTitle(LAN_PLUGIN_GALLERY_TITLE)
+			$this->addTitle(LAN_PLUGIN_GALLERY_TITLE)
+				->addTitle($catname)
 				->addBody($text);
 		}
 

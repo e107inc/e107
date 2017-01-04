@@ -116,7 +116,7 @@ class core_user_url extends eUrlConfig
 		return $admin;
 	}
 
-	public function parse($pathInfo, $params = array(), $request = NULL, $router = NULL, $config = array())
+	public function parse($pathInfo, $params = array(), eRequest $request = NULL, eRouter $router = NULL, $config = array())
 	{
 		// this config doesn't support parsing, it's done by the module entry script (news.php)
 		// this means News are not available via single entry point if this config is currently active

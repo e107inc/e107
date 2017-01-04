@@ -5,7 +5,7 @@
 	<category>content</category> 
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright> 
 	<adminLinks>
-		<link url='admin_config.php' description='POLL_ADLAN03' icon='images/polls_32.png' iconSmall='images/polls_16.png' primary='true' >POLL_ADLAN03</link>	
+		<link url='admin_config.php' description='LAN_CONFIGURE' icon='images/polls_32.png' iconSmall='images/polls_16.png' primary='true' >LAN_CONFIGURE</link>	
 	</adminLinks>
 	<pluginPrefs>
 	</pluginPrefs>

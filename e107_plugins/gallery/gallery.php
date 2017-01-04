@@ -54,9 +54,41 @@ class gallery
 		}
 	}
 
-	function listCategories()
+
+	/**
+	 * Convert legacy template from ['list_start'] etc. to ['list']['start']
+	 * @return array|string
+	 */
+	private function getTemplate()
 	{
 		$template = e107::getTemplate('gallery');
+
+		$oldKeys = array(
+			'list_start', 'list_item', 'list_caption', 'list_end',
+			'cat_start', 'cat_item', 'cat_caption', 'cat_end'
+		);
+
+		if(isset($template['list_start']))
+		{
+			foreach($oldKeys as $k)
+			{
+				list($main,$sub) = explode("_",$k);
+				$template[$main][$sub] = $template[$k];
+				unset($template[$k]);
+
+			}
+
+
+		}
+
+		return $template;
+	}
+
+	function listCategories()
+	{
+
+
+		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
@@ -65,17 +97,17 @@ class gallery
 			$template['cat_start'] = str_replace('row', 'row-fluid', $template['cat_start']);
 		}
 
-		$text = e107::getParser()->parseTemplate($template['cat_start'], true, $sc);
+		$text = e107::getParser()->parseTemplate($template['cat']['start'], true, $sc);
 
 		foreach($this->catList as $val)
 		{
 			$sc->setVars($val);
-			$text .= e107::getParser()->parseTemplate($template['cat_item'], true, $sc);
+			$text .= e107::getParser()->parseTemplate($template['cat']['item'], true, $sc);
 		}
 
-		$text .= e107::getParser()->parseTemplate($template['cat_end'], true, $sc);
+		$text .= e107::getParser()->parseTemplate($template['cat']['end'], true, $sc);
 
-		$caption = e107::getParser()->parseTemplate($template['cat_caption'], true, $sc);
+		$caption = e107::getParser()->parseTemplate($template['cat']['caption'], true, $sc);
 
 		e107::getRender()->tablerender($caption, $text);
 	}
@@ -86,7 +118,7 @@ class gallery
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
-		$template = e107::getTemplate('gallery');
+		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
 		$sc = e107::getScBatch('gallery', true);
 
@@ -109,14 +141,14 @@ class gallery
 		foreach($list as $row)
 		{
 			$sc->setVars($row);
-			$inner .= $tp->parseTemplate($template['list_item'], true, $sc);
+			$inner .= $tp->parseTemplate($template['list']['item'], true, $sc);
 		}
 
-		$text = $tp->parseTemplate($template['list_start'], true, $sc);
+		$text = $tp->parseTemplate($template['list']['start'], true, $sc);
 		$text .= $inner;
-		$text .= $tp->parseTemplate($template['list_end'], true, $sc);
+		$text .= $tp->parseTemplate($template['list']['end'], true, $sc);
 
-		$caption = $tp->parseTemplate($template['list_caption'], true, $sc);
+		$caption = $tp->parseTemplate($template['list']['caption'], true, $sc);
 
 		e107::getRender()->tablerender($caption, $mes->render() . $text);
 
