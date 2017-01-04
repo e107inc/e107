@@ -478,9 +478,7 @@ TEMPL;
 	color: #2F2F2F;
 	font-size: 13px;
 	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; 
-}
-
-
+	}
 
 	.menu-panel-header
 	 {
@@ -513,7 +511,7 @@ TEMPL;
 	.sortable li {  border-radius: 4px }
 	.sortable li:hover { background-color: silver; box-shadow:3px 3px 3px silver }
 	
-	.regularMenu { cursor:move; border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px;background-color: #E0EBF1; border-radius: 5px; }
+	.regularMenu {  border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px;background-color: #E0EBF1; border-radius: 5px; }
 	.regularMenu span {padding:3px; font-weight:bold; color:#2F2F2F;text-align:left; }
 	.ui-draggable	{  background-color: rgb(245, 245, 245); min-width:100px;}
 
