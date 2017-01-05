@@ -147,16 +147,33 @@ class admin_start
 			$this->deleteDeprecated();
 		}
 
+		e107::getDb()->db_Mark_Time('Check New Install');
 		$this->checkNewInstall();
+		e107::getDb()->db_Mark_Time('Check Core Update');
+		$this->checkCoreUpdate();
+		e107::getDb()->db_Mark_Time('Check Plugin Update');
+		$this->checkPluginUpdate();
+		e107::getDb()->db_Mark_Time('Check Theme Update');
+		$this->checkThemeUpdate();
+		e107::getDb()->db_Mark_Time('Check Paths');
 		$this->checkPaths();
+		e107::getDb()->db_Mark_Time('Check Timezone');
 		$this->checkTimezone();
+		e107::getDb()->db_Mark_Time('Check Writable');
 		$this->checkWritable();
-		$this->checkHtmlarea();	
+		e107::getDb()->db_Mark_Time('Check HTMLArea');
+		$this->checkHtmlarea();
+		e107::getDb()->db_Mark_Time('Check Incompatible Plugins');
 		$this->checkIncompatiblePlugins();
+		e107::getDb()->db_Mark_Time('Check Filetypes');
 		$this->checkFileTypes();
+		e107::getDb()->db_Mark_Time('Check Suspect Files');
 		$this->checkSuspiciousFiles();
+		e107::getDb()->db_Mark_Time('Check Deprecated');
 		$this->checkDeprecated();
+		e107::getDb()->db_Mark_Time('Check Password Encryption');
 		$this->checkPasswordEncryption();
+		e107::getDb()->db_Mark_Time('Check Htaccess');
 		$this->checkHtaccess();
 
 		if($this->refresh == true)
@@ -205,6 +222,118 @@ class admin_start
 
 	}
 
+
+	private function checkCoreUpdate()
+	{
+		// auto db update
+		if ('0' != ADMINPERMS)
+		{
+			return null;
+		}
+
+		//$sc = e107::getScBatch('admin');
+		//echo $tp->parseTemplate('{ADMIN_COREUPDATE=alert}',true, $sc);
+
+		global $dont_check_update, $e107info;
+		global $dbupdate, $dbupdatep, $e107cache;
+
+		require_once(e_ADMIN.'update_routines.php');
+		update_check();
+
+
+
+	}
+
+
+	private function checkPluginUpdate()
+	{
+		require_once(e_HANDLER.'e_marketplace.php');
+		$mp = new e_marketplace(); // autodetect the best method
+
+		$versions = $mp->getVersionList('plugin');
+
+		$plugins = e107::getPref('plug_installed');
+
+		if(empty($plugins))
+		{
+			return null;
+		}
+
+
+		$tp = e107::getParser();
+
+		foreach($plugins as $folder=>$version)
+		{
+
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			{
+				$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+
+				$dl = $mp->getDownloadModal('plugin', $versions[$folder]);
+
+				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
+
+				$lans = array('x'=>$link, 'y'=>LAN_PLUGIN);
+				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+
+
+				e107::getMessage()->addInfo($message);
+				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+			}
+
+		}
+
+
+	}
+
+	private function checkThemeUpdate()
+	{
+		require_once(e_HANDLER.'e_marketplace.php');
+		$mp = new e_marketplace(); // autodetect the best method
+
+		$versions = $mp->getVersionList('theme');
+
+		$themes = scandir(e_THEME);
+
+		if(empty($themes))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+
+		$list = e107::getTheme()->getThemeList();
+
+		foreach($list as $data)
+		{
+
+			$folder = $data['path'];
+			$version = $data['version'];
+
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			{
+				$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+
+				$lans = array('x'=>$link, 'y'=>LAN_THEME);
+
+				$dl = $mp->getDownloadModal('theme', $versions[$folder]);
+
+				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
+
+				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+
+
+				e107::getMessage()->addInfo($message);
+				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+			}
+
+		}
+
+
+
+	}
 
 	/**
 	 *
@@ -486,15 +615,7 @@ class admin_start
 // ---------------------------------------------------------
 
 
-// auto db update
-if ('0' == ADMINPERMS)
-{
-	$sc = e107::getScBatch('admin');
-	echo $tp->parseTemplate('{ADMIN_COREUPDATE=alert}',true, $sc);
-	
-	require_once(e_ADMIN.'update_routines.php');
-	update_check();
-}
+
 
 
 

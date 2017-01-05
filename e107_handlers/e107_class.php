@@ -201,6 +201,7 @@ class e107
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
+		'e_theme'                        => '{e_HANDLER}theme_handler.php',
 		'e_upgrade'                      => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'                   => '{e_HANDLER}user_model.php',
 		'e_user'                         => '{e_HANDLER}user_model.php',
@@ -1302,7 +1303,7 @@ class e107
 	}
 	
 	
-		/**
+	/**
 	 * Retrieve rater singleton object
 	 *
 	 * @return rater
@@ -1383,6 +1384,19 @@ class e107
 	{
 		return self::getSingleton('e_menu', true);
 	}
+
+
+		/**
+	 * Retrieve rater singleton object
+	 *
+	 * @return e_theme
+	 */
+	public static function getTheme()
+	{
+		return self::getSingleton('e_theme', true);
+	}
+
+
 
 	/**
 	 * Retrieve URL singleton object

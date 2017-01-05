@@ -503,5 +503,7 @@ define("LAN_CREATE_ANOTHER", "create another");
 define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
-define("LAN_CHANGE_LANGUAGE", "Change Language");  
+define("LAN_CHANGE_LANGUAGE", "Change Language");
+
+define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
 
