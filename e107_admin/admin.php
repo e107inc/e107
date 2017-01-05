@@ -103,6 +103,7 @@ class admin_start
 
 	private $allowed_types = null;
 	private $refresh  = false;
+	private $exit = false;
 
 	private $deprecated = array();
 	
@@ -147,14 +148,23 @@ class admin_start
 			$this->deleteDeprecated();
 		}
 
-		e107::getDb()->db_Mark_Time('Check New Install');
-		$this->checkNewInstall();
 		e107::getDb()->db_Mark_Time('Check Core Update');
 		$this->checkCoreUpdate();
+
+		if($this->exit === true)
+		{
+			return null;
+		}
+
+		e107::getDb()->db_Mark_Time('Check New Install');
+		$this->checkNewInstall();
+
 		e107::getDb()->db_Mark_Time('Check Plugin Update');
 		$this->checkPluginUpdate();
+
 		e107::getDb()->db_Mark_Time('Check Theme Update');
 		$this->checkThemeUpdate();
+
 		e107::getDb()->db_Mark_Time('Check Paths');
 		$this->checkPaths();
 		e107::getDb()->db_Mark_Time('Check Timezone');
@@ -238,7 +248,14 @@ class admin_start
 		global $dbupdate, $dbupdatep, $e107cache;
 
 		require_once(e_ADMIN.'update_routines.php');
-		update_check();
+
+		if(update_check() === true)
+		{
+			if(e_DEBUG !== true)
+			{
+				$this->exit = true;
+			}
+		}
 
 
 
