@@ -506,4 +506,8 @@ define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
 define("LAN_CHANGE_LANGUAGE", "Change Language");
 
 define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
-
+define("LAN_SUBJECT", "Subject");
+define("LAN_ITEM", "Item");
+define("LAN_LOCK", "Lock");
+define("LAN_SYSTEM_USER", "System user");
+define("LAN_ENGINE", "Engine");
