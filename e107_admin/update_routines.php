@@ -437,7 +437,11 @@ function update_check()
 	//	$text = ADLAN_120. "<a class='btn btn-xs btn-inline' href='".e_ADMIN_ABS."e107_update.php'>". e107::getParser()->toGlyph('fa-chevron-circle-right')."</a>";
 	//	$text .= "<hr />";
 		$mes->addInfo($text);
+
 	}
+
+
+	return $update_needed;
 }
 
 	
