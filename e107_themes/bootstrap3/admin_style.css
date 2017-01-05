@@ -436,13 +436,13 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   border-top: 2px solid #dddddd;
 }
 
+/*
 
 .button,
 .plupload_button,
 .plupload_button:hover{
   display: inline-block;
   *display: inline;
-  /* IE7 inline-block hack */
 
   *zoom: 1;
   padding: 4px 12px;
@@ -454,7 +454,6 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   vertical-align: middle;
   cursor: pointer;
   color: #333333;
-  /* text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75); */
   background-color: #f5f5f5;
   background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
@@ -466,8 +465,6 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   border-color: #e6e6e6 #e6e6e6 #bfbfbf;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #e6e6e6;
-  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   border: 1px solid #bbbbbb;
   *border: 0;
@@ -481,14 +478,18 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 }
 
+*/
+
 
 .plupload_start:hover {
 	background-image: linear-gradient(#285128, #363 40%, #397339);
 	background-repeat: no-repeat;
 	filter: none;
-	border:0;
+	border: inherit;
 	}
 
+
+/*
 
 .button:hover,
 .button:active,
@@ -511,7 +512,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   text-decoration: none;
   background-color: #e6e6e6;
   *background-color: #d9d9d9;
-  /* Buttons in IE7 don't get borders, so darken on hover */
+  !* Buttons in IE7 don't get borders, so darken on hover *!
 
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
@@ -560,7 +561,6 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   border-color: #51a351 #51a351 #387038;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #51a351;
-  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
@@ -575,8 +575,9 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 }
 .button:active,
 .button.active {
-  background-color: #408140 \9;
+  background-color: #408140 ;
 }
+*/
 
 tr.e-sort { box-shadow: 0 5px 8px #cccccc; -webkit-box-shadow: 0 5px 8px #cccccc; -moz-box-shadow: 0 5px 8px #cccccc;}
 th label.checkbox { min-height:inherit; } /* Bootstrap Fix but doesn't work */
