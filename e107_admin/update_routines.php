@@ -246,12 +246,16 @@ class e107Update
 		}
 		
 		$frm = e107::getForm();
-		
+
+		$tp = e107::getParser();
+
 		$text = "";
 		foreach($list as $path=>$val)
 		{
+			$name = !empty($val['@attributes']['lan']) ? $tp->toHtml($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
+
 			$text .= "<tr>
-					<td>".$val['@attributes']['name']."</td>
+					<td>".$name."</td>
 					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning', '', 'disabled='.$this->disabled)."</td>
 					</tr>";			
 		}
