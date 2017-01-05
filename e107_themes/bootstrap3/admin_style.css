@@ -1288,6 +1288,16 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 ul.core-update-available li a.dropdown-toggle i  { opacity:1;  color:white; transition: none; !important}
 ul.core-update-available li { color: white }
 
+/* BC for old plugins in admin */
+input[type=checkbox].tbox { margin-right:5px }
+td.forumheader3 .form-control { display:inherit }
+td.forumheader { background-image: linear-gradient(#303030,#212121 60%,#171717); filter: none; text-shadow: 1px 1px 1px rgba(0,0,0,.3);   }
+
+
+
+
+
+
 
 
 /*
