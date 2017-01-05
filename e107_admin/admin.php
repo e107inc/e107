@@ -148,6 +148,34 @@ class admin_start
 			$this->deleteDeprecated();
 		}
 
+
+
+
+		e107::getDb()->db_Mark_Time('Check Paths');
+		$this->checkPaths();
+		e107::getDb()->db_Mark_Time('Check Timezone');
+		$this->checkTimezone();
+		e107::getDb()->db_Mark_Time('Check Writable');
+		$this->checkWritable();
+
+		e107::getDb()->db_Mark_Time('Check Incompatible Plugins');
+		$this->checkIncompatiblePlugins();
+
+		e107::getDb()->db_Mark_Time('Check Filetypes');
+		$this->checkFileTypes();
+
+		e107::getDb()->db_Mark_Time('Check Suspect Files');
+		$this->checkSuspiciousFiles();
+
+		e107::getDb()->db_Mark_Time('Check Deprecated');
+		$this->checkDeprecated();
+
+		e107::getDb()->db_Mark_Time('Check HTMLArea');
+		$this->checkHtmlarea();
+
+		e107::getDb()->db_Mark_Time('Check Htaccess');
+		$this->checkHtaccess();
+
 		e107::getDb()->db_Mark_Time('Check Core Update');
 		$this->checkCoreUpdate();
 
@@ -164,27 +192,10 @@ class admin_start
 
 		e107::getDb()->db_Mark_Time('Check Theme Update');
 		$this->checkThemeUpdate();
-
-		e107::getDb()->db_Mark_Time('Check Paths');
-		$this->checkPaths();
-		e107::getDb()->db_Mark_Time('Check Timezone');
-		$this->checkTimezone();
-		e107::getDb()->db_Mark_Time('Check Writable');
-		$this->checkWritable();
-		e107::getDb()->db_Mark_Time('Check HTMLArea');
-		$this->checkHtmlarea();
-		e107::getDb()->db_Mark_Time('Check Incompatible Plugins');
-		$this->checkIncompatiblePlugins();
-		e107::getDb()->db_Mark_Time('Check Filetypes');
-		$this->checkFileTypes();
-		e107::getDb()->db_Mark_Time('Check Suspect Files');
-		$this->checkSuspiciousFiles();
-		e107::getDb()->db_Mark_Time('Check Deprecated');
-		$this->checkDeprecated();
+		
 		e107::getDb()->db_Mark_Time('Check Password Encryption');
 		$this->checkPasswordEncryption();
-		e107::getDb()->db_Mark_Time('Check Htaccess');
-		$this->checkHtaccess();
+
 
 		if($this->refresh == true)
 		{
