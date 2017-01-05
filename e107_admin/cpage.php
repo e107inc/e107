@@ -134,7 +134,7 @@ class page_admin_form_ui extends e_admin_form_ui
 // BOOKS & CHAPTERS 
 class page_chapters_ui extends e_admin_ui
 {
-		protected $pluginTitle	= 'Page';
+		protected $pluginTitle	= CUSLAN_59;
 		protected $pluginName	= 'core';
 		protected $table 		= "page_chapters";
 		protected $pid			= "chapter_id";
