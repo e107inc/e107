@@ -59,7 +59,7 @@ $dbupdate = array();			// Array of core upgrade actions
 
 global $e107cache;
 
-if (is_readable(e_ADMIN.'ver.php'))
+if(is_readable(e_ADMIN.'ver.php'))
 {
   include(e_ADMIN.'ver.php');
 }
@@ -168,7 +168,7 @@ class e107Update
 		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 		{
 			$func = key($_POST['update_core']);
-			$message = $this->updateCore($func);
+			$this->updateCore($func);
 		}	
 		
 		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
@@ -176,11 +176,7 @@ class e107Update
 			$func = key($_POST['update']);
 			$this->updatePlugin($func);
 		}	
-			
-		if(vartrue($message))
-		{
-			$mes->addSuccess($message);	
-		}
+
 		
 		$this->renderForm();	
 	}
@@ -425,17 +421,22 @@ function update_check()
 	if ($update_needed === TRUE)
 	{
 		$frm = e107::getForm();
+		$label = LAN_UPDATE." ".e107::getParser()->toGlyph('fa-arrow-right');
+
 		
-		$txt = "
+		$text = "
 		<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
 		<div>
-			".ADLAN_120."
-			".$frm->admin_button('e107_system_update', LAN_UPDATE, 'other')."
-		</div>
+			<p>".ADLAN_120."</p>
+			".$frm->admin_button('e107_system_update', 'update', 'other', $label)."
+		</div><br />
 		</form>
 		";
-		
-		$mes->addInfo($txt);
+
+
+	//	$text = ADLAN_120. "<a class='btn btn-xs btn-inline' href='".e_ADMIN_ABS."e107_update.php'>". e107::getParser()->toGlyph('fa-chevron-circle-right')."</a>";
+	//	$text .= "<hr />";
+		$mes->addInfo($text);
 	}
 }
 

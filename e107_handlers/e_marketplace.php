@@ -225,6 +225,54 @@ class e_marketplace
 	}
 
 
+	/**
+	 * @param $data - e107.org plugin/theme feed data.
+	 */
+	public function getDownloadModal($type='plugin',$data)
+	{
+
+		$url = false;
+
+		if($type === 'plugin')
+		{
+
+			$srcData = array(
+				'plugin_id'     => $data['params']['id'],
+				'plugin_folder' => $data['folder'],
+				'plugin_price'  => $data['price'],
+				'plugin_mode'   => $data['params']['mode'],
+				'plugin_url'    => $data['url'],
+			);
+
+
+
+			$d = http_build_query($srcData,false,'&');
+			$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+		}
+
+		if($type === 'theme')
+		{
+			$srcData = array(
+				'id'    => $data['params']['id'],
+				'url'   => $data['url'],
+				'mode'  => 'addon',
+				'price' => $data['price']
+			);
+
+			$d = http_build_query($srcData,false,'&');
+			$url = e_ADMIN.'theme.php?mode=download&src='.base64_encode($d);//$url.'&amp;action=download';
+
+		}
+
+
+		return $url;
+
+	}
+
+
+
+
+
 	public function getVersionList($type='plugin')
 	{
 		$cache = e107::getCache();
@@ -408,7 +456,7 @@ abstract class e_marketplace_adapter_abstract
 		}
 		
 		
-		if($fl->unzipArchive($localfile,$type))
+		if($fl->unzipArchive($localfile,$type, true))
 		{
 			$mes->addSuccess(TPVLAN_82); 
 			return true; 

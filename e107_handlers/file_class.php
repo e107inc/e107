@@ -1321,7 +1321,7 @@ class e_file
 	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
 	 * @return string unzipped folder name on success or false. 
 	 */
-	public function unzipArchive($localfile, $type)
+	public function unzipArchive($localfile, $type, $overwrite=false)
 	{
 		$mes = e107::getMessage();
 		
@@ -1329,7 +1329,7 @@ class e_file
 
 		$dir = false;
 
-		if(class_exists('ZipArchive') && e_DEBUG === true) // PHP7 compat. method.
+		if(class_exists('ZipArchive')) // PHP7 compat. method.
 		{
 			$zip = new ZipArchive;
 
@@ -1377,15 +1377,30 @@ class e_file
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); 
-			 
-			if(file_exists(e_TEMP.$localfile))
-			{	
-				@unlink(e_TEMP.$localfile);
+			if($overwrite === true)
+			{
+				if(file_exists(e_TEMP.$localfile))
+				{
+					$time = date("YmdHi");
+					if(rename($destpath.$dir, e_BACKUP.$dir."_".$time))
+					{
+						$mes->addSuccess("Old folder moved to backup directory");
+					}
+				}
 			}
-			
-			$this->removeDir(e_TEMP.$dir);
-			return false;
+			else
+			{
+
+				$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir);
+
+				if(file_exists(e_TEMP.$localfile))
+				{
+					@unlink(e_TEMP.$localfile);
+				}
+
+				$this->removeDir(e_TEMP.$dir);
+				return false;
+			}
 		}
 	
 		if(empty($dir))

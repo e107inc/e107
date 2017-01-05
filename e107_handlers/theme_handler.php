@@ -16,6 +16,482 @@ if(!defined('e107_INIT'))
 }
 
 
+// new in v.2.1.4
+/**
+ * Retrieve info about themes on the system. - optimized for speed. 
+ * Class e_theme
+ */
+class e_theme
+{
+
+	private static $allowedCategories = array(
+		'generic',
+		 'adult',
+		 'blog',
+		 'clan',
+		 'children',
+		 'corporate',
+		 'forum',
+		 'gaming',
+		 'gallery',
+		 'news',
+		 'social',
+		 'video',
+		 'multimedia'
+	);
+
+
+	private static $cacheTime = 120; // 2 hours
+
+
+	function __construct()
+	{
+
+
+
+
+	}
+
+
+	/**
+	 * Get a list of all themes in theme folder and its data.
+	 * @param bool|false xml|false
+	 * @param bool|false $force force a refresh ie. ignore cached list.
+	 * @return array
+	 */
+	public static function getThemeList($mode = false, $force = false)
+	{
+		$themeArray = array();
+
+		$tloop = 1;
+
+		$array = scandir(e_THEME);
+
+		$cacheTag = "Theme_meta";
+
+		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::$cacheTime, true, true))
+		{
+			return e107::unserialize($tmp);
+		}
+
+		foreach($array as $file)
+		{
+
+			if(($mode == 'xml') && !is_readable(e_THEME.$file."/theme.xml"))
+			{
+				continue;
+			}
+
+			if($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && is_readable(e_THEME.$file."/theme.php"))
+			{
+				if($mode == "id")
+				{
+					$themeArray[$tloop] = $file;
+				}
+				else
+				{
+					$themeArray[$file] = self::getThemeInfo($file);
+					$themeArray[$file]['id'] = $tloop;
+				}
+				$tloop++;
+			}
+		}
+
+
+		$cacheSet = e107::serialize($themeArray,'json');
+
+		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
+
+		return $themeArray;
+	}
+
+
+
+
+	public static function getThemeInfo($file)
+	{
+		$reject = array('e_.*');
+
+		$handle2 = e107::getFile()->get_files(e_THEME.$file."/", "\.php|\.css|\.xml|preview\.jpg|preview\.png", $reject, 1);
+
+		$themeArray = array();
+
+		foreach ($handle2 as $fln)
+		{
+			$file2 = str_replace(e_THEME.$file."/", "", $fln['path']).$fln['fname'];
+
+			$themeArray[$file]['files'][] = $file2;
+
+			if(strstr($file2, "preview."))
+			{
+				$themeArray[$file]['preview'] = e_THEME.$file."/".$file2;
+			}
+
+			// ----------------  get information string for css file - Legacy mode (no theme.xml)
+
+			if(strstr($file2, ".css") && !strstr($file2, "menu.css") && strpos($file2, "e_") !== 0)
+			{
+				if($cssContents = file_get_contents(e_THEME.$file."/".$file2))
+				{
+					$nonadmin = preg_match('/\* Non-Admin(.*?)\*\//', $cssContents) ? true : false;
+					preg_match('/\* info:(.*?)\*\//', $cssContents, $match);
+					$match[1] = varset($match[1], '');
+					$scope = ($nonadmin == true) ? 'front' : '';
+
+
+					$themeArray[$file]['css'][] = array("name"=>$file2,	 "info"=>$match[1], "scope"=>$scope, "nonadmin"=>$nonadmin);
+
+				}
+				else
+				{
+ 				//	$mes->addDebug("Couldn't read file: ".e_THEME.$file."/".$file2);
+				}
+			}
+
+
+		} // end foreach
+
+
+
+		// Load Theme information and merge with existing array. theme.xml (v2.x theme) is given priority over theme.php (v1.x).
+
+		if(in_array("theme.xml", $themeArray[$file]['files']))
+		{
+			$themeArray[$file] = array_merge($themeArray[$file], self::parse_theme_xml($file));
+		}
+		elseif(in_array("theme.php", $themeArray[$file]['files']))
+		{
+			$themeArray[$file] = array_merge($themeArray[$file], self::parse_theme_php($file));
+		}
+
+		if(!empty($themeArray[$file]['css']) && count($themeArray[$file]['css']) > 1)
+		{
+			$themeArray[$file]['multipleStylesheets'] = true;
+		}
+
+
+
+		return $themeArray[$file];
+
+
+	}
+
+
+
+
+	private static function parse_theme_php($path)
+	{
+		$CUSTOMPAGES = "";
+		$tp = e107::getParser();
+		$fp = fopen(e_THEME.$path."/theme.php", "r");
+		$themeContents = fread($fp, filesize(e_THEME.$path."/theme.php"));
+		fclose($fp);
+
+
+		preg_match('/themename(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['name'] = varset($match[3], '');
+		preg_match('/themeversion(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['version'] = varset($match[3], '');
+		preg_match('/themeauthor(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['author'] = varset($match[3], '');
+		preg_match('/themeemail(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['email'] = varset($match[3], '');
+		preg_match('/themewebsite(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['website'] = varset($match[3], '');
+		preg_match('/themedate(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['date'] = varset($match[3], '');
+		preg_match('/themeinfo(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		$themeArray['info'] = varset($match[3], '');
+		preg_match('/xhtmlcompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
+		$xhtml = strtolower($match[2]);
+		$themeArray['xhtmlcompliant'] = ($xhtml == "true" ? "1.1" : false);
+
+		preg_match('/csscompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
+		$css = strtolower($match[2]);
+		$themeArray['csscompliant'] = ($css == "true" ? "2.1" : false);
+
+		/*        preg_match('/CUSTOMPAGES(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+		 $themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
+
+		$themeContentsArray = explode("\n", $themeContents);
+
+		preg_match_all("#\\$"."CUSTOMHEADER\[(\"|')(.*?)('|\")\].*?#",$themeContents,$match);
+		$customHeaderArray = $match[2];
+
+		preg_match_all("#\\$"."CUSTOMFOOTER\[(\"|')(.*?)('|\")\].*?#",$themeContents,$match);
+		$customFooterArray = $match[2];
+
+		if(!$themeArray['name'])
+		{
+			unset($themeArray);
+		}
+
+
+		$lays['legacyDefault']['@attributes'] = array('title'=>'Default',
+			 'plugins'=>'',
+			 'default'=>'true');
+
+		// load custompages from theme.php only when theme.xml doesn't exist.
+		if(!file_exists(e_THEME.$path."theme.xml"))
+		{
+			foreach ($themeContentsArray as $line)
+			{
+				if(strstr($line, "CUSTOMPAGES"))
+				{
+					eval(str_replace("$", "\$", $line)); // detect arrays also.
+				}
+			}
+
+			if(is_array($CUSTOMPAGES))
+			{
+				foreach ($CUSTOMPAGES as $key=>$val)
+				{
+					$themeArray['custompages'][$key] = explode(" ", $val);
+				}
+			}
+			elseif($CUSTOMPAGES)
+			{
+				$themeArray['custompages']['legacyCustom'] = explode(" ", $CUSTOMPAGES);
+				$lays['legacyCustom']['@attributes'] = array('title'=>'Custom',
+					 'plugins'=>'');
+			}
+
+
+			foreach($customHeaderArray as $tm)
+			{
+				$lays[$tm]['@attributes'] = array('title'=>str_replace("_"," ",$tm),
+						 'plugins'=>'');
+			}
+
+			foreach($customFooterArray as $tm)
+			{
+				$lays[$tm]['@attributes'] = array('title'=>str_replace("_"," ",$tm),
+						 'plugins'=>'');
+			}
+		}
+
+		$themeArray['path'] = $path;
+		$themeArray['layouts'] = $lays;
+
+		if(file_exists(e_THEME.$path."/preview.jpg"))
+		{
+			$themeArray['preview'] = array("preview.jpg");
+			$themeArray['thumbnail'] = "preview.jpg";
+		}
+
+		if(file_exists(e_THEME.$path."/preview.png"))
+		{
+			$themeArray['preview'] = array("preview.png");
+			$themeArray['thumbnail'] = "preview.png";
+		}
+	//	 echo "<h2>".$themeArray['name']."</h2>";
+	//	 print_a($lays);
+
+		return $themeArray;
+	}
+
+	private static function parse_theme_xml($path)
+	{
+		$tp = e107::getParser();
+		$xml = e107::getXml();
+
+				//	loadLanFiles($path, 'admin');     // Look for LAN files on default paths
+		// layout should always be an array.
+		$xml->setOptArrayTags('layout,screenshots/image');
+		$xml->setOptStringTags('menuPresets,customPages,custompages');
+
+
+	//	$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', true, true);
+	//	$oldvars =
+		$vars = $xml->loadXMLfile(e_THEME.$path.'/theme.xml', 'advanced', true); // must be 'advanced'
+
+		if($path == "bootstrap3" )
+		{
+	//		echo "<table class='table table-bordered'>
+	//		<tr><th>old</th><th>new parser</th></tr>
+	//	<tr><td>".print_a($oldvars,true)."</td><td>".print_a($vars,true)."</td></tr></table>";
+		}
+
+
+		$vars['name'] 			= varset($vars['@attributes']['name']);
+		$vars['version'] 		= varset($vars['@attributes']['version']);
+		$vars['date'] 			= varset($vars['@attributes']['date']);
+		$vars['compatibility'] 	= varset($vars['@attributes']['compatibility']);
+		$vars['releaseUrl'] 	= varset($vars['@attributes']['releaseUrl']);
+		$vars['email'] 			= varset($vars['author']['@attributes']['email']);
+		$vars['website'] 		= varset($vars['author']['@attributes']['url']);
+		$vars['author'] 		= varset($vars['author']['@attributes']['name']);
+		$vars['info'] 			= varset($vars['description']);
+		$vars['category'] 		= self::getThemeCategory(varset($vars['category']));
+		$vars['xhtmlcompliant'] = varset($vars['compliance']['@attributes']['xhtml']);
+		$vars['csscompliant'] 	= varset($vars['compliance']['@attributes']['css']);
+		$vars['path'] 			= $path;
+		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
+		$vars['preview'] 		= varset($vars['screenshots']['image']);
+		$vars['thumbnail'] 		= varset($vars['preview'][0]);
+
+		if(!empty($vars['themePrefs']))
+		{
+
+			foreach($vars['themePrefs']['pref'] as $k=>$val)
+			{
+				$name = $val['@attributes']['name'];
+				$vars['preferences'][$name] = $val['@value'];
+			}
+		}
+
+
+		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
+
+		// Compile layout information into a more usable format.
+
+
+		$custom = array();
+		/*
+		foreach ($vars['layouts'] as $layout)
+		{
+			foreach ($layout as $key=>$val)
+			{
+				$name = $val['@attributes']['name'];
+				unset($val['@attributes']['name']);
+				$lays[$name] = $val;
+
+
+				if(isset($val['customPages']))
+				{
+					$cusArray = explode(" ", $val['customPages']);
+					$custom[$name] = array_filter($cusArray);
+				}
+				if(isset($val['custompages']))
+				{
+					$cusArray = explode(" ", $val['custompages']);
+					$custom[$name] = array_filter(explode(" ", $val['custompages']));
+				}
+			}
+		}
+		*/
+
+		$lays = array();
+
+		foreach($vars['layouts']['layout'] as $k=>$val)
+		{
+			$name = $val['@attributes']['name'];
+			unset($val['@attributes']['name']);
+			$lays[$name] = $val;
+
+
+			if(isset($val['custompages']))
+			{
+				if(is_string($val['custompages']))
+				{
+					$custom[$name] = array_filter(explode(" ", $val['custompages']));
+				}
+				elseif(is_array($val['custompages']))
+				{
+					$custom[$name] = $val['custompages'];
+				}
+			}
+		}
+
+
+		$vars['layouts'] 		= $lays;
+		$vars['path'] 			= $path;
+		$vars['custompages'] 	= $custom;
+
+		if(!empty($vars['stylesheets']['css']))
+		{
+			$vars['css'] = array();
+
+			foreach($vars['stylesheets']['css'] as $val)
+			{
+				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
+
+				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=> vartrue($val['@attributes']['scope']));
+			}
+
+			unset($vars['stylesheets']);
+		}
+
+
+		$vars['glyphs'] = array();
+		if(!empty($vars['glyphicons']['glyph']))
+		{
+
+			foreach($vars['glyphicons']['glyph'] as $val)
+			{
+				$vars['glyphs'][] = array(
+						'name'      => $val['@attributes']['name'],
+						'pattern'   => $val['@attributes']['pattern'],
+						'path'      => $val['@attributes']['path'],
+						'prefix'    => $val['@attributes']['prefix'],
+						'tag'       => $val['@attributes']['tag'],
+				);
+
+			}
+
+			unset($vars['glyphicons']);
+
+		}
+
+
+		if($path == "leasure" )
+		{
+
+		//	$mes->addDebug("<h2>".$path."</h2>");
+		//	$mes->addDebug(print_a($vars,true));
+		//	$mes->addDebug("<hr />");
+		}
+
+		if($path == "bootstrap3" )
+		{
+	//		print_a($vars);
+		//	echo "<table class='table'><tr><td>".print_a($vars,true)."</td><td>".print_a($adv,true)."</td></tr></table>";
+		}
+
+
+		return $vars;
+	}
+
+
+		/**
+	 * Validate and return the name of the categories.
+	 *
+	 * @param string [optional] $categoryfromXML
+	 * @return string
+	 */
+	private static function getThemeCategory($categoryfromXML = '')
+	{
+		if(!$categoryfromXML)
+		{
+			return 'generic';
+		}
+
+		$tmp = explode(",", $categoryfromXML);
+		$category = array();
+		foreach ($tmp as $cat)
+		{
+			$cat = trim($cat);
+			if(in_array($cat, self::$allowedCategories))
+			{
+				$category[] = $cat;
+			}
+			else
+			{
+				$category[] = 'generic';
+			}
+		}
+
+		return implode(', ', $category);
+
+	}
+
+
+}
+
+
+
+
+
 class themeHandler
 {
 	
