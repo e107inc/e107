@@ -264,7 +264,7 @@ if (!empty($pref['e_header_list']) && is_array($pref['e_header_list']))
 	foreach($pref['e_header_list'] as $val)
 	{
 		// no checks fore existing file - performance
-		e107_include(e_PLUGIN.$val."/e_header.php");
+		e107_include_once(e_PLUGIN.$val."/e_header.php");
 	}
 }
 unset($e_headers);

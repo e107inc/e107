@@ -429,12 +429,11 @@ TEMPL;
 	
 	.menuOptions > select { max-width:100% }
 	
-	.menu-options-buttons	{  }
+	.menu-options-buttons	{ display:block; text-align:right; }
+	select.menu-btn { text-align:left; display:block; width:100%; margin-left:3px }
 	#menu-manage-actions		{ width:50%; vertical-align:top; text-align:center; padding:15px }
 	
-	select.menu-btn { text-align:left }
 
-	
 	label 										{  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; color:black;  line-height:14px }
 	label.input									{ margin-right:10px;  }
 	
@@ -1772,7 +1771,14 @@ class e_layout
 
 
 
-
+if (!empty($pref['e_header_list']) && is_array($pref['e_header_list']))
+{
+	foreach($pref['e_header_list'] as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include_once(e_PLUGIN.$val."/e_header.php");
+	}
+}
 
 
 $e_sub_cat = 'menus';
