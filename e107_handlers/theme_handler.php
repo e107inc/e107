@@ -437,8 +437,8 @@ class e_theme
 		if($path == "landingzero" )
 		{
 
-			e107::getMessage()->addDebug("<h2>".$path."</h2>");
-			e107::getMessage()->addDebug(print_a($vars,true));
+		//	e107::getMessage()->addDebug("<h2>".$path."</h2>");
+		//	e107::getMessage()->addDebug(print_a($vars,true));
 		//	$mes->addDebug("<hr />");
 		}
 
