@@ -700,7 +700,7 @@ class pluginManager{
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
 
-		if(e_DEBUG === true)
+		if(deftrue('e_DEBUG_MARKETPLACE'))
 		{
 			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
 			echo '$_GET[src]: ';
