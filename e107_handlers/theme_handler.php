@@ -18,7 +18,7 @@ if(!defined('e107_INIT'))
 
 // new in v.2.1.4
 /**
- * Retrieve info about themes on the system. - optimized for speed. 
+ * Retrieve info about themes on the system. - optimized for speed.
  * Class e_theme
  */
 class e_theme
@@ -1295,27 +1295,42 @@ class themeHandler
 	function renderThemeInfo($theme)
 	{
 
+		if(empty($theme))
+		{
+			return null;
+		}
+
+		if(!empty($theme['compatibility']) && $theme['compatibility'] == 2)
+		{
+			$theme['compatibility'] = '2.0';
+		}
+
+
 		global $pref;
-		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
-		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
+		$author 		= !empty($theme['email']) ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author'];
+		$website 		= !empty($theme['website']) ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "";
 //		$preview 		= "<a href='".SITEURL."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
 		$description 	= vartrue($theme['description'],'');
-		$compat			= (intval($theme['compatibility']) == 2) ? "<span class='label label-warning'>".number_format($theme['compatibility'], 1, '.','')."</span><span class='text-warning'> ".TPVLAN_77."</span>": vartrue(number_format($theme['compatibility'], 1, '.',''),'1.0');
+		$compat			= (version_compare(1.9,$theme['compatibility'],'<')) ? "<span class='label label-warning'>".$theme['compatibility']."</span><span class='text-warning'> ".TPVLAN_77."</span>": vartrue($theme['compatibility'],'1.0');
 		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
-	
+
+
 	
 		$text = "<table class='table table-striped'>";
-	//	$text .= "<tr><th colspan='2'><h3>".$theme['name']." ".$theme['version']."</h3></th></tr>";
 
-		$text .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".LAN_AUTHOR."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
-		$text .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
-		$text .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
-		$text .= $compat ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_57."</b>:</td><td style='vertical-align:top'>".$compat."</td></tr>" : "";
+
+
+	//	$text .= "<tr><th colspan='2'><h3>".$theme['name']." ".$theme['version']."</h3></th></tr>";
 		$text .=  "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_75."</b>:</td><td style='vertical-align:top'>".$price."</td></tr>";
-	
-		$text .= $description ? "<tr><td style='vertical-align:top; width:24%'><b>".LAN_DESCRIPTION."</b>:</td><td style='vertical-align:top'>".$description."</td></tr>" : "";
-	
-	
+
+		$text .= ($author) ? "<tr><td style='vertical-align:top; width:24%'><b>".LAN_AUTHOR."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
+		$text .= ($website) ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
+		$text .= !empty($theme['date']) ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
+		$text .= $compat ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_57."</b>:</td><td style='vertical-align:top'>".$compat."</td></tr>" : "";
+
+		$text .= !empty($description) ? "<tr><td style='vertical-align:top; width:24%'><b>".LAN_DESCRIPTION."</b>:</td><td style='vertical-align:top'>".$description."</td></tr>" : "";
+
+
 	//	$text .= "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_49."</b>:</td>
 	//		<td style='vertical-align:top'>XHTML ";
 	//	$text .= ($theme['xhtmlcompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
@@ -1323,25 +1338,23 @@ class themeHandler
 	//	$text .= ($theme['csscompliant']) ? ADMIN_TRUE_ICON : ADMIN_FALSE_ICON;
 	//	$text .= "</td></tr>";
 		
-		if(vartrue($theme['category']))
+		if(!empty($theme['category']))
 		{
 			$text .= "<tr><td><b>".LAN_CATEGORY."</b></td><td>".$theme['category']."</td></tr>";			
 		}
 		
-		
+
 	
 		$itext = '';
 
-		
-		// New in 0.8    WORK IN PROGRESS ----
-		if($theme['layouts'])
+		if(!empty($theme['layouts']))
 		{
 			$itext .= "<tr>
 					<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
 					<td class='well' style='vertical-align:top'>
 					<table class='table table-striped table-bordered' style='margin-left:0px;margin-right:auto' >
 						<tr>";
-			$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>".TPVLAN_55."</td>" : "";
+		//	$itext .= ($mode == 1) ? "<td class='fcaption' style='text-align:center;vertical-align:top;'>".TPVLAN_55."</td>" : "";
 			$itext .= "
 							<th class='fcaption'>".LAN_TITLE."</th>
 							<th class='fcaption'>".TPVLAN_78."</th>
@@ -1352,7 +1365,7 @@ class themeHandler
 			{
 				$itext .= "
 				<tr>";
-				if($mode == 1)
+			/*	if($mode == 1)
 				{
 					if(!$pref['sitetheme_deflayout'])
 					{
@@ -1363,17 +1376,17 @@ class themeHandler
 	                <td style='vertical-align:top width:auto;text-align:center'>
 						<input type='radio' name='layout_default' value='{$key}' ".($pref['sitetheme_deflayout'] == $key ? " checked='checked'" : "")." />
 					</td>";
-				}
+				}*/
 				
 				$itext .= "<td style='vertical-align:top'>";
-				$itext .= ($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
+				$itext .= !empty($val['@attributes']['previewFull']) ? "<a href='".e_THEME_ABS.$theme['path']."/".$val['@attributes']['previewFull']."' >" : "";
 				$itext .= $val['@attributes']['title'];
-				$itext .= ($val['@attributes']['previewFull']) ? "</a>" : "";
+				$itext .= !empty($val['@attributes']['previewFull']) ? "</a>" : "";
 				$itext .= ($pref['sitetheme_deflayout'] == $key) ? " (default)" : "";
 				$itext .= "</td>
-					<td style='vertical-align:top'>".$val['@attributes']['plugins']."&nbsp;</td>
+					<td style='vertical-align:top'>".varset($val['@attributes']['plugins'])."&nbsp;</td>
                     <td style='vertical-align:top;text-align:center'>";
-				$itext .= ($val['menuPresets']) ? ADMIN_TRUE_ICON : "&nbsp;";
+				$itext .= !empty($val['menuPresets']) ? ADMIN_TRUE_ICON : "&nbsp;";
 				$itext .= "</td>
 				</tr>";
 			}
@@ -1424,7 +1437,7 @@ class themeHandler
 	
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			$text .= print_a($theme, true);	
+		//	$text .= print_a($theme, true);
 		}
 	
 	
