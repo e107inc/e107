@@ -74,11 +74,13 @@ if(!empty($_GET['action']))
 		*/
 
 		case 'info':
-			$string =  base64_decode($_GET['src']);
-			parse_str($string,$p);
-			$themeInfo = e107::getSession()->get('thememanager/online/'.intval($p['id']));
-			echo $themec->renderThemeInfo($themeInfo);
-
+			if(!empty($_GET['src']))
+			{
+				$string =  base64_decode($_GET['src']);
+				parse_str($string,$p);
+				$themeInfo = e107::getSession()->get('thememanager/online/'.intval($p['id']));
+				echo $themec->renderThemeInfo($themeInfo);
+			}
 		break;
 		
 		case 'preview':
