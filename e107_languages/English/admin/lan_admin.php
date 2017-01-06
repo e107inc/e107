@@ -197,6 +197,7 @@ define("ADLAN_170", "These stats are for demonstration purposes only.");
 define("ADLAN_171", "Install Site Stats Plugin");
 
 define("ADLAN_185", "Toggle Sidebar");
+define("ADLAN_186", "The following old files can be safely deleted from your system:");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
