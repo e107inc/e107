@@ -4647,6 +4647,7 @@ return;
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
 		        $value = str_replace('<br></br>', PHP_EOL, $value);
+
 		    }
 
 		    if($node->nodeName == 'code')
@@ -4661,6 +4662,16 @@ return;
 
 		    $newNode = $doc->createElement($node->nodeName);
 		    $newNode->nodeValue = $value;
+
+		    if($class = $node->getAttribute('class'))
+		    {
+		        $newNode->setAttribute('class',$class);
+		    }
+
+	        if($style = $node->getAttribute('style'))
+		    {
+		        $newNode->setAttribute('style',$style);
+		    }
 
 		    $node->parentNode->replaceChild($newNode, $node);
        }
