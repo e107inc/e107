@@ -165,7 +165,7 @@ if($mode == 'download' && !empty($_GET['src']))
 			return true;
 		}
 
-		if(e_DEBUG === true)
+		if(deftrue('e_DEBUG_MARKETPLACE'))
 		{
 			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
 			echo '$_GET: ';

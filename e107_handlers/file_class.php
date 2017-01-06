@@ -1338,12 +1338,17 @@ class e_file
 				for($i = 0; $i < $zip->numFiles; $i++ )
 				{
 					$filename = $zip->getNameIndex($i);
+
                     $fileinfo = pathinfo($filename);
 
                     if($fileinfo['dirname'] === '.')
                     {
                         $dir = $fileinfo['basename'];
                         break;
+                    }
+                    elseif($fileinfo['basename'] === 'plugin.php' || $fileinfo['basename'] === 'theme.php')
+                    {
+						$dir = $fileinfo['dirname'];
                     }
 
 			     //   $stat = $zip->statIndex( $i );
@@ -1354,8 +1359,16 @@ class e_file
 				$zip->extractTo(e_TEMP);
 				chmod(e_TEMP.$dir, 0755);
 
+				if(empty($dir) && e_DEBUG)
+				{
+					print_a($fileinfo);
+				}
+
+
 				$zip->close();
 			}
+
+
 
 
 		}
