@@ -906,7 +906,7 @@ class e_form
 		if(E107_DBG_BASIC)
 		{
 
-			$title = LAN_MEDIAMANAGER." : ".$category;
+			$title = "Media Manager : ".$category;
 		}
 		else
 		{
@@ -1701,7 +1701,7 @@ e107::getDebug()->log($sc_parameters);
 
 	function upload($name, $options = array())
 	{
-		return LAN_READY_UP_FOLDER_FIELDS;
+		return 'Ready to use upload form fields, optional - file list view';
 	}
 
 	function password($name, $value = '', $maxlength = 50, $options = array())
