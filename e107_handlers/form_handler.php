@@ -76,6 +76,7 @@ class e_form
 
 	function __construct($enable_tabindex = false)
 	{
+		require_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_form_handler.php");
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
