@@ -1476,11 +1476,11 @@ class e_db_mysql
 	*
 	* @access public
 	*/
-	function fetch($type = 'assoc')
+	function fetch($type = null)
 	{
-		if (!is_int($type))
+		if(defined('e_LEGACY_MODE') && !is_int($type))
 		{
-	//		$type='assoc';
+			$type='both';
 		}
 
 		if(defined('MYSQL_ASSOC'))
@@ -1497,9 +1497,10 @@ class e_db_mysql
 						$type = ($this->pdo) ? PDO::FETCH_NUM : MYSQL_NUM;
 					break;
 
+					default:
 					case 'assoc':
 					case 1; //: // 1
-					default:
+
 						$type =  ($this->pdo) ?  PDO::FETCH_ASSOC : MYSQL_ASSOC;
 					break;
 				}
