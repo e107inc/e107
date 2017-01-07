@@ -493,7 +493,6 @@ define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no chang
 define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
 define("LAN_AFTER_SUBMIT", "After submit:");
 define("LAN_UNAVAILABLE", "Unavailable");
-define("LAN_READY_UP_FOLDER_FIELDS", "Ready to use upload form fields, optional - file list view");
 define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
 define("LAN_NOT_FOUND", "Not Found!");
 define("LAN_QUICK_VIEW", "Quick View");
