@@ -22,7 +22,7 @@ a:hover { color: #000000; }
 }
 
 
-
+img { max-width:100%}
 
 table label.checkbox {
     margin-left: 20px;
