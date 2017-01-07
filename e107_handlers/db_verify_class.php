@@ -54,6 +54,8 @@ class db_verify
 				
 		$pref = e107::getPref();
 		$mes = e107::getMessage();
+		$sql = e107::getDb();
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 
 		$this->backUrl = e_SELF;	
 			
@@ -930,7 +932,7 @@ class db_verify
 			return false;
 		}
 
-		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');	
+
 	//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
 		
