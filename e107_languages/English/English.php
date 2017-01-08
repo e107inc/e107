@@ -121,6 +121,7 @@ define("LAN_RATING", "Rating");
 define("LAN_IMAGE","Image");
 define("LAN_ABOUT", "About");
 define("LAN_TITLE", "Title");
+define("LAN_MESSAGE", "Message");
 define("LAN_USER", "User");
 define("LAN_EMAIL","Email address");
 define("LAN_WROTE", "wrote"); // as in John wrote.."  ";
