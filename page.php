@@ -594,6 +594,8 @@ class pageClass
 
 		$this->page = $sql->fetch();
 
+
+
 		// setting override to true breaks default.
 
 		$this->templateID = vartrue($this->page['page_template'], 'default');
@@ -676,9 +678,10 @@ class pageClass
 		$this->page['book_name']        = $this->getName($this->page['chapter_parent']);
 		// -----------------
 
+		e107::getEvent()->trigger('user_page_item_viewed',$this->page);
 
 		$this->batch->setVars($this->page);
-		
+
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));

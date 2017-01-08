@@ -8,6 +8,7 @@
 
 		<core name="newsposts">3</core>
 		<core name="shortdate">%d %b %Y</core>
+		<core name="sitelogo">{e_THEME}voux/install/logo2B252832529.png</core>
 		<core name="signup_option_class">1</core>
 		<core name="sitetheme_custompages"><![CDATA[array (
   'jumbotron_full' => 
@@ -177,6 +178,15 @@
   'vimeo' => '',
 )]]></core>
 	</prefs>
+	<pluginPrefs>
+		<social name="sharing_providers"><![CDATA[array (
+  'email' => '1',
+  'facebook-like' => '1',
+  'twitter' => '1',
+  'google-plus1' => '1',
+  'pinterest' => '1',
+)]]></social>
+</pluginPrefs>
 	<database>
 	<dbTable name="core_media">
 		<item>
@@ -1079,6 +1089,17 @@
 			<field name="news_summary"></field>
 			<field name="news_thumbnail">{e_THEME}voux/install/2_.jpg,{e_THEME}voux/install/8.jpg</field>
 			<field name="news_sticky">0</field>
+		</item>
+	</dbTable>
+	<dbTable name="generic">
+		<item>
+			<field name="gen_id">1</field>
+			<field name="gen_type">wmessage</field>
+			<field name="gen_datestamp">1145848343</field>
+			<field name="gen_user_id">1</field>
+			<field name="gen_ip">Hello World!</field>
+			<field name="gen_intdata">0</field>
+			<field name="gen_chardata"><![CDATA[[html]This is the voux template for a simple blog/website. The text you are reading is the &quot;Welcome Message&quot; and the items below are &quot;News Items&quot;. Visit the admin-area to modify.<br><br><a class=&quot;btn btn-primary btn-large &quot; href=&quot;e107_admin/admin.php&quot;>Go to Admin area</a><br>[/html]]]></field>
 		</item>
 	</dbTable>
 	<dbTable name="news_category">

@@ -162,6 +162,7 @@ class pluginmanager_form extends e_form
 		if ($this->plug['plugin_version'] != $this->plug_vars['@attributes']['version'] && $this->plug['plugin_installflag'])
 		{
 		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
+		    e107::getMessage()->addInfo("<b>".$tp->toHtml($this->plug['plugin_name'],false,'TITLE')."</b> is ready to be upgraded. (see below)"); // TODO LAN
 			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 		}
 
@@ -616,7 +617,13 @@ class pluginManager{
 		
 		if($total > $amount)
 		{
-			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
+			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
+
+			if(!empty($srch))
+			{
+				$parms .= '&amp;srch='.$srch;
+			}
+
 			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
 		}
 		
@@ -686,13 +693,14 @@ class pluginManager{
 		define('e_IFRAME', true);
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 		
 	//	print_a($_GET); 	
 		
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
 
-		if(e_DEBUG === true)
+		if(deftrue('e_DEBUG_MARKETPLACE'))
 		{
 			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
 			echo '$_GET[src]: ';
@@ -703,10 +711,14 @@ class pluginManager{
 			return false;
 		}
 
+		$pluginFolder = !empty($data['plugin_folder']) ? $tp->filter($data['plugin_folder']) : '';
+		$pluginUrl = !empty($data['plugin_url']) ? $tp->filter($data['plugin_url']) : '';
+		$pluginID = !empty($data['plugin_id']) ? $tp->filter($data['plugin_id']) : '';
+		$pluginMode = !empty($data['plugin_mode']) ? $tp->filter($data['plugin_mode']) : '';
 
 		if(!empty($data['plugin_price']))
 		{
-			e107::getRedirect()->go($data['plugin_url']);
+			e107::getRedirect()->go($pluginUrl);
 			return true;
 		}
 
@@ -718,10 +730,10 @@ class pluginManager{
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
 	 	$mes->addSuccess(EPL_ADLAN_94);
 
-		if($mp->download($data['plugin_id'], $data['plugin_mode'], 'plugin'))
+		if($mp->download($pluginID, $pluginMode, 'plugin'))
 		{
 			$this -> pluginCheck(true); // rescan the plugin directory
-			$text = e107::getPlugin()->install($data['plugin_folder']); 
+			$text = e107::getPlugin()->install($pluginFolder);
 
 			$mes->addInfo($text); 
 			echo $mes->render('default', 'success'); 
@@ -737,7 +749,7 @@ class pluginManager{
 		
 		
 		
-		$text ="<iframe src='".$data['plugin_url']."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";	
+		$text ="<iframe src='".$pluginUrl."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";
 	//	print_a($data); 
 		$text .= $frm->open('upload-url-form','post');
 		
@@ -1460,7 +1472,7 @@ class pluginManager{
 					$pgf->plug		= $plug;
 					$text 			.= $pgf->renderTableRow($this->fields, $this->fieldpref, $data, 'plugin_id');
 
-
+/*
 					$folder = $plug['plugin_path'];
 					if(!empty($versions[$folder]['version']) && version_compare( $plug['plugin_version'], $versions[$folder]['version'], '<'))
 					{
@@ -1469,7 +1481,7 @@ class pluginManager{
 						$lan = "A newer version of [x] is available for download.";
 						e107::getMessage()->addInfo($tp->lanVars($lan,$link));
 						e107::getMessage()->addDebug("Local version: ".$plug['plugin_version']." Remote version: ".$versions[$folder]['version']);
-					}
+					}*/
 
 				}
 			}

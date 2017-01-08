@@ -1263,7 +1263,11 @@ $text .= "
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
-				<tbody>
+				<tbody>";
+
+	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')     // Only allow if an SSL login has been made.
+	{
+		$text .="
 					<tr>
 						<td><label for='ssl-enabled'>".PRFLAN_60."</label></td>
 
@@ -1272,10 +1276,9 @@ $text .= "
 							<div class='field-help'>".PRFLAN_61."</div>
 						</td>
 					</tr>
-					<!-- Secure Image -->
-					
-";
-
+			";
+	}
+	// Secure Image/ Captcha
 	$secureImage = array('signcode'=>PRFLAN_76, 'logcode'=>PRFLAN_81, "fpwcode"=>PRFLAN_138,'admincode'=>PRFLAN_222);
 	
 	foreach($secureImage as $key=>$label)
@@ -1363,7 +1366,18 @@ $text .= "
 						<td><label for='cookie-name'>".PRFLAN_55."</label></td>
 						<td >".$frm->text('cookie_name', $pref['cookie_name'], 20)."
 						<div class='field-help'>".PRFLAN_263.".</div></td></tr>
-					
+
+
+					<tr>
+						<td><label for='session-lifetime'>".PRFLAN_272."</label></td>
+						<td>
+							".$frm->number('session_lifetime', $pref['session_lifetime'],6)."
+							<div class='smalltext field-help'>".PRFLAN_273."</div>
+						</td>
+					</tr>
+
+
+
 					<tr>
 						<td><label for='passwordencoding'>".PRFLAN_188.":</label></td>
 

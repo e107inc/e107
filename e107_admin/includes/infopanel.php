@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Info panel admin view
  *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT'))
@@ -160,7 +158,6 @@ class adminstyle_infopanel
 
 		';
 	*/	
-		//TODO LANs throughout.
 
 		$user_pref = $this->getUserPref();
 
@@ -624,7 +621,7 @@ class adminstyle_infopanel
 	
 	
 		
-	function render_infopanel_options($render = false) //TODO LAN
+	function render_infopanel_options($render = false)
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
@@ -771,27 +768,34 @@ class adminstyle_infopanel
 		{
 			$data = array();
 		
-			$data['labels'] 	= array("January","February","March","April","May","June","July");
-			
+			$months = e107::getDate()->terms('month');
+		
+			$data['labels'] = array($months[0], //"January",
+ 						$months[1], //"February",
+ 						$months[2], //"March",
+ 						$months[3], //"April",
+ 						$months[4], //"May",
+ 						$months[5], //"June",
+ 						$months[6]  //"July"
+ 			);
 			
 			$data['datasets'][]	= array(
-								'fillColor' 		=> "rgba(220,220,220,0.5)",
-								'strokeColor'  		=>  "rgba(220,220,220,1)",
-								'pointColor '  		=>  "rgba(220,220,220,1)",
-								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(65,59,90,81,56,55,40),
-								'title'				=> "Visits"
-				
+							'fillColor'			=> "rgba(220,220,220,0.5)",
+							'strokeColor'		=> "rgba(220,220,220,1)",
+							'pointColor '		=> "rgba(220,220,220,1)",
+							'pointStrokeColor'	=> "#fff",
+							'data'				=> array(65,59,90,81,56,55,40),
+							'title'				=> ADLAN_168// "Visits"
 			);
 			
 			$data['datasets'][]	= array(
-								'fillColor' 		=> "rgba(151,187,205,0.5)",
-								'strokeColor'  		=>  "rgba(151,187,205,1)",
-								'pointColor '  		=>  "rgba(151,187,205,1)",
-								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(28,48,40,19,96,27,100),
-								'title'				=> "Unique Visits"		
-			);	
+							'fillColor'			=> "rgba(151,187,205,0.5)",
+							'strokeColor'		=> "rgba(151,187,205,1)",
+							'pointColor '		=> "rgba(151,187,205,1)",
+							'pointStrokeColor'	=> "#fff",
+							'data'				=> array(28,48,40,19,96,27,100),
+							'title'				=> ADLAN_169 //"Unique Visits"
+			);
 			
 			return $data;
 		}
@@ -955,21 +959,21 @@ class adminstyle_infopanel
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
 		}
 		else
 		{
 			$text .= "<div class='center'><small>
-			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> Visitors  &nbsp;&nbsp;  
-			<span style='color:rgba(151,187,205,1)'>&diams;</span> Unique Visitors
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span>".ADLAN_168."&nbsp;&nbsp;
+			<span style='color:rgba(151,187,205,1)'>&diams;</span>".ADLAN_169."
 			</small></div>";
 		}
 		
 		
-		return $text;									
-
+		return $text;
 		
 	}
 	
 }
 ?>
+

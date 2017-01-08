@@ -79,7 +79,7 @@ class core_news_url extends eUrlConfig
 	 * - list/year?id=xxx -> ?year-id
 	 * - list/nextprev?route=xxx -> PARSED_ROUTE.[FROM] (recursive parse() call)
 	 */
-	public function create($route, $params = array())
+	public function create($route, $params = array(),$options = array())
 	{
 		if(!$params) return 'news.php';
 		
@@ -175,7 +175,7 @@ class core_news_url extends eUrlConfig
 		return $url;
 	}
 	
-	public function parse($request)
+	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
 	{
 		// this config doesn't support parsing, it's done by the module entry script (news.php)
 		// this means News are not available via single entry point if this config is currently active

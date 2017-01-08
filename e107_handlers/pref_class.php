@@ -69,7 +69,7 @@ class e_pref extends e_front_model
 	 * Constructor
 	 *
 	 * @param string $prefid
-	 * @param string $alias
+	 * @param string $alias Used by cache file.
 	 * @param array $data
 	 * @param boolean $sanitize_data
 	 */
@@ -83,6 +83,7 @@ class e_pref extends e_front_model
 		{
 			$alias = $prefid;
 		}
+
 		$this->alias = preg_replace('/[^\w\-]/', '', $alias);
 
 		$this->loadData($data, $sanitize_data);
@@ -965,7 +966,7 @@ class e_plugin_pref extends e_pref
 		{
 			$plugin_id = $plugin_id.'_'.$multi_row;
 		}
-		parent::__construct('plugin_'.$plugin_id, $this->plugin_id);
+		parent::__construct('plugin_'.$plugin_id, "plugin_".$this->plugin_id);
 		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
 		{
 			$this->load();
@@ -998,6 +999,81 @@ class e_plugin_pref extends e_pref
 		return $ret;
 	}
 }
+
+
+/**
+ * Handle plugin preferences
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
+class e_theme_pref extends e_pref
+{
+	/**
+	 * Unique plugin name
+	 *
+	 * @var string
+	 */
+	protected $theme_id;
+
+	/**
+	 * Constructor
+	 * Note: object data will be loaded only if the plugin is installed (no matter of the passed
+	 * $load value)
+	 *
+	 * @param string $theme_id unique plugin name
+	 * @param string $multi_row additional field identifier appended to the $prefid
+	 * @param boolean $load load on startup
+	 */
+	function __construct($theme_id, $multi_row = '', $load = true)
+	{
+		$this->theme_id = $theme_id;
+		if($multi_row)
+		{
+			$theme_id = $theme_id.'_'.$multi_row;
+		}
+		parent::__construct('theme_'.$theme_id, "theme_".$this->theme_id);
+	//	if($load && e107::findPref('plug_installed/'.$this->theme_id))
+		{
+			$this->load();
+		}
+	}
+
+	/**
+	 * Retrive unique plugin name
+	 *
+	 * @return string
+	 */
+	public function getPluginId()
+	{
+		return $this->theme_id;
+	}
+
+	/**
+	 * Delete plugin preferences
+	 * @see e107_handlers/e_pref#delete()
+	 * @return boolean
+	 */
+	public function delete($ids, $destroy = true, $session_messages = false)
+	{
+		$ret = false;
+		if($this->theme_id)
+		{
+			$ret = e107::getDb($this->theme_id)->delete('core', "e107_name='{$this->theme_id}'");
+			$this->destroy();
+		}
+		return $ret;
+	}
+}
+
+
+
+
+
+
 
 /**
  * DEPRECATED - see e107::getConfig(), e_core_pref and e_plugin_pref

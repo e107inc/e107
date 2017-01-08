@@ -1003,24 +1003,27 @@ class e_file
 	 */
 	public function getUserDir($user, $create = false, $subDir = null)
 	{
-		$user = intval($user);
 		$tp = e107::getParser();
 
 		$baseDir = e_MEDIA.'plugins/'.e_CURRENT_PLUGIN.'/';
 
 		if(!empty($subDir))
 		{
+			$subDir = e107::getParser()->filter($subDir,'w');
 			$baseDir .= rtrim($subDir,'/').'/';
 		}
 
-		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		if(is_numeric($user))
+		{
+			$baseDir .= ($user > 0) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		}
 
 		if($create == true && !is_dir($baseDir))
 		{
 			mkdir($baseDir, 0755, true); // recursively
 		}
 
-		$baseDir .= "/";
+		$baseDir = rtrim($baseDir,'/')."/";
 
 		return $baseDir;
 	}
@@ -1195,7 +1198,7 @@ class e_file
 	{
 		require_once(e_HANDLER."upload_handler.php");
 
-		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir = e_AVATAR_UPLOAD)
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir == e_AVATAR_UPLOAD)
 		{
 			$path = $uploaddir;
 		}
@@ -1318,7 +1321,7 @@ class e_file
 	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
 	 * @return string unzipped folder name on success or false. 
 	 */
-	public function unzipArchive($localfile, $type)
+	public function unzipArchive($localfile, $type, $overwrite=false)
 	{
 		$mes = e107::getMessage();
 		
@@ -1326,7 +1329,7 @@ class e_file
 
 		$dir = false;
 
-		if(class_exists('ZipArchive') && e_DEBUG === true) // PHP7 compat. method.
+		if(class_exists('ZipArchive')) // PHP7 compat. method.
 		{
 			$zip = new ZipArchive;
 
@@ -1335,12 +1338,17 @@ class e_file
 				for($i = 0; $i < $zip->numFiles; $i++ )
 				{
 					$filename = $zip->getNameIndex($i);
+
                     $fileinfo = pathinfo($filename);
 
                     if($fileinfo['dirname'] === '.')
                     {
                         $dir = $fileinfo['basename'];
                         break;
+                    }
+                    elseif($fileinfo['basename'] === 'plugin.php' || $fileinfo['basename'] === 'theme.php')
+                    {
+						$dir = $fileinfo['dirname'];
                     }
 
 			     //   $stat = $zip->statIndex( $i );
@@ -1351,8 +1359,16 @@ class e_file
 				$zip->extractTo(e_TEMP);
 				chmod(e_TEMP.$dir, 0755);
 
+				if(empty($dir) && e_DEBUG)
+				{
+					print_a($fileinfo);
+				}
+
+
 				$zip->close();
 			}
+
+
 
 
 		}
@@ -1374,15 +1390,30 @@ class e_file
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); 
-			 
-			if(file_exists(e_TEMP.$localfile))
-			{	
-				@unlink(e_TEMP.$localfile);
+			if($overwrite === true)
+			{
+				if(file_exists(e_TEMP.$localfile))
+				{
+					$time = date("YmdHi");
+					if(rename($destpath.$dir, e_BACKUP.$dir."_".$time))
+					{
+						$mes->addSuccess("Old folder moved to backup directory");
+					}
+				}
 			}
-			
-			$this->removeDir(e_TEMP.$dir);
-			return false;
+			else
+			{
+
+				$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir);
+
+				if(file_exists(e_TEMP.$localfile))
+				{
+					@unlink(e_TEMP.$localfile);
+				}
+
+				$this->removeDir(e_TEMP.$dir);
+				return false;
+			}
 		}
 	
 		if(empty($dir))

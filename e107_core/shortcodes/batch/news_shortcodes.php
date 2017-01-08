@@ -357,6 +357,11 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsimage($parm);
 	}
 
+	public function sc_news_related($parm=null)
+	{
+		return $this->sc_newsrelated($parm);
+	}
+
 	public function sc_news_visibility($parm=null)
 	{
 		$string= e107::getUserClass()->getIdentifier($this->news_item['news_class']);
@@ -496,6 +501,7 @@ class news_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if (ADMIN && getperms('H'))
 		{
+
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
 			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
 
@@ -504,7 +510,7 @@ class news_shortcodes extends e_shortcode
 			
 			$class = varset($parm['class']);
 			
-			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
+			return "<a class='e-tip e-instant-edit ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
 		else
 		{
@@ -848,6 +854,7 @@ class news_shortcodes extends e_shortcode
 			{
 				$src = $tp->thumbUrl($srcPath);
 				$dimensions = $tp->thumbDimensions();
+				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
 
 			}
 			else
@@ -876,6 +883,15 @@ class news_shortcodes extends e_shortcode
 
 		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
 
+		$imgParms = array(
+			'class'=>$class,
+			'alt'=>basename($src),
+			'style'=>$style
+		);
+
+
+		$imgTag = $tp->toImage($srcPath,$imgParms);
+
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
@@ -883,12 +899,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
 			break;
 		}
 	}

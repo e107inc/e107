@@ -79,22 +79,22 @@ class newsfeed_ui extends e_admin_ui
 		protected $listOrder		= 'newsfeed_id DESC';
 
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'newsfeed_id' =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_name' =>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'required'=>true,  'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_url' =>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'required'=>true, 'inline'=>true, 'width' => 'auto',  'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_data' =>   array ( 'title' => 'Data', 'type' => null,  'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_description' =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'newsfeed_image' =>   array ( 'title' => NFLAN_11, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => LAN_OPTIONAL, 'readParms' => 'thumb=80x80', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_id' =>			array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_name' =>		array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'required'=>true,  'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_url' =>			array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'required'=>true, 'inline'=>true, 'width' => 'auto',  'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_data' =>		array ( 'title' => LAN_DATA, 'type' => null,  'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_description' =>	array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_image' =>		array ( 'title' => NFLAN_11, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => LAN_OPTIONAL, 'readParms' => 'thumb=80x80', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
-		   'newsfeed_updateint' =>   array ( 'title' => NFLAN_18, 'type' => 'text', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3600), 'class' => 'left', 'thclass' => 'left',  ),
-	        'newsfeed_timestamp' =>   array ( 'title' => NFLAN_50, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_updateint' =>	array ( 'title' => NFLAN_18, 'type' => 'text', 'data' => 'int', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3600), 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_timestamp' =>	array ( 'title' => LAN_LAST_UPDATED, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
-  	  	  'newsfeed_active' =>   array ( 'title' => NFLAN_12, 'type' => 'radio', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3, 'optArray'=>array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21)), 'class' => 'left', 'thclass' => 'left',  ),
+		  'newsfeed_active' =>		array ( 'title' => NFLAN_12, 'type' => 'radio', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('default'=>3, 'optArray'=>array(NFLAN_13,NFLAN_14,NFLAN_20,NFLAN_21)), 'class' => 'left', 'thclass' => 'left',  ),
 
-		  'newsfeed_showmenu'   => array('title'=>NFLAN_45, 'type'=>'method', 'data'=>false, 'class'=>'center', 'thclass'=>'center' ),
-		  'newsfeed_showmain'   => array('title'=>NFLAN_46, 'type'=>'method', 'data'=>false, 'class'=>'center', 'thclass'=>'center'),
+		  'newsfeed_showmenu'	=>	array ( 'title' => NFLAN_45, 'type'=>'method', 'data'=>false, 'class'=>'center', 'thclass'=>'center' ),
+		  'newsfeed_showmain'	=>	array ( 'title' => NFLAN_46, 'type'=>'method', 'data'=>false, 'class'=>'center', 'thclass'=>'center'),
 
-		    'options' =>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '8%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>	array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '8%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);
 
 		protected $fieldpref = array('newsfeed_name', 'newsfeed_url', 'newsfeed_updateint', 'newsfeed_timestamp', 'newsfeed_active', 'newsfeed_showmenu', 'newsfeed_showmain');

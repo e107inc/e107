@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2015 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -50,7 +50,7 @@ define("LAN_SIGNUP_13", "You can now log in from the Login box, or from [here]."
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
-define("LAN_SIGNUP_17", "Please certify you are 13 or over the age of 13.");
+define("LAN_SIGNUP_17", "Please confirm that you are age 13 or over.");
 define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information:");
 //define("LAN_SIGNUP_19", "Username:"); // now LAN_LOGINNAME
 //define("LAN_SIGNUP_20", "Password:"); // now LAN_PASSWORD
@@ -140,7 +140,6 @@ define("LAN_SIGNUP_103", "Too many users already using IP address: ");
 define("LAN_SIGNUP_105", "Unable to action your request - please contact the site administrator");		// Two people with same password.
 define("LAN_SIGNUP_106", "Unable to action your request - do you already have an account here?");		// Trying to set email same as existing
 
-
 define("LAN_LOGINNAME", "Username");
 //define("LAN_PASSWORD", "Password");
 define("LAN_USERNAME", "Display Name");
@@ -153,4 +152,11 @@ define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar
 define("LAN_SIGNUP_112", "You are currently logged in as Main Admin.");
 
 define("LAN_SIGNUP_113", "Subscription(s)");
+
+define("LAN_SIGNUP_114", "User registration is currently disabled.");
+define("LAN_SIGNUP_115", "Preview Activation Email");
+define("LAN_SIGNUP_116", "Preview After Form Submit");
+define("LAN_SIGNUP_117", "Send a Test Activation");
+define("LAN_SIGNUP_118", "To [x]");
+define("LAN_SIGNUP_119", "Don't send email");
 

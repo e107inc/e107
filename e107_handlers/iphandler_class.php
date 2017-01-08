@@ -100,6 +100,8 @@ class eIPHandler
 	 */
 	private $ourIP = '';
 
+	private $serverIP = '';
+
 	private $debug = false;
 	/**
 	 *	Host name of current user
@@ -168,6 +170,9 @@ class eIPHandler
 
 
 		$this->ourIP = $this->ipEncode($this->getCurrentIP());
+
+		$this->serverIP = $this->ipEncode($_SERVER['SERVER_ADDR']);
+
 		$this->makeUserToken();
 		$ipStatus = $this->checkIP($this->ourIP);
 		if ($ipStatus != 0)
@@ -886,7 +891,7 @@ class eIPHandler
 		{
 			$ip = $this->getip(); // This will be in normalised IPV6 form
 
-			if ($ip != e107::LOCALHOST_IP && $ip != e107::LOCALHOST_IP2) // Check host name, user email to see if banned
+			if ($ip !== e107::LOCALHOST_IP && ($ip !== e107::LOCALHOST_IP2) && ($ip !== $this->serverIP)) // Check host name, user email to see if banned
 			{
 				$vals = array();
 				if (e107::getPref('enable_rdns'))

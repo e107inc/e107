@@ -17,8 +17,16 @@ $pref = e107::getPref();
 
 if (isset($pref['statActivate']) && $pref['statActivate'] == true) 
 {
-	$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
-	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
+	//$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
+
+	require_once(e_PLUGIN."log/consolidate.php");
+	$logObj = new logConsolidate;
+
+
+	$pageName = $logObj->getPageKey(e_REQUEST_URL, false, null, e_LAN);
+
+
+	$logfile = e_LOG."logp_".date("z.Y", time()).".php";
 	if(!is_readable($logfile))
 	{
 		if(ADMIN && !$pref['statCountAdmin'])
@@ -51,6 +59,8 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true)
 				}
 				else
 				{
+					e107::getDebug()->log("Found Log Data");
+
 					$dbPageInfo = unserialize($row['log_data']);
 					$totalPageEver = ($dbPageInfo[$pageName]['ttlv'] ? $dbPageInfo[$pageName]['ttlv'] : 0);
 					$uniquePageEver = ($dbPageInfo[$pageName]['unqv'] ? $dbPageInfo[$pageName]['unqv'] : 0);
@@ -63,9 +73,14 @@ if (isset($pref['statActivate']) && $pref['statActivate'] == true)
 		$totalever = ($pageInfo[$pageName]['ttlv'] ? $pageInfo[$pageName]['ttlv'] : 0) + $totalPageEver + $total;
 		$uniqueever = ($pageInfo[$pageName]['unqv'] ? $pageInfo[$pageName]['unqv'] : 0) + $uniquePageEver + $unique;
 	}
+
+
+	// e107::getDebug()->log($pageInfo);
+
 	$text .= "<b>".COUNTER_L2."</b><br />".COUNTER_L3.": $total<br />".COUNTER_L5.": $unique<br /><br />
 	<b>".COUNTER_L4."</b><br />".COUNTER_L3.": $totalever<br />".COUNTER_L5.": $uniqueever<br /><br />
 	<b>".COUNTER_L6."</b><br />".COUNTER_L3.": $siteTotal<br />".COUNTER_L5.": $siteUnique";
+
 	$ns->tablerender(COUNTER_L7, $text, 'counter');
 	unset($dbPageInfo);
 }
