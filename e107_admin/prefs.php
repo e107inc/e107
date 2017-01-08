@@ -1785,18 +1785,48 @@ $text .= "
 
 	}
 
-$text .= pref_submit('javascript');
-
 // [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
 e107::lan('core', 'library_manager');
 
-$text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
+$CDNproviders = array(
+	'jsdelivr' => 'jsDelivr',
+	'cdnjs' => 'cdnjs',
+);
 
+$text .= '
+<h4 class="caption">' . LAN_LIBRARY_MANAGER_30 . '</h4>
+<table class="table adminform">
+	<colgroup>
+		<col class="col-label"/>
+		<col class="col-control"/>
+	</colgroup>
+	<tbody>
+		<tr>
+			<td>' . LAN_LIBRARY_MANAGER_31 . '</td>
+			<td>
+				' . $frm->radio("e_jslib_cdn", array(1 => LAN_YES, 0 => LAN_NO), varset($pref['e_jslib_cdn'], 1)) . '
+			</td>
+		</tr>
+		<tr>
+			<td>' . LAN_LIBRARY_MANAGER_32 . '</td>
+			<td>
+				' . $frm->select("e_jslib_cdn_provider", $CDNproviders, varset($pref['e_jslib_cdn_provider'], 'jsdelivr')) . '
+			</td>
+		</tr>
+	</tbody>
+</table>
+';
+
+// Submit button.
+$text .= pref_submit('javascript');
+
+$text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
 $text .= '<table width="100%" class="table table-striped" cellpadding="0" cellspacing="0">';
 $text .= '<thead>';
 $text .= '<tr>';
 $text .= '<th>' . LAN_LIBRARY_MANAGER_13 . '</th>';
 $text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
+$text .= '<th>' . LAN_LIBRARY_MANAGER_29 . '</th>';
 $text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_14 . '</th>';
 $text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_18 . '</th>';
 $text .= '<th>' . LAN_LIBRARY_MANAGER_19 . '</th>';
@@ -1823,6 +1853,7 @@ foreach($libraries as $machineName => $library)
 	$text .= '<tr>';
 	$text .= '<td>' . $name . '</td>';
 	$text .= '<td class="text-center">' . $provider . '</td>';
+	$text .= '<td class="smalltext">' . varset($details['library_path']) . '</td>';
 	$text .= '<td class="text-center">' . varset($details['version']) . '</td>';
 	$text .= '<td class="text-center">' . $status . '</td>';
 	$text .= '<td>' . varset($details['error_message']) . '</td>';
@@ -1833,7 +1864,7 @@ foreach($libraries as $machineName => $library)
 if(empty($libraries))
 {
 	$text .= '<tr>';
-	$text .= '<td colspan="6">' . LAN_LIBRARY_MANAGER_26 . '</td>';
+	$text .= '<td colspan="7">' . LAN_LIBRARY_MANAGER_26 . '</td>';
 	$text .= '</tr>';
 }
 
@@ -1841,28 +1872,7 @@ $text .= '</tbody>';
 $text .= '</table>';
 
 $text .= "</fieldset>";
-					
-		/*			
-		e107::js('inline',"			
-						\$\$('#e-jslib-nocombine', '#e-jslib-nocombine-1').invoke('observe', 'change', function(event) {
-							var element = event.findElement('input'), check = !parseInt(element.value);
-							eHandleJsForm(check);
-							
-						});
-						
-						var eHandleJsForm = function(enable) {
-							var collection = \$w('e-jslib-gzip e-jslib-nocache e-jslib-nobcache');
-							collection.each(function(id) {
-								var method = enable ? 'enable' : 'disable';
-								\$\$('#' + id, '#' + id + '-1').invoke(method);
-							});
-						};
-						
-						eHandleJsForm(".($pref['e_jslib_nocombine'] ? 'false' : 'true').");
-					
-					","prototype");
-		*/
-	
+
 
 //Advanced Features
 $text .= "

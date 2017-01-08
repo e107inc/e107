@@ -239,11 +239,16 @@ class e_jsmanager
 		{
 			if($this->isInAdmin()) // Admin Area.
 			{
-				// TODO
+				e107::library('load', 'jquery', $minified);
+				// jQuery Once is used in e107.behaviors.
+				e107::library('load', 'jquery.once', $minified);
+				e107::library('load', 'jquery.ui', $minified);
 			}
 			else // Front-End.
 			{
-				// TODO
+				e107::library('load', 'jquery', $minified);
+				// jQuery Once is used in e107.behaviors.
+				e107::library('load', 'jquery.once', $minified);
 			}
 		}
 		else // Use CDN files.

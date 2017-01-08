@@ -1,0 +1,22 @@
+{
+  "name": "jquery-once",
+  "homepage": "http://github.com/robloach/jquery-once",
+  "description": "Act on jQuery elements only once.",
+  "license": "GPL-2.0",
+  "main": "jquery.once.js",
+  "ignore": [
+    "*.json",
+    "test",
+    "example",
+    ".travis.yml",
+    ".gitignore",
+    "Gruntfile.js"
+  ],
+  "keywords": [
+    "jquery",
+    "jquery-plugin"
+  ],
+  "dependencies": {
+    "jquery": "*"
+  }
+}
