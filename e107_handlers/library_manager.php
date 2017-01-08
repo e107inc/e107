@@ -508,6 +508,9 @@ class e_library_manager
 				$this->infoDefaults($properties, $machine_name);
 			}
 
+			// Alter config array. For example, change CDN provider.
+			$coreLibrary->config_alter($libraries);
+
 			// Allow enabled plugins (with e_library.php file) to alter the registered libraries.
 			foreach($plugins as $plugin)
 			{
@@ -1223,13 +1226,45 @@ class core_library
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery/2.2.4/',
 		);
 
+		// jQuery (local).
+		$libraries['jquery'] = array(
+			'name'              => 'jQuery (local)',
+			'vendor_url'        => 'https://jquery.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/jquery.min.js',
+				'pattern' => '/v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'dist/jquery.js' => array(
+						'zone' => 1,
+						'type' => 'url',
+					),
+				),
+			),
+			'variants'          => array(
+				// All properties defined for 'minified' override top-level properties.
+				'minified' => array(
+					'files' => array(
+						'js' => array(
+							'dist/jquery.min.js' => array(
+								'zone' => 1,
+								'type' => 'url',
+							),
+						),
+					),
+				),
+			),
+		);
+
 		// jQuery Once (CDN).
 		$libraries['cdn.jquery.once'] = array(
 			'name'              => 'jQuery Once (CDN)',
 			'vendor_url'        => 'https://plugins.jquery.com/once/',
 			'version_arguments' => array(
 				'file'    => 'jquery.once.min.js',
-				'pattern' => '/jQuery\sOnce\s++v(\d\.\d\.\d+)/',
+				'pattern' => '/jQuery\sOnce\s+v(\d\.\d\.\d+)/',
 				'lines'   => 5,
 			),
 			'files'             => array(
@@ -1258,6 +1293,43 @@ class core_library
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once/2.1.2/',
+		);
+
+		// jQuery Once (local).
+		$libraries['jquery.once'] = array(
+			'name'              => 'jQuery Once (local)',
+			'vendor_url'        => 'https://plugins.jquery.com/once/',
+			'version_arguments' => array(
+				'file'    => 'jquery.once.min.js',
+				'pattern' => '/jQuery\sOnce\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'jquery.once.min.js' => array( // There is no non-minified version.
+						'zone' => 2,
+						'type' => 'url',
+					),
+				),
+			),
+			'variants'          => array(
+				// All properties defined for 'minified' override top-level properties.
+				'minified' => array(
+					'files' => array(
+						'js' => array(
+							'jquery.once.min.js' => array(
+								'zone' => 2,
+								'type' => 'url',
+							),
+						),
+					),
+				),
+			),
+			'dependencies'      => array(
+				'jquery',
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/jquery-once/',
 		);
 
 		// jQuery UI (CDN).
@@ -1352,6 +1424,51 @@ class core_library
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap/3.3.7/',
+		);
+
+		// Bootstrap (local).
+		$libraries['bootstrap'] = array(
+			'name'              => 'Bootstrap (local)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap.js' => array(
+						'zone' => 2,
+						'type' => 'url',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// All properties defined for 'minified' override top-level properties.
+				'minified' => array(
+					'files' => array(
+						'js'  => array(
+							'dist/js/bootstrap.min.js' => array(
+								'zone' => 2,
+								'type' => 'url',
+							),
+						),
+						'css' => array(
+							'dist/css/bootstrap.min.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			'dependencies'      => array(
+				'jquery',
+			),
 		);
 
 		// Bootstrap Editable (Local).
@@ -1480,7 +1597,67 @@ class core_library
 			'library_path'      => 'https://cdn.jsdelivr.net/fontawesome/4.7.0/',
 		);
 
+		// Font-Awesome (local).
+		$libraries['fontawesome'] = array(
+			'name'              => 'Font-Awesome (local)',
+			'vendor_url'        => 'http://fontawesome.io/',
+			'version_arguments' => array(
+				'file'    => 'css/font-awesome.min.css',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 10,
+			),
+			'files'             => array(
+				'css' => array(
+					'css/font-awesome.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// All properties defined for 'minified' override top-level properties.
+				'minified' => array(
+					'files' => array(
+						'css' => array(
+							'css/font-awesome.min.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/font-awesome/',
+		);
+
 		return $libraries;
+	}
+
+	/**
+	 * Implements config_alter().
+	 */
+	function config_alter(&$libraries)
+	{
+		$pref = e107::pref('core');
+		$cdnProvider = varset($pref['e_jslib_cdn_provider'], 'jsdelivr');
+
+		// If CDNJS is the selected provider, we alter core CDN libraries to use it
+		// instead of jsDelivr.
+		if($cdnProvider == 'cdnjs')
+		{
+			$libraries['cdn.jquery']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery/', 'https://cdnjs.cloudflare.com/ajax/libs/jquery/', $libraries['cdn.jquery']['library_path']);
+			$libraries['cdn.jquery.once']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.once/', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-once/', $libraries['cdn.jquery.once']['library_path']);
+			$libraries['cdn.jquery.ui']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.ui/', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/', $libraries['cdn.jquery.ui']['library_path']);
+			$libraries['cdn.bootstrap']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap/', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/', $libraries['cdn.bootstrap']['library_path']);
+
+			if (preg_match('/(\d\.\d\.\d+)/', $libraries['cdn.bootstrap.editable']['library_path'], $matches)) {
+				$version = $matches[0];
+				$old = 'https://cdn.jsdelivr.net/bootstrap.editable/' . $version . '/';
+				$new = 'https://cdnjs.cloudflare.com/ajax/libs/x-editable/' . $version . '/bootstrap-editable/';
+				$libraries['cdn.bootstrap.editable']['library_path'] = str_replace($old, $new, $libraries['cdn.bootstrap.editable']['library_path']);
+			}
+
+			$libraries['cdn.fontawesome']['library_path'] = str_replace('https://cdn.jsdelivr.net/fontawesome/', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/', $libraries['cdn.fontawesome']['library_path']);
+		}
 	}
 
 }
