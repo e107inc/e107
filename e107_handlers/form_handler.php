@@ -8,9 +8,6 @@
  *
  * Form Handler
  *
- * $URL$
- * $Id$
- *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -79,6 +76,7 @@ class e_form
 
 	function __construct($enable_tabindex = false)
 	{
+		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_form_handler.php");
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
@@ -142,7 +140,7 @@ class e_form
 		else 
 		{
 			$target = str_replace("&", "&amp;", $target);
-			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
+			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method='{$method}'{$autoComplete}>\n";
 		}
 		return $text;	
 	}
@@ -2889,7 +2887,22 @@ e107::getDebug()->log($sc_parameters);
 	}
 
 
+	/**
+	 * Render a direct link admin-edit button on the frontend.
+	 * @param $url
+	 * @param string $perms
+	 * @return string
+	 */
+	public function instantEditButton($url, $perms='0')
+	{
+		if(deftrue("BOOTSTRAP") && getperms($perms))
+		{
+			return "<span class='e-instant-edit hidden-print'><a target='_blank' title='".LAN_EDIT."' href='".$url."'>".e107::getParser()->toGlyph('fa-edit')."</a></span>";
+		}
 
+		return '';
+
+	}
 
 
 
@@ -4333,8 +4346,7 @@ e107::getDebug()->log($sc_parameters);
 
 			case 'icon':
 
-				$parms['size'] = '2x';
-				$value = $tp->toIcon($value,$parms);
+				$value = "<span class='icon-preview'>".$tp->toIcon($value,$parms)."</span>";
 				
 			break;
 			

@@ -2,20 +2,17 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Media Management Class
  *
- * $URL$
- * $Id$
- *
 */
 
 
 if (!defined('e107_INIT')) { exit; }
-
+//TODO LANS
 
 class e_media
 {
@@ -485,7 +482,9 @@ class e_media
 		
 		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
 	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
-			
+
+
+
 		if($search)
 		{
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
@@ -510,6 +509,9 @@ class e_media
 		{
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
+
+	//	e107::getDebug()->log($query);
+
 		e107::getDb()->gen($query);
 		while($row = e107::getDb()->fetch())
 		{
@@ -573,7 +575,7 @@ class e_media
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
 		$total = ($sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;
-		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
+		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='".LAN_CLOSE."' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
 		{
@@ -869,13 +871,19 @@ class e_media
 
 
 	/**
-	 * Get all Glyphs
+	 * @param string|array $type
+	 * @param $type['name']
+	 * @param $type[['type']
+	 * @param $type['path'] URL or e107 path {e_THEME} etc.
+	 * @param $type['prefix']
+	 * @param string $addPrefix
+	 * @return array
 	 */
-	function getGlyphs($type='fa4',$prefix = '')
+	function getGlyphs($type='fa4', $addPrefix = '')
 	{
 		$icons = array();
 		
-		if($type == 'bs2')
+		if($type === 'bs2')
 		{
 			$matches = array(
 				'glass','music','search','envelope','heart','star','star-empty','user','film','th-large','th','th-list','ok',
@@ -897,13 +905,13 @@ class e_media
 				
 			foreach($matches as $match)
 			{
-			    $icons[] = $prefix.$match;
+			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
 					
-		if($type == 'bs3')
+		if($type === 'bs3')
 		{
 			$matches = array(
 			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
@@ -922,42 +930,71 @@ class e_media
 			
 			foreach($matches as $match)
 			{
-			    $icons[] = $prefix.$match;
+			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
-		
-		$cache = e107::getCache();
-		$cachTag = !empty($prefix) ? "glyphs_".$prefix : "glyphs";
-		$cache->setMD5($cachTag, false);
-		
-		if($data = $cache->retrieve($type,360,true))
+
+		if(is_array($type))
 		{
-			$cache->setMD5(null);
+			$prefix     = $type['prefix'];
+			$pattern    = $type['pattern'];
+			$path       = $type['path'];
+			$type       = $type['name'];
+
+		}
+
+
+
+		$cache = e107::getCache();
+		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
+
+
+
+		if($data = $cache->retrieve($cachTag ,360,true,true))
+		{
 			return e107::unserialize($data);
 		}
 		
 		
-		if($type == 'fa4')
+		if($type === 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css');
-		//	print_a($subject);
+			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
+			$prefix = 'fa-';
 		}
-		elseif($type == 'fa3')
+		elseif($type === 'fa3')
 		{
 			$pattern = '/\.(icon-(?:\w+(?:-)?)+):before/';
 			$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
+			$prefix = 'fa-';
 		}
-				
+		elseif(!empty($pattern) && !empty($path))
+		{
+			$pattern = '/'.$pattern.'/';
+			if(substr($path,0,4) === 'http')
+			{
+				$subject = e107::getFile()->getRemoteContent($path);
+			}
+			else
+			{
+				$path = e107::getParser()->replaceConstants($path);
+				$subject = file_get_contents($path);
+			}
+
+
+
+		}
+
+
+		$prefixLength = !empty($prefix) ? strlen($prefix) : 3;
+
 		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
-		
-		
-		
+
 		foreach($matches as $match)
 		{
-		    $icons[] = $prefix.substr($match[1],3);
+		    $icons[] = $addPrefix.substr($match[1],$prefixLength);
 		}
 
 		if(empty($icons)) // failed to produce a result so don't cache it. .
@@ -967,14 +1004,15 @@ class e_media
 
 		$data = e107::serialize($icons);
 
-		$cache->set($type,$data,true);
-		$cache->setMD5(null);
+		$cache->set_sys($cachTag ,$data,true);
+
 		return $icons; 
 	
 	}
 
 
-	
+
+
 	function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
@@ -984,7 +1022,7 @@ class e_media
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
 			$this->log("Couldn't detect mime-type ($mime).");
-			$text = $text = str_replace('[x]',$mime,IMALAN_111);
+			$text = $text = str_replace('[x]',$mime,IMALAN_111); //FIXME LAN IMALAN_112 is not generic. This method can be called from anywhere, not only e107_admin/image.php.
 			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}

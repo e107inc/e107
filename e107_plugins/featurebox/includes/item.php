@@ -203,7 +203,7 @@ class plugin_featurebox_item extends e_model
 	public function sc_featurebox_counter($parm=1)
 	{	
 		$count = $this->getParam('counter', 1);
-		return ($parm == 0) ? $count - 1 : $count;
+		return (empty($parm)) ? $count - 1 : $count;
 	}
 
 	/**

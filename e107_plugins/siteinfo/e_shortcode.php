@@ -98,23 +98,31 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		$logopref = e107::getConfig('core')->get('sitelogo');
 		$logop = $tp->replaceConstants($logopref);
 
-		if($parm == 'login') // Login Page. BC fix. 
+		if($parm == 'login' || isset($parm['login'])) // Login Page. BC fix.
 		{
-			if(vartrue($logopref) && is_readable($logop))
+
+			if(!empty($logopref) && is_readable($logop))
 			{
+
 				$logo = $tp->replaceConstants($logopref,'abs');
 				$path = $tp->replaceConstants($logopref);
 			}
 			elseif(is_readable(THEME."images/login_logo.png"))
 			{
-				
+
 				$logo = THEME_ABS."images/login_logo.png";	
 				$path = THEME."images/login_logo.png";	
 			}
 			else
 			{
-				$logo = e_IMAGE_ABS."logo.png";	
-				$path = e_IMAGE."logo.png";			
+
+
+				$logo = "{e_IMAGE}logoHD.png";
+				$path = e_IMAGE."logoHD.png";
+				if(empty($parm['w']))
+				{
+					$parm['w'] = 330;
+				}
 			}	
 		}
 		else 
@@ -141,13 +149,11 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			}
 			else
 			{
-				$logo = e_IMAGE_ABS.'logo.png';				// HTML path
-				$path = e_IMAGE.'logo.png';					// PHP path
+				$logo = '{e_IMAGE}logoHD.png';				// HTML path
+				$path = e_IMAGE.'logoHD.png';					// PHP path
 			}
 			
 		}
-		
-		//TODO Parm for resizing the logo image with thumb.php
 
 		$dimensions = array();
 		
@@ -183,10 +189,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 	//	$imageStyle = (empty($dimensions)) ? '' : " style='width: ".$dimensions[0]."px; height: ".$dimensions[1]."px' ";
 	//	$image = "<img class='logo img-responsive' src='".$logo."' ".$imageStyle." alt='".SITENAME."' />\n";
 
-
-
 		$image = $tp->toImage($logo,$opts);
-		
 
 		if (isset($link) && $link)
 		{

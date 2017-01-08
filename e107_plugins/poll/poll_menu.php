@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -59,4 +59,5 @@ ORDER BY p.poll_datestamp DESC LIMIT 0,1
 $poll->remove_poll_cookies();
 
 $poll->render_poll($query, $pollType, $pollMode);
+
 ?>

@@ -146,7 +146,7 @@ class online_shortcodes extends e_shortcode
 			if(varset($parm['type']) == 'avatar')
 			{
 				$this->currentMember =  array('oid'	=> $row['user_id'], 'oname'=> $row['user_name'], 'page' => null, 'pinfo' => null,'oimage' => $row['user_image']	);
-				//$ret =  e107::getParser()->parseTemplate($this->newestTemplate, TRUE, $this);
+				$ret =  e107::getParser()->parseTemplate($this->newestTemplate, TRUE, $this);
 
 			}
 			else

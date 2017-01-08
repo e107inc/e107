@@ -15,7 +15,7 @@
  *	@subpackage	chatbox
  */
 
-error_reporting(E_ALL);
+
 if(isset($_POST['chatbox_ajax']))
 {
 	define('e_MINIMAL',true);

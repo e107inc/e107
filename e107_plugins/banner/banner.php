@@ -21,11 +21,11 @@ if (!e107::isInstalled('banner'))
 }
 
 e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
-e107::lan('banner'); 
+e107::lan('banner');
 
 
 
-
+$sql = e107::getDb();
 $mes = e107::getMessage();
 $frm = e107::getForm();
 

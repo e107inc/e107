@@ -74,10 +74,13 @@ if(!empty($_GET['action']))
 		*/
 
 		case 'info':
-			$string =  base64_decode($_GET['src']);
-			parse_str($string,$p);
-			echo $themec->renderThemeInfo($p);
-
+			if(!empty($_GET['src']))
+			{
+				$string =  base64_decode($_GET['src']);
+				parse_str($string,$p);
+				$themeInfo = e107::getSession()->get('thememanager/online/'.intval($p['id']));
+				echo $themec->renderThemeInfo($themeInfo);
+			}
 		break;
 		
 		case 'preview':
@@ -164,7 +167,7 @@ if($mode == 'download' && !empty($_GET['src']))
 			return true;
 		}
 
-		if(e_DEBUG === true)
+		if(deftrue('e_DEBUG_MARKETPLACE'))
 		{
 			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
 			echo '$_GET: ';

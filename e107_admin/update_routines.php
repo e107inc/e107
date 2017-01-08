@@ -59,7 +59,7 @@ $dbupdate = array();			// Array of core upgrade actions
 
 global $e107cache;
 
-if (is_readable(e_ADMIN.'ver.php'))
+if(is_readable(e_ADMIN.'ver.php'))
 {
   include(e_ADMIN.'ver.php');
 }
@@ -168,7 +168,7 @@ class e107Update
 		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 		{
 			$func = key($_POST['update_core']);
-			$message = $this->updateCore($func);
+			$this->updateCore($func);
 		}	
 		
 		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
@@ -176,11 +176,7 @@ class e107Update
 			$func = key($_POST['update']);
 			$this->updatePlugin($func);
 		}	
-			
-		if(vartrue($message))
-		{
-			$mes->addSuccess($message);	
-		}
+
 		
 		$this->renderForm();	
 	}
@@ -246,16 +242,20 @@ class e107Update
 	{
 		if(!$list = e107::getPlugin()->updateRequired())
 		{
-			return;
+			return false;
 		}
 		
 		$frm = e107::getForm();
-		
+
+		$tp = e107::getParser();
+
 		$text = "";
 		foreach($list as $path=>$val)
 		{
+			$name = !empty($val['@attributes']['lan']) ? $tp->toHtml($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
+
 			$text .= "<tr>
-					<td>".$val['@attributes']['name']."</td>
+					<td>".$name."</td>
 					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning', '', 'disabled='.$this->disabled)."</td>
 					</tr>";			
 		}
@@ -425,18 +425,27 @@ function update_check()
 	if ($update_needed === TRUE)
 	{
 		$frm = e107::getForm();
+		$label = LAN_UPDATE." ".e107::getParser()->toGlyph('fa-arrow-right');
+
 		
-		$txt = "
+		$text = "
 		<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
 		<div>
-			".ADLAN_120."
-			".$frm->admin_button('e107_system_update', LAN_UPDATE, 'other')."
-		</div>
+			<p>".ADLAN_120."</p>
+			".$frm->admin_button('e107_system_update', 'update', 'other', $label)."
+		</div><br />
 		</form>
 		";
-		
-		$mes->addInfo($txt);
+
+
+	//	$text = ADLAN_120. "<a class='btn btn-xs btn-inline' href='".e_ADMIN_ABS."e107_update.php'>". e107::getParser()->toGlyph('fa-chevron-circle-right')."</a>";
+	//	$text .= "<hr />";
+		$mes->addInfo($text);
+
 	}
+
+
+	return $update_needed;
 }
 
 	
@@ -601,9 +610,9 @@ function update_706_to_800($type='')
 	$sql2 	= e107::getDb('sql2');
 	$tp 	= e107::getParser();
 	$ns 	= e107::getRender();
-	
+
 	e107::getCache()->clearAll('db');
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 
 	e107::getMessage()->setUnique();
 
@@ -779,7 +788,7 @@ function update_706_to_800($type='')
 
 
 	// Move the maximum online counts from menu prefs to a separate pref - 'history'
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 	$menuConfig = e107::getConfig('menu',true,true); 
 	
 	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
@@ -1184,9 +1193,7 @@ function update_706_to_800($type='')
 	
 //	$notify_prefs = $sysprefs -> get('notify_prefs');
 //	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
-	e107::getCache()->clearAll('system');
-
-
+	e107::getCache()->clear_sys('Config');
 
 	$notify_prefs = e107::getConfig('notify',true,true)->getPref();
 
@@ -1961,5 +1968,18 @@ function convert_serialized($serializedData, $type='')
 	return $data;
 }
 
+function theme_foot()
+{
+	global $pref;
+
+	if(!empty($_POST['update_core']['706_to_800']))
+	{
+		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade');
+		$base = base64_encode(http_build_query($data, null, '&'));
+		$url = "http://e107.org/e-install/".$base;
+		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
+	}
+
+}
 
 ?>

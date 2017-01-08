@@ -872,9 +872,9 @@ class xmlClass
 	 * @param boolean $debug [optional]
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $debug = FALSE)
+	public function e107Export($xmlprefs, $tables, $plugPrefs, $mode = false)
 	{
-		error_reporting(0);
+	//	error_reporting(0);
 		$e107info = array();
 		require_once(e_ADMIN."ver.php");
 
@@ -904,7 +904,7 @@ class xmlClass
 					{
 						continue;
 					}
-					elseif($debug == true)
+					elseif($mode === 'debug')
 					{
 						echo "<div>Original/Modiied <b>".$key."</b>";
 						var_dump($default[$key],$val);
@@ -920,6 +920,32 @@ class xmlClass
 			}
 			$text .= "\t</prefs>\n";
 		}
+
+
+		if(!empty($plugPrefs))
+		{
+			$text .= "\t<pluginPrefs>\n";
+
+			foreach($plugPrefs as $plug)
+			{
+				$prefs = e107::getPlugConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</pluginPrefs>\n";
+		}
+
+
+
 
 		if(varset($tables))
 		{
@@ -958,10 +984,16 @@ class xmlClass
 
 		$text .= "</e107Export>";
 
-		if($debug==TRUE)
+
+		if($mode === 'return')
+		{
+			return $text;
+		}
+
+		if($mode === 'debug')
 		{
 			echo "<pre>".htmlentities($text)."</pre>";
-			return TRUE;
+			return null;
 		}
 		else
 		{
@@ -991,12 +1023,16 @@ class xmlClass
 	 * Return an Array of core preferences from e107 XML Dump data
 	 *
 	 * @param array $XMLData Raw XML e107 Export Data
-	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc.
+	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc or plugin-folder name
+	 * @param string $mode core|plugin
 	 * @return array preference array equivalent to the old $pref global;
 	 */
-	public function e107ImportPrefs($XMLData, $prefType='core')
+	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
-		if(!vartrue($XMLData['prefs'][$prefType]))
+
+		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+
+		if(!vartrue($XMLData[$key][$prefType]))
 		{
 			return array();
 		}
@@ -1004,7 +1040,7 @@ class xmlClass
 		//$mes = eMessage::getInstance();
 
 		$pref = array();
-		foreach($XMLData['prefs'][$prefType] as $val)
+		foreach($XMLData[$key][$prefType] as $val)
 		{
 			$name = $val['@attributes']['name'];
 			// if(strpos($val['@value'], 'array (') === 0)
@@ -1051,8 +1087,10 @@ class xmlClass
 		}
 
 		$ret = array();
-		
-		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
+
+		// ----------------- Save Core Prefs ---------------------
+
+		if(!empty($xmlArray['prefs']))
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
@@ -1079,6 +1117,40 @@ class xmlClass
 				}
 			}
 		}
+
+
+		 // ---------------   Save Plugin Prefs  ---------------------
+
+		if(!empty($xmlArray['pluginPrefs']))
+		{
+			foreach($xmlArray['pluginPrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'plugin');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getPlugConfig($type)->setPref($pArray);
+				}
+				else // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getPlugConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getPlugConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
+
+
+
 
 		if(vartrue($xmlArray['database']))
 		{

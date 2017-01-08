@@ -54,7 +54,7 @@ $NAVIGATION_TEMPLATE['main']['end'] = '</ul>';
 
 // Sub menu 
 $NAVIGATION_TEMPLATE['main']['submenu_start'] = '
-		<ul class="dropdown-menu" role="menu" >
+		<ul class="dropdown-menu submenu-start submenu-level-{LINK_DEPTH}" role="menu" >
 ';
 
 // Sub menu Link 
@@ -70,12 +70,17 @@ $NAVIGATION_TEMPLATE['main']['submenu_item_active'] = '
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
 			</li>
 ';
+$NAVIGATION_TEMPLATE['main']['submenu_end'] = '</ul>';
+
+// Sub menu
+$NAVIGATION_TEMPLATE['main']['submenu_lowerstart'] = '
+		<ul class="dropdown-menu submenu-start lower submenu-level-{LINK_DEPTH}" role="menu" >
+';
 
 // Sub Menu Link which has a sub menu. 
 $NAVIGATION_TEMPLATE['main']['submenu_loweritem'] = '
-			<li role="menuitem" class="dropdown-submenu">
+			<li role="menuitem" class="dropdown-submenu lower">
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
-				<span class="caret"></span>
 				{LINK_SUB}
 			</li>
 ';
@@ -83,13 +88,12 @@ $NAVIGATION_TEMPLATE['main']['submenu_loweritem'] = '
 $NAVIGATION_TEMPLATE['main']['submenu_loweritem_active'] = '
 			<li role="menuitem" class="dropdown-submenu active">
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
-				<span class="caret"></span>
 				{LINK_SUB}
 			</li>
 ';
 
+$NAVIGATION_TEMPLATE['main']['submenu_lowerend'] = '</ul>';
 
-$NAVIGATION_TEMPLATE['main']['submenu_end'] = '</ul>';
 
 
 // TEMPLATE FOR {NAVIGATION=side}

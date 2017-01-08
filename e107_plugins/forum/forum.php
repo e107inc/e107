@@ -330,7 +330,7 @@ if(empty($FORUM_TEMPLATE))
 	}
 }
 
-if(is_array($FORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // new v2.x format. 
+if(is_array($FORUM_TEMPLATE)) // new v2.x format.
 {
 
 	if(varset($FORUM_TEMPLATE['main-start'])) // correction of previous v2.x setup.

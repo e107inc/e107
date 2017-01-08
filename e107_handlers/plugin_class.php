@@ -306,7 +306,7 @@ class e107plugin
 					$needed[$path] = $data;		
 				} 
 				
-				if($curVal < $fileVal) // check pref version against file version. 
+				if(version_compare($curVal,$fileVal,"<")) // check pref version against file version.
 				{
 					
 					if($mode == 'boolean')
@@ -543,6 +543,11 @@ class e107plugin
 			$this->rebuildUrlConfig();
 			e107::getConfig('core')->save(true,false,false);
 		}
+
+		// Triggering system (post) event.
+		e107::getEvent()->trigger('system_plugins_table_updated', array(
+			'mode' => $mode,
+		));
 	}
 
 	function manage_category($cat)

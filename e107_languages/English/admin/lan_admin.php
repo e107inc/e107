@@ -1,6 +1,10 @@
 <?php
 /*
- * Copyright (C) 2008-2016 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Admin Language File
  *
@@ -125,7 +129,7 @@ define("ADLAN_119", "Unchecked submitted links");
 
 define("ADLAN_120", "There is a database update available, please click button to install ...");
 define("ADLAN_121", "Install");
-
+define("ADLAN_122", "A new update is ready to install! Click to unzip and install v [x]");
 
 //define("ADLAN_123", "Unchecked submitted articles");
 //define("ADLAN_124", "Unchecked submitted reviews");
@@ -185,6 +189,14 @@ define("ADLAN_163", "A newer version of an installed plugin is available:");
 define("ADLAN_164", "Successfully logged in as [x].");
 define("ADLAN_165", "Powered by e107");
 define("ADLAN_166", "Return to Website");
+define("ADLAN_167", "Pending Mailshots");
+
+define("ADLAN_168", "Visitors");//infopanel
+define("ADLAN_169", "Unique Visitors");
+define("ADLAN_170", "These stats are for demonstration purposes only.");
+define("ADLAN_171", "Install Site Stats Plugin");
+
+define("ADLAN_185", "Toggle Sidebar");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
@@ -226,13 +238,20 @@ Below is the list of files that could potentially be malicious:");
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
+define("LAN_LAST_UPDATED","Last Updated");
+define("LAN_UPDATE_AVAILABLE","Update Available");
 define("LAN_ADD", "Add");
+define("LAN_ADD_MORE", "Add More");
+define("LAN_MULTIPLE_CHOICE", "Multiple Choice");
+
 define("LAN_SAVE","Save");
 define("LAN_SAVED","Saved");
 define("LAN_SETSAVED","Your settings have been saved");
 define("LAN_NOCHANGE_NOTSAVED", "Nothing changed - not saved");
 define("LAN_CONFIRMDEL","Please confirm you wish to delete");
 define("LAN_ERRORS", "Errors");
+define("LAN_MESSAGES", "Messages");
+define("LAN_DATA", "Data");
 
 define("LAN_OPTIONS","Options");
 define("LAN_PREFS","Preferences");
@@ -298,7 +317,7 @@ define("LAN_LANG","Lang.");
 define("LAN_APPROVE","Approve");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
-define("LAN_ACTIVE","Active");
+//define("LAN_ACTIVE","Active");//English.php 
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
@@ -333,7 +352,7 @@ define("LAN_CONFIGURE", "Configure");
 define("LAN_NOPERMISSION", "no permissions");
 
 define("LAN_CREDITS","Credits");
-define("LAN_NEWVERSION","New Version Available");
+define("LAN_NEWVERSION","e107 v[x] Available");
 
 define("LAN_CHECKALL", "Check All");
 define("LAN_UNCHECKALL", "Uncheck All");
@@ -365,6 +384,8 @@ define("LAN_ID", "ID");
 
 
 define("LAN_VISIBILITY", "Visibility");
+define("LAN_VISIBLE_TO", "Visible To");
+
 define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
 
@@ -427,6 +448,8 @@ define("LAN_UI_PREF_LABEL", "Settings");
 define("LAN_UI_DELETE_LABEL", "Confirm Delete");
 define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
+define("LAN_UI_DELETED", "[x] record(s) successfully deleted!");
+define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
 define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");
@@ -461,6 +484,7 @@ define("LAN_FOLDER", "Folder");
 define("LAN_PERSONALIZE_ICONS", "Personalize Icons");
 define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
+define("LAN_COMMENTS_ALLOWED", "Comments Allowed");
 define("LAN_PERSONALIZE", "Personalize");
 define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
 define("LAN_DISPLAY_COLUMNS", "Display Columns");
@@ -478,3 +502,8 @@ define("LAN_GO_TO_LIST", "go to list");
 define("LAN_CREATE_ANOTHER", "create another");
 define("LAN_EDIT_CURRENT", "edit current");
 define("LAN_MAINTENANCE", "Maintenance");
+define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
+define("LAN_CHANGE_LANGUAGE", "Change Language");
+
+define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
+

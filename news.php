@@ -27,6 +27,10 @@ if(!deftrue('e_LEGACY_NEWS')) // subject to removal at any time.
 	exit;
 }
 
+
+// --------------------- everything below this point will be removed in future --------------------------
+
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");

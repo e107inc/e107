@@ -13,8 +13,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-error_reporting(E_ALL);
-
 
 // require_once(e_HANDLER.'user_handler.php'); //shouldn't be necessary
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
