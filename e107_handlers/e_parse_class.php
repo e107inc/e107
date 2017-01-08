@@ -3654,15 +3654,15 @@ class e_parser
 		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
 		$linkStart  = '';
 		$linkEnd    =  '';
-		
-		if(!isset($userData['user_image']) && USERID)
+
+		if($userData === null && USERID)
 		{
 			$userData = array();
 			$userData['user_id']    = USERID;
 			$userData['user_image']	= USERIMAGE;
 			$userData['user_name']	= USERNAME; 
 		}
-		
+
 		
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
 		
