@@ -238,6 +238,7 @@ Below is the list of files that could potentially be malicious:");
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
+define("LAN_INSTALLED","Installed");//TODO elsewhere
 define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
 define("LAN_ADD", "Add");
@@ -295,6 +296,7 @@ define("LAN_PLUGIN","Plugin");
 define("LAN_PLUGIN_FOLDER","Plugin Folder");
 define("LAN_THEMES","Themes");
 define("LAN_THEME","Theme");
+define("LAN_CORE","Core");
 define("LAN_LATEST_e107_NEWS","Latest e107 News");
 define("LAN_WEBSITE_STATUS","Website Status");
 define("LAN_STATS","Stats");
