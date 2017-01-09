@@ -680,7 +680,7 @@ if (isset($_POST['set_initial_classes']))
 	}
 	else
 	{
-		$message = UCSLAN_42;
+		$message = LAN_NOCHANGE_NOTSAVED;
 	}
 }
 */
@@ -1047,7 +1047,7 @@ else
 {
 	$text .= $frm->admin_button('createclass', LAN_CREATE, 'create');
 	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
- //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />
+ //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".LAN_CREATE."' />
   //	&nbsp;&nbsp;<input class='btn' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
 	    <input type='hidden' name='userclass_id' value='0' />";
