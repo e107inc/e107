@@ -197,6 +197,7 @@ define("ADLAN_170", "These stats are for demonstration purposes only.");
 define("ADLAN_171", "Install Site Stats Plugin");
 
 define("ADLAN_185", "Toggle Sidebar");
+define("ADLAN_186", "The following old files can be safely deleted from your system:");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
@@ -486,24 +487,29 @@ define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
 define("LAN_COMMENTS_ALLOWED", "Comments Allowed");
 define("LAN_PERSONALIZE", "Personalize");
-define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
-define("LAN_DISPLAY_COLUMNS", "Display Columns");
+//define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display"); // Moved to lan_form_handler.php
+//define("LAN_DISPLAY_COLUMNS", "Display Columns"); // Moved to lan_form_handler.php
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
 define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
-define("LAN_AFTER_SUBMIT", "After submit:");
+//define("LAN_AFTER_SUBMIT", "After submit:"); // Moved to lan_form_handler.php
 define("LAN_UNAVAILABLE", "Unavailable");
-define("LAN_READY_UP_FOLDER_FIELDS", "Ready to use upload form fields, optional - file list view");
+//define("LAN_READY_UP_FOLDER_FIELDS", "Ready to use upload form fields, optional - file list view"); // Not used only debug
 define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
 define("LAN_NOT_FOUND", "Not Found!");
-define("LAN_QUICK_VIEW", "Quick View");
-define("LAN_GO_TO_USER_PROFILE", "Go to user profile");
-define("LAN_MULTI_LANGUAGE_FIELD", "Multi-language field");
-define("LAN_GO_TO_LIST", "go to list");
-define("LAN_CREATE_ANOTHER", "create another");
-define("LAN_EDIT_CURRENT", "edit current");
+//define("LAN_QUICK_VIEW", "Quick View"); // Moved to lan_form_handler.php
+//define("LAN_GO_TO_USER_PROFILE", "Go to user profile"); // Moved to lan_form_handler.php
+//define("LAN_MULTI_LANGUAGE_FIELD", "Multi-language field"); // Moved to lan_form_handler.php
+//define("LAN_GO_TO_LIST", "go to list"); // Moved to lan_form_handler.php
+//define("LAN_CREATE_ANOTHER", "create another"); // Moved to lan_form_handler.php
+//define("LAN_EDIT_CURRENT", "edit current"); // Moved to lan_form_handler.php
 define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
 define("LAN_CHANGE_LANGUAGE", "Change Language");
 
 define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
 
+define("LAN_SUBJECT", "Subject");
+define("LAN_ITEM", "Item");
+define("LAN_LOCK", "Lock");
+define("LAN_SYSTEM_USER", "System user");
+define("LAN_ENGINE", "Engine");
