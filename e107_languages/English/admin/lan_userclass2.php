@@ -51,7 +51,7 @@ define("UCSLAN_38", "Initial User Class");
 define("UCSLAN_39", "No classes which can be set");
 define("UCSLAN_40", "Set initial classes");
 define("UCSLAN_41", "Settings updated");
-define("UCSLAN_42", "Nothing changed - not updated");
+//define("UCSLAN_42", "Nothing changed - not updated");//LAN_NOCHANGE_NOTSAVED
 define("UCSLAN_43", "Existing classes: ");
 //define("UCSLAN_44", "None");//LAN_NONE
 define("UCSLAN_45", "Point at which classes set:");
