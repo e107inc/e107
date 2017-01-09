@@ -114,6 +114,7 @@ define("LAN_FILES","Files");
 define("LAN_SIZE", "Size");
 define("LAN_VERSION", "Version");
 define("LAN_DOWNLOAD", "Download");
+define("LAN_WEBSITE", "Website");
 define("LAN_COMMENTS", "Comments");
 define("LAN_LOCATION", "Location");
 define("LAN_NO_RECORDS_FOUND","No Records Found");
