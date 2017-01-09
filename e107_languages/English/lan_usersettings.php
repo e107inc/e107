@@ -110,11 +110,6 @@ define("LAN_USET_40", "The two passwords do not match");			// LAN_105
 define("LAN_USET_41", "Settings updated and saved into database.");	// LAN_150 //TODO Common LAN?
 define("LAN_USET_42", "Mismatch on validation key");
 define("LAN_USET_43", "Error updating user data");
-define("LAN_USET_44", "Click on the avatar to change it");
-define("LAN_USET_45", "OR");
-define("LAN_USET_46", "No Avatars Available");
-define("LAN_USET_47", "Admin-Only Notice: The folder");
-define("LAN_USET_48", "is empty. Upload some default avatars images to this folder for users to choose avatars from.");
 
 // BC for v1.x template
 //TODO Move to usersettings.php with bcDefs() method.
