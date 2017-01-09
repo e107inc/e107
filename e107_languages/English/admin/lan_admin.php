@@ -487,20 +487,20 @@ define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
 define("LAN_COMMENTS_ALLOWED", "Comments Allowed");
 define("LAN_PERSONALIZE", "Personalize");
-define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display");
-define("LAN_DISPLAY_COLUMNS", "Display Columns");
+//define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display"); // Moved to lan_form_handler.php
+//define("LAN_DISPLAY_COLUMNS", "Display Columns"); // Moved to lan_form_handler.php
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
 define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
-define("LAN_AFTER_SUBMIT", "After submit:");
+//define("LAN_AFTER_SUBMIT", "After submit:"); // Moved to lan_form_handler.php
 define("LAN_UNAVAILABLE", "Unavailable");
 define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
 define("LAN_NOT_FOUND", "Not Found!");
-define("LAN_QUICK_VIEW", "Quick View");
-define("LAN_GO_TO_USER_PROFILE", "Go to user profile");
-define("LAN_MULTI_LANGUAGE_FIELD", "Multi-language field");
-define("LAN_GO_TO_LIST", "go to list");
-define("LAN_CREATE_ANOTHER", "create another");
-define("LAN_EDIT_CURRENT", "edit current");
+//define("LAN_QUICK_VIEW", "Quick View"); // Moved to lan_form_handler.php
+//define("LAN_GO_TO_USER_PROFILE", "Go to user profile"); // Moved to lan_form_handler.php
+//define("LAN_MULTI_LANGUAGE_FIELD", "Multi-language field"); // Moved to lan_form_handler.php
+//define("LAN_GO_TO_LIST", "go to list"); // Moved to lan_form_handler.php
+//define("LAN_CREATE_ANOTHER", "create another"); // Moved to lan_form_handler.php
+//define("LAN_EDIT_CURRENT", "edit current"); // Moved to lan_form_handler.php
 define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
 define("LAN_CHANGE_LANGUAGE", "Change Language");
