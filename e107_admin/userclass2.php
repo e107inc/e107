@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2015 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -93,13 +93,13 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 		protected $fields = array(
 			'checkboxes' 		        =>  array ( 'title' => '', 		'type' => null,         'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 			'userclass_id'				=> array('title'=> LAN_ID,		'type' =>'hidden',  	 'data'=>'int', 'width' => '5%',	'thclass' => 'left'),
-			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'tab'=>0, 'data'=>'str', 'width' => '5%',	'thclass' => 'left', 'class' => 'center'),
-			'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true, 'width' => 'auto',	'thclass' => 'left'),
-			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true,'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
-			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'dropdown',	'tab'=>0,'data'=>'int', 'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
-			'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'nobody,public,main,admin,classes,matchclass,member, no-excludes')),
-			'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left'),
-			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'main,admin,nobody,public,classes,matchclass,member, no-excludes')),
+			'userclass_icon' 			=> array('title'=> LAN_ICON,	'type' => 'icon', 		'tab'=>0, 'data'=>'str', 'width' => '5%',	'thclass' => 'left', 'class' => 'center'),
+			'userclass_name'	   		=> array('title'=> LAN_NAME,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true, 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text', 		'tab'=>0,'data'=>'str', 'inline'=>true,'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('size'=>'xxlarge')),
+			'userclass_type' 			=> array('title'=> LAN_TYPE,	'type' => 'dropdown',	'tab'=>0,'data'=>'int', 'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
+			'userclass_editclass' 		=> array('title'=> LAN_MANAGER,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'nobody,public,main,admin,classes,matchclass,member, no-excludes')),
+			'userclass_visibility' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left'),
+			'userclass_parent' 			=> array('title'=> LAN_PARENT,	'type' => 'userclass',	'tab'=>0,'data'=>'int', 'width' => 'auto',	'thclass' => 'left', 'writeParms'=>array('classlist'=>'main,admin,nobody,public,classes,matchclass,member, no-excludes')),
 			'userclass_perms' 			=> array('title'=> "Perms",	'type' => 'hidden',	'tab'=>0,'data'=>'str', 'width' => 'auto',	'thclass' => 'left'),
 
 			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => 'method',		'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'right', 'readParms' => array('deleteClass' => e_UC_NOBODY))
@@ -212,7 +212,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 			$frm = e107::getForm();
 
 
-			$mes->addWarning(UCSLAN_52."<br />".UCSLAN_53);
+			$mes->addWarning(LAN_OPTIONS."<br /><br />".UCSLAN_53);
 
 			$text = "<h4>".LAN_PREFS."</h4>
 			<form method='post' action='".e_SELF."?mode=main&action=options' id='treesetForm'>
@@ -376,7 +376,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 				}
 				else
 				{
-					$text .= UCSLAN_44;
+					$text .= LAN_NONE;
 				}
 
 
@@ -391,7 +391,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 				    <td>".$frm->select('init_class_stage', $initClassStages, $sel_stage)."<span class='field-help'>".UCSLAN_46."</span>
 
 				    </td></tr></table>
-				    <div class='buttons-bar'>".	$frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)."</div>";
+				    <div class='buttons-bar' center>".	$frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)."</div>";
 				}
 				else
 				{
@@ -718,16 +718,16 @@ if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 		//		unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
 		//		save_prefs();
 			}
-			$emessage->add(UCSLAN_3, E_MESSAGE_SUCCESS);
+			$emessage->add(UCSL/AN_3, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-			$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
+			$emessage->add(UCSL/AN_10, E_MESSAGE_ERROR);
 		}
 	}
 	else
 	{
-		$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
+		$emessage->add(UCSL/AN_10, E_MESSAGE_ERROR);
 	}
 }*/
 
@@ -794,8 +794,8 @@ if (isset($_POST['createclass']))		// Add or edit
 			$e_userclass->save_edited_class($class_record);
 			userclass2_adminlog('03',"ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 			$do_tree = TRUE;
-			//$message .= UCSLAN_5;
-			$emessage->add(UCSLAN_5, E_MESSAGE_SUCCESS);
+			//$message .= LAN_UPDATED.': '.LAN_USERCLASS;
+			$emessage->add(LAN_UPDATED.': '.LAN_USERCLASS, E_MESSAGE_SUCCESS);
 		}
 		else
 		{	// Creating new class
@@ -815,8 +815,8 @@ if (isset($_POST['createclass']))		// Add or edit
 						$e_userclass->add_new_class($class_record);
 						userclass2_adminlog("01","ID:{$class_record['userclass_id']} (".$class_record['userclass_name'].")");
 						$do_tree = TRUE;
-						//$message .= UCSLAN_6;
-						$emessage->add(UCSLAN_6, E_MESSAGE_SUCCESS);
+						//$message .= LAN_UPDATED.': '.LAN_USERCLASS;
+						$emessage->add(LAN_UPDATED.': '.LAN_USERCLASS, E_MESSAGE_SUCCESS);
 					}
 				}
 				else
@@ -940,7 +940,7 @@ switch ($action)
 
 	$text .= "
 		<tr>
-		<td>".UCSLAN_12."</td>
+		<td>".LAN_NAME."</td>
 		<td>";
 	if ($fullEdit)
 	{
@@ -954,7 +954,7 @@ switch ($action)
 
 		</tr>
 		<tr>
-		<td>".UCSLAN_13."</td>
+		<td>".LAN_DESCRIPTION."</td>
 		<td><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='{$userclass_description}' />
 		<div class='field-help'>".UCSLAN_31."</div></td>
 		</tr>";
@@ -962,7 +962,7 @@ switch ($action)
 // Userclass icon
 		$text .= "
 		<tr>
-		<td>".UCSLAN_68."</td>
+		<td>".LAN_ICON."</td>
 		<td>".$frm->iconpicker('userclass_icon', $userclass_icon, LAN_SELECT)."
 		<div class='field-help'>".UCSLAN_69."</div></td>
   		</tr>
@@ -970,7 +970,7 @@ switch ($action)
 
 	$text .= "
 		<tr>
-		<td>".UCSLAN_79."</td>
+		<td>".LAN_TYPE."</td>
 		<td>";
 	$classTypes = array(UC_TYPE_STD => UCSLAN_80, UC_TYPE_GROUP => UCSLAN_81);
 	if ($fullEdit)
@@ -992,7 +992,7 @@ switch ($action)
 	// Who can manage class
 	$text .= "
 		<tr id='userclass_type_standard' ".(UC_TYPE_GROUP == $userclass_type ? " style='display:none'" : "").">
-		<td>".UCSLAN_24."</td>
+		<td>".LAN_MANAGER."</td>
 		<td>";
 	  $text .= "<select name='userclass_editclass' class='tbox'>".$e_userclass->vetted_tree('userclass_editclass',array($e_userclass,'select'), $userclass_editclass,'nobody,public,main,admin,classes,matchclass,member, no-excludes').'</select>';
 	$text .= "<div class='field-help'>".UCSLAN_32."</div></td>
@@ -1012,7 +1012,7 @@ switch ($action)
 
 	$text .= "
 		<tr>
-		<td>".UCSLAN_34."</td>
+		<td>".LAN_VISIBILITY."</td>
 		<td>";
 	  $text .= "<select name='userclass_visibility' class='tbox'>".$e_userclass->vetted_tree('userclass_visibility',array($e_userclass,'select'), $userclass_visibility,'main,admin,classes,matchclass,public,member,nobody').'</select>';
 	$text .= "<div class='field-help'>".UCSLAN_33."</div></td>
@@ -1021,7 +1021,7 @@ switch ($action)
 
 	$text .= "
 		<tr>
-		<td>".UCSLAN_35."</td>
+		<td>".LAN_PARENT."</td>
 		<td>";
 	  $text .= "<select name='userclass_parent' class='tbox'>".$e_userclass->vetted_tree('userclass_parent',array($e_userclass,'select'), $userclass_parent,'main,admin,nobody,public,classes,matchclass,member, no-excludes').'</select>';
 //		.r_userclass("userclass_parent", $userclass_parent, "off", "admin,classes,matchclass,public,member").
@@ -1035,9 +1035,9 @@ switch ($action)
 
 if($params == 'edit')
 {
-   	$text .= $frm->admin_button('createclass', UCSLAN_14, 'create');
+   	$text .= $frm->admin_button('createclass', LAN_UPDATE, 'create');
 	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
- //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".UCSLAN_14."' />";
+ //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".LAN_UPDATE."' />";
  //	$text .= "&nbsp;&nbsp;<input class='btn' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
 	$text .= "
 		<input type='hidden' name='userclass_id' value='{$userclass_id}' />
@@ -1045,7 +1045,7 @@ if($params == 'edit')
 }
 else
 {
-	$text .= $frm->admin_button('createclass', UCSLAN_15, 'create');
+	$text .= $frm->admin_button('createclass', LAN_CREATE, 'create');
 	$text .= $frm->admin_button('updatecancel', LAN_CANCEL, 'cancel');
  //	$text .= "<input class='btn' type='submit' id='createclass' name='createclass' value='".UCSLAN_15."' />
   //	&nbsp;&nbsp;<input class='btn' type='submit' id='updatecancel' name='updatecancel' value='".LAN_CANCEL."' />";
@@ -1097,7 +1097,7 @@ unset($title);
 	}
 	else
 	{
-	  $text .= UCSLAN_44;
+	  $text .= LAN_NONE;
 	}
 
 
@@ -1133,7 +1133,7 @@ unset($title);
   case 'debug' :
 //    if (!check_class(e_UC_MAINADMIN)) break;				// Let ordinary admins see this if they know enough to specify the URL
 	$text .= $e_userclass->show_graphical_tree(TRUE);			// Print with debug options
-	$ns->tablerender(UCSLAN_21, $text);
+	$ns->tablerender(LAN_SETTINGS, $text);
 
 	$text = "<table class='table adminlist'><tr><td colspan='5'>Class rights for first 20 users in database</td></tr>
 	<tr><td>User ID</td><td>Disp Name</td><td>Raw classes</td><td>Inherited classes</td><td>Editable classes</td></tr>";
@@ -1148,7 +1148,7 @@ unset($title);
 	  </tr>";
 	}
 	$text .= "</table>";
-	$ns->tablerender(UCSLAN_21, $text);
+	$ns->tablerender(LAN_SETTINGS, $text);
     break;				// End of 'debug'
 
 
@@ -1201,7 +1201,7 @@ unset($title);
 
 	$mes = e107::getMessage();
 
-	$mes->addWarning(UCSLAN_52."<br />".UCSLAN_53);
+	$mes->addWarning(LAN_OPTIONS."<br />".UCSLAN_53);
 
 	$text = "<form method='post' action='".e_SELF."?options{$params}' id='treesetForm'>
 		<table class='table adminform'>
@@ -1408,12 +1408,12 @@ function userclass2_adminmenu()
 	$var['list']['link'] = 'userclass2.php';
 
 
-	$var['config']['text'] = LAN_CREATE; // UCSLAN_25;
+	$var['config']['text'] = LAN_CREATE; // UCSL/AN_25;
 	$var['config']['link'] = 'userclass2.php?config';
 
 //DEPRECATED - use admin->users instead.
 
-//	$var['membs']['text'] = UCSLAN_26;
+//	$var['membs']['text'] = UCSL/AN_26;
 //	$var['membs']['link'] ='userclass2.php?membs';
 
 
@@ -1422,12 +1422,12 @@ function userclass2_adminmenu()
 
 	if (check_class(e_UC_MAINADMIN))
 	{
-		$var['options']['text'] = LAN_PREFS; // UCSLAN_50;
+		$var['options']['text'] = LAN_PREFS; // UCSL/AN_50;
 		$var['options']['link'] ='userclass2.php?options';
 
 		if (defined('UC_DEBUG_OPTS'))
 		{
-			$var['debug']['text'] = UCSLAN_27;
+			$var['debug']['text'] = UCSL/AN_27;
 			$var['debug']['link'] ='userclass2.php?debug';
 
 			$var['test']['text'] = 'Test functions';
@@ -1460,14 +1460,14 @@ class uclass_manager
         $this->fieldpref = (varset($user_pref['admin_userclass_columns'])) ? $user_pref['admin_userclass_columns'] : array("userclass_id","userclass_name","userclass_description");
 
     	$this->fields = array(
-			'userclass_icon' 			=> array('title'=> UCSLAN_68,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),
+			'userclass_icon' 			=> array('title'=> LAN_ICON,	'type' => 'icon', 		'width' => '5%',	'thclass' => 'center', 'class' => 'center'),
 			'userclass_id'				=> array('title'=> LAN_ID,		'type' => 'int', 		'width' => '5%',	'thclass' => 'left'),
-            'userclass_name'	   		=> array('title'=> UCSLAN_12,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
-			'userclass_description'   	=> array('title'=> UCSLAN_13,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
-         	'userclass_editclass' 		=> array('title'=> UCSLAN_24,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
-			'userclass_parent' 			=> array('title'=> UCSLAN_35,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
-            'userclass_visibility' 		=> array('title'=> UCSLAN_34,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
-			'userclass_type' 			=> array('title'=> UCSLAN_79,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
+            'userclass_name'	   		=> array('title'=> LAN_NAME,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
+			'userclass_description'   	=> array('title'=> LAN_DESCRIPTION,	'type' => 'text', 		'width' => 'auto',	'thclass' => 'left'),
+         	'userclass_editclass' 		=> array('title'=> LAN_MANAGER,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
+			'userclass_parent' 			=> array('title'=> LAN_PARENT,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
+            'userclass_visibility' 		=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',	'width' => 'auto',	'thclass' => 'left'),
+			'userclass_type' 			=> array('title'=> LAN_TYPE,	'type' => 'method',		'width' => '10%',	'thclass' => 'left',	'class'=>'left' ),
    			'options' 					=> array('title'=> LAN_OPTIONS, 'type' => null,			'width' => '10%',	'thclass' => 'center last', 'forced'=>TRUE,  'class'=>'right', 'readParms' => array('deleteClass' => e_UC_NOBODY))
 		);
 
@@ -1491,14 +1491,14 @@ class uclass_manager
 		if (!$total = $sql->db_Select('userclass_classes', '*'))
 		{
 			$text = "";
-			$mes->add(UCSLAN_7, E_MESSAGE_INFO);
+			$mes->add(LAN_NO_RECORDS_FOUND, E_MESSAGE_INFO);
 
 		}
 		else
 		{
              $text = "<form method='post' action='".e_SELF."?".e_QUERY."'>
                         <fieldset id='core-userclass-list'>
-						<legend class='e-hideme'>".UCSLAN_5."</legend>
+						<legend class='e-hideme'>".LAN_UPDATED.': '.LAN_USERCLASS."</legend>
 						<table class='table adminlist'>".
 							$frm->colGroup($this->fields,$this->fieldpref).
 							$frm->thead($this->fields,$this->fieldpref).
