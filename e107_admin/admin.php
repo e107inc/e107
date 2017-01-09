@@ -507,7 +507,7 @@ class admin_start
 			$frm = e107::getForm();
 
 			$text = $frm->open('deprecatedFiles', 'post');
-			$text .= "The following old files can be safely deleted from your system: ";
+			$text .= ADLAN_186;
 			$text .= "<ul><li>".implode("</li><li>", $found)."</li></ul>";
 
 			$text .= $frm->button('delete-deprecated',LAN_DELETE,'delete');
