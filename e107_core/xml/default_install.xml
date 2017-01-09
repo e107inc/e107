@@ -96,6 +96,7 @@
 		<core name="e_meta_list"><![CDATA[array (
   'rss_menu' => 'rss_menu',
 )]]></core>
+	<core name="e_module_list"><![CDATA[array ()]]></core>
 		<core name="e_related_list"><![CDATA[array (
   'news' => 'news',
   'page' => 'page',
