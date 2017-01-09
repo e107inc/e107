@@ -33,6 +33,7 @@ class news_front
 	private $text = null;
 	private $pref = array();
 	private $debugInfo = array();
+	private $cacheRefreshTime = false;
 //	private $interval = 1;
 
 	function __construct()
@@ -44,6 +45,7 @@ class news_front
 
 		$this->pref = e107::getPref();
 
+		$this->cacheRefreshTime = vartrue($this->pref['news_cache_timeout'],false);
 		// $this->interval = $this->pref['newsposts']-$this>pref['newsposts_archive'];
 
 		require_once(e_HANDLER."news_class.php");
@@ -258,9 +260,9 @@ class news_front
 		echo "<h4>News Debug Info</h4>";
 		echo "<b>action:</b> ".$this->action."  ";
 		echo "<br /><b>subaction:</b> ".$this->subAction."  ";
-		echo "<br /><b>route</b> ".$this->route."  ";
+		echo "<br /><b>route:</b> ".$this->route."  ";
 		echo "<br /><b>e_QUERY:</b> ".e_QUERY."  ";
-
+		echo "<br /><b>CacheTimeout:</b> ".$this->cacheRefreshTime." ";
 		echo "<br /><b>_GET:</b> ".print_r($_GET,true);
 
 		foreach($this->debugInfo as $key=>$val)
@@ -520,9 +522,9 @@ class news_front
 		$this->addDebug("checkCache", 'true');
 		$e107cache->setMD5(null);
 
-		$cache_data = $e107cache->retrieve($cacheString);
-		$cache_title = $e107cache->retrieve($cacheString."_title");
-		$cache_diz = $e107cache->retrieve($cacheString."_diz");
+		$cache_data = $e107cache->retrieve($cacheString, $this->cacheRefreshTime);
+		$cache_title = $e107cache->retrieve($cacheString."_title", $this->cacheRefreshTime);
+		$cache_diz = $e107cache->retrieve($cacheString."_diz", $this->cacheRefreshTime);
 		$etitle = ($cache_title != "e_PAGETITLE") ? $cache_title : "";
 		$ediz = ($cache_diz != "META_DESCRIPTION") ? $cache_diz : "";
 
