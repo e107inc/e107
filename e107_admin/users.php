@@ -1,9 +1,8 @@
 <?php
-
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2013 e107 Inc (e107.org)
+* Copyright (C) 2008-2017 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -995,7 +994,7 @@ class users_admin_ui extends e_admin_ui
 				}
 				if ($messaccess == '') $messaccess = UCSLAN_12."\n";
 				
-				$message = UCSLAN_3." ".$sysuser->getName().",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN;
+				$message = USRLAN_256." ".$sysuser->getName().",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL." )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN;
 				//    $admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","User class change",str_replace("\n","<br />",$message),FALSE,LOG_TO_ROLLING);
 				
 				$options['mail_subject'] = UCSLAN_2;
@@ -1075,9 +1074,9 @@ class users_admin_ui extends e_admin_ui
 
 		$text .= "	<div class='buttons-bar center'>
 	 					".$frm->hidden('userid', $userid)."
-						".$frm->checkbox_label(UCSLAN_8.'&nbsp;&nbsp;', 'notifyuser', 1)."
-						".$frm->admin_button('etrigger_updateclass', UCSLAN_7, 'update')."
-						".$frm->admin_button('etrigger_back', 'Back', 'cancel')."
+						".$frm->checkbox_label(USRLAN_255.'&nbsp;&nbsp;', 'notifyuser', 1)."
+						".$frm->admin_button('etrigger_updateclass', LAN_NO_RECORDS_FOUND, 'update')."
+						".$frm->admin_button('etrigger_back', LAN_BACK, 'cancel')."
 					</div>
 					</fieldset>
 					</form>
