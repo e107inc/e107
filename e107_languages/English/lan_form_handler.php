@@ -1,12 +1,12 @@
 <?php
-/**
+        /**
 	 * e107 website system
 	 *
 	 * Copyright (C) 2008-2017 e107 Inc (e107.org)
 	 * Released under the terms and conditions of the
 	 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 	 *
-*/
+         */
 
 define("LAN_EFORM_001", "Click on the avatar to change it"); 
 define("LAN_EFORM_002", "Choose Avatar"); 
@@ -24,5 +24,3 @@ define("LAN_EFORM_013", "go to list");
 define("LAN_EFORM_014", "create another");
 define("LAN_EFORM_015", "edit current");
 define("LAN_EFORM_016", "After submit:");
-
-?>
