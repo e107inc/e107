@@ -540,7 +540,7 @@ e107::js('footer-inline', js());
 			}
 			else
 			{
-				$mes->addDebug("User Extended Column deleted from table");
+				$mes->addSucess("User Extended Column deleted from table"); //TODO  LAN
 			}
 
 		}
