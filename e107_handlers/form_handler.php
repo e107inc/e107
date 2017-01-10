@@ -915,7 +915,7 @@ class e_form
 		}
 
 	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
-	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='".LAN_MEDIAMANAGER."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
@@ -1028,7 +1028,10 @@ class e_form
 
 			if(ADMIN)
 			{
-				$text .= "<div class='alert alert-danger'>".LAN_EFORM_006." <b>".e_AVATAR_DEFAULT."</b> ".LAN_EFORM_007."</div>"; 
+				$EAVATAR = "<b>".e_AVATAR_DEFAULT."</b>";
+				$text .= "<div class='alert alert-danger'>";
+				$text .= e107::getParser()->lanVars(LAN_EFORM_006, array('x'=>$EAVATAR));
+				$text .= "</div>"; 
 			}
 
 			$text .= "</div>";
