@@ -8,3 +8,7 @@ e107_media/*
 e107_system/*
 /.settings
 e107_core/override
+install.php_
+e107_plugins/forum/plugin.xml
+e107_plugins/forum/plugin.xml
+e107_plugins/forum/templates/_notes/dwsync.xml

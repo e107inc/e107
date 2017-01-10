@@ -231,5 +231,5 @@ define("FORLAN_213", "Post");
 define("FORLAN_214", "Leave blank to auto-generate it from the title above.");
 define("FORLAN_215", "Not installed!");
 define("FORLAN_216", "(New Parent)");
-
+define("FORLAN_217", "Forum Image");
 ?>

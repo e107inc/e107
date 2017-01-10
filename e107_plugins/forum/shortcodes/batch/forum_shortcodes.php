@@ -331,6 +331,75 @@ class forum_shortcodes extends e_shortcode
 	function sc_parentname()
 	{
 		return $this->var['forum_name'];
+	}	
+	
+	function sc_parentimg($parm = '')
+	{
+		/*
+		$parameters:
+			w => width
+			h => height
+			crop => corp image
+			fmt => format
+				txt => Show Text
+				img => Show Image
+		*/
+		$tp = e107::getParser();
+		$parms = eHelper::scParams($parm);
+		$aSize=array('crop'=>1);		
+		$aSize['w'] = vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth();
+		$aSize['h'] = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight();		
+		$fmt = vartrue($parms['fmt']) ? $parms['fmt'] : "txt";		
+		
+		if($this->var['forum_img']) 
+		{
+			$img=e107::getParser()->toImage($this->var['forum_img'], $aSize);						
+			$txt=$this->var['forum_name'];	
+			
+			$fmt=str_replace('img',$img,$fmt);
+			$fmt=str_replace('txt',$txt,$fmt);
+			$ret=$fmt;
+		}
+		else
+		{
+			 $ret= $this->var['forum_name'];
+		}
+		return $ret;
+	}
+	
+	function sc_forumimg($parm = '')
+	{
+		/*
+		$parameters:
+			w => width
+			h => height
+			crop => corp image
+			fmt => format
+				txt => Show Text
+				img => Show Image
+		*/
+		$tp = e107::getParser();
+		$parms = eHelper::scParams($parm);
+		$aSize=array('crop'=>1);		
+		$aSize['w'] = vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth();
+		$aSize['h'] = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight();	
+		$fmt = vartrue($parms['fmt']) ? $parms['fmt'] : "txt";				
+		if($this->var['forum_img']) 
+		{
+			$img=e107::getParser()->toImage($this->var['forum_img'],$aSize);						
+			$txt=$this->var['forum_name'];			
+			$fmt=str_replace('img',$img,$fmt);
+			$fmt=str_replace('txt',$txt,$fmt);
+			$ret=$fmt;
+		}
+		else
+		{
+			 $ret= $this->var['forum_name'];
+		}
+		
+		$url = e107::url('forum', 'forum', $this->var);
+		return "<a href='".$url."'>{$ret}</a>";
+
 	}
 
 
