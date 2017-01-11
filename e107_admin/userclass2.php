@@ -391,7 +391,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 				    <td>".$frm->select('init_class_stage', $initClassStages, $sel_stage)."<span class='field-help'>".UCSLAN_46."</span>
 
 				    </td></tr></table>
-				    <div class='buttons-bar' 'center'>".	$frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)."</div>";
+				    <div class='buttons-bar center'>".	$frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)."</div>";
 				}
 				else
 				{
