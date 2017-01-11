@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -54,7 +54,7 @@ class banner_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if(!$row['banner_image'])
 		{
-			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".BANNERLAN_39."</a>";
 		}
 	
 		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
@@ -82,17 +82,9 @@ class banner_shortcodes extends e_shortcode
 				break;
 				
 				default:
-					if($row['banner_image'][0] == '{')
-					{
-						$src = $row['banner_image'];
-					}
-					else
-					{
-						$src = e_IMAGE_ABS.'banners/'.$row['banner_image'];
-						$style = "'border:0'";
-					}
-						// Somehow, can't use vartrue core function when referencing $parm['class'], gives bug....
-						$ban_ret = $tp->toImage($src, array('class'=>($parm['class'] == ''?"e-banner img-responsive img-rounded":$parm['class']) , 'alt'=>$row['banner_clickurl'], 'style'=>$style));
+
+						$class = empty($parm['class']) ? "e-banner img-responsive" : $parm['class'];
+						$ban_ret = $tp->toImage($row['banner_image'], array('class'=> $class , 'alt'=>basename($row['banner_image']), 'legacy'=>'{e_IMAGE}banners'));
 
 				break;
 			}

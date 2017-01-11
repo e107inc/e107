@@ -47,7 +47,8 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 {
 	if($_GET['action'] == 'download')
 	{
-		$string =  base64_decode($_GET['src']);	
+		$string =  base64_decode($_GET['src']);
+		$string = $tp->filter($string);
 		parse_str($string, $p);
 		
 	//	print_a($p);
@@ -58,7 +59,7 @@ if(e_AJAX_REQUEST && isset($_GET['action'])) // Ajax
 	
 	
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
-		echo "<pre>Connecting...\n"; flush(); // FIXME change the modal default label, default is Loading...
+		echo "<pre>".EPL_ADLAN_94."\n"; flush(); // FIXME change the modal default label, default is Loading...
 		// download and flush
 	//	$mp->download($p['plugin_id'], $p['plugin_mode'], 'plugin');
 		
@@ -93,7 +94,7 @@ class pluginmanager_form extends e_form
 	//FIXME _ there's a problem with calling this. 
 	function plugin_website($parms, $value, $id, $attributes)
 	{
-		return ($plugURL) ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "";	
+		return (varset($plugURL, false)) ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "";	
 		
 	}
 	
@@ -113,7 +114,7 @@ class pluginmanager_form extends e_form
 		if ($this->plug_vars['administration']['configFile'] && $this->plug['plugin_installflag'] == true)
 		{
 			$conf_file = e_PLUGIN. $this->plug['plugin_path'].'/'.$this->plug_vars['administration']['configFile'];
-			$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($this->plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
+			$conf_title = LAN_CONFIGURE.' '.$tp->toHTML($this->plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 			$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
 			$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 		}
@@ -161,17 +162,18 @@ class pluginmanager_form extends e_form
 		if ($this->plug['plugin_version'] != $this->plug_vars['@attributes']['version'] && $this->plug['plugin_installflag'])
 		{
 		  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$this->plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
+		    e107::getMessage()->addInfo("<b>".$tp->toHtml($this->plug['plugin_name'],false,'TITLE')."</b> is ready to be upgraded. (see below)"); // TODO LAN
+			$text .= "<a class='btn btn-default' href='".e_SELF."?upgrade.{$this->plug['plugin_id']}' title=\"".EPL_UPGRADE." v".$this->plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
 		}
 
 		if ($this->plug['plugin_installflag'] && e_DEBUG == true)
 		{
-				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='Repair plugin settings'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
+				$text .= "<a class='btn btn-default' href='".e_SELF."?repair.".$this->plug['plugin_id']."' title='".LAN_REPAIR_PLUGIN_SETTINGS."'> ".ADMIN_REPAIRPLUGIN_ICON."</a>";
 		}
 
 		if($this->plug['plugin_installflag'] && is_dir($_path.".git"))
 		{
-			$text .=  "<a class='plugin-manager btn btn-default' href='".e_SELF."?pull.".$this->plug['plugin_id']."' title='Sync with Git Repo'> ".ADMIN_GITSYNC_ICON."</a>";
+			$text .=  "<a class='plugin-manager btn btn-default' href='".e_SELF."?pull.".$this->plug['plugin_id']."' title='".LAN_SYNC_WITH_GIT_REPO."'> ".ADMIN_GITSYNC_ICON."</a>";
 		}
 
 
@@ -228,7 +230,7 @@ class pluginManager{
 				"plugin_icon"			=> array("title" => EPL_ADLAN_82, "type"=>"icon", "width" => "5%", "thclass" => "middle center",'class'=>'center', "url" => ""),
 				"plugin_name"			=> array("title" => EPL_ADLAN_10, 'forced'=>true, "type"=>"text", "width" => "auto", 'class'=>'left', "thclass" => "middle", "url" => ""),
  				"plugin_version"		=> array("title" => EPL_ADLAN_11, "type"=>"numeric", "width" => "5%", "thclass" => "middle", "url" => ""),
-    			"plugin_date"			=> array("title" => "Released ", 	"type"=>"text", "width" => "8%", "thclass" => "middle"),
+    			"plugin_date"			=> array("title" => LAN_RELEASED, 	"type"=>"text", "width" => "8%", "thclass" => "middle"),
     			
     			"plugin_folder"			=> array("title" => EPL_ADLAN_64, "type"=>"text", "width" => "10%", "thclass" => "middle"),
 				"plugin_category"		=> array("title" => LAN_CATEGORY, "type"=>"text", "width" => "auto", "thclass" => "middle"),
@@ -305,6 +307,7 @@ class pluginManager{
 
     function pluginObserver()
 	{
+		$tp = e107::getParser();
 
         global $user_pref,$admin_log;
         
@@ -316,7 +319,7 @@ class pluginManager{
 
         if(isset($_POST['etrigger_ecolumns']))
 		{
-			$user_pref['admin_pluginmanager_columns'] = $_POST['e-columns'];
+			$user_pref['admin_pluginmanager_columns'] = $tp->filter($_POST['e-columns']);
 			save_prefs('user');
 		}
 
@@ -343,7 +346,7 @@ class pluginManager{
 
 		if($this->action == 'pull' && !empty($this->id))
 		{
-			$info = e107::getPlugin()->getInfo($this->id);
+			$info = e107::getPlugin()->getinfo($this->id);
 
 			if(!empty($info['plugin_path']))
 			{
@@ -614,7 +617,13 @@ class pluginManager{
 		
 		if($total > $amount)
 		{
-			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode='.$_GET['mode'].'&amp;frm=[FROM]';
+			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
+
+			if(!empty($srch))
+			{
+				$parms .= '&amp;srch='.$srch;
+			}
+
 			$text .= "<div class='control-group form-inline input-inline' style='text-align:center;margin-top:10px'>".$tp->parseTemplate("{NEXTPREV=$parms}",TRUE)."</div>";
 		}
 		
@@ -636,17 +645,37 @@ class pluginManager{
 		}
 		*/
 				
-		$d = http_build_query($data,false,'&');
+
 		//$url = e_SELF."?src=".base64_encode($d);
 	//	$url = e_SELF.'?action=download&amp;src='.base64_encode($d);//$url.'&amp;action=download';
 		$id = 'plug_'.$data['plugin_id'];
 		//<button type='button' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='btn btn-primary e-ajax middle' value='Download and Install' data-src='".$url."' ><span>Download and Install</span></button>
-		$modalCaption = (!empty($data['plugin_price'])) ? "Purchase ".$data['plugin_name']." ".$data['plugin_version'] : 'Downloading and Installing '.$data['plugin_name']." ".$data['plugin_version'];
+		$modalCaption = (!empty($data['plugin_price'])) ? EPL_ADLAN_92." ".$data['plugin_name']." ".$data['plugin_version'] : EPL_ADLAN_230." ".$data['plugin_name']." ".$data['plugin_version'];
 
-		$url = e_SELF.'?mode=download&amp;src='.base64_encode($d);
-		$dicon = '<a title="Download and Install" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
-	
-	
+		$srcData = array(
+			'plugin_id'     => $data['plugin_id'],
+			'plugin_folder' => $data['plugin_folder'],
+			'plugin_price'  => $data['plugin_price'],
+			'plugin_mode'   => $data['plugin_mode'],
+			'plugin_url'    => $data['plugin_url'],
+		);
+
+
+		$d = http_build_query($srcData,false,'&');
+		$url = e_SELF.'?mode=download&src='.base64_encode($d);
+		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
+
+		/*
+
+		// DEBUGGER .
+		$base64 = base64_encode($d);
+		$tmp = base64_decode($base64);
+		parse_str($tmp, $data);
+
+	//  XXX Suhosin has a 512 char limit for $_GET strings.
+		e107::getDebug()->log($data['plugin_name'].' : '.strlen($base64)."<br />".print_a($data,true)); //FIXME - enable when needed to debug.
+		*/
+
 		// Temporary Pop-up version. 
 	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
 		
@@ -664,15 +693,32 @@ class pluginManager{
 		define('e_IFRAME', true);
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 		
 	//	print_a($_GET); 	
 		
 		$string =  base64_decode($_GET['src']);	
 		parse_str($string, $data);
 
+		if(deftrue('e_DEBUG_MARKETPLACE'))
+		{
+			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
+			echo '$_GET[src]: ';
+			print_a($_GET);
+
+			echo 'base64 decoded and parsed as $data:';
+			print_a($data);
+			return false;
+		}
+
+		$pluginFolder = !empty($data['plugin_folder']) ? $tp->filter($data['plugin_folder']) : '';
+		$pluginUrl = !empty($data['plugin_url']) ? $tp->filter($data['plugin_url']) : '';
+		$pluginID = !empty($data['plugin_id']) ? $tp->filter($data['plugin_id']) : '';
+		$pluginMode = !empty($data['plugin_mode']) ? $tp->filter($data['plugin_mode']) : '';
+
 		if(!empty($data['plugin_price']))
 		{
-			e107::getRedirect()->go($data['plugin_url']);
+			e107::getRedirect()->go($pluginUrl);
 			return true;
 		}
 
@@ -684,9 +730,10 @@ class pluginManager{
 		// Server flush useless. It's ajax ready state 4, we can't flush (sadly) before that (at least not for all browsers) 
 	 	$mes->addSuccess(EPL_ADLAN_94);
 
-		if($mp->download($data['plugin_id'], $data['plugin_mode'], 'plugin'))
+		if($mp->download($pluginID, $pluginMode, 'plugin'))
 		{
-			$text = e107::getPlugin()->install($data['plugin_folder']); 
+			$this -> pluginCheck(true); // rescan the plugin directory
+			$text = e107::getPlugin()->install($pluginFolder);
 
 			$mes->addInfo($text); 
 			echo $mes->render('default', 'success'); 
@@ -702,7 +749,7 @@ class pluginManager{
 		
 		
 		
-		$text ="<iframe src='".$data['plugin_url']."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";	
+		$text ="<iframe src='".$pluginUrl."' style='width:99%; height:500px; border:0px'>Loading...</iframe>";
 	//	print_a($data); 
 		$text .= $frm->open('upload-url-form','post');
 		
@@ -729,11 +776,22 @@ class pluginManager{
 			$eplug_folder = '';
 			if(!isset($_POST['uninstall_confirm']))
 			{	// $id is already an integer
-				$this->pluginConfirmUninstall($this->id);
+				$this->pluginConfirmUninstall();
    				return;
 			}
 
 			$plug = $plugin->getinfo($this->id);
+
+		// Check if plugin is being used by another plugin before uninstalling it.
+		if(isset($plug['plugin_path']))
+		{
+			if ($plugin->isUsedByAnotherPlugin($plug['plugin_path']))
+			{
+				$this->action = 'installed'; // Render plugin list.
+				return;
+			}
+		}
+
 			$text = '';
 			//Uninstall Plugin
 			if ($plug['plugin_installflag'] == TRUE )
@@ -744,10 +802,21 @@ class pluginManager{
 				if(file_exists($_path.'plugin.xml'))
 				{
 					unset($_POST['uninstall_confirm']);
-					$text .= $plugin->install_plugin_xml($this->id, 'uninstall', $_POST); //$_POST must be used.
+					$plugin->install_plugin_xml($this->id, 'uninstall', $tp->filter($_POST)); //$_POST must be used.
 				}
 				else
 				{	// Deprecated - plugin uses plugin.php
+					$eplug_table_names = null;
+					$eplug_prefs = null;
+					$eplug_comment_ids= null;
+					$eplug_array_pref= null;
+					$eplug_menu_name = null;
+					$eplug_link = null;
+					$eplug_link_url = null;
+					$eplug_link_name = null;
+					$eplug_userclass = null;
+					$eplug_version = null;
+
 					include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 					$func = $eplug_folder.'_uninstall';
@@ -763,7 +832,7 @@ class pluginManager{
 							$result = $plugin->manage_tables('remove', $eplug_table_names);
 							if ($result !== TRUE)
 							{
-								$text .= EPL_ADLAN_27.' <b>'.$mySQLprefix.$result.'</b> - '.EPL_ADLAN_30.'<br />';
+								$text .= EPL_ADLAN_27.' <b>'.MPREFIX.$result.'</b> - '.EPL_ADLAN_30.'<br />';
 							}
 							else
 							{
@@ -797,7 +866,7 @@ class pluginManager{
 
 					if ($eplug_menu_name)
 					{
-						$sql->db_Delete('menus', "menu_name='{$eplug_menu_name}' ");
+						$sql->delete('menus', "menu_name='{$eplug_menu_name}' ");
 					}
 
 					if ($eplug_link)
@@ -846,7 +915,7 @@ class pluginManager{
 
 			$this->show_message($text, E_MESSAGE_SUCCESS);
 		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
-			$text = '';
+
 			$this->action = 'installed';
 			return;
 
@@ -880,12 +949,12 @@ class pluginManager{
 			
 			echo $mes->render(); 
 			
-			return; 
+			return true;
 
 			// ----------------- Everything below is unused. 
-			
+	/*
 			extract($_FILES);
-			/* check if e_PLUGIN dir is writable ... */
+
 			if(!is_writable(e_PLUGIN))
 			{
 				// still not writable - spawn error message 
@@ -949,7 +1018,7 @@ class pluginManager{
 						exit;
 					}
 
-					// ok it looks like the unarc succeeded - continue */
+					// ok it looks like the unarc succeeded - continue
 
 					// get folder name ...  
 					
@@ -957,24 +1026,24 @@ class pluginManager{
 
 					if(file_exists(e_PLUGIN.$folderName."/plugin.php") || file_exists(e_PLUGIN.$folderName."/plugin.xml"))
 					{
-						/* upload is a plugin */
+
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
 					}
 					elseif(file_exists(e_PLUGIN.$folderName."/theme.php") || file_exists(e_PLUGIN.$folderName."/theme.xml"))
 					{
-						/* upload is a menu */
+
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_45);
 					}
 					else
 					{
-						/* upload is unlocatable */
+						// upload is unlocatable
 						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_98.' '.$fileList[0]['stored_filename']);
 					}
 
-					/* attempt to delete uploaded archive */
+					// attempt to delete uploaded archive
 					@unlink(e_PLUGIN.$archiveName);
 				}
-			}
+			}*/
    }
 
 
@@ -983,7 +1052,7 @@ class pluginManager{
 
    function pluginInstall()
    {
-        global $plugin,$admin_log,$eplug_folder;
+        global $plugin;
 		$text = $plugin->install_plugin($this->id);
 		
 		$log = e107::getAdminLog();
@@ -1020,6 +1089,8 @@ class pluginManager{
 	  	$sql 		= e107::getDb();
    		$mes 		= e107::getMessage(); 
 		$plug 		= $plugin->getinfo($this->id);
+
+		$text = '';
 
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 		if(file_exists($_path.'plugin.xml'))
@@ -1174,7 +1245,7 @@ class pluginManager{
 
 			if(!is_writable(e_PLUGIN))
 			{
-			   	e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_44);
+			   	$text = EPL_ADLAN_44;
 			}
 			else
 			{
@@ -1213,19 +1284,27 @@ class pluginManager{
 
 // -----------------------------------------------------------------------------
 
+
+
+
 	function pluginRenderList() // Uninstall and Install sorting should be fixed once and for all now !
 	{
 
 		global $plugin;
 		$frm = e107::getForm();
-		$e107 = e107::getInstance();
 		$mes = e107::getMessage();
 
 		if($this->action == "" || $this->action == "installed")
 		{
 			$installed = $plugin->getall(1);
+
+			$mp = $this->getMarketplace();
+
+			$versions = $mp->getVersionList();
+
+		//	print_a($versions);
 			$caption = EPL_ADLAN_22;
-			$pluginRenderPlugin = $this->pluginRenderPlugin($installed);
+			$pluginRenderPlugin = $this->pluginRenderPlugin($installed, $versions);
 			$button_mode = "uninstall-selected";
 			$button_caption = EPL_ADLAN_85;
 			$button_action = "delete";
@@ -1281,7 +1360,7 @@ class pluginManager{
 
 // -----------------------------------------------------------------------------
 
-	function pluginRenderPlugin($pluginList)
+	function pluginRenderPlugin($pluginList, $versions = array())
 	{
 			global $plugin; 
 			
@@ -1334,7 +1413,7 @@ class pluginManager{
 					if ($plug_vars['administration']['configFile'] && $plug['plugin_installflag'] == true)
 					{
 						$conf_file = e_PLUGIN.$plug['plugin_path'].'/'.$plug_vars['administration']['configFile'];
-						$conf_title = LAN_CONFIGURE.' '.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
+						$conf_title = LAN_CONFIGURE.' '.$tp->toHTML($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
 					//	$plugin_icon = "<a title='{$conf_title}' href='{$conf_file}' >".$plugin_icon."</a>";
 						$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='{$conf_file}' >".ADMIN_CONFIGURE_ICON."</a>";
 					}
@@ -1383,7 +1462,7 @@ class pluginManager{
 					'plugin_description'	=> $description,
 					'plugin_compatible'		=> $this->compatibilityLabel($plug_vars['@attributes']['compatibility']),
 				
-					'plugin_website'		=> vartrue($row['authorUrl']),
+					'plugin_website'		=> vartrue($plug['authorUrl']),
 			//		'plugin_url'			=> vartrue($plugURL), // ; //  ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "",
 					'plugin_notes'			=> ''
 					);	
@@ -1393,107 +1472,16 @@ class pluginManager{
 					$pgf->plug		= $plug;
 					$text 			.= $pgf->renderTableRow($this->fields, $this->fieldpref, $data, 'plugin_id');
 
-
 /*
-
-					//LEGACY CODE 
-
-
-
-
-					$text .= "<tr>";
-
-					if(varset($this-> fields['checkboxes']))
+					$folder = $plug['plugin_path'];
+					if(!empty($versions[$folder]['version']) && version_compare( $plug['plugin_version'], $versions[$folder]['version'], '<'))
 					{
-                 		$rowid = "checkboxes[".$plug['plugin_id']."]";
-                		$text .= "<td class='center middle'>".$frm->checkbox($rowid, $plug['plugin_id'])."</td>\n";
-					}
+						$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
 
-				//	$text .= (in_array("plugin_status",$this->fieldpref)) ? "<td class='center'>".$img."</td>" : "";
-				
-			
-                    $text .= (in_array("plugin_icon",$this->fieldpref)) ? "<td class='center middle'>".$plugin_icon."</td>" : "";
-                    $text .= (in_array("plugin_name",$this->fieldpref)) ? "<td class='middle'>".$plugName."</td>" : "";
-                    $text .= (in_array("plugin_version",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_version']."</td>" : "";
-					$text .= (in_array("plugin_date",$this->fieldpref)) ? "<td class='middle'>".$plugDate."</td>" : "";
-					
-					$text .= (in_array("plugin_folder",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_path']."</td>" : "";
-					$text .= (in_array("plugin_category",$this->fieldpref)) ? "<td class='middle'>".$plug['plugin_category']."</td>" : "";
-                    $text .= (in_array("plugin_author",$this->fieldpref)) ? "<td class='middle'><a href='mailto:".$plugEmail."' title='".$plugEmail."'>".$plugAuthor."</a>&nbsp;</td>" : "";
-                    $text .= (in_array("plugin_website",$this->fieldpref)) ? "<td class='center middle'>".($plugURL ? "<a href='{$plugURL}' title='{$plugURL}' >".ADMIN_URL_ICON."</a>" : "")."</td>" : "";
-
-                   	$text .= (in_array("plugin_compatible",$this->fieldpref)) ? "<td class='center middle'>".$this->compatibilityLabel($plug_vars['@attributes']['compatibility'])."</td>" : "";
-					
-					$text .= (in_array("plugin_description",$this->fieldpref)) ? "<td class='middle'>".$description."</td>" : "";
-                 	$text .= (in_array("plugin_compliant",$this->fieldpref)) ? "<td class='center middle'>".((varset($plug_vars['compliant']) || varsettrue($plug_vars['@attributes']['xhtmlcompliant'])) ? ADMIN_TRUE_ICON : "&nbsp;")."</td>" : "";
-	     			$text .= (in_array("plugin_notes",$this->fieldpref)) ? "<td class='center middle'>".($plugReadme ? "<a href='".e_PLUGIN.$plug['plugin_path']."/".$plugReadme."' title='".$plugReadme."'>".ADMIN_INFO_ICON."</a>" : "&nbsp;")."</td>" : "";
-			
-
-
-				
-
-
-                	// Plugin options Column --------------
-
-   					$text .= "<td class='options center middle'>
-   					<div class='btn-group'>".$plugin_config_icon;
-
-
-						if ($plug_vars['@attributes']['installRequired'])
-						{
-							if ($plug['plugin_installflag'])
-							{
-						  		$text .= ($plug['plugin_installflag'] ? "<a class='btn' href=\"".e_SELF."?uninstall.{$plug['plugin_id']}\" title='".EPL_ADLAN_1."'  >".ADMIN_UNINSTALLPLUGIN_ICON."</a>" : "<a class='btn' href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>");
-
-                             //   $text .= ($plug['plugin_installflag'] ? "<button type='button' class='delete' value='no-value' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_1."</span></button>" : "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>");
-								if (PLUGIN_SHOW_REFRESH && !varsettrue($plug_vars['plugin_php']))
-								{
-									$text .= "<br /><br /><input type='button' class='btn button' onclick=\"location.href='".e_SELF."?refresh.{$plug['plugin_id']}'\" title='".'Refresh plugin settings'."' value='".'Refresh plugin settings'."' /> ";
-								}
-							}
-							else
-							{
-							  //	$text .=  "<input type='button' class='btn' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />";
-							  //	$text .= "<button type='button' class='update' value='no-value' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\"><span>".EPL_ADLAN_0."</span></button>";
-                            	$text .= "<a class='btn' href=\"".e_SELF."?install.{$plug['plugin_id']}\" title='".EPL_ADLAN_0."' >".ADMIN_INSTALLPLUGIN_ICON."</a>";
-							}
-						}
-						else
-						{
-							if ($plug_vars['menuName'])
-							{
-								$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
-							}
-							else
-							{
-								$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
-								if($plug['plugin_installflag'] == false)
-								{					
-									e107::getDb()->db_Delete('plugin', "plugin_installflag=0 AND (plugin_path='{$plug['plugin_path']}' OR plugin_path='{$plug['plugin_path']}/' )  ");
-								}
-							}
-						}
-
-						if ($plug['plugin_version'] != $plug_vars['@attributes']['version'] && $plug['plugin_installflag'])
-						{
-						  //	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-							$text .= "<a class='btn' href='".e_SELF."?upgrade.{$plug['plugin_id']}' title=\"".EPL_UPGRADE." to v".$plug_vars['@attributes']['version']."\" >".ADMIN_UPGRADEPLUGIN_ICON."</a>";
-						}
-
-					$text .="</div></td>";
-              //      $text .= "</tr>";
-
-
-
-
-*/
-
-
-
-
-
-
-
+						$lan = "A newer version of [x] is available for download.";
+						e107::getMessage()->addInfo($tp->lanVars($lan,$link));
+						e107::getMessage()->addDebug("Local version: ".$plug['plugin_version']." Remote version: ".$versions[$folder]['version']);
+					}*/
 
 				}
 			}
@@ -1629,7 +1617,7 @@ class pluginManager{
 				}
 
 				$opts['delete_ipool'] = array(
-					'label'			=>'Remove icons from Media-Manager',
+					'label'			=> EPL_ADLAN_231,
 					'preview'		=> $iconText,
 					'helpText'		=> EPL_ADLAN_79,
 					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
@@ -1784,9 +1772,11 @@ class pluginLanguage
 	function __construct()
 		{
 		
-			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
+			if(!empty($_GET['newplugin']) && $_GET['step']==2)
 			{
-				return $this->step2($_GET['newplugin']);	
+				$plugin = e107::getParser()->filter($_GET['newplugin'],'file');
+				$this->step2($plugin);
+				return false;
 			}
 			
 		
@@ -1831,7 +1821,7 @@ class pluginLanguage
 		
 			$this->renderResults(); 
 
-			
+			return true;
 		}
 		
 		
@@ -2238,12 +2228,12 @@ class pluginBuilder
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
-			if(vartrue($_GET['newplugin']))
+			if(!empty($_GET['newplugin']))
 			{
-				$this->pluginName = $_GET['newplugin'];
+				$this->pluginName = e107::getParser()->filter($_GET['newplugin'],'file');
 			}
 			
-			if(vartrue($_GET['createFiles']))
+			if(!empty($_GET['createFiles']))
 			{
 				$this->createFiles	= true; 
 			}
@@ -2264,7 +2254,7 @@ class pluginBuilder
 
 
 			
-			if(vartrue($_GET['newplugin']) && $_GET['step']==2)
+			if(!empty($_GET['newplugin']) && $_GET['step']==2)
 			{
 				return $this->step2();	
 			}
@@ -2314,12 +2304,12 @@ class pluginBuilder
 						</colgroup>
 				<tr>
 					<td>".EPL_ADLAN_107."</td>
-					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->checkbox('createFiles',1,1,'Create Files').$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_232).$frm->close()."</td>
 				</tr>
 				
 				<tr>
 					<td>".EPL_ADLAN_108."</td>
-					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other','Go')."</div> ".$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->close()."</td>
 				</tr>";
 				
 					
@@ -2402,7 +2392,7 @@ class pluginBuilder
 			$tp = e107::getParser();
 
 			
-			$newplug = $tp->filter($_GET['newplugin']);
+			$newplug = $tp->filter($_GET['newplugin'],'file');
 			$this->pluginName = $newplug;
 
 			$sqlFile = e_PLUGIN.$newplug."/".$newplug."_sql.php";
@@ -2444,7 +2434,7 @@ class pluginBuilder
 
 
 			$text .= "<li><a data-toggle='tab'  href='#preferences'>".LAN_PREFS."</a></li>";
-			$text .= "<li><a data-toggle='tab'  href='#addons'>Addons</a></li>"; //TODO LAN
+			$text .= "<li><a data-toggle='tab'  href='#addons'>".LAN_ADDONS."</a></li>"; //TODO LAN
 
 			
 			$text .= "</ul>";
@@ -2591,13 +2581,13 @@ class pluginBuilder
 
 			foreach($list as $addon)
 			{
-
+				$addonDest = str_replace("_blank",$this->pluginName,$addon);
 				$source         = e_PLUGIN."_blank/".$addon.".php";
-				$destination    = e_PLUGIN.$this->pluginName. "/".$addon.".php";
+				$destination    = e_PLUGIN.$this->pluginName. "/".$addonDest.".php";
 
 				if(file_exists($destination))
 				{
-					$result[] = "Skipped (already exists) : ".$addon;
+					$result[] = "Skipped (already exists) : ".$addonDest;
 					continue;
 				}
 
@@ -2609,12 +2599,12 @@ class pluginBuilder
 					{
 						if(file_put_contents($destination,$content))
 						{
-							$result[] = LAN_CREATED." : ".$addon;
+							$result[] = LAN_CREATED." : ".$addonDest;
 						}
 					}
 					else
 					{
-						$result[] = "Skipped (already exists) : ".$addon;
+						$result[] = "Skipped (already exists) : ".$addonDest;
 					}
 				}
 				else
@@ -2638,11 +2628,23 @@ class pluginBuilder
 			$frm = e107::getForm();
 			$text = "<table class='table table-striped adminlist' >";
 
-			$setupDiz = "Create default table data during install, upgrade, uninstall etc";
 
-			array_unshift($list,$this->pluginName.'_setup');
+		//Todo LANS
+			$dizOther = array(
+				'_blank' => "Simple frontend script",
+				'_blank_setup' => "Create default table data during install, upgrade, uninstall etc",
+				'_blank_menu' => "Menu item for use in the menu manager."
+			);
+
+			array_unshift($list,'_blank', '_blank_setup', '_blank_menu');
 
 			$templateFiles = scandir(e_PLUGIN."_blank");
+
+
+
+	//print_a($list);
+		//	$list[] = "_blank";
+		//	$list[] = "_blank_setup";
 
 			foreach($list as $v)
 			{
@@ -2652,12 +2654,13 @@ class pluginBuilder
 					continue;
 				}
 
-
-				$diz = ($v == $this->pluginName.'_setup') ? $setupDiz : $plg->getAddonsDiz($v);
+				$diz = !empty($dizOther[$v]) ? $dizOther[$v] : $plg->getAddonsDiz($v);
+				$label = str_replace("_blank", $this->pluginName, $v);
+				$id = str_replace('_blank', 'blank', $v);
 
 				$text .= "<tr>";
-				$text .= "<td>".$frm->checkbox('addons[]',$v,false, $v)."</td>";
-				$text .= "<td><label for='".$frm->name2id('addons-'.$v)."'>".$diz."</label></td>";
+				$text .= "<td>".$frm->checkbox('addons[]',$v,false,$label)."</td>";
+				$text .= "<td><label for='".$frm->name2id('addons-'.$id)."'>".$diz."</label></td>";
 				$text .= "</tr>";
 			}
 
@@ -2868,7 +2871,7 @@ class pluginBuilder
 					$default 	= '1.0';
 					$required 	= true;
 					$help 		= EPL_ADLAN_138;
-					$pattern	= "^[\d]{1,2}\.[\d]{1,2}$";
+					$pattern	= "^[\d]{1,2}\.[\d]{1,2}(\.[\d]{1,2})?$";
 					$xsize		= 'small';
 				break;
 
@@ -2904,7 +2907,7 @@ class pluginBuilder
 					$required 	= true;
 					$size 		= 130;
 					$placeholder= " ";
-					$pattern	= "[A-Za-z \.0-9]*";
+					$pattern	= "[A-Za-z -\.0-9]*";
 					$xsize		= 'block-level';
 				break;	
 
@@ -2929,7 +2932,7 @@ class pluginBuilder
 					$required 	= true;
 					$size 		= 100;
 					$placeholder = " ";
-					$pattern	= "[A-Za-z \.0-9]*";
+					$pattern	= "[A-Za-z -\.0-9]*";
 					$xsize		= 'block-level';
 				break;
 				
@@ -2953,7 +2956,7 @@ class pluginBuilder
 			switch ($type) 
 			{
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req . $sz);		
+					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd&return=string'.$req . $sz);
 				break;
 				
 				case 'description':
@@ -3033,8 +3036,10 @@ class pluginBuilder
 				
 			}
 			
-			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHtml($newArray['DESCRIPTION_DESCRIPTION'],true));
-			
+			$newArray['DESCRIPTION_DESCRIPTION'] = strip_tags($tp->toHTML($newArray['DESCRIPTION_DESCRIPTION'],true));
+
+			$_POST['pluginPrefs'] = $tp->filter($_POST['pluginPrefs']);
+
 			foreach($_POST['pluginPrefs'] as $val)
 			{
 				if(vartrue($val['index']))
@@ -3586,23 +3591,25 @@ TEMPLATE;
 
 		function step4()
 		{
-			
-			$pluginTitle = $_POST['xml']['main-name'] ;
+			$tp = e107::getParser();
+			$pluginTitle = $tp->filter($_POST['xml']['main-name']);
 			
 			if($_POST['xml'])
 			{
+				$_POST['xml'] = $tp->filter($_POST['xml']);
 				$xmlText =	$this->createXml($_POST['xml']);
 			}
 					
 			if(!empty($_POST['addons']))
 			{
+				$_POST['addons'] = $tp->filter($_POST['addons']);
 				$addonResults = $this->createAddons($_POST['addons']);
 			}
 			
 			
 			
 			unset($_POST['step'],$_POST['xml'], $_POST['addons']);
-		$thePlugin = $_POST['newplugin'];
+		$thePlugin = $tp->filter($_POST['newplugin'],'file');
 
 $text = "\n
 // Generated e107 Plugin Admin Area 
@@ -3631,6 +3638,9 @@ class ".$thePlugin."_adminArea extends e_admin_dispatcher
 			{
 				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
 				{
+
+					$vars['mode'] = $tp->filter($vars['mode']);
+
 	$text .= "
 		'".$vars['mode']."'	=> array(
 			'controller' 	=> '".$table."',
@@ -3662,6 +3672,8 @@ $text .= "
 			{
 				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
 				{
+
+						$vars['mode'] = $tp->filter($vars['mode']);
 $text .= "
 		'".$vars['mode']."/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'".$vars['mode']."/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
@@ -3684,7 +3696,7 @@ $text .= "
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected \$menuTitle = '".vartrue($vars['pluginName'], $pluginTitle)."';
+	protected \$menuTitle = '".vartrue($pluginTitle, $tp->filter($vars['pluginName']))."';
 }
 
 
@@ -3728,7 +3740,10 @@ $text .= "
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
 
-
+				$vars['mode'] = $tp->filter($vars['mode']);
+				$vars['pluginName'] = $tp->filter($vars['pluginName']);
+				$vars['table'] = $tp->filter($vars['table']);
+				$vars['pid'] = $tp->filter($vars['pid']);
 
 				if($table == 'pluginPrefs' || $vars['mode'] == 'exclude')
 				{
@@ -3797,11 +3812,11 @@ if($_POST['pluginPrefs'] && ($vars['mode']=='main'))
 		{
 			if(vartrue($val['index']))
 			{
-				$index = $val['index'];
+				$index = $tp->filter($val['index']);
 				$type = vartrue($val['type'],'text');
 				$help = str_replace("'",'', vartrue($val['help']));
 				
-				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$type."', 'data' => 'str', 'help'=>'".$help."'),\n";
+				$text .= "\t\t\t'".$index."'\t\t=> array('title'=> '".ucfirst($index)."', 'tab'=>0, 'type'=>'".$tp->filter($type)."', 'data' => 'str', 'help'=>'".$tp->filter($help)."'),\n";
 			}	
 	
 		}
@@ -3876,6 +3891,7 @@ $text .= "
 		public function customPage()
 		{
 			\$text = 'Hello World!';
+			\$otherField  = \$this->getController()->getFieldVar('other_field_name');
 			return \$text;
 			
 		}

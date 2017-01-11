@@ -388,7 +388,7 @@ class eDispatcher
 				//if($custom) $custom = 'url/'.$custom;
 				if(!defined('e_CURRENT_PLUGIN'))
 				{
-					define('e_CURRENT_PLUGIN', $module); // TODO Move to a better location.
+					define('e_CURRENT_PLUGIN', rtrim($module,'/')); // TODO Move to a better location.
 				}
 				return $sc ? '{e_PLUGIN}'.$module.'url/'.$custom.'url.php' : e_PLUGIN.$module.'url/'.$custom.'url.php';
 			break;
@@ -2402,7 +2402,7 @@ class eUrlRule
 		
 		if(is_array($route)) $route = implode('/', $route);
 		
-		
+
 		
 		$tr = array();
 		if ($route !== $this->route)
@@ -2472,18 +2472,24 @@ class eUrlRule
 				}
 			}
 		}
-	
+
+		$tp = e107::getParser();
+		$urlFormat = e107::getConfig()->get('url_sef_translate');
+
 		foreach ($this->params as $key => $value)
 		{
 			// FIX - non-latin URLs proper encoded
-			$tr["<$key>"] = rawurlencode($params[$key]);
+			$tr["<$key>"] = rawurlencode($params[$key]); //todo transliterate non-latin
+		//	$tr["<$key>"] = eHelper::title2sef($tp->toASCII($params[$key]), $urlFormat); // enabled to test.
 			unset($params[$key]);
 		}
 		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
 		
 		// XXX TODO Find better place for this check which will affect all types of SEF URL configurations. (@see news/sef_noid_url.php for duplicate)
-		$urlFormat = e107::getConfig()->get('url_sef_translate');
+
+
+
 		
 		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
 		{
@@ -2491,7 +2497,13 @@ class eUrlRule
 		}
 		
 		$url = strtr($this->template, $tr);
-		
+
+		// Work-around fix for lowercase username
+		if($urlFormat == 'dashl' && $this->route == 'profile/view')
+		{
+			$url = str_replace('%20','-', strtolower($url));
+		}
+
 		if(empty($params))
 		{
 			 return $url !== '' ? $url.$suffix : $url;
@@ -3804,6 +3816,46 @@ class eResponse
 		$this->_body[$ns] = $body;
 		return $this;
 	}
+
+
+	/**
+	 * @param $name
+	 * @param $content
+	 * @return $this
+	 */
+	public function setMeta($name, $content)
+	{
+		foreach($this->_meta as $k=>$v)
+		{
+			if($v['name'] === $name)
+			{
+				$this->_meta[$k]['content'] = $content;
+			}
+		}
+
+		return $this;
+
+	}
+
+
+	/**
+	 * @param $name
+	 * @return $this
+	 */
+	public function removeMeta($name)
+	{
+		foreach($this->_meta as $k=>$v)
+		{
+			if($v['name'] === $name)
+			{
+				unset($this->_meta[$k]);
+			}
+		}
+
+		return $this;
+
+	}
+
 	
 	/**
 	 * Prepend content
@@ -4013,6 +4065,8 @@ class eResponse
 	public function renderMeta()
 	{
 		$attrData = '';
+
+		e107::getEvent()->trigger('system_meta_pre');
 		
 		foreach ($this->_meta as $attr) 
 		{
@@ -4023,6 +4077,7 @@ class eResponse
 			}
 			$attrData .= ' />'."\n";
 		}
+
 		return $attrData;
 	}
 
@@ -4059,6 +4114,18 @@ class eResponse
 		}
 		return '';
 	}
+
+
+
+	/**
+	 * Return an array of all meta data
+	 * @return array
+	 */
+	function getMeta()
+	{
+		return $this->_meta;
+	}
+
 
 	/**
 	 * @param string $title
@@ -4304,7 +4371,7 @@ class eHelper
 	 */
 	public static function title2sef($title, $type = null)
 	{
-		$char_map = array(
+		/*$char_map = array(
 			// Latin
 			'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
 			'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
@@ -4361,9 +4428,11 @@ class eHelper
 			'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
 			'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
 			'š' => 's', 'ū' => 'u', 'ž' => 'z'
-		);
+		);*/
 
-		$title = str_replace(array_keys($char_map), $char_map, $title);
+		$tp = e107::getParser();
+
+		$title = $tp->toASCII($title);
 
 		$title = str_replace(array('/',' '),' ',$title);
 		$title = str_replace(array("&",",","(",")"),'',$title);
@@ -4381,7 +4450,7 @@ class eHelper
 		{
 			$type = e107::getPref('url_sef_translate'); 
 		}
-		$tp = e107::getParser();
+
 		switch ($type) 
 		{
 			case 'dashl': //dasherize, to lower case

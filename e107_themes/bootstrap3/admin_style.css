@@ -316,6 +316,7 @@ input[type="radio"]:checked, input[type="radio"]:checked + span {  opacity:1.0; 
 label.legacy 						{ margin-left:5px;margin-right:10px;	display: inline-block;  }
 
 /* Core Icons & Image Buttons */
+.icon-preview               { font-size: 2em}
 img.icon					{ border: 0px; vertical-align: middle; }
 img.icon.list, 
 input.action				{ margin: 0px 3px }
@@ -397,6 +398,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 
 .s-message-body { padding-left: 42px; }
 .s-message-item {}
+.s-message-item a.btn { margin-top: 15px; }
 
 .e-footer-info 		{ text-align: center }
 
@@ -434,13 +436,13 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   border-top: 2px solid #dddddd;
 }
 
+/*
 
 .button,
 .plupload_button,
 .plupload_button:hover{
   display: inline-block;
   *display: inline;
-  /* IE7 inline-block hack */
 
   *zoom: 1;
   padding: 4px 12px;
@@ -452,7 +454,6 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   vertical-align: middle;
   cursor: pointer;
   color: #333333;
-  /* text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75); */
   background-color: #f5f5f5;
   background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
@@ -464,8 +465,6 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   border-color: #e6e6e6 #e6e6e6 #bfbfbf;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #e6e6e6;
-  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   border: 1px solid #bbbbbb;
   *border: 0;
@@ -479,14 +478,18 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 }
 
+*/
+
 
 .plupload_start:hover {
 	background-image: linear-gradient(#285128, #363 40%, #397339);
 	background-repeat: no-repeat;
 	filter: none;
-	border:0;
+	border: inherit;
 	}
 
+
+/*
 
 .button:hover,
 .button:active,
@@ -509,7 +512,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   text-decoration: none;
   background-color: #e6e6e6;
   *background-color: #d9d9d9;
-  /* Buttons in IE7 don't get borders, so darken on hover */
+  !* Buttons in IE7 don't get borders, so darken on hover *!
 
   background-position: 0 -15px;
   -webkit-transition: background-position 0.1s linear;
@@ -558,7 +561,6 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
   border-color: #51a351 #51a351 #387038;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #51a351;
-  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
@@ -573,8 +575,9 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 }
 .button:active,
 .button.active {
-  background-color: #408140 \9;
+  background-color: #408140 ;
 }
+*/
 
 tr.e-sort { box-shadow: 0 5px 8px #cccccc; -webkit-box-shadow: 0 5px 8px #cccccc; -moz-box-shadow: 0 5px 8px #cccccc;}
 th label.checkbox { min-height:inherit; } /* Bootstrap Fix but doesn't work */
@@ -593,6 +596,8 @@ i.S16, li.plupload_done a {
 	line-height: 14px;
 	vertical-align: text-top;
 }
+
+
 i.e-add-16{ background-position: 0 0; width: 16px; height: 16px; } 
 i.e-adminlogs-16{ background-position: -21px 0; width: 16px; height: 16px; } 
 i.e-adminpass-16{ background-position: -42px 0; width: 16px; height: 16px; } 
@@ -685,6 +690,17 @@ i.S32 {
  	width:32px;
  	height:32px;
 }
+
+i.S24  {
+  background: url(images/adminicons_32.png) no-repeat top left;
+ 	display: inline-block;
+ 	background-size: 1522px;
+ 	width:24px;
+ 	height:24px;
+}
+
+i.e-news-24{ background-position: -1442px 0;  }
+i.e-custom-24{ background-position: -639px 0; }
 
 i.e-add-32{ background-position: 0 0; width: 32px; height: 32px; } 
 i.e-adminlogs-32{ background-position: -37px 0; width: 32px; height: 32px; } 
@@ -916,6 +932,8 @@ a.e-media-select
 { 
 	color: inherit
 }
+
+.media-select-file-footer { padding:30px; text-align:center }
 
 #cboxOverlay{ background-color:#000000;}
 
@@ -1161,10 +1179,10 @@ li.rssRow > div {
 
 .core-mainpanel-link-icon img { margin-bottom: 5px }
 
-.sidebar-toggle { width: 14px; height:300px; display: block; position: absolute; margin-left: -25px; margin-top:130px  }
+.sidebar-toggle { width: 14px; height:300px; display: block; position: absolute; margin-left: -25px; margin-top:130px; z-index: 1;  }
 .sidebar-toggle a {color:#C6C6C6; height:300px; display:block; width:100%; border-right:7px double #77ACD9; opacity: 0; transition:.5s; z-index:5000; outline:0 }
 .sidebar-toggle a:hover { opacity: .8; outline:0 }
-#left-panel.toggled { display: none }
+.admin-left-panel.toggled { display: none }
 
 
 /* ######## selectize.js ######## */
@@ -1212,8 +1230,10 @@ li.rssRow > div {
 
 
 /* Theme selection */
-.admin-theme-thumb			{ width:100%; height:130px;overflow:hidden;border:1px solid black; margin:0; margin-bottom:10px; padding:0;   }
+
+.admin-theme-thumb			{ position:relative; width:100%; height:130px;overflow:hidden;border:1px solid black; margin:0; margin-bottom:10px; padding:0;   }
 .admin-theme-thumb:hover	{ opacity:0.4 }
+.admin-theme-thumb img { position:absolute; height:130px; left:-10px; min-width:110%; }
 
 .admin-theme-options		{
 	transition: opacity .20s ease-in-out;
@@ -1262,6 +1282,25 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 
 
 .plugin-manager .fa-refresh { padding-top: 4px }
+
+.admin-left-panel .panel-title span { display: inline-block; vertical-align: middle; color:white;text-shadow:0 1px 1px #000}
+.admin-left-panel .panel-title .S24, .admin-left-panel .panel-title img { margin-right:6px; width:24px; height:24px; vertical-align:middle}
+
+
+ul.core-update-available li a.dropdown-toggle i  { opacity:1;  color:white; transition: none; !important}
+ul.core-update-available li { color: white }
+
+/* BC for old plugins in admin */
+input[type=checkbox].tbox { margin-right:5px }
+td.forumheader3 .form-control { display:inherit }
+td.forumheader { background-image: linear-gradient(#303030,#212121 60%,#171717); filter: none; text-shadow: 1px 1px 1px rgba(0,0,0,.3);   }
+
+
+
+
+
+
+
 
 /*
 

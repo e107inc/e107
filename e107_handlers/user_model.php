@@ -219,6 +219,13 @@ class e_user_model extends e_admin_model
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	final public function getTimezone()
+	{
+		// If timezone is not set, we return an empty string in order to use the
+		// default timezone is set for e107.
+		return ($this->get('user_timezone') ? $this->get('user_timezone') : '');
+	}
+
 	/**
 	 * DEPRECATED - will be removed or changed soon (see e_session)
 	 * @return string
@@ -1586,11 +1593,14 @@ class e_user extends e_user_model
 		
 		$userdata  = $userlogin->getUserData();
 
-		e107::getLog()->add('XUP Debug', (__CLASS__.':'.__METHOD__.'-'.__LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		if(defset('E107_DEBUG_LEVEL', 0) > 0)
+		{
+			e107::getLog()->add('XUP Debug', (__CLASS__ . ':' . __METHOD__ . '-' . __LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		}
 		
 		$this->setSessionData(true)->setData($userdata);
 			
-		e107::getEvent()->trigger('user_xup_login', $userdata); 	
+		e107::getEvent()->trigger('user_xup_login', $userdata);
 
 		return $this->isUser();
 	}
@@ -1753,10 +1763,12 @@ class e_user extends e_user_model
 					$updateQry['user_image'] = $userdata['user_image'];
 				}
 
-				$updateQry['WHERE'] = "WHERE user_id=".$user['user_id']." LIMIT 1";
+				$updateQry['WHERE'] = "user_id=".$user['user_id']." LIMIT 1";
 
 				if($sql->update('user', $updateQry) !==false)
 				{
+					$updatedProfile = array_replace($user, $userdata);
+					e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
 					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 				}
 				else

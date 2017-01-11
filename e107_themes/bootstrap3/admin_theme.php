@@ -13,7 +13,7 @@ define('FONTAWESOME',	4);
 
 e107::js("url", 			"https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
 // e107::css('url', 			'https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css');
-e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
+e107::css('url',            'https://cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css');
 
 
 // Too slow.
@@ -98,171 +98,116 @@ class bootstrap3_admintheme
 	function tablestyle($caption, $text, $mode, $data)
 	{
 		// global $style;
-		
-		$style = $data['setStyle'];
 
+		$style = $data['setStyle'];
+		
 	//	echo "Style: ".$style;
+
+		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
 		$class = '';
 
-		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
-			
+		if(is_string($mode) && $mode == 'admin_help')
+		{
+			$class = ' ' . str_replace('_', '-', $mode);
+		}
+
 		if($mode == 'e_help')
 		{
-			$style = 'admin_menu';	
+			$style = 'admin_menu';
 		}
-		
+
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
-			//return;
-			echo '	
-		<!-- Start Mode: '.$mode.' -->
-
-					
-					<div class="well" style="padding:10px;min-height:220px;" >  
-					<div class="nav-header">'.$caption.'</div>
+			echo '<!-- Start Mode: ' . $mode . ' -->	
+				<div class="well" style="padding:10px;min-height:220px;">  
+					<div class="nav-header">' . $caption . '</div>
 					<!-- Content Start -->
-					'.$text.'
+					' . $text . '
 					<!-- Content End -->
-					</div>
-					
-
-		<!-- End Mode: '.$mode.' -->
+				</div>
+				<!-- End Mode: ' . $mode . ' -->
 			';
+
 			return;
-		}	
-	
+		}
+
 		if($mode == 'personalize')
 		{
-			/*echo '
-		<!-- Mode: '.$mode.' -->
-		<div class="well" style="padding:10px">  
-					<div class="nav-header">'.$caption.'</div>
-					<!-- Content Start -->
-					'.$text.'
-					<!-- Content End -->
-				</div>
-		<!-- End Mode: '.$mode.' -->
-		';*/
 			$style = 'admin_menu';
-		//	return;
 		}
-		
-	
-	/*
-		
-		if($style == 'core-infopanel')
-		{
-			echo '	
-		<!-- Start Style: '.$style.' -->
-			
-		<li class="span12 col-md-12">
-			
-				<div class="well" >  
-					<div class="nav-header">'.$caption.'</div>
-					<!-- Content Start -->
-					'.$text.'
-					<!-- Content End -->
-				</div>
-				
-		</li>
-		<!-- End Style: '.$style.' -->
-			';
-			return;
-		}
-		*/
-	
+
 		if(deftrue('e_IFRAME'))
 		{
-			echo '<!-- Start Style: '.$style.' Mode: '.$mode.' and iFrame active -->
+			echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' and iFrame active -->
 				<div class="block">
 					<div class="block-text">
-						'.$text.'
+						' . $text . '
 					</div>
 				</div>
 			';
-			
+
 			return;
 		}
-		
+
 		if(trim($caption) == '')
 		{
-			$style = 'no_caption';	
+			$style = 'no_caption';
 		}
 
-		$panelType = array('core-infopanel'=>'panel-default','admin_menu'=>'panel-primary', 'site_info'=>'panel-default');
-
-
-
-		
+		$panelType = array(
+			'core-infopanel' => 'panel-default',
+			'admin_menu'     => 'panel-primary',
+			'site_info'      => 'panel-default',
+			'flexpanel'      => 'panel-default',
+		);
 		
 		switch(varset($style, 'admin_content'))
 		{
-			case 'core-infopanel' :
-			case 'admin_menu' :
-			case 'site_info' :
-				echo '<div class="panel '.$panelType[$style].'">
+			case 'flexpanel':
+				echo '<div class="panel ' . $panelType[$style] . '" id="' . $data['uniqueId'] . '">
 					  <div class="panel-heading">
-					    <h3 class="panel-title">'.$caption.'</h3>
+					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
 					  <div class="panel-body">
-					    '.$text.'
+					    ' . $text . '
 					  </div>
 					</div>';
-			
-			/*
-				echo '
-						<div class="well sidebar-nav" >  
-						<div class="nav-header">'.$caption.'</div>
-						'.$text.'
-					</div>
-				';
-			 **/
-			break;
-		
-			/*case 'site_info' :
-				echo '
-					<div class="panel panel-primary" >
-						<div class="panel-heading">'.$caption.'</div>
-						<p style="padding:10px">
-							'.$text.'
-						</p>
-					</div>
-				';
-			break;*/
-		/*
-			case 'admin_content':
-				echo '
+				break;
+
+			case 'core-infopanel':
+			case 'admin_menu':
+			case 'site_info':
+				echo '<div class="panel ' . $panelType[$style] . '">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+					  <div class="panel-body">
+					    ' . $text . '
+					  </div>
+					</div>';
+				break;
+
+			case 'no_caption':
+				echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' -->
 					<div class="block">
-						<h2 class="caption">'.$caption.'</h2>
 						<div class="block-text">
-							'.$text.'
+							' . $text . '
 						</div>
 					</div>
 				';
-			break;
-		*/
-		
-			case 'no_caption' :
-				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
-					<div class="block">
-						<div class="block-text">
-							'.$text.'
-						</div>
-					</div>
-				';
-			break;
-		
-		
+				break;
+
+
 			default:
-				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
+				echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' -->
 					<div class="block">
-						<h4 class="caption">'.$caption.'</h4>
+						<h4 class="caption">' . $caption . '</h4>
 						<div class="block-text">
-							'.$text.'
+							' . $text . '
 						</div>
 					</div>
 				';
-			break;
+				break;
 		}
 	}
 }

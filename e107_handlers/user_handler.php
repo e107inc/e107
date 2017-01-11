@@ -54,7 +54,7 @@ class UserHandler
 	var $preferred = PASSWORD_DEFAULT_TYPE;			// Preferred password format
 	var $passwordOpts = 0;							// Copy of pref
 	var $passwordEmail = false;						// True if can use email address to log in
-	var $otherFields = array();
+	private $otherFields = array();
 	private $passwordAPI = false;
 
 	// Constructor
@@ -177,6 +177,36 @@ class UserHandler
 	{
 		return $this->passwordAPI;
 	}
+
+
+	/**
+	 * Check if a user posted field is readonly (should not be user-editable) - used in usersettings.php
+	 * @param array $posted
+	 * @return bool
+	 */
+	public function hasReadonlyField($posted)
+	{
+		$restricted = array_keys($this->otherFields);
+
+		$pref = e107::getPref();
+
+		if(empty($pref['signup_option_class']))
+		{
+			$restricted[] = 'user_class';
+		}
+
+		foreach($posted as $k=>$v)
+		{
+			if(in_array($k,$restricted))
+			{
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+
 
 
 	/**
@@ -701,7 +731,7 @@ class UserHandler
 		}
 		else
 		{
-			if ($userData['user_class'] != '') $classList = explode(',',$userData['user_class']);
+			if (!empty($userData['user_class'])) $classList = explode(',',$userData['user_class']);
 		}
 		foreach (array(e_UC_MEMBER, e_UC_READONLY, e_UC_PUBLIC) as $c)
 		{
@@ -1093,7 +1123,35 @@ class e_user_provider
 	
 	public function setProvider($provider)
 	{
-		$provider = ucfirst(strtolower($provider));
+		$provider = strtolower($provider);
+
+		switch($provider)
+		{
+			case 'aol':
+				$provider = 'AOL';
+				break;
+
+			case 'googleopenid':
+				$provider = 'GoogleOpenID';
+				break;
+
+			case 'linkedin':
+				$provider = 'LinkedIn';
+				break;
+
+			case 'myspace':
+				$provider = 'MySpace';
+				break;
+
+			case 'openid':
+				$provider = 'OpenID';
+				break;
+
+			default:
+				$provider = ucfirst($provider);
+				break;
+		}
+
 		if(isset($this->_config['providers'][$provider]) && $this->_config['providers'][$provider]['enabled'])
 		{
 			if($this->_config['providers'][$provider]['enabled'] && vartrue($this->_config['providers'][$provider]['keys']))
@@ -1367,7 +1425,7 @@ class e_user_provider
 		}
 		
 		$this->adapter = $this->hybridauth->authenticate($this->getProvider());
-		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId(), false);
+		$check = e107::getUser()->setProvider($this)->loginProvider($this->userId());
 
 
 		if($redirectUrl)

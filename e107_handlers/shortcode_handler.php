@@ -100,6 +100,7 @@ class e_parse_shortcode
 	protected $sc_style             = array();  // Former $sc_style global variable. Internally used - performance reasons
 	protected $editableCodes        = array(); // Array of editable shortcode data.
 	protected $editableActive       = false;
+	protected $nowrap               = false;
 
 	function __construct()
 	{
@@ -460,7 +461,7 @@ class e_parse_shortcode
 		// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
 		}
 
-		e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
+	//	e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
 
 
 		// TODO - throw exception?
@@ -1006,7 +1007,12 @@ class e_parse_shortcode
 			$parm = trim($parm);
 			$parm = str_replace(array('[[', ']]'), array('{', '}'), $parm);
 		}
-		
+
+		if(empty($parm))
+		{
+			$parm = array();
+		}
+
 		
 		if (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
@@ -1295,7 +1301,10 @@ class e_parse_shortcode
 		if (isset($ret) && ($ret != '' || is_numeric($ret)))
 		{
 			$ret = $this->makeEditable($ret, $code);
-			$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
+			if (!$this->nowrap == $code)
+			{
+				$ret = $this->makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode);
+			}
 		}
 
 
@@ -1372,50 +1381,63 @@ class e_parse_shortcode
 	 */
 	private function makeWrapper($ret, $code, $fullShortcodeKey, $sc_mode)
 	{
+		$pre = $post = '';
 
 		if(isset($this->wrappers[$code]) && !empty($this->wrappers[$code])) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$code], 2);
-			return $pre.$ret.$post;
 		}
-
-		if(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
+		elseif(!empty($fullShortcodeKey) && !empty($this->wrappers[$fullShortcodeKey]) ) // eg: $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1']
 		{
 			list($pre, $post) = explode("{---}", $this->wrappers[$fullShortcodeKey], 2);
-			return $pre.$ret.$post;
 		}
-
-		//if $sc_mode exists, we need it to parse $sc_style
-		if ($sc_mode)
+		else
 		{
-			$code = $code.'|'.$sc_mode;
-		}
-
-		if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
-		{
-			$pre = $post = '';
-			// old way - pre/post keys
-			if(is_array($this->sc_style[$code]))
+			//if $sc_mode exists, we need it to parse $sc_style
+			if($sc_mode)
 			{
-				if (isset($this->sc_style[$code]['pre']))
-				{
-					$pre = $this->sc_style[$code]['pre'];
-				}
-				if (isset($this->sc_style[$code]['post']))
-				{
-					$post = $this->sc_style[$code]['post'];
-				}
-			}
-			else // new way - same format as wrapper
-			{
-				list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+				$code = $code.'|'.$sc_mode;
 			}
 
-			$ret = $pre.$ret.$post;
+			if (is_array($this->sc_style) && array_key_exists($code, $this->sc_style))
+			{
+
+				// old way - pre/post keys
+				if(is_array($this->sc_style[$code]))
+				{
+					if (isset($this->sc_style[$code]['pre']))
+					{
+						$pre = $this->sc_style[$code]['pre'];
+					}
+					if (isset($this->sc_style[$code]['post']))
+					{
+						$post = $this->sc_style[$code]['post'];
+					}
+				}
+				else // new way - same format as wrapper
+				{
+					list($pre, $post) = explode("{---}", $this->sc_style[$code], 2);
+				}
+
+			}
+
 		}
 
+		if(strpos($pre, '{') !== false) // shortcode found in wrapper
+		{
+			$this->nowrap = $code;
+			$pre = $this->parseCodes($pre, true, $this->addedCodes);
+			$this->nowrap = false;
+		}
 
-		return $ret;
+		if(strpos($post, '{') !== false) // shortcode found in wrapper
+		{
+			$this->nowrap = $code;
+			$post = $this->parseCodes($post, true, $this->addedCodes);
+			$this->nowrap = false;
+		}
+
+		return $pre.$ret.$post;
 
 	}
 

@@ -65,10 +65,22 @@ class page_sitelink // include plugin-folder in the name.
 				'description' 	=> "A list of all chapters from the book ".$row['chapter_name']
 			);
 		}
+
+		$chaps = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_parent !=0 ORDER BY chapter_order ASC" , true);
+
+		foreach($chaps as $row)
+		{
+			$links[] = array(
+				'name'			=> "All Pages from ".$row['chapter_name'],
+				'function'		=> "pagesFromChapter",
+				'parm'			=> $row['chapter_id'],
+				'description' 	=> "A list of all pages from the chapter ".$row['chapter_name']
+			);
+		}
 			
 		$links[] = array(
 			'name'			=> "All Pages",
-			'function'		=> "pageNav",
+			'function'		=> "pageList",
 			'parm'			=> "",
 			'description' 	=> "A list of all pages"
 		);	
@@ -83,7 +95,66 @@ class page_sitelink // include plugin-folder in the name.
 	{
 		return $this->pageNav('book=0');
 	}
-	
+
+	public function pagesFromChapter($id)
+	{
+
+		return $this->pageList($id);
+	}
+
+
+	private function pageList($parm)
+	{
+		$sql = e107::getDb();
+		$arr = array();
+
+
+		if(!empty($parm))
+		{
+			$query = "SELECT * FROM `#page` WHERE page_class IN (".USERCLASS_LIST.") AND page_chapter = ".intval($parm)." ORDER BY page_order ASC" ;
+		}
+		else
+		{
+			$query = "SELECT * FROM `#page` WHERE page_class IN (".USERCLASS_LIST.") ORDER BY page_order ASC" ;
+		}
+
+		$pages = $sql->retrieve($query, true);
+
+		foreach($pages as $row)
+		{
+			$chapter_parent = $this->getParent($row['page_chapter']);
+
+			$row['book_sef'] = $this->getSef($chapter_parent);
+
+			$row['chapter_sef'] = $this->getSef($row['page_chapter']);
+
+			if(!vartrue($row['chapter_sef']))
+			{
+			//	$row['chapter_sef'] = '--sef-not-assigned--';
+			}
+
+			$arr[]  = array(
+				'link_id'			=> $row['page_id'],
+				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
+				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
+				'link_description'	=> '',
+			//	'link_button'		=> $row['menu_image'],
+				'link_category'		=> '',
+				'link_order'		=> $row['page_order'],
+				'link_parent'		=> $row['page_chapter'],
+				'link_open'			=> '',
+				'link_class'		=> intval($row['page_class']),
+				'link_active'		=> (isset($options['cpage']) && $row['page_id'] == $options['cpage']),
+				'link_identifier'	=> 'page-nav-'.intval($row['page_id']) // used for css id.
+
+			);
+
+		}
+
+		return $arr;
+
+	}
+
 	/**
 	 * Return a list of all chapters from a sepcific book. 
 	 */

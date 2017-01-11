@@ -147,7 +147,7 @@ class e_session
 		'path'		 => '',
 		'domain'	 => '',
 		'secure'	 => false,
-		'httponly'	 => false,
+		'httponly'	 => true,
 	);
 
 	/**
@@ -197,16 +197,17 @@ class e_session
 			);
 			
 			$options = array(
-				'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+		//		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+				'httponly' => true,
 			);
 			
 			if(!defined('E107_INSTALL'))
 			{
 				$config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
 				$config['SaveMethod'] = e107::getPref('session_save_method', 'files'); // FIXME - new pref
-				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); // FIXME - new pref
+				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); //
 				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
-				$options['secure'] = e107::getPref('ssl_enabled', false); // FIXME - new pref
+				$options['secure'] = e107::getPref('ssl_enabled', false); //
 			}
 
 			if(defined('SESSION_SAVE_PATH')) // safer than a pref.
@@ -226,7 +227,7 @@ class e_session
 			$this->setConfig($config)
 				->setOptions($options);
 		}
-		
+
 		return $this;
 	}
 	
@@ -332,8 +333,13 @@ class e_session
 	 * @param string $key
 	 * @return e_session
 	 */
-	public function clear($key)
+	public function clear($key=null)
 	{
+		if($key == null) // clear all under this namespace.
+		{
+			$this->_data = array(); // must be set to array() not unset.
+		}
+
 		unset($this->_data[$key]);
 		return $this;
 	}
@@ -450,7 +456,10 @@ class e_session
 			break;
 
 			default:
-				session_module_name('files');
+				if(!isset($_SESSION))
+				{
+					session_module_name('files');
+				}
 			break;
 		}
 

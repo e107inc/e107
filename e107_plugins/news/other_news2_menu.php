@@ -103,6 +103,16 @@ if(!$OTHERNEWS2_STYLE)
 	}
 }
 
+
+$template['caption'] .= e107::getForm()->instantEditButton(e_ADMIN_ABS."newspost.php?searchquery=&filter_options=news_render_type__3", 'H');
+
+
+
+
+
+
+
+
 if(!defined("OTHERNEWS2_LIMIT")){
 //	define("OTHERNEWS2_LIMIT",5);
 }

@@ -29,11 +29,11 @@ class admin_shortcodes
 		
 		
             if($parm=='alert')
-            {
-            	$text = 'A new update is ready to install! Click to unzip and install  v'.$cacheData.'</a>.
-            	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
+            {	//TODO LANVARS
+				$text = ADLAN_122.'  v'.$cacheData.'</a>.
+					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
 				
-                 $mes->addInfo($text);
+				$mes->addInfo($text);
 				return; //  $mes->render(); 
 			}
             
@@ -41,17 +41,17 @@ class admin_shortcodes
             {
 				
 				return '<ul class="nav navbar pill navbar-nav">
-        			<li class="dropdown">
-            		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#">
-                	'.E_16_E107.' <b class="caret"></b>
-            	</a> 
-            	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header dropdown-header navbar-header">Update Available</li>
-                    <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
-	          	 </ul>
-	        	</li>
-	        	</ul>
-	        ';
+						<li class="dropdown">
+						<a class="dropdown-toggle" title="'.LAN_MESSAGES.'" role="button" data-toggle="dropdown" href="#">
+						'.E_16_E107.' <b class="caret"></b>
+						</a> 
+						<ul class="dropdown-menu" role="menu">
+						<li class="nav-header dropdown-header navbar-header">'.LAN_UPDATE_AVAILABLE.'</li>
+						<li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
+						</ul>
+						</li>
+						</ul>
+						';
 				
 				
 			} 
@@ -405,17 +405,16 @@ class admin_shortcodes
 		if(isset($params['nomenu'])) { return $select; }
 		if($select) { $text .= "<div class='center'>{$select}</div>"; }
 
-		return $ns->tablerender(UTHEME_MENU_L2, $text, '', true);
+		return $ns->tablerender(UTHEME_MENU_L2, $text, 'core-menu-lang', true);
 
 	}
 
 	function sc_admin_latest($parm)
 	{
-		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
 		{
 			return;
 		}
-		
 		
 		if (ADMIN) {
 			if (!function_exists('admin_latest')) //XXX Is this still necessary?
@@ -507,9 +506,8 @@ class admin_shortcodes
 
 				
 				//	$text .= "</div>";
-					
-					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;	
-
+					$ns->setUniqueId('e-latest-list');
+					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;
 				}
 			}
 
@@ -742,14 +740,14 @@ class admin_shortcodes
 
        $text = '<ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header dropdown-header">Private Messages</li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
+                <li class="nav-header navbar-header dropdown-header">'.LAN_PM.'</li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_INBOX.'" data-target="#uiModal" href="'.$inboxUrl.'" >'.LAN_PLUGIN_PM_INBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_OUTBOX.'" data-target="#uiModal" href="'.$outboxUrl.'">'.LAN_PLUGIN_PM_OUTBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PM_35.'" data-target="#uiModal" href="'.$composeUrl.'">'.LAN_PM_35.'</a></li>
                 </ul>
         </li>
         </ul>
@@ -793,20 +791,10 @@ class admin_shortcodes
 	{
 		if (ADMIN)
 		{
-			global $ns;
-			ob_start();
 			if(!FILE_UPLOADS)
 			{
-				echo message_handler('ADMIN_MESSAGE', LAN_HEADER_02, __LINE__, __FILE__);
+				return e107::getRender()->tablerender(LAN_WARNING,LAN_HEADER_02,'admin_msg',true);
 			}
-			/*
-			if(OPEN_BASEDIR){
-			echo message_handler('ADMIN_MESSAGE', LAN_HEADER_03, __LINE__, __FILE__);
-			}
-			*/
-			$message_text = ob_get_contents();
-			ob_end_clean();
-			return $message_text;
 		}
 	}
 
@@ -983,6 +971,7 @@ class admin_shortcodes
 			if ($pref['adminpwordchange'] && ((ADMINPWCHANGE+2592000) < time()))
 			{
 				$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN."updateadmin.php'>".ADLAN_103.'</a></div>';
+				$ns->setUniqueId('e-password-change');
 				return $ns -> tablerender(ADLAN_104, $text, '', true);
 			}
 		}
@@ -1059,11 +1048,17 @@ class admin_shortcodes
 
 			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
 
+			$sqlMode = str_replace(",", ", ",e107::getDB()->getMode());
+
 			$text .= "<br /><br />
 			<b>".FOOTLAN_8."</b>
 			<br />
 			".$install_date."
-			<br /><br />
+			<br />";
+
+			$text .= $this->getLastGitUpdate();
+
+			$text .= "<br />
 			<b>".FOOTLAN_9."</b>
 			<br />".
 			preg_replace("/PHP.*/i", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
@@ -1075,8 +1070,11 @@ class admin_shortcodes
 			<b>".FOOTLAN_12."</b>
 			<br />
 			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
-			"<br />
-			".FOOTLAN_16.": ".$mySQLdefaultdb."
+
+			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
+			<br />PDO: ".((e107::getDB()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
+			<br />Mode: <small>".$sqlMode."</small>
+
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
 			<br />utf-8
@@ -1090,9 +1088,25 @@ class admin_shortcodes
 		}
 	}
 
+	private function getLastGitUpdate()
+	{
+		$gitFetch = e_BASE.'.git/FETCH_HEAD';
+
+		if(file_exists($gitFetch))
+		{
+			$unix = filemtime($gitFetch);
+
+			$text = "<br /><b>Last Git Update</b><br />"; // NO LAN required. Developer-Only
+			$text.= ($unix) ? date('r',$unix)  : "Never";
+			$text .= "<br />";
+			return $text;
+		}
+
+	}
+
 	function sc_admin_status($parm)
 	{
-		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
 		{
 			return;
 		}
@@ -1148,7 +1162,7 @@ class admin_shortcodes
 					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
-						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>"Pending Mailshots", 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
+						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>ADLAN_167, 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
 					}
 					
 					
@@ -1205,7 +1219,7 @@ class admin_shortcodes
 					
 				//	$text .= "\n\t\t\t\t\t</div>";
 					
-					
+					$ns->setUniqueId('e-status-list');
 					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
 				}
 			}
@@ -1305,61 +1319,66 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	function sc_admin_update()
 	{
-		if (!ADMIN) { return ''; }
+		if (!ADMIN) { return null; }
 
-		global $e107cache,$ns, $pref;
-		if (!varset($pref['check_updates'], FALSE)) { return ''; }
+		$pref = e107::getPref();
 
-		if (is_readable(e_ADMIN.'ver.php'))
+		if(empty($pref['check_updates']))
 		{
-			include(e_ADMIN.'ver.php');
+			return null;
 		}
 
-		$feed = "http://sourceforge.net/export/rss2_projfiles.php?group_id=63748&rss_limit=5";
-		$e107cache->CachePageMD5 = md5($e107info['e107_version']);
+		$cacheTag = 'Update_core';
 
-		if($cacheData = $e107cache->retrieve('updatecheck', 3600, TRUE))
+		if(!$cached = e107::getCache()->retrieve($cacheTag, 1440, true, true))
 		{
-			return $ns -> tablerender(LAN_NEWVERSION, $cacheData);
+			e107::getDebug()->log("Checking for Core Update");
+			$status = e107::coreUpdateAvailable();
+
+			if($status === false)
+			{
+				$status = array('status'=>'not needed');
+			}
+
+			$cached =  e107::serialize($status,'json');
+			e107::getCache()->set_sys($cacheTag, $cached,true,true);
 		}
+		else
+		{
+			e107::getDebug()->log("Using Cached Core Update Data");
+
+		}
+
+		$data = e107::unserialize($cached);
+
+		if($data === false || isset($data['status']))
+		{
+			return null;
+		}
+
 
 		// Don't check for updates if running locally (comment out the next line to allow check - but
 		// remember it can cause delays/errors if its not possible to access the Internet
-		if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) { return ''; }
-
-		$xml = e107::getXml();
-
-		require_once(e_HANDLER."magpie_rss.php");
-
-		$ftext = '';
-		if($rawData = $xml -> getRemoteFile($feed))
+		if(e_DEBUG !== true)
 		{
-			$rss = new MagpieRSS( $rawData );
-			list($cur_version,$tag) = explode(" ",$e107info['e107_version']);
-			$c = 0;
-			foreach($rss->items as $val)
-			{
-				$search = array((strstr($val['title'], '(')), 'e107', 'released', ' v');
-				$version = trim(str_replace($search, '', $val['title']));
-
-				if(version_compare($version,$cur_version)==1)
-				{
-					$ftext = "<a rel='external' href='".$val['link']."' >e107 v".$version."</a><br />\n";
-					break;
-				}
-				$c++;
-			}
-		}
-		else
-		{  // Error getting data
-			$ftext = ADLAN_154;
+			if ((strpos(e_SELF,'localhost') !== false) || (strpos(e_SELF,'127.0.0.1') !== false)) { return null; }
 		}
 
-		$e107cache->set('updatecheck', $ftext, TRUE);
-		if($ftext)
-		{
-			return $ns -> tablerender(LAN_NEWVERSION, $ftext);
-		}
+
+		return '<ul class="core-update-available nav navbar-nav navbar-left">
+        <li class="dropdown open">
+            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" href="#" aria-expanded="true">
+                <i class="fa fa-cloud-download  text-success"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li class="nav-header navbar-header dropdown-header">'.e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']).'</li>
+                    <li><a href="'.$data['url'].'" rel="external"><i class="fa fa-download" ></i> '.LAN_DOWNLOAD.'</a></li>
+                    <li><a href="'.$data['infourl'].'" rel="external"><i class="fa fa-file-text-o "></i> Release Notes</a></li>
+                </ul>
+        </li>
+        </ul>';
+
+
 	}
 
 	// Does actually the same than ADMIN_SEL_LAN
@@ -1677,16 +1696,22 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large'] = '';
 			$tmp[1]['image_src'] = '';
 			$tmp[1]['image_large_src'] = '';
-			
-						
-			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
-			$tmp[2]['description'] = "Customize administration panels";
-			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
-			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$tmp[2]['image_large'] = '';
-			$tmp[2]['image_src'] = '';
-			$tmp[2]['image_large_src'] = '';
-		//	$tmp[2]['perm'] = '';	
+
+
+			// If not Main Admin and "Apply dashboard preferences to all administrators"
+			// is checked in admin theme settings.
+			$adminPref = e107::getConfig()->get('adminpref', 0);
+			if(getperms("1") || $adminPref == 0)
+			{
+				$tmp[2]['text'] = LAN_PERSONALIZE;
+				$tmp[2]['description'] = "Customize administration panels";
+				$tmp[2]['link'] = e_ADMIN . 'admin.php?mode=customize';
+				$tmp[2]['image'] = "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
+				$tmp[2]['image_large'] = '';
+				$tmp[2]['image_src'] = '';
+				$tmp[2]['image_large_src'] = '';
+				//	$tmp[2]['perm'] = '';
+			}
 			
 			
 			$tmp[3]['text'] = LAN_LOGOUT;
@@ -1767,7 +1792,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				foreach($langSubs as $v)
 				{
-					$multiDoms[] = trim($v);	
+					if(!empty($v))
+					{
+						$multiDoms[] = trim($v);
+					}
 				}
 				
 			}
@@ -1864,7 +1892,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$var[$key]['link'] = '#'.$key;
 			$var[$key]['link_class'] = ' menuManagerSelect';
 			$var[$key]['active'] = ($key==$pref['sitetheme_deflayout']) ? true: false;
-			$var[$key]['include'] = "data-url='".$url = e_SELF."?configure=".$key."'";
+			$var[$key]['include'] = " data-url='". e_SELF."?configure=".$key."' data-layout='".$key."' ";
 		}
 		$action = $pref['sitetheme_deflayout'];
 
@@ -1872,7 +1900,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$var = array($defLayout => $var[$defLayout]) + $var;
 
-	    e107::getNav()->admin(ADLAN_6,$action, $var);
+		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
+
+	   return e107::getNav()->admin(ADLAN_6,$action, $var);
 
 
 

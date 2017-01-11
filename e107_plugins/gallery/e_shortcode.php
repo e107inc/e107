@@ -38,13 +38,21 @@ class gallery_shortcodes extends e_shortcode
 
 	function sc_gallery_caption($parm = '')
 	{
+		$tp = e107::getParser();
+
+		if($parm === 'text')
+		{
+			return $tp->toAttribute($this->var['media_caption']);
+		}
+
+
 		e107_require_once(e_PLUGIN . 'gallery/includes/gallery_load.php');
 		// Load prettyPhoto settings and files.
 		gallery_load_prettyphoto();
 
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$hook = varset($plugPrefs['pp_hook'], 'data-gal');
-		$tp = e107::getParser();
+
 		$text = "<a class='gallery-caption' title='" . $tp->toAttribute($this->var['media_caption']) . "' href='" . $tp->thumbUrl($this->var['media_url'], $this->attFull) . "' " . $hook . "='prettyPhoto[slide]' >";     // Erase  rel"lightbox.Gallery2"  - Write "prettyPhoto[slide]"
 		$text .= $this->var['media_caption'];
 		$text .= "</a>";
@@ -210,8 +218,9 @@ class gallery_shortcodes extends e_shortcode
 	function sc_gallery_portfolio($parms = '')
 	{
 		$ns = e107::getRender();
+		$tp = e107::getParser();
 		$parm = eHelper::scParams($parms);
-		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), 1); //TODO Separate pref?
+		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), false); //TODO Separate pref?
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
 		$limit = vartrue($parm['limit'], 6);
@@ -219,7 +228,11 @@ class gallery_shortcodes extends e_shortcode
 		$plugPrefs = e107::getPlugConfig('gallery')->getPref();
 		$orderBy = varset($plugPrefs['orderby'], 'media_id DESC');
 
-		$list = e107::getMedia()->getImages('gallery_image|gallery_' . $cat . '|gallery_image_' . $cat, 0, $limit, null, $orderBy);
+		$imageQry = (empty($cat) || $cat==1) ? "gallery_image|gallery_image_1|gallery_1" : 'gallery_' . $cat . '|gallery_image_' . $cat;
+
+
+
+		$list = e107::getMedia()->getImages($imageQry, 0, $limit, null, $orderBy);
 
 		if(count($list) < 1 && vartrue($parm['placeholder']))
 		{
@@ -231,12 +244,37 @@ class gallery_shortcodes extends e_shortcode
 			}
 		}
 
+		$template = e107::getTemplate('gallery', 'gallery', 'portfolio');
+
+		if(!empty($template['start']))
+		{
+			$text = $tp->parseTemplate($template['start'],true, $this);
+		}
+		else
+		{
+			$text = '';
+		}
+
 		//NOTE: Using tablerender() allows the theme developer to set the number of columns etc using col-xx-xx
-		$text = '';
+
 		foreach($list as $val)
 		{
 			$this->var = $val;
-			$text .= $ns->tablerender('', $this->sc_gallery_thumb('class=gallery_thumb img-responsive img-home-portfolio'), 'gallery_portfolio', true);
+
+			if(empty($template['item']))
+			{
+				$text .= $ns->tablerender('', $this->sc_gallery_thumb('class=gallery_thumb img-responsive img-home-portfolio'), 'gallery_portfolio', true);
+			}
+			else
+			{
+				$text .= $tp->parseTemplate($template['item'],true,$this);
+			}
+
+		}
+
+		if(!empty($template['end']))
+		{
+			$text .= $tp->parseTemplate($template['end'],true, $this);
 		}
 
 		return $text;

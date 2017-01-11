@@ -54,17 +54,17 @@ if (isset($_POST['active']))
 
 }
 
-$ns->tablerender($caption, $mes->render() . $text);
+e107::getRender()->tablerender($caption, $mes->render() . $text);
 
 /* get packs */
 require_once(e_HANDLER."file_class.php");
 $fl = e107::getFile();
 $emote = new emotec;
 $one_pack = FALSE;
-
+$filtered = e107::getParser()->filter($_POST);
 
 // Check for pack-related buttons pressed
-foreach($_POST as $key => $value)
+foreach($filtered as $key => $value)
 {
 	if(strstr($key, "subPack_"))
 	{
@@ -274,7 +274,8 @@ class emotec
 		$tp = e107::getParser();
 		$fl = e107::getFile();
 		$ns = e107::getRender(); 
-		
+
+		$packID = $tp->filter($packID);
 		$corea = "emote_".$packID;
 
 		$emotecode = $sysprefs -> getArray($corea);	
@@ -362,6 +363,8 @@ class emotec
 		$fl = e107::getFile();
 		$tp = e107::getParser();
 
+		$packID = $tp->filter($packID);
+
 		$fname = e_IMAGE."emotes/".$packID."/emoticons.xml";
 		$backname = e_IMAGE."emotes/".$packID."/emoticons.bak";
 
@@ -445,9 +448,9 @@ class emotec
 
 		// Pick up a list of emote packs from the database
 		$pack_local = array();
-		if ($sql->db_Select("core","*","`e107_name` LIKE 'emote_%'"))
+		if ($sql->select("core","*","`e107_name` LIKE 'emote_%'"))
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 		  	{
 		    	$pack_local[substr($row['e107_name'],6)] = TRUE;
 		  	}
@@ -518,7 +521,7 @@ class emotec
 					  $confArray[$confIC] = trim($tmp[2]);
 					}
 					// $tmp = addslashes(serialize($confArray));
-					$tmp = e107::getArrayStorage()->WriteArray($confArray);
+					$tmp = e107::serialize($confArray);
 					$File_type = EMOLAN_22.":";
 				}
 				/* end  */
@@ -643,11 +646,11 @@ class emotec
 				{
 				  if ($do_one)
 				  {	// Assume existing pack
-				    $sql->db_Update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$value."'");
+				    $sql->update("core", "`e107_value`='{$tmp}' WHERE `e107_name`='emote_".$value."'");
 				  }
 				  else
 				  {	// Assume new pack
-				    $sql->db_Insert("core", "'emote_".$value."', '{$tmp}' ");
+				    $sql->insert("core", "'emote_".$value."', '{$tmp}' ");
 				  }
 				  $mes->addInfo("<strong>{$File_type}</strong> '{$value}'");
 				}
@@ -688,8 +691,8 @@ require_once("footer.php");
  */
 function headerjs()
 {
-	require_once(e_HANDLER.'js_helper.php');
-	//FIXME - how exactly to auto-call JS lan? This and more should be solved in Stage II.
+/*	require_once(e_HANDLER.'js_helper.php');
+
 	$ret = "
 		<script type='text/javascript'>
 			//add required core lan - delete confirm message
@@ -697,6 +700,6 @@ function headerjs()
 		<script type='text/javascript' src='".e_JS."core/admin.js'></script>
 	";
 
-	return $ret;
+	return $ret;*/
 }
 ?>

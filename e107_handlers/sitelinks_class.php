@@ -260,6 +260,8 @@ class sitelinks
 
 		}
 
+
+
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == TRUE) 
 		{
@@ -274,9 +276,13 @@ class sitelinks
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
 		$linkInfo['link_url'] = $tp -> replaceConstants($linkInfo['link_url'], TRUE, TRUE); // replace {e_xxxx}
 
-		if(strpos($linkInfo['link_url'],"{") !== FALSE)
+		if(strpos($linkInfo['link_url'],"{") !== false)
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
+		}
+		elseif($linkInfo['link_url'][0] != '/')
+		{
+			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
 		// By default links are not highlighted.
 		
@@ -306,7 +312,7 @@ class sitelinks
 		elseif ($linkInfo['link_url'])
 		{
 			// Only add the e_BASE if it actually has an URL.
-			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url']);
+			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') !== 0 ? $linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) 
@@ -333,7 +339,7 @@ class sitelinks
 			// Open link in a new window.  (equivalent of target='_blank' )
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 		}
-
+e107::getDebug()->log($linkInfo['link_url']);
 		// Remove default images if its a button and add new image at the start.
 		if ($linkInfo['link_button'])
 		{
@@ -370,6 +376,8 @@ class sitelinks
 		}
 
 		$_link = $linkstart.$indent.$_link;
+
+			e107::getDebug()->log($linkInfo['link_url']);
 
 		global $SITELINKSTYLE;
 		if(!$SITELINKSTYLE)
@@ -1460,10 +1468,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		foreach ($data as $_data) 
 		{		
 			$active			= ($this->isActive($_data, $this->activeMainFound)) ? "_active" : ""; 
-			
+			$sc->setDepth(0);
 			$sc->setVars($_data); // isActive is allowed to alter data
 			$itemTmpl 		= count($_data['link_sub']) > 0 ? $template['item_submenu'.$active] : $template['item'.$active];
-			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, TRUE, $sc);	
+			$ret 			.= e107::getParser()->parseTemplate($itemTmpl, true, $sc);
 			$sc->active		= ($active) ? true : false;
 			if($sc->active)
 			{
@@ -1490,7 +1498,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$data 		= $sql->retrieve($query,true);
 
 
-		return $this->compile($data, $outArray);		
+		$ret = $this->compile($data, $outArray);
+
+		return $ret;
 	}
 
 
@@ -1502,8 +1512,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	    if(!is_array($inArray) || !is_array($outArray)){ return null; }
 
 	    $frm = e107::getForm();
-		
-	    foreach($inArray as $key => $val) 
+
+	    foreach($inArray as $key => $val)
 	    {
 	        if($val['link_parent'] == $pid) 
 	        {
@@ -1548,8 +1558,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
 				$class = $path."_sitelink";
-				if($sublinkArray = e107::callMethod($class,$method,$parm)) //TODO Cache it.
+				if($sublinkArray = e107::callMethod($class,$method,$parm,$row)) //TODO Cache it.
 				{
+
+
 					return $sublinkArray;
 				} 
 			}
@@ -1603,8 +1615,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		if(E107_DBG_PATH)
 		{
-			e107::getMessage()->addDebug("<h3>Sitelinks::isActive</h3>
-				db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
+		//	e107::getDebug()->log("db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
 		}
 	
 		if($exactMatch)
@@ -1658,6 +1669,7 @@ class navigation_shortcodes extends e_shortcode
 	public $template;
 	public $counter;
 	public $active;
+	public $depth = 0;
 
 	
 	/**
@@ -1686,7 +1698,18 @@ class navigation_shortcodes extends e_shortcode
 		return intval($this->var['link_id']);		
 	}
 
-	
+	function sc_link_depth($parm='')
+	{
+		return $this->depth;
+	}
+
+
+	function setDepth($val)
+	{
+		$this->depth = intval($val);
+	}
+
+
 	/**
 	 * Return the name of the current link
 	 * @return string 
@@ -1826,6 +1849,14 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_description($parm='')
 	{
+		$toolTipEnabled = e107::pref('core', 'linkpage_screentip', false);
+
+		if($toolTipEnabled == false || empty($this->var['link_description']))
+		{
+			return null;
+		}
+
+
 		return e107::getParser()->toAttribute($this->var['link_description']);	
 	}
 
@@ -1849,9 +1880,13 @@ class navigation_shortcodes extends e_shortcode
 			return $this->var['link_sub'];
 		}
 
+		$this->depth++;
 		// Assume it's an array.
-		
-		$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_start']), true, $this);
+
+		$startTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerstart'] : $this->template['submenu_start'];
+		$endTemplate = !empty($this->var['link_sub'][0]['link_sub']) && isset($this->template['submenu_lowerstart']) ? $this->template['submenu_lowerend'] :  $this->template['submenu_end'];
+
+		$text = e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $startTemplate), true, $this);
 
 		foreach($this->var['link_sub'] as $val)
 		{
@@ -1862,7 +1897,7 @@ class navigation_shortcodes extends e_shortcode
 			if($active) $this->activeSubFound = true;		
 		}
 
-		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $this->template['submenu_end']), true, $this);
+		$text .= e107::getParser()->parseTemplate(str_replace('{LINK_SUB}', '', $endTemplate), true, $this);
 		
 		return $text;
 	}

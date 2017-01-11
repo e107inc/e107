@@ -110,14 +110,21 @@ e107::getLanguage()->bcDefs($bcDefs);
 			}
 
 
+			/**
+			 * @deprecated use {LM_IMAGECODE_NUMBER}, {LM_IMAGECODE_BOX} instead
+			 * @param string $parm
+			 * @return string
+			 */
 			function sc_lm_imagecode($parm='')
 			{
 				//DEPRECATED - use LM_IMAGECODE_NUMBER, LM_IMAGECODE_BOX instead
 				if($this->use_imagecode)
 				{
-				    return '<input type="hidden" name="rand_num" id="rand_num" value="'.$this->sec->random_number.'" />
+					return $this->sc_lm_imagecode_number()."<br />".$this->sc_lm_imagecode_box();
+				    /*return '<input type="hidden" name="rand_num" id="rand_num" value="'.$this->sec->random_number.'" />
 				            '.$this->sec->r_image().'
 				            <br /><input class="tbox login verify" type="text" name="code_verify" id="code_verify" size="15" maxlength="20" /><br />';
+					*/
 				}
 				return '';
 			}
@@ -127,20 +134,23 @@ e107::getLanguage()->bcDefs($bcDefs);
 			{
 				if($this->use_imagecode)
 				{
-				    return '<input type="hidden" name="rand_num" id="rand_num" value="'.$this->sec->random_number.'" />
-				        '.$this->sec->r_image();
+					return e107::getSecureImg()->renderImage();
+				 /*   return '<input type="hidden" name="rand_num" id="rand_num" value="'.$this->sec->random_number.'" />
+				        '.$this->sec->r_image();*/
 				}
+
 				return '';
 			}
 
 			function sc_lm_imagecode_box($parm='')
 			{
-				$placeholder = LAN_ENTER_CODE;
-
 				if($this->use_imagecode)
 				{
-				    return '<input class="form-control tbox login verify" type="text" name="code_verify" id="code_verify" size="15" maxlength="20" placeholder="'.$placeholder.'" />';
+					return e107::getSecureImg()->renderInput();
+					// $placeholder = LAN_ENTER_CODE;
+				  //  return '<input class="form-control tbox login verify" type="text" name="code_verify" id="code_verify" size="15" maxlength="20" placeholder="'.$placeholder.'" />';
 				}
+
 				return '';
 			}
 

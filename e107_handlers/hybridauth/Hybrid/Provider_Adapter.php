@@ -173,7 +173,12 @@ class Hybrid_Provider_Adapter {
 		// move on
 		Hybrid_Logger::debug("Hybrid_Provider_Adapter::login( {$this->id} ), redirect the user to login_start URL.");
 
-		Hybrid_Auth::redirect($this->params["login_start"]);
+		// redirect
+		if (empty($this->params["redirect_mode"])) {
+			Hybrid_Auth::redirect($this->params["login_start"]);	
+		} else {
+			Hybrid_Auth::redirect($this->params["login_start"],$this->params["redirect_mode"]);
+		}
 	}
 
 	/**
@@ -280,6 +285,12 @@ class Hybrid_Provider_Adapter {
 	function returnToCallbackUrl() {
 		// get the stored callback url
 		$callback_url = Hybrid_Auth::storage()->get("hauth_session.{$this->id}.hauth_return_to");
+
+		// if the user presses the back button in the browser and we already deleted the hauth_return_to from
+		// the session in the previous request, we will redirect to '/' instead of displaying a blank page.
+		if (!$callback_url) {
+			$callback_url = '/';
+		}
 
 		// remove some unneeded stored data
 		Hybrid_Auth::storage()->delete("hauth_session.{$this->id}.hauth_return_to");

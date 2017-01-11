@@ -19,7 +19,7 @@ if (!getperms('P'))
 	exit ;
 }
 
-error_reporting(E_ALL);
+
 require_once (e_PLUGIN . 'forum/forum_class.php');
 require_once (e_ADMIN . 'auth.php');
 
@@ -195,7 +195,9 @@ function step2()
 	{
 		$message = 'Creating table ' . ($rename ? $rename : $name);
 
-		if($sql->isTable($name) && $sql->isEmpty($name))
+		$curTable = ($rename ? $rename : $name);
+
+		if($sql->isTable($curTable) && $sql->isEmpty($curTable))
 		{
 			$mes -> addSuccess("Skipping table ".$name." (already exists)");
 			continue;
@@ -397,7 +399,7 @@ function step4()
 
 			if ($viewed != '')
 			{
-				$ue -> user_extended_setvalue($userId, 'plugin_forum_viewed', mysql_real_escape_string($viewed));
+				$ue->user_extended_setvalue($userId, 'plugin_forum_viewed', ($viewed));
 				$result['viewcount']++;
 			}
 

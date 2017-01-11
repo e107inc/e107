@@ -67,7 +67,7 @@ class pm_shortcodes extends e_shortcode
 
 			<a href="'.$urlInbox.'">'.LAN_PLUGIN_PM_INBOX.'</a>
 			<a href="'.$urlOutbox.'">'.LAN_PLUGIN_PM_OUTBOX.'</a>
-			<a href="'.$urlCompose.'">'.LAN_PM_35.'</a>
+			<a href="'.$urlCompose.'">'.LAN_PLUGIN_PM_NEW.'</a>
 
 		</li>
 		</ul>';
@@ -111,7 +111,7 @@ class pm_shortcodes extends e_shortcode
 		    if(deftrue('FONTAWESOME') && deftrue('BOOTSTRAP'))
 		    {
 		        $img =  e107::getParser()->toGlyph($glyph,'');
-		        return  "<a class='".$class."' href='".$url ."'>{$img} ".LAN_PM_35."</a>";
+		        return  "<a class='".$class."' href='".$url ."'>{$img} ".LAN_PLUGIN_PM_NEW."</a>";
 		    }
 
 

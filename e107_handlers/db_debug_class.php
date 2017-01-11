@@ -167,7 +167,7 @@ class e107_db_debug {
 		$t['marker']	= $this->curTimeMark;
 		$t['caller']	= "$sCallingFile($sCallingLine)";
 		$t['query']		= $query;
-		$t['ok']		= $sQryRes ? TRUE : FALSE;
+		$t['ok']		= ($sQryRes !==false) ? true : false;
 		$t['error']		= $sQryRes ? '' : $sql->getLastErrorText(); // mysql_error();
 		$t['nFields']	= $nFields;
 		$t['time']		= $mytime;
@@ -264,21 +264,36 @@ class e107_db_debug {
 		// Optionally list good queries
 		//
 		
-		if ($okCount && E107_DBG_SQLDETAILS) {
+		if ($okCount && E107_DBG_SQLDETAILS)
+		{
 			$text .= "\n<table class='fborder table table-striped table-bordered'>\n";
 			$text .= "<tr><td class='fcaption' colspan='3'><b>".$this->countLabel($okCount)." Good Queries</b></td></tr>\n";
 			$text .= "<tr><td class='fcaption'><b>Index</b></td><td class='fcaption'><b>Qtime</b></td><td class='fcaption'><b>Query</b></td></tr>\n
 				 <tr><td class='fcaption'>&nbsp;</td><td class='fcaption'><b>(msec)</b></td><td class='fcaption'>&nbsp;</td></tr>\n
 				 ";
 
+			$count = 0;
 			foreach ($this->aSQLdetails as $idx => $cQuery) 
 			{
-				if ($cQuery['ok']) {
+				if($count > 500)
+				{
+					$text .= "<tr class='danger'><td colspan='6'><b>Too many queries. Ending... </b></td></tr>"; // NO LAN - debug only.
+					break;
+				}
+
+
+				if ($cQuery['ok'])
+				{
 					$text .= "<tr><td class='forumheader3' style='text-align:right'>{$idx}&nbsp;</td>
 	       	        <td class='forumheader3' style='text-align:right'>".number_format($cQuery['time'] * 1000.0, 4)."&nbsp;</td>
 	       	        <td class='forumheader3'>".$cQuery['query'].'<br />['.$cQuery['marker']." - ".$cQuery['caller']."]</td></tr>\n";
+
+					$count++;
 				}
 			}
+
+
+
 				$text .= "\n</table><br />\n";
 		}
 
@@ -286,8 +301,11 @@ class e107_db_debug {
 		//
 		// Optionally list query details
 		//
-		if (E107_DBG_SQLDETAILS) {
-			foreach ($this->aSQLdetails as $idx => $cQuery) {
+		if (E107_DBG_SQLDETAILS)
+		{
+			$count = 0;
+			foreach ($this->aSQLdetails as $idx => $cQuery)
+			 {
 				$text .= "\n<table class='fborder table table-striped table-bordered' style='width: 100%;'>\n";
 				$text .= "<tr><td class='forumheader3' colspan='".$cQuery['nFields']."'><b>".$idx.") Query:</b> [".$cQuery['marker']." - ".$cQuery['caller']."]<br />".$cQuery['query']."</td></tr>\n";
 				if (isset($cQuery['explain'])) {
@@ -300,6 +318,15 @@ class e107_db_debug {
 				$text .= "<tr><td class='forumheader3'  colspan='".$cQuery['nFields']."'><b>Query time:</b> ".number_format($cQuery['time'] * 1000.0, 4).' (ms)</td></tr>';
 			
 				$text .= '</table><br />'."\n";
+
+				if($count > 500)
+				{
+					$text .= "<div class='alert alert-danger text-center'>Too many queries. Ending...</div>"; // NO LAN - debug only.
+					break;
+				}
+
+
+				$count++;
 			}
 		}
 
@@ -412,11 +439,30 @@ class e107_db_debug {
 		$aSum['%Time']=$totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
 		$aSum['%DB Time']=$db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 		$aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
-		$aSum['Time']=number_format($aSum['Time']*1000.0, 1);
+		$aSum['Time']=number_format($aSum['Time'] * 1000.0, 1);
 		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
 
-		$text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
-		$text .= "\n</table><br />\n";
+
+		$text .= "<tr>
+		<td class='fcaption'>&nbsp;</td>
+		<td class='fcaption' style='text-align:right'><b>Total</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$aSum['%Time']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$aSum['%DB Time']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$aSum['%DB Count']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$aSum['Time']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$aSum['DB Time']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$aSum['DB Count']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$tMarker['Memory']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>".$tMarker['OB Lev']."</b></td>
+
+		</tr>
+		";
+
+
+	//	$text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
+
+			$text .= "\n</table><br />\n";
+
 
 		//
 		// Stats by Table
@@ -461,7 +507,7 @@ class e107_db_debug {
 		$aSum['%DB Time']=$db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
 		$aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
 		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
-		$text .= "<tr><td class='fcaption'>".implode("&nbsp;</td><td class='fcaption' style='text-align:right'>", array_values($aSum))."&nbsp;</td></tr>\n";
+		$text .= "<tr><td class='fcaption'><b>".implode("&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_values($aSum))."&nbsp;</b></td></tr>\n";
 		$text .= "\n</table><br />\n";
 
 		return $text;
@@ -659,22 +705,24 @@ class e107_db_debug {
 	function log($message,$TraceLev=1)
 	{
 
-		if(is_array($message))
+		if(is_array($message) || is_object($message))
 		{
 			$message = "<pre>".print_r($message,true)."</pre>";
 		}
 
-		if (!E107_DBG_BASIC){
-			return FALSE;
+		if (!E107_DBG_BASIC && !E107_DBG_ALLERRORS && !E107_DBG_SQLDETAILS && !E107_DBG_NOTICES)
+		{
+			return false;
 		}
+
 		if ($TraceLev)
 		{
 			$bt = debug_backtrace();
 			$this->aLog[] =	array (
 				'Message'   => $message,
 				'Function'	=> (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'].$bt[$TraceLev]['type'].$bt[$TraceLev]['function'].'()' : $bt[$TraceLev]['function']).'()',
-				'File'	=> $bt[$TraceLev]['file'],
-				'Line'	=> $bt[$TraceLev]['line']
+				'File'	=> varset($bt[$TraceLev]['file']),
+				'Line'	=> varset($bt[$TraceLev]['line'])
 			);
 		} else {
 			$this->aLog[] =	array (

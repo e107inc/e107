@@ -86,7 +86,19 @@ class search extends e_shortcode
 		}
 		else
 		{
-			if (file_exists(THEME."search_template.php")) 
+			$SEARCH_TOP_TABLE = '';
+			$SEARCH_BOT_TABLE = '';
+			$SEARCH_CATS = '';
+			$SEARCH_TYPE = '';
+			$SEARCH_ADV = '';
+			$SEARCH_ENHANCED = '';
+			$SEARCH_ADV_COMBO = '';
+
+			if (file_exists(THEME."templates/search_template.php"))
+			{
+				require(THEME."templates/search_template.php");
+			}
+			elseif (file_exists(THEME."search_template.php"))
 			{
 				require(THEME."search_template.php");
 			} 
@@ -226,9 +238,28 @@ class search extends e_shortcode
 		return $this->message;	
 	}
 
+	function sc_search_form_url($parm='')
+	{
+		return e107::getUrl()->create('search');
+	}
+
+
+
+	// -----------------------
+
+
+
 	private function selectElement($parm)
 	{
 		// standard search config
+		$dropdown = '';
+		$PRE_CHECKBOXES = '';
+		$POST_CHECKBOXES = '';
+
+		$search_count = count($this->search_info);
+		$google_id = $search_count + 1;
+
+
 		if ($this->search_prefs['selector'] == 2) 
 		{
 			$dropdown = "<select name='t' id='t' class='tbox form-control e-ajax' data-src='".e_SELF."' data-target='search-advanced' >";
@@ -274,7 +305,7 @@ class search extends e_shortcode
 		{
 			if ($this->search_prefs['selector'] == 2) 
 			{
-				$dropdown .= "<option value='".$google_id."'>Google</option>"; //FIXME googleid
+				$dropdown .= "<option value='".$google_id."'>Google</option>";
 			} 
 			else if 
 			($this->search_prefs['selector'] == 1)  //FIXME PRE_CHECKBOXES and POST_CHECKBOXES
@@ -351,7 +382,9 @@ class search extends e_shortcode
 		{
 			return '';
 		}	
-			
+
+		$text = '';
+
 
 		if (isset($this->search_info[$parm]['advanced'])) 
 		{
@@ -713,7 +746,7 @@ class search extends e_shortcode
 	
 	function renderResults()
 	{
-		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
+		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag, $advanced_caption;
 		
 		$ns = e107::getRender();
 
@@ -803,7 +836,7 @@ class search extends e_shortcode
 						$temp1 = preg_replace('/[^\w_ +]/i','',$pparm_value);		// Filter 'non-word' charcters in search term
 						if (($temp == $pparm_key) && !isset($core_parms[$pparm_key])) 
 						{
-							$parms .= "&".$pparm_key."=".$temp1;
+						//	$parms .= "&".$pparm_key."=".$temp1; //FIXME Unused
 						}
 					}
 					if ($results > $search_res) 
@@ -859,14 +892,14 @@ class search extends e_shortcode
 				$_GET = $this->magic_search($_GET);
 			}
 			
-			$full_query = $_GET['q'];
+			$full_query = $tp->filter($_GET['q'],'w');
 			
 			if ($_GET['in']) 
 			{
 				$en_in = explode(' ', $_GET['in']);
 				foreach ($en_in as $en_in_key) 
 				{
-					$full_query .= " +".$en_in_key;
+					$full_query .= " +".$tp->filter($en_in_key);
 				}
 				$this->enhanced = true;
 			}
@@ -875,13 +908,13 @@ class search extends e_shortcode
 				$en_ex = explode(' ', $_GET['ex']);
 				foreach ($en_ex as $en_ex_key) 
 				{
-					$full_query .= " -".$en_ex_key;
+					$full_query .= " -".$tp->filter($en_ex_key);
 				}
 				$this->enhanced = true;
 			}
 			if ($_GET['ep']) 
 			{
-				$full_query .= " \"".$_GET['ep']."\"";
+				$full_query .= " \"".$tp->filter($_GET['ep'])."\"";
 				$this->enhanced = true;
 			}
 			if ($_GET['be']) 
@@ -889,7 +922,7 @@ class search extends e_shortcode
 				$en_be = explode(' ', $_GET['be']);
 				foreach ($en_be as $en_be_key) 
 				{
-					$full_query .= " ".$en_be_key."*";
+					$full_query .= " ".$tp->filter($en_be_key)."*";
 				}
 				$this->enhanced = true;
 			}
@@ -1254,7 +1287,11 @@ if(deftrue('BOOTSTRAP'))
 }
 else
 {
-	if (file_exists(THEME."search_template.php")) 
+	if (file_exists(THEME."templates/search_template.php"))
+	{
+		require(THEME."templates/search_template.php");
+	}
+	elseif (file_exists(THEME."search_template.php"))
 	{
 		require(THEME."search_template.php");
 	} 

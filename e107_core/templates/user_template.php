@@ -128,7 +128,7 @@ $sc_style['USER_SENDPM']['post'] = "</div><div class='f-right'>".LAN_USER_62."</
 
 // Determine which other bits are installed; let photo span those rows (can't do signature - will vary with user)
 $span = 4;
-if ($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
+if (e107::getParser()->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
 $span = " rowspan='".$span."' ";
 
 //$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3 center middle' style='width:20%'>";

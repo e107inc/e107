@@ -768,7 +768,7 @@ class e_admin_log
 	{
 		$mes = e107::getMessage();
 				
-		$resultTypes = array(E_MESSAGE_SUCCESS - 'Success', E_MESSAGE_ERROR => 'Fail');	// Add LANS here. Could add other codes
+		$resultTypes = array(E_MESSAGE_SUCCESS => 'Success', E_MESSAGE_ERROR => 'Fail');	// Add LANS here. Could add other codes
 		$separator = '';
 		$logString = '';
 		foreach ($this->_messages as $m)
@@ -880,7 +880,7 @@ class e_admin_log
 		}
 		elseif(getperms('0') && E107_DEBUG_LEVEL > 0)
 		{
-			echo "Could Save to Log File: ".$fileName;	
+			e107::getMessage()->addDebug("Couldn't Save to Log File: ".$fileName);
 		}	
 
 		return false;

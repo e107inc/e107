@@ -13,8 +13,6 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-error_reporting(E_ALL);
-
 
 // require_once(e_HANDLER.'user_handler.php'); //shouldn't be necessary
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
@@ -165,12 +163,11 @@ class userlogin
 		// Check secure image
 		if (!$forceLogin && $pref['logcode'] && extension_loaded('gd'))
 		{
-			require_once(e_HANDLER."secure_img_handler.php");
-			$sec_img = new secure_image;
-			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
-			{	// Invalid code
-				return $this->invalidLogin($username,LOGIN_BAD_CODE);
+			if ($secImgResult = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // Invalid code
+			{
+				return $this->invalidLogin($username, LOGIN_BAD_CODE, $secImgResult);
 			}
+
 		}
 
 		if (empty($this->userData))		// May have retrieved user data earlier
@@ -578,7 +575,7 @@ class userlogin
 				$doCheck = true;
 				break;
 			case LOGIN_BAD_CODE :
-				$message = LAN_LOGIN_23;
+				$message = $extra_text; // LAN_LOGIN_23;
 				$this->logNote('LAN_ROLL_LOG_02', $username);
 				break;
 			case LOGIN_NOT_ACTIVATED :

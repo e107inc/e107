@@ -45,7 +45,7 @@ class e_jsmanager
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
 		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
-			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+			"https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js",
 			// jQuery Once filters out all elements that had the same filter applied on them before. It can be used to
 			// ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
 			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js"
@@ -268,7 +268,7 @@ class e_jsmanager
 		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
 		{
 			$this->_libraries['jquery'] = array(
-				"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
+				"https://cdn.jsdelivr.net/jquery/2.2.4/jquery.min.js",
 				// jQuery Once filters out all elements that had the same filter applied on them before. It can be used
 				// to ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
 				"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
@@ -991,11 +991,15 @@ class e_jsmanager
 			break;
 
 			case 'plugin_css':
-				$file_path = explode(':', $file_path);
-				$file_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
+				$pfile_path = explode(':', $file_path,2);
+				$plugfile_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$pfile_path[0].'/'.trim($pfile_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
+
+				// allow for URLs to be attributed to plugins. (loads after theme css in admin area header)
+				$file_path = ((strpos($pfile_path[1], 'http') !== 0 && strpos($pfile_path[1], '//') !== 0)) ? $plugfile_path : 'all'.$this->_sep.$pfile_path[1].$this->_sep.$pre.$this->_sep.$post;;
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
+
 			break;
 
 			case 'theme_css':
@@ -1071,7 +1075,7 @@ class e_jsmanager
 			break;
 
 			case 'settings':
-				$this->_e_js_settings = array_merge_recursive($this->_e_js_settings, $file_path);
+				$this->_e_js_settings = $this->arrayMergeDeepArray(array($this->_e_js_settings, $file_path));
 				return $this;
 			break;
 
@@ -1111,8 +1115,7 @@ class e_jsmanager
 		{
 			case 'settings':
 				$tp = e107::getParser();
-				$options = $this->arrayMergeDeepArray(array($this->_e_js_settings));
-				$json = $tp->toJSON($options);
+				$json = $tp->toJSON($this->_e_js_settings);
 				echo "<script>\n";
 				echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
 				echo "jQuery.extend(e107.settings, " . $json . ");\n";
