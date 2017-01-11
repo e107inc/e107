@@ -604,11 +604,11 @@ class listclass
 		global $qs;
 
 		$lvisit = defined('USERLV') ? USERLV : time() + 1000;			// Set default value
-		if(vartrue($qs[0]) == "new")
+		if(!empty($qs[0]) &&  $qs[0] === "new")
 		{
-			if(vartrue($this->list_pref['new_page_timelapse']))
+			if(!empty($this->list_pref['new_page_timelapse']))
 			{
-				if(vartrue($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
+				if(!empty($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
 				{
 					$days = $this->list_pref['new_page_timelapse_days'];
 				}
