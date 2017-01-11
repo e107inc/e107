@@ -231,7 +231,7 @@ class e_db_mysql
 		// Set utf8 connection?
 		//@TODO: simplify when yet undiscovered side-effects will be fixed
 		$this->db_Set_Charset();
-
+		$this->setSQLMode();
 
 	//	if ($this->pdo!== true && !@mysql_select_db($this->mySQLdefaultdb, $this->mySQLaccess))
 		if (!$this->database($this->mySQLdefaultdb))
@@ -254,7 +254,6 @@ class e_db_mysql
 
 		return true;
 	}
-
 
 
 
@@ -316,6 +315,7 @@ class e_db_mysql
 		}
 
 		$this->db_Set_Charset();
+		$this->setSQLMode();
 		
 		if ($db_ConnectionID == NULL){ 	$db_ConnectionID = $this->mySQLaccess; }
 		
@@ -2663,6 +2663,15 @@ class e_db_mysql
 	{
 		return $this->mySQLlastQuery;
 	}
+
+	private function setSQLMode()
+	{
+
+		$this->db_Query("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION';");
+
+	}
+
+
 
 	/**
 	 * Check if MySQL version is utf8 compatible and may be used as it accordingly to the user choice
