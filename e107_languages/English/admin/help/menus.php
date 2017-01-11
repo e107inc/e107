@@ -16,7 +16,7 @@ if (!getperms("2"))
 	exit;
 }
 
-if(e_DEBUG_MENUMANAGER === true)
+if(!deftrue("e_DEBUG_MENUMANAGER"))
 {
 	return;
 }

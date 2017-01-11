@@ -1256,7 +1256,7 @@ class e_menuManager {
 			$text .= "</div>";
 		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
-		if(e_DEBUG_MENUMANAGER === true)
+		if(!deftrue("e_DEBUG_MENUMANAGER"))
 		{
 			echo "<div class='menu-panel' style='padding:50px'>Main Content Area</div>";
 		}

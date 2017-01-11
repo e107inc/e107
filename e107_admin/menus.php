@@ -39,7 +39,7 @@ require_once("../class2.php");
 
 if(e_MENUMANAGER_ACTIVE === false )
 {
-	if(e_DEBUG_MENUMANAGER === true)
+	if(!deftrue("e_DEBUG_MENUMANAGER"))
 	{
 		e107::css('inline', '
 
@@ -701,7 +701,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 
 	function e_help()
 	{
-		if(e_DEBUG_MENUMANAGER !== true)
+		if(deftrue("e_DEBUG_MENUMANAGER"))
 		{
 			return null;
 		}
