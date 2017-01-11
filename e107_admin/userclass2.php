@@ -718,7 +718,7 @@ if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 		//		unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
 		//		save_prefs();
 			}
-			$emessage->add(UCSLAN_3, E_MESSAGE_SUCCESS);
+			$emessage->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
