@@ -391,7 +391,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 				    <td>".$frm->select('init_class_stage', $initClassStages, $sel_stage)."<span class='field-help'>".UCSLAN_46."</span>
 
 				    </td></tr></table>
-				    <div class='buttons-bar' center>".	$frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)."</div>";
+				    <div class='buttons-bar' 'center'>".	$frm->admin_button('set_initial_classes','no-value','create',LAN_UPDATE)."</div>";
 				}
 				else
 				{
@@ -718,16 +718,16 @@ if (isset($_POST['etrigger_delete']) && !empty($_POST['etrigger_delete']))
 		//		unset($pref['frontpage'][$class_id]);		// (Should work with both 0.7 and 0.8 front page methods)
 		//		save_prefs();
 			}
-			$emessage->add(UCSL/AN_3, E_MESSAGE_SUCCESS);
+			$emessage->add(UCSLAN_3, E_MESSAGE_SUCCESS);
 		}
 		else
 		{
-			$emessage->add(UCSL/AN_10, E_MESSAGE_ERROR);
+			$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
 		}
 	}
 	else
 	{
-		$emessage->add(UCSL/AN_10, E_MESSAGE_ERROR);
+		$emessage->add(UCSLAN_10, E_MESSAGE_ERROR);
 	}
 }*/
 
@@ -1408,12 +1408,12 @@ function userclass2_adminmenu()
 	$var['list']['link'] = 'userclass2.php';
 
 
-	$var['config']['text'] = LAN_CREATE; // UCSL/AN_25;
+	$var['config']['text'] = LAN_CREATE; // UCSLAN_25;
 	$var['config']['link'] = 'userclass2.php?config';
 
 //DEPRECATED - use admin->users instead.
 
-//	$var['membs']['text'] = UCSL/AN_26;
+//	$var['membs']['text'] = UCSLAN_26;
 //	$var['membs']['link'] ='userclass2.php?membs';
 
 
@@ -1422,12 +1422,12 @@ function userclass2_adminmenu()
 
 	if (check_class(e_UC_MAINADMIN))
 	{
-		$var['options']['text'] = LAN_PREFS; // UCSL/AN_50;
+		$var['options']['text'] = LAN_PREFS; // UCSLAN_50;
 		$var['options']['link'] ='userclass2.php?options';
 
 		if (defined('UC_DEBUG_OPTS'))
 		{
-			$var['debug']['text'] = UCSL/AN_27;
+			$var['debug']['text'] = UCSLAN_27;
 			$var['debug']['link'] ='userclass2.php?debug';
 
 			$var['test']['text'] = 'Test functions';
