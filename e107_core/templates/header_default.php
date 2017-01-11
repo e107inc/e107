@@ -80,7 +80,7 @@ $js_body_onload = array();		// Legacy array of code to load with page.
 // A: Define themeable header parsing
 //
 
-if (!function_exists("parseheader")) 
+if (!function_exists("parseheader"))
 {
 	function parseheader($LAYOUT)
 	{
@@ -88,17 +88,17 @@ if (!function_exists("parseheader"))
 		$tmp 	= explode("\n", $LAYOUT);
 
 		$sc = e107::getScBatch('_theme_');
-		
-		foreach ($tmp as $line) 
+
+		foreach ($tmp as $line)
 		{
 			if (preg_match("/{.+?}/", $line))
 			{
 				$line = str_replace('{THEME}',THEME_ABS, $line); // Quick-fix allow for use of {THEME} shortcode.
-				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
-			} 
-			else 
+				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks.
+			}
+			else
 			{
-				echo $line."\n"; // retain line-breaks. 
+				echo $line."\n"; // retain line-breaks.
 			}
 		}
 	}
@@ -120,11 +120,11 @@ if (!function_exists("parseheader"))
 if(!defined("XHTML4"))
 {
 	echo "<!doctype html>\n";
-	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
+	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";
 	echo "<head>\n";
 	echo "<meta charset='utf-8' />\n";
 }
-else 
+else
 {
 	echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='utf-8' "."?".">\n")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	echo "<html xmlns='http://www.w3.org/1999/xhtml'".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("XMLNS") ? " ".XMLNS." " : "").(defined("CORE_LC") ? " xml:lang=\"".CORE_LC."\"" : "").">\n";
@@ -141,6 +141,7 @@ else
 
 if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
+
 $siteButton = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
 if($pref['sitebutton']) e107::meta('og:image',$siteButton);
 if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
@@ -176,12 +177,12 @@ echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME
 $e_js = e107::getJs();
 $e_pref = e107::getConfig('core');
 
-// Other Meta tags. 
+// Other Meta tags.
 
 
 // Register Core CSS first, TODO - convert $no_core_css to constant, awaiting for path changes
 // NOTE: PREVIEWTHEME check commented - It shouldn't break anything as it's overridden by theme CSS now
-if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==true) && defset('CORE_CSS') !== false) 
+if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==true) && defset('CORE_CSS') !== false)
 {
 	//echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
@@ -201,21 +202,21 @@ $e_pref = e107::getConfig('core');
 // --- Load plugin Meta files - now possible to add to all zones!  --------
 $e_meta_content = '';
 if (is_array($pref['e_meta_list']))
-{	
+{
 	// $pref = e107::getPref();
 	ob_start();
-	
+
 	foreach($pref['e_meta_list'] as $val)
-	{		
-		$fname = e_PLUGIN.$val."/e_meta.php"; // Do not place inside a function - BC $pref required. . 
-		
+	{
+		$fname = e_PLUGIN.$val."/e_meta.php"; // Do not place inside a function - BC $pref required. .
+
 		if(is_readable($fname))
 		{
 			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
-		}	
+		}
 	}
 	// content will be added later
-	// NOTE: not wise to do e_meta output, use JS Manager!  
+	// NOTE: not wise to do e_meta output, use JS Manager!
 	$e_meta_content = ob_get_contents();
 	ob_end_clean();
 	unset($ret);
@@ -226,13 +227,13 @@ if (is_array($pref['e_meta_list']))
 if(isset($pref['sitebutton']))
 {
 	$appleIcon = $tp->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',true);
-	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";	
+	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";
 	unset($appleIcon);
 }
 
 
 
-// Register Plugin specific CSS 
+// Register Plugin specific CSS
 // DEPRECATED, use $e_js->pluginCSS('myplug', 'style/myplug.css'[, $media = 'all|screen|...']);
 if (isset($eplug_css) && $eplug_css)
 {
@@ -250,28 +251,28 @@ if (isset($eplug_css) && $eplug_css)
 
 // Register Theme CSS
 // Writing link tags is DEPRECATED, use $e_js->themeCSS('style/mytheme.css'[, $media = 'all|screen|...']); - current theme is auto-detected
-if(defined("PREVIEWTHEME")) 
+if(defined("PREVIEWTHEME"))
 {
-	// XXX - can be PREVIEWTHEME done in a better way than this? 
+	// XXX - can be PREVIEWTHEME done in a better way than this?
 	//echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 	//var_dump(PREVIEWTHEMENAME);
 	$e_js->otherCSS(PREVIEWTHEME.'style.css');
-} 
-else 
+}
+else
 {
 	$css_default = "all"; // TODO - default should be defined by the theme
 	// theme-css.php auto-detection TODO - convert it to constant or anything different from GLOBAL
-	if (isset($theme_css_php) && $theme_css_php) 
+	if (isset($theme_css_php) && $theme_css_php)
 	{
 		//echo "<link rel='stylesheet' href='".THEME_ABS."theme-css.php' type='text/css' />\n";
 		$e_js->themeCSS('theme-css.php', $css_default);
-	} 
-	else 
+	}
+	else
 	{
 		// Theme default
-		
+
 		$e_js->themeCSS(THEME_STYLE, $css_default);
-		
+
 		/* Moved to class2 and defined as THEME_STYLE
 		if($e_pref->get('themecss') && file_exists(THEME.$e_pref->get('themecss')))
 		{
@@ -298,7 +299,7 @@ else
 			$e_js->themeCSS('style_print.css', 'print');
 		}
 	}
-	
+
 	// FIXME: TEXTDIRECTION compatibility CSS (marj?)
 	// TODO: probably better to externalise along with some other things above
 	// possibility to overwrite some CSS definition according to TEXTDIRECTION
@@ -320,7 +321,7 @@ else
 
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility; NOTE - could be removed in the future!!!
 
-//TODO Additional options for 'bootstrap' and 'style' (ie. THEME_STYLE loaded above). Requires changes to js_manager.php 
+//TODO Additional options for 'bootstrap' and 'style' (ie. THEME_STYLE loaded above). Requires changes to js_manager.php
 
 
 
@@ -332,7 +333,7 @@ $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','
 foreach($CSSORDER as $val)
 {
 	$cssId = $val."_css";
-	$e_js->renderJs($cssId, false, 'css', false);		
+	$e_js->renderJs($cssId, false, 'css', false);
 }
 
 unset($CSSORDER);
@@ -511,11 +512,11 @@ echo render_meta('tag');
 unset($key_merge,$diz_merge);
 
 // ---------- Favicon ---------
-if (file_exists(THEME."favicon.ico")) 
+if (file_exists(THEME."favicon.ico"))
 {
 	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
 }
-elseif (file_exists(e_BASE."favicon.ico")) 
+elseif (file_exists(e_BASE."favicon.ico"))
 {
 	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
 }
@@ -529,9 +530,9 @@ if ($pref['image_preload'] && is_dir(THEME.'images'))
 	$ejs_listpics = '';
 
 	$handle=opendir(THEME.'images');
-	while ($file = readdir($handle)) 
+	while ($file = readdir($handle))
 	{
-		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file)) 
+		if(preg_match("#(jpg|jpeg|gif|bmp|png)$#i", $file))
 		{
 			$ejs_listpics .= $file.",";
 		}
@@ -544,7 +545,7 @@ if ($pref['image_preload'] && is_dir(THEME.'images'))
 	$script_text .= "ejs_preload('".THEME_ABS."images/','".$ejs_listpics."');\n";
 }
 
-if (isset($script_text) && $script_text) 
+if (isset($script_text) && $script_text)
 {
 	echo "<script type='text/javascript'>\n";
 	echo "<!--\n";
@@ -599,26 +600,26 @@ echo "</head>\n";
 
 // ---------- New in 2.0 -------------------------------------------------------
 
-	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER. 
+	if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
 			if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
 			{
-				continue;	
+				continue;
 			}
-			
+
 			if(strpos($template,'{---}') !==false)
 			{
 				list($hd,$ft) = explode("{---}",$template);
 				$HEADER[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
-				$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;	
+				$FOOTER[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;
 			}
-			else 
+			else
 			{
 				e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["'.$key.'"] ');
 			}
-		}	
+		}
 		unset($hd,$ft);
 	}
 
@@ -655,7 +656,7 @@ echo "</head>\n";
 	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b>")->render();
 	    }
     }
-    
+
     if(deftrue('e_IFRAME'))
     {
         $HEADER = deftrue('e_IFRAME_HEADER',"");
@@ -682,7 +683,7 @@ else
 	}
 	else
 	{
-		echo BODYTAG."\n";	
+		echo BODYTAG."\n";
 	}
 }
 
@@ -748,15 +749,15 @@ if ($e107_popup != 1) {
 		parseheader($NEWSHEADER);
 	}
 	else
-	{	
-		if(deftrue('DEMO_CONTENT')) // embedded content relative to THEME directory - update paths. 
+	{
+		if(deftrue('DEMO_CONTENT')) // embedded content relative to THEME directory - update paths.
 		{
-			$HEADER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $HEADER);	
-			$FOOTER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $FOOTER);	
+			$HEADER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $HEADER);
+			$FOOTER = preg_replace('#(src|href)=("|\')([^:\'"]*)("|\')#','$1=$2'.THEME.'$3$4', $FOOTER);
 		}
-		
+
    		parseheader($HEADER);
-		
+
 	//	echo $HEADER;
 	}
 
@@ -770,10 +771,10 @@ if ($e107_popup != 1) {
 
 	if(ADMIN && !vartrue($_SERVER['E_DEV']) && file_exists(e_BASE.'install.php'))
 	{
-		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>"; 
+		 echo "<div class='installer alert alert-danger alert-block text-center'><b>*** ".CORE_LAN4." ***</b><br />".CORE_LAN5."</div>";
 	}
-	
-	//XXX TODO LAN in English.php 
+
+	//XXX TODO LAN in English.php
 	echo "<noscript><div class='alert alert-block alert-error alert-danger'><strong>This web site requires that javascript be enabled. <a rel='external' href='http://activatejavascript.org'>Click here for instructions.</a>.</strong></div></noscript>";
 
 	if(deftrue('BOOTSTRAP'))
@@ -802,7 +803,7 @@ if ($e107_popup != 1) {
 	}
 
 
-	if(defined("PREVIEWTHEME")) 
+	if(defined("PREVIEWTHEME"))
 	{
 		themeHandler::showPreview();
 	}
