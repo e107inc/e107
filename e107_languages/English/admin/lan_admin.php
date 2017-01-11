@@ -362,7 +362,7 @@ define("LAN_UNCHECKALL", "Uncheck All");
 define("LAN_DELCHECKED", "Delete Checked");
 
 define("LAN_USERCLASS", "Userclass");
-
+define("LAN_MANAGER", "Manager");
 
 define("LAN_HELP", "Help");
 define("LAN_CUSTOM", "Custom");
@@ -388,6 +388,7 @@ define("LAN_ID", "ID");
 
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_VISIBLE_TO", "Visible To");
+define("LAN_PARENT", "Parent");
 
 define("LAN_ICON", "Icon");
 define("LAN_LOADING", "Loading...");
