@@ -208,6 +208,7 @@ class banlist_ui extends e_admin_ui
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
+
 			e107::getIPHandler()->regenerateFiles();
 		}
 
@@ -229,10 +230,15 @@ class banlist_ui extends e_admin_ui
 		
 		private function timesPageSave()
 		{
+
+
 			$ipAdministrator = new banlistManager;
 			$tp = e107::getParser();
-			$changed = FALSE;
-			
+			$changed = false;
+
+			$pref = array();
+
+			$reasonList = $ipAdministrator->getValidReasonList();
 			foreach ($ipAdministrator->getValidReasonList() as $bt)
 			{
 				$i = abs($bt) + 1;		// Forces a single-digit positive number for part of field name
@@ -249,7 +255,8 @@ class banlist_ui extends e_admin_ui
 					$changed = TRUE;
 				}
 			}
-			if ($changed)
+
+			if ($changed && !empty($pref))
 			{
 			// @todo write actual prefs changes to log file (different methods for prefs?)
 				e107::getConfig()->setPref($pref)->save(); 
@@ -519,13 +526,14 @@ class banlist_form_ui extends e_admin_form_ui
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
 		protected $perPage 			= 10;
-		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='failed_login' ORDER BY gen_datestamp DESC";
+		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='failed_login' ";
+		protected $listOrder        = "gen_datestamp DESC";
 
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		                                    'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			//	  'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'gen_chardata' 		=> array ( 'title' => LAN_DESCRIPTION, 'type' => 'method', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'gen_chardata' 		=> array ( 'title' => LAN_DESCRIPTION, 'type' => 'method', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'filter'=>true ),
 
 			//	  'gen_user_id' 		=> array ( 'title' => LAN_BAN, 'type' => 'method', 'batch'=>true, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'gen_ip' 				=> array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -535,6 +543,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata');
 
+		protected $batchOptions = array();
 
 		// optional
 		public function init()
@@ -543,6 +552,26 @@ class banlist_form_ui extends e_admin_form_ui
 			{
 				$dels = implode(',',$_POST['e-multiselect']);
 				//$e107::getDb()->insert('banlist',
+			}
+
+			$allFailedTotal = e107::getDB()->count('generic', '(*)', "gen_type='failed_login'");
+
+			$this->batchOptions = array('delete-all'=>"Delete all ".$allFailedTotal." failed logins from database");
+
+			if(!empty($_POST['etrigger_batch']) && $_POST['etrigger_batch'] == "delete-all")
+			{
+				$this->deleteAllFailed();
+			}
+
+		
+		}
+
+		private function deleteAllFailed()
+		{
+
+			if(e107::getDB()->delete('generic', "gen_type='failed_login'"))
+			{
+				e107::getMessage()->addSuccess(LAN_DELETED);
 			}
 		}
 

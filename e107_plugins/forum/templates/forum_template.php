@@ -25,7 +25,9 @@ if (!isset($FORUM_MAIN_PARENT))
 }
 if (!isset($FORUM_MAIN_FORUM))
 {
-	$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='forumheader2'>{NEWFLAG}</td>\n<td style='width:55%' class='forumheader2'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
+	$SC_WRAPPER['LASTPOST:type=date'] = "{---}<br>";
+	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".IMAGE_post2."</a>";
+	$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='forumheader2'>{NEWFLAG}</td>\n<td style='width:55%' class='forumheader2'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='forumheader3'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='forumheader3'><span class='smallblacktext'>{LASTPOST:type=date}{LASTPOSTUSER}{LASTPOST:type=url}</span></td>\n</tr>";
 }
 if (!isset($FORUM_MAIN_END))
 {
@@ -126,17 +128,20 @@ $FORUM_TEMPLATE['main']['parent']			= 	"<tr>
 											</tr>";
 
 
+
 $FORUM_TEMPLATE['main']['forum']			= 	"<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
 											<td class='hidden-xs text-center'>{REPLIESX}</td>
 											<td class='text-center'>{THREADSX}</td>
-											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
+											<td class='hidden-xs text-center'><small>{LASTPOST:type=username} {LASTPOST:type=datelink}</small></td>
 											</tr>";
+
+//{LASTPOST:type=username} + {LASTPOST:type=datelink} can also be replaced by the legacy shortcodes {LASTPOST} or {LASTPOSTUSER} + {LASTPOSTDATE}
 
 $FORUM_TEMPLATE['main']['end']				= "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
 
-
+// $FORUM_WRAPPER['main']['forum']['USERINFOX'] = "{FORUM_BREADCRUMB}(html before){---}(html after)";
 
 // Tracking
 $FORUM_TEMPLATE['track']['start']       = "{FORUM_BREADCRUMB}<div id='forum-track'>

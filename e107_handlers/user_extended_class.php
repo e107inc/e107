@@ -552,7 +552,7 @@ class e107_user_extended
 	  return $this->user_extended_add($name, '_system_', $type, $source, '', $default, 0, 255, 255, 255, 0, 0);
 	}
 
-	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
+	function user_extended_add($name, $text='', $type='', $parms='', $values='', $default='', $required='', $read='', $write='', $applicable='', $order='', $parent='')
 	{
 		
 		$sql = e107::getDb('ue');
@@ -570,70 +570,72 @@ class e107_user_extended
 			$type = $this->typeArray[$type];
 	  	}
 
-		if($this->user_extended_field_exist($name))
+		if($this->user_extended_field_exist($name) && $sql->field('user_extended', 'user_'.$name)!==false)
 		{
 			return true;
 		}
 
-		if (!$this->user_extended_reserved($name))
+		if ($this->user_extended_reserved($name))
 		{
-			$field_info = $this->user_extended_type_text($type, $default);
-		
-			// wrong type
-			if(false === $field_info)
-			{
-				e107::getMessage()->addDebug("\$field_info is false ".__METHOD__);
-				return false;
-			}
-		
-			if($order === '' && $field_info)
-			{
-			  if($sql->select('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
-			  {
-				$row = $sql->fetch();
-				if(is_numeric($row['maxorder']))
-				{
-				  $order = $row['maxorder']+1;
-				}
-			  }
-			}
-			// field of type category
-			if($field_info)
-			{
-				$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
-			}
-
-		/*	TODO
-				$extStructInsert = array(
-				'user_extended_struct_id'           => '_NULL_',
-				'user_extended_struct_name'         => '',
-				'user_extended_struct_text'         => '',
-				'user_extended_struct_type'         => '',
-				'user_extended_struct_parms'        => '',
-				'user_extended_struct_values'       => '',
-				'user_extended_struct_default'      => '',
-				'user_extended_struct_read'         => '',
-				'user_extended_struct_write'        => '',
-				'user_extended_struct_required'     => '',
-				'user_extended_struct_signup'       => '',
-				'user_extended_struct_applicable'   => '',
-				'user_extended_struct_order'        => '',
-				'user_extended_struct_parent'       => ''
-
-			);
-
-		*/
-
-			$rest = $sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
-
-
-			if ($this->user_extended_field_exist($name))
-			{
-			  return TRUE;
-			}
+			return false;
 		}
 
-		return FALSE;
+		$field_info = $this->user_extended_type_text($type, $default);
+		
+		// wrong type
+		if(false === $field_info)
+		{
+			e107::getMessage()->addDebug("\$field_info is false ".__METHOD__);
+			return false;
+		}
+		
+		if($order === '' && $field_info)
+		{
+		  if($sql->select('user_extended_struct','MAX(user_extended_struct_order) as maxorder','1'))
+		  {
+			$row = $sql->fetch();
+			if(is_numeric($row['maxorder']))
+			{
+			  $order = $row['maxorder']+1;
+			}
+		  }
+		}
+		// field of type category
+		if($field_info)
+		{
+			$sql->gen('ALTER TABLE #user_extended ADD user_'.$tp -> toDB($name, true).' '.$field_info);
+		}
+
+		/*	TODO
+			$extStructInsert = array(
+			'user_extended_struct_id'           => '_NULL_',
+			'user_extended_struct_name'         => '',
+			'user_extended_struct_text'         => '',
+			'user_extended_struct_type'         => '',
+			'user_extended_struct_parms'        => '',
+			'user_extended_struct_values'       => '',
+			'user_extended_struct_default'      => '',
+			'user_extended_struct_read'         => '',
+			'user_extended_struct_write'        => '',
+			'user_extended_struct_required'     => '',
+			'user_extended_struct_signup'       => '',
+			'user_extended_struct_applicable'   => '',
+			'user_extended_struct_order'        => '',
+			'user_extended_struct_parent'       => ''
+			);
+		*/
+
+		if(!$this->user_extended_field_exist($name))
+		{
+			$sql->insert('user_extended_struct',"null,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+		}
+
+		if($this->user_extended_field_exist($name))
+		{
+		    return true;
+		}
+
+		return false;
 	}
 
 
@@ -724,8 +726,8 @@ class e107_user_extended
 		
 		$parms 		= explode("^,^",$struct['user_extended_struct_parms']);
 		$include 	= preg_replace("/\n/", " ", $tp->toHtml($parms[0]));
-		$regex 		= $tp->toText($parms[1]);
-		$regexfail 	= $tp->toText($parms[2]);
+		$regex 		= $tp->toText(varset($parms[1]));
+		$regexfail 	= $tp->toText(varset($parms[2]));
 		$fname 		= "ue[user_".$struct['user_extended_struct_name']."]";
 		$required	= vartrue($struct['user_extended_struct_required']) == 1 ? "required"  : "";
 		$fid		= $frm->name2id($fname);

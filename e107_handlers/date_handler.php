@@ -142,7 +142,8 @@ class convert
 	 * 
 	 * @return string parsed date
 	 */
-	function convert_date($datestamp, $mask = '') {
+	function convert_date($datestamp, $mask = '')
+	{
 		if(empty($mask))
 		{
 			$mask = 'long';
@@ -196,9 +197,18 @@ class convert
 				}				
 			break;
 		}
-	
-		return utf8_encode(strftime($mask, $datestamp));
+
+		$dateString = strftime($mask, $datestamp);
+
+		if (!e107::getParser()->isUTF8($dateString))
+		{
+			$dateString = utf8_encode($dateString);
+		}
+
+		return $dateString;
 	}
+
+
 
 
 	/**

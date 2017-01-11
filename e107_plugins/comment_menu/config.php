@@ -28,33 +28,56 @@ $menu_config = e107::getConfig('menu');
 if (isset($_POST['update_menu'])) 
 {
 	$temp = $old = $menu_config->getPref();
+
+
+	if(!is_array($temp['comment_caption']))
+	{
+		$temp['comment_caption'] = array();
+	}
+
 	
 	$tp = e107::getParser();
 	while (list($key, $value) = each($_POST)) 
 	{
+		if($key == "comment_caption")
+		{
+			$temp['comment_caption'][e_LANGUAGE] = $tp->toDB($value);
+			continue;
+		}
+
+
 		if ($value != LAN_UPDATE) 
 		{
 			$temp[$tp->toDB($key)] = $tp->toDB($value);
 		}
 	}
-	if (!$_POST['comment_title']) 
+
+	if (!$_POST['comment_title'])
 	{
 		$temp['comment_title'] = 0;
 	}
 	
 	$menu_config->setPref($temp);
-	if ($admin_log->logArrayDiffs($old, $menu_config->getPref(), 'MISC_04'))
+
+	if($menu_config->save(false))
 	{
-		if($menu_config->save(false))
-		{
-			$mes->addSuccess();
-		}
+		$mes->addSuccess();
+	}
+	/*if ($admin_log->logArrayDiffs($old, $menu_config->getPref(), 'MISC_04'))
+	{
+
 	}
 	else
 	{
 		$mes->addInfo(LAN_NO_CHANGE);
-	}
+	}*/
 }
+
+$frm = e107::getForm();
+
+$commentTmp = $menu_config->get('comment_caption');
+
+$commentCaption = (!empty($commentTmp[e_LANGUAGE])) ? $commentTmp[e_LANGUAGE] : $commentTmp;
 
 $text = "
 	<form method='post' action='".e_SELF."?".e_QUERY."' id='plugin-menu-config-form'>
@@ -65,7 +88,7 @@ $text = "
     </colgroup>
 	<tr>
 		<td>".CM_L3.":</td>
-		<td><input class='tbox' type='text' name='comment_caption' size='20' value='".$menu_config->get('comment_caption')."' maxlength='100' /></td>
+		<td>".$frm->renderElement('comment_caption',$commentCaption, array('type'=>'text','multilan'=>true))."</td>
 	</tr>
 	 
 	<tr>

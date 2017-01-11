@@ -163,6 +163,7 @@ if (empty($FORUM_VIEW_START))
 if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // New v2.x bootstrap Template.
 {
 	
+	$FORUM_VIEW_CAPTION				= $FORUM_VIEWFORUM_TEMPLATE['caption'];
 	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
 	$FORUM_VIEW_START				= $FORUM_VIEWFORUM_TEMPLATE['header'];
 	$FORUM_VIEW_FORUM				= $FORUM_VIEWFORUM_TEMPLATE['item'];
@@ -222,8 +223,8 @@ if(varset($pref['track_online']))
 {
 //	$member_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id != 0");
 //	$guest_users = $sql->count('online', '(*)', "WHERE online_location REGEXP('viewforum.php.id=$forumId\$') AND online_user_id = 0");
-	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id != 0");
-	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI)."%') AND online_user_id = 0");
+	$member_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI, 'url')."%') AND online_user_id != 0");
+	$guest_users = $sql->count('online', '(*)', "WHERE online_location LIKE('".$tp->filter(e_REQUEST_URI, 'url')."%') AND online_user_id = 0");
 
 
 	$users = $member_users+$guest_users;
@@ -280,7 +281,8 @@ if ($pages)
 	}
 }
 
-if($forum->checkPerm($forumId, 'thread')) //new thread access only.
+//-- if($forum->checkPerm($forumId, 'thread')) //new thread access only.
+if($forum->checkPerm($forumId, 'post')) //new thread access only.
 {
 		$forumSCvars['ntUrl']= e107::url('forum','post')."?f=nt&amp;id=". $forumId;
 /*--
@@ -465,7 +467,7 @@ $threadFilter = null;
 
 if(!empty($_GET['srch']))
 {
-	$threadFilter = "t.thread_name LIKE '%".$tp->filter($_GET['srch'])."%'";
+	$threadFilter = "t.thread_name LIKE '%".$tp->filter($_GET['srch'], 'w')."%'";
 }
 
 $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilter);
@@ -473,7 +475,7 @@ $threadList = $forum->forumGetThreads($forumId, $threadFrom, $view, $threadFilte
 $subList = $forum->forumGetSubs(vartrue($forum_id));
 --*/
 //------$gen = new convert;
-		$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
+$forumSCvars['forum_parent']= $forumInfo['forum_parent'];
 /*--
 $fVars->SUBFORUMS = '';
 if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
@@ -536,7 +538,8 @@ if (count($threadList) )
 }
 else
 {
-	$forum_view_forum .= "<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
+	$forum_view_forum .= deftrue('BOOTSTRAP')?"<div class='alert alert-warning'>".LAN_FORUM_1008."</div>":
+"<tr><td class='forumheader alert alert-warning alert-block' colspan='6'>".LAN_FORUM_1008."</td></tr>";
 }
 
 //--$fVars->FORUMJUMP = forumjump();
@@ -550,12 +553,13 @@ if($container_only)
 }
 
 
+		$sc->setVars($forumSCvars);
 
-				$sc->setVars($forumSCvars);
 
 //var_dump ($FORUM_VIEW_START);
 //  	var_dump ($FORUM_VIEW_SUB);
 $forum_view_start = $tp->parseTemplate($FORUM_VIEW_START, false, $sc);
+$forum_view_forum = $tp->parseTemplate($forum_view_forum, false, $sc);
 $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
 
 //$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
@@ -564,7 +568,9 @@ $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
 if ($forum->prefs->get('enclose'))
 {	
 // $forum_view_subs????
-	$ns->tablerender($forum->prefs->get('title'), $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
+	$caption = varset($FORUM_VIEW_CAPTION) ? $tp->parseTemplate($FORUM_VIEW_CAPTION, TRUE, $sc) : $forum->prefs->get('title');
+
+	$ns->tablerender($caption, $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
 }
 else
 {
@@ -982,7 +988,7 @@ function fadminoptions($thread_info)
 	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
 	$id = intval($thread_info['thread_id']);
 	
-	$lan = array('stick'=>'Stick','unstick'=>'Unstick','lock'=>"Lock", 'unlock'=>"Unlock");
+	$lan = array('stick'=>LAN_FORUM_8007,'unstick'=>LAN_FORUM_8008,'lock'=>LAN_FORUM_8009, 'unlock'=>LAN_FORUM_8010);
 	$icon = array(
 		'unstick'	=>	$tp->toGlyph('chevron-down'),
 		'stick'		=>	$tp->toGlyph('chevron-up'),
@@ -992,11 +998,11 @@ function fadminoptions($thread_info)
 	
 
 
-	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>Delete ".$tp->toGlyph('trash');
+	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>".LAN_DELETE." ".$tp->toGlyph('trash');
 	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
 	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
 	
-	$text .= "<li class='text-right'><a href='{$moveUrl}'>Move ".$tp->toGlyph('move')."</i></a></li>";
+	$text .= "<li class='text-right'><a href='{$moveUrl}'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</i></a></li>";
 
 	if(e_DEVELOPER)
 	{

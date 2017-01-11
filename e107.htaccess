@@ -1,9 +1,9 @@
 # Custom error pages for php scripts only
-<FilesMatch \.php$> 
+<FilesMatch \.php$>
 	ErrorDocument 400 /error.php?400
 	ErrorDocument 401 /error.php?401
 	ErrorDocument 403 /error.php?403
-	ErrorDocument 404 /error.php?404 
+	ErrorDocument 404 /error.php?404
 	ErrorDocument 500 /error.php?500
 </FilesMatch>
 
@@ -83,7 +83,7 @@
     <IfModule mod_expires.c>
         ExpiresActive On
         ExpiresDefault "access plus 2 hours"
-        ExpiresByType image/x-icon "access plus 1 year”
+        ExpiresByType image/x-icon "access plus 1 year"
         ExpiresByType image/gif "access plus 1 week"
         ExpiresByType image/png "access plus 1 week"
         ExpiresByType image/jpg "access plus 1 week"

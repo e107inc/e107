@@ -284,7 +284,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 		public function sc_pm_post_button()
 		{
-			return "<input class='button btn btn-primary' type='submit' name='postpm' value='".LAN_PM_1."' />";
+			return "<input class='button btn btn-primary' type='submit' name='postpm' value='".LAN_PLUGIN_PM_NEW."' />";
 		}
 
 
@@ -585,7 +585,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 
 
-			$action = $extra == 'outbox' ? 'delete-out' : 'delete-in';
+			$action = $extra == '.outbox' ? 'delete-out' : 'delete-in';
 			return "<a class='btn btn-default' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
 		}
 
@@ -731,7 +731,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 			$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-sm btn-primary btn-block-level';
 
-			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ')."Compose</a>";
+			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ')."".LAN_PLUGIN_PM_NEW."</a>";
 		}
 
 

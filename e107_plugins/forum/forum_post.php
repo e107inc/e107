@@ -373,16 +373,25 @@ class forum_post_handler
 
 		global $FORUMPOST, $subjectbox, $userbox, $poll_form, $fileattach, $fileattach_alert; // needed for BC.
 
-		$FORUM_POST_TEMPLATE        = array();
-		$FORUM_POSTED_TEMPLATE      = array();
+//--		$FORUM_POST_TEMPLATE        = array();
+//--		$FORUM_POSTED_TEMPLATE      = array();
 		$FORUMREPLYPOSTED           = '';
 		$FORUMTHREADPOSTED          = '';
 		$FORUMPOLLPOSTED            = '';
 
-		$file = "forum_".$type."_template.php";
+//		$file = "forum_".$type."_template.php";
 
-		if (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+//    var_dump ($type);
+//    var_dump (e107::getTemplate('forum', 'forum_'.$type));
+		$template = e107::getTemplate('forum', 'forum_'.$type);
+//--		if($template = e107::getTemplate('forum', 'forum_'.$type))
+//--		{
+//--		  	$FORUM_POST_TEMPLATE = $template;
+//--		}
+//--		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+		if (empty($template) && empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
 		{
+  		$file = "forum_".$type."_template.php";
 			if (is_readable(THEME.$file))
 			{
 				include_once(THEME.$file);
@@ -396,6 +405,8 @@ class forum_post_handler
 				include_once(e_PLUGIN.'forum/templates/'.$file);
 			}
 		}
+
+
 
 		// ----------------- Legacy -------------------------
 
@@ -603,33 +614,29 @@ class forum_post_handler
 
 
 
-		if($type == 'post')
+//--		if($type == 'post' || $type == 'posted')
+		if($template)
 		{
-			$template= (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+//--			$template= (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+			$template= (deftrue('BOOTSTRAP')) ? $template : array('form'=>$FORUMPOST);
 		//	print_a($template);
 			return $this->upgradeTemplate($template);
 		}
-		else
-		{
-			if (deftrue('BOOTSTRAP')) //v2.x
-			{
-				return $FORUM_POSTED_TEMPLATE;
-			}
-			else //v1.x
-			{
+//--		else
+//--		{
+//--			if (deftrue('BOOTSTRAP')) //v2.x
+//--			{
+//--				return $FORUM_POSTED_TEMPLATE;
+//--			}
+//--			else //v1.x
+//--			{
 				return array(
 					 "reply"    => $FORUMREPLYPOSTED,
 					 "thread"   => $FORUMTHREADPOSTED,
 					 "poll"     => $FORUMPOLLPOSTED
 				);
-
-			}
-
-
-		}
-
-
-
+//--			}
+//--		}
 	}
 
 
@@ -691,7 +698,7 @@ class forum_post_handler
 		$text = $this->renderBreadcrumb();
 
 
-		$text .= e107::getMessage()->setTitle("Warning!",E_MESSAGE_ERROR)->addError("This post, and every post below it will be moved into a new thread/topic.")->render();
+		$text .= e107::getMessage()->setTitle(LAN_FORUM_8015,E_MESSAGE_ERROR)->addError( LAN_FORUM_8014 )->render();
 
 			$text .= "
 		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
@@ -770,7 +777,7 @@ class forum_post_handler
 
 				if($this->data['forum_id'] == $f['forum_id'])
 				{
-					$for_name .= " (Current)";
+					$for_name .= LAN_FORUM_8016;
 					$currentName = $for_name;
 					continue;
 				}
@@ -857,9 +864,19 @@ class forum_post_handler
 		$data       = $this->data;
 		$template   = $this->getTemplate();
 		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
+
+		$sc->wrapper('forum_post');
+
 		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
 
-		$this->render($text);
+		$caption = null;
+
+		if(!empty($template['caption']))
+		{
+			$caption =  e107::getParser()->parseTemplate($template['caption'], true, $sc);
+		}
+
+		$this->render($text, $caption);
 
 		if(empty($data))
 		{
@@ -961,13 +978,15 @@ class forum_post_handler
 	/**
 	 * @param $text
 	 */
-	function render($text)
+	function render($text, $caption = false)
 	{
 		$ns = e107::getRender();
 
 		if ($this->forumObj->prefs->get('enclose'))
 		{
-			$ns->tablerender($this->forumObj->prefs->get('title'), $text);
+
+			$caption = (!empty($caption)) ? $caption : $this->forumObj->prefs->get('title');
+			$ns->tablerender($caption, $text);
 		}
 		else
 		{
@@ -1279,6 +1298,7 @@ class forum_post_handler
 
 		if(!deftrue('MODERATOR'))
 		{
+			e107::getDebug()->log("Move Thread attempted by non-moderator"); // No LAN necessary.
 			return false;
 		}
 
@@ -1299,7 +1319,7 @@ class forum_post_handler
 		}
 
 		$threadId = intval($_GET['id']);
-		$toForum = $posted['forum_move'];
+		$toForum = intval($posted['forum_move']);
 
 		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
@@ -1322,6 +1342,7 @@ class forum_post_handler
 	{
 		if(!deftrue('MODERATOR'))
 		{
+			e107::getDebug()->log("Split Thread attempted by non-moderator"); // No LAN necessary.
 			return false;
 		}
 

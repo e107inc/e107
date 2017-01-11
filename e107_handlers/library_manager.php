@@ -86,7 +86,7 @@ class e_library_manager
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
 		if($library['library_path'] === false || (!file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
 		{
-			$library['error'] = LAN_LIBRARY_MANAGER_09;
+			$library['error'] = LAN_NOT_FOUND;
 
 			$replace_with = array($library['name']);
 			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
@@ -204,7 +204,7 @@ class e_library_manager
 			foreach($library['variants'] as $variant_name => &$variant)
 			{
 				// If no variant callback has been set, assume the variant to be installed.
-				if(!isset($variant['variant callback']))
+				if(!isset($variant['variant_callback']))
 				{
 					$variant['installed'] = true;
 				}
@@ -231,12 +231,12 @@ class e_library_manager
 
 					// We support both a single parameter, which is an associative array, and an indexed array of
 					// multiple parameters.
-					if(isset($variant['variant arguments'][0]))
+					if(isset($variant['variant_arguments'][0]))
 					{
 						if($class)
 						{
-							$params = array_merge(array($library, $variant_name), $variant['variant arguments']);
-							$variant['installed'] = e107::callMethod($class, $library['variant callback'], $params);
+							$params = array_merge(array($library, $variant_name), $variant['variant_arguments']);
+							$variant['installed'] = e107::callMethod($class, $library['variant_callback'], $params);
 						}
 					}
 					else
@@ -244,18 +244,18 @@ class e_library_manager
 						if($class)
 						{
 							// Can't use e107::callMethod(), because it only supports 2 params.
-							if(method_exists($class, $variant['variant callback']))
+							if(method_exists($class, $variant['variant_callback']))
 							{
 								// Call PLUGIN/THEME_library::VARIANT_CALLBACK().
-								$method = $variant['variant callback'];
-								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant arguments']);
+								$method = $variant['variant_callback'];
+								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant_arguments']);
 							}
 						}
 					}
 
 					if(!$variant['installed'])
 					{
-						$variant['error'] = LAN_LIBRARY_MANAGER_09;
+						$variant['error'] = LAN_NOT_FOUND;
 
 						$replace_with = array($variant_name, $library['name']);
 						$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with, true);
@@ -283,7 +283,7 @@ class e_library_manager
 	 *   request. The variant that has been passed first is used; different variant names in subsequent calls are
 	 *   ignored.
 	 *
-	 * @return
+	 * @return mixed
 	 *   An associative array of the library information as returned from config(). The top-level properties
 	 *   contain the effective definition of the library (variant) that has been loaded. Additionally:
 	 *   - installed: Whether the library is installed, as determined by detect().
@@ -974,7 +974,7 @@ class e_library_manager
 	 *     minified or compressed files, this prevents reading the entire file into memory.
 	 *
 	 * @return mixed
-	 *   A string containing the version of the library.
+	 *   A string containing the version of the library. Or null.
 	 */
 	private function getVersion($library, $options)
 	{
@@ -1037,6 +1037,8 @@ class e_library_manager
 		{
 			unlink($tmpFile);
 		}
+
+		return;
 	}
 
 	/**
@@ -1111,7 +1113,7 @@ class e_library_manager
 	 * @param $current_version
 	 *   The version to check against (like 4.2).
 	 *
-	 * @return
+	 * @return mixed
 	 *   NULL if compatible, otherwise the original dependency version string that caused the incompatibility.
 	 *
 	 * @see parseDependency()

@@ -413,7 +413,7 @@ class e_file
 	/**
 	 *	 Grab a remote file and save it in the /temp directory. requires CURL
 	 *	@param $remote_url
-	 *	@param $local_file
+	 *	@param $local_file string filename to save as
 	 *	@param $type  media, temp, or import
 	 *	@return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
 	 */
@@ -440,7 +440,7 @@ class e_file
 
         $cp = $this->initCurl($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
-
+		curl_setopt($cp, CURLOPT_TIMEOUT, 20);//FIXME Make Pref - avoids get file timeout on slow connections
        	/*
        	$cp = curl_init($remote_url);
 
@@ -452,6 +452,7 @@ class e_file
        	*/
 
         $buffer = curl_exec($cp);
+		//FIXME addDebug curl_error output - here see #1936
        
         curl_close($cp);
         fclose($fp);
@@ -484,8 +485,8 @@ class e_file
 		curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($cu, CURLOPT_HEADER, 0);
 		curl_setopt($cu, CURLOPT_REFERER, $referer);
-		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0);
+		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
 		curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
 		curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
@@ -788,7 +789,7 @@ class e_file
 	 *
 	 * @return string formatted size
 	 */
-	function file_size_encode($size, $retrieve = false)
+	function file_size_encode($size, $retrieve = false, $decimal =2)
 	{
 		if($retrieve)
 		{
@@ -808,15 +809,15 @@ class e_file
 		}
 		else if($size < $mb)
 		{
-			return round($size/$kb, 2)."&nbsp;".CORE_LAN_KB;
+			return round($size/$kb, $decimal)."&nbsp;".CORE_LAN_KB;
 		}
 		else if($size < $gb)
 		{
-			return round($size/$mb, 2)."&nbsp;".CORE_LAN_MB;
+			return round($size/$mb, $decimal)."&nbsp;".CORE_LAN_MB;
 		}
 		else if($size < $tb)
 		{
-			return round($size/$gb, 2)."&nbsp;".CORE_LAN_GB;
+			return round($size/$gb, $decimal)."&nbsp;".CORE_LAN_GB;
 		}
 		else
 		{
@@ -1002,24 +1003,27 @@ class e_file
 	 */
 	public function getUserDir($user, $create = false, $subDir = null)
 	{
-		$user = intval($user);
 		$tp = e107::getParser();
 
 		$baseDir = e_MEDIA.'plugins/'.e_CURRENT_PLUGIN.'/';
 
 		if(!empty($subDir))
 		{
+			$subDir = e107::getParser()->filter($subDir,'w');
 			$baseDir .= rtrim($subDir,'/').'/';
 		}
 
-		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		if(is_numeric($user))
+		{
+			$baseDir .= ($user > 0) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		}
 
 		if($create == true && !is_dir($baseDir))
 		{
 			mkdir($baseDir, 0755, true); // recursively
 		}
 
-		$baseDir .= "/";
+		$baseDir = rtrim($baseDir,'/')."/";
 
 		return $baseDir;
 	}
@@ -1190,11 +1194,11 @@ class e_file
 	 *		['error']	- error code. 0 = 'good'. 1..4 main others, although up to 8 defined for later PHP versions
 	 *	Files stored in server's temporary directory, unless another set
 	 */
-	public function getUploaded($uploaddir, $fileinfo = false, $options = null)
+	public function getUploaded($uploaddir, $fileinfo = false, $options = array())
 	{
 		require_once(e_HANDLER."upload_handler.php");
 
-		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP)
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir == e_AVATAR_UPLOAD)
 		{
 			$path = $uploaddir;
 		}
@@ -1206,7 +1210,6 @@ class e_file
 		{
 			return false;
 		}
-
 
 		return process_uploaded_files($path, $fileinfo, $options);
 
@@ -1254,6 +1257,7 @@ class e_file
 
 	//	$text = 'umask 0022'; //Could correct permissions issue with 0664 files.
 		// Change Dir.
+		$folder = e107::getParser()->filter($folder,'file'); // extra filter to keep RIPS happy.
 
 		switch($type)
 		{
@@ -1317,16 +1321,68 @@ class e_file
 	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
 	 * @return string unzipped folder name on success or false. 
 	 */
-	public function unzipArchive($localfile, $type)
+	public function unzipArchive($localfile, $type, $overwrite=false)
 	{
 		$mes = e107::getMessage();
 		
 		chmod(e_TEMP.$localfile, 0755);
-		require_once(e_HANDLER."pclzip.lib.php");
+
+		$dir = false;
+
+		if(class_exists('ZipArchive')) // PHP7 compat. method.
+		{
+			$zip = new ZipArchive;
+
+			if($zip->open(e_TEMP.$localfile) === true)
+			{
+				for($i = 0; $i < $zip->numFiles; $i++ )
+				{
+					$filename = $zip->getNameIndex($i);
+
+                    $fileinfo = pathinfo($filename);
+
+                    if($fileinfo['dirname'] === '.')
+                    {
+                        $dir = $fileinfo['basename'];
+                        break;
+                    }
+                    elseif($fileinfo['basename'] === 'plugin.php' || $fileinfo['basename'] === 'theme.php')
+                    {
+						$dir = $fileinfo['dirname'];
+                    }
+
+			     //   $stat = $zip->statIndex( $i );
+			    //    print_a( $stat['name']  );
+				}
+
+
+				$zip->extractTo(e_TEMP);
+				chmod(e_TEMP.$dir, 0755);
+
+				if(empty($dir) && e_DEBUG)
+				{
+					print_a($fileinfo);
+				}
+
+
+				$zip->close();
+			}
+
+
+
+
+		}
+		else // Legacy Method.
+		{
+			require_once(e_HANDLER."pclzip.lib.php");
 		
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= $this->getRootFolder($unarc);	
+			$archive 	= new PclZip(e_TEMP.$localfile);
+			$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+			$dir 		= $this->getRootFolder($unarc);
+		}
+
+
+
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
 		$typeDiz 	= ucfirst($type);
 		
@@ -1334,18 +1390,33 @@ class e_file
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); 
-			 
-			if(file_exists(e_TEMP.$localfile))
-			{	
-				@unlink(e_TEMP.$localfile);
+			if($overwrite === true)
+			{
+				if(file_exists(e_TEMP.$localfile))
+				{
+					$time = date("YmdHi");
+					if(rename($destpath.$dir, e_BACKUP.$dir."_".$time))
+					{
+						$mes->addSuccess("Old folder moved to backup directory");
+					}
+				}
 			}
-			
-			$this->removeDir(e_TEMP.$dir);
-			return false;
+			else
+			{
+
+				$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir);
+
+				if(file_exists(e_TEMP.$localfile))
+				{
+					@unlink(e_TEMP.$localfile);
+				}
+
+				$this->removeDir(e_TEMP.$dir);
+				return false;
+			}
 		}
 	
-		if($dir == '')
+		if(empty($dir))
 		{
 			$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
 			@unlink(e_TEMP.$localfile);
@@ -1354,13 +1425,14 @@ class e_file
 	
 		if(is_dir(e_TEMP.$dir)) 
 		{
-			if(!rename(e_TEMP.$dir,$destpath.$dir))
+			$res = rename(e_TEMP.$dir,$destpath.$dir);
+			if($res === false)
 			{
 				$mes->addError("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"); //  flush(); usleep(50000);
 				@unlink(e_TEMP.$localfile);
 				return false;
 			}	
-			
+
 
 			
 		//	$dir 		= basename($unarc[0]['filename']);

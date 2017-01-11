@@ -33,9 +33,16 @@ if(array_key_exists($parm, $aColors))
 }
 else
 {
-	if(preg_match("/(#[a-fA-F0-9]{3,6})/", $parm, $matches))
+	if(preg_match("/(#[a-fA-F0-9]{3,12})/", $parm, $matches))
 	{
 		return "<span class='{$class}' style='color:{$matches[1]};'>$code_text</span>";
 
 	}
+
+	if(preg_match("/([a-zA-Z]{3,20})/", $parm, $matches)) // support color names http://www.w3schools.com/colors/colors_names.asp
+	{
+		return "<span class='{$class}' style='color:{$matches[1]};'>$code_text</span>";
+	}
+
+
 }

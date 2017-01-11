@@ -7,27 +7,42 @@
 */
 
 define("FC_LAN_1", "File Inspector");
-define("FC_LAN_2", "Scan Options");
+//define("FC_LAN_2", "Scan Options");//LAN_OPTIONS
 //define("FC_LAN_3", "Show");
-define("FC_LAN_4", "All");
+//define("FC_LAN_4", "All");//LAN_ALL
 define("FC_LAN_5", "Core Files");
 define("FC_LAN_6", "Integrity Fail Only");
 define("FC_LAN_7", "Non Core Files");
 define("FC_LAN_8", "Check Integrity Of Core Files");
-define("FC_LAN_9", "On");
-define("FC_LAN_10", "Off");
+//define("FC_LAN_9", "On");//LAN_YES - consistent with prefs
+//define("FC_LAN_10", "Off");//LAN_NO
 define("FC_LAN_11", "Scan Now");
-define("FC_LAN_12", "None");
+//define("FC_LAN_12", "None");//LAN_NONE
 define("FC_LAN_13", "Missing Core Files");
 define("FC_LAN_14", "Display results as");
 define("FC_LAN_15", "Directory Tree");
-define("FC_LAN_16", "List");
+//define("FC_LAN_16", "List");//LAN_LIST
 define("FC_LAN_17", "String Matching");
 define("FC_LAN_18", "Regular expression");
 define("FC_LAN_19", "Show line numbers");
 define("FC_LAN_20", "Show matched lines");
 define("FC_LAN_21", "Old Core Files");
-define("FC_LAN_22", "Highlight matched text");
+//define("FC_LAN_22", "Highlight matched text");//not used
+define("FC_LAN_23", "Exclude Language-Files");
+define("FC_LAN_24", "Core Folder (Integrity Pass)");
+define("FC_LAN_25", "Core Folder (Integrity Fail)");
+define("FC_LAN_26", "Core Folder (Missing)");
+define("FC_LAN_27", "Core Folder (Old)");
+define("FC_LAN_28", "Non-core Folder");
+define("FC_LAN_29", "Core File (Integrity Pass)");
+define("FC_LAN_30", "Core File (Unchecked)");
+define("FC_LAN_31", "Core File (Integrity Fail)");
+define("FC_LAN_32", "Core File (Missing)");
+define("FC_LAN_33", "Core File (Old)");
+define("FC_LAN_34", "Core File (Incalculable)");
+define("FC_LAN_35", "Known Security issue");
+define("FC_LAN_36", "Non-core file");
+define("FC_LAN_37", "File Key");
 
 define("FR_LAN_1", "Scanning");
 define("FR_LAN_2", "Scan Results");
@@ -67,9 +82,10 @@ define("FR_LAN_26", "Warning! Known Insecurity Detected!");
 define("FR_LAN_27", "There are files on your server that are known to be exploitable and must be removed immediately.");
 define("FR_LAN_28", "Known insecure files");
 
-define("FR_LAN_29", "Total files matched");
-define("FR_LAN_30", "Total lines matched");
-define("FR_LAN_31", "Missing complete plugin folder");
+//define("FR_LAN_29", "Total files matched");//not used
+//define("FR_LAN_30", "Total lines matched");//not used
+//define("FR_LAN_31", "Missing complete plugin folder");//not used
+define("FR_LAN_32", "You need to run a scan first!");
 
 define("FS_LAN_1", "Create Snapshot");
 define("FS_LAN_2", "Absolute path of root directory to create image from");

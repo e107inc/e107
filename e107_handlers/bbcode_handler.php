@@ -386,7 +386,7 @@ class e_bbcode
 		 *	@todo - capturing output deprecated
 		 */
 		ob_start();
-		$bbcode_return = eval($bbcode);
+		$bbcode_return = eval($bbcode); //FIXME notice removal
 		$bbcode_output = ob_get_contents();
 		ob_end_clean();
 

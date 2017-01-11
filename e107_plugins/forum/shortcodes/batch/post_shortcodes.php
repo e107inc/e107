@@ -283,7 +283,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			return '';
 		}
 
-		return "Options"; //TODO LAN.
+		return LAN_FORUM_8013; 
 	}
 
 

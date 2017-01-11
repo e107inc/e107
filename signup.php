@@ -425,6 +425,14 @@ class signup
 				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 			}
 
+			// When user clicks twice on the email activation link or admin manually activated the account already.
+			if($sql->select("user", "user_id", "user_id = ".intval($qs[1])." AND user_ban = 0 AND user_sess='' " ) ) //TODO XXX check within last 24 hours only?
+			{
+				$text = "<div class='alert alert-success'>".LAN_SIGNUP_41."</div>";
+				$ns->tablerender(LAN_SIGNUP_75, $text);
+				return true;
+			}
+
 
 			e107::getCache()->clear("online_menu_totals");
 

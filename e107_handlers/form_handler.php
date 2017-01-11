@@ -8,9 +8,6 @@
  *
  * Form Handler
  *
- * $URL$
- * $Id$
- *
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -79,6 +76,7 @@ class e_form
 
 	function __construct($enable_tabindex = false)
 	{
+		e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_form_handler.php");
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
@@ -142,7 +140,7 @@ class e_form
 		else 
 		{
 			$target = str_replace("&", "&amp;", $target);
-			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method = '{$method}'{$autoComplete}>\n";
+			$text = "\n<form {$class} action='{$target}' id='".$this->name2id($name)."' method='{$method}'{$autoComplete}>\n";
 		}
 		return $text;	
 	}
@@ -154,6 +152,298 @@ class e_form
 	{
 		return "</form>";	
 		
+	}
+
+
+	/**
+	 * Render a country drop-down list.
+	 * @param string $name
+	 * @param string $value
+	 * @param array $options
+	 * @return string
+	 */
+	public function country($name, $value, $options=array())
+	{
+
+		$arr = $this->getCountry();
+
+		$placeholder = isset($options['placeholder']) ? $options['placeholder'] : ' ';
+
+		return $this->select($name, $arr, $value, $options, $placeholder);
+	}
+
+
+	/**
+	 * Get a list of countries.
+	 * @param null $iso
+	 */
+	public function getCountry($iso=null)  // move to parser?
+	{
+
+		$c = array();
+
+		 $c['af'] = "Afghanistan";
+		 $c['al'] = "Albania";
+		 $c['dz'] = "Algeria";
+		 $c['as'] = "American Samoa";
+		 $c['ad'] = "Andorra";
+		 $c['ao'] = "Angola";
+		 $c['ai'] = "Anguilla";
+		 $c['aq'] = "Antarctica";
+		 $c['ag'] = "Antigua and Barbuda";
+		 $c['ar'] = "Argentina";
+		 $c['am'] = "Armenia";
+		 $c['aw'] = "Aruba";
+		 $c['au'] = "Australia";
+		 $c['at'] = "Austria";
+		 $c['az'] = "Azerbaijan";
+		 $c['bs'] = "Bahamas";
+		 $c['bh'] = "Bahrain";
+		 $c['bd'] = "Bangladesh";
+		 $c['bb'] = "Barbados";
+		 $c['by'] = "Belarus";
+		 $c['be'] = "Belgium";
+		 $c['bz'] = "Belize";
+		 $c['bj'] = "Benin";
+		 $c['bm'] = "Bermuda";
+		 $c['bt'] = "Bhutan";
+		 $c['bo'] = "Bolivia";
+		 $c['ba'] = "Bosnia-Herzegovina";
+		 $c['bw'] = "Botswana";
+		 $c['bv'] = "Bouvet Island";
+		 $c['br'] = "Brazil";
+		 $c['io'] = "British Indian Ocean Territory";
+		 $c['bn'] = "Brunei Darussalam";
+		 $c['bg'] = "Bulgaria";
+		 $c['bf'] = "Burkina Faso";
+		 $c['bi'] = "Burundi";
+		 $c['kh'] = "Cambodia";
+		 $c['cm'] = "Cameroon";
+		 $c['ca'] = "Canada";
+
+		 $c['cv'] = "Cape Verde";
+		 $c['ky'] = "Cayman Islands";
+		 $c['cf'] = "Central African Republic";
+		 $c['td'] = "Chad";
+		 $c['cl'] = "Chile";
+		 $c['cn'] = "China";
+		 $c['cx'] = "Christmas Island";
+		 $c['cc'] = "Cocos (Keeling) Islands";
+		 $c['co'] = "Colombia";
+		 $c['km'] = "Comoros";
+		 $c['cg'] = "Congo";
+		 $c['cd'] = "Congo (Dem.Rep)";
+		 $c['ck'] = "Cook Islands";
+		 $c['cr'] = "Costa Rica";
+		 $c['hr'] = "Croatia";
+		 $c['cu'] = "Cuba";
+		 $c['cy'] = "Cyprus";
+		 $c['cz'] = "Czech Republic";
+		 $c['dk'] = "Denmark";
+		 $c['dj'] = "Djibouti";
+		 $c['dm'] = "Dominica";
+		 $c['do'] = "Dominican Republic";
+		 $c['tp'] = "East Timor";
+		 $c['ec'] = "Ecuador";
+		 $c['eg'] = "Egypt";
+		 $c['sv'] = "El Salvador";
+		 $c['gq'] = "Equatorial Guinea";
+		 $c['er'] = "Eritrea";
+		 $c['ee'] = "Estonia";
+		 $c['et'] = "Ethiopia";
+		 $c['fk'] = "Falkland Islands";
+		 $c['fo'] = "Faroe Islands";
+		 $c['fj'] = "Fiji";
+		 $c['fi'] = "Finland";
+		// $c['cs'] = "Former Czechoslovakia";
+		// $c['su'] = "Former USSR";
+		 $c['fr'] = "France";
+		// $c['fx'] = "France (European Territory)";
+		 $c['gf'] = "French Guyana";
+		 $c['tf'] = "French Southern Territories";
+		 $c['ga'] = "Gabon";
+		 $c['gm'] = "Gambia";
+		 $c['ge'] = "Georgia";
+		 $c['de'] = "Germany";
+		 $c['gh'] = "Ghana";
+		 $c['gi'] = "Gibraltar";
+		 $c['gr'] = "Greece";
+		 $c['gl'] = "Greenland";
+		 $c['gd'] = "Grenada";
+		 $c['gp'] = "Guadeloupe (French)";
+		 $c['gu'] = "Guam (USA)";
+		 $c['gt'] = "Guatemala";
+		 $c['gn'] = "Guinea";
+		 $c['gw'] = "Guinea Bissau";
+		 $c['gy'] = "Guyana";
+		 $c['ht'] = "Haiti";
+		 $c['hm'] = "Heard and McDonald Islands";
+		 $c['hn'] = "Honduras";
+		 $c['hk'] = "Hong Kong";
+		 $c['hu'] = "Hungary";
+		 $c['is'] = "Iceland";
+		 $c['in'] = "India";
+		 $c['id'] = "Indonesia";
+		 $c['ir'] = "Iran";
+		 $c['iq'] = "Iraq";
+		 $c['ie'] = "Ireland";
+		 $c['il'] = "Israel";
+		 $c['it'] = "Italy";
+		 $c['ci'] = "Ivory Coast (Cote D'Ivoire)";
+		 $c['jm'] = "Jamaica";
+		 $c['jp'] = "Japan";
+		 $c['jo'] = "Jordan";
+		 $c['kz'] = "Kazakhstan";
+		 $c['ke'] = "Kenya";
+		 $c['ki'] = "Kiribati";
+		 $c['kp'] = "Korea (North)";
+		 $c['kr'] = "Korea (South)";
+		 $c['kw'] = "Kuwait";
+		 $c['kg'] = "Kyrgyzstan";
+		 $c['la'] = "Laos";
+		 $c['lv'] = "Latvia";
+		 $c['lb'] = "Lebanon";
+		 $c['ls'] = "Lesotho";
+		 $c['lr'] = "Liberia";
+		 $c['ly'] = "Libya";
+		 $c['li'] = "Liechtenstein";
+		 $c['lt'] = "Lithuania";
+		 $c['lu'] = "Luxembourg";
+		 $c['mo'] = "Macau";
+		 $c['mk'] = "Macedonia";
+		 $c['mg'] = "Madagascar";
+		 $c['mw'] = "Malawi";
+		 $c['my'] = "Malaysia";
+		 $c['mv'] = "Maldives";
+		 $c['ml'] = "Mali";
+		 $c['mt'] = "Malta";
+		 $c['mh'] = "Marshall Islands";
+		 $c['mq'] = "Martinique (French)";
+		 $c['mr'] = "Mauritania";
+		 $c['mu'] = "Mauritius";
+		 $c['yt'] = "Mayotte";
+		 $c['mx'] = "Mexico";
+		 $c['fm'] = "Micronesia";
+		 $c['md'] = "Moldavia";
+		 $c['mc'] = "Monaco";
+		 $c['mn'] = "Mongolia";
+		 $c['me'] = "Montenegro";
+		 $c['ms'] = "Montserrat";
+		 $c['ma'] = "Morocco";
+		 $c['mz'] = "Mozambique";
+		 $c['mm'] = "Myanmar";
+		 $c['na'] = "Namibia";
+		 $c['nr'] = "Nauru";
+		 $c['np'] = "Nepal";
+		 $c['nl'] = "Netherlands";
+		 $c['an'] = "Netherlands Antilles";
+		 // $c['net'] = "Network";
+
+		 $c['nc'] = "New Caledonia (French)";
+		 $c['nz'] = "New Zealand";
+		 $c['ni'] = "Nicaragua";
+		 $c['ne'] = "Niger";
+		 $c['ng'] = "Nigeria";
+		 $c['nu'] = "Niue";
+		 $c['nf'] = "Norfolk Island";
+
+		 $c['mp'] = "Northern Mariana Islands";
+		 $c['no'] = "Norway";
+		//  $c['arpa'] = "Old style Arpanet";
+		 $c['om'] = "Oman";
+		 $c['pk'] = "Pakistan";
+		 $c['pw'] = "Palau";
+		 $c['pa'] = "Panama";
+		 $c['pg'] = "Papua New Guinea";
+		 $c['py'] = "Paraguay";
+		 $c['pe'] = "Peru";
+		 $c['ph'] = "Philippines";
+		 $c['pn'] = "Pitcairn Island";
+		 $c['pl'] = "Poland";
+		 $c['pf'] = "Polynesia (French)";
+		 $c['pt'] = "Portugal";
+		 $c['pr'] = "Puerto Rico";
+		 $c['ps'] = "Palestine";
+		 $c['qa'] = "Qatar";
+		 $c['re'] = "Reunion (French)";
+		 $c['ro'] = "Romania";
+		 $c['ru'] = "Russia";
+		 $c['rw'] = "Rwanda";
+		 $c['gs'] = "S. Georgia &amp; S. Sandwich Isls.";
+		 $c['sh'] = "Saint Helena";
+		 $c['kn'] = "Saint Kitts &amp; Nevis";
+		 $c['lc'] = "Saint Lucia";
+		 $c['pm'] = "Saint Pierre and Miquelon";
+		 $c['st'] = "Saint Tome (Sao Tome) and Principe";
+		 $c['vc'] = "Saint Vincent &amp; Grenadines";
+		 $c['ws'] = "Samoa";
+		 $c['sm'] = "San Marino";
+		 $c['sa'] = "Saudi Arabia";
+		 $c['sn'] = "Senegal";
+		 $c['rs'] = "Serbia";
+		 $c['sc'] = "Seychelles";
+		 $c['sl'] = "Sierra Leone";
+		 $c['sg'] = "Singapore";
+		 $c['sk'] = "Slovak Republic";
+		 $c['si'] = "Slovenia";
+		 $c['sb'] = "Solomon Islands";
+		 $c['so'] = "Somalia";
+		 $c['za'] = "South Africa";
+
+		 $c['es'] = "Spain";
+		 $c['lk'] = "Sri Lanka";
+		 $c['sd'] = "Sudan";
+		 $c['sr'] = "Suriname";
+		 $c['sj'] = "Svalbard and Jan Mayen Islands";
+		 $c['sz'] = "Swaziland";
+		 $c['se'] = "Sweden";
+		 $c['ch'] = "Switzerland";
+		 $c['sy'] = "Syria";
+		 $c['tj'] = "Tadjikistan";
+		 $c['tw'] = "Taiwan";
+		 $c['tz'] = "Tanzania";
+		 $c['th'] = "Thailand";
+		 $c['ti'] = "Tibet";
+		 $c['tg'] = "Togo";
+		 $c['tk'] = "Tokelau";
+		 $c['to'] = "Tonga";
+		 $c['tt'] = "Trinidad and Tobago";
+		 $c['tn'] = "Tunisia";
+		 $c['tr'] = "Turkey";
+		 $c['tm'] = "Turkmenistan";
+		 $c['tc'] = "Turks and Caicos Islands";
+		 $c['tv'] = "Tuvalu";
+		 $c['ug'] = "Uganda";
+		 $c['ua'] = "Ukraine";
+		 $c['ae'] = "United Arab Emirates";
+		 $c['gb'] = "United Kingdom";
+		 $c['us'] = "United States";
+		 $c['uy'] = "Uruguay";
+		 $c['um'] = "US Minor Outlying Islands";
+		 $c['uz'] = "Uzbekistan";
+		 $c['vu'] = "Vanuatu";
+		 $c['va'] = "Vatican City State";
+		 $c['ve'] = "Venezuela";
+		 $c['vn'] = "Vietnam";
+		 $c['vg'] = "Virgin Islands (British)";
+		 $c['vi'] = "Virgin Islands (USA)";
+		 $c['wf'] = "Wallis and Futuna Islands";
+		 $c['eh'] = "Western Sahara";
+		 $c['ye'] = "Yemen";
+
+		// $c['zr'] = "(deprecated) Zaire";
+		 $c['zm'] = "Zambia";
+		 $c['zw'] = "Zimbabwe";
+
+
+        if(!empty($iso) && !empty($c[$iso]))
+        {
+            return $c[$iso];
+        }
+
+
+		return $c;
+
 	}
 
 
@@ -217,6 +507,7 @@ class e_form
 			<ul class="nav nav-tabs">';
 
 		$c = 0;
+
 		foreach($array as $key=>$tab)
 		{
 
@@ -312,21 +603,28 @@ class e_form
 		$text  ='
 		<!-- Carousel -->
 		
-		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>
-  		<!-- Indicators -->
-  		<ol class="carousel-indicators">
-		';
+		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>';
 
-		$c = 0;
-		foreach($array as $key=>$tab)
+		if(count($array) > 1)
 		{
-			$active = ($c == $act) ? ' class="active"' : '';
-			$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
-			$c++;
+			$text .= '
+	        <!-- Indicators -->
+	        <ol class="carousel-indicators">
+			';
+
+			$c = 0;
+			foreach($array as $key=>$tab)
+			{
+				$active = ($c == $act) ? ' class="active"' : '';
+				$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
+				$c++;
+			}
+
+			$text .= '
+			</ol>';
 		}
-		
+
 		$text .= '
-		</ol>
 
 		<div class="carousel-inner">
 		';
@@ -350,15 +648,18 @@ class e_form
 		
 		$text .= '
 		</div>';
-		
-		$text .= '
-		<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
-    	<span class="glyphicon glyphicon-chevron-left"></span>
-		</a>
-		<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
-		<span class="glyphicon glyphicon-chevron-right"></span>
-		</a>';
-		
+
+		if(count($array) > 1)
+		{
+			$text .= '
+			<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
+	        <span class="glyphicon glyphicon-chevron-left"></span>
+			</a>
+			<a class="right carousel-control" href="#'.$name.'" role="button" data-slide="next">
+			<span class="glyphicon glyphicon-chevron-right"></span>
+			</a>';
+		}
+
 		$text .= '</div><!-- End Carousel -->';
 
 		return $text;
@@ -551,6 +852,7 @@ class e_form
 
 
 		$options['media'] = '_icon';
+		$options['legacyPath'] = "{e_IMAGE}icons";
 		
 		return $this->imagepicker($name, $default, $label, $options);
 		
@@ -587,15 +889,20 @@ class e_form
 			$url .= "&amp;w=".$extras['w'];	
 		}
 
-		if(vartrue($extras['glyphs']))
+		if(!empty($extras['glyphs']))
 		{
 			$url .= "&amp;glyphs=1";	
 		}	
 		
-		if(vartrue($extras['video']))
+		if(!empty($extras['video']))
 		{
 			$url .= "&amp;video=1";	
 		}			
+
+		if(!empty($extras['path']) && $extras['path'] == 'plugin')
+		{
+			$url .= "&amp;path=".deftrue('e_CURRENT_PLUGIN');
+		}
 
 		if(E107_DBG_BASIC)
 		{
@@ -608,7 +915,7 @@ class e_form
 		}
 
 	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
-	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
@@ -675,13 +982,13 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='Click on the avatar to change it' alt='Click on the avatar to change it' />"; // TODO LAN
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />"; 
 		}
 		else
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
+			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />"; 
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -698,7 +1005,7 @@ class e_form
 				
 				if(count($avFiles) > 0)
 				{
-					$text .= "<div class='divider'><span>OR</span></div>";
+					$text .= "<div class='divider'><span>".LAN_EFORM_003."</span></div>";
 					$count = 1;
 				}
 		}
@@ -707,7 +1014,7 @@ class e_form
 		foreach($avFiles as $fi)
 		{
 			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname']);	
-			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;\" /></a> ";			
+			$text .= "\n<a class='e-expandit' title='".LAN_EFORM_004."' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;return false\" /></a> ";
 			$count++;
 
 
@@ -717,11 +1024,14 @@ class e_form
 		if($count == 0)
 		{
 			$text .= "<div class='row'>";
-			$text .= "<div class='alert alert-info'>No Avatars Available</div>"; //TODO LAN
+			$text .= "<div class='alert alert-info'>".LAN_EFORM_005."</div>"; 
 
 			if(ADMIN)
 			{
-				$text .= "<div class='alert alert-danger'>Admin-Only Notice: The folder <b>".e_AVATAR_DEFAULT."</b> is empty. Upload some default avatars images to this folder for users to choose avatars from.</div>"; //TODO LAN
+				$EAVATAR = "<b>".e_AVATAR_DEFAULT."</b>";
+				$text .= "<div class='alert alert-danger'>";
+				$text .= e107::getParser()->lanVars(LAN_EFORM_006, array('x'=>$EAVATAR));
+				$text .= "</div>"; 
 			}
 
 			$text .= "</div>";
@@ -776,7 +1086,7 @@ class e_form
 	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 	 * @return string html output
 	 */
-	function imagepicker($name, $default, $label = '', $sc_parameters = '')
+	function imagepicker($name, $default, $previewURL = '', $sc_parameters = '')
 	{
 		$tp = e107::getParser();
 		$name_id = $this->name2id($name);
@@ -789,30 +1099,46 @@ class e_form
 		}
 
 
-	//	print_a($sc_parameters);
-	
 		if(empty($sc_parameters['media']))
 		{
 			$sc_parameters['media'] = '_common';	
 		}
-	
+
+
+e107::getDebug()->log($sc_parameters);
+
 		$default_thumb = $default;
+		$class = '';
+
 		if($default)
 		{
 			if($video = $tp->toVideo($default, array('thumb'=>'src')))
 			{
-				$default_url = $video;	
+				$default_url = $video;
+				$class = 'image-selector-video';
+
 			}
 			else 
 			{
-				if('{' != $default[0])
+				if('{' != $default[0]) // legacy path or one without {}
 				{
-					// convert to sc path
-					$default_thumb = $tp->createConstants($default, 'nice');
-					$default = $tp->createConstants($default, 'mix');
+					list($default_thumb,$default) = $this->imagepickerDefault($default, $sc_parameters);
 				}
+
 				$default_url = $tp->replaceConstants($default, 'abs');
 			}
+
+
+			$debugInfo = "
+			<pre>
+			default-thumb: ".$default_thumb."
+			defautlt:   ".$default."
+			default-url: ".$default_url."
+			</pre>";
+
+		//	e107::getDebug()->log($debugInfo);
+
+
 			$blank = FALSE;
 			
 			
@@ -822,10 +1148,10 @@ class e_form
 			//$default = $default_url = e_IMAGE_ABS."generic/blank.gif";
 			$default_url = e_IMAGE_ABS."generic/nomedia.png";
 			$blank = TRUE;
+			$class = 'image-selector-empty';
 		}
 		
-		
-		
+
 		//$width = intval(vartrue($sc_parameters['width'], 150));
 		$cat = $tp->toDB(vartrue($sc_parameters['media']));	
 		
@@ -850,24 +1176,27 @@ class e_form
 			$width = vartrue($sc_parameters['w'], 120);
 			$height = vartrue($sc_parameters['h'], 0);
 
-
-
-			$ret = "<div class='imgselector-container e-tip' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
+			$ret = "<div class='imgselector-container e-tip ".$class."' {$title} style='vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
 			$att = 'aw='.$width."'&ah=".$height."'";
-			$thpath = empty($default) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
+			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
 			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
 
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector img-responsive' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
 			
-			if($cat != 'news' && $cat !='page' && $cat !='') 
+			if($cat != 'news' && $cat !='page' && $cat !='' && strpos($cat,'_image')===false)
 			{
 			 	$cat = $cat . "_image";		
 			}
 
 
 		}
-		
-		
+
+		if(!empty($previewURL))
+		{
+			$default_url = $previewURL;
+		}
+
+
 		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
 
 		if($cat != '_icon' && $blank == false) // ICONS
@@ -888,7 +1217,35 @@ class e_form
 
 	}
 
+	private function imagepickerDefault($path, $parms=array())
+	{
+		$tp = e107::getParser();
 
+			if(!empty($parms['legacyPath'])) // look in a specific path.
+			{
+				$legacyDefault = rtrim($parms['legacyPath'],'/')."/".$path;
+				$legacyRel = $tp->replaceConstants($legacyDefault);
+
+				if(is_readable($legacyRel))
+				{
+					return array($legacyDefault, $legacyDefault);
+				}
+				else
+				{
+			//		e107::getDebug()->log("Legacy Default:".$legacyDefault);
+			//		e107::getDebug()->log("wasnt found:".$legacyRel);
+				}
+
+			}
+
+			$path = str_replace('e_MEDIA_IMAGE/','{e_MEDIA_IMAGE}',$path);
+
+			$default_thumb = $tp->createConstants($path, 'nice');
+			$default = $tp->createConstants($path, 'mix');
+
+			return array($default_thumb, $default);
+
+	}
 
 			
 	/**
@@ -928,7 +1285,7 @@ class e_form
 		}
 		
 		
-		$default_label 				= ($default) ? $default : "Choose a file";
+		$default_label 				= ($default) ? $default : LAN_CHOOSE_FILE;
 		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
 			
 		$sc_parameters['mode'] 		= 'main';
@@ -1103,7 +1460,7 @@ class e_form
 
 		if(empty($users))
 		{
-			return "Unavailable";
+			return LAN_UNAVAILABLE;
 		}
 
 		$opt = array();
@@ -1375,7 +1732,7 @@ class e_form
 		
 		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
 		$options['required'] = varset($options['required'], 1);
-		$options['class'] = vartrue($options['class'],'e-password');
+		$options['class'] = vartrue($options['class'],'e-password tbox');
 
 
 		e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
@@ -1488,7 +1845,7 @@ class e_form
    		 	$text .= "</div>
     	</div>";
 		
-		$loading = vartrue($options['loading'],'Please wait...');
+		$loading = vartrue($options['loading'],LAN_LOADING);
 		
 		$buttonId = $target.'-start';
 		
@@ -1561,11 +1918,13 @@ class e_form
 		//width should be explicit set by current admin theme
 	//	$size = 'input-large';
 		$height = '';
+		$cols = 70;
 		
 		switch($size)
 		{
 			case 'tiny':
 				$rows = '3';
+				$cols = 50;
 			//	$height = "style='height:250px'"; // inline required for wysiwyg
 			break;
 			
@@ -1616,7 +1975,7 @@ class e_form
 
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
-		$ret .=	$this->textarea($name, $value, $rows, 70, $options, $counter); // higher thank 70 will break some layouts. 
+		$ret .=	$this->textarea($name, $value, $rows, $cols, $options, $counter); // higher thank 70 will break some layouts.
 			
 		$ret .= "</div>\n";
 		
@@ -2178,7 +2537,7 @@ class e_form
 		$tp = e107::getParser();
 		
 		$text = '<span class="input-append input-group e-search">
-    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder=Search&hellip;').'
+    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder='.LAN_SEARCH.'&hellip;').'
    			 <span class="input-group-btn"><button class="btn btn-primary" name="'.$submitName.'" type="submit">'.$tp->toGlyph('fa-search',' ').'</button></span>
     	</span>';
 		
@@ -2461,7 +2820,7 @@ class e_form
 					
 			$text = '<div class="btn-group pull-'.$align.'">
 			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" href="#">
-			    '.($label ? $label : 'No Label Provided').'
+			    '.($label ? $label : LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
 			    <ul class="dropdown-menu">
@@ -2487,7 +2846,9 @@ class e_form
 
 	/**
 	 * Render a Breadcrumb in Bootstrap format. 
-	 * @param $array 
+	 * @param $array
+	 * @param $array[url]
+	 * @param $array[text]
 	 */
 	function breadcrumb($array)
 	{
@@ -2529,7 +2890,22 @@ class e_form
 	}
 
 
+	/**
+	 * Render a direct link admin-edit button on the frontend.
+	 * @param $url
+	 * @param string $perms
+	 * @return string
+	 */
+	public function instantEditButton($url, $perms='0')
+	{
+		if(deftrue("BOOTSTRAP") && getperms($perms))
+		{
+			return "<span class='e-instant-edit hidden-print'><a target='_blank' title='".LAN_EDIT."' href='".$url."'>".e107::getParser()->toGlyph('fa-edit')."</a></span>";
+		}
 
+		return '';
+
+	}
 
 
 
@@ -2999,10 +3375,10 @@ class e_form
 	// navbar-header nav-header
 	// navbar-header nav-header
 		$text = '<div class="col-selection dropdown e-tip pull-right" data-placement="left">
-    <a class="dropdown-toggle" title="Select columns to display" data-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
-    <li class="list-group-item "><h5 class="list-group-item-heading">Display Columns</h5></li>
+    <li class="list-group-item "><h5 class="list-group-item-heading">'.LAN_EFORM_009.'</h5></li>
     <li class="list-group-item">
      <ul class="nav scroll-menu" >';
 		
@@ -3460,7 +3836,7 @@ class e_form
 
 		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
 		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
-		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)."' data-value=\"{$curVal}\"   href='#' ";
+		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)." ".$class."' data-value=\"{$curVal}\"   href='#' ";
 
 		if(!empty($options))
 		{
@@ -3500,9 +3876,11 @@ class e_form
 			if(!is_array($attributes['readParms'])) parse_str($attributes['readParms'], $attributes['readParms']);
 			$parms = $attributes['readParms'];
 		}
+
+
 	
-		if(vartrue($attributes['inline'])) $parms['editable'] = true; // attribute alias
-		if(vartrue($attributes['sort'])) $parms['sort'] = true; // attribute alias
+		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
+		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
 		if(!empty($parms['type'])) // Allow the use of a different type in readMode. eg. type=method.
 		{
@@ -3516,7 +3894,7 @@ class e_form
 		{
 			case 'options':
 				
-				if(varset($attributes['type']) == "method") // Allow override with 'options' function.
+				if(!empty($attributes['type']) && ($attributes['type'] == "method")) // Allow override with 'options' function.
 				{
 					$attributes['mode'] = "read";
 					if(isset($attributes['method']) && $attributes['method'] && method_exists($this, $attributes['method']))
@@ -3540,7 +3918,7 @@ class e_form
 					
 					$value = "<div class='btn-group'>";
 					
-					if(vartrue($parms['sort']))//FIXME use a global variable such as $fieldpref
+					if(!empty($parms['sort']))//FIXME use a global variable such as $fieldpref
 					{
 						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 						$from = intval(vartrue($_GET['from'],0));
@@ -3581,7 +3959,7 @@ class e_form
 						".deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'))."</a>";
 					}
 
-					$delcls = vartrue($attributes['noConfirm']) ? ' no-confirm' : '';
+					$delcls = !empty($attributes['noConfirm']) ? ' no-confirm' : '';
 					if(varset($parms['deleteClass']) && varset($parms['delete'],1) == 1)
 					{
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
@@ -3613,7 +3991,7 @@ class e_form
 				if(!$value) $value = '0';
 				if($parms)
 				{
-					if(!isset($parms['sep'])) $value = number_format($value, $parms['decimals']);
+					if(!isset($parms['sep'])) $value = number_format($value, varset($parms['decimals'],0));
 					else $value = number_format($value, $parms['decimals'], vartrue($parms['point'], '.'), vartrue($parms['sep'], ' '));
 				}
 				
@@ -3805,7 +4183,7 @@ class e_form
 					// in case something goes wrong...
 					if($link)
 					{
-						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='Quick View' >" . $value . "</a>";
+						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='".LAN_EFORM_010."' >" . $value . "</a>";
 					}
 				}
 
@@ -3886,7 +4264,7 @@ class e_form
                     }
                     
 					// in case something goes wrong...
-                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View' >".$value."</a>";
+                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
 				}
 
 				if(empty($value))
@@ -3971,8 +4349,7 @@ class e_form
 
 			case 'icon':
 
-				$parms['size'] = '2x';
-				$value = $tp->toIcon($value,$parms);
+				$value = "<span class='icon-preview'>".$tp->toIcon($value,$parms)."</span>";
 				
 			break;
 			
@@ -3986,7 +4363,7 @@ class e_form
 				$value = '<a href="'.$url.'" title="Direct link to '.$name.'" rel="external">'.$name.'</a>';
 			break;
 
-			case 'image': //TODO - thumb, js tooltip...
+			case 'image': //js tooltip...
 				if($value)
 				{
 					
@@ -4015,6 +4392,8 @@ class e_form
 						return e107::getParser()->toGlyph('fa-file','size=2x');
 				//		return '<img src="'.$src.'" alt="'.$value.'" class="e-thumb" title="'.$value.'" />';
 					}
+
+
 					
 					if(vartrue($parms['thumb']))
 					{
@@ -4042,13 +4421,26 @@ class e_form
 						{
 							$thparms['aw'] = intval($parms['thumb_aw']);
 						}
-						
+
+						if(!empty($parms['legacyPath']))
+						{
+							$thparms['legacy'] = $parms['legacyPath'];
+							$parms['pre'] = rtrim($parms['legacyPath'],'/').'/';
+						}
 					//	return print_a($thparms,true); 
 					
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
 						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
 						$alt = basename($src);
-						$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
+					//	$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
+
+						$thparms['alt'] = $alt;
+						$thparms['class'] = "thumbnail e-thumb";
+
+						$ttl = $tp->toImage($value, $thparms);
+
+
+
 						$value = '<a href="'.$src.'" data-modal-caption="'.$alt.'" data-target="#uiModal" class="e-modal e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
 					}
 					else
@@ -4065,7 +4457,7 @@ class e_form
 				$ret = '<ol>';
 				for ($i=0; $i < 5; $i++) 
 				{				
-					$k 		= $key.'['.$i.'][path]';
+					//$k 		= $key.'['.$i.'][path]';
 					$ival 	= $value[$i]['path'];
 					$ret .=  '<li>'.$ival.'</li>';		
 				}
@@ -4204,7 +4596,7 @@ class e_form
 					// Stay in admin area.
 					$link = e_ADMIN."users.php?mode=main&action=edit&id=".$id."&readonly=1&iframe=1"; // e107::getUrl()->create('user/profile/view', array('id' => $id, 'name' => $ttl))
 
-					$value = '<a class="e-modal" data-modal-caption="User #'.$id.' : '.$ttl.'" href="'.$link.'" title="Go to user profile">'.$ttl.'</a>';
+					$value = '<a class="e-modal" data-modal-caption="User #'.$id.' : '.$ttl.'" href="'.$link.'" title="'.LAN_EFORM_011.'">'.$ttl.'</a>';
 				}
 				else
 				{
@@ -4239,7 +4631,7 @@ class e_form
 					}
 					else
 					{	
-						$false = ($value === '') ? "&square;" : "&cross;";		
+						$false = ($value === '') ? "&square;" : "&cross;";
 					}
 					
 					$true = varset($parms['true'],'&check;'); // custom representation for 'true'. (supports font-awesome when set by css)
@@ -4250,7 +4642,7 @@ class e_form
 					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
 					$dispValue = $wparms[$value];
 
-					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms);
+					return $this->renderInline($field, $id, $attributes['title'], $value, $dispValue, 'select', $wparms, array('class'=>'e-editable-boolean'));
 				}
 				
 				if(vartrue($parms['reverse']))
@@ -4302,7 +4694,8 @@ class e_form
 				if(method_exists($this,$meth))
 				{
 					$parms['field'] = $field;
-					$value = call_user_func_array(array($this, $meth), array($value, 'read', $parms));
+					$mode = (!empty($attributes['mode'])) ? $attributes['mode'] :'read';
+					$value = call_user_func_array(array($this, $meth), array($value, $mode, $parms));
 				}
 				else
 				{
@@ -4462,7 +4855,7 @@ class e_form
 		if(!empty($attributes['multilan']))
 		{
 			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
-			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='Multi-language field'>".$tp->toGlyph('fa-language')."</small>";
+			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>";
 		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
@@ -4638,8 +5031,9 @@ class e_form
 			//	return print_a($value, true);
 				$ret = "";
 				$label = varset($parms['label'], 'LAN_EDIT');
+				$max = varset($parms['max'],5);
 
-				for ($i=0; $i < 5; $i++) 
+				for ($i=0; $i < $max; $i++)
 				{				
 					$k 		= $key.'['.$i.'][path]';
 					$ival 	= $value[$i]['path'];
@@ -4908,7 +5302,17 @@ class e_form
 				$meth = (!empty($attributes['method'])) ? $attributes['method'] : $key;
 				$parms['field'] = $key;
 
-				$ret =  call_user_func_array(array($this, $meth), array($value, 'write', $parms));
+				if(strpos($meth,'::')!==false)
+				{
+					list($className,$meth) = explode('::', $meth);
+					$cls = new $className;
+				}
+				else
+				{
+					$cls = $this;
+				}
+
+				$ret =  call_user_func_array(array($cls, $meth), array($value, 'write', $parms));
 			break;
 
 			case 'upload': //TODO - from method
@@ -5157,7 +5561,7 @@ class e_form
 
 			$query = isset($form['query']) ? $form['query'] : e_QUERY ;
 			$url = (isset($form['url']) ? e107::getParser()->replaceConstants($form['url'], 'abs') : e_SELF).($query ? '?'.$query : '');
-			$curTab = varset($_GET['tab'],0);
+			$curTab = strval(varset($_GET['tab'],'0'));
 
 			$text .= "
 				<form method='post' action='".$url."' id='{$form['id']}-form' enctype='multipart/form-data' autocomplete='off' >
@@ -5177,14 +5581,14 @@ class e_form
 					$text .= '<ul class="nav nav-tabs">';
 					foreach($data['tabs'] as $i=>$label)
 					{	
-						$class = ($i == $curTab) ? 'class="active" ' : '';
+						$class = (strval($i) === $curTab) ? 'class="active" ' : '';
 						$text .= '<li '.$class.'><a href="#tab'.$i.'" data-toggle="tab">'.$label.'</a></li>';
 					}
 					$text .= ' </ul><div class="tab-content">';	
 					
 					foreach($data['tabs'] as $tabId=>$label)
 					{
-						$active = ($tabId == $curTab) ? 'active' : '';
+						$active = (strval($tabId) === $curTab) ? 'active' : '';
 						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
 						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
 						$text .= "</div>";	
@@ -5310,7 +5714,7 @@ class e_form
 			if('hidden' === $att['type'])
 			{
 				
-				if(!vartrue($writeParms['show']))
+				if(empty($writeParms['show']))
 				{
 					$hidden_fields[] = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()));
 
@@ -5357,8 +5761,8 @@ class e_form
 				 
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
-				 
-				if(vartrue($att['type']) == 'bbarea' || varset($writeParms['nolabel']) == true)
+
+				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
 				{
 					$text .= "
 					<tr><td colspan='2'>";
@@ -5631,7 +6035,7 @@ class e_form
 				<div class='buttons-bar center'>
 		";
 					// After submit options
-					$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
+					$defsubmitopt = array('list' => LAN_EFORM_013, 'create' => LAN_EFORM_014, 'edit' => LAN_EFORM_015);
 					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
 					if(true === $submitopt)
 					{
@@ -5672,10 +6076,10 @@ class e_form
 									<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu col-selection">
-									<li class="dropdown-header nav-header">After submit:</li>
+									<li class="dropdown-header nav-header">'.LAN_EFORM_016.'</li>
 							';
 							
-							foreach($defsubmitopt as $k=>$v)
+							foreach($submitopt as $k=>$v)
 							{
 								$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
 							}

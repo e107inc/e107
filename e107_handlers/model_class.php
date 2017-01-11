@@ -2657,6 +2657,10 @@ class e_front_model extends e_model
 				return $tp->toDB($value);
 			break;
 
+			case 'code':
+				return $tp->toDB($value, false, false, 'pReFs');
+			break;
+
 			case 'float':
 				return $this->toNumber($value);
 			break;

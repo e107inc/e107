@@ -20,7 +20,7 @@ if (!defined('e107_INIT'))
 
 header('Content-type: text/html; charset=utf-8', TRUE);
 
-define('ADMINFEED', 'http://e107.org/adminfeed');
+define('ADMINFEED', 'https://e107.org/adminfeed');
 
 
 
@@ -67,6 +67,13 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 		echo $text;
 
 	}
+	else
+	{
+		if(e_DEBUG)
+		{
+		//	echo "Feed failed: ".ADMINFEED;
+		}
+	}
 	exit;
 }
 
@@ -92,7 +99,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 	}
 
 
-	if($data = e107::getXml()->getRemoteFile('http://e107.org/feed/?limit=3&type='.$type,3))
+	if($data = e107::getXml()->getRemoteFile('https://e107.org/feed/?limit=3&type='.$type,3))
 	{
 		$rows = e107::getXml()->parseXml($data, 'advanced');
 //	print_a($rows);

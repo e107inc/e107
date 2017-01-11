@@ -56,7 +56,7 @@ class upload_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'Upload';
+	protected $menuTitle = LAN_UPLOAD;
 }
 
 
@@ -66,7 +66,7 @@ class upload_admin extends e_admin_dispatcher
 class upload_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Upload';
+		protected $pluginTitle		= LAN_UPLOAD;
 		protected $pluginName		= 'core';
 		protected $table			= 'upload';
 		protected $pid				= 'upload_id';
@@ -87,7 +87,7 @@ class upload_ui extends e_admin_ui
 
             'upload_demo'           =>   array ( 'title' => UPLLAN_14, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
             'upload_filesize'       =>   array ( 'title' => LAN_SIZE, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-            'upload_active'         =>   array ( 'title' => "Imported", 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true, 'filter'=>true),
+            'upload_active'         =>   array ( 'title' => UPLLAN_69, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('singleOption' => true), 'class' => 'center', 'thclass' => 'center',  'batch' => true, 'filter'=>true),
             'upload_category'       =>   array ( 'title' => LAN_CATEGORY, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left', 'validate' => true ),
             'upload_owner'          =>   array ( 'title' => LAN_OWNER, 'type' => 'text', 'readonly'=>true, 'data' => 'str', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 
@@ -380,7 +380,7 @@ class upload_form_ui extends e_admin_form_ui
 
 				$tp = e107::getParser();
 
-				$lan = "Send to [x]";
+				$lan = UPLLAN_70;
 				$text = '';
 				foreach($pref as $k=>$v)
 				{

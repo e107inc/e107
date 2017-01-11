@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -32,8 +32,9 @@ class signup_shortcodes extends e_shortcode
 			return "
 			<form method='post' action='".e_SELF."?stage1' autocomplete='off'>\n
 			<div><br />
-			<input type='radio' name='coppa' value='0' checked='checked' /> ".LAN_NO."
-			<input type='radio' name='coppa' value='1' /> ".LAN_YES."<br />
+			<input type='radio' name='coppa' value='0' id='coppa_no' checked='checked' /> <label class='control-label' for='coppa_no'>".LAN_NO."</label>
+			<input type='radio' name='coppa' value='1' id='coppa_yes' /> <label class='control-label' for='coppa_yes'>".LAN_YES."</label>
+			<br />
 			<br />
 			<input class='btn btn-primary button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
 			</div></form>
@@ -88,7 +89,7 @@ class signup_shortcodes extends e_shortcode
 					
 					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in. 
 					
-					$button = (defset('FONTAWESOME') === 4) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size)) : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";			
+					$button = (defset('FONTAWESOME') === 4) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size)) : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
 					$text .= " <a title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)." ' role='button' class='signup-xup  btn btn-primary' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
@@ -103,7 +104,8 @@ class signup_shortcodes extends e_shortcode
 	function sc_signup_xup_signup($parm)
 	{
 		$pref = e107::getPref('social_login_active');
-			$tp = e107::getParser();
+		$tp = e107::getParser();
+		
 		if(!empty($pref))
 		{
 			$text = "";
@@ -129,7 +131,7 @@ class signup_shortcodes extends e_shortcode
 						$ic = 'windows';
 					}
 					
-					$button = (defset('FONTAWESOME') === 4) ? "<span title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p)."'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size))."</span>" : "<img class='e-tip' title='Register using your {$p} account' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
+					$button = (defset('FONTAWESOME') === 4) ? "<span title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p)."'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size))."</span>" : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
 				
 					$text .= " <a class='signup-xup ".$class."' role='button' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
 				}
@@ -255,8 +257,17 @@ class signup_shortcodes extends e_shortcode
 		$options['required'] = true;
 		$options['pattern'] = '(?=^.{'.$len.',}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$';
 		$options['autocomplete'] = 'off';
-		$options['class']   = vartrue($parm['class'],'');
-		$options['placeholder'] = vartrue($parm['placeholder'],'');
+
+		if(!empty($parm['class']))
+		{
+			$options['class'] = $parm['class'];
+		}
+
+		if(!empty($parm['placeholder']))
+		{
+			$options['placeholder'] = $parm['placeholder'];
+		}
+
 		
 	//	$options['pattern'] = '\w{'.$len.',}'; // word of minimum length 
 	
@@ -277,9 +288,18 @@ class signup_shortcodes extends e_shortcode
 		{
 			return false;
 		}
-		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1);
-		$options['class']   = vartrue($parm['class'],'');
-		$options['placeholder'] = vartrue($parm['placeholder'],'');
+
+		$options = array('size'=>30,'class'=>'e-password tbox','required'=>1); //defaults
+
+		if(!empty($parm['class']))
+		{
+			$options['class'] = $parm['class'];
+		}
+
+		if(!empty($parm['placeholder']))
+		{
+			$options['placeholder'] = $parm['placeholder'];
+		}
 				
 		return e107::getForm()->password('password2', '', 20, $options);
 	}
@@ -301,7 +321,7 @@ class signup_shortcodes extends e_shortcode
 		
 	function sc_signup_email($parm=null)
 	{	
-		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control input-text e-email');
+		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control e-email');
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
 		$options['class']   = vartrue($parm['class'],'');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');   
@@ -341,7 +361,7 @@ class signup_shortcodes extends e_shortcode
 
 		if ($pref)
 		{
-			return $rs->form_radio("hideemail", 1, $default_email_setting==1)." ".LAN_YES."&nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." ".LAN_NO;
+			return $rs->form_radio("hideemail", 1, $default_email_setting==1)." <label for='hideemail1'>".LAN_YES."</label> &nbsp;&nbsp;".$rs->form_radio("hideemail",  0,$default_email_setting==0)." <label for='hideemail0'>".LAN_NO."</label>";
 		}
 	}
 
@@ -378,8 +398,8 @@ class signup_shortcodes extends e_shortcode
 		$uc = e107::getUserClass();
 		$frm = e107::getForm();
 
-		if(deftrue('BOOTSTRAP'))
-		{
+	//	if(deftrue('BOOTSTRAP'))
+	//	{
 
 			$text   = "<div class='checkboxes'>";
 			$label  = $tp->toHTML($uc->getName($classnum),false, 'defs');
@@ -389,11 +409,13 @@ class signup_shortcodes extends e_shortcode
 			$text .= "</div>";
 
 			return $text;
-		}
+	//	}
 
+		// code below is too unpredictable for reliable BC.
 
 		global $USERCLASS_SUBSCRIBE_ROW;
 
+		e107::getDebug()->log($USERCLASS_SUBSCRIBE_ROW);
 
 		$tmp = explode(',',$current_value);
 
@@ -535,7 +557,8 @@ class signup_shortcodes extends e_shortcode
 	// allow main admin to view signup page for design/testing.
 	function sc_signup_adminoptions()
 	{
-
+	
+		
 		if(getperms('0'))
 		{
 			$pref = e107::getPref();
@@ -544,17 +567,17 @@ class signup_shortcodes extends e_shortcode
 
 			if(intval($pref['user_reg']) !== 1)
 			{
-				$adminMsg .= "<div class='form-group'><b>User registration is currently disabled.</b></div>";
+				$adminMsg .= "<div class='form-group'><b>".LAN_SIGNUP_114."</b></div>";
 			}
 
 			$adminMsg .= "<div class='form-group form-inline'>
-			<a class='btn btn-warning btn-danger btn-sm' href='".e_SELF."?preview'>Preview Activation Email</a>
-			<a class='btn btn-error btn-danger btn-sm' href='".e_SELF."?preview.aftersignup'>Preview After Form Submit</a>
-			<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test' title=\"to ".USEREMAIL."\">Send a Test Activation</a>
+			<a class='btn btn-warning btn-danger btn-sm' href='".e_SELF."?preview'>".LAN_SIGNUP_115."</a>
+			<a class='btn btn-error btn-danger btn-sm' href='".e_SELF."?preview.aftersignup'>".LAN_SIGNUP_116."</a>
+			<a class='btn btn-error btn-danger btn-sm e-tip' href='".e_SELF."?test' title=\"".e107::getParser()->lanVars(LAN_SIGNUP_118,USEREMAIL)."\">".LAN_SIGNUP_117."</a>
 			</div>
 			";
 
-			$adminMsg .= $frm->checkbox('simulation',1, false, "Don't send email");
+			$adminMsg .= $frm->checkbox('simulation',1, false, LAN_SIGNUP_119);
 
 			return "<div class='alert alert-block alert-error alert-danger text-center'>".$adminMsg."</div>";
 

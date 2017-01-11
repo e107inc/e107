@@ -32,6 +32,7 @@
 		<core name="compress_output">0</core>
 		<core name="contact_emailcopy">0</core>
         <core name="contact_visibility">0</core>
+        <core name="contact_filter"></core>
 		<core name="cookie_name">e107cookie</core>
 		<core name="core-infopanel-default"><![CDATA[array (
   0 => 'e-administrator',
@@ -95,6 +96,7 @@
 		<core name="e_meta_list"><![CDATA[array (
   'rss_menu' => 'rss_menu',
 )]]></core>
+	<core name="e_module_list"><![CDATA[array ()]]></core>
 		<core name="e_related_list"><![CDATA[array (
   'news' => 'news',
   'page' => 'page',
@@ -242,6 +244,7 @@
 </core>
 		<core name="search_highlight">1</core>
 		<core name="search_restrict">0</core>
+		<core name="session_lifetime">86400</core>
 		<core name="shortdate">%d %b %Y : %H:%M</core>
 		<core name="signcode">0</core>
 		<core name="signup_disallow_text"></core>
@@ -309,7 +312,6 @@ City, State, Country
 		<core name="subnews_resize"></core>
 		<core name="themecss">style.css</core>
 		<core name="thumbnail_quality">75</core>
-		<core name="time_offset">0</core>
 		<core name="timezone">UTC</core>
 		<core name="track_online">1</core>
 		<core name="ue_upgrade">1</core>

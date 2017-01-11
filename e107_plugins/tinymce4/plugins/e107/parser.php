@@ -129,7 +129,7 @@ TEMPL;
 
 				//$content = str_replace('\r\n',"<br />",$content);
 				//$content =  nl2br($content, true);
-				$content = $tp->toHtml($content, true);
+				$content = $tp->toHtml($content, true, 'WYSIWYG');
 			}
 
 			$content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor.
@@ -161,7 +161,7 @@ TEMPL;
 			//echo $tp->toHtml(str_replace("\n","",$content), true);
 
 			$content = str_replace("{e_BASE}",e_HTTP, $content); // We want {e_BASE} in the final data going to the DB, but not the editor.
-			$content = $tp->toHtml($content, true);
+			$content = $tp->toHtml($content, true, 'WYSIWYG');
 			$content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
 
 			$text = "";
@@ -298,7 +298,7 @@ TEMPL;
 
 		foreach($arr['img'] as $img)
 		{
-			if(substr($img['src'],0,4) == 'http')
+			if(substr($img['src'],0,4) == 'http' || strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
 			{
 				continue;
 			}

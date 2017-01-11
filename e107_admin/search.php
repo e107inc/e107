@@ -494,6 +494,12 @@ else
 	foreach ($search_prefs['comments_handlers'] as $key => $value) 
 	{
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
+
+		if($value['dir'] == 'download' && !e107::isInstalled($value['dir']))
+		{
+			continue;
+		}
+
 		if(is_readable($path))
 		{
 			require_once($path);

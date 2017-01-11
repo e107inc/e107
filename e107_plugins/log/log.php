@@ -66,12 +66,12 @@ $pageUnique = array('page' => 1, 'content' => array('content'));
 
 
 $logVals = base64_decode($_GET['lv']);
-
+$logVals = filter_var($logVals, FILTER_SANITIZE_URL);
 
 $logVals .= "&ip=".USERIP;
 $logVals .= "&iphost=". @gethostbyaddr(USERIP);
 $logVals .= "&lan=".e_LAN;
-$logVals .= "&agent=".$_SERVER['HTTP_USER_AGENT'];
+$logVals .= "&agent=".filter_var($_SERVER['HTTP_USER_AGENT'],FILTER_SANITIZE_STRING);
 
 parse_str($logVals, $vals);
 

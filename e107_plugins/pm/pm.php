@@ -167,7 +167,7 @@ class pm_extended extends private_message
 			}
 			else
 			{
-				return "<div class='alert alert-danger'>User Not Found</div>";
+				return "<div class='alert alert-danger'>".LAN_PM_115."</div>";
 			}
 		}
 		//echo "Show_send: {$to_uid} from {$pm_info['from_name']} is happening<br />";
@@ -775,7 +775,7 @@ if($message != '')
 switch ($action)
 {
 	case 'send' :
-		$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_35). $mes->render() . $pm->show_send($pm_proc_id));
+		$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PLUGIN_PM_NEW). $mes->render() . $pm->show_send($pm_proc_id));
 		break;
 
 	case 'reply' :

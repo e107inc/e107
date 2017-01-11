@@ -96,6 +96,11 @@
 
 		foreach($tmp as $plug=>$cfg)
 		{
+			if(empty($pref['e_url_list'][$plug])) // disabled.
+			{
+				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> is disabled.');
+				continue;
+			}
 
 			foreach($cfg as $k=>$v)
 			{
@@ -125,7 +130,7 @@
 				
 				$newLocation = preg_replace($regex, $v['redirect'], $req);
 
-				if($newLocation !=$req)
+				if($newLocation != $req)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file,$query) = explode("?",$redirect,2);

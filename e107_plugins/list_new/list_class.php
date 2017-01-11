@@ -41,7 +41,7 @@ class listclass
 	 * @return void
 	 *
 	 */
-	function listclass($mode='')
+	function __construct($mode='')
 	{
 		global $TEMPLATE_LIST_NEW, $list_shortcodes;
 
@@ -67,6 +67,7 @@ class listclass
 //		$this->shortcodes = $list_shortcodes;
 		$this->shortcodes = new list_shortcodes();
 		$this->shortcodes->rc = $this;
+
 
 		if($mode=='admin')
 		{
@@ -422,6 +423,7 @@ class listclass
 		$this->data = $this->load_elist();
 		
 		//$this->shortcodes->rc->data = $this->data;
+
 
 		//set record variables
 		$this->row = array();
@@ -797,8 +799,14 @@ class listclass
 
 		//display the sections
 		$k=0;
+
+	//	print_a($arr);
+
 		foreach($arr as $sect)
 		{
+
+			$this->shortcodes->plugin = $sect['section'];
+
 			if($sect['display'] == '1')
 			{
 				$sectiontext = $this->displaySection($sect);

@@ -32,14 +32,16 @@ if(varset($_GET['mode']) == "ajax")
 			if($tableName)
 			{
 				$sql = e107::getDb();
+				$tp = e107::getParser();
 
 				$sub_action = '';
 
 				if(e_QUERY)
 				{
 					$tmp = explode(".", e_QUERY);
-					$action = $tmp[0];
+					$action = $tp->filter($tmp[0]);
 					$sub_action = varset($tmp[1], '');
+					$sub_action = $tp->filter($sub_action);
 					$id = varset($tmp[2], 0);
 					unset($tmp);
 				}
@@ -538,7 +540,7 @@ e107::js('footer-inline', js());
 			}
 			else
 			{
-				$mes->addDebug("User Extended Column deleted from table");
+				$mes->addSuccess("User Extended Column deleted from table"); //TODO  LAN
 			}
 
 		}
@@ -594,7 +596,7 @@ e107::js('footer-inline', js());
 			// do something
 		}
 
-		function addPageActivate()
+		private function addPageActivate()
 		{
 			$ue = e107::getUserExt();
 			$tp = e107::getParser();
@@ -634,7 +636,35 @@ e107::js('footer-inline', js());
 		}
 
 
+		private function addPageDeactivate()
+		{
 
+			$tp = e107::getParser();
+			$sql = e107::getDb();
+			$ue = e107::getUserExt();
+
+			$ret = "";
+			foreach(array_keys($_POST['deactivate']) as $f)
+			{
+				$f = $tp->filter($f);
+
+				if($ue->user_extended_remove($f, $f))
+				{
+					$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
+					if(is_readable(e_CORE."sql/extended_".$f.".php"))
+					{
+		                $ret .= ($sql->gen("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+					}
+				}
+				else
+				{
+					$ret .= EXTLAN_70." $f ".EXTLAN_73."<br />";
+				}
+			}
+			e107::getLog()->add('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
+			e107::getMessage()->addSuccess($ret);
+			return $ret;
+		}
 
 
 
@@ -645,6 +675,7 @@ e107::js('footer-inline', js());
 			$ue = e107::getUserExt();
 
 			$this->addPageActivate();
+			$this->addPageDeactivate();
 
 
 			// Get list of current extended fields
@@ -1147,6 +1178,7 @@ $user = new users_ext;
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
+$tp = e107::getParser();
 
 require_once(e_HANDLER.'user_extended_class.php');
 require_once(e_HANDLER.'userclass_class.php');
@@ -1159,15 +1191,17 @@ $message_type = E_MESSAGE_SUCCESS;
 if (e_QUERY)
 {
 	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
+	$action = $tp->filter($tmp[0]);
 	$sub_action = varset($tmp[1],'');
+	$sub_action = $tp->filter($sub_action);
 	$id = varset($tmp[2],0);
 	unset($tmp);
 }
 
 // TODO $_POST['up_x'] check for the evil IE
-$tmp = isset($_POST['up']) ? $_POST['up'] : false;
-if ($tmp)
+$tmp = isset($_POST['up']) ? $tp->filter($_POST['up']) : false;
+
+if (is_array($tmp))
 {
 	$tmp = array_values($tmp);
 	$qs = explode(".", $tmp[0]);
@@ -1184,8 +1218,9 @@ if ($tmp)
 }
 
 // TODO $_POST['down_x'] check for the evil IE
-$tmp = isset($_POST['down']) ? $_POST['down'] : false;
-if ($tmp)
+$tmp = isset($_POST['down']) ? $tp->filter($_POST['down']) : false;
+
+if (is_array($tmp))
 {
 	$tmp = array_values($tmp);
 	$qs = explode(".", $tmp[0]);
@@ -1240,7 +1275,12 @@ if (isset($_POST['add_field']))
 	{
 		if($_POST['user_type']==EUF_DB_FIELD)
 		{
-			$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+			$_POST['user_values'] = array(
+				$tp->filter($_POST['table_db']),
+				$tp->filter($_POST['field_id']),
+				$tp->filter($_POST['field_value']),
+				$tp->filter($_POST['field_order']),
+			);
 		}
 
 		if(!empty($_POST['sort_user_values']))
@@ -1287,7 +1327,12 @@ if (isset($_POST['update_field']))
 {
 	if($_POST['user_type']==EUF_DB_FIELD)
 	{
-    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
+    	$_POST['user_values'] = array(
+		    $tp->filter($_POST['table_db']),
+		    $tp->filter($_POST['field_id']),
+			$tp->filter($_POST['field_value']),
+			$tp->filter($_POST['field_order']),
+	    );
 	}
 
 	if(!empty($_POST['sort_user_values']))
@@ -1412,10 +1457,10 @@ if($message)
 if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field'])
 {
 	$action = "continue";
-	$current['user_extended_struct_name'] = $_POST['user_field'];
-    $current['user_extended_struct_parms'] = $_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide'];
-    $current['user_extended_struct_text'] = $_POST['user_text'];
-	$current['user_extended_struct_type'] = $_POST['user_type'];
+	$current['user_extended_struct_name'] = $tp->filter($_POST['user_field']);
+    $current['user_extended_struct_parms'] = $tp->filter($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
+    $current['user_extended_struct_text'] = $tp->filter($_POST['user_text']);
+	$current['user_extended_struct_type'] = $tp->filter($_POST['user_type']);
 	$user->show_extended($current);
 }
 
@@ -2343,15 +2388,22 @@ class users_ext
 
 	function field_deactivate()
 	{
-		global $ue, $ns, $tp, $sql, $admin_log;
+
+		$tp = e107::getParser();
+		$sql = e107::getDb();
+		$ue = e107::getUserExt();
+
 		$ret = "";
 		foreach(array_keys($_POST['deactivate']) as $f)
 		{
+			$f = $tp->filter($f);
+
 			if($ue->user_extended_remove($f, $f))
 			{
 				$ret .= EXTLAN_68." $f ".EXTLAN_72."<br />";
-				if(is_readable(e_CORE."sql/extended_".$f.".php")){
-	             	$ret .= (mysql_query("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
+				if(is_readable(e_CORE."sql/extended_".$f.".php"))
+				{
+	             	$ret .= ($sql->gen("DROP TABLE ".MPREFIX."user_extended_".$f)) ? LAN_DELETED." user_extended_".$f."<br />" : LAN_DELETED_FAILED." user_extended_".$f."<br />";
 				}
 			}
 			else
@@ -2360,6 +2412,7 @@ class users_ext
 			}
 		}
 		e107::getLog()->add('EUF_12',implode(', ',$_POST['deactivate']),E_LOG_INFORMATIVE,'');
+
 		return $ret;
 	}
 
@@ -2378,7 +2431,7 @@ class users_ext
 	    preg_match_all("/create(.*?)myisam;/si", $sql_data, $creation);
 	    foreach($creation[0] as $tab){
 			$query = str_replace($search,$replace,$tab);
-	      	if(!mysql_query($query)){
+	      	if(!$sql->gen($query)){
 	        	$error = TRUE;
 			}
 		}
@@ -2386,7 +2439,7 @@ class users_ext
 	    preg_match_all("/insert(.*?);/si", $sql_data, $inserts);
 		foreach($inserts[0] as $ins){
 			$qry = str_replace($search,$replace,$ins);
-			if(!mysql_query($qry)){
+			if(!$sql->gen($qry)){
 			  	$error = TRUE;
 			}
 	    }

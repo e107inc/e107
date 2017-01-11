@@ -23,7 +23,9 @@ class _blank_admin
 		switch($type)
 		{
 			case "news": // hook into the news admin form.
-				$config['fields']['url'] =   array ( 'title' =>"CUstom Field", 'type' => 'url', 'tab'=>1,  'writeParms'=> array('size'=>'xxlarge', 'placeholder'=>'', 'default'=>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
+				$config['fields']['url'] =   array ( 'title' =>"Custom Field", 'type' => 'url', 'tab'=>1,  'writeParms'=> array('size'=>'xxlarge', 'placeholder'=>'', 'default'=>$defaultValue), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
+
+				$config['batchOptions'] = array('custom'    => 'Custom Batch Command');
 				break;
 		}
 
@@ -37,17 +39,25 @@ class _blank_admin
 	/**
 	 * Process Posted Data.
 	 * @param object $ui admin-ui
-	 * @param int $id - Primary ID of the record being created/edited/deleted
+	 * @param int|array $id - Primary ID of the record being created/edited/deleted or array data of a batch process.
 	 */
 	public function process($ui, $id=0)
 	{
 
 		$data       = $ui->getPosted();
 		$type       = $ui->getEventName();
-		$action     = $ui->getAction(); // current mode: create, edit, list
+		$action     = $ui->getAction(); // current mode: create, edit, list, batch
 
 		if($action == 'delete')
 		{
+			return;
+		}
+
+		if($action == 'batch')
+		{
+			$arrayOfRecordIds = $id['ids'];
+			$command = $id['cmd'];
+
 			return;
 		}
 

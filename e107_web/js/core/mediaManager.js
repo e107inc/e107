@@ -141,8 +141,18 @@ $(document).ready(function()
 	}
 	
 		
-		
-		
+	 $(document).on("click", ".e-media-select-file-none", function(){
+
+	 		var target 	= $(this).attr('data-target');
+	 		var label = $(this).attr('data-target-label');
+
+			parent.$('input#'+target).val(null);
+		 	parent.$('input#'+target+'-id').val(null);
+		  	parent.$('input#'+target+'-path').val(null);
+		   	parent.$('input#'+target+'-name').val(null);
+		   	parent.$('#'+target+'_prev').text(label);
+
+	 });
 		
 				// $(".e-media-select").click(function () {  
     $(document).on("click", ".e-media-select", function(){
@@ -530,7 +540,7 @@ $(document).ready(function()
 	        // General settings
 		        runtimes : "html5,html4",
 		        url : upath,
-		        max_file_size : "20mb",
+		        max_file_size : $("#uploader").attr("data-max-size"),
 		        chunk_size : "1mb",
 		        unique_names : false,
 		 

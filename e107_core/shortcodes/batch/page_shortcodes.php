@@ -268,7 +268,14 @@ class cpage_shortcodes extends e_shortcode
 			return "<!-- Button Removed: No page text exists! -->";	
 		}
 
-		parse_str($parm,$options);
+		if(is_string($parm))
+		{
+			parse_str($parm,$options);
+		}
+		else
+		{
+			$options= $parm;
+		}
 		
 		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
 		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url']);
@@ -301,6 +308,21 @@ class cpage_shortcodes extends e_shortcode
 		// print_a($this);
 		return e107::getParser()->toHTML($this->var['menu_text'], true, 'BODY');
 	}
+
+	/**
+	 * @param null $parm
+	 * @example {CMENUURL}
+	 * @return string
+	 */
+	function sc_cmenuurl($parm=null)
+	{
+		if(empty($this->var['menu_button_url']))
+		{
+			return $this->sc_cpageurl();
+		}
+
+		return e107::getParser()->replaceConstants($this->var['menu_button_url']);
+	}
 	
 	
 	function sc_cmenuimage($parm='')
@@ -312,21 +334,25 @@ class cpage_shortcodes extends e_shortcode
 			return $video;	
 		}
 		
-		$img = $tp->thumbUrl($this->var['menu_image']);
+
 		if($parm == 'url')
 		{
+			$img = $tp->thumbUrl($this->var['menu_image']);
 			return $img;	
 		}
 
-		$dimensions = $tp->thumbDimensions();
+		return $tp->toImage($this->var['menu_image'], $parm);
 
-		$class = vartrue($parm['class'],'img-responsive img-rounded');
-
-		return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
+		//return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
 	}
 	
 	function sc_cmenuicon($parm='')
 	{
+		if($parm === 'css')
+		{
+			return str_replace(".glyph", "", $this->var['menu_icon']);
+		}
+
 		return e107::getParser()->toIcon($this->var['menu_icon'], array('space'=>' '));
 	}		
 
@@ -534,8 +560,13 @@ class cpage_shortcodes extends e_shortcode
 		{
 			$array['types'] = 'page,news';
 		}
-			
-		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']));	
+
+		$templateID = vartrue($this->var['page_template'],'default');
+
+		$template = e107::getCoreTemplate('page', $templateID);
+
+
+		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']), $template['related']);
 	}
 	
 	

@@ -87,7 +87,7 @@ if (!USER || getperms('0'))
 	if(!empty($LOGIN_TEMPLATE['page']))
 	{
 		$LOGIN_TABLE_HEADER = $LOGIN_TEMPLATE['page']['header'];
-		$LOGIN_TABLE 		= "<form class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
+		$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
 		$LOGIN_TABLE_FOOTER = $LOGIN_TEMPLATE['page']['footer'];
 	}
 	
@@ -96,12 +96,16 @@ if (!USER || getperms('0'))
 
 	if(getperms('0'))
 	{
-		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in.</div>";	
+		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in as the Main Admin.</div>"; //TODO LAN
 	}
 	
 
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
-	echo LOGINMESSAGE;
+	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
+	{
+		echo LOGINMESSAGE;
+	}
+
 	echo $tp->parseTemplate($LOGIN_TABLE_HEADER,true, $sc);
 	$ns->tablerender($login_message, $text, 'login_page');
 	echo $tp->parseTemplate($LOGIN_TABLE_FOOTER, true, $sc);

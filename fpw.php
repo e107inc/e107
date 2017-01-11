@@ -264,7 +264,7 @@ if(e_QUERY)
 
 
 // Request to reset password
-if (isset($_POST['pwsubmit']))
+if (!empty($_POST['pwsubmit']))
 {	
 	require_once(e_HANDLER.'mail.php');
 	
@@ -290,13 +290,15 @@ if (isset($_POST['pwsubmit']))
 		$row = $sql->fetch();
 
 		// Main admin expected to be competent enough to never forget password! (And its a security check - so warn them)
-		// Sending email to admin alerting them of attempted admin password reset, and redirect user to homepage. 
-		if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
-		{	
-			sendemail($pref['siteadminemail'], LAN_06, LAN_07.' ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).' '.LAN_08);
-			e107::getRedirect()->redirect(SITEURL);
+		// Sending email to admin alerting them of attempted admin password reset, and redirect user to homepage.
+		if(!getperms('0')) // disabled when testing as main-admin.
+		{
+			if (($row['user_admin'] == 1) && (($row['user_perms'] == '0')  OR ($row['user_perms'] == '0.')))
+			{
+				sendemail($pref['siteadminemail'], LAN_06, LAN_07.' ['.e107::getIPHandler()->getIP(FALSE).'] '.e107::getIPHandler()->getIP(TRUE).' '.LAN_08);
+				e107::getRedirect()->redirect(SITEURL);
+			}
 		}
-
 		// Banned user, or not validated
 		switch($row['user_ban'])
 		{	
@@ -318,11 +320,8 @@ if (isset($_POST['pwsubmit']))
 		}
 
 		// Set unique reset code
-		mt_srand ((double)microtime() * 1000000);
-		$maxran 	= 1000000;
-		$rand_num 	= mt_rand(0, $maxran);
-		$datekey 	= date('r');
-		$rcode 		= md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
+		$datekey 	= microtime(true);
+		$rcode 		= crypt(($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $clean_email . $datekey), e_TOKEN);
 
 		// Prepare email
 		$link 		= SITEURL.'fpw.php?'.$rcode;

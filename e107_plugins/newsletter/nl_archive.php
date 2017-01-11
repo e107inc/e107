@@ -47,7 +47,7 @@ else
 	}
 	else
 	{
-		$limit_start = $_POST['limit_start'];
+		$limit_start = intval($_POST['limit_start']);
 	}
 	$nl_count = $sql->count('newsletter', '(*)', "WHERE newsletter_parent='".$action_parent_id."' AND newsletter_flag='1'");
 	if ($nl_count > 0)

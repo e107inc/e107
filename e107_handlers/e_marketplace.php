@@ -223,6 +223,101 @@ class e_marketplace
 		$this->adapter = null;
 		//echo "Adapter destroyed", PHP_EOL;
 	}
+
+
+	/**
+	 * @param $data - e107.org plugin/theme feed data.
+	 */
+	public function getDownloadModal($type='plugin',$data)
+	{
+
+		$url = false;
+
+		if($type === 'plugin')
+		{
+
+			$srcData = array(
+				'plugin_id'     => $data['params']['id'],
+				'plugin_folder' => $data['folder'],
+				'plugin_price'  => $data['price'],
+				'plugin_mode'   => $data['params']['mode'],
+				'plugin_url'    => $data['url'],
+			);
+
+
+
+			$d = http_build_query($srcData,false,'&');
+			$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+		}
+
+		if($type === 'theme')
+		{
+			$srcData = array(
+				'id'    => $data['params']['id'],
+				'url'   => $data['url'],
+				'mode'  => 'addon',
+				'price' => $data['price']
+			);
+
+			$d = http_build_query($srcData,false,'&');
+			$url = e_ADMIN.'theme.php?mode=download&src='.base64_encode($d);//$url.'&amp;action=download';
+
+		}
+
+
+		return $url;
+
+	}
+
+
+
+
+
+	public function getVersionList($type='plugin')
+	{
+		$cache = e107::getCache();
+		$cache->setMD5('_', false);
+
+		$tag = 'Versions_'.$type;
+
+		if($data = $cache->retrieve($tag,(60 * 12), true, true))
+		{
+			return e107::unserialize($data);
+		}
+
+	//	$mp = $this->getMarketplace();
+	//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		e107::getDebug()->log("Retrieving ".$type." version list from e107.org");
+
+		$xdata = $this->call('getList', array(
+			'type' => $type,
+			'params' => array('limit' => 200, 'search' => null, 'from' => 0)
+		));
+
+		$arr = array();
+
+		if(!empty($xdata['data']))
+		{
+
+			foreach($xdata['data'] as $row)
+			{
+				$k = $row['folder'];
+				$arr[$k] = $row;
+			}
+
+		}
+
+// print_a($xdata['data']);
+
+		$data = e107::serialize($arr);
+		$cache->set($tag, $data, true, null, true);
+
+		return $arr;
+
+	}
+
+
+
 }
 
 abstract class e_marketplace_adapter_abstract
@@ -325,7 +420,7 @@ abstract class e_marketplace_adapter_abstract
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		$mes->addSuccess("Downloading..."); 
+		$mes->addSuccess(TPVLAN_81); 
 	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
@@ -347,7 +442,10 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$mes->addError( "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"); 
+			$srch = array("[", "]");
+			$repl = array("<a href='".$remotefile."'>", "</a>");
+
+			$mes->addError( TPVLAN_83." ".str_replace($srch, $repl, TPVLAN_84));
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
@@ -358,25 +456,18 @@ abstract class e_marketplace_adapter_abstract
 		}
 		
 		
-		if($fl->unzipArchive($localfile,$type))
+		if($fl->unzipArchive($localfile,$type, true))
 		{
-			$mes->addSuccess("Download Complete!"); 
+			$mes->addSuccess(TPVLAN_82); 
 			return true; 
 		}
 		else 
 		{
-			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
+			$mes->addSuccess( "<a href='".$remotefile."'>".TPVLAN_84."</a>");
 		}
 		
 		return false; 
 	}
-
-	
-	
-	
-	
-	
-	
 			
 		
 
@@ -456,7 +547,18 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		    'connection_timeout' 	=> 60,
 		);
 
-		$this->client = new SoapClient($this->serviceUrl, $options);
+
+		try
+		{
+            $this->client = new SoapClient($this->serviceUrl, $options);
+        }
+        catch (Exception $e)
+        {
+           e107::getMessage()->addError(TPVLAN_90);
+           e107::getMessage()->addDebug($e->getMessage());
+        }
+
+
 
 		if(function_exists('xdebug_disable'))
 		{

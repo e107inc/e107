@@ -68,10 +68,11 @@ class e_tohtml_linkwords
 		$this->lwAjaxEnabled    = varset($pref['lw_ajax_enable'],0);
 
 		// See whether they should be active on this page - if not, no point doing anything!
-		if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
+		if(e_ADMIN_AREA === true) { return; }
+	//	if ((strpos(e_SELF, ADMINDIR) !== FALSE) || (strpos(e_PAGE, "admin_") !== FALSE)) return;   // No linkwords on admin directories
 
 		// Now see if disabled on specific pages
-		$check_url = e_SELF.(e_QUERY ? "?".e_QUERY : '');
+		$check_url = e_SELF.(defined('e_QUERY') ? "?".e_QUERY : '');
 		$this->block_list = explode("|",substr(varset($pref['lw_page_visibility'],''),2));    // Knock off the 'show/hide' flag
 
 		foreach($this->block_list as $p)
@@ -138,7 +139,14 @@ class e_tohtml_linkwords
 						$lwlist = explode(',',$lw);
 						foreach ($lwlist as $lw)
 						{
-							$this->word_list[]      = trim($lw);
+							$lw = trim($lw);
+
+							if(empty($lw))
+							{
+								continue;
+							}
+
+							$this->word_list[]      = $lw;
 							$this->word_class[]     = 'lw-'.$frm->name2id($lw);
 							$this->word_limit[]     = vartrue($row['linkword_limit'],3);
 
@@ -151,6 +159,14 @@ class e_tohtml_linkwords
 					}
 					else
 					{
+
+						$lw = trim($lw);
+
+						if(empty($lw))
+						{
+							continue;
+						}
+
 						$this->word_list[]      = $lw;
 						$this->word_class[]     = 'lw-'.$frm->name2id($lw);
 						$this->word_limit[]     = vartrue($row['linkword_limit'],3);
@@ -174,8 +190,6 @@ class e_tohtml_linkwords
 				}
 			}
 		}
-
-
 
 	}
 
@@ -244,7 +258,10 @@ class e_tohtml_linkwords
 
 		// Consider next line - stripos is PHP5, and mb_stripos is PHP >= 5.2 - so may well often require handling
 //		while (($first < $limit) && (stripos($text,$this->word_list[$first]) === FALSE))   { $first++; };		// *utf   (stripos is PHP5 - compatibility handler implements)
-		while (($first < $limit) && (strpos($tp->ustrtolower($text), $this->word_list[$first]) === false))
+
+
+
+		while (($first < $limit) && (strpos($tp->ustrtolower($text),$this->word_list[$first]) === false))
 		{
 			$first++;
 		}		// *utf
@@ -355,3 +372,4 @@ class e_tohtml_linkwords
 
 
 
+?>

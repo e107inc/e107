@@ -219,5 +219,17 @@ define("LAN_NEWS_92", "eg. news.php?all or news.php?cat.1 or news.php?tag=xxx");
 define("LAN_NEWS_93", "List-view content");
 define("LAN_NEWS_94", "Items assigned to these templates will be displayed in the list.");
 define("LAN_NEWS_95", "Another news item is using the SEF URL: [x]");
+define("LAN_NEWS_96", "Approve"); 
+define("LAN_NEWS_97", "News Grid Menu");
+define("LAN_NEWS_98", "Ping Services");
+define("LAN_NEWS_99", "Only accept images larger than");
+define("LAN_NEWS_100", "Any Size");
+define("LAN_NEWS_101", "Submit News");
+define("LAN_NEWS_102", "Open in new tab");
+define("LAN_NEWS_103", "Email notification");
+define("LAN_NEWS_104", "Trigger an email notification when you submit this form.");
+define("LAN_NEWS_105", "Email notification triggered!");
+define("LAN_NEWS_106", "News item visibility must include 'everyone' for email notifications to work.");
+define("LAN_NEWS_107", "Checking for Ping Status");
 
 ?>

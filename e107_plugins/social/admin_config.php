@@ -73,7 +73,7 @@ class social_ui extends e_admin_ui
 		protected $fieldpref        = array();
 		
 
-		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17);
+		protected $preftabs        = array(LAN_LOGIN, LAN_SOCIAL_ADMIN_14, LAN_SOCIAL_ADMIN_15, LAN_SOCIAL_ADMIN_16, LAN_SOCIAL_ADMIN_17, LAN_SOCIAL_ADMIN_37);
 
 		protected $prefs = array(
 
@@ -89,7 +89,7 @@ class social_ui extends e_admin_ui
 
 
 
-			'twitter_menu_theme'	=> array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>4, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
+			'twitter_menu_theme'	    => array('title'=> LAN_SOCIAL_ADMIN_19, 'type'=>'dropdown', 'tab'=>4, 'writeParms'=>array('optArray'=>array('light'=>LAN_SOCIAL_ADMIN_35,'dark'=>LAN_SOCIAL_ADMIN_36)), 'data' => 'str'),
 			'twitter_menu_height'		=> array('title'=> LAN_SOCIAL_ADMIN_23, 'type'=>'number', 'tab'=>4, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_33),
 			'twitter_menu_limit'		=> array('title'=> LAN_SOCIAL_ADMIN_18, 'type'=>'number', 'tab'=>4, 'data' => 'int','help'=>LAN_SOCIAL_ADMIN_34),
 
@@ -99,8 +99,9 @@ class social_ui extends e_admin_ui
 			'sharing_providers'         => array('title'=> 'Providers', 'type'=>'checkboxes', 'tab'=>1, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 
 			'xup_login_update_username'  => array('title'=> 'Update User Display Name ', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
-			'xup_login_update_avatar'  => array('title'=> 'Update User Avatar', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
+			'xup_login_update_avatar'   => array('title'=> 'Update User Avatar', 'type'=>'bool', 'tab'=>0, 'writeParms'=>array(), 'data' => 'str','help'=>''),
 
+			'og_image'	                => array('title'=> "Custom Image", 'type'=>'image', 'tab'=>5, 'data' => 'str','help'=>'og:image'),
 
 
 			);
@@ -157,7 +158,7 @@ class social_ui extends e_admin_ui
 					"keys"    => array ( "id" => "", "secret" => "" ),
 					"trustForwarded" => false,
 					// A comma-separated list of permissions you want to request from the user. See the Facebook docs for a full list of available permissions: http://developers.facebook.com/docs/reference/api/permissions.
-					"scope"   => "",
+					"scope"   => "email",
 
 					// The display context to show the authentication page. Options are: page, popup, iframe, touch and wap. Read the Facebook docs for more details: http://developers.facebook.com/docs/reference/dialogs#display. Default: page
 					"display" => ""
@@ -170,13 +171,14 @@ class social_ui extends e_admin_ui
 
 				"Github" => array (
 					"enabled" => true,
-					"keys"    => array ( "id" => "", "secret" => "" )
+					"keys"    => array ( "id" => "", "secret" => "" ),
+					"scope"   => "user:email",
 				),
 
 				"Google" => array (
 					"enabled" => true,
 					"keys"    => array ( "id" => "", "secret" => "" ),
-					"scope"   => ""
+					"scope"   => "email"
 				),
 /*
 				"Instagram" => array (
@@ -318,6 +320,7 @@ class social_ui extends e_admin_ui
 								<col style='width:10%' />
 								<col class='col-control' />
 								<col class='col-control' />
+								<col class='col-control' />
 								<col style='width:20%' />
 							</colgroup>
 							<thead>
@@ -325,6 +328,7 @@ class social_ui extends e_admin_ui
 									<th>".LAN_SOCIAL_ADMIN_04."</th>
 									<th>".LAN_SOCIAL_ADMIN_05."</th>
 									<th>".LAN_SOCIAL_ADMIN_06."</th>
+									<th>".LAN_SOCIAL_ADMIN_38."</th>
 									<th class='center'>".LAN_SOCIAL_ADMIN_03."</th>
 								</tr>
 							</thead>
@@ -373,7 +377,9 @@ class social_ui extends e_admin_ui
 							break;
 
 						case 'scope':
-							$textScope .= $frm->hidden('social_login['.$prov.'][scope]','email');
+							$eopt = array( 'size'=>'block-level');
+							$keyCount[] = 1;
+							$textScope .= "<td>".$frm->text('social_login['.$prov.'][scope]', vartrue($pref['social_login'][$prov]['scope']), 100, $eopt)."</td>";
 							break;
 
 						default:
@@ -388,16 +394,20 @@ class social_ui extends e_admin_ui
 
 
 
-					if(empty($keyCount))
-					{
-						$textKeys = "<td>&nbsp;</td><td>&nbsp;</td>";
-					}
-					elseif(count($keyCount) == 1)
-					{
-						$textKeys .= "<td>&nbsp;</td>";
-					}
+				if(empty($keyCount))
+				{
+					$textKeys = "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+				}
+				elseif(count($keyCount) == 1)
+				{
+					$textKeys .= "<td>&nbsp;</td><td>&nbsp;</td>";
+				}
+				elseif(count($keyCount) == 2)
+				{
+					$textKeys .= "<td>&nbsp;</td>";
+				}
 
-				$text .= $textKeys."<td class='center'>".$textEnabled.$textScope."</td>";
+				$text .= $textKeys.$textScope."<td class='center'>".$textEnabled."</td>";
 
 				$text .= "
 					</tr>

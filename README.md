@@ -7,7 +7,7 @@ e107 is a free (open-source) content management system which allows you to easil
 
 ### Requirements
 
-* PHP v5.3 or higher
+* PHP v5.4 or higher
 * MySQL 4.x or higher 
 
 ### Installation

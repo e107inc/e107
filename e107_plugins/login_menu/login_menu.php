@@ -137,7 +137,7 @@ if (USER == TRUE || ADMIN == TRUE)
 		$menu_data['listnew_link'] = '';
 		if ($menu_data['new_total'] && array_key_exists('list_new', $pref['plug_installed'])) 
         {
-            $menu_data['listnew_link'] = e_PLUGIN.'list_new/list.php?new';
+            $menu_data['listnew_link'] = e_PLUGIN_ABS.'list_new/list.php?new';
 		}
 
 		// ------------ Pass the data & parse ------------

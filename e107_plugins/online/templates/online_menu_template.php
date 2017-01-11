@@ -24,9 +24,10 @@ $ONLINE_MENU_TEMPLATE['default']['enabled']                         = "
 																	<ul class='online-menu'>
 																	{ONLINE_GUESTS}
 																	{ONLINE_MEMBERS}
+																	{ONLINE_MEMBERS_LIST}
 																	{ONLINE_MEMBERS_LIST_EXTENDED}
 																	{ONLINE_ONPAGE}
-																	{ONLINE_MEMBER_TOTAL}
+																	{ONLINE_MEMBERS_TOTAL}
 																	{ONLINE_MEMBER_NEWEST}
 																	<li>
 																	{ONLINE_MOST}
@@ -68,7 +69,7 @@ $ONLINE_MENU_TEMPLATE['extended']['enabled']                        = "
 																		{ONLINE_MEMBERS}
 																		{ONLINE_MEMBERS_LIST_EXTENDED}
 																		{ONLINE_ONPAGE}
-																		{ONLINE_MEMBER_TOTAL}
+																		{ONLINE_MEMBERS_TOTAL}
 																		{ONLINE_MEMBER_NEWEST: type=avatar}
 																		{ONLINE_MEMBERS_REGISTERED}
 																		<li class='online-menu-extended-label'>
@@ -94,7 +95,7 @@ $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS']                  = "<li class
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_LIST']             = "<ul>{---}</ul>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_LIST_EXTENDED']    = "<ul class='unstyled list-unstyled'>{---}</ul>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_ONPAGE']                   = "<li>".LAN_ONLINE_3."<span class='label label-default pull-right'>{---}</span></li>";
-$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_TOTAL']             = "<li>".LAN_ONLINE_2."<span class='label label-default pull-right'>{---}</span></li>";
+$ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBERS_TOTAL']             = "<li>".LAN_ONLINE_2."<span class='label label-default pull-right'>{---}</span></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MEMBER_NEWEST']            = "<li class='online-menu-extended-label'>".LAN_ONLINE_6."</li><li><ul class='unstyled list-unstyled'>{---}</ul></li>";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST']                     = "<a class='e-expandit' href='#online-menu-extended-most'>".LAN_ONLINE_8."</a><span class='label label-default pull-right'>{---}</span><br />";
 $ONLINE_MENU_WRAPPER['extended']['ONLINE_MOST_MEMBERS']             = LAN_ONLINE_2."{---}";

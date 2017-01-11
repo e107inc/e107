@@ -598,8 +598,14 @@ class comment
 		return $text;
 	}
 
-	
-	function deleteComment($id) // delete a single comment by comment id.  
+
+	/**
+	 * @param $id - comment_id to delete
+	 * @param string $table - comment belongs to this table eg. 'news'
+	 * @param string $itemid - corresponding item from the table. eg. news_id
+	 * @return int|null|void
+	 */
+	function deleteComment($id, $table='', $itemid='') // delete a single comment by comment id.
 	{
 
 		if($this->engine != 'e107')
@@ -609,9 +615,18 @@ class comment
 
 		if(!getperms('0') && !getperms("B"))
 		{
-			return;	
+			return null;
 		}
-		return e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");	
+
+		$table = e107::getParser()->filter($table,'w');
+
+		$status = e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");
+
+		$data = array('comment_id'=>intval($id), 'comment_type'=>$table, 'comment_item_id'=> intval($itemid));
+		e107::getEvent()->trigger('user_comment_deleted', $data);
+
+
+		return $status;
 	}
 	
 	function approveComment($id) // appropve a single comment by comment id.  
@@ -858,13 +873,16 @@ class comment
 						unset($edata_li['comment_ip']);*/
 
 						e107::getEvent()->trigger("postcomment", $edata_li);
+						e107::getEvent()->trigger('user_comment_posted', $edata_li);
 						e107::getCache()->clear("comment");
 
+						// Moved to e107_plugins/news/e_event.php
+/*
 
 						if ((empty($table) || $table == "news") && !$this->moderateComment($pref['comments_moderate']))
 						{
 							$sql->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
-						}
+						}*/
 
 						//if rateindex is posted, enter the rating from this user
 					//	if ($rateindex)
@@ -1177,7 +1195,7 @@ class comment
 		
 
 		$ret['comment'] = $text;
-		
+		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 
@@ -1422,7 +1440,7 @@ class comment
 		 */
 
 
-		function getCommentData($amount = '', $from = '', $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
+		function getCommentData($amount = '', $from = 0, $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
 		{
 
 			if($this->engine != 'e107')
@@ -1521,7 +1539,7 @@ class comment
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;
-								$ret['comment_url'] = e107::getUrl()->create('user/pofile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('user/profile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
 							}
 							break;
 						case 'page': //	Custom Page

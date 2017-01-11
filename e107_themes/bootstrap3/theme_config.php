@@ -16,14 +16,16 @@ class theme_bootstrap3 implements e_theme_config
 		$theme_pref['usernav_placement'] 	= $_POST['usernav_placement'];
 		$theme_pref['branding'] 	        = $_POST['branding'];
 		$theme_pref['bootswatch'] 	        = $_POST['bootswatch'];
+		$theme_pref['cdn'] 	                = $_POST['cdn'];
+
 
 		$pref->set('sitetheme_pref', $theme_pref);
 		return $pref->dataHasChanged();
 	}
 
-	function config()
+	function config($type='front')
 	{
-		$frm = e107::getForm();
+			$frm = e107::getForm();
 
 		$brandingOpts = array('sitename'=>LAN_THEMEPREF_04, 'logo' => LAN_THEMEPREF_05, 'sitenamelogo'=>LAN_THEMEPREF_06);
 
@@ -60,6 +62,13 @@ class theme_bootstrap3 implements e_theme_config
             "yeti"=> 'Yeti',
 		);
 
+		$cdnFront = array(
+			'cdnjs'  => "CDNJS (Cloudflare)",
+			'jsdelivr'  => "jsDelivr"
+			// google ? No fontawesome support?
+
+		);
+
 
 		$previewLink = " <a class='btn btn-default e-modal' data-modal-caption=\"Use the 'Themes' menu to view the selection.\" href='http://bootswatch.com/default/'>".LAN_PREVIEW."</a>";
 
@@ -67,14 +76,21 @@ class theme_bootstrap3 implements e_theme_config
 		$var[3]['html'] 	= "<div class='form-inline'>".$frm->select('bootswatch', $bootswatch, e107::pref('theme', 'bootswatch', ''),null,LAN_DEFAULT ).$previewLink."</div>";
 		$var[3]['help']		= "";
 
+		$var[4]['caption'] 	= "CDN";
+		$var[4]['html'] 	= $frm->select('cdn', $cdnFront, e107::pref('theme', 'cdn', '') );
+		$var[4]['help']		= "";
+
+
+
 
 
 
 	//	$var[1]['caption'] 	= "Sample configuration field 2";
 	//	$var[1]['html'] 	= $frm->text('_blank_example2', e107::pref('theme', 'example2', 'default'));
-		
+
 		return $var;
 	}
+
 
 	function help()
 	{

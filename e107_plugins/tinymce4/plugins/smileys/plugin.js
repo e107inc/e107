@@ -1,5 +1,5 @@
 tinymce.PluginManager.add('smileys', function (editor, url) {
-    var defaultSmileys = [
+    /*var defaultSmileys = [
                         [
                             { shortcut: '(^^^)', url: url + '/img/shark.gif', title: 'shark' },
                             { shortcut: 'O:)', url: url + '/img/angel.png', title: 'angel' },
@@ -27,7 +27,9 @@ tinymce.PluginManager.add('smileys', function (editor, url) {
                             { shortcut: '>:O', url: url + '/img/upset.png', title: 'upset' },
                             { shortcut: '>:(', url: url + '/img/grumpy.png', title: 'grumpy' }
                         ]
-    ];
+    ];*/
+
+    var defaultSmileys = [];
 
     var smileys = editor.settings.smileys || defaultSmileys, fullSmileysList = editor.settings.extended_smileys ? smileys.concat(editor.settings.extended_smileys) : smileys;
 

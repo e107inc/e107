@@ -321,8 +321,20 @@ class download_shortcodes extends e_shortcode
    {
 	  $tp = e107::getParser();
 	  
-      $img = ($this->var['download_thumb']) ? "<img class='download-thumb img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt=\"".$this->var['download_name']."\"  />" : "";
-      
+      $img = "";
+
+      if(!empty($this->var['download_thumb']))
+      {
+           $opts = array(
+             'legacy' => "{e_FILE}downloadthumbs/",
+             'class'  => 'download-image img-responsive',
+              'alt'     => $this->var['download_name']
+         );
+
+         $img = $tp->toImage($this->var['download_thumb'], $opts);
+      }
+
+
       if ($parm == "link" && $this->var['download_thumb'])
       {
       	$url = e107::getUrl()->create('download/view/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
@@ -392,8 +404,13 @@ class download_shortcodes extends e_shortcode
    function sc_download_list_imagefull($parm='')
    {
 	
-		$img = ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".e107::getParser()->thumbUrl($this->var['download_image'])."'  alt=\"".$this->var['download_name']."\"   />" : "";
-		
+		$img = "";
+
+		if(!empty($this->var['download_image']))
+        {
+            $img = $this->sc_download_view_imagefull();
+        }
+
 		if($parm == "link" && $this->var['download_image'])
 		{
 			$url = e107::getUrl()->create('download/view/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
@@ -556,32 +573,50 @@ class download_shortcodes extends e_shortcode
    {
       return $this->sc_download_view_date('long');
    }
-   
+
    function sc_download_view_image()
    {
-	  $tp = e107::getParser();
-	  
-      if ($this->var['download_thumb']) 
+      $tp = e107::getParser();
+
+
+      if($this->var['download_thumb'])
       {
-      	return ($this->var['download_image'] ? "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'><img class='download-image dl_image img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt='*'  /></a>" : "<img class='download-image dl_image img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt='*'  />");
+         $opts = array(
+             'legacy' => "{e_FILE}downloadthumbs/",
+             'class'  => 'download-image dl_image img-responsive'
+         );
+         $image = $tp->toImage($this->var['download_thumb'], $opts);
+
+         return ($this->var['download_image'] ? "<a href='" . e_PLUGIN_ABS . "download/request.php?download." . $this->var['download_id'] . "'>" . $image . "</a>" : $image);
       }
-      elseif ($this->var['download_image'])
-	  {
-      	return "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'>".LAN_dl_40."</a>";
+      elseif($this->var['download_image'])
+      {
+         return "<a href='" . e_PLUGIN_ABS . "download/request.php?download." . $this->var['download_id'] . "'>" . LAN_dl_40 . "</a>";
       }
       else
       {
-      	return LAN_dl_75;
+         return LAN_dl_75;
       }
    }
 
    /**
     * {DOWNLOAD_VIEW_LINK: class=thumbnail}
     */   
-   function sc_download_view_imagefull($parm)
+   function sc_download_view_imagefull($parm=array())
    {
-	  $tp = e107::getParser();
-      return ($this->var['download_image']) ? "<img class='download-image dl_image download-view-image img-responsive ".vartrue($parm['class'])."' src='".$tp->thumbUrl($this->var['download_image'])."' alt='*'  />" : "";
+
+      if(!empty($this->var['download_image']))
+      {
+
+         $opts = array(
+                'legacy' => "{e_FILE}downloadimages/",
+                'class'  => 'download-image dl_image download-view-image img-responsive '.vartrue($parm['class']),
+               'alt' => basename($this->var['download_image'])
+         );
+
+         return e107::getParser()->toImage($this->var['download_image'], $opts);
+      }
+
    }
    
    /**

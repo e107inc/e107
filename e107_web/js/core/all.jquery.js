@@ -146,7 +146,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						// If this is a navigation controller, e.g. pager.
 						nav: $element.attr('data-nav-inc'),
 						// Old way - href='myscript.php#id-to-target.
-						href: $element.attr("href")
+						href: $element.attr("href"),
+						// Wait for final event. Useful for keyUp, keyDown... etc.
+						wait: $element.attr('data-event-wait')
 					};
 
 					// If this is a navigation controller, e.g. pager.
@@ -160,7 +162,16 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						ajaxOptions.type = 'GET';
 					}
 
-					e107.callbacks.ajaxRequestHandler($element, ajaxOptions);
+					if(ajaxOptions.wait != null)
+					{
+						e107.callbacks.waitForFinalEvent(function(){
+							e107.callbacks.ajaxRequestHandler($element, ajaxOptions);
+						}, parseInt(ajaxOptions.wait), event);
+					}
+					else
+					{
+						e107.callbacks.ajaxRequestHandler($element, ajaxOptions);
+					}
 
 					return false;
 				});
@@ -531,6 +542,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				// Command to provide the jQuery css() function.
 				case 'css':
 					$(command.target).css(command.arguments);
+					// Attach all registered behaviors to the new content.
+					e107.attachBehaviors();
 					break;
 
 				// Command to set the settings that will be used for other commands in this response.
@@ -544,12 +557,16 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				// Command to attach data using jQuery's data API.
 				case 'data':
 					$(command.target).data(command.name, command.value);
+					// Attach all registered behaviors to the new content.
+					e107.attachBehaviors();
 					break;
 
 				// Command to apply a jQuery method.
 				case 'invoke':
 					var $element = $(command.target);
 					$element[command.method].apply($element, command.arguments);
+					// Attach all registered behaviors to the new content.
+					e107.attachBehaviors();
 					break;
 			}
 		});
@@ -615,6 +632,39 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		// Attach all registered behaviors to the new content.
 		e107.attachBehaviors();
 	};
+
+	/**
+	 * Wait for final event. Useful when you need to call an event callback
+	 * only once, but event is fired multiple times. For example:
+	 * - resizing window manually
+	 * - wait for User to stop typing
+	 *
+	 * Example usage:
+	 * @code
+	 *  $(window).resize(function () {
+	 *      waitForFinalEvent(function(){
+	 *          alert('Resize...');
+	 *          //...
+	 *      }, 500, "some unique string");
+	 *  });
+	 * @endcode
+	 */
+	e107.callbacks.waitForFinalEvent = (function ()
+	{
+		var timers = {};
+		return function (callback, ms, uniqueId)
+		{
+			if(!uniqueId)
+			{
+				uniqueId = "Don't call this twice without a uniqueId";
+			}
+			if(timers[uniqueId])
+			{
+				clearTimeout(timers[uniqueId]);
+			}
+			timers[uniqueId] = setTimeout(callback, ms);
+		};
+	})();
 
 })(jQuery);
 
@@ -1347,6 +1397,11 @@ $(document).ready(function()
 				
 	}
 
+
+
+
+
+
 // Legacy Stuff to be converted. 
 // BC Expandit() function 
 
@@ -1356,35 +1411,35 @@ $(document).ready(function()
 	
 	function expandit(e) {
 
+		if(typeof e === 'object')
+		{
 
-
-		//	var href = ($(e).is("a")) ? $(e).attr("href") : '';
 			if($(e).is("a"))
 			{
-				var href = $(e).attr("href");	
-						
+				var href = $(e).attr("href");						
 			}
-			else
-            {
-                var href = '';
-            }
 
-			if(href === "#" || e === null || href === undefined) 
+			if(href === "#" || e === null || href === undefined)
 			{
-				idt = $(e).next("div");	
+				idt = $(e).next("div");
 								
 				$(idt).toggle("slow");
 				return false;
 			}
-			
-			var id = "#" + e;
+		}
 
 
-			
-			$(id).toggle("slow");
-			return false;
+		var id = "#" + e;
+
+		$(id).toggle("slow");
+
+		return false;
 	}
-		
+
+
+
+
+
 
 	var addinput = function(text,rep) {
 	

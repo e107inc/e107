@@ -141,8 +141,10 @@ else
 
 if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
-if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
+$siteButton = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+if($pref['sitebutton']) e107::meta('og:image',$siteButton);
+if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
+unset($siteButton);
 
 
 // Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg

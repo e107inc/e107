@@ -20,6 +20,17 @@
  */
 
 require_once("class2.php");
+
+if(!deftrue('e_LEGACY_NEWS')) // subject to removal at any time.
+{
+	require_once(e_PLUGIN."news/news.php");
+	exit;
+}
+
+
+// --------------------- everything below this point will be removed in future --------------------------
+
+
 include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");
@@ -185,7 +196,7 @@ if(!empty($_GET['author']) || substr($action,0,4) == 'author=')
 }
 
 
-if(E107_DBG_PATH)
+if(e_DEBUG === 'news')
 {
 	echo "<div class='alert alert-info'>";
 	echo "<h4>SEF Debug Info</h4>";
@@ -411,7 +422,7 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 	}
 	else // No News - empty.
 	{
-		$text .= "<div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div>";
+		$text .= "<div class='news-empty'><div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 	}
 
 	if(vartrue($template['end']))
@@ -509,6 +520,8 @@ if ($action == 'extend')
 	{
 		$news = $sql->fetch();
 		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
+
+		e107::getEvent()->trigger('user_news_item_viewed', $news);
 
 		//***NEW [SecretR] - comments handled inside now
 		e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
@@ -624,6 +637,8 @@ $order = $tp -> toDB($order, true);			/// @todo - try not to use toDB() - trigge
 
 $interval = $pref['newsposts'];
 
+
+
 switch ($action)
 {
 	case "list" :
@@ -639,6 +654,8 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_category={$sub_action}
 		ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
+
+		$noNewsMessage = LAN_NEWS_463;
 		break;
 
 
@@ -669,7 +686,10 @@ switch ($action)
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
 		}
+
+		$noNewsMessage = LAN_NEWS_83;
 		break;
+
 
 	case "month" :
 	case "day" :
@@ -700,6 +720,9 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
+
+		$noNewsMessage = LAN_NEWS_462;
+
 		break;
 
 	case 'default' :
@@ -743,6 +766,8 @@ switch ($action)
 		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
 		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 		}
+
+		$noNewsMessage = LAN_NEWS_83;
 }	// END - switch($action)
 
 
@@ -780,10 +805,10 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 }
 
 
-if (!($news_total = $sql->db_Select_gen($query)))
+if (!($news_total = $sql->gen($query)))
 {  // No news items
 	require_once(HEADERF);
-	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
+	echo "<div class='news-empty'><div class='alert alert-info' style='text-align:center'>".$noNewsMessage."</div></div>";
 	require_once(FOOTERF);
 	exit;
 }
@@ -994,12 +1019,13 @@ else
 		if ($action == "item")
 		{
 			unset($news['news_render_type']);
+			e107::getEvent()->trigger('user_news_item_viewed', $news);
+			//e107::getDebug()->log($news);
 		}
 		// $template = false;
 		$ix->render_newsitem($news, 'default', '', $template, $param);
-		
-		
-		
+
+
 		$i++;
 	}
 
@@ -1112,7 +1138,8 @@ if(is_dir("remotefile")) {
 	}
 }
 
-if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
+{
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 

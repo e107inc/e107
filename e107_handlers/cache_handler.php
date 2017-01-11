@@ -45,8 +45,20 @@ class ecache {
 	 */
 	public function setMD5($text, $hash=true)
 	{
+		if($text === null)
+		{
+			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
+			return $this;
+		}
+
 		$this->CachePageMD5 = ($hash === true) ? md5($text) : $text;
 		return $this;
+	}
+
+
+	public function getMD5()
+	{
+		return $this->CachePageMD5;
 	}
 
 	/**
@@ -110,21 +122,24 @@ class ecache {
 	}
 
 	/**
-	* @return string
-	* @param string $query
-	* @param int $MaximumAge the time in minutes before the cache file 'expires'
-	* @param Forced check if cache is disabled. 
-	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
-	* @scope public
-	*/
+	 * Retrieve Cache data.
+	 * @param $CacheTag
+	 * @param bool|int $MaximumAge the time in minutes before the cache file 'expires'
+	 * @param bool $ForcedCheck check even if cache pref is disabled.
+	 * @param bool $syscache set to true when checking sys cache.
+	 * @return string
+	 * @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
+	 * @scope public
+	 */
 	public function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
 	{
 		if(($ForcedCheck != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
-			if (file_exists($cache_file))
+
+			if(file_exists($cache_file))
 			{
-				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
+				if ($MaximumAge !== false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
 					return false;
 				}
@@ -135,13 +150,16 @@ class ecache {
 					{
 						$ret = substr($ret, strlen(self::CACHE_PREFIX));
 					}
-					else
+					elseif(substr($ret,0,5) == '<?php')
 					{
 						$ret = substr($ret, 5);		// Handle the history for now
 					}
 					return $ret;
 				}
-			} else {
+			}
+			else
+			{
+			//	e107::getDebug()->log("Couldn't find cache file: ".json_encode($cache_file));
 				return false;
 			}
 		}
@@ -222,6 +240,7 @@ class ecache {
 	 */
 	public function clear($CacheTag = '', $syscache = false, $related = false)
 	{
+
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
 		$ret = self::delete(e_CACHE_CONTENT, $file, $syscache);
@@ -243,6 +262,8 @@ class ecache {
 	*/
 	function clear_sys($CacheTag = '', $related = false)
 	{
+
+
 		if(isset($this) && $this instanceof ecache)
 		{
 			return $this->clear($CacheTag, true, $related);

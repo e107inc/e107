@@ -1,10 +1,13 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ * 
+ *    e107 website system - Language File.
+ */
 
 define("RSS_LAN05","Number of items (0=inactive)");
 
@@ -33,9 +36,9 @@ define("RSS_DL", "Downloads");
 //define("RSS_PLUGIN_LAN_2", "RSS Feeds from your site");
 
 define("RSS_PLUGIN_LAN_6", "Feed Links");
-define("RSS_PLUGIN_LAN_7", "The rss feed of the news");
-define("RSS_PLUGIN_LAN_8", "The rss feed of the downloads");
-define("RSS_PLUGIN_LAN_9", "The rss feed of the comments");
+define("RSS_PLUGIN_LAN_7", "The rss feed of news");
+define("RSS_PLUGIN_LAN_8", "The rss feed of downloads");
+define("RSS_PLUGIN_LAN_9", "The rss feed of comments");
 define("RSS_PLUGIN_LAN_10", "The rss feed of news category:");
 define("RSS_PLUGIN_LAN_11", "The rss feed of download category:");
 
@@ -54,20 +57,20 @@ define("RSS_LAN_ERROR_6", "There are no rss feeds to import");
 define("RSS_LAN_ERROR_7", "Some required fields are missing.");
 
 define("RSS_LAN_ADMIN_1", "Existing RSS feeds");
-define("RSS_LAN_ADMIN_2", "Id");
-define("RSS_LAN_ADMIN_3", "Path");
-//define("RSS_LAN_ADMIN_4", "Name");
-define("RSS_LAN_ADMIN_5", "Url");
-define("RSS_LAN_ADMIN_6", "Text");
-define("RSS_LAN_ADMIN_7", "Limit");
-define("RSS_LAN_ADMIN_8", "Visibility");
+//define("RSS_LAN_ADMIN_2", "Id");//LAN_ID
+//define("RSS_LAN_ADMIN_3", "Path");//LAN_PLUGIN_FOLDER
+//define("RSS_LAN_ADMIN_4", "Name");//LAN_NAME
+//define("RSS_LAN_ADMIN_5", "Url");//LAN_URL
+//define("RSS_LAN_ADMIN_6", "Text");//LAN_DESCRIPTION
+//define("RSS_LAN_ADMIN_7", "Limit");//LAN_LIMIT
+//define("RSS_LAN_ADMIN_8", "Visibility");//LAN_VISIBILITY
 //define("RSS_LAN_ADMIN_9", "Type");
 define("RSS_LAN_ADMIN_10", "rss feed create entry");
 define("RSS_LAN_ADMIN_11", "rss feed import feeds");
-define("RSS_LAN_ADMIN_12", "Topic id");
+define("RSS_LAN_ADMIN_12", "Topic ID");//LAN_ID
 
 define("RSS_LAN_ADMIN_13", "Include Other-news items in News Feed?");
-define("RSS_LAN_ADMIN_14", "Enable");
+//define("RSS_LAN_ADMIN_14", "Enable");//LAN_ENABLE
 define("RSS_LAN_ADMIN_15", "Tick links to mark them for import ...");
 define("RSS_LAN_ADMIN_16", "import?");
 define("RSS_LAN_ADMIN_17", "import ticked links");
@@ -80,7 +83,7 @@ define("RSS_LAN_ADMIN_23", "inactive");
 
 define("RSS_LAN_ADMIN_26", "Check All");
 define("RSS_LAN_ADMIN_27", "Uncheck All");
-define("RSS_LAN_ADMIN_28", "Nothing changed - not saved");
+//define("RSS_LAN_ADMIN_28", "Nothing changed - not saved");//LAN_NOCHANGE_NOTSAVED
 
 define("RSS_LAN_ADMIN_31", "rss entries limits updated");
 define("RSS_LAN_ADMIN_32", "");

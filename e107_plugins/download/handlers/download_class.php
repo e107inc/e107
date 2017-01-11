@@ -211,7 +211,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div ".(deftrue('BOOTSTRAP')?"class='alert alert-warning' >":"")."style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
 				
 		$download_cat_table_string = "";
@@ -419,6 +419,7 @@ class download
 		{
 			$template = e107::getTemplate('download','download');
 			
+			$DOWNLOAD_LIST_CAPTION 		= $template['list']['caption'];	
 			$DOWNLOAD_LIST_TABLE_START 	= $template['list']['start'];	
 			$DOWNLOAD_LIST_TABLE 		= $template['list']['item'];
 			$DOWNLOAD_LIST_TABLE_END 	= $template['list']['end'];		
@@ -578,6 +579,8 @@ class download
 		
 		if($filetotal)
 		{
+	  		$caption = varset($DOWNLOAD_LIST_CAPTION) ? $tp->parseTemplate($DOWNLOAD_LIST_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
+
 			// Only show list if some files in it
 			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $sc);
 			
@@ -610,8 +613,8 @@ class download
 			}
 
 			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
-			
-			$text .= $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $dl_text, 'download-list', true);
+
+			$text .= $ns->tablerender($caption, $dl_text, 'download-list', true);
 		}
 
 		if(!isset($DOWNLOAD_LIST_NEXTPREV))

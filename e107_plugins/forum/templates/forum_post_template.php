@@ -12,6 +12,7 @@ if (!defined('e107_INIT')) { exit; }
 
 // New in v2.x - requires a bootstrap theme be loaded.  
 
+//$FORUM_POST_TEMPLATE['caption']		= "Custom caption";
 $FORUM_POST_TEMPLATE['form']		= "
 									{FORUM_POST_FORM_START}
 									<div class='row-fluid'>
@@ -53,6 +54,7 @@ $FORUM_POST_TEMPLATE['form']		= "
 
 $FORUM_POST_TEMPLATE['reply']	= "";
 
+// $FORUM_POST_WRAPPER['FORUM_POST_TEXTAREA'] = "(pre){---}(post)";  // Custom Wrapper. 
 
 
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";

@@ -89,7 +89,7 @@ $LOGIN_TEMPLATE['page']['header'] = "
 		</div>";
 
 $LOGIN_TEMPLATE['page']['body'] = '
-
+		{LOGIN_TABLE_LOGINMESSAGE}
         <h2 class="form-signin-heading">'.LAN_LOGIN_4.'</h2>';
 	if (e107::pref('core', 'password_CHAP') == 2)
 	{
@@ -110,6 +110,9 @@ $LOGIN_WRAPPER['page']['LOGIN_TABLE_SECIMG_TEXTBOC'] = "<div class='form-group'>
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_REMEMBERME'] = "<div class='form-group checkbox'>{---}</div>";
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_SUBMIT'] = "<div class='form-group'>{---}</div>";
 $LOGIN_WRAPPER['page']['LOGIN_TABLE_FOOTER_USERREG'] = "<div class='form-group'>{---}</div>";
+$LOGIN_WRAPPER['page']['LOGIN_TABLE_LOGINMESSAGE'] = "<div class='alert alert-danger'>{---}</div>";
+
+
 // $LOGIN_WRAPPER['page']['LOGIN_TABLE_FPW_LINK'] = "<div class='form-group'>{---}</div>";
 
 $LOGIN_TEMPLATE['page']['body'] .= '

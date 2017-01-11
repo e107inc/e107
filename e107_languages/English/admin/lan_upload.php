@@ -87,8 +87,8 @@ define("UPLLAN_64", "Manage Download");
 define("UPLLAN_66", "Download path error");
 //define("UPLLAN_67", "Anonymous");//LAN_ANONYMOUS
 define("UPLLAN_68", "SQL Error:");
-define("UPLLAN_69", "");
-define("UPLLAN_70", "");
+define("UPLLAN_69", "Imported");
+define("UPLLAN_70", "Send to [x]");
 
 
 ?>

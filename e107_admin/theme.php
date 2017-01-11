@@ -74,10 +74,13 @@ if(!empty($_GET['action']))
 		*/
 
 		case 'info':
-			$string =  base64_decode($_GET['src']);
-			parse_str($string,$p);
-			echo $themec->renderThemeInfo($p);
-
+			if(!empty($_GET['src']))
+			{
+				$string =  base64_decode($_GET['src']);
+				parse_str($string,$p);
+				$themeInfo = e107::getSession()->get('thememanager/online/'.intval($p['id']));
+				echo $themec->renderThemeInfo($themeInfo);
+			}
 		break;
 		
 		case 'preview':
@@ -164,9 +167,20 @@ if($mode == 'download' && !empty($_GET['src']))
 			return true;
 		}
 
+		if(deftrue('e_DEBUG_MARKETPLACE'))
+		{
+			echo "<b>DEBUG MODE ACTIVE (no downloading)</b><br />";
+			echo '$_GET: ';
+			print_a($_GET);
+
+			echo 'base64 decoded and parsed as $data:';
+			print_a($data);
+			return false;
+		}
+
 		
 		$mp = $themec->getMarketplace();	
-	 	$mes->addSuccess("Connecting...");   
+	 	$mes->addSuccess(TPVLAN_85);   
 
 		if($mp->download($data['id'], $data['mode'], 'theme')) // download and unzip theme.
 		{
@@ -326,7 +340,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 			
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_1, $mes->render() . $text);			
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);			
 			
 		}	
 
@@ -418,7 +432,7 @@ class theme_builder
 			
 			$text .= $frm->close();
 
-			$ns->tablerender(TPVLAN_26.SEP."Converter".SEP. TPVLAN_CONV_2, $mes->render() . $text);		
+			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_2, $mes->render() . $text);		
 		}
 					
 				

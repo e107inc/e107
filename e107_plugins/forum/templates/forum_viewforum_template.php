@@ -72,6 +72,8 @@ if(empty($FORUM_VIEW_START_CONTAINER))
 
 
 if (empty($FORUM_VIEW_FORUM)) {
+	$SC_WRAPPER['LASTPOST:type=date'] = "{---}<br>";
+	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".IMAGE_post2."</a>";
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
@@ -89,7 +91,7 @@ if (empty($FORUM_VIEW_FORUM)) {
 		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
 		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
 		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST:type=date}{LASTPOSTUSER}{LASTPOST:type=url}</td>
 		</tr>";
 }
 
@@ -286,6 +288,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 //TODO Find a good place to put a {SEARCH} dropdown.
 
+$FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
@@ -302,13 +305,14 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 												
 													{SUBFORUMS}";
 
+
 $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 													<td>{ICON}</td>
 													<td>
 													<div class='row'>
 														<div class='col-xs-12 col-md-9'>
 														{THREADNAME}
-														<div><small>by {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+														<div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
 														</div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
 														</div>
 														<div class='row'>
@@ -340,8 +344,14 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 
 $FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
 
+/* Examples top divider with shortcodes - working
+$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006." {FORUMTITLE}</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007." {FORUMTITLE}</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+*/
 $FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
 $FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+
+$SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>{---}</div></div></div>";
 
 $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												<div class='row row-fluid'>
@@ -352,7 +362,7 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 
 												<div>
 													<div class='panel panel-default' style='margin-top:50px'>
-													<div class='panel-heading'>Status Keys</div>
+													<div class='panel-heading'>".LAN_FORUM_8011."</div>
 													<div class='panel-body'>
 													{ICONKEY}
 

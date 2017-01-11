@@ -94,8 +94,18 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	// define different tablerender mode here
 	$PAGE_TEMPLATE['default']['tableRender'] = 'cpage';
 
+
+
+	$PAGE_TEMPLATE['default']['related']['start']   = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">{LAN=LAN_RELATED}</h2><div class="row">';
+	$PAGE_TEMPLATE['default']['related']['item']    = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
+	$PAGE_TEMPLATE['default']['related']['end']     = '</div>';
+
+
+
 	
 #### No table render example template ####
+
+
 	$PAGE_TEMPLATE['custom']['start'] 			= '<div id="{CPAGESEF}" class="cpage-body">'; 
 	$PAGE_TEMPLATE['custom']['body'] 			= ''; 
 	$PAGE_TEMPLATE['custom']['authorize'] 		= '
@@ -108,8 +118,22 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['custom']['tableRender'] 	= '';
 	
 	
+	$PAGE_WRAPPER['profile']['CMENUIMAGE: template=profile'] = '<span class="page-profile-image pull-left col-xs-12 col-sm-4 col-md-4">{---}</span>';
+	$PAGE_TEMPLATE['profile'] = $PAGE_TEMPLATE['default'];
+	$PAGE_TEMPLATE['profile']['body'] = '
+		{CPAGEMESSAGE}
+		{CPAGESUBTITLE}
+		<div class="clear"><!-- --></div>
 
+		{CPAGENAV|default}
+		{SETIMAGE: w=320}
+		{CMENUIMAGE: template=profile}
+		{CPAGEBODY}
 
+		<div class="clear"><!-- --></div>
+		{CPAGERATING}
+		{CPAGEEDIT}
+	';
 	
 	
 	
