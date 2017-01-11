@@ -1035,13 +1035,14 @@ class news_front
 		{
 			global $comment_edit_query; //FIXME - kill me
 			$comment_edit_query = 'comment.news.'.$news['news_id'];
-			$comments = e107::getComment()->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], false, true);
+			$text = e107::getComment()->compose_comment('news', 'comment', $news['news_id'], null, $news['news_title'], false, 'html');
 
 
-			if(!empty($comments))
+			if(!empty($text))
 			{
-				$text = $comments['comment_form'] . $comments['comment'] .$comments['moderate'];
-				return e107::getRender()->tablerender($comments['caption'], $text,'comment', true);
+			//	$text = $comments['comment_form'] . $comments['comment'] .$comments['moderate'];
+				return $text;
+			//	return e107::getRender()->tablerender($comments['caption'], $text,'comment', true);
 			}
 
 		}
