@@ -915,7 +915,7 @@ class e_form
 		}
 
 	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
-	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='Media Manager' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
@@ -982,13 +982,13 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='Click on the avatar to change it' alt='Click on the avatar to change it' />"; // TODO LAN
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />"; 
 		}
 		else
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"Choose Avatar\"  />"; //TODO Common LAN. 
+			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />"; 
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -1005,7 +1005,7 @@ class e_form
 				
 				if(count($avFiles) > 0)
 				{
-					$text .= "<div class='divider'><span>OR</span></div>";
+					$text .= "<div class='divider'><span>".LAN_EFORM_003."</span></div>";
 					$count = 1;
 				}
 		}
@@ -1014,7 +1014,7 @@ class e_form
 		foreach($avFiles as $fi)
 		{
 			$img_path = $tp->thumbUrl(e_AVATAR_DEFAULT.$fi['fname']);	
-			$text .= "\n<a class='e-expandit' title='Choose this avatar' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;return false\" /></a> ";
+			$text .= "\n<a class='e-expandit' title='".LAN_EFORM_004."' href='#{$optioni}'><img src='".$img_path."' alt=''  onclick=\"insertext('".$fi['fname']."', '".$idinput."');document.getElementById('".$previnput."').src = this.src;return false\" /></a> ";
 			$count++;
 
 
@@ -1024,11 +1024,14 @@ class e_form
 		if($count == 0)
 		{
 			$text .= "<div class='row'>";
-			$text .= "<div class='alert alert-info'>No Avatars Available</div>"; //TODO LAN
+			$text .= "<div class='alert alert-info'>".LAN_EFORM_005."</div>"; 
 
 			if(ADMIN)
 			{
-				$text .= "<div class='alert alert-danger'>Admin-Only Notice: The folder <b>".e_AVATAR_DEFAULT."</b> is empty. Upload some default avatars images to this folder for users to choose avatars from.</div>"; //TODO LAN
+				$EAVATAR = "<b>".e_AVATAR_DEFAULT."</b>";
+				$text .= "<div class='alert alert-danger'>";
+				$text .= e107::getParser()->lanVars(LAN_EFORM_006, array('x'=>$EAVATAR));
+				$text .= "</div>"; 
 			}
 
 			$text .= "</div>";
@@ -1457,7 +1460,7 @@ e107::getDebug()->log($sc_parameters);
 
 		if(empty($users))
 		{
-			return "Unavailable";
+			return LAN_UNAVAILABLE;
 		}
 
 		$opt = array();
@@ -1842,7 +1845,7 @@ e107::getDebug()->log($sc_parameters);
    		 	$text .= "</div>
     	</div>";
 		
-		$loading = vartrue($options['loading'],'Please wait...');
+		$loading = vartrue($options['loading'],LAN_LOADING);
 		
 		$buttonId = $target.'-start';
 		
@@ -2534,7 +2537,7 @@ e107::getDebug()->log($sc_parameters);
 		$tp = e107::getParser();
 		
 		$text = '<span class="input-append input-group e-search">
-    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder=Search&hellip;').'
+    		'.$this->text($name, $searchVal,20,'class=search-query&placeholder='.LAN_SEARCH.'&hellip;').'
    			 <span class="input-group-btn"><button class="btn btn-primary" name="'.$submitName.'" type="submit">'.$tp->toGlyph('fa-search',' ').'</button></span>
     	</span>';
 		
@@ -2817,7 +2820,7 @@ e107::getDebug()->log($sc_parameters);
 					
 			$text = '<div class="btn-group pull-'.$align.'">
 			    <a class="btn dropdown-toggle '.$options['class'].'" data-toggle="dropdown" href="#">
-			    '.($label ? $label : 'No Label Provided').'
+			    '.($label ? $label : LAN_NO_LABEL_PROVIDED).'
 			    <span class="caret"></span>
 			    </a>
 			    <ul class="dropdown-menu">
@@ -3372,10 +3375,10 @@ e107::getDebug()->log($sc_parameters);
 	// navbar-header nav-header
 	// navbar-header nav-header
 		$text = '<div class="col-selection dropdown e-tip pull-right" data-placement="left">
-    <a class="dropdown-toggle" title="Select columns to display" data-toggle="dropdown" href="#"><b class="caret"></b></a>
+    <a class="dropdown-toggle" title="'.LAN_EFORM_008.'" data-toggle="dropdown" href="#"><b class="caret"></b></a>
     <ul class="list-group dropdown-menu  col-selection e-noclick" role="menu" aria-labelledby="dLabel">
    
-    <li class="list-group-item "><h5 class="list-group-item-heading">Display Columns</h5></li>
+    <li class="list-group-item "><h5 class="list-group-item-heading">'.LAN_EFORM_009.'</h5></li>
     <li class="list-group-item">
      <ul class="nav scroll-menu" >';
 		
@@ -4180,7 +4183,7 @@ e107::getDebug()->log($sc_parameters);
 					// in case something goes wrong...
 					if($link)
 					{
-						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='Quick View' >" . $value . "</a>";
+						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='".LAN_EFORM_010."' >" . $value . "</a>";
 					}
 				}
 
@@ -4261,7 +4264,7 @@ e107::getDebug()->log($sc_parameters);
                     }
                     
 					// in case something goes wrong...
-                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='Quick View' >".$value."</a>";
+                    if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
 				}
 
 				if(empty($value))
@@ -4593,7 +4596,7 @@ e107::getDebug()->log($sc_parameters);
 					// Stay in admin area.
 					$link = e_ADMIN."users.php?mode=main&action=edit&id=".$id."&readonly=1&iframe=1"; // e107::getUrl()->create('user/profile/view', array('id' => $id, 'name' => $ttl))
 
-					$value = '<a class="e-modal" data-modal-caption="User #'.$id.' : '.$ttl.'" href="'.$link.'" title="Go to user profile">'.$ttl.'</a>';
+					$value = '<a class="e-modal" data-modal-caption="User #'.$id.' : '.$ttl.'" href="'.$link.'" title="'.LAN_EFORM_011.'">'.$ttl.'</a>';
 				}
 				else
 				{
@@ -4852,7 +4855,7 @@ e107::getDebug()->log($sc_parameters);
 		if(!empty($attributes['multilan']))
 		{
 			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
-			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='Multi-language field (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>";
+			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>";
 		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
@@ -6032,7 +6035,7 @@ e107::getDebug()->log($sc_parameters);
 				<div class='buttons-bar center'>
 		";
 					// After submit options
-					$defsubmitopt = array('list' => 'go to list', 'create' => 'create another', 'edit' => 'edit current');
+					$defsubmitopt = array('list' => LAN_EFORM_013, 'create' => LAN_EFORM_014, 'edit' => LAN_EFORM_015);
 					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
 					if(true === $submitopt)
 					{
@@ -6073,7 +6076,7 @@ e107::getDebug()->log($sc_parameters);
 									<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu col-selection">
-									<li class="dropdown-header nav-header">After submit:</li>
+									<li class="dropdown-header nav-header">'.LAN_EFORM_016.'</li>
 							';
 							
 							foreach($submitopt as $k=>$v)
