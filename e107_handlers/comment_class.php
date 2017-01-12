@@ -1087,6 +1087,10 @@ class comment
 					echo $text;
 				}
 			}
+			elseif($return === 'html')
+			{
+				return $ns->tablerender(null, $text, 'comment', true);
+			}
 			else
 			{
 				$ret['comment'] = $text;
