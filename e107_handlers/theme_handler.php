@@ -1610,7 +1610,7 @@ class themeHandler
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style=''  alt='' />";
+		$thumbnail = "<img src='".$thumbPath."' style='max-width:100%'  alt='' />";
 		
 
 		if($_GET['mode'] == 'online')
