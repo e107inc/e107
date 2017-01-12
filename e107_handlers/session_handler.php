@@ -205,7 +205,7 @@ class e_session
 			{
 				$systemSaveMethod = ini_get('session.save_handler');
 
-				e107::getDebug()->log("Save Method:".$systemSaveMethod);
+			//	e107::getDebug()->log("Save Method:".$systemSaveMethod);
 
 				$saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
 
