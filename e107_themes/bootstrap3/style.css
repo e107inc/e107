@@ -144,6 +144,7 @@ table label.checkbox {
 
 
 li.dropdown-avatar > a.dropdown-toggle { padding:9px 15px 10px 0; }
+li.dropdown-pm > a.dropdown-toggle { height:50px }
 
 
 /* Navigation sub-sub menu - Mega Menu */
