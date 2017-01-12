@@ -60,10 +60,12 @@ $security_risks = array(
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
     }
-	
+
+	$sessionSaveMethod = ini_get('session.save_handler');
+
 	if($sessionSavePath = ini_get('session.save_path'))
 	{
-		if(!is_writable($sessionSavePath))
+		if(!is_writable($sessionSavePath) && $sessionSaveMethod === 'files')
 		{
 			$mes->addError("<b>session.save_path</b> is not writable! That can cause major issues with your site.");	
 		}
