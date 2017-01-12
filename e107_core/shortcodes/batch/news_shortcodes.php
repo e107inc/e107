@@ -501,6 +501,7 @@ class news_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if (ADMIN && getperms('H'))
 		{
+
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
 			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
 
@@ -509,7 +510,7 @@ class news_shortcodes extends e_shortcode
 			
 			$class = varset($parm['class']);
 			
-			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
+			return "<a class='e-tip e-instant-edit ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
 		else
 		{
@@ -898,7 +899,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return ".$imgTag."; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
+				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':

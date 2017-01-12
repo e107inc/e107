@@ -44,6 +44,7 @@ if (!e107::isInstalled('download'))
 
 	$dl = new download();
 
+	if(!defined("e_PAGETITLE")) {define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);}
 
 	if(!defined("USER_WIDTH") && !deftrue('BOOTSTRAP')) { define("USER_WIDTH","width:100%"); }
 
@@ -51,7 +52,7 @@ if (!e107::isInstalled('download'))
 
 	if(deftrue('BOOTSTRAP'))
 	{
-		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : e_IMAGE."generic/download.png"));
+		define("IMAGE_DOWNLOAD", (file_exists(THEME."images/download.png") ? THEME."images/download.png" : 'icon-download.glyph'));
 		define("IMAGE_NEW", (file_exists(THEME."images/new.png") ? THEME."images/new.png" : 'icon-star.glyph'));	
 	}
 	else 

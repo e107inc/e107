@@ -24,6 +24,7 @@ class e_menuManager {
 		var $debug;
 		var $menuMessage;
 		var $style = 'default';
+		private $menuData = array();
 
 		function __construct($dragdrop=FALSE)
 		{
@@ -62,7 +63,7 @@ class e_menuManager {
 					$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
 				}
 
-			$this->curLayout =  $tp->filter($this->curLayout);
+				$this->curLayout =  $tp->filter($this->curLayout);
 
 				$this->dbLayout = ($this->curLayout != $pref['sitetheme_deflayout']) ? $this->curLayout : "";  //menu_layout is left blank when it's default.
 
@@ -70,6 +71,9 @@ class e_menuManager {
 				{
                 	$this->menuId = (isset($_POST['menu_id'])) ? intval($_POST['menu_id']) : intval($_GET['id']);
 				}
+
+
+
 
 				if (/*$menu_act == "sv" || */isset($_POST['class_submit']))
 				{
@@ -90,9 +94,13 @@ class e_menuManager {
 				 	$this->menuGoConfig();
 				}
 
+
+
 				$this->menuGrabLayout();
 
 	        	$menu_array = $this->parseheader($HEADER.$FOOTER, 'check');
+
+
 
 				if($menu_array)
 				{
@@ -110,7 +118,7 @@ class e_menuManager {
 
 				$this->menuModify();
 
-            	if(vartrue($_POST['menuActivate']))
+            	if(!empty($_POST['menuActivate']))
 				{
 					$menuActivate = $tp->filter($_POST['menuActivate']);
                     $this->menuActivateLoc = key($menuActivate);
@@ -118,6 +126,8 @@ class e_menuManager {
 					$this->menuActivate();
 
 				}
+
+				$this->loadMenuData();
 
 				if(vartrue($_POST['menuSetCustomPages']))
 				{
@@ -134,6 +144,53 @@ class e_menuManager {
 
 		}
 
+
+	/**
+	 * Load the Menu Table data for the current layout.
+	 */
+	private function loadMenuData()
+	{
+		$menu_qry = 'SELECT * FROM #menus WHERE menu_location > 0 AND  menu_layout = "'.$this->dbLayout.'" ORDER BY menu_location,menu_order';
+
+		$sql = e107::getDb();
+
+		$eMenuArea = array();
+
+		if($rows = $sql->retrieve($menu_qry, true))
+		{
+
+			$lastLoc = -1;
+			$c = 0;
+			foreach($rows as $row)
+			{
+				$loc = intval($row['menu_location']);
+
+				if($lastLoc != $loc)
+				{
+					$c = 1;
+				}
+
+				if($c !== intval($row['menu_order'])) // fix the order if it is off..
+				{
+					if($sql->update('menus', "menu_order= ".$c." WHERE menu_id = ".$row['menu_id']." LIMIT 1"))
+					{
+						$row['menu_order'] = $c;
+					}
+
+				}
+
+				$eMenuArea[$loc][] = $row;
+
+				$lastLoc = $loc;
+				$c++;
+			}
+		}
+
+		$this->menuData = $eMenuArea;
+
+	}
+
+
 // -------------------------------------------------------------------------
 
 	function menuRenderIframe($url='')
@@ -149,7 +206,7 @@ class e_menuManager {
 	//	$cnt = $sql->select("menus", "*", "menu_location > 0 AND menu_layout = '$curLayout' ORDER BY menu_name "); // calculate height to remove vertical scroll-bar.
 
 	//	$text = "<object class='well' type='text/html' id='menu_iframe' data='".$url."' width='100%' style='overflow:auto;width: 100%; height: ".(($cnt*90)+600)."px; border: 0px' ></object>";
-		$text = "<iframe class='well' id='menu_iframe' src='".$url."' width='100%' scrolling='no' style='width: 100%; height: 800px; border: 0px' ></iframe>";
+		$text = "<iframe class='well' id='menu_iframe' name='e-mm-iframe' src='".$url."' width='100'   ></iframe>";
 	
 		return $text;
 	}
@@ -1008,11 +1065,11 @@ class e_menuManager {
 				if(!$sql->select('menus', 'menu_id', "menu_name='{$row['menu_name']}' AND menu_location = ".$this->menuNewLoc." AND menu_layout='".$this->dbLayout ."' LIMIT 1"))
 				{
 					$menu_count = $sql->count("menus", "(*)", " WHERE menu_location=".$this->menuNewLoc);
-					$sql->db_Update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
+					$sql->update("menus", "menu_location='{$this->menuNewLoc}', menu_order=".($menu_count+1)." WHERE menu_id=".$this->menuId);
 
 					if(isset($location) && isset($position))
 					{
-						$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
+						$sql->update("menus", "menu_order=menu_order-1 WHERE menu_location='{$location}' AND menu_order > {$position} AND menu_layout='".$this->dbLayout ."' ");
 					}
 				}
 				e107::getLog()->add('MENU_03',$row['menu_name'].'[!br!]'.$this->menuNewLoc.'[!br!]'.$this->menuId,E_LOG_INFORMATIVE,'');
@@ -1085,10 +1142,9 @@ class e_menuManager {
 		$sql    = e107::getDb();     
 		$tp     = e107::getParser();
 		
-	
-		
-		//FIXME - XHTML cleanup, front-end standards (elist, forms etc)
-		echo "<div id='portal'>";
+
+
+	//	echo "<div id='portal'>";
 		$this->parseheader($HEADER);  // $layouts_str;
 		
 		$layout = ($this->curLayout);
@@ -1200,7 +1256,16 @@ class e_menuManager {
 			$text .= "</div>";
 		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
-		echo $this->renderPanel(MENLAN_22, $text);
+		if(!deftrue("e_DEBUG_MENUMANAGER"))
+		{
+			echo "<div class='menu-panel' style='padding:50px'>Main Content Area</div>";
+		}
+		else
+		{
+			echo $this->renderPanel(MENLAN_22, $text);
+		}
+
+	//
         echo $rs->form_close();
 		echo "</div>";
 
@@ -1211,7 +1276,7 @@ class e_menuManager {
 		{
 	    	echo "<div id='debug' style='margin-left:0px;border:1px solid silver; overflow:scroll;height:250px'> &nbsp;</div>";
         }
-		echo "</div>"; 
+	//	echo "</div>";
 	}
 
 
@@ -1259,6 +1324,7 @@ class e_menuManager {
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 	function parseheader($LAYOUT, $check = FALSE)
 	{
+
 		//  $tmp = explode("\n", $LAYOUT);
 		// Split up using the same function as the shortcode handler
 		$tmp = preg_split('#(\{\S[^\x02]*?\S\})#', $LAYOUT, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -1353,12 +1419,12 @@ class e_menuManager {
 	//	{
 	//		echo "[SiteLinks]";
 	//	}
-		elseif(strstr($str, "NAVIGATION"))
-		{
-			$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
-			$tp->parseTemplate("{NAVIGATION".$cust."}",true);
+	//	elseif(strstr($str, "NAVIGATION"))
+	//	{
+	//		$cust = preg_replace("/\W*\{NAVIGATION(.*?)(\+.*)?\}\W*/si", "\\1", $str);
+	//		$tp->parseTemplate("{NAVIGATION".$cust."}",true);
 		//	echo "<span class='label label-info'>Navigation Area</span>";
-		}
+	//	}
 		elseif(strstr($str, "ALERT"))
 		{
 			//echo "[Navigation Area]";
@@ -1443,20 +1509,30 @@ class e_menuManager {
 
 					$menuText .= "<div class='menu-panel-header' >" . MENLAN_14 . "  " . $menu . "</div>\n\n";
 
-					$sql9 = new db();
+				//	$sql9 = new db();
 				//	$sql9 = e107::getDb('sql9');
-					if($sql9->count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
+				//	if($sql9->count("menus", "(*)", " WHERE menu_location='$menu' AND menu_layout = '" . $this->dbLayout . "' "))
+					if(!empty($this->menuData[$menu]))
 					{
 						unset($text);
 						$menuText .= $rs->form_open("post", e_SELF . "?configure=" . $this->curLayout, "frm_menu_" . intval($menu));
 						
-						$sql9->select("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order");
-						$menu_count = $sql9->db_Rows();
-						
+					//	$rows = $sql9->retrieve("menus", "*", "menu_location='$menu' AND menu_layout='" . $this->dbLayout . "' ORDER BY menu_order",true);
+						$rows = $this->menuData[$menu];
+					//	$menu_count = $sql9->db_Rows();
+						$menu_count = count($rows);
+
+						if(!empty($_GET['debug']))
+						{
+							print_a($rows);
+					//		print_a($this->menuData[$menu]);
+						}
+
 						$cl = ($this->dragDrop) ? "'portlet" : "regularMenu";
 						
 						$menuText .= "\n<div class='column' id='area-".$menu."'>\n\n";
-						while($row = $sql9->fetch())
+					//	while($row = $sql9->fetch())
+						foreach($rows as $row)
 						{
 							$menuText .= "\n\n\n <!-- Menu Start ".$row['menu_name']. "-->\n";
 							$menuText .= "<div class='{$cl}' id='block-".$row['menu_id']."-".$menu."'>\n";
@@ -1492,16 +1568,16 @@ class e_menuManager {
 					
 					
 				}
+
+				$ns->tablerender('', varset($menuText));
+			}
+			else
+			{
+				echo $tp->parseTemplate($str,true);
 			}
 
 
-			$ns->tablerender('', varset($menuText));
 		}
-
-	//.	else if(strstr($str, "SITEDISCLAIMER"))
-	//{
-	//		echo "[Sitedisclaimer]";
-	//	}
 		else
 		{
 			echo $tp->parseTemplate($str,true);
@@ -1526,7 +1602,7 @@ class e_menuManager {
 		$menu_name = varset($menu_name);
 		$menu_name = preg_replace("#_menu#i", "", $menu_name);
 		//TODO we need a CSS class for this
-		$vis = (varset($menu_class) || strlen(varset($menu_pages)) > 1) ? " <span class='required'><i class='icon-search'></i></span> " : "";
+		$vis = (varset($menu_class) || strlen(varset($menu_pages)) > 1) ? " <span class='required'><i class='e-mm-icon-search'></i></span> " : "";
 		//DEBUG div not allowed in final tags 	$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
 		// use theme render style instead
 		

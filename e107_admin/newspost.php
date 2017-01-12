@@ -857,6 +857,7 @@ class news_admin_ui extends e_admin_ui
 		$temp['news_default_template']	= preg_replace('#[^\w\pL\-]#u', '', $_POST['news_default_template']);
 		$temp['news_list_limit']		= intval($_POST['news_list_limit']);
 		$temp['news_list_templates']     = e107::getParser()->toDB($_POST['news_list_templates']);
+		$temp['news_cache_timeout']     = intval($_POST['news_cache_timeout']);
 
 		e107::getConfig()->updatePref($temp);
 
@@ -1141,7 +1142,20 @@ class news_admin_ui extends e_admin_ui
 									".$frm->textarea('news_ping_services', $pingVal, 4, 100, $pingOpt)."
 									<div class='field-help'>".LAN_NEWS_89."<br />".LAN_NEWS_90."</div>
 								</td>
-							</tr>
+							</tr>";
+
+								// TODO LAN
+						$tab1 .= "
+							<tr>
+								<td>News Cache Timeout </td>
+								<td>
+									".$frm->number('news_cache_timeout',varset($pref['news_cache_timeout'],0), 6)."
+									<div class='field-help'>Time in minutes. Applies only when system cache is enabled.</div>
+								</td>
+							</tr>";
+
+
+						$tab1 .= "
 
 							<tr>
 							<td>".NWSLAN_86."</td>

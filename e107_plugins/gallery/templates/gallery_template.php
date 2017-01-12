@@ -1,20 +1,21 @@
 <?php
-
-/**
- * Copyright (c) 2012 e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+/*
+ * e107 website system
  *
- * @file
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * Templates for "gallery" plugin.
  */
 
+$GALLERY_TEMPLATE['list']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
-$GALLERY_TEMPLATE['list_caption'] = LAN_PLUGIN_GALLERY_TITLE;
-
-$GALLERY_TEMPLATE['list_start'] = '{GALLERY_BREADCRUMB}
+$GALLERY_TEMPLATE['list']['start'] = '{GALLERY_BREADCRUMB}
 <div class="row gallery">
 ';
 
-$GALLERY_TEMPLATE['list_item'] = '
+$GALLERY_TEMPLATE['list']['item'] = '
 	<div class="span2 col-xs-6 col-md-3">
 		<div class="thumbnail">
 			{GALLERY_THUMB=w=300&h=200}
@@ -23,7 +24,7 @@ $GALLERY_TEMPLATE['list_item'] = '
 	</div>
 ';
 
-$GALLERY_TEMPLATE['list_end'] = '
+$GALLERY_TEMPLATE['list']['end'] = '
 </div>
 <div class="center">
 	<div class="gallery-list-nextprev">{GALLERY_NEXTPREV}</div>
@@ -34,13 +35,13 @@ $GALLERY_TEMPLATE['list_end'] = '
 ';
 
 // Bootstrap3 Compatible.
-$GALLERY_TEMPLATE['cat_caption'] = LAN_PLUGIN_GALLERY_TITLE;
+$GALLERY_TEMPLATE['cat']['caption'] = LAN_PLUGIN_GALLERY_TITLE;
 
-$GALLERY_TEMPLATE['cat_start'] = '{GALLERY_BREADCRUMB}
+$GALLERY_TEMPLATE['cat']['start'] = '{GALLERY_BREADCRUMB}
 <div class="row gallery-cat">
 ';
 
-$GALLERY_TEMPLATE['cat_item'] = '
+$GALLERY_TEMPLATE['cat']['item'] = '
 	<div class="span3 col-xs-6 col-md-3">
 		<div>
 			{GALLERY_CAT_THUMB}
@@ -49,7 +50,7 @@ $GALLERY_TEMPLATE['cat_item'] = '
 	</div>
 ';
 
-$GALLERY_TEMPLATE['cat_end'] = '
+$GALLERY_TEMPLATE['cat']['end'] = '
 </div>
 ';
 
@@ -93,7 +94,7 @@ $GALLERY_TEMPLATE['prettyphoto']['content'] = '
 				<div class="pp_content">
 					<div class="pp_loaderIcon"></div>
 					<div class="pp_fade">
-						<a href="#" class="pp_expand" title="Expand the image">' . LAN_EXPAND . '</a>
+						<a href="#" class="pp_expand" title="'.LAN_GALLERY_FRONT_02.'">'.LAN_EXPAND.'</a>
 						<div class="pp_hoverContainer">
 							<a class="pp_next" href="#">' . LAN_NEXT . '</a>
 							<a class="pp_previous" href="#">' . LAN_PREVIOUS . '</a>
@@ -179,3 +180,16 @@ $GALLERY_TEMPLATE['prettyphoto']['social_item'] = '
 	</div>
 </div>
 ';
+
+
+
+
+
+
+/*
+
+$GALLERY_TEMPLATE['portfolio']['start']     = '<-- start portfolio -->';
+$GALLERY_TEMPLATE['portfolio']['item']      = '<img src="{GALLERY_THUMB: w=1080&h=720&thumbsrc}" class="img-responsive" alt="{GALLERY_CAPTION=text}">';
+$GALLERY_TEMPLATE['portfolio']['end']       = '<-- end portfolio -->';
+
+*/

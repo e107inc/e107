@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
+ * FAQ Core Plugin
  *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/faqs/faqs.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if (!defined('e107_INIT'))
@@ -126,7 +122,7 @@ if (isset($_POST['commentsubmit']))
 
 	$faqpref = e107::getPlugConfig('faqs')->getPref();
 
-	if ($action == "" || $action == "main")
+	if (empty($action) || $action == "main")
 	{
 		if(vartrue($faqpref['classic_look']))
 		{
@@ -137,7 +133,7 @@ if (isset($_POST['commentsubmit']))
 		{
 			$srch = vartrue($_GET['srch']);
 			$ftmp = $faq->view_all($srch);
-			$caption = FAQLAN_FAQ;
+			$caption = LAN_FAQS_FAQ;
 
 		}
 
@@ -182,7 +178,7 @@ if (isset($_POST['commentsubmit']))
 	if($action == "cat" && $idx)
 	{
 		 $ftmp = $faq->view_faq($idx) ;
-		 define("e_PAGETITLE",FAQLAN_FAQ." - ". $ftmp['title']);
+		 define("e_PAGETITLE",LAN_FAQS_FAQ." - ". $ftmp['title']);
 		 require_once(HEADERF);
 		 $ns -> tablerender($ftmp['caption'], $ftmp['text']);
 	}
@@ -233,7 +229,7 @@ class faq
 
 			if(!empty($this->pref['submit_question_limit']) && $existing >= $this->pref['submit_question_limit'])
 			{
-				e107::getMessage()->setTitle('Sorry',E_MESSAGE_INFO)->addInfo("You have reached the maximum number of new questions. You may ask more once your existing questions have been answered.");
+				e107::getMessage()->setTitle(LAN_WARNING,E_MESSAGE_INFO)->addInfo(LAN_FAQS_LIMIT_REACHED);
 				return;
 			}
 
@@ -288,7 +284,7 @@ class faq
 	
 		$text .= $tp->parseTemplate($template['end'], true, $this->sc); // footer
 
-		$ret['title'] = FAQLAN_FAQ;
+		$ret['title'] = LAN_FAQS_FAQ;
 		$ret['text'] = $text;
 
 		if (!empty($this->pref['page_title'][e_LANGUAGE]))
@@ -333,7 +329,7 @@ class faq
 			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR f.faq_answer LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
 
 
-			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='Remove' href='".$removeUrl."'>×</a></span>";
+			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_REMOVE."' href='".$removeUrl."'>×</a></span>";
 
 			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
 			$text = e107::getMessage()->render();
@@ -359,7 +355,7 @@ class faq
 
 			$insert = " AND FIND_IN_SET ('".$srch."', f.faq_tags)  ";
 
-			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='Remove' href='".$removeUrl."'>×</a></span>";
+			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_REMOVE."' href='".$removeUrl."'>×</a></span>";
 
 			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
 			$text = e107::getMessage()->render();
@@ -372,8 +368,8 @@ class faq
 		
 		if(!$data = $sql->retrieve($query, true))
 		{
-			$message = 	(!empty($srch)) ? "<b>".$srch."</b> was not found in search results. <a class='e-tip' title='Reset' href='".$removeUrl."'>Reset</a>" : LAN_FAQS_NONE_AVAILABLE;
-			return "<div class='alert alert-warning alert-block'>".$message."</div>" ; //TODO LAN
+			$message = 	(!empty($srch)) ? e107::getParser()->lanVars(LAN_FAQS_X_NOT_FOUND, $srch)."<a class='e-tip' title='".LAN_FAQS_RESET."' href='".$removeUrl."'>".LAN_FAQS_RESET."</a>" : LAN_FAQS_NONE_AVAILABLE;
+			return "<div class='alert alert-warning alert-block'>".$message."</div>" ; 
 		}
 		
 		// -----------------
@@ -383,8 +379,8 @@ class faq
 		$prevcat = "";
 		$sc = e107::getScBatch('faqs', true);
 		$sc->counter = 1;
-		$sc->tag = htmlspecialchars($tag, ENT_QUOTES, 'utf-8');
-		$sc->category = $category;
+		$sc->tag = htmlspecialchars(varset($tag), ENT_QUOTES, 'utf-8');
+		$sc->category = varset($category);
 
 		 if(!empty($_GET['id'])) // expand one specific FAQ.
 		{
@@ -474,12 +470,12 @@ class faq
 		{
 			$sc->setVars($rw);
 			$text .= $tp->parseTemplate($FAQ_LIST_LOOP, true);
-			$caption = "&nbsp;Category: <b>".$rw['faq_info_title']."</b>";
+			$caption = "&nbsp;".LAN_CATEGORY.": <b>".$rw['faq_info_title']."</b>";
 		}
 
 		$text .= $tp->parseTemplate($FAQ_LIST_END, true);
 
-		$ret['title'] = FAQLAN_FAQ." - ".$category_title;
+		$ret['title'] = LAN_FAQS_FAQ." - ".$category_title;
 		$ret['text'] = $text.$this->faq_footer($id);
 		$ret['caption'] = $caption;
 		return $ret;
@@ -605,7 +601,7 @@ class faq
 				if (ADMIN && getperms("B"))
 				{
 					// bkwon 05-Jun-2004 fix URL to moderate comment
-					echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?faq.$faq_id'>moderate comments</a></div><br />";
+					echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?faq.$faq_id'>".LAN_FAQS_MODERATE_COMMENTS."</a></div><br />";
 				}
 			}
 			$cobj->form_comment($action, $table, $idx.".".$id, $subject, $content_type);
@@ -618,10 +614,10 @@ class faq
 	{
         global $faqpref,$timing_start,$tp,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
         $text_menu .= "<div style='text-align:center;' ><br />
-        &nbsp;&nbsp;[&nbsp;<a href=\"faqs.php?main\">Back to Categories</a>&nbsp;]&nbsp;&nbsp;";
+        &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
 
         if(check_class($faqpref['add_faq'])){
-                $text_menu .="[&nbsp;<a href=\"faqs.php?new.$id\">Submit a Question</a>&nbsp;]";
+                $text_menu .="[&nbsp;<a href='faqs.php?new.$id'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";
         }
         $text_menu .="</div>";
 
@@ -649,7 +645,7 @@ class faq
         <table class='fborder' style=\"width:100%\">
         <tr>
         <td class='fcaption' style=\"width:70%\">".FAQ_ADLAN_49."</td>
-        <td class='fcaption' style='text-align:center'>Options</td></tr>
+		<td class='fcaption' style='text-align:center'>".LAN_SETTINGS."</td></tr>
         ";
 		while ($rw = $sql->db_Fetch())
 		{
@@ -681,8 +677,8 @@ class faq
         <tr>
         <td class='fcaption' colspan='2' style='text-align:center'>";
 
-		$text .= (is_numeric($id)) ? "Edit" : "Add";
-		$text .= " an FAQ</td></tr>";
+		$text .= (is_numeric($id)) ? LAN_EDIT : LAN_ADD; //LAN_ADD may not exist on the front end, but I dont think this code is used - Mikey.
+		$text .= " FAQ</td></tr>"; 
 
 		$text .= "
         <tr>
@@ -763,7 +759,7 @@ class faq
 			$row = $sql->db_Fetch();
 			extract($row);
 		}
-		$ns->tablerender("Frequently asked Questions".$faq_info_title, "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
+		$ns->tablerender( LAN_PLUGIN_FAQS_FRONT_NAME.$faq_info_title, "<div style='text-align:center'>".$text."</div>".$this->faq_footer());
 
 	}
 

@@ -482,7 +482,9 @@ class e_media
 		
 		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
 	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
-			
+
+
+
 		if($search)
 		{
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
@@ -507,6 +509,9 @@ class e_media
 		{
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
+
+	//	e107::getDebug()->log($query);
+
 		e107::getDb()->gen($query);
 		while($row = e107::getDb()->fetch())
 		{
@@ -866,13 +871,19 @@ class e_media
 
 
 	/**
-	 * Get all Glyphs
+	 * @param string|array $type
+	 * @param $type['name']
+	 * @param $type[['type']
+	 * @param $type['path'] URL or e107 path {e_THEME} etc.
+	 * @param $type['prefix']
+	 * @param string $addPrefix
+	 * @return array
 	 */
-	function getGlyphs($type='fa4',$prefix = '')
+	function getGlyphs($type='fa4', $addPrefix = '')
 	{
 		$icons = array();
 		
-		if($type == 'bs2')
+		if($type === 'bs2')
 		{
 			$matches = array(
 				'glass','music','search','envelope','heart','star','star-empty','user','film','th-large','th','th-list','ok',
@@ -894,13 +905,13 @@ class e_media
 				
 			foreach($matches as $match)
 			{
-			    $icons[] = $prefix.$match;
+			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
 					
-		if($type == 'bs3')
+		if($type === 'bs3')
 		{
 			$matches = array(
 			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
@@ -919,14 +930,27 @@ class e_media
 			
 			foreach($matches as $match)
 			{
-			    $icons[] = $prefix.$match;
+			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
-		
+
+		if(is_array($type))
+		{
+			$prefix     = $type['prefix'];
+			$pattern    = $type['pattern'];
+			$path       = $type['path'];
+			$type       = $type['name'];
+
+		}
+
+
+
 		$cache = e107::getCache();
-		$cachTag = !empty($prefix) ? "Glyphs_".$prefix."_".$type : "Glyphs_".$type;
+		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
+
+
 
 		if($data = $cache->retrieve($cachTag ,360,true,true))
 		{
@@ -934,25 +958,43 @@ class e_media
 		}
 		
 		
-		if($type == 'fa4')
+		if($type === 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
 			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
-		//	print_a($subject);
+			$prefix = 'fa-';
 		}
-		elseif($type == 'fa3')
+		elseif($type === 'fa3')
 		{
 			$pattern = '/\.(icon-(?:\w+(?:-)?)+):before/';
 			$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
+			$prefix = 'fa-';
 		}
-				
+		elseif(!empty($pattern) && !empty($path))
+		{
+			$pattern = '/'.$pattern.'/';
+			if(substr($path,0,4) === 'http')
+			{
+				$subject = e107::getFile()->getRemoteContent($path);
+			}
+			else
+			{
+				$path = e107::getParser()->replaceConstants($path);
+				$subject = file_get_contents($path);
+			}
+
+
+
+		}
+
+
+		$prefixLength = !empty($prefix) ? strlen($prefix) : 3;
+
 		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
-		
-		
-		
+
 		foreach($matches as $match)
 		{
-		    $icons[] = $prefix.substr($match[1],3);
+		    $icons[] = $addPrefix.substr($match[1],$prefixLength);
 		}
 
 		if(empty($icons)) // failed to produce a result so don't cache it. .
@@ -967,6 +1009,7 @@ class e_media
 		return $icons; 
 	
 	}
+
 
 
 

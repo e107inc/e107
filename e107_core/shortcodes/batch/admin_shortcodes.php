@@ -1892,7 +1892,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$var[$key]['link'] = '#'.$key;
 			$var[$key]['link_class'] = ' menuManagerSelect';
 			$var[$key]['active'] = ($key==$pref['sitetheme_deflayout']) ? true: false;
-			$var[$key]['include'] = "data-url='".$url = e_SELF."?configure=".$key."'";
+			$var[$key]['include'] = " data-url='". e_SELF."?configure=".$key."' data-layout='".$key."' ";
 		}
 		$action = $pref['sitetheme_deflayout'];
 
@@ -1900,7 +1900,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$var = array($defLayout => $var[$defLayout]) + $var;
 
-	    e107::getNav()->admin(ADLAN_6,$action, $var);
+		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
+
+	   return e107::getNav()->admin(ADLAN_6,$action, $var);
 
 
 

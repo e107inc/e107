@@ -16,6 +16,12 @@ if (!getperms("2"))
 	exit;
 }
 
+if(!deftrue("e_DEBUG_MENUMANAGER"))
+{
+	return;
+}
+
+
 $sql = e107::getDb();
 $tp = e107::getParser();
 $frm = e107::getForm();

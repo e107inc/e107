@@ -30,7 +30,7 @@ class banner_setup
 			'banner_clientlogin'    => '',
 			'banner_clientpassword' => '',
 			'banner_image'          => '{e_PLUGIN}banner/images/banner1.png',
-			'banner_clickurl'       => 'http://e107.org',
+			'banner_clickurl'       => 'https://e107.org',
 			'banner_impurchased'    => '0',
 			'banner_startdate'      => '0',
 			'banner_enddate'        => '0',
@@ -38,7 +38,7 @@ class banner_setup
 			'banner_clicks'         => '0',
 			'banner_impressions'    => '0',
 			'banner_ip'             => '',
-			'banner_description'    => 'Learn more about e107 CMS.',
+			'banner_description'    => '',
 			'banner_campaign'       => 'e107promo'
 		);
 

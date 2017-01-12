@@ -248,8 +248,8 @@ class language{
 
 	/**
 	 * Converts iso to language-name and visa-versa.
-	 * @param object $data
-	 * @return 
+	 * @param string $data
+	 * @return string
 	 */
 	function convert($data){
 
@@ -466,15 +466,16 @@ class language{
 	 * Convert the current URL to a multi-lang for the specified language. 
 	 * eg. 'http://www.mydomain.com' becomes 'http://es.mydomain.com'
 	 * @param string $language eg. 'Spanish'
-	 * @return URL
+	 * @return string url
 	 */
 	function subdomainUrl($language, $url=e_REQUEST_URL)
 	{
-		global $pref;
+
+		$sitelanguage =  e107::getPref('sitelanguage',null);
 
 		$iso = (strlen($language) == 2) ? $language : $this->convert($language);
 
-		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $iso;
+		$codelnk = ($language == $sitelanguage) ? "www" : $iso;
 		
 		if($codelnk == '')
 		{

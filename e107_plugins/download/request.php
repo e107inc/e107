@@ -76,7 +76,7 @@ if(strstr(e_QUERY, "mirror"))
 			exit();
 		}
 
-		$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$download_id;
+		$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
 		e107::redirect($goUrl);
 		//header("Location: ".e_BASE."download.php?error.{$download_id}.1");
 		exit;
@@ -249,7 +249,7 @@ if ($type == "file")
 				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
 				))
 			{
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$id;
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
 				e107::redirect($goUrl);
 				exit();
 			}
@@ -317,21 +317,24 @@ else
 	if ($table == "download") 
 	{
 		require_once(HEADERF);
-    $imagecaption = ''; // TODO ?name or text Screenshot
+         $imagecaption = ''; // TODO ?name or text Screenshot
+
 		if (file_exists(e_FILE."download/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img src='".e_FILE."download/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive' src='".e_FILE."download/{$image}' alt='' /></div>";
 		}
 		else if(file_exists(e_FILE."downloadimages/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive' src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
 		} 
 		else 
 		{
-      $image = $tp->replaceConstants($image);
-			$disp = "<div style='text-align:center'><img src='".$image."' alt='' /></div>";
+             $image = $tp->replaceConstants($image);
+			$disp = "<div style='text-align:center'><img class='img-responsive' src='".$image."' alt='' /></div>";
 		}
+
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>";
+
 		$ns->tablerender($imagecaption, $disp);
 
 		require_once(FOOTERF);
@@ -383,7 +386,7 @@ function check_download_limits()
 			if($row['count'] >= $limits['gen_intdata']) 
 			{
 				// Exceeded download count limit
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$cutoff;
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
 				e107::redirect($goUrl);
 			 // 	e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require_once(HEADERF);
@@ -415,7 +418,7 @@ function check_download_limits()
 			
 			if($row['total_bw'] / 1024 > $limit['gen_user_id']) 
 			{	//Exceed bandwith limit
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=".$cutoff;
+				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
 				 e107::redirect($goUrl);
 			 // e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require(HEADERF);

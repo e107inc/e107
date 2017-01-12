@@ -116,18 +116,25 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 	
-	function sc_contact_body($parm='')
+	function sc_contact_body($parm=null)
 	{
-		parse_str($parm, $parm);
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$rows = vartrue($parm['rows'],10);
 		$cols = vartrue($parm['cols'],70);
+		$placeholder = !empty($parm['placeholder']) ? "placeholder=\"".$parm['placeholder']."\"" : "";
 		
 		if($cols > 60)
 		{
 			$size = 'input-xxlarge';	
 		}
+
+
 		
-		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' ".$placeholder." required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
 	}
 	
 	

@@ -71,6 +71,12 @@ class user_dashboard // plugin-folder + '_url'
 		{
 
 			$diz = date('j', $row['user_join']);
+
+			if(!isset($amt[$diz]))
+			{
+				$amt[$diz] = 0;
+			}
+
 			$amt[$diz] += 1; 
 			$dateName[$diz] = date('jS', $row['user_join']);
 		}
@@ -90,7 +96,8 @@ class user_dashboard // plugin-folder + '_url'
 		for ($i=1; $i < ($totalDays +1); $i++) 
 		{
 			$diz = date('D jS', mktime(1,1,1,$monthNumber,$i, $yearNumber));
-			$data[] = array($diz, $amt[$i]); //	$dateName[$i]
+			$val = !empty($amt[$i]) ? $amt[$i] : 0;
+			$data[] = array($diz, $val); //	$dateName[$i]
 			$ticks[] = $i;
 		}
 		

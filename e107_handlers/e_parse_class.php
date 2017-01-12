@@ -2549,7 +2549,7 @@ class e_parse extends e_parser
 			if(empty($parm['w']) && isset($parm['h']))
 			{
 				$parm['h'] = ($parm['h'] * $multiply) ;
-				return $this->thumbUrl($src, $parm)." h".$parm['h']." ".$multiply;
+				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
 			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : ($this->thumbWidth * $multiply);
@@ -3309,7 +3309,9 @@ class e_parser
 	                                'video'     => array('autoplay', 'controls', 'height', 'loop', 'muted', 'poster', 'preload', 'src', 'width'),
 	                                'td'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
 	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
-	                                'col'       => array('id', 'span', 'class','style')
+	                                'col'       => array('id', 'span', 'class','style'),
+		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
+
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -3608,7 +3610,7 @@ class e_parser
 			}
 			else
 			{
-				$prefix = 'icon-';	
+		//		$prefix = 'icon-';
 				$tag = 'i';
 			}
 			
@@ -3652,19 +3654,19 @@ class e_parser
 		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
 		$linkStart  = '';
 		$linkEnd    =  '';
-		
-		if(!isset($userData['user_image']) && USERID)
+
+		if($userData === null && USERID)
 		{
 			$userData = array();
 			$userData['user_id']    = USERID;
 			$userData['user_image']	= USERIMAGE;
 			$userData['user_name']	= USERNAME; 
 		}
-		
+
 		
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
-		
-		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
+
+		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);
 		
 		if (!empty($image)) 
 		{
@@ -4645,6 +4647,7 @@ return;
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
 		        $value = str_replace('<br></br>', PHP_EOL, $value);
+
 		    }
 
 		    if($node->nodeName == 'code')
@@ -4659,6 +4662,16 @@ return;
 
 		    $newNode = $doc->createElement($node->nodeName);
 		    $newNode->nodeValue = $value;
+
+		    if($class = $node->getAttribute('class'))
+		    {
+		        $newNode->setAttribute('class',$class);
+		    }
+
+	        if($style = $node->getAttribute('style'))
+		    {
+		        $newNode->setAttribute('style',$style);
+		    }
 
 		    $node->parentNode->replaceChild($newNode, $node);
        }

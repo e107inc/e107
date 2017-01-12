@@ -507,24 +507,17 @@ class e_menu
 			// 	print_a($template['body']);           
 				$text = $head.$tp->parseTemplate($template['body'], true, $page_shortcodes).$foot;
 			// 	echo "TEMPLATE= ($mpath)".$page['menu_template'];
-				
-				
-				
-			//	if($template['noTableRender'] !==true) // XXX Deprecated - causes confusion while themeing. use {SETSTYLE=none} instead. 
-			//	{
-					$ns->setUniqueId('cmenu-'.$page['menu_name']);
-					$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
-			//	}
-			//	else
-			//	{
-			//		echo $text;
-			//	}
-				
+
+				$ns->setUniqueId('cmenu-'.$page['menu_name']);
+				$caption .= e107::getForm()->instantEditButton(e_ADMIN_ABS."cpage.php?mode=menu&action=edit&tab=2&id=".intval($page['page_id']),'J');
+
+				$ns->tablerender($caption, $text, 'cmenu-'.$page['menu_template']);
 			}
 			else 
 			{				
 				$text = $tp->toHTML($page['menu_text'], true, 'parse_sc, constants');
 				$ns->setUniqueId('cmenu-'.$page['menu_name']);
+
 				$ns->tablerender($caption, $text, 'cmenu');
 			}
 			
@@ -546,6 +539,9 @@ class e_menu
 
 			$id = e107::getForm()->name2id($mpath . $mname);
 			$ns->setUniqueId($id);
+
+			global $pref; // possibly used by plugin menu.
+
 
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
 		}
