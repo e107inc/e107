@@ -86,7 +86,7 @@ class e_library_manager
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
 		if($library['library_path'] === false || (!file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
 		{
-			$library['error'] = LAN_LIBRARY_MANAGER_09;
+			$library['error'] = LAN_NOT_FOUND;
 
 			$replace_with = array($library['name']);
 			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
@@ -255,7 +255,7 @@ class e_library_manager
 
 					if(!$variant['installed'])
 					{
-						$variant['error'] = LAN_LIBRARY_MANAGER_09;
+						$variant['error'] = LAN_NOT_FOUND;
 
 						$replace_with = array($variant_name, $library['name']);
 						$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with, true);

@@ -184,7 +184,7 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
     padding: 10px 0;
 }
 
-
+.e-instant-edit { font-size: 10pt; position: absolute; right: 10px; text-align: right; display: inline-block; z-index:1000; margin-right:10px;	}
 
 
 

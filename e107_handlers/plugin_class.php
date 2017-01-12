@@ -306,7 +306,7 @@ class e107plugin
 					$needed[$path] = $data;		
 				} 
 				
-				if($curVal < $fileVal) // check pref version against file version. 
+				if(version_compare($curVal,$fileVal,"<")) // check pref version against file version.
 				{
 					
 					if($mode == 'boolean')

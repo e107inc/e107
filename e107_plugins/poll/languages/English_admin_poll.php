@@ -10,15 +10,15 @@
 
 //define("POLL_ADLAN01", "Poll");
 //define("POLL_ADLAN02", "The poll plugin allows you to define polls in either a menu or forum post.");
-define("POLL_ADLAN03", "Configure polls");
+//define("POLL_ADLAN03", "Configure polls");//LAN_CONFIGURE
 define("POLL_ADLAN04", "The poll plugin has been successfully installed. To add polls, click on the Polls icon in the plugin section of your admin front page, and remember to activate the menu item from your menus page.");
 
-define("POLL_ADLAN05", "Main Poll: ");
-define("POLL_ADLAN06", "Forum Thread: ");
-define("POLL_ADLAN07", "Type");
+//define("POLL_ADLAN05", "Main Poll: ");//NOT USED
+//define("POLL_ADLAN06", "Forum Thread: ");//NOT USED
+//define("POLL_ADLAN07", "Type");//NOT USED
 //define("POLL_ADLAN08", "Poll deleted");
 
-define("POLLAN_MENU_CAPTION", "Poll");
+//define("POLLAN_MENU_CAPTION", "Poll");//LAN_PLUGIN_POLL_NAME
 
 //define("POLLAN_1", "Existing polls");
 //define("POLLAN_2", "Create / edit polls");
@@ -26,7 +26,7 @@ define("POLLAN_MENU_CAPTION", "Poll");
 //define("POLLAN_4", "Poll Options");
 //define("POLLAN_5", "Edit");
 //define("POLLAN_6", "Delete");
-define("POLLAN_7", "No polls yet.");
+//define("POLLAN_7", "No polls yet.");//LAN_NO_RECORDS_FOUND
 /*
 define("POLLAN_8", "Add another option");
 define("POLLAN_9", "Allow multiple choices?");
@@ -70,9 +70,9 @@ define("POLLAN_44", "Delete this poll?");
 //define("POLLAN_46", "Field(s) left blank");
 
 // Log messages
-define("LAN_AL_POLL_01","Poll deleted");
-define("LAN_AL_POLL_02","Poll updated");
-define("LAN_AL_POLL_03","Poll added");
-define("LAN_AL_POLL_04","");
-define("LAN_AL_POLL_05","");
+//define("LAN_AL_POLL_01","Poll deleted");//CHANGED TO EXISTING LANS
+//define("LAN_AL_POLL_02","Poll updated");//NOT USED
+//define("LAN_AL_POLL_03","Poll added");//NOT USED
+//define("LAN_AL_POLL_04","");//NOT USED
+//define("LAN_AL_POLL_05","");//NOT USED
 

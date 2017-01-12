@@ -89,8 +89,8 @@ if(!defined($SIGNUP_EXTENDED_USER_FIELDS))
 	$SIGNUP_EXTENDED_USER_FIELDS	= "
 	<tr>
 		<td style='width:40%' class='forumheader3'>
-			{EXTENDED_USER_FIELD_TEXT}
-			{EXTENDED_USER_FIELD_REQUIRED}
+			<label>{EXTENDED_USER_FIELD_TEXT}
+			{EXTENDED_USER_FIELD_REQUIRED}</label>
 		</td>
 		<td style='width:60%' class='forumheader3'>
 			{EXTENDED_USER_FIELD_EDIT}
@@ -152,7 +152,7 @@ $sc_style['SIGNUP_LOGINNAME']['post'] = "
 
 $sc_style['SIGNUP_HIDE_EMAIL']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_83."</td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'><label>".LAN_USER_83."</label></td>
 	<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_HIDE_EMAIL']['post'] = "
 	</td>
@@ -182,7 +182,7 @@ $sc_style['SIGNUP_PASSWORD2']['post'] = "</td>
 		</tr>";
 
 $sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['pre'] = "<tr>
-			<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_113."</td>
+			<td class='forumheader3' style='width:30%;white-space:nowrap'><label>".LAN_SIGNUP_113."</label></td>
 			<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['post'] = "</td>
 		</tr>";

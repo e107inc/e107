@@ -1,14 +1,13 @@
 <?php
 /*
- * e107 website system
- *
- * Copyright (C) e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- * $URL$
- * $Id$
- */
++ ----------------------------------------------------------------------------+
+| 
+|     e107 website system
+|     Copyright (C) 2008-2016 e107 Inc (e107.org)
+|     Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+|
++ ----------------------------------------------------------------------------+
+*/
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -64,9 +63,9 @@ class rater {
 		
 		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
 		
-		$TEMPLATE['STATUS'] 	= "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}' style='display:none'>".$label."</span>";
-		$TEMPLATE['RATE'] = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
-		$TEMPLATE['VOTES'] 	= "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><small>".$this->renderVotes($votes,$score)."</small></div>";
+		$TEMPLATE['STATUS'] = "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}' style='display:none'>".$label."</span>";
+		$TEMPLATE['RATE']   = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
+		$TEMPLATE['VOTES']  = "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><small>".$this->renderVotes($votes,$score)."</small></div>";
 
 		$tmp = explode("|",$template);
 		
@@ -188,7 +187,7 @@ class rater {
 		
 		if($id == 0)
 		{
-			return "There is no item ID in the rating";	
+			return RATELAN_10;
 		}
 		$sep = chr(1);
 
@@ -270,8 +269,8 @@ class rater {
 		
 		$p = ($perc) ? "%" : "";	
 		
-		$upImg = "<img class='e-tip' src='".e_IMAGE_ABS."rate/like_16.png' alt='' title='Like' />";
-		$upDown = "<img class='e-tip' src='".e_IMAGE_ABS."rate/dislike_16.png' alt='' title='Dislike' />";
+		$upImg = "<img class='e-tip' src='".e_IMAGE_ABS."rate/like_16.png' alt='' title='".RATELAN_7."' />";//like
+		$upDown = "<img class='e-tip' src='".e_IMAGE_ABS."rate/dislike_16.png' alt='' title='".RATELAN_8."' />";//dislike
 		
 		if(deftrue('BOOTSTRAP'))
 		{
@@ -397,7 +396,7 @@ class rater {
 			}
 			else
 			{
-				return "Error: ".print_a($qs,true);	
+				return LAN_ERROR.": ".print_a($qs,true);	
 			}	
 			
 		}
@@ -425,7 +424,7 @@ class rater {
 			if(strpos($row['rate_voters'], ".".$voter.".") == true || strpos($row['rate_voters'], ".".USERID.".") == true)
 			{
 				
-				return "You already voted|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
+				return RATELAN_9."|".$this->renderVotes($new_votes,$statR); // " newvotes = ".($statR). " =".$new_votes;
 			}
 			
 			
@@ -435,7 +434,7 @@ class rater {
 			}
 			else
 			{
-				return "Error";	
+				return LAN_ERROR;
 			}
 				
 		}
@@ -463,7 +462,7 @@ class rater {
 			}
 			elseif(getperms('0'))
 			{
-				return "Rating Failed ";	
+				return RATELAN_11;
 			}
 		}
 		

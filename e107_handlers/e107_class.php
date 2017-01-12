@@ -121,6 +121,29 @@ class e107
 	protected static $_plug_config_arr = array();
 
 	/**
+	 * e107 theme config object storage
+	 *
+	 * @var array
+	 */
+	protected static $_theme_config_arr = array();
+
+
+
+	/**
+	 * e107 e107::css() on/off flag.
+	 *
+	 * @var bool
+	 */
+	protected static $_css_enabled = true;
+
+	/**
+	 * e107  e107::js() on/off flag.
+	 *
+	 * @var bool
+	 */
+	protected static $_js_enabled = true;
+
+	/**
 	 * Core handlers array
 	 * For new/missing handler add
 	 * 'class name' => 'path' pair
@@ -178,6 +201,7 @@ class e107
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
+		'e_theme'                        => '{e_HANDLER}theme_handler.php',
 		'e_upgrade'                      => '{e_HANDLER}e_upgrade_class.php',
 		'e_user_model'                   => '{e_HANDLER}user_model.php',
 		'e_user'                         => '{e_HANDLER}user_model.php',
@@ -1027,6 +1051,45 @@ class e107
 		return self::getPlugConfig($plug_name)->getPref($pref_name, $default, $index);
 	}
 
+
+	/**
+	 * Retrieve theme config handlers.
+	 * Multiple theme preference DB rows are supported
+	 * Class overload is supported.
+	 * Examples:
+	 * - <code>e107::getTHemeConfig('mytheme');</code>
+	 * 	 will search for e107_plugins/myplug/e_pref/myplug_pref.php which
+	 * 	 should contain class 'e_plugin_myplug_pref' class (child of e_plugin_pref)
+	 * - <code>e107::getPluginConfig('myplug', 'row2');</code>
+	 * 	 will search for e107_plugins/myplug/e_pref/myplug_row2_pref.php which
+	 * 	 should contain class 'e_plugin_myplug_row2_pref' class (child of e_plugin_pref)
+	 *
+	 * @param string $theme_name
+	 * @param string $multi_row
+	 * @param boolean $load load from DB on startup
+	 * @return e_plugin_pref
+	 */
+	public static function getThemeConfig($theme_name=null, $multi_row = '', $load = true)
+	{
+
+		if(empty($theme_name))
+		{
+			$theme_name = self::getPref('sitetheme');
+		}
+
+		if(!isset(self::$_theme_config_arr[$theme_name.$multi_row]))
+		{
+			e107_require_once(e_HANDLER.'pref_class.php');
+
+			self::$_theme_config_arr[$theme_name.$multi_row] = new e_theme_pref($theme_name, $multi_row, $load);
+		}
+
+		return self::$_theme_config_arr[$theme_name.$multi_row];
+	}
+
+
+
+
 	/**
 	 * Get current theme preference. $pref_name is parsed,
 	 * so that $pref_name = 'x/y/z' will search for value pref_data[x][y][z]
@@ -1040,10 +1103,21 @@ class e107
 	 */
 	public static function getThemePref($pref_name = '', $default = null, $index = null)
 	{
+		// new storage method in it's own core table row. eg. theme_bootstrap3
+		$theme_name = self::getPref('sitetheme');
 
-		if($pref_name) $pref_name = '/'.$pref_name;
-		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$pref_name, $default, $index);
+		if(self::getThemeConfig($theme_name)->hasData() === true)
+		{
+			return  empty($pref_name) ? self::getThemeConfig($theme_name)->getPref() : self::getThemeConfig($theme_name)->get($pref_name, $default);
+		}
+
+		// old storage method in core prefs.
+
+		$legacy_pref_name = ($pref_name) ? $pref_name = '/'.$pref_name : '';
+		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$legacy_pref_name, $default, $index);
+
 		return !empty($tprefs) ? $tprefs : array();
+
 	}
 	
 	/**
@@ -1059,6 +1133,38 @@ class e107
 		if(is_array($pref_name)) return e107::getConfig()->set('sitetheme_pref', $pref_name);
 		return e107::getConfig()->updatePref('sitetheme_pref/'.$pref_name, $pref_value, false);
 	}
+
+
+	public static function getThemeGlyphs()
+	{
+
+		$custom = self::getConfig()->getPref('sitetheme_glyphicons', false);
+		$theme = self::getConfig()->getPref('sitetheme', false);
+
+		$arr = array();
+
+		if(!empty($custom))
+		{
+
+			foreach($custom as $glyphConfig)
+			{
+
+				if(substr($glyphConfig['path'],0,4) !== 'http')
+				{
+					$glyphConfig['path'] = e_THEME."$theme/".$glyphConfig['path'];
+				}
+
+				$arr[] = $glyphConfig;
+			}
+
+		}
+
+		return $arr;
+
+	}
+
+
+
 
 	/**
 	 * Retrieve text parser singleton object
@@ -1197,7 +1303,7 @@ class e107
 	}
 	
 	
-		/**
+	/**
 	 * Retrieve rater singleton object
 	 *
 	 * @return rater
@@ -1278,6 +1384,19 @@ class e107
 	{
 		return self::getSingleton('e_menu', true);
 	}
+
+
+		/**
+	 * Retrieve rater singleton object
+	 *
+	 * @return e_theme
+	 */
+	public static function getTheme()
+	{
+		return self::getSingleton('e_theme', true);
+	}
+
+
 
 	/**
 	 * Retrieve URL singleton object
@@ -1755,7 +1874,23 @@ class e107
 		}
 		return e_jsmanager::getInstance();
 	}
-	
+
+
+	public static function set($type=null, $val=true)
+	{
+		if($type === 'js_enabled')
+		{
+			self::$_js_enabled = (bool) $val;
+		}
+
+		if($type === 'css_enabled')
+		{
+			self::$_css_enabled = (bool) $val;
+		}
+	}
+
+
+
 	/**
 	 * JS Common Public Function. Prefered is shortcode script path
 	 * @param string $type core|theme|footer|inline|footer-inline|url or any existing plugin_name
@@ -1765,6 +1900,11 @@ class e107
 	 */
 	public static function js($type, $data, $dep = null, $zone = null, $pre = '', $post = '')
 	{
+		if(self::$_js_enabled === false)
+		{
+			return null;
+		}
+
 		$jshandler = e107::getJs();
 		$jshandler->setDependency($dep);
 		
@@ -1856,6 +1996,11 @@ class e107
 		if((strstr($data,'bootstrap.css') || strstr($data,'bootstrap.min.css')) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently. 
 		{
 			define("BOOTSTRAP", true);	
+		}
+
+		if(self::$_css_enabled === false)
+		{
+			return null;
 		}
 		
 		$jshandler = e107::getJs();
@@ -3388,7 +3533,7 @@ class e107
 				exit();	
 			}
 			
-			$regex = "/(wget |curl -o |fetch |lwp-download|onmouse)/i";
+			$regex = "/(wget |curl -o |lwp-download|onmouse)/i";
 			if(preg_match($regex,$input))
 			{
 				header('HTTP/1.0 400 Bad Request', true, 400);

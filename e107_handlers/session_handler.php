@@ -203,11 +203,17 @@ class e_session
 			
 			if(!defined('E107_INSTALL'))
 			{
+				$systemSaveMethod = ini_get('session.save_handler');
+
+			//	e107::getDebug()->log("Save Method:".$systemSaveMethod);
+
+				$saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
+
 				$config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
-				$config['SaveMethod'] = e107::getPref('session_save_method', 'files'); // FIXME - new pref
-				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); // FIXME - new pref
+				$config['SaveMethod'] = e107::getPref('session_save_method', $saveMethod); // FIXME - new pref
+				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); //
 				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
-				$options['secure'] = e107::getPref('ssl_enabled', false); // FIXME - new pref
+				$options['secure'] = e107::getPref('ssl_enabled', false); //
 			}
 
 			if(defined('SESSION_SAVE_PATH')) // safer than a pref.
@@ -458,7 +464,7 @@ class e_session
 			default:
 				if(!isset($_SESSION))
 				{
-					session_module_name('files');
+					session_module_name($this->_sessionSaveMethod);
 				}
 			break;
 		}
@@ -887,11 +893,11 @@ class e_core_session extends e_session
 				//	$details .= print_r($_POST,true);
 				//	$details .= "\n_GET:\n";
 				//	$details .= print_r($_GET,true);
-					if($pref['plug_installed'])
+				/*	if($pref['plug_installed'])
 					{
 						$details .= "\nPlugins:\n";
 						$details .= print_r($pref['plug_installed'],true);
-					}
+					}*/
 					
 					$details .= "die = ".($die == true ? 'true' : 'false')."\n\n---------------------------------\n\n";
 				

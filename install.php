@@ -1757,13 +1757,10 @@ if($this->pdo == true)
 			return FALSE;
 		}
 
-		require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
+	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
+	//	$tm = new themeHandler;
+		$xmlArray = e107::getTheme()->parse_theme_xml($theme_folder);
 
-		$tm = new themeHandler;
-		$xmlArray = $tm->parse_theme_xml($theme_folder);
-
-		// $xml = e107::getXml();
-		// $xmlArray = $xml->loadXMLfile($path,'advanced');
 		return (is_array($xmlArray)) ? $xmlArray : FALSE;
 	}
 
