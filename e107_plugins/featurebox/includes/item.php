@@ -48,7 +48,11 @@ class plugin_featurebox_item extends e_model
 	 */
 	public function sc_featurebox_title($parm = '')
 	{
-		parse_str($parm, $parm);
+		if(!empty($parm) && is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$tp = e107::getParser();
 		if(isset($parm['alt']))
 		{
