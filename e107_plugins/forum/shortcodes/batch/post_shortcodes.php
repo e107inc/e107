@@ -434,7 +434,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return $_tmp['breadcrumb'];
 	}
 
-	function sc_forum_post_captionname()
+	function sc_forum_post_caption()
 	{
 //		global $forumInfo;
 			$tp = e107::getParser();
