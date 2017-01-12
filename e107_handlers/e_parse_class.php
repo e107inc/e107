@@ -3536,7 +3536,7 @@ class e_parser
 	public function toGlyph($text, $space=" ")
 	{
 
-		if(!deftrue('BOOTSTRAP') || empty($text))
+		if(empty($text))
 		{
 			return false;	
 		}
