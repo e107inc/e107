@@ -3965,12 +3965,15 @@ e107::getDebug()->log($sc_parameters);
 						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
 						if(check_class($cls))
 						{
-							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+							$parms['class'] =  'action delete btn btn-default'.$delcls;
+							unset($parms['deleteClass']);
+							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
 						}
 					}
 					else
 					{
-						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+						$parms['class'] =  'action delete btn btn-default'.$delcls;
+						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
 					}
 				}
 				//$attributes['type'] = 'text';
