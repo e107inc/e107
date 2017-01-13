@@ -44,7 +44,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 {
 	if(!deftrue("e_DEBUG_MENUMANAGER"))
 	{
-		e107::css('inline', '
+		e107::getJs()->inlineCSS('
 
 		body { overflow:hidden }
 
@@ -76,7 +76,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 
 	}
 
-	e107::css('inline',"
+	e107::getJs()->inlineCSS("
 
 		.menu-manager-items          { padding-right:15px}
 		.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
@@ -111,7 +111,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 
 			@media all and (min-height: 1000px) {
 
-				.menu-selector { height:550px }
+				.menu-selector { height:500px }
 			}
 
 			@media all and (max-height: 800px) {
@@ -213,9 +213,9 @@ $JSMODAL = <<<TEMPL
 TEMPL;
 
 
-	e107::js('inline', $JSMODAL );
+	e107::getJs()->footerInline( $JSMODAL );
 
-	e107::js('inline', "
+	e107::getJs()->footerInline("
 		$(function() {
 						
 			// Visibility/Instance Options etc.
@@ -306,7 +306,7 @@ TEMPL;
 	");
 	
 	
-	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
+	e107::getJs()->inlineCSS("	.column { width:100%;  padding-bottom: 100px; }
 	
 
 	#core-menumanager-main th {color: silver; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;  font-size:14px; font-weight: bold; line-height:24px; background-color:#2F2F2F }
@@ -526,7 +526,7 @@ TEMPL;
 //	e107::js('footer',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
 //	e107::css('url', "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
-			e107::js('footer-inline','
+	e107::getJs()->footerInline('
 			 $(function()
 			 {
 			 		// post the form back to this script.
@@ -629,7 +629,7 @@ TEMPL;
 
 else
 {
-
+/*
 
 		e107::js('footer-inline', "
 
@@ -670,7 +670,7 @@ else
 		");
 
 
-
+*/
 
 
 
@@ -712,19 +712,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 	
 		return e_menu_layout::menuSelector();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
 		$text = '
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#plugins" data-toggle="tab">'.ADLAN_CL_7.'</a></li>	
@@ -787,7 +775,7 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 				
 			</div>";
 
-		return array('caption'=>MENLAN_57,'text'=>$text);
+		return array('caption'=>MENLAN_57,'text'=>$text);*/
 	}
 //}
 
