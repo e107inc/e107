@@ -533,6 +533,11 @@ class wysiwyg
                     {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
                 ]},
 
+                  {title: 'Lists', items: [
+                    {title: 'FontAwesome', selector: 'ul', classes: 'fa-ul' },
+                    {title: 'Bootstrap Listgroup', selector: 'ul', classes: 'list-group' },
+                ]},
+
                 {title: 'Alignment', items: [
                     {title: 'Left', block: 'div', classes: 'text-left',  icon: 'alignleft'},
                     {title: 'Center', block: 'div',classes: 'text-center', icon: 'aligncenter'},
@@ -614,6 +619,8 @@ class wysiwyg
         {title: 'Button (Warning)', value: 'btn btn-warning'},
         {title: 'Button (Danger)', value: 'btn btn-danger'}
     ]";
+
+		
 
 	/*	$ret['setup'] = "function(ed) {
       ed.addMenuItem('test', {
