@@ -536,6 +536,7 @@ class wysiwyg
                   {title: 'Lists', items: [
                     {title: 'FontAwesome', selector: 'ul', classes: 'fa-ul' },
                     {title: 'Bootstrap Listgroup', selector: 'ul', classes: 'list-group' },
+                    {title: 'Bootstrap Listgroup Item', selector: 'li', classes: 'list-group-item' },
                 ]},
 
                 {title: 'Alignment', items: [
@@ -620,7 +621,7 @@ class wysiwyg
         {title: 'Button (Danger)', value: 'btn btn-danger'}
     ]";
 
-		
+
 
 	/*	$ret['setup'] = "function(ed) {
       ed.addMenuItem('test', {
