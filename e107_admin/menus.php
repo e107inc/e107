@@ -16,15 +16,18 @@ if(isset($_GET['configure']))
 	define("USER_AREA", true);
 	//Switch to desired layout
 	define('THEME_LAYOUT', $_GET['configure']);
-	define('e_DEBUG', false);
-	define('E107_DEBUG_LEVEL', 0);
-	if(function_exists('xdebug_disable'))
-	{
-		xdebug_disable();
-	}
-	@ini_set('display_errors', 0);
-	error_reporting(0);
 
+	if(empty($_GET['debug']))
+	{
+		define('e_DEBUG', false);
+		define('E107_DEBUG_LEVEL', 0);
+		if(function_exists('xdebug_disable'))
+		{
+			xdebug_disable();
+		}
+		@ini_set('display_errors', 0);
+		error_reporting(0);
+	}
 	define('e_MENUMANAGER_ACTIVE', true);
 
 }
