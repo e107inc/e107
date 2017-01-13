@@ -3660,7 +3660,8 @@ class e_parser
 			$userData = array();
 			$userData['user_id']    = USERID;
 			$userData['user_image']	= USERIMAGE;
-			$userData['user_name']	= USERNAME; 
+			$userData['user_name']	= USERNAME;
+			$userData['user_currentvisit'] = USERCURRENTVISIT;
 		}
 
 		
@@ -3714,8 +3715,10 @@ class e_parser
 		$heightInsert = empty($height) ? '' : "height='".$height."'";
 		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : "";
 
+		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? " user-avatar-online" : '';
+
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$shape." user-avatar' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$shape." user-avatar".$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
 	//	return $img;
 		return $text;
