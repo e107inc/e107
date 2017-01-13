@@ -535,6 +535,7 @@ class wysiwyg
 
                   {title: 'Lists', items: [
                     {title: 'FontAwesome', selector: 'ul', classes: 'fa-ul' },
+                    {title: 'FontAwesome List Icon', selector: 'i', classes: 'fa-li' },
                     {title: 'Bootstrap Listgroup', selector: 'ul', classes: 'list-group' },
                     {title: 'Bootstrap Listgroup Item', selector: 'li', classes: 'list-group-item' },
                 ]},
