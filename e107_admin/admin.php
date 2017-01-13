@@ -568,7 +568,7 @@ class admin_start
 		if (count($this->allowed_types) == 0)
 		{
 			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1, 'pdf'=>1);
-			$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
+			$mes->addDebug("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
 		
 		}	
 	}
