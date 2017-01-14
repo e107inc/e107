@@ -8,3 +8,7 @@ e107_media/*
 e107_system/*
 /.settings
 e107_core/override
+
+e107InstallLog.log
+
+newfile.txt
