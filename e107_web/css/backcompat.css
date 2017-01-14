@@ -40,3 +40,16 @@ ul.breadcrumb li span.divider { padding-left:5px; }
 
 .img-responsive { max-width:100%; }
 
+
+.media-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.media-body, .media-left, .media-right {
+    display: table-cell;
+    vertical-align: top;
+}
+.media-left, .media > .pull-left {
+    padding-right: 10px;
+}
