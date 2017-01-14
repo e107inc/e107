@@ -916,6 +916,8 @@ if (!class_exists('e107table', false))
 		private $adminThemeClass = '';
 		public  $frontend = null;
 		private $uniqueId = null;
+		private $content = array();
+		private $contentTypes = array('header','footer','text','title','image');
 
 		
 		function __construct()
@@ -942,6 +944,23 @@ if (!class_exists('e107table', false))
 		{
 			$this->uniqueId = $id;
 		}
+
+
+		/**
+		 * Set Advanced Menu content (beyond just $caption and $text)
+		 * @param string $type header|footer|text|title|image
+		 * @param string $val
+		 */
+		public function setContent($type, $val)
+		{
+			if(!in_array($type,$this->contentTypes))
+			{
+				return false;
+			}
+
+			$this->content[$type] = (string) $val;
+		}
+
 
 
 		/**
@@ -1017,17 +1036,27 @@ if (!class_exists('e107table', false))
 			{
 				$thm = new $this->themeClass();
 			}
+
+			$options = $this->content;
+
+			$options['uniqueId'] = $this->uniqueId;
+			$options['menuArea'] = $this->eMenuArea;
+			$options['menuCount'] = $this->eMenuCount;
+			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
+			$options['setStyle'] = $this->eSetStyle;
+
 			
 			if(is_object(vartrue($thm)))
 			{
-				$thm->tablestyle($caption, $text, $mode, array('uniqueId'=>$this->uniqueId, 'menuArea'=>$this->eMenuArea, 'menuCount'=>$this->eMenuCount,	'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]), 'setStyle'=>$this->eSetStyle));
+				$thm->tablestyle($caption, $text, $mode, $options);
 			}
 			else 
 			{
-				tablestyle($caption, $text, $mode, array('uniqueId'=>$this->uniqueId, 'menuArea'=>$this->eMenuArea,'menuCount'=>$this->eMenuCount,'menuTotal'=>varset($this->eMenuTotal[$this->eMenuArea]),'setStyle'=>$this->eSetStyle));
+				tablestyle($caption, $text, $mode, $options);
 			}
 
 			$this->uniqueId = null;
+			$this->content = array();
 		}
 
 
