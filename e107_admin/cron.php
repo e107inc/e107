@@ -69,7 +69,7 @@ class cron_admin_ui extends e_admin_ui
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
      		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
-			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right')
 		);
 		
 		
@@ -566,13 +566,22 @@ class cron_admin_form_ui extends e_admin_form_ui
 	// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
 	{
-		
+		$att = $attributes;
 		if($attributes['mode'] == 'read')
 		{
-			$text = "<div class='btn-group'>";
-			$text .= $this->renderValue('options',$value,'',$id);
+			$func = $this->getController()->getFieldVar('cron_function');
+		//
+			if(substr($func,0,7) === '_system')
+			{
+				$att['readParms'] = array('disabled'=>'disabled');
+			}
+
+			$text = "<div class='btn-group pull-right'>";
+			$text .= $this->renderValue('options',$value,$att,$id);
 			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', LAN_RUN);
 			$text .= "</div>";
+
+
 			return $text;
 		}
 	}
