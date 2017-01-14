@@ -1097,12 +1097,14 @@ class e_model extends e_object
         	$data = &$this->{$data_src};
             for ($i = 0, $l = count($keyArr); $i < $l; $i++)
             {
+
 	            $k = $keyArr[$i];
 
-	            if (!isset($data[$k]))
+	            if (!isset($data[$k]) || empty($data[$k])) // PHP7.1 fix. Reset to empty array() if $data[$k] is an empty string. Reason for empty string still unknown.
 	            {
 	                $data[$k] = array();
 	            }
+
 	            $data = &$data[$k];
 	        }
 

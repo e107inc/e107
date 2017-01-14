@@ -1869,6 +1869,7 @@ function init_session()
 		define('USERIMAGE', $user->get('user_image'));
 		define('USERPHOTO', $user->get('user_sess'));
 		define('USERJOINED', $user->get('user_join'));
+		define('USERCURRENTVISIT', $user->get('user_currentvisit'));
 		define('USERVISITS', $user->get('user_visits'));
 		define('USERSIGNATURE', $user->get('user_signature'));
 
