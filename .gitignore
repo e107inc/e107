@@ -6,6 +6,7 @@ e107_config.php
 e107_config_*.php
 e107_media/*
 e107_system/*
+e107_web/cache/
 /.settings
 e107_core/override
 
