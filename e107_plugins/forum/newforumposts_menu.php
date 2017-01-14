@@ -79,7 +79,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 			while($row = $sql->fetch())
 			{
-				
+
 				$datestamp 	= $tp->toDate($row['post_datestamp'], 'relative');
 				$id 		= $row['thread_id'];
 				$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');

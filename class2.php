@@ -917,7 +917,7 @@ if (!class_exists('e107table', false))
 		public  $frontend = null;
 		private $uniqueId = null;
 		private $content = array();
-		private $contentTypes = array('header','footer','text','title','image');
+		private $contentTypes = array('header','footer','text','title','image', 'list');
 
 		
 		function __construct()
