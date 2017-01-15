@@ -489,14 +489,14 @@ $(document).ready(function()
 
             $.get(src, function( data ) {
 
-                $(id).hide('slide', { direction: outDir }, 1200, function(){
+                $(id).hide('slide', { direction: outDir }, 500, function(){
 
                     //   alert('done');
                     $(id ).html( data );
                     newVal = $('#admin-ui-media-select-count-hidden').text();
                     $('#admin-ui-media-select-count').text(newVal).fadeIn();
 
-                    $(id).show('slide', { direction: inDir },1200,function(){
+                    $(id).show('slide', { direction: inDir },700,function(){
                         $('#e-modal-loading', window.parent.document).hide();
 
 
