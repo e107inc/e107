@@ -26,8 +26,8 @@ $E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav navbar-nav navbar-right">';
 
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
-		 {LINK_TEXT} 
+		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		 {LINK_IMAGE} {LINK_TEXT}
 		<b class="caret"></b>
 		</a> 
 		{SUB_MENU}
@@ -284,11 +284,12 @@ else
 			</div>
 	
 			{ADMIN_SITEINFO=creditsonly}
-			{SETSTYLE=admin_menu}
-	
+
+			{SETSTYLE=lists}
 			{ADMIN_LATEST=infopanel}
 			{ADMIN_STATUS=infopanel}
-	
+				{SETSTYLE=admin_menu}
+
 			{ADMIN_LOG=request}
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
