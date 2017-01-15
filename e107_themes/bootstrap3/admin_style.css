@@ -1335,6 +1335,14 @@ footer {
 }
 */
 
+@media (max-width: 1400px ){
+
+ul.navbar-nav.navbar-left > li > a > i { display:none; }
+
+}
+
+
+
 @media (max-width: 1100px) {
 	.navbar-header {
 		float: none;

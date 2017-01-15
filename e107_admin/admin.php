@@ -303,7 +303,7 @@ class admin_start
 
 				$lans = array('x'=>$link, 'y'=>LAN_PLUGIN);
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -350,7 +350,7 @@ class admin_start
 				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
 
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
