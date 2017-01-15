@@ -606,7 +606,7 @@ if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->thread
 else
 {
 	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>USERLV, 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
-	$mes->addDebug(print_a($ret,true));
+	e107::getDebug()->log($ret);
 	unset($ret);
 }
 
