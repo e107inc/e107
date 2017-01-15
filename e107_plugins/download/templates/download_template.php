@@ -524,6 +524,8 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
 
 // ##### ------------------------------------------------------------------------------------------
 
+//$DOWNLOAD_TEMPLATE['list']['caption'] = "Test custom caption";
+
 $DOWNLOAD_TEMPLATE['list']['start'] = "
 	<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<div class='table-responsive'>

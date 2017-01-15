@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Language file - user admin
  *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 define("USRLAN_1", "Options Saved.");
@@ -279,16 +275,18 @@ define("USRLAN_251", "Leave blank for no change");
 define("USRLAN_252", "Resend account activation email to unactivated users.");
 define("USRLAN_253", "Older than");
 define("USRLAN_254", "Reset all passwords");
+define("USRLAN_255", "Notify User");
+define("USRLAN_256", "Dear");
 
-// These need review - there are duplicates above - they come from admin/lan_userclass.php.
+// These need review - there are duplicates above - they come from admin/lan_userclass.php and are unconsistent with userclass defines. TODO LANS
 define("UCSLAN_1", "Sending notification email to");
 define("UCSLAN_2", "Updated Privileges");
-define("UCSLAN_3", "Dear");
+//define("UCSLAN_3", "Dear");//USRLAN_256
 define("UCSLAN_4", "Your privileges have been updated at");
 define("UCSLAN_5", "You now have access to the following area(s)");
 define("UCSLAN_6", "Set class for user");
 define("UCSLAN_7", "Set Classes");
-define("UCSLAN_8", "Notify User");
+//define("UCSLAN_8", "Notify User");//incorrect//USRLAN_255
 define("UCSLAN_9", "Classes Updated.");
 define("UCSLAN_10", "Regards,");
 define("UCSLAN_11", "Class membership for user ID --UID-- changed to --CLASSES--");

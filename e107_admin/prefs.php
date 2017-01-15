@@ -1827,10 +1827,10 @@ $text .= '<tr>';
 $text .= '<th>' . LAN_LIBRARY_MANAGER_13 . '</th>';
 $text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
 $text .= '<th>' . LAN_LIBRARY_MANAGER_29 . '</th>';
-$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_14 . '</th>';
-$text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_18 . '</th>';
-$text .= '<th>' . LAN_LIBRARY_MANAGER_19 . '</th>';
-$text .= '<th></th>';
+$text .= '<th class="text-center">' . LAN_VERSION . '</th>';
+$text .= '<th class="text-center">' . LAN_STATUS . '</th>';
+$text .= '<th>' . LAN_MESSAGE . '</th>';
+$text .= '<th>' . LAN_MOREINFO . '</th>';
 $text .= '</tr>';
 $text .= '</thead>';
 $text .= '<tbody>';
@@ -1864,7 +1864,7 @@ foreach($libraries as $machineName => $library)
 if(empty($libraries))
 {
 	$text .= '<tr>';
-	$text .= '<td colspan="7">' . LAN_LIBRARY_MANAGER_26 . '</td>';
+	$text .= '<td colspan="6">' . LAN_NOT_FOUND . '</td>';
 	$text .= '</tr>';
 }
 
@@ -2049,7 +2049,7 @@ function libraryGetHomepage($details)
 	$href = $details['vendor_url'];
 	$title = $details['name'];
 
-	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_LIBRARY_MANAGER_15 . '</a>';
+	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_WEBSITE . '</a>';
 }
 
 /**
@@ -2065,7 +2065,7 @@ function libraryGetDownload($details)
 	$href = $details['download_url'];
 	$title = $details['name'];
 
-	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_LIBRARY_MANAGER_16 . '</a>';
+	return '<a href="' . $href . '" title="' . $title . '" target="_blank">' . LAN_DOWNLOAD . '</a>';
 }
 
 /**
@@ -2074,18 +2074,18 @@ function libraryGetDownload($details)
 function libraryGetProvider($details)
 {
 	$text = 'e107';
-	$provider = LAN_LIBRARY_MANAGER_24;
+	$provider = LAN_CORE;
 
 	if(varset($details['plugin'], false) == true)
 	{
 		$text = $details['plugin'];
-		$provider = LAN_LIBRARY_MANAGER_22;
+		$provider = LAN_PLUGIN;
 	}
 
 	if(varset($details['theme'], false) == true)
 	{
 		$text = $details['theme'];
-		$provider = LAN_LIBRARY_MANAGER_23;
+		$provider = LAN_THEME;
 	}
 
 	return '<span data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $provider . '</span>';

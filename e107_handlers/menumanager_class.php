@@ -1256,7 +1256,7 @@ class e_menuManager {
 			$text .= "</div>";
 		}
 	//	$ns -> tablerender(MENLAN_22.'blabla', $text);
-		if(e_DEBUG_MENUMANAGER === true)
+		if(!deftrue("e_DEBUG_MENUMANAGER"))
 		{
 			echo "<div class='menu-panel' style='padding:50px'>Main Content Area</div>";
 		}
@@ -1489,10 +1489,11 @@ class e_menuManager {
 		}
 		else if(strstr($str, "MENU"))
 		{
-			
+
 			$matches = array();
 			if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $str, $matches))
 			{
+
 				$menuText = "";
 				foreach($matches[1] as $menu)
 				{
@@ -1501,7 +1502,7 @@ class e_menuManager {
 					{
 						$menuText .= $sc_style['MENU']['pre'];
 					}
-					
+
 
 					// ---------------
 					$menuText .= "\n\n<!-- START AREA ".$menu." -->";
@@ -1569,10 +1570,13 @@ class e_menuManager {
 					
 				}
 
-				$ns->tablerender('', varset($menuText));
+				echo $menuText;
+
+			//	$ns->tablerender('', varset($menuText)); // Could fail with a badly built theme.
 			}
 			else
 			{
+
 				echo $tp->parseTemplate($str,true);
 			}
 

@@ -8,7 +8,7 @@ a.media-select-image:hover	{ border:1px solid red; }
 
 
 a.media-select-image,
-a.media-select-none 		{ margin:5px; text-decoration:none; width:80px; height:80px; box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset; background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);}
+a.media-select-none 		{ margin:5px; margin-left:0; text-decoration:none; width:80px; height:80px; box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1), 0px 1px 7px 0px rgba(0, 0, 0, 0.8) inset; background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.3);}
 
 @media (min-height: 500px){ 
 	a.media-select-image,
