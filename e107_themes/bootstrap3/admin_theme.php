@@ -187,6 +187,17 @@ class bootstrap3_admintheme
 					</div>';
 				break;
 
+			case 'lists':
+				echo '<div class="panel panel-default">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
+					</div>';
+				break;
+
 			case 'no_caption':
 				echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' -->
 					<div class="block">
