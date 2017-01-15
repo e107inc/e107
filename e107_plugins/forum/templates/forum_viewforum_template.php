@@ -70,7 +70,7 @@ if(empty($FORUM_VIEW_START_CONTAINER))
 	";
 }
 
-
+// XXX These templates should remain unchanged.
 if (empty($FORUM_VIEW_FORUM)) {
 	$SC_WRAPPER['LASTPOST:type=date'] = "{---}<br>";
 	$SC_WRAPPER['LASTPOST:type=url'] = " <a href='{---}'>".IMAGE_post2."</a>";
@@ -91,7 +91,7 @@ if (empty($FORUM_VIEW_FORUM)) {
 		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
 		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
 		<td style='vertical-align:middle; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST:type=date}{LASTPOSTUSER}{LASTPOST:type=url}</td>
+		<td style='vertical-align:middle; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
 		</tr>";
 }
 
