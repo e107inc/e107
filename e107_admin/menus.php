@@ -1034,7 +1034,7 @@ class e_menu_layout
 
 		;
 
-		$diz = "The Menu-Manager allows you to place and arrange your menus within your theme template. Hover over the sub-areas to modify existing menu items. ";
+		$diz = MENLAN_58;
 
 		$caption .= "<span class='pull-right'><a class='e-tip' title=\"".$tp->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
 
