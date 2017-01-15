@@ -303,7 +303,7 @@ class admin_start
 
 				$lans = array('x'=>$link, 'y'=>LAN_PLUGIN);
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -350,7 +350,7 @@ class admin_start
 				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
 
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -507,7 +507,7 @@ class admin_start
 			$frm = e107::getForm();
 
 			$text = $frm->open('deprecatedFiles', 'post');
-			$text .= "The following old files can be safely deleted from your system: ";
+			$text .= ADLAN_186;
 			$text .= "<ul><li>".implode("</li><li>", $found)."</li></ul>";
 
 			$text .= $frm->button('delete-deprecated',LAN_DELETE,'delete');
@@ -568,7 +568,7 @@ class admin_start
 		if (count($this->allowed_types) == 0)
 		{
 			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1, 'pdf'=>1);
-			$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
+			$mes->addDebug("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
 		
 		}	
 	}

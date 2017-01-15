@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1509,7 +1509,7 @@ class user_class_admin extends user_class
 
 		if ($this->class_tree[$listnum]['userclass_type'] == UC_TYPE_GROUP)
 		{
-			$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> '.UCSLAN_84;	// Highlight groups
+			$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> ('.UCSLAN_81.').';	// Highlight groups
 		}
 		else
 		{

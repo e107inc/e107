@@ -661,6 +661,7 @@ class usersettings_front // Begin Usersettings rewrite.
 			if (count($triggerData))
 			{
 				e107::getEvent()->trigger('userdatachanged', $triggerData);
+				e107::getEvent()->trigger('user_profile_edit', $triggerData);
 			}
 
 			if (e_QUERY == 'update')

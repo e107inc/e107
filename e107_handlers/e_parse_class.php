@@ -3536,7 +3536,7 @@ class e_parser
 	public function toGlyph($text, $space=" ")
 	{
 
-		if(!deftrue('BOOTSTRAP') || empty($text))
+		if(empty($text))
 		{
 			return false;	
 		}
@@ -3654,19 +3654,20 @@ class e_parser
 		$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";		
 		$linkStart  = '';
 		$linkEnd    =  '';
-		
-		if(!isset($userData['user_image']) && USERID)
+
+		if($userData === null && USERID)
 		{
 			$userData = array();
 			$userData['user_id']    = USERID;
 			$userData['user_image']	= USERIMAGE;
-			$userData['user_name']	= USERNAME; 
+			$userData['user_name']	= USERNAME;
+			$userData['user_currentvisit'] = USERCURRENTVISIT;
 		}
-		
+
 		
 		$image = (!empty($userData['user_image'])) ? varset($userData['user_image']) : null;
-		
-		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);	
+
+		$genericImg = $tp->thumbUrl(e_IMAGE."generic/blank_avatar.jpg","w=".$width."&h=".$height,true);
 		
 		if (!empty($image)) 
 		{
@@ -3714,8 +3715,10 @@ class e_parser
 		$heightInsert = empty($height) ? '' : "height='".$height."'";
 		$id = (!empty($options['id'])) ? "id='".$options['id']."' " : "";
 
+		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? " user-avatar-online" : '';
+
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$shape." user-avatar' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$shape." user-avatar".$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
 	//	return $img;
 		return $text;

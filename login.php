@@ -96,7 +96,7 @@ if (!USER || getperms('0'))
 
 	if(getperms('0'))
 	{
-		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in.</div>";	
+		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in as the Main Admin.</div>"; //TODO LAN
 	}
 	
 

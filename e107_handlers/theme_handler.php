@@ -272,6 +272,7 @@ class e_theme
 
 		$themeArray['path'] = $path;
 		$themeArray['layouts'] = $lays;
+		$themeArray['description'] = $themeArray['info'];
 
 		if(file_exists(e_THEME.$path."/preview.jpg"))
 		{
@@ -330,6 +331,7 @@ class e_theme
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
 		$vars['thumbnail'] 		= varset($vars['preview'][0]);
 
+
 		if(!empty($vars['themePrefs']))
 		{
 
@@ -341,7 +343,7 @@ class e_theme
 		}
 
 
-		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['description'],$vars['screenshots']);
+		unset($vars['authorEmail'], $vars['authorUrl'], $vars['xhtmlCompliant'], $vars['cssCompliant'], $vars['screenshots']);
 
 		// Compile layout information into a more usable format.
 
@@ -731,6 +733,7 @@ class themeHandler
 	
 	function getThemeInfo($file)
 	{
+	//	return e_theme::getThemeInfo($file);
 
 		$mes = e107::getMessage();
 		$reject = array('e_.*');
@@ -1315,7 +1318,6 @@ class themeHandler
 		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 
 
-	
 		$text = "<table class='table table-striped'>";
 
 
@@ -1608,7 +1610,7 @@ class themeHandler
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style='width:100%; max-height:200px;'  alt='' />";
+		$thumbnail = "<img src='".$thumbPath."' style='max-width:100%'  alt='' />";
 		
 
 		if($_GET['mode'] == 'online')
@@ -2345,8 +2347,8 @@ class themeHandler
 		
 		if($core->save())
 		{
-			$mes->addDebug(MENLAN_31.": ".$deflayout);
-			$mes->addDebug(MENLAN_56.": ".print_a($customPages,true));
+			$mes->addDebug("Default Layout: ".$deflayout);
+			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
