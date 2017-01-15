@@ -485,24 +485,22 @@ $(document).ready(function()
             $('#e-modal-loading', window.parent.document).show();
             $('iframe', window.parent.document).attr('scrolling', 'no'); // hide the scrollbar. 
 
-
+			$(id).hide('slide', { direction: outDir }, 1500, function(){  });
 
             $.get(src, function( data ) {
 
-                $(id).hide('slide', { direction: outDir }, 1200, function(){
-
-                    //   alert('done');
+ 				//   alert('done');
                     $(id ).html( data );
                     newVal = $('#admin-ui-media-select-count-hidden').text();
                     $('#admin-ui-media-select-count').text(newVal).fadeIn();
 
-                    $(id).show('slide', { direction: inDir },1200,function(){
+                    $(id).show('slide', { direction: inDir },500,function(){
                         $('#e-modal-loading', window.parent.document).hide();
 
 
                     });
 
-                });
+
 
 
 
