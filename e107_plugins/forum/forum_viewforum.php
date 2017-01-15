@@ -131,7 +131,7 @@ $forumInfo = $forum->forumGet($forumId);
 
 if (empty($FORUM_VIEW_START))
 {
-	if(deftrue('BOOTSTRAP'))
+	if(THEME_LEGACY !== true)
 	{
 		 $FORUM_VIEWFORUM_TEMPLATE = e107::getTemplate('forum','forum_viewforum');
 	}
@@ -141,11 +141,11 @@ if (empty($FORUM_VIEW_START))
 		{
 			require_once(THEME.'templates/forum/forum_viewforum_template.php');
 		}
-		elseif (file_exists(THEME.'forum_viewforum_template.php'))
+		elseif (file_exists(THEME.'forum_viewforum_template.php')) //v1.x
 		{
 			require_once(THEME.'forum_viewforum_template.php');
 		}
-		elseif (file_exists(THEME.'forum_template.php'))
+		elseif (file_exists(THEME.'forum_template.php'))  //v1.x
 		{
 			require_once(THEME.'forum_template.php');
 		}
@@ -160,7 +160,7 @@ if (empty($FORUM_VIEW_START))
 }
 
 
-if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && deftrue('BOOTSTRAP',false)) // New v2.x bootstrap Template.
+if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && THEME_LEGACY !== true) // New v2.x bootstrap Template.
 {
 	
 	$FORUM_VIEW_CAPTION				= $FORUM_VIEWFORUM_TEMPLATE['caption'];
