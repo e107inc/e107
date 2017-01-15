@@ -497,8 +497,8 @@ class admin_shortcodes
 						foreach($v as $val)
 						{
 							$class = admin_shortcodes::getBadge($val['total']); 
-							$link =  "<a  href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li class='list-group-item clearfix'>".$val['icon']." ".$link."</li>\n";
+							$link =  "<a  href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$text .= "<li class='list-group-item clearfix'>".$link."</li>\n";
 						}	
 					}
 					$text .= "</ul>";
@@ -1206,8 +1206,8 @@ class admin_shortcodes
 						{
 							$type = empty($val['invert']) ? 'latest' : 'invert';
 							$class = admin_shortcodes::getBadge($val['total'], $type);
-							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li class='list-group-item'>".$val['icon']." ".$link."</li>\n";
+							$link =  "<a href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$text .= "<li class='list-group-item'>".$link."</li>\n";
 						}	
 					}
 					$text .= "</ul>";
