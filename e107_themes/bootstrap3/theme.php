@@ -930,4 +930,25 @@ $NEWSCAT_ITEM = "\n\n\n\n<!-- News Category Item -->\n\n\n\n
 		</td></tr></table></div>
 ";
 
+
+// OLD BREADCRUMB STYLING - DEFAULT
+// Cannot use $BREADCRUMB because variable is used inside forum_viewforum.php....
+$BREADCRUMB_TEMPLATE['start']="<ul class='breadcrumb'><li>";
+$BREADCRUMB_TEMPLATE['urlstart']="<a href='";
+$BREADCRUMB_TEMPLATE['urlmid']="'>";
+$BREADCRUMB_TEMPLATE['urlend']="</a>";
+$BREADCRUMB_TEMPLATE['separator']="</li><li>";
+$BREADCRUMB_TEMPLATE['divider']="<span class='divider'>/</span>";
+$BREADCRUMB_TEMPLATE['end']="</li></ul>";
+
+// NEW BREADCRUMB STYLING - BUTONIZED
+/*
+$BREADCRUMB_TEMPLATE['start']="<div class='btn-group btn-breadcrumb'>";
+$BREADCRUMB_TEMPLATE['urlstart']="<a href='";
+$BREADCRUMB_TEMPLATE['urlmid']="' class='btn btn-default'><div>";
+$BREADCRUMB_TEMPLATE['urlend']="</div></a>";
+$BREADCRUMB_TEMPLATE['separator']="";
+$BREADCRUMB_TEMPLATE['divider']="";
+$BREADCRUMB_TEMPLATE['end']="</div>";
+*/
 ?>
