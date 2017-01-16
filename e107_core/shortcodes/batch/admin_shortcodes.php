@@ -1776,7 +1776,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 			$menu_vars['logout']['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = $tp->toAvatar(null, array('w'=>32,'h'=>32, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['logout']['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
 			$menu_vars['logout']['sub'] = $tmp;	
 		}
