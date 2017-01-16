@@ -534,24 +534,27 @@ class pm_extended extends private_message
 			}
 
 
-			if(check_class($this->pmPrefs['attach_class']))
+			if(!empty($_POST['uploaded']))
 			{
-				$_POST['uploaded'] = $this->processAttachments();
-
-				foreach($_POST['uploaded'] as $var)
+				if(check_class($this->pmPrefs['attach_class']))
 				{
-					if(!empty($var['message']))
+					$_POST['uploaded'] = $this->processAttachments();
+
+					foreach($_POST['uploaded'] as $var)
 					{
-						$msg .= $var['message']."<br />";
+						if(!empty($var['message']))
+						{
+							$msg .= $var['message']."<br />";
+						}
+
 					}
+				}
+				else
+				{
+					$msg .= LAN_PM_23.'<br />';
+					unset($_POST['uploaded']);
 
 				}
-			}
-			else
-			{
-				$msg .= LAN_PM_23.'<br />';
-				unset($_POST['uploaded']);
-
 			}
 
 			$_POST['from_id'] = USERID;
