@@ -85,7 +85,7 @@ $E_ADMIN_NAVIGATION['button_language'] = '
 // Logout / Settings / Personalize 			
 $E_ADMIN_NAVIGATION['button_logout'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 

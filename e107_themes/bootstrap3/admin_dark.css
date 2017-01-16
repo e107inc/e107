@@ -66,6 +66,9 @@ select:invalid:focus {
 	box-shadow:  0px 1px 1px 0px rgba(255, 0, 0, 0.75) inset;
 }
 
+.admin-icon-debug i { color: #f89406; margin-right:10px; cursor:help}
+
+
 
 /*
 .bootstrap-select, bootstrap-select button
