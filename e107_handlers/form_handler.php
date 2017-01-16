@@ -1028,7 +1028,7 @@ class e_form
 
 			if(ADMIN)
 			{
-				$EAVATAR = "".e_AVATAR_DEFAULT."";
+				$EAVATAR = e_AVATAR_DEFAULT;
 				$text .= "<div class='alert alert-danger'>";
 				$text .= e107::getParser()->lanVars(e107::getParser()->toHTML(LAN_EFORM_006, true), array('x'=>$EAVATAR));
 				$text .= "</div>"; 
