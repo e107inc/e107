@@ -364,7 +364,7 @@ class comment_shortcodes extends e_shortcode
 
 		if ($pref['allowCommentEdit'] && USER && $this->var['user_id'] == USERID && ($this->var['comment_lock'] < 1))
 		{
-			$adop_icon = (file_exists(THEME."images/commentedit.png") ? "<img src='".THEME_ABS."images/commentedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' />" : "Edit");
+			$adop_icon = (file_exists(THEME."images/commentedit.png") ? "<img src='".THEME_ABS."images/commentedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' class='icon' />" : LAN_EDIT);
 			//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
 			if (strstr(e_QUERY, "&"))
 			{
