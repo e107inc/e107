@@ -434,6 +434,29 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		return $_tmp['breadcrumb'];
 	}
 
+	function sc_forum_post_caption()
+	{
+//		global $forumInfo;
+			$tp = e107::getParser();
+//    var_dump ($this);
+//$this->forumObj->threadGet($this->id, false)		
+    if ($this->var['action'] == "rp")
+    {
+      	$pre = LAN_FORUM_1003;
+	$name = $tp->toHTML($this->var['thread_name'], false, 'no_hook, emotes_off');
+	$url = e107::url('forum', 'topic', $this->var);
+      	$post = LAN_FORUM_2006;
+    }
+    if ($this->var['action'] == "nt")
+    {
+      	$pre = LAN_FORUM_1001;
+	$name = $tp->toHTML($this->var['forum_name'], false, 'no_hook, emotes_off');
+	$url = e107::url('forum', 'forum', $this->var);
+      	$post = LAN_FORUM_2005;
+    }
+    return $pre.($url?": <a {$title} href='".$url."'>{$name}</a> - ":$name).$post;
+	}
+	
 	function sc_noemotes()
 	{
 		if(vartrue($eaction) == true) { return null; }
