@@ -866,13 +866,13 @@ class e_install
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-danger";
 		$PHPColor 	= ($version_fail == false) ? "text-success" : "text-danger";
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-danger";
-
+/*
 		if(version_compare($php_version, 7.1, ">=")) // XXX Remove once tested thoroughly
 		{
 			$php_help = "<span class='glyphicon glyphicon-warning-sign'></span> PHP 7.1 may have issues with e107. We recommend using 7.0.x versions instead until further testing has been performed.";
 			$PHPColor = 'text-warning';
 		}
-
+*/
 
 		$extensionCheck = array(
 			'xml'       => array('label'=> LANINS_050,      'status'=> function_exists('utf8_encode'),      'url'=> 'http://php.net/manual/en/ref.xml.php'),
