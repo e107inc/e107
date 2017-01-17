@@ -8,8 +8,6 @@
  *
  * URL and front controller Management
  *
- * $URL$
- * $Id$
 */
 
 require_once('../class2.php');

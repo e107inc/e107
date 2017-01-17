@@ -10,15 +10,8 @@
  *
  */
 
-/**
- * @package e107
- * @subpackage	admin
- * @version $Id$
- *
- * Manage site navigation links
- */
-
 require_once("../class2.php");
+
 if (!getperms("I"))
 {
 	e107::redirect('admin');

@@ -14,11 +14,9 @@ header('Content-Encoding: none'); // turn off gzip.
 ob_implicit_flush(true);
 ob_end_flush();
 
-
-
 require_once('../class2.php');
 
-e107::lan('core','fileinspector', true);
+e107::coreLan('fileinspector', true);
 
 if (!getperms('Y'))
 {
