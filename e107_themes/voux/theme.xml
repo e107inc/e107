@@ -2,7 +2,7 @@
 <e107Theme name="Voux" version="1.0" date="2016-05-30" compatibility="2.0">
 	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
 	<summary>Simple modern blog theme.</summary>
-	<description>Ported from the blogger theme by ThemeExpose</description>
+	<description>A responsive bootstrap blog theme by ThemeExpose</description>
 	<category>blog</category>
 	<plugins>
         <plugin name='rss_menu' url='core' />

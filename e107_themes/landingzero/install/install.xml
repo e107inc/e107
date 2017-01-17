@@ -1,6 +1,18 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<e107Export version="2.1.4 (git)" timestamp="1483741200" >
+<e107Export version="2.1.4 (git)" timestamp="1484692157" >
 	<prefs>
+		<core name="xurl"><![CDATA[array (
+  'facebook' => 'https://www.facebook.com/e107CMS',
+  'twitter' => 'https://twitter.com/e107',
+  'youtube' => 'http://youtube.com/e107inc',
+  'google' => '#',
+  'linkedin' => '',
+  'github' => '',
+  'flickr' => '',
+  'instagram' => '',
+  'pinterest' => '',
+  'vimeo' => '',
+)]]></core>
 		<history name="most_guests_online">1</history>
 		<history name="most_members_online">1</history>
 		<history name="most_online_datestamp">1483175267</history>
@@ -10,6 +22,21 @@
 	<pluginPrefs>
 		<gallery name="perpage">12</gallery>
 		<gallery name="orderby">media_id ASC</gallery>
+		<social name="xup_login_update_username">0</social>
+		<social name="xup_login_update_avatar">0</social>
+		<social name="sharing_mode">normal</social>
+		<social name="sharing_hashtags"></social>
+		<social name="facebook_comments_limit">0</social>
+		<social name="facebook_comments_theme">dark</social>
+		<social name="facebook_comments_loadingtext"></social>
+		<social name="facebook_like_menu_theme">dark</social>
+		<social name="facebook_like_menu_action">like</social>
+		<social name="facebook_like_menu_width">0</social>
+		<social name="twitter_menu_theme">dark</social>
+		<social name="twitter_menu_height">0</social>
+		<social name="twitter_menu_limit">3</social>
+		<social name="og_image"></social>
+		<social name="sharing_providers"></social>
 	</pluginPrefs>
 	<database>
 	<dbTable name="generic">
@@ -1168,6 +1195,86 @@
 			<field name="menu_layout"></field>
 			<field name="menu_parms"></field>
 		</item>
+		<item>
+			<field name="menu_id">83</field>
+			<field name="menu_name">otheruser_menu</field>
+			<field name="menu_location">0</field>
+			<field name="menu_order">0</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">user/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">84</field>
+			<field name="menu_name">news_categories_menu</field>
+			<field name="menu_location">1</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">87</field>
+			<field name="menu_name">other_news2_menu</field>
+			<field name="menu_location">2</field>
+			<field name="menu_order">1</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">86</field>
+			<field name="menu_name">news_months_menu</field>
+			<field name="menu_location">1</field>
+			<field name="menu_order">2</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"><![CDATA[array (
+  'showarchive' => '0',
+  'year' => '2017',
+)]]></field>
+		</item>
+		<item>
+			<field name="menu_id">88</field>
+			<field name="menu_name">other_news_menu</field>
+			<field name="menu_location">2</field>
+			<field name="menu_order">2</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">news/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">90</field>
+			<field name="menu_name">twitter_menu</field>
+			<field name="menu_location">2</field>
+			<field name="menu_order">3</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">social/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
+		<item>
+			<field name="menu_id">91</field>
+			<field name="menu_name">fb_like_menu</field>
+			<field name="menu_location">1</field>
+			<field name="menu_order">3</field>
+			<field name="menu_class">0</field>
+			<field name="menu_pages"></field>
+			<field name="menu_path">social/</field>
+			<field name="menu_layout"></field>
+			<field name="menu_parms"></field>
+		</item>
 	</dbTable>
 	<dbTable name="news">
 		<item>
@@ -1179,7 +1286,7 @@
 <p>While <strong>lorem ipsum</strong>&#039;s still resembles classical Latin, it actually has no meaning whatsoever. As Cicero&#039;s text doesn&#039;t contain the letters K, W, or Z, alien to latin, these, and others are often inserted randomly to mimic the&nbsp; typographic appearence of European languages, as are digraphs not to be found in the original.</p>[/html]]]></field>
 			<field name="news_meta_keywords">welcome,new website</field>
 			<field name="news_meta_description">Description for Facebook and search engines.</field>
-			<field name="news_datestamp">1454367600</field>
+			<field name="news_datestamp">1484982000</field>
 			<field name="news_author">1</field>
 			<field name="news_category">1</field>
 			<field name="news_allow_comments">0</field>
@@ -1201,7 +1308,7 @@
 <p>While <strong>lorem ipsum</strong>&#039;s still resembles classical Latin, it actually has no meaning whatsoever. As Cicero&#039;s text doesn&#039;t contain the letters K, W, or Z, alien to latin, these, and others are often inserted randomly to mimic the&nbsp; typographic appearence of European languages, as are digraphs not to be found in the original.</p>[/html]]]></field>
 			<field name="news_meta_keywords">welcome,new website</field>
 			<field name="news_meta_description">Description for Facebook and search engines.</field>
-			<field name="news_datestamp">1455103800</field>
+			<field name="news_datestamp">1483899000</field>
 			<field name="news_author">1</field>
 			<field name="news_category">1</field>
 			<field name="news_allow_comments">0</field>
@@ -1223,7 +1330,7 @@
 <p>While <strong>lorem ipsum</strong>&#039;s still resembles classical Latin, it actually has no meaning whatsoever. As Cicero&#039;s text doesn&#039;t contain the letters K, W, or Z, alien to latin, these, and others are often inserted randomly to mimic the&nbsp; typographic appearence of European languages, as are digraphs not to be found in the original.</p>[/html]]]></field>
 			<field name="news_meta_keywords">welcome,new website</field>
 			<field name="news_meta_description">Description for Facebook and search engines.</field>
-			<field name="news_datestamp">1455820200</field>
+			<field name="news_datestamp">1484910000</field>
 			<field name="news_author">1</field>
 			<field name="news_category">1</field>
 			<field name="news_allow_comments">0</field>
