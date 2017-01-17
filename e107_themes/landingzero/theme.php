@@ -1,7 +1,11 @@
 <?php
 /**
  * Bootstrap 3 Theme for e107 v2.x
+ * Landing Zero Theme by www.bootstrapzero.com adapted for e107 CMS.
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://gnu.org).
  */
+
 if (!defined('e107_INIT')) { exit; }
 
 define("BOOTSTRAP", 	3);

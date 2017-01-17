@@ -2,7 +2,7 @@
 <e107Theme name="Landing Zero" version="2.0" date="2016-12-31" compatibility="2.1.4">
 	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
 	<summary>A free landing page theme with video background</summary>
-	<description>Bootstrap landing page theme with a full-screen video background. This single-page Bootstrap template has a sleek darkgrey color scheme, accent color and smooth scrolling.  </description>
+	<description>Landing Zero Theme by bootstrapzero.com is a device-agnostic, modern responsive design that is customizable. It's designed to work well on desktops, laptops, tablets and mobile phones. Home page contains a video background. This single-page Bootstrap template has a sleek darkgrey color scheme, accent color and smooth scrolling.  </description>
 	<category>generic</category>
 	<plugins>
 		<plugin name='gallery' url='core' />
