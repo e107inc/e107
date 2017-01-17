@@ -2778,9 +2778,11 @@ class e107
 				return false;
 			}
 			
-			self::getMessage()->addDebug("Couldn't load language file: ".$path);
+
 			$path = str_replace(e_LANGUAGE, 'English', $path);
-			
+
+			self::getDebug()->log("Couldn't load language file: ".$path);
+
 			if(!is_readable($path))
 			{
 				return false;
