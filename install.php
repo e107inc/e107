@@ -1129,6 +1129,7 @@ class e_install
 					$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
 					$preview    = e_THEME.$val."/".$themeInfo['thumbnail'];
+					$description = vartrue($themeInfo['description']);
 
 					if(!is_readable($preview))
 					{
@@ -1142,7 +1143,7 @@ class e_install
 
 					$output .= "
 									<div class='col-md-6 theme-cell' >
-										<label class='theme-selection'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />
+										<label class='theme-selection' title=\"".$description."\"><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />
 										<div>".$thumbnail."
 										<h5>".$title." <small>(".$category.")</small><span class='glyphicon glyphicon-ok text-success'></span></h5>
 										</div>
@@ -2104,6 +2105,7 @@ function template_data()
 		label.theme-selection > input:checked + div {    border:2px solid #337ab7; 	}
 		label.theme-selection > input + div span { visibility: hidden; float:right; margin-right:10px; color:#337ab7	}
 		label.theme-selection > input:checked + div span { visibility: initial;	}
+		div.tooltip { width:320px }
 
 
 
