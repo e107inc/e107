@@ -108,6 +108,13 @@ function tablestyle($caption, $text, $id='', $info=array())
 		return;	
 		
 	}
+
+	if($style === 'menu' && !empty($info['footer']) && !empty($info['text']))
+	{
+		$style = 'menu-footer';
+	}
+
+
 		
 	if($style == 'menu')
 	{
@@ -119,7 +126,20 @@ function tablestyle($caption, $text, $id='', $info=array())
 	</div>';
 		return;
 		
-	}	
+	}
+
+	if($style == 'menu-footer')
+	{
+		echo '<div class="panel panel-default">
+	  <div class="panel-heading">'.$caption.'</div>
+	  <div class="panel-body">
+	   '.$info['text'].'
+	  </div>
+	  <div class="panel-footer text-align:right">'.$info['footer'].'</div>
+	</div>';
+		return;
+
+	}
 
 	if($style == 'portfolio')
 	{

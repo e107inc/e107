@@ -259,3 +259,12 @@ a.list-group-item {
  right: initial;
  margin-right: initial;
 }
+
+article .panel-footer i {
+padding-left: 10px;
+}
+article .panel-footer i.fa-user {
+padding-right: 3px;
+}
+
+.news-menu-archive { text-align:right }
