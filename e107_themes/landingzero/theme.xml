@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="Landing Zero" version="2.0" date="2016-12-31" compatibility="2.1.4">
+	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
+	<summary>A free landing page theme with video background</summary>
+	<description>Bootstrap landing page theme with a full-screen video background. This single-page Bootstrap template has a sleek darkgrey color scheme, accent color and smooth scrolling.  </description>
+	<category>generic</category>
+	<plugins>
+		<plugin name='gallery' url='core' />
+		<plugin name='social' url='core' />
+	</plugins>
+	<keywords>
+		<word>bootstrap</word>
+		<word>clean</word>
+		<word>video</word>
+	</keywords>
+	<screenshots>
+		<image>preview_default.png</image>
+		<image>preview_onepage.png</image>
+	</screenshots>
+	<stylesheets>
+		<css file="style.css" name="Default"  />
+	</stylesheets>
+	<layouts>
+		<layout name='homepage' title='Homepage Option 1' default='false'>
+			<custompages>FRONTPAGE</custompages>	
+		</layout>
+		<layout name='full' title='Full width page'  >
+            <custompages>forum gallery</custompages>
+		</layout>
+		<layout name='sidebar_right' title='Blog sidebar-right' default='true' >
+			<custompages>/news</custompages>
+			<menuPresets>
+				<area id='1'>
+					<menu name='news_categories' />
+					<menu name='other_news' />
+					<menu name='other_news2' />
+					<menu name='blogcalendar' />
+				</area>
+			</menuPresets>
+		</layout>
+		<layout name='sidebar_left' title='Blog sidebar-left' default='false' >
+			<custompages>/page</custompages>	
+		</layout>
+	</layouts>
+	<glyphicons>
+		<glyph name='ionicons' pattern='\.(ion-[a-z-]*):before\{'  path='css/ionicons.min.css' prefix='ion-' tag='i' />
+	</glyphicons>
+</e107Theme>
