@@ -17,9 +17,7 @@ if (!getperms('U'))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-
+e107::coreLan('cron', true);
 
 class cron_admin extends e_admin_dispatcher
 {
@@ -269,7 +267,7 @@ class cron_admin_ui extends e_admin_ui
 			
 			if(!$sql->insert('cron',$insert))
 			{
-				e107::getMessage()->add(LAN_CRON_6, E_MESSAGE_ERROR);
+				e107::getMessage()->addDebug(LAN_CRON_6);
 			}
 			else
 			{

@@ -8,16 +8,6 @@
  *
  * Banlist export
  *
- * $URL$
- * $Id$
- */
-
-/**
- *	e107 Banlist administration
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
  */
 
 require_once('../class2.php');

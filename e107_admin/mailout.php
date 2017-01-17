@@ -10,14 +10,6 @@
  *
 */
 
-
-/**
- *	e107 Mail handling - Admin
- *
- *	@package	e107
- *	@subpackage	admin
- */
-
 /*
 Features:
 1. Additional sources of email addresses for mailouts can be provided via plugins, and can be enabled via the mailout preferences page
@@ -74,9 +66,9 @@ if (!getperms('W'))
 	e107::redirect('admin');
 	exit;
 }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
-//	e107::lan('core','signup');
+
+e107::coreLan('users', true); 
+e107::coreLan('mailout', true); 
 
 require_once(e_HANDLER.'ren_help.php');
 

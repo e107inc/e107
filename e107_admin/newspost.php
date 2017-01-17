@@ -27,9 +27,6 @@ e107::css('inline', "
 
 ");
 
-
-
-
 class news_admin extends e_admin_dispatcher
 {
 

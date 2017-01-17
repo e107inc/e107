@@ -49,10 +49,6 @@ if(e_MENUMANAGER_ACTIVE === false )
 		body { overflow:hidden }
 
 
-
-
-
-
 		');
 	}
 	else
@@ -124,10 +120,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
 
 		");
-
 }
-
-
 
 
 if (!getperms("2"))
@@ -137,15 +130,8 @@ if (!getperms("2"))
 }
 
 
-
-
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
-
-
-
-
-
 
 
 if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))

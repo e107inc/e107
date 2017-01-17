@@ -15,7 +15,7 @@ if (!getperms('L'))
 	e107::redirect('admin');
 	exit;
 }
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 e107::coreLan('language', true);
 
 $e_sub_cat = 'language';
@@ -24,11 +24,6 @@ if(!empty($_GET['iframe']))
 {
 	define('e_IFRAME', true);
 }
-
-
-
-
-
 
 	class language_admin extends e_admin_dispatcher
 	{
