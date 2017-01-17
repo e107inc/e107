@@ -122,9 +122,18 @@ if(false === $cached)
 		$menu_text[] = $tp->simpleParse($template['item'], $vars);
 	}
 	$cached = $template['start'].implode(varset($template['separator'],''), $menu_text).$template['end'];
+
+	$ns->setContent('text', $cached);
+
 	if($cached) 
 	{
-		if(!$parms['showarchive']) $cached .= '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
+		if(!$parms['showarchive'])
+		{
+			$footer = '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
+			$ns->setContent('footer', $footer);
+			$cached .= $footer;
+
+		}
 		$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $cached, 'news_months_menu', true);
 	}
 	e107::getCache()->set($cString, $cached);
