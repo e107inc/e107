@@ -590,6 +590,12 @@ class news_admin_ui extends e_admin_ui
 	 */
 	private function checkSEFSimilarity($new_data)
 	{
+		if(e_LANGUAGE === "Japanese" || e_LANGUAGE === "Korean")
+		{
+			return null;
+		}
+
+
 		$expectedSEF = eHelper::title2sef($new_data['news_title']);
 		similar_text($expectedSEF,$new_data['news_sef'],$percSimilar);
 
