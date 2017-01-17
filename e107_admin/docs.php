@@ -8,10 +8,6 @@
  *
  * Docs
  *
- * $Source: /cvs_backup/e107_0.8/e107_admin/docs.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 require_once("../class2.php");
@@ -20,7 +16,7 @@ if (!ADMIN) {
 	exit;
 }
 
-e107::lan('core','docs',true);
+e107::coreLan('docs', true);
 
 define('DOC_PATH',      e_DOCS.e_LANGUAGE.'/');
 define('DOC_PATH_ALT',  e_DOCS.'English/');

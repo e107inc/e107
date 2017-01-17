@@ -25,7 +25,7 @@ if(! getperms('G'))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('frontpage', true);
 
 $e_sub_cat = 'frontpage';
 require_once ('auth.php');

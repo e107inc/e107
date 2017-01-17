@@ -23,7 +23,7 @@ if(isset($_POST['go_back']))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('administrator', true);
 
 $e_sub_cat = 'admin';
 require_once('auth.php');

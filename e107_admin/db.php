@@ -26,9 +26,7 @@ if(isset($_POST['back']))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);		
-
-
+e107::coreLan('db', true);
 
 $e_sub_cat = 'database';
 

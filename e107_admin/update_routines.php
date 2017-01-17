@@ -1,26 +1,14 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Revision$
-|     $Id$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 
 /**
- *	@package    e107
- *	@subpackage	admin
- *	@version 	$Id$;
  *
  *	Update routines from older e107 versions to current.
  *

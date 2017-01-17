@@ -10,25 +10,15 @@
  *
 */
 
-
-/**
- *	e107 Userclass handling - Admin
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
- */
-
 require_once('../class2.php');
+
 if (!getperms('4'))
 {
   e107::redirect('admin');
   exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-
+e107::coreLan('userclass2', true);
 
 
 	class uclass_admin extends e_admin_dispatcher
