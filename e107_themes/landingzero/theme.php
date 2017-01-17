@@ -5,7 +5,7 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://gnu.org).
  */
-
+ 
 if (!defined('e107_INIT')) { exit; }
 
 define("BOOTSTRAP", 	3);
@@ -21,30 +21,29 @@ e107::css('theme', 'css/animate.min.css');
 e107::css('theme', 'css/ionicons.min.css');    
 e107::css('theme', 'css/styles.css');
 
-//e107::js("footer", 	    'https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', 2);
-e107::js("theme", "js/bootstrap.min.js", 'jquery');
-e107::js("theme", "js/jquery.easing.min.js", 'jquery');
-e107::js("theme", "js/wow.js", 'jquery');
-e107::js("theme", "js/scripts.js", 'jquery');
+ 
+$cndPref = e107::pref('theme', 'cdn','cdnjs');
+ 
+switch($cndPref)
+{
+	case "jsdelivr":
+		e107::js("footer", "https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery');
+    e107::js("footer", "https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js", 'jquery');
+		break;			
+	case "localhost":
+		e107::js("theme", "js/bootstrap.min.js", 'jquery');
+		e107::js("theme", "js/jquery.easing.min.js", 'jquery');
+		break;			
+	case "cdnjs":
+	default:
+		e107::js("footer", "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js", 'jquery', 2);
+    e107::js("footer", "https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js", 'jquery', 2);
 
-/* theme plugin is needed for this */
-$inlinecss = e107::pref('landingzero', 'inlinecss');
-if($inlinecss) { 
-	e107::css("inline", $inlinecss);
 }
-$inlinejs = e107::pref('landingzero', 'inlinejs');
-if($inlinejs) { 
-	e107::js("footer-inline", $inlinejs);
-}
-
-
-/* NOTE: with future update from original css not forget remove hardcoded image from style.css  */
-
-
-
-
-/* video settings */
-$default = e107::getParser()->parseTemplate('{SITELOGO}');
+		e107::js("theme", "js/wow.js", 'jquery');
+		e107::js("theme", "js/scripts.js", 'jquery');
+ 
+ 
 
 
 $videomobilehide = e107::pref('landingzero', 'videomobilehide'); 
