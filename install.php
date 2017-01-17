@@ -1138,7 +1138,7 @@ class e_install
 					$thumbnail = "<img class='img-responsive thumbnail'  src='".$preview ."' alt='".$val."' />";
 
 
-					$selected = ($val == 'bootstrap3') ? " checked" : "";
+					$selected = ($val == 'landingzero') ? " checked" : "";
 
 					$output .= "
 									<div class='col-md-6 theme-cell' >
