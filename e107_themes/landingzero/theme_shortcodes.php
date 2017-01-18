@@ -140,7 +140,7 @@ class theme_shortcodes extends e_shortcode
         if($data['href'] != '')
         {
              $text .= '
-             <li><a rel="nofollow" href="'.$data['href'].'" title="'.$data['title'].'"><i class="icon-lg ion-social-'.$id.'-outline"></i></a>&nbsp;</li>';
+             <li><a rel="nofollow" target="_blank" href="'.$data['href'].'" title="'.$data['title'].'"><i class="icon-lg ion-social-'.$id.'-outline"></i></a>&nbsp;</li>';
              $text .= "\n";
         }
     }   
