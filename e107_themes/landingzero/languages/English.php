@@ -7,7 +7,6 @@
 +----------------------------------------------------------------------------+
 */
 
-/* examples */
 define("LAN_LZ_THEME_00", "OK");
 define("LAN_LZ_THEME_01", "Get Started");
 define("LAN_LZ_THEME_02", "Toggle Video"); 
