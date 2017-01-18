@@ -171,7 +171,7 @@ class theme_shortcodes extends e_shortcode
 		$text .= "</div>";
 		$text .= $frm->close();
 
-		$caption = "Stay Posted";
+		$caption = LAN_LZ_THEME_17;
 
 		return $ns->tablerender($caption,$text,'lz-subscribe', true);
 	}
