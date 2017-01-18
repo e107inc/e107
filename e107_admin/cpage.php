@@ -480,7 +480,7 @@ class page_admin_ui extends e_admin_ui
 			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
 
 		 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 'inline'=>true, 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
-			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'media=page&template=page'), 
+			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>array('media'=>'page', 'template'=>'page')),
 		
 		
 			// Options Tab. 
@@ -593,7 +593,18 @@ class page_admin_ui extends e_admin_ui
                 $this->parseAliases();
 			}
 				
-							
+
+			if($this->getAction() == 'create' && e_DEBUG === true)
+			{
+
+				$tmp = e107::getCoreTemplate('page', 'default');
+				if(!empty($tmp['editor']))
+				{
+					$this->fields['page_text']['writeParms']['default'] = $tmp['editor'];
+				}
+
+			}
+
 			
 			$this->templates = e107::getLayouts('', 'page', 'front', '', true, false); 
 			unset($this->templates['panel'], $this->templates['nav']);
