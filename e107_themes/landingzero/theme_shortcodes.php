@@ -164,10 +164,10 @@ class theme_shortcodes extends e_shortcode
 		$frm = e107::getForm();
 		$text = $frm->open('lz-subscribe','post', e_SIGNUP);
 		$text .= "<div class='form-group'>";
-		$text .= $frm->text('email','', null, array('placeholder'=>"Tell us your email", 'size'=>'xxlarge'));
+		$text .= $frm->text('email','', null, array('placeholder'=>LAN_LZ_THEME_15, 'size'=>'xxlarge'));
 		$text .= "</div>";
 		$text .= "<div class='form-group'>";
-		$text .= " ".$frm->button('subscribe', 1, 'submit', "Subscribe for updates", array('class'=>'btn-primary'));
+		$text .= " ".$frm->button('subscribe', 1, 'submit', LAN_LZ_THEME_16, array('class'=>'btn-primary'));
 		$text .= "</div>";
 		$text .= $frm->close();
 
