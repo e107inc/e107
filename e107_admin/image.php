@@ -1482,7 +1482,7 @@ class media_admin_ui extends e_admin_ui
 
 
 		
-		if(vartrue($parm['search']))
+		if(!empty($parm['search']))
 		{
 			$filtered = array();
 			if(!empty($items))
