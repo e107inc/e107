@@ -823,6 +823,7 @@ if (!function_exists('checkvalidtheme'))
 	{
 		// arg1 = theme to check
 		//global $ADMIN_DIRECTORY, $tp, $e107;
+		global $sql;
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$ADMIN_DIRECTORY = $e107->getFolder('admin');
@@ -846,15 +847,27 @@ if (!function_exists('checkvalidtheme'))
 			define('PREVIEWTHEMENAME', $themeArray[$id]);
 			define('THEME', e_THEME.$themeArray[$id].'/');
 			define('THEME_ABS', e_THEME_ABS.$themeArray[$id].'/');
-			
+
+			$legacy = (file_exists( e_THEME_ABS.$themeArray[$id].'/theme.xml') === false);
+
+			define('THEME_LEGACY',$legacy);
 	
 			
 			return;
 		}
+
+		$sql->db_Mark_time("Theme Check");
+
 		if (@fopen(e_THEME.$theme_check.'/theme.php', 'r'))
+	//	if (is_readable(e_THEME.$theme_check.'/theme.php'))
 		{
 			define('THEME', e_THEME.$theme_check.'/');
 			define('THEME_ABS', e_THEME_ABS.$theme_check.'/');
+
+			$legacy = (file_exists(e_THEME.$theme_check.'/theme.xml') === false);
+
+			define('THEME_LEGACY',$legacy);
+
 			$e107->site_theme = $theme_check;
 		}
 		else
@@ -889,6 +902,8 @@ if (!function_exists('checkvalidtheme'))
 				
 			}
 		}
+		$sql->db_Mark_time("Theme Check End");
+
 		$themes_dir = $e107->getFolder('themes');
 		$e107->http_theme_dir = "{$e107->server_path}{$themes_dir}{$e107->site_theme}/";
 	}

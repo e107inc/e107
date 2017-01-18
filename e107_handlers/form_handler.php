@@ -1028,9 +1028,9 @@ class e_form
 
 			if(ADMIN)
 			{
-				$EAVATAR = "<b>".e_AVATAR_DEFAULT."</b>";
+				$EAVATAR = e_AVATAR_DEFAULT;
 				$text .= "<div class='alert alert-danger'>";
-				$text .= e107::getParser()->lanVars(LAN_EFORM_006, array('x'=>$EAVATAR));
+				$text .= e107::getParser()->lanVars(e107::getParser()->toHTML(LAN_EFORM_006, true), array('x'=>$EAVATAR));
 				$text .= "</div>"; 
 			}
 
@@ -2763,29 +2763,29 @@ e107::getDebug()->log($sc_parameters);
 		switch ($image)
 		{
 			case 'edit':
-				$icon = "e-edit-32";
+				$icon = (e_ADMIN_AREA === true) ? ADMIN_EDIT_ICON : $tp->toIcon("e-edit-32");
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action edit' : $options['class'];
 			break;
 
 			case 'delete':
-				$icon = (e_ADMIN_AREA === true) ? "e-delete-32" : 'fa-trash.glyph';
+				$icon = (e_ADMIN_AREA === true) ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
-				$icon = "e-execute-32";
+				$icon = (e_ADMIN_AREA === true) ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action execute' : $options['class'];
 			break;
 
 			case 'view':
-				$icon = "e-view-32";
+				$icon = $tp->toIcon("e-view-32");
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
 		
-		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  >".$tp->toIcon($icon)."</button>";
+		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  >".$icon."</button>";
 
 	
 	}

@@ -3655,6 +3655,12 @@ class e_parser
 		$linkStart  = '';
 		$linkEnd    =  '';
 
+		if(!empty($options['h']))
+		{
+			$height = intval($options['h']);
+		}
+
+
 		if($userData === null && USERID)
 		{
 			$userData = array();

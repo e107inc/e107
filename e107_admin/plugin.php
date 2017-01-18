@@ -11,7 +11,8 @@
  */
 
 require_once("../class2.php");
-if (!getperms("Z"))
+
+if(!getperms("Z"))
 {
 	e107::redirect('admin');
 	exit;

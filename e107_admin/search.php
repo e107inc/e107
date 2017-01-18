@@ -17,14 +17,12 @@ if (!getperms('X'))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('search', true);
 
 $e_sub_cat = 'search';
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'search_class.php');
-
-
 
 $frm = e107::getForm();
 $mes = e107::getMessage();

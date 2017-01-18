@@ -8,23 +8,15 @@
  *
  */
 
-/**
- *	@package    e107
- *	@subpackage	admin
- *
- *	'Notify' admin page - selects action on various events 
- */
-
 require_once('../class2.php');
+
 if (!getperms('O')) 
 {
 	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-
+e107::coreLan('notify', true);
 
 class plugin_notify_admin extends e_admin_dispatcher
 {

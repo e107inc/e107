@@ -18,7 +18,7 @@ if (!getperms("F"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('emoticon', true);
 
 $e_sub_cat = 'emoticon';
 

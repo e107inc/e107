@@ -98,7 +98,17 @@ function loadJSAddons()
 	e107::css('core', 	'core/all.jquery.css', 'jquery');
 
 	e107::js("core",	"core/all.jquery.js","jquery",4); // Load all default functions.
-	
+
+	$plUpload = "plupload/i18n/".e_LAN.".js";
+
+	if(e_LAN != 'en' && file_exists(e_WEB_JS.$plUpload))
+	{
+		e107::js('core', $plUpload); 
+	}
+
+
+
+
 }
 
 loadJSAddons();

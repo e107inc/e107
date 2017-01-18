@@ -232,4 +232,7 @@ define("LAN_NEWS_105", "Email notification triggered!");
 define("LAN_NEWS_106", "News item visibility must include 'everyone' for email notifications to work.");
 define("LAN_NEWS_107", "Checking for Ping Status");
 
+//v2.1.4
+define("LAN_NEWS_108", "The SEF URL is unlike the title of your news item.");
+
 ?>
