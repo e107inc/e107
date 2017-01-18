@@ -302,9 +302,9 @@ $LAYOUT['homepage'] =  '
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-8 col-lg-offset-2 text-center">
-						<h2 class="margin-top-0 wow fadeIn">Get in Touch</h2>
+						<h2 class="margin-top-0 wow fadeIn">'.LAN_LZ_THEME_13.'</h2>
 						<hr class="primary">
-						<p>We love feedback. Fill out the form below and we\'ll get back to you as soon as possible.</p>
+						<p>'.LAN_LZ_THEME_14.'</p>
 					</div>
 					<div class="col-lg-10 col-lg-offset-1 text-center">
 						{MENU=contact/contact}
