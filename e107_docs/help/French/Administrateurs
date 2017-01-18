@@ -1,0 +1,8 @@
+<div class='forumheader4'>Q>	Qu'est-ce que c'est que des permissions ?
+A>	Elles vous permettent de donner à des administrateurs différents niveaux d'accès à la section d'administration.  
+Par exemple vous pourriez seulement laissez apparaitre certaines infos d'administation et pas d'autres , ceci devient possible en allouant des permissions.  
+Il y a des fonctions d'administration qui sont seulement accessible à l'administateur principal, ceci est pour des raisons de sécurité.
+</div><div class='forumheader4'>Q>	Je veux transformer un membre enregistré existant en un administrateur - comment ?
+A>	cliquez sur membres dans votre section d'administration et recherchez le membre enregistré, cliquez alors sur "Devient Administrateur"(vous pouvez également lui enlever le statut d'admin de cette façon) 
+Puis aller immédiatement à la section Administrateurs et determiner lui ses permissions.
+</div>

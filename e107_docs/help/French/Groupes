@@ -1,0 +1,6 @@
+<div class='forumheader4'>Q>	Qu'est que c'est que ces groupes d'utilisateurs que je vois continuellement?  à quoi servent-ils?
+A>	Les groupes d'utilisateurs (ou classes) limitent l'accès à certains secteurs ou fonctions de votre site.  
+		Si vous définissez un groupe (ou classe), en lui ajoutant un certain nombre d'utilisateurs, vous pouvez rendre accessible certains aspects du site pour les personnes de ce groupe seulement. 
+		Par exemple, pour le groupe FORUMPRIVE déjà créé par défaut quand vous installez e107, vous pouvez en lui ajoutant des utilisateurs, créer un forum uniquement reservé aux membres de ce groupe
+		Grâce aux définitions de groupes (classes) vous pourrez limiter l'accès des utilisateurs aux nouveaux secteurs, fonctions, liens, téléchargements etc...
+</div>

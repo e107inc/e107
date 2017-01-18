@@ -1,0 +1,15 @@
+<div class='forumheader4'>Q>	J'ai fait quelques changements sur mon site et maintenant j'obtiens des erreurs de mySQL et mon site n'apparaît pas.
+A>	Il se pourrait que votre noyau soit corrompu. Le noyau contient les paramètres de configuration et les variables d'e107. 
+Pour reinstaller votre noyau, allez à la page http://yoursite.com/e107_files/resetcore.php</a>.  
+Faites toujours une sauvegarde de votre noyau (depuis l'écran de base de données) avant de procéder à des changements, 
+vous pourrez ainsi le restaurer si les choses tournent mal (depuis la page resetcore.php).
+</div><div class='forumheader4'>Q>	J'ai oublié que mon mot de passe d'administrateur principal et maintenant je ne peux avoir accès à mon espace administrateur.
+A>	Pour de très bonnes raisons de sécurité il est impossible de remettre à zéro votre mot de passe à moins que vous soyez connectés.  
+Si vous n'avez pas couché par écrit votre mot de passe dans un endroit sûr svp à l'avenir faites le et ce scénario ne se reproduira jamais.  
+Si c'est le cas , vous devrez remettre à zéro votre mot de passe en employant manuellement PHPMyAdmin ou un gestionnaire mySQL similaire. 
+Aller à la table Users, l'administrateur principal (main admin) devraient être l'utilisateur numéro 1.  
+Cliquez sur le bouton d'édition et changez le mot de passe en entant 4cb9c8a8048fd02294477fcb1a41191a, ceci changera votre mot de passe en 'changeme'.  
+Ouvrez une session maintenant et <strong>Mettez à jour votre mot de passe immediatement</strong>.
+</div><div class='forumheader4'>Q>	J'ai installé un thème/extension etc.. et maintenant mon site est devenu inaccessible, que puis-je faire?
+A>	Utiliser resetcore.php (voir ci-dessus).
+</div>

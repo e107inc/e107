@@ -1,0 +1,11 @@
+<div class='forumheader4'>Q>	Comment est-ce que je change de thème?
+A>	Il y a une section sur votre page de préférences qui vous permet de changer le  thème du votre site.  
+Veuillez visionner le thème préalablement d'abord car certains thèmes anciens ne sont plus compatibles et pourrait rendre votre site inutilisable si vous les mettiez en place directement.
+</div><div class='forumheader4'>Q>	Qu'est-ce que la COPPA ?
+A>	C'est La Loi de 1998 sur la protection de l'intimité des enfants en ligne.(The Children's Online Privacy Protection Act of 1998). C'est une règle universelle utilisée pour protèger des mineurs âgés 13 et moins.  
+Elle s'assure qu'aucune information sur des mineurs ne sera employée par l''opérateur '(IE, vous) pour des buts autres que ceux du maintient du website.  Pour plus d'information voir svp le http://www.cdt.org/legislation/105th/privacy/coppa.html. 
+</div><div class='forumheader4'>Q>	Qu'est-ce que la protection des flux(flood protextion)? 
+A>	Il empêche votre site d'être inondé par les appels de HTTP, qui peuvent rendre votre site inaccessible.
+</div><div class='forumheader4'>Q>	Dois-je employer des cookies ou des sessions pour suivre mes utilisateurs?
+A>	C'est votre choix, si votre site fonctionne bien avec des cookies (l'option par défaut) laissez le donc ainsi. Si vous préférez employer des sessions PHP, employez les alors (un outil de traitement de session crée spécialement pour cela est employé par e107 pour stocker et manipuler des sessions).
+</div>

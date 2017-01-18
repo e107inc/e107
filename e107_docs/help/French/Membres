@@ -1,0 +1,18 @@
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/Membres,v $
+ * $Revision: 1.2 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	A quoi servent les champs étendus de profile?
+A>	Ils vous permettent d’ajouter plus de paramètres à vos membres.
+Par exemple, si vous démarrer un clan, ou faites la moyenne du nombre de drapeaux :) etc.
+Les nouveaux champs apparaitront dans la page des paramètres du membre, ainsi que dans la liste des membres.

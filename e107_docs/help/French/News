@@ -1,0 +1,27 @@
+<!--
+/**
+ * Fichiers utf-8 français pour le CMS e107 version 0.8 α
+ * accessoirement compatible 0.7.11
+ * Licence GNU/GPL
+ * Traducteurs: communauté française e107 http://etalkers.tuxfamily.org/
+ *
+ * $Source: /cvsroot/touchatou/e107_french/e107_docs/help/French/News,v $
+ * $Revision: 1.4 $
+ * $Date: 2009/02/02 22:01:01 $
+ * $Author: marj_nl_fr $
+ */
+-->
+
+Q>	A quoi servent les catégories de news?
+A>	Vous pouvez grouper vos news sous différentes catégories pour ensuite les afficher avec différentes icônes (si définies) etc.
+Cela rends la navigation sur votre site plus facile pour vos visiteurs et leur permettent de ne lire que les sujets les intéressant.
+
+Q>	A quoi sert la zone “Compléter la news (suite)”?
+A>	Vous avez sûrement remarqué comment sont affichées les news de certains sites. Elles proposent une brève introduction et un lien vers la totalité de la news.
+Vous avez la possibilité de le faire en mettant le texte d’introduction dans le “Corps” et la suite dans “Compléter la news (suite)”
+
+Q>	A quoi servent les champs “Activation”?
+A>	En renseignant ces champs vous pouvez définir une news comme étant visible entre deux dates particulières. Si vous les laissez vides, la news sera visible immédiatement et en tout temps.
+
+Q>	J’ai poster une news et il est affiché “News insérée dans la base de données.”. Cela signifie-il que la news est visible?
+A>	Cela signifie que le texte que vous avez entré à été sauvegardé. Si la news est définie comme étant active, alors elle est effectivement affichée dans la page de news.

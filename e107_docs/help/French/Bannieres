@@ -1,0 +1,22 @@
+<div class='forumheader4'>Q>	J'ai défini une nouvelle bannière de pub depuis secteur d'administration mais pourquoi n'apparaît-elle pas ?
+A>	le thème que vous employez à besoin de le savoir pour afficher la dite bannière.  
+		Ouvrez le fichier"theme.php"du thème utilisé et assurez-vous d'avoir {BANNER} ou {BANNER=yourcampaignname} dans $HEADER section.
+</div><div class='forumheader4'>Q>	Je veux un ensemble de bannières publicitaires dans un secteur et à un ensemble différent dans un autre secteur - comment faire?
+A>	Vous pouvez grouper vos bannières sous des 'campagnes', et puis configurer votre thème pour afficher les bannières de certaines campagnes.  
+		Par exemple, si vous aviez deux campagnes, appelées cam_1 et le cam_2, 
+		Mettre { BANNER=cam1 } dans un secteur de votre $HEADER section dans le theme.php affichera seulement les bannières cam_1,et 
+		Mettre { BANNER=cam_2 } dans un autre secteur affichera seulement les bannières cam_2.
+		Mettre { BANNIÈRE } (aucun nom de campagne) dans votre theme.php affichera aléatoirement les bannières de toutes les campagnes.
+</div><div class='forumheader4'>Q>	Qu'est-ce que l'Identifiant Client(login) et le Mot de passe Client?
+A>	vous pouvez définir un identifiant ou pseudo (comme login) et un mot de passe pour chacun de vos clients de bannière,
+		ils peuvent alors employer ces derniers pour accéder à des informations sur les performances obtenus par l'affichage de leurs bannière s
+		en allant http://yoursite.com/banner.php et en écrivant le nom et pour passer.
+</div><div class='forumheader4'>Q>	Comment puis j'avoir une bannière de type de 'tour' dans un article de menu?
+A>	D'abord vous devez définir la campagne pour les bannières de type de tour (ceci les dissociera des bannières de type de barre)...  
+		1. Allez sur votre espace d'administration et cliquez sur Bannières.
+		2. Entrer le nom votre bannière de type tour, assurez-vous que vous employez un nouveau nom de campagne, par exemple des 'tours '.
+		3. Allez maintenant à votre région de menus, et activez le banner_menu dans un de vos secteurs de menu.  
+		4. Cliquez sur'configure 'le lien dans l'article de menu. 
+		5. écrivez le titre de légende (par défaut c'est un 'avertisement'), et écrivez le nom de campagne que vous avez défini avant. 
+		6. Laissez votre secteur d'admin et vous verrez votre bannière de type-tour dans le secteur que vous les avez assignés à.
+</div>
