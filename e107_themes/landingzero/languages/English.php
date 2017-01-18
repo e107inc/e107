@@ -25,4 +25,5 @@ define("LAN_LZ_THEME_14", "We love feedback. Fill out the form below and we\'ll 
 define("LAN_LZ_THEME_15", "Tell us your email");
 define("LAN_LZ_THEME_16", "Subscribe for updates");
 define("LAN_LZ_THEME_17", "Stay Posted");
+define("LAN_LZ_THEME_18", "YOU MIGHT ALSO LIKE");
 ?>
