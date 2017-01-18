@@ -19,4 +19,8 @@ define("LAN_LZ_THEME_07", "Please enter a message.");
 define("LAN_LZ_THEME_08", "Phone Number");
 define("LAN_LZ_THEME_09", "Please enter your phone number.");
 define("LAN_LZ_THEME_10", "Follow");
+define("LAN_LZ_THEME_11", "Phone");
+define("LAN_LZ_THEME_12", "Your message here...");
+define("LAN_LZ_THEME_13", "Get in Touch");
+define("LAN_LZ_THEME_14", "We love feedback. Fill out the form below and we\'ll get back to you as soon as possible.");
 ?>
