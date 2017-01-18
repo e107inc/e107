@@ -101,7 +101,7 @@ $NEWS_TEMPLATE['default']['item'] = '
                             <div class="panel-footer">
                                 <div class="row">
                                     <div class="col-lg-10 col-md-9 col-sm-8">
-                                        <i class="fa fa-clock-o"></i> {NEWSDATE=short} <i class="fa fa-user"> </i {NEWSAUTHOR} <i class="fa fa-folder-open"></i> {NEWSCATEGORY}.
+                                        <i class="fa fa-clock-o"></i> {NEWSDATE=short} <i class="fa fa-user"> </i> {NEWSAUTHOR} <i class="fa fa-folder-open"></i> {NEWSCATEGORY}.
                                     </div>
                                     <div class="col-lg-2 col-md-3 col-sm-4">
                                         <a href="{NEWSURL}" class="pull-right">'.LAN_READ_MORE.' &raquo;</a>
