@@ -49,11 +49,11 @@ $CONTACT_TEMPLATE['info'] = "
                         </div>
                         <div class="col-md-4">
                             <label></label>
-                            <input class="form-control" placeholder="Phone" name="phone" type="text">
+                            <input class="form-control" placeholder="'.LAN_LZ_THEME_11.'" name="phone" type="text">
                         </div>
                         <div class="col-md-12">
                             <label></label>
-                            {CONTACT_BODY: rows=5&cols=30&placeholder=Your message here..}
+                            {CONTACT_BODY: rows=5&cols=30&placeholder='.LAN_LZ_THEME_12.'}
                         </div>
                         <div class="col-md-4 col-md-offset-4">
                             <label></label>
