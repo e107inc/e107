@@ -101,7 +101,7 @@ $NEWS_TEMPLATE['default']['item'] = '
                             <div class="panel-footer">
                                 <div class="row">
                                     <div class="col-lg-10 col-md-9 col-sm-8">
-                                        <i class="fa fa-clock-o"></i> {NEWSDATE=short} <i class="fa fa-user"> </i {NEWSAUTHOR} <i class="fa fa-folder-open"></i> {NEWSCATEGORY}.
+                                        <i class="fa fa-clock-o"></i> {NEWSDATE=short} <i class="fa fa-user"> </i> {NEWSAUTHOR} <i class="fa fa-folder-open"></i> {NEWSCATEGORY}.
                                     </div>
                                     <div class="col-lg-2 col-md-3 col-sm-4">
                                         <a href="{NEWSURL}" class="pull-right">'.LAN_READ_MORE.' &raquo;</a>
@@ -215,6 +215,6 @@ $NEWS_TEMPLATE['related']['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')
 $NEWS_TEMPLATE['related']['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
 $NEWS_TEMPLATE['related']['end'] = "</ul>";*/
 
-$NEWS_TEMPLATE['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">YOU MIGHT ALSO LIKE</h2><div class="row">';
+$NEWS_TEMPLATE['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">'.LAN_LZ_THEME_18.'</h2><div class="row">';
 $NEWS_TEMPLATE['related']['item'] = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
 $NEWS_TEMPLATE['related']['end'] = '</div>';

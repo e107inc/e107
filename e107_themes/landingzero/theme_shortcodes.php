@@ -140,7 +140,7 @@ class theme_shortcodes extends e_shortcode
         if($data['href'] != '')
         {
              $text .= '
-             <li><a rel="nofollow" href="'.$data['href'].'" title="'.$data['title'].'"><i class="icon-lg ion-social-'.$id.'-outline"></i></a>&nbsp;</li>';
+             <li><a rel="nofollow" target="_blank" href="'.$data['href'].'" title="'.$data['title'].'"><i class="icon-lg ion-social-'.$id.'-outline"></i></a>&nbsp;</li>';
              $text .= "\n";
         }
     }   
@@ -164,14 +164,14 @@ class theme_shortcodes extends e_shortcode
 		$frm = e107::getForm();
 		$text = $frm->open('lz-subscribe','post', e_SIGNUP);
 		$text .= "<div class='form-group'>";
-		$text .= $frm->text('email','', null, array('placeholder'=>"Tell us your email", 'size'=>'xxlarge'));
+		$text .= $frm->text('email','', null, array('placeholder'=>LAN_LZ_THEME_15, 'size'=>'xxlarge'));
 		$text .= "</div>";
 		$text .= "<div class='form-group'>";
-		$text .= " ".$frm->button('subscribe', 1, 'submit', "Subscribe for updates", array('class'=>'btn-primary'));
+		$text .= " ".$frm->button('subscribe', 1, 'submit', LAN_LZ_THEME_16, array('class'=>'btn-primary'));
 		$text .= "</div>";
 		$text .= $frm->close();
 
-		$caption = "Stay Posted";
+		$caption = LAN_LZ_THEME_17;
 
 		return $ns->tablerender($caption,$text,'lz-subscribe', true);
 	}
