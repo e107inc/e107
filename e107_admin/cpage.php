@@ -371,7 +371,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 
 			$text .= "</tbody></table>";
 
-			$text .= print_a($value,true);
+		//	$text .= print_a($value,true);
 
 
 			return $text;
