@@ -451,6 +451,8 @@ class e_menu
 	public function renderMenu($mpath, $mname='', $parm = '', $return = false)
 	{
 	//	global $sql; // required at the moment.
+
+
 		global $sc_style, $e107_debug;
 				
 
@@ -540,7 +542,8 @@ class e_menu
 			$id = e107::getForm()->name2id($mpath . $mname);
 			$ns->setUniqueId($id);
 
-			global $pref; // possibly used by plugin menu.
+
+			$pref = e107::getPref(); // possibly used by plugin menu.
 
 
 			$e107_debug ? include(e_PLUGIN.$mpath.$mname.'.php') : @include(e_PLUGIN.$mpath.$mname.'.php');
