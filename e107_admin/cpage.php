@@ -784,16 +784,15 @@ class page_admin_ui extends e_admin_ui
 
 			$chap = intval($row['page_chapter']);
 
-			$this->tabs[] = "Additional Fields";
-
-			$curVal = e107::unserialize($row['page_fields']);
-
-			$tabCount = count($this->tabs) -1;
 
 			$this->getModel()->set('page_fields', null);
 
 			if(!empty($this->chapterFields[$chap]))
 			{
+				$curVal = e107::unserialize($row['page_fields']);
+
+				$this->tabs[] = "Additional Fields";
+				$tabCount = count($this->tabs) -1;
 
 				foreach($this->chapterFields[$chap] as $key=>$fld)
 				{

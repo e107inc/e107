@@ -5786,7 +5786,7 @@ e107::getDebug()->log($sc_parameters);
 					$text .= "
 					<tr><td colspan='2'>";
 					
-					$text .= (varset($writeParms['nolabel']) == 2) ? '' : "<div style='padding-bottom:8px'>".$leftCell."</div>" ;
+					$text .= (isset($writeParms['nolabel']) && $writeParms['nolabel'] == 2) ? '' : "<div style='padding-bottom:8px'>".$leftCell."</div>" ;
 					$text .= $rightCell."
 						</td>
 						
