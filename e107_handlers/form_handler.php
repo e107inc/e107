@@ -1112,7 +1112,7 @@ class e_form
 		}
 
 
-e107::getDebug()->log($sc_parameters);
+// e107::getDebug()->log($sc_parameters);
 
 		$default_thumb = $default;
 		$class = '';
@@ -4866,9 +4866,11 @@ e107::getDebug()->log($sc_parameters);
 			$ajaxParms['data-src'] = varset($parms['ajax']['src']);
 			$ajaxParms['data-target'] = varset($parms['ajax']['target']);
 			$ajaxParms['data-method'] = varset($parms['ajax']['method'], 'html');
-			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
+			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], 'fa-spinner'); //$tp->toGlyph('fa-spinner', array('spin'=>1))
 
 			unset($attributes['writeParms']['ajax']);
+
+		//	e107::getDebug()->log($parms['ajax']);
 		}
 
 		if(!empty($attributes['multilan']))
@@ -5590,7 +5592,7 @@ e107::getDebug()->log($sc_parameters);
 				".$this->token()."
 			";
 
-			foreach ($form['fieldsets'] as $elid => $data) //XXX rename 'fieldsets' to 'forms' ?
+			foreach ($form['fieldsets'] as $elid => $data)
 			{
 				$elid = $form['id'].'-'.$elid;
 		
@@ -5609,6 +5611,12 @@ e107::getDebug()->log($sc_parameters);
 					{
 						$active = (strval($tabId) === $curTab) ? 'active' : '';
 						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
+
+					//	e107::getDebug()->log('elid: '.$elid. " tabid: ".$tabId);
+					//	e107::getDebug()->log($data);
+					//	e107::getDebug()->log($model);
+
+
 						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
 						$text .= "</div>";	
 					}
@@ -5648,12 +5656,13 @@ e107::getDebug()->log($sc_parameters);
 	 * @param string $id field id
 	 * @param array $fdata fieldset data
 	 * @param object $model
-	 * @return string
+	 * @return string | false
 	 */
 	function renderCreateFieldset($id, $fdata, $model, $tab=0)
 	{
-		
-		$text = vartrue($fdata['fieldset_pre'])."
+
+
+		$start = vartrue($fdata['fieldset_pre'])."
 			<fieldset id='{$id}-".$tab."'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
@@ -5664,6 +5673,8 @@ e107::getDebug()->log($sc_parameters);
 					</colgroup>
 					<tbody>
 		";
+
+		$text = '';
 
 		// required fields - model definition
 		$model_required = $model->getValidationRules();
@@ -5830,17 +5841,27 @@ e107::getDebug()->log($sc_parameters);
 			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
 		}
 
-		$text .= "
+
+		if(!empty($text) || !empty($hidden_fields))
+		{
+			$text = $start.$text;
+
+			$text .= "
 					</tbody>
 				</table>";
 
-		$text .= implode("\n", $hidden_fields);
+			$text .= implode("\n", $hidden_fields);
 
-		$text .= "</fieldset>";
-				
-		$text .= vartrue($fdata['fieldset_post']);
+			$text .= "</fieldset>";
+
+			$text .= vartrue($fdata['fieldset_post']);
+
+			return $text;
+		}
+
+
 		
-		return $text;		
+		return false;
 		
 		/*		
 		$text .= "

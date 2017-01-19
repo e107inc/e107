@@ -9,7 +9,7 @@
  * Custom Menus/Pages Administration
  * Admin-related functions for custom page and menu creation
 */
-define('e_MINIMAL',true);
+//define('e_MINIMAL',true);
 require_once('../class2.php');
 
 if (!getperms("5|J")) { e107::redirect('admin'); exit; }
@@ -77,6 +77,19 @@ class page_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = ADLAN_42;
+
+
+	function init()
+	{
+
+
+
+
+
+	}
+
+
+
 }
 
 class page_admin_form_ui extends e_admin_form_ui
@@ -582,7 +595,7 @@ class page_admin_ui extends e_admin_ui
             'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
 		    'page_chapter' 		=> array('title'=> CUSLAN_63, 	    'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
        
-			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
+			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>array()),
 
 		 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 'inline'=>true, 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
 			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>array('media'=>'page', 'template'=>'page')),
@@ -768,9 +781,41 @@ class page_admin_ui extends e_admin_ui
 			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
 			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
-			if(e_DEBUG === true && $this->getAction() === 'edit')
+			if(e_DEBUG !== false && $this->getAction() === 'create')
 			{
-			//	$this->initCustomFields();
+				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
+
+			}
+
+			if(e_AJAX_REQUEST && isset($_POST['page_chapter']) ) //&& $this->getAction() === 'chapter-change'
+			{
+				$this->initCustomFields($_POST['page_chapter']);
+
+				$elid = 'core-page-create';
+				$model = $this->getModel();
+				$tabId = 'additional';
+
+				$data = array(
+						'tabs'	=>  $this->getTabs(),
+						'legend' => '',
+						'fields' => $this->getFields(),
+				);
+
+
+				$text = $this->getUI()->renderCreateFieldset($elid, $data, $model, $tabId);
+
+				if(empty($text))
+				{
+					echo "<div class='alert alert-info alert-block'>There are no additional fields for the selected chapter</div>";
+				}
+				else
+				{
+					echo $text;
+				}
+
+				exit;
+
+
 			}
 
 
@@ -778,48 +823,79 @@ class page_admin_ui extends e_admin_ui
 		}
 
 
-		private function initCustomFields()
+		private function initCustomFields($chap=null)
 		{
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
 
-			$chap = intval($row['page_chapter']);
+			$this->tabs['additional'] = "Additional Fields";
 
 
-			$this->getModel()->set('page_fields', null);
 
 			if(!empty($this->chapterFields[$chap]))
 			{
-				$curVal = e107::unserialize($row['page_fields']);
 
-				$this->tabs[] = "Additional Fields";
-				$tabCount = count($this->tabs) -1;
 
-				foreach($this->chapterFields[$chap] as $key=>$fld)
+				if(!empty($this->chapterFields[$chap]))
 				{
-					$fld['tab'] = $tabCount;
-					$fld['data'] = false;
+					foreach($this->chapterFields[$chap] as $key=>$fld)
+					{
+						$fld['tab'] = 'additional';
+						$fld['data'] = false;
 
-					$this->fields['page_fields__'.$key] = $fld;
+						$this->fields['page_fields__'.$key] = $fld;
+					}
 
-					$this->getModel()->set('page_fields__'.$key, $curVal[$key]);
 				}
 			}
 
 
 		}
 
+		private function loadCustomFieldsData()
+		{
+			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+			$chap = intval($row['page_chapter']);
+			$this->getModel()->set('page_fields', null);
+
+			$curVal = e107::unserialize($row['page_fields']);
+
+			if(!empty($this->chapterFields[$chap]))
+			{
+				foreach($this->chapterFields[$chap] as $key=>$fld)
+				{
+					$this->getModel()->set('page_fields__'.$key, $curVal[$key]);
+				}
+
+			}
+
+		}
+
+
+		function CreateObserver()
+		{
+			parent::CreateObserver();
+			$this->initCustomFields(0);
+
+		}
+
+
+
 		// Override default so we can alter the field db table data after it is loaded. .
 		function EditObserver()
 		{
-			$this->getModel()->load($this->getId());
-			$this->addTitle();
 
-			if(e_DEBUG !== true)
+			parent::EditObserver();
+
+			if(!deftrue('e_DEBUG'))
 			{
 				return;
 			}
 
-			$this->initCustomFields();
+
+
+			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+			$chap = intval($row['page_chapter']);
+			$this->initCustomFields($chap);
+			$this->loadCustomFieldsData();
 
 
 		}
