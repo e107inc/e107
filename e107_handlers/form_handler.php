@@ -67,6 +67,13 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 
+	private $fields = array(
+			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
+			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
+			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country'
+
+	);
+
 	/**
 	 * @var user_class
 	 */
@@ -3011,6 +3018,15 @@ e107::getDebug()->log($sc_parameters);
 		return false;
 	}
 
+
+	protected function getFieldTypes()
+	{
+		asort($this->fields);
+		return $this->fields;
+	}
+
+
+
 	/**
 	 * Helper function to get default button class by action.
 	 *
@@ -5770,7 +5786,7 @@ e107::getDebug()->log($sc_parameters);
 					$text .= "
 					<tr><td colspan='2'>";
 					
-					$text .= "<div style='padding-bottom:8px'>".$leftCell."</div>";
+					$text .= (varset($writeParms['nolabel']) == 2) ? '' : "<div style='padding-bottom:8px'>".$leftCell."</div>" ;
 					$text .= $rightCell."
 						</td>
 						
