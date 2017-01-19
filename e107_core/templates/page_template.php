@@ -51,7 +51,11 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 		<div class="clear"><!-- --></div>
 		{CPAGERATING|default}
 		{CPAGEEDIT}
-	'; 
+
+
+	';
+
+	// {CPAGEFIELD: name=image}
 
 	$PAGE_WRAPPER['default']['CPAGEEDIT'] = "<div class='text-right'>{---}</div>";
 
