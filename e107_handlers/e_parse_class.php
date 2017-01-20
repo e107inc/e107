@@ -3710,7 +3710,7 @@ class e_parser
 		}
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
-		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
+		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
 
 		if(!empty($options['type']) && $options['type'] == 'url')
 		{
