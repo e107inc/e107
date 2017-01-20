@@ -1267,7 +1267,7 @@ class e_media
 		
 				if($data['type'] == 'image')
 				{
-					$text .= '<img class="img-responsive" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+					$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
 				}
 				elseif($data['type'] == 'glyph')
 				{

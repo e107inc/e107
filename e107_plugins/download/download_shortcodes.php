@@ -327,7 +327,7 @@ class download_shortcodes extends e_shortcode
       {
            $opts = array(
              'legacy' => "{e_FILE}downloadthumbs/",
-             'class'  => 'download-image img-responsive',
+             'class'  => 'download-image img-responsive img-fluid',
               'alt'     => $this->var['download_name']
          );
 
@@ -583,7 +583,7 @@ class download_shortcodes extends e_shortcode
       {
          $opts = array(
              'legacy' => "{e_FILE}downloadthumbs/",
-             'class'  => 'download-image dl_image img-responsive'
+             'class'  => 'download-image dl_image img-responsive img-fluid'
          );
          $image = $tp->toImage($this->var['download_thumb'], $opts);
 
@@ -610,7 +610,7 @@ class download_shortcodes extends e_shortcode
 
          $opts = array(
                 'legacy' => "{e_FILE}downloadimages/",
-                'class'  => 'download-image dl_image download-view-image img-responsive '.vartrue($parm['class']),
+                'class'  => 'download-image dl_image download-view-image img-responsive img-fluid '.vartrue($parm['class']),
                'alt' => basename($this->var['download_image'])
          );
 

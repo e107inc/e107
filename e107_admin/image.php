@@ -2135,7 +2135,7 @@ class media_admin_ui extends e_admin_ui
 
 					$img_src = "
 				<div class='thumbnail'>
-				<label for='".$for."' ><img  class='img-responsive' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' /></label>
+				<label for='".$for."' ><img  class='img-responsive img-fluid' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' /></label>
 				</div>
 				";
 

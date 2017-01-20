@@ -321,16 +321,16 @@ else
 
 		if (file_exists(e_FILE."download/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img class='img-responsive' src='".e_FILE."download/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE."download/{$image}' alt='' /></div>";
 		}
 		else if(file_exists(e_FILE."downloadimages/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img class='img-responsive' src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
 		} 
 		else 
 		{
              $image = $tp->replaceConstants($image);
-			$disp = "<div style='text-align:center'><img class='img-responsive' src='".$image."' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".$image."' alt='' /></div>";
 		}
 
 		$disp .= "<br /><div style='text-align:center'><a href='javascript:history.back(1)'>".LAN_BACK."</a></div>";
