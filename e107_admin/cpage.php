@@ -801,53 +801,48 @@ class page_admin_ui extends e_admin_ui
 						'fields' => $this->getFields(),
 				);
 
-
 				$text = $this->getUI()->renderCreateFieldset($elid, $data, $model, $tabId);
+				$displayMode = 'inline-block';
 
 				if(empty($text))
 				{
-					$text = "<div class='alert alert-info alert-block'>There are no additional fields for the selected chapter</div>";
+					$text = ""; // There are no additional fields for the selected chapter.
+					$displayMode = 'none';
 				}
 
 				$ajax = e107::getAjax();
 
 				$commands = array();
-				$commands[] = $ajax->commandInvoke('#tabadditional', 'html', array($text));
+				$commands[] = $ajax->commandInvoke('#tab' . $tabId, 'html', array($text));
+				// Show/hide tab.
+				$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'css', array('display', $displayMode));
 
 				$ajax->response($commands);
 				exit;
 			}
-
-
-
 		}
 
 
 		private function initCustomFields($chap=null)
 		{
+			$tabId = 'additional';
 
-			$this->tabs['additional'] = "Additional Fields";
-
-
+			$this->tabs[$tabId] = "Additional Fields";
 
 			if(!empty($this->chapterFields[$chap]))
 			{
-
-
-				if(!empty($this->chapterFields[$chap]))
+				foreach($this->chapterFields[$chap] as $key=>$fld)
 				{
-					foreach($this->chapterFields[$chap] as $key=>$fld)
-					{
-						$fld['tab'] = 'additional';
-						$fld['data'] = false;
+					$fld['tab'] = $tabId;
+					$fld['data'] = false;
 
-						$this->fields['page_fields__'.$key] = $fld;
-					}
-
+					$this->fields['page_fields__'.$key] = $fld;
 				}
 			}
-
-
+			else
+			{
+				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
+			}
 		}
 
 		private function loadCustomFieldsData()
