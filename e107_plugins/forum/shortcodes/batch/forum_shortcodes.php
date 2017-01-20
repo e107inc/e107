@@ -350,6 +350,7 @@ class forum_shortcodes extends e_shortcode
 		$aSize['w'] = vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth();
 		$aSize['h'] = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight();		
 		$fmt = vartrue($parms['fmt']) ? $parms['fmt'] : "txt";		
+		$ret= $this->var['forum_name'];
 		
 		if($this->var['forum_img']) 
 		{
@@ -359,10 +360,6 @@ class forum_shortcodes extends e_shortcode
 			$fmt=str_replace('img',$img,$fmt);
 			$fmt=str_replace('txt',$txt,$fmt);
 			$ret=$fmt;
-		}
-		else
-		{
-			 $ret= $this->var['forum_name'];
 		}
 		return $ret;
 	}
@@ -383,7 +380,9 @@ class forum_shortcodes extends e_shortcode
 		$aSize=array('crop'=>1);		
 		$aSize['w'] = vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth();
 		$aSize['h'] = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight();	
-		$fmt = vartrue($parms['fmt']) ? $parms['fmt'] : "txt";				
+		$fmt = vartrue($parms['fmt']) ? $parms['fmt'] : "txt";	
+		$ret= $this->var['forum_name'];
+		
 		if($this->var['forum_img']) 
 		{
 			$img=e107::getParser()->toImage($this->var['forum_img'],$aSize);						
@@ -391,10 +390,6 @@ class forum_shortcodes extends e_shortcode
 			$fmt=str_replace('img',$img,$fmt);
 			$fmt=str_replace('txt',$txt,$fmt);
 			$ret=$fmt;
-		}
-		else
-		{
-			 $ret= $this->var['forum_name'];
 		}
 		
 		$url = e107::url('forum', 'forum', $this->var);
