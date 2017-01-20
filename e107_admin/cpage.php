@@ -806,16 +806,16 @@ class page_admin_ui extends e_admin_ui
 
 				if(empty($text))
 				{
-					echo "<div class='alert alert-info alert-block'>There are no additional fields for the selected chapter</div>";
-				}
-				else
-				{
-					echo $text;
+					$text = "<div class='alert alert-info alert-block'>There are no additional fields for the selected chapter</div>";
 				}
 
+				$ajax = e107::getAjax();
+
+				$commands = array();
+				$commands[] = $ajax->commandInvoke('#tabadditional', 'html', array($text));
+
+				$ajax->response($commands);
 				exit;
-
-
 			}
 
 
