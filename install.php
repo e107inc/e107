@@ -1136,7 +1136,7 @@ class e_install
 						continue;
 					}
 
-					$thumbnail = "<img class='img-responsive thumbnail'  src='".$preview ."' alt='".$val."' />";
+					$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
 
 
 					$selected = ($val == 'landingzero') ? " checked" : "";

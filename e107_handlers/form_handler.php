@@ -1188,7 +1188,7 @@ class e_form
 			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
 			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
 
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive img-fluid' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='' && strpos($cat,'_image')===false)
 			{
