@@ -693,7 +693,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-fluid img-rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-fluid img-rounded rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
@@ -826,7 +826,7 @@ class news_shortcodes extends e_shortcode
 		$tmp = $this->handleMultiple($parm);
 		$srcPath = $tmp['file'];
 		
-		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded";
+		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
 		$class .= ' news-image-'.$tmp['count'];
 		$dimensions = null;
 		$srcset = null;

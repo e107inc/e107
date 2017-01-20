@@ -103,7 +103,7 @@ class gallery_shortcodes extends e_shortcode
 		$w = vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth(); // 190; // 160;
 		$h = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight(); // 130;
 
-		$class = ($this->slideMode == true) ? 'gallery-slideshow-thumb img-responsive img-fluid img-rounded' : varset($parms['class'], 'gallery-thumb img-responsive img-fluid');
+		$class = ($this->slideMode == true) ? 'gallery-slideshow-thumb img-responsive img-fluid img-rounded rounded' : varset($parms['class'], 'gallery-thumb img-responsive img-fluid');
 		$rel = ($this->slideMode == true) ? 'prettyPhoto[pp_gal]' : 'prettyPhoto[pp_gal]';
 
 		//$att        = array('aw'=>$w, 'ah'=>$h, 'x'=>1, 'crop'=>1);
