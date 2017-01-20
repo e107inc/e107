@@ -110,7 +110,7 @@ class admin_start
 	function __construct()
 	{
 
-		if(!getperms('0')) // don't display this tuff to regular admins only main admin.
+		if(!getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
 		{
 			return null;
 		}
