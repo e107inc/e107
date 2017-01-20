@@ -10,14 +10,6 @@
  *
 */
 
-
-/**
- *	e107 Mail handling - Admin
- *
- *	@package	e107
- *	@subpackage	admin
- */
-
 /*
 Features:
 1. Additional sources of email addresses for mailouts can be provided via plugins, and can be enabled via the mailout preferences page
@@ -74,9 +66,9 @@ if (!getperms('W'))
 	e107::redirect('admin');
 	exit;
 }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
-//	e107::lan('core','signup');
+
+e107::coreLan('users', true); 
+e107::coreLan('mailout', true); 
 
 require_once(e_HANDLER.'ren_help.php');
 
@@ -242,7 +234,7 @@ class mailout_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 	'perm' => 'W'),
 	
-		'recipients/list'	=> array('caption'=> "Recipients", 		'perm' => 'W'),		
+		'recipients/list'	=> array('caption'=> Recipients, 		'perm' => 'W'),		
 	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
 	//	'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
@@ -252,7 +244,7 @@ class mailout_admin extends e_admin_dispatcher
 		'other2' 			=> array('divider'=> true),
 		'prefs/prefs' 		=> array('caption'=> LAN_PREFS, 		'perm' => '0'),
 		'maint/maint'		=> array('caption'=> ADLAN_40, 			'perm' => '0'),
-		'main/templates'	=> array('caption'=> 'Template Preview', 'perm' => '0'),
+		'main/templates'	=> array('caption'=> LAN_MAILOUT_262, 'perm' => '0'),
 	);
 
 
@@ -298,7 +290,7 @@ class mailout_main_ui extends e_admin_ui
 			'mail_bcopy_to'			=> array('title' => LAN_MAILOUT_152,'tab'=>1, 'type'=>'method','data'=>false),	
 			'mail_subject' 			=> array('title' => LAN_MAILOUT_06, 'type'=>'text', 'forced' => TRUE,'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1'),
 			'mail_content_status' 	=> array('title' => LAN_MAILOUT_136, 'tab'=>1, 'type'=> 'dropdown', 'data'=>'int', 'filter'=>false, 'inline'=>false, 'thclass' => 'left', 'class'=>'left'),
-			'mail_total_count' 		=> array('title' => "Total Recipients", 'noedit'=>true, 'type'=>'number'),
+			'mail_total_count' 		=> array('title' => LAN_MAILOUT_263, 'noedit'=>true, 'type'=>'number'),
 			'mail_sent_count' 		=> array('title' => LAN_MAILOUT_82, 'noedit'=>true, 'type'=>'number'),
 			'mail_togo_count' 		=> array('title' => LAN_MAILOUT_83, 'noedit'=>true, 'type'=>'number'),
 		
@@ -315,7 +307,7 @@ class mailout_main_ui extends e_admin_ui
 			'mail_attach'			=> array('title' => LAN_MAILOUT_153, 'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_include_images' 	=> array('title' => LAN_MAILOUT_224, 'tab'=>1, 'type'=>'boolean','data'=>false, 'proc' => 'yesno'),
 			'mail_send_style'		=> array('title' => LAN_MAILOUT_154,'type'=>'method','data'=>false),
-			'mail_media' 			=> array('title' => 'Embed Media', 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
+			'mail_media' 			=> array('title' => LAN_MAILOUT_264, 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
 	 
 			'mail_body' 			=> array('title' => LAN_MAILOUT_100, 'type'=>'bbarea', 'proc' => 'trunc200'),
 			'mail_body_templated' 	=> array('title' => LAN_MAILOUT_257, 'noedit'=>true, 'proc' => 'chars'),
@@ -412,7 +404,7 @@ class mailout_main_ui extends e_admin_ui
 			define('MAIL_STATUS_TEMP', 22);			// Tags entries which aren't yet in any list
 		*/
 	
-		$types = array(10=>'Pending',20=>"Saved", 21=>"Held", 0=>'Sent', 1=>'Bounced', 2=>'Cancelled', 3=> 'Partial', 5=>'Failed',  19 => "Max Active",  22=>"Temp");
+		$types = array(10=>LAN_MAILOUT_265,20=>LAN_SAVED, 21=>LAN_MAILOUT_217, 0=>LAN_MAILOUT_211, 1=>LAN_MAILOUT_213, 2=>LAN_MAILOUT_218, 3=>LAN_MAILOUT_219, 5=>LAN_MAILOUT_212,  19 => LAN_MAILOUT_266,  22=>"Temp");
 		
 		
 		$qr = array('saved'=>20,'pending'=>10,'held'=>21,'sent'=>0);
@@ -1182,8 +1174,8 @@ class mailout_main_ui extends e_admin_ui
 
 	if(function_exists('openssl_pkey_new') && deftrue('e_DEVELOPER'))
 	{
-		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary','Generate Public/Private keys')."
-		<span class='label label-warning'>Developer Mode Only</span></td></tr>";
+		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary',LAN_MAILOUT_267)."
+		<span class='label label-warning'>".LAN_MAILOUT_268."</span></td></tr>";
 	}
 
 
@@ -1593,8 +1585,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default' title='Send Mail'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".E_32_MAIL."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 
 			$text .= $this->renderValue('options',$value,$attributes,$id);
 
@@ -1608,8 +1600,8 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
 			$text = "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".E_32_USER."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 
 			$attributes['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$attributes,$id);

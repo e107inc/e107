@@ -11,12 +11,14 @@
  *
 */
 require_once("../class2.php");
-if (!getperms("T")) {
+
+if (!getperms("T")) 
+{
 	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('meta', true);
 
 $e_sub_cat = 'meta';
 require_once("auth.php");
@@ -94,12 +96,12 @@ $text = "
 					</tr>
 					<tr>
 						<td>".LAN_COPYRIGHT."</td>
-						<td><input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".varset($meta_copyright[e_LANGUAGE])."\" /></td>
+						<td><input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".$meta_copyright[e_LANGUAGE]."\" /></td>
 					</tr>
 
 					<tr>
 						<td>".LAN_AUTHOR."</td>
-						<td><input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".varset($meta_author[e_LANGUAGE])."\" /></td>
+						<td><input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" /></td>
 					</tr>
 
 					<tr>

@@ -260,7 +260,11 @@ img.image-selector							{ margin-bottom:0; }
 .dropdown-menu img 							{ padding: 0 0; margin-right: 10px; }
 
 ul.navbar-nav li ul.dropdown-menu > li a img,
-ul.navbar-nav li ul.dropdown-menu > li a i		{
+ul.navbar-nav li ul.dropdown-menu > li a i,
+ul#e-latest img,
+ul#e-latest i,
+ul#e-status img,
+ul#e-status i		{
             			       				-webkit-filter: grayscale(100%);
                                             -moz-filter: grayscale(100%);
                                             -ms-filter: grayscale(100%);
@@ -270,7 +274,11 @@ ul.navbar-nav li ul.dropdown-menu > li a i		{
 											}
 
 ul.navbar-nav li ul.dropdown-menu a:hover i,
-ul.navbar-nav li ul.dropdown-menu a:hover img
+ul.navbar-nav li ul.dropdown-menu a:hover img,
+ul#e-latest a:hover img,
+ul#e-latest a:hover i,
+ul#e-status a:hover img,
+ul#e-status a:hover i
 											{
 											filter: none;
 											 -webkit-filter: none;
@@ -1297,7 +1305,7 @@ td.forumheader { background-image: linear-gradient(#303030,#212121 60%,#171717);
 
 
 
-
+.navbar-nav > li > a.admin-icon-avatar { padding-top:9px; padding-bottom:5px}
 
 
 
@@ -1326,6 +1334,14 @@ footer {
     color: rgb(119, 119, 119);
 }
 */
+
+@media (max-width: 1400px ){
+
+ul.navbar-nav.navbar-left > li > a > i { display:none; }
+
+}
+
+
 
 @media (max-width: 1100px) {
 	.navbar-header {

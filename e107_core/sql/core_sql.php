@@ -387,6 +387,7 @@ CREATE TABLE page (
   page_ip_restrict text,
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
+  page_fields mediumtext,
   menu_name varchar(50) NOT NULL default '',  
   menu_title varchar(250) NOT NULL default '',  
   menu_text mediumtext,
@@ -418,6 +419,7 @@ CREATE TABLE page_chapters (
   chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
   chapter_visibility tinyint(3) unsigned NOT NULL default '0',
+  chapter_fields mediumtext,
   PRIMARY KEY  (chapter_id),
   KEY chapter_order (chapter_order)
 ) ENGINE=MyISAM;

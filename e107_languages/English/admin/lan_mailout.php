@@ -280,7 +280,13 @@ define("LAN_HOLD", "Hold");
 
 define("LAN_MAILOUT_260", "User-Type");
 define("LAN_MAILOUT_261", "SMTP Port");
-
+define("LAN_MAILOUT_262", "Template Preview");
+define("LAN_MAILOUT_263", "Total Recipients");
+define("LAN_MAILOUT_264", "Embed Media");
+define("LAN_MAILOUT_265", "Pending");
+define("LAN_MAILOUT_266", "Max Active");
+define("LAN_MAILOUT_267", "Generate Public/Private keys");
+define("LAN_MAILOUT_268", "Developer Mode Only");
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
 ?>

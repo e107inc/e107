@@ -45,7 +45,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		$qry = "
 		SELECT
 			p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
-			t.thread_id, t.thread_datestamp, t.thread_name, u.user_name, f.forum_sef
+			t.thread_id, t.thread_datestamp, t.thread_name, u.user_id, u.user_name, u.user_image, u.user_currentvisit, f.forum_sef
 		FROM `#forum_post` as p
 
 		LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
@@ -67,14 +67,25 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		$pref = e107::getPref();
 
 		$qry = $this->getQuery();
+		$ns = e107::getRender();
 
+
+		$list = null;
+		$text = null;
 
 		if($results = $sql->gen($qry))
 		{
-			$text = "<ul class='newforumposts-menu'>";
+
+			if($tp->thumbWidth()  > 250) // Fix for unset image size.
+			{
+				$tp->setThumbSize(40,40,true);
+			}
+
+			$list = "<ul class='media-list newforumposts-menu'>";
 
 			while($row = $sql->fetch())
 			{
+
 				$datestamp 	= $tp->toDate($row['post_datestamp'], 'relative');
 				$id 		= $row['thread_id'];
 				$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
@@ -116,22 +127,32 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 				));
 
 
-				$text .= "<li>";
+				$list .= "<li class='media'>";
+
+				$list .= "<div class='media-left'>";
+				$list .= "<a href='".$url."'>".$tp->toAvatar($row, array('shape'=>'circle'))."</a>";
+				$list .= "</div>";
+
+				$list .= "<div class='media-body'>";
 
 				if (!empty($this->menuPref['title']))
 				{
-					$text .= "<a href='{$url}'>{$topic}</a><br />{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
+					$list .= "<h4 class='media-header'><a href='{$url}'>{$topic}</a></h4>{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
 				}
 				else
 				{
-					$text .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='text-muted muted'>{$datestamp}</small><br />{$post}<br />";
+					$list .= "<a href='{$url}'>".LAN_FORUM_MENU_001."</a> {$poster} <small class='text-muted muted'>{$datestamp}</small><br />{$post}<br />";
 				}
 
-				$text .= "</li>";
+				$list .= "</div></li>";
+
+
 
 			}
 
-			$text .= "</ul>";
+			$list .= "</ul>";
+
+			$text = $list;
 		}
 		else
 		{
@@ -150,7 +171,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 	//	e107::debug('menuPref', $this->menuPref);
 
-		e107::getRender()->tablerender($caption, $text, 'nfp_menu');
+		$ns->tablerender($caption, $text, 'nfp_menu');
 
 	}
 

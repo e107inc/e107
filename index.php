@@ -86,8 +86,19 @@
  */
  
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
-	
-	$tmp = e107::getAddonConfig('e_url');
+
+	// XXX Cache didn't bring much benefit.
+
+	/*if($cached = e107::getCache()->retrieve('Addon_url',5,true,true))
+	{
+		$tmp = e107::unserialize($cached);
+	}
+	else*/
+	{
+		$tmp = e107::getAddonConfig('e_url');
+	//	e107::getCache()->set('Addon_url',e107::serialize($tmp,'json'),true,true,true);
+	}
+
 
 	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
 		

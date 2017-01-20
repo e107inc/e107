@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -15,7 +15,7 @@ if (!getperms('L'))
 	e107::redirect('admin');
 	exit;
 }
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 e107::coreLan('language', true);
 
 $e_sub_cat = 'language';
@@ -24,11 +24,6 @@ if(!empty($_GET['iframe']))
 {
 	define('e_IFRAME', true);
 }
-
-
-
-
-
 
 	class language_admin extends e_admin_dispatcher
 	{
@@ -1091,7 +1086,7 @@ class lanDeveloper
 
 	function disableUnused($data)
 	{
-		$data = str_replace("2008-2010","2008-2013", $data);
+		$data = str_replace("2008-2010","2008-2017", $data);
 		$data = str_replace(' * $URL$
  * $Revision$
  * $Id$
@@ -1166,21 +1161,29 @@ class lanDeveloper
 		//	print_a($_SESSION['languageTools_lanFileList']);
 
 
-		$text .= "
-						<tr>
-							<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
-							<td class='form-inline'>
-								<select name='deprecatedLans[]' multiple style='height:200px'>
-									<option value=''>".LANG_LAN_141."</option>";
+		$text .= "	<tr>
+						<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
+					</tr>
+					<tr>
+						<td class='form-inline'>
+							<select name='deprecatedLans[]' multiple style='height:200px'>
+								<option value=''>".LANG_LAN_141."</option>";
 
 
 		$omit = array('languages','\.png','\.gif','handlers');
 		$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
+		asort($lans);
+
 		$fl->setFileFilter(array("^e_"));
 		$root = $fl->get_files(e_BASE,'.*?/?.*?\.php',$omit,0);
+		asort($root);
 
 		$templates = $fl->get_files(e_CORE."templates",'.*?/?.*?\.php',$omit,0);
+		asort($templates);
+
 		$shortcodes = $fl->get_files(e_CORE."shortcodes",'.*?/?.*?\.php',$omit,1);
+		asort($shortcodes);
+
 		$exclude = array('lan_admin.php');
 
 		$srch = array(e_ADMIN,e_PLUGIN, e_CORE, e_BASE );
@@ -1261,7 +1264,7 @@ class lanDeveloper
 
 		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" :"";
 		$text .= "<option value='auto' {$selected}>".LANG_LAN_142."</option><optgroup label='".LANG_LAN_143."'>\n";//Auto-Detect
-
+		asort($_SESSION['languageTools_lanFileList']);
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
 			if(strstr($val,e_SYSTEM))

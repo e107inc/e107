@@ -110,7 +110,7 @@ class admin_start
 	function __construct()
 	{
 
-		if(!getperms('0')) // don't display this tuff to regular admins only main admin.
+		if(!getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
 		{
 			return null;
 		}
@@ -303,7 +303,7 @@ class admin_start
 
 				$lans = array('x'=>$link, 'y'=>LAN_PLUGIN);
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -350,7 +350,7 @@ class admin_start
 				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
 
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-cloud-download')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -568,7 +568,7 @@ class admin_start
 		if (count($this->allowed_types) == 0)
 		{
 			$this->allowed_types = array('zip' => 1, 'gz' => 1, 'jpg' => 1, 'png' => 1, 'gif' => 1, 'pdf'=>1);
-			$mes->addInfo("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
+			$mes->addDebug("Setting default filetypes: ".implode(', ',array_keys($this->allowed_types)));
 		
 		}	
 	}

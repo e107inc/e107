@@ -16,8 +16,7 @@ if (!getperms('4'))
 	exit;
 }
 
-
-include_lan(e_LANGUAGEDIR . e_LANGUAGE . '/admin/lan_' . e_PAGE);
+e107::coreLan('users_extended', true);
 
 if(varset($_GET['mode']) == "ajax")
 {

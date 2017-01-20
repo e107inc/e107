@@ -491,14 +491,14 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-latest' class='unstyled list-unstyled'>";
+					$text = "<ul id='e-latest' class='list-group'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
 							$class = admin_shortcodes::getBadge($val['total']); 
-							$link =  "<a  href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li class='clearfix'>".$val['icon']." ".$link."</li>\n";	
+							$link =  "<a  href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$text .= "<li class='list-group-item clearfix'>".$link."</li>\n";
 						}	
 					}
 					$text .= "</ul>";
@@ -707,7 +707,7 @@ class admin_shortcodes
 	{
 		if(e_DEBUG !== false)
 		{
-			return "<div class='navbar-right navbar-text'><span class='label label-warning'>DEBUG MODE</span>&nbsp;</div>";
+			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug')."&nbsp;</div>";
 		}
 
 	}
@@ -1199,15 +1199,15 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-status' class='unstyled list-unstyled'>";
+					$text = "<ul id='e-status' class='list-group'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
 							$type = empty($val['invert']) ? 'latest' : 'invert';
 							$class = admin_shortcodes::getBadge($val['total'], $type);
-							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
+							$link =  "<a href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$text .= "<li class='list-group-item'>".$link."</li>\n";
 						}	
 					}
 					$text .= "</ul>";
@@ -1774,9 +1774,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['image_large_src'] 	= '';
 			$tmp[8]['link_class']		= '';					
 				
-			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
+			$menu_vars['logout']['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
 			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['logout']['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
 			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
 			$menu_vars['logout']['sub'] = $tmp;	
 		}

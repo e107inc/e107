@@ -205,7 +205,7 @@ if(file_exists(THEME.'forum_design.php')) // legacy file
 
 
 // New in v2.x
-if(deftrue('BOOTSTRAP',false))
+if(THEME_LEGACY !== true)
 {
 	$FORUM_VIEWTOPIC_TEMPLATE = e107::getTemplate('forum','forum_viewtopic');
 
@@ -220,7 +220,7 @@ if(deftrue('BOOTSTRAP',false))
 }
 else
 {
-	if (!vartrue($FORUMSTART))
+	if (empty($FORUMSTART))
 	{
 		if(file_exists(THEME.'forum_viewtopic_template.php'))
 		{
@@ -606,7 +606,7 @@ if ($thread->threadInfo['thread_lastpost'] > USERLV && !in_array($thread->thread
 else
 {
 	$ret = array('lastpost'=>$thread->threadInfo['thread_lastpost'], 'lastvisit'=>USERLV, 'thread'=>$thread->threadId, 'viewed'=>$threadsViewed);
-	$mes->addDebug(print_a($ret,true));
+	e107::getDebug()->log($ret);
 	unset($ret);
 }
 

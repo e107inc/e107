@@ -1,10 +1,14 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
  *
- * Admin Language File
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
-*/
+ * Language file - Site Links Admin
+ *
+ */
 
 // define("LCLAN_1", "Options Saved");
 // define("LCLAN_2", "Saving link to database.");
@@ -14,7 +18,7 @@
 // define("LCLAN_8", "Site Navigation Links");
 // define("LCLAN_12", "Link Rendertype");
 // define("LCLAN_13", "Render");
-define("LCLAN_15", "Link Name");
+//define("LCLAN_15", "Link Name");//LAN_NAME
 // define("LCLAN_16", "Link URL");
 // define("LCLAN_17", "Link Description");
 // define("LCLAN_18", "Link Button / Icon");
@@ -57,7 +61,7 @@ define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Li
 // define("LCLAN_102", "New 600x400");
 // define("LCLAN_103", "New 800x600");
 
-define("LCLAN_104", "Sublink of");
+//define("LCLAN_104", "Sublink of");//LAN_PARENT
 define("LCLAN_105", "Function");
 define("LCLAN_106", "Owned by");
 define("LCLAN_107", "Enable to override URL with a dynamically created Search-Engine-Friendly URL");

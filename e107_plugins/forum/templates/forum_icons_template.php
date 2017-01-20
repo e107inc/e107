@@ -65,7 +65,7 @@ define('IMAGE_untrack', 	'<img src="'.img_path('untrack.png').'" alt="'.LAN_FORU
 
 // User info
 define('IMAGE_website', '<img src="'.img_path('website.png').'" alt="'.LAN_FORUM_2034.'" title="'.LAN_FORUM_2034.'" />');
-define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" />');
+define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" class="icon S16 action" />');
 define('IMAGE_profile', '<img src="'.img_path('profile.png').'" alt="'.LAN_FORUM_4007.'" title="'.LAN_FORUM_4007.'" />');
 
 // action

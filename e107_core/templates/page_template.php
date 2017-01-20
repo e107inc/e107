@@ -51,7 +51,11 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 		<div class="clear"><!-- --></div>
 		{CPAGERATING|default}
 		{CPAGEEDIT}
-	'; 
+
+
+	';
+
+	// {CPAGEFIELD: name=image}
 
 	$PAGE_WRAPPER['default']['CPAGEEDIT'] = "<div class='text-right'>{---}</div>";
 
@@ -100,7 +104,7 @@ $sc_style['CPAGENAV|default']['post'] = '</div>';
 	$PAGE_TEMPLATE['default']['related']['item']    = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
 	$PAGE_TEMPLATE['default']['related']['end']     = '</div>';
 
-
+	// $PAGE_TEMPLATE['default']['editor'] = '<ul class="fa-ul"><li><i class="fa fa-li fa-edit"></i> Level 1</li><li><i class="fa fa-li fa-cog"></i> Level 2</li></ul>';
 
 	
 #### No table render example template ####

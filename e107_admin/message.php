@@ -6,17 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/message.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once("../class2.php");
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('message', true);
 
 $e_sub_cat = 'message';
 require_once("auth.php");

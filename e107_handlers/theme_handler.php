@@ -1422,7 +1422,7 @@ class themeHandler
 					
 					
 					$text .= "<div class='col-md-6'>
-						<img class='img-responsive' src='".$picFull."' alt=\"".$theme['name']."\" />
+						<img class='img-responsive img-fluid' src='".$picFull."' alt=\"".$theme['name']."\" />
 						</div>";	
 					
 				}
@@ -2347,8 +2347,8 @@ class themeHandler
 		
 		if($core->save())
 		{
-			$mes->addDebug(MENLAN_31.": ".$deflayout);
-			$mes->addDebug(MENLAN_56.": ".print_a($customPages,true));
+			$mes->addDebug("Default Layout: ".$deflayout);
+			$mes->addDebug("Custom Pages: ".print_a($customPages,true));
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	

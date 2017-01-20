@@ -10,14 +10,6 @@
  *
 */
 
-/**
- *
- *	@package     e107
- *	@subpackage	admin
- *
- *	Handle display of the various system logs
- */
-
 /*
  * Preferences:
  * 	'sys_log_perpage' - number of events per page
@@ -37,11 +29,8 @@ if(! getperms('S'))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-// Main language file should automatically be loaded
-// Load language files for log messages
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php'); //... for core functions
-
+e107::coreLan('admin_log', true);
+e107::coreLan('log_messages', true); 
 
 if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 {

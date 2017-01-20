@@ -22,7 +22,7 @@ if (!getperms("L"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_lancheck.php');
+e107::coreLan('lancheck', true);
 
 $e_sub_cat = 'language';
 // require_once("auth.php");

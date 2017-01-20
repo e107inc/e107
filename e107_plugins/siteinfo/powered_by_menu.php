@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 $text = "
 <div id='powered-by-menu' class='text-center'>
 <a href='http://e107.org' rel='external'>
-	<img class='img-responsive' src='".e_IMAGE_ABS."admin_images/credits_logo.png' alt='e107' style='max-width:100%' />
+	<img class='img-responsive img-fluid' src='".e_IMAGE_ABS."admin_images/credits_logo.png' alt='e107' style='max-width:100%' />
 </a>
 </div>
 ";
