@@ -106,7 +106,7 @@ class e107forum
 	 */
 	private function getForumData()
 	{
-		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef, forum_class FROM `#forum`", true); // no ordering for better performance.
+		$data = e107::getDb()->retrieve("SELECT forum_id, forum_sef, forum_class, forum_img FROM `#forum`", true); // no ordering for better performance.
 
 		$newData = array();
 		foreach($data as $row)
