@@ -693,7 +693,7 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-fluid img-rounded rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
@@ -734,7 +734,7 @@ class news_shortcodes extends e_shortcode
 			$parm['item'] = ($parm['item'] +1);
 			if(empty($parm['class']))
 			{
-				$parm['class'] = 'img-responsive news-media news-media-'.$parm['item'];
+				$parm['class'] = 'img-responsive img-fluid news-media news-media-'.$parm['item'];
 			}
 			return $this->sc_newsimage($parm);
 		}
@@ -811,7 +811,7 @@ class news_shortcodes extends e_shortcode
 	 * Display News Images (but not video thumbnails )
 	 * @param $parm array
 	 * @example {NEWSIMAGE: type=src&placeholder=true}
-	 * @example {NEWSIMAGE: class=img-responsive}
+	 * @example {NEWSIMAGE: class=img-responsive img-fluid}
 	 */
 	function sc_newsimage($parm = null)
 	{
@@ -826,7 +826,7 @@ class news_shortcodes extends e_shortcode
 		$tmp = $this->handleMultiple($parm);
 		$srcPath = $tmp['file'];
 		
-		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-rounded";
+		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
 		$class .= ' news-image-'.$tmp['count'];
 		$dimensions = null;
 		$srcset = null;

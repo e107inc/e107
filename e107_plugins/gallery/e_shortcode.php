@@ -103,7 +103,7 @@ class gallery_shortcodes extends e_shortcode
 		$w = vartrue($parms['w']) ? $parms['w'] : $tp->thumbWidth(); // 190; // 160;
 		$h = vartrue($parms['h']) ? $parms['h'] : $tp->thumbHeight(); // 130;
 
-		$class = ($this->slideMode == true) ? 'gallery-slideshow-thumb img-responsive img-rounded' : varset($parms['class'], 'gallery-thumb img-responsive');
+		$class = ($this->slideMode == true) ? 'gallery-slideshow-thumb img-responsive img-fluid img-rounded rounded' : varset($parms['class'], 'gallery-thumb img-responsive img-fluid');
 		$rel = ($this->slideMode == true) ? 'prettyPhoto[pp_gal]' : 'prettyPhoto[pp_gal]';
 
 		//$att        = array('aw'=>$w, 'ah'=>$h, 'x'=>1, 'crop'=>1);
@@ -186,7 +186,7 @@ class gallery_shortcodes extends e_shortcode
 		}
 
 		$text = "<a class='thumbnail' href='" . $url . "'>";
-		$text .= "<img class='img-responsive' data-src='holder.js/" . $w . "x" . $h . "' src='" . e107::getParser()->thumbUrl($this->var['media_cat_image'], $att) . "' alt='' />";
+		$text .= "<img class='img-responsive img-fluid' data-src='holder.js/" . $w . "x" . $h . "' src='" . e107::getParser()->thumbUrl($this->var['media_cat_image'], $att) . "' alt='' />";
 		$text .= "</a>";
 		return $text;
 	}
@@ -263,7 +263,7 @@ class gallery_shortcodes extends e_shortcode
 
 			if(empty($template['item']))
 			{
-				$text .= $ns->tablerender('', $this->sc_gallery_thumb('class=gallery_thumb img-responsive img-home-portfolio'), 'gallery_portfolio', true);
+				$text .= $ns->tablerender('', $this->sc_gallery_thumb('class=gallery_thumb img-responsive img-fluid img-home-portfolio'), 'gallery_portfolio', true);
 			}
 			else
 			{

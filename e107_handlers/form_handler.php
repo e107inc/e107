@@ -67,6 +67,13 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 
+	private $fields = array(
+			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
+			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
+			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country'
+
+	);
+
 	/**
 	 * @var user_class
 	 */
@@ -982,13 +989,13 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />"; 
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />";
 		}
 		else
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />"; 
+			$text .= "<input class='img-rounded rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />";
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -1105,7 +1112,7 @@ class e_form
 		}
 
 
-e107::getDebug()->log($sc_parameters);
+// e107::getDebug()->log($sc_parameters);
 
 		$default_thumb = $default;
 		$class = '';
@@ -1181,7 +1188,7 @@ e107::getDebug()->log($sc_parameters);
 			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
 			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
 
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive img-fluid' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='' && strpos($cat,'_image')===false)
 			{
@@ -3010,6 +3017,15 @@ e107::getDebug()->log($sc_parameters);
 
 		return false;
 	}
+
+
+	protected function getFieldTypes()
+	{
+		asort($this->fields);
+		return $this->fields;
+	}
+
+
 
 	/**
 	 * Helper function to get default button class by action.
@@ -4850,9 +4866,11 @@ e107::getDebug()->log($sc_parameters);
 			$ajaxParms['data-src'] = varset($parms['ajax']['src']);
 			$ajaxParms['data-target'] = varset($parms['ajax']['target']);
 			$ajaxParms['data-method'] = varset($parms['ajax']['method'], 'html');
-			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
+			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], 'fa-spinner'); //$tp->toGlyph('fa-spinner', array('spin'=>1))
 
 			unset($attributes['writeParms']['ajax']);
+
+		//	e107::getDebug()->log($parms['ajax']);
 		}
 
 		if(!empty($attributes['multilan']))
@@ -5574,7 +5592,7 @@ e107::getDebug()->log($sc_parameters);
 				".$this->token()."
 			";
 
-			foreach ($form['fieldsets'] as $elid => $data) //XXX rename 'fieldsets' to 'forms' ?
+			foreach ($form['fieldsets'] as $elid => $data)
 			{
 				$elid = $form['id'].'-'.$elid;
 		
@@ -5593,6 +5611,12 @@ e107::getDebug()->log($sc_parameters);
 					{
 						$active = (strval($tabId) === $curTab) ? 'active' : '';
 						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
+
+					//	e107::getDebug()->log('elid: '.$elid. " tabid: ".$tabId);
+					//	e107::getDebug()->log($data);
+					//	e107::getDebug()->log($model);
+
+
 						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
 						$text .= "</div>";	
 					}
@@ -5632,12 +5656,13 @@ e107::getDebug()->log($sc_parameters);
 	 * @param string $id field id
 	 * @param array $fdata fieldset data
 	 * @param object $model
-	 * @return string
+	 * @return string | false
 	 */
 	function renderCreateFieldset($id, $fdata, $model, $tab=0)
 	{
-		
-		$text = vartrue($fdata['fieldset_pre'])."
+
+
+		$start = vartrue($fdata['fieldset_pre'])."
 			<fieldset id='{$id}-".$tab."'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
@@ -5648,6 +5673,8 @@ e107::getDebug()->log($sc_parameters);
 					</colgroup>
 					<tbody>
 		";
+
+		$text = '';
 
 		// required fields - model definition
 		$model_required = $model->getValidationRules();
@@ -5770,7 +5797,7 @@ e107::getDebug()->log($sc_parameters);
 					$text .= "
 					<tr><td colspan='2'>";
 					
-					$text .= "<div style='padding-bottom:8px'>".$leftCell."</div>";
+					$text .= (isset($writeParms['nolabel']) && $writeParms['nolabel'] == 2) ? '' : "<div style='padding-bottom:8px'>".$leftCell."</div>" ;
 					$text .= $rightCell."
 						</td>
 						
@@ -5814,17 +5841,27 @@ e107::getDebug()->log($sc_parameters);
 			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
 		}
 
-		$text .= "
+
+		if(!empty($text) || !empty($hidden_fields))
+		{
+			$text = $start.$text;
+
+			$text .= "
 					</tbody>
 				</table>";
 
-		$text .= implode("\n", $hidden_fields);
+			$text .= implode("\n", $hidden_fields);
 
-		$text .= "</fieldset>";
-				
-		$text .= vartrue($fdata['fieldset_post']);
+			$text .= "</fieldset>";
+
+			$text .= vartrue($fdata['fieldset_post']);
+
+			return $text;
+		}
+
+
 		
-		return $text;		
+		return false;
 		
 		/*		
 		$text .= "
