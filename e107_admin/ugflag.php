@@ -10,6 +10,7 @@
  *
  */
 require_once ('../class2.php');
+
 if(!getperms('9'))
 {
 	e107::redirect('admin');
@@ -18,7 +19,7 @@ if(!getperms('9'))
 
 $e_sub_cat = 'maintain';
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('ugflag', true);
 
 $mes = e107::getMessage();
 $frm = e107::getForm();

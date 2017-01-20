@@ -39,4 +39,17 @@ ul.breadcrumb li span.divider { padding-left:5px; }
 .thumbnail img { border-radius:8px; }
 
 .img-responsive { max-width:100%; }
+.logo.img-responsive { height: auto; }
 
+.media-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.media-body, .media-left, .media-right {
+    display: table-cell;
+    vertical-align: top;
+}
+.media-left, .media > .pull-left {
+    padding-right: 10px;
+}

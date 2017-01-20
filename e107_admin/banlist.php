@@ -8,29 +8,10 @@
  *
  * Ban List Management
  *
- * $URL$
- * $Id$
  *
 */
-
-/**
- *	e107 Banlist administration
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
- */
-
 
 require_once('../class2.php');
-/*
-@todo should this be here?
-if(count($_POST) && !varset($_POST['e-token']))
-{
-	die('Access denied - bl');
-}
-*/
-
 
 if (!getperms('4'))
 {
@@ -38,11 +19,9 @@ if (!getperms('4'))
 	exit();
 }
 
-
-
 require_once(e_HANDLER.'iphandler_class.php');		// This is probably already loaded in class2.php
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('banlist', true);
 
 e107::js('footer-inline', "
 
@@ -53,9 +32,7 @@ e107::js('footer-inline', "
 			event.preventDefault();
 		});
 
-
 ");
-
 
 
 class banlist_admin extends e_admin_dispatcher

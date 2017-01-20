@@ -8,8 +8,6 @@
  *
  * Image Administration Area
  *
- * $URL$
- * $Id$
  *
 */
 
@@ -53,7 +51,7 @@ if(isset($_POST['submit_cancel_show']))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('image', true);
 
 if($_GET['action'] == 'dialog')
 {
@@ -1484,7 +1482,7 @@ class media_admin_ui extends e_admin_ui
 
 
 		
-		if(vartrue($parm['search']))
+		if(!empty($parm['search']))
 		{
 			$filtered = array();
 			if(!empty($items))
@@ -2137,7 +2135,7 @@ class media_admin_ui extends e_admin_ui
 
 					$img_src = "
 				<div class='thumbnail'>
-				<label for='".$for."' ><img  class='img-responsive' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' /></label>
+				<label for='".$for."' ><img  class='img-responsive img-fluid' src='".$img_path."' alt='{$image_name}' title='".IMALAN_66.": {$image_name}' /></label>
 				</div>
 				";
 

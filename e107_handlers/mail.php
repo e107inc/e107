@@ -787,7 +787,7 @@ class e107Email extends PHPMailer
 					{
 						$size = isset($mediaParms[$nk]) ? "?w=".$mediaParms[$nk]['w'] : '';
 						//echo $nk.": ".$val['path'].$size."<br />";
-						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive ".strtolower($id)."' src='".$val['path'].$size."' alt='' /></div>";
+						$eml['shortcodes'][$id] = "<div class='media media-image'><img class='img-responsive img-fluid ".strtolower($id)."' src='".$val['path'].$size."' alt='' /></div>";
 					}
 					
 				}	

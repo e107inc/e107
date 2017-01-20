@@ -144,15 +144,18 @@ class e107_debug {
 			
 		$aDVal = explode('.',$dVals); // support multiple values, OR'd together
 		$dVal = 0;
+
+
+
 		foreach ($aDVal as $curDVal)
 		{
 		  if (isset($this->aDebugShortcuts[$curDVal])) 
 		  {
 			$dVal |= $this->aDebugShortcuts[$curDVal];
-		  } 
+		  }
 		  else 
 		  {
-				$dVal |= $curDVal;
+				$dVal |= intval($curDVal);
 		  }
 		}
 								

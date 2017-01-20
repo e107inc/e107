@@ -33,9 +33,17 @@ class cpage_shortcodes extends e_shortcode
 		foreach($books as $row)
 		{
 			$id 							= $row['chapter_id'];
+
+			if(!empty($row['chapter_fields']))
+			{
+				$row['chapter_fields'] = e107::unserialize($row['chapter_fields']);
+			}
+
 			$this->chapterData[$id]			= $row;
 		}	
-	
+
+
+
 	}
 		
 	
@@ -596,5 +604,57 @@ class cpage_shortcodes extends e_shortcode
 
 	    return "<a rel='external'  title=\"".LAN_EDIT."\"  data-modal-caption=\"".LAN_EDIT."\" class='btn btn-default ".$modal."' href='".e_ADMIN_ABS."cpage.php?action=edit&id=".$this->var['page_id'].$iframe."' >".$icon."</a>";
 	}
-	
+
+
+	/**
+	 * Return raw HTML-usable values from page fields.
+	 * @experimental subject to change without notice.
+	 * @param null $parm
+	 * @return mixed
+	 */
+	function sc_cpagefield($parm=null)
+	{
+		if(empty($parm['name']) || empty($this->var['page_fields']))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+
+		$chap       = $this->var['page_chapter'];
+		$key        = $parm['name'];
+		$fields     = $this->chapterData[$chap]['chapter_fields'];
+		$fieldData  = e107::unserialize($this->var['page_fields']);
+		$type       = $fields[$key]['type'];;
+
+		// @todo Move this part to form_handler somewhere.
+		if(isset($fieldData[$key]))
+		{
+			$value = $fieldData[$key];
+
+			switch($type)
+			{
+				case "image":
+					return $tp->toImage($value);
+					break;
+
+				case "icon":
+					return $tp->toIcon($value);
+					break;
+
+				default:
+					return $tp->toHtml($value);
+			}
+
+		}
+
+
+
+	}
+
+
+
+
+
+
 }

@@ -2,25 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Site navigation administration
  *
- * $URL$
- * $Id$
- */
-
-/**
- * @package e107
- * @subpackage	admin
- * @version $Id$
- *
- * Manage site navigation links
  */
 
 require_once("../class2.php");
+
 if (!getperms("I"))
 {
 	e107::redirect('admin');
@@ -77,13 +68,13 @@ class links_admin_ui extends e_admin_ui
 	public $sublink_data = null;
 
 	protected $fields = array(
-		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true, 'thclass' => 'center first','class' => 'center first'),
-		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center', 'writeParms'=>'glyphs=1'),
-		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method','readParms'=>'','noedit'=>TRUE),
-		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' =>false, 'validate' => false), // not required as only an icon may be used.
-	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
-    
-    	'link_parent' 		=> array('title'=> LCLAN_104, 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'checkboxes' 		=> array('title'=> '',				'width' => '3%',		'forced' => true,	'thclass'=>'center first',	'class'=>'center first'),
+		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',		'writeParms'=>'glyphs=1'),
+		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method',		'readParms'=>'',	'noedit'=>TRUE),
+		'link_name'			=> array('title'=> LAN_NAME,		'type'=>'text',			'inline'=>true,		'required'=>false,		'validate'=>false,	'width'=>'auto'), // not required as only an icon may be used.
+		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',		'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto'),
+
+		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first'),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),

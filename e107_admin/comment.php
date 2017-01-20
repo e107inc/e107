@@ -73,7 +73,7 @@ class comments_admin_ui extends e_admin_ui
 	
 	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
-			'comment_item_id' 		=> array('title'=> LAN_ITEM." ".LAN_ID,		'type' => 'text',	'readonly'=>2, 'data'=>'int',		'width' => '5%'),
+			'comment_item_id' 		=> array('title'=> LAN_ITEM,		'type' => 'text',	'readonly'=>2, 'data'=>'int',		'width' => '5%'),
          	'comment_subject' 		=> array('title'=> LAN_SUBJECT,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'writeParms'=>array('size'=>'xxlarge')), // Display name
          	'comment_comment' 		=> array('title'=> LAN_COMMENTS,		'type' => 'textarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'size=xxlarge'), // Display name
 		 	'comment_author_id' 	=> array('title'=> LAN_AUTHOR,		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id

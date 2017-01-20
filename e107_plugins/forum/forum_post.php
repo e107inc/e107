@@ -1228,7 +1228,7 @@ class forum_post_handler
 			if($postResult === -1 || $newPostId === -1) //Duplicate post
 			{
 				require_once(HEADERF);
-				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>Return</a>";
+				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>".LAN_FORUM_8028."</a>";
 				$text = e107::getMessage()->addError($message)->render();
 				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text); // change to forum-title pref.
 				require_once(FOOTERF);
@@ -1282,7 +1282,7 @@ class forum_post_handler
 				$txt = e107::getParser()->parseTemplate($txt,true, $SHORTCODES);
 
 
-				e107::getRender()->tablerender('Forums', e107::getMessage()->render().$txt);
+				e107::getRender()->tablerender(e_PAGETITLE, e107::getMessage()->render().$txt);
 				require_once(FOOTERF);
 				exit;
 			}

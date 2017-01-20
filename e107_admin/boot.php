@@ -8,8 +8,6 @@
  *
  * Admin BootLoader
  *
- * $URL$
- * $Id$
 */
 
 if (!defined('e107_INIT'))
@@ -115,7 +113,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 			$text .= '<div class="media">';
 			$text .= '<div class="media-left">
 		    <a href="'.$link.'">
-		      <img class="media-object img-rounded" src="'.$img.'" style="width:100px">
+		      <img class="media-object img-rounded rounded" src="'.$img.'" style="width:100px">
 		    </a>
 		  </div>
 		  <div class="media-body">
@@ -165,14 +163,8 @@ e107::coreLan('footer', true);
 }
 
 
-
-
-
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 include_once(e107::coreTemplatePath('admin_icons'));
-
-
-
 
 
 if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))

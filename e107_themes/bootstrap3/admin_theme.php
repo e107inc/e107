@@ -104,6 +104,8 @@ class bootstrap3_admintheme
 	//	echo "Style: ".$style;
 
 		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
+		echo "<!-- Style: ".$style." -->\n\n";
+			echo "<!-- Mode: ".$mode." -->";
 		$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help')
@@ -160,6 +162,13 @@ class bootstrap3_admintheme
 			'site_info'      => 'panel-default',
 			'flexpanel'      => 'panel-default',
 		);
+
+		if($data['uniqueId'] === 'e-latest-list' || $data['uniqueId'] === 'e-status-list')
+		{
+			$style = 'lists';
+		}
+
+
 		
 		switch(varset($style, 'admin_content'))
 		{
@@ -184,6 +193,17 @@ class bootstrap3_admintheme
 					  <div class="panel-body">
 					    ' . $text . '
 					  </div>
+					</div>';
+				break;
+
+			case 'lists':
+				echo '<div class="panel panel-default" id="' . $data['uniqueId'] . '">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
 					</div>';
 				break;
 

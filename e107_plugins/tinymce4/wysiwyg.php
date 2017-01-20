@@ -533,6 +533,13 @@ class wysiwyg
                     {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
                 ]},
 
+                  {title: 'Lists', items: [
+                    {title: 'FontAwesome', selector: 'ul', classes: 'fa-ul' },
+                    {title: 'FontAwesome List Icon', selector: 'i', classes: 'fa-li' },
+                    {title: 'Bootstrap Listgroup', selector: 'ul', classes: 'list-group' },
+                    {title: 'Bootstrap Listgroup Item', selector: 'li', classes: 'list-group-item' },
+                ]},
+
                 {title: 'Alignment', items: [
                     {title: 'Left', block: 'div', classes: 'text-left',  icon: 'alignleft'},
                     {title: 'Center', block: 'div',classes: 'text-center', icon: 'aligncenter'},
@@ -580,8 +587,8 @@ class wysiwyg
                 ]},
 
 				 {title: 'Bootstrap Images', items: [
-				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive'},
-				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded'},
+				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive img-fluid'},
+				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded rounded'},
 				 {title: 'Circle', selector: 'img', classes: 'img-circle'},
                  {title: 'Thumbnail', selector: 'img', classes: 'img-thumbnail'},
                 ]},
@@ -614,6 +621,8 @@ class wysiwyg
         {title: 'Button (Warning)', value: 'btn btn-warning'},
         {title: 'Button (Danger)', value: 'btn btn-danger'}
     ]";
+
+
 
 	/*	$ret['setup'] = "function(ed) {
       ed.addMenuItem('test', {

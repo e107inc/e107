@@ -625,7 +625,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 			case 'html':
 			default:
-				$target.html(data).hide().show("slow");
+				$target.html(data); // .hide().show("slow"); //XXX this adds display:block by default which breaks loading content within inactive tabs.
 				break;
 		}
 

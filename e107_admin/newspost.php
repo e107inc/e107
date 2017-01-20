@@ -27,9 +27,6 @@ e107::css('inline', "
 
 ");
 
-
-
-
 class news_admin extends e_admin_dispatcher
 {
 
@@ -509,6 +506,9 @@ class news_admin_ui extends e_admin_ui
 
 		$new_data['news_sef'] =  empty($new_data['news_sef']) ?  eHelper::title2sef($new_data['news_title']) : eHelper::secureSef($new_data['news_sef']);
 
+		$this->checkSEFSimilarity($new_data);
+
+
 		$tmp = explode(chr(35), $new_data['news_author']);
 		$new_data['news_author'] = intval($tmp[0]);
 
@@ -566,6 +566,9 @@ class news_admin_ui extends e_admin_ui
 			$new_data['news_sef'] = eHelper::title2sef($new_data['news_title']);
 		}
 
+
+		$this->checkSEFSimilarity($new_data);
+
 		if(!empty($new_data['news_author']))
 		{
 			$tmp = explode(chr(35), $new_data['news_author']);
@@ -578,6 +581,30 @@ class news_admin_ui extends e_admin_ui
 		}
 
 		return $new_data;
+	}
+
+
+	/**
+	 * Display a warning if there is a mismatch with the SEF Url.
+	 * @param $new_data
+	 */
+	private function checkSEFSimilarity($new_data)
+	{
+		if(e_LANGUAGE === "Japanese" || e_LANGUAGE === "Korean")
+		{
+			return null;
+		}
+
+
+		$expectedSEF = eHelper::title2sef($new_data['news_title']);
+		similar_text($expectedSEF,$new_data['news_sef'],$percSimilar);
+
+		if($percSimilar < 60)
+		{
+			e107::getMessage()->addWarning(LAN_NEWS_108); // The SEF URL is unlike the title of your news item.
+		}
+
+
 	}
 
 
