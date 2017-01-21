@@ -1,3 +1,6 @@
 body { padding: 10px;  }
 div.clearfix:before { color:silver; content: "CLEAR FLOATS"; font-size:0.7em; padding-left:49%; padding-top:15px;   }
 div.clearfix { margin-bottom:10px;  }
+ul.fa-ul { padding-left:5px}
+.mce-visualblocks li { outline: 1px dashed silver; }
+.mce-visualblocks ul.fa-ul { padding-left:30px }

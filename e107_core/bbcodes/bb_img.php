@@ -133,7 +133,7 @@ class bb_img extends e_bb_base
 
 	    $imgParms['title'] = $imgParms['alt'] ;
         
-        $imgParms['class']      = "img-rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified        
+        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified
         
         if($mode == 'string')
 		{
