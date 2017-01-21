@@ -53,6 +53,39 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 })(jQuery);
 
+(function (jQuery)
+{
+
+	/**
+	 * jQuery extension to make admin tab 'fadeIn' with 'display: inline-block'.
+	 *
+	 * @param displayMode
+	 *  A string determining display mode for element after the animation.
+	 *  Default: 'inline-block'.
+	 * @param duration
+	 *  A string or number determining how long the animation will run.
+	 *  Default: 400.
+	 */
+	jQuery.fn.fadeInAdminTab = function (displayMode, duration)
+	{
+		var $this = $(this);
+
+		if($this.css('display') !== 'none')
+		{
+			return;
+		}
+
+		displayMode = displayMode || 'inline-block';
+		duration = duration || 400;
+
+		$this.fadeIn(duration, function ()
+		{
+			$this.css('display', displayMode);
+		});
+	};
+
+})(jQuery);
+
 
 $(document).ready(function()
 {
