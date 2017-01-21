@@ -4025,6 +4025,10 @@ class e_form
 				// else same
 			break;
 
+			case 'country':
+				$value = $this->getCountry($value);
+			break;
+
 			case 'ip':
 				//$e107 = e107::getInstance();
 				$value = "<span title='".$value."'>".e107::getIPHandler()->ipDecode($value).'</span>';;
@@ -4948,6 +4952,10 @@ class e_form
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner ';
 				if(!$value) $value = '0';
 				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
+			break;
+
+			case 'country':
+				$ret = vartrue($parms['pre']).$this->country($key, $value).vartrue($parms['post']);
 			break;
 
 			case 'ip':

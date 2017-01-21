@@ -3641,6 +3641,38 @@ class e_parser
 	}
 
 
+	/**
+	 * @param $text
+	 * @return string
+	 */
+	public function toLabel($text, $type = null)
+	{
+		if($type === null)
+		{
+			$type = 'default';
+		}
+
+		$tmp = explode(",",$text);
+
+		$opt = array();
+		foreach($tmp as $v)
+		{
+			$opt[] = "<span class='label label-".$type."'>".$v."</span>";
+		}
+
+		return implode(" ",$opt);
+	}
+
+	/**
+	 * Take a file-path and convert it to a download link.
+	 * @todo
+	 * @param $text
+	 * @return string
+	 */
+	public function toFile($text)
+	{
+
+	}
 
 	/**
 	 * Render an avatar based on supplied user data or current user when missing. 
