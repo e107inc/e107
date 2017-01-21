@@ -98,7 +98,7 @@ define("EXTLAN_81", "Add Custom Field");
 define("EXTLAN_82", "Values"); 
 define("EXTLAN_83", "Placeholder"); 
 define("EXTLAN_84", "Help Tip"); 
-define("EXTLAN_85", "Write Access"); 
+
 define("EXTLAN_86", "User Extended Column deleted from table"); 
 define("EXTLAN_87", "Sort values"); 
 
