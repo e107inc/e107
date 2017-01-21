@@ -796,26 +796,27 @@ class page_admin_ui extends e_admin_ui
 				$tabId = 'additional';
 
 				$data = array(
-						'tabs'	=>  $this->getTabs(),
-						'legend' => '',
-						'fields' => $this->getFields(),
+					'tabs'   => $this->getTabs(),
+					'legend' => '',
+					'fields' => $this->getFields(),
 				);
 
 				$text = $this->getUI()->renderCreateFieldset($elid, $data, $model, $tabId);
-				$displayMode = 'inline-block';
+
+				$ajax = e107::getAjax();
+				$commands = array();
 
 				if(empty($text))
 				{
 					$text = ""; // There are no additional fields for the selected chapter.
-					$displayMode = 'none';
+					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeOut');
+				}
+				else
+				{
+					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeInAdminTab');
 				}
 
-				$ajax = e107::getAjax();
-
-				$commands = array();
 				$commands[] = $ajax->commandInvoke('#tab' . $tabId, 'html', array($text));
-				// Show/hide tab.
-				$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'css', array('display', $displayMode));
 
 				$ajax->response($commands);
 				exit;
