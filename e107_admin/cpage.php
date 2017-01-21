@@ -134,7 +134,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 			
-			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
 			
 			return $text;
 		}
@@ -190,7 +190,7 @@ class page_chapters_ui extends e_admin_ui
 		function init()
 		{
 
-			if(e_DEBUG === true)
+		//	if(e_DEBUG === true)
 			{
 				e107::getMessage()->addWarning("Experimental: Custom Fields");
 				$this->tabs = array(LAN_GENERAL,"Custom Fields");
@@ -369,17 +369,17 @@ class page_chapters_form_ui extends e_admin_form_ui
 				<col style='width:40%' />
 			</colgroup>
 			<tbody>
-				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th></tr>
+				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th><th>".LAN_TOOLTIP."</th></tr>
 				";
 
-			for ($i = 0; $i <= 10; $i++)
+			for ($i = 0; $i <= 20; $i++)
 			{
 				$fieldName = $this->text('chapter_fields['.$i.'][key]',$value[$i]['key'],30, array('pattern'=>'^[a-z0-9-]*'));
 				$fieldTitle = $this->text('chapter_fields['.$i.'][title]',$value[$i]['title'], 80);
 				$fieldType = $this->select('chapter_fields['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], 'useValues=1&default=blank');
-				$fieldParms = $this->text('chapter_fields['.$i.'][writeParms]',$value[$i]['writeParams'], 80, array('size'=>'xxlarge'));
-
-			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td></tr>";
+				$fieldParms = $this->text('chapter_fields['.$i.'][writeParms]',$value[$i]['writeParms'], 80, array('size'=>'block-level'));
+				$fieldHelp = $this->text('chapter_fields['.$i.'][help]',$value[$i]['help'], 80, array('size'=>'block-level'));
+			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td><td>".$fieldHelp."</td></tr>";
 			}
 
 			$text .= "</tbody></table>";
@@ -702,7 +702,7 @@ class page_admin_ui extends e_admin_ui
 				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');
 
 
-				if(e_DEBUG)
+				if(deftrue('e_DEBUG'))
 				{
 					$this->fields['menu_name']['inline'] = true;
 				}
@@ -752,8 +752,7 @@ class page_admin_ui extends e_admin_ui
 			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
 			
 			$sql = e107::getDb();
-			
-			$chapterFields = array();
+
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
 			while($row = $sql->fetch())
 			{
@@ -781,10 +780,9 @@ class page_admin_ui extends e_admin_ui
 			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
 			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
-			if(e_DEBUG !== false && $this->getAction() === 'create')
+			if($this->getAction() === 'create')
 			{
 				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
-
 			}
 
 			if(e_AJAX_REQUEST && isset($_POST['page_chapter']) ) //&& $this->getAction() === 'chapter-change'
@@ -883,7 +881,7 @@ class page_admin_ui extends e_admin_ui
 
 			if(!deftrue('e_DEBUG'))
 			{
-				return;
+		//		return;
 			}
 
 
