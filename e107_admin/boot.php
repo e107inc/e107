@@ -15,7 +15,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-
+e107::getDb()->db_Mark_Time('(Start boot.php)');
 header('Content-type: text/html; charset=utf-8', TRUE);
 
 define('ADMINFEED', 'https://e107.org/adminfeed');

@@ -69,10 +69,10 @@ require_once(e_ADMIN.'boot.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'upload_handler.php');
 
-
+e107::getDb()->db_Mark_Time('(Start Admin Checks)');
 new admin_start;
 
-
+e107::getDb()->db_Mark_Time('(After Admin Checks)');
 $mes = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn't be needed - but just in case
@@ -153,8 +153,10 @@ class admin_start
 
 		e107::getDb()->db_Mark_Time('Check Paths');
 		$this->checkPaths();
+
 		e107::getDb()->db_Mark_Time('Check Timezone');
 		$this->checkTimezone();
+
 		e107::getDb()->db_Mark_Time('Check Writable');
 		$this->checkWritable();
 

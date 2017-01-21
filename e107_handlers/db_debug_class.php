@@ -352,8 +352,8 @@ class e107_db_debug {
 	}
 
 
-		function Show_Performance()
-		{
+	function Show_Performance()
+	{
 			//
 			// Stats by Time Marker
 			//
@@ -382,6 +382,24 @@ class e107_db_debug {
 			$aSum['DB Count'] = 0;
 			$aSum['Memory'] = 0;
 
+			// Calculate Memory Usage per entry.
+			$prevMem = 0;
+
+			foreach($this->aTimeMarks as $k=>$v)
+			{
+
+				$prevKey = $k-1;
+
+				if(!empty($prevKey))
+				{
+					$this->aTimeMarks[$prevKey]['Memory Used'] = (intval($v['Memory']) - $prevMem);
+				}
+
+				$prevMem = intval($v['Memory']);
+			}
+
+
+
 			while(list($tKey, $tMarker) = each($this->aTimeMarks))
 			{
 				if(!$bRowHeaders)
@@ -405,27 +423,32 @@ class e107_db_debug {
 					}
 					$aUnits['OB Lev'] = 'lev(buf bytes)';
 					$aUnits['Memory'] = '(kb)';
+					$aUnits['Memory Used'] = '(kb)';
 					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
 				}
 
 
 
-				$tMem =   ($tMarker['Memory'] - $aSum['Memory']);
+			//	$tMem =   ($tMarker['Memory'] - $aSum['Memory']);
+
+				$tMem =   ($tMarker['Memory']);
 
 				if($tMem < 0) // Quick Fix for negative numbers.
 				{
-					$tMem = 0.0000000001;
+				//	$tMem = 0.0000000001;
 				}
 
 				$tMarker['Memory'] = ($tMem ? number_format($tMem / 1024.0, 1) : '?'); // display if known
 
+				$tUsage = $tMarker['Memory Used'];
+				$tMarker['Memory Used'] = number_format($tUsage / 1024.0, 1);
 
-				if($tMem > 400000) // Highlight high memory usage.
+				if($tUsage > 400000) // Highlight high memory usage.
 				{
-					$tMarker['Memory'] = "<span class='label label-danger'>".$tMarker['Memory']."</span>";
+					$tMarker['Memory Used'] = "<span class='label label-danger'>".$tMarker['Memory Used']."</span>";
 				}
 
-				$aSum['Memory'] += $tMem;
+			//	$aSum['Memory'] += $tMem;
 
 				if($tMarker['What'] == 'Stop')
 				{
