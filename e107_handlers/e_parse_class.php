@@ -3669,9 +3669,16 @@ class e_parser
 	 * @param $text
 	 * @return string
 	 */
-	public function toFile($text)
+	public function toFile($text, $parm=array())
 	{
+		$link = e_HTTP."request.php?".str_replace('{e_MEDIA_FILE}', '',$text);
 
+		if(!empty($parm['raw']))
+		{
+			return $link;
+		}
+
+		return "<a href='".$link."'>-attachment-</a>"; //TODO Add pref for this. 
 	}
 
 	/**

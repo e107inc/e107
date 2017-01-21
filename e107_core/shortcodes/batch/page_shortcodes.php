@@ -685,6 +685,10 @@ class cpage_shortcodes extends e_shortcode
 					return ($raw) ? $value : $tp->toDate($value);
 					break;
 
+				case "file":
+					return ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
+					break;
+
 				case "url":
 				case "email":
 					return ($raw) ? $value : $tp->toHtml($value);
