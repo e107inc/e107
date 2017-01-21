@@ -1310,7 +1310,7 @@ class e_parse_shortcode
 
 		if (E107_DBG_SC || E107_DBG_TIMEDETAILS)
 		{
-			$sql->db_Mark_Time("(After SC {$code})");
+		//	$sql->db_Mark_Time("(After SC {$code})");
 		}
 		
 		if (($noDebugLog != true) && (E107_DBG_BBSC || E107_DBG_SC || E107_DBG_TIMEDETAILS))

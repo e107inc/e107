@@ -176,6 +176,7 @@ class e107Update
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
+		$sql = e107::getDb();
 
 
 	//	foreach($this->core as $func => $data)
@@ -258,6 +259,7 @@ class e107Update
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$sql = e107::getDb();
 		
 		$text = "";
 
@@ -373,8 +375,11 @@ function update_check()
 		
 		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
+
 		  if (function_exists('update_'.$func))
 			{
+
+				$sql->db_Mark_Time('Check Core Update_'.$func.' ');
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
@@ -388,6 +393,7 @@ function update_check()
 		{
 			if (function_exists('update_'.$func))
 			{
+			//	$sql->db_Mark_Time('Check Core Update_'.$func.' ');
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
@@ -588,6 +594,7 @@ function update_core_database($type = '')
 //--------------------------------------------
 function update_706_to_800($type='')
 {
+
 	global $pref, $e107info;
 	global $sysprefs, $eArrayStorage;
 
@@ -1744,6 +1751,7 @@ function core_media_import($cat,$epath)
 
 function update_70x_to_706($type='')
 {
+
 	global $sql,$ns, $pref, $e107info, $admin_log, $emessage;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;
