@@ -517,10 +517,8 @@ require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
 $e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
 													// @TODO: Does core object manager need to know somehow?
 
-require_once(e_HANDLER.'form_handler.php');
-
-
-$frm = new e_form();
+$frm = e107::getForm();
+ 
 // $uc = new uclass_manager;
 $mes = e107::getMessage();
 
