@@ -513,14 +513,13 @@ e107::coreLan('userclass2', true);
 $e_sub_cat = 'userclass';
 //define('UC_DEBUG_OPTS',FALSE);
 
-require_once(e_HANDLER.'userclass_class.php');		// Modified class handler
-$e_userclass = new user_class_admin;				// Admin functions - should just obliterate any previous object created in class2.php
-													// @TODO: Does core object manager need to know somehow?
-
-require_once(e_HANDLER.'form_handler.php');
+$e_userclass = e107::user_class_admin(); // Modified class handler
+	// Admin functions - should just obliterate any previous object created in class2.php
+	// @TODO: Does core object manager need to know somehow?
 
 
-$frm = new e_form();
+$frm = e107::getForm();
+ 
 // $uc = new uclass_manager;
 $mes = e107::getMessage();
 
