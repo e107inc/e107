@@ -2839,7 +2839,7 @@ class e107plugin
 	{
 		if(empty($dir))
 		{
-			return;	
+			return null;
 		}	
 		
 		global $sysprefs, $mySQLprefix;
@@ -2854,7 +2854,7 @@ class e107plugin
 		
 		if(!is_array($plug))
 		{
-			return "'{$id}' is missing from the plugin db table";	
+			return "'{$dir}' is missing from the plugin db table";
 		}
 		
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
