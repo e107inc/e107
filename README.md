@@ -2,6 +2,10 @@
 
 [![Join the chat at https://gitter.im/e107inc/e107](https://badges.gitter.im/e107inc/e107.svg)](https://gitter.im/e107inc/e107?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/508c87e10e594ab4800cea0a3c501cda)](https://www.codacy.com/app/reconix/e107?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Reconix/e107&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://scrutinizer-ci.com/g/Reconix/e107/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Reconix/e107/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Reconix/e107/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Reconix/e107/?branch=master)
+
 ### What is e107?
 e107 is a free (open-source) content management system which allows you to easily manage and publish your content online. Developers can save time in building websites and powerful online applications. Users can avoid programming completely! Blogs, Websites, Intranets - e107 does it all. 
 
