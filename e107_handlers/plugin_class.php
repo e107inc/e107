@@ -277,11 +277,11 @@ class e107plugin
 		foreach($plugVersions as $path=>$version)
 		{
 			$fullPath = e_PLUGIN.$path."/plugin.xml";
-			if(is_file(e_PLUGIN.$path."/plugin.xml"))
+			if(file_exists(e_PLUGIN.$path."/plugin.xml"))
 			{	
 				$data = $xml->loadXMLfile($fullPath, true);
 				
-				if(!in_array($path, $this->core_plugins)) // check non-core plugins for sql file changes. 
+				if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes. 
 				{
 					$dbv->errors = array();
 					$dbv->compare($path);
