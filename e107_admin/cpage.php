@@ -431,10 +431,6 @@ class page_chapters_form_ui extends e_admin_form_ui
 				return 'eg. { "optArray": { "blue": "Blue", "green": "Green", "red": "Red" }, "default": "blank" }';
 				break;
 
-			case "tags":
-				return 'eg. tag1,tag2,tag3,tag4';
-				break;
-
 			case "datestamp":
 				return 'eg. (Optional) { "format": "yyyy-mm-dd" }';
 			break;
