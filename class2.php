@@ -446,21 +446,27 @@ e107_require_once(e_HANDLER.'php_compatibility_handler.php');
 //
 // L: Extract core prefs from the database
 //
-$sql->db_Mark_Time('Extract Core Prefs');
+
 
 // TODO - remove it from here, auto-loaded when required
+$sql->db_Mark_Time('Load Cache Handler');
 e107_require_once(e_HANDLER.'cache_handler.php');
 
 //DEPRECATED, BC, call the method only when needed, $e107->arrayStorage caught by __get()
+$sql->db_Mark_Time('Load Array Storage Handler');
 e107_require_once(e_HANDLER.'arraystorage_class.php'); // ArrayData(); BC Fix only. 
 $eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage with e107::getArrayStorage();
 
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
+$sql->db_Mark_Time('Load Event Handler');
 $e_event = e107::getEvent(); //TODO - find & replace $e_event, $e107->e_event
 
 // TODO - DEPRECATED - remove
+
+$sql->db_Mark_Time('Load Core Prefs');
 e107_require_once(e_HANDLER."pref_class.php");
 $sysprefs = new prefs;
+
 
 // Check core preferences
 //FIXME - message_handler is dying after message_handler(CRITICAL_ERROR) call
@@ -515,6 +521,7 @@ $pref = e107::getPref();
 // $e107->set_base_path(); moved to init().
 
 //DEPRECATED, BC, call e107::getConfig('menu')->get('pref_name') only when needed
+$sql->db_Mark_Time('Load Menu Prefs');
 $menu_pref = e107::getConfig('menu')->getPref(); //extract menu prefs
 
 // NEW - force ssl
@@ -627,6 +634,7 @@ if(!empty($pref['redirectsiteurl']) && !empty($pref['siteurl'])) {
 // - Language detection (because of session.cookie_domain)
 // to avoid multi-language 'access-denied' issues.
 //session_start(); see e107::getSession() above
+$sql->db_Mark_Time('Load Session Handler');
 e107::getSession(); //init core _SESSION - actually here for reference only, it's done by language handler set() method
 $sql->db_Mark_Time('Set User Language Session');
 e107::getLanguage()->set();  // set e_LANGUAGE, USERLAN, Language Session / Cookies etc. requires $pref;

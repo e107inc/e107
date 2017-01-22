@@ -281,7 +281,7 @@ class e107plugin
 			{	
 				$data = $xml->loadXMLfile($fullPath, true);
 				
-				if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes. 
+				if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
 				{
 					$dbv->errors = array();
 					$dbv->compare($path);
