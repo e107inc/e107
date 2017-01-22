@@ -53,6 +53,7 @@ if(is_readable(e_ADMIN.'ver.php'))
 }
 
 $mes = e107::getMessage();
+/*
 // If $dont_check_update is both defined and TRUE on entry, a check for update is done only once per 24 hours.
 $dont_check_update = varset($dont_check_update, FALSE);
 
@@ -69,8 +70,9 @@ if ($dont_check_update === TRUE)
 		}
 	}
 }
+*/
 
-
+$dont_check_update = false;
 
 if (!$dont_check_update)
 {

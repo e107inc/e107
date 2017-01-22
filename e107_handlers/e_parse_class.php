@@ -3678,7 +3678,7 @@ class e_parser
 			return $link;
 		}
 
-		return "<a href='".$link."'>-attachment-</a>"; //TODO Add pref for this. 
+		return "<a href='".$link."'>-attachment-</a>"; //TODO Add pref for this.
 	}
 
 	/**
