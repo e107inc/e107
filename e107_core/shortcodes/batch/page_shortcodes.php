@@ -652,6 +652,9 @@ class cpage_shortcodes extends e_shortcode
 
 		$fieldType       = $fields[$key]['type'];
 
+	//	print_a($fields);
+
+
 		// @todo Move this part to form_handler or e_parse somewhere.
 
 		if(isset($fieldData[$key]))
@@ -660,6 +663,12 @@ class cpage_shortcodes extends e_shortcode
 
 			switch($fieldType)
 			{
+				case "dropdown":
+				case "checkboxes":
+				case "radio":
+					return ($raw) ? $value : e107::getForm()->renderValue($key,$value,$fields[$key]);
+				break;
+
 				case "image":
 					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
 					break;
@@ -727,6 +736,7 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagefields($parm=null)
 	{
 		$fieldData  = e107::unserialize($this->var['page_fields']);
+
 
 		$text = '<table class="table table-bordered table-striped">
 		<tr><th>Name</th><th>Title<br /><small>&#123;CPAGEFIELDTITLE: name=x&#125;</small></th><th>Normal<br /><small>&#123;CPAGEFIELD: name=x&#125;</small></th><th>Raw<br /><small>&#123;CPAGEFIELD: name=x&mode=raw&#125;</small></th></tr>';

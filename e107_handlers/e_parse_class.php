@@ -3995,6 +3995,30 @@ class e_parser
 	}
 
 
+	/**
+	 * Check if string is json and parse or return false.
+	 * @param $text
+	 * @return bool|mixed return false if not json, and json values if true.
+	 */
+	public function isJSON($text)
+	{
+		 if(substr($text,0,1) === '{' || substr($text,0,1) === '[') // json
+	    {
+	        $dat = json_decode($text, true);
+
+	        if(json_last_error() !=  JSON_ERROR_NONE)
+	        {
+		        //   e107::getDebug()->log("Json data found");
+	           return false;
+	        }
+
+	        return $dat;
+	    }
+
+		return false;
+
+	}
+
 
 
 	/**
