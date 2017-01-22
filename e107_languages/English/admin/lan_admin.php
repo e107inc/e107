@@ -509,7 +509,7 @@ define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
 define("LAN_CHANGE_LANGUAGE", "Change Language");
 
-define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for download."); // x= Name  y = Theme | Plugin
+define("LAN_NEWER_VERSION_OF_X", "A newer version of the [x] [y] is available for [z]."); // x= Name  y = Theme | Plugin z = Download text & icon link
 
 define("LAN_SUBJECT", "Subject");
 define("LAN_ITEM", "Item");
