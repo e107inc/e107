@@ -665,12 +665,13 @@ echo "</head>\n";
 
 	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
 
-	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
+	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 
 
 
 if(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
+	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
 }
 else
