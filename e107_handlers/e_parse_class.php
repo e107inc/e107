@@ -2584,6 +2584,16 @@ class e_parse extends e_parser
 			$parm['crop'] = null;
 		}
 
+		$defaultWidth = $this->thumbWidth();
+		$defaultHeight = $this->thumbHeight();
+
+
+		if(empty($defaultWidth) && empty($defaultHeight))
+		{
+			return false;
+		}
+
+
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
 
 	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
@@ -3906,10 +3916,18 @@ class e_parser
 
 			unset($parm['src']);
 			$path = $tp->thumbUrl($file,$parm);
-			$srcSetParm = $parm;
-			$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
 
-			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+
+			if(empty($parm['w']) && empty($parm['h']))
+			{
+				$parm['srcset'] = false;
+			}
+			else
+			{
+				$srcSetParm = $parm;
+				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+			}
 
 		}
 		elseif(strpos($file,'http')===0)
