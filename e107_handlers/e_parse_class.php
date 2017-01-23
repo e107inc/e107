@@ -2584,23 +2584,11 @@ class e_parse extends e_parser
 			$parm['crop'] = null;
 		}
 
-		$defaultWidth = $this->thumbWidth();
-		$defaultHeight = $this->thumbHeight();
-
-
-		if(empty($defaultWidth) && empty($defaultHeight))
-		{
-			return false;
-		}
-
-
 		$parms = array('w'=>$width,'h'=>$height,'crop'=> $parm['crop'],'x'=>$parm['x'], 'aw'=>$parm['aw'],'ah'=>$parm['ah']);
 
 	//	$parms = !empty($this->thumbCrop) ? array('aw' => $width, 'ah' => $height, 'x'=>$encode) : array('w'  => $width,	'h'  => $height, 'x'=>$encode	);
 
 		// $parms['x'] = $encode;
-
-
 
 		if(!empty($parm['return']) && $parm['return'] == 'src')
 		{
