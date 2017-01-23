@@ -1,7 +1,7 @@
 //<?
 global $sql,$sysprefs,$SEARCH_SHORTCODE;
 
-include_lan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 $text = "";
 if (!isset($SEARCH_SHORTCODE)) 
 {

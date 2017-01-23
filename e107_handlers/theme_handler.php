@@ -653,7 +653,7 @@ class themeHandler
 		{
 			$key = key($_POST['installplugin']);
 			
-			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
 			require_once (e_HANDLER."plugin_class.php");
 			
 			$eplug = new e107plugin;
@@ -664,7 +664,7 @@ class themeHandler
 		if(isset($_POST['setMenuPreset']))
 		{
 			$key = key($_POST['setMenuPreset']);
-			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 			require_once (e_HANDLER."menumanager_class.php");
 			$men = new e_menuManager();
 			$men->curLayout = $key;
@@ -2290,7 +2290,7 @@ class themeHandler
 	
 	function showPreview()
 	{
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
 		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
 		global $ns;
 		$ns->tablerender(TPVLAN_2, $text);

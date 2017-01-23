@@ -20,7 +20,7 @@ e107::css('inline',"
 ");
 
 e107::coreLan('cpage', true);
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_page.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_page.php');
 
 $e_sub_cat = 'custom';
 

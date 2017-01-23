@@ -32,7 +32,7 @@ if (!getperms('4'))
 	exit() ;
 }
 
-include_lan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
 require_once(e_ADMIN.'auth.php');
 
 require_once(e_PLUGIN.'login_menu/login_menu_class.php');

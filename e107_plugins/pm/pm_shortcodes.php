@@ -28,7 +28,7 @@
 
 //if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');	
+e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 include_once(e_PLUGIN.'pm/pm_func.php');
 
 // register_shortcode('pm_handler_shortcodes', true);
