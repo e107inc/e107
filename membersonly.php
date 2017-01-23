@@ -18,7 +18,7 @@
 */
 require_once("class2.php");
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 	if(deftrue('BOOTSTRAP')) //v2.x
 	{

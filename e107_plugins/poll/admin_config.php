@@ -17,7 +17,7 @@ if (!getperms("P") || !e107::isInstalled('poll'))
 }
 $e_sub_cat = 'poll';
 
-include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
+e107::includeLan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."userclass_class.php");

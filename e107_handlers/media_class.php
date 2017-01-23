@@ -37,7 +37,7 @@ class e_media
 			$this->logging = true; 	
 		}
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
 	}
 
 

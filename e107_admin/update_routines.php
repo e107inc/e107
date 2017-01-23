@@ -21,7 +21,7 @@
 
 require_once('../class2.php');
 require_once(e_HANDLER.'db_table_admin_class.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function
 //		- reduces code size typically 30%.
 //		- keeping check and update code together should improve clarity/reduce mis-types etc

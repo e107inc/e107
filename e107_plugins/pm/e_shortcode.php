@@ -23,7 +23,7 @@ class pm_shortcodes extends e_shortcode
 
 	function __construct()
 	{
-		include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+		e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 		require_once(e_PLUGIN."pm/pm_func.php");
 
 		$this->pm = new pmbox_manager();

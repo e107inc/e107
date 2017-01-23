@@ -9,7 +9,7 @@
  */
 
 if (!defined('e107_INIT')) { exit(); }
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
+e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php');
 
 function forum_thread_moderate($p)
 {

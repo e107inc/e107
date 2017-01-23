@@ -3,7 +3,7 @@
 //              BEGIN CONFIGURATION AREA
 //---------------------------------------------------------------
 if (!defined('e107_INIT')){ exit; } 
-include_lan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
 
   $helptitle = XMLRPC_HELP_001;
 //

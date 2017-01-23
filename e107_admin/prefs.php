@@ -1575,7 +1575,7 @@ $text .= "
 	
 // File Uploads
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
 	require_once(e_HANDLER."upload_handler.php"); 
 	
 	

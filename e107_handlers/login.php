@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 
 
 // require_once(e_HANDLER.'user_handler.php'); //shouldn't be necessary
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
 
 // TODO - class constants
 define ('LOGIN_TRY_OTHER', 2);		// Try some other authentication method

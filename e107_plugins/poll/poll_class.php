@@ -10,7 +10,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
 define('POLLCLASS', TRUE);
 define('POLL_MODE_COOKIE', 0);
 define('POLL_MODE_IP', 1);

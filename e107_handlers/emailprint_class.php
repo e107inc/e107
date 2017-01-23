@@ -16,8 +16,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_print.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
 
 class emailprint 
 {

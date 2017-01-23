@@ -19,7 +19,7 @@ if (!getperms('1'))
 	 exit ;
 }
 require_once(e_ADMIN.'auth.php');
-include_lan(e_PLUGIN.'clock_menu/languages/admin/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'clock_menu/languages/admin/'.e_LANGUAGE.'.php');
 
 $frm = e107::getForm();
 $mes = e107::getMessage();

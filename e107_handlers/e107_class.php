@@ -2764,7 +2764,7 @@ class e107
 
 	/**
 	 * Load language file, replacement of include_lan()
-	 *
+	 * @outdated use e107::lan() or e107::coreLan(), e107::plugLan(), e107::themeLan()
 	 * @param string $path
 	 * @param boolean $force
 	 * @return string

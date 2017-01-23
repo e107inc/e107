@@ -26,7 +26,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-include_lan(e_PLUGIN.'/pm/languages/English_mailer.php');
+e107::includeLan(e_PLUGIN.'/pm/languages/English_mailer.php');
 
 class pm_cron // include plugin-folder in the name.
 {

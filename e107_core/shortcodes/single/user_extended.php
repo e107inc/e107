@@ -65,7 +65,7 @@
 		/**
 		 *	@todo - must be a better way of picking up the 'Miscellaneous' category
 		 */
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 
 
 		if (($parms[1] != 'icon') && ($parms[0] != LAN_USER_44))
