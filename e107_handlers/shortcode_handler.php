@@ -107,10 +107,15 @@ class e_parse_shortcode
 		// $_SESSION['editable'] = array();
 
 		$this->ignoreCodes = e107::getParser()->getUrlConstants(); // ignore all URL shortcodes. ie. {e_PLUGIN}
-		$this->loadOverrideShortcodes();
-		$this->loadThemeShortcodes();
-		$this->loadPluginShortcodes();
-		$this->loadPluginSCFiles();
+
+		if(e_ADMIN_AREA !== true)
+		{
+			$this->loadOverrideShortcodes();
+			$this->loadThemeShortcodes();
+			$this->loadPluginShortcodes();
+			$this->loadPluginSCFiles();
+
+		}
 		//$this->loadCoreShortcodes(); DEPRECATED
 
 		$editableActivePref = e107::getPref('inline_editing',255);
