@@ -448,7 +448,7 @@ class e107_db_debug {
 					$tMarker['Memory Used'] = "<span class='label label-danger'>".$tMarker['Memory Used']."</span>";
 				}
 
-			//	$aSum['Memory'] += $tMem;
+				$aSum['Memory'] = $tMem;
 
 				if($tMarker['What'] == 'Stop')
 				{
@@ -511,7 +511,9 @@ class e107_db_debug {
 		<td class='fcaption' style='text-align:right' title='DB Time (msec)'><b>" . $aSum['DB Time'] . "</b></td>
 		<td class='fcaption' style='text-align:right'><b>" . $aSum['DB Count'] . "</b></td>
 		<td class='fcaption' style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
-		<td class='fcaption' style='text-align:right'><b>" . $tMarker['OB Lev'] . "</b></td>
+		<td class='fcaption' style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
+
+			<td class='fcaption' style='text-align:right'><b>" . $tMarker['OB Lev'] . "</b></td>
 
 		</tr>
 		";
