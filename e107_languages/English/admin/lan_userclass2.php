@@ -103,8 +103,7 @@ define("UCSLAN_87", "Recently joined users");
 define("UCSLAN_88", "Identified search bots");
 define("UCSLAN_89", "Checked classes are members of the group");
 define("UCSLAN_90", "You can't edit certain system user classes!");
-//define("UCSLAN_91", "");//NOT USED
-
+define("UCSLAN_91", "Class Structure");
 
 //define("UCSLAN_UPDATE", "Update");//NOT USED ... LAN_UPDATE
 

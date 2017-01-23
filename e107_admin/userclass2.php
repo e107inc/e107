@@ -194,7 +194,7 @@ e107::coreLan('userclass2', true);
 			$e_userclass->calc_tree();
 			$text = "<div id='userclass-tree-structure'>".$e_userclass->show_graphical_tree()."</div>";
 
-			return array('caption'=>'Class Structure', 'text' => $text); //TODO LAN
+			return array('caption'=>UCSLAN_91, 'text' => $text); 
 
 			// $text .= $e_userclass->show_graphical_tree();
 		}
