@@ -234,7 +234,7 @@ class mailout_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 	'perm' => 'W'),
 	
-		'recipients/list'	=> array('caption'=> Recipients, 		'perm' => 'W'),		
+		'recipients/list'	=> array('caption'=> LAN_MAILOUT_173, 		'perm' => 'W'),		
 	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
 	//	'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),

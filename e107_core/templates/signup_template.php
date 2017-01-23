@@ -167,7 +167,7 @@ $sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
 </tr>";
 
 $sc_style['SIGNUP_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
-$sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>OR</span></h2></div>";
+$sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>".LAN_SIGNUP_120."</span></h2></div>";
 
 $sc_style['SIGNUP_PASSWORD1']['pre'] = "<tr>
 				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password1'>".LAN_SIGNUP_83."<span class='required'> *</span></label></td>
@@ -191,7 +191,7 @@ $sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['post'] = "</td>
 if(!defined($COPPA_TEMPLATE))
 {
 	$COPPA_TEMPLATE = 
-	LAN_SIGNUP_77." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. "
+	LAN_SIGNUP_77." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. "
 	.LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."<br />
 	<br />
 	<div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
