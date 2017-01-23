@@ -20,7 +20,7 @@ e107::css('inline',"
 ");
 
 e107::coreLan('cpage', true);
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_page.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_page.php');
 
 $e_sub_cat = 'custom';
 
@@ -134,7 +134,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 			
-			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
 			
 			return $text;
 		}
@@ -190,7 +190,7 @@ class page_chapters_ui extends e_admin_ui
 		function init()
 		{
 
-			if(e_DEBUG === true)
+		//	if(e_DEBUG === true)
 			{
 				e107::getMessage()->addWarning("Experimental: Custom Fields");
 				$this->tabs = array(LAN_GENERAL,"Custom Fields");
@@ -335,8 +335,8 @@ class page_chapters_form_ui extends e_admin_form_ui
 	
 	function chapter_fields($curVal,$mode,$parm)
 	{
+		$fieldAmount = (deftrue('e_DEBUG')) ? 20 :10;
 
-		$frm = e107::getForm();
 
 		if($mode == 'read')
 		{
@@ -369,17 +369,36 @@ class page_chapters_form_ui extends e_admin_form_ui
 				<col style='width:40%' />
 			</colgroup>
 			<tbody>
-				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th></tr>
+				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th><th>".LAN_TOOLTIP."</th></tr>
 				";
 
-			for ($i = 0; $i <= 10; $i++)
+
+
+
+
+			for ($i = 0; $i <= $fieldAmount; $i++)
 			{
+
+				$writeParms = array(
+					'class' => 'e-ajax',
+					'useValues' => 1,
+					'default'   => 'blank',
+					'data-src' => e_REQUEST_URI,
+
+				);
+
+				$parmsWriteParms= array(
+					'size' => 'block-level',
+					'placeholder' => $this->getCustomFieldPlaceholder($value[$i]['type'])
+
+				);
+
 				$fieldName = $this->text('chapter_fields['.$i.'][key]',$value[$i]['key'],30, array('pattern'=>'^[a-z0-9-]*'));
 				$fieldTitle = $this->text('chapter_fields['.$i.'][title]',$value[$i]['title'], 80);
-				$fieldType = $this->select('chapter_fields['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], 'useValues=1&default=blank');
-				$fieldParms = $this->text('chapter_fields['.$i.'][writeParms]',$value[$i]['writeParams'], 80, array('size'=>'xxlarge'));
-
-			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td></tr>";
+				$fieldType = $this->select('chapter_fields['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], $writeParms);
+				$fieldParms = $this->text('chapter_fields['.$i.'][writeParms]',$value[$i]['writeParms'], 255, $parmsWriteParms);
+				$fieldHelp = $this->text('chapter_fields['.$i.'][help]',$value[$i]['help'], 255, array('size'=>'block-level'));
+			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td><td>".$fieldHelp."</td></tr>";
 			}
 
 			$text .= "</tbody></table>";
@@ -399,8 +418,33 @@ class page_chapters_form_ui extends e_admin_form_ui
 			return;
 		}
 	}
-	
-	
+
+
+	//@XXX Move to Form-handler?
+	public function getCustomFieldPlaceholder($type)
+	{
+		switch($type)
+		{
+			case "radio":
+			case "dropdown":
+			case "checkboxes":
+				return 'eg. { "optArray": { "blue": "Blue", "green": "Green", "red": "Red" }, "default": "blank" }';
+				break;
+
+			case "datestamp":
+				return 'eg. (Optional) { "format": "yyyy-mm-dd" }';
+			break;
+
+
+			default:
+
+		}
+
+
+		return null;
+
+
+	}
 	
 		// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
@@ -702,7 +746,7 @@ class page_admin_ui extends e_admin_ui
 				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');
 
 
-				if(e_DEBUG)
+				if(deftrue('e_DEBUG'))
 				{
 					$this->fields['menu_name']['inline'] = true;
 				}
@@ -752,8 +796,7 @@ class page_admin_ui extends e_admin_ui
 			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
 			
 			$sql = e107::getDb();
-			
-			$chapterFields = array();
+
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
 			while($row = $sql->fetch())
 			{
@@ -781,14 +824,23 @@ class page_admin_ui extends e_admin_ui
 			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
 			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
-			if(e_DEBUG !== false && $this->getAction() === 'create')
+			if($this->getAction() === 'create')
 			{
 				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
-
 			}
+
+
+			if(e_AJAX_REQUEST)
+			{
+				// @todo insert placeholder examples in params input when 'type' dropdown value is changed
+			}
+
+
+
 
 			if(e_AJAX_REQUEST && isset($_POST['page_chapter']) ) //&& $this->getAction() === 'chapter-change'
 			{
+
 				$this->initCustomFields($_POST['page_chapter']);
 
 				$elid = 'core-page-create';
@@ -796,33 +848,36 @@ class page_admin_ui extends e_admin_ui
 				$tabId = 'additional';
 
 				$data = array(
-						'tabs'	=>  $this->getTabs(),
-						'legend' => '',
-						'fields' => $this->getFields(),
+					'tabs'   => $this->getTabs(),
+					'legend' => '',
+					'fields' => $this->getFields(),
 				);
 
 				$text = $this->getUI()->renderCreateFieldset($elid, $data, $model, $tabId);
-				$displayMode = 'inline-block';
+
+				$ajax = e107::getAjax();
+				$commands = array();
 
 				if(empty($text))
 				{
 					$text = ""; // There are no additional fields for the selected chapter.
-					$displayMode = 'none';
+					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeOut');
+				}
+				else
+				{
+					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeInAdminTab');
 				}
 
-				$ajax = e107::getAjax();
-
-				$commands = array();
 				$commands[] = $ajax->commandInvoke('#tab' . $tabId, 'html', array($text));
-				// Show/hide tab.
-				$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'css', array('display', $displayMode));
 
 				$ajax->response($commands);
 				exit;
 			}
 		}
 
-
+		/*
+		 * @todo Move to admin-ui ?
+		 */
 		private function initCustomFields($chap=null)
 		{
 			$tabId = 'additional';
@@ -836,7 +891,24 @@ class page_admin_ui extends e_admin_ui
 					$fld['tab'] = $tabId;
 					$fld['data'] = false;
 
+					if($fld['type'] === 'icon')
+					{
+						$fld['writeParms'] .= "&glyphs=1";
+					}
+
+					if($fld['type'] == 'checkboxes')
+					{
+						if($tmp = e107::getParser()->isJSON($fld['writeParms']))
+						{
+							$fld['writeParms'] = $tmp;
+						}
+
+						$fld['writeParms']['useKeyValues'] = 1;
+					}
+
+
 					$this->fields['page_fields__'.$key] = $fld;
+
 				}
 			}
 			else
@@ -880,18 +952,10 @@ class page_admin_ui extends e_admin_ui
 
 			parent::EditObserver();
 
-			if(!deftrue('e_DEBUG'))
-			{
-				return;
-			}
-
-
-
 			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
 			$chap = intval($row['page_chapter']);
 			$this->initCustomFields($chap);
 			$this->loadCustomFieldsData();
-
 
 		}
 
@@ -928,6 +992,11 @@ class page_admin_ui extends e_admin_ui
 
 
 		}
+
+
+
+
+
 
         /**
          * Overrid

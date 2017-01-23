@@ -37,7 +37,7 @@ if (($action != 'export') || $params)
 	exit;
 }
 
-include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin_log.php');		// LANs may be needed for error messages
+e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin_log.php');		// LANs may be needed for error messages
 
 
 // List of the non-page-based info which is gathered - historically only 'all-time' stats, now we support monthly as well. (Here, only keys are used for validation)

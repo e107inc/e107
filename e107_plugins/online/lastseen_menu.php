@@ -16,7 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
 if(class_exists('online_shortcodes'))
 {

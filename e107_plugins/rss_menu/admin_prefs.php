@@ -31,7 +31,7 @@ if(!getperms("P") || !e107::isInstalled('rss_menu'))
 }
 
 
-include_lan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
+e107::includeLan(e_PLUGIN."rss_menu/languages/".e_LANGUAGE."_admin_rss_menu.php");
 
 
 

@@ -17,7 +17,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
 class db_verify
 {

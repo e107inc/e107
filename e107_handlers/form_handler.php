@@ -3893,8 +3893,14 @@ class e_form
 			$parms = $attributes['readParms'];
 		}
 
+		// @see custom fields in cpage which accept json params.
+		if(!empty($attributes['writeParms']) && $tmpOpt = e107::getParser()->isJSON($attributes['writeParms']))
+		{
+			$attributes['writeParms'] = $tmpOpt;
+			unset($tmpOpt);
+		}
 
-	
+
 		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
@@ -3998,9 +4004,15 @@ class e_form
 			break;
 
 			case 'checkboxes':
-				$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+
 				//$attributes['type'] = 'text';
-				return $value;
+				if(empty($attributes['writeParms'])) // avoid comflicts with a field called 'checkboxes'
+				{
+					$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+					return $value;
+				}
+
+
 			break;
 		}
 
@@ -4023,6 +4035,10 @@ class e_form
 				
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
+			break;
+
+			case 'country':
+				$value = $this->getCountry($value);
 			break;
 
 			case 'ip':
@@ -4098,7 +4114,7 @@ class e_form
 					$opts['multiple'] = true;	
 				}
 			
-				if(vartrue($opts['multiple']))
+				if(!empty($opts['multiple']))
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -4107,6 +4123,8 @@ class e_form
 						if(isset($wparms[$v])) $ret[] = $wparms[$v];
 					}
 					$value = implode(', ', $ret);
+
+
 				}
 				else
 				{
@@ -4853,9 +4871,13 @@ class e_form
 	{
 		$tp = e107::getParser();
 
-
-
 		$parms = vartrue($attributes['writeParms'], array());
+
+		if($tmpOpt = $tp->isJSON($parms))
+		{
+			$parms = $tmpOpt;
+			unset($tmpOpt);
+		}
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
@@ -4948,6 +4970,10 @@ class e_form
 				if(!vartrue($parms['class'])) $parms['class'] = 'tbox number e-spinner ';
 				if(!$value) $value = '0';
 				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
+			break;
+
+			case 'country':
+				$ret = vartrue($parms['pre']).$this->country($key, $value).vartrue($parms['post']);
 			break;
 
 			case 'ip':

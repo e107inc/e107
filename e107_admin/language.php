@@ -634,7 +634,7 @@ require_once ("auth.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
 require_once(e_ADMIN."lancheck.php");
 require_once(e_HANDLER."language_class.php");
 

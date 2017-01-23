@@ -10,7 +10,7 @@
 
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-include_lan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
 
 require_once(e_HANDLER.'userclass_class.php');
 global $e_userclass;

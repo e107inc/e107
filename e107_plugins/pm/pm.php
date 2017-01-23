@@ -40,7 +40,7 @@ if(vartrue($_POST['keyword']))
 e107::css('pm','pm.css');
 require_once(e_PLUGIN.'pm/pm_class.php');
 require_once(e_PLUGIN.'pm/pm_func.php');
-include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 e107::getScParser();
 // require_once(e_PLUGIN.'pm/shortcodes/batch/pm_shortcodes.php');
 

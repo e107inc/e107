@@ -606,6 +606,26 @@ class cpage_shortcodes extends e_shortcode
 	}
 
 
+	function sc_cpagefieldtitle($parm=null)
+	{
+		if(empty($parm['name']) || empty($this->var['page_fields']))
+		{
+			return null;
+		}
+
+		$chap       = $this->var['page_chapter'];
+		$key        = $parm['name'];
+
+
+		if(!empty($this->chapterData[$chap]['chapter_fields'][$key]['title']))
+		{
+			return $this->chapterData[$chap]['chapter_fields'][$key]['title'];
+		}
+
+		return null;
+	}
+
+
 	/**
 	 * Return raw HTML-usable values from page fields.
 	 * @experimental subject to change without notice.
@@ -625,22 +645,77 @@ class cpage_shortcodes extends e_shortcode
 		$key        = $parm['name'];
 		$fields     = $this->chapterData[$chap]['chapter_fields'];
 		$fieldData  = e107::unserialize($this->var['page_fields']);
-		$type       = $fields[$key]['type'];;
 
-		// @todo Move this part to form_handler somewhere.
+
+		$raw = (!empty($parm['mode']) && $parm['mode'] === 'raw') ? true : false;
+		$type = (!empty($parm['type'])) ? $parm['type'] : null;
+
+		$fieldType       = $fields[$key]['type'];
+
+	//	print_a($fields);
+
+
+		// @todo Move this part to form_handler or e_parse somewhere.
+
 		if(isset($fieldData[$key]))
 		{
 			$value = $fieldData[$key];
 
-			switch($type)
+			switch($fieldType)
 			{
+				case "dropdown":
+				case "checkboxes":
+				case "radio":
+					return ($raw) ? $value : e107::getForm()->renderValue($key,$value,$fields[$key]);
+				break;
+
 				case "image":
-					return $tp->toImage($value);
+					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
 					break;
 
 				case "icon":
-					return $tp->toIcon($value);
+					return ($raw) ? str_replace(".glyph", '', $value) : $tp->toIcon($value);
 					break;
+
+				case "country":
+					return ($raw) ? $value : e107::getForm()->getCountry($value);
+					break;
+
+				case "tags":
+					return ($raw) ? $value : $tp->toLabel($value,$type);
+					break;
+
+				case "lanlist":
+				case "language":
+					return ($raw) ? $value : e107::getLanguage()->convert($value);
+					break;
+
+				case "datestamp":
+					return ($raw) ? $value : $tp->toDate($value);
+					break;
+
+				case "file":
+					return ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
+					break;
+
+				case "url":
+				case "email":
+					return ($raw) ? $value : $tp->toHtml($value);
+					break;
+
+				case "user":
+					return ($raw) ? $value : e107::getSystemUser($value,true)->getName();
+					break;
+
+				case "userclass":
+					return ($raw) ? $value : e107::getUserClass()->getName($value);
+					break;
+
+				case "textarea":
+				case "bbarea":
+					return $tp->toHtml($value, true);
+					break;
+
 
 				default:
 					return $tp->toHtml($value);
@@ -653,7 +728,30 @@ class cpage_shortcodes extends e_shortcode
 	}
 
 
+	/**
+	 * @experimental - subject to change without notice. Use at own risk.
+	 * @param null $parm
+	 * @return string
+	 */
+	function sc_cpagefields($parm=null)
+	{
+		$fieldData  = e107::unserialize($this->var['page_fields']);
 
+
+		$text = '<table class="table table-bordered table-striped">
+		<tr><th>Name</th><th>Title<br /><small>&#123;CPAGEFIELDTITLE: name=x&#125;</small></th><th>Normal<br /><small>&#123;CPAGEFIELD: name=x&#125;</small></th><th>Raw<br /><small>&#123;CPAGEFIELD: name=x&mode=raw&#125;</small></th></tr>';
+
+		foreach($fieldData as $ok=>$v)
+		{
+
+			$text .= "<tr><td>".$ok."</td><td>".$this->sc_cpagefieldtitle(array('name'=>$ok))."</td><td>".$this->sc_cpagefield(array('name'=>$ok))."</td><td>".$this->sc_cpagefield(array('name'=>$ok, 'mode'=>'raw'))."</td></tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
+	}
 
 
 

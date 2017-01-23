@@ -22,7 +22,7 @@ if (!varset($pref['maintainance_flag']) && !getperms('0')) // Allow main admin t
 
 header('Content-type: text/html; charset=utf-8');
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 // require_once(e_CORE.'shortcodes/batch/sitedown_shortcodes.php');
 
