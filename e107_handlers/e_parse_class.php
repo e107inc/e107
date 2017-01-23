@@ -3665,13 +3665,17 @@ class e_parser
 
 	/**
 	 * Take a file-path and convert it to a download link.
-	 * @todo
 	 * @param $text
 	 * @return string
 	 */
 	public function toFile($text, $parm=array())
 	{
-		$link = e_HTTP."request.php?".str_replace('{e_MEDIA_FILE}', '',$text);
+		$srch = array(
+			'{e_MEDIA_FILE}' => 'e_MEDIA_FILE/',
+			'{e_PLUGIN}' => 'e_PLUGIN/'
+		);
+
+		$link = e_HTTP."request.php?file=". str_replace(array_keys($srch), $srch,$text);
 
 		if(!empty($parm['raw']))
 		{
