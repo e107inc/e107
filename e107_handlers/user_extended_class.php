@@ -50,7 +50,7 @@ class e107_user_extended
 	private $nameIndex          = array();	// Array for field name lookup - initialised by constructor
 	public $systemCount         = 0;		// Count of system fields - always zero ATM
 	public $userCount           = 0;			// Count of non-system fields
-	private $fieldPermissions   = array(); // Field Permissionss with field name as key.
+	private $fieldAttributes   = array(); // Field Permissionss with field name as key.
 
 	public function __construct()
 	{
@@ -130,10 +130,16 @@ class e107_user_extended
 				else
 				{	// Its a field definition
 					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
-					$id = 'user_'.$row['user_extended_struct_name'];
-					$this->fieldPermissions[$id] = array('read'=>$row['user_extended_struct_read'], 'write'=>$row['user_extended_struct_write']);
-					$this->nameIndex['user_'.$row['user_extended_struct_name']] = $row['user_extended_struct_id'];			// Create name to ID index
-					if ($row['user_extended_struct_text'] == '_system_')
+					$id = 'user_' . $row['user_extended_struct_name'];
+
+					$this->fieldAttributes[$id] = array(
+							'read' => $row['user_extended_struct_read'],
+							'write' => $row['user_extended_struct_write'],
+							'type'  => $row['user_extended_struct_type']
+					);
+					$this->nameIndex['user_' . $row['user_extended_struct_name']] = $row['user_extended_struct_id'];            // Create name to ID index
+
+					if($row['user_extended_struct_text'] == '_system_')
 					{
 						$this->systemCount++;
 					}
@@ -154,7 +160,7 @@ class e107_user_extended
 	 */
 	public function hasPermission($field, $type='read')
 	{
-		$class = ($type == 'read') ? $this->fieldPermissions[$field]['read'] : $this->fieldPermissions[$field]['write'];
+		$class = ($type == 'read') ? $this->fieldAttributes[$field]['read'] : $this->fieldAttributes[$field]['write'];
 		return check_class($class);
 	}
 
@@ -486,7 +492,16 @@ class e107_user_extended
 	}
 			
 		
+	public function getFieldType($field)
+	{
 
+		if(!empty($this->fieldAttributes[$field]['type']))
+		{
+			return (int) $this->fieldAttributes[$field]['type'];
+		}
+
+		return false;
+	}
 
 
 	// Return the field creation text for a definition
@@ -1189,8 +1204,9 @@ class e107_user_extended
 	 * @param $type
 	 * @return array|string
 	 */
-	function renderValue($value, $type='')
+	public function renderValue($value, $type=null)
 	{
+
 
 		//TODO FIXME Add more types.
 

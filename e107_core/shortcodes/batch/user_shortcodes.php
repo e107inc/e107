@@ -679,14 +679,14 @@ class user_shortcodes extends e_shortcode
 
 			if(!$ext->hasPermission($fld,'read'))
 			{
+			//	e107::getDebug()->log("Wrong permissions for user_euf: ".$fld);
 				return false;
 			}
 
 			$val = $this->var[$fld];
+			$type = $ext->getFieldType($fld);
 
-		//	e107::getDebug()->log(print_a($ext,true));
-
-			return $ext->renderValue($val); //TODO auto-detect type, from within the user-extended class.
+			return $ext->renderValue($val,$type);
 
 		}
 
