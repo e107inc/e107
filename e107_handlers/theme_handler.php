@@ -329,7 +329,7 @@ class e_theme
 		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
-		$vars['thumbnail'] 		= varset($vars['preview'][0]);
+		$vars['thumbnail'] 		= isset($vars['preview'][0]) ?  $vars['preview'][0] : '';
 
 
 		if(!empty($vars['themePrefs']))
