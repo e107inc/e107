@@ -49,7 +49,7 @@ class listclass
 		$this->e107 = e107::getInstance();
 
 		//language
-		include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
+		e107::includeLan($this->plugin_dir."languages/".e_LANGUAGE.".php");
 
 		//template
 		if (is_readable(THEME."list_template.php"))

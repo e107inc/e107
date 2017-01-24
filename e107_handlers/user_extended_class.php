@@ -67,6 +67,7 @@ class e107_user_extended
 		define('EUF_CHECKBOX',10);
 		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
 		define('EUF_ADDON', 12);  // defined within e_user.php addon
+		define('EUF_COUNTRY', 13);  // $frm->country()
 
 		$this->typeArray = array(
 			'text' => 1,
@@ -80,7 +81,8 @@ class e107_user_extended
 			'list' => 9,
 			'checkbox'	=> 10,
 			'predefined' => 11, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
-			'addon'     => 12
+			'addon'     => 12,
+			'country'   => 13,
 		);
 
 		$this->user_extended_types = array(
@@ -258,24 +260,40 @@ class e107_user_extended
 	function user_extended_validate_entry($val, $params)
 	{
 		$tp = e107::getParser();
-		
+
 		$parms = explode('^,^', $params['user_extended_struct_parms']);
 		$requiredField = $params['user_extended_struct_required'] == 1;
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
-		if (defined($regexfail)) { $regexfail = constant($regexfail); }
-		if($val == '' && $requiredField) return TRUE;
-		switch ($type)
+		if(defined($regexfail))
+		{
+			$regexfail = constant($regexfail);
+		}
+		if($val == '' && $requiredField)
+		{
+			return true;
+		}
+
+		$type = $params['user_extended_struct_type'];
+
+		switch($type)
 		{
 			case EUF_DATE :
-				if ($requiredField && ($val == '0000-00-00')) return TRUE;
+				if($requiredField && ($val == '0000-00-00'))
+				{
+					return true;
+				}
 				break;
 		}
 		if($regex != "" && $val != "")
 		{
-			if(!preg_match($regex, $val)) return $regexfail ? $regexfail : TRUE;
+			if(!preg_match($regex, $val))
+			{
+				return $regexfail ? $regexfail : true;
+			}
 		}
-		return FALSE;			// Pass by default here
+
+		return false;            // Pass by default here
 	}
 
 
@@ -488,6 +506,10 @@ class e107_user_extended
 
 	  switch ($type)
 	  {
+		  case EUF_COUNTRY :
+		  $db_type = 'VARCHAR(2)';
+		  break;
+
 		case EUF_INTEGER :
 		  $db_type = 'INT(11)';
 		  break;
@@ -577,6 +599,7 @@ class e107_user_extended
 
 		if ($this->user_extended_reserved($name))
 		{
+			e107::getMessage()->addDebug("Reserved Field");
 			return false;
 		}
 
@@ -753,6 +776,12 @@ class e107_user_extended
 
 		switch($struct['user_extended_struct_type'])
 		{
+
+			case EUF_COUNTRY:
+				return e107::getForm()->country($fname,$curval);
+			break;
+
+
 			case EUF_TEXT :  //textbox
 			case EUF_INTEGER :  //integer
 		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' {$title} value='{$curval}' {$include} {$required} {$placeholder} />";
@@ -920,6 +949,11 @@ class e107_user_extended
 				if($curval == '0000-00-00') // Quick datepicker fix. 
 				{
 					$curval = '';
+				}
+
+				if(THEME_LEGACY === true)
+				{
+					return e107::getForm()->text($fname,$curval,10,array('placeholder'=>'yyyy-mm-dd'));
 				}
 			
 				return e107::getForm()->datepicker($fname,$curval,array('format'=>'yyyy-mm-dd','return'=>'string'));
@@ -1162,6 +1196,18 @@ class e107_user_extended
 
 		switch($type)
 		{
+
+			case EUF_COUNTRY:
+				if(!empty($value))
+				{
+					return e107::getForm()->getCountry($value);
+				}
+
+				return null;
+			break;
+
+
+
 			case EUF_CHECKBOX:
 					$value = e107::unserialize($value);
 

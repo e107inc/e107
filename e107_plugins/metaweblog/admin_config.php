@@ -12,7 +12,7 @@
 require_once("../../class2.php");
 if(!getperms("P")){ e107::redirect('admin');exit; }
 
-include_lan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."metaweblog/languages/".e_LANGUAGE.".php");
 require_once(e_ADMIN."auth.php");
 
 $text = "<div class='alert alert-block'>".XMLRPC_HELP_011."</div>";

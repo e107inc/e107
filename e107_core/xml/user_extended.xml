@@ -8,8 +8,7 @@
 		<write>253</write>
 	</item>
 	<item name="country">
-		<type>db field</type>
-		<values>user_extended_country,country_iso,country_name,country_name</values>
+		<type>country</type>
 		<include_text></include_text>
 		<applicable>253</applicable>
 		<read>253</read>

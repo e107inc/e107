@@ -23,7 +23,7 @@ if(!defined("USER_WIDTH") && !deftrue('BOOTSTRAP'))
 	define("USER_WIDTH","width:95%");
 }
 
-include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 
 if(e_QUERY)
 {

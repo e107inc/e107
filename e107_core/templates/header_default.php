@@ -188,7 +188,7 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
-if(!deftrue('BOOTSTRAP'))
+if(THEME_LEGACY === true)
 {
 	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
 }
@@ -666,12 +666,13 @@ echo "</head>\n";
 
 	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
 
-	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
+	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 
 
 
 if(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
+	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
 }
 else

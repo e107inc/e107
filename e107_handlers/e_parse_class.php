@@ -2590,8 +2590,6 @@ class e_parse extends e_parser
 
 		// $parms['x'] = $encode;
 
-
-
 		if(!empty($parm['return']) && $parm['return'] == 'src')
 		{
 			return $this->thumbUrl($src, $parms);
@@ -3641,6 +3639,49 @@ class e_parser
 	}
 
 
+	/**
+	 * @param $text
+	 * @return string
+	 */
+	public function toLabel($text, $type = null)
+	{
+		if($type === null)
+		{
+			$type = 'default';
+		}
+
+		$tmp = explode(",",$text);
+
+		$opt = array();
+		foreach($tmp as $v)
+		{
+			$opt[] = "<span class='label label-".$type."'>".$v."</span>";
+		}
+
+		return implode(" ",$opt);
+	}
+
+	/**
+	 * Take a file-path and convert it to a download link.
+	 * @param $text
+	 * @return string
+	 */
+	public function toFile($text, $parm=array())
+	{
+		$srch = array(
+			'{e_MEDIA_FILE}' => 'e_MEDIA_FILE/',
+			'{e_PLUGIN}' => 'e_PLUGIN/'
+		);
+
+		$link = e_HTTP."request.php?file=". str_replace(array_keys($srch), $srch,$text);
+
+		if(!empty($parm['raw']))
+		{
+			return $link;
+		}
+
+		return "<a href='".$link."'>-attachment-</a>"; //TODO Add pref for this.
+	}
 
 	/**
 	 * Render an avatar based on supplied user data or current user when missing. 
@@ -3863,10 +3904,18 @@ class e_parser
 
 			unset($parm['src']);
 			$path = $tp->thumbUrl($file,$parm);
-			$srcSetParm = $parm;
-			$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
 
-			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+
+			if(empty($parm['w']) && empty($parm['h']))
+			{
+				$parm['srcset'] = false;
+			}
+			else
+			{
+				$srcSetParm = $parm;
+				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+			}
 
 		}
 		elseif(strpos($file,'http')===0)
@@ -3955,6 +4004,30 @@ class e_parser
 
 	}
 
+
+	/**
+	 * Check if string is json and parse or return false.
+	 * @param $text
+	 * @return bool|mixed return false if not json, and json values if true.
+	 */
+	public function isJSON($text)
+	{
+		 if(substr($text,0,1) === '{' || substr($text,0,1) === '[') // json
+	    {
+	        $dat = json_decode($text, true);
+
+	        if(json_last_error() !=  JSON_ERROR_NONE)
+	        {
+		        //   e107::getDebug()->log("Json data found");
+	           return false;
+	        }
+
+	        return $dat;
+	    }
+
+		return false;
+
+	}
 
 
 

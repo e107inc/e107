@@ -86,7 +86,7 @@ class theme_shortcodes extends e_shortcode
 			return '';
 		}
 
-		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
