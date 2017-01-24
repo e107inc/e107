@@ -150,12 +150,17 @@ class sitelinks
 				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
-				if(!defined("LINKSRENDERONLYMAIN") && !varset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
+				if(!defined("LINKSRENDERONLYMAIN") && !isset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
                 {
 					$render_link[$key] .= $this->subLink($main_linkid,$aSubStyle,$css_class);
                 }  
 			}
-			$text .= implode(varset($style['linkseparator']), $render_link);
+			
+			if(!empty($style['linkseparator']))
+			{
+				$text .= implode($style['linkseparator'], $render_link);
+			}
+
 			$text .= $style['postlink'];
 			if ($style['linkdisplay'] == 2)	
 			{
@@ -266,7 +271,7 @@ class sitelinks
 				$tmp = explode('.', $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
 			}
-			$indent = ($style['linkdisplay'] != 3) ? varset($style['subindent']) : "";
+			$indent = ($style['linkdisplay'] != 3) ? ($style['subindent']) : "";
 		}
 
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
@@ -316,7 +321,9 @@ class sitelinks
 				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
 				$highlighted = TRUE;
 			}
-			if ($this->hilite(varset($linkInfo['link_url']), varset($style['linkclass_hilite']))== TRUE) 
+
+
+			if ($this->hilite(varset($linkInfo['link_url']), !empty($style['linkclass_hilite'])))
 			{
 				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
@@ -358,7 +365,7 @@ e107::getDebug()->log($linkInfo['link_url']);
 		// If its a link.. make a link
 		$_link = "";
 		$_link .= $accessdigit;
-		if (!empty($href) && ((varset($style['hilite_nolink']) && $highlighted)!=TRUE))
+		if (!empty($href) && ((isset($style['hilite_nolink']) && $highlighted)!=TRUE))
 		{
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook")."</a>";
 		}
