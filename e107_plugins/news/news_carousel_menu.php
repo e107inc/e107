@@ -59,7 +59,12 @@ $query .= "
 		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
 		LIMIT ".$limit;
 
+
+
+
 $data = $sql->retrieve($query,true);
+
+
 
 if(empty($data))
 {
@@ -73,7 +78,7 @@ $count = 0;
 
 $sc = e107::getScBatch('news');
 $text = '';
-
+$nav = array();
 
 foreach($data as $row)
 {
