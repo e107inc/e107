@@ -1788,26 +1788,6 @@ class navigation_shortcodes extends e_shortcode
 		
 		return $url;
 	}
-
-
-	/**
-	 * Returns only the anchor target in the URL if one is found.
-	 * @param null $parm
-	 * @return null|string
-	 */
-	function sc_link_target($parm=null)
-	{
-		if(strpos($this->var['link_url'],'#')!==false)
-		{
-			list($tmp,$segment) = explode('#',$this->var['link_url'],2);
-			return '#'.$segment;
-
-		}
-
-		return '#';
-	}
-
-
 	
 	function sc_link_open($parm = '')
 	{

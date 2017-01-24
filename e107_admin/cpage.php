@@ -9,7 +9,7 @@
  * Custom Menus/Pages Administration
  * Admin-related functions for custom page and menu creation
 */
-//define('e_MINIMAL',true);
+define('e_MINIMAL',true);
 require_once('../class2.php');
 
 if (!getperms("5|J")) { e107::redirect('admin'); exit; }
@@ -77,19 +77,6 @@ class page_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = ADLAN_42;
-
-
-	function init()
-	{
-
-
-
-
-
-	}
-
-
-
 }
 
 class page_admin_form_ui extends e_admin_form_ui
@@ -174,11 +161,11 @@ class page_chapters_ui extends e_admin_ui
         
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			    'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
-			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name'), // Display name
+			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1'), // Display name
 			'chapter_manager' 			=> array('title'=> CUSLAN_55,		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
-			'chapter_fields'            => array('title', 'hidden',                 'type'=>'hidden'),
+		
 			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);
@@ -190,6 +177,7 @@ class page_chapters_ui extends e_admin_ui
 		function init()
 		{
 
+<<<<<<< HEAD
 		//	if(e_DEBUG === true)
 			{
 				e107::getMessage()->addWarning("Experimental: Custom Fields");
@@ -199,6 +187,8 @@ class page_chapters_ui extends e_admin_ui
 
 
 
+=======
+>>>>>>> parent of 03cac0e... Merge branch 'master' of github.com:e107inc/e107
 			if($this->getAction() == 'list')
 			{
 				$this->fields['chapter_parent']['title'] = CUSLAN_56;
@@ -259,38 +249,7 @@ class page_chapters_ui extends e_admin_ui
 		
 		public function beforeUpdate($new_data, $old_data, $id)
 		{	
-			// return $this->beforeCreate($new_data);
-
-			$new_data['chapter_fields'] = $this->processCustomFields($new_data['chapter_fields']);
-
-			return $new_data;
-		}
-
-
-		private function processCustomFields($newdata)
-		{
-			if(empty($newdata))
-			{
-				return null;
-			}
-
-			$new = array();
-			foreach($newdata as $fields)
-			{
-				if(empty($fields['key']) || empty($fields['type']))
-				{
-					continue;
-				}
-
-
-				$key = $fields['key'];
-				unset($fields['key']);
-				$new[$key] = $fields;
-
-
-			}
-
-			return $new;
+			// return $this->beforeCreate($new_data);	
 		}
 
 }
@@ -333,6 +292,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 	}
 	
 	
+<<<<<<< HEAD
 	function chapter_fields($curVal,$mode,$parm)
 	{
 		$fieldAmount = (deftrue('e_DEBUG')) ? 20 :10;
@@ -445,6 +405,11 @@ class page_chapters_form_ui extends e_admin_form_ui
 
 
 	}
+=======
+	
+	
+	
+>>>>>>> parent of 03cac0e... Merge branch 'master' of github.com:e107inc/e107
 	
 		// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
@@ -635,11 +600,11 @@ class page_admin_ui extends e_admin_ui
 		// PAGE LIST/EDIT and MENU EDIT modes. 
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'3%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
+			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=dialog'),
             'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
 		    'page_chapter' 		=> array('title'=> CUSLAN_63, 	    'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
        
-			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>array()),
+			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
 
 		 	'page_author' 		=> array('title'=> LAN_AUTHOR, 		'tab' => 0,	'type' => 'user', 'inline'=>true, 		'data'=>'int','width' => 'auto', 'thclass' => 'left'),
 			'page_text' 		=> array('title'=> CUSLAN_9,		'tab' => 0,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>array('media'=>'page', 'template'=>'page')),
@@ -656,9 +621,7 @@ class page_admin_ui extends e_admin_ui
 			'page_metadscr' 	=> array('title'=> CUSLAN_11, 		'tab' => 1,	'type' => 'text', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),	
 		
 			'page_order' 		=> array('title'=> LAN_ORDER, 		'tab' => 1,	'type' => 'number', 'width' => 'auto', 'inline'=>true),
-			'page_fields'       => array('title'=>'Custom Fields',  'tab'=>4, 'type'=>'hidden', 'data'=>'json', 'width'=>'auto'),
-
-
+			
 			// Menu Tab  XXX 'menu_name' is 'menu_name' - not caption. 
 			'menu_name' 		=> array('title'=> CUSLAN_64, 		'tab' => 2,	'type' => 'text', 		'width' => 'auto','nolist'=>true, "help"=>"Will be listed in the Menu-Manager under this name or may be called using {CMENU=name} in your theme. Must use ASCII characters only and be all lowercase."),
 		   	'menu_title'	   	=> array('title'=> CUSLAN_65, 	    'nolist'=>true, 'tab' => 2,	'type' => 'text', 'inline'=>true,		'width'=>'25%', "help"=>"Caption displayed on the menu item.", 'writeParms'=>'size=xxlarge'),
@@ -692,13 +655,9 @@ class page_admin_ui extends e_admin_ui
 		protected $books = array();
 		protected $cats = array(0 => LAN_NONE);
 		protected $templates = array();
-		protected $chapterFields = array();
 
 		function init()
 		{
-
-
-
 			
 			if(vartrue($_POST['menu_delete'])) // Delete a Menu (or rather, remove it's data )
 			{
@@ -711,7 +670,7 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
-			if($this->getMode() == 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
+			if($this->getMode() == 'menu' && ($this->getACtion() == 'list' || $this->getACtion() == 'inline'))
 			{
 			
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
@@ -796,8 +755,14 @@ class page_admin_ui extends e_admin_ui
 			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
 			
 			$sql = e107::getDb();
+<<<<<<< HEAD
 
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
+=======
+			
+			
+			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
+>>>>>>> parent of 03cac0e... Merge branch 'master' of github.com:e107inc/e107
 			while($row = $sql->fetch())
 			{
 				$cat = $row['chapter_id'];
@@ -810,20 +775,14 @@ class page_admin_ui extends e_admin_ui
 				{
 					$book = $row['chapter_parent'];
 					$this->cats[$cat] = $this->books[$book] . " : ".$row['chapter_name'];	
-				}
-
-				if(!empty($row['chapter_fields']))
-				{
-					$this->chapterFields[$cat] = e107::unserialize($row['chapter_fields']);
-				}
-
-
+				}			
 			}
 		//	asort($this->cats);			
 			
 			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
 			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
+<<<<<<< HEAD
 			if($this->getAction() === 'create')
 			{
 				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
@@ -998,6 +957,11 @@ class page_admin_ui extends e_admin_ui
 
 
 
+=======
+		}
+
+
+>>>>>>> parent of 03cac0e... Merge branch 'master' of github.com:e107inc/e107
         /**
          * Overrid
          */
@@ -1066,10 +1030,7 @@ class page_admin_ui extends e_admin_ui
 				$newdata['page_sef'] = eHelper::secureSef($newdata['page_sef']);
 			}
 
-
-		//	$newdata = $this->processCustomFieldData($newdata);
-
-
+			
 			$sef = e107::getParser()->toDB($newdata['page_sef']);
 
 			if(isset($newdata['page_title']) && isset($newdata['menu_name']) && empty($newdata['page_title']) && empty($newdata['menu_name']))
@@ -1090,16 +1051,10 @@ class page_admin_ui extends e_admin_ui
 		
 		function beforeUpdate($newdata,$olddata, $id)
 		{
-
-			$newdata = $this->processCustomFieldData($newdata);
-
 			if(isset($newdata['menu_name']))
 			{
 				$newdata['menu_name'] = preg_replace('/[^\w-*]/','',$newdata['menu_name']);
 			}
-
-
-
 
 			return $newdata;	
 		}		
@@ -1133,8 +1088,6 @@ class page_admin_ui extends e_admin_ui
 				
 			}				
 		}
-
-
 
 
 		public function afterDelete($deleted_data, $id, $deleted_check)

@@ -33,17 +33,9 @@ class cpage_shortcodes extends e_shortcode
 		foreach($books as $row)
 		{
 			$id 							= $row['chapter_id'];
-
-			if(!empty($row['chapter_fields']))
-			{
-				$row['chapter_fields'] = e107::unserialize($row['chapter_fields']);
-			}
-
 			$this->chapterData[$id]			= $row;
 		}	
-
-
-
+	
 	}
 		
 	
@@ -604,6 +596,7 @@ class cpage_shortcodes extends e_shortcode
 
 	    return "<a rel='external'  title=\"".LAN_EDIT."\"  data-modal-caption=\"".LAN_EDIT."\" class='btn btn-default ".$modal."' href='".e_ADMIN_ABS."cpage.php?action=edit&id=".$this->var['page_id'].$iframe."' >".$icon."</a>";
 	}
+<<<<<<< HEAD
 
 
 	function sc_cpagefieldtitle($parm=null)
@@ -755,4 +748,7 @@ class cpage_shortcodes extends e_shortcode
 
 
 
+=======
+	
+>>>>>>> parent of 03cac0e... Merge branch 'master' of github.com:e107inc/e107
 }

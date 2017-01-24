@@ -1422,7 +1422,7 @@ class themeHandler
 					
 					
 					$text .= "<div class='col-md-6'>
-						<img class='img-responsive img-fluid' src='".$picFull."' alt=\"".$theme['name']."\" />
+						<img class='img-responsive' src='".$picFull."' alt=\"".$theme['name']."\" />
 						</div>";	
 					
 				}

@@ -587,8 +587,8 @@ class wysiwyg
                 ]},
 
 				 {title: 'Bootstrap Images', items: [
-				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive img-fluid'},
-				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded rounded'},
+				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive'},
+				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded'},
 				 {title: 'Circle', selector: 'img', classes: 'img-circle'},
                  {title: 'Thumbnail', selector: 'img', classes: 'img-thumbnail'},
                 ]},

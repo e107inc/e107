@@ -2659,10 +2659,6 @@ class e_front_model extends e_model
 				return $tp->toDB($value);
 			break;
 
-			case 'json':
-				return e107::serialize($value,'json');
-			break;
-
 			case 'code':
 				return $tp->toDB($value, false, false, 'pReFs');
 			break;

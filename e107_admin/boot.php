@@ -113,7 +113,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 			$text .= '<div class="media">';
 			$text .= '<div class="media-left">
 		    <a href="'.$link.'">
-		      <img class="media-object img-rounded rounded" src="'.$img.'" style="width:100px">
+		      <img class="media-object img-rounded" src="'.$img.'" style="width:100px">
 		    </a>
 		  </div>
 		  <div class="media-body">
