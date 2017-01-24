@@ -155,7 +155,7 @@ class sitelinks
 					$render_link[$key] .= $this->subLink($main_linkid,$aSubStyle,$css_class);
                 }  
 			}
-			
+
 			if(!empty($style['linkseparator']))
 			{
 				$text .= implode($style['linkseparator'], $render_link);
@@ -1243,27 +1243,24 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		//	$temp = $tmpl['button'.$kpost];
 		//	echo "ap = ".$active_page;
 		//	echo " act = ".$act."<br /><br />";
+
+
+
 		
 			if($rid == 'adminhome')
 			{
 				$temp = $tmpl['button_other'.$kpost];	
 			}
+
+			if(!empty($e107_vars[$act]['template']))
+			{
+				$tmplateKey = 'button_'.$e107_vars[$act]['template'].$kpost;
+				$temp = $tmpl[$tmplateKey];
+
+				// e107::getDebug()->log($tmplateKey);
+			}
 	
-			if($rid == 'home')
-			{
-				$temp = $tmpl['button_home'.$kpost];	
-			}
-			
-			if($rid == 'language')
-			{
-				$temp = $tmpl['button_language'.$kpost];	
-			}
-			
-			if($rid == 'logout')
-			{
-				$temp = $tmpl['button_logout'.$kpost];	
-			}
-			
+
 			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 			// valid URLs
 			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));

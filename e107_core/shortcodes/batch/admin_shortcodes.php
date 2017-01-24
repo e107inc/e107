@@ -15,6 +15,10 @@ if (!defined('e107_INIT')) { exit; }
 
 class admin_shortcodes
 {
+
+	const ADMIN_NAV_HOME = 'enav_home'; // Must match with admin_template. ie. {ADMIN_NAVIGATION=enav_home} and $E_ADMIN_NAVIGATION['button_enav_home']
+	const ADMIN_NAV_LANGUAGE = 'enav_language';
+	const ADMIN_NAV_LOGOUT = 'enav_logout';
 	
 	function cronUpdateRender($parm,$cacheData)
 	{
@@ -1418,7 +1422,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 		
-		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
 		{
 			$template = $$tmpl;
 
@@ -1479,6 +1483,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['perm'] = $subitem[3];
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
+
 
 				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
 				{
@@ -1649,15 +1654,16 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
-		if($type == 'home')
+		if($type === self::ADMIN_NAV_HOME)
 		{
 		
-			$menu_vars['home']['text'] =  ""; // ADLAN_53;
-			$menu_vars['home']['link'] = e_HTTP.'index.php';
-			$menu_vars['home']['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['home']['image_src'] = ADLAN_151;
-			$menu_vars['home']['sort'] = 1;
-			$menu_vars['home']['sub_class'] = 'sub';
+			$menu_vars[$type]['text'] =  ""; // ADLAN_53;
+			$menu_vars[$type]['link'] = e_HTTP.'index.php';
+			$menu_vars[$type]['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars[$type]['image_src'] = ADLAN_151;
+			$menu_vars[$type]['sort'] = 1;
+			$menu_vars[$type]['sub_class'] = 'sub';
+			$menu_vars[$type]['template'] = $type;
 			
 			// Sub Links for 'home'. 
 			require_once(e_HANDLER."sitelinks_class.php");
@@ -1682,10 +1688,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$c++;
 			}
 
-			$menu_vars['home']['sub'] = $tmp;
+			$menu_vars[$type]['sub'] = $tmp;
 			// --------------------
 		}
-		elseif($type == 'logout')
+		elseif($type == self::ADMIN_NAV_LOGOUT)
 		{
 			$tmp = array();
 			
@@ -1774,14 +1780,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['image_large_src'] 	= '';
 			$tmp[8]['link_class']		= '';					
 				
-			$menu_vars['logout']['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
-			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
-			$menu_vars['logout']['sub'] = $tmp;	
+			$menu_vars[$type]['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
+			$menu_vars[$type]['link'] = '#';
+			$menu_vars[$type]['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars[$type]['image_src'] = LAN_LOGOUT;
+			$menu_vars[$type]['sub'] = $tmp;
+			$menu_vars[$type]['template'] = $type;
 		}
 
-		if($type == 'language')
+		if($type == self::ADMIN_NAV_LANGUAGE)
 		{
 			$slng = e107::getLanguage();
 			$languages = $slng->installed();//array('English','French');
@@ -1839,11 +1846,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					$c++;		
 				}
 				
-				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
-				$menu_vars['language']['link'] = '#';
-				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
-				$menu_vars['language']['image_src'] = null;
-				$menu_vars['language']['sub'] = $tmp;	
+				$menu_vars[$type]['text'] = strtoupper(e_LAN); // e_LANGUAGE;
+				$menu_vars[$type]['link'] = '#';
+				$menu_vars[$type]['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
+				$menu_vars[$type]['image_src'] = null;
+				$menu_vars[$type]['sub'] = $tmp;
+				$menu_vars[$type]['template'] = $type;
 			}	
 			
 		}	
@@ -1877,6 +1885,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$var = array();
 
+
+
 		foreach($pref['sitetheme_layouts'] as $key=>$val)
 		{
 			$layoutName = str_replace($search,$replace,$key);
@@ -1901,6 +1911,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$var = array($defLayout => $var[$defLayout]) + $var;
 
 		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
+
+
 
 	   return e107::getNav()->admin(ADLAN_6,$action, $var);
 
