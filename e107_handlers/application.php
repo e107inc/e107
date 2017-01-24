@@ -18,12 +18,12 @@
  * @author SecretR
  *
  * e107 Single Entry Point handling
- *
+ * 
  * Currently this file contains all classes required for single entry point functionallity
  * They will be separated in different files in a proper way (soon)
  */
 
-
+ 
 /**
  * e107 Front controller
  */
@@ -34,34 +34,34 @@ class eFront
 	 * @var eFront
 	 */
 	private static $_instance;
-
+	
 	/**
 	 * @var eDispatcher
 	 */
 	protected $_dispatcher;
-
+	
 	/**
 	 * @var eRequest
 	 */
-	protected $_request;
-
+	protected $_request; 
+	
 	/**
 	 * @var eRouter
 	 */
 	protected $_router;
-
+	
 	/**
 	 * @var string path to file to include - the old deprecated way of delivering content
 	 */
 	protected static $_legacy = '';
-
+	
 	/**
 	 * Constructor
 	 */
 	private function __construct()
 	{
 	}
-
+	
 	/**
 	 * Cloning not allowed
 	 *
@@ -69,7 +69,7 @@ class eFront
 	private function __clone()
 	{
 	}
-
+	
 	/**
 	 * Singleton implementation
 	 * @return eFront
@@ -82,7 +82,7 @@ class eFront
 		}
 	  	return self::$_instance;
 	}
-
+	
 	/**
 	 * Dispatch
 	 */
@@ -90,7 +90,7 @@ class eFront
 	{
 		if(null === $request)
 		{
-			if(null === $this->getRequest())
+			if(null === $this->getRequest()) 
 			{
 				$request = new eRequest();
 				$this->setRequest($request);
@@ -98,10 +98,10 @@ class eFront
 			else $request = $this->getRequest();
 		}
 		elseif(null === $this->getRequest()) $this->setRequest($request);
-
+		
 		if(null === $response)
 		{
-			if(null === $this->getResponse())
+			if(null === $this->getResponse()) 
 			{
 				$response = new eResponse();
 				$this->setResponse($response);
@@ -109,11 +109,11 @@ class eFront
 			else $response = $this->getResponse();
 		}
 		elseif(null === $this->getRequest()) $this->setRequest($request);
-
-
+		
+		
 		if(null === $dispatcher)
 		{
-			if(null === $this->getDispatcher())
+			if(null === $this->getDispatcher()) 
 			{
 				$dispatcher = new eDispatcher();
 				$this->setDispatcher($dispatcher);
@@ -121,40 +121,40 @@ class eFront
 			else $dispatcher = $this->getDispatcher();
 		}
 		elseif(null === $this->getDispatcher()) $this->setDispatcher($dispatcher);
-
-
+		
+		
 		// set dispatched status true, required for checkLegacy()
 		$request->setDispatched(true);
 
 		$router = $this->getRouter();
-
+		
 		// If current request not already routed outside the dispatch method, route it
-		if(!$request->routed) $router->route($request);
+		if(!$request->routed) $router->route($request); 
 
 		$c = 0;
 		// dispatch loop
-		do
+		do 
 		{
 			$c++;
 			if($c > 100)
 			{
 				throw new eException("Too much dispatch loops", 1);
 			}
-
+			
 			// dispatched status true on first loop
 			$router->checkLegacy($request);
-
+			
 			// dispatched by default - don't allow legacy to alter dispatch status
 			$request->setDispatched(true);
-
+			
 			// legacy mod - return control to the bootstrap
-			if(self::isLegacy())
+			if(self::isLegacy()) 
 			{
-				return;
+				return; 
 			}
-
+			
 			// for the good players - dispatch loop - no more BC!
-			try
+			try 
 			{
 				$dispatcher->dispatch($request, $response);
 			}
@@ -164,10 +164,10 @@ class eFront
 				exit;
 			}
 
-
+			
 		} while (!$request->isDispatched());
 	}
-
+	
 	/**
 	 * Init all objects required for request dispatching
 	 * @return eFront
@@ -176,31 +176,31 @@ class eFront
 	{
 		$request = new eRequest();
 		$this->setRequest($request);
-
+		
 		$dispatcher = new eDispatcher();
 		$this->setDispatcher($dispatcher);
-
+		
 		$router = new eRouter();
 		$this->setRouter($router);
-
+		
 		$response = new eResponse();
 		$this->setResponse($response);
-
+		
 		return $this;
 	}
-
+	
 	/**
 	 * Dispatch
 	 * @param string|eRequest $route
 	 */
 	public function run($route = null)
 	{
-		if($route)
+		if($route) 
 		{
 			if(is_object($route) && ($route instanceof eRequest)) $this->setRequest($route);
 			elseif(null !== $route && null !== $this->getRequest()) $this->getRequest()->setRoute($route);
 		}
-		try
+		try 
 		{
 			$this->dispatch();
 		}
@@ -209,9 +209,9 @@ class eFront
 			echo $e->getMessage();
 			exit;
 		}
-
+		
 	}
-
+	
 	/**
 	 * Application instance (e107 class)
 	 * @return e107
@@ -220,7 +220,7 @@ class eFront
 	{
 		return e107::getInstance();
 	}
-
+	
 	/**
 	 * Get dispatcher instance
 	 * @return eDispatcher
@@ -229,7 +229,7 @@ class eFront
 	{
 		return $this->_dispatcher;
 	}
-
+	
 	/**
 	 * Set dispatcher
 	 * @param eDispatcher $dispatcher
@@ -240,7 +240,7 @@ class eFront
 		$this->_dispatcher = $dispatcher;
 		return $this;
 	}
-
+	
 	/**
 	 * Get request instance
 	 * @return eRequest
@@ -249,7 +249,7 @@ class eFront
 	{
 		return $this->_request;
 	}
-
+	
 	/**
 	 * Set request
 	 * @param eRequest $request
@@ -260,7 +260,7 @@ class eFront
 		$this->_request = $request;
 		return $this;
 	}
-
+	
 	/**
 	 * Get response instance
 	 * @return eResponse
@@ -269,7 +269,7 @@ class eFront
 	{
 		return $this->_response;
 	}
-
+	
 	/**
 	 * Set response
 	 * @param eResponse $response
@@ -280,7 +280,7 @@ class eFront
 		$this->_response = $response;
 		return $this;
 	}
-
+	
 	/**
 	 * Get router instance
 	 * @return eRouter
@@ -289,7 +289,7 @@ class eFront
 	{
 		return $this->_router;
 	}
-
+	
 	/**
 	 * Set router instance
 	 * @return eFront
@@ -299,7 +299,7 @@ class eFront
 		$this->_router = $router;
 		return $this;
 	}
-
+	
 	/**
 	 * Set/get legacy status of the current request
 	 * @param boolean $status
@@ -307,12 +307,12 @@ class eFront
 	 */
 	public static function isLegacy($status = null)
 	{
-		if(null !== $status)
+		if(null !== $status) 
 		{
 			if(!empty($status[0]) && ($status[0] === '{'))
 			{
 				$status = e107::getParser()->replaceConstants($status);
-			}
+			} 
 			self::$_legacy = $status;
 		}
 		return self::$_legacy;
@@ -332,40 +332,40 @@ class eDispatcher
 		$controllerName = $request->getControllerName();
 		$moduleName = $request->getModuleName();
 		$className = $this->isDispatchable($request, false);
-
+		
 		// dispatch based on rule settings
 		if(!$className)
 		{
-			if($controllerName == 'index') // v2.x upgrade has not been run yet.
+			if($controllerName == 'index') // v2.x upgrade has not been run yet. 
 			{
-				e107::getRedirect()->redirect(e_ADMIN."admin.php");
+				e107::getRedirect()->redirect(e_ADMIN."admin.php");	
 			}
-
+			
 			throw new eException("Invalid controller '".$controllerName."'");
 		}
-
+		
 		$controller = new $className($request, $response);
 		if(!($controller instanceof eController))
 		{
 			throw new eException("Controller $controller is not an instance of eController");
 		}
-
+		
 		$actionName = $request->getActionMethodName();
-
+		
 		ob_start();
-
+		
 		$controller->dispatch($actionName);
-
+		
 		$content = ob_get_contents();
 		ob_end_clean();
-
+		
 		$response->appendBody($content);
 		unset($controller);
 	}
-
+	
 	/**
 	 * Get path to the e_url handler
-	 * @param string $module
+	 * @param string $module 
 	 * @param string $location plugin|core|override
 	 * @param boolean $sc
 	 * @return string path
@@ -375,14 +375,14 @@ class eDispatcher
 		$tmp = explode('/', $location);
 		$custom = '';
 		$location = $tmp[0];
-		if(isset($tmp[1]) && !empty($tmp[1]))
+		if(isset($tmp[1]) && !empty($tmp[1])) 
 		{
 			$custom = $tmp[1].'_';
 		}
 		unset($tmp);
 		if($module !== '*') $module .= '/';
-
-		switch ($location)
+		
+		switch ($location) 
 		{
 			case 'plugin':
 				//if($custom) $custom = 'url/'.$custom;
@@ -402,23 +402,23 @@ class eDispatcher
 				if($module === '*') return $sc ? '{e_CORE}override/url/'  : e_CORE.'override/url/' ;
 				return $sc ? '{e_CORE}override/url/'.$module.$custom.'url.php'  : e_CORE.'override/url/'.$module.$custom.'url.php' ;
 			break;
-
+			
 			default:
 				return null;
 			break;
 		}
 	}
-
+	
 	/**
 	 * Get path to url configuration subfolders
-	 * @param string $module
+	 * @param string $module 
 	 * @param string $location plugin|core|override
 	 * @param boolean $sc
 	 * @return string path
 	 */
 	public static function getConfigLocationPath($module, $location, $sc = false)
 	{
-		switch ($location)
+		switch ($location) 
 		{
 			case 'plugin':
 				return $sc ? '{e_PLUGIN}'.$module.'/url/' : e_PLUGIN.$module.'/url/';
@@ -431,13 +431,13 @@ class eDispatcher
 			case 'override':
 				return $sc ? '{e_CORE}override/url/'.$module.'/'  : e_CORE.'override/url/'.$module.'/';
 			break;
-
+			
 			default:
 				return null;
 			break;
 		}
 	}
-
+	
 	/**
 	 * Get dispatch system path
 	 * @param string $location plugin|core|override
@@ -446,60 +446,60 @@ class eDispatcher
 	 * @return string path
 	 */
 	public static function getDispatchLocationPath($location, $plugin = null, $sc = false)
-	{
-		switch ($location)
+	{	
+		switch ($location) 
 		{
 			case 'plugin':
 				if(!$plugin) return null;
 				return $sc ? '{e_PLUGIN}'.$plugin.'/controllers/' : e_PLUGIN.$plugin.'/controllers/';
 			break;
-
+			
 			case 'core':
 				return $sc ? '{e_CORE}controllers/' : e_CORE.'controllers/';
 			break;
-
+			
 			case 'override':
 				return $sc ? '{e_CORE}override/controllers/' : e_CORE.'override/controllers/';
 			break;
-
+			
 			default:
 				return null;
 			break;
 		}
 	}
-
+	
 	/**
 	 * Get full dispatch system path
-	 * @param string $module
+	 * @param string $module 
 	 * @param string $location plugin|core|override
 	 * @param boolean $sc
 	 * @return string path
 	 */
 	public static function getDispatchPath($module, $location, $sc = false)
-	{
-		switch ($location)
+	{	
+		switch ($location) 
 		{
 			case 'plugin':
 				return $sc ? '{e_PLUGIN}'.$module.'/controllers/' : e_PLUGIN.$module.'/controllers/';
 			break;
-
+			
 			case 'core':
 				return $sc ? '{e_CORE}controllers/'.$module.'/' : e_CORE.'controllers/'.$module.'/';
 			break;
-
+			
 			case 'override':
 				return $sc ? '{e_CORE}override/controllers/'.$module.'/' : e_CORE.'override/controllers/'.$module.'/';
 			break;
-
+			
 			default:
 				return null;
 			break;
 		}
 	}
-
+	
 	/**
 	 * Get include path to a given module/controller
-	 *
+	 * 
 	 * @param string $module valid module name
 	 * @param string $controller controller name
 	 * @param string $location core|plugin|override
@@ -509,13 +509,13 @@ class eDispatcher
 	public static function getControllerPath($module, $controller, $location = null, $sc = false)
 	{
 		if(null === $location) $location = self::getDispatchLocation($module);
-
+		
 		return ($location ? self::getDispatchPath($module, $location, $sc).$controller.'.php': null);
 	}
-
+	
 	/**
 	 * Get class name of a given module/controller
-	 *
+	 * 
 	 * @param string $module valid module name
 	 * @param string $controllerName controller name
 	 * @param string $location core|plugin|override
@@ -524,14 +524,14 @@ class eDispatcher
 	public static function getControllerClass($module, $controllerName, $location = null)
 	{
 		if(null === $location) $location = self::getDispatchLocation($module);
-
+		
 		return ($location ? $location.'_'.$module.'_'.$controllerName.'_controller' : null);
 	}
-
+	
 
 	/**
 	 * Get controller object
-	 *
+	 * 
 	 * @param eRequest $request
 	 * @param boolean $checkOverride whether to check the override location
 	 * @return eController null if not dispatchable
@@ -540,10 +540,10 @@ class eDispatcher
 	{
 		$class_name = $this->isDispatchable($request, true, $checkOverride);
 		if(!$class_name) return null;
-
+		
 		return new $class_name();
 	}
-
+	
 	/**
 	 * Check if given module/controller is dispatchable
 	 * @param string $module valid module name
@@ -556,38 +556,38 @@ class eDispatcher
 	{
 		if($checkOverride || $location == 'override')
 		{
-			$path = self::getControllerPath($module, $controllerName, 'override', false);
-
+			$path = self::getControllerPath($module, $controllerName, 'override', false); 
+			
 			$class_name = self::getControllerClass($module, $controllerName, 'override');
 			if($class_name && !class_exists($class_name, false) && is_readable($path)) include_once($path);
-
+			
 			if($class_name && class_exists($class_name, false)) return $class_name;
 		}
-
+		
 		// fallback to original dispatch location if any
 		if($location === 'override')
 		{
 			// check for real location
 			if(($location = eDispatcher::getModuleRealLocation($module)) === null) return false;
 		}
-
+		
 		if($location !== 'override')
 		{
-			$path = self::getControllerPath($module, $controllerName, $location, false);
-
+			$path = self::getControllerPath($module, $controllerName, $location, false); 
+			
 			$class_name = self::getControllerClass($module, $controllerName, $location);
 			if(!$class_name) return false;
-
+			
 			if(!class_exists($class_name, false) && is_readable($path)) include_once($path);
-
+			
 			if(class_exists($class_name, false)) return $class_name;
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Automated version of self::isDispatchableModule()
-	 * @param eRequest $request
+	 * @param eRequest $request 
 	 * @param boolean $checkReflection deep check - proper subclassing, action
 	 * @param boolean $checkOverride try override controller folder first
 	 * @return mixed class name OR false if not dispatchable
@@ -595,40 +595,40 @@ class eDispatcher
 	public function isDispatchable(eRequest $request, $checkReflection = false, $checkOverride = true)
 	{
 		$location = self::getDispatchLocation($request->getModuleName());
-
+		
 		$controllerName = $request->getControllerName();
 		$moduleName = $request->getModuleName();
 		$className = false;
-
+		
 		// dispatch based on url_config preference value, if config location is override and there is no
 		// override controller, additional check against real controller location will be made
 		if($location)
 		{
 			$className = $this->isDispatchableModule($moduleName, $controllerName, $location, $checkOverride);
 		}
-		//else
+		//else 
 		//{
 			# Disable plugin check for routes with no config info - prevent calling of non-installed plugins
-			# We may allow this for plugins which don't have plugin.xml in the future
+			# We may allow this for plugins which don't have plugin.xml in the future 
 			// $className = $this->isDispatchableModule($moduleName, $controllerName, 'plugin', $checkOverride);
-			// if(!$className)
+			// if(!$className)  
 			//$className = $this->isDispatchableModule($moduleName, $controllerName, 'core', $checkOverride);
 		//}
-
+		
 		if(empty($className)) return false;
 		elseif(!$checkReflection) return $className;
-
+		
 		$rfl = new ReflectionClass($className);
 		$method = $request->getActionMethodName();
 		if($rfl->isSubclassOf('eController') && $rfl->hasMethod($method) && $rfl->getMethod($method)->isPublic() && !$rfl->getMethod($method)->isStatic())
 			return $className;
-
+		
 		return false;
 	}
-
+	
 	/**
 	 * Get class name of a given module config
-	 *
+	 * 
 	 * @param string $module valid module name
 	 * @param string $location core|plugin|override[/custom]
 	 * @return string controller path
@@ -638,20 +638,20 @@ class eDispatcher
 		$tmp = explode('/', $location);
 		$custom = '';
 		$location = $tmp[0];
-		if(isset($tmp[1]) && !empty($tmp[1]))
+		if(isset($tmp[1]) && !empty($tmp[1])) 
 		{
 			$custom = $tmp[1].'_';
 		}
 		unset($tmp);
 		$module .= '_';
-
+		
 		// we need to prepend location to avoid namespace colisions
 		return $location.'_'.$module.$custom.'url';
 	}
-
+	
 	/**
 	 * Get config object for a module
-	 *
+	 * 
 	 * @param string $module valid module name
 	 * @param string $location core|plugin|override[/custom]
 	 * @return eUrlConfig
@@ -665,20 +665,20 @@ class eDispatcher
 		}
 		$reg = $module.'/'.$location;
 		if(isset(self::$_configObjects[$reg])) return self::$_configObjects[$reg];
-		$className = self::getConfigClassName($module, $location);
+		$className = self::getConfigClassName($module, $location); 
 		if(!class_exists($className, false))
 		{
 			$path = self::getConfigPath($module, $location, false);
 			if(!is_readable($path)) return null;
 			include_once($path);
-
+			
 			if(!class_exists($className, false)) return null;
 		}
 		$obj = new $className();
 		$obj->init();
 		self::$_configObjects[$reg] = $obj;
 		$obj = null;
-
+		
 		return self::$_configObjects[$reg];
 	}
 
@@ -703,15 +703,15 @@ class eDispatcher
 		//retrieve from prefs
 		$location = self::getModuleConfigLocation($module);
 		if(!$location) return null;
-
+		
 		if(($pos = strpos($location, '/'))) //can't be 0
 		{
 			return substr($location, 0, $pos);
 		}
 		return $location;
 	}
-
-
+	
+	
 	/**
 	 * Auto discover module real location (and not currently set from url adminsitration) from stored in core prefs data
 	 * @param string $module
@@ -721,10 +721,10 @@ class eDispatcher
 		//retrieve from prefs
 		$searchArray = e107::findPref('url_modules');
 		if(!$searchArray) return null;
-
+		
 		$search = array('core', 'plugin', 'override');
-
-		foreach ($search as $location)
+		
+		foreach ($search as $location) 
 		{
 			$_searchArray = vartrue($searchArray[$location], array());
 			if(in_array($module, $_searchArray)) return $location;
@@ -744,35 +744,35 @@ class eRouter
 	 * @var array
 	 */
 	protected $_rules = array();
-
+	
 	/**
 	 * List of all system wide available aliases
 	 * This includes multi-lingual configurations as well
 	 * @var array
 	 */
 	protected $_aliases = array();
-
+	
 	/**
 	 * Cache for rule objects
 	 * @var array
 	 */
 	protected $_parsedRules = array(); // array of rule objects
-
+	
 	/**
 	 * Global config values per rule set
 	 * @var array
 	 */
-	protected $_globalConfig = array();
-
+	protected $_globalConfig = array(); 
+	
 	/**
 	 * Module name which is used for site main namespace
 	 * Example mysite.com/news/News Item => converted to mysite.com/News Item
 	 * NOTE: Could be moved to rules config
-	 *
-	 * @var string
+	 * 
+	 * @var string 
 	 */
 	protected $_mainNsModule = '';
-
+	
 	/**
 	 * Default URL suffix - to be added to end of all urls (e.g. '.html')
 	 * This value can be overridden per rule item
@@ -780,60 +780,60 @@ class eRouter
 	 * @var string
 	 */
 	public $urlSuffix = '';
-
+	
 	/**
 	 * @var string  GET variable name for route. Defaults to 'route'.
 	 */
 	public $routeVar = 'route';
-
+	
 	/**
 	 * @var string
 	 */
 	const FORMAT_GET = 'get';
-
+	
 	/**
 	 * @var string
 	 */
 	const FORMAT_PATH = 'path';
-
+	
 	/**
 	 * @var string
 	 */
 	private $_urlFormat = self::FORMAT_PATH;
-
+	
 	/**
 	 * Not found route
 	 * @var string
 	 */
 	public $notFoundRoute = 'system/error/notfound';
-
+	
 	protected $_defaultAssembleOptions = array('full' => false, 'amp' => '&amp;', 'equal' => '=', 'encode' => true);
-
+	
 	/**
 	 * Not found URL - used when system route not found and 'url_error_redirect' core pref is true
 	 * TODO - user friendly URL ('/system/404') when system config is ready ('/system/404')
 	 * @var string
 	 */
 	public $notFoundUrl = 'system/error/404?type=routeError';
-
+	
 	public function __construct()
 	{
 		$this->_init();
 	}
-
+	
 	/**
 	 * Init object
-	 * @return void
+	 * @return void 
 	 */
 	protected function _init()
 	{
-		// Gather all rules, add-on info, cache, module for main namespace etc
+		// Gather all rules, add-on info, cache, module for main namespace etc 
 		$this->_loadConfig()
 			->setAliases();
 		// we need config first as setter does some checks if module can be set as main
 		$this->setMainModule(e107::getPref('url_main_module', ''));
 	}
-
+	
 	/**
 	 * Set module for default namespace
 	 * @param string $module
@@ -845,7 +845,7 @@ class eRouter
 		$this->_mainNsModule = $module;
 		return $this;
 	}
-
+	
 	/**
 	 * Get main url namespace module
 	 * @return string
@@ -854,7 +854,7 @@ class eRouter
 	{
 		return $this->_mainNsModule;
 	}
-
+	
 	/**
 	 * Check if given module is the main module
 	 * @param string $module
@@ -864,8 +864,8 @@ class eRouter
 	{
 		return ($this->_mainNsModule === $module);
 	}
-
-
+	
+	
 	/**
 	 * @return string get|path
 	 */
@@ -873,7 +873,7 @@ class eRouter
 	{
 		return $this->_urlFormat;
 	}
-
+	
 	/**
 	 * Load config and url rules, if not available - build it on the fly
 	 * @return eRouter
@@ -882,45 +882,45 @@ class eRouter
 	{
 		if(!is_readable(e_CACHE_URL.'config.php')) $config = $this->buildGlobalConfig();
 		else $config = include(e_CACHE_URL.'config.php');
-
+		
 		if(!$config) $config = array();
-
+		
 		$rules = array();
-
-		foreach ($config as $module => $c)
+		
+		foreach ($config as $module => $c) 
 		{
 			$rules[$module] = $c['rules'];
 			unset($config[$module]['rules']);
 			$config[$module] = $config[$module]['config'];
 		}
 		$this->_globalConfig = $config;
-		$this->setRuleSets($rules);
-
+		$this->setRuleSets($rules); 
+		
 		return $this;
 	}
-
+	
 	public static function clearCache()
 	{
 		if(file_exists(e_CACHE_URL.'config.php'))
 		{
-			@unlink(e_CACHE_URL.'config.php');
-		}
+			@unlink(e_CACHE_URL.'config.php');	
+		}			
 	}
-
+	
 	/**
 	 * Build unified config.php
 	 */
 	public function buildGlobalConfig($save = true)
 	{
 		$active = e107::getPref('url_config', array());
-
+		
 		$config = array();
-		foreach ($active as $module => $location)
+		foreach ($active as $module => $location) 
 		{
 			$_config = array();
 			$obj = eDispatcher::getConfigObject($module, $location);
 			$path = eDispatcher::getConfigPath($module, $location, true);
-
+			
 			if(null !== $obj)
 			{
 				$_config = $obj->config();
@@ -928,7 +928,7 @@ class eRouter
 				$_config['config']['configClass'] = eDispatcher::getConfigClassName($module, $location);
 			}
 			if(!isset($_config['config'])) $_config['config'] = array();
-
+			
 			$_config['config']['location'] = $location;
 			if(!isset($_config['config']['format']) || !in_array($_config['config']['format'], array(self::FORMAT_GET, self::FORMAT_PATH)))
 			{
@@ -936,23 +936,23 @@ class eRouter
 			}
 
 			if(!isset($_config['rules'])) $_config['rules'] = array();
-
-			foreach ($_config['rules'] as $pattern => $rule)
+			
+			foreach ($_config['rules'] as $pattern => $rule) 
 			{
 				if(!is_array($rule))
 				{
 					$_config['rules'][$pattern] = array($rule);
 				}
 			}
-
+			
 			$config[$module] = $_config;
 		}
-
+		
 		if($save)
 		{
 			$fileContent = '<?php'."\n### Auto-generated - DO NOT EDIT ### \nreturn ";
 			$fileContent .= trim(var_export($config, true)).';';
-
+			
 			file_put_contents(e_CACHE_URL.'config.php', $fileContent);
 		}
 		return $config;
@@ -967,13 +967,13 @@ class eRouter
 	{
 		$file = e107::getFile(false);
 		$ret = array();
-
+		
 		$file->mode = 'fname';
 		$files = $file->setFileInfo('fname')
 			->get_files($path, '^([a-z_]{1,}_)?url\.php$');
-
-
-		foreach ($files as $file)
+			
+		
+		foreach ($files as $file) 
 		{
 			if(null === $location)
 			{
@@ -997,7 +997,7 @@ class eRouter
 		if($location) $location .= '/';
 		return $location.substr($filename, 0, strrpos($filename, '_'));
 	}
-
+	
 	/**
 	 * Detect all available system url modules, used as a map on administration configuration path
 	 * and required (same structure) {@link from eDispatcher::adminBuildConfig())
@@ -1005,28 +1005,28 @@ class eRouter
 	 * It goes through both config and dispatch locations and registers directory tree as modules
 	 * The only exception are plugins - if plugin requires install (plugin.xml) and it is not installed,
 	 * it won't be registered
-	 * Another important thing is - core has always higher priority, as plugins are not allowed to
-	 * directly override core modules. At this moment, core modules could be overloaded only via override configs (e107_core/override/url/)
-	 * and controllers (e107_core/override/controllers)
-	 * This array is stored as url_modules core preference
-	 *
+	 * Another important thing is - core has always higher priority, as plugins are not allowed to 
+	 * directly override core modules. At this moment, core modules could be overloaded only via override configs (e107_core/override/url/) 
+	 * and controllers (e107_core/override/controllers) 
+	 * This array is stored as url_modules core preference 
+	 * 
 	 * @param string $type possible values are all|plugin|core|override
 	 * @return array available system url modules stored as url_modules core preference
-	 */
+	 */	
 	public static function adminReadModules($type = 'all')
 	{
 		$f = e107::getFile();
 		$ret = array('core' => array(), 'plugin' => array(), 'override' => array());
-
+		
 		if($type == 'all' || $type = 'core')
 		{
 			$location = eDispatcher::getDispatchLocationPath('core');
 			// search for controllers first
 			$ret['core'] = $f->get_dirs($location);
-
+			
 			// merge with configs
 			$configArray = $f->get_dirs(eDispatcher::getConfigPath('*', 'core'));
-			foreach ($configArray as $config)
+			foreach ($configArray as $config) 
 			{
 				if(!in_array($config, $ret['core']))
 				{
@@ -1035,19 +1035,19 @@ class eRouter
 			}
 			sort($ret['core']);
 		}
-
+		
 		if($type == 'all' || $type = 'plugin')
 		{
 			$plugins = $f->get_dirs(e_PLUGIN);
-			foreach ($plugins as $plugin)
+			foreach ($plugins as $plugin) 
 			{
-				// DON'T ALLOW PLUGINS TO OVERRIDE CORE!!!
+				// DON'T ALLOW PLUGINS TO OVERRIDE CORE!!! 
 				// This will be possible in the future under some other, more controllable form
 				if(in_array($plugin, $ret['core'])) continue;
-
+				
 				$location = eDispatcher::getDispatchLocationPath('plugin', $plugin);
 				$config = eDispatcher::getConfigPath($plugin, 'plugin');
-
+				
 				if(e107::isInstalled($plugin))
 				{
 					if(is_dir($location) || is_readable($config))
@@ -1056,7 +1056,7 @@ class eRouter
 					}
 					continue;
 				}
-
+				
 				// Register only those who don't need install and may be dispatchable
 				if((!is_readable(e_PLUGIN.$plugin.'/plugin.php') && !is_readable(e_PLUGIN.$plugin.'/plugin.xml')))
 				{
@@ -1068,16 +1068,16 @@ class eRouter
 			}
 			sort($ret['plugin']);
 		}
-
+		
 		if($type == 'all' || $type = 'override')
 		{
 			// search for controllers first
 			$location = eDispatcher::getDispatchLocationPath('override');
 			$ret['override'] = $f->get_dirs($location);
-
+			
 			// merge with configs
 			$configArray = $f->get_dirs(eDispatcher::getConfigPath('*', 'override'));
-			foreach ($configArray as $config)
+			foreach ($configArray as $config) 
 			{
 				if(!in_array($config, $ret['override']))
 				{
@@ -1085,11 +1085,11 @@ class eRouter
 				}
 			}
 			sort($ret['override']);
-
+			
 			// remove not installed plugin locations, possible only for 'all' type
 			if($type == 'all')
 			{
-				foreach ($ret['override'] as $i => $l)
+				foreach ($ret['override'] as $i => $l) 
 				{
 					// it's a plugin override, but not listed in current plugin array - remove
 					if(in_array($l, $plugins) && !in_array($l, $ret['plugin']))
@@ -1099,15 +1099,15 @@ class eRouter
 				}
 			}
 		}
-
+		
 		return $ret;
 	}
 
 	/**
 	 * Rebuild configuration array, stored as url_config core preference
 	 * More strict detection compared to {@link eDispatcher::adminReadModules()}
-	 * Current flat array containing config locations per module are rebuilt so that new
-	 * modules are registered, missing modules - removed. Additionally fallback to the default location
+	 * Current flat array containing config locations per module are rebuilt so that new 
+	 * modules are registered, missing modules - removed. Additionally fallback to the default location 
 	 * is done if current user defined location is not readable
 	 * @see eDispatcher::adminReadModules()
 	 * @param array current configuration array (url_config core preference like)
@@ -1117,10 +1117,10 @@ class eRouter
 	public static function adminBuildConfig($current, $adminReadModules = null)
 	{
 		if(null === $adminReadModules) $adminReadModules = self::adminReadModules();
-
+		
 		$ret = array();
 		$all = array_unique(array_merge($adminReadModules['core'], $adminReadModules['plugin'], $adminReadModules['override']));
-		foreach ($all as $module)
+		foreach ($all as $module) 
 		{
 			if(isset($current[$module]))
 			{
@@ -1130,10 +1130,10 @@ class eRouter
 					$ret[$module] = $current[$module];
 					continue;
 				}
-
+				
 				// in all other cases additional re-check will be made - see below
 			}
-
+			
 			if(in_array($module, $adminReadModules['override']))
 			{
 				// core check
@@ -1141,7 +1141,7 @@ class eRouter
 				{
 					$mustHave = is_readable(eDispatcher::getConfigPath($module, 'core'));
 					$has = is_readable(eDispatcher::getConfigPath($module, 'override'));
-
+					
 					// No matter if it must have, it has e_url config
 					if($has) $ret[$module] = 'override';
 					// It must have but it doesn't have e_url config, fallback
@@ -1154,7 +1154,7 @@ class eRouter
 				{
 					$mustHave = is_readable(eDispatcher::getConfigPath($module, 'plugin'));
 					$has = is_readable(eDispatcher::getConfigPath($module, 'override'));
-
+					
 					// No matter if it must have, it has e_url config
 					if($has) $ret[$module] = 'override';
 					// It must have but it doesn't have e_url config, fallback
@@ -1167,9 +1167,9 @@ class eRouter
 				{
 					$ret[$module] = 'override';
 				}
-
+				
 			}
-			// default core location
+			// default core location 
 			elseif(in_array($module, $adminReadModules['core']))
 			{
 				$ret[$module] = 'core';
@@ -1184,7 +1184,7 @@ class eRouter
 	}
 
 	/**
-	 * Detect available config locations (readable check), based on available url_modules {@link eDispatcher::adminReadModules()} core preference arrays
+	 * Detect available config locations (readable check), based on available url_modules {@link eDispatcher::adminReadModules()} core preference arrays 
 	 * Used to rebuild url_locations core preference value
 	 * @see eDispatcher::adminBuildConfig()
 	 * @see eDispatcher::adminReadModules()
@@ -1195,20 +1195,20 @@ class eRouter
 	{
 		$ret = array();
 		if(null === $available) $available = self::adminReadModules();
-
+		
 		$fl = e107::getFile();
-
+		
 		// Core
-		foreach ($available['core'] as $module)
+		foreach ($available['core'] as $module) 
 		{
 			// Default module
 			$ret[$module] = array('core');
-
+			
 			// read sub-locations
-			$path = eDispatcher::getConfigLocationPath($module, 'core');
+			$path = eDispatcher::getConfigLocationPath($module, 'core'); 
 			//$sub = $fl->get_dirs($path);
 			$sub = eRouter::adminReadConfigs($path);
-
+			
 			if($sub)
 			{
 				foreach ($sub as $moduleSub)
@@ -1219,26 +1219,26 @@ class eRouter
 						$ret[$module][] = 'override/'.$moduleSub;
 					}
 					// no override available, register the core location
-					elseif(is_readable(eDispatcher::getConfigPath($module, 'core/'.$moduleSub)))
+					elseif(is_readable(eDispatcher::getConfigPath($module, 'core/'.$moduleSub))) 
 					{
 						$ret[$module][] = 'core/'.$moduleSub;
 					}
-				}
+				} 
 			}
 		}
-
-
+		
+		
 		// Plugins
-		foreach ($available['plugin'] as $module)
+		foreach ($available['plugin'] as $module) 
 		{
 			// Default module
 			$ret[$module] = array('plugin');
-
+			
 			// read sub-locations
 			$path = eDispatcher::getConfigLocationPath($module, 'plugin');
 			//$sub = $fl->get_dirs($path);
 			$sub = eRouter::adminReadConfigs($path);
-
+			
 			if($sub)
 			{
 				foreach ($sub as $moduleSub)
@@ -1249,48 +1249,48 @@ class eRouter
 						$ret[$module][] = 'override/'.$moduleSub;
 					}
 					// no override available, register the core location
-					elseif(is_readable(eDispatcher::getConfigPath($module, 'plugin/'.$moduleSub)))
+					elseif(is_readable(eDispatcher::getConfigPath($module, 'plugin/'.$moduleSub))) 
 					{
 						$ret[$module][] = 'plugin/'.$moduleSub;
 					}
-				}
+				} 
 			}
 		}
 
 		// Go through all overrides, register those who don't belong to core & plugins as standalone core modules
-		foreach ($available['override'] as $module)
+		foreach ($available['override'] as $module) 
 		{
 			// either it is a core/plugin module or e_url.php is not readable - continue
 			if(in_array($module, $available['core']) || in_array($module, $available['plugin']))
 			{
 				continue;
 			}
-
+			
 			// Default module
 			$ret[$module] = array('override');
-
+			
 			// read sub-locations
 			$path = eDispatcher::getConfigLocationPath($module, 'override');
 			//$sub = $fl->get_dirs($path);
 			$sub = eRouter::adminReadConfigs($path);
-
+			
 			if($sub)
 			{
 				foreach ($sub as $moduleSub)
 				{
-					if(is_readable(eDispatcher::getConfigPath($module, 'override/'.$moduleSub)))
+					if(is_readable(eDispatcher::getConfigPath($module, 'override/'.$moduleSub))) 
 					{
 						$ret[$module][] = 'override/'.$moduleSub;
 					}
-				}
+				} 
 			}
 		}
-
+		
 		return $ret;
 	}
 
 	/**
-	 * Match current aliases against currently available module and languages
+	 * Match current aliases against currently available module and languages 
 	 * @param array $currentAliases url_aliases core preference
 	 * @param array $currentConfig url_config core preference
 	 * @return array cleaned aliases
@@ -1298,16 +1298,16 @@ class eRouter
 	public static function adminSyncAliases($currentAliases, $currentConfig)
 	{
 		if(empty($currentAliases)) return array();
-
+		
 		$modules = array_keys($currentConfig);
-
+		
 		// remove non existing languages
 		$lng = e107::getLanguage();
 		$lanList = $lng->installed();
-
+		
 		if(is_array($currentAliases))
 		{
-			foreach ($currentAliases as $lanCode => $aliases)
+			foreach ($currentAliases as $lanCode => $aliases) 
 			{
 				$lanName = $lng->convert($lanCode);
 				if(!$lanName || !in_array($lanName, $lanList))
@@ -1315,9 +1315,9 @@ class eRouter
 					unset($currentAliases[$lanCode]);
 					continue;
 				}
-
+				
 				// remove non-existing modules
-				foreach ($aliases as $alias => $module)
+				foreach ($aliases as $alias => $module) 
 				{
 					if(!isset($currentConfig[$module])) unset($currentAliases[$lanCode][$alias]);
 				}
@@ -1334,10 +1334,10 @@ class eRouter
 	public function getConfig($module = null)
 	{
 		if(null === $module) return $this->_globalConfig;
-
-		return isset($this->_globalConfig[$module]) ? $this->_globalConfig[$module] : array();
+		
+		return isset($this->_globalConfig[$module]) ? $this->_globalConfig[$module] : array();	
 	}
-
+	
 	/**
 	 * Retrieve single value from a module global configuration array
 	 * @param string $module system module
@@ -1345,9 +1345,9 @@ class eRouter
 	 */
 	public function getConfigValue($module, $key, $default = null)
 	{
-		return isset($this->_globalConfig[$module]) && isset($this->_globalConfig[$module][$key]) ? $this->_globalConfig[$module][$key] : $default;
+		return isset($this->_globalConfig[$module]) && isset($this->_globalConfig[$module][$key]) ? $this->_globalConfig[$module][$key] : $default;	
 	}
-
+	
 	/**
 	 * Get system name of a module by its alias
 	 * Returns null if $alias is not an existing alias
@@ -1360,24 +1360,24 @@ class eRouter
 		if($lan) return e107::findPref('url_aliases/'.$lan.'/'.$alias, null);
 		return (isset($this->_aliases[$alias]) ? $this->_aliases[$alias] : null);
 	}
-
+	
 	/**
 	 * Get alias name for a module
 	 * Returns null if module doesn't have an alias
 	 * @param string $module
 	 * @param string $lan optional language alias check. Example $lan = 'bg' (search for Bulgarian aliases)
-	 * @return string alias
+	 * @return string alias 
 	 */
 	public function getAliasFromModule($module, $lan = null)
 	{
-		if($lan)
+		if($lan) 
 		{
 			$aliases = e107::findPref('url_aliases/'.$lan, array());
 			return (in_array($module, $aliases) ? array_search($module, $aliases) : null);
 		}
 		return (in_array($module, $this->_aliases) ? array_search($module, $this->_aliases) : null);
 	}
-
+	
 	/**
 	 * Check if alias exists
 	 * @param string $alias
@@ -1386,14 +1386,14 @@ class eRouter
 	 */
 	public function isAlias($alias, $lan = null)
 	{
-		if($lan)
+		if($lan) 
 		{
 			$aliases = e107::findPref('url_aliases/'.$lan, array());
 			return isset($aliases[$alias]);
 		}
 		return isset($this->_aliases[$alias]);
 	}
-
+	
 	/**
 	 * Check if there is an alias for provided module
 	 * @param string $module
@@ -1402,14 +1402,14 @@ class eRouter
 	 */
 	public function hasAlias($module, $lan = null)
 	{
-		if($lan)
+		if($lan) 
 		{
 			$aliases = e107::findPref('url_aliases/'.$lan, array());
 			return in_array($module, $aliases);
 		}
 		return in_array($module, $this->_aliases);
 	}
-
+	
 	/**
 	 * Get all available module aliases
 	 * @param string $lan optional language alias check. Example $lan = 'bg' (search for Bulgarian aliases)
@@ -1417,13 +1417,13 @@ class eRouter
 	 */
 	public function getAliases($lanCode = null)
 	{
-		if($lan)
+		if($lan) 
 		{
 			return e107::findPref('url_aliases/'.$lan, array());
 		}
 		return $this->_aliases;
 	}
-
+	
 	/**
 	 * Set module aliases
 	 * @param array $aliases
@@ -1433,15 +1433,15 @@ class eRouter
 	{
 		if(null === $aliases)
 		{
-			$lanCode = e107::getLanguage()->convert(e_LANGUAGE);
-
+			$lanCode = e107::getLanguage()->convert(e_LANGUAGE); 
+			
 			$aliases = e107::findPref('url_aliases/'.$lanCode, array());
 		}
 		$this->_aliases = $aliases;
-
+		
 		return $this;
 	}
-
+	
 	/**
 	 * Check if provided module is present in the rules config
 	 * @param string module
@@ -1451,7 +1451,7 @@ class eRouter
 	{
 		return isset($this->_globalConfig[$module]);
 	}
-
+	
 	/**
 	 * Check if the passed value is valid module or module alias, returns system module
 	 * or null on failure
@@ -1461,15 +1461,15 @@ class eRouter
 	 */
 	public function retrieveModule($module, $strict = true)
 	{
-		if($this->isAlias($module))
+		if($this->isAlias($module)) 
 			$module = $this->getModuleFromAlias($module);
-
-		if($strict && (!$module || !$this->isModule($module)))
+		
+		if($strict && (!$module || !$this->isModule($module))) 
 			return null;
 
 		return $module;
 	}
-
+	
 	/**
 	 * Set rule config for this instance
 	 * @param array $rules
@@ -1479,7 +1479,7 @@ class eRouter
 	{
 		$this->_rules = $rules;
 	}
-
+	
 	/**
 	 * Retrieve rule set for a module
 	 * @param string $module
@@ -1488,7 +1488,7 @@ class eRouter
 	{
 		return (isset($this->_rules[$module]) ? $this->_rules[$module] : array());
 	}
-
+	
 	/**
 	 * Get all rule sets
 	 */
@@ -1496,7 +1496,7 @@ class eRouter
 	{
 		return $this->_rules;
 	}
-
+	
 	/**
 	 * Retrive array of eUrlRule objects for given module
 	 */
@@ -1504,7 +1504,7 @@ class eRouter
 	{
 		return $this->_processRules($module);
 	}
-
+	
 	/**
 	 * Process rule set array, create rule objects
 	 * TODO - rule cache
@@ -1514,16 +1514,16 @@ class eRouter
 	protected function _processRules($module)
 	{
 		if(!$this->isModule($module)) return array();
-
+		
 		if(!isset($this->_parsedRules[$module]))
 		{
 			$rules = $this->getRuleSet($module);
 			$config = $this->getConfig($module);
 			$this->_parsedRules[$module] = array();
 			$map = array('urlSuffix' => 'urlSuffix', 'legacy' => 'legacy', 'legacyQuery' => 'legacyQuery', 'mapVars' => 'mapVars', 'allowVars' => 'allowVars', 'matchValue' => 'matchValue');
-			foreach ($rules as $pattern => $set)
+			foreach ($rules as $pattern => $set) 
 			{
-				foreach ($map as $key => $value)
+				foreach ($map as $key => $value) 
 				{
 					if(!isset($set[$value]) && isset($config[$key]))
 					{
@@ -1538,7 +1538,7 @@ class eRouter
 
 	/**
 	 * Create rule object
-	 *
+	 * 
 	 * @param string $route
 	 * @param string|array $pattern
 	 * @param boolean $cache
@@ -1557,19 +1557,19 @@ class eRouter
 	public function route(eRequest $request, $checkOnly = false)
 	{
 		$request->routed = false;
-
+		
 		if(isset($_GET[$this->routeVar]))
 		{
 			$rawPathInfo = $_GET[$this->routeVar];
 			unset($_GET[$this->routeVar]);
 			$this->_urlFormat = self::FORMAT_GET;
 		}
-		else
+		else 
 		{
 			$rawPathInfo = rawurldecode($request->getPathInfo());
 			//$this->_urlFormat = self::FORMAT_PATH;
 		}
-
+		
 		// Route to front page - index/index/index route
 		if(!$rawPathInfo && (!$this->getMainModule() || empty($_GET)))
 		{
@@ -1582,11 +1582,11 @@ class eRouter
 
 		// max number of parts is actually 4 - module/controller/action/[additional/pathinfo/vars], here for reference only
 		$parts = $rawPathInfo ? explode('/', $rawPathInfo, 4) : array();
-
+		
 		// find module - check aliases
 		$module = $this->retrieveModule($parts[0]);
 		$mainSwitch = false;
-
+		
 		// no module found, switch to Main module (pref) if available
 		if(null === $module && $this->getMainModule() && $this->isModule($this->getMainModule()))
 		{
@@ -1595,49 +1595,49 @@ class eRouter
 			array_unshift($parts, $module);
 			$mainSwitch = true;
 		}
-
+		
 		$request->routePathInfo = $rawPathInfo;
-
+		
 		// valid module
 		if(null !== $module)
 		{
 			// we have valid module
-			$config = $this->getConfig($module);
-
+			$config = $this->getConfig($module); 
+			
 			// set legacy state
 			eFront::isLegacy(varset($config['legacy']));
-
+			
 			// Don't allow single entry if required by module config
 			if(vartrue($config['noSingleEntry']))
 			{
 				$request->routed = true;
 				if(!eFront::isLegacy())
 				{
-					$request->setRoute($this->notFoundRoute);
+					$request->setRoute($this->notFoundRoute); 
 					return false;
 				}
 				// legacy entry point - include it later in the bootstrap, legacy query string will be set to current
 				$request->addRouteHistory($rawPathInfo);
 				return true;
 			}
-
+			
 			// URL format - the one set by current config overrides the auto-detection
 			$format = isset($config['format']) && $config['format'] ? $config['format'] : $this->getUrlFormat();
-
+			
 			//remove leading module, unnecessary overhead while matching
 			array_shift($parts);
 			$rawPathInfo = $parts ? implode('/', $parts) : '';
 			$pathInfo = $this->removeUrlSuffix($rawPathInfo, $this->urlSuffix);
-
+			
 			// retrieve rules if any and if needed
 			$rules = $format == self::FORMAT_PATH ? $this->getRules($module) : array();
-
+			
 			// Further parsing may still be needed
 			if(empty($rawPathInfo))
 			{
 				$rawPathInfo = $pathInfo;
 			}
-
+			
 			// parse callback
 			if(vartrue($config['selfParse']))
 			{
@@ -1653,18 +1653,18 @@ class eRouter
 			// rules available - try to match an Url Rule
 			elseif($rules)
 			{
-				foreach ($rules as $rule)
+				foreach ($rules as $rule) 
 				{
 					$route = $rule->parseUrl($this, $request, $pathInfo, $rawPathInfo);
 					if($route !== false)
 					{
 						eFront::isLegacy($rule->legacy); // legacy include override
-
+						
 						if($rule->parseCallback)
 						{
 							$this->configCallback($module, $rule->parseCallback, array($request), $config['location']);
 						}
-						// parse legacy query string if any
+						// parse legacy query string if any		
 						if(null !== $rule->legacyQuery)
 						{
 							$obj = eDispatcher::getConfigObject($module, $config['location']);
@@ -1675,12 +1675,12 @@ class eRouter
 							$vars->action = $request->getAction();
 							if($rule->allowVars)
 							{
-								foreach ($rule->allowVars as $key)
+								foreach ($rule->allowVars as $key) 
 								{
 									if(isset($_GET[$key]) && !$request->isRequestParam($key))
 									{
 										// sanitize
-										$vars->$key = preg_replace('/[^\d\w\-]/', '', $_GET[$key]);
+										$vars->$key = preg_replace('/[^\d\w\-]/', '', $_GET[$key]); 
 									}
 								}
 							}
@@ -1691,12 +1691,12 @@ class eRouter
 					}
 				}
 			}
-
+			
 			// append module to be registered in the request object
 			if(false !== $route)
 			{
 				// don't modify if true - request directly modified by config callback
-				if(!$request->routed)
+				if(!$request->routed) 
 				{
 					if(eFront::isLegacy()) $this->configCallback($module, 'legacy', array($route, $request), $config['location']);
 					$route = $module.'/'.$route;
@@ -1717,7 +1717,7 @@ class eRouter
 			{
 				$route = $request->getRoute();
 			}
-
+			
 			if(!$route)
 			{
 				$route = $this->notFoundRoute;
@@ -1733,7 +1733,7 @@ class eRouter
 				}
 			}
 		}
-
+		
 		$request->setRoute($route);
 		$request->addRouteHistory($route);
 		$request->routed = true;
@@ -1749,18 +1749,18 @@ class eRouter
 	public function checkLegacy(eRequest $request)
 	{
 		$module = $request->getModule();
-
+		
 		// forward from controller to a legacy module - bad stuff
 		if(!$request->isDispatched() && $this->getConfigValue($module, 'legacy'))
 		{
 			eFront::isLegacy($this->getConfigValue($module, 'legacy'));
-
+			
 			$url = $this->assemble($request->getRoute(), $request->getRequestParams());
 			$request->setRequestInfo($url)->setPathInfo(null)->setRoute(null);
 
 			$_GET = $request->getRequestParams();
 			$_SERVER['QUERY_STRING'] = http_build_query($request->getRequestParams(), null, '&');
-
+			
 			// Infinite loop impossible, as dispatcher will break because of the registered legacy path
 			$this->route($request);
 		}
@@ -1773,13 +1773,13 @@ class eRouter
 	{
 		if(null == $location) $location = eDispatcher::getModuleConfigLocation($module);
 		if(!$module || !($obj = eDispatcher::getConfigObject($module, $location))) return false;
-
+		
 		return call_user_func_array(array($obj, $callBack), $params);
 	}
-
+	
 	/**
 	 * Convert assembled url to shortcode
-	 *
+	 * 
 	 * @param string $route
 	 * @param array $params
 	 * @param array $options {@see eRouter::$_defaultAssembleOptions}
@@ -1790,9 +1790,9 @@ class eRouter
 		$url = $this->assemble($route, $params, $options);
 		return e107::getParser()->createConstants($url, 'mix');
 	}
-
+	
 	/**
-	 * Assemble system URL
+	 * Assemble system URL 
 	 * Examples:
 	 * <?php
 	 * $router->assemble('/'); // index page URL e.g. / or /site_folder/
@@ -1801,7 +1801,7 @@ class eRouter
 	 * $router->assemble('* /* /newaction'); // (NO EMPTY SPACES) change only current action - /module/controller/newaction
 	 * $newsItem = array('news_id' => 1, 'news_sef' => 'My Title', ...); // as retrieved from DB
 	 * $router->assemble('news/view/item', $newsItem); // All unused key=>values will be removed and NOT appended as GET vars
-	 *
+	 * 
 	 * @param string $route
 	 * @param array $params
 	 * @param array $options {@see eRouter::$_defaultAssembleOptions}
@@ -1815,43 +1815,43 @@ class eRouter
 		$base = ($options['full'] ? SITEURLBASE : '').$request->getBasePath();
 
 		$anc = '';
-
-
+		
+		
 		if(is_string($params)) parse_str($params, $params);
 		if(isset($params['#']))
 		{
 			$anc = '#'.$params['#'];
-			unset($params['#']);
+			usnet($params['#']);
 		}
-
+		
 		// Config independent - Deny parameter keys, useful for directly denying sensitive data e.g. password db fields
 		if(isset($options['deny']))
 		{
 			$list = array_map('trim', explode(',', $options['deny']));
-			foreach ($list as $value)
+			foreach ($list as $value) 
 			{
 				unset($params[$value]);
 			}
 			unset($list);
 		}
-
+		
 		// Config independent - allow parameter keys, useful to directly allow data (and not to rely on config allowVars) e.g. when retrieved from db
 		if(isset($options['allow']))
 		{
 			$list = array_map('trim', explode(',', $options['allow']));
 			$_params = $params;
 			$params = array();
-			foreach ($list as $value)
+			foreach ($list as $value) 
 			{
 				if(isset($_params[$value])) $params[$value] = $_params[$value];
 			}
 			unset($list, $_params);
 		}
-
+		
 		# Optional convenient masks for creating system URL's
 		if($route === '/' || empty($route))
 		{
-			if($params)
+			if($params) 
 			{
 				$params = $this->createPathInfo($params, $options);
 				return $base.'?'.$params;
@@ -1865,7 +1865,7 @@ class eRouter
 			parse_str($tmp[1], $params);
 			unset($tmp);
 		}
-
+		
 		if($route === '*')
 		{
 			$route = $route = explode('/', $request->getRoute());
@@ -1876,24 +1876,24 @@ class eRouter
 			if($route[0] === '*') $route[0] = $request->getModule();
 			if(isset($route[1]) && $route[1] === '*') $route[1] = $request->getController();
 		}
-		else
+		else 
 		{
 			$route = explode('/', $route, 3);
 		}
-
+		
 		// we don't know anything about this route, just build it blind
 		if(!$this->isModule($route[0]))
 		{
-			if($params)
+			if($params) 
 			{
 				$params = $this->createPathInfo($params, $options);
 				return $base.implode('/', $route).'?'.$params;
 			}
 			return $base.implode('/', $route);
 		}
-
+		
 		# fill in index when needed - XXX not needed, may be removed soon
-		switch (count($route))
+		switch (count($route)) 
 		{
 			case 1:
 				$route[1] = 'index';
@@ -1903,7 +1903,7 @@ class eRouter
 				$route[2] = 'index';
 			break;
 		}
-
+		
 		# aliases
 		$module = $route[0];
 		$config = $this->getConfig($module);
@@ -1911,59 +1911,59 @@ class eRouter
 		$alias = $this->hasAlias($module, vartrue($options['lan'], null)) ? $this->getAliasFromModule($module, vartrue($options['lan'], null)) : $module;
 		$route[0] = $alias;
 		if($options['encode']) $alias = rawurlencode($alias);
-
+		
 		$format = isset($config['format']) && $config['format'] ? $config['format'] : self::FORMAT_GET;
-
+		
 		$urlSuffix = '';
-
+		
 		// Fix base url for legacy links
 		if(vartrue($config['noSingleEntry'])) $base = $options['full'] ? SITEURL : e_HTTP;
 		elseif(self::FORMAT_GET !== $config['format'])
 		{
 			$urlSuffix = $this->urlSuffix;
 			if(isset($config['urlSuffix'])) $urlSuffix = $config['urlSuffix'];
-		}
-
+		} 
+		
 		// Create by config callback
 		if(vartrue($config['selfCreate']))
 		{
-			$tmp = $this->configCallback($module, 'create', array(array($route[1], $route[2]), $params, $options), $config['location']);
-
+			$tmp = $this->configCallback($module, 'create', array(array($route[1], $route[2]), $params, $options), $config['location']); 
+			
 			if(empty($tmp)) return '#not-found';
-
+			
 			if(is_array($tmp))
 			{
 				$route = $tmp[0];
 				$params = $tmp[1];
-
+				
 				if($options['encode']) $route = array_map('rawurlencode', $route);
 				$route = implode('/', $route);
-
-				if(!$route)
+			
+				if(!$route) 
 				{
 					$urlSuffix = '';
 					if(!$this->isMainModule($module)) $route = $alias;
 				}
-				elseif (!$this->isMainModule($module))
+				elseif (!$this->isMainModule($module)) 
 				{
 					$route = $alias.'/'.$route;
 				}
-
+				
 			}
-			else
-			{
+			else 
+			{	
 				// relative url returned
 				return $base.$tmp.$anc;
-			}
+			}	
 			unset($tmp);
-
+			
 			if($format === self::FORMAT_GET)
 			{
 				$params[$this->routeVar] = $route;
 				$route = '';
 			}
-
-			if($params)
+			
+			if($params) 
 			{
 				$params = $this->createPathInfo($params, $options);
 				return $base.$route.$urlSuffix.'?'.$params.$anc;
@@ -1971,8 +1971,8 @@ class eRouter
 
 			return $base.$route.$urlSuffix.$anc;
 		}
-
-
+		
+		
 		// System URL create routine
 		$rules = $this->getRules($module);
 		if($format !== self::FORMAT_GET && !empty($rules))
@@ -1993,9 +1993,9 @@ class eRouter
 			unset($route[2]);
 			if($route[1] == 'index') unset($route[1]);
 		}
-
+		
 		# Modify params if required
-		if($params)
+		if($params) 
 		{
 			if(varset($config['mapVars']))
 			{
@@ -2006,9 +2006,9 @@ class eRouter
 						$params[$dstKey] = $params[$srcKey];
 						unset($params[$srcKey]);
 					}
-				}
+				}	
 			}
-
+			
 			// false means - no vars are allowed, nothing to preserve here
 			if(varset($config['allowVars']) === false) $params = array();
 			// default empty array value - try to guess what's allowed - mapVars is the best possible candidate
@@ -2024,14 +2024,14 @@ class eRouter
 				}
 				unset($copy);
 			}
-
+			
 			if($format === self::FORMAT_GET)
 			{
 				$urlSuffix = '';
 				$copy = $params;
 				$params = array();
 				$params[$this->routeVar] = implode('/', $route);
-				foreach ($copy as $key => $value)
+				foreach ($copy as $key => $value) 
 				{
 					$params[$key] = $value;
 				}
@@ -2045,11 +2045,11 @@ class eRouter
 		}
 		$route = implode('/', $route);
 		if(!$route || $route == $alias) $urlSuffix = '';
-
-
+		
+		
 		return $format === self::FORMAT_GET ? $base.'?'.$this->routeVar.'='.$route.$anc : $base.$route.$urlSuffix.$anc;
 	}
-
+	
 	/**
 	 * Alias of assemble()
 	 */
@@ -2057,11 +2057,11 @@ class eRouter
 	{
 		return $this->assemble($route, $params);
 	}
-
+	
 	/**
 	 * Creates a path info based on the given parameters.
 	 * XXX - maybe we can switch to http_build_query(), should be able to do everything we need in a much better way
-	 *
+	 * 
 	 * @param array $params list of GET parameters
 	 * @param array $options rawurlencode, equal, encode and amp settings
 	 * @param string $key this is used internally for recursive calls
@@ -2079,7 +2079,7 @@ class eRouter
 			if (null !== $key) $k = $key.'['.rawurlencode($k).']';
 
 			if (is_array($v)) $pairs[] = $this->createPathInfo($v, $options, $k);
-			else
+			else 
 			{
 				if(null === $v)
 				{
@@ -2100,11 +2100,11 @@ class eRouter
 		}
 		return implode($ampersand, $pairs);
 	}
-
+	
 	/**
 	 * Parses a path info into URL segments
 	 * Be sure to not use non-unique chars for equal and ampersand signs, or you'll break your URLs
-	 *
+	 * 
 	 * @param eRequest $request
 	 * @param string $pathInfo path info
 	 * @param string $equal
@@ -2113,18 +2113,18 @@ class eRouter
 	public function parsePathInfo($pathInfo, $equal = '/', $ampersand = '/')
 	{
 		if ('' === $pathInfo) return;
-
+		
 		if ($equal != $ampersand) $pathInfo = str_replace($equal, $ampersand, $pathInfo);
 		$segs = explode($ampersand, $pathInfo.$ampersand);
-
+		
 		$segs = explode('/', $pathInfo);
 		$ret = array();
-
+		
 		for ($i = 0, $n = count($segs); $i < $n - 1; $i += 2)
 		{
 			$key = $segs[$i];
 			if ('' === $key) continue;
-			$value = $segs[$i + 1];
+			$value = $segs[$i + 1]; 
 			// array support
 			if (($pos = strpos($key, '[')) !== false && ($pos2 = strpos($key, ']', $pos + 1)) !== false)
 			{
@@ -2139,15 +2139,15 @@ class eRouter
 					$ret[$name][$key] = $value;
 				}
 			}
-			else
+			else 
 			{
 				$ret[$key] = $value;
-
+				
 			}
 		}
 		return $ret;
 	}
-
+	
 	/**
 	 * Removes the URL suffix from path info.
 	 * @param string $pathInfo path info part in the URL
@@ -2164,7 +2164,7 @@ class eRouter
 
 class eException extends Exception
 {
-
+	
 }
 
 /**
@@ -2223,46 +2223,46 @@ class eUrlRule
 	 * @var boolean whether the URL allows additional parameters at the end of the path info.
 	 */
 	public $append;
-
+	
 	/**
 	 * @var array list of SourceKey=>DestinationKey associations
 	 */
 	public $mapVars = array();
-
+	
 	/**
 	 * Numerical array of allowed parameter keys. If set, everything else will be wiped out from the passed parameter array
 	 * @var array
 	 */
 	public $allowVars = array();
-
+	
 	/**
 	 * Should be values matched vs route patterns when assembling URLs
 	 * Warning SLOW when true!!!
-	 * @var mixed true or 1 for preg_match (extremely slower), or 'empty' for only empty check (better)
+	 * @var mixed true or 1 for preg_match (extremely slower), or 'empty' for only empty check (better) 
 	 */
 	public $matchValue;
-
+	
 	/**
 	 * Method member of module config object, to be called after successful request parsing
 	 * @var string
 	 */
 	public $parseCallback;
-
+	
 	/**
 	 * Shortcode path to the old entry point e.g. '{e_BASE}news.php'
 	 * @var string
 	 */
 	public $legacy;
-
+	
 	/**
 	 * Template used for automated recognition of legacy QueryString (parsed via simpleParser with values of retrieved requestParameters)
 	 * @var string
 	 */
 	public $legacyQuery;
-
+	
 	/**
 	 * Core regex templates
-	 * Example usage - route <var:{number}> will result in
+	 * Example usage - route <var:{number}> will result in 
 	 * @var array
 	 */
 	public $regexTemplates = array(
@@ -2279,19 +2279,19 @@ class eUrlRule
 		'numberOptional' 		=> '[\d]{0,}',
 		'usernameOptional' 		=> '[\w\pL.\-\s!,]{0,}', // TODO - should equal to username pattern, sync it
 	);
-
+	
 	/**
 	 * User defined regex templates
 	 * @var array
 	 */
-	public $varTemplates = array();
-
+	public $varTemplates = array(); 
+	
 	/**
 	 * All regex templates
 	 * @var e_var
 	 */
 	protected $_regexTemplates;
-
+	
 
 	/**
 	 * Constructor.
@@ -2308,7 +2308,7 @@ class eUrlRule
 				$this->_regexTemplates = new e_vars($this->regexTemplates);
 				return;
 			}
-
+			
 			$this->setData($route);
 			if($this->defaultParams && is_string($this->defaultParams))
 			{
@@ -2324,11 +2324,11 @@ class eUrlRule
 		{
 			foreach ($matches2[1] as $name) $this->references[$name] = "<$name>";
 		}
-
+		
 		if($this->varTemplates)
 		{
 			// don't override core regex templates
-			$this->regexTemplates = array_merge($this->varTemplates, $this->regexTemplates);
+			$this->regexTemplates = array_merge($this->varTemplates, $this->regexTemplates); 
 			$this->varTemplates = array();
 		}
 		$this->_regexTemplates = new e_vars($this->regexTemplates);
@@ -2349,7 +2349,7 @@ class eUrlRule
 				else $this->params[$name] = $value;
 			}
 		}
-
+		
 		$p = rtrim($pattern, '*');
 		$this->append = $p !== $pattern;
 		$p = trim($p, '/');
@@ -2376,7 +2376,7 @@ class eUrlRule
 	{
 		if (!is_array($data)) return;
 		$vars = array_keys(get_class_vars(__CLASS__));
-
+		
 		foreach ($vars as $prop)
 		{
 			if (!isset($data[$prop])) continue;
@@ -2387,7 +2387,7 @@ class eUrlRule
 	/**
 	 * Creates a URL based on this rule.
 	 * TODO - more clear logic and flexibility by building the query string
-	 *
+	 * 
 	 * @param eRouter $manager the router/manager
 	 * @param string $route the route
 	 * @param array $params list of parameters
@@ -2399,11 +2399,11 @@ class eUrlRule
 		$case = 'i';
 		$ampersand = $options['amp'];
 		$encode = vartrue($options['encode']);
-
+		
 		if(is_array($route)) $route = implode('/', $route);
+		
 
-
-
+		
 		$tr = array();
 		if ($route !== $this->route)
 		{
@@ -2413,7 +2413,7 @@ class eUrlRule
 			}
 			else return false;
 		}
-
+		
 		// map vars first
 		foreach ($this->mapVars as $srcKey => $dstKey)
 		{
@@ -2422,12 +2422,12 @@ class eUrlRule
 				$params[$dstKey] = $params[$srcKey];
 				unset($params[$srcKey]);
 			}
-		}
-
+		}	
+			
 		// false means - no vars are allowed, preserve only route vars
 		if($this->allowVars === false) $this->allowVars = array_keys($this->params);
 		// empty array (default) - everything is allowed
-
+		
 		// disallow everything but valid URL parameters
 		if(!empty($this->allowVars))
 		{
@@ -2449,12 +2449,12 @@ class eUrlRule
 				else return false;
 			}
 		}
-
+		
 		foreach ($this->params as $key => $value) if (!isset($params[$key])) return false;
-
+		
 		if($this->matchValue)
 		{
-
+			
 			if('empty' !== $this->matchValue)
 			{
 				foreach($this->params as $key=>$value)
@@ -2483,19 +2483,19 @@ class eUrlRule
 		//	$tr["<$key>"] = eHelper::title2sef($tp->toASCII($params[$key]), $urlFormat); // enabled to test.
 			unset($params[$key]);
 		}
-
+		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
-
+		
 		// XXX TODO Find better place for this check which will affect all types of SEF URL configurations. (@see news/sef_noid_url.php for duplicate)
 
 
 
-
-		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.
+		
+		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
 		{
-			$this->template = strtolower($this->template);
+			$this->template = strtolower($this->template);	
 		}
-
+		
 		$url = strtr($this->template, $tr);
 
 		// Work-around fix for lowercase username
@@ -2518,7 +2518,7 @@ class eUrlRule
 			$options['equal'] = '=';
 			$url .= '?'.$manager->createPathInfo($params, $options);
 		}
-
+	
 
 		return rtrim($url, '/');
 	}
@@ -2534,9 +2534,9 @@ class eUrlRule
 	public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
 	{
 		$case = 'i';	# 'i' = insensitive
-
+		
 		if ($this->urlSuffix !== null)	$pathInfo = $manager->removeUrlSuffix($rawPathInfo, $this->urlSuffix);
-
+		
 		$pathInfo = rtrim($pathInfo, '/').'/';
 		// pathInfo is decoded, pattern could be encoded - required for proper url assemble (e.g. cyrillic chars)
 		if (preg_match(rawurldecode($this->pattern).$case, $pathInfo, $matches))
@@ -2550,13 +2550,13 @@ class eUrlRule
 			foreach ($matches as $key => $value)
 			{
 				if (isset($this->references[$key])) $tr[$this->references[$key]] = $value;
-				elseif (isset($this->params[$key]))
+				elseif (isset($this->params[$key])) 
 				{
 					//$_REQUEST[$key] = $_GET[$key] = $value;
 					$request->setRequestParam($key, $value);
 				}
 			}
-
+			
 			if ($pathInfo !== $matches[0])	# Additional GET params exist
 			{
 				$manager->parsePathInfo($request, ltrim(substr($pathInfo, strlen($matches[0])), '/'));
@@ -2565,7 +2565,7 @@ class eUrlRule
 		}
 		else return false;
 	}
-
+	
 }
 
 abstract class eUrlConfig
@@ -2574,19 +2574,19 @@ abstract class eUrlConfig
 	 * Registered by parse method legacy query string
 	 */
 	public $legacyQueryString = null;
-
+	
 	/**
 	 * User defined initialization
 	 */
 	public function init() {}
-
+	
 	/**
 	 * Retrieve module config options (including url rules if any)
 	 * Return array is called once and cached, so runtime changes are not an option
 	 * @return array
 	 */
 	abstract public function config();
-
+	
 	/**
 	 * Create URL callback, called only when config option selfParse is set to true
 	 * Expected return array format:
@@ -2601,10 +2601,10 @@ abstract class eUrlConfig
 	 * @return array|string numerical of type (routeParts, GET Params)| string route or false on error
 	 */
 	public function create($route, $params = array(), $options = array()) {}
-
+	
 	/**
 	 * Parse URL callback, called only when config option selfCreate is set to true
-	 * TODO - register variable eURLConfig::currentConfig while initializing the object, remove from method arguments
+	 * TODO - register variable eURLConfig::currentConfig while initializing the object, remove from method arguments 
 	 * @param string $pathInfo
 	 * @param array $params request parameters
 	 * @param eRequest $request
@@ -2613,7 +2613,7 @@ abstract class eUrlConfig
 	 * @return string route or false on error
 	 */
 	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array()) { return false; }
-
+	
 	/**
 	 * Legacy callback, used called when config option legacy is not empty
 	 * By default it sets legacy query string to $legacyQueryString value (normaly assigned inside of the parse method)
@@ -2622,23 +2622,23 @@ abstract class eUrlConfig
 	 * @param string $callType 'route' - called once, when parsing the request, 'dispatch' - called inside the dispatch loop (in case of controller _forward)
 	 * @param void
 	 */
-	public function legacy($resolvedRoute, eRequest $request, $callType = 'route')
+	public function legacy($resolvedRoute, eRequest $request, $callType = 'route') 
 	{
-		if($this->legacyQueryString !== null)
+		if($this->legacyQueryString !== null) 
 		{
 			$request->setLegacyQstring($this->legacyQueryString);
 			$request->setLegacyPage();
 		}
 	}
-
+	
 	/**
 	 * Developed mainly for legacy modules.
-	 * It should be manually triggered inside of old entry point. The idea is
+	 * It should be manually triggered inside of old entry point. The idea is 
 	 * to avoid multiple URL addresses having same content (bad SEO practice)
 	 * FIXME - under construction
 	 */
 	public function forward() {}
-
+	
 	/**
 	 * Admin interface callback, returns array with all required from administration data
 	 * Return array structure:
@@ -2656,58 +2656,58 @@ abstract class eUrlConfig
 	 * </code>
 	 */
 	public function admin() { return array(); }
-
+	
 	/**
 	 * Admin submit hook
 	 * FIXME - under construction
 	 */
 	public function submit() {}
-
+	
 	/**
 	 * Admin interface help messages, labels and titles
 	 * FIXME - under construction
 	 */
 	public function help() {}
-
-
+	
+	
 }
 
 /**
  * Controller base class, actions are extending it
- *
+ * 
  */
 class eController
 {
 	protected $_request;
 	protected $_response;
-
+	
 	public function __construct(eRequest $request, eResponse $response = null)
 	{
 		$this->setRequest($request)
 			->setResponse($response)
 			->init();
 	}
-
+	
 	/**
 	 * Custom init, always called in the constructor, no matter what is the request dispatch status
 	 */
 	public function init() {}
-
+	
 	/**
 	 * Custom shutdown, always called after the controller dispatch, no matter what is the request dispatch status
 	 */
 	public function shutdown() {}
-
+	
 	/**
 	 * Pre-action callback, fired only if dispatch status is still true and action method is found
 	 */
 	public function preAction() {}
-
+	
 	/**
 	 * Post-action callback, fired only if dispatch status is still true and action method is found
 	 */
 	public function postAction() {}
-
+	
 	/**
 	 * @param eRequest $request
 	 * @return eController
@@ -2717,7 +2717,7 @@ class eController
 		$this->_request = $request;
 		return $this;
 	}
-
+	
 	/**
 	 * @return eRequest
 	 */
@@ -2725,7 +2725,7 @@ class eController
 	{
 		return $this->_request;
 	}
-
+	
 	/**
 	 * @param eResponse $response
 	 * @return eController
@@ -2735,7 +2735,7 @@ class eController
 		$this->_response = $response;
 		return $this;
 	}
-
+	
 	/**
 	 * @return eResponse
 	 */
@@ -2743,19 +2743,19 @@ class eController
 	{
 		return $this->_response;
 	}
-
+	
 	public function addBody($content)
 	{
 		$this->getResponse()->appendBody($content);
 		return $this;
 	}
-
+	
 	public function addMetaDescription($description)
 	{
 		$this->getResponse()->addMetaDescription($description);
 		return $this;
 	}
-
+	
 	/**
 	 * Add document title
 	 * @param string $title
@@ -2768,41 +2768,41 @@ class eController
 		if($meta) $this->addMetaTitle(strip_tags($title));
 		return $this;
 	}
-
-
+	
+	
 	public function addMetaTitle($title)
 	{
 		$this->getResponse()->addMetaTitle($title);
 		return $this;
 	}
-
+	
 	public function dispatch($actionMethodName)
 	{
 		$request = $this->getRequest();
 		$content = '';
-
+		
 		// init() could modify the dispatch status
 		if($request->isDispatched())
-		{
-			if(method_exists($this, $actionMethodName))
+		{		
+			if(method_exists($this, $actionMethodName)) 
 			{
 				$this->preAction();
 				// TODO request userParams() to store private data - check for noPopulate param here
 				if($request->isDispatched())
 				{
 					$request->populateRequestParams();
-
+					
 					// allow return output
 					$content = $this->$actionMethodName();
 					if(!empty($content)) $this->addBody($content);
-
+					
 					if($request->isDispatched())
 					{
 						$this->postAction();
 					}
 				}
 			}
-			else
+			else 
 			{
 				//TODO not found method by controller or default one
 				$action = substr($actionMethodName, 6);
@@ -2811,23 +2811,23 @@ class eController
 		}
 		$this->shutdown();
 	}
-
+	
 	public function run(eRequest $request = null, eResponse $response = null)
 	{
 		if(null === $request) $request = $this->getRequest();
 		else $this->setRequest($request);
-
+		
 		if(null === $response) $response = $this->getResponse();
 		else $this->setResponse($response);
-
+		
 		$action = $request->getActionMethodName();
-
+		
 		$request->setDispatched(true);
 		$this->dispatch($action);
-
+		
 		return $this->getResponse();
 	}
-
+	
 	protected function _redirect($url, $createURL = false, $code = null)
 	{
 		$redirect = e107::getRedirect();
@@ -2841,7 +2841,7 @@ class eController
 		}
 		$redirect->redirect($url, true, $code);
 	}
-
+	
 	/**
 	 * System forward
 	 * @param string $route
@@ -2850,42 +2850,42 @@ class eController
 	protected function _forward($route, $params = array())
 	{
 		$request = $this->getRequest();
-
+		
 		if(is_string($params))
 		{
 			parse_str($params, $params);
 		}
-
+		
 		$oldRoute = $request->getRoute();
 		$route = explode('/', trim($route, '/'));
-
+		
 		switch (count($route)) {
 			case 3:
 				if($route[0] !== '*') $request->setModule($route[0]);
 				if($route[1] !== '*') $request->setController($route[1]);
 				$request->setAction($route[2]);
 			break;
-
+			
 			case 2:
 				if($route[1] !== '*') $request->setController($route[0]);
 				$request->setAction($route[1]);
 			break;
-
+			
 			case 1:
 				$request->setAction($route[0]);
 			break;
-
+			
 			default:
 				return;
 			break;
 		}
-
+		
 		$request->addRouteHistory($oldRoute);
-
+		
 		if(false !== $params) $request->setRequestParams($params);
 		$request->setDispatched(false);
 	}
-
+	
     /**
      * @param  string $methodName
      * @param  array $args
@@ -2894,7 +2894,7 @@ class eController
      */
     public function __call($methodName, $args)
     {
-        if ('action' == substr($methodName, 0, 6))
+        if ('action' == substr($methodName, 0, 6)) 
         {
             $action = substr($methodName, 6);
             throw new eException('Action "'.$action.'" does not exist', 2404);
@@ -2920,57 +2920,57 @@ class eControllerFront extends eController
 	 * @var string
 	 */
 	protected $plugin = null;
-
+	
 	/**
 	 * Default controller access
 	 * @var integer
 	 */
 	protected $userclass = e_UC_PUBLIC;
-
+	
 	/**
 	 * Generic 404 page URL (redirect), SITEURL will be added
 	 * @var string
 	 */
 	protected $e404 = '404.html';
-
+	
 	/**
 	 * Generic 403 page URL (redirect), SITEURL will be added
 	 * @var string
 	 */
 	protected $e403 = '403.html';
-
+	
 	/**
 	 * Generic 404 route URL (forward)
 	 * @var string
 	 */
 	protected $e404route = 'index/not-found';
-
+	
 	/**
 	 * Generic 403 route URL (forward)
 	 * @var string
 	 */
 	protected $e403route = 'index/access-denied';
-
+	
 	/**
 	 * View renderer objects
 	 * @var array
 	 */
 	protected $_validator;
-
+	
 	/**
 	 * Per action access
 	 * Format 'action' => userclass
 	 * @var array
 	 */
 	protected $access = array();
-
+	
 	/**
 	 * User input filter (_GET)
 	 * Format 'action' => array(var => validationArray)
 	 * @var array
 	 */
 	protected $filter = array();
-
+	
 	/**
 	 * Base constructor - set 404/403 locations
 	 */
@@ -2979,7 +2979,7 @@ class eControllerFront extends eController
 		parent::__construct($request, $response);
 		$this->_init();
 	}
-
+	
 	/**
 	 * Base init, called after the public init() - handle access restrictions
 	 * The base init() method is able to change controller variables on the fly (e.g. access, filters, etc)
@@ -2995,24 +2995,24 @@ class eControllerFront extends eController
 				return;
 			}
 		}
-
+		
 		// global controller restriction
 		if(!e107::getUser()->checkClass($this->userclass, false))
 		{
 			$this->forward403();
 			return;
 		}
-
+		
 		// by action access
 		if(!$this->checkActionPermissions()) exit;
-
+		
 		// _GET input validation
 		$this->validateInput();
-
+		
 		// Set Render mode to module-controller-action, override possible within the action
 		$this->getResponse()->setRenderMod(str_replace('/', '-', $this->getRequest()->getRoute()));
 	}
-
+	
 	/**
 	 * Check persmission for current action
 	 * @return boolean
@@ -3028,27 +3028,27 @@ class eControllerFront extends eController
 		}
 		return true;
 	}
-
+	
 	public function redirect404()
 	{
 		e107::getRedirect()->redirect(SITEURL.$this->e404);
 	}
-
+	
 	public function redirect403()
 	{
 		e107::getRedirect()->redirect(SITEURL.$this->e403);
 	}
-
+	
 	public function forward404()
 	{
 		$this->_forward($this->e404route);
 	}
-
+	
 	public function forward403()
 	{
 		$this->_forward($this->e403route);
 	}
-
+	
 	/**
 	 * Controller validator object
 	 * @return e_validator
@@ -3059,31 +3059,31 @@ class eControllerFront extends eController
 		{
 			$this->_validator = new e_validator('controller');
 		}
-
+		
 		return $this->_validator;
 	}
-
+	
 	/**
 	 * Register request parameters based on current $filter data (_GET only)
 	 * Additional security layer
 	 */
 	public function validateInput()
 	{
-		$validator = $this->getValidator();
+		$validator = $this->getValidator(); 
 		$request = $this->getRequest();
 		if(empty($this->filter) || !isset($this->filter[$request->getAction()])) return;
 		$validator->setRules($this->filter[$request->getAction()])
 			->validate($_GET);
-
+		
 		$validData = $validator->getValidData();
-
-		foreach ($validData as $key => $value)
+		
+		foreach ($validData as $key => $value) 
 		{
 			if(!$request->isRequestParam($key)) $request->setRequestParam($key, $value);
 		}
 		$validator->clearValidateMessages();
 	}
-
+	
 	/**
 	 * System error message proxy
 	 * @param string $message
@@ -3093,7 +3093,7 @@ class eControllerFront extends eController
 	{
 		return e107::getMessage()->addError($message, 'default', $session);
 	}
-
+	
 	/**
 	 * System success message proxy
 	 * @param string $message
@@ -3103,7 +3103,7 @@ class eControllerFront extends eController
 	{
 		return e107::getMessage()->addSuccess($message, 'default', $session);
 	}
-
+	
 	/**
 	 * System warning message proxy
 	 * @param string $message
@@ -3113,7 +3113,7 @@ class eControllerFront extends eController
 	{
 		return e107::getMessage()->addWarning($message, 'default', $session);
 	}
-
+	
 	/**
 	 * System debug message proxy
 	 * @param string $message
@@ -3128,7 +3128,7 @@ class eControllerFront extends eController
 
 /**
  * Request handler
- *
+ * 
  */
 class eRequest
 {
@@ -3136,59 +3136,59 @@ class eRequest
 	 * @var string
 	 */
 	protected $_module;
-
+	
 	/**
 	 * @var string
 	 */
 	protected $_controller;
-
+	
 	/**
 	 * @var string
 	 */
 	protected $_action;
-
+	
 	/**
 	 * Request status
 	 * @var boolean
 	 */
 	protected $_dispatched = false;
-
+	
 	/**
 	 * @var array
 	 */
 	protected $_requestParams = array();
-
+	
 	/**
 	 * @var string
 	 */
 	protected $_basePath;
-
+	
 	/**
 	 * @var string
 	 */
 	protected $_pathInfo;
-
-
+	
+	
 	/**
 	 * @var string
 	 */
 	protected $_requestInfo;
-
+	
 	/**
 	 * Pathinfo string used for initial system routing
 	 */
 	public $routePathInfo;
-
+	
 	/**
 	 * @var array
 	 */
 	protected $_routeHistory = array();
-
+	
 	/**
 	 * @var boolean if request is already routed - generally set by callbacks to notify router about route changes
 	 */
 	public $routed = false;
-
+	
 	/**
 	 * Name of the bootstrap file
 	 * @var string
@@ -3200,7 +3200,7 @@ class eRequest
 	 */
 	public function __construct($route = null)
 	{
-		if(null !== $route)
+		if(null !== $route) 
 		{
 			$this->setRoute($route);
 			$this->routed = true;
@@ -3213,15 +3213,15 @@ class eRequest
 	 */
 	public function getBasePath()
 	{
-		if(null == $this->_basePath)
+		if(null == $this->_basePath) 
 		{
 			$this->_basePath = e_HTTP;
 			if(!e107::getPref('url_disable_pathinfo')) $this->_basePath .= $this->singleEntry.'/';
 		}
-
+		
 		return $this->_basePath;
 	}
-
+	
 	/**
 	 * Set system base path
 	 * @param string $basePath
@@ -3232,7 +3232,7 @@ class eRequest
 		$this->_basePath = $basePath;
 		return $this;
 	}
-
+	
 	/**
 	 * Get path info
 	 * If not set, it'll be auto-retrieved
@@ -3242,18 +3242,18 @@ class eRequest
 	{
 		if(null == $this->_pathInfo)
 		{
-			if($this->getBasePath() == $this->getRequestInfo())
+			if($this->getBasePath() == $this->getRequestInfo()) 
 				$this->_pathInfo = ''; // map to indexRoute
-
-			else
+				
+			else 
 				$this->_pathInfo = substr($this->getRequestInfo(), strlen($this->getBasePath()));
-
+			
 			if($this->_pathInfo && trim($this->_pathInfo, '/') == trim($this->singleEntry, '/')) $this->_pathInfo = '';
 		}
-
+		
 		return $this->_pathInfo;
 	}
-
+	
 	/**
 	 * Override path info
 	 * @param string $pathInfo
@@ -3264,7 +3264,7 @@ class eRequest
 		$this->_pathInfo = $pathInfo;
 		return $this;
 	}
-
+	
 	/**
 	 * @return string request info
 	 */
@@ -3276,8 +3276,8 @@ class eRequest
 		}
 		return $this->_requestInfo;
 	}
-
-
+	
+	
 	/**
 	 * Override request info
 	 * @param string $pathInfo
@@ -3288,18 +3288,18 @@ class eRequest
 		$this->_requestInfo = $requestInfo;
 		return $this;
 	}
-
+	
 	/**
-	 * Quick front page check
+	 * Quick front page check 
 	 */
 	public static function isFrontPage($entryScript = 'index.php', $currentPathInfo = e_REQUEST_HTTP)
 	{
 		$basePath = e_HTTP;
 		if(!e107::getPref('url_disable_pathinfo')) $basePath .= $entryScript.'/';
-
+		
 		return ($basePath == $currentPathInfo);
 	}
-
+	
 	/**
 	 * Get current controller string
 	 * @return string
@@ -3308,7 +3308,7 @@ class eRequest
 	{
 		return $this->_controller;
 	}
-
+	
 	/**
 	 * Get current controller name
 	 * Example: requested controller-name or 'controller name' -> converted to controller_name
@@ -3318,7 +3318,7 @@ class eRequest
 	{
 		return eHelper::underscore($this->_controller);
 	}
-
+	
 	/**
 	 * Set current controller name
 	 * Example: controller_name OR 'controller name' -> converted to controller-name
@@ -3331,7 +3331,7 @@ class eRequest
 		$this->_controller = strtolower(eHelper::dasherize($this->sanitize($controller)));
 		return $this;
 	}
-
+	
 	/**
 	 * Get current module string
 	 * @return string
@@ -3340,7 +3340,7 @@ class eRequest
 	{
 		return $this->_module;
 	}
-
+	
 	/**
 	 * Get current module name
 	 * Example: module-name OR 'module name' -> converted to module_name
@@ -3350,7 +3350,7 @@ class eRequest
 	{
 		return eHelper::underscore($this->_module);
 	}
-
+	
 	/**
 	 * Set current module name
 	 * Example: module_name OR 'module name' -> converted to module-name
@@ -3363,7 +3363,7 @@ class eRequest
 		$this->_module = strtolower(eHelper::dasherize($this->sanitize($module)));
 		return $this;
 	}
-
+	
 	/**
 	 * Get current action string
 	 * @return string
@@ -3372,7 +3372,7 @@ class eRequest
 	{
 		return $this->_action;
 	}
-
+	
 	/**
 	 * Get current action name
 	 * Example: action-name OR 'action name' OR action_name -> converted to ActionName
@@ -3382,7 +3382,7 @@ class eRequest
 	{
 		return eHelper::camelize($this->_action, true);
 	}
-
+	
 	/**
 	 * Get current action method name
 	 * Example: action-name OR 'action name' OR action_name -> converted to actionActionName
@@ -3392,7 +3392,7 @@ class eRequest
 	{
 		return 'action'.eHelper::camelize($this->_action, true);
 	}
-
+	
 	/**
 	 * Set current action name
 	 * Example: action_name OR 'action name' OR Action_Name OR 'Action Name' -> converted to ation-name
@@ -3405,7 +3405,7 @@ class eRequest
 		$this->_action = strtolower(eHelper::dasherize($this->sanitize($action)));
 		return $this;
 	}
-
+	
 	/**
 	 * Get current route string/array -> module/controller/action
 	 * @param boolean $array
@@ -3413,10 +3413,10 @@ class eRequest
 	 */
 	public function getRoute($array = false)
 	{
-		if(!$this->getModule())
+		if(!$this->getModule()) 
 		{
 			$route = array('index', 'index', 'index');
-		}
+		}	
 		else
 		{
 			$route = array(
@@ -3427,7 +3427,7 @@ class eRequest
 		}
 		return ($array ? $route : implode('/', $route));
 	}
-
+	
 	/**
 	 * Set current route
 	 * @param string $route module/controller/action
@@ -3435,7 +3435,7 @@ class eRequest
 	 */
 	public function setRoute($route)
 	{
-		if(null === $route)
+		if(null === $route) 
 		{
 			$this->_module = null;
 			$this->_controller = null;
@@ -3443,7 +3443,7 @@ class eRequest
 		}
 		return $this->initFromRoute($route);
 	}
-
+	
 	/**
 	 * System routing track, used in controllers forwarder
 	 * @param string $route
@@ -3454,10 +3454,10 @@ class eRequest
 		$this->_routeHistory[] = $route;
 		return $this;
 	}
-
+	
 	/**
 	 * Retrieve route from history track
-	 * Based on $source we can retrieve
+	 * Based on $source we can retrieve 
 	 * - array of all history records
 	 * - 'first' route record
 	 * - 'last' route record
@@ -3468,15 +3468,15 @@ class eRequest
 	public function getRouteHistory($source = null)
 	{
 		if(null === $source) return $this->_routeHistory;
-
+		
 		if(!$this->_routeHistory) return null;
 		elseif('last' === $source)
 		{
-			return $this->_routeHistory[count($this->_routeHistory) -1];
+			return $this->_routeHistory[count($this->_routeHistory) -1]; 
 		}
 		elseif('first' === $source)
 		{
-			return $this->_routeHistory[0];
+			return $this->_routeHistory[0]; 
 		}
 		elseif(is_int($source))
 		{
@@ -3484,10 +3484,10 @@ class eRequest
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Search route history for the given $route
-	 *
+	 * 
 	 * @param string $route
 	 * @return integer route index or false if not found
 	 */
@@ -3495,7 +3495,7 @@ class eRequest
 	{
 		return array_search($route, $this->_routeHistory);
 	}
-
+	
 	/**
 	 * Populate module, controller and action from route string
 	 * @param string $route
@@ -3504,15 +3504,15 @@ class eRequest
 	public function initFromRoute($route)
 	{
 		$route = trim($route, '/');
-		if(!$route)
+		if(!$route) 
 		{
 			$route = 'index/index/index';
-		}
+		}		
 		$parts = explode('/', $route);
 		$this->setModule($parts[0])
 			->setController(vartrue($parts[1], 'index'))
 			->setAction(vartrue($parts[2], 'index'));
-
+			
 		return $this;//->getRoute(true);
 	}
 
@@ -3526,7 +3526,7 @@ class eRequest
 	{
 		return (isset($this->_requestParams[$key]) ? $this->_requestParams[$key] : $default);
 	}
-
+	
 	/**
 	 * Check if request parameter exists
 	 * @param string $key
@@ -3536,7 +3536,7 @@ class eRequest
 	{
 		return isset($this->_requestParams[$key]);
 	}
-
+	
 	/**
 	 * Get request parameters array
 	 * @return array value
@@ -3545,7 +3545,7 @@ class eRequest
 	{
 		return $this->_requestParams;
 	}
-
+	
 	/**
 	 * Set request parameter
 	 * @param string $key
@@ -3557,7 +3557,7 @@ class eRequest
 		$this->_requestParams[$key] = $value;
 		return $this;
 	}
-
+	
 	/**
 	 * Set request parameters
 	 * @param array $params
@@ -3568,7 +3568,7 @@ class eRequest
 		$this->_requestParams = $params;
 		return $this;
 	}
-
+	
 	/**
 	 * Populate current request parameters (_GET scope)
 	 * @return eRequest
@@ -3576,14 +3576,14 @@ class eRequest
 	public function populateRequestParams()
 	{
 		$rp = $this->getRequestParams();
-
-		foreach ($rp as $key => $value)
+		
+		foreach ($rp as $key => $value) 
 		{
 			$_GET[$key] = $value;
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * More BC
 	 * @param string $qstring
@@ -3592,7 +3592,7 @@ class eRequest
 	public function setLegacyQstring($qstring = null)
 	{
 		if(defined('e_QUERY')) return $this;
-
+		
 		if(null === $qstring)
 		{
 			$qstring = self::getQueryString();
@@ -3608,20 +3608,20 @@ class eRequest
 			define("e_QUERY", $qstring);
 		}
 
-		$_SERVER['QUERY_STRING'] = e_QUERY;
-
-		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc.
+		$_SERVER['QUERY_STRING'] = e_QUERY;	
+		
+		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc. 
 		{
 			parse_str(str_replace(array('&amp;'), array('&'), e_QUERY),$tmp);
 			foreach($tmp as $key=>$value)
 			{
-				$_GET[$key] = $value;
+				$_GET[$key] = $value;	
 			}
 		}
-
+		
 		return $this;
 	}
-
+	
 	/**
 	 * And More BC :/
 	 * @param string $page
@@ -3634,14 +3634,14 @@ class eRequest
 		{
 			$page = eFront::isLegacy();
 		}
-		if(!$page)
+		if(!$page) 
 		{
 			define('e_PAGE', $this->singleEntry);
 		}
 		else define('e_PAGE', basename(str_replace(array('{', '}'), '/', $page)));
 		return $this;
 	}
-
+	
 	/**
 	 * And More from the same - BC :/
 	 * @return string
@@ -3656,7 +3656,7 @@ class eRequest
 		$qstring = str_replace('&', '&amp;', e107::getParser()->post_toForm($qstring));
 		return $qstring;
 	}
-
+	
 	/**
 	 * Basic sanitize method for module, controller and action input values
 	 * @param string $str string to be sanitized
@@ -3666,10 +3666,10 @@ class eRequest
 	public function sanitize($str, $pattern='', $replace='-')
 	{
 		if (!$pattern) $pattern = '/[^\w\pL-]/u';
-
+		
 		return preg_replace($pattern, $replace, $str);
 	}
-
+	
 	/**
 	 * Set dispatched status of the request
 	 * @param boolean $mod
@@ -3680,7 +3680,7 @@ class eRequest
 		$this->_dispatched = $mod ? true : false;
 		return $this;
 	}
-
+	
 	/**
 	 * Get dispatched status of the request
 	 * @return boolean
@@ -3721,51 +3721,51 @@ class eResponse
 		'jsonNoTitle' => false,
 		'jsonRender' => false,
 	);
-
+	
 	public function setParam($key, $value)
 	{
 		$this->_params[$key] = $value;
 		return $this;
 	}
-
+	
 	public function setParams($params)
 	{
 		$this->_params = $params;
 		return $this;
 	}
-
+	
 	public function getParam($key, $default = null)
 	{
 		return (isset($this->_params[$key]) ? $this->_params[$key] : $default);
 	}
-
+	
 	public function isParam($key)
 	{
 		return isset($this->_params[$key]);
 	}
-
+	
 	public function addContentType($typeName, $mediaType)
 	{
 		$this->_content_type_arr[$typeName] = $mediaType;
 		return $this;
 	}
-
+	
 	public function getContentType()
 	{
 		return $this->_content_type;
 	}
-
+	
 	public function getContentMediaType($typeName)
 	{
 		if(isset($this->_content_type_arr[$typeName]))
 			return $this->_content_type_arr[$typeName];
 	}
-
+	
 	public function setContentType($typeName)
 	{
 		$this->_content_type = $typeName;
 	}
-
+	
 	/**
 	 * @return eResponse
 	 */
@@ -3778,7 +3778,7 @@ class eResponse
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * @return eResponse
 	 */
@@ -3787,7 +3787,7 @@ class eResponse
 		header($header, $override, $responseCode);
 		return $this;
 	}
-
+	
 	/**
 	 * Append content
 	 * @param str $body
@@ -3801,10 +3801,10 @@ class eResponse
 			$this->_body[$ns] = '';
 		}
 		$this->_body[$ns] .= $body;
-
+		
 		return $this;
 	}
-
+	
 	/**
 	 * Set content
 	 * @param str $body
@@ -3856,7 +3856,7 @@ class eResponse
 
 	}
 
-
+	
 	/**
 	 * Prepend content
 	 * @param str $body
@@ -3870,10 +3870,10 @@ class eResponse
 			$this->_body[$ns] = '';
 		}
 		$this->_body[$ns] = $content.$this->_body[$ns];
-
+		
 		return $this;
 	}
-
+	
 	/**
 	 * Get content
 	 * @param str $ns
@@ -3888,10 +3888,10 @@ class eResponse
 		}
 		$ret = $this->_body[$ns];
 		if($reset) unset($this->_body[$ns]);
-
+		
 		return $ret;
 	}
-
+	
 	/**
 	 * @param str $title
 	 * @param str $ns
@@ -3983,7 +3983,7 @@ class eResponse
 		}
 		return $ret;
 	}
-
+	
 	/**
 	 *
 	 * @param string $render_mod
@@ -4009,10 +4009,10 @@ class eResponse
 		}
 		return vartrue($this->_render_mod[$ns], null);
 	}
-
+	
 	/**
-	 * Generic meta information
-	 * Example usage:
+	 * Generic meta information 
+	 * Example usage: 
 	 * addMeta('og:title', 'My Title');
 	 * addMeta(null, 30, array('http-equiv' => 'refresh'));
 	 * addMeta(null, null, array('http-equiv' => 'refresh', 'content' => 30)); // same as above
@@ -4023,13 +4023,13 @@ class eResponse
 	 */
 	public function addMeta($name = null, $content = null, $extended = array())
 	{
-		if(empty($content)){ return $this; } // content is required, otherwise ignore.
-
-		//TODO need an option that allows subsequent entries to overwrite existing ones.
-		//ie. 'description' and 'keywords' should never be duplicated, but overwritten by plugins and other non-pref-based meta data.
-
+		if(empty($content)){ return $this; } // content is required, otherwise ignore. 
+		
+		//TODO need an option that allows subsequent entries to overwrite existing ones. 
+		//ie. 'description' and 'keywords' should never be duplicated, but overwritten by plugins and other non-pref-based meta data. 
+		
 		$attr = array();
-
+				
 		if(null !== $name)
 		{
 		//	$key = (substr($name,0,3) == 'og:') ? 'property' : 'name';
@@ -4048,16 +4048,16 @@ class eResponse
 
 
 		if(null !== $content) $attr['content'] = $content;
-		if(!empty($extended))
+		if(!empty($extended)) 
 		{
 			if(!empty($attr))  $attr = array_merge($attr, $extended);
 			else $attr = $extended;
 		}
-
+		
 		if(!empty($attr)) $this->_meta[] = $attr;
 		return $this;
 	}
-
+	
 	/**
 	 * Render meta tags, registered via addMeta() method
 	 * @return string
@@ -4067,11 +4067,11 @@ class eResponse
 		$attrData = '';
 
 		e107::getEvent()->trigger('system_meta_pre');
-
-		foreach ($this->_meta as $attr)
+		
+		foreach ($this->_meta as $attr) 
 		{
 			$attrData .= '<meta';
-			foreach ($attr as $p => $v)
+			foreach ($attr as $p => $v) 
 			{
 				$attrData .= ' '.preg_replace('/[^\w\-]/', '', $p).'="'.str_replace(array('"', '<'), '', $v).'"';
 			}
@@ -4098,7 +4098,7 @@ class eResponse
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Get meta title, description and keywords
 	 *
@@ -4207,7 +4207,7 @@ class eResponse
 		$content = $this->getBody($ns, true);
 		$render = $this->getParam('render');
 		$meta = $this->getParam('meta');
-
+		
 		$this->sendContentType();
 
 		if($render_message)
@@ -4249,7 +4249,7 @@ class eResponse
 			return '';
 		}
 	}
-
+	
 	/**
 	 * Send AJAX Json Response Output - default method
 	 * It's fully compatible with the core dialog.js
@@ -4260,7 +4260,7 @@ class eResponse
 	function sendJson($override = array(), $ns = null, $render_message = true)
 	{
 		if(!$ns) $ns = 'default';
-
+		
 		$content = $this->getBody($ns, true);
 		// separate render parameter for json response, false by default
 		$render = $this->getParam('jsonRender');
@@ -4274,14 +4274,14 @@ class eResponse
 		{
 			$render = false;
 		}
-
-
+		
+		
 		$title = '';
 		if(!$this->getParam('jsonNoTitle'))
 		{
 			$titleArray = $this->_title;
 			$title = isset($titleArray[$ns]) ? array_pop($titleArray[$ns]) : '';
-		}
+		} 
 
 		if($render)
 		{
@@ -4298,9 +4298,9 @@ class eResponse
 		echo $jshelper->buildJsonResponse($override);
 		$jshelper->sendJsonResponse(null);
 	}
-
+	
 	/**
-	 * JS manager
+	 * JS manager 
 	 * @return e_jsmanager
 	 */
 	function getJs()
@@ -4311,51 +4311,51 @@ class eResponse
 
 /**
  * We move all generic helper functionallity here - a lot of candidates in e107 class
- *
+ * 
  */
 class eHelper
 {
 	protected static $_classRegEx = '#[^\w\s\-]#';
 	protected static $_idRegEx = '#[^\w\-]#';
 	protected static $_styleRegEx = '#[^\w\s\-\.;:!]#';
-
+	
 	public static function secureClassAttr($string)
 	{
 		return preg_replace(self::$_classRegEx, '', $string);
 	}
-
+	
 	public static function secureIdAttr($string)
 	{
 		return preg_replace(self::$_idRegEx, '', $string);
 	}
-
+	
 	public static function secureStyleAttr($string)
 	{
 		return preg_replace(self::$_styleRegEx, '', $string);
 	}
-
+	
 	public static function buildAttr($safeArray)
 	{
 		return http_build_query($safeArray, null, '&');
 	}
-
+	
 	public static function formatMetaTitle($title)
 	{
 		$title = trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($title, TRUE))));
 		return trim(preg_replace('/[\s,]+/', ' ', str_replace('_', ' ', $title)));
 	}
-
+	
 	public static function secureSef($sef)
 	{
 		return trim(preg_replace('/[^\w\pL\s\-+.,]+/u', '', strip_tags(e107::getParser()->toHTML($sef, TRUE))));
 	}
-
+	
 	public static function formatMetaKeys($keywordString)
 	{
 		$keywordString = preg_replace('/[^\w\pL\s\-.,+]/u', '', strip_tags(e107::getParser()->toHTML($keywordString, TRUE)));
 		return trim(preg_replace('/[\s]?,[\s]?/', ',', str_replace('_', ' ', $keywordString)));
 	}
-
+	
 	public static function formatMetaDescription($descrString)
 	{
 		$descrString = preg_replace('/[\r]*\n[\r]*/', ' ', trim(str_replace(array('"', "'"), '', strip_tags(e107::getParser()->toHTML($descrString, TRUE)))));
@@ -4448,54 +4448,54 @@ class eHelper
 
 		if(null === $type)
 		{
-			$type = e107::getPref('url_sef_translate');
+			$type = e107::getPref('url_sef_translate'); 
 		}
 
-		switch ($type)
+		switch ($type) 
 		{
 			case 'dashl': //dasherize, to lower case
 				return self::dasherize($tp->ustrtolower($title));
 			break;
-
+			
 			case 'dashc': //dasherize, camel case
 				return self::dasherize(self::camelize($title, true, ' '));
 			break;
-
+			
 			case 'dash': //dasherize
 				return self::dasherize($title);
 			break;
-
+			
 			case 'underscorel': ///underscore, to lower case
 				return self::underscore($tp->ustrtolower($title));
 			break;
-
+			
 			case 'underscorec': ///underscore, camel case
 				return self::underscore(self::camelize($title, true, ' '));
 			break;
-
+			
 			case 'underscore': ///underscore
 				return self::underscore($title);
 			break;
-
+			
 			case 'plusl': ///plus separator, to lower case
 				return str_replace(' ', '+', $tp->ustrtolower($title));
 			break;
-
+			
 			case 'plusc': ///plus separator, to lower case
 				return str_replace(' ', '+', self::camelize($title, true, ' '));
 			break;
-
+			
 			case 'plus': ///plus separator
 				return str_replace(' ', '+', $title);
 			break;
-
+			
 			case 'none':
 			default:
 				return $title;
 			break;
 		}
 	}
-
+	
 	/**
 	 * Return a memory value formatted helpfully
 	 * $dp overrides the number of decimal places displayed - realistically, only 0..3 are sensible
@@ -4539,7 +4539,7 @@ class eHelper
 		}
 		return (number_format($size, $dp).$memunit);
 	}
-
+	
 	/**
 	 * Get the current memory usage of the code
 	 * If $separator argument is null, raw data (array) will be returned
@@ -4563,21 +4563,21 @@ class eHelper
 
 		return (null !== $separator ? implode($separator, $ret) : $ret);
 	}
-
+	
 	public static function camelize($str, $all = false, $space = '')
 	{
 		// clever recursion o.O
 		if($all) return self::camelize('-'.$str, false, $space);
-
+		
 		$tmp = explode('-', str_replace(array('_', ' '), '-', e107::getParser()->ustrtolower($str)));
 		return trim(implode($space, array_map('ucfirst', $tmp)), $space);
 	}
-
+	
 	public static function labelize($str, $space = ' ')
 	{
 		return self::camelize($str, true, ' ');
 	}
-
+	
 	public static function dasherize($str)
 	{
 		return str_replace(array('_', ' '), '-', $str);
@@ -4587,7 +4587,7 @@ class eHelper
 	{
 		return str_replace(array('-', ' '), '_', $str);
 	}
-
+	
 	/**
 	 * Parse generic shortcode parameter string
 	 * Format expected: {SC=key=val&key1=val1...}
@@ -4612,19 +4612,19 @@ class eHelper
 
 		return $parm;
 	}
-
+	
 	/**
 	 * Parse shortcode parameter string of type 'dual parameters' - advanced, more complex and slower(!) case
 	 * Format expected: {SC=name|key=val&key1=val1...}
 	 * Escape strings: \| => | , \& => & and \&amp; => &amp;
-	 * Return array is formatted like this:
-	 * 1 => string|array (depends on $name2array value) containing first set of parameters;
+	 * Return array is formatted like this: 
+	 * 1 => string|array (depends on $name2array value) containing first set of parameters; 
 	 * 2 => array containing second set of parameters;
 	 * 3 => string containing second set of parameters;
-	 *
+	 * 
 	 * @param string $parmstr
 	 * @param boolean $first2array If true, first key (1) of the returned array will be parsed to array as well
-	 * @return array
+	 * @return array 
 	 */
 	public static function scDualParams($parmstr, $first2array = false)
 	{
