@@ -409,8 +409,8 @@ class user_shortcodes extends e_shortcode
 
 	function sc_user_name_link($parm='')
 	{
-		$uparams = array('id' => $this->var['user_id'], 'name' => $this->var['user_name']);
-		return "<a href='".e107::getUrl()->create('user/profile/view', $uparams)."'>".$this->var['user_name']."</a>";
+	   $url = $this->sc_user_profile_url(); 
+	   return "<a href='".$url."'>".$this->var['user_name']."</a>";
 	}
 
 
