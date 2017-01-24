@@ -70,19 +70,19 @@ class e107_user_extended
 		define('EUF_COUNTRY', 13);  // $frm->country()
 
 		$this->typeArray = array(
-			'text' => 1,
-			'radio' => 2,
-			'dropdown' => 3,
-			'db field' => 4,
-			'textarea' => 5,
-			'integer' => 6,
-			'date' => 7,
-			'language' => 8,
-			'list' => 9,
-			'checkbox'	=> 10,
-			'predefined' => 11, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
-			'addon'     => 12,
-			'country'   => 13,
+			'text'          => EUF_TEXT,
+			'radio'         => EUF_RADIO,
+			'dropdown'      => EUF_DROPDOWN,
+			'db field'      => EUF_DB_FIELD,
+			'textarea'      => EUF_TEXTAREA,
+			'integer'       => EUF_INTEGER,
+			'date'          => EUF_DATE,
+			'language'      => EUF_LANGUAGE,
+			'list'          => EUF_PREDEFINED,
+			'checkbox'	    => EUF_CHECKBOX,
+			'predefined'    => EUF_PREFIELD, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
+			'addon'         => EUF_ADDON,
+			'country'       => EUF_COUNTRY,
 		);
 
 		$this->user_extended_types = array(
@@ -95,7 +95,8 @@ class e107_user_extended
 			7 => LAN_DATE,
 			8 => UE_LAN_8,
 			9 => UE_LAN_9,
-			10=> UE_LAN_10
+			10=> UE_LAN_10,
+			13=> UE_LAN_13
 		//	12=> UE_LAN_10
 		);
 
@@ -490,8 +491,13 @@ class e107_user_extended
 		return $ret;
 		
 	}
-			
-		
+
+
+	/**
+	 * Get the field-type of a given field-name.
+	 * @param $field
+	 * @return bool|int
+	 */
 	public function getFieldType($field)
 	{
 
@@ -501,6 +507,17 @@ class e107_user_extended
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * Return a list of all field types.
+	 * @return array
+	 */
+	public function getFieldTypes()
+	{
+		return $this->user_extended_types;
+
 	}
 
 
@@ -566,7 +583,11 @@ class e107_user_extended
 	  {
 		$default_text = '';
 	  }
+
+
 	  return $db_type.$default_text;
+
+
 	}
 
 

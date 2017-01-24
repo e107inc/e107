@@ -845,7 +845,7 @@ e107::js('footer-inline', js());
 						$curVal = '1';
 					}
 
-					$types = e107::getUserExt()->user_extended_types;
+					$types = e107::getUserExt()->getFieldTypes();
 
 					return $this->select('user_extended_struct_type', $types, $curVal, array('class'=>'tbox e-select'));
 
