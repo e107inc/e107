@@ -260,24 +260,40 @@ class e107_user_extended
 	function user_extended_validate_entry($val, $params)
 	{
 		$tp = e107::getParser();
-		
+
 		$parms = explode('^,^', $params['user_extended_struct_parms']);
 		$requiredField = $params['user_extended_struct_required'] == 1;
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
-		if (defined($regexfail)) { $regexfail = constant($regexfail); }
-		if($val == '' && $requiredField) return TRUE;
-		switch ($type)
+		if(defined($regexfail))
+		{
+			$regexfail = constant($regexfail);
+		}
+		if($val == '' && $requiredField)
+		{
+			return true;
+		}
+
+		$type = $params['user_extended_struct_type'];
+
+		switch($type)
 		{
 			case EUF_DATE :
-				if ($requiredField && ($val == '0000-00-00')) return TRUE;
+				if($requiredField && ($val == '0000-00-00'))
+				{
+					return true;
+				}
 				break;
 		}
 		if($regex != "" && $val != "")
 		{
-			if(!preg_match($regex, $val)) return $regexfail ? $regexfail : TRUE;
+			if(!preg_match($regex, $val))
+			{
+				return $regexfail ? $regexfail : true;
+			}
 		}
-		return FALSE;			// Pass by default here
+
+		return false;            // Pass by default here
 	}
 
 
@@ -1180,6 +1196,18 @@ class e107_user_extended
 
 		switch($type)
 		{
+
+			case EUF_COUNTRY:
+				if(!empty($value))
+				{
+					return e107::getForm()->getCountry($value);
+				}
+
+				return null;
+			break;
+
+
+
 			case EUF_CHECKBOX:
 					$value = e107::unserialize($value);
 
