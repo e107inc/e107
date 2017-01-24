@@ -89,6 +89,9 @@ class usersettings_front // Begin Usersettings rewrite.
 		else
 		{
 			global $sc_style;
+			$REQUIRED_FIELD                     = '';
+			$USER_EXTENDED_CAT                  = '';
+			$USEREXTENDED_FIELD                 = '';
 			$USERSETTINGS_MESSAGE 				= '';
 			$USERSETTINGS_MESSAGE_CAPTION 		= '';
 			$USERSETTINGS_EDIT_CAPTION 			= '';
@@ -97,6 +100,13 @@ class usersettings_front // Begin Usersettings rewrite.
 			include_once($coreTemplatePath); //correct way to load a core template.
 			e107::scStyle($sc_style);
 			$usersettings_shortcodes = e107::getScBatch('usersettings');
+
+			$usersettings_shortcodes->legacyTemplate = array(
+				'USER_EXTENDED_CAT' => $USER_EXTENDED_CAT,
+				'USEREXTENDED_FIELD' => $USEREXTENDED_FIELD,
+					'REQUIRED_FIELD' => $REQUIRED_FIELD
+			);
+
 		}
 
 		$this->sc = $usersettings_shortcodes;

@@ -20,6 +20,9 @@ define("UE_LAN_6", "Integer");
 define("UE_LAN_8", "Language");
 define("UE_LAN_9", "Predefined list");
 define("UE_LAN_10", "Checkboxes");
+//v2.1.5
+define("UE_LAN_13", "Country");
+
 // Leave a gap to allow for more field types
 define("UE_LAN_21", "Name");
 define("UE_LAN_22", "Type");
@@ -44,7 +47,7 @@ define("UE_LAN_BIRTHDAY_DESC", "Birthday");
 define("UE_LAN_LANGUAGE", "Language");
 define("UE_LAN_LANGUAGE_DESC", "User Language");
 define("UE_LAN_COUNTRY", "Country");
-define("UE_LAN_COUNTRY_DESC", "User Country (includes db table)");
+define("UE_LAN_COUNTRY_DESC", "User Country");
 define("UE_LAN_TIMEZONE", "Timezone");
 define("UE_LAN_TIMEZONE_DESC", "User Timezone (from predefined list)");
 
