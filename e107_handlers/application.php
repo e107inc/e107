@@ -4319,6 +4319,7 @@ class eHelper
 	
 	public static function secureIdAttr($string)
 	{
+		$string = str_replace(array('/','_'),'-',$string);
 		return preg_replace(self::$_idRegEx, '', $string);
 	}
 	
