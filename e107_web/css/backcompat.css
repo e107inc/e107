@@ -53,3 +53,5 @@ ul.breadcrumb li span.divider { padding-left:5px; }
 .media-left, .media > .pull-left {
     padding-right: 10px;
 }
+
+.form-control { max-width:100% }

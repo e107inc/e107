@@ -780,6 +780,9 @@ class e_menu_layout
 			$theme = e107::pref('core','sitetheme');
 		}
 
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 		$HEADER         = null;
 		$FOOTER         = null;
 		$LAYOUT         = null;

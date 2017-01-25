@@ -261,12 +261,12 @@ class page_chapters_ui extends e_admin_ui
 		{	
 			// return $this->beforeCreate($new_data);
 
-			$new_data['chapter_fields'] = $this->processCustomFields($new_data['chapter_fields']);
+			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
 
 			return $new_data;
 		}
 
-
+/*
 		private function processCustomFields($newdata)
 		{
 			if(empty($newdata))
@@ -291,7 +291,7 @@ class page_chapters_ui extends e_admin_ui
 			}
 
 			return $new;
-		}
+		}*/
 
 }
 
@@ -345,68 +345,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
-
-			$value= array();
-
-			if(!empty($curVal))
-			{
-				$curVal = e107::unserialize($curVal);
-				$i = 0;
-				foreach($curVal as $k=>$v)
-				{
-					$v['key'] = $k;
-					$value[$i] = $v;
-					$i++;
-				}
-			}
-
-
-			$text = "<table class='table table-striped table-bordered'>
-			<colgroup>
-				<col />
-				<col />
-				<col />
-				<col style='width:40%' />
-			</colgroup>
-			<tbody>
-				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th><th>".LAN_TOOLTIP."</th></tr>
-				";
-
-
-
-
-
-			for ($i = 0; $i <= $fieldAmount; $i++)
-			{
-
-				$writeParms = array(
-					'class' => 'e-ajax',
-					'useValues' => 1,
-					'default'   => 'blank',
-					'data-src' => e_REQUEST_URI,
-
-				);
-
-				$parmsWriteParms= array(
-					'size' => 'block-level',
-					'placeholder' => $this->getCustomFieldPlaceholder($value[$i]['type'])
-
-				);
-
-				$fieldName = $this->text('chapter_fields['.$i.'][key]',$value[$i]['key'],30, array('pattern'=>'^[a-z0-9-]*'));
-				$fieldTitle = $this->text('chapter_fields['.$i.'][title]',$value[$i]['title'], 80);
-				$fieldType = $this->select('chapter_fields['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], $writeParms);
-				$fieldParms = $this->text('chapter_fields['.$i.'][writeParms]',$value[$i]['writeParms'], 255, $parmsWriteParms);
-				$fieldHelp = $this->text('chapter_fields['.$i.'][help]',$value[$i]['help'], 255, array('size'=>'block-level'));
-			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td><td>".$fieldHelp."</td></tr>";
-			}
-
-			$text .= "</tbody></table>";
-
-		//	$text .= print_a($value,true);
-
-
-			return $text;
+			return e107::getCustomFields()->loadConfig($curVal)->renderConfigForm('chapter_fields');
 		}
 
 		if($mode == 'filter')
@@ -420,31 +359,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 	}
 
 
-	//@XXX Move to Form-handler?
-	public function getCustomFieldPlaceholder($type)
-	{
-		switch($type)
-		{
-			case "radio":
-			case "dropdown":
-			case "checkboxes":
-				return 'eg. { "optArray": { "blue": "Blue", "green": "Green", "red": "Red" }, "default": "blank" }';
-				break;
 
-			case "datestamp":
-				return 'eg. (Optional) { "format": "yyyy-mm-dd" }';
-			break;
-
-
-			default:
-
-		}
-
-
-		return null;
-
-
-	}
 	
 		// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
@@ -882,58 +797,14 @@ class page_admin_ui extends e_admin_ui
 		{
 			$tabId = 'additional';
 
-			$this->tabs[$tabId] = "Additional Fields";
-
 			if(!empty($this->chapterFields[$chap]))
 			{
-				foreach($this->chapterFields[$chap] as $key=>$fld)
-				{
-					$fld['tab'] = $tabId;
-					$fld['data'] = false;
-
-					if($fld['type'] === 'icon')
-					{
-						$fld['writeParms'] .= "&glyphs=1";
-					}
-
-					if($fld['type'] == 'checkboxes')
-					{
-						if($tmp = e107::getParser()->isJSON($fld['writeParms']))
-						{
-							$fld['writeParms'] = $tmp;
-						}
-
-						$fld['writeParms']['useKeyValues'] = 1;
-					}
-
-
-					$this->fields['page_fields__'.$key] = $fld;
-
-				}
+				e107::getCustomFields()->loadConfig($this->chapterFields[$chap])->setTab($tabId, "Additional")->setAdminUIConfig('page_fields',$this);
 			}
 			else
 			{
 				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
 			}
-		}
-
-		private function loadCustomFieldsData()
-		{
-			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
-			$chap = intval($row['page_chapter']);
-			$this->getModel()->set('page_fields', null);
-
-			$curVal = e107::unserialize($row['page_fields']);
-
-			if(!empty($this->chapterFields[$chap]))
-			{
-				foreach($this->chapterFields[$chap] as $key=>$fld)
-				{
-					$this->getModel()->set('page_fields__'.$key, $curVal[$key]);
-				}
-
-			}
-
 		}
 
 
@@ -954,8 +825,9 @@ class page_admin_ui extends e_admin_ui
 
 			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
 			$chap = intval($row['page_chapter']);
+
 			$this->initCustomFields($chap);
-			$this->loadCustomFieldsData();
+			e107::getCustomFields()->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
 
 		}
 
@@ -963,7 +835,7 @@ class page_admin_ui extends e_admin_ui
 		 * Filter/Process Posted page_field data;
 		 * @param $new_data
 		 * @return null
-		 */
+		 *//*
 		private function processCustomFieldData($new_data)
 		{
 			if(empty($new_data))
@@ -992,7 +864,7 @@ class page_admin_ui extends e_admin_ui
 
 
 		}
-
+*/
 
 
 
@@ -1091,7 +963,7 @@ class page_admin_ui extends e_admin_ui
 		function beforeUpdate($newdata,$olddata, $id)
 		{
 
-			$newdata = $this->processCustomFieldData($newdata);
+			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
 
 			if(isset($newdata['menu_name']))
 			{

@@ -67,12 +67,7 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 
-	private $fields = array(
-			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
-			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
-			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country'
 
-	);
 
 	/**
 	 * @var user_class
@@ -538,10 +533,11 @@ class e_form
 		$text .= '</ul>';
 
 		$initTab = varset($options['active'],false);
+		$tabClass = varset($options['class'],null);
 
 		$text .= '
 		<!-- Tab panes -->
-		<div class="tab-content">';
+		<div class="tab-content '.$tabClass.'">';
 		
 		$c=0;
 		foreach($array as $key=>$tab)
@@ -903,7 +899,7 @@ class e_form
 		
 		if(!empty($extras['video']))
 		{
-			$url .= "&amp;video=1";	
+			$url .= ($extras['video'] == 2) ? "&amp;video=2" : "&amp;video=1";
 		}			
 
 		if(!empty($extras['path']) && $extras['path'] == 'plugin')
@@ -3019,11 +3015,7 @@ class e_form
 	}
 
 
-	protected function getFieldTypes()
-	{
-		asort($this->fields);
-		return $this->fields;
-	}
+
 
 
 
@@ -4997,6 +4989,11 @@ class e_form
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
+				if(!isset($parms['required']))
+				{
+
+					$parms['required'] = false;
+				}
 				$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			
 			break; 
@@ -5068,9 +5065,17 @@ class e_form
 				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
 			break;
 
+			case 'video':
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
+
+				if($attributes['type'] === 'video')
+				{
+					$parms['video'] = 2; // ie. video only.
+					$parms['w'] = 280;
+				}
+
 				$ret =  $this->imagepicker($key, $value, defset($label, $label), $parms);
 			break;
 			

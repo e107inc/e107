@@ -2590,8 +2590,6 @@ class e_parse extends e_parser
 
 		// $parms['x'] = $encode;
 
-
-
 		if(!empty($parm['return']) && $parm['return'] == 'src')
 		{
 			return $this->thumbUrl($src, $parms);
@@ -3906,10 +3904,18 @@ class e_parser
 
 			unset($parm['src']);
 			$path = $tp->thumbUrl($file,$parm);
-			$srcSetParm = $parm;
-			$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
 
-			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+
+			if(empty($parm['w']) && empty($parm['h']))
+			{
+				$parm['srcset'] = false;
+			}
+			else
+			{
+				$srcSetParm = $parm;
+				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+			}
 
 		}
 		elseif(strpos($file,'http')===0)
@@ -4006,6 +4012,11 @@ class e_parser
 	 */
 	public function isJSON($text)
 	{
+		if(!is_string($text))
+		{
+			return false;
+		}
+
 		 if(substr($text,0,1) === '{' || substr($text,0,1) === '[') // json
 	    {
 	        $dat = json_decode($text, true);

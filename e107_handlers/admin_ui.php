@@ -2608,6 +2608,10 @@ class e_admin_controller_ui extends e_admin_controller
 		return $this->tabs;
 	}
 
+	public function addTab($key,$val)
+	{
+		$this->tabs[$key] = (string) $val;
+	}
 
 	/**
 	 * Get Tab data
