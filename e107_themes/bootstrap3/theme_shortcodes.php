@@ -196,7 +196,7 @@ class theme_shortcodes extends e_shortcode
 		$text = '
 		
 		<ul class="nav navbar-nav navbar-right'.$direction.'">
-		<li class="dropdown">{PM_NAV}</li>
+		<li class="dropdown dropdown-pm">{PM_NAV}</li>
 		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30} {USER_AVATAR: shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>

@@ -1725,31 +1725,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 		e107::getMessage()->addDebug('Deprecated save_prefs() backtrace:<pre>'."\n".print_r($backtrace, true).'</pre>');
 	}
 
-
-
-
 	switch($table)
 	{
 		case 'core':
 			//brute load, force update
-
-			if(count($pref) < 100) // precaution for old plugins
-			{
-				$backtrace = debug_backtrace(false);
-
-				e107::getAdminLog()->add(
-				'Core pref corruption avoided',
-				"Call to deprecated function save_prefs() (class2.php) with too few prefs. Backtrace:\n".print_r($backtrace, true),
-				E_LOG_INFORMATIVE,
-				'DEPRECATED'
-				);
-
-
-				e107::getMessage()->addDebug('Core-pref corruption avoided. Too few prefs sent to save_prefs(). Backtrace:<pre>'."\n".print_r($backtrace, true).'</pre>');
-				return false;
-			}
-
-
 			return e107::getConfig()->loadData($pref, false)->save(false, true);
 			break;
 

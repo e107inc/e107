@@ -1821,7 +1821,7 @@ class eRouter
 		if(isset($params['#']))
 		{
 			$anc = '#'.$params['#'];
-			usnet($params['#']);
+			unset($params['#']);
 		}
 		
 		// Config independent - Deny parameter keys, useful for directly denying sensitive data e.g. password db fields

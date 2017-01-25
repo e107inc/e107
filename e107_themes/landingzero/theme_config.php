@@ -8,12 +8,6 @@ e107::lan('theme', 'admin',true);
 class theme_config implements e_theme_config
 {
 
-	function __construct()
-	{
-		e107::themeLan('admin','landingzero',true);
-	}
-
-
 	function config()
 	{
 		// v2.1.4 format.
@@ -24,7 +18,7 @@ class theme_config implements e_theme_config
 			'videoposter'           => array('title' => LAN_LZ_THEMEPREF_02, 'type'=>'image', 'help'=>''),
 			'videourl'              => array('title' => LAN_LZ_THEMEPREF_03, 'type'=>'text', 'writeParms'=>array('size'=>'xxlarge'),'help'=>''),
 			'usernav_placement'     => array('title' => LAN_LZ_THEMEPREF_04, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>array(LAN_LZ_THEMEPREF_05, LAN_LZ_THEMEPREF_06), 'useValues'=>1)),
-			'cdn'   		        => array('title' => 'CDN', 'type'=>'dropdown', 'writeParms'=>array('optArray'=>array( 'cdnjs' => 'CDNJS (Cloudflare)', 'jsdelivr' => 'jsDelivr')))
+			'cdn'   		=> array('title' => 'CDN', 'type'=>'dropdown', 'writeParms'=>array('optArray'=>array( 'cdnjs' => 'CDNJS (Cloudflare)', 'jsdelivr' => 'jsDelivr')))
 		);
 
 		return $fields;
@@ -33,12 +27,12 @@ class theme_config implements e_theme_config
 
 	function help()
 	{
-	 	return null;
+	 	return '';
 	}
 	
 	function process()
 	{
-	 	return null;
+	 	return '';
 	}
 }
 

@@ -3751,7 +3751,7 @@ class e_parser
 		}
 		
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
-		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
+		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded";
 
 		if(!empty($options['type']) && $options['type'] == 'url')
 		{
@@ -3952,7 +3952,7 @@ class e_parser
 
 
 		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
-		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive img-fluid";
+		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive";
 		$alt    = (!empty($parm['alt']))    ? $tp->toAttribute($parm['alt']) : basename($file);
 		$style  = (!empty($parm['style']))  ? "style=\"".$parm['style']."\" " :  ""  ;
 		$srcset = (!empty($parm['srcset'])) ? "srcset=\"".$parm['srcset']."\" " : "";
@@ -4153,7 +4153,7 @@ class e_parser
 		
 			if($thumb == 'tag')
 			{
-				return "<img class='img-responsive img-fluid' src='".$thumbSrc."' alt='Youtube Video' style='width:".vartrue($parm['w'],'80')."px'/>";
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='Youtube Video' style='width:".vartrue($parm['w'],'80')."px'/>";	
 			}
 			
 			if($thumb == 'email')
@@ -4199,7 +4199,7 @@ class e_parser
 				{
 					$thumbSrc = e_IMAGE_ABS."generic/playlist_120.png";
 				}
-				return "<img class='img-responsive img-fluid' src='".$thumbSrc."' alt='".LAN_YOUTUBE_PLAYLIST."' style='width:".vartrue($parm['w'],'80')."px'/>";
+				return "<img class='img-responsive' src='".$thumbSrc."' alt='".LAN_YOUTUBE_PLAYLIST."' style='width:".vartrue($parm['w'],'80')."px'/>";
 
 			}
 

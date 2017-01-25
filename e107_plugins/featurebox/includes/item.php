@@ -156,7 +156,7 @@ class plugin_featurebox_item extends e_model
 		{
 			return $src;
 		}
-		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive img-fluid" />';
+		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive" />';
 		if(isset($parm['nourl']) || !$this->get('fb_imageurl'))
 		{
 			return $tag;
