@@ -184,6 +184,7 @@ class e107
 		'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage.
 		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
+		'e_customfields'                 => '{e_HANDLER}e_customfields_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
@@ -1763,6 +1764,15 @@ class e107
 	public static function getComment()
 	{
 		return self::getSingleton('comment', true);
+	}
+
+	/**
+	 * Retrieve comments handler singleton object
+	 * @return e_customfields
+	 */
+	public static function getCustomFields()
+	{
+		return self::getSingleton('e_customfields', true);
 	}
 
 	/**
