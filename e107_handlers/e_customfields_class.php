@@ -55,6 +55,8 @@
 
 			$this->_config = e107::unserialize($data);
 
+			e107::getDebug()->log($this->_config);
+
 			return $this;
 		}
 
@@ -311,11 +313,10 @@
 			$ui->addTab($tabKey, $this->_tab[$tabKey]);
 
 
-			foreach($this->_config as $k=>$fld)
+			foreach($this->_config as $key=>$fld)
 			{
 				$fld['tab'] = $tabKey;
 				$fld['data'] = false;
-				$key = $fld['key'];
 
 				if($fld['type'] === 'icon')
 				{
@@ -380,10 +381,9 @@
 				return $postData;
 			}
 
-			$newdata = $postData[$fieldname];
 
 			$new = array();
-			foreach($newdata as $fields)
+			foreach($postData[$fieldname] as $fields)
 			{
 				if(empty($fields['key']) || empty($fields['type']))
 				{
@@ -398,7 +398,9 @@
 
 			}
 
-			return $new;
+			$postData[$fieldname] = $new;
+
+			return $postData;
 
 		}
 

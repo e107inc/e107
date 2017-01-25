@@ -252,6 +252,8 @@ class page_chapters_ui extends e_admin_ui
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
 			}
+
+			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
 			
 			return $new_data;	
 		}
