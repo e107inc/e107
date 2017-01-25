@@ -55,7 +55,8 @@
 
 			$this->_config = e107::unserialize($data);
 
-			e107::getDebug()->log($this->_config);
+			// e107::getDebug()->log($this->_config);
+
 
 			return $this;
 		}
@@ -69,6 +70,8 @@
 		public function loadData($data)
 		{
 			$this->_data = e107::unserialize($data);
+
+		//	e107::getDebug()->log($this->_data);
 
 			return $this;
 		}
