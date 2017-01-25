@@ -1038,7 +1038,13 @@ class media_admin_ui extends e_admin_ui
 		$mes->addDebug("For:".$cat);
 		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
-	
+		$video = $this->getQuery('video');
+
+		if($video == 2)
+		{
+			echo $this->mediaSelectUpload('video');
+			return;
+		}
 		
 		$this->processUploadUrl(true, $cat);
 		
@@ -1140,6 +1146,19 @@ class media_admin_ui extends e_admin_ui
 	function mediaSelectUpload($type='image') 
 	{
 		$frm = e107::getForm();
+
+		if($type === 'video')
+		{
+			$tabs = array(
+				'youtube' => array('caption'=>'Youtube', 'text' => $this->videoTab())
+			);
+
+			return $frm->tabs($tabs, array('class'=>'media-manager'));
+		}
+
+
+
+
 		$videoActive = 'inactive';
 		
 		$options = array();

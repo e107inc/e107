@@ -4012,6 +4012,11 @@ class e_parser
 	 */
 	public function isJSON($text)
 	{
+		if(!is_string($text))
+		{
+			return false;
+		}
+
 		 if(substr($text,0,1) === '{' || substr($text,0,1) === '[') // json
 	    {
 	        $dat = json_decode($text, true);
