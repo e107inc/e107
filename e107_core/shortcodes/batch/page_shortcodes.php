@@ -34,10 +34,6 @@ class cpage_shortcodes extends e_shortcode
 		{
 			$id 							= $row['chapter_id'];
 
-			if(!empty($row['chapter_fields']))
-			{
-				$row['chapter_fields'] = e107::unserialize($row['chapter_fields']);
-			}
 
 			$this->chapterData[$id]			= $row;
 		}	
@@ -45,7 +41,7 @@ class cpage_shortcodes extends e_shortcode
 
 
 	}
-		
+
 	
 	// Set Chapter. // @see chapter_menu.php 
 	public function setChapter($id)
@@ -639,90 +635,10 @@ class cpage_shortcodes extends e_shortcode
 			return null;
 		}
 
-		$tp = e107::getParser();
-
 		$chap       = $this->var['page_chapter'];
-		$key        = $parm['name'];
 		$fields     = $this->chapterData[$chap]['chapter_fields'];
-		$fieldData  = e107::unserialize($this->var['page_fields']);
 
-
-		$raw = (!empty($parm['mode']) && $parm['mode'] === 'raw') ? true : false;
-		$type = (!empty($parm['type'])) ? $parm['type'] : null;
-
-		$fieldType       = $fields[$key]['type'];
-
-	//	print_a($fields);
-
-
-		// @todo Move this part to form_handler or e_parse somewhere.
-
-		if(isset($fieldData[$key]))
-		{
-			$value = $fieldData[$key];
-
-			switch($fieldType)
-			{
-				case "dropdown":
-				case "checkboxes":
-				case "radio":
-					return ($raw) ? $value : e107::getForm()->renderValue($key,$value,$fields[$key]);
-				break;
-
-				case "image":
-					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
-					break;
-
-				case "icon":
-					return ($raw) ? str_replace(".glyph", '', $value) : $tp->toIcon($value);
-					break;
-
-				case "country":
-					return ($raw) ? $value : e107::getForm()->getCountry($value);
-					break;
-
-				case "tags":
-					return ($raw) ? $value : $tp->toLabel($value,$type);
-					break;
-
-				case "lanlist":
-				case "language":
-					return ($raw) ? $value : e107::getLanguage()->convert($value);
-					break;
-
-				case "datestamp":
-					return ($raw) ? $value : $tp->toDate($value);
-					break;
-
-				case "file":
-					return ($raw) ? $tp->toFile($value, array('raw'=>1)) : $tp->toFile($value);
-					break;
-
-				case "url":
-				case "email":
-					return ($raw) ? $value : $tp->toHtml($value);
-					break;
-
-				case "user":
-					return ($raw) ? $value : e107::getSystemUser($value,true)->getName();
-					break;
-
-				case "userclass":
-					return ($raw) ? $value : e107::getUserClass()->getName($value);
-					break;
-
-				case "textarea":
-				case "bbarea":
-					return $tp->toHtml($value, true);
-					break;
-
-
-				default:
-					return $tp->toHtml($value);
-			}
-
-		}
-
+		return e107::getCustomFields()->loadConfig($fields)->loadData($this->var['page_fields'])->getFieldValue($parm['name'],$parm);
 
 
 	}
