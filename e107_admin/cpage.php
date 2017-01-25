@@ -729,7 +729,7 @@ class page_admin_ui extends e_admin_ui
 
 				if(!empty($row['chapter_fields']))
 				{
-					$this->chapterFields[$cat] = e107::unserialize($row['chapter_fields']);
+					$this->chapterFields[$cat] = ($row['chapter_fields']);
 				}
 
 
@@ -799,12 +799,25 @@ class page_admin_ui extends e_admin_ui
 
 			if(!empty($this->chapterFields[$chap]))
 			{
-				e107::getCustomFields()->loadConfig($this->chapterFields[$chap])->setTab($tabId, "Additional")->setAdminUIConfig('page_fields',$this);
+				e107::getCustomFields()->setTab($tabId, "Additional")->loadConfig($this->chapterFields[$chap])->setAdminUIConfig('page_fields',$this);
 			}
 			else
 			{
 				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
 			}
+		}
+
+		private function loadCustomFieldsData()
+		{
+			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+
+			$cf = e107::getCustomFields();
+
+			$cf->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
+
+		//	e107::getDebug()->log($cf);
+
+
 		}
 
 
@@ -827,7 +840,7 @@ class page_admin_ui extends e_admin_ui
 			$chap = intval($row['page_chapter']);
 
 			$this->initCustomFields($chap);
-			e107::getCustomFields()->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
+			$this->loadCustomFieldsData();
 
 		}
 

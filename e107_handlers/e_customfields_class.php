@@ -311,10 +311,11 @@
 			$ui->addTab($tabKey, $this->_tab[$tabKey]);
 
 
-			foreach($this->_config as $key=>$fld)
+			foreach($this->_config as $k=>$fld)
 			{
 				$fld['tab'] = $tabKey;
 				$fld['data'] = false;
+				$key = $fld['key'];
 
 				if($fld['type'] === 'icon')
 				{
@@ -333,8 +334,6 @@
 
 				$fields[$fieldName.'__'.$key] = $fld;
 
-				//$model->fields[$fieldName.'__'.$key] = $fld;
-
 			}
 
 			$ui->setFieldAttr($fields);
@@ -352,19 +351,16 @@
 		 */
 		public function setAdminUIData($fieldname, e_admin_ui &$ui)
 		{
-		//	$model->getModel()->set($fieldname, null);
-
-		//	e107::getCustomFields()->setData($row['page_fields']);
 
 			$ui->getModel()->set($fieldname, null);
 
 			foreach($this->_data as $key=>$value)
 			{
 				$ui->getModel()->set($fieldname.'__'.$key, $value);
+			//	e107::getDebug()->log($fieldname.'__'.$key.": ".$value);
 			}
 
 			return $this;
-
 
 
 		}
@@ -424,7 +420,7 @@
 			unset($new_data[$fieldname]); // Reset.
 
 			$len = strlen($fieldname);
-			
+
 			foreach($new_data as $k=>$v)
 			{
 				if(substr($k,0,$len) === $fieldname)
