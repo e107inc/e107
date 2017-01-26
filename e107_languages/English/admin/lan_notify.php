@@ -9,7 +9,7 @@
 define("NT_LAN_1", "Notify");
 define("NT_LAN_2", "Receive email notification on");
 //define("NT_LAN_3", "Off");
-//define("NT_LAN_4", "Head admin");
+define("NT_LAN_4", "Test");
 //define("NT_LAN_5", "Class");
 //define("NT_LAN_6", "Email");
 
