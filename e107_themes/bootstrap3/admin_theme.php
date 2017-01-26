@@ -6,9 +6,18 @@ define("BOOTSTRAP", 	3);
 define('FONTAWESOME',	4);
 
 $minified = deftrue('e_DEBUG') == true ? null : 'minified';
+$cdn = e107::getPref('e_jslib_cdn', true);
 
-e107::library('load', 'cdn.bootstrap', $minified);
-e107::library('load', 'cdn.fontawesome', $minified);
+if($cdn) {
+	e107::library('load', 'cdn.bootstrap', $minified);
+	e107::library('load', 'cdn.fontawesome', $minified);
+}
+else
+{
+	e107::library('load', 'bootstrap', $minified);
+	e107::library('load', 'fontawesome', $minified);
+}
+
 e107::library('load', 'bootstrap.editable', $minified);
 
 e107::css('theme','css/bootstrap-dark.min.css');
