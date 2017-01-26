@@ -2660,6 +2660,10 @@ class e_front_model extends e_model
 			break;
 
 			case 'json':
+				if(empty($value))
+				{
+					return null;
+				}
 				return e107::serialize($value,'json');
 			break;
 

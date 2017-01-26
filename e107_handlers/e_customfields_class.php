@@ -47,13 +47,24 @@
 		 */
 		public function loadConfig($data)
 		{
+			if(empty($data))
+			{
+				return $this;
+			}
+
 			if(is_array($data))
 			{
 				$this->_config = $data;
 				return $this;
 			}
 
-			$this->_config = e107::unserialize($data);
+			$tp = e107::getParser();
+
+			if($arr = $tp->isJSON($data))
+			{
+				$this->_config = $arr;
+			}
+
 
 			// e107::getDebug()->log($this->_config);
 
@@ -401,7 +412,7 @@
 
 			}
 
-			$postData[$fieldname] = $new;
+			$postData[$fieldname] = empty($new) ? null : $new;
 
 			return $postData;
 
@@ -437,6 +448,11 @@
 
 				}
 
+			}
+
+			if(empty($new_data[$fieldname]))
+			{
+			//	$new_data[$fieldname] = array();
 			}
 
 			return $new_data;

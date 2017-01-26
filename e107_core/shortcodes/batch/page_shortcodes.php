@@ -461,6 +461,15 @@ class cpage_shortcodes extends e_shortcode
 		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
 	}
 
+	/**
+	 * Alias for {CHAPTER_NAME}
+	 * @example {CHAPTER_TITLE}
+	 */
+	function sc_chapter_title()
+	{
+		return $this->sc_chapter_name();
+	}
+
 
 	/**
 	 * @example {CHAPTER_ANCHOR}

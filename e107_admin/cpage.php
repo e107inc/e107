@@ -174,7 +174,7 @@ class page_chapters_ui extends e_admin_ui
         
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			    'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
-			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name'), // Display name
+			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
 			'chapter_manager' 			=> array('title'=> CUSLAN_55,		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
@@ -190,18 +190,18 @@ class page_chapters_ui extends e_admin_ui
 		function init()
 		{
 
-		//	if(e_DEBUG === true)
-			{
-				e107::getMessage()->addWarning("Experimental: Custom Fields");
-				$this->tabs = array(LAN_GENERAL,"Custom Fields");
-				$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
-			}
+		//	e107::getMessage()->addWarning("Experimental: Custom Fields");
+			$this->tabs = array(LAN_GENERAL,"Custom Fields");
+			$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
 
-
-
-			if($this->getAction() == 'list')
+			if($this->getAction() === 'list')
 			{
 				$this->fields['chapter_parent']['title'] = CUSLAN_56;
+			}
+			elseif(deftrue('e_DEBUG'))
+			{
+				$this->fields['chapter_sef']['title'] = LAN_SEFURL.' / '.LAN_NAME;
+				$this->fields['chapter_sef']['help'] = 'May also be used in shortcode {CHAPTER_MENUS: name=x}';
 			}
 
 			$sql = e107::getDb();
@@ -326,11 +326,11 @@ class page_chapters_form_ui extends e_admin_form_ui
 			
 		if($mode == 'filter')
 		{
-			return;	
+			return null;
 		}
 		if($mode == 'batch')
 		{
-			return;
+			return null;
 		}		
 	}
 	
@@ -631,9 +631,9 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() == 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
 			{
 			
-				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
 			
-				$this->listOrder 		= 'p.page_id desc';
+				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 			
 				$this->batchDelete 	= false;
 				$this->fields = array(

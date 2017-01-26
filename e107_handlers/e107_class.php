@@ -1117,7 +1117,7 @@ class e107
 		$legacy_pref_name = ($pref_name) ? $pref_name = '/'.$pref_name : '';
 		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$legacy_pref_name, $default, $index);
 
-		return !empty($tprefs) ? $tprefs : array();
+		return !empty($tprefs) ? $tprefs : $default;
 
 	}
 	
