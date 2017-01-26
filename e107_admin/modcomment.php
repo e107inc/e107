@@ -9,11 +9,12 @@
  */
 
 require_once("../class2.php");
-if (!getperms("B")) {
+
+if (!getperms("B")) 
+{
 	e107::redirect('admin');
 	exit;
 }
-
 
 
 $tmp	= explode(".", e_QUERY);

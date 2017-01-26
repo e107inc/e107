@@ -67,6 +67,8 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 
+
+
 	/**
 	 * @var user_class
 	 */
@@ -531,10 +533,11 @@ class e_form
 		$text .= '</ul>';
 
 		$initTab = varset($options['active'],false);
+		$tabClass = varset($options['class'],null);
 
 		$text .= '
 		<!-- Tab panes -->
-		<div class="tab-content">';
+		<div class="tab-content '.$tabClass.'">';
 		
 		$c=0;
 		foreach($array as $key=>$tab)
@@ -896,7 +899,7 @@ class e_form
 		
 		if(!empty($extras['video']))
 		{
-			$url .= "&amp;video=1";	
+			$url .= ($extras['video'] == 2) ? "&amp;video=2" : "&amp;video=1";
 		}			
 
 		if(!empty($extras['path']) && $extras['path'] == 'plugin')
@@ -982,13 +985,13 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />"; 
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />";
 		}
 		else
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />"; 
+			$text .= "<input class='img-rounded rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />";
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -1028,9 +1031,9 @@ class e_form
 
 			if(ADMIN)
 			{
-				$EAVATAR = "<b>".e_AVATAR_DEFAULT."</b>";
+				$EAVATAR = e_AVATAR_DEFAULT;
 				$text .= "<div class='alert alert-danger'>";
-				$text .= e107::getParser()->lanVars(LAN_EFORM_006, array('x'=>$EAVATAR));
+				$text .= e107::getParser()->lanVars(e107::getParser()->toHTML(LAN_EFORM_006, true), array('x'=>$EAVATAR));
 				$text .= "</div>"; 
 			}
 
@@ -1105,7 +1108,7 @@ class e_form
 		}
 
 
-e107::getDebug()->log($sc_parameters);
+// e107::getDebug()->log($sc_parameters);
 
 		$default_thumb = $default;
 		$class = '';
@@ -1181,7 +1184,7 @@ e107::getDebug()->log($sc_parameters);
 			$thpath = empty($default) || !empty($video) ?  $default_url : $tp->thumbUrl($default_thumb, $att, true);
 			//isset($sc_parameters['nothumb']) || vartrue($hide) ?
 
-			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive' style='display:block;' />";
+			$label = "<img id='{$name_id}_prev' src='".$thpath."' alt='{$default_url}' class='well well-small image-selector  img-responsive img-fluid' style='display:block;' />";
 			
 			if($cat != 'news' && $cat !='page' && $cat !='' && strpos($cat,'_image')===false)
 			{
@@ -2763,29 +2766,29 @@ e107::getDebug()->log($sc_parameters);
 		switch ($image)
 		{
 			case 'edit':
-				$icon = "e-edit-32";
+				$icon = (e_ADMIN_AREA === true) ? ADMIN_EDIT_ICON : $tp->toIcon("e-edit-32");
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action edit' : $options['class'];
 			break;
 
 			case 'delete':
-				$icon = (e_ADMIN_AREA === true) ? "e-delete-32" : 'fa-trash.glyph';
+				$icon = (e_ADMIN_AREA === true) ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
-				$icon = "e-execute-32";
+				$icon = (e_ADMIN_AREA === true) ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action execute' : $options['class'];
 			break;
 
 			case 'view':
-				$icon = "e-view-32";
+				$icon = $tp->toIcon("e-view-32");
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
 			break;
 		}
 		$options['title'] = $title;//shorthand
 		
-		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  >".$tp->toIcon($icon)."</button>";
+		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  >".$icon."</button>";
 
 	
 	}
@@ -3010,6 +3013,11 @@ e107::getDebug()->log($sc_parameters);
 
 		return false;
 	}
+
+
+
+
+
 
 	/**
 	 * Helper function to get default button class by action.
@@ -3877,8 +3885,14 @@ e107::getDebug()->log($sc_parameters);
 			$parms = $attributes['readParms'];
 		}
 
+		// @see custom fields in cpage which accept json params.
+		if(!empty($attributes['writeParms']) && $tmpOpt = e107::getParser()->isJSON($attributes['writeParms']))
+		{
+			$attributes['writeParms'] = $tmpOpt;
+			unset($tmpOpt);
+		}
 
-	
+
 		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
@@ -3982,9 +3996,15 @@ e107::getDebug()->log($sc_parameters);
 			break;
 
 			case 'checkboxes':
-				$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+
 				//$attributes['type'] = 'text';
-				return $value;
+				if(empty($attributes['writeParms'])) // avoid comflicts with a field called 'checkboxes'
+				{
+					$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+					return $value;
+				}
+
+
 			break;
 		}
 
@@ -4007,6 +4027,10 @@ e107::getDebug()->log($sc_parameters);
 				
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
+			break;
+
+			case 'country':
+				$value = $this->getCountry($value);
 			break;
 
 			case 'ip':
@@ -4082,7 +4106,7 @@ e107::getDebug()->log($sc_parameters);
 					$opts['multiple'] = true;	
 				}
 			
-				if(vartrue($opts['multiple']))
+				if(!empty($opts['multiple']))
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -4091,6 +4115,8 @@ e107::getDebug()->log($sc_parameters);
 						if(isset($wparms[$v])) $ret[] = $wparms[$v];
 					}
 					$value = implode(', ', $ret);
+
+
 				}
 				else
 				{
@@ -4837,9 +4863,13 @@ e107::getDebug()->log($sc_parameters);
 	{
 		$tp = e107::getParser();
 
-
-
 		$parms = vartrue($attributes['writeParms'], array());
+
+		if($tmpOpt = $tp->isJSON($parms))
+		{
+			$parms = $tmpOpt;
+			unset($tmpOpt);
+		}
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
@@ -4850,9 +4880,11 @@ e107::getDebug()->log($sc_parameters);
 			$ajaxParms['data-src'] = varset($parms['ajax']['src']);
 			$ajaxParms['data-target'] = varset($parms['ajax']['target']);
 			$ajaxParms['data-method'] = varset($parms['ajax']['method'], 'html');
-			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], $tp->toGlyph('fa-spinner', array('spin'=>1)));
+			$ajaxParms['data-loading'] = varset($parms['ajax']['loading'], 'fa-spinner'); //$tp->toGlyph('fa-spinner', array('spin'=>1))
 
 			unset($attributes['writeParms']['ajax']);
+
+		//	e107::getDebug()->log($parms['ajax']);
 		}
 
 		if(!empty($attributes['multilan']))
@@ -4932,6 +4964,10 @@ e107::getDebug()->log($sc_parameters);
 				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
 
+			case 'country':
+				$ret = vartrue($parms['pre']).$this->country($key, $value).vartrue($parms['post']);
+			break;
+
 			case 'ip':
 				$ret = vartrue($parms['pre']).$this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms).vartrue($parms['post']);
 			break;
@@ -4953,6 +4989,11 @@ e107::getDebug()->log($sc_parameters);
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
+				if(!isset($parms['required']))
+				{
+
+					$parms['required'] = false;
+				}
 				$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			
 			break; 
@@ -5024,9 +5065,17 @@ e107::getDebug()->log($sc_parameters);
 				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
 			break;
 
+			case 'video':
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
+
+				if($attributes['type'] === 'video')
+				{
+					$parms['video'] = 2; // ie. video only.
+					$parms['w'] = 280;
+				}
+
 				$ret =  $this->imagepicker($key, $value, defset($label, $label), $parms);
 			break;
 			
@@ -5574,7 +5623,7 @@ e107::getDebug()->log($sc_parameters);
 				".$this->token()."
 			";
 
-			foreach ($form['fieldsets'] as $elid => $data) //XXX rename 'fieldsets' to 'forms' ?
+			foreach ($form['fieldsets'] as $elid => $data)
 			{
 				$elid = $form['id'].'-'.$elid;
 		
@@ -5593,6 +5642,12 @@ e107::getDebug()->log($sc_parameters);
 					{
 						$active = (strval($tabId) === $curTab) ? 'active' : '';
 						$text .= '<div class="tab-pane '.$active.'" id="tab'.$tabId.'">';
+
+					//	e107::getDebug()->log('elid: '.$elid. " tabid: ".$tabId);
+					//	e107::getDebug()->log($data);
+					//	e107::getDebug()->log($model);
+
+
 						$text .= $this->renderCreateFieldset($elid, $data, $model, $tabId);	
 						$text .= "</div>";	
 					}
@@ -5632,12 +5687,13 @@ e107::getDebug()->log($sc_parameters);
 	 * @param string $id field id
 	 * @param array $fdata fieldset data
 	 * @param object $model
-	 * @return string
+	 * @return string | false
 	 */
 	function renderCreateFieldset($id, $fdata, $model, $tab=0)
 	{
-		
-		$text = vartrue($fdata['fieldset_pre'])."
+
+
+		$start = vartrue($fdata['fieldset_pre'])."
 			<fieldset id='{$id}-".$tab."'>
 				<legend>".vartrue($fdata['legend'])."</legend>
 				".vartrue($fdata['table_pre'])."
@@ -5648,6 +5704,8 @@ e107::getDebug()->log($sc_parameters);
 					</colgroup>
 					<tbody>
 		";
+
+		$text = '';
 
 		// required fields - model definition
 		$model_required = $model->getValidationRules();
@@ -5770,7 +5828,7 @@ e107::getDebug()->log($sc_parameters);
 					$text .= "
 					<tr><td colspan='2'>";
 					
-					$text .= "<div style='padding-bottom:8px'>".$leftCell."</div>";
+					$text .= (isset($writeParms['nolabel']) && $writeParms['nolabel'] == 2) ? '' : "<div style='padding-bottom:8px'>".$leftCell."</div>" ;
 					$text .= $rightCell."
 						</td>
 						
@@ -5814,17 +5872,27 @@ e107::getDebug()->log($sc_parameters);
 			$required_help = '<div class="form-note">'.$this->getRequiredString().' - required fields</div>'; //TODO - lans
 		}
 
-		$text .= "
+
+		if(!empty($text) || !empty($hidden_fields))
+		{
+			$text = $start.$text;
+
+			$text .= "
 					</tbody>
 				</table>";
 
-		$text .= implode("\n", $hidden_fields);
+			$text .= implode("\n", $hidden_fields);
 
-		$text .= "</fieldset>";
-				
-		$text .= vartrue($fdata['fieldset_post']);
+			$text .= "</fieldset>";
+
+			$text .= vartrue($fdata['fieldset_post']);
+
+			return $text;
+		}
+
+
 		
-		return $text;		
+		return false;
 		
 		/*		
 		$text .= "

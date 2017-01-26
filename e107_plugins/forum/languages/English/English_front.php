@@ -343,6 +343,8 @@ define("LAN_FORUM_8024", "Failed to open thread");
 define("LAN_FORUM_8025", "Failed to stick thread");
 define("LAN_FORUM_8026", "Failed to unstick thread");
 define("LAN_FORUM_8027", "No action selected");
+define("LAN_FORUM_8028", "Return"); 
+define("LAN_FORUM_8029", "New topic created!");
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================

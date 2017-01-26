@@ -28,17 +28,34 @@ if (!e_QUERY || isset($_POST['userlogin']))
 
 // Media-Manager direct file download. 
 
-if(vartrue($_GET['file']) && is_numeric($_GET['file'])) // eg. request.php?file=1
+if(!empty($_GET['file'])) // eg. request.php?file=1
 {
+	if(is_numeric($_GET['file']))
+	{
+		$query = "media_id= ".intval($_GET['file']);
+	}
+	else // @see $tp->toFile()
+	{
+		$srch = array(
+			'{e_MEDIA_FILE}' => 'e_MEDIA_FILE/',
+			'{e_PLUGIN}' => 'e_PLUGIN/'
+		);
+
+		$fileName = str_replace($srch,array_keys($srch),$_GET['file']);
+
+		$query = "media_url= \"".e107::getParser()->filter($fileName)."\"";
+
+	}
+
 	$sql = e107::getDb();
-	if ($sql->select('core_media', 'media_url', "media_id= ".intval($_GET['file'])." AND media_userclass IN (".USERCLASS_LIST.") LIMIT 1 ")) 
+	if ($sql->select('core_media', 'media_url', $query . " AND media_userclass IN (".USERCLASS_LIST.") LIMIT 1 "))
 	{
 		$row = $sql->fetch();
 		// $file = $tp->replaceConstants($row['media_url'],'rel');
 		e107::getFile()->send($row['media_url']);
 	} 	
 }
-else //BC Legacy Support. (Downloads Plugin)
+elseif(e107::isInstalled('download')) //BC Legacy Support. (Downloads Plugin)
 {
 	e107::getRedirect()->redirect(e_PLUGIN."download/request.php?".e_QUERY);
 }

@@ -225,10 +225,22 @@ elseif ($action == 'forums')
 			{
 				$vars->USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_15.': ';
 			}
+
+
+			$row['forum_sef'] = $forum->getForumSef($row);
+			$row['thread_sef'] = $forum->getThreadSef($row);
+
+			$forumUrl = e107::url('forum', 'forum', $row);
+
+			$postNum = $forum->postGetPostNum($row['post_thread'], $row['post_id']);
+			$postPage = ceil($postNum / $forum->prefs->get('postspage'));
+
+			$postUrl = e107::url('forum', 'topic', $row, array('query' => array('p' => $postPage), 'fragment' => 'post-' . $row['post_id']));
+
 			$vars->USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
-			$vars->USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e107::getUrl()->create('forum/thread/post', array('id' =>$row['post_id']))."'>"; //$e107->url->getUrl('forum', 'thread', "func=post&id={$row['post_id']}")
+			$vars->USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".$postUrl."'>"; //$e107->url->getUrl('forum', 'thread', "func=post&id={$row['post_id']}")
 			$vars->USERPOSTS_FORUM_TOPIC = $tp->toHTML($row['thread_name'], true, 'USER_BODY', $id); 
-			$vars->USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".e107::getUrl()->create('forum/forum/view', array('id' => $row['forum_id']))."'>"; //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['post_forum']}")
+			$vars->USERPOSTS_FORUM_NAME_HREF_PRE = "<a href='".$forumUrl."'>"; //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['post_forum']}")
 			$vars->USERPOSTS_FORUM_NAME = $tp->toHTML($row['forum_name'], true, 'USER_BODY', $id);
 			$vars->USERPOSTS_FORUM_THREAD = $tp->toHTML($row['post_entry'], true, 'USER_BODY', $id);
 			$vars->USERPOSTS_FORUM_DATESTAMP = UP_LAN_11." ".$datestamp;

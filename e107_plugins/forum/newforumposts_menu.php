@@ -75,6 +75,12 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 		if($results = $sql->gen($qry))
 		{
+
+			if($tp->thumbWidth()  > 250) // Fix for unset image size.
+			{
+				$tp->setThumbSize(40,40,true);
+			}
+
 			$list = "<ul class='media-list newforumposts-menu'>";
 
 			while($row = $sql->fetch())

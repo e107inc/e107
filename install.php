@@ -866,13 +866,13 @@ class e_install
 		$permColor	= ($perms_pass == true) ? "text-success" : "text-danger";
 		$PHPColor 	= ($version_fail == false) ? "text-success" : "text-danger";
 		$mysqlColor	= ($mysql_pass == true) ? "text-success" : "text-danger";
-
+/*
 		if(version_compare($php_version, 7.1, ">=")) // XXX Remove once tested thoroughly
 		{
 			$php_help = "<span class='glyphicon glyphicon-warning-sign'></span> PHP 7.1 may have issues with e107. We recommend using 7.0.x versions instead until further testing has been performed.";
 			$PHPColor = 'text-warning';
 		}
-
+*/
 
 		$extensionCheck = array(
 			'xml'       => array('label'=> LANINS_050,      'status'=> function_exists('utf8_encode'),      'url'=> 'http://php.net/manual/en/ref.xml.php'),
@@ -1129,20 +1129,21 @@ class e_install
 					$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
 					$preview    = e_THEME.$val."/".$themeInfo['thumbnail'];
+					$description = vartrue($themeInfo['description']);
 
 					if(!is_readable($preview))
 					{
 						continue;
 					}
 
-					$thumbnail = "<img class='img-responsive thumbnail'  src='".$preview ."' alt='".$val."' />";
+					$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
 
 
-					$selected = ($val == 'bootstrap3') ? " checked" : "";
+					$selected = ($val == 'landingzero') ? " checked" : "";
 
 					$output .= "
 									<div class='col-md-6 theme-cell' >
-										<label class='theme-selection'><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />
+										<label class='theme-selection' title=\"".$description."\"><input type='radio' name='sitetheme' value='{$val}' required='required' $selected />
 										<div>".$thumbnail."
 										<h5>".$title." <small>(".$category.")</small><span class='glyphicon glyphicon-ok text-success'></span></h5>
 										</div>
@@ -2104,6 +2105,7 @@ function template_data()
 		label.theme-selection > input:checked + div {    border:2px solid #337ab7; 	}
 		label.theme-selection > input + div span { visibility: hidden; float:right; margin-right:10px; color:#337ab7	}
 		label.theme-selection > input:checked + div span { visibility: initial;	}
+		div.tooltip { width:320px }
 
 
 

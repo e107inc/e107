@@ -37,7 +37,7 @@ class e_media
 			$this->logging = true; 	
 		}
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
 	}
 
 
@@ -1267,7 +1267,7 @@ class e_media
 		
 				if($data['type'] == 'image')
 				{
-					$text .= '<img class="img-responsive" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+					$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
 				}
 				elseif($data['type'] == 'glyph')
 				{

@@ -1336,13 +1336,25 @@ class e_jsmanager
 				if('css' === $external)
 				{
 					$path = explode($this->_sep, $path, 4);
+
+
+
 					$media = $path[0];
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
+
+					$insertID ='';
+
 					if(strpos($path, 'http') !== 0) // local file.
 					{
+
+						if($label === 'Theme CSS') // add an id for local theme stylesheets. 
+						{
+							$insertID = 'id="stylesheet-'. eHelper::secureIdAttr(str_replace(array('{e_THEME}','.css'),'',$path)).'"' ;
+						}
+
 						if($this->addCache($external,$path) === true) // if cache enabled, then skip and continue.
 						{
 							continue;
@@ -1354,7 +1366,8 @@ class e_jsmanager
 						continue;
 					}
 
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
+
+					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 
 					continue;

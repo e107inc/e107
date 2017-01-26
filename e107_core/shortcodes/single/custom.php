@@ -9,7 +9,7 @@ function custom_shortcode($parm)
 	{
 		case 'login':
 		case 'login noprofile':
-			include_lan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
+			e107::includeLan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
 			$ret = '';
 			$sep = (defined('LOGINC_SEP')) ? LOGINC_SEP : "<span class='loginc sep'>.:.</span>";
 

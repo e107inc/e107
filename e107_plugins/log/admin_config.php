@@ -88,8 +88,8 @@ if(e_AJAX_REQUEST && varset($_GET['action']) == 'rebuild')
 
 define('LogFlagFile', 'LogFlag.php');
 
-include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
-include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin.php');
+e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'_admin.php');
 
 if(!is_writable(e_LOG))
 {

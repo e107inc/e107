@@ -18,10 +18,7 @@ if (!defined('e107_INIT')) { exit; }
 e107::js('forum', 'js/forum.js', 'jquery', 5);
 e107::css('forum','forum.css');
 
-
-e107::lan('forum','English_front');
-
-
+e107::lan('forum', "front", true);
 
 // include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php');
 if(!defined('IMAGE_new') && !defined('IMAGE_e'))

@@ -31,7 +31,7 @@ if(!deftrue('e_LEGACY_NEWS')) // subject to removal at any time.
 // --------------------- everything below this point will be removed in future --------------------------
 
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");
 //require_once(e_HANDLER."comment_class.php");
@@ -44,7 +44,7 @@ if (isset($NEWSHEADER))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
 
 $cacheString = 'news.php_default_';
 $action = '';

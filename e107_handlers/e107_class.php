@@ -184,6 +184,7 @@ class e107
 		'e_array'                        => '{e_HANDLER}core_functions.php', // Old ArrayStorage.
 		'e_bbcode'                       => '{e_HANDLER}bbcode_handler.php',
 		'e_bb_base'                      => '{e_HANDLER}bbcode_handler.php',
+		'e_customfields'                 => '{e_HANDLER}e_customfields_class.php',
 		'e_file'                         => '{e_HANDLER}file_class.php',
 		'e_form'                         => '{e_HANDLER}form_handler.php',
 		'e_jshelper'                     => '{e_HANDLER}js_helper.php',
@@ -1116,7 +1117,7 @@ class e107
 		$legacy_pref_name = ($pref_name) ? $pref_name = '/'.$pref_name : '';
 		$tprefs = self::getConfig()->getPref('sitetheme_pref'.$legacy_pref_name, $default, $index);
 
-		return !empty($tprefs) ? $tprefs : array();
+		return !empty($tprefs) ? $tprefs : $default;
 
 	}
 	
@@ -1763,6 +1764,15 @@ class e107
 	public static function getComment()
 	{
 		return self::getSingleton('comment', true);
+	}
+
+	/**
+	 * Retrieve comments handler singleton object
+	 * @return e_customfields
+	 */
+	public static function getCustomFields()
+	{
+		return self::getSingleton('e_customfields', true);
 	}
 
 	/**
@@ -2764,7 +2774,7 @@ class e107
 
 	/**
 	 * Load language file, replacement of include_lan()
-	 *
+	 * @outdated use e107::lan() or e107::coreLan(), e107::plugLan(), e107::themeLan()
 	 * @param string $path
 	 * @param boolean $force
 	 * @return string
@@ -2778,9 +2788,11 @@ class e107
 				return false;
 			}
 			
-			self::getMessage()->addDebug("Couldn't load language file: ".$path);
+
 			$path = str_replace(e_LANGUAGE, 'English', $path);
-			
+
+			self::getDebug()->log("Couldn't load language file: ".$path);
+
 			if(!is_readable($path))
 			{
 				return false;

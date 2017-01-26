@@ -40,8 +40,8 @@ class news_front
 	{
 		global $NEWSHEADER;
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
 
 		$this->pref = e107::getPref();
 

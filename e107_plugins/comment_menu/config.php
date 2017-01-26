@@ -14,7 +14,7 @@ $eplug_admin = TRUE;
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 	
-include_lan(e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."comment_menu/languages/".e_LANGUAGE.".php");
 if (!getperms("1")) 
 {
 	e107::redirect('admin');

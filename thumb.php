@@ -472,7 +472,7 @@ class e_thumbpage
 	{
 		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
 
-		header('location: http://placehold.it/'.$getsize);
+		header('location: https://placehold.it/'.$getsize);
 		header('Content-Length: 0');
 		exit();		
 	}

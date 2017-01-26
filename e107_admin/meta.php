@@ -11,12 +11,14 @@
  *
 */
 require_once("../class2.php");
-if (!getperms("T")) {
+
+if (!getperms("T")) 
+{
 	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('meta', true);
 
 $e_sub_cat = 'meta';
 require_once("auth.php");

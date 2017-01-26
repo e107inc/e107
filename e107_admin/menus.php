@@ -49,10 +49,6 @@ if(e_MENUMANAGER_ACTIVE === false )
 		body { overflow:hidden }
 
 
-
-
-
-
 		');
 	}
 	else
@@ -124,10 +120,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
 
 		");
-
 }
-
-
 
 
 if (!getperms("2"))
@@ -137,15 +130,8 @@ if (!getperms("2"))
 }
 
 
-
-
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
-
-
-
-
-
 
 
 if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
@@ -794,6 +780,9 @@ class e_menu_layout
 			$theme = e107::pref('core','sitetheme');
 		}
 
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 		$HEADER         = null;
 		$FOOTER         = null;
 		$LAYOUT         = null;
@@ -1034,7 +1023,7 @@ class e_menu_layout
 
 		;
 
-		$diz = "The Menu-Manager allows you to place and arrange your menus within your theme template. Hover over the sub-areas to modify existing menu items. ";
+		$diz = MENLAN_58;
 
 		$caption .= "<span class='pull-right'><a class='e-tip' title=\"".$tp->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
 

@@ -350,168 +350,232 @@ class e107_db_debug {
 		
 		return "<span class='label ".$inc."'>".$amount."</span>";
 	}
-	
 
-	function Show_Performance() {
-		//
-		// Stats by Time Marker
-		//
-		global $db_time;
-		global $sql;
-		global $eTimingStart, $eTimingStop;
 
-		$this->Mark_Time('Stop');
+	function Show_Performance()
+	{
+			//
+			// Stats by Time Marker
+			//
+			global $db_time;
+			global $sql;
+			global $eTimingStart, $eTimingStop;
 
-		if (!E107_DBG_TIMEDETAILS) return '';
+			$this->Mark_Time('Stop');
 
-		$totTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
-		$text = "\n<table class='fborder table table-striped table-condensed'>\n";
-		$bRowHeaders=FALSE;
-		reset($this->aTimeMarks);
-		$aSum=$this->aTimeMarks[0]; // create a template from the 'real' array
-		$aSum['Index']='';
-		$aSum['What']='Total';
-		$aSum['Time']=0;
-		$aSum['DB Time']=0;
-		$aSum['DB Count']=0;
-		$aSum['Memory']='';
+			if(!E107_DBG_TIMEDETAILS)
+			{
+				return '';
+			}
 
-		while (list($tKey, $tMarker) = each($this->aTimeMarks)) {
-			if (!$bRowHeaders) {
-				// First time: emit headers
-				$bRowHeaders=TRUE;
-				$text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_keys($tMarker))."</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
-				$aUnits = $tMarker;
-				foreach ($aUnits as $key=>$val) {
-					switch ($key) {
-						case 'DB Time':
-						case 'Time':
-						$aUnits[$key] = '(msec)';
-						break;
-						default:
-						$aUnits[$key] = '';
-						break;
-					}
+			$totTime = e107::getSingleton('e107_traffic')->TimeDelta($eTimingStart, $eTimingStop);
+
+			$text = "\n<table class='fborder table table-striped table-condensed'>\n";
+			$bRowHeaders = false;
+			reset($this->aTimeMarks);
+			$aSum = $this->aTimeMarks[0]; // create a template from the 'real' array
+
+			$aSum['Index'] = '';
+			$aSum['What'] = 'Total';
+			$aSum['Time'] = 0;
+			$aSum['DB Time'] = 0;
+			$aSum['DB Count'] = 0;
+			$aSum['Memory'] = 0;
+
+			// Calculate Memory Usage per entry.
+			$prevMem = 0;
+
+			foreach($this->aTimeMarks as $k=>$v)
+			{
+
+				$prevKey = $k-1;
+
+				if(!empty($prevKey))
+				{
+					$this->aTimeMarks[$prevKey]['Memory Used'] = (intval($v['Memory']) - $prevMem);
 				}
-				$aUnits['OB Lev'] = 'lev(buf bytes)';
-				$aUnits['Memory'] = '(kb)';
-				$text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits)."</b>&nbsp;</td></tr>\n";
+
+				$prevMem = intval($v['Memory']);
 			}
 
-			$tMem = $tMarker['Memory'];
-			$tMarker['Memory'] = ($tMem ? number_format($tMem/1024.0, 1) : '?'); // display if known
-			if ($tMarker['What'] == 'Stop') {
-				$tMarker['Time']='&nbsp;';
-				$tMarker['%Time']='&nbsp;';
-				$tMarker['%DB Count']='&nbsp;';
-				$tMarker['%DB Time']='&nbsp;';
-				$tMarker['DB Time']='&nbsp;';
-				$tMarker['OB Lev']=$this->aOBMarks[$tKey];
-				$tMarker['DB Count']='&nbsp;';
-				} else {
-				// Convert from start time to delta time, i.e. from now to next entry
-				$nextMarker=current($this->aTimeMarks);
-				$aNextT=$nextMarker['Time'];
-				$aThisT=$tMarker['Time'];
-	
-				$thisDelta = e107::getSingleton('e107_traffic')->TimeDelta($aThisT, $aNextT);
-				$aSum['Time'] += $thisDelta;
-				$aSum['DB Time'] += $tMarker['DB Time'];
-				$aSum['DB Count'] += $tMarker['DB Count'];
-				$tMarker['Time']=number_format($thisDelta*1000.0, 1);
-				$tMarker['%Time']=$totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
-				$tMarker['%DB Count']=number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
-				$tMarker['%DB Time']=$db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
-				$tMarker['DB Time']=number_format($tMarker['DB Time']*1000.0, 1);
-				
-				$tMarker['OB Lev']=$this->aOBMarks[$tKey];
+
+
+			while(list($tKey, $tMarker) = each($this->aTimeMarks))
+			{
+				if(!$bRowHeaders)
+				{
+					// First time: emit headers
+					$bRowHeaders = true;
+					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_keys($tMarker)) . "</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>OB Lev&nbsp;</b></td></tr>\n";
+					$aUnits = $tMarker;
+					foreach($aUnits as $key => $val)
+					{
+						switch($key)
+						{
+							case 'DB Time':
+							case 'Time':
+								$aUnits[$key] = '(msec)';
+								break;
+							default:
+								$aUnits[$key] = '';
+								break;
+						}
+					}
+					$aUnits['OB Lev'] = 'lev(buf bytes)';
+					$aUnits['Memory'] = '(kb)';
+					$aUnits['Memory Used'] = '(kb)';
+					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
+				}
+
+
+
+			//	$tMem =   ($tMarker['Memory'] - $aSum['Memory']);
+
+				$tMem =   ($tMarker['Memory']);
+
+				if($tMem < 0) // Quick Fix for negative numbers.
+				{
+				//	$tMem = 0.0000000001;
+				}
+
+				$tMarker['Memory'] = ($tMem ? number_format($tMem / 1024.0, 1) : '?'); // display if known
+
+				$tUsage = $tMarker['Memory Used'];
+				$tMarker['Memory Used'] = number_format($tUsage / 1024.0, 1);
+
+				if($tUsage > 400000) // Highlight high memory usage.
+				{
+					$tMarker['Memory Used'] = "<span class='label label-danger'>".$tMarker['Memory Used']."</span>";
+				}
+
+				$aSum['Memory'] = $tMem;
+
+				if($tMarker['What'] == 'Stop')
+				{
+					$tMarker['Time'] = '&nbsp;';
+					$tMarker['%Time'] = '&nbsp;';
+					$tMarker['%DB Count'] = '&nbsp;';
+					$tMarker['%DB Time'] = '&nbsp;';
+					$tMarker['DB Time'] = '&nbsp;';
+					$tMarker['OB Lev'] = $this->aOBMarks[$tKey];
+					$tMarker['DB Count'] = '&nbsp;';
+				}
+				else
+				{
+					// Convert from start time to delta time, i.e. from now to next entry
+					$nextMarker = current($this->aTimeMarks);
+					$aNextT = $nextMarker['Time'];
+					$aThisT = $tMarker['Time'];
+
+					$thisDelta = e107::getSingleton('e107_traffic')->TimeDelta($aThisT, $aNextT);
+					$aSum['Time'] += $thisDelta;
+					$aSum['DB Time'] += $tMarker['DB Time'];
+					$aSum['DB Count'] += $tMarker['DB Count'];
+					$tMarker['Time'] = number_format($thisDelta * 1000.0, 1);
+					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
+					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
+					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
+					$tMarker['DB Time'] = number_format($tMarker['DB Time'] * 1000.0, 1);
+
+					$tMarker['OB Lev'] = $this->aOBMarks[$tKey];
+				}
+
+				$text .= "<tr><td class='forumheader3' >" . implode("&nbsp;</td><td class='forumheader3'  style='text-align:right'>", array_values($tMarker)) . "&nbsp;</td></tr>\n";
+
+				if(isset($this->aMarkNotes[$tKey]))
+				{
+					$text .= "<tr><td class='forumheader3' >&nbsp;</td><td class='forumheader3' colspan='4'>";
+					$text .= $this->aMarkNotes[$tKey] . "</td></tr>\n";
+				}
+
+				if($tMarker['What'] == 'Stop')
+				{
+					break;
+				}
 			}
 
-			$text .= "<tr><td class='forumheader3' >".implode("&nbsp;</td><td class='forumheader3'  style='text-align:right'>", array_values($tMarker))."&nbsp;</td></tr>\n";
-
-			if (isset($this->aMarkNotes[$tKey])) {
-				$text .= "<tr><td class='forumheader3' >&nbsp;</td><td class='forumheader3' colspan='4'>";
-				$text .= $this->aMarkNotes[$tKey]."</td></tr>\n";
-			}
-			if ($tMarker['What'] == 'Stop') break;
-		}
-
-		$aSum['%Time']=$totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
-		$aSum['%DB Time']=$db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
-		$aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
-		$aSum['Time']=number_format($aSum['Time'] * 1000.0, 1);
-		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
+			$aSum['%Time'] = $totTime ? number_format(100.0 * ($aSum['Time'] / $totTime), 0) : 0;
+			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
+			$aSum['Time'] = number_format($aSum['Time'] * 1000.0, 1);
+			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
 
 
-		$text .= "<tr>
+			$text .= "<tr>
 		<td class='fcaption'>&nbsp;</td>
 		<td class='fcaption' style='text-align:right'><b>Total</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$aSum['%Time']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$aSum['%DB Time']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$aSum['%DB Count']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$aSum['Time']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$aSum['DB Time']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$aSum['DB Count']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$tMarker['Memory']."</b></td>
-		<td class='fcaption' style='text-align:right'><b>".$tMarker['OB Lev']."</b></td>
+		<td class='fcaption' style='text-align:right'><b>" . $aSum['%Time'] . "</b></td>
+		<td class='fcaption' style='text-align:right'><b>" . $aSum['%DB Time'] . "</b></td>
+		<td class='fcaption' style='text-align:right'><b>" . $aSum['%DB Count'] . "</b></td>
+		<td class='fcaption' style='text-align:right' title='Time (msec)'><b>" . $aSum['Time'] . "</b></td>
+		<td class='fcaption' style='text-align:right' title='DB Time (msec)'><b>" . $aSum['DB Time'] . "</b></td>
+		<td class='fcaption' style='text-align:right'><b>" . $aSum['DB Count'] . "</b></td>
+		<td class='fcaption' style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
+		<td class='fcaption' style='text-align:right' title='Memory (Kb)'><b>" . number_format($aSum['Memory'] / 1024, 1) . "</b></td>
+
+			<td class='fcaption' style='text-align:right'><b>" . $tMarker['OB Lev'] . "</b></td>
 
 		</tr>
 		";
 
 
-	//	$text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
+			//	$text .= "<tr><td class='fcaption'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aSum)."</b>&nbsp;</td><td class='fcaption'>&nbsp;</td></tr>\n";
 
 			$text .= "\n</table><br />\n";
 
 
-		//
-		// Stats by Table
-		//
+			//
+			// Stats by Table
+			//
 
-		$text .= "\n<table class='fborder table table-striped table-condensed'>\n";
+			$text .= "\n<table class='fborder table table-striped table-condensed'>\n";
 
-		$bRowHeaders=FALSE;
-		$aSum=$this->aDBbyTable['core']; // create a template from the 'real' array
-		$aSum['Table']='Total';
-		$aSum['%DB Count']=0;
-		$aSum['%DB Time']=0;
-		$aSum['DB Time']=0;
-		$aSum['DB Count']=0;
+			$bRowHeaders = false;
+			$aSum = $this->aDBbyTable['core']; // create a template from the 'real' array
+			$aSum['Table'] = 'Total';
+			$aSum['%DB Count'] = 0;
+			$aSum['%DB Time'] = 0;
+			$aSum['DB Time'] = 0;
+			$aSum['DB Count'] = 0;
 
-		foreach ($this->aDBbyTable as $curTable) {
-			if (!$bRowHeaders) {
-				$bRowHeaders=TRUE;
-				$text .= "<tr><td class='fcaption'><b>".implode("</b></td><td class='fcaption'><b>", array_keys($curTable))."</b></td></tr>\n";
-				$aUnits = $curTable;
-				foreach ($aUnits as $key=>$val) {
-					switch ($key) {
-						case 'DB Time':
-						$aUnits[$key] = '(msec)';
-						break;
-						default:
-						$aUnits[$key] = '';
-						break;
+			foreach($this->aDBbyTable as $curTable)
+			{
+				if(!$bRowHeaders)
+				{
+					$bRowHeaders = true;
+					$text .= "<tr><td class='fcaption'><b>" . implode("</b></td><td class='fcaption'><b>", array_keys($curTable)) . "</b></td></tr>\n";
+					$aUnits = $curTable;
+					foreach($aUnits as $key => $val)
+					{
+						switch($key)
+						{
+							case 'DB Time':
+								$aUnits[$key] = '(msec)';
+								break;
+							default:
+								$aUnits[$key] = '';
+								break;
+						}
 					}
+					$text .= "<tr><td class='fcaption' style='text-align:right'><b>" . implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits) . "</b>&nbsp;</td></tr>\n";
 				}
-				$text .= "<tr><td class='fcaption' style='text-align:right'><b>".implode("</b>&nbsp;</td><td class='fcaption' style='text-align:right'><b>", $aUnits)."</b>&nbsp;</td></tr>\n";
+
+				$aSum['DB Time'] += $curTable['DB Time'];
+				$aSum['DB Count'] += $curTable['DB Count'];
+				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
+				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
+				$curTable['DB Time'] = number_format($curTable['DB Time'] * 1000.0, 1);
+				$text .= "<tr><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
 			}
 
-			$aSum['DB Time'] += $curTable['DB Time'];
-			$aSum['DB Count'] += $curTable['DB Count'];
-			$curTable['%DB Count']=number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
-			$curTable['%DB Time']=number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
-			$curTable['DB Time']=number_format($curTable['DB Time']*1000.0, 1);
-			$text .= "<tr><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable))."&nbsp;</td></tr>\n";
+			$aSum['%DB Time'] = $db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
+			$aSum['%DB Count'] = ($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
+			$aSum['DB Time'] = number_format($aSum['DB Time'] * 1000.0, 1);
+			$text .= "<tr><td class='fcaption'><b>" . implode("&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_values($aSum)) . "&nbsp;</b></td></tr>\n";
+			$text .= "\n</table><br />\n";
+
+			return $text;
 		}
-
-		$aSum['%DB Time']=$db_time ? number_format(100.0 * ($aSum['DB Time'] / $db_time), 0) : 0;
-		$aSum['%DB Count']=($sql->db_QueryCount()) ? number_format(100.0 * ($aSum['DB Count'] / ($sql->db_QueryCount())), 0) : 0;
-		$aSum['DB Time']=number_format($aSum['DB Time']*1000.0, 1);
-		$text .= "<tr><td class='fcaption'><b>".implode("&nbsp;</td><td class='fcaption' style='text-align:right'><b>", array_values($aSum))."&nbsp;</b></td></tr>\n";
-		$text .= "\n</table><br />\n";
-
-		return $text;
-	}
 
 	function logDeprecated(){
 

@@ -15,7 +15,7 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 	$_POST['e-token'] = '';
 } 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 

@@ -30,7 +30,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
 
 //define("UH_DEBUG",TRUE);
 

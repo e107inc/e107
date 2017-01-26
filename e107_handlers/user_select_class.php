@@ -15,7 +15,7 @@
 /* @DEPRECATED - SUBJECT TO REMOVAL */
 // Possible replacements: $frm->userpicker();
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 class user_select 
 {

@@ -173,7 +173,7 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 			$dimensions = getimagesize($path);
 		}
 
-		$opts = array('alt'=>SITENAME, 'class'=>'logo img-responsive');
+		$opts = array('alt'=>SITENAME, 'class'=>'logo img-responsive img-fluid');
 
 		if(!empty($dimensions[0]))
 		{

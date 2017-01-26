@@ -40,7 +40,7 @@ if(vartrue($_POST['keyword']))
 e107::css('pm','pm.css');
 require_once(e_PLUGIN.'pm/pm_class.php');
 require_once(e_PLUGIN.'pm/pm_func.php');
-include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 e107::getScParser();
 // require_once(e_PLUGIN.'pm/shortcodes/batch/pm_shortcodes.php');
 
@@ -534,24 +534,27 @@ class pm_extended extends private_message
 			}
 
 
-			if(check_class($this->pmPrefs['attach_class']))
+			if(!empty($_POST['uploaded']))
 			{
-				$_POST['uploaded'] = $this->processAttachments();
-
-				foreach($_POST['uploaded'] as $var)
+				if(check_class($this->pmPrefs['attach_class']))
 				{
-					if(!empty($var['message']))
+					$_POST['uploaded'] = $this->processAttachments();
+
+					foreach($_POST['uploaded'] as $var)
 					{
-						$msg .= $var['message']."<br />";
+						if(!empty($var['message']))
+						{
+							$msg .= $var['message']."<br />";
+						}
+
 					}
+				}
+				else
+				{
+					$msg .= LAN_PM_23.'<br />';
+					unset($_POST['uploaded']);
 
 				}
-			}
-			else
-			{
-				$msg .= LAN_PM_23.'<br />';
-				unset($_POST['uploaded']);
-
 			}
 
 			$_POST['from_id'] = USERID;

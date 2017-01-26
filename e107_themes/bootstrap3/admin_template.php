@@ -48,7 +48,7 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 
 
 // Leave Admin Area. 
-$E_ADMIN_NAVIGATION['button_home'] = '
+$E_ADMIN_NAVIGATION['button_enav_home'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
@@ -60,7 +60,7 @@ $E_ADMIN_NAVIGATION['button_home'] = '
 ';
 
 // Change Language
-$E_ADMIN_NAVIGATION['button_language'] = '
+$E_ADMIN_NAVIGATION['button_enav_language'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
@@ -83,9 +83,9 @@ $E_ADMIN_NAVIGATION['button_language'] = '
 
 
 // Logout / Settings / Personalize 			
-$E_ADMIN_NAVIGATION['button_logout'] = '
+$E_ADMIN_NAVIGATION['button_enav_logout'] = '
 	<li class="dropdown">
-		<a class="dropdown-toggle" title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
+		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
 		<b class="caret"></b>
 		</a> 
@@ -244,9 +244,9 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		<div class="navbar-collapse collapse">
 			{ADMIN_NAVIGATION=no-main}
 			<div>
-				{ADMIN_NAVIGATION=logout}
-				{ADMIN_NAVIGATION=language}
-				{ADMIN_NAVIGATION=home}
+				{ADMIN_NAVIGATION=enav_logout}
+				{ADMIN_NAVIGATION=enav_language}
+				{ADMIN_NAVIGATION=enav_home}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 				{ADMIN_UPDATE}

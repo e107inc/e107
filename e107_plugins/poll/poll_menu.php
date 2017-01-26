@@ -34,7 +34,7 @@ if(!isset($poll) || !is_object($poll))
 if(!defined("POLL_1"))
 {
 	/* if menu is being called from comments, lan files have to be included manually ... */
-	include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
+	e107::includeLan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 }
 
 if (empty($poll_to_show))
