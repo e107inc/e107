@@ -34,7 +34,7 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && empty($pref['soci
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 if(!defined('e_IFRAME')) define('e_IFRAME',true);
 require_once(HEADERF);
@@ -91,12 +91,18 @@ if (!USER || getperms('0'))
 		$LOGIN_TABLE_FOOTER = $LOGIN_TEMPLATE['page']['footer'];
 	}
 	
-	
+
 	$text = $tp->parseTemplate($LOGIN_TABLE,true, $sc);
 
 	if(getperms('0'))
 	{
 		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in as the Main Admin.</div>"; //TODO LAN
+
+		if(empty($pref['user_reg']))
+		{
+			echo "<div class='alert alert-block alert-error alert-danger center'>User registration and/or login is currently disabled. <a class='alert-link' target='_blank' href='".e_ADMIN_ABS."prefs.php#nav-core-prefs-registration'>Go here to enable it.</a></div>"; //TODO LAN
+		}
+
 	}
 	
 
@@ -113,6 +119,7 @@ if (!USER || getperms('0'))
 }
 
 require_once(FOOTERF);
+
 exit;
 
 ?>

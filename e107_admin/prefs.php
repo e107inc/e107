@@ -9,6 +9,7 @@
  * Administration - Site Preferences
  *
  */
+
 require_once ("../class2.php");
 
 if(isset($_POST['newver']))
@@ -17,17 +18,17 @@ if(isset($_POST['newver']))
 	exit();
 }
 
-if(! getperms("1"))
+if(!getperms("1"))
 {
 	e107::redirect('admin');
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('prefs', true);
+
 $e_sub_cat = 'prefs';
-e107::lan('core','mailout','admin');
-
-
+//e107::lan('core','mailout','admin');
+e107::coreLan('mailout', true);
 
 
 require_once (e_ADMIN."auth.php");
@@ -1574,7 +1575,7 @@ $text .= "
 	
 // File Uploads
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_upload.php");
 	require_once(e_HANDLER."upload_handler.php"); 
 	
 	

@@ -56,13 +56,13 @@ class plugin_download_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		
 		'other0' 		=> array('divider'=> true),
 		
 		'cat/list'			=> array('caption'=> LAN_CATEGORIES, 'perm'=>'P'),
-		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'Q'),
+		'cat/create' 		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'Q'),
 		
 		'other1' 		=> array('divider'=> true),
 		
@@ -144,7 +144,7 @@ class download_cat_ui extends e_admin_ui
        		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',			'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
          
 	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'download_category_parent' 			=> array('title'=> 'Parent',		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
+		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
 			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
@@ -2389,7 +2389,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 class download_mirror_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Downloads';
+		protected $pluginTitle		= LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName		= 'download';
 		protected $table			= 'download_mirror';
 		protected $pid				= 'mirror_id';
@@ -2409,10 +2409,10 @@ class download_mirror_ui extends e_admin_ui
 		  'mirror_name' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_url' 			=>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_image' 		=>   array ( 'title' => LAN_IMAGE, 'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'mirror_location' 	=>   array ( 'title' => 'Location', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'mirror_location' 	=>   array ( 'title' => DOWLAN_141, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'mirror_description' 	=>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_count' 		=>   array ( 'title' => 'Count', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('mirror_name', 'mirror_url', 'mirror_image', 'mirror_location');

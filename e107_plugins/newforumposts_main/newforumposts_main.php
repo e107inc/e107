@@ -18,7 +18,7 @@ if(!defined('e107_INIT')) { exit();}
 
 require_once (e_HANDLER.'userclass_class.php');
 $query = ($pref['nfp_posts'] ? 'thread_lastpost' : 'thread_datestamp');
-include_lan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 $path = e_PLUGIN.'forum/';
 
 global $sql, $ns;

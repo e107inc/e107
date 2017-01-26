@@ -15,7 +15,7 @@ if (!getperms("M"))
 	exit;
 }
 
-e107::lan('core','wmessage',true);
+e107::coreLan('wmessage', true);
 
 
 class wmessage_admin extends e_admin_dispatcher

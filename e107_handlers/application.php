@@ -6,17 +6,10 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
 */
 
 
 /**
- * @package e107
- * @subpackage	e107_handlers
- * @version $Id$
- * @author SecretR
- *
  * e107 Single Entry Point handling
  * 
  * Currently this file contains all classes required for single entry point functionallity
@@ -1821,7 +1814,7 @@ class eRouter
 		if(isset($params['#']))
 		{
 			$anc = '#'.$params['#'];
-			usnet($params['#']);
+			unset($params['#']);
 		}
 		
 		// Config independent - Deny parameter keys, useful for directly denying sensitive data e.g. password db fields
@@ -4326,6 +4319,7 @@ class eHelper
 	
 	public static function secureIdAttr($string)
 	{
+		$string = str_replace(array('/','_'),'-',$string);
 		return preg_replace(self::$_idRegEx, '', $string);
 	}
 	

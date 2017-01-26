@@ -124,7 +124,7 @@ $NEWS_MENU_TEMPLATE['carousel']['end'] = '
 
 $NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
 											<div class="item {ACTIVE}">{SETIMAGE: w=800&h=370&crop=1}
-									          {NEWS_IMAGE: class=img-responsive}
+									          {NEWS_IMAGE: class=img-responsive img-fluid}
 									           <div class="carousel-caption">
 									            <small>{NEWS_DATE=dd MM, yyyy}</small>
 									            <h1>{NEWS_TITLE}</h1>

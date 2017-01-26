@@ -19,6 +19,9 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+e107::getDb()->db_Mark_Time('(Start auth.php)');
+
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
 

@@ -47,7 +47,7 @@ if (!is_object($tp->e_bb))
 */
 
 // Get language file
-include_lan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
+e107::includeLan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
 
 // Get template
 if (is_readable(THEME.'rss_template.php'))

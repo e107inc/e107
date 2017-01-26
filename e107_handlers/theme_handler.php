@@ -329,7 +329,7 @@ class e_theme
 		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
-		$vars['thumbnail'] 		= varset($vars['preview'][0]);
+		$vars['thumbnail'] 		= isset($vars['preview'][0]) ?  $vars['preview'][0] : '';
 
 
 		if(!empty($vars['themePrefs']))
@@ -653,7 +653,7 @@ class themeHandler
 		{
 			$key = key($_POST['installplugin']);
 			
-			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
 			require_once (e_HANDLER."plugin_class.php");
 			
 			$eplug = new e107plugin;
@@ -664,7 +664,7 @@ class themeHandler
 		if(isset($_POST['setMenuPreset']))
 		{
 			$key = key($_POST['setMenuPreset']);
-			include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 			require_once (e_HANDLER."menumanager_class.php");
 			$men = new e_menuManager();
 			$men->curLayout = $key;
@@ -1422,7 +1422,7 @@ class themeHandler
 					
 					
 					$text .= "<div class='col-md-6'>
-						<img class='img-responsive' src='".$picFull."' alt=\"".$theme['name']."\" />
+						<img class='img-responsive img-fluid' src='".$picFull."' alt=\"".$theme['name']."\" />
 						</div>";	
 					
 				}
@@ -2290,7 +2290,7 @@ class themeHandler
 	
 	function showPreview()
 	{
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_theme.php");
 		$text = "<br /><div class='indent'>".TPVLAN_1.".</div><br />";
 		global $ns;
 		$ns->tablerender(TPVLAN_2, $text);
