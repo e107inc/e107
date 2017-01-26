@@ -765,162 +765,33 @@ class pluginManager{
 		
 	}
 	
-	
-	// FIXME - move it to plugin handler, similar to install_plugin() routine
+
 	function pluginUninstall()
 	{
-			$pref = e107::getPref();
-			$admin_log = e107::getAdminLog();
-			$plugin = e107::getPlugin();
-			$tp = e107::getParser();
-			$sql = e107::getDb();
-			$eplug_folder = '';
-			if(!isset($_POST['uninstall_confirm']))
-			{	// $id is already an integer
-				$this->pluginConfirmUninstall();
-   				return;
-			}
 
-			$plug = $plugin->getinfo($this->id);
+		if(!isset($_POST['uninstall_confirm']))
+		{	// $id is already an integer
 
-		// Check if plugin is being used by another plugin before uninstalling it.
-		if(isset($plug['plugin_path']))
-		{
-			if ($plugin->isUsedByAnotherPlugin($plug['plugin_path']))
-			{
-				$this->action = 'installed'; // Render plugin list.
-				return;
-			}
+			$this->pluginConfirmUninstall();
+			return;
 		}
 
-			$text = '';
-			//Uninstall Plugin
-			if ($plug['plugin_installflag'] == TRUE )
-			{
-				$eplug_folder = $plug['plugin_path'];
-				$_path = e_PLUGIN.$plug['plugin_path'].'/';
+		$post = e107::getParser()->filter($_POST);
+		$text = e107::getPlugin()->uninstall($this->id, $post);
+		$this->show_message($text, E_MESSAGE_SUCCESS);
 
-				if(file_exists($_path.'plugin.xml'))
-				{
-					unset($_POST['uninstall_confirm']);
-					$plugin->install_plugin_xml($this->id, 'uninstall', $tp->filter($_POST)); //$_POST must be used.
-				}
-				else
-				{	// Deprecated - plugin uses plugin.php
-					$eplug_table_names = null;
-					$eplug_prefs = null;
-					$eplug_comment_ids= null;
-					$eplug_array_pref= null;
-					$eplug_menu_name = null;
-					$eplug_link = null;
-					$eplug_link_url = null;
-					$eplug_link_name = null;
-					$eplug_userclass = null;
-					$eplug_version = null;
+		$this->action = 'installed';
 
-					include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+		$log = e107::getPlugin()->getLog();
+		e107::getDebug()->log($log);
 
-					$func = $eplug_folder.'_uninstall';
-					if (function_exists($func))
-					{
-						$text .= call_user_func($func);
-					}
-
-					if($_POST['delete_tables'])
-					{
-						if (is_array($eplug_table_names))
-						{
-							$result = $plugin->manage_tables('remove', $eplug_table_names);
-							if ($result !== TRUE)
-							{
-								$text .= EPL_ADLAN_27.' <b>'.MPREFIX.$result.'</b> - '.EPL_ADLAN_30.'<br />';
-							}
-							else
-							{
-								$text .= EPL_ADLAN_28."<br />";
-							}
-						}
-					}
-					else
-					{
-						$text .= EPL_ADLAN_49."<br />";
-					}
-
-					if (is_array($eplug_prefs))
-					{
-						$plugin->manage_prefs('remove', $eplug_prefs);
-						$text .= EPL_ADLAN_29."<br />";
-					}
-
-					if (is_array($eplug_comment_ids))
-					{
-						$text .= ($plugin->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
-					}
-
-					if (is_array($eplug_array_pref))
-					{
-						foreach($eplug_array_pref as $key => $val)
-						{
-							$plugin->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
-						}
-					}
-
-					if ($eplug_menu_name)
-					{
-						$sql->delete('menus', "menu_name='{$eplug_menu_name}' ");
-					}
-
-					if ($eplug_link)
-					{
-						$plugin->manage_link('remove', $eplug_link_url, $eplug_link_name);
-					}
-
-					if ($eplug_userclass)
-					{
-						$plugin->manage_userclass('remove', $eplug_userclass);
-					}
-
-					$sql->update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$this->id}' ");
-					$plugin->manage_search('remove', $eplug_folder);
-
-					$plugin->manage_notify('remove', $eplug_folder);
-					
-					// it's done inside install_plugin_xml(), required only here
-					if (isset($pref['plug_installed'][$plug['plugin_path']]))
-					{
-						unset($pref['plug_installed'][$plug['plugin_path']]);
-					}
-					e107::getConfig('core')->setPref($pref);
-					$plugin->rebuildUrlConfig();
-					e107::getConfig('core')->save();
-				}
-
-				$logInfo = deftrue($plug['plugin_name'],$plug['plugin_name']). " v".$plug['plugin_version']." ({e_PLUGIN}".$plug['plugin_path'].")";
-				e107::getLog()->add('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
-			}
-
-			if(!empty($_POST['delete_files'])  && ($plug['plugin_installflag'] == true))
-			{
-				if(!empty($eplug_folder))
-				{
-					$result = e107::getFile()->rmtree(e_PLUGIN.$eplug_folder);
-					$text .= ($result ? '<br />'.EPL_ADLAN_86.e_PLUGIN.$eplug_folder : '<br />'.EPL_ADLAN_87.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
-				}
-			}
-			else
-			{
-				$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
-			}
-
-			$plugin->save_addon_prefs('update');
-
-			$this->show_message($text, E_MESSAGE_SUCCESS);
-		 //	$ns->tablerender(EPL_ADLAN_1.' '.$tp->toHtml($plug['plugin_name'], "", "defs,emotes_off,no_make_clickable"), $text);
-
-			$this->action = 'installed';
-			return;
+		return;
 
    }
+
+
+
+
 
    function pluginProcessUpload()
    {
