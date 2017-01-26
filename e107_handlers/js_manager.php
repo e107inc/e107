@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * e107 website system
  *
  * Copyright (C) 2008-2012 e107 Inc (e107.org)
@@ -10,20 +11,18 @@
  * $Id$
  *
 */
-//global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
 
+
+/**
+ * Class e_jsmanager.
+ */
 class e_jsmanager
 {
 	/**
 	 * Supported Libraries (Front-End) - loaded on demand. 
 	 */
 	protected $_libraries = array(
-		'prototype'	=> array(
-			'prototype/prototype.js' ,
-			'scriptaculous/scriptaculous.js',
-			'scriptaculous/effects.js',
-			'e107.js',
-		),
+		'prototype'	=> array(), // TODO remove prototype completely.
 		'jquery'	=> array(),
 	);
 
@@ -233,9 +232,10 @@ class e_jsmanager
 		$this->setInAdmin(defset('e_ADMIN_AREA', false));
 
 		$minified = deftrue('e_DEBUG') == true ? null : 'minified';
+		$cdn = e107::getPref('e_jslib_cdn', true);
 
 		// Use local files.
-		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN',true))
+		if(isset($_SERVER['E_DEV_LOCALJS']) && $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN', $cdn))
 		{
 			if($this->isInAdmin()) // Admin Area.
 			{

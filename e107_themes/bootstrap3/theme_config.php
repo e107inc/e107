@@ -18,9 +18,16 @@ class theme_bootstrap3 implements e_theme_config
 		$theme_pref['bootswatch'] 	        = $_POST['bootswatch'];
 		$theme_pref['cdn'] 	                = $_POST['cdn'];
 
-
 		$pref->set('sitetheme_pref', $theme_pref);
-		return $pref->dataHasChanged();
+		$changed = $pref->dataHasChanged();
+
+		if($changed)
+		{
+			// Need to clear cache in order to refresh library information.
+			e107::getCache()->clearAll('system');
+		}
+
+		return $changed;
 	}
 
 	function config($type='front')

@@ -91,7 +91,7 @@
 		<core name="e_jslib_nocombine">1</core>
 		<core name="e_jslib_core"><![CDATA[array (
 'prototype' => 'none',
-'jquery' => 'auto',
+'jquery' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
