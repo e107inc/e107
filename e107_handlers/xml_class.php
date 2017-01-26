@@ -1005,7 +1005,14 @@ class xmlClass
 			$path = e107::getParser()->replaceConstants($this->filePathDestination);
 			if($path)
 			{
-				file_put_contents($path."install.xml",$text,FILE_TEXT);
+				$fileName= "install.xml";
+
+				if(file_exists($path.$fileName))
+				{
+					$fileName = "install_".date('Y-m-d').".xml";
+				}
+
+				file_put_contents($path.$fileName,$text,FILE_TEXT);
 				return true;
 			}
 
