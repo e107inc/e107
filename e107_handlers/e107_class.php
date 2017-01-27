@@ -1824,7 +1824,7 @@ class e107
 	 *
 	 * @return e_library_manager
 	 */
-	private static function getLibrary()
+	public static function getLibrary()
 	{
 		return self::getSingleton('e_library_manager', true);
 	}

@@ -832,7 +832,7 @@ class e_library_manager
 		if(!isset($loaded[$name]))
 		{
 			$cache = e107::getCache();
-			$cacheID = 'library_manager_' . md5($name);
+			$cacheID = 'Library_' . e107::getParser()->filter($name,'file');
 			$cached = $cache->retrieve($cacheID, false, true, true);
 
 			if($cached)
@@ -843,8 +843,8 @@ class e_library_manager
 			if(!varset($library, false))
 			{
 				$library = $this->detect($name);
-				$cacheData = serialize($library);
-				$cache->set($cacheID, $cacheData, true, false, true);
+				$cacheData = e107::serialize($library,'json');
+				$cache->set($cacheID, $cacheData, true, true, true);
 			}
 
 			// Exit early if the library was not found.
