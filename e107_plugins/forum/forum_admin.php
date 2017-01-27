@@ -152,7 +152,8 @@ if(!deftrue('OLD_FORUMADMIN'))
 		    'forum_id'                  =>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_name'                =>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'inline'=>true,  'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_sef'                 =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
-            'forum_description'         =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+			 'forum_img'                 =>   array ( 'title' => FORLAN_217, 'type'=>'image', 'data'=> 'str', 'width' => '120px', 'thclass' => 'center', 'class' => 'center', 'readParms' => 'thumb=120&thumb_urlraw=0&thumb_aw=120', 'readonly' => false, 'batch' => false, 'filter' => false,),			
+			'forum_description'         =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'forum_parent'              =>   array ( 'title' => FORLAN_75, 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_sub'                 =>   array ( 'title' => LAN_FORUM_1002, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		    'forum_moderators'          =>   array ( 'title' => LAN_FORUM_2003, 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,mods,classes", 'class' => 'left', 'thclass' => 'left',  ),
@@ -197,10 +198,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			'popular'	            => array('title'=> FORLAN_55, 'type'=>'number', 'data' => 'int','help'=>FORLAN_56),
 			'postspage'	            => array('title'=> FORLAN_57, 'type'=>'number', 'data' => 'int','help'=>FORLAN_58),
 			'threadspage'	        => array('title'=> FORLAN_186, 'type'=>'number', 'data' => 'int','help'=>FORLAN_187),
-
-
-
-
 		);
 
 		public $forumParents = array();
