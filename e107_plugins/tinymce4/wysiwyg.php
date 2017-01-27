@@ -795,6 +795,11 @@ class wysiwyg
 		{
 			$css[] = str_replace(THEME,THEME_ABS,$val['path'].$val['fname']);	
 		}
+
+
+
+	// @todo	e107::library('info','bootstrap','library_path'); or similar ?
+
 		$css[] = "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css";
 		$content_css = vartrue($config['content_css'], implode(",",$css)); 
 		
