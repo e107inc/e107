@@ -955,6 +955,23 @@ class e_library_manager
 	}
 
 	/**
+	 * Returns with the selected property of a library.
+	 *
+	 * @param string $library
+	 *  Library machine name. For example: bootstrap
+	 *
+	 * @param string $property
+	 *  The property name. For example: library_path
+	 *
+	 * @return mixed
+	 */
+	public function getProperty($library, $property)
+	{
+		$lib = self::info($library);
+		return varset($lib[$property], false);
+	}
+
+	/**
 	 * Returns information about registered libraries.
 	 *
 	 * The returned information is unprocessed; i.e., as registered by plugins.
@@ -1003,48 +1020,32 @@ class e_library_manager
 				}
 			}
 
-			// Gather information from THEME_library::config().
-			$siteTheme = e107::getPref('sitetheme');
-			$adminTheme = e107::getPref('admintheme');
+			$themes[] = array(
+				'name'  => e107::getPref('sitetheme'),
+				'file'  => 'theme_library',
+				'class' => 'theme_library',
+			);
 
+			$themes[] = array(
+				'name'  => e107::getPref('admintheme'),
+				'file'  => 'admin_theme_library',
+				'class' => 'admin_theme_library',
+			);
 
-
-			foreach(array($siteTheme, $adminTheme) as $theme)
+			foreach($themes as $theme)
 			{
-				if(is_readable(e_THEME . $theme . '/theme_library.php')) // we don't use e_XXXX for themes.
+				if(is_readable(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php'))
 				{
-					e107_require_once(e_THEME . $theme . '/theme_library.php');
+					e107_require_once(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php');
 
-					$className =  'theme_library';
-					if(class_exists($className)) //@todo replace with e107::callMethod();
+					$info = e107::callMethod($theme['class'], 'config');
+					if(is_array($info))
 					{
-						$addonClass = new $className();
-
-						if(method_exists($addonClass, 'config'))
+						foreach($info as $machine_name => $properties)
 						{
-							$info = $addonClass->config();
-							if(is_array($info))
-							{
-								foreach($info as $machine_name => $properties)
-								{
-									$properties['info_type'] = 'theme';
-									$properties['theme'] = $theme;
-									$libraries[$machine_name] = $properties;
-
-									if(!in_array($theme, $themes))
-									{
-										$themes[] = $theme; // This theme has a valid e_library implementation.
-									}
-								}
-							}
-						}
-
-						if(method_exists($addonClass, 'config_alter'))
-						{
-							if(!in_array($theme, $themes))
-							{
-								$themes[] = $theme; // This theme has a valid e_library implementation.
-							}
+							$properties['info_type'] = 'theme';
+							$properties['theme'] = $theme['name'];
+							$libraries[$machine_name] = $properties;
 						}
 					}
 				}
@@ -1070,18 +1071,21 @@ class e_library_manager
 				}
 			}
 
-			// Allow enabled themes (with theme_library.php file) to alter the registered libraries.
+			// Allow enabled themes to alter the registered libraries.
 			foreach($themes as $theme)
 			{
-				e107_require_once(e_THEME . $theme . '/theme_library.php');
-				$addonClass = $theme . '_library';
-
-				if(class_exists($addonClass))
+				if(is_readable(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php'))
 				{
-					$class = new $addonClass();
-					if(method_exists($class, 'config_alter'))
+					e107_require_once(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php');
+
+					if(class_exists($theme['class']))
 					{
-						$class->config_alter($libraries);
+						$class = new $theme['class']();
+						if(method_exists($class, 'config_alter'))
+						{
+							// We cannot use e107::callMethod() because need to pass variable by reference.
+							$class->config_alter($libraries);
+						}
 					}
 				}
 			}
