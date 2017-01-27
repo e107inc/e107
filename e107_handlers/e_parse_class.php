@@ -2775,7 +2775,6 @@ class e_parse extends e_parser
 			return $new;
 		}
 
-
 		if($mode != "")
 		{
 			$e107 = e107::getInstance();
