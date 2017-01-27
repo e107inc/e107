@@ -82,6 +82,8 @@
   'social' => 'social',
   'tinymce4' => 'tinymce4',
 )]]></core>
+		<core name="e_jslib_cdn">1</core>
+		<core name="e_jslib_cdn_provider">jsdelivr</core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_nobcache">1</core>
 		<core name="e_jslib_nocache">1</core>
@@ -89,7 +91,7 @@
 		<core name="e_jslib_nocombine">1</core>
 		<core name="e_jslib_core"><![CDATA[array (
 'prototype' => 'none',
-'jquery' => 'auto',
+'jquery' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>

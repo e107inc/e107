@@ -189,13 +189,16 @@ if(isset($_POST['updateprefs']))
 		}
 		
 		$core_pref->update($key, $newValue);
-		/*if($newValue != $core_pref->get($key))
-		{ // Changed value
-			$core_pref->set($key, $newValue);
-			$prefChanges[$key] = $newValue;
-		}*/
 	}
+
+	if($core_pref->dataHasChanged())
+	{
+		// Need to clear cache in order to refresh library information.
+		e107::getCache()->clearAll('system');
+	}
+
 	$core_pref->save(false);
+
 	// special case, do session cleanup, logout, redirect to login screen
 	if($sessionRegenerate)
 	{
@@ -1671,67 +1674,52 @@ $text .= "
 			
 			
 	$text .= "
-		</fieldset>";	
-	
-	
-	
-	
-	
-// Javascript Control
-$text .= "
-			<fieldset class='e-hideme' id='core-prefs-javascript'>
-			<legend>".PRFLAN_242."</legend>
+		</fieldset>";
+
+
+$text .= "<fieldset class='e-hideme' id='core-prefs-javascript'>";
+
+if(E107_DEBUG_LEVEL > 0)
+{
+	// TODO - remove these old JS settings completely!
+
+	// Javascript Control
+	$text .= "
+			<legend>" . PRFLAN_242 . "</legend>
 			<table class='table adminform'>
 				<colgroup>
 					<col class='col-label' />
 					<col class='col-control' />
 				</colgroup>
 				<tbody>";
-	
-		$js_options = array(
-			'auto'	=> PRFLAN_243, 	// load based on dependency
-			'admin'	=> PRFLAN_244, 		// Always load in admin
-			'front'	=> PRFLAN_245, 		// Always load in front-end
-			'all'	=> PRFLAN_246,				// Always load in admin and front-end
-			'none'	=> PRFLAN_247 			// disabled
-		);	
-	
-		
-		//TODO FIXME 
-		// ie. e107 Core Minimum: JS similar to e107 v1.0 should be loaded "e_js.php" (no framwork dependency) 
-		// with basic functions like SyncWithServerTime() and expandit(), externalLinks() etc. 
 
-		
-		$js_types = array(
-			array('id'	=> 'jquery', 		'name'=> 'jQuery (local)'),		
-			array('id'	=> 'prototype',		'name'=> 'Prototype (local)'),
-			
- 		);	
-		
-		//TODO // separate switch for CDN.. or automatic fall-back. 	
-				
-		
-				
-		foreach($js_types as $arr)
-		{
-			// $k = $arr['path'];
-			$k = $arr['id'];
-			$name = $arr['name'];
-			$text .= "<tr>
-				<td>".$name."</td>
-				<td>".$frm->radio("e_jslib_core[{$k}]", $js_options, $pref['e_jslib_core'][$k])."</td>
-				</tr>";
-		}
-								
-		$text .= "
-					</tbody>
-			</table>";
+	$js_options = array(
+		'auto'  => PRFLAN_243, // load based on dependency
+		'admin' => PRFLAN_244, // Always load in admin
+		'front' => PRFLAN_245, // Always load in front-end
+		'all'   => PRFLAN_246, // Always load in admin and front-end
+		'none'  => PRFLAN_247  // disabled
+	);
 
-	if(E107_DEBUG_LEVEL > 0)
+	$js_types = array(
+		array('id' => 'jquery', 'name' => 'jQuery (local)'),
+		array('id' => 'prototype', 'name' => 'Prototype (local)'),
+	);
+
+	foreach($js_types as $arr)
 	{
+		// $k = $arr['path'];
+		$k = $arr['id'];
+		$name = $arr['name'];
+		$text .= "<tr>
+				<td>" . $name . "</td>
+				<td>" . $frm->radio("e_jslib_core[{$k}]", $js_options, $pref['e_jslib_core'][$k]) . "</td>
+				</tr>";
+	}
 
-
-		$text .= "
+	$text .= "
+					</tbody>
+			</table>
 			<table class='table adminform' style='margin-top: 20px'>
 				<colgroup>
 					<col class='col-label' />
@@ -1742,62 +1730,106 @@ $text .= "
 				</thead>
 				<tbody>
 					<tr>
-						<td>".PRFLAN_248."</td>
+						<td>" . PRFLAN_248 . "</td>
 						<td>
-							".$frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_249."</div>
+							" . $frm->radio_switch('e_jslib_nocombine', $pref['e_jslib_nocombine'], LAN_YES, LAN_NO) . "
+							<div class='smalltext field-help'>" . PRFLAN_249 . "</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_250."</td>
+						<td>" . PRFLAN_250 . "</td>
 						<td>
-							".$frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_251."</div>
+							" . $frm->radio_switch('e_jslib_gzip', $pref['e_jslib_gzip'], LAN_YES, LAN_NO) . "
+							<div class='smalltext field-help'>" . PRFLAN_251 . "</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_252."</td>
+						<td>" . PRFLAN_252 . "</td>
 						<td>
-							".$frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_251."</div>
+							" . $frm->radio_switch('e_jslib_nocache', $pref['e_jslib_nocache'], LAN_YES, LAN_NO) . "
+							<div class='smalltext field-help'>" . PRFLAN_251 . "</div>
 						</td>
 					</tr>
 					<tr>
-						<td>".PRFLAN_253."</td>
+						<td>" . PRFLAN_253 . "</td>
 						<td>
-							".$frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO)."
-							<div class='smalltext field-help'>".PRFLAN_251."</div>
+							" . $frm->radio_switch('e_jslib_nobcache', $pref['e_jslib_nobcache'], LAN_YES, LAN_NO) . "
+							<div class='smalltext field-help'>" . PRFLAN_251 . "</div>
 						</td>
 					</tr>
-		";	
-					
-			$text .= "
-					</tbody></table>";
+		";
 
-	}
-	else
-	{
-		$text .= "<div>".
-			$frm->hidden('e_jslib_nocombine',1).
-			$frm->hidden('e_jslib_nocache', 1).
-			$frm->hidden('e_jslib_nobcache',1).
-			$frm->hidden('e_jslib_gzip',0).
-			"</div>";
+	$text .= "</tbody></table></fieldset>";
+}
+else
+{
+	$text .= "<div>";
+	$text .= $frm->hidden('e_jslib_core[jquery]', 'all');
+	$text .= $frm->hidden('e_jslib_core[prototype]', 'none');
+	$text .= $frm->hidden('e_jslib_nocombine', 1);
+	$text .= $frm->hidden('e_jslib_nocache', 1);
+	$text .= $frm->hidden('e_jslib_nobcache', 1);
+	$text .= $frm->hidden('e_jslib_gzip', 0);
+	$text .= "</div>";
+}
 
-	}
-
-$text .= pref_submit('javascript');
+/**
+ * @addtogroup CDN settings
+ * @{
+ */
 
 // [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
 e107::lan('core', 'library_manager');
 
-$text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
+$CDNproviders = array(
+	'jsdelivr' => 'jsDelivr',
+	'cdnjs' => 'cdnjs',
+);
 
+$text .= '
+<h4 class="caption">' . LAN_LIBRARY_MANAGER_30 . '</h4>
+<table class="table adminform">
+	<colgroup>
+		<col class="col-label"/>
+		<col class="col-control"/>
+	</colgroup>
+	<tbody>
+		<tr>
+			<td>' . LAN_LIBRARY_MANAGER_31 . '</td>
+			<td>
+				' . $frm->radio("e_jslib_cdn", array(1 => LAN_YES, 0 => LAN_NO), varset($pref['e_jslib_cdn'], 1)) . '
+			</td>
+		</tr>
+		<tr>
+			<td>' . LAN_LIBRARY_MANAGER_32 . '</td>
+			<td>
+				' . $frm->select("e_jslib_cdn_provider", $CDNproviders, varset($pref['e_jslib_cdn_provider'], 'jsdelivr')) . '
+			</td>
+		</tr>
+	</tbody>
+</table>
+';
+
+// Submit button.
+$text .= pref_submit('javascript');
+
+/**
+ * @} End of "addtogroup CDN settings".
+ */
+
+
+/**
+ * @addtogroup Third-party libraries
+ * @{
+ */
+
+$text .= '<h4 class="caption">' . LAN_LIBRARY_MANAGER_25 . '</h4>';
 $text .= '<table width="100%" class="table table-striped" cellpadding="0" cellspacing="0">';
 $text .= '<thead>';
 $text .= '<tr>';
 $text .= '<th>' . LAN_LIBRARY_MANAGER_13 . '</th>';
 $text .= '<th class="text-center">' . LAN_LIBRARY_MANAGER_21 . '</th>';
+$text .= '<th>' . LAN_LIBRARY_MANAGER_29 . '</th>';
 $text .= '<th class="text-center">' . LAN_VERSION . '</th>';
 $text .= '<th class="text-center">' . LAN_STATUS . '</th>';
 $text .= '<th>' . LAN_MESSAGE . '</th>';
@@ -1824,6 +1856,7 @@ foreach($libraries as $machineName => $library)
 	$text .= '<tr>';
 	$text .= '<td>' . $name . '</td>';
 	$text .= '<td class="text-center">' . $provider . '</td>';
+	$text .= '<td class="smalltext">' . varset($details['library_path']) . '</td>';
 	$text .= '<td class="text-center">' . varset($details['version']) . '</td>';
 	$text .= '<td class="text-center">' . $status . '</td>';
 	$text .= '<td>' . varset($details['error_message']) . '</td>';
@@ -1840,32 +1873,18 @@ if(empty($libraries))
 
 $text .= '</tbody>';
 $text .= '</table>';
-
 $text .= "</fieldset>";
-					
-		/*			
-		e107::js('inline',"			
-						\$\$('#e-jslib-nocombine', '#e-jslib-nocombine-1').invoke('observe', 'change', function(event) {
-							var element = event.findElement('input'), check = !parseInt(element.value);
-							eHandleJsForm(check);
-							
-						});
-						
-						var eHandleJsForm = function(enable) {
-							var collection = \$w('e-jslib-gzip e-jslib-nocache e-jslib-nobcache');
-							collection.each(function(id) {
-								var method = enable ? 'enable' : 'disable';
-								\$\$('#' + id, '#' + id + '-1').invoke(method);
-							});
-						};
-						
-						eHandleJsForm(".($pref['e_jslib_nocombine'] ? 'false' : 'true').");
-					
-					","prototype");
-		*/
-	
 
-//Advanced Features
+/**
+ * @} End of "addtogroup Third-party libraries".
+ */
+
+
+/**
+ * @addtogroup Advanced Features
+ * @{
+ */
+
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-advanced'>
 			<legend>".PRFLAN_149."</legend>
@@ -1932,7 +1951,9 @@ $text .= "
 		</fieldset>
 	";
 
-// END Advanced Features
+/**
+ * @} End of "addtogroup Advanced Features".
+ */
 
 
 $text .= "
@@ -1993,6 +2014,11 @@ function prefs_adminmenu()
 	
 	e107::getNav()->admin("Basic ".LAN_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
 }
+
+/**
+ * @addtogroup Third-party libraries
+ * @{
+ */
 
 /**
  * Helper function to get library's name.
@@ -2100,3 +2126,7 @@ function libraryGetStatus($details)
 	$text = $details['error'];
 	return '<span class="text-danger" data-toggle="tooltip" data-placement="top" title="' . $text . '">' . $icon . '</span>';
 }
+
+/**
+ * @} End of "addtogroup Third-party libraries".
+ */
