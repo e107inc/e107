@@ -146,13 +146,13 @@ class ecache {
 				else
 				{
 					$ret = file_get_contents($cache_file);
-					if (substr($ret,0,strlen(self::CACHE_PREFIX)) == self::CACHE_PREFIX)
+					if (strpos($ret,self::CACHE_PREFIX) == 0 )  
 					{
-						$ret = substr($ret, strlen(self::CACHE_PREFIX));
+						$ret = self::CACHE_PREFIX;
 					}
-					elseif(substr($ret,0,5) == '<?php')
+					elseif(strpos($ret,'<?php') == 0)
 					{
-						$ret = substr($ret, 5);		// Handle the history for now
+						$ret ='<?php' ;			// Handle the history for now
 					}
 					return $ret;
 				}
