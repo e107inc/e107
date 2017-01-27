@@ -2764,6 +2764,17 @@ class e_parse extends e_parser
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
+		if(is_array($text))
+		{
+			$new = array();
+			foreach($text as $k=>$v)
+			{
+				$new[$k] = $this->replaceConstants($v,$mode,$all);
+			}
+
+			return $new;
+		}
+
 
 		if($mode != "")
 		{
