@@ -4514,7 +4514,7 @@ return;
 	/**
 	 * Filters/Validates using the PHP5 filter_var() method.
 	 * @param $text
-	 * @param $type string str|int|email|url|w|wds
+	 * @param $type string str|int|email|url|w|wds|file
 	 * @return string | boolean | array
 	 */
 	function filter($text, $type='str',$validate=false)
