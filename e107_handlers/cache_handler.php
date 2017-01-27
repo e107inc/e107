@@ -148,7 +148,7 @@ class ecache {
 					$ret = file_get_contents($cache_file);
 					if (strpos($ret,self::CACHE_PREFIX) == 0 )  
 					{
-						$ret = self::CACHE_PREFIX;
+						substr($ret, strlen(self::CACHE_PREFIX));
 					}
 					elseif(strpos($ret,'<?php') == 0)
 					{
