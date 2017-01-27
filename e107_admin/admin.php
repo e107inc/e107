@@ -256,7 +256,7 @@ class admin_start
 
 		$checked = e107::getSession()->get('core-update-checked');
 
-		if(!deftrue('e_DEBUG') &&  $checked === true)
+		if(!deftrue('e_DEBUG') &&  $checked === true && !deftrue('e_DEVELOPER'))
 		{
 			e107::getMessage()->addDebug("Skipping core update");
 			return null;
