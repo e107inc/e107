@@ -1853,13 +1853,57 @@ class e107
 	{
 		$libraryHandler = e107::getLibrary();
 
-		switch ($action)
+		switch($action)
 		{
 			case 'detect':
 				return $libraryHandler->detect($library);
 				break;
 
 			case 'load':
+				$cdn = (bool) e107::getPref('e_jslib_cdn', true);
+				$debug = (bool) deftrue('e_DEBUG');
+
+				// Try to detect and load CDN version.
+				if($cdn && substr($library, 0, 4) != 'cdn.')
+				{
+					$lib = $libraryHandler->detect('cdn.' . $library);
+
+					// If CDN version is available.
+					if($lib && !empty($lib['installed']))
+					{
+						// If a variant is specified, we need to check if it's installed.
+						if(!empty($variant) && !empty($lib['variants'][$variant]['installed']))
+						{
+							// Load CDN version with the variant.
+							return $libraryHandler->load('cdn.' . $library, $variant);
+						}
+
+						// If CDN version is available, but no variant is specified,
+						// and debug mode is on, try to load 'debug' variant.
+						if(empty($variant) && $debug && !empty($lib['variants']['dev']['installed']))
+						{
+							// Load CDN version with 'debug' variant.
+							return $libraryHandler->load('cdn.' . $library, 'dev');
+						}
+
+						// Load CDN version without variant.
+						return $libraryHandler->load('cdn.' . $library, $variant);
+					}
+				}
+
+				// If no variant is specified, and CDN version is not available, and debug mode is on.
+				if(empty($variant) && $debug)
+				{
+					$lib = $libraryHandler->detect($library);
+
+					// If 'debug' variant is available.
+					if($lib && !empty($lib['variants']['dev']['installed']))
+					{
+						// Load library with 'debug' variant.
+						return $libraryHandler->load($library, 'dev');
+					}
+				}
+
 				return $libraryHandler->load($library, $variant);
 				break;
 

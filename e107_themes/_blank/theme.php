@@ -7,12 +7,12 @@ e107::lan('theme');
 e107::meta('viewport', 'width=device-width, initial-scale=1.0');
 //e107::meta('apple-mobile-web-app-capable','yes');
 
-e107::js('core','bootstrap/js/bootstrap.min.js');
+e107::library('load', 'bootstrap');
+
 //e107::js('theme', 'js/theme.js');
 
-e107::css('core','bootstrap/css/bootstrap-responsive.min.css');
-//e107::css('theme','assets/css/style.css');
-//e107::css('url', 'external url ');
+// e107::css('theme','assets/css/style.css');
+// e107::css('url', 'external url ');
 
 
 // Custom Shortcodes. 
