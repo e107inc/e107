@@ -15,7 +15,7 @@
 /**
  * Class bootstrap3_library.
  */
-class bootstrap3_library
+class theme_library
 {
 
 	/**
