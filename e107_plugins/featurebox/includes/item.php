@@ -137,8 +137,12 @@ class plugin_featurebox_item extends e_model
 		{
 			return $video;	
 		}
+
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
 		
-		parse_str($parm, $parm);
 		$tp = e107::getParser();
 		
 		$imageSrc = ($parm != 'placeholder') ? $this->get('fb_image') : "";
