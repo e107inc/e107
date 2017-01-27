@@ -13,7 +13,7 @@
 
 
 /**
- * Class bootstrap3_library.
+ * Class theme_library.
  */
 class theme_library
 {
