@@ -142,7 +142,7 @@ class plugin_featurebox_item extends e_model
 		{
 			parse_str($parm, $parm);
 		}
-		
+
 		$tp = e107::getParser();
 		
 		$imageSrc = ($parm != 'placeholder') ? $this->get('fb_image') : "";

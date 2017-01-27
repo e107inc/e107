@@ -246,7 +246,8 @@ class e_theme
 			{
 				foreach ($CUSTOMPAGES as $key=>$val)
 				{
-					$themeArray['custompages'][$key] = explode(" ", $val);
+					$themeArray['custompages'][$key] = explode(" ", trim($val));
+					$lays[$key]['custompages'] = trim($val);
 				}
 			}
 			elseif($CUSTOMPAGES)
