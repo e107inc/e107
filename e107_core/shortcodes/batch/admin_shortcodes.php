@@ -993,9 +993,9 @@ class admin_shortcodes
 
 	function sc_admin_siteinfo($parm='')
 	{
-		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php")
+		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php" && e_PAGE != 'e107_update.php')
 		{
-			return;
+			return null;
 		}	
 		
 		
