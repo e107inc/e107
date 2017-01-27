@@ -80,7 +80,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 {
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
-	$tag = 'infopanel_'.$type;
+	$tag = 'Infopanel_'.$type;
 
 	$cache = e107::getCache();
 
