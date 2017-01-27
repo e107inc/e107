@@ -1677,13 +1677,14 @@ $text .= "
 		</fieldset>";
 
 
+$text .= "<fieldset class='e-hideme' id='core-prefs-javascript'>";
+
 if(E107_DEBUG_LEVEL > 0)
 {
 	// TODO - remove these old JS settings completely!
 
 	// Javascript Control
 	$text .= "
-			<fieldset class='e-hideme' id='core-prefs-javascript'>
 			<legend>" . PRFLAN_242 . "</legend>
 			<table class='table adminform'>
 				<colgroup>
@@ -1786,7 +1787,6 @@ $CDNproviders = array(
 );
 
 $text .= '
-<fieldset class="e-hideme" id="core-prefs-javascript">
 <h4 class="caption">' . LAN_LIBRARY_MANAGER_30 . '</h4>
 <table class="table adminform">
 	<colgroup>

@@ -3,14 +3,13 @@
 /**
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
- * GNU General Public License (http://gnu.org).
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
- *
-*/
+ * @file
+ * JS Manager.
+ */
 
 
 /**
@@ -191,8 +190,6 @@ class e_jsmanager
 	 *
 	 * Use {@link getInstance()}, direct instantiating
 	 * is not possible for signleton objects
-	 *
-	 * @return void
 	 */
 	protected function __construct()
 	{
@@ -231,43 +228,24 @@ class e_jsmanager
 		// Try to auto-detect runtime location
 		$this->setInAdmin(defset('e_ADMIN_AREA', false));
 
-		$minified = deftrue('e_DEBUG') == true ? null : 'minified';
-		$cdn = e107::getPref('e_jslib_cdn', true);
+		if($this->isInAdmin()) // Admin Area.
+		{
+			e107::library('load', 'jquery');
+			// jQuery Once is used in e107.behaviors.
+			e107::library('load', 'jquery.once');
+			e107::library('load', 'jquery.ui');
+		}
+		else // Front-End.
+		{
+			e107::library('load', 'jquery');
+			// jQuery Once is used in e107.behaviors.
+			e107::library('load', 'jquery.once');
+		}
 
-		// Use local files.
-		if(isset($_SERVER['E_DEV_LOCALJS']) && $_SERVER['E_DEV_LOCALJS'] === 'true' || !deftrue('e_CDN', $cdn))
-		{
-			if($this->isInAdmin()) // Admin Area.
-			{
-				e107::library('load', 'jquery', $minified);
-				// jQuery Once is used in e107.behaviors.
-				e107::library('load', 'jquery.once', $minified);
-				e107::library('load', 'jquery.ui', $minified);
-			}
-			else // Front-End.
-			{
-				e107::library('load', 'jquery', $minified);
-				// jQuery Once is used in e107.behaviors.
-				e107::library('load', 'jquery.once', $minified);
-			}
-		}
-		else // Use CDN files.
-		{
-			if($this->isInAdmin()) // Admin Area.
-			{
-				e107::library('load', 'cdn.jquery', $minified);
-				// jQuery Once is used in e107.behaviors.
-				e107::library('load', 'cdn.jquery.once', $minified);
-				e107::library('load', 'cdn.jquery.ui', $minified);
-			}
-			else // Front-End.
-			{
-				e107::library('load', 'cdn.jquery', $minified);
-				// jQuery Once is used in e107.behaviors.
-				e107::library('load', 'cdn.jquery.once', $minified);
-			}
-		}
-		
+		// TODO
+		// jQuery is the only JS framework, and it is always loaded. So remove
+		// unnecessary code here below.
+
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
 		$this->_cache_enabled = e107::getPref('jscsscachestatus',false);
 		
@@ -277,12 +255,9 @@ class e_jsmanager
 		}
 
 		// Try to load browser cache id from core preferences
-		//$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
-		$this->setCacheId(e107::getPref('e_jslib_browser_cache'), 0);
+		$this->setCacheId(e107::getPref('e_jslib_browser_cache', 0));
 
-		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
-			
-	//	$core_libs = e107::getPref('e_jslib_core');
+		// Load stored in preferences core lib paths ASAP
 		$this->_core_prefs = e107::getPref('e_jslib_core');
 		$core = array();
 
@@ -294,13 +269,11 @@ class e_jsmanager
 
 				if(!$this->libDisabled($id,$vis))
 				{
-				 	//echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
 					if(vartrue($this->_libraries[$id]))
 					{
 						foreach($this->_libraries[$id] as $path)
 						{
-							//echo "<h4>Loaded: ".$path."  :: ".$vis."</h4>";
-							$core[$path] = $vis;	
+							$core[$path] = $vis;
 						}		
 					}
 					
@@ -314,7 +287,6 @@ class e_jsmanager
 		{
 			$this->checkLibDependence(null, $core);
 		}
-		
 
 		// Load stored in preferences plugin lib paths ASAP
 		$plug_libs = e107::getPref('e_jslib_plugin');
@@ -336,12 +308,6 @@ class e_jsmanager
 			$theme_libs = array();
 		}
 		$this->themeLib($theme_libs);
-		
-		// TEST VALUES
-		// $this->_e_jslib_plugin[] = '{e_PLUGIN}myplug/test.js';
-		// $this->_e_jslib_plugin[] = 'http://somesite/myplug/test.js';
-		// $this->_e_jslib_theme[] = '{THEME}js/test.js';
-		// $this->_e_jslib_theme[] = 'http://somesite/js/test.js';
 	}
 
 	/**

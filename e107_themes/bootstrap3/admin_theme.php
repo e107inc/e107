@@ -1,29 +1,33 @@
 <?php
-if ( ! defined('e107_INIT')) { exit(); }
 
-define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
-define("BOOTSTRAP", 	3);
-define('FONTAWESOME',	4);
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * @file
+ * Bootstrap 3 Theme for e107 v2.x admin area.
+ */
 
-$minified = deftrue('e_DEBUG') == true ? null : 'minified';
-$cdn = e107::getPref('e_jslib_cdn', true);
-
-if($cdn) {
-	e107::library('load', 'cdn.bootstrap', $minified);
-	e107::library('load', 'cdn.fontawesome', $minified);
-}
-else
+if(!defined('e107_INIT'))
 {
-	e107::library('load', 'bootstrap', $minified);
-	e107::library('load', 'fontawesome', $minified);
+	exit();
 }
 
-e107::library('load', 'bootstrap.editable', $minified);
+define("SEP", " <span class='fa fa-play e-breadcrumb'></span> ");
+define("BOOTSTRAP", 3);
+define('FONTAWESOME', 4);
 
-e107::css('theme','css/bootstrap-dark.min.css');
-e107::css('theme','admin_style.css');
-e107::css('theme','admin_dark.css');
-e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
+e107::library('load', 'bootstrap');
+e107::library('load', 'fontawesome');
+e107::library('load', 'bootstrap.editable');
+
+e107::css('theme', 'css/bootstrap-dark.min.css');
+e107::css('theme', 'admin_style.css');
+e107::css('theme', 'admin_dark.css');
+e107::css('theme', 'ie_all.css', null, 'all', "<!--[if IE]>", "<![endif]-->");
 
 e107::css('inline', "
 .mce-menubar .mce-caret             { border-top-color: #C6C6C6!important  }
