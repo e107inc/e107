@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * @file
  * Bootstrap 3 Theme for e107 v2.x.
  */
@@ -14,19 +20,8 @@ define("BOOTSTRAP", 3);
 define("FONTAWESOME", 4);
 define('VIEWPORT', "width=device-width, initial-scale=1.0");
 
-$min = deftrue('e_DEBUG') == true ? null : 'minified';
-$cdn = e107::getPref('e_jslib_cdn', true);
-
-if($cdn)
-{
-	e107::library('load', 'cdn.bootstrap', $min);
-	e107::library('load', 'cdn.fontawesome', $min);
-}
-else
-{
-	e107::library('load', 'bootstrap', $min);
-	e107::library('load', 'fontawesome', $min);
-}
+e107::library('load', 'bootstrap');
+e107::library('load', 'fontawesome');
 
 // CDN provider for Bootswatch.
 $cndPref = e107::pref('theme', 'cdn', 'cdnjs');
@@ -50,17 +45,8 @@ switch($cndPref)
 		break;
 }
 
-
-
-
-
-
-
-
 /* @example prefetch  */
 //e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
-
-
 
 e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
 
