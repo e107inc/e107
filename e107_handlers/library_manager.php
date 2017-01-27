@@ -666,12 +666,27 @@ class e_library_manager
 				elseif(varset($library['theme'], false))
 				{
 					// e107::getAddon() does not support theme folders.
-					e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
-					$addonClass = $library['theme'] . '_library';
-
-					if(isset($addonClass) && class_exists($addonClass))
+					if(is_readable(e_THEME . $library['theme'] . '/theme_library.php'))
 					{
-						$class = new $addonClass();
+						e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
+						$addonClass = 'theme_library';
+
+						if(class_exists($addonClass))
+						{
+							$class = new $addonClass();
+						}
+					}
+
+					// e107::getAddon() does not support theme folders.
+					if(is_readable(e_THEME . $library['theme'] . '/admin_theme_library.php'))
+					{
+						e107_require_once(e_THEME . $library['theme'] . '/admin_theme_library.php');
+						$addonClass = 'admin_theme_library';
+
+						if(class_exists($addonClass))
+						{
+							$class = new $addonClass();
+						}
 					}
 				}
 
@@ -754,12 +769,27 @@ class e_library_manager
 					elseif(varset($library['theme'], false))
 					{
 						// e107::getAddon() does not support theme folders.
-						e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
-						$addonClass = $library['theme'] . '_library';
-
-						if(isset($addonClass) && class_exists($addonClass))
+						if(is_readable(e_THEME . $library['theme'] . '/theme_library.php'))
 						{
-							$class = new $addonClass();
+							e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
+							$addonClass = 'theme_library';
+
+							if(class_exists($addonClass))
+							{
+								$class = new $addonClass();
+							}
+						}
+
+						// e107::getAddon() does not support theme folders.
+						if(is_readable(e_THEME . $library['theme'] . '/admin_theme_library.php'))
+						{
+							e107_require_once(e_THEME . $library['theme'] . '/admin_theme_library.php');
+							$addonClass = 'admin_theme_library';
+
+							if(class_exists($addonClass))
+							{
+								$class = new $addonClass();
+							}
 						}
 					}
 
@@ -1716,11 +1746,20 @@ class e_library_manager
 				// Force to use default (original) files on Admin UI.
 				case 'cdn.jquery.ui':
 				case 'jquery.ui':
+					$coreLib = $coreLibs[$library['machine_name']];
+					$library['files'] = $coreLib['files'];
+					$library['variants'] = $coreLib['variants'];
+					break;
+
 				case 'cdn.bootstrap':
 				case 'bootstrap':
 					$coreLib = $coreLibs[$library['machine_name']];
 					$library['files'] = $coreLib['files'];
 					$library['variants'] = $coreLib['variants'];
+
+					// Admin UI uses its own CSS.
+					unset($library['files']['css']);
+					unset($library['variants']['dev']['files']['css']);
 					break;
 			}
 		}
