@@ -1862,9 +1862,10 @@ class e107
 			case 'load':
 				$cdn = (bool) self::getPref('e_jslib_cdn', true);
 				$debug = (bool) deftrue('e_DEBUG');
+				$admin = (bool) defset('e_ADMIN_AREA', false);
 
 				// Try to detect and load CDN version.
-				if($cdn && substr($library, 0, 4) != 'cdn.')
+				if(!$admin && $cdn && substr($library, 0, 4) != 'cdn.')
 				{
 					$lib = $libraryHandler->detect('cdn.' . $library);
 
