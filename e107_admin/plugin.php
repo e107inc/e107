@@ -3658,7 +3658,8 @@ class ".$table." extends e_admin_ui
 		protected \$pid				= '".$vars['pid']."';
 		protected \$perPage			= 10; 
 		protected \$batchDelete		= true;
-	//	protected \$batchCopy		= true;		
+		protected \$batchExport     = true;
+		protected \$batchCopy		= true;
 	//	protected \$sortField		= 'somefield_order';
 	//	protected \$orderStep		= 10;
 	//	protected \$tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the \$fields below to enable. 

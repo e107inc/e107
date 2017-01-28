@@ -154,6 +154,7 @@ class page_chapters_ui extends e_admin_ui
 		protected $batchDelete 	= false;
 		protected $batchCopy	= true;	
         protected $batchLink   	= true;
+        protected $batchExport  = true;
 
 		protected $listQry          = "SELECT a. *, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + (( a.chapter_order)/1000) END AS Sort FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
 		protected $listOrder		= 'Sort,chapter_order ';
@@ -527,7 +528,8 @@ class page_admin_ui extends e_admin_ui
 		protected $batchDelete 		= true;
 		protected $batchCopy 		= true;	
         protected $batchLink    	= true;
-	  	protected $batchFeaturebox   = true;
+		protected $batchExport      = true;
+	  	protected $batchFeaturebox  = true;
 		protected $sortField		= 'page_order';
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
