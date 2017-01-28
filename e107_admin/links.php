@@ -887,7 +887,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy()) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch(array('delete'=>$controller->getBatchDelete(),'copy'=>$controller->getBatchCopy())) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation

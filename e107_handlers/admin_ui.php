@@ -2478,6 +2478,11 @@ class e_admin_controller_ui extends e_admin_controller
      */
     protected $batchFeaturebox = false;
 
+	 /**
+     * @var boolean
+     */
+    protected $batchExport = false;
+
 	/**
 	 * @var array
 	 */
@@ -2557,6 +2562,11 @@ class e_admin_controller_ui extends e_admin_controller
     public function getBatchFeaturebox()
     {
         return $this->batchFeaturebox;
+    }
+
+	public function getBatchExport()
+    {
+        return $this->batchExport;
     }
 
 	public function getBatchOptions()
@@ -3126,6 +3136,16 @@ class e_admin_controller_ui extends e_admin_controller
 		
 		switch($trigger[0])
 		{
+
+			case 'export':
+				$method = 'handle'.$this->getRequest()->getActionName().'ExportBatch';
+				if(method_exists($this, $method)) // callback handling
+				{
+					$this->$method($selected);
+				}
+
+			break;
+
 			case 'delete': //FIXME - confirmation popup
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
@@ -4523,7 +4543,7 @@ class e_admin_ui extends e_admin_controller_ui
 		//$this->redirect();
 	}
 
-	/** TODO
+	/**
 	 * Batch copy trigger
 	 * @param array $selected
 	 * @return void
@@ -4541,6 +4561,28 @@ class e_admin_ui extends e_admin_controller_ui
 		// redirect
 		$this->redirect();
 	}
+
+
+	/**
+	 * Batch Export trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListExportBatch($selected)
+	{
+		// Batch Copy
+		$res = $this->getTreeModel()->export($selected);
+		// callback
+	//	$this->afterCopy($res, $selected);
+		// move messages to default stack
+		$this->getTreeModel()->setMessages();
+		// send messages to session
+		e107::getMessage()->moveToSession();
+		// redirect
+		$this->redirect();
+	}
+
+
 
     /** 
      * Batch URL trigger
@@ -5951,7 +5993,14 @@ class e_admin_form_ui extends e_form
 
 		// ------------------------------------------
 
+		$coreBatchOptions = array(
+			'delete'        => $controller->getBatchDelete(),
+			'copy'          => $controller->getBatchCopy(),
+			'url'           => $controller->getBatchLink(),
+			'featurebox'    => $controller->getBatchFeaturebox(),
+			'export'        => $controller->getBatchExport()
 
+		);
 
 
 		$options[$id] = array(
@@ -5969,7 +6018,9 @@ class e_admin_form_ui extends e_form
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
 		//	'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
-			'table_post' => $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox(), $controller->getBatchOptions()),
+
+
+			'table_post' => $this->renderBatch($coreBatchOptions, $controller->getBatchOptions()),
 	
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
@@ -6264,15 +6315,17 @@ class e_admin_form_ui extends e_form
 
 
 	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
-	function renderBatch($allow_delete = false,$allow_copy= false, $allow_url=false, $allow_featurebox=false, $customBatchOptions=array())
+
+	/**
+	 * @param array $options array of flags for copy, delete, url, featurebox, batch
+	 * @param array $customBatchOptions
+	 * @return string
+	 */
+	function renderBatch($options, $customBatchOptions=array())
 	{
-		
-		// $allow_copy = TRUE;
-		
+
 		$fields = $this->getController()->getFields();
-		
-	
-		
+
 		if(!varset($fields['checkboxes']))
 		{
 			$mes = e107::getMessage();
@@ -6283,7 +6336,7 @@ class e_admin_form_ui extends e_form
 		// FIX - don't show FB option if plugin not installed
 		if(!e107::isInstalled('featurebox'))
 		{
-			$allow_featurebox = false;
+			$options['featurebox'] = false;
 		}
 		
 		// TODO - core ui-batch-option class!!! REMOVE INLINE STYLE!
@@ -6302,10 +6355,11 @@ class e_admin_form_ui extends e_form
 				
 		if(!$this->getController()->getTreeModel()->isEmpty())
 		{		
-			$selectOpt .= ($allow_copy ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
-			$selectOpt .= ($allow_delete ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
-			$selectOpt .= ($allow_url ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
-			$selectOpt .= ($allow_featurebox ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '');
+			$selectOpt .= !empty($options['copy']) ? $this->option(LAN_COPY, 'copy', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['delete']) ? $this->option(LAN_DELETE, 'delete', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['export']) ? $this->option(LAN_UI_BATCH_EXPORT, 'export', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['url']) ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+			$selectOpt .= !empty($options['featurebox']) ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
 
 			if(!empty($customBatchOptions))
 			{

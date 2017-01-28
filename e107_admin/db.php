@@ -1735,7 +1735,7 @@ function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=
 		}
 	}
 
-	$mode = ($debug === true) ? "debug" : false;
+	$mode = ($debug === true) ? array( "debug" =>1) : null;
 
 	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
 	{

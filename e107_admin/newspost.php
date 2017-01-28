@@ -120,6 +120,7 @@ class news_cat_ui extends e_admin_ui
 		protected $pid			= "category_id";
 		protected $perPage = 0; //no limit
 		protected $batchDelete = false;
+		protected $batchExport = true;
 		protected $sortField = 'category_order';
 		protected $listOrder	= "category_order ASC";
 		
@@ -407,6 +408,7 @@ class news_admin_ui extends e_admin_ui
 	protected $pid			= "news_id";
 	protected $perPage 		= 10; //no limit
 	protected $batchDelete 	= true;
+	protected $batchExport  = true;
 	protected $batchCopy 	= true;
     protected $batchLink    = true;
 	protected $listQry      = "SELECT n.*,u.user_id,u.user_name FROM `#news` AS n LEFT JOIN `#user` AS u ON n.news_author = u.user_id "; // without any Order or Limit.
