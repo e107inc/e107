@@ -1599,7 +1599,14 @@ class e_library_manager
 		// The library will be cached with version number, so this only run once per library.
 		if(substr($file, 0, 4) == 'http')
 		{
-			$content = file_get_contents($file);
+			$context = array(
+				'ssl' => array(
+					'verify_peer'      => false,
+					'verify_peer_name' => false,
+				),
+			);
+
+			$content = file_get_contents($file, false, stream_context_create($context));
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');
 
 			if($tmpFile)
