@@ -581,7 +581,15 @@ class e_file
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents($address);
+
+			$context = array(
+				'ssl' => array(
+					'verify_peer'      => false,
+					'verify_peer_name' => false,
+				),
+			);
+
+			$data = file_get_contents($address, false, stream_context_create($context));
 
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
