@@ -17,7 +17,7 @@ if (!getperms("P") || !e107::isInstalled('poll'))
 }
 $e_sub_cat = 'poll';
 
-include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
+e107::includeLan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'_admin_poll.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."userclass_class.php");
@@ -84,7 +84,15 @@ if (varset($_POST['edit']) || varset($_GET['mode'])=='create' && !varset($_POST[
 			
 		$poll_total = $sql->select("polls");
 		$text = $poll -> renderPollForm();
-		$ns->tablerender(POLLAN_MENU_CAPTION.SEP.POLLAN_2, $mes->render() . $text);
+
+		if (varset($_GET['mode'])=='create')
+		{
+		$ns->tablerender(LAN_PLUGIN_POLL_NAME.SEP.LAN_CREATE, $mes->render() . $text);
+		}
+		if (varset($_GET['mode'])=='edit')
+		{
+		$ns->tablerender(LAN_PLUGIN_POLL_NAME.SEP.LAN_EDIT, $mes->render() . $text);
+		}
 }
 
 
@@ -211,18 +219,18 @@ function poll_list()
 	}
 	else 
 	{
-		$mes->addInfo(POLLAN_7);
+		$mes->addInfo(LAN_NO_RECORDS_FOUND);
 	}
 	$text .= "</form>";
 	
-	$ns->tablerender(POLLAN_MENU_CAPTION.SEP.POLLAN_1, $mes->render(). $text);
+	$ns->tablerender(LAN_PLUGIN_POLL_NAME.SEP.LAN_MANAGE, $mes->render(). $text);
 }
 
 
 function admin_config_adminmenu() 
 {
 	$action = varset($_GET['mode']) ? $_GET['mode'] : "list";
-    $var['list']['text'] = LAN_EXISTING;
+    $var['list']['text'] = LAN_MANAGE;
 	$var['list']['link'] = e_SELF;
 	$var['list']['perm'] = "P";
 	$var['create']['text'] = LAN_CREATE ;
@@ -231,6 +239,6 @@ function admin_config_adminmenu()
 /*	$var['import']['text'] = GSLAN_23;
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";*/
-	show_admin_menu(POLLAN_MENU_CAPTION, $action, $var);
+	show_admin_menu(LAN_PLUGIN_POLL_NAME, $action, $var);
 }
 ?>

@@ -95,6 +95,12 @@ class parseXml extends xmlClass // BC with v1.x
             {
 				$error = sprintf('XML error: %s at line %d, column %d', xml_error_string(xml_get_error_code($this->parser)), xml_get_current_line_number($this->parser),xml_get_current_column_number($this->parser));
 				$log->addDebug($error)->save('XML');
+				if(e_DEBUG === true)
+				{
+					$error .= "\n".$data;
+					$error .= "\n--------------------------------------------\n\n";
+					$log->addDebug($error)->toFile('xmlErrors',"XML Error Log",true);
+				}
 				return FALSE;
             }
         }
@@ -208,6 +214,8 @@ class xmlClass
 	public $fileConvertLog = array();
 
 	public $convertFilePaths = FALSE;
+
+	public $modifiedPrefsOnly = false;
 
 	public $filePathDestination = FALSE;
 
@@ -433,128 +441,10 @@ class xmlClass
 	{		
 		$_file = e107::getFile();
 		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
-		$this->error = $_file->error;
+		$this->error = $_file->getErrorMessage();
 		
 		return $this->xmlFileContents;
-		
-		// ------ MOVED TO FILE HANDLER ------ //
-		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
-		$timeout = min($timeout, 120);
-		$timeout = max($timeout, 3);
-		$this->xmlFileContents = '';
-		
-		$mes = e107::getMessage();
-			
-		if($this->_feedUrl) // override option for use when part of the address needs to be encoded. 
-		{
-			$mes->addDebug("getting Remote File: ".$this->_feedUrl);
-		}
-		else
-		{
-			$address = str_replace(array("\r", "\n", "\t"), '', $address); // May be paranoia, but streaky thought it might be a good idea	
-			// ... and there shouldn't be unprintable characters in the URL anyway
-		}		
-		
-		if($this->urlPrefix !== false)
-		{
-			$address = 	$this->urlPrefix.$address;
-		}
-		
-		
-		// ... and there shouldn't be unprintable characters in the URL anyway
-		
-		
-		// Keep this in first position. 
-		if (function_exists("curl_init")) // Preferred. 
-		{
-			$cu = curl_init();
-			curl_setopt($cu, CURLOPT_URL, $address);
-			curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($cu, CURLOPT_HEADER, 0);
-			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
-			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE); 
-			curl_setopt($cu, CURLOPT_REFERER, e_REQUEST_HTTP);
-			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0); 
-			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
-			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
-	
-			if(!file_exists(e_SYSTEM.'cookies.txt'))
-			{
-				file_put_contents(e_SYSTEM.'cookies.txt','');	
-			}
-			
-			$this->xmlFileContents = curl_exec($cu);
-			if (curl_error($cu))
-			{
-				$this->error = "Curl error: ".curl_errno($cu).", ".curl_error($cu);
-				return FALSE;
-			}
-			curl_close($cu);
-			return $this->xmlFileContents;
-		}
-		
 
-		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
-		{
-			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$address = ($this->_feedUrl) ? $this->_feedUrl : urldecode($address);
-
-			$data = file_get_contents($address);
-
-			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
-			if ($old_timeout !== FALSE)
-			{
-				e107_ini_set('default_socket_timeout', $old_timeout);
-			}
-			if ($data !== FALSE)
-			{
-				$this->xmlFileContents = $data;
-				return $data;
-			}
-			$this->error = "File_get_contents(XML) error";		// Fill in more info later
-			return FALSE;
-		}
-
-		if (ini_get("allow_url_fopen"))
-		{
-			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$remote = @fopen($address, "r");
-			if (!$remote)
-			{
-				$this->error = "fopen: Unable to open remote XML file: ".$address;
-				return FALSE;
-			}
-		}
-		else
-		{
-			$old_timeout = $timeout;
-			$tmp = parse_url($address);
-			if (!$remote = fsockopen($tmp['host'], 80, $errno, $errstr, $timeout))
-			{
-				$this->error = "Sockets: Unable to open remote XML file: ".$address;
-				return FALSE;
-			}
-			else
-			{
-				socket_set_timeout($remote, $timeout);
-				fputs($remote, "GET ".urlencode($address)." HTTP/1.0\r\n\r\n");
-			}
-		}
-		$this->xmlFileContents = "";
-		while (!feof($remote))
-		{
-			$this->xmlFileContents .= fgets($remote, 4096);
-		}
-		fclose($remote);
-		if ($old_timeout != $timeout)
-		{
-			if ($old_timeout !== FALSE)
-			{
-				e107_ini_set('default_socket_timeout', $old_timeout);
-			}
-		}
-		return $this->xmlFileContents;
 	}
 
 	/**
@@ -951,16 +841,19 @@ class xmlClass
 			$val = $this->filePathPrepend[$key].$val;
 		}
 
+		if(is_array($val))
+		{
+		//	$val = "<![CDATA[".e107::serialize($val,false)."]]>";
+			$val = e107::serialize($val,false);
+		}
+
 		if($this->convertFilePaths)
 		{
 			$types = implode("|",$this->convertFileTypes);
 			$val = preg_replace_callback("#({e_.*?\.(".$types."))#i", array($this,'replaceFilePaths'), $val);
 		}
 
-		if(is_array($val))
-		{
-			return "<![CDATA[".e107::getArrayStorage()->WriteArray($val,FALSE)."]]>";
-		}
+
 
 		if((strpos($val,"<")!==FALSE) || (strpos($val,">")!==FALSE) || (strpos($val,"&")!==FALSE))
 		{
@@ -976,16 +869,27 @@ class xmlClass
 	 *
 	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
 	 * @param array $tables - table names without the prefix
-	 * @param boolean $debug [optional]
+	 * @param array $options [optional] debug, return, query
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $debug = FALSE)
+	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
 	{
-		error_reporting(0);
+	//	error_reporting(0);
+		$e107info = array();
 		require_once(e_ADMIN."ver.php");
 
 		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
 		$text .= "<e107Export version=\"".$e107info['e107_version']."\" timestamp=\"".time()."\" >\n";
+
+		$default = array();
+		$excludes = array();
+
+		if($this->modifiedPrefsOnly == true)
+		{
+			$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
+			$default = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
+			$excludes = array('social_login','replyto_email','replyto_name','siteadminemail','lan_global_list','menuconfig_list','plug_installed','shortcode_legacy_list','siteurl','cookie_name','install_date');
+		}
 
 		if(varset($xmlprefs)) // Export Core Preferences.
 		{
@@ -993,9 +897,21 @@ class xmlClass
 			foreach($xmlprefs as $type)
 			{
 				$theprefs = e107::getConfig($type)->getPref();
-				$prefsorted = ksort($theprefs);
+				ksort($theprefs);
 				foreach($theprefs as $key=>$val)
 				{
+					if($type == 'core' && $this->modifiedPrefsOnly == true && (($val == $default[$key]) || in_array($key,$excludes) || substr($key,0,2) == 'e_'))
+					{
+						continue;
+					}
+					elseif(!empty($options['debug']))
+					{
+						echo "<div>Original/Modiied <b>".$key."</b>";
+						var_dump($default[$key],$val);
+						echo "</div>";
+
+					}
+
 					if(isset($val))
 					{
 						$text .= "\t\t<".$type." name=\"".$key."\">".$this->e107ExportValue($val)."</".$type.">\n";
@@ -1005,16 +921,51 @@ class xmlClass
 			$text .= "\t</prefs>\n";
 		}
 
-		if(varset($tables))
+
+		if(!empty($plugPrefs))
+		{
+			$text .= "\t<pluginPrefs>\n";
+
+			foreach($plugPrefs as $plug)
+			{
+				$prefs = e107::getPlugConfig($plug)->getPref();
+
+				foreach($prefs as $key=>$val)
+				{
+					if(isset($val))
+					{
+						$text .= "\t\t<".$plug." name=\"".$key."\">".$this->e107ExportValue($val)."</".$plug.">\n";
+					}
+
+				}
+
+			}
+
+			$text .= "\t</pluginPrefs>\n";
+		}
+
+
+
+
+		if(!empty($tables))
 		{
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
-				e107::getDB()->select($eTable, "*");
+				$eQry = (!empty($options['query'])) ? $options['query'] : null;
+				e107::getDB()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
-				while($row = e107::getDB()-> db_Fetch())
+				$count = 1;
+				while($row = e107::getDB()->fetch())
 				{
+
+					if($this->convertFilePaths == true && $eTable == 'core_media' && substr($row['media_url'],0,8) != '{e_MEDIA')
+					{
+						continue;
+					}
+
+
 					$text .= "\t\t<item>\n";
 					foreach($row as $key=>$val)
 					{
@@ -1022,6 +973,7 @@ class xmlClass
 					}
 
 					$text .= "\t\t</item>\n";
+					$count++;
 				}
 				$text .= "\t</dbTable>\n";
 
@@ -1033,10 +985,16 @@ class xmlClass
 
 		$text .= "</e107Export>";
 
-		if($debug==TRUE)
+
+		if(!empty($options['return']))
+		{
+			return $text;
+		}
+
+		if(!empty($options['debug']))
 		{
 			echo "<pre>".htmlentities($text)."</pre>";
-			return TRUE;
+			return null;
 		}
 		else
 		{
@@ -1048,12 +1006,21 @@ class xmlClass
 			$path = e107::getParser()->replaceConstants($this->filePathDestination);
 			if($path)
 			{
-				file_put_contents($path."install.xml",$text,FILE_TEXT);
+				$fileName= "install.xml";
+
+				if(file_exists($path.$fileName))
+				{
+					$fileName = "install_".date('Y-m-d').".xml";
+				}
+
+				file_put_contents($path.$fileName,$text,FILE_TEXT);
 				return true;
 			}
 
+			$fileName = (!empty($options['file'])) ? $options['file'] : "e107Export_" . date("Y-m-d").".xml";
+
 			header('Content-type: application/xml', TRUE);
-			header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
+			header("Content-disposition: attachment; filename= ".$fileName);
 			header("Cache-Control: max-age=30");
 			header("Pragma: public");
 			echo $text;
@@ -1066,12 +1033,16 @@ class xmlClass
 	 * Return an Array of core preferences from e107 XML Dump data
 	 *
 	 * @param array $XMLData Raw XML e107 Export Data
-	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc.
+	 * @param string $prefType [optional] the type of core pref: core|emote|ipool|menu etc or plugin-folder name
+	 * @param string $mode core|plugin
 	 * @return array preference array equivalent to the old $pref global;
 	 */
-	public function e107ImportPrefs($XMLData, $prefType='core')
+	public function e107ImportPrefs($XMLData, $prefType='core', $mode='core')
 	{
-		if(!vartrue($XMLData['prefs'][$prefType]))
+
+		$key = ($mode === 'core') ? 'prefs' : 'pluginPrefs';
+
+		if(!vartrue($XMLData[$key][$prefType]))
 		{
 			return array();
 		}
@@ -1079,7 +1050,7 @@ class xmlClass
 		//$mes = eMessage::getInstance();
 
 		$pref = array();
-		foreach($XMLData['prefs'][$prefType] as $val)
+		foreach($XMLData[$key][$prefType] as $val)
 		{
 			$name = $val['@attributes']['name'];
 			// if(strpos($val['@value'], 'array (') === 0)
@@ -1102,7 +1073,7 @@ class xmlClass
 	/**
 	 * Import an e107 XML file into site preferences and DB tables
 	 *
-	 * @param path $file - e107 XML file path
+	 * @param string $file - e107 XML file path
 	 * @param string $mode[optional] - add|replace
 	 * @param boolean $noLogs [optional] tells pref handler to disable admin logs when true (install issues)
 	 * @param boolean $debug [optional]
@@ -1126,8 +1097,10 @@ class xmlClass
 		}
 
 		$ret = array();
-		
-		if(vartrue($xmlArray['prefs'])) // Save Core Prefs
+
+		// ----------------- Save Core Prefs ---------------------
+
+		if(!empty($xmlArray['prefs']))
 		{
 			foreach($xmlArray['prefs'] as $type=>$array)
 			{
@@ -1154,6 +1127,40 @@ class xmlClass
 				}
 			}
 		}
+
+
+		 // ---------------   Save Plugin Prefs  ---------------------
+
+		if(!empty($xmlArray['pluginPrefs']))
+		{
+			foreach($xmlArray['pluginPrefs'] as $type=>$array)
+			{
+
+				$pArray = $this->e107ImportPrefs($xmlArray,$type, 'plugin');
+
+				if($mode == 'replace') // merge with existing, add new
+				{
+					e107::getPlugConfig($type)->setPref($pArray);
+				}
+				else // 'add' only new prefs
+				{
+					foreach ($pArray as $pname => $pval)
+					{
+						e107::getPlugConfig($type)->add($pname, $pval); // don't parse x/y/z
+					}
+				}
+
+				if($debug == false)
+				{
+					 e107::getPlugConfig($type)
+					 	->setParam('nologs', $noLogs)
+					 	->save(FALSE,TRUE);
+				}
+			}
+		}
+
+
+
 
 		if(vartrue($xmlArray['database']))
 		{
@@ -1189,6 +1196,12 @@ class xmlClass
 					{
 						$error = $sql->getLastErrorText();
 						$lastQry = $sql->getLastQuery();
+
+						if(is_array($lastQry))
+						{
+							$lastQry = $lastQry['PREPARE'];
+						}
+
 						$ret['failed'][] = $table. "\n[".$error."]\n".$lastQry."\n\n";
 					}
 				}

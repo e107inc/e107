@@ -15,7 +15,7 @@
 //HCL define('PAGE_NAME', 'Members');
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 // Next bit is to fool PM plugin into doing things
 global $user;
@@ -47,12 +47,18 @@ if(e_AJAX_REQUEST)
 {
 	if(vartrue($_POST['q']))
 	{
-		$q = filter_var($_POST['q'], FILTER_SANITIZE_STRING);
+		$db = e107::getDb();
+		$tp = e107::getParser();
+
+		$q = $tp->filter($_POST['q']);
 		$l = vartrue($_POST['l']) ? intval($_POST['l']) : 10;
 
-		$db = e107::getDb();
+		$where = "user_name LIKE '". $q."%' ";
 
-		if($db->select("user", "user_id,user_name", "user_name LIKE '". $q."%' ORDER BY user_name LIMIT " . $l))
+		//TODO FIXME Filter by userclass.  - see $frm->userlist().
+
+
+		if($db->select("user", "user_id,user_name", $where. " ORDER BY user_name LIMIT " . $l))
 		{
 			$data = array();
 			while($row = $db->fetch())
@@ -65,8 +71,8 @@ if(e_AJAX_REQUEST)
 
 			if(count($data))
 			{
-				header('Content-type: application/json');
-				echo json_encode($data);
+				$ajax = e107::getAjax();
+				$ajax->response($data);
 			}
 		}
 	}
@@ -115,11 +121,10 @@ else
 	$USER_SHORT_TEMPLATE_END    = $USER_TEMPLATE['list']['end'];
 }
 
-$TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $TEMPLATE); // BC Fix
+$USER_FULL_TEMPLATE = str_replace('{USER_EMBED_USERPROFILE}','{USER_ADDONS}', $USER_FULL_TEMPLATE); // BC Fix
 
 $user_shortcodes = e107::getScBatch('user');
 $user_shortcodes->wrapper('user/view');
-
 
 
 
@@ -235,30 +240,54 @@ if (isset($id))
 	exit;
 }
 
-$users_total = $sql->count("user","(*)", "WHERE user_ban = 0");
+// $users_total = $sql->count("user","(*)", "WHERE user_ban = 0");
 
-if (!$sql->select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
-{
-	echo "<div style='text-align:center'><b>".LAN_USER_53."</b></div>";
-}
-else
-{
-	$userList = $sql->db_getList();
 
-	$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $user_shortcodes);
-	foreach ($userList as $row)
+
+	// --------------------- List Users ------------------------  //TODO Put all of this into a class.
+
+	$users_total=  $sql->count("user","(*)", "WHERE user_ban = 0");
+	$query = "SELECT u.*, ue.* FROM `#user` AS u LEFT JOIN `#user_extended` AS ue ON u.user_id = ue.user_extended_id WHERE u.user_ban = 0 ORDER BY u.user_id ".$order." LIMIT ".intval($from).",".intval($records);
+
+	if (!$data = $sql->retrieve($query,true))
+
+	// if (!$sql->select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records"))
 	{
-		$loop_uid = $row['user_id'];
-		
-		$text .= renderuser($row, "short");
+		echo "<div style='text-align:center'><b>".LAN_USER_53."</b></div>";
 	}
-	$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $user_shortcodes);
-}
+	else
+	{
+		// $userList = $sql->db_getList();
+		$sc = e107::getScBatch('user');
+		$text = $tp->parseTemplate($USER_SHORT_TEMPLATE_START, TRUE, $sc);
 
-$ns->tablerender(LAN_USER_52, $text);
+		foreach ($data as $row)
+		{
+			$loop_uid = $row['user_id'];
 
-$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
-echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+		//	$text .= renderuser($row, "short");
+			$sc->setVars($row);
+			$sc->wrapper('user/list');
+
+			$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE, TRUE, $sc);
+		}
+
+		$text .= $tp->parseTemplate($USER_SHORT_TEMPLATE_END, TRUE, $sc);
+	}
+
+	$ns->tablerender(LAN_USER_52, $text);
+
+	$parms = $users_total.",".$records.",".$from.",".e_SELF.'?[FROM].'.$records.".".$order;
+	echo "<div class='nextprev form-inline'>&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>";
+
+
+
+
+
+
+
+
+
 
 
 function renderuser($uid, $mode = "verbose")
@@ -281,7 +310,8 @@ function renderuser($uid, $mode = "verbose")
 		}
 	}
 	
-	e107::getScBatch('user')->setVars($user);
+	$user_shortcodes->setVars($user);
+
 
 	if($mode == 'verbose')
 	{

@@ -23,7 +23,7 @@ class bb_img extends e_bb_base
 		if(vartrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
 		if(vartrue($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
 		if(vartrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
-		if(vartrue($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['style'],'str');
+		if(vartrue($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['alt'],'str');
 
 		if($safe)
 		{
@@ -133,7 +133,7 @@ class bb_img extends e_bb_base
 
 	    $imgParms['title'] = $imgParms['alt'] ;
         
-        $imgParms['class']      = "img-rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified        
+        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified
         
         if($mode == 'string')
 		{

@@ -22,8 +22,10 @@ if (!defined('e107_INIT'))
  */
 function avatar($avatar)
 {
-	
-	return e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true);
+	$data = array('user_image' => $avatar);
+
+	return e107::getParser()->toAvatar($data, array('type'=>'url'));
+//	return e107::getParser()->parseTemplate("{USER_AVATAR=".$avatar."}",true);
 	
 	/*
 	global $tp;

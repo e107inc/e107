@@ -33,6 +33,7 @@ else
 {
 	require_once(e_PLUGIN."comment_menu/comment_menu_template.php");
 }
+global $menu_pref;
 
 $data = $cobj->getCommentData(intval($menu_pref['comment_display']));
 
@@ -71,6 +72,11 @@ $text .= $tp->parseTemplate($TEMPLATE['end'], true, $comment_menu_shortcodes);
 //e107::setRegistry('plugin/comment_menu/current', null);
 
 $title = e107::getConfig('menu')->get('comment_caption');
+
+if(!empty($title[e_LANGUAGE]))
+{
+	$title = $title[e_LANGUAGE];
+}
 
 e107::getRender()->tablerender(defset($title, $title), $text, 'comment_menu');
 ?>

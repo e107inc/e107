@@ -28,7 +28,7 @@
 
 //if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');	
+e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 include_once(e_PLUGIN.'pm/pm_func.php');
 
 // register_shortcode('pm_handler_shortcodes', true);
@@ -78,9 +78,9 @@ PM_BLOCKED_DELETE
 DELETE_BLOCKED_SELECTED
 */
 
-if(!class_exists('pm_shortcodes'))
+if(!class_exists('plugin_pm_pm_shortcodes'))
 {
-	class pm_shortcodes extends e_shortcode // class pm_handler_shortcodes
+	class plugin_pm_pm_shortcodes extends e_shortcode // class pm_handler_shortcodes
 	{
 		public		$pmPrefs;		// PM system options
 		public		$pmInfo;		// Data relating to current PM being displayed - replaced by $var.
@@ -89,6 +89,7 @@ if(!class_exists('pm_shortcodes'))
 		public		$nextPrev = array();	//XXX In USE ?? // Variables used by nextprev
 		public		$pmManager = NULL;		// Pointer to pmbox_manager class instance
 		public		$pmNextPrev = array();
+		public      $pmMode = null;
 		//public 		$var = array();
 
 		public function __construct()
@@ -98,7 +99,9 @@ if(!class_exists('pm_shortcodes'))
 			$this->pmPrefs = $pm_prefs;
 			// print_a($pm_prefs);
 			require_once(e_PLUGIN."pm/pm_class.php");
+
 			$pmClass = new private_message($pm_prefs);
+
 			$blocks = $pmClass->block_get_user();
 
 			foreach($blocks as $usr)
@@ -111,33 +114,83 @@ if(!class_exists('pm_shortcodes'))
 			}
 		}
 
-		// TODO rewrite $frm->userpicker(), etc. Get rid of e107_handlers/user_select_class.php
+
+		public function sc_pm_form_to($parm)
+		{
+			$userTo = $this->sc_pm_form_touser();
+			$classTo = $this->sc_pm_form_toclass();
+
+			if(!empty($this->var['pm_from']))
+			{
+				return e107::getForm()->hidden('pm_to', $this->var['pm_from']).$this->var['from_name'];
+			}
+
+			if(deftrue('BOOTSTRAP'))
+			{
+
+				if(check_class($this->pmPrefs['opt_userclass']) )
+				{
+					$tab = array();
+
+					$userDiz = (check_class($this->pmPrefs['multi_class'])) ? LAN_PM_112 : LAN_USER;
+
+					$tab['user'] = array('caption'=> $userDiz, 'text'=>$userTo);
+					$tab['class'] = array('caption'=>LAN_PM_4, 'text'=>$classTo);
+
+					return e107::getForm()->tabs($tab);
+				}
+				else
+				{
+					return $userTo;
+				}
+
+
+
+			}
+
+			return $userTo."<br />".$classTo; // Legacy Layout.
+
+
+		}
+
+
+
+		// TODO  Get rid of e107_handlers/user_select_class.php
 		public function sc_pm_form_touser()
 		{
-			if(vartrue($this->var['from_name']))
+			if(vartrue($this->var['pm_from']))
 			{
-				return "<input type='hidden' name='pm_to' value='{$this->var['from_name']}' />{$this->var['from_name']}";
+				return "<input type='hidden' name='pm_to' value='{$this->var['pm_from']}' />{$this->var['from_name']}";
 			}
-			require_once(e_HANDLER.'user_select_class.php');
-			$us = new user_select;
-			$type = ($this->pmPrefs['dropdown'] == TRUE ? 'list' : 'popup');
+
+		//	require_once(e_HANDLER.'user_select_class.php');
+		//	$us = new user_select;
+		//	$type = ($this->pmPrefs['dropdown'] == TRUE ? 'list' : 'popup');
+
+
 			if(check_class($this->pmPrefs['multi_class']))
 			{
-				$ret = $us->select_form($type, 'textarea.pm_to', '', $this->pmPrefs['pm_class']);
+				$ret = e107::getForm()->userpicker('pm_to', null, array('limit'=>10));
 			}
 			else
 			{
 				$frm = e107::getForm();
-				//TODO Use $frm->userpicker();
-				return $frm->text('pm_to','',20,'typeahead=users');
 
-				// $ret = $us->select_form($type, 'pm_to', '', $this->pmPrefs['pm_class']);
+				$exclude = (getperms('0') && e_DEBUG === true) ? false : true;
+
+				$ret = $frm->userlist('pm_to',null,array('excludeSelf'=>$exclude, 'default'=>'blank', 'classes'=>varset($this->pmPrefs['send_to_class'], e_UC_MEMBER)));
 			}
+
+
 			return $ret;
 		}
 
+
+
 		public function sc_pm_form_toclass($parm = '')
 		{
+
+
 			if(vartrue($this->var['from_name']))
 			{
 				return '';
@@ -145,23 +198,27 @@ if(!class_exists('pm_shortcodes'))
 
 			$ret = "";
 
-			if(check_class($this->pmPrefs['opt_userclass']) && check_class($this->pmPrefs['multi_class']))
+			if(check_class($this->pmPrefs['opt_userclass']) )
 			{
 				//$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
 
-				$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
+		//		$ret = "<div class='input-group'><span class='input-group-addon'>".e107::getForm()->checkbox('to_userclass',1,false, LAN_PM_4)."</span>";
 
 				// Option show by visibility
 				$filterVisible = $parm == 'visible' ? 'matchclass, filter' : 'matchclass';
 
-				$args = (ADMIN ? 'admin, classes' : 'classes, '.$filterVisible);
+				$args = (ADMIN ? 'nobody, admin, classes' : 'nobody,classes, '.$filterVisible);
 				if(check_class($this->pmPrefs['sendall_class']))
 				{
 					$args = 'member, '.$args;
 				}
 
-				$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', '', $args)."</div>";
+				$ret .= e107::getUserClass()->uc_dropdown('pm_userclass', e_UC_NOBODY, $args)."</div>";
 				if (strpos($ret,'option') === FALSE)  $ret = '';
+			}
+			else
+			{
+				return false;
 			}
 			return $ret;
 		}
@@ -179,7 +236,7 @@ if(!class_exists('pm_shortcodes'))
 				}
 			}
 
-			return e107::getForm()->text('pm_subject',$value,255);
+			return e107::getForm()->text('pm_subject',$value,255, array('size'=>80, 'required'=>1));
 
 			// return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
 		}
@@ -188,28 +245,46 @@ if(!class_exists('pm_shortcodes'))
 		public function sc_pm_form_message()
 		{
 			$value = '';
+			$maxlength = '';
+			$placeholder = '';
+
 			if(vartrue($this->var['pm_text']))
 			{
 				if(isset($_POST['quote']))
 				{
 					$t = time();
-					$value = "[quote{$t}={$this->var['from_name']}]\n{$this->var['pm_text']}\n[/quote{$t}]\n\n";
+					$value = "\n\n\n\n\n\n\n[quote{$t}={$this->var['from_name']}]\n".trim($this->var['pm_text'])."[/quote{$t}]";
 				}
 			}
-			return "<textarea class='tbox form-control' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
+
+
+			if(!empty($this->pmPrefs['maxlength']))
+			{
+				$length = intval($this->pmPrefs['maxlength']);
+				$maxlength = "maxlength=".$length;
+				$placeholder = "placeholder='Max. ".$length." chars.'"; // TODO LAN
+			}
+
+			return "<textarea class='tbox form-control' ".$placeholder." name='pm_message' cols='60' rows='10' ".$maxlength." onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
 		}
 
 
 		public function sc_pm_emotes()
 		{
-			// require_once(e_HANDLER.'emote.php');
+			$active = e107::pref('core','smiley_activate');
+
+			if(empty($active))
+			{
+				return null;
+			}
+
 			return r_emote();
 		}
 
 
 		public function sc_pm_post_button()
 		{
-			return "<input class='button btn btn-primary' type='submit' name='postpm' value='".LAN_PM_1."' />";
+			return "<input class='button btn btn-primary' type='submit' name='postpm' value='".LAN_PLUGIN_PM_NEW."' />";
 		}
 
 
@@ -225,16 +300,22 @@ if(!class_exists('pm_shortcodes'))
 			{
 				$ret = "
 				<div id='up_container' >
-				<span id='upline' style='white-space:nowrap'>
-				<input class='tbox' type='file' name='file_userfile[]' size='40' />
-				</span>
-				</div>
+					<span id='upline' style='white-space:nowrap'>
+					".e107::getForm()->file('file_userfile[]', array('size'=>40, 'multiple'=>'multiple'))."
+					</span>
+				</div>";
+				/*
+				$ret .= "
 				<input type='button' class='btn btn-default button' value='".LAN_PM_11."' onclick=\"duplicateHTML('upline','up_container');\"  />
-				";
+				";*/
 				return $ret;
 			}
 			return '';
 		}
+
+
+
+
 
 
 		public function sc_pm_attachment_icon()
@@ -248,6 +329,8 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_attachments()
 		{
+			$tp = e107::getParser();
+
 			if($this->var['pm_attachments'] != '')
 			{
 				$attachments = explode(chr(0), $this->var['pm_attachments']);
@@ -257,7 +340,7 @@ if(!class_exists('pm_shortcodes'))
 				{
 					list($timestamp, $fromid, $rand, $filename) = explode("_", $a, 4);
 					$url = $this->url('action/get', array('id' => $this->var['pm_id'], 'index' => $i));
-					$ret .= "<a href='".$url."'>{$filename}</a><br />";
+					$ret .= $tp->toGlyph('fa-paperclip')."<a href='".$url."'>{$filename}</a><br />";
 					$i++;
 				}
 				$ret = substr($ret, 0, -3);
@@ -335,6 +418,11 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_read($parm = '')
 		{
+			if($this->pmMode == 'inbox')
+			{
+				return;
+			}
+
 			if($this->var['pm_read'] == 0)
 			{
 				return LAN_PM_27;
@@ -343,14 +431,14 @@ if(!class_exists('pm_shortcodes'))
 			{
 				return LAN_PM_28;
 			}
-			require_once(e_HANDLER.'date_handler.php');
+
 			if('lapse' != $parm)
 			{
-				return convert::convert_date($this->var['pm_read'], $parm);
+				return e107::getDate()->convert_date($this->var['pm_read'], $parm);
 			}
 			else
 			{
-				return convert::computeLapse($this->var['pm_read']);
+				return e107::getDate()->computeLapse($this->var['pm_read']);
 			}
 		}
 
@@ -358,19 +446,19 @@ if(!class_exists('pm_shortcodes'))
 		public function sc_pm_from_to()
 		{
 			$tp = e107::getParser();
-			$sc = e107::getScBatch('pm',TRUE);
+		//	$sc = e107::getScBatch('pm',TRUE);
 
-			if($this->var['pm_from'] == USERID)
+			if($this->pmMode == 'outbox')
 			{
-				$ret = LAN_PM_2.': <br />';
+				$ret = LAN_PM_2.': ';
 				$this->var['user_name'] = $this->var['sent_name'];
-				$ret .= $tp->parseTemplate("{PM_TO=link}", false, $sc);
+				$ret .= $this->sc_pm_to('link'); // $tp->parseTemplate("{PM_TO=link}", false, $sc);
 			}
 			else
 			{
-				$ret = LAN_PM_31.': <br />';
+				$ret = LAN_PM_31.': ';
 				$this->var['user_name'] = $this->var['from_name'];
-				$ret .= $tp->parseTemplate("{PM_FROM=link}", false, $sc);
+				$ret .= $this->sc_pm_from('link');// $tp->parseTemplate("{PM_FROM=link}", false, $sc);
 			}
 			return $ret;
 		}
@@ -380,7 +468,9 @@ if(!class_exists('pm_shortcodes'))
 		{
 			$tp = e107::getParser();
 			$ret = $tp->toHTML($this->var['pm_subject'], true, 'USER_TITLE');
+
 			$prm = explode(',',$parm);
+
 			if('link' == $prm[0])
 			{
 				$extra = '';
@@ -395,7 +485,9 @@ if(!class_exists('pm_shortcodes'))
 				$ret = "<a href='".$ret."'>".$ret."</a>";
 				*/
 
-				$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$this->var['pm_id']}{$extra}'>".$ret."</a>";
+				$url = e107::url('pm','index')."?show.{$this->var['pm_id']}{$extra}";
+
+				$ret = "<a href='".$url."'>".$ret."</a>";
 			}
 			return $ret;
 		}
@@ -434,10 +526,24 @@ if(!class_exists('pm_shortcodes'))
 			}
 		}
 
-
-		public function sc_pm_avatar()
+		public function sc_pm_status_class()
 		{
-			return e107::getParser()->toAvatar($this->var);
+
+			if($this->var['pm_read'] > 0 )
+			{
+				return 'pm-read';
+			}
+			else
+			{
+				return 'pm-unread';
+			}
+
+		}
+
+
+		public function sc_pm_avatar($parm)
+		{
+			return e107::getParser()->toAvatar($this->var, $parm);
 		}
 
 
@@ -448,38 +554,47 @@ if(!class_exists('pm_shortcodes'))
 
 			if(in_array($this->var['pm_from'], $this->pmBlocks))
 			{
-				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
+				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus','fw=1') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
 
-				return "<a class='btn btn-sm btn-default btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
+				return "<a class='btn  btn-default btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
 			}
 			else
 			{
-				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times') : "<img src='".e_PLUGIN_ABS."pm/images/mail_block.png'  alt='".LAN_PM_50."' class='icon S16' />";
+				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-times','fw=1') : "<img src='".e_PLUGIN_ABS."pm/images/mail_block.png'  alt='".LAN_PM_50."' class='icon S16' />";
 
-				return "<a class='btn btn-sm btn-default' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
+				return "<a class='btn  btn-default' href='".$this->url('action/block', 'id='.$this->var['pm_from'])."' title='".LAN_PM_50."'>".$icon."</a>";
 			}
 		}
 
 
 		public function sc_pm_delete($parm = '')
 		{
+			if($this->pmMode !== 'inbox' && $this->pmMode !== 'outbox' && empty($parm))
+			{
+				 return '';
+			}
+
+
 			if($parm != '')
 			{
 				$extra = '.'.$parm;
 			}
 			else
 			{
-				$extra = '.'.($this->var['pm_from'] == USERID ? 'outbox' : 'inbox');
+				$extra = '.'.($this->pmMode == 'outbox' ? 'outbox' : 'inbox');
 			}
-			if($extra !== 'inbox' && $extra !== 'outbox') return '';
-			$action = $extra == 'outbox' ? 'delete-out' : 'delete-in';
-			return "<a href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_DELETE."' alt='".LAN_DELETE."' class='icon S16' /></a>";
+
+
+			$action = $extra == '.outbox' ? 'delete-out' : 'delete-in';
+			return "<a class='btn btn-default' title='".LAN_DELETE."' href='".$this->url('action/'.$action, 'id='.$this->var['pm_id'])."'>".PM_DELETE_ICON."</a>";
 		}
 
 
 		public function sc_pm_delete_selected()
 		{
-			return "<input type='submit' name='pm_delete_selected' class='button btn btn-danger' value='".LAN_PM_53."' />";
+			$tp = e107::getParser();
+			return e107::getForm()->button('pm_delete_selected',1,'delete',$tp->toGlyph('fa-trash').LAN_PM_53);
+		//	return "<input type='submit' name='pm_delete_selected' class='button btn btn-sm btn-danger' value='".LAN_PM_53."' />";
 		}
 
 
@@ -516,7 +631,7 @@ if(!class_exists('pm_shortcodes'))
 			{
 				// pm_id is mapped insisde the config to id key
 				$ret = "
-				<form method='post' action='".$this->url('reply', $this->var)."'>
+				<form method='post' action='".$this->url('action/reply', $this->var)."'>
 				<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
 				</form>
 				";
@@ -530,7 +645,7 @@ if(!class_exists('pm_shortcodes'))
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 			if($pm_outbox['outbox']['filled'] < 100)
 			{
-				$link = $this->url('new');
+				$link = $this->url('action/new');
 				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".PM_SEND_LINK."</a>";
 			}
 			return '';
@@ -560,7 +675,7 @@ if(!class_exists('pm_shortcodes'))
 		public function sc_pm_blocked_senders_manage()
 		{
 			$sql = e107::getDb();
-			$count = $sql->db_Count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
+			$count = $sql->count('private_msg_block', '(*)', 'WHERE `pm_block_to` = '.USERID);
 			if (!$count) return '';
 			return LAN_PM_66;
 		}
@@ -593,8 +708,7 @@ if(!class_exists('pm_shortcodes'))
 
 		public function sc_pm_blocked_date($parm='')
 		{
-			require_once(e_HANDLER.'date_handler.php');
-			return convert::convert_date($this->pmBlocked['pm_block_datestamp'], $parm);
+			return e107::getDate()->convert_date($this->pmBlocked['pm_block_datestamp'], $parm);
 		}
 
 
@@ -609,15 +723,83 @@ if(!class_exists('pm_shortcodes'))
 			return "<input type='submit' name='pm_delete_blocked_selected' class='btn btn-default button' value='".LAN_PM_53."' />";
 		}
 
-		/**
-		 * Convinient url assembling shortcut
-		 */
-		public function url($action, $params = array(), $options = array())
-		{
-			if(strpos($action, '/') === false) $action = 'view/'.$action;
 
-			return e107::getUrl()->create('pm/'.$action, $params, $options);
+		public function sc_pm_compose()
+		{
+			$tp = e107::getParser();
+			$urlCompose = e107::url('pm','index','', array('query'=>array('mode'=>'send')));
+
+			$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-sm btn-primary btn-block-level';
+
+			return "<a class='".$class."' href='".$urlCompose."'>".$tp->toGlyph('fa-edit',' ')."".LAN_PLUGIN_PM_NEW."</a>";
 		}
+
+
+
+		private function url($route, $params = array())
+		{
+
+			if(is_string($params))
+			{
+				parse_str($params,$params);
+			}
+
+			if(!isset($params['id']) && isset($params['pm_id'])) $params['id'] = $params['pm_id'];
+
+			if(is_string($route))
+			{
+				$route = explode('/', $route, 2);
+			}
+
+			$base = e107::url('pm','index').'?';
+
+			switch($route[1])
+			{
+				case 'index':
+				case 'inbox':
+					return $base.'inbox';
+					break;
+				case 'outbox':
+					return $base.'outbox';
+					break;
+					// we could just remove them all and let only 'message' live
+				case 'show':
+					return $base.'show.'.$params['id'];
+					break;
+				case 'message':
+					return $base.'show.'.$params['id'].'.inbox';
+					break;
+				case 'sent':
+					return $base.'show.'.$params['id'].'.outbox';
+					break;
+				case 'reply':
+					return $base.'reply.'.$params['id'];
+					break;
+				case 'new':
+					return $base.'send';
+					break;
+				case 'delete-in':
+					return $base.'del.'.$params['id'].'.inbox';
+					break;
+				case 'delete-out':
+					return $base.'del.'.$params['id'].'.outbox';
+					break;
+				case 'delete-blocked':
+					return $base.'delblocked.'.$params['id'];
+					break;
+				case 'block':
+					return $base.'block.'.$params['id'];
+					break;
+				case 'unblock':
+					return $base.'unblock.'.$params['id'];
+					break;
+				case 'get':
+					return $base.'get.'.$params['id'].'.'.$params['index'];
+					break;
+			}
+
+		}
+
 	}
 
 }

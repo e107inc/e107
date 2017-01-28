@@ -219,6 +219,13 @@ class e_user_model extends e_admin_model
 		return ($this->isAdmin() ? $this->get('user_perms') : false);
 	}
 
+	final public function getTimezone()
+	{
+		// If timezone is not set, we return an empty string in order to use the
+		// default timezone is set for e107.
+		return ($this->get('user_timezone') ? $this->get('user_timezone') : '');
+	}
+
 	/**
 	 * DEPRECATED - will be removed or changed soon (see e_session)
 	 * @return string
@@ -246,6 +253,41 @@ class e_user_model extends e_admin_model
 	final public function isAdmin()
 	{
 		return ($this->get('user_admin') ? true : false);
+	}
+
+	final public function isNewUser()
+	{
+		$new_user_period = e107::getPref('user_new_period', 0);
+
+		if(empty($new_user_period))	{ return false; }
+
+		return (($this->get('user_join') > strtotime($new_user_period." days ago")) ? true : false);
+	}
+
+	final public function isBot()
+	{
+		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+		if(empty($userAgent))
+		{
+			return false;
+		}
+
+		$botlist = array( "googlebot", "Bingbot", 'slurp', 'baidu', 'ichiro','nutch','yacy', "Teoma",
+		"alexa", "froogle", "Gigabot", "inktomi",
+		"looksmart", "URL_Spider_SQL", "Firefly", "NationalDirectory",
+		"Ask Jeeves", "TECNOSEEK", "InfoSeek", "WebFindBot", "girafabot",
+		"crawler", "www.galaxy.com", "Scooter", "msnbot", "appie", "FAST", "WebBug", "Spade", "ZyBorg", "rabaz",
+		"Baiduspider", "Feedfetcher-Google", "TechnoratiSnoop", "Rankivabot",
+		"Mediapartners-Google", "Sogou web spider", "WebAlta Crawler","TweetmemeBot",
+		"Butterfly","Twitturls","Me.dium","Twiceler");
+
+		foreach($botlist as $bot)
+		{
+			if(stripos($userAgent, $bot) !== false){ return true; }
+		}
+
+		return false;
 	}
 
 	final public function isMainAdmin()
@@ -288,11 +330,19 @@ class e_user_model extends e_admin_model
 				// list of all 'inherited' user classes, convert elements to integer
 				$this->_class_list = array_map('intval', e107::getUserClass()->get_all_user_classes($this->get('user_class'), true));
 			}
+
 			$this->_class_list[] = e_UC_MEMBER;
+
+			if($this->isNewUser())
+			{
+				$this->_class_list[] = e_UC_NEWUSER;
+			}
+
 			if ($this->isAdmin())
 			{
 				$this->_class_list[] = e_UC_ADMIN;
 			}
+
 			if ($this->isMainAdmin())
 			{
 				$this->_class_list[] = e_UC_MAINADMIN;
@@ -301,7 +351,14 @@ class e_user_model extends e_admin_model
 		else
 		{
 			$this->_class_list[] = e_UC_GUEST;
+
+			if($this->isBot())
+			{
+				$this->_class_list[] = e_UC_BOTS;
+			}
+
 		}
+
 		$this->_class_list[] = e_UC_READONLY;
 		$this->_class_list[] = e_UC_PUBLIC;
 
@@ -952,7 +1009,7 @@ class e_user_model extends e_admin_model
 		
 		if(false !== $ret && null !== $this->_extended_model) // don't load extended fields if not already used
 		{
-			$ret_e = $this->_extended_model->save($force, $session);
+			$ret_e = $this->_extended_model->save(true, $force, $session);
 			if(false !== $ret_e)
 			{
 				return ($ret_e + $ret);
@@ -1119,7 +1176,7 @@ class e_system_user extends e_user_model
 		{
 			if($this->debug)
 			{
-				echo '$eml returned nothing on Line 1050 of user_model.php using $type = '.$type;
+				echo '$eml returned nothing on Line '.__LINE__.' of user_model.php using $type = '.$type;
 				print_a($userInfo);
 			}
 			 return false;
@@ -1130,6 +1187,8 @@ class e_system_user extends e_user_model
 			{
 				echo '<h3>$eml array</h3>';
 				print_a($eml);
+				$temp = var_export($eml, true);
+				print_a($temp);
 			}	
 		}
 		
@@ -1194,6 +1253,14 @@ class e_system_user extends e_user_model
 		if(!is_array($EMAIL_TEMPLATE)) //BC Fixes. pre v2 alpha3. 
 		{
 			// load from old location. (root of theme folder if it exists)
+
+			$SIGNUPEMAIL_SUBJECT = '';
+			$SIGNUPEMAIL_CC = '';
+			$SIGNUPEMAIL_BCC = '';
+			$SIGNUPEMAIL_ATTACHMENTS = '';
+			$SIGNUPEMAIL_TEMPLATE = '';
+
+
 			if (file_exists(THEME.'email_template.php'))
 			{
 				include(THEME.'email_template.php');
@@ -1247,14 +1314,17 @@ class e_system_user extends e_user_model
 			return array();
 		}
 
-		$pass_show = varset($userInfo['user_password']);
+
+
+	//
 		
 		// signup email only
 		if($type == 'signup')
 		{
 			$HEAD = '';
 			$FOOT = '';
-			
+
+			$pass_show = e107::pref('core','user_reg_secureveri', false);
 			
 			$ret['e107_header'] = $userInfo['user_id'];
 			
@@ -1275,7 +1345,7 @@ class e_system_user extends e_user_model
 			$sc = array();
 			
 			$sc['LOGINNAME'] 		= intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-			$sc['PASSWORD']			= $pass_show ? $pass_show : '******';
+			$sc['PASSWORD']			= ($pass_show && !empty($userInfo['user_password'])) ?  '*************' : $userInfo['user_password'];
 			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
 		//	$sc['SITENAME']			= SITENAME;
 			$sc['SITEURL']			= "<a href='".SITEURL."' {$style}>".SITEURL."</a>";
@@ -1285,7 +1355,7 @@ class e_system_user extends e_user_model
 			$sc['EMAIL']			= $userInfo['user_email'];
 			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
 			
-			$ret['email_subject'] =  $EMAIL_TEMPLATE['signup']['subject']; // $subject;
+			$ret['subject'] =  $EMAIL_TEMPLATE['signup']['subject']; // $subject;
 			$ret['send_html'] = TRUE;
 			$ret['shortcodes'] = $sc;
 		
@@ -1348,10 +1418,11 @@ class e_system_user extends e_user_model
 			return array();
 		}
 		
-		
+
 		$templateName = $ret['template'];
 		
-		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
+//		$ret['email_subject'] 	=  varset($EMAIL_TEMPLATE[$templateName]['subject'], $EMAIL_TEMPLATE['default']['subject']) ; // $subject;
+		$ret['subject']         = $userInfo['mail_subject'];
 		$ret['e107_header'] 	= $userInfo['user_id'];
 		
 		if (vartrue($userInfo['email_copy_to'])) 	{ 	$ret['email_copy_to']	= $userInfo['email_copy_to']; }
@@ -1364,55 +1435,18 @@ class e_system_user extends e_user_model
 		$sc['DISPLAYNAME']			= $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
 		$sc['SITEURL']				= "<a href='".SITEURL."'>".SITEURL."</a>";
 		$sc['USERNAME']				= $userInfo['user_name'];
-		$sc['USERURL']				= vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
-		$sc['PASSWORD']				= $pass_show ? $pass_show : '******';
+		$sc['USERURL']				= vartrue($userInfo['user_website'], '');
+		$sc['PASSWORD']				= vartrue($userInfo['user_password'], '***********');
 		$sc['SUBJECT']				= $userInfo['mail_subject'];
 
-		
-		/*
-		$search[0] = '{LOGINNAME}';
-		$replace[0] = intval($pref['allowEmailLogin']) === 0 ? $userInfo['user_loginname'] : $userInfo['user_email'];
-		
-		$search[1] = '{DISPLAYNAME}';
-		$replace[1] = $userInfo['user_login'] ? $userInfo['user_login'] : $userInfo['user_name'];
-		
-		$search[2] = '{EMAIL}';
-		$replace[2] = $userInfo['user_email'];
-	
-		$search[3] = '{SITENAME}';
-		$replace[3] = SITENAME;
-	
-		$search[4] = '{SITEURL}';
-		$replace[4] = "<a href='".SITEURL."'>".SITEURL."</a>";
-	
-		$search[5] = '{USERNAME}';
-		$replace[5] = $userInfo['user_name'];
-	
-		$search[6] = '{USERURL}';
-		$replace[6] = vartrue($userInfo['user_website']) ? $userInfo['user_website'] : "";
-	
-		$ret['email_subject'] =  $subject; // str_replace($search, $replace, $subject); - performed in mail handler. 
-		
-		$search[7] = '{PASSWORD}';
-		$replace[7] = $pass_show ? $pass_show : '******';
-		*/
-		
-		
+
 		if(isset($userInfo['activation_url']))
 		{
 			$sc['ACTIVATION_URL']	= $userInfo['activation_url'];
 			$sc['ACTIVATION_LINK']	= strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
-			
-			/*
-			$search[8] = '{ACTIVATION_URL}';
-			$replace[8] = $userInfo['activation_url'];
-			
-			$search[9] = '{ACTIVATION_LINK}';
-			$replace[9] = strpos($userInfo['activation_url'], 'http') === 0 ? '<a href="'.$userInfo['activation_url'].'">'.$userInfo['activation_url'].'</a>' : $userInfo['activation_url'];
-			*/
 		}
 		
-		$ret['send_html'] 		= TRUE;
+		$ret['send_html'] 		= true;
 		$ret['email_body'] 		= $template; // e107::getParser()->parseTemplate(str_replace($search, $replace, $template)); - performed in mail handler. 
 		$ret['preview'] 		= $ret['mail_body']; // Non-standard field
 		$ret['shortcodes'] 		= $sc;
@@ -1559,11 +1593,14 @@ class e_user extends e_user_model
 		
 		$userdata  = $userlogin->getUserData();
 
-		e107::getLog()->add('XUP Debug', (__CLASS__.':'.__METHOD__.'-'.__LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		if(defset('E107_DEBUG_LEVEL', 0) > 0)
+		{
+			e107::getLog()->add('XUP Debug', (__CLASS__ . ':' . __METHOD__ . '-' . __LINE__), E_LOG_INFORMATIVE, "XUP_DEBUG");
+		}
 		
 		$this->setSessionData(true)->setData($userdata);
 			
-		e107::getEvent()->trigger('user_xup_login', $userdata); 	
+		e107::getEvent()->trigger('user_xup_login', $userdata);
 
 		return $this->isUser();
 	}
@@ -1709,12 +1746,29 @@ class e_user extends e_user_model
 			e107::getUserSession()->makeUserCookie($user);
 			$this->setSessionData();
 
-			// Update display name or avatar image if they have changed.
-			if(($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
-			{
+			$spref = e107::pref('social');
 
-				if($sql->update('user', "user_name='".$userdata['user_name']."', user_image='".$userdata['user_image']."' WHERE user_id=".$user['user_id']." LIMIT 1")!==false)
+			// Update display name or avatar image if they have changed.
+			if(!empty($spref['xup_login_update_username']) || !empty($spref['xup_login_update_avatar']) || ($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
+			{
+				$updateQry = array();
+
+				if(!empty($spref['xup_login_update_username']))
 				{
+					$updateQry['user_name'] = $userdata['user_name'];
+				}
+
+				if(!empty($spref['xup_login_update_avatar']))
+				{
+					$updateQry['user_image'] = $userdata['user_image'];
+				}
+
+				$updateQry['WHERE'] = "user_id=".$user['user_id']." LIMIT 1";
+
+				if($sql->update('user', $updateQry) !==false)
+				{
+					$updatedProfile = array_replace($user, $userdata);
+					e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
 					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
 				}
 				else
@@ -2287,7 +2341,7 @@ class e_user_extended_model extends e_admin_model
 	 * @see e_model#load($id, $force)
 	 * @return e_user_extended_model
 	 */
-	public function load($force = false)
+	public function load($id=null, $force = false)
 	{
 		if ($this->getId() && !$force)
 			return $this;
@@ -2431,7 +2485,7 @@ class e_user_extended_model extends e_admin_model
 	 * Build data types and rules on the fly and save
 	 * @see e_front_model::save()
 	 */
-	public function save($force = false, $session = false)
+	public function save($from_post = true, $force = false, $session = false)
 	{
 		// when not loaded from db, see the construct check
 		if(!$this->getId()) 
@@ -2727,7 +2781,7 @@ class e_user_pref extends e_front_model
 	 * @param boolean $force
 	 * @return e_user_pref
 	 */
-	public function load($force = false)
+	public function load($id = null, $force = false)
 	{
 		if($force || !$this->hasData())
 		{
@@ -2782,13 +2836,13 @@ class e_user_pref extends e_front_model
 	}
 
 	/**
-	 * Remove & apply user prefeferences, optionally - save to DB
+	 * Remove & apply user preferences, optionally - save to DB
 	 * @return boolean success
 	 */
-	public function delete($save = false)
+	public function delete($ids, $destroy = true, $session_messages = false) // replaced $save = false for PHP7 fix.
 	{
 		$this->removeData()->apply();
-		if($save) return $this->save();
+	//	if($save) return $this->save(); //FIXME adjust within the context of the variables in the method.
 		return true;
 	}
 }

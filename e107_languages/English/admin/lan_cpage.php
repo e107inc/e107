@@ -21,7 +21,7 @@ define("CUSLAN_53", "Book or Chapter Title");
 
 define("CUSLAN_55", "Can be edited by");
 define("CUSLAN_56", "Parent");
-define("CUSLAN_57", "Please choose unique SEF URL string for this entry.");
+define("CUSLAN_57", "Please choose a unique SEF URL for this entry.");
 define("CUSLAN_58", "View Pages in this chapter");
 define("CUSLAN_59", "Page");
 define("CUSLAN_60", "Page Options");
@@ -43,6 +43,8 @@ define("CUSLAN_75", "Missing Menu-id detected:");
 define("CUSLAN_76", "Menu with path #");
 define("CUSLAN_77", "deleted");
 define("CUSLAN_78", "Couldn't delete menu with path ");
+define("CUSLAN_79", "You must enter either a page title or a menu name.");
+
 
 // define("CUSLAN_54", "Meta Keywords"); //LAN_KEYWORDS
 // define("CUSLAN_1", "Title");

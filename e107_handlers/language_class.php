@@ -248,8 +248,8 @@ class language{
 
 	/**
 	 * Converts iso to language-name and visa-versa.
-	 * @param object $data
-	 * @return 
+	 * @param string $data
+	 * @return string
 	 */
 	function convert($data){
 
@@ -392,6 +392,7 @@ class language{
 	 * @param str $type - English or Native.
 	 * @example type = english: array(0=>'English', 1=>'French' ...)
 	 * @example type = native: array('English'=>'English', 'French'=>'Francais'...)
+	 * @example type = abbr: array('en'=>'English, 'fr'=>'French' ... )
 	 * @return array
 	 */
 	function installed($type='english')
@@ -415,20 +416,39 @@ class language{
 			$this->lanlist = array_intersect($lanlist,$this->list);
 		}
 
-		if($type == 'native')
+		switch($type)
 		{
-			$natList = array();
-			foreach($this->lanlist as $lang)
-			{
-				$natList[$lang] = $this->toNative($lang);
-			}
+			case "native":
+				$natList = array();
+				foreach($this->lanlist as $lang)
+				{
+					$natList[$lang] = $this->toNative($lang);
+				}
 
-			natsort($natList);
+				natsort($natList);
 
-			return $natList;
+				return $natList;
+				break;
+
+			case "abbr":
+				$natList = array();
+				foreach($this->lanlist as $lang)
+				{
+					$iso = $this->convert($lang);
+					$natList[$iso] = $lang;
+				}
+
+				natsort($natList);
+
+				return $natList;
+				break;
+
+			case "english":
+			default:
+				return $this->lanlist;
 		}
-		
-		return $this->lanlist;
+
+
 	}
 	
 	
@@ -446,15 +466,16 @@ class language{
 	 * Convert the current URL to a multi-lang for the specified language. 
 	 * eg. 'http://www.mydomain.com' becomes 'http://es.mydomain.com'
 	 * @param string $language eg. 'Spanish'
-	 * @return URL
+	 * @return string url
 	 */
 	function subdomainUrl($language, $url=e_REQUEST_URL)
 	{
-		global $pref;
+
+		$sitelanguage =  e107::getPref('sitelanguage',null);
 
 		$iso = (strlen($language) == 2) ? $language : $this->convert($language);
 
-		$codelnk = ($language == $pref['sitelanguage']) ? "www" : $iso;
+		$codelnk = ($language == $sitelanguage) ? "www" : $iso;
 		
 		if($codelnk == '')
 		{

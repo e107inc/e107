@@ -18,7 +18,7 @@
 */
 require_once("class2.php");
 
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 	if(deftrue('BOOTSTRAP')) //v2.x
 	{
@@ -61,7 +61,7 @@ class membersonly
 
 	function sc_membersonly_returntohome()
 	{
-		return "<a href='".e_HTTP."index.php'>".LAN_MEMBERS_4."</a>";
+		return "<a class='alert-link' href='".e_HTTP."index.php'>".LAN_MEMBERS_4."</a>";
 	}
 
 	function sc_membersonly_restricted_area()

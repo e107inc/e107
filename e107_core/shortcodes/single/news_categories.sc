@@ -61,7 +61,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	{
 		$NEWSCAT_ITEM = "
 		<div style='width:100%;padding-bottom:2px'>
-		<table style='width:100%' cellpadding='0' cellspacing='0' border='0'>
+		<table class='news-category table' style='width:100%' cellpadding='0' cellspacing='0' border='0'>
 		<tr>
 		<td style='width:2px;vertical-align:top'>&#8226;
 		</td>
@@ -85,7 +85,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	}
 	if(!defined("NEWSCAT_STYLE"))
 	{
-			define("NEWSCAT_STYLE","width:96%");
+			define("NEWSCAT_STYLE",'');
 	}
 	if(!defined("NEWSCAT_CATICON"))
 	{
@@ -131,7 +131,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	
 	$text3 = "\n\n\n
 	<div style='width:100%;text-align:center;margin-left:auto;margin-right:auto'>
-	<table style='".NEWSCAT_STYLE."'  cellpadding='0' cellspacing='0'>
+	<table class='table' style='".NEWSCAT_STYLE."'  cellpadding='0' cellspacing='0'>
 	\n";
 	$t = 0;
 	$wid = floor(100/$nbr_cols);

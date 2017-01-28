@@ -34,9 +34,12 @@ if(!isset($pref['cb_mod']))
 {
 	$pref['cb_mod'] = e_UC_ADMIN;
 }
+
+
 define("CB_MOD", check_class($pref['cb_mod']));
 
-if($_POST['moderate'] && CB_MOD)
+
+if(!empty($_POST['moderate']) && CB_MOD)
 {
 	if(isset($_POST['block']))
 	{
@@ -69,10 +72,13 @@ if($_POST['moderate'] && CB_MOD)
 }
 
 // when coming from search.php
+
+$fs = false;
+
 if (strstr(e_QUERY, "fs")) 
 {
 	$cgtm = intval(str_replace(".fs", "", e_QUERY));
-	$fs = TRUE;
+	$fs = true;
 }
 // end search
 
@@ -87,7 +93,7 @@ if ($fs)
 {
 	$page_count = 0;
 	$row_count = 0;
-	$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC");
+	$sql->select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC");
 	while ($row = $sql->fetch()) 
 	{
 		if ($row['cb_id'] == $cgtm) 
@@ -110,10 +116,28 @@ $obj2 = new convert;
 
 $chatList = $sql->db_getList();
 $frm = e107::getForm();
+$vars = array();
+$flag = false;
+
+if (empty($CHAT_TABLE))
+{
+	if (file_exists(THEME."chat_template.php"))
+	{
+		require_once(THEME."chat_template.php");
+	}
+	else
+	{
+		require_once(e_PLUGIN."chatbox_menu/chat_template.php");
+	}
+}
+
+$textstring = '';
+
 foreach ($chatList as $row)
 {
-	$CHAT_TABLE_DATESTAMP = $tp->toDate($row['cb_datestamp'], "relative");
-	$CHAT_TABLE_NICK = preg_replace("/[0-9]+\./", "", $row['cb_nick']);
+	$vars['CHAT_TABLE_DATESTAMP'] = $tp->toDate($row['cb_datestamp'], "relative");
+	$vars['CHAT_TABLE_NICK'] = preg_replace("/[0-9]+\./", "", $row['cb_nick']);
+
 	$cb_message = $tp->toHTML($row['cb_message'], TRUE,'USER_BODY');
 
 	if($row['cb_blocked'])
@@ -140,25 +164,24 @@ foreach ($chatList as $row)
 		$cb_message .= "</div>";
 	}
 
-	$CHAT_TABLE_MESSAGE = $cb_message;
-	$CHAT_TABLE_FLAG = ($flag ? "forumheader3" : "forumheader4");
+	$vars['CHAT_TABLE_MESSAGE'] = $cb_message;
+	$vars['CHAT_TABLE_FLAG'] = ($flag ? "forumheader3" : "forumheader4");
 
-	if (!$CHAT_TABLE) {
-		if (file_exists(THEME."chat_template.php"))
-		{
-			require_once(THEME."chat_template.php");
-		}
-		else
-		{
-			require_once(e_PLUGIN."chatbox_menu/chat_template.php");
-		}
-	}
-	$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE);
-	$flag = (!$flag ? TRUE : FALSE);
+
+//	$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE);
+	$textstring .= $tp->parseTemplate($CHAT_TABLE, true, $vars);
+	$flag = (!$flag ? true : false);
 }
 
-$textstart = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_START);
-$textend = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_END);
+
+//print_a($CHAT_TABLE);
+
+
+//$textstart = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_START);
+//$textend = preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE_END);
+
+$textstart = $tp->parseTemplate($CHAT_TABLE_START, true, $vars);
+$textend = $tp->parseTemplate($CHAT_TABLE_END, true, $vars);
 $text = $textstart.$textstring.$textend;
 
 if(CB_MOD)

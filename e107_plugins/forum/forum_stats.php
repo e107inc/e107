@@ -365,7 +365,7 @@ class forumStats
 		{
 			$text_3 .= "<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
 			<td style='width: 50%;' class='forumheader3'>".$this->showBar($ma['percentage'])."
@@ -399,7 +399,7 @@ class forumStats
 		{
 			$text_4 .= "<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
 			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
@@ -430,7 +430,7 @@ class forumStats
 			$text_5 .= "
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
 			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
@@ -548,7 +548,7 @@ class forumStats
 
 					$text .= "<tr>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::url('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_plugin_forum_posts']}</td>
 					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
 					</tr>";
@@ -619,21 +619,21 @@ class forumStats
 			{
 				if ($row['user_name'])
 				{
-					$POSTER = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
+					$POSTER = "<a href='".e107::url('user/profile/view', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
 				}
 				else
 				{
 					$POSTER = $row['thread_user_anon'];
 				}
 
-				$LINKTOTHREAD = e107::getUrl()->create('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-				$LINKTOFORUM = e107::getUrl()->create('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+				$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
+				$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
 
 				$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 
 				if ($row['user_last'])
 				{
-					$LASTPOST = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
+					$LASTPOST = "<a href='".e107::url('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
 				}
 				else
 				{

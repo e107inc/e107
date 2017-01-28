@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Gallery" lan="LAN_PLUGIN_GALLERY_TITLE" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Gallery" lan="LAN_PLUGIN_GALLERY_TITLE" version="1.1" date="2016-03-30" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
 	<description lan="LAN_PLUGIN_GALLERY_DIZ">A simple image gallery</description>
 	<category>content</category>
@@ -23,5 +23,27 @@
 		<pref name="slideshow_freq">4000</pref>
 		<pref name="slideshow_effect">scrollHorz</pref>	
 		<pref name="perpage">12</pref>
+		<pref name="orderby">media_id DESC</pref>
+		<pref name="pp_global">0</pref>
+		<pref name="pp_hook">data-gal</pref>
+		<pref name="pp_animation_speed">fast</pref>
+		<pref name="pp_slideshow">5000</pref>
+		<pref name="pp_autoplay_slideshow">0</pref>
+		<pref name="pp_opacity">0.80</pref>
+		<pref name="pp_show_title">1</pref>
+		<pref name="pp_allow_resize">1</pref>
+		<pref name="pp_default_width">500</pref>
+		<pref name="pp_default_height">344</pref>
+		<pref name="pp_counter_separator_label">/</pref>
+		<pref name="pp_theme">pp_default</pref>
+		<pref name="pp_horizontal_padding">20</pref>
+		<pref name="pp_hideflash">0</pref>
+		<pref name="pp_wmode">opaque</pref>
+		<pref name="pp_autoplay">1</pref>
+		<pref name="pp_modal">0</pref>
+		<pref name="pp_deeplinking">0</pref>
+		<pref name="pp_overlay_gallery">0</pref>
+		<pref name="pp_keyboard_shortcuts">1</pref>
+		<pref name="pp_ie6_fallback">1</pref>
 	</pluginPrefs>
 </e107Plugin>

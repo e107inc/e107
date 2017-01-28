@@ -97,7 +97,7 @@ Variables relating to DB values all begin 'mail_' - others are internal (volatil
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');		// May be needed by anything loading this class
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');		// May be needed by anything loading this class
 
 define('MAIL_STATUS_SENT', 0);			// Mail sent. Email handler happy, but may have bounced (or may be yet to bounce)
 define('MAIL_STATUS_BOUNCED', 1);
@@ -216,9 +216,19 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function __construct($overrides = FALSE)
+	public function __construct($overrides = array())
 	{
 		$this->e107 = e107::getInstance();
+
+		$pref = e107::pref('core');
+
+		$bulkmailer = (!empty($pref['bulkmailer'])) ? $pref['bulkmailer'] : $pref['mailer'];
+
+	//	if($overrides === false)
+	//	{
+			$overrides['mailer'] = $bulkmailer;
+	//	}
+
 		$this->mailOverrides = $overrides;
 		
 		if(deftrue('e_DEBUG'))
@@ -247,7 +257,7 @@ class e107MailManager
 	 *
 	 * @return void
 	 */
-	public function mailToDb(&$data, $addMissing = FALSE)
+	public function mailToDb(&$data, $addMissing = false)
 	{
 		$res = array();
 		$res1 = array();
@@ -745,10 +755,9 @@ class e107MailManager
 
 		}
 
-	//	else
-		{
-			$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
-		}
+
+		$result = $this->mailer->sendEmail($email['mail_recipient_email'], $email['mail_recipient_name'], $mailToSend, TRUE);
+
 
 		if($this->debugMode)
 		{
@@ -1179,13 +1188,25 @@ class e107MailManager
 	 */
 	public function mailAddNoDup($handle, $mailRecip, $initStatus = MAIL_STATUS_TEMP, $priority = self::E107_EMAIL_PRIORITY_LOW)
 	{
+
 		if (($handle <= 0) || !is_numeric($handle)) return FALSE;
 		if (!isset($this->mailCounters[$handle])) return 'nocounter';
+
 		$this->checkDB(1);			// Make sure DB object created
-		$result = $this->db->db_Select('mail_recipients', 'mail_target_id', "`mail_detail_id`={$handle} AND `mail_recipient_email`='{$mailRecip['mail_recipient_email']}'");
-		if ($result === FALSE)
+
+		if(empty($mailRecip['mail_recipient_email']))
 		{
-			return FALSE;
+			e107::getMessage()->addError("Empty Recipient Email");
+			return false;
+		}
+
+
+		$result = $this->db->select('mail_recipients', 'mail_target_id', "`mail_detail_id`={$handle} AND `mail_recipient_email`='{$mailRecip['mail_recipient_email']}'");
+
+
+		if ($result === false)
+		{
+			return false;
 		}
 		elseif ($result != 0)
 		{
@@ -1195,8 +1216,10 @@ class e107MailManager
 		$mailRecip['mail_status'] = $initStatus;
 		$mailRecip['mail_detail_id'] = $handle;
 		$mailRecip['mail_send_date'] = time();
-		$data = $this->targetToDb($mailRecip);							// Convert internal types
-		if ($this->db->db_Insert('mail_recipients', array('data' => $data, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'])))
+
+		$data = $this->targetToDb($mailRecip);
+							// Convert internal types
+		if ($this->db->insert('mail_recipients', array('data' => $data, '_FIELD_TYPES' => $this->dbTypes['mail_recipients'])))
 		{
 			$this->mailCounters[$handle]['add']++;
 		}
@@ -1310,7 +1333,7 @@ class e107MailManager
 		
 		if (!$this->db->update('mail_content',$query))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_content: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		
@@ -1319,7 +1342,7 @@ class e107MailManager
 		//	echo "Update individual emails: {$query}<br />";
 		if (FALSE === $this->db->update('mail_recipients',$query))
 		{
-			$this->e107->admin_log->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
+			e107::getLog()->e_log_event(10,-1,'MAIL','Activate/hold mail','mail_recipient: '.$query.'[!br!]Fail: '.$this->db->mySQLlastErrText,FALSE,LOG_TO_ROLLING);
 			return FALSE;
 		}
 		return TRUE;
@@ -1788,7 +1811,7 @@ class e107MailManager
 		
 		if (!is_array($recipientData))
 		{
-			$recipientData = array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData);
+			$recipientData = array(array('mail_recipient_email' => $recipientData, 'mail_recipient_name' => $recipientData));
 		}
 
 		$emailData['mail_content_status'] = MAIL_STATUS_TEMP;
@@ -1809,7 +1832,7 @@ class e107MailManager
 		
 		if (!isset($emailData['mail_overrides']))
 		{
-			$emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
+			// $emailData['mail_overrides'] = $ourTemplate->lastTemplateData['email_overrides'];
 		}
 		
 		if(!empty($emailData['template'])) // Quick Fix for new email template standards. 

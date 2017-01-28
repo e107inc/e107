@@ -23,7 +23,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'log/languages/'.e_LANGUAGE."_log_help.php");
+e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE."_log_help.php");
 
 if (e_QUERY) list($action,$junk) = explode('.',e_QUERY); else $action = 'list';
 

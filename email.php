@@ -23,7 +23,7 @@ if (!check_class(varset($pref['email_item_class'],e_UC_MEMBER)))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 

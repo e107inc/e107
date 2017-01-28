@@ -75,3 +75,6 @@ li.faq-listall-loop {
     padding: 10px;
     border-radius: 5px;
 }
+
+.faq-char-limit { text-align:right }
+

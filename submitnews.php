@@ -15,7 +15,7 @@ if(!empty($_POST) && !isset($_POST['e-token']))
 	$_POST['e-token'] = '';
 } 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(HEADERF);
 
@@ -27,7 +27,7 @@ if (!isset($pref['subnews_class']))
 
 if (!check_class($pref['subnews_class']))
 {
-	$ns->tablerender(LAN_UI_403_TITLE_ERROR, LAN_UI_403_BODY_ERROR);
+	e107::getRender()->tablerender(NWSLAN_12, NWSLAN_11);
 	require_once(FOOTERF);
 	exit;
 }
@@ -91,8 +91,8 @@ class submitNews
 
 		$submitnews_user  = (USER ? USERNAME  : trim($tp->toDB($_POST['submitnews_name'])));
 		$submitnews_email = (USER ? USEREMAIL : trim(check_email($tp->toDB($_POST['submitnews_email']))));
-		$submitnews_title = $tp->toDB($_POST['submitnews_title']);
-		$submitnews_item  = $tp->toDB($_POST['submitnews_item']);
+		$submitnews_title = $tp->filter($_POST['submitnews_title']);
+		$submitnews_item  = $tp->filter($_POST['submitnews_item']);
 	//	$submitnews_item  = str_replace("src=&quot;e107_images", "src=&quot;".SITEURL."e107_images", $submitnews_item);
 		$submitnews_file  = "";
 		$submitnews_error = false;
@@ -175,16 +175,21 @@ class submitNews
 		{
 
 			$insertQry = array(
-				'submitnews_id'         => 0,
-				'submitnews_name'       => $submitnews_user,
-				'submitnews_email'      => $submitnews_email,
-				'submitnews_title'      => $submitnews_title,
-				'submitnews_category'   => intval($_POST['cat_id']),
-				'submitnews_item'       => $submitnews_item,
-				'submitnews_datestamp'  => time(),
-				'submitnews_ip'         => $ip,
-				'submitnews_auth'       => '0',
-				'submitnews_file'       => implode(',',$submitnews_filearray),
+				'submitnews_id'             => 0,
+				'submitnews_name'           => $submitnews_user,
+				'submitnews_email'          => $submitnews_email,
+				'submitnews_user'           => USERID,
+				'submitnews_title'          => $submitnews_title,
+				'submitnews_category'       => intval($_POST['cat_id']),
+				'submitnews_item'           => $submitnews_item,
+				'submitnews_datestamp'      => time(),
+				'submitnews_ip'             => $ip,
+				'submitnews_auth'           => '0',
+				'submitnews_file'           => implode(',',$submitnews_filearray),
+				'submitnews_keywords'       => $tp->filter($_POST['submitnews_keywords'], 'str'),
+                'submitnews_description'    => $tp->filter($_POST['submitnews_description'], 'str'),
+                'submitnews_summary'        => $tp->filter($_POST['submitnews_summary'], 'str'),
+                'submitnews_media'          => json_encode($_POST['submitnews_media'],JSON_PRETTY_PRINT)
 			);
 
 			if(!$sql->insert("submitnews", $insertQry))
@@ -224,6 +229,7 @@ class submitNews
 		$sql = e107::getDb();
 		$ns = e107::getRender();
 		$pref = e107::pref('core');
+		$frm = e107::getForm();
 
 		$text = "";
 
@@ -293,6 +299,30 @@ class submitNews
 			</tr>
 			";
 
+
+
+			/*  submitnews_keywords  varchar(255) NOT NULL default '',
+  submitnews_description text NOT NULL,
+  submitnews_summary text NOT NULL,
+  submitnews_media text NOT NULL,
+			*/
+			$fields = array();
+			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
+			$fields['submitnews_summary']       = array('title'=>SUBNEWSLAN_10, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
+			$fields['submitnews_description']   = array('title'=>SUBNEWSLAN_11, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
+			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
+
+
+			foreach($fields as $key=>$fld)
+			{
+				$text .= "<tr><td style='width:20%' class='forumheader3'>
+							".$fld['title']
+							."</td>
+							<td style='width:80%' class='forumheader3'>".$frm->renderElement($key, '', $fld)."</td>
+						</tr>";
+
+			}
+
 			if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS)
 			{
 				  $text .= "
@@ -332,6 +362,36 @@ class submitNews
 
 			$ns->tablerender(LAN_136, $text);
 
+
+	}
+
+
+
+
+}
+
+class submitNewsForm extends e_form
+{
+
+	function submitnews_media($cur, $mode, $att)
+	{
+		$text = '';
+
+		$placeholders = array(
+			'eg. http://www.youtube.com/watch?v=Mxhn11_fzJQ',
+			'eg. http://path-to-image/image.jpg',
+			'eg. http://path-to-audio/file.mp3'
+		);
+
+		for($i = 0; $i <8; $i++)
+		{
+			$help = (isset($placeholders[$i])) ? $placeholders[$i] : '';
+			$text .= "<div class='form-group'>";
+			$text .= $this->text('submitnews_media['.$i.']', $_POST['submitnews_media'][$i], 255, array('placeholder'=>$help) );
+			$text .= "</div>";
+		}
+
+		return $text;
 
 	}
 

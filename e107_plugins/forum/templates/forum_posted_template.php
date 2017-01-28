@@ -66,13 +66,13 @@ $FORUMREPLYPOSTED = "
 $FORUM_POSTED_TEMPLATE['poll']      =   $FORUMPOLLPOSTED;
 
 $FORUM_POSTED_TEMPLATE['thread']    =   "<div class='alert alert-success'>
-										<h4>New topic created.</h4>
+										<h4>".LAN_FORUM_8029."</h4>
 										<a class='btn btn-primary' href='{THREADLINK}'>".LAN_FORUM_3048."</a>
 										<a class='btn btn-primary' href='{FORUMLINK}'>".LAN_FORUM_2022."</a>
 										</div>";
 
 $FORUM_POSTED_TEMPLATE['reply']     =   "<div class='alert alert-success'>
-										<h4>New reply created.</h4>
+										<h4>".LAN_FORUM_3049."</h4>
 										<a class='btn btn-primary' href='{THREADLINK}'>".LAN_FORUM_3048."</a>
 										<a class='btn btn-primary' href='{FORUMLINK}'>".LAN_FORUM_2022."</a>
 										</div>";

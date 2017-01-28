@@ -128,7 +128,7 @@ $sc_style['USER_SENDPM']['post'] = "</div><div class='f-right'>".LAN_USER_62."</
 
 // Determine which other bits are installed; let photo span those rows (can't do signature - will vary with user)
 $span = 4;
-if ($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
+if (e107::getParser()->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes)) $span++;
 $span = " rowspan='".$span."' ";
 
 //$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3 center middle' style='width:20%'>";
@@ -222,17 +222,17 @@ $USER_EMBED_USERPROFILE_TEMPLATE = "
 
 
 // Convert Shortcode Wrappers from v1.x to v2.x standards.
-$USER_TEMPLATE['view'] 				        =   $USER_FULL_TEMPLATE;
-$USER_WRAPPER['view']['USER_COMMENTS_LINK'] =	$sc_style['USER_COMMENTS_LINK']['pre']."{---}".$sc_style['USER_COMMENTS_LINK']['post'];
-$USER_WRAPPER['view']['USER_SIGNATURE'] 	=	$sc_style['USER_SIGNATURE']['pre']."{---}".$sc_style['USER_SIGNATURE']['post'];
-$USER_WRAPPER['view']['USER_UPDATE_LINK'] 	=	$sc_style['USER_UPDATE_LINK']['pre']."{---}".$sc_style['USER_UPDATE_LINK']['post'];
-$USER_WRAPPER['view']['USER_FORUM_LINK'] 	=	$sc_style['USER_FORUM_LINK']['pre']."{---}".$sc_style['USER_FORUM_LINK']['post'];
-$USER_WRAPPER['view']['USER_RATING'] 		=	$sc_style['USER_RATING']['pre']."{---}".$sc_style['USER_RATING']['post'];
-$USER_WRAPPER['view']['USER_SENDPM'] 		=	$sc_style['USER_SENDPM']['pre']."{---}".$sc_style['USER_SENDPM']['post'];
-$USER_WRAPPER['view']['USER_LOGINNAME'] 	=	$sc_style['USER_LOGINNAME']['pre']."{---}";
+$USER_TEMPLATE['view'] 				        = $USER_FULL_TEMPLATE;
+$USER_WRAPPER['view']['USER_COMMENTS_LINK'] = $sc_style['USER_COMMENTS_LINK']['pre']."{---}".$sc_style['USER_COMMENTS_LINK']['post'];
+$USER_WRAPPER['view']['USER_SIGNATURE'] 	= $sc_style['USER_SIGNATURE']['pre']."{---}".$sc_style['USER_SIGNATURE']['post'];
+$USER_WRAPPER['view']['USER_UPDATE_LINK'] 	= $sc_style['USER_UPDATE_LINK']['pre']."{---}".$sc_style['USER_UPDATE_LINK']['post'];
+$USER_WRAPPER['view']['USER_FORUM_LINK'] 	= $sc_style['USER_FORUM_LINK']['pre']."{---}".$sc_style['USER_FORUM_LINK']['post'];
+$USER_WRAPPER['view']['USER_RATING'] 		= $sc_style['USER_RATING']['pre']."{---}".$sc_style['USER_RATING']['post'];
+$USER_WRAPPER['view']['USER_SENDPM'] 		= $sc_style['USER_SENDPM']['pre']."{---}".$sc_style['USER_SENDPM']['post'];
+$USER_WRAPPER['view']['USER_LOGINNAME'] 	= $sc_style['USER_LOGINNAME']['pre']."{---}";
 
-$USER_WRAPPER['view']['USER_COMMENTPOSTS'] 	=	$sc_style['USER_COMMENTPOSTS']['pre']."{---}";
-$USER_WRAPPER['view']['USER_COMMENTPER'] 	=	$sc_style['USER_COMMENTPER']['pre']."{---}".$sc_style['USER_COMMENTPER']['post'];
+$USER_WRAPPER['view']['USER_COMMENTPOSTS'] 	= $sc_style['USER_COMMENTPOSTS']['pre']."{---}";
+$USER_WRAPPER['view']['USER_COMMENTPER'] 	= $sc_style['USER_COMMENTPER']['pre']."{---}".$sc_style['USER_COMMENTPER']['post'];
 
 $USER_TEMPLATE['addon'] 			        = $USER_EMBED_USERPROFILE_TEMPLATE;
 $USER_TEMPLATE['extended']['start']         = $EXTENDED_CATEGORY_START;
@@ -254,20 +254,20 @@ if(deftrue('BOOTSTRAP'))
 
 
 	$USER_TEMPLATE['addon']  = '
-		<p class="row">
-			<span class="col-xs-12 col-md-6">{USER_ADDON_LABEL}</span>
-			<span class="col-xs-12 col-md-6">{USER_ADDON_TEXT}</span>
-		 </p>
+		<div class="row">
+			<div class="col-xs-12 col-md-4">{USER_ADDON_LABEL}</div>
+			<div class="col-xs-12 col-md-8">{USER_ADDON_TEXT}</div>
+		 </div>
 		';
 
 	$USER_TEMPLATE['extended']['start'] = '';
 	$USER_TEMPLATE['extended']['end']   = '';
 
 	$USER_TEMPLATE['extended']['item'] = '
-		<p class="row">
-		    <span class="col-xs-12 col-md-6">{EXTENDED_NAME}</span>
-		    <span class="col-xs-12 col-md-6">{EXTENDED_VALUE}</span>
-		<p>
+		<div class="row {EXTENDED_ID}">
+		    <div class="ue-label col-xs-12 col-md-4">{EXTENDED_NAME}</div>
+		    <div class="ue-value col-xs-12 col-md-8">{EXTENDED_VALUE}</div>
+		</div>
 		';
 
 
@@ -316,22 +316,24 @@ if(deftrue('BOOTSTRAP'))
 
 
 	// View shortcode wrappers.
-	$USER_WRAPPER['view']['USER_COMMENTPOSTS']  = '<span class="col-xs-12 col-md-6">'.LAN_USER_68.'</span><span class="col-xs-12 col-md-6">{---}';
-	$USER_WRAPPER['view']['USER_COMMENTPER']    = ' ( {---}% )</span>';
-	$USER_WRAPPER['view']['USER_SIGNATURE']     = '<div>{---}</div>';
-	$USER_WRAPPER['view']['USER_RATING']        = '<div>{---}</div>';
-	$USER_WRAPPER['view']['USER_SENDPM']         = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_COMMENTPOSTS']      = '<div class="col-xs-12 col-md-4">'.LAN_USER_68.'</div><div class="col-xs-12 col-md-8">{---}';
+	$USER_WRAPPER['view']['USER_COMMENTPER']        = ' ( {---}% )</div>';
+	$USER_WRAPPER['view']['USER_SIGNATURE']         = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_RATING']            = '<div>{---}</div>';
+	$USER_WRAPPER['view']['USER_SENDPM']            = '<div>{---}</div>';
+	$USER_WRAPPER['view']['PROFILE_COMMENTS']       = '<div class="panel panel-default clearfix">{---}';
+	$USER_WRAPPER['view']['PROFILE_COMMENT_FORM']   = '{---} </div>';
 
 	$USER_TEMPLATE['view'] 				= '
 	{SETIMAGE: w=600}
-	<div class="row">
+	<div class="user-profile row">
 	    <div class="col-md-12">
 	        <div class="panel panel-default panel-profile clearfix">
 	            <div class="panel-heading" style="height:180px; background-size: cover;background-image: url( {USER_PHOTO: type=url});">
 	                <h5 class="user-id">'.LAN_USER_58.' {USER_ID}</h5>
 	            </div>
 	            <div class="panel-body text-center">
-	                {SETIMAGE: w=200}
+	                {SETIMAGE: w=200&h=200&crop=1}
 	                {USER_PICTURE: shape=circle&link=1}
 	                <div class="profile-header">
 	                    <h4>{USER_NAME}</h4>
@@ -341,17 +343,17 @@ if(deftrue('BOOTSTRAP'))
 	                </div>
 	            </div>
 	            <div class="panel-body">
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_63.'</span><span class="col-xs-12 col-md-6">{USER_REALNAME}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_02.'</span><span class="col-xs-12 col-md-6">{USER_LOGINNAME}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_60.'</span><span class="col-xs-12 col-md-6">{USER_EMAIL}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_54.'</span><span class="col-xs-12 col-md-6">{USER_LEVEL}</span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_65.'</span><span class="col-xs-12 col-md-6">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_59.'</span><span class="col-xs-12 col-md-6">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></span></p>
-	                <p class="row"><span class="col-xs-12 col-md-6">'.LAN_USER_66.'</span><span class="col-xs-12 col-md-6">{USER_VISITS}</span></p>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_63.'</div><div class="col-xs-12 col-md-8">{USER_REALNAME}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_02.'</div><div class="col-xs-12 col-md-8">{USER_LOGINNAME}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_60.'</div><div class="col-xs-12 col-md-8">{USER_EMAIL}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_54.'</div><div class="col-xs-12 col-md-8">{USER_LEVEL}</div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_65.'</div><div class="col-xs-12 col-md-8">{USER_LASTVISIT}<br /><small class="padding-left">{USER_LASTVISIT_LAPSE}</small></div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_59.'</div><div class="col-xs-12 col-md-8">{USER_JOIN}<br /><small class="padding-left">{USER_DAYSREGGED}</small></div></div>
+	                <div class="row"><div class="col-xs-12 col-md-4">'.LAN_USER_66.'</div><div class="col-xs-12 col-md-8">{USER_VISITS}</div></div>
 	                {USER_ADDONS}
-	                <p class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</p>
+	                <div class="row">{USER_COMMENTPOSTS} {USER_COMMENTPER}</div>
 	                {USER_EXTENDED_ALL}
-	                <p class="row"></p>
+	                <div class="row"></div>
 	            </div>
 	            <div class="panel-body text-center">
 	                {USER_UPDATE_LINK}
@@ -370,10 +372,10 @@ if(deftrue('BOOTSTRAP'))
 	                </ul>
 	            </div>
 	        </div>
-	        <div class="panel panel-default clearfix">
+
 	            {PROFILE_COMMENTS}
 	            {PROFILE_COMMENT_FORM}
-	        </div>
+
 	    </div>
 	</div>
 	';

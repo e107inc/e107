@@ -440,13 +440,24 @@ if (!defined('E_16_FAILEDLOGIN')) {
 define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 
+/*
+	define("ADMIN_TRUE_ICON", "<i class='fa fa-check text-success'></i>");
+	define("ADMIN_FALSE_ICON", "<i class='fa fa-times text-danger'></i>");
+	define("ADMIN_WARNING_ICON", "<i class='fa fa-warning text-warning'></i>");
+
+	define("ADMIN_EDIT_ICON", "<i class='fa fa-edit fa-2x fa-fw'></i>");
+	define("ADMIN_DELETE_ICON", "<i class='fa fa-trash fa-2x fa-fw'></i>");
+	define("ADMIN_EXECUTE_ICON", "<i class='fa fa-power-off fa-2x fa-fw'></i>");
+	define("ADMIN_SORT_ICON", "<i class='fa fa-sort fa-2x fa-fw'></i>");
+*/
 
 	define("ADMIN_TRUE_ICON", "<i class='S16 e-true-16'></i>");
 	define("ADMIN_FALSE_ICON", "<i class='S16 e-false-16'></i>");
 	define("ADMIN_WARNING_ICON", "<i class='S16 e-warning-16'></i>");
-
 	define("ADMIN_EDIT_ICON", "<i class='S32 e-edit-32'></i>");
 	define("ADMIN_DELETE_ICON", "<i class='S32 e-delete-32'></i>");
+
+
 
 	define("ADMIN_ADD_ICON", "<i class='S32 e-add-32'></i>");
 	define("ADMIN_INFO_ICON", "<i class='S16 e-info-16'></i>");
@@ -461,6 +472,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 	define("ADMIN_DOWN_ICON", "<i class='S32 e-down-32'></i>");
 	define("ADMIN_SORT_ICON", "<i class='S32 e-sort-32'></i>");
 	define("ADMIN_EXECUTE_ICON", "<i class='S32 e-execute-32'></i>");
+
 
 
 	// FOR BC 

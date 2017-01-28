@@ -78,9 +78,11 @@ class news_sitelink // include plugin-folder in the name.
 		{		
 			while($row = $sql->fetch())
 			{
+
+				$row['id'] = $row['category_id'];
 				$sublinks[] = array(
 					'link_name'			=> $row['category_name'],
-					'link_url'			=> e107::getUrl()->create($urlPath, $row, array('allow' => 'category_sef,category_name,category_id')), // 'news.php?extend.'.$row['news_id'],
+					'link_url'			=> e107::getUrl()->create($urlPath, $row, array('allow' => 'id,category_sef,category_name,category_id')), // 'news.php?extend.'.$row['news_id'],
 					'link_description'	=> $row['category_meta_description'],
 					'link_button'		=> '',
 					'link_category'		=> '',

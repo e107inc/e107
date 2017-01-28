@@ -15,12 +15,12 @@ if(deftrue('BOOTSTRAP'))
 elseif (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL)) 
 {
 	$icon = THEME_ABS."images/".ICONMAIL;
-	$img = "<img src='".$icon."' style='border:0' alt='{$parms[0]}' />";
+	$img = "<img src='".$icon."' style='border:0' alt='{$parms[0]}' class='icon S16 action' />";
 }
 else
 {
 	$icon = e_IMAGE_ABS."generic/email.png";
-	$img = "<img src='".$icon."' style='border:0' alt='{$parms[0]}' />";
+	$img = "<img src='".$icon."' style='border:0' alt='{$parms[0]}' class='icon S16 action' />";
 }
 
 // message^source^other_parms

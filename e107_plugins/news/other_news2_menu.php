@@ -32,20 +32,40 @@ $ix = new news;
 
 if(!empty($parm))
 {
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
 }
 
 if(!$OTHERNEWS2_STYLE) 
 {
 	if(deftrue('BOOTSTRAP')) // v2.x
 	{
-		define("OTHERNEWS_COLS",false);
+		if(!defined("OTHERNEWS_COLS"))
+		{
+			define("OTHERNEWS_COLS",false);
+		}
+
 		$template = e107::getTemplate('news', 'news_menu', 'other2');
 		$OTHERNEWS2_STYLE = $template['item'];
 
 		if(!empty($parms['caption']))
 		{
-			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
+			if(isset($parms['caption'][e_LANGUAGE]))
+			{
+				$template['caption'] =  e107::getParser()->toHtml($parms['caption'][e_LANGUAGE], true,'TITLE');
+			}
+			else
+			{
+				$template['caption'] =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
+			}
+
+
 		}
 	}
 	else //v1.x
@@ -82,6 +102,16 @@ if(!$OTHERNEWS2_STYLE)
 		";
 	}
 }
+
+
+$template['caption'] .= e107::getForm()->instantEditButton(e_ADMIN_ABS."newspost.php?searchquery=&filter_options=news_render_type__3", 'H');
+
+
+
+
+
+
+
 
 if(!defined("OTHERNEWS2_LIMIT")){
 //	define("OTHERNEWS2_LIMIT",5);

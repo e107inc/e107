@@ -22,7 +22,7 @@ if (!getperms("L"))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_lancheck.php');
+e107::coreLan('lancheck', true);
 
 $e_sub_cat = 'language';
 // require_once("auth.php");
@@ -139,7 +139,7 @@ if(isset($_POST['submit']))
 	}
 	else
 	{
-		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24;
+		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_SUMMARY;
 		$mes->addSuccess(sprintXXX(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
 	}
 	fclose($writeit);
@@ -242,7 +242,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 
 	$text .= "
 		<fieldset id='core-lancheck-theme'>
-			<legend>".LAN_CHECK_22."</legend>
+			<legend>".LAN_THEME."</legend>
 			<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 25%' />
@@ -286,7 +286,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 	}
 	
 
-	$ns->tablerender(LAN_CHECK_25, $mes->render(). $text);
+	$ns->tablerender(LAN_THEMES, $mes->render(). $text);
 
 
 	
@@ -739,7 +739,7 @@ class lancheck
 	 * @param string $filter
 	 * @return array|bool
 	 */
-	private function getFilePaths($path, $language, $restrict=array())
+	public function getFilePaths($path, $language, $restrict=array())
 	{
 		$fl = e107::getFile();
 
@@ -773,7 +773,7 @@ class lancheck
 			{
 				foreach($restrict as $accept)
 				{
-					if(strpos($p, $accept)!==false)
+					if(strpos($p, '/'.$accept.'/')!==false)
 					{
 
 						$newlist[] = $p;
@@ -1057,7 +1057,7 @@ class lancheck
 		// Themes  -------------
 		$theme_header = "<table class='table table-striped'>
 		<tr>
-		<td class='fcaption'>".LAN_CHECK_22."</td>
+		<td class='fcaption'>".LAN_THEME."</td>
 		<td class='fcaption'>".LAN_CHECK_16."</td>
 		<td class='fcaption'>".$lan."</td>
 		<td class='fcaption'>".LAN_OPTIONS."</td></tr>";
@@ -1114,7 +1114,7 @@ class lancheck
 			
 		$mes->add($message, $mesStatus);	
 			
-	//	$ns -> tablerender(LAN_CHECK_24.": ".$lan,$message);
+	//	$ns -> tablerender(LAN_SUMMARY.": ".$lan,$message);
 
 
 
@@ -1122,10 +1122,10 @@ class lancheck
 		$ret['text'] = $mes->render();
 
 		$tabs = array(
-			'core'  => array('caption'=>'Front', 'text'=> $core_text),
-			'admin'  => array('caption'=> LAN_ADMIN, 'text'=>$core_admin),
-			'plugin'  => array('caption'=> ADLAN_CL_7, 'text'=>$plug_text),
-			'theme'  => array('caption'=> LAN_CHECK_25, 'text'=>$theme_text),
+			'core'   => array('caption'=> LAN_CHECK_26, 'text'=>$core_text),
+			'admin'  => array('caption'=> LAN_ADMIN,    'text'=>$core_admin),
+			'plugin' => array('caption'=> ADLAN_CL_7,   'text'=>$plug_text),
+			'theme'  => array('caption'=> LAN_THEMES,   'text'=>$theme_text),
 		);
 
 		$ret['text'] .= e107::getForm()->tabs($tabs);
@@ -1137,7 +1137,7 @@ class lancheck
 		$ns -> tablerender(LANG_LAN_21.SEP.$lan.SEP.LAN_CHECK_2, $core_text);
 		$ns -> tablerender(LAN_CHECK_3.": ".$lan."/admin", $core_admin);
 		$ns -> tablerender(ADLAN_CL_7, $plug_text);
-		$ns -> tablerender(LAN_CHECK_25, $theme_text);	*/
+		$ns -> tablerender(LAN_THEMES, $theme_text);	*/
 		//TODO Add a return statement here.
 	}
 	
@@ -1285,7 +1285,7 @@ class lancheck
 	{
 		$tp = e107::getParser();
 	//	$sql->db_Mark_Time('Start Get Core Lan Phrases English');
-		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
+		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,"English");
 		
 	//	$sql->db_Mark_Time('End Get Core Lan Phrases English');
 		$check = $this->get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
@@ -1544,7 +1544,7 @@ class lancheck
 
 		foreach($lang_array as $k=> $f)
 		{
-			$path = str_replace(e_LANGUAGEDIR.e_LANGUAGE."/", "", $f['path'].$f['fname']);
+			$path = str_replace(e_LANGUAGEDIR.$lang."/", "", $f['path'].$f['fname']);
 
 			if(in_array($path, $this->deprecatedFiles))
 			{
@@ -1847,12 +1847,12 @@ class lancheck
 			$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
 			$hglt1=""; $hglt2="";
 			if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
-				$hglt1="<span class='label label-danger label-important e-tip' title='Missing' >";
+				$hglt1="<span class='label label-danger label-important e-tip' title='".LAN_MISSING."'>";//Missing
 				$hglt2="</span>";
 			}
 			elseif($trans['tran'][$sk] == $trans['orig'][$sk])
 			{
-				$hglt1="<span class='label label-warning e-tip' title='Identical' >";
+				$hglt1="<span class='label label-warning e-tip' title='".LAN_CHECK_28."'>";//Identical
 				$hglt2="</span>";
 			}
 			$text .="<tr>

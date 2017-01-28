@@ -30,7 +30,7 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_upload_handler.php');
 
 //define("UH_DEBUG",TRUE);
 
@@ -195,6 +195,8 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 	
 	foreach ($files['name'] as $key=>$name)
 	{
+		$name = filter_var($name, FILTER_SANITIZE_STRING);
+
 		$first_error = FALSE; // Clear error flag
 		if (($name != '') || $files['size'][$key]) // Need this check for things like file manager which allow multiple possible uploads
 		{
@@ -300,7 +302,9 @@ function process_uploaded_files($uploaddir, $fileinfo = FALSE, $options = NULL)
 
 			if (!$first_error)  // All tests passed - can store it somewhere
 			{
-				$uploaded[$c] = e107::getFile()->get_file_info($uploadfile,true);
+				// File upload broken - temp file renamed.
+				// FIXME - method starting with 'get' shouldn't do system file changes.
+				$uploaded[$c] = e107::getFile()->get_file_info($uploadfile, true, false);
 
 				$uploaded[$c]['name'] = $name;
 				$uploaded[$c]['rawname'] = $raw_name;
@@ -453,7 +457,7 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
  *	This is the 'legacy' interface, which handles various special cases etc.
  *	It was the only option in E107 0.7.8 and earlier, and is still used in some places in core.
  *	It also attempts to return in the same way as the original, especially when any errors occur
- *
+ *  @deprecated
  *	@param string $uploaddir - target directory for file. Defaults to e_FILE/public
  *	@param boolean|string $avatar - sets the 'type' or destination of the file:
  * 				FALSE 			- its a 'general' file
@@ -471,7 +475,14 @@ function handle_upload_messages(&$upload_array, $errors_only = TRUE, $use_handle
  *  								otherwise returns an array with per-file error codes as appropriate.
  *	 On exit, F_MESSAGE is defined with the success/failure message(s) that have been displayed - one file per line
  */
-
+/**
+ * @Deprecated use e107::getFile()->getUploaded();
+ * @param $uploaddir
+ * @param bool|false $avatar
+ * @param string $fileinfo
+ * @param string $overwrite
+ * @return array|bool
+ */
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "", $overwrite = "")
 {
 	$admin_log = e107::getAdminLog();
@@ -645,6 +656,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 	// 3. Now do what we can based on file extension
 	switch ($file_ext)
 	{
+	
 		case 'jpg':
 		case 'gif':
 		case 'png':
@@ -652,8 +664,13 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		case 'pjpeg':
 		case 'bmp':
 		case 'swf':
+		case 'fla':
+		case 'flv':
 		case 'swc':
 		case 'psd':
+		case 'ai':
+		case 'eps':
+		case 'svg':
 		case 'tiff':
 		case 'jpc': // http://fileinfo.com/extension/jpc
 		case 'jpx': // http://fileinfo.com/extension/jpx
@@ -678,9 +695,19 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		case 'tar':
 		case 'bzip':
 		case 'pdf':
+		case 'doc':
+		case 'docx':
+		case 'xls':
+		case 'xlsx':
 		case 'rar':
 		case '7z':
 		case 'csv':
+		case 'mp3':
+		case 'wav':
+		case 'mp4':
+		case 'mpg':
+		case 'mpa':
+		case 'wma':
 		case 'wmv':
 		case 'flv': //Flash stream
 		case 'f4v': //Flash stream

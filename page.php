@@ -103,6 +103,7 @@ class pageClass
 
     public $pageOutput = array();   // Output storage - text and caption
     protected $renderMode;          // Page render mode to be used on view page
+    protected $templateID = null;
 	
 	function __construct($debug=FALSE)
 	{
@@ -577,9 +578,13 @@ class pageClass
 			$this->authorized = 'nf';
 			$this->template = e107::getCoreTemplate('page', 'default');
 		//	$this->batch = e107::getScBatch('page',null,'cpage')->setVars(new e_vars($ret))->setScVar('page', array()); ///Upgraded to setVars() array. (not using '$this->page')
-			
-			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page); 
-		
+
+
+
+
+
+			$this->batch = e107::getScBatch('page',null,'cpage')->setVars($this->page)->wrapper('page/'.$this->templateID);
+
 			
 			
 			define("e_PAGETITLE", $this->page['page_title']);
@@ -589,21 +594,41 @@ class pageClass
 
 		$this->page = $sql->fetch();
 
-		// setting override to true breaks default. 
-		$this->template = e107::getCoreTemplate('page', vartrue($this->page['page_template'], 'default'), true, true); 
+
+
+		// setting override to true breaks default.
+
+		$this->templateID = vartrue($this->page['page_template'], 'default');
+
+		$this->template = e107::getCoreTemplate('page', $this->templateID, true, true);
 		
 		if(!$this->template)
 		{
 			// switch to default
 			$this->template = e107::getCoreTemplate('page', 'default', false, false);
+			$this->templateID = 'default';
 		}
 
 		if(empty($this->template))
 		{
 			 $this->template = e107::getCoreTemplate('page', 'default');
+			 $this->templateID = 'default';
 		}
-		
+
+		$editable = array(
+				'table' => 'page',
+				'pid'   => 'page_id',
+				'perms' => '5',
+				'shortcodes' => array(
+					'cpagetitle' => array('field'=>'page_subtitle','type'=>'text', 'container'=>'span'),
+					'cpagebody' => array('field'=>'page_text','type'=>'html', 'container'=>'div'),
+				)
+		);
+
+
 		$this->batch = e107::getScBatch('page',null,'cpage');
+		$this->batch->wrapper('page/'.$this->templateID );
+		$this->batch->editable($editable);
 
 		$this->pageText = $this->page['page_text'];
 
@@ -653,9 +678,10 @@ class pageClass
 		$this->page['book_name']        = $this->getName($this->page['chapter_parent']);
 		// -----------------
 
+		e107::getEvent()->trigger('user_page_item_viewed',$this->page);
 
 		$this->batch->setVars($this->page);
-		
+
 		
 		define('e_PAGETITLE', eHelper::formatMetaTitle($this->page['page_title']));
 		if($this->page['page_metadscr']) define('META_DESCRIPTION', eHelper::formatMetaDescription($this->page['page_metadscr']));
@@ -767,6 +793,7 @@ class pageClass
 		$extend->message = e107::getMessage()->render();
         $tp = e107::getParser();
 
+
 		switch ($this->authorized) 
 		{
 			case 'class':
@@ -804,7 +831,7 @@ class pageClass
 	
 	public function renderPage($template, $vars = null)
 	{
-		
+
 		if(null === $vars) 
 		{
 			$ret = e107::getParser()->parseTemplate($template, true, $this->batch);

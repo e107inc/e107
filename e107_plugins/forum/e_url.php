@@ -43,6 +43,13 @@ class forum_url // plugin-folder + '_url'
 			'redirect'		=> '{e_PLUGIN}forum/forum.php?f=track',
 		);
 
+		$config['markread']  = array(
+			'sef'           => '^forum/markread/{forum_id}',
+			'regex'			=> 'forum/markread/([\d]*)',
+			'redirect'      => '{e_PLUGIN}forum/forum.php?f=mfar&amp;id=$1',
+			'legacy'        => '{e_PLUGIN}forum/forum.php?f=mfar&amp;id={forum_id}'
+		);
+
 		$config['post'] = array(
 			'regex'			=> '^forum/post/?',
 			'sef'			=> 'forum/post/',
@@ -52,11 +59,20 @@ class forum_url // plugin-folder + '_url'
 		// only create url  - parsed above.
 		$config['move'] = array(
 			'sef'           => 'forum/post/?f=move&amp;id={thread_id}',
+			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=move&amp;id={thread_id}'
+		);
+
+
+
+		$config['split'] = array(
+			'sef'           => 'forum/post/?f=split&amp;id={thread_id}&amp;post={post_id}',
+			'legacy'        => '{e_PLUGIN}forum/forum_post.php?f=split&amp;id={thread_id}&amp;post={post_id}'
 		);
 
 		$config['topic'] = array(
-			'regex'			=> '^forum/(.*)/(\d*)-([\w-]*)/?\??(.*)',
-			'sef'			=> 'forum/{forum_sef}/{thread_id}-{thread_sef}/',
+			'regex'         => 'forum\/([^\/]*)\/([\d]*)(?:\/|-)([\w-]*)/?\??(.*)',
+		//	'regex'			=> '^forum/(.*)/(\d*)(?:-|/)([\w-]*)/?\??(.*)',
+			'sef'			=> 'forum/{forum_sef}/{thread_id}/{thread_sef}/',
 			'redirect'		=> '{e_PLUGIN}forum/forum_viewtopic.php?id=$2&$4'
 		);
 /*
@@ -68,19 +84,21 @@ class forum_url // plugin-folder + '_url'
 		);
 */
 
-		$config['forum'] = array(
-			'regex'			=> '^forum/(.*)$',
-			'sef'			=> 'forum/{forum_sef}',
-			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1',
-			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
-		);
-
 		$config['index'] = array(
-			'regex'			=> '^forum/?$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'regex'			=> '^forum\/?$', 						// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> 'forum', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}forum/forum.php', 		// file-path of what to load when the regex returns true.
 
 		);
+
+
+		$config['forum'] = array(
+			'regex'			=> '^forum\/([^\/]*)\/?\??([^\/]*)?$',
+			'sef'			=> 'forum/{forum_sef}/',
+			'redirect'		=> '{e_PLUGIN}forum/forum_viewforum.php?sef=$1&$2',
+			'legacy'        => '{e_PLUGIN}forum/forum_viewforum.php?id={forum_id}'
+		);
+
 
 
 

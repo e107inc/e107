@@ -147,6 +147,7 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 /* User Profile css */
 .panel-profile .user-avatar {
 	max-width: 150px;
+	max-height: 150px;
 	margin-top: -90px;
 	margin-bottom: 15px;
 	border: 5px solid #fff;
@@ -178,8 +179,12 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
     border-top: 1px solid rgba(170,170,170,0.35);
     padding-top: 10px;
 }
+.panel-profile .panel-body div.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding: 10px 0;
+}
 
-
+.e-instant-edit { font-size: 10pt; position: absolute; right: 10px; text-align: right; display: inline-block; z-index:1000; margin-right:10px;	}
 
 
 
@@ -312,3 +317,25 @@ optgroup.level-2 { padding-left:0.7em }
 optgroup.level-3 { padding-left:2em }
 optgroup.level-4 { padding-left:3em }
 optgroup.level-5 { padding-left:4em }
+
+.online-menu-extended li, .online-menu li ul li { min-height: 40px; padding-top:8px}
+.online-menu-extended ul { padding-bottom:20px}
+.online-menu-extended span.online-menu-user { display:block; font-size:1.1em;margin-top:4px; line-height:1}
+.online-menu-extended-label { font-size:1.2em; }
+
+/* Emoticons */
+img.e-emoticon { vertical-align:middle; border:0; width:24px }
+
+.e-editable-front:hover { background-color:#FCF8E3 }
+.e-editable-front a:hover { background-color:#FCF8E3 }
+.e-editable-front:hover:after { content: "\f044"; z-index:10000; position:relative; top:0; right:-5px; margin-right:4px; padding-right:5px; font-family:'FontAwesome'; font-size:0.8em }
+
+
+#uiAlert    { z-index: 10001 }
+#uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
+
+div.e-debug { margin-top:50px; background-color: white }
+
+#login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
+#login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
+#login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }

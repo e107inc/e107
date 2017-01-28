@@ -81,7 +81,7 @@ class secure_image
 	//	$sql = e107::getDb();
 	//	$tp = e107::getParser();
 
-		if(!empty($_SESSION['secure_img'][$recnum]) && (intval($_SESSION['secure_img'][$recnum]) == $checkstr))
+		if(!empty($_SESSION['secure_img'][$recnum]) && $_SESSION['secure_img'][$recnum] === $checkstr )
 		{
 			unset($_SESSION['secure_img']);
 			return true;
@@ -109,7 +109,7 @@ class secure_image
 	 * @param $checkstr
 	 * @return bool|mixed|string
 	 */
-	function invalidCode($rec_num, $checkstr)
+	function invalidCode($rec_num=null, $checkstr=null)
 	{
 		if ($user_func = e107::getOverride()->check($this,'invalidCode'))
 		{

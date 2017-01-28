@@ -2,18 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/poll/templates/poll_template.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
-
+ 
 if (!defined('e107_INIT')) { exit; }
 
 /* ################################# */
@@ -233,8 +227,16 @@ $POLL_TEMPLATE['results']['end'] = "
 </div>
 ";
 
+/*	v2.x template for polls when user HAS been denied the ability to vote (userclass)	*/
 
-
+$POLL_TEMPLATE['denied']['start'] = $POLL_TEMPLATE['results']['start'];
+$POLL_TEMPLATE['denied']['item'] = $POLL_TEMPLATE['results']['item'];
+$POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{DISALLOWMESSAGE}</div>
+		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		 {COMMENTS} {OLDPOLLS}
+	</div>
+</div>
+";
 
 
 ?>

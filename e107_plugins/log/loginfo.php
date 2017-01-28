@@ -9,7 +9,7 @@
  * $Id$
 */
 
-if (!defined('log_INIT')) { exit; }
+if (!defined('LOGSTATS_INIT')) { exit; }
 
 $logIfile = e_LOG."logi_{$date}.php";
 $i_handle = fopen($logIfile, 'r+');

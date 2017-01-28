@@ -102,7 +102,14 @@ class core_news_sef_noid_url extends eUrlConfig
 				
 				case 'tag':				// news/tag/xxxx
 					$r[0] = 'tag';
-					$r[1] = $params['tag']; 
+					$r[1] = $params['tag'];
+					if($page) $parm = array('page' => $page);
+				break;
+
+				case 'author':				// news/author/xxxx
+					$r[0] = 'author';
+					$r[1] = $params['author'];
+					if($page) $parm = array('page' => $page);
 				break;
 				
 				case 'category':
@@ -117,7 +124,7 @@ class core_news_sef_noid_url extends eUrlConfig
 						// news/Category/Category-Name?page=xxx
 						// news/Short/Category-Name?page=xxx
 						$r[0] = $route[1] == 'category' ? 'Category' :  'Short';
-						$r[1] = $params['name'] ? $params['name'] : $params['id'];
+						$r[1] = !empty($params['name']) ? $params['name'] : $params['id'];
 						if($page) $parm = array('page' => $page);  
 					}
 				break;
@@ -158,8 +165,9 @@ class core_news_sef_noid_url extends eUrlConfig
 	 * - news/Category/Category-Name?page=10 -> list.xxx.10
 	 * - news/Day|Month-xxx -> day|month-xxx
 	 */
-	public function parse($pathInfo, $params, $request, $router, $config)
+	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
 	{
+
 		$page = !empty($params['page']) ? intval($params['page']) : '0';
 		if(!$pathInfo) 
 		{
@@ -249,6 +257,11 @@ class core_news_sef_noid_url extends eUrlConfig
 			case 'tag': // url: news/tag/xxxxx
 				$this->legacyQueryString = 'tag='.$parts[1];
 				return 'list/tag';
+			break;
+
+			case 'author': // url: news/author/xxxxx
+				$this->legacyQueryString = 'author='.$parts[1].'&page='.$page;
+				return 'list/author';
 			break;
 			
 			# force not found

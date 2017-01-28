@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -21,8 +21,8 @@ define("REQUIRED_FIELD_MARKER", "<span class='required'> *</span>");
 
 $sc_style['SIGNUP_DISPLAYNAME']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap' >"
-		.LAN_SIGNUP_89."<span class='required'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_90."</span>
+	<td class='forumheader3' style='width:30%;white-space:nowrap' ><label for='username'>"
+		.LAN_SIGNUP_89."<span class='required'> *</span><br /><span class='smalltext'>".LAN_SIGNUP_90."</span></label>
 	</td>
 	<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
@@ -31,8 +31,8 @@ $sc_style['SIGNUP_DISPLAYNAME']['post'] = "
 
 $sc_style['SIGNUP_REALNAME']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>"
-		.LAN_SIGNUP_91."".req($pref['signup_option_realname'])."
+	<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='realname'>"
+		.LAN_SIGNUP_91."".req($pref['signup_option_realname'])."</label>
 	</td>
 	<td class='forumheader3' style='width:70%' >";
 $sc_style['SIGNUP_REALNAME']['post'] = "
@@ -53,7 +53,7 @@ if(!defined($USERCLASS_SUBSCRIBE_START))
 		<td class='forumheader3' style='width:70%;margin-left:0px'>
 			<table style='".USER_WIDTH."'>";
 }
-
+/*
 if(!defined($USERCLASS_SUBSCRIBE_ROW))
 {
 	$USERCLASS_SUBSCRIBE_ROW = "
@@ -68,7 +68,7 @@ if(!defined($USERCLASS_SUBSCRIBE_ROW))
 			<span class='smalltext'>{USERCLASS_DESCRIPTION}</span>
 		</td>
 	</tr>";
-}
+}*/
 
 if(!defined($USERCLASS_SUBSCRIBE_END))
 {
@@ -89,8 +89,8 @@ if(!defined($SIGNUP_EXTENDED_USER_FIELDS))
 	$SIGNUP_EXTENDED_USER_FIELDS	= "
 	<tr>
 		<td style='width:40%' class='forumheader3'>
-			{EXTENDED_USER_FIELD_TEXT}
-			{EXTENDED_USER_FIELD_REQUIRED}
+			<label>{EXTENDED_USER_FIELD_TEXT}
+			{EXTENDED_USER_FIELD_REQUIRED}</label>
 		</td>
 		<td style='width:60%' class='forumheader3'>
 			{EXTENDED_USER_FIELD_EDIT}
@@ -119,7 +119,7 @@ $SIGNUP_SIGNATURE_END = "
 
 $sc_style['SIGNUP_SIGNATURE']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_SIGNUP_93." ".req($pref['signup_option_signature'])."</td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' ><label for='signature'>".LAN_SIGNUP_93." ".req($pref['signup_option_signature'])."</label></td>
 	<td class='forumheader3' style='width:70%'>";
 	
 $sc_style['SIGNUP_SIGNATURE']['post'] = "
@@ -128,7 +128,7 @@ $sc_style['SIGNUP_SIGNATURE']['post'] = "
 	
 $sc_style['SIGNUP_IMAGES']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_SIGNUP_94.req($pref['signup_option_image'])."</td>
+	<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' ><label for='avatar'>".LAN_SIGNUP_94.req($pref['signup_option_image'])."</label></td>
 	<td class='forumheader3' style='width:70%;vertical-align:top'>";
 $sc_style['SIGNUP_IMAGES']['post'] = "
 	</td>
@@ -136,7 +136,7 @@ $sc_style['SIGNUP_IMAGES']['post'] = "
 
 $sc_style['SIGNUP_IMAGECODE']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%'>".e107::getSecureImg()->renderLabel().req(2)."</td>
+	<td class='forumheader3' style='width:30%'><label for='code-verify'>".e107::getSecureImg()->renderLabel().req(2)."</label></td>
 	<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_IMAGECODE']['post'] = "
 	</td>
@@ -144,7 +144,7 @@ $sc_style['SIGNUP_IMAGECODE']['post'] = "
 
 $sc_style['SIGNUP_LOGINNAME']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%'>".LAN_SIGNUP_81.req(2)."</td>
+	<td class='forumheader3' style='width:30%'><label for='loginname'>".LAN_SIGNUP_81.req(2)."</label></td>
 	<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_LOGINNAME']['post'] = "
 	</td>
@@ -152,7 +152,7 @@ $sc_style['SIGNUP_LOGINNAME']['post'] = "
 
 $sc_style['SIGNUP_HIDE_EMAIL']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_83."</td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'><label>".LAN_USER_83."</label></td>
 	<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_HIDE_EMAIL']['post'] = "
 	</td>
@@ -160,32 +160,38 @@ $sc_style['SIGNUP_HIDE_EMAIL']['post'] = "
 
 $sc_style['SIGNUP_EMAIL_CONFIRM']['pre'] = "
 <tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."</td>
+	<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='email-confirm'>".LAN_SIGNUP_39."</label></td>
 	<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_EMAIL_CONFIRM']['post'] = "
 	</td>
 </tr>";
 
 $sc_style['SIGNUP_XUP']['pre'] = "<div class='center' style='display:block;padding:10px'>";
-$sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>OR</span></h2></div>";
+$sc_style['SIGNUP_XUP']['post'] = "<h2 class='signup-divider'><span>".LAN_SIGNUP_120."</span></h2></div>";
 
 $sc_style['SIGNUP_PASSWORD1']['pre'] = "<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_83."<span class='required'> *</span></td>
+				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password1'>".LAN_SIGNUP_83."<span class='required'> *</span></label></td>
 				<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_PASSWORD1']['post'] = "</td>
 			</tr>";
 
 $sc_style['SIGNUP_PASSWORD2']['pre'] = "<tr>
-			<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_84."<span class='required'> *</span></td>
+			<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='password2'>".LAN_SIGNUP_84."<span class='required'> *</span></label></td>
 			<td class='forumheader3' style='width:70%'>";
 $sc_style['SIGNUP_PASSWORD2']['post'] = "</td>
+		</tr>";
+
+$sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['pre'] = "<tr>
+			<td class='forumheader3' style='width:30%;white-space:nowrap'><label>".LAN_SIGNUP_113."</label></td>
+			<td class='forumheader3' style='width:70%'>";
+$sc_style['SIGNUP_USERCLASS_SUBSCRIBE']['post'] = "</td>
 		</tr>";
 
 
 if(!defined($COPPA_TEMPLATE))
 {
 	$COPPA_TEMPLATE = 
-	LAN_SIGNUP_77." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. "
+	LAN_SIGNUP_77." <a target='_blank' href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".LAN_SIGNUP_14."</a>. "
 	.LAN_SIGNUP_15." ".$tp->emailObfuscate(SITEADMINEMAIL,LAN_SIGNUP_14)." ".LAN_SIGNUP_16."<br />
 	<br />
 	<div style='text-align:center'><b>".LAN_SIGNUP_17."</b>
@@ -223,7 +229,7 @@ if(!defined($SIGNUP_BODY))
 			{SIGNUP_LOGINNAME}
 			{SIGNUP_REALNAME}
 			<tr>
-				<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_USER_60."{SIGNUP_IS_MANDATORY=email}</td>
+				<td class='forumheader3' style='width:30%;white-space:nowrap'><label for='email'>".LAN_USER_60."{SIGNUP_IS_MANDATORY=email}</label></td>
 				<td class='forumheader3' style='width:70%'>
 					{SIGNUP_EMAIL}
 				</td>

@@ -20,7 +20,18 @@
  */
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+
+if(!deftrue('e_LEGACY_NEWS')) // subject to removal at any time.
+{
+	require_once(e_PLUGIN."news/news.php");
+	exit;
+}
+
+
+// --------------------- everything below this point will be removed in future --------------------------
+
+
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 require_once(e_HANDLER."news_class.php");
 //require_once(e_HANDLER."comment_class.php");
@@ -33,7 +44,7 @@ if (isset($NEWSHEADER))
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_news.php');		// Temporary
 
 $cacheString = 'news.php_default_';
 $action = '';
@@ -155,19 +166,37 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
 if(vartrue($_GET['tag']) || substr($action,0,4) == 'tag=')
 {
-	
-	$newsRoute = 'news/list/tag';	
+
+	$newsRoute = 'news/list/tag';
 	if(!vartrue($_GET['tag']))
 	{
-		list($action,$word) = explode("=",$action,2);	
+		list($action,$word) = explode("=",$action,2);
 		$_GET['tag'] = $word;
 		unset($word,$tmp);
 	}
 
+	$newsUrlparms['tag'] = $tp->filter($_GET['tag']);
 	$newsfrom = intval(varset($_GET['page'],0));
 }
 
-if(E107_DBG_PATH)
+if(!empty($_GET['author']) || substr($action,0,4) == 'author=')
+{
+
+	$newsRoute = 'news/list/author';
+	if(!vartrue($_GET['author']))
+	{
+		list($action,$author) = explode("=",$action,2);
+		$_GET['author'] = $author;
+		unset($author,$tmp);
+	}
+
+	$newsUrlparms['author'] = $tp->filter($_GET['author']);
+	$newsfrom = intval(varset($_GET['page'],0));
+
+}
+
+
+if(e_DEBUG === 'news')
 {
 	echo "<div class='alert alert-info'>";
 	echo "<h4>SEF Debug Info</h4>";
@@ -184,7 +213,7 @@ if(E107_DBG_PATH)
 //------------------------------------------------------
 // Just title and a few other details
 
-if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
+if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET['author']))
 {	// --> Cache
 	if($newsCachedPage = checkCache($cacheString))
 	{
@@ -214,9 +243,9 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 			$renTypeQry = " AND (n.news_render_type REGEXP '(^|,)(".implode("|", $pref['news_list_templates']).")(,|$)')";
 		}
 		
-		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
+	//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -235,10 +264,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	elseif ($action == 'cat') // show archive of all news items in a particular category using list-style template.
 	{
 		
-		$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
+	//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
 		
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -251,10 +280,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 	elseif(vartrue($_GET['tag']))
 	{
-		$tagsearch = preg_replace('#[^a-zA-Z0-9 \-]#','', $_GET['tag']);
+		$tagsearch = e107::getParser()->filter($_GET['tag']);
 
 		$query = "
-		SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
 		FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -267,11 +296,32 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 		$category_name = 'Tag: "'.$tagsearch.'"';
 		
 	}
+	elseif(!empty($_GET['author']))
+	{
+		$authorSearch = e107::getParser()->filter($_GET['author']);
+
+		$query = "
+		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		nc.category_meta_description
+		FROM #news AS n
+		LEFT JOIN #user AS u ON n.news_author = u.user_id
+		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
+		WHERE u.user_name = '".$authorSearch."'
+		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
+		AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
+		ORDER BY n.news_datestamp DESC
+		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
+		$category_name = 'Author: "'.$authorSearch.'"';
+
+
+
+	}
 
 	$newsList = array();
 	
 	if($sql->gen($query))
 	{
+		$news_total = $sql->foundRows();
 		$newsList = $sql->db_getList();
 		$ogImageCount = 0;
 		foreach($newsList as $row)
@@ -302,22 +352,46 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	{
 		setNewsFrontMeta($newsList[1], 'category');
 	}
-	elseif($category_name)
-	{
-		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
-	}
-
+//	elseif($category_name)
+//	{
+//		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
+//	}
+e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 	$currentNewsAction = $action;
 	require_once(HEADERF);
 	$action = $currentNewsAction;
 
-	if(vartrue($NEWSLISTSTYLE)) // Legacy v1.x
-	{
-		 $template =  array('start'=>'', 'item'=>$NEWSLISTSTYLE, 'end'=>'');
-	}
-	else  // v2.x
+	if(deftrue('BOOTSTRAP'))  // v2.x
 	{
 		$template = e107::getTemplate('news', 'news', 'list');
+	}
+	else  // v1.x
+	{
+		if(empty($NEWSLISTSTYLE))
+		{
+			$NEWSLISTSTYLE = "
+			<div style='padding:3px;width:100%'>
+			<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
+			<tr>
+			<td style='vertical-align:top;padding:3px;width:20px'>
+			{NEWS_CATEGORY_ICON}
+			</td><td style='text-align:left;padding:3px'>
+			{NEWSTITLELINK=extend}
+			<br />
+			{NEWS_SUMMARY}
+			<span class='smalltext'>
+			{NEWS_DATE}
+			{NEWSCOMMENTS}
+			</span>
+			</td><td style='width:55px'>
+			{SETIMAGE: w=55&h=55&crop=1}
+			{NEWSTHUMBNAIL}
+			</td></tr></table>
+			</div>\n";
+		}
+
+		$template =  array('start'=>'', 'item'=>$NEWSLISTSTYLE, 'end'=>'');
+
 	}
 
 	// Legacy Styling.. 
@@ -348,7 +422,7 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	}
 	else // No News - empty.
 	{
-		$text .= "<div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div>";
+		$text .= "<div class='news-empty'><div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 	}
 
 	if(vartrue($template['end']))
@@ -368,7 +442,10 @@ if ($action == 'cat' || $action == 'all' || vartrue($_GET['tag']))
 	$nitems 	= defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 	$url 		= rawurlencode(e107::getUrl()->create($newsRoute, $newsUrlparms));
 	$parms  	= 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$newsfrom.$nitems.'&url='.$url;
-	
+
+
+	// e107::getDebug()->log($newsUrlparms);
+
 	$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
 	if(varset($template['caption'])) // v2.x
@@ -443,6 +520,8 @@ if ($action == 'extend')
 	{
 		$news = $sql->fetch();
 		$id = $news['news_category'];		// Use category of this news item to generate next/prev links
+
+		e107::getEvent()->trigger('user_news_item_viewed', $news);
 
 		//***NEW [SecretR] - comments handled inside now
 		e107::setRegistry('news/page_allow_comments', !$news['news_allow_comments']);
@@ -558,6 +637,8 @@ $order = $tp -> toDB($order, true);			/// @todo - try not to use toDB() - trigge
 
 $interval = $pref['newsposts'];
 
+
+
 switch ($action)
 {
 	case "list" :
@@ -573,6 +654,8 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_category={$sub_action}
 		ORDER BY n.news_sticky DESC,".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
+
+		$noNewsMessage = LAN_NEWS_463;
 		break;
 
 
@@ -603,7 +686,10 @@ switch ($action)
 		WHERE n.news_id={$sub_action} AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")";
 		}
+
+		$noNewsMessage = LAN_NEWS_83;
 		break;
+
 
 	case "month" :
 	case "day" :
@@ -634,6 +720,9 @@ switch ($action)
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type)) AND n.news_datestamp BETWEEN {$startdate} AND {$enddate}
 		ORDER BY ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
+
+		$noNewsMessage = LAN_NEWS_462;
+
 		break;
 
 	case 'default' :
@@ -677,6 +766,8 @@ switch ($action)
 		AND (FIND_IN_SET('0', n.news_render_type) OR FIND_IN_SET(1, n.news_render_type))
 		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($newsfrom).",".ITEMVIEW;
 		}
+
+		$noNewsMessage = LAN_NEWS_83;
 }	// END - switch($action)
 
 
@@ -714,10 +805,10 @@ if($newsCachedPage = checkCache($cacheString)) // normal news front-page - with 
 }
 
 
-if (!($news_total = $sql->db_Select_gen($query)))
+if (!($news_total = $sql->gen($query)))
 {  // No news items
 	require_once(HEADERF);
-	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</b></div><br /><br />";
+	echo "<div class='news-empty'><div class='alert alert-info' style='text-align:center'>".$noNewsMessage."</div></div>";
 	require_once(FOOTERF);
 	exit;
 }
@@ -741,7 +832,7 @@ switch($action)
 	
 	case 'list':
 	default:
-		setNewsFrontMeta($newsAr[1], 'category');
+		setNewsFrontMeta($newsAr[1], 'list');
 		break;
 }
 
@@ -928,12 +1019,13 @@ else
 		if ($action == "item")
 		{
 			unset($news['news_render_type']);
+			e107::getEvent()->trigger('user_news_item_viewed', $news);
+			//e107::getDebug()->log($news);
 		}
 		// $template = false;
 		$ix->render_newsitem($news, 'default', '', $template, $param);
-		
-		
-		
+
+
 		$i++;
 	}
 
@@ -1046,7 +1138,8 @@ if(is_dir("remotefile")) {
 	}
 }
 
-if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
+{
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
@@ -1199,7 +1292,7 @@ function setNewsFrontMeta($news, $type='news')
 
 
 
-	if($news['category_name'] && !defined('e_PAGETITLE'))
+	if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'category')
 	{
 		define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
 	}

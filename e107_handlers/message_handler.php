@@ -934,6 +934,8 @@ class eMessage
 	public function addAuto($update, $type = 'update', $success = false, $failed = false, $output = false)
 	{
 
+		$sql = e107::getDb();
+
 		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
 		{
 			$this->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
@@ -942,7 +944,7 @@ class eMessage
 		{
 			$this->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
 		}
-		elseif (!mysql_errno())
+		elseif (!$sql->getLastErrorNumber())
 		{
 			if ($type == 'update')
 			{
@@ -968,7 +970,7 @@ class eMessage
 				break;
 			}
 
-			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".$sql->getLastErrorNumber().": ".$sql->getLastErrorText();
 			$this->add($text, E_MESSAGE_ERROR);
 		}
 

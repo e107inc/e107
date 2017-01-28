@@ -16,25 +16,21 @@ global $sc_style;
 
 
 // category menu
-$NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="nav nav-list news-menu-category">';
+$NEWS_MENU_TEMPLATE['category']['start']       = '<ul class="news-menu-category">';
 $NEWS_MENU_TEMPLATE['category']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['category']['item']        = '
-	<li><a class="e-menu-link newscats{active}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE} {NEWS_CATEGORY_NEWS_COUNT}</a></li>
+	<li><a class="e-menu-link newscats{active}" href="{NEWS_CATEGORY_URL}">{NEWS_CATEGORY_TITLE}{NEWS_CATEGORY_NEWS_COUNT}</a></li>
 ';
-
-$NEWS_MENU_WRAPPER['category']['NEWS_CATEGORY_NEWS_COUNT'] = "({---})"; // Wrap brackets around the news count when value is returned. 
-//$NEWS_MENU_TEMPLATE['category']['separator']   = '<br />';
-
 
 
 
 
 
 // months menu
-$NEWS_MENU_TEMPLATE['months']['start']       = '<ul class="nav nav-list news-menu-months">';
+$NEWS_MENU_TEMPLATE['months']['start']       = '<ul class="news-menu-months">';
 $NEWS_MENU_TEMPLATE['months']['end']         = '</ul>';
 $NEWS_MENU_TEMPLATE['months']['item']        = '
-	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} ({count})</a></li>
+	<li><a class="e-menu-link newsmonths{active}" href="{url}">{month} <span class="badge">{count}</span></a></li>
 ';
 //$NEWS_MENU_TEMPLATE['months']['separator']   = '<br />';
 
@@ -44,11 +40,10 @@ $NEWS_MENU_TEMPLATE['months']['item']        = '
 
 
 // latest menu
-$NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="nav nav-list news-menu-latest">';
+$NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="news-menu-latest">';
 $NEWS_MENU_TEMPLATE['latest']['end']         = '</ul>'; // Example: $NEWS_MENU_TEMPLATE['latest']['end']  '<br />{currentTotal} from {total}';
-$NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE} {NEWSCOMMENTCOUNT}</a></li>';
+$NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmonths" href="{NEWSURL}">{NEWSTITLE} <span class="badge">{NEWSCOMMENTCOUNT}</span></a></li>';
 
-$NEWS_MENU_WRAPPER['latest']['NEWSCOMMENTCOUNT']	= "({---})";
 
 
 
@@ -90,7 +85,53 @@ $NEWS_MENU_TEMPLATE['other2']['end'] 	= "</ul>";
 
 
 
+// Grid Menu
+$NEWS_MENU_TEMPLATE['grid']['start']    = '<div class="row news-menu-grid">';
+$NEWS_MENU_TEMPLATE['grid']['item']		= '<div class="item {NEWSGRID}">
+												{SETIMAGE: w=400&h=400&crop=1}
+												{NEWSTHUMBNAIL=placeholder}
+              									<h3>{NEWSTITLE: limit=_titleLimit_}</h3>
+              									<p>{NEWSSUMMARY: limit=_summaryLimit_}</p>
+              									<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">'.LAN_READ_MORE.'</a></p>
+            							   </div>';
+$NEWS_MENU_TEMPLATE['grid']['end']      = '</div>';
+
+
+// $NEWS_MENU_WRAPPER['grid']['NEWSTITLE'] = "<span style='color:red'>{---}</span>"; // example
+
+
+/* Carousel Menu */
+
+$NEWS_MENU_TEMPLATE['carousel']['start'] = '
+										    <div id="news-carousel" class="carousel slide" data-ride="carousel">
+										        <div class="row">
+										      <!-- Wrapper for slides -->
+										      <div id="news-carousel-images" class="col-md-8">
+										      <div class="carousel-inner">';
+
+
+$NEWS_MENU_TEMPLATE['carousel']['end'] = '
+
+										      </div><!-- End Carousel Inner -->
+											</div>
+												<div id="news-carousel-titles" class="col-md-4 ">
+													<ul id="news-carousel-nav" class="nav nav-inverse nav-stacked pull-right ">{NAV}</ul>
+												</div>
+											</div><!-- End Carousel -->
+											</div>
+										 ';
+
+
+$NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
+											<div class="item {ACTIVE}">{SETIMAGE: w=800&h=370&crop=1}
+									          {NEWS_IMAGE: class=img-responsive img-fluid}
+									           <div class="carousel-caption">
+									            <small>{NEWS_DATE=dd MM, yyyy}</small>
+									            <h1>{NEWS_TITLE}</h1>
+
+									          </div>
+									        </div><!-- End Item -->';
 
 
 
-//$NEWS_MENU_TEMPLATE['latest']['separator']   = '<br />'; // Shouldn't be needed. 
+$NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-slide-to="{COUNT}" class="{ACTIVE}"><a href="#">{NEWS_SUMMARY}</a></li>';

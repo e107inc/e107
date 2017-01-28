@@ -218,7 +218,7 @@ class e_search
 
 			if(e_DEBUG)
 			{
-				echo e107::getMessage()->addDebug("Using MYSQL Sort Method")->render();
+				e107::getDebug()->log("Using MYSQL Sort Method");
 			}
 
 			$this -> query = str_replace('&quot;', '"', $this -> query);

@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 global $comment_shortcodes;
 require_once (e_CORE."shortcodes/batch/comment_shortcodes.php");
 /**
@@ -598,8 +598,14 @@ class comment
 		return $text;
 	}
 
-	
-	function deleteComment($id) // delete a single comment by comment id.  
+
+	/**
+	 * @param $id - comment_id to delete
+	 * @param string $table - comment belongs to this table eg. 'news'
+	 * @param string $itemid - corresponding item from the table. eg. news_id
+	 * @return int|null|void
+	 */
+	function deleteComment($id, $table='', $itemid='') // delete a single comment by comment id.
 	{
 
 		if($this->engine != 'e107')
@@ -609,9 +615,18 @@ class comment
 
 		if(!getperms('0') && !getperms("B"))
 		{
-			return;	
+			return null;
 		}
-		return e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");	
+
+		$table = e107::getParser()->filter($table,'w');
+
+		$status = e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");
+
+		$data = array('comment_id'=>intval($id), 'comment_type'=>$table, 'comment_item_id'=> intval($itemid));
+		e107::getEvent()->trigger('user_comment_deleted', $data);
+
+
+		return $status;
 	}
 	
 	function approveComment($id) // appropve a single comment by comment id.  
@@ -858,13 +873,16 @@ class comment
 						unset($edata_li['comment_ip']);*/
 
 						e107::getEvent()->trigger("postcomment", $edata_li);
+						e107::getEvent()->trigger('user_comment_posted', $edata_li);
 						e107::getCache()->clear("comment");
 
+						// Moved to e107_plugins/news/e_event.php
+/*
 
 						if ((empty($table) || $table == "news") && !$this->moderateComment($pref['comments_moderate']))
 						{
 							$sql->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
-						}
+						}*/
 
 						//if rateindex is posted, enter the rating from this user
 					//	if ($rateindex)
@@ -1012,12 +1030,28 @@ class comment
 
 
 	/**
+	 * Returns a rendered commenting area. (html) v2.x
+	 * This is the only method a plugin developer should require in order to include user comments.
+	 * @param string $plugin - directory of the plugin that will own these comments.
+	 * @param int $id - unique id for this page/item. Usually the primary ID of your plugin's database table.
+	 * @param string $subject
+	 * @param bool|false $rate true = will rendered rating buttons, false will not.
+	 * @return null|string
+	 */
+	public function render($plugin, $id, $subject, $rate=false)
+	{
+		return $this->compose_comment($plugin, 'comment', $id, 0, $subject, $rate, 'html');
+	}
+
+
+
+	/**
 	 * Displays existing comments, and a comment entry form
 	 *
 	 * @param string $table - the source table for the associated item
 	 * @param string $action - usually 'comment' or 'reply'
 	 * @param integer $id - ID of item associated with comments (e.g. news ID)
-	 * @param unknown_type $width - appears to not be used
+	 * @param int $width - appears to not be used
 	 * @param string $subject
 	 * @param boolean $rate
 	 */
@@ -1052,6 +1086,10 @@ class comment
 				{
 					echo $text;
 				}
+			}
+			elseif($return === 'html')
+			{
+				return $ns->tablerender(null, $text, 'comment', true);
 			}
 			else
 			{
@@ -1144,7 +1182,11 @@ class comment
 			{
 				echo $TEMPL;	
 			}
-		}		
+		}
+		elseif($return === 'html')
+		{
+			return $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
+		}
 			//echo $modcomment.$comment;
 			//echo $text;
 
@@ -1157,7 +1199,7 @@ class comment
 		
 
 		$ret['comment'] = $text;
-		
+		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 
@@ -1402,7 +1444,7 @@ class comment
 		 */
 
 
-		function getCommentData($amount = '', $from = '', $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
+		function getCommentData($amount = '', $from = 0, $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
 		{
 
 			if($this->engine != 'e107')
@@ -1501,7 +1543,7 @@ class comment
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;
-								$ret['comment_url'] = e107::getUrl()->create('user/pofile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('user/profile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
 							}
 							break;
 						case 'page': //	Custom Page

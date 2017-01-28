@@ -1,26 +1,18 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
+| 
 |     e107 website system
+|     Copyright (C) 2008-2016 e107 Inc (e107.org)
+|     Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
 |
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/rate.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
++ ----------------------------------------------------------------------------+
 */
 
 // DIRTY - needs input validation, streaky
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 
 if(!e_AJAX_REQUEST) // Legacy method. 

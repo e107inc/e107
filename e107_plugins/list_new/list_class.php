@@ -41,7 +41,7 @@ class listclass
 	 * @return void
 	 *
 	 */
-	function listclass($mode='')
+	function __construct($mode='')
 	{
 		global $TEMPLATE_LIST_NEW, $list_shortcodes;
 
@@ -49,7 +49,7 @@ class listclass
 		$this->e107 = e107::getInstance();
 
 		//language
-		include_lan($this->plugin_dir."languages/".e_LANGUAGE.".php");
+		e107::includeLan($this->plugin_dir."languages/".e_LANGUAGE.".php");
 
 		//template
 		if (is_readable(THEME."list_template.php"))
@@ -67,6 +67,7 @@ class listclass
 //		$this->shortcodes = $list_shortcodes;
 		$this->shortcodes = new list_shortcodes();
 		$this->shortcodes->rc = $this;
+
 
 		if($mode=='admin')
 		{
@@ -423,6 +424,7 @@ class listclass
 		
 		//$this->shortcodes->rc->data = $this->data;
 
+
 		//set record variables
 		$this->row = array();
 		$this->row['caption'] = '';
@@ -602,11 +604,11 @@ class listclass
 		global $qs;
 
 		$lvisit = defined('USERLV') ? USERLV : time() + 1000;			// Set default value
-		if(vartrue($qs[0]) == "new")
+		if(!empty($qs[0]) &&  $qs[0] === "new")
 		{
-			if(vartrue($this->list_pref['new_page_timelapse']))
+			if(!empty($this->list_pref['new_page_timelapse']))
 			{
-				if(vartrue($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
+				if(!empty($this->list_pref['new_page_timelapse_days']) && is_numeric($this->list_pref['new_page_timelapse_days']))
 				{
 					$days = $this->list_pref['new_page_timelapse_days'];
 				}
@@ -797,8 +799,14 @@ class listclass
 
 		//display the sections
 		$k=0;
+
+	//	print_a($arr);
+
 		foreach($arr as $sect)
 		{
+
+			$this->shortcodes->plugin = $sect['section'];
+
 			if($sect['display'] == '1')
 			{
 				$sectiontext = $this->displaySection($sect);

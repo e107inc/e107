@@ -1,3 +1,92 @@
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
+
+(function ($)
+{
+
+	/**
+	 * Initializes click event on '.e-modal' elements.
+	 *
+	 * @type {{attach: e107.behaviors.eModalAdmin.attach}}
+	 */
+	e107.behaviors.eModalAdmin = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-modal').once('e-modal-admin').each(function ()
+			{
+				var $that = $(this);
+
+				$that.on('click', function ()
+				{
+					var $this = $(this);
+
+					if($this.attr('data-cache') == 'false')
+					{
+						$('#uiModal').on('shown.bs.modal', function ()
+						{
+							$(this).removeData('bs.modal');
+						});
+					}
+
+					var url = $this.attr('href');
+					var caption = $this.attr('data-modal-caption');
+					var height = ($(window).height() * 0.7) - 120;
+
+					if(caption === undefined)
+					{
+						caption = '';
+					}
+
+					$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+					$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$('.modal').modal('show');
+
+					$("#e-modal-iframe").on("load", function ()
+					{
+						$('#e-modal-loading').hide();
+					});
+
+					return false;
+				});
+			});
+		}
+	};
+
+})(jQuery);
+
+(function (jQuery)
+{
+
+	/**
+	 * jQuery extension to make admin tab 'fadeIn' with 'display: inline-block'.
+	 *
+	 * @param displayMode
+	 *  A string determining display mode for element after the animation.
+	 *  Default: 'inline-block'.
+	 * @param duration
+	 *  A string or number determining how long the animation will run.
+	 *  Default: 400.
+	 */
+	jQuery.fn.fadeInAdminTab = function (displayMode, duration)
+	{
+		var $this = $(this);
+
+		if($this.css('display') !== 'none')
+		{
+			return;
+		}
+
+		displayMode = displayMode || 'inline-block';
+		duration = duration || 400;
+
+		$this.fadeIn(duration, function ()
+		{
+			$this.css('display', displayMode);
+		});
+	};
+
+})(jQuery);
+
+
 $(document).ready(function()
 {
 		$('form').h5Validate(
@@ -74,7 +163,7 @@ $(document).ready(function()
 			var pos = $(this).attr('data-placement'); 
 			if(!pos)
 			{
-				pos = 'top';	
+				pos = 'top';
 			}
 			
 			$(this).tooltip({opacity:1.0,fade:true, placement: pos});
@@ -154,9 +243,23 @@ $(document).ready(function()
 		$('a[data-toggle-sidebar]').on('click', function(e)
         {
             e.preventDefault();
-            
-            $("#left-panel").toggle(1000);
-            $("#right-panel").toggleClass("col-md-10 col-md-12"); //XXX Control animation direction?
+
+	        var $leftPanel = $(".admin-left-panel");
+	        var $rightPanel = $(".admin-right-panel");
+
+	        if ($rightPanel.hasClass('col-md-12'))
+	        {
+		        $rightPanel.toggleClass("col-md-9 col-md-12");
+		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
+		        $leftPanel.toggle(1000);
+	        }
+	        else
+	        {
+		        $leftPanel.toggle(1000, function() {
+			        $rightPanel.toggleClass("col-md-9 col-md-12");
+			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
+		        });
+	        }
 
         });
 
@@ -193,44 +296,6 @@ $(document).ready(function()
 	
 		});
 
-
-
-
-	
-
-
-		
-		
-		/*  Bootstrap Modal window within an iFrame */
-		$('.e-modal').on('click', function(e) 
-		{
-
-			e.preventDefault();
-
-            if($(this).attr('data-cache') == 'false')
-            {
-                $('#uiModal').on('shown.bs.modal', function () {
-                    $(this).removeData('bs.modal');
-                });
-            }
-            
-			var url 		= $(this).attr('href');
-			var caption  	= $(this).attr('data-modal-caption');
-			var height 		= ($(window).height() * 0.7) - 120;
-
-            if(caption === undefined)
-            {
-                caption = '';
-            }
-
-    		$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
-    		$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
-    		$('.modal').modal('show');
-    		
-    		$("#e-modal-iframe").on("load", function () {
-				 $('#e-modal-loading').hide(); 
-			});
-    	});	
 
 		
 
@@ -365,12 +430,12 @@ $(document).ready(function()
 						
 			var t = $(this).nextAll(".field-help");
 
-			var placement = 'top';
+			var placement = 'bottom';
 			
-		/*	if($(this).is("textarea"))
+			if($(this).is("textarea"))
 			{
 				var placement = 'top';	
-			}*/
+			}
 
             var custplace = $(t).attr('data-placement'); // ie top|left|bottom|right
 
@@ -623,7 +688,28 @@ $(document).ready(function()
 
 
 
+		$("a.menuManagerSelect").click(function(e){
 
+
+			var link = $(this).attr('data-url');
+			var layout= $(this).attr('data-layout');
+
+			$('#curLayout').val(layout);
+			$('ul.e-mm-selector').hide();
+			$('form#e-mm-selector').attr('action',link);
+
+			var text = $(this).text();
+			$(this).html(text + ' <i class="e-mm-select-loading fa fa-spin fa-spinner"></i>');
+
+			$("#menu_iframe").attr("src",link);
+
+			$("#menu_iframe").on("load", function () {
+				$('.e-mm-select-loading').hide();
+			});
+
+
+			return false;
+		});
 
 
     // Menu Manager Layout drop-down options
@@ -632,12 +718,28 @@ $(document).ready(function()
 			$("#menu_iframe").attr("src",link);			
 			return false;		
 		});
-		
-		$('#menu_iframe').load(function() {
-		   this.style.height = this.contentWindow.document.body.offsetHeight + 100 + 'px';
-		});
+
 			
+
+		$("a.e-mm-selector").click(function(e){
+
+			 var hash = $('#curLayout').val();
+			//	alert(hash);
+
+			var selector = 'ul.dropdown-menu.e-mm-selector.' + hash;
 		
+			$(selector).toggle();
+
+			return false; 
+		});
+
+
+		$(".e-mm-selector li input").click(function(e){
+
+			$("ul.dropdown-menu.e-mm-selector").css('display','none');
+
+		});
+
 		
 		$(".e-shake" ).effect("shake",{times: 10, distance: 2},20);
 		

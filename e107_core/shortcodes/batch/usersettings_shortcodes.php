@@ -18,51 +18,63 @@ if (!defined('e107_INIT')) { exit; }
 class usersettings_shortcodes extends e_shortcode
 {
 	private $extendedTabs = false;
-	
+	public $legacyTemplate = array();
+
 	function sc_username($parm) // This is the 'display name'
 	{
 		$pref = e107::getPref();
-		
-		if (check_class($pref['displayname_class']) || $pref['allowEmailLogin'] == 1) // display if email is used for login. 
+		$dis_name_len = varset($pref['displayname_maxlength'], 15);
+
+		if(check_class($pref['displayname_class']) || $pref['allowEmailLogin'] == 1) // display if email is used for login.
 		{
-		  	$dis_name_len 	= varset($pref['displayname_maxlength'],15);
-			$options 		= array('title'=> LAN_USER_80, 'size' => 40);
-		
-			return e107::getForm()->text('username',$this->var['user_name'], $dis_name_len, $options);
+			$options = array(
+				'title' => LAN_USER_80,
+				'size'  => 40,
+			);
+
+			return e107::getForm()->text('username', $this->var['user_name'], $dis_name_len, $options);
 		}
-		else
+
+		if($parm == 'show') // Show it, but as a readonly field.
 		{
-			return ($parm == 'show') ? $this->var['user_name'] : ''; // ; if it can't be changed then hide it. 
+			$options = array(
+				'title'    => LAN_USER_80,
+				'size'     => 40,
+				'readonly' => true,
+			);
+
+			return e107::getForm()->text('username', $this->var['user_name'], $dis_name_len, $options);
 		}
+
+		// Hide it!
+		return '';
 	}
-	
-	
-	
+
+
 	function sc_loginname($parm)
-	{ 
+	{
 		$pref = e107::getPref();
-		
+
 		if($pref['allowEmailLogin'] == 1) // email/password login only. 
 		{
 			return; // hide login name when email-login is being used. (may contain social login info)	
 		}
-				
-		if (ADMIN && getperms("4"))
+
+		$log_name_length = varset($pref['loginname_maxlength'], 30);
+
+		$options = array(
+			'title' => ($pref['allowEmailLogin'] == 1) ? LAN_USER_82 : LAN_USER_80,
+			'size'  => 40,
+		);
+
+		if(ADMIN && getperms("4")) // Has write permission.
 		{
-			 
-		  	$log_name_length = varset($pref['loginname_maxlength'],30);
-			
-		  	$options = array(
-		  		'title'=> ($pref['allowEmailLogin'] ==1 ) ? LAN_USER_82 : LAN_USER_80,
-		  		'size' => 40
-			);
-		
-			return e107::getForm()->text('loginname',$this->var['user_loginname'], $log_name_length, $options);	  
+			return e107::getForm()->text('loginname', $this->var['user_loginname'], $log_name_length, $options);
 		}
-		else
-		{
-			return $this->var['user_loginname'];
-		}
+
+		// No write permission.
+		$options['readonly'] = true;
+		return e107::getForm()->text('loginname', $this->var['user_loginname'], $log_name_length, $options);
 	}
 	
 	
@@ -75,20 +87,26 @@ class usersettings_shortcodes extends e_shortcode
 			return e107::getForm()->text('customtitle', $this->var['user_customtitle'], 100, $options);
 		}
 	}
-	
-	
-	
+
+
+
 	function sc_realname($parm)
 	{
-		if(!empty($this->var['user_xup'])) // social login active.
+		$pref = e107::getPref();
+		$sc = e107::getScBatch('usersettings');
+
+		$options = array(
+			'title'    => '',
+			'size'     => 40,
+			'required' => $pref['signup_option_realname'],
+		);
+
+		if(!empty($sc->var['user_login']) && !empty($sc->var['user_xup'])) // social login active.
 		{
-			return $this->var['user_login'];
+			$options['readonly'] = true;
 		}
 
-
-		$pref = e107::getPref();
-		$options = array('title'=> '', 'size' => 40,'required'=>$pref['signup_option_realname']);	
-		return e107::getForm()->text('realname',$this->var['user_login'], 100, $options);
+		return e107::getForm()->text('realname', $sc->var['user_login'], 100, $options);
 	}
 	
 	
@@ -142,18 +160,25 @@ class usersettings_shortcodes extends e_shortcode
 		}
 		return $pref['signup_pass_len'];
 	}
-	
-	
-	
+
+
+
 	function sc_email($parm)
 	{
-		if(!empty($this->var['user_xup'])) // social login active.
+		$sc = e107::getScBatch('usersettings');
+
+		$options = array(
+			'size'     => 40,
+			'title'    => '',
+			'required' => true,
+		);
+
+		if(!empty($sc->var['user_email']) && !empty($sc->var['user_xup'])) // social login active.
 		{
-			return $this->var['user_email'];
+			$options['readonly'] = true;
 		}
 
-		$options = array('size' => 40,'title'=>'','required'=>true); 
-		return e107::getForm()->email('email', $this->var['user_email'], 100, $options);
+		return e107::getForm()->email('email', $sc->var['user_email'], 100, $options);
 	}
 	
 	
@@ -198,7 +223,7 @@ class usersettings_shortcodes extends e_shortcode
 		  $inclass = implode(',',$is_checked);
 		
 	//	  $ret = "<table style='width:95%;margin-left:0px'><tr><td class='defaulttext'>";
-		  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,checkbox_desc),$inclass,'editable, no-excludes');
+		  $ret .= $e_userclass->vetted_tree('class',array($e_userclass,'checkbox_desc'),$inclass,'editable, no-excludes');
 	//	  $ret .= "</td></tr></table>\n";
 		
 		return $ret;
@@ -351,22 +376,25 @@ class usersettings_shortcodes extends e_shortcode
 		
 		return $ret;
 	}
-	
-	
-	
-	function sc_userextended_cat($parm='')
-	{ 
-		global $usersettings_shortcodes, $USER_EXTENDED_CAT, $extended_showed;
-		
-		if(deftrue('BOOTSTRAP')===3)
+
+
+	function sc_userextended_cat($parm = '')
+	{
+		global $extended_showed;
+
+		if(THEME_LEGACY === true)
 		{
-			$USER_EXTENDED_CAT = e107::getCoreTemplate('usersettings','extended-category'); 
+			$USER_EXTENDED_CAT = $this->legacyTemplate['USER_EXTENDED_CAT'];
 		}
-		
-		
+		else
+		{
+			$USER_EXTENDED_CAT = e107::getCoreTemplate('usersettings', 'extended-category');
+		}
+
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
+
 		if(isset($extended_showed['cat'][$parm]))
 		{
 			return "";
@@ -377,26 +405,27 @@ class usersettings_shortcodes extends e_shortcode
 		{
 			$qry = "
 			SELECT * FROM #user_extended_struct
-			WHERE user_extended_struct_applicable IN (".$tp -> toDB($this->var['userclass_list'], true).")
-			AND user_extended_struct_write IN (".USERCLASS_LIST.")
-			AND user_extended_struct_id = ".intval($parm)."
+			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
+			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
+			AND user_extended_struct_id = " . intval($parm) . "
 			";
 			if($sql->gen($qry))
 			{
 				$catInfo = $sql->fetch();
 			}
 		}
-		
+
 		if($catInfo)
 		{
 			$qry = "
 			SELECT * FROM #user_extended_struct
-			WHERE user_extended_struct_applicable IN (".$tp -> toDB($this->var['userclass_list'], true).")
-			AND user_extended_struct_write IN (".USERCLASS_LIST.")
-			AND user_extended_struct_parent = ".intval($parm)."
+			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
+			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
+			AND user_extended_struct_parent = " . intval($parm) . "
 			AND user_extended_struct_type != 0
 			ORDER BY user_extended_struct_order ASC
 			";
+
 			if($sql->gen($qry))
 			{
 				$fieldList = $sql->db_getList();
@@ -405,94 +434,115 @@ class usersettings_shortcodes extends e_shortcode
 					cachevars("extendedfield_{$field['user_extended_struct_name']}", $field);
 					//TODO use $this instead of parseTemplate(); 
 					$ret .= $this->sc_userextended_field($field['user_extended_struct_name']);
-			//		$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", TRUE, $usersettings_shortcodes);
+					//		$ret .= $tp->parseTemplate("{USEREXTENDED_FIELD={$field['user_extended_struct_name']}}", TRUE, $usersettings_shortcodes);
 				}
 			}
 		}
-		
+
 		if($ret && $this->extendedTabs == false)
 		{
 			$catName = $catInfo['user_extended_struct_text'] ? $catInfo['user_extended_struct_text'] : $catInfo['user_extended_struct_name'];
-			if(defined($catName)) $catName = constant($catName);
-			$ret = str_replace("{CATNAME}", $tp->toHTML($catName, FALSE, 'emotes_off,defs'), $USER_EXTENDED_CAT).$ret;
+			if(defined($catName))
+			{
+				$catName = constant($catName);
+			}
+			$ret = str_replace("{CATNAME}", $tp->toHTML($catName, false, 'emotes_off,defs'), $USER_EXTENDED_CAT) . $ret;
 		}
-		
+
 		$extended_showed['cat'][$parm] = 1;
+
 		return $ret;
 	}
-	
-	
-	
-	function sc_userextended_field($parm='')
-	{		 
-		global $usersettings_shortcodes, $extended_showed, $ue, $USEREXTENDED_FIELD, $REQUIRED_FIELD;
-		
-		if(deftrue('BOOTSTRAP')===3)
+
+
+	function sc_userextended_field($parm = '')
+	{
+		global $extended_showed;
+
+		$ue = e107::getUserExt();
+
+
+		if(THEME_LEGACY === true)
 		{
-			$USEREXTENDED_FIELD = e107::getCoreTemplate('usersettings','extended-field'); 
+			$USEREXTENDED_FIELD = $this->legacyTemplate['USEREXTENDED_FIELD'];
+			$REQUIRED_FIELD = $this->legacyTemplate['REQUIRED_FIELD'];
 		}
-		
-		
+		else
+		{
+			$USEREXTENDED_FIELD = e107::getCoreTemplate('usersettings', 'extended-field');
+			$REQUIRED_FIELD = '';
+		}
+
+
 		if(isset($extended_showed['field'][$parm]))
 		{
 			return "";
 		}
-		
+
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-		
-		
+
 		$ret = "";
-		
+
 		$fInfo = getcachedvars("extendeddata_{$parm}");
+
 		if(!$fInfo)
 		{
 			$qry = "
 			SELECT * FROM #user_extended_struct
-			WHERE user_extended_struct_applicable IN (".$tp -> toDB($this->var['userclass_list'], true).")
-			AND user_extended_struct_write IN (".USERCLASS_LIST.")
-			AND user_extended_struct_name = '".$tp -> toDB($parm, true)."'
+			WHERE user_extended_struct_applicable IN (" . $tp->toDB($this->var['userclass_list'], true) . ")
+			AND user_extended_struct_write IN (" . USERCLASS_LIST . ")
+			AND user_extended_struct_name = '" . $tp->toDB($parm, true) . "'
 			";
 			if($sql->gen($qry))
 			{
 				$fInfo = $sql->fetch();
 			}
 		}
-		
+
 		if($fInfo)
 		{
 			$fname = $fInfo['user_extended_struct_text'];
-			if(defined($fname)) $fname = constant($fname);
+
+			if(defined($fname))
+			{
+				$fname = constant($fname);
+			}
+
 			$fname = $tp->toHTML($fname, "", "emotes_off, defs");
-			
+
 			if($fInfo['user_extended_struct_required'] == 1 && !deftrue('BOOTSTRAP'))
 			{
 				$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);
 			}
-		
-			$parms = explode("^,^",$fInfo['user_extended_struct_parms']);
-		
-			$fhide="";
-			if($parms[3])
+
+			$parms = explode("^,^", $fInfo['user_extended_struct_parms']);
+
+			$fhide = "";
+
+			if(varset($parms[3]))
 			{
-				$chk = (strpos($this->var['user_hidden_fields'], "^user_".$parm."^") === FALSE) ? FALSE : TRUE;
+				$chk = (strpos($this->var['user_hidden_fields'], "^user_" . $parm . "^") === false) ? false : true;
+
 				if(isset($_POST['updatesettings']))
 				{
-					$chk = isset($_POST['hide']['user_'.$parm]);
+					$chk = isset($_POST['hide']['user_' . $parm]);
 				}
+
 				$fhide = $ue->user_extended_hide($fInfo, $chk);
 			}
-		
-			$uVal = str_replace(chr(1), "", $this->var['user_'.$parm]);
+
+			$uVal = str_replace(chr(1), "", $this->var['user_' . $parm]);
 			$fval = $ue->user_extended_edit($fInfo, $uVal);
-		
+
 			$ret = $USEREXTENDED_FIELD;
 			$ret = str_replace("{FIELDNAME}", $fname, $ret);
 			$ret = str_replace("{FIELDVAL}", $fval, $ret);
 			$ret = str_replace("{HIDEFIELD}", $fhide, $ret);
 		}
-		
+
 		$extended_showed['field'][$parm] = 1;
+
 		return $ret;
 	}
 

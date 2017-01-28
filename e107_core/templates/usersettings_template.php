@@ -46,7 +46,7 @@ $sc_style['PASSWORD_LEN']['pre'] 		= "<br /><span class='smalltext'>  (".LAN_USE
 $sc_style['PASSWORD_LEN']['post'] 		= " ".LAN_USER_79.")</span>";
 
 $sc_style['USERCLASSES']['pre'] 		= "<tr>
-											<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_76.":".req($pref['signup_option_class'])."
+											<td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_76.":".req(varset($pref['signup_option_class']))."
 											<br /><span class='smalltext'>".LAN_USER_73."</span>
 											</td>
 											<td style='width:60%' class='forumheader2'>";										
@@ -77,7 +77,7 @@ $sc_style['LOGINNAME']['pre'] 			= "<tr>
 $sc_style['LOGINNAME']['post'] 			= "</td></tr>\n";	
 	
 
-$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.req($pref['signup_option_signature'])."</td>
+$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'>".LAN_USER_71.req(varset($pref['signup_option_signature']))."</td>
 											<td style='width:60%' class='forumheader2'>";
 
 //$sc_style['SIGNATURE']['pre']			= "<tr><td style='width:40%;vertical-align:top' class='forumheader3'></td>
@@ -125,14 +125,14 @@ $USERSETTINGS_EDIT = "
 	{LOGINNAME}
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_60.req(!varset($pref['disable_emailcheck']))."</td>
 	<td style='width:60%' class='forumheader2'>
 	{EMAIL}
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_USER_63.req($pref['signup_option_realname'])."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_USER_63.req(varset($pref['signup_option_realname']))."</td>
 	<td style='width:60%' class='forumheader2'>
 	{REALNAME}
 	</td>
@@ -154,7 +154,7 @@ $USERSETTINGS_EDIT = "
 	</tr>
 	
 	<tr>
-	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USER_07.req($pref['signup_option_image'])."</td>
+	<td style='width:40%; vertical-align:top' class='forumheader3'>".LAN_USER_07.req(varset($pref['signup_option_image']))."</td>
 	<td style='width:60%' class='forumheader2'>
 	{AVATAR_REMOTE}
 	</td>
@@ -214,7 +214,7 @@ $USERSETTINGS_WRAPPER['edit']['CUSTOMTITLE'] =			"<div class='form-group'>
 														";
 
 $USERSETTINGS_WRAPPER['edit']['USERCLASSES'] = 			"<div class='form-group'>
-															<label  class='col-sm-3 control-label'>".LAN_USER_76.":".req($pref['signup_option_class'])."</label>
+															<label  class='col-sm-3 control-label'>".LAN_USER_76.":".req(varset($pref['signup_option_class']))."</label>
 														       	<div class='col-sm-9'>{---}</div>
 														   </div>
 														";
@@ -233,7 +233,7 @@ $USERSETTINGS_WRAPPER['edit']['PHOTO_UPLOAD'] = 		"<div class='form-group'>
 														
 
 $USERSETTINGS_WRAPPER['edit']['SIGNATURE']			= "<div class='form-group'>
-														<label for='signature' class='col-sm-3 control-label'>".LAN_USER_71.req($pref['signup_option_signature'])."</label>
+														<label for='signature' class='col-sm-3 control-label'>".LAN_USER_71.req(varset($pref['signup_option_signature']))."</label>
 												       	<div class='col-sm-9'>{---}</div>
 													   	</div>
 													 ";
@@ -256,14 +256,14 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 
 
 	<div class='form-group'>
-	<label for='email' class='col-sm-3 control-label'>".LAN_USER_60.req(!$pref['disable_emailcheck'])."</label>
+	<label for='email' class='col-sm-3 control-label'>".LAN_USER_60.req(!varset($pref['disable_emailcheck']))."</label>
 	<div class='col-sm-9'>
 		{EMAIL}
 	</div>
 	</div>
 
 	<div class='form-group'>
-	<label for='realname' class='col-sm-3 control-label'>".LAN_USER_63.req($pref['signup_option_realname'])."</label>
+	<label for='realname' class='col-sm-3 control-label'>".LAN_USER_63.req(varset($pref['signup_option_realname']))."</label>
 	<div class='col-sm-9'>
 		{REALNAME}
 	</div>
@@ -284,7 +284,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	</div>
 
 	<div class='form-group'>
-	<label class='col-sm-3 control-label'>".LAN_USER_07.req($pref['signup_option_image'])."</label>
+	<label class='col-sm-3 control-label'>".LAN_USER_07.req(varset($pref['signup_option_image']))."</label>
 	<div class='col-sm-9'>
 	{AVATAR_REMOTE}
 	</div>

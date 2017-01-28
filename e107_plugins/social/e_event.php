@@ -11,7 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-class e_event_social //FIXME should be 'social_event'
+class social_event
 {
 
 	/*
@@ -23,6 +23,12 @@ class e_event_social //FIXME should be 'social_event'
 		
 	}
 
+
+	function config()
+	{
+
+
+	}
 
 } //end class
 

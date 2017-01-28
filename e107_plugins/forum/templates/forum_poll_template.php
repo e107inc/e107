@@ -17,7 +17,7 @@ $FORUM_POLL_TEMPLATE = array();
 
 $FORUM_POLL_TEMPLATE['form']['start'] = "
 <div class='clearfix'>
-	<div class='well col-md-8 span6'>
+	<div class='well col-md-8 span6 forum-poll-form'>
 		<div class='form-group control-group'>
 			Poll: {QUESTION}
 			
@@ -44,8 +44,10 @@ $FORUM_POLL_TEMPLATE['form']['end'] = "
 
 $FORUM_POLL_TEMPLATE['results']['start'] = "
 <div class='clearfix'>
-	<div class='well span6'>
-		<h5>Poll: {QUESTION}</h5>
+<div class='col-md-10 forum-poll-results'>
+	<div class='panel panel-primary'>
+		<div class='panel-heading'>Poll: {QUESTION}</div>
+		<div class='panel-body'>
 ";
 
 $FORUM_POLL_TEMPLATE['results']['item'] = "
@@ -54,12 +56,24 @@ $FORUM_POLL_TEMPLATE['results']['item'] = "
 ";
 
 $FORUM_POLL_TEMPLATE['results']['end'] = "
-		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+			<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		</div>
+	</div>
 	</div>
 </div>
 ";
 
 
+/*	v2.x template for polls when user HAS been denied the ability to vote (userclass)	*/
+
+$FORUM_POLL_TEMPLATE['denied']['start'] = $FORUM_POLL_TEMPLATE['results']['start'];
+$FORUM_POLL_TEMPLATE['denied']['item'] = $FORUM_POLL_TEMPLATE['results']['item'];
+$FORUM_POLL_TEMPLATE['denied']['end'] = "<div class='alert text-warning text-center'>{DISALLOWMESSAGE}</div>
+		<div class='text-center'><small>{VOTE_TOTAL}</small></div>
+		 {COMMENTS} {OLDPOLLS}
+	</div>
+</div>
+";
 
 
 

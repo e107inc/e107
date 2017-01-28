@@ -36,6 +36,8 @@ $(document).ready(function()
 		var _float 			= $('#float').val();
 		var alt             = $('#alt').val();
 
+		var target 		    = $(e).attr('data-target');
+
 
         if(margin_right !='' && margin_right !== undefined)
 		{				
@@ -105,7 +107,31 @@ $(document).ready(function()
 			bb = bb + ']';
 			bb = bb + path;
 			bb = bb + '[/img]';
-			$('#bbcode_holder').val(bb); // Set the BBcode Value. 
+
+			if(target && target.charAt(0) != "#" && target.charAt(0) != ".")
+			{
+				target = "#" + target;
+			}
+
+			var $target = $(target);
+
+			if($target.length > 0)
+			{
+				$target.val($target.val() + bb);
+			}
+			else
+			{
+				var $parentTarget = parent.$(target); // From iframe.
+
+				if($parentTarget.length > 0)
+				{
+					$parentTarget.val($parentTarget.val() + bb);
+				}
+				else
+				{
+					$('#bbcode_holder').val(bb); // Set the BBcode Value.
+				}
+			}
 		}		
 		
 		
@@ -115,8 +141,18 @@ $(document).ready(function()
 	}
 	
 		
-		
-		
+	 $(document).on("click", ".e-media-select-file-none", function(){
+
+	 		var target 	= $(this).attr('data-target');
+	 		var label = $(this).attr('data-target-label');
+
+			parent.$('input#'+target).val(null);
+		 	parent.$('input#'+target+'-id').val(null);
+		  	parent.$('input#'+target+'-path').val(null);
+		   	parent.$('input#'+target+'-name').val(null);
+		   	parent.$('#'+target+'_prev').text(label);
+
+	 });
 		
 				// $(".e-media-select").click(function () {  
     $(document).on("click", ".e-media-select", function(){
@@ -449,24 +485,22 @@ $(document).ready(function()
             $('#e-modal-loading', window.parent.document).show();
             $('iframe', window.parent.document).attr('scrolling', 'no'); // hide the scrollbar. 
 
-
+			$(id).hide('slide', { direction: outDir }, 1500, function(){  });
 
             $.get(src, function( data ) {
 
-                $(id).hide('slide', { direction: outDir }, 1200, function(){
-
-                    //   alert('done');
+ 				//   alert('done');
                     $(id ).html( data );
                     newVal = $('#admin-ui-media-select-count-hidden').text();
                     $('#admin-ui-media-select-count').text(newVal).fadeIn();
 
-                    $(id).show('slide', { direction: inDir },1200,function(){
+                    $(id).show('slide', { direction: inDir },500,function(){
                         $('#e-modal-loading', window.parent.document).hide();
 
 
                     });
 
-                });
+
 
 
 
@@ -504,7 +538,7 @@ $(document).ready(function()
 	        // General settings
 		        runtimes : "html5,html4",
 		        url : upath,
-		        max_file_size : "20mb",
+		        max_file_size : $("#uploader").attr("data-max-size"),
 		        chunk_size : "1mb",
 		        unique_names : false,
 		 

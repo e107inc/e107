@@ -1,21 +1,15 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Printer Friendly
+ *
 */
+
 require_once("class2.php");
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
@@ -69,7 +63,7 @@ if(strpos($source,'plugin:') !== FALSE)
 	}
 	else
 	{
-		echo "file missing.";
+		echo LAN_FILE_NOT_FOUND;
 		exit;
 	}
 }
@@ -108,9 +102,9 @@ else
 	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
 	<h2>".LAN_PRINT_135.$news_title."</h2>
 	<br />
-	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
+	(".LAN_CATEGORY." ".$tp->toHTML($category_name,FALSE,"defs").")
 	<br />
-	".LAN_PRINT_94." ".$a_name."<br />
+	".LAN_POSTED_BY." ".$a_name."<br />
 	".$news_datestamp."
 	<br /><br />".
 	$news_body;

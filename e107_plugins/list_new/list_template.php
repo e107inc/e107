@@ -57,8 +57,8 @@ $TEMPLATE_LIST_NEW['MENU_NEW_END'] = "
 
 //LIST_MENU_RECENT TEMPLATE -------------------------------------------------------------------------
 $TEMPLATE_LIST_NEW['MENU_RECENT_START'] = "
-<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader3' style='margin-bottom:5px; display:{LIST_DISPLAYSTYLE};'>\n";
+<div class='{LIST_CSS_ID} fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='{LIST_CSS_ID} forumheader3' style='margin-bottom:5px; display:{LIST_DISPLAYSTYLE};'>\n";
 $TEMPLATE_LIST_NEW['MENU_RECENT'] = "
 <div>
 {LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY}
@@ -69,8 +69,8 @@ $TEMPLATE_LIST_NEW['MENU_RECENT_END'] = "
 
 //PAGE TEMPLATE -------------------------------------------------------------------------
 $TEMPLATE_LIST_NEW['PAGE_RECENT_START'] = "
-<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader3' style='margin-bottom:10px; display:{LIST_DISPLAYSTYLE};'>\n";
+<div class='{LIST_CSS_ID} fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='{LIST_CSS_ID} forumheader3' style='margin-bottom:10px; display:{LIST_DISPLAYSTYLE};'>\n";
 $TEMPLATE_LIST_NEW['PAGE_RECENT'] = "
 <div>
 {LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY} {LIST_INFO}
@@ -81,8 +81,8 @@ $TEMPLATE_LIST_NEW['PAGE_RECENT_END'] = "
 
 //NEW TEMPLATE -------------------------------------------------------------------------
 $TEMPLATE_LIST_NEW['PAGE_NEW_START'] = "
-<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader3' style='margin-bottom:10px; display:{LIST_DISPLAYSTYLE};'>\n";
+<div class='{LIST_CSS_ID} fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='{LIST_CSS_ID} forumheader3' style='margin-bottom:10px; display:{LIST_DISPLAYSTYLE};'>\n";
 $TEMPLATE_LIST_NEW['PAGE_NEW'] = "
 <div>
 {LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY} {LIST_INFO}

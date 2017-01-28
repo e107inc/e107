@@ -25,8 +25,8 @@ $sql->db_Mark_Time('(Header Top)');
 
 
 
-e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
-e107::css('core',	'bootstrap/css/tooltip.css','jquery');
+//e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
+// e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
 if(deftrue('BOOTSTRAP'))
 {
@@ -93,6 +93,7 @@ if (!function_exists("parseheader"))
 		{
 			if (preg_match("/{.+?}/", $line))
 			{
+				$line = str_replace('{THEME}',THEME_ABS, $line); // Quick-fix allow for use of {THEME} shortcode.
 				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
 			} 
 			else 
@@ -140,8 +141,10 @@ else
 
 if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
-if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
+$siteButton = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+if($pref['sitebutton']) e107::meta('og:image',$siteButton);
+if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
+unset($siteButton);
 
 
 // Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg
@@ -184,7 +187,7 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
-if(!deftrue('BOOTSTRAP'))
+if(THEME_LEGACY === true)
 {
 	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
 }
@@ -661,10 +664,14 @@ echo "</head>\n";
     }
 
 	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
-	
+
+	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
+
+
 
 if(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
+	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
 }
 else

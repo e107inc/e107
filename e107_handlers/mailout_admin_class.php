@@ -544,16 +544,18 @@ class mailoutAdminClass extends e107MailManager
 	{
 		$pref = e107::getPref();
 
+		$pref['mailout_enabled'] = str_replace('core','user',$pref['mailout_enabled']); // BC fix.
+
 		$ret = 0;
 		$toLoad = explode(',', $options);
 		
-		$active_mailers = explode(',', varset($pref['mailout_enabled'], 'core'));
+		$active_mailers = explode(',', varset($pref['mailout_enabled'], 'user'));
 		
 		if((in_array('core', $toLoad) || ($options == 'all')) && in_array('core', $active_mailers))
 		{
-			require_once (e_HANDLER . 'mailout_class.php');
-			$this->mailHandlers['core'] = new core_mailout; // Start by loading the core mailout class
-			$ret++;
+		//	require_once (e_HANDLER . 'mailout_class.php');
+		//	$this->mailHandlers['core'] = new core_mailout; // Start by loading the core mailout class
+		//	$ret++;
 		}
 		
 		if(empty($pref['e_mailout_list']))
@@ -580,6 +582,7 @@ class mailoutAdminClass extends e107MailManager
 					// Definitely need this plugin
 					$mailClass = $mailer . '_mailout';
 					$temp = new $mailClass;
+				//	$temp = e107::getSingleton($mailClass);
 					if($temp->mailerEnabled)
 					{
 						$this->mailHandlers[$mailer] = $temp;
@@ -627,7 +630,7 @@ class mailoutAdminClass extends e107MailManager
 
 				if(is_array($content))
 				{
-					$text = "<table class='table ' style='width:100%;margin-left:0px'>
+					$text = "<table class='table table-bordered table-striped ' style='margin-bottom:0;margin-left:0; margin-top:10px'>
 					<colgroup span='2'>
 						<col class='col-label' />
 						<col class='col-control' />
@@ -638,7 +641,7 @@ class mailoutAdminClass extends e107MailManager
 					{
 						$text .= "
 						<tr>
-							<td style='padding-left:0px'>" . $var['caption'] . "</td>
+							<td>" . $var['caption'] . "</td>
 							<td class='form-inline'>" . $var['html'] . "</td>
 						</tr>";
 					}
@@ -964,7 +967,7 @@ class mailoutAdminClass extends e107MailManager
 			$tList = self::getEmailTemplateNames('user');
 			foreach($tList as $key => $val)
 			{
-				$emFormat[$key] = LAN_TEMPLATE . $val;
+				$emFormat[$key] = LAN_TEMPLATE .": ". $val;
 			}	
 		}
 		
@@ -1515,7 +1518,8 @@ class mailoutAdminClass extends e107MailManager
 				{
 					
 					$mailerCount = $m->selectInit($mailData['mail_selectors'][$key]); // Initialise
-					if($mailerCount > 0)
+
+					if(!empty($mailerCount))
 					{
 						
 						while($row = $m->selectAdd()) // Get email addresses - add to list, strip duplicates
@@ -1529,6 +1533,13 @@ class mailoutAdminClass extends e107MailManager
 							}
 						}
 					}
+					else
+					{
+						e107::getMessage()->addWarning($key.": no matching recipients");
+					}
+
+
+
 					$m->select_close();
 					// Close
 					// Update the stats after each handler
@@ -1580,7 +1591,10 @@ class mailoutAdminClass extends e107MailManager
 		$text .= '</td></tr>';
 		
 		// Figures - number of emails to send, number of duplicates stripped
-		$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . ($mailData['mail_togo_count']) . "<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
+
+		$totalRecipients = !empty($mailData['mail_togo_count']) ? $mailData['mail_togo_count'] : $counters['add'];
+
+		$text .= '<tr><td>' . LAN_MAILOUT_173 . '</td><td>' . $totalRecipients . "<input type='hidden' name='mailIDConf' value='{$mailMainID}' /></td></tr>";
 		$text .= '<tr><td>' . LAN_MAILOUT_71 . '</td><td> ' . $counters['add'] . ' ' . LAN_MAILOUT_69 . $counters['dups'] . LAN_MAILOUT_70 . '</td></tr>';
 		$text .= "</tbody></table>\n</fieldset>";
 
@@ -2096,6 +2110,138 @@ class mailoutAdminClass extends e107MailManager
 
 		 */
 	}
+
+
+
+
+	public static function mailerPrefsTable($pref, $id='mailer')
+	{
+
+		$frm = e107::getForm();
+
+		$mailers = array('php'=>'php','smtp'=>'smtp','sendmail'=>'sendmail');
+
+		$smtp_opts = explode(',',varset($pref['smtp_options'],''));
+		$smtpdisp = ($pref[$id] != 'smtp') ? "style='display:none;'" : '';
+
+		$text = $frm->select($id, $mailers, $pref[$id])."
+		<span class='field-help'>".LAN_MAILOUT_116."</span>";
+
+		$text .= "<div id='smtp' {$smtpdisp}>
+		<table class='table table-bordered adminlist' style='margin-top:10px;width:auto;margin-right:auto;margin-left:0'>
+		<colgroup>
+			<col class='col-label' />
+			<col class='col-control' />
+		</colgroup>
+		";
+
+
+		$ports = array(25=>'25 ('.LAN_DEFAULT.")",26=>'26',465=>'465 (SSL)', 587=>'587', 2465=>'2465', 2525=>'2525', 2587=>'2587');
+
+		$text .= "
+		<tr>
+		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
+		<td>".$frm->text('smtp_server',$pref['smtp_server'], 50, array('size'=>'xxlarge'))."</td>
+		</tr>
+
+		<tr>
+		<td>".LAN_MAILOUT_88.":</td>
+		<td style='width:50%;' >".$frm->text('smtp_username',$pref['smtp_username'], 50, array('size'=>'xxlarge', 'placeholder'=>"(".LAN_OPTIONAL.")"))."</td>
+		</tr>
+
+		<tr>
+		<td>".LAN_MAILOUT_89.":</td>
+		<td>".$frm->password('smtp_password',$pref['smtp_password'], 50, array('size'=>'xxlarge', 'placeholder'=>"(".LAN_OPTIONAL.")"))."
+		</td>
+		</tr>
+
+		<tr>
+		<td>".LAN_MAILOUT_261."</td>
+		<td>".$frm->select('smtp_port',$ports, $pref['smtp_port'])."
+		</td>
+		</tr>
+
+		<tr>
+		<td>".LAN_MAILOUT_90."</td><td>
+		<select class='tbox' name='smtp_options'>\n
+
+		<option value=''>".LAN_MAILOUT_96."</option>\n";
+		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
+		$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
+		$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
+		$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
+		$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
+		$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
+		$text .= "</select></td></tr>";
+
+		$text .= "<tr>
+			<td><label for='smtp_keepalive'>".LAN_MAILOUT_57."</label></td><td>\n";
+
+		$text .= $frm->radio_switch('smtp_keepalive', $pref['smtp_keepalive'])."
+			</td>
+			</tr>";
+
+
+		$text .= "<tr>
+			<td><label for='smtp_useVERP'>".LAN_MAILOUT_95."</label></td><td>".$frm->radio_switch('smtp_useVERP',(in_array('useVERP',$smtp_opts)))."
+				</td>
+			</tr>
+			</table></div>";
+
+		/* FIXME - posting SENDMAIL path triggers Mod-Security rules. use define() in e107_config.php instead.
+			// Sendmail. -------------->
+
+				$text .= "<div id='sendmail' {$senddisp}><table style='margin-right:0px;margin-left:auto;border:0px'>";
+				$text .= "
+				<tr>
+				<td>".LAN_MAILOUT_20.":&nbsp;&nbsp;</td>
+				<td>
+				<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
+				</td>
+				</tr>
+
+				</table></div>";
+			*/
+
+		e107::js('footer-inline', "
+
+			$('#".$id."').on('change', function() {
+
+				var type = $(this).val();
+
+				if(type == 'smtp')
+				{
+					$('#smtp').show('slow');
+					$('#sendmail').hide('slow');
+					return;
+				}
+
+				if(type =='sendmail')
+				{
+					$('#smtp').hide('slow');
+					$('#sendmail').show('slow');
+					return;
+				}
+
+				$('#smtp').hide('slow');
+				$('#sendmail').hide('slow');
+
+
+			});
+
+
+		");
+
+
+
+
+
+
+		return $text;
+
+
+	}
+
 
 }
 ?>

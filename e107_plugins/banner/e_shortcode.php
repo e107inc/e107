@@ -2,15 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Banner shortcode
  *
-*/
-
-/**
  *	e107 Banner management plugin
  *
  *	Handles the display and sequencing of banners on web pages, including counting impressions
@@ -21,37 +18,28 @@
 
 class banner_shortcodes extends e_shortcode
 {
-	
-	
-		
+
+// $parm now can be array, old campaign $parm still allowed....
 	function sc_banner($parm='')
 	{
-		
 		$sql = e107::getDb();
 		$tp = e107::getParser();
-
 		mt_srand ((double) microtime() * 1000000);
 		$seed = mt_rand(1,2000000000);
 		$time = time();
-	
-		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$tp->toDB($parm)."'" : '')."
+		$campaign = (is_array($parm)?$parm['campaign']:$parm);
+		$query = " (banner_startdate=0 OR banner_startdate <= {$time}) AND (banner_enddate=0 OR banner_enddate > {$time}) AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($campaign ? " AND banner_campaign='".$tp->toDB($campaign)."'" : '')."
 		AND banner_active IN (".USERCLASS_LIST.") ";
-
 		if($tags = e107::getRegistry('core/form/related'))
 		{
 			$tags_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
 			$query .= " AND banner_keywords REGEXP ".$tags_regexp;
 		}
-
 		$query .= "	ORDER BY RAND($seed) LIMIT 1";
-
-
-
 		if($sql->select('banner', 'banner_id, banner_image, banner_clickurl, banner_description', $query))
 		{
 			$row = $sql->fetch();
-			return $this->renderBanner($row);
-			
+			return $this->renderBanner($row, $parm);
 		}
 		else
 		{
@@ -60,14 +48,13 @@ class banner_shortcodes extends e_shortcode
 	}
 
 	// Also used by banner_menu.php 
-	public function renderBanner($row)
+	public function renderBanner($row, $parm = '')
 	{
 		$sql = e107::getDb('banner');
 		$tp = e107::getParser();
-
 		if(!$row['banner_image'])
 		{
-			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+			return "<a href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external'>".BANNERLAN_39."</a>";
 		}
 	
 		$fileext1 = substr(strrchr($row['banner_image'], '.'), 1);
@@ -96,41 +83,21 @@ class banner_shortcodes extends e_shortcode
 				
 				default:
 
-					if($row['banner_image'][0] == '{')
-					{
-						$src = $row['banner_image'];
-						$ban_ret = $tp->toImage($src,   array('class'=>'e-banner img-responsive', 'alt'=>$row['banner_clickurl']));
-					}
-					else
-					{
-						$src = e_IMAGE_ABS.'banners/'.$row['banner_image'];
-						$ban_ret = "<img class='e-banner img-responsive' src='".$src."' alt='".$row['banner_clickurl']."' style='border:0' />";
-					}
-
-
+						$class = empty($parm['class']) ? "e-banner img-responsive img-fluid" : $parm['class'];
+						$ban_ret = $tp->toImage($row['banner_image'], array('class'=> $class , 'alt'=>basename($row['banner_image']), 'legacy'=>'{e_IMAGE}banners'));
 
 				break;
 			}
-
-			$tooltip = varset($row['banner_tooltip'],'');
-
-			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute($tooltip)."\">";
-			$item = $ban_ret;
+			$start = "<a class='e-tip' href='".e_HTTP.'banner.php?'.$row['banner_id']."' rel='external' title=\"".$tp->toAttribute(varset($row['banner_tooltip'],''))."\">";
 			$end = '</a>';
-
-			$text = $start.$item.$end;
-
+			$text = $start.$ban_ret.$end;
+	
 			if(!empty($row['banner_description']))
 			{
 				$text .= "<div class='e-banner-description'>".$start.$tp->toHtml($row['banner_description'], true).$end. "</div>";
 			}
 
-
-
-
 			return $text;
-
 	}
-
 }
-?>
+

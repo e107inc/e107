@@ -8,8 +8,6 @@
 		<link url='admin_config.php' description='Configure Newsfeeds' icon='images/newsfeed_32.png' iconSmall='images/newsfeed_16.png' primary='true' >Configure Newsfeeds</link>	
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}newsfeed/newsfeed.php" >Newsfeeds</link>
+		<link url="{e_PLUGIN}newsfeed/newsfeed.php" sef="index" >LAN_PLUGIN_NEWSFEEDS_NAME</link>
 	</siteLinks>	
-	<pluginPrefs>
-	</pluginPrefs>
 </e107Plugin>

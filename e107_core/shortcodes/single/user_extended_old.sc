@@ -10,7 +10,7 @@
  *	USAGE:  {USER_EXTENDED=<field_name>.[text|value|icon|text_value].<user_id>}
  *	EXAMPLE: {USER_EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
  */
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 $parms = explode('.', $parm);
 global $currentUser, $tp, $loop_uid, $e107, $sc_style;
 if(isset($loop_uid) && intval($loop_uid) == 0) { return ''; }
@@ -49,7 +49,7 @@ if($udata['user_admin'] == 1)
 /**
  *	@todo - must be a better way of picking up the 'Miscellaneous' category
  */
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');
 if (($parms[1] != 'icon') && ($parms[0] != LAN_USER_44))
 {
   $ret_cause = 0;

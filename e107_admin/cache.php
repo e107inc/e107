@@ -8,28 +8,17 @@
  *
  * Cache Administration Area
  *
- * $URL$
- * $Id$
- *
 */
 
-/**
- *	Admin page - cache management
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
- *  @author 	e107 Inc
- */
-
 require_once("../class2.php");
+
 if (!getperms("C"))
 {
 	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('cache', true);
 
 $e_sub_cat = 'cache';
 
@@ -103,6 +92,8 @@ if (isset($_POST['trigger_empty_cache']))
 			e107::getCache()->clearAll('db');
 			e107::getCache()->clearAll('image');
 			e107::getCache()->clearAll('browser');
+			e107::getCache()->clearAll('js');
+			e107::getCache()->clearAll('css');
 			e107::getAdminLog()->flushMessages(CACLAN_26);
 		break;
 	}

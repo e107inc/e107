@@ -24,8 +24,8 @@ $eplug_admin = true;
 require_once('../../class2.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'form_handler.php');
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_ldap_conf.php');
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
+e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_ldap_conf.php');
+e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define('ALT_AUTH_ACTION', 'ldap');
 require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 
