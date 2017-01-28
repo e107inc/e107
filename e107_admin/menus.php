@@ -297,7 +297,7 @@ TEMPL;
 	    margin-top: 1px;
 	    line-height: 14px;
 	    vertical-align: text-top;
-	    background-image: url('".e_JS."bootstrap/img/glyphicons-halflings.png');
+	    background-image: url('".e_THEME."bootstrap3/images/glyphicons-halflings.png');
 	    background-position: 14px 14px;
 	    background-repeat: no-repeat;
 	}
