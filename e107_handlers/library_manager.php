@@ -412,7 +412,7 @@ class core_library
 
 		// Bootstrap Editable (local).
 		$libraries['bootstrap.editable'] = array(
-			'name'              => 'Bootstrap Editable (Local)',
+			'name'              => 'Bootstrap Editable (local)',
 			'vendor_url'        => 'https://vitalets.github.io/bootstrap-editable/',
 			'version_arguments' => array(
 				'file'    => 'js/bootstrap-editable.min.js',
@@ -452,6 +452,95 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}js/bootstrap3-editable',
+		);
+
+		// Bootstrap Switch (CDN).
+		$libraries['cdn.bootstrap.switch'] = array(
+			'name'              => 'Bootstrap Switch (CDN)',
+			'vendor_url'        => 'http://www.bootstrap-switch.org',
+			'version_arguments' => array(
+				'file'    => 'js/bootstrap-switch.min.js',
+				'pattern' => '/v(\d\.\d\.\d)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/bootstrap-switch.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'css/bootstrap3/bootstrap-switch.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap-switch.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap3/bootstrap-switch.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.switch',
+			'path'              => '3.3.2',
+		);
+
+		// Bootstrap Switch (local).
+		$libraries['bootstrap.switch'] = array(
+			'name'              => 'Bootstrap Switch (local)',
+			'vendor_url'        => 'http://www.bootstrap-switch.org',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap-switch.min.js',
+				'pattern' => '/v(\d\.\d\.\d)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap-switch.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap3/bootstrap-switch.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'dist/js/bootstrap-switch.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'dist/css/bootstrap3/bootstrap-switch.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/bootstrap-switch',
 		);
 
 		// Font-Awesome (CDN).
@@ -542,6 +631,7 @@ class core_library
 			$libraries['cdn.bootstrap.editable']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap.editable', 'https://cdnjs.cloudflare.com/ajax/libs/x-editable', $libraries['cdn.bootstrap.editable']['library_path']);
 			$libraries['cdn.bootstrap.editable']['path'] .= '/bootstrap-editable';
 
+			$libraries['cdn.bootstrap.switch']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap.switch', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch', $libraries['cdn.bootstrap.switch']['library_path']);
 			$libraries['cdn.fontawesome']['library_path'] = str_replace('https://cdn.jsdelivr.net/fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome', $libraries['cdn.fontawesome']['library_path']);
 		}
 	}

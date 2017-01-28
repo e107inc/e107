@@ -262,7 +262,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			</colgroup>";
 
 			$name = 'urlstatus['.$plug.']';
-			$text .= "<tr class='active'><td ><h4>".$plug."</h4></td><td colspan='2'>".$frm->radio_switch($name,$active)."</td></tr>";
+
+			$switch = $frm->radio_switch($name, $active, LAN_ON, LAN_OFF, array(
+				'switch' => 'mini',
+			));
+
+			$text .= "<tr class='active'><td ><h4>" . $plug . "</h4></td><td colspan='2'>" . $switch . "</td></tr>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
 
