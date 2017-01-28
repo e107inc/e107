@@ -225,7 +225,7 @@ class user_select
 		<html lang='".CORE_LC."'>
 		<head>
 		<title>".SITENAME."</title>\n";
-		
+
 		echo "<link rel=stylesheet href='".e_WEB_ABS."js/bootstrap/css/bootstrap.min.css'>
 		<link rel=stylesheet href='".THEME_ABS."style.css'>
 		<script language='JavaScript' type='text/javascript'>
