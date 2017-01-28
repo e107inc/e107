@@ -1599,7 +1599,7 @@ class e_library_manager
 		// The library will be cached with version number, so this only run once per library.
 		if(substr($file, 0, 4) == 'http')
 		{
-			$content = file_get_contents($file);
+			$content = e107::getFile()->getRemoteContent($file);
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');
 
 			if($tmpFile)
