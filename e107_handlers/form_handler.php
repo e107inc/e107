@@ -2243,54 +2243,85 @@ class e_form
 	}
 
 	/**
-	 * Boolean Radio Buttons. 
-	 * @param name string
-	 * @param check_enabled boolean
-	 * @param label_enabled default is LAN_ENABLED
-	 * @param label_disabled default is LAN_DISABLED
-	 * @param options array - inverse=1 (invert values) or reverse=1 (switch display order) 
+	 * Boolean Radio Buttons / Checkbox (with Bootstrap Switch).
+	 *
+	 * @param string $name
+	 *  Form element name.
+	 * @param bool $checked_enabled
+	 *  Use the checked attribute or not.
+	 * @param string $label_enabled
+	 *  Default is LAN_ENABLED
+	 * @param string $label_disabled
+	 *  Default is LAN_DISABLED
+	 * @param array $options
+	 *  - 'inverse' => 1 (invert values)
+	 *  - 'reverse' => 1 (switch display order)
+	 *  - 'switch'  => 'normal' (size for Bootstrap Switch... mini, small, normal, large)
+	 *
+	 * @return string $text
 	 */
-	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
+	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '', $options = array())
 	{
-		if(!is_array($options)) parse_str($options, $options);
-		
-		$options_on = varset($options['enabled'],array());
-		$options_off = varset($options['disabled'],array());
+		if(!is_array($options))
+		{
+			parse_str($options, $options);
+		}
 
-		unset($options['enabled'],$options['disabled']);
+		$options_on = varset($options['enabled'], array());
+		$options_off = varset($options['disabled'], array());
+
+		unset($options['enabled'], $options['disabled']);
 
 		$options_on = array_merge($options_on, $options);
 		$options_off = array_merge($options_off, $options);
 
-		
+
 		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
 		{
 			$options_on = array_merge($options, array('class' => 'e-expandit-on'));
-			$options_off = array_merge($options, array('class' => 'e-expandit-off'));	
+			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
-		
-		$options_on['label'] = $label_enabled ? defset($label_enabled,$label_enabled) : LAN_ENABLED; 
-		$options_off['label'] = $label_disabled ? defset($label_disabled,$label_disabled) : LAN_DISABLED; 
-		
-		if(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'  
+
+		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
+		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
+
+		if(!empty($options['switch']))
 		{
-			$text = $this->radio($name, 0, !$checked_enabled, $options_on)." 	".$this->radio($name, 1, $checked_enabled, $options_off);		
-			
+			if(!empty($options['inverse']))
+			{
+				$checked_enabled = !$checked_enabled;
+			}
+
+			$js_options = array(
+				// Each form element has its own options.
+				$name => array(
+					'size'    => $options['switch'],
+					'onText'  => $options_on['label'],
+					'offText' => $options_off['label'],
+				),
+			);
+
+			e107::library('load', 'bootstrap.switch');
+			e107::js('settings', array('bsSwitch' => $js_options));
+			e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
+
+			$text = $this->checkbox($name, 1, $checked_enabled);
+		}
+		elseif(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'
+		{
+			$text = $this->radio($name, 0, !$checked_enabled, $options_on) . " 	" . $this->radio($name, 1, $checked_enabled, $options_off);
+
 		}
 		elseif(!empty($options['reverse'])) // reverse display order. 
 		{
-			$text = $this->radio($name, 0, !$checked_enabled, $options_off)." ".$this->radio($name, 1, $checked_enabled, $options_on);		
+			$text = $this->radio($name, 0, !$checked_enabled, $options_off) . " " . $this->radio($name, 1, $checked_enabled, $options_on);
 		}
 		else
 		{
-			
-			$text = $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);	
+			$text = $this->radio($name, 1, $checked_enabled, $options_on) . " 	" . $this->radio($name, 0, !$checked_enabled, $options_off);
 		}
 
-
-
 		return $text;
-		
 	}
 
 

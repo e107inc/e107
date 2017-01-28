@@ -340,6 +340,8 @@ define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 77
 define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
 define("LAN_WIDTH","Width");
 
+define("LAN_ON","On");
+define("LAN_OFF", "Off");
 define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
