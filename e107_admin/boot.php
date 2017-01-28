@@ -80,24 +80,25 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 {
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
-	$tag = 'infopanel_'.$type;
+	$tag = 'Infopanel_'.$type;
 
 	$cache = e107::getCache();
-	$cache->setMD5('_');
 
-	if($text = $cache->retrieve($tag,180,true)) // check every 3 hours.
+	$feed = 'https://e107.org/feed/?limit=3&type='.$type;
+
+	if($text = $cache->retrieve($tag,180,true, true)) // check every 3 hours.
 	{
 		echo $text;
 
 		if(e_DEBUG === true)
 		{
-			echo "<span class='label label-warning'>Cached</span>";
+			echo "<span class='label label-warning' title='".$feed."'>Cached</span>";
 		}
 		exit;
 	}
 
 
-	if($data = e107::getXml()->getRemoteFile('https://e107.org/feed/?limit=3&type='.$type,3))
+	if($data = e107::getXml()->getRemoteFile($feed,3))
 	{
 		$rows = e107::getXml()->parseXml($data, 'advanced');
 //	print_a($rows);
@@ -128,7 +129,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 
 		echo $text;
 
-		$cache->set($tag, $text, true);
+		$cache->set($tag, $text, true, null, true);
 
 	}
 	exit;

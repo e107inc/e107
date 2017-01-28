@@ -37,3 +37,8 @@ define("LAN_LIBRARY_MANAGER_21", "Provider");
 define("LAN_LIBRARY_MANAGER_25", "Third-party libraries");
 //define("LAN_LIBRARY_MANAGER_26", "No library found");//LAN_NOT_FOUND
 define("LAN_LIBRARY_MANAGER_27", "Machine name: [x]");
+define('LAN_LIBRARY_MANAGER_28', 'Library path: [x]');
+define('LAN_LIBRARY_MANAGER_29', 'Library path');
+define('LAN_LIBRARY_MANAGER_30', 'CDN settings');
+define('LAN_LIBRARY_MANAGER_31', 'Use CDN for core libraries');
+define('LAN_LIBRARY_MANAGER_32', 'CDN provider');

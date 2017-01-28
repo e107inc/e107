@@ -16,7 +16,8 @@ class page_shortcodes extends e_shortcode
 		
 		function __construct()
 		{
-			
+
+
 			$this->request = e107::getRegistry('core/page/request');
 			
 			$action = varset($this->request['action']);
@@ -126,4 +127,52 @@ class page_shortcodes extends e_shortcode
 		{
 			return e107::getMenu()->renderMenu($parm,  false, false, true);									
 		}
+
+
+		/**
+		 * Render All visible Menus from a specific chapter.
+		 * @param null $parm
+		 * @example {CHAPTER_MENUS: name=chapter-sef-url}
+		 * @return string
+		 */
+		function sc_chapter_menus($parm=null)
+		{
+			$tp = e107::getParser();
+			$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $tp->filter($parm['name'],'str') . "' ORDER BY p.page_order ASC ";
+
+			$text = '';
+
+			if(!$pageArray = e107::getDb()->retrieve($query, true))
+			{
+				e107::getDebug()->log('{CHAPTER_MENUS: name='.$parm['name'].'} failed.<br />Query: '.$query);
+				return null;
+			}
+
+			$template = e107::getCoreTemplate('menu',null,true,true);
+
+			$sc = e107::getScBatch('page', null, 'cpage');
+			$sc->setVars($pageArray[0]);
+			$tpl = varset($pageArray[0]['menu_template'],'default'); // use start template from first row.
+
+			$start = $tp->parseTemplate($template[$tpl]['start'],true,$sc);
+
+			foreach($pageArray as $row)
+			{
+				$tpl = varset($row['menu_template'],'default');
+				$sc->setVars($row);
+
+				$text .= $tp->parseTemplate($template[$tpl]['body'],true,$sc);
+
+			}
+
+			$end = $tp->parseTemplate($template[$tpl]['end'],true,$sc);
+
+			if(!empty($text))
+			{
+				return $start . $text . $end;
+			}
+
+
+		}
+
 }

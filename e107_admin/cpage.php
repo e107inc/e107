@@ -154,6 +154,7 @@ class page_chapters_ui extends e_admin_ui
 		protected $batchDelete 	= false;
 		protected $batchCopy	= true;	
         protected $batchLink   	= true;
+        protected $batchExport  = true;
 
 		protected $listQry          = "SELECT a. *, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + (( a.chapter_order)/1000) END AS Sort FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
 		protected $listOrder		= 'Sort,chapter_order ';
@@ -174,7 +175,7 @@ class page_chapters_ui extends e_admin_ui
         
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			    'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
-			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name'), // Display name
+			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
 			'chapter_manager' 			=> array('title'=> CUSLAN_55,		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
@@ -190,18 +191,18 @@ class page_chapters_ui extends e_admin_ui
 		function init()
 		{
 
-		//	if(e_DEBUG === true)
-			{
-				e107::getMessage()->addWarning("Experimental: Custom Fields");
-				$this->tabs = array(LAN_GENERAL,"Custom Fields");
-				$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
-			}
+		//	e107::getMessage()->addWarning("Experimental: Custom Fields");
+			$this->tabs = array(LAN_GENERAL,"Custom Fields");
+			$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
 
-
-
-			if($this->getAction() == 'list')
+			if($this->getAction() === 'list')
 			{
 				$this->fields['chapter_parent']['title'] = CUSLAN_56;
+			}
+			elseif(deftrue('e_DEBUG'))
+			{
+				$this->fields['chapter_sef']['title'] = LAN_SEFURL.' / '.LAN_NAME;
+				$this->fields['chapter_sef']['help'] = 'May also be used in shortcode {CHAPTER_MENUS: name=x}';
 			}
 
 			$sql = e107::getDb();
@@ -252,6 +253,8 @@ class page_chapters_ui extends e_admin_ui
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
 			}
+
+			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
 			
 			return $new_data;	
 		}
@@ -324,11 +327,11 @@ class page_chapters_form_ui extends e_admin_form_ui
 			
 		if($mode == 'filter')
 		{
-			return;	
+			return null;
 		}
 		if($mode == 'batch')
 		{
-			return;
+			return null;
 		}		
 	}
 	
@@ -525,7 +528,8 @@ class page_admin_ui extends e_admin_ui
 		protected $batchDelete 		= true;
 		protected $batchCopy 		= true;	
         protected $batchLink    	= true;
-	  	protected $batchFeaturebox   = true;
+		protected $batchExport      = true;
+	  	protected $batchFeaturebox  = true;
 		protected $sortField		= 'page_order';
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
@@ -629,9 +633,9 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() == 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
 			{
 			
-				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
 			
-				$this->listOrder 		= 'p.page_id desc';
+				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 			
 				$this->batchDelete 	= false;
 				$this->fields = array(
@@ -729,7 +733,7 @@ class page_admin_ui extends e_admin_ui
 
 				if(!empty($row['chapter_fields']))
 				{
-					$this->chapterFields[$cat] = e107::unserialize($row['chapter_fields']);
+					$this->chapterFields[$cat] = ($row['chapter_fields']);
 				}
 
 
@@ -799,12 +803,25 @@ class page_admin_ui extends e_admin_ui
 
 			if(!empty($this->chapterFields[$chap]))
 			{
-				e107::getCustomFields()->loadConfig($this->chapterFields[$chap])->setTab($tabId, "Additional")->setAdminUIConfig('page_fields',$this);
+				e107::getCustomFields()->setTab($tabId, "Additional")->loadConfig($this->chapterFields[$chap])->setAdminUIConfig('page_fields',$this);
 			}
 			else
 			{
 				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
 			}
+		}
+
+		private function loadCustomFieldsData()
+		{
+			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
+
+			$cf = e107::getCustomFields();
+
+			$cf->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
+
+		//	e107::getDebug()->log($cf);
+
+
 		}
 
 
@@ -827,7 +844,7 @@ class page_admin_ui extends e_admin_ui
 			$chap = intval($row['page_chapter']);
 
 			$this->initCustomFields($chap);
-			e107::getCustomFields()->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
+			$this->loadCustomFieldsData();
 
 		}
 

@@ -138,33 +138,7 @@ if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
 
 
-	
-	//e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
-	
-	//e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-	//e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-	//e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
-	
-	//e107::css('core', 	'chosen/chosen.css', 'jquery');
-	//e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
-	
-	//e107::css('core', 	'password/style.css', 'jquery');
-	//e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
-	// 
-	//e107::js("core",	"plupload/customUpload.js","jquery",3);
-	
-	//e107::js("core",	"core/mediaManager.js","jquery",3);
-
-	
-	// e107::css('core', 	'core/admin.css', 'jquery');
-//	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
-// e107::js('core','bootstrap/js/bootstrap-tooltip.js');
-
-
-
-//	e107::css('core','bootstrap/css/bootstrap.min.css');
-
-$JSMODAL = <<<TEMPL
+	$JSMODAL = <<<TEMPL
 	$(function() {
 		$('.e-modal-menumanager').on('click', function(e)
 		{
@@ -323,7 +297,7 @@ TEMPL;
 	    margin-top: 1px;
 	    line-height: 14px;
 	    vertical-align: text-top;
-	    background-image: url('".e_JS."bootstrap/img/glyphicons-halflings.png');
+	    background-image: url('".e_THEME."bootstrap3/images/glyphicons-halflings.png');
 	    background-position: 14px 14px;
 	    background-repeat: no-repeat;
 	}

@@ -47,13 +47,27 @@
 		 */
 		public function loadConfig($data)
 		{
+			if(empty($data))
+			{
+				return $this;
+			}
+
 			if(is_array($data))
 			{
 				$this->_config = $data;
 				return $this;
 			}
 
-			$this->_config = e107::unserialize($data);
+			$tp = e107::getParser();
+
+			if($arr = $tp->isJSON($data))
+			{
+				$this->_config = $arr;
+			}
+
+
+			// e107::getDebug()->log($this->_config);
+
 
 			return $this;
 		}
@@ -67,6 +81,8 @@
 		public function loadData($data)
 		{
 			$this->_data = e107::unserialize($data);
+
+		//	e107::getDebug()->log($this->_data);
 
 			return $this;
 		}
@@ -333,8 +349,6 @@
 
 				$fields[$fieldName.'__'.$key] = $fld;
 
-				//$model->fields[$fieldName.'__'.$key] = $fld;
-
 			}
 
 			$ui->setFieldAttr($fields);
@@ -352,19 +366,16 @@
 		 */
 		public function setAdminUIData($fieldname, e_admin_ui &$ui)
 		{
-		//	$model->getModel()->set($fieldname, null);
-
-		//	e107::getCustomFields()->setData($row['page_fields']);
 
 			$ui->getModel()->set($fieldname, null);
 
 			foreach($this->_data as $key=>$value)
 			{
 				$ui->getModel()->set($fieldname.'__'.$key, $value);
+			//	e107::getDebug()->log($fieldname.'__'.$key.": ".$value);
 			}
 
 			return $this;
-
 
 
 		}
@@ -384,10 +395,9 @@
 				return $postData;
 			}
 
-			$newdata = $postData[$fieldname];
 
 			$new = array();
-			foreach($newdata as $fields)
+			foreach($postData[$fieldname] as $fields)
 			{
 				if(empty($fields['key']) || empty($fields['type']))
 				{
@@ -402,7 +412,9 @@
 
 			}
 
-			return $new;
+			$postData[$fieldname] = empty($new) ? null : $new;
+
+			return $postData;
 
 		}
 
@@ -424,7 +436,7 @@
 			unset($new_data[$fieldname]); // Reset.
 
 			$len = strlen($fieldname);
-			
+
 			foreach($new_data as $k=>$v)
 			{
 				if(substr($k,0,$len) === $fieldname)
@@ -436,6 +448,11 @@
 
 				}
 
+			}
+
+			if(empty($new_data[$fieldname]))
+			{
+			//	$new_data[$fieldname] = array();
 			}
 
 			return $new_data;

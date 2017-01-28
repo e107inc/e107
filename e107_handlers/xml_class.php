@@ -869,10 +869,10 @@ class xmlClass
 	 *
 	 * @param array $prefs  - see e_core_pref $aliases (eg. core, ipool etc)
 	 * @param array $tables - table names without the prefix
-	 * @param boolean $debug [optional]
+	 * @param array $options [optional] debug, return, query
 	 * @return string text / file for download
 	 */
-	public function e107Export($xmlprefs, $tables, $plugPrefs, $mode = false)
+	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
 	{
 	//	error_reporting(0);
 		$e107info = array();
@@ -904,7 +904,7 @@ class xmlClass
 					{
 						continue;
 					}
-					elseif($mode === 'debug')
+					elseif(!empty($options['debug']))
 					{
 						echo "<div>Original/Modiied <b>".$key."</b>";
 						var_dump($default[$key],$val);
@@ -947,13 +947,14 @@ class xmlClass
 
 
 
-		if(varset($tables))
+		if(!empty($tables))
 		{
 			$text .= "\t<database>\n";
 			foreach($tables as $tbl)
 			{
 				$eTable= str_replace(MPREFIX,"",$tbl);
-				e107::getDB()->select($eTable, "*");
+				$eQry = (!empty($options['query'])) ? $options['query'] : null;
+				e107::getDB()->select($eTable, "*", $eQry);
 				$text .= "\t<dbTable name=\"".$eTable."\">\n";
 				$count = 1;
 				while($row = e107::getDB()->fetch())
@@ -985,12 +986,12 @@ class xmlClass
 		$text .= "</e107Export>";
 
 
-		if($mode === 'return')
+		if(!empty($options['return']))
 		{
 			return $text;
 		}
 
-		if($mode === 'debug')
+		if(!empty($options['debug']))
 		{
 			echo "<pre>".htmlentities($text)."</pre>";
 			return null;
@@ -1005,12 +1006,21 @@ class xmlClass
 			$path = e107::getParser()->replaceConstants($this->filePathDestination);
 			if($path)
 			{
-				file_put_contents($path."install.xml",$text,FILE_TEXT);
+				$fileName= "install.xml";
+
+				if(file_exists($path.$fileName))
+				{
+					$fileName = "install_".date('Y-m-d').".xml";
+				}
+
+				file_put_contents($path.$fileName,$text,FILE_TEXT);
 				return true;
 			}
 
+			$fileName = (!empty($options['file'])) ? $options['file'] : "e107Export_" . date("Y-m-d").".xml";
+
 			header('Content-type: application/xml', TRUE);
-			header("Content-disposition: attachment; filename= e107Export_" . date("Y-m-d").".xml");
+			header("Content-disposition: attachment; filename= ".$fileName);
 			header("Cache-Control: max-age=30");
 			header("Pragma: public");
 			echo $text;

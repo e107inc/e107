@@ -2764,6 +2764,16 @@ class e_parse extends e_parser
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
+		if(is_array($text))
+		{
+			$new = array();
+			foreach($text as $k=>$v)
+			{
+				$new[$k] = $this->replaceConstants($v,$mode,$all);
+			}
+
+			return $new;
+		}
 
 		if($mode != "")
 		{
@@ -3617,8 +3627,9 @@ class e_parser
 		}
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
+		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
 		
-		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate.$fixedW."'></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
@@ -4513,7 +4524,7 @@ return;
 	/**
 	 * Filters/Validates using the PHP5 filter_var() method.
 	 * @param $text
-	 * @param $type string str|int|email|url|w|wds
+	 * @param $type string str|int|email|url|w|wds|file
 	 * @return string | boolean | array
 	 */
 	function filter($text, $type='str',$validate=false)

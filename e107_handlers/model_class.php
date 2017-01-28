@@ -1711,6 +1711,10 @@ class e_model extends e_object
 		return e107::getParser()->parseTemplate($template, $parsesc, $this, $eVars);
 	}
 
+	/**
+	 * Export a Model configuration
+	 * @return string
+	 */
 	public function toXML()
 	{
 		$ret = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
@@ -2660,6 +2664,10 @@ class e_front_model extends e_model
 			break;
 
 			case 'json':
+				if(empty($value))
+				{
+					return null;
+				}
 				return e107::serialize($value,'json');
 			break;
 
@@ -3701,5 +3709,33 @@ class e_admin_tree_model extends e_front_tree_model
 			$ret[$id] = $model->url(null, $options, $extended);
 		}
 		return $ret;
+    }
+
+
+	/**
+	 * Export Selected Data
+	 * @param $ids
+	 * @return null
+	 */
+	public function export($ids)
+    {
+        $ids = e107::getParser()->filter($ids,'int');
+
+        if(empty($ids))
+        {
+            return false;
+        }
+
+        $idstr = implode(', ', $ids);
+
+	    $table      = array($this->getModelTable());
+
+	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
+	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
+
+		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+
+		return null;
+
     }
 }

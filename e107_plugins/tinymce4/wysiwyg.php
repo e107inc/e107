@@ -724,24 +724,29 @@ class wysiwyg
 	//	$ret['skin']                    = 'e107admin';
 	//	$ret['skin_url']                = SITEURLBASE.e_PLUGIN_ABS.'tinymce4/skins/e107admin';
 
-
-
 		$ret['convert_fonts_to_spans']	= false;
 
+/*
 		$editorCSS = array(
 
 			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
 			'http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
 			e_PLUGIN_ABS.'tinymce4/editor.css',
 		);
+*/
 
+
+		$editorCSS = array(
+			0 => e107::getLibrary()->getProperty('bootstrap','library_path').'dist/css/bootstrap.min.css',
+			1 => e107::getLibrary()->getProperty('fontawesome','library_path').'css/font-awesome.min.css',
+			2 => e_PLUGIN_ABS.'tinymce4/editor.css'
+		);
+
+		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
 
 		$ret['content_css']				= json_encode($editorCSS);
 		$ret['content_style']           = "div.clearfix { border-top:1px solid red } ";
-
-	//	$ret['content_css'] = e_WEB_ABS."js/bootstrap/css/bootstrap.min.css";
-
-		$ret['relative_urls']			= false;  //Media Manager prefers it like this. 
+		$ret['relative_urls']			= false;  //Media Manager prefers it like this.
 		$ret['preformatted']			= true;
 		$ret['document_base_url']		= SITEURL;
 		$ret['schema']                  = "html5";
@@ -787,18 +792,7 @@ class wysiwyg
 		// -------------------------------------------------------------------------------------
 		
 		
-	
-		$cssFiles = $fl->get_files(THEME,"\.css",'',2);
-		
-		
-		foreach($cssFiles as $val)
-		{
-			$css[] = str_replace(THEME,THEME_ABS,$val['path'].$val['fname']);	
-		}
-		$css[] = "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css";
-		$content_css = vartrue($config['content_css'], implode(",",$css)); 
-		
-		$content_styles = array('Bootstrap Button' => 'btn btn-primary', 'Bootstrap Table' => 'table');
+/*
 
 
 
@@ -828,7 +822,7 @@ class wysiwyg
            //     'end_container_on_empty_block' => true,
         
                 // HTML5 formats
-                /*
+
                 'style_formats' => "[
                         {title : 'h1', block : 'h1'},
                         {title : 'h2', block : 'h2'},
@@ -846,7 +840,7 @@ class wysiwyg
                         {title : 'aside', block : 'aside', wrapper: true},
                         {title : 'figure', block : 'figure', wrapper: true}
                 ]",
-        		*/
+
 	       // --------------------------------
 		
 			
@@ -916,7 +910,7 @@ class wysiwyg
 		if(ADMIN)
 		{
 	//		$this->config['external_link_list_url'] = e_PLUGIN_ABS."tiny_mce/filelist.php";
-		}
+		}*/
 	}
 
 

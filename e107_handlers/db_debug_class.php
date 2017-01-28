@@ -86,8 +86,10 @@ class e107_db_debug {
 
 		if(!empty($str))
 		{
-			e107::getRender()->setStyle('debug');
-			e107::getRender()->tablerender($title, $str);
+			//e107::getRender()->setStyle('debug');
+			echo "<h4>".$title."</h4>";
+			echo $str;
+			//e107::getRender()->tablerender($title, $str);
 		}
 	}
 
