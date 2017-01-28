@@ -335,3 +335,7 @@ img.e-emoticon { vertical-align:middle; border:0; width:24px }
 #uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
 
 div.e-debug { margin-top:50px; background-color: white }
+
+#login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
+#login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
+#login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
