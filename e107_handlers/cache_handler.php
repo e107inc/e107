@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2010 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Cache handler
  *
- * $URL$
- * $Id$
 */
 
 if (!defined('e107_INIT')) { exit; }
@@ -146,11 +144,11 @@ class ecache {
 				else
 				{
 					$ret = file_get_contents($cache_file);
-					if (strpos($ret,self::CACHE_PREFIX) == 0 )  
+					if (strpos($ret,self::CACHE_PREFIX) === 0 )  
 					{
 						substr($ret, strlen(self::CACHE_PREFIX));
 					}
-					elseif(strpos($ret,'<?php') == 0)
+					elseif(strpos($ret,'<?php') === 0)
 					{
 						$ret ='<?php' ;			// Handle the history for now
 					}
