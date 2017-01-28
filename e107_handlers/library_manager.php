@@ -954,18 +954,18 @@ class e_library_manager
 		if(!isset($loaded[$name]))
 		{
 			$cache = e107::getCache();
-			$cacheID = 'Library_' . e107::getParser()->filter($name,'file');
+			$cacheID = 'Library_' . e107::getParser()->filter($name, 'file');
 			$cached = $cache->retrieve($cacheID, false, true, true);
 
 			if($cached)
 			{
-				$library = unserialize($cached);
+				$library = e107::unserialize($cached);
 			}
 
 			if(!varset($library, false))
 			{
 				$library = $this->detect($name);
-				$cacheData = e107::serialize($library,'json');
+				$cacheData = e107::serialize($library, 'json');
 				$cache->set($cacheID, $cacheData, true, true, true);
 			}
 
