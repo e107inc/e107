@@ -78,7 +78,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/jquery/2.2.4/',
+			'library_path'      => 'https://cdn.jsdelivr.net/jquery',
+			'path'              => '2.2.4',
 		);
 
 		// jQuery (local).
@@ -111,6 +112,7 @@ class core_library
 					),
 				),
 			),
+			'path'              => '2.2.4',
 		);
 
 		// jQuery Once (CDN).
@@ -145,7 +147,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once/2.1.2/',
+			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once',
+			'path'              => '2.1.2',
 		);
 
 		// jQuery Once (local).
@@ -193,7 +196,7 @@ class core_library
 				'lines'   => 5,
 			),
 			'files'             => array(
-				'js' => array(
+				'js'  => array(
 					'jquery-ui.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
@@ -209,7 +212,7 @@ class core_library
 				// 'unminified' version for debugging.
 				'dev' => array(
 					'files' => array(
-						'js' => array(
+						'js'  => array(
 							// There is no non-minified version.
 							'jquery-ui.min.js' => array(
 								'zone' => 2,
@@ -226,7 +229,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/jquery.ui/1.11.4/',
+			'library_path'      => 'https://cdn.jsdelivr.net/jquery.ui',
+			'path'              => '1.11.4',
 		);
 
 		// jQuery UI (local).
@@ -239,7 +243,7 @@ class core_library
 				'lines'   => 5,
 			),
 			'files'             => array(
-				'js' => array(
+				'js'  => array(
 					'jquery-ui.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
@@ -255,7 +259,7 @@ class core_library
 				// 'unminified' version for debugging.
 				'dev' => array(
 					'files' => array(
-						'js' => array(
+						'js'  => array(
 							'jquery-ui.js' => array(
 								'zone' => 2,
 								'type' => 'footer',
@@ -270,7 +274,7 @@ class core_library
 				),
 			),
 			// Override library path.
-			'library_path'      => '{e_WEB}lib/jquery-ui/',
+			'library_path'      => '{e_WEB}lib/jquery-ui',
 		);
 
 		// Bootstrap (CDN).
@@ -314,7 +318,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap/3.3.7/',
+			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
+			'path'              => '3.3.7',
 		);
 
 		// Bootstrap (local).
@@ -357,8 +362,7 @@ class core_library
 					),
 				),
 			),
-			// Override library path.
-			'library_path'      => '{e_WEB}lib/bootstrap/3.3.7/',
+			'path'              => '3.3.7',
 		);
 
 		// Bootstrap Editable (CDN).
@@ -402,7 +406,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.editable/1.5.1/',
+			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.editable',
+			'path'              => '1.5.1',
 		);
 
 		// Bootstrap Editable (local).
@@ -446,7 +451,7 @@ class core_library
 				),
 			),
 			// Override library path.
-			'library_path'      => '{e_WEB}js/bootstrap3-editable/',
+			'library_path'      => '{e_WEB}js/bootstrap3-editable',
 		);
 
 		// Font-Awesome (CDN).
@@ -478,7 +483,8 @@ class core_library
 				),
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/fontawesome/4.7.0/',
+			'library_path'      => 'https://cdn.jsdelivr.net/fontawesome',
+			'path'              => '4.7.0',
 		);
 
 		// Font-Awesome (local).
@@ -510,7 +516,7 @@ class core_library
 				),
 			),
 			// Override library path.
-			'library_path'      => '{e_WEB}lib/font-awesome/',
+			'library_path'      => '{e_WEB}lib/font-awesome',
 		);
 
 		return $libraries;
@@ -528,19 +534,15 @@ class core_library
 		// instead of jsDelivr.
 		if($cdnProvider == 'cdnjs')
 		{
-			$libraries['cdn.jquery']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery/', 'https://cdnjs.cloudflare.com/ajax/libs/jquery/', $libraries['cdn.jquery']['library_path']);
-			$libraries['cdn.jquery.once']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.once/', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-once/', $libraries['cdn.jquery.once']['library_path']);
-			$libraries['cdn.jquery.ui']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.ui/', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/', $libraries['cdn.jquery.ui']['library_path']);
-			$libraries['cdn.bootstrap']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap/', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/', $libraries['cdn.bootstrap']['library_path']);
+			$libraries['cdn.jquery']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery', 'https://cdnjs.cloudflare.com/ajax/libs/jquery', $libraries['cdn.jquery']['library_path']);
+			$libraries['cdn.jquery.once']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.once', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-once', $libraries['cdn.jquery.once']['library_path']);
+			$libraries['cdn.jquery.ui']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.ui', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui', $libraries['cdn.jquery.ui']['library_path']);
+			$libraries['cdn.bootstrap']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap', $libraries['cdn.bootstrap']['library_path']);
 
-			if (preg_match('/(\d\.\d\.\d+)/', $libraries['cdn.bootstrap.editable']['library_path'], $matches)) {
-				$version = $matches[0];
-				$old = 'https://cdn.jsdelivr.net/bootstrap.editable/' . $version . '/';
-				$new = 'https://cdnjs.cloudflare.com/ajax/libs/x-editable/' . $version . '/bootstrap-editable/';
-				$libraries['cdn.bootstrap.editable']['library_path'] = str_replace($old, $new, $libraries['cdn.bootstrap.editable']['library_path']);
-			}
+			$libraries['cdn.bootstrap.editable']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap.editable', 'https://cdnjs.cloudflare.com/ajax/libs/x-editable', $libraries['cdn.bootstrap.editable']['library_path']);
+			$libraries['cdn.bootstrap.editable']['path'] .= '/bootstrap-editable';
 
-			$libraries['cdn.fontawesome']['library_path'] = str_replace('https://cdn.jsdelivr.net/fontawesome/', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/', $libraries['cdn.fontawesome']['library_path']);
+			$libraries['cdn.fontawesome']['library_path'] = str_replace('https://cdn.jsdelivr.net/fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome', $libraries['cdn.fontawesome']['library_path']);
 		}
 	}
 
@@ -1425,7 +1427,7 @@ class e_library_manager
 
 		// Construct the full path to the library for later use.
 		$path = e107::getParser()->replaceConstants($library['library_path']);
-		$path = ($library['path'] !== '' ? $path . '/' . $library['path'] : $path);
+		$path = ($library['path'] !== '' ? rtrim($path, '/') . '/' . $library['path'] : $path);
 		$path = rtrim($path, '/');
 
 		// Count the number of loaded files for the return value.
@@ -1583,6 +1585,9 @@ class e_library_manager
 		);
 
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
+		$libraryPath = ($library['path'] !== '' ? rtrim($libraryPath, '/') . '/' . $library['path'] : $libraryPath);
+		$libraryPath = rtrim($libraryPath, '/');
+
 		$file = $libraryPath . '/' . $options['file'];
 
 		if(empty($options['file']))
