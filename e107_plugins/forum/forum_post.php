@@ -16,7 +16,14 @@ if(!defined('e107_INIT'))
 	require_once('../../class2.php');
 }
 
-
+if(USER)
+{
+	define('e_TINYMCE_TEMPLATE', 'member'); // allow images / videos.
+}
+else
+{
+	define('e_TINYMCE_TEMPLATE', 'public');
+}
 
 define('NAVIGATION_ACTIVE','forum'); // ??
 
@@ -64,8 +71,13 @@ class forum_post_handler
 
 
 		$this->data = $this->processGet();
+
 		$this->checkPerms($this->data['forum_id']);
-		$this->processPosted();
+
+		if($this->processPosted() === false)
+		{
+			return false;
+		}
 
 		if($this->action == 'report')
 		{
@@ -74,6 +86,10 @@ class forum_post_handler
 		elseif($this->action == 'move')
 		{
 			$this->renderFormMove();
+		}
+		elseif($this->action == 'split')
+		{
+			$this->renderFormSplit();
 		}
 		else
 		{
@@ -134,6 +150,7 @@ class forum_post_handler
 			case 'edit':
 			case "quote":
 			case "report":
+			case 'split':
 				$postInfo               = $this->forumObj->postGet($this->post, 'post');
 				$forumInfo              = $this->forumObj->forumGet($postInfo['post_forum']);
 				$data                   = array_merge($postInfo ,$forumInfo);
@@ -186,6 +203,12 @@ class forum_post_handler
 			$this->moveThread($_POST);
 		}
 
+		if(!empty($_POST['split_thread']))
+		{
+			$this->splitThread($_POST);
+			return false;
+		}
+
 		if(isset($_POST['update_reply']))
 		{
 			$this->updateReply();
@@ -206,7 +229,7 @@ class forum_post_handler
 			$this->submitReport();
 		}
 
-
+		return true;
 	}
 
 
@@ -219,7 +242,9 @@ class forum_post_handler
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			require_once(HEADERF);
+
 			e107::getRender()->tablerender('Debug', "Redirecting to: <a href='".$url."'>".$url."</a>");
+			echo e107::getMessage()->render();
 			require_once(FOOTERF);
 			exit;
 
@@ -344,19 +369,29 @@ class forum_post_handler
 	 */
 	function getTemplate($type = 'post')
 	{
+		$pref = e107::pref('core');
 
 		global $FORUMPOST, $subjectbox, $userbox, $poll_form, $fileattach, $fileattach_alert; // needed for BC.
 
-		$FORUM_POST_TEMPLATE        = array();
-		$FORUM_POSTED_TEMPLATE      = array();
+//--		$FORUM_POST_TEMPLATE        = array();
+//--		$FORUM_POSTED_TEMPLATE      = array();
 		$FORUMREPLYPOSTED           = '';
 		$FORUMTHREADPOSTED          = '';
 		$FORUMPOLLPOSTED            = '';
 
-		$file = "forum_".$type."_template.php";
+//		$file = "forum_".$type."_template.php";
 
-		if (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+//    var_dump ($type);
+//    var_dump (e107::getTemplate('forum', 'forum_'.$type));
+		$template = e107::getTemplate('forum', 'forum_'.$type);
+//--		if($template = e107::getTemplate('forum', 'forum_'.$type))
+//--		{
+//--		  	$FORUM_POST_TEMPLATE = $template;
+//--		}
+//--		elseif (empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
+		if (empty($template) && empty($FORUMPOST) && empty($FORUMREPLYPOSTED) && empty($FORUMTHREADPOSTED))
 		{
+  		$file = "forum_".$type."_template.php";
 			if (is_readable(THEME.$file))
 			{
 				include_once(THEME.$file);
@@ -371,35 +406,282 @@ class forum_post_handler
 			}
 		}
 
-		if($type == 'post')
+
+
+		// ----------------- Legacy -------------------------
+
+		if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+
+		if(empty($userbox))
 		{
-			return (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+			$userbox = "<tr>
+			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3010."</td>
+			<td class='forumheader2' style='width:80%'>
+			<input class='tbox form-control' type='text' name='anonname' size='71' value='".vartrue($anonname)."' maxlength='20' style='width:95%' />
+			</td>
+			</tr>";
 		}
-		else
+
+		if(empty($subjectbox))
 		{
-			if (deftrue('BOOTSTRAP')) //v2.x
-			{
-				return $FORUM_POSTED_TEMPLATE;
-			}
-			else //v1.x
-			{
+			$subjectbox = "<tr>
+			<td class='forumheader2' style='width:20%'>".LAN_FORUM_3011."</td>
+			<td class='forumheader2' style='width:80%'>
+			<input class='tbox form-control' type='text' name='subject' size='71' value='".vartrue($subject)."' maxlength='100' style='width:95%' />
+			</td>
+			</tr>";
+		}
+
+		if(empty($fileattach))
+		{
+			$fileattach = "
+			<tr>
+				<td colspan='2' class='nforumcaption2 fcaption'>".($pref['image_post'] ? LAN_FORUM_3012 : LAN_FORUM_3013)."</td>
+			</tr>
+			<tr>
+				<td style='width:20%' class='forumheader3'>".LAN_FORUM_3014."</td>
+				<td style='width:80%' class='forumheader3'>".str_replace(array('[', ']'), array('<b>', '</b>'), LAN_FORUM_3015)."<br>".LAN_FORUM_3016.": ".vartrue($allowed_filetypes)." <br />".LAN_FORUM_3017."<br />".LAN_FORUM_3018.": ".(vartrue($max_upload_size) ? $max_upload_size." ".LAN_FORUM_3019 : ini_get('upload_max_filesize'))."
+					<br />
+					<div id='fiupsection'>
+					<span id='fiupopt'>
+						<input class='tbox' name='file_userfile[]' type='file' size='47' />
+					</span>
+					</div>
+					<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+				</td>
+			</tr>
+			";
+
+		}
+		// If the upload directory is not writable, we need to alert the user about this.
+		if(empty($fileattach_alert))
+		{
+			$fileattach_alert = "
+			<tr>
+				<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_FORUM_3012 : LAN_FORUM_3013)."</td>
+			</tr>
+			<tr>
+				<td colspan='2' class='forumheader3'>".str_replace('[x]', e_FILE."public", LAN_FORUM_3021)."</td>
+			</tr>\n";
+		}
+		// ------------
+
+		if(empty($FORUMPOST))
+		{
+			$FORUMPOST = "
+			<div style='text-align:center'>
+			<div class='spacer'>
+			{FORMSTART}
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+			<td colspan='2' class='fcaption'>{BACKLINK}
+			</td>
+			</tr>
+			{USERBOX}
+			{SUBJECTBOX}
+			<tr>
+			<td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
+			<td class='forumheader2' style='width:80%'>
+			{POSTBOX}<br />
+			{EMAILNOTIFY}<br />
+			{NOEMOTES}<br />
+			{POSTTHREADAS}
+			</td>
+			</tr>
+			{POLL}
+			{FILEATTACH}
+
+			<tr style='vertical-align:top'>
+			<td colspan='2' class='forumheader' style='text-align:center'>
+			{BUTTONS}
+			</td>
+			</tr>
+			</table>
+			{FORMEND}
+
+			<table style='".USER_WIDTH."'>
+			<tr>
+			<td>
+			{FORUMJUMP}
+			</td>
+			</tr>
+			</table>
+			</div></div>
+			";
+		}
+
+		if(empty($FORUMPOST_REPLY))
+		{
+			$FORUMPOST_REPLY = "
+			<div style='text-align:center'>
+			<div class='spacer'>
+			{FORMSTART}
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+			<td colspan='2' class='fcaption'>{BACKLINK}
+			</td>
+			</tr>
+			{USERBOX}
+			{SUBJECTBOX}
+			<tr>
+			<td class='forumheader2' style='width:20%'>{POSTTYPE}</td>
+			<td class='forumheader2' style='width:80%'>
+			{POSTBOX}<br />
+			{EMAILNOTIFY}<br />
+			{NOEMOTES}<br />
+			{POSTTHREADAS}
+			</td>
+			</tr>
+
+			{POLL}
+
+			{FILEATTACH}
+
+			<tr style='vertical-align:top'>
+			<td colspan='2' class='forumheader' style='text-align:center'>
+			{BUTTONS}
+			</td>
+			</tr>
+			</table>
+			{FORMEND}
+
+			<table style='".USER_WIDTH."'>
+			<tr>
+			<td>
+			{FORUMJUMP}
+			</td>
+			</tr>
+			</table>
+			</div></div>
+			<div style='text-align:center'>
+			{THREADTOPIC}
+			{LATESTPOSTS}
+			</div>
+			";
+		}
+
+		if(empty($LATESTPOSTS_START))
+		{
+			$LATESTPOSTS_START = "
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+			<td colspan='2' class='fcaption' style='vertical-align:top'>".str_replace('[y]', "{LATESTPOSTSCOUNT}", LAN_FORUM_3022)."</td>
+			</tr>";
+		}
+
+		if(empty($LATESTPOSTS_POST))
+		{
+			$LATESTPOSTS_POST = "
+			<tr>
+			<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
+			<td class='forumheader3' style='width:80%'>
+				<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {THREADDATESTAMP}</div>
+				{POST}
+			</td>
+			</tr>
+			";
+		}
+
+		if(empty($LATESTPOSTS_END))
+		{
+			$LATESTPOSTS_END = "
+			</table>
+			";
+		}
+
+		if(empty($THREADTOPIC_REPLY))
+		{
+			$THREADTOPIC_REPLY = "
+			<table style='".USER_WIDTH."' class='fborder table'>
+			<tr>
+				<td colspan='2' class='fcaption' style='vertical-align:top'>".LAN_FORUM_1003."</td>
+			</tr>
+			<tr>
+				<td class='forumheader3' style='width:20%;vertical-align:top'><b>{POSTER}</b></td>
+				<td class='forumheader3' style='width:80%'>
+					<div class='smallblacktext' style='text-align:right'>".IMAGE_post2." {THREADDATESTAMP}</div>
+					{POST}
+				</td>
+			</tr>
+			</table>
+			";
+		}
+
+
+		// -------------------------------- End Legacy Code ----------------------------------//
+
+
+
+
+
+//--		if($type == 'post' || $type == 'posted')
+		if($template)
+		{
+//--			$template= (deftrue('BOOTSTRAP')) ? $FORUM_POST_TEMPLATE : array('form'=>$FORUMPOST);
+			$template= (deftrue('BOOTSTRAP')) ? $template : array('form'=>$FORUMPOST);
+		//	print_a($template);
+			return $this->upgradeTemplate($template);
+		}
+//--		else
+//--		{
+//--			if (deftrue('BOOTSTRAP')) //v2.x
+//--			{
+//--				return $FORUM_POSTED_TEMPLATE;
+//--			}
+//--			else //v1.x
+//--			{
 				return array(
 					 "reply"    => $FORUMREPLYPOSTED,
 					 "thread"   => $FORUMTHREADPOSTED,
 					 "poll"     => $FORUMPOLLPOSTED
 				);
+//--			}
+//--		}
+	}
 
-			}
 
+	private function upgradeTemplate($template)
+	{
+		$arr = array(
+			'POSTOPTIONS'       => "FORUM_POST_OPTIONS",
+			'POSTOPTIONS_LABEL' => "FORUM_POST_OPTIONS_LABEL",
+			'POLL'              => 'FORUM_POST_POLL',
+			'FORUM_AUTHOR'      => 'FORUM_POST_AUTHOR',
+			'FORUM_SUBJECT'     => 'FORUM_POST_SUBJECT',
+			'BUTTONS'           => 'FORUM_POST_BUTTONS',
+			'FORMSTART'         => 'FORUM_POST_FORM_START',
+			'FORMEND'           => 'FORUM_POST_FORM_END',
+			'POSTBOX'           => 'FORUM_POST_TEXTAREA',
+			'EMAILNOTIFY'       => 'FORUM_POST_EMAIL_NOTIFY',
+			'BACKLINK'          => 'FORUM_POST_BREADCRUMB',
+			'POSTTYPE'          => 'FORUM_POST_TEXTAREA_LABEL'
+		);
+
+		foreach($arr as $old => $new)
+		{
+			//$template = str_replace("{".$old."}", "{".$new."}", $template);
+			$reg = '/\{'.$old.'((?:=|:)?[^\}]*)\}/';  // handle variations.
+			$repl = '{'.$new.'$1}';
+			$template = preg_replace($reg,$repl, $template);
 
 		}
 
+	//	print_a($template);
 
+		return $template;
 
 	}
 
 
-	function renderFormMove()
+	private function renderBreadcrumb()
+	{
+		$sc  = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
+		return  e107::getParser()->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
+
+	}
+
+
+	private function renderFormSplit()
 	{
 		if(!deftrue('MODERATOR'))
 		{
@@ -408,9 +690,67 @@ class forum_post_handler
 
 
 		$frm = e107::getForm();
-		$sql = e107::getDb();
+
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+
+
+		$text = $this->renderBreadcrumb();
+
+
+		$text .= e107::getMessage()->setTitle(LAN_FORUM_8015,E_MESSAGE_ERROR)->addError( LAN_FORUM_8014 )->render();
+
+			$text .= "
+		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
+		<div>
+		<table class='table table-striped'>
+		<tr><td>".LAN_FORUM_3050."</td>
+		<td><div class='alert alert-warning' style='margin:0'>".$tp->toHTML($this->data['post_entry'], true)."</div></td>
+		</tr>
+
+		<tr>
+		<td>".LAN_FORUM_3051.": </td>
+		<td>".$this->forumSelect('forum_split',$this->data['forum_id'], 'required=1')."
+
+		</td>
+		</tr>
+		<tr>
+		<td >".LAN_FORUM_3042."</td>
+		<td>
+
+		".$frm->text('new_thread_title', $tp->toForm($this->data['thread_name'], 250))."
+
+		</div></td>
+		</tr>
+		</table>
+		<div class='center'>
+		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
+		<a class='btn btn-default button'  href='".e_REFERER_SELF."' >".LAN_CANCEL."</a>
+		</div>
+
+		</div>
+		</form>";
+
+
+		$ns->tablerender(LAN_FORUM_3052, $text);
+
+
+	}
+
+
+
+
+
+	/**
+	 * Render a drop-down list of forums.
+	 * @param $name
+	 * @param mixed $curVal
+	 * @param string|array $opts
+	 * @return string
+	 */
+	private function forumSelect($name, $curVal=null, $opts=null)
+	{
+		$sql = e107::getDb();
 
 		$qry = "
 		SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
@@ -422,7 +762,6 @@ class forum_post_handler
 		";
 
 		$fList = $sql->retrieve($qry,true);
-
 
 		$opts = array();
 		$currentName = "";
@@ -438,7 +777,7 @@ class forum_post_handler
 
 				if($this->data['forum_id'] == $f['forum_id'])
 				{
-					$for_name .= " (Current)";
+					$for_name .= LAN_FORUM_8016;
 					$currentName = $for_name;
 					continue;
 				}
@@ -449,10 +788,30 @@ class forum_post_handler
 		}
 
 
-		$text = "
+		return e107::getForm()->select($name, $opts, $curVal, $opts, $currentName);
+	}
+
+
+	/**
+	 * Render Move Form.
+	 */
+	private function renderFormMove()
+	{
+		if(!deftrue('MODERATOR'))
+		{
+			return;
+		}
+
+		$frm = e107::getForm();
+		$tp = e107::getParser();
+		$ns = e107::getRender();
+
+		$text = $this->renderBreadcrumb();
+
+		$text .= "
 		<form class='forum-horizontal' method='post' action='".e_REQUEST_URI."'>
 		<div>
-		<table class='table table-striped' style='".ADMIN_WIDTH."'>
+		<table class='table table-striped'>
 		<tr>
 		<td>".LAN_FORUM_3011.": </td>
 		<td>
@@ -464,7 +823,7 @@ class forum_post_handler
 
 		<tr>
 		<td>".LAN_FORUM_5019.": </td>
-		<td>".$frm->select('forum_move', $opts, $this->data['forum_id'], 'required=1', $currentName)."
+		<td>".$this->forumSelect('forum_move', $this->data['forum_id'], 'required=1')."
 
 		</td>
 		</tr>
@@ -505,9 +864,19 @@ class forum_post_handler
 		$data       = $this->data;
 		$template   = $this->getTemplate();
 		$sc         = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($data))->setVars($data);
+
+		$sc->wrapper('forum_post');
+
 		$text       = e107::getParser()->parseTemplate($template['form'], true, $sc);
 
-		$this->render($text);
+		$caption = null;
+
+		if(!empty($template['caption']))
+		{
+			$caption =  e107::getParser()->parseTemplate($template['caption'], true, $sc);
+		}
+
+		$this->render($text, $caption);
 
 		if(empty($data))
 		{
@@ -538,7 +907,9 @@ class forum_post_handler
 
 		if(deftrue('BOOTSTRAP')) //v2.x
 		{
-			$text = $frm->open('forum-report-thread','post');
+			$text = $this->renderBreadcrumb();
+
+			$text .= $frm->open('forum-report-thread','post');
 			$text .= "
 							<div>
 								<div class='alert alert-block alert-warning'>
@@ -551,7 +922,7 @@ class forum_post_handler
 								</div>
 								<div class='form-group' >
 									<div class='col-md-12'>
-								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge'))."
+								".$frm->textarea('report_add','',10,35,array('size'=>'xxlarge', 'placeholder'=>LAN_FORUM_2038))."
 									</div>
 								</div>
 								<div class='form-group'>
@@ -607,13 +978,15 @@ class forum_post_handler
 	/**
 	 * @param $text
 	 */
-	function render($text)
+	function render($text, $caption = false)
 	{
 		$ns = e107::getRender();
 
 		if ($this->forumObj->prefs->get('enclose'))
 		{
-			$ns->tablerender($this->forumObj->prefs->get('title'), $text);
+
+			$caption = (!empty($caption)) ? $caption : $this->forumObj->prefs->get('title');
+			$ns->tablerender($caption, $text);
 		}
 		else
 		{
@@ -781,19 +1154,19 @@ class forum_post_handler
 			{
 				foreach($uploadResult as $ur)
 				{
-					//$postInfo['post_entry'] .= $ur['txt'];
-					//	$_tmp = $ur['type'].'*'.$ur['file'];
-					//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
-					//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
-
 					$type = $ur['type'];
-					$newValues[$type][] = $ur['file'];
-					// $attachments[] = $_tmp;
+					$newValues[$type][] = array('file'=>$ur['file'], 'name'=>$ur['fname'], 'size'=>$ur['size']);
 				}
 
-				//	$postInfo['_FIELD_TYPES']['post_attachments'] = 'array';
-				$postInfo['post_attachments'] = e107::serialize($newValues); //FIXME XXX - broken encoding when saved to DB.
+				$postInfo['post_attachments'] = e107::serialize($newValues);
 			}
+			
+			//Allows directly overriding the method of adding files (or other data) as attachments
+			if($attachmentsPosted = $this->processAttachmentsPosted())
+			{
+				$postInfo['post_attachments'] = $attachmentsPosted;
+			}	
+			
 //		var_dump($uploadResult);
 
 			switch($this->action)
@@ -855,7 +1228,7 @@ class forum_post_handler
 			if($postResult === -1 || $newPostId === -1) //Duplicate post
 			{
 				require_once(HEADERF);
-				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>Return</a>";
+				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>".LAN_FORUM_8028."</a>";
 				$text = e107::getMessage()->addError($message)->render();
 				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text); // change to forum-title pref.
 				require_once(FOOTERF);
@@ -909,7 +1282,7 @@ class forum_post_handler
 				$txt = e107::getParser()->parseTemplate($txt,true, $SHORTCODES);
 
 
-				e107::getRender()->tablerender('Forums', e107::getMessage()->render().$txt);
+				e107::getRender()->tablerender(e_PAGETITLE, e107::getMessage()->render().$txt);
 				require_once(FOOTERF);
 				exit;
 			}
@@ -920,12 +1293,13 @@ class forum_post_handler
 	}
 
 
-	function moveThread($posted)
+	private function moveThread($posted)
 	{
 
 		if(!deftrue('MODERATOR'))
 		{
-			return;
+			e107::getDebug()->log("Move Thread attempted by non-moderator"); // No LAN necessary.
+			return false;
 		}
 
 		$tp = e107::getParser();
@@ -945,7 +1319,7 @@ class forum_post_handler
 		}
 
 		$threadId = intval($_GET['id']);
-		$toForum = $posted['forum_move'];
+		$toForum = intval($posted['forum_move']);
 
 		$this->forumObj->threadMove($threadId, $toForum, $newThreadTitle, $newThreadTitleType);
 
@@ -962,6 +1336,89 @@ class forum_post_handler
 
 	}
 
+
+
+	private function splitThread($post)
+	{
+		if(!deftrue('MODERATOR'))
+		{
+			e107::getDebug()->log("Split Thread attempted by non-moderator"); // No LAN necessary.
+			return false;
+		}
+
+		$threadInfo = array();
+		$threadInfo['thread_sticky']    = 0;
+		$threadInfo['thread_name']      = $post['new_thread_title'];
+		$threadInfo['thread_forum_id']  = (!empty($post['forum_split'])) ? intval($post['forum_split']) : $this->data['post_forum'];
+		$threadInfo['thread_active']    = 1;
+		$threadInfo['thread_datestamp'] = $this->data['post_datestamp'];
+		$threadInfo['thread_views']      = 0;
+		$threadInfo['thread_user']       = $this->data['post_user'];
+
+
+	//	print_a($this->data);
+
+		if($ret = $this->forumObj->threadAdd($threadInfo, false))
+		{
+
+			$urlInfo = $threadInfo;
+			$urlInfo['thread_sef'] = $ret['threadsef'];
+			$urlInfo['thread_id'] = $ret['threadid'];
+			$urlInfo['forum_sef'] = $this->forumObj->getForumSef($threadInfo);
+
+			$newUrl = e107::url('forum','topic', $urlInfo);
+
+			e107::getMessage()->addSuccess("Created new thread <a class='alert-link' href='".$newUrl."'>#".$ret['threadid']."</a>");
+			$update = array(
+				'post_thread' => $ret['threadid'],
+				'post_forum'  => $threadInfo['thread_forum_id'],
+				 'WHERE'   => "post_thread = ".$this->data['post_thread']." AND post_id >= ".$this->data['post_id']
+
+			);
+
+			if($result = e107::getDb()->update('forum_post', $update))
+			{
+
+				e107::getMessage()->addSuccess("Moved ".$result." posts to topic #". $ret['threadid']);
+
+
+				// Update old thread.
+
+				if(!$this->forumObj->threadUpdateCounts($this->data['post_thread']))
+				{
+					e107::getMessage()->addError("Couldn't update thread replies for original topic #". $this->data['post_thread']);
+				}
+
+				if(!$this->forumObj->forumUpdateLastpost('thread',$this->data['post_thread']))
+				{
+					e107::getMessage()->addError("Couldn't update last post user for original topic #". $this->data['post_thread']);
+
+				}
+
+				// Update new thread.
+
+				if(!$this->forumObj->threadUpdateCounts($ret['threadid']))
+				{
+					e107::getMessage()->addError("Couldn't update thread replies for #". $ret['threadid']);
+				}
+
+				if(!$this->forumObj->forumUpdateLastpost('thread',$ret['threadid']))
+				{
+					e107::getMessage()->addError("Couldn't update last post user for #". $ret['threadid']);
+
+				}
+
+			}
+
+		}
+
+		$sc   = e107::getScBatch('post', 'forum')->setScVar('forum', $this->forumObj)->setScVar('threadInfo', vartrue($this->data))->setVars($this->data);
+		$text = e107::getParser()->parseTemplate("<div class='row-fluid'><div>{FORUM_POST_BREADCRUMB}</div></div>",true,$sc);
+		$text .= e107::getMessage()->render();
+
+
+		e107::getRender()->tablerender(LAN_FORUM_3052, $text);
+	}
 
 
 
@@ -988,17 +1445,28 @@ class forum_post_handler
 
 			if($uploadResult = $this->processAttachments())
 			{
-				$attachments = explode(',', $this->data['post_attachments']);
+				// $attachments = explode(',', $this->data['post_attachments']);
+				$newValues   = e107::unserialize($this->data['post_attachments']);
 				foreach($uploadResult as $ur)
 				{
-					$_tmp = $ur['type'].'*'.$ur['file'];
-					if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
-					if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
-					$attachments[] = $_tmp;
-				}
-				$postVals['post_attachments'] = implode(',', $attachments);
-			}
+				//	$_tmp = $ur['type'].'*'.$ur['file'];
+				//	if($ur['thumb']) { $_tmp .= '*'.$ur['thumb']; }
+				//	if($ur['fname']) { $_tmp .= '*'.$ur['fname']; }
+				//	$attachments[] = $_tmp;
 
+					$type = $ur['type'];
+					$newValues[$type][] = array('file'=>$ur['file'], 'name'=>$ur['fname'], 'size'=>$ur['size']);
+				}
+				$postVals['post_attachments'] = e107::serialize($newValues);
+				// $postVals['post_attachments'] = implode(',', $attachments);
+			}
+			
+			//Allows directly overriding the method of adding files (or other data) as attachments
+			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
+			{
+				$postVals['post_attachments'] = $attachmentsPosted;
+			}	
+      
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
@@ -1046,9 +1514,30 @@ class forum_post_handler
 			return;
 		}
 
+		e107::getMessage()->addDebug(print_a($this->data,true));
+
 		$postVals['post_edit_datestamp']    = time();
 		$postVals['post_edit_user']         = USERID;
 		$postVals['post_entry']             = $_POST['post'];
+
+		if($uploadResult = $this->processAttachments())
+		{
+			$newValues   = e107::unserialize($this->data['post_attachments']);
+
+			foreach($uploadResult as $ur)
+			{
+				$type = $ur['type'];
+				$newValues[$type][] = array('file'=>$ur['file'], 'name'=>$ur['fname'], 'size'=>$ur['size']);
+			}
+
+			$postVals['post_attachments'] = e107::serialize($newValues);
+		}
+		
+		//Allows directly overriding the method of adding files (or other data) as attachments
+		if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
+		{
+			$postVals['post_attachments'] = $attachmentsPosted;
+		}		
 
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
@@ -1074,23 +1563,33 @@ class forum_post_handler
 	}
 
 
-
-
-
+	/**
+	 * @return array
+	 */
 	function processAttachments()
 	{
 
 		$ret = array();
 
+		e107::getMessage()->addDebug("Processing Attachments");
+
+
 		if (isset($_FILES['file_userfile']['error']))
 		{
-			require_once(e_HANDLER.'upload_handler.php');
+
+				e107::getMessage()->addDebug("Attachment Detected");
 
 			// retrieve and create attachment directory if needed
-			$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
+			//$attachmentDir = $this->forumObj->getAttachmentPath(USERID, true);
 
-			if($uploaded = process_uploaded_files($attachmentDir, 'attachment', ''))
+		//	e107::getMessage()->addDebug("Attachment Directory: ".$attachmentDir);
+
+			if($uploaded = e107::getFile()->getUploaded('attachments', 'attachment', array( 'max_file_count' => 5)))
 			{
+
+				e107::getMessage()->addDebug("Uploaded Data: ".print_a($uploaded,true));
+
+
 				foreach($uploaded as $upload)
 				{
 					//print_a($upload); exit;
@@ -1163,7 +1662,7 @@ class forum_post_handler
 						}
 						if($_txt && $_file)
 						{
-							$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $_fname);
+							$ret[] = array('type' => $_type, 'txt' => $_txt, 'file' => $_file, 'thumb' => $_thumb, 'fname' => $upload['origname'], 'size'=>$upload['size']);
 						}
 					}
 					else
@@ -1176,6 +1675,11 @@ class forum_post_handler
 
 				return $ret;
 			}
+			else
+			{
+				// e107::getMessage()->addError('There was a problem with the attachment.');
+				// e107::getMessage()->addDebug(print_a($_FILES['file_userfile'],true));
+			}
 		}
 		/* no file uploaded at all, proceed with creating the topic or reply
 		// TODO don't call process_upload() when no attachments are uploaded.. (check  user input first, then call if needed)
@@ -1184,6 +1688,31 @@ class forum_post_handler
 			e107::getMessage()->addError('Something went wrong during the attachment uploading process.');
 		}
 		*/
+	}
+	
+	
+	//Allows directly overriding the method of adding files (or other data) as attachments
+	function processAttachmentsPosted($existingValues = '')
+	{		
+		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
+		{
+			$postedAttachments = json_decode($_POST['post_attachments_json'], true);
+			$attachmentsJsonErrors = json_last_error();
+			if($attachmentsJsonErrors === JSON_ERROR_NONE)
+			{
+		        if($existingValues)
+		        {
+		          $existingValues = e107::unserialize($existingValues);
+		          return e107::serialize(array_merge_recursive($existingValues,$postedAttachments));
+		        }
+		        else
+		        {
+				  return e107::serialize($postedAttachments);
+				}
+			}
+		}
+
+    	return false;
 	}
 
 }

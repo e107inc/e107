@@ -647,7 +647,7 @@ class e_model extends e_object
 	 * @param boolean $extended [optional] if true, method will return an array containing url, title and description of the url
      * @return mixed URL string or extended array data
      */
-    public function url($options = array(), $extended = false)
+    public function url($ids, $options = array(), $extended = false)
     {
         $urldata = $this->getUrl();
 		if(empty($urldata) || !vartrue($urldata['route'])) return ($extended ? array() : null);
@@ -1097,12 +1097,14 @@ class e_model extends e_object
         	$data = &$this->{$data_src};
             for ($i = 0, $l = count($keyArr); $i < $l; $i++)
             {
+
 	            $k = $keyArr[$i];
 
-	            if (!isset($data[$k]))
+	            if (!isset($data[$k]) || empty($data[$k])) // PHP7.1 fix. Reset to empty array() if $data[$k] is an empty string. Reason for empty string still unknown.
 	            {
 	                $data[$k] = array();
 	            }
+
 	            $data = &$data[$k];
 	        }
 
@@ -1709,6 +1711,10 @@ class e_model extends e_object
 		return e107::getParser()->parseTemplate($template, $parsesc, $this, $eVars);
 	}
 
+	/**
+	 * Export a Model configuration
+	 * @return string
+	 */
 	public function toXML()
 	{
 		$ret = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
@@ -2299,7 +2305,7 @@ class e_front_model extends e_model
 			}
 			else //no db field types, use toDB()
 			{
-				$src_data = $tp->toDB($src_data);
+				$src_data = e107::getParser()->toDB($src_data);
 			}
 		}
 
@@ -2647,10 +2653,26 @@ class e_front_model extends e_model
 				return intval($this->toNumber($value));
 			break;
 
+			case 'safestr':
+				return $tp->filter($value);
+			break;
+
 			case 'str':
 			case 'string':
 			case 'array':
 				return $tp->toDB($value);
+			break;
+
+			case 'json':
+				if(empty($value))
+				{
+					return null;
+				}
+				return e107::serialize($value,'json');
+			break;
+
+			case 'code':
+				return $tp->toDB($value, false, false, 'pReFs');
 			break;
 
 			case 'float':
@@ -2855,7 +2877,7 @@ class e_admin_model extends e_front_model
 			$this->mergePostedData(false, true, true);
 		}
 
-		if($this->getId() && $this->getPostedData('etrigger_submit') !='Create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
+		if($this->getId() && $this->getPostedData('etrigger_submit') !='create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
 		{
 			return $this->dbUpdate($force, $session_messages);
 		}
@@ -2881,7 +2903,7 @@ class e_admin_model extends e_front_model
 		return $this->dbInsert($session_messages);
     }
 
-	public function delete($destroy = true, $session_messages = false)
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = $this->dbDelete();
 		if($ret)
@@ -2920,7 +2942,8 @@ class e_admin_model extends e_front_model
 			$this->_db_errmsg = $sql->getLastErrorText();
 
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$this->_db_errmsg);
+			$this->addMessageDebug('SQL QRY Error '.print_a($sqlQry,true));
 
 			return false;
 		}
@@ -3683,8 +3706,36 @@ class e_admin_tree_model extends e_front_tree_model
 
 			$model = $this->getNode($id);
 			if($this->getUrl()) $model->setUrl($this->getUrl()); // copy url config data if available
-			$ret[$id] = $model->url($options, $extended);
+			$ret[$id] = $model->url(null, $options, $extended);
 		}
 		return $ret;
+    }
+
+
+	/**
+	 * Export Selected Data
+	 * @param $ids
+	 * @return null
+	 */
+	public function export($ids)
+    {
+        $ids = e107::getParser()->filter($ids,'int');
+
+        if(empty($ids))
+        {
+            return false;
+        }
+
+        $idstr = implode(', ', $ids);
+
+	    $table      = array($this->getModelTable());
+
+	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
+	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
+
+		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+
+		return null;
+
     }
 }

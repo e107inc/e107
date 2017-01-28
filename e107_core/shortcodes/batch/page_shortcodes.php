@@ -15,7 +15,9 @@ if (!defined('e107_INIT')) { exit; }
  *
  *	Shortcodes for custom page display
  */
- 
+
+
+
  
 class cpage_shortcodes extends e_shortcode
 {
@@ -31,11 +33,15 @@ class cpage_shortcodes extends e_shortcode
 		foreach($books as $row)
 		{
 			$id 							= $row['chapter_id'];
+
+
 			$this->chapterData[$id]			= $row;
 		}	
-	
+
+
+
 	}
-		
+
 	
 	// Set Chapter. // @see chapter_menu.php 
 	public function setChapter($id)
@@ -246,12 +252,14 @@ class cpage_shortcodes extends e_shortcode
 	function sc_cpagebutton($parm)
 	{
 		$tp = e107::getParser();
-		
-		if(empty($this->var['menu_button_url']) && !check_class($this->var['page_class'])) // ignore when custom url used. 
+
+		$pgClass = intval($this->var['page_class']);
+
+		if(empty($this->var['menu_button_url']) && !check_class($pgClass)) // ignore when custom url used.
 		{
 			return "<!-- Button Removed: Page check_class() returned false. -->";	
 		}
-		
+
 		$url = $this->sc_cpageurl();
 		
 		if($parm == 'href' || !$url)
@@ -263,8 +271,15 @@ class cpage_shortcodes extends e_shortcode
 		{
 			return "<!-- Button Removed: No page text exists! -->";	
 		}
-		
-		parse_str($parm,$options);
+
+		if(is_string($parm))
+		{
+			parse_str($parm,$options);
+		}
+		else
+		{
+			$options= $parm;
+		}
 		
 		$buttonText = (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
 		$buttonUrl	= (empty($this->var['menu_button_url'])) ? $url : $tp->replaceConstants($this->var['menu_button_url']);
@@ -297,6 +312,21 @@ class cpage_shortcodes extends e_shortcode
 		// print_a($this);
 		return e107::getParser()->toHTML($this->var['menu_text'], true, 'BODY');
 	}
+
+	/**
+	 * @param null $parm
+	 * @example {CMENUURL}
+	 * @return string
+	 */
+	function sc_cmenuurl($parm=null)
+	{
+		if(empty($this->var['menu_button_url']))
+		{
+			return $this->sc_cpageurl();
+		}
+
+		return e107::getParser()->replaceConstants($this->var['menu_button_url']);
+	}
 	
 	
 	function sc_cmenuimage($parm='')
@@ -308,19 +338,25 @@ class cpage_shortcodes extends e_shortcode
 			return $video;	
 		}
 		
-		$img = $tp->thumbUrl($this->var['menu_image']);
+
 		if($parm == 'url')
 		{
+			$img = $tp->thumbUrl($this->var['menu_image']);
 			return $img;	
 		}
 
-		$dimensions = $tp->thumbDimensions();
+		return $tp->toImage($this->var['menu_image'], $parm);
 
-		return "<img class='img-responsive img-rounded' src='".$img."' alt='' ".$dimensions." />";
+		//return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
 	}
 	
 	function sc_cmenuicon($parm='')
 	{
+		if($parm === 'css')
+		{
+			return str_replace(".glyph", "", $this->var['menu_icon']);
+		}
+
 		return e107::getParser()->toIcon($this->var['menu_icon'], array('space'=>' '));
 	}		
 
@@ -423,6 +459,15 @@ class cpage_shortcodes extends e_shortcode
 		$row = $this->getChapter();
 
 		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
+	}
+
+	/**
+	 * Alias for {CHAPTER_NAME}
+	 * @example {CHAPTER_TITLE}
+	 */
+	function sc_chapter_title()
+	{
+		return $this->sc_chapter_name();
 	}
 
 
@@ -528,11 +573,111 @@ class cpage_shortcodes extends e_shortcode
 		{
 			$array['types'] = 'page,news';
 		}
-			
-		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']));	
+
+		$templateID = vartrue($this->var['page_template'],'default');
+
+		$template = e107::getCoreTemplate('page', $templateID);
+
+
+		return e107::getForm()->renderRelated($array, $this->var['page_metakeys'], array('page'=>$this->var['page_id']), $template['related']);
 	}
 	
 	
-	
-	
+	function sc_cpageedit($parm=array())
+	{
+
+		if(!ADMIN || !getperms('5'))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+
+		if(!empty($parm['modal']))
+		{
+			$modal =  'e-modal';
+			$iframe = '&iframe=1';
+		}
+		else
+		{
+			$modal =  '';
+		    $iframe = '';
+		}
+
+		$icon = deftrue('FONTAWESOME') ? $tp->toGlyph('fa-edit') : "<img src='".e_IMAGE_ABS."/admin_images/edit_16.png' alt='edit' style='border: 0px none; height: 16px; width: 16px;' />";
+
+
+	    return "<a rel='external'  title=\"".LAN_EDIT."\"  data-modal-caption=\"".LAN_EDIT."\" class='btn btn-default ".$modal."' href='".e_ADMIN_ABS."cpage.php?action=edit&id=".$this->var['page_id'].$iframe."' >".$icon."</a>";
+	}
+
+
+	function sc_cpagefieldtitle($parm=null)
+	{
+		if(empty($parm['name']) || empty($this->var['page_fields']))
+		{
+			return null;
+		}
+
+		$chap       = $this->var['page_chapter'];
+		$key        = $parm['name'];
+
+
+		if(!empty($this->chapterData[$chap]['chapter_fields'][$key]['title']))
+		{
+			return $this->chapterData[$chap]['chapter_fields'][$key]['title'];
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Return raw HTML-usable values from page fields.
+	 * @experimental subject to change without notice.
+	 * @param null $parm
+	 * @return mixed
+	 */
+	function sc_cpagefield($parm=null)
+	{
+		if(empty($parm['name']) || empty($this->var['page_fields']))
+		{
+			return null;
+		}
+
+		$chap       = $this->var['page_chapter'];
+		$fields     = $this->chapterData[$chap]['chapter_fields'];
+
+		return e107::getCustomFields()->loadConfig($fields)->loadData($this->var['page_fields'])->getFieldValue($parm['name'],$parm);
+
+
+	}
+
+
+	/**
+	 * @experimental - subject to change without notice. Use at own risk.
+	 * @param null $parm
+	 * @return string
+	 */
+	function sc_cpagefields($parm=null)
+	{
+		$fieldData  = e107::unserialize($this->var['page_fields']);
+
+
+		$text = '<table class="table table-bordered table-striped">
+		<tr><th>Name</th><th>Title<br /><small>&#123;CPAGEFIELDTITLE: name=x&#125;</small></th><th>Normal<br /><small>&#123;CPAGEFIELD: name=x&#125;</small></th><th>Raw<br /><small>&#123;CPAGEFIELD: name=x&mode=raw&#125;</small></th></tr>';
+
+		foreach($fieldData as $ok=>$v)
+		{
+
+			$text .= "<tr><td>".$ok."</td><td>".$this->sc_cpagefieldtitle(array('name'=>$ok))."</td><td>".$this->sc_cpagefield(array('name'=>$ok))."</td><td>".$this->sc_cpagefield(array('name'=>$ok, 'mode'=>'raw'))."</td></tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
+	}
+
+
+
 }

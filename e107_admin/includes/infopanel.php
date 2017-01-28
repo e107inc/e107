@@ -2,14 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Info panel admin view
  *
- * $URL$
- * $Id$
  */
 
 if (!defined('e107_INIT'))
@@ -31,48 +29,86 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
-	//	e107::js('core','zrssfeed/jquery.zrssfeed.min.js'); // http://www.zazar.net/developers/jquery/zrssfeed/
-		
 		$code = "
-		
-		
 		jQuery(function($){
-
   			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
-
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
-
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
-
 		});
-";
-		
-		global $user_pref; // quick fix. 
-		$pref = e107::getPref();  
+		";
 		
 		e107::js('inline',$code,'jquery');
 		
-		
 		if (isset($_POST['submit-mye107']) || varset($_POST['submit-mymenus']))
 		{
-			
-			$user_pref['core-infopanel-mye107'] = $_POST['e-mye107'];
-			
-			save_prefs('user');
-			
-			$pref['core-infopanel-menus'] = $_POST['e-mymenus'];
-			
-			save_prefs();
+			$this->savePref('core-infopanel-mye107', $_POST['e-mye107']);
+			$this->savePref('core-infopanel-menus', $_POST['e-mymenus']);
 		}
-		
-		
-	//	$array_functions_assoc = e107::getNav()->adminLinks('assoc');
-	
-	//	$this->iconlist = array_merge($array_functions_assoc, e107::getNav()->pluginLinks(E_16_PLUGMANAGER, "array"));
+
 		$this->iconlist = e107::getNav()->adminLinks();
-		
 	}
-	
+
+	/**
+	 * Save preferences.
+	 *
+	 * @param $key
+	 * @param $value
+	 */
+	public function savePref($key, $value)
+	{
+		// Get "Apply dashboard preferences to all administrators" setting.
+		$adminPref = e107::getConfig()->get('adminpref', 0);
+
+		// If "Apply dashboard preferences to all administrators" is checked.
+		// Save as $pref.
+		if($adminPref == 1)
+		{
+			e107::getConfig()
+				->setPosted($key, $value)
+				->save();
+		}
+		// Save as $user_pref.
+		else
+		{
+			e107::getUser()
+				->getConfig()
+				->set($key, $value)
+				->save();
+		}
+	}
+
+	/**
+	 * Get preferences.
+	 *
+	 * @return mixed
+	 */
+	public function getUserPref()
+	{
+		// Get "Apply dashboard preferences to all administrators" setting.
+		$adminPref = e107::getConfig()->get('adminpref', 0);
+
+		// If "Apply dashboard preferences to all administrators" is checked.
+		// Get $pref.
+		if($adminPref == 1)
+		{
+			$user_pref = e107::getPref();
+		}
+		// Get $user_pref.
+		else
+		{
+			$user_pref = e107::getUser()->getPref();
+		}
+
+		return $user_pref;
+	}
+
+	/**
+	 * Allow to get Icon List.
+	 */
+	function getIconList()
+	{
+		return $this->iconlist;
+	}
 	
 	function render()
 	{
@@ -122,34 +158,33 @@ class adminstyle_infopanel
 
 		';
 	*/	
-		//TODO LANs throughout.
-		
-		global $style, $user_pref;
+
+		$user_pref = $this->getUserPref();
 
 		// ---------------------- Start Panel --------------------------------
 
 //		$text = "<div >";
-		if (getperms('0') && !vartrue($user_pref['core-infopanel-mye107'])) // Set default icons.
+		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
+		if(empty($myE107)) // Set default icons.
 		{
-			$defArray = array (
-			  	0 => 'e-administrator',
-			    1 => 'e-cpage',
-			    2 => 'e-frontpage',
-			    3 => 'e-mailout',
-			    4 => 'e-image',
-			    5 => 'e-menus',
-			    6 => 'e-meta',
-			    7 => 'e-newspost',
-			    8 => 'e-plugin',
-			    9 => 'e-prefs',
-			    10 => 'e-links',
-			    11 => 'e-theme',
-			    12 => 'e-userclass2',
-			    13 => 'e-users',
-			    14 => 'e-wmessage'
-			  );
-			$user_pref['core-infopanel-mye107'] = vartrue($pref['core-infopanel-default'],$defArray);
-			
+			$defArray = array(
+				0  => 'e-administrator',
+				1  => 'e-cpage',
+				2  => 'e-frontpage',
+				3  => 'e-mailout',
+				4  => 'e-image',
+				5  => 'e-menus',
+				6  => 'e-meta',
+				7  => 'e-newspost',
+				8  => 'e-plugin',
+				9  => 'e-prefs',
+				10 => 'e-links',
+				11 => 'e-theme',
+				12 => 'e-userclass2',
+				13 => 'e-users',
+				14 => 'e-wmessage'
+			);
+			$user_pref['core-infopanel-mye107'] = $defArray;
 		}
 		
        
@@ -209,11 +244,11 @@ class adminstyle_infopanel
 	//  ------------------------------- e107 News --------------------------------
 
 		$newsTabs = array();
-		$newsTabs['coreFeed'] = array('caption'=>'General','text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
-		$newsTabs['pluginFeed'] = array('caption'=>'Plugins','text'=>"<div id='e-adminfeed-plugin'></div>");
-		$newsTabs['themeFeed'] = array('caption'=>'Themes','text'=>"<div id='e-adminfeed-theme'></div>");
+		$newsTabs['coreFeed'] = array('caption'=>LAN_GENERAL,'text'=>"<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='".ADMINFEEDMORE."'>".LAN_MORE."</a></div>");
+		$newsTabs['pluginFeed'] = array('caption'=>LAN_PLUGIN,'text'=>"<div id='e-adminfeed-plugin'></div>");
+		$newsTabs['themeFeed'] = array('caption'=>LAN_THEMES,'text'=>"<div id='e-adminfeed-theme'></div>");
 
-		$text2 = $ns->tablerender("Latest e107 News",e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
+		$text2 = $ns->tablerender(LAN_LATEST_e107_NEWS,e107::getForm()->tabs($newsTabs, array('active'=>'coreFeed')),"core-infopanel_news",true);
 	
 	
 	
@@ -226,7 +261,7 @@ class adminstyle_infopanel
 
 
 		
-		$text2 .= $ns->tablerender("Website Status", $this->renderWebsiteStatus(),"",true);	
+		$text2 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);	
 		
 		
 	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
@@ -251,16 +286,24 @@ class adminstyle_infopanel
 	//	$text2 .= $ns->tablerender('Visitors Online : '.vartrue($nOnline), $panelOnline,'core-infopanel_online',true);
 		
 	// --------------------- User Selected Menus -------------------
-		
-	
-		if (varset($pref['core-infopanel-menus']))
+
+
+		if(varset($user_pref['core-infopanel-menus']))
 		{
-			foreach ($pref['core-infopanel-menus'] as $val)
+			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
-				$id = $frm->name2id('core-infopanel_'.$val);			
-				$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+				// Custom menu (core).
+				if(is_numeric($val))
+				{
+					$inc = e107::getMenu()->renderMenu($val, null, null, true);
+				}
+				// Plugin defined menu.
+				else
+				{
+					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
+				}
+
 				$text .= $inc;
-				// $text .= $ns->tablerender("", $inc, $id,true);
 			}
 		}
 	
@@ -300,7 +343,7 @@ class adminstyle_infopanel
 		}
 		else
 		{
-			echo $frm->open('infopanel','post',e_SELF);
+			echo $frm->open('infopanel','post', e_SELF);
 			echo $this->render_infopanel_options(true);	
 			echo $frm->close();
 		}
@@ -352,8 +395,8 @@ class adminstyle_infopanel
 		 */
 		
 		$tab = array();
-		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' Stats', 'text'=>$this->renderChart());
-		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' Online ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
+		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' '.LAN_STATS, 'text'=>$this->renderChart());
+		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
 		
 
 
@@ -401,19 +444,18 @@ class adminstyle_infopanel
 		$panelOnline .= (!empty($multilan)) ? "<col style='width: auto' />" : "";
 
 
-		// TODO LAN
 		$panelOnline .= "
 
 				</colgroup>
 				<thead>
 					<tr class='first'>
-						<th>Timestamp</th>
-						<th>Username</th>
-						<th>IP</th>
-						<th>Page</th>
-						<th class='center'>Agent</th>";
+						<th>".LAN_TIMESTAMP."</th>
+						<th>".LAN_USER."</th>
+						<th>".LAN_IP."</th>
+						<th>".LAN_PAGE."</th>
+						<th class='center'>".LAN_AGENT."</th>";
 
-		$panelOnline .= (!empty($multilan)) ? "<th class='center'>Lang.</th>" : "";
+		$panelOnline .= (!empty($multilan)) ? "<th class='center'>".LAN_LANG."</th>" : "";
 
 		$panelOnline .= "
 					</tr>
@@ -523,6 +565,9 @@ class adminstyle_infopanel
 		
 		//XXX Always keep template hardcoded here - heavy use of ajax and ids. 
 		$count = 1;
+
+		$lanVar = array('x' =>'{USERNAME}', 'y'=>'{TIMEDATE=relative}');
+				
 		foreach($rows as $row) 
 		{
 			$hide = ($count > 3) ? ' hide' : '';
@@ -531,15 +576,14 @@ class adminstyle_infopanel
 			<li id='comment-".$row['comment_id']."' class='media".$hide."'>
 				<span class='media-object pull-left'>{USER_AVATAR=".$row['comment_author_id']."}</span> 
 				<div class='btn-group pull-right'>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> Delete</button>
-	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> Approve</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='delete' class='btn btn-sm btn-mini btn-danger'><i class='icon-remove'></i> ".LAN_DELETE."</button>
+	            	<button data-target='".e_BASE."comment.php' data-comment-id='".$row['comment_id']."' data-comment-action='approve' class='btn btn-sm btn-mini btn-success'><i class='icon-ok'></i> ".LAN_APPROVE."</button>
 	            </div>
-				<div class='media-body'><small class='muted smalltext'>Posted by {USERNAME} {TIMEDATE=relative}</small><br />
+				<div class='media-body'>
+					<small class='muted smalltext'>".$tp->lanVars(LAN_POSTED_BY_X, $lanVar)."</small><br />
 					<p>{COMMENT}</p> 
 				</div>
 				</li>";
-
-			//TODO LAN for 'Posted by [x] ';
 			
 			$sc->setVars($row);  
 		 	$text .= $tp->parseTemplate($TEMPLATE,true,$sc);
@@ -550,13 +594,13 @@ class adminstyle_infopanel
     	$text .= '
      		</ul>
 		    <div class="right">
-		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">View all</a>
+		      <a class="btn btn-xs btn-mini btn-primary text-right" href="'.e_ADMIN.'comment.php?searchquery=&filter_options=comment_blocked__2">'.LAN_VIEW_ALL.'</a>
 		    </div>
 		 ';		
 		// $text .= "<small class='text-center text-warning'>Note: Not fully functional at the moment.</small>";
 		
 		$ns = e107::getRender();
-		return $ns->tablerender("Latest Comments",$text,'core-infopanel_online',true);		
+		return $ns->tablerender(LAN_LATEST_COMMENTS,$text,'core-infopanel_online',true);		
 	}
 		
 		
@@ -577,39 +621,22 @@ class adminstyle_infopanel
 	
 	
 		
-	function render_infopanel_options($render = false) //TODO LAN
+	function render_infopanel_options($render = false)
 	{
-		// $frm = e107::getSingleton('e_form');
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 		$ns = e107::getRender();
 		
-		$start = "<div>
-		To customize this page, please <a title = 'Customize Admin' href='".e_SELF."?mode=customize&amp;iframe=1' class='e-modal-iframe'>click here</a>.
-		</div>
-	    ";
-	    
 	    if($render == false){ return ""; }
-	    
-		$text2 = "<div id='customize_icons' class='forumheader3' style='border:0px;margin:0px'>
-	    <form method='post' id='e-modal-form' action='".e_SELF."'>";
-	    
-		$text2 .= $ns->tablerender("Personalize Icons", $this->render_infopanel_icons(),'personalize',true); 
+
+		$text2 = $ns->tablerender(LAN_PERSONALIZE_ICONS, $this->render_infopanel_icons(),'personalize',true);
 		$text2 .= "<div class='clear'>&nbsp;</div>";
-		$text2 .= $ns->tablerender("Personalize Menus", $this->render_infopanel_menu_options(),'personalize',true); 
-	//	$text2 .= render_infopanel_icons();
-		//$text2 .= "<div class='clear'>&nbsp;</div>";
-	//	$text2 .= "<h3>Menus</h3>";
-	//	$text2 .= render_infopanel_menu_options();
+		$text2 .= $ns->tablerender(LAN_PERSONALIZE_MENUS, $this->render_infopanel_menu_options(),'personalize',true);
 		$text2 .= "<div class='clear'>&nbsp;</div>";
 		$text2 .= "<div id='button' class='buttons-bar center'>";
-		$text2 .= $frm->admin_button('submit-mye107', 'Save', 'create');
-		$text2 .= "</div></form>";
-	//	$text2 .= "</div>";
-		
-	//	$end = "</div>";
-			
-		
+		$text2 .= $frm->admin_button('submit-mye107', LAN_SAVE, 'create');
+		$text2 .= "</div>";
+
 		return $mes->render().$text2;
 	}
 
@@ -618,11 +645,33 @@ class adminstyle_infopanel
 	{
 	
 		$frm = e107::getForm();
-		global  $user_pref;
+		$user_pref = $this->getUserPref();
 
 		$text = "<div style='padding-left:20px'>";
-        
-     
+
+
+		$myE107 = varset($user_pref['core-infopanel-mye107'], array());
+		if(empty($myE107)) // Set default icons.
+		{
+			$defArray = array(
+				0  => 'e-administrator',
+				1  => 'e-cpage',
+				2  => 'e-frontpage',
+				3  => 'e-mailout',
+				4  => 'e-image',
+				5  => 'e-menus',
+				6  => 'e-meta',
+				7  => 'e-newspost',
+				8  => 'e-plugin',
+				9  => 'e-prefs',
+				10 => 'e-links',
+				11 => 'e-theme',
+				12 => 'e-userclass2',
+				13 => 'e-users',
+				14 => 'e-wmessage'
+			);
+			$user_pref['core-infopanel-mye107'] = $defArray;
+		}
 	
 	
 		foreach ($this->iconlist as $key=>$icon)
@@ -636,7 +685,7 @@ class adminstyle_infopanel
 			}
 		}
 		
-		if (is_array($pluglist))
+		if (isset($pluglist) && is_array($pluglist))
 		{
 			foreach ($pluglist as $key=>$icon)
 			{
@@ -663,26 +712,33 @@ class adminstyle_infopanel
 		}
 
 		$frm = e107::getForm();
-		$pref = e107::getPref();
+		$user_pref = $this->getUserPref();
 		
 	
 		$text = "<div style='padding-left:20px'>";
 		$menu_qry = 'SELECT * FROM #menus WHERE menu_id!= 0  GROUP BY menu_name ORDER BY menu_name';
-		$settings = varset($pref['core-infopanel-menus'],array());
+		$settings = varset($user_pref['core-infopanel-menus'],array());
 	
 		if (e107::getDb()->gen($menu_qry))
 		{
 			while ($row = e107::getDb()->db_Fetch())
 			{
-				// if(!is_numeric($row['menu_path']))
+				// Custom menu (core).
+				if(is_numeric($row['menu_path']))
 				{
-					$label = str_replace("_menu","",$row['menu_name']);
-					$path_to_menu = $row['menu_path'].$row['menu_name'];
-					$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
-					$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
-					$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
-					$text .= "</div>";
+					$path_to_menu = $row['menu_path'];
 				}
+				// Plugin defined menu.
+				else
+				{
+					$path_to_menu = $row['menu_path'].$row['menu_name'];
+				}
+
+				$label = str_replace("_menu","",$row['menu_name']);
+				$checked = ($settings && in_array($path_to_menu, $settings)) ? true : false;
+				$text .= "\n<div class='left f-left list field-spacer' style='display:block;height:24px;width:200px;'>";
+				$text .= $frm->checkbox_label($label, "e-mymenus[]",$path_to_menu, $checked);
+				$text .= "</div>";
 			}
 		}
 		
@@ -712,27 +768,34 @@ class adminstyle_infopanel
 		{
 			$data = array();
 		
-			$data['labels'] 	= array("January","February","March","April","May","June","July");
-			
+			$months = e107::getDate()->terms('month');
+		
+			$data['labels'] = array($months[0], //"January",
+ 						$months[1], //"February",
+ 						$months[2], //"March",
+ 						$months[3], //"April",
+ 						$months[4], //"May",
+ 						$months[5], //"June",
+ 						$months[6]  //"July"
+ 			);
 			
 			$data['datasets'][]	= array(
-								'fillColor' 		=> "rgba(220,220,220,0.5)",
-								'strokeColor'  		=>  "rgba(220,220,220,1)",
-								'pointColor '  		=>  "rgba(220,220,220,1)",
-								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(65,59,90,81,56,55,40),
-								'title'				=> "Visits"
-				
+							'fillColor'			=> "rgba(220,220,220,0.5)",
+							'strokeColor'		=> "rgba(220,220,220,1)",
+							'pointColor '		=> "rgba(220,220,220,1)",
+							'pointStrokeColor'	=> "#fff",
+							'data'				=> array(65,59,90,81,56,55,40),
+							'title'				=> ADLAN_168// "Visits"
 			);
 			
 			$data['datasets'][]	= array(
-								'fillColor' 		=> "rgba(151,187,205,0.5)",
-								'strokeColor'  		=>  "rgba(151,187,205,1)",
-								'pointColor '  		=>  "rgba(151,187,205,1)",
-								'pointStrokeColor'  =>  "#fff",
-								'data'				=> array(28,48,40,19,96,27,100),
-								'title'				=> "Unique Visits"		
-			);	
+							'fillColor'			=> "rgba(151,187,205,0.5)",
+							'strokeColor'		=> "rgba(151,187,205,1)",
+							'pointColor '		=> "rgba(151,187,205,1)",
+							'pointStrokeColor'	=> "#fff",
+							'data'				=> array(28,48,40,19,96,27,100),
+							'title'				=> ADLAN_169 //"Unique Visits"
+			);
 			
 			return $data;
 		}
@@ -896,21 +959,21 @@ class adminstyle_infopanel
 			
 		if($type == 'demo')
 		{
-			$text .= "<div class='center'><small>These stats are for demonstration purposes only. <a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>Install Site Stats Plugin</a></small></div>";
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
 		}
 		else
 		{
 			$text .= "<div class='center'><small>
-			<span style='color:rgba(220,220,220,0.5)'>&diams;</span> Visitors  &nbsp;&nbsp;  
-			<span style='color:rgba(151,187,205,1)'>&diams;</span> Unique Visitors
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span>".ADLAN_168."&nbsp;&nbsp;
+			<span style='color:rgba(151,187,205,1)'>&diams;</span>".ADLAN_169."
 			</small></div>";
 		}
 		
 		
-		return $text;									
-
+		return $text;
 		
 	}
 	
 }
 ?>
+

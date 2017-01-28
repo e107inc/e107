@@ -8,9 +8,12 @@
 		<word>blank</word>
 		<word>empty</word>
 		<word>template</word>
-	</keywords> 
+	</keywords>
+	<screenshots>
+		<image></image>
+	</screenshots>
 	<adminLinks>
-		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' primary='true' >LAN_CONGIGURE</link>
+		<link url='admin_config.php' description='Configure Blank Plugin' icon='images/blank_32.png' iconSmall='images/blank_16.png' icon128="" primary='true' >LAN_CONGIGURE</link>
 		<link url="admin_config.php?mode=options" description="Configure Blank Prefs" icon="manage" >Blank Prefs</link>
 	</adminLinks>
 	<siteLinks>
@@ -25,5 +28,9 @@
 	</userClasses>
 	<extendedFields>
 		<field name="custom" type='EUF_TEXTAREA' default='0' active="true" />
-	</extendedFields>		
+		<field name="custom2" type='EUF_ADDON' data="str" default='0' active="true" system="false" text="My Label" />
+	</extendedFields>
+	<mediaCategories>
+		<category type="image">Blank Images</category>
+	</mediaCategories>
 </e107Plugin>

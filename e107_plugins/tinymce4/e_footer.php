@@ -22,7 +22,15 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 		e107::js('footer', '//cdn.tinymce.com/4/tinymce.min.js');
 
 	//	e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
-		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
+
+		$mceScript = e_PLUGIN.'tinymce4/wysiwyg.php';
+
+		if(defined('e_TINYMCE_TEMPLATE'))
+		{
+			$mceScript .= '?config='.e_TINYMCE_TEMPLATE.'&other=';
+		}
+
+		e107::js('footer',$mceScript,'jquery',5);
 
 		// Add to e107_config.php to view hidden content when TinyMce not saving correctly
 		if(deftrue('e_TINYMCE_DEBUG'))

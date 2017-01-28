@@ -2,25 +2,16 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Site navigation administration
  *
- * $URL$
- * $Id$
- */
-
-/**
- * @package e107
- * @subpackage	admin
- * @version $Id$
- *
- * Manage site navigation links
  */
 
 require_once("../class2.php");
+
 if (!getperms("I"))
 {
 	e107::redirect('admin');
@@ -29,7 +20,7 @@ if (!getperms("I"))
 
 e107::coreLan('links', true);
 
-
+e107::css('inline', " td .label-warning { margin-left:30px } ");
 
 
 class links_admin extends e_admin_dispatcher
@@ -55,12 +46,12 @@ class links_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'
 	);
 
-	protected $menuTitle = 'Links';
+	protected $menuTitle = ADLAN_138;
 }
 
 class links_admin_ui extends e_admin_ui
 {
-	protected $pluginTitle 	= "Site links";
+	protected $pluginTitle 	= ADLAN_138;
 	protected $pluginName 	= 'core';
 	protected $table 		= "links";
 	protected $listQry 		= '';
@@ -77,13 +68,13 @@ class links_admin_ui extends e_admin_ui
 	public $sublink_data = null;
 
 	protected $fields = array(
-		'checkboxes' 		=> array('title'=> '',				'width' => '3%','forced' => true, 'thclass' => 'center first','class' => 'center first'),
-		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%', 'thclass' => 'center', 'class'=>'center', 'writeParms'=>'glyphs=1'),
-		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method','readParms'=>'','noedit'=>TRUE),
-		'link_name'	   		=> array('title'=> LCLAN_15,		'width'=>'auto','type'=>'text', 'inline'=>true, 'required' =>false, 'validate' => false), // not required as only an icon may be used.
-	    'link_category'     => array('title'=> LAN_TEMPLATE,    'type' => 'dropdown', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
-    
-    	'link_parent' 		=> array('title'=> LCLAN_104, 	'type' => 'method', 'data'=>'int', 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'checkboxes' 		=> array('title'=> '',				'width' => '3%',		'forced' => true,	'thclass'=>'center first',	'class'=>'center first'),
+		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',		'writeParms'=>'glyphs=1'),
+		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method',		'readParms'=>'',	'noedit'=>TRUE),
+		'link_name'			=> array('title'=> LAN_NAME,		'type'=>'text',			'inline'=>true,		'required'=>false,		'validate'=>false,	'width'=>'auto'), // not required as only an icon may be used.
+		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',		'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto'),
+
+		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first'),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
@@ -691,8 +682,13 @@ class links_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			$linkUrl = $this->getController()->getListModel()->get('link_url');
-			$linkUrl = e107::getParser()->replaceConstants($linkUrl,'abs');
-			$url = $this->link_url($linkUrl,$mode);
+
+
+
+			$url = $this->link_url($linkUrl,'link_id');
+
+
+
 			return "<a href='".$url."' rel='external'>".$curVal."</a>"; //  $this->linkFunctions[$curVal];
 		}
 	}
@@ -720,12 +716,13 @@ class links_admin_form_ui extends e_admin_form_ui
 
 			foreach($config as $k=>$v)
 			{
-				if(strpos($v['regex'],')')===false) // only provide urls without dynamic elements.
+				if($k == 'index' || (strpos($v['regex'],'(') === false)) // only provide urls without dynamic elements.
 				{
 					$opts[] = $k;
 				}
 			}
 
+			sort($opts);
 
 			return $this->select('link_sefurl', $opts, $curVal, array('useValues'=>true,'defaultValue'=>'','default'=>'('.LAN_DISABLED.')'));
 		}
@@ -734,15 +731,28 @@ class links_admin_form_ui extends e_admin_form_ui
 
 	function link_url($curVal,$mode)
 	{
-		if($mode == 'read')
+		if($mode == 'read' || $mode == 'link_id') // read = display mode, link_id = actual absolute URL
 		{
 			$owner = $this->getController()->getListModel()->get('link_owner');
 			$sef =  $this->getController()->getListModel()->get('link_sefurl');
 
+			if($curVal[0] !== '{' && substr($curVal,0,4) != 'http' && $mode == 'link_id')
+			{
+				$curVal = '{e_BASE}'.$curVal;
+			}
+
 			if(!empty($owner) && !empty($sef))
 			{
-				$curVal = str_replace(e_HTTP,'',e107::url($owner,$sef));
+				$opt = ($mode == 'read') ? array('mode'=>'raw') : array();
+				$curVal = e107::url($owner,$sef, null, $opt);
 			}
+			else
+			{
+				$opt = ($mode == 'read') ? 'rel' : 'abs';
+				$curVal = e107::getParser()->replaceConstants($curVal,$opt);
+			}
+
+			e107::getDebug()->log($curVal);
 
 			return $curVal; //  $this->linkFunctions[$curVal];
 		}
@@ -877,7 +887,7 @@ class links_admin_form_ui extends e_admin_form_ui
 			'fields' => $controller->getFields(), // see e_admin_ui::$fields
 			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
 			'table_pre' => '', // markup to be added before opening table element
-			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy()) : '',
+			'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch(array('delete'=>$controller->getBatchDelete(),'copy'=>$controller->getBatchCopy())) : '',
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation

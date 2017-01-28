@@ -2,20 +2,17 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Administration - Media Management Class
  *
- * $URL$
- * $Id$
- *
 */
 
 
 if (!defined('e107_INIT')) { exit; }
-
+//TODO LANS
 
 class e_media
 {
@@ -40,7 +37,7 @@ class e_media
 			$this->logging = true; 	
 		}
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
 	}
 
 
@@ -437,7 +434,7 @@ class e_media
 	 * @param $search
 	 * @return array
 	 */
-	public function getImages($cat='', $from=0, $amount=null,$search=null)
+	public function getImages($cat='', $from=0, $amount=null, $search=null, $orderby=null)
 	{
 		$inc 		= array();
 		$searchinc 	= array();
@@ -485,13 +482,22 @@ class e_media
 		
 		$query = "SELECT ".$fields." FROM #core_media WHERE `media_category` REGEXP '(^|,)".implode("|",$catArray)."(,|$)' AND `media_userclass` IN (".USERCLASS_LIST.")  " ;	
 	//	$query = "SELECT ".$fields." FROM #core_media WHERE media_userclass IN (".USERCLASS_LIST.") AND ( ".implode(" OR ",$inc)." ) " ;	
-			
+
+
+
 		if($search)
 		{
 			$query .= " AND ( ".implode(" OR ",$searchinc)." ) " ;	
 		}
-		
-		$query .= " ORDER BY media_id DESC";
+
+		if($orderby)
+		{
+			$query .= " ORDER BY " . $orderby;
+		}
+		else
+		{
+			$query .= " ORDER BY media_id DESC";
+		}
 
 		if($amount == 'all')
 		{
@@ -503,6 +509,9 @@ class e_media
 		{
 			$query .= " LIMIT ".$from." ,".$amount;	
 		}
+
+	//	e107::getDebug()->log($query);
+
 		e107::getDb()->gen($query);
 		while($row = e107::getDb()->fetch())
 		{
@@ -566,7 +575,7 @@ class e_media
 			background-color:black;border:1px solid black;position:absolute; height:200px;width:205px;overflow-y:scroll; bottom:30px; right:100px'>";
 		
 		$total = ($sql->gen("SELECT * FROM `#core_media` WHERE media_category = '_common' OR media_category = '".$cat."' ORDER BY media_category,media_datestamp DESC ")) ? TRUE : FALSE;
-		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='Close' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
+		$text .= "<div style='font-size:120%;font-weight:bold;text-align:right;margin-right:10px'><a title='".LAN_CLOSE."' style='text-decoration:none;color:white' href='#' onclick=\"expandit('{$formid}'); return false;\" >x</a></div>";
 			
 		while ($row = $sql->db_Fetch())
 		{
@@ -683,29 +692,33 @@ class e_media
 			// Inline style to override jquery-ui stuff. 
 			$text .= "<div>
 			<div id='admin-ui-media-manager-search' class='input-append form-inline' style='margin-top:10px;font-size:12px'>
-			<input type='text' id='media-search' placeholder='Search...' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
+			<input type='text' id='media-search' placeholder='".LAN_SEARCH."' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
 			";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
-			$text .= "<button type='button'  class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >Go</button>"; // Manual filter, if onkeyup ajax fails for some reason.
+			$text .= "<button type='button'  class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >".LAN_GO."</button>"; // Manual filter, if onkeyup ajax fails for some reason.
 	
-			$text .= "<button id='admin-ui-media-nav-down' type='button' title='previous page' class='btn btn-default e-nav e-media-nav e-tip' style='outline:0' data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."'>&laquo;</button>"; // see next page of images.
+			$text .= "<button id='admin-ui-media-nav-down' type='button' title='".IMALAN_130."' class='btn btn-default e-nav e-media-nav e-tip' style='outline:0' data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='down' data-nav-inc='".$limit."' data-src='".$data_src."'>&laquo;</button>"; // see next page of images.
 		
-			$text .= "<button id='admin-ui-media-nav-up' type='button' title='next page' class='btn btn-default e-nav e-media-nav e-tip' style='outline:0;text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$data_src."' >&raquo;</button>"; // see next page of images.
+			$text .= "<button id='admin-ui-media-nav-up' type='button' title='".IMALAN_131."' class='btn btn-default e-nav e-media-nav e-tip' style='outline:0;text-align:center'  data-target='media-select-container' data-nav-total='".$total."' data-nav-dir='up' data-nav-inc='".$limit."' data-src='".$data_src."' >&raquo;</button>"; // see next page of images.
 			$text .= "</div></div>";
-			$text .= "<div id='admin-ui-media-select-count' class='media-select-count' style='text-align:right; display:block'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
+			$text .= "<div id='admin-ui-media-select-count' class='media-select-count' style='text-align:right; display:block'>";
+			$text .= e107::getParser()->lanVars(IMALAN_162, array('x'=> $frm +1, 'y'=> $dipTotal, 'z'=>$total ));
+			$text .= "</div>\n";	
 
 			$text .= "
 			<div id='media-select-container'>";	
 		}
 		
-		$text .= "<div id='admin-ui-media-select-count-hidden' class='media-select-count' data-media-select-current-limit='".$dipTotal."' style='text-align:right; display:none'> Displaying ".($frm +1)."-".($dipTotal)." of ".$total." images.</div>\n";
+		$text .= "<div id='admin-ui-media-select-count-hidden' class='media-select-count' data-media-select-current-limit='".$dipTotal."' style='text-align:right; display:none'>";
+		$text .= e107::getParser()->lanVars(IMALAN_162, array('x'=> $frm +1, 'y'=> $dipTotal, 'z'=>$total ));
+		$text .= "</div>\n";
 		
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
 
 			// TODO LAN.
-			$text .= "<a title='No Image' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
+			$text .= "<a title='".IMALAN_165."' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<span>".$tp->toGlyph('fa-ban')."</span>
 			</a>";		
 		}
@@ -858,13 +871,19 @@ class e_media
 
 
 	/**
-	 * Get all Glyphs
+	 * @param string|array $type
+	 * @param $type['name']
+	 * @param $type[['type']
+	 * @param $type['path'] URL or e107 path {e_THEME} etc.
+	 * @param $type['prefix']
+	 * @param string $addPrefix
+	 * @return array
 	 */
-	function getGlyphs($type='fa4',$prefix = '')
+	function getGlyphs($type='fa4', $addPrefix = '')
 	{
 		$icons = array();
 		
-		if($type == 'bs2')
+		if($type === 'bs2')
 		{
 			$matches = array(
 				'glass','music','search','envelope','heart','star','star-empty','user','film','th-large','th','th-list','ok',
@@ -886,13 +905,13 @@ class e_media
 				
 			foreach($matches as $match)
 			{
-			    $icons[] = $prefix.$match;
+			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
 					
-		if($type == 'bs3')
+		if($type === 'bs3')
 		{
 			$matches = array(
 			'adjust','align-center','align-justify','align-left','align-right','arrow-down','arrow-left','arrow-right','arrow-up','asterisk','backward','ban-circle','barcode','bell','bold','book
@@ -911,52 +930,90 @@ class e_media
 			
 			foreach($matches as $match)
 			{
-			    $icons[] = $prefix.$match;
+			    $icons[] = $addPrefix.$match;
 			}
 			
 			return $icons;
 		}
-		
+
+		if(is_array($type))
+		{
+			$prefix     = $type['prefix'];
+			$pattern    = $type['pattern'];
+			$path       = $type['path'];
+			$type       = $type['name'];
+
+		}
+
+
+
 		$cache = e107::getCache();
-		$cache->setMD5('_'.$prefix.$type);
-		
-		if($data = $cache->retrieve($type,360,true))
+		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
+
+
+
+		if($data = $cache->retrieve($cachTag ,360,true,true))
 		{
 			return e107::unserialize($data);
 		}
 		
 		
-		if($type == 'fa4')
+		if($type === 'fa4') // todo use e107::library
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css');
-		//	print_a($subject);
+			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
+			$prefix = 'fa-';
 		}
-		elseif($type == 'fa3')
+		elseif($type === 'fa3')
 		{
 			$pattern = '/\.(icon-(?:\w+(?:-)?)+):before/';
 			$subject = file_get_contents(e_WEB_JS.'font-awesome/css/font-awesome.css');
+			$prefix = 'fa-';
 		}
-				
+		elseif(!empty($pattern) && !empty($path))
+		{
+			$pattern = '/'.$pattern.'/';
+			if(substr($path,0,4) === 'http')
+			{
+				$subject = e107::getFile()->getRemoteContent($path);
+			}
+			else
+			{
+				$path = e107::getParser()->replaceConstants($path);
+				$subject = file_get_contents($path);
+			}
+
+
+
+		}
+
+
+		$prefixLength = !empty($prefix) ? strlen($prefix) : 3;
+
 		preg_match_all($pattern, $subject, $matches, PREG_SET_ORDER);
-		
-		
-		
+
 		foreach($matches as $match)
 		{
-		    $icons[] = $prefix.substr($match[1],3);
+		    $icons[] = $addPrefix.substr($match[1],$prefixLength);
 		}
-			
+
+		if(empty($icons)) // failed to produce a result so don't cache it. .
+		{
+			return array();
+		}
+
 		$data = e107::serialize($icons);
-		$cache->set($type,$data,true);		
+
+		$cache->set_sys($cachTag ,$data,true);
+
 		return $icons; 
 	
 	}
 
 
-	
-	
-	function getPath($mime)
+
+
+	function getPath($mime, $path=null)
 	{
 		$mes = e107::getMessage();
 
@@ -965,16 +1022,24 @@ class e_media
 		if(!vartrue($this->mimePaths[$pmime]))
 		{
 			$this->log("Couldn't detect mime-type ($mime).");
-			$text = $text = str_replace('[x]',$mime,IMALAN_111);
+			$text = $text = str_replace('[x]',$mime,IMALAN_111); //FIXME LAN IMALAN_112 is not generic. This method can be called from anywhere, not only e107_admin/image.php.
 			$mes->add($text, E_MESSAGE_ERROR);
 			return FALSE;
 		}
 
-		$dir = $this->mimePaths[$pmime].date("Y-m");
+		if(!empty($path))
+		{
+			$dir = e_MEDIA."plugins/".e107::getParser()->filter($path,'w');
+		}
+		else
+		{
+			$dir = $this->mimePaths[$pmime].date("Y-m");
+		}
+
 
 		if(!is_dir($dir))
 		{
-			if(!mkdir($dir, 0755))
+			if(!mkdir($dir, 0755,true))
 			{
 
 				$this->log("Couldn't create folder ($dir).");
@@ -1036,19 +1101,38 @@ class e_media
 		$insert = "\n\n".date('r')."\n".$message;
 		file_put_contents(e_LOG."mediaUpload.log",$insert,FILE_APPEND | LOCK_EX);	
 	}
-	
-	
-	
-	
-	
-	public function importFile($file='',$category='_common_image', $oldpath = null, $new_data = array())
+
+
+	/**
+	 * Import a file into the Media Manager
+	 * @param string $file Path to file
+	 * @param string $category media-category to import into
+	 * @param null|array $opts
+	 * @param string $opts['path'] Custom Folder (optional)
+	 * @param array $new_data - Additional media info to save.
+	 * @param string $new_data['media_caption']
+	 * @param string $new_data['media_descrption']
+	 * @return bool|string
+	 */
+	public function importFile($file='', $category='_common_image', $opts = null, $new_data = array())
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
+		if(is_array($opts))
+        {
+            $uploadPath = varset($opts['path']);
+            $oldpath = null;
+        }
+        else
+        {
+	        $uploadPath = null;
+            $oldpath = $opts;
+        }
+
         if(empty($oldpath)) $oldpath = e_IMPORT.$file;
-		
+
 		if(!file_exists($oldpath))
 		{
 			// Check it hasn't been imported already. 	
@@ -1063,12 +1147,13 @@ class e_media
 		}	
 			
 		$img_data = $this->mediaData($oldpath); // Basic File Info only
+
 		
-		if(!$typePath = $this->getPath($img_data['media_type']))
+		if(!$typePath = $this->getPath($img_data['media_type'], $uploadPath))
 		{		
 				$this->log("Line: ".__LINE__." Couldn't generate path from file info:".$oldpath);
 				$mes->addError("Couldn't generate path from file info:".$oldpath);
-				return FALSE;
+				return false;
 		}
 
 
@@ -1083,14 +1168,14 @@ class e_media
 		{
 			$this->log("Couldn't move file from ".realpath($oldpath)." to ".e_MEDIA.$newpath);
 			$mes->add("Couldn't move file from ".$oldpath." to ".$newpath, E_MESSAGE_ERROR);
-			return FALSE;
+			return false;
 		};
 		
 		$img_data['media_url']			= $tp->createConstants($newpath,'rel');
 		$img_data['media_name'] 		= $tp->toDB(basename($newpath));
-		$img_data['media_caption'] 		= $new_data['media_caption'];
+		$img_data['media_caption'] 		= vartrue($new_data['media_caption']);
 		$img_data['media_category'] 	= vartrue($category,'_common_image');
-		$img_data['media_description'] 	= $new_data['media_description'];
+		$img_data['media_description'] 	= vartrue($new_data['media_description']);
 		$img_data['media_userclass'] 	= '0';	
 
 		if($sql->insert("core_media",$img_data))
@@ -1101,9 +1186,9 @@ class e_media
 		}
 		else
 		{
-			$this->log("Db Insert Failed ");
+			$this->log("Db Insert Failed: ".var_export($img_data,true));
 			rename($newpath,$oldpath);	//move it back.
-			return FALSE;
+			return false;
 		}
 		
 		
@@ -1182,7 +1267,7 @@ class e_media
 		
 				if($data['type'] == 'image')
 				{
-					$text .= '<img class="img-responsive" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+					$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
 				}
 				elseif($data['type'] == 'glyph')
 				{
@@ -1458,6 +1543,11 @@ class e_media
 
 		$src = $tp->replaceConstants($src);
 		$dest =  $tp->replaceConstants($dest);
+
+		if(!file_exists($src))
+		{
+			return false;
+		}
 
 		$maxWidth = varset($opts['w'], 800);
 		$maxHeight = varset($opts['h'], 800);

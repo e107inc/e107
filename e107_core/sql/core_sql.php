@@ -387,6 +387,7 @@ CREATE TABLE page (
   page_ip_restrict text,
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
+  page_fields mediumtext,
   menu_name varchar(50) NOT NULL default '',  
   menu_title varchar(250) NOT NULL default '',  
   menu_text mediumtext,
@@ -418,6 +419,7 @@ CREATE TABLE page_chapters (
   chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
   chapter_visibility tinyint(3) unsigned NOT NULL default '0',
+  chapter_fields mediumtext,
   PRIMARY KEY  (chapter_id),
   KEY chapter_order (chapter_order)
 ) ENGINE=MyISAM;
@@ -467,6 +469,7 @@ CREATE TABLE submitnews (
   submitnews_id int(10) unsigned NOT NULL auto_increment,
   submitnews_name varchar(100) NOT NULL default '',
   submitnews_email varchar(100) NOT NULL default '',
+  submitnews_user int(10) unsigned NOT NULL default '0',
   submitnews_title varchar(200) NOT NULL default '',
   submitnews_category tinyint(3) unsigned NOT NULL default '0',
   submitnews_item text NOT NULL,
@@ -474,6 +477,10 @@ CREATE TABLE submitnews (
   submitnews_ip varchar(45) NOT NULL default '',
   submitnews_auth tinyint(3) unsigned NOT NULL default '0',
   submitnews_file text NOT NULL,
+  submitnews_keywords  varchar(255) NOT NULL default '',
+  submitnews_description text,
+  submitnews_summary text,
+  submitnews_media text,
   PRIMARY KEY  (submitnews_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
@@ -526,11 +533,11 @@ CREATE TABLE user (
   user_name varchar(100) NOT NULL default '',
   user_loginname varchar(100) NOT NULL default '',
   user_customtitle varchar(100) NOT NULL default '',
-  user_password varchar(50) NOT NULL default '',
+  user_password varchar(255) NOT NULL default '',
   user_sess varchar(100) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
-  user_image varchar(100) NOT NULL default '',
+  user_image varchar(255) NOT NULL default '',
   user_hideemail tinyint(3) unsigned NOT NULL default '0',
   user_join int(10) unsigned NOT NULL default '0',
   user_lastvisit int(10) unsigned NOT NULL default '0',

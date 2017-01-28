@@ -8,7 +8,7 @@
 		<core name="admincss">admin_dark.css</core>
 		<core name="adminlanguage"></core>
 		<core name="adminpwordchange">0</core>
-		<core name="adminstyle">infopanel</core>
+		<core name="adminstyle">flexpanel</core>
 		<core name="admintheme">bootstrap3</core>
 		<core name="allowCommentEdit">0</core>
 		<core name="allowEmailLogin">2</core>
@@ -32,6 +32,7 @@
 		<core name="compress_output">0</core>
 		<core name="contact_emailcopy">0</core>
         <core name="contact_visibility">0</core>
+        <core name="contact_filter"></core>
 		<core name="cookie_name">e107cookie</core>
 		<core name="core-infopanel-default"><![CDATA[array (
   0 => 'e-administrator',
@@ -81,6 +82,8 @@
   'social' => 'social',
   'tinymce4' => 'tinymce4',
 )]]></core>
+		<core name="e_jslib_cdn">1</core>
+		<core name="e_jslib_cdn_provider">jsdelivr</core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_nobcache">1</core>
 		<core name="e_jslib_nocache">1</core>
@@ -88,13 +91,14 @@
 		<core name="e_jslib_nocombine">1</core>
 		<core name="e_jslib_core"><![CDATA[array (
 'prototype' => 'none',
-'jquery' => 'auto',
+'jquery' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
 		<core name="e_meta_list"><![CDATA[array (
   'rss_menu' => 'rss_menu',
 )]]></core>
+	<core name="e_module_list"><![CDATA[array ()]]></core>
 		<core name="e_related_list"><![CDATA[array (
   'news' => 'news',
   'page' => 'page',
@@ -150,6 +154,7 @@
 		<core name="image_post_class">0</core>
 		<core name="image_preload">0</core>
 		<core name="img_import_resize">1200x800</core>
+		<core name="inline_editing">255</core>
 		<core name="inputdate">%A, %d %b, %Y</core>
 		<core name="inputtime">%I:%M %p</core>
 		<core name="install_date">1251664949</core>
@@ -168,6 +173,7 @@
 		<core name="mail_sendstyle">texthtml</core>		
 		<core name="mail_workpertick">5</core>
 		<core name="mailer">php</core>
+		<core name="bulkmailer">smtp</core>
 		<core name="main_wordwrap"></core>
 		<core name="maintainance_flag">0</core>
 		<core name="make_clickable">0</core>
@@ -189,6 +195,7 @@
     'link' => 'blogcalendar_menu/config.php',
   ),
 )]]></core>
+		<core name="membersonly_redirect">login</core>
 		<core name="meta_tag"></core>
 		<core name="multilanguage">0</core>
 		<core name="nbr_cols">1</core>
@@ -239,6 +246,7 @@
 </core>
 		<core name="search_highlight">1</core>
 		<core name="search_restrict">0</core>
+		<core name="session_lifetime">86400</core>
 		<core name="shortdate">%d %b %Y : %H:%M</core>
 		<core name="signcode">0</core>
 		<core name="signup_disallow_text"></core>
@@ -296,6 +304,7 @@ City, State, Country
 		<core name="smtp_username"></core>
 		<core name="smtp_password"></core>
 		<core name="smtp_options"></core>
+		<core name="smtp_port">25</core>
 		<core name="social_login_active">0</core>
 		<core name="social_login"><![CDATA[array()]]></core>
 		<core name="ssl_enabled">0</core>
@@ -305,7 +314,6 @@ City, State, Country
 		<core name="subnews_resize"></core>
 		<core name="themecss">style.css</core>
 		<core name="thumbnail_quality">75</core>
-		<core name="time_offset">0</core>
 		<core name="timezone">UTC</core>
 		<core name="track_online">1</core>
 		<core name="ue_upgrade">1</core>
@@ -1202,6 +1210,18 @@ City, State, Country
 				<field name="userclass_editclass">254</field>
 				<field name="userclass_parent">0</field>
 				<field name="userclass_accum">0,2</field>
+				<field name="userclass_visibility">0</field>
+				<field name="userclass_type">0</field>
+				<field name="userclass_icon"></field>
+				<field name="userclass_perms"></field>
+			</item>
+			<item>
+				<field name="userclass_id">3</field>
+				<field name="userclass_name">NEWSLETTER</field>
+				<field name="userclass_description">Subscribe to Newsletter</field>
+				<field name="userclass_editclass">0</field>
+				<field name="userclass_parent">255</field>
+				<field name="userclass_accum">3</field>
 				<field name="userclass_visibility">0</field>
 				<field name="userclass_type">0</field>
 				<field name="userclass_icon"></field>

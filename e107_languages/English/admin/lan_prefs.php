@@ -58,8 +58,8 @@ define("PRFLAN_55", "Cookie/Session name");
 define("PRFLAN_56", "Timezone");
 define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
-define("PRFLAN_60", "Enable SSL");
-define("PRFLAN_61", "Only enable SSL if you are sure you know what you are doing!");
+define("PRFLAN_60", "Use SSL only");
+define("PRFLAN_61", "Redirect all traffic through SSL (https)");
 define("PRFLAN_76", "Display CAPTCHA on signup page.");
 define("PRFLAN_77", "Admin Display Options ");
 define("PRFLAN_78", "Leave blank to disable");
@@ -271,7 +271,7 @@ define("PRFLAN_253", "Disable consolidated scripts browser cache:");
 define("PRFLAN_254", "Email &amp; Contact Info");
 define("PRFLAN_255", "File Uploading");
 define("PRFLAN_256", "Advanced Options");
-define("PRFLAN_257", "Javascript Framework");
+define("PRFLAN_257", "Libraries");
 
 define("PRFLAN_258", "Contact Form Visibility");
 define("PRFLAN_259", "Register & Login");
@@ -280,4 +280,15 @@ define("PRFLAN_261", "Field options");
 define("PRFLAN_262", "Password in Email Confirmation");
 define("PRFLAN_263", "Should be unique to this website");
 
-?>
+define("PRFLAN_264", "Frontpage is login page (login.php)");
+define("PRFLAN_265", "Frontpage is splash page (membersonly.php)");
+define("PRFLAN_266", "When logged out, which page should the user be directed to?");
+define("PRFLAN_267", "Emailing method");
+
+define("PRFLAN_268", "Frontend Inline-Editing");
+define("PRFLAN_269", "Admins with this userclass (and the appropriate admin permissions) will be able to edit html directly via the frontend area.");
+define("PRFLAN_270", "Contact Form Filtering");
+define("PRFLAN_271", "Ignore form submissions containing these words or phrases. One per line.");
+
+define("PRFLAN_272", "Session Lifetime");
+define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");

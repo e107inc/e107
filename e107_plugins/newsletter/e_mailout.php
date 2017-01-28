@@ -23,7 +23,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-include_lan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
+e107::includeLan(e_PLUGIN.'/newsletter/languages/English_admin_newsletter.php');
 
 /* 
 Class for newsletter mailout function

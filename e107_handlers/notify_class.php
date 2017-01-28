@@ -23,7 +23,7 @@ class notify
 
 	function __construct()
 	{
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
 
 		if(empty($this->notify_prefs))
 		{

@@ -8,12 +8,10 @@
  *
  * URL and front controller Management
  *
- * $URL$
- * $Id$
 */
 
 require_once('../class2.php');
-if (!ADMIN || !getperms('L'))
+if (!getperms('K'))
 {
 	e107::redirect('admin');
 	exit;
@@ -204,7 +202,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	}
 
 	//TODO Checkbox for each plugin to enable/disable
-	public function simplePage()
+	protected function simplePage()
 	{
 		// $this->addTitle("Simple Redirects");
 		$eUrl =e107::getAddonConfig('e_url');
@@ -212,15 +210,23 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$tp = e107::getParser();
 		$cfg = e107::getConfig();
 
+
+
 		if(!empty($_POST['saveSimpleSef']))
 		{
-			if(is_string($this->getConfig()->get('e_url_alias')))
+			/*if(is_string($this->getConfig()->get('e_url_alias')))
 			{
 				$cfg->setPostedData('e_url_alias', array(e_LAN => $_POST['e_url_alias']), false);
 			}
 			else
 			{
 				$cfg->setPref('e_url_alias/'.e_LAN, $_POST['e_url_alias']);
+			}*/
+
+			foreach($_POST['urlstatus'] as $k=>$v)
+			{
+				$val = (!empty($v)) ? $tp->filter($k,'w') : 0;
+				$cfg->setPref('e_url_list/'.$k, $val);
 			}
 
 			$cfg->save(true, true, true);
@@ -228,10 +234,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 
 		$pref = e107::getPref('e_url_alias');
+		$sefActive = e107::getPref('e_url_list');
 
 		if(empty($eUrl))
 		{
-			return; 		
+			return false;
 		}
 
 		$text = "<div class='e-container'>";
@@ -241,10 +248,21 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		$home = "<small>".SITEURL.'</small>';
 
+
+		//  e107::getDebug()->log($sefActive);
+
 		foreach($eUrl as $plug=>$val)
 		{
-			$text .= "<h4>".$plug."</h4>";
-			$text .= "<table class='table table-striped table-bordered'>";
+			$active = !empty($sefActive[$plug]) ? true : false;
+			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:40px'>
+			<colgroup>
+				<col style='min-width:200px' />
+				<col style='width:45%' />
+				<col style='width:45%' />
+			</colgroup>";
+
+			$name = 'urlstatus['.$plug.']';
+			$text .= "<tr class='active'><td ><h4>".$plug."</h4></td><td colspan='2'>".$frm->radio_switch($name,$active)."</td></tr>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
 
@@ -258,15 +276,15 @@ class eurl_admin_ui extends e_admin_controller_ui
 				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
 					$pid            = $plug."|".$k;
 
-					$v['regex'] = str_replace("^",$home,$v['regex']);
-					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." Only)", 'url'=>e_REQUEST_SELF));
+					$v['regex'] =   preg_replace("/^\^/",$home,$v['regex']);
+					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (Language-specific)", 'url'=>e_REQUEST_SELF));
 					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
 					$text .= "<tr>
-					<td style='width:5%'>".$k."</td>
-					<td style='width:20%'>".$aliasRender."</td>
+					<td >".$k."</td>
+					<td >".$aliasRender."</td>
 
-					<td style='width:30%'>". $v['redirect']."</td>
+					<td >". $v['redirect']."</td>
 					</tr>";
 			}
 		
@@ -274,7 +292,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$text .= "</table>";
 		}	
 
-	//	$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
+		$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE, 'submit')."</div>";
 		$text .= $frm->close();
 		$text .= "</div>";
 		return $text;		
@@ -312,7 +330,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		if(isset($_POST['etrigger_save']))
 		{
 			$this->getConfig()
-						->setPostedData($this->getPosted(), null, false, false)
+						->setPostedData($this->getPosted(), null, false)
 						//->setPosted('not_existing_pref_test', 1)
 						->save(true);
 		
@@ -320,7 +338,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function SettingsPage()
+	protected function SettingsPage()
 	{
 		//$this->addTitle(LAN_EURL_NAME_SETTINGS);
 		return $this->getUI()->urlSettings();
@@ -356,7 +374,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function AliasPage()
+	protected function AliasPage()
 	{
 	//	$this->addTitle(LAN_EURL_NAME_ALIASES);
 		
@@ -411,7 +429,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function ConfigPage()
+	protected function ConfigPage()
 	{
 		// $this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');

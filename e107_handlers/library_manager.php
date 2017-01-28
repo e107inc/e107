@@ -1,8 +1,14 @@
 <?php
 
 /**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
  * @file
- * External library handling for e107 plugins/themes.
+ * External library handling for e107 core/plugins/themes.
  *
  * TODO:
  * - Provide the ability to use third-party callbacks (are defined in e_library.php files) for groups:
@@ -11,6 +17,536 @@
 
 // [e_LANGUAGEDIR]/[e_LANGUAGE]/lan_library_manager.php
 e107::lan('core', 'library_manager');
+
+
+
+/**
+ * Class core_library.
+ */
+class core_library
+{
+
+	/**
+	 * Provides information about external libraries.
+	 *
+	 * Provides information about:
+	 * - jQuery (CDN).
+	 * - jQuery (local).
+	 * - jQuery Once (CDN)
+	 * - jQuery Once (local)
+	 * - jQuery UI (CDN)
+	 * - jQuery UI (local)
+	 * - Bootstrap (CDN)
+	 * - Bootstrap (local)
+	 * - Bootstrap Editable (CDN)
+	 * - Bootstrap Editable (local)
+	 * - Font-Awesome (CDN)
+	 * - Font-Awesome (local)
+	 */
+	public function config()
+	{
+		$libraries = array();
+
+		// jQuery (CDN).
+		$libraries['cdn.jquery'] = array(
+			'name'              => 'jQuery (CDN)',
+			'vendor_url'        => 'https://jquery.com/',
+			'version_arguments' => array(
+				'file'    => 'jquery.min.js',
+				'pattern' => '/jQuery\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'jquery.min.js' => array(
+						'zone' => 1,
+						'type' => 'url',
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js' => array(
+							'jquery.js' => array(
+								'zone' => 1,
+								'type' => 'url',
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/jquery',
+			'path'              => '2.2.4',
+		);
+
+		// jQuery (local).
+		$libraries['jquery'] = array(
+			'name'              => 'jQuery (local)',
+			'vendor_url'        => 'https://jquery.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/jquery.min.js',
+				'pattern' => '/v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'dist/jquery.min.js' => array(
+						'zone' => 1,
+						'type' => 'url',
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js' => array(
+							'dist/jquery.js' => array(
+								'zone' => 1,
+								'type' => 'url',
+							),
+						),
+					),
+				),
+			),
+			'path'              => '2.2.4',
+		);
+
+		// jQuery Once (CDN).
+		$libraries['cdn.jquery.once'] = array(
+			'name'              => 'jQuery Once (CDN)',
+			'vendor_url'        => 'https://plugins.jquery.com/once/',
+			'version_arguments' => array(
+				'file'    => 'jquery.once.min.js',
+				'pattern' => '/jQuery\sOnce\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'jquery.once.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js' => array(
+							// There is no non-minified version.
+							'jquery.once.min.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/jquery.once',
+			'path'              => '2.1.2',
+		);
+
+		// jQuery Once (local).
+		$libraries['jquery.once'] = array(
+			'name'              => 'jQuery Once (local)',
+			'vendor_url'        => 'https://plugins.jquery.com/once/',
+			'version_arguments' => array(
+				'file'    => 'jquery.once.min.js',
+				'pattern' => '/jQuery\sOnce\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js' => array(
+					'jquery.once.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js' => array(
+							// There is no non-minified version.
+							'jquery.once.min.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/jquery-once/',
+		);
+
+		// jQuery UI (CDN).
+		$libraries['cdn.jquery.ui'] = array(
+			'name'              => 'jQuery UI (CDN)',
+			'vendor_url'        => 'https://jqueryui.com/',
+			'version_arguments' => array(
+				'file'    => 'jquery-ui.min.js',
+				'pattern' => '/v(\d\.\d+\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'jquery-ui.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'jquery-ui.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							// There is no non-minified version.
+							'jquery-ui.min.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							// There is no non-minified version.
+							'jquery-ui.min.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/jquery.ui',
+			'path'              => '1.11.4',
+		);
+
+		// jQuery UI (local).
+		$libraries['jquery.ui'] = array(
+			'name'              => 'jQuery UI (local)',
+			'vendor_url'        => 'https://jqueryui.com/',
+			'version_arguments' => array(
+				'file'    => 'jquery-ui.js',
+				'pattern' => '/v(\d\.\d+\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'jquery-ui.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'jquery-ui.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'jquery-ui.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'jquery-ui.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/jquery-ui',
+		);
+
+		// Bootstrap (CDN).
+		$libraries['cdn.bootstrap'] = array(
+			'name'              => 'Bootstrap (CDN)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/bootstrap.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'css/bootstrap.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
+			'path'              => '3.3.7',
+		);
+
+		// Bootstrap (local).
+		$libraries['bootstrap'] = array(
+			'name'              => 'Bootstrap (local)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'dist/js/bootstrap.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'dist/css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			'path'              => '3.3.7',
+		);
+
+		// Bootstrap Editable (CDN).
+		$libraries['cdn.bootstrap.editable'] = array(
+			'name'              => 'Bootstrap Editable (CDN)',
+			'vendor_url'        => 'https://vitalets.github.io/bootstrap-editable/',
+			'version_arguments' => array(
+				'file'    => 'js/bootstrap-editable.min.js',
+				'pattern' => '/v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/bootstrap-editable.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'css/bootstrap-editable.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap-editable.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap-editable.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.editable',
+			'path'              => '1.5.1',
+		);
+
+		// Bootstrap Editable (local).
+		$libraries['bootstrap.editable'] = array(
+			'name'              => 'Bootstrap Editable (Local)',
+			'vendor_url'        => 'https://vitalets.github.io/bootstrap-editable/',
+			'version_arguments' => array(
+				'file'    => 'js/bootstrap-editable.min.js',
+				'pattern' => '/v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'js/bootstrap-editable.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'css/bootstrap-editable.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap-editable.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap-editable.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}js/bootstrap3-editable',
+		);
+
+		// Font-Awesome (CDN).
+		$libraries['cdn.fontawesome'] = array(
+			'name'              => 'Font-Awesome (CDN)',
+			'vendor_url'        => 'http://fontawesome.io/',
+			'version_arguments' => array(
+				'file'    => 'css/font-awesome.min.css',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 10,
+			),
+			'files'             => array(
+				'css' => array(
+					'css/font-awesome.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'css' => array(
+							'css/font-awesome.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/fontawesome',
+			'path'              => '4.7.0',
+		);
+
+		// Font-Awesome (local).
+		$libraries['fontawesome'] = array(
+			'name'              => 'Font-Awesome (local)',
+			'vendor_url'        => 'http://fontawesome.io/',
+			'version_arguments' => array(
+				'file'    => 'css/font-awesome.min.css',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 10,
+			),
+			'files'             => array(
+				'css' => array(
+					'css/font-awesome.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'css' => array(
+							'css/font-awesome.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/font-awesome',
+		);
+
+		return $libraries;
+	}
+
+	/**
+	 * Alters library information before detection and caching takes place.
+	 */
+	function config_alter(&$libraries)
+	{
+		$pref = e107::pref('core');
+		$cdnProvider = varset($pref['e_jslib_cdn_provider'], 'jsdelivr');
+
+		// If CDNJS is the selected provider, we alter core CDN libraries to use it
+		// instead of jsDelivr.
+		if($cdnProvider == 'cdnjs')
+		{
+			$libraries['cdn.jquery']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery', 'https://cdnjs.cloudflare.com/ajax/libs/jquery', $libraries['cdn.jquery']['library_path']);
+			$libraries['cdn.jquery.once']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.once', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-once', $libraries['cdn.jquery.once']['library_path']);
+			$libraries['cdn.jquery.ui']['library_path'] = str_replace('https://cdn.jsdelivr.net/jquery.ui', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui', $libraries['cdn.jquery.ui']['library_path']);
+			$libraries['cdn.bootstrap']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap', 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap', $libraries['cdn.bootstrap']['library_path']);
+
+			$libraries['cdn.bootstrap.editable']['library_path'] = str_replace('https://cdn.jsdelivr.net/bootstrap.editable', 'https://cdnjs.cloudflare.com/ajax/libs/x-editable', $libraries['cdn.bootstrap.editable']['library_path']);
+			$libraries['cdn.bootstrap.editable']['path'] .= '/bootstrap-editable';
+
+			$libraries['cdn.fontawesome']['library_path'] = str_replace('https://cdn.jsdelivr.net/fontawesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome', $libraries['cdn.fontawesome']['library_path']);
+		}
+	}
+
+}
 
 
 /**
@@ -86,10 +622,10 @@ class e_library_manager
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
 		if($library['library_path'] === false || (!file_exists($libraryPath) && substr($libraryPath, 0, 4) != 'http'))
 		{
-			$library['error'] = LAN_LIBRARY_MANAGER_09;
+			$library['error'] = LAN_NOT_FOUND;
 
 			$replace_with = array($library['name']);
-			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with);
+			$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_03, $replace_with, true);
 
 			return $library;
 		}
@@ -132,12 +668,27 @@ class e_library_manager
 				elseif(varset($library['theme'], false))
 				{
 					// e107::getAddon() does not support theme folders.
-					e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
-					$addonClass = $library['theme'] . '_library';
-
-					if(isset($addonClass) && class_exists($addonClass))
+					if(is_readable(e_THEME . $library['theme'] . '/theme_library.php'))
 					{
-						$class = new $addonClass();
+						e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
+						$addonClass = 'theme_library';
+
+						if(class_exists($addonClass))
+						{
+							$class = new $addonClass();
+						}
+					}
+
+					// e107::getAddon() does not support theme folders.
+					if(is_readable(e_THEME . $library['theme'] . '/admin_theme_library.php'))
+					{
+						e107_require_once(e_THEME . $library['theme'] . '/admin_theme_library.php');
+						$addonClass = 'admin_theme_library';
+
+						if(class_exists($addonClass))
+						{
+							$class = new $addonClass();
+						}
 					}
 				}
 
@@ -165,7 +716,7 @@ class e_library_manager
 				$library['error'] = LAN_LIBRARY_MANAGER_10;
 
 				$replace_with = array($library['name']);
-				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with);
+				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_04, $replace_with, true);
 
 				return $library;
 			}
@@ -188,7 +739,7 @@ class e_library_manager
 				$library['error'] = LAN_LIBRARY_MANAGER_11;
 
 				$replace_with = array($library['version'], $library['name']);
-				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_05, $replace_with);
+				$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_05, $replace_with, true);
 
 				return $library;
 			}
@@ -204,7 +755,7 @@ class e_library_manager
 			foreach($library['variants'] as $variant_name => &$variant)
 			{
 				// If no variant callback has been set, assume the variant to be installed.
-				if(!isset($variant['variant callback']))
+				if(!isset($variant['variant_callback']))
 				{
 					$variant['installed'] = true;
 				}
@@ -220,23 +771,38 @@ class e_library_manager
 					elseif(varset($library['theme'], false))
 					{
 						// e107::getAddon() does not support theme folders.
-						e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
-						$addonClass = $library['theme'] . '_library';
-
-						if(isset($addonClass) && class_exists($addonClass))
+						if(is_readable(e_THEME . $library['theme'] . '/theme_library.php'))
 						{
-							$class = new $addonClass();
+							e107_require_once(e_THEME . $library['theme'] . '/theme_library.php');
+							$addonClass = 'theme_library';
+
+							if(class_exists($addonClass))
+							{
+								$class = new $addonClass();
+							}
+						}
+
+						// e107::getAddon() does not support theme folders.
+						if(is_readable(e_THEME . $library['theme'] . '/admin_theme_library.php'))
+						{
+							e107_require_once(e_THEME . $library['theme'] . '/admin_theme_library.php');
+							$addonClass = 'admin_theme_library';
+
+							if(class_exists($addonClass))
+							{
+								$class = new $addonClass();
+							}
 						}
 					}
 
 					// We support both a single parameter, which is an associative array, and an indexed array of
 					// multiple parameters.
-					if(isset($variant['variant arguments'][0]))
+					if(isset($variant['variant_arguments'][0]))
 					{
 						if($class)
 						{
-							$params = array_merge(array($library, $variant_name), $variant['variant arguments']);
-							$variant['installed'] = e107::callMethod($class, $library['variant callback'], $params);
+							$params = array_merge(array($library, $variant_name), $variant['variant_arguments']);
+							$variant['installed'] = e107::callMethod($class, $library['variant_callback'], $params);
 						}
 					}
 					else
@@ -244,21 +810,21 @@ class e_library_manager
 						if($class)
 						{
 							// Can't use e107::callMethod(), because it only supports 2 params.
-							if(method_exists($class, $variant['variant callback']))
+							if(method_exists($class, $variant['variant_callback']))
 							{
 								// Call PLUGIN/THEME_library::VARIANT_CALLBACK().
-								$method = $variant['variant callback'];
-								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant arguments']);
+								$method = $variant['variant_callback'];
+								$variant['installed'] = $class->$method($library, $variant_name, $variant['variant_arguments']);
 							}
 						}
 					}
 
 					if(!$variant['installed'])
 					{
-						$variant['error'] = LAN_LIBRARY_MANAGER_09;
+						$variant['error'] = LAN_NOT_FOUND;
 
 						$replace_with = array($variant_name, $library['name']);
-						$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with);
+						$variant['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_06, $replace_with, true);
 					}
 				}
 			}
@@ -283,7 +849,7 @@ class e_library_manager
 	 *   request. The variant that has been passed first is used; different variant names in subsequent calls are
 	 *   ignored.
 	 *
-	 * @return
+	 * @return mixed
 	 *   An associative array of the library information as returned from config(). The top-level properties
 	 *   contain the effective definition of the library (variant) that has been loaded. Additionally:
 	 *   - installed: Whether the library is installed, as determined by detect().
@@ -298,7 +864,7 @@ class e_library_manager
 		if(!isset($loaded[$name]))
 		{
 			$cache = e107::getCache();
-			$cacheID = 'library_manager_' . md5($name);
+			$cacheID = 'Library_' . e107::getParser()->filter($name,'file');
 			$cached = $cache->retrieve($cacheID, false, true, true);
 
 			if($cached)
@@ -309,8 +875,8 @@ class e_library_manager
 			if(!varset($library, false))
 			{
 				$library = $this->detect($name);
-				$cacheData = serialize($library);
-				$cache->set($cacheID, $cacheData, true, false, true);
+				$cacheData = e107::serialize($library,'json');
+				$cache->set($cacheID, $cacheData, true, true, true);
 			}
 
 			// Exit early if the library was not found.
@@ -421,6 +987,23 @@ class e_library_manager
 	}
 
 	/**
+	 * Returns with the selected property of a library.
+	 *
+	 * @param string $library
+	 *  Library machine name. For example: bootstrap
+	 *
+	 * @param string $property
+	 *  The property name. For example: library_path
+	 *
+	 * @return mixed
+	 */
+	public function getProperty($library, $property)
+	{
+		$lib = self::info($library);
+		return varset($lib[$property], false);
+	}
+
+	/**
 	 * Returns information about registered libraries.
 	 *
 	 * The returned information is unprocessed; i.e., as registered by plugins.
@@ -433,7 +1016,7 @@ class e_library_manager
 	 *   An associative array containing registered information for all libraries, the registered information for the
 	 *   library specified by $name, or FALSE if the library $name is not registered.
 	 */
-	private function &info($library = null)
+	public function &info($library = null)
 	{
 		// This static cache is re-used by detect() to save memory.
 		static $libraries;
@@ -441,6 +1024,17 @@ class e_library_manager
 		if(!isset($libraries))
 		{
 			$libraries = array();
+
+			$coreLibrary = new core_library();
+			$info = $coreLibrary->config();
+			if(is_array($info))
+			{
+				foreach($info as $machine_name => $properties)
+				{
+					$properties['info_type'] = 'core';
+					$libraries[$machine_name] = $properties;
+				}
+			}
 
 			$plugins = array();
 			$themes = array();
@@ -458,34 +1052,32 @@ class e_library_manager
 				}
 			}
 
-			// Gather information from THEME_library::config().
-			$siteTheme = e107::getPref('sitetheme');
-			$adminTheme = e107::getPref('admintheme');
+			$themes[] = array(
+				'name'  => e107::getPref('sitetheme'),
+				'file'  => 'theme_library',
+				'class' => 'theme_library',
+			);
 
-			foreach(array($siteTheme, $adminTheme) as $theme)
+			$themes[] = array(
+				'name'  => e107::getPref('admintheme'),
+				'file'  => 'admin_theme_library',
+				'class' => 'admin_theme_library',
+			);
+
+			foreach($themes as $theme)
 			{
-				if(is_readable(e_THEME . $theme . '/theme_library.php')) // we don't use e_XXXX for themes.
+				if(is_readable(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php'))
 				{
-					e107_require_once(e_THEME . $theme . '/theme_library.php');
+					e107_require_once(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php');
 
-					$className = $theme . '_library';
-					if(class_exists($className))
+					$info = e107::callMethod($theme['class'], 'config');
+					if(is_array($info))
 					{
-						$addonClass = new $className();
-
-						if(method_exists($addonClass, 'config'))
+						foreach($info as $machine_name => $properties)
 						{
-							$info = $addonClass->config();
-							if(is_array($info))
-							{
-								foreach($info as $machine_name => $properties)
-								{
-									$properties['info_type'] = 'theme';
-									$properties['theme'] = $theme;
-									$libraries[$machine_name] = $properties;
-									$themes[] = $theme; // This theme has a valid e_library implementation.
-								}
-							}
+							$properties['info_type'] = 'theme';
+							$properties['theme'] = $theme['name'];
+							$libraries[$machine_name] = $properties;
 						}
 					}
 				}
@@ -496,6 +1088,9 @@ class e_library_manager
 			{
 				$this->infoDefaults($properties, $machine_name);
 			}
+
+			// Alter config array. For example, change CDN provider.
+			$coreLibrary->config_alter($libraries);
 
 			// Allow enabled plugins (with e_library.php file) to alter the registered libraries.
 			foreach($plugins as $plugin)
@@ -508,18 +1103,21 @@ class e_library_manager
 				}
 			}
 
-			// Allow enabled themes (with theme_library.php file) to alter the registered libraries.
+			// Allow enabled themes to alter the registered libraries.
 			foreach($themes as $theme)
 			{
-				e107_require_once(e_THEME . $theme . '/theme_library.php');
-				$addonClass = $theme . '_library';
-
-				if(class_exists($addonClass))
+				if(is_readable(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php'))
 				{
-					$class = new $addonClass();
-					if(method_exists($class, 'config_alter'))
+					e107_require_once(e_THEME . $theme['name'] . '/' . $theme['file'] . '.php');
+
+					if(class_exists($theme['class']))
 					{
-						$class->config_alter($libraries);
+						$class = new $theme['class']();
+						if(method_exists($class, 'config_alter'))
+						{
+							// We cannot use e107::callMethod() because need to pass variable by reference.
+							$class->config_alter($libraries);
+						}
 					}
 				}
 			}
@@ -582,7 +1180,7 @@ class e_library_manager
 			'pre_detect'            => array(),
 			'post_detect'           => array(),
 			'pre_dependencies_load' => array(),
-			'pre_load'              => array(),
+			'pre_load'              => array('preLoad'),
 			'post_load'             => array(),
 		);
 
@@ -680,7 +1278,7 @@ class e_library_manager
 					$library['error'] = LAN_LIBRARY_MANAGER_07;
 
 					$replace_with = array($dependency['name'], $library['name']);
-					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_01, $replace_with);
+					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_01, $replace_with, true);
 				}
 				elseif($this->checkIncompatibility($dependency_info, $dependency['version']))
 				{
@@ -688,7 +1286,7 @@ class e_library_manager
 					$library['error'] = LAN_LIBRARY_MANAGER_08;
 
 					$replace_with = array($dependency['version'], $library['name'], $library['name']);
-					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_02, $replace_with);
+					$library['error_message'] = e107::getParser()->lanVars(LAN_LIBRARY_MANAGER_02, $replace_with, true);
 				}
 
 				// Remove the version string from the dependency, so load() can load the libraries directly.
@@ -739,21 +1337,21 @@ class e_library_manager
 		{
 			// Always apply the callback to the top-level library.
 			// Params: $library, $version, $variant
-			$this->$callback($library, null, null);
+			$this->{$callback}($library, null, null);
 
 			// Apply the callback to versions.
 			if(isset($library['versions']))
 			{
 				foreach($library['versions'] as $version_string => &$version)
 				{
-					$this->$callback($version, $version_string, null);
+					$this->{$callback}($version, $version_string, null);
 
 					// Versions can include variants as well.
 					if(isset($version['variants']))
 					{
 						foreach($version['variants'] as $version_variant_name => &$version_variant)
 						{
-							$this->$callback($version_variant, $version_string, $version_variant_name);
+							$this->{$callback}($version_variant, $version_string, $version_variant_name);
 						}
 					}
 				}
@@ -829,7 +1427,7 @@ class e_library_manager
 
 		// Construct the full path to the library for later use.
 		$path = e107::getParser()->replaceConstants($library['library_path']);
-		$path = ($library['path'] !== '' ? $path . '/' . $library['path'] : $path);
+		$path = ($library['path'] !== '' ? rtrim($path, '/') . '/' . $library['path'] : $path);
 		$path = rtrim($path, '/');
 
 		// Count the number of loaded files for the return value.
@@ -974,7 +1572,7 @@ class e_library_manager
 	 *     minified or compressed files, this prevents reading the entire file into memory.
 	 *
 	 * @return mixed
-	 *   A string containing the version of the library.
+	 *   A string containing the version of the library. Or null.
 	 */
 	private function getVersion($library, $options)
 	{
@@ -987,6 +1585,9 @@ class e_library_manager
 		);
 
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
+		$libraryPath = ($library['path'] !== '' ? rtrim($libraryPath, '/') . '/' . $library['path'] : $libraryPath);
+		$libraryPath = rtrim($libraryPath, '/');
+
 		$file = $libraryPath . '/' . $options['file'];
 
 		if(empty($options['file']))
@@ -998,7 +1599,7 @@ class e_library_manager
 		// The library will be cached with version number, so this only run once per library.
 		if(substr($file, 0, 4) == 'http')
 		{
-			$content = file_get_contents($file);
+			$content = e107::getFile()->getRemoteContent($file);
 			$tmpFile = tempnam(sys_get_temp_dir(), 'lib_');
 
 			if($tmpFile)
@@ -1037,6 +1638,8 @@ class e_library_manager
 		{
 			unlink($tmpFile);
 		}
+
+		return;
 	}
 
 	/**
@@ -1111,7 +1714,7 @@ class e_library_manager
 	 * @param $current_version
 	 *   The version to check against (like 4.2).
 	 *
-	 * @return
+	 * @return mixed
 	 *   NULL if compatible, otherwise the original dependency version string that caused the incompatibility.
 	 *
 	 * @see parseDependency()
@@ -1129,6 +1732,40 @@ class e_library_manager
 						return $v['original_version'];
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * Alter library information before loading.
+	 */
+	private function preLoad(&$library)
+	{
+		if(defset('e_ADMIN_AREA', false) == true)
+		{
+			$coreLibrary = new core_library();
+			$coreLibs = $coreLibrary->config();
+
+			switch($library['machine_name'])
+			{
+				// Force to use default (original) files on Admin UI.
+				case 'cdn.jquery.ui':
+				case 'jquery.ui':
+					$coreLib = $coreLibs[$library['machine_name']];
+					$library['files'] = $coreLib['files'];
+					$library['variants'] = $coreLib['variants'];
+					break;
+
+				case 'cdn.bootstrap':
+				case 'bootstrap':
+					$coreLib = $coreLibs[$library['machine_name']];
+					$library['files'] = $coreLib['files'];
+					$library['variants'] = $coreLib['variants'];
+
+					// Admin UI uses its own CSS.
+					unset($library['files']['css']);
+					unset($library['variants']['dev']['files']['css']);
+					break;
 			}
 		}
 	}

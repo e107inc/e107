@@ -13,7 +13,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_chatbox_menu
 {
-	function list_chatbox_menu($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}
@@ -49,17 +49,18 @@ class list_chatbox_menu
 				$cb_id = substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
 				$cb_nick = substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
 				$cb_message = ($row['cb_blocked'] ? CHATBOX_L6 : str_replace("<br />", " ", $tp->toHTML($row['cb_message'])));
-				$rowheading = $this->parent->parse_heading($cb_message);
+		//	$rowheading = $this->parent->parse_heading($cb_message);
+
 				//<a href='".e_BASE."user.php?id.$cb_id'>".$cb_nick."</a>
 				$uparams = array('id' => $cb_id, 'name' => $cb_nick);
 				$link = e107::getUrl()->create('user/profile/view', $uparams);
 				$userlink = "<a href='".$link."'>".$cb_nick."</a>";
 				$record['icon'] = $bullet;
-				$record['heading'] = $rowheading;
+			//	$record['heading'] = $rowheading;
 				$record['author'] = ($this->parent->settings['author'] ? ($cb_id != 0 ? $userlink : $cb_nick) : "");
 				$record['category'] = "";
 				$record['date'] = ($this->parent->settings['date'] ? ($row['cb_datestamp'] ? $this->parent->getListDate($row['cb_datestamp']) : "") : "");
-				$record['info'] = "";
+				$record['info'] = $cb_message;
 
 				$list_data[] = $record;
 			}

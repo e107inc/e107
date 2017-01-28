@@ -35,7 +35,7 @@ if (!isset($COMMENT_MENU_TEMPLATE))
 	$COMMENT_MENU_TEMPLATE['item'] = "<li>
 	{CM_URL_PRE}{CM_TYPE} {CM_HEADING}{CM_URL_POST}
 	<div>{CM_COMMENT}</div>
-	<small class='muted'>{CM_AUTHOR} {CM_DATESTAMP}</small>
+	<small class='text-muted muted'>{CM_AUTHOR} {CM_DATESTAMP}</small>
 	</li>";
 	
 	$COMMENT_MENU_TEMPLATE['end'] = "</ul>";

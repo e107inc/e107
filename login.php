@@ -34,9 +34,9 @@ if ((USER || e_LOGIN != e_SELF || (empty($pref['user_reg']) && empty($pref['soci
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
-define('e_IFRAME',true);
+if(!defined('e_IFRAME')) define('e_IFRAME',true);
 require_once(HEADERF);
 $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 
@@ -87,21 +87,31 @@ if (!USER || getperms('0'))
 	if(!empty($LOGIN_TEMPLATE['page']))
 	{
 		$LOGIN_TABLE_HEADER = $LOGIN_TEMPLATE['page']['header'];
-		$LOGIN_TABLE 		= "<form class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
+		$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
 		$LOGIN_TABLE_FOOTER = $LOGIN_TEMPLATE['page']['footer'];
 	}
 	
-	
+
 	$text = $tp->parseTemplate($LOGIN_TABLE,true, $sc);
 
 	if(getperms('0'))
 	{
-		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in.</div>";	
+		echo "<div class='alert alert-block alert-error alert-danger center'> You are currently logged in as the Main Admin.</div>"; //TODO LAN
+
+		if(empty($pref['user_reg']))
+		{
+			echo "<div class='alert alert-block alert-error alert-danger center'>User registration and/or login is currently disabled. <a class='alert-link' target='_blank' href='".e_ADMIN_ABS."prefs.php#nav-core-prefs-registration'>Go here to enable it.</a></div>"; //TODO LAN
+		}
+
 	}
 	
 
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
-	echo LOGINMESSAGE;
+	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)
+	{
+		echo LOGINMESSAGE;
+	}
+
 	echo $tp->parseTemplate($LOGIN_TABLE_HEADER,true, $sc);
 	$ns->tablerender($login_message, $text, 'login_page');
 	echo $tp->parseTemplate($LOGIN_TABLE_FOOTER, true, $sc);
@@ -109,6 +119,7 @@ if (!USER || getperms('0'))
 }
 
 require_once(FOOTERF);
+
 exit;
 
 ?>

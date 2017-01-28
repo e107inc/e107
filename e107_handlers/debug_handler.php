@@ -49,11 +49,16 @@ if (!defined('e107_INIT')) { exit; }
 if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) 
 {
 	$e107_debug = new e107_debug;
-	require_once(e_HANDLER.'db_debug_class.php');
-	$db_debug = new e107_db_debug;
+//	require_once(e_HANDLER.'db_debug_class.php');
+	//$db_debug = new e107_db_debug;
+
+	$db_debug = e107::getDebug();
 	$e107_debug->set_error_reporting();
 	$e107_debug_level = $e107_debug->debug_level;
-	define('E107_DEBUG_LEVEL', $e107_debug_level);
+	if(!defined('E107_DEBUG_LEVEL'))
+	{
+		define('E107_DEBUG_LEVEL', $e107_debug_level);
+	}
 } 
 else 
 {
@@ -139,15 +144,18 @@ class e107_debug {
 			
 		$aDVal = explode('.',$dVals); // support multiple values, OR'd together
 		$dVal = 0;
+
+
+
 		foreach ($aDVal as $curDVal)
 		{
 		  if (isset($this->aDebugShortcuts[$curDVal])) 
 		  {
 			$dVal |= $this->aDebugShortcuts[$curDVal];
-		  } 
+		  }
 		  else 
 		  {
-				$dVal |= $curDVal;
+				$dVal |= intval($curDVal);
 		  }
 		}
 								

@@ -20,7 +20,7 @@ if (!e107::isInstalled('newsfeed'))
 	return '';
 }
 
-include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
+e107::includeLan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_newsfeed.php');
 
 if(!class_exists('newsfeedClass'))
 {

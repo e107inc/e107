@@ -36,10 +36,13 @@ if (isset($_POST['update_settings']))
 			$userData['data']['user_password'] = $sql->escape($userMethods->HashPassword($_POST['a_password'], $currentUser['user_loginname']), FALSE);
 			unset($_POST['a_password']);
 			unset($_POST['a_password2']);
+
 			if (vartrue($pref['allowEmailLogin']))
 			{
+				$new_pass = e107::getParser()->filter($_POST['a_password']);
+
 				$user_prefs = e107::getArrayStorage()->unserialize($currentUser['user_prefs']);
-				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, $email);
+				$user_prefs['email_password'] = $userMethods->HashPassword($new_pass, USEREMAIL);
 				$userData['data']['user_prefs'] = e107::getArrayStorage()->serialize($user_prefs);
 			}
 

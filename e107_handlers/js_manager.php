@@ -1,63 +1,28 @@
 <?php
-/*
+
+/**
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
- * GNU General Public License (http://gnu.org).
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
- *
-*/
-//global $pref, $eplug_admin, $THEME_JSLIB, $THEME_CORE_JSLIB;
+ * @file
+ * JS Manager.
+ */
 
+
+/**
+ * Class e_jsmanager.
+ */
 class e_jsmanager
 {
 	/**
 	 * Supported Libraries (Front-End) - loaded on demand. 
 	 */
 	protected $_libraries = array(
-		'prototype'	=> array(
-			'prototype/prototype.js' ,
-			'scriptaculous/scriptaculous.js',
-			'scriptaculous/effects.js',
-			'e107.js'),
-		/*	
-		'jquery'	=> array(
-			"http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css",
-			"http://code.jquery.com/jquery-1.8.2.js",
-			"http://code.jquery.com/ui/1.9.1/jquery-ui.js"		
-			),	
-		
-		
-		'jquery'	=> array(
-			"http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js",
-			"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"		
-			)
-		*/	
-		
-		
-		'jquery'	=> array(
-		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/base/jquery-ui.css",
-		//	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"	
-		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js",
-		//	"http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"
-		//	"http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"
-			"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
-			// jQuery Once filters out all elements that had the same filter applied on them before. It can be used to
-			// ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
-			"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js"
-	//		,
-	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js",
-	//		"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css",
-		//	"http://code.jquery.com/jquery-1.8.3.js",
-	//		"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css",
-	//		"http://code.jquery.com/ui/1.9.2/jquery-ui.js"
-			
-			)	
-			
+		'prototype'	=> array(), // TODO remove prototype completely.
+		'jquery'	=> array(),
 	);
 
 	/**
@@ -225,8 +190,6 @@ class e_jsmanager
 	 *
 	 * Use {@link getInstance()}, direct instantiating
 	 * is not possible for signleton objects
-	 *
-	 * @return void
 	 */
 	protected function __construct()
 	{
@@ -264,30 +227,25 @@ class e_jsmanager
 	{
 		// Try to auto-detect runtime location
 		$this->setInAdmin(defset('e_ADMIN_AREA', false));
-		
-		if($this->isInAdmin()) // Include jquery-ui in the admin-area only - Jquery-UI to eventually be removed from e107 completely if possible. 
-		{
-			$this->_libraries['jquery'] = array(
-				"https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js",
-				// jQuery Once filters out all elements that had the same filter applied on them before. It can be used
-				// to ensure that a function is only applied once to an element. jQuery Once is used in e107.behaviors.
-				"https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.1.1/jquery.once.min.js",
-				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js",
-				"https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/smoothness/jquery-ui.min.css"
-			);
 
-			//		"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js",
-			//	"https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css",
-			//https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css
-		}
-		
-		if(isset($_SERVER['E_DEV_LOCALJS']) &&  $_SERVER['E_DEV_LOCALJS'] === 'true') // Test with Local JS Framework files. 
+		if($this->isInAdmin()) // Admin Area.
 		{
-			$this->_libraries['jquery'] = array(
-				"jquery/jquery.min.js"
-			);
+			e107::library('load', 'jquery');
+			// jQuery Once is used in e107.behaviors.
+			e107::library('load', 'jquery.once');
+			e107::library('load', 'jquery.ui');
 		}
-		
+		else // Front-End.
+		{
+			e107::library('load', 'jquery');
+			// jQuery Once is used in e107.behaviors.
+			e107::library('load', 'jquery.once');
+		}
+
+		// TODO
+		// jQuery is the only JS framework, and it is always loaded. So remove
+		// unnecessary code here below.
+
 		$customJqueryUrls = e107::getPref('library-jquery-urls');
 		$this->_cache_enabled = e107::getPref('jscsscachestatus',false);
 		
@@ -297,12 +255,9 @@ class e_jsmanager
 		}
 
 		// Try to load browser cache id from core preferences
-		//$this->setCacheId(deftrue('e_NOCACHE') ? time() : e107::getPref('e_jslib_browser_cache'));
-		$this->setCacheId(e107::getPref('e_jslib_browser_cache'), 0);
+		$this->setCacheId(e107::getPref('e_jslib_browser_cache', 0));
 
-		// Load stored in preferences core lib paths ASAP - FIXME - find better way to store libs - array structure and separate table row
-			
-	//	$core_libs = e107::getPref('e_jslib_core');
+		// Load stored in preferences core lib paths ASAP
 		$this->_core_prefs = e107::getPref('e_jslib_core');
 		$core = array();
 
@@ -314,13 +269,11 @@ class e_jsmanager
 
 				if(!$this->libDisabled($id,$vis))
 				{
-				 	//echo "<h2>FRAMEWORK Loaded: ".$id."  :: ".$vis."</h2>";
 					if(vartrue($this->_libraries[$id]))
 					{
 						foreach($this->_libraries[$id] as $path)
 						{
-							//echo "<h4>Loaded: ".$path."  :: ".$vis."</h4>";
-							$core[$path] = $vis;	
+							$core[$path] = $vis;
 						}		
 					}
 					
@@ -334,7 +287,6 @@ class e_jsmanager
 		{
 			$this->checkLibDependence(null, $core);
 		}
-		
 
 		// Load stored in preferences plugin lib paths ASAP
 		$plug_libs = e107::getPref('e_jslib_plugin');
@@ -356,12 +308,6 @@ class e_jsmanager
 			$theme_libs = array();
 		}
 		$this->themeLib($theme_libs);
-		
-		// TEST VALUES
-		// $this->_e_jslib_plugin[] = '{e_PLUGIN}myplug/test.js';
-		// $this->_e_jslib_plugin[] = 'http://somesite/myplug/test.js';
-		// $this->_e_jslib_theme[] = '{THEME}js/test.js';
-		// $this->_e_jslib_theme[] = 'http://somesite/js/test.js';
 	}
 
 	/**
@@ -569,6 +515,20 @@ class e_jsmanager
 	public function headerTheme($file_path, $zone = 5, $pre = '', $post = '')
 	{
 		$this->headerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
+		return $this;
+	}
+
+
+	/**
+	 * Add Theme JS file for inclusion in site footer (preferred), shorthand of footerFile() method
+	 *
+	 * @param string $file_path relative to theme root folder
+	 * @param integer $zone 1-5 (see header.php)
+	 * @return e_jsmanager
+	 */
+	public function footerTheme($file_path, $zone = 5, $pre = '', $post = '')
+	{
+		$this->footerFile(THEME.trim($file_path, '/'), $zone, $pre, $post);
 		return $this;
 	}
 
@@ -977,11 +937,15 @@ class e_jsmanager
 			break;
 
 			case 'plugin_css':
-				$file_path = explode(':', $file_path);
-				$file_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$file_path[0].'/'.trim($file_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
+				$pfile_path = explode(':', $file_path,2);
+				$plugfile_path = $runtime_location.$this->_sep.'{e_PLUGIN}'.$pfile_path[0].'/'.trim($pfile_path[1], '/').$this->_sep.$pre.$this->_sep.$post;
+
+				// allow for URLs to be attributed to plugins. (loads after theme css in admin area header)
+				$file_path = ((strpos($pfile_path[1], 'http') !== 0 && strpos($pfile_path[1], '//') !== 0)) ? $plugfile_path : 'all'.$this->_sep.$pfile_path[1].$this->_sep.$pre.$this->_sep.$post;;
 				if(!isset($this->_e_css['plugin'])) $this->_e_css['plugin'] = array();
 				$registry = &$this->_e_css['plugin'];
 				$runtime = true;
+
 			break;
 
 			case 'theme_css':
@@ -1057,7 +1021,7 @@ class e_jsmanager
 			break;
 
 			case 'settings':
-				$this->_e_js_settings = array_merge_recursive($this->_e_js_settings, $file_path);
+				$this->_e_js_settings = $this->arrayMergeDeepArray(array($this->_e_js_settings, $file_path));
 				return $this;
 			break;
 
@@ -1097,8 +1061,7 @@ class e_jsmanager
 		{
 			case 'settings':
 				$tp = e107::getParser();
-				$options = $this->arrayMergeDeepArray(array($this->_e_js_settings));
-				$json = $tp->toJSON($options);
+				$json = $tp->toJSON($this->_e_js_settings);
 				echo "<script>\n";
 				echo "var e107 = e107 || {'settings': {}, 'behaviors': {}};\n";
 				echo "jQuery.extend(e107.settings, " . $json . ");\n";
@@ -1271,7 +1234,11 @@ class e_jsmanager
 		if($label && E107_DEBUG_LEVEL > 0) 
 		{
 			echo $external ? "<!-- [JSManager] ".$label." -->\n" : "/* [JSManager] ".$label." */\n\n";
+			e107::getDb()->db_Mark_Time("Load JS/CSS: ".$label);
 		}
+
+
+
 
 		$lmodified = 0;
 		foreach ($file_path_array as $path)
@@ -1326,26 +1293,47 @@ class e_jsmanager
 				{
 					if($external !== 'css') $isExternal = true;
 				}
-				
+
+
+
+
+
 				            	
 				if('css' === $external)
 				{
 					$path = explode($this->_sep, $path, 4);
+
+
+
 					$media = $path[0];
 					// support of IE checks
 					$pre = varset($path[2]) ? $path[2]."\n" : '';
 					$post = varset($path[3]) ? "\n".$path[3] : '';
 					$path = $path[1];
+
+					$insertID ='';
+
 					if(strpos($path, 'http') !== 0) // local file.
 					{
+
+						if($label === 'Theme CSS') // add an id for local theme stylesheets. 
+						{
+							$insertID = 'id="stylesheet-'. eHelper::secureIdAttr(str_replace(array('{e_THEME}','.css'),'',$path)).'"' ;
+						}
+
 						if($this->addCache($external,$path) === true) // if cache enabled, then skip and continue.
 						{
 							continue;
 						}
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
-					
-					echo $pre.'<link rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
+					elseif($this->isValidUrl($path) === false)
+					{
+						continue;
+					}
+
+
+					echo $pre.'<link '.$insertID.' rel="stylesheet" media="'.$media.'" property="stylesheet" type="text/css" href="'.$path.'" />'.$post;
 					echo "\n";
 
 					continue;
@@ -1374,14 +1362,16 @@ class e_jsmanager
 						// don't render non CDN libs as external script calls when script consolidation is enabled
 						if($mod === 'core' || $mod === 'plugin' || $mod === 'theme')
 						{
-
-
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
+
 						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
 					}
 
-
+					if($isExternal === true && $this->isValidUrl($path) == false)
+					{
+						continue;
+					}
 
 					echo $pre.'<script type="text/javascript" src="'.$path.'"'.$inline.'></script>'.$post;
 					echo "\n";
@@ -1402,11 +1392,33 @@ class e_jsmanager
 		}
 
 
-
 		return $lmodified;
 	}
 
 
+	/**
+	 * Check CDN Url is valid.
+	 * Experimental.
+	 * @param $url
+	 * @return resource
+	 */
+	private function isValidUrl($url)
+	{
+		return true;
+		/*
+
+
+		$connected = e107::getFile()->isValidURL($url);
+
+		if($connected == false)
+		{
+		//	echo "<br />Skipping: ".$url ." : ".$port;
+			e107::getDebug()->log("Couldn't reach ".$url);
+		}
+
+		return $connected;
+		*/
+	}
 
 
 	/**
@@ -1416,7 +1428,7 @@ class e_jsmanager
 	 */
 	private function addCache($type,$path)
 	{
-		if($this->_cache_enabled != true  || $this->isInAdmin() || substr($path,0,2) == '//' )
+		if($this->_cache_enabled != true  || $this->isInAdmin() || substr($path,0,2) == '//' || strpos($path, 'wysiwyg.php')!==false )
 		{
 			return false;
 		}

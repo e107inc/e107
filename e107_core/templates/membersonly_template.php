@@ -29,7 +29,7 @@ $MEMBERSONLY_END = "<div>";
 
 	$MEMBERSONLY_TEMPLATE['default']['caption']	= LAN_MEMBERS_0;
 	$MEMBERSONLY_TEMPLATE['default']['header']	= "<div class='container text-center' style='margin-right:auto;margin-left:auto'><br /><br />";
-	$MEMBERSONLY_TEMPLATE['default']['body']	= "<div class='alert alert-block alert-danger'>
+	$MEMBERSONLY_TEMPLATE['default']['body']	= "<div class='alert alert-block text-danger'>
 														{MEMBERSONLY_RESTRICTED_AREA} {MEMBERSONLY_LOGIN}
 														{MEMBERSONLY_SIGNUP}<br /><br />{MEMBERSONLY_RETURNTOHOME}
 

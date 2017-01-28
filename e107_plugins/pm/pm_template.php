@@ -27,16 +27,23 @@ if (!defined('e107_INIT')) { exit; }
 
 global $sc_style;		// Needed for the PM_REPLY shortcode!
 
-if (!defined('PM_READ_ICON')) define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
-if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
+if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
+{
+	define('PM_READ_ICON', e107::getParser()->toGlyph('fa-envelope'));
+	define('PM_UNREAD_ICON', e107::getParser()->toGlyph('fa-envelope-o'));
+}
+else
+{
+	if (!defined('PM_READ_ICON')) define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
+	if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
+}
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
-
-$sc_style['PM_ATTACHMENTS']['pre'] = "<br /><div style='vertical-align:bottom; text-align:left;'>";
+$sc_style['PM_ATTACHMENTS']['pre'] = "<div class='alert alert-block alert-info'>";
 $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
 
-$sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ".LAN_PM_59;
-$sc_style['PM_NEXTPREV']['post'] = "</td></tr>";
+//$sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ".LAN_PM_59;
+//$sc_style['PM_NEXTPREV']['post'] = "</td></tr>";
 
 $sc_style['PM_EMOTES']['pre'] = "
 <tr>
@@ -69,13 +76,14 @@ $sc_style['PM_REPLY']['post'] = "</td>
 
 $PM_SEND_PM = "<div id='pm-send-pm'>
 <table class='table fborder'>
+<thead>
 <tr>
-	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
+	<th colspan='2' class='fcaption'>".LAN_PLUGIN_PM_NEW.": </th>
 </tr>
+</thead>
 <tr>
 	<td class='forumheader3' style='width: 30%'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TOUSER}<br />
-	<div class='form-inline'>{PM_FORM_TOCLASS}</div></td>
+	<td class='forumheader3' style='width: 70%; text-align:left'>{PM_FORM_TO}</td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>
@@ -101,21 +109,22 @@ $PM_INBOX_HEADER = "
 <tr>
 	<th class='fcaption' style='width:1%'>&nbsp;</th>
 	<th class='fcaption' style='width:1%'>&nbsp;</th>
-	<th class='fcaption' style='width:38%'>".LAN_PM_5."</th>
-	<th class='fcaption' style='width:22%'>".LAN_PM_31."</th>
-	<th class='fcaption' style='width:30%'>".LAN_PM_32."</th>
-	<th class='fcaption' style='width:8%'>&nbsp;</th>
+	<th class='fcaption' style='width:25%'>".LAN_PM_31."</th>
+	<th class='fcaption' style='width:auto'>".LAN_PM_5."</th>
+	<th class='fcaption' style='width:auto'>".LAN_PM_32."</th>
+	<th class='fcaption' style='width:100px'>{PM_COMPOSE: class=block-level}</th>
 </tr>
 </thead>
 	<tbody>
 ";
 
-$PM_INBOX_TABLE = "
-<tr>
+$PM_INBOX_TABLE = "{SETIMAGE: w=30&h=30&crop=1}
+<tr class='{PM_STATUS_CLASS}'>
 	<td class='forumheader3'>{PM_SELECT}</td>
-	<td class='forumheader3'>{PM_READ_ICON}</td>
-	<td class='forumheader3'>{PM_SUBJECT=link,inbox}{PM_ATTACHMENT_ICON}</td>
-	<td class='forumheader3'>{PM_FROM=link}</td>
+	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
+	<td class='forumheader3'>{PM_AVATAR: shape=circle} {PM_FROM=link}</td>
+	<td class='forumheader3'>{PM_SUBJECT=link,inbox}</td>
+
 	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3' style='text-align: center; white-space: nowrap'>{PM_DELETE=inbox}&nbsp;{PM_BLOCK_USER}</td>
 </tr>
@@ -129,12 +138,14 @@ $PM_INBOX_EMPTY = "
 
 $PM_INBOX_FOOTER = "
 <tr>
-	<td class='forumheader' colspan='6' style='text-align:center'>
+	<td class='forumheader' colspan='3'>
 	<input type='hidden' name='pm_come_from' value='inbox' />
 	{PM_DELETE_SELECTED}
 	</td>
+	<td class='forumheader text-right' colspan='3'>
+	{PM_NEXTPREV=inbox}
+	</td>
 </tr>
-{PM_NEXTPREV=inbox}
 </tbody>
 </table>
 ";
@@ -157,8 +168,8 @@ $PM_OUTBOX_HEADER = "
 $PM_OUTBOX_TABLE = "
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
-	<td class='forumheader3'>{PM_READ_ICON}</td>
-	<td class='forumheader3'>{PM_SUBJECT=link,outbox}{PM_ATTACHMENT_ICON}</td>
+	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
+	<td class='forumheader3'>{PM_SUBJECT=link,outbox}</td>
 		<td class='forumheader3'>{PM_TO=link}</td>
 	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3' style='text-align: center'>{PM_DELETE=outbox}</td>
@@ -170,7 +181,7 @@ $PM_OUTBOX_EMPTY = "
 	<td colspan='6' class='forumheader'>".LAN_PM_34."</td>
 </tr>
 ";
-
+/*
 $PM_OUTBOX_FOOTER = "
 <tr>
 	<td class='forumheader' colspan='6' style='text-align:center'>
@@ -181,7 +192,22 @@ $PM_OUTBOX_FOOTER = "
 {PM_NEXTPREV=outbox}
 </tbody>
 </table>
+";*/
+
+$PM_OUTBOX_FOOTER = "
+<tr>
+	<td class='forumheader' colspan='3'>
+	<input type='hidden' name='pm_come_from' value='inbox' />
+	{PM_DELETE_SELECTED}
+	</td>
+	<td class='forumheader text-right' colspan='3'>
+	{PM_NEXTPREV=inbox}
+	</td>
+</tr>
+</tbody>
+</table>
 ";
+
 
 
 $PM_BLOCKED_HEADER = "
@@ -221,29 +247,38 @@ $PM_BLOCKED_FOOTER = "
 
 
 $PM_SHOW =
-"<div style='text-align: center'>
-<table class='table fborder'>
+"<div class='pm-show' style='text-align: center'>
+<table class='table table-bordered table-striped fborder'>
 <tr>
-	<td class='fcaption text-left' colspan='2'>{PM_SUBJECT}</td>
+	<td class='fcaption text-left' colspan='2'>
+	<h3>{PM_SUBJECT} <small class='pull-right'>{PM_DATE}</small></h3>
+	<small>{PM_FROM_TO}</small>
+	<small class='pull-right' >{PM_READ} {PM_DELETE}</small></td>
 </tr>
 <tr>
-	<td class='forumheader3 text-left' style='width:20%; vertical-align:top'>
-		{PM_FROM_TO}
-		<br />
-		<br />
-		<span class='smalltext'>".LAN_PM_29.":<br />{PM_DATE}</span>
-		<br />
-		<br />
-		<span class='smalltext'>".LAN_PM_30.":<br />{PM_READ}</span>
-		<br />
-		<br />
-		{PM_DELETE}
+	<td class='forumheader3 text-left' style='vertical-align:top'>
+	<div class='pm-message'>{PM_MESSAGE}</div>
+	{PM_ATTACHMENTS}
 	</td>
-	<td class='forumheader3 text-left' style='width:80%; vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
 </tr>
 {PM_REPLY}
 </table>
 </div>
+<hr />
 ";
 
-?>
+
+$PM_NOTIFY =
+"<div>
+<h4>".LAN_PM_101."{SITENAME}</h4>
+<table class='table table-striped'>
+<tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
+<tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>
+<tr><td>".LAN_PM_108."</td><td>{PM_DATE}</td></tr>
+<tr><td>".LAN_PM_104."</td><td>{PM_ATTACHMENTS}</td></tr>
+</table>
+<table class='table'><tr><td class='text-center'><br />
+<a class='btn btn-primary btn-lg' href='{PM_URL}'>".LAN_PM_113."</a></td></tr>
+</table>
+";
+

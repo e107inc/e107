@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -15,7 +15,7 @@ if (!getperms("M"))
 	exit;
 }
 
-e107::lan('core','wmessage',true);
+e107::coreLan('wmessage', true);
 
 
 class wmessage_admin extends e_admin_dispatcher
@@ -74,15 +74,15 @@ class generic_ui extends e_admin_ui
 	
 		protected $listOrder		= 'gen_id DESC';
 	
-		protected $fields 		= array (  
-		  'checkboxes' 		=>   array ( 'title' => '', 			'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'gen_id' 			=>   array ( 'title' => LAN_ID, 		'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'gen_type' 		=>   array ( 'title' => LAN_TYPE, 		'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'default=wmessage', 'class' => 'left', 'thclass' => 'left',  ),
+		protected $fields		= array (  
+		  'checkboxes'		=>   array ( 'title' => '', 			'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
+		  'gen_id'			=>   array ( 'title' => LAN_ID, 		'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_type'		=>   array ( 'title' => LAN_TYPE, 		'type' => 'hidden', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'default=wmessage', 'class' => 'left', 'thclass' => 'left',  ),
 		  'gen_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 	'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'gen_user_id' 	=>   array ( 'title' => LAN_ID, 		'type' => 'hidden', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'gen_ip' 			=>   array ( 'title' => WMLAN_10,	 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
-		  'gen_intdata' 	=>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'gen_chardata' 	=>   array ( 'title' => WMLAN_04, 		'type' => 'bbarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'gen_user_id'		=>   array ( 'title' => LAN_AUTHOR,		'type' => 'hidden', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_ip'			=>   array ( 'title' => LAN_TITLE,		'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_intdata'		=>   array ( 'title' => LAN_VISIBILITY,	'type' => 'userclass', 'data' => 'int', 'inline'=>true, 'batch'=>true, 'filter'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'gen_chardata'	=>   array ( 'title' => LAN_MESSAGE, 	'type' => 'bbarea', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'options' 		=>   array ( 'title' => LAN_OPTIONS, 	'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
@@ -90,7 +90,7 @@ class generic_ui extends e_admin_ui
 		
 		
 		protected $prefs = array(
-			'wm_enclose'		=> array('title'=> WMLAN_05, 'type'=>'radio', 'data' => 'int','help'=> WMLAN_06, 'writeParms'=>array('optArray'=>array(0=> LAN_DISABLED, 1=> LAN_ENABLED, 2=> "Enclosed with Carousel"))),
+			'wm_enclose'		=> array('title'=> WMLAN_05, 'type'=>'radio', 'data' => 'int','help'=> WMLAN_06, 'writeParms'=>array('optArray'=>array(0=> LAN_DISABLED, 1=> LAN_ENABLED, 2=> WMLAN_11))),
 		);
 
 	
@@ -306,7 +306,7 @@ if ($action == "main" || $action == "")
 			<thead>
 			<tr>
 				<th>".LAN_ID."</th>
-				<th>".WMLAN_02."</th>
+				<th>".LAN_MESSAGE."</th>
 				<th class='center'>".LAN_VISIBILITY."</th>
 				<th class='center'>".LAN_OPTIONS."</th>
 			</tr>
@@ -360,7 +360,7 @@ if ($action == "create" || $action == "edit")
 			<td>".$frm->text('wm_caption', $tp->toForm(vartrue($row['gen_ip'])), 80)."</td>
 		</tr>
 		<tr>
-			<td>".WMLAN_04."</td>
+			<td>".LAN_MESSAGE."</td>
 			<td>";
 			
 		$text .= $frm->bbarea('data',$row['gen_chardata']);

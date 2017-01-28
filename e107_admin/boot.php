@@ -8,8 +8,6 @@
  *
  * Admin BootLoader
  *
- * $URL$
- * $Id$
 */
 
 if (!defined('e107_INIT'))
@@ -17,10 +15,10 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-
+e107::getDb()->db_Mark_Time('(Start boot.php)');
 header('Content-type: text/html; charset=utf-8', TRUE);
 
-define('ADMINFEED', 'http://e107.org/adminfeed');
+define('ADMINFEED', 'https://e107.org/adminfeed');
 
 
 
@@ -67,6 +65,13 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 		echo $text;
 
 	}
+	else
+	{
+		if(e_DEBUG)
+		{
+		//	echo "Feed failed: ".ADMINFEED;
+		}
+	}
 	exit;
 }
 
@@ -75,24 +80,25 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 {
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
-	$tag = 'infopanel_'.$type;
+	$tag = 'Infopanel_'.$type;
 
 	$cache = e107::getCache();
-	$cache->setMD5('_');
 
-	if($text = $cache->retrieve($tag,180,true)) // check every 3 hours.
+	$feed = 'https://e107.org/feed/?limit=3&type='.$type;
+
+	if($text = $cache->retrieve($tag,180,true, true)) // check every 3 hours.
 	{
 		echo $text;
 
 		if(e_DEBUG === true)
 		{
-			echo "<span class='label label-warning'>Cached</span>";
+			echo "<span class='label label-warning' title='".$feed."'>Cached</span>";
 		}
 		exit;
 	}
 
 
-	if($data = e107::getXml()->getRemoteFile('http://e107.org/feed/?limit=3&type='.$type,3))
+	if($data = e107::getXml()->getRemoteFile($feed,3))
 	{
 		$rows = e107::getXml()->parseXml($data, 'advanced');
 //	print_a($rows);
@@ -108,7 +114,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 			$text .= '<div class="media">';
 			$text .= '<div class="media-left">
 		    <a href="'.$link.'">
-		      <img class="media-object img-rounded" src="'.$img.'" style="width:100px">
+		      <img class="media-object img-rounded rounded" src="'.$img.'" style="width:100px">
 		    </a>
 		  </div>
 		  <div class="media-body">
@@ -123,7 +129,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
 
 		echo $text;
 
-		$cache->set($tag, $text, true);
+		$cache->set($tag, $text, true, null, true);
 
 	}
 	exit;
@@ -142,7 +148,7 @@ e107::coreLan('footer', true);
 {
 	$_globalLans = e107::pref('core', 'lan_global_list'); 
 	$_plugins = e107::getPref('plug_installed');
-	if(!empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && count($_plugins) > 0)
+	if(!deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
 	{
 		$_plugins = array_keys($_plugins);
 		
@@ -158,14 +164,8 @@ e107::coreLan('footer', true);
 }
 
 
-
-
-
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
 include_once(e107::coreTemplatePath('admin_icons'));
-
-
-
 
 
 if(!defset('e_ADMIN_UI') && !defset('e_PAGETITLE'))

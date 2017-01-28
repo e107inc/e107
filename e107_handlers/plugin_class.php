@@ -37,9 +37,9 @@ class e107plugin
 		'e_meta', // @Deprecated 
 		'e_emailprint',
 		'e_frontpage',
-		'e_latest', // @Deprecated  - see e_dashboard
-		'e_status', //@Deprecated  - see e_dashboard
-		'e_menu', // experimental.
+		'e_latest', /* @deprecated  - see e_dashboard */
+		'e_status', /* @deprecated  - see e_dashboard */
+		'e_menu',
 		'e_search',
 		'e_shortcode',
 		'e_module',
@@ -55,13 +55,60 @@ class e107plugin
 		'e_url', // simple mod-rewrite. 
 		'e_mailout',
 		'e_sitelink', // sitelinks generator. 
-		'e_tohtml',
+		'e_tohtml', /* @deprecated  - use e_parse */
 		'e_featurebox',
+		'e_parse',
 		'e_related',
 		'e_rss',
 		'e_upload',
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
+	);
+
+
+	/** Deprecated or non-v2.x standards */
+	private $plugin_addons_deprecated = array(
+		'e_bb',     // @deprecated
+		'e_list',
+		'e_meta',   // @deprecated
+		'e_latest', // @deprecated
+		'e_status', // @deprecated
+		'e_tagwords',
+		'e_sql.php',
+		'e_linkgen',
+		'e_frontpage',
+		'e_tohtml', // @deprecated rename to e_parser ?
+		'e_sql',
+		'e_emailprint',
+	);
+
+
+
+	private $plugin_addons_diz = array(
+		'e_admin'       => "Add form elements to existing core admin areas.",
+		'e_cron'        => "Include your plugin's cron in the 'Scheduled Tasks' admin area.",
+		'e_notify'      => "Include your plugin's notification to the Notify admin area.",
+		'e_linkgen'     => "Add link generation into the sitelinks area.",
+		'e_frontpage'   => "Add your plugin as a frontpage option.",
+		'e_menu'        => "Gives your plugin's menu(s) configuration options in the Menu Manager.",
+		'e_featurebox'  => "Allow your plugin to generate content for the featurebox plugin.",
+		'e_search'      => "Add your plugin to the search page.",
+		'e_shortcode'   => "Add a global shortcode which can be used site-wide. (use sparingly)",
+		'e_module'      => "Include a file within class2.php (every page of the site).",
+		'e_event'       => "Hook into core events and process them with custom functions.",
+		'e_comment'     => "Override the core commenting system.",
+		'e_dashboard'   => "Add something to the default admin dashboard panel.", // Admin Front-Page addon.
+		'e_header'      => "Have your plugin include code in the head of every page of the site. eg. css", // loaded in header prior to javascript manager.
+		'e_footer'      => "Have your plugin include code in the foot of every page of the site. eg. javascript", // Loaded in footer prior to javascript manager.
+		'e_url'         => "Give your plugin search-engine-friendly URLs", // simple mod-rewrite.
+		'e_mailout'     => "Allow the mailing engine to use data from your plugin's database tables.",
+		'e_sitelink'    => "Create dynamic navigation links for your plugin.", // sitelinks generator.
+		'e_related'     => "Allow your plugin to be included in the 'related' links.",
+		'e_rss'         => "Give your plugin an rss feed.",
+		'e_upload'      => "Use data from your plugin in the user upload form.",
+		'e_user'        => "Have your plugin include data on the user-profile page.",
+		'e_library'     => "Include a third-party library"
+
 	);
 
 
@@ -136,6 +183,7 @@ class e107plugin
 	var $unInstallOpts;
 	var $module = array();
 	private $options = array();
+	private $log = array();
 
 	function __construct()
 	{
@@ -230,11 +278,11 @@ class e107plugin
 		foreach($plugVersions as $path=>$version)
 		{
 			$fullPath = e_PLUGIN.$path."/plugin.xml";
-			if(is_file(e_PLUGIN.$path."/plugin.xml"))
+			if(file_exists(e_PLUGIN.$path."/plugin.xml"))
 			{	
 				$data = $xml->loadXMLfile($fullPath, true);
 				
-				if(!in_array($path, $this->core_plugins)) // check non-core plugins for sql file changes. 
+				if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
 				{
 					$dbv->errors = array();
 					$dbv->compare($path);
@@ -259,7 +307,7 @@ class e107plugin
 					$needed[$path] = $data;		
 				} 
 				
-				if($curVal < $fileVal) // check pref version against file version. 
+				if(version_compare($curVal,$fileVal,"<")) // check pref version against file version.
 				{
 					
 					if($mode == 'boolean')
@@ -494,12 +542,18 @@ class e107plugin
 		{
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 			$this->rebuildUrlConfig();
-			e107::getConfig('core')->save();
+			e107::getConfig('core')->save(true,false,false);
 		}
+
+		// Triggering system (post) event.
+		e107::getEvent()->trigger('system_plugins_table_updated', array(
+			'mode' => $mode,
+		));
 	}
 
 	function manage_category($cat)
 	{
+		$this->log("Running ".__FUNCTION__);
 		if (vartrue($cat) && in_array($cat, $this->accepted_categories))
 		{
 			return $cat;
@@ -512,7 +566,7 @@ class e107plugin
 
 	function manage_icons($plugin = '', $function = '')
 	{
-
+		$this->log("Running ".__FUNCTION__);
 		if ($plugin == '')
 		{
 			return;
@@ -534,7 +588,8 @@ class e107plugin
 			if (vartrue($this->unInstallOpts['delete_ipool'], FALSE))
 			{
 				$status = ($med->removePath(e_PLUGIN.$plugin, 'icon')) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add('Removing Icons from Media-Manager', $status);
+				$mes->add(IMALAN_164, $status);
+				$this->log("Deleted Icons from Media-Manager "); // No LANS
 			}
 			return;
 		}
@@ -658,6 +713,7 @@ class e107plugin
 	 */
 	function manage_extended_field($action, $field_name, $field_attrib, $field_source = '')
 	{
+		$this->log("Running ".__FUNCTION__);
 		$mes = e107::getMessage();
 		$this->setUe();
 
@@ -665,7 +721,7 @@ class e107plugin
 		$type_name = $this->ue_field_type_name($type);
 		
 		$mes->addDebug("Extended Field: ".$action.": ".$field_name." : ".$type_name);
-		
+
 		// predefined
 		if($type == EUF_PREFIELD)
 		{
@@ -748,6 +804,7 @@ class e107plugin
 			}
 			
 			//var_dump($field_attrib, $field_name, $type);
+			$mes->addDebug("Extended Field: ".print_a($field_attrib,true));
 			
 			$status = $this->module['ue']->user_extended_add(
 				$field_name, 
@@ -801,6 +858,7 @@ class e107plugin
 
 	function manage_extended_field_sql($action, $field_name)
 	{
+		$this->log("Running ".__FUNCTION__);
 		$f = e_CORE.'sql/extended_'.preg_replace('/[^\w]/', '', $field_name).'.php'; // quick security, always good idea
 		
 		if(!is_readable($f)) return false;
@@ -809,6 +867,10 @@ class e107plugin
 		// FIXME - use sql parse handler
 		$error = FALSE;
 		$count = 0;
+
+		$sql = e107::getDb();
+
+
 		if($action == 'add')
 		{
 			$sql_data = file_get_contents($f);
@@ -820,7 +882,7 @@ class e107plugin
 		    foreach($creation[0] as $tab)
 		    {
 				$query = str_replace($search,$replace,$tab);
-		      	if(!mysql_query($query))
+		      	if(!$sql->gen($query))
 		      	{
 		        	$error = TRUE;
 				}
@@ -831,7 +893,7 @@ class e107plugin
 			foreach($inserts[0] as $ins)
 			{
 				$qry = str_replace($search,$replace,$ins);
-				if(!mysql_query($qry))
+				if(!$sql->gen($qry))
 				{
 				  	$error = TRUE;
 				}
@@ -847,12 +909,13 @@ class e107plugin
 		if($action == 'remove')
 		{
 			// executed only if the sql file exists!
-			return mysql_query("DROP TABLE ".MPREFIX."user_extended_".$field_name) ? true : false;
+			return $sql->gen("DROP TABLE ".MPREFIX."user_extended_".$field_name) ? true : false;
 		}
 	}
 
-	function manage_userclass($action, $class_name, $class_description)
+	function manage_userclass($action, $class_name, $class_description='')
 	{
+		$this->log("Running ".__FUNCTION__);
 		global $e107;
 		$tp = e107::getParser();
 		$sql = e107::getDb();
@@ -980,6 +1043,7 @@ class e107plugin
 	// $prefType specifies the storage type - may be 'pref', 'listPref' or 'arrayPref'
 	function manage_prefs($action, $var, $prefType = 'pref', $path = '', $unEscape = FALSE)
 	{
+		$this->log("Running ".__FUNCTION__);
 		global $pref;
 		if (!is_array($var))
 			return;
@@ -1061,13 +1125,14 @@ class e107plugin
 			}
 		}
 
-		e107::getConfig('core')->setPref($pref)->save();
+		e107::getConfig('core')->setPref($pref)->save(true,false,false);
 
 		//	 e107::getConfig()->loadData($pref, false)->save(false, true);
 	}
 
 	function manage_comments($action, $comment_id)
 	{
+		$this->log("Running ".__FUNCTION__);
 		$sql = e107::getDb();
 		$tp = e107::getParser();
 
@@ -1092,6 +1157,7 @@ class e107plugin
 	//  'upgrade' and 'remove' operate on all language variants of the same table
 	function manage_tables($action, $var)
 	{
+		$this->log("Running ".__FUNCTION__);
 		$sql = e107::getDB();
 		$mes = e107::getMessage();
 		
@@ -1194,7 +1260,7 @@ class e107plugin
 		}
 
 		e107::getConfig('core')->setPref($pref);
-		e107::getConfig('core')->save();
+		e107::getConfig('core')->save(true,false,false);
 
 	}
 
@@ -1259,12 +1325,13 @@ class e107plugin
 				unset($search_prefs['comments_handlers'][$eplug_folder]);
 			}
 
-		e107::getConfig('search')->setPref($search_prefs)->save();
+	//	e107::getConfig('search')->setPref($search_prefs)->save(true,false,false);
 
 	}
 
 	function manage_notify($action, $eplug_folder)
 	{
+		$this->log("Running ".__FUNCTION__);
 		$tp = e107::getParser();
 		//	$notify_prefs = $sysprefs -> get('notify_prefs');
 		//	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
@@ -1318,7 +1385,7 @@ class e107plugin
 		//$s_prefs = $tp -> toDB($notify_prefs);
 		//$s_prefs = e107::getArrayStorage()->WriteArray($s_prefs);
 		//e107::getDb() -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
-		$notify_prefs->save(false);
+		$notify_prefs->save(false,false,false);
 	}
 
 	/**
@@ -1329,19 +1396,19 @@ class e107plugin
 	 */
 	public function rebuildUrlConfig()
 	{
-		
+		$this->log("Running ".__FUNCTION__);
 		$modules = eRouter::adminReadModules(); // get all available locations, non installed plugins will be ignored
 		$config = eRouter::adminBuildConfig(e107::getPref('url_config'), $modules); // merge with current config
 		$locations = eRouter::adminBuildLocations($modules); // rebuild locations pref
 		$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config); // rebuild aliases
 			
 		// set new values, changes should be saved outside this methods
-		e107::getConfig()
+	/*	e107::getConfig()
 			->set('url_aliases', $aliases)
 			->set('url_config', $config)
 			->set('url_modules', $modules)
 			->set('url_locations', $locations);
-				
+			*/
 		eRouter::clearCache();
 	}
 
@@ -1356,6 +1423,22 @@ class e107plugin
 		return $txt;
 	}
 
+
+	private function log($message)
+	{
+		$this->log[] = $message;
+	}
+
+	public function getLog()
+	{
+		$text = $this->log;
+
+		$this->log = array();
+
+		return $text;
+
+	}
+
 	/**
 	 * Install routine for XML file
 	 * @param mixed $id (the number of the plugin in the DB) or the path to the plugin folder. eg. 'forum'
@@ -1366,7 +1449,7 @@ class e107plugin
 	 * 			'delete_xfields' - to delete extended fields
 	 * 			'delete_ipool' - to delete icon pool entry
 	 * 			+ any defined in <pluginname>_setup.php in the uninstall_options() method.
-	 * @return void
+	 * @return bool
 	 */
 	function install_plugin_xml($id, $function = '', $options = null)
 	{	
@@ -1375,6 +1458,8 @@ class e107plugin
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 	  	$event = e107::getEvent();
+
+	  	$this->log("Running Plugin: ".$function);
 
 		$error = array(); // Array of error messages
 		$canContinue = TRUE; // Clear flag if must abort part way through
@@ -1419,16 +1504,19 @@ class e107plugin
 		if (!file_exists($path.'plugin.xml') || $function == '')
 		{
 			$error[] = EPL_ADLAN_77;
+			$this->log("Cannot find plugin.xml"); // Do NOT LAN. Debug Only.
 			$canContinue = false;
 		}
 
 		if ($canContinue && $this->parse_plugin_xml($plug['plugin_path']))
 		{
 			$plug_vars = $this->plug_vars;
+			$this->log("Vars: ".print_r($plug_vars,true));
 		}
 		else
 		{
 			$error[] = EPL_ADLAN_76;
+			$this->log("Error in plugin.xml");
 			$canContinue = FALSE;
 		}
 			
@@ -1436,13 +1524,14 @@ class e107plugin
 		$this->XmlLanguageFiles($function, varset($plug_vars['languageFiles']), 'pre'); // First of all, see if there's a language file specific to install
 
 		// Next most important, if installing or upgrading, check that any dependencies are met
-		if ($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
+		if($canContinue && ($function != 'uninstall') && isset($plug_vars['dependencies']))
 		{
 			$canContinue = $this->XmlDependencies($plug_vars['dependencies']);
 		}
 
 		if ($canContinue === false)
 		{
+			$this->log("Cannot Continue. Line:".__LINE__); // Do NOT LAN. Debug Only.
 			return false;
 		}
 
@@ -1516,7 +1605,7 @@ class e107plugin
 			$this->XmlAdminLinks($function, $plug_vars['adminLinks']);
 		}
 
-		if (varset($plug_vars['siteLinks']))
+		if (!empty($plug_vars['siteLinks']))
 		{
 			$this->XmlSiteLinks($function, $plug_vars);
 		}
@@ -1556,6 +1645,9 @@ class e107plugin
 			$this->XmlMediaCategories($function, $plug_vars);
 		}
 
+		$this->XmlMenus($this->plugFolder, $function, $plug_vars['files']);
+
+
 		$this->manage_icons($this->plugFolder, $function);
 
 		//FIXME
@@ -1589,12 +1681,17 @@ class e107plugin
 			
 			e107::getConfig('core')->setPref('plug_installed', $p_installed);
 
+
+			$this->removeCrons($plug_vars);
+
 		}
 		
-		e107::getMessage()->addDebug("updated Installed plugins pref: ".print_a($p_installed,true));
+
 		
 		
 		$this->rebuildUrlConfig();
+
+		$this->log("Updated 'plug_installed' core pref. ");
 
 		e107::getConfig('core')->save(true, false, false);
 
@@ -1612,7 +1709,7 @@ class e107plugin
 		{
 			if ($function == 'install')
 			{
-				$text = "Installation Complete.";
+				$text = EPL_ADLAN_238;
 
 				if ($this->plugConfigFile)
 				{
@@ -1644,8 +1741,94 @@ class e107plugin
 			$event->trigger('admin_plugin_refresh', $plug);
 		}
 
+		return null;
+
 	}
 
+
+	private function removeCrons($plug_vars)
+	{
+		$this->log("Running ".__METHOD__);
+
+		if(!file_exists(e_PLUGIN. $plug_vars['folder']."/e_cron.php"))
+		{
+			return false;
+		}
+
+		if(e107::getDb()->delete('cron', 'cron_function LIKE "'. $plug_vars['folder'] . '::%"'))
+		{
+			$this->log($plug_vars['folder']." crons removed successfully."); // no LANs.
+			e107::getMessage()->addDebug($plug_vars['folder']." crons removed successfully."); // No LAN necessary
+		}
+
+		return false;
+
+	}
+
+	private function XmlMenus($plug, $function, $files)
+	{
+		$this->log("Running ".__FUNCTION__);
+
+		$menuFiles = array();
+
+
+
+		foreach($files as $file)
+		{
+			if($file === 'e_menu.php')
+			{
+				continue;
+			}
+
+			if(substr($file,-9) === '_menu.php')
+			{
+				$menuFiles[] = basename($file, '.php');
+			}
+
+
+		}
+
+		$this->log("Scanning for _menu.php files - ". count($menuFiles)." found."); // Debug info, no LAN
+
+
+		if(empty($menuFiles))
+		{
+			return false;
+		}
+
+
+		switch($function)
+		{
+			case "install":
+			case "refresh":
+
+				$this->log("Adding menus to menus table."); // NO LANS - debug info!
+
+				foreach($menuFiles as $menu)
+				{
+					if(!e107::getMenu()->add($plug, $menu))
+					{
+						$this->log("Couldn't add ".$menu." to menus table."); // NO LAN
+					}
+				}
+
+				break;
+
+			case "uninstall":
+
+				$this->log("Removing menus from menus table."); // No Lan
+
+				if(!e107::getMenu()->remove($plug))
+				{
+					$this->log("Couldn't remove menus for plugin: ".$plug); // NO LAN
+				}
+
+				break;
+
+		}
+
+		return null;
+	}
 
 	/**
 	 * Parse {plugin}_sql.php file and install/upgrade/uninstall tables.
@@ -1655,18 +1838,20 @@ class e107plugin
 	 */
 	function XmlTables($function, $plug, $options = array())
 	{
+		$this->log("Running ".__METHOD__);
 
 		$sqlFile = e_PLUGIN.$plug['plugin_path'].'/'.str_replace("_menu","", $plug['plugin_path'])."_sql.php";
 
 		if(!file_exists($sqlFile)) // No File, so return;
 		{
-			e107::getMessage()->addDebug("No SQL File Found at: ".$sqlFile);
+			$this->log("No SQL File Found at: ".$sqlFile);
 			return;
 		}
 
 		if(!is_readable($sqlFile)) // File Can't be read.
 		{
 			e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
+			$this->log("Can't read SQL definition: ".$sqlFile);
 			return; 
 		}
 		
@@ -1682,6 +1867,7 @@ class e107plugin
 			if(empty($contents))
 			{
 				e107::getMessage()->addError("Can't read SQL definition: ".$sqlFile);
+				$this->log("Can't read SQL definition: ".$sqlFile);
 				return;
 			}
 
@@ -1696,7 +1882,7 @@ class e107plugin
 						$query .= $tableData['data'][$k];
 						$query .= "\n) ENGINE=". vartrue($tableData['engine'][$k],"InnoDB")." DEFAULT CHARSET=utf8 ";
 
-						$txt = "Adding Table: <b>{$v}</b> ";
+						$txt = EPL_ADLAN_239." <b>{$v}</b> ";
 						$status = $sql->db_Query($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 						break;
 
@@ -1704,7 +1890,7 @@ class e107plugin
 						if (!empty($options['delete_tables']))
 						{
 							$query = "DROP TABLE  `".MPREFIX.$v."`; ";
-							$txt = "Removing Table: {$v} <br />";
+							$txt = EPL_ADLAN_240." <b> {$v} </b><br />";
 							$status = $sql->db_Query_all($query) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						}
@@ -1740,77 +1926,178 @@ class e107plugin
 			
 						
 	}
-				
-			
-		
-	
-	
-	
-	/**
-	 * Process XML Tag <dependencies> (deprecated 'depend' which is a brand of adult diapers)
-	 * @param array $tag
-	 * @return boolean
-	 */
-	function XmlDependencies($tag)
-	{
-		$canContinue = TRUE;
-		$mes = e107::getMessage();
-		$error = array();
 
-		foreach ($tag as $dt => $dv)
+
+	/**
+	 * Check if plugin is being used by another plugin before uninstalling it.
+	 *
+	 * @param array $plugin
+	 *  Plugin name.
+	 *
+	 * @return boolean
+	 *  TRUE if plugin is used, otherwise FALSE.
+	 */
+	function isUsedByAnotherPlugin($plugin)
+	{
+		$this->log("Running ".__FUNCTION__);
+		$db = e107::getDb();
+		$tp = e107::getParser();
+		$mes = e107::getMessage();
+		$xml = e107::getXml();
+
+		$pluginIsUsed = false;
+		$enPlugs = array();
+		$usedBy = array();
+
+		// Get list of enabled plugins.
+		$db->select("plugin", "*", "plugin_id !='' order by plugin_path ASC");
+		while($row = $db->fetch())
 		{
-			if (isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+			if($row['plugin_installflag'] == 1)
 			{
-				//			  echo "Check {$dt} dependency: {$dv['@attributes']['name']} version {$dv['@attributes']['min_version']}<br />";
-				switch ($dt)
+				$enPlugs[] = $row['plugin_path'];
+			}
+		}
+
+		foreach($enPlugs as $enPlug)
+		{
+			if(!file_exists(e_PLUGIN . $enPlug . '/plugin.xml'))
+			{
+				continue;
+			}
+
+			$plugInfo = $xml->loadXMLfile(e_PLUGIN . $enPlug . '/plugin.xml', 'advanced');
+
+			if($plugInfo === false)
+			{
+				continue;
+			}
+
+			if (!isset($plugInfo['dependencies']))
+			{
+				continue;
+			}
+
+			// FIXME too many nested foreach, need refactoring.
+			foreach($plugInfo['dependencies'] as $dt => $da)
+			{
+				foreach($da as $dv)
 				{
-					case 'plugin':
-						if (!isset($pref['plug_installed'][$dv['@attributes']['name']]))
-						{ // Plugin not installed
-							$canContinue = FALSE;
-							$error[] = EPL_ADLAN_70.$dv['@attributes']['name'];
-						}
-						elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $pref['plug_installed'][$dv['@attributes']['name']], '<=') === FALSE))
+					if(isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+					{
+						switch($dt)
 						{
-							$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
+							case 'plugin':
+								if ($dv['@attributes']['name'] == $plugin)
+								{
+									$usedBy[] = $enPlug;
+								}
+								break;
 						}
-						break;
-					case 'extension':
-						if (!extension_loaded($dv['@attributes']['name']))
-						{
-							$canContinue = FALSE;
-							$error[] = EPL_ADLAN_73.$dv['@attributes']['name'];
-						}
-						elseif (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_71.$dv['@attributes']['name'].EPL_ADLAN_72.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					case 'php': // all should be lowercase
-						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_74.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					case 'mysql': // all should be lowercase
-						if (isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], e107::getDb()->mySqlServerInfo(), '<=') === FALSE))
-						{
-							$error[] = EPL_ADLAN_75.$dv['@attributes']['min_version'];
-							$canContinue = FALSE;
-						}
-						break;
-					default:
-						echo "Unknown dependency: {$dt}<br />";
+					}
 				}
 			}
 		}
 
-		if (count($error))
+		if(count($usedBy))
 		{
-			$text = '<b>'.LAN_INSTALL_FAIL.'</b><br />'.implode('<br />', $error);
+			$pluginIsUsed = true;
+			$text = '<b>' . LAN_UNINSTALL_FAIL . '</b><br />';
+			$text .= $tp->lanVars(LAN_PLUGIN_IS_USED, array('x' => $plugin), true) . ' ';
+			$text .= implode(', ', $usedBy);
+			$mes->addError($text);
+		}
+
+		return $pluginIsUsed;
+	}
+
+	/**
+	 * Process XML Tag <dependencies> (deprecated 'depend' which is a brand of adult diapers)
+	 *
+	 * @param array $tags
+	 *  Tags (in <dependencies> tag) from XML file.
+	 *
+	 * @return boolean
+	 */
+	function XmlDependencies($tags)
+	{
+		$this->log("Running ".__METHOD__);
+		$db = e107::getDb();
+		$mes = e107::getMessage();
+
+		$canContinue = true;
+		$enabledPlugins = array();
+		$error = array();
+
+		// Get list of enabled plugins.
+		$db->select("plugin", "*", "plugin_id !='' order by plugin_path ASC");
+		while($row = $db->fetch())
+		{
+			if($row['plugin_installflag'] == 1)
+			{
+				$enabledPlugins[$row['plugin_path']] = $row['plugin_version'];
+			}
+		}
+
+		// FIXME too many nested foreach, need refactoring.
+		foreach($tags as $dt => $da)
+		{
+			foreach($da as $dv)
+			{
+				if(isset($dv['@attributes']) && isset($dv['@attributes']['name']))
+				{
+					switch($dt)
+					{
+						case 'plugin':
+							if(!isset($enabledPlugins[$dv['@attributes']['name']]))
+							{ // Plugin not installed
+								$canContinue = false;
+								$error[] = EPL_ADLAN_70 . $dv['@attributes']['name'];
+							}
+							elseif(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $enabledPlugins[$dv['@attributes']['name']], '<=') === false))
+							{
+								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
+								$canContinue = false;
+							}
+							break;
+						case 'extension':
+							if(!extension_loaded($dv['@attributes']['name']))
+							{
+								$canContinue = false;
+								$error[] = EPL_ADLAN_73 . $dv['@attributes']['name'];
+							}
+							elseif(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion($dv['@attributes']['name']), '<=') === false))
+							{
+								$error[] = EPL_ADLAN_71 . $dv['@attributes']['name'] . EPL_ADLAN_72 . $dv['@attributes']['min_version'];
+								$canContinue = false;
+							}
+							break;
+						case 'php': // all should be lowercase
+							if(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], phpversion(), '<=') === false))
+							{
+								$error[] = EPL_ADLAN_74 . $dv['@attributes']['min_version'];
+								$canContinue = false;
+							}
+							break;
+						case 'mysql': // all should be lowercase
+							if(isset($dv['@attributes']['min_version']) && (version_compare($dv['@attributes']['min_version'], $db->mySqlServerInfo(), '<=') === false)
+							)
+							{
+								$error[] = EPL_ADLAN_75 . $dv['@attributes']['min_version'];
+								$canContinue = false;
+							}
+							break;
+						default:
+							// TODO lan
+							echo "Unknown dependency: {$dt}<br />";
+					}
+				}
+			}
+		}
+
+		if(count($error))
+		{
+			$text = '<b>' . LAN_INSTALL_FAIL . '</b><br />' . implode('<br />', $error);
 			$mes->addError($text);
 		}
 
@@ -1900,6 +2187,7 @@ class e107plugin
 	 */
 	function XmlLanguageFiles($function, $tag='', $when = '')
 	{
+		$this->log("Running ".__FUNCTION__);
 		$core = e107::getConfig('core');
 	
 		$updated = false;
@@ -1958,7 +2246,8 @@ class e107plugin
 	
 		if($updated === true)
 		{
-			$core->save();	//FIXME do this quietly without an s-message
+			$this->log("Prefs saved");
+			$core->save(true,false,false);	//FIXME do this quietly without an s-message
 		}
 	
 	}
@@ -1971,14 +2260,21 @@ class e107plugin
 	 */
 	function XmlSiteLinks($function, $plug_vars)
 	{
+		$this->log("Running ".__FUNCTION__);
+
 		$mes = e107::getMessage();
 		
 		if(vartrue($this->options['nolinks']))
 		{
 			return;	
 		}
-		
-	//	print_a($plug_vars); 
+
+		if($function == 'refresh')
+		{
+			$mes->addDebug("Checking Plugin Site-links");
+			$mes->addDebug(print_a($plug_vars['siteLinks'],true));
+		}
+
 		
 		$array = $plug_vars['siteLinks']; 
 
@@ -2003,31 +2299,37 @@ class e107plugin
 			{
 				case 'upgrade':
 				case 'install':
+				case 'refresh':
 
 					if (!$remove) // Add any non-deprecated link
 					{
+
+						if($function == 'refresh')
+						{
+							$perm = 'nobody';
+
+						}
+
 						$result = $this->manage_link('add', $url, $linkName, $perm, $options);
 						if($result !== NULL)
 						{
 							$status = ($result) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-							$mes->add("Adding Link: {$linkName} with url [{$url}] and perm {$perm} ", $status); 
+							$mes->add(EPL_ADLAN_233." {$linkName} URL: [{$url}] ".EPL_ADLAN_252." {$perm} ", $status);
 						}					
 					}
 
 					if ($function == 'upgrade' && $remove) //remove inactive links on upgrade
 					{
 						$status = ($this->manage_link('remove', $url, $linkName,false, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
+						$mes->add(EPL_ADLAN_234." {$linkName} URL: [{$url}]", $status);
 					}
 					break;
 
-				case 'refresh': // Probably best to leave well alone
-					break;
 
 				case 'uninstall': //remove all links
 
 					$status = ($this->manage_link('remove', $url, $linkName, $perm, $options)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-					$mes->add("Removing Link: {$linkName} with url [{$url}]", $status);
+					$mes->add(EPL_ADLAN_234." {$linkName} URL: [{$url}]", $status);
 					break;
 			}
 		}
@@ -2039,6 +2341,7 @@ class e107plugin
 	 */
 	function XmlAdminLinks($function, $tag)
 	{
+		$this->log("Running ".__FUNCTION__);
 		foreach ($tag['link'] as $link)
 		{
 			$attrib = $link['@attributes'];
@@ -2082,6 +2385,7 @@ class e107plugin
 	// Only 1 category per file-type allowed. ie. 1 for images, 1 for files. 
 	function XmlMediaCategories($function, $tag)
 	{
+		$this->log("Running ".__FUNCTION__);
 		$mes = e107::getMessage();
 	//	print_a($tag);
 		
@@ -2092,8 +2396,11 @@ class e107plugin
 		//print_a($tag);
 		switch ($function)
 		{
-			case 'install': 
+			case 'install':
+			case 'refresh':
 				$c = 1;
+				$i = array('file'=>1, 'image'=>1, 'video'=>1);
+
 				foreach($tag['mediaCategories']['category'] as $v)
 				{
 					$type = $v['@attributes']['type'];
@@ -2103,33 +2410,42 @@ class e107plugin
 						continue; 	
 					}
 					
-					if($c == 4 || ($prevType == $type))
+					if($c == 4)
 					{
-						$mes->addDebug("Only 3 Media Categories are permitted during install. One for images and one for files.");
+						$mes->addDebug(EPL_ADLAN_244);
 						break;
 					}
 					
-					$prevType = $type;
+				//	$prevType = $type;
 									
 					$data['owner'] 		= $folder;
 					$data['image']		= vartrue($v['@attributes']['image']);
-					$data['category'] 	= $folder."_".$type;	
+					$data['category'] 	= $folder."_".$type;
+
+					if($i[$type] > 1)
+					{
+						$data['category'] 	.= "_".$i[$type];
+					}
+
 					$data['title'] 		= $v['@value'];
 					$data['sef'] 		= vartrue($v['@attributes']['sef']);
 				//	$data['type'] = $v['@attributes']['type']; //TODO
 					$data['class'] 		= $this->getPerm(varset($v['@attributes']['perm']), 'member');
 					
 					$status = e107::getMedia()->createCategory($data) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-					$mes->add("Adding Media Category: {$data['category']}", $status);				
+					$message = str_replace('[x]', $data['category'], EPL_ADLAN_245);
+					$mes->add($message, $status); 				
 					e107::getMedia()->import($data['category'],e_PLUGIN.$folder, false,'min-size=20000'); 
-					$c++;					
+					$c++;
+					$i[$type]++;
 				}	
 			
 			break;
 			
 			case 'uninstall': // Probably best to leave well alone
 				$status = e107::getMedia()->deleteAllCategories($folder)? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-				$mes->add("Deleting All Media Categories owned by : {$folder}", $status);	
+				$message = str_replace('[x]', $folder, EPL_ADLAN_246);		
+				$mes->add($message, $status);	
 			break;
 		
 		
@@ -2146,15 +2462,15 @@ class e107plugin
 	 */
 	function XmlBBcodes($function, $tag)
 	{
-		$mes = e107::getMessage();
-		//print_a($tag);
+		$this->log("Running ".__FUNCTION__);
+
 		switch ($function)
 		{
 			case 'install': // Probably best to leave well alone
 				if(vartrue($tag['bbcodes']['@attributes']['imgResize']))
 				{
 					e107::getConfig('core')->setPref('resize_dimensions/'.$this->plugFolder."-bbcode", array('w'=>300,'h'=>300));
-					$mes->debug('Adding imageResize for: '.$this->plugFolder);
+					$this->log('Adding imageResize for: '.$this->plugFolder);
 				}		
 			break;
 			
@@ -2164,7 +2480,7 @@ class e107plugin
 					//e107::getConfig('core')->removePref('resize_dimensions/'.$this->plugFolder);
 					//e107::getConfig('core')->removePref('e_imageresize/'.$this->plugFolder);
 					e107::getConfig('core')->removePref('resize_dimensions/'.$this->plugFolder."-bbcode");
-					$mes->debug('Removing imageResize for: '.$this->plugFolder."-bbcode");
+					$this->log('Removing imageResize for: '.$this->plugFolder."-bbcode");
 				}
 			
 			break;	
@@ -2184,6 +2500,7 @@ class e107plugin
 	function XmlUserClasses($function, $array)
 	{
 		$mes = e107::getMessage();
+		$this->log("Running ".__FUNCTION__);
 
 		foreach ($array['class'] as $uclass)
 		{
@@ -2243,6 +2560,7 @@ class e107plugin
 	 */
 	function XmlExtendedFields($function, $array)
 	{
+		$this->log("Running ".__FUNCTION__);
 		$mes = e107::getMessage();
 		$this->setUe();
 
@@ -2264,21 +2582,21 @@ class e107plugin
 			switch ($function)
 			{
 				case 'install': // Add all active extended fields
-					case 'upgrade':
+				case 'upgrade':
 
 					if (!$remove)
 					{
 						//$status = $this->manage_extended_field('add', $name, $type, $attrib['default'], $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
 
 						$status = $this->manage_extended_field('add', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Adding Extended Field: '.$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_249 .$name.' ... ', $status);
 					}
 
 					if ($function == 'upgrade' && $remove) //If upgrading, removing any inactive extended fields
 
 					{
 						$status = $this->manage_extended_field('remove', $name, $attrib, $source) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_250 .$name.' ... ', $status);
 					}
 					break;
 
@@ -2287,11 +2605,11 @@ class e107plugin
 					if (vartrue($this->unInstallOpts['delete_xfields'], FALSE))
 					{
 						$status = ($this->manage_extended_field('remove', $name, $attrib, $source)) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
-						$mes->add('Removing Extended Field: '.$name.' ... ', $status);
+						$mes->add(EPL_ADLAN_250 .$name.' ... ', $status);
 					}
 					else
 					{
-						$mes->add('Extended Field: '.$name.' left in place', E_MESSAGE_SUCCESS);
+						$mes->add(EPL_ADLAN_251 .$name, E_MESSAGE_SUCCESS);
 					}
 					break;
 			}
@@ -2308,7 +2626,7 @@ class e107plugin
 	 */
 	function XmlPrefs($mode = 'core', $function, $prefArray)
 	{
-
+		$this->log("Running ".__FUNCTION__);
 		//XXX Could also be used for theme prefs.. perhaps this function should be moved elsewhere?
 		//TODO array support for prefs. <key>? or array() as used in xml site export?
 
@@ -2345,7 +2663,7 @@ class e107plugin
 					$ret = $config->add($key, $value);
 					if($ret->data_has_changed == TRUE)
 					{
-						$mes->addSuccess("Adding Pref: ".$key);	
+						$mes->addSuccess(EPL_ADLAN_241, $key);	
 					}								
 					break;
 
@@ -2355,19 +2673,20 @@ class e107plugin
 
 					{
 						$config->remove($key, $value);
-						$mes->addSuccess("Removing Pref: ".$key);
+						$mes->addSuccess(EPL_ADLAN_242, $key);
 					}
 					else
 					{
 						$config->update($key, $value);
-						$mes->addSuccess("Updating Pref: ".$key);
+						$mes->addSuccess(EPL_ADLAN_243, $key);
 					}
 
 					break;
 
 				case 'uninstall':
 					$config->remove($key, $value);
-					$mes->addSuccess("Removing Pref: ".$key);
+					$mes->addSuccess(EPL_ADLAN_242, $key);
+					$this->log("Removing Pref: ".$key);
 					break;
 			}
 		}
@@ -2471,7 +2790,8 @@ class e107plugin
 		return FALSE; // IMPORTANT.
 	}
 
-	// DEPRECATED - See XMLPrefs();
+/* @deprecated
+	// @deprecated - See XMLPrefs();
 	function parse_prefs($pref_array, $mode = 'simple')
 	{
 		$ret = array();
@@ -2509,12 +2829,16 @@ class e107plugin
 		return $ret;
 	}
 
+*/
+
 	function install_plugin_php($id)
 	{
 		$function = 'install';
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 		$mySQLprefix = MPREFIX; // Fix for some plugin.php files.
+
+		$this->log("Running Legacy Plugin: ".$function);
 
 		if(is_array($id))
 		{
@@ -2533,6 +2857,9 @@ class e107plugin
 		$this->parse_plugin_php($plug['plugin_path']);
 		$plug_vars = $this->plug_vars;
 
+		$eplug_folder = '';
+		$text = '';
+
 		include($_path.'plugin.php');
 
 		$func = $eplug_folder.'_install';
@@ -2541,16 +2868,18 @@ class e107plugin
 			$text .= call_user_func($func);
 		}
 
-		if (is_array($eplug_tables))
+		if(!empty($eplug_tables) && is_array($eplug_tables))
 		{
 			$result = $this->manage_tables('add', $eplug_tables);
-			if ($result === TRUE)
+			if ($result === true)
 			{
 				$text .= EPL_ADLAN_19.'<br />';
+				$this->log("Tables added");
 				$mes->addSuccess(EPL_ADLAN_19);
 			}
 			else
 			{
+				$this->log("Unable to create tables for this plugin."); // NO LANS - debug info!
 				$mes->addError(EPL_ADLAN_18);
 
 			}
@@ -2563,18 +2892,19 @@ class e107plugin
 		 }*/
 
 		if (varset($plug_vars['mainPrefs'])) //Core pref items <mainPrefs>
-
 		{
 			$this->XmlPrefs('core', $function, $plug_vars['mainPrefs']);
-			$text .= EPL_ADLAN_8.'<br />';
+			$this->log("Prefs added");
+			//$text .= EPL_ADLAN_8.'<br />';
 		}
 
-		if (is_array($eplug_array_pref))
+		if (!empty($eplug_array_pref) && is_array($eplug_array_pref))
 		{
 			foreach ($eplug_array_pref as $key => $val)
 			{
 				$this->manage_plugin_prefs('add', $key, $eplug_folder, $val);
 			}
+			$this->log("Adding Prefs: ". print_r($eplug_array_pref, true));
 		}
 
 		if (varset($plug_vars['siteLinks']))
@@ -2591,6 +2921,8 @@ class e107plugin
 
 		$this->manage_notify('add', $eplug_folder);
 
+		$this->XmlMenus($plug_vars['folder'], $function, $plug_vars['files']);
+
 		$eplug_addons = $this->getAddons($eplug_folder);
 
 		$sql->update('plugin', "plugin_installflag = 1, plugin_addons = '{$eplug_addons}' WHERE plugin_id = ".(int) $id);
@@ -2604,8 +2936,11 @@ class e107plugin
 		
 		e107::getConfig('core')->save();
 
+		$this->save_addon_prefs('update');
+
 		$text .= (isset($eplug_done) ? "<br />{$eplug_done}" : "<br />".LAN_INSTALL_SUCCESSFUL);
-		if ($eplug_conffile)
+
+		if (!empty($eplug_conffile))
 		{
 			$text .= "<br /><a class='btn btn-primary' href='".e_PLUGIN.$eplug_folder."/".$eplug_conffile."'>".LAN_CONFIGURE."</a>";
 		}
@@ -2636,7 +2971,7 @@ class e107plugin
 	{
 		if(empty($dir))
 		{
-			return;	
+			return null;
 		}	
 		
 		global $sysprefs, $mySQLprefix;
@@ -2651,21 +2986,24 @@ class e107plugin
 		
 		if(!is_array($plug))
 		{
-			return "'{$id}' is missing from the plugin db table";	
+			return "'{$dir}' is missing from the plugin db table";
 		}
 		
 		$_path = e_PLUGIN.$plug['plugin_path'].'/';
 		
 		if (file_exists($_path.'plugin.xml'))
 		{
-			$text = $this->install_plugin_xml($plug, 'refresh');
+			$this->install_plugin_xml($plug, 'refresh');
 		}
 		else
 		{
+			e107::getMessage()->addDebug("Missing xml file at : ".$_path."plugin.xml");
 			$text = EPL_ADLAN_21;
 			
 		}
-		
+
+		e107::getMessage()->addDebug("Running Refresh of ".$_path);
+
 		$this->save_addon_prefs();
 		
 		return $text;
@@ -2681,6 +3019,8 @@ class e107plugin
 	function install($id, $options = array())
 	{
 		global $sysprefs, $mySQLprefix;
+		$this->log("Running ".__METHOD__);
+
 		$ns = e107::getRender();
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -2698,12 +3038,13 @@ class e107plugin
 			return "'{$id}' is missing from the plugin db table";	
 		}
 		
-		$plug['plug_action'] = 'install';
+		$plug['plug_action'] = !empty($options['function']) ? $options['function'] : 'install';
 
 		if (!vartrue($plug['plugin_installflag']))
 		{
 			$_path = e_PLUGIN.$plug['plugin_path'].'/';
-			
+
+			$this->log("Installing: ".$plug['plugin_path']);
 			
 			if (file_exists($_path.'plugin.xml'))
 			{
@@ -2720,8 +3061,169 @@ class e107plugin
 			$text = EPL_ADLAN_21;
 			
 		}
+
+		$this->log("Installation completed"); // no LANs
 		return $text;
 	}
+
+
+
+	public function uninstall($id, $options = array())
+	{
+		$pref = e107::getPref();
+		$admin_log = e107::getAdminLog();
+		$plugin = e107::getPlugin();
+		$tp = e107::getParser();
+
+		$sql = e107::getDb();
+		$plug = $this->getinfo($id);
+
+		$this->log("Uninstalling :".$plug['plugin_path']." with options: ".print_r($options, true));
+
+		// Check if plugin is being used by another plugin before uninstalling it.
+		if(isset($plug['plugin_path']))
+		{
+			if ($this->isUsedByAnotherPlugin($plug['plugin_path']))
+			{
+				$this->action = 'installed'; // Render plugin list.
+				return false;
+			}
+		}
+
+			$text = '';
+			//Uninstall Plugin
+			if ($plug['plugin_installflag'] == true )
+			{
+				$eplug_folder = $plug['plugin_path'];
+				$_path = e_PLUGIN.$plug['plugin_path'].'/';
+
+				if(file_exists($_path.'plugin.xml'))
+				{
+					unset($_POST['uninstall_confirm']);
+					$this->install_plugin_xml($plug, 'uninstall', $options); //$_POST must be used.
+				}
+				else
+				{	// Deprecated - plugin uses plugin.php
+					$eplug_table_names = null;
+					$eplug_prefs = null;
+					$eplug_comment_ids= null;
+					$eplug_array_pref= null;
+					$eplug_menu_name = null;
+					$eplug_link = null;
+					$eplug_link_url = null;
+					$eplug_link_name = null;
+					$eplug_userclass = null;
+					$eplug_version = null;
+
+					include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+
+					$func = $eplug_folder.'_uninstall';
+					if (function_exists($func))
+					{
+						$text .= call_user_func($func);
+					}
+
+					if(!empty($options['delete_tables']))
+					{
+
+						if (is_array($eplug_table_names))
+						{
+							$result = $this->manage_tables('remove', $eplug_table_names);
+							if ($result !== TRUE)
+							{
+								$text .= EPL_ADLAN_27.' <b>'.MPREFIX.$result.'</b> - '.EPL_ADLAN_30.'<br />';
+								$this->log("Unable to delete table."); // No LANS
+							}
+							else
+							{
+								$text .= EPL_ADLAN_28."<br />";
+								$this->log("Deleting tables."); // NO LANS
+							}
+						}
+					}
+					else
+					{
+						$text .= EPL_ADLAN_49."<br />";
+						$this->log("Tables left intact by request."); // No LANS
+					}
+
+					if (is_array($eplug_prefs))
+					{
+						$this->manage_prefs('remove', $eplug_prefs);
+						$text .= EPL_ADLAN_29."<br />";
+					}
+
+					if (is_array($eplug_comment_ids))
+					{
+						$text .= ($this->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
+					}
+
+					if (is_array($eplug_array_pref))
+					{
+						foreach($eplug_array_pref as $key => $val)
+						{
+							$this->manage_plugin_prefs('remove', $key, $eplug_folder, $val);
+						}
+					}
+/*
+					if ($eplug_menu_name)
+					{
+						$sql->delete('menus', "menu_name='{$eplug_menu_name}' ");
+					}*/
+					$folderFiles = scandir(e_PLUGIN.$plug['plugin_path']);
+					$this->XmlMenus($eplug_folder,'uninstall',$folderFiles);
+
+					if ($eplug_link)
+					{
+						$this->manage_link('remove', $eplug_link_url, $eplug_link_name);
+					}
+
+					if ($eplug_userclass)
+					{
+						$this->manage_userclass('remove', $eplug_userclass);
+					}
+
+					$sql->update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_path='{$eplug_folder}' ");
+					$this->manage_search('remove', $eplug_folder);
+
+					$this->manage_notify('remove', $eplug_folder);
+
+					// it's done inside install_plugin_xml(), required only here
+					if (isset($pref['plug_installed'][$plug['plugin_path']]))
+					{
+						unset($pref['plug_installed'][$plug['plugin_path']]);
+					}
+					e107::getConfig('core')->setPref($pref);
+					$this->rebuildUrlConfig();
+					e107::getConfig('core')->save(false,true,false);
+				}
+
+				$logInfo = deftrue($plug['plugin_name'],$plug['plugin_name']). " v".$plug['plugin_version']." ({e_PLUGIN}".$plug['plugin_path'].")";
+				e107::getLog()->add('PLUGMAN_03', $logInfo, E_LOG_INFORMATIVE, '');
+			}
+
+			if(!empty($_POST['delete_files'])  && ($plug['plugin_installflag'] == true))
+			{
+				if(!empty($eplug_folder))
+				{
+					$result = e107::getFile()->rmtree(e_PLUGIN.$eplug_folder);
+					$text .= ($result ? '<br />'.EPL_ADLAN_86.e_PLUGIN.$eplug_folder : '<br />'.EPL_ADLAN_87.'<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
+				}
+			}
+			else
+			{
+				$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
+			}
+
+			$this->save_addon_prefs('update');
+
+		$this->log("Uninstall completed");
+
+		return $text;
+	}
+
+
+
 
 
 	/*
@@ -2867,6 +3369,26 @@ class e107plugin
 		return;
 	}
 
+	public function getAddonsList()
+	{
+		$list = array_diff($this->plugin_addons,$this->plugin_addons_deprecated);
+		sort($list);
+
+		return $list;
+	}
+
+	public function getAddonsDiz($v)
+	{
+		if(!empty($this->plugin_addons_diz[$v]))
+		{
+			return $this->plugin_addons_diz[$v];
+		}
+
+		return null;
+
+	}
+
+
 	// return a list of available plugin addons for the specified plugin. e_xxx etc.
 	// $debug = TRUE - prints diagnostics
 	// $debug = 'check' - checks each file found for php tags - prints 'pass' or 'fail'
@@ -2876,6 +3398,7 @@ class e107plugin
 		$mes = e107::getMessage();
 
 		$p_addons = array();
+
 
 		foreach ($this->plugin_addons as $addon) //Find exact matches only.
 		{
@@ -3044,22 +3567,23 @@ class e107plugin
 	}
 	
 	// return the Icon of the 
-	function getIcon($plugName='',$size=32)
+	function getIcon($plugName='',$size=32, $defaultOverride=false)
 	{
-		if(!$plugName) return;
+		if(!$plugName) return false;
 		
 		$tp = e107::getParser();
 		
 		if(!isset($this->parsed_plugin[$plugName]))
 		{
-			$plug_vars = $this->parse_plugin($plugName);	
+			 $this->parse_plugin($plugName,true);
+
 		}
-		else
-		{
-			$plug_vars = $this->parsed_plugin[$plugName];	
-		}
+
+		$plug_vars = $this->parsed_plugin[$plugName];
+
 			
-		//return print_r($plug_vars,TRUE);	
+		//return print_r($plug_vars,TRUE);
+
 			
 		$sizeArray = array(32=>'icon', 16=>'iconSmall');
 		$default = ($size == 32) ? $tp->toGlyph('e-cat_plugins-32') : "<img class='icon S16' src='".E_16_CAT_PLUG."' alt='' />"; 
@@ -3067,7 +3591,13 @@ class e107plugin
 		
 		$icon_src = e_PLUGIN.$plugName."/".$plug_vars['administration'][$sz];
 		$plugin_icon = $plug_vars['administration'][$sz] ? "<img src='{$icon_src}' alt='' class='icon S".intval($size)."' />" : $default;
-     	
+
+     	if($defaultOverride !== false && $default === $plugin_icon)
+        {
+            return $defaultOverride;
+        }
+
+
 		if(!$plugin_icon)
 		{
 		//	
@@ -3082,6 +3612,9 @@ class e107plugin
 	function parse_plugin_php($plugName)
 	{
 		$tp = e107::getParser();
+		$sql = e107::getDb(); // in case it is used inside plugin.php
+
+		$PLUGINS_FOLDER = '{e_PLUGIN}'; // Could be used in plugin.php file.
 
 		$eplug_conffile     = null;
 		$eplug_table_names  = null;
@@ -3094,11 +3627,12 @@ class e107plugin
 		$eplug_icon_small   = null;
 
 
+		ob_start();
 		if (include(e_PLUGIN.$plugName.'/plugin.php'))
 		{
 			//$mes->add("Loading ".e_PLUGIN.$plugName.'/plugin.php', E_MESSAGE_DEBUG);
-			}
-
+		}
+		ob_end_clean();
 		$ret = array();
 
 		//		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
@@ -3141,7 +3675,7 @@ class e107plugin
 		$ret['administration']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
 		$ret['administration']['configFile'] = varset($eplug_conffile);
 
-		if (varset($eplug_conffile))
+		if(varset($eplug_conffile))
 		{
 			$ret['adminLinks']['link'][0]['@attributes']['url'] = varset($eplug_conffile);
 			$ret['adminLinks']['link'][0]['@attributes']['description'] = LAN_CONFIGURE;
@@ -3149,22 +3683,26 @@ class e107plugin
 			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
 			$ret['adminLinks']['link'][0]['@attributes']['primary'] = 'true';
 		}
-		if (vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
+		if(vartrue($eplug_link) && varset($eplug_link_name) && varset($eplug_link_url))
 		{
 			$ret['siteLinks']['link'][0]['@attributes']['url'] = $tp->createConstants($eplug_link_url, 1);
 			$ret['siteLinks']['link'][0]['@attributes']['perm'] = varset($eplug_link_perms);
 			$ret['siteLinks']['link'][0]['@value'] = varset($eplug_link_name);
 		}
 
-		if (vartrue($eplug_userclass) && vartrue($eplug_userclass_description))
+		if(vartrue($eplug_userclass) && vartrue($eplug_userclass_description))
 		{
 			$ret['userClasses']['class'][0]['@attributes']['name'] = $eplug_userclass;
 			$ret['userClasses']['class'][0]['@attributes']['description'] = $eplug_userclass_description;
 		}
 
+		$ret['files'] = preg_grep('/^([^.])/', scandir(e_PLUGIN.$plugName,SCANDIR_SORT_ASCENDING));
+
+
 		// Set this key so we know the vars came from a plugin.php file
 		// $ret['plugin_php'] = true; // Should no longer be needed. 
 		$this->plug_vars = $ret;
+
 
 		return true;
 	}
@@ -3190,8 +3728,10 @@ class e107plugin
 			return FALSE;
 		}
 
-		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
+		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
+		$this->plug_vars['files'] = preg_grep('/^([^.])/', scandir(e_PLUGIN.$plugName,SCANDIR_SORT_ASCENDING));
+
 
 		if(varset($this->plug_vars['description']))
 		{

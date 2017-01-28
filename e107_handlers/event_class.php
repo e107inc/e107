@@ -29,12 +29,42 @@ class e107_event
 		'fileupload'	=> 'user_file_upload',
 		'newspost'		=> 'admin_news_created',
 		'newsupd'		=> 'admin_news_updated',
-		'newsdel'		=> 'admin_news_deleted'
+		'newsdel'		=> 'admin_news_deleted',
+		'userdatachanged' => 'user_profile_edit'
 	);
 
 
 	function __construct()
 	{
+
+
+
+	}
+
+
+	public function init()
+	{
+
+		$temp = e107::getAddonConfig('e_event');
+
+		if(!empty($temp))
+		{
+			foreach($temp as $plug=>$data)
+			{
+				foreach($data as $event)
+				{
+					$name = $event['name'];
+					$class = array($plug."_event", $event['function']);
+
+					if(!empty($name) && !empty($event['function']))
+					{
+						$this->register($name, $class);
+					}
+				}
+
+			}
+
+		}
 
 
 	}
@@ -55,7 +85,8 @@ class e107_event
 				'user_xup_signup'			=> 'User social signup',
 				'user_ban_flood'			=> NS_LAN_2,
 				'user_ban_failed_login'		=> 'IP banned for multiple failed login attempts',
-				'user_profile_display'      => "User views profile"
+				'user_profile_display'      => "User views profile",
+				'user_profile_edit'         => "User edits profile"
 
 			),
 

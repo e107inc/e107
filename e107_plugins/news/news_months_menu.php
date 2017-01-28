@@ -46,7 +46,7 @@ if(false === $cached)
 
 		
 //	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
-	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/English.php');
+	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/'.e_LANGUAGE.'.php');
 
 	$tp = e107::getParser();
 	$sql = e107::getDb();
@@ -87,12 +87,12 @@ if(false === $cached)
 	$month_links = array();
 	
 	$sql->db_Mark_Time('News months menu');
-	if(!$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
+	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
 	{
 		e107::getCache()->set($cString, '');
 		return '';
 	}
-	while ($news = $sql->db_Fetch())
+	while ($news = $sql->fetch())
 	{	
 		$xmonth = date("n", $news['news_datestamp']);
 		if ((!isset($month_links[$xmonth]) || !$month_links[$xmonth]))
@@ -102,7 +102,10 @@ if(false === $cached)
 		}
 		$xmonth_cnt[$xmonth]++;
 	}
-	
+
+
+	e107::getDebug()->log($month_links);
+
 	// go over the link array and create the option fields
 	$menu_text = array();
 	$template = e107::getTemplate('news', 'news_menu', 'months');
@@ -119,9 +122,18 @@ if(false === $cached)
 		$menu_text[] = $tp->simpleParse($template['item'], $vars);
 	}
 	$cached = $template['start'].implode(varset($template['separator'],''), $menu_text).$template['end'];
+
+	$ns->setContent('text', $cached);
+
 	if($cached) 
 	{
-		if(!$parms['showarchive']) $cached .= '<ul class="nav nav-list e-menu-link news-menu-archive"><li><a href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></li></ul>';
+		if(!$parms['showarchive'])
+		{
+			$footer = '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
+			$ns->setContent('footer', $footer);
+			$cached .= $footer;
+
+		}
 		$cached = $ns->tablerender(BLOGCAL_L1." ".$req_year, $cached, 'news_months_menu', true);
 	}
 	e107::getCache()->set($cString, $cached);

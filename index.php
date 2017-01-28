@@ -86,8 +86,19 @@
  */
  
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
-	
-	$tmp = e107::getAddonConfig('e_url');
+
+	// XXX Cache didn't bring much benefit.
+
+	/*if($cached = e107::getCache()->retrieve('Addon_url',5,true,true))
+	{
+		$tmp = e107::unserialize($cached);
+	}
+	else*/
+	{
+		$tmp = e107::getAddonConfig('e_url');
+	//	e107::getCache()->set('Addon_url',e107::serialize($tmp,'json'),true,true,true);
+	}
+
 
 	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
 		
@@ -96,6 +107,11 @@
 
 		foreach($tmp as $plug=>$cfg)
 		{
+			if(empty($pref['e_url_list'][$plug])) // disabled.
+			{
+				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> is disabled.');
+				continue;
+			}
 
 			foreach($cfg as $k=>$v)
 			{
@@ -125,7 +141,7 @@
 				
 				$newLocation = preg_replace($regex, $v['redirect'], $req);
 
-				if($newLocation !=$req)
+				if($newLocation != $req)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file,$query) = explode("?",$redirect,2);
@@ -135,12 +151,13 @@
 						parse_str($query,$_GET);
 					}
 					
-					e107::getMessage()->addDebug('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true));
+					e107::getDebug()->log('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true),1);
 
 					if(file_exists($file))
 					{
 						define('e_CURRENT_PLUGIN', $plug);
 						define('e_QUERY', $query); // do not add to e107_class.php
+						define('e_URL_LEGACY', $redirect);
 						include_once($file);
 						exit;
 					}

@@ -56,13 +56,13 @@ class plugin_download_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		
 		'other0' 		=> array('divider'=> true),
 		
 		'cat/list'			=> array('caption'=> LAN_CATEGORIES, 'perm'=>'P'),
-		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'Q'),
+		'cat/create' 		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'Q'),
 		
 		'other1' 		=> array('divider'=> true),
 		
@@ -138,13 +138,13 @@ class download_cat_ui extends e_admin_ui
 	 	 	
 		protected $fields = array(
 			'checkboxes'						=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'icon',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),	 
+			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'method',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),
 			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),     		
          	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
        		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',			'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
          
 	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'download_category_parent' 			=> array('title'=> 'Parent',		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
+		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
 			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
@@ -193,6 +193,34 @@ class download_cat_form_ui extends e_admin_form_ui
 			case 'filter':
 			case 'batch':
 				return $controller->getDownloadCategoryTree();
+			break;
+		}
+	}
+
+
+
+
+	public function download_category_icon($curVal,$mode)
+	{
+
+		if(!empty($curVal) && strpos($curVal, chr(1)))
+		{
+			list($curVal,$tmp) = explode(chr(1),$curVal);
+		}
+
+		switch($mode)
+		{
+			case 'read':
+				return e107::getParser()->toIcon($curVal, array('legacy'=>'{e_IMAGE}icons/'));
+			break;
+
+			case 'write':
+				return $this->iconpicker('download_category_icon', $curVal,null,array('glyphs'=>true, 'legacyPath'=>'{e_IMAGE}icons/'));
+			break;
+
+			case 'filter':
+			case 'batch':
+				return null;
 			break;
 		}
 	}
@@ -250,8 +278,8 @@ class download_main_admin_ui extends e_admin_ui
 			'download_active'			=> array('title'=> DOWLAN_21,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center', 'class' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'download_datestamp' 		=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => ''),
 			
-			'download_thumb' 			=> array('title'=> DOWLAN_20,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE ),
-			'download_image' 			=> array('title'=> DOWLAN_19,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
+			'download_thumb' 			=> array('title'=> DOWLAN_20,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60&legacyPath={e_FILE}downloadthumbs',  'readonly'=>TRUE ),
+			'download_image' 			=> array('title'=> DOWLAN_19,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60&legacyPath={e_FILE}downloadimages', 'readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
 			'download_comment'			=> array('title'=> DOWLAN_102,			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			
 			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
@@ -1387,7 +1415,7 @@ $columnInfo = array(
 									 $text .= "     </select>";
 										   */
 		   
-		$text .= $frm->imagepicker('download_image', $download_image,'','download_image'); 
+		$text .= $frm->imagepicker('download_image', $download_image,'',array('media'=>'download_image', 'legacyPath'=>'{e_FILE}downloadimages'));
 		  
 	      if ($subAction == "dlm" && $download_image)
 	      {
@@ -1418,7 +1446,7 @@ $columnInfo = array(
 										 $text .= "        </select>";
 						   */
 				 
-				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'','download_thumb'); 
+				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'',array('media'=>'download_thumb', 'legacyPath'=>'{e_FILE}downloadthumbs'));
 				 
 				 
 			    $text .= "
@@ -1699,7 +1727,7 @@ $columnInfo = array(
 	      	$dlInfo['download_comment']				= $tp->toDB($_POST['download_comment']);
 	      	$dlInfo['download_class']				= $tp->toDB($_POST['download_class']);
 	      	$dlInfo['download_visible']				= $tp->toDB($_POST['download_visible']);
-			$dlInfo['download_datestamp']			= e107::getDate()->convert($_POST['download_datestamp'],'inputdate');
+			$dlInfo['download_datestamp']			= intval($_POST['download_datestamp']);
 			
 	
 	      if($_POST['update_datestamp'])
@@ -2361,7 +2389,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 class download_mirror_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Downloads';
+		protected $pluginTitle		= LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName		= 'download';
 		protected $table			= 'download_mirror';
 		protected $pid				= 'mirror_id';
@@ -2381,10 +2409,10 @@ class download_mirror_ui extends e_admin_ui
 		  'mirror_name' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_url' 			=>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_image' 		=>   array ( 'title' => LAN_IMAGE, 'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'mirror_location' 	=>   array ( 'title' => 'Location', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'mirror_location' 	=>   array ( 'title' => DOWLAN_141, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'mirror_description' 	=>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_count' 		=>   array ( 'title' => 'Count', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('mirror_name', 'mirror_url', 'mirror_image', 'mirror_location');

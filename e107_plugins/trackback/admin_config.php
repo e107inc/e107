@@ -19,7 +19,7 @@ if (!getperms("P") || !e107::isInstalled('trackback'))
 	exit() ;
 }
 
-include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
+e107::includeLan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 	
 require_once(e_ADMIN."auth.php");
 $frm = e107::getForm();

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -18,6 +18,9 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
+
+
+e107::getDb()->db_Mark_Time('(Start auth.php)');
 
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
@@ -66,9 +69,12 @@ if (ADMIN)
 		// XXX LOGIN AS Temporary solution, we need something smarter, e.g. reserved message stack 'admin' which will be always printed
 		// inside admin area
 		if(e107::getUser()->getSessionDataAs())
-		{ // TODO - lan
+		{  
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
-			e107::getMessage()->addInfo('Successfully logged in as '.($asuser->getId()  ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown'). ' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>');
+			
+			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
+			e107::getMessage()->addInfo($tp->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
+			
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
 		if(deftrue('e_ADMIN_UI'))
@@ -152,11 +158,10 @@ else
 			$class_list[] = e_UC_MEMBER;
 			$class_list[] = e_UC_PUBLIC;
 
-			
-			$user_logging_opts = e107::getConfig()->get('user_audit_opts');
-			if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'], ''), $class_list))
-			{ // Need to note in user audit trail
-				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, '', $user_id, $user_name);
+
+			if (in_array(varset($pref['user_audit_class'], ''), $class_list))
+			{
+				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, 'Login via admin page', $row['user_id'], $row['user_name']);
 			}
 
 			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
@@ -298,7 +303,7 @@ class auth
 
 
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
-		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='login' /></div>
+		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='".LAN_LOGIN."' /></div>
 		<div id='login-admin' class='center'>
 		<div>";
 
@@ -361,7 +366,7 @@ class auth
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
 		echo "<div class='row-fluid'>
-			<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>
+						<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>".ADLAN_165."</a></span> <a href='".e_BASE."index.php'>".ADLAN_166."</a></div>
 			</div>";
 	}
 

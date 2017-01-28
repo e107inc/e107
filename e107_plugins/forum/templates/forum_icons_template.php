@@ -13,13 +13,13 @@
 if (!defined('e107_INIT')) { exit(); }
 
 $tp = e107::getParser();
-if(deftrue("FONTAWESOME", 4)) {
+if(deftrue("FONTAWESOME", false)) {
 
 define('IMAGE_e', 					'e');
 define('IMAGE_new', 				$tp->toGlyph('fa-star', 'size=2x'));
 define('IMAGE_nonew', 				$tp->toGlyph('fa-comment', 'size=2x'));
 define('IMAGE_new_small',  			$tp->toGlyph('fa-star'));
-define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment-o'));
+define('IMAGE_nonew_small',  		$tp->toGlyph('fa-comment'));
 define('IMAGE_new_popular',  		$tp->toGlyph('fa-comments', 'size=2x'));
 define('IMAGE_nonew_popular', 		$tp->toGlyph('fa-comments-o', 'size=2x'));
 define('IMAGE_new_popular_small',  	$tp->toGlyph('fa-comments'));
@@ -32,7 +32,8 @@ define('IMAGE_announce',  			$tp->toGlyph('fa-bullhorn', 'size=2x'));
 define('IMAGE_announce_small',  	$tp->toGlyph('fa-bullhorn'));
 define('IMAGE_closed_small',  		$tp->toGlyph('fa-lock'));
 define('IMAGE_closed', 				$tp->toGlyph('fa-lock', 'size=2x'));
-
+define('IMAGE_noreplies', 			$tp->toGlyph('fa-comment-o', 'size=2x'));
+define('IMAGE_noreplies_small', 	$tp->toGlyph('fa-comment-o'));
 define('IMAGE_track', 		        $tp->toGlyph('fa-bell'));
 define('IMAGE_untrack', 	        $tp->toGlyph('fa-bell-o'));
     
@@ -64,7 +65,7 @@ define('IMAGE_untrack', 	'<img src="'.img_path('untrack.png').'" alt="'.LAN_FORU
 
 // User info
 define('IMAGE_website', '<img src="'.img_path('website.png').'" alt="'.LAN_FORUM_2034.'" title="'.LAN_FORUM_2034.'" />');
-define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" />');
+define('IMAGE_email', 	'<img src="'.img_path('email.png').'" alt="'.LAN_FORUM_2044.'" title="'.LAN_FORUM_2044.'" class="icon S16 action" />');
 define('IMAGE_profile', '<img src="'.img_path('profile.png').'" alt="'.LAN_FORUM_4007.'" title="'.LAN_FORUM_4007.'" />');
 
 // action

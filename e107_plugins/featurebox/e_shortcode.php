@@ -29,7 +29,7 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 	 */
 	function sc_featurebox($parm=null, $mod = '')
 	{
-		
+
 		if($parm == null && $mod == '') // ie {FEATUREBOX}
 		{
 			$type 	= vartrue(e107::getPlugPref('featurebox','menu_category'),'bootstrap_carousel');
@@ -53,8 +53,11 @@ class featurebox_shortcodes// must match the plugin's folder name. ie. [PLUGIN_F
 		{
 			$ctemplate = $mod;
 		}
-		
-		parse_str($parm, $parm);
+
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
 		
 		$category = $this->getCategoryModel($ctemplate, (vartrue($parm['force']) ? true : false));
 		$defopt = array(

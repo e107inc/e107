@@ -2,16 +2,12 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Language file - user admin
  *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/admin/lan_users.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 define("USRLAN_1", "Options Saved.");
@@ -180,7 +176,7 @@ define("USRLAN_171", "Random password");
 define("USRLAN_172", "User account has been created with the following:");
 // define("USRLAN_173", "Login name set");
 // define("USRLAN_174", "User name --NAME-- created");
-define("USRLAN_175", "");
+define("USRLAN_175", "Session");
 
 define("USRLAN_179", "User banned: ");
 define("USRLAN_180", "IP address of {IP} appears on whitelist; IP not banned.");
@@ -199,7 +195,7 @@ define("USRLAN_191", "Administrator can impose restrictions during this period i
 define("USRLAN_192", ""); // was "days" use value in lan_date.php instead. 
 define("USRLAN_193", "Nothing changed - not saved");
 define("USRLAN_194", "Signature may be modified by");
-define("USRLAN_195", "");
+define("USRLAN_195", "Last Post");
 
 //User Ranks phrases
 // define("USRLAN_196", "User ranks"); // use LAN_USER_RANKS
@@ -233,6 +229,13 @@ define("LAN_NOTVERIFIED","Not Verified");
 define("LAN_BANNED","Banned");
 define("LAN_BOUNCED","Bounced");
 
+define("LAN_UI_1_HOUR", "1 hour");
+define("LAN_UI_3_HOURS", "3 hours");
+define("LAN_UI_6_HOURS", "6 hours");
+define("LAN_UI_12_HOURS", "12 hours");
+define("LAN_UI_24_HOURS", "24 hours");
+define("LAN_UI_48_HOURS", "48 hours");
+define("LAN_UI_3_DAYS", "3 days");
 
 define("USRLAN_220", "All Userclasses");
 define("USRLAN_221", "Edit admin perms");
@@ -263,21 +266,27 @@ define("USRLAN_242", "Require Activation, Notify (password and activation link)"
 define("USRLAN_243", "Set Permissions");
 define("USRLAN_244", "Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)");
 define("USRLAN_245", "Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin");
-define("USRLAN_246", "Us");
+define("USRLAN_246", "(Not required)");
 define("USRLAN_247", "Us");
 define("USRLAN_248", "Us");
 define("USRLAN_249", "Us");
 define("USRLAN_250", "Us");
+define("USRLAN_251", "Leave blank for no change");
+define("USRLAN_252", "Resend account activation email to unactivated users.");
+define("USRLAN_253", "Older than");
+define("USRLAN_254", "Reset all passwords");
+define("USRLAN_255", "Notify User");
+define("USRLAN_256", "Dear");
 
-// These need review - there are duplicates above - they come from admin/lan_userclass.php.
+// These need review - there are duplicates above - they come from admin/lan_userclass.php and are unconsistent with userclass defines. TODO LANS
 define("UCSLAN_1", "Sending notification email to");
 define("UCSLAN_2", "Updated Privileges");
-define("UCSLAN_3", "Dear");
+//define("UCSLAN_3", "Dear");//USRLAN_256
 define("UCSLAN_4", "Your privileges have been updated at");
 define("UCSLAN_5", "You now have access to the following area(s)");
 define("UCSLAN_6", "Set class for user");
 define("UCSLAN_7", "Set Classes");
-define("UCSLAN_8", "Notify User");
+//define("UCSLAN_8", "Notify User");//incorrect//USRLAN_255
 define("UCSLAN_9", "Classes Updated.");
 define("UCSLAN_10", "Regards,");
 define("UCSLAN_11", "Class membership for user ID --UID-- changed to --CLASSES--");

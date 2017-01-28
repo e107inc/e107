@@ -16,7 +16,6 @@
  * @package e107
  * @subpackage core
  * @author secretr
- * @version $Id$
  *
  * @todo cache management - max age, max size, image cache manager (?), cron (?)
  *
@@ -28,7 +27,8 @@ define('e107_INIT', true);
 // error_reporting(E_ALL);
 
 
-error_reporting(0); // suppress all errors or image will be corrupted. 
+
+error_reporting(0); // suppress all errors or image will be corrupted.
 ini_set('gd.jpeg_ignore_warning', 1);
 //require_once './e107_handlers/benchmark.php';
 //$bench = new e_benchmark();
@@ -48,6 +48,10 @@ exit;
 
 class e_thumbpage
 {
+	private $_debug = false;
+
+	private $_cache = true;
+
 	/**
 	 * Page request
 	 * @var array
@@ -84,7 +88,12 @@ class e_thumbpage
 		// initial path
 		$self = realpath(dirname(__FILE__));
 
+		$mySQLdefaultdb = '';
+		$HANDLERS_DIRECTORY = '';
+		$mySQLprefix = '';
+
 		// Config
+
 		include($self.'/e107_config.php');
 
 		// support early include feature
@@ -92,6 +101,9 @@ class e_thumbpage
 		{
 			 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
 		}
+
+
+		ob_end_clean(); // Precaution - clearout utf-8 BOM or any other garbage in e107_config.php
 
 		$tmp = $self.'/'.$HANDLERS_DIRECTORY;
 
@@ -210,15 +222,12 @@ class e_thumbpage
 			$this->_src_path = $path;
 			return true;
 		}
-		else
-		{
-			$this->_placeholder = true;
-			return true;	
-		}
-		
-		// echo "path=".$path."<br />";
-		return false;
+
+		$this->_placeholder = true;
+		return true;
+
 	}
+
 
 	function sendImage()
 	{
@@ -232,7 +241,13 @@ class e_thumbpage
 			$parm = array('size' => $width."x".$height);
 			
 			$this->placeholder($parm);
-			return;
+			return false;
+		}
+
+		if($this->_debug === true)
+		{
+			var_dump($this->_request);
+		//	return false;
 		}
 		
 		if(!$this->_src_path)
@@ -243,20 +258,28 @@ class e_thumbpage
 		$thumbnfo = pathinfo($this->_src_path);
 		$options = $this->getRequestOptions();
 
-		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
+		if($this->_debug === true)
+		{
+			var_dump($options);
+		//	return false;
+		}
+
+		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality. $options['c']);
 		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
-	
 
-		if(is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname))
+
+		if(($this->_cache === true) && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
 		{
 			$thumbnfo['lmodified'] = filemtime(e_CACHE_IMAGE.$fname);
 			$thumbnfo['md5s'] = md5_file(e_CACHE_IMAGE.$fname);
 			$thumbnfo['fsize'] = filesize(e_CACHE_IMAGE.$fname);
 			
 			// Send required headers
-			$this->sendHeaders($thumbnfo);
-		
+			if($this->_debug !== true)
+			{
+				$this->sendHeaders($thumbnfo);
+			}
 
 				//$bench->end()->logResult('thumb.php', $_GET['src'].' - 304 not modified');
 			// 	exit;
@@ -271,6 +294,8 @@ class e_thumbpage
 			// Send required headers
 			//$this->sendHeaders($thumbnfo);
 
+
+
 			@readfile(e_CACHE_IMAGE.$fname);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
 			
@@ -278,11 +303,15 @@ class e_thumbpage
 		}
 
 		// TODO - wrap it around generic e107 thumb handler
+		if($this->_debug === true)
+		{
+			$start = microtime(true);
+		}
 		@require(e_HANDLER.'phpthumb/ThumbLib.inc.php');
 		try
 		{
 		    $thumb = PhpThumbFactory::create($this->_src_path);
-			$sizeUp = ($this->_request['w'] > 110) ? true : false; // don't resizeUp the icon images. 
+			$sizeUp = ($this->_request['w'] > 110 || $this->_request['aw'] > 110) ? true : false; // don't resizeUp the icon images.
 		   	$thumb->setOptions(array(
 		   	    'correctPermissions'    => true,
 		   	    'resizeUp'              => $sizeUp,
@@ -297,19 +326,45 @@ class e_thumbpage
 		     return $this;
 		}
 
+		// Image Cropping by Quadrant.
+		if(!empty($options['c'])) // $quadrant T(op), B(ottom), C(enter), L(eft), R(right)
+		{
+			if(!empty($this->_request['ah']))
+			{
+				$this->_request['h'] = $this->_request['ah'];
+			}
+
+			if(!empty($this->_request['aw']))
+			{
+				$this->_request['w'] = $this->_request['aw'];
+			}
+
+
+
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0), $options['c']);
+		}
 		if(isset($this->_request['w']) || isset($this->_request['h']))
 		{
 			$thumb->resize((integer) vartrue($this->_request['w'], 0), (integer) vartrue($this->_request['h'], 0));
 		}
-		elseif(vartrue($this->_request['ah']))
+		elseif(!empty($this->_request['ah']))
 		{
 			//Typically gives a better result with images of people than adaptiveResize().
-			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center? 
-			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');	
+			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center?
+			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');
 		}
 		else 
 		{
-			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));	
+			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
+		}
+
+
+		if($this->_debug === true)
+		{
+			echo "time: ".round((microtime(true) - $start),4);
+
+			var_dump($thumb);
+			return false;
 		}
 
 		// Watermark Option - See admin->MediaManager->prefs for details. 
@@ -327,12 +382,14 @@ class e_thumbpage
 			$thumb->WatermarkText($this->_watermark);			
 		}
 		//	echo "hello";
-			
+
+
 			
 	//exit;
 
 		// set cache
 		$thumb->save(e_CACHE_IMAGE.$fname);
+
 
 		
 		// show thumb
@@ -346,7 +403,14 @@ class e_thumbpage
 		$ret['h'] = isset($this->_request['h']) ? intval($this->_request['h']) : $ret['w'];
 		$ret['aw'] = isset($this->_request['aw']) ? intval($this->_request['aw']) : false;
 		$ret['ah'] = isset($this->_request['ah']) ? intval($this->_request['ah']) : $ret['aw'];
+		$ret['c'] = isset($this->_request['c']) ? strtoupper(substr(filter_var($this->_request['c'],FILTER_SANITIZE_STRING),0,1)) : false;
 	//	$ret['wm'] = isset($this->_request['wm']) ? intval($this->_request['wm']) : $ret['wm'];
+
+		if($ret['c'] == 'A') // auto
+		{
+			$ret['c'] = 'T'; // default is 'Top';
+		}
+
 		return $ret;
 	}
 
@@ -408,7 +472,7 @@ class e_thumbpage
 	{
 		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
 
-		header('location: http://placehold.it/'.$getsize);
+		header('location: https://placehold.it/'.$getsize);
 		header('Content-Length: 0');
 		exit();		
 	}

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -21,7 +21,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
 
 
 /*
@@ -95,6 +95,17 @@ class user_class
 	}
 
 
+	public function getFixedClassDescription($id)
+	{
+		if(isset($this->fixed_classes[$id]))
+		{
+			return $this->fixed_classes[$id];
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * Take a key value such as 'member' and return it's numerical value.
 	 * @param $text
@@ -141,12 +152,12 @@ class user_class
         
 		if ($temp = $e107->ecache->retrieve_sys(UC_CACHE_TAG))
 		{
-			$this->class_tree = e107::getArrayStorage()->read($temp);
+			$this->class_tree = e107::unserialize($temp);
 			unset($temp);
 		}
 		else
 		{
-			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent', 'nowhere')) // The order statement should give a consistent return
+			if($this->sql_r->field('userclass_classes','userclass_parent') &&  $this->sql_r->select('userclass_classes', '*', 'ORDER BY userclass_parent,userclass_name', 'nowhere')) // The order statement should give a consistent return
 			{
 				while ($row = $this->sql_r->fetch())
 				{
@@ -221,6 +232,9 @@ class user_class
 	{
 		$is = array();
 		$start_array = explode(',', $startList);
+
+
+
 		foreach ($start_array as $sa)
 		{	// Merge in latest values - should eliminate duplicates as it goes
 			$is[] = $sa; // add parent to the flat list first
@@ -378,6 +392,26 @@ class user_class
 	}
 
 
+	/**
+	 * @param string $optlist - comma-separated list of classes/class types to be included in the list
+			It allows selection of the classes to be shown in the dropdown. All or none can be included, separated by comma. Valid options are:
+			public
+			guest
+			nobody
+			member
+			readonly
+			admin
+			main - main admin
+			new - new users
+			bots - search bot class
+			classes - shows all classes
+			matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
+	 * @return array
+	 */
+	public function getClassList($optlist)
+	{
+		return $this->uc_required_class_list($optlist);
+	}
 
 
 	/** 
@@ -900,6 +934,32 @@ class user_class
 	}
 
 
+
+	/**
+	 *	Return a key-name identifier for given class ID
+	 *	@param integer $id - class number. A negative number indicates 'not a member of...'
+	 *	@return string class name ke
+	 */
+	public function getIdentifier($id)
+	{
+		$cn = abs($id);
+
+		$ucString = '';
+
+		$fixedClasses = array_flip($this->text_class_link);
+
+		if(isset($fixedClasses[$cn]))
+		{
+			return $fixedClasses[$cn];
+		}
+
+		if(isset($this->class_tree[$cn]))
+		{
+			return e107::getForm()->name2id($this->class_tree[$cn]['userclass_name']);
+		}
+
+		return $ucString;
+	}
 
 
 	/**
@@ -1449,7 +1509,7 @@ class user_class_admin extends user_class
 
 		if ($this->class_tree[$listnum]['userclass_type'] == UC_TYPE_GROUP)
 		{
-			$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> '.UCSLAN_84;	// Highlight groups
+			$name_line .= '<b>'.$this->class_tree[$listnum]['userclass_name'].'</b> ('.UCSLAN_81.').';	// Highlight groups
 		}
 		else
 		{

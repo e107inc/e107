@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -16,9 +16,113 @@ if(isset($_GET['configure']))
 	define("USER_AREA", true);
 	//Switch to desired layout
 	define('THEME_LAYOUT', $_GET['configure']);
+
+	if(empty($_GET['debug']))
+	{
+		define('e_DEBUG', false);
+		define('E107_DEBUG_LEVEL', 0);
+		if(function_exists('xdebug_disable'))
+		{
+			xdebug_disable();
+		}
+		@ini_set('display_errors', 0);
+		error_reporting(0);
+	}
+	define('e_MENUMANAGER_ACTIVE', true);
+
+}
+else
+{
+	define('e_ADMIN_AREA', true);
+	define('e_MENUMANAGER_ACTIVE', false);
 }
 
 require_once("../class2.php");
+
+
+if(e_MENUMANAGER_ACTIVE === false )
+{
+	if(!deftrue("e_DEBUG_MENUMANAGER"))
+	{
+		e107::getJs()->inlineCSS('
+
+		body { overflow:hidden }
+
+
+		');
+	}
+	else
+	{
+		e107::js('footer-inline',"
+
+			$('#menu_iframe').attr('scrolling','no');
+			$('#menu_iframe').load(function() {
+		//	$('#menu_iframe').bind('load', function() {
+
+			  var height = this.contentWindow.document.body.offsetHeight + 400 + 'px';
+
+			//	$(this).css('overflow-y','visible');
+				$(this).css('height',height);
+			 // alert(this.style.height);
+
+			});
+
+
+		");
+
+	}
+
+	e107::getJs()->inlineCSS("
+
+		.menu-manager-items          { padding-right:15px}
+		.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
+		.menu-manager-sticky {
+			position: fixed;
+		padding-left: 15px;
+		padding-right: 15px;
+		left: 0;
+		top: 60px;
+			z-index: 100;
+			border-top: 0;
+		    -moz-transition: fadeIn .4s;
+		    -o-transition: fadeIn .4s;
+		    -webkit-transition: fadeIn .4s;
+		    transition: fadeIn .4s;
+		}
+
+		iframe#menu_iframe { overflow-x:hidden; width: 100%; height: 90vh; border-width: 3px; padding:0 }
+
+			.menu-selector ul li {
+				background-color: rgba(255,255,255,0.1);
+				padding: 5px 30px;
+				padding-right:2px;
+				margin-bottom:2px;
+			}
+
+			.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
+
+			.menu-selector { height:330px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+
+			.menu-selector input:checked + span {  color: white; }
+
+			@media all and (min-height: 1000px) {
+
+				.menu-selector { height:500px }
+			}
+
+			@media all and (max-height: 800px) {
+
+				.menu-selector { height:250px }
+				iframe#menu_iframe { height: 87vh }
+				.menu-selector ul li { font-size: 0.8em }
+			}
+
+			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
+
+		");
+}
+
+
 if (!getperms("2"))
 {
 	e107::redirect('admin');
@@ -26,40 +130,15 @@ if (!getperms("2"))
 }
 
 
-
-
 e107::coreLan('menus', true);
 e107::coreLan('admin', true);
 
 
-
-if(strpos(e_QUERY, 'configure') !== FALSE || vartrue($_GET['enc']))
+if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
-	
-	
-	//e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
-	
-	//e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-	//e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-	//e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
-	
-	//e107::css('core', 	'chosen/chosen.css', 'jquery');
-	//e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
-	
-	//e107::css('core', 	'password/style.css', 'jquery');
-	//e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
-	// 
-	//e107::js("core",	"plupload/customUpload.js","jquery",3);
-	
-	//e107::js("core",	"core/mediaManager.js","jquery",3);
 
-	
-	// e107::css('core', 	'core/admin.css', 'jquery');
-//	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
- e107::js('core','bootstrap/js/bootstrap-tooltip.js');
-//	e107::css('core','bootstrap/css/bootstrap.min.css');
 
-$JSMODAL = <<<TEMPL
+	$JSMODAL = <<<TEMPL
 	$(function() {
 		$('.e-modal-menumanager').on('click', function(e)
 		{
@@ -94,9 +173,9 @@ $JSMODAL = <<<TEMPL
 TEMPL;
 
 
-	e107::js('inline', $JSMODAL );
+	e107::getJs()->footerInline( $JSMODAL );
 
-	e107::js('inline', "
+	e107::getJs()->footerInline("
 		$(function() {
 						
 			// Visibility/Instance Options etc.
@@ -108,8 +187,8 @@ TEMPL;
 				window.parent.$('#uiModal .modal-caption').text(caption);	
 				window.parent.$('#uiModal .modal-body').load(link, function(){
 				 					   
-				 	window.parent.$('.modal-body .e-save').on('change', function(){
-					
+				 	window.parent.$('.modal-body :input').on('change', function(){
+
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
 
@@ -117,7 +196,14 @@ TEMPL;
 				//	alert(target);
 						$.post(target, data ,function(ret)
 						{
-						//	alert('Posted: '+ret);
+					//	alert('Posted: '+ret);
+						//	console.log('Posted: '+ ret);
+
+							if(ret == '')
+							{
+								return false;
+							}
+
 						  	var a = $.parseJSON(ret);
 
 							if(a.error)
@@ -180,7 +266,7 @@ TEMPL;
 	");
 	
 	
-	e107::css('inline',"	.column { width:100%;  padding-bottom: 100px; }
+	e107::getJs()->inlineCSS("	.column { width:100%;  padding-bottom: 100px; }
 	
 
 	#core-menumanager-main th {color: silver; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;  font-size:14px; font-weight: bold; line-height:24px; background-color:#2F2F2F }
@@ -190,26 +276,41 @@ TEMPL;
 	.portlet-content { padding: 7px; }
 	.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 	.ui-sortable-placeholder * { visibility: hidden; }
-	
-	[class^='icon-'], [class*=' icon-'] {
+
+	i.S16 {
+    background: url(".e_THEME."bootstrap3/images/adminicons_16.png) no-repeat top left;
+ 	display:inline-block;  	width:17px;  	height:16px;
+ 	*margin-right: .3em;
+	line-height: 14px;
+	vertical-align: text-top;
+	}
+
+	i.e-search-16 { background-position: -1344px 0; width: 16px; height: 16px; }
+	i.e-delete-16 { background-position: -525px 0; width: 16px; height: 16px; }
+	i.e-configure-16 { background-position: -378px 0; width: 16px; height: 16px; }
+	i.e-edit-16 { background-position: -609px 0; width: 16px; height: 16px; }
+
+	.e-mm-icon-search {
 	    display: inline-block;
 	    width: 14px;
 	    height: 14px;
 	    margin-top: 1px;
 	    line-height: 14px;
 	    vertical-align: text-top;
-	    background-image: url('".e_JS."bootstrap/img/glyphicons-halflings.png');
+	    background-image: url('".e_THEME."bootstrap3/images/glyphicons-halflings.png');
 	    background-position: 14px 14px;
 	    background-repeat: no-repeat;
 	}
 	
-	.icon-search {
+	.e-mm-icon-search {
 	  background-position: -48px 0;
 	}
-	.icon-align-justify {
+
+	/*
+	.e-mm-icon-align-justify {
 	  background-position: -336px -48px;
 	}
-	
+	*/
 	
 	/* A little bit of bootstrap styling - loading /bootstrap.css could break some themes */
 	
@@ -291,12 +392,11 @@ TEMPL;
 	
 	.menuOptions > select { max-width:100% }
 	
-	.menu-options-buttons	{  }
+	.menu-options-buttons	{ display:block; text-align:right; }
+	select.menu-btn { text-align:left; display:block; width:100%; margin-left:3px }
 	#menu-manage-actions		{ width:50%; vertical-align:top; text-align:center; padding:15px }
 	
-	select.menu-btn { text-align:left }
 
-	
 	label 										{  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; color:black;  line-height:14px }
 	label.input									{ margin-right:10px;  }
 	
@@ -340,8 +440,8 @@ TEMPL;
 	color: #2F2F2F;
 	font-size: 13px;
 	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; 
-}
-	
+	}
+
 	.menu-panel-header
 	 {
     	display: block;
@@ -373,24 +473,175 @@ TEMPL;
 	.sortable li {  border-radius: 4px }
 	.sortable li:hover { background-color: silver; box-shadow:3px 3px 3px silver }
 	
-	.regularMenu { cursor:move; border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px }
-	
+	.regularMenu {  border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px;background-color: #E0EBF1; border-radius: 5px; }
+	.regularMenu span {padding:3px; font-weight:bold; color:#2F2F2F;text-align:left; }
 	.ui-draggable	{  background-color: rgb(245, 245, 245); min-width:100px;}
-	
+
+	.regularMenu:hover { background-color: #B1D7EA; }
+
+
 	",'jquery');
 	
 	
-	
+//	e107::js('footer',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
+//	e107::css('url', "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
+
+	e107::getJs()->footerInline('
+			 $(function()
+			 {
+			 		// post the form back to this script.
+			 		var saveData = function(areaid)
+			 		{
+
+			 			var formid 	= "#form-" + areaid;
+						var form 	= $(formid);
+						var data 	= form.serialize();
+
+						$.ajax({
+						  type: "POST",
+						  url: "menus.php",
+						  data: data
+						}).done(function( msg )
+						{
+							$(".menuOption").show();
+						//	 alert("POSTED: "+ msg );
+						});
+
+			 		}
+
+
+
+/*
+
+				 	$(".sortable").sortable({
+				 		connectWith: $("#area-1,#area-2,#area-3,#area-4,#area-5"),
+						revert: true,
+						cursor: "move",
+						distance: 20,
+					//	containment: $(".sortable"),
+						update: function(ev,ui)
+				        {
+				        	var areaid = $(this).attr("id");
+							saveData(areaid);
+				        }
+					});
+
+
+
+
+				$( ".draggable", window.top.document).click(function()
+					{
+						alert("hi there");
+					});
+
+
+
+				// http://jsfiddle.net/DT764/2/
+
+
+					$(".draggable", window.top.document).draggable({
+					//	connectToSortable: ".sortable",
+						helper: "clone",
+					//	appendTo: $(this), // ".sortable", // "#area-1", //FIXME Needs to be a specific area.
+					//	revert: "invalid",
+						containment: "document",
+					//	delay: 0,
+					//	revertDuration: 100,
+						cursor: "move",
+						iframeFix: true,
+					//	containment: false,
+						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped.
+                        	// Figure out positioning magic to determine if e.ui.position is in the iframe
+                      	//	var what = $(this).parent().attr("id");
+						//	$(".sortable").draggable( "disable" );
+                       	alert(what);
+                    	}
+
+					});
+*/
+				//	$( "ul, li", window.top.document ).disableSelection();
+
+
+					$( ".deleteMenu").on("click", function()
+					{
+						var deleteId = $(this).attr("data-delete");
+						var area 	= $(this).attr("data-area");
+						$("#"+deleteId).hide("slow", function(){
+							 $("#"+deleteId).remove();
+						});
+
+
+					//	$("#"+deleteId).remove();
+					//	alert(deleteId + " " + area);
+
+
+						saveData(area);
+					});
+
+
+
+
+			 });
+		 ');
+
 	
 }
 
+else
+{
+/*
 
+		e107::js('footer-inline', "
+
+
+		$(document).ready(function() {
+
+   	    var stickyNavTop = $('.e-scroll-fixed').offset().top - 60; // grab the initial top offset of the navigation
+
+    	var stickyNav = function(){
+
+		    var scrollTop = $(window).scrollTop(); // our current vertical position from the top
+
+		    if (scrollTop > stickyNavTop) {
+	            $('.e-scroll-fixed').addClass('menu-manager-sticky visible col-lg-2 col-md-3');
+		    } else {
+	            $('.e-scroll-fixed').removeClass('menu-manager-sticky visible col-lg-2 col-md-3');
+		    }
+		};
+
+	stickyNav();
+
+	$(window).scroll(function() { // and run it again every time you scroll
+		stickyNav();
+	});
+
+
+
+
+
+
+	});
+
+
+
+
+
+
+		");
+
+
+*/
+
+
+
+
+}
 		
 	
 
 
 
-
+/*
 if($_SERVER['E_DEV_MENU'] == 'true')
 {
 	if(isset($_GET['configure']) || isset($_GET['iframe']))
@@ -404,38 +655,40 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 	require_once("auth.php");
 	require_once("footer.php");
 	exit;
-}
+}*/
 
 // if($_SERVER['E_DEV_MENU'] == 'true')	
 //{
+
+
+
 	function e_help()
 	{
-		if($_SERVER['E_DEV_MENU'] != 'true')	
+		if(deftrue("e_DEBUG_MENUMANAGER"))
 		{
-			return false;		
-		}	
+			return null;
+		}
 			
 	
-		
-		$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list. 
-		$sql = e107::getDb();
+		return e_menu_layout::menuSelector();
 
+/*
 		$text = '
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#plugins" data-toggle="tab">Plugins</a></li>	
-				<li><a href="#custom" data-toggle="tab">Custom</a></li>	
+				<li class="active"><a href="#plugins" data-toggle="tab">'.ADLAN_CL_7.'</a></li>	
+				<li><a href="#custom" data-toggle="tab">'.LAN_CUSTOM.'</a></li>	
 			</ul>
 			<div class="tab-content">';	
 		
 				$text .= "
 				<div class='active tab-pane' id='plugins'>
-				<ul>";
+				<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
 				
 				$c = 500; // start high to prevent overwriting of keys after we drag and drop. 
 				
 				foreach($p as $menu => $folder)
 				{
-					$text .= "<li id='{$menu}' class='draggable regularMenu' style='cursor:move'>";
+					$text .= "<div id='{$menu}' class='item draggable regularMenu' style='cursor:move'>";
 				//	$text .= str_replace("_menu","",$menu);
 				
 					$defaults = array(
@@ -446,22 +699,22 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 					
 					$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
 					
-					$text .= "</li>";
+					$text .= "</div>";
 					$c++;
 					
 				}
 				
-				$text .= "</ul>
+				$text .= "</div>
 				</div>
 				
 				<div class='tab-pane' id='custom'>";
 	
 				if($sql->select('page','*',"menu_name !='' ORDER BY menu_name"))
 				{
-					$text .= "<ul>";
+					$text .= "<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
 					while($row = $sql->fetch())
 					{
-						$text .= "<li id='".$row['page_id']."' class='draggable regularMenu' style='cursor:move'>";
+						$text .= "<div id='".$row['page_id']."' class='item draggable regularMenu' style='cursor:move'>";
 					//	$text .= $row['menu_name'];
 						
 						$defaults = array(
@@ -472,19 +725,296 @@ if($_SERVER['E_DEV_MENU'] == 'true')
 						
 						$text .= e_layout::renderMenuOptions($defaults,'layout','area',$c);
 						
-						$text .= "</li>";	
+						$text .= "</div>";
 					}
 						
-					$text .= "</ul>";			
+					$text .= "</div>";
 				}
 					
 				$text .= "</div>
 				
 			</div>";
 
-		return array('caption'=>'Menu Items','text'=>$text); 
+		return array('caption'=>MENLAN_57,'text'=>$text);*/
 	}
 //}
+
+// new v2.1.4
+class e_menu_layout
+{
+	function __construct()
+	{
+
+	}
+
+	static function getLayouts($theme=null)
+	{
+		if(empty($theme))
+		{
+			$theme = e107::pref('core','sitetheme');
+		}
+
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
+		$HEADER         = null;
+		$FOOTER         = null;
+		$LAYOUT         = null;
+		$CUSTOMHEADER   = null;
+		$CUSTOMFOOTER   = null;
+
+		$file = e_THEME.$theme."/theme.php";
+
+		if(!is_readable($file))
+		{
+			return false;
+		}
+
+		e107::set('css_enabled',false);
+		e107::set('js_enabled',false);
+
+		require($file);
+
+		e107::set('css_enabled',true);
+		e107::set('js_enabled',true);
+
+		$head = array();
+		$foot = array();
+
+
+		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
+		{
+			foreach($LAYOUT as $key=>$template)
+			{
+				if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
+				{
+					continue;
+				}
+
+				if(strpos($template,'{---}') !==false)
+				{
+					list($hd,$ft) = explode("{---}",$template);
+					$head[$key] = isset($LAYOUT['_header_']) ? $LAYOUT['_header_'] . $hd : $hd;
+					$foot[$key] = isset($LAYOUT['_footer_']) ? $ft . $LAYOUT['_footer_'] : $ft ;
+				}
+				else
+				{
+					e107::getMessage()->addDebug('Missing "{---}" in $LAYOUT["'.$key.'"] ');
+				}
+			}
+			unset($hd,$ft);
+		}
+
+
+        if(is_string($CUSTOMHEADER))
+        {
+			$head['legacyCustom'] = $CUSTOMHEADER;
+        }
+        elseif(is_array($CUSTOMHEADER))
+        {
+            foreach($CUSTOMHEADER as $k=>$v)
+            {
+                $head[$k] = $v;
+            }
+        }
+
+        if(is_string($HEADER))
+        {
+			$head['legacyDefault'] = $HEADER;
+        }
+        elseif(is_array($HEADER))
+        {
+			 foreach($HEADER as $k=>$v)
+            {
+                $head[$k] = $v;
+            }
+
+        }
+
+		if(is_string($CUSTOMFOOTER))
+        {
+			$foot['legacyCustom'] = $CUSTOMFOOTER;
+        }
+        elseif(is_array($CUSTOMFOOTER))
+        {
+	        foreach($CUSTOMFOOTER as $k=>$v)
+            {
+                $foot[$k] = $v;
+            }
+        }
+
+
+        if(is_string($FOOTER))
+        {
+			$foot['legacyDefault'] = $FOOTER;
+        }
+        elseif(is_array($FOOTER))
+        {
+	        foreach($FOOTER as $k=>$v)
+            {
+                $foot[$k] = $v;
+            }
+        }
+
+		$layout = array();
+
+		foreach($head as $k=>$v)
+		{
+			$template = $head[$k]."\n{---}".$foot[$k];
+			$layout['templates'][$k] = $template;
+			$layout['menus'][$k] = self::countMenus($template);
+		}
+
+
+		return $layout;
+
+
+	}
+
+
+	private static function countMenus($template)
+	{
+		if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
+		{
+			sort($matches[1]);
+			return $matches[1];
+		}
+
+		return array();
+	}
+
+
+
+	static function menuSelector()
+	{
+
+	//	$p = e107::getPref('e_menu_list');	// new storage for xxxxx_menu.php list.
+		$sql = e107::getDb();
+		$frm = e107::getForm();
+
+		$done = array();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 ORDER BY menu_name ASC");
+		while ($row = $sql->fetch())
+		{
+
+			if(in_array($row['menu_name'],$done))
+			{
+				continue;
+			}
+
+			$done[] = $row['menu_name'];
+
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$tab1 = '<div class="menu-selector"><ul class="list-unstyled">';
+
+		foreach($pageMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " (#".$row['menu_path'].")";
+			$tab1 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>"<span>".$row['menu_name']."<small>".$menuInf."</small></span>"))."</li>";
+		}
+
+		$tab1 .= '</ul></div>';
+
+		$tab2 = '<div class="menu-selector"><ul class=" list-unstyled">';
+		foreach($pluginMenu as $row)
+		{
+			$menuInf = (!is_numeric($row['menu_path'])) ? ' ('.substr($row['menu_path'],0,-1).')' : " (#".$row['menu_path'].")";
+			$tab2 .= "<li>".$frm->checkbox('menuselect[]',$row['menu_id'],'',array('label'=>"<span>".$row['menu_name']."<small>".$menuInf."</small></span>"))."</li>";
+		}
+
+		$tab2 .= '</ul></div>';
+
+		$tabs = array(
+			'custom' => array('caption'=>'<i title="'.MENLAN_49.'" class="S16 e-custom-16"></i>', 'text'=>$tab1),
+			'plugin' => array('caption'=>'<i title="'.ADLAN_CL_7.'" class="S16 e-plugins-16"></i>', 'text'=>$tab2)
+
+		);
+
+
+		$defLayout =e107::getRegistry('core/e107/menu-manager/curLayout');;
+
+		$text = '<form id="e-mm-selector" action="'.e_ADMIN_ABS.'menus.php?configure='.$defLayout.'" method="post" target="e-mm-iframe">';
+
+		$text .= "<input type='hidden' id='curLayout' value='".$defLayout."' />";
+
+
+		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
+
+		$layouts = self::getLayouts();
+
+	//	$text .= print_a($layouts['menus'],true);
+
+		$text .= '
+
+		    <div class="dropdown pull-right">
+
+		        <a class="btn btn-default btn-sm e-mm-selector " title="Activate">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
+
+
+		        foreach($layouts['menus'] as $name=>$areas)
+		        {
+					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >';
+
+					foreach ($areas as $menu_act)
+					{
+						$text .= "<li><input type='submit' class='btn btn-primary btn-block'  name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+					}
+
+					$text .= '</ul>';
+
+		        }
+
+		        $text .= '
+
+		    </div>';
+
+
+		$text .= $frm->tabs($tabs);
+
+
+
+
+
+		$text .= '</form>';
+
+		$tp = e107::getParser();
+
+		$caption = MENLAN_22;
+
+		;
+
+		$diz = MENLAN_58;
+
+		$caption .= "<span class='pull-right'><a class='e-tip' title=\"".$tp->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
+
+
+		return array('caption'=>$caption,'text'=>$text);
+
+
+
+
+
+
+	}
+
+
+
+}
+
 
 
 // XXX Menu Manager Re-Write with drag and drop and multi-dimensional array as storage. ($pref)
@@ -568,105 +1098,7 @@ class e_layout
 			
 			require_once(e_CORE."templates/admin_icons_template.php");
 
-			e107::js('url',"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js");
-			e107::js('url',	"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/jquery-ui.css");
 
-			e107::js('inline','
-			 $(function() 
-			 {
-			 		// post the form back to this script. 		
-			 		var saveData = function(areaid)
-			 		{
-			 						
-			 			var formid 	= "#form-" + areaid;
-						var form 	= $(formid);
-						var data 	= form.serialize();
-							
-						$.ajax({
-						  type: "POST",
-						  url: "menus.php",
-						  data: data
-						}).done(function( msg ) 
-						{
-							$(".menuOption").show();
-						//	 alert("POSTED: "+ msg );
-						});			
-			 			
-			 		}
-			 				
-			 				
-			 		
-			 	
-					
-				 	$(".sortable").sortable({
-				 		connectWith: $("#area-1,#area-2,#area-3,#area-4,#area-5"),
-						revert: true,
-						cursor: "move",
-						distance: 20,
-					//	containment: $(".sortable"),
-						update: function(ev,ui)
-				        {
-				        	var areaid = $(this).attr("id");
-							saveData(areaid);
-				        }
-					});
-					
-					
-					
-					
-			//		$( ".draggable", window.top.document).click(function()
-			//		{
-			//			alert("hi there");	
-			//		});
-				
-				// http://jsfiddle.net/DT764/2/	
-					
-			
-					$( ".draggable", window.top.document).draggable({
-						connectToSortable: ".sortable",
-						helper: "clone",
-						appendTo: $(this), // ".sortable", // "#area-1", //FIXME Needs to be a specific area. 
-						revert: "invalid",
-						containment: "parent",
-						delay: 0,
-						revertDuration: 100,
-						cursor: "move",
-						iframeFix: true,
-						containment: false,
-						stop: function(e, ui) {  //TODO Rename layout and area in the hidden fields to that of the where the menu was dropped. 
-                        	// Figure out positioning magic to determine if e.ui.position is in the iframe
-                      	//	var what = $(this).parent().attr("id");
-						//	$(".sortable").draggable( "disable" );
-                        //	alert(what);
-                    	}
-			       
-					});
-				
-				//	$( "ul, li", window.top.document ).disableSelection();
-				
-				
-					$( ".deleteMenu").on("click", function()
-					{
-						var deleteId = $(this).attr("data-delete");
-						var area 	= $(this).attr("data-area");
-						$("#"+deleteId).hide("slow", function(){
-							 $("#"+deleteId).remove();
-						});
-						
-						
-					//	$("#"+deleteId).remove();
-					//	alert(deleteId + " " + area);
-					
-					
-						saveData(area);
-					});
-					
-				
-					
-				
-			 });
-		 ');
-		 	
 			
 		 /*
 		
@@ -683,7 +1115,7 @@ class e_layout
 		*/
 						
 			$this->curLayout = vartrue($_GET['configure'], $pref['sitetheme_deflayout']);
-			$this->renderLayout($this->curLayout);	
+			$this->renderLayout($this->curLayout);
 			
 		
 			
@@ -825,7 +1257,7 @@ class e_layout
 		
 		// return print_a($this->menuData,true);
 		$text = "<div class='menu-panel'>";
-		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">Area ".$area."</div>\n";
+		$text .= "<div class='menu-panel-header' title=\"".MENLAN_34."\">".MENLAN_14." ".$area."</div>\n";
 		$text .= $frm->open('form-area-'.$area,'post',e_SELF);
 		$text .= "<ul id='area-".$area."' class='sortable unstyled list-unstyled'>
 			<li>&nbsp;</li>";
@@ -1056,7 +1488,7 @@ class e_layout
 	        <table class='table adminform'>
 			<tr>
 			<td>
-			".MENLAN_4." ".
+			".LAN_VISIBLE_TO." ".
 			r_userclass('menu_class', intval($_GET['class']), "off", "public,member,guest,admin,main,classes,nobody")."
 			</td>
 			</tr>
@@ -1227,7 +1659,7 @@ class e_layout
 		
 	//	$ns->frontend = false;
 		
-		$ns->tablerender("Menu Layout",$text);		
+		$ns->tablerender(MENLAN_55,$text);		
 	}
 	
 	
@@ -1290,19 +1722,17 @@ class e_layout
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
 
 
-// FIXME - quick temporarry fix for missing icons on menu administration. We need different core style to be included (forced) here - e.g. e107_web/css/admin/sprite.css
-if(e_IFRAME) //<-- Check config and delete buttons if modifying
+
+
+
+if (!empty($pref['e_header_list']) && is_array($pref['e_header_list']))
 {
-
-//e107::js('core','bootstrap/js/bootstrap.min.js');
-//e107::css('core','bootstrap/css/bootstrap.min.css');
-	e107::css('url','{e_THEME}/bootstrap3/admin_style.css');
-
+	foreach($pref['e_header_list'] as $val)
+	{
+		// no checks fore existing file - performance
+		e107_include_once(e_PLUGIN.$val."/e_header.php");
+	}
 }
-
-
-
-
 
 
 $e_sub_cat = 'menus';
@@ -1375,8 +1805,7 @@ if($_POST)
 		
 		
 		
-		
-		
+
 		
 		
 		
@@ -1390,14 +1819,16 @@ if($_POST)
 		{
 //			$men->menuScanMenus();   // - Runs 2x - Is already called by menuModify() in menumanager_class.php
             $text = $men->menuRenderMessage();
-            $text .= $men->menuSelectLayout();
+         //   $text .= $men->menuSelectLayout();
 			$text .= $men->menuVisibilityOptions();
 			$text .= $men->menuInstanceParameters();
             $text .= $men->menuRenderIframe();
-            $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, e107::getMessage()->render(). $text, 'menus_config');
+            echo $text;
+         //   $ns -> tablerender(ADLAN_6.SEP.LAN_MENULAYOUT, e107::getMessage()->render(). $text, 'menus_config');
 		}
 		else // Within the IFrame.
 		{
+
 		  	$men->menuRenderPage();
 
 		}
@@ -1417,7 +1848,7 @@ if($_POST)
 
 // -----------------------------------------------------------------------------
 
-require_once("footer.php");
+ require_once("footer.php");
 
  // -----------------------------------------------------------------------
 

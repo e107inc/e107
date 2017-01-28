@@ -376,10 +376,28 @@ class news {
 
 		$wrapperKey = (!empty($param['template_key'])) ? 'news/'.$param['template_key'].'/item' : 'news/view/item';
 
+		$editable = array(
+			'table' => 'news',
+			'pid'   => 'news_id',
+			'vars'  => 'news_item',
+			'perms' => 'H|H4',
+			'shortcodes'    => array(
+					'news_title'        => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
+					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'span'),
+					'news_body'         => array('field'=>'news_body', 'type'=>'html', 'container'=>'div'),
+					'news_summary'      => array('field'=>'news_summary', 'type'=>'text', 'container'=>'span'),
+			)
+
+		);
+
+
+
+
 		$sc = e107::getScBatch('news')
 			->wrapper($wrapperKey)
 			->setScVar('news_item', $news)
-			->setScVar('param', $param);
+			->setScVar('param', $param)
+			->editable($editable);
 
 
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
@@ -684,9 +702,11 @@ class e_news_tree extends e_front_tree_model
 		$parser = e107::getParser();
 		$batch = e107::getScBatch('news')
 			->setScVar('param', $param);
-			
-		$batch->wrapper('news_menu/latest'); //@SecretR - Please FIXME, I'm lost in here. (Cam) 
+
+		$wrapperKey = ($parms['tmpl'].'/'.$parms['tmpl_key']);
+		$batch->wrapper($wrapperKey);
 		$i = 1;
+
 
 		$items = $this->getTree();
 
@@ -816,7 +836,7 @@ class e_news_category_item extends e_front_model
 		{
 			return '';
 		}
-		return (string) $this->cat('news_count');
+		return (string) e107::getParser()->toBadge( $this->cat('news_count'));
 	}
 }
 

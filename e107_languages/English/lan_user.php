@@ -114,6 +114,15 @@ define("LAN_USER_83", "Hide email address?: ");					// LAN_113
 define("LAN_USER_84", "This will prevent your email address from being displayed on site");	// LAN_114
 define("LAN_USER_85", "If you want to change your user name, you must ask a site administrator");
 define("LAN_USER_86", "Maximum avatar size is --WIDTH-- x --HEIGHT-- pixels");
+define("LAN_USER_87", "Login to rate this user!");
+
+// social plugin
+define("LAN_XUP_ERRM_01", "Signup failed! This feature is disabled.");
+define("LAN_XUP_ERRM_02", "Signup failed! Wrong provider.");
+define("LAN_XUP_ERRM_03", "Log in Failed! Wrong provider.");
+define("LAN_XUP_ERRM_04", "Signup failed! User already signed in.");
+define("LAN_XUP_ERRM_05", "Signup failed! User already exists. Please use 'login' instead.");
+define("LAN_XUP_ERRM_06", "Signup failed! Can't access user email - registration without an email is impossible.");
 
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages

@@ -6,16 +6,11 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/phpinfo.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once("../class2.php");
-if (!getperms("0"))
+
+if(!getperms("0"))
 {
 	e107::redirect('admin');
     exit;
@@ -60,10 +55,12 @@ $security_risks = array(
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
     }
-	
+
+	$sessionSaveMethod = ini_get('session.save_handler');
+
 	if($sessionSavePath = ini_get('session.save_path'))
 	{
-		if(!is_writable($sessionSavePath))
+		if(!is_writable($sessionSavePath) && $sessionSaveMethod === 'files')
 		{
 			$mes->addError("<b>session.save_path</b> is not writable! That can cause major issues with your site.");	
 		}

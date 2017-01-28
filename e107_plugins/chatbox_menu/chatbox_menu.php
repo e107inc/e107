@@ -8,14 +8,6 @@
  *
  */
 
-/**
- *	e107 Chatbox plugin
- *
- *	@package	e107_plugins
- *	@subpackage	chatbox
- */
-
-error_reporting(E_ALL);
 if(isset($_POST['chatbox_ajax']))
 {
 	define('e_MINIMAL',true);
@@ -24,10 +16,8 @@ if(isset($_POST['chatbox_ajax']))
 
 global $e107cache, $e_event, $e107;
 
-
 $tp = e107::getParser();
 $pref = e107::getPref(); 
-
 
 
 if (!e107::isInstalled('chatbox_menu')) 
@@ -36,7 +26,7 @@ if (!e107::isInstalled('chatbox_menu'))
 }
 
 
-e107::lan('chatbox_menu',e_LANGUAGE);
+e107::lan('chatbox_menu', e_LANGUAGE);
 
 // FIXME - start - LAN is not loaded
 /*
@@ -191,7 +181,8 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] != '')
 					{
 						$sql->insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
 						$edata_cb = array("cmessage" => $cmessage, "ip" => $ip);
-						$e_event -> trigger("cboxpost", $edata_cb);
+						$e_event -> trigger("cboxpost", $edata_cb); // deprecated
+						e107::getEvent('user_chatbox_post_created', $edata_cb); 
 						$e107cache->clear("nq_chatbox");
 					}
 				}
@@ -211,7 +202,11 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] != '')
 if(!USER && !$pref['anon_post']){
 	if($pref['user_reg'])
 	{
-		$texta = "<div style='text-align:center'>".CHATBOX_L3."</div><br /><br />";
+		$text1 = str_replace(array('[',']'), array("<a href='".e_LOGIN."'>", "</a>"), CHATBOX_L3);
+		if($pref['user_reg'] == 1 ){
+		  $text1 .= str_replace(array('[',']'), array("<a href='".e_SIGNUP."'>", "</a>"), CHATBOX_L3b);		
+		}
+		$texta = "<div style='text-align:center'>".$text1."</div><br /><br />";
 	}
 }
 else
@@ -275,7 +270,11 @@ if(!$text = $e107cache->retrieve("nq_chatbox"))
 	{
 		$pref['cb_mod'] = e_UC_ADMIN;
 	}
-	define("CB_MOD", check_class($pref['cb_mod']));
+
+	if(!defined('CB_MOD'))
+	{
+		define("CB_MOD", check_class($pref['cb_mod']));
+	}
 
 	$qry = "
 	SELECT c.*, u.user_name, u.user_image FROM #chatbox AS c

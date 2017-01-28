@@ -17,6 +17,7 @@ if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'
 $_E107['no_online'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
+$_E107['no_maintenance'] = true;
 
 if(!defined('TINYMCE_DEBUG'))
 {
@@ -128,7 +129,7 @@ TEMPL;
 
 				//$content = str_replace('\r\n',"<br />",$content);
 				//$content =  nl2br($content, true);
-				$content = $tp->toHtml($content, true);
+				$content = $tp->toHtml($content, true, 'WYSIWYG');
 			}
 
 			$content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor.
@@ -160,7 +161,7 @@ TEMPL;
 			//echo $tp->toHtml(str_replace("\n","",$content), true);
 
 			$content = str_replace("{e_BASE}",e_HTTP, $content); // We want {e_BASE} in the final data going to the DB, but not the editor.
-			$content = $tp->toHtml($content, true);
+			$content = $tp->toHtml($content, true, 'WYSIWYG');
 			$content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
 
 			$text = "";
@@ -192,9 +193,9 @@ TEMPL;
 
 			$content = trim($content);
 
-			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
-			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
-			$content 	= str_replace($srch, $repl, $content);
+		//	$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+		//	$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
+		//	$content 	= str_replace($srch, $repl, $content);
 
 			// resize the thumbnail to match wysiwyg width/height.
 
@@ -219,6 +220,8 @@ TEMPL;
 
 			$text = e107::getBB()->htmltoBBcode($content);   // not reliable enough yet.
 		}
+
+		$text = str_replace('[html]<p></p>[/html]','',$text); // cleanup.
 
 		return $text;
 
@@ -295,6 +298,12 @@ TEMPL;
 
 		foreach($arr['img'] as $img)
 		{
+			if(substr($img['src'],0,4) == 'http' || strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			{
+				continue;
+			}
+
+
 			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
 
 			$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
@@ -313,7 +322,8 @@ TEMPL;
 				$qr['h'] = $img['height'];
 			}
 
-			$qr['ebase'] = true; 
+			$qr['ebase'] = true;
+
 			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
 			$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';

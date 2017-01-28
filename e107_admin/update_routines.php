@@ -1,26 +1,14 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2010 e107 Inc (e107.org)
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $URL$
-|     $Revision$
-|     $Id$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 
 /**
- *	@package    e107
- *	@subpackage	admin
- *	@version 	$Id$;
  *
  *	Update routines from older e107 versions to current.
  *
@@ -33,7 +21,7 @@
 
 require_once('../class2.php');
 require_once(e_HANDLER.'db_table_admin_class.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function
 //		- reduces code size typically 30%.
 //		- keeping check and update code together should improve clarity/reduce mis-types etc
@@ -59,12 +47,13 @@ $dbupdate = array();			// Array of core upgrade actions
 
 global $e107cache;
 
-if (is_readable(e_ADMIN.'ver.php'))
+if(is_readable(e_ADMIN.'ver.php'))
 {
   include(e_ADMIN.'ver.php');
 }
 
 $mes = e107::getMessage();
+/*
 // If $dont_check_update is both defined and TRUE on entry, a check for update is done only once per 24 hours.
 $dont_check_update = varset($dont_check_update, FALSE);
 
@@ -81,8 +70,9 @@ if ($dont_check_update === TRUE)
 		}
 	}
 }
+*/
 
-
+$dont_check_update = false;
 
 if (!$dont_check_update)
 {
@@ -133,13 +123,18 @@ if (!$dont_check_update)
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
 
+	// $dbupdate['212_to_213'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.2','2.1.3')), 'message'=> null, 'hide_when_complete'=>true);
 
-	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>false);
+
+	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
 
 
 	// always run these last.
 	$dbupdate['core_database'] = array('master'=>false, 'title'=> $LAN_UPDATE_5);
 	$dbupdate['core_prefs'] = array('master'=>true, 'title'=> LAN_UPDATE_13);						// Prefs check
+
+
+
 //	$dbupdate['70x_to_706'] = LAN_UPDATE_8.' .70x '.LAN_UPDATE_9.' .706';
 }		// End if (!$dont_check_update)
 
@@ -163,7 +158,7 @@ class e107Update
 		if(varset($_POST['update_core']) && is_array($_POST['update_core']))
 		{
 			$func = key($_POST['update_core']);
-			$message = $this->updateCore($func);
+			$this->updateCore($func);
 		}	
 		
 		if(varset($_POST['update']) && is_array($_POST['update'])) // Do plugin updates
@@ -171,11 +166,7 @@ class e107Update
 			$func = key($_POST['update']);
 			$this->updatePlugin($func);
 		}	
-			
-		if(vartrue($message))
-		{
-			$mes->addSuccess($message);	
-		}
+
 		
 		$this->renderForm();	
 	}
@@ -187,6 +178,7 @@ class e107Update
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
+		$sql = e107::getDb();
 
 
 	//	foreach($this->core as $func => $data)
@@ -241,16 +233,20 @@ class e107Update
 	{
 		if(!$list = e107::getPlugin()->updateRequired())
 		{
-			return;
+			return false;
 		}
 		
 		$frm = e107::getForm();
-		
+
+		$tp = e107::getParser();
+
 		$text = "";
 		foreach($list as $path=>$val)
 		{
+			$name = !empty($val['@attributes']['lan']) ? $tp->toHtml($val['@attributes']['lan'],false,'TITLE') : $val['@attributes']['name'];
+
 			$text .= "<tr>
-					<td>".$val['@attributes']['name']."</td>
+					<td>".$name."</td>
 					<td>".$frm->admin_button('update['.$path.']', LAN_UPDATE, 'warning', '', 'disabled='.$this->disabled)."</td>
 					</tr>";			
 		}
@@ -265,6 +261,7 @@ class e107Update
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$sql = e107::getDb();
 		
 		$text = "";
 
@@ -380,8 +377,11 @@ function update_check()
 		
 		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
+
 		  if (function_exists('update_'.$func))
 			{
+
+				$sql->db_Mark_Time('Check Core Update_'.$func.' ');
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
@@ -395,6 +395,7 @@ function update_check()
 		{
 			if (function_exists('update_'.$func))
 			{
+			//	$sql->db_Mark_Time('Check Core Update_'.$func.' ');
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
@@ -420,18 +421,27 @@ function update_check()
 	if ($update_needed === TRUE)
 	{
 		$frm = e107::getForm();
+		$label = LAN_UPDATE." ".e107::getParser()->toGlyph('fa-arrow-right');
+
 		
-		$txt = "
+		$text = "
 		<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
 		<div>
-			".ADLAN_120."
-			".$frm->admin_button('e107_system_update', LAN_UPDATE, 'other')."
-		</div>
+			<p>".ADLAN_120."</p>
+			".$frm->admin_button('e107_system_update', 'update', 'other', $label)."
+		</div><br />
 		</form>
 		";
-		
-		$mes->addInfo($txt);
+
+
+	//	$text = ADLAN_120. "<a class='btn btn-xs btn-inline' href='".e_ADMIN_ABS."e107_update.php'>". e107::getParser()->toGlyph('fa-chevron-circle-right')."</a>";
+	//	$text .= "<hr />";
+		$mes->addInfo($text);
+
 	}
+
+
+	return $update_needed;
 }
 
 	
@@ -542,7 +552,43 @@ function update_core_database($type = '')
 	return $just_check;
 }
 
+	/**
+	 * @param string $type
+	 * @return bool true = no update required, and false if update required.
+	 */
+	 function update_212_to_213($type='')
+	{
 
+		$sql = e107::getDb();
+		$log = e107::getLog();
+		$just_check = ($type == 'do') ? false : true;
+
+			// List of changed menu locations.
+			/*
+		$changeMenuPaths = array(
+
+			array('oldpath'	=> 'comment_menu',		'newpath' => 'comment',		'menu' => 'comment_menu'),
+		);
+
+		if(!empty($changeMenuPaths))
+		{
+			foreach($changeMenuPaths as $val)
+			{
+				$qry = "SELECT menu_path FROM `#menus` WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) LIMIT 1";
+				if($sql->gen($qry))
+				{
+					if ($just_check) return update_needed('Menu path changed required:  '.$val['menu'].' ');
+					$updqry = "menu_path='".$val['newpath']."/' WHERE menu_name = '".$val['menu']."' AND (menu_path='".$val['oldpath']."' || menu_path='".$val['oldpath']."/' ) ";
+					$status = $sql->update('menus', $updqry) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
+					$log->logMessage(LAN_UPDATE_23.'<b>'.$val['menu'].'</b> : '.$val['oldpath'].' => '.$val['newpath'], $status); // LAN_UPDATE_25;
+					// catch_error($sql);
+				}
+			}
+		}*/
+
+		return true;
+
+	}
 
 
 //--------------------------------------------
@@ -550,6 +596,7 @@ function update_core_database($type = '')
 //--------------------------------------------
 function update_706_to_800($type='')
 {
+
 	global $pref, $e107info;
 	global $sysprefs, $eArrayStorage;
 
@@ -560,9 +607,9 @@ function update_706_to_800($type='')
 	$sql2 	= e107::getDb('sql2');
 	$tp 	= e107::getParser();
 	$ns 	= e107::getRender();
-	
+
 	e107::getCache()->clearAll('db');
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 
 	e107::getMessage()->setUnique();
 
@@ -575,7 +622,7 @@ function update_706_to_800($type='')
 				);
 
 	// List of DB tables not required (includes a few from 0.6xx)
-	$obs_tables = array('flood', 'headlines', 'stat_info', 'stat_counter', 'stat_last', 'session', 'preset', 'tinymce');
+	$obs_tables = array('flood',  'stat_info', 'stat_counter', 'stat_last', 'session', 'preset', 'tinymce');
 
 
 	// List of DB tables newly required  (defined in core_sql.php) (The existing dblog table gets renamed)
@@ -738,7 +785,7 @@ function update_706_to_800($type='')
 
 
 	// Move the maximum online counts from menu prefs to a separate pref - 'history'
-	e107::getCache()->clearAll('system');
+	e107::getCache()->clear_sys('Config');
 	$menuConfig = e107::getConfig('menu',true,true); 
 	
 	if ($menuConfig->get('most_members_online') || $menuConfig->get('most_guests_online') || $menuConfig->get('most_online_datestamp'))
@@ -951,9 +998,9 @@ function update_706_to_800($type='')
 	}
 
 	// Check need for user timezone before we delete the field
-	if (vartrue($pref['signup_option_timezone']))
+//	if (vartrue($pref['signup_option_timezone']))
 	{
-		if ($sql->db_Field('user', 'user_timezone', '', TRUE) && !$sql->db_Field('user_extended','user_timezone','',TRUE))
+		if ($sql->field('user', 'user_timezone')===true && $sql->field('user_extended','user_timezone')===false)
 		{
 			if ($just_check) return update_needed('Move user timezone info');
 			if (!copy_user_timezone())
@@ -1143,9 +1190,7 @@ function update_706_to_800($type='')
 	
 //	$notify_prefs = $sysprefs -> get('notify_prefs');
 //	$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
-	e107::getCache()->clearAll('system');
-
-
+	e107::getCache()->clear_sys('Config');
 
 	$notify_prefs = e107::getConfig('notify',true,true)->getPref();
 
@@ -1274,7 +1319,7 @@ function update_706_to_800($type='')
 	{
 		$data = '<?xml version="1.0" encoding="utf-8"?>
 <e107Filetypes>
-	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml" maxupload="2M" />
+	<class name="253" type="zip,gz,jpg,jpeg,png,gif,xml,pdf" maxupload="2M" />
 </e107Filetypes>';	
 					
 		file_put_contents(e_SYSTEM."filetypes.xml",$data);
@@ -1301,7 +1346,10 @@ function update_706_to_800($type='')
 		{
 			if(!is_dir(e_MEDIA.$md))
 			{
-				mkdir(e_MEDIA.$md);		
+				if(mkdir(e_MEDIA.$md)===false)
+				{
+					e107::getMessage()->addWarning("Unable to create ".e_MEDIA.$md.".");
+				}
 			}			
 		}	
 	}
@@ -1319,7 +1367,10 @@ function update_706_to_800($type='')
 		{
 			$apath = (strstr($av['path'],'public/')) ? e_AVATAR_UPLOAD : e_AVATAR_DEFAULT;
 			
-			@rename($av['path'].$av['fname'], $apath. $av['fname']);			
+			if(rename($av['path'].$av['fname'], $apath. $av['fname'])===false)
+			{
+				e107::getMessage()->addWarning("Unable to more ".$av['path'].$av['fname']." to ".$apath. $av['fname'].". Please move manually.");
+			}
 		}	
 	}
 	
@@ -1702,6 +1753,7 @@ function core_media_import($cat,$epath)
 
 function update_70x_to_706($type='')
 {
+
 	global $sql,$ns, $pref, $e107info, $admin_log, $emessage;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;
@@ -1797,15 +1849,25 @@ function copy_user_timezone()
 	$sql2 = e107::getDb('sql2');
 	$tp = e107::getParser();
 
-	require_once(e_HANDLER.'user_extended_class.php');
-	$ue = new e107_user_extended;
+	// require_once(e_HANDLER.'user_extended_class.php');
+	$ue = e107::getUserExt();
 	$tmp = $ue->parse_extended_xml('getfile');
+
 	$tmp['timezone']['parms'] = $tp->toDB($tmp['timezone']['parms']);
+
 	if(!$ue->user_extended_add($tmp['timezone']))
 	{
-		return FALSE;
+		e107::getMessage()->addError("Unable to add user_timezone field to user_extended table.");
+		return false;
 	}
 
+	if($sql->field('user_extended', 'user_timezone')===false)
+	{
+		e107::getMessage()->addError("user_timezone field missing from user_extended table.");
+		return false;
+	}
+
+	e107::getMessage()->addDebug("Line:".__LINE__);
 	// Created the field - now copy existing data
 	if ($sql->db_Select('user','user_id, user_timezone'))
 	{
@@ -1814,7 +1876,7 @@ function copy_user_timezone()
 			$sql2->update('user_extended',"`user_timezone`='{$row['user_timezone']}' WHERE `user_extended_id`={$row['user_id']}");
 		}
 	}
-	return TRUE;		// All done!
+	return true;		// All done!
 }
 
 
@@ -1904,5 +1966,18 @@ function convert_serialized($serializedData, $type='')
 	return $data;
 }
 
+function theme_foot()
+{
+	global $pref;
+
+	if(!empty($_POST['update_core']['706_to_800']))
+	{
+		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade');
+		$base = base64_encode(http_build_query($data, null, '&'));
+		$url = "http://e107.org/e-install/".$base;
+		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
+	}
+
+}
 
 ?>

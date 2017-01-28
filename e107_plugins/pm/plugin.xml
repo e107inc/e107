@@ -4,7 +4,7 @@
 	<description lan="LAN_PLUGIN_PM_DESCRIPTION">This plugin is a fully featured Private Messaging system.</description>
 	<category>users</category>
 	<adminLinks>
-		<link url='pm_conf.php' description='ADLAN_PM_2' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
+		<link url='admin_config.php' description='LAN_CONFIGURE' icon='images/pvt_message_32.png' iconSmall='images/pvt_message_16.png' primary='true' />
 	</adminLinks>
 	<pluginPrefs>
 		<pref name="title">PMLAN_PM</pref>
@@ -13,7 +13,7 @@
 		<pref name="read_timeout">0</pref>
 		<pref name="unread_timeout">0</pref>
 		<pref name="popup">0</pref>
-		<pref name="popup_delay"></pref>
+		<pref name="popup_delay">3</pref>
 		<pref name="perpage">10</pref>
 		<pref name="pm_class">e_UC_MEMBER</pref>
 		<pref name="notify_class">e_UC_ADMIN</pref>
@@ -25,5 +25,6 @@
 		<pref name="allow_userclass">1</pref>
 		<pref name="pm_limits">0</pref>
 		<pref name="pm_max_send">100</pref>
+		<pref name="sent_to_class">matchclass</pref>
 	</pluginPrefs>
 </e107Plugin>

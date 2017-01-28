@@ -14,7 +14,7 @@
 */
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
 
 class convert
 {
@@ -142,7 +142,8 @@ class convert
 	 * 
 	 * @return string parsed date
 	 */
-	function convert_date($datestamp, $mask = '') {
+	function convert_date($datestamp, $mask = '')
+	{
 		if(empty($mask))
 		{
 			$mask = 'long';
@@ -196,12 +197,23 @@ class convert
 				}				
 			break;
 		}
-	
-		return strftime($mask, $datestamp);
+
+		$dateString = strftime($mask, $datestamp);
+
+		if (!e107::getParser()->isUTF8($dateString))
+		{
+			$dateString = utf8_encode($dateString);
+		}
+
+		return $dateString;
 	}
 
 
+
+
 	/**
+	 * @deprecated - for internal use only.
+	 * @see $tp->toDate() as a replacement. 
 	 * Converts between unix timestamp and human-readable date-time OR vice-versa. (auto-detected)
 	 * @param string $string unix timestamp OR human-readable date-time.
 	 * @param string $mask (optional) long | short | input
@@ -620,6 +632,12 @@ class convert
 		  }
 		  if($format == 'short' && count($outputArray) == 1) { break; }
 		}
+
+		if(empty($outputArray[1]) && ($outputArray[0] == "0 ".$mins))
+		{
+			return deftrue('LANDT_10',"Just now");
+		}
+
 		return ($mode ? $outputArray : implode(", ", $outputArray) . " " . LANDT_AGO);
 	}
 

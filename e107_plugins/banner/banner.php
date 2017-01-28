@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2009-2014 e107 Inc (e107.org)
+ * Copyright (C) 2009-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -21,11 +21,11 @@ if (!e107::isInstalled('banner'))
 }
 
 e107::includeLan(e_PLUGIN."banner/languages/".e_LANGUAGE."_banner.php"); // TODO
-e107::lan('banner'); 
+e107::lan('banner');
 
 
 
-
+$sql = e107::getDb();
 $mes = e107::getMessage();
 $frm = e107::getForm();
 
@@ -82,7 +82,7 @@ if (isset($_POST['clientsubmit']))
 	// check 
 	if(!$banner_total) 
 	{	
-		$mes->addInfo(BANNERLAN_29); 
+		$mes->addInfo(LAN_NO_RECORDS_FOUND.": ".LAN_PLUGIN_BANNER_NAME); 
 		$ns->tablerender(PAGE_NAME, $mes->render());
 		require_once(FOOTERF);
 		exit;
@@ -101,9 +101,9 @@ if (isset($_POST['clientsubmit']))
 			$BANNER_TABLE_BANNER_ID 			= $row['banner_id'];
 			$BANNER_TABLE_BANNER_CLICKS 		= $row['banner_clicks'];
 			$BANNER_TABLE_BANNER_IMPRESSIONS 	= $row['banner_impressions'];
-			$BANNER_TABLE_ACTIVE 				= BANNERLAN_36.($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
-			$BANNER_TABLE_STARTDATE 			= BANNERLAN_37." ".$start_date;
-			$BANNER_TABLE_ENDDATE 				= BANNERLAN_34." ".$end_date;
+			$BANNER_TABLE_ACTIVE 				= LAN_VISIBILITY." ".($row['banner_active'] != "255" ? LAN_YES : "<b>".LAN_NO."</b>");
+			$BANNER_TABLE_STARTDATE				= LAN_START." ".$start_date;
+			$BANNER_TABLE_ENDDATE				= LAN_END." ".$end_date;
 			
 			if ($row['banner_ip']) 
 			{
