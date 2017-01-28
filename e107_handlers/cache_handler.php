@@ -150,7 +150,7 @@ class ecache {
 					}
 					elseif(strpos($ret,'<?php') === 0)
 					{
-						$ret = '<?php' ;			// Handle the history for now
+						$ret = substr($ret,5);			// Handle the history for now
 					}
 					return $ret;
 				}
