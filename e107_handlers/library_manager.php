@@ -606,6 +606,7 @@ class core_library
 			),
 			// Override library path.
 			'library_path'      => '{e_WEB}lib/font-awesome',
+			'path'              => '4.7.0',
 		);
 
 		return $libraries;
