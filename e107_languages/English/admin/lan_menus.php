@@ -73,4 +73,10 @@ define("MENLAN_55", "Menu Layout");
 define("MENLAN_56", "Custom Pages");
 define("MENLAN_57", "Drag-and-Drop Menus");
 define("MENLAN_58", "The Menu-Manager allows you to place and arrange your menus within your theme template. Hover over the sub-areas to modify existing menu items.");
+
+define("MENLAN_59", "Area [x]");
+
+
+
+
 ?>
