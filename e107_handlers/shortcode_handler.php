@@ -112,10 +112,12 @@ class e_parse_shortcode
 		{
 			$this->loadOverrideShortcodes();
 			$this->loadThemeShortcodes();
-			$this->loadPluginShortcodes();
-			$this->loadPluginSCFiles();
-
 		}
+
+		$this->loadPluginShortcodes();
+		$this->loadPluginSCFiles();
+
+		
 		//$this->loadCoreShortcodes(); DEPRECATED
 
 		$editableActivePref = e107::getPref('inline_editing',255);
