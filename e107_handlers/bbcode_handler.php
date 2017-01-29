@@ -35,17 +35,17 @@ class e_bbcode
 	function __construct()
 	{
 		$pref = e107::getPref();
-		
+
 		$this->core_bb = array(
-		'alert',
-		'blockquote', 'img', 'i', 'u', 'center',
-		'_br', 'color', 'size', 'code',
-		 'flash', 'link', 'email',
-		'url', 'quote', 'left', 'right',
-		'b', 'justify', 'file', 'stream',
-		'textarea', 'list', 'time',
-		'spoiler', 'hide', 'youtube', 'sanitised', 
-		'p', 'h', 'nobr', 'block','table','th', 'tr','tbody','td','markdown','video','glyph'
+			'alert',
+			'blockquote', 'img', 'i', 'u', 'center',
+			'_br', 'color', 'size', 'code',
+			'flash', 'link', 'email',
+			'url', 'quote', 'left', 'right',
+			'b', 'justify', 'file', 'stream',
+			'textarea', 'list', 'time',
+			'spoiler', 'hide', 'youtube', 'sanitised',
+			'p', 'h', 'nobr', 'block', 'table', 'th', 'tr', 'tbody', 'td', 'video', 'glyph'
 		);
 
 		foreach($this->core_bb as $c)

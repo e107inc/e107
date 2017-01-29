@@ -955,6 +955,7 @@ class e_menu_layout
 		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
 
 		$layouts = self::getLayouts();
+		$tp = e107::getParser();
 
 	//	$text .= print_a($layouts['menus'],true);
 
@@ -964,17 +965,19 @@ class e_menu_layout
 
 		        <a class="btn btn-default btn-sm e-mm-selector " title="Activate">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
 
+				$menuButtonLabel = defset("MENLAN_59", "Area [x]");
 
 		        foreach($layouts['menus'] as $name=>$areas)
 		        {
-					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >';
+					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >
+					<li><div class="btn-group">';
 
 					foreach ($areas as $menu_act)
 					{
-						$text .= "<li><input type='submit' class='btn btn-primary btn-block'  name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+						$text .= "<input type='submit' class='btn btn-sm btn-primary col-xs-6'  name='menuActivate[".trim($menu_act)."]' value=\"".$tp->lanVars($menuButtonLabel,trim($menu_act))."\" />\n";
 					}
 
-					$text .= '</ul>';
+					$text .= '</div></li></ul>';
 
 		        }
 
