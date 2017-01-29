@@ -320,7 +320,7 @@ define("LAN_LANG","Lang.");
 define("LAN_APPROVE","Approve");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
-//define("LAN_ACTIVE","Active");//English.php 
+define("LAN_ACTIVATE","Activate"); 
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
