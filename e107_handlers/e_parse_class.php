@@ -483,7 +483,7 @@ class e_parse extends e_parser
 	 * 				If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
 	 * @param boolean $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
 	 * 				the save_prefs() function has been called by a non admin user / user without html posting permissions.
-	 * @param boolean $mod [optional] The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
+	 * @param boolean|string $mod [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
 	 * @param boolean $original_author [optional]
 	 * @return string
@@ -511,7 +511,7 @@ class e_parse extends e_parser
 			$data = stripslashes($data);
 		}
 
-		if ($mod != 'pReFs') //XXX We're not saving prefs. 
+		if ($mod !== 'pReFs') //XXX We're not saving prefs.
 		{
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
@@ -579,7 +579,7 @@ class e_parse extends e_parser
 		}
 
 		// Don't allow hooks to mess with prefs.
-		if($mod === 'pReFs')
+		if($mod !== 'model')
 		{
 			return $ret;
 		}
