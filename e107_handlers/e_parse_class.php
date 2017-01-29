@@ -489,7 +489,7 @@ class e_parse extends e_parser
 	 * @return string
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $original_author = false)
+	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
 	{
 		$core_pref = e107::getConfig();
 
@@ -550,11 +550,10 @@ class e_parse extends e_parser
 			$no_encode = true;
 		}
 				
-		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
+		if($parm !== null && is_numeric($parm) && !check_class($core_pref->get('post_html'), '', $parm))
 		{
 			$no_encode = false;
 		}
-
 
 		if ($no_encode === true && strpos($mod, 'no_html') === false)
 		{
@@ -595,8 +594,8 @@ class e_parse extends e_parser
 			$opts = array(
 				'nostrip'   => $nostrip,
 				'noencode'  => $no_encode,
-				'mode'      => $mod,
-				'author'    => $original_author
+				'type'      => $parm['type'],
+				'field'     => $parm['field']
 			);
 
 			foreach($eParseList as $plugin)

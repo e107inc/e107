@@ -4269,6 +4269,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	protected $fieldTypes = array();
 	protected $dataFields = array();
+	protected $fieldInputTypes = array();
 	protected $validationRules = array();
 
 	protected $table;
@@ -5696,6 +5697,10 @@ class e_admin_ui extends e_admin_controller_ui
 				if(($key !== 'options' && false !== varset($att['data']) && null !== varset($att['type'],null) && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
+					if(!empty($att['type']))
+					{
+						$this->fieldInputTypes[$key] = $att['type'];
+					}
 				}
 
 
@@ -5728,12 +5733,15 @@ class e_admin_ui extends e_admin_controller_ui
 		if($this->_model) return $this;
 
 		// default model
+
+
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
             ->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
+			->setFieldInputTypes($this->fieldInputTypes)
 			->setDataFields($this->dataFields)
 			->setMessageStackName('admin_ui_model_'.$this->table)
 			->setParam('db_query', $this->editQry);

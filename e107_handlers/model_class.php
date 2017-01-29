@@ -514,6 +514,17 @@ class e_model extends e_object
      */
     protected $_data_fields = array();
 
+
+
+	/**
+	 * Current model field types eg. text, bbarea, dropdown etc.
+	 *
+	 *
+	 * @var string
+	 */
+	protected $_field_input_types = array();
+
+
 	/**
 	 * Current model DB table, used in all db calls
 	 *
@@ -719,6 +730,21 @@ class e_model extends e_object
     	return $this->_data_fields;
     }
 
+
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	public function getFieldInputType($key)
+    {
+        if(isset($this->_field_input_types[$key]))
+        {
+            return $this->_field_input_types[$key];
+        }
+
+        return false;
+    }
+
     /**
      * Set Predefined data fields in format key => type
      * @return e_model
@@ -726,6 +752,16 @@ class e_model extends e_object
     public function setDataFields($data_fields)
     {
     	$this->_data_fields = $data_fields;
+		return $this;
+    }
+
+	/**
+     * Set Predefined data fields in format key => type
+     * @return e_model
+     */
+    public function setFieldInputTypes($fields)
+    {
+    	$this->_field_input_types = $fields;
 		return $this;
     }
 
@@ -2646,6 +2682,7 @@ class e_front_model extends e_model
 			$value = $this->getPostedData($key);
 		}
 
+
 		switch ($type)
 		{
 			case 'int':
@@ -2660,7 +2697,8 @@ class e_front_model extends e_model
 			case 'str':
 			case 'string':
 			case 'array':
-				return $tp->toDB($value, false, false, 'model');
+				$type = $this->getFieldInputType($key);
+				return $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
 			break;
 
 			case 'json':
