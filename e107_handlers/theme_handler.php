@@ -2495,24 +2495,32 @@ class themeHandler
 		//	$ns->tablerender("Admin Message", "<br /><div style='text-align:center;'>".TPVLAN_40." <b>'".$themeArray[$this -> id]."'</b>.</div><br />");
 		//  $this->showThemes('admin');
 	}
-	
+
+	/**
+	 * @todo add admin log
+	 */
 	function setStyle()
 	{
 		global $pref,$e107cache;
-		$sql = e107::getDb();
-		$ns = e107::getRender();
-		$mes = e107::getMessage();
-		
-		//TODO adminlog
-		e107::getConfig()->setPosted('themecss', $_POST['themecss'])->setPosted('sitetheme_deflayout', $_POST['layout_default']);
-		
+		$sql            = e107::getDb();
+		$ns             = e107::getRender();
+		$mes            = e107::getMessage();
+
+		$themeCSS       = vartrue($_POST['themecss'],'style.css');
+		$themeLayout    = vartrue($_POST['layout_default'], 'default');
+
+		e107::getConfig()->setPosted('themecss',$themeCSS)->setPosted('sitetheme_deflayout', $themeLayout);
+
 		$msg = $this->setThemeConfig();
+
 		if($msg)
 		{
 			$mes->add(TPVLAN_37, E_MESSAGE_SUCCESS);
 			if(is_array($msg))
 				$mes->add($msg[0], $msg[1]);
 		}
+
+
 	}
 	
 	function setAdminStyle()
