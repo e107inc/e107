@@ -2660,7 +2660,7 @@ class e_front_model extends e_model
 			case 'str':
 			case 'string':
 			case 'array':
-				return $tp->toDB($value);
+				return $tp->toDB($value, false, false, 'model');
 			break;
 
 			case 'json':
