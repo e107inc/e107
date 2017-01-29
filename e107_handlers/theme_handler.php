@@ -1498,11 +1498,17 @@ class themeHandler
 		
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
+		$pref = e107::getConfig()->getPref();
 		$mes->addDebug("Rendering Theme Config");
 		
 		$this->loadThemeConfig();
 
 		$value = e107::getThemeConfig($this->id)->getPref();
+
+		if(empty($value) && !empty($pref['sitetheme_pref']))
+		{
+			$value = $pref['sitetheme_pref'];
+		}
 
 		if($this->themeConfigObj)
 		{
@@ -1523,7 +1529,8 @@ class themeHandler
 						$value[$field] = varset($value[$field][e_LANGUAGE],'');
 					}
 
-					$text .= "<tr><td><b>".$val['title']."</b>:</td><td colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div>
+					$tdClass = !empty($val['writeParms']['post']) ? 'form-inline' : '';
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div>
 </td></tr>";
 				}
 			}
@@ -1566,9 +1573,24 @@ class themeHandler
 					$theme_pref[$field] = $_POST[$field];
 				}
 
-				return $pref->setPref($theme_pref)->save(true,true,false);
+				if($pref->setPref($theme_pref)->save(true,true,false))
+				{
+					$siteThemePref = e107::getConfig()->get('sitetheme_pref');
+					if(!empty($siteThemePref))
+					{
+						e107::getConfig()->set('sitetheme_pref',null)->save(false,true,false); // remove old theme pref
+					}
+				}
+
+				if($pref->dataHasChanged())
+				{
+					e107::getCache()->clearAll('system'); // Need to clear cache in order to refresh library information.
+				}
+
+				return true;
 			}
 
+			e107::getCache()->clearAll('system');
 			return call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
 		}
 	}
