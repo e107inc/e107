@@ -62,6 +62,10 @@ class e_parse extends e_parser
 
 	private $thumbEncode = 0;
 
+	// BBcode that contain preformatted code.
+	private $preformatted = array('html', 'markdown');
+
+
 	// Set up the defaults
 	var $e_optDefault = array(
 		// default context: reflects legacy settings (many items enabled)
@@ -1658,6 +1662,7 @@ class e_parse extends e_parser
 							{	// Its a bbcode class file
 								require_once($bbPath.'bb_'.$bbFile.'.php');
 								$className = 'bb_'.$last_bbcode;
+
 								$this->bbList[$last_bbcode] = new $className();
 							}
 							elseif(file_exists($bbPath.$bbFile.'.bb'))
@@ -1669,6 +1674,7 @@ class e_parse extends e_parser
 					if ($className)
 					{
 						$tempCode = new $className();
+
 						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
 					}
 					elseif ($bbcode)
@@ -1765,15 +1771,14 @@ class e_parse extends e_parser
 						// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
 						if (!$opts['nobreak'])
 						{
-							if ($convertNL && substr($sub_blk,0,6) != '[html]') //XXX Quick Fix, find a cleaner way. 
+							if ($convertNL && ($this->preformatted($sub_blk) === false)) // eg. html or markdown
 							{
 								// We may need to convert to <br /> later
-							
 								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
 							}
 							else
 							{
-								// Not doing any more - its HTML so keep \n so HTML is formatted
+								// Not doing any more - its HTML or Markdown so keep it as is.
 								$sub_blk = preg_replace("#[\r]*\n[\r]*#", "\n", $sub_blk);
 							}
 						}
@@ -1810,7 +1815,7 @@ class e_parse extends e_parser
 								}
 								else 
 								{
-									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);	
+									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);
 								}
 								
 							}
@@ -1855,8 +1860,10 @@ class e_parse extends e_parser
 						}
 
 
-						//Run any hooked in parsers
-						if ($opts['hook'])
+						/**
+						 * / @deprecated
+						 */
+						if ($opts['hook']) //Run any hooked in parsers
 						{
 							if ( varset($pref['tohtml_hook']))
 							{
@@ -1877,6 +1884,9 @@ class e_parse extends e_parser
 								}
 							}
 
+							/**
+						    * / @deprecated
+						    */
 							if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
 							{
 								foreach($pref['e_tohtml_list'] as $hook)
@@ -1898,7 +1908,9 @@ class e_parse extends e_parser
 								}
 							}
 
-
+							/**
+						    * / Preferred 'hook'
+						    */
 							if(!empty($pref['e_parse_list']))
 							{
 								foreach($pref['e_parse_list'] as $plugin)
@@ -1979,6 +1991,30 @@ class e_parse extends e_parser
 
 		return trim($ret_parser);
 	}
+
+
+	/**
+	 * Check if a string begins with a preformatter flag.
+	 * @param $str
+	 * @return bool
+	 */
+	private function preformatted($str)
+	{
+		foreach($this->preformatted as $type)
+		{
+			$code = '['.$type.']';
+			if(strpos($str, $code) === 0)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+
+
 
 
 	function toASCII($text)
