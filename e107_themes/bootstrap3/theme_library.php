@@ -34,7 +34,7 @@ class theme_library
 	{
 		$bootswatch = e107::pref('theme', 'bootswatch', false);
 
-		if($bootswatch)
+		if(!empty($bootswatch))
 		{
 			// Disable Bootstrap CSS.
 			unset($libraries['cdn.bootstrap']['files']['css']);

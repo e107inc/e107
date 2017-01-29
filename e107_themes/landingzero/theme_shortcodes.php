@@ -113,42 +113,45 @@ class theme_shortcodes extends e_shortcode
  
 	  $text .= ' '.$sitedisclaimer;        
 		return e107::getParser()->toHtml($text, true, 'SUMMARY');	
-	}	
-	
- function sc_xurl_icons()  {
-     $social = array(
-            'rss'           => array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
-            'facebook'      => array('href'=> deftrue('XURL_FACEBOOK'),     'title'=>'Facebook'),
-            'twitter'       => array('href'=> deftrue('XURL_TWITTER'),      'title'=>'Twitter'),
-            'google'        => array('href'=> deftrue('XURL_GOOGLE'),       'title'=>'Google Plus'),
-            'linkedin'      => array('href'=> deftrue('XURL_LINKEDIN'),     'title'=>'LinkedIn'),
-            'github'        => array('href'=> deftrue('XURL_GITHUB'),       'title'=>'Github'),
-            'pinterest'     => array('href'=> deftrue('XURL_PINTEREST'),    'title'=>'Pinterest'),
-            'flickr'        => array('href'=> deftrue('XURL_FLICKR'),       'title'=>'Flickr'),
-            'instagram'     => array('href'=> deftrue('XURL_INSTAGRAM'),    'title'=>'Instagram'),
-            'youtube'       => array('href'=> deftrue('XURL_YOUTUBE'),      'title'=>'YouTube'),
-            'question-circle'      => array('href'=> deftrue('XURL_VIMEO'),     'title'=>'e107 HELP')
-        );
-        
-    //Fixme - GooglePlus not working.
+	}
 
-    $text =  '';   
-    $textstart ='<ul class="list-inline lz-social-icons">';
-    $textend   = '</ul>';
-    foreach($social as $id => $data)
-    {
-        if($data['href'] != '')
-        {
-             $text .= '
-             <li><a rel="nofollow" target="_blank" href="'.$data['href'].'" title="'.$data['title'].'"><i class="icon-lg ion-social-'.$id.'-outline"></i></a>&nbsp;</li>';
-             $text .= "\n";
-        }
-    }   
-    if($text !='')
-    {
-        return  $textstart.$text.$textend;
-    }
-  }
+
+	//@todo Replace with social template. 
+	function sc_xurl_icons()
+	{
+		$social = array(
+			'rss'             => array('href' => (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url' => 'news')) : ''), 'title' => 'RSS/Atom Feed'),
+			'facebook'        => array('href' => deftrue('XURL_FACEBOOK'), 'title' => 'Facebook'),
+			'twitter'         => array('href' => deftrue('XURL_TWITTER'), 'title' => 'Twitter'),
+			'google'          => array('href' => deftrue('XURL_GOOGLE'), 'title' => 'Google Plus'),
+			'linkedin'        => array('href' => deftrue('XURL_LINKEDIN'), 'title' => 'LinkedIn'),
+			'github'          => array('href' => deftrue('XURL_GITHUB'), 'title' => 'Github'),
+			'pinterest'       => array('href' => deftrue('XURL_PINTEREST'), 'title' => 'Pinterest'),
+			'flickr'          => array('href' => deftrue('XURL_FLICKR'), 'title' => 'Flickr'),
+			'instagram'       => array('href' => deftrue('XURL_INSTAGRAM'), 'title' => 'Instagram'),
+			'youtube'         => array('href' => deftrue('XURL_YOUTUBE'), 'title' => 'YouTube'),
+			'question-circle' => array('href' => deftrue('XURL_VIMEO'), 'title' => 'e107 HELP')
+		);
+
+		//Fixme - GooglePlus not working.
+
+		$text = '';
+		$textstart = '<ul class="list-inline lz-social-icons">';
+		$textend = '</ul>';
+		foreach($social as $id => $data)
+		{
+			if($data['href'] != '')
+			{
+				$text .= '
+             <li><a rel="nofollow" target="_blank" href="' . $data['href'] . '" title="' . $data['title'] . '"><i class="icon-lg ion-social-' . $id . '-outline"></i></a>&nbsp;</li>';
+				$text .= "\n";
+			}
+		}
+		if($text != '')
+		{
+			return $textstart . $text . $textend;
+		}
+	}
 
 
   	function sc_lz_subscribe()

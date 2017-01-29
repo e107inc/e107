@@ -1582,15 +1582,16 @@ class themeHandler
 					}
 				}
 
-				if($pref->dataHasChanged())
+			//	if($pref->dataHasChanged())
 				{
-					e107::getCache()->clearAll('system'); // Need to clear cache in order to refresh library information.
+
+					e107::getCache()->clearAll('library'); // Need to clear cache in order to refresh library information.
 				}
 
 				return true;
 			}
 
-			e107::getCache()->clearAll('system');
+			e107::getCache()->clearAll('library');
 			return call_user_func(array(&$this->themeConfigObj, 'process')); //pre v2.1.4
 		}
 	}
@@ -2352,13 +2353,40 @@ class themeHandler
 				
 		if(!empty($this->themeArray[$name]['preferences']))
 		{
-			 $core->set('sitetheme_pref', $this->themeArray[$name]['preferences']);	
+			$themePrefs = $this->themeArray[$name]['preferences'];
+
+			e107::getMessage()->addDebug("ThemePrefs found in theme.xml");
+
+			$this->id = $name;
+			$this->loadThemeConfig();
+			$name = get_class($this->themeConfigObj);
+
+			if($name === 'theme_config') // new way.  2.1.4
+			{
+				$themeConfig = e107::getThemeConfig($name);
+
+				e107::getMessage()->addDebug("Saving theme prefs to their own row. ");
+
+				foreach($themePrefs as $key=>$val)
+				{
+
+					$themeConfig->add($key,$val);
+				}
+
+				$themeConfig->save(false,true,false);
+
+
+			}
+			else // old way.
+			{
+				e107::getMessage()->addDebug("Saving theme prefs to sitetheme_ref");
+				 $core->set('sitetheme_pref', $this->themeArray[$name]['preferences']);
+			}
+
+
+
 		}
-		
-		
-	//	$core->set('sitetheme_releaseUrl', $this->themeArray[$name]['releaseUrl']);
-		
-		
+
 		if($contentCheck === true)
 		{
 			$sql->delete("menus", "menu_layout !='' ");
@@ -2367,6 +2395,7 @@ class themeHandler
 		e107::getCache()->clear();
 		e107::getCache()->clearAll('js');
 		e107::getCache()->clearAll('css');
+		e107::getCache()->clearAll('library');
 		
 		if($core->save())
 		{
@@ -2375,27 +2404,21 @@ class themeHandler
 			
 			$med = e107::getMedia();
 			$med->import('_common_image', e_THEME.$name, "^.*?logo.*?(\.png|\.jpeg|\.jpg|\.JPG|\.GIF|\.PNG)$");	
-			$med->import('_common_image', e_THEME.$name, '', 'min-size=20000');	
-			
-			
+			$med->import('_common_image', e_THEME.$name, '', 'min-size=20000');
 			
 			if($contentCheck === true)
 			{
 				$this->installContentCheck($name);
 			}
-			
-			
+
 			$this->theme_adminlog('01', $name.', style.css');
-			
-			
-			
-			
-			return TRUE;
+
+			return true;
 		}
 		else
 		{
 		//	$mes->add(TPVLAN_3." <b>'".$name."'</b>", E_MESSAGE_ERROR);
-			return FALSE;
+			return true;
 		}
 	
 	}

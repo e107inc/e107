@@ -46,4 +46,7 @@
 	<glyphicons>
 		<glyph name='ionicons' pattern='\.(ion-[a-z-]*):before\{'  path='css/ionicons.min.css' prefix='ion-' tag='i' />
 	</glyphicons>
+	<themePrefs>
+		<pref name='usernav_placement'>top</pref>
+	</themePrefs>
 </e107Theme>

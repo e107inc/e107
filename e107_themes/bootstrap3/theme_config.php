@@ -14,7 +14,6 @@ class theme_config implements e_theme_config
 		$brandingOpts = array('sitename'=>LAN_THEMEPREF_04, 'logo' => LAN_THEMEPREF_05, 'sitenamelogo'=>LAN_THEMEPREF_06);
 
 		$bootswatch = array(
-		//	''  => LAN_DEFAULT,
 			"cerulean"=> 'Cerulean',
 			"cosmo"=> 'Cosmo',
             "cyborg"=> 'Cyborg',
@@ -40,7 +39,7 @@ class theme_config implements e_theme_config
 			'branding'          => array('title'=>LAN_THEMEPREF_00, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $brandingOpts)),
 			'nav_alignment'     => array('title'=>LAN_THEMEPREF_01, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('left'=> LAN_THEMEPREF_07,'right'=> LAN_THEMEPREF_08))),
 			'usernav_placement' => array('title'=>LAN_THEMEPREF_02, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('top'=> LAN_THEMEPREF_09, 'bottom'=> LAN_THEMEPREF_10))),
-			'bootswatch'        => array('title'=>LAN_THEMEPREF_03, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $bootswatch, 'post'=>$previewLink)),
+			'bootswatch'        => array('title'=>LAN_THEMEPREF_03, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $bootswatch, 'post'=>$previewLink, 'default'=>LAN_DEFAULT)),
 		);
 
 		return $fields;
