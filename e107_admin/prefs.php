@@ -1759,7 +1759,7 @@ if(E107_DEBUG_LEVEL > 0)
 					</tr>
 		";
 
-	$text .= "</tbody></table></fieldset>";
+	$text .= "</tbody></table>";
 }
 else
 {
