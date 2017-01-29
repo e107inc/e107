@@ -287,6 +287,7 @@ define("LAN_MAILOUT_265", "Pending");
 define("LAN_MAILOUT_266", "Max Active");
 define("LAN_MAILOUT_267", "Generate Public/Private keys");
 define("LAN_MAILOUT_268", "Developer Mode Only");
+define("LAN_MAILOUT_269", "Send Later");
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
 ?>
