@@ -32,6 +32,7 @@ class _blank_parse
 
 
 	/**
+	 * Process a string before it is sent to the browser as html.
 	 * @param string $text html/text to be processed.
 	 * @param string $context Current context ie.  OLDDEFAULT | BODY | TITLE | SUMMARY | DESCRIPTION | WYSIWYG etc.
 	 * @return string
@@ -41,6 +42,22 @@ class _blank_parse
 		$text = str_replace('****', '<hr />', $text);
 		return $text;
 	}
+
+
+
+
+	/**
+	 * Process a string before it is saved to the database.
+	 * @param string $text html/text to be processed.
+	 * @param array $param nostrip, noencode etc.
+	 * @return string
+	 */
+	function toDB($text, $param=array())
+	{
+		$text = str_replace('<hr />', '****', $text);
+		return $text;
+	}
+
 
 
 
