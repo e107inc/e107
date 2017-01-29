@@ -1607,7 +1607,7 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "<a href='".e_SELF."?mode=main&action=sendnow&id=".$mailMainID."' class='btn btn-primary'>".LAN_MAILOUT_158."</a>";
 		 
 	//	$text .= $frm->admin_button('email_sendnow', "Send Now", 'primary');
-		$text .= $frm->admin_button('email_send', "Send Later");
+		$text .= $frm->admin_button('email_send', LAN_MAILOUT_269);
 
 		// $text .= "<input  type='submit' name='email_send' value=\"".LAN_SEND."\" />";
 
