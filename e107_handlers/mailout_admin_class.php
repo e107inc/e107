@@ -100,7 +100,7 @@ class mailoutAdminClass extends e107MailManager
 				'forced' => TRUE
 			),
 			'mail_title' => array(
-				'title' => LAN_TITLE,
+				'title' => LAN_MAILOUT_140,
 				'forced' => TRUE
 			),
 			'mail_subject' => array(
