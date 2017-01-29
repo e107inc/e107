@@ -116,7 +116,7 @@ class theme_shortcodes extends e_shortcode
 	}
 
 
-	//@todo Replace with social template. 
+	//@todo Replace with social template.
 	function sc_xurl_icons()
 	{
 		$social = array(
