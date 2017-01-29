@@ -492,6 +492,7 @@ class e_parse extends e_parser
 	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $original_author = false)
 	{
 		$core_pref = e107::getConfig();
+
 		if (is_array($data))
 		{
 			$ret = array();
@@ -576,6 +577,40 @@ class e_parse extends e_parser
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 		}
+
+		// Don't allow hooks to mess with prefs.
+		if($mod === 'pReFs')
+		{
+			return $ret;
+		}
+
+
+		/**
+		 * e_parse hook
+		 */
+		$eParseList = $core_pref->get('e_parse_list');
+		if(!empty($eParseList))
+		{
+
+			$opts = array(
+				'nostrip'   => $nostrip,
+				'noencode'  => $no_encode,
+				'mode'      => $mod,
+				'author'    => $original_author
+			);
+
+			foreach($eParseList as $plugin)
+			{
+				$hookObj = e107::getAddon($plugin, 'e_parse');
+				if($tmp = e107::callMethod($hookObj, 'toDB', $ret, $opts))
+				{
+					$ret = $tmp;
+				}
+
+			}
+
+		}
+
 
 		return $ret;
 	}
@@ -1395,7 +1430,7 @@ class e_parse extends e_parser
 
 		$textReplace = (!empty($opts['sub'])) ? $opts['sub'] : '';
 
-		if(substr($textReplace,-6) == '.glyph')
+		if(substr($textReplace,-6) === '.glyph')
 		{
 			$textReplace = $this->toGlyph($textReplace,'');
 		}
@@ -1700,14 +1735,15 @@ class e_parse extends e_parser
 				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 				foreach ($subcon as $sub_blk)
 				{
-					if(substr($sub_blk, 0, 7) == '<script') // Strip scripts unless permitted
+
+					if(strpos($sub_blk,'<script') === 0) // Strip scripts unless permitted
 					{
 						if($opts['scripts'])
 						{
 							$ret_parser .= html_entity_decode($sub_blk, ENT_QUOTES);
 						}
 					}
-					elseif(substr($sub_blk, 0, 6) == '<style')
+					elseif(strpos($sub_blk,'<style') === 0)
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
 						if(defined('DB_INF_SHOW'))
@@ -1908,25 +1944,28 @@ class e_parse extends e_parser
 								}
 							}
 
-							/**
-						    * / Preferred 'hook'
-						    */
-							if(!empty($pref['e_parse_list']))
+						/**
+						* / Preferred 'hook'
+						*/
+						if(!empty($pref['e_parse_list']))
+						{
+							foreach($pref['e_parse_list'] as $plugin)
 							{
-								foreach($pref['e_parse_list'] as $plugin)
+								$hookObj = e107::getAddon($plugin,'e_parse');
+								if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
 								{
-									$hookObj = e107::getAddon($plugin,'e_parse');
-
-									if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
-									{
-										$sub_blk = $tmp;
-
-									}
-
+									$sub_blk = $tmp;
 								}
 
 							}
+
 						}
+
+
+
+
+
+				}
 
 
 						// 	Word wrap
@@ -2439,7 +2478,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
-		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc.
+		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
 			// always switch to 'nice' urls when SC is used	
