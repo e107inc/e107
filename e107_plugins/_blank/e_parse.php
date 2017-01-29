@@ -39,7 +39,7 @@ class _blank_parse
 	 */
 	function toHtml($text, $context='')
 	{
-		$text = str_replace('****', '<hr />', $text);
+		$text = str_replace('****', '<hr>', $text);
 		return $text;
 	}
 
@@ -54,7 +54,8 @@ class _blank_parse
 	 */
 	function toDB($text, $param=array())
 	{
-		$text = str_replace('<hr />', '****', $text);
+	//	e107::getDebug()->log($text);
+		$text = str_replace('<hr>', '****', $text);
 		return $text;
 	}
 
