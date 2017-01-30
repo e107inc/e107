@@ -2367,17 +2367,16 @@ class themeHandler
 
 			$this->id = $name;
 			$this->loadThemeConfig();
-			$name = get_class($this->themeConfigObj);
+			$className = get_class($this->themeConfigObj);
 
-			if($name === 'theme_config') // new way.  2.1.4
+			if($className === 'theme_config') // new way.  2.1.4
 			{
 				$themeConfig = e107::getThemeConfig($name);
 
-				e107::getMessage()->addDebug("Saving theme prefs to their own row. ");
+				e107::getMessage()->addDebug("Saving theme prefs to their own row: ".print_r($themePrefs,true));
 
 				foreach($themePrefs as $key=>$val)
 				{
-
 					$themeConfig->add($key,$val);
 				}
 
