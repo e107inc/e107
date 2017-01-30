@@ -5,10 +5,13 @@
 #poll.tab-pane .form-group                              { margin-left: 0; margin-right:0}
 
 #forum-viewtopic                                        { margin-top: 15px }
-#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid #EEE;  padding:15px 10px }
-#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background: #F5F5F5 }
+#forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid rgba(100,100,100,0.2);  padding:15px 10px }
+#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background-color: rgba(100,100,100,0.09) }
 #forum-viewtopic li ul.thumbnails                       { margin-top:15px }
 #forum-viewtopic li img.user-avatar                     { margin-bottom:10px; display:inline-block; border-radius:50% }
+#forum-viewtopic .label-info                            {display: table; margin: 5px auto; padding: 5px 10px;}
+#forum-viewtopic .left                                  {text-align: center;}
+#forum-viewtopic .left .btn-block                       {display: table; margin: 0 auto!important;}
 
 .forum-attachment-file                                  { margin-top:15px; }
 .forum-user-combo                                       { padding-bottom:5px }
@@ -20,17 +23,7 @@ ul.newforumposts-menu li                                 { margin-bottom: 15px; 
 */
 
 div.forum-poll-results                                  { padding-left:0 }
-.forum-viewtopic-customtitle                            {
-display: block;
-background-color: #E0E0E0;
-border-bottom-left-radius: 5px;
-border-bottom-right-radius: 5px;
-margin-top: -3px;
-border: 1px solid #ccc;
-padding: 5px 15px;
-text-align: center;
-    }
-
+.forum-viewtopic-customtitle                            { display: table; margin: 5px auto 0 auto; padding: 5px 15px; text-align: center;}
 
 /* v1.x icon fix */
 .forum-viewforum-admin-icons a                          { vertical-align:top;  width:16px; height:16px; display:inline-block; line-height:14px }
