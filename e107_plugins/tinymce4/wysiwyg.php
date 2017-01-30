@@ -734,12 +734,18 @@ class wysiwyg
 			e_PLUGIN_ABS.'tinymce4/editor.css',
 		);
 */
+		$pathBS = e107::getLibrary()->getProperty('bootstrap', 'library_path');
+		$pathBS .= '/';
+		$pathBS .= e107::getLibrary()->getProperty('bootstrap', 'path'); // sub-folder
 
+		$pathFA = e107::getLibrary()->getProperty('fontawesome', 'library_path');
+		$pathFA .= '/';
+		$pathFA .= e107::getLibrary()->getProperty('fontawesome', 'path'); // sub-folder
 
 		$editorCSS = array(
-			0 => e107::getLibrary()->getProperty('bootstrap','library_path').'dist/css/bootstrap.min.css',
-			1 => e107::getLibrary()->getProperty('fontawesome','library_path').'css/font-awesome.min.css',
-			2 => e_PLUGIN_ABS.'tinymce4/editor.css'
+			0 => $pathBS . '/dist/css/bootstrap.min.css',
+			1 => $pathFA . '/css/font-awesome.min.css',
+			2 => e_PLUGIN_ABS . 'tinymce4/editor.css',
 		);
 
 		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
