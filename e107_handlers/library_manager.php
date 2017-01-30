@@ -112,6 +112,7 @@ class core_library
 					),
 				),
 			),
+			'library_path'      => '{e_WEB}lib/jquery',
 			'path'              => '2.2.4',
 		);
 
@@ -183,7 +184,7 @@ class core_library
 				),
 			),
 			// Override library path.
-			'library_path'      => '{e_WEB}lib/jquery-once/',
+			'library_path'      => '{e_WEB}lib/jquery-once',
 		);
 
 		// jQuery UI (CDN).
@@ -362,6 +363,7 @@ class core_library
 					),
 				),
 			),
+			'library_path'      => '{e_WEB}lib/bootstrap',
 			'path'              => '3.3.7',
 		);
 
