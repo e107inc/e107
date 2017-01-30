@@ -1402,7 +1402,7 @@ if(!isset($_E107['no_menus']))
 if(e_ADMIN_AREA)
 {
 	$sql->db_Mark_Time('Loading Admin Theme');
-	if(file_exists(THEME.'admin_theme.php')&&(strpos(e_SELF.'?'.e_QUERY, $ADMIN_DIRECTORY.'menus.php?configure')===FALSE)) // no admin theme when previewing.
+	if(file_exists(THEME.'admin_theme.php') && !deftrue('e_MENUMANAGER_ACTIVE')) // no admin theme when previewing.
 	{
 		require_once (THEME.'admin_theme.php');
 	}
