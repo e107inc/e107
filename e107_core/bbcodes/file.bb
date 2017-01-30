@@ -13,7 +13,7 @@ if(is_numeric($parm)) // Media-Manager file.
 
 
 
-if ((e_PAGE == 'page.php') || (array_key_exists('forum_attach', $pref) && $pref['forum_attach'] && FILE_UPLOADS || ADMIN || $fromadmin))
+if ((e_PAGE === 'page.php') || (array_key_exists('forum_attach', $pref) && $pref['forum_attach'] && FILE_UPLOADS || ADMIN || $fromadmin))
 {
 	list($fname, $uc) = explode("^", $parm."^");
 	if($uc)

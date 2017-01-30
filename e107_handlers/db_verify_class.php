@@ -263,7 +263,7 @@ class db_verify
 		//	$debugB = $rawSqlData;
 			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
-			if(isset($debugA) && (e_PAGE == 'db.php'))
+			if(isset($debugA) && (e_PAGE === 'db.php'))
 			{
 									
 				$debug = "<table class='table' border='1'>
@@ -365,7 +365,7 @@ class db_verify
 		foreach($this->results as $tabs => $field)
 		{
 			$file = varset($this->results[$tabs]['_file']);		
-			if(varset($this->errors[$tabs]['_status']) == 'missing_table') // Missing Table
+			if(varset($this->errors[$tabs]['_status']) === 'missing_table') // Missing Table
 			{				
 				$this->fixList[$file][$tabs]['all'][] = 'create';
 			}					
@@ -451,7 +451,7 @@ class db_verify
 		foreach($this->results as $tabs => $field)
 		{
 					
-			if($this->errors[$tabs]['_status'] == 'missing_table') // Missing Table
+			if($this->errors[$tabs]['_status'] === 'missing_table') // Missing Table
 			{
 				$text .= "
 					<tr>
@@ -590,7 +590,7 @@ class db_verify
 		
 		if(!$data) return;
 		
-		if($mode == 'index')
+		if($mode === 'index')
 		{
 			// print_a($data);
 			if($data['type'])
@@ -776,7 +776,7 @@ class db_verify
 			
 		foreach($match[1] as $c=>$k)
 		{
-			if(substr($k,0, 5) == 'e107_') // remove prefix if found in sql dump. 
+			if(strpos($k,'e107_' === 0) // remove prefix if found in sql dump.
 			{
 				$k = substr($k, 5);	
 			}

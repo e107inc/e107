@@ -337,7 +337,7 @@
 					$fld['writeParms'] .= "&glyphs=1";
 				}
 
-				if($fld['type'] == 'checkboxes')
+				if($fld['type'] === 'checkboxes')
 				{
 					if($tmp = e107::getParser()->isJSON($fld['writeParms']))
 					{
