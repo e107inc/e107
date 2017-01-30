@@ -41,7 +41,8 @@ class e_theme
 	);
 
 
-	private static $cacheTime = 120; // 2 hours
+	const CACHETIME = 120; // 2 hours
+	const CACHETAG  = "Meta_theme";
 
 
 	function __construct()
@@ -49,6 +50,14 @@ class e_theme
 
 
 
+
+	}
+
+
+	public function clearCache()
+	{
+
+		e107::getCache()->clear(self::CACHETAG, true);
 
 	}
 
@@ -67,9 +76,8 @@ class e_theme
 
 		$array = scandir(e_THEME);
 
-		$cacheTag = "Theme_meta";
 
-		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::$cacheTime, true, true))
+		if($force === false && $tmp = e107::getCache()->retrieve(self::CACHETAG, self::CACHETIME, true, true))
 		{
 			return e107::unserialize($tmp);
 		}
@@ -100,7 +108,7 @@ class e_theme
 
 		$cacheSet = e107::serialize($themeArray,'json');
 
-		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
+		e107::getCache()->set(self::CACHETAG,$cacheSet,true,true,true);
 
 		return $themeArray;
 	}
