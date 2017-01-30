@@ -2408,7 +2408,7 @@ class e_parse extends e_parser
 	{
 		if(!empty($this->thumbCrop) && !empty($this->thumbWidth) && !empty($this->thumbHeight)) // dimensions are known.
 		{
-			return ($type == 'double') ? 'width="'.$this->thumbWidth.'" height="'.$this->thumbHeight.'"' : "width='".$this->thumbWidth."' height='".$this->thumbHeight."'";
+			return ($type === 'double') ? 'width="'.$this->thumbWidth.'" height="'.$this->thumbHeight.'"' : "width='".$this->thumbWidth."' height='".$this->thumbHeight."'";
 		}
 
 		return null;
@@ -2617,7 +2617,7 @@ class e_parse extends e_parser
 			return implode(", ",$links);
 
 		}
-		elseif($multiply == '2x' || $multiply == '3x' || $multiply == '4x')
+		elseif($multiply === '2x' || $multiply === '3x' || $multiply === '4x')
 		{
 
 			if(empty($parm['w']) && isset($parm['h']))
@@ -2664,7 +2664,7 @@ class e_parse extends e_parser
 
 		// $parms['x'] = $encode;
 
-		if(!empty($parm['return']) && $parm['return'] == 'src')
+		if(!empty($parm['return']) && $parm['return'] === 'src')
 		{
 			return $this->thumbUrl($src, $parms);
 		}
@@ -3194,7 +3194,7 @@ class e_parse extends e_parser
 		foreach($tmp as $key=>$val)
 		{
 			// Fix - don't break the CDN '//cdn.com' URLs
-			if ($hasCDN && $val == '/') {
+			if ($hasCDN && $val === '/') {
 				continue;
 			}
 
@@ -3638,11 +3638,11 @@ class e_parser
 			$parm = array();
 		}
 
-		if(substr($text,0,2) == 'e-') 	// e107 admin icon. 
+		if(substr($text,0,2) === 'e-') 	// e107 admin icon.
 		{
-			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';
+			$size = (substr($text,-3) === '-32') ? 'S32' : 'S16';
 
-			if(substr($text,-3) == '-24')
+			if(substr($text,-3) === '-24')
 			{
 				$size = 'S24';
 			}
@@ -3838,7 +3838,7 @@ class e_parser
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
 
-		if(!empty($options['type']) && $options['type'] == 'url')
+		if(!empty($options['type']) && $options['type'] === 'url')
 		{
 			return $img;
 		}
@@ -3895,7 +3895,7 @@ class e_parser
 			$path = $this->thumbUrl($icon);
 			$dimensions = $this->thumbDimensions();
 		}
-		elseif($icon[0] == '{')
+		elseif($icon[0] === '{')
 		{
 			$path = $this->replaceConstants($icon,'full');		
 		}
@@ -4007,7 +4007,7 @@ class e_parser
 		{
 			$path = $file;
 		}
-		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
+		elseif($file[0] === '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
 			$path = $tp->replaceConstants($file,'abs');
 		}
@@ -4171,7 +4171,7 @@ class e_parser
 	{
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
-		return ($ext == 'youtube' || $ext == 'youtubepl') ? true : false;
+		return ($ext === 'youtube' || $ext === 'youtubepl') ? true : false;
 		
 	}
 
@@ -4190,7 +4190,7 @@ class e_parser
 
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 
-		return ($ext == 'jpg' || $ext == 'png' || $ext == 'gif' || $ext == 'jpeg') ? true : false;
+		return ($ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg') ? true : false;
 	}
 
 	
@@ -4215,7 +4215,7 @@ class e_parser
 		$ytpref = array();
 		foreach($pref as $k=>$v) // Find all Youtube Prefs. 
 		{
-			if(substr($k,0,8) == 'youtube_')
+			if(substr($k,0,8) === 'youtube_')
 			{
 				$key = substr($k,8);
 				$ytpref[$key] = $v;
@@ -4234,19 +4234,19 @@ class e_parser
 		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 
 
-		if($type == 'youtube')
+		if($type === 'youtube')
 		{
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
 			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
 
 		
-			if($thumb == 'tag')
+			if($thumb === 'tag')
 			{
 				return "<img class='img-responsive img-fluid' src='".$thumbSrc."' alt='Youtube Video' style='width:".vartrue($parm['w'],'80')."px'/>";
 			}
 			
-			if($thumb == 'email')
+			if($thumb === 'email')
 			{
 				$thumbSrc = "http://i1.ytimg.com/vi/".$id."/maxresdefault.jpg"; // 640 x 480
 				$filename = 'temp/yt-thumb-'.md5($id).".jpg";
@@ -4262,14 +4262,14 @@ class e_parser
 				<div class='video-thumbnail-caption'><small>".LAN_CLICK_TO_VIEW."</small></div></a>";
 			}
 			
-			if($thumb == 'src')
+			if($thumb === 'src')
 			{
 				return $thumbSrc;
 			}
 
 
 			
-			if($thumb == 'video')
+			if($thumb === 'video')
 			{
 				return '<div class="'.$defClass.' video-thumbnail thumbnail">'.$video.'</div>';
 			}
@@ -4278,10 +4278,10 @@ class e_parser
 		}
 
 
-		if($type =='youtubepl')
+		if($type === 'youtubepl')
 		{
 
-			if($thumb == 'tag')
+			if($thumb === 'tag')
 			{
 				$thumbSrc =  e107::getMedia()->getThumb($id);
 
@@ -4293,7 +4293,7 @@ class e_parser
 
 			}
 
-			if($thumb == 'src')
+			if($thumb === 'src')
 			{
 				$thumb = e107::getMedia()->getThumb($id);
 				if(!empty($thumb))
@@ -4311,7 +4311,7 @@ class e_parser
 			return '<div class="'.$defClass.' '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 				
-		if($type == 'mp4') //TODO FIXME 
+		if($type === 'mp4') //TODO FIXME
 		{
 			return '
 			<div class="video-responsive">
@@ -4608,17 +4608,17 @@ return;
 			return $text;
 		}
 
-		if($type == 'w') // words only.
+		if($type === 'w') // words only.
 		{
 			return preg_replace('/[^\w]/',"",$text);
 		}
 
-		if($type == 'wds') // words, digits and spaces only.
+		if($type === 'wds') // words, digits and spaces only.
 		{
 			return preg_replace('/[^\w\d ]/',"",$text);
 		}
 
-		if($type == 'file')
+		if($type === 'file')
 		{
 			return preg_replace('/[^\w\d_\.-]/',"",$text);
 		}
@@ -4814,7 +4814,7 @@ return;
 
 		    $value = str_replace("&#xD;", "\r", $value);
 
-		    if($node->nodeName == 'pre')
+		    if($node->nodeName === 'pre')
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
@@ -4822,7 +4822,7 @@ return;
 
 		    }
 
-		    if($node->nodeName == 'code')
+		    if($node->nodeName === 'code')
 		    {
 		        $value = preg_replace('/^<code[^>]*>/', '', $value);
 		        $value = str_replace("</code>", "", $value);
