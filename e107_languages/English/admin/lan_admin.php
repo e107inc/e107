@@ -383,8 +383,7 @@ define("LAN_PURCHASE", "Purchase ");
 define("LAN_DOWN_THEME", "Downloading ");
 
 define("LAN_ID", "ID");
-
-
+define("LAN_TEST", "Test");
 
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_VISIBLE_TO", "Visible To");
