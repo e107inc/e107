@@ -206,7 +206,7 @@ class admin_start
 
 	}	
 
-	function checkPaths()
+	private function checkPaths()
 	{
 		$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
 
@@ -231,7 +231,7 @@ class admin_start
 
 
 
-	function checkTimezone()
+	private function checkTimezone()
 	{
 		$mes = e107::getMessage();
 		$timezone = e107::pref('core','timezone');
@@ -415,7 +415,7 @@ class admin_start
 
 
 
-	function checkWritable()
+	private function checkWritable()
 	{
 		$mes = e107::getMessage();
 		
@@ -442,7 +442,7 @@ class admin_start
 
 	
 	
-	function checkHtmlarea()
+	private function checkHtmlarea()
 	{
 		$mes = e107::getMessage();
 		if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
@@ -453,7 +453,7 @@ class admin_start
 	
 
 
-	function checkIncompatiblePlugins()
+	private function checkIncompatiblePlugins()
 	{
 		$mes = e107::getMessage();
 		
@@ -479,7 +479,7 @@ class admin_start
 	}
 
 
-	function checkPasswordEncryption()
+	private function checkPasswordEncryption()
 	{
 		$us = e107::getUserSession();
 		$mes = e107::getMessage();
@@ -561,7 +561,7 @@ class admin_start
 	}
 
 
-	function checkHtaccess() // upgrade scenario
+	private function checkHtaccess() // upgrade scenario
 	{
 		if(!file_exists(e_BASE.".htaccess") && file_exists(e_BASE."e107.htaccess"))
 		{
@@ -575,7 +575,7 @@ class admin_start
 
 
 	
-	function checkFileTypes()
+	private function checkFileTypes()
 	{
 		$mes = e107::getMessage();
 		
@@ -590,7 +590,7 @@ class admin_start
 	
 
 
-	function checkSuspiciousFiles()
+	private function checkSuspiciousFiles()
 	{
 		$mes = e107::getMessage();
 		$public = array(e_UPLOAD, e_AVATAR_UPLOAD);

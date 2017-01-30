@@ -182,7 +182,8 @@ if($mode == 'download' && !empty($_GET['src']))
 			// Auto install?
 		//	$text = e107::getPlugin()->install($data['plugin_folder']); 
 		//	$mes->addInfo($text); 
-			echo $mes->render('default', 'success'); 
+			echo $mes->render('default', 'success');
+			e107::getTheme()->clearCache();
 		}
 		else
 		{

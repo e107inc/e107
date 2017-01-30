@@ -542,7 +542,7 @@ class db_verify
 	function renderTableName($tabs)
 	{
 		
-		if(substr($tabs,0,4)=="lan_")
+		if(strpos($tabs,"lan_") === 0)
 		{
 			list($tmp,$lang,$table) = explode("_",$tabs,3);
 			return $table. " (".ucfirst($lang).")";
@@ -776,7 +776,7 @@ class db_verify
 			
 		foreach($match[1] as $c=>$k)
 		{
-			if(strpos($k,'e107_' === 0)) // remove prefix if found in sql dump.
+			if(strpos($k,'e107_') === 0) // remove prefix if found in sql dump.
 			{
 				$k = substr($k, 5);	
 			}
