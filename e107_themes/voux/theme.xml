@@ -40,4 +40,9 @@
 			</menuPresets>	
 		</layout>
 	</layouts>
+	<themePrefs>
+		<pref name='branding'>sitename</pref>
+		<pref name='nav_alignment'>right</pref>
+		<pref name='usernav_placement'>bottom</pref>
+	</themePrefs>
 </e107Theme>
