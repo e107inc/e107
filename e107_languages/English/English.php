@@ -61,7 +61,6 @@ define("LAN_GOTOPAGEX", "Go to page [x]");
 define("LAN_GO", "Go");
 define("LAN_SUBMIT", "Submit");
 define("LAN_NONE", "None");
-define("LAN_TEST", "Test");
 define("LAN_WARNING", "Warning!");
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
