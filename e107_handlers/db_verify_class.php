@@ -776,7 +776,7 @@ class db_verify
 			
 		foreach($match[1] as $c=>$k)
 		{
-			if(strpos($k,'e107_' === 0) // remove prefix if found in sql dump.
+			if(strpos($k,'e107_' === 0)) // remove prefix if found in sql dump.
 			{
 				$k = substr($k, 5);	
 			}
