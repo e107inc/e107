@@ -34,7 +34,7 @@ class social_comment
 
 		if($engine == 'social::facebook' && empty($this->facebookActive))
 		{
-			e107::getMessage()->addInfo(LAN_SOCIAL_205);
+			e107::getMessage()->addInfo(LAN_SOCIAL_WARNING);
 		}
 
 		$config = array();
@@ -51,7 +51,7 @@ class social_comment
 
 		if(!deftrue('SOCIAL_FACEBOOK_INIT') && ADMIN)
 		{
-			return "<div class='alert alert-important alert-danger'>".LAN_SOCIAL_206."</div>";
+			return "<div class='alert alert-important alert-danger'>".LAN_SOCIAL_205."</div>";
 		}
 
 		e107::js('footer-inline', SOCIAL_FACEBOOK_INIT);
