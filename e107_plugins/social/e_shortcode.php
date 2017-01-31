@@ -366,7 +366,7 @@ class social_shortcodes extends e_shortcode
 
 
 			$text = '<div class="social-share btn-group hidden-print '.$dir.'">
-				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="Share">'.$label.'</a>
+				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu" >
 				  
