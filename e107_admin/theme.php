@@ -308,7 +308,7 @@ class theme_builder
 
 				);
 
-				$ns->tablerender(ADLAN_140.SEP."Tools",e107::getForm()->tabs($tabs));
+				$ns->tablerender(ADLAN_140.SEP.ADLAN_CL_6,e107::getForm()->tabs($tabs));
 			}
 
 
@@ -844,12 +844,12 @@ TEMPLATE;
 							<col class='col-control' />
 						</colgroup>
 				<tr>
-					<td>Create a new theme based on</td>
+					<td>".TPVLAN_91."</td>
 					<td>".$frm->select("src",$folders,'',array('useValues'=>1))."</td>
 				</tr>
 
 				<tr>
-					<td>New Theme Folder</td>
+					<td>".TPVLAN_92."</td>
 					<td>".$frm->text("newtheme",'',25, array('pattern'=>'[a-z_0-9]*', 'required'=>1))."</td>
 				</tr>
 
@@ -878,7 +878,7 @@ TEMPLATE;
 		//	$text = "Create a new theme based on ".e->select('copytheme',$list);
 
 
-			return array('caption'=>"Create New", 'text'=>$text);
+			return array('caption'=>TPVLAN_93, 'text'=>$text);
 
 		}
 
