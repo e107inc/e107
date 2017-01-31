@@ -884,11 +884,14 @@ class e_file
 	 * Copy a file, or copy the contents of a folder.
 	 * @param   string    $source    Source path
 	 * @param   string   $dest      Destination path
-	 * @param   int      $perm
+	 * @param   array    $options
 	 * @return  bool     Returns true on success, false on error
 	 */
-	function copy($source, $dest, $perm = 0755)
+	function copy($source, $dest, $options=array())
 	{
+
+		$perm = !empty($options['perm']) ? $options['perm'] : 0755;
+		$filter = !empty($options['git']) ? "" : ".git"; // filter out .git by default.
 
 		// Simple copy for a file
 		if(is_file($source))
@@ -907,7 +910,7 @@ class e_file
 		foreach($dir as $folder)
 		{
 			// Skip pointers
-			if($folder === '.' || $folder == '..')
+			if($folder === '.' || $folder == '..' || $folder === $filter)
 			{
 				continue;
 			}
