@@ -643,7 +643,7 @@ TEMPLATE;
 				$mes->addError("Couldn't Save: ".$path);
 			}
 			
-			$mes->addWarning("Please update your theme.php file with the data below");
+			$mes->addWarning(TPVLAN_94);
 			
 			return  htmlentities($result);
 
