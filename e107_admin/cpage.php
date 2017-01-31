@@ -801,14 +801,18 @@ class page_admin_ui extends e_admin_ui
 		{
 			$tabId = 'additional';
 
+			e107::getCustomFields()->setTab($tabId, "Additional");
+
 			if(!empty($this->chapterFields[$chap]))
 			{
-				e107::getCustomFields()->setTab($tabId, "Additional")->loadConfig($this->chapterFields[$chap])->setAdminUIConfig('page_fields',$this);
+				e107::getCustomFields()->loadConfig($this->chapterFields[$chap]);
 			}
 			else
 			{
 				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
 			}
+
+			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
 		}
 
 		private function loadCustomFieldsData()
