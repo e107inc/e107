@@ -1481,12 +1481,16 @@ class pluginManager{
 			$med = e107::getMedia();
 			$icons = $med->listIcons(e_PLUGIN.$plug['plugin_path']);
 
+			$iconText = '';
+
 			if(count($icons)>0)
 			{
 				foreach($icons as $key=>$val)
 				{
 					$iconText .= "<img src='".$tp->replaceConstants($val)."' alt='' />";
 				}
+
+				$iconText = '<div class="icon-pool-preview">'.$iconText.'</div>';
 
 				$opts['delete_ipool'] = array(
 					'label'			=> EPL_ADLAN_231,
@@ -1495,7 +1499,11 @@ class pluginManager{
 					'itemList'		=> array(1=>LAN_YES,0=>LAN_NO),
 					'itemDefault' 	=> 1
 				);
+
+
 			}
+
+
 
 			if(is_readable(e_PLUGIN.$plug['plugin_path']."/".$plug['plugin_path']."_setup.php"))
 			{

@@ -3867,9 +3867,9 @@ class e_parser
 	public function toIcon($icon='',$parm = array())
 	{
 
-		if(!vartrue($icon))
+		if(empty($icon))
 		{
-			return;
+			return null;
 		}
 
 		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
