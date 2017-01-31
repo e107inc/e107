@@ -643,7 +643,6 @@ TEMPLATE;
 				$mes->addError("Couldn't Save: ".$path);
 			}
 			
-			$mes->addWarning(TPVLAN_94);
 			
 			return  htmlentities($result);
 
