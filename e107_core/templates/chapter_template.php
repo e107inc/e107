@@ -111,15 +111,15 @@ $CHAPTER_TEMPLATE['nav']['showPage'] = $CHAPTER_TEMPLATE['nav']['listChapters'];
 
 // Used by e107_plugins/page/chapter_menu.php & /page.php?bk=x
 $CHAPTER_TEMPLATE['panel']['listChapters']['caption']			= "{BOOK_NAME}";
-$CHAPTER_TEMPLATE['panel']['listChapters']['start']				= "<div class='chapter-panel-list'>";
-$CHAPTER_TEMPLATE['panel']['listChapters']['item']				= "<div class='col-xs-12 col-md-4 text-center'>
-																	<h2>{CHAPTER_NAME}</h2>
+$CHAPTER_TEMPLATE['panel']['listChapters']['start']				= "<div class='row chapter-panel-list'>";
+$CHAPTER_TEMPLATE['panel']['listChapters']['item']				= "<div class='col-xs-12 col-md-4'>
+																	<h2 class='text-center'>{CHAPTER_NAME}</h2>
          															<h1><a href='{CHAPTER_URL}' >{CHAPTER_ICON}</a></h1><p>{CHAPTER_DESCRIPTION}</p><p>{CHAPTER_BUTTON}</p></div>";
 $CHAPTER_TEMPLATE['panel']['listChapters']['end']				= "</div>";
 
 
 $CHAPTER_TEMPLATE['panel']['listPages']['caption']				= "{CHAPTER_NAME}";
-$CHAPTER_TEMPLATE['panel']['listPages']['start'] 				= "{CHAPTER_BREADCRUMB}<div class='chapter-pages-list'>";
+$CHAPTER_TEMPLATE['panel']['listPages']['start'] 				= "{CHAPTER_BREADCRUMB}<div class='chapter-pages-list col-sm-12'>";
 $CHAPTER_TEMPLATE['panel']['listPages']['item'] 				= "<div class='section'><div class='row'>{CPAGEMENU}</div></div>";
 $CHAPTER_TEMPLATE['panel']['listPages']['end'] 					= "</div>";	
 
