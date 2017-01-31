@@ -801,9 +801,11 @@ class page_admin_ui extends e_admin_ui
 		{
 			$tabId = 'additional';
 
+			e107::getCustomFields()->setTab($tabId, "Additional")->setAdminUIConfig('page_fields',$this);
+
 			if(!empty($this->chapterFields[$chap]))
 			{
-				e107::getCustomFields()->setTab($tabId, "Additional")->loadConfig($this->chapterFields[$chap])->setAdminUIConfig('page_fields',$this);
+				e107::getCustomFields()->loadConfig($this->chapterFields[$chap])->setAdminUIConfig('page_fields',$this);
 			}
 			else
 			{
