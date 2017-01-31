@@ -169,6 +169,11 @@ class e_media
 			
 			$this->import('_icon_'.$size, $path, $types);
 		}
+
+		$types = '[a-zA-z0-9_-]\.(svg|SVG)$';
+
+		$this->import('_icon_svg', $path, $types);
+
 		return $this;
 	}
 	
@@ -237,7 +242,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ")) ? TRUE : FALSE;		
+		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64,_icon_svg' ")) ? TRUE : FALSE;
 		while ($row = $sql->fetch())
 		{
 			$ret[] = $row['media_url'];
