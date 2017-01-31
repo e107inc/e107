@@ -519,3 +519,5 @@ define("LAN_ITEM", "Item");
 define("LAN_LOCK", "Lock");
 define("LAN_SYSTEM_USER", "System user");
 define("LAN_ENGINE", "Engine");
+define("LAN_SOCIAL_POST", "Post to Twitter");
+define("LAN_SOCIAL_TWEET", "Type your tweet here.");
