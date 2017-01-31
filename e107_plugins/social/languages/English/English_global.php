@@ -13,3 +13,4 @@ define("LAN_PLUGIN_SOCIAL_SIGNIN",  "Sign in with:");
 define("LAN_PLUGIN_SOCIAL_XUP_SIGNUP", "Sign-in with your [x] account"); 
 define("LAN_PLUGIN_SOCIAL_XUP_REG", "Register with your [x] account");
 define("LAN_PLUGIN_SOCIAL_NAME", "Social");
+define("LAN_SOCIAL_WARNING", "Facebook comments requires that you have a facebook App ID. See the 'social login' area in admin-preferences to add one.");
