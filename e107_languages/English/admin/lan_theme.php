@@ -128,3 +128,4 @@ define("TPVLAN_90","Unable to connect. Please check firewall and/or internet con
 define("TPVLAN_91", "Create a new theme based on");
 define("TPVLAN_92", "New Theme Folder");
 define("TPVLAN_93", "Create New");
+define("TPVLAN_94", "Please update your theme.php file with the data below");
