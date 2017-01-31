@@ -880,7 +880,43 @@ class e_file
 	} 
 	
 	
-	
+	/**
+	 * Copy a file, or copy the contents of a folder.
+	 * @param   string    $source    Source path
+	 * @param   string   $dest      Destination path
+	 * @param   int      $perm
+	 * @return  bool     Returns true on success, false on error
+	 */
+	function copy($source, $dest, $perm = 0755)
+	{
+
+		// Simple copy for a file
+		if(is_file($source))
+		{
+			return copy($source, $dest);
+		}
+
+		// Make destination directory
+		if(!is_dir($dest))
+		{
+			mkdir($dest, $perm);
+		}
+
+		// Directory - so copy it.
+		$dir = scandir($source);
+		foreach($dir as $folder)
+		{
+			// Skip pointers
+			if($folder === '.' || $folder == '..')
+			{
+				continue;
+			}
+
+			$this->copy("$source/$folder", "$dest/$folder", $perm);
+		}
+
+		return true;
+	}
 	
 
 	/**

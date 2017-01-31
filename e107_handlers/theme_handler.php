@@ -56,10 +56,42 @@ class e_theme
 
 	public function clearCache()
 	{
-
 		e107::getCache()->clear(self::CACHETAG, true);
+		return $this;
+	}
+
+
+	public function upgradeThemeCode($text)
+	{
+		$search = array();
+		$replace = array();
+
+		$search[0] 	= '$HEADER ';
+		$replace[0]	= '$HEADER["default"] ';
+
+		$search[1] 	= '$FOOTER ';
+		$replace[1]	= '$FOOTER["default"] ';
+
+			// Early 0.6 and 0.7 Themes
+
+		$search[2] 	= '$CUSTOMHEADER ';
+		$replace[2]	= '$HEADER["custom"] ';
+
+		$search[3] 	= '$CUSTOMFOOTER ';
+		$replace[3]	= '$FOOTER["custom"] ';
+
+		//TODO Handle v1.x style themes. eg. $CUSTOMHEADER['something'];
+
+		$text = str_replace($_SESSION['themebulder-remove'],"",$text);
+		$text = str_replace($search, $replace, $text);
+
+		return $text;
+
 
 	}
+
+
+
 
 
 	/**
