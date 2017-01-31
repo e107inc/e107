@@ -454,7 +454,7 @@ class news_admin_ui extends e_admin_ui
         'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',    'tab'=>2,	'writeParms'=>'inverse=1', 'data' => 'int', 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',     'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
-		'news_email_notify'     => array('title' => LAN_NEWS_103, 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1, 'tdClassRight'=>'form-inline'), 'help'=>'Trigger an email notification when you submit this form.'),
+		'news_email_notify'     => array('title' => LAN_NEWS_103, 'type' => 'checkbox',   'tab'=>2,  'data'=>false, 'writeParms'=>array('show'=>1, 'tdClassRight'=>'form-inline'), 'help'=>LAN_NEWS_109),
 		'submitted_id'          => array('title' => LAN_NEWS_68, 'type' => 'hidden',  'tab'=>2,  'data'=>false, 'writeParms'=>'show=0'),
 		'options'				=> array('title' => LAN_OPTIONS, 	'type' => null, 		'width' => '10%', 	'thclass' => 'center last', 	'class' => 'center', 	'nosort' => true, 'forced' => TRUE)
 
@@ -1172,14 +1172,13 @@ class news_admin_ui extends e_admin_ui
 									<div class='field-help'>".LAN_NEWS_89."<br />".LAN_NEWS_90."</div>
 								</td>
 							</tr>";
-
-								// TODO LAN
+								
 						$tab1 .= "
 							<tr>
-								<td>News Cache Timeout </td>
+								<td>".LAN_NEWS_110."</td>
 								<td>
 									".$frm->number('news_cache_timeout',varset($pref['news_cache_timeout'],0), 6)."
-									<div class='field-help'>Time in minutes. Applies only when system cache is enabled.</div>
+									<div class='field-help'>".LAN_NEWS_111."</div>
 								</td>
 							</tr>";
 
