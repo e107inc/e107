@@ -201,7 +201,7 @@ class search extends e_shortcode
 	{
 		 if($this->search_prefs['selector'] == 1) 
 		 {
-		 	return "<input class='btn btn-default button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";	
+		 	return "<input class='btn btn-default button' type='button' name='CheckAll' value='".LAN_CHECKALL."' onclick='checkAll(this);' />";	
 		 }
 	}
 
@@ -209,7 +209,7 @@ class search extends e_shortcode
 	{
 		 if($this->search_prefs['selector'] == 1) 
 		 {
-		 	return "<input class='btn btn-default button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+		 	return "<input class='btn btn-default button' type='button' name='UnCheckAll' value='".LAN_UNCHECKALL."' onclick='uncheckAll(this); uncheckG();' />";
 		 }	
 	}
 	
@@ -1180,8 +1180,8 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 /*
 if ($search_prefs['selector'] == 1) 
 {
-  $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input  type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-  $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input  type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
+  $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input  type='button' name='CheckAll' value='".LAN_CHECKALL."' onclick='checkAll(this);' />";
+  $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input  type='button' name='UnCheckAll' value='".LAN_UNCHECKALL."' onclick='uncheckAll(this); uncheckG();' />";
 }
 */
 //$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input type='submit' name='s' value='".LAN_SEARCH."' />";

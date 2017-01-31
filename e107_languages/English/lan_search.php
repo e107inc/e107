@@ -25,8 +25,8 @@ define("LAN_417", "Search terms must be at least --CHARS-- characters.");
 
 define("LAN_418", "Other Pages");
 
-define("LAN_SEARCH_1", "Check All");
-define("LAN_SEARCH_2", "Uncheck All");
+//define("LAN_SEARCH_1", "Check All"); > new LAN CHECKALL
+//define("LAN_SEARCH_2", "Uncheck All"); . new LAN_UNCHECKALL
 define("LAN_SEARCH_3", "Posted on ");
 define("LAN_SEARCH_4", "Match found in news title");
 define("LAN_SEARCH_5", "Match found in news text");
