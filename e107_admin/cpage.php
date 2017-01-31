@@ -73,7 +73,8 @@ class page_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'page/edit'		=> 'page/list',
-		'menu/edit'		=> 'menu/create'				
+		'menu/edit'		=> 'menu/create',
+		'cat/edit'      => 'cat/list'
 	);	
 	
 	protected $menuTitle = ADLAN_42;
@@ -190,7 +191,7 @@ class page_chapters_ui extends e_admin_ui
 	
 		function init()
 		{
-
+			$this->addTitle(CUSLAN_63);
 		//	e107::getMessage()->addWarning("Experimental: Custom Fields");
 			$this->tabs = array(LAN_GENERAL,"Custom Fields");
 			$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
@@ -764,7 +765,7 @@ class page_admin_ui extends e_admin_ui
 
 				$elid = 'core-page-create';
 				$model = $this->getModel();
-				$tabId = 'additional';
+				$tabId = e107::getCustomFields()->getTabId();
 
 				$data = array(
 					'tabs'   => $this->getTabs(),
@@ -799,9 +800,6 @@ class page_admin_ui extends e_admin_ui
 		 */
 		private function initCustomFields($chap=null)
 		{
-			$tabId = 'additional';
-
-			e107::getCustomFields()->setTab($tabId, "Additional");
 
 			if(!empty($this->chapterFields[$chap]))
 			{
@@ -809,6 +807,7 @@ class page_admin_ui extends e_admin_ui
 			}
 			else
 			{
+				$tabId = e107::getCustomFields()->getTabId();
 				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
 			}
 
