@@ -1,10 +1,8 @@
 
-body 						{ }
-
-@media (min-width: 1000px){ 
-	
 body						{ padding-top: 75px;  }
 
+@media (max-width: 992px) {
+    body { height: 100vh; overflow-y: auto!important; }
 }
 
 button, button:active                      { outline: 0; }
