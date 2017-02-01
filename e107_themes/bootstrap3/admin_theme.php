@@ -24,9 +24,19 @@ e107::library('load', 'bootstrap');
 e107::library('load', 'fontawesome');
 e107::library('load', 'bootstrap.editable');
 
-e107::css('theme', 'css/bootstrap-dark.min.css');
+
+$adminStyle = e107::pref('core', 'admincss');
+
+//e107::css('theme', 'css/bootstrap-dark.min.css');
+e107::css('theme', $adminStyle);
 e107::css('theme', 'admin_style.css');
-e107::css('theme', 'admin_dark.css');
+
+if(!deftrue('e_DEBUG'))
+{
+	e107::css('theme', 'admin_dark.css');
+}
+
+
 e107::css('theme', 'ie_all.css', null, 'all', "<!--[if IE]>", "<![endif]-->");
 
 e107::css('inline', "

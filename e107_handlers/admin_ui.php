@@ -2119,7 +2119,7 @@ class e_admin_controller
 
 	//	e107::getDebug()->log("Admin-ui Action: <b>".$action."</b>");
 
-		if($action == 'Edit')
+		if($action === 'Edit')
 		{
 			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
 		}
@@ -2827,7 +2827,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return null;
 		}
 
-		if($this->getAction() == 'list')
+		if($this->getAction() === 'list')
 		{
 			return $this->getListModel()->get($key);
 		}
@@ -3188,7 +3188,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$field = $trigger[1];
 				$value = $trigger[2];
 				
-				if($trigger[0] == 'addAll')
+				if($trigger[0] === 'addAll')
 				{
 					$parms = $this->getFieldAttr($field, 'writeParms', array());
 					if(!is_array($parms)) parse_str($parms, $parms);
@@ -3221,7 +3221,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				if(method_exists($this, 'handleCommaBatch')) 
 				{
-					$trigger[0] = $trigger[0] == 'ucadd' ? 'attach' : 'deattach';
+					$trigger[0] = $trigger[0] === 'ucadd' ? 'attach' : 'deattach';
 					$this->handleCommaBatch($selected, $field, $class, $trigger[0]);
 				}
 			break;
@@ -3799,7 +3799,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$_dataType = $this->fields[$filterField]['data'];
 				$_fieldType = $this->fields[$filterField]['type'];
 
-				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType == 'userclasses' || ($_fieldType == 'dropdown' && !empty($this->fields[$filterField]['writeParms']['multiple'])))
+				if($_fieldType === 'comma' || $_fieldType === 'checkboxes' || $_fieldType === 'userclasses' || ($_fieldType === 'dropdown' && !empty($this->fields[$filterField]['writeParms']['multiple'])))
 				{
 					 $_dataType = 'set';
 				}
@@ -3812,7 +3812,7 @@ class e_admin_controller_ui extends e_admin_controller
 					
 					case 'int':
 					case 'integer':
-						if($_fieldType == 'datestamp') // Past Month, Past Year etc.
+						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
 						{
 							$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);	
 						}
@@ -3826,14 +3826,14 @@ class e_admin_controller_ui extends e_admin_controller
 					
 					default: // string usually. 
 
-						if($filterValue == '_ISEMPTY_')
+						if($filterValue === '_ISEMPTY_')
 						{
 							$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
 						}
 						else
 						{
 
-							if($_fieldType == 'method') // More flexible filtering.
+							if($_fieldType === 'method') // More flexible filtering.
 							{
 
 								$searchQry[] = $this->fields[$filterField]['__tableField']." LIKE \"%".$tp->toDB($filterValue)."%\"";		
@@ -3879,14 +3879,14 @@ class e_admin_controller_ui extends e_admin_controller
 			// filter for WHERE and FROM clauses
 			$searchable_types = array('text', 'textarea', 'bbarea', 'url', 'ip', 'tags', 'email', 'int', 'integer', 'str', 'string', 'number'); //method? 'user',
 			
-			if($var['type'] == 'method' && !empty($var['data']) && ($var['data'] == 'string' || $var['data'] == 'str'))
+			if($var['type'] === 'method' && !empty($var['data']) && ($var['data'] === 'string' || $var['data'] === 'str'))
 			{
 				$searchable_types[] = 'method';
 			}
 			
 			if(trim($searchQuery) !== '' && in_array($var['type'], $searchable_types) && $var['__tableField'])
 			{
-				if($var['data'] == 'int' || $var['data'] == 'integer' ||  $var['type'] == 'int' || $var['type'] == 'integer')
+				if($var['data'] === 'int' || $var['data'] === 'integer' ||  $var['type'] === 'int' || $var['type'] === 'integer')
 				{
 					if(is_numeric($searchQuery))
 					{
@@ -3895,7 +3895,7 @@ class e_admin_controller_ui extends e_admin_controller
 					continue;
 				}
 
-				if($var['type'] == 'ip')
+				if($var['type'] === 'ip')
 				{
 					$ipSearch = e107::getIpHandler()->ipEncode($searchQuery);
 					if(!empty($ipSearch))
@@ -4013,7 +4013,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$rawData['joins'] = $joins;
 			$rawData['groupField'] = $groupField;
 			$rawData['orderField'] = isset($this->fields[$orderField]) ? $this->fields[$orderField]['__tableField'] : '';
-			$rawData['orderType'] = $request->getQuery('asc') == 'desc' ? 'DESC' : 'ASC';
+			$rawData['orderType'] = $request->getQuery('asc') === 'desc' ? 'DESC' : 'ASC';
 			$rawData['limitFrom'] = false === $forceFrom ? intval($request->getQuery('from', 0)) : intval($forceFrom);
 			$rawData['limitTo'] = false === $forceTo ? intval($this->getPerPage()) : intval($forceTo);
 			return $rawData;
@@ -4072,7 +4072,7 @@ class e_admin_controller_ui extends e_admin_controller
 			if(isset($this->fields[$orderField]) && strpos($this->listQry,'ORDER BY')==FALSE) //override ORDER using listQry (admin->sitelinks)
 			{
 				// no need of sanitize - it's found in field array
-				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) == 'desc' ? 'DESC' : 'ASC');
+				$qry .= ' ORDER BY '.$this->fields[$orderField]['__tableField'].' '.(strtolower($orderDef) === 'desc' ? 'DESC' : 'ASC');
 			}
 		}
 		
@@ -4147,7 +4147,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 		// - Autoincrement sortField on 'Create'.
 
-		if(($_posted['etrigger_submit'] == 'create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
+		if(($_posted['etrigger_submit'] === 'create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
 		{
 
 			$incVal = e107::getDb()->max($this->table, $this->sortField) + 1;
@@ -4254,7 +4254,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return false; 
 		}
 
-		if($when == 'after')
+		if($when === 'after')
 		{
 			$type .= 'd'; // ie. 'created' or 'updated'.
 		}
@@ -4269,6 +4269,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 	protected $fieldTypes = array();
 	protected $dataFields = array();
+	protected $fieldInputTypes = array();
 	protected $validationRules = array();
 
 	protected $table;
@@ -4391,7 +4392,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 					$fieldName = 'x_'.$plug.'_'.$k;
 
-					if($v['type'] == 'method' && method_exists($form,$fieldName))
+					if($v['type'] === 'method' && method_exists($form,$fieldName))
 					{
 						$v['method'] = $plug."_admin_form::".$fieldName;
 						//echo "Found method ".$fieldName." in ".$plug."_menu_form";
@@ -4947,12 +4948,12 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		// special exceptions
 		
-		if($value == '#delete') // see admin->users
+		if($value === '#delete') // see admin->users
 		{
 			$val = "''";
 			$value = "(empty)";	
 		}	
-		elseif($value == "#null")
+		elseif($value === "#null")
 		{
 			$val = null;
 			$value = "(empty)";
@@ -4962,7 +4963,7 @@ class e_admin_ui extends e_admin_controller_ui
 			$val = "'".$value."'";	
 		}
 		
-		if($field == 'options') // reserved field type. see: admin -> media-manager - batch rotate image. 
+		if($field === 'options') // reserved field type. see: admin -> media-manager - batch rotate image.
 		{
 			return; 
 		}
@@ -5504,7 +5505,7 @@ class e_admin_ui extends e_admin_controller_ui
 
 		foreach($this->prefs as $k=>$v) // fix for empty checkboxes - need to save a value.
 		{
-			if(!isset($data[$k]) && $v['data'] !== false && ($v['type'] == 'checkboxes' || $v['type'] == 'checkbox'))
+			if(!isset($data[$k]) && $v['data'] !== false && ($v['type'] === 'checkboxes' || $v['type'] === 'checkbox'))
 			{
 				$data[$k] = null;
 			}
@@ -5633,7 +5634,7 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function _setConfig()
 	{
-		$this->_pref = $this->pluginName == 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
+		$this->_pref = $this->pluginName === 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
 
 		$dataFields = $validateRules = array();
 		foreach ($this->prefs as $key => $att)
@@ -5677,7 +5678,7 @@ class e_admin_ui extends e_admin_controller_ui
 					continue;
 				}
 
-				if(varset($att['type']) == 'comma' && (empty($att['data']) || empty($att['rule'])))
+				if(varset($att['type']) === 'comma' && (empty($att['data']) || empty($att['rule'])))
 				{
 					$att['data'] = 'set';
 					$att['validate'] = 'set';
@@ -5688,7 +5689,7 @@ class e_admin_ui extends e_admin_controller_ui
 					unset($_parms);
 				}
 
-				if(!empty($att['data']) && $att['data'] == 'array' && ($this->getAction() == 'inline')) // FIX for arrays being saved incorrectly with inline editing.
+				if(!empty($att['data']) && $att['data'] === 'array' && ($this->getAction() === 'inline')) // FIX for arrays being saved incorrectly with inline editing.
 				{
 					$att['data'] = 'set';
 				}
@@ -5696,6 +5697,10 @@ class e_admin_ui extends e_admin_controller_ui
 				if(($key !== 'options' && false !== varset($att['data']) && null !== varset($att['type'],null) && !vartrue($att['noedit'])) || vartrue($att['forceSave']))
 				{
 					$this->dataFields[$key] = vartrue($att['data'], 'str');
+					if(!empty($att['type']))
+					{
+						$this->fieldInputTypes[$key] = $att['type'];
+					}
 				}
 
 
@@ -5728,12 +5733,15 @@ class e_admin_ui extends e_admin_controller_ui
 		if($this->_model) return $this;
 
 		// default model
+
+
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
             ->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
+			->setFieldInputTypes($this->fieldInputTypes)
 			->setDataFields($this->dataFields)
 			->setMessageStackName('admin_ui_model_'.$this->table)
 			->setParam('db_query', $this->editQry);
@@ -6115,13 +6123,13 @@ class e_admin_form_ui extends e_form
 			$get = $this->getController()->getQuery();
 			foreach ($get as $key => $value) 
 			{
-				if($key == 'searchquery' || $key == 'filter_options' || $key == 'etrigger_filter')
+				if($key === 'searchquery' || $key === 'filter_options' || $key === 'etrigger_filter')
 				{
 					continue;
 				}
 
 				// Reset pager after filtering.
-				if ($key == 'from')
+				if ($key === 'from')
 				{
 					continue;
 				}
@@ -6459,7 +6467,7 @@ class e_admin_form_ui extends e_form
 							$option['bool__'.$key.'__0'] = LAN_NO;	
 						}
 							
-						if($type == 'batch')
+						if($type === 'batch')
 						{
 							$option['boolreverse__'.$key] = LAN_BOOL_REVERSE;
 						}
@@ -6477,7 +6485,7 @@ class e_admin_form_ui extends e_form
 						if(empty($options)) continue;
 						
 						
-						if($type == 'batch')
+						if($type === 'batch')
 						{
 							$_option = array(); 
 
@@ -6562,7 +6570,7 @@ class e_admin_form_ui extends e_form
 
 						if(!is_array(varset($parms['__options']))) parse_str($parms['__options'], $parms['__options']);
 						$opts = $parms['__options'];
-						if(vartrue($opts['multiple']) && $type == 'batch')
+						if(vartrue($opts['multiple']) && $type === 'batch')
 						{
 							// no batch support for multiple, should have some for filters soon
 							continue;
@@ -6624,7 +6632,7 @@ class e_admin_form_ui extends e_form
 						$classes = e107::getUserClass()->uc_required_class_list(vartrue($parms['classlist'], 'public,nobody,guest,admin,main,classes'));
 						$_option = array();
 						
-						if($type == 'batch')
+						if($type === 'batch')
 						{
 							// FIXME Lan
 							foreach ($classes as $k => $v) 
@@ -6714,7 +6722,7 @@ class e_admin_form_ui extends e_form
 	public function getElementId()
 	{
 		$controller = $this->getController();
-		$name = str_replace('_', '-', ($controller->getPluginName() == 'core' ? 'core-'.$controller->getTableName() : 'plugin-'.$controller->getPluginName()));
+		$name = str_replace('_', '-', ($controller->getPluginName() === 'core' ? 'core-'.$controller->getTableName() : 'plugin-'.$controller->getPluginName()));
 		return e107::getForm()->name2id($name); // prevent invalid ids.
 	}
 

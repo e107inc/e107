@@ -763,6 +763,7 @@ class e_menu_layout
 		$CUSTOMHEADER   = null;
 		$CUSTOMFOOTER   = null;
 
+
 		$file = e_THEME.$theme."/theme.php";
 
 		if(!is_readable($file))
@@ -773,7 +774,23 @@ class e_menu_layout
 		e107::set('css_enabled',false);
 		e107::set('js_enabled',false);
 
-		require($file);
+		$themeFileContent = file_get_contents($file);
+
+		$srch = array('<?php','?>');
+
+		$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "'.$theme.'/" .', str_replace($srch, '', $themeFileContent));
+
+		try
+		{
+		   @eval($themeFileContent);
+		}
+		catch (ParseError $e)
+		{
+			echo "<div class='alert alert-danger'>Couldn't parse theme.php: ". $e->getMessage()." </div>";
+		}
+
+
+	//	@eval($themeFileContent);
 
 		e107::set('css_enabled',true);
 		e107::set('js_enabled',true);

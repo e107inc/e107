@@ -24,12 +24,15 @@
 
 		private $_field_limit = 20;
 
-		private $_tab = array('additional'=>'Additional FieldsXX');
+		private $_tab = array();
+
+		private $_tab_default = 'additional';
 
 
 		function __construct()
 		{
 			asort($this->_fieldTypes);
+			$this->_tab = array($this->_tab_default => "Additional");
 
 		}
 
@@ -37,6 +40,16 @@
 		{
 
 			return $this->_fieldTypes;
+		}
+
+		public function getTabId()
+		{
+			return $this->_tab_default;
+		}
+
+		public function getTabLabel()
+		{
+			return $this->_tab[$this->_tab_default];
 		}
 
 
@@ -62,6 +75,13 @@
 
 			if($arr = $tp->isJSON($data))
 			{
+
+				if(!empty($arr['__tabs__']))
+				{
+					$this->_tab = $arr['__tabs__'];
+					unset($arr['__tabs__']);
+				}
+
 				$this->_config = $arr;
 			}
 
@@ -239,7 +259,11 @@
 			}
 
 
-			$text = "<table class='table table-striped table-bordered'>
+			$text = "
+			<div class='form-group'>
+				".$frm->text('__e_customfields_tabs__', $this->_tab[$this->_tab_default], 30, array('placeholder'=>"Tab label",'size'=>'medium', 'required'=>1))."
+			</div>
+			<table class='table table-striped table-bordered'>
 			<colgroup>
 				<col />
 				<col />
@@ -337,7 +361,7 @@
 					$fld['writeParms'] .= "&glyphs=1";
 				}
 
-				if($fld['type'] == 'checkboxes')
+				if($fld['type'] === 'checkboxes')
 				{
 					if($tmp = e107::getParser()->isJSON($fld['writeParms']))
 					{
@@ -397,8 +421,19 @@
 
 
 			$new = array();
+
+			if(!empty($postData['__e_customfields_tabs__']))
+			{
+				$new['__tabs__'] = array($this->_tab_default =>	$postData['__e_customfields_tabs__']);
+				unset($postData['__e_customfields_tabs__']);
+			}
+
 			foreach($postData[$fieldname] as $fields)
 			{
+
+
+
+
 				if(empty($fields['key']) || empty($fields['type']))
 				{
 					continue;

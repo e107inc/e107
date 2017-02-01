@@ -560,7 +560,7 @@ class e107
 			return self::$_registry[$id];
 		}
 
-		if($id == '_all_')
+		if($id === '_all_')
 		{
 			return self::$_registry;
 		}
@@ -934,7 +934,7 @@ class e107
 			e107_require_once(e_HANDLER.'pref_class.php'); 
 			self::$_core_config_arr[$name] = new e_core_pref($name, $load);		
 			
-			if($name == 'core') // prevent loop between pref and cache handlers. 
+			if($name === 'core') // prevent loop between pref and cache handlers.
 			{
 				self::getCache()->UserCacheActive = self::getPref('cachestatus');
 				self::getCache()->SystemCacheActive = self::getPref('syscachestatus');
@@ -2060,6 +2060,11 @@ class e107
 		
 		$jshandler = self::getJs();
 		$jshandler->setDependency($dep);
+
+		if(strpos($data,'http')===0)
+		{
+			$type = 'url';
+		}
 		
 		switch ($type) 
 		{
@@ -2208,12 +2213,12 @@ class e107
 	 */
 	public static function meta($name = null, $content = null, $extended = array())
 	{
-		if($name == 'description')
+		if($name === 'description')
 		{
 			self::getUrl()->response()->addMetaDescription($content);	//Cam: TBD
 		}
 		
-		if($name == 'keywords')
+		if($name === 'keywords')
 		{
 			self::getUrl()->response()->addMetaKeywords($content);	//Cam: TBD
 		}
@@ -2251,7 +2256,7 @@ class e107
 
 		$elist = self::getPref($filename.'_list');
 
-		if($filename == 'e_menu')
+		if($filename === 'e_menu')
 		{
 			if(!in_array($pluginName, $elist)) return null;
 		}
@@ -2828,7 +2833,7 @@ class e107
 	{
 		if (!is_readable($path))
 		{
-			if (self::getPref('noLanguageSubs') || (e_LANGUAGE == 'English'))
+			if (self::getPref('noLanguageSubs') || (e_LANGUAGE === 'English'))
 			{
 				return false;
 			}
@@ -3168,11 +3173,11 @@ class e107
 			{
 				$rawUrl = $tp->simpleParse($tmp[$plugin][$key]['sef'], $row);
 
-				if($options['mode'] == 'full')
+				if($options['mode'] === 'full')
 				{
 					$sefUrl = SITEURL.$rawUrl;
 				}
-				elseif($options['mode'] == 'raw')
+				elseif($options['mode'] === 'raw')
 				{
 					$sefUrl = $rawUrl;
 				}
@@ -3407,7 +3412,7 @@ class e107
 				return (isset($ret)) ? $ret : "";
 			}
 		}
-		if (self::getPref('noLanguageSubs') || (e_LANGUAGE == 'English'))
+		if (self::getPref('noLanguageSubs') || (e_LANGUAGE === 'English'))
 		{
 			return FALSE;		// No point looking for the English files twice
 		}
@@ -3446,7 +3451,7 @@ class e107
 		if (isset($_REQUEST)) array_walk($_REQUEST, array('self', 'filter_request'), '_REQUEST');
 
 		// A better way to detect an AJAX request. No need for "ajax_used=1";
-		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') 
+		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
 		{
   			define('e_AJAX_REQUEST', true);
 		}
@@ -3603,7 +3608,7 @@ class e107
 		
 		}
 
-		if($type == '_GET') // Basic XSS check.
+		if($type === '_GET') // Basic XSS check.
 		{
 			if(stripos($input, "<script")!==false || stripos($input, "%3Cscript")!==false)
 			{
@@ -4129,8 +4134,8 @@ class e107
 			  || ($isPluginDir && (strpos(e_PAGE,'_admin.php') !== false || strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
 			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
-			  || ($isPluginDir && e_PAGE == 'prefs.php') //BC Fix for old plugins
-			  || ($isPluginDir && e_PAGE == 'config.php') // BC Fix for old plugins
+			  || ($isPluginDir && e_PAGE === 'prefs.php') //BC Fix for old plugins
+			  || ($isPluginDir && e_PAGE === 'config.php') // BC Fix for old plugins
 			)
 		{
 			$inAdminDir = TRUE;

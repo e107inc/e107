@@ -227,6 +227,7 @@ else // backend css.
 	}
 
 		//NEW - Iframe mod
+		/*
 	if(!deftrue('e_IFRAME') && !empty($pref['admincss']))
 	{
 		$css_file = file_exists(THEME.'admin_'.$pref['admincss']) ? 'admin_'.$pref['admincss'] : $pref['admincss'];
@@ -245,7 +246,7 @@ else // backend css.
 		$css_file = (file_exists(THEME.'admin_style.css')) ? 'admin_style.css' : 'style.css';
 		//echo "<link rel='stylesheet' href='".$css_file."' type='text/css' />\n";
 		$e_js->themeCSS($css_file);
-	}
+	}*/
 
 
 

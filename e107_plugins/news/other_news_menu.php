@@ -49,7 +49,7 @@ if(!empty($parm))
 
 if(!$OTHERNEWS_STYLE)
 {
-	if(deftrue('BOOTSTRAP')) // v2.x
+	if(THEME_LEGACY !== true) // v2.x
 	{
 		if(!defined("OTHERNEWS_COLS"))
 		{

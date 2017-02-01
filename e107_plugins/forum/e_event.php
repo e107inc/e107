@@ -35,13 +35,13 @@ class forum_event
 
 	function forum_eventlogin($data) // Clear user_plugin_forum_viewed on user LOGIN
 	{
-		$myfile = fopen("newfile.txt", "a") or die("Unable to open file!");
+		/*$myfile = fopen("newfile.txt", "a") or die("Unable to open file!");
 		$txt = "login (".USERID.")\n";
 		fwrite($myfile, $txt);
 		fwrite($myfile, print_r($data,true));
 		fclose($myfile);
 		echo('hola');
-		print_a($data);
+		print_a($data);*/
 		e107::getDb()->update('user_extended', "user_plugin_forum_viewed = NULL WHERE user_extended_id = ".$data[user_id]); 
 		
 	}

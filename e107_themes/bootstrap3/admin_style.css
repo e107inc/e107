@@ -1,10 +1,12 @@
 
-body 						{ }
+body						{ padding-top: 75px;
+font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+font-size: 14px;
 
-@media (min-width: 1000px){ 
-	
-body						{ padding-top: 75px;  }
+ }
 
+@media (max-width: 992px) {
+    body { height: 100vh; overflow-y: auto!important; }
 }
 
 button, button:active                      { outline: 0; }
@@ -1312,6 +1314,9 @@ td.forumheader { background-image: linear-gradient(#303030,#212121 60%,#171717);
 >>>>>>> refs/remotes/e107inc/master
 
 form#simplesef h4 { margin: 0 }
+.adminlist tr > td { min-height:50px; }
+
+.navbar-fixed-top { height: 51px; }
 
 
 /*

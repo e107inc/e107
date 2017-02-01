@@ -704,8 +704,9 @@ class news_admin_ui extends e_admin_ui
 		$ecache = e107::getCache();
 		$ecache->clear("news.php"); //TODO change it to 'news_*' everywhere
 		$ecache->clear("news_", false, true); //NEW global news cache prefix
-		$ecache->clear("othernews"); //TODO change it to 'news_othernews' everywhere
-		$ecache->clear("othernews2"); //TODO change it to 'news_othernews2' everywhere
+		$ecache->clear("othernews"); //TODO change it to 'news_other' everywhere
+		$ecache->clear("othernews2"); //TODO change it to 'news_other2' everywhere
+
 
 		//$ecache->clear("nq_news_"); - supported by cache::clear() now
 		//$ecache->clear("nomd5_news_"); supported by cache::clear() now

@@ -182,7 +182,8 @@ if($mode == 'download' && !empty($_GET['src']))
 			// Auto install?
 		//	$text = e107::getPlugin()->install($data['plugin_folder']); 
 		//	$mes->addInfo($text); 
-			echo $mes->render('default', 'success'); 
+			echo $mes->render('default', 'success');
+			e107::getTheme()->clearCache();
 		}
 		else
 		{
@@ -192,16 +193,16 @@ if($mode == 'download' && !empty($_GET['src']))
 		echo $mes->render('default', 'debug'); 
 	
 }
-elseif(vartrue($_POST['selectadmin']))
+elseif(!empty($_POST['selectadmin']))
 {
 	$mode = "admin";
 }
 
-if(vartrue($_POST['upload']))
+if(!empty($_POST['upload']))
 {
 	$mode = "upload";
 }
-elseif(vartrue($_POST['selectmain']) || varset($_POST['setUploadTheme']))
+elseif(!empty($_POST['selectmain']) || isset($_POST['setUploadTheme']))
 {
 	$mode = "main";
 }
@@ -247,7 +248,7 @@ function theme_adminmenu()
 		$var['upload']['text'] = TPVLAN_38;
 		$var['upload']['link'] = e_SELF."?mode=upload";
 		
-		$var['convert']['text'] = TPVLAN_63;
+		$var['convert']['text'] = ADLAN_CL_6;
 		$var['convert']['link'] = e_SELF."?mode=convert";
 
       //  $selected = (e_QUERY) ? e_QUERY : "main";
@@ -263,7 +264,28 @@ class theme_builder
 	
 		function __construct()
 		{
-			$this->themeName = $_GET['newtheme'];
+
+			$ns = e107::getRender();
+			$tp = e107::getParser();
+
+			e107::getMessage()->addDebug("Disable debug to save generated files. ");
+
+
+			$this->themeName = $tp->filter($_GET['newtheme'],'w');
+
+			if(!empty($_GET['src']))
+			{
+				$this->themeSrc = $tp->filter($_GET['src'],'w');
+				$this->copyTheme();
+			/*	$src = $tp->filter($_GET['src'],'w');
+				$name = $tp->filter($_GET['f']);
+				$title = $tp->filter($_GET['t']);
+
+				$this->copyTheme($src,$name,$title);*/
+
+			}
+
+
 			
 			if(vartrue($_GET['step']) == 3)
 			{	
@@ -277,8 +299,21 @@ class theme_builder
 			}
 			else 
 			{
-				$this->step1();
+				$ret = $this->step1();
+				$ret2 = $this->copyThemeForm();
+
+				$tabs = array(
+					0 => array('caption'=>$ret['caption'], 'text'=>$ret['text']),
+					1 => array('caption'=>$ret2['caption'], 'text'=>$ret2['text']),
+
+				);
+
+				$ns->tablerender(ADLAN_140.SEP."Tools",e107::getForm()->tabs($tabs));
 			}
+
+
+
+
 				
 		}		
 	
@@ -314,6 +349,7 @@ class theme_builder
 							<col class='col-label' />
 							<col class='col-control' />
 						</colgroup>
+						<tbody>
 				<tr>
 					<td> ".TPVLAN_68."</td>
 					<td>".$frm->select("newtheme",$newDir)."</td>
@@ -327,13 +363,15 @@ class theme_builder
 				</tr>";
 				*/
 				
-			$text .= "				
+			$text .= "</tbody>
 				</table>
 				<div class='buttons-bar center'>
 				".$frm->admin_button('step', 2,'other',LAN_GO)."
 				</div>";
 			
 			$text .= $frm->close();
+
+			return array('caption'=>TPVLAN_88, 'text'=>$mes->render() . $text);
 			
 			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_1, $mes->render() . $text);			
 			
@@ -350,11 +388,13 @@ class theme_builder
 			
 			$data = array(
 				'main' 			=> array('name','lang','version','date', 'compatibility'),
-			  'author' 		=> array('name','url'),
+			    'author' 		=> array('name','url'),
 				'summary'		=> array('summary'),
 				'description' 	=> array('description'),
+
 				'keywords' 		=> array('one','two'),
 				'category'		=> array('category'),
+				'livedemo'      => array('livedemo'),
 				'copyright' 	=> array('copyright'),
 				'stylesheets' 	=> array('stylesheets')
 		//		'adminLinks'	=> array('url','description','icon','iconSmall','primary'),
@@ -362,24 +402,63 @@ class theme_builder
 			);			
 					
 			$legacyFile = e_THEME.$this->themeName."/theme.php";		
-			if(file_exists($legacyFile))
+
+
+
+			$newThemeXML = e_THEME.$this->themeName."/theme.xml";
+			if(file_exists($newThemeXML))
 			{
-				$legacyData = file_get_contents($legacyFile);	
-				
+				$info = e107::getTheme()->getThemeInfo($this->themeName);
+
+				e107::getDebug()->log($info);
+
+				if($this->themeSrc) // New theme copied from another
+				{
+					$defaults = array(
+						"main-name"				=> ucfirst($this->themeName),
+						'category-category'     => vartrue($info['category']),
+					);
+				}
+				else
+				{
+					$defaults = array(
+						"main-name"					=> vartrue($info['name']),
+						"main-date"                 => vartrue($info['date']),
+						"main-version"				=> vartrue($info['version']),
+						"author-name"				=> vartrue($info['author']),
+						"author-url"				=> vartrue($info['website']),
+						"description-description"	=> vartrue($info['description']),
+						"summary-summary"			=> vartrue($info['summary']),
+						'category-category'         => vartrue($info['category']),
+				//		"custompages"				=> vartrue($leg['CUSTOMPAGES']),
+					);
+				}
+
+				if(!empty($info['keywords']['word']))
+				{
+					$defaults['keywords-one'] = $info['keywords']['word'][0];
+					$defaults['keywords-two'] = $info['keywords']['word'][1];
+				}
+
+			}
+			elseif(file_exists($legacyFile))
+			{
+				$legacyData = file_get_contents($legacyFile);
+
 				$regex = '/\$([\w]*)\s*=\s*("|\')([\w @.\/:<\>,\'\[\] !()]*)("|\');/im';
 				preg_match_all($regex, $legacyData, $matches);
-				
+
 				$leg = array();
-				
+
 				foreach($matches[1] as $i => $m)
 				{
-					$leg[$m] = strip_tags($matches[3][$i]);	
+					$leg[$m] = strip_tags($matches[3][$i]);
 					if(substr($m,0,5) == 'theme' || $m == "CUSTOMPAGES")
 					{
-						$search[] = $matches[0][$i];		
-					}					
+						$search[] = $matches[0][$i];
+					}
 				}
-				
+
 				$defaults = array(
 					"main-name"					=> vartrue($leg['themename']),
 					"author-name"				=> vartrue($leg['themeauthor']),
@@ -388,16 +467,16 @@ class theme_builder
 					"summary-summary"			=> vartrue($leg['themeinfo']),
 					"custompages"				=> vartrue($leg['CUSTOMPAGES']),
 				);
-				
+
 				$search[] = "Steve Dunstan";
 				$search[] = "jalist@e107.org";
-				
+
 				$_SESSION['themebulder-remove'] = $search;
-				
-				$mes->addInfo("Loading theme.php file");						
-			}	
+
+				$mes->addInfo("Loading theme.php file");
+			}
 			
-			$text = $frm->open('newtheme-step3','post', e_SELF.'?mode=convert&newtheme='.$this->themeName.'&step=3');
+			$text = $frm->open('newtheme-step3','post', e_SELF.'?mode=convert&src='.$this->themeSrc.'&newtheme='.$this->themeName.'&step=3');
 			$text .= "<table class='table adminlist'>";
 			foreach($data as $key=>$val)
 			{
@@ -420,14 +499,16 @@ class theme_builder
 			$text .= "</table>";
 			$text .= "
 			<div class='buttons-bar center'>"
-			.$frm->hidden('newtheme', $this->themeName)
-			.$frm->hidden('xml[custompages]', trim(vartrue($leg['CUSTOMPAGES'])))
+			.$frm->hidden('newtheme', $this->themeName);
+			$text .= $frm->hidden('xml[custompages]', trim(vartrue($leg['CUSTOMPAGES'])))
 			.$frm->admin_button('step', 3,'other',LAN_GENERATE)."
 			</div>";
 			
 			$text .= $frm->close();
 
-			$ns->tablerender(TPVLAN_26.SEP.TPVLAN_88.SEP. TPVLAN_CONV_2, $mes->render() . $text);		
+		//	return array('caption'=>TPVLAN_88.SEP. TPVLAN_CONV_2, 'text'=>$mes->render() . $text);
+
+			$ns->tablerender(TPVLAN_26.SEP.ADLAN_CL_6.SEP. TPVLAN_CONV_2, $mes->render() . $text);
 		}
 					
 				
@@ -438,56 +519,28 @@ class theme_builder
 			
 		//	print_a($_POST);
 			
-			if($_POST['xml'])
+			if(!empty($_POST['xml']))
 			{
 				$xmlText =	$this->createXml($_POST['xml']);
-			}	
-			
-			$ns->tablerender("theme.xml", $mes->render(). "<pre>".$xmlText."</pre>");
-			
+				$ns->tablerender("theme.xml", $mes->render(). "<pre>".$xmlText."</pre>");
+			}
+
+
 			$legacyFile = e_THEME.$this->themeName."/theme.php";		
-			if(file_exists($legacyFile))
+			if(file_exists($legacyFile) && empty($this->themeSrc))
 			{
-				$legacyData = file_get_contents($legacyFile);	
+				$legacyData = file_get_contents($legacyFile);
+				$legacyData = e107::getTheme()->upgradeThemeCode($legacyData);
+
+				$output = nl2br(htmlentities($legacyData));
+
+				$ns->tablerender("theme.php (updated)",  $output);
 			}
 			
-			$legacyData = $this->cleanUp($legacyData);
-			
-			$output = nl2br(htmlentities($legacyData));
-			
-			// $legacyData = str_replace("\n\n\n","\n",$legacyData);
-			
-			$ns->tablerender("theme.php (updated)",  $output);
+
 		}	
 
 
-		function cleanUp($text)
-		{
-			$search = array();
-			$replace = array();
-		
-			$search[0] 	= '$HEADER ';
-			$replace[0]	= '$HEADER["default"] ';
-
-			$search[1] 	= '$FOOTER ';
-			$replace[1]	= '$FOOTER["default"] ';	
-			
-			// Early 0.6 and 0.7 Themes 
-
-			$search[2] 	= '$CUSTOMHEADER ';
-			$replace[2]	= '$HEADER["custom"] ';
-
-			$search[3] 	= '$CUSTOMFOOTER ';
-			$replace[3]	= '$FOOTER["custom"] ';
-			
-			//TODO Handle v1.x style themes. eg. $CUSTOMHEADER['something'];
-
-			$text = str_replace($_SESSION['themebulder-remove'],"",$text);
-					
-			$text = str_replace($search, $replace, $text);
-			
-			return $text;	
-		}
 
 
 		function createXml($data)
@@ -502,7 +555,7 @@ class theme_builder
 				$newArray[$key] = $val;			
 			}	
 				
-			if(vartrue($newArray['CUSTOMPAGES']))
+			if(!empty($newArray['CUSTOMPAGES']))
 			{
 				$newArray['CUSTOMPAGES'] = trim($newArray['CUSTOMPAGES']);			
 				$LAYOUTS = "\n<layout name='custom' title='Custom'>\n";
@@ -514,15 +567,24 @@ class theme_builder
 				$LAYOUTS = "";
 			}
 			
-			if(vartrue($newArray['STYLESHEETS_STYLESHEETS']))
+			if(!empty($newArray['STYLESHEETS_STYLESHEETS']))
 			{
-				$STYLESHEETS = "\n\t<stylesheets>\n";
+				$STYLESHEETS = '';
 				foreach($newArray['STYLESHEETS_STYLESHEETS'] as $val)
 				{
+					if(empty($val['file']))
+					{
+						continue;
+					}
+
 					$STYLESHEETS .= "\t\t<css file=\"".$val['file']."\" name=\"".$val['name']."\" />\n";	
 				}
-				$STYLESHEETS .= "\t</stylesheets>";
-				
+
+				if(!empty($STYLESHEETS))
+				{
+					$STYLESHEETS = "\n\t<stylesheets>\n".$STYLESHEETS."\t</stylesheets>";
+				}
+
 				unset($newArray['STYLESHEETS_STYLESHEETS']);
 			}
 			else 
@@ -537,15 +599,15 @@ class theme_builder
 
 $template = <<<TEMPLATE
 <?xml version="1.0" encoding="utf-8"?>
-<e107Theme name="{MAIN_NAME}" lan="{MAIN_LANG}" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" >
+<e107Theme name="{MAIN_NAME}" lan="{MAIN_LANG}" version="{MAIN_VERSION}" date="{MAIN_DATE}" compatibility="{MAIN_COMPATIBILITY}" livedemo="{LIVEDEMO_LIVEDEMO}">
 	<author name="{AUTHOR_NAME}" url="{AUTHOR_URL}" />
 	<summary lan="">{SUMMARY_SUMMARY}</summary>
 	<description lan="">{DESCRIPTION_DESCRIPTION}</description>
+	<category>{CATEGORY_CATEGORY}</category>
 	<keywords>
 		<word>{KEYWORDS_ONE}</word>
 		<word>{KEYWORDS_TWO}</word>
 	</keywords>
-	<category>{CATEGORY_CATEGORY}</category>
 	<copyright>{COPYRIGHT_COPYRIGHT}</copyright>
 	<screenshots>
 		<image>preview.jpg</image>
@@ -581,7 +643,7 @@ TEMPLATE;
 				$mes->addError("Couldn't Save: ".$path);
 			}
 			
-			$mes->addWarning("Please update your theme.php file with the data below");
+
 			
 			return  htmlentities($result);
 
@@ -605,7 +667,7 @@ TEMPLATE;
 				case 'main-name':
 					$help 		= TPVLAN_CONV_3;
 					$required 	= true;
-					$pattern 	= "[A-Za-z ]*";
+					$pattern 	= "[A-Za-z 0-9]*";
 				break;
 		
 				case 'main-lang':
@@ -618,6 +680,7 @@ TEMPLATE;
 				case 'main-date':
 					$help 		= TPVLAN_CONV_6;
 					$required 	= true;
+					$default = (empty($default)) ? time() : strtotime($default);
 				break;
 				
 				case 'main-version':
@@ -644,6 +707,13 @@ TEMPLATE;
 				case 'author-url':
 					$required 	= true;
 					$help 		= TPVLAN_CONV_9;
+				//	$pattern	= "https?://.+";
+				break;
+
+				case 'livedemo-livedemo':
+					$required 	= false;
+					$help 		= TPVLAN_CONV_16;
+					$placeholder= "http://demo-of-my-theme.com";
 				//	$pattern	= "https?://.+";
 				break;
 				
@@ -700,7 +770,7 @@ TEMPLATE;
 					$fl = e107::getFile();
 			
 					$fl->setMode('full');
-					$stylesheets = $fl->get_files(e_THEME.$this->themeName."/", "\.css", $reject, 1);
+					$stylesheets = $fl->get_files(e_THEME.$this->themeName."/", "\.css", null, 1);
 					foreach($stylesheets as $key=>$path)
 					{
 						$file = str_replace(e_THEME.$this->themeName."/",'',$path);
@@ -722,11 +792,11 @@ TEMPLATE;
 				
 				
 				case 'date':
-					$text = $frm->datepicker($name, time(), 'format=yyyy-mm-dd'.$req.'&size=block-level');
+					$text = $frm->datepicker($name, $default, 'format=yyyy-mm-dd'.$req.'&size=block-level');
 				break;
 				
 				case 'description':
-					$text = $frm->textarea($name,$default, 3, 100, $req,'&size=block-level');	// pattern not supported.
+					$text = $frm->textarea($name,$default, 3, 100, $req.'&size=block-level');	// pattern not supported.
 				break;
 								
 						
@@ -739,7 +809,7 @@ TEMPLATE;
 					
 				sort($allowedCategories);
 				
-					$text = $frm->select($name, $allowedCategories,'','useValues=1&required=1', true);	
+					$text = $frm->select($name, $allowedCategories,$default,'useValues=1&required=1', true);
 				break;
 				
 				
@@ -752,7 +822,100 @@ TEMPLATE;
 			$text .= ($help) ? "<span class='field-help'>".$help."</span>" : "";
 			return $text;
 			
-		}		
+		}
+
+
+
+
+
+		function copyThemeForm()
+		{
+
+			$frm = e107::getForm();
+
+			$list = e107::getTheme()->clearCache()->getThemeList(); // (e_THEME);
+
+			$folders = array_keys($list);
+
+			$text = $frm->open('copytheme','get','theme.php?mode=convert');
+			$text .= "<table class='table adminform'>
+						<colgroup>
+							<col class='col-label' />
+							<col class='col-control' />
+						</colgroup>
+				<tr>
+					<td>Create a new theme based on</td>
+					<td>".$frm->select("src",$folders,'',array('useValues'=>1))."</td>
+				</tr>
+
+				<tr>
+					<td>New Theme Folder</td>
+					<td>".$frm->text("newtheme",'',25, array('pattern'=>'[a-z_0-9]*', 'required'=>1))."</td>
+				</tr>
+
+				";
+
+				/*
+				$text .= "
+				<tr>
+					<td>Create Files</td>
+					<td>".$frm->checkbox('createFiles',1,1)."</td>
+				</tr>";
+				*/
+
+			$text .= "
+				</table>
+					<div class='buttons-bar center'>
+				".$frm->admin_button('step', 2,'success', LAN_CREATE)."
+				</div>";
+
+
+
+
+				$text .= $frm->close();
+
+
+		//	$text = "Create a new theme based on ".e->select('copytheme',$list);
+
+
+			return array('caption'=>"Create New", 'text'=>$text);
+
+		}
+
+		private function copyTheme()
+		{
+			if(empty($this->themeSrc) || empty($this->themeName) || is_dir(e_THEME.$this->themeName))
+			{
+				return false;
+			}
+
+			if(e107::getFile()->copy(e_THEME.$this->themeSrc, e_THEME.$this->themeName))
+			{
+				$newfiles = scandir(e_THEME.$this->themeName);
+
+				foreach($newfiles as $file)
+				{
+					if(is_dir(e_THEME.$this->themeName.'/'.$file) || $file === '.' || $file === '..')
+					{
+						continue;
+					}
+
+					if(strpos($file,"admin_") === 0)
+					{
+						unlink(e_THEME.$this->themeName.'/'.$file);
+					}
+
+
+
+				}
+
+			}
+
+		}
+
+
+
+
 }
 
 
