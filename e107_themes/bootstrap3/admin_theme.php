@@ -185,8 +185,7 @@ class bootstrap3_admintheme
 				break;
 
 				case 'admin_menu':
-
-				echo '<div class="panel ' . $panelType[$style] . '">
+				echo '<div class="panel panel-default">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>

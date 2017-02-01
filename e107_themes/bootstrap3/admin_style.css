@@ -114,7 +114,10 @@ table input.form-control, table textarea.form-control,  table select.form-contro
 }
 
 .plugin-navigation li a { outline: 0; }
+/*
+
 .plugin-navigation li a.link-active:before { content: "\f054"; font-family:FontAwesome; margin-left:-10px }
+*/
 
 table textarea.input-block-level,
 input.input-block-level,
