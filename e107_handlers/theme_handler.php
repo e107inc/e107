@@ -2634,9 +2634,12 @@ class themeHandler
 			$config->setPosted('admincss', $_POST['admincss']);
 		}
 
-		return $config->setPosted('adminstyle', $_POST['adminstyle'])
+		$config->setPosted('adminstyle', $_POST['adminstyle'])
 			->setPosted('adminpref', varset($_POST['adminpref'], 0))->save(true,true,false);
-		
+
+
+		e107::redirect(e_REQUEST_URI);
+
 		/*return (e107::getConfig()->dataHasChangedFor('admincss')
 			|| e107::getConfig()->dataHasChangedFor('adminstyle')
 			|| e107::getConfig()->dataHasChangedFor('adminpref'));*/
