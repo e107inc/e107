@@ -766,6 +766,7 @@ class page_admin_ui extends e_admin_ui
 				$elid = 'core-page-create';
 				$model = $this->getModel();
 				$tabId = e107::getCustomFields()->getTabId();
+				$tabLabel = e107::getCustomFields()->getTabLabel();
 
 				$data = array(
 					'tabs'   => $this->getTabs(),
@@ -788,6 +789,7 @@ class page_admin_ui extends e_admin_ui
 					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeInAdminTab');
 				}
 
+				$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'html', array($tabLabel));
 				$commands[] = $ajax->commandInvoke('#tab' . $tabId, 'html', array($text));
 
 				$ajax->response($commands);
