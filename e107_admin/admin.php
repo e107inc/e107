@@ -310,7 +310,7 @@ class admin_start
 
 			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
 			{
-				$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+				$link = "<a rel='external' class='alert-link' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
 
 				$dl = $mp->getDownloadModal('plugin', $versions[$folder]);
 
@@ -318,7 +318,7 @@ class admin_start
 
 				$lans = array('x'=>$link, 'y'=>LAN_PLUGIN);
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal alert-link' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -356,7 +356,7 @@ class admin_start
 
 			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
 			{
-				$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+				$link = "<a rel='external' class='alert-link' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
 
 				$lans = array('x'=>$link, 'y'=>LAN_THEME);
 
@@ -365,7 +365,7 @@ class admin_start
 				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
 
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal alert-link' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
