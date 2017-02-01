@@ -250,6 +250,8 @@ class e_theme
 		$css = strtolower($match[2]);
 		$themeArray['csscompliant'] = ($css == "true" ? "2.1" : false);
 
+		$themeArray['version'] = str_replace(array('<br />','<br>','<br/>'),' ',$themeArray['version']);
+
 		/*        preg_match('/CUSTOMPAGES(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
 		 $themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
 
