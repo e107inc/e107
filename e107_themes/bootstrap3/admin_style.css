@@ -1193,9 +1193,11 @@ li.rssRow > div {
 
 /* ######## selectize.js ######## */
 
-.selectize-input input, .selectize-input.full { color: inherit; background-color:inherit }
+.selectize-input { color: inherit;  }
+.selectize-input > input,  .selectize-input.full { color: inherit; background-color:inherit}
 .selectize-control div.item { border-radius:3px; }
 .selectize-control div.item .remove { margin-top:3px }
+.selectize-input.focus { }
 
 
 /*
