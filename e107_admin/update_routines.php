@@ -602,7 +602,7 @@ function update_core_database($type = '')
 			}
 		}*/
 
-	
+
 
 	}
 
