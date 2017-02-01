@@ -1476,7 +1476,7 @@ legend{color:#fff}
 .breadcrumb,.darkwell,.form-control,.hero-unit,.progress,.uneditable-input,code,input[type=date],input[type=time],input[type=datetime-local],input[type=month],input[type=text],input[type=password],input[type=datetime],input[type=week],input[type=email],input[type=url],input[type=tel],input[type=color],input[type=number],input[type=search],pre,select,textarea{box-shadow:0 1px 0 rgba(255,255,255,.1),0 1px 7px 0 rgba(0,0,0,.8) inset;background:rgba(0,0,0,.3)}
 .nav-pills>li>a{border:0;background:0 0}
 .nav-pills>li>a:hover{background:#3c3c3c;border:0}
-.nav-pills>li.active>a,.nav-pills>li.active>a:hover{background:0 0;border:0}
+.nav-pills>li.active>a{background-color:#337ab7}
 .nav-pills>li.active>a:hover{background:#3c3c3c}
 .nav-pills>li.disabled>a,.nav-pills>li.disabled>a:hover{background:0 0}
 .pagination>li>a{background-image:-webkit-linear-gradient(#303030,#212121 60%,#171717);background-image:-o-linear-gradient(#303030,#212121 60%,#171717);background-image:linear-gradient(#303030,#212121 60%,#171717);background-repeat:no-repeat;filter:none}
