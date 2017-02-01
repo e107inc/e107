@@ -1,5 +1,9 @@
 
-body						{ padding-top: 75px;  }
+body						{ padding-top: 75px;
+font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+font-size: 14px;
+
+ }
 
 @media (max-width: 992px) {
     body { height: 100vh; overflow-y: auto!important; }
