@@ -750,7 +750,7 @@ class e_form
 			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
 
 			$options['selectize']['wrapperClass'] = 'selectize-control';
-			$options['selectize']['inputClass'] = 'selectize-input form-control';
+			$options['selectize']['inputClass'] = 'form-control selectize-input ';
 			$options['selectize']['dropdownClass'] = 'selectize-dropdown';
 			$options['selectize']['dropdownContentClass'] = 'selectize-dropdown-content';
 			$options['selectize']['copyClassesToDropdown'] = true;
