@@ -41,7 +41,7 @@ if($core->get('admintheme') != 'bootstrap3')
 }
 
 $admincss = trim($core->get('admincss'));
-if(empty($admincss) || $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
+if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
 {
 	$core->update('admincss','css/bootstrap-dark.min.css');
 	$core->save(false,true);
