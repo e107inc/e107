@@ -1677,14 +1677,16 @@ class themeHandler
 		{
 			$thumbPath = e_THEME.$theme['path'] ."/".$theme['thumbnail'];
 			$previewPath = e_THEME.$theme['path'] ."/".$theme['thumbnail'];
+			$class = 'admin-theme-preview';
 		}
 		else 
 		{
 			$thumbPath = e_IMAGE_ABS."admin_images/nopreview.png";
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
+			$class = 'admin-theme-nopreview';
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style='max-width:100%'  alt='' />";
+		$thumbnail = "<img class='".$class."' src='".$thumbPath."' style='max-width:100%'  alt='' />";
 		
 
 		if($_GET['mode'] == 'online')

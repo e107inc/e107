@@ -710,6 +710,7 @@ i.S24  {
 
 i.e-news-24{ background-position: -1442px 0;  }
 i.e-custom-24{ background-position: -639px 0; }
+i.e-themes-24 {background-position: -639px 0; }
 
 i.e-add-32{ background-position: 0 0; width: 32px; height: 32px; } 
 i.e-adminlogs-32{ background-position: -37px 0; width: 32px; height: 32px; } 
@@ -1254,6 +1255,9 @@ li.rssRow > div {
 .admin-theme-thumb			{ position:relative; width:100%; height:130px;overflow:hidden;border:1px solid black; margin:0; margin-bottom:10px; padding:0;   }
 .admin-theme-thumb:hover	{ opacity:0.4 }
 .admin-theme-thumb img { position:absolute; height:130px; left:-10px; min-width:110%; }
+.admin-theme-nopreview      { opacity: 0.3 }
+
+
 
 .admin-theme-options		{
 	transition: opacity .20s ease-in-out;
@@ -1303,7 +1307,7 @@ li.after-submit:hover { background-color: #337AB7; color:white }
 
 .plugin-manager .fa-refresh { padding-top: 4px }
 
-.admin-left-panel .panel-title span { display: inline-block; vertical-align: middle; color:white;text-shadow:0 1px 1px #000}
+.admin-left-panel .panel-title span { display: inline-block; vertical-align: middle; }
 .admin-left-panel .panel-title .S24, .admin-left-panel .panel-title img { margin-right:6px; width:24px; height:24px; vertical-align:middle}
 
 
