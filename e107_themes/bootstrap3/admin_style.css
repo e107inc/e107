@@ -1306,6 +1306,9 @@ td.forumheader { background-image: linear-gradient(#303030,#212121 60%,#171717);
 .navbar-nav > li > a.admin-icon-avatar { padding-top: 11px; padding-bottom: 10px;}
 
 form#simplesef h4 { margin: 0 }
+.adminlist tr > td { min-height:50px; }
+
+.navbar-fixed-top { height: 51px; }
 
 
 /*

@@ -20,6 +20,7 @@
 	<stylesheets>
 		<css file="style.css" name="Default"  />
         <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' />
+        <css file="http://bootswatch.com/sandstone/bootstrap.min.css" name="Bootwatch Sandstone" scope='admin' />
         <css file="*" name="*"  />
 	</stylesheets>
 	<layouts>

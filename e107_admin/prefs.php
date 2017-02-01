@@ -453,7 +453,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 					<tr>
 						<td><label for='testaddress'>".LAN_MAILOUT_110."</label><br /></td>
 						<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-							<input name='testaddress' id='testaddress' class='tbox' placeholder='user@yoursite.com' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+							<input name='testaddress' id='testaddress' class='tbox form-control input-xxlarge' placeholder='user@yoursite.com' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 						</td>
 					</tr>
 		
@@ -739,7 +739,7 @@ $text .= "
 					<tr>
 						<td><label for='timezone'>".PRFLAN_56."</label></td>
 						<td>
-							".$frm->select('timezone', $timeZones, vartrue($pref['timezone'], 'UTC'))."
+							".$frm->select('timezone', $timeZones, vartrue($pref['timezone'], 'UTC'),'size=xlarge')."
 						</td>
 					</tr>
 				</tbody>

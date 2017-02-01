@@ -36,6 +36,12 @@ if($core->get('admintheme') != 'bootstrap3')
 	$core->save();	
 	e107::getRedirect()->redirect(e_SELF);		
 }
+if($core->get('admincss') === 'admin_dark.css' || $core->get('admincss') === 'admin_light.css')
+{
+	$core->update('admincss','css/bootstrap-dark.min.css');
+	$core->save();
+	e107::getRedirect()->redirect(e_SELF);	;
+}
 
 // Check Admin-Perms for current language and redirect if necessary. 
 if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE) && empty($_E107['no_language_perm_check']))
