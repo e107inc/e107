@@ -102,6 +102,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                             inputClass: item.options.inputClass || 'selectize-input',
                             dropdownClass: item.options.dropdownClass || 'selectize-dropdown',
                             dropdownContentClass: item.options.dropdownContentClass || 'selectize-dropdown-content',
+                            copyClassesToDropdown: item.options.copyClassesToDropdown ? item.options.copyClassesToDropdown : null,
 
                             // Callbacks.
                             load: function (query, callback) {
