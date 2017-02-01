@@ -1191,7 +1191,11 @@ li.rssRow > div {
 .admin-left-panel.toggled { display: none }
 
 
-/* ######## selectize.js ######## *
+/* ######## selectize.js ######## */
+
+.selectize-input input { color: inherit }
+
+
 /*
 .selectize-control.single .selectize-input,
 .selectize-control.single .selectize-input.input-active,

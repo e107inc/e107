@@ -732,27 +732,28 @@ class e_form
 		}	
 		*/
 
-		if(vartrue($options['selectize']))
+		if(!empty($options['selectize']))
 		{
 			e107::js('core', 'selectize/js/selectize.min.js', 'jquery');
 			e107::css('core', 'selectize/css/selectize.css', 'jquery');
 
 			if(deftrue('BOOTSTRAP') === 3)
 			{
-				e107::css('core', 'selectize/css/selectize.bootstrap3.css', 'jquery');
+		//		e107::css('core', 'selectize/css/selectize.bootstrap3.css', 'jquery');
 			}
 			elseif(deftrue('BOOTSTRAP'))
 			{
-				e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
+		//		e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
 			}
 
 			// Load selectize behavior.
 			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
 
 			$options['selectize']['wrapperClass'] = 'selectize-control';
-			$options['selectize']['inputClass'] = 'selectize-input';
+			$options['selectize']['inputClass'] = 'selectize-input form-control';
 			$options['selectize']['dropdownClass'] = 'selectize-dropdown';
 			$options['selectize']['dropdownContentClass'] = 'selectize-dropdown-content';
+			$options['selectize']['copyClassesToDropdown'] = true;
 
 			$jsSettings = array(
 				'id'      => vartrue($options['id'], $this->name2id($name)),
@@ -765,6 +766,8 @@ class e_form
 
 			// Merge field settings with other selectize field settings.
 			e107::js('settings', array('selectize' => array($jsSettings)));
+
+			$options['class'] = '';
 		}
 
 		// TODO: remove typeahead.
