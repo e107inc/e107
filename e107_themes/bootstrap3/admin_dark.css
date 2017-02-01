@@ -11,10 +11,7 @@ thead tr {
     border: 1px solid rgb(3, 3, 3);
 }
 
-.adminlist tr > td {
-	
-min-height:50px;
-}
+
 
 .datetimepicker {
 	background-color: #191919;

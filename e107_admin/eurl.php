@@ -760,7 +760,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$text .= "
                 <tr>
                     <td>".$this->moreInfo($title, $info)."</td>
-                    <td><select name='eurl_config[$module]' class='input-block-level'>".$opt."</select></td>
+                    <td><select name='eurl_config[$module]' class='form-control input-block-level'>".$opt."</select></td>
                     <td>";
 		
 			$bTable = ($admin['generate']['table']);

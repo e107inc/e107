@@ -3702,8 +3702,9 @@ class e_parser
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
+		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
 		
-		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;

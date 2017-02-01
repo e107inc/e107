@@ -447,8 +447,8 @@ class e_theme
 
 			foreach($vars['stylesheets']['css'] as $val)
 			{
-				$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
-
+			//	$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
+				$notadmin = (varset($val['@attributes']['scope']) !== 'admin') ? true : false;
 				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=> vartrue($val['@attributes']['scope']));
 			}
 
@@ -828,7 +828,7 @@ class themeHandler
 
 		if(!empty($themeArray[$file]['css']) && count($themeArray[$file]['css']) > 1)
 		{
-			$themeArray[$file]['multipleStylesheets'] = TRUE;	
+			$themeArray[$file]['multipleStylesheets'] = true;
 		}
 
 
@@ -2007,7 +2007,7 @@ class themeHandler
 						
 						$adminstyles = $file->get_files(e_ADMIN."includes");
 						
-						$astext = "\n<select id='mode2' name='adminstyle' class='tbox'>\n";
+						$astext = "\n<select id='mode2' name='adminstyle' class='form-control input-medium'>\n";
 						
 						foreach ($adminstyles as $as)
 						{
@@ -2027,9 +2027,11 @@ class themeHandler
 						<tr>
 							<td><b>" . TPVLAN_89 . "</b></td>
 							<td colspan='2'>
+								<div class='checkbox'>
 								<label class='checkbox'>
 									" . $frm->checkbox('adminpref', 1, (varset($pref['adminpref'], 0) == 1)) . "
 								</label>
+								</div>
 							</td>
 						</tr>
 						\n";
@@ -2065,7 +2067,7 @@ class themeHandler
 								case 2: // admin mode.
 									$for = $frm->name2id("admincss-".$css['name']);
 									$text2 = "<td class='center'>";
-									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name']);
+									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'], array('id'=>$for));
 									$text2 .= "</td>";
 									$text2 .= "<td><label for='".$for."'>".$css['info']."</label></td>";
 									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
@@ -2182,6 +2184,8 @@ class themeHandler
 		}
 
 
+
+
 		foreach($theme['css'] as $k=>$vl) // as defined.
 		{
 			if(!empty($detected[$vl['name']])) // remove any detected files which are listed
@@ -2215,6 +2219,11 @@ class themeHandler
 
 				case 2: // admin
 
+					if(e_DEVELOPER !== true || e_DEBUG !== true)
+					{
+						return array();
+					}
+
 					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
 					{
 						$remove[$k] = $vl['name'];
@@ -2225,7 +2234,7 @@ class themeHandler
 						$remove[$k] = $vl['name'];
 					}
 
-					if($vl['scope'] == 'front')
+					if($vl['scope'] === 'front')
 					{
 						$remove[$k] = $vl['name'];
 					}
@@ -2609,33 +2618,21 @@ class themeHandler
 	
 	function setAdminStyle()
 	{
-		global $pref,$e107cache;
-		
-		$ns = e107::getRender();
-		$mes = e107::getMessage();
-		/*$pref['admincss'] = $_POST['admincss'];
-		 $pref['adminstyle'] = $_POST['adminstyle'];
-		 $e107cache->clear_sys();
-		 if(save_prefs())
-		 {
-		 $mes->add(TPVLAN_43, E_MESSAGE_SUCCESS);
-		 $this->theme_adminlog('04',$pref['adminstyle'].', '.$pref['admincss']);
-		 }
-		 else
-		 {
-		 $mes->add(TPVLAN_43, E_MESSAGE_ERROR);
-		 }*/
-
-		
 		//TODO adminlog
-		e107::getConfig()
-			->setPosted('admincss', $_POST['admincss'])
-			->setPosted('adminstyle', $_POST['adminstyle'])
-			->setPosted('adminpref', varset($_POST['adminpref'], 0));
+
+		$config =  e107::getConfig();
+
+		if(!empty($_POST['admincss']))
+		{
+			$config->setPosted('admincss', $_POST['admincss']);
+		}
+
+		return $config->setPosted('adminstyle', $_POST['adminstyle'])
+			->setPosted('adminpref', varset($_POST['adminpref'], 0))->save(true,true,false);
 		
-		return (e107::getConfig()->dataHasChangedFor('admincss')
+		/*return (e107::getConfig()->dataHasChangedFor('admincss')
 			|| e107::getConfig()->dataHasChangedFor('adminstyle')
-			|| e107::getConfig()->dataHasChangedFor('adminpref'));
+			|| e107::getConfig()->dataHasChangedFor('adminpref'));*/
 	}
 	
 	function SetCustomPages($array)

@@ -711,7 +711,7 @@ class admin_shortcodes
 	{
 		if(e_DEBUG !== false)
 		{
-			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug')."&nbsp;</div>";
+			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug', array('class'=>'text-warning'))."&nbsp;</div>";
 		}
 
 	}

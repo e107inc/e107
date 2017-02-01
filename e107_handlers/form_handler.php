@@ -2205,9 +2205,14 @@ class e_form
 		
 		$labelFound = vartrue($options['label']);
 		unset($options['label']); // label attribute not valid in html5
-				
+
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
+
+		if(empty($options['id']))
+		{
+			$options['id'] = '';
+		}
 		// $options['class'] = 'inline';	
 		$text = "";
 		
@@ -2423,11 +2428,11 @@ class e_form
 		{
 			if(!empty($options['class']))
 			{
-				$options['class'] .= " input-".$options['size'];
+				$options['class'] .= "form-control input-".$options['size'];
 			}
 			else
 			{
-				$options['class'] = "input-".$options['size'];
+				$options['class'] = "form-control input-".$options['size'];
 			}
 
 			unset($options['size']); // don't include in html 'size='. 	
@@ -3379,7 +3384,7 @@ class e_form
 
 			case 'radio':
 				//$def_options['class'] = ' ';
-				$def_options = array('class' => '');
+				$def_options = array('class' => '', 'id'=>'');
 				unset($def_options['size'], $def_options['selected']);
 				break;
 
