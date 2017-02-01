@@ -2061,7 +2061,7 @@ class e107
 		$jshandler = self::getJs();
 		$jshandler->setDependency($dep);
 
-		if(strpos($data,'http:')===0)
+		if(strpos($data,'http')===0)
 		{
 			$type = 'url';
 		}
