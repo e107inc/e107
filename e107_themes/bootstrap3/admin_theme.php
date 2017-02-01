@@ -184,8 +184,20 @@ class bootstrap3_admintheme
 					</div>';
 				break;
 
+				case 'admin_menu':
+
+				echo '<div class="panel ' . $panelType[$style] . '">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
+					</div>';
+				break;
+
+
 			case 'core-infopanel':
-			case 'admin_menu':
 			case 'site_info':
 				echo '<div class="panel ' . $panelType[$style] . '">
 					  <div class="panel-heading">
