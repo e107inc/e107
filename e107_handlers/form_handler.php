@@ -794,10 +794,10 @@ class e_form
 	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
-		if (vartrue($options['maxlength'])) $maxlength = $options['maxlength'];
+		if (empty($options['maxlength'])) $maxlength = $options['maxlength'];
 		unset($options['maxlength']);
-		if(!vartrue($options['size'])) $options['size'] = 15;
-		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small form-control';
+		if(empty($options['size'])) $options['size'] = 15;
+		if(empty($options['class'])) $options['class'] = 'tbox number e-spinner input-small ';
 		
 		if(!empty($options['size']))
 		{
@@ -805,6 +805,7 @@ class e_form
 			unset($options['size']);
 		}
 
+		$options['class'] .= " form-control";
 		$options['type'] ='number';
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
@@ -817,7 +818,7 @@ class e_form
 
 		
 		//never allow id in format name-value for text fields
-		if(deftrue('BOOTSTRAP'))
+		if(THEME_LEGACY === false)
 		{
 			return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
 		}
@@ -3350,7 +3351,7 @@ class e_form
 			//	'multiple' => false, - see case 'select'
 		);
 
-		$form_control = (deftrue('BOOTSTRAP') === 3) ? ' form-control' : '';
+		$form_control = (THEME_LEGACY !== true) ? ' form-control' : '';
 
 		switch ($type) {
 			case 'hidden':
@@ -3360,6 +3361,10 @@ class e_form
 			case 'text':
 				$def_options['class'] = 'tbox input-text'.$form_control;
 				unset($def_options['selected'], $def_options['checked']);
+				break;
+
+			case 'number':
+				$def_options['class'] = 'tbox '.$form_control;
 				break;
 
 			case 'file':
@@ -5090,6 +5095,12 @@ class e_form
 					
 					// Appending needs is  performed and customized using function: beforeUpdate($new_data, $old_data, $id)
 				}
+
+				if(empty($parms['size']))
+				{
+					$parms['size'] = 'xxlarge';
+				}
+
 
 				$text .= vartrue($parms['pre']).$this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
 				$ret =  $text;
