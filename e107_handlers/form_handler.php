@@ -749,6 +749,11 @@ class e_form
 			// Load selectize behavior.
 			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
 
+			$options['selectize']['wrapperClass'] = 'selectize-control';
+			$options['selectize']['inputClass'] = 'selectize-input';
+			$options['selectize']['dropdownClass'] = 'selectize-dropdown';
+			$options['selectize']['dropdownContentClass'] = 'selectize-dropdown-content';
+
 			$jsSettings = array(
 				'id'      => vartrue($options['id'], $this->name2id($name)),
 				'options' => $options['selectize'],
