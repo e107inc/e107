@@ -281,6 +281,41 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Behavior to initialize Modal closer elements.
+	 *
+	 * @type {{attach: e107.behaviors.eDialogClose.attach}}
+	 */
+	e107.behaviors.eDialogClose = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
+			{
+				$(this).click(function ()
+				{
+					var $modal = $('.modal');
+					var $parentModal = parent.$('.modal');
+					var $parentDismiss = parent.$('[data-dismiss=modal]');
+
+					if($modal.length > 0)
+					{
+						$modal.modal('hide');
+					}
+
+					if($parentModal.length > 0)
+					{
+						$parentModal.modal('hide');
+					}
+
+					if($parentDismiss.length > 0)
+					{
+						$parentDismiss.trigger({type: 'click'});
+					}
+				});
+			});
+		}
+	};
+
+	/**
 	 * Check if the selector is valid.
 	 *
 	 * @param selector
@@ -1115,15 +1150,6 @@ $(document).ready(function()
 		});
 		*/
 
-
-    $(document).on("click", ".e-dialog-close", function(){
-			parent.$('.modal').modal('hide');
-            $('.modal').modal('hide');
-			parent.$('[data-dismiss=modal]').trigger({ type: 'click' });
-
-         //   $('#modal').modal('hide');
-			// parent.$.colorbox.close()	
-	});
 		
 		
 		
