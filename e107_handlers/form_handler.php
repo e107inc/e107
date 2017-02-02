@@ -1986,6 +1986,29 @@ class e_form
 		<div class='field-spacer'><!-- --></div>\n";
 
 
+		if(e107::wysiwyg() === true)
+		{
+			$eParseList = e107::getConfig()->get('e_parse_list');
+
+			if(!empty($eParseList))
+			{
+				$opts = array(
+					'field' => $name,
+				);
+
+				foreach($eParseList as $plugin)
+				{
+					$hookObj = e107::getAddon($plugin, 'e_parse');
+
+					if($tmp = e107::callMethod($hookObj, 'toWYSIWYG', $value, $opts))
+					{
+						$value = $tmp;
+					}
+				}
+			}
+		}
+
+
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
 		$ret .=	$this->textarea($name, $value, $rows, $cols, $options, $counter); // higher thank 70 will break some layouts.
 			
