@@ -877,7 +877,7 @@ TEMPLATE;
 		//	$text = "Create a new theme based on ".e->select('copytheme',$list);
 
 
-			return array('caption'=>TPVLAN_93, 'text'=>$text);
+			return array('caption'=>LAN_CREATE, 'text'=>$text);
 
 		}
 
