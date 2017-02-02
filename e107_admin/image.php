@@ -1633,12 +1633,15 @@ class media_admin_ui extends e_admin_ui
 			$accData = json_decode($accData,true);
 			$channelID = e107::pref('core', 'youtube_default_account');
 
-			foreach($accData['items'] as $val)
+			if(!empty($accData['items']))
 			{
-				if($val['kind'] == 'youtube#channel')
+				foreach($accData['items'] as $val)
 				{
+					if($val['kind'] == 'youtube#channel')
+					{
 						$channelID = $val['id'];
 						break;
+					}
 				}
 			}
 
