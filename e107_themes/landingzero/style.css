@@ -254,6 +254,12 @@ a.list-group-item {
 	 } 
 }  
 
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+    color: #fff;
+    background-color: #9c27c1;
+    border-color: #9c27c1;
+}
+
 
 .options .e-instant-edit {
  right: initial;
@@ -267,4 +273,44 @@ article .panel-footer i.fa-user {
 padding-right: 3px;
 }
 
-.news-menu-archive { text-align:right }
+.news-menu-archive { text-align:right }      
+
+#forum   {
+	border-color: black;
+}
+
+#forum .table-bordered>tbody>tr>td, 
+#forum .table-bordered>tbody>tr>th, 
+#forum .table-bordered>tfoot>tr>td, 
+#forum .table-bordered>tfoot>tr>th, 
+#forum .table-bordered>thead>tr>td, 
+#forum .table-bordered>thead>tr>th {
+    border: 1px solid black;
+}
+#forum tr.forum-title {
+	background-color:#36333d;
+} 
+#forum tr.forum-parent {
+ background-color: #9c27c1;
+} 
+
+#forum .table-hover>tbody>tr:hover {
+    background-color: #36333d;
+}
+
+#forum-viewtopic li.forum-viewtopic-post {
+   border: 1px solid black;
+}
+
+#forum-viewtopic li.forum-viewtopic-post:nth-child(odd) {
+    background-color: #36333d;
+}
+
+#forum-viewforum .table-bordered>tbody>tr:hover {
+  background-color: #36333d;
+}
+
+#forum-viewforum .table-bordered>tbody>tr>th {
+  background-color: #9c27c1;
+}
+
