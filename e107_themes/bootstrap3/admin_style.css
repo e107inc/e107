@@ -1410,7 +1410,7 @@ form#simplesef h4 { margin: 0 }
 
 .admin-icon-debug i {  margin-right:10px; cursor:help}
 
-.navbar-fixed-top { height: 51px;
+.navbar-fixed-top {
 font-size: 14px;
 left: 0px;
 line-height: 20px;
@@ -1472,6 +1472,11 @@ footer {
     color: rgb(119, 119, 119);
 }
 */
+
+
+@media (min-width: 1101px ){
+.navbar-fixed-top { height: 51px; }
+}
 
 @media (max-width: 1400px ){
 
