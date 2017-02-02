@@ -142,7 +142,10 @@ table  label.checkbox                   { margin-left: 20px }
 
 #admin-ui-media-manager-search          { margin-bottom: 20px }
 
+
+/*
 .panel-default:hover { transition: color .50s ease-in-out; -moz-transition: color .50s ease-in-out; -webkit-transition: color .50s ease-in-out; color: #fff }
+*/
 
 #admin-ui-edit                          { }
 #admin-ui-edit-db-language              { margin-bottom: -30px; padding-bottom:5px; padding-right:5px }

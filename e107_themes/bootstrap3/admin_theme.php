@@ -170,6 +170,7 @@ class bootstrap3_admintheme
 		}
 
 
+
 		
 		switch(varset($style, 'admin_content'))
 		{
@@ -185,13 +186,25 @@ class bootstrap3_admintheme
 				break;
 
 				case 'admin_menu':
-				echo '<div class="panel panel-default">
+				echo '<div class="panel panel-default" >
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
 
 					    ' . $text . '
 
+					</div>';
+				break;
+
+
+				case 'warning':
+				echo '<div class="panel panel-warning">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+					  <div class="panel-body">
+					    ' . $text . '
+					  </div>
 					</div>';
 				break;
 
