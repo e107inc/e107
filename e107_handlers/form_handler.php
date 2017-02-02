@@ -3871,8 +3871,8 @@ class e_form
 				$jsonArray[$k] = str_replace("'", "`", $v);	
 			}
 		}
-		$source = str_replace('"',"'",json_encode($jsonArray, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
-		
+
+		$source = e107::getParser()->toJSON($jsonArray);
 		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
@@ -3892,7 +3892,7 @@ class e_form
 		unset( $options['title']);
 
 		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
-		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
+		$text .= (is_array($array)) ? "data-source='".$source."'  " : "";
 		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)." ".$class."' data-value=\"{$curVal}\"   href='#' ";
 
 		if(!empty($options))
