@@ -299,6 +299,7 @@ if(!BOOTSTRAP)
 --*/
 }
 
+//XXX  What is this?
 if(substr($forumInfo['forum_name'], 0, 1) == '*')
 {
 	$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
@@ -558,9 +559,9 @@ if($container_only)
 
 //var_dump ($FORUM_VIEW_START);
 //  	var_dump ($FORUM_VIEW_SUB);
-$forum_view_start = $tp->parseTemplate($FORUM_VIEW_START, false, $sc);
+$forum_view_start = $tp->parseTemplate($FORUM_VIEW_START_CONTAINER.$FORUM_VIEW_START, false, $sc);
 $forum_view_forum = $tp->parseTemplate($forum_view_forum, false, $sc);
-$forum_view_end = $tp->parseTemplate($FORUM_VIEW_END, false, $sc);
+$forum_view_end = $tp->parseTemplate($FORUM_VIEW_END.$FORUM_VIEW_END_CONTAINER, false, $sc);
 
 //$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
 //$forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
