@@ -642,7 +642,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 * Example usage:
 	 * @code
 	 *  $(window).resize(function () {
-	 *      waitForFinalEvent(function(){
+	 *      e107.callbacks.waitForFinalEvent(function(){
 	 *          alert('Resize...');
 	 *          //...
 	 *      }, 500, "some unique string");
@@ -1345,61 +1345,6 @@ $(document).ready(function()
 			
 		
 });
-
-
-	/**
-	 * TODO:
-	 * This function is only used by mediaNav() in mediaManager.js. So need to rewrite mediaManager.js to use
-	 * e107.behaviors, and e107.callbacks.eNav() could be used instead of this function.
-	 *
-	 * dynamic next/prev  
-	 * @param e object (eg. from selector)
-	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
-	 */
-	function eNav(e,navid)
-	{
-			var src = $(e).attr("data-src");
-			var inc = parseInt($(e).attr("data-nav-inc"));
-			var dir = $(e).attr("data-nav-dir");
-			var tot = parseInt($(e).attr("data-nav-total"));
-			var val = src.match(/from=(\d+)/);
-			var amt = parseInt(val[1]);
-			
-			var oldVal = 'from='+ amt;
-		
-			var sub = amt - inc;
-			var add = amt + inc;
-			
-			$(e).show();	
-			
-			if(add > tot)
-			{
-				add = amt;	
-			//	$(e).hide();
-			}
-				
-			if(sub < 0)
-			{
-				sub = 0
-			}
-			
-			if(dir == 'down')
-			{
-				var newVal = 'from='+ sub;
-			}
-			else
-			{
-				var newVal = 'from='+ add;	
-			}
-			
-			src = src.replace(oldVal, newVal);
-			$(navid).attr("data-src",src);
-				
-	}
-
-
-
-
 
 
 // Legacy Stuff to be converted. 
