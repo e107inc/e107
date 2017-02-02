@@ -415,9 +415,9 @@ class admin_shortcodes
 
 	function sc_admin_latest($parm)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
-			return;
+			return null;
 		}
 		
 		if (ADMIN) {
@@ -1110,7 +1110,7 @@ class admin_shortcodes
 
 	function sc_admin_status($parm)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
 			return;
 		}
@@ -1321,10 +1321,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 	function sc_admin_addon_updates()
 	{
-		if(!getperms('0'))
+		if(!getperms('0') || !deftrue('e_ADMIN_HOME'))
 		{
 			return null;
 		}
+
 
 		$themes = $this->getUpdateable('theme');
 		$plugins = $this->getUpdateable('plugin');
