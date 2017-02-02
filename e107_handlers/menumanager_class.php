@@ -1830,7 +1830,7 @@ class e_menuManager {
 
     function menuSetConfigList()
 	{
-		e107::getMessage()->addDebug("Scanning for Menu config files");
+		e107::getDebug()->log("Scanning for Menu config files");
 
         	$sql = e107::getDb();
         	$pref = e107::getPref();

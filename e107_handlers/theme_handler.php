@@ -1519,7 +1519,7 @@ class themeHandler
 				
 		if(($this->themeConfigObj === null) )
 		{
-			$mes->addDebug("Loading : ".$confile);
+			e107::getDebug()->log("Loading : ".$confile);
 			include ($confile);
 			$className = 'theme_'.$this->id;
 
