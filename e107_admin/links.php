@@ -47,6 +47,8 @@ class links_admin extends e_admin_dispatcher
 	);
 
 	protected $menuTitle = ADLAN_138;
+
+		protected $adminMenuIcon = 'e-links-24';
 }
 
 class links_admin_ui extends e_admin_ui

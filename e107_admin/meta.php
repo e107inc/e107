@@ -96,12 +96,12 @@ $text = "
 					</tr>
 					<tr>
 						<td>".LAN_COPYRIGHT."</td>
-						<td><input class='tbox input-text' size='70' type='text' name='meta_copyright' value=\"".$meta_copyright[e_LANGUAGE]."\" /></td>
+						<td><input class='tbox form-control input-xxlarge' size='70' type='text' name='meta_copyright' value=\"".$meta_copyright[e_LANGUAGE]."\" /></td>
 					</tr>
 
 					<tr>
 						<td>".LAN_AUTHOR."</td>
-						<td><input class='tbox input-text' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" /></td>
+						<td><input class='tbox form-control input-xxlarge' size='70' type='text' name='meta_author' value=\"".$meta_author[e_LANGUAGE]."\" /></td>
 					</tr>
 
 					<tr>

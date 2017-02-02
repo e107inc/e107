@@ -139,6 +139,8 @@ class media_admin extends e_admin_dispatcher
 		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
 	);
 
+	protected $adminMenuIcon = 'e-images-24';
+
 /*
 	$var['main']['text'] = IMALAN_7;
 	$var['main']['link'] = e_SELF;

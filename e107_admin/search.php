@@ -541,6 +541,9 @@ function search_adminmenu()
 	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
-	e107::getNav()->admin(SEALAN_40, $action, $var);
+		$icon  = e107::getParser()->toIcon('e-search-24');
+		$caption = $icon."<span>".SEALAN_40."</span>";
+
+	e107::getNav()->admin($caption, $action, $var);
 }
 ?>
