@@ -116,11 +116,11 @@ $FORUM_TEMPLATE['main']['start']			= "{FORUM_BREADCRUMB}
 											<col style='width:10%' />
 											<col class='hidden-xs' style='width:20%' />
 											</colgroup>
-											<tr>
+											<tr class='forum-title'>
 											<th colspan='5'>{FORUMTITLE}</th>
 											</tr>";
 
-$FORUM_TEMPLATE['main']['parent']			= 	"<tr>
+$FORUM_TEMPLATE['main']['parent']			= 	"<tr class='forum-parent'>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
 											<th class='hidden-xs text-center'>".LAN_FORUM_0003."</th>
 											<th class='text-center'>".LAN_FORUM_0002."</th>
