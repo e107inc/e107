@@ -239,6 +239,10 @@ function admin_config_adminmenu()
 /*	$var['import']['text'] = GSLAN_23;
 	$var['import']['link'] = e_SELF."?import";
 	$var['import']['perm'] = "0";*/
-	show_admin_menu(LAN_PLUGIN_POLL_NAME, $action, $var);
+
+	$icon  = e107::getParser()->toIcon(e_PLUGIN.'poll/images/polls_32.png');
+	$caption = $icon."<span>".LAN_PLUGIN_POLL_NAME."</span>";
+
+	show_admin_menu($caption, $action, $var);
 }
 ?>

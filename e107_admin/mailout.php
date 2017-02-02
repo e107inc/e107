@@ -251,7 +251,9 @@ class mailout_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'main/send'	=> 'main/create',	
-	);	
+	);
+
+	protected $adminMenuIcon = 'e-mail-24';
 	
 	protected $menuTitle = LAN_MAILOUT_15;
 }

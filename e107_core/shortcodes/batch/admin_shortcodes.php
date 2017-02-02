@@ -1461,9 +1461,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
 			//$menu_vars[$id]['perm'] = '';
 			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
+
+
 		}
 
 		//CORE SUBLINKS
+		$active = '';
 		foreach ($array_functions as $key => $subitem)
 		{
 			if(!empty($subitem[3]) && !getperms($subitem[3]))
@@ -1484,6 +1487,14 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
 
+				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				{
+					$active = $catid;
+				}
+
+
+
+			//	e107::getDebug()->log($catid);
 
 				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
 				{
@@ -1597,10 +1608,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		}
 
-
 		// ---------------- Cameron's Bit ---------------------------------
 
-		if(!vartrue($pref['admin_separate_plugins']))
+		if(empty($pref['admin_separate_plugins']))
 		{
         	// Convert Plugin Categories to Core Categories.
 			$convert = array(
@@ -1613,26 +1623,34 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				'help'		=> array(20,'helpMenu')
 			);
 
+
              foreach($tmp as $pg)
 			 {
 			    if(!empty($pg['category']))
 			    {
 			 	    $id = $convert[$pg['category']][1];
              	    $menu_vars[$id]['sub'][] = $pg;
+
+				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+					{
+						$active = $id;
+					}
+
+
 			    }
 			 }
 
-		   	 unset($menu_vars['plugMenu']);
-			 
-		
 			// Clean up - remove empty main sections
 			foreach ($menu_vars as $_m => $_d)
 			{
+
 				if(!isset($_d['sub']) || empty($_d['sub']))
 				{
 					unset($menu_vars[$_m]);
 				}
 			}
+
+			unset($menu_vars['plugMenu']);
 		}
 
 		// ------------------------------------------------------------------
@@ -1644,7 +1662,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 	//	 print_a($menu_vars);
-		return e107::getNav()->admin('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
+
+
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
 
@@ -1912,9 +1932,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
 
+		$icon  = e107::getParser()->toIcon('e-menus-24');
+		$caption = $icon."<span>".ADLAN_6."</span>";
 
-
-	   return e107::getNav()->admin(ADLAN_6,$action, $var);
+	   return e107::getNav()->admin($caption,$action, $var);
 
 
 

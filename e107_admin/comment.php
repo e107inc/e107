@@ -47,6 +47,8 @@ class comments_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = LAN_COMMENTMAN;
+
+		protected $adminMenuIcon = 'e-comments-24';
 }
 
 class comments_admin_ui extends e_admin_ui

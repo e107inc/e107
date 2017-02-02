@@ -96,7 +96,9 @@ class adminlog_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
-	);	
+	);
+
+	protected $adminMenuIcon = 'e-adminlogs-24';
 	
 	protected $menuTitle = ADLAN_155;
 	

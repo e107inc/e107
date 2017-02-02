@@ -1608,9 +1608,11 @@ class pluginManager{
 				{
 					$action = 'create';
 				}
-					
 
-				e107::getNav()->admin(ADLAN_98, $action, $var);
+				$icon  = e107::getParser()->toIcon('e-plugmanager-24');
+				$caption = $icon."<span>".ADLAN_98."</span>";
+
+				e107::getNav()->admin($caption, $action, $var);
 		}
 
 

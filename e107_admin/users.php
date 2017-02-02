@@ -76,6 +76,8 @@ class users_admin extends e_admin_dispatcher
 	
 	protected $menuTitle = ADLAN_36;  // 'Users'
 
+	protected $adminMenuIcon = 'e-users-24';
+
 
 	function init()
 	{

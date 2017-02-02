@@ -1695,7 +1695,10 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 		$var[$key]['link'] = e_SELF."?mode=".$key;
 	}
 
-	e107::getNav()->admin(DBLAN_10, $_GET['mode'], $var);
+		$icon  = e107::getParser()->toIcon('e-database-24');
+		$caption = $icon."<span>".DBLAN_10."</span>";
+
+	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
 
 

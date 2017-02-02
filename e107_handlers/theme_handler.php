@@ -1666,8 +1666,6 @@ class themeHandler
 		$price 			= '';
 
 
-		e107::getDebug()->log($mode);
-
 		if(substr($theme['thumbnail'],0,4) == 'http')
 		{
 			$thumbPath = $theme['thumbnail'];	

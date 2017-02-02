@@ -48,6 +48,8 @@ class eurl_admin extends e_admin_dispatcher
 	protected $defaultAction = 'config';
 
 	protected $menuTitle = LAN_EURL_MENU;
+
+	protected $adminMenuIcon = 'e-eurl-24';
 }
 
 class eurl_admin_ui extends e_admin_controller_ui

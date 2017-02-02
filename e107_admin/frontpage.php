@@ -736,8 +736,11 @@ function frontpage_adminmenu()
 	$var['create']['text'] = LAN_CREATE;
 	$var['create']['link'] = e_SELF."?mode=create";
 
+		$icon  = e107::getParser()->toIcon('e-frontpage-24');
+		$caption = $icon."<span>".FRTLAN_PAGE_TITLE."</span>";
 
-	show_admin_menu(FRTLAN_PAGE_TITLE, $action, $var);
+
+	show_admin_menu($caption, $action, $var);
 }
 
 

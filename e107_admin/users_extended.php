@@ -299,6 +299,8 @@ e107::js('footer-inline', js());
 			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 		);
 
+			protected $adminMenuIcon = 'e-extended-24';
+
 		/*
 		 * 	}
 		$var['main']['text'] = EXTLAN_34;
