@@ -38,7 +38,7 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
     color: black;
 }
 
-
+tr.first a, th a							{ color: rgb(102, 102, 102); }
 
 
 .bootstrap-select.btn-group .dropdown-menu .optgroup-div {

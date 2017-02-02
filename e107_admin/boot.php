@@ -77,7 +77,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 
 
 
-if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' )
+if(ADMIN && (e_AJAX_REQUEST || e_DEBUG_FEEDS===true) && varset($_GET['mode']) == 'addons' )
 {
 	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
 	$tag = 'Infopanel_'.$type;

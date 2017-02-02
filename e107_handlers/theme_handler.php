@@ -106,13 +106,19 @@ class e_theme
 
 		$tloop = 1;
 
-		$array = scandir(e_THEME);
+		$cacheTag = self::CACHETAG;
 
+		if(!empty($mode))
+		{
+			$cacheTag = self::CACHETAG.'_'.$mode;
+		}
 
-		if($force === false && $tmp = e107::getCache()->retrieve(self::CACHETAG, self::CACHETIME, true, true))
+		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
 		{
 			return e107::unserialize($tmp);
 		}
+
+		$array = scandir(e_THEME);
 
 		foreach($array as $file)
 		{
@@ -124,9 +130,14 @@ class e_theme
 
 			if($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && is_readable(e_THEME.$file."/theme.php"))
 			{
-				if($mode == "id")
+				if($mode === "id")
 				{
 					$themeArray[$tloop] = $file;
+				}
+				elseif($mode === 'version')
+				{
+					$data = self::getThemeInfo($file);
+					$themeArray[$file] = $data['version'];
 				}
 				else
 				{
@@ -140,7 +151,7 @@ class e_theme
 
 		$cacheSet = e107::serialize($themeArray,'json');
 
-		e107::getCache()->set(self::CACHETAG,$cacheSet,true,true,true);
+		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
 
 		return $themeArray;
 	}
