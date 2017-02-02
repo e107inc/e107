@@ -63,7 +63,7 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 }
 
 
-
+define('e_ADMIN_HOME', true); // used by some admin shortcodes.
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_ADMIN.'auth.php');
