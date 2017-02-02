@@ -103,7 +103,7 @@ class bootstrap3_admintheme
 		{
 			$class = ' ' . str_replace('_', '-', $mode);
 		}
-		
+
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
 			echo '<!-- Start Mode: ' . $mode . ' -->	
