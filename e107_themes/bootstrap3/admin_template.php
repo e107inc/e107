@@ -234,11 +234,11 @@ else
 
 			{ADMIN_MENUMANAGER}
 	
-			<div class="e-scroll-fixed">
+
 				{SETSTYLE=site_info}
 				{ADMINUI_HELP}
 				{ADMIN_HELP}
-			</div>
+
 	
 			{ADMIN_SITEINFO=creditsonly}
 
