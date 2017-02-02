@@ -1451,7 +1451,7 @@ td.visible-print,th.visible-print{display:table-cell!important}
 .input-group-addon,.pagination>li>a{filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff303030', endColorstr='#ff171717', GradientType=0)}
 .btn-link,.btn-link:hover{border-color:transparent}
 h1,h2,h3,h4,h5,h6{text-shadow:-1px -1px 0 rgba(0,0,0,.3)}
-.breadcrumb,.input-group-addon,.nav-pills>li>a,.pager>li>a,.pagination>li>a{text-shadow:1px 1px 1px rgba(0,0,0,.3)}
+.breadcrumb,.input-group-addon,.nav-pills>li>a,.pager>li>a,.pagination>li>a,td.forumheader{text-shadow:1px 1px 1px rgba(0,0,0,.3)}
 .text-primary,.text-primary:hover{color:#337ab7}
 .text-success,.text-success:hover{color:#51a351}
 .text-danger,.text-danger:hover{color:#ee5f5b}
@@ -1495,3 +1495,15 @@ a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover{border-color:#0f0f0f}
 .jumbotron{border:1px solid rgba(0,0,0,.6)}
 .panel-danger .panel-heading,.panel-info .panel-heading,.panel-primary .panel-heading,.panel-success .panel-heading,.panel-warning .panel-heading{border-color:#000}
 .btn:focus,.nav-pills>li>a,.nav-tabs>li>a,.navbar-default .navbar-nav>li>a,.navbar-inverse .navbar-nav>li>a,a,a:active,a:hover{outline:0}
+th a,tr.first a{color:#c6c6c6}
+thead tr{background-color:#363636;background-image:linear-gradient(to bottom,#444,#222);border:1px solid #030303}
+.datetimepicker,.datetimepicker tfoot tr:first-child th:hover,.datetimepicker thead tr:first-child th:hover{background-color:#191919}
+.nav-collapse .dropdown-menu a:focus,.nav-collapse .dropdown-menu a:hover,.nav-collapse .nav>li>a:focus,.nav-collapse .nav>li>a:hover{background-color:#363636}
+#admin-ui-media-manager.nav-tabs,.table-striped>tbody>tr.highlight-even,.table-striped>tbody>tr.highlight-odd,tr.highlight-even,tr.highlight-odd{background-color:#212121}
+.datetimepicker table tr td span:hover,.datetimepicker table tr td.day:hover{color:#000}
+.bootstrap-select.btn-group .dropdown-menu .optgroup-div{color:#363636}
+.btn-primary>[class^=icon-],.dropdown-menu>.active>a>[class*=" icon-"],.dropdown-menu>.active>a>[class^=icon-],.dropdown-menu>li>a:hover>[class*=" icon-"],.dropdown-menu>li>a:hover>[class^=icon-],.dropdown-submenu:hover>a>[class*=" icon-"],.dropdown-submenu:hover>a>[class^=icon-],.icon-white,.nav-list>.active>a>[class*=" icon-"],.nav-list>.active>a>[class^=icon-],.nav-pills>.active>a>[class*=" icon-"],.nav-pills>.active>a>[class^=icon-],.nav-tabs>li>a>[class^=icon-],.navbar-inverse .nav>.active>a>[class*=" icon-"],.navbar-inverse .nav>.active>a>[class^=icon-],h1>[class^=icon-],h2>[class^=icon-],h3>[class^=icon-],h4>[class^=icon-],h5>[class^=icon-]{background-image:none}
+#admin-ui-nav-menu a.link-active{color:#fff}
+.tab-content{background-color:#373737}
+input:invalid:focus,select:invalid:focus,textarea:invalid:focus{border-color:red;box-shadow:0 1px 1px 0 rgba(255,0,0,.75) inset}
+td.forumheader{background-image:linear-gradient(#303030,#212121 60%,#171717);filter:none}
