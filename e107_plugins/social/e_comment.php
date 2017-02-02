@@ -8,6 +8,8 @@
 *
 */
 
+e107::lan('social',false, true);
+
 class social_comment
 {
 	private $facebookActive;
