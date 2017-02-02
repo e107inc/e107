@@ -489,6 +489,13 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			case 'wider_sidebar':
 			case 'default':
 			default:
+
+				if($id == 'e-addon-updates')
+				{
+					$default['area'] = 'menu-area-01';
+					$default['weight'] = 1;
+				}
+
 				if($id == 'core-infopanel_help')
 				{
 					$default['area'] = 'menu-area-01';

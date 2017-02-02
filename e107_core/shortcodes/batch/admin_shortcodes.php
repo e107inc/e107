@@ -1337,10 +1337,11 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			return null;
 		}
+		$ns = e107::getRender();
 
 		$tp = e107::getParser();
-
-		return e107::getRender()->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
+		$ns->setUniqueId('e-addon-updates');
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
 
 
 	}
