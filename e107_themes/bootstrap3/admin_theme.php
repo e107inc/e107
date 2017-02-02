@@ -103,12 +103,7 @@ class bootstrap3_admintheme
 		{
 			$class = ' ' . str_replace('_', '-', $mode);
 		}
-
-		if($mode == 'e_help')
-		{
-			$style = 'admin_menu';
-		}
-
+		
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
 			echo '<!-- Start Mode: ' . $mode . ' -->	
@@ -176,7 +171,7 @@ class bootstrap3_admintheme
 				break;
 
 				case 'admin_menu':
-				echo '<div class="panel panel-default" >
+				echo '<div class="admin-menu panel panel-default" >
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
@@ -188,7 +183,7 @@ class bootstrap3_admintheme
 
 
 				case 'warning':
-				echo '<div class="panel panel-warning">
+				echo '<div class="panel panel-warning" id="'.$data['uniqueId'].'">
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
