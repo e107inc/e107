@@ -46,7 +46,7 @@ define('ACTIVE', false);
 
 
 
-if(ACTIVE !== true) 
+if(ACTIVE !== true)
 {
 	echo "<span class='headertext2'>Currently disabled. To enable please open this file in a text editor and follow the instructions to activate.</span>";
 	exit;
@@ -76,7 +76,7 @@ require_once($siteRoot.'e107_config.php');
 if (!isset($mySQLdefaultdb)) return FALSE;
 if (!isset($mySQLprefix)) return FALSE;
 
-$hash = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);	
+$hash = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);
 
 
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
@@ -110,9 +110,9 @@ $eArrayStorage = new e_array();
 <?php
 
 
-if (isset($_POST['usubmit'])) 
+if (isset($_POST['usubmit']))
 {
-	if (($row = e_verify()) !== FALSE) 
+	if (($row = e_verify()) !== FALSE)
 	{
 		extract($row);
 
@@ -129,10 +129,10 @@ if (isset($_POST['usubmit']))
 			<td>
 			<form method='post' action='".$_SERVER['PHP_SELF']."'>
 			<input type='radio' name='mode' value='2' /> <span class='headertext2'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3' /> <span class='headertext2'>Restore core backup</span>" : "<br />( There is no backed-up core - unable to offer option to restore backup )")."<br /><br /><input class='btn button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
-				 
+
 			<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
 			<input type='hidden' name='a_password' value='".$_POST['a_password']."' />
-				 
+
 			</form>
 			</td>
 			</tr>
@@ -149,7 +149,7 @@ if (isset($_POST['usubmit']))
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 {
-	if (($at = e_verify()) === FALSE) 
+	if (($at = e_verify()) === FALSE)
 	{
 		exit;
 	}
@@ -180,12 +180,12 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
 
 	mysql_query("DELETE FROM ".$mySQLprefix."core WHERE e107_name='SitePrefs' OR e107_name='SitePrefs_Backup'");
-	if (!mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')")) 
+	if (!mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')"))
 	{
 		$message = "Rebuild failed ...";
 		$END = TRUE;
-	} 
-	else 
+	}
+	else
 	{
 		mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
 		$message = "Core reset. <br /><br /><a href='../../index.php'>Click here to continue</a>";
@@ -195,7 +195,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 
 
 
-function recurse_pref($ppost) 
+function recurse_pref($ppost)
 {
 	$search = array("\"", "'", "\\", '\"', "\'", "$", "?");
 	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;", "&copy;");
@@ -299,7 +299,7 @@ if (isset($END)) {
 echo "<span class='headertext2'>
 	This is the e107 resetcore utility. It allows you to completely rebuild your core if it becomes corrupt, or to restore a backup. <br />It won't affect your actual content (news posts, forum posts, articles etc).<br />
 	<b>Only run this utility if your site is failing to load due to a critical core error, or if you need to change a setting and can't log into your admin area.</b></span><br /><br /><br /><br />
-	 
+
 	<span class='headertext'>Please enter your main administrator username and password to continue ...</span><br /><br />
 	<form method='post' action='".$_SERVER['PHP_SELF']."'>
 	<table style='width:95%'>
@@ -333,11 +333,11 @@ echo "<span class='headertext2'>
  */
 function e_verify() {
 	global $mySQLprefix;
-	if (ACTIVE !== TRUE) 
+	if (ACTIVE !== TRUE)
 	{
 		exit();
 	}
-	if (MAGIC_QUOTES_GPC == FALSE) 
+	if (MAGIC_QUOTES_GPC == FALSE)
 	{
 		$a_name = addslashes($_POST['a_name']);
 	}
@@ -352,12 +352,12 @@ function e_verify() {
 	$row = mysql_fetch_array($result);
 
 	// @TODO: Will need to handle other password encodings as well
-	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && (ACTIVE === TRUE)) 
+	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && (ACTIVE === TRUE))
 	{
 		clear_cache();
 		return $row;
-	} 
-	else 
+	}
+	else
 	{
 		return FALSE;
 	}
@@ -369,7 +369,7 @@ function e_verify() {
 /**
  *	Clear all cache files
  */
-function clear_cache() 
+function clear_cache()
 {
 	// $dir = "../cache/";
 	$dir = e_CACHE;
