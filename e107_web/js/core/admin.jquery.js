@@ -173,12 +173,40 @@ $(document).ready(function()
 		
 		$("#uiModal").draggable({
    			 handle: ".modal-header"
-		}); 
-		
-	
-		$('div.e-container').editable({
-			selector: '.e-editable'
-         });
+		});
+
+
+	$('div.e-container').editable({
+		selector: '.e-editable',
+		display: function (value, sourceData)
+		{
+			// HTML entities decoding... fix for:
+			// @see https://github.com/e107inc/e107/issues/2351
+			$.each(sourceData, function (index, element)
+			{
+				element.text = $("<div/>").html(element.text).text();
+				sourceData[index] = element;
+			});
+
+			// Display checklist as comma-separated values.
+			var html = [];
+			var checked = $.fn.editableutils.itemsByValue(value, sourceData);
+
+			if(checked.length)
+			{
+				$.each(checked, function (i, v)
+				{
+					html.push($.fn.editableutils.escape(v.text));
+				});
+
+				$(this).html(html.join(', '));
+			}
+			else
+			{
+				$(this).empty();
+			}
+		}
+	});
 		
 //		$('.e-editable').editable();
 		
@@ -510,6 +538,7 @@ $(document).ready(function()
 	   		
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
+	
 			$(id).removeClass('e-hideme').show({
 				effect: "slide"
 			});
@@ -517,7 +546,8 @@ $(document).ready(function()
 			if(hash) {
 				window.location.hash = 'nav-' + hash;
 			  	if(form) {
-			    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash);
+
+			  //  	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash); // breaks menu-manager nav.
 			    }
 			    return false; 
 			}

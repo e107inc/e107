@@ -63,7 +63,7 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 }
 
 
-
+define('e_ADMIN_HOME', true); // used by some admin shortcodes.
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_ADMIN.'auth.php');
@@ -110,7 +110,7 @@ class admin_start
 	function __construct()
 	{
 
-		if(!getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
+		if(e_AJAX_REQUEST || !getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
 		{
 			return null;
 		}
@@ -189,12 +189,12 @@ class admin_start
 		e107::getDb()->db_Mark_Time('Check New Install');
 		$this->checkNewInstall();
 
-		e107::getDb()->db_Mark_Time('Check Plugin Update');
+	/*	e107::getDb()->db_Mark_Time('Check Plugin Update');
 		$this->checkPluginUpdate();
 
 		e107::getDb()->db_Mark_Time('Check Theme Update');
 		$this->checkThemeUpdate();
-		
+		*/
 		e107::getDb()->db_Mark_Time('Check Password Encryption');
 		$this->checkPasswordEncryption();
 
@@ -287,7 +287,8 @@ class admin_start
 
 	}
 
-
+/*
+ *  // Moved to admin_shortcodes.php
 	private function checkPluginUpdate()
 	{
 		require_once(e_HANDLER.'e_marketplace.php');
@@ -322,14 +323,15 @@ class admin_start
 
 
 				e107::getMessage()->addInfo($message);
-				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+
 			}
 
 		}
 
 
-	}
-
+	}*/
+/*
+ *  Moved to admin_shortcodes.php
 	private function checkThemeUpdate()
 	{
 		require_once(e_HANDLER.'e_marketplace.php');
@@ -376,7 +378,7 @@ class admin_start
 
 
 
-	}
+	}*/
 
 	/**
 	 *

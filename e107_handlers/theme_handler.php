@@ -40,16 +40,76 @@ class e_theme
 		 'multimedia'
 	);
 
+	private $_data = array();
+
+	private $_current = null;
+
+	private $_frontcss = null;
+
+	private $_admincss = null;
+
+	private $_legacy_themes = array();
+
 
 	const CACHETIME = 120; // 2 hours
 	const CACHETAG  = "Meta_theme";
 
 
-	function __construct()
+	function __construct($options=array())
 	{
 
+		if(!empty($options['themedir']))
+		{
+			$this->_current = $options['themedir'];
+		}
+
+		if(!defined('E107_INSTALL'))
+		{
+			$this->_frontcss = e107::getPref('themecss');
+			$this->_admincss = e107::getPref('admincss');
+		}
+
+		if(empty($this->_data) || $options['force'] === true)
+		{
+
+			$this->load($options['force']);
+		}
 
 
+
+	}
+
+	/**
+	 * Get info on the current front or admin theme and selected style. (ie. as found in theme.xml <stylesheets>)
+	 * @param string $mode
+	 * @param null $var file | name | scope | library
+	 * @return bool
+	 */
+	public function cssAttribute($mode='front', $var=null)
+	{
+		$css = $this->get('css');
+
+		if(empty($css))
+		{
+			return false;
+		}
+
+		foreach($css as $k=>$v)
+		{
+			if($mode === 'front' && $v['name'] === $this->_frontcss)
+			{
+				return !empty($var) ? varset($v[$var],null) : $v;
+			}
+
+			if($mode === 'admin' && $v['name'] === $this->_admincss)
+			{
+				return !empty($var) ? varset($v[$var],null) : $v;
+			}
+
+
+		}
+
+		return false;
 
 	}
 
@@ -91,11 +151,101 @@ class e_theme
 	}
 
 
+	/**
+	 * Load data for all themes in theme directory.
+	 * @param bool|false $force
+	 * @return $this
+	 */
+	private function load($force=false)
+	{
+		$themeArray = array();
 
+		$tloop = 1;
+
+		$cacheTag = self::CACHETAG;
+
+		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
+		{
+			$this->_data = e107::unserialize($tmp);
+			return $this;
+		}
+
+		$array = scandir(e_THEME);
+
+		foreach($array as $file)
+		{
+			if($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && is_readable(e_THEME.$file."/theme.php"))
+			{
+
+				$themeArray[$file] = self::getThemeInfo($file);
+				$themeArray[$file]['id'] = $tloop;
+
+				$tloop++;
+			}
+		}
+
+
+		$cacheSet = e107::serialize($themeArray,'json');
+
+		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
+
+		$this->_data = $themeArray;
+
+
+	}
 
 
 	/**
+	 * Return a var from the current theme.
+	 * @param $var
+	 * @param null $key
+	 * @return array|bool
+	 */
+	public function get($var, $key=null)
+	{
+		return isset($this->_data[$this->_current][$var]) ? $this->_data[$this->_current][$var] : false;
+	}
+
+	/**
+	 * Return a list of all local themes in various formats.
+	 * Replaces getThemeList
+	 * @param null|string $mode  null, 'version' | 'id'
+	 * @return array|bool a list or false if no results
+	 */
+	public function getList($mode=null)
+	{
+		$arr = array();
+
+		if($mode === 'version')
+		{
+			foreach($this->_data as $dir=>$v)
+			{
+				$arr[$dir] = $v['version'];
+			}
+
+		}
+		elseif($mode === 'id')
+		{
+			foreach($this->_data as $dir=>$v)
+			{
+				$arr[] = $dir;
+			}
+		}
+		else
+		{
+			$arr = $this->_data;
+		}
+
+
+		return !empty($arr) ? $arr : false;
+
+
+	}
+
+	/**
 	 * Get a list of all themes in theme folder and its data.
+	 * @deprecated
+	 * @see load();
 	 * @param bool|false xml|false
 	 * @param bool|false $force force a refresh ie. ignore cached list.
 	 * @return array
@@ -106,13 +256,19 @@ class e_theme
 
 		$tloop = 1;
 
-		$array = scandir(e_THEME);
+		$cacheTag = self::CACHETAG;
 
+		if(!empty($mode))
+		{
+			$cacheTag = self::CACHETAG.'_'.$mode;
+		}
 
-		if($force === false && $tmp = e107::getCache()->retrieve(self::CACHETAG, self::CACHETIME, true, true))
+		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
 		{
 			return e107::unserialize($tmp);
 		}
+
+		$array = scandir(e_THEME);
 
 		foreach($array as $file)
 		{
@@ -124,9 +280,14 @@ class e_theme
 
 			if($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && is_readable(e_THEME.$file."/theme.php"))
 			{
-				if($mode == "id")
+				if($mode === "id")
 				{
 					$themeArray[$tloop] = $file;
+				}
+				elseif($mode === 'version')
+				{
+					$data = self::getThemeInfo($file);
+					$themeArray[$file] = $data['version'];
 				}
 				else
 				{
@@ -140,14 +301,18 @@ class e_theme
 
 		$cacheSet = e107::serialize($themeArray,'json');
 
-		e107::getCache()->set(self::CACHETAG,$cacheSet,true,true,true);
+		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
 
 		return $themeArray;
 	}
 
 
-
-
+	/**
+	 * Internal Use. Heavy CPU usage.
+	 * Use e107::getTheme($themeDir,$force)->get() instead.
+	 * @param $file
+	 * @return mixed
+	 */
 	public static function getThemeInfo($file)
 	{
 		$reject = array('e_.*');
@@ -222,7 +387,10 @@ class e_theme
 	public static function parse_theme_php($path)
 	{
 		$CUSTOMPAGES = "";
-		$tp = e107::getParser();
+
+		$tp = e107::getParser(); // could be used by a theme file.
+		$sql = e107::getDb(); // could be used by a theme file.
+
 		$fp = fopen(e_THEME.$path."/theme.php", "r");
 		$themeContents = fread($fp, filesize(e_THEME.$path."/theme.php"));
 		fclose($fp);
@@ -330,6 +498,7 @@ class e_theme
 		}
 	//	 echo "<h2>".$themeArray['name']."</h2>";
 	//	 print_a($lays);
+		$themeArray['legacy'] = true;
 
 		return $themeArray;
 	}
@@ -442,6 +611,7 @@ class e_theme
 		$vars['layouts'] 		= $lays;
 		$vars['path'] 			= $path;
 		$vars['custompages'] 	= $custom;
+		$vars['legacy']         = false;
 
 		if(!empty($vars['stylesheets']['css']))
 		{
@@ -451,7 +621,15 @@ class e_theme
 			{
 			//	$notadmin = vartrue($val['@attributes']['admin']) ? false : true;
 				$notadmin = (varset($val['@attributes']['scope']) !== 'admin') ? true : false;
-				$vars['css'][] = array("name" => $val['@attributes']['file'], "info"=> $val['@attributes']['name'], "nonadmin"=>$notadmin, 'scope'=> vartrue($val['@attributes']['scope']));
+
+				$vars['css'][] = array(
+					"name"      => $val['@attributes']['file'],
+					"info"      => $val['@attributes']['name'],
+					"nonadmin"  => $notadmin,
+					'scope'     => vartrue($val['@attributes']['scope']),
+					'library'   => vartrue($val['@attributes']['library'])
+
+				);
 			}
 
 			unset($vars['stylesheets']);

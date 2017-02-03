@@ -24,19 +24,9 @@ e107::library('load', 'bootstrap');
 e107::library('load', 'fontawesome');
 e107::library('load', 'bootstrap.editable');
 
-
-$adminStyle = e107::pref('core', 'admincss');
-
-//e107::css('theme', 'css/bootstrap-dark.min.css');
+$adminStyle = e107::pref('core', 'admincss', 'css/bootstrap-dark.min.css');
 e107::css('theme', $adminStyle);
 e107::css('theme', 'admin_style.css');
-
-if(!deftrue('e_DEBUG'))
-{
-	e107::css('theme', 'admin_dark.css');
-}
-
-
 e107::css('theme', 'ie_all.css', null, 'all', "<!--[if IE]>", "<![endif]-->");
 
 e107::css('inline', "
@@ -114,11 +104,6 @@ class bootstrap3_admintheme
 			$class = ' ' . str_replace('_', '-', $mode);
 		}
 
-		if($mode == 'e_help')
-		{
-			$style = 'admin_menu';
-		}
-
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
 			echo '<!-- Start Mode: ' . $mode . ' -->	
@@ -170,6 +155,7 @@ class bootstrap3_admintheme
 		}
 
 
+
 		
 		switch(varset($style, 'admin_content'))
 		{
@@ -185,13 +171,25 @@ class bootstrap3_admintheme
 				break;
 
 				case 'admin_menu':
-				echo '<div class="panel panel-default">
+				echo '<div class="admin-menu panel panel-default" >
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
 
 					    ' . $text . '
 
+					</div>';
+				break;
+
+
+				case 'warning':
+				echo '<div class="panel panel-warning" id="'.$data['uniqueId'].'">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+					  <div class="panel-body">
+					    ' . $text . '
+					  </div>
 					</div>';
 				break;
 

@@ -415,9 +415,9 @@ class admin_shortcodes
 
 	function sc_admin_latest($parm)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
-			return;
+			return null;
 		}
 		
 		if (ADMIN) {
@@ -1110,7 +1110,7 @@ class admin_shortcodes
 
 	function sc_admin_status($parm)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
 			return;
 		}
@@ -1319,7 +1319,125 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 	}
 			
-		
+	function sc_admin_addon_updates()
+	{
+		if(!getperms('0') || !deftrue('e_ADMIN_HOME'))
+		{
+			return null;
+		}
+
+
+		$themes = $this->getUpdateable('theme');
+		$plugins = $this->getUpdateable('plugin');
+
+		$text = $this->renderAddonUpdate($plugins);
+		$text .= $this->renderAddonUpdate($themes);
+
+		if(empty($text))
+		{
+			return null;
+		}
+		$ns = e107::getRender();
+
+		$tp = e107::getParser();
+		$ns->setUniqueId('e-addon-updates');
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
+
+
+	}
+
+
+	private function getUpdateable($type)
+	{
+
+		if(empty($type))
+		{
+			return false;
+		}
+
+		require_once(e_HANDLER.'e_marketplace.php');
+		$mp = new e_marketplace(); // autodetect the best method
+
+		switch($type)
+		{
+			case "theme":
+				$versions = $mp->getVersionList('theme');
+				$list = e107::getTheme()->getThemeList('version');
+				break;
+
+			case "plugin":
+				$versions = $mp->getVersionList('plugin');
+				$list = e107::getPref('plug_installed');
+				break;
+		}
+
+		$ret = array();
+
+		foreach($list as $folder=>$version)
+		{
+
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			{
+				$versions[$folder]['modalDownload'] = $mp->getDownloadModal('theme', $versions[$folder]);
+				$ret[] = $versions[$folder];
+				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+			}
+
+		}
+
+		return $ret;
+
+	}
+
+
+
+	private function renderAddonUpdate($list)
+	{
+
+		if(empty($list))
+		{
+			return null;
+		}
+
+
+		$tp = e107::getParser();
+		$text = '<ul class="media-list">';
+		foreach($list as $row)
+		{
+
+			$caption = LAN_DOWNLOAD.": ".$row['name']." ".$row['version'];
+
+			$ls = '<a href="'.$row['modalDownload'].'" class="e-modal alert-link" data-modal-caption="'.$caption .'" title="'.LAN_DOWNLOAD.'">';
+			$le = '</a>';
+
+			$thumb = ($row['icon']) ? $row['icon'] : $row['thumbnail'];
+
+			$text .= '
+			  <li class="media">
+			    <div class="media-left">
+			      '.$ls.'
+			        <img class="media-object" src="'.$thumb.'" width="96">
+			      '.$le.'
+			    </div>
+			    <div class="media-body">
+			      <h4 class="media-heading">'.$ls.$row['name'].$le.'</h4>
+			      <p>'.$row['version'].'<br />
+			       <small class="text-muted">Released: '.($row['date']).'</small>
+			       </p>
+
+			    </div>
+			  </li>
+			';
+
+		}
+
+
+		$text .= "</ul>";
+
+
+		return $text;
+	}
+
 
 	function sc_admin_update()
 	{

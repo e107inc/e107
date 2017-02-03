@@ -1387,14 +1387,23 @@ class e107
 	}
 
 
-		/**
-	 * Retrieve rater singleton object
-	 *
+	/**
+	 * Retrieve e_theme singleton object
 	 * @return e_theme
 	 */
-	public static function getTheme()
+	public static function getTheme($themedir='front', $clearCache=false)
 	{
-		return self::getSingleton('e_theme', true);
+		if($themedir === 'front')
+		{
+			$themedir= self::getPref('sitetheme');
+		}
+
+		if($themedir === 'admin')
+		{
+			$themedir = self::getPref('admintheme');
+		}
+
+		return self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
 	}
 
 

@@ -1552,7 +1552,10 @@ function fileinspector_adminmenu() //FIXME - has problems when navigation is on 
 	$var['run']['text'] = FR_LAN_2;
 	$var['run']['link'] = e_SELF."?mode=run";
 
-	e107::getNav()->admin(FC_LAN_1, $_GET['mode'], $var);
+	$icon  = e107::getParser()->toIcon('e-fileinspector-24');
+	$caption = $icon."<span>".FC_LAN_1."</span>";
+
+	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
 
 function e_help()
