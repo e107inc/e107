@@ -46,9 +46,9 @@ define("LAN_FORUM_0019", "There are no new posts"); // LAN_31
 define("LAN_FORUM_0020", "There is one new post "); // LAN_32
 define("LAN_FORUM_0021", "There are"); // LAN_33
 define("LAN_FORUM_0022", "new posts"); // LAN_34
-define("LAN_FORUM_0023", "since your last visit.");  // LAN_35
-define("LAN_FORUM_0024", "You last visited at ");  // LAN_36
-define("LAN_FORUM_0025", "It is now");  // LAN_37
+define("LAN_FORUM_0023", "since your last visit."); // LAN_35
+define("LAN_FORUM_0024", "You last visited at "); // LAN_36
+define("LAN_FORUM_0025", "It is now"); // LAN_37
 //define("LAN_FORUM_0026", ", all times are ");  // LAN_38
 define("LAN_FORUM_0027", "You have read"); // LAN_196
 define("LAN_FORUM_0028", "of these posts."); // LAN_197
@@ -106,7 +106,7 @@ define("LAN_FORUM_0070", "Cancel Topic Tracking"); // LAN_392
 //define("LAN_FORUM_0071", "Forum Rules"); // LAN_433
 define("LAN_FORUM_0072", "No rules defined."); // FORLAN_441
 define("LAN_FORUM_0073", "Tracked topics"); // LAN_397
-define("LAN_FORUM_0074", "Posted by");  // LAN_423
+define("LAN_FORUM_0074", "Posted by"); // LAN_423
 define("LAN_FORUM_0075", "New topics"); // LAN_424
 
 // starting at LAN_FORUM_1xxx => forum_viewforum.php
@@ -297,14 +297,14 @@ define("LAN_FORUM_6014", "Average posts per day"); // FSLAN_24
 
 // ---- Uploads ----------
 
-define("LAN_FORUM_7001","Uploaded Files in forum");
-define("LAN_FORUM_7002","File deleted"); // LAN_FORUM_7002
-define("LAN_FORUM_7003","Error: Unable to delete file"); // LAN_FORUM_7003
-define("LAN_FORUM_7004","File deletion"); // LAN_FORUM_7004
-define("LAN_FORUM_7006","Result"); // LAN_FORUM_7006
-define("LAN_FORUM_7007","Found in thread"); // LAN_FORUM_7007
-define("LAN_FORUM_7008","NOT FOUND"); // LAN_FORUM_7008
-define("LAN_FORUM_7009","No uploaded files found"); // LAN_FORUM_7009
+define("LAN_FORUM_7001", "Uploaded Files in forum");
+define("LAN_FORUM_7002", "File deleted"); // LAN_FORUM_7002
+define("LAN_FORUM_7003", "Error: Unable to delete file"); // LAN_FORUM_7003
+define("LAN_FORUM_7004", "File deletion"); // LAN_FORUM_7004
+define("LAN_FORUM_7006", "Result"); // LAN_FORUM_7006
+define("LAN_FORUM_7007", "Found in thread"); // LAN_FORUM_7007
+define("LAN_FORUM_7008", "NOT FOUND"); // LAN_FORUM_7008
+define("LAN_FORUM_7009", "No uploaded files found"); // LAN_FORUM_7009
 
 
 
