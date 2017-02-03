@@ -9,7 +9,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%;margin-left:auto;margin-right:auto"); }
+if (!defined("USER_WIDTH")) { define("USER_WIDTH", "width:95%;margin-left:auto;margin-right:auto"); }
 
 $sc_style['LASTEDIT']['pre'] = LAN_FORUM_2016.' ';
 
@@ -310,8 +310,8 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 // New in v2.x - requires a bootstrap theme be loaded.
 
-$FORUM_VIEWTOPIC_TEMPLATE['caption'] 	= "";
-$FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
+$FORUM_VIEWTOPIC_TEMPLATE['caption'] = "";
+$FORUM_VIEWTOPIC_TEMPLATE['start'] = "
 
 	<div class='row-fluid'>
 		<div>{BACKLINK}</div>
