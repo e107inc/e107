@@ -175,7 +175,7 @@ class Hybrid_Provider_Adapter {
 
 		// redirect
 		if (empty($this->params["redirect_mode"])) {
-			Hybrid_Auth::redirect($this->params["login_start"]);	
+			Hybrid_Auth::redirect($this->params["login_start"]);
 		} else {
 			Hybrid_Auth::redirect($this->params["login_start"],$this->params["redirect_mode"]);
 		}
