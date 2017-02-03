@@ -162,21 +162,23 @@ if (empty($FORUM_VIEW_START))
 
 if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && THEME_LEGACY !== true) // New v2.x bootstrap Template.
 {
-	
+
 	$FORUM_VIEW_CAPTION				= $FORUM_VIEWFORUM_TEMPLATE['caption'];
 	$FORUM_VIEW_START_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['start'];
 	$FORUM_VIEW_START				= $FORUM_VIEWFORUM_TEMPLATE['header'];
+	$FORUM_VIEW_WRAP_START			= $FORUM_VIEWFORUM_TEMPLATE['item-wrap-start'];
 	$FORUM_VIEW_FORUM				= $FORUM_VIEWFORUM_TEMPLATE['item'];
+	$FORUM_VIEW_WRAP_END			= $FORUM_VIEWFORUM_TEMPLATE['item-wrap-end'];
 	$FORUM_VIEW_FORUM_STICKY		= $FORUM_VIEWFORUM_TEMPLATE['item-sticky'];
 	$FORUM_VIEW_FORUM_ANNOUNCE		= $FORUM_VIEWFORUM_TEMPLATE['item-announce'];
 	$FORUM_VIEW_END					= $FORUM_VIEWFORUM_TEMPLATE['footer'];
 	$FORUM_VIEW_END_CONTAINER		= $FORUM_VIEWFORUM_TEMPLATE['end'];
-	$FORUM_VIEW_SUB_START			= $FORUM_VIEWFORUM_TEMPLATE['sub-header'];		
-	$FORUM_VIEW_SUB					= $FORUM_VIEWFORUM_TEMPLATE['sub-item'];		
-	$FORUM_VIEW_SUB_END				= $FORUM_VIEWFORUM_TEMPLATE['sub-footer'];		
+	$FORUM_VIEW_SUB_START			= $FORUM_VIEWFORUM_TEMPLATE['sub-header'];
+	$FORUM_VIEW_SUB					= $FORUM_VIEWFORUM_TEMPLATE['sub-item'];
+	$FORUM_VIEW_SUB_END				= $FORUM_VIEWFORUM_TEMPLATE['sub-footer'];
 	$FORUM_IMPORTANT_ROW			= $FORUM_VIEWFORUM_TEMPLATE['divider-important'];
-	$FORUM_NORMAL_ROW				= $FORUM_VIEWFORUM_TEMPLATE['divider-normal'];	
-	
+	$FORUM_NORMAL_ROW				= $FORUM_VIEWFORUM_TEMPLATE['divider-normal'];
+
 }
 
 
@@ -214,7 +216,7 @@ if (MODERATOR)
 	}
 }
 
-if(e_AJAX_REQUEST && MODERATOR) // see javascript above. 
+if(e_AJAX_REQUEST && MODERATOR) // see javascript above.
 {
 	$forum->ajaxModerate();
 }
@@ -430,7 +432,7 @@ $fVars->SEARCH = "
 	<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
 	<button class='btn btn-default button' type='submit' name='s' >".LAN_SEARCH."</button>
 	<input type='hidden' name='r' value='0' />
-	<input type='hidden' name='ref' value='forum' />	
+	<input type='hidden' name='ref' value='forum' />
 	</p>
 	</form>";
 --*/
@@ -530,7 +532,7 @@ if (count($threadList) )
 			}
 			else
 			{
-				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>"; 
+				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_FORUM_1007."</b></span></td></tr>";
 			}
 			$unstuck = true;
 		}
@@ -560,18 +562,20 @@ if($container_only)
 //var_dump ($FORUM_VIEW_START);
 //  	var_dump ($FORUM_VIEW_SUB);
 $forum_view_start = $tp->parseTemplate($FORUM_VIEW_START_CONTAINER.$FORUM_VIEW_START, false, $sc);
+$forum_view_wrap_start = $tp->parseTemplate($FORUM_VIEW_WRAP_START, false, $sc); // Exstended Item Wrap - $FORUM_VIEW_WRAP_START
 $forum_view_forum = $tp->parseTemplate($forum_view_forum, false, $sc);
+$forum_view_wrap_end = $tp->parseTemplate($FORUM_VIEW_WRAP_END, false, $sc); // Exstended Item Wrap - $FORUM_VIEW_WRAP_END
 $forum_view_end = $tp->parseTemplate($FORUM_VIEW_END.$FORUM_VIEW_END_CONTAINER, false, $sc);
 
 //$forum_view_start .= "<hr><hr>FVARS FORUM<hr><hr>".$tp->simpleParse($FORUM_VIEW_START, $fVars);
 //$forum_view_end = $tp->simpleParse($FORUM_VIEW_END, $fVars);
 
 if ($forum->prefs->get('enclose'))
-{	
+{
 // $forum_view_subs????
 	$caption = varset($FORUM_VIEW_CAPTION) ? $tp->parseTemplate($FORUM_VIEW_CAPTION, TRUE, $sc) : $forum->prefs->get('title');
 
-	$ns->tablerender($caption, $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
+	$ns->tablerender($caption, $forum_view_start.$forum_view_subs.$forum_view_wrap_start.$forum_view_forum.$forum_view_wrap_end.$forum_view_end, array('forum_viewforum', 'main1'));
 }
 else
 {
@@ -602,9 +606,9 @@ function parse_thread($thread_info)
 
 	$tVars['VIEWS'] = $thread_info['thread_views'];
 	$tVars['REPLIES'] = $thread_info['thread_total_replies'];
-	
+
 	$badge = ($thread_info['thread_views'] > 0) ? "badge-info" : "";
-	
+
 	$tVars['REPLIESX'] = "<span class='badge badge-info'>".$thread_info['thread_total_replies']."</span>";
 	$tVars['VIEWSX'] = "<span class='badge {$badge}'>".$thread_info['thread_views']."</span>";
 
@@ -648,7 +652,7 @@ function parse_thread($thread_info)
 	$newflag = (USER && $thread_info['thread_lastpost'] > USERLV && !in_array($thread_info['thread_id'], $threadsViewed));
 
 	$tVars['THREADDATE'] = $gen->convert_date($thread_info['thread_datestamp'], 'forum');
-	
+
 	$tVars['THREADTIMELAPSE'] = $gen->computeLapse($thread_info['thread_datestamp'],time(), false, false, 'short'); //  convert_date($thread_info['thread_datestamp'], 'forum');
 
 
@@ -790,7 +794,7 @@ function parse_thread($thread_info)
 		<a class='e-tip' title=\"".LAN_FORUM_5019."\" href='".$moveUrl."'>".IMAGE_admin_move.'</a>
 		</div></form>
 		';
-		
+
 		$tVars['ADMINOPTIONS'] = fadminoptions($thread_info);
 	}
 
@@ -833,20 +837,20 @@ function parse_thread($thread_info)
 			$_TEMPLATE = $FORUM_VIEW_FORUM;
 			break;
 	}
-	
-	
-	if(substr($_TEMPLATE,0,4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. . 
+
+
+	if(substr($_TEMPLATE,0,4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. .
 	{
-		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
+		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);
 	}
-	
+
 	if(!deftrue('BOOTSTRAP'))
 	{
 		$tVars['REPLIESX']        = 	$tVars['REPLIES'];
 		$tVars['VIEWSX']	        = $tVars['VIEWS'];
 		$tVars['ADMINOPTIONS']    = $tVars['ADMIN_ICONS'];
 	}
-	
+
 	$tVars['_WRAPPER_'] = 'forum_viewforum';
 
 	return $tp->parseTemplate($_TEMPLATE, true, $tVars);
@@ -874,14 +878,14 @@ function parse_thread($thread_info)
 			$_TEMPLATE = $FORUM_VIEW_FORUM;
 			break;
 	}
-	
-	
-	if(substr($_TEMPLATE,0,4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. . 
+
+
+	if(substr($_TEMPLATE,0,4) == '<tr>') // Inject id into table row. //XXX Find a better way to do this without placing in template. .
 	{
 
 	$threadId = $thread_info['thread_id'];
 
-		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);	
+		$_TEMPLATE = "<tr id='thread-{$threadId}'>".substr($_TEMPLATE,4);
 	}
 
 	return $tp->parseTemplate($_TEMPLATE, true, $sc);
@@ -900,16 +904,16 @@ function parse_sub($subInfo)
 	$tVars['SUB_DESCRIPTION'] = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
 	$tVars['SUB_THREADS'] = $subInfo['forum_threads'];
 	$tVars['SUB_REPLIES'] = $subInfo['forum_replies'];
-	
+
 	$badgeReplies = ($subInfo['forum_replies']) ? "badge-info" : "";
 	$badgeThreads = ($subInfo['forum_replies']) ? "badge-info" : "";
-	
+
 	$tVars['SUB_THREADSX'] = "<span class='badge {$badgeThreads}'>".$subInfo['forum_threads']."</span>";
 	$tVars['SUB_REPLIESX'] = "<span class='badge {$badgeReplies}'>".$subInfo['forum_replies']."</span>";
 
 //	$tVars['REPLIESX'] = "<span class='badge badge-info'>".$thread_info['thread_total_replies']."</span>";
 //	$tVars['VIEWSX'] = "<span class='badge {$badge}'>".$thread_info['thread_views']."</span>";
-	
+
 	if(USER && is_array($newflag_list) && in_array($subInfo['forum_id'], $newflag_list))
 	{
 
@@ -935,7 +939,7 @@ function parse_sub($subInfo)
 			$lp_name = $subInfo['forum_lastpost_user_anon'];
 		}
 		$tVars['SUB_LASTPOST'] = $lp_date.'<br />'.$lp_name.' '.$lp_thread;
-		
+
 		$tVars['SUB_LASTPOSTDATE'] = $gen->computeLapse($tmp[0], time(), false, false, 'short');
 		$tVars['SUB_LASTPOSTUSER'] = $lp_name;
 	}
@@ -971,15 +975,15 @@ function fadminoptions($thread_info)
 //----	$tVars = new e_vars;
 	$e107 = e107::getInstance();
 	$tp = e107::getParser();
-	
+
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
 	$text = '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu pull-right">	
+    <ul class="dropdown-menu pull-right">
    ';
-   
-	//FIXME - not fully working. 
+
+	//FIXME - not fully working.
 
 	$moveUrl        = e107::url('forum','move', $thread_info);
 // What's the use of $splitUrl?????
@@ -988,7 +992,7 @@ function fadminoptions($thread_info)
 	$lockUnlock 	= ($thread_info['thread_active'] ) ? 'lock' : 'unlock';
 	$stickUnstick 	= ($thread_info['thread_sticky'] == 1) ? 'unstick' : 'stick';
 	$id = intval($thread_info['thread_id']);
-	
+
 	$lan = array('stick'=>LAN_FORUM_8007,'unstick'=>LAN_FORUM_8008,'lock'=>LAN_FORUM_8009, 'unlock'=>LAN_FORUM_8010);
 	$icon = array(
 		'unstick'	=>	$tp->toGlyph('chevron-down'),
@@ -996,13 +1000,13 @@ function fadminoptions($thread_info)
 		'lock'		=>	$tp->toGlyph('lock'),
 		'unlock'	=>	$tp->toGlyph('unlock'),
 	);
-	
+
 
 
 	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='delete' data-forum-thread='".$id."'>".LAN_DELETE." ".$tp->toGlyph('trash');
 	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$stickUnstick."' data-forum-thread='".$id."'>".$lan[$stickUnstick]." ".$icon[$stickUnstick]."</a></li>";
 	$text .= "<li class='text-right'><a href='".e_REQUEST_URI."' data-forum-action='".$lockUnlock."' data-forum-thread='".$id."'>".$lan[$lockUnlock]." ".$icon[$lockUnlock]."</a></li>";
-	
+
 	$text .= "<li class='text-right'><a href='{$moveUrl}'>".LAN_FORUM_2042." ".$tp->toGlyph('move')."</i></a></li>";
 
 	if(e_DEVELOPER)
@@ -1013,27 +1017,27 @@ function fadminoptions($thread_info)
 
 /*
 	$text .= "<li><input type='image' ".IMAGE_admin_delete." name='deleteThread_{$threadId}' value='thread_action' onclick=\"return confirm_({$threadId})\" /> Delete</li>";
-	
+
 	$text .= "<li>".($thread_info['thread_sticky'] == 1 ? "<input type='image' ".IMAGE_admin_unstick." name='unstick_{$threadId}' value='thread_action' /> Unstick" : "<input type='image' ".IMAGE_admin_stick." name='stick_{$threadId}' value='thread_action' /> Stick")."
 		</li>";
-		
+
 	$text .= "<li>".($thread_info['thread_active'] ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$threadId}' value='thread_action' /> Lock" : "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$threadId}' value='thread_action' /> Unlock"). "
 		</li>";
-		
+
 	$text .= "<li><a href='".e107::getUrl()->create('forum/thread/move', "id={$thread_info['thread_id']}")."'>Move</a></li>";
-*/		
-	
+*/
+
 	$text .= "</ul></div>";
-//	$text .= "</form>";	
+//	$text .= "</form>";
 	return $text;
 }
-	
-	
+
+
 function fpages($thread_info, $replies)
 {
 	global $forum;
 	$tp = e107::getParser();
-	
+
 	$pages = ceil(($replies)/$forum->prefs->get('postspage'));
 	$thread_info['thread_sef'] = eHelper::title2sef($thread_info['thread_name'],'dashl');
 	$urlparms = $thread_info;
@@ -1085,23 +1089,23 @@ function fpages($thread_info, $replies)
 		{
 			$text = "<ul class='pagination pagination-sm forum-viewforum-pagination'>
 						<li>";
-			
-			$text .= implode("</li><li>",$opts); // ."</div>";	
+
+			$text .= implode("</li><li>",$opts); // ."</div>";
 			$text .= "</li></ul>";
 		}
-		else 
+		else
 		{
 			$text = implode("",$opts); // ."</div>";
 		}
-		
+
 	}
 	else
 	{
 		$text = '';
-	}	
-	
-	return $text; 
-}	
+	}
+
+	return $text;
+}
 
 function newthreadjump($url)
 {
@@ -1115,16 +1119,16 @@ function newthreadjump($url)
     </button>
     <ul class="dropdown-menu pull-right">
     ';
-	
+
 	foreach($jumpList as $key => $val)
 	{
 		$text .= '<li><a href="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017.': '.$val['forum_name'].'</a></li>';
 	}
-	
+
 	$text .= '
     </ul>
     </div>';
-	
+
 	return $text;
 }
 ?>
