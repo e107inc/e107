@@ -252,9 +252,11 @@ function theme_adminmenu()
 		$var['convert']['link'] = e_SELF."?mode=convert";
 
       //  $selected = (e_QUERY) ? e_QUERY : "main";
+		$icon  = e107::getParser()->toIcon('e-themes-24');
+		$caption = $icon."<span>".TPVLAN_26."</span>";
 
 
-		e107::getNav()->admin(TPVLAN_26, $mode, $var);
+		e107::getNav()->admin($caption, $mode, $var);
 }
 
 class theme_builder 

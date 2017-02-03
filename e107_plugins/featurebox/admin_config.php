@@ -51,7 +51,7 @@ class fb_admin extends e_admin_dispatcher
 		'category/edit'	=> 'category/list'
 	);	
 	
-	protected $menuTitle = 'featurebox';
+	protected $menuTitle = 'Feature Box';
 }
 
 class fb_category_ui extends e_admin_ui

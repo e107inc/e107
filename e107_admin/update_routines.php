@@ -573,11 +573,11 @@ function update_core_database($type = '')
 
 			$query = "INSERT INTO `#core_media_cat` (media_cat_id, media_cat_owner, media_cat_category, media_cat_title, media_cat_sef, media_cat_diz, media_cat_class, media_cat_image, media_cat_order) VALUES (NULL, '_icon', '_icon_svg', 'Icons SVG', '', 'Available where icons are used in admin.', '253', '', '0');";
 
-			return $sql->gen($query);
+			$sql->gen($query);
 
 		}
 
-
+		return $just_check;
 
 			// List of changed menu locations.
 			/*
@@ -602,7 +602,7 @@ function update_core_database($type = '')
 			}
 		}*/
 
-		return true;
+
 
 	}
 

@@ -139,6 +139,8 @@ class media_admin extends e_admin_dispatcher
 		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
 	);
 
+	protected $adminMenuIcon = 'e-images-24';
+
 /*
 	$var['main']['text'] = IMALAN_7;
 	$var['main']['link'] = e_SELF;
@@ -1631,12 +1633,15 @@ class media_admin_ui extends e_admin_ui
 			$accData = json_decode($accData,true);
 			$channelID = e107::pref('core', 'youtube_default_account');
 
-			foreach($accData['items'] as $val)
+			if(!empty($accData['items']))
 			{
-				if($val['kind'] == 'youtube#channel')
+				foreach($accData['items'] as $val)
 				{
+					if($val['kind'] == 'youtube#channel')
+					{
 						$channelID = $val['id'];
 						break;
+					}
 				}
 			}
 

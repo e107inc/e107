@@ -37,7 +37,7 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 
 $E_ADMIN_NAVIGATION['button_active'] = '
-	<li class="dropdown">
+	<li class="dropdown active">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_IMAGE} {LINK_TEXT}
 		<b class="caret"></b>
@@ -408,7 +408,7 @@ $ADMIN_FOOTER = "
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $E_ADMIN_MENU['start'] = '
-<ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-list">
+<ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 
 $E_ADMIN_MENU['button'] = '

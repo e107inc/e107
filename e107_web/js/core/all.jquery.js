@@ -281,6 +281,41 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Behavior to initialize Modal closer elements.
+	 *
+	 * @type {{attach: e107.behaviors.eDialogClose.attach}}
+	 */
+	e107.behaviors.eDialogClose = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-dialog-close').once('e-dialog-close').each(function ()
+			{
+				$(this).click(function ()
+				{
+					var $modal = $('.modal');
+					var $parentModal = parent.$('.modal');
+					var $parentDismiss = parent.$('[data-dismiss=modal]');
+
+					if($modal.length > 0)
+					{
+						$modal.modal('hide');
+					}
+
+					if($parentModal.length > 0)
+					{
+						$parentModal.modal('hide');
+					}
+
+					if($parentDismiss.length > 0)
+					{
+						$parentDismiss.trigger({type: 'click'});
+					}
+				});
+			});
+		}
+	};
+
+	/**
 	 * Check if the selector is valid.
 	 *
 	 * @param selector
@@ -642,7 +677,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	 * Example usage:
 	 * @code
 	 *  $(window).resize(function () {
-	 *      waitForFinalEvent(function(){
+	 *      e107.callbacks.waitForFinalEvent(function(){
 	 *          alert('Resize...');
 	 *          //...
 	 *      }, 500, "some unique string");
@@ -1115,15 +1150,6 @@ $(document).ready(function()
 		});
 		*/
 
-
-    $(document).on("click", ".e-dialog-close", function(){
-			parent.$('.modal').modal('hide');
-            $('.modal').modal('hide');
-			parent.$('[data-dismiss=modal]').trigger({ type: 'click' });
-
-         //   $('#modal').modal('hide');
-			// parent.$.colorbox.close()	
-	});
 		
 		
 		
@@ -1345,61 +1371,6 @@ $(document).ready(function()
 			
 		
 });
-
-
-	/**
-	 * TODO:
-	 * This function is only used by mediaNav() in mediaManager.js. So need to rewrite mediaManager.js to use
-	 * e107.behaviors, and e107.callbacks.eNav() could be used instead of this function.
-	 *
-	 * dynamic next/prev  
-	 * @param e object (eg. from selector)
-	 * @param navid - class with data-src that needs 'from=' value updated. (often 2 of them eg. next/prev)
-	 */
-	function eNav(e,navid)
-	{
-			var src = $(e).attr("data-src");
-			var inc = parseInt($(e).attr("data-nav-inc"));
-			var dir = $(e).attr("data-nav-dir");
-			var tot = parseInt($(e).attr("data-nav-total"));
-			var val = src.match(/from=(\d+)/);
-			var amt = parseInt(val[1]);
-			
-			var oldVal = 'from='+ amt;
-		
-			var sub = amt - inc;
-			var add = amt + inc;
-			
-			$(e).show();	
-			
-			if(add > tot)
-			{
-				add = amt;	
-			//	$(e).hide();
-			}
-				
-			if(sub < 0)
-			{
-				sub = 0
-			}
-			
-			if(dir == 'down')
-			{
-				var newVal = 'from='+ sub;
-			}
-			else
-			{
-				var newVal = 'from='+ add;	
-			}
-			
-			src = src.replace(oldVal, newVal);
-			$(navid).attr("data-src",src);
-				
-	}
-
-
-
-
 
 
 // Legacy Stuff to be converted. 

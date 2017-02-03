@@ -250,6 +250,8 @@ class e_theme
 		$css = strtolower($match[2]);
 		$themeArray['csscompliant'] = ($css == "true" ? "2.1" : false);
 
+		$themeArray['version'] = str_replace(array('<br />','<br>','<br/>'),' ',$themeArray['version']);
+
 		/*        preg_match('/CUSTOMPAGES(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
 		 $themeArray['custompages'] = array_filter(explode(" ",$match[3]));*/
 
@@ -370,7 +372,7 @@ class e_theme
 		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
-		$vars['thumbnail'] 		= isset($vars['preview'][0]) ?  $vars['preview'][0] : '';
+		$vars['thumbnail'] 		= isset($vars['preview'][0]) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]) ?  $vars['preview'][0] : '';
 
 
 		if(!empty($vars['themePrefs']))
@@ -568,6 +570,11 @@ class themeHandler
 	 * @var e_marketplace
 	 */
 	protected $mp;
+
+	const RENDER_THUMBNAIL = 0;
+	const RENDER_SITEPREFS = 1;
+	const RENDER_ADMINPREFS = 2;
+
 	
 	/* constructor */
 	
@@ -1512,7 +1519,7 @@ class themeHandler
 				
 		if(($this->themeConfigObj === null) )
 		{
-			$mes->addDebug("Loading : ".$confile);
+			e107::getDebug()->log("Loading : ".$confile);
 			include ($confile);
 			$className = 'theme_'.$this->id;
 
@@ -1641,7 +1648,7 @@ class themeHandler
 		 mode = 1 :: selected site theme
 		 mode = 2 :: selected admin theme
 	*/
-	function renderTheme($mode = FALSE, $theme)
+	function renderTheme($mode = 0, $theme)
 	{
 		$ns = e107::getRender();
 		$pref = e107::getPref();
@@ -1657,24 +1664,27 @@ class themeHandler
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 		$price 			= '';
-		
+
+
 		if(substr($theme['thumbnail'],0,4) == 'http')
 		{
 			$thumbPath = $theme['thumbnail'];	
 			$previewPath = $theme['preview'][0];	
 		}
-		elseif(!empty($theme['preview'][0]))
+		elseif(!empty($theme['thumbnail']))
 		{
-			$thumbPath = e_THEME.$theme['path'] ."/".$theme['preview'][0];	
-			$previewPath = e_THEME.$theme['path'] ."/".$theme['preview'][0];	
+			$thumbPath = e_THEME.$theme['path'] ."/".$theme['thumbnail'];
+			$previewPath = e_THEME.$theme['path'] ."/".$theme['thumbnail'];
+			$class = 'admin-theme-preview';
 		}
 		else 
 		{
 			$thumbPath = e_IMAGE_ABS."admin_images/nopreview.png";
 			$previewPath = e_BASE."index.php?themepreview.".$theme['id'];
+			$class = 'admin-theme-nopreview';
 		}
 		
-		$thumbnail = "<img src='".$thumbPath."' style='max-width:100%'  alt='' />";
+		$thumbnail = "<img class='".$class."' src='".$thumbPath."' style='max-width:100%'  alt='' />";
 		
 
 		if($_GET['mode'] == 'online')
@@ -1762,10 +1772,10 @@ class themeHandler
 		
 		
 		
-		if(!$mode)
+		if($mode == self::RENDER_THUMBNAIL)
 		{
 			// styles NEED to be put into style.css
-					
+			/*
 			if($pref['sitetheme'] == $theme['path'])
 			{
 				$borderStyle = "admin-theme-cell-site";		
@@ -1778,7 +1788,7 @@ class themeHandler
 			{
 				$borderStyle = "admin-theme-cell-default";
 			}
-			
+		*/
 			$borderStyle = 'well';
 			
 			
@@ -1786,10 +1796,11 @@ class themeHandler
 				<div class='f-left block-text admin-theme-cell ".$borderStyle."'>
 					<div class='well admin-theme-thumb'>".$thumbnail."</div>
 					<div id='".$frm->name2id($theme['name'])."' class='admin-theme-options'>".$main_icon.$admin_icon.$info_icon.$preview_icon."</div>
-					<div class='admin-theme-title'><small>".$theme['name']." ".$theme['version']."</small>
+					<div class='admin-theme-title'><small>".strip_tags($theme['name'])." ".$theme['version']."</small>
 					".$price."
 					</div>	
 				</div>";
+
 			return $text;
 		}
 		
@@ -1805,7 +1816,7 @@ class themeHandler
         <li class='active'><a data-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
 		
 
-		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == 1)
+		if($this->themeConfigObj && call_user_func(array(&$this->themeConfigObj, 'config')) && $mode == self::RENDER_SITEPREFS)
 		{
 			$text .= "<li><a data-toggle='tab' href='#core-thememanager-customconfig'>".LAN_PREFS."</a></li>\n";
 		}
@@ -1853,7 +1864,7 @@ class themeHandler
 
 		
 					// site theme..
-					if($mode == 1)
+					if($mode == self::RENDER_SITEPREFS)
 					{
 						
 						$text .= "
@@ -1877,11 +1888,7 @@ class themeHandler
 								<input type='radio' name='image_preload' value='0'".(!$pref['image_preload'] ? " checked='checked'" : "")." /> ".TPVLAN_29."
 								</td>
 							</tr>";*/
-					}
-		
-					// New in 0.8   ----   site theme.
-					if($mode == 1)
-					{
+
 						
 						$itext = "<tr>
 								<td style='vertical-align:top; width:24%'><b>".TPVLAN_50."</b>:</td>
@@ -1894,7 +1901,7 @@ class themeHandler
 										<col class='col-tm-layout-preset' style='width:20%' />
 			                      	</colgroup>
 									<tr>";
-						$itext .= ($mode == 1) ? "<th class='center top'>".TPVLAN_55."</th>" : "";
+						$itext .= ($mode == self::RENDER_SITEPREFS) ? "<th class='center top'>".TPVLAN_55."</th>" : "";
 						$itext .= "
 										<th>".TPVLAN_52."</th>
 										<th>".TPVLAN_56."</th>
@@ -1907,7 +1914,7 @@ class themeHandler
 						{
 							$itext .= "
 										<tr>";
-							if($mode == 1)
+							if($mode == self::RENDER_SITEPREFS)
 							{
 								if(!$pref['sitetheme_deflayout'])
 								{
@@ -1999,7 +2006,7 @@ class themeHandler
 		
 		//		$itext .= !$mode ? "<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
 		
-					if($mode == 2)
+					if($mode == self::RENDER_ADMINPREFS)
 					{
 						
 						$astext = "";
@@ -2064,7 +2071,7 @@ class themeHandler
 
 							switch($mode)
 							{
-								case 2: // admin mode.
+								case self::RENDER_ADMINPREFS: // admin mode.
 									$for = $frm->name2id("admincss-".$css['name']);
 									$text2 = "<td class='center'>";
 									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'], array('id'=>$for));
@@ -2073,7 +2080,7 @@ class themeHandler
 									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
 									break;
 
-								case 1: // front 'sitetheme' mode.
+								case self::RENDER_SITEPREFS: // front 'sitetheme' mode.
 
 									$text2 = "
 									<td class='center'>
@@ -2098,7 +2105,7 @@ class themeHandler
 
 			   		<div class='center buttons-bar'>";
 			
-					if($mode == 2) // admin
+					if($mode == self::RENDER_ADMINPREFS) // admin
 					{
 						$mainid = "selectmain[".$theme['id']."]";
 						$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
@@ -2133,7 +2140,7 @@ class themeHandler
 
 				<div class='center buttons-bar'>";
 		
-				if($mode == 2) // admin
+				if($mode == self::RENDER_ADMINPREFS) // admin
 				{
 					$mainid = "selectmain[".$theme['id']."]";
 					$text .= $this->frm->admin_button('submit_adminstyle', TPVLAN_35, 'update');
@@ -2165,7 +2172,7 @@ class themeHandler
 		$remove = array();
 		$detected = array();
 
-		if($mode == 1)
+		if($mode == self::RENDER_SITEPREFS)
 		{
 			foreach($theme['css'] as $k=>$v) // check if wildcard is present.
 			{
@@ -2627,9 +2634,12 @@ class themeHandler
 			$config->setPosted('admincss', $_POST['admincss']);
 		}
 
-		return $config->setPosted('adminstyle', $_POST['adminstyle'])
+		$config->setPosted('adminstyle', $_POST['adminstyle'])
 			->setPosted('adminpref', varset($_POST['adminpref'], 0))->save(true,true,false);
-		
+
+
+		e107::redirect(e_REQUEST_URI);
+
 		/*return (e107::getConfig()->dataHasChangedFor('admincss')
 			|| e107::getConfig()->dataHasChangedFor('adminstyle')
 			|| e107::getConfig()->dataHasChangedFor('adminpref'));*/

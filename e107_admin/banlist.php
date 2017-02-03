@@ -87,6 +87,8 @@ class banlist_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = BANLAN_16;
+
+	protected $adminMenuIcon = 'e-banlist-24';
 }
 
 

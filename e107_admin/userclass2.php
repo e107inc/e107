@@ -52,6 +52,8 @@ e107::coreLan('userclass2', true);
 		);
 
 		protected $menuTitle = ADLAN_38;
+
+		protected $adminMenuIcon = 'e-userclass-24';
 	}
 
 
