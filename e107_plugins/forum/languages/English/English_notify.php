@@ -14,4 +14,3 @@ define("LAN_FORUM_NT_TOPIC_DELETED", "Topic deleted");
 define("LAN_FORUM_NT_TOPIC_SPLIT", "Topic split");
 define("LAN_FORUM_NT_POST_DELETED", "Post deleted");
 define("LAN_FORUM_NT_POST_REPORTED", "Post reported");
-

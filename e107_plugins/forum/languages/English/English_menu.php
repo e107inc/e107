@@ -8,7 +8,7 @@
  *
  */
 
- 
+
 define("LAN_FORUM_MENU_001", "Posted by");
 define("LAN_FORUM_MENU_002", "No posts yet");
 define("LAN_FORUM_MENU_003", "New Forum Posts menu configuration saved");
@@ -23,5 +23,5 @@ define("LAN_FORUM_MENU_0010", "New Forum Posts Menu Configuration");
 define("LAN_FORUM_MENU_0012", "Maximum age of displayed posts");
 define("LAN_FORUM_MENU_0013", "Use zero on a quiet site; setting a value in days will reduce database time on a busy site");
 
-	
+
 ?>
