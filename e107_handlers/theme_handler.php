@@ -201,8 +201,13 @@ class e_theme
 	 * @param null $key
 	 * @return array|bool
 	 */
-	public function get($var, $key=null)
+	public function get($var=null, $key=null)
 	{
+		if(empty($var) && isset($this->_data[$this->_current]))
+		{
+			return $this->_data[$this->_current];
+		}
+
 		return isset($this->_data[$this->_current][$var]) ? $this->_data[$this->_current][$var] : false;
 	}
 
