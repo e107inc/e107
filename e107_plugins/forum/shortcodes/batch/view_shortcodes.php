@@ -893,48 +893,46 @@ return $thread->message;
 
 	function sc_quickreply()
 	{
-		  global $forum, $forum_quickreply;
+		global $forum, $forum_quickreply;
 
-if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
-{
-	//XXX Show only on the last page??
-	if (!vartrue($forum_quickreply))
-	{
-		$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
-	//	$ajaxInsert = 1;
-	//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
-//Orphan $frm variable????		$frm = e107::getForm();
-
-		$urlParms = array('f'=>'rp','id'=>$this->var['thread_id'], 'post'=>$this->var['thread_id']);
-		$url = e107::url('forum','post', null, array('query'=>$urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
-
-		return "
-		<form action='" . $url . "' method='post'>
-		<div class='form-group'>
-			<textarea cols='80' placeholder='".LAN_FORUM_2007."' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
-		</div>
-		<div class='center text-center form-group'>
-			<input type='submit' data-token='".e_TOKEN."' data-forum-insert='".$ajaxInsert."' data-forum-post='".$this->var['thread_forum_id']."' data-forum-thread='".$this->var['thread_id']."' data-forum-action='quickreply' name='reply' value='".LAN_FORUM_2006. "' class='btn btn-success button' />
-			<input type='hidden' name='thread_id' value='".$this->var['thread_id']."' />
-		</div>
-
-		</form>";
-
-		if(E107_DEBUG_LEVEL > 0)
+		if ($forum->checkPerm($this->var['thread_forum_id'], 'post') && $this->var['thread_active'])
 		{
-		//	echo "<div class='alert alert-info'>Thread id: ".$threadId."</div>";
-		//	print_a($this);
+			//XXX Show only on the last page??
+			if (!vartrue($forum_quickreply))
+			{
+				$ajaxInsert = ($thread->pages == $thread->page || $thread->pages == 0) ? 1 : 0;
+			//	$ajaxInsert = 1;
+			//	echo "AJAX-INSERT=".$ajaxInsert ."(".$thread->pages." vs ".$thread->page.")";
+			//Orphan $frm variable????		$frm = e107::getForm();
+
+				$urlParms = array('f'=>'rp','id'=>$this->var['thread_id'], 'post'=>$this->var['thread_id']);
+				$url = e107::url('forum','post', null, array('query'=>$urlParms));; // ."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadInfo['thread_id'];
+
+				return "
+				<form action='" . $url . "' method='post'>
+				<div class='form-group'>
+					<textarea cols='80' placeholder='".LAN_FORUM_2007."' rows='4' id='forum-quickreply-text' class='tbox input-xxlarge form-control' name='post' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>
+				</div>
+				<div class='center text-center form-group'>
+					<input type='submit' data-token='".e_TOKEN."' data-forum-insert='".$ajaxInsert."' data-forum-post='".$this->var['thread_forum_id']."' data-forum-thread='".$this->var['thread_id']."' data-forum-action='quickreply' name='reply' value='".LAN_FORUM_2006. "' class='btn btn-success button' />
+					<input type='hidden' name='thread_id' value='".$this->var['thread_id']."' />
+				</div>
+
+				</form>";
+
+				if(E107_DEBUG_LEVEL > 0)
+				{
+				//	echo "<div class='alert alert-info'>Thread id: ".$threadId."</div>";
+				//	print_a($this);
+				}
+
+				// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
+			}
+		//----	else
+		//----	{
+				return $forum_quickreply;
+		//----	}
 		}
-
-
-
-		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
-	}
-//----	else
-//----	{
-		return $forum_quickreply;
-//----	}
-}
 	}
 
 }
