@@ -16,12 +16,12 @@
 */
 require_once("class2.php");
 if(!e107::isInstalled('gsitemap'))
-{ 
+{
 	e107::redirect();
 	exit();
 }
 
-e107::lan('gsitemap'); 
+e107::lan('gsitemap');
 
 if(e_QUERY == "show" || !empty($_GET['show']))
 {

@@ -7,21 +7,21 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * User signup
- * 
+ *
  */
 
 require_once("class2.php");
 
-if(vartrue($_POST['email2'])) // spam-trap. 
+if(vartrue($_POST['email2'])) // spam-trap.
 {
-	exit; 	
+	exit;
 }
 
 $qs = explode(".", e_QUERY);
 
 if($qs[0] != 'activate')
 {   // multi-language fix.
-	e107::coreLan('signup'); 
+	e107::coreLan('signup');
 	//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 //	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_usersettings.php");		Shouldn't need this now
 }
@@ -114,7 +114,7 @@ if($signup_imagecode)
 if ((USER || (intval($pref['user_reg']) !== 1) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
 	e107::redirect();
-	
+
 }
 
 
@@ -592,13 +592,13 @@ class signup
 //----------------------------------------
 // 		Initial signup (registration)
 // TODO - move all of this into the class above.
-if (isset($_POST['register']) && intval($pref['user_reg']) === 1) 
-{	
+if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
+{
 	e107::getCache()->clear("online_menu_totals");
-	
+
 	if (isset($_POST['rand_num']) && $signup_imagecode)
-	{	
-		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error. 
+	{
+		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error.
 		{
 			//$extraErrors[] = LAN_SIGNUP_3."\\n";
 			$extraErrors[] = $badCodeMsg."\\n";
@@ -619,17 +619,17 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		  $_POST['loginname'] = $userMethods->generateUserLogin($pref['predefinedLoginName']);
 		}
 
-		if(!isset($_POST['hideemail'])) // For when it is disabled - default is to hide-email.  
+		if(!isset($_POST['hideemail'])) // For when it is disabled - default is to hide-email.
 		{
 			$_POST['hideemail'] = 1;
 		}
-		
+
 		if(!isset($_POST['email_confirm']))
 		{
-			$_POST['email_confirm'] = $_POST['email'];	
+			$_POST['email_confirm'] = $_POST['email'];
 		}
-			
-			
+
+
 		// Use LoginName for DisplayName if restricted
 		if (!check_class($pref['displayname_class'],e_UC_PUBLIC.','.e_UC_MEMBER))
 		{
@@ -660,7 +660,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 
 		if (!isset($allData['errors']['user_password']))
-		{	
+		{
 			// No errors in password - keep it outside the main data array
 			$savePassword = $allData['data']['user_password'];
 			unset($allData['data']['user_password']); // Delete the password value in the output array
@@ -722,9 +722,9 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 		// Determine whether we have an error
 		$error = ((isset($allData['errors']) && count($allData['errors'])) || (isset($eufVals['errors']) && count($eufVals['errors'])) || count($extraErrors));
-		
+
 		// All validated here - handle any errors
-		if ($error) //FIXME - this ignores the errors caused by invalid image-code. 
+		if ($error) //FIXME - this ignores the errors caused by invalid image-code.
 		{
 			$temp = array();
 			if (count($extraErrors))
@@ -743,26 +743,26 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 			if(deftrue('BOOTSTRAP'))
 			{
-				e107::getMessage()->addError(implode('<br />', $temp)); 
+				e107::getMessage()->addError(implode('<br />', $temp));
 			}
 			else
 			{
-				message_handler('P_ALERT', implode('<br />', $temp));	
+				message_handler('P_ALERT', implode('<br />', $temp));
 			}
-	
+
 		}
 	}		// End of data validation
 	else
 	{
 		if(deftrue('BOOTSTRAP'))
 		{
-			e107::getMessage()->addError(implode('<br />', $temp)); 
+			e107::getMessage()->addError(implode('<br />', $temp));
 		}
 		else
 		{
-			message_handler('P_ALERT', implode('<br />', $extraErrors));	// Workaround for image-code errors. 
+			message_handler('P_ALERT', implode('<br />', $extraErrors));	// Workaround for image-code errors.
 		}
-		
+
 	}
 
 
@@ -801,7 +801,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		{
 			$allData['data']['user_ban'] = USER_VALIDATED;
 		}
-		
+
 		// Work out data to be written to user audit trail
 		$signup_data = array('user_name', 'user_loginname', 'user_email', 'user_ip');
 //		foreach (array() as $f)
@@ -811,7 +811,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		}
 
 		$allData['data']['user_password'] = $userMethods->HashPassword($savePassword,$allData['data']['user_loginname']);
-		
+
 		if (vartrue($pref['allowEmailLogin']))
 		{  // Need to create separate password for email login
 			//$allData['data']['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
@@ -822,13 +822,13 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		$allData['data']['user_ip'] = e107::getIPHandler()->getIP(FALSE);
 
 
-		
+
 		if(!vartrue($allData['data']['user_name']))
 		{
-			$allData['data']['user_name'] = $allData['data']['user_loginname'];	
+			$allData['data']['user_name'] = $allData['data']['user_loginname'];
 			$signup_data['user_name'] = $allData['data']['user_loginname'];
-		} 
-		
+		}
+
 		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
 		//   so we put apropriate ones, otherwise - broken DB Insert
 
@@ -849,9 +849,9 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 		// Actually write data to DB
 		validatorClass::addFieldTypes($userMethods->userVettingInfo, $allData);
-		
+
 		$nid = $sql->insert('user', $allData);
-		
+
 		if (isset($eufVals['data']) && count($eufVals['data']))
 		{
 			$usere->addFieldTypes($eufVals);		// Add in the data types for storage
@@ -860,7 +860,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			$sql->gen("INSERT INTO `#user_extended` (user_extended_id) values ('{$nid}')");
 			$sql->update('user_extended', $eufVals);
 		}
-		
+
 		if (SIGNUP_DEBUG)
 		{
 			 $admin_log->e_log_event(10,debug_backtrace(),"DEBUG","Signup new user",array_merge($allData['data'],$eufVals) ,FALSE,LOG_TO_ROLLING);
@@ -890,7 +890,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 		// Verification required (may be by email or by admin)
 		if ($pref['user_reg_veri'])
-		{	
+		{
 			// ========== Send Email =========>
 			if (($pref['user_reg_veri'] != 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
 			{
@@ -899,7 +899,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				$allData['data']['activation_url'] = SITEURL."signup.php?activate.".$allData['data']['user_id'].".".$allData['data']['user_sess'];
 				// FIX missing user_name
 				if(!vartrue($allData['data']['user_name'])) $allData['data']['user_name'] = $allData['data']['user_login'];
-				
+
 				// prefered way to send user emails
 
 				if(getperms('0') && !empty($_POST['simulation']))
@@ -934,10 +934,10 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				$eml['e107_header'] = $eml['userid'];
 				require_once(e_HANDLER.'mail.php');
 				$mailer = new e107Email();
-				
+
 				// FIX - sendEmail returns TRUE or error message...
 				$check = $mailer->sendEmail($allData['data']['user_email'], $allData['data']['user_name'], $eml,FALSE);*/
-				
+
 				if(true !== $check)
 				{
 					$error_message = LAN_SIGNUP_42; // There was a problem, the registration mail was not sent, please contact the website administrator.
@@ -960,11 +960,11 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		}
 		// User can be signed up immediately
 		else
-		{	
+		{
 			require_once(HEADERF);
 
 			if(!$sql->select("user", "user_id", "user_loginname='".$allData['data']['user_loginname']."' AND user_password='".$allData['data']['user_password']."'"))
-			{	
+			{
 				// Error looking up newly created user
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
@@ -976,7 +976,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			{
 				$allData['data']['user_class'] = $init_class;
 				$user_class_update = $sql->update("user", "user_class = '{$allData['data']['user_class']}' WHERE user_name='{$allData['data']['user_name']}'");
-				
+
 				if($user_class_update === FALSE)
 				{
 					//$admin_log->e_log_event(10,debug_backtrace(),'USER','Userclass update fail',print_r($row,TRUE),FALSE,LOG_TO_ROLLING);
@@ -985,7 +985,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 					require_once(FOOTERF);
 					exit;
 				}
-			}	
+			}
 
 			e107::getEvent()->trigger('usersup', $_POST);  // send everything in the template, including extended fields.
 			e107::getEvent()->trigger('userfull', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
@@ -999,7 +999,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />";
 				$text .= str_replace(array('[',']'), array("<a href='".e_LOGIN."'>", "</a>"), LAN_SIGNUP_13);
 			}
-			
+
 			$ns->tablerender(LAN_SIGNUP_8,$text);
 			require_once(FOOTERF);
 			exit;

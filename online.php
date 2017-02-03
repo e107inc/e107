@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -48,13 +48,13 @@ else
 
 global $listuserson;
 
-foreach($listuserson as $uinfo => $pinfo) 
+foreach($listuserson as $uinfo => $pinfo)
 {
   $class_check = TRUE;
   list($oid, $oname) = explode(".", $uinfo, 2);
   $online_location = $pinfo;
   $online_location_page = substr(strrchr($online_location, "/"), 1);
-  if (!strstr($online_location, "forum_") || !strstr($online_location, "content.php") || !strstr($online_location, "comment.php")) 
+  if (!strstr($online_location, "forum_") || !strstr($online_location, "content.php") || !strstr($online_location, "comment.php"))
   {
 	$online_location_page = str_replace(".php", "", substr(strrchr($online_location, "/"), 1));
   }
@@ -148,7 +148,7 @@ foreach($listuserson as $uinfo => $pinfo)
 	default :
 	  $online_location_page = OTHER.$online_location_page;
   }
-  
+
 /*
 Think these are no longer used
 	case 'article' :
@@ -164,7 +164,7 @@ Think these are no longer used
 		$online_location_page = STATS;
 	}
 */
-  if (strstr($online_location, "content.php")) 
+  if (strstr($online_location, "content.php"))
   {
 		$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 		if ($tmp[0] == "article") {
@@ -197,7 +197,7 @@ Think these are no longer used
 		}
   }
 
-  if (strstr($online_location, "comment.php")) 
+  if (strstr($online_location, "comment.php"))
   {
 		$tmp = explode(".php.", $online_location);
 		$tmp = explode(".", $tmp[1]);
@@ -223,7 +223,7 @@ Think these are no longer used
 		}
   }
 
-  if (strstr($online_location, "forum")) 
+  if (strstr($online_location, "forum"))
   {
 		$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 		if (strstr($online_location, "_viewtopic")) {
@@ -265,14 +265,14 @@ Think these are no longer used
 		}
   }
 
-  if (strstr($online_location, "admin")) 
+  if (strstr($online_location, "admin"))
   {
 	$class_check = FALSE;
 	$online_location_page = ADMINAREA;
   }
-	
+
   $ONLINE_TABLE_ICON = (vartrue($pref['plug_installed']['pm']) && $oid != USERID ? $tp->parseTemplate("{SENDPM={$oid}}", 'sendpm.sc') : "<img src='".e_PLUGIN."online_extended_menu/images/user.png' alt='' style='vertical-align:middle' />");
- 
+
   //$ONLINE_TABLE_USERNAME = "<a href='".e_BASE."user.php?id.$oid'>{$oname}</a>";
   $uparams = array('id' => $oid, 'name' => $oname);
   $link = e107::getUrl()->create('user/profile/view', $uparams);
@@ -281,36 +281,36 @@ Think these are no longer used
 
   $textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $ONLINE_TABLE);
 }
-	
+
 $ONLINE_TABLE_MEMBERS_ONLINE = ONLINE_EL1.GUESTS_ONLINE;
 $ONLINE_TABLE_GUESTS_ONLINE = ONLINE_EL2.MEMBERS_ONLINE;
-	
-if (!isset($gen) || !is_object($gen)) 
+
+if (!isset($gen) || !is_object($gen))
 {
   $gen = new convert;
 }
 
 $siteHistory = e107::getConfig('history')->getPref('');
-	
+
 $datestamp = $gen->convert_date($siteHistory['most_online_datestamp'], "short");
-	
+
 $ONLINE_TABLE_MOST_EVER_ONLINE = ONLINE_EL8.($siteHistory['most_members_online'] + $siteHistory['most_guests_online']);
 $ONLINE_TABLE_MOST_MEMBERS_ONLINE = ONLINE_EL2.$siteHistory['most_members_online'];
 $ONLINE_TABLE_MOST_GUESTS_ONLINE = ONLINE_EL1.$siteHistory['most_guests_online'];
 $ONLINE_TABLE_DATESTAMP = $datestamp;
-	
+
 $total_members = $sql->db_Count("user","(*)","where user_ban = 0");
-	
+
 if ($total_members > 1)
 {
 	$newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban=0 ORDER BY user_join DESC LIMIT 0,1");
 	$row = $sql->db_Fetch();
-	 
+
 	$ONLINE_TABLE_MEMBERS_TOTAL = "<br />".ONLINE_EL5.": ".$total_members;
 	$ONLINE_TABLE_MEMBERS_NEWEST = "<br />".ONLINE_EL6.": ".(USER ? "<a href='".e_BASE."user.php?id.".$row['user_id']."'>".$row['user_name']."</a>" : $row['user_name']);
 }
 
-	
+
 $text = '';
 if (count($listuserson))
 {
@@ -319,7 +319,7 @@ if (count($listuserson))
   $text = $textstart.$textstring.$textend;
 }
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $ONLINE_TABLE_MISC);
-	
+
 $ns->tablerender(ONLINE_EL4, $text);
-	
+
 require_once(FOOTERF);

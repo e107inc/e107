@@ -47,44 +47,44 @@
 
 
 	define('e_SINGLE_ENTRY', TRUE);
-	
+
 	$_E107['single_entry'] = true; // TODO - notify class2.php
-	
+
 	define('ROOT', dirname(__FILE__));
 	set_include_path(ROOT.PATH_SEPARATOR.get_include_path());
-	
+
 	require_once("class2.php");
 
 // ----------------------------
-	
+
 /**
- * Simple URL ReWrite (experimental) //TODO test, discuss, benchmark, enhance and include in eFront etc. if all goes well.  
- * Why?: 
- * - To make simple url rewrites as quick and easy for plugin developers to implement as it currently is to do the same with .htaccess 
- * - To use the same familiar standard as used by e_cron, e_status, e_rss etc. etc. so even a novice developer can understand it. 
- * 
- * @example (.httaccess): 
- * RewriteRule ^ref-(.*)/?$ e107_plugins/myplugin/myplugin.php?ref=$1 [NC,L] 
- * 
+ * Simple URL ReWrite (experimental) //TODO test, discuss, benchmark, enhance and include in eFront etc. if all goes well.
+ * Why?:
+ * - To make simple url rewrites as quick and easy for plugin developers to implement as it currently is to do the same with .htaccess
+ * - To use the same familiar standard as used by e_cron, e_status, e_rss etc. etc. so even a novice developer can understand it.
+ *
+ * @example (.httaccess):
+ * RewriteRule ^ref-(.*)/?$ e107_plugins/myplugin/myplugin.php?ref=$1 [NC,L]
+ *
  * @example (e_url.php file - in the 'myplugin' folder)
- * 
- *	class myplugin_url // plugin-folder + '_url' 
+ *
+ *	class myplugin_url // plugin-folder + '_url'
 	{
-		function config() 
+		function config()
 		{
 			$config = array();
-		
+
 			$config[] = array(
 				'regex'			=> '^ref-(.*)/?$',
 				'redirect'		=> '{e_PLUGIN}myplugin/myplugin.php?ref=$1',
 			);
-			
+
 			return $config;
 		}
-		
+
 	}
  */
- 
+
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
 
 	// XXX Cache didn't bring much benefit.
@@ -101,7 +101,7 @@
 
 
 	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
-		
+
 	if(count($tmp))
 	{
 
@@ -130,27 +130,27 @@
 					$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
 				}
 
-			
+
 				$regex = '#'.$v['regex'].'#';
-				
+
 				if(empty($v['redirect']))
 				{
-					continue;	
+					continue;
 				}
-			
-				
+
+
 				$newLocation = preg_replace($regex, $v['redirect'], $req);
 
 				if($newLocation != $req)
 				{
 					$redirect = e107::getParser()->replaceConstants($newLocation);
 					list($file,$query) = explode("?",$redirect,2);
-					
+
 					if(!empty($query))
 					{
 						parse_str($query,$_GET);
 					}
-					
+
 					e107::getDebug()->log('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true),1);
 
 					if(file_exists($file))
@@ -161,17 +161,17 @@
 						include_once($file);
 						exit;
 					}
-					elseif(getperms('0')) 
+					elseif(getperms('0'))
 					{
 						echo "File missing: ".$file;
-						exit;	
+						exit;
 					}
 
-				}				
-			}	
-			
+				}
+			}
+
 		}
-		
+
 		unset($tmp,$redirect,$regex);
 	}
 
@@ -179,20 +179,20 @@
 // -----------------------------------------
 
 	$sql->db_Mark_Time("Start regular eFront Class");
-	
+
 	$front = eFront::instance();
 	$front->init()
 		->run();
-	
+
 	$request = $front->getRequest();
-	
-	
-	
+
+
+
 	// If not already done - define legacy constants
 	$request->setLegacyQstring();
-	$request->setLegacyPage(); 
-	
-	$inc = $front->isLegacy(); 
+	$request->setLegacyPage();
+
+	$inc = $front->isLegacy();
 	if($inc)
 	{
 		// last chance to set legacy env
@@ -205,7 +205,7 @@
 		include($inc);
 		exit;
 	}
-	
+
 	$response = $front->getResponse();
 	if(e_AJAX_REQUEST)
 	{
@@ -215,8 +215,8 @@
 		exit;
 	}
 	$response->sendMeta();
-	
-	
+
+
 
 // -------------- Experimental -----------------
 
@@ -225,25 +225,25 @@
 	if(vartrue($_GET['provider']) && !isset($_SESSION['E:SOCIAL']) && e107::getPref('social_login_active', false) && (e_ADMIN_AREA !== true))
 	{
 		require_once(e_HANDLER."hybridauth/Hybrid/Auth.php");
-	
+
 		$config = array(
-			"base_url" => SITEURL.$HANDLERS_DIRECTORY."hybridauth/", 
-			"providers" => e107::getPref('social_login', array())	
+			"base_url" => SITEURL.$HANDLERS_DIRECTORY."hybridauth/",
+			"providers" => e107::getPref('social_login', array())
 		);
-	
+
 	//	print_a($config);
-	 //	$params = array("hauth_return_to" => e_SELF);  
-	
+	 //	$params = array("hauth_return_to" => e_SELF);
+
 		$hybridauth = new Hybrid_Auth($config);
-		
+
 		$prov = (!isset($config['providers'][$_GET['provider']])) ? "Facebook" : $_GET['provider'];
 
-	
+
 		$adapter = $hybridauth->authenticate( $prov);
-		$user_profile = $adapter->getUserProfile(); 
-		
+		$user_profile = $adapter->getUserProfile();
+
 		$prov_id = $prov."_".$user_profile->identifier;
-		
+
 		if($user_profile->identifier >0)
 		{
 			if (!$sql->select("user", "*", "user_xup = '".$prov_id."' ")) // New User
@@ -251,7 +251,7 @@
 				$user_join 				= time();
 				$user_pass 				= md5($user_profile->identifier.$user_join);
 				$user_loginname 		= "xup_".$user_profile->identifier;
-							
+
 				$insert = array(
 					'user_name'			=> $user_profile->displayName,
 					'user_email'		=> $user_profile->email,
@@ -261,26 +261,26 @@
 					'user_join'			=> $user_join,
 					'user_xup'			=> $prov_id
 				);
-				
+
 				if($newid = $sql->insert('user',$insert,true))
 				{
-					e107::getEvent()->trigger('usersup', $insert);	
+					e107::getEvent()->trigger('usersup', $insert);
 					if(!USERID)
 					{
 						require_once(e_HANDLER.'login.php');
-						$usr = new userlogin($user_loginname, $user_pass, 'signup', '');		
+						$usr = new userlogin($user_loginname, $user_pass, 'signup', '');
 					}
 				}
 			}
-			else // Existing User. 
+			else // Existing User.
 			{
-				
+
 			}
 
-	
+
 		}
 	// 	echo "CHECKING";
-		$_SESSION['E:SOCIAL'] = (array) $user_profile;	
+		$_SESSION['E:SOCIAL'] = (array) $user_profile;
 		echo "USERNAME=".USERNAME;
 		echo "<br />USEREMAIL=".USEREMAIL;
 		echo "<br />USERIMAGE=".USERIMAGE;
@@ -289,16 +289,15 @@
 
 
 // -------------------------------------------
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	include_once(HEADERF);
 		eFront::instance()->getResponse()->send('default', false, true);
 	include_once(FOOTERF);
 	exit;
 
  // BOOTSTRAP END
-

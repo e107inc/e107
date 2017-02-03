@@ -30,7 +30,7 @@ $sitedown_shortcodes= e107::getScBatch('sitedown');
 
 if (!$SITEDOWN_TABLE)
 {
-	if (file_exists(THEME.'templates/sitedown_template.php')) //v2.x location. 
+	if (file_exists(THEME.'templates/sitedown_template.php')) //v2.x location.
 	{
 		require_once(THEME.'templates/sitedown_template.php');
 	}
