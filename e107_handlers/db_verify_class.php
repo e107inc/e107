@@ -46,24 +46,45 @@ class db_verify
 		);
 	
 	var $errors = array();
+
+	const cachetag = 'Dbverify';
 	/**
 	 * Setup
 	 */
 	function __construct()
 	{
 				
-		$pref = e107::getPref();
-		$mes = e107::getMessage();
+
 		$sql = e107::getDb();
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 
-		$this->backUrl = e_SELF;	
-			
-		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
-		$this->tables['core'] = $this->getTables($core_data);
+		$this->backUrl = e_SELF;
+
+		if(!deftrue('e_DEBUG') && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
+		{
+			$this->tables = e107::unserialize($tmp);
+			return $this;
+		}
+
+		$this->tables = $this->load();
+		$data = e107::serialize($this->tables,'json');
+		e107::getCache()->set(self::cachetag,$data, true, true, true);
+
 		
+	}
+
+	private function load()
+	{
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+
+		$ret = array();
+
+		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
+		$ret['core'] = $this->getTables($core_data);
+
 		$this->sqlLanguageTables = $this->getSqlLanguages();
-		if(varset($pref['e_sql_list']))
+		if(!empty($pref['e_sql_list']))
 		{
 			foreach($pref['e_sql_list'] as $path => $file)
 			{
@@ -73,8 +94,8 @@ class db_verify
 					$id = str_replace('_sql','',$file);
 					$data = file_get_contents($filename);
 					$this->currentTable = $id;
-					$this->tables[$id] = $this->getTables($data);
-			      	unset($data);				
+					$ret[$id] = $this->getTables($data);
+			      	unset($data);
 				}
 				else
 				{
@@ -83,10 +104,10 @@ class db_verify
 				}
 			}
 		}
-		
-	}
 
-	
+		return $ret;
+
+	}
 	
 	/**
 	 * Main Routine for checking and rendering results. 

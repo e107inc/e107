@@ -207,6 +207,7 @@ class system_tools
 		
 		if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
 		{
+			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
 			$dbv->backUrl = e_SELF."?mode=verify_sql";
