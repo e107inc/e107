@@ -135,8 +135,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 						$name = !empty($file['name']) ? $file['name'] : $file['file'];
 
 						$file = $file['file'];
-					}
-					else
+					} else
 					{
 							list($date,$user, $name) = explode("_", $file, 3);
 					}
@@ -150,8 +149,7 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							if(defset("BOOTSTRAP") == 3)
 							{
 								$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='".$url."'>".$tp->toGlyph('glyphicon-save')." {$name}</a><br />";
-							}
-							else
+							} else
 							{
 								$txt .= IMAGE_attachment." <a href='".$url."'>{$name}</a><br />";
 							}
@@ -159,9 +157,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 						break;
 
 						case 'img': //Always use thumb to hide the hash.
-
-
-
 
 						//	return $baseDir.$file;
 							if(file_exists($baseDir.$file))
@@ -180,8 +175,6 @@ class plugin_forum_view_shortcodes extends e_shortcode
 							{
 								$images[] = "Missing File: ".$baseDir.$file;
 							}
-
-
 
 						break;
 					}
@@ -747,27 +740,27 @@ return (!$this->var['thread_active'] ? LAN_FORUM_2004 : '');
 }
 
 
-	function sc_gotopages()
-	{
-  global $thread;
-if ($thread->pages > 1)
+function sc_gotopages()
 {
-	if(!$thread->page) $thread->page = 1;
-//	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
+  	global $thread;
+	if ($thread->pages > 1)
+	{
+		if(!$thread->page) $thread->page = 1;
+	//	$url = rawurlencode(e107::getUrl()->create('forum/thread/view', array('name' => $thread->threadInfo['thread_name'], 'id' => $thread->threadId, 'page' => '[FROM]')));
 
-//	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
-	$url = e107::url('forum','topic', $this->var)."&amp;p=[FROM]";
+	//	$url = e_REQUEST_SELF."?p=[FROM]"; // SEF URL Friendly.
+		$url = e107::url('forum','topic', $this->var)."&amp;p=[FROM]";
 
-	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".urlencode($url)."&caption=off&tmpl=default&navcount=4&glyphs=1";
+		$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".urlencode($url)."&caption=off&tmpl=default&navcount=4&glyphs=1";
 
-	//XXX FIXME - pull-down template not practical here. Can we force another?
+		//XXX FIXME - pull-down template not practical here. Can we force another?
 
-//	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
-	return e107::getParser()->parseTemplate("{NEXTPREV={$parms}}");
-/*
-	$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
-	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");*/
-}
+	//	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+		return e107::getParser()->parseTemplate("{NEXTPREV={$parms}}");
+	/*
+		$parms = ($thread->pages).",1,{$thread->page},url::forum::thread::func=view&id={$thread->threadId}&page=[FROM],off";
+		$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");*/
+	}
 }
 
 
