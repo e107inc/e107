@@ -20,62 +20,62 @@ if (!defined('e107_INIT')) { exit; }
 class news_sitelink // include plugin-folder in the name.
 {
 	function config()
-	{	
+	{
 		$links = array();
-		
+
 		$links[] = array(
 			'name'			=> "News Category List",
 			'function'		=> "news_category_list",
 			'description' 	=> ""
-		);	
-		
+		);
+
 		$links[] = array(
 			'name'			=> "News Category Pages",
 			'function'		=> "news_category_page",
 			'description' 	=> ""
-		);	
-			
+		);
+
 		$links[] = array(
 			'name'			=> "Last 10 News Items",
 			'function'		=> "last_ten",
 			'description' 	=> ""
-		);	
-		
+		);
+
 		return $links;
 	}
 
-	
+
 	function news_category_page()
 	{
-		return $this->news_category_list('category');	
+		return $this->news_category_list('category');
 	}
-	
-	
+
+
 	function news_cats() // BC
 	{
 		return $this->news_category_list();
 	}
 
 
-	function news_category_list($type=null) 
+	function news_category_list($type=null)
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
-		
+
 //		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$query = "SELECT * FROM #news_category ";
 	//	$query .= "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ";
 		$query .= "	ORDER BY category_order ASC";
-		
+
 		if($type == null)
 		{
-			$type = 'short';	
+			$type = 'short';
 		}
-		
+
 		$urlPath = 'news/list/'.$type;
-		
+
 		if($sql->gen($query))
-		{		
+		{
 			while($row = $sql->fetch())
 			{
 
@@ -92,10 +92,10 @@ class news_sitelink // include plugin-folder in the name.
 					'link_class'		=> 0
 				);
 			}
-			
+
 			$sublinks[] = array(
 					'link_name'			=> LAN_MORE,
-					'link_url'			=> e107::getUrl()->create('news/list/all'),  
+					'link_url'			=> e107::getUrl()->create('news/list/all'),
 					'link_description'	=> '',
 					'link_button'		=> '',
 					'link_category'		=> '',
@@ -104,22 +104,22 @@ class news_sitelink // include plugin-folder in the name.
 					'link_open'			=> '',
 					'link_class'		=> 0
 				);
-				
+
 			return $sublinks;
 	    };
 	}
 
 
-	function last_ten() 
+	function last_ten()
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
-		
+
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ORDER BY news_datestamp DESC LIMIT 10";
-		
+
 		if($sql->gen($query))
-		{		
+		{
 			while($row = $sql->fetch())
 			{
 				$sublinks[] = array(
@@ -134,10 +134,10 @@ class news_sitelink // include plugin-folder in the name.
 					'link_class'		=> intval($row['news_class'])
 				);
 			}
-			
+
 			$sublinks[] = array(
 					'link_name'			=> LAN_MORE,
-					'link_url'			=> e107::getUrl()->create('news/list/all'),  
+					'link_url'			=> e107::getUrl()->create('news/list/all'),
 					'link_description'	=> '',
 					'link_button'		=> '',
 					'link_category'		=> '',
@@ -146,13 +146,13 @@ class news_sitelink // include plugin-folder in the name.
 					'link_open'			=> '',
 					'link_class'		=> intval($row['news_class'])
 				);
-				
+
 			return $sublinks;
 	    };
 	}
 
 
-	
+
 }
 
 

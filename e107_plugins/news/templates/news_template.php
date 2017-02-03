@@ -2,7 +2,7 @@
 /**
  * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
- * 
+ *
  * News default templates
  */
 
@@ -18,11 +18,11 @@ $NEWS_MENU_TEMPLATE['list']['start']       = '<div class="thumbnails">';
 $NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
 
 
-// XXX The ListStyle template offers a listed summary of items with a minimum of 10 items per page. 
-// As displayed by news.php?cat.1 OR news.php?all 
-// {NEWSBODY} should not appear in the LISTSTYLE as it is NOT the same as what would appear on news.php (no query) 
+// XXX The ListStyle template offers a listed summary of items with a minimum of 10 items per page.
+// As displayed by news.php?cat.1 OR news.php?all
+// {NEWSBODY} should not appear in the LISTSTYLE as it is NOT the same as what would appear on news.php (no query)
 
-// Template/CSS to be reviewed for best bootstrap implementation 
+// Template/CSS to be reviewed for best bootstrap implementation
 $NEWS_TEMPLATE['list']['caption']	= '{NEWSCATEGORY}';
 $NEWS_TEMPLATE['list']['start']	= '{SETIMAGE: w=400&h=350&crop=1}';
 $NEWS_TEMPLATE['list']['end']	= '';
@@ -58,7 +58,7 @@ $NEWS_TEMPLATE['list']['item']	= '
 
 
 // XXX As displayed by news.php (no query) or news.php?list.1.1 (ie. regular view of a particular category)
-//XXX TODO GEt this looking good in the default Bootstrap theme. 
+//XXX TODO GEt this looking good in the default Bootstrap theme.
 /*
 $NEWS_TEMPLATE['default']['item'] = '
 	{SETIMAGE: w=400}
@@ -149,7 +149,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 
 			<br />
 			{SETIMAGE: w=400&h=400}
-			
+
 			<div class="row  news-images-1">
         		<div class="col-md-6">{NEWSIMAGE: item=2}</div>
         		<div class="col-md-6">{NEWSIMAGE: item=3}</div>
@@ -158,22 +158,22 @@ $NEWS_TEMPLATE['view']['item'] = '
         		<div class="col-md-6">{NEWSIMAGE: item=4}</div>
         		<div class="col-md-6">{NEWSIMAGE: item=5}</div>
             </div>
-            
+
             {NEWSVIDEO: item=4}
 			{NEWSVIDEO: item=5}
-			
+
            <div class="body-extended text-justify">
 				{NEWS_BODY=extended}
 			</div>
-			
-			
+
+
 		</div>
 
 
 
 
 		<hr>
-		
+
 		<div class="options hidden-print ">
 			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
 		</div>
@@ -208,7 +208,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
 
-###### news_categories.sc 
+###### news_categories.sc
 $NEWS_TEMPLATE['category']['body'] = '
 	<div style="padding:5px"><div style="border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px">
 	{NEWSCATICON}&nbsp;{NEWSCATEGORY}

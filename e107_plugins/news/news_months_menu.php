@@ -2,7 +2,7 @@
 /**
  * Copyright (C) 2008-2011 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
- * 
+ *
  * News by month menu
  */
 
@@ -38,21 +38,21 @@ if(false === $cached)
 			return $date;
 		}
 	}
-	
+
 	if(!isset($parms['showarchive']))
 	{
 		$parms['showarchive'] = 0;
 	}
 
-		
+
 //	e107::lan('blogcalendar_menu', e_LANGUAGE); // FIXME decide on language file structure (#743)
 	e107::includeLan(e_PLUGIN.'blogcalendar_menu/languages/'.e_LANGUAGE.'.php');
 
 	$tp = e107::getParser();
 	$sql = e107::getDb();
-	
+
 	$marray  = e107::getDate()->terms('month');
-	
+
 
 	//$parms['year'] = "2011 0";
 	if(vartrue($parms['year']))
@@ -62,30 +62,30 @@ if(false === $cached)
 		$start = mktime(0, 0, 0, 1, 1, $cur_year);
 		$end = mktime(23, 59, 59, 12, 31, $cur_year);
 	}
-	else 
+	else
 	{
 		$date = "Y n";
 		list($cur_year, $cur_month) = explode(" ", date($date));
 		$start = mktime(0, 0, 0, 1, 1, $cur_year);
 		$end = time();
 	}
-	
+
 	$req_year = $cur_year;
-	if(e_PAGE == 'news.php' && strstr(e_QUERY, "month")) 
+	if(e_PAGE == 'news.php' && strstr(e_QUERY, "month"))
 	{
 		$tmp = explode('.', e_QUERY);
 		$item = $tmp[1];
 		$req_month = intval(substr($item, 4, 2));
 		$req = 'month';
-	} 
-	else 
+	}
+	else
 	{
 		$req_month = $cur_month;
 	}
 
 	$xmonth_cnt = array();
 	$month_links = array();
-	
+
 	$sql->db_Mark_Time('News months menu');
 	if(!$sql->select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end)." ORDER BY news_datestamp DESC"))
 	{
@@ -93,7 +93,7 @@ if(false === $cached)
 		return '';
 	}
 	while ($news = $sql->fetch())
-	{	
+	{
 		$xmonth = date("n", $news['news_datestamp']);
 		if ((!isset($month_links[$xmonth]) || !$month_links[$xmonth]))
 		{
@@ -111,7 +111,7 @@ if(false === $cached)
 	$template = e107::getTemplate('news', 'news_menu', 'months');
 	$bullet = defined('BULLET') ? THEME_ABS.'images/'.BULLET : THEME_ABS.'images/bullet2.gif';
 	$vars = new e_vars(array('bullet' => $bullet));
-	foreach($month_links as $index => $val) 
+	foreach($month_links as $index => $val)
 	{
 		$vars->addData(array(
 			'active' => $index == $req_month ? " active" : '',
@@ -125,7 +125,7 @@ if(false === $cached)
 
 	$ns->setContent('text', $cached);
 
-	if($cached) 
+	if($cached)
 	{
 		if(!$parms['showarchive'])
 		{

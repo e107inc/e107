@@ -12,7 +12,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 //v2.x Standard for extending menu configuration within Menu Manager. (replacement for v1.x config.php)
-//TODO Configure for news menus. 
+//TODO Configure for news menus.
 
 class news_menu
 {

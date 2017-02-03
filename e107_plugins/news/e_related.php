@@ -14,22 +14,20 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-
 class news_related // include plugin-folder in the name.
 {
 
-
-	function compile($tags,$parm=array()) 
+	function compile($tags,$parm=array())
 	{
 		$sql = e107::getDb();
 		$items = array();
-			
+
 		$tag_regexp = "'(^|,)(".str_replace(",", "|", $tags).")(,|$)'";
-		
+
 		$query = "SELECT * FROM #news WHERE news_id != ".$parm['current']." AND news_class REGEXP '".e_CLASS_REGEXP."'  AND news_meta_keywords REGEXP ".$tag_regexp."  ORDER BY news_datestamp DESC LIMIT ".$parm['limit'];
-			
+
 		if($sql->gen($query))
-		{		
+		{
 			while($row = $sql->fetch())
 			{
 				$thumbs = !empty($row['news_thumbnail']) ?  explode(",",$row['news_thumbnail']) : array();
@@ -41,15 +39,15 @@ class news_related // include plugin-folder in the name.
 					'image'			=> $thumbs[0]
 				);
 			}
-			
+
 			return $items;
 	    }
 		elseif(ADMIN)
 		{
-		//	return array(array('title'=>$query,'url'=>''));	
+		//	return array(array('title'=>$query,'url'=>''));
 		}
 	}
-	
+
 }
 
 

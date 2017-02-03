@@ -8,10 +8,10 @@
  *
  *	RSS chatbox feed addon
  */
- 
+
 if (!defined('e107_INIT')) { exit; }
 
-// v2.x Standard 
+// v2.x Standard
 class news_rss // plugin-folder + '_rss'
 {
 
@@ -22,8 +22,8 @@ class news_rss // plugin-folder + '_rss'
 	/**
 	 * Admin RSS Configuration
 	 *
-	 */		
-	function config() 
+	 */
+	function config()
 	{
 		$config = array();
 
@@ -54,7 +54,7 @@ class news_rss // plugin-folder + '_rss'
 
 			}
 		}
-		
+
 		return $config;
 	}
 
@@ -82,16 +82,16 @@ class news_rss // plugin-folder + '_rss'
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class IN (".USERCLASS_LIST.") AND NOT (n.news_class REGEXP ".$nobody_regexp.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") {$render} {$topic} ORDER BY n.news_datestamp DESC LIMIT 0,".$limit;
-		
+
 		$sql = e107::getDb();
-		
-		
+
+
 		$sql->gen($rssQuery);
 		$tmp = $sql->db_getList();
 
 		$rss = array();
 		$i=0;
-		
+
 		foreach($tmp as $value)
 		{
 			$rss[$i]['title']           = $value['news_title'];
@@ -112,9 +112,9 @@ class news_rss // plugin-folder + '_rss'
 
 			$i++;
 		}
-	
+
 		return $rss;
-	
+
 	}
 
 
@@ -157,7 +157,7 @@ class news_rss // plugin-folder + '_rss'
 
 
 
-	
+
 	function getMedia($row)
 	{
 		$tp = e107::getParser();
@@ -206,22 +206,22 @@ class news_rss // plugin-folder + '_rss'
 
 
 	}
-	
 
-	
-	
+
+
+
 	/**
 	 * Compile RSS Data
-	 * @param $parms array	url, limit, id 
+	 * @param $parms array	url, limit, id
 	 * @return array
 	 */
 	function dataChat($parms='')
 	{
 		$sql = e107::getDb();
-		
+
 		$rss = array();
 		$i=0;
-					
+
 		if($items = $sql->select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0,".$parms['limit']))
 		{
 
@@ -229,7 +229,7 @@ class news_rss // plugin-folder + '_rss'
 			{
 				$tmp						= explode(".", $row['cb_nick']);
 				$rss[$i]['author']			= $tmp[1];
-				$rss[$i]['author_email']	= ''; 
+				$rss[$i]['author_email']	= '';
 				$rss[$i]['link']			= "chatbox_menu/chat.php?".$row['cb_id'];
 				$rss[$i]['linkid']			= $row['cb_id'];
 				$rss[$i]['title']			= '';
@@ -243,19 +243,19 @@ class news_rss // plugin-folder + '_rss'
 				$i++;
 			}
 
-		}				
-					
+		}
+
 		return $rss;
 	}
-			
-		
-	
+
+
+
 }
 
 
 
 /*
- * 
+ *
  * if($topic_id && is_numeric($topic_id))
 				{
 					$topic = " AND news_category = ".intval($topic_id);
@@ -282,9 +282,9 @@ class news_rss // plugin-folder + '_rss'
 				{
 					$rss[$i]['title'] = $value['news_title'];
 				//	$rss[$i]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
-					
-					$rss[$i]['link'] = e107::getUrl()->create('news/view/item', $value, 'full=1'); 
-					
+
+					$rss[$i]['link'] = e107::getUrl()->create('news/view/item', $value, 'full=1');
+
 					if($value['news_summary'] && $pref['rss_summarydiz'])
 					{
 						$rss[$i]['description'] = $value['news_summary'];
@@ -310,12 +310,12 @@ class news_rss // plugin-folder + '_rss'
 
 					$i++;
 				}
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  * XXX Left here as an example of how to convert from v1.x to v2.x
- *  
+ *
 //##### create feed for admin, return array $eplug_rss_feed --------------------------------
 
 $feed['name']		= 'Chatbox';
@@ -357,4 +357,3 @@ if($items = $sql -> db_Select('chatbox', "*", "cb_blocked=0 ORDER BY cb_datestam
 $eplug_rss_data[] = $rss;
 $eplug_rss_feed[] = $feed;
 */
-
