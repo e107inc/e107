@@ -538,6 +538,7 @@ $(document).ready(function()
 	   		
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
+	
 			$(id).removeClass('e-hideme').show({
 				effect: "slide"
 			});
@@ -545,7 +546,8 @@ $(document).ready(function()
 			if(hash) {
 				window.location.hash = 'nav-' + hash;
 			  	if(form) {
-			    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash);
+
+			  //  	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash); // breaks menu-manager nav.
 			    }
 			    return false; 
 			}
