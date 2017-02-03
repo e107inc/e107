@@ -955,8 +955,8 @@ class e_media
 
 
 		$cache = e107::getCache();
-		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
 
+		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
 
 
 		if($data = $cache->retrieve($cachTag ,360,true,true))
@@ -965,10 +965,11 @@ class e_media
 		}
 		
 		
-		if($type === 'fa4') // todo use e107::library
+		if($type === 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
+			$path = e107::getLibrary()->getPath('fontawesome');
+			$subject = file_get_contents($path.'css/font-awesome.css');
 			$prefix = 'fa-';
 		}
 		elseif($type === 'fa3')
@@ -1009,9 +1010,9 @@ class e_media
 			return array();
 		}
 
-		$data = e107::serialize($icons);
+		$data = e107::serialize($icons,'json');
 
-		$cache->set_sys($cachTag ,$data,true);
+		$cache->set_sys($cachTag ,$data,true,true);
 
 		return $icons; 
 	

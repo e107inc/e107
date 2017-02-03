@@ -709,7 +709,7 @@ class e_library_manager
 		// Check whether the library exists.
 		if(!isset($library['library_path']))
 		{
-			$library['library_path'] = $this->getPath($library['machine_name']);
+			$library['library_path'] = $this->detectPath($library['machine_name']);
 		}
 
 		$libraryPath = e107::getParser()->replaceConstants($library['library_path']);
@@ -1034,7 +1034,7 @@ class e_library_manager
 	 * @return string
 	 *   The path to the specified library or FALSE if the library wasn't found.
 	 */
-	private function getPath($name)
+	private function detectPath($name)
 	{
 		static $libraries;
 
@@ -1095,6 +1095,24 @@ class e_library_manager
 		$lib = self::info($library);
 		return varset($lib[$property], false);
 	}
+
+
+	/**
+	 * Return full path to a library in different formats.
+	 * @param string $library
+	 * The library name eg. bootstrap
+	 *
+	 * @param null $mode
+	 * The mode: null | 'full' | 'abs'
+	 *
+	 * @return string
+	 */
+	public function getPath($library, $mode=null)
+	{
+		$path = self::getProperty($library, 'library_path').'/'. self::getProperty($library, 'path');
+		return e107::getParser()->replaceConstants($path,$mode).'/';
+	}
+
 
 	/**
 	 * Returns information about registered libraries.
