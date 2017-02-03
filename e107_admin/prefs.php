@@ -502,7 +502,7 @@ $text .= "<fieldset class='e-hideme' id='core-prefs-email'>
 						<td><label for='contact_visibility'>".PRFLAN_258."</label></td>
 						<td>
 							".$e_userclass->uc_dropdown('contact_visibility', varset( $pref['contact_visibility'],e_UC_PUBLIC), null, "tabindex='".$frm->getNext()."'")."
-							<div class='smalltext field-help'>Contact form will only be visible to this userclass group.</div>
+							<div class='smalltext field-help'>".PRFLAN_274."</div>
 						</td>
 					</tr>
 						<tr>
@@ -994,7 +994,7 @@ $text .= "
 						<td><label for='use-coppa'>".PRFLAN_45."</label></td>
 						<td>
 							".$frm->radio_switch('use_coppa', $pref['use_coppa'])."
-							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm'>".PRFLAN_94."</a></div>
+							<div class='field-help'>".PRFLAN_46." <a href='http://www.ftc.gov/privacy/coppafaqs.shtm' rel='external'>".PRFLAN_94."</a></div>
 						</td>
 					</tr>";
 
