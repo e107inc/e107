@@ -62,17 +62,17 @@ class e107forum
 		$tp = e107::getParser();
 		$this->userViewed = array();
 		$this->modArray = array();
-		
+
 		if($update === false)
 		{
 			$this->loadPermList();
 		}
-		
+
 		$this->prefs = e107::getPlugConfig('forum');
 		if(!$this->prefs->get('postspage')) {
 			$this->setDefaults();
 		}
-		
+
 		$this->getForumData();
 //		var_dump($this->prefs);
 
@@ -130,7 +130,7 @@ class e107forum
 		{
 			$ret = null;
 		}
-	
+
 		return $ret;
 
 	}
@@ -173,12 +173,12 @@ class e107forum
 		$tp = e107::getParser();
 		$baseDir = e_MEDIA.'plugins/forum/attachments/';
 		$baseDir .= ($user) ? "user_". $tp->leadingZeros($user, 6) : "anon";
-		
+
 		if($create == TRUE && !is_dir($baseDir))
 		{
-			mkdir($baseDir, 0755, TRUE); // recursively	
+			mkdir($baseDir, 0755, TRUE); // recursively
 		}
-		
+
 		$baseDir .= "/";
 
 		return $baseDir;
@@ -214,7 +214,7 @@ class e107forum
 
         $file 	= $this->getAttachmentPath($array['post_user']).varset($filename);
 
-        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist. 
+        // Check if file exists. Send file for download if it does, return 404 error code when file does not exist.
  		if(file_exists($file))
  		{
  		   e107::getFile()->send($file);
@@ -294,7 +294,7 @@ class e107forum
 			}
 
 			$ret['status'] = 'ok';
-			$ret['msg'] = LAN_FORUM_3047; 
+			$ret['msg'] = LAN_FORUM_3047;
 		}
 
 		e107::getSession()->reset();
@@ -338,7 +338,7 @@ class e107forum
 			}
 			else
 			{
-				$ret['msg'] = LAN_FORUM_8017;  
+				$ret['msg'] = LAN_FORUM_8017;
 				$ret['status'] = 'error';
 			}
 
@@ -354,7 +354,7 @@ class e107forum
 			else
 			{
 				$ret['html'] = IMAGE_untrack;
-				$ret['msg'] = LAN_FORUM_8018;  
+				$ret['msg'] = LAN_FORUM_8018;
 				$ret['status'] = 'error';
 			}
 
@@ -366,139 +366,139 @@ class e107forum
 		exit;
 
 	}
-	
-	
+
+
 	public function ajaxModerate()
 	{
-		
-		if(!$this->isModerator(USERID)) //FIXME check permissions per forum. 
+
+		if(!$this->isModerator(USERID)) //FIXME check permissions per forum.
 		{
-			exit; 	
+			exit;
 		}
-		
+
 			if(!vartrue($_POST['thread']) && !vartrue($_POST['post']))
 			{
-				exit;	
+				exit;
 			}
-			
+
 			$id = intval($_POST['thread']);
-			
+
 		//	print_r($_POST);
-			
-			$ret = array('hide' => false, 'msg' => '', 'status' => null); 
-			
-			switch ($_POST['action']) 
+
+			$ret = array('hide' => false, 'msg' => '', 'status' => null);
+
+			switch ($_POST['action'])
 			{
 				case 'delete':
 					if($this->threadDelete($id))
 					{
 						$ret['msg'] 	= ''.LAN_FORUM_8020.' #'.$id;
-						$ret['hide'] 	= true; 
-						$ret['status'] 	= 'ok';	
+						$ret['hide'] 	= true;
+						$ret['status'] 	= 'ok';
 					}
 					else
 					{
 						$ret['msg'] 	= LAN_FORUM_8019;
-						$ret['status'] 	= 'error';	
+						$ret['status'] 	= 'error';
 					}
 				break;
-				
+
 				case 'deletepost':
 					if(!$postId = vartrue($_POST['post']))
 					{
 						// echo "No Post";
 						// exit;
 						$ret['msg'] 	= LAN_FORUM_7008;
-						$ret['status'] 	= 'error';		
+						$ret['status'] 	= 'error';
 					}
-					
+
 					if($this->postDelete($postId))
 					{
 						$ret['msg'] 	= ''.LAN_FORUM_8021.' #'.$postId;
-						$ret['hide'] 	= true; 
-						$ret['status'] 	= 'ok';	
+						$ret['hide'] 	= true;
+						$ret['status'] 	= 'ok';
 					}
 					else
 					{
 						$ret['msg'] 	= "".LAN_FORUM_8021." #".$postId;
-						$ret['status'] 	= 'error';	
+						$ret['status'] 	= 'error';
 					}
 				break;
-				
+
 				case 'lock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] 	= LAN_FORUM_CLOSE; 
-						$ret['status'] 	= 'ok';	
+						$ret['msg'] 	= LAN_FORUM_CLOSE;
+						$ret['status'] 	= 'ok';
 					}
 					else
 					{
 						$ret['msg'] 	= LAN_FORUM_8023;
-						$ret['status'] 	= 'error';	
+						$ret['status'] 	= 'error';
 					}
 				break;
 
 				case 'unlock':
 					if(e107::getDb()->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = LAN_FORUM_OPEN; 
-						$ret['status'] 	= 'ok';	
+						$ret['msg'] = LAN_FORUM_OPEN;
+						$ret['status'] 	= 'ok';
 					}
 					else
 					{
 						$ret['msg'] = LAN_FORUM_8024;
-						$ret['status'] 	= 'error';	
+						$ret['status'] 	= 'error';
 					}
 				break;
 
 				case 'stick':
 					if(e107::getDb()->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = LAN_FORUM_STICK; 
-						$ret['status'] 	= 'ok';	
+						$ret['msg'] = LAN_FORUM_STICK;
+						$ret['status'] 	= 'ok';
 					}
 					else
 					{
 						$ret['msg'] = LAN_FORUM_8025;
-						$ret['status'] 	= 'error';	
+						$ret['status'] 	= 'error';
 					}
 				break;
 
 				case 'unstick':
 					if(e107::getDb()->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id))
 					{
-						$ret['msg'] = LAN_FORUM_UNSTICK; 
-						$ret['status'] 	= 'ok';		
+						$ret['msg'] = LAN_FORUM_UNSTICK;
+						$ret['status'] 	= 'ok';
 					}
 					else
 					{
 						$ret['msg'] = LAN_FORUM_8026;
-						$ret['status'] 	= 'error';	
+						$ret['status'] 	= 'error';
 					}
-				break;	
-				
-				
-				
-						
-				
+				break;
+
+
+
+
+
 				default:
-					$ret['status'] 	= 'error';	
+					$ret['status'] 	= 'error';
 					$ret['msg'] 	= LAN_FORUM_8027;
 				break;
 			}
-						
-			echo json_encode($ret);  
-			
+
+			echo json_encode($ret);
+
 			exit;
 	}
-				
-				
-			
-			
-		
-		
-		
-	
+
+
+
+
+
+
+
+
 
 	private function loadPermList()
 	{
@@ -602,8 +602,8 @@ class e107forum
 		// print_a($this->permList);
 	}
 
-	
-	
+
+
 	function checkPerm($forumId, $type='view')
 	{
 	//	print_a( $this->permList[$type]);
@@ -615,8 +615,8 @@ class e107forum
 		return (in_array($forumId, $this->permList[$type]));
 	}
 
-	
-	
+
+
 	function threadViewed($threadId)
 	{
 		$e107 = e107::getInstance();
@@ -630,8 +630,8 @@ class e107forum
 		return (is_array($this->userViewed) && in_array($threadId, $this->userViewed));
 	}
 
-	
-	
+
+
 	function getTrackedThreadList($id, $retType = 'array')
 	{
 		$e107 = e107::getInstance();
@@ -944,8 +944,8 @@ class e107forum
 	  	e107::getEvent()->trigger('user_forum_topic_updated', $triggerData);
 	}
 
-	
-	
+
+
 	function postUpdate($postId, $postInfo)
 	{
 		$info = array();
@@ -963,8 +963,8 @@ class e107forum
 	  	e107::getEvent()->trigger('user_forum_post_updated', $info);
 	}
 
-	
-	
+
+
 	function threadGet($id, $joinForum = true, $uid = USERID)
 	{
 		$id = (int)$id;
@@ -1103,7 +1103,7 @@ class e107forum
 		$threadId = $sql->retrieve('forum_post', 'post_thread', 'post_id = '.$postId);
 
 		if($rows = $sql->retrieve('forum_post', 'post_id', 'post_thread = '.$threadId, TRUE))
-		{	
+		{
 			$postids = array();
 
 			foreach($rows as $row)
@@ -1114,7 +1114,7 @@ class e107forum
 			if($postId == min($postids))
 			{
 				return true;
-			}			 
+			}
 		}
 		return false;
 	}
@@ -1142,7 +1142,7 @@ class e107forum
 		return $ret;
 	}
 
-	
+
 	function threadGetUserViewed($uid = USERID)
 	{
 		$e107 = e107::getInstance();
@@ -1164,11 +1164,11 @@ class e107forum
 	{
 		$e107 = e107::getInstance();
 		$sql  = e107::getDb();
-		$log  = e107::getAdminLog(); 
+		$log  = e107::getAdminLog();
 
 		$id = (int)$id;
 		if(!$id) { return; }
-		
+
 		// Moc: Is the code below used at all? When deleting a thread, threadDelete() loops through each post separately to delete attachments (type=post)
 		/*
 		if($type == 'thread')
@@ -1179,7 +1179,7 @@ class e107forum
 			}
 
 			$postList = array();
-			
+
 			while($row = $sql->Fetch())
 			{
 				$postList[] = $row['post_id'];
@@ -1191,7 +1191,7 @@ class e107forum
 			}
 		}
 		*/
-		
+
 		// if we are deleting just a single post
 		if($type == 'post')
 		{
@@ -1204,14 +1204,14 @@ class e107forum
 
 			$attachment_array = e107::unserialize($tmp['post_attachments']);
 	   		$files = $attachment_array['file'];
-	   		$imgs  = $attachment_array['img']; 
-	   		
-	   		// TODO see if files/images check can be written more efficiently 
-	   		// check if there are files to be deleted 
+	   		$imgs  = $attachment_array['img'];
+
+	   		// TODO see if files/images check can be written more efficiently
+	   		// check if there are files to be deleted
 	   		if(is_array($files))
 	   		{
 		   		// loop through each file and delete it
-		   		foreach ($files as $file) 
+		   		foreach ($files as $file)
 		   		{
 		   			$file = $this->getAttachmentPath($tmp['post_user']).$file;
 		   			@unlink($file);
@@ -1221,14 +1221,14 @@ class e107forum
 		   			{
 		   				$log->addWarning("Could not delete file: ".$file.". Please delete manually as this file is now no longer in use (orphaned).");
 		   			}
-		   		} 
+		   		}
 	   		}
-	   		
+
 	   		// check if there are images to be deleted
 	   		if(is_array($imgs))
 	   		{
 	   			// loop through each image and delete it
-		   		foreach ($imgs as $img) 
+		   		foreach ($imgs as $img)
 		   		{
 		   			$img = $this->getAttachmentPath($tmp['post_user']).$img;
 		   			@unlink($img);
@@ -1238,18 +1238,18 @@ class e107forum
 		   			{
 		   				$log->addWarning("Could not delete image: ".$img.". Please delete manually as this file is now no longer in use (orphaned).");
 		   			}
-		   		} 	
+		   		}
 	   		}
 
-	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above). 
+	   		// At this point we assume that all attachments have been deleted from the post. The log file may prove otherwise (see above).
 	   		$log->toFile('forum_delete_attachments', 'Forum plugin - Delete attachments', TRUE);
 
 	   		// Empty the post_attachments field for this post in the database (prevents loop when deleting entire thread)
 	   		$sql->update("forum_post", "post_attachments = NULL WHERE post_id = ".$id);
 
-	    		
-			/* Old code when attachments were still stored in plugin folder. 
-			Left for review but may be deleted in future.  
+
+			/* Old code when attachments were still stored in plugin folder.
+			Left for review but may be deleted in future.
 
 			foreach($attachments as $k => $a)
 			{
@@ -1390,8 +1390,8 @@ class e107forum
 		}
 	}
 
-	
-	
+
+
 	function forumMarkAsRead($forum_id)
 	{
 		$sql = e107::getDb();
@@ -1595,7 +1595,7 @@ class e107forum
 		return false;
 	}
 
-	
+
 	/**
 	* List of forums with unread threads
 	*
@@ -1934,7 +1934,7 @@ class e107forum
 	function threadGetNextPrev($which, $threadId, $forumId, $lastpost)
 	{
 		$sql = e107::getDb();
-		
+
 		$forumId = (int)$forumId;
 		$lastpost = (int)$lastpost;
 
@@ -2158,7 +2158,7 @@ class e107forum
 		$frm = e107::getForm();
 
 		$forumTitle = e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME);
-		
+
 //--		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread;
 //--		global $BREADCRUMB,$BACKLINK;  // Eventually we should deprecate BACKLINK
 		global $FORUM_CRUMB, $forumInfo, $threadInfo, $thread, $BREADCRUMB;
@@ -2244,16 +2244,16 @@ class e107forum
 		// return;
 
 		$breadcrumb = array();
-		
+
 		$breadcrumb[]	= array('text'=> $forumTitle	, 'url'=> e107::url('forum','index'));
-		
+
 		if($forumInfo['sub_parent'])
 		{
 				$forum_sub_parent = (substr($forumInfo['sub_parent'], 0, 1) == '*' ? substr($forumInfo['sub_parent'], 1) : $forumInfo['sub_parent']);
 		}
-		
+
 		$breadcrumb[]	= array('text'=>$tp->toHTML($forumInfo['parent_name'])		, 'url'=> e107::url('forum', 'index')."#".$frm->name2id($forumInfo['parent_name']));
-	
+
 		if($forumInfo['forum_sub'])
 		{
 			$breadcrumb[]	= array('text'=> ltrim($forumInfo['sub_parent'], '*')		, 'url'=> e107::url('forum','forum', array('forum_sef'=> $forumInfo['parent_sef'])));
@@ -2270,21 +2270,21 @@ class e107forum
 		{
 			$breadcrumb[]	= array('text'=> $forumInfo['thread_name'] , 'url'=>null);
 		}
-		
-		
+
+
 		if(deftrue('BOOTSTRAP'))
 		{
 			$BREADCRUMB =  $frm->breadcrumb($breadcrumb);
 		}
-		
-		
-		
+
+
+
 /*
 		$BACKLINK = $BREADCRUMB;
 
 		$templateVar->BREADCRUMB = $BREADCRUMB;
-	
-	
+
+
 		$templateVar->BACKLINK = $BACKLINK;
 		$templateVar->FORUM_CRUMB = $FORUM_CRUMB;
 */
@@ -2300,22 +2300,22 @@ class e107forum
 	 * Delete a Thread
 	 * @param $threadId integer
 	 * @param $updateForumLastPost boolean
-	 * @return true on success or false on error. 
+	 * @return true on success or false on error.
 	 */
 	function threadDelete($threadId, $updateForumLastpost = true)
 	{
-		$e107 = e107::getInstance();		
+		$e107 = e107::getInstance();
 		$sql = e107::getDb();
-		$status = false; 
-		
+		$status = false;
+
 		if ($threadInfo = $this->threadGet($threadId))
 		{
 			// delete poll if there is one
 			if($sql->select('polls', '*', 'poll_datestamp='.$threadId))
 			{
 				$sql->delete('polls', 'poll_datestamp='.$threadId);
-			} 
-	
+			}
+
 			// decrement user post counts
 			if ($postCount = $this->threadGetUserPostcount($threadId))
 			{
@@ -2349,10 +2349,10 @@ class e107forum
 
 			//Delete any thread tracking
 			if($sql->select('forum_track', '*', 'track_thread='.$threadId))
-			{	
+			{
 				$sql->delete('forum_track', 'track_thread='.$threadId);
 			}
-			
+
 			// update forum with correct thread/reply counts
 			$sql->update('forum', "forum_threads=GREATEST(forum_threads-1,0), forum_replies=GREATEST(forum_replies-{$threadInfo['thread_total_replies']},0) WHERE forum_id=".$threadInfo['thread_forum_id']);
 
@@ -2369,20 +2369,20 @@ class e107forum
 	 * Delete a Post
 	 * @param $postId integer
 	 * @param $updateCounts boolean
-	 * 
+	 *
 	 */
 	function postDelete($postId, $updateCounts = true)
 	{
 		$postId 	= (int)$postId;
-		$e107 		= e107::getInstance();		
+		$e107 		= e107::getInstance();
 		$sql 		= e107::getDb();
-		$deleted 	= false; 
-		
+		$deleted 	= false;
+
 		if(!$sql->select('forum_post', '*', 'post_id = '.$postId))
 		{
 			echo 'NOT FOUND!'; return;
 		}
-		
+
 
 		$row = $sql->fetch();
 
@@ -2471,7 +2471,7 @@ class e107forum
 * @desc checks for the existence of a forum icon image in the themes forum folder and if it is found
 *  returns the path and filename of that file, otherwise it returns the path and filename of the
 *  default forum icon image in e_IMAGES. The additional  args if specfied switch the process
-*  to the sister multi-language function 
+*  to the sister multi-language function
 *
 * @access public
 */

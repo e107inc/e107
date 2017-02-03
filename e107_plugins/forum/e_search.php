@@ -137,9 +137,9 @@ class forum_search extends e_search // include plugin-folder in the name.
 
 /*
 $search_info[] = array(
-	'sfile' => e_PLUGIN.'forum/search/search_parser.php', 
-	'qtype' => LAN_PLUGIN_FORUM_NAME, 
-	'refpage' => 'forum', 
-	'advanced' => e_PLUGIN.'forum/search/search_advanced.php', 
+	'sfile' => e_PLUGIN.'forum/search/search_parser.php',
+	'qtype' => LAN_PLUGIN_FORUM_NAME,
+	'refpage' => 'forum',
+	'advanced' => e_PLUGIN.'forum/search/search_advanced.php',
 	'id' => 'forum'
 );*/

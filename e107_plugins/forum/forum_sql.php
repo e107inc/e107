@@ -72,4 +72,3 @@ CREATE TABLE forum_track (
   KEY `track_userid` (`track_userid`),
   KEY `track_thread` (`track_thread`)
 ) ENGINE=MyISAM;
-

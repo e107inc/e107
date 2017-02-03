@@ -12,7 +12,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 //v2.x Standard for extending menu configuration within Menu Manager. (replacement for v1.x config.php)
-	
+
 class forum_menu
 {
 	function __construct()

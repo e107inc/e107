@@ -42,10 +42,10 @@ class forum_setup
 			$mes->add("Setting all user_forums to 0.", E_MESSAGE_SUCCESS);
 		}*/
 	}
-	
+
 	/*
-	 * Call During Upgrade Check. May be used to check for existance of tables etc and if not found return TRUE to call for an upgrade. 
-	 * 
+	 * Call During Upgrade Check. May be used to check for existance of tables etc and if not found return TRUE to call for an upgrade.
+	 *
 	 */
 	function upgrade_required()
 	{
@@ -57,7 +57,7 @@ class forum_setup
 
 		if(!e107::getDb()->field('forum_thread','thread_id'))
 		{
-			return true;	 // true to trigger an upgrade alert, and false to not. 	
+			return true;	 // true to trigger an upgrade alert, and false to not.
 		}
 
 		if(e107::getDb()->field('forum_thread', 'thread_sef'))
@@ -73,7 +73,7 @@ class forum_setup
 
 		return false;
 	}
-	
+
 
 	function upgrade_pre($var)
 	{
@@ -89,7 +89,7 @@ class forum_setup
 		{
 			e107::getRedirect()->go(e_PLUGIN_ABS.'forum/forum_update.php'); //Redirect upgrade to customized upgrade routine
 		}
-		
+
 		//header('Location: '.e_PLUGIN.'forum/forum_update.php');
 	}
 

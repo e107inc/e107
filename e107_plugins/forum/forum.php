@@ -874,8 +874,6 @@ function forum_track()
 
 	e107::getRender()->tablerender(LAN_FORUM_0030, $text, array('forum', 'forum_track'));
 
-
 }
-
 
 ?>

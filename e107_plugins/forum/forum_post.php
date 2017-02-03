@@ -1160,13 +1160,13 @@ class forum_post_handler
 
 				$postInfo['post_attachments'] = e107::serialize($newValues);
 			}
-			
+
 			//Allows directly overriding the method of adding files (or other data) as attachments
 			if($attachmentsPosted = $this->processAttachmentsPosted())
 			{
 				$postInfo['post_attachments'] = $attachmentsPosted;
-			}	
-			
+			}
+
 //		var_dump($uploadResult);
 
 			switch($this->action)
@@ -1460,13 +1460,13 @@ class forum_post_handler
 				$postVals['post_attachments'] = e107::serialize($newValues);
 				// $postVals['post_attachments'] = implode(',', $attachments);
 			}
-			
+
 			//Allows directly overriding the method of adding files (or other data) as attachments
 			if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
 			{
 				$postVals['post_attachments'] = $attachmentsPosted;
-			}	
-      
+			}
+
 			$postVals['post_edit_datestamp']    = time();
 			$postVals['post_edit_user']         = USERID;
 			$postVals['post_entry']             = $_POST['post'];
@@ -1532,12 +1532,12 @@ class forum_post_handler
 
 			$postVals['post_attachments'] = e107::serialize($newValues);
 		}
-		
+
 		//Allows directly overriding the method of adding files (or other data) as attachments
 		if($attachmentsPosted = $this->processAttachmentsPosted($this->data['post_attachments']))
 		{
 			$postVals['post_attachments'] = $attachmentsPosted;
-		}		
+		}
 
 		$this->forumObj->postUpdate($this->data['post_id'], $postVals);
 
@@ -1689,11 +1689,11 @@ class forum_post_handler
 		}
 		*/
 	}
-	
-	
+
+
 	//Allows directly overriding the method of adding files (or other data) as attachments
 	function processAttachmentsPosted($existingValues = '')
-	{		
+	{
 		if(isset($_POST['post_attachments_json']) && trim($_POST['post_attachments_json']))
 		{
 			$postedAttachments = json_decode($_POST['post_attachments_json'], true);

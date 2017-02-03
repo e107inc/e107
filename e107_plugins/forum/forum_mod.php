@@ -26,22 +26,22 @@ function forum_thread_moderate($p)
 			{
 				case 'lock':
 				$sql->update('forum_thread', 'thread_active=0 WHERE thread_id='.$id);
-				return LAN_FORUM_CLOSE; 
+				return LAN_FORUM_CLOSE;
 				break;
 
 				case 'unlock':
 				$sql->update('forum_thread', 'thread_active=1 WHERE thread_id='.$id);
-				return LAN_FORUM_OPEN; 
+				return LAN_FORUM_OPEN;
 				break;
 
 				case 'stick':
 				$sql->update('forum_thread', 'thread_sticky=1 WHERE thread_id='.$id);
-				return LAN_FORUM_STICK; 
+				return LAN_FORUM_STICK;
 				break;
 
 				case 'unstick':
 				$sql->update('forum_thread', 'thread_sticky=0 WHERE thread_id='.$id);
-				return LAN_FORUM_UNSTICK; 
+				return LAN_FORUM_UNSTICK;
 				break;
 
 				case 'deleteThread':
