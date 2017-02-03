@@ -1871,7 +1871,7 @@ class e107plugin
 				return;
 			}
 
-			$tableData = $dbv->getTables($contents);
+			$tableData = $dbv->getSqlFileTables($contents);
 
 			foreach($tableData['tables'] as $k=>$v)
 			{
