@@ -8,7 +8,7 @@
  *
  */
 if (!defined('e107_INIT')) { exit; }
-if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
+if (!defined("USER_WIDTH")) { define("USER_WIDTH", "width:95%"); }
 
 if (!isset($FORUM_MAIN_START))
 {
@@ -100,7 +100,7 @@ $FORUM_TRACK_END	= "<br />TRACK-END";
 // New in v2.x - requires a bootstrap theme be loaded.
 
 
-$FORUM_TEMPLATE['main']['start']			= "{FORUM_BREADCRUMB}
+$FORUM_TEMPLATE['main']['start'] = "{FORUM_BREADCRUMB}
 											<div class=''>
 
 												<div class='form-group right'>
@@ -120,7 +120,7 @@ $FORUM_TEMPLATE['main']['start']			= "{FORUM_BREADCRUMB}
 											<th colspan='5'>{FORUMTITLE}</th>
 											</tr>";
 
-$FORUM_TEMPLATE['main']['parent']			= 	"<tr class='forum-parent'>
+$FORUM_TEMPLATE['main']['parent'] = "<tr class='forum-parent'>
 											<th colspan='2'>{PARENTNAME} {PARENTSTATUS}</th>
 											<th class='hidden-xs text-center'>".LAN_FORUM_0003."</th>
 											<th class='text-center'>".LAN_FORUM_0002."</th>
@@ -129,7 +129,7 @@ $FORUM_TEMPLATE['main']['parent']			= 	"<tr class='forum-parent'>
 
 
 
-$FORUM_TEMPLATE['main']['forum']			= 	"<tr>
+$FORUM_TEMPLATE['main']['forum'] = "<tr>
 											<td>{NEWFLAG}</td>
 											<td>{FORUMNAME}<br /><small>{FORUMDESCRIPTION}</small>{FORUMSUBFORUMS}</td>
 											<td class='hidden-xs text-center'>{REPLIESX}</td>
@@ -139,12 +139,12 @@ $FORUM_TEMPLATE['main']['forum']			= 	"<tr>
 
 //{LASTPOST:type=username} + {LASTPOST:type=datelink} can also be replaced by the legacy shortcodes {LASTPOST} or {LASTPOSTUSER} + {LASTPOSTDATE}
 
-$FORUM_TEMPLATE['main']['end']				= "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
+$FORUM_TEMPLATE['main']['end'] = "</table><div class='forum-footer center'><small>{USERINFOX}</small></div></div>";
 
 // $FORUM_WRAPPER['main']['forum']['USERINFOX'] = "{FORUM_BREADCRUMB}(html before){---}(html after)";
 
 // Tracking
-$FORUM_TEMPLATE['track']['start']       = "{FORUM_BREADCRUMB}<div id='forum-track'>
+$FORUM_TEMPLATE['track']['start'] = "{FORUM_BREADCRUMB}<div id='forum-track'>
 											<table class='table table-striped table-bordered table-hover'>
 											<colgroup>
 											<col style='width:5%' />
@@ -162,7 +162,7 @@ $FORUM_TEMPLATE['track']['start']       = "{FORUM_BREADCRUMB}<div id='forum-trac
 											</thead>
 											";
 
-$FORUM_TEMPLATE['track']['item']        = "<tr>
+$FORUM_TEMPLATE['track']['item'] = "<tr>
 											<td class='text-center'>{NEWIMAGE}</td>
 											<td>{TRACKPOSTNAME}</td>
 											<td class='hidden-xs text-center'><small>{LASTPOSTUSER} {LASTPOSTDATE}</small></td>
@@ -170,7 +170,7 @@ $FORUM_TEMPLATE['track']['item']        = "<tr>
 											</tr>";
 
 
-$FORUM_TEMPLATE['track']['end']         = "</table>\n</div>";
+$FORUM_TEMPLATE['track']['end'] = "</table>\n</div>";
 
 
 
