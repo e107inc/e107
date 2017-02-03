@@ -477,10 +477,6 @@ class e107forum
 					}
 				break;
 
-
-
-
-
 				default:
 					$ret['status'] 	= 'error';
 					$ret['msg'] 	= LAN_FORUM_8027;
@@ -491,14 +487,6 @@ class e107forum
 
 			exit;
 	}
-
-
-
-
-
-
-
-
 
 	private function loadPermList()
 	{
@@ -521,8 +509,9 @@ class e107forum
 		unset($tmp);
 	}
 
-
-
+	/**
+	 * @param string $what
+	 */
 	public function getForumPermList($what = null)
 	{
 		if(null !== $what) return (isset($this->permList[$what]) ? $this->permList[$what] : null);
@@ -669,9 +658,6 @@ class e107forum
 		return false;
 
 	}
-
-
-
 
 	/*
 	 * Add a post to the db.
@@ -2514,8 +2500,5 @@ function img_path($filename)
 
 	return $image;
 }
-
-
-
 
 ?>
