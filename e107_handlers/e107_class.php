@@ -1393,15 +1393,21 @@ class e107
 	 */
 	public static function getTheme($themedir='front', $clearCache=false)
 	{
-		if($themedir === 'front')
+
+		if(!defined('E107_INSTALL'))
 		{
-			$themedir= self::getPref('sitetheme');
+
+			if($themedir === 'front')
+			{
+				$themedir= self::getPref('sitetheme');
+			}
+
+			if($themedir === 'admin')
+			{
+				$themedir = self::getPref('admintheme');
+			}
 		}
 
-		if($themedir === 'admin')
-		{
-			$themedir = self::getPref('admintheme');
-		}
 
 		return self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
 	}

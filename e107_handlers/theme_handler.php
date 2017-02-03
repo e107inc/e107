@@ -448,7 +448,16 @@ class e_theme
 			{
 				if(strstr($line, "CUSTOMPAGES"))
 				{
-					eval(str_replace("$", "\$", $line)); // detect arrays also.
+					try
+					{
+					    @eval(str_replace("$", "\$", $line)); // detect arrays also.
+					}
+					catch (ParseError $e)
+					{
+
+
+					}
+
 				}
 			}
 
