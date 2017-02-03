@@ -1760,7 +1760,7 @@ if($this->pdo == true)
 
 	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
 	//	$tm = new themeHandler;
-		$xmlArray = e107::getTheme()->parse_theme_xml($theme_folder);
+		$xmlArray = e107::getSingleton('e_theme')->parse_theme_xml($theme_folder);
 
 		return (is_array($xmlArray)) ? $xmlArray : FALSE;
 	}
