@@ -476,7 +476,6 @@ class forum_shortcodes extends e_shortcode
 		return $this->lastpostdata('post');
 */
 
-
 		if (empty($this->var['forum_lastpost_info']))
 		{
 			return false;
