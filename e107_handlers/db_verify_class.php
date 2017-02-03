@@ -21,9 +21,10 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
 class db_verify
 {
-	var $backUrl = "";
-	var $tables = array();
-	var $sqlTables = array();
+	var $backUrl       = "";
+	var $sqlFileTables = array();
+	private $sqlDatabaseTables   = array();
+
 	var $sqlLanguageTables = array();
 	var $results = array();
 	var $indices = array(); // array(0) - Issue?
@@ -62,14 +63,24 @@ class db_verify
 
 		if(!deftrue('e_DEBUG') && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
 		{
-			$this->tables = e107::unserialize($tmp);
-			return $this;
+			$this->sqlFileTables = e107::unserialize($tmp);
+
+		}
+		else
+		{
+			$this->sqlFileTables = $this->load();
+			$data = e107::serialize($this->sqlFileTables,'json');
+			e107::getCache()->set(self::cachetag,$data, true, true, true);
 		}
 
-		$this->tables = $this->load();
-		$data = e107::serialize($this->tables,'json');
-		e107::getCache()->set(self::cachetag,$data, true, true, true);
 
+
+
+		$this->sqlLanguageTables = $this->getSqlLanguages();
+
+	//	$this->loadCreateTableData();
+
+		return $this;
 		
 	}
 
@@ -81,9 +92,9 @@ class db_verify
 		$ret = array();
 
 		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
-		$ret['core'] = $this->getTables($core_data);
+		$ret['core'] = $this->getSqlFileTables($core_data);
 
-		$this->sqlLanguageTables = $this->getSqlLanguages();
+
 		if(!empty($pref['e_sql_list']))
 		{
 			foreach($pref['e_sql_list'] as $path => $file)
@@ -94,7 +105,7 @@ class db_verify
 					$id = str_replace('_sql','',$file);
 					$data = file_get_contents($filename);
 					$this->currentTable = $id;
-					$ret[$id] = $this->getTables($data);
+					$ret[$id] = $this->getSqlFileTables($data);
 			      	unset($data);
 				}
 				else
@@ -106,6 +117,15 @@ class db_verify
 		}
 
 		return $ret;
+
+	}
+
+
+
+	private function loadCreateTableData()
+	{
+
+
 
 	}
 	
@@ -191,11 +211,11 @@ class db_verify
 		{
 			foreach($exclude as $val)
 			{
-				unset($this->tables[$val]);
+				unset($this->sqlFileTables[$val]);
 			}
 		}
 		
-		$dtables = array_keys($this->tables);
+		$dtables = array_keys($this->sqlFileTables);
 
 		foreach($dtables as $tb)
 		{
@@ -224,21 +244,21 @@ class db_verify
 
 		$this->currentTable = $selection;
 
-		if(!isset($this->tables[$selection])) // doesn't have an SQL file.
+		if(!isset($this->sqlFileTables[$selection])) // doesn't have an SQL file.
 		{
 		// e107::getMessage()->addDebug("No SQL File for ".$selection);
 			return false;
 		}
 
 
-		if(empty($this->tables[$selection]['tables']))
+		if(empty($this->sqlFileTables[$selection]['tables']))
 		{
 			//$this->internalError = true;
 			e107::getMessage()->addDebug("Couldn't read table data for ".$selection);
 			return false;
 		}
-	
-		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
+
+		foreach($this->sqlFileTables[$selection]['tables'] as $key=>$tbl)
 		{
 			//$this->errors[$tbl]['_status'] = 'ok'; // default table status
 					
@@ -262,14 +282,15 @@ class db_verify
 		//	print_a($rawSqlData);
 					//	$this->currentTable = $tbl;v
 
-			$sqlDataArr     = $this->getTables($rawSqlData);
+			$sqlDataArr     = $this->getSqlFileTables($rawSqlData);
+
 		//	echo "<h4>PARSED</h4>";
 		//	print_a($sqlDataArr);
 
-			$fileFieldData	= $this->getFields($this->tables[$selection]['data'][$key]);
+			$fileFieldData	= $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
 			$sqlFieldData	= $this->getFields($sqlDataArr['data'][0]);	
 			
-			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
+			$fileIndexData	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
@@ -280,7 +301,7 @@ class db_verify
 			$debugB .= print_r($sqlIndexData,TRUE);
 		*/
 		
-			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
+			$debugA = $this->sqlFileTables[$selection]['data'][$key];	// Extracted Raw Field Text
 		//	$debugB = $rawSqlData;
 			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
@@ -693,7 +714,7 @@ class db_verify
 			foreach($file as $table=>$val)
 			{
 				
-				$id = $this->getId($this->tables[$j]['tables'],$table); 
+				$id = $this->getId($this->sqlFileTables[$j]['tables'],$table);
 						
 				foreach($val as $field=>$fixes)
 				{
@@ -701,13 +722,13 @@ class db_verify
 					{				
 						if(substr($mode,0,5)== 'index')
 						{
-							$fdata = $this->getIndex($this->tables[$j]['data'][$id]);
+							$fdata = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
 							$newval = $this->toMysql($fdata[$field],'index');	
 						}
 						else
 						{
 							
-							$fdata = $this->getFields($this->tables[$j]['data'][$id]);											
+							$fdata = $this->getFields($this->sqlFileTables[$j]['data'][$id]);
 							$newval = $this->toMysql($fdata[$field]);	
 						}
 						
@@ -736,7 +757,7 @@ class db_verify
 							break;
 							
 							case 'create':
-								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->tables[$j]['data'][$id].") ENGINE=MyISAM;";
+								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->sqlFileTables[$j]['data'][$id].") ENGINE=MyISAM;";
 							break;
 						}
 						
@@ -771,7 +792,7 @@ class db_verify
 	
 	
 	
-	function getTables($sql_data)
+	function getSqlFileTables($sql_data)
 	{
 		if(!$sql_data)
 		{
@@ -944,7 +965,10 @@ class db_verify
 			$prefix .= "lan_".$language."_";
 			// $mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
 		}
-		
+
+
+
+
 		$sql = e107::getDb();
 
 		if(!$sql->isTable($tbl))
@@ -965,6 +989,7 @@ class db_verify
 		//	$row = mysql_fetch_row($z);
 			$row = $sql->fetch('num');
 			//return $row[1];
+
 			return stripslashes($row[1]).';'; // backticks needed. 
 			// return str_replace("`", "", stripslashes($row[1])).';';
 		}
@@ -1018,7 +1043,7 @@ class db_verify
 					<tbody>
 		";
 	
-		foreach(array_keys($this->tables) as $t=>$x)
+		foreach(array_keys($this->sqlFileTables) as $t=>$x)
 		{
 			$text .= "
 				<tr>

@@ -2289,7 +2289,7 @@ class pluginBuilder
 			if(file_exists($sqlFile))
 			{		
 				$data = file_get_contents($sqlFile);
-				$ret =  $dv->getTables($data);
+				$ret =  $dv->getSqlFileTables($data);
 			}
 			else
 			{
