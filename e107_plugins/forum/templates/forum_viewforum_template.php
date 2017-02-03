@@ -12,7 +12,6 @@ if (!defined('e107_INIT')) { exit; }
 if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
 
 
-
 if (empty($FORUM_VIEW_START))
 {
 $FORUM_VIEW_START = "
@@ -188,7 +187,7 @@ if (empty($FORUM_VIEW_END))
 	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a>
 	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 	//	</div>
-	//	
+	//
 		$FORUM_VIEW_END .= "
 		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
 		</div>
@@ -274,7 +273,7 @@ $FORUM_CRUMB['sitename']['sep'] = " :: ";
 $FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
-$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>"; 
+$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>";
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
 $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
@@ -284,7 +283,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 
 
-// New in v2.x - requires a bootstrap theme be loaded.  
+// New in v2.x - requires a bootstrap theme be loaded.
 
 //TODO Find a good place to put a {SEARCH} dropdown.
 
@@ -302,7 +301,7 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 													<col class='hidden-xs' style='width:8%' />
 													<col class='hidden-xs' style='width:20%' />
 													</colgroup>
-												
+
 													{SUBFORUMS}";
 
 
@@ -342,7 +341,7 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 												</tr>\n";
 
 
-$FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
+$FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";
 
 /* Examples top divider with shortcodes - working
 $FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006." {FORUMTITLE}</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
@@ -396,8 +395,3 @@ $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 
 
 // $FORUM_VIEWFORUM_WRAPPER['THREADNAME']          = "<span class='label label-info'>{---}</span>";
-
-
-
-
-

@@ -297,7 +297,7 @@ $FORUM_CRUMB['sitename']['sep'] = " :: ";
 $FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
-$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>"; 
+$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>";
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
 $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
@@ -308,7 +308,7 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 
 // {MODERATORS} {THREADSTATUS}
 
-// New in v2.x - requires a bootstrap theme be loaded.  
+// New in v2.x - requires a bootstrap theme be loaded.
 
 $FORUM_VIEWTOPIC_TEMPLATE['caption'] 	= "";
 $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
@@ -320,10 +320,10 @@ $FORUM_VIEWTOPIC_TEMPLATE['start'] 	= "
 	<div class='row row-fluid'>
 		<div class='col-md-9 span9 pull-left'><h3>{THREADNAME}</h3></div><div class='col-md-3 span3 pull-right right text-right' style='padding-top:10px'>{TRACK} {BUTTONSX}</div>
 	</div>
-	
+
 	{MESSAGE}
-	
-											
+
+
 <ul id='forum-viewtopic' class='unstyled list-unstyled'>
 
 ";
@@ -342,7 +342,7 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 												<div class='col-xs-4 col-sm-3 text-muted span4 text-muted muted'><small>{THREADDATESTAMP=relative}</small></div>
 												<div class='col-xs-5 text-muted span5 text-muted muted right text-right'><small>{LASTEDIT}{LASTEDITBY=link}</small></div>
 												<div class='col-xs-3 col-sm-2 span1 right text-right'>{POSTOPTIONS}</div>
-										
+
 										</div>
 
 										<div class='row row-fluid'  >
@@ -367,8 +367,8 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 												{ATTACHMENTS: modal=1}
 											</div>
 										</div>
-										
-										
+
+
 										<div class='row row-fluid'>
 											<div class='col-xs-2 span2 finfobar'>
 												&nbsp;
@@ -376,12 +376,12 @@ $FORUM_VIEWTOPIC_TEMPLATE['thread'] = "
 											<div class='col-xs-9 span9  finfobar' >
 												<small> {SIGNATURE=clean}</small>
 											</div>
-											
+
 											<div class='col-xs-3 span3'>
 											</div>
 										</div>
-										
-										
+
+
 									</li>
 
 									";
@@ -474,10 +474,9 @@ $FORUM_VIEWTOPIC_TEMPLATE['deleted'] = "
 
 
 
-	
+
 $FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'] = "<div class='forum-viewtopic-attachments'>{---}</div>";
 $FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'] = "<span class='forum-viewtopic-customtitle'><small>{---}</small></span>";
 
 $FORUM_VIEWTOPIC_WRAPPER['replies']['ATTACHMENTS'] = $FORUM_VIEWTOPIC_WRAPPER['thread']['ATTACHMENTS'];
 $FORUM_VIEWTOPIC_WRAPPER['replies']['CUSTOMTITLE'] = $FORUM_VIEWTOPIC_WRAPPER['thread']['CUSTOMTITLE'];
-

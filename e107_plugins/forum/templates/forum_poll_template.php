@@ -20,20 +20,20 @@ $FORUM_POLL_TEMPLATE['form']['start'] = "
 	<div class='well col-md-8 span6 forum-poll-form'>
 		<div class='form-group control-group'>
 			Poll: {QUESTION}
-			
+
 ";
 
 $FORUM_POLL_TEMPLATE['form']['item'] = "
 			<div class='radio'>
-				{ANSWER} 
+				{ANSWER}
 			</div>";
 
 $FORUM_POLL_TEMPLATE['form']['end'] = "
-			
+
 		</div>
 		<div class='control-group'>
 			 <div class='controls text-center'>
-				{SUBMITBUTTON}	
+				{SUBMITBUTTON}
 			</div>
 		</div>
 	</div>
