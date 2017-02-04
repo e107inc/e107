@@ -1467,7 +1467,7 @@ class forumUpgrade
 		$thread['thread_views'] = $post['thread_views'];
 		$thread['thread_active'] = $post['thread_active'];
 		$thread['thread_sticky'] = $post['thread_s'];
-		//	$thread['thread_lastuser']		= $post['thread_lastuser'];
+		$thread['thread_lastuser']		= $this->getLastUser($post['thread_lastuser']);
 		$thread['thread_total_replies'] = $post['thread_total_replies'];
 
 		$userInfo = $this -> getUserInfo($post['thread_user']);
@@ -1490,6 +1490,23 @@ class forumUpgrade
 		$result = e107::getDb() -> insert('forum_thread', $thread);
 		return $result;
 	}
+
+
+	private function getLastUser($string)
+	{
+
+		if(empty($string))
+		{
+			return 0;
+		}
+
+		list($num,$name) = explode(".",$string,2);
+
+		return intval($num);
+
+	}
+
+
 
 	function addPost(&$post)
 	{
