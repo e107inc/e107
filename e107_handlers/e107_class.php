@@ -199,6 +199,7 @@ class e107
 		'e_parse'                        => '{e_HANDLER}e_parse_class.php',
 		'e_parser'                       => '{e_HANDLER}e_parse_class.php',
 		'e_parse_shortcode'              => '{e_HANDLER}shortcode_handler.php',
+		'e_plugin'                       => '{e_HANDLER}plugin_class.php',
 		'e_ranks'                        => '{e_HANDLER}e_ranks_class.php',
 		'e_shortcode'                    => '{e_HANDLER}shortcode_handler.php',
 		'e_system_user'                  => '{e_HANDLER}user_model.php',
@@ -1752,6 +1753,18 @@ class e107
 	{
 		return self::getSingleton('e107plugin', true);
 	}
+
+
+
+	/**
+	 * Retrieve plugin class singleton object
+	 * @return e_plugin
+	 */
+	public static function getPlug()
+	{
+		return self::getSingleton('e_plugin', true);
+	}
+
 	/**
 	 * Retrieve online users handler singleton object
 	 * @return e_online

@@ -254,7 +254,9 @@ class pluginManager{
 	{
         global $user_pref,$admin_log;
 
-        $tmp = explode('.', e_QUERY);
+		$qry = str_replace('XDEBUG_PROFILE', '', e_QUERY);
+
+        $tmp = explode('.',$qry);
 
 	  	$this -> action     = ($tmp[0]) ? $tmp[0] : "installed";
 		$this -> id         = !empty($tmp[1]) ? intval($tmp[1]) : "";
@@ -1261,10 +1263,20 @@ class pluginManager{
 				$plug_vars = false;
 				$plugin_config_icon = "";
 
-				if($plugin->parse_plugin($plug['plugin_path']))
+
+
+				if(deftrue('e_DEBUG_PLUGMANAGER'))
 				{
-					$plug_vars = $plugin->plug_vars;
+					$plug_vars = e107::getPlug()->getMeta($plug['plugin_path']);
 				}
+				else
+				{
+					if($plugin->parse_plugin($plug['plugin_path']))
+					{
+						$plug_vars = $plugin->plug_vars;
+					}
+				}
+
 
 				if(varset($plug['plugin_category']) == "menu") // Hide "Menu Only" plugins.
 				{

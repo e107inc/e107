@@ -1517,9 +1517,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	
 	/**
-	 * New Admin Navigation Routine. 
+	 * Old Admin Navigation Routine.
 	 */
-	function sc_admin_navigation($parm)
+	function sc_admin_navigationOld($parm=null)
 	{
 	
 		if (!ADMIN) return '';
@@ -1722,6 +1722,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				}
 			}
 
+
+
 		 	$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
 
 		}
@@ -1785,6 +1787,209 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
+
+
+	/**
+	 * New Admin Navigation Routine. v2.1.5
+	 */
+	function sc_admin_navigation($parm=null)
+	{
+
+		if (!ADMIN) return '';
+	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
+
+		$pref = e107::getPref();
+
+		$admin_cat 				= e107::getNav()->adminCats();
+		$array_functions 		= e107::getNav()->adminLinks('legacy');
+		$array_sub_functions	= e107::getNav()->adminLinks('sub');
+		$array_plugins          = e107::getNav()->adminLinks('plugin2');
+
+
+		$tp 	= e107::getParser();
+		$e107	= e107::getInstance();
+		$sql	= e107::getDb('sqlp');
+
+		parse_str($parm, $parms);
+		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
+		global $$tmpl;
+
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
+		{
+			$template = $$tmpl;
+
+			$template['start'] = $template['start_other'];
+
+			$menu_vars = $this->getOtherNav($parm);
+			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
+		}
+
+
+
+		// MAIN LINK
+		if($parm != 'no-main')
+		{
+			$menu_vars = array();
+			$menu_vars['adminhome']['text'] = ADLAN_151;
+			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
+			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['adminhome']['image_src'] = ADLAN_151;
+			$menu_vars['adminhome']['perm'] = '';
+		}
+
+		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
+
+  		foreach($admin_cat['id'] as $i => $cat)
+		{
+
+			$id = $admin_cat['id'][$i];
+			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
+			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
+			$menu_vars[$id]['link'] = '#';
+			$menu_vars[$id]['image'] = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
+			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
+			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
+			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
+			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
+			//$menu_vars[$id]['perm'] = '';
+			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
+
+		}
+
+
+		//CORE SUBLINKS
+		$active = '';
+		foreach ($array_functions as $key => $subitem)
+		{
+			if(!empty($subitem[3]) && !getperms($subitem[3]))
+			{
+				continue;
+			}
+
+				$catid = $admin_cat['id'][$subitem[4]];
+				$tmp = array();
+				$tmp['text'] = $subitem[1];
+				$tmp['description'] = $subitem[2];
+				$tmp['link'] = $subitem[0];
+				$tmp['image'] = $subitem[5];
+				$tmp['image_large'] = $subitem[6];
+				$tmp['image_src'] = '';
+				$tmp['image_large_src'] = '';
+				$tmp['perm'] = $subitem[3];
+				$tmp['sub_class'] = '';
+				$tmp['sort'] = false;
+
+				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				{
+					$active = $catid;
+				}
+
+
+
+			//	e107::getDebug()->log($catid);
+
+				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
+				{
+					$tmp['sub_class'] = 'sub';
+					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)
+					{
+						$subid = $key.'_'.$subkey;
+						$tmp['sub'][$subid]['text'] = $subsubitem[1];
+						$tmp['sub'][$subid]['description'] = $subsubitem[2];
+						$tmp['sub'][$subid]['link'] = $subsubitem[0];
+						$tmp['sub'][$subid]['image'] = $subsubitem[5];
+						$tmp['sub'][$subid]['image_large'] = $subsubitem[6];
+						$tmp['sub'][$subid]['image_src'] = '';
+						$tmp['sub'][$subid]['image_large_src'] = '';
+						$tmp['sub'][$subid]['perm'] = $subsubitem[3];
+					}
+				}
+
+				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
+		}
+
+
+	//PLUGINS ----------------------------------------------------------
+
+		$tmp = array();
+		foreach($array_plugins as $key=>$p)
+		{
+			if(!getperms($p['perm']))
+			{
+				continue;
+			}
+
+			$tmp[$key]= $p;
+
+		}
+
+
+		$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
+
+	// --------------------------------------------------------------------
+
+
+		if(empty($pref['admin_separate_plugins']))
+		{
+        	// Convert Plugin Categories to Core Categories.
+			$convert = array(
+				'settings' 	=> array(1,'setMenu'),
+				'users'		=> array(2,'userMenu'),
+				'content'	=> array(3,'contMenu'),
+				'tools'		=> array(4,'toolMenu'),
+				'manage'	=> array(6,'managMenu'),
+				'misc'		=> array(7,'miscMenu'),
+				'help'		=> array(20,'helpMenu')
+			);
+
+
+             foreach($tmp as $pg)
+			 {
+			    if(!empty($pg['category']))
+			    {
+			 	    $id = $convert[$pg['category']][1];
+             	    $menu_vars[$id]['sub'][] = $pg;
+
+				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+					{
+						$active = $id;
+					}
+
+
+			    }
+			 }
+
+			// Clean up - remove empty main sections
+			foreach ($menu_vars as $_m => $_d)
+			{
+
+				if(!isset($_d['sub']) || empty($_d['sub']))
+				{
+					unset($menu_vars[$_m]);
+				}
+			}
+
+			unset($menu_vars['plugMenu']);
+		}
+
+		// ------------------------------------------------------------------
+
+	//	 print_a($menu_vars);
+
+
+
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, false, false);
+
+	}
+
+
+
+
+
+
+
+
+
 
 
 	function getOtherNav($type)
