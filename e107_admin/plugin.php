@@ -1247,6 +1247,8 @@ class pluginManager{
 
 			$text = "";
 
+			$plg = e107::getPlug();
+
 			foreach($pluginList as $plug)
 			{
 				e107::loadLanFiles($plug['plugin_path'],'admin');
@@ -1264,10 +1266,10 @@ class pluginManager{
 				$plugin_config_icon = "";
 
 
-
 				if(deftrue('e_DEBUG_PLUGMANAGER'))
 				{
-					$plug_vars = e107::getPlug()->getMeta($plug['plugin_path']);
+					$plg->load($plug['plugin_path']);
+					$plug_vars = $plg->getMeta();
 				}
 				else
 				{
