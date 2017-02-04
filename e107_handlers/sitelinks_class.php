@@ -1003,11 +1003,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				e107::loadLanFiles($path, 'admin');
 			}
 
+			$plug->load($path);
+
 
 			$key = ($linkStyle === 'standard') ? "plugnav-".$path : 'p-'.$path;
 
-			$url = $plug->getAdminUrl($path);
-			$cat = $plug->getCategory($path);
+			$url = $plug->getAdminUrl();
+			$cat = $plug->getCategory();
 
 			if(empty($url) || $cat === 'menu')
 			{
@@ -1017,25 +1019,25 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			// Keys compatible with legacy and new admin layouts.
 			$arr[$key] = array(
 
-				'text'          => $plug->getName($path),
-				'description'   => $plug->getDescription($path),
+				'text'          => $plug->getName(),
+				'description'   => $plug->getDescription(),
 				'link'          => $url,
-				'image'         => $plug->getIcon($path,16),
-				'image_large'   => $plug->getIcon($path,32),
+				'image'         => $plug->getIcon(16),
+				'image_large'   => $plug->getIcon(32),
 				'category'      => $cat,
-				'perm'           => "P".$plug->getId($path),
+				'perm'           => "P".$plug->getId(),
 				'sort'          => 2,
 				'sub_class'     => null,
 
 
 				// Legacy Keys.
 				'key'       => $key,
-				'title'     => $plug->getName($path),
-				'caption'   => $plug->getAdminCaption($path),
-				'perms'     => "P".$plug->getId($path),
-				'icon'      => $plug->getIcon($path,16),
-				'icon_32'   => $plug->getIcon($path,32),
-				'cat'       => $this->plugCatToCoreCat($plug->getCategory($path))
+				'title'     => $plug->getName(),
+				'caption'   => $plug->getAdminCaption(),
+				'perms'     => "P".$plug->getId(),
+				'icon'      => $plug->getIcon(16),
+				'icon_32'   => $plug->getIcon(32),
+				'cat'       => $this->plugCatToCoreCat($plug->getCategory())
 
 			);
 
