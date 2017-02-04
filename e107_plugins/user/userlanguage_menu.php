@@ -65,4 +65,3 @@ else
 }
 
 $ns->tablerender(UTHEME_MENU_L2, $text, 'user_lan');
-

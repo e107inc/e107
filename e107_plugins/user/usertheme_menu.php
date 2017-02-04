@@ -21,11 +21,11 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		$themeList = explode(',',$pref['allowed_themes']);
 	}
 	$handle = opendir(e_THEME);
-	while ($file = readdir($handle)) 
+	while ($file = readdir($handle))
 	{
-		if ($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS") 
+		if ($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS")
 		{
-			if (is_readable(e_THEME.$file."/theme.php") /*&& is_readable(e_THEME.$file."/style.css")*/ && ($allThemes || in_Array($file, $themeList))) 
+			if (is_readable(e_THEME.$file."/theme.php") /*&& is_readable(e_THEME.$file."/style.css")*/ && ($allThemes || in_Array($file, $themeList)))
 			{
 				$themelist[] = $file;
 				$themecount[$file] = 0;
@@ -40,26 +40,26 @@ if ((USER == TRUE) && check_class(varset($pref['allow_theme_select'],FALSE)))
 		$count = 0;
 
 		$totalct = $sql->select("user", "user_prefs", "user_prefs REGEXP('sitetheme') ");
- 
-		while ($row = $sql->fetch()) 
+
+		while ($row = $sql->fetch())
 		{
             $up = (substr($row['user_prefs'],0,5) == "array") ? e107::unserialize($row['user_prefs']) : unserialize($row['user_prefs']);
 
 			if (isset($themecount[$up['sitetheme']])) { $themecount[$up['sitetheme']]++; }
 		}
- 
+
 		$defaultusers = $sql->count("user") - $totalct;
 		$themecount[$defaulttheme] += $defaultusers;
-	 
+
 		$text = "<form method='post' action='".e_SELF."'>
 			<div style='text-align:center'>
 			<select name='sitetheme' class='tbox' style='width: 95%;'>";
 		$counter = 0;
 
-		while (isset($themelist[$counter]) && $themelist[$counter]) 
+		while (isset($themelist[$counter]) && $themelist[$counter])
 		{
 			$text .= "<option value='".$themelist[$counter]."' ";
-			if (($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme)) 
+			if (($themelist[$counter] == USERTHEME) || (USERTHEME == FALSE && $themelist[$counter] == $defaulttheme))
 			{
 				$text .= "selected='selected'";
 			}
