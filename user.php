@@ -108,7 +108,7 @@ $self_page =($qs[0] == 'id' && intval($qs[1]) == USERID);
 $USER_TEMPLATE = e107::getCoreTemplate('user');
 e107::scStyle($sc_style);
 
-if(empty($USER_TEMPLATE)) // BC Fix for loading old templates. 
+if(empty($USER_TEMPLATE)) // BC Fix for loading old templates.
 {
 	e107::getMessage()->addDebug( "Using v1.x user template");
 	include(e107::coreTemplatePath('user')); //correct way to load a core template. (don't use 'include_once' in case it has already been loaded).
@@ -309,7 +309,7 @@ function renderuser($uid, $mode = "verbose")
 			return FALSE;
 		}
 	}
-	
+
 	$user_shortcodes->setVars($user);
 
 

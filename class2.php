@@ -253,7 +253,7 @@ if(!function_exists('spl_autoload_register'))
 if(!defset('E107_DISABLE_AUTOLOAD', false))
 {
 	/**
-	 * Generic autoloader. (didn't work while in e107_class.php) 
+	 * Generic autoloader. (didn't work while in e107_class.php)
 	 * @example if your plugin calls 'use Xxxxx\Yyyyy\Zzzzz;' it will attempt to load: ./vendor/Xxxxx/Yyyyy/Zzzzz.php
 	 */
 	function autoloadPsr0($className)
@@ -262,32 +262,32 @@ if(!defset('E107_DISABLE_AUTOLOAD', false))
 		$className = ltrim($className, '\\');
 		$fileName = '';
 		$namespace = '';
-		
+
 		if ($lastNsPos = strripos($className, '\\'))
 		{
 			$namespace = substr($className, 0, $lastNsPos);
 			$className = substr($className, $lastNsPos + 1);
 			$fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 		}
-		
+
 		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-		
+
 		$fullPath = 'vendor'. DIRECTORY_SEPARATOR . $fileName;
-		
+
 		if(file_exists($fullPath))
 		{
-			e107_require_once($fullPath);	
+			e107_require_once($fullPath);
 		}
 		else
 		{
-			return false;	
-		} 
-		
+			return false;
+		}
+
 	}
 
 	e107::autoload_register(array('e107', 'autoload'));
-//	e107::autoload_register('autoloadPsr0');  // Generic 'use xxxx\yyyy\zzzz;' fix/solution for plugin developers. 
-	
+//	e107::autoload_register('autoloadPsr0');  // Generic 'use xxxx\yyyy\zzzz;' fix/solution for plugin developers.
+
 }
 
 	function genericAutoload($className)
@@ -303,7 +303,7 @@ if(!defset('E107_DISABLE_AUTOLOAD', false))
 	            $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 	        }
 	        $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-	
+
 	        e107_require_once($fileName);
 	    }
 
@@ -454,7 +454,7 @@ e107_require_once(e_HANDLER.'cache_handler.php');
 
 //DEPRECATED, BC, call the method only when needed, $e107->arrayStorage caught by __get()
 $sql->db_Mark_Time('Load Array Storage Handler');
-e107_require_once(e_HANDLER.'arraystorage_class.php'); // ArrayData(); BC Fix only. 
+e107_require_once(e_HANDLER.'arraystorage_class.php'); // ArrayData(); BC Fix only.
 $eArrayStorage = e107::getArrayStorage();  //TODO - find & replace $eArrayStorage with e107::getArrayStorage();
 
 //DEPRECATED, BC, call the method only when needed, $e107->e_event caught by __get()
@@ -541,7 +541,7 @@ if(e107::getPref('ssl_enabled') && !deftrue('e_SSL_DISABLE') && empty($_E107['cl
 // $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
 $sql->db_Mark_Time('Init Language and detect changes');
-$lng = e107::getLanguage(); // required for v1.0 BC. 
+$lng = e107::getLanguage(); // required for v1.0 BC.
 $lng->detect();
 
 //
@@ -666,7 +666,7 @@ if(is_readable($customLan)) // FASTER - if exist, should be done 'once' by the c
 	include($customLan);
 }
 
-// v2 Custom language File Path. 
+// v2 Custom language File Path.
 $customLan2 = e_SYSTEM.'/lans/'.e_LANGUAGE.'_custom.php';
 if(is_readable($customLan2)) // FASTER - if exist, should be done 'once' by the core
 {
@@ -681,20 +681,20 @@ if(isset($pref['lan_global_list']))
 {
 	foreach($pref['lan_global_list'] as $path)
 	{
-		e107::plugLan($path,'global',true);			
-	}			
+		e107::plugLan($path,'global',true);
+	}
 }
 
 
 
 $sql->db_Mark_Time('CHAP challenge');
 
-$die = (e_AJAX_REQUEST == true) ? false : true; 
+$die = (e_AJAX_REQUEST == true) ? false : true;
 e107::getSession()
 	->challenge() // Make sure there is a unique challenge string for CHAP login
 	->check($die); // Token protection
 unset($die);
-	
+
 //
 // N: misc setups: online user tracking, cache
 //
@@ -780,7 +780,7 @@ else
 
 if(!defined('MAIL_IDENTIFIER'))
 {
-	define('MAIL_IDENTIFIER', 'X-e107-id');	
+	define('MAIL_IDENTIFIER', 'X-e107-id');
 }
 
 /* Withdrawn 0.8
@@ -835,7 +835,7 @@ if (!function_exists('checkvalidtheme'))
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$ADMIN_DIRECTORY = $e107->getFolder('admin');
-		
+
 		// e_QUERY not set when in single entry mod
 		if (ADMIN && strpos($_SERVER['QUERY_STRING'], 'themepreview') !== false)
 		{
@@ -848,7 +848,7 @@ if (!function_exists('checkvalidtheme'))
             $id = intval($id);
 
  			$themeDef = $themeobj->findDefault($themeArray[$id]);
-			
+
             define('THEME_LAYOUT',$themeDef);
 
 			define('PREVIEWTHEME', e_THEME.$themeArray[$id].'/');
@@ -859,8 +859,8 @@ if (!function_exists('checkvalidtheme'))
 			$legacy = (file_exists( e_THEME_ABS.$themeArray[$id].'/theme.xml') === false);
 
 			define('THEME_LEGACY',$legacy);
-	
-			
+
+
 			return;
 		}
 
@@ -907,7 +907,7 @@ if (!function_exists('checkvalidtheme'))
 				$tm->setTheme($e107tmp_theme);
 			//	$config = e107::getConfig();
 			//	$config->set('sitetheme','core');
-				
+
 			}
 		}
 		$sql->db_Mark_time("Theme Check End");
@@ -942,11 +942,11 @@ if (!class_exists('e107table', false))
 		private $content = array();
 		private $contentTypes = array('header','footer','text','title','image', 'list');
 
-		
+
 		function __construct()
 		{
-		//	$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment. 
-			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
+		//	$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment.
+			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class.
 		}
 
 
@@ -990,7 +990,7 @@ if (!class_exists('e107table', false))
 		 * @param $caption string caption text
 		 * @param $text string
 		 * @param $mode unique identifier
-		 * @param $return boolean : return the html instead of echo it. 
+		 * @param $return boolean : return the html instead of echo it.
 		 * @return null
 		 */
 		public function tablerender($caption, $text, $mode = 'default', $return = false)
@@ -1018,9 +1018,9 @@ if (!class_exists('e107table', false))
 				{
 					$this->eMenuCount++;
 				}
-				
+
 				ob_start();
-				$this->tablestyle($caption, $text, $mode);	
+				$this->tablestyle($caption, $text, $mode);
 				$ret=ob_get_contents();
 				ob_end_clean();
 
@@ -1033,7 +1033,7 @@ if (!class_exists('e107table', false))
 		 		{
 	         		$this->eMenuCount++;
 			   	}
-				
+
 				$this->tablestyle($caption, $text, $mode);
 				return '';
 			}
@@ -1043,19 +1043,19 @@ if (!class_exists('e107table', false))
 
 
 		/**
-		 * Output the styled template. 
+		 * Output the styled template.
 		 * @param $caption
 		 * @param $text
 		 * @param $mode
 		 */
 		private function tablestyle($caption, $text, $mode)
-		{	
-		
+		{
+
 			if(class_exists($this->adminThemeClass) && ($this->frontend == false))
 			{
-				$thm = new $this->adminThemeClass();	
+				$thm = new $this->adminThemeClass();
 			}
-			elseif(class_exists($this->themeClass)) // disabled at the moment. 
+			elseif(class_exists($this->themeClass)) // disabled at the moment.
 			{
 				$thm = new $this->themeClass();
 			}
@@ -1068,12 +1068,12 @@ if (!class_exists('e107table', false))
 			$options['menuTotal'] = varset($this->eMenuTotal[$this->eMenuArea]);
 			$options['setStyle'] = $this->eSetStyle;
 
-			
+
 			if(is_object(vartrue($thm)))
 			{
 				$thm->tablestyle($caption, $text, $mode, $options);
 			}
-			else 
+			else
 			{
 				tablestyle($caption, $text, $mode, $options);
 			}
@@ -1085,7 +1085,7 @@ if (!class_exists('e107table', false))
 
 	}
 
-	
+
 
 
 }
@@ -1158,13 +1158,13 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 	{
 		$sql->update('online', "online_user_id = 0, online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}'");
 	}
-	
-	// earlier event trigger with user data still available 
+
+	// earlier event trigger with user data still available
 	e107::getEvent()->trigger('logout');
-	
+
 	// first model logout and session destroy..
 	e107::getUser()->logout();
-	
+
 	// it might be removed soon
 	if ($pref['user_tracking'] == 'session')
 	{
@@ -1173,7 +1173,7 @@ if (($_SERVER['QUERY_STRING'] == 'logout')/* || (($pref['user_tracking'] == 'ses
 		// @TODO: Need to destroy the session cookie as well (not done by session_destroy()
 	}
 	cookie(e_COOKIE, '', (time() - 2592000));
-	
+
 	e107::getRedirect()->redirect(SITEURL);
 	// header('location:'.e_BASE.'index.php');
 	exit();
@@ -1321,11 +1321,11 @@ if(!defined("THEME_LAYOUT"))
 		$c_url = str_replace(array('&amp;'), array('&'), e_REQUEST_URL);//.(e_QUERY ? '?'.e_QUERY : '');// mod_rewrite support
 		// FIX - check against urldecoded strings
 		$c_url = rtrim(rawurldecode($c_url), '?');
-		
+
     	foreach($cusPagePref as $lyout=>$cusPageArray)
 		{
 			if(!is_array($cusPageArray)) { continue; }
-			
+
 			// NEW - Front page template check - early
 			if(in_array('FRONTPAGE', $cusPageArray) && ($c_url == SITEURL || rtrim($c_url, '/') == SITEURL.'index.php'))
 			{
@@ -1370,7 +1370,7 @@ if(!defined("THEME_LAYOUT"))
 	else
 	{
 		define("THEME_STYLE", 'style.css');
-	}	
+	}
 
     if($def) // custom-page layout.
 	{
@@ -1533,18 +1533,18 @@ function check_email($email)
 
 	if(filter_var($email, FILTER_VALIDATE_EMAIL))
 	{
-		return $email;	
+		return $email;
 	}
-	
-	return false; 
-	
+
+	return false;
+
 	// return preg_match("/^([_a-zA-Z0-9-+]+)(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+)(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,6})$/" , $email) ? $email : false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------
 /**
  * @param $var is a single class number or name, or a comma-separated list of the same.
- * @param $userclass a custom list of userclasses or leave blank for the current user's permissions. 
+ * @param $userclass a custom list of userclasses or leave blank for the current user's permissions.
 * If a class is prefixed with '-' this means 'exclude' - returns FALSE if the user is in this class (overrides 'includes').
 * Otherwise returns TRUE if the user is in any of the classes listed in $var.
  */
@@ -1702,7 +1702,7 @@ function get_user_data($uid, $extra = '')
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//SO MUCH DEPRECATED 
+//SO MUCH DEPRECATED
 /**
  * @deprecated
  * @example Use instead: e107::getConfig(alias)->->setPref($array)->save();  Not to be used for saving plugin or theme prefs!
@@ -1714,7 +1714,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '')
 	if(e107::getPref('developer'))
 	{
 		$backtrace = debug_backtrace(false);
-		
+
 		e107::getAdminLog()->add(
 			'Deprecated call - save_prefs()',
 			"Call to deprecated function save_prefs() (class2.php). Backtrace:\n".print_r($backtrace, true),
@@ -1839,7 +1839,7 @@ function init_session()
 	# - scope public
 	*/
 
-	
+
 	// ----------------------------------------
 
 
@@ -1963,7 +1963,7 @@ function init_session()
 		$currentUser['user_realname'] = $user->get('user_login'); // Used by force_userupdate
 		$e107->currentUser = &$currentUser;
 
-		// if(defined('SETTHEME')) //override - within e_module for example. 
+		// if(defined('SETTHEME')) //override - within e_module for example.
 		// {
 			// $_POST['sitetheme'] = SETTHEME;
 			// $_POST['settheme'] = 1;
@@ -2041,8 +2041,8 @@ function cookie($name, $value, $expire=0, $path = e_HTTP, $domain = '', $secure 
 	if(!e_SUBDOMAIN || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
 	{
 		$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
-	}	
-	
+	}
+
 	setcookie($name, $value, $expire, $path, $domain, $secure, true);
 }
 
@@ -2059,8 +2059,8 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 		if(($domain == '' && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
 		{
 			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
-		}	
-		
+		}
+
 		setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
 	}
@@ -2211,8 +2211,8 @@ function include_lan_admin($path)
  */
 function loadLanFiles($unitName, $type='runtime')
 {
-	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2); 
-	e107::getMessage()->addDebug("Using deprecated function loanLanFiles(). Replace with e107::loadLanFiles().".print_a($info,true)); 
+	$info = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+	e107::getMessage()->addDebug("Using deprecated function loanLanFiles(). Replace with e107::loadLanFiles().".print_a($info,true));
 	return e107::loadLanFiles($unitName, $type);
 }
 
@@ -2445,7 +2445,7 @@ class error_handler
 
 				if($index == 0) { $index = 1; } else { $index = 0; }
 			}
-		
+
 		}
 		else
 		{
@@ -2468,12 +2468,12 @@ class error_handler
 
 
 /**
- * Manage Headers sent to browser. 
- * It is important to specify one of Expires or Cache-Control max-age, and one of Last-Modified or ETag, for all cacheable resources. 
- * It is redundant to specify both Expires and Cache-Control: max-age, or to specify both Last-Modified and ETag. 
+ * Manage Headers sent to browser.
+ * It is important to specify one of Expires or Cache-Control max-age, and one of Last-Modified or ETag, for all cacheable resources.
+ * It is redundant to specify both Expires and Cache-Control: max-age, or to specify both Last-Modified and ETag.
  * Reference : http://css-tricks.com/snippets/php/intelligent-php-cache-control/
- * XXX Etag cannot be relied on as some hosts have Etag disabled. 
- * XXX session_cache_limiter('private') will override some of the things below and bring back our browser cache issues. 
+ * XXX Etag cannot be relied on as some hosts have Etag disabled.
+ * XXX session_cache_limiter('private') will override some of the things below and bring back our browser cache issues.
  */
 class e_http_header
 {
@@ -2486,18 +2486,18 @@ class e_http_header
 	private $headers = array();
 	private $length = 0;
 
-	
+
 	function __construct()
 	{
 		if (strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
 		{
 			$this->compression_browser_support = true;
 		}
-		
+
 		if(ini_get("zlib.output_compression")=='' && function_exists("gzencode"))
 		{
 			$this->compression_server_support = true;
-		}	
+		}
 
 		if($this->compression_server_support == true && $this->compression_browser_support == true)
 		{
@@ -2510,8 +2510,8 @@ class e_http_header
 
 
 	}
-	
-	
+
+
 	function setContent($content,$search=null,$replace=null)
 	{
 
@@ -2550,14 +2550,14 @@ class e_http_header
 	{
 		return $this->content;
 	}
-	
+
 	function setHeader($header, $force=false, $response_code=null)
 	{
 		list($key,$val) = explode(':',$header,2);
 		$this->headers[$key] = $val;
 		header($header, $force, $response_code);
 	}
-			
+
 	function debug() // needs to be disabled if PHP gzip is to work
 	{
 		if(!ADMIN)
@@ -2565,7 +2565,7 @@ class e_http_header
 			return null;
 		}
 
-		
+
 		$text = "<h3>Server Headers</h3>";
 		$server = getallheaders();
 		ksort($server);
@@ -2575,14 +2575,14 @@ class e_http_header
 		$text .= print_a($this->headers,true);
 		$text .= "<h4>Compress Output</h4>";
 		$text .= print_a($this->compress_output,true);
-		
+
 		$server = array();
 		foreach($_SERVER as $k=>$v)
 		{
 			if(substr($k,0,4) == 'HTTP')
 			{
-				$server[$k] = $v;	
-			}	
+				$server[$k] = $v;
+			}
 		}
 
 		$text .= "<h3>_SERVER</h3>";
@@ -2599,13 +2599,13 @@ class e_http_header
 		}
 
 		echo $text;
-		
-	}			
-		
-	
+
+	}
+
+
 	function send()
 	{
-		// Disable caching of html. 	
+		// Disable caching of html.
 		/*
 		$this->setHeader("Expires: 0", true);
 		$this->setHeader("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);
@@ -2615,18 +2615,18 @@ class e_http_header
 		$this->setHeader("Cache-Control: max-age=0", false);
 		*/
 	//	$this->setHeader("Cache-Control: public", true);
-	
-	
+
+
 		$canCache = e107::canCache();
-		
-	// $this->setHeader("Cache-Control: must-revalidate", true); 
-		 
+
+	// $this->setHeader("Cache-Control: must-revalidate", true);
+
 		if($canCache && !deftrue('e_NOCACHE') && $_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['QUERY_STRING'] != 'logout')
 		{
-			// header("Cache-Control: must-revalidate", true);	
+			// header("Cache-Control: must-revalidate", true);
 			if(e107::getPref('site_page_expires')) // TODO - allow per page
-			{ 
-				if (function_exists('date_default_timezone_set')) 
+			{
+				if (function_exists('date_default_timezone_set'))
 				{
 				    date_default_timezone_set('UTC');
 				}
@@ -2638,65 +2638,65 @@ class e_http_header
 		{
 			$canCache = false;
 		}
-		
+
 
 		if($this->compress_output != false)
 		{
 		//	$this->setHeader("ETag: \"{$this->etag}-gzip\"");
-			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
+			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);
 			$this->content = gzencode($this->content, $this->compression_level);
 			$this->setHeader('Content-Encoding: gzip', true);
 			$this->setHeader("Content-Length: ".$this->length, true);
 
-		} 
-		else 
+		}
+		else
 		{
 
 /*
-			if($this->compression_browser_support ==true) 
+			if($this->compression_browser_support ==true)
 			{
-				$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
+				$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);
 			}
 			else
 			{*/
-				$this->setHeader('ETag: "'.$this->etag.'"', true);	
+				$this->setHeader('ETag: "'.$this->etag.'"', true);
 		//	}
-			
+
 			$this->setHeader("Content-Length: ".$this->length, true);
 		}
-		
+
 		if(defset('X-POWERED-BY') !== false)
 		{
-			$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html. 
+			$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html.
 		}
-		
+
 		if($this->compression_server_support == true)
 		{
-			$this->setHeader('Vary: Accept-Encoding');	
+			$this->setHeader('Vary: Accept-Encoding');
 		}
 		else
 		{
 			$this->setHeader('Vary: Accept');
 		}
-		
+
 		// should come after the Etag header
 		if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
 		{
 			$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
 			if($IF_NONE_MATCH == $this->etag || ($IF_NONE_MATCH == ($this->etag."-gzip")))
 			{
-				$this->setHeader('HTTP/1.1 304 Not Modified'); 
-				exit();	
+				$this->setHeader('HTTP/1.1 304 Not Modified');
+				exit();
 			}
 		}
 	}
-					
-				
-			
-		
-	
-	
-}	
+
+
+
+
+
+
+}
 
 
 
@@ -2729,4 +2729,3 @@ function plugInstalled($plugname)
 	// Could add more checks here later if appropriate
 	return isset($pref['plug_installed'][$plugname]);*/
 }
-

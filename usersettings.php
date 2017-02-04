@@ -24,7 +24,7 @@ USET_01 - admin changed user data
 
 require_once ('class2.php');
 
-// TODO - Remove all the adminEdit stuff. 
+// TODO - Remove all the adminEdit stuff.
 
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
@@ -995,6 +995,3 @@ function req($field)
 	}
 	return $ret;
 }
-
-
-

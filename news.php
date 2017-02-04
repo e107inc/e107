@@ -57,17 +57,17 @@ if (!defined('ITEMVIEW'))
 	define('ITEMVIEW', varset($pref['newsposts'],15));
 }
 
-// ?all and ?cat.x and ?tag are the same listing functions - just filtered differently. 
+// ?all and ?cat.x and ?tag are the same listing functions - just filtered differently.
 // NEWSLIST_LIMIT is suitable for all
 
-if(!defined("NEWSLIST_LIMIT")) 
+if(!defined("NEWSLIST_LIMIT"))
 {
-	 define("NEWSLIST_LIMIT", varset($pref['news_list_limit'],15)); 
+	 define("NEWSLIST_LIMIT", varset($pref['news_list_limit'],15));
 }
 
 $defTemplate = e107::getPref('news_default_template');
 
-if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format. 
+if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format.
 {
 
 	$tmp = explode(".",e_QUERY);
@@ -77,9 +77,9 @@ if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out
 	$newsfrom = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
 	$cacheString = 'news.php_'.e_QUERY;
 }
-else 
+else
 {
-	
+
 	$opt = array('default'=>'', 'list'=>'all');
 	$action = varset($opt[$defTemplate],'');
 }
@@ -123,25 +123,25 @@ $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 	$newsUrlparms = array('page' => '--FROM--');
 	if($sub_action)
 	{
-		
-		switch ($action) 
+
+		switch ($action)
 		{
 			case 'list':
 				$newsUrlparms['id'] = $sub_action;
 				$newsRoute = 'list/category';
 			break;
-			
-			case 'cat':	
+
+			case 'cat':
 				$newsUrlparms['id'] = $sub_action;
 				$newsRoute = 'list/short';
 			break;
-			
-			case 'day':	
+
+			case 'day':
 			case 'month':
 				$newsUrlparms['id'] = $sub_action;
 				$newsRoute = 'list/'.$action;
 			break;
-			
+
 			default:
 				$newsRoute = 'list/items';
 			break;
@@ -231,9 +231,9 @@ if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET
 		$row = $sql->fetch();
 		extract($row);  // still required for the table-render.  :(
 	}
-	
+
 	//XXX These are all correctly using LIST templates.
-	
+
 	if ($action == 'all') // show archive of all news items using list-style template.
 	{
 		$renTypeQry = '';
@@ -242,7 +242,7 @@ if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET
 		{
 			$renTypeQry = " AND (n.news_render_type REGEXP '(^|,)(".implode("|", $pref['news_list_templates']).")(,|$)')";
 		}
-		
+
 	//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
 		$query = "
 		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
@@ -257,15 +257,15 @@ if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET
 
 		$query .= "
 		ORDER BY n.news_sticky DESC, n.news_datestamp DESC
-		LIMIT ".intval($newsfrom).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient. 
+		LIMIT ".intval($newsfrom).",".deftrue('NEWSALL_LIMIT', NEWSLIST_LIMIT); // NEWSALL_LIMIT just for BC. NEWSLIST_LIMIT is sufficient.
 		$category_name = ($defTemplate == 'list') ? PAGE_NAME : "All";
 		unset($renTypeQry);
 	}
 	elseif ($action == 'cat') // show archive of all news items in a particular category using list-style template.
 	{
-		
+
 	//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
-		
+
 		$query = "
 		SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 		nc.category_meta_description
@@ -292,9 +292,9 @@ if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET
 		AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (n.news_class REGEXP ".$nobody_regexp.")
 		ORDER BY n.news_datestamp DESC
-		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;	
+		LIMIT ".intval($newsfrom).",".NEWSLIST_LIMIT;
 		$category_name = 'Tag: "'.$tagsearch.'"';
-		
+
 	}
 	elseif(!empty($_GET['author']))
 	{
@@ -318,7 +318,7 @@ if ($action == 'cat' || $action == 'all' || !empty($_GET['tag']) || !empty($_GET
 	}
 
 	$newsList = array();
-	
+
 	if($sql->gen($query))
 	{
 		$news_total = $sql->foundRows();
@@ -394,7 +394,7 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 
 	}
 
-	// Legacy Styling.. 
+	// Legacy Styling..
 	$param = array();
 	$param['itemlink'] = (defined("NEWSLIST_ITEMLINK")) ? NEWSLIST_ITEMLINK : "";
 	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
@@ -410,7 +410,7 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 
 	if(vartrue($template['start']))
 	{
-		$text .= $tp->parseTemplate($template['start'], true);		
+		$text .= $tp->parseTemplate($template['start'], true);
 	}
 
 	if(!empty($newsList))
@@ -427,9 +427,9 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 
 	if(vartrue($template['end']))
 	{
-		$text .= $tp->parseTemplate($template['end'], true);				
+		$text .= $tp->parseTemplate($template['end'], true);
 	}
-	
+
 	$icon = ($row['category_icon']) ? "<img src='".e_IMAGE."icons/".$row['category_icon']."' alt='' />" : "";
 
 	// Deprecated.
@@ -450,9 +450,9 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 
 	if(varset($template['caption'])) // v2.x
 	{
-		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'), $template['caption']);  	
+		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'), $template['caption']);
 	}
-	elseif(!$NEWSLISTTITLE) // default 
+	elseif(!$NEWSLISTTITLE) // default
 	{
 		$NEWSLISTTITLE = LAN_NEWS_82." '".$tp->toHTML($category_name,FALSE,'TITLE')."'";
 	}
@@ -460,7 +460,7 @@ e107::getDebug()->log("PageTitle: ".e_PAGETITLE);
 	{
 		$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'),$NEWSLISTTITLE);
 	}
-	
+
 	if($defTemplate != 'list')
 	{
 		$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
@@ -583,16 +583,16 @@ if ($action == 'extend')
 		$param = array();
 		$param['current_action'] = $action;
 		$param['template_key'] = 'view';
-		
-		if(vartrue($NEWSSTYLE)) 
+
+		if(vartrue($NEWSSTYLE))
 		{
 			$template =  $NEWSSTYLE;
 		}
 		elseif(function_exists("news_style")) // BC
 		{
-			$template = news_style($news, 'extend', $param);	
+			$template = news_style($news, 'extend', $param);
 		}
-		else 
+		else
 		{
 			$tmp = e107::getTemplate('news', 'news', 'view');
 			$template = $tmp['item'];
@@ -706,7 +706,7 @@ switch ($action)
 			$day = 1;
 			$lastday = date("t", $startdate);
 		}
-		
+
 		$startdate = mktime(0, 0, 0, $month, $day, $year);
 		$enddate = mktime(23, 59, 59, $month, $lastday, $year);
 
@@ -740,7 +740,7 @@ switch ($action)
 		// Get number of news item to show
 		if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
 			$query = "
-		SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, 
+		SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id,
 		nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description,
 		COUNT(*) AS tbcount
 		FROM #news AS n
@@ -829,7 +829,7 @@ switch($action)
 	case 'item':
 		setNewsFrontMeta($newsAr[1]);
 		break;
-	
+
 	case 'list':
 	default:
 		setNewsFrontMeta($newsAr[1], 'list');
@@ -929,8 +929,8 @@ else
 	$pref['newsHeaderDate'] = 1;
 	$gen = new convert();
 	/*
-	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE; v1.x doesn't do this.. so no point doing it here. 
-	else 
+	if(vartrue($NEWSLISTSTYLE)) $template =  $NEWSLISTSTYLE; v1.x doesn't do this.. so no point doing it here.
+	else
 	{
 		$tmp = e107::getTemplate('news', 'news', 'list');
 		$template = $tmp['item'];
@@ -946,25 +946,25 @@ else
 	$param = array();
 	$param['current_action'] = $action;
 	$param['template_key'] = 'default';
-	
-	// Get Correct Template 
-	// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode - XXX No this is not NEWSLISTSTYLE - which provides only summaries. 
+
+	// Get Correct Template
+	// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode - XXX No this is not NEWSLISTSTYLE - which provides only summaries.
 	// TODO requires BC testing if we comment this one
-	if(vartrue($NEWSSTYLE)) 
+	if(vartrue($NEWSSTYLE))
 	{
 		$template =  $NEWSSTYLE;
 	}
-	else 
+	else
 	{
-		$tmp = e107::getTemplate('news', 'news', 'default'); // default - we show the full items, except for the 'extended' part.. 
+		$tmp = e107::getTemplate('news', 'news', 'default'); // default - we show the full items, except for the 'extended' part..
 		$template = $tmp['item'];
 		unset($tmp);
 	}
 
 
-	
-	
-	
+
+
+
 	// NEW - news category title when in list
 	if($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name']))
 	{
@@ -986,10 +986,10 @@ else
 
 	$socialInstalled = e107::isInstalled('social');
 
-	while(isset($newsAr[$i]) && $i <= $interval) 
+	while(isset($newsAr[$i]) && $i <= $interval)
 	{
 		$news = $newsAr[$i];
-		
+
 		// Set the Values for the social shortcode usage.
 		if($socialInstalled == true)
 		{
@@ -1004,10 +1004,10 @@ else
 
 		if(function_exists("news_style")) // BC
 		{
-			$template = news_style($news, $action, $param);	
+			$template = news_style($news, $action, $param);
 		}
-		
-		
+
+
 		//        render new date header if pref selected ...
 		$thispostday = strftime("%j", $news['news_datestamp']);
 		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader']))
@@ -1192,8 +1192,8 @@ function render_newscats(){  // --  CNN Style Categories. ----
 	$tp = e107::getParser();
 	$ns = e107::getRender();
 	$pref = e107::getPref();
-	
-	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') 
+
+	if (isset($pref['news_cats']) && $pref['news_cats'] == '1')
 	{
 		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'TITLE');
 		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
@@ -1202,7 +1202,7 @@ function render_newscats(){  // --  CNN Style Categories. ----
 
 function setNewsFrontMeta($news, $type='news')
 {
-	
+
 	$tp = e107::getParser();
 
 	if($type == 'news')
@@ -1211,18 +1211,18 @@ function setNewsFrontMeta($news, $type='news')
 		{
 			define('e_PAGETITLE', $news['news_title']);
 			e107::meta('og:title',$news['news_title']);
-			e107::meta('og:type','article');		
+			e107::meta('og:type','article');
 		}
 
 		if($news['news_meta_description'] && !defined('META_DESCRIPTION'))
 		{
 			e107::meta('description',$news['news_meta_description']);
-			e107::meta('og:description',$news['news_meta_description']);	
+			e107::meta('og:description',$news['news_meta_description']);
 			//define('META_DESCRIPTION', $news['news_meta_description']); // deprecated
 		}
 		elseif($news['news_summary']) // BC compatibility
 		{
-			e107::meta('og:description',$news['news_summary']);		
+			e107::meta('og:description',$news['news_summary']);
 		}
 
 		// include news-thumbnail/image in meta. - always put this one first.
@@ -1241,8 +1241,8 @@ function setNewsFrontMeta($news, $type='news')
 			}
 
 		}
-	
-		// grab all images in news-body and add to meta. 
+
+		// grab all images in news-body and add to meta.
 		$images = e107::getBB()->getContent('img',$news['news_body'],SITEURL.e_IMAGE."newspost_images/");
 		$c =1;
 		foreach($images as $im)
@@ -1251,8 +1251,8 @@ function setNewsFrontMeta($news, $type='news')
 			e107::meta('og:image',$im);
 			$c++;
 		}
-		
-		// grab all youtube videos in news-body and add thumbnails to meta. 
+
+		// grab all youtube videos in news-body and add thumbnails to meta.
 		$youtube = e107::getBB()->getContent('youtube',$news['news_body']);
 		$c = 1;
 		foreach($youtube as $yt)
@@ -1266,12 +1266,12 @@ function setNewsFrontMeta($news, $type='news')
 
 
 		$url = e107::getUrl()->create('news/view/item', $news,'full=1');
-		e107::meta('og:url',$url);	
-		
-		e107::meta('article:section',$news['category_name']);	
-		
+		e107::meta('og:url',$url);
+
+		e107::meta('article:section',$news['category_name']);
+
 		if($news['news_meta_keywords'] && !defined('META_KEYWORDS'))
-		{		
+		{
 			e107::meta('keywords',$news['news_meta_keywords']);
 			$tmp = explode(",",$news['news_meta_keywords']);
 			foreach($tmp as $t)
@@ -1283,7 +1283,7 @@ function setNewsFrontMeta($news, $type='news')
 		}
 
 
-		/* Facebook reference. 
+		/* Facebook reference.
 		 * http://developers.facebook.com/docs/opengraph/objects/builtin/
 		 */
 
@@ -1306,8 +1306,8 @@ function setNewsFrontMeta($news, $type='news')
 	{
 		define('META_DESCRIPTION', $news['category_meta_description']);
 	}
-	
-			
+
+
 
 }
 

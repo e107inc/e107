@@ -46,7 +46,7 @@ CSS;
 
 e107::css('inline',$CSS);
 
-define('e_IFRAME', true); 
+define('e_IFRAME', true);
 
 $source = $qs[0];
 $parms = varset($qs[1],'');
@@ -131,8 +131,8 @@ else
 	<br />
 	".$newsUrl."
 	";
-	
-	
+
+
 
 }
 
@@ -152,7 +152,7 @@ if(is_readable(THEME.'print_template.php'))
 	include_once(THEME.'print_template.php');
 	echo $tp->parseTemplate($PRINT_TEMPLATE);
 }
-else 
+else
 {
 	echo "
 		<div style='background-color:white'>
