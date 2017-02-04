@@ -1523,46 +1523,33 @@ class forumUpgrade
 
 	}
 
-	function getUserInfo(&$info)
+	function getUserInfo($info)
 	{
-		$e107 = e107::getInstance();
-		
-		$tmp = explode('.', $info);
-		$ret = array(
-			'user_id' => 0,
-			'user_ip' => '_NULL_',
-			'anon_name' => '_NULL_'
-		);
+	    $tmp     = explode('.', $info);
+	    $id     = (int)$tmp[0];
 
-		if (count($tmp) == 2)
-		{
-			$id = (int)$tmp[0];
-			if ($id == 0)//Anonymous post
-			{
-				$_tmp = explode(chr(0), $tmp[1]);
-				if (count($_tmp) == 2)//Ip address exists
-				{
-					$ret['user_ip'] = $e107 -> ipEncode($_tmp[1]);
-					$ret['anon_name'] = $_tmp[0];
-				}
-			}
-			else
-			{
-				$ret['user_id'] = $id;
-			}
-		}
-		else
-		{
-			if (is_numeric($info) && $info > 0)
-			{
-				$ret['user_id'] = $info;
-			}
-			else
-			{
-				$ret['anon_name'] = 'Unknown';
-			}
-		}
-		return $ret;
+	    // Set default values
+	    $ret = array(
+	        'user_id'   => 0,
+	        'user_ip'   => '_NULL_',
+	        'anon_name' => '_NULL_'
+	    );
+
+	    // Check if post is done anonymously (ID = 0, and there should be a chr(1) value between the username and IP address)
+	    if(strpos($info, chr(1)) !== false && $id == 0)
+	    {
+	        $anon = explode(chr(1), $info);
+	        $anon_name = explode('.', $anon[0]);
+
+	        $ret['anon_name'] = $anon_name[1];
+	        $ret['user_ip']	  = e107::getIPHandler()->ipEncode($anon[1]);
+	    }
+	    // User id is known - NOT anonymous
+	    {
+	        $ret['user_id'] = $id;
+	    }
+
+	    return $ret;
 	}
 
 	function moveAttachment($attachment, $post, &$error)
