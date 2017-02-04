@@ -133,7 +133,7 @@ if (isset($_POST['GetOnWithIt']))
   {
 	echo LAN_PCONV_28;
 	if (!$pc_db->db_Table_exists('user_backup'))
-	{  
+	{
 	  $error = LAN_PCONV_28;
 	}
 	if (!$error && $pc_db->db_Select('user_backup','*'))
@@ -210,7 +210,7 @@ if (isset($_POST['GetOnWithIt']))
 		{
 		  $newData['user_prefs'] = $newPrefs;
 		}
-		
+
 		if (count($newData)) $sql->db_UpdateArray('user',$newData, " WHERE `user_id`={$row['user_id']}");
 	  }
 	}
@@ -227,10 +227,10 @@ if (isset($_POST['GetOnWithIt']))
 	require_once(FOOTERF);
 	exit;
   }
-  
- 
+
+
   if ($cookieChange)
-  { 
+  {
 //    echo "Cookie Updated.<br /><br />";
 	$cookieval = USERID.".".md5($cookieChange);		// Just changed admin password, and hence cookie
 	cookie($pref['cookie_name'], $cookieval);
@@ -238,7 +238,7 @@ if (isset($_POST['GetOnWithIt']))
 }
 
 
-$text = 
+$text =
 	"<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' onsubmit=\"return jsconfirm('".LAN_PCONV_12."')\">
 	<table style='width:95%' class='fborder'>

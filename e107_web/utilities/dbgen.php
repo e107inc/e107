@@ -146,7 +146,7 @@ if ($table)
 //========================================================
 //						FORM
 //========================================================
-$text = 
+$text =
 	"<div style='text-align:center; width:700px'>
 	<form method='post' action='".e_SELF."'>
 	<table style='width:95%' class='fborder'>
