@@ -798,6 +798,15 @@ class e_menu_layout
 		$head = array();
 		$foot = array();
 
+		if(isset($LAYOUT) && (isset($HEADER) || isset($FOOTER)))
+		{
+			$fallbackLan = "This theme is using deprecated elements. All [x]HEADER and [x]FOOTER variables should be removed from theme.php."; // DO NOT TRANSLATE!
+			$warningLan = $tp->lanVars(deftrue('MENLAN_60',$fallbackLan),'$');
+			echo "<div class='alert alert-danger'>".$warningLan."</div>";
+
+		}
+
+
 
 		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
 		{
