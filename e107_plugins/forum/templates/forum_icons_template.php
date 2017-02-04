@@ -36,7 +36,7 @@ define('IMAGE_noreplies', 			$tp->toGlyph('fa-comment-o', 'size=2x'));
 define('IMAGE_noreplies_small', 	$tp->toGlyph('fa-comment-o'));
 define('IMAGE_track', 		        $tp->toGlyph('fa-bell'));
 define('IMAGE_untrack', 	        $tp->toGlyph('fa-bell-o'));
-    
+
 } else {
 
 // Thread info

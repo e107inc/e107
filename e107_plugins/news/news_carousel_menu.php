@@ -28,7 +28,7 @@ $template   = e107::getTemplate('news', 'news_menu', 'carousel', true, true);
 $nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 
 e107::getDebug()->log("News Carousel Menu ".print_a($parms,true));
-	
+
 $query = "
 		SELECT n.*, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 		nc.category_meta_keywords, nc.category_meta_description
@@ -102,8 +102,8 @@ foreach($data as $row)
 }
 
 	$header = $template['start'];
-	
-	$footer = str_replace("{NAV}", implode("\n",$nav), $template['end']); 
+
+	$footer = str_replace("{NAV}", implode("\n",$nav), $template['end']);
 
 
 if(!empty($parms['caption']))
@@ -137,5 +137,3 @@ e107::js('footer-inline',"
 		clickEvent = false;
 	});"
 );
-
-

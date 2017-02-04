@@ -20,30 +20,30 @@ if (!defined('e107_INIT')) { exit; }
 class news_featurebox // include plugin-folder in the name.
 {
 	function config()
-	{	
+	{
 		$links = array();
-			
-		$links[] = array( // render_type 
+
+		$links[] = array( // render_type
 			'name'			=> "Featurebox",
 			'function'		=> "process",
 			'description' 	=> ""
-		);	
-		
+		);
+
 		return $links;
 	}
-	
-	
 
-	function process() 
+
+
+	function process()
 	{
 		$sql = e107::getDb();
 		$fbox = array();
-		
+
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND FIND_IN_SET(5,news_render_type) ORDER BY news_datestamp DESC LIMIT 10";
-		
+
 		if($sql->gen($query))
-		{		
+		{
 			while($row = $sql->fetch())
 			{
 				$fbox[] = array(
@@ -54,11 +54,11 @@ class news_featurebox // include plugin-folder in the name.
 					'class'			=> $row['news_class']
 				);
 			}
-			
+
 			return $fbox;
 	    };
 	}
-	
+
 }
 
 

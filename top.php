@@ -38,7 +38,7 @@ if (e_QUERY)
 if ($action == 'top')
 {
 	define('e_PAGETITLE', LAN_8);
-} 
+}
 elseif ($action == 'active')
 {
 	define('e_PAGETITLE', LAN_7);
@@ -47,7 +47,7 @@ else
 {
 	e107::redirect();
 	exit;
-}	
+}
 
 
 require_once(HEADERF);
@@ -191,7 +191,7 @@ if ($action == 'top')
 			}
 		}
 		$text .= "</table>\n</div>";
-		if ($subaction == 'forum') 
+		if ($subaction == 'forum')
 		{
 			$ftotal = $sql->db_Count('user', '(*)', 'WHERE `user_forums` > 0');
 			$parms = "{$ftotal},{$view},{$from},".e_SELF.'?[FROM].top.forum.'.$view;
@@ -255,8 +255,8 @@ if ($action == 'top')
 		$text .= "</table>\n</div>";
 		$ns->tablerender(TOP_LAN_3, $text);
 	}
-	 
-	if ($subaction == 'chat' || $subaction == 'all') 
+
+	if ($subaction == 'chat' || $subaction == 'all')
 	{
 		$top_forum_posters = $sql->select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
 		$text = "

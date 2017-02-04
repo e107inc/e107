@@ -44,7 +44,7 @@ if($_GET['reset'])
 {
 	unset($_SESSION['forumUpgrade']);
 	unset($_SESSION['forumupdate']);
-	$f -> updateInfo['currentStep'] = intval($_GET['reset']);	
+	$f -> updateInfo['currentStep'] = intval($_GET['reset']);
 	$f -> setUpdateInfo();
 
 }
@@ -540,7 +540,7 @@ function step6()
 	$sql = e107::getDb();
 	$ns = e107::getRender();
 	$mes = e107::getMessage();
-	
+
 	$stepCaption = 'Step 6: Thread and post data';
 
 	$_SESSION['forumupdate']['thread_total'] = $sql -> count('forum_t', '(*)', "WHERE thread_parent = 0");
@@ -558,30 +558,30 @@ function step6()
 
 function renderProgress($caption, $step)
 {
-	
+
 	if(!$step)
 	{
-		return "No step entered in function";	
+		return "No step entered in function";
 	}
-	
+
 	$thisStep = 'step'.$step;
 	$nextStep = 'step'.($step + 1);
-	
+
 	$text = '
 		<div class="row-fluid">
 			<div class="span9 well">
 				<div class="progress progress-success progress-striped active" id="progressouter">
 	   				<div class="progress-bar bar" role="progressbar" id="progress"></div>
 				</div>
-			
+
 			<a id="'.$thisStep.'" data-loading-text="Please wait..." data-progress="' . e_SELF . '"  data-progress-target="progress"  data-progress-mode="'.$step.'" data-progress-show="'.$nextStep.'" data-progress-hide="'.$thisStep.'" class="btn btn-primary e-progress" >'.$caption.'</a>
 			</div>
 		</div>';
 
 	$text .= "<form method='post' action='" . e_SELF . "?step=".($step+1)."'>
 		<input id='".$nextStep."' style='display:none' class='btn btn-success' type='submit' name='nextStep[".($step+1)."]' value='Proceed to step ".($step+1)."' />
-		</form>";	
-	
+		</form>";
+
 	return $text;
 }
 
@@ -687,33 +687,33 @@ function step8()
 {
 	$sql = e107::getDb();
 	$mes = e107::getMessage();
-	
+
 	$stepCaption = 'Step 8: Calculate last post information';
-	
-	
+
+
 	$_SESSION['forumupdate']['lastpost_total'] = $sql -> count('forum', '(*)', "WHERE forum_parent != 0");
 	$_SESSION['forumupdate']['lastpost_count'] = 0;
 	$_SESSION['forumupdate']['lastpost_last'] = 0;
-	
+
 	$mes->addDebug("Total LastPost: ".$_SESSION['forumupdate']['lastpost_total']);
-	
+
 	$text = "
 		This step will recalculate all thread and forum lastpost information";
-		
+
 	$text .= renderProgress('Proceed with lastpost calculation',8);
-	
+
 	e107::getRender() -> tablerender($stepCaption, $mes->render(). $text);
 	return;
-	
+
 
 }
 
 function step8_ajax()
 {
 	$sql = e107::getDb();
-	
+
 	$lastThread = vartrue($_SESSION['forumupdate']['lastpost_last'], 0);
-	
+
 	global $forum;
 
 	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
@@ -746,7 +746,7 @@ function step9()
 {
 
 	$sql = e107::getDb();
-	
+
 	$stepCaption = 'Step 9: Migrate poll information';
 	if (!isset($_POST['migrate_polls']))
 	{
@@ -821,7 +821,7 @@ function step10()
 	global $f;
 
 	$stepCaption = 'Step 10: Migrate forum attachments';
-	
+
 	$_SESSION['forumupdate']['attachment_total'] = $sql -> count('forum_post', '(*)', "WHERE post_entry LIKE '%public/%' ");
 	$_SESSION['forumupdate']['attachment_count'] = 0;
 	$_SESSION['forumupdate']['attachment_last'] = 0;
@@ -829,7 +829,7 @@ function step10()
 	if ($_SESSION['forumupdate']['attachment_total'] == 0)
 	{
 		$text = "
-		No forum attachments found. 
+		No forum attachments found.
 		<br /><br />
 		<form method='post' action='" . e_SELF . "?step=11'>
 		<input class='btn btn-success' type='submit' name='nextStep[11]' value='Proceed to step 11' />
@@ -847,14 +847,14 @@ function step10()
 
 	$text .= renderProgress("Begin attachment migration",10);
 
-	file_put_contents(e_LOG."forum_upgrade_attachments.log",'');		// clear the log. 
+	file_put_contents(e_LOG."forum_upgrade_attachments.log",'');		// clear the log.
 
 	$ns -> tablerender($stepCaption, $mes -> render() . $text);
 
 }
 
 /**
- * Attachments 
+ * Attachments
  */
 function step10_ajax()//TODO
 {
@@ -878,8 +878,8 @@ function step10_ajax()//TODO
 	";
 
 	// file_put_contents(e_LOG."forum_update_step10.log",$qry."\n",FILE_APPEND);
-	
-	
+
+
 	if ($sql->gen($qry))
 	{
 		while ($row = $sql->fetch())
@@ -905,9 +905,9 @@ function step10_ajax()//TODO
 
 			//[link={e_FILE}public/1230091080_1_FT0_julia.jpg][img:width=60&height=45]{e_FILE}public/1230091080_1_FT0_julia_.jpg[/img][/link][br]
 			//Check for images with thumbnails linking to full size
-			
-		//	if (preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))	
-			
+
+		//	if (preg_match_all('#\[link=(.*?)\]\[img.*?\]({e_FILE}.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
+
 			if (preg_match_all('#\[link=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
@@ -924,7 +924,7 @@ function step10_ajax()//TODO
 					logAttachment($att['thread_id'],'link', $att['name']);
 				}
 			}
-			
+
 			if (preg_match_all('#\[lightbox=([^\]]*?)\]\s*?\[img.*?\](({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)\[/img\]\s*?\[/lightbox\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
 				foreach ($matches as $match)
@@ -941,8 +941,8 @@ function step10_ajax()//TODO
 					logAttachment($att['thread_id'],'lightbox', $att['name']);
 				}
 			}
-			
-			
+
+
 
 /*
 			if (preg_match_all('#\[link=(.*?)\]\[img.*?\](\.\./\.\./e107_files/public/.*?)\[/img\]\[/link\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
@@ -965,9 +965,9 @@ function step10_ajax()//TODO
 			//<div
 			// class=&#039;spacer&#039;>[img:width=604&height=453]{e_FILE}public/1229562306_1_FT0_julia.jpg[/img]</div>
 			//Check for attached full-size images
-			
+
 			;
-			
+
 		//	if (preg_match_all('#\[img.*?\]({e_FILE}.*?_FT\d+_.*?)\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			if (preg_match_all('#\[img[^\]]*?\]\s*?(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\[]*)\s*?\[/img\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
@@ -1007,13 +1007,13 @@ function step10_ajax()//TODO
 				}
 			}
 			*/
-			
-			
+
+
 			//[file={e_FILE}public/1230090820_1_FT0_julia.zip]julia.zip[/file]
 			//Check for attached file (non-images)
-			
-			
-			
+
+
+
 		//	if (preg_match_all('#\[file=({e_FILE}.*?)\](.*?)\[/file\]#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			if (preg_match_all('#\[file=(({e_FILE}|e107_files|\.\./\.\./e107_files)[^\]]*)#ms', $post['post_entry'], $matches, PREG_SET_ORDER))
 			{
@@ -1026,7 +1026,7 @@ function step10_ajax()//TODO
 					$att['name'] = $match[1];
 					$att['thumb'] = '';
 					$attachments[] = $att;
-					
+
 					logAttachment($att['thread_id'],'file', $att['name']);
 				}
 			}
@@ -1046,8 +1046,8 @@ function step10_ajax()//TODO
 				}
 			}
 			*/
-			
-			
+
+
 
 			if (count($attachments))
 			{
@@ -1055,7 +1055,7 @@ function step10_ajax()//TODO
 				$newValues = array();
 				$info = array();
 				$info['post_entry'] = $post['post_entry'];
-				
+
 				foreach ($attachments as $attachment)
 				{
 					$error = '';
@@ -1079,29 +1079,29 @@ function step10_ajax()//TODO
 				{
 					$info['WHERE'] = 'post_id = ' . $post['post_id'];
 					$info['post_attachments'] = e107::serialize($newValues);
-				//	$sql->update('forum_post', $info); // XXX FIXME TODO screwed up due to _FIELD_DEFS 
-					
+				//	$sql->update('forum_post', $info); // XXX FIXME TODO screwed up due to _FIELD_DEFS
+
 					$sql->update('forum_post',"post_entry = \"".$info['post_entry']."\", post_attachments=\"".$info['post_attachments']."\" WHERE post_id = ".$post['post_id']."");
 				}
-				
+
 			}
 
-		
+
 		}
-		
+
 			$totalOutput = round(($_SESSION['forumupdate']['attachment_count'] / $_SESSION['forumupdate']['attachment_total']) * 100, 1);
 			echo $totalOutput;
-			
-			
-		
+
+
+
 			/*
 			$debugRound = "
 			forumupdate_attachment_count = ".$_SESSION['forumupdate']['attachment_count']."
 			forumupdate_attachment_total = ".$_SESSION['forumupdate']['attachment_total']."
 			calculated = ".$totalOutput."
-			
+
 			";
-			
+
 			file_put_contents(e_LOG."forum_update_step10.log",$debugRound,FILE_APPEND);
 			*/
 	}
@@ -1115,13 +1115,13 @@ function step10_ajax()//TODO
 
 function logAttachment($thread, $type, $attach)
 {
-	$tab = ($type == 'img') ? "\t\t\t" : "\t\t";	
-	
+	$tab = ($type == 'img') ? "\t\t\t" : "\t\t";
+
 	$text = $thread."\t\t".$type.$tab.$attach."\n";
-	file_put_contents(e_LOG."forum_upgrade_attachments.log",$text, FILE_APPEND);			
+	file_put_contents(e_LOG."forum_upgrade_attachments.log",$text, FILE_APPEND);
 }
-		
-	
+
+
 
 function step11()
 {
@@ -1208,7 +1208,7 @@ function step11()
 			{$extra}
 			<input class='btn' type='submit' name='delete_orphans' value='Delete files' />
 			</form>
-			
+
 		";
 		$ns -> tablerender($stepCaption, $text);
 		return;
@@ -1265,14 +1265,14 @@ function step12()
 			$sql -> gen($qry);
 		}
 	}
-	
+
 	unset($_SESSION['forumUpgrade']);
 	$ret = $f -> setNewVersion();
 
 	$mes -> addSuccess("Congratulations, the forum upgrade is now completed!<br /><br />{$ret}");
-	
+
 	$text = "<a class='btn btn-primary' href='".e_ADMIN."e107_update.php'>Return to e107 Update</a>";
-	
+
 	$ns -> tablerender($stepCaption, $mes -> render() . $text);
 	return;
 }
@@ -1352,7 +1352,7 @@ class forumUpgrade
 		}
 
 		return;
-		
+
 		/*
 		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
@@ -1456,8 +1456,8 @@ class forumUpgrade
 		 */
 
 		$detected 	= mb_detect_encoding($post['thread_name']); // 'ISO-8859-1'
-		$threadName = iconv($detected,'UTF-8', $post['thread_name']); 
-		 
+		$threadName = iconv($detected,'UTF-8', $post['thread_name']);
+
 		$thread = array();
 		$thread['thread_id'] = $post['thread_id'];
 		$thread['thread_name'] = $threadName;
@@ -1494,7 +1494,7 @@ class forumUpgrade
 	function addPost(&$post)
 	{
 		global $forum;
-		
+
 		$detected 						= mb_detect_encoding($post['thread_thread']); // 'ISO-8859-1'
 		$postEntry 						= iconv($detected,'UTF-8', $post['thread_thread']);
 
@@ -1526,7 +1526,7 @@ class forumUpgrade
 	function getUserInfo(&$info)
 	{
 		$e107 = e107::getInstance();
-		
+
 		$tmp = explode('.', $info);
 		$ret = array(
 			'user_id' => 0,
@@ -1754,11 +1754,11 @@ function forum_update_adminmenu()
 
 	$var[12]['text'] = '12 - Delete old forum data';
 	$var[12]['link'] = '#';
-	
+
 	if(E107_DEBUG_LEVEL)
 	{
 		$var[13]['divider'] = true;
-		
+
 		$var[14]['text'] = 'Reset';
 		$var[14]['link'] = e_SELF . "?reset";
 
@@ -1770,13 +1770,13 @@ function forum_update_adminmenu()
 
 		$var[17]['text'] = 'Reset to 7';
 		$var[17]['link'] = e_SELF . "?step=7&reset=7";
-		
+
 		$var[18]['text'] = 'Reset to 10';
 		$var[18]['link'] = e_SELF . "?step=10&reset=10";
-		
+
 	}
-	
-	
+
+
 
 	if (isset($_GET['step']))
 	{

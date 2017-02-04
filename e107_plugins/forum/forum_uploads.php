@@ -10,7 +10,7 @@
 
 require_once("../../class2.php");
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum')) 
+if (!$e107->isInstalled('forum'))
 {
 	e107::redirect();
 	exit;
@@ -99,7 +99,7 @@ if(is_array($fileList))
 				{
 					$txt .= "<td class='forumheader3'>".LAN_FORUM_7007.": <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tinfo['thread_id']}'>{$tinfo['thread_id']}</a></td>";
 				}
-			
+
 			}
 			else
 			{

@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 ||     e107 website system
 |
-|     Copyright (C) 2008-2014 e107 Inc 
+|     Copyright (C) 2008-2014 e107 Inc
 |     http://e107.org
 |
 |
@@ -13,7 +13,7 @@
 |
 */
 
-// Usage: [full path to this script]cron.php --u=admin --p=password // use your admin login. 
+// Usage: [full path to this script]cron.php --u=admin --p=password // use your admin login.
 // test
 
 $_E107['cli'] = true;
@@ -21,7 +21,7 @@ $_E107['debug'] = false;
 $_E107['no_online'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_menus'] = true;
-$_E107['allow_guest'] = true; // allow crons to run while in members-only mode. 
+$_E107['allow_guest'] = true; // allow crons to run while in members-only mode.
 $_E107['no_maintenance'] = true;
 
 // we allow theme init as cron jobs might need to access current theme templates (e.g. custom email templates)
@@ -31,7 +31,7 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 
 
 	$pwd = ($_E107['debug'] && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
-	
+
 	if(!empty($_GET['token']))
 	{
 		$pwd = e107::getParser()->filter($_GET['token']);
@@ -40,14 +40,14 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	{
 		$pwd = str_replace('token=','',$pwd);
 	}
-		
+
 	if(($pref['e_cron_pwd'] != $pwd) || empty($pref['e_cron_pwd']))
-	{	
+	{
 
 		if(!empty($pwd))
 		{
 			require_once(e_HANDLER."mail.php");
-			
+
 			$message = "Your Cron Schedule is not configured correctly. Your passwords do not match.
 			<br /><br />
 			Sent from cron: ".$pwd."<br />
@@ -85,20 +85,20 @@ require_once(realpath(dirname(__FILE__)."/class2.php"));
 	{
 		while($row = $sql->fetch())
 		{
-			list($class,$function) = explode("::",$row['cron_function'],2);			
+			list($class,$function) = explode("::",$row['cron_function'],2);
 			$key = $class."__".$function;
-			
+
 			$list[$key] = array(
 				'path'		=> $class,
-				'active'	=> 1,	
+				'active'	=> 1,
 				'tab'		=> $row['cron_tab'],
 				'function' 	=> $function,
-				'class'		=> $class				
-			);				
-		}	
+				'class'		=> $class
+			);
+		}
 	}
-	
-	
+
+
 	// foreach($pref['e_cron_pref'] as $func=>$cron)
 	// {
     	// if($cron['active']==1)
@@ -125,23 +125,23 @@ foreach($list as $func=>$val)
 {
 	$cron->calcLastRan($val['tab']);
 	$due = $cron->getLastRanUnix();
-	
+
 	if($_E107['debug'])
 	{
 		echo "<br />Cron: ".$val['function'];
 	}
-		
+
     if($due > (time()-45))
 	{
 		if($_E107['debug'])	{ 	echo "<br />Running Now...<br />path: ".$val['path']; }
-		
+
 		if(($val['path']=='_system') || is_readable(e_PLUGIN.$val['path']."/e_cron.php"))
 		{
-			if($val['path'] != '_system') // this is correct. 
+			if($val['path'] != '_system') // this is correct.
 			{
 				include_once(e_PLUGIN.$val['path']."/e_cron.php");
 			}
-				
+
 			$classname = $val['class']."_cron";
 			if(class_exists($classname, false))
 			{
@@ -150,11 +150,11 @@ foreach($list as $func=>$val)
 				{
 					//	$mes->add("Executing config function <b>".$key." : ".$method_name."()</b>", E_MESSAGE_DEBUG);
 					if($_E107['debug'])	{ echo "<br />Method Found: ".$classname."::".$val['function']."()"; }
-					
+
 					// Exception handling
 					$methodname = $val['function'];
 					$status = false;
-					try 
+					try
 					{
 						$status = $obj->$methodname();
 					}
@@ -163,19 +163,19 @@ foreach($list as $func=>$val)
 						$errorMData = $e->getFile().' '.$e->getLine();
 						$errorMData .= "\n\n".$e->getCode().''.$e->getMessage();
 						$errorMData .= "\n\n".implode("\n", $e->getTrace());
-						//TODO log error in admin log. Pref for sending email to Administator 
+						//TODO log error in admin log. Pref for sending email to Administator
 						sendemail($pref['siteadminemail'], $pref['siteadmin'].": Cron Schedule Exception", $errorMData, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
 					}
 					// $status = call_user_func(array($obj,$val['function']));
-					
-					// If task returns value which is not boolean (bc), it'll be used as a message (send email, logs) 
+
+					// If task returns value which is not boolean (bc), it'll be used as a message (send email, logs)
 					if($status && true !== $status)
 					{
-						//TODO log error in admin log. Pref for sending email to Administator 
+						//TODO log error in admin log. Pref for sending email to Administator
 						// echo "\nerror running the function ".$func.".\n"; // log the error.
 						if($_E107['debug'])	{ 	echo "<br />Method returned message: [{$classname}::".$val['function'].'] '.$status; }
 						sendemail($pref['siteadminemail'],  $pref['siteadmin'].": Cron Schedule Task Report", "Method returned message: [{$classname}::".$val['function'].'] '.$status, $pref['siteadmin'], $pref['siteadminemail'], $pref['siteadmin']);
-					}					 					
+					}
 				}
 				else
 				{

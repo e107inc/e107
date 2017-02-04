@@ -238,22 +238,22 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			}
 		}
 	}
-	
-	
+
+
 	function sc_forumattachment()
 	{
 		$pref = e107::getPref();
 		$tp = e107::getParser();
 
 		global $forum;
-		
+
 		//. <div>".($pref['image_post'] ? "Attach file / image" : "Attach file")."</div>
-		
+
 		//$tooltip = "Allowed file types | ".vartrue($allowed_filetypes).". Any other file type will be deleted instantly. Maximum file size: ".(vartrue($max_upload_size) ? $max_upload_size."bytes" : ini_get('upload_max_filesize'));
 		$tooltip = LAN_FORUM_3016.": ".vartrue($allowed_filetypes)." <br />".LAN_FORUM_3017."<br />".LAN_FORUM_3018.": ".(vartrue($max_upload_size) ? $max_upload_size." ".LAN_FORUM_3019 : ini_get('upload_max_filesize')); // FIXME <br /> in tooltip, no value $allowed_filetypes on v2/bootstrap
 
 		$fileattach = "
-			<div>	
+			<div>
 				<div id='fiupsection'>
 				<span id='fiupopt'>
 					<input class='tbox e-tip' title=\"".$tp->toAttribute($tooltip)."\" name='file_userfile[]' type='file' size='47'  multiple='multiple' />
@@ -261,14 +261,14 @@ class plugin_forum_post_shortcodes extends e_shortcode
 				</div>
 
 			</div>
-		
-		";	
+
+		";
 		//<input class='btn btn-default button' type='button' name='addoption' value=".LAN_FORUM_3020."  />
 		if( $this->forum->prefs->get('attach') && (check_class($pref['upload_class']) || getperms('0')))
 		{
 			return $fileattach;
 		}
-		
+
 	}
 
 
@@ -283,7 +283,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 			return '';
 		}
 
-		return LAN_FORUM_8013; 
+		return LAN_FORUM_8013;
 	}
 
 
@@ -325,10 +325,10 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		$text = "
 		<ul class='nav nav-tabs'>
 		<li class='active'><a href='#type' data-toggle='tab'>".LAN_FORUM_3025."</a></li>";
-		
+
 		$text .= ($poll) ? "<li><a href='#poll' data-toggle='tab'>".LAN_FORUM_1016."</a></li>\n" : "";
 		$text .= ($attach) ? "<li><a href='#attach' data-toggle='tab'>".LAN_FORUM_3012."</a></li>\n" : "";
-		
+
 		$text .= "
 		</ul>
 				<div class='tab-content text-left'>
@@ -341,33 +341,33 @@ class plugin_forum_post_shortcodes extends e_shortcode
 						</div>
 					</div>
 				";
-				
+
 		if($poll)
 		{
 			$text .= "<div class='tab-pane' id='poll'>
 						".$poll."
-					</div>";	
-			
+					</div>";
+
 		}
-					
+
 		if($attach)
 		{
 			$text .= "
 			<div class='tab-pane' id='attach'>
 						".$attach."
-					</div>";	
-		}			
-										
-		$text .= "			
+					</div>";
+		}
+
+		$text .= "
 		</div>";
-		
-			
+
+
 		return $text;*/
-		
-		
-		
+
+
+
 	}
-	
+
 
 	function sc_forum_post_poll($parm=null)
 	{
@@ -380,16 +380,16 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		require_once(e_PLUGIN."poll/poll_class.php");
 		$pollo = new poll;
 		$type = ($parm == 'front') ? 'front' : 'forum';
-			
+
 		$poll_form = $pollo -> renderPollForm($type);
 
 		if ($this->var['action'] == 'nt' && check_class($this->forum->prefs->get('poll')) && strpos(e_QUERY, 'edit') === false)
 		{
 			if($parm == 'front')
 			{
-				return $poll_form;	
+				return $poll_form;
 			}
-			
+
 			//BC Code below.
 			return "<tr><td class='forumheader3' style='vertical-align:top'><a href='#pollform' class='e-expandit' >".LAN_FORUM_3028."</a></td>
 			<td class='forumheader3'>
@@ -408,11 +408,11 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		{
 			$thread_sticky = (isset($_POST['threadtype']) ? $_POST['threadtype'] : vartrue($this->var['thread_sticky'], 0)); // no reference of 'head' $threadInfo['head']['thread_sticky']
 
-			$opts = array(0 => LAN_FORUM_3038, 1 => LAN_FORUM_1011, 2 => LAN_FORUM_1013); 
+			$opts = array(0 => LAN_FORUM_3038, 1 => LAN_FORUM_1011, 2 => LAN_FORUM_1013);
 
 			return "<div class='checkbox'>".e107::getForm()->radio('threadtype',$opts, $thread_sticky)."</div>";
 
-		//	return "<br /><span class='defaulttext'>post thread as 
+		//	return "<br /><span class='defaulttext'>post thread as
 		//	<input name='threadtype' type='radio' value='0' ".(!$thread_sticky ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_sticky == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_sticky == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 		}
 		return '';
@@ -439,7 +439,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 //		global $forumInfo;
 			$tp = e107::getParser();
 //    var_dump ($this);
-//$this->forumObj->threadGet($this->id, false)		
+//$this->forumObj->threadGet($this->id, false)
     if ($this->var['action'] == "rp")
     {
       	$pre = LAN_FORUM_1003;
@@ -456,7 +456,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
     }
     return $pre.($url?": <a {$title} href='".$url."'>{$name}</a> - ":$name).$post;
 	}
-	
+
 	function sc_noemotes()
 	{
 		if(vartrue($eaction) == true) { return null; }
@@ -466,7 +466,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_forum_post_email_notify()
 	{
 
-		
+
 		global $threadInfo, $action, $eaction;
 
 		$pref = e107::getPlugPref('forum');

@@ -20,7 +20,7 @@ define('LAN_PCALC_11', 'Password Calculation');
 $loginName = varset($_POST['calc_loginname'],'');
 
 require(HEADERF);
-$text = 
+$text =
 	"<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='width:95%' class='fborder'>
@@ -82,7 +82,7 @@ if (isset($_POST['show_password']))
 	  $errorString = LAN_PCALC_05;
 	}
   }
-  
+
   if (!$errorString)
   {
 	$text .= "
@@ -91,7 +91,7 @@ if (isset($_POST['show_password']))
 	    <td class='forumheader3'>".$passwordHash."</td>
 	</tr>";
   }
-  
+
 
   if ($errorString)
   {

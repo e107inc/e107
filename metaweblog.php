@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -11,7 +11,7 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.8/metaweblog.php,v $
-|     $Revision$ 
+|     $Revision$
 |     $Date$
 |     $Author$
 |

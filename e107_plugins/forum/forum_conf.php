@@ -10,7 +10,7 @@
 
 require_once('../../class2.php');
 $e107 = e107::getInstance();
-if (!$e107->isInstalled('forum')) 
+if (!$e107->isInstalled('forum'))
 {
 	e107::redirect('admin');
 	exit;
@@ -58,7 +58,7 @@ if(!in_array(USERID, array_keys($modList)))
 
 require_once(HEADERF);
 
-if (isset($_POST['deletepollconfirm'])) 
+if (isset($_POST['deletepollconfirm']))
 {
 	$sql->delete("poll", "poll_id='".intval($thread_parent)."' ");
 	$sql->select("forum_thread", "*", "thread_id='".$thread_id."' ");
@@ -147,9 +147,9 @@ if ($action == "delete_poll")
 if ($action == 'move')
 {
 	$postInfo = $forum->postGet($id, 0, 1);
-	
+
 	$frm = e107::getForm();
-	
+
 	$qry = "
 	SELECT f.forum_id, f.forum_name, fp.forum_name AS forum_parent, sp.forum_name AS sub_parent
 	FROM `#forum` AS f
@@ -159,10 +159,10 @@ if ($action == 'move')
 	AND f.forum_id != ".(int)$threadInfo['thread_forum_id']."
 	ORDER BY f.forum_parent ASC, f.forum_sub, f.forum_order ASC
 	";
-	
+
 	$sql->gen($qry);
 	$fList = $sql->db_getList();
-		
+
 	$text = "
 		<form class='forum-horizontal' method='post' action='".e_SELF.'?'.e_QUERY."'>
 		<div style='text-align:center'>
@@ -202,14 +202,14 @@ if ($action == 'move')
 		<input class='btn btn-primary button' type='submit' name='move' value='".LAN_FORUM_5019."' />
 		<input class='btn btn-default button' type='submit' name='movecancel' value='".LAN_CANCEL."' />
 		</div>
-		
+
 		</div>
 		</form>";
-	
-		
+
+
 		$threadName = $tp->toHTML($threadInfo['thread_name'], true);
 		$threadText = $tp->toHTML($postInfo[0]['post_entry'], true);
-		
+
 	$text .= "<h3>".$threadName."</h3><div>".$threadText."</div>"; // $e107->ns->tablerender(, ), '', true).$ns->tablerender('', $text, '', true);
 	$ns->tablerender(LAN_FORUM_5019, $text);
 

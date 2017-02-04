@@ -28,7 +28,7 @@ class Hybrid_Provider_Model_OAuth2 extends Hybrid_Provider_Model {
 
   /**
    * Provider API wrapper
-   * @var OAuth2Client 
+   * @var OAuth2Client
    */
   public $api = null;
 

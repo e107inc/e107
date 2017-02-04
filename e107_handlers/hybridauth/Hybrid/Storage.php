@@ -3,7 +3,7 @@
 /**
  * HybridAuth
  * http://hybridauth.sourceforge.net | http://github.com/hybridauth/hybridauth
- * (c) 2009-2015, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html 
+ * (c) 2009-2015, HybridAuth authors | http://hybridauth.sourceforge.net/licenses.html
  */
 require_once realpath(dirname(__FILE__)) . "/StorageInterface.php";
 
@@ -41,7 +41,7 @@ class Hybrid_Storage implements Hybrid_Storage_Interface {
 		} elseif (isset($_SESSION["HA::CONFIG"][$key])) {
 			return unserialize($_SESSION["HA::CONFIG"][$key]);
 		}
-		
+
 		return null;
 	}
 
@@ -130,7 +130,7 @@ class Hybrid_Storage implements Hybrid_Storage_Interface {
 
 	/**
 	 * Restores the session from serialized session data
-	 * 
+	 *
 	 * @param string $sessiondata Serialized session data
 	 * @return void
 	 */

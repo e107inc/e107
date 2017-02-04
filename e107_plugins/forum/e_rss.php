@@ -101,7 +101,7 @@ function get_forum_rss(){
 //##### create rss data, return as array $eplug_rss_data -----------------------------------
 $sqlrss = new db;
 
-switch($this->parm){ //FIXME use v2.x standard and replace this with $parm['url'] check. 
+switch($this->parm){ //FIXME use v2.x standard and replace this with $parm['url'] check.
 
 	case threads:
 	case 6:

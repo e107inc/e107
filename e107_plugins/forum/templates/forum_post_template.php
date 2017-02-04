@@ -10,10 +10,10 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-// New in v2.x - requires a bootstrap theme be loaded.  
+// New in v2.x - requires a bootstrap theme be loaded.
 
 //$FORUM_POST_TEMPLATE['caption']		= "{FORUM_POST_CAPTION}";
-$FORUM_POST_TEMPLATE['form']		= "
+$FORUM_POST_TEMPLATE['form'] = "
 									{FORUM_POST_FORM_START}
 									<div class='row-fluid'>
 										<div>{FORUM_POST_BREADCRUMB}</div>
@@ -52,9 +52,9 @@ $FORUM_POST_TEMPLATE['form']		= "
 
 
 
-$FORUM_POST_TEMPLATE['reply']	= "";
+$FORUM_POST_TEMPLATE['reply'] = "";
 
-// $FORUM_POST_WRAPPER['FORUM_POST_TEXTAREA'] = "(pre){---}(post)";  // Custom Wrapper. 
+// $FORUM_POST_WRAPPER['FORUM_POST_TEXTAREA'] = "(pre){---}(post)";  // Custom Wrapper.
 
 
 $FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' href='{SITENAME_HREF}'>{SITENAME}</a>";
@@ -73,4 +73,3 @@ $FORUM_CRUMB['forum']['value'] = "<a class='forumlink' href='{FORUM_HREF}'>{FORU
 $FORUM_CRUMB['forum']['sep'] = " :: ";
 
 $FORUM_CRUMB['thread']['value'] = "<a class='forumlink' href='{THREAD_HREF}'>{THREAD_TITLE}</a>";
-

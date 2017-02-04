@@ -6,9 +6,9 @@ if (!defined('e107_INIT')) { exit; }
 e107::js("footer-inline",  "
 
     $('#addoption').click(function () {
- 
+
       $('#poll_answer').clone().appendTo('#pollsection').find('input[type=text]').val('');
- 
+
     });
  ");
 

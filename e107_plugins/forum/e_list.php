@@ -31,8 +31,8 @@ class list_forum
 			$lvisit = $this->parent->getlvisit();
 			$qry = "
 			SELECT t.thread_name AS parent_name, t.thread_id as parent_id,
-			f.forum_id, f.forum_name, f.forum_class, 
-			u.user_name, lp.user_name AS lp_name, 
+			f.forum_id, f.forum_name, f.forum_class,
+			u.user_name, lp.user_name AS lp_name,
 			t.thread_id, t.thread_views as tviews, t.thread_name, t.thread_datestamp, t.thread_user,
 			tp.post_thread, tp.post_user, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies
 			FROM #forum_thread AS t
@@ -48,7 +48,7 @@ class list_forum
 		else
 		{	// Most recently updated threads up to limit
 			$qry = "
-			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, 
+			SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost,
 			t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name
 			FROM #forum_thread AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -73,7 +73,7 @@ class list_forum
 				extract($forumInfo);
 
 				$record = array();
-				
+
 				//last user
 				$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
 				$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
@@ -88,13 +88,13 @@ class list_forum
 				$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
 				$thread_user = $u_id;
 
-				if (isset($thread_anon)) 
+				if (isset($thread_anon))
 				{
 					$tmp = explode(chr(1), $thread_anon);
 					$thread_user = $tmp[0];
 					$thread_user_ip = $tmp[1];
 				}
-				
+
 				$gen = new convert;
 				$r_datestamp = $gen->convert_date($thread_lastpost, "short");
 				if($thread_total_replies)

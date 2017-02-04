@@ -42,7 +42,7 @@ if(!empty($parm))
 	}
 }
 
-if(!$OTHERNEWS2_STYLE) 
+if(!$OTHERNEWS2_STYLE)
 {
 	if(THEME_LEGACY !== true) // v2.x
 	{
@@ -71,7 +71,7 @@ if(!$OTHERNEWS2_STYLE)
 	else //v1.x
 	{
 		$template['start'] = '';
-		$template['end'] = '';	
+		$template['end'] = '';
 
 
 		if(!empty($parms['caption']))
@@ -82,7 +82,7 @@ if(!$OTHERNEWS2_STYLE)
 		{
 			$template['caption'] = TD_MENU_L2;
 		}
-		
+
 		$OTHERNEWS2_STYLE = "
 		<table class='forumheader3' cellpadding='0' cellspacing='0' style='width:100%'>
 		<tr><td class='caption2' colspan='2' style='padding:3px;text-decoration:none;'>
@@ -154,26 +154,26 @@ $nbr_cols 				= defset('OTHERNEWS2_COLS', 1);
 $query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon FROM #news AS n
 LEFT JOIN #user AS u ON n.news_author = u.user_id
 LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") 
+WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")
 AND FIND_IN_SET(3, n.news_render_type)  ORDER BY n.news_datestamp DESC LIMIT 0,". defset('OTHERNEWS2_LIMIT',5);
 
 if (e107::getDb()->gen($query))
 {
 	$text = $tp->parseTemplate($template['start'],true);
-	
+
 	if(OTHERNEWS2_COLS !== false)
-	{			
+	{
 		$text = "<table style='width:100%' cellpadding='0' cellspacing='".defset('OTHERNEWS2_SPACING',0)."'>";
 		$t = 0;
 		$wid = floor(100/$nbr_cols);
-		
-		while ($row = $sql->fetch()) 
+
+		while ($row = $sql->fetch())
 		{
 			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 			$text .= "\n<td style='$style ; width:$wid%;'>\n";
-	
+
 			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
-	
+
 			$text .= "\n</td>\n";
 			if (($t+1) % $nbr_cols == 0) {
 				$text .= "</tr>";
@@ -183,24 +183,24 @@ if (e107::getDb()->gen($query))
 				$t++;
 			}
 		}
-	
+
 		while ($t % $nbr_cols != 0)
 		{
 			$text .= "<td style='width:$wid'>&nbsp;</td>\n";
 			$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
 			$t++;
-	
+
 		}
 		$text .= "</table>";
 	}
-	else // perfect for divs. 
+	else // perfect for divs.
 	{
-		while ($row = $sql->fetch()) 
+		while ($row = $sql->fetch())
 		{
 			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS2_STYLE, $param);
 		}
 	}
-		
+
 	$text .= $tp->parseTemplate($template['end'], true);
 
 	// Save Data

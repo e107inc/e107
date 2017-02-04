@@ -35,19 +35,19 @@ $ns = e107::getRender();
 
 if (!vartrue($CONTACT_FORM))
  {
-	if (file_exists(THEME."contact_template.php")) 
+	if (file_exists(THEME."contact_template.php"))
 	{
 		require_once(THEME."contact_template.php");
 	}
 	else
-	{		
-		// Redirect Page if no contact-form or contact-info is available. 
+	{
+		// Redirect Page if no contact-form or contact-info is available.
 		if(($pref['sitecontacts']== e_UC_NOBODY) && trim(SITECONTACTINFO) == "")
 		{
 			e107::getRedirect()->redirect(e_BASE."index.php");
 			exit;
 		}
-		
+
 		$CONTACT_FORM = e107::getCoreTemplate('contact','form'); // require_once(e_THEME."templates/contact_template.php");
 	}
 }
@@ -88,7 +88,7 @@ if(isset($_POST['send-contactus']))
 	$body           = nl2br($tp->toEmail($_POST['body'], true,'RAWTEXT'));
 
 	$email_copy     = !empty($_POST['email_copy']) ? 1 : 0;
-	
+
 // Check Image-Code
     if (isset($_POST['rand_num']) && !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 	{
@@ -221,7 +221,7 @@ if(isset($_POST['send-contactus']))
 
 		// -----------------------
 
-		// Send as default sender to avoid spam issues. Use 'replyto' instead. 
+		// Send as default sender to avoid spam issues. Use 'replyto' instead.
     	$eml = array(
     	    'subject'       => $subject,
     	    'sender_name'   => $sender_name,
@@ -259,9 +259,9 @@ if(SITECONTACTINFO)
 {
 	if(!isset($CONTACT_INFO))
 	{
-		$CONTACT_INFO = e107::getCoreTemplate('contact','info'); 
+		$CONTACT_INFO = e107::getCoreTemplate('contact','info');
 	}
-	
+
 	$text = $tp->parseTemplate($CONTACT_INFO, true, vartrue($contact_shortcodes));
 	$ns -> tablerender(LANCONTACT_01, $text,"contact");
 }
@@ -272,7 +272,7 @@ if(check_class($active) && isset($pref['sitecontacts']) && $pref['sitecontacts']
 	$contact_shortcodes = e107::getScBatch('contact');
 	// Wrapper support
 	$contact_shortcodes->wrapper('contact/form');
-	
+
 	$text = $tp->parseTemplate($CONTACT_FORM, true, $contact_shortcodes);
 
 	if(trim($text) != "")

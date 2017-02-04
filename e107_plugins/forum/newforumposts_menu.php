@@ -178,6 +178,3 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 }
 
 new forum_newforumposts_menu;
-
-
-

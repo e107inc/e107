@@ -2,7 +2,7 @@
 /**
  * Copyright (C) e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
  * $Id$
- * 
+ *
  * News menus templates
  */
 
@@ -49,17 +49,17 @@ $NEWS_MENU_TEMPLATE['latest']['item']        = '<li><a class="e-menu-link newsmo
 
 
 
-// Other News Menu. 
+// Other News Menu.
 $NEWS_MENU_TEMPLATE['other']['caption'] 	= TD_MENU_L1;
 $NEWS_MENU_TEMPLATE['other']['start']		= "<div id='otherNews' data-interval='false' class='carousel slide othernews-block'>
 												<div class='carousel-inner'>
-												{SETIMAGE: w=400&h=200&crop=1}"; // set the {NEWSIMAGE} dimensions. 								
+												{SETIMAGE: w=400&h=200&crop=1}"; // set the {NEWSIMAGE} dimensions.
 $NEWS_MENU_TEMPLATE['other']['item']		= '<div class="item {ACTIVE}">
 												{NEWSTHUMBNAIL=placeholder}
               									<h3>{NEWSTITLE}</h3>
               									<p>{NEWSSUMMARY}</p>
               									<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">'.LAN_READ_MORE.' &raquo;</a></p>
-            									</div>';									
+            									</div>';
 $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 
 
@@ -69,17 +69,17 @@ $NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 
 
 
-// Other News Menu. 2 
+// Other News Menu. 2
 
 $NEWS_MENU_TEMPLATE['other2']['caption'] 	= TD_MENU_L2;
 $NEWS_MENU_TEMPLATE['other2']['start'] 	= "<ul class='media-list unstyled list-unstyled othernews2-block'>{SETIMAGE: w=100&h=100&crop=1}"; // set the {NEWSIMAGE} dimensions.
 $NEWS_MENU_TEMPLATE['other2']['item'] 	= "<li class='media'>
-										<span class='media-object pull-left'>{NEWSTHUMBNAIL=placeholder}</span> 
+										<span class='media-object pull-left'>{NEWSTHUMBNAIL=placeholder}</span>
 										<div class='media-body'><h4>{NEWSTITLELINK}</h4>
 										<p class='text-right'><a class='btn btn-primary btn-othernews2' href='{NEWSURL}'>".LAN_READ_MORE." &raquo;</a></p>
 										</div>
 										</li>\n";
-										
+
 $NEWS_MENU_TEMPLATE['other2']['end'] 	= "</ul>";
 
 

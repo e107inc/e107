@@ -67,14 +67,14 @@ class e_thumbpage
 	 * @var string source path modified/sanitized
 	 */
 	protected $_src_path = null;
-	
-	
-	/** Stores watermark prefs 
+
+
+	/** Stores watermark prefs
 	 */
 	protected $_watermark = array();
-	
+
 	private $_placeholder = false;
-	
+
 	protected $_thumbQuality = null;
 
 	/**
@@ -133,9 +133,9 @@ class e_thumbpage
 	//	$sql_info = array(); //compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLcharset');
 		//e107::getInstance()->initCore($e107_paths, $self, $sql_info, varset($e107_CONFIG, array()));
 		$e107 = e107::getInstance();
-		
+
 		$e107->site_path = substr(md5($mySQLdefaultdb.".".$mySQLprefix),0,10);
-		
+
 		$e107->prepare_request();
 		$e107->setDirs($e107_paths, varset($E107_CONFIG, array()));
 		$e107->set_constants();
@@ -145,13 +145,13 @@ class e_thumbpage
 		$e107->set_request(false);
 		$e107->set_urls(false);
 		unset($tmp, $self);
-	
+
 		// basic Admin area detection - required for proper path parsing
 		define('ADMIN', strpos(e_SELF, ($e107->getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
 		$e107->set_urls(false);
-			
+
 		$pref = $e107->getPref(); //TODO optimize/benchmark
-		
+
 		$this->_watermark = array(
 			'activate'		=> vartrue($pref['watermark_activate'], false),
 			'text'			=> vartrue($pref['watermark_text']),
@@ -160,13 +160,13 @@ class e_thumbpage
 			'color'			=> vartrue($pref['watermark_color'],'fff'),
 			'font'			=> vartrue($pref['watermark_font']),
 			'margin'		=> vartrue($pref['watermark_margin'],30),
-			'shadowcolor'	=> vartrue($pref['watermark_shadowcolor'], '000000'),		
-			'opacity'		=> vartrue($pref['watermark_opacity'], 20)		
-		);	
-		
+			'shadowcolor'	=> vartrue($pref['watermark_shadowcolor'], '000000'),
+			'opacity'		=> vartrue($pref['watermark_opacity'], 20)
+		);
+
 		$this->_thumbQuality = vartrue($pref['thumbnail_quality'],65);
-		
-				
+
+
 		// parse request
 		$this->parseRequest();
 	}
@@ -175,21 +175,21 @@ class e_thumbpage
 	{
 		//echo 'e_query='.str_replace('&amp;', '&', e_QUERY);
 		$e_QUERY = e_QUERY;
-		
+
 		if(isset($_GET['id'])) // very-basic url-tampering prevention and path cloaking
 		{
-			$e_QUERY = base64_decode($_GET['id']);	
+			$e_QUERY = base64_decode($_GET['id']);
 		}
-		
+
 		parse_str(str_replace('&amp;', '&', $e_QUERY), $this->_request);
-		
+
 		// parse_str($_SERVER['QUERY_STRING'], $this->_request);
 		return $this;
 	}
 
 	function checkSrc()
 	{
-		if(!vartrue($this->_request['src'])) // display placeholder when src is missing. 
+		if(!vartrue($this->_request['src'])) // display placeholder when src is missing.
 		{
 			$this->_placeholder = true;
 			return true;
@@ -232,14 +232,14 @@ class e_thumbpage
 	function sendImage()
 	{
 		//global $bench;
-	
+
 		if($this->_placeholder == true)
 		{
 			$width = ($this->_request['aw']) ? $this->_request['aw'] : $this->_request['w'];
 			$height = ($this->_request['ah']) ? $this->_request['ah'] : $this->_request['h'];
-			
+
 			$parm = array('size' => $width."x".$height);
-			
+
 			$this->placeholder($parm);
 			return false;
 		}
@@ -249,7 +249,7 @@ class e_thumbpage
 			var_dump($this->_request);
 		//	return false;
 		}
-		
+
 		if(!$this->_src_path)
 		{
 			return $this;
@@ -274,7 +274,7 @@ class e_thumbpage
 			$thumbnfo['lmodified'] = filemtime(e_CACHE_IMAGE.$fname);
 			$thumbnfo['md5s'] = md5_file(e_CACHE_IMAGE.$fname);
 			$thumbnfo['fsize'] = filesize(e_CACHE_IMAGE.$fname);
-			
+
 			// Send required headers
 			if($this->_debug !== true)
 			{
@@ -298,7 +298,7 @@ class e_thumbpage
 
 			@readfile(e_CACHE_IMAGE.$fname);
 			//$bench->end()->logResult('thumb.php', $_GET['src'].' - retrieve cache');
-			
+
 			exit;
 		}
 
@@ -318,7 +318,7 @@ class e_thumbpage
 		   	    'jpegQuality'           => $this->_thumbQuality,
 			    'interlace'             => true // improves performance
 		    ));
-			
+
 		}
 		catch (Exception $e)
 		{
@@ -353,7 +353,7 @@ class e_thumbpage
 			//TODO TBD Add Pref for Top, Bottom, Left, Right, Center?
 			$thumb->adaptiveResizeQuadrant((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0), 'T');
 		}
-		else 
+		else
 		{
 			$thumb->adaptiveResize((integer) vartrue($this->_request['aw'], 0), (integer) vartrue($this->_request['ah'], 0));
 		}
@@ -367,9 +367,9 @@ class e_thumbpage
 			return false;
 		}
 
-		// Watermark Option - See admin->MediaManager->prefs for details. 
-		
-		if(($this->_watermark['activate'] < $options['w'] 
+		// Watermark Option - See admin->MediaManager->prefs for details.
+
+		if(($this->_watermark['activate'] < $options['w']
 		|| $this->_watermark['activate'] < $options['aw']
 		|| $this->_watermark['activate'] < $options['h']
 		|| $this->_watermark['activate'] < $options['ah']
@@ -378,20 +378,20 @@ class e_thumbpage
 			$tp = e107::getParser();
 			$this->_watermark['font'] = $tp->createConstants($this->_watermark['font'], 'mix');
 			$this->_watermark['font'] =  realpath($tp->replaceConstants($this->_watermark['font'],'rel'));
-			
-			$thumb->WatermarkText($this->_watermark);			
+
+			$thumb->WatermarkText($this->_watermark);
 		}
 		//	echo "hello";
 
 
-			
+
 	//exit;
 
 		// set cache
 		$thumb->save(e_CACHE_IMAGE.$fname);
 
 
-		
+
 		// show thumb
 		$thumb->show();
 	}
@@ -422,7 +422,7 @@ class e_thumbpage
 			exit;
 		}
 
-		if (function_exists('date_default_timezone_set')) 
+		if (function_exists('date_default_timezone_set'))
 		{
 		    date_default_timezone_set('UTC');
 		}
@@ -431,7 +431,7 @@ class e_thumbpage
 	//	header('Cache-Control: public, max-age=3600');
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $thumbnfo['lmodified']).' GMT');
 		header('Content-Length: '.$thumbnfo['fsize']);
-		header('Content-Disposition: filename='.$thumbnfo['basename']); // important for right-click save-as. 
+		header('Content-Disposition: filename='.$thumbnfo['basename']); // important for right-click save-as.
 
 		$ctype = self::ctype($thumbnfo['extension']);
 		if(null !== $ctype)
@@ -443,7 +443,7 @@ class e_thumbpage
 		$time = time() + 365 * 86400;
 		header('Expires: '.gmdate("D, d M Y H:i:s", $time).' GMT');
 		header("Etag: ".$thumbnfo['md5s']);
-		
+
 	}
 
 
@@ -465,19 +465,19 @@ class e_thumbpage
 		}
 		return null;
 	}
-	
-	
-	// Display a placeholder image. 
+
+
+	// Display a placeholder image.
 	function placeholder($parm)
 	{
 		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
 
 		header('location: https://placehold.it/'.$getsize);
 		header('Content-Length: 0');
-		exit();		
+		exit();
 	}
-	
-	
+
+
 }
 
 ?>

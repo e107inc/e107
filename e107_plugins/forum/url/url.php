@@ -12,7 +12,7 @@ class plugin_forum_url extends eUrlConfig
 	public function config()
 	{
 		return array(
-		
+
 			'config' => array(
 				'noSingleEntry' => true,	// [optional] default false; disallow this module to be shown via single entry point when this config is used
 				'legacy' 		=> '{e_PLUGIN}forum/forum.php', // this config won't work in single entry point mod (legacy not used at all), so just set this to default plugin file to notify router it's legacy module
@@ -22,9 +22,9 @@ class plugin_forum_url extends eUrlConfig
 				'defaultRoute'	=> 'forum/main', // [optional] default empty; route (no leading module) used when module is found with no additional controller/action information e.g. /news/
 				'legacyQuery' => '' // default legacy query string template, null to disable, empty - use current QUERY_STRING
 			),
-			
+
 			// rule set array
-			'rules' => array() 
+			'rules' => array()
 		);
 	}
 
@@ -39,7 +39,7 @@ class plugin_forum_url extends eUrlConfig
 		if(!varset($route[0]) || 'index' == $route[0]) $route[0] = 'forum';
 		if(!varset($route[1])) $route[1] = 'main';
 		$base = e107::getInstance()->getFolder('plugins').'forum/';
-		
+
 		//var_dump($options, $route, $params);
 		if($route[0] == 'forum')
 		{
@@ -51,28 +51,28 @@ class plugin_forum_url extends eUrlConfig
 					$page = (varset($params['page']) ? $amp.'p='.$params['page'] : '');
 					return $base."forum_viewforum.php?id={$params['id']}{$page}";
 					break;
-		
+
 				case 'track':
 					return $base.'forum.php?track';
 					break;
-		
+
 				case 'index':
 				case 'main':
 					return $base.'forum.php';
 					break;
-		
+
 				case 'post':
 					return $base."forum_post.php?f={$params['type']}{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'rules':
 					return $base.'forum.php?f=rules';
 					break;
-		
+
 				case 'mfar':
 					return $base.'forum.php?f=mfar'.$amp.'id='.$params['id'];
 					break;
-		
+
 			}
 		}
 		elseif($route[0] == 'thread')
@@ -84,65 +84,65 @@ class plugin_forum_url extends eUrlConfig
 				case 'new':
 					return $base."forum_post.php?f=nt{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'reply':
 					return $base."forum_post.php?f=rp{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'view':
 					$page = (varset($params['page']) ? $amp.'p='.$params['page'] : '');
 					return $base."forum_viewtopic.php?id={$params['id']}{$page}";
 					break;
-		
+
 				case 'last':
 					return $base."forum_viewtopic.php?id={$params['id']}{$amp}last=1";
 					break;
-		
+
 				case 'post':
 					return $base."forum_viewtopic.php?f=post{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'report':
 					$page = (isset($params['page']) ? (int)$params['page'] : 0 );
 					return $base."forum_viewtopic.php?f=report{$amp}id={$params['id']}{$amp}post={$params['post']}{$amp}p={$page}";
 					break;
-		
+
 				case 'edit':
 					return $base."forum_post.php?f=edit{$amp}id={$params['id']}{$amp}post={$params['post']}";
 					break;
-		
+
 				case 'move':
 					return $base."forum_conf.php?f=move{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'split':
 					return $base."forum_conf.php?f=split{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'quote':
 					return $base."forum_post.php?f=quote{$amp}id={$params['id']}{$amp}post={$params['post']}";
 					break;
-		
+
 				case 'next':
 					return $base."forum_viewtopic.php?f=next{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'prev':
 					return $base."forum_viewtopic.php?f=prev{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'track':
 					return $base."forum_viewtopic.php?f=track{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'untrack':
 					return $base."forum_viewtopic.php?f=untrack{$amp}id={$params['id']}";
 					break;
-		
+
 				case 'track_toggle':
 					return $base."forum_viewtopic.php?f=track_toggle{$amp}id={$params['id']}";
 					break;
-		
+
 			}
 		}
 		return false;

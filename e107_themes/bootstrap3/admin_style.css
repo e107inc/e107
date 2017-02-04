@@ -1406,7 +1406,11 @@ td.forumheader3 .form-control { display:inherit }
 
 
 
+<<<<<<< HEAD
+.navbar-nav > li > a.admin-icon-avatar { padding-top:9px; padding-bottom:11px}
+=======
 .navbar-nav > li > a.admin-icon-avatar { padding-top: 11px; padding-bottom: 10px;}
+>>>>>>> refs/remotes/e107inc/master
 
 form#simplesef h4 { margin: 0 }
 .adminlist tr > td { min-height:50px; }

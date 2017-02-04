@@ -9,8 +9,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-if(!defined("USER_WIDTH")){ define("USER_WIDTH","width:95%"); }
-
+if (!defined("USER_WIDTH")) { define("USER_WIDTH", "width:95%"); }
 
 
 if (empty($FORUM_VIEW_START))
@@ -55,7 +54,7 @@ $FORUM_VIEW_START = "
 	</tr>";
 }
 
-if(empty($FORUM_VIEW_START_CONTAINER))
+if (empty($FORUM_VIEW_START_CONTAINER))
 {
 	$FORUM_VIEW_START_CONTAINER = "
 	<div style='text-align:center'>
@@ -188,7 +187,7 @@ if (empty($FORUM_VIEW_END))
 	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a>
 	//	<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 	//	</div>
-	//	
+	//
 		$FORUM_VIEW_END .= "
 		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
 		</div>
@@ -196,7 +195,7 @@ if (empty($FORUM_VIEW_END))
 }
 
 
-if(empty($FORUM_VIEW_END_CONTAINER))
+if (empty($FORUM_VIEW_END_CONTAINER))
 {
 	$FORUM_VIEW_END_CONTAINER = "
 		<table style='".USER_WIDTH."'>
@@ -274,7 +273,7 @@ $FORUM_CRUMB['sitename']['sep'] = " :: ";
 $FORUM_CRUMB['forums']['value'] = "<a class='forumlink' href='{FORUMS_HREF}'>{FORUMS_TITLE}</a>";
 $FORUM_CRUMB['forums']['sep'] = " :: ";
 
-$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>"; 
+$FORUM_CRUMB['parent']['value'] = "<a class='forumlink' href='{PARENT_HREF}'>{PARENT_TITLE}</a>";
 $FORUM_CRUMB['parent']['sep'] = " :: ";
 
 $FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' href='{SUBPARENT_HREF}'>{SUBPARENT_TITLE}</a>";
@@ -284,11 +283,11 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 
 
-// New in v2.x - requires a bootstrap theme be loaded.  
+// New in v2.x - requires a bootstrap theme be loaded.
 
 //TODO Find a good place to put a {SEARCH} dropdown.
 
-$FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
+$FORUM_VIEWFORUM_TEMPLATE['caption'] = "";
 $FORUM_VIEWFORUM_TEMPLATE['start'] 				= "<div id='forum-viewforum'>";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
@@ -302,11 +301,11 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 													<col class='hidden-xs' style='width:8%' />
 													<col class='hidden-xs' style='width:20%' />
 													</colgroup>
-												
+
 													{SUBFORUMS}";
 
 
-$FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
+$FORUM_VIEWFORUM_TEMPLATE['item'] = "<tr>
 													<td>{ICON}</td>
 													<td>
 													<div class='row'>
@@ -323,18 +322,18 @@ $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
 													<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
 													</tr>\n";
 
-$FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
-$FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
+$FORUM_VIEWFORUM_TEMPLATE['item-sticky'] = $FORUM_VIEWFORUM_TEMPLATE['item']; // "<tr><td>{THREADNAME}</td></tr>\n";
+$FORUM_VIEWFORUM_TEMPLATE['item-announce'] = $FORUM_VIEWFORUM_TEMPLATE['item']; // "<tr><td>{THREADNAME}</td></tr>\n";
 
 
-$FORUM_VIEWFORUM_TEMPLATE['sub-header']			= "<tr>
+$FORUM_VIEWFORUM_TEMPLATE['sub-header'] = "<tr>
 													<th colspan='2'>".LAN_FORUM_1002."</th>
 													<th class='text-center'>".LAN_FORUM_0003."</th>
 													<th class='hidden-xs text-center'>".LAN_FORUM_0002."</th>
 													<th class='hidden-xs'>".LAN_FORUM_0004."</th>
 												</tr>";
 
-$FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
+$FORUM_VIEWFORUM_TEMPLATE['sub-item'] = "<tr><td>{NEWFLAG}</td>
 												<td><div>{SUB_FORUMTITLE}</div><small>{SUB_DESCRIPTION}</small></td>
 												<td class='text-center'>{SUB_REPLIESX}</td>
 												<td class='hidden-xs text-center'>{SUB_THREADSX}</td>
@@ -342,18 +341,18 @@ $FORUM_VIEWFORUM_TEMPLATE['sub-item']			= "<tr><td>{NEWFLAG}</td>
 												</tr>\n";
 
 
-$FORUM_VIEWFORUM_TEMPLATE['sub-footer']			= "";		
+$FORUM_VIEWFORUM_TEMPLATE['sub-footer'] = "";
 
 /* Examples top divider with shortcodes - working
 $FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006." {FORUMTITLE}</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
 $FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007." {FORUMTITLE}</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
 */
-$FORUM_VIEWFORUM_TEMPLATE['divider-important']	= "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
-$FORUM_VIEWFORUM_TEMPLATE['divider-normal']		= "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-important'] = "<tr><th colspan='2'>".LAN_FORUM_1006."</th><th class='text-center'>".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
+$FORUM_VIEWFORUM_TEMPLATE['divider-normal'] = "<tr><th colspan='2'>".LAN_FORUM_1007."</th><th class='text-center' >".LAN_FORUM_0003."</th><th class='hidden-xs text-center'>".LAN_FORUM_1005."</th><th class='hidden-xs'>".LAN_FORUM_0004."</th></tr>";
 
 $SC_WRAPPER['VIEWABLE_BY'] = "<div class='panel panel-default' style='margin-top:10px'><div class='panel-heading'>".LAN_FORUM_8012."</div><div class='panel-body'>{---}</div></div></div>";
 
-$FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
+$FORUM_VIEWFORUM_TEMPLATE['footer'] = "</table>
 												<div class='row row-fluid'>
 
 												<div class='col-md-5 span5 pull-left left' style='padding-top:10px'>{THREADPAGES}</div><div class='col-md-3 span3 pull-right right' style='padding-top:10px'>{NEWTHREADBUTTONX}</div>
@@ -374,10 +373,10 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												{VIEWABLE_BY}
 
 												";
-$FORUM_VIEWFORUM_TEMPLATE['end'] 					= "</div>\n<!--- END --> \n";
+$FORUM_VIEWFORUM_TEMPLATE['end'] = "</div>\n<!--- END --> \n";
 
 // define {ICONKEY}
-$FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
+$FORUM_VIEWFORUM_TEMPLATE['iconkey'] = "
 												<div class='row' >
 													<div class='col-sm-3 col-xs-6'>".IMAGE_new_small." ".LAN_FORUM_0039."</div>
 													<div class='col-sm-3 col-xs-6'>".IMAGE_nonew_small." ".LAN_FORUM_0040."</div>
@@ -396,8 +395,3 @@ $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 
 
 // $FORUM_VIEWFORUM_WRAPPER['THREADNAME']          = "<span class='label label-info'>{---}</span>";
-
-
-
-
-

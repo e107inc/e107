@@ -62,7 +62,7 @@ include_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum();
 $thread = new e107ForumThread();
 
-// check if user wants to download a file 
+// check if user wants to download a file
 if(vartrue($_GET['id']) && isset($_GET['dl']))
 {
 	$forum->sendFile($_GET);
@@ -88,7 +88,7 @@ if(e_AJAX_REQUEST)
 
 }
 
-		
+
 if (isset($_GET['last']))
 {
 	$_GET['f'] = 'last';
@@ -178,7 +178,7 @@ if($thread->message)
 
 
 
-//if (isset($thread->threadInfo['thread_options']['poll'])) //XXX Currently Failing - misconfigured thread-options. 
+//if (isset($thread->threadInfo['thread_options']['poll'])) //XXX Currently Failing - misconfigured thread-options.
 //{
 if(e107::isInstalled('poll'))
 {
@@ -357,7 +357,7 @@ if ($thread->pages > 1)
 	$url = e107::url('forum','topic', $thread->threadInfo)."&amp;p=[FROM]";
 
 	$parms = "total={$thread->pages}&type=page&current={$thread->page}&url=".urlencode($url)."&caption=off&tmpl=default&navcount=4&glyphs=1";
-	
+
 	//XXX FIXME - pull-down template not practical here. Can we force another?
 
 	$tVars->GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
@@ -388,9 +388,9 @@ $tVars->BUTTONSX = forumbuttons($thread);
 
 function forumbuttons($thread)
 {
-	global $forum; 
+	global $forum;
 
-	
+
 	if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread->threadInfo['thread_active'])
 	{
 		$url = e107::url('forum','post')."?f=rp&amp;id=".$thread->threadInfo['thread_id']."&amp;post=".$thread->threadId;
@@ -402,8 +402,8 @@ function forumbuttons($thread)
 		$ntUrl = e107::url('forum','post')."?f=nt&amp;id=". $thread->threadInfo['thread_forum_id'];
 	//	$ntUrl = e107::getUrl()->create('forum/thread/new', array('id' => $thread->threadInfo['thread_forum_id']));
 		$options[] = " <a  href='".$ntUrl."'>".LAN_FORUM_2005."</a>";
-	}	
-	
+	}
+
 //	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2001."</a>";
 //	$options[] = "<a href='" . e107::getUrl()->create('forum/thread/prev', array('id' => $thread->threadId)) . "'>".LAN_FORUM_1017." ".LAN_FORUM_2002."</a>";
 
@@ -427,28 +427,28 @@ function forumbuttons($thread)
     </button>
     <ul class="dropdown-menu pull-right">
     ';
-	
+
 	foreach($options as $key => $val)
 	{
 		$text .= '<li>'.$val.'</li>';
 	}
-	
+
 	$jumpList = $forum->forumGetAllowed();
-	
+
 	$text .= "<li class='divider'></li>";
-	
+
 	foreach($jumpList as $key=>$val)
 	{
 		$text .= '<li><a href ="'.e107::url('forum','forum',$val).'">'.LAN_FORUM_1017." ".$val['forum_name'].'</a></li>';
 	}
-	
+
 	$text .= '
     </ul>
     </div>';
-	
-	
+
+
 	return $text;
-	
+
 }
 ----*/
 
@@ -566,7 +566,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 			<input type='submit' data-token='".e_TOKEN."' data-forum-insert='".$ajaxInsert."' data-forum-post='".$thread->threadInfo['thread_forum_id']."' data-forum-thread='".$threadId."' data-forum-action='quickreply' name='reply' value='".LAN_FORUM_2006. "' class='btn btn-success button' />
 			<input type='hidden' name='thread_id' value='".$threadId."' />
 		</div>
-		
+
 		</form>";
 
 		if(E107_DEBUG_LEVEL > 0)
@@ -576,7 +576,7 @@ if ($forum->checkPerm($thread->threadInfo['thread_forum_id'], 'post') && $thread
 		}
 
 
-				
+
 		// Preview should be reserved for the full 'Post reply' page. <input type='submit' name='fpreview' value='" . Preview . "' /> &nbsp;
 	}
 	else
@@ -822,15 +822,15 @@ class e107ForumThread
 		$this->perPage = (varset($_GET['perpage']) ? (int)$_GET['perpage'] : $forum->prefs->get('postspage'));
 		$this->page = (varset($_GET['p']) ? (int)$_GET['p'] : 1);
 
-		
-		if(!$this->threadId && e_QUERY) //BC Links fix. 
+
+		if(!$this->threadId && e_QUERY) //BC Links fix.
 		{
 			list($id,$page) = explode(".",e_QUERY);
-			$this->threadId = intval($id);	
+			$this->threadId = intval($id);
 			$this->page 	= intval($page);
 		}
-		
-		
+
+
 		//If threadId doesn't exist, or not given, redirect to main forum page
 		if (!$this->threadId || !$this->threadInfo = $forum->threadGet($this->threadId))
 		{

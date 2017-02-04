@@ -103,7 +103,7 @@
 			</button>
 		    	<ul class="dropdown-menu pull-right">
 		    	';
-			
+
 			//--	foreach($jumpList as $key => $val)
 			foreach($jumpList as $val)
 			{
@@ -753,7 +753,7 @@
 		function sc_icon()
 		{
 			global $forum;
-//	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref, 
+//	global $forum, $FORUM_VIEW_FORUM, $FORUM_VIEW_FORUM_STICKY, $FORUM_VIEW_FORUM_ANNOUNCE, $gen, $menu_pref,
 //$threadsViewed = $forum->threadGetUserViewed();
 //	$newflag = (USER && $this->var['thread_lastpost'] > USERLV && !in_array($this->var['thread_id'], $threadsViewed));
 			$newflag = (USER && $this->var['thread_lastpost'] > USERLV && !in_array($this->var['thread_id'], $forum->threadGetUserViewed()));

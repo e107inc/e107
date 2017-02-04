@@ -24,9 +24,6 @@ if($cacheData = e107::getCache()->retrieve("nq_othernews"))
 }
 
 
-
-
-
 require_once(e_HANDLER."news_class.php");
 unset($text);
 global $OTHERNEWS_STYLE;
@@ -56,8 +53,8 @@ if(!$OTHERNEWS_STYLE)
 			define("OTHERNEWS_COLS",false);
 		}
 		$template = e107::getTemplate('news', 'news_menu', 'other');
-		
-		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
+
+		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>
  		<a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="next">›</a></div>';
 
 		if(!empty($parms['caption']))
@@ -65,9 +62,9 @@ if(!$OTHERNEWS_STYLE)
 			$template['caption'] =  e107::getParser()->toHtml($parms['caption'],true,'TITLE');
 		}
 
-		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";		
-				
-		$OTHERNEWS_STYLE = $template['item']; 
+		$caption = "<div class='inline-text'>".$template['caption']." ".$item_selector."</div>";
+
+		$OTHERNEWS_STYLE = $template['item'];
 	}
 	else //v1.x
 	{
@@ -76,10 +73,10 @@ if(!$OTHERNEWS_STYLE)
 		{
 			$caption =  e107::getParser()->toHtml($parms['caption'], true,'TITLE');
 		}
-			
+
 		$template['start'] = '';
-		$template['end'] = '';	
-			
+		$template['end'] = '';
+
 		$OTHERNEWS_STYLE = "
 		<div style='padding:3px;width:100%'>
 		<table style='border-bottom:1px solid black;width:100%' cellpadding='0' cellspacing='0'>
@@ -90,10 +87,10 @@ if(!$OTHERNEWS_STYLE)
 		{NEWSTITLELINK}
 		</td></tr></table>
 		</div>\n";
-	 
+
 	}
-	
-	
+
+
 
 }
 
@@ -146,19 +143,19 @@ WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".$_t." AND (n.new
 if ($sql->gen($query))
 {
 	$text = $tp->parseTemplate($template['start'],true);
-		
+
 	if(OTHERNEWS_COLS !== false)
 	{
 		$text .= "<table style='width:100%' cellpadding='0' cellspacing='".OTHERNEWS_SPACING."'>";
-		$t = 0;		
-		
+		$t = 0;
+
 		$wid = floor(100/$nbr_cols);
-		while ($row = $sql->fetch()) 
+		while ($row = $sql->fetch())
 		{
 			$text .= ($t % $nbr_cols == 0) ? "<tr>" : "";
 			$text .= "\n<td style='$style ; width:$wid%;'>\n";
 			$text .= $ix->render_newsitem($row, 'return', '', $OTHERNEWS_STYLE, $param);
-	
+
 			$text .= "\n</td>\n";
 			if (($t+1) % $nbr_cols == 0) {
 				$text .= "</tr>";
@@ -168,30 +165,30 @@ if ($sql->gen($query))
 				$t++;
 			}
 		}
-	
-	
+
+
 		while ($t % $nbr_cols != 0)
 		{
 			$text .= "<td style='width:$wid'>&nbsp;</td>\n";
 			$text .= (($t+1) % $nbr_cols == 0) ? "</tr>" : "";
 			$t++;
-	
+
 		}
-		
-		$text .= "</table>";		
+
+		$text .= "</table>";
 	}
-	else // perfect for divs. 
+	else // perfect for divs.
 	{
 		$loop = 0;
-		while ($row = $sql->fetch()) 
+		while ($row = $sql->fetch())
 		{
-			$active = ($loop == 0) ? 'active' : '';		
-			
-			$TMPL = str_replace("{ACTIVE}", $active, $OTHERNEWS_STYLE);	
-			
+			$active = ($loop == 0) ? 'active' : '';
+
+			$TMPL = str_replace("{ACTIVE}", $active, $OTHERNEWS_STYLE);
+
 			$text .= $ix->render_newsitem($row, 'return', '', $TMPL, $param);
 			$loop++;
-		}				
+		}
 	}
 
 	$text .= $tp->parseTemplate($template['end'], true);

@@ -24,7 +24,7 @@ USET_01 - admin changed user data
 
 require_once ('class2.php');
 
-// TODO - Remove all the adminEdit stuff. 
+// TODO - Remove all the adminEdit stuff.
 
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
@@ -54,14 +54,11 @@ require_once (e_HANDLER.'ren_help.php');
 // require_once (e_HANDLER.'user_handler.php');
 require_once(e_HANDLER.'validator_class.php');
 
-
-
 class usersettings_front // Begin Usersettings rewrite.
 {
 
 	private $template = array();
 	private $sc = null;
-
 
 	/**
 	 * usersettings_front constructor.
@@ -117,9 +114,6 @@ class usersettings_front // Begin Usersettings rewrite.
 			'edit'              => $USERSETTINGS_EDIT,
 
 		);
-
-
-
 
 		e107::js('footer-inline',"
 			function addtext_us(sc)
@@ -211,7 +205,6 @@ class usersettings_front // Begin Usersettings rewrite.
 		}
 
 
-
 		// Save user settings (changes only)
 		//-----------------------------------
 
@@ -276,7 +269,6 @@ class usersettings_front // Begin Usersettings rewrite.
 
 
 			}
-
 
 			// Now validate everything - just check everything that's been entered
 			$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
@@ -936,14 +928,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		$ns->tablerender($caption, $text);
 
-
-
-
-
 	}
-
-
-
 
 	//
 	/**'
@@ -983,8 +968,6 @@ require_once(HEADERF);
 $us->init();
 require_once (FOOTERF);
 
-
-
 // If a field is required, returns a red asterisk
 function req($field)
 {
@@ -995,6 +978,3 @@ function req($field)
 	}
 	return $ret;
 }
-
-
-

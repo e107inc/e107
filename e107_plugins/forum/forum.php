@@ -122,7 +122,7 @@ $fVars->LOGO = IMAGE_e;
 // Gonne directly to template file
 $fVars->NEWTHREADTITLE = LAN_FORUM_0075;
 // Gonne directly to template file
-$fVars->POSTEDTITLE = LAN_FORUM_0074; 
+$fVars->POSTEDTITLE = LAN_FORUM_0074;
 // Gonne directly to shortcode file
 $fVars->NEWIMAGE = IMAGE_new_small;
 // Gonne directly to template file
@@ -211,7 +211,7 @@ $fVars->ICONKEY = "
 
 if(!$srchIcon = $tp->toGlyph('fa-search'))
 {
-	$srchIcon = LAN_SEARCH; 	
+	$srchIcon = LAN_SEARCH;
 }
 
 $fVars->SEARCH = "
@@ -298,7 +298,7 @@ if (USER && vartrue($trackPref) && e_QUERY != 'track')
 	$fVars->INFO .= "<br /><a href='".e107::url('forum','track')."'>".LAN_FORUM_0030.'</a>';
 }
 
-$fVars->FORUMINFO = 
+$fVars->FORUMINFO =
 str_replace("[x]", ($total_topics+$total_replies), LAN_FORUM_0031)." ($total_topics ".($total_topics == 1 ? LAN_FORUM_0032 : LAN_FORUM_0033).", $total_replies ".($total_replies == 1 ? LAN_FORUM_0034 : LAN_FORUM_0035).")
 ".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_FORUM_0059 : LAN_FORUM_0060)." (".$member_users." ".($member_users == 1 ? LAN_FORUM_0061 : LAN_FORUM_0062).", ".$guest_users." ".($guest_users == 1 ? LAN_FORUM_0063 : LAN_FORUM_0064).")<br />".LAN_FORUM_0066." ".$total_members."<br />".LAN_FORUM_0065." <a href='".e_HTTP."user.php ?id.".$nuser_id."'>".$nuser_name."</a>.\n"); // FIXME cannot find other references to e_TRACKING_DISABLED, use pref?
 --*/
@@ -346,10 +346,12 @@ if(is_array($FORUM_TEMPLATE) && THEME_LEGACY !== true) // new v2.x format.
 		$FORUM_TEMPLATE['main']['end']      = $FORUM_TEMPLATE['main-end'];
 	}
 
-	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main']['start'];
-	$FORUM_MAIN_PARENT 		= $FORUM_TEMPLATE['main']['parent'];
-	$FORUM_MAIN_FORUM		= $FORUM_TEMPLATE['main']['forum'];
-	$FORUM_MAIN_END			= $FORUM_TEMPLATE['main']['end'];
+	$FORUM_MAIN_START				= $FORUM_TEMPLATE['main']['start'];
+	$FORUM_MAIN_PARENT 				= $FORUM_TEMPLATE['main']['parent'];
+	$FORUM_MAIN_FORUM_WRAP_START	= $FORUM_TEMPLATE['main']['wrapstart']; // Exstended Forum Wrapper
+	$FORUM_MAIN_FORUM				= $FORUM_TEMPLATE['main']['forum'];
+	$FORUM_MAIN_FORUM_WRAP_END		= $FORUM_TEMPLATE['main']['wrapend']; // Exstended Forum Wrapper
+	$FORUM_MAIN_END					= $FORUM_TEMPLATE['main']['end'];
 
 	$FORUM_NEWPOSTS_START	= $FORUM_TEMPLATE['main']['start']; // $FORUM_TEMPLATE['new-start'];
 	$FORUM_NEWPOSTS_MAIN 	= $FORUM_TEMPLATE['main']['forum']; // $FORUM_TEMPLATE['new-main'];
@@ -421,6 +423,11 @@ foreach ($forumList['parents'] as $parent)
 				$forum_string .= parse_forum($f);
 			}
 		}
+		if (isset($FORUM_MAIN_FORUM_WRAP_END))
+		{
+		// Exstended Forum Wrapper
+    	$forum_string .= $tp->parseTemplate($FORUM_MAIN_FORUM_WRAP_END, false, $sc);
+		}
 		if (isset($FORUM_MAIN_PARENT_END))
 		{
 //--			$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
@@ -484,10 +491,10 @@ function parse_forum($f, $restricted_string = '')
 //--	$fVars->REPLIES = $f['forum_replies'];
 //----	$sc->replies = $f['forum_replies'];
 //--	$fVars->FORUMSUBFORUMS = '';
-	
+
 //--	$badgeReplies = ($f['forum_replies']) ? "badge-info" : "";
 //--	$badgeThreads = ($f['forum_threads']) ? "badge-info" : "";
-	
+
 //--	$fVars->THREADSX = "<span class='badge {$badgeThreads}'>".$f['forum_threads']."</span>";
 //--	$fVars->REPLIESX = "<span class='badge {$badgeReplies}'>".$f['forum_replies']."</span>";
 
@@ -539,7 +546,7 @@ function parse_forum($f, $restricted_string = '')
 		$fVars->LASTPOSTDATE .= "<a href='".$url."'>". $gen->computeLapse($lastpost_datestamp, time(), false, false, 'short')."</a>";
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
 		$fVars->LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".$e107->url->create('forum/thread/last', array('name' => $lastpost_name, 'id' => $lastpost_thread))."'>".IMAGE_post2.'</a>';
-		
+
 	}
 	else
 	{
@@ -804,7 +811,7 @@ function forum_track()
 				$row['thread_sef'] = eHelper::title2sef($row['thread_name'],'dashl');
 
 				$data['NEWIMAGE'] = $IMAGE_nonew_small;
-				
+
 				if ($row['thread_datestamp'] > USERLV && !in_array($row['thread_id'], $viewed))
 				{
 					$data['NEWIMAGE'] = $IMAGE_new_small;
@@ -812,7 +819,7 @@ function forum_track()
 
 				$data['LASTPOSTUSER'] = !empty($row['user_name']) ? "<a href='".e107::url('user/profile/view', array('name' => $row['user_name'], 'id' => $row['thread_lastuser']))."'>".$row['user_name']."</a>" : LAN_ANONYMOUS;
 				$data['LASTPOSTDATE'] = $tp->toDate($row['thread_lastpost'],'relative');
-				
+
 				$buttonId = "forum-track-button-".intval($row['thread_id']);
 
 				$forumUrl = e107::url('forum','forum',$row);
@@ -867,8 +874,6 @@ function forum_track()
 
 	e107::getRender()->tablerender(LAN_FORUM_0030, $text, array('forum', 'forum_track'));
 
-
 }
-
 
 ?>
