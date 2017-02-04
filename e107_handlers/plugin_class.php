@@ -237,7 +237,7 @@ class e_plugin
 
 	public function getName($plugdir)
 	{
-		if(!empty($this->_data[$plugdir]['@attributes']['lan']))
+		if(!empty($this->_data[$plugdir]['@attributes']['lan']) && defined($this->_data[$plugdir]['@attributes']['lan']))
 		{
 			return constant($this->_data[$plugdir]['@attributes']['lan']);
 		}
