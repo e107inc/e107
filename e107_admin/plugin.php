@@ -86,6 +86,307 @@ if(isset($_POST['uninstall_cancel']))
 }
 
 
+// Experimental rewrite for v2.1.5 ----------------------
+
+
+
+
+class plugman_adminArea extends e_admin_dispatcher
+{
+
+	protected $modes = array(
+
+		'main'	=> array(
+			'controller' 	=> 'plugin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'plugin_form_ui',
+			'uipath' 		=> null
+		),
+
+
+	);
+
+
+	protected $adminMenu = array(
+
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
+		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+
+		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+	);
+
+	protected $adminMenuAliases = array(
+		'main/edit'	=> 'main/list'
+	);
+
+	protected $adminMenuIcon = 'e-plugmanager-24';
+
+
+	/**
+	 * @var string		$var['installed']['text'] = EPL_ADLAN_22;
+				$var['installed']['link'] = e_SELF;
+
+				$var['avail']['text'] = EPL_ADLAN_23;
+				$var['avail']['link'] = e_SELF."?avail";
+
+
+				$var['online']['text'] = EPL_ADLAN_220;
+				$var['online']['link'] = e_SELF."?mode=online";
+
+
+				if(E107_DEBUG_LEVEL > 0)
+				{
+					$var['upload']['text'] = EPL_ADLAN_38;
+					$var['upload']['link'] = e_SELF."?mode=upload";
+				}
+
+				$var['create']['text'] = EPL_ADLAN_114;
+				$var['create']['link'] = e_SELF."?mode=create";
+
+
+
+
+
+				$keys = array_keys($var);
+
+				$action = (in_array($this->action,$keys)) ? $this->action : "installed";
+
+				if($this->action == 'lans')
+				{
+					$action = 'create';
+				}
+
+				$icon  = e107::getParser()->toIcon('e-plugmanager-24');
+				$caption = $icon."<span>".ADLAN_98."</span>";
+	 */
+
+	protected $menuTitle = ADLAN_98;
+}
+
+
+
+
+
+class plugin_ui extends e_admin_ui
+{
+
+		protected $pluginTitle		= ADLAN_98;
+		protected $pluginName		= 'core';
+	//	protected $eventName		= 'plugman-plugin'; // remove comment to enable event triggers in admin.
+		protected $table			= 'plugin';
+		protected $pid				= 'plugin_id';
+		protected $perPage			= 10;
+		protected $batchDelete		= true;
+		protected $batchExport     = true;
+		protected $batchCopy		= true;
+	//	protected $sortField		= 'somefield_order';
+	//	protected $orderStep		= 10;
+	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
+
+	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+
+		protected $listOrder		= 'plugin_id DESC';
+
+	protected $fields = array(
+			'checkboxes'         => array('title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',),
+	        'plugin_id'          => array('title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+			'plugin_icon'        => array('title' => LAN_ICON, 'type' => 'icon', 'data' => 'str', "width" => "5%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+	        'plugin_name'        => array('title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+	        'plugin_version'     => array('title' => LAN_VERSION, 'type' => 'text', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+			'plugin_date'    => array('title' => "Released", 'type' => 'text', 'data' => false,  "width" => "8%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+		    'plugin_category'    => array('title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',),
+
+			'plugin_author'      => array('title' => LAN_AUTHOR, 'type' => 'text', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+			'plugin_compatible'  => array('title' => "Compatible", 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+			'plugin_description' => array('title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+
+			'plugin_path'        => array('title' => 'Path', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+	        'plugin_installflag' => array('title' => 'Installed', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+	        'plugin_addons'      => array('title' => 'Addons', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+	         'options'            => array('title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',),
+	);
+
+	protected $fieldpref = array('plugin_icon', 'plugin_name', 'plugin_version', 'plugin_description', 'plugin_compatible', 'plugin_released','plugin_author', 'plugin_category','plugin_installflag');
+
+
+	//	protected $preftabs        = array('General', 'Other' );
+		protected $prefs = array(
+		);
+
+
+		public function init()
+		{
+			// Set drop-down values (if any).
+			$this->fields['plugin_category']['writeParms']['optArray'] = e107::getPlug()->getCategoryList(); // array('plugin_category_0','plugin_category_1', 'plugin_category_2'); // Example Drop-down array.
+
+		}
+
+		// Modify the list data.
+        public function ListObserver()
+        {
+            parent::ListObserver();
+
+	        $tree = $this->getTreeModel();
+
+			$plg = e107::getPlug();
+
+            foreach ($tree->getTree() as $id => $model)
+            {
+				$path = $model->get('plugin_path');
+
+				$plg->load($path);
+
+	            $model->set('plugin_name',$plg->getName());
+	            $model->set('plugin_date',$plg->getDate());
+	            $model->set('plugin_description',$plg->getDescription());
+                $model->set('plugin_icon',$plg->getIcon(32, 'path'));
+
+            }
+
+
+        }
+
+
+
+
+
+
+		// ------- Customize Create --------
+
+		public function beforeCreate($new_data,$old_data)
+		{
+			return $new_data;
+		}
+
+		public function afterCreate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onCreateError($new_data, $old_data)
+		{
+			// do something
+		}
+
+
+		// ------- Customize Update --------
+
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+			return $new_data;
+		}
+
+		public function afterUpdate($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+		public function onUpdateError($new_data, $old_data, $id)
+		{
+			// do something
+		}
+
+
+	/*
+		// optional - a custom page.
+		public function customPage()
+		{
+			$text = 'Hello World!';
+			$otherField  = $this->getController()->getFieldVar('other_field_name');
+			return $text;
+
+		}
+	*/
+
+}
+
+
+
+class plugin_form_ui extends e_admin_form_ui
+{
+
+
+	// Custom Method/Function
+	function plugin_name($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return $curVal;
+			break;
+
+			case 'write': // Edit Page
+				return $frm->text('plugin_name',$curVal, 255, 'size=large');
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
+
+
+	// Custom Method/Function
+	function plugin_addons($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return $curVal;
+			break;
+
+			case 'write': // Edit Page
+				return $frm->text('plugin_addons',$curVal, 255, 'size=large');
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
+
+}
+
+if(deftrue('e_DEBUG_PLUGMANAGER'))
+{
+	new plugman_adminArea();
+	require_once(e_ADMIN."auth.php");
+	e107::getAdminUI()->runPage();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// --------------------------------------
+
+
 class pluginmanager_form extends e_form
 {
 	
@@ -1247,7 +1548,7 @@ class pluginManager{
 
 			$text = "";
 
-			$plg = e107::getPlug();
+
 
 			foreach($pluginList as $plug)
 			{
@@ -1266,18 +1567,12 @@ class pluginManager{
 				$plugin_config_icon = "";
 
 
-				if(deftrue('e_DEBUG_PLUGMANAGER'))
+
+				if($plugin->parse_plugin($plug['plugin_path']))
 				{
-					$plg->load($plug['plugin_path']);
-					$plug_vars = $plg->getMeta();
+					$plug_vars = $plugin->plug_vars;
 				}
-				else
-				{
-					if($plugin->parse_plugin($plug['plugin_path']))
-					{
-						$plug_vars = $plugin->plug_vars;
-					}
-				}
+
 
 
 				if(varset($plug['plugin_category']) == "menu") // Hide "Menu Only" plugins.

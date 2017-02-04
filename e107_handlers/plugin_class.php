@@ -37,7 +37,7 @@ class e_plugin
 	const CACHETIME  = 120; // 2 hours
 	const CACHETAG   = "Meta_plugin";
 
-	private $_accepted_categories = array('settings', 'users', 'content', 'tools', 'manage', 'misc', 'menu', 'about');
+	private $_accepted_categories = array('settings'=>'settings', 'users'=>'users', 'content'=>'content','tools'=> 'tools', 'manage'=>'manage','misc'=> 'misc', 'menu'=>'menu', 'about'=> 'about');
 
 	function __construct()
 	{
@@ -63,6 +63,11 @@ class e_plugin
 		return $this;
 	}
 
+	public function getCategoryList()
+	{
+		return $this->_accepted_categories;
+	}
+
 
 	public function clearCache()
 	{
@@ -85,6 +90,31 @@ class e_plugin
 	}
 
 
+	public function getDate()
+	{
+		if(isset($this->_data[$this->_plugdir]['@attributes']['date']))
+		{
+			return $this->_data[$this->_plugdir]['@attributes']['date'];
+		}
+
+		return false;
+	}
+
+	public function getAuthor()
+	{
+		if(!isset($this->_data[$this->_plugdir]['author']))
+		{
+			return false;
+		}
+
+		return print_r($this->_data[$this->_plugdir]['author'],true);
+
+		return (string) $this->_data[$this->_plugdir]['author'];
+
+	}
+
+
+
 	public function getCategory()
 	{
 		if(!isset($this->_data[$this->_plugdir]['category']))
@@ -92,7 +122,7 @@ class e_plugin
 			return false;
 		}
 
-		return $this->_data[$this->_plugdir]['category'];
+		return (string) $this->_data[$this->_plugdir]['category'];
 
 	}
 
@@ -109,8 +139,10 @@ class e_plugin
 	}
 
 
-	public function getIcon($size = 16)
+	public function getIcon($size = 16,$opt='')
 	{
+
+
 
 		$link = $this->_data[$this->_plugdir]['adminLinks']['link'][0]['@attributes'];
 
@@ -125,6 +157,11 @@ class e_plugin
 		}
 
 		$caption = $this->getName();
+
+		if($opt === 'path')
+		{
+			return e107::getParser()->createConstants(e_PLUGIN_ABS.$this->_plugdir.'/'.$link[$key]);
+		}
 
 		return "<img src='".e_PLUGIN_ABS.$this->_plugdir.'/'.$link[$key] ."' alt=\"".$caption."\"  class='icon S".$size."'  />";
 	}
