@@ -32,6 +32,7 @@ class e_plugin
 	protected $_ids          = array();
 	protected $_installed    = array();
 	protected $_addons       = array();
+	protected $_plugdir      = null; // the currently loaded plugin
 
 	const CACHETIME  = 120; // 2 hours
 	const CACHETAG   = "Meta_plugin";
@@ -41,14 +42,27 @@ class e_plugin
 	function __construct()
 	{
 
-		$this->load();
+		$this->init();
 
 		if(empty($this->_ids))
 		{
-			$this->loadIDs();
+			$this->initIDs();
 		}
 
 	}
+
+	/**
+	 * Load specified plugin data.
+	 * @param string $plugdir
+	 * @return e_plugin
+	 */
+	public function load($plugdir)
+	{
+		$this->_plugdir = (string) $plugdir;
+
+		return $this;
+	}
+
 
 	public function clearCache()
 	{
@@ -60,45 +74,45 @@ class e_plugin
 		return $this->_installed;
 	}
 
-	public function getId($plugdir)
+	public function getId()
 	{
-		if(isset($this->_ids[$plugdir]))
+		if(isset($this->_ids[$this->_plugdir]))
 		{
-			return $this->_ids[$plugdir];
+			return $this->_ids[$this->_plugdir];
 		}
 
 		return false;
 	}
 
 
-	public function getCategory($plugdir)
+	public function getCategory()
 	{
-		if(!isset($this->_data[$plugdir]['category']))
+		if(!isset($this->_data[$this->_plugdir]['category']))
 		{
 			return false;
 		}
 
-		return $this->_data[$plugdir]['category'];
+		return $this->_data[$this->_plugdir]['category'];
 
 	}
 
 
-	public function getDescription($plugdir)
+	public function getDescription()
 	{
-		if(!isset($this->_data[$plugdir]['description']['@value']))
+		if(!isset($this->_data[$this->_plugdir]['description']['@value']))
 		{
 			return false;
 		}
 
-		return $this->_data[$plugdir]['description']['@value'];
+		return $this->_data[$this->_plugdir]['description']['@value'];
 
 	}
 
 
-	public function getIcon($plugdir, $size = 16)
+	public function getIcon($size = 16)
 	{
 
-		$link = $this->_data[$plugdir]['adminLinks']['link'][0]['@attributes'];
+		$link = $this->_data[$this->_plugdir]['adminLinks']['link'][0]['@attributes'];
 
 		$k = array(16 => 'iconSmall', 32 => 'icon', 128=>'icon128');
 		$def = array(16 => E_16_PLUGIN, 32 => E_32_PLUGIN);
@@ -110,16 +124,16 @@ class e_plugin
 			return $def[$size];
 		}
 
-		$caption = $this->getName($plugdir);
+		$caption = $this->getName();
 
-		return "<img src='".e_PLUGIN_ABS.$plugdir.'/'.$link[$key] ."' alt=\"".$caption."\"  class='icon S".$size."'  />";
+		return "<img src='".e_PLUGIN_ABS.$this->_plugdir.'/'.$link[$key] ."' alt=\"".$caption."\"  class='icon S".$size."'  />";
 	}
 
 
 
-	public function getAdminCaption($plugdir)
+	public function getAdminCaption()
 	{
-		$att = $this->_data[$plugdir]['adminLinks']['link'][0]['@attributes'];
+		$att = $this->_data[$this->_plugdir]['adminLinks']['link'][0]['@attributes'];
 
 		if(empty($att['description']))
 		{
@@ -132,11 +146,11 @@ class e_plugin
 
 
 
-	public function getAdminUrl($plugdir)
+	public function getAdminUrl()
 	{
-		if(isset($this->_data[$plugdir]['administration']['configFile']))
+		if(isset($this->_data[$this->_plugdir]['administration']['configFile']))
 		{
-			return e_PLUGIN_ABS.$plugdir.'/'.$this->_data[$plugdir]['administration']['configFile'];
+			return e_PLUGIN_ABS.$this->_plugdir.'/'.$this->_data[$this->_plugdir]['administration']['configFile'];
 		}
 
 		return false;
@@ -144,7 +158,7 @@ class e_plugin
 	}
 
 
-	private function loadIDs()
+	private function initIDs()
 	{
 		$sql = e107::getDb();
 
@@ -172,7 +186,7 @@ class e_plugin
 
 	}
 
-	private function load($force=false)
+	private function init($force=false)
 	{
 
 		$cacheTag = self::CACHETAG;
@@ -223,28 +237,28 @@ class e_plugin
 	}
 
 
-	public function getMeta($plugdir)
+	public function getMeta()
 	{
 
-		if(isset($this->_data[$plugdir]))
+		if(isset($this->_data[$this->_plugdir]))
 		{
-			return $this->_data[$plugdir];
+			return $this->_data[$this->_plugdir];
 		}
 
 		return false;
 	}
 
 
-	public function getName($plugdir)
+	public function getName()
 	{
-		if(!empty($this->_data[$plugdir]['@attributes']['lan']) && defined($this->_data[$plugdir]['@attributes']['lan']))
+		if(!empty($this->_data[$this->_plugdir]['@attributes']['lan']) && defined($this->_data[$this->_plugdir]['@attributes']['lan']))
 		{
-			return constant($this->_data[$plugdir]['@attributes']['lan']);
+			return constant($this->_data[$this->_plugdir]['@attributes']['lan']);
 		}
 
-		if(isset($this->_data[$plugdir]['@attributes']['name']))
+		if(isset($this->_data[$this->_plugdir]['@attributes']['name']))
 		{
-			return e107::getParser()->toHTML($this->_data[$plugdir]['@attributes']['name'],FALSE,"defs, emotes_off");
+			return e107::getParser()->toHTML($this->_data[$this->_plugdir]['@attributes']['name'],FALSE,"defs, emotes_off");
 		}
 
 		return false;
