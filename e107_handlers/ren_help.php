@@ -2,7 +2,7 @@
 /**
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -236,7 +236,7 @@ function PreImage_Select($formid='preimage_selector')
 // Parameter '$bbcode_filedir' removed - not used in code.
 function PreFile_Select($formid='prefile_selector')
 {
-	require_once(e_HANDLER."userclass_class.php");
+	$e_userclass = e107::user_class_admin();
 	global $IMAGES_DIRECTORY, $fl;
 
 	$sql = e107::getDb();
