@@ -19,9 +19,438 @@ if (!defined('e107_INIT')) { exit; }
  *	Plugin administration handler
  */
 
-// TODO LAN
 
 e107::coreLan('plugin', true);
+
+
+// new in v2.1.5 - optimized for speed.
+class e_plugin
+{
+
+
+	protected $_data         = array();
+	protected $_ids          = array();
+	protected $_installed    = array();
+	protected $_addons       = array();
+
+	const CACHETIME  = 120; // 2 hours
+	const CACHETAG   = "Meta_plugin";
+
+	private $_accepted_categories = array('settings', 'users', 'content', 'tools', 'manage', 'misc', 'menu', 'about');
+
+	function __construct()
+	{
+
+		$this->load();
+
+		if(empty($this->_ids))
+		{
+			$this->loadIDs();
+		}
+
+	}
+
+	public function clearCache()
+	{
+		e107::getCache()->clear(self::CACHETAG);
+	}
+
+	public function getInstalled()
+	{
+		return $this->_installed;
+	}
+
+	public function getId($plugdir)
+	{
+		if(isset($this->_ids[$plugdir]))
+		{
+			return $this->_ids[$plugdir];
+		}
+
+		return false;
+	}
+
+
+	public function getCategory($plugdir)
+	{
+		if(!isset($this->_data[$plugdir]['category']))
+		{
+			return false;
+		}
+
+		return $this->_data[$plugdir]['category'];
+
+	}
+
+
+	public function getDescription($plugdir)
+	{
+		if(!isset($this->_data[$plugdir]['description']['@value']))
+		{
+			return false;
+		}
+
+		return $this->_data[$plugdir]['description']['@value'];
+
+	}
+
+
+	public function getIcon($plugdir, $size = 16)
+	{
+
+		$link = $this->_data[$plugdir]['adminLinks']['link'][0]['@attributes'];
+
+		$k = array(16 => 'iconSmall', 32 => 'icon', 128=>'icon128');
+		$def = array(16 => E_16_PLUGIN, 32 => E_32_PLUGIN);
+
+		$key = $k[$size];
+
+		if(empty($link[$key]))
+		{
+			return $def[$size];
+		}
+
+		$caption = $this->getName($plugdir);
+
+		return "<img src='".e_PLUGIN_ABS.$plugdir.'/'.$link[$key] ."' alt=\"".$caption."\"  class='icon S".$size."'  />";
+	}
+
+
+
+	public function getAdminCaption($plugdir)
+	{
+		$att = $this->_data[$plugdir]['adminLinks']['link'][0]['@attributes'];
+
+		if(empty($att['description']))
+		{
+			return false;
+		}
+
+		return str_replace("'", '', e107::getParser()->toHTML($att['description'], FALSE, 'defs, emotes_off'));
+
+	}
+
+
+
+	public function getAdminUrl($plugdir)
+	{
+		if(isset($this->_data[$plugdir]['administration']['configFile']))
+		{
+			return e_PLUGIN_ABS.$plugdir.'/'.$this->_data[$plugdir]['administration']['configFile'];
+		}
+
+		return false;
+
+	}
+
+
+	private function loadIDs()
+	{
+		$sql = e107::getDb();
+
+		if ($rows = $sql->retrieve("plugin", "plugin_id,plugin_path,plugin_installflag", "plugin_id != '' ORDER by plugin_path ", true))
+		{
+
+			foreach($rows as $row)
+			{
+				$path = $row['plugin_path'];
+				$this->_ids[$path] = (int) $row['plugin_id'];
+
+				if(!empty($row['plugin_installflag']))
+				{
+					$this->_installed[$path] = $path;
+				}
+
+				$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;// $path;
+			}
+
+
+		}
+
+
+
+
+	}
+
+	private function load($force=false)
+	{
+
+		$cacheTag = self::CACHETAG;
+
+		if($force === false && $tmp = e107::getCache()->retrieve($cacheTag, self::CACHETIME, true, true))
+		{
+			$this->_data = e107::unserialize($tmp);
+			return true;
+		}
+
+		$dirs = scandir(e_PLUGIN);
+
+		$arr = array();
+
+		foreach($dirs as $plugName)
+		{
+
+			if($plugName === '.' || $plugName === '..' || !is_dir(e_PLUGIN.$plugName))
+			{
+				continue;
+			}
+
+			if (file_exists(e_PLUGIN.$plugName.'/plugin.xml'))
+			{
+				$ret = $this->parse_plugin_xml($plugName);
+			}
+			elseif (file_exists(e_PLUGIN.$plugName.'/plugin.php'))
+			{
+				$ret = $this->parse_plugin_php($plugName);
+			}
+
+			$arr[$plugName] = $ret;
+
+		}
+
+		if(empty($arr))
+		{
+			return false;
+		}
+
+		$cacheSet = e107::serialize($arr,'json');
+
+		e107::getCache()->set($cacheTag,$cacheSet,true,true,true);
+
+		$this->_data = $arr;
+
+
+	}
+
+
+	public function getMeta($plugdir)
+	{
+
+		if(isset($this->_data[$plugdir]))
+		{
+			return $this->_data[$plugdir];
+		}
+
+		return false;
+	}
+
+
+	public function getName($plugdir)
+	{
+		if(!empty($this->_data[$plugdir]['@attributes']['lan']))
+		{
+			return constant($this->_data[$plugdir]['@attributes']['lan']);
+		}
+
+		if(isset($this->_data[$plugdir]['@attributes']['name']))
+		{
+			return e107::getParser()->toHTML($this->_data[$plugdir]['@attributes']['name'],FALSE,"defs, emotes_off");
+		}
+
+		return false;
+
+	}
+
+
+	private function parse_plugin_xml($plugName)
+	{
+		$tp = e107::getParser();
+		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
+		$xml = e107::getXml();
+		$mes = e107::getMessage();
+
+
+		e107::getDebug()->log("Parsing Plugin: ".$plugName);
+
+		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
+		//	$xml->setOptStringTags('install,uninstall,upgrade');
+	//	if(null === $where) $where = 'plugin.xml';
+
+		$where = 'plugin.xml';
+		$ret = $xml->loadXMLfile(e_PLUGIN.$plugName.'/'.$where, 'advanced');
+
+		if ($ret === FALSE)
+		{
+			$mes->addError("Error reading {$plugName}/plugin.xml");
+			return FALSE;
+		}
+
+
+
+		$ret['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
+		$ret['category'] = (isset($ret['category'])) ? $this->checkCategory($ret['category']) : "misc";
+		$ret['files'] = preg_grep('/^([^.])/', scandir(e_PLUGIN.$plugName,SCANDIR_SORT_ASCENDING));
+
+
+		if(varset($ret['description']))
+		{
+			if (is_array($ret['description']))
+			{
+				if (isset($ret['description']['@attributes']['lan']) && defined($ret['description']['@attributes']['lan']))
+				{
+					// Pick up the language-specific description if it exists.
+					$ret['description']['@value'] = constant($ret['description']['@attributes']['lan']);
+				}
+			}
+			else
+			{
+				$diz = $ret['description'];
+				unset($ret['description']);
+
+				$ret['description']['@value'] = $diz;
+			}
+		}
+
+
+		 // Very useful debug code.to compare plugin.php vs plugin.xml
+		/*
+		 $testplug = 'forum';
+		 if($plugName == $testplug)
+		 {
+		 $plug_vars1 = $ret;
+		 $this->parse_plugin_php($testplug);
+		 $plug_vars2 = $ret;
+		 ksort($plug_vars2);
+		 ksort($plug_vars1);
+		 echo "<table>
+		 <tr><td><h1>PHP</h1></td><td><h1>XML</h1></td></tr>
+		 <tr><td style='border-right:1px solid black'>";
+		 print_a($plug_vars2);
+		 echo "</td><td>";
+		 print_a($plug_vars1);
+		 echo "</table>";
+		 }
+		*/
+
+
+		// TODO search for $ret['adminLinks']['link'][0]['@attributes']['primary']==true.
+		$ret['administration']['icon'] = varset($ret['adminLinks']['link'][0]['@attributes']['icon']);
+		$ret['administration']['caption'] = varset($ret['adminLinks']['link'][0]['@attributes']['description']);
+		$ret['administration']['iconSmall'] = varset($ret['adminLinks']['link'][0]['@attributes']['iconSmall']);
+		$ret['administration']['configFile'] = varset($ret['adminLinks']['link'][0]['@attributes']['url']);
+
+
+		return $ret;
+
+	}
+
+
+
+
+
+	private function parse_plugin_php($plugName)
+	{
+		$tp = e107::getParser();
+		$sql = e107::getDb(); // in case it is used inside plugin.php
+
+		$PLUGINS_FOLDER = '{e_PLUGIN}'; // Could be used in plugin.php file.
+
+		$eplug_conffile     = null;
+		$eplug_table_names  = null;
+		$eplug_prefs        = null;
+		$eplug_module       = null;
+		$eplug_userclass    = null;
+		$eplug_status       = null;
+		$eplug_latest       = null;
+		$eplug_icon         = null;
+		$eplug_icon_small   = null;
+
+
+		ob_start();
+		if (include(e_PLUGIN.$plugName.'/plugin.php'))
+		{
+			//$mes->add("Loading ".e_PLUGIN.$plugName.'/plugin.php', E_MESSAGE_DEBUG);
+		}
+		ob_end_clean();
+		$ret = array();
+
+		//		$ret['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest);
+
+		$ret['@attributes']['name'] = varset($eplug_name);
+		$ret['@attributes']['lan'] = varset($eplug_name);
+		$ret['@attributes']['version'] = varset($eplug_version);
+		$ret['@attributes']['date'] = varset($eplug_date);
+		$ret['@attributes']['compatibility'] = varset($eplug_compatible);
+		$ret['@attributes']['installRequired'] = ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) ? 'true' : '';
+		$ret['@attributes']['xhtmlcompliant'] = vartrue($eplug_compliant) ? 'true' : '';
+		$ret['folder'] = $plugName; // (varset($eplug_folder)) ? $eplug_folder : $plugName;
+
+		$ret['author']['@attributes']['name'] = varset($eplug_author);
+		$ret['author']['@attributes']['url'] = varset($eplug_url);
+		$ret['author']['@attributes']['email'] = varset($eplug_email);
+		$ret['description']['@value'] = varset($eplug_description);
+		$ret['description']['@attributes']['lan'] = varset($eplug_description);
+
+		$ret['category'] = !empty($eplug_category) ? $this->checkCategory($eplug_category) : "misc";
+		$ret['readme'] = !empty($eplug_readme);
+
+		$ret['menuName'] = varset($eplug_menu_name);
+
+
+		if (!empty($eplug_prefs) && is_array($eplug_prefs))
+		{
+			$c = 0;
+			foreach($eplug_prefs as $name => $value)
+			{
+				$ret['mainPrefs']['pref'][$c]['@attributes']['name'] = $name;
+				$ret['mainPrefs']['pref'][$c]['@value'] = $value;
+				$c++;
+			}
+		}
+
+		// For BC.
+		$ret['administration']['icon'] = str_replace($plugName."/","",$eplug_icon);
+		$ret['administration']['caption'] = varset($eplug_caption);
+		$ret['administration']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
+		$ret['administration']['configFile'] = varset($eplug_conffile);
+
+		if(isset($eplug_conffile))
+		{
+			$ret['adminLinks']['link'][0]['@attributes']['url'] = varset($eplug_conffile);
+			$ret['adminLinks']['link'][0]['@attributes']['description'] = LAN_CONFIGURE;
+			$ret['adminLinks']['link'][0]['@attributes']['icon'] = str_replace($plugName."/","",$eplug_icon);
+			$ret['adminLinks']['link'][0]['@attributes']['iconSmall'] = str_replace($plugName."/","",$eplug_icon_small);
+			$ret['adminLinks']['link'][0]['@attributes']['primary'] = 'true';
+		}
+		if(!empty($eplug_link) && isset($eplug_link_name) && isset($eplug_link_url))
+		{
+			$ret['siteLinks']['link'][0]['@attributes']['url'] = $tp->createConstants($eplug_link_url, 1);
+			$ret['siteLinks']['link'][0]['@attributes']['perm'] = varset($eplug_link_perms);
+			$ret['siteLinks']['link'][0]['@value'] = varset($eplug_link_name);
+		}
+
+		if(!empty($eplug_userclass) && !empty($eplug_userclass_description))
+		{
+			$ret['userClasses']['class'][0]['@attributes']['name'] = $eplug_userclass;
+			$ret['userClasses']['class'][0]['@attributes']['description'] = $eplug_userclass_description;
+		}
+
+		$ret['files'] = preg_grep('/^([^.])/', scandir(e_PLUGIN.$plugName,SCANDIR_SORT_ASCENDING));
+
+
+		return $ret;
+
+	}
+
+
+	private function checkCategory($cat)
+	{
+		if (!empty($cat) && in_array($cat, $this->_accepted_categories))
+		{
+			return $cat;
+		}
+		else
+		{
+			return 'misc';
+		}
+	}
+
+
+
+}
+
+
+
 
 class e107plugin
 {
@@ -184,6 +613,11 @@ class e107plugin
 	var $module = array();
 	private $options = array();
 	private $log = array();
+
+
+
+
+
 
 	function __construct()
 	{
@@ -1741,6 +2175,8 @@ class e107plugin
 			$event->trigger('admin_plugin_refresh', $plug);
 		}
 
+
+
 		return null;
 
 	}
@@ -3005,7 +3441,9 @@ class e107plugin
 		e107::getMessage()->addDebug("Running Refresh of ".$_path);
 
 		$this->save_addon_prefs();
-		
+
+		e107::getPlug()->clearCache();
+
 		return $text;
 	}
 
@@ -3063,6 +3501,9 @@ class e107plugin
 		}
 
 		$this->log("Installation completed"); // no LANs
+
+		e107::getPlug()->clearCache();
+
 		return $text;
 	}
 
@@ -3218,6 +3659,8 @@ class e107plugin
 			$this->save_addon_prefs('update');
 
 		$this->log("Uninstall completed");
+
+		e107::getPlug()->clearCache();
 
 		return $text;
 	}
@@ -3715,7 +4158,7 @@ class e107plugin
 		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
-		
+
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');
 		if(null === $where) $where = 'plugin.xml';
@@ -3726,7 +4169,7 @@ class e107plugin
 		{
 			$mes->addError("Error reading {$plugName}/plugin.xml");
 			return FALSE;
-		}
+	}
 
 		$this->plug_vars['folder'] = $plugName; // remove the need for <folder> tag in plugin.xml.
 		$this->plug_vars['category'] = (isset($this->plug_vars['category'])) ? $this->manage_category($this->plug_vars['category']) : "misc";
@@ -3741,7 +4184,7 @@ class e107plugin
 				{
 					// Pick up the language-specific description if it exists.
 					$this->plug_vars['description']['@value'] = constant($this->plug_vars['description']['@attributes']['lan']);
-				}
+}
 			}
 			else
 			{

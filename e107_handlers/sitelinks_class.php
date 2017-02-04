@@ -726,7 +726,7 @@ class e_navigation
 		$this->admin_cat['title'][1] = LAN_SETTINGS;
 		$this->admin_cat['id'][1] = 'setMenu';
 		$this->admin_cat['img'][1] = 'fa-cogs.glyph';
-		$this->admin_cat['lrg_img'][1] = 'e-settings-32.glyph';
+		$this->admin_cat['lrg_img'][1] = $tp->toGlyph('e-settings-32');
 		$this->admin_cat['sort'][1] = true;
 
 /*
@@ -788,7 +788,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$this->admin_cat['title'][20] = LAN_ABOUT;
 		$this->admin_cat['id'][20] = 'aboutMenu';
 		$this->admin_cat['img'][20] = 'fa-info-circle.glyph'; // E_16_CAT_ABOUT;//E_16_NAV_DOCS
-		$this->admin_cat['lrg_img'][20] = ''; // E_32_CAT_ABOUT;
+		$this->admin_cat['lrg_img'][20] = ''; // $tp->toGlyph('e-cat_about-32'); ; // E_32_CAT_ABOUT;
 		$this->admin_cat['sort'][20] = false;	
 				
 		
@@ -804,6 +804,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
         {
              return $this->pluginLinks(E_16_PLUGMANAGER, "array") ;   
         }
+
+		if($mode == 'plugin2')
+        {
+             return $this->pluginLinks(E_16_PLUGMANAGER, "standard") ;
+        }
+
+
 		
 		$this->setIconArray();	
 		
@@ -966,10 +973,105 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
             return (int) vartrue($convert[$cat][0]);
     }
-		
+
+
+	/**
+	 * Get Plugin Links - rewritten for v2.1.5
+	 * @param string $iconSize
+	 * @param string $linkStyle standard = new in v2.1.5 | array | adminb
+	 * @return array|string
+	 */
+	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
+	{
+		$plug = e107::getPlug();
+		$data = $plug->getInstalled();
+
+		$arr = array();
+
+		$pref = e107::getPref();
+
+		foreach($data as $path)
+		{
+
+			if(!e107::isInstalled($path))
+			{
+				continue;
+			}
+
+			if(!empty($pref['lan_global_list']) && !in_array($path, $pref['lan_global_list']))
+			{
+				e107::loadLanFiles($path, 'admin');
+			}
+
+
+			$key = ($linkStyle === 'standard') ? "plugnav-".$path : 'p-'.$path;
+
+			$url = $plug->getAdminUrl($path);
+			$cat = $plug->getCategory($path);
+
+			if(empty($url) || $cat === 'menu')
+			{
+				continue;
+			}
+
+			// Keys compatible with legacy and new admin layouts.
+			$arr[$key] = array(
+
+				'text'          => $plug->getName($path),
+				'description'   => $plug->getDescription($path),
+				'link'          => $url,
+				'image'         => $plug->getIcon($path,16),
+				'image_large'   => $plug->getIcon($path,32),
+				'category'      => $cat,
+				'perm'           => "P".$plug->getId($path),
+				'sort'          => 2,
+				'sub_class'     => null,
+
+
+				// Legacy Keys.
+				'key'       => $key,
+				'title'     => $plug->getName($path),
+				'caption'   => $plug->getAdminCaption($path),
+				'perms'     => "P".$plug->getId($path),
+				'icon'      => $plug->getIcon($path,16),
+				'icon_32'   => $plug->getIcon($path,32),
+				'cat'       => $this->plugCatToCoreCat($plug->getCategory($path))
+
+			);
+
+
+		}
+
+		//ksort($arr, SORT_STRING);
+
+		if($linkStyle === "array" || $iconSize === 'assoc' || $linkStyle === 'standard')
+		{
+		   	return $arr;
+		}
+
+
+		$text = '';
+
+		foreach ($arr as $plug_key => $plug_value)
+		{
+			$the_icon =  ($iconSize == E_16_PLUGMANAGER) ?  $plug_value['icon'] : $plug_value['icon_32'];
+			$text .= $this->renderAdminButton($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
+		}
+
+		return $text;
+
+	}
+
+
 	// Function renders all the plugin links according to the required icon size and layout style
 	// - common to the various admin layouts such as infopanel, classis etc. 
-	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
+	/**
+	 * @deprecated
+	 * @param string $iconSize
+	 * @param string $linkStyle
+	 * @return array|string
+	 */
+	function pluginLinksOld($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	{
 	
 		$sql = e107::getDb();
@@ -991,13 +1093,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 		$plugs = e107::getObject('e107plugin');
 		
+
 		
-		
-		if(vartrue($pref['plug_installed']))
+		if(!empty($pref['plug_installed']))
 		{
 			foreach($pref['plug_installed'] as $plug=>$vers)
 			{
-		
+
 				$plugs->parse_plugin($plug);
 				
 		
@@ -1042,7 +1144,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 						$plugin_array['p-'.$plugin_path] = array(
 						  'key'      => 'p-'.$plugin_path,
 						  'link'      => e_PLUGIN.$plugin_path."/".$eplug_conffile, 
-						  'title'     => $eplug_name, 'caption' => $eplug_caption, 
+						  'title'     => $eplug_name,
+						  'caption' => $eplug_caption,
 						  'perms'     => "P".varset($plug_id[$plugin_path]), 
 						  'icon'      => $plugin_icon, 
 						  'icon_32'   => $plugin_icon_32,
