@@ -42,7 +42,7 @@ require_once("../class2.php");
 
 if(e_MENUMANAGER_ACTIVE === false )
 {
-	if(!deftrue("e_DEBUG_MENUMANAGER"))
+	if(!deftrue("e_DEBUG"))
 	{
 		e107::getJs()->inlineCSS('
 
@@ -879,7 +879,7 @@ class e_menu_layout
 		{
 			$template = $head[$k]."\n{---}".$foot[$k];
 			$layout['templates'][$k] = $template;
-			$layout['menus'][$k] = self::countMenus($template);
+			$layout['menus'][$k] = self::countMenus($template, $k);
 		}
 
 
@@ -889,13 +889,15 @@ class e_menu_layout
 	}
 
 
-	private static function countMenus($template)
+	private static function countMenus($template, $name)
 	{
 		if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
 		{
 			sort($matches[1]);
 			return $matches[1];
 		}
+
+		e107::getDebug()->log("No Menus Found in Template:".$name." with strlen: ".strlen($template));
 
 		return array();
 	}
