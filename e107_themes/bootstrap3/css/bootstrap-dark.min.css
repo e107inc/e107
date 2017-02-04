@@ -1477,7 +1477,7 @@ legend{color:#fff}
 .nav-pills>li>a{border:0;background:0 0}
 .nav-pills>li>a:hover{background:#3c3c3c;border:0}
 .nav-pills>li.active>a{background-color:#337ab7}
-.nav-pills>li.active>a:hover{background:#3c3c3c}
+.nav-pills>li.active>a:focus,.nav-pills>li.active>a:hover{background:#337ab7}
 .nav-pills>li.disabled>a,.nav-pills>li.disabled>a:hover{background:0 0}
 .pagination>li>a{background-image:-webkit-linear-gradient(#303030,#212121 60%,#171717);background-image:-o-linear-gradient(#303030,#212121 60%,#171717);background-image:linear-gradient(#303030,#212121 60%,#171717);background-repeat:no-repeat;filter:none}
 .pagination>li.active>a,.pagination>li>a:hover{background-image:-webkit-linear-gradient(#000,#000 40%,#000);background-image:-o-linear-gradient(#000,#000 40%,#000);background-image:linear-gradient(#000,#000 40%,#000);background-repeat:no-repeat;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff000000', endColorstr='#ff000000', GradientType=0);filter:none}
