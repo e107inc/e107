@@ -192,7 +192,7 @@ class e_marketplace
 	{
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			e107::getMessage()->addDebug("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
+			e107::getDebug()->log("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
 		}
 		return $this->adapter()->call($method, $data, $apply);
 	}
@@ -227,6 +227,7 @@ class e_marketplace
 
 	/**
 	 * @param $data - e107.org plugin/theme feed data.
+	 * @return bool|string
 	 */
 	public function getDownloadModal($type='plugin',$data)
 	{
@@ -236,18 +237,34 @@ class e_marketplace
 		if($type === 'plugin')
 		{
 
-			$srcData = array(
-				'plugin_id'     => $data['params']['id'],
-				'plugin_folder' => $data['folder'],
-				'plugin_price'  => $data['price'],
-				'plugin_mode'   => $data['params']['mode'],
-				'plugin_url'    => $data['url'],
-			);
+			if(empty($data['plugin_id']))
+			{
 
-
+				$srcData = array(
+					'plugin_id'     => $data['params']['id'],
+					'plugin_folder' => $data['folder'],
+					'plugin_price'  => $data['price'],
+					'plugin_mode'   => $data['params']['mode'],
+					'plugin_url'    => $data['url'],
+				);
+			}
+			else
+			{
+				$srcData = $data;
+			}
 
 			$d = http_build_query($srcData,false,'&');
-			$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+
+			if(deftrue('e_DEBUG_PLUGMANAGER'))
+			{
+				$url = e_ADMIN.'plugin.php?mode=online&action=download&src='.base64_encode($d);
+			}
+			else
+			{
+				$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+			}
+
+
 		}
 
 		if($type === 'theme')

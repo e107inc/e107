@@ -96,7 +96,7 @@ class bootstrap3_admintheme
 
 		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
 		echo "<!-- Style: ".$style." -->\n\n";
-			echo "<!-- Mode: ".$mode." -->";
+			echo "<!-- Mode: ".(string) $mode." -->";
 		$class = '';
 
 		if(is_string($mode) && $mode == 'admin_help')

@@ -3525,7 +3525,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$sql = e107::getDb();
 			if($qry && $sql->gen($qry, $debug))
 			{
-				while ($res = $sql->db_Fetch())
+				while ($res = $sql->fetch())
 				{
 					$tmp1 = array();
 					$tmp = array_values(preg_grep('#'.$srch.'#i', $res));
@@ -3860,12 +3860,18 @@ class e_admin_controller_ui extends e_admin_controller
 			$searchQry[] = $searchFilter;
 		}
 
+	if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
+		{
+			e107::getMessage()->addDebug(print_a($searchQry,true));
+		}
+
+
 		// main table should select everything
 		$tableSFieldsArr[] = $tablePath.'*';
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
-			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']))
+			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || $var['data'] === false)
 			{
 				continue;
 			}
@@ -3918,7 +3924,8 @@ class e_admin_controller_ui extends e_admin_controller
 
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
 		{
-	//		e107::getMessage()->addInfo(print_a($filter,true));
+		//	e107::getDebug()->log(print_a($filter,true));
+			// e107::getMessage()->addInfo(print_a($filter,true));
 		}
 
 		if($isfilter)
@@ -5475,8 +5482,12 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function renderHelp()
 	{
+
 	}
 
 	/**
@@ -5962,7 +5973,7 @@ class e_admin_form_ui extends e_form
 
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
-		
+
 		$this->listTotal = $tree[$id]->getTotal();
 
 
