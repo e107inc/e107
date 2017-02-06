@@ -6,7 +6,19 @@
  * Latest news menu
  */
 if (!defined('e107_INIT')) { exit; }
-
+/**
+ * News Grid Menu
+ *
+ * @param string    $parm['caption']        text or constant
+ * @param integer   $parm['titleLimit']     number of chars fo news title
+ * @param integer   $parm['summaryLimit']   number of chars for new summary
+ * @param string    $parm['source']         latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
+ * @param integer   $parm['order']          n.news_datestamp DESC
+ * @param integer   $parm['limit']          10
+ *
+ * @example hard-coded {MENU: path=news/news_grid&limit=6&source=latest}
+ * @example admin assigned - Add via Media-Manager and then configure.  
+ */
 $cacheString = 'nq_news_grid_menu_'.md5(serialize($parm));
 
 $cached = e107::getCache()->retrieve($cacheString);
