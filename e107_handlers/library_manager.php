@@ -1499,7 +1499,7 @@ class e_library_manager
 		$adminTheme = e107::getPref('admintheme');
 
 		// Load integration_files.
-		if(!$library['post_load_integration_files'] && !empty($library['integration_files']))
+		if(!empty($library['post_load_integration_files']) && !$library['post_load_integration_files'] && !empty($library['integration_files']))
 		{
 			foreach($library['integration_files'] as $provider => $files)
 			{
@@ -1611,7 +1611,7 @@ class e_library_manager
 		}
 
 		// Load integration_files.
-		if($library['post_load_integration_files'] && !empty($library['integration_files']))
+		if(!empty($library['post_load_integration_files']) && $library['post_load_integration_files'] && !empty($library['integration_files']))
 		{
 			foreach($library['integration_files'] as $provider => $files)
 			{
@@ -1852,6 +1852,11 @@ class e_library_manager
 	 */
 	private function preLoad(&$library)
 	{
+		if(empty($library['machine_name']))
+		{
+			return;
+		}
+
 		if(defset('e_ADMIN_AREA', false) == true)
 		{
 			$coreLibrary = new core_library();
