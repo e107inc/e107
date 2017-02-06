@@ -3871,7 +3871,7 @@ class e_admin_controller_ui extends e_admin_controller
 		foreach($this->getFields() as $key => $var)
 		{
 			// disabled or system
-			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || $var['data'] === false)
+			if((!empty($var['nolist']) && empty($var['filter'])) || empty($var['type']) || empty($var['data']))
 			{
 				continue;
 			}
@@ -6154,6 +6154,16 @@ class e_admin_form_ui extends e_form
 			$filter_preserve_var[] = $this->hidden('mode', $l[0]);
 			$filter_preserve_var[] = $this->hidden('action', $l[1]);
 		}
+
+
+		//	$tree = $this->getTree();
+		//	$total = $this->getTotal();
+		$tree = $this->getController()->getTreeModel();
+		$totalRecords = $tree->getTotal();
+		$perPage = $this->getController()->getPerPage();
+		$fromPage = $this->getController()->getQuery('from', 0);
+
+
 		$text = "
 			<form method='get' action='".e_SELF."'>
 				<fieldset id='admin-ui-list-filter' class='e-filter'>
@@ -6173,6 +6183,7 @@ class e_admin_form_ui extends e_form
 							<div class='e-autocomplete'></div>
 							".implode("\n", $filter_preserve_var)."
 							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
+							".$this->pagination(e_REQUEST_SELF.'?from=[FROM]',$totalRecords,$fromPage,$perPage,array('template'=>'basic'))."
 							<span class='indicator' style='display: none;'>
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 							</span>
