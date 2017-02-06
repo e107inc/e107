@@ -37,12 +37,8 @@ if(!deftrue('e_DEBUG_PLUGMANAGER'))
 	$plugin = new e107plugin;
 	$pman = new pluginManager;
 
+	define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 }
-
-
-define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
-
-
 
 
 if(isset($_POST['uninstall_cancel']))
@@ -248,6 +244,7 @@ class plugin_ui extends e_admin_ui
 		            $model->set('plugin_author',$plg->getAuthor());
 		            $model->set('plugin_compatible',$plg->getCompat());
 		            $model->set('plugin_admin_url',$plg->getAdminUrl());
+		            $model->set('plugin_admin_caption', $plg->getAdminCaption());
 		            $model->set('plugin_description',$plg->getDescription());
 		            $model->set('plugin_version_file',$plg->getVersion());
 		            $model->set('plugin_install_required',$plg->getInstallRequired());
@@ -296,6 +293,33 @@ class plugin_ui extends e_admin_ui
 
 	     }
 
+
+
+		function renderHelp()
+		{
+			$plg = e107::getPlug();
+			if(!$list = $plg->getUpgradableList())
+			{
+				return null;
+			}
+
+
+			$text = "<ul class='list-unstyled'>";
+			foreach($list as $path=>$ver)
+			{
+				$plg->load($path);
+				$url = e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$path;
+				$text .= "<li><a href='".$url."'>".$plg->getIcon(32)." ".$plg->getName()."</a></li>";
+
+			}
+			$text .= "</ul>";
+
+
+
+
+			return array('caption'=>"Updates to be Installed", 'text'=>$text);
+
+		}
 
 		// Action Pages.
 
@@ -870,7 +894,8 @@ class plugin_form_ui extends e_admin_form_ui
 
 		if($var['plugin_admin_url'] && $var['plugin_installflag'] == true)
 		{
-			$conf_title = LAN_CONFIGURE . ' ' . $tp->toHTML($var['@attributes']['name'], "", "defs,emotes_off, no_make_clickable");
+
+			$conf_title = !empty($var['plugin_admin_caption']) ? $var['plugin_admin_caption'] : LAN_CONFIGURE . ' ' . $tp->toHTML($var['plugin_name'], "", "defs,emotes_off, no_make_clickable");
 			$plugin_config_icon = "<a class='btn btn-default' title='{$conf_title}' href='" . $var['plugin_admin_url'] . "' >" . ADMIN_CONFIGURE_ICON . "</a>";
 		}
 
@@ -908,9 +933,7 @@ class plugin_form_ui extends e_admin_form_ui
 
 		if($var['plugin_version'] != $var['plugin_version_file'] && $var['plugin_installflag'])
 		{
-			//	$text .= "<br /><input type='button' class='btn' onclick=\"location.href='".e_SELF."?upgrade.{$var['plugin_id']}'\" title='".EPL_UPGRADE." to v".$var['@attributes']['version']."' value='".EPL_UPGRADE."' />";
-			e107::getMessage()->addInfo("<b>" . $tp->toHtml($var['plugin_name'], false, 'TITLE') . "</b> is ready to be upgraded. (see below)"); // TODO LAN
-			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&id={$var['plugin_path']}' title=\"" . EPL_UPGRADE . " v" . $var['@attributes']['version'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
+			$text .= "<a class='btn btn-default' href='" . e_SELF . "?mode=".$mode."&action=upgrade&id={$var['plugin_path']}' title=\"" . EPL_UPGRADE . " v" . $var['plugin_version'] . "\" >" . ADMIN_UPGRADEPLUGIN_ICON . "</a>";
 		}
 
 		if($var['plugin_installflag'] && e_DEBUG == true)
