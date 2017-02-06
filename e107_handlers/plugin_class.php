@@ -903,8 +903,11 @@ class e107plugin
 				}
 			}
 				
-				$curVal = floatval($version);
+			//	$curVal = floatval($version);
+				$curVal = $version;
 				$fileVal = $plg->getVersion(); // floatval($data['@attributes']['version']);
+			//	$fileVal = floatval($fileVal);
+
 				
 				if($ret = $this->execute_function($path, 'upgrade', 'required', array($this, $curVal, $fileVal))) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
 				{
