@@ -8,7 +8,9 @@
 if (!defined('e107_INIT')) { exit; }
 
 $cacheString = 'nq_news_grid_menu_'.md5(serialize($parm));
+
 $cached = e107::getCache()->retrieve($cacheString);
+
 if(false === $cached)
 {
 	e107::plugLan('news');
@@ -20,12 +22,20 @@ if(false === $cached)
 	else
 	{
 		$parms = $parm;
+
+		e107::getDebug()->log($parms);
 	}
 
 	if(isset($parms['caption'][e_LANGUAGE]))
 	{
 		$parms['caption'] = $parms['caption'][e_LANGUAGE];
 	}
+
+	if(defset($parms['caption']))
+	{
+		$parms['caption'] = constant($parms['caption']);
+	}
+
 
 	$ntree          = e107::getObject('e_news_tree', null, e_HANDLER.'news_class.php');
 	$template       = e107::getTemplate('news', 'news_menu', 'grid');
@@ -60,6 +70,12 @@ if(false === $cached)
 
 	$treeparm = array();
 	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);
+
+	if(!empty($parms['limit']))
+	{
+		$treeparm['db_limit'] = '0, '.intval($parms['limit']);
+	}
+
 	if(vartrue($parms['order'])) $treeparm['db_order'] = e107::getParser()->toDb($parms['order']);
 	$parms['return'] = true;
 
