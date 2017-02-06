@@ -968,6 +968,13 @@ class admin_shortcodes
 
 	function sc_admin_pword()
 	{
+
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php") !==false)
+		{
+			return false;
+		}
+		
+
 		global $pref;
 		if (ADMIN && ADMINPERMS == '0')
 		{

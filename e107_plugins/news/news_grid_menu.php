@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
  * @param integer   $parm['limit']          10
  *
  * @example hard-coded {MENU: path=news/news_grid&limit=6&source=latest}
- * @example admin assigned - Add via Media-Manager and then configure.  
+ * @example admin assigned - Add via Media-Manager and then configure.
  */
 $cacheString = 'nq_news_grid_menu_'.md5(serialize($parm));
 
