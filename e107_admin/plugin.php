@@ -30,7 +30,7 @@ define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('siz
 global $user_pref;
 
 
-if(deftrue('e_DEBUG_PLUGMANAGER'))
+if(!deftrue('e_DEBUG_PLUGMANAGER'))
 {
 	require_once(e_HANDLER.'plugin_class.php');
 	require_once(e_HANDLER.'file_class.php');
