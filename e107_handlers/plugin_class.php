@@ -139,6 +139,7 @@ class e_plugin
 		return false;
 	}
 
+
 	public function getAuthor($type='name')
 	{
 		if(!isset($this->_data[$this->_plugdir]['author']['@attributes'][$type]))
@@ -149,8 +150,6 @@ class e_plugin
 		return $this->_data[$this->_plugdir]['author']['@attributes'][$type];
 
 	}
-
-
 
 
 
@@ -234,11 +233,42 @@ class e_plugin
 	}
 
 
+	/**
+	 * Check if the current plugin is a legacy plugin which doesn't use plugin.xml
+	 * @return mixed
+	 */
+	public function isLegacy()
+	{
+		return $this->_data[$this->_plugdir]['legacy'];
+	}
+
+
+
+	public function getUpgradableList()
+	{
+		$needed = array();
+
+		foreach($this->_installed as $path=>$curVal)
+		{
+
+			$version = $this->load($path)->getVersion();
+
+			if(version_compare($curVal,$version,"<")) // check pref version against file version.
+			{
+				$needed[$path] = $version;
+			}
+
+		}
+
+		return !empty($needed) ? $needed : false;
+	}
+
+
 	private function initIDs()
 	{
 		$sql = e107::getDb();
 
-		if ($rows = $sql->retrieve("plugin", "plugin_id,plugin_path,plugin_installflag", "plugin_id != '' ORDER by plugin_path ", true))
+		if ($rows = $sql->retrieve("plugin", "*", "plugin_id != '' ORDER by plugin_path ", true))
 		{
 
 			foreach($rows as $row)
@@ -248,7 +278,7 @@ class e_plugin
 
 				if(!empty($row['plugin_installflag']))
 				{
-					$this->_installed[$path] = $path;
+					$this->_installed[$path] = $row['plugin_version'];
 				}
 
 				$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;// $path;
@@ -350,7 +380,7 @@ class e_plugin
 		$mes = e107::getMessage();
 
 
-		e107::getDebug()->log("Parsing Plugin: ".$plugName);
+
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');
@@ -419,7 +449,7 @@ class e_plugin
 		$ret['administration']['caption'] = varset($ret['adminLinks']['link'][0]['@attributes']['description']);
 		$ret['administration']['iconSmall'] = varset($ret['adminLinks']['link'][0]['@attributes']['iconSmall']);
 		$ret['administration']['configFile'] = varset($ret['adminLinks']['link'][0]['@attributes']['url']);
-
+		$ret['legacy'] = false;
 
 		return $ret;
 
@@ -523,7 +553,7 @@ class e_plugin
 		}
 
 		$ret['files'] = preg_grep('/^([^.])/', scandir(e_PLUGIN.$plugName,SCANDIR_SORT_ASCENDING));
-
+		$ret['legacy'] = true;
 
 		return $ret;
 
@@ -846,27 +876,33 @@ class e107plugin
 		require_once(e_HANDLER."db_verify_class.php");
 		$dbv = new db_verify;
 		
-				
+
+		$plg = e107::getPlug();
+
 		foreach($plugVersions as $path=>$version)
 		{
-			$fullPath = e_PLUGIN.$path."/plugin.xml";
-			if(file_exists(e_PLUGIN.$path."/plugin.xml"))
-			{	
-				$data = $xml->loadXMLfile($fullPath, true);
+			if($plg->isLegacy() === true)
+			{
+				continue;
+			}
+
+			$data = $plg->load($path)->getMeta();
+
+		//	$data = $xml->loadXMLfile($fullPath, true);
 				
-				if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
-				{
-					$dbv->errors = array();
-					$dbv->compare($path);
+			if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
+			{
+				$dbv->errors = array();
+				$dbv->compare($path);
 					
-					if($dbv->errors())
-					{
-						$needed[$path] = $data;		
-					}
+				if($dbv->errors())
+				{
+					$needed[$path] = $data;
 				}
+			}
 				
 				$curVal = floatval($version);
-				$fileVal = floatval($data['@attributes']['version']);
+				$fileVal = $plg->getVersion(); // floatval($data['@attributes']['version']);
 				
 				if($ret = $this->execute_function($path, 'upgrade', 'required', array($this, $curVal, $fileVal))) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
 				{
@@ -893,7 +929,7 @@ class e107plugin
 				//	$log->flushMessages();
 					$needed[$path] = $data;
 				}	
-			}
+
 
 		}
 
@@ -4207,6 +4243,7 @@ class e107plugin
 		$eplug_icon         = null;
 		$eplug_icon_small   = null;
 
+	e107::getDebug()->log("Legacy Plugin Parse (php): ".$plugName);
 
 		ob_start();
 		if (include(e_PLUGIN.$plugName.'/plugin.php'))
@@ -4296,6 +4333,8 @@ class e107plugin
 		//	loadLanFiles($plugName, 'admin');					// Look for LAN files on default paths
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
+
+		e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName);
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');
