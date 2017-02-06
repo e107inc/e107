@@ -37,7 +37,7 @@ class e_plugin
 	const CACHETIME  = 120; // 2 hours
 	const CACHETAG   = "Meta_plugin";
 
-	private $_accepted_categories = array('settings'=>'settings', 'users'=>'users', 'content'=>'content','tools'=> 'tools', 'manage'=>'manage','misc'=> 'misc', 'menu'=>'menu', 'about'=> 'about');
+	private $_accepted_categories = array('settings'=>LAN_SETTINGS, 'users'=>ADLAN_36, 'content'=>ADLAN_CL_3,'tools'=> ADLAN_CL_6, 'manage'=>LAN_MANAGE,'misc'=> ADLAN_CL_8, 'menu'=>'menu', 'about'=> 'about');
 
 	function __construct()
 	{
