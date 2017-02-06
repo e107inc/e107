@@ -1807,6 +1807,7 @@ class e_form
 		}
 
 
+
 		require_once(e_CORE."shortcodes/single/nextprev.php");
 
 		$nextprev = array(
@@ -1818,6 +1819,8 @@ class e_form
 			'type'          => varset($options['type'],'record'), // page|record
 			'glyphs'        => vartrue($options['glyphs'],false) // 1|0
 		);
+
+	//	e107::getDebug()->log($nextprev);
 
 		return nextprev_shortcode($nextprev);
 	}

@@ -193,7 +193,12 @@ class e_db_mysql
 			{
 				list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 			}
-	
+
+			if($this->mySQLserver === 'localhost')
+			{
+				$this->mySQLserver = '127.0.0.1';  // faster by almost 1 second
+			}
+
 			try
 			{
 				$this->mySQLaccess = new PDO("mysql:host=".$this->mySQLserver."; port=".$this->mySQLport, $this->mySQLuser, $this->mySQLpassword, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
@@ -284,7 +289,13 @@ class e_db_mysql
 		{
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
-		
+
+		if($this->mySQLserver === 'localhost')
+		{
+			$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second. 
+		}
+
+
 		if($this->pdo) // PDO 
 		{		
 			try
@@ -2105,7 +2116,7 @@ class e_db_mysql
 
 		if ($prefix == '') $prefix = $this->mySQLPrefix;
 
-		if (FALSE === ($result = $this->gen('set innodb_stats_on_metadata=0;SHOW COLUMNS FROM '.$prefix.$table)))
+		if (FALSE === ($result = $this->gen('SHOW COLUMNS FROM '.$prefix.$table)))
 		{
 			return FALSE;		// Error return
 		}
@@ -2175,7 +2186,7 @@ class e_db_mysql
 			$this->mySQLaccess = $db_ConnectionID;
 		}
 
-        $result = $this->gen("set innodb_stats_on_metadata=0;SHOW COLUMNS FROM ".$this->mySQLPrefix.$table);
+        $result = $this->gen("SHOW COLUMNS FROM ".$this->mySQLPrefix.$table);
         if ($result && ($this->rowCount() > 0))
 		{
 			$c=0;

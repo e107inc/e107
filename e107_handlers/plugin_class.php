@@ -603,7 +603,9 @@ class e_plugin
 
 	private function checkCategory($cat)
 	{
-		if (!empty($cat) && in_array($cat, $this->_accepted_categories))
+		$okayCats = array_keys($this->_accepted_categories);
+
+		if (!empty($cat) && in_array($cat, $okayCats))
 		{
 			return $cat;
 		}
