@@ -5098,6 +5098,11 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function ListObserver()
 	{
+		$table = $this->getTableName();
+		if(empty($table))
+		{
+			return;
+		}
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 		$this->addTitle(); 
 	}
