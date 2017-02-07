@@ -496,6 +496,23 @@ class e_menu
 		}
 	}
 
+private function menuarraysearch($array, $key, $value)
+{
+    $results = array();
+
+    if (is_array($array)) {
+        if (isset($array[$key]) && $array[$key] == $value) {
+            $results[] = $array;
+        }
+
+        foreach ($array as $subarray) {
+            $results = array_merge($results, $this->menuarraysearch($subarray, $key, $value));
+        }
+    }
+
+    return $results;
+}
+	
 	/**
 	 * Render menu
 	 *
@@ -523,6 +540,8 @@ class e_menu
 			unset($tmp);
 		}
 
+    	if (!$parm) {$parm = ($this->menuarraysearch($this->eMenuActive, 'menu_name', $mname)[0]['menu_parms']);}
+		
 		$this->_current_parms = $parm;
 		$this->_current_menu = $mname;
 
