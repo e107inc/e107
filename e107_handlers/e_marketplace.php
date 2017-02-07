@@ -612,9 +612,18 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		$auth = new stdClass;
 		$auth->authKey = $this->getAuthKey();
 		$header = new SoapHeader('http://e107.org/services/auth', 'checkAuthHeader', $auth);
+
+		if(!is_object($this->client))
+		{
+			$result['exception'] = array();
+			$result['exception']['message'] = "Unable to connect at this time.";
+			return $result;
+		}
 		
 		try
 		{
+
+
 			$this->client->__setSoapHeaders(array($header));
 			if(is_array($args) && $apply)
 			{
