@@ -875,8 +875,8 @@ class e107plugin
 			return FALSE;
 		}
 		
-		require_once(e_HANDLER."db_verify_class.php");
-		$dbv = new db_verify;
+	//	require_once(e_HANDLER."db_verify_class.php");
+		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 		
 
 		$plg = e107::getPlug();
@@ -891,7 +891,7 @@ class e107plugin
 			$data = $plg->load($path)->getMeta();
 
 		//	$data = $xml->loadXMLfile($fullPath, true);
-				
+
 			if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
 			{
 				$dbv->errors = array();
@@ -902,7 +902,7 @@ class e107plugin
 					$needed[$path] = $data;
 				}
 			}
-				
+
 			//	$curVal = floatval($version);
 				$curVal = $version;
 				$fileVal = $plg->getVersion(); // floatval($data['@attributes']['version']);
@@ -2471,9 +2471,10 @@ class e107plugin
 			$this->log("Can't read SQL definition: ".$sqlFile);
 			return; 
 		}
-		
-		require_once(e_HANDLER."db_verify_class.php");
-		$dbv = new db_verify;
+
+		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
+	//	require_once(e_HANDLER."db_verify_class.php");
+	//	$dbv = new db_verify;
 		$sql = e107::getDb();
 
 		// Add or Remove Table --------------
