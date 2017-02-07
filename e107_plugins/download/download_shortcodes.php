@@ -395,7 +395,7 @@ class download_shortcodes extends e_shortcode
 	function sc_download_filename($parm=null)
 	{
 		return basename($this->var['download_url']);
-		
+
 	}
    
    function sc_download_list_icon($parm='') //XXX FIXME $img. 
