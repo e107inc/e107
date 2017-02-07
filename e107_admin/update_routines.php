@@ -516,8 +516,11 @@ if (defined('TEST_UPDATE'))
 function update_core_database($type = '')
 {
 	$just_check = ($type == 'do') ? FALSE : TRUE;
-	require_once(e_HANDLER."db_verify_class.php");
-	$dbv = new db_verify;
+//	require_once(e_HANDLER."db_verify_class.php");
+//	$dbv = new db_verify;
+
+	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
+
 	$log = e107::getAdminLog();
 
 	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
@@ -1132,8 +1135,9 @@ function update_706_to_800($type='')
 	/* -------------- Upgrade Entire Table Structure - Multi-Language Supported ----------------- */
 	// ONLY ever add fields, never deletes. 
 	
-	require_once(e_HANDLER."db_verify_class.php");
-	$dbv = new db_verify;
+//	require_once(e_HANDLER."db_verify_class.php");
+//	$dbv = new db_verify;
+	$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 	
 	if($plugUpgradeReq = e107::getPlugin()->updateRequired())
 	{
