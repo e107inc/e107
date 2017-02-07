@@ -31,8 +31,10 @@ class theme_shortcodes extends e_shortcode
 
 		$frm = e107::getForm();
 		$text = $frm->open('newsletter','post', e_SIGNUP, array('class'=>'form-inline'));
+		$text .= "<div class='input-inline'>";
 		$text .= $frm->text('email','', null, array('placeholder'=>"Enter your email"));
 		$text .= $frm->button('subscribe', 1, 'primary', "Subscribe");
+		$text .= "</div>";
 		$text .= $frm->close();
 
 		return $text;
