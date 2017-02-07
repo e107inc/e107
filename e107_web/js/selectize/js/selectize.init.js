@@ -98,6 +98,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                             labelField: item.options.labelField ? item.options.labelField : 'label',
                             searchField: item.options.searchField ? item.options.searchField : 'label',
 
+                            wrapperClass: item.options.wrapperClass || 'selectize-control',
+                            inputClass: item.options.inputClass || 'selectize-input',
+                            dropdownClass: item.options.dropdownClass || 'selectize-dropdown',
+                            dropdownContentClass: item.options.dropdownContentClass || 'selectize-dropdown-content',
+                            copyClassesToDropdown: item.options.copyClassesToDropdown ? item.options.copyClassesToDropdown : null,
+
                             // Callbacks.
                             load: function (query, callback) {
                                 var loadPath = item.options.loadPath ? item.options.loadPath : '';

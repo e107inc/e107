@@ -94,7 +94,13 @@ define("EXTLAN_78", "Cannot find file --FILE-- needed to create data table");
 
 define("EXTLAN_79", "Label");
 define("EXTLAN_80", "Validation error - aborted.");
-
+define("EXTLAN_81", "Add Custom Field");  
+define("EXTLAN_82", "Values"); 
+define("EXTLAN_83", "Placeholder"); 
+define("EXTLAN_84", "Help Tip"); 
+ 
+define("EXTLAN_86", "User Extended Column deleted from table"); 
+define("EXTLAN_87", "Sort values"); 
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex validation code<br />regexfail - validation fail text");

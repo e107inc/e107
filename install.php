@@ -1760,9 +1760,9 @@ if($this->pdo == true)
 
 	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
 	//	$tm = new themeHandler;
-		$xmlArray = e107::getTheme()->parse_theme_xml($theme_folder);
+		$xmlArray = e107::getTheme($theme_folder)->get();
 
-		return (is_array($xmlArray)) ? $xmlArray : FALSE;
+		return (is_array($xmlArray)) ? $xmlArray : false;
 	}
 
 	/**
@@ -2121,7 +2121,7 @@ function template_data()
 
 		  <div class="masthead">
 			<ul class="nav nav-pills pull-right" >
-			  <li class="active" style="width:200px;text-align:center" ><a href="#" >'.LANINS_134.' &#58  {stage_pre} {stage_num} '.LANINS_135.' 8</a>
+			  <li style="width:200px;text-align:center" ><a href="#" >'.LANINS_134.' &#58  {stage_pre} {stage_num} '.LANINS_135.' 8</a>
 			  <div class="progress progress-{bartype}">
 				<div class="progress-bar bar" style="width: {percent}%"></div>
 			</div>

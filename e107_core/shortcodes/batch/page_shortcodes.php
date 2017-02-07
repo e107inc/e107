@@ -34,10 +34,6 @@ class cpage_shortcodes extends e_shortcode
 		{
 			$id 							= $row['chapter_id'];
 
-			if(!empty($row['chapter_fields']))
-			{
-				$row['chapter_fields'] = e107::unserialize($row['chapter_fields']);
-			}
 
 			$this->chapterData[$id]			= $row;
 		}	
@@ -45,7 +41,7 @@ class cpage_shortcodes extends e_shortcode
 
 
 	}
-		
+
 	
 	// Set Chapter. // @see chapter_menu.php 
 	public function setChapter($id)
@@ -465,6 +461,15 @@ class cpage_shortcodes extends e_shortcode
 		return $tp->toHtml($row['chapter_name'], false, 'TITLE');		
 	}
 
+	/**
+	 * Alias for {CHAPTER_NAME}
+	 * @example {CHAPTER_TITLE}
+	 */
+	function sc_chapter_title()
+	{
+		return $this->sc_chapter_name();
+	}
+
 
 	/**
 	 * @example {CHAPTER_ANCHOR}
@@ -606,6 +611,26 @@ class cpage_shortcodes extends e_shortcode
 	}
 
 
+	function sc_cpagefieldtitle($parm=null)
+	{
+		if(empty($parm['name']) || empty($this->var['page_fields']))
+		{
+			return null;
+		}
+
+		$chap       = $this->var['page_chapter'];
+		$key        = $parm['name'];
+
+
+		if(!empty($this->chapterData[$chap]['chapter_fields'][$key]['title']))
+		{
+			return $this->chapterData[$chap]['chapter_fields'][$key]['title'];
+		}
+
+		return null;
+	}
+
+
 	/**
 	 * Return raw HTML-usable values from page fields.
 	 * @experimental subject to change without notice.
@@ -619,41 +644,39 @@ class cpage_shortcodes extends e_shortcode
 			return null;
 		}
 
-		$tp = e107::getParser();
-
 		$chap       = $this->var['page_chapter'];
-		$key        = $parm['name'];
 		$fields     = $this->chapterData[$chap]['chapter_fields'];
-		$fieldData  = e107::unserialize($this->var['page_fields']);
-		$type       = $fields[$key]['type'];;
 
-		// @todo Move this part to form_handler somewhere.
-		if(isset($fieldData[$key]))
-		{
-			$value = $fieldData[$key];
-
-			switch($type)
-			{
-				case "image":
-					return $tp->toImage($value);
-					break;
-
-				case "icon":
-					return $tp->toIcon($value);
-					break;
-
-				default:
-					return $tp->toHtml($value);
-			}
-
-		}
-
+		return e107::getCustomFields()->loadConfig($fields)->loadData($this->var['page_fields'])->getFieldValue($parm['name'],$parm);
 
 
 	}
 
 
+	/**
+	 * @experimental - subject to change without notice. Use at own risk.
+	 * @param null $parm
+	 * @return string
+	 */
+	function sc_cpagefields($parm=null)
+	{
+		$fieldData  = e107::unserialize($this->var['page_fields']);
 
+
+		$text = '<table class="table table-bordered table-striped">
+		<tr><th>Name</th><th>Title<br /><small>&#123;CPAGEFIELDTITLE: name=x&#125;</small></th><th>Normal<br /><small>&#123;CPAGEFIELD: name=x&#125;</small></th><th>Raw<br /><small>&#123;CPAGEFIELD: name=x&mode=raw&#125;</small></th></tr>';
+
+		foreach($fieldData as $ok=>$v)
+		{
+
+			$text .= "<tr><td>".$ok."</td><td>".$this->sc_cpagefieldtitle(array('name'=>$ok))."</td><td>".$this->sc_cpagefield(array('name'=>$ok))."</td><td>".$this->sc_cpagefield(array('name'=>$ok, 'mode'=>'raw'))."</td></tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
+	}
 
 
 

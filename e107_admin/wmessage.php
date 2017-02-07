@@ -48,6 +48,8 @@ class wmessage_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = WMLAN_00;
+
+	protected $adminMenuIcon = 'e-welcome-24';
 }
 
 

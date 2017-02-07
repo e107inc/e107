@@ -20,7 +20,7 @@
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 	
-include_lan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");
 require_once("calendar.php");
 require_once("functions.php");
 require_once(HEADERF);

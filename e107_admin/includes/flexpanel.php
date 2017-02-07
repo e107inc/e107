@@ -223,6 +223,14 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		// $panels['Area01'] .= $this->renderLatestComments(); // TODO
 
 
+		// --------------------- Add-on updates ---------------------------
+		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setUniqueId('e-addon-updates');
+		$addonUpdates = $tp->parseTemplate("{ADMIN_ADDON_UPDATES}", true, $admin_sc);
+		$info = $this->getMenuPosition('e-addon-updates');
+		$panels[$info['area']][$info['weight']] .= $addonUpdates;
+
+
 		// --------------------- User Selected Menus ----------------------
 		if(varset($user_pref['core-infopanel-menus']))
 		{
@@ -294,240 +302,237 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			'weight' => 1000,
 		);
 
-		switch(varset($user_pref['core-flexpanel-layout'], 'default'))
+		$positions = $this->getDefaultPositions();
+
+		$layout = varset($user_pref['core-flexpanel-layout'], 'default');
+
+		if(!empty($positions[$layout][$id]))
 		{
-			case 'two_col_bricks':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 1;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 2;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 1;
-				}
-				break;
-
-			case 'two_col_stacked':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 1;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-05';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-12';
-					$default['weight'] = 1;
-				}
-				break;
-
-			case 'three_col_bricks':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-09';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-13';
-					$default['weight'] = 0;
-				}
-				break;
-
-			case 'three_col_stacked':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-05';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-12';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-13';
-					$default['weight'] = 0;
-				}
-				break;
-
-			case 'one_col':
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-02';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-03';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-04';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-05';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-06';
-					$default['weight'] = 0;
-				}
-				break;
-
-			case 'wider_sidebar':
-			case 'default':
-			default:
-				if($id == 'core-infopanel_help')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'e-latest-list')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 1;
-				}
-
-				if($id == 'e-status-list')
-				{
-					$default['area'] = 'menu-area-01';
-					$default['weight'] = 2;
-				}
-
-				if($id == 'core-infopanel_mye107')
-				{
-					$default['area'] = 'menu-area-07';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_news')
-				{
-					$default['area'] = 'menu-area-08';
-					$default['weight'] = 0;
-				}
-
-				if($id == 'core-infopanel_website_status')
-				{
-					$default['area'] = 'menu-area-08';
-					$default['weight'] = 1;
-				}
-				break;
+			return $positions[$layout][$id];
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Get default menu positions.
+	 *
+	 * @return array
+	 */
+	function getDefaultPositions()
+	{
+		return array(
+			'two_col_bricks'    => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 1,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 2,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-03',
+					'weight' => 1,
+				),
+			),
+			'two_col_stacked'   => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-05',
+					'weight' => 0,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-12',
+					'weight' => 1,
+				),
+			),
+			'three_col_bricks'  => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-02',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-09',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-13',
+					'weight' => 0,
+				),
+			),
+			'three_col_stacked' => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-03',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-05',
+					'weight' => 0,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-12',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-13',
+					'weight' => 0,
+				),
+			),
+			'one_col'           => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-02',
+					'weight' => 0,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-03',
+					'weight' => 0,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-04',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-05',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-06',
+					'weight' => 0,
+				),
+			),
+			'wider_sidebar'     => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 1,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 2,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-07',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-08',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-08',
+					'weight' => 1,
+				),
+			),
+			'default'           => array(
+				'e-addon-updates'               => array(
+					'area'   => 'menu-area-01',
+					'weight' => -1,
+				),
+				'core-infopanel_help'           => array(
+					'area'   => 'menu-area-01',
+					'weight' => 0,
+				),
+				'e-latest-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 1,
+				),
+				'e-status-list'                 => array(
+					'area'   => 'menu-area-01',
+					'weight' => 2,
+				),
+				'core-infopanel_mye107'         => array(
+					'area'   => 'menu-area-07',
+					'weight' => 0,
+				),
+				'core-infopanel_news'           => array(
+					'area'   => 'menu-area-08',
+					'weight' => 0,
+				),
+				'core-infopanel_website_status' => array(
+					'area'   => 'menu-area-08',
+					'weight' => 1,
+				),
+			),
+		);
 	}
 
 	/**

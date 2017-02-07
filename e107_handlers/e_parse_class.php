@@ -62,6 +62,10 @@ class e_parse extends e_parser
 
 	private $thumbEncode = 0;
 
+	// BBcode that contain preformatted code.
+	private $preformatted = array('html', 'markdown');
+
+
 	// Set up the defaults
 	var $e_optDefault = array(
 		// default context: reflects legacy settings (many items enabled)
@@ -479,15 +483,16 @@ class e_parse extends e_parser
 	 * 				If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
 	 * @param boolean $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
 	 * 				the save_prefs() function has been called by a non admin user / user without html posting permissions.
-	 * @param boolean $mod [optional] The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
+	 * @param boolean|string $mod [optional] model = admin-ui usage. The 'no_html' and 'no_php' modifiers blanket prevent HTML and PHP posting regardless of posting permissions. (used in logging)
 	 *		The 'pReFs' value is for internal use only, when saving prefs, to prevent sanitisation of HTML.
 	 * @param boolean $original_author [optional]
 	 * @return string
 	 * @todo complete the documentation of this essential method
 	 */
-	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $original_author = false)
+	public function toDB($data, $nostrip =false, $no_encode = false, $mod = false, $parm = null)
 	{
 		$core_pref = e107::getConfig();
+
 		if (is_array($data))
 		{
 			$ret = array();
@@ -506,7 +511,7 @@ class e_parse extends e_parser
 			$data = stripslashes($data);
 		}
 
-		if ($mod != 'pReFs') //XXX We're not saving prefs. 
+		if ($mod !== 'pReFs') //XXX We're not saving prefs.
 		{
 
 			$data = $this->preFilter($data); // used by bb_xxx.php toDB() functions. bb_code.php toDB() allows us to properly bypass HTML cleaning below.
@@ -545,11 +550,10 @@ class e_parse extends e_parser
 			$no_encode = true;
 		}
 				
-		if (is_numeric($original_author) && !check_class($core_pref->get('post_html'), '', $original_author))
+		if($parm !== null && is_numeric($parm) && !check_class($core_pref->get('post_html'), '', $parm))
 		{
 			$no_encode = false;
 		}
-
 
 		if ($no_encode === true && strpos($mod, 'no_html') === false)
 		{
@@ -572,6 +576,40 @@ class e_parse extends e_parser
 		{
 			$ret = preg_replace("#\[(php)#i", "&#91;\\1", $ret);
 		}
+
+		// Don't allow hooks to mess with prefs.
+		if($mod !== 'model')
+		{
+			return $ret;
+		}
+
+
+		/**
+		 * e_parse hook
+		 */
+		$eParseList = $core_pref->get('e_parse_list');
+		if(!empty($eParseList))
+		{
+
+			$opts = array(
+				'nostrip'   => $nostrip,
+				'noencode'  => $no_encode,
+				'type'      => $parm['type'],
+				'field'     => $parm['field']
+			);
+
+			foreach($eParseList as $plugin)
+			{
+				$hookObj = e107::getAddon($plugin, 'e_parse');
+				if($tmp = e107::callMethod($hookObj, 'toDB', $ret, $opts))
+				{
+					$ret = $tmp;
+				}
+
+			}
+
+		}
+
 
 		return $ret;
 	}
@@ -1391,7 +1429,7 @@ class e_parse extends e_parser
 
 		$textReplace = (!empty($opts['sub'])) ? $opts['sub'] : '';
 
-		if(substr($textReplace,-6) == '.glyph')
+		if(substr($textReplace,-6) === '.glyph')
 		{
 			$textReplace = $this->toGlyph($textReplace,'');
 		}
@@ -1658,6 +1696,7 @@ class e_parse extends e_parser
 							{	// Its a bbcode class file
 								require_once($bbPath.'bb_'.$bbFile.'.php');
 								$className = 'bb_'.$last_bbcode;
+
 								$this->bbList[$last_bbcode] = new $className();
 							}
 							elseif(file_exists($bbPath.$bbFile.'.bb'))
@@ -1669,6 +1708,7 @@ class e_parse extends e_parser
 					if ($className)
 					{
 						$tempCode = new $className();
+
 						$full_text = $tempCode->bbPreDisplay($matches[4], $parm);
 					}
 					elseif ($bbcode)
@@ -1694,14 +1734,15 @@ class e_parse extends e_parser
 				$subcon = preg_split('#((?:<s)(?:cript[^>]+>.*?</script>|tyle[^>]+>.*?</style>))#mis', $full_text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
 				foreach ($subcon as $sub_blk)
 				{
-					if(substr($sub_blk, 0, 7) == '<script') // Strip scripts unless permitted
+
+					if(strpos($sub_blk,'<script') === 0) // Strip scripts unless permitted
 					{
 						if($opts['scripts'])
 						{
 							$ret_parser .= html_entity_decode($sub_blk, ENT_QUOTES);
 						}
 					}
-					elseif(substr($sub_blk, 0, 6) == '<style')
+					elseif(strpos($sub_blk,'<style') === 0)
 					{
 						// Its a style block - just pass it through unaltered - except, do we need the line break stuff? - QUERY XXX-01
 						if(defined('DB_INF_SHOW'))
@@ -1765,15 +1806,14 @@ class e_parse extends e_parser
 						// Reduce newlines in all forms to a single newline character (finds '\n', '\r\n', '\n\r')
 						if (!$opts['nobreak'])
 						{
-							if ($convertNL && substr($sub_blk,0,6) != '[html]') //XXX Quick Fix, find a cleaner way. 
+							if ($convertNL && ($this->preformatted($sub_blk) === false)) // eg. html or markdown
 							{
 								// We may need to convert to <br /> later
-							
 								$sub_blk = preg_replace("#[\r]*\n[\r]*#", E_NL, $sub_blk);
 							}
 							else
 							{
-								// Not doing any more - its HTML so keep \n so HTML is formatted
+								// Not doing any more - its HTML or Markdown so keep it as is.
 								$sub_blk = preg_replace("#[\r]*\n[\r]*#", "\n", $sub_blk);
 							}
 						}
@@ -1810,7 +1850,7 @@ class e_parse extends e_parser
 								}
 								else 
 								{
-									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);	
+									$sub_blk = $this->e_bb->parseBBCodes($sub_blk, $postID);
 								}
 								
 							}
@@ -1855,8 +1895,10 @@ class e_parse extends e_parser
 						}
 
 
-						//Run any hooked in parsers
-						if ($opts['hook'])
+						/**
+						 * / @deprecated
+						 */
+						if ($opts['hook']) //Run any hooked in parsers
 						{
 							if ( varset($pref['tohtml_hook']))
 							{
@@ -1877,6 +1919,9 @@ class e_parse extends e_parser
 								}
 							}
 
+							/**
+						    * / @deprecated
+						    */
 							if(isset($pref['e_tohtml_list']) && is_array($pref['e_tohtml_list']))
 							{
 								foreach($pref['e_tohtml_list'] as $hook)
@@ -1898,23 +1943,28 @@ class e_parse extends e_parser
 								}
 							}
 
-
-							if(!empty($pref['e_parse_list']))
+						/**
+						* / Preferred 'hook'
+						*/
+						if(!empty($pref['e_parse_list']))
+						{
+							foreach($pref['e_parse_list'] as $plugin)
 							{
-								foreach($pref['e_parse_list'] as $plugin)
+								$hookObj = e107::getAddon($plugin,'e_parse');
+								if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
 								{
-									$hookObj = e107::getAddon($plugin,'e_parse');
-
-									if($tmp = e107::callMethod($hookObj, 'toHTML', $sub_blk, $opts['context']))
-									{
-										$sub_blk = $tmp;
-
-									}
-
+									$sub_blk = $tmp;
 								}
 
 							}
+
 						}
+
+
+
+
+
+				}
 
 
 						// 	Word wrap
@@ -1979,6 +2029,30 @@ class e_parse extends e_parser
 
 		return trim($ret_parser);
 	}
+
+
+	/**
+	 * Check if a string begins with a preformatter flag.
+	 * @param $str
+	 * @return bool
+	 */
+	private function preformatted($str)
+	{
+		foreach($this->preformatted as $type)
+		{
+			$code = '['.$type.']';
+			if(strpos($str, $code) === 0)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+
+
 
 
 	function toASCII($text)
@@ -2334,7 +2408,7 @@ class e_parse extends e_parser
 	{
 		if(!empty($this->thumbCrop) && !empty($this->thumbWidth) && !empty($this->thumbHeight)) // dimensions are known.
 		{
-			return ($type == 'double') ? 'width="'.$this->thumbWidth.'" height="'.$this->thumbHeight.'"' : "width='".$this->thumbWidth."' height='".$this->thumbHeight."'";
+			return ($type === 'double') ? 'width="'.$this->thumbWidth.'" height="'.$this->thumbHeight.'"' : "width='".$this->thumbWidth."' height='".$this->thumbHeight."'";
 		}
 
 		return null;
@@ -2403,7 +2477,7 @@ class e_parse extends e_parser
 	 */
 	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
-		if(substr($url,0,3)=="{e_") // Fix for broken links that use {e_MEDIA} etc.
+		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
 			// always switch to 'nice' urls when SC is used	
@@ -2543,7 +2617,7 @@ class e_parse extends e_parser
 			return implode(", ",$links);
 
 		}
-		elseif($multiply == '2x' || $multiply == '3x' || $multiply == '4x')
+		elseif($multiply === '2x' || $multiply === '3x' || $multiply === '4x')
 		{
 
 			if(empty($parm['w']) && isset($parm['h']))
@@ -2590,9 +2664,7 @@ class e_parse extends e_parser
 
 		// $parms['x'] = $encode;
 
-
-
-		if(!empty($parm['return']) && $parm['return'] == 'src')
+		if(!empty($parm['return']) && $parm['return'] === 'src')
 		{
 			return $this->thumbUrl($src, $parms);
 		}
@@ -2766,6 +2838,16 @@ class e_parse extends e_parser
 	 */
 	public function replaceConstants($text, $mode = '', $all = FALSE)
 	{
+		if(is_array($text))
+		{
+			$new = array();
+			foreach($text as $k=>$v)
+			{
+				$new[$k] = $this->replaceConstants($v,$mode,$all);
+			}
+
+			return $new;
+		}
 
 		if($mode != "")
 		{
@@ -3112,7 +3194,7 @@ class e_parse extends e_parser
 		foreach($tmp as $key=>$val)
 		{
 			// Fix - don't break the CDN '//cdn.com' URLs
-			if ($hasCDN && $val == '/') {
+			if ($hasCDN && $val === '/') {
 				continue;
 			}
 
@@ -3556,11 +3638,11 @@ class e_parser
 			$parm = array();
 		}
 
-		if(substr($text,0,2) == 'e-') 	// e107 admin icon. 
+		if(substr($text,0,2) === 'e-') 	// e107 admin icon.
 		{
-			$size = (substr($text,-3) == '-32') ? 'S32' : 'S16';
+			$size = (substr($text,-3) === '-32') ? 'S32' : 'S16';
 
-			if(substr($text,-3) == '-24')
+			if(substr($text,-3) === '-24')
 			{
 				$size = 'S24';
 			}
@@ -3619,8 +3701,10 @@ class e_parser
 		}
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
+		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
+		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
 		
-		$text = "<".$tag." {$idAtt}class='".$prefix.$id.$size.$spin.$rotate.$fixedW."'></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
 		$text .= ($space !== false) ? $space : "";
 		
 		return $text;
@@ -3641,6 +3725,49 @@ class e_parser
 	}
 
 
+	/**
+	 * @param $text
+	 * @return string
+	 */
+	public function toLabel($text, $type = null)
+	{
+		if($type === null)
+		{
+			$type = 'default';
+		}
+
+		$tmp = explode(",",$text);
+
+		$opt = array();
+		foreach($tmp as $v)
+		{
+			$opt[] = "<span class='label label-".$type."'>".$v."</span>";
+		}
+
+		return implode(" ",$opt);
+	}
+
+	/**
+	 * Take a file-path and convert it to a download link.
+	 * @param $text
+	 * @return string
+	 */
+	public function toFile($text, $parm=array())
+	{
+		$srch = array(
+			'{e_MEDIA_FILE}' => 'e_MEDIA_FILE/',
+			'{e_PLUGIN}' => 'e_PLUGIN/'
+		);
+
+		$link = e_HTTP."request.php?file=". str_replace(array_keys($srch), $srch,$text);
+
+		if(!empty($parm['raw']))
+		{
+			return $link;
+		}
+
+		return "<a href='".$link."'>-attachment-</a>"; //TODO Add pref for this.
+	}
 
 	/**
 	 * Render an avatar based on supplied user data or current user when missing. 
@@ -3712,7 +3839,7 @@ class e_parser
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
 
-		if(!empty($options['type']) && $options['type'] == 'url')
+		if(!empty($options['type']) && $options['type'] === 'url')
 		{
 			return $img;
 		}
@@ -3741,9 +3868,9 @@ class e_parser
 	public function toIcon($icon='',$parm = array())
 	{
 
-		if(!vartrue($icon))
+		if(empty($icon))
 		{
-			return;
+			return null;
 		}
 
 		if(strpos($icon,'e_MEDIA_IMAGE')!==false)
@@ -3769,7 +3896,7 @@ class e_parser
 			$path = $this->thumbUrl($icon);
 			$dimensions = $this->thumbDimensions();
 		}
-		elseif($icon[0] == '{')
+		elseif($icon[0] === '{')
 		{
 			$path = $this->replaceConstants($icon,'full');		
 		}
@@ -3863,17 +3990,25 @@ class e_parser
 
 			unset($parm['src']);
 			$path = $tp->thumbUrl($file,$parm);
-			$srcSetParm = $parm;
-			$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
 
-			$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+
+			if(empty($parm['w']) && empty($parm['h']))
+			{
+				$parm['srcset'] = false;
+			}
+			else
+			{
+				$srcSetParm = $parm;
+				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
+				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
+			}
 
 		}
 		elseif(strpos($file,'http')===0)
 		{
 			$path = $file;
 		}
-		elseif($file[0] == '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
+		elseif($file[0] === '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
 			$path = $tp->replaceConstants($file,'abs');
 		}
@@ -3956,6 +4091,35 @@ class e_parser
 	}
 
 
+	/**
+	 * Check if string is json and parse or return false.
+	 * @param $text
+	 * @return bool|mixed return false if not json, and json values if true.
+	 */
+	public function isJSON($text)
+	{
+		if(!is_string($text))
+		{
+			return false;
+		}
+
+		 if(substr($text,0,1) === '{' || substr($text,0,1) === '[') // json
+	    {
+	        $dat = json_decode($text, true);
+
+	        if(json_last_error() !=  JSON_ERROR_NONE)
+	        {
+		        //   e107::getDebug()->log("Json data found");
+	           return false;
+	        }
+
+	        return $dat;
+	    }
+
+		return false;
+
+	}
+
 
 
 	/**
@@ -4008,7 +4172,7 @@ class e_parser
 	{
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 			
-		return ($ext == 'youtube' || $ext == 'youtubepl') ? true : false;
+		return ($ext === 'youtube' || $ext === 'youtubepl') ? true : false;
 		
 	}
 
@@ -4027,7 +4191,7 @@ class e_parser
 
 		$ext = pathinfo($file,PATHINFO_EXTENSION);
 
-		return ($ext == 'jpg' || $ext == 'png' || $ext == 'gif' || $ext == 'jpeg') ? true : false;
+		return ($ext === 'jpg' || $ext === 'png' || $ext === 'gif' || $ext === 'jpeg') ? true : false;
 	}
 
 	
@@ -4052,7 +4216,7 @@ class e_parser
 		$ytpref = array();
 		foreach($pref as $k=>$v) // Find all Youtube Prefs. 
 		{
-			if(substr($k,0,8) == 'youtube_')
+			if(substr($k,0,8) === 'youtube_')
 			{
 				$key = substr($k,8);
 				$ytpref[$key] = $v;
@@ -4071,19 +4235,19 @@ class e_parser
 		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 
 
-		if($type == 'youtube')
+		if($type === 'youtube')
 		{
 		//	$thumbSrc = "https://i1.ytimg.com/vi/".$id."/0.jpg";
 			$thumbSrc = "https://i1.ytimg.com/vi/".$id."/mqdefault.jpg";
 			$video =  '<iframe class="embed-responsive-item" width="560" height="315" src="//www.youtube.com/embed/'.$id.'?'.$ytqry.'" style="background-size: 100%;background-image: url('.$thumbSrc.');border:0px" allowfullscreen></iframe>';
 
 		
-			if($thumb == 'tag')
+			if($thumb === 'tag')
 			{
 				return "<img class='img-responsive img-fluid' src='".$thumbSrc."' alt='Youtube Video' style='width:".vartrue($parm['w'],'80')."px'/>";
 			}
 			
-			if($thumb == 'email')
+			if($thumb === 'email')
 			{
 				$thumbSrc = "http://i1.ytimg.com/vi/".$id."/maxresdefault.jpg"; // 640 x 480
 				$filename = 'temp/yt-thumb-'.md5($id).".jpg";
@@ -4099,14 +4263,14 @@ class e_parser
 				<div class='video-thumbnail-caption'><small>".LAN_CLICK_TO_VIEW."</small></div></a>";
 			}
 			
-			if($thumb == 'src')
+			if($thumb === 'src')
 			{
 				return $thumbSrc;
 			}
 
 
 			
-			if($thumb == 'video')
+			if($thumb === 'video')
 			{
 				return '<div class="'.$defClass.' video-thumbnail thumbnail">'.$video.'</div>';
 			}
@@ -4115,10 +4279,10 @@ class e_parser
 		}
 
 
-		if($type =='youtubepl')
+		if($type === 'youtubepl')
 		{
 
-			if($thumb == 'tag')
+			if($thumb === 'tag')
 			{
 				$thumbSrc =  e107::getMedia()->getThumb($id);
 
@@ -4130,7 +4294,7 @@ class e_parser
 
 			}
 
-			if($thumb == 'src')
+			if($thumb === 'src')
 			{
 				$thumb = e107::getMedia()->getThumb($id);
 				if(!empty($thumb))
@@ -4148,7 +4312,7 @@ class e_parser
 			return '<div class="'.$defClass.' '.vartrue($parm['class']).'">'.$video.'</div>';
 		}
 				
-		if($type == 'mp4') //TODO FIXME 
+		if($type === 'mp4') //TODO FIXME
 		{
 			return '
 			<div class="video-responsive">
@@ -4435,7 +4599,7 @@ return;
 	/**
 	 * Filters/Validates using the PHP5 filter_var() method.
 	 * @param $text
-	 * @param $type string str|int|email|url|w|wds
+	 * @param $type string str|int|email|url|w|wds|file
 	 * @return string | boolean | array
 	 */
 	function filter($text, $type='str',$validate=false)
@@ -4445,17 +4609,17 @@ return;
 			return $text;
 		}
 
-		if($type == 'w') // words only.
+		if($type === 'w') // words only.
 		{
 			return preg_replace('/[^\w]/',"",$text);
 		}
 
-		if($type == 'wds') // words, digits and spaces only.
+		if($type === 'wds') // words, digits and spaces only.
 		{
 			return preg_replace('/[^\w\d ]/',"",$text);
 		}
 
-		if($type == 'file')
+		if($type === 'file')
 		{
 			return preg_replace('/[^\w\d_\.-]/',"",$text);
 		}
@@ -4651,7 +4815,7 @@ return;
 
 		    $value = str_replace("&#xD;", "\r", $value);
 
-		    if($node->nodeName == 'pre')
+		    if($node->nodeName === 'pre')
 		    {
 		        $value = preg_replace('/^<pre[^>]*>/', '', $value);
 		        $value = str_replace("</pre>", "", $value);
@@ -4659,7 +4823,7 @@ return;
 
 		    }
 
-		    if($node->nodeName == 'code')
+		    if($node->nodeName === 'code')
 		    {
 		        $value = preg_replace('/^<code[^>]*>/', '', $value);
 		        $value = str_replace("</code>", "", $value);

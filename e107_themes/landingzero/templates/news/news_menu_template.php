@@ -54,7 +54,8 @@ $NEWS_MENU_WRAPPER['latest']['NEWSCOMMENTCOUNT']	= "({---})";
 
 
 
-// Other News Menu. 
+// Other News Menu.
+ /*
 $NEWS_MENU_TEMPLATE['other']['caption'] 	= '';
 $NEWS_MENU_TEMPLATE['other']['start']		= "
 												{SETIMAGE: w=700&h=400&crop=1}"; // set the {NEWSIMAGE} dimensions. 								
@@ -71,10 +72,26 @@ $NEWS_MENU_TEMPLATE['other']['item']		= '
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <a href="{NEWSURL}" class="btn btn-primary btn-block">'.LAN_THEME_NEWS_1.'</a>
+                            <a href="{NEWSURL}" class="btn btn-primary btn-block">'.LAN_READ_MORE.'</a>
                         </div>
                     </div>';									
 $NEWS_MENU_TEMPLATE['other']['end']			= "";
+
+
+*/
+
+
+$NEWS_MENU_TEMPLATE['other']['caption'] 	= TD_MENU_L1;
+$NEWS_MENU_TEMPLATE['other']['start']		= "<div id='otherNews' data-interval='false' class='carousel slide othernews-block'>
+												<div class='carousel-inner'>
+												{SETIMAGE: w=500&h=300&crop=1}"; // set the {NEWSIMAGE} dimensions.
+$NEWS_MENU_TEMPLATE['other']['item']		= '<div class="item {ACTIVE}">
+												{NEWSTHUMBNAIL=placeholder}
+              									<h3>{NEWSTITLE}</h3>
+              									<p>{NEWSSUMMARY}</p>
+              									<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">'.LAN_READ_MORE.' &raquo;</a></p>
+            									</div>';
+$NEWS_MENU_TEMPLATE['other']['end']			= "</div></div>";
 
 
 

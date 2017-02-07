@@ -417,12 +417,12 @@ class signup
 				}
 				else
 				{
-					include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+					e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 				}
 			}
 			else
 			{
-				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+				e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 			}
 
 			// When user clicks twice on the email activation link or admin manually activated the account already.

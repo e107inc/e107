@@ -924,7 +924,7 @@ class download
         	return "Error reading categories<br />";
         	exit;
       }
-      $boxinfo .= "<select name='{$name}' id='download_category' class='tbox'>
+      $boxinfo .= "<select name='{$name}' id='download_category' class='tbox form-control'>
       	<option value=''>{$blankText}</option>\n";
       // Its a structured display option - need a 2-step process to create a tree
       $catlist = array();

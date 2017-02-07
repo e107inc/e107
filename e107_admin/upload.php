@@ -57,6 +57,8 @@ class upload_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = LAN_UPLOAD;
+
+	protected $adminMenuIcon = 'e-uploads-24';
 }
 
 

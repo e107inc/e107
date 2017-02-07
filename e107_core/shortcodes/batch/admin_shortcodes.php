@@ -15,6 +15,10 @@ if (!defined('e107_INIT')) { exit; }
 
 class admin_shortcodes
 {
+
+	const ADMIN_NAV_HOME = 'enav_home'; // Must match with admin_template. ie. {ADMIN_NAVIGATION=enav_home} and $E_ADMIN_NAVIGATION['button_enav_home']
+	const ADMIN_NAV_LANGUAGE = 'enav_language';
+	const ADMIN_NAV_LOGOUT = 'enav_logout';
 	
 	function cronUpdateRender($parm,$cacheData)
 	{
@@ -411,9 +415,9 @@ class admin_shortcodes
 
 	function sc_admin_latest($parm)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
-			return;
+			return null;
 		}
 		
 		if (ADMIN) {
@@ -707,7 +711,7 @@ class admin_shortcodes
 	{
 		if(e_DEBUG !== false)
 		{
-			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug')."&nbsp;</div>";
+			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug', array('class'=>'text-warning'))."&nbsp;&nbsp;</div>";
 		}
 
 	}
@@ -964,6 +968,13 @@ class admin_shortcodes
 
 	function sc_admin_pword()
 	{
+
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php") !==false)
+		{
+			return false;
+		}
+
+
 		global $pref;
 		if (ADMIN && ADMINPERMS == '0')
 		{
@@ -989,9 +1000,9 @@ class admin_shortcodes
 
 	function sc_admin_siteinfo($parm='')
 	{
-		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php")
+		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php" && e_PAGE != 'e107_update.php')
 		{
-			return;
+			return null;
 		}	
 		
 		
@@ -1106,7 +1117,7 @@ class admin_shortcodes
 
 	function sc_admin_status($parm)
 	{
-		if(($parm == 'infopanel' || $parm == 'flexpanel') && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
 			return;
 		}
@@ -1315,7 +1326,125 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 	}
 			
-		
+	function sc_admin_addon_updates()
+	{
+		if(!getperms('0') || !deftrue('e_ADMIN_HOME'))
+		{
+			return null;
+		}
+
+
+		$themes = $this->getUpdateable('theme');
+		$plugins = $this->getUpdateable('plugin');
+
+		$text = $this->renderAddonUpdate($plugins);
+		$text .= $this->renderAddonUpdate($themes);
+
+		if(empty($text))
+		{
+			return null;
+		}
+		$ns = e107::getRender();
+
+		$tp = e107::getParser();
+		$ns->setUniqueId('e-addon-updates');
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
+
+
+	}
+
+
+	private function getUpdateable($type)
+	{
+
+		if(empty($type))
+		{
+			return false;
+		}
+
+		require_once(e_HANDLER.'e_marketplace.php');
+		$mp = new e_marketplace(); // autodetect the best method
+
+		switch($type)
+		{
+			case "theme":
+				$versions = $mp->getVersionList('theme');
+				$list = e107::getTheme()->getThemeList('version');
+				break;
+
+			case "plugin":
+				$versions = $mp->getVersionList('plugin');
+				$list = e107::getPref('plug_installed');
+				break;
+		}
+
+		$ret = array();
+
+		foreach($list as $folder=>$version)
+		{
+
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			{
+				$versions[$folder]['modalDownload'] = $mp->getDownloadModal('theme', $versions[$folder]);
+				$ret[] = $versions[$folder];
+				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+			}
+
+		}
+
+		return $ret;
+
+	}
+
+
+
+	private function renderAddonUpdate($list)
+	{
+
+		if(empty($list))
+		{
+			return null;
+		}
+
+
+		$tp = e107::getParser();
+		$text = '<ul class="media-list">';
+		foreach($list as $row)
+		{
+
+			$caption = LAN_DOWNLOAD.": ".$row['name']." ".$row['version'];
+
+			$ls = '<a href="'.$row['modalDownload'].'" class="e-modal alert-link" data-modal-caption="'.$caption .'" title="'.LAN_DOWNLOAD.'">';
+			$le = '</a>';
+
+			$thumb = ($row['icon']) ? $row['icon'] : $row['thumbnail'];
+
+			$text .= '
+			  <li class="media">
+			    <div class="media-left">
+			      '.$ls.'
+			        <img class="media-object" src="'.$thumb.'" width="96">
+			      '.$le.'
+			    </div>
+			    <div class="media-body">
+			      <h4 class="media-heading">'.$ls.$row['name'].$le.'</h4>
+			      <p>'.$row['version'].'<br />
+			       <small class="text-muted">Released: '.($row['date']).'</small>
+			       </p>
+
+			    </div>
+			  </li>
+			';
+
+		}
+
+
+		$text .= "</ul>";
+
+
+		return $text;
+	}
+
 
 	function sc_admin_update()
 	{
@@ -1395,9 +1524,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	
 	/**
-	 * New Admin Navigation Routine. 
+	 * Old Admin Navigation Routine.
 	 */
-	function sc_admin_navigation($parm)
+	function sc_admin_navigationOld($parm=null)
 	{
 	
 		if (!ADMIN) return '';
@@ -1418,7 +1547,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 		
-		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
 		{
 			$template = $$tmpl;
 
@@ -1457,9 +1586,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
 			//$menu_vars[$id]['perm'] = '';
 			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
+
+
 		}
 
 		//CORE SUBLINKS
+		$active = '';
 		foreach ($array_functions as $key => $subitem)
 		{
 			if(!empty($subitem[3]) && !getperms($subitem[3]))
@@ -1479,6 +1611,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['perm'] = $subitem[3];
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
+
+				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				{
+					$active = $catid;
+				}
+
+
+
+			//	e107::getDebug()->log($catid);
 
 				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
 				{
@@ -1588,14 +1729,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				}
 			}
 
+
+
 		 	$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
 
 		}
 
-
 		// ---------------- Cameron's Bit ---------------------------------
 
-		if(!vartrue($pref['admin_separate_plugins']))
+		if(empty($pref['admin_separate_plugins']))
 		{
         	// Convert Plugin Categories to Core Categories.
 			$convert = array(
@@ -1608,26 +1750,34 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				'help'		=> array(20,'helpMenu')
 			);
 
+
              foreach($tmp as $pg)
 			 {
 			    if(!empty($pg['category']))
 			    {
 			 	    $id = $convert[$pg['category']][1];
              	    $menu_vars[$id]['sub'][] = $pg;
+
+				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+					{
+						$active = $id;
+					}
+
+
 			    }
 			 }
 
-		   	 unset($menu_vars['plugMenu']);
-			 
-		
 			// Clean up - remove empty main sections
 			foreach ($menu_vars as $_m => $_d)
 			{
+
 				if(!isset($_d['sub']) || empty($_d['sub']))
 				{
 					unset($menu_vars[$_m]);
 				}
 			}
+
+			unset($menu_vars['plugMenu']);
 		}
 
 		// ------------------------------------------------------------------
@@ -1639,9 +1789,214 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 	//	 print_a($menu_vars);
-		return e107::getNav()->admin('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
+
+
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
+
+
+	/**
+	 * New Admin Navigation Routine. v2.1.5
+	 */
+	function sc_admin_navigation($parm=null)
+	{
+
+		if (!ADMIN) return '';
+	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
+
+		$pref = e107::getPref();
+
+		$admin_cat 				= e107::getNav()->adminCats();
+		$array_functions 		= e107::getNav()->adminLinks('legacy');
+		$array_sub_functions	= e107::getNav()->adminLinks('sub');
+		$array_plugins          = e107::getNav()->adminLinks('plugin2');
+
+
+		$tp 	= e107::getParser();
+		$e107	= e107::getInstance();
+		$sql	= e107::getDb('sqlp');
+
+		parse_str($parm, $parms);
+		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
+		global $$tmpl;
+
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
+		{
+			$template = $$tmpl;
+
+			$template['start'] = $template['start_other'];
+
+			$menu_vars = $this->getOtherNav($parm);
+			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
+		}
+
+
+
+		// MAIN LINK
+		if($parm != 'no-main')
+		{
+			$menu_vars = array();
+			$menu_vars['adminhome']['text'] = ADLAN_151;
+			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
+			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['adminhome']['image_src'] = ADLAN_151;
+			$menu_vars['adminhome']['perm'] = '';
+		}
+
+		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
+
+  		foreach($admin_cat['id'] as $i => $cat)
+		{
+
+			$id = $admin_cat['id'][$i];
+			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
+			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
+			$menu_vars[$id]['link'] = '#';
+			$menu_vars[$id]['image'] = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
+			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
+			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
+			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
+			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
+			//$menu_vars[$id]['perm'] = '';
+			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
+
+		}
+
+
+		//CORE SUBLINKS
+		$active = '';
+		foreach ($array_functions as $key => $subitem)
+		{
+			if(!empty($subitem[3]) && !getperms($subitem[3]))
+			{
+				continue;
+			}
+
+				$catid = $admin_cat['id'][$subitem[4]];
+				$tmp = array();
+				$tmp['text'] = $subitem[1];
+				$tmp['description'] = $subitem[2];
+				$tmp['link'] = $subitem[0];
+				$tmp['image'] = $subitem[5];
+				$tmp['image_large'] = $subitem[6];
+				$tmp['image_src'] = '';
+				$tmp['image_large_src'] = '';
+				$tmp['perm'] = $subitem[3];
+				$tmp['sub_class'] = '';
+				$tmp['sort'] = false;
+
+				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				{
+					$active = $catid;
+				}
+
+
+
+			//	e107::getDebug()->log($catid);
+
+				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
+				{
+					$tmp['sub_class'] = 'sub';
+					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)
+					{
+						$subid = $key.'_'.$subkey;
+						$tmp['sub'][$subid]['text'] = $subsubitem[1];
+						$tmp['sub'][$subid]['description'] = $subsubitem[2];
+						$tmp['sub'][$subid]['link'] = $subsubitem[0];
+						$tmp['sub'][$subid]['image'] = $subsubitem[5];
+						$tmp['sub'][$subid]['image_large'] = $subsubitem[6];
+						$tmp['sub'][$subid]['image_src'] = '';
+						$tmp['sub'][$subid]['image_large_src'] = '';
+						$tmp['sub'][$subid]['perm'] = $subsubitem[3];
+					}
+				}
+
+				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
+		}
+
+
+	//PLUGINS ----------------------------------------------------------
+
+		$tmp = array();
+		foreach($array_plugins as $key=>$p)
+		{
+			if(!getperms($p['perm']))
+			{
+				continue;
+			}
+
+			$tmp[$key]= $p;
+
+		}
+
+
+		$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
+
+	// --------------------------------------------------------------------
+
+
+		if(empty($pref['admin_separate_plugins']))
+		{
+        	// Convert Plugin Categories to Core Categories.
+			$convert = array(
+				'settings' 	=> array(1,'setMenu'),
+				'users'		=> array(2,'userMenu'),
+				'content'	=> array(3,'contMenu'),
+				'tools'		=> array(4,'toolMenu'),
+				'manage'	=> array(6,'managMenu'),
+				'misc'		=> array(7,'miscMenu'),
+				'help'		=> array(20,'helpMenu')
+			);
+
+
+             foreach($tmp as $pg)
+			 {
+			    if(!empty($pg['category']))
+			    {
+			 	    $id = $convert[$pg['category']][1];
+             	    $menu_vars[$id]['sub'][] = $pg;
+
+				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+					{
+						$active = $id;
+					}
+
+
+			    }
+			 }
+
+			// Clean up - remove empty main sections
+			foreach ($menu_vars as $_m => $_d)
+			{
+
+				if(!isset($_d['sub']) || empty($_d['sub']))
+				{
+					unset($menu_vars[$_m]);
+				}
+			}
+
+			unset($menu_vars['plugMenu']);
+		}
+
+		// ------------------------------------------------------------------
+
+	//	 print_a($menu_vars);
+
+
+
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, false, false);
+
+	}
+
+
+
+
+
+
+
+
+
 
 
 	function getOtherNav($type)
@@ -1649,15 +2004,16 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
-		if($type == 'home')
+		if($type === self::ADMIN_NAV_HOME)
 		{
 		
-			$menu_vars['home']['text'] =  ""; // ADLAN_53;
-			$menu_vars['home']['link'] = e_HTTP.'index.php';
-			$menu_vars['home']['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['home']['image_src'] = ADLAN_151;
-			$menu_vars['home']['sort'] = 1;
-			$menu_vars['home']['sub_class'] = 'sub';
+			$menu_vars[$type]['text'] =  ""; // ADLAN_53;
+			$menu_vars[$type]['link'] = e_HTTP.'index.php';
+			$menu_vars[$type]['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars[$type]['image_src'] = ADLAN_151;
+			$menu_vars[$type]['sort'] = 1;
+			$menu_vars[$type]['sub_class'] = 'sub';
+			$menu_vars[$type]['template'] = $type;
 			
 			// Sub Links for 'home'. 
 			require_once(e_HANDLER."sitelinks_class.php");
@@ -1682,10 +2038,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$c++;
 			}
 
-			$menu_vars['home']['sub'] = $tmp;
+			$menu_vars[$type]['sub'] = $tmp;
 			// --------------------
 		}
-		elseif($type == 'logout')
+		elseif($type == self::ADMIN_NAV_LOGOUT)
 		{
 			$tmp = array();
 			
@@ -1774,14 +2130,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['image_large_src'] 	= '';
 			$tmp[8]['link_class']		= '';					
 				
-			$menu_vars['logout']['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
-			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
-			$menu_vars['logout']['sub'] = $tmp;	
+			$menu_vars[$type]['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
+			$menu_vars[$type]['link'] = '#';
+			$menu_vars[$type]['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars[$type]['image_src'] = LAN_LOGOUT;
+			$menu_vars[$type]['sub'] = $tmp;
+			$menu_vars[$type]['template'] = $type;
 		}
 
-		if($type == 'language')
+		if($type == self::ADMIN_NAV_LANGUAGE)
 		{
 			$slng = e107::getLanguage();
 			$languages = $slng->installed();//array('English','French');
@@ -1839,11 +2196,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					$c++;		
 				}
 				
-				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
-				$menu_vars['language']['link'] = '#';
-				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
-				$menu_vars['language']['image_src'] = null;
-				$menu_vars['language']['sub'] = $tmp;	
+				$menu_vars[$type]['text'] = strtoupper(e_LAN); // e_LANGUAGE;
+				$menu_vars[$type]['link'] = '#';
+				$menu_vars[$type]['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
+				$menu_vars[$type]['image_src'] = null;
+				$menu_vars[$type]['sub'] = $tmp;
+				$menu_vars[$type]['template'] = $type;
 			}	
 			
 		}	
@@ -1877,6 +2235,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$var = array();
 
+
+
 		foreach($pref['sitetheme_layouts'] as $key=>$val)
 		{
 			$layoutName = str_replace($search,$replace,$key);
@@ -1902,7 +2262,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
 
-	   return e107::getNav()->admin(ADLAN_6,$action, $var);
+		$icon  = e107::getParser()->toIcon('e-menus-24');
+		$caption = $icon."<span>".ADLAN_6."</span>";
+
+	   return e107::getNav()->admin($caption,$action, $var);
 
 
 

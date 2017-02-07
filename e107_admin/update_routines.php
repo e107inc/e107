@@ -21,7 +21,7 @@
 
 require_once('../class2.php');
 require_once(e_HANDLER.'db_table_admin_class.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_e107_update.php');
 // Modified update routine - combines checking and update code into one block per function
 //		- reduces code size typically 30%.
 //		- keeping check and update code together should improve clarity/reduce mis-types etc
@@ -53,6 +53,7 @@ if(is_readable(e_ADMIN.'ver.php'))
 }
 
 $mes = e107::getMessage();
+/*
 // If $dont_check_update is both defined and TRUE on entry, a check for update is done only once per 24 hours.
 $dont_check_update = varset($dont_check_update, FALSE);
 
@@ -69,8 +70,9 @@ if ($dont_check_update === TRUE)
 		}
 	}
 }
+*/
 
-
+$dont_check_update = false;
 
 if (!$dont_check_update)
 {
@@ -121,7 +123,7 @@ if (!$dont_check_update)
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
 
-	// $dbupdate['212_to_213'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.2','2.1.3')), 'message'=> null, 'hide_when_complete'=>true);
+	 $dbupdate['214_to_215'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.4','2.1.5')), 'message'=> null, 'hide_when_complete'=>true);
 
 
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
@@ -176,6 +178,7 @@ class e107Update
 	{
 		$mes = e107::getMessage();
 		$tp = e107::getParser();
+		$sql = e107::getDb();
 
 
 	//	foreach($this->core as $func => $data)
@@ -218,7 +221,7 @@ class e107Update
 	function updatePlugin($path)
 	{
 		e107::getPlugin()->install_plugin_xml($path, 'upgrade');
-		e107::getPlugin()->save_addon_prefs(); // Rebuild addon prefs. 
+		// e107::getPlugin()->save_addon_prefs(); // Rebuild addon prefs.
 		e107::getMessage()->reset(E_MESSAGE_INFO); 
 		e107::getMessage()->addSuccess(LAN_UPDATED." : ".$path);
 		
@@ -258,6 +261,7 @@ class e107Update
 	{
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
+		$sql = e107::getDb();
 		
 		$text = "";
 
@@ -373,8 +377,11 @@ function update_check()
 		
 		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
+
 		  if (function_exists('update_'.$func))
 			{
+
+				$sql->db_Mark_Time('Check Core Update_'.$func.' ');
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
@@ -388,6 +395,7 @@ function update_check()
 		{
 			if (function_exists('update_'.$func))
 			{
+			//	$sql->db_Mark_Time('Check Core Update_'.$func.' ');
 				if (!call_user_func('update_'.$func, FALSE))
 				{
 				  $update_needed = TRUE;
@@ -548,12 +556,28 @@ function update_core_database($type = '')
 	 * @param string $type
 	 * @return bool true = no update required, and false if update required.
 	 */
-	 function update_212_to_213($type='')
+	 function update_214_to_215($type='')
 	{
 
 		$sql = e107::getDb();
 		$log = e107::getLog();
 		$just_check = ($type == 'do') ? false : true;
+
+
+		if(!$sql->select('core_media_cat', 'media_cat_id', "media_cat_category = '_icon_svg' LIMIT 1"))
+		{
+			if($just_check)
+			{
+				return update_needed("Missing Media-category for SVG");
+			}
+
+			$query = "INSERT INTO `#core_media_cat` (media_cat_id, media_cat_owner, media_cat_category, media_cat_title, media_cat_sef, media_cat_diz, media_cat_class, media_cat_image, media_cat_order) VALUES (NULL, '_icon', '_icon_svg', 'Icons SVG', '', 'Available where icons are used in admin.', '253', '', '0');";
+
+			$sql->gen($query);
+
+		}
+
+		return $just_check;
 
 			// List of changed menu locations.
 			/*
@@ -578,7 +602,7 @@ function update_core_database($type = '')
 			}
 		}*/
 
-		return true;
+
 
 	}
 
@@ -588,6 +612,7 @@ function update_core_database($type = '')
 //--------------------------------------------
 function update_706_to_800($type='')
 {
+
 	global $pref, $e107info;
 	global $sysprefs, $eArrayStorage;
 
@@ -1744,6 +1769,7 @@ function core_media_import($cat,$epath)
 
 function update_70x_to_706($type='')
 {
+
 	global $sql,$ns, $pref, $e107info, $admin_log, $emessage;
 
 	$just_check = $type == 'do' ? FALSE : TRUE;

@@ -9,7 +9,7 @@
  */
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 if (!$pref['upload_enabled'] || $pref['upload_class'] == 255)
 {

@@ -57,6 +57,8 @@ if(!empty($_GET['iframe']))
 			'main/edit'	=> 'main/list'
 		);
 
+		protected $adminMenuIcon = 'e-language-24';
+
 		protected $menuTitle = ADLAN_132;
 
 		function init()
@@ -582,7 +584,7 @@ if(!empty($_GET['iframe']))
 			{
 				if($val != $pref['sitelanguage'])
 				{
-					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";
+					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' class='form-control' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";
 				}
 			}
 
@@ -634,7 +636,7 @@ require_once ("auth.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
 require_once(e_ADMIN."lancheck.php");
 require_once(e_HANDLER."language_class.php");
 

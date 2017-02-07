@@ -207,6 +207,7 @@ class system_tools
 		
 		if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
 		{
+			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
 			$dbv->backUrl = e_SELF."?mode=verify_sql";
@@ -1428,7 +1429,7 @@ class system_tools
 					<fieldset id='core-db-pref-edit'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>";
 
-		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
+		$text .= "<select class='tbox form-control input-large' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=search'>Search</option>
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=notify'>Notify</option>\n";
@@ -1551,7 +1552,7 @@ class system_tools
 	{
 		$error_messages = array(0 => DBLAN_31, 1 => LAN_ERROR, 2 => DBLAN_33, 3 => DBLAN_34);
 	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
-		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,"<i class='S16 e-warning-16'></i>","<i style='display:inline-block;width:17px;height:16px;'> </i>");
+		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,ADMIN_WARNING_ICON,"<i style='display:inline-block;width:17px;height:16px;'> </i>");
 		
 		$error_type = array('warning'=>2, 'error'=>1);
 
@@ -1695,7 +1696,10 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 		$var[$key]['link'] = e_SELF."?mode=".$key;
 	}
 
-	e107::getNav()->admin(DBLAN_10, $_GET['mode'], $var);
+		$icon  = e107::getParser()->toIcon('e-database-24');
+		$caption = $icon."<span>".DBLAN_10."</span>";
+
+	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
 
 
@@ -1735,7 +1739,7 @@ function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=
 		}
 	}
 
-	$mode = ($debug === true) ? "debug" : false;
+	$mode = ($debug === true) ? array( "debug" =>1) : null;
 
 	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
 	{

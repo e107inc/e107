@@ -385,7 +385,7 @@ else
 							<td>".$value."</td>
 							<td class='center'>".r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='core_handlers[".$key."][order]' class='tbox order'>
+								<select name='core_handlers[".$key."][order]' class='tbox order form-control input-small'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
@@ -438,7 +438,7 @@ else
 							<td>".$search_info[0]['qtype'] . "</td>
 							<td class='center'>".r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='plug_handlers[".$plug_dir."][order]' class='tbox order'>
+								<select name='plug_handlers[".$plug_dir."][order]' class='form-control input-small order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++)
 		 {
@@ -541,6 +541,9 @@ function search_adminmenu()
 	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
-	e107::getNav()->admin(SEALAN_40, $action, $var);
+		$icon  = e107::getParser()->toIcon('e-search-24');
+		$caption = $icon."<span>".SEALAN_40."</span>";
+
+	e107::getNav()->admin($caption, $action, $var);
 }
 ?>

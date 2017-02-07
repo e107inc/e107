@@ -20,6 +20,6 @@ if (!e107::isInstalled('newsfeed'))
 	return;
 }
 
-include_lan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_admin_newsfeed.php');
+e107::includeLan(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_admin_newsfeed.php');
 $ns->tablerender(NFLAN_43, e107::getParser()->toHTML(NFLAN_42, true) );
 ?>

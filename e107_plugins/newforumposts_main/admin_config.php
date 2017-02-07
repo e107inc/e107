@@ -17,7 +17,7 @@ if(!getperms('1'))
 
 require_once (e_HANDLER.'userclass_class.php');
 
-include_lan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 require_once (e_ADMIN.'auth.php');
 
 $frm = e107::getForm();

@@ -10,7 +10,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
 define('POLLCLASS', TRUE);
 define('POLL_MODE_COOKIE', 0);
 define('POLL_MODE_IP', 1);
@@ -797,7 +797,7 @@ class poll
 		<tr>
 		<td style='width:30%'><div class='normaltext'>".POLLAN_3.":</div></td>
 		<td style='width:70%'>
-		<input class='tbox input-xxlarge' type='text' name='poll_title' size='70' value='".$tp->post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
+		<input class='tbox input-xxlarge form-control' type='text' name='poll_title' size='70' value='".$tp->post_toForm(varset($_POST['poll_title']))."' maxlength='200' />";
 
 		$option_count = (varset($_POST['poll_option']) && count($_POST['poll_option']) ? count($_POST['poll_option']) : 2);
 
@@ -809,7 +809,7 @@ class poll
 		for($count = 1; $count <= $option_count; $count++)
 		{
 			$opt = ($count==1) ? "id='pollopt'" : "";
-			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large' type='text' name='poll_option[]' size='40' value=\"".$tp->post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+			$text .="<span class='form-inline' style='display:inline-block; padding-bottom:5px' {$opt}><input  class='tbox input-large form-control' type='text' name='poll_option[]' size='40' value=\"".$tp->post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 			$text .= "</span><br />";
 		}
 

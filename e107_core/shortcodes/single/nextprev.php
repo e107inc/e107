@@ -68,9 +68,12 @@ function nextprev_shortcode($parm = '')
 	 * New parameter requirements formatted as a GET string.
 	 * Template support.
 	 */
-	if(is_string($parm) && strpos($parm, 'total=') !== false)
+	if(is_array($parm) || strpos($parm, 'total=') !== false)
 	{
-		parse_str($parm, $parm);
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
 
 		// Calculate
 		$total_items = intval($parm['total']);
@@ -363,10 +366,6 @@ function nextprev_shortcode($parm = '')
 	 */
 	else
 	{
-		if(empty($parm))
-		{
-			$parm = '';
-		}
 		$parm_count = substr_count($parm, ',');
 		while($parm_count < 5)
 		{

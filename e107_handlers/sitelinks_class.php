@@ -9,12 +9,23 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 
+
+/**
+ * Legacy Navigation class.
+ * Class sitelinks
+ */
 class sitelinks
 {
 	var $eLinkList = array();
 	var $sefList = array();
+
+	const LINK_DISPLAY_FLAT     = 1;
+	const LINK_DISPLAY_MENU     = 2;
+	const LINK_DISPLAY_OTHER    = 3;
+	const LINK_DISPLAY_SLIDER   = 4;
+
 
 	function getlinks($cat=1)
 	{
@@ -73,19 +84,24 @@ class sitelinks
 		return $this->eLinkList;
 	}
 
-	function get($cat=1, $style='', $css_class = false)
+	function get($cat = 1, $style = null, $css_class = false)
 	{
 		global $pref, $ns, $e107cache, $linkstyle;
+		$ns = e107::getRender();
+		$pref = e107::getPref();
+		$e107cache = e107::getCache();
+
 		$usecache = ((trim(defset('LINKSTART_HILITE')) != "" || trim(defset('LINKCLASS_HILITE')) != "") ? false : true);
-		if ($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY))))
+
+		if($usecache && !strpos(e_SELF, e_ADMIN) && ($data = $e107cache->retrieve('sitelinks_' . $cat . md5($linkstyle . e_PAGE . e_QUERY))))
 		{
-		  return $data;
+			return $data;
 		}
 
-		if (LINKDISPLAY == 4) 
+		if(LINKDISPLAY == self::LINK_DISPLAY_SLIDER)
 		{
-			require_once(e_PLUGIN.'ypslide_menu/ypslide_menu.php');
-			return;
+			require_once(e_PLUGIN . 'ypslide_menu/ypslide_menu.php');
+			return null;
 		}
 
 		$this->getlinks($cat);
@@ -102,10 +118,14 @@ class sitelinks
 		// -----------------------------
 
 		// where did link alignment go?
-		if (!defined('LINKALIGN')) { define('LINKALIGN', ''); }
-
-		if(!$style)
+		if(!defined('LINKALIGN'))
 		{
+			define('LINKALIGN', '');
+		}
+
+		if(empty($style))
+		{
+			$style = array();
 			$style['prelink'] = defined('PRELINK') ? PRELINK : '';
 			$style['postlink'] = defined('POSTLINK') ? POSTLINK : '';
 			$style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
@@ -121,96 +141,117 @@ class sitelinks
 		}
 
 		// Sublink styles.- replacing the tree-menu.
-        if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink']))
+		if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink']))
 		{
-			foreach($style as $key=>$val)
+			foreach($style as $key => $val)
 			{
-			  	$aSubStyle[$key] = vartrue($style["sub".$key]) ? $style["sub".$key] : $style[$key];
+				$aSubStyle[$key] = vartrue($style["sub" . $key]) ? $style["sub" . $key] : $style[$key];
 			}
-        }
+		}
 		else
 		{
 			$style['subindent'] = "&nbsp;&nbsp;";
 			$aSubStyle = $style;
 		}
-		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
+
+		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n" . $style['prelink'];
 
 		// php warnings
 		if(!vartrue($this->eLinkList['head_menu']))
 		{
 			$this->eLinkList['head_menu'] = array();
 		}
+
 		$render_link = array();
 
-		if ($style['linkdisplay'] != 3)	
+		if($style['linkdisplay'] != self::LINK_DISPLAY_OTHER)
 		{
-			foreach ($this->eLinkList['head_menu'] as $key => $link)
-			{
-				$main_linkid = "sub_".$link['link_id'];
-				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
-				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
-				if(!defined("LINKSRENDERONLYMAIN") && !varset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
-                {
-					$render_link[$key] .= $this->subLink($main_linkid,$aSubStyle,$css_class);
-                }  
-			}
-			$text .= implode(varset($style['linkseparator']), $render_link);
-			$text .= $style['postlink'];
-			if ($style['linkdisplay'] == 2)	
+			foreach($this->eLinkList['head_menu'] as $key => $link)
 			{
-				$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks', TRUE);
+				$main_linkid = "sub_" . $link['link_id'];
+				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ? true : false;
+				$render_link[$key] = $this->makeLink($link, '', $style, $css_class);
+
+				if(!defined("LINKSRENDERONLYMAIN") && !isset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
+				{
+					$render_link[$key] .= $this->subLink($main_linkid, $aSubStyle, $css_class);
+				}
+			}
+
+			if(!isset($style['linkseparator']))
+			{
+				$style['linkseparator'] = '';
+			}
+
+			$text .= implode($style['linkseparator'], $render_link);
+
+
+			$text .= $style['postlink'];
+
+			if($style['linkdisplay'] == self::LINK_DISPLAY_MENU)
+			{
+				$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks', true);
 			}
 		}
-		else
+		else // link_DISPLAY_3
 		{
 			foreach($this->eLinkList['head_menu'] as $link)
 			{
-				if (!count($this->eLinkList['sub_'.$link['link_id']]))
+				if(!count($this->eLinkList['sub_' . $link['link_id']]))
 				{
-					$text .= $this->makeLink($link,'', $style, $css_class);
+					$text .= $this->makeLink($link, '', $style, $css_class);
 				}
 				$text .= $style['postlink'];
 			}
-			$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks_main', TRUE);
+
+			$text = $ns->tablerender(LAN_SITELINKS_183, $text, 'sitelinks_main', true);
+
 			foreach(array_keys($this->eLinkList) as $k)
 			{
 				$mnu = $style['prelink'];
 				foreach($this->eLinkList[$k] as $link)
 				{
-					if ($k != 'head_menu')
+					if($k != 'head_menu')
 					{
-						$mnu .= $this->makeLink($link, TRUE, $style, $css_class);
+						$mnu .= $this->makeLink($link, true, $style, $css_class);
 					}
 				}
 				$mnu .= $style['postlink'];
-				$text .= $ns->tablerender($k, $mnu, 'sitelinks_sub', TRUE);
+				$text .= $ns->tablerender($k, $mnu, 'sitelinks_sub', true);
 			}
 		}
+
 		$text .= "\n\n\n<!-- end Site Links -->\n\n\n";
+
+
+
 		if($usecache)
 		{
-			$e107cache->set('sitelinks_'.$cat.md5($linkstyle.e_PAGE.e_QUERY), $text);
+			$e107cache->set('sitelinks_' . $cat . md5($linkstyle . e_PAGE . e_QUERY), $text);
 		}
-	 	return $text;
+
+		return $text;
 	}
 	
 	/**
 	 * Manage Sublink Rendering
-	 * @param object $main_linkid
-	 * @param object $aSubStyle
-	 * @param object $css_class
+	 * @param string $main_linkid
+	 * @param string $aSubStyle
+	 * @param string $css_class
 	 * @param object $level [optional]
 	 * @return 
 	 */
 	function subLink($main_linkid,$aSubStyle,$css_class='',$level=0)
 	{
 		global $pref;
+
 		if(!isset($this->eLinkList[$main_linkid]) || !is_array($this->eLinkList[$main_linkid]))
 		{
-			return;
+			return null;
 		}
-		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
+
+		$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 						
 		foreach($this->eLinkList[$main_linkid] as $val) // check that something in the submenu is actually selected.
  		{
@@ -227,15 +268,17 @@ class sitelinks
 
 		$text = "";
 		$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle' class='d_sublink'>\n";
+
 		foreach ($this->eLinkList[$main_linkid] as $sub)
 		{
-			$id = "sub_".$sub['link_id'];
-			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !vartrue($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;
+			$id = (!empty($sub['link_id'])) ? "sub_".$sub['link_id'] : 'sub_0';
+			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;
 			$class = "sublink-level-".($level+1);
 			$class .= ($css_class) ? " ".$css_class : "";
 			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
 			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
 		}
+
 		$text .= "\n</div>\n\n";
 		return $text;	
 	}
@@ -266,7 +309,7 @@ class sitelinks
 				$tmp = explode('.', $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
 			}
-			$indent = ($style['linkdisplay'] != 3) ? varset($style['subindent']) : "";
+			$indent = ($style['linkdisplay'] != self::LINK_DISPLAY_OTHER && !empty($style['subindent'])) ? ($style['subindent']) : "";
 		}
 
 		// Convert any {e_XXX} to absolute URLs (relative ones sometimes get broken by adding e_HTTP at the front)
@@ -316,7 +359,9 @@ class sitelinks
 				$linkstart = (isset($style['linkstart_hilite'])) ? $style['linkstart_hilite'] : "";
 				$highlighted = TRUE;
 			}
-			if ($this->hilite(varset($linkInfo['link_url']), varset($style['linkclass_hilite']))== TRUE) 
+
+
+			if ($this->hilite(varset($linkInfo['link_url']), !empty($style['linkclass_hilite'])))
 			{
 				$linkadd = (isset($style['linkclass_hilite'])) ? " class='".$style['linkclass_hilite']."'" : "";
 				$highlighted = TRUE;
@@ -358,7 +403,7 @@ e107::getDebug()->log($linkInfo['link_url']);
 		// If its a link.. make a link
 		$_link = "";
 		$_link .= $accessdigit;
-		if (!empty($href) && ((varset($style['hilite_nolink']) && $highlighted)!=TRUE))
+		if (!empty($href) && ((isset($style['hilite_nolink']) && $highlighted)!=TRUE))
 		{
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.$accesskey.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off, defs, no_hook")."</a>";
 		}
@@ -387,6 +432,7 @@ e107::getDebug()->log($linkInfo['link_url']);
 		$replace[1] = $tp -> toHTML($linkInfo['link_description'], true);
 
 		$text = preg_replace($search, $replace, $SITELINKSTYLE);
+
 		return $text;
 	}
 
@@ -505,9 +551,9 @@ e107::getDebug()->log($linkInfo['link_url']);
 					return TRUE;
 				}
 			}
-			elseif (!e_QUERY && e_PAGE == "news.php")
+			elseif (!e_QUERY && defset('e_PAGE') === "news.php")
 			{
-				return TRUE;
+				return true;
 			}
 			return FALSE;
 		}
@@ -680,7 +726,7 @@ class e_navigation
 		$this->admin_cat['title'][1] = LAN_SETTINGS;
 		$this->admin_cat['id'][1] = 'setMenu';
 		$this->admin_cat['img'][1] = 'fa-cogs.glyph';
-		$this->admin_cat['lrg_img'][1] = 'e-settings-32.glyph';
+		$this->admin_cat['lrg_img'][1] = $tp->toGlyph('e-settings-32');
 		$this->admin_cat['sort'][1] = true;
 
 /*
@@ -742,7 +788,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$this->admin_cat['title'][20] = LAN_ABOUT;
 		$this->admin_cat['id'][20] = 'aboutMenu';
 		$this->admin_cat['img'][20] = 'fa-info-circle.glyph'; // E_16_CAT_ABOUT;//E_16_NAV_DOCS
-		$this->admin_cat['lrg_img'][20] = ''; // E_32_CAT_ABOUT;
+		$this->admin_cat['lrg_img'][20] = ''; // $tp->toGlyph('e-cat_about-32'); ; // E_32_CAT_ABOUT;
 		$this->admin_cat['sort'][20] = false;	
 				
 		
@@ -758,6 +804,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
         {
              return $this->pluginLinks(E_16_PLUGMANAGER, "array") ;   
         }
+
+		if($mode == 'plugin2')
+        {
+             return $this->pluginLinks(E_16_PLUGMANAGER, "standard") ;
+        }
+
+
 		
 		$this->setIconArray();	
 		
@@ -920,10 +973,107 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
             return (int) vartrue($convert[$cat][0]);
     }
-		
+
+
+	/**
+	 * Get Plugin Links - rewritten for v2.1.5
+	 * @param string $iconSize
+	 * @param string $linkStyle standard = new in v2.1.5 | array | adminb
+	 * @return array|string
+	 */
+	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
+	{
+		$plug = e107::getPlug();
+		$data = $plug->getInstalled();
+
+		$arr = array();
+
+		$pref = e107::getPref();
+
+		foreach($data as $path=>$ver)
+		{
+
+			if(!e107::isInstalled($path))
+			{
+				continue;
+			}
+
+			if(!empty($pref['lan_global_list']) && !in_array($path, $pref['lan_global_list']))
+			{
+				e107::loadLanFiles($path, 'admin');
+			}
+
+			$plug->load($path);
+
+
+			$key = ($linkStyle === 'standard') ? "plugnav-".$path : 'p-'.$path;
+
+			$url = $plug->getAdminUrl();
+			$cat = $plug->getCategory();
+
+			if(empty($url) || $cat === 'menu')
+			{
+				continue;
+			}
+
+			// Keys compatible with legacy and new admin layouts.
+			$arr[$key] = array(
+
+				'text'          => $plug->getName(),
+				'description'   => $plug->getDescription(),
+				'link'          => $url,
+				'image'         => $plug->getIcon(16),
+				'image_large'   => $plug->getIcon(32),
+				'category'      => $cat,
+				'perm'           => "P".$plug->getId(),
+				'sort'          => 2,
+				'sub_class'     => null,
+
+
+				// Legacy Keys.
+				'key'       => $key,
+				'title'     => $plug->getName(),
+				'caption'   => $plug->getAdminCaption(),
+				'perms'     => "P".$plug->getId(),
+				'icon'      => $plug->getIcon(16),
+				'icon_32'   => $plug->getIcon(32),
+				'cat'       => $this->plugCatToCoreCat($plug->getCategory())
+
+			);
+
+
+		}
+
+		//ksort($arr, SORT_STRING);
+
+		if($linkStyle === "array" || $iconSize === 'assoc' || $linkStyle === 'standard')
+		{
+		   	return $arr;
+		}
+
+
+		$text = '';
+
+		foreach ($arr as $plug_key => $plug_value)
+		{
+			$the_icon =  ($iconSize == E_16_PLUGMANAGER) ?  $plug_value['icon'] : $plug_value['icon_32'];
+			$text .= $this->renderAdminButton($plug_value['link'], $plug_value['title'], $plug_value['caption'], $plug_value['perms'], $the_icon, $linkStyle);
+		}
+
+		return $text;
+
+	}
+
+
 	// Function renders all the plugin links according to the required icon size and layout style
 	// - common to the various admin layouts such as infopanel, classis etc. 
-	function pluginLinks($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
+	/**
+	 * @deprecated
+	 * @param string $iconSize
+	 * @param string $linkStyle
+	 * @return array|string
+	 */
+	function pluginLinksOld($iconSize = E_16_PLUGMANAGER, $linkStyle = 'adminb')
 	{
 	
 		$sql = e107::getDb();
@@ -945,13 +1095,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	
 		$plugs = e107::getObject('e107plugin');
 		
+
 		
-		
-		if(vartrue($pref['plug_installed']))
+		if(!empty($pref['plug_installed']))
 		{
 			foreach($pref['plug_installed'] as $plug=>$vers)
 			{
-		
+
 				$plugs->parse_plugin($plug);
 				
 		
@@ -996,7 +1146,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 						$plugin_array['p-'.$plugin_path] = array(
 						  'key'      => 'p-'.$plugin_path,
 						  'link'      => e_PLUGIN.$plugin_path."/".$eplug_conffile, 
-						  'title'     => $eplug_name, 'caption' => $eplug_caption, 
+						  'title'     => $eplug_name,
+						  'caption' => $eplug_caption,
 						  'perms'     => "P".varset($plug_id[$plugin_path]), 
 						  'icon'      => $plugin_icon, 
 						  'icon_32'   => $plugin_icon_32,
@@ -1236,27 +1387,24 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		//	$temp = $tmpl['button'.$kpost];
 		//	echo "ap = ".$active_page;
 		//	echo " act = ".$act."<br /><br />";
+
+
+
 		
 			if($rid == 'adminhome')
 			{
 				$temp = $tmpl['button_other'.$kpost];	
 			}
+
+			if(!empty($e107_vars[$act]['template']))
+			{
+				$tmplateKey = 'button_'.$e107_vars[$act]['template'].$kpost;
+				$temp = $tmpl[$tmplateKey];
+
+				// e107::getDebug()->log($tmplateKey);
+			}
 	
-			if($rid == 'home')
-			{
-				$temp = $tmpl['button_home'.$kpost];	
-			}
-			
-			if($rid == 'language')
-			{
-				$temp = $tmpl['button_language'.$kpost];	
-			}
-			
-			if($rid == 'logout')
-			{
-				$temp = $tmpl['button_logout'.$kpost];	
-			}
-			
+
 			$replace[0] = str_replace(" ", "&nbsp;", $e107_vars[$act]['text']);
 			// valid URLs
 			$replace[1] = str_replace(array('&amp;', '&'), array('&', '&amp;'), vartrue($e107_vars[$act]['link'], "#{$act}"));
@@ -1330,7 +1478,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 	
 		$ns = e107::getRender();
-		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
+		$ns->setUniqueId($id);
+		$ns->tablerender($title, $text);
 		return '';
 	}
 			
@@ -1781,6 +1930,26 @@ class navigation_shortcodes extends e_shortcode
 		
 		return $url;
 	}
+
+
+	/**
+	 * Returns only the anchor target in the URL if one is found.
+	 * @param null $parm
+	 * @return null|string
+	 */
+	function sc_link_target($parm=null)
+	{
+		if(strpos($this->var['link_url'],'#')!==false)
+		{
+			list($tmp,$segment) = explode('#',$this->var['link_url'],2);
+			return '#'.$segment;
+
+		}
+
+		return '#';
+	}
+
+
 	
 	function sc_link_open($parm = '')
 	{

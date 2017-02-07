@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * e107 website system
  *
@@ -6,19 +6,13 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/newforumposts_main/newforumposts_main.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 if(!defined('e107_INIT')) { exit();}
 
 require_once (e_HANDLER.'userclass_class.php');
 $query = ($pref['nfp_posts'] ? 'thread_lastpost' : 'thread_datestamp');
-include_lan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'newforumposts_main/languages/'.e_LANGUAGE.'.php');
 $path = e_PLUGIN.'forum/';
 
 global $sql, $ns;
@@ -65,14 +59,14 @@ elseif(!isset($NEWFORUMPOSTSTYLE_HEADER))
 		
 }
 
-$results = $sql->db_Select_gen("
-SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, t.thread_s, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
+$results = $sql->gen("
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_thread AS t
 LEFT JOIN #user AS u ON SUBSTRING_INDEX(t.thread_user,'.',1) = u.user_id
 LEFT JOIN #user AS lp ON SUBSTRING_INDEX(t.thread_lastuser,'.',1) = lp.user_id
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
-WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.")
+WHERE f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST.")
 AND fp.forum_class IN (".USERCLASS_LIST.")
 ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 
@@ -93,17 +87,19 @@ else
 	$ICON = "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' />";
 }
 */
-$TOTAL_TOPICS = $sql->db_Count("forum_thread", "(*)", " WHERE thread_parent='0' ");
-$TOTAL_REPLIES = $sql->db_Count("forum_thread", "(*)", " WHERE thread_parent!='0' ");
-$sql->db_Select_gen("SELECT sum(thread_views) FROM #forum_thread");
-$tmp = $sql->db_Fetch();
-$TOTAL_VIEWS = $tmp[0];
+$TOTAL_TOPICS = $sql->count("forum_thread");
+$TOTAL_REPLIES = $sql->count("forum_post");
+
+$sql->gen("SELECT sum(thread_views) FROM #forum_thread");
+$tmp = $sql->fetch();
+$TOTAL_VIEWS = $tmp["sum(thread_views)"];
+
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_HEADER);
 
 foreach ($forumArray as $forumInfo)
 {
 	extract($forumInfo);
-	
+
 	$r_datestamp = $gen->convert_date($thread_lastpost, "forum");
 	if($thread_total_replies)
 	{
@@ -142,7 +138,7 @@ foreach ($forumArray as $forumInfo)
 			$newflag = TRUE;
 		}
 	}
-	
+
 	if ($newflag) 
 	{
 		if ($forumInfo['thread_total_replies'] >= $pref['forum_popular']) 

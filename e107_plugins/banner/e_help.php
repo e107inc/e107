@@ -15,7 +15,7 @@ if (!e107::isInstalled('banner'))
 	return;
 }
 
-include_lan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'admin_banner.php');
+e107::includeLan(e_PLUGIN.'banner/languages/'.e_LANGUAGE.'admin_banner.php');
 $ns->tablerender(BNRLAN_HELP_01, BNRLAN_HELP_02);
 
 ?>

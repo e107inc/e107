@@ -14,15 +14,21 @@ define("FONTAWESOME", 	4);
 define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
 
 
+
 //
 
 /* @see https://www.cdnperf.com */
 // Warning: Some bootstrap CDNs are not compiled with popup.js
 // use https if e107 is using https.
 
-e107::js("url",  "https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
+/*e107::js("url",  "https://cdn.jsdelivr.net/bootstrap/3.3.6/js/bootstrap.min.js", 'jquery', 2);
 e107::css('url', 'https://cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css');
-e107::css('url', 'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');
+e107::css('url', 'https://cdn.jsdelivr.net/fontawesome/4.5.0/css/font-awesome.min.css');*/
+
+e107::library('load', 'bootstrap');
+e107::library('load', 'fontawesome');
+
+
 e107::css('url', 'http://fonts.googleapis.com/css?family=Bad+Script|Raleway:400,500,600,700,300|Lora:400');
 // e107::css('theme','voux.css');
 e107::css('url', 'http://fonts.googleapis.com/css?family=Montserrat:400,700&ver=4.2.4');
@@ -260,12 +266,12 @@ $LAYOUT['_footer_'] = '
   <div class="container">
   <div class="block">
 		<div class="row">
-      		<div class="col-lg-6">
+      		<div class="col-lg-offset-1 col-lg-5 col-sm-6">
 		         <div class="caption">
-		            <img src="'.THEME_ABS.'install/sketch-subscribe.png">
+		            <img class="img-responsive" src="'.THEME_ABS.'install/sketch-subscribe.png">
 		         </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-sm-6">
 		         {VOUX_NEWSLETTER_FORM}
 		         </div>
             </div>

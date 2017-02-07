@@ -97,7 +97,7 @@ Variables relating to DB values all begin 'mail_' - others are internal (volatil
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');		// May be needed by anything loading this class
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');		// May be needed by anything loading this class
 
 define('MAIL_STATUS_SENT', 0);			// Mail sent. Email handler happy, but may have bounced (or may be yet to bounce)
 define('MAIL_STATUS_BOUNCED', 1);

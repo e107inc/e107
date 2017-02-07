@@ -19,11 +19,17 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+e107::getDb()->db_Mark_Time('(Start auth.php)');
+
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
 
+
+
 // Required for a clean v1.x -> v2 upgrade. 
-$core = e107::getConfig('core'); 		
+$core = e107::getConfig('core');
+
 if($core->get('admintheme') != 'bootstrap3')
 {
 	$core->update('admintheme','bootstrap3');
@@ -32,6 +38,14 @@ if($core->get('admintheme') != 'bootstrap3')
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
 	$core->save();	
 	e107::getRedirect()->redirect(e_SELF);		
+}
+
+$admincss = trim($core->get('admincss'));
+if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
+{
+	$core->update('admincss','css/bootstrap-dark.min.css');
+	$core->save(false,true);
+	e107::getRedirect()->redirect(e_SELF);
 }
 
 // Check Admin-Perms for current language and redirect if necessary. 

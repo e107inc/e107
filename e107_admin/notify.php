@@ -29,12 +29,15 @@ class plugin_notify_admin extends e_admin_dispatcher
 
 	protected $adminMenu = array(
 		'main/config' 		=> array('caption'=> "Email", 'perm' => '0'),
-		'main/push'		=> array('caption'=> "Push (experimental)", 'perm' => '0')
+//		'main/push'		=> array('caption'=> "Push (experimental)", 'perm' => '0')
 	);
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'
 	);
+
+
+	protected $adminMenuIcon = 'e-notify-24';
 
 	/**
 	 * Navigation menu title
@@ -349,7 +352,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 				$value= "";
 			}
 
-			$text .= "<input type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
+			$text .= "<input class='form-control' type='text' style='width:200px;$disp' class='tbox' id='event_".$id."' name='event[".$id."][email]' value=\"".$value."\" />\n";
 
 		$text .= $frm->hidden("event[".$id."][include]", $include);
 		$text .= $frm->hidden("event[".$id."][legacy]", $legacy); // function or method

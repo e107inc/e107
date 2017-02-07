@@ -7,7 +7,7 @@
 	<external_plugins>e107</external_plugins>
 	<image_advtab>false</image_advtab>
 	<media_alt_source>false</media_alt_source>
-	<media_dimensions>false</media_dimensions>
+	<media_dimensions>true</media_dimensions>
 	<media_poster>false</media_poster>
 	<plugin_preview_width>800</plugin_preview_width>
 	<extended_valid_elements>i[*], bbcode[*]</extended_valid_elements>

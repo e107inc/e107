@@ -17,10 +17,8 @@ if (!getperms('P'))
 }
 
 
-e107::lan('forum', 'admin',true);
-e107::lan('forum','front', true);
-//e107::includeLan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/English_admin.php');
-//e107::lan('forum','', 'front');
+e107::lan('forum', 'admin', true);
+e107::lan('forum', 'front', true);
 
 
 e107::css('inline',"
@@ -45,7 +43,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 	class forum_admin extends e_admin_dispatcher
 	{
-
 		protected $modes = array(
 
 			'main'	=> array(
@@ -75,23 +72,22 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		);
 
-
 		protected $adminMenu = array(
+			'main/list'			=> array('caption' => LAN_MANAGE, 'perm' => 'P'),
+			'main/create'		=> array('caption' => LAN_CREATE, 'perm' => 'P'),
 
-			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-			'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-			'main/opt1'              => array('divider'=>true),
+			'main/opt1'         => array('divider' => true),
 
+			'main/rules'		=> array('caption' => WMGLAN_5, 'perm' => 'P'),
+			'mods/list'         => array('caption' => LAN_FORUM_2003, 'perm'=>'P'),
+			'main/prefs' 		=> array('caption' => LAN_PREFS, 'perm' => 'P'),
 
-			'main/rules'		=> array('caption'=> WMGLAN_5, 'perm' => 'P'),
-			'mods/list'         => array('caption'=> LAN_FORUM_2003, 'perm'=>'P'),
-			'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
-			'main/opt2'         => array('divider'=>true),
-			'report/list'      => array('caption'=> FORLAN_116, 'perm'=>'P'),
-			'post/list'         => array('caption'=>LAN_PLUGIN_FORUM_LATESTPOSTS, 'perm'=>'P'),
-			'main/prune'		=> array('caption'=> LAN_PRUNE, 'perm' => 'P'),
-			'main/tools'        => array('caption'=>FORLAN_153, 'perm'=>'p')
+			'main/opt2'         => array('divider' => true),
 
+			'report/list'       => array('caption' => FORLAN_116, 'perm'=>'P'),
+			'post/list'         => array('caption' => LAN_PLUGIN_FORUM_LATESTPOSTS, 'perm'=>'P'),
+			'main/prune'		=> array('caption' => LAN_PRUNE, 'perm' => 'P'),
+			'main/tools'        => array('caption' => FORLAN_153, 'perm'=>'p')
 		);
 
 		protected $adminMenuAliases = array(
@@ -100,24 +96,15 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		protected $menuTitle = LAN_PLUGIN_FORUM_NAME;
 
-
 		function init()
 		{
 			if(E107_DEBUG_LEVEL > 0)
 			{
 				$this->adminMenu['opt3'] = array('divider'=>true);
 				$this->adminMenu['main/update'] = array('caption'=>"Redo v1.x Forum Upgrade", 'perm'=>0, 'uri'=>'{e_PLUGIN}forum/forum_update.php');
-
-
-
 			}
-
 		}
 	}
-
-
-
-
 
 	class forum_ui extends e_admin_ui
 	{
@@ -177,30 +164,25 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 
 		protected $prefs = array(
-			'enclose'		        => array('title'=> FORLAN_44, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_45),
-			'title'		            => array('title'=> FORLAN_65, 'type'=>'text', 'data' => 'str','help'=>''),
-			'notify'		        => array('title'=> FORLAN_47, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_48),
-			'notify_on'	            => array('title'=> FORLAN_177, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_178),
-			'poll'		            => array('title'=> FORLAN_49, 'type'=>'userclass', 'data' => 'int','help'=>FORLAN_50),
-			'attach'		        => array('title'=> FORLAN_70, 'type'=>'boolean', 'data' => 'str','help'=>FORLAN_71),
-			'maxwidth'	            => array('title'=> FORLAN_134, 'type'=>'number', 'data' => 'str','help'=>FORLAN_135),
-			'linkimg'		        => array('title'=> FORLAN_136, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_137),
-			'track'		            => array('title'=> FORLAN_200, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_201),
-			'trackemail'		    => array('title'=> FORLAN_202, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_203),
-			'redirect'	            => array('title'=> FORLAN_112, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_113),
-			'reported_post_email'	=> array('title'=> FORLAN_116, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_122),
-			'tooltip'	            => array('title'=> FORLAN_126, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_127),
-			'ranks'                 => array('title'=> FORLAN_63, 'type'=>'boolean', 'data' => 'int','help'=>''),
-
-			'tiplength'	            => array('title'=> FORLAN_128, 'type'=>'number', 'data' => 'int','help'=>FORLAN_129),
-			'eprefix'	            => array('title'=> FORLAN_53, 'type'=>'text', 'data' => 'string','help'=>FORLAN_54),
-			'popular'	            => array('title'=> FORLAN_55, 'type'=>'number', 'data' => 'int','help'=>FORLAN_56),
-			'postspage'	            => array('title'=> FORLAN_57, 'type'=>'number', 'data' => 'int','help'=>FORLAN_58),
-			'threadspage'	        => array('title'=> FORLAN_186, 'type'=>'number', 'data' => 'int','help'=>FORLAN_187),
-
-
-
-
+			'enclose'		        => array('title' => FORLAN_44, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_45),
+			'title'		            => array('title' => FORLAN_65, 'type'=>'text', 'data' => 'str','help'=>''),
+			'notify'		        => array('title' => FORLAN_47, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_48),
+			'notify_on'	            => array('title' => FORLAN_177, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_178),
+			'poll'		            => array('title' => FORLAN_49, 'type'=>'userclass', 'data' => 'int','help'=>FORLAN_50),
+			'attach'		        => array('title' => FORLAN_70, 'type'=>'boolean', 'data' => 'str','help'=>FORLAN_71),
+			'maxwidth'	            => array('title' => FORLAN_134, 'type'=>'number', 'data' => 'str','help'=>FORLAN_135),
+			'linkimg'		        => array('title' => FORLAN_136, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_137),
+			'track'		            => array('title' => FORLAN_200, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_201),
+			'trackemail'		    => array('title' => FORLAN_202, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_203),
+			'redirect'	            => array('title' => FORLAN_112, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_113),
+			'reported_post_email'	=> array('title' => FORLAN_116, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_122),
+			'tooltip'	            => array('title' => FORLAN_126, 'type'=>'boolean', 'data' => 'int','help'=>FORLAN_127),
+			'ranks'                 => array('title' => FORLAN_63, 'type'=>'boolean', 'data' => 'int','help'=>''),
+			'tiplength'	            => array('title' => FORLAN_128, 'type'=>'number', 'data' => 'int','help'=>FORLAN_129),
+			'eprefix'	            => array('title' => FORLAN_53, 'type'=>'text', 'data' => 'string','help'=>FORLAN_54),
+			'popular'	            => array('title' => FORLAN_55, 'type'=>'number', 'data' => 'int','help'=>FORLAN_56),
+			'postspage'	            => array('title' => FORLAN_57, 'type'=>'number', 'data' => 'int','help'=>FORLAN_58),
+			'threadspage'	        => array('title' => FORLAN_186, 'type'=>'number', 'data' => 'int','help'=>FORLAN_187),
 		);
 
 		public $forumParents = array();
@@ -234,11 +216,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 					$sql2->update('forum', 'forum_order = '.$c.' WHERE forum_id = '.$row['forum_id'].' LIMIT 1');
 				}
-
-
 			}
-
-
 		}
 
 
@@ -247,12 +225,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			$this->checkOrder();
 
-
 			if(e107::isInstalled('poll') == false)
 			{
 				$this->prefs['poll']['writeParms']['post'] = " <span class='label label-important label-danger'>".FORLAN_215."</span>";
 			}
-
 
 			if($this->getMode() == 'mods')
 			{
@@ -264,7 +240,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 				$this->fields['forum_postclass']['batch'] = false;
 				$this->fields['forum_threadclass']['batch'] = false;
 				$this->fields['forum_moderators']['batch'] = true;
-
 			}
 
 			require_once(e_PLUGIN.'forum/forum_class.php');
@@ -274,7 +249,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			{
 				$this->forumObj->upgradeLegacyPrefs();
 			}
-
 
 			if (!empty($_POST['do_prune']) && !empty($_POST['prune_days']) && !empty($_POST['pruneForum']))
 			{
@@ -287,14 +261,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 				$this->saveRules();
 			}
 
-
-
-
 			if($this->getAction() == 'edit')
 			{
 				$this->fields['forum_order']['noedit'] = true;
 			}
-
 
 			$data = e107::getDb()->retrieve('forum', 'forum_id,forum_name,forum_parent', 'forum_id != 0',true);
 			$this->forumParents[0] = FORLAN_216;
@@ -318,7 +288,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$this->fields['forum_parent']['writeParms'] = $this->forumParents;
 			$this->fields['forum_sub']['writeParms']['optArray'] = $forumSubParents;
 			$this->fields['forum_sub']['writeParms']['default'] = 'blank';
-
 		}
 
 
@@ -326,7 +295,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		public function afterSort($result, $selected)
 		{
-
 			return;
 
 			$sql = e107::getDb();
@@ -336,7 +304,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			{
 				$id = $val['forum_id'];
 				$parent[$id] = $val['forum_order'];
-
 			}
 
 			$previous = 0;
@@ -356,9 +323,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			//	echo "<br />".$row['forum_name']." with parent: ".$p." old: ".$row['forum_order']."  new: ".$c;
 				$sql->update('forum','forum_order = '.$c.' WHERE forum_id = '.intval($row['forum_id']).' LIMIT 1');
-
 			}
-
 		}
 
 
@@ -420,7 +385,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		}
 
 
-					// optional - a custom page.
+		// optional - a custom page.
 		public function prunePage()
 		{
 			$ns = e107::getRender();
@@ -486,10 +451,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			</form>";
 
 			return $text;
-
-
-
-
 		}
 
 
@@ -498,32 +459,26 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$tp = e107::getParser();
 			$sql = e107::getDb();
 
+			$guestrules 	= $tp->toDB($_POST['guestrules']);
+			$memberrules 	= $tp->toDB($_POST['memberrules']);
+			$adminrules 	= $tp->toDB($_POST['adminrules']);
 
-				$guestrules 	= $tp->toDB($_POST['guestrules']);
-				$memberrules 	= $tp->toDB($_POST['memberrules']);
-				$adminrules 	= $tp->toDB($_POST['adminrules']);
+			if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
+			{
+				$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
+			}
+			if(!$sql->update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
+			{
+				$sql->insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
+			}
+			if(!$sql->update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
+			{
+				$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
+			}
 
-				if(!$sql->update("generic", "gen_chardata ='$guestrules', gen_intdata='".$_POST['guest_active']."' WHERE gen_type='forum_rules_guest' "))
-				{
-					$sql->insert("generic", "0, 'forum_rules_guest', '".time()."', 0, '', '".$_POST['guest_active']."', '$guestrules' ");
-				}
-				if(!$sql->update("generic", "gen_chardata ='$memberrules', gen_intdata='".$_POST['member_active']."' WHERE gen_type='forum_rules_member' "))
-				{
-					$sql->insert("generic", "0, 'forum_rules_member', '".time()."', 0, '', '".$_POST['member_active']."', '$memberrules' ");
-				}
-				if(!$sql->update("generic", "gen_chardata ='$adminrules', gen_intdata='".$_POST['admin_active']."' WHERE gen_type='forum_rules_admin' "))
-				{
-					$sql->insert("generic", "0, 'forum_rules_admin', '".time()."', 0, '', '".$_POST['admin_active']."', '$adminrules' ");
-				}
-
-
-				e107::getMessage()->addSuccess(LAN_SAVED);
-				return null;
-
-
+			e107::getMessage()->addSuccess(LAN_SAVED);
+			return null;
 		}
-
-
 
 		function rulesPage()
 		{
@@ -543,7 +498,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			list($id, $memberrules, $wm_active5) = $sql->fetch();
 			list($id, $adminrules, $wm_active6) = $sql->fetch();
 			*/
-
 
 			if($sql->select('generic','*',"gen_type='forum_rules_guest'"))
 			{
@@ -633,7 +587,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 			$ns->tablerender(WMGLAN_5, $text);
 
-
 /*
 			echo "
 			<script type=\"text/javascript\">
@@ -657,11 +610,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			}
 			</script>
 			";*/
-
 		}
-
-
-
 
 		function modsPage()
 		{
@@ -679,11 +628,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$tp = e107::getParser();
 
 			$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='table adminlist'>
-		<colgroup span='2'>
-    		<col class='col-label' />
-    		<col class='col-control' />
-    	</colgroup>";
+			<table class='table adminlist'>
+			<colgroup span='2'>
+	    		<col class='col-label' />
+	    		<col class='col-control' />
+	    	</colgroup>";
 
 			foreach($parentList as $p)
 			{
@@ -720,19 +669,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 			</form>";
 
 			return $txt;
-
-
-
-
-
-
 		}
-
-
 
 		function toolsPageProcess()
 		{
-
 			$mes = e107::getMessage();
 
 			$fList = array();
@@ -780,10 +720,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 				$mes->addSuccess($msg);
 			//	$ns->tablerender($caption, $mes->render().$text);
 			}
-
-
 		}
-
 
 		//TODO Add SEF-url generation for forum and threads where missing. 
 		function toolsPage()
@@ -796,84 +733,77 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$this->toolsPageProcess();
 
 			$txt = "
-		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table class='table adminlist'>
-		<colgroup span='3'>
-    		<col class='col-label' />
-    		<col class='col-control' />
-    		<col class='col-control' style='width:50%' />
-    	</colgroup>
-		<tr>
-			<td>".FORLAN_156."</td>
+			<form method='post' action='".e_SELF."?".e_QUERY."'>
+			<table class='table adminlist'>
+			<colgroup span='3'>
+	    		<col class='col-label' />
+	    		<col class='col-control' />
+	    		<col class='col-control' style='width:50%' />
+	    	</colgroup>
+			<tr>
+				<td>".FORLAN_156."</td>
 
-			<td colspan='2'>
-			";
-			if($sql->select("forum", "*", "1 ORDER BY forum_order"))
-			{
-				$fList = $sql->db_getList();
-				foreach($fList as $f)
+				<td colspan='2'>
+				";
+				if($sql->select("forum", "*", "1 ORDER BY forum_order"))
 				{
-					$key = 'forumlist['.$f['forum_id'].']';
-					$txt .= $frm->checkbox($key, 1, false, $tp->toHTML($f['forum_name']));
-				//	$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
+					$fList = $sql->db_getList();
+					foreach($fList as $f)
+					{
+						$key = 'forumlist['.$f['forum_id'].']';
+						$txt .= $frm->checkbox($key, 1, false, $tp->toHTML($f['forum_name']));
+					//	$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
+					}
+					$txt .= "<hr />";
+					$txt .= $frm->checkbox('forum_all', 1, false, LAN_PLUGIN_FORUM_ALLFORUMS);
+				//	$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".LAN_PLUGIN_FORUM_ALLFORUMS."</strong>";
 				}
-				$txt .= "<hr />";
-				$txt .= $frm->checkbox('forum_all', 1, false, LAN_PLUGIN_FORUM_ALLFORUMS);
-			//	$txt .= "<input type='checkbox' name='forum_all' value='1' /> <strong>".LAN_PLUGIN_FORUM_ALLFORUMS."</strong>";
-			}
 
 
-			//TODO LAN - see below
-			$txt .= "
-			</td>
-		</tr>
-		<tr>
-			<td>".FORLAN_158."</td>
+				//TODO LAN - see below
+				$txt .= "
+				</td>
+			</tr>
+			<tr>
+				<td>".FORLAN_158."</td>
 
-			<td>".$frm->checkbox('lastpost', 1, false, LAN_ACTIVE).
-				"</td><td>".
-			$frm->select('lastpost_nothread', array(0=>FORLAN_207, 1=>FORLAN_208))."
+				<td>".$frm->checkbox('lastpost', 1, false, LAN_ACTIVE).
+					"</td><td>".
+				$frm->select('lastpost_nothread', array(0=>FORLAN_207, 1=>FORLAN_208))."
 
-			</td>
-		</tr>
-		<tr>
-			<td>".FORLAN_161."</td>
+				</td>
+			</tr>
+			<tr>
+				<td>".FORLAN_161."</td>
 
-		<td>".$frm->checkbox('counts', 1, false, LAN_ACTIVE).
-		"</td><td>".
-		$frm->checkbox('counts_threads', 1, false, FORLAN_182)."
-		<span class='text-warning'>".FORLAN_183."</span>
+			<td>".$frm->checkbox('counts', 1, false, LAN_ACTIVE).
+			"</td><td>".
+			$frm->checkbox('counts_threads', 1, false, FORLAN_182)."
+			<span class='text-warning'>".FORLAN_183."</span>
 
-			</td>
-		</tr>
-		<tr>
-			<td>".FORLAN_163."</td>
+				</td>
+			</tr>
+			<tr>
+				<td>".FORLAN_163."</td>
 
-			<td colspan='2'>".$frm->checkbox('userpostcounts',1, false, LAN_ACTIVE)."</td>
-		</tr>
-		</table>
-		<div class='buttons-bar center'>
-			".$frm->admin_button('tools', LAN_GO, 'submit')."
-		</div>
-		</form>
-		";
+				<td colspan='2'>".$frm->checkbox('userpostcounts',1, false, LAN_ACTIVE)."</td>
+			</tr>
+			</table>
+			<div class='buttons-bar center'>
+				".$frm->admin_button('tools', LAN_GO, 'submit')."
+			</div>
+			</form>
+			";
 
 			return $txt;
-		//	$ns->tablerender(FORLAN_166, $txt);
-
-
+			//	$ns->tablerender(FORLAN_166, $txt);
 		}
-
-
 	}
-
 
 	class forum_form_ui extends e_admin_form_ui
 	{
-
 		function forum_name($curVal,$mode,$parm)
 		{
-
 			$frm = e107::getForm();
 
 			if($mode == 'read')
@@ -884,8 +814,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 				$id			= $this->getController()->getListModel()->get('forum_id');
 				$sub     = $this->getController()->getListModel()->get('forum_sub');
 
-
-
 				$level = 1;
 
 				if(!empty($sub))
@@ -895,8 +823,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 				$linkQ = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";
 				$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
-
-
 
 				return ($parent) ?  $level_image.$curVal : $curVal;
 			}
@@ -986,10 +912,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 			}
 		}
 
-
-
-
-
 		// Custom Method/Function
 		function forum_lastpost_info($curVal,$mode)
 		{
@@ -1011,7 +933,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 					break;
 			}
 		}
-
 
 		// Custom Method/Function
 		function forum_options($curVal,$mode)
@@ -1038,8 +959,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 	}
 
 
-
-
 	class reported_ui extends e_admin_ui
 	{
 
@@ -1064,7 +983,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_user_id', 'gen_chardata');
 
-
 		// optional
 		public function init()
 		{
@@ -1081,15 +999,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 			return array('caption'=>LAN_HELP, 'text'=>FORLAN_189);
 
 		}
-
 	}
-
 
 
 	class reported_form_ui extends e_admin_form_ui
 	{
-
-
 		// Custom Method/Function
 		function gen_intdata($curVal,$mode)
 		{
@@ -1113,7 +1027,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 					break;
 			}
 		}
-
 
 		// Custom Method/Function
 		function gen_chardata($curVal,$mode)
@@ -1153,11 +1066,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 				return $text;
 			}
 		}
-
-
 	}
-
-
 
 	class post_ui extends e_admin_ui
 	{
@@ -1208,14 +1117,11 @@ if(!deftrue('OLD_FORUMADMIN'))
 		{
 			//	$sql2->db_Delete('banlist', "banlist_ip='{$banIP}'");
 		}
-
 	}
-
 
 
 	class post_form_ui extends e_admin_form_ui
 	{
-
 		function post_attachments($curVal,$mode)
 		{
 
@@ -1226,7 +1132,6 @@ if(!deftrue('OLD_FORUMADMIN'))
 					$data = e107::unserialize($curVal);
 					$tp = e107::getParser();
 					$fl = e107::getFile();
-
 
 					$text = '';
 
@@ -1266,12 +1171,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 					break;
 			}
 		}
-
-
-
 	}
-
-
 
 	new forum_admin();
 
@@ -1280,9 +1180,8 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 	require_once(e_ADMIN."footer.php");
 	exit;
-
-
 }
+
 
 
 /*
