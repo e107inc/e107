@@ -4596,10 +4596,13 @@ TEMPLATE;
 			return $text;
 			
 		}
-					
-				
-			
-		
+
+
+		/**
+		 * @param $name
+		 * @param $val
+		 * @return string
+		 */
 		function fieldType($name, $val)
 		{
 			$type = strtolower($val['type']);
@@ -4615,9 +4618,12 @@ TEMPLATE;
 			{
 				case 'date':
 				case 'datetime':
+				case 'time':
+				case 'timestamp':
 					$array = array(
 					'text'		=> EPL_ADLAN_179,
-					"hidden"	=> EPL_ADLAN_180
+					"hidden"	=> EPL_ADLAN_180,
+					"method"	=> EPL_ADLAN_186,
 					);
 				break;
 			
@@ -4625,6 +4631,7 @@ TEMPLATE;
 				case 'tinyint':
 				case 'bigint':
 				case 'smallint':
+				case 'mediumint':
 					$array = array(
 					"boolean"	=> EPL_ADLAN_181,
 					"number"	=> EPL_ADLAN_182,
@@ -4638,6 +4645,8 @@ TEMPLATE;
 				break;
 				
 				case 'decimal':
+				case 'double':
+				case 'float':
 					$array = array(
 					"number"	=> EPL_ADLAN_189,
 					"dropdown"	=> EPL_ADLAN_190,
@@ -4648,6 +4657,7 @@ TEMPLATE;
 				
 				case 'varchar':
 				case 'tinytext':
+				case 'tinyblob':
 				$array = array(
 					'text'		=> EPL_ADLAN_193,
 					"url"		=> EPL_ADLAN_194,
@@ -4669,10 +4679,22 @@ TEMPLATE;
 					"hidden"	=> EPL_ADLAN_207
 					);
 				break;
+
+				case 'enum':
+				$array = array(
+					"dropdown"	=> EPL_ADLAN_200,
+					"tags"		=> EPL_ADLAN_211,
+					"method"	=> EPL_ADLAN_212,
+					"hidden"	=> EPL_ADLAN_215
+					);
+				break;
 				
 				case 'text':
 				case 'mediumtext':
 				case 'longtext':
+				case 'blob':
+				case 'mediumblob':
+				case 'longblob':
 				$array = array(
 					'textarea'	=> EPL_ADLAN_208,
 					'bbarea'	=> EPL_ADLAN_209,
