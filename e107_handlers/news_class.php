@@ -718,8 +718,6 @@ class e_news_tree extends e_front_tree_model
 
 		$featuredCount = !empty($parms['featured']) ? intval($parms['featured']) : 0;
 
-		e107::getDebug()->log("Featured Count: ".$featuredCount);
-
 
 		foreach ($items as $news)
 		{
