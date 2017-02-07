@@ -16,7 +16,7 @@ function menu_shortcode($parm, $mode='')
 		}
 		
 		unset($parm['path']);
-		return e107::getMenu()->renderMenu($plugin,$menu."_menu", http_build_query($parm, '', '&'));			
+		return e107::getMenu()->renderMenu($plugin,$menu."_menu", http_build_query($parm, '', '&'),true);
 		
 	}
 	else
@@ -37,7 +37,7 @@ function menu_shortcode($parm, $mode='')
 				$menu = $plugin;	
 			}
 			
-			return e107::getMenu()->renderMenu($plugin,$menu."_menu");		
+			return e107::getMenu()->renderMenu($plugin,$menu."_menu", null, true);
 		}
 	}
 }
