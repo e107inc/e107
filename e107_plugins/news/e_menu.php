@@ -56,6 +56,7 @@ class news_menu
 					$fields['source']       = array('title'=> "Source", 'type'=>'dropdown','writeParms'=>array('optArray'=>$sources), 'help'=>"Assigned items are those with a template assigned to 'News Grid Menu' ");
 					$fields['layout']       = array('title'=> "Layout", 'type'=>'method', 'writeParms'=>'');
 					$fields['count']        = array('title'=> "Number of Items to Display", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
+					$fields['feature']      = array('title'=> "Number of Feature Items", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>0));
 					$fields['titleLimit']   = array('title'=> "Title Character Limit", 'type'=>'number', 'writeParms'=>'');
 					$fields['summaryLimit'] = array('title'=> "Summary Character Limit", 'type'=>'number', 'writeParms'=>'');
 
