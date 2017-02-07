@@ -2308,6 +2308,8 @@ class e107plugin
 
 		e107::getConfig('core')->save(true, false, false);
 
+		$this->save_addon_prefs('update');
+
 		/*	if($function == 'install')
 		 {
 		 if(isset($plug_vars['management']['installDone'][0]))
@@ -3859,7 +3861,7 @@ class e107plugin
 	 */
 	function save_addon_prefs($mode = 'upgrade') 
 	{
-		e107::getMessage()->addDebug('Running save_addon_prefs('.$mode.')'); 	
+		$this->log('Running save_addon_prefs('.$mode.')');
 		
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
@@ -4100,6 +4102,8 @@ class e107plugin
 		{
 			echo $plugin_path." = ".implode(",", $p_addons)."<br />";
 		}
+
+		$this->log("Detected Addons: ".print_a($p_addons,true));
 
 		return implode(",", $p_addons);
 	}
