@@ -990,7 +990,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$pref = e107::getPref();
 
-		foreach($data as $path)
+		foreach($data as $path=>$ver)
 		{
 
 			if(!e107::isInstalled($path))
@@ -1478,7 +1478,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 	
 		$ns = e107::getRender();
-		$ns->tablerender($title, $text, array('id'=>$id, 'style'=>'button_menu'));
+		$ns->setUniqueId($id);
+		$ns->tablerender($title, $text);
 		return '';
 	}
 			

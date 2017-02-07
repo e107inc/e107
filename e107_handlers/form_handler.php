@@ -1807,6 +1807,7 @@ class e_form
 		}
 
 
+
 		require_once(e_CORE."shortcodes/single/nextprev.php");
 
 		$nextprev = array(
@@ -1818,6 +1819,8 @@ class e_form
 			'type'          => varset($options['type'],'record'), // page|record
 			'glyphs'        => vartrue($options['glyphs'],false) // 1|0
 		);
+
+	//	e107::getDebug()->log($nextprev);
 
 		return nextprev_shortcode($nextprev);
 	}
@@ -4782,7 +4785,7 @@ class e_form
 			break;
 
 			case 'method': // Custom Function			
-				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
+				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method.
 				$_value = $value;
 
 				if(!empty($attributes['data']) && $attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.
@@ -4800,7 +4803,9 @@ class e_form
 				}
 				else
 				{
-					return "<span class='label label-important label-danger'>Missing: ".$method."()</span>";
+					$className = get_class($this);
+					e107::getDebug()->log("Missing Method: ".$className."::".$meth." ".print_a($attributes,true));
+					return "<span class='label label-important label-danger'>Missing Method</span>";
 				}
 			//	 print_a($attributes);
 					// Inline Editing.  

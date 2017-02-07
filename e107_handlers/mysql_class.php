@@ -292,7 +292,7 @@ class e_db_mysql
 
 		if($this->mySQLserver === 'localhost')
 		{
-			$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second.
+			$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second. 
 		}
 
 
