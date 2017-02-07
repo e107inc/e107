@@ -255,13 +255,13 @@ class e_marketplace
 
 			$d = http_build_query($srcData,false,'&');
 
-			if(deftrue('e_DEBUG_PLUGMANAGER'))
+		//	if(deftrue('e_DEBUG_PLUGMANAGER'))
 			{
 				$url = e_ADMIN.'plugin.php?mode=online&action=download&src='.base64_encode($d);
 			}
-			else
+		//	else
 			{
-				$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+			//	$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
 			}
 
 
