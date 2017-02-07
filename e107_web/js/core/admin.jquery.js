@@ -203,7 +203,7 @@ $(document).ready(function()
 			}
 			else
 			{
-				$(this).empty();
+				$(this).text(value);
 			}
 		}
 	});
