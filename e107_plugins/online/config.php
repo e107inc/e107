@@ -12,7 +12,7 @@
 
 $eplug_admin = TRUE;
 require_once('../../class2.php');
-include_lan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'online/languages/'.e_LANGUAGE.'.php');
 
 if (!getperms('1')) 
 {

@@ -139,6 +139,8 @@ class media_admin extends e_admin_dispatcher
 		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
 	);
 
+	protected $adminMenuIcon = 'e-images-24';
+
 /*
 	$var['main']['text'] = IMALAN_7;
 	$var['main']['link'] = e_SELF;
@@ -1038,7 +1040,13 @@ class media_admin_ui extends e_admin_ui
 		$mes->addDebug("For:".$cat);
 		$mes->addDebug("Bbcode: ".$this->getQuery('bbcode'));
 
-	
+		$video = $this->getQuery('video');
+
+		if($video == 2)
+		{
+			echo $this->mediaSelectUpload('video');
+			return;
+		}
 		
 		$this->processUploadUrl(true, $cat);
 		
@@ -1140,6 +1148,19 @@ class media_admin_ui extends e_admin_ui
 	function mediaSelectUpload($type='image') 
 	{
 		$frm = e107::getForm();
+
+		if($type === 'video')
+		{
+			$tabs = array(
+				'youtube' => array('caption'=>'Youtube', 'text' => $this->videoTab())
+			);
+
+			return $frm->tabs($tabs, array('class'=>'media-manager'));
+		}
+
+
+
+
 		$videoActive = 'inactive';
 		
 		$options = array();
@@ -1612,12 +1633,15 @@ class media_admin_ui extends e_admin_ui
 			$accData = json_decode($accData,true);
 			$channelID = e107::pref('core', 'youtube_default_account');
 
-			foreach($accData['items'] as $val)
+			if(!empty($accData['items']))
 			{
-				if($val['kind'] == 'youtube#channel')
+				foreach($accData['items'] as $val)
 				{
+					if($val['kind'] == 'youtube#channel')
+					{
 						$channelID = $val['id'];
 						break;
+					}
 				}
 			}
 

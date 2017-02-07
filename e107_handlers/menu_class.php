@@ -212,7 +212,64 @@ class e_menu
 		return  e107::getDb()->update('menus', $qry);
 	}
 
-	
+
+	/**
+	 * Add a Menu to the Menu Table.
+	 * @param string $plugin folder name
+	 * @param string $menufile name without the .php
+	 * @return bool|int
+	 */
+	public function add($plugin, $menufile)
+	{
+		$sql = e107::getDb();
+
+		if(empty($plugin) || empty($menufile))
+		{
+			return false;
+		}
+
+		if($sql->select('menus', 'menu_id' , 'menu_path="'.$plugin.'/" AND menu_name="'.$menufile.'" LIMIT 1'))
+		{
+			return false;
+		}
+
+		$insert = array(
+			'menu_id'       => 0,
+			'menu_name'     => $menufile,
+			'menu_location' => 0,
+			'menu_order'    => 0,
+			'menu_class'    => 0,
+			'menu_pages'    => 0,
+			'menu_path'     => $plugin."/",
+			'menu_layout'   => '',
+			'menu_parms'    => ''
+		);
+
+		return  $sql->insert('menus', $insert);
+
+
+	}
+
+
+	/**
+	 * Remove a menu from the Menu table.
+	 * @param string $plugin folder name
+	 * @param string $menufile
+	 * @return int
+	 */
+	public function remove($plugin, $menufile=null)
+	{
+		$qry = 'menu_path="'.$plugin.'/" ';
+
+		if(!empty($menufile))
+		{
+			$qry .= ' AND menu_name="'.$menufile.'" ';
+		}
+
+		return e107::getDb()->delete('menus', $qry);
+	}
+
+
 	/** 
 	 * Function to retrieve Menu data from tables.
 	 */

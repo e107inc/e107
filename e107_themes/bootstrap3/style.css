@@ -125,9 +125,7 @@ img.featurebox { border-radius: 5px }
 
 .tab-pane { padding-top:15px }
 
-#login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
-#login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
-#login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
+
 
 .modal-lg { width: 70% }
 
@@ -155,8 +153,8 @@ li.dropdown-submenu.lower ul.submenu-start li a { display:inline-block; padding-
 li.dropdown-submenu.lower ul.submenu-start li a:hover { background:none}
 li.dropdown-submenu.lower ul.submenu-start li:hover { background-color:#f5f5f5; }
 
-
-
+.news-grid-default .featured { margin-bottom:30px; }
+.news-grid-other .featured { margin-bottom:30px; }
 
 /* CUSTOM Responsive Styles */
 

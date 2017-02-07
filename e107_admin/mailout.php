@@ -234,7 +234,7 @@ class mailout_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 	'perm' => 'W'),
 	
-		'recipients/list'	=> array('caption'=> Recipients, 		'perm' => 'W'),		
+		'recipients/list'	=> array('caption'=> LAN_MAILOUT_173, 		'perm' => 'W'),		
 	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
 	//	'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
@@ -251,7 +251,9 @@ class mailout_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'main/send'	=> 'main/create',	
-	);	
+	);
+
+	protected $adminMenuIcon = 'e-mail-24';
 	
 	protected $menuTitle = LAN_MAILOUT_15;
 }
@@ -1059,7 +1061,7 @@ class mailout_main_ui extends e_admin_ui
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
 			<td class='form-inline'><div class='input-append'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-			<input name='testaddress' class='tbox input-xlarge' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+			<input name='testaddress' class='form-control input-xlarge' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 			 <span style='padding-left:5px'>".$this->mailAdmin->sendStyleSelect(varset($_POST['testtemplate'], 'textonly'), 'testtemplate')."</span>
 			</div></td>
 		</tr>
@@ -1198,7 +1200,7 @@ class mailout_main_ui extends e_admin_ui
 	$autoDisp = ($pref['mail_bounce'] != 'auto') ? "style='display:none;'" : '';
 	$autoMail = ($pref['mail_bounce'] != 'mail') ? "style='display:none;'" : '';
 	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
-	$text .= "<select name='mail_bounce' class='tbox' onchange='bouncedisp(this.value)'>\n<option value=''>&nbsp;</option>\n";
+	$text .= "<select name='mail_bounce' class='form-control' onchange='bouncedisp(this.value)'>\n<option value=''>&nbsp;</option>\n";
 	foreach ($bounceOpts as $k => $v)
 	{
 		$selected = ($pref['mail_bounce'] == $k) ? " selected='selected'" : '';

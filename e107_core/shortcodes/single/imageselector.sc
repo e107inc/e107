@@ -28,7 +28,7 @@ $text = '';
 $name_id = e107::getForm()->name2id($name);
 
 //Get Select Box Only!
-if($scaction == 'select' || $scaction == 'all')
+if($scaction === 'select' || $scaction === 'all')
 {
 	require_once(e_HANDLER."file_class.php");
 	$fl = new e_file;
@@ -86,7 +86,7 @@ if($scaction == 'select' || $scaction == 'all')
 	$text .= "</select>";
 
 
-	if($scaction == 'select') return $text;
+	if($scaction === 'select') return $text;
 }
 
 $hide = '';

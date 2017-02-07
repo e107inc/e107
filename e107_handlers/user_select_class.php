@@ -15,7 +15,7 @@
 /* @DEPRECATED - SUBJECT TO REMOVAL */
 // Possible replacements: $frm->userpicker();
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 class user_select 
 {
@@ -189,8 +189,11 @@ class user_select
 			return $row['user_name'];
 		}
 	}
-	
-	function popup() 
+
+	/**
+	 * @deprecated
+	 */
+	function popup()
 	{
 		global $ns, $tp;
 		list($elementType, $elementID) = explode(".", e_QUERY);
@@ -223,7 +226,6 @@ class user_select
 		<head>
 		<title>".SITENAME."</title>\n";
 
-		
 		echo "<link rel=stylesheet href='".e_WEB_ABS."js/bootstrap/css/bootstrap.min.css'>
 		<link rel=stylesheet href='".THEME_ABS."style.css'>
 		<script language='JavaScript' type='text/javascript'>

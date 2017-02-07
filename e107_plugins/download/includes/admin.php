@@ -56,13 +56,13 @@ class plugin_download_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		
 		'other0' 		=> array('divider'=> true),
 		
 		'cat/list'			=> array('caption'=> LAN_CATEGORIES, 'perm'=>'P'),
-		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'Q'),
+		'cat/create' 		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'Q'),
 		
 		'other1' 		=> array('divider'=> true),
 		
@@ -144,7 +144,7 @@ class download_cat_ui extends e_admin_ui
        		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',			'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
          
 	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'download_category_parent' 			=> array('title'=> 'Parent',		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
+		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
 			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
@@ -620,12 +620,12 @@ $columnInfo = array(
 					<td>".$row['limit_id']."</td>
 					<td>".r_userclass_name($row['limit_classnum'])."</td>
 					<td>
-						<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
-						<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
+						<input type='text' class='form-control' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
+						<input type='text' class='form-control' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
 					</td>
 					<td>
-						<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
-						<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
+						<input type='text' class='form-control' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
+						<input type='text' class='form-control' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
 					</td>
 					</tr>
 					";
@@ -644,12 +644,12 @@ $columnInfo = array(
 			<tr>
 			<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
 			<td>
-				<input type='text' class='tbox' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
-				<input type='text' class='tbox' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
+				<input type='text' class='form-control' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
+				<input type='text' class='form-control' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
 			</td>
 			<td>
-				<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
-				<input type='text' class='tbox' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
+				<input type='text' class='form-control' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
+				<input type='text' class='form-control' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
 			</td>
 			</tr>
 			<tr>
@@ -1221,7 +1221,7 @@ $columnInfo = array(
 	                        <td style='width:80%'>
 	                           <div>".DOWLAN_131."&nbsp;&nbsp;";
 							  
-	                   //       $text .= "<select name='download_url' class='tbox'>
+	                   //       $text .= "<select name='download_url' class='form-control'>
 	                  //               <option value=''>&nbsp;</option>\n";
 	   
 	
@@ -1272,14 +1272,14 @@ $columnInfo = array(
 	                  <tr>
 	                       <td>".DOWLAN_149."</td>
 	                       <td style='width:80%;'>
-	                          <input class='tbox input-xxlarge' type='text' name='download_url_external' size='90' value='{$download_url_external}' maxlength='255'/>
+	                          <input class='form-control input-xxlarge' type='text' name='download_url_external' size='90' value='{$download_url_external}' maxlength='255'/>
 	                       </td>
 	                    </tr>
 	                    <tr>
 	                       <td>".DOWLAN_66."</td>
 	                       <td>
-	                          <input class='tbox' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
-	                       	 <select class='tbox' name='download_filesize_unit'>
+	                          <input class='form-control' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
+	                       	 <select class='form-control' name='download_filesize_unit'>
 						      <option value='B'{$b_sel}>".CORE_LAN_B."</option>
 						      <option value='KB'{$kb_sel}>".CORE_LAN_KB."</option>
 						      <option value='MB'>".CORE_LAN_MB."</option>
@@ -1311,7 +1311,7 @@ $columnInfo = array(
 	            $opt = ($count==1) ? "id='mirror'" : "";
 	            $text .="
 	                        <div {$opt}>
-	                           <select name='download_mirror_name[]' class='tbox'>
+	                           <select name='download_mirror_name[]' class='form-control'>
 	                              <option value=''>&nbsp;</option>";
 	
 	            foreach ($mirrorList as $mirror)
@@ -1321,8 +1321,8 @@ $columnInfo = array(
 	            }
 	
 	            $text .= "</select>
-	                           <input  class='tbox' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200'/>
-	                           <input  class='tbox' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$mirrorArray[($count-1)]['filesize']."\" maxlength='10'/>";
+	                           <input  class='form-control' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200'/>
+	                           <input  class='form-control' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$mirrorArray[($count-1)]['filesize']."\" maxlength='10'/>";
 	            if (DOWNLOAD_DEBUG)
 	            {
 	               if ($id)
@@ -1331,7 +1331,7 @@ $columnInfo = array(
 	               }
 	               else
 	               {
-	               $text .= "<input  class='tbox' type='text' name='download_mirror_requests[]' style='width: 10%;' value=\"".$mirrorArray[($count-1)]['requests']."\" maxlength='10'/>";
+	               $text .= "<input  class='form-control' type='text' name='download_mirror_requests[]' style='width: 10%;' value=\"".$mirrorArray[($count-1)]['requests']."\" maxlength='10'/>";
 	               }
 	            }
 	            $text .= "  </div>";
@@ -1370,25 +1370,25 @@ $columnInfo = array(
 	                  <tr>
 	                     <td >".DOWLAN_12."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox input-xxlarge' type='text' id='download-name' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
+	                        <input class='form-control input-xxlarge' type='text' id='download-name' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_15."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox' type='text' name='download_author' size='60' value='$download_author' maxlength='100'/>
+	                        <input class='form-control' type='text' name='download_author' size='60' value='$download_author' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_16."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox' type='text' name='download_author_email' size='60' value='$download_author_email' maxlength='100'/>
+	                        <input class='form-control' type='text' name='download_author_email' size='60' value='$download_author_email' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_17."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox' type='text' name='download_author_website' size='60' value='$download_author_website' maxlength='100'/>
+	                        <input class='form-control' type='text' name='download_author_website' size='60' value='$download_author_website' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
@@ -1404,7 +1404,7 @@ $columnInfo = array(
 	                     <td style='width:20%'>".DOWLAN_19."</td>
 	                     <td style='width:80%'>";
 	       /*
-															$text = "<select name='download_image' class='tbox'>
+															$text = "<select name='download_image' class='form-control'>
 										  <option value=''>&nbsp;</option>";
 																foreach($image_array as $img)
 					 {
@@ -1436,7 +1436,7 @@ $columnInfo = array(
 			           <td style='width:80%'>";
 			     /*
 												   $text .= "
-											 <select name='download_thumb' class='tbox'>
+											 <select name='download_thumb' class='form-control'>
 												<option value=''>&nbsp;</option>";
 						   foreach($thumb_array as $thm){
 							  $tpath = str_replace(e_FILE."downloadthumbs/","",$thm['path'].$thm['fname']);
@@ -1493,7 +1493,7 @@ $columnInfo = array(
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_21."</td>
 	                     <td style='width:80%'>
-	                        <select name='download_active' class='tbox'>";
+	                        <select name='download_active' class='form-control input-xxlarge'>";
 	      foreach($download_status as $key => $val){
 	         $sel = ($download_active == $key) ? " selected = 'selected' " : "";
 	           $text .= "<option value='{$key}' {$sel}>{$val}</option>\n";
@@ -1526,7 +1526,7 @@ $columnInfo = array(
 	                  <tr>
 	                     <td style='width:30%'>".DOWLAN_153."</td>
 	                     <td style='width:70%'>
-	                        <select name='move_file' class='tbox'>
+	                        <select name='move_file' class='form-control'>
 	                           <option value=''>".LAN_NO."</option>";
 	           $dl_dirlist = $fl->get_dirs(e_DOWNLOAD);
 	           if ($dl_dirlist){
@@ -1954,21 +1954,21 @@ $columnInfo = array(
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_12."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' name='mirror_name' size='60' value='{$mirror_name}' maxlength='200'/>
+	      <input class='form-control input-xxlarge' type='text' name='mirror_name' size='60' value='{$mirror_name}' maxlength='200'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_139."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' name='mirror_url' size='70' value='{$mirror_url}' maxlength='255'/>
+	      <input class='form-control input-xxlarge' type='text' name='mirror_url' size='70' value='{$mirror_url}' maxlength='255'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_136."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
+	      <input class='form-control input-xxlarge' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
 	
 	
 	      <br /><input class='btn btn-default button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
@@ -1987,7 +1987,7 @@ $columnInfo = array(
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_141."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' name='mirror_location' size='60' value='$mirror_location' maxlength='200'/>
+	      <input class='form-control' type='text' name='mirror_location' size='60' value='$mirror_location' maxlength='200'/>
 	      </td>
 	      </tr>
 	
@@ -2122,7 +2122,7 @@ $columnInfo = array(
 		            		      <tr>
 		               		      <td>".DOWLAN_160."</td>
 		               		      <td>
-		                  		      <select name='mirror_order' class='tbox'>".
+		                  		      <select name='mirror_order' class='form-control'>".
 		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
 		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
 		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
@@ -2131,7 +2131,7 @@ $columnInfo = array(
 		            		      </tr>
 		            		      <tr>
 		            		         <td>".DOWLAN_164."</td>
-		            		         <td><input type='text' name='recent_download_days' class='tbox' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
+		            		         <td><input type='text' name='recent_download_days' class='form-control' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
 		            		         </td>
 		            		      </tr>
 		            		   </table>
@@ -2320,7 +2320,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 		}
 
 		$types = array("theme","plugin");
-		$text = "<select class='tbox' name='release_type' >";
+		$text = "<select class='form-control' name='release_type' >";
 		foreach($types as $val)
 		{
 			$selected = ($curVal == $val) ? "selected='selected'" : "";
@@ -2389,7 +2389,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 class download_mirror_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Downloads';
+		protected $pluginTitle		= LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName		= 'download';
 		protected $table			= 'download_mirror';
 		protected $pid				= 'mirror_id';
@@ -2409,10 +2409,10 @@ class download_mirror_ui extends e_admin_ui
 		  'mirror_name' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_url' 			=>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_image' 		=>   array ( 'title' => LAN_IMAGE, 'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'mirror_location' 	=>   array ( 'title' => 'Location', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'mirror_location' 	=>   array ( 'title' => DOWLAN_141, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'mirror_description' 	=>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_count' 		=>   array ( 'title' => 'Count', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('mirror_name', 'mirror_url', 'mirror_image', 'mirror_location');

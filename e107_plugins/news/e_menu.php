@@ -36,6 +36,8 @@ class news_menu
 
 		$tmp =  e107::getDb()->retrieve('news_category','category_id,category_name',null, true);
 
+		$templates = e107::getLayouts('news','news_grid', 'front', null, false, false);
+
 		foreach($tmp as $val)
 		{
 			$id = $val['category_id'];
@@ -54,8 +56,10 @@ class news_menu
 					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'), 'help'=>LAN_OPTIONAL);
 					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>"(".LAN_ALL.")"), 'help'=>"Limit news items to a specific category");
 					$fields['source']       = array('title'=> "Source", 'type'=>'dropdown','writeParms'=>array('optArray'=>$sources), 'help'=>"Assigned items are those with a template assigned to 'News Grid Menu' ");
+					$fields['template']     = array('title'=> LAN_TEMPLATE, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$templates));
 					$fields['layout']       = array('title'=> "Layout", 'type'=>'method', 'writeParms'=>'');
 					$fields['count']        = array('title'=> "Number of Items to Display", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
+					$fields['feature']      = array('title'=> "Number of Feature Items", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>0));
 					$fields['titleLimit']   = array('title'=> "Title Character Limit", 'type'=>'number', 'writeParms'=>'');
 					$fields['summaryLimit'] = array('title'=> "Summary Character Limit", 'type'=>'number', 'writeParms'=>'');
 

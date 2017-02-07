@@ -42,7 +42,7 @@ require_once("../class2.php");
 
 if(e_MENUMANAGER_ACTIVE === false )
 {
-	if(!deftrue("e_DEBUG_MENUMANAGER"))
+	if(!deftrue("e_DEBUG"))
 	{
 		e107::getJs()->inlineCSS('
 
@@ -138,33 +138,7 @@ if(e_MENUMANAGER_ACTIVE === true || vartrue($_GET['enc']))
 {
 
 
-	
-	//e107::js('core', 	'core/jquery.elastic.source.js', 'jquery', 2);
-	
-	//e107::js('core', 	'plupload/plupload.full.js', 'jquery', 2);
-	//e107::css('core', 	'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
-	//e107::js('core', 	'plupload/jquery.plupload.queue/jquery.plupload.queue.js', 'jquery', 2);
-	
-	//e107::css('core', 	'chosen/chosen.css', 'jquery');
-	//e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
-	
-	//e107::css('core', 	'password/style.css', 'jquery');
-	//e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2);
-	// 
-	//e107::js("core",	"plupload/customUpload.js","jquery",3);
-	
-	//e107::js("core",	"core/mediaManager.js","jquery",3);
-
-	
-	// e107::css('core', 	'core/admin.css', 'jquery');
-//	e107::js('core', 	'core/admin.jquery.js', 'jquery', 4);
-// e107::js('core','bootstrap/js/bootstrap-tooltip.js');
-
-
-
-//	e107::css('core','bootstrap/css/bootstrap.min.css');
-
-$JSMODAL = <<<TEMPL
+	$JSMODAL = <<<TEMPL
 	$(function() {
 		$('.e-modal-menumanager').on('click', function(e)
 		{
@@ -323,7 +297,7 @@ TEMPL;
 	    margin-top: 1px;
 	    line-height: 14px;
 	    vertical-align: text-top;
-	    background-image: url('".e_JS."bootstrap/img/glyphicons-halflings.png');
+	    background-image: url('".e_THEME."bootstrap3/images/glyphicons-halflings.png');
 	    background-position: 14px 14px;
 	    background-repeat: no-repeat;
 	}
@@ -780,11 +754,15 @@ class e_menu_layout
 			$theme = e107::pref('core','sitetheme');
 		}
 
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+
 		$HEADER         = null;
 		$FOOTER         = null;
 		$LAYOUT         = null;
 		$CUSTOMHEADER   = null;
 		$CUSTOMFOOTER   = null;
+
 
 		$file = e_THEME.$theme."/theme.php";
 
@@ -796,13 +774,38 @@ class e_menu_layout
 		e107::set('css_enabled',false);
 		e107::set('js_enabled',false);
 
-		require($file);
+		$themeFileContent = file_get_contents($file);
+
+		$srch = array('<?php','?>');
+
+		$themeFileContent = preg_replace('/\(\s?THEME\s?\./', '( e_THEME. "'.$theme.'/" .', str_replace($srch, '', $themeFileContent));
+
+		try
+		{
+		   @eval($themeFileContent);
+		}
+		catch (ParseError $e)
+		{
+			echo "<div class='alert alert-danger'>Couldn't parse theme.php: ". $e->getMessage()." </div>";
+		}
+
+
+	//	@eval($themeFileContent);
 
 		e107::set('css_enabled',true);
 		e107::set('js_enabled',true);
 
 		$head = array();
 		$foot = array();
+
+		if(isset($LAYOUT) && (isset($HEADER) || isset($FOOTER)))
+		{
+			$fallbackLan = "This theme is using deprecated elements. All [x]HEADER and [x]FOOTER variables should be removed from theme.php."; // DO NOT TRANSLATE!
+			$warningLan = $tp->lanVars(deftrue('MENLAN_60',$fallbackLan),'$');
+			echo "<div class='alert alert-danger'>".$warningLan."</div>";
+
+		}
+
 
 
 		if(isset($LAYOUT) && is_array($LAYOUT)) // $LAYOUT is a combined $HEADER,$FOOTER.
@@ -885,7 +888,7 @@ class e_menu_layout
 		{
 			$template = $head[$k]."\n{---}".$foot[$k];
 			$layout['templates'][$k] = $template;
-			$layout['menus'][$k] = self::countMenus($template);
+			$layout['menus'][$k] = self::countMenus($template, $k);
 		}
 
 
@@ -895,13 +898,15 @@ class e_menu_layout
 	}
 
 
-	private static function countMenus($template)
+	private static function countMenus($template, $name)
 	{
 		if(preg_match_all("/\{MENU=([\d]{1,3})(:[\w\d]*)?\}/", $template, $matches))
 		{
 			sort($matches[1]);
 			return $matches[1];
 		}
+
+		e107::getDebug()->log("No Menus Found in Template:".$name." with strlen: ".strlen($template));
 
 		return array();
 	}
@@ -978,6 +983,7 @@ class e_menu_layout
 		//TODO FIXME parse the theme file (or store it somewhere) to get the number of menu areas for each layout. ie. $menu_areas below.
 
 		$layouts = self::getLayouts();
+		$tp = e107::getParser();
 
 	//	$text .= print_a($layouts['menus'],true);
 
@@ -987,17 +993,19 @@ class e_menu_layout
 
 		        <a class="btn btn-default btn-sm e-mm-selector " title="Activate">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
 
+				$menuButtonLabel = defset("MENLAN_59", "Area [x]");
 
 		        foreach($layouts['menus'] as $name=>$areas)
 		        {
-					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >';
+					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >
+					<li><div class="btn-group">';
 
 					foreach ($areas as $menu_act)
 					{
-						$text .= "<li><input type='submit' class='btn btn-primary btn-block'  name='menuActivate[".trim($menu_act)."]' value='".MENLAN_13." ".trim($menu_act)."' /></li>\n";
+						$text .= "<input type='submit' class='btn btn-sm btn-primary col-xs-6'  name='menuActivate[".trim($menu_act)."]' value=\"".$tp->lanVars($menuButtonLabel,trim($menu_act))."\" />\n";
 					}
 
-					$text .= '</ul>';
+					$text .= '</div></li></ul>';
 
 		        }
 

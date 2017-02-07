@@ -48,6 +48,8 @@ class eurl_admin extends e_admin_dispatcher
 	protected $defaultAction = 'config';
 
 	protected $menuTitle = LAN_EURL_MENU;
+
+	protected $adminMenuIcon = 'e-eurl-24';
 }
 
 class eurl_admin_ui extends e_admin_controller_ui
@@ -262,7 +264,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			</colgroup>";
 
 			$name = 'urlstatus['.$plug.']';
-			$text .= "<tr class='active'><td ><h4>".$plug."</h4></td><td colspan='2'>".$frm->radio_switch($name,$active)."</td></tr>";
+
+			$switch = $frm->radio_switch($name, $active, LAN_ON, LAN_OFF, array(
+				'switch' => 'mini',
+			));
+
+			$text .= "<tr class='active'><td ><h4>" . $plug . "</h4></td><td colspan='2'>" . $switch . "</td></tr>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
 
@@ -755,7 +762,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$text .= "
                 <tr>
                     <td>".$this->moreInfo($title, $info)."</td>
-                    <td><select name='eurl_config[$module]' class='input-block-level'>".$opt."</select></td>
+                    <td><select name='eurl_config[$module]' class='form-control input-block-level'>".$opt."</select></td>
                     <td>";
 		
 			$bTable = ($admin['generate']['table']);

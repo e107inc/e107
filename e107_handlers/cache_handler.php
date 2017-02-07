@@ -309,7 +309,7 @@ class ecache {
 	
 	/**
 	 * Clear Full Cache
-	 * @param string $type: content | system| browser | db | image
+	 * @param string $type: content | system| browser | db | image | js | css | library
 	 * @example clearAll('db');
 	 */
 	 
@@ -323,40 +323,46 @@ class ecache {
 			return;
 		}
 			
-		if($type == 'system')
+		if($type === 'system')
 		{
 			$this->clear_sys();
 			return;	
 		}
 
-		if($type == 'browser')
+		if($type === 'browser')
 		{
 			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
 			return;	
 		}
 
-		if($type == 'db')
+		if($type === 'db')
 		{
 			$path = e_CACHE_DB;
 			$mask = ($mask == null) ? '.*\.php' : $mask;
 		}
 
-		if($type == 'image')
+		if($type === 'image')
 		{
 			$path = e_CACHE_IMAGE;
 			$mask = ($mask == null) ? '.*\.cache\.bin' : $mask;		
 		}
 
-		if($type == 'js')
+		if($type === 'js')
 		{
 			$path = e_WEB."cache/";
 			$mask = ($mask == null) ? '.*\.js' : $mask;
 		}
 
-		if($type == 'css')
+		if($type === 'css')
 		{
 			$path = e_WEB."cache/";
 			$mask = ($mask == null) ? '.*\.css' : $mask;
+		}
+
+		if($type === 'library')
+		{
+			$path = e_CACHE_CONTENT;
+			$mask = ($mask == null) ? 'S_Library_.*\.cache\.php' : $mask;
 		}
 
 		if((null == $path) || (null == $mask))
@@ -367,6 +373,7 @@ class ecache {
 		$fl = e107::getFile(false);
 		$fl->mode = 'fname';
 		$files = $fl->get_files($path, $mask);
+
 		if($files)
 		{
 			foreach ($files as $file)

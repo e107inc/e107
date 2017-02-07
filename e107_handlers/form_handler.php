@@ -67,12 +67,7 @@ class e_form
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
 
-	private $fields = array(
-			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
-			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
-			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country'
 
-	);
 
 	/**
 	 * @var user_class
@@ -538,10 +533,11 @@ class e_form
 		$text .= '</ul>';
 
 		$initTab = varset($options['active'],false);
+		$tabClass = varset($options['class'],null);
 
 		$text .= '
 		<!-- Tab panes -->
-		<div class="tab-content">';
+		<div class="tab-content '.$tabClass.'">';
 		
 		$c=0;
 		foreach($array as $key=>$tab)
@@ -736,22 +732,28 @@ class e_form
 		}	
 		*/
 
-		if(vartrue($options['selectize']))
+		if(!empty($options['selectize']))
 		{
 			e107::js('core', 'selectize/js/selectize.min.js', 'jquery');
 			e107::css('core', 'selectize/css/selectize.css', 'jquery');
 
 			if(deftrue('BOOTSTRAP') === 3)
 			{
-				e107::css('core', 'selectize/css/selectize.bootstrap3.css', 'jquery');
+		//		e107::css('core', 'selectize/css/selectize.bootstrap3.css', 'jquery');
 			}
 			elseif(deftrue('BOOTSTRAP'))
 			{
-				e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
+		//		e107::css('core', 'selectize/css/selectize.bootstrap2.css', 'jquery');
 			}
 
 			// Load selectize behavior.
 			e107::js('core', 'selectize/js/selectize.init.js', 'jquery');
+
+			$options['selectize']['wrapperClass'] = 'selectize-control';
+			$options['selectize']['inputClass'] = 'form-control selectize-input ';
+			$options['selectize']['dropdownClass'] = 'selectize-dropdown';
+			$options['selectize']['dropdownContentClass'] = 'selectize-dropdown-content';
+			$options['selectize']['copyClassesToDropdown'] = true;
 
 			$jsSettings = array(
 				'id'      => vartrue($options['id'], $this->name2id($name)),
@@ -764,6 +766,8 @@ class e_form
 
 			// Merge field settings with other selectize field settings.
 			e107::js('settings', array('selectize' => array($jsSettings)));
+
+			$options['class'] = '';
 		}
 
 		// TODO: remove typeahead.
@@ -798,10 +802,10 @@ class e_form
 	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
-		if (vartrue($options['maxlength'])) $maxlength = $options['maxlength'];
+		if (empty($options['maxlength'])) $maxlength = $options['maxlength'];
 		unset($options['maxlength']);
-		if(!vartrue($options['size'])) $options['size'] = 15;
-		if(!vartrue($options['class'])) $options['class'] = 'tbox number e-spinner input-small form-control';
+		if(empty($options['size'])) $options['size'] = 15;
+		if(empty($options['class'])) $options['class'] = 'tbox number e-spinner input-small ';
 		
 		if(!empty($options['size']))
 		{
@@ -809,6 +813,7 @@ class e_form
 			unset($options['size']);
 		}
 
+		$options['class'] .= " form-control";
 		$options['type'] ='number';
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
@@ -821,7 +826,7 @@ class e_form
 
 		
 		//never allow id in format name-value for text fields
-		if(deftrue('BOOTSTRAP'))
+		if(THEME_LEGACY === false)
 		{
 			return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
 		}
@@ -903,7 +908,7 @@ class e_form
 		
 		if(!empty($extras['video']))
 		{
-			$url .= "&amp;video=1";	
+			$url .= ($extras['video'] == 2) ? "&amp;video=2" : "&amp;video=1";
 		}			
 
 		if(!empty($extras['path']) && $extras['path'] == 'plugin')
@@ -1802,6 +1807,7 @@ class e_form
 		}
 
 
+
 		require_once(e_CORE."shortcodes/single/nextprev.php");
 
 		$nextprev = array(
@@ -1813,6 +1819,8 @@ class e_form
 			'type'          => varset($options['type'],'record'), // page|record
 			'glyphs'        => vartrue($options['glyphs'],false) // 1|0
 		);
+
+	//	e107::getDebug()->log($nextprev);
 
 		return nextprev_shortcode($nextprev);
 	}
@@ -1979,6 +1987,29 @@ class e_form
 		
 		$ret = "<div class='bbarea {$size}'>
 		<div class='field-spacer'><!-- --></div>\n";
+
+
+		if(e107::wysiwyg() === true)
+		{
+			$eParseList = e107::getConfig()->get('e_parse_list');
+
+			if(!empty($eParseList))
+			{
+				$opts = array(
+					'field' => $name,
+				);
+
+				foreach($eParseList as $plugin)
+				{
+					$hookObj = e107::getAddon($plugin, 'e_parse');
+
+					if($tmp = e107::callMethod($hookObj, 'toWYSIWYG', $value, $opts))
+					{
+						$value = $tmp;
+					}
+				}
+			}
+		}
 
 
 		$ret .=	e107::getBB()->renderButtons($template,$help_tagid);
@@ -2209,9 +2240,14 @@ class e_form
 		
 		$labelFound = vartrue($options['label']);
 		unset($options['label']); // label attribute not valid in html5
-				
+
 		$options = $this->format_options('radio', $name, $options);
 		$options['checked'] = $checked; //comes as separate argument just for convenience
+
+		if(empty($options['id']))
+		{
+			$options['id'] = '';
+		}
 		// $options['class'] = 'inline';	
 		$text = "";
 		
@@ -2247,54 +2283,85 @@ class e_form
 	}
 
 	/**
-	 * Boolean Radio Buttons. 
-	 * @param name string
-	 * @param check_enabled boolean
-	 * @param label_enabled default is LAN_ENABLED
-	 * @param label_disabled default is LAN_DISABLED
-	 * @param options array - inverse=1 (invert values) or reverse=1 (switch display order) 
+	 * Boolean Radio Buttons / Checkbox (with Bootstrap Switch).
+	 *
+	 * @param string $name
+	 *  Form element name.
+	 * @param bool $checked_enabled
+	 *  Use the checked attribute or not.
+	 * @param string $label_enabled
+	 *  Default is LAN_ENABLED
+	 * @param string $label_disabled
+	 *  Default is LAN_DISABLED
+	 * @param array $options
+	 *  - 'inverse' => 1 (invert values)
+	 *  - 'reverse' => 1 (switch display order)
+	 *  - 'switch'  => 'normal' (size for Bootstrap Switch... mini, small, normal, large)
+	 *
+	 * @return string $text
 	 */
-	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '',$options=array())
+	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '', $options = array())
 	{
-		if(!is_array($options)) parse_str($options, $options);
-		
-		$options_on = varset($options['enabled'],array());
-		$options_off = varset($options['disabled'],array());
+		if(!is_array($options))
+		{
+			parse_str($options, $options);
+		}
 
-		unset($options['enabled'],$options['disabled']);
+		$options_on = varset($options['enabled'], array());
+		$options_off = varset($options['disabled'], array());
+
+		unset($options['enabled'], $options['disabled']);
 
 		$options_on = array_merge($options_on, $options);
 		$options_off = array_merge($options_off, $options);
 
-		
+
 		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
 		{
 			$options_on = array_merge($options, array('class' => 'e-expandit-on'));
-			$options_off = array_merge($options, array('class' => 'e-expandit-off'));	
+			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
-		
-		$options_on['label'] = $label_enabled ? defset($label_enabled,$label_enabled) : LAN_ENABLED; 
-		$options_off['label'] = $label_disabled ? defset($label_disabled,$label_disabled) : LAN_DISABLED; 
-		
-		if(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'  
+
+		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
+		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
+
+		if(!empty($options['switch']))
 		{
-			$text = $this->radio($name, 0, !$checked_enabled, $options_on)." 	".$this->radio($name, 1, $checked_enabled, $options_off);		
-			
+			if(!empty($options['inverse']))
+			{
+				$checked_enabled = !$checked_enabled;
+			}
+
+			$js_options = array(
+				// Each form element has its own options.
+				$name => array(
+					'size'    => $options['switch'],
+					'onText'  => $options_on['label'],
+					'offText' => $options_off['label'],
+				),
+			);
+
+			e107::library('load', 'bootstrap.switch');
+			e107::js('settings', array('bsSwitch' => $js_options));
+			e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
+
+			$text = $this->checkbox($name, 1, $checked_enabled);
+		}
+		elseif(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'
+		{
+			$text = $this->radio($name, 0, !$checked_enabled, $options_on) . " 	" . $this->radio($name, 1, $checked_enabled, $options_off);
+
 		}
 		elseif(!empty($options['reverse'])) // reverse display order. 
 		{
-			$text = $this->radio($name, 0, !$checked_enabled, $options_off)." ".$this->radio($name, 1, $checked_enabled, $options_on);		
+			$text = $this->radio($name, 0, !$checked_enabled, $options_off) . " " . $this->radio($name, 1, $checked_enabled, $options_on);
 		}
 		else
 		{
-			
-			$text = $this->radio($name, 1, $checked_enabled, $options_on)." 	".$this->radio($name, 0, !$checked_enabled, $options_off);	
+			$text = $this->radio($name, 1, $checked_enabled, $options_on) . " 	" . $this->radio($name, 0, !$checked_enabled, $options_off);
 		}
 
-
-
 		return $text;
-		
 	}
 
 
@@ -2396,11 +2463,11 @@ class e_form
 		{
 			if(!empty($options['class']))
 			{
-				$options['class'] .= " input-".$options['size'];
+				$options['class'] .= "form-control input-".$options['size'];
 			}
 			else
 			{
-				$options['class'] = "input-".$options['size'];
+				$options['class'] = "form-control input-".$options['size'];
 			}
 
 			unset($options['size']); // don't include in html 'size='. 	
@@ -3019,11 +3086,7 @@ class e_form
 	}
 
 
-	protected function getFieldTypes()
-	{
-		asort($this->fields);
-		return $this->fields;
-	}
+
 
 
 
@@ -3322,7 +3385,7 @@ class e_form
 			//	'multiple' => false, - see case 'select'
 		);
 
-		$form_control = (deftrue('BOOTSTRAP') === 3) ? ' form-control' : '';
+		$form_control = (THEME_LEGACY !== true) ? ' form-control' : '';
 
 		switch ($type) {
 			case 'hidden':
@@ -3332,6 +3395,10 @@ class e_form
 			case 'text':
 				$def_options['class'] = 'tbox input-text'.$form_control;
 				unset($def_options['selected'], $def_options['checked']);
+				break;
+
+			case 'number':
+				$def_options['class'] = 'tbox '.$form_control;
 				break;
 
 			case 'file':
@@ -3356,7 +3423,7 @@ class e_form
 
 			case 'radio':
 				//$def_options['class'] = ' ';
-				$def_options = array('class' => '');
+				$def_options = array('class' => '', 'id'=>'');
 				unset($def_options['size'], $def_options['selected']);
 				break;
 
@@ -3830,8 +3897,8 @@ class e_form
 				$jsonArray[$k] = str_replace("'", "`", $v);	
 			}
 		}
-		$source = str_replace('"',"'",json_encode($jsonArray, JSON_FORCE_OBJECT)); // SecretR - force object, fix number of bugs
-		
+
+		$source = e107::getParser()->toJSON($jsonArray);
 		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
@@ -3851,7 +3918,7 @@ class e_form
 		unset( $options['title']);
 
 		$text = "<a class='e-tip e-editable editable-click ".$class."' data-name='".$dbField."' ";
-		$text .= (is_array($array)) ? "data-source=\"".$source."\"  " : "";
+		$text .= (is_array($array)) ? "data-source='".$source."'  " : "";
 		$text .= " title=\"".$title."\" data-type='".$type."' data-inputclass='x-editable-".$this->name2id($dbField)." ".$class."' data-value=\"{$curVal}\"   href='#' ";
 
 		if(!empty($options))
@@ -3893,8 +3960,14 @@ class e_form
 			$parms = $attributes['readParms'];
 		}
 
+		// @see custom fields in cpage which accept json params.
+		if(!empty($attributes['writeParms']) && $tmpOpt = e107::getParser()->isJSON($attributes['writeParms']))
+		{
+			$attributes['writeParms'] = $tmpOpt;
+			unset($tmpOpt);
+		}
 
-	
+
 		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
@@ -3998,9 +4071,15 @@ class e_form
 			break;
 
 			case 'checkboxes':
-				$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+
 				//$attributes['type'] = 'text';
-				return $value;
+				if(empty($attributes['writeParms'])) // avoid comflicts with a field called 'checkboxes'
+				{
+					$value = $this->checkbox(vartrue($attributes['toggle'], 'multiselect').'['.$id.']', $id);
+					return $value;
+				}
+
+
 			break;
 		}
 
@@ -4023,6 +4102,10 @@ class e_form
 				
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
+			break;
+
+			case 'country':
+				$value = $this->getCountry($value);
 			break;
 
 			case 'ip':
@@ -4098,7 +4181,7 @@ class e_form
 					$opts['multiple'] = true;	
 				}
 			
-				if(vartrue($opts['multiple']))
+				if(!empty($opts['multiple']))
 				{
 					$ret = array();
 					$value = is_array($value) ? $value : explode(',', $value);
@@ -4107,6 +4190,8 @@ class e_form
 						if(isset($wparms[$v])) $ret[] = $wparms[$v];
 					}
 					$value = implode(', ', $ret);
+
+
 				}
 				else
 				{
@@ -4700,7 +4785,7 @@ class e_form
 			break;
 
 			case 'method': // Custom Function			
-				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method. 
+				$method = $attributes['field']; // prevents table alias in method names. ie. u.my_method.
 				$_value = $value;
 
 				if(!empty($attributes['data']) && $attributes['data'] == 'array') // FIXME @SecretR - please move this to where it should be.
@@ -4718,7 +4803,9 @@ class e_form
 				}
 				else
 				{
-					return "<span class='label label-important label-danger'>Missing: ".$method."()</span>";
+					$className = get_class($this);
+					e107::getDebug()->log("Missing Method: ".$className."::".$meth." ".print_a($attributes,true));
+					return "<span class='label label-important label-danger'>Missing Method</span>";
 				}
 			//	 print_a($attributes);
 					// Inline Editing.  
@@ -4853,9 +4940,13 @@ class e_form
 	{
 		$tp = e107::getParser();
 
-
-
 		$parms = vartrue($attributes['writeParms'], array());
+
+		if($tmpOpt = $tp->isJSON($parms))
+		{
+			$parms = $tmpOpt;
+			unset($tmpOpt);
+		}
 
 		if(is_string($parms)) parse_str($parms, $parms);
 
@@ -4950,6 +5041,10 @@ class e_form
 				$ret =  vartrue($parms['pre']).$this->number($key, $value, $maxlength, $parms).vartrue($parms['post']);
 			break;
 
+			case 'country':
+				$ret = vartrue($parms['pre']).$this->country($key, $value).vartrue($parms['post']);
+			break;
+
 			case 'ip':
 				$ret = vartrue($parms['pre']).$this->text($key, e107::getIPHandler()->ipDecode($value), 32, $parms).vartrue($parms['post']);
 			break;
@@ -4971,6 +5066,11 @@ class e_form
 			case 'password': // encrypts to md5 when saved. 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
+				if(!isset($parms['required']))
+				{
+
+					$parms['required'] = false;
+				}
 				$ret =  vartrue($parms['pre']).$this->password($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 			
 			break; 
@@ -5032,6 +5132,12 @@ class e_form
 					// Appending needs is  performed and customized using function: beforeUpdate($new_data, $old_data, $id)
 				}
 
+				if(empty($parms['size']))
+				{
+					$parms['size'] = 'xxlarge';
+				}
+
+
 				$text .= vartrue($parms['pre']).$this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
 				$ret =  $text;
 			break;
@@ -5042,9 +5148,17 @@ class e_form
 				$ret =  vartrue($parms['pre']).$this->bbarea($key, $value, vartrue($parms['template']), vartrue($parms['media']), vartrue($parms['size'], 'medium'),$options ).vartrue($parms['post']);
 			break;
 
+			case 'video':
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
 				unset($parms['label']);
+
+				if($attributes['type'] === 'video')
+				{
+					$parms['video'] = 2; // ie. video only.
+					$parms['w'] = 280;
+				}
+
 				$ret =  $this->imagepicker($key, $value, defset($label, $label), $parms);
 			break;
 			

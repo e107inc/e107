@@ -581,7 +581,15 @@ class e_file
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents($address);
+
+			$context = array(
+				'ssl' => array(
+					'verify_peer'      => false,
+					'verify_peer_name' => false,
+				),
+			);
+
+			$data = file_get_contents($address, false, stream_context_create($context));
 
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
@@ -872,7 +880,46 @@ class e_file
 	} 
 	
 	
-	
+	/**
+	 * Copy a file, or copy the contents of a folder.
+	 * @param   string    $source    Source path
+	 * @param   string   $dest      Destination path
+	 * @param   array    $options
+	 * @return  bool     Returns true on success, false on error
+	 */
+	function copy($source, $dest, $options=array())
+	{
+
+		$perm = !empty($options['perm']) ? $options['perm'] : 0755;
+		$filter = !empty($options['git']) ? "" : ".git"; // filter out .git by default.
+
+		// Simple copy for a file
+		if(is_file($source))
+		{
+			return copy($source, $dest);
+		}
+
+		// Make destination directory
+		if(!is_dir($dest))
+		{
+			mkdir($dest, $perm);
+		}
+
+		// Directory - so copy it.
+		$dir = scandir($source);
+		foreach($dir as $folder)
+		{
+			// Skip pointers
+			if($folder === '.' || $folder == '..' || $folder === $filter)
+			{
+				continue;
+			}
+
+			$this->copy("$source/$folder", "$dest/$folder", $perm);
+		}
+
+		return true;
+	}
 	
 
 	/**

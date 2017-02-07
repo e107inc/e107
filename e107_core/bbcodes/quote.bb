@@ -1,6 +1,6 @@
 //<?
 $class = e107::getBB()->getClass('quote');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_parser_functions.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_parser_functions.php");
 
 if(deftrue('BOOTSTRAP'))
 {

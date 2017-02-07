@@ -40,7 +40,7 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 		
 	//	echo "orig = ".$file."     ";
 		//e107::lan($path,'log',true);
-		include_lan(e_PLUGIN.$path.'/languages/'.$file);
+		e107::includeLan(e_PLUGIN.$path.'/languages/'.$file);
 	}
 }
 
@@ -96,7 +96,9 @@ class adminlog_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
-	);	
+	);
+
+	protected $adminMenuIcon = 'e-adminlogs-24';
 	
 	protected $menuTitle = ADLAN_155;
 	
@@ -861,7 +863,7 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 		
 	//	echo "orig = ".$file."     ";
 		//e107::lan($path,'log',true);
-		include_lan(e_PLUGIN.$path.'/languages/'.$file);
+		e107::includeLan(e_PLUGIN.$path.'/languages/'.$file);
 	}
 }
 

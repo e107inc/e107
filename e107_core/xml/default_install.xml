@@ -82,6 +82,8 @@
   'social' => 'social',
   'tinymce4' => 'tinymce4',
 )]]></core>
+		<core name="e_jslib_cdn">1</core>
+		<core name="e_jslib_cdn_provider">jsdelivr</core>
 		<core name="e_jslib_browser_cache">0</core>
 		<core name="e_jslib_nobcache">1</core>
 		<core name="e_jslib_nocache">1</core>
@@ -89,7 +91,7 @@
 		<core name="e_jslib_nocombine">1</core>
 		<core name="e_jslib_core"><![CDATA[array (
 'prototype' => 'none',
-'jquery' => 'auto',
+'jquery' => 'all',
 )]]></core>
 		<core name="e_jslib_plugin"><![CDATA[array ()]]></core>
 		<core name="e_jslib_theme"><![CDATA[array ()]]></core>
@@ -753,6 +755,17 @@ City, State, Country
 				<field name="media_cat_owner">_icon</field>
 				<field name="media_cat_category">_icon_64</field>
 				<field name="media_cat_title">Icons 64px</field>
+				<field name="media_cat_sef"></field>
+				<field name="media_cat_diz">Available where icons are used in admin.</field>
+				<field name="media_cat_class">253</field>
+				<field name="media_cat_image"></field>
+				<field name="media_cat_order">0</field>
+			</item>
+			<item>
+				<field name="media_cat_id">13</field>
+				<field name="media_cat_owner">_icon</field>
+				<field name="media_cat_category">_icon_svg</field>
+				<field name="media_cat_title">Icons SVG</field>
 				<field name="media_cat_sef"></field>
 				<field name="media_cat_diz">Available where icons are used in admin.</field>
 				<field name="media_cat_class">253</field>

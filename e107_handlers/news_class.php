@@ -715,11 +715,16 @@ class e_news_tree extends e_front_tree_model
 			$start = $parser->parseTemplate($template['start'], true, $vars); // must be here in case {SETIMAGE} is present and used for items below.
 		}
 
+
+		$featuredCount = !empty($parms['featured']) ? intval($parms['featured']) : 0;
+
+
 		foreach ($items as $news)
 		{
 			$vars->counter = $i;
 			$batch->setScVar('news_item', $news->getData());
-			$ret[] = $parser->parseTemplate($template['item'], true, $batch, $vars);
+			$tmpl = (isset($template['featured']) && $i <= $featuredCount) ? 'featured' : 'item';
+			$ret[] = $parser->parseTemplate($template[$tmpl], true, $batch, $vars);
 			$i++;
 		}
 
@@ -912,6 +917,8 @@ class e_news_category_tree extends e_front_tree_model
 			return '';
 		}
 
+
+
 		$ret = array();
 		$tp = e107::getParser();
 
@@ -926,7 +933,8 @@ class e_news_category_tree extends e_front_tree_model
 		}
 		$bullet = defined('BULLET') ? THEME_ABS.'images/'.BULLET : THEME_ABS.'images/bullet2.gif';
 		$obj = new e_vars(array('bullet' => $bullet));
-		
+
+
 		foreach ($this->getTree() as $cat)
 		{
 			$obj->active = '';
@@ -934,8 +942,9 @@ class e_news_category_tree extends e_front_tree_model
 			{
 				$obj->active = ' active';
 			}
-			
+
 			$ret[] = $cat->toHTML($template['item'], $parsesc, $obj);
+
 		}
 
 		if($ret)

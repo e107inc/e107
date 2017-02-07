@@ -340,6 +340,8 @@ define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 77
 define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
 define("LAN_WIDTH","Width");
 
+define("LAN_ON","On");
+define("LAN_OFF", "Off");
 define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
@@ -453,7 +455,8 @@ define("LAN_UI_DELETE_LABEL", "Confirm Delete");
 define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
 define("LAN_UI_DELETED", "[x] record(s) successfully deleted!");
-define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");
+define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");\
+define("LAN_UI_BATCH_EXPORT", "Export");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
 define("LAN_UI_TOTAL_RECORDS", "Total Records: [x]");

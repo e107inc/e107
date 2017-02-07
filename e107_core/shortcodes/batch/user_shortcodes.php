@@ -374,7 +374,6 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
 	function sc_user_icon_link($parm='')
 	{
 
@@ -396,29 +395,32 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
 	function sc_user_id($parm='')
 	{
 		return $this->var['user_id'];
 	}
-	
-	
-	
+
+
 	function sc_user_name($parm='')
 	{
 		return $this->var['user_name'];
 	}
-	
-	
-	
+
+
 	function sc_user_name_link($parm='')
 	{
-		$uparams = array('id' => $this->var['user_id'], 'name' => $this->var['user_name']);
-		return "<a href='".e107::getUrl()->create('user/profile/view', $uparams)."'>".$this->var['user_name']."</a>";
+	   $url = $this->sc_user_profile_url(); 
+	   return "<a href='".$url."'>".$this->var['user_name']."</a>";
 	}
-	
-	
-	
+
+
+	function sc_user_profile_url($parm='')
+	{
+	    $uparams = array('id' => $this->var['user_id'], 'name' => $this->var['user_name']);
+	    return e107::getUrl()->create('user/profile/view', $uparams);
+	}
+
+
 	function sc_user_loginname($parm='')
 	{
 		if(ADMIN && getperms("4"))
@@ -428,7 +430,6 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
 	function sc_user_birthday_icon($parm='')
 	{
 		if(defined("USER_BIRTHDAY_ICON"))
@@ -439,12 +440,11 @@ class user_shortcodes extends e_shortcode
 		{
 			return "<img src='".THEME_ABS."images/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 		}
-		
+
 		return "<img src='".e_IMAGE_ABS."user_icons/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 	}
 
-	
-		
+
 	function sc_user_birthday($parm='')
 	{
 		if ($this->var['user_birthday'] != "" && $this->var['user_birthday'] != "0000-00-00" && preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $this->var['user_birthday'], $regs))
@@ -456,9 +456,8 @@ class user_shortcodes extends e_shortcode
 			return "<i>".LAN_USER_33."</i>";
 		}
 	}
-	
-	
-	
+
+
 	function sc_user_signature($parm) 
 	{
 		$tp = e107::getParser();
@@ -466,7 +465,6 @@ class user_shortcodes extends e_shortcode
 	}
 
 
-	
 	function sc_user_comments_link($parm) 
 	{
 		if($this->commentsDisabled)
@@ -679,14 +677,14 @@ class user_shortcodes extends e_shortcode
 
 			if(!$ext->hasPermission($fld,'read'))
 			{
+			//	e107::getDebug()->log("Wrong permissions for user_euf: ".$fld);
 				return false;
 			}
 
 			$val = $this->var[$fld];
+			$type = $ext->getFieldType($fld);
 
-		//	e107::getDebug()->log(print_a($ext,true));
-
-			return $ext->renderValue($val); //TODO auto-detect type, from within the user-extended class.
+			return $ext->renderValue($val,$type);
 
 		}
 

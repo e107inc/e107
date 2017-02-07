@@ -159,4 +159,4 @@ define("LAN_SIGNUP_116", "Preview After Form Submit");
 define("LAN_SIGNUP_117", "Send a Test Activation");
 define("LAN_SIGNUP_118", "To [x]");
 define("LAN_SIGNUP_119", "Don't send email");
-
+define("LAN_SIGNUP_120", "OR");

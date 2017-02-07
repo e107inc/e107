@@ -21,7 +21,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_userclass.php');
 
 
 /*
@@ -1520,7 +1520,7 @@ class user_class_admin extends user_class
 		//$ret .= "<img src='".UC_ICON_DIR."topicon.png' alt='class icon' /><a style='text-decoration: none' class='userclass_edit' href='".e_ADMIN_ABS."userclass2.php?config.edit.{$this->class_tree[$listnum]['userclass_id']}'>".$name_line."</a></div>";
 		if($this->queryCanEditClass($this->class_tree[$listnum]['userclass_id']))
 		{
-			$url = e_SELF.'?action=edit&amp;id='.$this->class_tree[$listnum]['userclass_id'];
+			$url = e_SELF.'?mode=main&action=edit&amp;id='.$this->class_tree[$listnum]['userclass_id'];
 			$onc = '';
 		}
 		else

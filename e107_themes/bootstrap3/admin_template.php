@@ -37,7 +37,7 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 
 $E_ADMIN_NAVIGATION['button_active'] = '
-	<li class="dropdown">
+	<li class="dropdown active">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
 		 {LINK_IMAGE} {LINK_TEXT}
 		<b class="caret"></b>
@@ -48,7 +48,7 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 
 
 // Leave Admin Area. 
-$E_ADMIN_NAVIGATION['button_home'] = '
+$E_ADMIN_NAVIGATION['button_enav_home'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" style="display:inline-block; margin-right:0;" title="'.ADLAN_53.'" href="'.e_HTTP.'" >
 		 {LINK_IMAGE} {LINK_TEXT} 
@@ -60,7 +60,7 @@ $E_ADMIN_NAVIGATION['button_home'] = '
 ';
 
 // Change Language
-$E_ADMIN_NAVIGATION['button_language'] = '
+$E_ADMIN_NAVIGATION['button_enav_language'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle" title="'.LAN_CHANGE_LANGUAGE.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
@@ -83,7 +83,7 @@ $E_ADMIN_NAVIGATION['button_language'] = '
 
 
 // Logout / Settings / Personalize 			
-$E_ADMIN_NAVIGATION['button_logout'] = '
+$E_ADMIN_NAVIGATION['button_enav_logout'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle admin-icon-avatar " title="'.$label.'" role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" >
 		 {LINK_IMAGE} {LINK_TEXT} 
@@ -157,54 +157,7 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 
 $inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
     
-    
- /*   
-$ADMIN_HEADER = '<div class="navbar '.$inverse.' navbar-nav navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid"> 
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a> 
-          <a class="brand " href="'.e_ADMIN_ABS.'admin.php" title="Return to Front Panel"><img class="admin-logo" src="'.e_THEME_ABS.'bootstrap/images/e107_adminlogo.png" alt="e107" /></a>
-          <div class="nav-collapse collapse">
-            
-            
-			<div class="dropdown nav">
-			{ADMIN_NAVIGATION=no-main}        	 
-   			 </div>
-   			 <div class="dropdown nav pull-right navbar-text ">
-   			 <li>{ADMIN_COREUPDATE=icon}</li>
-            {ADMIN_PM}
-            {ADMIN_NAVIGATION=home}
-			{ADMIN_NAVIGATION=language}
-			{ADMIN_NAVIGATION=logout}
-		
-            </div>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>';
-*/
 
-
-/*
-$ADMIN_MODAL =  '<div id="uiModal" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-header">
-            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-             	<h4 class="modal-caption">&nbsp;</h4>
-             </div>
-             <div class="modal-body">
-             <p>Loading…</p>
-             </div>
-             <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
-            </div>
-        </div>';*/
-
-
-// TODO - LANs
 $ADMIN_MODAL = '
 <div id="uiModal" class="modal fade">
 	<div id="admin-ui-modal" class="modal-dialog modal-lg">
@@ -226,7 +179,7 @@ $ADMIN_MODAL = '
 </div>
 ';
 
-// TODO - LANs
+
 $ADMIN_HEADER = $ADMIN_MODAL . '
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container">
@@ -244,9 +197,9 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		<div class="navbar-collapse collapse">
 			{ADMIN_NAVIGATION=no-main}
 			<div>
-				{ADMIN_NAVIGATION=logout}
-				{ADMIN_NAVIGATION=language}
-				{ADMIN_NAVIGATION=home}
+				{ADMIN_NAVIGATION=enav_logout}
+				{ADMIN_NAVIGATION=enav_language}
+				{ADMIN_NAVIGATION=enav_home}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 				{ADMIN_UPDATE}
@@ -268,20 +221,24 @@ if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET
 }
 else
 {
-	// TODO - LANs
+
 	$ADMIN_HEADER .= '
 		<div class="col-md-3 col-lg-2 admin-left-panel">
+			{SETSTYLE=warning}
+			{ADMIN_ADDON_UPDATES}
+			{SETSTYLE=site_info}
+			{ADMIN_PWORD}
 			{SETSTYLE=admin_menu}
 			{ADMIN_MENU}
 
-			{ADMIN_PWORD}
+
 			{ADMIN_MENUMANAGER}
 	
-			<div class="e-scroll-fixed">
+
 				{SETSTYLE=site_info}
 				{ADMINUI_HELP}
 				{ADMIN_HELP}
-			</div>
+
 	
 			{ADMIN_SITEINFO=creditsonly}
 
@@ -312,103 +269,16 @@ $ADMIN_FOOTER = '
 </div><!--/.fluid-container-->
 
 <footer class="center mute"> 
-	Copyright &copy; 2008-2015 e107 Inc (e107.org)<br />
+	Copyright &copy; 2008-2017 e107 Inc (e107.org)<br />
 </footer>
 ';
 
 
-//{FS_ADMIN_ALT_NAV}
-/*
-$ADMIN_HEADER = "
-<div class='admin-wrapper'>
-	<div class='admin-header'>
-		<div class='admin-header-content'>
-			<div class='f-right'><!-- -->{ADMIN_LANG=nobutton&nomenu}</div>
-			{ADMIN_LOGO}
-			{ADMIN_LOGGED}
-			{ADMIN_SEL_LAN}
-
-		</div>
-		<div style='height: 20px;'><!-- --></div>
-		<div class='admin-navigation'>
-			<div id='nav'>{ADMIN_NAVIGATION}</div>
-			<div class='clear'><!-- --></div>
-		</div>
-	</div>
-	<div class='admin-page-body'>
-		<table class='main-table'>
-			<tr>
-			
-				<td class='col-left'>
-				
-						{SETSTYLE=admin_menu}
-						{ADMIN_MENU}
-						{ADMIN_MENUMANAGER} 
-						{ADMIN_PRESET}
-						{ADMIN_LANG}
-						{SETSTYLE=none}
-						{ADMIN_PWORD}
-						{ADMIN_STATUS=request}
-						{ADMIN_LATEST=request}
-						{ADMIN_LOG=request}
-						{ADMIN_MSG}
-						{ADMIN_PLUGINS}
-						{ADMIN_UPDATE}
-						
-						{SETSTYLE=site_info}
-						{ADMIN_SITEINFO}
-						{ADMIN_HELP}
-				
-				
-				
-				
-				</td>
-				<td>
-					<div class='col-main'>
-						<div class='inner-wrapper'>
-						{SETSTYLE=admin_content}
-";
-*/
-/*
-	{SETSTYLE=admin_menu}
-	<!--
-	{ADMIN_NAV}
-	-->
-		{ADMIN_LANG}
-
-		{ADMIN_SITEINFO}
-
-		{ADMIN_DOCS}
- */
- 
-/*
-$ADMIN_FOOTER = "
-						</div>
-					</div>
-				</td>
-				<!--
-				<td class='col-right'>
-					<div class='col-right'>
-
-
-
-					</div>
-				</td>
-				-->
-			</tr>
-		</table>
-	</div>
-	<div class='admin-footer'>
-		<!-- -->
-	</div>
-</div>
-";
-*/
 /* NEW ADMIN MENU TEMPLATE
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $E_ADMIN_MENU['start'] = '
-<ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-list">
+<ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 
 $E_ADMIN_MENU['button'] = '
@@ -452,53 +322,4 @@ $E_ADMIN_MENU['end'] = '
 $E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';
 
 
-/* NEW ADMIN SLIDE DOWN MENU TEMPLATE
- * see function admin_navigation() in e107_files/shortcodes/admin_navigation.php
- * TODO move it together with menu.css/menu.js to the theme templates/e107_files folder (default menu render)
- */
- 
- /*
-$E_ADMIN_NAVIGATION['start'] = '
-<ul id="nav nav-links">
-';
-
-$E_ADMIN_NAVIGATION['button'] = '
-	<li>
-		<a class="menuButton" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
-		{SUB_MENU}
-	</li>
-';
-$E_ADMIN_NAVIGATION['button_active'] = '
-	<li>
-		<a class="menuButton active" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
-		{SUB_MENU}
-	</li>
-';
-
-$E_ADMIN_NAVIGATION['start_sub'] = '
-		<ul class="menu"{SUB_ID}>
-';
-
-$E_ADMIN_NAVIGATION['button_sub'] = '
-			<li>
-				<a class="menuItem{SUB_CLASS}" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
-				{SUB_MENU}
-			</li>
-';
-$E_ADMIN_NAVIGATION['button_active_sub'] = '
-			<li>
-				<a class="menuItem{SUB_CLASS}" href="{LINK_URL}"{ONCLICK}>{LINK_IMAGE}{LINK_TEXT}</a>
-				{SUB_MENU}
-			</li>
-';
-
-$E_ADMIN_NAVIGATION['end_sub'] = '
-		</ul>
-';
-
-$E_ADMIN_NAVIGATION['end'] = '
-</ul>
-';
-
-  */
 ?>

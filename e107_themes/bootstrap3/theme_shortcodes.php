@@ -86,7 +86,7 @@ class theme_shortcodes extends e_shortcode
 			return '';
 		}
 
-		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
@@ -224,7 +224,46 @@ class theme_shortcodes extends e_shortcode
 		return $tp->parseTemplate($text,true,$login_menu_shortcodes);
 	}	
 	
-	
+
+	/*
+	 * @example shortcode to render news.
+	 */
+	function sc_bootstrap_news_example($parm=null)
+	{
+		$news   = e107::getObject('e_news_tree');  // get news class.
+		$sc     = e107::getScBatch('news'); // get news shortcodes.
+		$tp     = e107::getParser(); // get parser.
+
+		$newsCategory = 1; // null, number or array(1,3,4);
+
+		$opts = array(
+			'db_order'  =>'n.news_sticky DESC, n.news_datestamp DESC', //default is n.news_datestamp DESC
+			'db_where'  => "FIND_IN_SET(0, n.news_render_type)", // optional
+			'db_limit'  => '6', // default is 10
+		);
+
+		// load active news items. ie. the correct userclass, start/end time etc.
+		$data = $news->loadJoinActive($newsCategory, false, $opts)->toArray();  // false to utilize the built-in cache.
+		$TEMPLATE = "{NEWS_TITLE} : {NEWS_CATEGORY_NAME}<br />";
+
+		$text = '';
+
+		foreach($data as $row)
+		{
+
+			$sc->setScVar('news_item', $row); // send $row values to shortcodes.
+			$text .= $tp->parseTemplate($TEMPLATE, true, $sc); // parse news shortcodes.
+		}
+
+		return $text;
+
+
+	}
+
+
+
+
+
 	
 }
 

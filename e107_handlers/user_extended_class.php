@@ -50,7 +50,7 @@ class e107_user_extended
 	private $nameIndex          = array();	// Array for field name lookup - initialised by constructor
 	public $systemCount         = 0;		// Count of system fields - always zero ATM
 	public $userCount           = 0;			// Count of non-system fields
-	private $fieldPermissions   = array(); // Field Permissionss with field name as key.
+	private $fieldAttributes   = array(); // Field Permissionss with field name as key.
 
 	public function __construct()
 	{
@@ -67,20 +67,22 @@ class e107_user_extended
 		define('EUF_CHECKBOX',10);
 		define('EUF_PREFIELD',11); // should be EUF_PREDEFINED, useful when creating fields from e.g. plugin XML
 		define('EUF_ADDON', 12);  // defined within e_user.php addon
+		define('EUF_COUNTRY', 13);  // $frm->country()
 
 		$this->typeArray = array(
-			'text' => 1,
-			'radio' => 2,
-			'dropdown' => 3,
-			'db field' => 4,
-			'textarea' => 5,
-			'integer' => 6,
-			'date' => 7,
-			'language' => 8,
-			'list' => 9,
-			'checkbox'	=> 10,
-			'predefined' => 11, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
-			'addon'     => 12
+			'text'          => EUF_TEXT,
+			'radio'         => EUF_RADIO,
+			'dropdown'      => EUF_DROPDOWN,
+			'db field'      => EUF_DB_FIELD,
+			'textarea'      => EUF_TEXTAREA,
+			'integer'       => EUF_INTEGER,
+			'date'          => EUF_DATE,
+			'language'      => EUF_LANGUAGE,
+			'list'          => EUF_PREDEFINED,
+			'checkbox'	    => EUF_CHECKBOX,
+			'predefined'    => EUF_PREFIELD, // DON'T USE IT IN PREDEFINED FIELD XML!!! Used in plugin installation routine.
+			'addon'         => EUF_ADDON,
+			'country'       => EUF_COUNTRY,
 		);
 
 		$this->user_extended_types = array(
@@ -93,7 +95,8 @@ class e107_user_extended
 			7 => LAN_DATE,
 			8 => UE_LAN_8,
 			9 => UE_LAN_9,
-			10=> UE_LAN_10
+			10=> UE_LAN_10,
+			13=> UE_LAN_13
 		//	12=> UE_LAN_10
 		);
 
@@ -128,10 +131,16 @@ class e107_user_extended
 				else
 				{	// Its a field definition
 					$this->fieldDefinitions[$row['user_extended_struct_id']] = $row;
-					$id = 'user_'.$row['user_extended_struct_name'];
-					$this->fieldPermissions[$id] = array('read'=>$row['user_extended_struct_read'], 'write'=>$row['user_extended_struct_write']);
-					$this->nameIndex['user_'.$row['user_extended_struct_name']] = $row['user_extended_struct_id'];			// Create name to ID index
-					if ($row['user_extended_struct_text'] == '_system_')
+					$id = 'user_' . $row['user_extended_struct_name'];
+
+					$this->fieldAttributes[$id] = array(
+							'read' => $row['user_extended_struct_read'],
+							'write' => $row['user_extended_struct_write'],
+							'type'  => $row['user_extended_struct_type']
+					);
+					$this->nameIndex['user_' . $row['user_extended_struct_name']] = $row['user_extended_struct_id'];            // Create name to ID index
+
+					if($row['user_extended_struct_text'] == '_system_')
 					{
 						$this->systemCount++;
 					}
@@ -152,7 +161,7 @@ class e107_user_extended
 	 */
 	public function hasPermission($field, $type='read')
 	{
-		$class = ($type == 'read') ? $this->fieldPermissions[$field]['read'] : $this->fieldPermissions[$field]['write'];
+		$class = ($type == 'read') ? $this->fieldAttributes[$field]['read'] : $this->fieldAttributes[$field]['write'];
 		return check_class($class);
 	}
 
@@ -258,24 +267,40 @@ class e107_user_extended
 	function user_extended_validate_entry($val, $params)
 	{
 		$tp = e107::getParser();
-		
+
 		$parms = explode('^,^', $params['user_extended_struct_parms']);
 		$requiredField = $params['user_extended_struct_required'] == 1;
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
-		if (defined($regexfail)) { $regexfail = constant($regexfail); }
-		if($val == '' && $requiredField) return TRUE;
-		switch ($type)
+		if(defined($regexfail))
+		{
+			$regexfail = constant($regexfail);
+		}
+		if($val == '' && $requiredField)
+		{
+			return true;
+		}
+
+		$type = $params['user_extended_struct_type'];
+
+		switch($type)
 		{
 			case EUF_DATE :
-				if ($requiredField && ($val == '0000-00-00')) return TRUE;
+				if($requiredField && ($val == '0000-00-00'))
+				{
+					return true;
+				}
 				break;
 		}
 		if($regex != "" && $val != "")
 		{
-			if(!preg_match($regex, $val)) return $regexfail ? $regexfail : TRUE;
+			if(!preg_match($regex, $val))
+			{
+				return $regexfail ? $regexfail : true;
+			}
 		}
-		return FALSE;			// Pass by default here
+
+		return false;            // Pass by default here
 	}
 
 
@@ -466,9 +491,34 @@ class e107_user_extended
 		return $ret;
 		
 	}
-			
-		
 
+
+	/**
+	 * Get the field-type of a given field-name.
+	 * @param $field
+	 * @return bool|int
+	 */
+	public function getFieldType($field)
+	{
+
+		if(!empty($this->fieldAttributes[$field]['type']))
+		{
+			return (int) $this->fieldAttributes[$field]['type'];
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Return a list of all field types.
+	 * @return array
+	 */
+	public function getFieldTypes()
+	{
+		return $this->user_extended_types;
+
+	}
 
 
 	// Return the field creation text for a definition
@@ -488,6 +538,10 @@ class e107_user_extended
 
 	  switch ($type)
 	  {
+		  case EUF_COUNTRY :
+		  $db_type = 'VARCHAR(2)';
+		  break;
+
 		case EUF_INTEGER :
 		  $db_type = 'INT(11)';
 		  break;
@@ -529,7 +583,11 @@ class e107_user_extended
 	  {
 		$default_text = '';
 	  }
+
+
 	  return $db_type.$default_text;
+
+
 	}
 
 
@@ -577,6 +635,7 @@ class e107_user_extended
 
 		if ($this->user_extended_reserved($name))
 		{
+			e107::getMessage()->addDebug("Reserved Field");
 			return false;
 		}
 
@@ -753,6 +812,12 @@ class e107_user_extended
 
 		switch($struct['user_extended_struct_type'])
 		{
+
+			case EUF_COUNTRY:
+				return e107::getForm()->country($fname,$curval);
+			break;
+
+
 			case EUF_TEXT :  //textbox
 			case EUF_INTEGER :  //integer
 		 		$ret = "<input id='{$fid}' type='text' name='{$fname}' {$title} value='{$curval}' {$include} {$required} {$placeholder} />";
@@ -920,6 +985,11 @@ class e107_user_extended
 				if($curval == '0000-00-00') // Quick datepicker fix. 
 				{
 					$curval = '';
+				}
+
+				if(THEME_LEGACY === true)
+				{
+					return e107::getForm()->text($fname,$curval,10,array('placeholder'=>'yyyy-mm-dd'));
 				}
 			
 				return e107::getForm()->datepicker($fname,$curval,array('format'=>'yyyy-mm-dd','return'=>'string'));
@@ -1155,13 +1225,26 @@ class e107_user_extended
 	 * @param $type
 	 * @return array|string
 	 */
-	function renderValue($value, $type='')
+	public function renderValue($value, $type=null)
 	{
+
 
 		//TODO FIXME Add more types.
 
 		switch($type)
 		{
+
+			case EUF_COUNTRY:
+				if(!empty($value))
+				{
+					return e107::getForm()->getCountry($value);
+				}
+
+				return null;
+			break;
+
+
+
 			case EUF_CHECKBOX:
 					$value = e107::unserialize($value);
 

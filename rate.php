@@ -12,7 +12,7 @@
 // DIRTY - needs input validation, streaky
 
 require_once("class2.php");
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 
 if(!e_AJAX_REQUEST) // Legacy method. 

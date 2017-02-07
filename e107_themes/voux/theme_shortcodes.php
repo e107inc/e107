@@ -31,8 +31,10 @@ class theme_shortcodes extends e_shortcode
 
 		$frm = e107::getForm();
 		$text = $frm->open('newsletter','post', e_SIGNUP, array('class'=>'form-inline'));
+		$text .= "<div class='input-inline'>";
 		$text .= $frm->text('email','', null, array('placeholder'=>"Enter your email"));
 		$text .= $frm->button('subscribe', 1, 'primary', "Subscribe");
+		$text .= "</div>";
 		$text .= $frm->close();
 
 		return $text;
@@ -98,7 +100,7 @@ class theme_shortcodes extends e_shortcode
 			return '';
 		}
 
-		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.

@@ -37,7 +37,7 @@ class e_media
 			$this->logging = true; 	
 		}
 
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_image.php');
 	}
 
 
@@ -169,6 +169,11 @@ class e_media
 			
 			$this->import('_icon_'.$size, $path, $types);
 		}
+
+		$types = '[a-zA-z0-9_-]\.(svg|SVG)$';
+
+		$this->import('_icon_svg', $path, $types);
+
 		return $this;
 	}
 	
@@ -237,7 +242,7 @@ class e_media
 		
 		$path = $tp->createConstants($epath, 'rel');
 	
-		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64' ")) ? TRUE : FALSE;		
+		$status = ($sql->gen("SELECT * FROM `#core_media` WHERE `media_url` LIKE '".$path."%' AND media_category REGEXP '_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg' ")) ? TRUE : FALSE;
 		while ($row = $sql->fetch())
 		{
 			$ret[] = $row['media_url'];
@@ -664,7 +669,7 @@ class e_media
 			$w		= 64;
 			$h		= 64;
 			$total 	= 500;
-			$total	= $this->countImages("_icon_16|_icon_32|_icon_48|_icon_64",$search);
+			$total	= $this->countImages("_icon_16|_icon_32|_icon_48|_icon_64|_icon_svg",$search);
 			$onclick_clear = "parent.document.getElementById('{$tagid}').value = '';
 		 	parent.document.getElementById('".$prevId."').innerHTML= '';
 		 	 return false;";
@@ -716,15 +721,11 @@ class e_media
 		
 		if($bbcode == null) // e107 Media Manager - new-image mode. 
 		{
-
-			// TODO LAN.
 			$text .= "<a title='".IMALAN_165."' class='e-tip thumbnail {$class} ".$classN." media-select-none e-dialog-close' data-src='".varset($im['media_url'])."' style='vertical-align:middle;display:block;float:left;' href='#' onclick=\"{$onclick_clear}\" >
 			<span>".$tp->toGlyph('fa-ban')."</span>
 			</a>";		
 		}
 
-		$srch = array("{MEDIA_URL}","{MEDIA_PATH}");
-		
 		$w	= false; //
 		$h = false;
 		$defaultResizeWidth = 400;
@@ -746,25 +747,32 @@ class e_media
             $media_path : Inserted into html tags eg. <img src='here'...
         */
 
-	//	print_a($images);
-	//	return;
-		
 		foreach($images as $im)
 		{
 			list($dbWidth,$dbHeight) = explode(" x ",$im['media_dimensions']);	
 				
 			$w = ($dbWidth > $defaultResizeWidth) ? $defaultResizeWidth : intval($dbWidth);
-		//	$w = vartrue($w,0);
-       //     $h = vartrue($w,0);		
-								
-			$class 			= ($category !='_icon') ? "media-select-image" : "media-select-icon";
-			$media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "&w={$w}") : $tp->thumbUrl($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size 
-				
-			$realPath 		= $tp->thumbUrl($im['media_url'], $prevAtt); // Parsed back to Form as Preview Image. 
+
+            if($category === '_icon')
+            {
+                $class           = "media-select-icon";
+	            $media_path     = $tp->replaceConstants($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size
+				$realPath       = $media_path;
+                $img_url        = $media_path;
+
+            }
+            else // Regular image.
+            {
+
+                $class          = "media-select-image";
+	            $media_path 	= ($w || $h) ? $tp->thumbUrl($im['media_url'], "&w={$w}") : $tp->thumbUrl($im['media_url']); // $tp->replaceConstants($im['media_url'],'full'); // max-size
+				$realPath 		= $tp->thumbUrl($im['media_url'], $prevAtt); // Parsed back to Form as Preview Image.
+	            $img_url        = e107::getParser()->thumbUrl($im['media_url'], $thumbAtt);
+
+            }
+
 			
 			$diz 			= $tp->toAttribute(varset($im['media_name']))." (".str_replace(" ","", varset($im['media_dimensions'])).")";
-			$repl 			= array($im['media_url'],$media_path);
-
 			$media_alt      = $tp->toAttribute(vartrue($im['media_caption']));
 			
 			if($bbcode == null) // e107 Media Manager
@@ -789,8 +797,7 @@ class e_media
 			}
 			
 			$data_bb = ($bbcode) ? "img" : "";
-		 	
-		 	$img_url = ($cat !='_icon') ? e107::getParser()->thumbUrl($im['media_url'], $thumbAtt) : $media_path;
+
 			
 			$text .= "<a data-toggle='context' class='thumbnail {$class} e-tip' data-id='{$im['media_id']}' data-width='{$w}' data-height='{$h}' data-src='{$media_path}' data-bbcode='{$data_bb}' data-target='{$tagid}' data-path='{$im['media_url']}' data-preview='{$realPath}' data-alt=\"".$media_alt."\" title=\"".$diz."\" style='float:left' href='#' onclick=\"{$onclicki}\" >";
 			$text .= "<img class='image-rounded' src='".$img_url."' alt=\"".$im['media_title']."\" title=\"{$diz}\" />";
@@ -948,8 +955,8 @@ class e_media
 
 
 		$cache = e107::getCache();
-		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
 
+		$cachTag = !empty($addPrefix) ? "Glyphs_".$addPrefix."_".$type : "Glyphs_".$type;
 
 
 		if($data = $cache->retrieve($cachTag ,360,true,true))
@@ -961,7 +968,8 @@ class e_media
 		if($type === 'fa4')
 		{
 			$pattern = '/\.(fa-(?:\w+(?:-)?)+):before/';
-			$subject = e107::getFile()->getRemoteContent('http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css');
+			$path = e107::getLibrary()->getPath('fontawesome');
+			$subject = file_get_contents($path.'css/font-awesome.css');
 			$prefix = 'fa-';
 		}
 		elseif($type === 'fa3')
@@ -1002,9 +1010,9 @@ class e_media
 			return array();
 		}
 
-		$data = e107::serialize($icons);
+		$data = e107::serialize($icons,'json');
 
-		$cache->set_sys($cachTag ,$data,true);
+		$cache->set_sys($cachTag ,$data,true,true);
 
 		return $icons; 
 	

@@ -20,7 +20,7 @@ e107::css('inline',"
 ");
 
 e107::coreLan('cpage', true);
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_page.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_page.php');
 
 $e_sub_cat = 'custom';
 
@@ -73,7 +73,8 @@ class page_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'page/edit'		=> 'page/list',
-		'menu/edit'		=> 'menu/create'				
+		'menu/edit'		=> 'menu/create',
+		'cat/edit'      => 'cat/list'
 	);	
 	
 	protected $menuTitle = ADLAN_42;
@@ -134,7 +135,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
 			
-			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'.$delcls));
+			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
 			
 			return $text;
 		}
@@ -154,6 +155,7 @@ class page_chapters_ui extends e_admin_ui
 		protected $batchDelete 	= false;
 		protected $batchCopy	= true;	
         protected $batchLink   	= true;
+        protected $batchExport  = true;
 
 		protected $listQry          = "SELECT a. *, CASE WHEN a.chapter_parent = 0 THEN a.chapter_order ELSE b.chapter_order + (( a.chapter_order)/1000) END AS Sort FROM `#page_chapters` AS a LEFT JOIN `#page_chapters` AS b ON a.chapter_parent = b.chapter_id ";
 		protected $listOrder		= 'Sort,chapter_order ';
@@ -174,7 +176,7 @@ class page_chapters_ui extends e_admin_ui
         
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
 			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			    'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
-			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name'), // Display name
+			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
 			'chapter_manager' 			=> array('title'=> CUSLAN_55,		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
@@ -189,19 +191,19 @@ class page_chapters_ui extends e_admin_ui
 	
 		function init()
 		{
+			$this->addTitle(CUSLAN_63);
+		//	e107::getMessage()->addWarning("Experimental: Custom Fields");
+			$this->tabs = array(LAN_GENERAL,"Custom Fields");
+			$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
 
-			if(e_DEBUG === true)
-			{
-				e107::getMessage()->addWarning("Experimental: Custom Fields");
-				$this->tabs = array(LAN_GENERAL,"Custom Fields");
-				$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
-			}
-
-
-
-			if($this->getAction() == 'list')
+			if($this->getAction() === 'list')
 			{
 				$this->fields['chapter_parent']['title'] = CUSLAN_56;
+			}
+			elseif(deftrue('e_DEBUG'))
+			{
+				$this->fields['chapter_sef']['title'] = LAN_SEFURL.' / '.LAN_NAME;
+				$this->fields['chapter_sef']['help'] = 'May also be used in shortcode {CHAPTER_MENUS: name=x}';
 			}
 
 			$sql = e107::getDb();
@@ -252,6 +254,8 @@ class page_chapters_ui extends e_admin_ui
 				e107::getMessage()->addError(CUSLAN_57);
 				return false;
 			}
+
+			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
 			
 			return $new_data;	
 		}
@@ -261,12 +265,12 @@ class page_chapters_ui extends e_admin_ui
 		{	
 			// return $this->beforeCreate($new_data);
 
-			$new_data['chapter_fields'] = $this->processCustomFields($new_data['chapter_fields']);
+			$new_data = e107::getCustomFields()->processConfigPost('chapter_fields', $new_data);
 
 			return $new_data;
 		}
 
-
+/*
 		private function processCustomFields($newdata)
 		{
 			if(empty($newdata))
@@ -291,7 +295,7 @@ class page_chapters_ui extends e_admin_ui
 			}
 
 			return $new;
-		}
+		}*/
 
 }
 
@@ -324,19 +328,19 @@ class page_chapters_form_ui extends e_admin_form_ui
 			
 		if($mode == 'filter')
 		{
-			return;	
+			return null;
 		}
 		if($mode == 'batch')
 		{
-			return;
+			return null;
 		}		
 	}
 	
 	
 	function chapter_fields($curVal,$mode,$parm)
 	{
+		$fieldAmount = (deftrue('e_DEBUG')) ? 20 :10;
 
-		$frm = e107::getForm();
 
 		if($mode == 'read')
 		{
@@ -345,49 +349,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{
-
-			$value= array();
-
-			if(!empty($curVal))
-			{
-				$curVal = e107::unserialize($curVal);
-				$i = 0;
-				foreach($curVal as $k=>$v)
-				{
-					$v['key'] = $k;
-					$value[$i] = $v;
-					$i++;
-				}
-			}
-
-
-			$text = "<table class='table table-striped table-bordered'>
-			<colgroup>
-				<col />
-				<col />
-				<col />
-				<col style='width:40%' />
-			</colgroup>
-			<tbody>
-				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th></tr>
-				";
-
-			for ($i = 0; $i <= 10; $i++)
-			{
-				$fieldName = $this->text('chapter_fields['.$i.'][key]',$value[$i]['key'],30, array('pattern'=>'^[a-z0-9-]*'));
-				$fieldTitle = $this->text('chapter_fields['.$i.'][title]',$value[$i]['title'], 80);
-				$fieldType = $this->select('chapter_fields['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], 'useValues=1&default=blank');
-				$fieldParms = $this->text('chapter_fields['.$i.'][writeParms]',$value[$i]['writeParams'], 80, array('size'=>'xxlarge'));
-
-			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td></tr>";
-			}
-
-			$text .= "</tbody></table>";
-
-		//	$text .= print_a($value,true);
-
-
-			return $text;
+			return e107::getCustomFields()->loadConfig($curVal)->renderConfigForm('chapter_fields');
 		}
 
 		if($mode == 'filter')
@@ -399,8 +361,9 @@ class page_chapters_form_ui extends e_admin_form_ui
 			return;
 		}
 	}
-	
-	
+
+
+
 	
 		// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
@@ -566,7 +529,8 @@ class page_admin_ui extends e_admin_ui
 		protected $batchDelete 		= true;
 		protected $batchCopy 		= true;	
         protected $batchLink    	= true;
-	  	protected $batchFeaturebox   = true;
+		protected $batchExport      = true;
+	  	protected $batchFeaturebox  = true;
 		protected $sortField		= 'page_order';
 		protected $orderStep 		= 10;
 		//protected $url         	= array('profile'=>'page/view', 'name' => 'page_title', 'description' => '', 'link'=>'{e_BASE}page.php?id=[id]'); // 'link' only needed if profile not provided. 
@@ -670,9 +634,9 @@ class page_admin_ui extends e_admin_ui
 			if($this->getMode() == 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
 			{
 			
-				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE p.menu_name != '' "; // without any Order or Limit.
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
 			
-				$this->listOrder 		= 'p.page_id desc';
+				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 			
 				$this->batchDelete 	= false;
 				$this->fields = array(
@@ -702,7 +666,7 @@ class page_admin_ui extends e_admin_ui
 				$this->fieldpref = array("page_id","menu_name", "menu_title", 'menu_image', 'menu_template', 'menu_icon', 'page_chapter', 'menu_class');
 
 
-				if(e_DEBUG)
+				if(deftrue('e_DEBUG'))
 				{
 					$this->fields['menu_name']['inline'] = true;
 				}
@@ -752,8 +716,7 @@ class page_admin_ui extends e_admin_ui
 			$this->prefs['listBooksTemplate']['writeParms'] = $tmpl; 
 			
 			$sql = e107::getDb();
-			
-			$chapterFields = array();
+
 			$sql->gen("SELECT chapter_id,chapter_name,chapter_parent, chapter_fields FROM #page_chapters ORDER BY chapter_parent asc, chapter_order");
 			while($row = $sql->fetch())
 			{
@@ -771,7 +734,7 @@ class page_admin_ui extends e_admin_ui
 
 				if(!empty($row['chapter_fields']))
 				{
-					$this->chapterFields[$cat] = e107::unserialize($row['chapter_fields']);
+					$this->chapterFields[$cat] = ($row['chapter_fields']);
 				}
 
 
@@ -781,91 +744,88 @@ class page_admin_ui extends e_admin_ui
 			$this->fields['page_chapter']['writeParms']['optArray'] = $this->cats;
 			$this->fields['page_chapter']['writeParms']['size'] = 'xxlarge';
 
-			if(e_DEBUG !== false && $this->getAction() === 'create')
+			if($this->getAction() === 'create')
 			{
 				$this->fields['page_chapter']['writeParms']['ajax'] = array('src'=>e_SELF."?mode=page&action=chapter-change",'target'=>'tabadditional');
-
 			}
+
+
+			if(e_AJAX_REQUEST)
+			{
+				// @todo insert placeholder examples in params input when 'type' dropdown value is changed
+			}
+
+
+
 
 			if(e_AJAX_REQUEST && isset($_POST['page_chapter']) ) //&& $this->getAction() === 'chapter-change'
 			{
+
 				$this->initCustomFields($_POST['page_chapter']);
 
 				$elid = 'core-page-create';
 				$model = $this->getModel();
-				$tabId = 'additional';
+				$tabId = e107::getCustomFields()->getTabId();
+				$tabLabel = e107::getCustomFields()->getTabLabel();
 
 				$data = array(
-						'tabs'	=>  $this->getTabs(),
-						'legend' => '',
-						'fields' => $this->getFields(),
+					'tabs'   => $this->getTabs(),
+					'legend' => '',
+					'fields' => $this->getFields(),
 				);
-
 
 				$text = $this->getUI()->renderCreateFieldset($elid, $data, $model, $tabId);
 
+				$ajax = e107::getAjax();
+				$commands = array();
+
 				if(empty($text))
 				{
-					$text = "<div class='alert alert-info alert-block'>There are no additional fields for the selected chapter</div>";
+					$text = ""; // There are no additional fields for the selected chapter.
+					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeOut');
+				}
+				else
+				{
+					$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'fadeInAdminTab');
 				}
 
-				$ajax = e107::getAjax();
-
-				$commands = array();
-				$commands[] = $ajax->commandInvoke('#tabadditional', 'html', array($text));
+				$commands[] = $ajax->commandInvoke('a[href="#tab' . $tabId . '"]', 'html', array($tabLabel));
+				$commands[] = $ajax->commandInvoke('#tab' . $tabId, 'html', array($text));
 
 				$ajax->response($commands);
 				exit;
 			}
-
-
-
 		}
 
-
+		/*
+		 * @todo Move to admin-ui ?
+		 */
 		private function initCustomFields($chap=null)
 		{
 
-			$this->tabs['additional'] = "Additional Fields";
-
-
-
 			if(!empty($this->chapterFields[$chap]))
 			{
-
-
-				if(!empty($this->chapterFields[$chap]))
-				{
-					foreach($this->chapterFields[$chap] as $key=>$fld)
-					{
-						$fld['tab'] = 'additional';
-						$fld['data'] = false;
-
-						$this->fields['page_fields__'.$key] = $fld;
-					}
-
-				}
+				e107::getCustomFields()->loadConfig($this->chapterFields[$chap]);
+			}
+			else
+			{
+				$tabId = e107::getCustomFields()->getTabId();
+				e107::css('inline', '.nav-tabs li a[href="#tab' . $tabId . '"] { display: none; }');
 			}
 
-
+			e107::getCustomFields()->setAdminUIConfig('page_fields',$this);
 		}
 
 		private function loadCustomFieldsData()
 		{
 			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
-			$chap = intval($row['page_chapter']);
-			$this->getModel()->set('page_fields', null);
 
-			$curVal = e107::unserialize($row['page_fields']);
+			$cf = e107::getCustomFields();
 
-			if(!empty($this->chapterFields[$chap]))
-			{
-				foreach($this->chapterFields[$chap] as $key=>$fld)
-				{
-					$this->getModel()->set('page_fields__'.$key, $curVal[$key]);
-				}
+			$cf->loadData($row['page_fields'])->setAdminUIData('page_fields',$this);
 
-			}
+		//	e107::getDebug()->log($cf);
+
 
 		}
 
@@ -885,18 +845,11 @@ class page_admin_ui extends e_admin_ui
 
 			parent::EditObserver();
 
-			if(!deftrue('e_DEBUG'))
-			{
-				return;
-			}
-
-
-
 			$row = e107::getDb()->retrieve('page', 'page_chapter, page_fields', 'page_id='.$this->getId());
 			$chap = intval($row['page_chapter']);
+
 			$this->initCustomFields($chap);
 			$this->loadCustomFieldsData();
-
 
 		}
 
@@ -904,7 +857,7 @@ class page_admin_ui extends e_admin_ui
 		 * Filter/Process Posted page_field data;
 		 * @param $new_data
 		 * @return null
-		 */
+		 *//*
 		private function processCustomFieldData($new_data)
 		{
 			if(empty($new_data))
@@ -933,6 +886,11 @@ class page_admin_ui extends e_admin_ui
 
 
 		}
+*/
+
+
+
+
 
         /**
          * Overrid
@@ -1027,7 +985,7 @@ class page_admin_ui extends e_admin_ui
 		function beforeUpdate($newdata,$olddata, $id)
 		{
 
-			$newdata = $this->processCustomFieldData($newdata);
+			$newdata = e107::getCustomFields()->processDataPost('page_fields',$newdata);
 
 			if(isset($newdata['menu_name']))
 			{

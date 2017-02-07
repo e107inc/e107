@@ -44,6 +44,9 @@ class cron_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = PAGE_NAME;
+
+	protected $adminMenuIcon = 'e-cron-24';
+
 }
 
 class cron_admin_ui extends e_admin_ui

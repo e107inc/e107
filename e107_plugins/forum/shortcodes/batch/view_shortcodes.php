@@ -506,10 +506,10 @@ class plugin_forum_view_shortcodes extends e_shortcode
 
 		$userUrl = empty($this->postInfo['post_user']) ? '#' : e107::getUrl()->create('user/profile/view', array('user_id'=>$this->postInfo['post_user'], 'user_name'=>$username));
 		// e_HTTP.'user.php?id.'.$this->postInfo['post_user']
-		$text = '<div class="btn-group btn-block ">
+		$text = '<div class="btn-group ">
 
-    <a class="btn btn-default btn-sm col-sm-9  btn-small" href="'.$userUrl.'">'.$username.'</a>
-    <button class="btn btn-default btn-sm col-sm-3  btn-small dropdown-toggle" data-toggle="dropdown">
+    <a class="btn btn-default btn-sm btn-small" href="'.$userUrl.'">'.$username.'</a>
+    <button class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu left">

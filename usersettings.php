@@ -27,7 +27,7 @@ require_once ('class2.php');
 // TODO - Remove all the adminEdit stuff. 
 
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 define("US_DEBUG",FALSE);
 //define('US_DEBUG', false);
@@ -45,8 +45,8 @@ if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_usersettings.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user.php');		// Generic user-related language defines
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_usersettings.php');
 
 $ue = e107::getUserExt(); // needed by shortcodes for now.
 
@@ -89,6 +89,9 @@ class usersettings_front // Begin Usersettings rewrite.
 		else
 		{
 			global $sc_style;
+			$REQUIRED_FIELD                     = '';
+			$USER_EXTENDED_CAT                  = '';
+			$USEREXTENDED_FIELD                 = '';
 			$USERSETTINGS_MESSAGE 				= '';
 			$USERSETTINGS_MESSAGE_CAPTION 		= '';
 			$USERSETTINGS_EDIT_CAPTION 			= '';
@@ -97,6 +100,13 @@ class usersettings_front // Begin Usersettings rewrite.
 			include_once($coreTemplatePath); //correct way to load a core template.
 			e107::scStyle($sc_style);
 			$usersettings_shortcodes = e107::getScBatch('usersettings');
+
+			$usersettings_shortcodes->legacyTemplate = array(
+				'USER_EXTENDED_CAT' => $USER_EXTENDED_CAT,
+				'USEREXTENDED_FIELD' => $USEREXTENDED_FIELD,
+					'REQUIRED_FIELD' => $REQUIRED_FIELD
+			);
+
 		}
 
 		$this->sc = $usersettings_shortcodes;

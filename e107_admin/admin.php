@@ -63,16 +63,16 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 }
 
 
-
+define('e_ADMIN_HOME', true); // used by some admin shortcodes.
 
 require_once(e_ADMIN.'boot.php');
 require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'upload_handler.php');
 
-
+e107::getDb()->db_Mark_Time('(Start Admin Checks)');
 new admin_start;
 
-
+e107::getDb()->db_Mark_Time('(After Admin Checks)');
 $mes = e107::getMessage();
 
 if (!isset($pref['adminstyle'])) $pref['adminstyle'] = 'infopanel';		// Shouldn't be needed - but just in case
@@ -110,7 +110,7 @@ class admin_start
 	function __construct()
 	{
 
-		if(!getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
+		if(e_AJAX_REQUEST || !getperms('0') || varset($_GET['mode']) === 'customize') // don't display this tuff to regular admins only main admin.
 		{
 			return null;
 		}
@@ -153,8 +153,10 @@ class admin_start
 
 		e107::getDb()->db_Mark_Time('Check Paths');
 		$this->checkPaths();
+
 		e107::getDb()->db_Mark_Time('Check Timezone');
 		$this->checkTimezone();
+
 		e107::getDb()->db_Mark_Time('Check Writable');
 		$this->checkWritable();
 
@@ -187,12 +189,12 @@ class admin_start
 		e107::getDb()->db_Mark_Time('Check New Install');
 		$this->checkNewInstall();
 
-		e107::getDb()->db_Mark_Time('Check Plugin Update');
+	/*	e107::getDb()->db_Mark_Time('Check Plugin Update');
 		$this->checkPluginUpdate();
 
 		e107::getDb()->db_Mark_Time('Check Theme Update');
 		$this->checkThemeUpdate();
-		
+		*/
 		e107::getDb()->db_Mark_Time('Check Password Encryption');
 		$this->checkPasswordEncryption();
 
@@ -204,7 +206,7 @@ class admin_start
 
 	}	
 
-	function checkPaths()
+	private function checkPaths()
 	{
 		$create_dir = array(e_MEDIA,e_SYSTEM,e_CACHE,e_CACHE_CONTENT,e_CACHE_IMAGE, e_CACHE_DB, e_LOG, e_BACKUP, e_CACHE_URL, e_TEMP, e_IMPORT);
 
@@ -229,7 +231,7 @@ class admin_start
 
 
 
-	function checkTimezone()
+	private function checkTimezone()
 	{
 		$mes = e107::getMessage();
 		$timezone = e107::pref('core','timezone');
@@ -252,13 +254,26 @@ class admin_start
 			return null;
 		}
 
+		$checked = e107::getSession()->get('core-update-checked');
+
+		if(!deftrue('e_DEBUG') &&  $checked === true && !deftrue('e_DEVELOPER'))
+		{
+			e107::getMessage()->addDebug("Skipping core update");
+			return null;
+		}
+
 		//$sc = e107::getScBatch('admin');
 		//echo $tp->parseTemplate('{ADMIN_COREUPDATE=alert}',true, $sc);
+
+
 
 		global $dont_check_update, $e107info;
 		global $dbupdate, $dbupdatep, $e107cache;
 
 		require_once(e_ADMIN.'update_routines.php');
+
+		e107::getSession()->set('core-update-checked',true);
+		e107::getMessage()->addDebug("Checking for core updates");
 
 		if(update_check() === true)
 		{
@@ -272,7 +287,8 @@ class admin_start
 
 	}
 
-
+/*
+ *  // Moved to admin_shortcodes.php
 	private function checkPluginUpdate()
 	{
 		require_once(e_HANDLER.'e_marketplace.php');
@@ -295,7 +311,7 @@ class admin_start
 
 			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
 			{
-				$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+				$link = "<a rel='external' class='alert-link' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
 
 				$dl = $mp->getDownloadModal('plugin', $versions[$folder]);
 
@@ -303,18 +319,19 @@ class admin_start
 
 				$lans = array('x'=>$link, 'y'=>LAN_PLUGIN);
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal alert-link' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
-				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+
 			}
 
 		}
 
 
-	}
-
+	}*/
+/*
+ *  Moved to admin_shortcodes.php
 	private function checkThemeUpdate()
 	{
 		require_once(e_HANDLER.'e_marketplace.php');
@@ -341,7 +358,7 @@ class admin_start
 
 			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
 			{
-				$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
+				$link = "<a rel='external' class='alert-link' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
 
 				$lans = array('x'=>$link, 'y'=>LAN_THEME);
 
@@ -350,7 +367,7 @@ class admin_start
 				$caption = LAN_DOWNLOAD.": ".$versions[$folder]['name']." ".$versions[$folder]['version'];
 
 				$message = $tp->lanVars(LAN_NEWER_VERSION_OF_X, $lans);
-				$message .= " <a href='".$dl."' class='e-modal' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
+				$message .= " <a href='".$dl."' class='e-modal alert-link' data-modal-caption=\"".$caption."\" title=\"".LAN_DOWNLOAD."\">".$tp->toGlyph('fa-arrow-circle-o-down')."</a>";
 
 
 				e107::getMessage()->addInfo($message);
@@ -361,7 +378,7 @@ class admin_start
 
 
 
-	}
+	}*/
 
 	/**
 	 *
@@ -400,7 +417,7 @@ class admin_start
 
 
 
-	function checkWritable()
+	private function checkWritable()
 	{
 		$mes = e107::getMessage();
 		
@@ -427,7 +444,7 @@ class admin_start
 
 	
 	
-	function checkHtmlarea()
+	private function checkHtmlarea()
 	{
 		$mes = e107::getMessage();
 		if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea'))
@@ -438,7 +455,7 @@ class admin_start
 	
 
 
-	function checkIncompatiblePlugins()
+	private function checkIncompatiblePlugins()
 	{
 		$mes = e107::getMessage();
 		
@@ -464,7 +481,7 @@ class admin_start
 	}
 
 
-	function checkPasswordEncryption()
+	private function checkPasswordEncryption()
 	{
 		$us = e107::getUserSession();
 		$mes = e107::getMessage();
@@ -546,7 +563,7 @@ class admin_start
 	}
 
 
-	function checkHtaccess() // upgrade scenario
+	private function checkHtaccess() // upgrade scenario
 	{
 		if(!file_exists(e_BASE.".htaccess") && file_exists(e_BASE."e107.htaccess"))
 		{
@@ -560,7 +577,7 @@ class admin_start
 
 
 	
-	function checkFileTypes()
+	private function checkFileTypes()
 	{
 		$mes = e107::getMessage();
 		
@@ -575,7 +592,7 @@ class admin_start
 	
 
 
-	function checkSuspiciousFiles()
+	private function checkSuspiciousFiles()
 	{
 		$mes = e107::getMessage();
 		$public = array(e_UPLOAD, e_AVATAR_UPLOAD);

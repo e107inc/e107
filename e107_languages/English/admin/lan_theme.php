@@ -111,6 +111,7 @@ define("TPVLAN_CONV_12", "A full description of the theme (Must be written in En
 define("TPVLAN_CONV_13", "What category of theme is this?");
 define("TPVLAN_CONV_14", "Enable this stylesheet as a selectable option in the Theme Manager.");
 define("TPVLAN_CONV_15", "Give this stylesheet a name");
+define("TPVLAN_CONV_16", "URL to a live-demo of this theme.");
 
 //marketplace
 define("TPVLAN_81","Downloading..."); 

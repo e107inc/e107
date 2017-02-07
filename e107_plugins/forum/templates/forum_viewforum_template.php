@@ -289,7 +289,7 @@ $FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 //TODO Find a good place to put a {SEARCH} dropdown.
 
 $FORUM_VIEWFORUM_TEMPLATE['caption'] 				= "";
-$FORUM_VIEWFORUM_TEMPLATE['start'] 				= "";
+$FORUM_VIEWFORUM_TEMPLATE['start'] 				= "<div id='forum-viewforum'>";
 $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRUMB}</div></div>
 													<div class='row row-fluid'>
 													<div class='col-md-9 span9 pull-left'><h3>{FORUMTITLE}</h3></div>
@@ -374,7 +374,7 @@ $FORUM_VIEWFORUM_TEMPLATE['footer'] 				= "</table>
 												{VIEWABLE_BY}
 
 												";
-$FORUM_VIEWFORUM_TEMPLATE['end'] 					= "<!--- END --> \n";
+$FORUM_VIEWFORUM_TEMPLATE['end'] 					= "</div>\n<!--- END --> \n";
 
 // define {ICONKEY}
 $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "

@@ -514,6 +514,17 @@ class e_model extends e_object
      */
     protected $_data_fields = array();
 
+
+
+	/**
+	 * Current model field types eg. text, bbarea, dropdown etc.
+	 *
+	 *
+	 * @var string
+	 */
+	protected $_field_input_types = array();
+
+
 	/**
 	 * Current model DB table, used in all db calls
 	 *
@@ -719,6 +730,21 @@ class e_model extends e_object
     	return $this->_data_fields;
     }
 
+
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	public function getFieldInputType($key)
+    {
+        if(isset($this->_field_input_types[$key]))
+        {
+            return $this->_field_input_types[$key];
+        }
+
+        return false;
+    }
+
     /**
      * Set Predefined data fields in format key => type
      * @return e_model
@@ -726,6 +752,16 @@ class e_model extends e_object
     public function setDataFields($data_fields)
     {
     	$this->_data_fields = $data_fields;
+		return $this;
+    }
+
+	/**
+     * Set Predefined data fields in format key => type
+     * @return e_model
+     */
+    public function setFieldInputTypes($fields)
+    {
+    	$this->_field_input_types = $fields;
 		return $this;
     }
 
@@ -1711,6 +1747,10 @@ class e_model extends e_object
 		return e107::getParser()->parseTemplate($template, $parsesc, $this, $eVars);
 	}
 
+	/**
+	 * Export a Model configuration
+	 * @return string
+	 */
 	public function toXML()
 	{
 		$ret = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
@@ -2642,6 +2682,7 @@ class e_front_model extends e_model
 			$value = $this->getPostedData($key);
 		}
 
+
 		switch ($type)
 		{
 			case 'int':
@@ -2656,10 +2697,15 @@ class e_front_model extends e_model
 			case 'str':
 			case 'string':
 			case 'array':
-				return $tp->toDB($value);
+				$type = $this->getFieldInputType($key);
+				return $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
 			break;
 
 			case 'json':
+				if(empty($value))
+				{
+					return null;
+				}
 				return e107::serialize($value,'json');
 			break;
 
@@ -3701,5 +3747,33 @@ class e_admin_tree_model extends e_front_tree_model
 			$ret[$id] = $model->url(null, $options, $extended);
 		}
 		return $ret;
+    }
+
+
+	/**
+	 * Export Selected Data
+	 * @param $ids
+	 * @return null
+	 */
+	public function export($ids)
+    {
+        $ids = e107::getParser()->filter($ids,'int');
+
+        if(empty($ids))
+        {
+            return false;
+        }
+
+        $idstr = implode(', ', $ids);
+
+	    $table      = array($this->getModelTable());
+
+	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
+	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
+
+		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+
+		return null;
+
     }
 }

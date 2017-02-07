@@ -14,6 +14,8 @@ e107::lan('social',false, true);
 class social_shortcodes extends e_shortcode
 {
 
+	public $var;
+
 
 	public function getProviders()
 	{
@@ -52,18 +54,15 @@ class social_shortcodes extends e_shortcode
 
 
 
-
-
-
-		
-	public $var;	
 	/**
 	 * {XURL_ICONS: size=2x}
 	 * {XURL_ICONS: type=facebook,twitter,vimeo}
 	 */	
 	function sc_xurl_icons($parm='')
 	{
-							
+		$tp = e107::getParser();
+		$template = e107::getTemplate('social','social','xurl_icons');
+
 		$social = array(
 			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
 			'facebook'		=> array('href'=> deftrue('XURL_FACEBOOK'), 	'title'=>'Facebook'),
@@ -81,6 +80,9 @@ class social_shortcodes extends e_shortcode
 		
 	
 		$class      = (vartrue($parm['size'])) ?  'fa-'.$parm['size'] : '';
+
+		// @deprecated - use template.
+		/*
 		$tooltipPos = vartrue($parm['tip-pos'], 'top');
 
 		if(isset($parm['tip']))
@@ -92,7 +94,7 @@ class social_shortcodes extends e_shortcode
 			$tooltip = 'e-tip';
 		}
 
-		if(!empty($parm['type']))
+	*/	if(!empty($parm['type']))
 		{
 			$newList = array();
 			$tmp = explode(",",$parm['type']);
@@ -110,21 +112,51 @@ class social_shortcodes extends e_shortcode
 		foreach($social as $id => $data)
 		{
 
-			if($data['href'] != '')
+			if(!empty($data['href']))
 			{
+				$data['id'] = $id;
+				$data['class'] = $class;
 
-				 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-fw fa-'.$id.' '.$class.'"></span></a>';
-				 $text .= "\n";
+				$this->setVars($data);
+			//	 $text .= '<a rel="external" href="'.$data['href'].'" data-tooltip-position="'.$tooltipPos.'" class="'.$tooltip.' social-icon social-'.$id.'" title="'.$data['title'].'"><span class="fa fa-fw fa-'.$id.' '.$class.'"></span></a>';
+
+				$text .= $tp->parseTemplate($template['item'],true, $this);
+				$text .= "\n";
 			}
 		}
 
-		if($text !='')
+		if(!empty($text))
 		{
-			return 	'<p class="xurl-social-icons hidden-print">'.$text.'</p>';
+			return $tp->parseTemplate($template['start'],true). $text.$tp->parseTemplate($template['end'],true);
 		}
 
-	}	
+		return null;
 
+	}
+
+	// ----------- Internal Use only by sc_xurl_icons() ------------------
+
+	function sc_xurl_icons_href($parm=null)
+	{
+		return $this->var['href'];
+	}
+
+	function sc_xurl_icons_id($parm=null)
+	{
+		return $this->var['id'];
+	}
+
+	function sc_xurl_icons_title($parm=null)
+	{
+		return $this->var['title'];
+	}
+
+	function sc_xurl_icons_class($parm=null)
+	{
+		return $this->var['class'];
+	}
+
+// ------------------------------------------------
 
 	function sc_social_login($parm=null)
 	{
