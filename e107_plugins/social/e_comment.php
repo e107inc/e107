@@ -8,6 +8,8 @@
 *
 */
 
+e107::lan('social',false, true);
+
 class social_comment
 {
 	private $facebookActive;
@@ -34,7 +36,7 @@ class social_comment
 
 		if($engine == 'social::facebook' && empty($this->facebookActive))
 		{
-			e107::getMessage()->addInfo("Facebook comments requires that you have a facebook App ID. See the 'social login' area in admin-preferences to add one.");
+			e107::getMessage()->addInfo(LAN_SOCIAL_WARNING);
 		}
 
 		$config = array();
@@ -51,7 +53,7 @@ class social_comment
 
 		if(!deftrue('SOCIAL_FACEBOOK_INIT') && ADMIN)
 		{
-			return "<div class='alert alert-important alert-danger'>Unable to render comments. Missing Facebook appID.</div>";
+			return "<div class='alert alert-important alert-danger'>".LAN_SOCIAL_205."</div>";
 		}
 
 		e107::js('footer-inline', SOCIAL_FACEBOOK_INIT);
