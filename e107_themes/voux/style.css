@@ -23,6 +23,7 @@ a:hover { color: #000000; }
 
 
 img { max-width:100%}
+img.media-object { max-width: inherit}
 
 table label.checkbox {
     margin-left: 20px;
