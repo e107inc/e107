@@ -575,13 +575,13 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 
 
-			if($parm != '')
+			if(count($parm) == 0)
 			{
-				$extra = '.'.$parm;
+				$extra = '.'.($this->pmMode == 'outbox' ? 'outbox' : 'inbox');
 			}
 			else
 			{
-				$extra = '.'.($this->pmMode == 'outbox' ? 'outbox' : 'inbox');
+				$extra = '.'.$parm;
 			}
 
 
