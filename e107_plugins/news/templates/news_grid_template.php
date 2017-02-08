@@ -58,7 +58,7 @@
 													<li class="media">
 													  <div class="media-left media-top">
 													    <a href="#">
-													      {NEWS_IMAGE: class=media_object img-rounded}
+													      {NEWS_IMAGE: class=media-object img-rounded}
 													    </a>
 													  </div>
 													  <div class="media-body">
