@@ -3028,7 +3028,7 @@ class e107
 
 		$path = $theme.$fname.'.php';
 		
-		if(E107_DBG_INCLUDES)
+		if(deftrue('E107_DBG_INCLUDES'))
 		{
 			self::getMessage()->addDebug("Attempting to Load: ".$path);
 		}	
