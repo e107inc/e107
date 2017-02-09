@@ -125,3 +125,5 @@ define("TPVLAN_88","Converter");
 define("TPVLAN_89", "Apply dashboard preferences to all administrators");
 
 define("TPVLAN_90","Unable to connect. Please check firewall and/or internet connection.");
+define("TPVLAN_91", "Create a new theme based on");
+define("TPVLAN_92", "New Theme Folder");
