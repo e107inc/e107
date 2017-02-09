@@ -1005,7 +1005,10 @@ footer 		{ padding-top:150px; padding-bottom:20px; color: rgb(153, 153, 153); }
 }
 
 
+.plugin-navigation .nav-header {
+	padding: 10px 15px;
 
+}
 
 
 /* Attempt to Hide the white arrow */

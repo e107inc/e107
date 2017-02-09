@@ -1507,7 +1507,8 @@ class e_admin_dispatcher
 
 					case 'url':
 						$k2 = 'link';
-						$v = $tp->replaceConstants($v, 'abs').'?mode='.$tmp[0].'&amp;action='.$tmp[1];
+							$qry = (isset($val['query'])) ? $val['query'] : '?mode='.$tmp[0].'&amp;action='.$tmp[1];
+						$v = $tp->replaceConstants($v, 'abs').$qry;
 					break;
 
 					case 'uri':
