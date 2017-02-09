@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Copyright (C) 2008-2009 e107 Inc 
+|     Copyright (C) 2008-2009 e107 Inc
 |     http://e107.org
 |
 |
@@ -42,18 +42,18 @@ $use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
 
 define("LOGIN_CAPTCHA", $use_imagecode);
 
-//if (LOGIN_CAPTCHA) 
+//if (LOGIN_CAPTCHA)
 //{
 	//require_once(e_HANDLER."secure_img_handler.php");
 	//$sec_img = new secure_image;
 //}
 
-if (!USER || getperms('0')) 
+if (!USER || getperms('0'))
 {
 	if (!defined('LOGINMESSAGE')) define('LOGINMESSAGE', '');		// LOGINMESSAGE only appears with errors
 	require_once(e_HANDLER.'form_handler.php'); // required for BC
 	$rs = new form; // required for BC
-	
+
 	if (empty($LOGIN_TABLE))
 	{
 
@@ -90,7 +90,7 @@ if (!USER || getperms('0'))
 		$LOGIN_TABLE 		= "<form id='login-page' class='form-signin' method='post' action='".e_SELF."' onsubmit='hashLoginPassword(this)' >".$LOGIN_TEMPLATE['page']['body']."</form>";
 		$LOGIN_TABLE_FOOTER = $LOGIN_TEMPLATE['page']['footer'];
 	}
-	
+
 
 	$text = $tp->parseTemplate($LOGIN_TABLE,true, $sc);
 
@@ -104,7 +104,7 @@ if (!USER || getperms('0'))
 		}
 
 	}
-	
+
 
 	$login_message = SITENAME; //	$login_message = LAN_LOGIN_3." | ".SITENAME;
 	if(strpos($LOGIN_TABLE_HEADER,'LOGIN_TABLE_LOGINMESSAGE') === false && strpos($LOGIN_TABLE,'LOGIN_TABLE_LOGINMESSAGE') === false)

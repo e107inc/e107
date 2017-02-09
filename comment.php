@@ -37,72 +37,72 @@ if(e_AJAX_REQUEST) // TODO improve security
 	{
 		exit;
 	}
-	
+
 	$ret = array();
-	
-	// Comment Pagination 
+
+	// Comment Pagination
 	if(varset($_GET['mode']) == 'list' && vartrue($_GET['id']) && vartrue($_GET['type']))
 	{
 		$clean_type = preg_replace("/[^\w\d]/","",$_GET['type']);
-		
-		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']),$att);	
+
+		$tmp = e107::getComment()->getComments($clean_type,intval($_GET['id']),intval($_GET['from']),$att);
 		echo $tmp['comments'];
 		exit;
 	}
-	
+
 
 	if(varset($_GET['mode']) == 'reply' && vartrue($_POST['itemid']))
-	{	
-		$status 		= e107::getComment()->replyComment($_POST['itemid']);	
-		$ret['msg'] 	= COMLAN_332; 
+	{
+		$status 		= e107::getComment()->replyComment($_POST['itemid']);
+		$ret['msg'] 	= COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
 		$ret['html']	= $status;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
-	
-	
+
+
 	if(varset($_GET['mode']) == 'delete' && !empty($_POST['id']) && ADMIN)
 	{
 		$status 		= e107::getComment()->deleteComment($_POST['id'],$_POST['table'],$_POST['itemid']);
-		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332; 
+		$ret['msg'] 	= ($status) ? 'Ok' : COMLAN_332;
 		$ret['error'] 	= ($status) ? false : true;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
-	
+
 	if(varset($_GET['mode']) == 'approve' && vartrue($_POST['itemid']) && ADMIN)
 	{
-		$status 		= e107::getComment()->approveComment($_POST['itemid']);		
-		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334; 
+		$status 		= e107::getComment()->approveComment($_POST['itemid']);
+		$ret['msg'] 	= ($status) ? COMLAN_333 : COMLAN_334;
 		$ret['error'] 	= ($status) ? false : true;
 		$ret['html']	= COMLAN_335;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
-	
-		
+
+
 	if(!vartrue($_POST['comment']) && varset($_GET['mode']) == 'submit')
 	{
 		$ret['error'] 	= true;
 		$ret['msg'] 	= COMLAN_336;
 		echo json_encode($ret);
-		exit; 	
+		exit;
 	}
 
-	// Update Comment 
+	// Update Comment
 	if(e107::getPref('allowCommentEdit') && varset($_GET['mode']) == 'edit' && vartrue($_POST['comment']) && vartrue($_POST['itemid']))
-	{			
+	{
 		$error = e107::getComment()->updateComment($_POST['itemid'],$_POST['comment']);
-		
+
 		$ret['error'] 	= ($error) ? true : false;
 		$ret['msg'] 	= ($error) ? $error : COMLAN_337;
-		
+
 		echo json_encode($ret);
-		exit;	
+		exit;
 	}
-	
-	// Insert Comment and return rendered html. 
+
+	// Insert Comment and return rendered html.
 	if(vartrue($_POST['comment'])) // ajax render comment
 	{
 		$pid 				= intval(varset($_POST['pid'], 0)); // ID of the specific comment being edited (nested comments - replies)
@@ -110,9 +110,9 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$clean_authorname 	= vartrue($_POST['author_name'],USERNAME);
 		$clean_comment 		= $_POST['comment'];
 		$clean_subject 		= $_POST['subject'];
-		
+
 		$_SESSION['comment_author_name'] = $clean_authorname;
-		
+
 		$row['comment_pid'] 		= $pid;
 		$row['comment_item_id']		= intval($_POST['itemid']);
 		$row['comment_type']		= e107::getComment()->getCommentType($tp->toDB($_POST['table'],true));
@@ -126,37 +126,37 @@ if(e_AJAX_REQUEST) // TODO improve security
 		$row['comment_datestamp'] 	= time();
 		$row['comment_blocked']		= (check_class($pref['comments_moderate']) ? 2 : 0);
 		$row['comment_share']		= ($_POST['comment_share']);
-		
+
 		$newid = e107::getComment()->enter_comment($row);
-	
-		
+
+
 	//	$newid = e107::getComment()->enter_comment($clean_authorname, $clean_comment, $_POST['table'], intval($_POST['itemid']), $pid, $clean_subject);
-	
+
 		if(is_numeric($newid) && ($_GET['mode'] == 'submit'))
 		{
-			
-			$row['comment_id']			= $newid; 		
+
+			$row['comment_id']			= $newid;
 			$width = ($pid) ? 1 : 0;
-			
+
 			$ret['html'] = "\n<!-- Appended -->\n<li>";
 			$ret['html'] .= e107::getComment()->render_comment($row,'comments','comment',intval($_POST['itemid']),$width);
 			$ret['html'] .= "</li>\n<!-- end Appended -->\n";
-			
-			$ret['error'] = false;	
-			
+
+			$ret['error'] = false;
+
 		}
 		else
 		{
 			$ret['error'] = true;
-			$ret['msg'] = $newid;			
+			$ret['msg'] = $newid;
 		}
-		
+
 		echo json_encode($ret);
 	}
 	exit;
 }
 
-require_once(e_HANDLER."news_class.php"); // FIXME shouldn't be here. 
+require_once(e_HANDLER."news_class.php"); // FIXME shouldn't be here.
 require_once(e_HANDLER."comment_class.php");
 define("PAGE_NAME", LAN_COMMENTS);
 
@@ -190,21 +190,21 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit']))
 	switch ($table)
 	{
 		case 'poll' :
-			if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1")) 
+			if (!$sql->db_Select("polls", "poll_title", "`poll_id` = '{$id}' AND `poll_comment` = 1"))
 			{
 				e107::redirect();
 				exit;
 			}
 			break;
 		case 'news' :
-			if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0")) 
+			if (!$sql->db_Select("news", "news_allow_comments", "`news_id` = '{$id}' AND `news_allow_comments` = 0"))
 			{
 				e107::redirect();
 				exit;
 			}
 			break;
 		case 'user' :
-			if (!$sql->db_Select('user', 'user_name', '`user_id` ='.$id)) 
+			if (!$sql->db_Select('user', 'user_name', '`user_id` ='.$id))
 			{
 				e107::redirect();
 				exit;
@@ -296,13 +296,13 @@ if ($redirectFlag)
 		$plugin_redir = TRUE;
 		$reply_location = str_replace('{NID}', $redirectFlag, $e_comment[$table]['reply_location']);
 	}
-	
+
 	if ($plugin_redir)
 	{
 		echo "<script type='text/javascript'>document.location.href='{$reply_location}'</script>\n";
 		exit;
 	}
-	
+
 	// No redirect found if we get here.
 }
 
@@ -314,9 +314,9 @@ if ($action == "reply")
 		header('Location: '.e_BASE.'comment.php?comment.{$table}.{$nid}');
 		exit;
 	}
-	
+
 	$query = "`comment_id` = '{$id}' LIMIT 0,1";
-	
+
 	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'"))
 	{
 		$comments = $sql->db_Fetch();
@@ -330,7 +330,7 @@ if ($action == "reply")
 		{
 			case 'news' :
 				if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' "))
-				{ 
+				{
 					e107::redirect();
 					exit;
 				}
@@ -519,7 +519,7 @@ elseif ($action == 'comment')
 						echo "Comment error: {$table}  Field: {$e_comment['db_id']}  ID {$id}   Title: {$e_comment['db_title']}<br />";
 						echo "<pre>";
 						var_dump($e_comment);
-						echo "</pre>"; 
+						echo "</pre>";
 					}
 					else
 					{
@@ -551,11 +551,11 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 	{
 		$tbArray = $sql -> db_getList();
 
-		if (file_exists(THEME."trackback_template.php")) 
+		if (file_exists(THEME."trackback_template.php"))
 		{
 			require_once(THEME."trackback_template.php");
 		}
-		else 
+		else
 		{
 			require_once(e_CORE."templates/trackback_template.php");
 		}
@@ -584,7 +584,7 @@ if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == 'n
 	{
 		echo "<a name='track'></a>".COMLAN_316;
 	}
-	if (ADMIN && getperms("B")) 
+	if (ADMIN && getperms("B"))
 	{
 		echo "<div style='text-align:right'><a href='".e_PLUGIN_ABS."trackback/modtrackback.php?".$id."'>".COMLAN_317."</a></div><br />";
 	}

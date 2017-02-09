@@ -11,7 +11,7 @@
  * $Id$
  *
 */
-	
+
 //define("TRACKBACK_L1", "Configure Trackback");
 //define("TRACKBACK_L2", "This plugin enables you to use trackback in your news posts.");
 //define("TRACKBACK_L3", "Trackback is now installed and enabled.");

@@ -24,12 +24,12 @@ if (!getperms("P") || !e107::isInstalled('trackback') || !$pref['trackbackEnable
 }
 
 require_once(e_ADMIN."auth.php");
-if (isset($_POST['moderate'])) 
+if (isset($_POST['moderate']))
 {
 	$temp = array();
-	if (is_array($_POST['trackback_delete'])) 
+	if (is_array($_POST['trackback_delete']))
 	{
-		while (list ($key, $cid) = each ($_POST['trackback_delete'])) 
+		while (list ($key, $cid) = each ($_POST['trackback_delete']))
 		{
 			$cid = intval($cid);
 			if ($cid > 0)
@@ -46,16 +46,16 @@ if (isset($_POST['moderate']))
 	$ns->tablerender("", "<div style='text-align:center'><b>".TRACKBACK_L15."</b></div>");
 	$e107cache->clear("news.php");
 }
-	
+
 $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";
 
-if (e_QUERY=='all') 
+if (e_QUERY=='all')
 {
 	$res=$sql->db_Select("trackback", "*");
-} 
-else 
+}
+else
 {
 	$res=$sql->db_Select("trackback", "*", "trackback_pid=".intval(e_QUERY));
 }
@@ -63,7 +63,7 @@ else
 if (!$res)
 {
 	$text .= "<tr><td class='forumheader3' style='text-align:center'>".TRACKBACK_L12.".</td></tr></table></form></div>";
-} 
+}
 else
 {
 	$tbArray = $sql -> db_getList();
@@ -79,9 +79,9 @@ else
 	}
 	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='btn btn-default button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
 }
-	
+
 $ns->tablerender(TRACKBACK_L13, $text);
-	
+
 require_once(e_ADMIN."footer.php");
 
 ?>

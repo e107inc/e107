@@ -16,7 +16,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 
-/* 
+/*
 Class for user mailout function
 
 Allows admins to send mail to those subscribed to one or more newsletters
@@ -45,7 +45,7 @@ class user_mailout
 
 
 	/**
-	 * Manage Bounces. 
+	 * Manage Bounces.
 	 */
 	public function bounce($data)
 	{

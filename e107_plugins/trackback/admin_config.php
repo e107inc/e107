@@ -13,19 +13,19 @@
  *
 */
 require_once("../../class2.php");
-if (!getperms("P") || !e107::isInstalled('trackback')) 
+if (!getperms("P") || !e107::isInstalled('trackback'))
 {
 	e107::redirect('admin');
 	exit() ;
 }
 
 e107::includeLan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
-	
+
 require_once(e_ADMIN."auth.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
-	
-if (isset($_POST['updatesettings'])) 
+
+if (isset($_POST['updatesettings']))
 {
 	$temp = array();
 	if ($pref['trackbackEnabled'] != $_POST['trackbackEnabled'])
@@ -34,11 +34,11 @@ if (isset($_POST['updatesettings']))
 		$e107cache->clear('news.php');
 	}
 	$temp['trackbackString'] = $tp->toDB($_POST['trackbackString']);
-	
+
 	e107::getConfig('core')->setPref($temp)->save(false);
-	
+
 }
-	
+
 $ns->tablerender($caption, $mes->render() . $text);
 
 $text = "
@@ -61,6 +61,6 @@ $text = "
 ";
 
 $ns->tablerender(TRACKBACK_L10, $text);
-	
+
 require_once(e_ADMIN."footer.php");
 ?>

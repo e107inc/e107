@@ -25,14 +25,14 @@ if (!getperms("2")) 		// Same permissions as menu configuration
 require_once(e_ADMIN."auth.php");
 
 $frm = e107::getForm();
-	
+
 // Get the list of available themes
 $handle = opendir(e_THEME);
-while ($file = readdir($handle)) 
+while ($file = readdir($handle))
 {
-	if ($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS") 
+	if ($file != "." && $file != ".." && $file != "templates" && $file != "" && $file != "CVS")
 	{
-		if (is_readable(e_THEME.$file."/theme.php") /*&& is_readable(e_THEME.$file."/style.css")*/) 
+		if (is_readable(e_THEME.$file."/theme.php") /*&& is_readable(e_THEME.$file."/style.css")*/)
 		{
 			$themeOptions[] = $file;
 			$themeCount[$file] = 0;
@@ -42,10 +42,10 @@ while ($file = readdir($handle))
 closedir($handle);
 
 
-if (isset($_POST['update_theme'])) 
+if (isset($_POST['update_theme']))
 {
 	$tmp = array();
-	foreach($_POST as $key => $value) 
+	foreach($_POST as $key => $value)
 	{
 		if (substr($key,0,6) == 'theme_')
 		{
@@ -88,7 +88,7 @@ $text = "
 	</thead>
 		<tbody>";
 
-		foreach ($themeOptions as $th) 
+		foreach ($themeOptions as $th)
 		{
 			$ch = (in_array($th, $themeList) ? " checked='checked'" : '');
 			$text .= "
@@ -113,9 +113,9 @@ $text = "
 	</form>
 	";
 	$mes = e107::getMessage();
-	
+
 $ns->tablerender(LAN_UMENU_THEME_6,$mes->render().$text);
-	
+
 require_once(e_ADMIN."footer.php");
 
 /*

@@ -12,7 +12,7 @@
 
 require_once('class2.php');
 
-e107::coreLan('fpw'); 
+e107::coreLan('fpw');
 
 $tp = e107::getParser();
 
@@ -34,41 +34,41 @@ else
 
 
 class fpw_shortcodes extends e_shortcode
-{	
+{
 	private $secImg;
-	
+
 	function __construct()
 	{
-		global $sec_img; 
-		$this->secImg = $sec_img;	
+		global $sec_img;
+		$this->secImg = $sec_img;
 	}
 
 	function sc_fpw_username($parm='') // used when email login is disabled
 	{
-		// return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";	
+		// return "<input class='tbox' type='text' name='username' size='40' value='' maxlength='100' />";
 		return e107::getForm()->text('username'); // $frm->userpicker()?
 	}
 
-	function sc_fpw_useremail($parm='') 
+	function sc_fpw_useremail($parm='')
 	{
 		// return '<input class="tbox form-control" type="text" name="email" size="40" value="" maxlength="100" placeholder="Email" required="required" type="email">';
-		// return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";	
-		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required')); 
+		// return "<input class='tbox' type='text' name='email' size='40' value='' maxlength='100' />";
+		return e107::getForm()->email('email', '', 200, array('placeholder' => 'Email', 'required' => 'required'));
 	}
 
-	function sc_fpw_submit($parm='') 
+	function sc_fpw_submit($parm='')
 	{
 		// return '<button type="submit" name="pwsubmit" class="button btn btn-primary btn-block reset">'.$label.'</button>';
-		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";	
+		// return "<input class='button btn btn-primary btn-block' type='submit' name='pwsubmit' value='".$label."' />";
 		$label = deftrue('LAN_FPW_102', LAN_SUBMIT);
-		return e107::getForm()->button('pwsubmit', $label); 
+		return e107::getForm()->button('pwsubmit', $label);
 	}
 
 	function sc_fpw_captcha_lan($parm='')
 	{
 		return LAN_ENTER_CODE;
 	}
-	
+
 	function sc_fpw_captcha_hidden($parm='')
 	{
 		return; // no longer required - included in renderInput();
@@ -104,12 +104,12 @@ class fpw_shortcodes extends e_shortcode
 
 	function sc_fpw_logo($parm='')
 	{
-		// Unused at the moment. 	
+		// Unused at the moment.
 	}
-	
+
 	function sc_fpw_text($parm='')
 	{
-		return deftrue('LAN_FPW_101',"Not to worry. Just enter your email address below and we'll send you an instruction email for recovery.");	
+		return deftrue('LAN_FPW_101',"Not to worry. Just enter your email address below and we'll send you an instruction email for recovery.");
 	}
 }
 
@@ -119,12 +119,12 @@ if ($pref['membersonly_enabled'])
 	$sc = array (
 		'FPW_LOGIN_LOGO' => file_exists(THEME."images/login_logo.png") ? "<img src='".THEME_ABS."images/login_logo.png' alt='' />\n" : "<img src='".e_IMAGE_ABS."logo.png' alt='' />\n"
 	);
-	
-	
+
+
 	if(deftrue('BOOTSTRAP'))
 	{
-		$FPW_TABLE_HEADER = e107::getCoreTemplate('fpw','header');	
-		$FPW_TABLE_FOOTER = e107::getCoreTemplate('fpw','footer');	
+		$FPW_TABLE_HEADER = e107::getCoreTemplate('fpw','header');
+		$FPW_TABLE_FOOTER = e107::getCoreTemplate('fpw','footer');
 	}
 	else
 	{
@@ -167,7 +167,7 @@ define('FPW_SEPARATOR', '#');
 
 // User has clicked on the emailed link
 if(e_QUERY)
-{	
+{
 	// Make sure login menu is not giving any troubles
 	define('FPW_ACTIVE','TRUE');
 
@@ -176,7 +176,7 @@ if(e_QUERY)
 	if ($tmpinfo != e_QUERY)
 	{
 		// Shouldn't be any characters that toDB() changes
-		//die();			
+		//die();
 		e107::getRedirect()->redirect(SITEURL);
 	}
 
@@ -185,16 +185,16 @@ if(e_QUERY)
 	{
 		$row = $sql->fetch();
 
-		// Delete the record 
+		// Delete the record
 		$sql->delete('tmp', "`tmp_time` = ".$row['tmp_time']." AND `tmp_info` = '".$row['tmp_info']."' ");
 
 		list($uid, $loginName, $md5) = explode(FPW_SEPARATOR, $row['tmp_info']);
 		$loginName = $tp->toDB($loginName, true);
 
-		// This should never happen! 
+		// This should never happen!
 		if($md5 != $tmpinfo)
 		{
-			e107::getRedirect()->redirect(SITEURL);	
+			e107::getRedirect()->redirect(SITEURL);
 		}
 
 		// Generate new temporary password
@@ -249,7 +249,7 @@ if(e_QUERY)
 		<tr><td>".LAN_FPW9."</td><td style='font-weight:bold'>{$newpw}</td></tr>
 		</table>
 		<br /><br />".LAN_FPW10." <a href='".e_LOGIN."'>".LAN_LOGIN."</a>. "; // .LAN_FPW12;
-		
+
 		e107::getMessage()->addSuccess($txt);
 		e107::getRender()->tablerender(LAN_03, e107::getMessage()->render());
 		require_once(FOOTERF);
@@ -258,16 +258,16 @@ if(e_QUERY)
 	// The password reset code was not found
 	else
 	{
-		fpw_error(LAN_FPW7);		
+		fpw_error(LAN_FPW7);
 	}
 }
 
 
 // Request to reset password
 if (!empty($_POST['pwsubmit']))
-{	
+{
 	require_once(e_HANDLER.'mail.php');
-	
+
 	if ($pref['fpwcode'] && extension_loaded('gd'))
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
@@ -275,17 +275,17 @@ if (!empty($_POST['pwsubmit']))
 			fpw_error(LAN_INVALID_CODE);
 		}
 	}
-	
+
 	$email 			= $_POST['email'];
 	$clean_email 	= check_email($tp->toDB($_POST['email']));
 	$clean_username = $tp->toDB(varset($_POST['username'], ''));
- 	
+
  	$query = "`user_email`='{$clean_email}' ";
 	// Allow admins to remove 'username' from fpw_template.php if they wish.
 	$query .= (isset($_POST['username'])) ? " AND `user_loginname`='{$clean_username}'" : "";
 
 	if($sql->select('user', '*', $query))
-	{	
+	{
 		// Found user in DB
 		$row = $sql->fetch();
 
@@ -301,7 +301,7 @@ if (!empty($_POST['pwsubmit']))
 		}
 		// Banned user, or not validated
 		switch($row['user_ban'])
-		{	
+		{
 			case USER_BANNED:
 				e107::getRedirect()->redirect(SITEURL);
 				break;
@@ -328,8 +328,8 @@ if (!empty($_POST['pwsubmit']))
 		$message 	= LAN_FPW5.' '.SITENAME.' '.LAN_FPW14.': '.e107::getIPHandler()->getIP(TRUE).".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 
 		// Set timestamp two days ahead so it doesn't get auto-deleted
-		$deltime = time()+86400 * 2;			
-		
+		$deltime = time()+86400 * 2;
+
 		// Insert the password reset request into the database
 
 		$insertQry = array(
@@ -356,7 +356,7 @@ if (!empty($_POST['pwsubmit']))
 			exit;
 		}
 
-		// Try to send the email 
+		// Try to send the email
 		if(sendemail($clean_email, "".LAN_09."".SITENAME, $message))
 		{
 			e107::getMessage()->addInfo(LAN_FPW6);
@@ -366,7 +366,7 @@ if (!empty($_POST['pwsubmit']))
 		{
 			//$text = "<div style='text-align:center'>".LAN_02."</div>";
 			$do_log['password_result'] = LAN_FPW19;
-		  	fpw_error(LAN_02); 
+		  	fpw_error(LAN_02);
 		}
 
 		// Log to user audit log
@@ -380,8 +380,8 @@ if (!empty($_POST['pwsubmit']))
 	{
 		//$text = LAN_213;
 		//$ns->tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
-		e107::getMessage()->addError(LAN_213); 
-		$ns->tablerender(LAN_214, e107::getMessage()->render()); 
+		e107::getMessage()->addError(LAN_213);
+		$ns->tablerender(LAN_214, e107::getMessage()->render());
 	}
 }
 
@@ -400,10 +400,10 @@ if(deftrue('BOOTSTRAP'))
 	}
 
 
-	$FPW_TABLE .= e107::getCoreTemplate('fpw','form');	
-	$FPW_TABLE .= "</form>"; 
-	$caption = deftrue('LAN_FPW_100',"Forgot your password?");	
-}	
+	$FPW_TABLE .= e107::getCoreTemplate('fpw','form');
+	$FPW_TABLE .= "</form>";
+	$caption = deftrue('LAN_FPW_100',"Forgot your password?");
+}
 elseif(!$FPW_TABLE)
 {
 	require_once (e107::coreTemplatePath('fpw')); //correct way to load a core template.
@@ -412,7 +412,7 @@ elseif(!$FPW_TABLE)
 
 $sc = new fpw_shortcodes;
 
-// New Shortcode names in v2. BC Fix. 
+// New Shortcode names in v2. BC Fix.
 $bcShortcodes 	= array('{FPW_TABLE_SECIMG_LAN}', '{FPW_TABLE_SECIMG_HIDDEN}', '{FPW_TABLE_SECIMG_SECIMG}', '{FPW_TABLE_SECIMG_TEXTBOC}');
 $nwShortcodes 	= array('{FPW_CAPTCHA_LAN}', '{FPW_CAPTCHA_HIDDEN}', '{FPW_CAPTCHA_IMG}', '{FPW_CAPTCHA_INPUT}');
 $FPW_TABLE 		= str_replace($bcShortcodes,$nwShortcodes,$FPW_TABLE);
