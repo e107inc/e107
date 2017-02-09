@@ -324,10 +324,14 @@ class e_marketplace
 
 		}
 
-// print_a($xdata['data']);
 
-		$data = e107::serialize($arr);
-		$cache->set($tag, $data, true, null, true);
+		if(empty($arr))
+		{
+			$arr = array('-unable-to-connect'); // make sure something is cached so further lookups stop.
+		}
+
+		$data = e107::serialize($arr, 'json');
+		$cache->set($tag, $data, true, true, true);
 
 		return $arr;
 
@@ -561,7 +565,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			'exception' 			=> true,
 		    "uri" 					=> "http://server.soap.e107.inc.com/",
 		    'cache_wsdl'			=> WSDL_CACHE_NONE,
-		    'connection_timeout' 	=> 7,
+		    'connection_timeout' 	=> 5,
 		);
 
 
