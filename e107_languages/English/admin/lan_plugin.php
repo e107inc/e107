@@ -306,7 +306,7 @@ define("LAN_INSTALL_SUCCESSFUL", "Installation successful");
 define("LAN_INSTALL_FAIL", "Installation failed!");
 define("LAN_UNINSTALL_FAIL", "Unable to uninstall!");
 define("LAN_PLUGIN_IS_USED", "[x] plugin is used by:");
-
+define("LAN_PATH", "Path");
 
 
 ?>
