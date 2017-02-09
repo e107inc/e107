@@ -3836,7 +3836,7 @@ class e107
 	{
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
-		if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443)
 		{
 			$this->HTTP_SCHEME =  'https';
 		}
