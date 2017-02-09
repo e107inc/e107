@@ -400,6 +400,12 @@ class e107
 
 			// set some core URLs (e_LOGIN/SIGNUP)
 			$this->set_urls();
+
+			if(!is_dir(e_SYSTEM))
+			{
+				mkdir(e_SYSTEM, 0755);
+			}
+
 		}
 
 		
@@ -4008,7 +4014,7 @@ class e107
 			// Special
 			
 			define('e_BOOTSTRAP', e_WEB."bootstrap/");
-			
+
 
 		}
 		return $this;
