@@ -3853,13 +3853,6 @@ class e107
 			}
 		}
 
-/*
-		if(!empty($_SERVER['REQUEST_URI']) && !deftrue('e_SINGLE_ENTRY'))
-		{
-			list($_SERVER['PHP_SELF']) = explode("?",$_SERVER['REQUEST_URI'],1);
-		}
-*/
-
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
 
 		$http_path = dirname($_SERVER['PHP_SELF']);
@@ -3907,7 +3900,11 @@ class e107
 
 		if(!defined('e_HTTP') || !defined('e_ADMIN') )
 		{
-			define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+			if(!defined('e_HTTP'))
+			{
+				define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+			}
+
 		  	define('e_BASE', $this->relative_base_path);
 
 			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
