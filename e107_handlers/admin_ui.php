@@ -1410,7 +1410,7 @@ class e_admin_dispatcher
 				$this->_current_controller = $this->getDefaultController();
 				// add messages
 				e107::getMessage()->add('Can\'t find class <strong>&quot;'.($class_name ? $class_name : 'n/a').'&quot;</strong> for controller <strong>&quot;'.ucfirst($request->getModeName()).'&quot;</strong>', E_MESSAGE_ERROR)
-					->add('Requested: '.e_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
+					->add('Requested: '.e_REQUEST_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
 				//
 				$request->setMode($this->getDefaultControllerName())->setAction('e404');
 				$this->_current_controller->setRequest($request)->init();
@@ -1439,7 +1439,7 @@ class e_admin_dispatcher
 			$this->_current_controller = $this->getDefaultController();
 			// add messages
 			e107::getMessage()->add('Can\'t find class for controller <strong>&quot;'.ucfirst($request->getModeName()).'&quot;</strong>', E_MESSAGE_ERROR)
-				->add('Requested: '.e_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
+				->add('Requested: '.e_REQUEST_SELF.'?'.$request->buildQueryString(), E_MESSAGE_DEBUG);
 			// go to not found page
 			$request->setMode($this->getDefaultControllerName())->setAction('e404');
 			$this->_current_controller->setRequest($request)->init();
@@ -1545,7 +1545,7 @@ class e_admin_dispatcher
 			// TODO slide down menu options?
 			if(!vartrue($var[$key]['link']))
 			{
-				$var[$key]['link'] = e_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1]; // FIXME - URL based on $modes, remove url key
+				$var[$key]['link'] = e_REQUEST_SELF.'?mode='.$tmp[0].'&amp;action='.$tmp[1]; // FIXME - URL based on $modes, remove url key
 			}
 
 				
@@ -2209,7 +2209,7 @@ class e_admin_controller
 
 		if($mode) $request->setMode($mode);
 		if($action) $request->setAction($action);
-		if(!$path) $path = e_SELF;
+		if(!$path) $path = e_REQUEST_SELF;
 		
 		//prevent cache
 		header('Cache-Control: private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -3609,7 +3609,14 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 		}
 		
-	
+
+		if(empty($this->fields))
+		{
+			$this->_alias_parsed = true;
+			return $this;
+		}
+
+
 		// check for table & field aliases
 		$fields = array(); // preserve order
 		foreach ($this->fields as $field => $att)
@@ -5832,6 +5839,12 @@ class e_admin_form_ui extends e_form
 	{
 		$err = false;
 		$fields = $this->getController()->getFields();
+
+		if(empty($fields))
+		{
+			return null;
+		}
+
 		foreach($fields as $field => $foptions)
 		{
 			// check form custom methods
@@ -6104,7 +6117,7 @@ class e_admin_form_ui extends e_form
 
 		$forms[$id] = array(
 			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
-			'url' => e_SELF, // default
+			'url' => e_REQUEST_SELF, // default
 			'query' => $request->buildQueryString(array(), true, 'ajax_used'), // - ajax_used is now removed from QUERY_STRING - class2
 			'legend' => $controller->addTitle(LAN_UI_DELETE_LABEL), // hidden by default
 			'form_pre' => '',  // markup to be added before opening form element
@@ -6171,7 +6184,7 @@ class e_admin_form_ui extends e_form
 
 
 		$text = "
-			<form method='get' action='".e_SELF."'>
+			<form method='get' action='".e_REQUEST_SELF."'>
 				<fieldset id='admin-ui-list-filter' class='e-filter'>
 					<legend class='e-hideme'>".LAN_LABEL_LABEL_SELECTED."</legend>
 					".$filter_pre."
@@ -6217,7 +6230,7 @@ class e_admin_form_ui extends e_form
 	             \$\$('input[name=searchquery]').each(function(el, cnt) {
 				 	if(!cnt) el.activate();
 					else return;
-					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_SELF."?mode=".$l[0]."&action=filter', {
+					new Ajax.Autocompleter(el, el.next('div.e-autocomplete'), '".e_REQUEST_SELF."?mode=".$l[0]."&action=filter', {
 					  paramName: 'searchquery',
 					  minChars: 2,
 					  frequency: 0.5,
