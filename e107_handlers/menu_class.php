@@ -52,7 +52,7 @@ class e_menu
 	protected $_current_parms = array();
 
 	/**
-	 * Params of all active menus. 
+	 * Params of all active menus.
 	 * @var array
 	 */
 	protected $_menu_parms = array();
