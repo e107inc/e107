@@ -3852,6 +3852,14 @@ class e107
 				$i++;
 			}
 		}
+
+/*
+		if(!empty($_SERVER['REQUEST_URI']) && !deftrue('e_SINGLE_ENTRY'))
+		{
+			list($_SERVER['PHP_SELF']) = explode("?",$_SERVER['REQUEST_URI'],1);
+		}
+*/
+
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
 
 		$http_path = dirname($_SERVER['PHP_SELF']);
@@ -3864,8 +3872,14 @@ class e107
 			$j++;
 		}
 		$http_path = array_reverse($http_path);
+
+
+
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
+
+//var_dump($this->server_path);
+//exit;
 
 		if ($this->server_path == "//")
 		{
