@@ -206,7 +206,10 @@ class plugin_ui extends e_admin_ui
 		public function init()
 		{
 
-
+			if(!e_QUERY)
+			{
+				e107::getPlug()->clearCache();
+			}
 
 
 
@@ -4179,7 +4182,7 @@ class pluginBuilder
 					'about'		=> EPL_ADLAN_154
 					);
 				
-					$text = $frm->select($name, $options, $default,'required=1&class=null', true);	
+					$text = $frm->select($name, $options, $default,'required=1&class=form-control', true);
 				break;
 
 				case 'keywordDropDown':
@@ -4208,7 +4211,7 @@ class pluginBuilder
 
 					sort($options);
 
-					$text = $frm->select($name, $options, $default,'required=1&class=null&useValues=1', true);
+					$text = $frm->select($name, $options, $default,'required=1&class=form-control&useValues=1', true);
 
 
 				break;
@@ -5206,7 +5209,7 @@ exit;
 			{
 				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
 				{
-					$message = str_replace("[x]", "<a href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
+					$message = str_replace("[x]", "<a class='alert-link' href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
 					$mes->addSuccess($message);
 				}	
 				else 
