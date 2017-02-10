@@ -472,8 +472,8 @@ class import_main_ui extends e_admin_ui
 			<tr>
 			<td >$importType ".LAN_CONVERT_20."</td>
 			<td >
-				<input class='tbox' type='text' name='dbParamUsername' size='30' value='".varset($_POST['dbParamUsername'])."' maxlength='100' />
-				<div class='field-help'>Must be different from the one e107 uses.</div>
+				<input class='tbox' type='text' name='dbParamUsername' size='30' data-tooltipvalue='".varset($_POST['dbParamUsername'])."' maxlength='100' />
+				<div class='field-help' data-placement='right'>Must be different from the one e107 uses.</div>
 			</td>
 			</tr>
 			<tr>

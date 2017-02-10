@@ -23,6 +23,7 @@ a:hover { color: #000000; }
 
 
 img { max-width:100%}
+img.media-object { max-width: inherit}
 
 table label.checkbox {
     margin-left: 20px;
@@ -472,14 +473,13 @@ display: inline-block;
 }
 
 .subscribe-box .block {
-    padding: 20px 30px;
+    padding: 20px 0px;
     border: 1px solid #f0f0f0;
     margin: 20px auto;
-    width: 1080px;
 }
 
 form#newsletter { padding-top:30px }
-form#newsletter #email {   width: 70%; height:43px; margin-right:-3px;border:none; font-size: 15px; font-family: Playfair Display;
+form#newsletter #email {   min-width: 300px; height:43px; margin-right:-3px;border:none; font-size: 15px; font-family: Playfair Display;
 font-style: italic; }
 
 

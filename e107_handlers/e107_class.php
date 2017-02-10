@@ -400,6 +400,12 @@ class e107
 
 			// set some core URLs (e_LOGIN/SIGNUP)
 			$this->set_urls();
+
+			if(!is_dir(e_SYSTEM))
+			{
+				mkdir(e_SYSTEM, 0755);
+			}
+
 		}
 
 		
@@ -2391,7 +2397,7 @@ class e107
 			}
 			else
 			{
-				$mes->addDebug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');
+			//	$mes->addDebug('Function <strong>'.$class_name.' :: '.$method_name.'()</strong> NOT found.');
 			}
 		}
 		return FALSE;
@@ -3028,7 +3034,7 @@ class e107
 
 		$path = $theme.$fname.'.php';
 		
-		if(E107_DBG_INCLUDES)
+		if(deftrue('E107_DBG_INCLUDES'))
 		{
 			self::getMessage()->addDebug("Attempting to Load: ".$path);
 		}	
@@ -3830,7 +3836,7 @@ class e107
 	{
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
-		if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443)
 		{
 			$this->HTTP_SCHEME =  'https';
 		}
@@ -3846,6 +3852,7 @@ class e107
 				$i++;
 			}
 		}
+
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
 
 		$http_path = dirname($_SERVER['PHP_SELF']);
@@ -3858,8 +3865,14 @@ class e107
 			$j++;
 		}
 		$http_path = array_reverse($http_path);
+
+
+
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
+
+//var_dump($this->server_path);
+//exit;
 
 		if ($this->server_path == "//")
 		{
@@ -3887,7 +3900,11 @@ class e107
 
 		if(!defined('e_HTTP') || !defined('e_ADMIN') )
 		{
-			define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+			if(!defined('e_HTTP'))
+			{
+				define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+			}
+
 		  	define('e_BASE', $this->relative_base_path);
 
 			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
@@ -4008,7 +4025,7 @@ class e107
 			// Special
 			
 			define('e_BOOTSTRAP', e_WEB."bootstrap/");
-			
+
 
 		}
 		return $this;

@@ -37,21 +37,65 @@ class e_plugin
 	const CACHETIME  = 120; // 2 hours
 	const CACHETAG   = "Meta_plugin";
 
+
+	protected $_addon_types = array(
+		'e_admin',
+		'e_bb',
+		'e_cron',
+		'e_notify',
+		'e_linkgen',
+		'e_list',
+
+		'e_meta', // @Deprecated
+		'e_emailprint',
+		'e_frontpage',
+		'e_latest', /* @deprecated  - see e_dashboard */
+		'e_status', /* @deprecated  - see e_dashboard */
+		'e_menu',
+		'e_search',
+		'e_shortcode',
+		'e_module',
+		'e_event',
+		'e_comment',
+		'e_sql',
+		'e_dashboard', // Admin Front-Page addon.
+	//	'e_userprofile', @deprecated @see e_user
+		'e_header', // loaded in header prior to javascript manager.
+		'e_footer', // Loaded in footer prior to javascript manager.
+	//	'e_userinfo', @deprecated @see e_user
+		'e_tagwords',
+		'e_url', // simple mod-rewrite.
+		'e_mailout',
+		'e_sitelink', // sitelinks generator.
+		'e_tohtml', /* @deprecated  - use e_parse */
+		'e_featurebox',
+		'e_parse',
+		'e_related',
+		'e_rss',
+		'e_upload',
+		'e_user',
+		'e_library', // For third-party libraries are defined by plugins/themes.
+	);
+
+
+
+
+
 	private $_accepted_categories = array('settings'=>LAN_SETTINGS, 'users'=>ADLAN_36, 'content'=>ADLAN_CL_3,'tools'=> ADLAN_CL_6, 'manage'=>LAN_MANAGE,'misc'=> ADLAN_CL_8, 'menu'=>'menu', 'about'=> 'about');
 
 	function __construct()
 	{
 
-		$this->init();
+		$this->_init();
 
 		if(empty($this->_ids))
 		{
-			$this->initIDs();
+			$this->_initIDs();
 		}
 
 	}
 
-	/**
+		/**
 	 * Load specified plugin data.
 	 * @param string $plugdir
 	 * @return e_plugin
@@ -68,11 +112,16 @@ class e_plugin
 		return $this->_accepted_categories;
 	}
 
+	public function getDetected()
+	{
+		return array_keys($this->_data);
+	}
+
 
 	public function clearCache()
 	{
-		$this->init(true);
-		$this->initIDs();
+		$this->_init(true);
+		$this->_initIDs();
 		return $this;
 	}
 
@@ -264,7 +313,7 @@ class e_plugin
 	}
 
 
-	private function initIDs()
+	private function _initIDs()
 	{
 		$sql = e107::getDb();
 
@@ -287,12 +336,130 @@ class e_plugin
 
 		}
 
+		$detected = $this->getDetected();
+		$runUpdate = false;
 
+		foreach($detected as $path) // add a missing plugin to the database table.
+		{
+
+			if(!isset($this->_ids[$path]) && !empty($this->_data[$path]['@attributes']))
+			{
+				$this->load($path);
+				$row = $this->_getFields();
+
+//var_dump($row);
+				if(!$sql->insert('plugin',$row))
+				{
+					e107::getDebug()->log("Unable to insert plugin data into table".print_a($row,true));
+				}
+				else
+				{
+					$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;
+					$runUpdate = true;
+
+					if($row['plugin_installflag'] == 1)
+					{
+						e107::getConfig()->setPref('plug_installed/'.$path, $row['plugin_version'])->save(false,true,false);
+					}
+
+				}
+
+			}
+
+		}
+
+		if($runUpdate === true) // clearCache
+		{
+			$this->_init(true);
+
+		}
 
 
 	}
 
-	private function init($force=false)
+	private function _getFields()
+	{
+
+		$ret = array(
+			 'plugin_name'          => $this->getName('db'),
+			 'plugin_version'       => $this->getVersion(),
+			 'plugin_path'          => $this->_plugdir,
+			 'plugin_installflag'   => ($this->getInstallRequired() === true) ? 0 : 1,
+			 'plugin_addons'        => $this->getAddons(),
+			 'plugin_category'      => $this->getCategory()
+		);
+
+		return $ret;
+
+	}
+
+
+	/**
+	 *Returns a list of addons available for the currently loaded plugin.
+	 * @return string  (comma separated)
+	 */
+	public function getAddons()
+	{
+
+		$allFiles = $this->_data[$this->_plugdir]['files'];
+
+		$addons = array();
+
+		foreach($this->_addon_types as $ad)
+		{
+			$file = $ad.".php";
+
+			if(in_array($file,$allFiles))
+			{
+				$addons[] = $ad;
+			}
+
+		}
+
+		foreach($allFiles as $file)
+		{
+
+			if(substr($file, -8) === "_sql.php")
+			{
+				$addons[] = str_replace(".php", '', $file);
+			}
+
+			if(substr($file, -3) === ".bb")
+			{
+				$addons[] = $file;
+			}
+
+
+			if(substr($file, -3) === ".sc")
+			{
+				$addons[] = $file;
+			}
+
+			if(preg_match('/^bb_(.*)\.php$/',$file))
+			{
+				$addons[] = $file;
+			}
+
+		}
+
+		if(!empty($this->_data[$this->_plugdir]['shortcodes']))
+		{
+			foreach($this->_data[$this->_plugdir]['shortcodes'] as $val)
+			{
+				$addons[] = 'sc_'.$val;
+			}
+
+		}
+
+
+		return implode(',', $addons);
+
+
+	}
+
+
+
+	private function _init($force=false)
 	{
 
 		$cacheTag = self::CACHETAG;
@@ -309,6 +476,7 @@ class e_plugin
 
 		foreach($dirs as $plugName)
 		{
+			$ret = null;
 
 			if($plugName === '.' || $plugName === '..' || !is_dir(e_PLUGIN.$plugName))
 			{
@@ -355,16 +523,16 @@ class e_plugin
 	}
 
 
-	public function getName()
+	public function getName($mode=null)
 	{
 		if(!empty($this->_data[$this->_plugdir]['@attributes']['lan']) && defined($this->_data[$this->_plugdir]['@attributes']['lan']))
 		{
-			return constant($this->_data[$this->_plugdir]['@attributes']['lan']);
+			return ($mode === 'db') ? $this->_data[$this->_plugdir]['@attributes']['lan'] : constant($this->_data[$this->_plugdir]['@attributes']['lan']);
 		}
 
 		if(isset($this->_data[$this->_plugdir]['@attributes']['name']))
 		{
-			return e107::getParser()->toHTML($this->_data[$this->_plugdir]['@attributes']['name'],FALSE,"defs, emotes_off");
+			return ($mode === 'db') ? $this->_data[$this->_plugdir]['@attributes']['name'] : e107::getParser()->toHTML($this->_data[$this->_plugdir]['@attributes']['name'],FALSE,"defs, emotes_off");
 		}
 
 		return false;
@@ -450,6 +618,12 @@ class e_plugin
 		$ret['administration']['iconSmall'] = varset($ret['adminLinks']['link'][0]['@attributes']['iconSmall']);
 		$ret['administration']['configFile'] = varset($ret['adminLinks']['link'][0]['@attributes']['url']);
 		$ret['legacy'] = false;
+
+		if (is_dir(e_PLUGIN.$plugName."/shortcodes/single/"))
+		{
+			$ret['shortcodes'] = preg_grep('/^([^.])/', scandir(e_PLUGIN.$plugName,SCANDIR_SORT_ASCENDING));
+		}
+
 
 		return $ret;
 
@@ -875,8 +1049,8 @@ class e107plugin
 			return FALSE;
 		}
 		
-		require_once(e_HANDLER."db_verify_class.php");
-		$dbv = new db_verify;
+	//	require_once(e_HANDLER."db_verify_class.php");
+		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 		
 
 		$plg = e107::getPlug();
@@ -891,7 +1065,7 @@ class e107plugin
 			$data = $plg->load($path)->getMeta();
 
 		//	$data = $xml->loadXMLfile($fullPath, true);
-				
+
 			if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
 			{
 				$dbv->errors = array();
@@ -902,7 +1076,7 @@ class e107plugin
 					$needed[$path] = $data;
 				}
 			}
-				
+
 			//	$curVal = floatval($version);
 				$curVal = $version;
 				$fileVal = $plg->getVersion(); // floatval($data['@attributes']['version']);
@@ -2308,6 +2482,8 @@ class e107plugin
 
 		e107::getConfig('core')->save(true, false, false);
 
+		$this->save_addon_prefs('update');
+
 		/*	if($function == 'install')
 		 {
 		 if(isset($plug_vars['management']['installDone'][0]))
@@ -2469,9 +2645,10 @@ class e107plugin
 			$this->log("Can't read SQL definition: ".$sqlFile);
 			return; 
 		}
-		
-		require_once(e_HANDLER."db_verify_class.php");
-		$dbv = new db_verify;
+
+		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
+	//	require_once(e_HANDLER."db_verify_class.php");
+	//	$dbv = new db_verify;
 		$sql = e107::getDb();
 
 		// Add or Remove Table --------------
@@ -3859,7 +4036,7 @@ class e107plugin
 	 */
 	function save_addon_prefs($mode = 'upgrade') 
 	{
-		e107::getMessage()->addDebug('Running save_addon_prefs('.$mode.')'); 	
+		$this->log('Running save_addon_prefs('.$mode.')');
 		
 		$sql = e107::getDb();
 		$core = e107::getConfig('core');
@@ -4100,6 +4277,8 @@ class e107plugin
 		{
 			echo $plugin_path." = ".implode(",", $p_addons)."<br />";
 		}
+
+		$this->log("Detected Addons: ".print_a($p_addons,true));
 
 		return implode(",", $p_addons);
 	}

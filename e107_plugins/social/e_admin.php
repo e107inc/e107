@@ -41,7 +41,7 @@ class social_admin
 
 				if($this->twitterActive == true)
 				{
-					$config['fields']['twitter'] =   array ( 'title' =>"Post to Twitter", 'type' => 'text', 'tab'=>2,  'writeParms'=> array('size'=>'xxlarge', 'placeholder'=>'Type your tweet here.'), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
+					$config['fields']['twitter'] =   array ( 'title' =>LAN_SOCIAL_202, 'type' => 'text', 'tab'=>2,  'writeParms'=> array('size'=>'xxlarge', 'placeholder'=>LAN_SOCIAL_203), 'width' => 'auto', 'help' => '', 'readParms' => '', 'class' => 'left', 'thclass' => 'left',  );
 				}
 				break;
 		}

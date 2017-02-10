@@ -119,6 +119,7 @@ table input.form-control, table textarea.form-control,  table select.form-contro
 .plugin-navigation li a.link-active:before { content: "\f054"; font-family:FontAwesome; margin-left:-10px }
 */
 
+.form-control.input-block-level,
 table textarea.input-block-level,
 input.input-block-level,
 input.form-control.input-block-level,
@@ -1005,7 +1006,10 @@ footer 		{ padding-top:150px; padding-bottom:20px; color: rgb(153, 153, 153); }
 }
 
 
+.plugin-navigation .nav-header {
+	padding: 10px 15px;
 
+}
 
 
 /* Attempt to Hide the white arrow */
@@ -1287,7 +1291,7 @@ li.rssRow > div {
 .selectize-input > input,  .selectize-input.full { color: inherit; background-color:inherit}
 .selectize-control div.item { border-radius:3px; }
 .selectize-control div.item .remove { margin-top:3px }
-.selectize-input.focus { }
+.selectize-input.focus { box-shadow: inherit; }
 
 
 /*

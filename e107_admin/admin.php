@@ -201,7 +201,7 @@ class admin_start
 
 		if($this->refresh == true)
 		{
-			e107::getRedirect()->go(e_SELF);
+			e107::getRedirect()->go(e_REQUEST_SELF);
 		}
 
 	}	

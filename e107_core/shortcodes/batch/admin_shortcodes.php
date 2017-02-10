@@ -973,7 +973,7 @@ class admin_shortcodes
 		{
 			return false;
 		}
-		
+
 
 		global $pref;
 		if (ADMIN && ADMINPERMS == '0')
