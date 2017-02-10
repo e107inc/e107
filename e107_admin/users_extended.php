@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -63,7 +63,7 @@ if(varset($_GET['mode']) == "ajax")
 				$text = "<table class='table table-striped table-bordered' style='width:70%;margin-left:0;'><tr><td>";
 				$text .= EXTLAN_62 . "</td><td style='70%'>\n";
 				$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
-				$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+				$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 				$result = e107::getDb()->tables();
 				foreach($result as $row2)
 				{
@@ -78,7 +78,7 @@ if(varset($_GET['mode']) == "ajax")
 					// Field ID.
 					$text .= "<tr><td>" . EXTLAN_63 . "</td><td>";
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_id'>";
-					$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
@@ -94,7 +94,7 @@ if(varset($_GET['mode']) == "ajax")
 					// Display Value.
 					$text .= EXTLAN_64 . "</td><td>";
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_value'>";
-					$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
@@ -110,7 +110,7 @@ if(varset($_GET['mode']) == "ajax")
 					// Order.
 					$text .= LAN_ORDER . "</td><td>";
 					$text .= "<select style='width:99%' class='tbox e-select' name='field_order'>";
-					$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+					$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 					$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0];
 					if($sql->gen("DESCRIBE " . MPREFIX . "{$table_list}"))
 					{
@@ -964,7 +964,7 @@ e107::js('footer-inline', js());
 			$text .= "<table class='table table-striped table-bordered' style='width:70%;margin-left:0;'><tr><td>";
 			$text .= EXTLAN_62 . "</td><td style='70%'>";
 			$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
-			$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+			$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 
 			$result = e107::getDb()->tables();
 
@@ -983,7 +983,7 @@ e107::js('footer-inline', js());
 			{
 				// Field ID
 				$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
-			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
@@ -998,7 +998,7 @@ e107::js('footer-inline', js());
 				$text .= " </select></td></tr><tr><td>";
 				// Field Value
 				$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
-			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 				if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
@@ -1013,7 +1013,7 @@ e107::js('footer-inline', js());
 				$text .= " </select></td></tr><tr><td>";
 
 				$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
-			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			<option value='' class='caption'>".LAN_NONE."</option>\n";
 				$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 				if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
@@ -1821,7 +1821,7 @@ class users_ext
 		$text .= "<table style='width:70%;margin-left:0;'><tr><td>";
 		$text .= EXTLAN_62 . "</td><td style='70%'>";
 		$text .= "<select name='table_db' style='width:99%' class='tbox e-ajax' data-src='{$ajaxGetTableSrc}'>";
-		$text .= "<option value='' class='caption'>" . EXTLAN_61 . "</option>";
+		$text .= "<option value='' class='caption'>" . LAN_NONE . "</option>";
 
 
 			$result = e107::getDb()->tables();
@@ -1840,7 +1840,7 @@ class users_ext
 		{
 			// Field ID
 			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox e-select' name='field_id' >\n
-			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			<option value='' class='caption'>".LAN_NONE."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 			if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
@@ -1855,7 +1855,7 @@ class users_ext
     		$text .= " </select></td></tr><tr><td>";
              // Field Value
 			$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox e-select' name='field_value' >
-			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			<option value='' class='caption'>".LAN_NONE."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 			if($sql->gen("DESCRIBE ".MPREFIX."{$table_list}"))
@@ -1870,7 +1870,7 @@ class users_ext
     		$text .= " </select></td></tr><tr><td>";
 
 			$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox e-select' name='field_order' >
-			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			<option value='' class='caption'>".LAN_NONE."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 
 			if($sql ->gen("DESCRIBE ".MPREFIX."{$table_list}"))
