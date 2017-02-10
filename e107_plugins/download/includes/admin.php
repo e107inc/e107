@@ -1277,7 +1277,7 @@ $columnInfo = array(
 	                    </tr>
 	                    <tr>
 	                       <td>".DOWLAN_66."</td>
-	                       <td>
+	                       <td class='form-inline'>
 	                          <input class='form-control' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
 	                       	 <select class='form-control' name='download_filesize_unit'>
 						      <option value='B'{$b_sel}>".CORE_LAN_B."</option>
