@@ -4146,7 +4146,7 @@ class e107
 		$tmp2 = explode('?', e_REQUEST_URI);
 		define('e_REQUEST_HTTP', array_shift($tmp2)); // SELF URL without the QUERY string and leading domain part
 
-		if(!deftrue('e_SINGLE_ENTRY'))
+		if(!deftrue('e_SINGLE_ENTRY') && !deftrue('e_SELF_OVERRIDE') )
 		{
 			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
@@ -4162,6 +4162,11 @@ class e107
 		else
 		{
 			define('e_SELF', e_REQUEST_SELF);
+
+			if(deftrue('e_SELF_OVERRIDE')) // see multisite plugin.
+			{
+				define('e_PAGE', basename($_SERVER['SCRIPT_FILENAME']));
+			}
 		}
 
 
@@ -4173,14 +4178,15 @@ class e107
 		$inAdminDir = FALSE;
 		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
+		$curPage = basename($_SERVER['SCRIPT_FILENAME']);
 
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-			  || ($isPluginDir && (strpos(e_PAGE,'_admin.php') !== false || strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
+			  || ($isPluginDir && (strpos($curPage,'_admin.php') !== false || strpos($curPage,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
 			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
-			  || ($isPluginDir && e_PAGE === 'prefs.php') //BC Fix for old plugins
-			  || ($isPluginDir && e_PAGE === 'config.php') // BC Fix for old plugins
+			  || ($isPluginDir && $curPage === 'prefs.php') //BC Fix for old plugins
+			  || ($isPluginDir && $curPage === 'config.php') // BC Fix for old plugins
 			)
 		{
 			$inAdminDir = TRUE;
