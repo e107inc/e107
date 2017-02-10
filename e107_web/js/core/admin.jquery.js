@@ -454,7 +454,7 @@ $(document).ready(function()
 		});
 		
 			// run tips on .field-help 
-		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip").each(function(c) {
+		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control").each(function(c) {
 						
 			var t = $(this).nextAll(".field-help");
 
@@ -484,6 +484,7 @@ $(document).ready(function()
 				html: true,
 				opacity: 1.0,
 				placement: placement,
+				container: 'body',
 				delay: { show: 300, hide: 600 } 
 			});
 		
