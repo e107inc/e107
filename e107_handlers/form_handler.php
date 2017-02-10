@@ -2325,12 +2325,12 @@ class e_form
 		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true)
 		{
 			$options['switch'] = 'small';
-			$options['wrapperClass'] = 'wrapper form-control';
+
 			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
 			$label_disabled = ($label_disabled) ?  strtoupper($label_disabled): strtoupper(LAN_OFF);
 
 		}
-		
+
 		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
 		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
 
@@ -2347,12 +2347,13 @@ class e_form
 					'size'    => $options['switch'],
 					'onText'  => $options_on['label'],
 					'offText' => $options_off['label'],
+
 				),
 			);
 
-			if(isset($options['wrapperClass']))
+			if(e_ADMIN_AREA === true)
 			{
-				$js_options[$name]['wrapperClass'] = $options['wrapperClass'];
+				$js_options[$name]['wrapperClass'] =  'wrapper form-control';
 			}
 
 
