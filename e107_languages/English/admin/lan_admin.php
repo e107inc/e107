@@ -239,6 +239,7 @@ Below is the list of files that could potentially be malicious:");
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
+define("LAN_UPDATES", "Updates");
 define("LAN_INSTALLED","Installed");//TODO elsewhere
 define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
@@ -320,7 +321,7 @@ define("LAN_LANG","Lang.");
 define("LAN_APPROVE","Approve");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
-//define("LAN_ACTIVE","Active");//English.php 
+define("LAN_ACTIVATE","Activate"); 
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
@@ -455,7 +456,7 @@ define("LAN_UI_DELETE_LABEL", "Confirm Delete");
 define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
 define("LAN_UI_DELETED", "[x] record(s) successfully deleted!");
-define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");\
+define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");
 define("LAN_UI_BATCH_EXPORT", "Export");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");

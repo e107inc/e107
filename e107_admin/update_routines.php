@@ -349,7 +349,7 @@ class e107Update
 			";
 	
 	
-		$ns->tablerender("Updates",$mes->render() . $text);
+		$ns->tablerender(LAN_UPDATES,$mes->render() . $text);
 	
 	}
 	

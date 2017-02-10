@@ -100,7 +100,7 @@ class mailoutAdminClass extends e107MailManager
 				'forced' => TRUE
 			),
 			'mail_title' => array(
-				'title' => LAN_TITLE,
+				'title' => LAN_MAILOUT_140,
 				'forced' => TRUE
 			),
 			'mail_subject' => array(
@@ -1604,10 +1604,10 @@ class mailoutAdminClass extends e107MailManager
 		// Show the table of advanced options
 
 		$text .= "<div class='buttons-bar center'>";
-		$text .= "<a href='".e_SELF."?mode=main&action=sendnow&id=".$mailMainID."' class='btn btn-primary'>Send Now</a>";
+		$text .= "<a href='".e_SELF."?mode=main&action=sendnow&id=".$mailMainID."' class='btn btn-primary'>".LAN_MAILOUT_158."</a>";
 		 
 	//	$text .= $frm->admin_button('email_sendnow', "Send Now", 'primary');
-		$text .= $frm->admin_button('email_send', "Send Later");
+		$text .= $frm->admin_button('email_send', LAN_MAILOUT_269);
 
 		// $text .= "<input  type='submit' name='email_send' value=\"".LAN_SEND."\" />";
 

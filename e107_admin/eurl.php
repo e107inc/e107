@@ -270,7 +270,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			));
 
 			$text .= "<tr class='active'><td ><h4>" . $plug . "</h4></td><td colspan='2'>" . $switch . "</td></tr>";
-			$text .= "<tr><th>Key</th><th>Regular Expression</th>
+			$text .= "<tr><th>".LAN_EURL_KEY."</th><th>".LAN_EURL_REGULAR_EXPRESSION."</th>
 
 
 			<th>".LAN_URL."</th>
@@ -642,7 +642,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
         $text .= '</p>
                 </div>
                 <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+                <a href="#" data-dismiss="modal" class="btn btn-primary">'.LAN_CLOSE.'</a>
                 </div>
                 </div>';           
         
