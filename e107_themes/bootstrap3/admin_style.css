@@ -1417,7 +1417,7 @@ td.forumheader3 .form-control { display:inherit }
 
 .navbar-nav > li > a.admin-icon-avatar { padding-top: 11px; padding-bottom: 10px;}
 
-form#simplesef h4 { margin: 0 }
+form#simplesef h4 { margin: 4px }
 .adminlist tr > td { min-height:50px; }
 
 .admin-icon-debug i {  margin-right:10px; cursor:help}
