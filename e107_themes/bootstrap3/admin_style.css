@@ -223,6 +223,7 @@ a.tweet_action				{ font-size:8px }
 
 .bootstrap-switch .bootstrap-switch-label { background: inherit }
 .bootstrap-switch.form-control { padding:0; height:auto }
+td.center .bootstrap-switch.form-control { margin-left: auto; margin-right: auto; }
 
 
 /*

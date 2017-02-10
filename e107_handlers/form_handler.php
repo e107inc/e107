@@ -2322,16 +2322,15 @@ class e_form
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
 
-		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true && empty($label_enabled) && empty($label_disabled))
+		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true)
 		{
 			$options['switch'] = 'small';
 			$options['wrapperClass'] = 'wrapper form-control';
-			$label_enabled = strtoupper(LAN_ON);
-			$label_disabled = strtoupper(LAN_OFF);
+			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
+			$label_disabled = ($label_disabled) ?  strtoupper($label_disabled): strtoupper(LAN_OFF);
 
 		}
-
-
+		
 		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
 		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
 
