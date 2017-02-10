@@ -2322,6 +2322,16 @@ class e_form
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
 
+		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true && empty($label_enabled) && empty($label_disabled))
+		{
+			$options['switch'] = 'small';
+			$options['wrapperClass'] = 'wrapper form-control';
+			$label_enabled = strtoupper(LAN_ON);
+			$label_disabled = strtoupper(LAN_OFF);
+
+		}
+
+
 		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
 		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
 
@@ -2340,6 +2350,12 @@ class e_form
 					'offText' => $options_off['label'],
 				),
 			);
+
+			if(isset($options['wrapperClass']))
+			{
+				$js_options[$name]['wrapperClass'] = $options['wrapperClass'];
+			}
+
 
 			e107::library('load', 'bootstrap.switch');
 			e107::js('settings', array('bsSwitch' => $js_options));
