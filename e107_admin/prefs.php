@@ -1617,7 +1617,7 @@ $text .= "
 	<td>".UPLLAN_25."</td>
 	<td>".
 	
-	$frm->radio_switch('upload_enabled', $pref['upload_enabled'], LAN_YES, LAN_NO)
+	$frm->radio_switch('upload_enabled', $pref['upload_enabled'])
 	."
 	<div class='field-help'>".UPLLAN_26."</div>
 	</td>
