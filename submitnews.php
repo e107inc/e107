@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -211,7 +211,7 @@ class submitNews
 		//	echo $mes->render();
 			unset($_POST);
 
-			// $ns->tablerender(LAN_133, "<div style='text-align:center'>".LAN_134."</div>");
+			// $ns->tablerender(LAN_THANK_YOU, "<div style='text-align:center'>".LAN_134."</div>");
 
 		}
 		else
@@ -250,13 +250,13 @@ class submitNews
 			{
 			    $text .= "
 				  <tr>
-				    <td style='width:20%' class='forumheader3'>".LAN_7."</td>
+				    <td style='width:20%' class='forumheader3'>".LAN_NAME."</td>
 				    <td style='width:80%' class='forumheader3'>
 				      <input class='tbox' type='text' name='submitnews_name' size='60' value='".$tp->toHTML($_POST['submitnew_name'],FALSE,'USER_TITLE')."' maxlength='100' required />
 				    </td>
 				  </tr>
 				  <tr>
-				    <td style='width:20%' class='forumheader3'>".LAN_112."</td>
+				    <td style='width:20%' class='forumheader3'>".LAN_EMAIL."</td>
 				    <td style='width:80%' class='forumheader3'>
 				      <input class='tbox' type='text' name='submitnews_email' size='60' value='".$tp->filter($_POST['submitnews_email'], 'email')."' maxlength='100' required />
 				    </td>
@@ -265,7 +265,7 @@ class submitNews
 
 			$text .= "
 			<tr>
-			  <td style='width:20%' class='forumheader3'>".NWSLAN_6.": </td>
+			  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY.": </td>
 				<td style='width:80%' class='forumheader3'>";
 
 			if (!$sql->select("news_category"))
@@ -308,7 +308,7 @@ class submitNews
 			*/
 			$fields = array();
 			$fields['submitnews_keywords']      = array('title'=>SUBNEWSLAN_9, 'type'=>'tags');
-			$fields['submitnews_summary']       = array('title'=>SUBNEWSLAN_10, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
+			$fields['submitnews_summary']       = array('title'=>LAN_SUMMARY, 'type'=>'text', 'writeParms'=>array('maxlength'=>255, 'size'=>'xxlarge'));
 			$fields['submitnews_description']   = array('title'=>SUBNEWSLAN_11, 'type'=>'textarea','writeParms'=>array('placeholder'=>SUBNEWSLAN_12));
 			$fields['submitnews_media']         = array('title'=>SUBNEWSLAN_13, 'type'=>'method', 'method'=>'submitNewsForm::submitnews_media');
 
