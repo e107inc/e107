@@ -265,7 +265,7 @@ class submitNews
 
 			$text .= "
 			<tr>
-			  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY.": </td>
+			  <td style='width:20%' class='forumheader3'>".LAN_CATEGORY."</td>
 				<td style='width:80%' class='forumheader3'>";
 
 			if (!$sql->select("news_category"))

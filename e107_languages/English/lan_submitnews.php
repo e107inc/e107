@@ -1,21 +1,19 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_submitnews.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 define("PAGE_NAME", "Submit News");
 //define("LAN_7", "Name: ");//LAN_NAME
 //define("LAN_62", "News Title: ");//LAN_TITLE
 //define("LAN_112", "Email Address: ");//LAN_EMAIL
 //define("LAN_133", "Thank you");//LAN_THANK_YOU//NOT USED
 define("LAN_134", "Your item has been submitted for review by one of the site administrators.");
-define("LAN_135", "News Item: ");
+define("LAN_135", "News Item");
 define("LAN_136", "Submit News Item");
 //define("NWSLAN_6", "Category");//LAN_CATEGORY
 define("NWSLAN_10", "No news categories");
