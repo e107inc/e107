@@ -10,14 +10,6 @@
  *
 */
 
-/**
- *
- *	@package     e107
- *	@subpackage	admin
- *
- *	Handle display of the various system logs
- */
-
 /*
  * Preferences:
  * 	'sys_log_perpage' - number of events per page
@@ -33,15 +25,12 @@
 require_once ('../class2.php');
 if(! getperms('S'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-// Main language file should automatically be loaded
-// Load language files for log messages
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_log_messages.php'); //... for core functions
-
+e107::coreLan('admin_log', true);
+e107::coreLan('log_messages', true); 
 
 if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 {
@@ -51,7 +40,7 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 		
 	//	echo "orig = ".$file."     ";
 		//e107::lan($path,'log',true);
-		include_lan(e_PLUGIN.$path.'/languages/'.$file);
+		e107::includeLan(e_PLUGIN.$path.'/languages/'.$file);
 	}
 }
 
@@ -107,7 +96,9 @@ class adminlog_admin extends e_admin_dispatcher
 
 	protected $adminMenuAliases = array(
 		'main/edit'	=> 'main/list'				
-	);	
+	);
+
+	protected $adminMenuIcon = 'e-adminlogs-24';
 	
 	protected $menuTitle = ADLAN_155;
 	
@@ -152,7 +143,7 @@ class admin_log_ui extends e_admin_ui
 		protected $fields 		= array (  
 	//	'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'nolist'=>true, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => '12%', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		//  'dblog_microtime'		=>   array ( 'title' => 'Microtime', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_type' 			=>   array ( 'title' => RL_LAN_032, 'type' => 'method', 'data' => 'int', 'width' => '5%', 'filter' => true,  'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_ip' 			=>   array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -162,7 +153,7 @@ class admin_log_ui extends e_admin_ui
 		
 		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_remarks'		=>   array ( 'title' => RL_LAN_033, 'type' => 'method', 'data' => 'str', 'width' => '35%', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array( 'dblog_datestamp',  'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_ip', 'dblog_title', 'dblog_remarks');
@@ -445,7 +436,8 @@ class admin_log_form_ui extends e_admin_form_ui
 		//	define('USER_AUDIT_TEMP_ACCOUNT', 24); 		// User temporary account
 		
 		
-		$audit_checkboxes = array(USER_AUDIT_SIGNUP => RL_LAN_071, USER_AUDIT_EMAILACK => RL_LAN_072, USER_AUDIT_LOGIN => RL_LAN_073, //	USER_AUDIT_LOGOUT 	=> RL_LAN_074,			// Logout is lumped in with login
+		$audit_checkboxes = array(USER_AUDIT_SIGNUP => RL_LAN_071, USER_AUDIT_EMAILACK => RL_LAN_072,
+		 USER_AUDIT_LOGIN => LAN_AUDIT_LOG_013, 	USER_AUDIT_LOGOUT 	=> LAN_AUDIT_LOG_014,			// Logout is lumped in with login
 		USER_AUDIT_NEW_DN => RL_LAN_075, USER_AUDIT_NEW_PW => RL_LAN_076, USER_AUDIT_PW_RES => RL_LAN_078, USER_AUDIT_NEW_EML => RL_LAN_077, USER_AUDIT_NEW_SET => RL_LAN_079, 
 		USER_AUDIT_ADD_ADMIN => RL_LAN_080, USER_AUDIT_MAIL_BOUNCE => RL_LAN_081, USER_AUDIT_BANNED => RL_LAN_082, USER_AUDIT_BOUNCE_RESET => RL_LAN_083,
 		USER_AUDIT_TEMP_ACCOUNT => RL_LAN_084);
@@ -548,7 +540,7 @@ class admin_log_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return array('Informative','Notice','Warning','Fatal');
+				return array(RL_LAN_132,RL_LAN_133,RL_LAN_134,RL_LAN_135);
 			break;
 		}
 	}
@@ -638,7 +630,7 @@ class admin_log_form_ui extends e_admin_form_ui
 				if(strpos($text,'Array')!==false || strlen($text)>300)
 				{
 					$id = $this->getController()->getListModel()->get('dblog_id');
-					$ret ="<a class='e-expandit' href='#rem-".$id."'>Details</a>";
+					$ret ="<a class='e-expandit' href='#rem-".$id."'>".RL_LAN_087."</a>";
 					$ret .= "<div style='display:none' id='rem-".$id."'>";
 					$text = str_replace("<br />","\n",$text);
 					$text = str_replace("&#092;","/",$text);
@@ -713,7 +705,7 @@ class audit_log_ui extends e_admin_ui
 		protected $fields 		= array (  
 		'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_microtime' 	=>   array ( 'title' => 'Microtime', 'type' => 'text', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_eventcode' 	=>   array ( 'title' => 'Eventcode', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_user_id' 		=>   array ( 'title' => LAN_USER, 'type' => 'user', 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -721,7 +713,7 @@ class audit_log_ui extends e_admin_ui
 		  'dblog_ip' 			=>   array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_remarks' 		=>   array ( 'title' => 'Remarks', 'type' => 'method', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null,  'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null,  'nolist'=>true, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('dblog_id', 'dblog_datestamp', 'dblog_microtime', 'dblog_eventcode', 'dblog_user_id', 'dblog_user_name', 'dblog_ip', 'dblog_title','dblog_remarks');
@@ -766,7 +758,7 @@ class dblog_ui extends e_admin_ui
 		protected $fields 		= array (  
 		  'checkboxes' 			=>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 	//	  'dblog_id' 			=>   array ( 'title' => LAN_ID, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'dblog_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => array('mask'=>'dd MM yyyy hh:ii:ss'), 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_microtime' 	=>   array ( 'title' => 'Microtime', 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_type' 			=>   array ( 'title' => LAN_TYPE, 'type' => 'method', 'data' => 'int', 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_eventcode' 	=>   array ( 'title' => 'Eventcode', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -776,7 +768,7 @@ class dblog_ui extends e_admin_ui
 		  'dblog_caller' 		=>   array ( 'title' => 'Caller', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'dblog_title' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'dblog_remarks' 		=>   array ( 'title' => 'Remarks', 'type' => 'method', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null,  'nolist'=>true,  'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null,  'nolist'=>true,  'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);
 
 		protected $fieldpref = array('dblog_id', 'dblog_datestamp', 'dblog_microtime', 'dblog_type', 'dblog_eventcode', 'dblog_user_id', 'dblog_user_name', 'dblog_ip', 'dblog_caller', 'dblog_title', 'dblog_remarks');
@@ -871,7 +863,7 @@ if(is_array($pref['lan_log_list'])) //... and for any plugins which support it
 		
 	//	echo "orig = ".$file."     ";
 		//e107::lan($path,'log',true);
-		include_lan(e_PLUGIN.$path.'/languages/'.$file);
+		e107::includeLan(e_PLUGIN.$path.'/languages/'.$file);
 	}
 }
 
@@ -1511,7 +1503,7 @@ if(isset($page_title[$action]))
 	}
 
 	$num_entry = 0;
-	if($sql->db_Select_gen($qry.$limit_clause))
+	if($sql->gen($qry.$limit_clause))
 	{
 		$num_entry = $sql->total_results;
 	}
@@ -1519,7 +1511,7 @@ if(isset($page_title[$action]))
 	{
 		$from = 0; // We may be on a later page
 		$limit_clause = " LIMIT {$from}, {$amount} ";
-		$sql->db_Select_gen($qry.$limit_clause); // Re-run query with new value of $from
+		$sql->gen($qry.$limit_clause); // Re-run query with new value of $from
 		$num_entry = $sql->total_results;
 	}
 

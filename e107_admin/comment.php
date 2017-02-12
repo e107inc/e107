@@ -11,11 +11,16 @@
 require_once("../class2.php");
 if (!getperms("B")) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_prefs.php');
+// include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_prefs.php');
+
+e107::lan('core', 'comment');
+e107::lan('core', 'prefs', true);
+
+e107::css('inline', "td.status  span.label { display:block; width: 100%; padding: 6px 6px; }  ");
 
 class comments_admin extends e_admin_dispatcher
 {
@@ -41,7 +46,9 @@ class comments_admin extends e_admin_dispatcher
 		'main/edit'	=> 'main/list'				
 	);	
 	
-	protected $menuTitle = 'Comments';
+	protected $menuTitle = LAN_COMMENTMAN;
+
+		protected $adminMenuIcon = 'e-comments-24';
 }
 
 class comments_admin_ui extends e_admin_ui
@@ -64,19 +71,19 @@ class comments_admin_ui extends e_admin_ui
     	protected $fields = array(
 			'checkboxes'			=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'comment_id'			=> array('title'=> LAN_ID,			'type' => null,			'width' =>'5%', 'forced'=> TRUE),
-            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',	 	'inline'=>false, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
+            'comment_blocked' 		=> array('title'=> LAN_STATUS,		'type' => 'method',	 	'inline'=>false, /*'writeParms' => array("approved","blocked","pending"), */'data'=> 'int', 'thclass' => 'center', 'class'=>'status center', 'filter' => true, 'batch' => true,	'width' => 'auto'),	 	// Photo
 	
 	   		'comment_type' 			=> array('title'=> LAN_TYPE,			'type' => 'method',			'width' => '10%',  'filter'=>TRUE),	
 			
-			'comment_item_id' 		=> array('title'=> "item id",		'type' => 'text',	'data'=>'int',		'width' => '5%'),
-         	'comment_subject' 		=> array('title'=> "subject",		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first'), // Display name
-         	'comment_comment' 		=> array('title'=> "comment",		'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+			'comment_item_id' 		=> array('title'=> LAN_ITEM,		'type' => 'text',	'readonly'=>2, 'data'=>'int',		'width' => '5%'),
+         	'comment_subject' 		=> array('title'=> LAN_SUBJECT,		'type' => 'text',			'width' => 'auto', 'thclass' => 'left first', 'writeParms'=>array('size'=>'xxlarge')), // Display name
+         	'comment_comment' 		=> array('title'=> LAN_COMMENTS,		'type' => 'textarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1', 'writeParms'=>'size=xxlarge'), // Display name
 		 	'comment_author_id' 	=> array('title'=> LAN_AUTHOR,		'type' => 'user',			'data' => 'int',	'width' => 'auto', 'writeParms' => 'nameField=comment_author_name'),	// User id
-         	'comment_author_name' 	=> array('title'=> "authorName",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
-         	'u.user_name' 			=> array('title'=> "System user",	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true),	// User name
+         	'comment_author_name' 	=> array('title'=> LAN_USER,	'type' => 'text',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true, 'forceSave' => true),	// User name
+         	'u.user_name' 			=> array('title'=> LAN_SYSTEM_USER,	'type' => 'user',			'width' => 'auto', 'readParms'=>'idField=comment_author_id&link=1', 'noedit' => true),	// User name
 		    'comment_datestamp' 	=> array('title'=> LAN_DATESTAMP,	'type' => 'datestamp',		'width' => 'auto'),	// User date
       		'comment_ip' 			=> array('title'=> LAN_IP,			'type' => 'ip',			'width' => '10%', 'thclass' => 'center' ),	 // Real name (no real vetting)
-			'comment_lock' 			=> array('title'=> "Lock",			'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
+			'comment_lock' 			=> array('title'=> LAN_LOCK,			'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
 			'options' 				=> array('title'=> LAN_OPTIONS,		'type' => null,				'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
 		);
 		//required (but should be optional) - default column user prefs 
@@ -86,7 +93,7 @@ class comments_admin_ui extends e_admin_ui
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		
 		protected $prefs = array(
-			'comments_engine'		=> array('title'=>"Engine", 	'type'=>'dropdown', 'writeParms'=>array()),
+			'comments_engine'		=> array('title'=>LAN_ENGINE, 	'type'=>'dropdown', 'writeParms'=>array()),
 			'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean', 'writeParms'=>'inverse=1'), // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'  
 			'anon_post'				=> array('title'=>PRFLAN_32, 	'type'=>'boolean'),
 			'comments_icon'			=> array('title'=>PRFLAN_89, 	'type'=>'boolean'),
@@ -103,7 +110,7 @@ class comments_admin_ui extends e_admin_ui
 			if($engine != 'e107') // Hide all other prefs.
 			{
 				$this->prefs = array(
-					'comments_engine'		=> array('title'=>"Engine", 	'type'=>'dropdown', 'writeParms'=>array()),
+					'comments_engine'		=> array('title'=>LAN_ENGINE, 	'type'=>'dropdown', 'writeParms'=>array()),
 					'comments_disabled'		=> array('title'=>PRFLAN_161, 	'type'=>'boolean', 'writeParms'=>'inverse=1'),
 				);
 
@@ -140,6 +147,19 @@ class comments_admin_ui extends e_admin_ui
 			}
 		}
 
+		public function beforeUpdate($new_data, $old_data, $id)
+		{
+
+			if(is_numeric($new_data['comment_author_name']) && !empty($new_data['comment_author_name']))
+			{
+				$userData = e107::user($new_data['comment_author_name']);
+				$new_data['comment_author_id'] = $new_data['comment_author_name'];
+				$new_data['comment_author_name'] = $userData['user_name'];
+			}
+
+			return $new_data;
+
+		}
 
 				
 		public function beforeDelete($data, $id)
@@ -170,17 +190,17 @@ class comments_admin_form_ui extends e_admin_form_ui
 {
 	function comment_type($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function. 
 	{ 
-		if($mode == 'read')
+		if($mode == 'read' || $mode == 'write')
 		{
 			return e107::getComment()->getTable($curVal);
-			return $curVal.' (custom!)';
+		//	return $curVal.' (custom!)';
 		}
 		
 		if($mode == 'filter') // Custom Filter List for release_type
 		{
 			$sql = e107::getDb();
-			$sql->db_Select_gen('SELECT * FROM #comments GROUP BY comment_type');
-			while($row = $sql->db_Fetch())
+			$sql->gen('SELECT * FROM #comments GROUP BY comment_type');
+			while($row = $sql->fetch())
 			{
 				$id = $row['comment_type'];
 				$list[$id] = e107::getComment()->getTable($id);
@@ -201,7 +221,8 @@ class comments_admin_form_ui extends e_admin_form_ui
 	{
 		$frm = e107::getForm();
 		
-		$blocked = array("approved", "blocked", "pending");
+	//	$blocked = array("approved", "blocked", "pending");
+		$blocked = array(COMLAN_400, COMLAN_401, COMLAN_402);
 
 		if($mode == 'filter' || $mode == 'batch' || $mode == 'inline') // Custom Filter List for release_type
 		{			
@@ -211,7 +232,14 @@ class comments_admin_form_ui extends e_admin_form_ui
 		if($mode == 'read')
 		{
 			// $blocked = array("","blocked","pending");
-			return varset($blocked[$curVal], ''); // $blocked[$curVal];	
+
+			$blockedDisp = array(
+				"<span class='label label-success'>".COMLAN_400."</span>",
+				"<span class='label label-danger'>".COMLAN_401."</span>",
+				"<span class='label label-warning'>".COMLAN_402."</span>"
+			);
+
+			return varset($blockedDisp[$curVal], ''); // $blocked[$curVal];
 		}
 		
 		if($mode == 'write')

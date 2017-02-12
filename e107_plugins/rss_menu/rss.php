@@ -2,7 +2,7 @@
 /*
 * e107 website system
 *
-* Copyright (C) 2008-2013 e107 Inc (e107.org)
+* Copyright (C) 2008-2016 e107 Inc (e107.org)
 * Released under the terms and conditions of the
 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
 *
@@ -26,9 +26,9 @@ if (!defined('e107_INIT'))
 
 $e107 = e107::getInstance();
 
-if (!$e107->isInstalled('rss_menu'))
+if (!e107::isInstalled('rss_menu'))
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
@@ -47,7 +47,7 @@ if (!is_object($tp->e_bb))
 */
 
 // Get language file
-include_lan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
+e107::includeLan(e_PLUGIN.'rss_menu/languages/'.e_LANGUAGE.'_admin_rss_menu.php');
 
 // Get template
 if (is_readable(THEME.'rss_template.php'))
@@ -110,6 +110,8 @@ if (empty($rss_type))
 }
 
 
+while (@ob_end_clean());
+
 // Returning feeds here
 // Conversion table for old urls -------
 $conversion[1] = 'news';
@@ -135,7 +137,9 @@ if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$ch
 	if(!$sql->select('rss', '*', "rss_class!=2 AND rss_url='".$content_type."' ".$check_topic." AND rss_limit>0 "))
 	{
 		require_once(HEADERF);
-		$ns->tablerender('', RSS_LAN_ERROR_1);
+		$repl  = array("<a href='".e_REQUEST_SELF."'>", "</a>");
+		$message = str_replace(array("[","]"), $repl, RSS_LAN_ERROR_1);
+		$ns->tablerender('', $message);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -197,7 +201,6 @@ class rssCreate
 		$sql_rs = new db;
 		global $rssgen;
 		$sql = e107::getDb();
-		$pref = e107::getPref();
 		$tp = e107::getParser();
 
 		$this->e107 = e107::getInstance();
@@ -205,7 +208,6 @@ class rssCreate
 		$this -> path = e_PLUGIN."rss_menu/";
 		$this -> rssType = $rss_type;
 		$this -> topicid = $topic_id;
-		$this -> offset = $pref['time_offset'] * 3600;
 		$this -> limit = $row['rss_limit'];
 		$this -> contentType = $row['rss_name'];
 
@@ -420,7 +422,7 @@ class rssCreate
 						<title>".$tp->toRss($rss_title)."</title>
 						<link>".$pref['siteurl']."</link>
 						<description>".$tp->toRss($pref['sitedescription'])."</description>
-						<lastBuildDate>".$itemdate = date("r", ($time + $this -> offset))."</lastBuildDate>
+						<lastBuildDate>".$itemdate = date("r", ($time))."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>\n";
 
 					foreach($this -> rssItems as $value)
@@ -471,8 +473,8 @@ class rssCreate
 				<copyright>".$tp->toRss(SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</managingEditor>
 				<webMaster>".$this->nospam($pref['siteadminemail'])." (".$pref['siteadmin'].")</webMaster>
-				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
-				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
+				<pubDate>".date("r",($time))."</pubDate>
+				<lastBuildDate>".date("r",($time))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
 				<sy:updatePeriod>hourly</sy:updatePeriod>
@@ -547,7 +549,7 @@ class rssCreate
 						echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
 					}
 
-					echo "<pubDate>".date("r", ($value['pubdate'] + $this -> offset))."</pubDate>\n";
+					echo "<pubDate>".date("r", ($value['pubdate']))."</pubDate>\n";
 
 					if($link)
 					{
@@ -594,7 +596,7 @@ class rssCreate
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>".CORE_LC.(defined("CORE_LC2") ? "-".CORE_LC2 : "")."</dc:language>
-				<dc:date>".$this->get_iso_8601_date($time + $this -> offset). "</dc:date>
+				<dc:date>".$this->get_iso_8601_date($time). "</dc:date>
 				<dc:creator>".$this->nospam($pref['siteadminemail'])."</dc:creator>
 				<admin:generatorAgent rdf:resource=\"http://e107.org\" />
 				<admin:errorReportsTo rdf:resource=\"mailto:".$this->nospam($pref['siteadminemail'])."\" />
@@ -627,7 +629,7 @@ class rssCreate
 						<item rdf:about=\"".$link."\">
 						<title>".$tp->toRss($value['title'])."</title>
 						<link>".$link."</link>
-						<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
+						<dc:date>".$this->get_iso_8601_date($time)."</dc:date>
 						<dc:creator>".$value['author']."</dc:creator>
 						<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
 						<description>".$tp->toRss($value['description']). "</description>
@@ -651,7 +653,7 @@ class rssCreate
 					echo "
 					<id>".$pref['siteurl']."</id>\n
 					<title type='text'>".$tp->toRss($rss_title)."</title>\n
-					<updated>".$this->get_iso_8601_date($time + $this -> offset)."</updated>\n";
+					<updated>".$this->get_iso_8601_date($time)."</updated>\n";
 
 					// Recommended
 					echo "
@@ -687,7 +689,7 @@ class rssCreate
 						echo "
 						<id>".$value['link']."</id>\n
 						<title type='text'>".$tp->toRss($value['title'])."</title>\n
-						<updated>".$this->get_iso_8601_date($value['pubdate'] + $this -> offset)."</updated>\n";
+						<updated>".$this->get_iso_8601_date($value['pubdate'])."</updated>\n";
 
 						// Recommended
                         $author = ($value['author']) ? $value['author'] : "unknown";
@@ -711,7 +713,7 @@ class rssCreate
 						//<contributor>
 						//	<name>Jane Doe</name>
 						//</contributor>
-						echo "<published>".$this->get_iso_8601_date($value['pubdate'] + $this -> offset)."</published>\n";
+						echo "<published>".$this->get_iso_8601_date($value['pubdate'])."</published>\n";
 						//<source>
 						//	<id>http://example.org/</id>
 						//	<title>Fourty-Two</title>

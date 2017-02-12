@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -10,22 +10,13 @@
  *
 */
 
-
-/**
- *	e107 Newsletter plugin
- *
- *	@package	e107_plugins
- *	@subpackage	newsletter
- */
-
-
 require_once('../../class2.php');
-if (!$e107->isInstalled('newsletter') || !ADMIN) 
+if (!e107::isInstalled('newsletter') || !ADMIN)
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit(); 
 }
-include_lan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'newsletter/languages/'.e_LANGUAGE.'.php');
 require_once(HEADERF);
 
 $sql = e107::getDb();
@@ -56,7 +47,7 @@ else
 	}
 	else
 	{
-		$limit_start = $_POST['limit_start'];
+		$limit_start = intval($_POST['limit_start']);
 	}
 	$nl_count = $sql->count('newsletter', '(*)', "WHERE newsletter_parent='".$action_parent_id."' AND newsletter_flag='1'");
 	if ($nl_count > 0)

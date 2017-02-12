@@ -28,11 +28,11 @@ $eplug_admin = TRUE;
 require_once('../../class2.php');
 if (!getperms('4')) 
 { 
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit() ;
 }
 
-include_lan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'login_menu/languages/'.e_LANGUAGE.'.php');
 require_once(e_ADMIN.'auth.php');
 
 require_once(e_PLUGIN.'login_menu/login_menu_class.php');

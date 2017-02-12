@@ -18,11 +18,11 @@ if (!defined('e107_INIT'))
 
 if (!getperms("L")) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_lancheck.php');
+e107::coreLan('lancheck', true);
 
 $e_sub_cat = 'language';
 // require_once("auth.php");
@@ -139,7 +139,7 @@ if(isset($_POST['submit']))
 	}
 	else
 	{
-		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_CHECK_24;
+		$caption = LAN_CHECK_PAGE_TITLE.' - '.LAN_SUMMARY;
 		$mes->addSuccess(sprintXXX(str_replace("[x]", "%s", LAN_CHECK_23), basename($writeit)));
 	}
 	fclose($writeit);
@@ -242,7 +242,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 
 	$text .= "
 		<fieldset id='core-lancheck-theme'>
-			<legend>".LAN_CHECK_22."</legend>
+			<legend>".LAN_THEME."</legend>
 			<table class='table adminlist'>
 				<colgroup>
 					<col style='width: 25%' />
@@ -286,7 +286,7 @@ if(isset($_POST['language_sel']) && isset($_POST['language']))
 	}
 	
 
-	$ns->tablerender(LAN_CHECK_25, $mes->render(). $text);
+	$ns->tablerender(LAN_THEMES, $mes->render(). $text);
 
 
 	
@@ -312,7 +312,7 @@ class lancheck
 
 	private $thirdPartyPlugins = true;
 
-
+	private $deprecatedFiles = array('lan_download.php', 'lan_parser_functions.php', 'lan_prefs.php', 'admin/lan_download.php', 'admin/lan_modcomment.php');
 
 
 	function __construct()
@@ -475,7 +475,7 @@ class lancheck
 		if($status['error']==FALSE)
 		{
 			$text = $status['message']."<br />";
-			$text .= share($status['file']);
+			$text .= $this->share($status['file']);
 			$mes->addSuccess($text);
 			//$ns->tablerender(LAN_CREATED, $text );
 		}
@@ -490,6 +490,73 @@ class lancheck
 	}
 
 
+
+	/**
+	 * Share Language File
+	 * @param object $newfile
+	 * Usage of e107 is granted to you provided that this function is not modified or removed in any way.
+	 * @return
+	 */
+	private function share($newfile)
+	{
+		global $pref;
+
+		if(!$newfile || E107_DEBUG_LEVEL > 0)
+		{
+			return;
+		}
+
+		global $tp;
+		$full_link = $tp->createConstants($newfile);
+
+		$email_message = "<br />Site: <a href='".SITEURL."'>".SITENAME."</a>
+	<br />User: ".USERNAME."\n
+	<br />Email: ".USEREMAIL."\n
+	<br />Language: ".$_POST['language']."\n
+	<br />IP:".USERIP."
+	<br />...would like to contribute the following language pack for e107. (see attached)<br />:
+
+
+	<br />Missing Files: ".$_SESSION['lancheck'][$_POST['language']]['file']."
+	<br />Bom Errors : ".$_SESSION['lancheck'][$_POST['language']]['bom']."
+	<br />UTF Errors : ".$_SESSION['lancheck'][$_POST['language']]['utf']."
+	<br />Definition Errors : ".$_SESSION['lancheck'][$_POST['language']]['def']."
+	<br />Total Errors: ".$_SESSION['lancheck'][$_POST['language']]['total']."
+	<br />
+	<br />XML file: ".$_SESSION['lancheck'][$_POST['language']]['xml'];
+
+
+
+		require_once(e_HANDLER."mail.php");
+
+		$send_to = (!$_POST['contribute_pack']) ? "languagepacks@e107inc.org" : "certifiedpack@e107inc.org";
+		$to_name = "e107 Inc.";
+		$Cc = "";
+		$Bcc = "";
+		$returnpath='';
+		$returnreceipt='';
+		$inline ="";
+
+		$subject = (!$_POST['contribute_pack']) ? "[0.7 LanguagePack] " : "[0.7 Certified LanguagePack] ";
+		$subject .= basename($newfile);
+
+		if(!@sendemail($send_to, $subject, $email_message, $to_name, '', '', $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+		{
+			$text = "<div style='padding:40px'>";
+			$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>There was a problem sending the language-pack. Please email your verified language pack to:</b>";
+			$text .= " <a href='mailto:".$send_to."?subject=".$subject."'>".$send_to."</a>";
+			$text .= "</div>";
+
+			return $text;
+		}
+		elseif($_POST['contribute_pack'])
+		{
+			return "<div style='padding:40px'>Pack Sent to e107 Inc. A confirmation email will be sent to ".$pref['siteadminemail']." once it is received.<br />Please also make sure that email coming from ".$send_to." is not blocked by your spam filter.</div>";
+		}
+
+
+
+	}
 
 
 	/**
@@ -610,14 +677,18 @@ class lancheck
 
 		$archive = new PclZip($newfile);
 
-		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,'', 0);
-		$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'', 2);
+		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,''); // includes admin area.
+	//	$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'');
+		$core_admin = array();
 		$plugs      = $this->getFilePaths(e_BASE.$PLUGINS_DIRECTORY, $language, $this->core_plugins); // standardized path.
 		$theme      = $this->getFilePaths(e_BASE.$THEMES_DIRECTORY, $language, $this->core_themes);
 		$docs       = $this->getFilePaths(e_BASE.$HELP_DIRECTORY,$language);
 		$handlers   = $this->getFilePaths(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path.
 
 		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
+
+		$file = array_unique($file);
+
 		$data = implode(",", $file);
 
 		if ($archive->create($data,PCLZIP_OPT_REMOVE_PATH,e_BASE) == 0)
@@ -668,18 +739,20 @@ class lancheck
 	 * @param string $filter
 	 * @return array|bool
 	 */
-	private function getFilePaths($path, $language)
+	public function getFilePaths($path, $language, $restrict=array())
 	{
 		$fl = e107::getFile();
 
-		if ($lanlist = $fl->get_files($path, "", "standard", 4))
+		if ($lanlist = $fl->get_files($path, "", "standard", 4)) // (\.php|\.xml)$
 		{
 			sort($lanlist);
 		}
 		else
 		{
-			return false;
+			return array();
 		}
+
+
 
 		$pzip = array();
 		foreach ($lanlist as $p)
@@ -691,6 +764,30 @@ class lancheck
 				$pzip[] = $fullpath;
 			}
 		}
+
+
+		if(!empty($restrict)) // strip the list according to inclusion list.
+		{
+			$newlist = array();
+			foreach($pzip as $k=>$p)
+			{
+				foreach($restrict as $accept)
+				{
+					if(strpos($p, '/'.$accept.'/')!==false)
+					{
+
+						$newlist[] = $p;
+					}
+
+				}
+
+			}
+
+			$pzip = $newlist;
+		}
+
+
+
 		return $pzip;
 	}
 
@@ -782,7 +879,7 @@ class lancheck
 			$text .= "<a href='".e_REQUEST_URI."&amp;sub=verify&amp;lan=".$language."' class='btn btn-primary' >".LAN_CHECK_2."</a>";
 
 			$text .= "
-			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='button' onclick=\"this.value = '".$lan_pleasewait."'\" /></td>
+			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='btn btn-default' onclick=\"this.value = '".$lan_pleasewait."'\" /></td>
 			</tr>";
 		}
 
@@ -960,7 +1057,7 @@ class lancheck
 		// Themes  -------------
 		$theme_header = "<table class='table table-striped'>
 		<tr>
-		<td class='fcaption'>".LAN_CHECK_22."</td>
+		<td class='fcaption'>".LAN_THEME."</td>
 		<td class='fcaption'>".LAN_CHECK_16."</td>
 		<td class='fcaption'>".$lan."</td>
 		<td class='fcaption'>".LAN_OPTIONS."</td></tr>";
@@ -1017,7 +1114,7 @@ class lancheck
 			
 		$mes->add($message, $mesStatus);	
 			
-	//	$ns -> tablerender(LAN_CHECK_24.": ".$lan,$message);
+	//	$ns -> tablerender(LAN_SUMMARY.": ".$lan,$message);
 
 
 
@@ -1025,10 +1122,10 @@ class lancheck
 		$ret['text'] = $mes->render();
 
 		$tabs = array(
-			'core'  => array('caption'=>'Front', 'text'=> $core_text),
-			'admin'  => array('caption'=> LAN_ADMIN, 'text'=>$core_admin),
-			'plugin'  => array('caption'=> ADLAN_CL_7, 'text'=>$plug_text),
-			'theme'  => array('caption'=> LAN_CHECK_25, 'text'=>$theme_text),
+			'core'   => array('caption'=> LAN_CHECK_26, 'text'=>$core_text),
+			'admin'  => array('caption'=> LAN_ADMIN,    'text'=>$core_admin),
+			'plugin' => array('caption'=> ADLAN_CL_7,   'text'=>$plug_text),
+			'theme'  => array('caption'=> LAN_THEMES,   'text'=>$theme_text),
 		);
 
 		$ret['text'] .= e107::getForm()->tabs($tabs);
@@ -1040,7 +1137,7 @@ class lancheck
 		$ns -> tablerender(LANG_LAN_21.SEP.$lan.SEP.LAN_CHECK_2, $core_text);
 		$ns -> tablerender(LAN_CHECK_3.": ".$lan."/admin", $core_admin);
 		$ns -> tablerender(ADLAN_CL_7, $plug_text);
-		$ns -> tablerender(LAN_CHECK_25, $theme_text);	*/
+		$ns -> tablerender(LAN_THEMES, $theme_text);	*/
 		//TODO Add a return statement here.
 	}
 	
@@ -1098,10 +1195,11 @@ class lancheck
 			$diz .= "|        e107 website content management system ".$lan." Language File\n";
 			$diz .= "|        Released under the terms and conditions of the\n";
 			$diz .= "|        GNU General Public License (http://gnu.org).\n";
+			$diz .= "|        Last Modified: ".date("Y/m/d H:i:s")."\n";
 			$diz .= "|\n";
-			$diz .= "|        ".chr(36)."URL: $writeit ".chr(36)."\n";
-			$diz .= "|        ".chr(36)."Revision: 1.0 ".chr(36)."\n";
-			$diz .= "|        ".chr(36)."Id: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
+		//	$diz .= "|        ".chr(36)."URL: $writeit ".chr(36)."\n";
+		//	$diz .= "|        ".chr(36)."Revision: 1.0 ".chr(36)."\n";
+		//	$diz .= "|        ".chr(36)."Id: ".date("Y/m/d H:i:s")." ".chr(36)."\n";
 			$diz .= "|        ".chr(36)."Author: ".USERNAME." ".chr(36)."\n";
 			$diz .= "+---------------------------------------------------------------+\n";
 			$diz .= "*".chr(47)."\n\n";
@@ -1187,7 +1285,7 @@ class lancheck
 	{
 		$tp = e107::getParser();
 	//	$sql->db_Mark_Time('Start Get Core Lan Phrases English');
-		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,$checklan);
+		$English = $this->get_comp_lan_phrases(e_LANGUAGEDIR."English/".$subdir,"English");
 		
 	//	$sql->db_Mark_Time('End Get Core Lan Phrases English');
 		$check = $this->get_comp_lan_phrases(e_LANGUAGEDIR.$checklan."/".$subdir,$checklan);
@@ -1335,17 +1433,17 @@ class lancheck
 			$error[] = $def. ": Missing [ and/or ] character(s)";
 		}
 		
-		if((strpos($eng_line,"--LINK--")!==FALSE && strpos($trans_line,"--LINK--")==FALSE))
+		if((strpos($eng_line,"--LINK--")!==false && strpos($trans_line,"--LINK--")===false))
 		{
 			$error[] = $def. ": Missing --LINK--";
 		}
 		
-		if((strpos($eng_line,"e107.org")!==FALSE && strpos($trans_line,"e107.org")==FALSE))
+		if((strpos($eng_line,"e107.org")!==false && strpos($trans_line,"e107.org")===false))
 		{
 			$error[] = $def. ": Missing e107.org URL";
 		}
 		
-		if((strpos($eng_line,"e107coders.org")!==FALSE && strpos($trans_line,"e107coders.org")==FALSE))
+		if((strpos($eng_line,"e107coders.org")!==FALSE && strpos($trans_line,"e107coders.org")===false))
 		{
 			$error[] = $def. ": Missing e107coders.org URL";
 		}
@@ -1436,13 +1534,27 @@ class lancheck
 		
 
 		$fl = e107::getFile();
+		$tp = e107::getParser();
 
 		$ret = array();
 			
 		if($lang_array = $fl->get_files($comp_dir, ".php$","standard",$depth)){
 			sort($lang_array);
 		}
-	
+
+		foreach($lang_array as $k=> $f)
+		{
+			$path = str_replace(e_LANGUAGEDIR.$lang."/", "", $f['path'].$f['fname']);
+
+			if(in_array($path, $this->deprecatedFiles))
+			{
+				unset($lang_array[$k]);
+			}
+		}
+
+
+
+
 		if(strpos($comp_dir,e_LANGUAGEDIR) !== false)
 		{
 			$regexp = "#.php#";
@@ -1518,7 +1630,10 @@ class lancheck
 	
 			}
 		}
-	
+
+
+
+
 		return $ret;
 	
 	}
@@ -1625,7 +1740,17 @@ class lancheck
 
 		//	$text .= "<input class='btn btn-primary' type='button' style='width:60px' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;mode={$mode}'\" /> ";
 
-			$text .= "<a class='btn btn-primary' style='width:60px' href'".e_REQUEST_URI."&amp;f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;type={$mode}'>".LAN_EDIT."</a> ";
+			$parms = $_GET;
+			$parms['sub'] = 'edit';
+			$parms['file'] = $comp_dir."/languages/".$lnk;
+			$parms['lan'] = $this->transLanguage;
+			$parms['iframe'] = 1;
+			$parms['type'] = $mode;
+
+			$editUrl = e_REQUEST_SELF."?".http_build_query($parms,'&amp;');
+
+			$text .= "<a href='".$editUrl."'  class='e-modal btn btn-primary' data-modal-caption='".str_replace("../","",$comp_dir)."' style='width:60px' >".LAN_EDIT."</a> "; // href='".e_REQUEST_URI."&amp;f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;type={$mode}'
+		//	<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button' style='width:60px'>".LAN_EDIT."</a>";
 
 
 			$text .="</td></tr>";
@@ -1722,12 +1847,12 @@ class lancheck
 			$rowamount = round(strlen($trans['orig'][$sk])/34)+1;
 			$hglt1=""; $hglt2="";
 			if ($trans['tran'][$sk] == "" && $trans['orig'][$sk]!="") {
-				$hglt1="<span class='label label-danger label-important e-tip' title='Missing' >";
+				$hglt1="<span class='label label-danger label-important e-tip' title='".LAN_MISSING."'>";//Missing
 				$hglt2="</span>";
 			}
 			elseif($trans['tran'][$sk] == $trans['orig'][$sk])
 			{
-				$hglt1="<span class='label label-warning e-tip' title='Identical' >";
+				$hglt1="<span class='label label-warning e-tip' title='".LAN_CHECK_28."'>";//Identical
 				$hglt2="</span>";
 			}
 			$text .="<tr>

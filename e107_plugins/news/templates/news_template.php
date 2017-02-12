@@ -35,9 +35,9 @@ $NEWS_TEMPLATE['list']['item']	= '
                     </div>
 				</div>
 				<div class="span9 col-md-9">
-                   <h3 class="media-heading">{NEWSTITLELINK}</h3>
+                   <h3 class="media-heading">{NEWS_TITLE: link=1}</h3>
                       <p>
-                       	{NEWSSUMMARY}
+                       	{NEWS_SUMMARY}
 					</p>
                     <p>
                        <a href="{NEWSURL}" class="btn btn-small btn-primary">'.LAN_READ_MORE.'</a>
@@ -80,28 +80,34 @@ $NEWS_TEMPLATE['default']['item'] = '
 ';
 */
 
+$NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
+
 $NEWS_TEMPLATE['default']['item'] = '
-		{SETIMAGE: w=900&h=300}
-		<h2>{NEWSTITLELINK}</h2>
-          <p class="lead">{GLYPH=user} &nbsp;{NEWSAUTHOR}</p>
-          <hr>
-           <div class="row">
-        	<div class="col-md-4">{GLYPH=time} {NEWSDATE=short} </div>
-        	<div class="col-md-8 text-right options">{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </div>
+		{SETIMAGE: w=400&h=400}
+		<div class="default-item">
+		<h2 class="news-title">{NEWS_TITLE: link=1}</h2>
+
+        <hr class="news-heading-sep">
+         	<div class="row">
+        		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
+        		<div class="col-md-6 text-right options"><small>{GLYPH=tags} &nbsp;{NEWSTAGS} &nbsp; {GLYPH=folder-open} &nbsp;{NEWSCATEGORY} </small></div>
         	</div>
-          <hr>
+        <hr>
           {NEWSIMAGE: item=1}
 
-         
-          <hr>
-          <p class="lead">{NEWSSUMMARY}</p>
+          <p class="lead">{NEWS_SUMMARY}</p>
           {NEWSVIDEO: item=1}
-          {NEWSBODY}
+          <div class="text-justify">
+          {NEWS_BODY}
+          </div>
+          <div class="text-right">
+          {EXTENDED}
+          </div>
 		  <hr>
 			<div class="options">
-			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
+			<div class="btn-group hidden-print">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{PDFICON}{SOCIALSHARE}{ADMINOPTIONS: class=btn btn-default}</div>
 			</div>
-
+		</div>
 ';
 
 
@@ -118,8 +124,8 @@ $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-m
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=600}
 	<div class="view-item">
-		<h2 class="news-title">{NEWSTITLELINK}</h2>
-		  <p class="lead">{NEWSSUMMARY}</p>
+		<h2 class="news-title">{NEWS_TITLE: link=1}</h2>
+
         <hr class="news-heading-sep">
          	<div class="row">
         		<div class="col-md-6"><small>{GLYPH=user} &nbsp;{NEWSAUTHOR} &nbsp; {GLYPH=time} &nbsp;{NEWSDATE=short} </small></div>
@@ -130,7 +136,10 @@ $NEWS_TEMPLATE['view']['item'] = '
 
 		<div class="body">
 			{NEWSIMAGE: item=1}
-			{NEWSBODY=body}
+			 <p class="lead">{NEWS_SUMMARY}</p>
+			  <div class="text-justify">
+			{NEWS_BODY=body}
+			</div>
 			<div class="news-videos-1">
 			{NEWSVIDEO: item=1}
 		 	{NEWSVIDEO: item=2}
@@ -153,23 +162,49 @@ $NEWS_TEMPLATE['view']['item'] = '
             {NEWSVIDEO: item=4}
 			{NEWSVIDEO: item=5}
 			
-           <div class="body-extended">
-				{NEWSBODY=extended}
+           <div class="body-extended text-justify">
+				{NEWS_BODY=extended}
 			</div>
 			
 			
 		</div>
+
+
+
+
 		<hr>
 		
-		<div class="options ">
+		<div class="options hidden-print ">
 			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
 		</div>
-			
+
+
+
+
+
 	</div>
+
+	<hr />
 	{NEWSRELATED}
 	<hr>
 	{NEWSNAVLINK}
+
 ';
+
+/*
+ * 	<hr />
+	<h3>About the Author</h3>
+	<div class="media">
+			<div class="media-left">{SETIMAGE: w=80&h=80&crop=1}{NEWS_AUTHOR_AVATAR: shape=circle}</div>
+			<div class="media-body">
+				<h4>{NEWS_AUTHOR}</h4>
+					{NEWS_AUTHOR_SIGNATURE}
+					<a class="btn btn-xs btn-primary" href="{NEWS_AUTHOR_ITEMS_URL}">My Articles</a>
+			</div>
+	</div>
+ */
+
+
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
 
@@ -195,3 +230,15 @@ $NEWS_TEMPLATE['category']['item'] = '
 	</table>
 	</div>
 ';
+
+### Related 'start' - Options: Core 'single' shortcodes including {SETIMAGE}
+### Related 'item' - Options: {RELATED_URL} {RELATED_IMAGE} {RELATED_TITLE} {RELATED_SUMMARY}
+### Related 'end' - Options:  Options: Core 'single' shortcodes including {SETIMAGE}
+/*
+$NEWS_TEMPLATE['related']['start'] = "<hr><h4>".defset('LAN_RELATED', 'Related')."</h4><ul class='e-related'>";
+$NEWS_TEMPLATE['related']['item'] = "<li><a href='{RELATED_URL}'>{RELATED_TITLE}</a></li>";
+$NEWS_TEMPLATE['related']['end'] = "</ul>";*/
+
+$NEWS_TEMPLATE['related']['start'] = '{SETIMAGE: w=350&h=350&crop=1}<h2 class="caption">You Might Also Like</h2><div class="row">';
+$NEWS_TEMPLATE['related']['item'] = '<div class="col-md-4"><a href="{RELATED_URL}">{RELATED_IMAGE}</a><h3><a href="{RELATED_URL}">{RELATED_TITLE}</a></h3></div>';
+$NEWS_TEMPLATE['related']['end'] = '</div>';

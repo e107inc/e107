@@ -69,13 +69,13 @@ define("LANINS_044", "Successfully created database.");
 define("LANINS_045", "Please click on the button to proceed to next stage.");
 define("LANINS_046", "5");
 define("LANINS_047", "Administrator Details");
-// define("LANINS_048", "Go Back To Last Step");
+define("LANINS_048", "EXIF extension");
 define("LANINS_049", "The two passwords you entered are not the same. Please go back and try again.");
-define("LANINS_050", "XML Extension");
+define("LANINS_050", "XML extension");
 define("LANINS_051", "Installed");
 define("LANINS_052", "Not Installed");
-define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [link=http://php.net/manual/en/ref.xml.php]php.net[/link] before continuing");
-// define("LANINS_054", " before continuing");
+// define("LANINS_053", "e107 v2.x requires the PHP XML Extension to be installed. Please contact your host or read the information at [x] before continuing");
+// define("LANINS_054", "e107 v2.x requires the PHP EXIF Extension to be installed. Please contact your host or read the information at [x] before continuing");
 define("LANINS_055", "Install Confirmation");
 define("LANINS_056", "6");
 define("LANINS_057", " e107 now has all the information it needs to complete the installation.
@@ -90,22 +90,6 @@ Please ensure the file [b]core_sql.php[/b] exists in the [b]/e107_core/sql[/b] d
 define("LANINS_061", "e107 was unable to create all of the required database tables.
 Please clear the database and rectify any problems before trying again.");
 
-define("LANINS_062", "[b]Welcome to your new website![/b]
-e107 has installed successfully and is now ready to accept content.
-
-Your administration section is [link=e107_admin/admin.php]located here[/link], click to go there now. You will have to login using the name and password you entered during the installation process.
-
-[b]Support[/b]
-e107 Homepage: [link=http://e107.org]http://e107.org[/link], you will find the FAQ and documentation here.
-Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
-Plugin Developer Community: [link=http://www.e107coders.org]http://e107coders.org[/link]
-
-[b]Downloads[/b]
-Plugins: [link=http://plugins.e107.org]http://plugins.e107.org[/link]
-Themes: [link=http://themes.e107.org]http://themes.e107.org[/link]
-
-Thank you for trying e107, we hope it fulfils your website needs.
-(You can delete this message from your admin section.)");
 
 // define("LANINS_063", "Welcome to e107");
 
@@ -138,7 +122,7 @@ define("LANINS_083", "MySQL Reported Error:");
 define("LANINS_084", "The installer could not establish a connection to the database");
 define("LANINS_085", "The installer could not select database:");
 
-define("LANINS_086", "Admin Username, Admin Password and Admin Email are [b]required[/b] fields. Please return to the last page and ensure the information is correctly entered.");
+define("LANINS_086", "Admin Username, Admin Password and Admin Email are required fields. Please return to the last page and ensure the information is correctly entered.");
 
 // define("LANINS_087", "Misc");
 // define("LANINS_088", "Home");
@@ -187,3 +171,14 @@ define("LANINS_126", "For security reasons you should now set the file permissio
 define("LANINS_127", "The database [x] already exists. Overwrite it? (any existing data will be lost)"); 
 define("LANINS_128", "Overwrite");
 define("LANINS_129", "Database not found.");
+
+define("LANINS_134", "Installation");
+define("LANINS_135", "of");   //single time use installer only as in .1 of 8  not replacing by LAN_SEARCH_12
+define("LANINS_136", "Deleted existing database");
+define("LANINS_137", "Found existing database");
+// define("LANINS_138", "Version");
+
+define("LANINS_141", "Please fill in the form below with your MySQL details. If you do not know this information, please contact your hosting provider. You may hover over each field for additional information.");
+define("LANINS_142", "IMPORTANT: Please rename e107.htaccess to .htaccess");
+define("LANINS_144", "IMPORTANT: Please copy and paste the contents of the [b]e107.htaccess[/b] into your [b].htaccess[/b] file. Please take care NOT to overwrite any existing data that may be in it.");
+define("LANINS_145", "e107 v2.x requires the PHP [x] to be installed. Please contact your host or read the information at [y] before continuing.");

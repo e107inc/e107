@@ -49,15 +49,26 @@ if (!defined('e107_INIT')) { exit; }
 if (strstr(e_MENU, "debug") || isset($_COOKIE['e107_debug_level'])) 
 {
 	$e107_debug = new e107_debug;
-	require_once(e_HANDLER.'db_debug_class.php');
-	$db_debug = new e107_db_debug;
+//	require_once(e_HANDLER.'db_debug_class.php');
+	//$db_debug = new e107_db_debug;
+
+	$db_debug = e107::getDebug();
 	$e107_debug->set_error_reporting();
 	$e107_debug_level = $e107_debug->debug_level;
-	define('E107_DEBUG_LEVEL', $e107_debug_level);
+	if(!defined('E107_DEBUG_LEVEL'))
+	{
+		define('E107_DEBUG_LEVEL', $e107_debug_level);
+	}
 } 
 else 
 {
 	define('E107_DEBUG_LEVEL', 0);
+}
+
+if(!defined('e_DEBUG'))
+{
+	$e_DEBUG = (E107_DEBUG_LEVEL > 0) ? true: false;
+	define('e_DEBUG', $e_DEBUG);
 }
 
 // 
@@ -116,7 +127,7 @@ class e107_debug {
 														// removed: inline debug breaks pages!
 	);
 
-	function e107_debug() 
+	function __construct()
 	{
 	  if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) 
 	  {
@@ -133,15 +144,18 @@ class e107_debug {
 			
 		$aDVal = explode('.',$dVals); // support multiple values, OR'd together
 		$dVal = 0;
+
+
+
 		foreach ($aDVal as $curDVal)
 		{
 		  if (isset($this->aDebugShortcuts[$curDVal])) 
 		  {
 			$dVal |= $this->aDebugShortcuts[$curDVal];
-		  } 
+		  }
 		  else 
 		  {
-				$dVal |= $curDVal;
+				$dVal |= intval($curDVal);
 		  }
 		}
 								

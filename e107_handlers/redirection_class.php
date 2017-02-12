@@ -50,9 +50,18 @@ class redirection
 	 */
 	function __construct()
 	{
-		$this->self_exceptions = array(e_SIGNUP, SITEURL, SITEURL.'index.php', SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
-		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN);
+		$this->self_exceptions = array(e_SIGNUP, SITEURL.'fpw.php', e_LOGIN, SITEURL.'membersonly.php');
+		$this->page_exceptions = array('e_ajax.php', 'e_js.php', 'e_jslib.php', 'sitedown.php',e_LOGIN, 'secimg.php');
 		$this->query_exceptions = array('logout');
+
+		// Remove from self_exceptions:  SITEURL, SITEURL.'index.php', // allows a custom frontpage to be viewed while logged out and membersonly active.
+	}
+
+
+
+	function getSelfExceptions()
+	{
+		return $this->self_exceptions;
 	}
 	
 	/**
@@ -280,7 +289,12 @@ class redirection
 		*/
 		
 		$this->saveMembersOnlyUrl();
-		$this->redirect(e_HTTP.'membersonly.php');
+
+		$redirectType = e107::getPref('membersonly_redirect');
+
+		$redirectURL = ($redirectType == 'splash') ? 'membersonly.php' : 'login.php';
+
+		$this->redirect(e_HTTP.$redirectURL);
 	}
 
 	
@@ -333,23 +347,38 @@ class redirection
 	/**
 	 * Redirect to the given URI
 	 *
-	 * @param string $url or error code number. eg. 404 = Not Found. 
+	 * @param string $url or error code number. eg. 404 = Not Found. If left empty SITEURL will be used.
 	 * @param boolean $replace - default TRUE
 	 * @param integer|null $http_response_code - default NULL
 	 * @param boolean $preventCache
 	 * @return void
 	 */
-	public function go($url, $replace = TRUE, $http_response_code = NULL, $preventCache = true)
+	public function go($url='', $replace = TRUE, $http_response_code = NULL, $preventCache = true)
 	{
-		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url; 
+		$url = str_replace("&amp;", "&", $url); // cleanup when using e_QUERY in $url;
+
+		if(empty($url))
+		{
+			$url = SITEURL;
+		}
+
+		if($url == 'admin')
+		{
+			$url = SITEURLBASE. e_ADMIN_ABS;
+		}
+
+
 					
 		if(defset('e_DEBUG') === 'redirect')
 		{
 			$error = debug_backtrace();
-		
-			e107::getLog()->addDebug("URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n");
-			e107::getLog()->toFile('redirect.log',true); 
-			echo "debug active";
+
+			$message = "URL: ".$url."\nFile: ".$error[1]['file']."\nLine: ".$error[1]['line']."\nClass: ".$error[1]['class']."\nFunction: ".$error[1]['function']."\n\n";
+			e107::getLog()->addDebug($message, true);
+			echo "Debug active";
+			print_a($message);
+			echo "Go to : <a href='".$url."'>".$url."</a>";
+			e107::getLog()->toFile('redirect.log',true);
 			return; 
 		}
 		

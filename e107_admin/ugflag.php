@@ -10,15 +10,16 @@
  *
  */
 require_once ('../class2.php');
+
 if(!getperms('9'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit();
 }
 
 $e_sub_cat = 'maintain';
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('ugflag', true);
 
 $mes = e107::getMessage();
 $frm = e107::getForm();
@@ -124,6 +125,8 @@ $ns->tablerender(UGFLAN_4, $mes->render().$text, 'core-ugflag');
  *
  * @return string JS source
  */
+
+ /*
 function headerjs()
 {
 	$ret = "
@@ -153,4 +156,6 @@ function headerjs()
 	
 	return $ret;
 }
+
+ */
 ?>

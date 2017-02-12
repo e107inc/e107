@@ -8,7 +8,7 @@
  */
 
 
-if(empty($_POST['content']) && empty($_GET['debug']))
+if(empty($_POST['content']) && empty($_GET['debug']) && !defined('TINYMCE_DEBUG'))
 {
 	header('Content-Length: 0');
 	exit;
@@ -17,7 +17,12 @@ if(empty($_POST['content']) && empty($_GET['debug']))
 $_E107['no_online'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
-require_once("../../../../class2.php");
+$_E107['no_maintenance'] = true;
+
+if(!defined('TINYMCE_DEBUG'))
+{
+	require_once("../../../../class2.php");
+}
 
 /**
  * Two Modes supported below going to and from the Tinymce wysiwyg editor.
@@ -29,7 +34,7 @@ require_once("../../../../class2.php");
 class e107TinyMceParser
 {
 
-	protected $gzipCompression = true;
+	protected $gzipCompression = false;
 
 	/**
 	 *
@@ -38,14 +43,31 @@ class e107TinyMceParser
 	{
 		$html = '';
 
+		if(defined('TINYMCE_DEBUG'))
+		{
+			$this->gzipCompression = false;
+		}
+
 		if(!empty($_GET['debug']) && getperms('0'))
 		{
 			$debug = true;  // For future use.
+
+			if(defined("TINYMCE_PARSER_DEBUG_TEXT"))
+			{
+				$text = TINYMCE_PARSER_DEBUG_TEXT;
+				echo "<h1>Original</h1>";
+				print_a($text);
+				echo "<h1>toHtml</h1>";
+			}
+			else
+			{
+
 			$text = <<<TEMPL
 
 	[html][code]Something goes here [b]bold print[/b][/code][/html]
 
 TEMPL;
+			}
 			$_POST['content'] = $text;
 			$_POST['mode'] = 'tohtml';
 		}
@@ -68,6 +90,7 @@ TEMPL;
 		{
 			print_a($html);
 			echo "<hr />";
+			echo "<h1>Rendered</h1>";
 			echo $html;
 		}
 		elseif($this->gzipCompression == true)
@@ -104,9 +127,9 @@ TEMPL;
 			{
 				e107::getBB()->clearClass();
 
-				$content = str_replace('\r\n',"<br />",$content);
-				$content =  nl2br($content, true);
-				$content = $tp->toHtml($content, true);
+				//$content = str_replace('\r\n',"<br />",$content);
+				//$content =  nl2br($content, true);
+				$content = $tp->toHtml($content, true, 'WYSIWYG');
 			}
 
 			$content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor.
@@ -138,7 +161,7 @@ TEMPL;
 			//echo $tp->toHtml(str_replace("\n","",$content), true);
 
 			$content = str_replace("{e_BASE}",e_HTTP, $content); // We want {e_BASE} in the final data going to the DB, but not the editor.
-			$content = $tp->toHtml($content, true);
+			$content = $tp->toHtml($content, true, 'WYSIWYG');
 			$content = str_replace(e_MEDIA_IMAGE,"{e_MEDIA_IMAGE}",$content);
 
 			$text = "";
@@ -167,9 +190,12 @@ TEMPL;
 
 		if(check_class($pref['post_html'])) // Plain HTML mode.
 		{
-			$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
-			$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
-			$content 	= str_replace($srch, $repl, $content);
+
+			$content = trim($content);
+
+		//	$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
+		//	$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
+		//	$content 	= str_replace($srch, $repl, $content);
 
 			// resize the thumbnail to match wysiwyg width/height.
 
@@ -195,13 +221,67 @@ TEMPL;
 			$text = e107::getBB()->htmltoBBcode($content);   // not reliable enough yet.
 		}
 
+		$text = str_replace('[html]<p></p>[/html]','',$text); // cleanup.
+
 		return $text;
 
 	}
 
 
 	/**
+	 * Split a thumb.php url into an array which can be parsed back into the thumbUrl method. .
+	 * @param $src
+	 * @return array
+	 */
+	function thumbUrlDecode($src)
+	{
+		list($url,$qry) = explode("?",$src);
+
+		$ret = array();
+
+		if(strstr($url,"thumb.php") && !empty($qry)) // Regular
+		{
+			parse_str($qry,$val);
+			$ret = $val;
+		}
+		elseif(preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/',$url,$match)) // SEF
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_MEDIA_IMAGE/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+		}
+		elseif(preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // Theme-image SEF Urls
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_THEME/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+
+		}
+		elseif(defined('TINYMCE_DEBUG'))
+		{
+			print_a("thumbUrlDecode: No Matches");
+
+		}
+
+
+		return $ret;
+	}
+
+
+	/**
 	 * Rebuld <img> tags with modified thumbnail size.
+	 * @param $text
+	 * @return mixed
 	 */
 	function updateImg($text)
 	{
@@ -211,8 +291,19 @@ TEMPL;
 		$srch = array("?","&");
 		$repl = array("\?","&amp;");
 
+		if(defined('TINYMCE_DEBUG'))
+		{
+			print_a($arr);
+		}
+
 		foreach($arr['img'] as $img)
 		{
+			if(substr($img['src'],0,4) == 'http' || strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			{
+				continue;
+			}
+
+
 			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
 
 			$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
@@ -220,35 +311,34 @@ TEMPL;
 			$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
 			$class 	= vartrue($img['class'])	? ' class="'.$img['class'].'"' : '';
 			$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
+			$title 	= vartrue($img['title'])	? ' title="'.$img['title'].'"' : '';
+			$srcset = vartrue($img['srcset'])   ? 'srcset="'.$img['srcset'].'"' : '';
 
-			list($url,$qry) = explode("?",$img['src']);
+			$qr = $this->thumbUrlDecode($img['src']);
 
-			parse_str($qry,$qr);
-
-			if(substr($url,0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
+			if(substr($qr['src'],0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
 			{
 				$qr['w'] = $img['width'];
 				$qr['h'] = $img['height'];
 			}
 
-			$src = $url."?".urldecode(http_build_query($qr));
+			$qr['ebase'] = true;
 
-			$replacement = '<img'.$class.$style.' src="'.$src.'"'.$width.$height.$alt.' />';
+			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
+
+			$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';
 
 			$text = preg_replace($regexp, $replacement, $text);
-
 
 		}
 
 		return $text;
-
-
 	}
 
 
 }
 
-new	e107TinyMceParser();
+$mce = new	e107TinyMceParser();
 
 
 ?>

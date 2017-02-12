@@ -31,13 +31,13 @@ $eplug_admin = true;
 require_once('../../class2.php');
 if(!getperms('P') || !e107::isInstalled('alt_auth'))
 {
-	header('location:'.e_BASE.'index.php'); 
+	e107::redirect('admin');
 	exit(); 
 }
 require_once(e_HANDLER.'form_handler.php');
 $frm = e107::getForm();
 require_once(e_ADMIN.'auth.php');
-include_lan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
+e107::includeLan(e_PLUGIN.'alt_auth/languages/'.e_LANGUAGE.'/admin_alt_auth.php');
 define('ALT_AUTH_ACTION', 'main');
 require_once(e_PLUGIN.'alt_auth/alt_auth_adminmenu.php');
 require_once(e_HANDLER.'user_extended_class.php');
@@ -178,7 +178,7 @@ $ns->tablerender(LAN_ALT_3, $text);
 
 if ($euf->userCount)
 {
-	include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
+	e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_user_extended.php');
 	$fl = &$euf->fieldDefinitions;
 	$text = "<div>
 		<form method='post' action='".e_SELF."'>

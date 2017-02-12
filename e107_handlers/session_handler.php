@@ -147,7 +147,7 @@ class e_session
 		'path'		 => '',
 		'domain'	 => '',
 		'secure'	 => false,
-		'httponly'	 => false,
+		'httponly'	 => true,
 	);
 
 	/**
@@ -197,22 +197,43 @@ class e_session
 			);
 			
 			$options = array(
-				'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+		//		'httponly' => (e_SECURITY_LEVEL >= self::SECURITY_LEVEL_PARANOID),
+				'httponly' => true,
 			);
 			
 			if(!defined('E107_INSTALL'))
 			{
+				$systemSaveMethod = ini_get('session.save_handler');
+
+			//	e107::getDebug()->log("Save Method:".$systemSaveMethod);
+
+				$saveMethod = (!empty($systemSaveMethod)) ? $systemSaveMethod : 'files';
+
 				$config['SavePath'] = e107::getPref('session_save_path', false); // FIXME - new pref
-				$config['SaveMethod'] = e107::getPref('session_save_method', 'files'); // FIXME - new pref
-				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); // FIXME - new pref
+				$config['SaveMethod'] = e107::getPref('session_save_method', $saveMethod); // FIXME - new pref
+				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); //
 				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
-				$options['secure'] = e107::getPref('ssl_enabled', false); // FIXME - new pref
+				$options['secure'] = e107::getPref('ssl_enabled', false); //
 			}
+
+			if(defined('SESSION_SAVE_PATH')) // safer than a pref.
+			{
+				$config['SavePath'] = e_BASE. SESSION_SAVE_PATH;
+			}
+
+			$hashes = hash_algos();
+
+			if((e_SECURITY_LEVEL >= self::SECURITY_LEVEL_BALANCED) && in_array('sha512',$hashes))
+			{
+				ini_set('session.hash_function', 'sha512');
+				ini_set('session.hash_bits_per_character', 5);
+			}
+
 			
 			$this->setConfig($config)
 				->setOptions($options);
 		}
-		
+
 		return $this;
 	}
 	
@@ -318,8 +339,13 @@ class e_session
 	 * @param string $key
 	 * @return e_session
 	 */
-	public function clear($key)
+	public function clear($key=null)
 	{
+		if($key == null) // clear all under this namespace.
+		{
+			$this->_data = array(); // must be set to array() not unset.
+		}
+
 		unset($this->_data[$key]);
 		return $this;
 	}
@@ -436,14 +462,17 @@ class e_session
 			break;
 
 			default:
-				session_module_name('files');
+				if(!isset($_SESSION))
+				{
+					session_module_name($this->_sessionSaveMethod);
+				}
 			break;
 		}
 
 		if (empty($this->_options['domain']))
 		{
 			// MULTILANG_SUBDOMAIN set during initial language detection in language handler
-			$doma = ((!e_SUBDOMAIN || deftrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
+			$doma = ((deftrue('e_SUBDOMAIN') || deftrue('MULTILANG_SUBDOMAIN')) && e_DOMAIN != FALSE) ? ".".e_DOMAIN : FALSE; // from v1.x
 			$this->_options['domain'] = $doma;
 		}
 
@@ -864,11 +893,11 @@ class e_core_session extends e_session
 				//	$details .= print_r($_POST,true);
 				//	$details .= "\n_GET:\n";
 				//	$details .= print_r($_GET,true);
-					if($pref['plug_installed'])
+				/*	if($pref['plug_installed'])
 					{
 						$details .= "\nPlugins:\n";
 						$details .= print_r($pref['plug_installed'],true);
-					}
+					}*/
 					
 					$details .= "die = ".($die == true ? 'true' : 'false')."\n\n---------------------------------\n\n";
 				

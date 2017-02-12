@@ -14,10 +14,13 @@ if (!defined('e107_INIT')) { exit; }
 class login_shortcodes extends e_shortcode
 {
 	var $secImg = false;
-	
+	protected $userReg = false; // user registration pref.
+
+
 	function __construct()
 	{
 		$pref = e107::getPref();
+		$this->userReg = intval($pref['user_reg']);
 		$this->secImg = ($pref['logcode'] && extension_loaded("gd")) ? true : false;	
 	}
 	
@@ -31,11 +34,22 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_loginmessage($parm='')
 	{
-		return LOGINMESSAGE;	
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
+		return LOGINMESSAGE;
 	}
 	
 	function sc_login_table_username($parm='') //FIXME use $frm
 	{
+
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		$pref = e107::getPref();
 		$allowEmailLogin = varset($pref['allowEmailLogin'],0);
 		$ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
@@ -47,6 +61,11 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_password($parm='') //FIXME use $frm
 	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		$pref = e107::getPref();
 		$text = "<input class='tbox form-control input-block-level' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
 		
@@ -59,6 +78,11 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_secimg_lan($parm='')
 	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		if(!$this->secImg){ return; }
 		return e107::getSecureImg()->renderLabel();
 		// return LAN_LOGIN_13;	
@@ -73,6 +97,11 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_secimg_secimg($parm='')
 	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		if(!$this->secImg){ return; }
 		return e107::getSecureImg()->renderImage();
 		// return e107::getSecureImg()->r_image();	
@@ -80,6 +109,11 @@ class login_shortcodes extends e_shortcode
 	
 	function sc_login_table_secimg_textboc($parm='')
 	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		if(!$this->secImg){ return; }
 		return 	e107::getSecureImg()->renderInput();
 		// return "<input class='tbox' type='text' name='code_verify' size='15' maxlength='20' />";	
@@ -87,37 +121,82 @@ class login_shortcodes extends e_shortcode
 
 	function sc_login_table_autologin($parm='')//FIXME use $frm
 	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		return "<input type='checkbox' name='autologin' value='1' />";	
 	}
 	
 
 	function sc_login_table_autologin_lan($parm='')
 	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
 		return LAN_LOGIN_8;	
+	}
+
+	function sc_login_table_rememberme($parm=null)
+	{
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
+		return e107::getForm()->checkbox('autologin',1,false,LAN_LOGIN_8);
+
 	}
 	
 	function sc_login_table_submit($parm="") //FIXME use $frm
 	{
-		
-		$class = ($parm == 'large') ? "btn-large" : "";		
+		if(empty($this->userReg))
+		{
+			return null;
+		}
+
+		$class = ($parm == 'large') ? "btn-large btn-lg" : "";
 		return "<input class='btn btn-primary ".$class." button' type='submit' name='userlogin' value=\"".LAN_LOGIN_9."\" />";
 	}
 	
 	
-	function sc_login_table_footer_userreg()
+	function sc_login_table_footer_userreg($parm='')
 	{
-		$pref = e107::getPref();
+		//$pref = e107::getPref();
+
+		if(empty($this->userReg))
+		{
+			return null;
+		}
 		
-		if ($pref['user_reg'])
+		$text = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
+		$text .= "&nbsp;&nbsp;&nbsp;<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
+		return $text;
+
+	}
+
+	function sc_login_table_signup_link($parm='')
+	{
+		if($this->userReg === 1)
 		{
-			$text = "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>"; 
-			$text .= "&nbsp;&nbsp;&nbsp;<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
-			return $text;
+			return "<a href='".e_SIGNUP."'>".LAN_LOGIN_11."</a>";
 		}
-		else
+
+		return null;
+	}
+
+
+	function sc_login_table_fpw_link($parm='')
+	{
+		if(empty($this->userReg))
 		{
-			return '&nbsp;';		// In case no registration system enabled	
+			return null;
 		}
+
+		return "<a href='".e_BASE."fpw.php'>".LAN_LOGIN_12."</a>";
 	}
 	
 

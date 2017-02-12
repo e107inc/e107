@@ -13,18 +13,16 @@
 require_once('../class2.php');
 if (!getperms('X'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('search', true);
 
 $e_sub_cat = 'search';
 require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'search_class.php');
-
-
 
 $frm = e107::getForm();
 $mes = e107::getMessage();
@@ -387,7 +385,7 @@ else
 							<td>".$value."</td>
 							<td class='center'>".r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='core_handlers[".$key."][order]' class='tbox order'>
+								<select name='core_handlers[".$key."][order]' class='tbox order form-control input-small'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
@@ -440,7 +438,7 @@ else
 							<td>".$search_info[0]['qtype'] . "</td>
 							<td class='center'>".r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes")."</td>
 							<td class='center'>
-								<select name='plug_handlers[".$plug_dir."][order]' class='tbox order'>
+								<select name='plug_handlers[".$plug_dir."][order]' class='form-control input-small order'>
 		";
 		for($a = 1; $a <= $handlers_total; $a++)
 		 {
@@ -494,6 +492,12 @@ else
 	foreach ($search_prefs['comments_handlers'] as $key => $value) 
 	{
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
+
+		if($value['dir'] == 'download' && !e107::isInstalled($value['dir']))
+		{
+			continue;
+		}
+
 		if(is_readable($path))
 		{
 			require_once($path);
@@ -537,6 +541,9 @@ function search_adminmenu()
 	$var['settings']['text'] = LAN_PREFS;
 	$var['settings']['link'] = e_SELF."?settings";
 
-	e107::getNav()->admin(SEALAN_40, $action, $var);
+		$icon  = e107::getParser()->toIcon('e-search-24');
+		$caption = $icon."<span>".SEALAN_40."</span>";
+
+	e107::getNav()->admin($caption, $action, $var);
 }
 ?>

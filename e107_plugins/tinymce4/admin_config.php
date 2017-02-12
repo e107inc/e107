@@ -11,7 +11,7 @@
 require_once("../../class2.php");
 if( !e107::isInstalled('tinymce4'))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit();
 }
 
@@ -339,7 +339,7 @@ class tinymce
 		{
 			$query = str_replace("{ID}",$id,$this->editQry);
 			$sql->db_Select_gen($query);
-			$row = $sql->db_Fetch(MYSQL_ASSOC);			
+			$row = $sql->db_Fetch();
 		}
 		else
 		{

@@ -20,7 +20,7 @@ define('DOWNLOAD_DEBUG',FALSE);
 require_once("../../class2.php");
 if (!getperms("P") || !e107::isInstalled('download'))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit() ;
 }
 
@@ -158,9 +158,9 @@ if (isset($_POST['updateuploadoptions']))
 
 $targetFields = array('gen_datestamp', 'gen_user_id', 'gen_ip', 'gen_intdata', 'gen_chardata');		// Fields for download limits
 
-if (isset($_POST['addlimit']))
+if (!empty($_POST['addlimit']))
 {
-	if ($sql->db_Select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = {$_POST['newlimit_class']}"))
+	if ($sql->select('generic','gen_id',"gen_type = 'download_limit' AND gen_datestamp = ".intval($_POST['newlimit_class'])))
 	{
 		$message = DOWLAN_116;
 	}
@@ -173,7 +173,7 @@ if (isset($_POST['addlimit']))
 			$vals[$targetFields[$k]] = intval($_POST[$lName]);
 		}
 		$valString = implode(',',$vals);
-		if ($sql->db_Insert('generic',$vals))
+		if ($sql->insert('generic',$vals))
 		{
 			$message = DOWLAN_117;
 			e107::getLog()->add('DOWNL_09',$valString,E_LOG_INFORMATIVE,'');
@@ -364,8 +364,12 @@ if ($action == "uopt")
          foreach($activeUploads as $row)
          {
             $post_author_id = substr($row['upload_poster'], 0, strpos($row['upload_poster'], "."));
-            $post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1));
-            $poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
+            $post_author_name = substr($row['upload_poster'], (strpos($row['upload_poster'], ".")+1)); 
+            // $poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : "<a href='".e_BASE."user.php?id.".$post_author_id."'><b>".$post_author_name."</b></a>");
+            $uparams = array('id' => $post_author_id, 'name' => $post_author_name);
+            $link = e107::getUrl()->create('user/profile/view', $uparams);
+            $userlink = "<a href='".$link."'><b>".$post_author_name."</b></a>";
+            $poster = (!$post_author_id ? "<b>".$post_author_name."</b>" : $userlink);
             $upload_datestamp = $gen->convert_date($row['upload_datestamp'], "short");
             $text .= "
             <tr>

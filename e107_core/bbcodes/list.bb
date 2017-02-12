@@ -25,10 +25,11 @@ else
   $listitems = explode("*", $code_text);
 }
 
-if ($parm == '')
+if (empty($parm))
 {	/* unordered list */
   $listtext = "<ul class='bbcode'>";
   $trailer = "</ul>";
+  $type = '';
 }
 else
 {

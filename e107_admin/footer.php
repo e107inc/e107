@@ -203,9 +203,10 @@ if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
-	echo "<div class='e-debug query-notice'><table class='fborder' style='width: 100%;'>
+	echo "<div class='e-debug query-notice'>
+		<table class='fborder table table-bordered table-striped' style='width: 100%;'>
 		<tr>
-		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
+		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
 		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
@@ -348,6 +349,10 @@ if (abs($_serverTime - $lastSet) > 120)
      //  </script>\n";
 }
 
+// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear
+// afterwards.
+e107::getJs()->renderJs('settings');
+
 e107::getJs()->renderJs('footer_inline', true);
 
 //
@@ -406,78 +411,41 @@ if($tmp1)
 
 // Shutdown
 $e107->destruct();
-
+/*
 if($tmp)
 {
 	$page = str_replace($tmp['search'], $tmp['replace'], ob_get_clean());
 }
 else
+{*/
+
+//$length = ob_get_length();
+// $page = ob_get_clean();
+// }
+
+
+
+
+// $page = ob_get_clean();
+
+// New - see class2.php
+$ehd = new e_http_header;
+if($tmp)
 {
-	$page = ob_get_clean();
-}
-unset($tmp1, $tmp1);
-
-
-
-
-$etag = md5($page);
-
-if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
-{
-	$IF_NONE_MATCH = str_replace('"','',$_SERVER['HTTP_IF_NONE_MATCH']);
-	
-	$data = "IF_NON_MATCH = ".$IF_NONE_MATCH;
-	$data .= "\nEtag = ".$etag;
-	//file_put_contents(e_ADMIN."etag_log.txt",$data);
-
-	
-	if($IF_NONE_MATCH == $etag || ($IF_NONE_MATCH == ($etag."-gzip")))
-	{
-		header('HTTP/1.1 304 Not Modified');
-		exit();	
-	}
-}
-
-
-header("Cache-Control: max-age=5,no-cache",true);	// XXX testing 'always on' state for now. 
-if(!defined('e_NOCACHE'))
-{
-	// header("Cache-Control: must-revalidate");	
-}
-
-
-$pref['compression_level'] = 6;
-if (strstr(varset($_SERVER["HTTP_ACCEPT_ENCODING"], ""), "gzip"))
-{
-	$browser_support = true;
-}
-if (ini_get("zlib.output_compression") == false && function_exists("gzencode"))
-{
-	$server_support = true;
-}
-if (varset($pref['compress_output'], false) && $server_support == true && $browser_support == true)
-{
-	$level = intval($pref['compression_level']);
-	header("ETag: \"{$etag}-gzip\"");
-	$page = gzencode($page, $level);
-	header("Content-Encoding: gzip", true);
-	header("Content-Length: ".strlen($page), true);
-	echo $page;
+	$ehd->setContent('buffer',$tmp['search'],$tmp['replace']);
 }
 else
 {
-	if($browser_support==TRUE) 
-	{
-		header("ETag: \"{$etag}-gzip\"");	
-	}
-	else
-	{
-		header("ETag: \"{$etag}\"");	
-	}
-	
-	header("Content-Length: ".strlen($page), true);
-	echo $page;
+	$ehd->setContent('buffer');
 }
+unset($tmp1, $tmp1);
+$ehd->send();
+$page = $ehd->getOutput();
+// $ehd->debug();
+
+// real output
+echo $page;
+
 
 unset($In_e107_Footer);
 $e107_Clean_Exit = TRUE; // For registered shutdown function -- let it know all is well!

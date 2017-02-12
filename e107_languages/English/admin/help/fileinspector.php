@@ -16,7 +16,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-
+/*
 
 $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_core.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Core File</div>
@@ -34,7 +34,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_old.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Old Core File</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Non Core File</div>";
-$ns -> tablerender("File Key", $text);
+$ns -> tablerender("File Key", $text);*/
 
 $text = "File Inspector scans and analyses the files on your sites server. When File Inspector encounters 
 an e107 core file, it checks it for file consistency to make sure it isn't corrupted.";

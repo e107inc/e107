@@ -15,11 +15,11 @@ require_once ('../../class2.php');
 
 if (!getperms('P'))
 {
-	header('location:' . e_BASE . 'index.php');
+	e107::redirect();
 	exit ;
 }
 
-error_reporting(E_ALL);
+
 require_once (e_PLUGIN . 'forum/forum_class.php');
 require_once (e_ADMIN . 'auth.php');
 
@@ -190,11 +190,20 @@ function step2()
 	$ret = '';
 	$failed = false;
 	$text = '';
+	$sql = e107::getDb();
 	foreach ($tabList as $name => $rename)
 	{
 		$message = 'Creating table ' . ($rename ? $rename : $name);
 
-		$result = $db -> createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
+		$curTable = ($rename ? $rename : $name);
+
+		if($sql->isTable($curTable) && $sql->isEmpty($curTable))
+		{
+			$mes -> addSuccess("Skipping table ".$name." (already exists)");
+			continue;
+		}
+
+		$result = $db->createTable(e_PLUGIN . 'forum/forum_sql.php', $name, true, $rename);
 		if ($result === true)
 		{
 			$mes -> addSuccess($message);
@@ -221,9 +230,9 @@ function step2()
 	$ns -> tablerender('Step 2: Forum table creation', $mes -> render() . $text);
 }
 
-// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib,
-// $source)
 
+
+// FIXME - use e107::getPlugin()->manage_extended_field('add', $name, $attrib, $source)
 function step3()
 {
 	$ns = e107::getRender();
@@ -346,6 +355,15 @@ function step4()
 	$fconf -> setPref($old_prefs) -> save(false, true);
 	$coreConfig -> save(false, true);
 
+
+	// -----Upgrade old menu prefs ----------------
+	global $forum;
+	$forum->upgradeLegacyPrefs();
+
+	// --------------------
+
+
+
 	$result = array(
 		'usercount' => 0,
 		'viewcount' => 0,
@@ -357,7 +375,7 @@ function step4()
 		require_once (e_HANDLER . 'user_extended_class.php');
 		$ue = new e107_user_extended;
 
-		while ($row = $db -> fetch(MYSQL_ASSOC))
+		while ($row = $db -> fetch())
 		{
 			$result['usercount']++;
 			$userId = (int)$row['user_id'];
@@ -381,7 +399,7 @@ function step4()
 
 			if ($viewed != '')
 			{
-				$ue -> user_extended_setvalue($userId, 'plugin_forum_viewed', mysql_real_escape_string($viewed));
+				$ue->user_extended_setvalue($userId, 'plugin_forum_viewed', ($viewed));
 				$result['viewcount']++;
 			}
 
@@ -700,7 +718,7 @@ function step8_ajax()
 
 	if ($sql->select('forum', 'forum_id', 'forum_parent != 0 AND forum_id > '.$lastThread.' ORDER BY forum_id LIMIT 2'))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$parentList[] = $row['forum_id'];
 		}
@@ -750,7 +768,7 @@ function step9()
 	";
 	if ($sql -> gen($qry))
 	{
-		while ($row = $sql -> fetch(MYSQL_ASSOC))
+		while ($row = $sql -> fetch())
 		{
 			$threadList[] = $row['thread_id'];
 		}
@@ -758,7 +776,7 @@ function step9()
 		{
 			if ($sql -> select('forum_thread', 'thread_options', 'thread_id = ' . $threadId, 'default'))
 			{
-				$row = $sql -> fetch(MYSQL_ASSOC);
+				$row = $sql -> fetch();
 				if ($row['thread_options'])
 				{
 					$opts = unserialize($row['thread_options']);
@@ -864,7 +882,7 @@ function step10_ajax()//TODO
 	
 	if ($sql->gen($qry))
 	{
-		while ($row = $sql->fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			$postList[] = $row;
 		}
@@ -1261,7 +1279,7 @@ function step12()
 
 class forumUpgrade
 {
-	var $newVersion = '2.0';
+	private $newVersion = '2.0';
 	var $error = array();
 	public $updateInfo;
 	private $attachmentData;
@@ -1338,7 +1356,7 @@ class forumUpgrade
 		/*
 		if ($sql -> select('generic', '*', "gen_type = 'forumUpgrade'"))
 		{
-			$row = $sql -> fetch(MYSQL_ASSOC);
+			$row = $sql -> fetch();
 			$this -> updateInfo = unserialize($row['gen_chardata']);
 		}
 		else
@@ -1358,10 +1376,12 @@ class forumUpgrade
 
 	function setNewVersion()
 	{
-		$sql = e107::getDb();
+		// $sql = e107::getDb();
 
-		$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum'");
-		e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+	//	$sql -> update('plugin', "plugin_version = '{$this->newVersion}' WHERE plugin_name='Forum' OR plugin_name = 'LAN_PLUGIN_FORUM_NAME'");
+	//	e107::getConfig()->setPref('plug_installed/forum', $this->newVersion)->save(false,true,false);
+
+		e107::getPlugin()->refresh('forum');
 
 		return "Forum Version updated to version: {$this->newVersion} <br />";
 	}
@@ -1447,7 +1467,7 @@ class forumUpgrade
 		$thread['thread_views'] = $post['thread_views'];
 		$thread['thread_active'] = $post['thread_active'];
 		$thread['thread_sticky'] = $post['thread_s'];
-		//	$thread['thread_lastuser']		= $post['thread_lastuser'];
+		$thread['thread_lastuser']		= $this->getLastUser($post['thread_lastuser']);
 		$thread['thread_total_replies'] = $post['thread_total_replies'];
 
 		$userInfo = $this -> getUserInfo($post['thread_user']);
@@ -1470,6 +1490,23 @@ class forumUpgrade
 		$result = e107::getDb() -> insert('forum_thread', $thread);
 		return $result;
 	}
+
+
+	private function getLastUser($string)
+	{
+
+		if(empty($string))
+		{
+			return 0;
+		}
+
+		list($num,$name) = explode(".",$string,2);
+
+		return intval($num);
+
+	}
+
+
 
 	function addPost(&$post)
 	{
@@ -1503,46 +1540,33 @@ class forumUpgrade
 
 	}
 
-	function getUserInfo(&$info)
+	function getUserInfo($info)
 	{
-		$e107 = e107::getInstance();
-		
-		$tmp = explode('.', $info);
-		$ret = array(
-			'user_id' => 0,
-			'user_ip' => '_NULL_',
-			'anon_name' => '_NULL_'
-		);
+	    $tmp     = explode('.', $info);
+	    $id     = (int)$tmp[0];
 
-		if (count($tmp) == 2)
-		{
-			$id = (int)$tmp[0];
-			if ($id == 0)//Anonymous post
-			{
-				$_tmp = explode(chr(0), $tmp[1]);
-				if (count($_tmp) == 2)//Ip address exists
-				{
-					$ret['user_ip'] = $e107 -> ipEncode($_tmp[1]);
-					$ret['anon_name'] = $_tmp[0];
-				}
-			}
-			else
-			{
-				$ret['user_id'] = $id;
-			}
-		}
-		else
-		{
-			if (is_numeric($info) && $info > 0)
-			{
-				$ret['user_id'] = $info;
-			}
-			else
-			{
-				$ret['anon_name'] = 'Unknown';
-			}
-		}
-		return $ret;
+	    // Set default values
+	    $ret = array(
+	        'user_id'   => 0,
+	        'user_ip'   => '_NULL_',
+	        'anon_name' => '_NULL_'
+	    );
+
+	    // Check if post is done anonymously (ID = 0, and there should be a chr(1) value between the username and IP address)
+	    if(strpos($info, chr(1)) !== false && $id == 0)
+	    {
+	        $anon = explode(chr(1), $info);
+	        $anon_name = explode('.', $anon[0]);
+
+	        $ret['anon_name'] = $anon_name[1];
+	        $ret['user_ip']	  = e107::getIPHandler()->ipEncode($anon[1]);
+	    }
+	    // User id is known - NOT anonymous
+	    {
+	        $ret['user_id'] = $id;
+	    }
+
+	    return $ret;
 	}
 
 	function moveAttachment($attachment, $post, &$error)

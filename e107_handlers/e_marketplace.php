@@ -192,7 +192,7 @@ class e_marketplace
 	{
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			e107::getMessage()->addDebug("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
+			e107::getDebug()->log("Calling e107.org  using <b> ".$this->_adapter_name."</b> adapter");
 		}
 		return $this->adapter()->call($method, $data, $apply);
 	}
@@ -223,6 +223,122 @@ class e_marketplace
 		$this->adapter = null;
 		//echo "Adapter destroyed", PHP_EOL;
 	}
+
+
+	/**
+	 * @param $data - e107.org plugin/theme feed data.
+	 * @return bool|string
+	 */
+	public function getDownloadModal($type='plugin',$data)
+	{
+
+		$url = false;
+
+		if($type === 'plugin')
+		{
+
+			if(empty($data['plugin_id']))
+			{
+
+				$srcData = array(
+					'plugin_id'     => $data['params']['id'],
+					'plugin_folder' => $data['folder'],
+					'plugin_price'  => $data['price'],
+					'plugin_mode'   => $data['params']['mode'],
+					'plugin_url'    => $data['url'],
+				);
+			}
+			else
+			{
+				$srcData = $data;
+			}
+
+			$d = http_build_query($srcData,false,'&');
+
+		//	if(deftrue('e_DEBUG_PLUGMANAGER'))
+			{
+				$url = e_ADMIN.'plugin.php?mode=online&action=download&src='.base64_encode($d);
+			}
+		//	else
+			{
+			//	$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+			}
+
+
+		}
+
+		if($type === 'theme')
+		{
+			$srcData = array(
+				'id'    => $data['params']['id'],
+				'url'   => $data['url'],
+				'mode'  => 'addon',
+				'price' => $data['price']
+			);
+
+			$d = http_build_query($srcData,false,'&');
+			$url = e_ADMIN.'theme.php?mode=download&src='.base64_encode($d);//$url.'&amp;action=download';
+
+		}
+
+
+		return $url;
+
+	}
+
+
+
+
+
+	public function getVersionList($type='plugin')
+	{
+		$cache = e107::getCache();
+		$cache->setMD5('_', false);
+
+		$tag = 'Versions_'.$type;
+
+		if($data = $cache->retrieve($tag,(60 * 12), true, true))
+		{
+			return e107::unserialize($data);
+		}
+
+	//	$mp = $this->getMarketplace();
+	//	$mp->generateAuthKey($e107SiteUsername, $e107SiteUserpass);
+		e107::getDebug()->log("Retrieving ".$type." version list from e107.org");
+
+		$xdata = $this->call('getList', array(
+			'type' => $type,
+			'params' => array('limit' => 200, 'search' => null, 'from' => 0)
+		));
+
+		$arr = array();
+
+		if(!empty($xdata['data']))
+		{
+
+			foreach($xdata['data'] as $row)
+			{
+				$k = $row['folder'];
+				$arr[$k] = $row;
+			}
+
+		}
+
+
+		if(empty($arr))
+		{
+			$arr = array('-unable-to-connect'); // make sure something is cached so further lookups stop.
+		}
+
+		$data = e107::serialize($arr, 'json');
+		$cache->set($tag, $data, true, true, true);
+
+		return $arr;
+
+	}
+
+
+
 }
 
 abstract class e_marketplace_adapter_abstract
@@ -325,7 +441,7 @@ abstract class e_marketplace_adapter_abstract
 		$remotefile = $this->downloadUrl."?auth=".$this->getAuthKey()."&".$qry;
 
 		$localfile = md5($remotefile.time()).".zip";
-		$mes->addSuccess("Downloading..."); 
+		$mes->addSuccess(TPVLAN_81); 
 	
 		// FIXME call the service, check status first, then download (if status OK), else retireve the error break and show it
 		
@@ -347,7 +463,10 @@ abstract class e_marketplace_adapter_abstract
 		
 		if(!file_exists(e_TEMP.$localfile))
 		{
-			$mes->addError( "Automated download not possible. Please <a href='".$remotefile."'>Download Manually</a>"); 
+			$srch = array("[", "]");
+			$repl = array("<a href='".$remotefile."'>", "</a>");
+
+			$mes->addError( TPVLAN_83." ".str_replace($srch, $repl, TPVLAN_84));
 			
 			if(E107_DEBUG_LEVEL > 0)
 			{
@@ -358,25 +477,18 @@ abstract class e_marketplace_adapter_abstract
 		}
 		
 		
-		if($fl->unzipArchive($localfile,$type))
+		if($fl->unzipArchive($localfile,$type, true))
 		{
-			$mes->addSuccess("Download Complete!"); 
+			$mes->addSuccess(TPVLAN_82); 
 			return true; 
 		}
 		else 
 		{
-			$mes->addSuccess( "<a href='".$remotefile."'>Download Manually</a>"); // flush(); usleep(50000);
+			$mes->addSuccess( "<a href='".$remotefile."'>".TPVLAN_84."</a>");
 		}
 		
 		return false; 
 	}
-
-	
-	
-	
-	
-	
-	
 			
 		
 
@@ -392,9 +504,12 @@ abstract class e_marketplace_adapter_abstract
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
         //$fp1 = fopen(e_TEMP.'/curllog.txt', 'w'); 
-       
-        $cp = curl_init($remote_url);
-		curl_setopt($cp, CURLOPT_FILE, $fp);
+
+
+        $cp = e107::getFile()->initCurl($remote_url);
+        curl_setopt($cp, CURLOPT_FILE, $fp);
+     /*   $cp = curl_init($remote_url);
+
 		
 		//curl_setopt($ch, CURLOPT_VERBOSE, 1);
 		//curl_setopt($ch, CURLOPT_STDERR, $fp1);
@@ -402,7 +517,7 @@ abstract class e_marketplace_adapter_abstract
 		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');*/
 
         $buffer = curl_exec($cp);
        	
@@ -450,10 +565,23 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			'exception' 			=> true,
 		    "uri" 					=> "http://server.soap.e107.inc.com/",
 		    'cache_wsdl'			=> WSDL_CACHE_NONE,
-		    'connection_timeout' 	=> 60,
+		    'connection_timeout' 	=> 5,
 		);
 
-		$this->client = new SoapClient($this->serviceUrl, $options);
+
+		try
+		{
+			//libxml_disable_entity_loader(false);
+            $this->client = new SoapClient($this->serviceUrl, $options);
+        }
+        catch (Exception $e)
+        {
+	        $message = deftrue('LAN_ERROR_CONNECTION', "Unable to connect for updates. Please check firewall and/or internet connection.");
+            e107::getMessage()->addInfo($message);
+            e107::getMessage()->addDebug($e->getMessage());
+        }
+
+
 
 		if(function_exists('xdebug_disable'))
 		{
@@ -490,9 +618,18 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		$auth = new stdClass;
 		$auth->authKey = $this->getAuthKey();
 		$header = new SoapHeader('http://e107.org/services/auth', 'checkAuthHeader', $auth);
+
+		if(!is_object($this->client))
+		{
+			$result['exception'] = array();
+			$result['exception']['message'] = "Unable to connect at this time.";
+			return $result;
+		}
 		
 		try
 		{
+
+
 			$this->client->__setSoapHeaders(array($header));
 			if(is_array($args) && $apply)
 			{

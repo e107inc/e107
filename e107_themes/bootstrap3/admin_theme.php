@@ -1,46 +1,54 @@
 <?php
-if ( ! defined('e107_INIT')) { exit(); }
 
-define("SEP"," <span class='fa fa-play e-breadcrumb'></span> ");
-define("BOOTSTRAP", 	3);
-define('FONTAWESOME',	4);
+/**
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * @file
+ * Bootstrap 3 Theme for e107 v2.x admin area.
+ */
 
-e107::js("url", 		"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",'jquery', 2);
-// e107::css('url', 		'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
-e107::css('url', 		"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
+if(!defined('e107_INIT'))
+{
+	exit();
+}
 
-// Too slow.
-// e107::css('url', "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css");
-// e107::js('url',  "http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js");
+define("SEP", " <span class='fa fa-play e-breadcrumb'></span> ");
+define("BOOTSTRAP", 3);
+define('FONTAWESOME', 4);
 
-e107::css('core', 	'bootstrap3-editable/css/bootstrap-editable.css', 'jquery');
-e107::js('core', 	'bootstrap3-editable/js/bootstrap-editable.min.js', 'jquery', 4);
+e107::library('load', 'bootstrap');
+e107::library('load', 'fontawesome');
+e107::library('load', 'bootstrap.editable');
 
-// e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/slate/bootstrap.min.css');
-// e107::css('url', 'http://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cyborg/bootstrap.min.css');
-// e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/cosmo/bootstrap.min.css");
-// e107::css('url', "https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/darkly/bootstrap.min.css");
-
-e107::css('theme','css/bootstrap-dark.min.css');
-e107::css('theme','admin_style.css');
-e107::css('theme','admin_dark.css');
-e107::css('theme','ie_all.css',null,'all',"<!--[if IE]>","<![endif]-->");
+$adminStyle = e107::pref('core', 'admincss', 'css/bootstrap-dark.min.css');
+e107::css('theme', $adminStyle);
+e107::css('theme', 'admin_style.css');
+e107::css('theme', 'ie_all.css', null, 'all', "<!--[if IE]>", "<![endif]-->");
 
 e107::css('inline', "
-/* TinyMce */
-
 .mce-menubar .mce-caret             { border-top-color: #C6C6C6!important  }
 .mce-menubar:hover .mce-caret       { border-top-color: #FFFFFF!important }
-.mce-menubar .mce-btn button        { color: #C6C6C6!important; } /* v4.1+ */
-.mce-menubar .mce-btn button span   { color: #C6C6C6!important; } /* v4.0 */
+.mce-menubar .mce-btn button        { color: #C6C6C6!important; }
+.mce-menubar .mce-btn button span   { color: #C6C6C6!important; }
 .mce-menubar .mce-btn button:hover  { color: #FFFFFF!important; }
-.mce-menubar.mce-toolbar            { background-color: #373737!important; }
+.mce-menubar.mce-toolbar, .mce-window-head            { background-color: #373737; !important }
 .mce-tinymce[role=application]      { border-color: #373737!important; }
 .mce-menubar  .mce-menubtn:hover,
 .mce-menubtn:active,
 .mce-menubtn:focus                  { background-color:transparent!important; color: #FFFFFF!important; border-color:transparent!important; }
 .mce-menubar  .mce-btn.mce-active   { color:white!important; border-color:transparent!important; background-color: transparent!important; }
 
+body.forceColors                { margin:0; background-color: #373737; !important}
+body.forceColors a              { color: white}
+body.forceColors li a              { color: silver}
+
+div#media-manager div.mce-window-head  { background-color: #373737; !important }
+div#media-manager div.mce-title        { color:white; }
+div#media-manager, html                { color: silver; background-color: #2F2F2F; !important}
 ");
 
 /*
@@ -81,171 +89,155 @@ class bootstrap3_admintheme
 	function tablestyle($caption, $text, $mode, $data)
 	{
 		// global $style;
-		
-		$style = $data['setStyle'];
 
+		$style = $data['setStyle'];
+		
 	//	echo "Style: ".$style;
+
+		echo "\n\n<!-- UniqueID: ".$data['uniqueId']." -->\n\n";
+		echo "<!-- Style: ".$style." -->\n\n";
+			echo "<!-- Mode: ".(string) $mode." -->";
 		$class = '';
 
-		if(is_string($mode) && $mode == 'admin_help') $class = ' '.str_replace('_', '-', $mode);
-			
-		if($mode == 'e_help')
+		if(is_string($mode) && $mode == 'admin_help')
 		{
-			$style = 'admin_menu';	
+			$class = ' ' . str_replace('_', '-', $mode);
 		}
-		
+
 		if($mode == 'core-infopanel_latest' || $mode == 'core-infopanel_status')
 		{
-			//return;
-			echo '	
-		<!-- Start Mode: '.$mode.' -->
-
-					
-					<div class="well" style="padding:10px;min-height:220px;" >  
-					<div class="nav-header">'.$caption.'</div>
+			echo '<!-- Start Mode: ' . $mode . ' -->	
+				<div class="well" style="padding:10px;min-height:220px;">  
+					<div class="nav-header">' . $caption . '</div>
 					<!-- Content Start -->
-					'.$text.'
+					' . $text . '
 					<!-- Content End -->
-					</div>
-					
-
-		<!-- End Mode: '.$mode.' -->
+				</div>
+				<!-- End Mode: ' . $mode . ' -->
 			';
+
 			return;
-		}	
-	
+		}
+
 		if($mode == 'personalize')
 		{
-			/*echo '
-		<!-- Mode: '.$mode.' -->
-		<div class="well" style="padding:10px">  
-					<div class="nav-header">'.$caption.'</div>
-					<!-- Content Start -->
-					'.$text.'
-					<!-- Content End -->
-				</div>
-		<!-- End Mode: '.$mode.' -->
-		';*/
 			$style = 'admin_menu';
-		//	return;
 		}
-		
-	
-	/*
-		
-		if($style == 'core-infopanel')
-		{
-			echo '	
-		<!-- Start Style: '.$style.' -->
-			
-		<li class="span12 col-md-12">
-			
-				<div class="well" >  
-					<div class="nav-header">'.$caption.'</div>
-					<!-- Content Start -->
-					'.$text.'
-					<!-- Content End -->
-				</div>
-				
-		</li>
-		<!-- End Style: '.$style.' -->
-			';
-			return;
-		}
-		*/
-	
+
 		if(deftrue('e_IFRAME'))
 		{
-			echo '<!-- Start Style: '.$style.' Mode: '.$mode.' and iFrame active -->
+			echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' and iFrame active -->
 				<div class="block">
 					<div class="block-text">
-						'.$text.'
+						' . $text . '
 					</div>
 				</div>
 			';
-			
+
 			return;
 		}
-		
+
 		if(trim($caption) == '')
 		{
-			$style = 'no_caption';	
+			$style = 'no_caption';
 		}
 
-		$panelType = array('core-infopanel'=>'panel-default','admin_menu'=>'panel-primary', 'site_info'=>'panel-default');
+		$panelType = array(
+			'core-infopanel' => 'panel-default',
+			'admin_menu'     => 'panel-primary',
+			'site_info'      => 'panel-default',
+			'flexpanel'      => 'panel-default',
+		);
+
+		if($data['uniqueId'] === 'e-latest-list' || $data['uniqueId'] === 'e-status-list')
+		{
+			$style = 'lists';
+		}
 
 
 
-		
 		
 		switch(varset($style, 'admin_content'))
 		{
-			case 'core-infopanel' :
-			case 'admin_menu' :
-			case 'site_info' :
-				echo '<div class="panel '.$panelType[$style].'">
+			case 'flexpanel':
+				echo '<div class="panel ' . $panelType[$style] . '" id="' . $data['uniqueId'] . '">
 					  <div class="panel-heading">
-					    <h3 class="panel-title">'.$caption.'</h3>
+					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
 					  <div class="panel-body">
-					    '.$text.'
+					    ' . $text . '
 					  </div>
 					</div>';
-			
-			/*
-				echo '
-						<div class="well sidebar-nav" >  
-						<div class="nav-header">'.$caption.'</div>
-						'.$text.'
-					</div>
-				';
-			 **/
-			break;
-		
-			/*case 'site_info' :
-				echo '
-					<div class="panel panel-primary" >
-						<div class="panel-heading">'.$caption.'</div>
-						<p style="padding:10px">
-							'.$text.'
-						</p>
-					</div>
-				';
-			break;*/
-		/*
-			case 'admin_content':
-				echo '
+				break;
+
+				case 'admin_menu':
+				echo '<div class="admin-menu panel panel-default" >
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
+					</div>';
+				break;
+
+
+				case 'warning':
+				echo '<div class="panel panel-warning" id="'.$data['uniqueId'].'">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+					  <div class="panel-body">
+					    ' . $text . '
+					  </div>
+					</div>';
+				break;
+
+
+			case 'core-infopanel':
+			case 'site_info':
+				echo '<div class="panel ' . $panelType[$style] . '">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+					  <div class="panel-body">
+					    ' . $text . '
+					  </div>
+					</div>';
+				break;
+
+			case 'lists':
+				echo '<div class="panel panel-default" id="' . $data['uniqueId'] . '">
+					  <div class="panel-heading">
+					    <h3 class="panel-title">' . $caption . '</h3>
+					  </div>
+
+					    ' . $text . '
+
+					</div>';
+				break;
+
+			case 'no_caption':
+				echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' -->
 					<div class="block">
-						<h2 class="caption">'.$caption.'</h2>
 						<div class="block-text">
-							'.$text.'
+							' . $text . '
 						</div>
 					</div>
 				';
-			break;
-		*/
-		
-			case 'no_caption' :
-				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
-					<div class="block">
-						<div class="block-text">
-							'.$text.'
-						</div>
-					</div>
-				';
-			break;
-		
-		
+				break;
+
+
 			default:
-				echo '<!-- Start Style: '.$style.' Mode: '.$mode.' -->
+				echo '<!-- Start Style: ' . $style . ' Mode: ' . $mode . ' -->
 					<div class="block">
-						<h4 class="caption">'.$caption.'</h4>
+						<h4 class="caption">' . $caption . '</h4>
 						<div class="block-text">
-							'.$text.'
+							' . $text . '
 						</div>
 					</div>
 				';
-			break;
+				break;
 		}
 	}
 }

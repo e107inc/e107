@@ -8,8 +8,6 @@
  *
  * Admin BootLoader
  *
- * $URL$
- * $Id$
 */
 
 if (!defined('e107_INIT'))
@@ -17,8 +15,127 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
-
+e107::getDb()->db_Mark_Time('(Start boot.php)');
 header('Content-type: text/html; charset=utf-8', TRUE);
+
+define('ADMINFEED', 'https://e107.org/adminfeed');
+
+
+
+if(!empty($_GET['iframe'])) // global iframe support. 
+{
+	define('e_IFRAME', true);
+}
+
+// .e-sef-generate routine.
+if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_POST['source']) && e_AJAX_REQUEST)
+{
+	$d = array('converted'=> eHelper::title2sef($_POST['source']));
+	echo json_encode($d);
+	exit;
+}
+
+if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
+{
+
+	$limit = 3;
+
+	if($data = e107::getXml()->getRemoteFile(ADMINFEED,3))
+	{
+	//	print_a($data);
+		$rows = e107::getXml()->parseXml($data, 'advanced');
+		$defaultImg = $rows['channel']['image']['url'];
+
+		$text = '<div style="margin-left:10px;margin-top:10px">';
+		$count = 1;
+		foreach($rows['channel']['item'] as $row)
+		{
+			if($count > $limit){ break; }
+
+			$description = $tp->toText($row['description']);
+			$text .= '
+			<div class="media">
+			  <div class="media-body">
+			    <h4 class="media-heading"><a href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
+			   '.$tp->text_truncate($description,150).'
+			  </div></div>';
+			  $count++;
+		}
+		$text .= '</div>';
+		echo $text;
+
+	}
+	else
+	{
+		if(e_DEBUG)
+		{
+		//	echo "Feed failed: ".ADMINFEED;
+		}
+	}
+	exit;
+}
+
+
+
+if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']) == 'addons' )
+{
+	$type = ($_GET['type'] == 'plugin') ? 'plugin' : 'theme';
+	$tag = 'Infopanel_'.$type;
+
+	$cache = e107::getCache();
+
+	$feed = 'https://e107.org/feed/?limit=3&type='.$type;
+
+	if($text = $cache->retrieve($tag,180,true, true)) // check every 3 hours.
+	{
+		echo $text;
+
+		if(e_DEBUG === true)
+		{
+			echo "<span class='label label-warning' title='".$feed."'>Cached</span>";
+		}
+		exit;
+	}
+
+
+	if($data = e107::getXml()->getRemoteFile($feed,3))
+	{
+		$rows = e107::getXml()->parseXml($data, 'advanced');
+//	print_a($rows);
+//  exit;
+		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=online";
+
+		$text = "<div style='margin-top:10px'>";
+
+		foreach($rows[$type] as $val)
+		{
+			$meta = $val['@attributes'];
+			$img = ($type == 'theme') ? $meta['thumbnail'] : $meta['icon'];
+			$text .= '<div class="media">';
+			$text .= '<div class="media-left">
+		    <a href="'.$link.'">
+		      <img class="media-object img-rounded rounded" src="'.$img.'" style="width:100px">
+		    </a>
+		  </div>
+		  <div class="media-body">
+		    <h4 class="media-heading"><a href="'.$link.'">'.$meta['name'].' v'.$meta['version'].'</a> <small>&mdash; '.$meta['author'].'</small></h4>
+		    '.$val['description'].'
+		  </div>';
+			$text .= '</div>';
+		}
+
+		$text .= "</div>";
+		$text .= "<div class='right'><a href='".$link."'>".LAN_MORE."</a></div>";
+
+		echo $text;
+
+		$cache->set($tag, $text, true, null, true);
+
+	}
+	exit;
+
+}
+
 
 ### Language files
 e107::coreLan('header', true);
@@ -31,7 +148,7 @@ e107::coreLan('footer', true);
 {
 	$_globalLans = e107::pref('core', 'lan_global_list'); 
 	$_plugins = e107::getPref('plug_installed');
-	if(!empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && count($_plugins) > 0)
+	if(!deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
 	{
 		$_plugins = array_keys($_plugins);
 		
@@ -45,9 +162,6 @@ e107::coreLan('footer', true);
 		}
 	}
 }
-
-
-
 
 
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed

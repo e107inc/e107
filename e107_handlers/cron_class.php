@@ -41,25 +41,8 @@ class _system_cron
 		
 		if(is_dir(e_BASE.".git")) // Check it's a Git Repo
 		{
+			$return = $fl->gitPull();
 
-			$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
-				
-			// Change Dir. 
-			$cmd = 'cd '.e_ROOT;
-			$mes->addDebug($cmd);
-			$text = `$cmd 2>&1`;
-			
-			// Remove any local changes. 
-			$cmd = $gitPath.' reset --hard';
-			$mes->addDebug($cmd);
-			$text .= `$cmd 2>&1`;
-			
-			// Run Pull request
-			$cmd = $gitPath.' pull';
-			$mes->addDebug($cmd);
-			$text .= `$cmd 2>&1`;
-
-			$return = print_a($text,true);
 			$mes->addSuccess($return);
 			
 			if(unlink(e_BASE."install.php"))
@@ -84,80 +67,27 @@ class _system_cron
 	 */
 	function checkCoreUpdate () // Check if there is an e107 Core update and email Site Admin if so
 	{
-			// Check if there's a core e107 update available
-			
-	    // Get site version
-	    if (is_readable(e_ADMIN."ver.php"))
-	    {
-	      include (e_ADMIN."ver.php"); // $e107info['e107_version'];
-	    }
-	    else
-	    {
-	      // Find alternate way to get local site version or throw an error
-	    }
-	    
-	    // Check for updates for currently installed version
-	    $localVersion = (int) $e107info['e107_version'];
-	    
-	    switch ($localVersion) {
-	      case 0:
-	        // Local version is <= 0.7
-	        // Run update routine for 0.x
-	        break;
-	      case 1:
-	        // Local version is == 1.x
-	        // Run update routine for 1.x
-	        break;
-	      case 2:
-	        // Local version is == 2.x
-	        // Run update routine for 2.x
-	    
-	        // Get newest available release version
-	        $xml  = e107::getXml();
-	        $file = "http://e107.org/releases.php?mode=2";
-	        $xdata = $xml->loadXMLfile($file,true,false);
-	    
-	        // Check for update
-	        if ($e107info['e107_version'] < $xdata['core']['@attributes']['version'])
-	        {
-	        	// If there is a new version of e107 available, notify Site Admin by email, make a log entry, and notify Admin in Admin Area, $versionTest = false
-	        	
-	          $pref = e107::getPref();
-	          require_once(e_HANDLER.'mail.php');
-	          $message = "There is a new version of e107 available. Please visit http://www.e107.org for further details.";
-	          sendemail($pref['siteadminemail'], "e107 - Update(s) Available For " . $pref['sitename'], $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
-	    
-	          // Add entry to the log
-	          e107::getAdminLog()->add("Update(s) Available", "There is a new version of e107 available. Please visit http://www.e107.org for further details.", 3);
-	    
-	          $versionTest = $xdata['core']['@attributes']['version'];
-	    
-	        }
-	        else
-	        {
-	          // If there is not a new version of e107 available, $versionTest = false
-	        	$versionTest = false;
-	        }
-	    
-	        break;
-	    }
-	    
-	    //$versionTest = "{CHECK THE VERSION}"; // If out of date, return some text, if up-to-date , return false; 
-		
-	    $che = e107::getCache();
-	    $che->setMD5(e_LANGUAGE);
-	     
-			if($versionTest)
-			{
-				$che->set("releasecheck",$versionTest, TRUE);
-		        return $versionTest;
-			//	e107::getMessage()=>addInfo($versionTest);
-			}
-			else
-			{
-				$che->set("releasecheck", 'false', TRUE);
-		        return false;
-			}
+		if(!$data = e107::coreUpdateAvailable())
+		{
+			return false;
+		}
+
+		$pref = e107::getPref();
+
+		$message = "<p>There is a new version of e107 available.<br />
+		 Please visit ".$data['infourl']." for further details.</p>
+		 <a class='btn btn-primary' href=''>Download v".$data['version']."</a>";
+
+		$eml = array(
+					'subject' 		=> "e107 v".$data['version']." is now available.",
+					'sender_name'	=> SITENAME . " Automation",
+					'html'			=> true,
+					'template'		=> 'default',
+					'body'			=> $message
+				);
+
+		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
+
 	
 	}
 	
@@ -167,12 +97,63 @@ class _system_cron
 		global $pref, $_E107;
 		if($_E107['debug'])	{ 	echo "<br />sendEmail() executed"; }
 		
-	    require_once(e_HANDLER.'mail.php');
-		$message = "Your Cron test worked correctly. Sent at ".date("r").".";
+	  //  require_once(e_HANDLER.'mail.php');
+		$message = "Your Cron test worked correctly. Sent on ".date("r").".";
 
-	    sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],$pref['siteadminemail'], $pref['siteadmin']);
+		$message .= "<h2>Environment Variables</h2>";
+
+		$userCon = get_defined_constants(true);
+		ksort($userCon['user']);
+
+		$userVars = array();
+		foreach($userCon['user'] as $k=>$v)
+		{
+			if(substr($k,0,2) == 'e_')
+			{
+				$userVars[$k] = $v;
+			}
+		}
+
+		$message .= "<h3>e107 PATHS</h3>";
+		$message .= $this->renderTable($userVars);
+
+		$message .= "<h3>_SERVER</h3>";
+		$message .= $this->renderTable($_SERVER);
+		$message .= "<h3>_ENV</h3>";
+		$message .= $this->renderTable($_ENV);
+
+		$eml = array(
+					'subject' 		=> "TEST Email Sent by cron. ".date("r"),
+				//	'sender_email'	=> $email,
+					'sender_name'	=> SITENAME . " Automation",
+			//		'replyto'		=> $email,
+					'html'			=> true,
+					'template'		=> 'default',
+					'body'			=> $message
+				);
+
+		e107::getEmail()->sendEmail($pref['siteadminemail'],  $pref['siteadmin'], $eml);
+
+	   // sendemail($pref['siteadminemail'], "e107 - TEST Email Sent by cron.".date("r"), $message, $pref['siteadmin'],SITEEMAIL, $pref['siteadmin']);
 	}
 
+	private function renderTable($array)
+	{
+		$text = "<table class='table table-striped table-bordered' style='width:600px'>";
+
+		foreach($array as $k=>$v)
+		{
+			$text .= "<tr>
+				<td>".$k."</td>
+				<td>".print_a($v,true)."</td>
+				</tr>
+				";
+
+		}
+
+		$text .= "</table>";
+		return $text;
+	}
 
 	/**
 	 * Process the Mail Queue
@@ -271,11 +252,11 @@ class _system_cron
 		
 		return;
 		
-		
+		/*
 		require(e_BASE."e107_config.php");
 
 		$sql = e107::getDb();
-		$dbtable = $mySQLdefaultdb; // TODO - retrieve this in a better way. (without including e107_config) 
+		$dbtable = $mySQLdefaultdb; //
 	
 		$backupFile = e_BACKUP.SITENAME."_".date("Y-m-d-H-i-s").".sql";
 		$result = mysql_list_tables($dbtable);
@@ -285,14 +266,14 @@ class _system_cron
 			$table = $tab[0];
 			$text = "";
 			
-			$sql->db_Select_gen("SHOW CREATE TABLE `".$table."`");
+			$sql->gen("SHOW CREATE TABLE `".$table."`");
 			$row2 = $sql->db_Fetch();
 			$text .= $row2['Create Table'];
 			$text .= ";\n\n";
 			
 			ob_end_clean(); // prevent memory exhaustian 
 			
-			$count = $sql->db_Select_gen("SELECT * FROM `".$table."`");
+			$count = $sql->gen("SELECT * FROM `".$table."`");
 			$data_array = "";
 		
 			while($row = $sql->db_Fetch())
@@ -323,7 +304,7 @@ class _system_cron
 			
 		}
 				
-		
+		*/
 		
 	}
 	

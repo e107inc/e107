@@ -514,6 +514,17 @@ class e_model extends e_object
      */
     protected $_data_fields = array();
 
+
+
+	/**
+	 * Current model field types eg. text, bbarea, dropdown etc.
+	 *
+	 *
+	 * @var string
+	 */
+	protected $_field_input_types = array();
+
+
 	/**
 	 * Current model DB table, used in all db calls
 	 *
@@ -647,7 +658,7 @@ class e_model extends e_object
 	 * @param boolean $extended [optional] if true, method will return an array containing url, title and description of the url
      * @return mixed URL string or extended array data
      */
-    public function url($options = array(), $extended = false)
+    public function url($ids, $options = array(), $extended = false)
     {
         $urldata = $this->getUrl();
 		if(empty($urldata) || !vartrue($urldata['route'])) return ($extended ? array() : null);
@@ -719,6 +730,21 @@ class e_model extends e_object
     	return $this->_data_fields;
     }
 
+
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	public function getFieldInputType($key)
+    {
+        if(isset($this->_field_input_types[$key]))
+        {
+            return $this->_field_input_types[$key];
+        }
+
+        return false;
+    }
+
     /**
      * Set Predefined data fields in format key => type
      * @return e_model
@@ -726,6 +752,16 @@ class e_model extends e_object
     public function setDataFields($data_fields)
     {
     	$this->_data_fields = $data_fields;
+		return $this;
+    }
+
+	/**
+     * Set Predefined data fields in format key => type
+     * @return e_model
+     */
+    public function setFieldInputTypes($fields)
+    {
+    	$this->_field_input_types = $fields;
 		return $this;
     }
 
@@ -1097,12 +1133,14 @@ class e_model extends e_object
         	$data = &$this->{$data_src};
             for ($i = 0, $l = count($keyArr); $i < $l; $i++)
             {
+
 	            $k = $keyArr[$i];
 
-	            if (!isset($data[$k]))
+	            if (!isset($data[$k]) || empty($data[$k])) // PHP7.1 fix. Reset to empty array() if $data[$k] is an empty string. Reason for empty string still unknown.
 	            {
 	                $data[$k] = array();
 	            }
+
 	            $data = &$data[$k];
 	        }
 
@@ -1488,13 +1526,13 @@ class e_model extends e_object
 		$qry = str_replace('{ID}', $id, $this->getParam('db_query'));
 		if($qry)
 		{
-			$res = $sql->db_Select_gen($qry, $this->getParam('db_debug') ? true : false);
+			$res = $sql->gen($qry, $this->getParam('db_debug') ? true : false);
 		}
 		else
 		{
 			if(!is_numeric($id)) $id = "'{$id}'";
 
-			$res = $sql->db_Select(
+			$res = $sql->select(
 				$this->getModelTable(),
 				$this->getParam('db_fields', '*'),
 				$this->getFieldIdName().'='.$id.' '.trim($this->getParam('db_where', '')),
@@ -1506,7 +1544,7 @@ class e_model extends e_object
 
 		if($res)
 		{
-			$this->setData($sql->db_Fetch());
+			$this->setData($sql->fetch());
 		}
 
 		if($sql->getLastErrorNumber())
@@ -1624,7 +1662,7 @@ class e_model extends e_object
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    public function delete()
+    public function delete($ids, $destroy = true, $session_messages = false)
     {
     }
 
@@ -1651,7 +1689,7 @@ class e_model extends e_object
      * Awaiting for child class implementation
      * @see e_model_admin
      */
-    protected function dbUpdate()
+    protected function dbUpdate($force = false, $session_messages = false)
     {
     }
 
@@ -1676,7 +1714,7 @@ class e_model extends e_object
 	/**
 	 * Set parameter array
 	 * Core implemented:
-	 * - db_query: string db query to be passed to load() ($sql->db_Select_gen())
+	 * - db_query: string db query to be passed to load() ($sql->gen())
 	 * - db_query
 	 * - db_fields
 	 * - db_where
@@ -1709,6 +1747,10 @@ class e_model extends e_object
 		return e107::getParser()->parseTemplate($template, $parsesc, $this, $eVars);
 	}
 
+	/**
+	 * Export a Model configuration
+	 * @return string
+	 */
 	public function toXML()
 	{
 		$ret = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
@@ -2044,7 +2086,7 @@ class e_front_model extends e_model
     {
     	$d = $this->getDataFields();
 		
-		if($d[$key] == 'array')
+		if(!empty($d[$key]) && ($d[$key] == 'array'))
 		{
 			return e107::unserialize($this->getData((string) $key, $default, $index));	
 		}   
@@ -2299,7 +2341,7 @@ class e_front_model extends e_model
 			}
 			else //no db field types, use toDB()
 			{
-				$src_data = $tp->toDB($src_data);
+				$src_data = e107::getParser()->toDB($src_data);
 			}
 		}
 
@@ -2510,7 +2552,7 @@ class e_front_model extends e_model
      * @param boolean $force
      * @return e_front_model
      */
-	public function load($id, $force = false)
+	public function load($id=null, $force = false)
 	{
 		parent::load($id, $force);
 
@@ -2640,6 +2682,7 @@ class e_front_model extends e_model
 			$value = $this->getPostedData($key);
 		}
 
+
 		switch ($type)
 		{
 			case 'int':
@@ -2647,10 +2690,27 @@ class e_front_model extends e_model
 				return intval($this->toNumber($value));
 			break;
 
+			case 'safestr':
+				return $tp->filter($value);
+			break;
+
 			case 'str':
 			case 'string':
 			case 'array':
-				return $tp->toDB($value);
+				$type = $this->getFieldInputType($key);
+				return $tp->toDB($value, false, false, 'model', array('type'=>$type, 'field'=>$key));
+			break;
+
+			case 'json':
+				if(empty($value))
+				{
+					return null;
+				}
+				return e107::serialize($value,'json');
+			break;
+
+			case 'code':
+				return $tp->toDB($value, false, false, 'pReFs');
 			break;
 
 			case 'float':
@@ -2706,6 +2766,7 @@ class e_front_model extends e_model
 		if(!$this->data_has_changed && !$force)
 		{
 			$this->addMessageInfo(LAN_NO_CHANGE);
+
 			return 0;
 		}
 		$sql = e107::getDb();
@@ -2854,7 +2915,7 @@ class e_admin_model extends e_front_model
 			$this->mergePostedData(false, true, true);
 		}
 
-		if($this->getId() && $this->getPostedData('etrigger_submit') !='Create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
+		if($this->getId() && $this->getPostedData('etrigger_submit') !='create') // Additional Check to allow primary ID to be manually set when auto-increment PID is not used. @see userclass2.php
 		{
 			return $this->dbUpdate($force, $session_messages);
 		}
@@ -2880,7 +2941,7 @@ class e_admin_model extends e_front_model
 		return $this->dbInsert($session_messages);
     }
 
-	public function delete($destroy = true, $session_messages = false)
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = $this->dbDelete();
 		if($ret)
@@ -2919,7 +2980,8 @@ class e_admin_model extends e_front_model
 			$this->_db_errmsg = $sql->getLastErrorText();
 
 			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
-			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
+			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$this->_db_errmsg);
+			$this->addMessageDebug('SQL QRY Error '.print_a($sqlQry,true));
 
 			return false;
 		}
@@ -3000,7 +3062,8 @@ class e_admin_model extends e_front_model
 		if(is_numeric($id)) $id = intval($id);
 		else  $id = "'".e107::getParser()->toDB($id)."'";
 		$table  = $this->getModelTable();
-		$res = $sql->db_Delete($table, $this->getFieldIdName().'='.$id);
+		$where = $this->getFieldIdName().'='.$id;
+		$res = $sql->delete($table, $where);
         $this->_db_qry = $sql->getLastQuery();
 
 		if(!$res)
@@ -3016,8 +3079,13 @@ class e_admin_model extends e_front_model
 		}
     	else
 		{
-			e107::getAdminLog()->addSuccess($table,false);
-			e107::getAdminLog()->addArray($sqlQry)->save('ADMINUI_03');
+			if($table != 'admin_log')
+			{
+				$logData = array('TABLE'=>$table, 'WHERE'=>$where);
+				e107::getAdminLog()->addSuccess($table,false);
+				e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+			}
+
 			$this->clearCache();
 		}
 		return $res;
@@ -3120,12 +3188,12 @@ class e_tree_model extends e_front_model
 		return $this;
 	}
 
-	public function isCacheEnabled()
+	public function isCacheEnabled($checkId = true)
 	{
 		return (null !== $this->getCacheString());
 	}
 
-	public function getCacheString()
+	public function getCacheString($replace = false)
 	{
 		return $this->_cache_string;
 	}
@@ -3236,7 +3304,7 @@ class e_tree_model extends e_front_model
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
-			if($sql->db_Select_gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
+			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 				while($tmp = $sql->db_Fetch())
@@ -3423,11 +3491,11 @@ class e_tree_model extends e_front_model
 		return (string) e107::getArrayStorage()->WriteArray($this->toArray($total), $AddSlashes);
 	}
 
-	public function update()
+	public function update($from_post = true, $force = false, $session_messages = false)
 	{
 	}
 
-	public function delete()
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 	}
 }
@@ -3594,7 +3662,7 @@ class e_admin_tree_model extends e_front_tree_model
 		$table = $this->getModelTable();
 		$sqlQry = $this->getFieldIdName().' IN (\''.$idstr.'\')';
 
-		$res = $sql->db_Delete($table, $sqlQry);
+		$res = $sql->delete($table, $sqlQry);
 
 		$this->_db_errno = $sql->getLastErrorNumber();
 		$this->_db_errmsg = $sql->getLastErrorText();
@@ -3626,9 +3694,11 @@ class e_admin_tree_model extends e_front_tree_model
 			}
 		}
 
-		$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
-		e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
-
+		if($table != 'admin_log')
+		{
+			$logData = array('TABLE'=>$table, 'WHERE'=>$sqlQry);
+			e107::getAdminLog()->addArray($logData)->save('ADMINUI_03');
+		}
 		return $res;
 	}
 
@@ -3674,8 +3744,36 @@ class e_admin_tree_model extends e_front_tree_model
 
 			$model = $this->getNode($id);
 			if($this->getUrl()) $model->setUrl($this->getUrl()); // copy url config data if available
-			$ret[$id] = $model->url($options, $extended);
+			$ret[$id] = $model->url(null, $options, $extended);
 		}
 		return $ret;
+    }
+
+
+	/**
+	 * Export Selected Data
+	 * @param $ids
+	 * @return null
+	 */
+	public function export($ids)
+    {
+        $ids = e107::getParser()->filter($ids,'int');
+
+        if(empty($ids))
+        {
+            return false;
+        }
+
+        $idstr = implode(', ', $ids);
+
+	    $table      = array($this->getModelTable());
+
+	    $filename   = "e107Export_" .$this->getModelTable()."_". date("YmdHi").".xml";
+	    $query      = $this->getFieldIdName().' IN ('.$idstr.') '; //  ORDER BY '.$this->getParam('db_order') ;
+
+		e107::getXML()->e107Export(null,$table,null,array('file'=>$filename,'query'=>$query));
+
+		return null;
+
     }
 }

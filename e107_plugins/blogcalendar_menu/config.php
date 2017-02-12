@@ -13,10 +13,10 @@ $eplug_admin = TRUE;
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 	
-include_lan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."blogcalendar_menu/languages/".e_LANGUAGE.".php");
 if (!getperms("1")) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	 exit ;
 }
 require_once(e_ADMIN."auth.php");

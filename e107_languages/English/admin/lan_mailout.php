@@ -1,12 +1,14 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
  *
- * Admin Language File
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
-*/
+ */
 
-// TODO - MAJOR LAN REWRITE NEEDED 
+// TODO - LANS - MAJOR LAN REWRITE NEEDED 
 
 define("CORE_DATE_ORDER", "dmy");			// Temporary until we find somewhere better to put it.
 											// Defines order of field entry/display in date boxes
@@ -52,7 +54,7 @@ define("LAN_MAILOUT_38", "Cancel");
 define("LAN_MAILOUT_39", "Emailing");
 define("LAN_MAILOUT_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
 define("LAN_MAILOUT_41", "before sending mail from this page.");
-define("LAN_MAILOUT_42", "Warning");
+//define("LAN_MAILOUT_42", "Warning");//NOT_USED
 define("LAN_MAILOUT_43", "Username");
 define("LAN_MAILOUT_44", "User Login");
 define("LAN_MAILOUT_45", "User Email");
@@ -66,7 +68,7 @@ define("LAN_MAILOUT_52", "Last mod");
 define("LAN_MAILOUT_53", "Admins");
 define("LAN_MAILOUT_54", "Self");
 define("LAN_MAILOUT_55", "Userclass");
-define("LAN_MAILOUT_56", "Last Visit (dd-mm-yy)");
+define("LAN_MAILOUT_56", "Last Visit");
 define("LAN_MAILOUT_57", "Send bulk SMTP emails in blocks");			// SMTP KeepAlive option
 //define("LAN_MAILOUT_58", "There is a problem with the attachment:");
 //define("LAN_MAILOUT_59", "Mailing Progress");
@@ -106,7 +108,7 @@ define("LAN_MAILOUT_92", "SSL");
 define("LAN_MAILOUT_93", "TLS");
 define("LAN_MAILOUT_94", "(Use SSL for gmail/googlemail)");
 define("LAN_MAILOUT_95", "Use VERP for bulk mailing");
-define("LAN_MAILOUT_96", "none");
+//define("LAN_MAILOUT_96", "none");//LAN_NONE
 define("LAN_MAILOUT_97", "Mailer Results");
 define("LAN_MAILOUT_98", "Orphaned entries");
 define("LAN_MAILOUT_99", "Confirm retry mailshot");
@@ -125,7 +127,7 @@ define("LAN_MAILOUT_111", "Email Title (not sent)");
 define("LAN_MAILOUT_112", "Send test email to");
 define("LAN_MAILOUT_113", "Test email from");
 define("LAN_MAILOUT_114", "This is a test email, it appears that your email settings are working ok! [br][br] Regards [br] from the e107 website system.");
-define("LAN_MAILOUT_115", "Emailing method");
+define("LAN_MAILOUT_115", "Bulk Emailing method");
 define("LAN_MAILOUT_116", "If unsure, leave as php");
 define("LAN_MAILOUT_117", "complete");
 define("LAN_MAILOUT_118", "Click on proceed' to start sending emails. Click on 'cancel' to stop the run. Once complete, select another page. Unsent emails cal be viewed through the 'Mailshot status' screen");
@@ -274,15 +276,19 @@ define("LAN_MAILOUT_255", "Templated Email, ID: ");
 define("LAN_MAILOUT_256", "Return");
 define("LAN_MAILOUT_257", "Generated template");
 //define("LAN_MAILOUT_258", "Template: ");//LAN_TEMPLATE
-define("LAN_MAILOUT_259", "");
-
 
 define("LAN_SEND", "Send");
 define("LAN_HOLD", "Hold");
-define("LAN_MAILOUT_260", "User-Type");
-define("LAN_BASIC", "Basic");
-define("LAN_ADVANCED", "Advanced");
 
+define("LAN_MAILOUT_260", "User-Type");
+define("LAN_MAILOUT_261", "SMTP Port");
+define("LAN_MAILOUT_262", "Template Preview");
+define("LAN_MAILOUT_263", "Total Recipients");
+define("LAN_MAILOUT_264", "Embed Media");
+define("LAN_MAILOUT_265", "Pending");
+define("LAN_MAILOUT_266", "Max Active");
+define("LAN_MAILOUT_267", "Generate Public/Private keys");
+define("LAN_MAILOUT_268", "Developer Mode Only");
 //define("LAN_SUBMIT", "Do it!"); LAN_RUN
 
 ?>

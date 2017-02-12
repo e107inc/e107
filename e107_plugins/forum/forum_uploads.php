@@ -12,7 +12,7 @@ require_once("../../class2.php");
 $e107 = e107::getInstance();
 if (!$e107->isInstalled('forum')) 
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
@@ -22,9 +22,9 @@ if(!USER)
 	exit;
 }
 
-include_lan(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_uploads.php');
+e107::lan('forum', "front", true);
 
-e107::lan('forum','front');
+
 
 if(is_array($_POST['delete']))
 {
@@ -33,7 +33,7 @@ if(is_array($_POST['delete']))
 		$f = explode("_", $fname);
 		if($f[1] == USERID)
 		{
-			$path = e_UPLOAD.$fname;
+			$path = e_UPLOAD.e107::getParser()->filter($fname,'w');
 			if(unlink($path) == TRUE)
 			{
 				$msg = LAN_FORUM_7002.": $path";

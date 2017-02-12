@@ -1,6 +1,6 @@
 /*table { margin-left:auto; margin-right:auto; }*/
 
-.searchhighlight{text-decoration: underline; color:#FF0000; font-weight:bold; }
+
 
 /*
  * e107 v0.800 - new class definitions
@@ -139,6 +139,57 @@ div.bbcode { margin: 15px 0px; clear: both; } /* layout control via bbcodes */
 
 #comments-container { list-style: none outside none; margin:0px }
 #comments-container > li { padding: 5px 0px }
+.comment-text           { padding: 8px 0 }
+
+.e-email:before {    content: attr(data-user);    }
+.e-email:after {  	content: attr(data-dom)	}
+
+/* User Profile css */
+.panel-profile .user-avatar {
+	max-width: 150px;
+	max-height: 150px;
+	margin-top: -90px;
+	margin-bottom: 15px;
+	border: 5px solid #fff;
+	border-radius: 100%;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+	margin-left:auto;
+	margin-right:auto;
+}
+.panel-profile .panel-heading h5.user-id {
+	color:#ffffff;
+}
+.panel-profile .panel-body span.padding-left {
+	display:block;
+}
+.panel-profile .panel-body p {
+	clear: both;
+    float: none;
+    display: block;
+}
+.panel-profile .profile-header {
+ 	max-width:300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.panel-profile .profile-header h4 {
+    padding-bottom: 30px;
+}
+.panel-profile .panel-body p.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding-top: 10px;
+}
+.panel-profile .panel-body div.row {
+    border-top: 1px solid rgba(170,170,170,0.35);
+    padding: 10px 0;
+}
+
+.e-instant-edit { font-size: 10pt; position: absolute; right: 10px; text-align: right; display: inline-block; z-index:1000; margin-right:10px;	}
+
+
+
+
+
 /* default comments layout   */
 
 
@@ -193,8 +244,8 @@ a.comment-edit										{ }
 */
 div.e-comment-edit-save								{ margin-top:8px; padding: 5px }
 .e-comment-edit-active								{ -webkit-box-shadow:#CCCCCC 0px 0px 10px; -moz-box-shadow:#CCCCCC  0px 0px 10px; box-shadow:#CCCCCC 0px 0px 10px; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;}
-.e-comment-edit-success								{ padding:5px; text-align:center; background-color:#DFFFDF; border: 1px solid #009900; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
-.e-comment-edit-error								{ padding:5px; text-align:center; background-color:#FFCECE; border: 1px solid #CC0000;  -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px; }										
+.e-comment-edit-success								{ padding:8px; text-align:center; }
+.e-comment-edit-error								{ padding:8px; text-align:center; }
 
 .e-rate-up img										{ opacity: 0.4 }
 .e-rate-down img									{ opacity: 0.4 }
@@ -256,3 +307,37 @@ border-radius: 4px;
 box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.2) inset, 0px 1px 2px rgba(0, 0, 0, 0.05);
 	
 }
+
+#search-results li { margin-top:5px; padding: 10px 0; }
+#search-results li h4 { margin-bottom:0 !important }
+
+
+optgroup.level-1 { padding-left:0.1em }
+optgroup.level-2 { padding-left:0.7em }
+optgroup.level-3 { padding-left:2em }
+optgroup.level-4 { padding-left:3em }
+optgroup.level-5 { padding-left:4em }
+
+.online-menu-extended li, .online-menu li ul li { min-height: 40px; padding-top:8px}
+.online-menu-extended ul { padding-bottom:20px}
+.online-menu-extended span.online-menu-user { display:block; font-size:1.1em;margin-top:4px; line-height:1}
+.online-menu-extended-label { font-size:1.2em; }
+
+/* Emoticons */
+img.e-emoticon { vertical-align:middle; border:0; width:24px }
+
+.e-editable-front:hover { background-color:#FCF8E3 }
+.e-editable-front a:hover { background-color:#FCF8E3 }
+.e-editable-front:hover:after { content: "\f044"; z-index:10000; position:relative; top:0; right:-5px; margin-right:4px; padding-right:5px; font-family:'FontAwesome'; font-size:0.8em }
+
+
+#uiAlert    { z-index: 10001 }
+#uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
+
+div.e-debug { margin-top:50px; background-color: white }
+
+#login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
+#login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
+#login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
+#login-template .login-page-footer { margin-bottom:100px; margin-right:auto;margin-left:auto }
+div.login-page-signup-link, div.login-page-fpw-link { text-align:center }

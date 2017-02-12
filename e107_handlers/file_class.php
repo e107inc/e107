@@ -99,7 +99,12 @@ class e_file
 	
 	
 	
-	private $authKey = false; // Used when retrieving files from e107.org. 
+	private $authKey = false; // Used when retrieving files from e107.org.
+
+
+	private $error = null;
+
+	private $errornum = null;
 
 	/**
 	 * Constructor
@@ -169,8 +174,19 @@ class e_file
 		$this->mode= $mode; 
 	}
 			
-		
-	
+
+	public function getErrorMessage()
+	{
+		return $this->error;
+	}
+
+
+	public function getErrorCode()
+	{
+		return $this->errornum;
+	}
+
+
 	/**
 	 * Read files from given path
 	 *
@@ -397,7 +413,7 @@ class e_file
 	/**
 	 *	 Grab a remote file and save it in the /temp directory. requires CURL
 	 *	@param $remote_url
-	 *	@param $local_file
+	 *	@param $local_file string filename to save as
 	 *	@param $type  media, temp, or import
 	 *	@return boolean TRUE on success, FALSE on failure (which includes absence of CURL functions)
 	 */
@@ -421,22 +437,98 @@ class e_file
 		}
 		
         $fp = fopen($path.$local_file, 'w'); // media-directory is the root. 
-       
-        $cp = curl_init($remote_url);
+
+        $cp = $this->initCurl($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
+		curl_setopt($cp, CURLOPT_TIMEOUT, 20);//FIXME Make Pref - avoids get file timeout on slow connections
+       	/*
+       	$cp = curl_init($remote_url);
+
 		curl_setopt($cp, CURLOPT_REFERER, e_REQUEST_HTTP);
 		curl_setopt($cp, CURLOPT_HEADER, 0);
 		curl_setopt($cp, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
 		curl_setopt($cp, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+		curl_setopt($cp, CURLOPT_SSL_VERIFYPEER, FALSE);
+       	*/
 
         $buffer = curl_exec($cp);
+		//FIXME addDebug curl_error output - here see #1936
        
         curl_close($cp);
         fclose($fp);
        
         return ($buffer) ? true : false;
     }
-	
+
+	/**
+	 * @param string $address
+	 * @param array|null $options
+	 */
+	function initCurl($address, $options =null)
+	{
+		$cu = curl_init();
+
+		$timeout = (integer) vartrue($options['timeout'], 10);
+		$timeout = min($timeout, 120);
+		$timeout = max($timeout, 3);
+
+		$urlData = parse_url($address);
+		$referer = $urlData['scheme']."://".$urlData['host'];
+
+		if(empty($referer))
+		{
+			$referer = e_REQUEST_HTTP;
+		}
+
+		curl_setopt($cu, CURLOPT_URL, $address);
+		curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($cu, CURLOPT_HEADER, 0);
+		curl_setopt($cu, CURLOPT_REFERER, $referer);
+		curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($cu, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+		curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
+		curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
+
+		if(defined('e_CURL_PROXY'))
+		{
+			curl_setopt($cu, CURLOPT_PROXY, e_CURL_PROXY);     // PROXY details with port
+		}
+
+		if(defined('e_CURL_PROXYUSERPWD'))
+		{
+			curl_setopt($cu, CURLOPT_PROXYUSERPWD, e_CURL_PROXYUSERPWD);   // Use if proxy have username and password
+		}
+
+		if(defined('e_CURL_PROXYTYPE'))
+		{
+			curl_setopt($cu, CURLOPT_PROXYTYPE, e_CURL_PROXYTYPE); // If expected to cal
+		}
+
+		if(!empty($options['post']))
+		{
+			curl_setopt($cu, CURLOPT_POST, true);
+				// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
+			curl_setopt($cu, CURLOPT_POSTFIELDS, $options['post']);
+		}
+
+		if(isset($options['header']) && is_array($options['header']))
+		{
+			curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
+		}
+
+		if(!file_exists(e_SYSTEM.'cookies.txt'))
+		{
+			file_put_contents(e_SYSTEM.'cookies.txt','');
+		}
+
+		return $cu;
+
+	}
+
+
+
 	/**
 	 * FIXME add POST support
 	 * Get Remote contents
@@ -451,10 +543,7 @@ class e_file
 	function getRemoteContent($address, $options = array())
 	{
 		// Could do something like: if ($timeout <= 0) $timeout = $pref['get_remote_timeout'];  here
-		$postData = varset($options['post'], null);
-		$timeout = (integer) vartrue($options['timeout'], 10);
-		$timeout = min($timeout, 120);
-		$timeout = max($timeout, 3);
+
 		$fileContents = '';
 		$this->error = '';
 		$this->errornum = null;
@@ -467,38 +556,12 @@ class e_file
 		
 		if(vartrue($options['decode'], false)) $address = urldecode($address);
 
-		// Keep this in first position. 
+		// Keep this in first position.
 		if (function_exists("curl_init")) // Preferred. 
 		{
-			$cu = curl_init();
-			curl_setopt($cu, CURLOPT_URL, $address);
-			curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($cu, CURLOPT_HEADER, 0);
-			curl_setopt($cu, CURLOPT_TIMEOUT, $timeout);
-			curl_setopt($cu, CURLOPT_SSL_VERIFYPEER, FALSE); 
-			curl_setopt($cu, CURLOPT_REFERER, e_REQUEST_HTTP);
-			curl_setopt($cu, CURLOPT_FOLLOWLOCATION, 0); 
-			curl_setopt($cu, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)"); 
-			curl_setopt($cu, CURLOPT_COOKIEFILE, e_SYSTEM.'cookies.txt');
-			curl_setopt($cu, CURLOPT_COOKIEJAR, e_SYSTEM.'cookies.txt');
-			if($postData !== null)
-			{
-				curl_setopt($cu, CURLOPT_POST, true);
-				// if array -> will encode the data as multipart/form-data, if URL-encoded string - application/x-www-form-urlencoded
-				curl_setopt($cu, CURLOPT_POSTFIELDS, $postData);
-				$requireCurl = true;
-			}
-			if(isset($options['header']) && is_array($options['header']))
-			{
-				curl_setopt($cu, CURLOPT_HTTPHEADER, $options['header']);
-				$requireCurl = true;
-			}
-	
-			if(!file_exists(e_SYSTEM.'cookies.txt'))
-			{
-				file_put_contents(e_SYSTEM.'cookies.txt','');	
-			}
-			
+
+			$cu = $this->initCurl($address, $options);
+
 			$fileContents = curl_exec($cu);
 			if (curl_error($cu))
 			{
@@ -513,10 +576,20 @@ class e_file
 		// CURL is required, abort...
 		if($requireCurl == true) return false;
 
+		$timeout = 5;
+
 		if (function_exists('file_get_contents') && ini_get('allow_url_fopen'))
 		{
 			$old_timeout = e107_ini_set('default_socket_timeout', $timeout);
-			$data = file_get_contents($address);
+
+			$context = array(
+				'ssl' => array(
+					'verify_peer'      => false,
+					'verify_peer_name' => false,
+				),
+			);
+
+			$data = file_get_contents($address, false, stream_context_create($context));
 
 			//		  $data = file_get_contents(htmlspecialchars($address));	// buggy - sometimes fails.
 			if ($old_timeout !== FALSE)
@@ -724,7 +797,7 @@ class e_file
 	 *
 	 * @return string formatted size
 	 */
-	function file_size_encode($size, $retrieve = false)
+	function file_size_encode($size, $retrieve = false, $decimal =2)
 	{
 		if($retrieve)
 		{
@@ -744,15 +817,15 @@ class e_file
 		}
 		else if($size < $mb)
 		{
-			return round($size/$kb, 2)."&nbsp;".CORE_LAN_KB;
+			return round($size/$kb, $decimal)."&nbsp;".CORE_LAN_KB;
 		}
 		else if($size < $gb)
 		{
-			return round($size/$mb, 2)."&nbsp;".CORE_LAN_MB;
+			return round($size/$mb, $decimal)."&nbsp;".CORE_LAN_MB;
 		}
 		else if($size < $tb)
 		{
-			return round($size/$gb, 2)."&nbsp;".CORE_LAN_GB;
+			return round($size/$gb, $decimal)."&nbsp;".CORE_LAN_GB;
 		}
 		else
 		{
@@ -807,12 +880,51 @@ class e_file
 	} 
 	
 	
-	
+	/**
+	 * Copy a file, or copy the contents of a folder.
+	 * @param   string    $source    Source path
+	 * @param   string   $dest      Destination path
+	 * @param   array    $options
+	 * @return  bool     Returns true on success, false on error
+	 */
+	function copy($source, $dest, $options=array())
+	{
+
+		$perm = !empty($options['perm']) ? $options['perm'] : 0755;
+		$filter = !empty($options['git']) ? "" : ".git"; // filter out .git by default.
+
+		// Simple copy for a file
+		if(is_file($source))
+		{
+			return copy($source, $dest);
+		}
+
+		// Make destination directory
+		if(!is_dir($dest))
+		{
+			mkdir($dest, $perm);
+		}
+
+		// Directory - so copy it.
+		$dir = scandir($source);
+		foreach($dir as $folder)
+		{
+			// Skip pointers
+			if($folder === '.' || $folder == '..' || $folder === $filter)
+			{
+				continue;
+			}
+
+			$this->copy("$source/$folder", "$dest/$folder", $perm);
+		}
+
+		return true;
+	}
 	
 
 	/**
 	 * File retrieval function. by Cam.
-	 * @param $file actual path or {e_xxxx} path to file. 
+	 * @param $file string actual path or {e_xxxx} path to file.
 	 * 
 	 */
 	function send($file) 
@@ -926,9 +1038,42 @@ class e_file
 				}
 			}
 		}
-	}	
+	}
 
 
+	/**
+	 * Return a user specific file directory for the current plugin with the option to create one if it does not exist.
+	 * @param $baseDir
+	 * @param $user - user_id
+	 * @param bool|false $create
+	 * @return bool|string
+	 */
+	public function getUserDir($user, $create = false, $subDir = null)
+	{
+		$tp = e107::getParser();
+
+		$baseDir = e_MEDIA.'plugins/'.e_CURRENT_PLUGIN.'/';
+
+		if(!empty($subDir))
+		{
+			$subDir = e107::getParser()->filter($subDir,'w');
+			$baseDir .= rtrim($subDir,'/').'/';
+		}
+
+		if(is_numeric($user))
+		{
+			$baseDir .= ($user > 0) ? "user_". $tp->leadingZeros($user, 6) : "anon";
+		}
+
+		if($create == true && !is_dir($baseDir))
+		{
+			mkdir($baseDir, 0755, true); // recursively
+		}
+
+		$baseDir = rtrim($baseDir,'/')."/";
+
+		return $baseDir;
+	}
 		
 		
 	/**
@@ -1032,31 +1177,259 @@ class e_file
 	/**
 	 * File-class wrapper for upload handler. (Preferred for v2.x) 
 	 * Process files uploaded in a form post. ie. $_FILES. 
+	 * Routine processes the array of uploaded files according to both specific options set by the caller,
+	 * and	system options configured by the main admin.
+	 *
+	 *		@param string $uploaddir Target directory (checked that it exists, but path not otherwise changed)
+	 *
+	 *		@param string $fileinfo Determines any special handling of file name (combines previous $fileinfo and $avatar parameters):
+	 *			FALSE - default option; no processing
+	 *          @param string $fileinfo = 'attachment+extra_text' Indicates an attachment (related to forum post or PM), and specifies some optional text which is
+	 *				incorporated into the final file name (the original $fileinfo parameter).
+	 *		    @param string  $fileinfo = 'prefix+extra_text' - indicates an attachment or file, and specifies some optional text which is prefixed to the file name
+	 *			@param string  $fileinfo = 'unique'
+	 *				- if the proposed destination file doesn't exist, saved under given name
+	 *				- if the proposed destination file does exist, prepends time() to the file name to make it unique
+	 *			@param string  $fileinfo =  'avatar'
+	 *				- indicates an avatar is being uploaded (not used - options must be set elsewhere)
+	 *
+	 *		@param array $options An array of supplementary options, all of which will be given appropriate defaults if not defined:
+	 *          @param $options['filetypes'] Name of file containing list of valid file types
+	 *				- Always looks in the admin directory
+	 *				- defaults to e_ADMIN.filetypes.xml, else e_ADMIN.admin_filetypes.php for admins (if file exists), otherwise e_ADMIN.filetypes.php for users.
+	 *				- FALSE disables this option (which implies that 'extra_file_types' is used)
+	 *		    @param string $options['file_mask'] Comma-separated list of file types which if defined limits the allowed file types to those which are in both this list and the
+	 *				file specified by the 'filetypes' option. Enables restriction to, for example, image files.
+	 *		    @param bool $options['extra_file_types'] - if is FALSE or undefined, rejects totally unknown file extensions (even if in $options['filetypes'] file).
+	 *				if TRUE, accepts totally unknown file extensions which are in $options['filetypes'] file.
+	 *				otherwise specifies a comma-separated list of additional permitted file extensions
+	 *		    @param int 	$options['final_chmod'] - chmod() to be applied to uploaded files (0644 default)  (This routine expects an integer value, so watch formatting/decoding - its normally
+	 *				specified in octal. Typically use intval($permissions,8) to convert)
+	 *		    @param int 	$options['max_upload_size'] - maximum size of uploaded files in bytes, or as a string with a 'multiplier' letter (e.g. 16M) at the end.
+	 *				- otherwise uses $pref['upload_maxfilesize'] if set
+	 *				- overriding limit of the smaller of 'post_max_size' and 'upload_max_size' if set in php.ini
+	 *				(Note: other parts of E107 don't understand strings with a multiplier letter yet)
+	 *		@param string 	$options['file_array_name'] - the name of the 'input' array - defaults to file_userfile[] - otherwise as set.
+	 *		@param int 	$options['max_file_count'] - maximum number of files which can be uploaded - default is 'unlimited' if this is zero or not set.
+	 *		@param bool $options['overwrite'] - if TRUE, existing file of the same name is overwritten; otherwise returns 'duplicate file' error (default FALSE)
+	 *		@param int 	$options['save_to_db'] - [obsolete] storage type - if set and TRUE, uploaded files were saved in the database (rather than as flat files)
+	 *
+	 *	@return boolean|array
+	 *		Returns FALSE if the upload directory doesn't exist, or various other errors occurred which restrict the amount of meaningful information.
+	 *		Returns an array, with one set of entries per uploaded file, regardless of whether saved or
+	 *		discarded (not all fields always present) - $c is array index:
+	 *		 	$uploaded[$c]['name'] - file name - as saved to disc
+	 *			$uploaded[$c]['rawname'] - original file name, prior to any addition of identifiers etc (useful for display purposes)
+	 *			$uploaded[$c]['type'] - mime type (if set - as sent by browser)
+	 *			$uploaded[$c]['size'] - size in bytes (should be zero if error)
+	 *			$uploaded[$c]['error'] - numeric error code (zero = OK)
+	 *			$uploaded[$c]['index'] - if upload successful, the index position from the file_userfile[] array - usually numeric, but may be alphanumeric if coded
+	 *			$uploaded[$c]['message'] - text of displayed message relating to file
+	 *			$uploaded[$c]['line'] - only if an error occurred, has line number (from __LINE__)
+	 *			$uploaded[$c]['file'] - only if an error occurred, has file name (from __FILE__)
+	 *
+	 *	On exit, uploaded files should all have been removed from the temporary directory.
+	 *	No messages displayed - its caller's responsibility to handle errors and display info to
+	 *	user (or can use handle_upload_messages() from this module)
+	 *
+	 *	Details of uploaded files are in $_FILES['file_userfile'] (or other array name as set) on entry.
+	 *	Elements passed (from PHP) relating to each file:
+	 *		['name']	- the original name
+	 *		['type']	- mime type (if provided - not checked by PHP)
+	 *		['size']	- file size in bytes
+	 *		['tmp_name'] - temporary file name on server
+	 *		['error']	- error code. 0 = 'good'. 1..4 main others, although up to 8 defined for later PHP versions
+	 *	Files stored in server's temporary directory, unless another set
 	 */
-	public function getUploaded($uploaddir, $fileinfo = false, $options = null)
+	public function getUploaded($uploaddir, $fileinfo = false, $options = array())
 	{
 		require_once(e_HANDLER."upload_handler.php");
-		return process_uploaded_files($uploaddir, $fileinfo, $options);	
+
+		if($uploaddir == e_UPLOAD || $uploaddir == e_TEMP || $uploaddir == e_AVATAR_UPLOAD)
+		{
+			$path = $uploaddir;
+		}
+		elseif(defined('e_CURRENT_PLUGIN'))
+		{
+			$path = $this->getUserDir(USERID, true, str_replace("../",'',$uploaddir)); // .$this->get;
+		}
+		else
+		{
+			return false;
+		}
+
+		return process_uploaded_files($path, $fileinfo, $options);
 
 	}
-	
-	
+
+
+	/**
+	 * Quickly scan and return a list of files in a directory.
+	 * @param $dir
+	 * @return array
+	 */
+	public function scandir($dir, $extensions=null)
+	{
+		$list = array();
+
+		$ext = str_replace(",","|",$extensions);
+
+		$tmp = scandir($dir);
+		foreach($tmp as $v)
+		{
+			if($v == '.' || $v == '..')
+			{
+				continue;
+			}
+
+			if(!empty($ext) && !preg_match("/\.(".$ext.")$/i", $v))
+			{
+
+				continue;
+			}
+
+			$list[] = $v;
+		}
+
+		return $list ;
+	}
+
+
+
+	public function gitPull($folder='', $type=null)
+	{
+		$gitPath = defset('e_GIT','git'); // addo to e107_config.php to
+		$mes = e107::getMessage();
+
+
+	//	$text = 'umask 0022'; //Could correct permissions issue with 0664 files.
+		// Change Dir.
+		$folder = e107::getParser()->filter($folder,'file'); // extra filter to keep RIPS happy.
+
+		switch($type)
+		{
+			case "plugin":
+				$dir = realpath(e_PLUGIN.basename($folder));
+				break;
+
+			case "theme":
+				$dir = realpath(e_THEME.basename($folder));
+				break;
+
+			default:
+				$dir = e_ROOT;
+		}
+
+
+
+	//	$cmd1 = 'cd '.$dir;
+		$cmd2 = 'cd '.$dir.'; '.$gitPath.' reset --hard'; // Remove any local changes.
+		$cmd3 = 'cd '.$dir.'; '.$gitPath.' pull'; 	// Run Pull request
+
+
+	//	$mes->addDebug($cmd1);
+		$mes->addDebug($cmd2);
+		$mes->addDebug($cmd3);
+
+	//	return false;
+
+	//	$text = `$cmd1 2>&1`;
+		$text = `$cmd2 2>&1`;
+		$text .= `$cmd3 2>&1`;
+
+	//	$text .= `$cmd4 2>&1`;
+
+	//	$text .= `$cmd5 2>&1`;
+
+		return print_a($text,true);
+
+	}
+
+
+
+	/**
+	 * Returns true is the URL is valid and false if it is not.
+	 * @param $url
+	 * @return bool
+	 */
+	public function isValidURL($url)
+	{
+		ini_set('default_socket_timeout', 1);
+	   $headers = get_headers($url);
+	//   print_a($headers);
+
+	   return (stripos($headers[0],"200 OK") || stripos($headers[0],"302")) ? true : false;
+	}
+
+
 	/**
 	 * Unzip Plugin or Theme zip file and move to plugin or theme folder. 
 	 * @param string $localfile - filename located in e_TEMP
 	 * @param string $type - addon type, either 'plugin' or 'theme', (possibly 'language' in future). 
 	 * @return string unzipped folder name on success or false. 
 	 */
-	public function unzipArchive($localfile, $type)
+	public function unzipArchive($localfile, $type, $overwrite=false)
 	{
 		$mes = e107::getMessage();
 		
 		chmod(e_TEMP.$localfile, 0755);
-		require_once(e_HANDLER."pclzip.lib.php");
+
+		$dir = false;
+
+		if(class_exists('ZipArchive')) // PHP7 compat. method.
+		{
+			$zip = new ZipArchive;
+
+			if($zip->open(e_TEMP.$localfile) === true)
+			{
+				for($i = 0; $i < $zip->numFiles; $i++ )
+				{
+					$filename = $zip->getNameIndex($i);
+
+                    $fileinfo = pathinfo($filename);
+
+                    if($fileinfo['dirname'] === '.')
+                    {
+                        $dir = $fileinfo['basename'];
+                        break;
+                    }
+                    elseif($fileinfo['basename'] === 'plugin.php' || $fileinfo['basename'] === 'theme.php')
+                    {
+						$dir = $fileinfo['dirname'];
+                    }
+
+			     //   $stat = $zip->statIndex( $i );
+			    //    print_a( $stat['name']  );
+				}
+
+
+				$zip->extractTo(e_TEMP);
+				chmod(e_TEMP.$dir, 0755);
+
+				if(empty($dir) && e_DEBUG)
+				{
+					print_a($fileinfo);
+				}
+
+
+				$zip->close();
+			}
+
+
+
+
+		}
+		else // Legacy Method.
+		{
+			require_once(e_HANDLER."pclzip.lib.php");
 		
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first. 
-		$dir 		= $this->getRootFolder($unarc);	
+			$archive 	= new PclZip(e_TEMP.$localfile);
+			$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+			$dir 		= $this->getRootFolder($unarc);
+		}
+
+
+
 		$destpath 	= ($type == 'theme') ? e_THEME : e_PLUGIN;
 		$typeDiz 	= ucfirst($type);
 		
@@ -1064,18 +1437,33 @@ class e_file
 		
 		if($dir && is_dir($destpath.$dir))
 		{
-			$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir); 
-			 
-			if(file_exists(e_TEMP.$localfile))
-			{	
-				@unlink(e_TEMP.$localfile);
+			if($overwrite === true)
+			{
+				if(file_exists(e_TEMP.$localfile))
+				{
+					$time = date("YmdHi");
+					if(rename($destpath.$dir, e_BACKUP.$dir."_".$time))
+					{
+						$mes->addSuccess("Old folder moved to backup directory");
+					}
+				}
 			}
-			
-			$this->removeDir(e_TEMP.$dir);
-			return false;
+			else
+			{
+
+				$mes->addError("(".ucfirst($type).") Already Downloaded - ".basename($destpath).'/'.$dir);
+
+				if(file_exists(e_TEMP.$localfile))
+				{
+					@unlink(e_TEMP.$localfile);
+				}
+
+				$this->removeDir(e_TEMP.$dir);
+				return false;
+			}
 		}
 	
-		if($dir == '')
+		if(empty($dir))
 		{
 			$mes->addError("Couldn't detect the root folder in the zip."); //  flush();
 			@unlink(e_TEMP.$localfile);
@@ -1084,13 +1472,14 @@ class e_file
 	
 		if(is_dir(e_TEMP.$dir)) 
 		{
-			if(!rename(e_TEMP.$dir,$destpath.$dir))
+			$res = rename(e_TEMP.$dir,$destpath.$dir);
+			if($res === false)
 			{
 				$mes->addError("Couldn't Move ".e_TEMP.$dir." to ".$destpath.$dir." Folder"); //  flush(); usleep(50000);
 				@unlink(e_TEMP.$localfile);
 				return false;
 			}	
-			
+
 
 			
 		//	$dir 		= basename($unarc[0]['filename']);

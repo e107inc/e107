@@ -113,10 +113,10 @@
 			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec libero ipsum; imperdiet at risus non, dictum sagittis odio! Nulla facilisi. Pellentesque adipiscing facilisis pharetra. Morbi imperdiet augue in ligula luctus, et iaculis est porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In ultricies vitae nisi ut porttitor. Curabitur lectus tellus, feugiat a elit vel, gravida iaculis dui. Nulla vulputate turpis dui, ac faucibus enim dignissim non. Ut non tellus suscipit, scelerisque orci sed, scelerisque sapien. Aenean convallis sodales nulla in porttitor. In pretium ante sapien, a tempor eros blandit nec.
 
 			Nulla non est nibh? Fusce lacinia quam adipiscing magna posuere dapibus. Sed mollis condimentum rhoncus. Morbi sollicitudin tellus a ligula luctus, ac varius arcu ullamcorper. Mauris in aliquet tellus, nec porttitor dui. Quisque interdum euismod mi sed bibendum. Vivamus non odio quis quam lacinia rhoncus in nec nibh. Integer vitae turpis condimentum, laoreet diam nec viverra fusce.</field>
-			<field name="page_author">0</field>
+			<field name="page_author">1</field>
 			<field name="page_datestamp">1371420000</field>
-			<field name="page_rating_flag">0</field>
-			<field name="page_comment_flag">0</field>
+			<field name="page_rating_flag">1</field>
+			<field name="page_comment_flag">1</field>
 			<field name="page_password"></field>
 			<field name="page_class">0</field>
 			<field name="page_ip_restrict"></field>
@@ -140,7 +140,7 @@
 			<field name="page_metakeys"></field>
 			<field name="page_metadscr"></field>
 			<field name="page_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a nunc eget nulla rutrum fringilla sed vel nisl. Suspendisse at erat a neque pulvinar sodales. Etiam dictum erat erat. Pellentesque dictum convallis massa, eu varius sapien gravida a. Suspendisse auctor, mi a tempor tincidunt, lorem felis gravida libero, nec mattis eros felis eu neque. Etiam vel sagittis ipsum. Morbi at libero accumsan mauris tincidunt adipiscing sed vitae mauris. Aenean suscipit consectetur dignissim. Aliquam ornare diam vitae libero suscipit eget facilisis nisl ultrices? Curabitur luctus turpis ac lorem iaculis id interdum massa blandit! Curabitur placerat massa at neque accumsan porta. Nulla sed tortor id sapien dapibus auctor at eget mi. Sed ultrices lacinia viverra.Mauris in purus mauris. Nulla facilisi. Suspendisse dui enim, dapibus sed accumsan non, gravida eget nulla. Praesent ullamcorper, est ac viverra congue, nisl lacus imperdiet sem, et laoreet velit mauris sed leo. Donec erat mi, luctus quis suscipit pretium, luctus sed orci. Proin eu ultricies sem. Nam mollis turpis non erat fermentum congue.Nullam adipiscing, purus et varius blandit, arcu nisi pretium urna, a euismod eros eros quis turpis! Aliquam quis mi turpis, in varius neque. Aliquam erat volutpat. Vestibulum venenatis ipsum dapibus ante dictum egestas. Pellentesque eget nisi ligula, id accumsan eros. Aenean vitae felis vitae sapien mattis pellentesque non nec dolor. Nulla facilisi.Quisque in tortor turpis, sed venenatis nunc. Nunc tellus elit, suscipit et accumsan ac, mollis et risus. Phasellus consectetur sapien in felis semper non tempor tortor mollis. Ut id leo vel magna rhoncus aliquet. Nunc eget sollicitudin felis. Vestibulum tempor, justo et congue dignissim, augue ipsum malesuada libero, id suscipit felis mi vitae erat. Etiam suscipit lacinia sapien, ac gravida nisi lobortis non. Suspendisse dictum risus in est egestas egestas. Aenean et nisi sed odio sollicitudin placerat vel ut magna. Nulla facilisi. Proin condimentum ultricies vulputate. Morbi dapibus elit a tellus elementum congue! In vitae aliquet leo. Proin tempus tincidunt magna, sit amet malesuada ipsum ornare sed. Sed lorem augue, aliquam sit amet hendrerit sed; venenatis in massa. Sed iaculis amet.</field>
-			<field name="page_author">0</field>
+			<field name="page_author">1</field>
 			<field name="page_datestamp">1366149600</field>
 			<field name="page_rating_flag">0</field>
 			<field name="page_comment_flag">0</field>
@@ -281,7 +281,7 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_id">1</field>
 			<field name="chapter_parent">0</field>
 			<field name="chapter_name">General</field>
-			<field name="chapter_sef"></field>
+			<field name="chapter_sef">general</field>
 			<field name="chapter_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tempor odio. Quisque volutpat lorem nec lectus congue suscipit. In hac habitasse platea dictumst. Etiam odio nisi, egestas vitae amet.</field>
 			<field name="chapter_meta_keywords"></field>
 			<field name="chapter_manager">0</field>
@@ -294,7 +294,7 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_id">2</field>
 			<field name="chapter_parent">1</field>
 			<field name="chapter_name">Chapter 1</field>
-			<field name="chapter_sef"></field>
+			<field name="chapter_sef">chapter-1</field>
 			<field name="chapter_meta_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ut nunc ac neque egestas ullamcorper. In convallis semper hendrerit. Etiam non dolor nisl, varius facilisis dui. Nunc egestas massa nunc.</field>
 			<field name="chapter_meta_keywords"></field>
 			<field name="chapter_manager">0</field>
@@ -302,6 +302,19 @@ Morbi porta leo iaculis, hendrerit lorem interdum, porta dui. Integer tempor con
 			<field name="chapter_order">0</field>
 			<field name="chapter_template"></field>
 			<field name="chapter_visibility">0</field>
+		</item>
+	</dbTable>
+	<dbTable name="rss">
+		<item>
+			<field name="rss_id">1</field>
+			<field name="rss_name">News</field>
+			<field name="rss_url">news</field>
+			<field name="rss_topicid">0</field>
+			<field name="rss_path">0</field>
+			<field name="rss_text">The rss feed of the news</field>
+			<field name="rss_datestamp">1456448477</field>
+			<field name="rss_class">0</field>
+			<field name="rss_limit">10</field>
 		</item>
 	</dbTable>
 	</database>

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -56,13 +56,13 @@ class plugin_download_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Manage', 'perm' => 'P'),
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create' 		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		
 		'other0' 		=> array('divider'=> true),
 		
 		'cat/list'			=> array('caption'=> LAN_CATEGORIES, 'perm'=>'P'),
-		'cat/create' 		=> array('caption'=> "Create Category", 'perm' => 'Q'),
+		'cat/create' 		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'Q'),
 		
 		'other1' 		=> array('divider'=> true),
 		
@@ -138,13 +138,13 @@ class download_cat_ui extends e_admin_ui
 	 	 	
 		protected $fields = array(
 			'checkboxes'						=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
-			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'icon',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),	 
+			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'method',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),
 			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),     		
-         	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'inline' => true, 'width' => 'auto', 'thclass' => 'left'), 
-       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',			'inline' => true,	'width' => 'auto', 'thclass' => 'left'), 
+         	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
+       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',			'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
          
 	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
-		 	'download_category_parent' 			=> array('title'=> 'Parent',		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
+		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
 			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
@@ -196,6 +196,34 @@ class download_cat_form_ui extends e_admin_form_ui
 			break;
 		}
 	}
+
+
+
+
+	public function download_category_icon($curVal,$mode)
+	{
+
+		if(!empty($curVal) && strpos($curVal, chr(1)))
+		{
+			list($curVal,$tmp) = explode(chr(1),$curVal);
+		}
+
+		switch($mode)
+		{
+			case 'read':
+				return e107::getParser()->toIcon($curVal, array('legacy'=>'{e_IMAGE}icons/'));
+			break;
+
+			case 'write':
+				return $this->iconpicker('download_category_icon', $curVal,null,array('glyphs'=>true, 'legacyPath'=>'{e_IMAGE}icons/'));
+			break;
+
+			case 'filter':
+			case 'batch':
+				return null;
+			break;
+		}
+	}
 }
 
 
@@ -236,7 +264,7 @@ class download_main_admin_ui extends e_admin_ui
 			'download_id'				=> array('title'=> ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
             'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
             'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
-		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
+		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE, 'writeParms'=>'sef=download_name'),
 		  	'download_keywords'	   	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
 		
 			'download_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
@@ -250,8 +278,8 @@ class download_main_admin_ui extends e_admin_ui
 			'download_active'			=> array('title'=> DOWLAN_21,			'type' => 'method', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center', 'class' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			'download_datestamp' 		=> array('title'=> LAN_DATE, 			'type' => 'datestamp', 	'data' => 'int',		'width' => 'auto',	'thclass' => '', 'readParms' => 'long', 'writeParms' => ''),
 			
-			'download_thumb' 			=> array('title'=> DOWLAN_20,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE ),
-			'download_image' 			=> array('title'=> DOWLAN_19,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60','readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
+			'download_thumb' 			=> array('title'=> DOWLAN_20,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60&legacyPath={e_FILE}downloadthumbs',  'readonly'=>TRUE ),
+			'download_image' 			=> array('title'=> DOWLAN_19,			'type' => 'image', 		'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'readParms'=>'thumb=60&thumb_urlraw=0&thumb_aw=60&legacyPath={e_FILE}downloadimages', 'readonly'=>TRUE,	'batch' => FALSE, 'filter'=>FALSE),
 			'download_comment'			=> array('title'=> DOWLAN_102,			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			
 			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
@@ -592,12 +620,12 @@ $columnInfo = array(
 					<td>".$row['limit_id']."</td>
 					<td>".r_userclass_name($row['limit_classnum'])."</td>
 					<td>
-						<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
-						<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
+						<input type='text' class='form-control' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
+						<input type='text' class='form-control' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
 					</td>
 					<td>
-						<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
-						<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
+						<input type='text' class='form-control' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
+						<input type='text' class='form-control' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
 					</td>
 					</tr>
 					";
@@ -616,12 +644,12 @@ $columnInfo = array(
 			<tr>
 			<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
 			<td>
-				<input type='text' class='tbox' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
-				<input type='text' class='tbox' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
+				<input type='text' class='form-control' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
+				<input type='text' class='form-control' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
 			</td>
 			<td>
-				<input type='text' class='tbox' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
-				<input type='text' class='tbox' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
+				<input type='text' class='form-control' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
+				<input type='text' class='form-control' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
 			</td>
 			</tr>
 			<tr>
@@ -1193,7 +1221,7 @@ $columnInfo = array(
 	                        <td style='width:80%'>
 	                           <div>".DOWLAN_131."&nbsp;&nbsp;";
 							  
-	                   //       $text .= "<select name='download_url' class='tbox'>
+	                   //       $text .= "<select name='download_url' class='form-control'>
 	                  //               <option value=''>&nbsp;</option>\n";
 	   
 	
@@ -1244,14 +1272,14 @@ $columnInfo = array(
 	                  <tr>
 	                       <td>".DOWLAN_149."</td>
 	                       <td style='width:80%;'>
-	                          <input class='tbox input-xxlarge' type='text' name='download_url_external' size='90' value='{$download_url_external}' maxlength='255'/>
+	                          <input class='form-control input-xxlarge' type='text' name='download_url_external' size='90' value='{$download_url_external}' maxlength='255'/>
 	                       </td>
 	                    </tr>
 	                    <tr>
 	                       <td>".DOWLAN_66."</td>
-	                       <td>
-	                          <input class='tbox' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
-	                       	 <select class='tbox' name='download_filesize_unit'>
+	                       <td class='form-inline'>
+	                          <input class='form-control' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
+	                       	 <select class='form-control' name='download_filesize_unit'>
 						      <option value='B'{$b_sel}>".CORE_LAN_B."</option>
 						      <option value='KB'{$kb_sel}>".CORE_LAN_KB."</option>
 						      <option value='MB'>".CORE_LAN_MB."</option>
@@ -1283,7 +1311,7 @@ $columnInfo = array(
 	            $opt = ($count==1) ? "id='mirror'" : "";
 	            $text .="
 	                        <div {$opt}>
-	                           <select name='download_mirror_name[]' class='tbox'>
+	                           <select name='download_mirror_name[]' class='form-control'>
 	                              <option value=''>&nbsp;</option>";
 	
 	            foreach ($mirrorList as $mirror)
@@ -1293,8 +1321,8 @@ $columnInfo = array(
 	            }
 	
 	            $text .= "</select>
-	                           <input  class='tbox' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200'/>
-	                           <input  class='tbox' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$mirrorArray[($count-1)]['filesize']."\" maxlength='10'/>";
+	                           <input  class='form-control' type='text' name='download_mirror[]' style='width: 60%;' value=\"".$mirrorArray[($count-1)]['url']."\" maxlength='200'/>
+	                           <input  class='form-control' type='text' name='download_mirror_size[]' style='width: 15%;' value=\"".$mirrorArray[($count-1)]['filesize']."\" maxlength='10'/>";
 	            if (DOWNLOAD_DEBUG)
 	            {
 	               if ($id)
@@ -1303,7 +1331,7 @@ $columnInfo = array(
 	               }
 	               else
 	               {
-	               $text .= "<input  class='tbox' type='text' name='download_mirror_requests[]' style='width: 10%;' value=\"".$mirrorArray[($count-1)]['requests']."\" maxlength='10'/>";
+	               $text .= "<input  class='form-control' type='text' name='download_mirror_requests[]' style='width: 10%;' value=\"".$mirrorArray[($count-1)]['requests']."\" maxlength='10'/>";
 	               }
 	            }
 	            $text .= "  </div>";
@@ -1342,25 +1370,25 @@ $columnInfo = array(
 	                  <tr>
 	                     <td >".DOWLAN_12."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox input-xxlarge' type='text' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
+	                        <input class='form-control input-xxlarge' type='text' id='download-name' name='download_name' size='60' value=\"".$tp->toForm($download_name)."\" maxlength='200'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_15."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox' type='text' name='download_author' size='60' value='$download_author' maxlength='100'/>
+	                        <input class='form-control' type='text' name='download_author' size='60' value='$download_author' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_16."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox' type='text' name='download_author_email' size='60' value='$download_author_email' maxlength='100'/>
+	                        <input class='form-control' type='text' name='download_author_email' size='60' value='$download_author_email' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_17."</td>
 	                     <td style='width:80%'>
-	                        <input class='tbox' type='text' name='download_author_website' size='60' value='$download_author_website' maxlength='100'/>
+	                        <input class='form-control' type='text' name='download_author_website' size='60' value='$download_author_website' maxlength='100'/>
 	                     </td>
 	                  </tr>
 	                  <tr>
@@ -1376,7 +1404,7 @@ $columnInfo = array(
 	                     <td style='width:20%'>".DOWLAN_19."</td>
 	                     <td style='width:80%'>";
 	       /*
-															$text = "<select name='download_image' class='tbox'>
+															$text = "<select name='download_image' class='form-control'>
 										  <option value=''>&nbsp;</option>";
 																foreach($image_array as $img)
 					 {
@@ -1387,7 +1415,7 @@ $columnInfo = array(
 									 $text .= "     </select>";
 										   */
 		   
-		$text .= $frm->imagepicker('download_image', $download_image,'','download_image'); 
+		$text .= $frm->imagepicker('download_image', $download_image,'',array('media'=>'download_image', 'legacyPath'=>'{e_FILE}downloadimages'));
 		  
 	      if ($subAction == "dlm" && $download_image)
 	      {
@@ -1408,7 +1436,7 @@ $columnInfo = array(
 			           <td style='width:80%'>";
 			     /*
 												   $text .= "
-											 <select name='download_thumb' class='tbox'>
+											 <select name='download_thumb' class='form-control'>
 												<option value=''>&nbsp;</option>";
 						   foreach($thumb_array as $thm){
 							  $tpath = str_replace(e_FILE."downloadthumbs/","",$thm['path'].$thm['fname']);
@@ -1418,7 +1446,7 @@ $columnInfo = array(
 										 $text .= "        </select>";
 						   */
 				 
-				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'','download_thumb'); 
+				 $text .= $frm->imagepicker('download_thumb', $download_thumb,'',array('media'=>'download_thumb', 'legacyPath'=>'{e_FILE}downloadthumbs'));
 				 
 				 
 			    $text .= "
@@ -1447,8 +1475,8 @@ $columnInfo = array(
 	                  
 	     			 <tr>
 	                     <td >".LAN_SEFURL."</td>
-	                     <td style='width:80%'>
-	                        <input class='tbox input-xxlarge' type='text' name='download_sef' size='60' value=\"".$tp->toForm($download_sef)."\" maxlength='250'/>
+	                     <td class='input-group' style='width:80%'>
+	                        ".$frm->renderElement('download_sef',$download_sef, array('type'=>'text', 'writeParms'=>array('sef'=>'download_name','size'=>'xxlarge')))."
 	                     </td>
 	                  </tr> 
 	                  
@@ -1465,7 +1493,7 @@ $columnInfo = array(
 	                  <tr>
 	                     <td style='width:20%'>".DOWLAN_21."</td>
 	                     <td style='width:80%'>
-	                        <select name='download_active' class='tbox'>";
+	                        <select name='download_active' class='form-control input-xxlarge'>";
 	      foreach($download_status as $key => $val){
 	         $sel = ($download_active == $key) ? " selected = 'selected' " : "";
 	           $text .= "<option value='{$key}' {$sel}>{$val}</option>\n";
@@ -1498,7 +1526,7 @@ $columnInfo = array(
 	                  <tr>
 	                     <td style='width:30%'>".DOWLAN_153."</td>
 	                     <td style='width:70%'>
-	                        <select name='move_file' class='tbox'>
+	                        <select name='move_file' class='form-control'>
 	                           <option value=''>".LAN_NO."</option>";
 	           $dl_dirlist = $fl->get_dirs(e_DOWNLOAD);
 	           if ($dl_dirlist){
@@ -1540,10 +1568,10 @@ $columnInfo = array(
 						 
 	      if ($id && $subAction == "edit")
 		  {
-	         $text .= "<input class='btn btn-default button' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
+	         $text .= "<input class='btn btn-success' type='submit' name='submit_download' value='".DOWLAN_24."'/> ";
 	      } else
 	      {
-	         $text .= "<input class='btn btn-default button' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
+	         $text .= "<input class='btn btn-success' type='submit' name='submit_download' value='".DOWLAN_25."'/>";
 	      }
 	
 	      $text .= "
@@ -1699,7 +1727,7 @@ $columnInfo = array(
 	      	$dlInfo['download_comment']				= $tp->toDB($_POST['download_comment']);
 	      	$dlInfo['download_class']				= $tp->toDB($_POST['download_class']);
 	      	$dlInfo['download_visible']				= $tp->toDB($_POST['download_visible']);
-			$dlInfo['download_datestamp']			= e107::getDate()->convert($_POST['download_datestamp'],'inputdate');
+			$dlInfo['download_datestamp']			= intval($_POST['download_datestamp']);
 			
 	
 	      if($_POST['update_datestamp'])
@@ -1889,7 +1917,7 @@ $columnInfo = array(
 	            <tr>
 	            <td style='width: 10%; text-align: center;'>$mirror_id</td>
 	            <td style='width: 30%;'>".$tp -> toHTML($mirror_name)."</td>
-	            <td style='width: 30%;'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt=''/>" : DOWLAN_28)."</td>
+	            <td style='width: 30%;'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt=''/>" : LAN_NONE)."</td>
 	            <td style='width: 30%; text-align: center;'>
 	            <a href='".e_SELF."?mirror.edit.{$mirror_id}'>".ADMIN_EDIT_ICON."</a>
 	            <input type='image' title='".LAN_DELETE."' name='delete[mirror_{$mirror_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\"/>
@@ -1926,21 +1954,21 @@ $columnInfo = array(
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_12."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' name='mirror_name' size='60' value='{$mirror_name}' maxlength='200'/>
+	      <input class='form-control input-xxlarge' type='text' name='mirror_name' size='60' value='{$mirror_name}' maxlength='200'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_139."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' name='mirror_url' size='70' value='{$mirror_url}' maxlength='255'/>
+	      <input class='form-control input-xxlarge' type='text' name='mirror_url' size='70' value='{$mirror_url}' maxlength='255'/>
 	      </td>
 	      </tr>
 	
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_136."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
+	      <input class='form-control input-xxlarge' type='text' id='mirror_image' name='mirror_image' size='60' value='{$mirror_image}' maxlength='200'/>
 	
 	
 	      <br /><input class='btn btn-default button' type ='button' style='cursor:pointer' size='30' value='".DOWLAN_42."' onclick='expandit(this)'/>
@@ -1959,7 +1987,7 @@ $columnInfo = array(
 	      <tr>
 	      <td style='width: 30%;'>".DOWLAN_141."</td>
 	      <td style='width: 70%;'>
-	      <input class='tbox' type='text' name='mirror_location' size='60' value='$mirror_location' maxlength='200'/>
+	      <input class='form-control' type='text' name='mirror_location' size='60' value='$mirror_location' maxlength='200'/>
 	      </td>
 	      </tr>
 	
@@ -2031,7 +2059,7 @@ $columnInfo = array(
 		      $order_options = array(
 		         "download_id"        => "Id No.",
 		         "download_datestamp" => LAN_DATE,
-		         "download_requested" => ADLAN_24,
+		         "download_requested" => LAN_PLUGIN_DOWNLOAD_NAME,
 		         "download_name"      => DOWLAN_59,
 		         "download_author"    => DOWLAN_15
 		      );
@@ -2094,7 +2122,7 @@ $columnInfo = array(
 		            		      <tr>
 		               		      <td>".DOWLAN_160."</td>
 		               		      <td>
-		                  		      <select name='mirror_order' class='tbox'>".
+		                  		      <select name='mirror_order' class='form-control'>".
 		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
 		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
 		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
@@ -2103,7 +2131,7 @@ $columnInfo = array(
 		            		      </tr>
 		            		      <tr>
 		            		         <td>".DOWLAN_164."</td>
-		            		         <td><input type='text' name='recent_download_days' class='tbox' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
+		            		         <td><input type='text' name='recent_download_days' class='form-control' value='".$pref['recent_download_days']."' size='3' maxlength='3'/>
 		            		         </td>
 		            		      </tr>
 		            		   </table>
@@ -2292,7 +2320,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 		}
 
 		$types = array("theme","plugin");
-		$text = "<select class='tbox' name='release_type' >";
+		$text = "<select class='form-control' name='release_type' >";
 		foreach($types as $val)
 		{
 			$selected = ($curVal == $val) ? "selected='selected'" : "";
@@ -2361,7 +2389,7 @@ class download_main_admin_form_ui extends e_admin_form_ui
 class download_mirror_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Downloads';
+		protected $pluginTitle		= LAN_PLUGIN_DOWNLOAD_NAME;
 		protected $pluginName		= 'download';
 		protected $table			= 'download_mirror';
 		protected $pid				= 'mirror_id';
@@ -2381,10 +2409,10 @@ class download_mirror_ui extends e_admin_ui
 		  'mirror_name' 		=>   array ( 'title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_url' 			=>   array ( 'title' => LAN_URL, 'type' => 'url', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_image' 		=>   array ( 'title' => LAN_IMAGE, 'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'mirror_location' 	=>   array ( 'title' => 'Location', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'mirror_location' 	=>   array ( 'title' => DOWLAN_141, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		  'mirror_description' 	=>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'bbarea', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'mirror_count' 		=>   array ( 'title' => 'Count', 'type' => 'hidden', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'options' 			=>   array ( 'title' => 'Options', 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
+		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
 		protected $fieldpref = array('mirror_name', 'mirror_url', 'mirror_image', 'mirror_location');

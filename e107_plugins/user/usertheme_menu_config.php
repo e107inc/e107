@@ -10,7 +10,7 @@
 
 $eplug_admin = TRUE;
 require_once("../../class2.php");
-include_lan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
+e107::includeLan(e_PLUGIN."user_menu/languages/".e_LANGUAGE.".php");
 
 require_once(e_HANDLER.'userclass_class.php');
 global $e_userclass;
@@ -18,7 +18,7 @@ if (!is_object($e_userclass)) $e_userclass = new user_class;
 
 if (!getperms("2")) 		// Same permissions as menu configuration
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit ;
 }
 

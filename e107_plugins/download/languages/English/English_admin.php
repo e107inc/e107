@@ -1,14 +1,12 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_0.8/e107_plugins/download/languages/English/admin_download.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
-*/
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ */
 // define("LAN_PLUGIN_DOWNLOAD_NAME",	   "Downloads");
 define("LAN_DL_OPTIONS",               "Options"); //FIXME Use Generic
 define("LAN_DL_DOWNLOAD_OPT_GENERAL",  "General");
@@ -49,7 +47,8 @@ define("DOWLAN_24",  "Update Download");
 define("DOWLAN_25",  "Submit Download");
 // define("DOWLAN_26",  "Uploads enabled?");
 define("DOWLAN_27",  "Download");
-define("DOWLAN_28",  "None");
+//define("DOWLAN_28",  "None");//LAN_NONE
+define("DOWLAN_29", "Requested");
 define("DOWLAN_31",  "Categories");
 define("DOWLAN_32",  "Downloads");
 define("DOWLAN_33",  "Are you sure you want to delete this download?"); //FIXME Use Generic

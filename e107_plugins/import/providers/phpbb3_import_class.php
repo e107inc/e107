@@ -94,7 +94,7 @@ class phpbb3_import extends base_import_class
 								
 				if($this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}attachments`"))
 				{
-					while($row = $this->ourDB->fetch(MYSQL_ASSOC))
+					while($row = $this->ourDB->fetch())
 					{
 						$id = $row['post_msg_id'];
 						$key = $row['physical_filename'];

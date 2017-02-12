@@ -22,8 +22,15 @@
 	 ?>
 */
 // error_reporting(E_ALL);
-define('e107_INIT', true);
+// define('e107_INIT', true);
+$_E107['no_online'] = true;
+$_E107['no_forceuserupdate'] = true;
+$_E107['no_menus'] = true;
+$_E107['no_maintenance'] = true;
+//$_E107['no_theme'] = true;
+require_once("../class2.php");
 
+/*
 define('e_BASE',realpath("..".DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR);
 @include(e_BASE.'e107_config.php');
 if(!isset($mySQLserver))
@@ -33,10 +40,12 @@ if(!isset($mySQLserver))
           echo "FAILED TO LOAD ".e_BASE."e107_config.php in secimg.php";
     }
     exit;
-}
+}*/
 
 
-require_once(realpath(e_BASE.$HANDLERS_DIRECTORY.DIRECTORY_SEPARATOR."secure_img_handler.php"));
+// require_once(realpath(e_BASE.$HANDLERS_DIRECTORY.DIRECTORY_SEPARATOR."secure_img_handler.php"));
+
+require_once(e_HANDLER."secure_img_handler.php");
 
 $sim = new secure_image();
 
@@ -56,6 +65,7 @@ else
 	$color = "cccccc";		
 }
 
+ob_clean(); // Precaution - clearout utf-8 BOM or any other garbage in e107_config.php
 $sim->render($code,$color);
 
 exit;

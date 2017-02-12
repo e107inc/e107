@@ -30,7 +30,8 @@ define("LAN_EURL_FORM_HELP_EXAMPLE", "Base URL");
 
 // messages
 define("LAN_EURL_ERR_ALIAS_MODULE", "Alias &quot;%1\$s&quot; can't be saved - there is a system URL profile with the same name. Please choose another alias value for system URL profile &quot;%2\$s&quot;"); // FIXME HTML IN LAN
-
+define("LAN_EURL_SURL_UPD",    "&nbsp; SEF URLs were updated.");
+define("LAN_EURL_SURL_NUPD",    "&nbsp; SEF URLs were NOT updated.");
 // settings
 define("LAN_EURL_SETTINGS_PATHINFO", "Remove filename from the URL");
 define("LAN_EURL_SETTINGS_MAINMODULE", "Associate Root namespace");
@@ -54,11 +55,11 @@ define("LAN_EURL_MODREWR_DESCR", "Removes entry script file name (index.php/) fr
 
 // navigation
 define("LAN_EURL_MENU", "Site URLs");
-define("LAN_EURL_MENU_CONFIG", "URL Profiles");
-define("LAN_EURL_MENU_ALIASES", "Aliases");
+define("LAN_EURL_MENU_CONFIG", "Configurations");
+define("LAN_EURL_MENU_ALIASES", "Profile Aliases");
 define("LAN_EURL_MENU_SETTINGS", "Settings");
 define("LAN_EURL_MENU_HELP", "Help");
-define("LAN_EURL_MENU_REDIRECTS", "Redirects");
+define("LAN_EURL_MENU_PROFILES", "Profiles");
 
 define("LAN_EURL_UC", "Under Construction");
 
@@ -129,4 +130,5 @@ define("LAN_EURL_SYSTEM_REWRITE_DESCR", "URLs for pages like Not Found, Access d
 // System
 define("LAN_EURL_CORE_INDEX", "Front Page");
 define("LAN_EURL_CORE_INDEX_INFO", "Front Page can't have an alias.");
+define("LAN_EURL_REBUILD",    "Rebuild");
 //define("LAN_EURL_", "");

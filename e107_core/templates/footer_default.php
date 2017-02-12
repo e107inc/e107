@@ -20,8 +20,8 @@ $In_e107_Footer = TRUE; // For registered shutdown function
 
 global $error_handler,$db_time,$FOOTER;
 
-// Clean session shutdown
-e107::getSession()->shutdown();
+
+
 
 
 // System browser CACHE control - defaults to no cache; override in e107_config or on the fly
@@ -161,7 +161,7 @@ if (varset($e107_popup) != 1)
 	}
 	else
 	{
-		echo($rinfo ? "\n<div class='e-footer-info muted smalltext'><small>{$rinfo}</small></div>\n" : "");
+		echo($rinfo ? "\n<div class='e-footer-info muted smalltext hidden-print'><small>{$rinfo}</small></div>\n" : "");
 	}
 	
 } // End of regular-page footer (the above NOT done for popups)
@@ -187,9 +187,9 @@ if (ADMIN && isset($queryinfo) && is_array($queryinfo))
 {
 	$c = 1;
 	$mySQLInfo = $sql->mySQLinfo;
-	echo "<div class='e-debug query-notice'><table class='fborder' style='width: 100%;'>
+	echo "<div class='e-debug query-notice'><table class='fborder table table-striped table-bordered' style='width: 100%;'>
 		<tr>
-		<td class='fcaption' style='width: 5%;'>ID</td><td class='fcaption' style='width: 95%;'>SQL Queries</td>\n</tr>\n";
+		<th class='fcaption' style='width: 5%;'>ID</th><th class='fcaption' style='width: 95%;'>SQL Queries</th>\n</tr>\n";
 	foreach ($queryinfo as $infovalue)
 	{
 		echo "<tr>\n<td class='forumheader3' style='width: 5%;'>{$c}</td><td class='forumheader3' style='width: 95%;'>{$infovalue}</td>\n</tr>\n";
@@ -277,11 +277,11 @@ if (isset($footer_js) && is_array($footer_js))
 	}
 }
 
-// Load e_footer.php files. 
-if (is_array($pref['e_footer_list']))
+// Load e_footer.php files.
+if (!empty($pref['e_footer_list']) && is_array($pref['e_footer_list']))
 {
-	ob_start();
-	
+	//ob_start(); // sometimes raw HTML needs to be added at the bottom of every page. eg. <noscript> etc. so allow 'echo' in e_footer files. (but not e_header)
+
 	foreach($pref['e_footer_list'] as $val)
 	{		
 		$fname = e_PLUGIN.$val."/e_footer.php"; // Do not place inside a function - BC $pref required. . 
@@ -290,11 +290,12 @@ if (is_array($pref['e_footer_list']))
 		{
 			
 			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+
 		}	
 	}
 
-	$e_footer_ouput = ob_get_contents(); // Don't use. 
-	ob_end_clean();
+//	$e_footer_ouput = ob_get_contents(); // Don't use.
+//	ob_end_clean();
 	unset($ret);
 }
 
@@ -324,6 +325,10 @@ if(deftrue('e_DEVELOPER'))
 e107::getJs()->renderJs('footer', true);
 
 e107::getJs()->renderCached('js');
+
+// All JavaScript settings are placed in the footer of the page with the library weight so that inline scripts appear
+// afterwards.
+e107::getJs()->renderJs('settings');
 
 // [JSManager] Load JS Footer inline code by priority
 e107::getJs()->renderJs('footer_inline', true);
@@ -369,23 +374,35 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 unset($show);
 echo "\n</body>\n</html>";
 
-// Shutdown
-$e107->destruct();
 
 //
 // I Send the buffered page data, along with appropriate headers
 //
-$page = ob_get_clean();
+//$length = ob_get_length();
+//$page = ob_get_clean();
+
+
 
 // New - see class2.php 
 $ehd = new e_http_header;
-$ehd->setContent($page);
+$ehd->setContent('buffer');
 $ehd->send();
 // $ehd->debug();
+
+$page = $ehd->getOutput();
+//$ehd->setContent($page);
+//$ehd->send($length);
+
 
 // real output
 echo $page;
 
 unset($In_e107_Footer);
-$e107_Clean_Exit=TRUE;	// For registered shutdown function -- let it know all is well!
+
+
+// Clean session shutdown
+e107::getSession()->shutdown(); // moved from the top of footer_default.php to fix https://github.com/e107inc/e107/issues/1446 (session closing before page was complete)
+// Shutdown
+$e107->destruct();
+$e107_Clean_Exit=true;	// For registered shutdown function -- let it know all is well!
 ?>

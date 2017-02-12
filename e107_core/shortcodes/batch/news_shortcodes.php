@@ -34,6 +34,8 @@ class news_shortcodes extends e_shortcode
 	protected $commentsEngine = 'e107';
 	
 	private $imageItem;
+
+	// protected $param; // do not enable - erases param. .
 	
 	
 	function __construct($eVars = null)
@@ -51,9 +53,22 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_newstitle()
+	function sc_newstitle($parm)
 	{
-		return e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
+		$text = e107::getParser()->toHTML($this->news_item['news_title'], TRUE, 'TITLE');
+
+		if(!empty($parm['attribute']))
+		{
+			$text = e107::getParser()->toAttribute($text);
+		}
+
+		if(!empty($parm['limit']))
+		{
+			$text = e107::getParser()->text_truncate($text, $parm['limit']);
+		}
+
+
+		return $text;
 	}
 
 	function sc_newsurltitle()
@@ -67,7 +82,10 @@ class news_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 		e107::getBB()->setClass("news"); // For automatic bbcode image resizing. 
-		
+
+
+		$news_body = '';
+
 		if($parm != 'extended')
 		{
 			$news_body = $tp->toHTML($this->news_item['news_body'], true, 'BODY, fromadmin', $this->news_item['news_author']);
@@ -77,7 +95,9 @@ class news_shortcodes extends e_shortcode
 		{
 			$news_body .= $tp->toHTML($this->news_item['news_extended'], true, 'BODY, fromadmin', $this->news_item['news_author']);
 		}
+
 		e107::getBB()->clearClass();
+
 		return $news_body;
 	}
 
@@ -97,7 +117,7 @@ class news_shortcodes extends e_shortcode
 			}
 			else
 			{
-				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."{$parm}</a>";
+				return "<a href='".e107::getUrl()->create('user/profile/view', $this->news_item)."'>".$this->news_item['user_name']."</a>";
 			}
 		}
 		return "<a href='http://e107.org'>e107</a>";
@@ -152,7 +172,7 @@ class news_shortcodes extends e_shortcode
 			$NEWIMAGE = "";		
 		}
 		
-		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title='Comments' href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
+		return (!$news_item['news_allow_comments'] ? ''.($pref['comments_icon'] ? $NEWIMAGE.' ' : '')."<a title=\"".LAN_COMMENTS."\" href='".e107::getUrl()->create('news/view/item', $news_item)."'>".$param['commentlink'].intval($news_item['news_comment_total']).'</a>' : vartrue($param['commentoffstring'],'Disabled') );
 	}
 
 	function sc_trackback($parm=null)
@@ -198,7 +218,7 @@ class news_shortcodes extends e_shortcode
 			
 		$caption = vartrue($parm['text'],LAN_BACK);
 		
-		$text = '<ul class="pager">
+		$text = '<ul class="pager hidden-print">
   			<li><a href="'.$url.'">'.e107::getParser()->toHtml($caption,false,'defs').'</a></li>
 		</ul>';
 		
@@ -214,42 +234,189 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+	function sc_news_category_icon($parm=null)
+	{
+		return $this->sc_newscaticon($parm);
+	}
+
+
+	function sc_news_category_name($parm=null)
+	{
+		if(empty($parm['link']))
+		{
+			return e107::getParser()->toHTML($this->news_item['category_name'], 'TITLE');
+		}
+
+		return $this->sc_newscategory($parm);
+	}
+
+
+	function sc_news_category_sef($parm=null)
+	{
+		if(!empty($this->news_item['category_sef']))
+		{
+			return strtolower(str_replace(" ","", $this->news_item['category_sef']));
+		}
+	}
+
+
+	function sc_news_category_description($parm=null)
+	{
+		if(!empty($this->news_item['category_meta_description']))
+		{
+			return e107::getParser()->toHTML($this->news_item['category_meta_description'], false ,'BODY');
+		}
+	}
+
+
+	//New v2.x Aliases
+
+	public function sc_news_id($parm=null)
+	{
+		return $this->sc_newsid();
+	}
+
+	public function sc_news_title($parm=null)
+	{
+		return (!empty($parm['link'])) ? $this->sc_newstitlelink($parm) : $this->sc_newstitle($parm);
+	}
+
+	public function sc_news_body($parm=null)
+	{
+		return $this->sc_newsbody($parm);
+	}
+
+	public function sc_news_author($parm=null)
+	{
+		return $this->sc_newsauthor($parm);
+	}
+
+	public function sc_news_author_avatar($parm=null)
+	{
+		return $this->sc_newsavatar($parm);
+	}
+
+	public function sc_news_author_signature($parm=null)
+	{
+
+		$user = e107::user($this->news_item['user_id']);
+
+		if(!empty($user['user_signature']))
+		{
+			return e107::getParser()->toHtml($user['user_signature'], true, 'DESCRIPTION');
+		}
+	}
+
+	public function sc_news_author_items_url($parm=null)
+	{
+		return e107::getUrl()->create('news/list/author',array('author'=>$this->news_item['user_name'])); // e_BASE."news.php?author=".$val
+	}
+
+	public function sc_news_summary($parm=null)
+	{
+		return $this->sc_newssummary($parm);
+	}
+
+	public function sc_news_description($parm=null)
+	{
+		return $this->sc_newsmetadiz($parm);
+	}
+
+	public function sc_news_tags($parm=null)
+	{
+		return $this->sc_newstags($parm);
+	}
+
+	public  function sc_news_comment_count($parm=null)
+	{
+		return $this->sc_newscommentcount($parm);
+	}
+
+	public function sc_news_comment_label($parm=null)
+	{
+		return ($this->news_item['news_comment_total'] == 1) ? COMLAN_8 : LAN_COMMENTS;
+	}
+
+	public function sc_news_date($parm=null)
+	{
+		return $this->sc_newsdate($parm);
+	}
+
+	public function sc_news_user_avatar($parm=null)
+	{
+		return $this->sc_newsavatar($parm);
+	}
+
+	public function sc_news_url($parm=null)
+	{
+		return $this->sc_newsurl($parm);
+	}
+
+	public function sc_news_image($parm=null)
+	{
+		return $this->sc_newsimage($parm);
+	}
+
+	public function sc_news_related($parm=null)
+	{
+		return $this->sc_newsrelated($parm);
+	}
+
+	public function sc_news_visibility($parm=null)
+	{
+		$string= e107::getUserClass()->getIdentifier($this->news_item['news_class']);
+		return $string;
+
+	}
+
+
+// ----------------------------------- BC compatible Shortcodes ------------------------------------------- //
+
 	function sc_newscategory($parm=null)
 	{
 		$category_name = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
 		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
-		return "<a class='".$GLOBALS['NEWS_CSSMODE']."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
+		$categoryClass = varset($GLOBALS['NEWS_CSSMODE'],'');
+		return "<a class='".$categoryClass."_category' style='".(isset($this->param['catlink']) ? $this->param['catlink'] : "#")."' href='".e107::getUrl()->create('news/list/category', $category)."'>".$category_name."</a>";
 	}
 
 	function sc_newsdate($parm)
 	{
 	   $date = ($this->news_item['news_start'] > 0) ? $this->news_item['news_start'] : $this->news_item['news_datestamp'];
-		$con = new convert;
+		$con = e107::getDate();
+		$tp = e107::getParser();
+
 		if($parm == '')
 		{
-			return  $con->convert_date($date, 'long');
+			return  $tp->toDate($date, 'long');
 		}
+
+
 		switch($parm)
 		{
 			case 'long':
-			return  $con->convert_date($date, 'long');
+			return  $tp->toDate($date, 'long');
 			break;
 			case 'short':
-			return  $con->convert_date($date, 'short');
+			return  $tp->toDate($date, 'short');
 			break;
 			case 'forum':
 			return  $con->convert_date($date, 'forum');
 			break;
 			default :
-			return date($parm, $date);
+			return $tp->toDate($date,$parm);
+		//	return date($parm, $date);
 			break;
 		}
 	}
 
 
-	function sc_newsavatar()
+	function sc_newsavatar($parm=null)
 	{
-		return vartrue($this->news_item['user_id']) ? e107::getParser()->parseTemplate("{USER_AVATAR=".$this->news_item['user_id']."}",true) : '';
+		if(!empty($this->news_item['user_id']))
+		{
+			return e107::getParser()->toAvatar($this->news_item['user_id'], $parm);
+		}
 	} 
 
 	/**
@@ -261,13 +428,18 @@ class news_shortcodes extends e_shortcode
 
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;	
+			return null;
 		}
 
 		$class = varset($parm['class']) ? " ".$parm['class'] : "";
 
+		if(empty($this->param['commentlink']))
+		{
+			$this->param['commentlink'] = e107::getParser()->toGlyph('fa-comment');
+		}
+
 		// When news_allow_comments = 1 then it is disabled. Backward, but that's how it is in v1.x
-		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." comments' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
+		$text = ($this->news_item['news_allow_comments'] ? $this->param['commentoffstring'] : "<a title='".$this->sc_newscommentcount()." ".LAN_COMMENTS."' class='e-tip".$class."' href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$this->param['commentlink'].'</a>');
 		return $text;
 	}
 
@@ -278,7 +450,7 @@ class news_shortcodes extends e_shortcode
 	{
 		if($this->commentsDisabled || ($this->commentsEngine != 'e107'))
 		{
-			return;
+			return null;
 		}
 		
 		$text = varset($parm['glyph']) ? e107::getParser()->toGlyph($parm['glyph']) : "";
@@ -329,6 +501,7 @@ class news_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		if (ADMIN && getperms('H'))
 		{
+
 			//TODO - discuss - a pref for 'new browser window' loading, or a parm or leave 'new browser window' as default?
 			$default = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('icon-edit',false) :  "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt=\"".LAN_EDIT."\" class='icon' />";
 
@@ -337,7 +510,7 @@ class news_shortcodes extends e_shortcode
 			
 			$class = varset($parm['class']);
 			
-			return "<a class='e-tip ".$class."' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
+			return "<a class='e-tip ".$class." hidden-print' rel='external' href='".e_ADMIN_ABS."newspost.php?action=edit&amp;id=".$this->news_item['news_id']."' title=\"".LAN_EDIT."\">".$adop_icon."</a>\n";
 		}
 		else
 		{
@@ -345,10 +518,10 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
-	function sc_extended($parm='')
+	function sc_extended($parm=null)
 	{
 
-		$class = vartrue($parm['class']) ? "class='".$parm['class']."'" : '';
+		$class = !empty($parm['class']) ? "class='".$parm['class']."'" : '';
 
 		if ($this->news_item['news_extended'] && ($this->param['current_action'] != 'extend' || $parm == 'force'))
 		{
@@ -386,27 +559,37 @@ class news_shortcodes extends e_shortcode
 		return "<div class='".(defined('ADMINNAME') ? ADMINNAME : 'null')."'>".$news_body.'</div>';
 	}
 
-	function sc_newssummary()
+	function sc_newssummary($parm=null)
 	{
+		$text = '';
+
 		if($this->news_item['news_summary'])
 		{
-			return $this->news_item['news_summary'].'<br />';
+			$text = $this->news_item['news_summary'];
 		}
-		
-		if($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
+		elseif($this->news_item['news_body']) // Auto-generate from first 2 sentences of news-body. //TODO Add Pref?
 		{
 			$tp = e107::getParser();
 			$text = $tp->toHtml($this->news_item['news_body'],true);
-			$text = str_replace("<br />","\n",$text);
+			$breaks = array('<br />','<br>');
+			$text = str_replace($breaks,"\n",$text);
 			$text = strip_tags($text);	
-			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text));	
+			$tmp = preg_split('/(\.\s|!|\r|\n|\?)/i', trim($text), 2, PREG_SPLIT_DELIM_CAPTURE);
 			$tmp = array_filter($tmp);
-			
+
 			if($tmp[0])
 			{
-				return trim($tmp[0]);	
+				$text = trim($tmp[0]).trim($tmp[1]);
 			}
 		}
+
+		if(!empty($parm['limit']))
+		{
+			$text = e107::getParser()->text_truncate($text, $parm['limit']);
+		}
+
+
+		return $text;
 	}
 
 	/**
@@ -430,6 +613,9 @@ class news_shortcodes extends e_shortcode
 		$newsThumb = $tmp['file'];
 		
 		$class = 'news-thumbnail-'.$tmp['count'];
+		$dimensions = null;
+		$srcset = null;
+		$tp = e107::getParser();
 		
 		if(!$newsThumb && $parm != 'placeholder')
 		{
@@ -440,6 +626,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$src = $vThumb;
 			$_src = '#';
+			$dimensions = e107::getParser()->thumbDimensions();
 		}
 		else
 		{
@@ -447,7 +634,7 @@ class news_shortcodes extends e_shortcode
 			
 			if(empty($parms[2])) // get {SETIMAGE} values when no parm provided. 
 			{
-				$parms[2] = array('aw' => e107::getParser()->thumbWidth(), 'ah'=> e107::getParser()->thumbHeight());
+				$parms[2] = array('aw' => $tp->thumbWidth(), 'ah'=> $tp->thumbHeight());
 			}
 			
 			
@@ -472,12 +659,25 @@ class news_shortcodes extends e_shortcode
 			$_src = $src = ($newsThumb[0] == '{' || $parms[1] == 'placeholder') ? e107::getParser()->replaceConstants($newsThumb, 'abs') : e_IMAGE_ABS."newspost_images/".$newsThumb;
 		
 		
-			if($parms[2] || $parms[1] == 'placeholder')  $src = e107::getParser()->thumbUrl($src, $parms[2]);	
+			if(!empty($parms[2]) || $parms[1] == 'placeholder')
+			{
+				//  $srcset = "srcset='".$tp->thumbSrcSet($src,'all')."' size='100vw' ";
+				  $attr = !empty($parms[2]) ? $parms[2] : null;
+				  $src = e107::getParser()->thumbUrl($src, $attr);
+				  $dimensions = e107::getParser()->thumbDimensions();
+
+			}
 		}
 		
-		
-		
-				
+
+		if(empty($parms[1]))
+		{
+			$parms = array(1 => null);
+		}
+
+		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+
+
 		switch($parms[1])
 		{
 			case 'src':
@@ -485,15 +685,15 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
+				return "<img class='news_image ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'img':
-				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".$_src."' rel='external image'><img class='news_image ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-rounded ".$class."' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='news_image img-responsive img-fluid img-rounded rounded ".$class."' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} /></a>";
 			break;
 		}
 	}
@@ -519,14 +719,24 @@ class news_shortcodes extends e_shortcode
 		}
 			
 		$this->imageItem = varset($media[$parm['item']]); // Set the current Image for other image shortcodes. 
-		
+
+
 		if(vartrue($parm['placeholder']))
 		{
 			return $this->sc_newsimage('placeholder');	
 		}
+		elseif($video = e107::getParser()->toVideo($this->imageItem, array('class'=> 'news-media news-media-'.$parm['item'])))
+		{
+			return $video;
+		}
 		else
 		{
-			return $this->sc_newsimage();	
+			$parm['item'] = ($parm['item'] +1);
+			if(empty($parm['class']))
+			{
+				$parm['class'] = 'img-responsive img-fluid news-media news-media-'.$parm['item'];
+			}
+			return $this->sc_newsimage($parm);
 		}
 			
 		
@@ -601,6 +811,7 @@ class news_shortcodes extends e_shortcode
 	 * Display News Images (but not video thumbnails )
 	 * @param $parm array
 	 * @example {NEWSIMAGE: type=src&placeholder=true}
+	 * @example {NEWSIMAGE: class=img-responsive img-fluid}
 	 */
 	function sc_newsimage($parm = null)
 	{
@@ -610,13 +821,15 @@ class news_shortcodes extends e_shortcode
 		{
 			$parm = array('type'=> $parm);
 		}
-			
+
+
 		$tmp = $this->handleMultiple($parm);
 		$srcPath = $tmp['file'];
 		
-		$class = "news_image news-image img-responsive img-rounded";
+		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
 		$class .= ' news-image-'.$tmp['count'];
-		
+		$dimensions = null;
+		$srcset = null;
 			
 		if($tp->isVideo($srcPath))
 		{
@@ -629,7 +842,8 @@ class news_shortcodes extends e_shortcode
 			{
 				if(varset($parm['type']) == 'placeholder' || vartrue($parm['placeholder']))
 				{
-					$src = 	$tp->thumbUrl(); // placeholder; 
+					$src = 	$tp->thumbUrl(); // placeholder;
+					$dimensions = $tp->thumbDimensions();
 				}
 				else
 				{
@@ -638,7 +852,10 @@ class news_shortcodes extends e_shortcode
 			}
 			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
 			{
-				$src = $tp->thumbUrl($srcPath);	
+				$src = $tp->thumbUrl($srcPath);
+				$dimensions = $tp->thumbDimensions();
+				$srcset = $tp->thumbSrcSet($srcPath,array('size'=>'2x'));
+
 			}
 			else
 			{
@@ -659,8 +876,22 @@ class news_shortcodes extends e_shortcode
 			}
 		}
 		
+		if($tmp['count'] > 1 && empty($parm['type'])) // link first image by default, but not others.
+		{
+			$parm['type'] = 'tag';
+		}
 
-		
+		$style = !empty($this->param['thumbnail']) ? $this->param['thumbnail'] : '';
+
+		$imgParms = array(
+			'class'=>$class,
+			'alt'=>basename($src),
+			'style'=>$style
+		);
+
+
+		$imgTag = $tp->toImage($srcPath,$imgParms);
+
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
@@ -668,12 +899,12 @@ class news_shortcodes extends e_shortcode
 			break;
 
 			case 'tag':
-				return "<img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' />";
+				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'><img class='{$class}' src='".$src."' alt='' style='".$this->param['thumbnail']."' /></a>";
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
 			break;
 		}
 	}
@@ -691,22 +922,35 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newstitlelink($parm = '')
 	{
-		parse_str($parm, $parms);
+		if(is_string($parm))
+		{
+			parse_str($parm, $parms);
+		}
+		else
+		{
+			$parms = $parm;
+		}
+
 		$url = e107::getUrl()->create('news/view/item', $this->news_item);
 		if(isset($parms['href']))
 		{
 			return $url;
 		}
-		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$this->news_item['news_title'].'</a>';
+		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".e107::getParser()->toHTML($this->news_item['news_title'], TRUE, "TITLE").'</a>';
 	}
 
-	function sc_newsurl()
+	function sc_newsurl($parm=null)
 	{
 		return e107::getUrl()->create('news/view/item', $this->news_item);
 	}
 
-	function sc_newscaticon($parm = '')
+	/* @deprecated - use {NEWS_CATEGORY_ICON} instead */
+	function sc_newscaticon($parm = array())
 	{
+		if(is_string($parm))
+		{
+			$parm = array('type'=>$parm); 
+		}
 		// BC
 		$category_icon = str_replace('../', '', trim($this->news_item['category_icon']));
 		if (!$category_icon) { return ''; }
@@ -722,23 +966,29 @@ class news_shortcodes extends e_shortcode
 			$src =  (is_readable(e_IMAGE_ABS."newspost_images/".$category_icon)) ? e_IMAGE_ABS."newspost_images/".$category_icon : e_IMAGE_ABS."icons/".$category_icon;
 		}
 		
-		$alt_text = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
-		//TODO - remove inline styles
-		if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
 
-		switch($parm)
+	//	if($this->param['caticon'] == ''){$this->param['caticon'] = 'border:0px';}
+
+		$parm['alt']       = e107::getParser()->toHTML($this->news_item['category_name'], FALSE ,'defs');
+		$parm['legacy']    = array('{e_IMAGE}newspost_images/', '{e_IMAGE}icons/');
+		$parm['class']     = 'icon news_image news-category-icon';
+
+		$icon = e107::getParser()->toIcon($category_icon, $parm);
+
+		switch($parm['type'])
 		{
+			/* @deprecated - Will cause issues with glyphs */
 			case 'src':
 				return $src;
 			break;
 
 			case 'tag':
-				return "<img class='news_image' src='{$src}' alt='$alt_text' style='".$this->param['caticon']."' />";
+				return $icon;
 			break;
 
 			case 'url':
 			default:
-				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'><img class='img-rounded' style='".$this->param['caticon']."' src='".$src."' alt='$alt_text' /></a>";
+				return "<a href='".e107::getUrl()->create('news/list/category', $this->news_item)."'>".$icon."</a>";
 			break;
 		}
 	}
@@ -784,6 +1034,8 @@ class news_shortcodes extends e_shortcode
 	{
 		$tmp = explode(",",$this->news_item['news_meta_keywords']);
 		$words = array();
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'news-tag';
+		$separator = (isset($parm['separator'])) ? $parm['separator'] : ', ';
 		
 		if($parm == 'label')
 		{
@@ -795,7 +1047,7 @@ class news_shortcodes extends e_shortcode
 		{
 			$start = "";
 			$end = "";
-			$sep = ", ";
+			$sep = $separator;
 		}
 		
 		foreach($tmp as $val)
@@ -803,17 +1055,18 @@ class news_shortcodes extends e_shortcode
 			if(trim($val))
 			{
 				$url = e107::getUrl()->create('news/list/tag',array('tag'=>$val)); // e_BASE."news.php?tag=".$val
-				$words[] = "<a class='news-tag' href='".$url."'>".$start.$val.$end."</a>";	
+				$words[] = "<a class='".$class."' href='".$url."'>".$start.$val.$end."</a>";
 			}
 		}
-		
+
+
 		if(count($words))
 		{
 			return implode($sep,$words);
 		}
 		else 
 		{
-			return "None";
+			return LAN_NONE;
 		}			
 	}
 	
@@ -825,11 +1078,14 @@ class news_shortcodes extends e_shortcode
 		{
 			$array['types'] = 'news,page';
 		}
-		
-		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']));	
+
+		$template = e107::getTemplate('news', 'news', 'related');
+
+		return e107::getForm()->renderRelated($array, $this->news_item['news_meta_keywords'], array('news'=>$this->news_item['news_id']),$template);
 	}
-	
-	function sc_newsmetadiz()
+
+
+	function sc_newsmetadiz($parm=null)
 	{
   		return e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
 	}

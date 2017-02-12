@@ -26,7 +26,7 @@ if (!defined('e107_INIT')) { exit; }
 
 class list_news
 {
-	function list_news($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}
@@ -45,7 +45,7 @@ class list_news
 		$bullet = $this->parent->getBullet($this->parent->settings['icon']);
 
 		$list_caption = $this->parent->settings['caption'];
-		$list_display = (vartrue($this->parent->settings['open']) ? '' : 'none');
+		$list_display = (vartrue($this->parent->settings['open']) ? '' : LAN_NONE);
 
 		$qry = "
 		SELECT n.*, c.category_id AS news_category_id, c.category_name AS news_category_name, u.user_id AS news_author_id, u.user_name AS news_author_name
@@ -82,7 +82,10 @@ class list_news
 					{
 						if(vartrue($row['news_author_name']))
 						{
-							$record['author'] = "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>";
+							//$record['author'] = "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>";
+							$uparams = array('id' => $row['news_author_id'], 'name' => $row['news_author_name']);
+							$link = e107::getUrl()->create('user/profile/view', $uparams);
+							$record['author'] = "<a href='".$link."'>".$row['news_author_name']."</a>";
 						}
 					}
 				}

@@ -97,7 +97,7 @@ $sc_style['MODERATE']['post']	= '</div>';
 
 
 $COMMENT_TEMPLATE['form']			= "
-	{SETIMAGE: w=100&h=100}
+	{SETIMAGE: w=90&h=90&crop=1}
 	<div class='media comment-box comment-box-form clearfix'>
 		<div class='comment-box-left media-object pull-left' >
 		{COMMENT_AVATAR}
@@ -119,28 +119,29 @@ $COMMENT_TEMPLATE['form']			= "
 
 
 $COMMENT_TEMPLATE['item'] = '
-		{SETIMAGE: w=100&h=100}
+		{SETIMAGE: w=90&h=90&crop=1}
 		<div class="media-object comment-box-left pull-left span1">
 			{COMMENT_AVATAR}
 		</div>	
 		<div class="media-body comment-box-right ">
 			<div class="row">
 				
-					<div class="comment-box-username span2 col-md-2">{USERNAME}</div>
-					<div class="comment-box-date span2 col-md-2">{TIMEDATE=relative}</div>
-					<div class="comment-status span2 col-md-3">{COMMENT_STATUS}</div>
-					<div class="comment-moderate span6 col-md-5 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
-				
+					<div class="comment-box-username span2 col-xs-6 col-sm-6 col-md-6">{USERNAME}</div>
+					<div class="comment-box-date span2 col-xs-6 col-sm-6  col-md-6 text-right text-muted">{TIMEDATE=relative}</div>
+
 			</div>
 			
-			<div class="row-fluid">	
-				<div class="span12" id="{COMMENT_ITEMID}-edit" contentEditable="false" >
+			<div class="row-fluid">
+				<div class="span12 col-xs-12 comment-text" id="{COMMENT_ITEMID}-edit" contentEditable="false" >
 					<p>
 						{COMMENT}
 					</p>
 				</div>
 			</div>	
-			
+			<div class="row">
+				<div class="comment-status span2 col-sm-12 col-md-6">{COMMENT_STATUS}</div>
+					<div class="comment-moderate span6 col-sm-12 col-md-6 text-right">{COMMENT_RATE} {REPLY} {COMMENTEDIT} {COMMENT_MODERATE}</div>
+			</div>
 			
 				
 			

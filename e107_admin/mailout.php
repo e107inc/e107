@@ -10,14 +10,6 @@
  *
 */
 
-
-/**
- *	e107 Mail handling - Admin
- *
- *	@package	e107
- *	@subpackage	admin
- */
-
 /*
 Features:
 1. Additional sources of email addresses for mailouts can be provided via plugins, and can be enabled via the mailout preferences page
@@ -71,17 +63,17 @@ require_once('../class2.php');
 
 if (!getperms('W'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_users.php');
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_mailout.php');
-//	e107::lan('core','signup');
+
+e107::coreLan('users', true); 
+e107::coreLan('mailout', true); 
 
 require_once(e_HANDLER.'ren_help.php');
 
 require_once(e_HANDLER.'userclass_class.php');
-require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
+// require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
 require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
 
@@ -178,6 +170,10 @@ if($_GET['mode']=="process")
 */
 
 
+
+
+
+
 class mailout_admin extends e_admin_dispatcher
 {
 
@@ -238,7 +234,7 @@ class mailout_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 		'perm'=>  'W'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 	'perm' => 'W'),
 	
-		'recipients/list'	=> array('caption'=> "Recipients", 		'perm' => 'W'),		
+		'recipients/list'	=> array('caption'=> LAN_MAILOUT_173, 		'perm' => 'W'),		
 	//	'main/send'			=> array('caption'=> "Send", 			'perm' => 'W'),
 		'other' 			=> array('divider'=> true),
 	//	'saved/list'		=> array('caption'=> LAN_MAILOUT_191, 	'perm' => 'W'),
@@ -248,14 +244,16 @@ class mailout_admin extends e_admin_dispatcher
 		'other2' 			=> array('divider'=> true),
 		'prefs/prefs' 		=> array('caption'=> LAN_PREFS, 		'perm' => '0'),
 		'maint/maint'		=> array('caption'=> ADLAN_40, 			'perm' => '0'),
-		'main/templates'	=> array('caption'=> 'Template Preview', 'perm' => '0'),
+		'main/templates'	=> array('caption'=> LAN_MAILOUT_262, 'perm' => '0'),
 	);
 
 
 
 	protected $adminMenuAliases = array(
 		'main/send'	=> 'main/create',	
-	);	
+	);
+
+	protected $adminMenuIcon = 'e-mail-24';
 	
 	protected $menuTitle = LAN_MAILOUT_15;
 }
@@ -287,14 +285,14 @@ class mailout_main_ui extends e_admin_ui
 			'mail_source_id' 		=> array('title' => LAN_MAILOUT_137, 'width' =>'5%', 'thclass' => 'center', 'class'=>'center', 'forced' => TRUE),
 			
 			'mail_selectors'		=> array('title' => LAN_MAILOUT_03, 'type'=>'method', 'data'=>false, 'nolist' => true, 'writeParms'=>'nolabel=0'),
-			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>'whatever'),
+			'mail_title' 			=> array('title' => LAN_TITLE, 'type'=>'text', 'forced' => TRUE, 'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1', 'help'=>''),
 			'mail_sender_name'		=> array('title' => LAN_MAILOUT_150, 'type'=>'method', 'data'=>false),
-			'mail_sender_email' 	=> array('title' => LAN_ID,'type'=>'method','data'=>false),
+			'mail_sender_email' 	=> array('title' => LAN_MAILOUT_149,'type'=>'method','data'=>false),
 			'mail_copy_to'			=> array('title' => LAN_MAILOUT_151,'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_bcopy_to'			=> array('title' => LAN_MAILOUT_152,'tab'=>1, 'type'=>'method','data'=>false),	
 			'mail_subject' 			=> array('title' => LAN_MAILOUT_06, 'type'=>'text', 'forced' => TRUE,'data'=>'str', 'inline'=>true, 'writeParms'=>'size=xxlarge&required=1'),
 			'mail_content_status' 	=> array('title' => LAN_MAILOUT_136, 'tab'=>1, 'type'=> 'dropdown', 'data'=>'int', 'filter'=>false, 'inline'=>false, 'thclass' => 'left', 'class'=>'left'),
-			'mail_total_count' 		=> array('title' => "Total Recipients", 'noedit'=>true, 'type'=>'number'),
+			'mail_total_count' 		=> array('title' => LAN_MAILOUT_263, 'noedit'=>true, 'type'=>'number'),
 			'mail_sent_count' 		=> array('title' => LAN_MAILOUT_82, 'noedit'=>true, 'type'=>'number'),
 			'mail_togo_count' 		=> array('title' => LAN_MAILOUT_83, 'noedit'=>true, 'type'=>'number'),
 		
@@ -311,7 +309,7 @@ class mailout_main_ui extends e_admin_ui
 			'mail_attach'			=> array('title' => LAN_MAILOUT_153, 'tab'=>1, 'type'=>'method','data'=>false),
 			'mail_include_images' 	=> array('title' => LAN_MAILOUT_224, 'tab'=>1, 'type'=>'boolean','data'=>false, 'proc' => 'yesno'),
 			'mail_send_style'		=> array('title' => LAN_MAILOUT_154,'type'=>'method','data'=>false),
-			'mail_media' 			=> array('title' => 'Embed Media', 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
+			'mail_media' 			=> array('title' => LAN_MAILOUT_264, 'type' => 'images', 'data' => 'array', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'video=1', 'class' => 'center', 'thclass' => 'center',  ),
 	 
 			'mail_body' 			=> array('title' => LAN_MAILOUT_100, 'type'=>'bbarea', 'proc' => 'trunc200'),
 			'mail_body_templated' 	=> array('title' => LAN_MAILOUT_257, 'noedit'=>true, 'proc' => 'chars'),
@@ -381,7 +379,8 @@ class mailout_main_ui extends e_admin_ui
 
 		if($_GET['action'] == 'preview')
 		{
-			echo $this->previewPage($_GET['id'], $_GET['user']);
+			$tp = e107::getParser();
+			echo $this->previewPage($tp->filter($_GET['id']), $tp->filter($_GET['user']));
 			exit;
 		}
 		
@@ -407,7 +406,7 @@ class mailout_main_ui extends e_admin_ui
 			define('MAIL_STATUS_TEMP', 22);			// Tags entries which aren't yet in any list
 		*/
 	
-		$types = array(10=>'Pending',20=>"Saved", 21=>"Held", 0=>'Sent', 1=>'Bounced', 2=>'Cancelled', 3=> 'Partial', 5=>'Failed',  19 => "Max Active",  22=>"Temp");
+		$types = array(10=>LAN_MAILOUT_265,20=>LAN_SAVED, 21=>LAN_MAILOUT_217, 0=>LAN_MAILOUT_211, 1=>LAN_MAILOUT_213, 2=>LAN_MAILOUT_218, 3=>LAN_MAILOUT_219, 5=>LAN_MAILOUT_212,  19 => LAN_MAILOUT_266,  22=>"Temp");
 		
 		
 		$qr = array('saved'=>20,'pending'=>10,'held'=>21,'sent'=>0);
@@ -476,7 +475,7 @@ class mailout_main_ui extends e_admin_ui
 
 			$text = $this->getDKIMPublicKey();
 			e107::getMessage()->addInfo("Add the following to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
-			e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+			e107::getMessage()->addInfo("Consider testing it using this website: http://dkimvalidator.com");
 
 			return false;
 		}
@@ -511,7 +510,7 @@ class mailout_main_ui extends e_admin_ui
 
 		$text = $tp->lanVars($dnsEntry, $pubString);
 		e107::getMessage()->addInfo("Add the following ".$keyLength." bit key to your ".e_DOMAIN." DNS Zone records:".print_a($text,true));
-		e107::getMessage()->addinfo("Consider testing it using this website: http://dkimvalidator.com");
+		e107::getMessage()->addInfo("Consider testing it using this website: http://dkimvalidator.com");
 	}
 
 
@@ -560,43 +559,60 @@ class mailout_main_ui extends e_admin_ui
 		if(trim($_POST['testaddress']) == '')
 		{
 			$mes->addError(LAN_MAILOUT_19);
-			$subAction = 'error';
+			return null;
+		}
+
+		if(empty($pref['bulkmailer']))
+		{
+			$pref['bulkmailer'] = $pref['mailer'];
+		}
+
+		$add = ($pref['bulkmailer']) ? " (".strtoupper($pref['bulkmailer']).") " : ' (PHP)';
+
+		if($pref['bulkmailer'] == 'smtp')
+		{
+			$add .= "Port: ".varset($pref['smtp_port'],25);
+			$add .= " - ".str_replace("secure=", "", $pref['smtp_options']);
+		}
+
+		$sendto = trim($_POST['testaddress']);
+
+		$subjectSitename = ($_POST['testtemplate'] == 'textonly') ? SITENAME : '';
+			
+		$eml = array(
+			'e107_header'	=> USERID,
+			'subject'		=> LAN_MAILOUT_113." ".$subjectSitename.$add,
+			'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
+			'template'		=> vartrue($_POST['testtemplate'],null),
+			'shortcodes'	=> $this->getExampleShortcodes(),
+			'media'			=>  array(
+					0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					1 => array('path' => 'h-v880sXEOQ.youtube'),
+					2 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
+					3 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
+					4 => array('path' => '{e_PLUGIN}gallery/images/horse.jpg'),
+				)
+			);
+			
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$eml['SMTPDebug'] = true;
+		}
+
+
+		$options = array('mailer'=>$pref['bulkmailer']);
+
+			
+		if (!e107::getEmail($options)->sendEmail($sendto, LAN_MAILOUT_189, $eml))
+		{
+			$mes->addError(($pref['bulkmailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		}
 		else
 		{
+			$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
+			e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
+		}
 
-			$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : ' (PHP)';
-			$sendto = trim($_POST['testaddress']);
-			
-			$eml = array(
-				'e107_header'	=> USERID,
-				'subject'		=> LAN_MAILOUT_113." ".$add,
-				'body'			=> str_replace("[br]", "\n", LAN_MAILOUT_114),
-				'template'		=> vartrue($_POST['testtemplate'],null),
-				'shortcodes'	=> $this->getExampleShortcodes(),
-				'media'			=>  array(
-					0 => array('path' => '{e_PLUGIN}gallery/images/butterfly.jpg'),
-					1 => array('path' => 'h-v880sXEOQ.youtube'),
-
-				)
-
-				);
-			
-			if(E107_DEBUG_LEVEL > 0)
-			{
-				$eml['SMTPDebug'] = true; 	
-			}
-			
-			if (!e107::getEmail()->sendEmail($sendto, LAN_MAILOUT_189, $eml)) 	
-			{
-				$mes->addError(($pref['mailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
-			} 
-			else 
-			{
-				$mes->addSuccess(LAN_MAILOUT_81. ' ('.$sendto.')');
-				e107::getAdminLog()->log_event('MAIL_01', $sendto, E_LOG_INFORMATIVE,'');
-			}
-		}	
 		
 		
 	}
@@ -768,20 +784,27 @@ class mailout_main_ui extends e_admin_ui
 			$mailData = e107::getDb()->retrieve('mail_content','*','mail_source_id='.intval($id)." LIMIT 1");
 			
 			$shortcodes = array(
-			'USERNAME'=>'John Example',
-			 'DISPLAYNAME'=> 'John Example',
-			 'USERID'=>'555', 'MAILREF'=>$_GET['id'],
-			 'LOGINNAME' => 'johnE',
-			 'ACTIVATION_LINK' => SITEURL.'signup.php?testing-activation',
-			 'PASSWORD' => 'MyPass123',
-			 'NEWSLETTER'=>SITEURL."newsletter/?id=example1234567",
-			  'UNSUBSCRIBE'=>SITEURL."unsubscribe/?id=example1234567");
-			
+				'USERNAME'          => 'John Example',
+			    'DISPLAYNAME'       => 'John Example',
+			    'USERID'            => '555',
+				'LOGINNAME'         => 'johnE',
+			    'ACTIVATION_LINK'   => SITEURL.'signup.php?testing-activation',
+			    'PASSWORD'          => 'MyPass123',
+			    'NEWSLETTER'        => SITEURL."newsletter/?id=example1234567",
+			    'UNSUBSCRIBE'       => SITEURL."unsubscribe/?id=example1234567"
+			);
+
 			if(!empty($user))
 			{
 				$userData = e107::getDb()->retrieve('mail_recipients','*', 'mail_detail_id = '.intval($id).' AND mail_recipient_id = '.intval($user).' LIMIT 1');
 				$shortcodes = e107::unserialize(stripslashes($userData['mail_target_info']));
 			}
+
+			if(!isset($shortcodes['MAILREF']))
+			{
+				$shortcodes['MAILREF'] =  intval($_GET['id']);
+			}
+
 						
 			$data = $this->mailAdmin->dbToMail($mailData);
 	
@@ -818,7 +841,7 @@ class mailout_main_ui extends e_admin_ui
 		}
 			
 		return e107::getEmail()->preview($eml);
-		exit;
+
 
 	}
 
@@ -934,7 +957,7 @@ class mailout_main_ui extends e_admin_ui
 			$pause = e107::getConfig()->get('mail_pausetime',1);
 			$interval = ($pause * 1000);
 			
-			$text = e107::getForm()->progressBar('mail-progress',1, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
+			$text = e107::getForm()->progressBar('mail-progress',0, array('btn-label'=>'Start', 'interval'=>$interval, 'url'=> e_SELF, 'mode'=>$id));
 		}
 	
 		return $text;	
@@ -1038,7 +1061,7 @@ class mailout_main_ui extends e_admin_ui
 		<tr>
 			<td>".LAN_MAILOUT_110."<br /></td>
 			<td class='form-inline'><div class='input-append'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-			<input name='testaddress' class='tbox input-xlarge' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
+			<input name='testaddress' class='form-control input-xlarge' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
 			 <span style='padding-left:5px'>".$this->mailAdmin->sendStyleSelect(varset($_POST['testtemplate'], 'textonly'), 'testtemplate')."</span>
 			</div></td>
 		</tr>
@@ -1050,95 +1073,31 @@ class mailout_main_ui extends e_admin_ui
 		$mail_enable = explode(',',vartrue($pref['mailout_enabled'],'core'));
 		
 		$coreCheck = (in_array('core',$mail_enable)) ? "checked='checked'" : "";
-		$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
-	 
+	//	$text .= $frm->checkbox('mail_mailer_enabled[]','core', $coreCheck, 'users');
+
 		if(!empty($pref['e_mailout_list']))
 		{
 			foreach ($pref['e_mailout_list'] as $mailer => $v)	 
 			 {
+			    $addon = e107::getAddon($v,'e_mailout');
+			    $name = $addon->mailerName;
 				$check = (in_array($mailer,$mail_enable)) ? "checked='checked'" : "";
-				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$mailer);
-			//	$text .= "&nbsp;<input type='checkbox' name='mail_mailer_enabled[]' value='{$mailer}' {$check} /> {$mailer}<br />";
+				$text .= $frm->checkbox('mail_mailer_enabled[]',$mailer,$check,$name);
 			}
 		}
-			  
-	$text .= "</td></tr>	
+
+
+
+
+		$text .= "</td></tr>
 		
 		
 		<tr>
 		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
-		<td>
-		<select class='tbox input-xxlarge' name='mailer' onchange='disp(this.value)'>\n";
-	$mailers = array('php','smtp','sendmail');
-	foreach($mailers as $opt)
-	{
-		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
-		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-	}
-	$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
+		<td>";
 
 
-
-// SMTP. -------------->
-	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
-	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
-	$text .= "<div id='smtp' {$smtpdisp}>
-		<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
-		<colgroup>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		";
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%;' >
-		<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_90."</td><td>
-		<select class='tbox' name='smtp_options'>\n
-		
-		<option value=''>".LAN_MAILOUT_96."</option>\n";
-		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-		$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-		$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-		$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-		$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
-
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_57."</td><td>
-		";
-	$checked = (vartrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
-		</td>
-		</tr>";
-
-	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_95."</td><td>
-		<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
-		</td>
-		</tr>
-		</table></div>";
+		$text .= mailoutAdminClass::mailerPrefsTable($pref, 'bulkmailer');
 		
 	
 	/* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
@@ -1217,8 +1176,8 @@ class mailout_main_ui extends e_admin_ui
 
 	if(function_exists('openssl_pkey_new') && deftrue('e_DEVELOPER'))
 	{
-		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary','Generate Public/Private keys')."
-		<span class='label label-warning'>Developer Mode Only</span></td></tr>";
+		$text .= "<tr><td>DomainKeys Identified Mail (DKIM)</td><td class='form-inline'>".$frm->button('DKIM_generate',1,'primary',LAN_MAILOUT_267)."
+		<span class='label label-warning'>".LAN_MAILOUT_268."</span></td></tr>";
 	}
 
 
@@ -1241,7 +1200,7 @@ class mailout_main_ui extends e_admin_ui
 	$autoDisp = ($pref['mail_bounce'] != 'auto') ? "style='display:none;'" : '';
 	$autoMail = ($pref['mail_bounce'] != 'mail') ? "style='display:none;'" : '';
 	$bounceOpts = array('none' => LAN_MAILOUT_232, 'auto' => LAN_MAILOUT_233, 'mail' => LAN_MAILOUT_234);
-	$text .= "<select name='mail_bounce' class='tbox' onchange='bouncedisp(this.value)'>\n<option value=''>&nbsp;</option>\n";
+	$text .= "<select name='mail_bounce' class='form-control' onchange='bouncedisp(this.value)'>\n<option value=''>&nbsp;</option>\n";
 	foreach ($bounceOpts as $k => $v)
 	{
 		$selected = ($pref['mail_bounce'] == $k) ? " selected='selected'" : '';
@@ -1399,9 +1358,12 @@ class mailout_main_ui extends e_admin_ui
 		{
 			$temp['sendmail'] = '';
 		}
+
+		$temp['bulkmailer']     = $tp->filter($_POST['bulkmailer']);
 		$temp['smtp_server'] 	= $tp->toDB($_POST['smtp_server']);
 		$temp['smtp_username'] 	= $tp->toDB($_POST['smtp_username']);
 		$temp['smtp_password'] 	= $tp->toDB($_POST['smtp_password']);
+		$temp['smtp_port'] 	    = intval($_POST['smtp_port']);
 	
 		$smtp_opts = array();
 		switch (trim($_POST['smtp_options']))
@@ -1449,6 +1411,12 @@ class mailout_main_ui extends e_admin_ui
 	
 		$temp['mailout_enabled'] = implode(',', varset($_POST['mail_mailer_enabled'], ''));
 		$temp['mail_log_options'] = intval($_POST['mail_log_option']).','.intval($_POST['mail_log_email']);
+
+		if(empty($temp['mailout_enabled']))
+		{
+			$temp['mailout_enabled'] = 'user';
+		}
+
 	
 		foreach ($temp as &$t)
 		{
@@ -1485,6 +1453,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			break;
 
 			case 'write':
+
 				return $this->getController()->mailAdmin->emailSelector('all', varset($data['mail_selectors'], FALSE));	
 			break;
 
@@ -1618,10 +1587,10 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$link = e_SELF."?mode=main&action=send&id=".$id;	
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default' title='Send Mail'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
+			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".E_32_MAIL."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 
-			$text .= $this->renderValue('options',$value,$att,$id);
+			$text .= $this->renderValue('options',$value,$attributes,$id);
 
 			return $text;
 		}
@@ -1633,11 +1602,11 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$preview = e_SELF."?mode=main&action=preview&id=".$id.'&user='.$user;
 
 			$text = "<span class='btn-group'>";
-			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='Recipients'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='Preview'>".E_32_SEARCH."</a>";
-		
-			$att['readParms']['editClass'] = e_UC_NOBODY;
-			$text .= $this->renderValue('options',$value,$att,$id);
+			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".E_32_USER."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+
+			$attributes['readParms']['editClass'] = e_UC_NOBODY;
+			$text .= $this->renderValue('options',$value,$attributes,$id);
 			$text .= "</span>";
 			return $text;
 		}
@@ -1683,7 +1652,7 @@ class mailout_recipients_ui extends e_admin_ui
 			'mail_recipient_email' 	=> array('title' => LAN_MAILOUT_140, 'type'=>'email', 'data'=>'str', 'thclass' => 'left', 'forced' => TRUE),
 			'mail_status' 			=> array('title' => LAN_MAILOUT_138, 'type'=>'method', 'filter'=>true, 'data'=>'int', 'thclass' => 'left', 'class'=>'left', 'writeParms'=>''),
 			'mail_detail_id' 		=> array('title' => LAN_MAILOUT_137, 'type'=>'dropdown', 'filter'=>true),
-			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139, 'proc' => 'sdatetime'),
+			'mail_send_date' 		=> array('title' => LAN_MAILOUT_139,  'type'=>'datestamp', 'proc' => 'sdatetime'),
 			'mail_target_info'		=> array('title' => LAN_MAILOUT_148, 'proc' => 'array'),
 			'options' 				=> array('title' => LAN_OPTIONS, 'type'=>'method',  'width'=>'10%', 'forced' => TRUE)
 		);
@@ -1707,7 +1676,7 @@ class mailout_recipients_ui extends e_admin_ui
 			$id = $row['mail_detail_id'];
 			$array[$id] = $id." : ".vartrue($row['mail_title'], "(No Name)");	
 		}
-		$this->fields['mail_detail_id']['writeParms'] = $array;
+		$this->fields['mail_detail_id']['writeParms'] = varset($array, array());
 		
 		
 		$this->mailStatus = array(
@@ -1764,6 +1733,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 			 MAIL_STATUS_PENDING 	=> LAN_MAILOUT_214,
 		//	 MAIL_STATUS_SAVED 		=> LAN_MAILOUT_215,
 		//	 MAIL_STATUS_HELD		=> LAN_MAILOUT_217
+		//	MAIL_STATUS_TEMP        => ",
 		);	
 		
 		
@@ -1780,7 +1750,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 			$stat[13] = 'label-warning';
 			$stat[5] = 'label-error'; // MAIL_STATUS_FAILED
 			
-			return "<span class='label ".varset($stat[$curVal])."'>".$this->getController()->mailManager->statusToText($curVal)."</span>";
+			return "<span class='label ".varset($stat[$curVal])."'>#".$curVal." ".$this->getController()->mailManager->statusToText($curVal)."</span>";
 		}
 		
 		if($mode == 'write')
@@ -2385,114 +2355,8 @@ function sendImmediately($id)
 //		MAILER OPTIONS
 //----------------------------------------------------
 /*
-function show_prefs($mailAdmin)
-{
-	return;
-	
-	$pref = e107::getPref();
-	$e107 = e107::getInstance();
-	$frm = e107::getForm();
-	$mes = e107::getMessage();
-	$ns = e107::getRender();
 
 
-	e107::getCache()->CachePageMD5 = '_';
-	$lastload = e107::getCache()->retrieve('emailLastBounce',FALSE,TRUE,TRUE);
-	$lastBounce = round((time() - $lastload) / 60);
-	
-	$lastBounceText = ($lastBounce > 1256474) ? "<b>Never</b>" : "<b>".$lastBounce . " minutes </b>ago."; 
-
-	$text = "
-		<form method='post' action='".e_SELF."?".e_QUERY."' id='mailsettingsform'>
-		<fieldset id='mail'>
-		<legend>".LAN_MAILOUT_110."</legend>
-		<table class='table adminform'>
-		<colgroup>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		<tbody>
-		<tr>
-			<td>".LAN_MAILOUT_110."<br /></td>
-			<td class='form-inline'>".$frm->admin_button('testemail', LAN_MAILOUT_112,'other')."&nbsp;
-			<input name='testaddress' class='tbox' type='text' size='40' maxlength='80' value=\"".(varset($_POST['testaddress']) ? $_POST['testaddress'] : USEREMAIL)."\" />
-			</td>
-		</tr>
-
-		<tr>
-		<td style='vertical-align:top'>".LAN_MAILOUT_115."<br /></td>
-		<td>
-		<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
-	$mailers = array('php','smtp','sendmail');
-	foreach($mailers as $opt)
-	{
-		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : '';
-		$text .= "<option value='{$opt}' {$sel}>{$opt}</option>\n";
-	}
-	$text .="</select> <span class='field-help'>".LAN_MAILOUT_116."</span><br />";
-
-
-
-// SMTP. -------------->
-	$smtp_opts = explode(',',varset($pref['smtp_options'],''));
-	$smtpdisp = ($pref['mailer'] != 'smtp') ? "style='display:none;'" : '';
-	$text .= "<div id='smtp' {$smtpdisp}>
-		<table class='table adminlist' style='margin-right:auto;margin-left:0px;border:0px'>
-		<colgroup>
-			<col class='col-label' />
-			<col class='col-control' />
-		</colgroup>
-		";
-	$text .= "
-		<tr>
-		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_88.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td style='width:50%;' >
-		<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_89.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
-		<td>
-		<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
-		</td>
-		</tr>
-
-		<tr>
-		<td>".LAN_MAILOUT_90."</td><td>
-		<select class='tbox' name='smtp_options'>\n
-		<option value=''>".LAN_MAILOUT_96."</option>\n";
-	$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
-	$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_tls'{$selected}>".LAN_MAILOUT_93."</option>\n";
-	$selected = (in_array('pop3auth',$smtp_opts) ? " selected='selected'" : '');
-	$text .= "<option value='smtp_pop3auth'{$selected}>".LAN_MAILOUT_91."</option>\n";
-	$text .= "</select>\n<br />".LAN_MAILOUT_94."</td></tr>";
-
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_57."</td><td>
-		";
-	$checked = (varsettrue($pref['smtp_keepalive']) ) ? "checked='checked'" : '';
-	$text .= "<input type='checkbox' name='smtp_keepalive' value='1' {$checked} />
-		</td>
-		</tr>";
-
-	$checked = (in_array('useVERP',$smtp_opts) ? "checked='checked'" : "");
-	$text .= "<tr>
-		<td>".LAN_MAILOUT_95."</td><td>
-		<input type='checkbox' name='smtp_useVERP' value='1' {$checked} />
-		</td>
-		</tr>
-		</table></div>";
-*/
 /* FIXME - posting SENDMAIL path triggers Mod-Security rules. 
 // Sendmail. -------------->
 	$senddisp = ($pref['mailer'] != 'sendmail') ? "style='display:none;'" : '';
@@ -2747,25 +2611,6 @@ function headerjs()
 	$text = "
 	<script type='text/javascript'>
 		
-	function disp(type) 
-	{
-		if(type == 'smtp')
-		{
-			document.getElementById('smtp').style.display = '';
-			document.getElementById('sendmail').style.display = 'none';
-			return;
-		}
-
-		if(type =='sendmail')
-		{
-            document.getElementById('smtp').style.display = 'none';
-			document.getElementById('sendmail').style.display = '';
-			return;
-		}
-
-		document.getElementById('smtp').style.display = 'none';
-		document.getElementById('sendmail').style.display = 'none';
-	}
 
 	function bouncedisp(type)
 	{

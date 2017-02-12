@@ -20,12 +20,15 @@
 
 
 $retrieve_prefs[] = 'pm_prefs';
-require_once('../../class2.php');
+if (!defined('e107_INIT'))
+{
+	require_once("../../class2.php");
+}
 
 
 if (!e107::isInstalled('pm')) 
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
@@ -34,19 +37,44 @@ if(vartrue($_POST['keyword']))
 	pm_user_lookup();
 }
 
-
+e107::css('pm','pm.css');
 require_once(e_PLUGIN.'pm/pm_class.php');
 require_once(e_PLUGIN.'pm/pm_func.php');
-include_lan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_PLUGIN.'pm/languages/'.e_LANGUAGE.'.php');
 e107::getScParser();
-require_once(e_PLUGIN.'pm/pm_shortcodes.php');
+// require_once(e_PLUGIN.'pm/shortcodes/batch/pm_shortcodes.php');
 
-define('ATTACHMENT_ICON', "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />");
+if(!defined('ATTACHMENT_ICON'))
+{
+	if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
+	{
+		define('ATTACHMENT_ICON', $tp->toGlyph('fa-paperclip'));
+	}
+	else
+	{
+
+		define('ATTACHMENT_ICON', "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />");
+	}
+}
+
+if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
+{
+	define('PM_DELETE_ICON', $tp->toGlyph('fa-trash', 'fw=1'));
+}
+else
+{
+	define("PM_DELETE_ICON","<img src='".e_PLUGIN_ABS."pm/images/mail_delete.png'  alt='".LAN_DELETE."' class='icon S16' />");
+}
 
 $qs = explode('.', e_QUERY);
 $action = varset($qs[0],'inbox');
 if (!$action) $action = 'inbox';
 
+if(!empty($_GET['mode']))
+{
+	$action = $tp->filter($_GET['mode']);
+}
+/*
 if($action == 'textarea' || $action == 'input')
 {
 	if($qs[1] == 'pm_to') {
@@ -55,7 +83,7 @@ if($action == 'textarea' || $action == 'input')
 		$us->popup();
 		exit;
 	}
-}
+}*/
 
 $pm_proc_id = intval(varset($qs[1],0));
 
@@ -113,18 +141,33 @@ class pm_extended extends private_message
 	{
 		$pm_info = array();
 		$pm_outbox = $this->pmManager->pm_getInfo('outbox');
+
 		if (is_array($to_uid))
 		{
 			$pm_info = $to_uid;		// We've been passed a 'reply to' PM
 			$to_uid = $pm_info['pm_from'];
 		}
-		if($to_uid)
+
+
+
+		if(!empty($to_uid))
 		{
-			$sql2 = new db;
-			if($sql2->select('user', 'user_name', 'user_id = '.intval($to_uid)))
+
+			if($this->canSendTo($to_uid) == false)
+			{
+				return "<div class='alert alert-danger'>".LAN_PM_114."</div>";// sending to this user is not permitted.
+			}
+
+			$sql2 = e107::getDb('sql2');
+			if($sql2->select('user', 'user_name', 'user_id = '.intval($to_uid))) //TODO add a check for userclass.
 			{
 				$row = $sql2->fetch();
 				$pm_info['from_name'] = $row['user_name'];
+				$pm_info['pm_from'] = intval($to_uid);
+			}
+			else
+			{
+				return "<div class='alert alert-danger'>".LAN_PM_115."</div>";
 			}
 		}
 		//echo "Show_send: {$to_uid} from {$pm_info['from_name']} is happening<br />";
@@ -138,7 +181,7 @@ class pm_extended extends private_message
 		$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
 	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
 		
-		$sc = e107::getScBatch('pm',TRUE);
+		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->setVars($pm_info);
 		
 		$PM_SEND_PM = $this->updateTemplate($PM_SEND_PM);
@@ -167,10 +210,10 @@ class pm_extended extends private_message
 		
 		$pm_blocks = $this->block_get();
 		$pmlist = $this->pm_get_inbox(USERID, $start, $this->pmPrefs['perpage']);
-		
+
 	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
 		
-		$sc = e107::getScBatch('pm',TRUE);
+		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
 		
 		
@@ -179,7 +222,7 @@ class pm_extended extends private_message
 		$PM_INBOX_EMPTY = $this->updateTemplate($PM_INBOX_EMPTY);
 		$PM_INBOX_FOOTER = $this->updateTemplate($PM_INBOX_FOOTER);
 		
-		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+		$txt = "<form method='post' action='".e_REQUEST_SELF."?".e_QUERY."'>";
 		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $sc);
 		
 		if($pmlist['total_messages'])
@@ -198,7 +241,8 @@ class pm_extended extends private_message
 		
 		$txt .= $tp->parseTemplate($PM_INBOX_FOOTER, true, $sc);
 		$txt .= "</form>";
-		
+
+
 		return $txt;
 	}
 
@@ -218,7 +262,7 @@ class pm_extended extends private_message
 		$pmlist = $this->pm_get_outbox(USERID, $start, $this->pmPrefs['perpage']);
 	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
 		
-		$sc = e107::getScBatch('pm',TRUE);
+		$sc = e107::getScBatch('pm', true, 'pm');
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
 		
 		$PM_OUTBOX_HEADER = $this->updateTemplate($PM_OUTBOX_HEADER);
@@ -264,15 +308,14 @@ class pm_extended extends private_message
 		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pm_info = $this->pm_get($pmid);
 
-	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
-		$sc = e107::getScBatch('pm',TRUE);
+		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->setVars($pm_info);	
 
 		if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
 		{
 			$ns->tablerender(LAN_PM, LAN_PM_60);
-			require_once(FOOTERF);
-			exit;
+			return;
+
 		}
 
 		if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
@@ -282,11 +325,22 @@ class pm_extended extends private_message
 			$this->pm_mark_read($pmid, $pm_info);
 		}
 
+		$sc->pmMode = $comeFrom;
 
 		$PM_SHOW = $this->updateTemplate($PM_SHOW);
 
 		$txt = e107::getParser()->parseTemplate($PM_SHOW, true, $sc);
-		$ns->tablerender(LAN_PM, $txt);
+
+		if($comeFrom == 'outbox')
+		{
+			 $bread = array('text'=> LAN_PLUGIN_PM_OUTBOX, 'url'=>e107::url('pm','index').'?mode=outbox');
+		}
+		else
+		{
+			 $bread = array('text'=> LAN_PLUGIN_PM_INBOX, 'url'=>e107::url('pm','index').'?mode=inbox');
+		}
+
+		$ns->tablerender(LAN_PM, $this->breadcrumb($bread ,'#'.$pmid).$txt);
 
 		if (!$comeFrom)
 		{
@@ -296,11 +350,16 @@ class pm_extended extends private_message
 		// Need to show inbox or outbox from start
 		if ($comeFrom == 'outbox')
 		{	// Show Outbox
-			$ns->tablerender(LAN_PM." - ".LAN_PM_26, $this->show_outbox(), 'PM');
+
+			$caption = '';
+			if(!deftrue('BOOTSTRAP')){  $caption .= LAN_PM." - ".LAN_PLUGIN_PM_OUTBOX; }
+			$ns->tablerender($caption, $this->show_outbox(), 'PM');
 		} 
 		else
 		{	// Show Inbox
-			$ns->tablerender(LAN_PM.' - '.LAN_PM_25, $this->show_inbox(), 'PM');
+			$caption = '';
+			if(!deftrue('BOOTSTRAP')){  $caption .= LAN_PM." - ".LAN_PLUGIN_PM_INBOX; }
+			$ns->tablerender($caption, $this->show_inbox(), 'PM');
 		}
 	}
 
@@ -318,7 +377,7 @@ class pm_extended extends private_message
 		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
 		$pmBlocks = $this->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
 
-		$sc = e107::getScBatch('pm',TRUE);
+		$sc = e107::getScBatch('pm',TRUE, 'pm');
 		$sc->pmBlocks = $pmBlocks; 
 	
 		$PM_BLOCKED_HEADER = $this->updateTemplate($PM_BLOCKED_HEADER);
@@ -363,19 +422,26 @@ class pm_extended extends private_message
 		}
 
 		$pm_info = $this->pmManager->pm_getInfo('outbox');
+
 		if($pm_info['outbox']['total'] != $_POST['numsent'])
 		{
 			return LAN_PM_14;
+		}
+
+		if(isset($_POST['pm_userclass']) && ($_POST['pm_userclass'] == e_UC_NOBODY))
+		{
+			$_POST['pm_userclass'] = false;
 		}
 
 		if(isset($_POST['user']))
 		{
 			$_POST['pm_to'] = $_POST['user'];
 		}
+
 		if(isset($_POST['pm_to']))
 		{
 			$msg = '';
-			if(isset($_POST['to_userclass']) && $_POST['to_userclass'])
+			if(!empty($_POST['pm_userclass']))
 			{
 				if(!check_class($this->pmPrefs['opt_userclass']))
 				{
@@ -388,16 +454,14 @@ class pm_extended extends private_message
 			}
 			else
 			{
-				$to_array = explode("\n", trim($_POST['pm_to']));
-				foreach($to_array as $k => $v)
-				{
-					$to_array[$k] = trim($v);
-				}
+				$to_array = explode(",", str_replace(" ", "", $_POST['pm_to']));
 				$to_array = array_unique($to_array);
+
 				if(count($to_array) == 1)
 				{
 					$_POST['pm_to'] = $to_array[0];
 				}
+
 				if(check_class($this->pmPrefs['multi_class']) && count($to_array) > 1)
 				{
 					foreach($to_array as $to)
@@ -436,8 +500,11 @@ class pm_extended extends private_message
 					unset($_POST['receipt']);
 				}
 			}
+
 			$totalsize = strlen($_POST['pm_message']);
+
 			$maxsize = intval($this->pmPrefs['attach_size']) * 1024;
+
 			foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
 			{
 				if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
@@ -466,30 +533,78 @@ class pm_extended extends private_message
 				}
 			}
 
-			if($_FILES['file_userfile']['name'][0])
+
+			if(!empty($_POST['uploaded']))
 			{
 				if(check_class($this->pmPrefs['attach_class']))
 				{
-					require_once(e_HANDLER.'upload_handler.php');
-					$randnum = rand(1000, 9999);			
-					$_POST['uploaded'] = file_upload(e_PLUGIN.'pm/attachments', 'attachment', $randnum.'_');
-					if($_POST['uploaded'] == FALSE)
+					$_POST['uploaded'] = $this->processAttachments();
+
+					foreach($_POST['uploaded'] as $var)
 					{
-						unset($_POST['uploaded']);
-						$msg .= LAN_PM_22."<br />";
+						if(!empty($var['message']))
+						{
+							$msg .= $var['message']."<br />";
+						}
+
 					}
 				}
 				else
 				{
 					$msg .= LAN_PM_23.'<br />';
 					unset($_POST['uploaded']);
+
 				}
 			}
+
 			$_POST['from_id'] = USERID;
+
 			return $msg.$this->add($_POST);
 		}
 	}
+
+
+	function processAttachments()
+	{
+		$randnum = rand(1000, 9999);
+		$type = 'attachment+'.$randnum.'_';
+		return e107::getFile()->getUploaded("attachments",$type, array('max_file_count'=>3));
+	}
+
+
+
+
+	function breadcrumb($type='',$other)
+	{
+		if(!deftrue('BOOTSTRAP'))
+		{
+			return null;
+		}
+
+		$array = array();
+		$array[0] =  array('text'=>LAN_PM, 'url'=>e107::url('pm','index'));
+
+		if(is_string($type))
+		{
+			$array[1] = array('text'=>$type, 'url'=>null);
+		}
+		elseif(is_array($type))
+		{
+			$array[1] = $type;
+		}
+
+		if($other)
+		{
+			$array[2] = array('text'=>$other, 'url'=>null);
+		}
+
+		return e107::getForm()->breadcrumb($array);
+
+	}
+
 }
+
+
 
 
 
@@ -663,7 +778,7 @@ if($message != '')
 switch ($action)
 {
 	case 'send' :
-		$ns->tablerender(LAN_PM, $mes->render() . $pm->show_send($pm_proc_id));
+		$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PLUGIN_PM_NEW). $mes->render() . $pm->show_send($pm_proc_id));
 		break;
 
 	case 'reply' :
@@ -672,33 +787,41 @@ switch ($action)
 		{
 			if($pm_info['pm_to'] != USERID)
 			{
-				$ns->tablerender(LAN_PM, $mes->render() . LAN_PM_56);
+				$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55).$mes->render() . LAN_PM_56);
 			}
 			else
 			{
-				$ns->tablerender(LAN_PM, $mes->render() . $pm->show_send($pm_info));
+				$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55). $mes->render() . $pm->show_send($pm_info));
 			}
 		}
 		else
 		{
-			$ns->tablerender(LAN_PM, $mes->render() . LAN_PM_57);
+			$ns->tablerender(LAN_PM, $pm->breadcrumb(LAN_PM_55). $mes->render() . LAN_PM_57);
 		}
 		break;
 
 	case 'inbox' :
-		$ns->tablerender(LAN_PM.' - '.LAN_PM_25, $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
+		$caption  = LAN_PM;
+		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PLUGIN_PM_INBOX; }
+
+		$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_INBOX). $mes->render() . $pm->show_inbox($pm_proc_id), 'PM');
 		break;
 
 	case 'outbox' :
-		$ns->tablerender(LAN_PM.' - '.LAN_PM_26, $mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
+		$caption  = LAN_PM;
+		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PLUGIN_PM_OUTBOX; }
+		$ns->tablerender($caption, $pm->breadcrumb(LAN_PLUGIN_PM_OUTBOX).$mes->render() . $pm->show_outbox($pm_proc_id), 'PM');
 		break;
 
 	case 'show' :
+
 		$pm->show_pm($pm_proc_id, $pmSource);
 		break;
 
 	case 'blocked' :
-		$ns->tablerender(LAN_PM.' - '.LAN_PM_66, $mes->render() . $pm->showBlocked($pm_proc_id), 'PM');
+		$caption  = LAN_PM;
+		if(!deftrue('BOOTSTRAP')){  $caption .= ' - '.LAN_PM_66; }
+		$ns->tablerender($caption, $pm->breadcrumb('blocked').$mes->render() . $pm->showBlocked($pm_proc_id), 'PM');
 		break;
 }
 

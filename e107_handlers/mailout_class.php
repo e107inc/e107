@@ -8,20 +8,10 @@
  *
  * Mailout handling - selector for 'core' users
  *
- * $Source: /cvs_backup/e107_0.8/e107_handlers/mailout_class.php,v $
- * $Revision: 11315 $
- * $Date: 2010-02-10 18:18:01 +0000 (Wed, 10 Feb 2010) $
- * $Author: secretr $
+
  *
 */
 
-/**
- *	e107 Mail handling - core selector for users
- *
- *	@package	e107
- *	@subpackage	e107_handlers
- *	@version 	$Id: mailout_class.php 11315 2010-02-10 18:18:01Z secretr $;
- */
 
 if (!defined('e107_INIT')) { exit; }
 
@@ -216,7 +206,7 @@ class core_mailout
 		
 		e107::getMessage()->addDebug("Selector query: ".$qry);
 
-		if (!( $this->mail_count = $sql->db_Select_gen($qry))) return FALSE;
+		if (!( $this->mail_count = $sql->gen($qry))) return FALSE;
 		$this->mail_read = 0;
 		return $this->mail_count;
 	}
@@ -237,7 +227,7 @@ class core_mailout
 	{
 		$sql = e107::getDb();
 		
-		if (!($row = $sql->db_Fetch(MYSQL_ASSOC))) return FALSE;
+		if (!($row = $sql->db_Fetch())) return FALSE;
 		$ret = array('mail_recipient_id' => $row['user_id'],
 					 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 					 'mail_recipient_email' => $row['user_email'],

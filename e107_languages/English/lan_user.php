@@ -74,8 +74,8 @@ define("LAN_USER_43", "delete photo");							// LAN_413
 define("LAN_USER_44", "Miscellaneous");							// LAN_410
 define("LAN_USER_45", "DESC");									// LAN_420
 define("LAN_USER_46", "ASC");									// LAN_421
-define("LAN_USER_47", "Go");									// LAN_422
-define("LAN_USER_48", "Error");									// LAN_20
+// define("LAN_USER_47", "Go");									// LAN_422
+// define("LAN_USER_48", "Error");									// LAN_20
 define("LAN_USER_49", "There is no information for that user as they are not registered at");			// LAN_137
 define("LAN_USER_50", "Member Profile");						// LAN_402
 define("LAN_USER_51", "That is not a valid user.");				// LAN_400
@@ -97,7 +97,7 @@ define("LAN_USER_66", "Visits to site since registration");		// LAN_146
 define("LAN_USER_67", "Chatbox posts");							// LAN_147
 define("LAN_USER_68", "Comments posted");						// LAN_148
 define("LAN_USER_69", "Forum posts");							// LAN_149
-define("LAN_USER_70", "Show");									// LAN_419
+//define("LAN_USER_70", "Show");									// LAN_419
 define("LAN_USER_71", "Signature: ");							// LAN_120
 define("LAN_USER_72", "Avatar: ");								// LAN_121
 define("LAN_USER_73", "choice of Content/Mail-lists");
@@ -114,10 +114,19 @@ define("LAN_USER_83", "Hide email address?: ");					// LAN_113
 define("LAN_USER_84", "This will prevent your email address from being displayed on site");	// LAN_114
 define("LAN_USER_85", "If you want to change your user name, you must ask a site administrator");
 define("LAN_USER_86", "Maximum avatar size is --WIDTH-- x --HEIGHT-- pixels");
+define("LAN_USER_87", "Login to rate this user!");
+
+// social plugin
+define("LAN_XUP_ERRM_01", "Signup failed! This feature is disabled.");
+define("LAN_XUP_ERRM_02", "Signup failed! Wrong provider.");
+define("LAN_XUP_ERRM_03", "Log in Failed! Wrong provider.");
+define("LAN_XUP_ERRM_04", "Signup failed! User already signed in.");
+define("LAN_XUP_ERRM_05", "Signup failed! User already exists. Please use 'login' instead.");
+define("LAN_XUP_ERRM_06", "Signup failed! Can't access user email - registration without an email is impossible.");
 
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages
-// FIXME - do we need this?
+
 // 	- [Berckoff] Used in validator_class for error handling, maybe moved to a more suitable place?
 if (!defined("USER_ERR_01")) { define("USER_ERR_01","Missing value");  }
 if (!defined("USER_ERR_02")) { define("USER_ERR_02","Unexpected value");  }
@@ -143,21 +152,6 @@ if (!defined("USER_ERR_21")) { define("USER_ERR_21","Image too high");  }
 if (!defined("USER_ERR_22")) { define("USER_ERR_22","Unspecified error");  }
 if (!defined("USER_ERR_23")) { define("USER_ERR_23","Disallowed value (exact match)");  }
 
-// BC for v1.x template
-define("LAN_112", "Email Address");
-define("LAN_138", "Registered members: ");
-define("LAN_139", "Order: ");
-define("LAN_142", "Member");
-define("LAN_145", "Joined");
-define("LAN_146", "Visits to site since registration");
-define("LAN_147", "Chatbox posts");
-define("LAN_148", "Comments posted");
-define("LAN_149", "Forum posts");
-define("LAN_308", "Real Name");
-define("LAN_403", "Site Stats");
-define("LAN_404", "Last visit");
-//define("LAN_406", "Rating");//LAN_RATING
-define("LAN_419", "Show");
-define("LAN_425", "Send Private Message");
+
 
 ?>

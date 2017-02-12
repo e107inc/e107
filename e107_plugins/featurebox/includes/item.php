@@ -48,7 +48,11 @@ class plugin_featurebox_item extends e_model
 	 */
 	public function sc_featurebox_title($parm = '')
 	{
-		parse_str($parm, $parm);
+		if(!empty($parm) && is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$tp = e107::getParser();
 		if(isset($parm['alt']))
 		{
@@ -133,8 +137,12 @@ class plugin_featurebox_item extends e_model
 		{
 			return $video;	
 		}
-		
-		parse_str($parm, $parm);
+
+		if(is_string($parm))
+		{
+			parse_str($parm, $parm);
+		}
+
 		$tp = e107::getParser();
 		
 		$imageSrc = ($parm != 'placeholder') ? $this->get('fb_image') : "";
@@ -152,7 +160,7 @@ class plugin_featurebox_item extends e_model
 		{
 			return $src;
 		}
-		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive" />';
+		$tag = '<img id="featurebox-image-'.$this->getId().'" src="'.$src.'" alt="'.$tp->toAttribute($this->get('fb_title')).'" class="featurebox img-responsive img-fluid" />';
 		if(isset($parm['nourl']) || !$this->get('fb_imageurl'))
 		{
 			return $tag;
@@ -203,7 +211,7 @@ class plugin_featurebox_item extends e_model
 	public function sc_featurebox_counter($parm=1)
 	{	
 		$count = $this->getParam('counter', 1);
-		return ($parm == 0) ? $count - 1 : $count;
+		return (empty($parm)) ? $count - 1 : $count;
 	}
 
 	/**

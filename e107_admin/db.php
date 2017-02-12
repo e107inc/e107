@@ -16,7 +16,7 @@ define("EXPORT_PATH","{e_THEME}".$theme."/install/");
 
 if(!getperms('0'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit();
 }
 
@@ -26,9 +26,7 @@ if(isset($_POST['back']))
 	exit();
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);		
-
-
+e107::coreLan('db', true);
 
 $e_sub_cat = 'database';
 
@@ -68,7 +66,9 @@ if(isset($_POST['db_execute']))
 
 if(isset($_POST['exportXmlFile']))
 {
-	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['package_images']))
+
+
+	if(exportXmlFile($_POST['xml_prefs'],$_POST['xml_tables'],$_POST['xml_plugprefs'], $_POST['package_images'], false))
 	{
 		$mes = e107::getMessage();
 		$mes->add(LAN_SUCCESS, E_MESSAGE_SUCCESS);
@@ -84,7 +84,7 @@ if(e_AJAX_REQUEST )
 
 	if(varset($_GET['mode']) == 'backup') //FIXME - not displaying progress until complete. Use e-progress?
 	{
-		echo "Starting file backup...<br />";
+		echo "".DBLAN_120."<br />";
 		
 		$data = array();
 		$data[] = e_MEDIA;
@@ -182,8 +182,8 @@ class system_tools
 		
 		if(deftrue('e_DEVELOPER'))
 		{
-			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span>", 'label'=> 'Multi-Site' );
-			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>Developer Mode Only</span> Overwrite local files with the latest from github.", 'label'=> 'Sync with Github' );
+			$this->_options['multisite'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span>", 'label'=> 'Multi-Site' );
+			$this->_options['github'] = array('diz'=>"<span class='label label-warning'>".DBLAN_114."</span> ".DBLAN_115."", 'label'=> DBLAN_112 );
 		}
 
 
@@ -192,7 +192,7 @@ class system_tools
 				
 		if(isset($_POST['delplug']))
 		{
-			$this->delete_plugin_entry($_POST['pref_type']);
+			$this->delete_plugin_entry(); // $_POST['pref_type']
 		}
 
 		if(isset($_POST['upload']))
@@ -207,6 +207,7 @@ class system_tools
 		
 		if(isset($_POST['verify_sql']) || varset($_GET['mode'])=='verify_sql')
 		{
+			e107::getCache()->clear('Dbverify',true);
 			require_once(e_HANDLER."db_verify_class.php");
 			$dbv = new db_verify;
 			$dbv->backUrl = e_SELF."?mode=verify_sql";
@@ -335,8 +336,8 @@ class system_tools
 	//	$message .= "<br /><a class='e-ajax btn btn-success' data-loading-text='".DBLAN_71."' href='#backupstatus' data-src='".e_SELF."?mode=backup' >".LAN_CREATE."</a>";
 
 		$message = $frm->open('githubSync');
-		$message .= "<p>This will download the latest .zip file from github to <b>".e_SYSTEM."/temp</b> and then unzip it, overwriting any existing files that it finds on your server. It will take into account any custom folders you may have set in e107_config.php. </p>";
-		$message .= $frm->button('githubSyncProcess',1,'delete', "Overwrite Files");
+		$message .= "<p>".DBLAN_116." <b>".e_SYSTEM."temp</b> ".DBLAN_117." </p>";
+		$message .= $frm->button('githubSyncProcess',1,'delete', DBLAN_113);
 		$message .= $frm->close();
 
 
@@ -345,7 +346,7 @@ class system_tools
 	//	$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", $mes->render());
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, $mes->render());
 
 
 
@@ -369,7 +370,7 @@ class system_tools
 
 		if($result == false)
 		{
-			e107::getMessage()->addError( "Couldn't download .zip file");
+			e107::getMessage()->addError( DBLAN_118 );
 		}
 
 
@@ -420,7 +421,7 @@ class system_tools
 			$oldPath = $v['filename'];
 			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
 
-			$message = "Moving ".$oldPath." to ".$newPath;
+			$message = e107::getParser()->lanVars(DBLAN_121, array('x'=>$oldPath, 'y'=>$newPath));
 
 			if($v['folder'] ==1 && is_dir($newPath))
 			{
@@ -460,7 +461,7 @@ class system_tools
 
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Sync with Github", e107::getMessage()->render());
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
 
 	}
 
@@ -482,7 +483,7 @@ class system_tools
 		$text = "<div id='backupstatus' style='margin-top:20px'></div>";
 		
 		
-		e107::getRender()->tablerender(DBLAN_10.SEP."Backup", $mes->render().$text);		
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_119, $mes->render().$text);		
 	}
 
 
@@ -849,7 +850,7 @@ class system_tools
 		}
 
 
-		e107::getRender()->tablerender(DBLAN_10.SEP."Check Charset".SEP.$config['mySQLdefaultdb'], $mes->render().$text);
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_65.SEP.$config['mySQLdefaultdb'], $mes->render().$text);
 
 	}
 
@@ -987,7 +988,7 @@ class system_tools
 		
 		if($sql->gen($query))
 		{
-			while ($row = $sql->fetch(MYSQL_NUM))
+			while ($row = $sql->fetch('num'))
 			{
 	   			 $qry[] = $row[0];
 			}
@@ -1006,7 +1007,7 @@ class system_tools
 			$mes->addError("Query Failed: ".$query);
 			return;
 		}
-		while ($row = mysql_fetch_array($result, MYSQL_NUM))
+		while ($row = mysql_fetch_array($result, 'num'))
 		{
    			 $qry[] = $row[0];
 		}
@@ -1057,6 +1058,8 @@ class system_tools
 			e107::getCache()->clear();
 		}
 
+		return null;
+
 	}
 
 	private function delete_plugin_entry()
@@ -1066,7 +1069,7 @@ class system_tools
 		$sql = e107::getDb();
 
 		$del = array_keys($_POST['delplug']);
-		if($sql->db_Delete("plugin", "plugin_id='".intval($del[0])."'"))
+		if($sql->delete("plugin", "plugin_id='".intval($del[0])."'"))
 		{
 			$mes->add(LAN_DELETED, E_MESSAGE_SUCCESS);
 		}
@@ -1080,11 +1083,11 @@ class system_tools
 
 	/**
 	 * Render Options
-	 * @return none
+	 * @return null
 	 */
 	private function render_options()
 	{
-		$frm = e107::getForm();	
+
 		$mes = e107::getMessage(); 
 		
 		$text = "
@@ -1124,12 +1127,14 @@ class system_tools
 		";
 */
 		e107::getRender()->tablerender(DBLAN_10, $mes->render().$text);
+
+		return null;
 	}
 
 
 	/**
 	 * Import XML Form
-	 * @return none
+	 * @return null
 	 */
 	private function importForm()
 	{
@@ -1173,11 +1178,12 @@ class system_tools
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_59, $mes->render().$text);
 
+		return null;
 	}
 
 	/**
 	 * Export XML Dump
-	 * @return  none
+	 * @return null
 	 */
 	private function exportXmlForm()
 	{
@@ -1194,7 +1200,7 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." ".LAN_PREFS."</th>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_prefs')." &nbsp;".LAN_PREFS."</th>
 					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
@@ -1210,17 +1216,58 @@ class system_tools
 
 					foreach($pref_types as $key=>$description)
 					{
+						$data = e107::getConfig($key)->getPref();
+
+						$rows = count($data);
+
 						$checked = (vartrue($_POST['xml_prefs'][$key]) == $key) ? 1: 0;
 
 						$text .= "<tr>
 							<td>
 								".$frm->checkbox("xml_prefs[".$key."]", $key, $checked, array('label'=>LAN_PREFS.": ".$key))."
 							</td>
-							<td>&nbsp;</td>
+							<td class='text-right'>".intval($rows)."</td>
 
 							</tr>";
 
 					}
+
+
+					// Plugin Preferences ----------------------------
+					$pluglist = e107::pref('core','plug_installed');
+
+					$text .= "</tbody><thead><tr>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_plugprefs')." &nbsp;Plugin ".LAN_PREFS."</th>
+					<th class='right'>".DBLAN_98."</th>
+
+					</tr></thead><tbody>";
+
+					ksort($pluglist);
+
+					foreach($pluglist as $plug=>$ver)
+					{
+						$data = e107::getPlugConfig($plug)->getPref();
+
+						$key = $plug;
+
+						$checked = false;
+
+						if(!empty($data))
+						{
+							$rows = count($data);
+
+							$text .= "<tr>
+							<td>
+								".$frm->checkbox("xml_plugprefs[".$key."]",$key, $checked, array('label'=>LAN_PREFS.": ".$key))."
+							</td>
+							<td class='text-right'>".$rows."</td>
+
+							</tr>";
+						}
+					}
+
+
+
 					$text .= "</tbody>
 				</table>
 				<table class='table adminlist'>
@@ -1230,7 +1277,7 @@ class system_tools
 				</colgroup>
 				<thead>
 				<tr>
-					<th>".$frm->checkbox_toggle('check-all-verify', 'xml_tables').DBLAN_97."</th>
+					<th class='form-inline'>".$frm->checkbox_toggle('check-all-verify', 'xml_tables')." &nbsp;".DBLAN_97."</th>
 					<th class='right'>".DBLAN_98."</th>
 
 				</tr>
@@ -1283,14 +1330,40 @@ class system_tools
 		</form>	";
 
 
+		// display differences between default and core prefs.
+/*
+		$corePrefs = e107::pref('core');
+
+		$defaultArray = e107::getXml()->loadXMLfile(e_CORE."xml/default_install.xml", 'advanced');
+		$defaultPrefs = e107::getXml()->e107ImportPrefs($defaultArray);
+
+		$text .= "<table class='table'>";
+		foreach($defaultPrefs as $k=> $val)
+		{
+			if($val ==  $corePrefs[$k] || substr($k,-5) === '_list' || substr($k,0,9) == 'sitetheme')
+			{
+				continue;
+			}
+
+
+			$text .= "<tr>
+				<td>".$k."</td>
+				<td>".print_a($val,true)."<td><td>".print_a($corePrefs[$k],true)."</td>
+				</tr>";
+
+		}
+		$text .= "</table>";
+*/
+
+
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_102,$mes->render(). $text);
 
-
+		return null;
 	}
 
 	/**
 	 * Import XML Dump
-	 * @return none
+	 * @return null
 	 */
 	private function importXmlFile()
 	{
@@ -1305,27 +1378,34 @@ class system_tools
 		{
 			e107::getMessage()->addError(DBLAN_104." $table");
 		}
+
+		return null;
 	}
 
 	/**
 	 * Optimize SQL
-	 * @return none
+	 * @param $mySQLdefaultdb
+	 * @return null
 	 */
-	private function optimizesql($mySQLdefaultdb) //FIXME Use mysql class. 
+	private function optimizesql($mySQLdefaultdb) 
 	{
-	//	global $mes;
-		$result = mysql_list_tables($mySQLdefaultdb);
-		while($row = mysql_fetch_row($result))
+		$mes = e107::getMessage();
+		$tables = e107::getDb()->tables();
+		
+		foreach($tables as $table)
 		{
-			mysql_query("OPTIMIZE TABLE ".$row[0]);
+			e107::getDb()->gen("OPTIMIZE TABLE ".$table);
 		}
 
-	//	$mes->add(DBLAN_11." $mySQLdefaultdb ".DBLAN_12, E_MESSAGE_SUCCESS);
-		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, DBLAN_11." $mySQLdefaultdb ".DBLAN_12);
+		$mes->addSuccess(e107::getParser()->lanVars(DBLAN_11, $mySQLdefaultdb));
+		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_7, $mes->render());
+
+		return null;
 	}
 
 	/**
 	 * Preferences Editor
+	 * @param string $type
 	 * @return string text for display
 	 */
 	private function pref_editor($type='core')
@@ -1349,15 +1429,15 @@ class system_tools
 					<fieldset id='core-db-pref-edit'>
 						<legend class='e-hideme'>".DBLAN_20."</legend>";
 
-		$text .= "<select class='tbox' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
+		$text .= "<select class='tbox form-control input-large' name='type_select' onchange='urljump(this.options[selectedIndex].value)' >
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=core'>Core</option>\n
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=search'>Search</option>
 		<option value='".e_ADMIN."db.php?mode=".$_GET['mode']."&amp;type=notify'>Notify</option>\n";
 
 	//	e107::getConfig($type)->aliases
 
-		e107::getDb()->db_Select_gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
-		while ($row = e107::getDb()->db_Fetch())
+		e107::getDb()->gen("SELECT e107_name FROM #core WHERE e107_name LIKE ('plugin_%') ORDER BY e107_name");
+		while ($row = e107::getDb()->fetch())
 		{
 			$key = str_replace("plugin_","",$row['e107_name']);
 			$selected = (varset($_GET['type'])==$key) ? "selected='selected'" : "";
@@ -1472,7 +1552,7 @@ class system_tools
 	{
 		$error_messages = array(0 => DBLAN_31, 1 => LAN_ERROR, 2 => DBLAN_33, 3 => DBLAN_34);
 	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
-		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,"<i class='S16 e-warning-16'></i>","<i style='display:inline-block;width:17px;height:16px;'> </i>");
+		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,ADMIN_WARNING_ICON,"<i style='display:inline-block;width:17px;height:16px;'> </i>");
 		
 		$error_type = array('warning'=>2, 'error'=>1);
 
@@ -1616,7 +1696,10 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
 		$var[$key]['link'] = e_SELF."?mode=".$key;
 	}
 
-	e107::getNav()->admin(DBLAN_10, $_GET['mode'], $var);
+		$icon  = e107::getParser()->toIcon('e-database-24');
+		$caption = $icon."<span>".DBLAN_10."</span>";
+
+	e107::getNav()->admin($caption, $_GET['mode'], $var);
 }
 
 
@@ -1627,16 +1710,19 @@ function db_adminmenu() //FIXME - has problems when navigation is on the LEFT in
  * @param object $debug [optional]
  * @return none
  */
-function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
+function exportXmlFile($prefs,$tables=array(),$plugPrefs, $package=FALSE,$debug=FALSE)
 {
-	$xml = e107::getSingleton('xmlClass');
+	$xml = e107::getXml();
 	$tp = e107::getParser();
 	$mes = e107::getMessage();
+
+	$desinationFolder = null;
 
 	if(vartrue($package))
 	{
 
 		$xml->convertFilePaths = TRUE;
+		$xml->modifiedPrefsOnly = true;
 		$xml->filePathDestination = EXPORT_PATH;
 		$xml->filePathPrepend = array(
 			'news_thumbnail'	=> "{e_IMAGE}newspost_images/"
@@ -1649,12 +1735,13 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 		{
 			$message = str_replace('[folder]', $desinationFolder, DBLAN_107);
 			$mes->add($message, E_MESSAGE_ERROR);
-			return ;
+			return false ;
 		}
 	}
 
+	$mode = ($debug === true) ? array( "debug" =>1) : null;
 
-	if($xml->e107Export($prefs,$tables,$debug))
+	if($xml->e107Export($prefs,$tables,$plugPrefs, $mode))
 	{
 		$mes->add(DBLAN_108." ".$desinationFolder."install.xml", E_MESSAGE_SUCCESS);
 		if(varset($xml->fileConvertLog))
@@ -1667,14 +1754,16 @@ function exportXmlFile($prefs,$tables,$package=FALSE,$debug=FALSE)
 				{
 					$mes->add(DBLAN_109." ".$newfile, E_MESSAGE_SUCCESS);
 				}
-				else
+				elseif(!file_exists($newfile))
 				{
 					$mes->add(DBLAN_110." ".$newfile, E_MESSAGE_ERROR);
 				}
 			}
 		}
+
 	}
 
+	return null;
 }
 
 
@@ -1694,13 +1783,15 @@ function table_list()
 	$exclude[] = "user_extended_country";
 	$exclude[] = "plugin";
 
-	$coreTables = e107::getDb()->db_TableList('nolan');
+	$coreTables = e107::getDb()->tables('nolan');
 
 	$tables = array_diff($coreTables,$exclude);
 
+	$tabs = array();
+
 	foreach($tables as $e107tab)
 	{
-		$count = e107::getDb()->db_Select_gen("SELECT * FROM #".$e107tab);
+		$count = e107::getDb()->gen("SELECT * FROM #".$e107tab);
 
 		if($count)
 		{
@@ -1930,8 +2021,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			$dbtables = array();
 
 			//get all tables in the db
-			$sql2->db_Select_gen("SHOW TABLES");
-			while($row2 = $sql2->db_Fetch())
+			$sql2->gen("SHOW TABLES");
+			while($row2 = $sql2->fetch())
 			{
 				$dbtables[] = $row2[0];
 			}
@@ -1951,7 +2042,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			ORDER BY r.rate_table, r.rate_itemid";
 			$data = array('type' => 'rate', 'table' => 'rate_table', 'itemid' => 'rate_itemid', 'id' => 'rate_id');
 
-			if(!$sql->db_Select_gen($query))
+			if(!$sql->gen($query))
 			{
 				$text .= verify_sql_record_displayresult(DBLAN_49, $data['type']);
 			}
@@ -1963,7 +2054,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 				//array which will hold all db tables
 				$dbtables = verify_sql_record_gettables();
 
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 
 					$ctype = $data['type'];
@@ -1977,8 +2068,8 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 					if(in_array(MPREFIX.$ctable, $dbtables))
 					{
 
-						$sql3->db_Select_gen("SHOW COLUMNS FROM ".MPREFIX.$ctable);
-						while($row3 = $sql3->db_Fetch())
+						$sql3->gen("SHOW COLUMNS FROM ".MPREFIX.$ctable);
+						while($row3 = $sql3->fetch())
 						{
 							//find the auto_increment field, since that's the most likely key used
 							if($row3['Extra'] == 'auto_increment')
@@ -2018,7 +2109,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 			ORDER BY c.comment_type, c.comment_item_id";
 			$data = array('type' => 'comments', 'table' => 'comment_type', 'itemid' => 'comment_item_id', 'id' => 'comment_id');
 
-			if(!$sql->db_Select_gen($query))
+			if(!$sql->gen($query))
 			{
 				$text .= verify_sql_record_displayresult(DBLAN_49, $data['type']);
 			}
@@ -2036,7 +2127,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 				$cobj = new comment();
 				$e_comment = $cobj->get_e_comment();
 
-				while($row = $sql->db_Fetch())
+				while($row = $sql->fetch())
 				{
 
 					$ctype = $data['type'];
@@ -2101,7 +2192,7 @@ function verify_sql_record() // deprecated by db_verify.php ( i think).
 							if($installed = $sql2->db_Select("plugin", "*", "plugin_path = '".$var['plugin_path']."' AND plugin_installflag = '1' "))
 							{
 								$qryp = str_replace("{NID}", $citemid, $var['qry']);
-								if(!$sql2->db_Select_gen($qryp))
+								if(!$sql2->gen($qryp))
 								{
 									$err[] = array('type' => $ctable, 'sqlid' => $cid, 'table' => $ctable, 'itemid' => $citemid, 'table_exist' => TRUE);
 								}

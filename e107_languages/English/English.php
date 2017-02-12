@@ -1,6 +1,10 @@
 <?php
 /*
- * Copyright e107 Inc e107.org, Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * English language file - generic terms and system LAN
  *
@@ -50,6 +54,7 @@ define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
 define("LAN_DEFAULT","Default");
 define("LAN_MORE", "More..");
+define("LAN_LESS", "..Less");
 define("LAN_READ_MORE", "Read more..");
 define("LAN_GOPAGE", "Go to page");
 define("LAN_GOTOPAGEX", "Go to page [x]");
@@ -60,6 +65,7 @@ define("LAN_WARNING", "Warning!");
 define("LAN_ERROR", "Error");
 define("LAN_ANONYMOUS", "Anonymous");
 define("LAN_EMAIL_SUBS", "-email-");
+define("LAN_ACTIVE","Active");
 define("LAN_YES", "Yes");
 define("LAN_NO", "No");
 define("LAN_OK", "OK");
@@ -71,6 +77,7 @@ define("LAN_ENTER_CODE", "Enter code");
 define("LAN_INVALID_CODE", "Incorrect code entered.");
 define("LAN_SEARCH", "Search");
 define("LAN_VIEW", "View");
+define("LAN_CLICK_TO_VIEW", "Click to View");//TODO elsewhere
 define("LAN_SORT", "Sort");
 define("LAN_ORDER_BY", "Order By");
 define("LAN_ASCENDING", "Ascending");
@@ -82,9 +89,11 @@ define("LAN_DESCRIPTION", "Description");
 define("LAN_CANCEL","Cancel");
 define("LAN_DATE","Date");
 define("LAN_DATE_POSTED", "Date posted");
+define("LAN_POSTED_BY", "Posted by");
 define("LAN_JSCONFIRM","Are you sure?");
-define("LAN_IP", "IP Address");
-define("LAN_AUTHOR",	"Author");
+define("LAN_IP","IP");
+define("LAN_IP_ADDRESS","IP Address");
+define("LAN_AUTHOR","Author");
 define("LAN_CATEGORY", "Category");
 define("LAN_GUEST", "Guest");
 define("LAN_NEXT", "Next");
@@ -93,15 +102,19 @@ define("LAN_LOGIN", "Login");
 define("LAN_LOGOUT", "Logout");
 define("LAN_SETTINGS", "Settings");
 define("LAN_PASSWORD", "Password");
+define("LAN_INCORRECT_PASSWORD", "Incorrect Password");
 define("LAN_TYPE", "Type");
 define("LAN_SCREENSHOT", "Screenshot");
 define("LAN_FILE", "File");
+define("LAN_YOUTUBE_VIDEO", "Youtube Video");
+define("LAN_YOUTUBE_PLAYLIST", "Youtube Playlist");
 define("LAN_FILETYPES", "Filetypes");
 define("LAN_FILE_NOT_FOUND", "File Not Found");
 define("LAN_FILES","Files"); 
 define("LAN_SIZE", "Size");
 define("LAN_VERSION", "Version");
 define("LAN_DOWNLOAD", "Download");
+define("LAN_WEBSITE", "Website");
 define("LAN_COMMENTS", "Comments");
 define("LAN_LOCATION", "Location");
 define("LAN_NO_RECORDS_FOUND","No Records Found");
@@ -109,14 +122,22 @@ define("LAN_RATING", "Rating");
 define("LAN_IMAGE","Image");
 define("LAN_ABOUT", "About");
 define("LAN_TITLE", "Title");
+define("LAN_MESSAGE", "Message");
 define("LAN_USER", "User");
 define("LAN_EMAIL","Email address");
 define("LAN_WROTE", "wrote"); // as in John wrote.."  ";
 define("LAN_RE_ORDER", "Re-order");
+define("LAN_RELATED", "Related");
+define("LAN_CLOSE", "Close");
+define("LAN_EXPAND", "Expand");
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password
-
-
+define("LAN_SHOW", "Show");
+define("LAN_GENERATE", "Generate");
+define("LAN_SUMMARY", "Summary");  // TODO   more files use summary replace
+define("LAN_REQUIRED_BLANK", "Required field(s) were left blank.");
+define("LAN_PLEASEWAIT", "Please Wait");
+define("LAN_CHOOSE_FILE", "Choose a file");
 
 ?>

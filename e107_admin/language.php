@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -12,10 +12,10 @@
 require_once ("../class2.php");
 if (!getperms('L'))
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit;
 }
-//include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+
 e107::coreLan('language', true);
 
 $e_sub_cat = 'language';
@@ -24,11 +24,6 @@ if(!empty($_GET['iframe']))
 {
 	define('e_IFRAME', true);
 }
-
-
-
-
-
 
 	class language_admin extends e_admin_dispatcher
 	{
@@ -53,17 +48,16 @@ if(!empty($_GET['iframe']))
 
 		protected $adminMenu = array(
 
-			'main/prefs'			=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-			'main/db'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-			'main/tools'     => array('caption'=>LANG_LAN_21, 'perm'=>'P')
-		//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),
+			'main/prefs'	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
+			'main/tools'    => array('caption'=>LANG_LAN_21, 'perm'=>'L')
 
-			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
 		);
 
 		protected $adminMenuAliases = array(
 			'main/edit'	=> 'main/list'
 		);
+
+		protected $adminMenuIcon = 'e-language-24';
 
 		protected $menuTitle = ADLAN_132;
 
@@ -71,15 +65,18 @@ if(!empty($_GET['iframe']))
 		{
 			$pref = e107::getPref();
 
-			if (isset($pref['multilanguage']) && $pref['multilanguage'])
+			if (!empty($pref['multilanguage']))
 			{
-				$this->adminMenu['main/db']		= array('caption'=> LANG_LAN_03, 'perm' => 'P');
-
+				$this->adminMenu = array(
+					'main/prefs'    => $this->adminMenu['main/prefs'],
+					'main/db'       => 	array('caption'=> LANG_LAN_03, 'perm' => 'P'),
+					'main/tools'    => $this->adminMenu['main/tools'],
+				);
 			}
 
 			if(e_DEVELOPER == true)
 			{
-				$this->adminMenu['main/deprecated'] = array('caption'=>'Deprecated LANs', 'perm'=>'0');
+				$this->adminMenu['main/deprecated'] = array('caption'=>LANG_LAN_04, 'perm'=>'0');
 			}
 
 		}
@@ -235,6 +232,11 @@ if(!empty($_GET['iframe']))
 
 			$message = '';
 
+			if(!empty($_POST['language']))
+			{
+				$_POST['language'] = e107::getParser()->filter($_POST['language']);
+			}
+
 			// ----------------- delete tables ---------------------------------------------
 			if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			{
@@ -246,7 +248,7 @@ if(!empty($_GET['iframe']))
 					{
 						//	echo $del_table." exists<br />";
 						$qry = "DROP TABLE ".MPREFIX."lan_".$lang."_".$del_table;
-						if (mysql_query($qry))
+						if ($sql->gen($qry))
 						{
 							$msg = $tp->lanVars(LANG_LAN_100, $_POST['lang_choices'].' '.$del_table);
 							$message .= $msg.'[!br!]';
@@ -304,7 +306,7 @@ if(!empty($_GET['iframe']))
 						if ($_POST['remove'])
 						{
 							// Remove table.
-							if (mysql_query("DROP TABLE ".MPREFIX."lan_".$lang."_".$value))
+							if ($sql->gen("DROP TABLE ".MPREFIX."lan_".$lang."_".$value))
 							{
 								$message .= $_POST['language'].' '.$value.' '.LAN_DELETED.'[!br!]'; // can be removed?
 								$mes->addSuccess($_POST['language'].' '.$value.' '.LAN_DELETED);
@@ -582,7 +584,7 @@ if(!empty($_GET['iframe']))
 			{
 				if($val != $pref['sitelanguage'])
 				{
-					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";
+					$opt .= "<tr><td class='middle' style='width:5%'>".$val."</td><td class='left inline-text'><input type='text' class='form-control' name='multilanguage_domain[".$val."]' value=\"".$pref['multilanguage_domain'][$val]."\" /></td></tr>";
 				}
 			}
 
@@ -634,7 +636,7 @@ require_once ("auth.php");
 $frm = e107::getForm();
 $mes = e107::getMessage();
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_lancheck.php");
 require_once(e_ADMIN."lancheck.php");
 require_once(e_HANDLER."language_class.php");
 
@@ -791,73 +793,6 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 
 
 
-
-/**
- * Share Language File
- * @param object $newfile
- * Usage of e107 is granted to you provided that this function is not modified or removed in any way. 
- * @return 
- */
-function share($newfile)
-{
-	global $pref;
-	
-	if(!$newfile || E107_DEBUG_LEVEL > 0)
-	{
-		return;
-	}
-	
-	global $tp;
-	$full_link = $tp->createConstants($newfile);
-	
-	$email_message = "<br />Site: <a href='".SITEURL."'>".SITENAME."</a>
-	<br />User: ".USERNAME."\n
-	<br />Email: ".USEREMAIL."\n
-	<br />Language: ".$_POST['language']."\n
-	<br />IP:".USERIP."
-	<br />...would like to contribute the following language pack for e107. (see attached)<br />:
-		
-	
-	<br />Missing Files: ".$_SESSION['lancheck'][$_POST['language']]['file']."
-	<br />Bom Errors : ".$_SESSION['lancheck'][$_POST['language']]['bom']."
-	<br />UTF Errors : ".$_SESSION['lancheck'][$_POST['language']]['utf']."
-	<br />Definition Errors : ".$_SESSION['lancheck'][$_POST['language']]['def']."
-	<br />Total Errors: ".$_SESSION['lancheck'][$_POST['language']]['total']."
-	<br />
-	<br />XML file: ".$_SESSION['lancheck'][$_POST['language']]['xml'];
-	
-	
-	
-	require_once(e_HANDLER."mail.php");
-	
-	$send_to = (!$_POST['contribute_pack']) ? "languagepacks@e107inc.org" : "certifiedpack@e107inc.org"; 
-	$to_name = "e107 Inc.";
-	$Cc = "";
-	$Bcc = "";
-	$returnpath='';
-	$returnreceipt='';
-	$inline ="";
-		
-	$subject = (!$_POST['contribute_pack']) ? "[0.7 LanguagePack] " : "[0.7 Certified LanguagePack] ";		
-	$subject .= basename($newfile);
-	
-	if(!@sendemail($send_to, $subject, $email_message, $to_name, '', '', $newfile, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
-	{
-		$text = "<div style='padding:40px'>";
-		$text .= defined('LANG_LAN_EML') ?  "<b>".LANG_LAN_EML."</b>" : "<b>There was a problem sending the language-pack. Please email your verified language pack to:</b>";
-		$text .= " <a href='mailto:".$send_to."?subject=".$subject."'>".$send_to."</a>";
-		$text .= "</div>";
-		
-		return $text;	
-	}
-	elseif($_POST['contribute_pack'])
-	{
-		return "<div style='padding:40px'>Pack Sent to e107 Inc. A confirmation email will be sent to ".$pref['siteadminemail']." once it is received.<br />Please also make sure that email coming from ".$send_to." is not blocked by your spam filter.</div>";
-	}
-
-	
-
-}
 
 
 
@@ -1041,26 +976,29 @@ class lanDeveloper
 	{
 		$ns = e107::getRender();
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 
 	// ------------------------------ TODO -------------------------------
 
 		if(vartrue($_POST['disabled-unused']) && vartrue($_POST['disable-unused-lanfile']))
 		{
+			$disUnusedLanFile = $tp->filter($_POST['disable-unused-lanfile'], 'file');
+
 			$mes = e107::getMessage();
 
-			$data = file_get_contents($_POST['disable-unused-lanfile']);
+			$data = file_get_contents($disUnusedLanFile);
 
 			$new = $this->disableUnused($data);
-			if(file_put_contents($_POST['disable-unused-lanfile'],$new))
+			if(file_put_contents($disUnusedLanFile,$new))
 			{
-				$mes->addSuccess("Overwriting ".$_POST['disable-unused-lanfile']);
+				$mes->addSuccess(LANG_LAN_135.$disUnusedLanFile);//Overwriting
 			}
 			else
 			{
-				$mes->addError("Couldn't overwrite ".$_POST['disable-unused-lanfile']);
+				$mes->addError(LANG_LAN_136.$disUnusedLanFile);//Couldn't overwrite
 			}
 
-			$ns->tablerender("Processed".SEP.$_POST['disable-unused-lanfile'],$mes->render()."<pre>".htmlentities($new)."</pre>");
+			$ns->tablerender(LANG_LAN_137.SEP.$disUnusedLanFile,$mes->render()."<pre>".htmlentities($new)."</pre>");//Processed
 		}
 
 
@@ -1072,7 +1010,7 @@ class lanDeveloper
 
 	function run()
 	{
-
+		$tp = e107::getParser();
 		$mes = e107::getMessage();
 
 		if(varset($_POST['searchDeprecated']) && varset($_POST['deprecatedLans']))
@@ -1080,7 +1018,7 @@ class lanDeveloper
 
 		//	print_a($_POST);
 			// $lanfile = $_POST['deprecatedLans'];
-			$script = $_POST['deprecatedLans'];
+			$script = $tp->filter($_POST['deprecatedLans']);
 
 			foreach($script as $k=>$scr)
 			{
@@ -1102,7 +1040,7 @@ class lanDeveloper
 
 				if(!is_readable($scr))
 				{
-					$mes->addError("Not Readable: ".$scr);
+					$mes->addError(LAN_NOTREADABLE.$scr);
 					// $script = $scriptname; // matching files. lan_xxxx.php and xxxx.php
 				}
 			}
@@ -1120,7 +1058,7 @@ class lanDeveloper
 
 			if($_POST['deprecatedLanFile'][0] !='auto') //override.
 			{
-				$lanfile = $_POST['deprecatedLanFile'];
+				$lanfile = $tp->filter($_POST['deprecatedLanFile'], 'file');
 			}
 
 
@@ -1130,8 +1068,10 @@ class lanDeveloper
 			$this->commonPhrases = $this->getCommon();
 
 			//	print_a($this->commonPhrases);
+			$reverse = vartrue($_POST['deprecatedLansReverse']);
+			$reverse = $tp->filter($reverse);
 
-			if($res = $this->unused($lanfile, $script, vartrue($_POST['deprecatedLansReverse'])))
+			if($res = $this->unused($lanfile, $script, $reverse))
 			{
 				return $res;
 			//	$ns->tablerender($res['caption'],$mes->render(). $res['text']);
@@ -1148,7 +1088,7 @@ class lanDeveloper
 
 	function disableUnused($data)
 	{
-		$data = str_replace("2008-2010","2008-2013", $data);
+		$data = str_replace("2008-2010","2008-2017", $data);
 		$data = str_replace(' * $URL$
  * $Revision$
  * $Id$
@@ -1223,27 +1163,35 @@ class lanDeveloper
 		//	print_a($_SESSION['languageTools_lanFileList']);
 
 
-		$text .= "
-						<tr>
-							<td><div class='alert-info alert alert-block'>Hold down CTRL key to select multiple.<br />eg. To check <b>lan_signup.php</b> you'll want to also select <b>signup_shortcodes.php</b> and <b>signup_template.php</b>.</div></td>
-							<td class='form-inline'>
-								<select name='deprecatedLans[]' multiple style='height:200px'>
-									<option value=''>Select Script...</option>";
+		$text .= "	<tr>
+						<td><div class='alert-info alert alert-block'>".e107::getParser()->toHTML(LANG_LAN_140, true)."</div></td>
+					</tr>
+					<tr>
+						<td class='form-inline'>
+							<select name='deprecatedLans[]' multiple style='height:200px'>
+								<option value=''>".LANG_LAN_141."</option>";
 
 
 		$omit = array('languages','\.png','\.gif','handlers');
 		$lans = $fl->get_files(e_ADMIN,'.php','standard',0);
+		asort($lans);
+
 		$fl->setFileFilter(array("^e_"));
 		$root = $fl->get_files(e_BASE,'.*?/?.*?\.php',$omit,0);
+		asort($root);
 
 		$templates = $fl->get_files(e_CORE."templates",'.*?/?.*?\.php',$omit,0);
+		asort($templates);
+
 		$shortcodes = $fl->get_files(e_CORE."shortcodes",'.*?/?.*?\.php',$omit,1);
+		asort($shortcodes);
+
 		$exclude = array('lan_admin.php');
 
 		$srch = array(e_ADMIN,e_PLUGIN, e_CORE, e_BASE );
 
 
-		$text .= "<optgroup label='Admin Area'>";
+		$text .= "<optgroup label='".LAN_ADMIN."'>";
 		foreach($lans as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1256,7 +1204,7 @@ class lanDeveloper
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='Root'>";
+		$text .= "<optgroup label='".LAN_ROOT."'>";
 		foreach($root as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1270,7 +1218,7 @@ class lanDeveloper
 		$text .= "</optgroup>";
 
 
-		$text .= "<optgroup label='Templates'>";
+		$text .= "<optgroup label='".LAN_TEMPLATES."'>";
 		foreach($templates as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1283,7 +1231,7 @@ class lanDeveloper
 
 		$text .= "</optgroup>";
 
-		$text .= "<optgroup label='Shortcodes'>";
+		$text .= "<optgroup label='".LAN_SHORTCODES."'>";
 		foreach($shortcodes as $script=>$lan)
 		{
 			if(in_array(basename($lan),$exclude))
@@ -1295,7 +1243,8 @@ class lanDeveloper
 		}
 
 		$text .= "</optgroup>";
-
+		
+//TODO LANs - not sure if this can be replaced with LANS?
 		$depOptions = array(
 			1 => "Script > Lan File",
 			0 => "Script < Lan File"
@@ -1304,7 +1253,7 @@ class lanDeveloper
 
 		$text .= "
 								</select> ".
-			$frm->select('deprecatedLansReverse',$depOptions,$_POST['deprecatedLansReverse'],'class=select')." ";
+			$frm->select('deprecatedLansReverse',$depOptions,e107::getParser()->filter($_POST['deprecatedLansReverse']),'class=select')." ";
 
 		$search = array(e_PLUGIN,e_ADMIN,e_LANGUAGEDIR."English/",e_THEME);
 		$replace = array("Plugins ","Admin ","Core ","Themes ");
@@ -1316,8 +1265,8 @@ class lanDeveloper
 								";
 
 		$selected = ($_POST['deprecatedLanFile'][0] == 'auto') ? "selected='selected'" :"";
-		$text .= "<option value='auto' {$selected}>Auto-Detect</option><optgroup label='Specific LAN file:'>\n";
-
+		$text .= "<option value='auto' {$selected}>".LANG_LAN_142."</option><optgroup label='".LANG_LAN_143."'>\n";//Auto-Detect
+		asort($_SESSION['languageTools_lanFileList']);
 		foreach($_SESSION['languageTools_lanFileList'] as $val)
 		{
 			if(strstr($val,e_SYSTEM))
@@ -1344,7 +1293,7 @@ class lanDeveloper
 		$text .= "</select>";
 
 		// $frm->select('deprecatedLanFile',$_SESSION['languageTools_lanFileList'], $_POST['deprecatedLanFile'],'class=select&useValues=1','Select Language File (optional)').
-		$text .= $frm->admin_button('searchDeprecated',"Check",'other');
+		$text .= $frm->admin_button('searchDeprecated',LAN_GO,'other');
 		//		$text .= "<span class='field-help'>".(count($lans) + count($plugs))." files found</span>";
 		$text .= "
 							</td>
@@ -1472,7 +1421,7 @@ class lanDeveloper
 				if($disabled)
 				{
 					$text .= ADMIN_WARNING_ICON;
-					$label = " <span class='label label-important label-danger'>Must be re-enabled</span>";
+					$label = " <span class='label label-important label-danger'>".LANG_LAN_144."</span>";//Must be re-enabled
 					$this->errors++;
 					// $text .= "blabla";
 					//	$class = 'alert alert-warning';
@@ -1480,7 +1429,7 @@ class lanDeveloper
 				elseif($reverse == true)
 				{
 					$value = ADMIN_TRUE_ICON;
-					$value .= " Line:<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
+					$value .= " ".LAN_LINE."<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
 					foreach($found[$file]['line'] as $defLine)
 					{
 						$text .= print_a($defLine, true);
@@ -1489,7 +1438,7 @@ class lanDeveloper
 				}
 				else
 				{
-					$text .= " Line:<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
+					$text .= " ".LAN_LINE.":<b>".implode(", ",$found[$file]['count']) ."</b>  "; // "' Found";
 				}
 
 			}
@@ -1517,7 +1466,7 @@ class lanDeveloper
 					else
 					{
 						//	$color = "background-color:yellow";
-						$value = "<a href='#' title=\"Missing\">".ADMIN_WARNING_ICON."</a>";
+						$value = "<a href='#' title=".LAN_MISSING.">".ADMIN_WARNING_ICON."</a>";
 						$this->errors++;
 						$label = "<span class='label label-important label-danger'>".LANG_LAN_131."</span>";
 				//		$class = "alert alert-warning";
@@ -1528,7 +1477,7 @@ class lanDeveloper
 				{
 					// $color = "background-color:pink";
 					$class = ' ';
-					$label = " <span class='label label-important label-danger'>Unused</span>";
+					$label = " <span class='label label-important label-danger'>".LAN_UNUSED."</span>";
 					$text .= "-";
 					$this->errors++; 
 				}
@@ -1563,7 +1512,7 @@ class lanDeveloper
 		{
 			$color = "font-style:italic";
 			$class = 'muted text-important ';
-			$label .= " <span class='label label-inverse'>Disabled</span>";
+			$label .= " <span class='label label-inverse'>".LAN_DISABLED."</span>";
 		}
 
 		if(empty($found) && $disabled === true)
@@ -1628,11 +1577,11 @@ class lanDeveloper
 			$tmp = is_array($lanfile) ? $lanfile : explode(",", $lanfile);
 			foreach($tmp as $scr)
 			{
-				$mes->addDebug("Script: ".$scr);
+				$mes->addDebug("Script : ".$scr);
 
 				if(!file_exists($scr))
 				{
-					$mes->addError("reverse Mode: ".LANG_LAN_121." ".$scr);
+					$mes->addError("Reverse Mode: ".LANG_LAN_121." ".$scr);
 					continue;
 				}
 
@@ -1645,7 +1594,7 @@ class lanDeveloper
 		}
 		else
 		{
-			$mes->addDebug("NORMAL MODE ");
+			$mes->addDebug("NORMAL MODE "); 
 			$lanDefines = '';
 			foreach($lanfile as $arr)
 			{
@@ -1659,7 +1608,7 @@ class lanDeveloper
 			{
 				if(!file_exists($scr))
 				{
-					$mes->addError("Normal mode: ".LANG_LAN_121." ".$scr);
+					$mes->addError(LANG_LAN_148.": ".LANG_LAN_121." ".$scr);
 					continue;
 				}
 				$compare[$scr] = file_get_contents($scr);
@@ -1674,12 +1623,12 @@ class lanDeveloper
 
 		if(!$compare)
 		{
-			$mes->addError("Line ".__LINE__.": ".LANG_LAN_121." ".$script);
+			$mes->addError(LAN_LINE." ".__LINE__.": ".LANG_LAN_121." ".$script);
 		}
 
 		if(!$lanDefines)
 		{
-			$mes->addError("Line ".__LINE__.": ".LANG_LAN_121." ".$lanfile);
+			$mes->addError(LAN_LINE." ".__LINE__.": ".LANG_LAN_121." ".$lanfile);
 		}
 
 		$srch = array("<?php","<?","?>");
@@ -1709,7 +1658,7 @@ class lanDeveloper
 
 				if($reverse == false)
 				{
-					$text .= "<th>Value</th>";
+					$text .= "<th>".LANG_LAN_149."</th>";
 				}
 
 				foreach($compare as $k=>$val)
@@ -1762,11 +1711,11 @@ class lanDeveloper
 
 			if($reverse != true)
 			{
-				$mes->addInfo("<b>Search ENTIRE core before commenting out ANY LAN from ANY language file.</b>");
+				$mes->addInfo(e107::getParser()->toHTML(LANG_LAN_150, true)); //Search Everywhere before commenting out
 			}
 
 			$ret['text'] = $mes->render().$text;
-			$ret['caption'] = "Errors: ".intval($this->errors);
+			$ret['caption'] = LAN_ERRORS.": ".intval($this->errors);
 
 			return $ret;
 		}

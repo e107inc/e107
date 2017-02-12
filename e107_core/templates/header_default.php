@@ -25,12 +25,14 @@ $sql->db_Mark_Time('(Header Top)');
 
 
 
-e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
-e107::css('core',	'bootstrap/css/tooltip.css','jquery');
+//e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
+// e107::css('core',	'bootstrap/css/tooltip.css','jquery');
 
-e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
-e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
-
+if(deftrue('BOOTSTRAP'))
+{
+	e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
+	e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
+}
 
 // ------------------
 
@@ -91,6 +93,7 @@ if (!function_exists("parseheader"))
 		{
 			if (preg_match("/{.+?}/", $line))
 			{
+				$line = str_replace('{THEME}',THEME_ABS, $line); // Quick-fix allow for use of {THEME} shortcode.
 				echo $tp->parseTemplate($line, true, $sc)."\n";  // retain line-breaks. 
 			} 
 			else 
@@ -138,8 +141,10 @@ else
 
 if(vartrue($pref['meta_copyright'][e_LANGUAGE])) e107::meta('dcterms.rights',$pref['meta_copyright'][e_LANGUAGE]);
 if(vartrue($pref['meta_author'][e_LANGUAGE])) e107::meta('author',$pref['meta_author'][e_LANGUAGE]);
-if($pref['sitebutton']) e107::meta('og:image',$tp->replaceConstants($pref['sitelogo'],'full'));
-if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY 
+$siteButton = (strpos($pref['sitelogo'],'{e_MEDIA') !== false) ? $tp->thumbUrl($pref['sitelogo'],'w=800',false, true) : $tp->replaceConstants($pref['sitelogo'],'full');
+if($pref['sitebutton']) e107::meta('og:image',$siteButton);
+if(defined("VIEWPORT")) e107::meta('viewport',VIEWPORT); //BC ONLY
+unset($siteButton);
 
 
 // Load Plugin Header Files, allow them to load CSS/JSS/Meta via JS Manager early enouhg
@@ -182,6 +187,10 @@ if (/*!defined("PREVIEWTHEME") && */! (isset($no_core_css) && $no_core_css !==tr
 	$e_js->otherCSS('{e_WEB_CSS}e107.css');
 }
 
+if(THEME_LEGACY === true)
+{
+	$e_js->otherCSS('{e_WEB_CSS}backcompat.css');
+}
 
 
 // re-initalize in case globals are destroyed from $e_headers includes
@@ -320,9 +329,6 @@ else
 $CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
 
 
-
-
-
 foreach($CSSORDER as $val)
 {
 	$cssId = $val."_css";
@@ -334,7 +340,7 @@ unset($CSSORDER);
 
 $e_js->renderCached('css');
 
-
+$e_js->renderLinks();
 
 /*
 $e_js->renderJs('other_css', false, 'css', false);
@@ -516,8 +522,8 @@ elseif (file_exists(e_BASE."favicon.ico"))
 
 //
 // FIXME H: Generate JS for image preloads (do we really need this?)
-//
-
+/* @DEPRECATED  */
+/*
 if ($pref['image_preload'] && is_dir(THEME.'images'))
 {
 	$ejs_listpics = '';
@@ -545,7 +551,7 @@ if (isset($script_text) && $script_text)
 	echo $script_text;
 	echo "// -->\n";
 	echo "</script>\n";
-}
+}*/
 
 
 //
@@ -597,7 +603,7 @@ echo "</head>\n";
 	{
 		foreach($LAYOUT as $key=>$template)
 		{
-			if($key == '_header_' || $key == '_footer_')
+			if($key == '_header_' || $key == '_footer_' || $key == '_modal_')
 			{
 				continue;	
 			}
@@ -636,11 +642,18 @@ echo "</head>\n";
         $HEADER = ($CUSTOMHEADER[$def]) ? $CUSTOMHEADER[$def] : $HEADER;
         $FOOTER = ($CUSTOMFOOTER[$def]) ? $CUSTOMFOOTER[$def] : $FOOTER;
     }
-    elseif($def && isset($HEADER[$def]) && isset($FOOTER[$def])) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
+    elseif(!empty($def) && is_array($HEADER)) // 2.0 themes - we use only $HEADER and $FOOTER arrays.
     {
       //    echo " MODE 0.8";
-        $HEADER = $HEADER[$def];
-        $FOOTER = $FOOTER[$def];
+        if(isset($HEADER[$def]) && isset($FOOTER[$def]))
+	    {
+            $HEADER = $HEADER[$def];
+            $FOOTER = $FOOTER[$def];
+	    }
+	    else // Debug info only. No need for LAN.
+	    {
+	        echo e107::getMessage()->addError("There is no layout in theme.php with the key: <b>".$def."</b>")->render();
+	    }
     }
     
     if(deftrue('e_IFRAME'))
@@ -651,10 +664,14 @@ echo "</head>\n";
     }
 
 	$HEADER = str_replace("{e_PAGETITLE}",deftrue('e_PAGETITLE',''),$HEADER);
-	
+
+	//$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
+
+
 
 if(!deftrue('BODYTAG')) //TODO Discuss a better way?
 {
+	$body_onload .= " id='layout-".e107::getForm()->name2id(THEME_LAYOUT)."' ";
 	echo "<body".$body_onload.">\n";
 }
 else
@@ -670,22 +687,35 @@ else
 	}
 }
 
-// Bootstrap Modal Window - too important to template. 
-/*
-echo '<div id="uiModal" style="display:none" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-header">
-            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-             	<h4 class="modal-caption">&nbsp;</h4>
-             </div>
-             <div class="modal-body">
-             <p>Loading…</p>
-             </div>
-             <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
-            </div>
-        </div>
-';
-*/
+// Bootstrap Modal Window
+if(deftrue('BOOTSTRAP'))
+{
+//	if(empty($LAYOUT['_modal_'])) // leave it set for now.
+	{
+		$LAYOUT['_modal_'] = '<div id="uiModal" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+				            <div class="modal-header">
+				                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				                <h4 class="modal-caption">&nbsp;</h4>
+				             </div>
+				             <div class="modal-body">
+				             <p>Loading…</p>
+				             </div>
+				             <div class="modal-footer">
+				                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+				            </div>
+			            </div>
+		            </div>
+		        </div>
+		';
+
+
+
+	}
+
+	echo $LAYOUT['_modal_'];
+}
 
 
 
@@ -714,7 +744,7 @@ if ($e107_popup != 1) {
 // M: Send top of body for custom pages and for news
 //
 	//XXX - remove all page detections
-	if (e_PAGE == 'news.php' && isset($NEWSHEADER))
+	if (defset('e_PAGE') == 'news.php' && isset($NEWSHEADER))
 	{
 		parseheader($NEWSHEADER);
 	}
@@ -760,6 +790,16 @@ if ($e107_popup != 1) {
     if(deftrue('e_FRONTPAGE') && strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref.
 	{
 		echo e107::getParser()->parseTemplate("{WMESSAGE}");
+	}
+
+	if(!deftrue('e_IFRAME') && (strstr($HEADER,"{ALERTS}")===false && strstr($FOOTER,"{ALERTS}")===false)) // Old theme, missing {ALERTS}
+	{
+		if(deftrue('e_DEBUG'))
+		{
+			e107::getMessage()->addDebug("The {ALERTS} shortcode was not found in the \$HEADER or \$FOOTER template. It has been automatically added here. ");
+		}
+
+		echo e107::getParser()->parseTemplate("{ALERTS}");
 	}
 
 

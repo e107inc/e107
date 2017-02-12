@@ -45,7 +45,7 @@ elseif ($action == 'active')
 }
 else
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }	
 
@@ -75,7 +75,7 @@ if ($action == 'active')
 	if ($sql->gen($qry))
 	{
 		$text = "<div>\n<table style='width:auto' class='table fborder'>\n";
-		$gen = e107::gethateConvert();
+		$gen = e107::getDate();
 
 		$text .= "<tr>
 			<th style='width:5%' class='forumheader'>&nbsp;</th>
@@ -86,7 +86,7 @@ if ($action == 'active')
 			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
-		while ($row = $sql->db_Fetch(MYSQL_ASSOC))
+		while ($row = $sql->fetch())
 		{
 			if ($row['user_name'])
 			{
@@ -167,7 +167,7 @@ if ($action == 'top')
 		$sql2 = e107::getDb('sql2');
 		if ($sql2->gen($qry))
 		{
-			while ($row = $sql2->db_Fetch(MYSQL_ASSOC))
+			while ($row = $sql2->fetch())
 			{
 				//$ldata = get_level($row['user_id'], $row['user_plugin_forum_posts'], $row['user_comments'], $row['user_chats'], $row['user_visits'], $row['user_join'], $row['user_admin'], $row['user_perms'], $pref);
 				$ldata = $rank->getRanks($row, (USER && $forum->isModerator(USERID)));
@@ -210,7 +210,7 @@ if ($action == 'top')
 
 	if ($subaction == 'comment' || $subaction == 'all')
 	{
-		$top_forum_posters = $sql->db_Select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
+		$top_forum_posters = $sql->select("user", "*", "`user_comments` > 0 ORDER BY user_comments DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -258,7 +258,7 @@ if ($action == 'top')
 	 
 	if ($subaction == 'chat' || $subaction == 'all') 
 	{
-		$top_forum_posters = $sql->db_Select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
+		$top_forum_posters = $sql->select("user", "*", "`user_chats` > 0 ORDER BY user_chats DESC LIMIT 0, 10");
 		$text = "
 			<div style='text-align:center'>
 			<table style='width:95%' class='fborder'>
@@ -271,7 +271,7 @@ if ($action == 'top')
 		$counter = 1;
 		if($top_forum_posters)
 		{
-			while ($row = $sql->db_Fetch())
+			while ($row = $sql->fetch())
 			{
 				// TODO - Custom ranking (chat), LANs
 				$ldata = $rank->getRanks($row);

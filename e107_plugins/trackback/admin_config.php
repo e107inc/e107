@@ -15,11 +15,11 @@
 require_once("../../class2.php");
 if (!getperms("P") || !e107::isInstalled('trackback')) 
 {
-	header("location:".e_BASE."index.php");
+	e107::redirect('admin');
 	exit() ;
 }
 
-include_lan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
+e107::includeLan(e_PLUGIN."trackback/languages/".e_LANGUAGE."_admin_trackback.php");
 	
 require_once(e_ADMIN."auth.php");
 $frm = e107::getForm();

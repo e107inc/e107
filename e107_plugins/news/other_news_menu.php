@@ -37,14 +37,24 @@ $caption = TD_MENU_L1;
 
 if(!empty($parm))
 {
-	parse_str($parm, $parms);
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
 }
 
 if(!$OTHERNEWS_STYLE)
 {
-	if(deftrue('BOOTSTRAP')) // v2.x
+	if(THEME_LEGACY !== true) // v2.x
 	{
-		define("OTHERNEWS_COLS",false);
+		if(!defined("OTHERNEWS_COLS"))
+		{
+			define("OTHERNEWS_COLS",false);
+		}
 		$template = e107::getTemplate('news', 'news_menu', 'other');
 		
 		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default" href="#otherNews" data-slide="prev">‹</a>  
@@ -122,6 +132,7 @@ $param['itemlink'] 		= defset('OTHERNEWS_ITEMLINK');
 $param['thumbnail'] 	= defset('OTHERNEWS_THUMB');
 $param['catlink'] 		= defset('OTHERNEWS_CATLINK');
 $param['caticon'] 		= defset('OTHERNEWS_CATICON');
+$param['template_key']  = 'news_menu/other/item';
 
 $style 					= defset('OTHERNEWS_CELL');
 $nbr_cols 				= defset('OTHERNEWS_COLS');

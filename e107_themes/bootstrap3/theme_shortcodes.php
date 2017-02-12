@@ -13,15 +13,26 @@
 
 class theme_shortcodes extends e_shortcode
 {
+	// public $override = true;
+
 	function __construct()
 	{
 		
 	}
 
+/*
+	function sc_news_summary()
+	{
+		$sc = e107::getScBatch('news');
+		$data = $sc->getScVar('news_item');
+
+		return "<span class='label label-danger'>".e107::getParser()->toHTML($data['news_summary'],'BODY')."</span>";
+	}*/
+
 
 	function sc_bootstrap_branding()
 	{
-		$pref = e107::pref('theme', 'branding', 'sitename');
+		$pref = e107::pref('theme', 'branding');
 
 		switch($pref)
 		{
@@ -75,7 +86,7 @@ class theme_shortcodes extends e_shortcode
 			return '';
 		}
 
-		include_lan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+		e107::includeLan(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
 		
 		$tp = e107::getParser();		   
 		require(e_PLUGIN."login_menu/login_menu_shortcodes.php"); // don't use 'require_once'.
@@ -88,7 +99,7 @@ class theme_shortcodes extends e_shortcode
 		{		
 			$text = '
 			<ul class="nav navbar-nav navbar-right'.$direction.'">';
-			
+
 			if($userReg==1)
 			{
 				$text .= '
@@ -108,7 +119,7 @@ class theme_shortcodes extends e_shortcode
 				<a class="dropdown-toggle" href="#" data-toggle="dropdown">'.LAN_LOGINMENU_51.' <strong class="caret"></strong></a>
 				<div class="dropdown-menu col-sm-12" style="min-width:250px; padding: 15px; padding-bottom: 0px;">
 				
-				{SOCIAL_LOGIN: size=2x}		
+				{SOCIAL_LOGIN: size=2x&label=1}
 				'; // Sign In
 			}
 			else
@@ -179,11 +190,14 @@ class theme_shortcodes extends e_shortcode
 		
 		// Logged in. 
 		//TODO Generic LANS. (not theme LANs) 	
-		
+
+		$userNameLabel = !empty($parm['username']) ? USERNAME : '';
+
 		$text = '
 		
 		<ul class="nav navbar-nav navbar-right'.$direction.'">
-		<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=20}{USER_AVATAR} '. USERNAME.' <b class="caret"></b></a>
+		<li class="dropdown">{PM_NAV}</li>
+		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30} {USER_AVATAR: shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
 			<a href="{LM_USERSETTINGS_HREF}"><span class="glyphicon glyphicon-cog"></span> '.LAN_SETTINGS.'</a>
@@ -210,7 +224,46 @@ class theme_shortcodes extends e_shortcode
 		return $tp->parseTemplate($text,true,$login_menu_shortcodes);
 	}	
 	
-	
+
+	/*
+	 * @example shortcode to render news.
+	 */
+	function sc_bootstrap_news_example($parm=null)
+	{
+		$news   = e107::getObject('e_news_tree');  // get news class.
+		$sc     = e107::getScBatch('news'); // get news shortcodes.
+		$tp     = e107::getParser(); // get parser.
+
+		$newsCategory = 1; // null, number or array(1,3,4);
+
+		$opts = array(
+			'db_order'  =>'n.news_sticky DESC, n.news_datestamp DESC', //default is n.news_datestamp DESC
+			'db_where'  => "FIND_IN_SET(0, n.news_render_type)", // optional
+			'db_limit'  => '6', // default is 10
+		);
+
+		// load active news items. ie. the correct userclass, start/end time etc.
+		$data = $news->loadJoinActive($newsCategory, false, $opts)->toArray();  // false to utilize the built-in cache.
+		$TEMPLATE = "{NEWS_TITLE} : {NEWS_CATEGORY_NAME}<br />";
+
+		$text = '';
+
+		foreach($data as $row)
+		{
+
+			$sc->setScVar('news_item', $row); // send $row values to shortcodes.
+			$text .= $tp->parseTemplate($TEMPLATE, true, $sc); // parse news shortcodes.
+		}
+
+		return $text;
+
+
+	}
+
+
+
+
+
 	
 }
 

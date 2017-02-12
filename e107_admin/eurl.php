@@ -8,14 +8,12 @@
  *
  * URL and front controller Management
  *
- * $URL$
- * $Id$
 */
 
 require_once('../class2.php');
-if (!ADMIN || !getperms('L'))
+if (!getperms('K'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 
@@ -23,7 +21,7 @@ e107::coreLan('eurl', true);
 // TODO - admin interface support, remove it from globals
 $e_sub_cat = 'eurl';
 
-
+e107::css('inline', " span.e-help { cursor: help } ");
 
 class eurl_admin extends e_admin_dispatcher
 {
@@ -37,10 +35,11 @@ class eurl_admin extends e_admin_dispatcher
 	);
 
 	protected $adminMenu = array(
-		'main/config'		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
+		'main/config'		=> array('caption'=> LAN_EURL_MENU_PROFILES, 'perm' => 'L'),
 		'main/alias' 		=> array('caption'=> LAN_EURL_MENU_ALIASES, 'perm' => 'L'),
+		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_CONFIG, 'perm' => 'L'),
 		'main/settings' 	=> array('caption'=> LAN_EURL_MENU_SETTINGS, 'perm' => 'L'),
-		'main/simple' 		=> array('caption'=> LAN_EURL_MENU_REDIRECTS, 'perm' => 'L'),
+
 	//	'main/help' 		=> array('caption'=> LAN_EURL_MENU_HELP, 'perm' => 'L'),
 	);
 
@@ -49,6 +48,8 @@ class eurl_admin extends e_admin_dispatcher
 	protected $defaultAction = 'config';
 
 	protected $menuTitle = LAN_EURL_MENU;
+
+	protected $adminMenuIcon = 'e-eurl-24';
 }
 
 class eurl_admin_ui extends e_admin_controller_ui
@@ -177,12 +178,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 		if($success)
 		{
-			e107::getMessage()->addSuccess($success." SEF URLs were updated.");
+			e107::getMessage()->addSuccess($success. LAN_EURL_SURL_UPD);
 		}
 		
 		if($failed)
 		{
-			e107::getMessage()->addError($failed." SEF URLs were NOT updated.");	
+			e107::getMessage()->addError($failed. LAN_EURL_SURL_NUPD);	
 		}
 		
 		
@@ -203,7 +204,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	}
 
 	//TODO Checkbox for each plugin to enable/disable
-	public function simplePage()
+	protected function simplePage()
 	{
 		// $this->addTitle("Simple Redirects");
 		$eUrl =e107::getAddonConfig('e_url');
@@ -211,15 +212,23 @@ class eurl_admin_ui extends e_admin_controller_ui
 		$tp = e107::getParser();
 		$cfg = e107::getConfig();
 
+
+
 		if(!empty($_POST['saveSimpleSef']))
 		{
-			if(is_string($this->getConfig()->get('e_url_alias')))
+			/*if(is_string($this->getConfig()->get('e_url_alias')))
 			{
 				$cfg->setPostedData('e_url_alias', array(e_LAN => $_POST['e_url_alias']), false);
 			}
 			else
 			{
 				$cfg->setPref('e_url_alias/'.e_LAN, $_POST['e_url_alias']);
+			}*/
+
+			foreach($_POST['urlstatus'] as $k=>$v)
+			{
+				$val = (!empty($v)) ? $tp->filter($k,'w') : 0;
+				$cfg->setPref('e_url_list/'.$k, $val);
 			}
 
 			$cfg->save(true, true, true);
@@ -227,10 +236,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 
 		$pref = e107::getPref('e_url_alias');
+		$sefActive = e107::getPref('e_url_list');
 
 		if(empty($eUrl))
 		{
-			return; 		
+			return false;
 		}
 
 		$text = "<div class='e-container'>";
@@ -240,10 +250,31 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		$home = "<small>".SITEURL.'</small>';
 
+
+		//  e107::getDebug()->log($sefActive);
+
+		$plg = e107::getPlug();
+
 		foreach($eUrl as $plug=>$val)
 		{
-			$text .= "<h5>".$plug."</h5>";
-			$text .= "<table class='table table-striped table-bordered'>";
+
+			$plg->load($plug);
+
+			$active = !empty($sefActive[$plug]) ? true : false;
+			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:40px'>
+			<colgroup>
+				<col style='min-width:220px' />
+				<col style='width:45%' />
+				<col style='width:45%' />
+			</colgroup>";
+
+			$name = 'urlstatus['.$plug.']';
+
+			$switch = $frm->radio_switch($name, $active, LAN_ON, LAN_OFF, array(
+				'switch' => 'mini',
+			));
+
+			$text .= "<tr class='active'><td><h4>" . $plg->getName() . "</h4></td><td colspan='2'>" . $switch . "</td></tr>";
 			$text .= "<tr><th>Key</th><th>Regular Expression</th>
 
 
@@ -257,15 +288,15 @@ class eurl_admin_ui extends e_admin_controller_ui
 				//	$sefurl         = (!empty($alias)) ? str_replace('{alias}', $alias, $v['sef']) : $v['sef'];
 					$pid            = $plug."|".$k;
 
-					$v['regex'] = str_replace("^",$home,$v['regex']);
-					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (".e_LANGUAGE." Only)", 'url'=>e_REQUEST_SELF));
+					$v['regex'] =   preg_replace("/^\^/",$home,$v['regex']);
+					$aliasForm      = $frm->renderInline('e_url_alias['.$plug.']['.$k.']', $pid, 'e_url_alias['.$plug.']['.$k.']', $alias, $alias,'text',null,array('title'=>LAN_EDIT." (Language-specific)", 'url'=>e_REQUEST_SELF));
 					$aliasRender    = str_replace('{alias}', $aliasForm, $v['regex']);
 
 					$text .= "<tr>
-					<td style='width:5%'>".$k."</td>
-					<td style='width:20%'>".$aliasRender."</td>
+					<td >".$k."</td>
+					<td >".$aliasRender."</td>
 
-					<td style='width:30%'>". $v['redirect']."</td>
+					<td >". $v['redirect']."</td>
 					</tr>";
 			}
 		
@@ -273,7 +304,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$text .= "</table>";
 		}	
 
-	//	$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE." (".e_LANGUAGE.")",'submit')."</div>";
+		$text .= "<div class='buttons-bar center'>".$frm->button('saveSimpleSef',LAN_SAVE, 'submit')."</div>";
 		$text .= $frm->close();
 		$text .= "</div>";
 		return $text;		
@@ -311,7 +342,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		if(isset($_POST['etrigger_save']))
 		{
 			$this->getConfig()
-						->setPostedData($this->getPosted(), null, false, false)
+						->setPostedData($this->getPosted(), null, false)
 						//->setPosted('not_existing_pref_test', 1)
 						->save(true);
 		
@@ -319,7 +350,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function SettingsPage()
+	protected function SettingsPage()
 	{
 		//$this->addTitle(LAN_EURL_NAME_SETTINGS);
 		return $this->getUI()->urlSettings();
@@ -355,7 +386,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function AliasPage()
+	protected function AliasPage()
 	{
 	//	$this->addTitle(LAN_EURL_NAME_ALIASES);
 		
@@ -410,7 +441,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 	}
 	
-	public function ConfigPage()
+	protected function ConfigPage()
 	{
 		// $this->addTitle(LAN_EURL_NAME_CONFIG);
 		$active = e107::getPref('url_config');
@@ -466,9 +497,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		$ret = array();
 		$url = e107::getUrl();
-		
-		
+
 		ksort($locations);
+
+		unset($locations['forum'],$locations['faqs'], $locations['pm']); // using new system so hide from here.
+
 		foreach ($locations as $module => $l) 
 		{
 			$data = new e_vars(array(
@@ -481,10 +514,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$data->locations = $l;
 			$data->defaultLocation = $l[0];
 			$data->config = $obj;
-			
+
 			$ret[] = $data;
 		}
-		
+
+
+
 		return $this->getUI()->moduleRows($ret);
 	}
 	
@@ -629,7 +664,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		$text = '';
 		$tp = e107::getParser();
 		$frm = e107::getForm();
-		
+
 		if(empty($data))
 		{
 			return "
@@ -703,6 +738,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 
 	                }
 				 }
+
                  if(strpos($path,'noid')!==false)
                 {
                //     $exampleUrl .= "  &nbsp; &Dagger;";    //XXX Add footer - denotes more CPU required. ?
@@ -731,7 +767,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$text .= "
                 <tr>
                     <td>".$this->moreInfo($title, $info)."</td>
-                    <td><select name='eurl_config[$module]' class='input-block-level'>".$opt."</select></td>
+                    <td><select name='eurl_config[$module]' class='form-control input-block-level'>".$opt."</select></td>
                     <td>";
 		
 			$bTable = ($admin['generate']['table']);
@@ -740,7 +776,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$bPrimary = $admin['generate']['primary'];
 			
 		
-			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete',"Rebuild") : "";	  
+			$text .= (is_array($admin['generate'])) ? $frm->admin_button('rebuild['.$bTable.']', $bPrimary."::".$bInput."::".$bOutput,'delete', LAN_EURL_REBUILD) : "";	  
 				  
 
 			$text .= "</td>
@@ -832,7 +868,15 @@ class eurl_admin_form_ui extends e_admin_form_ui
 		
 		$text = '';
 		$tp = e107::getParser();
-		
+
+		$text .= "<tr>
+			<th>Module</th>
+			<th></th>
+			<th></th>
+		</tr>";
+
+		$lng = e107::getLanguage();
+
 		foreach ($modules as $module => $obj) 
 		{
 			$cfg = $obj->config->config();
@@ -840,21 +884,33 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			
 			if($module == 'index')
 			{
-			$text .= "
+				$text .= "
 				<tr>
 					<td>
 						".LAN_EURL_CORE_INDEX."
 					</td>
 					<td>
-						".LAN_EURL_CORE_INDEX_INFO."
-					</td>
-					<td>
-						".LAN_EURL_FORM_HELP_EXAMPLE.":<br /><strong>".e107::getUrl()->create('/', '', array('full' => 1))."</strong>
+						<table class='table table-striped table-bordered' style='margin-bottom:0'>
+						<colgroup>
+<col style='width:20%' />
+<col style='width:40%' />
+<col style='width:40%' />
+</colgroup>
+							<tr>
+							<td colspan='2'>
+								".LAN_EURL_CORE_INDEX_INFO."
+							</td>
+							<td>
+								".e107::getUrl()->create('/', '', array('full' => 1))."
+							</tr>
+						</table>
 					</td>
 				</tr>
 				";
 				continue;
 			}
+
+
 			$help = array();
 			$admin = $obj->config->admin();
 			$lan = $lanDef[0];
@@ -873,37 +929,94 @@ class eurl_admin_form_ui extends e_admin_form_ui
 					<td>
 			";
 			
+
 			
-			
-			// default language		
-			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal).' ['.$lanDef[1].']'.$this->help(LAN_EURL_FORM_HELP_DEFAULT);
-			$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
-			
+			// default language
+			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:0'>
+<colgroup>
+<col style='width:20%' />
+<col style='width:40%' />
+<col style='width:40%' />
+</colgroup>";
+
+			$text .= "<tr>
+			<th>".ADLAN_132."</th>
+			<th>".LAN_EURL_NAME_ALIASES."</th>
+			<th>".LAN_EURL_FORM_HELP_EXAMPLE."</th>
+		</tr>";
+
+			$text .= "<tr>";
+			$text .= "<td>".$lanDef[1]."</td>";
+			$text .= "<td class='form-inline'>";
+			$text .= $this->text('eurl_aliases['.$lanDef[0].']['.$module.']', $defVal, 255, 'size=xlarge');
+		//	$text .= ' ['.$lanDef[1].']';
+			$text .= "</td><td>";
+			$text .= $this->help(LAN_EURL_FORM_HELP_DEFAULT);
+
+			$text .= "</td>";
+		//	$help[] = '['.$lanDef[1].'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
+
+			$text .= "</tr>";
+
+			if(e107::getUrl()->router()->isMainModule($module))
+			{
+				$help = " <span class='e-tip e-help' title=\"".LAN_EURL_CORE_MAIN."\">".$tp->toGlyph('fa-home')."</span>";
+				//$readonly = 1; // may be used later.
+				$readonly = 0;
+			}
+			else
+			{
+				$help = '';
+				$readonly=0;
+			}
+
 			if($lans)
 			{
+
 				foreach ($lans as $code => $lan) 
 				{
 
 					$url = e107::getUrl()->create($module, '', array('lan' => $code, 'full' => 1, 'encode' => 0)); 
-					$defVal = isset($currentAliases[$code]) && in_array($module, $currentAliases[$code]) ? array_search($module, $currentAliases[$code]) : $module; 
-					$text .= "<div class='spacer'><!-- --></div>";
-					$text .= $this->text('eurl_aliases['.$code.']['.$module.']', $defVal).' ['.$lan.']'.$this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');
-					$help[] = '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
+					$defVal = isset($currentAliases[$code]) && in_array($module, $currentAliases[$code]) ? array_search($module, $currentAliases[$code]) : $module;
+
+
+				//	$help .= '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
+
+					$text .= "<tr>";
+					$text .= "<td>".$lan."</td>";
+					$text .= "<td class='form-inline'>". $this->text('eurl_aliases['.$code.']['.$module.']', $defVal, 255, array('size' => 'xlarge', 'readonly'=>$readonly));
+					$text .=  $help;
+					$text .= "</td>";
+					$text .= "<td>";
+
+					//	$text .= $this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');
+				//	$text .= $this->help(LAN_EURL_FORM_HELP_ALIAS_1.' <strong>'.$lan.'</strong>');
+					$url = $lng->subdomainUrl($lan,$url);
+					$text .= $url;
+					$text .= "</td>";
+				//	$text .= "<td>".
+
+				//	$text .= '['.$lan.'] '.LAN_EURL_FORM_HELP_EXAMPLE.':<br /><strong>'.$url.'</strong>';
+				//	$text .= "</td>";
+					$text .= "</tr>";
 				}
+
 			}
+
+			$text .= "</table>
+				</td></tr>";
+
+
 			
-			if(e107::getUrl()->router()->isMainModule($module))
-			{
-				$help = array(LAN_EURL_CORE_MAIN);
-			}
-			
-			$text .= "
+			/*$text .= "
 					</td>
 					<td>
 						".implode("<div class='spacer'><!-- --></div>", $help)."
 					</td>
 				</tr>
-			";
+			";*/
+
+		//	$text .= "</tr>";
 		}
 
 		return $text;

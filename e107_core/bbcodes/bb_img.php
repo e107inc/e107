@@ -23,6 +23,8 @@ class bb_img extends e_bb_base
 		if(vartrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
 		if(vartrue($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
 		if(vartrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
+		if(vartrue($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['alt'],'str');
+
 		if($safe)
 		{
 			return '[img '.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
@@ -40,42 +42,67 @@ class bb_img extends e_bb_base
           
 		// Replace the bbcode path with a real one. 
 		$code_text = str_replace('{e_MEDIA}images/','{e_MEDIA_IMAGE}',$code_text); //BC 0.8 fix.
-        $code_text = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
-		$code_text = str_replace('{e_THEME}', e_HTTP."thumb.php?src=e_THEME/", $code_text);
+     //   $code_text = str_replace('{e_MEDIA_IMAGE}', e_HTTP."thumb.php?src=e_MEDIA_IMAGE/", $code_text);
+	//	$code_text = str_replace('{e_THEME}', e_HTTP."thumb.php?src=e_THEME/", $code_text);
         $imgParms    = $this->processParm($code_text, $parm);
+
+        $figcaption = false;
+
+        if($imgParms['figcaption'])
+        {
+            $figcaption = $imgParms['figcaption'];
+            unset($imgParms['figcaption']);
+        }
+
         
         foreach($imgParms as $k => $v)
         {
            // $parmStr .= " ".$k.'="'.$v.'"';
-            $p[] = $tp->toAttribute($k).'="'.$tp->toAttribute($v).'"';
+            if($v !== '')
+            {
+                 $p[] = $tp->toAttribute($k).'="'.$tp->toAttribute($v).'"';
+            }
         } 
-        
-       
-        $w = e107::getBB()->resizeWidth(); // varies depending on the class set by external script. see admin->media-manager->prefs
-        
-        
+
         $w = vartrue($imgParms['width']) ? intval($imgParms['width']) : vartrue(e107::getBB()->resizeWidth(),0);
      //   $h = vartrue($imgParms['height']) ? intval($imgParms['height']) : e107::getBB()->resizeHeight();
         
-        $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing. 
-        $parmStr = implode(" ",$p);
-    
+    //    $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing.
+    //    $parmStr = implode(" ",$p);
+
    //     print_a($imgParms);
-   //     print_a($parmStr);
-        
-        return "<img src=\"".$code_text.$resize."\" {$parmStr} />";
+
+   //     $url = e107::getParser()->thumbUrl($code_text, $resize);
+
+		$imgParms['w'] = $w;
+
+		if(!empty($figcaption))
+		{
+			$html = "<figure>\n";
+		//	$html .= "<img src=\"".$url."\" {$parmStr} />";
+			$html .= $tp->toImage($code_text, $imgParms);
+			$html .= "<figcaption>".e107::getParser()->filter($figcaption,'str')."</figcaption>\n";
+			$html .= "</figure>";
+
+			return $html;
+		}
+		else
+		{
+			return $tp->toImage($code_text, $imgParms);
+		//	return "<img src=\"".$url."\" {$parmStr} />";
+		}
     }
+
+
 
     /**
      * Process the [img] bbcode parm. ie. [img parms]something[/img]
      */
     private function processParm($code_text, $parm, $mode='')
     {      
-        $tp = e107::getParser(); 
-        
+
         $imgParms               = array();
-        $parmStr                = "";
-     
+
         $parm = preg_replace('#onerror *=#i','',$parm);
         $parm = str_replace("amp;", "&", $parm);
         
@@ -86,20 +113,27 @@ class bb_img extends e_bb_base
 
 		if(!vartrue($imgParms['width']) && strpos($parm,'width')!==false) // Calculate thumbnail width from style. 
         {
-			preg_match("/width:([\d]*)/i", $parm, $m);
+			preg_match("/width:([\d]*)[p|x|%|;]*/i", $parm, $m);
 			if($m[1] > 0)
 			{
 				$imgParms['width'] = $m[1];
+				$imgParms['style'] = str_replace($m[0],'',$imgParms['style']); // strip hard-coded width styling.
 			}
 		}
 		
         if(!vartrue($imgParms['alt'])) // Generate an Alt value from filename if one not found.  
         {
            preg_match("/([\w]*)(?:\.png|\.jpg|\.jpeg|\.gif)/i", $code_text, $match); // Generate required Alt attribute. 
-           $imgParms['alt']        = ucwords(str_replace("_"," ",$match[1])); 
+           $imgParms['alt']  = ucwords(str_replace("_"," ",$match[1]));
         }
+		else
+		{
+			$imgParms['figcaption'] =  $imgParms['alt'] ;
+		}
+
+	    $imgParms['title'] = $imgParms['alt'] ;
         
-        $imgParms['class']      = "img-rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified        
+        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified
         
         if($mode == 'string')
 		{
@@ -111,12 +145,12 @@ class bb_img extends e_bb_base
 			return $text;
 		}
         
-        
-        
+
         return $imgParms;       
     }  
     
-	
+
+
 	function toHTML($code_text, $parm)
     {
        

@@ -55,13 +55,20 @@ define("COMLAN_326", "Reply to this");
 define("COMLAN_328", "Comments are locked");
 define("COMLAN_329", "Unauthorized");
 define("COMLAN_330", "IP:");
-define("COMLAN_331", "Pending Approval");
+define("COMLAN_331", "Awaiting Approval");
 define("COMLAN_332", "Couldn't delete comment");
 define("COMLAN_333", "Comment approved");
 define("COMLAN_334", "Couldn't approve comment");
 define("COMLAN_335", "Approved");
 define("COMLAN_336", "Please write something first.");
 define("COMLAN_337", "Updated successfully.");
+
+define("COMLAN_400", "approved");
+define("COMLAN_401", "blocked");
+define("COMLAN_402", "pending");
+
+define("COMLAN_403", "Leave a message...");
+define("COMLAN_404", "Approve");
 
 define("COMLAN_TYPE_1", "news");
 define("COMLAN_TYPE_2", "download");
@@ -72,4 +79,11 @@ define("COMLAN_TYPE_6", "bugtrack");
 define("COMLAN_TYPE_7", "ideas");
 define("COMLAN_TYPE_8", "userprofile");
 define("COMLAN_TYPE_PAGE", "Content");		// Really custom page, but use a 'non-technical' description
+
+define("COMLAN_500", "Please [sign in] to leave a comment.");
+define("COMLAN_501", "If you are not yet registered, you may [click here to register].");
+
+
+
+
 ?>

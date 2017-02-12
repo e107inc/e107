@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 {
 	exit;
 }
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 global $comment_shortcodes;
 require_once (e_CORE."shortcodes/batch/comment_shortcodes.php");
 /**
@@ -126,7 +126,7 @@ class comment
 			$sc_style['COMMENT_INPUT']['pre']		= "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_8.":</td><td id='commentform' style='width:80%;'>";
 			$sc_style['COMMENT_INPUT']['post']		= "</td></tr>";
 			
-			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td colspan='2' id='commentformbutton' style='width:80%;'>";
+			$sc_style['COMMENT_BUTTON']['pre']		= "<tr style='vertical-align:top'><td style='width:20%; vertical-align:top;'>&nbsp;</td><td id='commentformbutton' style='width:80%;'>";
 			$sc_style['COMMENT_BUTTON']['post']		= "</td></tr>";
 					
 		}	
@@ -325,8 +325,46 @@ class comment
 		}
 		else
 		{ // Comment entry not allowed - point to signup link
-			$text = "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
+			$userReg = intval(e107::pref('core','user_reg'));
+			$socialLogin = e107::pref('core','social_login_active');
+
+			$text = "<div class='comments-form-login'>";
+
+			$srch = array("[","]");
+
+			if(!empty($userReg) || !empty($socialLogin))
+			{
+
+				$COMLAN_500 = COMLAN_500; // Please [sign in] to leave a comment.
+
+				$repl = array("<a href='".e_LOGIN."'>","</a>");
+
+				$text .= "<div>".str_replace($srch,$repl,$COMLAN_500)."</div>";
+
+
+				if(!empty($socialLogin))
+				{
+					$text .= $tp->parseTemplate("{SOCIAL_LOGIN}",true);
+				//	$text .= "<br />";
+				}
+			}
+
+			if($userReg === 1)
+			{
+				$COMLAN_501 = COMLAN_501; // If you are not yet registered, you may [click here to register].
+
+				$repl = array("<a href='".e_SIGNUP."'>","</a>");
+
+				$text .= "<div>".str_replace($srch,$repl,$COMLAN_501)."</div>";
+			}
+
+			$text .= "</div>";
+
+
+		//	$text = "<br /><div style='text-align:center'><b>".COMLAN_6." <a href='".e_SIGNUP."'>".COMLAN_321."</a> ".COMLAN_322."</b></div>";
 		}
+
+
 		if ($return)
 		{
 			return $text;
@@ -443,7 +481,9 @@ class comment
 			$COMMENT_TEMPLATE['item'] = str_replace("row", "row-fluid", $COMMENT_TEMPLATE['item']);
 		}
 			
-			
+
+		e107::getParser()->setThumbSize(100,100); // BC FIx.  Set a default image size, in case the template doesn't have one.
+
 		if (vartrue($pref['nested_comments']))
 		{
 		//	$width2 = 100 - $width;
@@ -558,8 +598,14 @@ class comment
 		return $text;
 	}
 
-	
-	function deleteComment($id) // delete a single comment by comment id.  
+
+	/**
+	 * @param $id - comment_id to delete
+	 * @param string $table - comment belongs to this table eg. 'news'
+	 * @param string $itemid - corresponding item from the table. eg. news_id
+	 * @return int|null|void
+	 */
+	function deleteComment($id, $table='', $itemid='') // delete a single comment by comment id.
 	{
 
 		if($this->engine != 'e107')
@@ -569,9 +615,18 @@ class comment
 
 		if(!getperms('0') && !getperms("B"))
 		{
-			return;	
+			return null;
 		}
-		return e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");	
+
+		$table = e107::getParser()->filter($table,'w');
+
+		$status = e107::getDb()->update("comments","comment_blocked=1 WHERE comment_id = ".intval($id)."");
+
+		$data = array('comment_id'=>intval($id), 'comment_type'=>$table, 'comment_item_id'=> intval($itemid));
+		e107::getEvent()->trigger('user_comment_deleted', $data);
+
+
+		return $status;
 	}
 	
 	function approveComment($id) // appropve a single comment by comment id.  
@@ -716,7 +771,7 @@ class comment
 				{ 
 					if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' "))
 					{
-						if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".$tp->toDB($ip, true)."' "))
+						if ($sql2->select("user", "*", "user_name='".$tp->toDB($_POST['author_name'])."' AND user_ip='".USERIP."' "))
 						{
 							//list($cuser_id, $cuser_name) = $sql2->db_Fetch();
 							$tmp = $sql2->fetch();
@@ -818,13 +873,16 @@ class comment
 						unset($edata_li['comment_ip']);*/
 
 						e107::getEvent()->trigger("postcomment", $edata_li);
+						e107::getEvent()->trigger('user_comment_posted', $edata_li);
 						e107::getCache()->clear("comment");
 
+						// Moved to e107_plugins/news/e_event.php
+/*
 
-						if ((empty($type) || $type == "news") && !$this->moderateComment($pref['comments_moderate']))
+						if ((empty($table) || $table == "news") && !$this->moderateComment($pref['comments_moderate']))
 						{
 							$sql->update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
-						}
+						}*/
 
 						//if rateindex is posted, enter the rating from this user
 					//	if ($rateindex)
@@ -972,12 +1030,28 @@ class comment
 
 
 	/**
+	 * Returns a rendered commenting area. (html) v2.x
+	 * This is the only method a plugin developer should require in order to include user comments.
+	 * @param string $plugin - directory of the plugin that will own these comments.
+	 * @param int $id - unique id for this page/item. Usually the primary ID of your plugin's database table.
+	 * @param string $subject
+	 * @param bool|false $rate true = will rendered rating buttons, false will not.
+	 * @return null|string
+	 */
+	public function render($plugin, $id, $subject, $rate=false)
+	{
+		return $this->compose_comment($plugin, 'comment', $id, 0, $subject, $rate, 'html');
+	}
+
+
+
+	/**
 	 * Displays existing comments, and a comment entry form
 	 *
 	 * @param string $table - the source table for the associated item
 	 * @param string $action - usually 'comment' or 'reply'
 	 * @param integer $id - ID of item associated with comments (e.g. news ID)
-	 * @param unknown_type $width - appears to not be used
+	 * @param int $width - appears to not be used
 	 * @param string $subject
 	 * @param boolean $rate
 	 */
@@ -1012,6 +1086,10 @@ class comment
 				{
 					echo $text;
 				}
+			}
+			elseif($return === 'html')
+			{
+				return $ns->tablerender(null, $text, 'comment', true);
 			}
 			else
 			{
@@ -1088,7 +1166,11 @@ class comment
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
 		$replace = array($modcomment,$text,$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
-			
+
+
+	//	$return = null;
+	//	$tablerender = true;
+
 		if(!$return)
 		{		
 			if ($tablerender)
@@ -1100,15 +1182,24 @@ class comment
 			{
 				echo $TEMPL;	
 			}
-		}		
+		}
+		elseif($return === 'html')
+		{
+			return $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
+		}
 			//echo $modcomment.$comment;
 			//echo $text;
-		
+
+		if(!deftrue('BOOTSTRAP')) //v1.x
+		{
+			$comment = $ns->tablerender(COMLAN_9, $comment, 'comment', true );
+		}
+
 		
 		
 
 		$ret['comment'] = $text;
-		
+		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
 		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 
@@ -1156,7 +1247,7 @@ class comment
 			ORDER BY c.comment_datestamp ".$sort;
 		}
 		
-		$this->totalComments = $sql->db_Select_gen($query);
+		$this->totalComments = $sql->gen($query);
 			
 		$query .= " LIMIT ".$from.",".$this->commentsPerPage;
 		
@@ -1202,16 +1293,17 @@ class comment
 	{
 		//return "table=".$table."  id=".$id."  from=".$from;
 		//$from = $from + $this->commentsPerPage;
-		
-		
-		// from calculations are done by eNav() js. 
-		return "
-		<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Previous</a>
-		
-		<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='".e_BASE."comment.php?mode=list&amp;type=".$table."&amp;id=".$id."&amp;from=0'>Next</a>
-		
-		";	
-		
+
+
+		// from calculations are done by eNav() js.
+		if($this->totalComments > $this->commentsPerPage)
+		{
+			$prev = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
+			$next = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
+
+			return "<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
+			<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$next}'>" . LAN_NEXT . "</a>";
+		}
 		
 	}
 
@@ -1237,7 +1329,7 @@ class comment
 		FROM #comments
 		WHERE comment_author_id = '{$id}'
 		";
-			if ($sql->db_Select_gen($qry))
+			if ($sql->gen($qry))
 			{
 				$row = $sql->db_Fetch();
 				$sql->db_Update("user", "user_comments = '{$row['count']}' WHERE user_id = '{$id}'");
@@ -1255,7 +1347,7 @@ class comment
 		WHERE comment_item_id='{$id}' AND comment_type='{$comment_type}'
 		GROUP BY author
 		";
-			if ($sql->db_Select_gen($qry))
+			if ($sql->gen($qry))
 			{
 				while ($row = $sql->db_Fetch())
 				{
@@ -1306,7 +1398,7 @@ class comment
 				foreach ($files as $file=>$perms)
 				{
 					unset($e_comment, $key);
-					include (e_PLUGIN.$file."/e_comment.php");
+					include_once (e_PLUGIN.$file."/e_comment.php");
 					if ($e_comment && is_array($e_comment))
 					{
 						$key = $e_comment['eplug_comment_ids'];
@@ -1352,7 +1444,7 @@ class comment
 		 */
 
 
-		function getCommentData($amount = '', $from = '', $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
+		function getCommentData($amount = '', $from = 0, $qry = '', $cdvalid = FALSE, $cdreta = FALSE)
 		{
 
 			if($this->engine != 'e107')
@@ -1386,7 +1478,7 @@ class comment
 		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author_id = ue.user_extended_id
 		WHERE c.comment_id!='' AND c.comment_blocked = 0 ".$qry1." ORDER BY c.comment_datestamp DESC LIMIT ".intval($from1).",".intval($amount1)." ";
-			if ($comment_total = $sql->db_Select_gen($query))
+			if ($comment_total = $sql->gen($query))
 			{
 				$width = 0;
 				while ($row = $sql->db_Fetch())
@@ -1422,7 +1514,7 @@ class comment
 							break;
 						case '2': //	downloads
 							$qryd = "SELECT d.download_name, dc.download_category_class, dc.download_category_id, dc.download_category_name FROM #download AS d LEFT JOIN #download_category AS dc ON d.download_category=dc.download_category_id WHERE d.download_id={$row['comment_item_id']} AND dc.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
-							if ($sql2->db_Select_gen($qryd))
+							if ($sql2->gen($qryd))
 							{
 								$row2 = $sql2->db_Fetch();
 								$ret['comment_type'] = COMLAN_TYPE_2;
@@ -1451,7 +1543,7 @@ class comment
 							{
 								$ret['comment_type'] = COMLAN_TYPE_8;
 								$ret['comment_title'] = $comment_author_name;
-								$ret['comment_url'] = e107::getUrl()->create('user/pofile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
+								$ret['comment_url'] = e107::getUrl()->create('user/profile/view', array('id' => $row['user_id'], 'name' => $row['user_name']));//e_HTTP."user.php?id.".$row['comment_item_id'];
 							}
 							break;
 						case 'page': //	Custom Page
@@ -1471,7 +1563,7 @@ class comment
 										if ($installed = isset($pref['plug_installed'][$var['plugin_path']]))
 										{
 											$qryp = str_replace("{NID}", $row['comment_item_id'], $var['qry']);
-											if ($sql2->db_Select_gen($qryp))
+											if ($sql2->gen($qryp))
 											{
 												$row2 = $sql2->db_Fetch();
 												$ret['comment_type'] = $var['plugin_name'];

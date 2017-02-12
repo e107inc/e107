@@ -69,7 +69,7 @@ class e_pref extends e_front_model
 	 * Constructor
 	 *
 	 * @param string $prefid
-	 * @param string $alias
+	 * @param string $alias Used by cache file.
 	 * @param array $data
 	 * @param boolean $sanitize_data
 	 */
@@ -83,6 +83,7 @@ class e_pref extends e_front_model
 		{
 			$alias = $prefid;
 		}
+
 		$this->alias = preg_replace('/[^\w\-]/', '', $alias);
 
 		$this->loadData($data, $sanitize_data);
@@ -205,7 +206,7 @@ class e_pref extends e_front_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	public function set($pref_name, $value)
+	public function set($pref_name, $value=null, $strict = false)
 	{
 		global $pref;
 		if(empty($pref_name) || !is_string($pref_name))
@@ -341,7 +342,7 @@ class e_pref extends e_front_model
 	 * @param boolean $strict
 	 * @return $this|\e_model
 	 */
-	final public function addData($pref_name, $value = null)
+	final public function addData($pref_name, $value = null, $override = true)
 	{
 		global $pref;
 		parent::addData($pref_name, $value, false);
@@ -361,7 +362,7 @@ class e_pref extends e_front_model
 	 * @param mixed $value
 	 * @return e_pref
 	 */
-	final public function setData($pref_name, $value = null)
+	final public function setData($pref_name, $value = null, $strict = false)
 	{
 		global $pref;
 		if(empty($pref_name))
@@ -393,7 +394,7 @@ class e_pref extends e_front_model
 	 * @param string $pref_name
 	 * @return e_pref
 	 */
-	final public function removeData($pref_name)
+	final public function removeData($pref_name=null)
 	{
 		global $pref;
 		parent::removeData((string) $pref_name);
@@ -440,7 +441,7 @@ class e_pref extends e_front_model
 	 * @param boolean $force
 	 * @return e_pref
 	 */
-	public function load($force = false)
+	public function load($id=null, $force = false)
 	{
 		global $pref;
 		if($force || !$this->hasData())
@@ -475,9 +476,9 @@ class e_pref extends e_front_model
 			return $this;
 		}
 
-		if (e107::getDb()->db_Select('core', 'e107_value', "e107_name='{$id}'"))
+		if (e107::getDb()->select('core', 'e107_value', "e107_name='{$id}'"))
 		{
-			$row = e107::getDb()->db_Fetch();
+			$row = e107::getDb()->fetch();
 
 			if($this->serial_bc)
 			{
@@ -530,7 +531,11 @@ class e_pref extends e_front_model
 
 		if(!$this->data_has_changed && !$force)
 		{
-			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages)->moveStack($this->prefid);
+			if($session_messages !== false)
+			{
+				e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages)->moveStack($this->prefid);
+			}
+
 			return 0;
 		}
 
@@ -599,7 +604,7 @@ class e_pref extends e_front_model
 					$logId = 'PREFS_01';	
 				}
 				
-				$log->addSuccess('Settings successfully saved.', ($session_messages === null || $session_messages === true));
+				$log->addSuccess(LAN_SETSAVED, ($session_messages === null || $session_messages === true));
 
 				$uid = USERID;
 
@@ -646,7 +651,7 @@ class e_pref extends e_front_model
 		}
 		else
 		{
-			e107::getMessage()->addInfo('Settings not saved as no changes were made.', $this->prefid, $session_messages);
+			e107::getMessage()->addInfo(LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE, $this->prefid, $session_messages);
 			if(!$disallow_logs) $log->flushMessages('LAN_FIXME', E_LOG_INFORMATIVE, '', $this->prefid);
 			e107::getMessage()->moveStack($this->prefid);
 			return 0;
@@ -752,14 +757,14 @@ class e_pref extends e_front_model
     /**
      * Override
      */
-    public function delete()
+    public function delete($ids, $destroy = true, $session_messages = false)
     {
     }
 
     /**
      * Override
      */
-    protected function dbUpdate()
+    protected function dbUpdate($force = false, $session_messages = false)
     {
     }
 }
@@ -877,6 +882,54 @@ final class e_core_pref extends e_pref
 		$prefid = trim($prefid);
 		return array_search($prefid, $this->aliases);
 	}
+
+
+	/**
+	 * Export data from core pref and remove if needed. Useful for core pref -> menu table parm migration.
+	 * @param array $prefList  key/value pairs.  key = oldpref value = new pref key
+	 * @param bool|false $remove
+	 * @return array|false if no match found.
+	 */
+	public function migrateData($prefList=array(), $remove=false)
+	{
+		$data = self::getData();
+		$array = array();
+		$save = false;
+
+		if(empty($prefList))
+		{
+			return false;
+		}
+
+		foreach($data as $k=>$v)
+		{
+			if(isset($prefList[$k]))
+			{
+				$key = $prefList[$k];
+				$array[$key] = $v;
+
+				if($remove == true)
+				{
+					self::remove($k);
+					$save = true;
+				}
+			}
+
+		}
+
+		if(empty($array))
+		{
+			return false;
+		}
+
+		if(!empty($save))
+		{
+			self::save(false,true,false);
+		}
+
+		return $array;
+
+	}
 }
 
 /**
@@ -913,7 +966,7 @@ class e_plugin_pref extends e_pref
 		{
 			$plugin_id = $plugin_id.'_'.$multi_row;
 		}
-		parent::__construct('plugin_'.$plugin_id, $this->plugin_id);
+		parent::__construct('plugin_'.$plugin_id, "plugin_".$this->plugin_id);
 		if($load && e107::findPref('plug_installed/'.$this->plugin_id))
 		{
 			$this->load();
@@ -935,7 +988,7 @@ class e_plugin_pref extends e_pref
 	 * @see e107_handlers/e_pref#delete()
 	 * @return boolean
 	 */
-	public function delete()
+	public function delete($ids, $destroy = true, $session_messages = false)
 	{
 		$ret = false;
 		if($this->plugin_id)
@@ -946,6 +999,81 @@ class e_plugin_pref extends e_pref
 		return $ret;
 	}
 }
+
+
+/**
+ * Handle plugin preferences
+ *
+ * @package e107
+ * @category e107_handlers
+ * @version 1.0
+ * @author SecretR
+ * @copyright Copyright (c) 2009, e107 Inc.
+ */
+class e_theme_pref extends e_pref
+{
+	/**
+	 * Unique plugin name
+	 *
+	 * @var string
+	 */
+	protected $theme_id;
+
+	/**
+	 * Constructor
+	 * Note: object data will be loaded only if the plugin is installed (no matter of the passed
+	 * $load value)
+	 *
+	 * @param string $theme_id unique plugin name
+	 * @param string $multi_row additional field identifier appended to the $prefid
+	 * @param boolean $load load on startup
+	 */
+	function __construct($theme_id, $multi_row = '', $load = true)
+	{
+		$this->theme_id = $theme_id;
+		if($multi_row)
+		{
+			$theme_id = $theme_id.'_'.$multi_row;
+		}
+		parent::__construct('theme_'.$theme_id, "theme_".$this->theme_id);
+	//	if($load && e107::findPref('plug_installed/'.$this->theme_id))
+		{
+			$this->load();
+		}
+	}
+
+	/**
+	 * Retrive unique plugin name
+	 *
+	 * @return string
+	 */
+	public function getPluginId()
+	{
+		return $this->theme_id;
+	}
+
+	/**
+	 * Delete plugin preferences
+	 * @see e107_handlers/e_pref#delete()
+	 * @return boolean
+	 */
+	public function delete($ids, $destroy = true, $session_messages = false)
+	{
+		$ret = false;
+		if($this->theme_id)
+		{
+			$ret = e107::getDb($this->theme_id)->delete('core', "e107_name='{$this->theme_id}'");
+			$this->destroy();
+		}
+		return $ret;
+	}
+}
+
+
+
+
+
+
 
 /**
  * DEPRECATED - see e107::getConfig(), e_core_pref and e_plugin_pref

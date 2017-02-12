@@ -12,15 +12,27 @@ if (!defined('e107_INIT')) { exit; }
 
 $pref = e107::getPref();
 
+
 if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SELF,"tinymce4/admin_config.php") )
 {
 	if(e_PAGE != 'image.php')
 	{
-		//e107::js('tinymce','tiny_mce.js','jquery');
-		//e107::js('tinymce','wysiwyg.php','jquery',5);
-		
-		e107::js('footer', "https://tinymce.cachefly.net/4.0/tinymce.min.js"); // 4.1 and 4.2 have issues with saving under Firefox.  http://www.tinymce.com/develop/bugtracker_view.php?id=7655
-		e107::js('footer',e_PLUGIN.'tinymce4/wysiwyg.php','jquery',5);
+	//	e107::js('footer', "https://tinymce.cachefly.net/4.3/tinymce.min.js");
+
+	//	e107::js('footer', '//cdn.tinymce.com/4/tinymce.min.js');
+
+		e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.3/tinymce.min.js');
+
+	//	e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
+
+		$mceScript = e_PLUGIN.'tinymce4/wysiwyg.php';
+
+		if(defined('e_TINYMCE_TEMPLATE'))
+		{
+			$mceScript .= '?config='.e_TINYMCE_TEMPLATE.'&other=';
+		}
+
+		e107::js('footer',$mceScript,'jquery',5);
 
 		// Add to e107_config.php to view hidden content when TinyMce not saving correctly
 		if(deftrue('e_TINYMCE_DEBUG'))
@@ -40,15 +52,15 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 	}
 	else
 	{
-		e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
+	//	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
 	//	e107::js('tinymce','tiny_mce_popup.js','jquery');
 	}
 	
 	if(ADMIN)
 	{
 	    $insert = "$('#'+id).after('<div>";
-	    $insert .= "<a href=\"#\" id=\"' + id + '\" class=\"e-wysiwyg-toggle btn btn-xs btn-default btn-inverse btn-mini\">Switch to bbcode<\/a>";
-        
+
+
 	     if(e_PAGE == 'mailout.php')
         {
             $insert .= "&nbsp;&nbsp;<a href=\"#\" class=\"btn btn-mini tinyInsert\" data-value=\"|USERNAME|\" >".LAN_MAILOUT_16."<\/a>";
@@ -82,9 +94,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 			$('.e-wysiwyg').each(function() {
 
 				var id = $(this).attr('id'); // 'e-wysiwyg';
-				console.log(id);
 				".SWITCH_TO_BB."
-		    //	alert(id);
 		     	$('#bbcode-panel-'+id+'--preview').hide();
 
 			});
@@ -95,27 +105,6 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
                 top.tinymce.activeEditor.execCommand('mceInsertContent',0,val);
                 return false;
             });
-
-
-
-         /*
-            $('img.tinyInsertEmote').live('click',function() {
-
-                         var src = $(this).attr('src');
-                  //         alert(src);
-                     //  var html = '<img src=\''+src +'\' alt=\'emote\' />';
-                       tinyMCE.execCommand('mceInsertRawHTML',false, 'hi there');
-                       ;
-                       $('.mceContentBody', window.top.document).tinymce().execCommand('mceInsertContent',false,src);
-
-                      //   tinyMCE.selectedInstance.execCommand('mceInsertContent',0,src);
-
-                         $('#uiModal').modal('hide');
-                         return true;
-                     });
-            */
-
-
 
 
 			// When new tab is added - convert textarea to TinyMce.
@@ -131,28 +120,6 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 				top.tinymce.activeEditor.execCommand('mceAddControl', false, id);
 			});
 
-
-		 	$('a.e-wysiwyg-toggle').toggle(function(){
-
-		 			var id = $(this).attr('id'); // eg. news-body
-
-		 			$('#bbcode-panel-'+id+'--preview').show();
-		 			$(this).text('Switch to wysiwyg');
-
-		             tinymce.EditorManager.execCommand('mceRemoveEditor',true, id); //v4.x
-
-		         //	tinymce.remove('#'+id);
-		        //   tinymce.activeEditor.execCommand('mceRemoveControl', false, id);
-		         //  $('#'+id).tinymce().remove();
-
-			}, function () {
-					 var id = $(this).attr('id');
-					 $('#bbcode-panel-'+id+'--preview').hide();
-					 $(this).text('Switch to bbcode');
-					 tinymce.EditorManager.execCommand('mceAddEditor',true, id); //v4.x
-				//	 tinymce.remove('#'+id);
-		        //    tinymce.activeEditor.execCommand('mceAddControl', false, id);
-			});
 
 
 			 $(document).on('click','.e-dialog-save', function(){
@@ -177,7 +144,7 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 				}).responseText;
 
 				html = p;
-				//		alert(s);
+		//		alert(p);
 
 				if(html === undefined)
 				{
@@ -192,7 +159,8 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 			$('.e-dialog-close').click(function(){
 
-		//	top.tinymce.activeEditor.windowManager.close();
+				// top.tinymce.activeEditor.windowManager.close();
+
 			});
 
 

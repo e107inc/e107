@@ -37,7 +37,7 @@ require_once('../../class2.php');
 
 if (!e107::isInstalled('pm') || !getperms('P'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 
@@ -288,6 +288,30 @@ function show_options($pm_prefs)
 		<td>".$frm->text('pm_option-title', $pm_prefs['title'], '50')."</td>
 	</tr>
 	<tr>
+		<td>".ADLAN_PM_23."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', $pm_prefs['pm_class'], 'member,admin,classes')."</td>
+	</tr>
+	<tr>
+		<td>".ADLAN_PM_29."</td>
+		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
+	</tr>
+	<tr>
+		<td>".ADLAN_PM_88."</td>
+		<td>"; 
+
+	$list = e107::getUserClass()->getClassList('nobody,main,admin,member,classes');
+	$list['matchclass'] = ADLAN_PM_89; 
+
+	//$txt .= print_a($list,true);
+	$txt .= $frm->select('pm_option-send_to_class', $list, varset($pm_prefs['send_to_class'], e_UC_MEMBER));
+
+	//$text .= ".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
+
+	$txt .= "</td>
+	</tr>
+
+
+	<tr>
 		<td>".ADLAN_PM_17."</td>
 		<td>".$frm->radio_switch('pm_option-animate', $pm_prefs['animate'], LAN_YES, LAN_NO)."</td>
 	</tr>
@@ -309,12 +333,9 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_22."</td>
-		<td>".$frm->text('pm_option-popup_delay', $pm_prefs['popup_delay'], '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
+		<td class='form-inline'>".$frm->text('pm_option-popup_delay', $pm_prefs['popup_delay'], '5', array('class' => 'tbox input-text'))." ".ADLAN_PM_44."</td>
 	</tr>
-	<tr>
-		<td>".ADLAN_PM_23."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-pm_class', $pm_prefs['pm_class'], 'member,admin,classes')."</td>
-	</tr>
+
 	<tr>
 		<td>".ADLAN_PM_24."</td>
 		<td>".$frm->text('pm_option-perpage', $pm_prefs['perpage'], '5', array('class' => 'tbox input-text'))."</td>
@@ -333,12 +354,9 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_28."</td>
-		<td>".$frm->text('pm_option-attach_size', $pm_prefs['attach_size'], '8', array('class' => 'tbox input-text'))." kB</td>
+		<td class='form-inline'>".$frm->text('pm_option-attach_size', $pm_prefs['attach_size'], '8', array('class' => 'tbox input-text'))." kB</td>
 	</tr>
-	<tr>
-		<td>".ADLAN_PM_29."</td>
-		<td>".e107::getUserClass()->uc_dropdown('pm_option-sendall_class', $pm_prefs['sendall_class'], 'nobody,member,admin,classes')."</td>
-	</tr>
+
 	<tr>
 		<td>".ADLAN_PM_30."</td>
 		<td>".e107::getUserClass()->uc_dropdown('pm_option-multi_class', $pm_prefs['multi_class'], 'nobody,member,admin,classes')."</td>
@@ -349,7 +367,7 @@ function show_options($pm_prefs)
 	</tr>
 	<tr>
 		<td>".ADLAN_PM_81."</td>
-		<td>".$frm->text('pm_option-pm_max_send', $pm_prefs['pm_max_send'], '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
+		<td class='form-inline'>".$frm->text('pm_option-v', $pm_prefs['pm_max_send'], '5', array('class' => 'tbox input-text'))."<span class='field-help'>".ADLAN_PM_82."</span></td>
 	</tr>
 	</tbody>
 	</table>
@@ -388,7 +406,7 @@ function show_limits($pm_prefs)
 		</colgroup>
 		<thead>
 			<tr>
-			<th>".ADLAN_PM_36."</th>
+			<th>".LAN_USERCLASS."</th>
 			<th>".ADLAN_PM_37."</th>
 			<th>".ADLAN_PM_38."</th>
 		</tr>
@@ -423,12 +441,12 @@ function show_limits($pm_prefs)
 			<tr>
 			<td>".e107::getUserClass()->uc_get_classname($row['limit_classnum'])."</td>
 			<td>
-			".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
-			".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /> 
+			".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> <br />
+			".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' />
 			</td>
 			<td>
-			".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> <br />
-			".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
+			".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> <br />
+			".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' />
 			</td>
 			</tr>
 			";
@@ -480,7 +498,7 @@ function add_limit($pm_prefs)
 		</colgroup>
 		<thead>
 		<tr>
-			<th>".ADLAN_PM_36."</th>
+			<th>".LAN_USERCLASS."</th>
 			<th>".ADLAN_PM_37."</th>
 			<th>".ADLAN_PM_38."</th>
 			</tr>
@@ -492,12 +510,12 @@ function add_limit($pm_prefs)
 	<tr>
 	<td>".e107::getUserClass()->uc_dropdown('newlimit_class', 0, 'guest,member,admin,classes')."</td>
 	<td>
-		".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> <br />
-		".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
+		".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> <br />
+		".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='new_outbox_count' value='' />
 	</td>
 	<td>
-		".ADLAN_PM_39.": <input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> <br />
-		".ADLAN_PM_40.": <input type='text' class='tbox' size='5' name='new_outbox_size' value='' /> 
+		".LAN_PLUGIN_PM_INBOX.": <input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> <br />
+		".LAN_PLUGIN_PM_OUTBOX.": <input type='text' class='tbox' size='5' name='new_outbox_size' value='' />
 	</td>
 	</tr>
 
@@ -625,7 +643,7 @@ function doMaint($opts, $pmPrefs)
 		if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_from` = `#user`.`user_id`
 					WHERE (pm.`pm_read_del = 1) AND `#user`.`user_id` IS NULL"))
 		{
-			while ($row = $db2->fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch())
 			{
 				if ($pmHandler->del($row['pm_id']) !== FALSE)
 				{
@@ -642,7 +660,7 @@ function doMaint($opts, $pmPrefs)
 		if ($res = $db2->gen("SELECT pm.pm_id FROM `#private_msg` AS pm LEFT JOIN `#user` AS u ON pm.`pm_to` = `#user`.`user_id`
 					WHERE (pm.`pm_sent_del = 1) AND `#user`.`user_id` IS NULL"))
 		{
-			while ($row = $db2->fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch())
 			{
 				if ($pmHandler->del($row['pm_id']) !== FALSE)
 				{
@@ -703,7 +721,7 @@ function doMaint($opts, $pmPrefs)
 			$cnt = 0;
 			if($db2->db_Select('private_msg', 'pm_id', $qry))
 			{
-				while ($row = $db2->db_Fetch(MYSQL_ASSOC))
+				while ($row = $db2->db_Fetch())
 				{
 					if ($pmHandler->del($row['pm_id']) !== FALSE)
 					{
@@ -731,7 +749,7 @@ function doMaint($opts, $pmPrefs)
 		$fileArray = $fl->get_files(e_PLUGIN.'pm/attachments');
 		if ($db2->select('private_msg', 'pm_id, pm_attachments', "pm_attachments != ''"))
 		{
-			while ($row = $db2->fetch(MYSQL_ASSOC))
+			while ($row = $db2->fetch())
 			{
 				$attachList = explode(chr(0), $row['pm_attachments']);
 				foreach ($attachList as $a)

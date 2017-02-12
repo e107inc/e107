@@ -16,6 +16,7 @@ class plugin_download_url extends eUrlConfig
 		return array(
 		
 			'config' => array(
+				'allowMain'    => true,
 				'noSingleEntry' => true,	// [optional] default false; disallow this module to be shown via single entry point when this config is used
 				'legacy' 		=> '{e_PLUGIN}download/download.php', // this config won't work in single entry point mod (legacy not used at all), so just set this to default plugin file to notify router it's legacy module
 				'format'		=> 'get', 	// get|path - notify core for the current URL format, if set to 'get' rules will be ignored

@@ -56,7 +56,7 @@ class download
 		$this->qry['from']			= 0;
 			
 		// v2.x 
-		if(varset($_GET['action']))
+		if(!empty($_GET['action']))
 		{
 			$this->qry['action'] 	= (string) $_GET['action'];
 			$this->qry['view'] 		= varset($_GET['view']) ? intval($_GET['view']) : $this->qry['view'];
@@ -64,6 +64,11 @@ class download
 			$this->qry['order'] 	= vartrue($_GET['order']) && in_array("download_".$_GET['order'],$this->orderOptions) ? $_GET['order'] : $this->qry['order'];
 			$this->qry['sort'] 		= (varset($_GET['sort']) == 'asc') ? "asc" : 'desc';	
 			$this->qry['from']		= vartrue($_GET['from'],0);
+
+			if($this->qry['action'] == 'error')
+			{
+				$this->qry['error'] = intval($this->qry['id']);
+			}
 		}
 		else // v1.x Legacy URL support. 
 		{
@@ -84,9 +89,7 @@ class download
 			
 		}	
 		
-		
-		
-		// v1.x 
+		// v1.x
 		if(varset($_POST['view'])) 
 		{
 			$this->qry['view'] 		= varset($_POST['view']) ? intval($_POST['view']) : 10;
@@ -94,7 +97,7 @@ class download
 			$this->qry['sort'] 		= (strtolower($_POST['sort']) == 'asc') ? "asc" : 'desc';	
 		}	
 		
-		
+
 	}  
 
 
@@ -208,7 +211,7 @@ class download
 
 		if ($dlcat->down_count == 0)
 	   	{
-			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
+			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, "<div class='alert alert-warning' style='text-align:center'>".LAN_NO_RECORDS_FOUND."</div>",'download-categories',true);
 		}
 				
 		$download_cat_table_string = "";
@@ -416,6 +419,7 @@ class download
 		{
 			$template = e107::getTemplate('download','download');
 			
+			$DOWNLOAD_LIST_CAPTION 		= $template['list']['caption'];	
 			$DOWNLOAD_LIST_TABLE_START 	= $template['list']['start'];	
 			$DOWNLOAD_LIST_TABLE 		= $template['list']['item'];
 			$DOWNLOAD_LIST_TABLE_END 	= $template['list']['end'];		
@@ -575,6 +579,8 @@ class download
 		
 		if($filetotal)
 		{
+	  		$caption = varset($DOWNLOAD_LIST_CAPTION) ? $tp->parseTemplate($DOWNLOAD_LIST_CAPTION, TRUE, $sc) : LAN_PLUGIN_DOWNLOAD_NAME;
+
 			// Only show list if some files in it
 			$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_START, TRUE, $sc);
 			
@@ -607,8 +613,8 @@ class download
 			}
 
 			$dl_text .= $tp->parseTemplate($this->templateFooter, TRUE, $sc);
-			
-			$text .= $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $dl_text, 'download-list', true);
+
+			$text .= $ns->tablerender($caption, $dl_text, 'download-list', true);
 		}
 
 		if(!isset($DOWNLOAD_LIST_NEXTPREV))
@@ -894,7 +900,7 @@ class download
 	   	     $errmsg = LAN_ERROR." ".$this->qry['error'];		
 		}
 		
-		return $ns->tablerender(LAN_ERROR, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
+		return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $header. "<div class='alert alert-error alert-danger alert-block' style='text-align:center'>".$errmsg."</div>". $footer, 'download-error', true);
 		
 	}
    
@@ -918,11 +924,11 @@ class download
         	return "Error reading categories<br />";
         	exit;
       }
-      $boxinfo .= "<select name='{$name}' id='download_category' class='tbox'>
+      $boxinfo .= "<select name='{$name}' id='download_category' class='tbox form-control'>
       	<option value=''>{$blankText}</option>\n";
       // Its a structured display option - need a 2-step process to create a tree
       $catlist = array();
-      while ($dlrow = $sql->fetch(MYSQL_ASSOC))
+      while ($dlrow = $sql->fetch())
       {
          $tmp = $dlrow['download_category_parent'];
         	if ($tmp == '0')

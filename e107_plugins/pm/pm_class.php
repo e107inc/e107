@@ -19,16 +19,24 @@ class private_message
 	protected 	$e107;
 	protected	$pmPrefs;
 
+
+	public function prefs()
+	{
+		return $this->pmPrefs;
+	}
+
+
 	/**
 	 *	Constructor
 	 *
 	 *	@param array $prefs - pref settings for PM plugin
 	 *	@return none
 	 */
-	public	function __construct($prefs)
+	public	function __construct($prefs=null)
 	{
 		$this->e107 = e107::getInstance();
-		$this->pmPrefs = $prefs;	}
+		$this->pmPrefs = e107::pref('pm');
+	}
 
 
 	/**
@@ -110,6 +118,8 @@ class private_message
 		$pm_options = '';
 		$ret = '';
 		$addOutbox = TRUE;
+		$timestamp = time();
+
 		$maxSendNow = varset($this->pmPrefs['pm_max_send'],100);	// Maximum number of PMs to send without queueing them
 		if (isset($vars['pm_from']))
 		{	// Doing bulk send off cron task
@@ -128,6 +138,7 @@ class private_message
 		{	// Send triggered by user - may be immediate or bulk dependent on number of recipients
 			$vars['options'] = '';
 			if(isset($vars['receipt']) && $vars['receipt']) {$pm_options .= '+rr+';	}
+
 			if(isset($vars['uploaded']))
 			{
 				foreach($vars['uploaded'] as $u)
@@ -153,7 +164,7 @@ class private_message
 			// Most of the pm info is fixed - just need to set the 'to' user on each send
 			$info = array(
 				'pm_from' => $vars['from_id'],
-				'pm_sent' => time(),					/* Date sent */
+				'pm_sent' => $timestamp,					/* Date sent */
 				'pm_read' => 0,							/* Date read */
 				'pm_subject' => $pm_subject,
 				'pm_text' => $pm_message,
@@ -163,16 +174,20 @@ class private_message
 				'pm_option' => $pm_options,				/* Options associated with PM - '+rr' for read receipt */
 				'pm_size' => $pmsize
 				);
+
+		//	print_a($info);
+		//	print_a($vars);
 		}
 
-		if(isset($vars['to_userclass']) || isset($vars['to_array']))
+		if(!empty($vars['pm_userclass']) || isset($vars['to_array']))
 		{
-			if(isset($vars['to_userclass']))
+			if(!empty($vars['pm_userclass']))
 			{
 				$toclass = e107::getUserClass()->uc_get_classname($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
 				$ret .= LAN_PM_38.": {$toclass}<br />";
 				$class = TRUE;
+				$info['pm_sent_del'] = 1; // keep the outbox clean and limited to 1 entry when sending to an entire class.
 			}
 			else
 			{
@@ -220,9 +235,10 @@ class private_message
 					{
 						$toclass .= $u['user_name'].', ';
 					}
-					if(check_class($this->pmPrefs['notify_class'], $u['user_class']))
+					if(check_class($this->pmPrefs['notify_class'], null, $u['user_id']))
 					{
 						$vars['to_info'] = $u;
+						$vars['pm_sent'] = $timestamp;
 						$this->pm_send_notify($u['user_id'], $vars, $pmid, count($a_list));
 					}
 				}
@@ -247,13 +263,21 @@ class private_message
 		else
 		{	// Sending to a single person
 			$info['pm_to'] = intval($vars['to_info']['user_id']);		// Sending to a single user now
+
+
+
+
 			if($pmid = $sql->insert('private_msg', $info))
 			{
 				$info['pm_id'] = $pmid;
+				$info['pm_sent'] = $timestamp;
 				e107::getEvent()->trigger('user_pm_sent', $info);
-				if(check_class($this->pmPrefs['notify_class'], $vars['to_info']['user_class']))
+
+
+				if(check_class($this->pmPrefs['notify_class'], null, $vars['to_info']['user_id']))
 				{
-					set_time_limit(30);
+					set_time_limit(20);
+					$vars['pm_sent'] = $timestamp;
 					$this->pm_send_notify($vars['to_info']['user_id'], $vars, $pmid, count($a_list));
 				}
 				$ret .= LAN_PM_40.": {$vars['to_info']['user_name']}<br />";
@@ -333,12 +357,12 @@ class private_message
 
 	/**
 	 * Convinient url assembling shortcut
-	 */
+	 *//*
 	public function url($action, $params = array(), $options = array())
 	{
 		if(strpos($action, '/') === false) $action = 'view/'.$action;
 		e107::getUrl()->create('pm/'.$action, $params, $options);
-	}
+	}*/
 
 	/**
 	 *	Send an email to notify of a PM
@@ -352,19 +376,64 @@ class private_message
 	 */
 	function pm_send_notify($uid, $pmInfo, $pmid, $attach_count = 0)
 	{
-		require_once(e_HANDLER.'mail.php');
-		$subject = LAN_PM_100.SITENAME;
-	//	$pmlink = $this->url('show', 'id='.$pmid, 'full=1&encode=0'); //TODO broken - replace with e_url.php configuration.
-		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmid;
-		$txt = LAN_PM_101.SITENAME."\n\n";
-		$txt .= LAN_PM_102.USERNAME."\n";
-		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
-		if($attach_count > 0)
+	//	require_once(e_HANDLER.'mail.php');
+
+		$tpl_file = THEME.'pm_template.php';
+
+		$PM_NOTIFY = null; // loaded in template below.
+
+		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+
+		$template = $PM_NOTIFY;
+
+		if(empty($template)) // BC Fallback.
 		{
-			$txt .= LAN_PM_104.$attach_count."\n";
+
+			$template =
+			"<div>
+			<h4>".LAN_PM_101."{SITENAME}</h4>
+			<table class='table table-striped'>
+			<tr><td>".LAN_PM_102."</td><td>{USERNAME}</td></tr>
+			<tr><td>".LAN_PM_103."</td><td>{PM_SUBJECT}</td></tr>
+			<tr><td>".LAN_PM_108."</td><td>{PM_DATE}</td></tr>
+			<tr><td>".LAN_PM_104."</td><td>{PM_ATTACHMENTS}</td></tr>
+
+			</table><br />
+			<div>".LAN_PM_105.": {PM_URL}</div>
+			</div>
+			";
+
 		}
-		$txt .= LAN_PM_105."\n".$pmlink."\n";
-		sendemail($pmInfo['to_info']['user_email'], $subject, $txt, $pmInfo['to_info']['user_name']);
+
+		$url = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+
+		$data = array();
+		$data['PM_SUBJECT']     = $pmInfo['pm_subject'];
+		$data['PM_ATTACHMENTS'] = intval($attach_count);
+		$data['PM_DATE']        = e107::getParser()->toDate($pmInfo['pm_sent'], 'long');
+		$data['SITENAME']       = SITENAME;
+		$data['USERNAME']       = USERNAME;
+		$data['PM_URL']         = $url;// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+		$data['PM_BUTTON']      = "<a class='btn btn-primary' href='".$url."'>".LAN_PM_113."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
+
+		$text = e107::getParser()->simpleParse($template, $data);
+
+		$eml = array();
+		$eml['email_subject']		= LAN_PM_100.USERNAME;
+		$eml['send_html']			= true;
+		$eml['email_body']			= $text;
+		$eml['template']			= 'default';
+		$eml['e107_header']			= $pmInfo['to_info']['user_id'];
+
+		if(e107::getEmail()->sendEmail($pmInfo['to_info']['user_email'], $pmInfo['to_info']['user_name'], $eml))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
 	}
 
 
@@ -372,29 +441,34 @@ class private_message
 	 *	Send PM read receipt
 	 *
 	 *	@param array $pmInfo - PM details
-	 *
-	 * 	@return none
+	 * 	@return boolean
 	 */
-	function pm_send_receipt($pmInfo)
+	function pm_send_receipt($pmInfo) //TODO Add Template and combine with method above..
 	{
 		require_once(e_HANDLER.'mail.php');
 		$subject = LAN_PM_106.$pmInfo['sent_name'];
-	//	$pmlink = $this->url('show', 'id='.$pmInfo['pm_id'], 'full=1&encode=0');
-		$pmlink = SITEURLBASE.e_PLUGIN_ABS."pm/pm.php?show.".$pmInfo['pm_id'];
+
+		$pmlink = e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmInfo['pm_id'];
+
 		$txt = str_replace("{UNAME}", $pmInfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
 		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pmInfo['pm_sent'])."\n";
 		$txt .= LAN_PM_103.$pmInfo['pm_subject']."\n";
 		$txt .= LAN_PM_105."\n".$pmlink."\n";
-		sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']);
+
+		if(sendemail($pmInfo['from_email'], $subject, $txt, $pmInfo['from_name']))
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 
 	/**
-	 *	Get list of users blocked from sending to a specific user ID.
+	 *    Get list of users blocked from sending to a specific user ID.
 	 *
-	 *	@param integer $to - user ID
-	 *
-	 *	@return array of blocked users as user IDs
+	 * @param int|mixed $to - user ID
+	 * @return array of blocked users as user IDs
 	 */
 	function block_get($to = USERID)
 	{
@@ -403,7 +477,7 @@ class private_message
 		$to = intval($to);		// Precautionary
 		if ($sql->select('private_msg_block', 'pm_block_from', 'pm_block_to = '.$to))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = $row['pm_block_from'];
 			}
@@ -426,7 +500,7 @@ class private_message
 		$to = intval($to);		// Precautionary
 		if ($sql->gen('SELECT pm.*, u.user_name FROM `#private_msg_block` AS pm LEFT JOIN `#user` AS u ON `pm`.`pm_block_from` = `u`.`user_id` WHERE pm_block_to = '.$to))
 		{
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$ret[] = $row;
 			}
@@ -532,14 +606,26 @@ class private_message
 	function pm_getuid($var)
 	{
 		$sql = e107::getDb();
-		$var = strip_if_magic($var);
-		$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
-		if($sql->select('user', 'user_id, user_name, user_class, user_email', "user_name LIKE '".$sql->escape($var, FALSE)."'"))
+
+		if(is_numeric($var))
+		{
+			$where = "user_id = ".intval($var);
+		}
+		else
+		{
+			$var = strip_if_magic($var);
+			$var = str_replace("'", '&#039;', trim($var));		// Display name uses entities for apostrophe
+			$where = "user_name LIKE '".$sql->escape($var, FALSE)."'";
+		}
+
+		if($sql->select('user', 'user_id, user_name, user_class, user_email', $where))
 		{
 			$row = $sql->fetch();
 			return $row;
 		}
-		return FALSE;
+
+		return false;
+
 	}
 
 
@@ -553,6 +639,7 @@ class private_message
 	function get_users_inclass($class)
 	{
 		$sql = e107::getDb();
+
 		if($class == e_UC_MEMBER)
 		{
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE 1";
@@ -566,13 +653,55 @@ class private_message
 			$regex = "(^|,)(".e107::getParser()->toDB($class).")(,|$)";
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM `#user` WHERE user_class REGEXP '{$regex}'";
 		}
-		if($sql->gen($qry))
+
+
+		if(!empty($qry) && $sql->gen($qry))
 		{
 			$ret = $sql->db_getList();
 			return $ret;
 		}
 		return FALSE;
 	}
+
+
+	/**
+	 * Check permission to send a PM to someone.
+	 * @param int $uid user_id of the person to send to
+	 * @return bool
+	 */
+	function canSendTo($uid)
+	{
+		if(empty($uid))
+		{
+			return false;
+		}
+
+		if(!empty($this->pmPrefs['vip_class']))
+		{
+			if(check_class($this->pmPrefs['vip_class'],null,$uid) && !check_class($this->pmPrefs['vip_class']))
+			{
+				return false;
+			}
+
+		}
+
+		$user = e107::user($uid);
+
+		$uclass = explode(",", $user['user_class']);
+
+		if($this->pmPrefs['send_to_class'] == 'matchclass')
+		{
+			$tmp = explode(",", USERCLASS);
+			$result = array_intersect($uclass, $tmp);
+
+			return !empty($result);
+		}
+
+		return in_array($this->pmPrefs['send_to_class'], $uclass);
+
+	}
+
+
 
 
 	/**
@@ -600,11 +729,13 @@ class private_message
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.", ".$limit."
 		";
+
 		if($sql->gen($qry))
 		{
-			$total_messages = $sql->total_results;		// Total number of messages
+			$total_messages = $sql->foundRows(); 		// Total number of messages
 			$ret['messages'] = $sql->db_getList();
 		}
+
 		$ret['total_messages'] = $total_messages;		// Should always be defined
 		return $ret;
 	}
@@ -632,6 +763,7 @@ class private_message
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
 		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del = '0'
+
 		ORDER BY pm.pm_sent DESC
 		LIMIT ".$from.', '.$limit;
 		
@@ -653,28 +785,56 @@ class private_message
 	 *
 	 *	@return none
 	 *
-	 *	@todo Can we use core send routine?
 	 */
 	function send_file($pmid, $filenum)
 	{
 		$pm_info = $this->pm_get($pmid);
+
 		$attachments = explode(chr(0), $pm_info['pm_attachments']);
+
 		if(!isset($attachments[$filenum]))
 		{
-			return FALSE;
+			return false;
 		}
+
 		$fname = $attachments[$filenum];
 		list($timestamp, $fromid, $rand, $file) = explode("_", $fname, 4);
-		$filename = getcwd()."/attachments/{$fname}";
+
+
+		$filename = false; // getcwd()."/attachments/{$fname}";
+
+		$pathList = array();
+		$pathList[] = e_PLUGIN."pm/attachments/"; // getcwd()."/attachments/"; // legacy path.
+		$pathList[] = e107::getFile()->getUserDir($fromid, false, 'attachments'); // new media path.
+
+		foreach($pathList as $path)
+		{
+			$tPath = $path.$fname;
+
+			if(is_file($tPath))
+			{
+				$filename = $tPath;
+				break;
+			}
+
+		}
+
+		if(empty($filename) || !is_file($filename))
+		{
+			return false;
+		}
+
 
 		if($fromid != $pm_info['pm_from'])
 		{
-			return FALSE;
+			return false;
 		}
-		if(!is_file($filename))
-		{
-			return FALSE;
-		}
+
+	//	e107::getFile()->send($filename); // limited to Media and system folders. Won't work for legacy plugin path.
+	//	exit;
+
+
+
 		@set_time_limit(10 * 60);
 		@e107_ini_set("max_execution_time", 10 * 60);
 		while (@ob_end_clean()); // kill all output buffering else it eats server resources
@@ -718,6 +878,12 @@ class private_message
 			fclose($res);
 		}
 	}
+
+
+
+
+
+
 
 
 	

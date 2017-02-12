@@ -21,7 +21,7 @@ $tmpl = e107::getCoreTemplate('chapter','nav',true,true); // always merge and al
 
 $template = $tmpl['showPage'];
 
-$request = e107::getRegistry('core/pages/request');
+$request = e107::getRegistry('core/page/request');
 if($request && is_array($request))
 {
 	switch ($request['action']) 

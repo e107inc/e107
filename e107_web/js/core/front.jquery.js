@@ -1,5 +1,115 @@
 /* global $ */
 
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
+
+(function ($)
+{
+	// In case the page was opened with a hash, prevent jumping to it.
+	// http://stackoverflow.com/questions/3659072/how-to-disable-anchor-jump-when-loading-a-page
+	if(window.location.hash)
+	{
+		$('html, body').stop().animate({scrollTop: 0});
+	}
+
+	/**
+	 * Behavior to initialize Smooth Scrolling on document, if URL has a fragment.
+	 * TODO: create theme option on the admin panel to:
+	 * - enable/disable smooth scrolling
+	 * - change animation duration
+	 * - set top-offset if theme has a fixed top navigation bar
+	 *
+	 * @type {{attach: Function}}
+	 */
+	e107.behaviors.initializeSmoothScrolling = {
+		attach: function (context, settings)
+		{
+			if(window.location.hash && e107.callbacks.isValidSelector(window.location.hash))
+			{
+				$(context).find('body').once('initialize-smooth-scrolling').each(function ()
+				{
+					if($(window.location.hash).length !== 0)
+					{
+						$('html, body').stop().animate({
+							scrollTop: $(window.location.hash).offset().top
+						}, 2000);
+
+						return false;
+					}
+				});
+			}
+		}
+	};
+
+	/**
+	 * Initializes click event on '.e-modal' elements.
+	 *
+	 * @type {{attach: e107.behaviors.eModalFront.attach}}
+	 */
+	e107.behaviors.eModalFront = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-modal').once('e-modal-front').each(function ()
+			{
+				var $that = $(this);
+
+				$that.on('click', function ()
+				{
+					var $this = $(this);
+
+					if($this.attr('data-cache') == 'false')
+					{
+						$('#uiModal').on('shown.bs.modal', function ()
+						{
+							$(this).removeData('bs.modal');
+						});
+					}
+
+					var url = $this.attr('href');
+					var caption = $this.attr('data-modal-caption');
+					var backdrop = $this.attr('data-modal-backdrop');
+					var keyboard = $this.attr('data-modal-keyboard');
+					var height = ($(window).height() * 0.7) - 120;
+
+					var modalOptions = {show: true};
+
+					if(backdrop !== undefined)
+					{
+						modalOptions['backdrop'] = backdrop;
+					}
+
+					if(keyboard !== undefined)
+					{
+						modalOptions['keyboard'] = keyboard;
+					}
+
+					if(caption === undefined)
+					{
+						caption = '';
+					}
+
+					if($this.attr('data-modal-height') !== undefined)
+					{
+						height = $(this).attr('data-modal-height');
+					}
+
+					$('.modal-body').html('<div><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;" allowtransparency="true" allowfullscreen src="' + url + '"></iframe></div>');
+					$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$('.modal').modal(modalOptions);
+
+					$("#e-modal-iframe").on("load", function ()
+					{
+						$('#e-modal-loading').hide();
+					});
+
+					return false;
+				});
+			});
+		}
+	};
+
+})(jQuery);
+
+
 $(document).ready(function()
 {
 		$(":input").tooltip();	
@@ -167,13 +277,14 @@ $(document).ready(function()
 	});
 
 
-    $("form").on("click", "input.e-comment-edit-save", function(){
+    $(document).on("click", "input.e-comment-edit-save", function(){
 			
 			var url 	= $(this).attr("data-target");
 			var sp 		= $(this).attr('id').split("-");	
 			var id 		= "#comment-" + sp[4] + "-edit";
 			var comment = $(id).text();
-			
+
+
 			$(id).attr('contentEditable',false);
 			
 		        $.ajax({
@@ -191,20 +302,20 @@ $(document).ready(function()
 		            	{
 		            	 	$("div.e-comment-edit-save")
 		            	 	.hide()
-		                    .addClass("e-comment-edit-success")
+		                    .addClass("alert alert-success e-comment-edit-success")
 		                    .html(a.msg)
 		                    .fadeIn('slow')
-		                    .delay(1000)
-		                    .fadeOut('slow');
+		                    .delay(1500)
+		                    .fadeOut(2000);
 		                    
 						}
 						else
 						{
 							 $("div.e-comment-edit-save")
-		                    .addClass("e-comment-edit-error")
+		                    .addClass("alert alert-danger e-comment-edit-error")
 		                    .html(a.msg)
 		                    .fadeIn('slow')
-		                    .delay(1000)
+		                    .delay(1500)
 		                    .fadeOut('slow');				
 						}
 		            	$(id).removeClass("e-comment-edit-active");
@@ -227,6 +338,8 @@ $(document).ready(function()
     $(document).on("click", ".e-comment-delete", function(){
 			
 			var url 	= $(this).attr("data-target");
+			var table 	= $(this).attr("data-type");
+			var itemid 	= $(this).attr("data-itemid");
 			var sp 		= $(this).attr('id').split("-");	
 			var id 		= "#comment-" + sp[3];
 			var total 	= parseInt($("#e-comment-total").text());
@@ -234,7 +347,7 @@ $(document).ready(function()
 			$.ajax({
 			  type: 'POST',
 			  url: url + '?ajax_used=1&mode=delete',
-			  data: { itemid: sp[3] },
+			  data: { id: sp[3], itemid: itemid, table: table },
 			  success: function(data) {
 			var a = $.parseJSON(data);
 			  
@@ -351,7 +464,5 @@ $(document).ready(function()
             
             return true;
 		});
-	
-	
-	
+
 });

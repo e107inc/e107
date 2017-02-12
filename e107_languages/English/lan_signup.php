@@ -2,16 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
  * Language file - User signup
- *
- * $Source: /cvs_backup/e107_0.8/e107_languages/English/lan_signup.php,v $
- * $Revision$
- * $Date$
- * $Author$
  *
 */
 define("PAGE_NAME", "Register");
@@ -51,11 +46,11 @@ define("LAN_SIGNUP_9", "Unable to proceed.");
 //define("LAN_SIGNUP_10", "Yes");
 define("LAN_SIGNUP_11", ".");
 define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as if lost they cannot be retrieved.");
-define("LAN_SIGNUP_13", "You can now log in from the Login box, or from <a href='".e_BASE."login.php'>here</a>.");
+define("LAN_SIGNUP_13", "You can now log in from the Login box, or from [here].");
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
-define("LAN_SIGNUP_17", "Please certify you are 13 or over the age of 13.");
+define("LAN_SIGNUP_17", "Please confirm that you are age 13 or over.");
 define("LAN_SIGNUP_18", "Your registration has been received and created with the following login information:");
 //define("LAN_SIGNUP_19", "Username:"); // now LAN_LOGINNAME
 //define("LAN_SIGNUP_20", "Password:"); // now LAN_PASSWORD
@@ -65,7 +60,7 @@ define("LAN_SIGNUP_23", "to login.");
 define("LAN_SIGNUP_24", "Thank you for registering at");
 define("LAN_SIGNUP_25", "Upload your avatar");
 define("LAN_SIGNUP_26", "Upload your photograph");
-define("LAN_SIGNUP_27", "Show");
+//define("LAN_SIGNUP_27", "Show"); //not found in signup.php 
 //define("LAN_SIGNUP_28", "choice of Content/Mail-lists");		Now LAN_USER_73
 //define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please select 'Yes' for the 'Hide email address?' option.");
@@ -89,7 +84,7 @@ define("LAN_SIGNUP_48", "Username or Email");
 define("LAN_SIGNUP_49", "If you registered with the wrong email address, as well as filling in the box above, type a new email address and your password here:");
 define("LAN_SIGNUP_50", "New Email");
 define("LAN_SIGNUP_51", "Old Password");
-define("LAN_SIGNUP_52", "Incorrect Password");
+//define("LAN_SIGNUP_52", "Incorrect Password");//LAN_INCORRECT_PASSWORD
 define("LAN_SIGNUP_53", "field failed validation test");
 define("LAN_SIGNUP_54", "Click here to fill in your details to register");
 //define("LAN_SIGNUP_55", "That display name is too long. Please choose another");
@@ -122,7 +117,7 @@ define("LAN_SIGNUP_81", "Username: ");											// LAN_9
 define("LAN_SIGNUP_82", "the name that you use to login");						// LAN_10
 define("LAN_SIGNUP_83", "Password: ");											// LAN_17
 define("LAN_SIGNUP_84", "Re-type Password: ");									// LAN_111
-define("LAN_SIGNUP_85", "Usernames and passwords are <b>case-sensitive</b>.");	// LAN_400
+define("LAN_SIGNUP_85", "Usernames and passwords are case-sensitive.");	// LAN_400
 //define("LAN_SIGNUP_86", "Email Address: ");										// LAN_112 = LAN_USER_60
 //define("LAN_SIGNUP_87", "Hide email address?: ");								// LAN_113 = LAN_USER_83
 //define("LAN_SIGNUP_88", "This will prevent your email address from being displayed on site");	// LAN_114
@@ -145,7 +140,6 @@ define("LAN_SIGNUP_103", "Too many users already using IP address: ");
 define("LAN_SIGNUP_105", "Unable to action your request - please contact the site administrator");		// Two people with same password.
 define("LAN_SIGNUP_106", "Unable to action your request - do you already have an account here?");		// Trying to set email same as existing
 
-
 define("LAN_LOGINNAME", "Username");
 //define("LAN_PASSWORD", "Password");
 define("LAN_USERNAME", "Display Name");
@@ -157,24 +151,12 @@ define("LAN_SIGNUP_110", "Your full name");
 define("LAN_SIGNUP_111", "Enter a URL to your image or choose an existing avatar.");
 define("LAN_SIGNUP_112", "You are currently logged in as Main Admin.");
 
-// BC for v1.x template
-// //TODO Move into signup.php and use existing definition. eg. define("LAN_7", LAN_SIGNUP_89);
-define("LAN_7", "Display Name: ");
-define("LAN_8", "the name that will be displayed on site");
-define("LAN_9", "Username: ");
-define("LAN_10", "the name that you use to login");
-define("LAN_17", "Password: ");
-define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
-define("LAN_111", "Re-type Password: ");
-define("LAN_112", "Email Address: ");
-define("LAN_113", "Hide email address?: ");
-define("LAN_120", "Signature: ");
-define("LAN_121", "Avatar: ");
-define("LAN_122", "Timezone:");
-define("LAN_123", "Register");	
-define("LAN_308", "Real Name: ");
-define("LAN_309", "Please enter your details below.");
-define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>.");
-define("LAN_410", "Enter code visible in the image");
+define("LAN_SIGNUP_113", "Subscription(s)");
 
-?>
+define("LAN_SIGNUP_114", "User registration is currently disabled.");
+define("LAN_SIGNUP_115", "Preview Activation Email");
+define("LAN_SIGNUP_116", "Preview After Form Submit");
+define("LAN_SIGNUP_117", "Send a Test Activation");
+define("LAN_SIGNUP_118", "To [x]");
+define("LAN_SIGNUP_119", "Don't send email");
+define("LAN_SIGNUP_120", "OR");

@@ -321,8 +321,20 @@ class download_shortcodes extends e_shortcode
    {
 	  $tp = e107::getParser();
 	  
-      $img = ($this->var['download_thumb']) ? "<img class='download-thumb img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt=\"".$this->var['download_name']."\"  />" : "";
-      
+      $img = "";
+
+      if(!empty($this->var['download_thumb']))
+      {
+           $opts = array(
+             'legacy' => "{e_FILE}downloadthumbs/",
+             'class'  => 'download-image img-responsive img-fluid',
+              'alt'     => $this->var['download_name']
+         );
+
+         $img = $tp->toImage($this->var['download_thumb'], $opts);
+      }
+
+
       if ($parm == "link" && $this->var['download_thumb'])
       {
       	$url = e107::getUrl()->create('download/view/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
@@ -366,13 +378,25 @@ class download_shortcodes extends e_shortcode
      	}
      	else
      	{
-     		$url = e107::getUrl()->create('download/request/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
+     		$url = $tp->parseTemplate("{DOWNLOAD_REQUEST_URL}",true, $this); // $this->sc_download_request_url();
      	  	return ($pref['agree_flag'] ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".$url."' >{$img}</a>");
    
 		//	return ($pref['agree_flag'] ? "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' onclick= \"return confirm('{$agreetext}');\">{$img}</a>" : "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/request.php?".$this->var['download_id']."' >{$img}</a>");
      	}
    }
-   
+
+
+   function sc_download_request_url($parm=null)
+   {
+    	return e107::getUrl()->create('download/request/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));
+
+   }
+
+	function sc_download_filename($parm=null)
+	{
+		return basename($this->var['download_url']);
+
+	}
    
    function sc_download_list_icon($parm='') //XXX FIXME $img. 
    {
@@ -392,8 +416,13 @@ class download_shortcodes extends e_shortcode
    function sc_download_list_imagefull($parm='')
    {
 	
-		$img = ($this->var['download_image']) ? "<img class='download-image dl_image img-responsive' src='".e107::getParser()->thumbUrl($this->var['download_image'])."'  alt=\"".$this->var['download_name']."\"   />" : "";
-		
+		$img = "";
+
+		if(!empty($this->var['download_image']))
+        {
+            $img = $this->sc_download_view_imagefull();
+        }
+
 		if($parm == "link" && $this->var['download_image'])
 		{
 			$url = e107::getUrl()->create('download/view/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
@@ -443,7 +472,7 @@ class download_shortcodes extends e_shortcode
 	
 		$url = e_PLUGIN_ABS."download/admin_download.php?action=edit&id=".$this->var['download_id'];
 	
-		return (ADMIN && getperms('6')) ? "<a class='pull-right e-tip' href='".$url."' title='edit'>".$icon."</a>" : "";
+		return (ADMIN && getperms('6')) ? "<a class='e-tip btn btn-default hidden-print' href='".$url."' title='".LAN_EDIT."'>".$icon."</a>" : "";
    }
    
    function sc_download_category()
@@ -467,7 +496,7 @@ class download_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 
 		$viewUrl = e107::getUrl()->create('download/view/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
-		$requestUrl = e107::getUrl()->create('download/request/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
+		$requestUrl = 	$url = $tp->parseTemplate("{DOWNLOAD_REQUEST_URL}",true,$this); // $this->sc_download_request_url();
 
 		$link['view'] = "<a href='".$viewUrl."'>".$this->var['download_name']."</a>";
 		$link['request'] = "<a href='".$requestUrl."' title='".LAN_dl_46."'>".$this->var['download_name']."</a>";
@@ -489,7 +518,7 @@ class download_shortcodes extends e_shortcode
       global $dl;
 	  $tp = e107::getParser();
 	  $pref = e107::getPref();
-	  $url = e107::getUrl()->create('download/request/item',array('id'=>$dl['download_id'], 'name'=>$dl['download_sef']));	
+	  $url = 	$url = $tp->parseTemplate("{DOWNLOAD_REQUEST_URL}",true,$this);  //$this->sc_download_request_url();
 	  
       if ($pref['agree_flag'] == 1) 
       {
@@ -556,32 +585,50 @@ class download_shortcodes extends e_shortcode
    {
       return $this->sc_download_view_date('long');
    }
-   
+
    function sc_download_view_image()
    {
-	  $tp = e107::getParser();
-	  
-      if ($this->var['download_thumb']) 
+      $tp = e107::getParser();
+
+
+      if($this->var['download_thumb'])
       {
-      	return ($this->var['download_image'] ? "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'><img class='download-image dl_image img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt='*'  /></a>" : "<img class='download-image dl_image img-responsive' src='".$tp->thumbUrl($this->var['download_thumb'])."' alt='*'  />");
+         $opts = array(
+             'legacy' => "{e_FILE}downloadthumbs/",
+             'class'  => 'download-image dl_image img-responsive img-fluid'
+         );
+         $image = $tp->toImage($this->var['download_thumb'], $opts);
+
+         return ($this->var['download_image'] ? "<a href='" . e_PLUGIN_ABS . "download/request.php?download." . $this->var['download_id'] . "'>" . $image . "</a>" : $image);
       }
-      elseif ($this->var['download_image'])
-	  {
-      	return "<a href='".e_PLUGIN_ABS."download/request.php?download.".$this->var['download_id']."'>".LAN_dl_40."</a>";
+      elseif($this->var['download_image'])
+      {
+         return "<a href='" . e_PLUGIN_ABS . "download/request.php?download." . $this->var['download_id'] . "'>" . LAN_dl_40 . "</a>";
       }
       else
       {
-      	return LAN_dl_75;
+         return LAN_dl_75;
       }
    }
 
    /**
     * {DOWNLOAD_VIEW_LINK: class=thumbnail}
     */   
-   function sc_download_view_imagefull($parm)
+   function sc_download_view_imagefull($parm=array())
    {
-	  $tp = e107::getParser();
-      return ($this->var['download_image']) ? "<img class='download-image dl_image download-view-image img-responsive ".vartrue($parm['class'])."' src='".$tp->thumbUrl($this->var['download_image'])."' alt='*'  />" : "";
+
+      if(!empty($this->var['download_image']))
+      {
+
+         $opts = array(
+                'legacy' => "{e_FILE}downloadimages/",
+                'class'  => 'download-image dl_image download-view-image img-responsive img-fluid '.vartrue($parm['class']),
+               'alt' => basename($this->var['download_image'])
+         );
+
+         return e107::getParser()->toImage($this->var['download_image'], $opts);
+      }
+
    }
    
    /**
@@ -606,7 +653,7 @@ class download_shortcodes extends e_shortcode
       		$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],true,'emotes, no_tags'))."\")'";
 		}
 		
-		$url = e107::getUrl()->create('download/request/item',array('id'=>$this->var['download_id'], 'name'=>$this->var['download_sef']));	
+		$url = 	$url = $tp->parseTemplate("{DOWNLOAD_REQUEST_URL}",true,$this); //$this->sc_download_request_url();
      	
      	if(varset($parm['type']) == 'href')
 		{
@@ -909,6 +956,7 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_cat_search()
    {
+		$tp = e107::getParser();
    		$text = "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>";
    		$text .= '<div><div class="input-group">';
 		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_SEARCH."\" maxlength='50' />
@@ -918,9 +966,11 @@ class download_shortcodes extends e_shortcode
 			
 		$text .= '
               <span class="input-group-btn">
-              <button class="btn btn-default" type="submit" name="s"  value="1">
-              <span class="glyphicon glyphicon-search"></span>
-             </button>
+              <button class="btn btn-default" type="submit" name="s"  value="1">';
+              
+              $text .= $tp->toIcon('glyphicon-search.glyph');
+
+             $text .= '</button>
              </span>
              </div><!-- /input-group -->
         </div></form>';

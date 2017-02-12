@@ -2,12 +2,13 @@
 <e107Theme name="Bootstrap 3" version="1.0" date="2013-12-25" compatibility="2.0">
 	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
 	<summary>Bootstrap3 e107 theme</summary>
-	<description>a bootstrap 3 theme for the frontend</description>
+	<description>a simple bootstrap 3 template for the frontend</description>
 	<category>generic</category>
 	<plugins>
 		<plugin name='featurebox' url='core' />
 		<plugin name='gallery' url='core' />
         <plugin name='rss_menu' url='core' />
+		<plugin name='social' url='core' />
 	</plugins>
 	<keywords>
 		<word>bootstrap</word>
@@ -17,8 +18,11 @@
 		<image>preview_frontend.png</image>
 	</screenshots>
 	<stylesheets>
-		<css file="style.css" name="Default"  />
-        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' />
+		<css file="style.css" name="Default" library='bootstrap,fontawesome'  />
+        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' library='false' />
+		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" scope='admin' library='false' />
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" library='false' scope='admin' />
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" library='false' scope='admin' />
         <css file="*" name="*"  />
 	</stylesheets>
 	<layouts>
@@ -42,4 +46,9 @@
 			</menuPresets>	
 		</layout>
 	</layouts>
+	<themePrefs>
+		<pref name='branding'>sitename</pref>
+		<pref name='nav_alignment'>right</pref>
+		<pref name='usernav_placement'>top</pref>
+	</themePrefs>
 </e107Theme>

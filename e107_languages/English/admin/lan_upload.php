@@ -32,7 +32,7 @@ define("UPLLAN_21", "unmoderated public upload");
 //define("UPLLAN_22", "ID");//LAN_ID
 //define("UPLLAN_23", "Name");//LAN_NAME
 define("UPLLAN_24", "Filetype");
-define("UPLLAN_25", "Uploads Enabled?");
+define("UPLLAN_25", "Allow File Uploads");
 define("UPLLAN_26", "No public uploads will be permitted if disabled");
 define("UPLLAN_27", "unmoderated public uploads");
 
@@ -87,8 +87,8 @@ define("UPLLAN_64", "Manage Download");
 define("UPLLAN_66", "Download path error");
 //define("UPLLAN_67", "Anonymous");//LAN_ANONYMOUS
 define("UPLLAN_68", "SQL Error:");
-define("UPLLAN_69", "");
-define("UPLLAN_70", "");
+define("UPLLAN_69", "Imported");
+define("UPLLAN_70", "Send to [x]");
 
 
 ?>

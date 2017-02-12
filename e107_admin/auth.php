@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -19,12 +19,18 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+
+e107::getDb()->db_Mark_Time('(Start auth.php)');
+
 define('e_CAPTCHA_FONTCOLOR','#F9A533');
 
 
+
+
 // Required for a clean v1.x -> v2 upgrade. 
-$core = e107::getConfig('core'); 		
-if($core->get('admintheme') != 'bootstrap' && $core->get('admintheme') != 'bootstrap3')
+$core = e107::getConfig('core');
+
+if($core->get('admintheme') != 'bootstrap3')
 {
 	$core->update('admintheme','bootstrap3');
 	$core->update('adminstyle','infopanel');
@@ -34,8 +40,16 @@ if($core->get('admintheme') != 'bootstrap' && $core->get('admintheme') != 'boots
 	e107::getRedirect()->redirect(e_SELF);		
 }
 
+$admincss = trim($core->get('admincss'));
+if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css' || $admincss === 'admin_light.css')
+{
+	$core->update('admincss','css/bootstrap-dark.min.css');
+	$core->save(false,true);
+	e107::getRedirect()->redirect(e_SELF);
+}
+
 // Check Admin-Perms for current language and redirect if necessary. 
-if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE))
+if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANGUAGE) && empty($_E107['no_language_perm_check']))
 {
 	$lng = e107::getLanguage();
 
@@ -66,9 +80,12 @@ if (ADMIN)
 		// XXX LOGIN AS Temporary solution, we need something smarter, e.g. reserved message stack 'admin' which will be always printed
 		// inside admin area
 		if(e107::getUser()->getSessionDataAs())
-		{ // TODO - lan
+		{  
 			$asuser = e107::getSystemUser(e107::getUser()->getSessionDataAs(), false);
-			e107::getMessage()->addInfo('Successfully logged in as '.($asuser->getId()  ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown'). ' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">[logout]</a>');
+			
+			$lanVars = array ('x' => ($asuser->getId() ? $asuser->getName().' ('.$asuser->getValue('email').')' : 'unknown')) ;
+			e107::getMessage()->addInfo($tp->lanVars(ADLAN_164, $lanVars).' <a href="'.e_ADMIN_ABS.'users.php?mode=main&amp;action=logoutas">['.LAN_LOGOUT.']</a>');
+			
 		}
 		// NEW, legacy 3rd party code fix, header called inside the footer o.O
 		if(deftrue('e_ADMIN_UI'))
@@ -127,7 +144,7 @@ else
 		{
 			$admin_log->e_log_event(4, __FILE__."|".__FUNCTION__."@".__LINE__, "LOGIN", LAN_ROLL_LOG_11, "U: ".$tp->toDB($_POST['authname']), FALSE, LOG_TO_ROLLING);
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
-		//	header("location: ../index.php");
+
 			e107::getRedirect()->redirect('admin.php?failed');
 			exit;
 		}
@@ -152,11 +169,10 @@ else
 			$class_list[] = e_UC_MEMBER;
 			$class_list[] = e_UC_PUBLIC;
 
-			
-			$user_logging_opts = e107::getConfig()->get('user_audit_opts');
-			if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'], ''), $class_list))
-			{ // Need to note in user audit trail
-				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, '', $user_id, $user_name);
+
+			if (in_array(varset($pref['user_audit_class'], ''), $class_list))
+			{
+				e107::getAdminLog()->user_audit(USER_AUDIT_LOGIN, 'Login via admin page', $row['user_id'], $row['user_name']);
 			}
 
 			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
@@ -294,11 +310,31 @@ class auth
 	// NOTE: this should NOT be a template of the admin-template, however themes may style it using css. 
 	
 		$class = (e_QUERY == 'failed') ? "class='e-shake'" : "";
-			
+
+
+
 		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
-		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='login' /></div>
+		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='".LAN_LOGIN."' /></div>
 		<div id='login-admin' class='center'>
-		<div {$class}>
+		<div>";
+
+		if(e_QUERY == 'failed')
+		{
+			e107::lan('core', 'login');
+			$text .= "<div class='alert alert-danger'>".LAN_LOGIN_21."</div>";
+			$text .= "<script type='text/javascript'>
+				window.setTimeout(function() {
+			    $('.alert').fadeTo(500, 0).slideUp(500, function(){
+			        $(this).remove();
+			    });
+			}, 5000);
+			</script>";
+
+		}
+
+
+
+		$text .= "
 		<div class='panel well panel-primary'>
 			<div class='panel-heading'><h3 class='panel-title'>".LAN_HEADER_04."</h3></div>
 
@@ -306,13 +342,13 @@ class auth
 		    <div class='field'>
 		    	<label for='username'>".ADLAN_89."</label> 
 		    	<input class='tbox e-tip' type='text' autofocus required='required' name='authname' placeholder='".ADLAN_89."' id='username' size='30' value='' maxlength='".varset($pref['loginname_maxlength'], 30)."' />
-		    	<div class='field-help'>".LAN_ENTER_USRNAME_EMAIL."</div>
+		    	<div class='field-help' data-placement='right'>".LAN_ENTER_USRNAME_EMAIL."</div>
 		   	</div>			
 		
 		    <div class='field'>
 		    	<label for='userpass'>".ADLAN_90."</label>
-		    	<input class='tbox e-tip' type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
-		    	<div class='field-help'>".LAN_PWD_REQUIRED."</div>
+		    	<input class='tbox e-tip'  type='password' required='required' name='authpass' placeholder='".ADLAN_90."' id='userpass' size='30' value='' maxlength='30' />
+		    	<div class='field-help' data-placement='right'>".LAN_PWD_REQUIRED."</div>
 		    </div>";
 		
 		if ($use_imagecode)
@@ -341,7 +377,7 @@ class auth
 		    
 		e107::getRender()->tablerender("", $text, 'admin-login');
 		echo "<div class='row-fluid'>
-			<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>Powered by e107</a></span> <a href='".e_BASE."index.php'>Return to Website</a></div>
+						<div class='center' style='margin-top:25%; color:silver'><span style='padding:0 40px 0 0px;'><a href='http://e107.org'>".ADLAN_165."</a></span> <a href='".e_BASE."index.php'>".ADLAN_166."</a></div>
 			</div>";
 	}
 
@@ -424,6 +460,7 @@ class auth
 				{
 					return $row;
 				}
+
 			}
 		}
 		return array("authfail", "reason"=>$reason);

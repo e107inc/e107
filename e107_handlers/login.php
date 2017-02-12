@@ -13,11 +13,9 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-error_reporting(E_ALL);
-
 
 // require_once(e_HANDLER.'user_handler.php'); //shouldn't be necessary
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_login.php');
 
 // TODO - class constants
 define ('LOGIN_TRY_OTHER', 2);		// Try some other authentication method
@@ -165,12 +163,11 @@ class userlogin
 		// Check secure image
 		if (!$forceLogin && $pref['logcode'] && extension_loaded('gd'))
 		{
-			require_once(e_HANDLER."secure_img_handler.php");
-			$sec_img = new secure_image;
-			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
-			{	// Invalid code
-				return $this->invalidLogin($username,LOGIN_BAD_CODE);
+			if ($secImgResult = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // Invalid code
+			{
+				return $this->invalidLogin($username, LOGIN_BAD_CODE, $secImgResult);
 			}
+
 		}
 
 		if (empty($this->userData))		// May have retrieved user data earlier
@@ -213,6 +210,14 @@ class userlogin
 		{  // May want to rewrite password using salted hash (or whatever the preferred method is) - $pass_result has the value to write
 			// If login by email address also allowed, will have to write that value too
 //		  	$sql->update('user',"`user_password` = '{$pass_result}' WHERE `user_id`=".intval($this->userData['user_id']));
+			$reHashedPass = $this->userMethods->rehashPassword($this->userData,$userpass);
+			if($reHashedPass !==false)
+			{
+				$log = e107::getLog();
+				$auditLog = "User Password ReHashed";
+				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
+				$this->userData['user_password'] = $reHashedPass;
+			}
 		}
 
 
@@ -233,11 +238,11 @@ class userlogin
 		$user_email = $this->userData['user_email'];
 
 		/* restrict more than one person logging in using same us/pw */
-		if($pref['disallowMultiLogin'])
+		if(!empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
-			if($sql->db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
+			if($sql->select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
-				return $this->invalidLogin($username,LOGIN_MULTIPLE,$user_id);
+				return $this->invalidLogin($username, LOGIN_MULTIPLE, $user_id);
 			}
 		}
 
@@ -251,11 +256,13 @@ class userlogin
 		// Problem is that USERCLASS_LIST just contains 'guest' and 'everyone' at this point
 		$class_list = $this->userMethods->addCommonClasses($this->userData, TRUE);
 
-		$user_logging_opts = e107::getConfig()->get('user_audit_opts');
-		if (isset($user_logging_opts[USER_AUDIT_LOGIN]) && in_array(varset($pref['user_audit_class'],''),$class_list))
+	//	$user_logging_opts = e107::getConfig()->get('user_audit_opts');
+
+	/*	if (in_array(varset($pref['user_audit_class'],''), $class_list))
 		{  // Need to note in user audit trail
-			$this->e107->admin_log->user_audit(USER_AUDIT_LOGIN,'', $user_id,$user_name);
-		}
+			$log = e107::getLog();
+			$log->user_audit(USER_AUDIT_LOGIN,'', $user_id, $user_name);
+		}*/
 
 		$edata_li = array('user_id' => $user_id, 'user_name' => $user_name, 'class_list' => implode(',',$class_list), 'remember_me' => $autologin, 'user_admin'=>$user_admin, 'user_email'=> $user_email);
 		e107::getEvent()->trigger("login", $edata_li);
@@ -335,31 +342,42 @@ class userlogin
 	protected function lookupUser($username, $forceLogin)
 	{
 		$pref = e107::getPref();
+		$log = e107::getLog();
+
 		$maxLength = varset($pref['loginname_maxlength'],30);
 
-		if(varset($pref['allowEmailLogin'])==1) // Email login only
+		/*
+		 * 2: Username/Email and Password
+		 * 1: Email and Password
+		 * 0: Username and Password
+		 */
+		if(!empty($pref['allowEmailLogin'])) // Email login only
 		{
 			$maxLength = 254; // Maximum email length	
 		}
 
 		// Check username general format
-		if (!$forceLogin && (strlen($username) > $maxLength))
-		{  // Error - invalid username
+		if (!$forceLogin && (strlen($username) > $maxLength)) // Error - invalid username
+		{
+			$auditLog = array('reason'=>'username longer than maxlength', 'maxlength'=> $maxLength, 'username'=>$username);
+			$log->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			$this->invalidLogin($username,LOGIN_BAD_USERNAME);
 			return FALSE;
 		}
 
 		$query = $this->getLookupQuery($username, $forceLogin);
 
-		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well
-		{	// Invalid user
+		if (e107::getDb()->select('user', '*', $query) !== 1) 	// Handle duplicate emails as well // Invalid user
+		{
+			$auditLog = array('reason'=>'query failed to return a result', 'query'=>$query, 'username'=>$username);
+			$log->user_audit(USER_AUDIT_LOGIN, $auditLog, 0, $username);
 			return $this->invalidLogin($username,LOGIN_BAD_USER);
 		}
 
 		// User is in DB here
-		$this->userData = e107::getDb()->fetch(MYSQL_ASSOC);		// Get user info
+		$this->userData = e107::getDb()->fetch();		// Get user info
 		$this->userData['user_perms'] = trim($this->userData['user_perms']);
-		$this->lookEmail = $this->lookEmail && ($username == $this->userData['user_email']);		// Know whether login name or email address used now
+		$this->lookEmail = ($username == $this->userData['user_email']) ? 1 : 0;		// Know whether login name or email address used now
 		
 		return TRUE;
 	}
@@ -383,7 +401,7 @@ class userlogin
 
         $qry[0] = "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'";  // username only  (default)
 		$qry[1] = "{$dbAlias}`user_email` = '".$tp->toDB($username)."'";   // email only
-		$qry[2] = (strpos($username,'@') !== FALSE ) ? "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$tp->toDB($username)."'" : $qry[0];  //username or email
+		$qry[2] = (strpos($username,'@') !== false ) ? "{$dbAlias}`user_loginname`= '".$tp->toDB($username)."'  OR {$dbAlias}`user_email` = '".$tp->toDB($username)."'" : $qry[0];  //username or email
 		
 
 		// Look up user in DB - even if email addresses allowed, still look up by user name as well - user could have specified email address for their login name
@@ -406,9 +424,10 @@ class userlogin
 	protected function checkUserPassword($username, $userpass, $response, $forceLogin)
 	{
 		$pref = e107::getPref();
+		$log = e107::getAdminLog();
 		
 		if($forceLogin === 'provider') return true;
-		
+		/*
 		if ($this->lookEmail && vartrue($pref['passwordEncoding']))
 		{
 			$tmp = e107::getArrayStorage()->unserialize($this->userData['user_prefs']);
@@ -420,10 +439,8 @@ class userlogin
 		{
 			$requiredPassword = $this->userData['user_password'];
 		}
+		*/
 
-		// FIXME - [SecretR] $username is not set and I really can't get the idea.
-		//$username = $this->userData['user_loginname']; // TODO for Steve - temporary fix, where $username comes from?
-		
 		// Now check password
 		if ($forceLogin)
 		{
@@ -440,23 +457,40 @@ class userlogin
 			if ((($pref['password_CHAP'] > 0) && ($response && $gotChallenge) && ($response != $session->get('challenge'))) || ($pref['password_CHAP'] == 2))
 			{  // Verify using CHAP
 			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","CHAP login",$aLogVal, FALSE, LOG_TO_ROLLING);
-				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $requiredPassword)) === PASSWORD_INVALID)
+				if (($pass_result = $this->userMethods->CheckCHAP($session->get('challenge'), $response, $username, $this->userData['user_password'])) === PASSWORD_INVALID)
 				{
 					return $this->invalidLogin($username,LOGIN_CHAP_FAIL);
 				}
 			}
-			else
+			else // Plaintext password
 			{
-				// Plaintext password
-			  	//$this->e107->admin_log->e_log_event(4,__FILE__."|".__FUNCTION__."@".__LINE__,"DBG","Plaintext login",$aLogVal, FALSE,LOG_TO_ROLLING);
-				if (($pass_result = $this->userMethods->CheckPassword($userpass,($this->lookEmail ? $this->userData['user_loginname'] : $username),$requiredPassword)) === PASSWORD_INVALID)
+
+				$login_name = ($this->lookEmail) ? $this->userData['user_loginname'] : $username;
+
+			  	$auditLog = array(
+					'type'              => (($this->lookEmail) ? 'email' : 'userlogin'),
+					'login_name'        => $login_name,
+					'userpass'          => $userpass,
+					'pwdHash'           => $this->userData['user_password']
+				);
+
+				if (($pass_result = $this->userMethods->CheckPassword($userpass, $login_name, $this->userData['user_password'])) === PASSWORD_INVALID)
 				{
+					$auditLog['result'] = intval($pass_result);
+					$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 					return $this->invalidLogin($username,LOGIN_BAD_PW);
 				}
+
+				$auditLog['result'] = intval($pass_result);
+
+				$log->user_audit(USER_AUDIT_LOGIN, $auditLog, $this->userData['user_id'], $this->userData['user_name']);
 			}
+
+
 			$this->passResult = $pass_result;
 		}
-		return TRUE;
+
+		return true;
 	}
 
 
@@ -541,7 +575,7 @@ class userlogin
 				$doCheck = true;
 				break;
 			case LOGIN_BAD_CODE :
-				$message = LAN_LOGIN_23;
+				$message = $extra_text; // LAN_LOGIN_23;
 				$this->logNote('LAN_ROLL_LOG_02', $username);
 				break;
 			case LOGIN_NOT_ACTIVATED :
@@ -580,6 +614,8 @@ class userlogin
 
 		define('LOGINMESSAGE', $message);
 
+	//	$sql->update('online', 'user_active = 0 WHERE user_ip = "'.$this->userIP.'" LIMIT 1');
+
 		if ($doCheck) // See if ban required (formerly the checkibr() function)
 		{
 			if($pref['autoban'] == 1 || $pref['autoban'] == 3) // Flood + Login or Login Only.
@@ -614,8 +650,10 @@ class userlogin
 	//	$text  = e107::getParser()->toDB($text);
 	//	$text = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS_);
 
-		$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+		$debug = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
 
+		// unset($debug[0]);
+		$debug[0] = e_REQUEST_URI;
 
 	//	$array = debug_backtrace();
 	//	e107::getLog()->e_log_event(4, $array, "LOGIN", $title, $text, FALSE, LOG_TO_ROLLING);

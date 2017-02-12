@@ -17,17 +17,20 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_db_verify.php');
 
 class db_verify
 {
-	var $backUrl = "";
-	var $tables = array();
-	var $sqlTables = array();
+	var $backUrl       = "";
+	var $sqlFileTables = array();
+	private $sqlDatabaseTables   = array();
+
 	var $sqlLanguageTables = array();
 	var $results = array();
 	var $indices = array(); // array(0) - Issue?
 	var $fixList = array();
+	private $currentTable = null;
+	private $internalError = false;
 	
 	var $fieldTypes = array('time','timestamp','datetime','year','tinyblob','blob',
 							'mediumblob','longblob','tinytext','mediumtext','longtext','text','date');
@@ -44,24 +47,55 @@ class db_verify
 		);
 	
 	var $errors = array();
+
+	const cachetag = 'Dbverify';
 	/**
 	 * Setup
 	 */
 	function __construct()
 	{
 				
-		$ns = e107::getRender();
-		$pref = e107::getPref();
-		$mes = e107::getMessage();
-		$frm = e107::getForm();
-			
-		$this->backUrl = e_SELF;	
-			
-		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
-		$this->tables['core'] = $this->getTables($core_data);
-		
+
+		$sql = e107::getDb();
+		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+
+		$this->backUrl = e_SELF;
+
+		if(!deftrue('e_DEBUG') && $tmp = e107::getCache()->retrieve(self::cachetag, 15, true, true))
+		{
+			$this->sqlFileTables = e107::unserialize($tmp);
+
+		}
+		else
+		{
+			$this->sqlFileTables = $this->load();
+			$data = e107::serialize($this->sqlFileTables,'json');
+			e107::getCache()->set(self::cachetag,$data, true, true, true);
+		}
+
+
+
+
 		$this->sqlLanguageTables = $this->getSqlLanguages();
-		if(varset($pref['e_sql_list']))
+
+	//	$this->loadCreateTableData();
+
+		return $this;
+		
+	}
+
+	private function load()
+	{
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+
+		$ret = array();
+
+		$core_data = file_get_contents(e_CORE.'sql/core_sql.php');
+		$ret['core'] = $this->getSqlFileTables($core_data);
+
+
+		if(!empty($pref['e_sql_list']))
 		{
 			foreach($pref['e_sql_list'] as $path => $file)
 			{
@@ -70,8 +104,9 @@ class db_verify
 				{
 					$id = str_replace('_sql','',$file);
 					$data = file_get_contents($filename);
-					$this->tables[$id] = $this->getTables($data);
-			      	unset($data);				
+					$this->currentTable = $id;
+					$ret[$id] = $this->getSqlFileTables($data);
+			      	unset($data);
 				}
 				else
 				{
@@ -80,10 +115,19 @@ class db_verify
 				}
 			}
 		}
-		
+
+		return $ret;
+
 	}
 
-	
+
+
+	private function loadCreateTableData()
+	{
+
+
+
+	}
 	
 	/**
 	 * Main Routine for checking and rendering results. 
@@ -112,11 +156,8 @@ class db_verify
 		
 	function runComparison($fileArray)
 	{
-	
-		$ns = e107::getRender();
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
-		
+
 		foreach($fileArray as $tab)
 		{			
 			$this->compare($tab);	
@@ -134,12 +175,18 @@ class db_verify
 		}
 		else
 		{
-			$mes->addSuccess("Tables appear to be okay!"); //TODO LAN
-			$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
+			if($this->internalError === false)
+			{
+				$mes->addSuccess(DBLAN_111);
+				$mes->addSuccess("<a class='btn btn-primary' href='".$this->backUrl."'>".LAN_BACK."</a>");
+			}
+
+
 			//$debug = "<pre>".print_r($this->results,TRUE)."</pre>";
 			//$mes->add($debug,E_MESSAGE_DEBUG);	
 			//$text .= "<div class='buttons-bar center'>".$frm->admin_button('back', DBVLAN_17, 'back')."</div>";
-			$ns->tablerender("Okay",$mes->render().$text);
+			echo $mes->render();
+		//	$ns->tablerender("Okay",$mes->render().$text);
 		}	
 			
 	}	
@@ -164,11 +211,11 @@ class db_verify
 		{
 			foreach($exclude as $val)
 			{
-				unset($this->tables[$val]);
+				unset($this->sqlFileTables[$val]);
 			}
 		}
 		
-		$dtables = array_keys($this->tables);
+		$dtables = array_keys($this->sqlFileTables);
 
 		foreach($dtables as $tb)
 		{
@@ -194,21 +241,32 @@ class db_verify
 	
 	function compare($selection,$language='')
 	{
-		
-		if(empty($this->tables[$selection]['tables']))
+
+		$this->currentTable = $selection;
+
+		if(!isset($this->sqlFileTables[$selection])) // doesn't have an SQL file.
 		{
-			return; 	
+		// e107::getMessage()->addDebug("No SQL File for ".$selection);
+			return false;
 		}
-	
-		foreach($this->tables[$selection]['tables'] as $key=>$tbl)
+
+
+		if(empty($this->sqlFileTables[$selection]['tables']))
+		{
+			//$this->internalError = true;
+			e107::getMessage()->addDebug("Couldn't read table data for ".$selection);
+			return false;
+		}
+
+		foreach($this->sqlFileTables[$selection]['tables'] as $key=>$tbl)
 		{
 			//$this->errors[$tbl]['_status'] = 'ok'; // default table status
 					
 			$rawSqlData = $this->getSqlData($tbl,$language);
 			
 			
-			
-			if($rawSqlData === FALSE)
+
+			if($rawSqlData === false)
 			{
 				if($language) continue;
 				
@@ -219,13 +277,20 @@ class db_verify
 				// echo "missing table: $tbl";
 				continue;
 			}
-			
-			$sqlDataArr     = $this->getTables($rawSqlData);
-			
-			$fileFieldData	= $this->getFields($this->tables[$selection]['data'][$key]);
+
+		//	echo "<h4>RAW</h4>";
+		//	print_a($rawSqlData);
+					//	$this->currentTable = $tbl;v
+
+			$sqlDataArr     = $this->getSqlFileTables($rawSqlData);
+
+		//	echo "<h4>PARSED</h4>";
+		//	print_a($sqlDataArr);
+
+			$fileFieldData	= $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
 			$sqlFieldData	= $this->getFields($sqlDataArr['data'][0]);	
 			
-			$fileIndexData	= $this->getIndex($this->tables[$selection]['data'][$key]);
+			$fileIndexData	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
 			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
@@ -236,11 +301,11 @@ class db_verify
 			$debugB .= print_r($sqlIndexData,TRUE);
 		*/
 		
-			$debugA = $this->tables[$selection]['data'][$key];	// Extracted Raw Field Text
+			$debugA = $this->sqlFileTables[$selection]['data'][$key];	// Extracted Raw Field Text
 		//	$debugB = $rawSqlData;
 			$debugB = $sqlDataArr['data'][0];	// Extracted Raw Field Text	
 			
-			if(isset($debugA) && (e_PAGE == 'db.php'))
+			if(isset($debugA) && (e_PAGE === 'db.php'))
 			{
 									
 				$debug = "<table class='table' border='1'>
@@ -342,7 +407,7 @@ class db_verify
 		foreach($this->results as $tabs => $field)
 		{
 			$file = varset($this->results[$tabs]['_file']);		
-			if(varset($this->errors[$tabs]['_status']) == 'missing_table') // Missing Table
+			if(varset($this->errors[$tabs]['_status']) === 'missing_table') // Missing Table
 			{				
 				$this->fixList[$file][$tabs]['all'][] = 'create';
 			}					
@@ -428,7 +493,7 @@ class db_verify
 		foreach($this->results as $tabs => $field)
 		{
 					
-			if($this->errors[$tabs]['_status'] == 'missing_table') // Missing Table
+			if($this->errors[$tabs]['_status'] === 'missing_table') // Missing Table
 			{
 				$text .= "
 					<tr>
@@ -519,7 +584,7 @@ class db_verify
 	function renderTableName($tabs)
 	{
 		
-		if(substr($tabs,0,4)=="lan_")
+		if(strpos($tabs,"lan_") === 0)
 		{
 			list($tmp,$lang,$table) = explode("_",$tabs,3);
 			return $table. " (".ucfirst($lang).")";
@@ -567,7 +632,7 @@ class db_verify
 		
 		if(!$data) return;
 		
-		if($mode == 'index')
+		if($mode === 'index')
 		{
 			// print_a($data);
 			if($data['type'])
@@ -649,7 +714,7 @@ class db_verify
 			foreach($file as $table=>$val)
 			{
 				
-				$id = $this->getId($this->tables[$j]['tables'],$table); 
+				$id = $this->getId($this->sqlFileTables[$j]['tables'],$table);
 						
 				foreach($val as $field=>$fixes)
 				{
@@ -657,13 +722,13 @@ class db_verify
 					{				
 						if(substr($mode,0,5)== 'index')
 						{
-							$fdata = $this->getIndex($this->tables[$j]['data'][$id]);
+							$fdata = $this->getIndex($this->sqlFileTables[$j]['data'][$id]);
 							$newval = $this->toMysql($fdata[$field],'index');	
 						}
 						else
 						{
 							
-							$fdata = $this->getFields($this->tables[$j]['data'][$id]);											
+							$fdata = $this->getFields($this->sqlFileTables[$j]['data'][$id]);
 							$newval = $this->toMysql($fdata[$field]);	
 						}
 						
@@ -692,7 +757,7 @@ class db_verify
 							break;
 							
 							case 'create':
-								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->tables[$j]['data'][$id].") ENGINE=MyISAM;";
+								$query = "CREATE TABLE `".MPREFIX.$table."` (".$this->sqlFileTables[$j]['data'][$id].") ENGINE=MyISAM;";
 							break;
 						}
 						
@@ -727,30 +792,33 @@ class db_verify
 	
 	
 	
-	function getTables($sql_data)
+	function getSqlFileTables($sql_data)
 	{
 		if(!$sql_data)
 		{
-			return;
+			e107::getMessage()->addError("No SQL Data found in file");
+			return false;
 		}
 		
 		$ret = array();
-		
+
 		$sql_data = preg_replace("#\/\*.*?\*\/#mis", '', $sql_data);	// remove comments 
-		
+	//	echo "<h4>SqlData</h4>";
+	//	print_a($sql_data);
 	//	$regex = "/CREATE TABLE `?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
-	
-		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
+
+		$regex = "/CREATE TABLE (?:IF NOT EXISTS )?`?([\w]*)`?\s*?\(([\s\w\+\-_\(\),:'\. `]*)\)\s*(ENGINE|TYPE)\s*?=\s?([\w]*)[\w =]*;/i";
 	 			
 		$table = preg_match_all($regex,$sql_data,$match);
 		
+
 
 			
 		$tables = array();
 			
 		foreach($match[1] as $c=>$k)
 		{
-			if(substr($k,0, 5) == 'e107_') // remove prefix if found in sql dump. 
+			if(strpos($k,'e107_') === 0) // remove prefix if found in sql dump.
 			{
 				$k = substr($k, 5);	
 			}
@@ -763,7 +831,11 @@ class db_verify
 		$ret['data'] = $match[2];
 		$ret['engine'] = $match[4];
 		
-		
+		if(empty($ret['tables']))
+		{
+			e107::getMessage()->addDebug("Unable to parse ".$this->currentTable."_sql.php file data. Possibly missing a ';' at the end?");
+			e107::getMessage()->addDebug(print_a($regex,true));
+		}
 		
 		return $ret;
 	}
@@ -790,8 +862,15 @@ class db_verify
 		$mes = e107::getMessage();
 			
 	//	$regex = "/`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default .*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default [\w'.-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
-	
+		$regex = "/^\s*?`?([\w]*)`?\s*?(".implode("|",$this->fieldTypes)."|".implode("|",$this->fieldTypeNum).")\s?(?:\([\s]?([0-9,]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(?:(NOT NULL|NULL))?[\s]*(auto_increment|default|AUTO_INCREMENT|DEFAULT [\w'\s.\(:\)-]*)?[\s]?(comment [\w\s'.-]*)?[\s]?(?:PRIMARY KEY)?[\s]*?,?\s*?\n/im";
+
+		if(e_DEBUG)
+		{
+		//	e107::getMessage()->addDebug("Regex: ".print_a($data,true));
+		//	e107::getMessage()->addDebug("Regex: ".$regex);
+
+		}
+
 	//	echo $regex."<br /><br />";
 	
 		//	$regex = "/`?([\w]*)`?\s*(int|varchar|tinyint|smallint|text|char|tinyint) ?(?:\([\s]?([0-9]*)[\s]?\))?[\s]?(unsigned)?[\s]?.*?(NOT NULL|NULL)?[\s]*(auto_increment|default .*)?[\s]?,/i";		
@@ -886,7 +965,10 @@ class db_verify
 			$prefix .= "lan_".$language."_";
 			// $mes->addDebug("<h2>Retrieving Language Table Data: ".$prefix . $tbl."</h2>"); 				
 		}
-		
+
+
+
+
 		$sql = e107::getDb();
 
 		if(!$sql->isTable($tbl))
@@ -895,7 +977,7 @@ class db_verify
 			return false;
 		}
 
-		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');	
+
 	//	mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = 'SHOW CREATE TABLE `' . $prefix . $tbl . "`";
 		
@@ -905,14 +987,16 @@ class db_verify
 		if($z)
 		{
 		//	$row = mysql_fetch_row($z);
-			$row = $sql->fetch(MYSQL_NUM);
+			$row = $sql->fetch('num');
 			//return $row[1];
+
 			return stripslashes($row[1]).';'; // backticks needed. 
 			// return str_replace("`", "", stripslashes($row[1])).';';
 		}
 		else
 		{
 			$mes->addDebug('Failed: '.$qry);
+			$this->internalError = true;
 			return FALSE;
 		}
 	
@@ -959,7 +1043,7 @@ class db_verify
 					<tbody>
 		";
 	
-		foreach(array_keys($this->tables) as $t=>$x)
+		foreach(array_keys($this->sqlFileTables) as $t=>$x)
 		{
 			$text .= "
 				<tr>

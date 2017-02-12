@@ -307,7 +307,7 @@ if (!function_exists('asortbyindex'))
 if (!function_exists('r_emote')) 
 {
 	/**
-	 * @DEPRECATED
+	 * Still in use.
 	 */
 	function r_emote()
 	{
@@ -331,10 +331,24 @@ if (!function_exists('r_emote'))
 			$value = ($value2 ? $value2 : $value);
 			$value = ($value == '&|') ? ':((' : $value;
 			$value = " ".$value." ";
-			//TODO CSS class
-			$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+
+		//	$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"javascript:addtext('$value',true)\"><img src='$key' alt='' /></a> ";
+			$str .= "\n<a class='addEmote' data-emote=\"".$value."\" href=\"#\"><img src='$key' alt='' /></a> ";
 		}
-	
+
+		$JS = "
+
+		$('.addEmote').click(function(){
+
+			val = $(this).attr('data-emote')
+			addtext(val,true);
+			return false;
+		});
+		";
+
+		e107::js('footer-inline',$JS);
+
+
 		return "<div class='spacer'>".$str."</div>";
 	}
 }
@@ -398,7 +412,7 @@ if (!function_exists('multiarray_sort'))
 class e_array {
 
     /**
-    * Returns an array from stored array data.
+    * Returns an array from stored array data in php serialized, e107 var_export and json-encoded data. 
     *
     * @param string $ArrayData
     * @return array stored data
@@ -408,22 +422,101 @@ class e_array {
         if ($ArrayData == ""){
             return false;
         }
+
+        if(is_array($ArrayData))
+        {
+            return false;
+        }
         
         // Saftety mechanism for 0.7 -> 0.8 transition. 
-        if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:')
+        if(substr($ArrayData,0,2)=='a:' || substr($ArrayData,0,2)=='s:') // php serialize.
         {
             $dat = unserialize($ArrayData);
             $ArrayData = $this->WriteArray($dat,FALSE);
         }
-        
-        
-        $data = "";
-        $ArrayData = '$data = '.trim($ArrayData).';';
-        @eval($ArrayData);
-        if (!isset($data) || !is_array($data)) {
-            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
+
+	    if(substr($ArrayData,0,1) === '{' || substr($ArrayData,0,1) === '[') // json
+	    {
+	        $dat = json_decode($ArrayData, true);
+
+	     //   e107::getDebug()->log("Json data found");
+
+	        if(json_last_error() !=  JSON_ERROR_NONE && (e_DEBUG === true))
+	        {
+	            echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error (json)</h4></div>";
+		        echo "<pre>";
+				debug_print_backtrace();
+				echo "</pre>";
+	        }
+
+	        return $dat;
+	    }
+
+		// below is var_export() format using eval();
+
+        $ArrayData = trim($ArrayData);
+
+        if(strtolower(substr($ArrayData,0,5)) != 'array')
+        {
             return false;
         }
+
+		if(strpos($ArrayData,"0 => \'")!=false)
+		{
+             $ArrayData = stripslashes($ArrayData);
+		}
+
+	    $ArrayData = str_replace('=&gt;','=>',$ArrayData); //FIX for PDO encoding of strings. .
+
+
+	    if(trim($ArrayData) == 'Array') // Something went wrong with storage.
+        {
+            $debug = debug_backtrace(false);
+            e107::getMessage()->addDebug("Bad Array Storage found: ". print_a($debug,true));
+
+            return array();
+        }
+
+        $data = "";
+        $ArrayData = '$data = '.$ArrayData.';';
+
+		if(PHP_MAJOR_VERSION > 6) // catch parser error.
+	    {
+	        try
+	        {
+			    @eval($ArrayData);
+			}
+			catch (ParseError $e)
+			{
+
+				if(e_DEBUG === true)
+				{
+					$message = $e->getMessage();
+					$message .= print_a($ArrayData,true);
+					echo "<div class='alert alert-danger'><h4>e107::unserialize() Parser Error</h4>". $message. "</div>";
+					echo "<pre>";
+					debug_print_backtrace();
+					echo "</pre>";
+				}
+
+			    return array();
+
+			}
+
+	    }
+		else
+		{
+
+			@eval($ArrayData);
+	        if (!isset($data) || !is_array($data))
+	        {
+	            trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
+	            return false;
+	        }
+
+		}
+
+
         return $data;        
     }
     
@@ -432,18 +525,28 @@ class e_array {
     * Return a string containg exported array data.
     *
     * @param array $ArrayData array to be stored
-    * @param bool $AddSlashes default true, add slashes for db storage, else false
+    * @param bool|string $mode true = var_export with addedslashes, false = var_export (default), 'json' = json encoded
     * @return string
     */
-    public function serialize($ArrayData, $AddSlashes = false) 
+    public function serialize($ArrayData, $mode = false)
     {       
-        if (!is_array($ArrayData)) {
+        if (!is_array($ArrayData) || empty($ArrayData))
+        {
             return false;
         }
+
+        if($mode === 'json')
+        {
+            return json_encode($ArrayData, JSON_PRETTY_PRINT);
+        }
+
         $Array = var_export($ArrayData, true);
-        if ($AddSlashes == true) {
+
+        if ($mode == true)
+        {
             $Array = addslashes($Array);
         }
+
         return $Array;        
     }
 

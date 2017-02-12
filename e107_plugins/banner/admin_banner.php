@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2016 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -23,14 +23,44 @@
 require_once('../../class2.php');
 if (!getperms('D') && !getperms('P'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 
 $e_sub_cat = 'banner';
 
 e107::lan('banner',false,'front'); 
-e107::lan('banner',true,true); 
+e107::lan('banner',true,true);
+
+e107::css('inline', "
+
+.banner-image .tab-content { padding-top:15px;}
+
+
+");
+
+e107::js('footer-inline','
+
+	$("#banner-campaign-sel").on("change", function() {
+
+		vr = $(this).val();
+		if(vr == "_new_")
+		{
+			$("#banner-campaign").show("slow");
+		}
+		else
+		{
+			$("#banner-campaign").hide("slow");
+		}
+
+	});
+
+
+
+
+');
+
+
 
 
 class banner_admin extends e_admin_dispatcher
@@ -44,7 +74,7 @@ class banner_admin extends e_admin_dispatcher
 			'ui' 			=> 'banner_form_ui',
 			'uipath' 		=> null
 		),
-		
+
 
 	);	
 	
@@ -53,7 +83,7 @@ class banner_admin extends e_admin_dispatcher
 
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
-		'main/menu'			=> array('caption'=> BNRLAN_36, 'perm' => 'P'),	
+	//	'main/menu'			=> array('caption'=> BNRLAN_36, 'perm' => 'P'), //Done in Menu manager #2096
 	//	'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
 
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
@@ -69,11 +99,11 @@ class banner_admin extends e_admin_dispatcher
 
 
 
-				
+
 class banner_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'Banners';
+		protected $pluginTitle		= LAN_PLUGIN_BANNER_NAME;
 		protected $pluginName		= 'banner';
 		protected $table			= 'banner';
 		protected $pid				= 'banner_id';
@@ -82,35 +112,39 @@ class banner_ui extends e_admin_ui
 	//	protected $batchCopy		= true;		
 	//	protected $sortField		= 'somefield_order';
 	//	protected $orderStep		= 10;
-	//	protected $tabs				= array('General','Advanced'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
+		protected $tabs				= array(LAN_BASIC, LAN_ADVANCED); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable.
 		
 	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
 	
 		protected $listOrder		= 'banner_id DESC';
 	
-		protected $fields 		= array (  
+		protected $fields 		= array (
 		  'checkboxes'				=>   array ( 'title' => '', 		'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
-		  'banner_id' 				=>   array ( 'title' => LAN_ID, 	'data' => 'int', 'width' => '2%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banner_campaign' 		=>   array ( 'title' => 'Campaign', 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-	
-		  'banner_clientname'		=>   array ( 'title' => 'Clientname', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banner_clientlogin' 		=>   array ( 'title' => BNRLAN_12, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_clientpassword' 	=>   array ( 'title' => BNRLAN_13, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'strength=1&password=1&required=0&generate=1&nomask=1', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_image' 			=>   array ( 'title' => BNRLAN_14, 	'type' => 'image', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => 'thumb=0x50', 'writeParms' => 'media=banner&w=600', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_id' 				=>   array ( 'title' => LAN_ID, 	'type' => null, 'data' => 'int', 'width' => '2%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_campaign' 		=>   array ( 'title' => BNRLAN_11, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => array( 'tdClassRight'=>'form-inline'), 'class' => 'left', 'thclass' => 'left',  ),
+
+		  'banner_clientname'		=>   array ( 'title' => BANNERLAN_22, 'type' => 'method', 'tab'=>1, 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_clientlogin' 		=>   array ( 'title' => BNRLAN_12, 'type' => 'method',  'tab'=>1, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_clientpassword' 	=>   array ( 'title' => LAN_PASSWORD, 'type' => 'text',  'tab'=>1,'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => 'strength=1&password=1&required=0&generate=1&nomask=1', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_image' 			=>   array ( 'title' => LAN_IMAGE, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => 'thumb=0x50&legacyPath={e_IMAGE}banners', 'writeParms' => 'media=banner&w=600&legacyPath={e_IMAGE}banners', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clickurl' 		=>   array ( 'title' => BNRLAN_15, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'size=xxlarge&required=1', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banner_impurchased' 		=>   array ( 'title' => BNRLAN_16, 	'type' => 'number', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		
-		  'banner_startdate' 		=>   array ( 'title' => BNRLAN_17, 	'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_enddate' 			=>   array ( 'title' => BNRLAN_18, 		'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banner_active' 			=>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banner_impurchased' 		=>   array ( 'title' => BNRLAN_16, 	'type' => 'number', 'data' => 'int', 'width' => 'auto', 'inline' => true, 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center', 'help'=>'0 = unlimited' ),
+		  'banner_tooltip' 		    =>   array ( 'title' => LAN_TOOLTIP, 	'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'center', 'thclass' => 'center',  ),
+
+		  'banner_description' 		=>   array ( 'title' => LAN_DESCRIPTION, 	'type' => 'textarea', 'data' => 'str', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_keywords' 		=>   array ( 'title' => LAN_KEYWORDS, 	'type' => 'tags', 'data' => 'str', 'width' => 'auto', 'inline' => true, 'help' => 'When news or pages are loaded, this will limit banner result to matching keywords. Use with caution.', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+
+		  'banner_startdate' 		=>   array ( 'title' => LAN_START, 	'type' => 'datestamp',  'tab'=>1,'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_enddate' 			=>   array ( 'title' => LAN_END, 	'type' => 'datestamp',  'tab'=>1, 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		  'banner_active' 			=>   array ( 'title' => LAN_VISIBILITY, 'type' => 'userclass', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'batch'=>true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_clicks' 			=>   array ( 'title' => BANNERLAN_24, 		'type' => 'number', 'noedit'=>true, 'readonly'=>2, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		
+
 		  'click_percentage' 		=>   array ( 'title' => BANNERLAN_25, 	'type' => 'method', 'noedit'=>true, 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-	
-		  'banner_impressions' 		=>   array ( 'title' => 'Impressions', 	'type' => 'method', 'noedit'=>true, 'data' => 'int', 'width' => '12%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+
+		  'banner_impressions' 		=>   array ( 'title' => BANNERLAN_26, 	'type' => 'method', 'noedit'=>true, 'data' => 'int', 'width' => '12%',  'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banner_ip' 				=>   array ( 'title' => LAN_IP, 		'type' => 'hidden', 'noedit'=>true, 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 				=>   array ( 'title' => LAN_OPTIONS, 		'type' => null, 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
-		);		
+		);
 		
 		protected $fieldpref = array('banner_id', 'banner_campaign', 'banner_image', 'banner_clickurl', 'banner_clicks', 'banner_active', 'click_percentage', 'banner_impressions' );
 		
@@ -124,7 +158,7 @@ class banner_ui extends e_admin_ui
 	
 		public function init()
 		{
-			
+
 			if (!empty($_POST['update_menu']))
 			{
 				$this->menuPageSave();
@@ -143,11 +177,16 @@ class banner_ui extends e_admin_ui
 				$new_data['banner_clientname'] = $new_data['banner_clientname_sel'];
 					
 			}
-			
-			if(!empty($new_data['banner_campaign_sel']))
+
+			if(!empty($new_data['banner_campaign_sel']) && $new_data['banner_campaign_sel'] != '_new_')
 			{
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
 					
+			}
+
+			if(!empty($new_data['banner_image_remote']))
+			{
+				$new_data['banner_image'] = $new_data['banner_image_remote'];
 			}
 			
 			return $new_data;
@@ -160,7 +199,8 @@ class banner_ui extends e_admin_ui
 
 		public function onCreateError($new_data, $old_data)
 		{
-			// do something		
+			// do something
+			exit;
 		}		
 		
 		
@@ -179,6 +219,11 @@ class banner_ui extends e_admin_ui
 			if(!empty($new_data['banner_campaign_sel']))
 			{
 				$new_data['banner_campaign'] = $new_data['banner_campaign_sel'];
+			}
+
+			if(!empty($new_data['banner_image_remote']))
+			{
+				$new_data['banner_image'] = $new_data['banner_image_remote'];
 			}
 				
 			return $new_data;
@@ -236,6 +281,10 @@ class banner_ui extends e_admin_ui
 	
 		public function menuPage()
 		{
+
+			return e107::getMessage()->addInfo("The menu is now configured within the menu-manager.")->render();
+
+
 			$ns = e107::getRender();
 			$sql = e107::getDb();
 			$menu_pref = e107::getConfig('menu')->getPref('');
@@ -274,7 +323,7 @@ class banner_ui extends e_admin_ui
 							</colgroup>
 							<tbody>
 								<tr>
-									<td>".BNRLAN_37."</td>
+									<td>".LAN_CAPTION."</td>
 									<td>".$frm->text('banner_caption', $menu_pref['banner_caption'],255,'size=xxlarge')."</td>
 								</tr>
 								<tr>
@@ -355,6 +404,10 @@ class banner_form_ui extends e_admin_form_ui
 		$sql = e107::getDb();
 		if ($sql->select("banner"))
 		{
+
+			$this->campaigns['_new_'] =  "(".LAN_ADD.")";
+
+
 			while ($banner_row = $sql->fetch())
 			{
 				if (strpos($banner_row['banner_campaign'], "^") !== FALSE) 
@@ -389,6 +442,76 @@ class banner_form_ui extends e_admin_form_ui
 	}
 
 
+	function banner_image($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return e107::getParser()->toImage($curVal, array('h'=>100));
+			break;
+
+			case 'write': // Edit Page
+
+				$opts =   'media=banner&w=600&legacyPath={e_IMAGE}banners';
+
+				if(strpos($curVal,'http') === 0)
+				{
+					$val1 = null;
+					$val2 = $curVal;
+				}
+				else
+				{
+					$val1 = $curVal;
+					$val2 = null;
+				}
+
+				$tab1 = $this->imagepicker('banner_image',$val1, null, $opts);
+
+
+				$tab2 = "<p>". $this->text('banner_image_remote',$val2, 255, array('size'=>'xxlarge', 'placeholder'=>'eg. http://some-website.com/banner-image.jpg', 'title'=>'This will override any local image you have set.'))."</p>";
+
+				if(!empty($val2))
+				{
+					$tab2 .= e107::getParser()->toImage($val2);
+				}
+
+				$tabText = array(
+					'local' => array('caption'=>BNRLAN_50, 'text'=>$tab1),
+					'remote' => array('caption'=>BNRLAN_51, 'text'=>$tab2),
+				);
+
+				return "<div class='banner-image'>".$this->tabs($tabText)."</div>";
+			//	return $frm->text('banner_clientname',$curVal);
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  $this->clients;
+			break;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	// Custom Method/Function 
 	function banner_clientname($curVal,$mode)
@@ -402,6 +525,7 @@ class banner_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write': // Edit Page
+				$text = '';
 				if (count($this->clients)) 
 				{
 					$text = $frm->select('banner_clientname_sel',$this->clients, $curVal,'', LAN_SELECT);
@@ -410,7 +534,7 @@ class banner_form_ui extends e_admin_form_ui
 				else
 				{
 					
-					$text .= $frm->text('client_name',$curVal);	
+					$text .= $frm->text('banner_clientname',$curVal);
 					$text .= "<span class='field-help'>".BNRLAN_29."</span>";
 				}
 				
@@ -468,7 +592,7 @@ class banner_form_ui extends e_admin_form_ui
 			
 			case 'filter':
 			case 'batch':
-				return  $array; 
+				return  array();
 			break;
 		}
 	}
@@ -488,11 +612,11 @@ class banner_form_ui extends e_admin_form_ui
 				if (count($this->campaigns)) 
 				{
 					$text = $frm->select('banner_campaign_sel',$this->campaigns, $curVal,'',LAN_SELECT);
-					$text .= $frm->text('banner_campaign','','',array('placeholder'=> 'Or enter a new campaign'));	
+					$text .= $frm->text('banner_campaign','','',array('size'=>'xlarge', 'class'=>'e-hideme','placeholder'=> 'Enter a campaign name'));
 				}
 				else
 				{
-					$text = $frm->text('banner_campaign',$curVal);	
+					$text = $frm->text('banner_campaign',$curVal, '', array('size'=>'xlarge', 'placeholder'=> 'Enter a campaign name'));
 				}
 				return $text; // $frm->text('banner_campaign',$curVal);		
 			break;
@@ -510,7 +634,7 @@ class banner_form_ui extends e_admin_form_ui
 	{
 		if($mode != 'read')
 		{
-			return; 
+			return null;
 		}
 		
 		$frm = e107::getForm();		
@@ -521,8 +645,8 @@ class banner_form_ui extends e_admin_form_ui
 		$clickpercentage = ($banner_row['banner_clicks'] && $banner_row['banner_impressions'] ? round(($banner_row['banner_clicks'] / $banner_row['banner_impressions']) * 100,1)."%" : "-");
 		
 		return $clickpercentage; 
-		$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
-		$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
+		//$impressions_left = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] - $banner_row['banner_impressions'] : BANNERLAN_30);
+	//	$impressions_purchased = ($banner_row['banner_impurchased'] ? $banner_row['banner_impurchased'] : BANNERLAN_30);
 	}	
 	
 	
@@ -803,14 +927,14 @@ if (!$action)
 						<tr>
 							<td class='center'>".$banner_row['banner_id']."</td>
 							<td class='e-pointer' onclick=\"e107Helper.toggle('banner-infocell-{$banner_row['banner_id']}')\">
-								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit' title='".BNRLAN_7."'>
-								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BNRLAN_8)."</a>
+								<a href='#banner-infocell-{$banner_row['banner_id']}' class='action e-expandit' title='".LAN_STATS."'>
+								".($banner_row['banner_clientname'] ? $banner_row['banner_clientname'] : BANNERLAN_31)."</a>
 								<div class='e-hideme clear' id='banner-infocell-{$banner_row['banner_id']}'>
 									<div class='indent'>
 										<div class='field-spacer'><strong>".BNRLAN_11.": </strong>".$banner_row['banner_campaign']."</div>
 										<div class='field-spacer'><strong>".LAN_VISIBILITY." </strong>".r_userclass_name($banner_row['banner_active'])." ".$textvisivilitychanged."</div>
-										<div class='field-spacer'><strong>".BNRLAN_9.": </strong>".$start_date."</div>
-										<div class='field-spacer'><strong>".BNRLAN_10.": </strong>".$end_date."</div>
+										<div class='field-spacer'><strong>".LAN_START.": </strong>".$start_date."</div>
+										<div class='field-spacer'><strong>".LAN_END.": </strong>".$end_date."</div>
 									</div>
 								</div>
 							</td>
@@ -1006,11 +1130,11 @@ if ($action == "create")
 						<td>".$frm->text('client_login', $_POST['client_login'], '20')."</td>
 					</tr>
 					<tr>
-						<td>".BNRLAN_13."</td>
+						<td>".LAN_PASSWORD."</td>
 						<td>".$frm->password('client_password', $_POST['client_password'], '50','strength=1&generate=1&required=0')."</td>
 					</tr>
 					<tr>
-						<td>".BNRLAN_14."</td>
+						<td>".LAN_IMAGE."</td>
 						<td>".$frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
 						
 						
@@ -1076,12 +1200,12 @@ if ($action == "create")
 						<td>".$frm->number('impressions_purchased', $_POST['impressions_purchased'], 10)."<span class='field-help'>".BNRLAN_31."</span></td>
 					</tr>
 					<tr>
-						<td>".BNRLAN_17."</td>
+						<td>".LAN_START."</td>
 						<td>".$frm->datepicker('banner_startdate', $_POST['banner_startdate'],'type=date')."</td>
 					</tr>
 					<tr>
-						<td>".BNRLAN_18."</td>
-						<td>".$frm->datepicker('banner_enddate', $_POST['banner_enddate'],'type=date')."</td>			
+						<td>".LAN_END."</td>
+						<td>".$frm->datepicker('banner_enddate', $_POST['banner_enddate'],'type=date')."</td>
 					</tr>
 					<tr>
 						<td>".LAN_VISIBILITY."</td>
@@ -1149,7 +1273,7 @@ if ($action == "menu")
 					</colgroup>
 					<tbody>
 						<tr>
-							<td>".BNRLAN_37."</td>
+							<td>".LAN_CAPTION."</td>
 							<td>".$frm->text('banner_caption', $menu_pref['banner_caption'],255,'size=xxlarge')."</td>
 						</tr>
 						<tr>

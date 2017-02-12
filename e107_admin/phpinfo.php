@@ -6,17 +6,13 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_admin/phpinfo.php,v $
- * $Revision$
- * $Date$
- * $Author$
  */
 
 require_once("../class2.php");
-if (!getperms("0")) {
-    header("location:".e_BASE."index.php");
+
+if(!getperms("0"))
+{
+	e107::redirect('admin');
     exit;
 }
 $e_sub_cat = 'phpinfo';
@@ -24,7 +20,8 @@ require_once("auth.php");
 
 ob_start();
 phpinfo();
-$phpinfo .= ob_get_contents();
+$phpinfo = ob_get_contents();
+
 $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 $phpinfo = str_replace("font","span",$phpinfo);
 $phpinfo = str_replace("</body></html>","",$phpinfo);
@@ -35,7 +32,8 @@ $phpinfo = str_replace('class="e"','class="forumheader2 text-left"',$phpinfo);
 $phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="v"','class="forumheader3 text-left"',$phpinfo);
 $phpinfo = str_replace('class="h"','class="fcaption"',$phpinfo);
-$phpinfo = str_replace('<table  cellpadding="3" width="600">', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+$phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped adminlist"><colgroup><col style="width:30%" /><col style="width:auto" /></colgroup>', $phpinfo);
+
 
 $mes = e107::getMessage();
 
@@ -57,10 +55,12 @@ $security_risks = array(
             $mes->addWarning("<b>".$risk."</b>: ".$diz);
         }   
     }
-	
+
+	$sessionSaveMethod = ini_get('session.save_handler');
+
 	if($sessionSavePath = ini_get('session.save_path'))
 	{
-		if(!is_writable($sessionSavePath))
+		if(!is_writable($sessionSavePath) && $sessionSaveMethod === 'files')
 		{
 			$mes->addError("<b>session.save_path</b> is not writable! That can cause major issues with your site.");	
 		}
@@ -69,6 +69,13 @@ $security_risks = array(
 
 // $phpinfo = preg_replace("#^.*<body>#is", "", $phpinfo);
 ob_end_clean();
+
+
+if(deftrue('e_DEBUG'))
+{
+	$mes->addDebug("Session ID: ".session_id());
+}
+
 $ns->tablerender("PHPInfo", $mes->render(). $phpinfo);
 require_once("footer.php");
 ?>

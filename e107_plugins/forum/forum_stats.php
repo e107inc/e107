@@ -15,7 +15,7 @@ if(!defined('e107_INIT'))
 
 if (!e107::isInstalled('forum'))
 {
-	header('Location: '.e_BASE.'index.php');
+	e107::redirect();
 	exit;
 }
 
@@ -127,25 +127,27 @@ class forumStats
 		ORDER BY post_count DESC LIMIT 0,10";
 
 		$sql->gen($query);
-		$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
+	// 	$top_repliers_data = $sql->db_getList('ALL', false, false, 'user_id');
+		$top_repliers_data = $sql->retrieve($query,true);
 
 		// build top posters meanwhile
 		$top_posters = array();
+		$topReplier = array();
 		foreach($top_repliers_data as $poster)
 		{
 			$percent = round(($poster['post_count'] / $total_posts) * 100, 2);
-			$top_posters[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['post_count'], "percentage" => $percent);
+			$topReplier[] = intval($poster['user_id']);
+			$top_posters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['post_count'], "percentage" => $percent);
 		}
 			// end build top posters
 
-		$ids = implode(',', array_keys($top_repliers_data));
+		$ids = implode(',', $topReplier);
 
 		// find topics by top 10 users
 		$query = "
 		SELECT COUNT(ft.thread_id) AS thread_count, u.user_id FROM #forum_thread as ft
 		LEFT JOIN #user AS u ON ft.thread_user = u.user_id
-		WHERE u.user_id IN ({$ids})
-		GROUP BY ft.thread_user";
+		WHERE u.user_id IN ({$ids})	GROUP BY ft.thread_user";
 
 		$sql->gen($query);
 		$top_repliers_data_c = $sql->db_getList('ALL', false, false, 'user_id');
@@ -186,7 +188,7 @@ class forumStats
 		foreach($top_topic_starters_data as $poster)
 		{
 			$percent = round(($poster['thread_count'] / $total_topics) * 100, 2);
-			$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['thread_count'], "percentage" => $percent);
+			$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => vartrue($poster['user_name'],LAN_ANONYMOUS), "user_forums" => $poster['thread_count'], "percentage" => $percent);
 		}
 
 			/*
@@ -264,7 +266,10 @@ class forumStats
 		{
 			if($ma['user_name'])
 			{
-				$uinfo = "<a href='".e_BASE."user.php?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>{$ma['user_name']}</a>"; //TODO SEf Url .
+				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
 			}
 			else
 			{
@@ -310,7 +315,10 @@ class forumStats
 		{
 			if($ma['user_name'])
 			{
-				$uinfo = "<a href='".e_BASE."user.php?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
+				//$uinfo = "<a href='".e_HTTP."user.php ?id.{$ma['user_id']}'>".$ma['user_name']."</a>";  //TODO SEf Url .
+				$uparams = array('id' => $ma['user_id'], 'name' => $ma['user_name']);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$uinfo = "<a href='".$link."'>".$ma['user_name']."</a>";
 			}
 			else
 			{
@@ -355,15 +363,12 @@ class forumStats
 		$count=1;
 		foreach($top_posters as $ma)
 		{
-			extract($ma); // TODO Remove me.
-
-			//TODO SEf Url .
 			$text_3 .= "<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.".$ma['user_id']."'>".$ma['user_name']."</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
-			<td style='width: 50%;' class='forumheader3'>".$this->showBar($percentage)."
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
+			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
+			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
+			<td style='width: 50%;' class='forumheader3'>".$this->showBar($ma['percentage'])."
 			</td>
 			</tr>
 			";
@@ -392,16 +397,12 @@ class forumStats
 		$count=1;
 		foreach($top_topic_starters as $ma)
 		{
-			extract($ma); // TODO Remove me.
-			//TODO SEf Url .
-
-
 			$text_4 .= "<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
-			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($percentage)."</td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
+			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
+			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
+			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
 			</tr>
 			";
 			$count++;
@@ -426,16 +427,13 @@ class forumStats
 		$count=1;
 		foreach($top_repliers as $ma)
 		{
-			extract($ma); // TODO Remove me.
-			//TODO SEf Url .
-
 			$text_5 .= "
 			<tr>
 			<td style='width: 10%; text-align: center;' class='forumheader3'>$count</td>
-			<td style='width: 20%;' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$user_forums</td>
-			<td style='width: 10%; text-align: center;' class='forumheader3'>$percentage%</td>
-			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($percentage)."</td>
+			<td style='width: 20%;' class='forumheader3'><a href='".e107::url('user/profile/view', $ma)."'>".$ma['user_name']."</a></td>
+			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['user_forums']."</td>
+			<td style='width: 10%; text-align: center;' class='forumheader3'>".$ma['percentage']."%</td>
+			<td style='width: 50%; text-align: center;' class='forumheader3'>".$this->showBar($ma['percentage'])."</td>
 			</tr>
 			";
 
@@ -550,7 +548,7 @@ class forumStats
 
 					$text .= "<tr>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
-					<td style='width:50%' class='forumheader3'><a href='".e107::getUrl()->create('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
+					<td style='width:50%' class='forumheader3'><a href='".e107::url('user/profile/view', 'id='.$row['user_id'].'&name='.$row['user_name'])."'>{$row['user_name']}</a></td>
 					<td style='width:10%; text-align:center' class='forumheader3'>{$row['user_plugin_forum_posts']}</td>
 					<td style='width:30%; text-align:center' class='forumheader3'>{$r}</td>
 					</tr>";
@@ -617,25 +615,25 @@ class forumStats
 			<th style='width:25%; text-align:center' class='forumheader'>".LAN_5."</th>
 			</tr>\n";
 
-			while ($row = $sql->fetch(MYSQL_ASSOC))
+			while ($row = $sql->fetch())
 			{
 				if ($row['user_name'])
 				{
-					$POSTER = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
+					$POSTER = "<a href='".e107::url('user/profile/view', "name={$row['user_name']}&id={$row['thread_user']}")."'>{$row['user_name']}</a>";
 				}
 				else
 				{
 					$POSTER = $row['thread_user_anon'];
 				}
 
-				$LINKTOTHREAD = e107::getUrl()->create('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-				$LINKTOFORUM = e107::getUrl()->create('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+				$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
+				$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
 
 				$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 
 				if ($row['user_last'])
 				{
-					$LASTPOST = "<a href='".e107::getUrl()->create('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
+					$LASTPOST = "<a href='".e107::url('user/profile/view', "name={$row['user_last']}&id={$row['thread_lastuser']}")."'>{$row['user_last']}</a><br />".$lastpost_datestamp;
 				}
 				else
 				{

@@ -23,7 +23,7 @@ class notify
 
 	function __construct()
 	{
-		include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+		e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
 
 		if(empty($this->notify_prefs))
 		{
@@ -40,7 +40,7 @@ class notify
 	{
 		$active = e107::getConfig()->get('notify');
 
-		if(empty($active) && e_PAGE == 'notify.php')
+		if(empty($active) && defset('e_PAGE') == 'notify.php')
 		{
 			e107::getMessage()->addDebug('Notify is disabled!');
 			return false;
@@ -179,7 +179,7 @@ class notify
 			if (false !== ($count = $sql->gen($qry)))
 			{
 				// Now add email addresses to the list
-				while ($row = $sql->fetch(MYSQL_ASSOC))
+				while ($row = $sql->fetch())
 				{
 					if ($row['user_email'] != $emailFilter)
 					{
@@ -216,7 +216,7 @@ class notify
 
 		}
 
-		if(E107_DEBUG_LEVEL > 0)
+		if(E107_DEBUG_LEVEL > 0 || deftrue('e_DEBUG_NOTIFY'))
 		{
 			$data = array('id'=>$id, 'subject'=>$subject, 'recipients'=> $recipients, 'prefs'=>$this->notify_prefs['event'][$id], 'message'=>$message);
 
@@ -331,7 +331,7 @@ class notify
 
 	function notify_flood($data)
 	{
-		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data));
+		$this->send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.e107::getIPHandler()->ipDecode($data, TRUE));
 	}
 
 	function notify_subnews($data)

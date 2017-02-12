@@ -934,6 +934,8 @@ class eMessage
 	public function addAuto($update, $type = 'update', $success = false, $failed = false, $output = false)
 	{
 
+		$sql = e107::getDb();
+
 		if (($type == 'update' && $update) || ($type == 'insert' && $update !== false))
 		{
 			$this->add(($success ? $success : ($type == 'update' ? LAN_UPDATED : LAN_CREATED)), E_MESSAGE_SUCCESS);
@@ -942,7 +944,7 @@ class eMessage
 		{
 			$this->add(($success ? $success : LAN_DELETED), E_MESSAGE_SUCCESS);
 		}
-		elseif (!mysql_errno())
+		elseif (!$sql->getLastErrorNumber())
 		{
 			if ($type == 'update')
 			{
@@ -968,7 +970,7 @@ class eMessage
 				break;
 			}
 
-			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+			$text = ($failed ? $failed : $msg." - ".LAN_TRY_AGAIN)."<br />".LAN_ERROR." ".$sql->getLastErrorNumber().": ".$sql->getLastErrorText();
 			$this->add($text, E_MESSAGE_ERROR);
 		}
 
@@ -990,8 +992,8 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		<head>
 		<meta charset="utf-8" />
 		<title>Error</title>
-		<link rel="stylesheet" media="all" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
-		<link rel="stylesheet" media="all" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+		<link rel="stylesheet" media="all" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+		<link rel="stylesheet" media="all" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
 		<link rel="stylesheet" media="all" type="text/css" href="/e107_web/css/e107.css" />
 		</head>
 		<body >
@@ -1079,6 +1081,17 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 				exit;
 			}
 
+
+			if(defined('e_LOG_CRITICAL'))
+			{
+				$date = date('r');
+				@file_put_contents(e_LOG.'criticalError.log',$date."\t\t". strip_tags($message)."\n", FILE_APPEND);
+				$message = LAN_ERROR_46; // "Check log for details";
+				$line = null;
+				$file = null;
+			}
+
+
 			if(!defined('HEADERF'))
 			{
 				echo $errorHead;
@@ -1087,7 +1100,7 @@ $SYSTEM_DIRECTORY    = "e107_system/";</pre>
 			echo "<div class='alert alert-block alert-error alert-danger' style='font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><h4>CRITICAL ERROR: </h4>";
 			echo (!empty($line)) ? "Line $line " : "";
 			echo (!empty($file)) ? $file : "";
-			echo "<div>Error reported as: ".$message."</div>";
+			echo "<div>".$message."</div>";
 			echo "</div>";
 
 			if(!defined('FOOTERF'))

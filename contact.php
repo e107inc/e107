@@ -24,12 +24,14 @@ if(!check_class($active) && empty($contactInfo))
 require_once(e_HANDLER."secure_img_handler.php");
 $sec_img = new secure_image;
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 define('PAGE_NAME', LANCONTACT_00);
 
 require_once(HEADERF);
 
+$tp = e107::getParser();
+$ns = e107::getRender();
 
 if (!vartrue($CONTACT_FORM))
  {
@@ -52,16 +54,41 @@ if (!vartrue($CONTACT_FORM))
 
 if(isset($_POST['send-contactus']))
 {
+	$error          = "";
+	$ignore         = false;
 
-	$error = "";
+
+	// Contact Form Filter -----
+
+	$contact_filter = e107::pref('core','contact_filter','');
+
+	if(!empty($contact_filter))
+	{
+		$tmp = explode("\n", $contact_filter);
+
+		if(!empty($tmp))
+		{
+			foreach($tmp as $filterItem)
+			{
+				if(strpos($_POST['body'], $filterItem)!==false)
+				{
+					$ignore = true;
+					break;
+				}
+
+			}
+		}
+	}
+
+	// ---------
 
 	$sender_name    = $tp->toEmail($_POST['author_name'], true,'RAWTEXT');
 	$sender         = check_email($_POST['email_send']);
 	$subject        = $tp->toEmail($_POST['subject'], true,'RAWTEXT');
-	$body           = $tp->toEmail($_POST['body'], true,'RAWTEXT');
+	$body           = nl2br($tp->toEmail($_POST['body'], true,'RAWTEXT'));
 
 	$email_copy     = !empty($_POST['email_copy']) ? 1 : 0;
-
+	
 // Check Image-Code
     if (isset($_POST['rand_num']) && !$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 	{
@@ -75,7 +102,7 @@ if(isset($_POST['send-contactus']))
     }
 
 // Check subject line.
-	if(strlen(trim($subject)) < 2)
+	if(isset($_POST['subject']) && strlen(trim($subject)) < 2)
 	{
 		$error .= LANCONTACT_13."\\n";
     }
@@ -108,7 +135,14 @@ if(isset($_POST['send-contactus']))
 	*/
 
 	// No errors - so proceed to email the admin and the user (if selected).
-    if(empty($error))
+	if($ignore === true)
+    {
+        $ns->tablerender('', "<div class='alert alert-success'>".LANCONTACT_09."</div>"); // ignore and leave them none the wiser.
+        e107::getDebug()->log("Contact form post ignored");
+        require_once(FOOTERF);
+		exit;
+    }
+    elseif(empty($error))
 	{
 		$body .= "<br /><br />
 		<table class='table'>
@@ -198,22 +232,23 @@ if(isset($_POST['send-contactus']))
 	    );
 
 
-    	$message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml, false)  ? LANCONTACT_09 : LANCONTACT_10;
 
- 	//	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+	    $message = e107::getEmail()->sendEmail($send_to, $send_to_name, $eml, false)  ? LANCONTACT_09 : LANCONTACT_10;
 
-    	if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $email_copy == 1)
-    	{
+	    //	$message =  (sendemail($send_to,"[".SITENAME."] ".$subject, $body,$send_to_name,$sender,$sender_name)) ? LANCONTACT_09 : LANCONTACT_10;
+
+	    if(isset($pref['contact_emailcopy']) && $pref['contact_emailcopy'] && $email_copy == 1)
+	    {
 		    require_once(e_HANDLER."mail.php");
 			sendemail($sender,"[".SITENAME."] ".$subject, $body,ADMIN,$sender,$sender_name);
-    	}
+	    }
 
 
     	$ns->tablerender('', "<div class='alert alert-success'>".$message."</div>");
 		require_once(FOOTERF);
 		exit;
     }
-	else
+    else
 	{
 		message_handler("P_ALERT", $error);
 	}

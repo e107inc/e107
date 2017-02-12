@@ -17,18 +17,31 @@
 require_once("class2.php");
 if(!e107::isInstalled('gsitemap'))
 { 
-	header("location:".e_BASE."index.php"); 
+	e107::redirect();
 	exit();
 }
 
 e107::lan('gsitemap'); 
 
-if(e_QUERY == "show")
+if(e_QUERY == "show" || !empty($_GET['show']))
 {
 	require_once(HEADERF);
 
 	$nfArray = $sql ->retrieve("gsitemap", "*", "gsitemap_active IN (".USERCLASS_LIST.") ORDER BY gsitemap_order ",true);
-	$text = "<div style='text-align:left'><ul>";
+
+	if(deftrue('BOOTSTRAP'))
+	{
+		$bread = array(
+			0 => array('text' => $tp->toHtml(GSLAN_Name), 'url'=> null ) // e107::url('gsitemap','index')
+		);
+		$text = e107::getForm()->breadcrumb($bread);
+	}
+	else
+	{
+		$text = '';
+	}
+
+	$text .= "<div style='text-align:left'><ul>";
 
 	foreach($nfArray as $nfa)
 	{
@@ -37,7 +50,7 @@ if(e_QUERY == "show")
 	}
 	$text .= "</ul></div>";
 
-	$ns -> tablerender(SITENAME." : ".GSLAN_Name."", $text);
+	$ns -> tablerender(GSLAN_Name."", $text);
 
 	require_once(FOOTERF);
 	exit;

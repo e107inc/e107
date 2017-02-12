@@ -53,7 +53,7 @@ define("LAN_FORUM_0025", "It is now");  // LAN_37
 define("LAN_FORUM_0027", "You have read"); // LAN_196
 define("LAN_FORUM_0028", "of these posts."); // LAN_197
 define("LAN_FORUM_0029", "All new posts have been read."); // LAN_198
-define("LAN_FORUM_0030", "List tracked topics"); // LAN_393
+define("LAN_FORUM_0030", "Tracked topics"); // LAN_393
 define("LAN_FORUM_0031", "The users of this forum have made a total of [x] posts."); // LAN_192 and LAN_404
 define("LAN_FORUM_0032", "topic"); // LAN_411
 define("LAN_FORUM_0033", "topics"); // LAN_413
@@ -118,7 +118,7 @@ define("LAN_FORUM_1004", "Starter"); // LAN_54
 define("LAN_FORUM_1005", "Views"); // LAN_56
 
 define("LAN_FORUM_1006", "Important Topics"); // LAN_411 (vf)
-define("LAN_FORUM_1007", "Forum Topics"); // LAN_412 (vf)
+define("LAN_FORUM_1007", "Topics"); // LAN_412 (vf)
 define("LAN_FORUM_1008", "There are no topics in this forum yet."); // LAN_58
 define("LAN_FORUM_1009", "This forum is moderated by"); // LAN_404
 define("LAN_FORUM_1010", "[popular]"); // LAN_395 (vf)
@@ -132,6 +132,9 @@ define("LAN_FORUM_1016", "Poll"); // FORLAN_23
 define("LAN_FORUM_1017", "Go to"); // LAN_401 (p?)
 define("LAN_FORUM_1018", "New topic");
 // define("LAN_FORUM_1019", "Are you sure?"); // new
+define("LAN_FORUM_1020", "Modify");
+define("LAN_FORUM_1021", "No Replies");
+
 
 // starting at LAN_FORUM_2xxx => forum_viewtopic.php
 define("LAN_FORUM_2001", "Previous topic"); // LAN_389 
@@ -195,7 +198,7 @@ define("LAN_FORUM_3008", "Unauthorised"); // LAN_95
 define("LAN_FORUM_3009", "You are not authorised to edit this forum post."); //LAN_96
 define("LAN_FORUM_3010", "Your name"); // LAN_61
 define("LAN_FORUM_3011", "Subject"); // LAN_62
-define("LAN_FORUM_3012", "Attach file / image"); // LAN_390
+define("LAN_FORUM_3012", "Attach file(s) / image(s)"); // LAN_390
 define("LAN_FORUM_3013", "Attach file"); // LAN_416
 define("LAN_FORUM_3014", "File to attach"); // LAN_392
 define("LAN_FORUM_3015", "[Please note]"); // LAN_393 1st half - [ and ] are replaced by <b> </b>
@@ -214,7 +217,9 @@ define("LAN_FORUM_3026", "Post topic as"); // LAN_400 (p)
 define("LAN_FORUM_3028", "Add Poll"); // new // poll - partly in e107_plugins/poll/poll_class.php
 define("LAN_FORUM_3038", "Normal"); // LAN_1
 define("LAN_FORUM_3039", "Deactivate emoticons for this post"); // LAN_FORUMPOST_EMOTES
-define("LAN_FORUM_3040", "Enable email tracking (email sent when reply is posted)"); // LAN_380
+define("LAN_FORUM_3040", "Enable/disable email tracking (email sent when reply is posted)"); // LAN_380
+define("LAN_FORUM_3041", "Enable/disable tracking of this topic");
+define("LAN_FORUM_3042", "New Topic/Subject");
 // missing 41-21
 
 // forum_posted_template
@@ -225,7 +230,9 @@ define("LAN_FORUM_3046", "Click here to view your poll"); // LAN_414
 define("LAN_FORUM_3047", "Your message has been successfully posted."); // LAN_324
 define("LAN_FORUM_3048", "Click here to view your message"); // LAN_325
 define("LAN_FORUM_3049", "Your reply has been successfully posted."); // LAN_415
-
+define("LAN_FORUM_3050", "Split point");
+define("LAN_FORUM_3051", "New location");
+define("LAN_FORUM_3052", "Split Thread");
 
 
 // forum_icons_template
@@ -300,6 +307,44 @@ define("LAN_FORUM_7008","NOT FOUND"); // LAN_FORUM_7008
 define("LAN_FORUM_7009","No uploaded files found"); // LAN_FORUM_7009
 
 
+
+// -------- Tracking Email ------------
+
+define("LAN_FORUM_8001", "A new post has been made by [x] under the topic [y] at [z].");
+define("LAN_FORUM_8002", "Please click the following link to view the full post ...");
+define("LAN_FORUM_8003", "Email notifications for this topic are now turned on.");
+define("LAN_FORUM_8004", "Email notifications for this topic are now turned off.");
+define("LAN_FORUM_8005", "You are now tracking this topic.");
+define("LAN_FORUM_8006", "You are no longer tracking this topic.");
+
+// -------- View Forum ------------
+define("LAN_FORUM_8007", "Stick");
+define("LAN_FORUM_8008", "Unstick");
+define("LAN_FORUM_8009", "Lock");
+define("LAN_FORUM_8010", "Unlock");
+define("LAN_FORUM_8011", "Status Keys");
+define("LAN_FORUM_8012", "Viewable by");
+define("LAN_FORUM_8013", "Options");
+
+// -------- Forum Post------------
+define("LAN_FORUM_8014", "This post, and every post below it will be moved into a new thread/topic.");
+define("LAN_FORUM_8015", "Warning!");
+define("LAN_FORUM_8016", "(Current)");
+
+// -------- Forum Class------------
+define("LAN_FORUM_8017", "There was a problem disabling the tracking.");
+define("LAN_FORUM_8018", "There was a problem.");
+define("LAN_FORUM_8019", "Couldn't delete the topic!");
+define("LAN_FORUM_8020", "Deleted topic");
+define("LAN_FORUM_8021", "Deleted post");
+define("LAN_FORUM_8022", "Couldn't delete post");
+define("LAN_FORUM_8023", "Failed to close thread");
+define("LAN_FORUM_8024", "Failed to open thread");
+define("LAN_FORUM_8025", "Failed to stick thread");
+define("LAN_FORUM_8026", "Failed to unstick thread");
+define("LAN_FORUM_8027", "No action selected");
+define("LAN_FORUM_8028", "Return"); 
+define("LAN_FORUM_8029", "New topic created!");
 
 /*  THIS WILL BE DELETED ONCE THE REWRITE IS DONE
 ==================================================

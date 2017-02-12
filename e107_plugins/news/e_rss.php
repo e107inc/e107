@@ -143,7 +143,7 @@ class news_rss // plugin-folder + '_rss'
 			{
 
 				$text .= "<br />\n";
-				$text .= $tp->toImage($img, array('alt'=>basename($img), 'w'=>800,'h'=>600, 'legacy'=> "{e_IMAGE}newspost_images/"));
+				$text .= $tp->toImage($img, array('w'=>800,'h'=>600, 'legacy'=> "{e_IMAGE}newspost_images/"));
 			}
 
 		}

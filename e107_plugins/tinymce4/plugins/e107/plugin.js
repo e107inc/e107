@@ -17,17 +17,18 @@
 
 			var t = this, dialect = ed.getParam('bbcode_dialect', 'e107').toLowerCase();
 
-
+	
 			ed.on('beforeSetContent', function(e) {
 				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
 			});
 
+		//	ed.contentCSS.push(url+'/e107.css');
 
 
 			ed.on('postProcess', function(e) {
 
           //      console.log(e);
-          //      alert(e.content); // remove comment to test Firefox issue: http://www.tinymce.com/develop/bugtracker_view.php?id=7655
+          //      alert(e.content); // remove comment to test.
 
 				if (e.set) {
 					e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
@@ -74,8 +75,8 @@
 						title: 'Media Manager',
 						url: url + '/mediamanager.php?image',
 						width: 1050,
-						height: 650
-					
+						height: 680,
+						id: 'media-manager'
 					});
 				}
 			});
@@ -95,8 +96,8 @@
 						title: 'Media Manager',
 						url: url + '/mediamanager.php?video',
 						width: 1050,
-						height: 650
-					
+						height: 650,
+						id: 'media-manager'
 					});
 				}
 			});
@@ -111,8 +112,9 @@
 						title: 'Media Manager',
 						url: url + '/mediamanager.php?glyph',
 						width: 1050,
-						height: 650
-					
+						height: 650,
+						id: 'media-manager'
+
 					});
 				}
 			});

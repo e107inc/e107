@@ -6,17 +6,10 @@
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * $URL$
- * $Id$
 */
 
 
 /**
- * @package e107
- * @subpackage	e107_handlers
- * @version $Id$
- * @author SecretR
- *
  * e107 Single Entry Point handling
  * 
  * Currently this file contains all classes required for single entry point functionallity
@@ -309,7 +302,7 @@ class eFront
 	{
 		if(null !== $status) 
 		{
-			if($status[0] === '{')
+			if(!empty($status[0]) && ($status[0] === '{'))
 			{
 				$status = e107::getParser()->replaceConstants($status);
 			} 
@@ -388,7 +381,7 @@ class eDispatcher
 				//if($custom) $custom = 'url/'.$custom;
 				if(!defined('e_CURRENT_PLUGIN'))
 				{
-					define('e_CURRENT_PLUGIN', $module); // TODO Move to a better location.
+					define('e_CURRENT_PLUGIN', rtrim($module,'/')); // TODO Move to a better location.
 				}
 				return $sc ? '{e_PLUGIN}'.$module.'url/'.$custom.'url.php' : e_PLUGIN.$module.'url/'.$custom.'url.php';
 			break;
@@ -1821,7 +1814,7 @@ class eRouter
 		if(isset($params['#']))
 		{
 			$anc = '#'.$params['#'];
-			usnet($params['#']);
+			unset($params['#']);
 		}
 		
 		// Config independent - Deny parameter keys, useful for directly denying sensitive data e.g. password db fields
@@ -2402,7 +2395,7 @@ class eUrlRule
 		
 		if(is_array($route)) $route = implode('/', $route);
 		
-		
+
 		
 		$tr = array();
 		if ($route !== $this->route)
@@ -2472,18 +2465,24 @@ class eUrlRule
 				}
 			}
 		}
-	
+
+		$tp = e107::getParser();
+		$urlFormat = e107::getConfig()->get('url_sef_translate');
+
 		foreach ($this->params as $key => $value)
 		{
 			// FIX - non-latin URLs proper encoded
-			$tr["<$key>"] = rawurlencode($params[$key]);
+			$tr["<$key>"] = rawurlencode($params[$key]); //todo transliterate non-latin
+		//	$tr["<$key>"] = eHelper::title2sef($tp->toASCII($params[$key]), $urlFormat); // enabled to test.
 			unset($params[$key]);
 		}
 		
 		$suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
 		
 		// XXX TODO Find better place for this check which will affect all types of SEF URL configurations. (@see news/sef_noid_url.php for duplicate)
-		$urlFormat = e107::getConfig()->get('url_sef_translate');
+
+
+
 		
 		if($urlFormat == 'dashl' || $urlFormat == 'underscorel' || $urlFormat == 'plusl') // convert template to lowercase when using lowercase SEF URL format.  
 		{
@@ -2491,7 +2490,13 @@ class eUrlRule
 		}
 		
 		$url = strtr($this->template, $tr);
-		
+
+		// Work-around fix for lowercase username
+		if($urlFormat == 'dashl' && $this->route == 'profile/view')
+		{
+			$url = str_replace('%20','-', strtolower($url));
+		}
+
 		if(empty($params))
 		{
 			 return $url !== '' ? $url.$suffix : $url;
@@ -3585,9 +3590,17 @@ class eRequest
 		{
 			$qstring = self::getQueryString();
 		}
-		
-		define("e_SELF", e_REQUEST_SELF);
-		define("e_QUERY", $qstring);
+
+		if(!defined('e_SELF'))
+		{
+			define("e_SELF", e_REQUEST_SELF);
+		}
+
+		if(!defined('e_QUERY'))
+		{
+			define("e_QUERY", $qstring);
+		}
+
 		$_SERVER['QUERY_STRING'] = e_QUERY;	
 		
 		if(strpos(e_QUERY,"=")!==false ) // Fix for legacyQuery using $_GET ie. ?x=y&z=1 etc. 
@@ -3796,6 +3809,46 @@ class eResponse
 		$this->_body[$ns] = $body;
 		return $this;
 	}
+
+
+	/**
+	 * @param $name
+	 * @param $content
+	 * @return $this
+	 */
+	public function setMeta($name, $content)
+	{
+		foreach($this->_meta as $k=>$v)
+		{
+			if($v['name'] === $name)
+			{
+				$this->_meta[$k]['content'] = $content;
+			}
+		}
+
+		return $this;
+
+	}
+
+
+	/**
+	 * @param $name
+	 * @return $this
+	 */
+	public function removeMeta($name)
+	{
+		foreach($this->_meta as $k=>$v)
+		{
+			if($v['name'] === $name)
+			{
+				unset($this->_meta[$k]);
+			}
+		}
+
+		return $this;
+
+	}
+
 	
 	/**
 	 * Prepend content
@@ -4005,6 +4058,8 @@ class eResponse
 	public function renderMeta()
 	{
 		$attrData = '';
+
+		e107::getEvent()->trigger('system_meta_pre');
 		
 		foreach ($this->_meta as $attr) 
 		{
@@ -4015,6 +4070,7 @@ class eResponse
 			}
 			$attrData .= ' />'."\n";
 		}
+
 		return $attrData;
 	}
 
@@ -4051,6 +4107,18 @@ class eResponse
 		}
 		return '';
 	}
+
+
+
+	/**
+	 * Return an array of all meta data
+	 * @return array
+	 */
+	function getMeta()
+	{
+		return $this->_meta;
+	}
+
 
 	/**
 	 * @param string $title
@@ -4251,6 +4319,7 @@ class eHelper
 	
 	public static function secureIdAttr($string)
 	{
+		$string = str_replace(array('/','_'),'-',$string);
 		return preg_replace(self::$_idRegEx, '', $string);
 	}
 	
@@ -4296,11 +4365,76 @@ class eHelper
 	 */
 	public static function title2sef($title, $type = null)
 	{
-		$title = str_replace(array("&",",","(",")"),'',$title);
-		$title = preg_replace('/[^\w\d\pL\s.]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
-		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
+		/*$char_map = array(
+			// Latin
+			'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
+			'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
+			'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ő' => 'O',
+			'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
+			'ß' => 'ss',
+			'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c',
+			'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+			'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
+			'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
+			'ÿ' => 'y',
+			// Latin symbols
+			'©' => '(c)',
+			// Greek
+			'Α' => 'A', 'Β' => 'B', 'Γ' => 'G', 'Δ' => 'D', 'Ε' => 'E', 'Ζ' => 'Z', 'Η' => 'H', 'Θ' => '8',
+			'Ι' => 'I', 'Κ' => 'K', 'Λ' => 'L', 'Μ' => 'M', 'Ν' => 'N', 'Ξ' => '3', 'Ο' => 'O', 'Π' => 'P',
+			'Ρ' => 'R', 'Σ' => 'S', 'Τ' => 'T', 'Υ' => 'Y', 'Φ' => 'F', 'Χ' => 'X', 'Ψ' => 'PS', 'Ω' => 'W',
+			'Ά' => 'A', 'Έ' => 'E', 'Ί' => 'I', 'Ό' => 'O', 'Ύ' => 'Y', 'Ή' => 'H', 'Ώ' => 'W', 'Ϊ' => 'I',
+			'Ϋ' => 'Y',
+			'α' => 'a', 'β' => 'b', 'γ' => 'g', 'δ' => 'd', 'ε' => 'e', 'ζ' => 'z', 'η' => 'h', 'θ' => '8',
+			'ι' => 'i', 'κ' => 'k', 'λ' => 'l', 'μ' => 'm', 'ν' => 'n', 'ξ' => '3', 'ο' => 'o', 'π' => 'p',
+			'ρ' => 'r', 'σ' => 's', 'τ' => 't', 'υ' => 'y', 'φ' => 'f', 'χ' => 'x', 'ψ' => 'ps', 'ω' => 'w',
+			'ά' => 'a', 'έ' => 'e', 'ί' => 'i', 'ό' => 'o', 'ύ' => 'y', 'ή' => 'h', 'ώ' => 'w', 'ς' => 's',
+			'ϊ' => 'i', 'ΰ' => 'y', 'ϋ' => 'y', 'ΐ' => 'i',
+			// Turkish
+			'Ş' => 'S', 'İ' => 'I', 'Ç' => 'C', 'Ü' => 'U', 'Ö' => 'O', 'Ğ' => 'G',
+			'ş' => 's', 'ı' => 'i', 'ç' => 'c', 'ü' => 'u', 'ö' => 'o', 'ğ' => 'g',
+			// Russian
+			'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'Yo', 'Ж' => 'Zh',
+			'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O',
+			'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
+			'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sh', 'Ъ' => '', 'Ы' => 'Y', 'Ь' => '', 'Э' => 'E', 'Ю' => 'Yu',
+			'Я' => 'Ya',
+			'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo', 'ж' => 'zh',
+			'з' => 'z', 'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o',
+			'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c',
+			'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sh', 'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu',
+			'я' => 'ya',
+			// Ukrainian
+			'Є' => 'Ye', 'І' => 'I', 'Ї' => 'Yi', 'Ґ' => 'G',
+			'є' => 'ye', 'і' => 'i', 'ї' => 'yi', 'ґ' => 'g',
+			// Czech
+			'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Š' => 'S', 'Ť' => 'T', 'Ů' => 'U',
+			'Ž' => 'Z',
+			'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
+			'ž' => 'z',
+			// Polish
+			'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
+			'Ż' => 'Z',
+			'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ó' => 'o', 'ś' => 's', 'ź' => 'z',
+			'ż' => 'z',
+			// Latvian
+			'Ā' => 'A', 'Č' => 'C', 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
+			'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
+			'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
+			'š' => 's', 'ū' => 'u', 'ž' => 'z'
+		);*/
 
-		$words = str_word_count($title,1, '12345678990');
+		$tp = e107::getParser();
+
+		$title = $tp->toASCII($title);
+
+		$title = str_replace(array('/',' '),' ',$title);
+		$title = str_replace(array("&",",","(",")"),'',$title);
+		$title = preg_replace('/[^\w\d\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
+		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
+		$title = str_replace(array(' - ',' -','- ','--'),'-',$title); // cleanup to avoid ---
+
+		$words = str_word_count($title,1, '1234567890');
 
 		$limited = array_slice($words, 0, 14); // Limit number of words to 14. - any more and it ain't friendly.
 
@@ -4310,7 +4444,7 @@ class eHelper
 		{
 			$type = e107::getPref('url_sef_translate'); 
 		}
-		$tp = e107::getParser();
+
 		switch ($type) 
 		{
 			case 'dashl': //dasherize, to lower case

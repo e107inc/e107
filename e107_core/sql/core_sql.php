@@ -303,7 +303,7 @@ CREATE TABLE news (
   news_title varchar(255) NOT NULL default '',
   news_sef varchar(200) NOT NULL default '',
   news_body longtext NOT NULL,
-  news_extended text NOT NULL,
+  news_extended longtext NOT NULL,
   news_meta_keywords  varchar(255) NOT NULL default '',
   news_meta_description text NOT NULL,
   news_datestamp int(10) unsigned NOT NULL default '0',
@@ -361,6 +361,7 @@ CREATE TABLE online (
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
+  online_language varchar(2) NOT NULL default '',
   KEY online_ip (online_ip)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
@@ -386,6 +387,7 @@ CREATE TABLE page (
   page_ip_restrict text,
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
+  page_fields mediumtext,
   menu_name varchar(50) NOT NULL default '',  
   menu_title varchar(250) NOT NULL default '',  
   menu_text mediumtext,
@@ -417,6 +419,7 @@ CREATE TABLE page_chapters (
   chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
   chapter_visibility tinyint(3) unsigned NOT NULL default '0',
+  chapter_fields mediumtext,
   PRIMARY KEY  (chapter_id),
   KEY chapter_order (chapter_order)
 ) ENGINE=MyISAM;
@@ -466,6 +469,7 @@ CREATE TABLE submitnews (
   submitnews_id int(10) unsigned NOT NULL auto_increment,
   submitnews_name varchar(100) NOT NULL default '',
   submitnews_email varchar(100) NOT NULL default '',
+  submitnews_user int(10) unsigned NOT NULL default '0',
   submitnews_title varchar(200) NOT NULL default '',
   submitnews_category tinyint(3) unsigned NOT NULL default '0',
   submitnews_item text NOT NULL,
@@ -473,6 +477,10 @@ CREATE TABLE submitnews (
   submitnews_ip varchar(45) NOT NULL default '',
   submitnews_auth tinyint(3) unsigned NOT NULL default '0',
   submitnews_file text NOT NULL,
+  submitnews_keywords  varchar(255) NOT NULL default '',
+  submitnews_description text,
+  submitnews_summary text,
+  submitnews_media text,
   PRIMARY KEY  (submitnews_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
@@ -502,13 +510,14 @@ CREATE TABLE upload (
   upload_datestamp int(10) unsigned NOT NULL default '0',
   upload_name varchar(100) NOT NULL default '',
   upload_version varchar(10) NOT NULL default '',
-  upload_file varchar(100) NOT NULL default '',
+  upload_file varchar(180) NOT NULL default '',
   upload_ss varchar(100) NOT NULL default '',
   upload_description text NOT NULL,
   upload_demo varchar(100) NOT NULL default '',
   upload_filesize int(10) unsigned NOT NULL default '0',
   upload_active tinyint(3) unsigned NOT NULL default '0',
   upload_category tinyint(3) unsigned NOT NULL default '0',
+  upload_owner varchar(50) NOT NULL default '',
   PRIMARY KEY  (upload_id),
   KEY upload_active (upload_active)
 ) ENGINE=MyISAM;
@@ -524,11 +533,11 @@ CREATE TABLE user (
   user_name varchar(100) NOT NULL default '',
   user_loginname varchar(100) NOT NULL default '',
   user_customtitle varchar(100) NOT NULL default '',
-  user_password varchar(50) NOT NULL default '',
+  user_password varchar(255) NOT NULL default '',
   user_sess varchar(100) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
   user_signature text NOT NULL,
-  user_image varchar(100) NOT NULL default '',
+  user_image varchar(255) NOT NULL default '',
   user_hideemail tinyint(3) unsigned NOT NULL default '0',
   user_join int(10) unsigned NOT NULL default '0',
   user_lastvisit int(10) unsigned NOT NULL default '0',
@@ -567,6 +576,7 @@ CREATE TABLE userclass_classes (
   userclass_visibility smallint(5) signed NOT NULL default '0',
   userclass_type tinyint(1) unsigned NOT NULL default '0',
   userclass_icon varchar(250) NOT NULL default '',
+  userclass_perms text NOT NULL,
   PRIMARY KEY  (userclass_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------

@@ -14,7 +14,7 @@
 require_once('../../class2.php');
 if (!getperms('P')) 
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 $e_sub_cat = 'newsletter';
@@ -105,10 +105,11 @@ class newsletter
 			$this->createIssue();
 		}
 
-		if($mes)
+		echo $mes->render();
+		/*if($mes)
 		{
 			$ns->tablerender($caption, $mes->render() . $text);
-		}
+		}*/
 	}
 
 
@@ -231,7 +232,7 @@ class newsletter
 			$newsletter_header	= $tp->toFORM($edit['newsletter_header']);
 		}
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -326,7 +327,7 @@ class newsletter
 		{
 		$nlArray = $sql -> db_getList();
 
-		$text .= "
+		$text = "
 		<form action='".e_SELF."' id='newsletterform' method='post'>
 		<table class='table adminform'>
 		<colgroup span='2'>
@@ -398,7 +399,8 @@ class newsletter
 			$mes->addSuccess(NLLAN_39);
 		}
 
-		$ns->tablerender($caption, $mes->render() . $text);
+		echo $mes->render();
+	//	$ns->tablerender($caption, $mes->render() . $text);
 	}
 
 
@@ -424,14 +426,14 @@ class newsletter
 		{
 			return FALSE;
 		}
-		$newsletterInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterInfo = $sql->fetch();
 
 		// Get parent details - has header/footer and subscriber list
 		if(!$sql->select('newsletter', '*', "newsletter_id='".$newsletterInfo['newsletter_parent']."' "))
 		{
 			return FALSE;
 		}
-		$newsletterParentInfo = $sql->fetch(MYSQL_ASSOC);
+		$newsletterParentInfo = $sql->fetch();
 		$memberArray = explode(chr(1), $newsletterParentInfo['newsletter_subscribers']);
 
 		require(e_HANDLER.'mail_manager_class.php');
@@ -478,7 +480,7 @@ class newsletter
 			{
 				if($sql->select('user', 'user_name,user_email,user_loginname,user_lastvisit', 'user_id='.$memberID))
 				{
-					$row = $sql->db_Fetch(MYSQL_ASSOC);
+					$row = $sql->db_Fetch();
 					$uTarget = array('mail_recipient_id' => $memberID,
 									 'mail_recipient_name' => $row['user_name'],		// Should this use realname?
 									 'mail_recipient_email' => $row['user_email'],
@@ -602,6 +604,8 @@ class newsletter
 
 		$nl_sql = new db;
 		$_nl_sanatized = '';
+		$vs_text = '';
+
 
 		if(!$nl_sql->db_Select('newsletter', '*', 'newsletter_id='.$p_id))// Check if newsletter id is available
 		{	
@@ -651,13 +655,17 @@ class newsletter
 				{
 					if ($val != $_last_subscriber)
 					{
-						$nl_sql -> db_Select("user", "*", "user_id=".$val);
-						if($nl_row = $nl_sql-> db_Fetch())
+						$nl_sql -> select("user", "*", "user_id=".$val);
+						if($nl_row = $nl_sql-> fetch())
 						{
+							//<a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a>
+							$uparams = array('id' => $val, 'name' => $nl_row['user_name']);
+							$link = e107::getUrl()->create('user/profile/view', $uparams);
+							$userlink = "<a href='".$link."'>".$nl_row['user_name']."</a>";
 							$vs_text .= "
 							<tr>
 								<td>".$val."</td>
-								<td><a href='".e_BASE."user.php?id.{$val}'>".$nl_row['user_name']."</a></td>
+								<td>".$userlink."</td>
 								<td>".$nl_row['user_email']."</td>
 								<td><a href='".e_SELF."?remove.{$p_id}.{$val}'>".ADMIN_DELETE_ICON."</a>".(($nl_row['user_ban'] > 0) ? NLLAN_62 : "")."</td>
 							</tr>";
@@ -668,7 +676,7 @@ class newsletter
 					{	// Duplicate user id found in the subscribers_list array!
 						newsletter::remove_subscribers($p_id, $val);	// removes all entries for this user id
 						$newsletterArray[$p_id]['newsletter_subscribers'] = chr(1).$val;	// keep this single value in the list
-						$nl_sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
+						$nl_sql -> update("newsletter", "newsletter_subscribers='".$newsletterArray[$p_id]['newsletter_subscribers']."' WHERE newsletter_id='".intval($p_id)."'");
 						$subscribers_total_count --;
 						$_nl_sanatized = 1;
 					}
@@ -700,7 +708,7 @@ class newsletter
 	{
 		$sql = e107::getDb();
 		$sql ->select('newsletter', '*', 'newsletter_id='.intval($p_id));
-		if($nl_row = $sql->fetch(MYSQL_ASSOC))
+		if($nl_row = $sql->fetch())
 		{
 			$subscribers_list = array_flip(explode(chr(1), $nl_row['newsletter_subscribers']));
 			unset($subscribers_list[$p_key]);

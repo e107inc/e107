@@ -373,10 +373,32 @@ class news {
 
 
 		// Retrieve batch sc object, set required vars
+
+		$wrapperKey = (!empty($param['template_key'])) ? 'news/'.$param['template_key'].'/item' : 'news/view/item';
+
+		$editable = array(
+			'table' => 'news',
+			'pid'   => 'news_id',
+			'vars'  => 'news_item',
+			'perms' => 'H|H4',
+			'shortcodes'    => array(
+					'news_title'        => array('field'=>'news_title', 'type'=>'text', 'container'=>'span'),
+					'news_description'  => array('field'=>'news_meta_description','type'=>'text', 'container'=>'span'),
+					'news_body'         => array('field'=>'news_body', 'type'=>'html', 'container'=>'div'),
+					'news_summary'      => array('field'=>'news_summary', 'type'=>'text', 'container'=>'span'),
+			)
+
+		);
+
+
+
+
 		$sc = e107::getScBatch('news')
-			->wrapper('news/view/item')
+			->wrapper($wrapperKey)
 			->setScVar('news_item', $news)
-			->setScVar('param', $param);
+			->setScVar('param', $param)
+			->editable($editable);
+
 
 		$text = e107::getParser()->parseTemplate($NEWS_PARSE, true, $sc);
 
@@ -500,7 +522,7 @@ class e_news_item extends e_front_model
 	 * @param boolean $force
 	 * @return e_news_item
 	 */
-	public function load($id, $force = false)
+	public function load($id=null, $force = false)
 	{
 		
 		$id = intval($id);
@@ -680,23 +702,49 @@ class e_news_tree extends e_front_tree_model
 		$parser = e107::getParser();
 		$batch = e107::getScBatch('news')
 			->setScVar('param', $param);
-			
-		$batch->wrapper('news_menu/latest'); //@SecretR - Please FIXME, I'm lost in here. (Cam) 
-		$i = 1;
-		
 
-		foreach ($this->getTree() as $news)
+		$wrapperKey = ($parms['tmpl'].'/'.$parms['tmpl_key']);
+		$batch->wrapper($wrapperKey);
+		$i = 1;
+
+
+		$items = $this->getTree();
+
+		if(!empty($items))
+		{
+
+			foreach ($items as $news)
+			{
+				$d = $news->toArray();
+				$batch->setScVar('news_item',$d); // set news category.
+				break;
+			}
+
+			$start = $parser->parseTemplate($template['start'], true,$batch,$vars); // must be here in case {SETIMAGE} is present and used for items below.
+		}
+
+
+		$featuredCount = !empty($parms['featured']) ? intval($parms['featured']) : 0;
+
+
+		foreach ($items as $news)
 		{
 			$vars->counter = $i;
 			$batch->setScVar('news_item', $news->getData());
-			$ret[] = $parser->parseTemplate($template['item'], true, $batch, $vars);
+			$tmpl = (isset($template['featured']) && $i <= $featuredCount) ? 'featured' : 'item';
+			$ret[] = $parser->parseTemplate($template[$tmpl], true, $batch, $vars);
 			$i++;
 		}
 
+		if(!empty($items))
+		{
+			$end = $parser->parseTemplate($template['end'], true, $vars);
+		}
 		if($ret)
 		{
+
 			$separator = varset($template['separator'], '');
-			$ret = $parser->simpleParse($template['start'], $vars).implode($separator, $ret).$parser->simpleParse($template['end'], $vars);
+			$ret = $start.implode($separator, $ret).$end;
 			$return = isset($parms['return']) ? true : false;
 
 			if($tablerender)
@@ -801,7 +849,7 @@ class e_news_category_item extends e_front_model
 		{
 			return '';
 		}
-		return (string) $this->cat('news_count');
+		return (string) e107::getParser()->toBadge( $this->cat('news_count'));
 	}
 }
 
@@ -877,6 +925,8 @@ class e_news_category_tree extends e_front_tree_model
 			return '';
 		}
 
+
+
 		$ret = array();
 		$tp = e107::getParser();
 
@@ -891,7 +941,8 @@ class e_news_category_tree extends e_front_tree_model
 		}
 		$bullet = defined('BULLET') ? THEME_ABS.'images/'.BULLET : THEME_ABS.'images/bullet2.gif';
 		$obj = new e_vars(array('bullet' => $bullet));
-		
+
+
 		foreach ($this->getTree() as $cat)
 		{
 			$obj->active = '';
@@ -899,8 +950,9 @@ class e_news_category_tree extends e_front_tree_model
 			{
 				$obj->active = ' active';
 			}
-			
+
 			$ret[] = $cat->toHTML($template['item'], $parsesc, $obj);
+
 		}
 
 		if($ret)

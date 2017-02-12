@@ -2,35 +2,22 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2012 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * Cron Administration
+ * Cron Administration - Scheduled Tasks 
  *
- * $URL$
- * $Id$
- *
- */
-
-/**
- *
- * @package     e107
- * @subpackage	admin
- * @version     $Id$
- *	Admin-related functions for cron (Scheduler) management
  */
 
 require_once('../class2.php');
 if (!getperms('U'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit;
 }
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
-
-
+e107::coreLan('cron', true);
 
 class cron_admin extends e_admin_dispatcher
 {
@@ -57,6 +44,9 @@ class cron_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = PAGE_NAME;
+
+	protected $adminMenuIcon = 'e-cron-24';
+
 }
 
 class cron_admin_ui extends e_admin_ui
@@ -80,7 +70,7 @@ class cron_admin_ui extends e_admin_ui
          	'cron_tab'			=> array('title'=> LAN_CRON_3,		'type' => 'method',			'width' => 'auto'), // Display name
 		 	'cron_lastrun'		=> array('title'=> LAN_CRON_4,		'type' => 'datestamp',		'data' => 'int',	'width' => 'auto', 'readonly' => 2),	
      		'cron_active' 		=> array('title'=> LAN_ACTIVE,		'type' => 'boolean',		'data'=> 'int', 'thclass' => 'center', 'class'=>'center', 'filter' => true, 'batch' => true,	'width' => 'auto'),
-			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center')
+			'options' 			=> array('title'=> LAN_OPTIONS,		'type' => 'method',			'data'=> null, 'noedit'=>TRUE, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'right')
 		);
 		
 		
@@ -109,7 +99,7 @@ class cron_admin_ui extends e_admin_ui
 			}
 			
 			$sql->gen("SELECT cron_function,cron_active FROM #cron ");
-			while($row = $sql->fetch(MYSQL_ASSOC))
+			while($row = $sql->fetch())
 			{
 				$this->curCrons[] = $row['cron_function'];
 				if($row['cron_active']==1)
@@ -178,7 +168,7 @@ class cron_admin_ui extends e_admin_ui
 					'name' 			=> LAN_CRON_20_4,
 					'category'		=> 'update',
 					'function' 		=> 'gitrepo',
-					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_CRON_20_7."</span> ".LAN_CRON_20_8,
+					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_WARNING."</span> ".LAN_CRON_20_8,
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				);
 
@@ -194,7 +184,9 @@ class cron_admin_ui extends e_admin_ui
 				$this->cronImport(e107::getAddonConfig('e_cron'));	// Import plugin Crons
 				$this->cronImportLegacy(); // Import Legacy Cron Tab Settings	
 			}
-														
+
+			$this->renderHelp();
+
 		}
 		
 		
@@ -219,8 +211,8 @@ class cron_admin_ui extends e_admin_ui
 						'cron_category'		=> $val['category'],
 						'cron_description' 	=> $val['description'],
 						'cron_function'		=> $class."::".$val['function'],
-						'cron_tab'			=> '* * * * *',
-						'cron_active'		=> 0,
+						'cron_tab'			=> varset($val['tab'], '* * * * *'),
+						'cron_active'		=> varset($val['active'], '0'),
 					);	
 					
 					$this->cronInsert($insert);							
@@ -278,7 +270,7 @@ class cron_admin_ui extends e_admin_ui
 			
 			if(!$sql->insert('cron',$insert))
 			{
-				e107::getMessage()->add(LAN_CRON_6, E_MESSAGE_ERROR);
+				e107::getMessage()->addDebug(LAN_CRON_6);
 			}
 			else
 			{
@@ -343,9 +335,15 @@ class cron_admin_ui extends e_admin_ui
 			$mes 	= e107::getMessage();
 			$frm = e107::getForm();
 			
-			e107::getCache()->CachePageMD5 = '_';
-			$lastload = e107::getCache()->retrieve('cronLastLoad', false, true, true);
-			
+			if(file_exists(e_CACHE.'cronLastLoad.php'))
+			{
+				$lastload = intval(@file_get_contents(e_CACHE.'cronLastLoad.php'));
+			}
+			else
+			{
+				$lastload = 0;
+			}
+
 			$ago = (time() - $lastload);
 	
 			$active = ($ago < 1200) ? true : false; // longer than 20 minutes, so lets assume it's inactive.
@@ -387,10 +385,10 @@ class cron_admin_ui extends e_admin_ui
 				$setpwd_message .= "</pre><small>". LAN_CRON_16."</small>";
 				if(e_DOMAIN && file_exists("/usr/local/cpanel/version"))
 				{
-					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>Go to cPanel</a></div>";
+					$setpwd_message .= "<div style='margin-top:10px'><a rel='external' class='btn btn-primary' href='".e_HTTP."cpanel'>".LAN_CRON_60."</a></div>";
 					
 				}
-				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', 'Generate new cron password',array('class'=>'btn btn-small'));
+				$setpwd_message .= "<br /><br />".$frm->admin_button('generate_pwd', 1, 'delete', LAN_CRON_61 ,array('class'=>'btn btn-small'));
 				$setpwd_message .= $frm->close();	
 				
 				$mes->add($setpwd_message, E_MESSAGE_INFO);
@@ -403,7 +401,7 @@ class cron_admin_ui extends e_admin_ui
 			$sql = e107::getDb();
 			if($sql->select("cron","cron_name,cron_function","cron_id = ".intval($cron_id)))
 			{
-				$row = $sql->fetch(MYSQL_ASSOC);
+				$row = $sql->fetch();
 				$class_func = $row['cron_function'];
 				$cron_name = $row['cron_name'];	
 			}
@@ -442,7 +440,7 @@ class cron_admin_ui extends e_admin_ui
 				$obj = new $class_name;
 				if (method_exists($obj, $method_name))
 				{
-					$message = str_replace('[x]', $class_name." : ".$method_name, "Executing config function [b][x][/b]");
+					$message = str_replace('[x]', $class_name." : ".$method_name, LAN_CRON_62);//Executing config function [b][x][/b]
 					$mes->add($message, E_MESSAGE_DEBUG);
 					if ($return == 'boolean')
 					{
@@ -456,12 +454,17 @@ class cron_admin_ui extends e_admin_ui
 				}
 				else
 				{
-					$message = str_replace('[x]', $method_name."()", "Config function [b][x][/b] NOT found.");
+					$message = str_replace('[x]', $method_name."()", LAN_CRON_63 );//Config function [b][x][/b] NOT found.
 					$mes->add($message, E_MESSAGE_DEBUG);
 				}
 			}
 			return FALSE;
 		}		
+
+		function renderHelp()
+		{
+			return array('caption'=>LAN_HELP, 'text'=>e107::getParser()->toHTML(LAN_CRON_64, true));
+		}
 		
 }
 
@@ -564,13 +567,22 @@ class cron_admin_form_ui extends e_admin_form_ui
 	// Override the default Options field. 
 	function options($parms, $value, $id, $attributes)
 	{
-		
+		$att = $attributes;
 		if($attributes['mode'] == 'read')
 		{
-			$text = "<div class='btn-group'>";
-			$text .= $this->renderValue('options',$value,'',$id);
-			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', 'Execute');
+			$func = $this->getController()->getFieldVar('cron_function');
+		//
+			if(substr($func,0,7) === '_system')
+			{
+				$att['readParms'] = array('disabled'=>'disabled');
+			}
+
+			$text = "<div class='btn-group pull-right'>";
+			$text .= $this->renderValue('options',$value,$att,$id);
+			$text .= $this->submit_image('cron_execute['.$id.']', 1, 'execute', LAN_RUN);
 			$text .= "</div>";
+
+
 			return $text;
 		}
 	}
@@ -854,7 +866,7 @@ class cron
 
 	function cronExecute($class_func)
 	{
-		//TODO LANs
+		//TO/ DO L/ANs
 		list($class_name, $method_name) = explode("__", $class_func);
 		$mes = e107::getMessage();
 

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -19,7 +19,7 @@ if(defined("POLLRENDERED"))
 
 if (!e107::isInstalled('poll'))
 {
-  header("location:".e_BASE."index.php");
+	e107::redirect();
 }
 
 if(!defined("POLLCLASS"))
@@ -34,7 +34,7 @@ if(!isset($poll) || !is_object($poll))
 if(!defined("POLL_1"))
 {
 	/* if menu is being called from comments, lan files have to be included manually ... */
-	include_lan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
+	e107::includeLan(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 }
 
 if (empty($poll_to_show))
@@ -59,4 +59,5 @@ ORDER BY p.poll_datestamp DESC LIMIT 0,1
 $poll->remove_poll_cookies();
 
 $poll->render_poll($query, $pollType, $pollMode);
+
 ?>

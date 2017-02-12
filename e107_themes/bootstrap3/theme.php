@@ -1,19 +1,56 @@
 <?php
+
 /**
- * Bootstrap 3 Theme for e107 v2.x
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * @file
+ * Bootstrap 3 Theme for e107 v2.x.
  */
-if (!defined('e107_INIT')) { exit; }
 
-define("BOOTSTRAP", 	3);
-define("FONTAWESOME", 	4);
-define('VIEWPORT', 		"width=device-width, initial-scale=1.0");
+if(!defined('e107_INIT'))
+{
+	exit;
+}
 
-e107::js("url", 			"http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js");
-e107::css('url', 			'http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
-e107::css('url', 			"http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
+define("BOOTSTRAP", 3);
+define("FONTAWESOME", 4);
+define('VIEWPORT', "width=device-width, initial-scale=1.0");
+
+e107::library('load', 'bootstrap');
+e107::library('load', 'fontawesome');
+
+// CDN provider for Bootswatch.
+$cndPref = e107::pref('theme', 'cdn', 'cdnjs');
+$bootswatch = e107::pref('theme', 'bootswatch', false);
+
+switch($cndPref)
+{
+	case "jsdelivr":
+		if($bootswatch)
+		{
+			e107::css('url', 'https://cdn.jsdelivr.net/bootswatch/3.3.7/' . $bootswatch . '/bootstrap.min.css');
+		}
+		break;
+
+	case "cdnjs":
+	default:
+		if($bootswatch)
+		{
+			e107::css('url', 'https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/' . $bootswatch . '/bootstrap.min.css');
+		}
+		break;
+}
+
+/* @example prefetch  */
+//e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
 
 e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
-					
+
+// Legacy Stuff.
 define('OTHERNEWS_COLS',false); // no tables, only divs. 
 define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
 define('OTHERNEWS2_COLS',false); // no tables, only divs. 
@@ -308,7 +345,7 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
 	<div class="container">	
 	{ALERTS}
 <!-- Start Menu 1 --> 
-	{MENU=1}
+	{MENU=10}
 <!-- End Menu 1 --> 
 	</div>
 	
@@ -331,7 +368,6 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
         <div class="row">
             <div class="col-lg-12">
             	{WMESSAGE}   
-            <hr>
           </div>
         </div><!-- /.row -->
       </div><!-- /.container -->
@@ -351,7 +387,7 @@ $LAYOUT['modern_business_home'] =  <<<TMPL
           </div>
           
 		  {SETSTYLE=portfolio}
-		  {SETIMAGE: w=700&h=500&crop=1}
+		  {SETIMAGE: w=400&h=400&crop=1}
 		  {GALLERY_PORTFOLIO: placeholder=1&limit=6}   
 		  
         </div><!-- /.row -->
@@ -505,245 +541,9 @@ $LAYOUT['jumbotron_sidebar_right'] =  '
 
 
 /* XXX EVERYTHING BELOW THIS POINT IS UNUSED FOR NOW */
-
-
-
-
-$HEADER['default'] = '
-<div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="'.SITEURL.'">{SITENAME}</a>
-          <div class="nav-collapse collapse">
-           {NAVIGATION=main}
-           <div class="pull-right">{BOOTSTRAP_USERNAV}</div>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-<div class="container-fluid">
-	<div class="row-fluid">
-		 <div class="span3">
-           {NAVIGATION|s=side}          
-          {SETSTYLE=menu}
-          {MENU=1}
-        </div><!--/span-->
-		<div class="span9">
-		 {SETSTYLE=default}
-		 	{WMESSAGE}
-';
-
-
-
-$FOOTER['default'] = '
-		 {SETSTYLE=span4}
-      	
-		</div><!--/span-->
-	</div><!--/row-->
-
-<hr>
-
-<footer class="center"> 
-	{SITEDISCLAIMER}
-</footer>
-
-</div><!--/.fluid-container-->';
-
-
-$HEADER['default-home'] = $HEADER['default'];
-
-
-$FOOTER['default-home'] = '
-	
-		 {SETSTYLE=span4}
-		 
-		 <div class="row-fluid">
-            {MENU=2}
-      	</div><!--/row-->
-		 <div class="row-fluid">
-            {MENU=3}
-      	</div><!--/row-->	
-      	
-		</div><!--/span-->
-	</div><!--/row-->
-
-<hr>
-
-<footer class="center"> 
-		{SITEDISCLAIMER} 
-</footer>
-
-</div><!--/.fluid-container-->';
-
-
-
-
-
-
-
-
-
-
-// HERO http://twitter.github.com/bootstrap/examples/hero.html
-//FIXME insert shortcodes while maintaining only bootstrap classes. 
-
-$HEADER['hero'] = '
-
-	 <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">Project name</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li class="divider"></li>
-                  <li class="nav-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>
-            </ul>
-            <form class="navbar-form pull-right">
-              <input class="span2" type="text" placeholder="Email">
-              <input class="span2" type="password" placeholder="Password">
-              <button type="submit" class="btn">Sign in</button>
-            </form>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-
-      <!-- Main hero unit for a primary marketing message or call to action -->
-      <div class="hero-unit">';
-	  
-	  /*
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-     */
-     
-     
-//FIXME insert shortcodes while maintaining classes. 
-$FOOTER['hero'] = '
- </div>
-
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="span4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn" href="#">View details &raquo;</a></p>
-        </div>
-      </div>
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2012</p>
-      </footer>
-
-    </div> <!-- /container -->';
-
-
-// Marketing Narrow - http://twitter.github.com/bootstrap/examples/marketing-narrow.html
-//FIXME insert shortcodes while maintaing classes. 
-
-$HEADER['marketing-narrow'] = '
- <div class="container-narrow">
-
-      <div class="masthead">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        <h3 class="muted">Project name</h3>
-      </div>
-
-      <hr>
-
-      <div class="jumbotron">
-        <h1>Super awesome marketing speak!</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <a class="btn btn-large btn-success" href="#">Sign up today</a>   
-';
-
-
-//FIXME insert shortcodes while maintaing classes. 
-
-$FOOTER['marketing-narrow'] = '
-</div>
-
-      <hr>
-
-      <div class="row-fluid marketing">
-        <div class="span6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
-
-        <div class="span6">
-          <h4>Subheading</h4>
-          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
-
-          <h4>Subheading</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
-
-          <h4>Subheading</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-        </div>
-      </div>
-
-      <hr>
-
-      <div class="footer">
-        <p>&copy; Company 2012</p>
-      </div>
-
-    </div> <!-- /container -->
-    
-';
-
-
-
-
-
+/**
+* $HEADER AND $FOOTER are deprecated.
+*/
 
 
 /*
@@ -753,9 +553,9 @@ $FOOTER['marketing-narrow'] = '
 
  */
 
+/*
  
- 
-$HEADER['docs'] = <<<TMPL
+$LAYOUT['docs'] = <<<TMPL
 
   <!-- Navbar
     ================================================== -->
@@ -800,13 +600,9 @@ $HEADER['docs'] = <<<TMPL
       <div class="span9">
 
 
+		{---}
 
 
-
-TMPL;
-
-
-$FOOTER['docs'] = <<<TMPL
  	</div>
 	  </div>
  </div>
@@ -833,7 +629,7 @@ $FOOTER['docs'] = <<<TMPL
 TMPL;
  
  
- 
+ */
  
  
  

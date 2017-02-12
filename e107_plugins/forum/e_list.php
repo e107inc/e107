@@ -14,7 +14,7 @@ if (!defined('e107_INIT')) { exit; }
 //TODO: Investigate queries - needs some more sorting
 class list_forum
 {
-	function list_forum($parent)
+	function __construct($parent)
 	{
 		$this->parent = $parent;
 	}
@@ -30,7 +30,7 @@ class list_forum
 		{	// New posts since last visit, up to limit
 			$lvisit = $this->parent->getlvisit();
 			$qry = "
-			SELECT tp.thread_name AS parent_name, tp.thread_id as parent_id, 
+			SELECT t.thread_name AS parent_name, t.thread_id as parent_id,
 			f.forum_id, f.forum_name, f.forum_class, 
 			u.user_name, lp.user_name AS lp_name, 
 			t.thread_id, t.thread_views as tviews, t.thread_name, t.thread_datestamp, t.thread_user,
@@ -43,6 +43,7 @@ class list_forum
 			WHERE find_in_set(forum_class, '".USERCLASS_LIST."')
 			AND t.thread_lastpost > {$lvisit}
 			ORDER BY tp.post_datestamp DESC LIMIT 0,".intval($this->parent->settings['amount']);
+
 		}
 		else
 		{	// Most recently updated threads up to limit
@@ -101,7 +102,10 @@ class list_forum
 					$LASTPOST = "";
 					if($lp_name)
 					{
-						$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$lp_name</a>";
+						//$LASTPOST = "<a href='".e_HTTP."user.php ?id.{$thread_lastuser}'>$lp_name</a>";
+						$uparams = array('id' => $thread_lastuser, 'name' => $lp_name);
+						$link = e107::getUrl()->create('user/profile/view', $uparams);
+						$LASTPOST = "<a href='".$link."'>".$lp_name."</a>";
 					}
 					else
 					{
@@ -128,9 +132,12 @@ class list_forum
 				}
 				$rowheading	= $this->parent->parse_heading($parent_name);
 				$lnk = ($parent_id ? $thread_id.".post" : $thread_id);
-
+				//"<a href='".e_HTTP."user.php ?id.$thread_user'>$user_name</a>"
+				$uparams = array('id' => $thread_user, 'name' => $user_name);
+				$link = e107::getUrl()->create('user/profile/view', $uparams);
+				$userlink = "<a href='".$link."'>".$user_name."</a>";
 				$record['heading'] = "<a href='".$path."forum_viewtopic.php?$lnk'>".$rowheading."</a>";
-				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
+				$record['author'] = ($this->parent->settings['author'] ? ($thread_anon ? $thread_user : $userlink) : "");
 				$record['category'] = ($this->parent->settings['category'] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 				$record['date'] = ($this->parent->settings['date'] ? $this->parent->getListDate($thread_datestamp) : "");
 				$record['icon'] = $bullet;

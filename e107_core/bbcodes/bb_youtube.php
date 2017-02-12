@@ -269,7 +269,7 @@ class bb_youtube extends e_bb_base
 	
 		$yID = preg_replace('/[^0-9a-z\-_\&\?]/i', '', $code_text);
 
-		$url = isset($bbparm['privacy']) ? 'http://www.youtube-nocookie.com/v/' : 'http://www.youtube.com/v/';
+		$url = isset($bbparm['privacy']) ? 'https://www.youtube-nocookie.com/v/' : 'https://www.youtube.com/v/';
 		$url .= $yID.'?';
 
 		if(isset($params['nofull']) || !varset($params['fs'])) 

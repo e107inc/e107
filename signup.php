@@ -28,6 +28,29 @@ if($qs[0] != 'activate')
 
 e107::coreLan('user'); // Generic user-related language defines
 
+	$bcLans = array(
+	"LAN_7"=> "LAN_SIGNUP_89", // "Display Name: ");
+	"LAN_8"=> "LAN_SIGNUP_90", // "the name that will be displayed on site");
+	"LAN_9"=> "LAN_SIGNUP_81", // "Username: ");
+	"LAN_10"=> "LAN_SIGNUP_82", // "the name that you use to login");
+	"LAN_17"=> "LAN_SIGNUP_83", // "Password: ");
+	"LAN_109"=> "LAN_SIGNUP_77", // "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
+	"LAN_111"=> "LAN_SIGNUP_84", // "Re-type Password: ");
+	"LAN_112"=> "LAN_USER_60",  // "Email Address: ");
+	"LAN_113"=> "LAN_USER_83", // "Hide email address?: ");
+	"LAN_120"=> "LAN_USER_71", // "Signature: ");
+	"LAN_121"=> "LAN_SIGNUP_94", // "Avatar: ");
+	"LAN_122"=> "", // "Timezone:");
+	"LAN_123"=> "LAN_SIGNUP_79", // "Register");
+	"LAN_308"=> "LAN_SIGNUP_91", // "Real Name: ");
+	"LAN_309"=> "LAN_SIGNUP_80", // "Please enter your details below.");
+	"LAN_400"=> "LAN_SIGNUP_85", // "Usernames and passwords are <b>case-sensitive</b>.");
+	"LAN_410"=> "LAN_SIGNUP_95", // "Enter code visible in the image");
+	);
+
+e107::getLanguage()->bcDefs($bcLans); // Backward compatibility fix.
+
+
 define('SIGNUP_DEBUG', FALSE);
 
 e107::js('core', 'jquery.mailcheck.min.js','jquery',2);
@@ -90,7 +113,7 @@ if($signup_imagecode)
 
 if ((USER || (intval($pref['user_reg']) !== 1) || (vartrue($pref['auth_method'],'e107') != 'e107')) && !getperms('0'))
 {
-	 header('location: '.e_HTTP.'index.php');
+	e107::redirect();
 	
 }
 
@@ -211,7 +234,7 @@ class signup
 			}
 			else
 			{
-				message_handler("ALERT",LAN_SIGNUP_52); // Incorrect Password.
+				message_handler("ALERT",LAN_INCORRECT_PASSWORD); // Incorrect Password.
 				return false;
 			}
 		}
@@ -394,12 +417,20 @@ class signup
 				}
 				else
 				{
-					include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+					e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 				}
 			}
 			else
 			{
-				include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+				e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
+			}
+
+			// When user clicks twice on the email activation link or admin manually activated the account already.
+			if($sql->select("user", "user_id", "user_id = ".intval($qs[1])." AND user_ban = 0 AND user_sess='' " ) ) //TODO XXX check within last 24 hours only?
+			{
+				$text = "<div class='alert alert-success'>".LAN_SIGNUP_41."</div>";
+				$ns->tablerender(LAN_SIGNUP_75, $text);
+				return true;
 			}
 
 
@@ -482,7 +513,7 @@ class signup
 			$userInfo['user_password'] = "test-password";
 			$userInfo['user_loginname'] = "test-loginname";
 			$userInfo['user_name'] = "test-username";
-			$userInfo['user_email'] = "test-username@email";
+			$userInfo['user_email'] = "test-username@email.com";
 			$userInfo['user_website'] = "www.test-site.com";		// This may not be defined
 			$userInfo['user_id'] = 0;
 			$userInfo['user_sess'] = "1234567890ABCDEFGHIJKLMNOP";
@@ -613,6 +644,14 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			$_POST['password2'] = $_POST['password1'];
 		}
 
+		// posted class subscription - check it's only from the public classes.
+		if(!empty($_POST['class']))
+		{
+			$publicClasses = e107::getUserClass()->get_editable_classes(e_UC_PUBLIC, true);
+			$_POST['class'] = array_intersect($publicClasses, $_POST['class']);
+			unset($publicClasses);
+		}
+
 		// Now validate everything
 		$allData = validatorClass::validateFields($_POST,$userMethods->userVettingInfo, TRUE);		// Do basic validation
 		validatorClass::checkMandatory('user_name,user_loginname', $allData);						// Check for missing fields (email done in userValidation() )
@@ -739,7 +778,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		$fp = new floodprotect;
 		if ($fp->flood("user", "user_join") == FALSE)
 		{
-			header("location:".e_BASE."index.php");
+			e107::redirect();
 			exit;
 		}
 
@@ -792,7 +831,12 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		
 		// The user_class, user_perms, user_prefs, user_realm fields don't have default value,
 		//   so we put apropriate ones, otherwise - broken DB Insert
-		$allData['data']['user_class'] = '';
+
+		if(empty($allData['data']['user_class']))
+		{
+			$allData['data']['user_class'] = '';
+		}
+
 		$allData['data']['user_perms'] = '';
 		$allData['data']['user_prefs'] = '';
 		$allData['data']['user_realm'] = '';
@@ -903,6 +947,8 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 			e107::getEvent()->trigger('usersup', $_POST);  // Old trigger - send everything in the template, including extended fields.
 			e107::getEvent()->trigger('userpartial', array_merge($allData['data'],$eufVals['data']));  // New trigger - send everything in the template, including extended fields.
+			e107::getEvent()->trigger('user_signup_submitted', $_POST);
+
 
 			require_once(HEADERF);
 
@@ -950,7 +996,8 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			}
 			else
 			{
-				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13;
+				$text = LAN_SIGNUP_76."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />";
+				$text .= str_replace(array('[',']'), array("<a href='".e_LOGIN."'>", "</a>"), LAN_SIGNUP_13);
 			}
 			
 			$ns->tablerender(LAN_SIGNUP_8,$text);
@@ -994,7 +1041,7 @@ if ($qs == 'stage1' && $pref['use_coppa'] == 1)
 	}
 	else
 	{
-  		header('Location: '.e_BASE.'signup.php');
+		e107::redirect();
 		exit;
 	}
 }

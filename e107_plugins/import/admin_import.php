@@ -472,8 +472,8 @@ class import_main_ui extends e_admin_ui
 			<tr>
 			<td >$importType ".LAN_CONVERT_20."</td>
 			<td >
-				<input class='tbox' type='text' name='dbParamUsername' size='30' value='".varset($_POST['dbParamUsername'])."' maxlength='100' />
-				<div class='field-help'>Must be different from the one e107 uses.</div>
+				<input class='tbox' type='text' name='dbParamUsername' size='30' data-tooltipvalue='".varset($_POST['dbParamUsername'])."' maxlength='100' />
+				<div class='field-help' data-placement='right'>Must be different from the one e107 uses.</div>
 			</td>
 			</tr>
 			<tr>
@@ -622,6 +622,7 @@ class import_main_ui extends e_admin_ui
 	{
 		
 		$mes = e107::getMessage();
+		$tp = e107::getParser();
 		
 		$mes->addDebug("dbImport(): Loading: ".$this->importClass);
 		
@@ -654,7 +655,7 @@ class import_main_ui extends e_admin_ui
 				return false;
 			}
 		
-			$result = $converter->db_Connect($_POST['dbParamHost'],	$_POST['dbParamUsername'], $_POST['dbParamPassword'], $_POST['dbParamDatabase'],  $_POST['dbParamPrefix']);
+			$result = $converter->db_Connect($tp->filter($_POST['dbParamHost']),	$tp->filter($_POST['dbParamUsername']), $tp->filter($_POST['dbParamPassword']), $tp->filter($_POST['dbParamDatabase']),  $tp->filter($_POST['dbParamPrefix']));
 			if ($result !== TRUE)
 			{
 				$mes->addError(LAN_CONVERT_43.": ".$result);  // db connect failed

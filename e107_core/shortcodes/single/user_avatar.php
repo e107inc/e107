@@ -1,10 +1,40 @@
 <?php
 // $Id$
-function user_avatar_shortcode($parm=null) //TODO new function $tp->toAvatar(); so full arrays can be passed to it. 
+function user_avatar_shortcode($parm=null)
 {
+	$data = null;
+
+	if(!empty($parm))
+	{
+		if(is_numeric($parm))
+		{
+			$id = intval($parm);
+			$data = e107::user($id);
+			$parm = null;
+		}
+		if(is_string($parm))
+		{
+			$data = array('user_image'=>$parm);
+		}
+		elseif(is_array($parm))
+		{
+			if(isset($parm['user_image']))
+			{
+				$data = $parm;
+			}
+			else
+			{
+				$data = null;
+			}
+
+		}
+	}
+
+
+	return e107::getParser()->toAvatar($data, $parm);
+/*
 	global $loop_uid;
-	
-		
+
 	$tp 		= e107::getParser();
 	$width 		= $tp->thumbWidth;
 	$height 	= ($tp->thumbHeight !== 0) ? $tp->thumbHeight : "";
@@ -87,6 +117,6 @@ function user_avatar_shortcode($parm=null) //TODO new function $tp->toAvatar(); 
 	$text = "<img class='img-rounded user-avatar e-tip' title='".$title."' src='".$img."' alt='' style='width:".$width."px; height:".$height."px' />";
 //	return $img;
 	return $text;
+*/
 
 }
-?>

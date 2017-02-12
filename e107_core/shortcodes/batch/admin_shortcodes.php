@@ -15,6 +15,10 @@ if (!defined('e107_INIT')) { exit; }
 
 class admin_shortcodes
 {
+
+	const ADMIN_NAV_HOME = 'enav_home'; // Must match with admin_template. ie. {ADMIN_NAVIGATION=enav_home} and $E_ADMIN_NAVIGATION['button_enav_home']
+	const ADMIN_NAV_LANGUAGE = 'enav_language';
+	const ADMIN_NAV_LOGOUT = 'enav_logout';
 	
 	function cronUpdateRender($parm,$cacheData)
 	{
@@ -29,11 +33,11 @@ class admin_shortcodes
 		
 		
             if($parm=='alert')
-            {
-            	$text = 'A new update is ready to install! Click to unzip and install  v'.$cacheData.'</a>.
-            	<a class="btn btn-success" href="'.$installUrl.'">Install</a>'; 
+            {	//TODO LANVARS
+				$text = ADLAN_122.'  v'.$cacheData.'</a>.
+					<a class="btn btn-success" href="'.$installUrl.'">'.ADLAN_121.'</a>'; //Install
 				
-                 $mes->addInfo($text);
+				$mes->addInfo($text);
 				return; //  $mes->render(); 
 			}
             
@@ -41,17 +45,17 @@ class admin_shortcodes
             {
 				
 				return '<ul class="nav navbar pill navbar-nav">
-        			<li class="dropdown">
-            		<a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#">
-                	'.E_16_E107.' <b class="caret"></b>
-            	</a> 
-            	<ul class="dropdown-menu" role="menu">
-                	<li class="nav-header dropdown-header navbar-header">Update Available</li>
-                    <li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
-	          	 </ul>
-	        	</li>
-	        	</ul>
-	        ';
+						<li class="dropdown">
+						<a class="dropdown-toggle" title="'.LAN_MESSAGES.'" role="button" data-toggle="dropdown" href="#">
+						'.E_16_E107.' <b class="caret"></b>
+						</a> 
+						<ul class="dropdown-menu" role="menu">
+						<li class="nav-header dropdown-header navbar-header">'.LAN_UPDATE_AVAILABLE.'</li>
+						<li><a href="'.$installUrl.'">e107 v'.$cacheData.'</a></li>
+						</ul>
+						</li>
+						</ul>
+						';
 				
 				
 			} 
@@ -148,13 +152,14 @@ class admin_shortcodes
 	
 		$ns = e107::getRender();
 		$pref = e107::getPref();
+		$help_text = '';
 
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
-			return $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
+			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
-		
+
 		$helpfile = '';
 		
 		if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
@@ -181,12 +186,15 @@ class admin_shortcodes
 				$helpfile = $plugpath;
 			}
 		}
-		if (!$helpfile) { return ''; }
 
-		ob_start();
-		include_once($helpfile);
-		$help_text = ob_get_contents();
-		ob_end_clean();
+		if(!empty($helpfile))
+		{
+			ob_start();
+			include_once($helpfile);
+			$help_text .= ob_get_contents();
+			ob_end_clean();
+		}
+
 		return $help_text;
 	}
 
@@ -401,17 +409,16 @@ class admin_shortcodes
 		if(isset($params['nomenu'])) { return $select; }
 		if($select) { $text .= "<div class='center'>{$select}</div>"; }
 
-		return $ns->tablerender(UTHEME_MENU_L2, $text, '', true);
+		return $ns->tablerender(UTHEME_MENU_L2, $text, 'core-menu-lang', true);
 
 	}
 
 	function sc_admin_latest($parm)
 	{
-		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
-			return;
+			return null;
 		}
-		
 		
 		if (ADMIN) {
 			if (!function_exists('admin_latest')) //XXX Is this still necessary?
@@ -488,14 +495,14 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-latest' class='unstyled list-unstyled'>";
+					$text = "<ul id='e-latest' class='list-group'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
 							$class = admin_shortcodes::getBadge($val['total']); 
-							$link =  "<a  href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li class='clearfix'>".$val['icon']." ".$link."</li>\n";	
+							$link =  "<a  href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$text .= "<li class='list-group-item clearfix'>".$link."</li>\n";
 						}	
 					}
 					$text .= "</ul>";
@@ -503,9 +510,8 @@ class admin_shortcodes
 
 				
 				//	$text .= "</div>";
-					
-					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;	
-
+					$ns->setUniqueId('e-latest-list');
+					return ($parm != 'norender') ? $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE) : $text;
 				}
 			}
 
@@ -539,16 +545,16 @@ class admin_shortcodes
 					if (e_QUERY == 'logall')
 					{
 						$text .= "<div id='adminlog'>";
-						$cnt = $sql -> db_Select('admin_log', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
+						$cnt = $sql ->select('admin_log', '*', "ORDER BY `dblog_datestamp` DESC", 'no_where');
 					}
 					else
 					{
 						$text .= "<div style='display: none;' id='adminlog'>";
-						$cnt = $sql -> db_Select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
+						$cnt = $sql ->select('admin_log', '*', 'ORDER BY `dblog_datestamp` DESC LIMIT 0,10', 'no_where');
 					}
 					$text .= ($cnt) ? '<ul>' : '';
 					$gen = e107::getDateConvert();
-					while ($row = $sql -> db_Fetch())
+					while ($row = $sql ->fetch())
 					{
 						$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
 						$text .= "<li>{$datestamp} - {$row['dblog_title']}</li>";
@@ -661,10 +667,13 @@ class admin_shortcodes
 		}
 		unset($tmp);
 
+
+		$curScript = basename($_SERVER['SCRIPT_FILENAME']);
+
 		// Obsolete
 		ob_start();
 		//Show upper_right menu if the function exists
-		$tmp = explode('.',e_PAGE);
+		$tmp = explode('.',$curScript);
         $adminmenu_parms = "";
 
 		$adminmenu_func = $tmp[0].'_adminmenu';
@@ -681,6 +690,8 @@ class admin_shortcodes
 			}
 		}
 		$plugindir = (str_replace('/','',str_replace('..', '', e_PLUGIN)).'/');
+
+		// FIXME @TODO $plugPath is using the URL to detect the path. It should use $_SERVER['SCRIPT_FILENAME']
 		$plugpath = e_PLUGIN.str_replace(basename(e_SELF),'',str_replace('/'.$plugindir,'','/'.strstr(e_SELF,$plugindir))).'admin_menu.php';
 		
 		if(file_exists($plugpath))
@@ -699,6 +710,19 @@ class admin_shortcodes
 		ob_end_clean();
 		return $ret;
 	}
+
+
+	function sc_admin_debug()
+	{
+		if(e_DEBUG !== false)
+		{
+			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug', array('class'=>'text-warning'))."&nbsp;&nbsp;</div>";
+		}
+
+	}
+
+
+
 
 	// FIXME - make it work
 	function sc_admin_pm($parm)
@@ -723,16 +747,16 @@ class admin_shortcodes
 		$outboxUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
 
-       $text = '<ul class="nav navbar-nav nav-pills">
+       $text = '<ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-            <a class="dropdown-toggle" title="Messages" role="button" data-toggle="dropdown" href="#" >
+            <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
             </a> 
             <ul class="dropdown-menu" role="menu" >
-                <li class="nav-header navbar-header dropdown-header">Private Messages</li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Inbox" data-target="#uiModal" href="'.$inboxUrl.'" >Inbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Outbox" data-target="#uiModal" href="'.$outboxUrl.'">Outbox</a></li>
-                    <li><a class="e-modal" data-cache="false" data-modal-caption="Compose" data-target="#uiModal" href="'.$composeUrl.'">Compose</a></li>
+                <li class="nav-header navbar-header dropdown-header">'.LAN_PM.'</li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_INBOX.'" data-target="#uiModal" href="'.$inboxUrl.'" >'.LAN_PLUGIN_PM_INBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PLUGIN_PM_OUTBOX.'" data-target="#uiModal" href="'.$outboxUrl.'">'.LAN_PLUGIN_PM_OUTBOX.'</a></li>
+                    <li><a class="e-modal" data-cache="false" data-modal-caption="'.LAN_PM_35.'" data-target="#uiModal" href="'.$composeUrl.'">'.LAN_PM_35.'</a></li>
                 </ul>
         </li>
         </ul>
@@ -776,20 +800,10 @@ class admin_shortcodes
 	{
 		if (ADMIN)
 		{
-			global $ns;
-			ob_start();
 			if(!FILE_UPLOADS)
 			{
-				echo message_handler('ADMIN_MESSAGE', LAN_HEADER_02, __LINE__, __FILE__);
+				return e107::getRender()->tablerender(LAN_WARNING,LAN_HEADER_02,'admin_msg',true);
 			}
-			/*
-			if(OPEN_BASEDIR){
-			echo message_handler('ADMIN_MESSAGE', LAN_HEADER_03, __LINE__, __FILE__);
-			}
-			*/
-			$message_text = ob_get_contents();
-			ob_end_clean();
-			return $message_text;
 		}
 	}
 
@@ -832,7 +846,7 @@ class admin_shortcodes
 			$xml->filter = array('@attributes' => FALSE, 'administration' => FALSE);	// .. and they're all going to need the same filter
 
 			$nav_sql = new db;
-			if ($nav_sql -> db_Select('plugin', '*', 'plugin_installflag=1'))
+			if ($nav_sql ->select('plugin', '*', 'plugin_installflag=1'))
 			{
 				$tmp = array();
 				$e107_var['plugm']['text'] = ADLAN_95;
@@ -844,7 +858,7 @@ class admin_shortcodes
 				$tmp['plugm']['link'] = e_ADMIN.'plugin.php';
 				$tmp['plugm']['perm'] = 'P';
 
-				while($rowplug = $nav_sql -> db_Fetch())
+				while($rowplug = $nav_sql ->fetch())
 				{
 					$plugin_id = $rowplug['plugin_id'];
 					$plugin_path = $rowplug['plugin_path'];
@@ -897,9 +911,9 @@ class admin_shortcodes
 				if (strstr(e_SELF, '/admin.php'))
 				{
 					global $sql;
-					if ($sql -> db_Select('plugin', '*', 'plugin_installflag=1'))
+					if ($sql ->select('plugin', '*', 'plugin_installflag=1'))
 					{
-						while($rowplug = $sql -> db_Fetch())
+						while($rowplug = $sql->fetch())
 						{
 							extract($rowplug);
 							if(varset($rowplug[1]))
@@ -959,6 +973,13 @@ class admin_shortcodes
 
 	function sc_admin_pword()
 	{
+
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php") !==false)
+		{
+			return false;
+		}
+
+
 		global $pref;
 		if (ADMIN && ADMINPERMS == '0')
 		{
@@ -966,6 +987,7 @@ class admin_shortcodes
 			if ($pref['adminpwordchange'] && ((ADMINPWCHANGE+2592000) < time()))
 			{
 				$text = "<div style='mediumtext; text-align:center'>".ADLAN_102." <a href='".e_ADMIN."updateadmin.php'>".ADLAN_103.'</a></div>';
+				$ns->setUniqueId('e-password-change');
 				return $ns -> tablerender(ADLAN_104, $text, '', true);
 			}
 		}
@@ -983,9 +1005,9 @@ class admin_shortcodes
 
 	function sc_admin_siteinfo($parm='')
 	{
-		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php")
+		if($parm == 'creditsonly' && e_PAGE != "credits.php"  && e_PAGE != "phpinfo.php" && e_PAGE != 'e107_update.php')
 		{
-			return;
+			return null;
 		}	
 		
 		
@@ -1042,11 +1064,17 @@ class admin_shortcodes
 
 			$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : '';
 
+			$sqlMode = str_replace(",", ", ",e107::getDB()->getMode());
+
 			$text .= "<br /><br />
 			<b>".FOOTLAN_8."</b>
 			<br />
 			".$install_date."
-			<br /><br />
+			<br />";
+
+			$text .= $this->getLastGitUpdate();
+
+			$text .= "<br />
 			<b>".FOOTLAN_9."</b>
 			<br />".
 			preg_replace("/PHP.*/i", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
@@ -1057,9 +1085,12 @@ class admin_shortcodes
 			<br /><br />
 			<b>".FOOTLAN_12."</b>
 			<br />
-			".e107::getDB()->mySqlServerInfo.
-			"<br />
-			".FOOTLAN_16.": ".$mySQLdefaultdb."
+			".e107::getDB()->getServerInfo(). // mySqlServerInfo.
+
+			"<br />".FOOTLAN_16.": ".$mySQLdefaultdb."
+			<br />PDO: ".((e107::getDB()->getPDO() === true) ? LAN_ENABLED : LAN_DISABLED)."
+			<br />Mode: <small>".$sqlMode."</small>
+
 			<br /><br />
 			<b>".FOOTLAN_17."</b>
 			<br />utf-8
@@ -1073,9 +1104,25 @@ class admin_shortcodes
 		}
 	}
 
+	private function getLastGitUpdate()
+	{
+		$gitFetch = e_BASE.'.git/FETCH_HEAD';
+
+		if(file_exists($gitFetch))
+		{
+			$unix = filemtime($gitFetch);
+
+			$text = "<br /><b>Last Git Update</b><br />"; // NO LAN required. Developer-Only
+			$text.= ($unix) ? date('r',$unix)  : "Never";
+			$text .= "<br />";
+			return $text;
+		}
+
+	}
+
 	function sc_admin_status($parm)
 	{
-		if($parm == 'infopanel' && e_PAGE != 'admin.php')
+		if(($parm == 'infopanel' || $parm == 'flexpanel') && !deftrue('e_ADMIN_HOME'))
 		{
 			return;
 		}
@@ -1131,7 +1178,7 @@ class admin_shortcodes
 					if($emls = $sql->count('mail_recipients', '(*)', "WHERE mail_status = 13"))
 					{
 						//$text .= "\n\t\t\t\t\t<div style='padding-bottom: 2px;'>".E_16_FAILEDLOGIN." <a href='".e_ADMIN_ABS."fla.php'>".ADLAN_146.": $flo</a></div>";
-						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>"Pending Mailshots", 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
+						$oldconfigs['e-mailout'][0]	= array('icon'=>E_16_MAIL, 'title'=>ADLAN_167, 'url'=>e_ADMIN_ABS."mailout.php?mode=pending&action=list", 'total'=>$emls);
 					}
 					
 					
@@ -1168,15 +1215,15 @@ class admin_shortcodes
 					
 					$allconfigs = multiarray_sort($allconfigs,'title'); //XXX FIXME - not sorting correctly. 
 		
-					$text = "<ul id='e-status' class='unstyled list-unstyled'>";
+					$text = "<ul id='e-status' class='list-group'>";
 					foreach($allconfigs as $k=>$v)
 					{
 						foreach($v as $val)
 						{
 							$type = empty($val['invert']) ? 'latest' : 'invert';
 							$class = admin_shortcodes::getBadge($val['total'], $type);
-							$link =  "<a href='".$val['url']."'>".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";	
-							$text .= "<li>".$val['icon']." ".$link."</li>\n";	
+							$link =  "<a href='".$val['url']."'>".$val['icon']." ".str_replace(":"," ",$val['title'])." <span class='".$class."'>".$val['total']."</span></a>";
+							$text .= "<li class='list-group-item'>".$link."</li>\n";
 						}	
 					}
 					$text .= "</ul>";
@@ -1188,7 +1235,7 @@ class admin_shortcodes
 					
 				//	$text .= "\n\t\t\t\t\t</div>";
 					
-					
+					$ns->setUniqueId('e-status-list');
 					return ($parm != 'norender') ? $ns -> tablerender(LAN_STATUS, $text, '', TRUE) : $text;
 				}
 			}
@@ -1210,7 +1257,7 @@ class admin_shortcodes
 		}
 	}
 
-	function getBadge($total, $type = 'latest')
+	static function getBadge($total, $type = 'latest')
 	{
 		
 		/*
@@ -1269,7 +1316,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	/**
 	 * Attempt to Convert Old $text string into new array format (e_status and e_latest)
 	 */
-	function legacyToConfig($text)
+	static function legacyToConfig($text)
 	{
 		$var = array();
 		preg_match_all('/(<img[^>]*>)[\s]*<a[^>]href=(\'|")([^\'"]*)(\'|")>([^<]*)<\/a>[: ]*([\d]*)/is',$text, $match);
@@ -1284,65 +1331,188 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			
 	}
 			
-		
+	function sc_admin_addon_updates()
+	{
+		if(!getperms('0') || !deftrue('e_ADMIN_HOME'))
+		{
+			return null;
+		}
+
+
+		$themes = $this->getUpdateable('theme');
+		$plugins = $this->getUpdateable('plugin');
+
+		$text = $this->renderAddonUpdate($plugins);
+		$text .= $this->renderAddonUpdate($themes);
+
+		if(empty($text))
+		{
+			return null;
+		}
+		$ns = e107::getRender();
+
+		$tp = e107::getParser();
+		$ns->setUniqueId('e-addon-updates');
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
+
+
+	}
+
+
+	private function getUpdateable($type)
+	{
+
+		if(empty($type))
+		{
+			return false;
+		}
+
+		require_once(e_HANDLER.'e_marketplace.php');
+		$mp = new e_marketplace(); // autodetect the best method
+
+		switch($type)
+		{
+			case "theme":
+				$versions = $mp->getVersionList('theme');
+				$list = e107::getTheme()->getThemeList('version');
+				break;
+
+			case "plugin":
+				$versions = $mp->getVersionList('plugin');
+				$list = e107::getPref('plug_installed');
+				break;
+		}
+
+		$ret = array();
+
+		foreach($list as $folder=>$version)
+		{
+
+			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
+			{
+				$versions[$folder]['modalDownload'] = $mp->getDownloadModal('theme', $versions[$folder]);
+				$ret[] = $versions[$folder];
+				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
+			}
+
+		}
+
+		return $ret;
+
+	}
+
+
+
+	private function renderAddonUpdate($list)
+	{
+
+		if(empty($list))
+		{
+			return null;
+		}
+
+
+		$tp = e107::getParser();
+		$text = '<ul class="media-list">';
+		foreach($list as $row)
+		{
+
+			$caption = LAN_DOWNLOAD.": ".$row['name']." ".$row['version'];
+
+			$ls = '<a href="'.$row['modalDownload'].'" class="e-modal alert-link" data-modal-caption="'.$caption .'" title="'.LAN_DOWNLOAD.'">';
+			$le = '</a>';
+
+			$thumb = ($row['icon']) ? $row['icon'] : $row['thumbnail'];
+
+			$text .= '
+			  <li class="media">
+			    <div class="media-left">
+			      '.$ls.'
+			        <img class="media-object" src="'.$thumb.'" width="96">
+			      '.$le.'
+			    </div>
+			    <div class="media-body">
+			      <h4 class="media-heading">'.$ls.$row['name'].$le.'</h4>
+			      <p>'.$row['version'].'<br />
+			       <small class="text-muted">Released: '.($row['date']).'</small>
+			       </p>
+
+			    </div>
+			  </li>
+			';
+
+		}
+
+
+		$text .= "</ul>";
+
+
+		return $text;
+	}
+
 
 	function sc_admin_update()
 	{
-		if (!ADMIN) { return ''; }
+		if (!ADMIN) { return null; }
 
-		global $e107cache,$ns, $pref;
-		if (!varset($pref['check_updates'], FALSE)) { return ''; }
+		$pref = e107::getPref();
 
-		if (is_readable(e_ADMIN.'ver.php'))
+		if(empty($pref['check_updates']))
 		{
-			include(e_ADMIN.'ver.php');
+			return null;
 		}
 
-		$feed = "http://sourceforge.net/export/rss2_projfiles.php?group_id=63748&rss_limit=5";
-		$e107cache->CachePageMD5 = md5($e107info['e107_version']);
+		$cacheTag = 'Update_core';
 
-		if($cacheData = $e107cache->retrieve('updatecheck', 3600, TRUE))
+		if(!$cached = e107::getCache()->retrieve($cacheTag, 1440, true, true))
 		{
-			return $ns -> tablerender(LAN_NEWVERSION, $cacheData);
+			e107::getDebug()->log("Checking for Core Update");
+			$status = e107::coreUpdateAvailable();
+
+			if($status === false)
+			{
+				$status = array('status'=>'not needed');
+			}
+
+			$cached =  e107::serialize($status,'json');
+			e107::getCache()->set_sys($cacheTag, $cached,true,true);
 		}
+		else
+		{
+			e107::getDebug()->log("Using Cached Core Update Data");
+
+		}
+
+		$data = e107::unserialize($cached);
+
+		if($data === false || isset($data['status']))
+		{
+			return null;
+		}
+
 
 		// Don't check for updates if running locally (comment out the next line to allow check - but
 		// remember it can cause delays/errors if its not possible to access the Internet
-		if ((strpos(e_SELF,'localhost') !== FALSE) || (strpos(e_SELF,'127.0.0.1') !== FALSE)) { return ''; }
-
-		$xml = e107::getXml();
-
-		require_once(e_HANDLER."magpie_rss.php");
-
-		$ftext = '';
-		if($rawData = $xml -> getRemoteFile($feed))
+		if(e_DEBUG !== true)
 		{
-			$rss = new MagpieRSS( $rawData );
-			list($cur_version,$tag) = explode(" ",$e107info['e107_version']);
-			$c = 0;
-			foreach($rss->items as $val)
-			{
-				$search = array((strstr($val['title'], '(')), 'e107', 'released', ' v');
-				$version = trim(str_replace($search, '', $val['title']));
-
-				if(version_compare($version,$cur_version)==1)
-				{
-					$ftext = "<a rel='external' href='".$val['link']."' >e107 v".$version."</a><br />\n";
-					break;
-				}
-				$c++;
-			}
-		}
-		else
-		{  // Error getting data
-			$ftext = ADLAN_154;
+			if ((strpos(e_SELF,'localhost') !== false) || (strpos(e_SELF,'127.0.0.1') !== false)) { return null; }
 		}
 
-		$e107cache->set('updatecheck', $ftext, TRUE);
-		if($ftext)
-		{
-			return $ns -> tablerender(LAN_NEWVERSION, $ftext);
-		}
+
+		return '<ul class="core-update-available nav navbar-nav navbar-left">
+        <li class="dropdown open">
+            <a class="dropdown-toggle " title="Core Update Available" role="button" data-toggle="dropdown" href="#" aria-expanded="true">
+                <i class="fa fa-cloud-download  text-success"></i>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li class="nav-header navbar-header dropdown-header">'.e107::getParser()->lanVars(LAN_NEWVERSION,$data['version']).'</li>
+                    <li><a href="'.$data['url'].'" rel="external"><i class="fa fa-download" ></i> '.LAN_DOWNLOAD.'</a></li>
+                    <li><a href="'.$data['infourl'].'" rel="external"><i class="fa fa-file-text-o "></i> Release Notes</a></li>
+                </ul>
+        </li>
+        </ul>';
+
+
 	}
 
 	// Does actually the same than ADMIN_SEL_LAN
@@ -1359,9 +1529,9 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 	
 	/**
-	 * New Admin Navigation Routine. 
+	 * Old Admin Navigation Routine.
 	 */
-	function sc_admin_navigation($parm)
+	function sc_admin_navigationOld($parm=null)
 	{
 	
 		if (!ADMIN) return '';
@@ -1382,13 +1552,17 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
 		global $$tmpl;
 		
-		if($parm == 'home' || $parm == 'logout' || $parm == 'language' || $parm == 'pm')
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
 		{
+			$template = $$tmpl;
+
+			$template['start'] = $template['start_other'];
+
 			$menu_vars = $this->getOtherNav($parm);	
-			return e107::getNav()->admin('', '', $menu_vars, $$tmpl, FALSE, FALSE);
+			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
 		}
         
-        
+
         
 		// MAIN LINK
 		if($parm != 'no-main')
@@ -1417,9 +1591,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
 			//$menu_vars[$id]['perm'] = '';
 			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
+
+
 		}
 
 		//CORE SUBLINKS
+		$active = '';
 		foreach ($array_functions as $key => $subitem)
 		{
 			if(!empty($subitem[3]) && !getperms($subitem[3]))
@@ -1439,6 +1616,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$tmp['perm'] = $subitem[3];
 				$tmp['sub_class'] = '';
 				$tmp['sort'] = false;
+
+				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				{
+					$active = $catid;
+				}
+
+
+
+			//	e107::getDebug()->log($catid);
 
 				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
 				{
@@ -1548,14 +1734,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				}
 			}
 
+
+
 		 	$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
 
 		}
 
-
 		// ---------------- Cameron's Bit ---------------------------------
 
-		if(!vartrue($pref['admin_separate_plugins']))
+		if(empty($pref['admin_separate_plugins']))
 		{
         	// Convert Plugin Categories to Core Categories.
 			$convert = array(
@@ -1568,26 +1755,34 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				'help'		=> array(20,'helpMenu')
 			);
 
+
              foreach($tmp as $pg)
 			 {
 			    if(!empty($pg['category']))
 			    {
 			 	    $id = $convert[$pg['category']][1];
              	    $menu_vars[$id]['sub'][] = $pg;
+
+				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+					{
+						$active = $id;
+					}
+
+
 			    }
 			 }
 
-		   	 unset($menu_vars['plugMenu']);
-			 
-		
 			// Clean up - remove empty main sections
-			foreach ($menu_vars as $_m => $_d) 
+			foreach ($menu_vars as $_m => $_d)
 			{
+
 				if(!isset($_d['sub']) || empty($_d['sub']))
 				{
 					unset($menu_vars[$_m]);
 				}
 			}
+
+			unset($menu_vars['plugMenu']);
 		}
 
 		// ------------------------------------------------------------------
@@ -1599,9 +1794,214 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		}
 
 	//	 print_a($menu_vars);
-		return e107::getNav()->admin('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
+
+
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, FALSE, FALSE);
 		//return e_admin_men/u('', e_PAGE, $menu_vars, $$tmpl, FALSE, FALSE);
 	}
+
+
+	/**
+	 * New Admin Navigation Routine. v2.1.5
+	 */
+	function sc_admin_navigation($parm=null)
+	{
+
+		if (!ADMIN) return '';
+	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
+
+		$pref = e107::getPref();
+
+		$admin_cat 				= e107::getNav()->adminCats();
+		$array_functions 		= e107::getNav()->adminLinks('legacy');
+		$array_sub_functions	= e107::getNav()->adminLinks('sub');
+		$array_plugins          = e107::getNav()->adminLinks('plugin2');
+
+
+		$tp 	= e107::getParser();
+		$e107	= e107::getInstance();
+		$sql	= e107::getDb('sqlp');
+
+		parse_str($parm, $parms);
+		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
+		global $$tmpl;
+
+		if($parm == self::ADMIN_NAV_HOME || $parm == self::ADMIN_NAV_LOGOUT || $parm == self::ADMIN_NAV_LANGUAGE || $parm == 'pm')
+		{
+			$template = $$tmpl;
+
+			$template['start'] = $template['start_other'];
+
+			$menu_vars = $this->getOtherNav($parm);
+			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
+		}
+
+
+
+		// MAIN LINK
+		if($parm != 'no-main')
+		{
+			$menu_vars = array();
+			$menu_vars['adminhome']['text'] = ADLAN_151;
+			$menu_vars['adminhome']['link'] = e_ADMIN_ABS.'admin.php';
+			$menu_vars['adminhome']['image'] = "<img src='".E_16_NAV_MAIN."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars['adminhome']['image_src'] = ADLAN_151;
+			$menu_vars['adminhome']['perm'] = '';
+		}
+
+		//ALL OTHER ROOT LINKS - temporary data transformation - data structure will be changed in the future and this block will be removed
+
+  		foreach($admin_cat['id'] as $i => $cat)
+		{
+
+			$id = $admin_cat['id'][$i];
+			$menu_vars[$id]['text'] = $admin_cat['title'][$i];
+			$menu_vars[$id]['description'] = $admin_cat['title'][$i];
+			$menu_vars[$id]['link'] = '#';
+			$menu_vars[$id]['image'] = "<img src='".$admin_cat['img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S16' />";
+			$menu_vars[$id]['image_large'] = "<img src='".$admin_cat['lrg_img'][$i]."' alt='".$admin_cat['title'][$i]."' class='icon S32' />";
+			$menu_vars[$id]['image_src'] = $admin_cat['img'][$i];
+			$menu_vars[$id]['image_large_src'] = $admin_cat['lrg_img'][$i];
+			// FIX - 'perm' should not be set or navigation->admin() will be broken (bad permissions) for non main administrators
+			//$menu_vars[$id]['perm'] = '';
+			$menu_vars[$id]['sort'] = $admin_cat['sort'][$i];
+
+		}
+
+
+		//CORE SUBLINKS
+		$active = '';
+		foreach ($array_functions as $key => $subitem)
+		{
+			if(!empty($subitem[3]) && !getperms($subitem[3]))
+			{
+				continue;
+			}
+
+				$catid = $admin_cat['id'][$subitem[4]];
+				$tmp = array();
+				$tmp['text'] = $subitem[1];
+				$tmp['description'] = $subitem[2];
+				$tmp['link'] = $subitem[0];
+				$tmp['image'] = $subitem[5];
+				$tmp['image_large'] = $subitem[6];
+				$tmp['image_src'] = '';
+				$tmp['image_large_src'] = '';
+				$tmp['perm'] = $subitem[3];
+				$tmp['sub_class'] = '';
+				$tmp['sort'] = false;
+
+				if(strpos(e_REQUEST_SELF,$tmp['link'])!==false)
+				{
+					$active = $catid;
+				}
+
+
+
+			//	e107::getDebug()->log($catid);
+
+				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
+				{
+					$tmp['sub_class'] = 'sub';
+					foreach ($array_sub_functions[$key] as $subkey => $subsubitem)
+					{
+						$subid = $key.'_'.$subkey;
+						$tmp['sub'][$subid]['text'] = $subsubitem[1];
+						$tmp['sub'][$subid]['description'] = $subsubitem[2];
+						$tmp['sub'][$subid]['link'] = $subsubitem[0];
+						$tmp['sub'][$subid]['image'] = $subsubitem[5];
+						$tmp['sub'][$subid]['image_large'] = $subsubitem[6];
+						$tmp['sub'][$subid]['image_src'] = '';
+						$tmp['sub'][$subid]['image_large_src'] = '';
+						$tmp['sub'][$subid]['perm'] = $subsubitem[3];
+					}
+				}
+
+				if($tmp) $menu_vars[$catid]['sub'][$key] = $tmp;
+		}
+
+
+	//PLUGINS ----------------------------------------------------------
+
+		$tmp = array();
+		foreach($array_plugins as $key=>$p)
+		{
+			if(!getperms($p['perm']))
+			{
+				continue;
+			}
+
+			$tmp[$key]= $p;
+
+		}
+
+
+		$menu_vars['plugMenu']['sub'] = multiarray_sort($tmp, 'text');
+
+	// --------------------------------------------------------------------
+
+
+		if(empty($pref['admin_separate_plugins']))
+		{
+        	// Convert Plugin Categories to Core Categories.
+			$convert = array(
+				'settings' 	=> array(1,'setMenu'),
+				'users'		=> array(2,'userMenu'),
+				'content'	=> array(3,'contMenu'),
+				'tools'		=> array(4,'toolMenu'),
+				'manage'	=> array(6,'managMenu'),
+				'misc'		=> array(7,'miscMenu'),
+				'help'		=> array(20,'helpMenu')
+			);
+
+
+             foreach($tmp as $pg)
+			 {
+			    if(!empty($pg['category']))
+			    {
+			 	    $id = $convert[$pg['category']][1];
+             	    $menu_vars[$id]['sub'][] = $pg;
+
+				    if(strpos(e_REQUEST_SELF,$pg['link'])!==false)
+					{
+						$active = $id;
+					}
+
+
+			    }
+			 }
+
+			// Clean up - remove empty main sections
+			foreach ($menu_vars as $_m => $_d)
+			{
+
+				if(!isset($_d['sub']) || empty($_d['sub']))
+				{
+					unset($menu_vars[$_m]);
+				}
+			}
+
+			unset($menu_vars['plugMenu']);
+		}
+
+		// ------------------------------------------------------------------
+
+	//	 print_a($menu_vars);
+
+
+
+		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, false, false);
+
+	}
+
+
+
+
+
+
+
+
+
 
 
 	function getOtherNav($type)
@@ -1609,15 +2009,16 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		
-		if($type == 'home')
+		if($type === self::ADMIN_NAV_HOME)
 		{
 		
-			$menu_vars['home']['text'] =  ""; // ADLAN_53;
-			$menu_vars['home']['link'] = e_HTTP.'index.php';
-			$menu_vars['home']['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['home']['image_src'] = ADLAN_151;
-			$menu_vars['home']['sort'] = 1;
-			$menu_vars['home']['sub_class'] = 'sub';
+			$menu_vars[$type]['text'] =  ""; // ADLAN_53;
+			$menu_vars[$type]['link'] = e_HTTP.'index.php';
+			$menu_vars[$type]['image'] = $tp->toGlyph('fa-home'); // "<i class='fa fa-home'></i>" ; // "<img src='".E_16_NAV_LEAV."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars[$type]['image_src'] = ADLAN_151;
+			$menu_vars[$type]['sort'] = 1;
+			$menu_vars[$type]['sub_class'] = 'sub';
+			$menu_vars[$type]['template'] = $type;
 			
 			// Sub Links for 'home'. 
 			require_once(e_HANDLER."sitelinks_class.php");
@@ -1642,10 +2043,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$c++;
 			}
 
-			$menu_vars['home']['sub'] = $tmp;
+			$menu_vars[$type]['sub'] = $tmp;
 			// --------------------
 		}
-		elseif($type == 'logout')
+		elseif($type == self::ADMIN_NAV_LOGOUT)
 		{
 			$tmp = array();
 			
@@ -1656,16 +2057,22 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[1]['image_large'] = '';
 			$tmp[1]['image_src'] = '';
 			$tmp[1]['image_large_src'] = '';
-			
-						
-			$tmp[2]['text'] = "Personalize"; // TODO - generic LAN in lan_admin.php 
-			$tmp[2]['description'] = "Customize administration panels";
-			$tmp[2]['link'] = e_ADMIN.'admin.php?mode=customize';
-			$tmp[2]['image'] =  "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
-			$tmp[2]['image_large'] = '';
-			$tmp[2]['image_src'] = '';
-			$tmp[2]['image_large_src'] = '';
-		//	$tmp[2]['perm'] = '';	
+
+
+			// If not Main Admin and "Apply dashboard preferences to all administrators"
+			// is checked in admin theme settings.
+			$adminPref = e107::getConfig()->get('adminpref', 0);
+			if(getperms("1") || $adminPref == 0)
+			{
+				$tmp[2]['text'] = LAN_PERSONALIZE;
+				$tmp[2]['description'] = "Customize administration panels";
+				$tmp[2]['link'] = e_ADMIN . 'admin.php?mode=customize';
+				$tmp[2]['image'] = "<i class='S16 e-admins-16'></i>"; //E_16_ADMIN; // "<img src='".E_16_NAV_ADMIN."' alt='".ADLAN_151."' class='icon S16' />";
+				$tmp[2]['image_large'] = '';
+				$tmp[2]['image_src'] = '';
+				$tmp[2]['image_large_src'] = '';
+				//	$tmp[2]['perm'] = '';
+			}
 			
 			
 			$tmp[3]['text'] = LAN_LOGOUT;
@@ -1728,14 +2135,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			$tmp[8]['image_large_src'] 	= '';
 			$tmp[8]['link_class']		= '';					
 				
-			$menu_vars['logout']['text'] = ADMINNAME; // ""; // ADMINNAME;
-			$menu_vars['logout']['link'] = '#';
-			$menu_vars['logout']['image'] = $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
-			$menu_vars['logout']['image_src'] = LAN_LOGOUT;
-			$menu_vars['logout']['sub'] = $tmp;	
+			$menu_vars[$type]['text'] = ''; // ADMINNAME; // ""; // ADMINNAME;
+			$menu_vars[$type]['link'] = '#';
+			$menu_vars[$type]['image'] = $tp->toAvatar(null, array('w'=>30,'h'=>30,'crop'=>1, 'shape'=>'circle')); // $tp->toGlyph('fa-user'); // "<i class='icon-user'></i>"; // "<img src='".E_16_NAV_LGOT."' alt='".ADLAN_151."' class='icon S16' />";
+			$menu_vars[$type]['image_src'] = LAN_LOGOUT;
+			$menu_vars[$type]['sub'] = $tmp;
+			$menu_vars[$type]['template'] = $type;
 		}
 
-		if($type == 'language')
+		if($type == self::ADMIN_NAV_LANGUAGE)
 		{
 			$slng = e107::getLanguage();
 			$languages = $slng->installed();//array('English','French');
@@ -1746,10 +2154,15 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				
 				foreach($langSubs as $v)
 				{
-					$multiDoms[] = trim($v);	
+					if(!empty($v))
+					{
+						$multiDoms[] = trim($v);
+					}
 				}
 				
 			}
+
+			sort($languages);
 			
 			if(count($languages) > 1)
 			{
@@ -1788,24 +2201,80 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 					$c++;		
 				}
 				
-				$menu_vars['language']['text'] = strtoupper(e_LAN); // e_LANGUAGE;
-				$menu_vars['language']['link'] = '#';
-				$menu_vars['language']['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
-				$menu_vars['language']['image_src'] = null;
-				$menu_vars['language']['sub'] = $tmp;	
+				$menu_vars[$type]['text'] = strtoupper(e_LAN); // e_LANGUAGE;
+				$menu_vars[$type]['link'] = '#';
+				$menu_vars[$type]['image'] = $tp->toGlyph('fa-globe'); //  "<i class='icon-globe'></i>" ;
+				$menu_vars[$type]['image_src'] = null;
+				$menu_vars[$type]['sub'] = $tmp;
+				$menu_vars[$type]['template'] = $type;
 			}	
 			
 		}	
 		
-		return $menu_vars;
+		return !empty($menu_vars) ? $menu_vars : null;
 	}
 
 
 
-	function sc_admin_menumanager()  // List all menu-configs for easy-navigation
+
+
+
+	function sc_admin_menumanager($parm=null)  // List all menu-configs for easy-navigation
 	{
-    	global $pref;
-        $action = "";
+		if(strpos(e_REQUEST_URI,e_ADMIN_ABS."menus.php")===false)
+		{
+			return false;
+		}
+
+		if($parm == 'selection')
+		{
+			return $this->menuManagerSelection();
+		}
+
+		$pref = e107::getPref();
+
+
+
+		$search = array("_","legacyDefault","legacyCustom");
+		$replace = array(" ",MENLAN_31,MENLAN_33);
+
+		$var = array();
+
+
+
+		foreach($pref['sitetheme_layouts'] as $key=>$val)
+		{
+			$layoutName = str_replace($search,$replace,$key);
+			$layoutName .=($key==$pref['sitetheme_deflayout']) ? " (".LAN_DEFAULT.")" : "";
+		//	$selected = ($this->curLayout == $key || ($key==$pref['sitetheme_deflayout'] && $this->curLayout=='')) ? "selected='selected'" : FALSE;
+
+
+			//$url = e_SELF."?configure=".$key;
+			$url = e_SELF."?configure=".$key;
+
+		//	$text .= "<option value='".$url."' {$selected}>".$layoutName."</option>";
+			$var[$key]['text'] = str_replace(":"," / ",$layoutName);
+			$var[$key]['link'] = '#'.$key;
+			$var[$key]['link_class'] = ' menuManagerSelect';
+			$var[$key]['active'] = ($key==$pref['sitetheme_deflayout']) ? true: false;
+			$var[$key]['include'] = " data-url='". e_SELF."?configure=".$key."' data-layout='".$key."' ";
+		}
+		$action = $pref['sitetheme_deflayout'];
+
+		$defLayout = $pref['sitetheme_deflayout'];
+
+		$var = array($defLayout => $var[$defLayout]) + $var;
+
+		e107::setRegistry('core/e107/menu-manager/curLayout',$action);
+
+		$icon  = e107::getParser()->toIcon('e-menus-24');
+		$caption = $icon."<span>".ADLAN_6."</span>";
+
+	   return e107::getNav()->admin($caption,$action, $var);
+
+
+
+/*
 
         $var['menumanager']['text'] = LAN_MENULAYOUT;
 		$var['menumanager']['link'] = e_ADMIN_ABS.'menus.php';
@@ -1838,9 +2307,78 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	//	$action = (in_array($this->action,$keys)) ? $this->action : "installed";
 
 		e107::getNav()->admin("Menu Manager",$action, $var);
-	 //  e_admin/_menu(ADLAN_6,$action, $var);
+
+*/
+
 
 	}
+
+
+	private function menuManagerSelection()
+	{
+
+		 if(e_DEBUG === false)
+	    {
+	        return null;
+	    }
+
+
+		// TODO: Move to another shortcode?
+		// TODO: Get drag-n-drop working.
+
+
+		$sql = e107::getDb();
+
+		$pageMenu = array();
+		$pluginMenu = array();
+
+		$sql->select("menus", "menu_name, menu_id, menu_pages, menu_path", "1 GROUP BY menu_name ORDER BY menu_name ASC");
+
+		while ($row = $sql->fetch())
+		{
+			if(is_numeric($row['menu_path']))
+			{
+				$pageMenu[] = $row;
+			}
+			else
+			{
+				$pluginMenu[] = $row;
+			}
+
+		}
+
+		$text = "<div id='menu-manager-item-list' class='menu-manager-items' style='height:400px;overflow-y:scroll'>";
+		$text .= "<h4>Your Menus</h4>";
+
+		foreach($pageMenu as $row)
+		{
+			if(!empty($row['menu_name']))
+			{
+				$text .= "<div class='item' >".$row['menu_name']."</div>";
+			}
+		}
+
+		$text .= "<h4>Plugin Menus</h4>";
+		foreach($pluginMenu as $row)
+		{
+			$text .= "<div class='item' data-menu-id='".$row['menu_id']."'>".substr($row['menu_name'],0,-5)."</div>";
+		}
+
+		$text .=  "</div>";
+
+
+
+
+
+
+
+		return e107::getRender()->tablerender("Drag-N-Drop Menus", $text, null, true);
+
+
+
+
+	}
+
 
 }
 

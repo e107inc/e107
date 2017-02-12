@@ -1,14 +1,14 @@
 # Custom error pages for php scripts only
-<FilesMatch \.php$> 
+<FilesMatch \.php$>
 	ErrorDocument 400 /error.php?400
 	ErrorDocument 401 /error.php?401
 	ErrorDocument 403 /error.php?403
-	ErrorDocument 404 /error.php?404 
+	ErrorDocument 404 /error.php?404
 	ErrorDocument 500 /error.php?500
 </FilesMatch>
 
 ### Performance
-	AddDefaultCharset utf-8
+### AddDefaultCharset utf-8
 
 ### Security
 	ServerSignature Off
@@ -41,10 +41,11 @@
 
     <IfModule mod_env.c>
         SetEnv HTTP_MOD_REWRITE On
+        SetEnv HTTP_MOD_REWRITE_MEDIA On
     </IfModule>
 
 ### enable rewrites
-	Options +FollowSymLinks 
+###	Options +FollowSymLinks 
 	RewriteEngine On
 
 
@@ -54,7 +55,15 @@
 	
 ### Allow only GET and POST methods
 	RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK|OPTIONS|HEAD)
+
+
 	RewriteRule .* - [F]
+
+### Rewrite for Image URLs
+    ReWriteRule ^media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_MEDIA_IMAGE/$5&$1w=$2&$3h=$4 [NC,L]
+    ReWriteRule ^media\/avatar\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_AVATAR/$5&$1w=$2&$3h=$4 [NC,L]
+    RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1 [NC,L]
+    ReWriteRule ^theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_THEME/$5&$1w=$2&$3h=$4 [NC,L]
 
 ### send 404 on missing files in these folders 
 	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
@@ -68,6 +77,28 @@
 	RewriteRule .* index.php [L]
 
 </IfModule>
+
+### Mod_Expires Settings (when available)
+### May be modified if required
+    <IfModule mod_expires.c>
+        ExpiresActive On
+        ExpiresDefault "access plus 2 hours"
+        ExpiresByType image/x-icon "access plus 1 year"
+        ExpiresByType image/gif "access plus 1 week"
+        ExpiresByType image/png "access plus 1 week"
+        ExpiresByType image/jpg "access plus 1 week"
+        ExpiresByType image/jpeg "access plus 1 week"
+        ExpiresByType text/css "access plus 1 month"
+        ExpiresByType application/javascript "access plus 1 month"
+        ExpiresByType text/javascript "access plus 1 month"
+        ExpiresByType text/x-javascript "access plus 1 month"
+    </IfModule>
+
+### Gzip Compression Module
+<ifmodule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/xml text/xml application/rss+xml
+</ifmodule>
+
 
 ### Enable when developing locally. 
 ### SetEnv E_DEV true

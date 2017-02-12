@@ -1,3 +1,92 @@
+var e107 = e107 || {'settings': {}, 'behaviors': {}};
+
+(function ($)
+{
+
+	/**
+	 * Initializes click event on '.e-modal' elements.
+	 *
+	 * @type {{attach: e107.behaviors.eModalAdmin.attach}}
+	 */
+	e107.behaviors.eModalAdmin = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-modal').once('e-modal-admin').each(function ()
+			{
+				var $that = $(this);
+
+				$that.on('click', function ()
+				{
+					var $this = $(this);
+
+					if($this.attr('data-cache') == 'false')
+					{
+						$('#uiModal').on('shown.bs.modal', function ()
+						{
+							$(this).removeData('bs.modal');
+						});
+					}
+
+					var url = $this.attr('href');
+					var caption = $this.attr('data-modal-caption');
+					var height = ($(window).height() * 0.7) - 120;
+
+					if(caption === undefined)
+					{
+						caption = '';
+					}
+
+					$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="' + height + 'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
+					$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
+					$('.modal').modal('show');
+
+					$("#e-modal-iframe").on("load", function ()
+					{
+						$('#e-modal-loading').hide();
+					});
+
+					return false;
+				});
+			});
+		}
+	};
+
+})(jQuery);
+
+(function (jQuery)
+{
+
+	/**
+	 * jQuery extension to make admin tab 'fadeIn' with 'display: inline-block'.
+	 *
+	 * @param displayMode
+	 *  A string determining display mode for element after the animation.
+	 *  Default: 'inline-block'.
+	 * @param duration
+	 *  A string or number determining how long the animation will run.
+	 *  Default: 400.
+	 */
+	jQuery.fn.fadeInAdminTab = function (displayMode, duration)
+	{
+		var $this = $(this);
+
+		if($this.css('display') !== 'none')
+		{
+			return;
+		}
+
+		displayMode = displayMode || 'inline-block';
+		duration = duration || 400;
+
+		$this.fadeIn(duration, function ()
+		{
+			$this.css('display', displayMode);
+		});
+	};
+
+})(jQuery);
+
+
 $(document).ready(function()
 {
 		$('form').h5Validate(
@@ -74,7 +163,7 @@ $(document).ready(function()
 			var pos = $(this).attr('data-placement'); 
 			if(!pos)
 			{
-				pos = 'top';	
+				pos = 'top';
 			}
 			
 			$(this).tooltip({opacity:1.0,fade:true, placement: pos});
@@ -84,12 +173,40 @@ $(document).ready(function()
 		
 		$("#uiModal").draggable({
    			 handle: ".modal-header"
-		}); 
-		
-	
-		$('div.e-container').editable({
-			selector: '.e-editable',
-         });
+		});
+
+
+	$('div.e-container').editable({
+		selector: '.e-editable',
+		display: function (value, sourceData)
+		{
+			// HTML entities decoding... fix for:
+			// @see https://github.com/e107inc/e107/issues/2351
+			$.each(sourceData, function (index, element)
+			{
+				element.text = $("<div/>").html(element.text).text();
+				sourceData[index] = element;
+			});
+
+			// Display checklist as comma-separated values.
+			var html = [];
+			var checked = $.fn.editableutils.itemsByValue(value, sourceData);
+
+			if(checked.length)
+			{
+				$.each(checked, function (i, v)
+				{
+					html.push($.fn.editableutils.escape(v.text));
+				});
+
+				$(this).html(html.join(', '));
+			}
+			else
+			{
+				$(this).text(value);
+			}
+		}
+	});
 		
 //		$('.e-editable').editable();
 		
@@ -154,9 +271,23 @@ $(document).ready(function()
 		$('a[data-toggle-sidebar]').on('click', function(e)
         {
             e.preventDefault();
-            
-            $("#left-panel").toggle(1000);
-            $("#right-panel").toggleClass("span10",0);
+
+	        var $leftPanel = $(".admin-left-panel");
+	        var $rightPanel = $(".admin-right-panel");
+
+	        if ($rightPanel.hasClass('col-md-12'))
+	        {
+		        $rightPanel.toggleClass("col-md-9 col-md-12");
+		        $rightPanel.toggleClass("col-lg-10 col-lg-12");
+		        $leftPanel.toggle(1000);
+	        }
+	        else
+	        {
+		        $leftPanel.toggle(1000, function() {
+			        $rightPanel.toggleClass("col-md-9 col-md-12");
+			        $rightPanel.toggleClass("col-lg-10 col-lg-12");
+		        });
+	        }
 
         });
 
@@ -193,44 +324,6 @@ $(document).ready(function()
 	
 		});
 
-
-
-
-	
-
-
-		
-		
-		/*  Bootstrap Modal window within an iFrame */
-		$('.e-modal').on('click', function(e) 
-		{
-
-			e.preventDefault();
-
-            if($(this).attr('data-cache') == 'false')
-            {
-                $('#uiModal').on('shown.bs.modal', function () {
-                    $(this).removeData('bs.modal');
-                });
-            }
-            
-			var url 		= $(this).attr('href');
-			var caption  	= $(this).attr('data-modal-caption');
-			var height 		= ($(window).height() * 0.7) - 120;
-
-            if(caption === undefined)
-            {
-                caption = '';
-            }
-
-    		$('.modal-body').html('<div class="well"><iframe id="e-modal-iframe" width="100%" height="'+height+'px" frameborder="0" scrolling="auto" style="display:block;background-color:transparent" allowtransparency="true" src="' + url + '"></iframe></div>');
-    		$('.modal-caption').html(caption + ' <i id="e-modal-loading" class="fa fa-spin fa-spinner"></i>');
-    		$('.modal').modal('show');
-    		
-    		$("#e-modal-iframe").on("load", function () {
-				 $('#e-modal-loading').hide(); 
-			});
-    	});	
 
 		
 
@@ -270,7 +363,10 @@ $(document).ready(function()
 				//	alert(data);
 				$("#"+target).css('width', data+'%');   	// update the progress bar width */
 				$("#"+target).html(data+'%');     		// display the numeric value */
-		    
+
+
+		        data = parseInt(data);
+
 				if(data > 99.999) {
 				
 					clearInterval(progresspump);
@@ -358,11 +454,11 @@ $(document).ready(function()
 		});
 		
 			// run tips on .field-help 
-		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip").each(function(c) {
+		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control").each(function(c) {
 						
 			var t = $(this).nextAll(".field-help");
 
-			var placement = 'right';	
+			var placement = 'bottom';
 			
 			if($(this).is("textarea"))
 			{
@@ -388,6 +484,7 @@ $(document).ready(function()
 				html: true,
 				opacity: 1.0,
 				placement: placement,
+				container: 'body',
 				delay: { show: 300, hide: 600 } 
 			});
 		
@@ -417,7 +514,7 @@ $(document).ready(function()
 			
 		});
 		
-		$(".e-tags").tag();
+	//	$(".e-tags").tag();
 		
 		
 
@@ -442,6 +539,7 @@ $(document).ready(function()
 	   		
 			$(this).switchClass( "link", "link-active", 30 );
 			$(this).closest("li").addClass("active");
+	
 			$(id).removeClass('e-hideme').show({
 				effect: "slide"
 			});
@@ -449,7 +547,8 @@ $(document).ready(function()
 			if(hash) {
 				window.location.hash = 'nav-' + hash;
 			  	if(form) {
-			    	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash);
+
+			  //  	$(form).attr('action', $(form).attr('action').split('#')[0] + '#nav-' + hash); // breaks menu-manager nav.
 			    }
 			    return false; 
 			}
@@ -461,12 +560,13 @@ $(document).ready(function()
 		}
 		
 		// backend 
-		$(".e-password").pwdMeter({
+	/*
+	    $(".e-password").pwdMeter({
 	            minLength: 6,
 	            displayGeneratePassword: true,
 	            generatePassText: "Generate",
 	            randomPassLength: 12
-	    });
+	    });*/
 		
 		
 		
@@ -574,30 +674,103 @@ $(document).ready(function()
 		
 	
 		// Basic Delete Confirmation	
-		$("input.delete,button.delete").click(function(){
-  			var answer = confirm($(this).attr("data-confirm"));
-  			return answer // answer is a boolean
+		$('input.delete,button.delete,a[data-confirm]').click(function(){
+  			answer = confirm($(this).attr("data-confirm"));
+  			return answer; // answer is a boolean
 		});
 		
-		$("e-confirm").click(function(){
-  			var answer = confirm($(this).attr("title"));
-  			return answer // answer is a boolean
-		});    
-		
+		$(".e-confirm").click(function(){
+  			answer = confirm($(this).attr("title"));
+  			return answer; // answer is a boolean
+		});
 
-		
-		// Menu Manager Layout drop-down options
+
+        // see boot.php for main processing. (works only in admin)
+        $(".e-sef-generate").click(function(){
+
+            src         = $(this).attr("data-src");
+            target      = $(this).attr("data-target");
+            toconvert   = $('#'+src).val();
+            script      = window.location;
+
+            $.ajax({
+                type: "POST",
+                url: script,
+                data: { source: toconvert, mode: 'sef' }
+
+            }).done(function( data ) {
+
+                var a = $.parseJSON(data);
+          //      alert(a.converted);
+                if(a.converted)
+                {
+                    $('#'+target).val(a.converted);
+
+                    //	$('#uiAlert').notify({
+                    //		type: 'success',
+                    //       message: { text: 'Completed' },
+                    //        fadeOut: { enabled: true, delay: 2000 }
+                    //    }).show();
+
+                }
+            });
+
+        });
+
+
+
+		$("a.menuManagerSelect").click(function(e){
+
+
+			var link = $(this).attr('data-url');
+			var layout= $(this).attr('data-layout');
+
+			$('#curLayout').val(layout);
+			$('ul.e-mm-selector').hide();
+			$('form#e-mm-selector').attr('action',link);
+
+			var text = $(this).text();
+			$(this).html(text + ' <i class="e-mm-select-loading fa fa-spin fa-spinner"></i>');
+
+			$("#menu_iframe").attr("src",link);
+
+			$("#menu_iframe").on("load", function () {
+				$('.e-mm-select-loading').hide();
+			});
+
+
+			return false;
+		});
+
+
+    // Menu Manager Layout drop-down options
 		$("#menuManagerSelect").change(function(){
 			var link = $(this).val();
 			$("#menu_iframe").attr("src",link);			
 			return false;		
 		});
-		
-		$('#menu_iframe').load(function() {
-		   this.style.height = this.contentWindow.document.body.offsetHeight + 100 + 'px';
-		});
+
 			
+
+		$("a.e-mm-selector").click(function(e){
+
+			 var hash = $('#curLayout').val();
+			//	alert(hash);
+
+			var selector = 'ul.dropdown-menu.e-mm-selector.' + hash;
 		
+			$(selector).toggle();
+
+			return false; 
+		});
+
+
+		$(".e-mm-selector li input").click(function(e){
+
+			$("ul.dropdown-menu.e-mm-selector").css('display','none');
+
+		});
+
 		
 		$(".e-shake" ).effect("shake",{times: 10, distance: 2},20);
 		

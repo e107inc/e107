@@ -43,10 +43,22 @@ class ecache {
 	/**
 	 * Set the MD5 Hash
 	 */
-	public function setMD5($text)
+	public function setMD5($text, $hash=true)
 	{
-		$this->CachePageMD5 = md5($text);
+		if($text === null)
+		{
+			$this->CachePageMD5 = md5(e_BASE.e_LANGUAGE.THEME.USERCLASS_LIST.defset('e_QUERY').filemtime(THEME.'theme.php'));
+			return $this;
+		}
+
+		$this->CachePageMD5 = ($hash === true) ? md5($text) : $text;
 		return $this;
+	}
+
+
+	public function getMD5()
+	{
+		return $this->CachePageMD5;
 	}
 
 	/**
@@ -110,21 +122,24 @@ class ecache {
 	}
 
 	/**
-	* @return string
-	* @param string $query
-	* @param int $MaximumAge the time in minutes before the cache file 'expires'
-	* @param Forced check if cache is disabled. 
-	* @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
-	* @scope public
-	*/
+	 * Retrieve Cache data.
+	 * @param $CacheTag
+	 * @param bool|int $MaximumAge the time in minutes before the cache file 'expires'
+	 * @param bool $ForcedCheck check even if cache pref is disabled.
+	 * @param bool $syscache set to true when checking sys cache.
+	 * @return string
+	 * @desc Returns the data from the cache file associated with $query, else it returns false if there is no cache for $query.
+	 * @scope public
+	 */
 	public function retrieve($CacheTag, $MaximumAge = false, $ForcedCheck = false, $syscache = false)
 	{
 		if(($ForcedCheck != false ) || ($syscache == false && $this->UserCacheActive) || ($syscache == true && $this->SystemCacheActive) && !e107::getParser()->checkHighlighting())
 		{
 			$cache_file = (isset($this) && $this instanceof ecache ? $this->cache_fname($CacheTag, $syscache) : self::cache_fname($CacheTag, $syscache));
-			if (file_exists($cache_file))
+
+			if(file_exists($cache_file))
 			{
-				if ($MaximumAge != false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
+				if ($MaximumAge !== false && (filemtime($cache_file) + ($MaximumAge * 60)) < time()) {
 					unlink($cache_file);
 					return false;
 				}
@@ -135,13 +150,16 @@ class ecache {
 					{
 						$ret = substr($ret, strlen(self::CACHE_PREFIX));
 					}
-					else
+					elseif(substr($ret,0,5) == '<?php')
 					{
 						$ret = substr($ret, 5);		// Handle the history for now
 					}
 					return $ret;
 				}
-			} else {
+			}
+			else
+			{
+			//	e107::getDebug()->log("Couldn't find cache file: ".json_encode($cache_file));
 				return false;
 			}
 		}
@@ -172,7 +190,7 @@ class ecache {
 	/**
 	 *
 	 * @param string $CacheTag - name of tag for future retrieval - should NOT contain an MD5. 
-	 * @param data $Data - data to be cached
+	 * @param string $Data - data to be cached
 	 * @param boolean $ForceCache [optional] if TRUE, writes cache even when disabled in admin prefs. 
 	 * @param boolean $bRaw [optional] if TRUE, writes data exactly as provided instead of prefacing with php leadin
 	 * @param boolean $syscache [optional]
@@ -222,6 +240,7 @@ class ecache {
 	 */
 	public function clear($CacheTag = '', $syscache = false, $related = false)
 	{
+
 		$file = ($CacheTag) ? preg_replace("#\W#", "_", $CacheTag)."*.cache.php" : "*.cache.php";
 		e107::getEvent()->triggerAdminEvent('cache_clear', "cachetag=$CacheTag&file=$file&syscache=$syscache");
 		$ret = self::delete(e_CACHE_CONTENT, $file, $syscache);
@@ -243,6 +262,8 @@ class ecache {
 	*/
 	function clear_sys($CacheTag = '', $related = false)
 	{
+
+
 		if(isset($this) && $this instanceof ecache)
 		{
 			return $this->clear($CacheTag, true, $related);
@@ -288,7 +309,7 @@ class ecache {
 	
 	/**
 	 * Clear Full Cache
-	 * @param string $type: content | system| browser | db | image
+	 * @param string $type: content | system| browser | db | image | js | css | library
 	 * @example clearAll('db');
 	 */
 	 
@@ -302,28 +323,46 @@ class ecache {
 			return;
 		}
 			
-		if($type == 'system')
+		if($type === 'system')
 		{
 			$this->clear_sys();
 			return;	
 		}
 
-		if($type == 'browser')
+		if($type === 'browser')
 		{
 			e107::getConfig()->set('e_jslib_browser_cache', time())->save(false);
 			return;	
 		}
 
-		if($type == 'db')
+		if($type === 'db')
 		{
 			$path = e_CACHE_DB;
 			$mask = ($mask == null) ? '.*\.php' : $mask;
 		}
 
-		if($type == 'image')
+		if($type === 'image')
 		{
 			$path = e_CACHE_IMAGE;
 			$mask = ($mask == null) ? '.*\.cache\.bin' : $mask;		
+		}
+
+		if($type === 'js')
+		{
+			$path = e_WEB."cache/";
+			$mask = ($mask == null) ? '.*\.js' : $mask;
+		}
+
+		if($type === 'css')
+		{
+			$path = e_WEB."cache/";
+			$mask = ($mask == null) ? '.*\.css' : $mask;
+		}
+
+		if($type === 'library')
+		{
+			$path = e_CACHE_CONTENT;
+			$mask = ($mask == null) ? 'S_Library_.*\.cache\.php' : $mask;
 		}
 
 		if((null == $path) || (null == $mask))
@@ -334,6 +373,7 @@ class ecache {
 		$fl = e107::getFile(false);
 		$fl->mode = 'fname';
 		$files = $fl->get_files($path, $mask);
+
 		if($files)
 		{
 			foreach ($files as $file)

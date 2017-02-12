@@ -8,41 +8,20 @@
  *
  * Ban List Management
  *
- * $URL$
- * $Id$
  *
 */
-
-/**
- *	e107 Banlist administration
- *
- *	@package	e107
- *	@subpackage	admin
- *	@version 	$Id$;
- */
-
 
 require_once('../class2.php');
-/*
-@todo should this be here?
-if(count($_POST) && !varset($_POST['e-token']))
-{
-	die('Access denied - bl');
-}
-*/
-
 
 if (!getperms('4'))
 {
-	header('location:'.e_BASE.'index.php');
+	e107::redirect('admin');
 	exit();
 }
 
-
-
 require_once(e_HANDLER.'iphandler_class.php');		// This is probably already loaded in class2.php
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_'.e_PAGE);
+e107::coreLan('banlist', true);
 
 e107::js('footer-inline', "
 
@@ -53,9 +32,7 @@ e107::js('footer-inline', "
 			event.preventDefault();
 		});
 
-
 ");
-
 
 
 class banlist_admin extends e_admin_dispatcher
@@ -87,8 +64,8 @@ class banlist_admin extends e_admin_dispatcher
 	
 	protected $adminMenu = array(
 
-		'main/list'			=> array('caption'=> "Blacklist", 'perm' => '4'), //TODO check for LAN.
-		'main/create'		=> array('caption'=> "Add to Blacklist", 'perm' => '4'),
+		'main/list'			=> array('caption'=> BANLAN_122, 'perm' => '4'),
+		'main/create'		=> array('caption'=> BANLAN_123, 'perm' => '4'),
 		'other'            => array('divider'=>true),
 		// Use FILTER to view whitelist instead. 
 		'white/list'		=> array('caption'=> BANLAN_52, 'perm' => '4'),
@@ -96,7 +73,7 @@ class banlist_admin extends e_admin_dispatcher
 
 		'other1'            => array('divider'=>true),
 
-		'failed/list'       => array('caption'=> 'Failed logins', 'perm'=>'4'),
+		'failed/list'       => array('caption'=> ADLAN_146, 'perm'=>'4'),
 
 		'other2'            => array('divider'=>true),
 		'main/transfer'		=> array('caption'=> BANLAN_35, 'perm' => '4'),
@@ -110,6 +87,8 @@ class banlist_admin extends e_admin_dispatcher
 	);	
 	
 	protected $menuTitle = BANLAN_16;
+
+	protected $adminMenuIcon = 'e-banlist-24';
 }
 
 
@@ -133,10 +112,10 @@ class banlist_ui extends e_admin_ui
 		  'banlist_ip' 			=>   array ( 'title' => LAN_IP, 			'type' => 'ip', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_bantype' 	=>   array ( 'title' => LAN_TYPE, 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_banexpires' 	=>   array ( 'title' => 'Expires',	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_banexpires' 	=>   array ( 'title' => BANLAN_124,	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_admin' 		=>   array ( 'title' => 'Admin', 			'type' => 'text', 	    'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
-		  'banlist_reason' 		=>   array ( 'title' => 'Reason', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_notes' 		=>   array ( 'title' => 'Notes', 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_reason' 		=>   array ( 'title' => BANLAN_7, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => 'constant=1', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_notes' 		=>   array ( 'title' => BANLAN_19, 			'type' => 'text', 		'data' => 'str', 'inline'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => array('size'=>'xxlarge'), 'class' => 'left', 'thclass' => 'left',  ),
 		  'options' 			=>   array ( 'title' => LAN_OPTIONS, 		'type' => '', 			'data' => '', 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',  ),
 		);		
 		
@@ -167,7 +146,7 @@ class banlist_ui extends e_admin_ui
 					$myip = e107::getIPHandler()->getIP(true);
 					$this->fields['banlist_ip']['writeParms']['tdClassRight']  = 'form-inline';
 					$this->fields['banlist_ip']['writeParms']['pre'] = "<div class='input-append'>";
-					$this->fields['banlist_ip']['writeParms']['post'] = "<button class='btn btn-primary' id='useip' data-ip='{$myip}'>Use My IP</button></div>"; // USERIP;
+					$this->fields['banlist_ip']['writeParms']['post'] = "<button class='btn btn-primary' id='useip' data-ip='{$myip}'>".BANLAN_125."</button></div>"; // USERIP;
 				}
 
 			}
@@ -208,6 +187,7 @@ class banlist_ui extends e_admin_ui
 
 		public function afterDelete($deleted_data, $id, $deleted_check)
 		{
+
 			e107::getIPHandler()->regenerateFiles();
 		}
 
@@ -229,10 +209,15 @@ class banlist_ui extends e_admin_ui
 		
 		private function timesPageSave()
 		{
+
+
 			$ipAdministrator = new banlistManager;
 			$tp = e107::getParser();
-			$changed = FALSE;
-			
+			$changed = false;
+
+			$pref = array();
+
+			$reasonList = $ipAdministrator->getValidReasonList();
 			foreach ($ipAdministrator->getValidReasonList() as $bt)
 			{
 				$i = abs($bt) + 1;		// Forces a single-digit positive number for part of field name
@@ -249,7 +234,8 @@ class banlist_ui extends e_admin_ui
 					$changed = TRUE;
 				}
 			}
-			if ($changed)
+
+			if ($changed && !empty($pref))
 			{
 			// @todo write actual prefs changes to log file (different methods for prefs?)
 				e107::getConfig()->setPref($pref)->save(); 
@@ -269,7 +255,7 @@ class banlist_ui extends e_admin_ui
 
 
 		
-		public function timesPage()
+		protected function timesPage()
 		{
 			if (!getperms('0'))
 			{
@@ -328,7 +314,7 @@ class banlist_ui extends e_admin_ui
 								<div class='field-help'>".$ipAdministrator->getBanTypeString($bt, TRUE)."</div>
 							</td>
 							<td class='left'>
-								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120)."
+								".$frm->textarea('ban_text_'.($i), $pref['ban_messages'][$bt], 4, 120, array('size'=>'xxlarge'))."
 							</td>
 							<td class='center'>".ban_time_dropdown('', BANLAN_32, $pref['ban_durations'][$bt], 'ban_time_'.($i))."</td>
 						</tr>
@@ -349,12 +335,12 @@ class banlist_ui extends e_admin_ui
 		}		
 
 		
-		public function optionsPage()
+		protected function optionsPage()
 		{
 			//FIXME Put Options code in here. 
 		}				
 
-		public function banlogPage()
+		protected function banlogPage()
 		{
 			//FIXME Put LogPage code in here. 
 		}	
@@ -519,13 +505,14 @@ class banlist_form_ui extends e_admin_form_ui
 		protected $table			= 'generic';
 		protected $pid				= 'gen_id';
 		protected $perPage 			= 10;
-		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='failed_login' ORDER BY gen_datestamp DESC";
+		protected $listQry			= "SELECT * FROM `#generic` WHERE gen_type='failed_login' ";
+		protected $listOrder        = "gen_datestamp DESC";
 
 		protected $fields 		= array (  'checkboxes' =>   array ( 'title' => '', 'type' => null, 'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		                                    'gen_id' 				=> array ( 'title' => LAN_ID,	 'nolist'=>true,	'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			//	  'gen_type' 			=> array ( 'title' => LAN_BAN, 	'type' => 'method', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'gen_datestamp' 		=> array ( 'title' => LAN_DATESTAMP, 'type' => 'datestamp', 'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		                                    'gen_chardata' 		=> array ( 'title' => LAN_DESCRIPTION, 'type' => 'method', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		                                    'gen_chardata' 		=> array ( 'title' => LAN_DESCRIPTION, 'type' => 'method', 'data' => 'str', 'width' => '40%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left', 'filter'=>true ),
 
 			//	  'gen_user_id' 		=> array ( 'title' => LAN_BAN, 'type' => 'method', 'batch'=>true, 'data' => 'int', 'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		                                    'gen_ip' 				=> array ( 'title' => LAN_IP, 'type' => 'ip', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -535,6 +522,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 		protected $fieldpref = array('gen_datestamp', 'gen_ip', 'gen_chardata');
 
+		protected $batchOptions = array();
 
 		// optional
 		public function init()
@@ -543,6 +531,26 @@ class banlist_form_ui extends e_admin_form_ui
 			{
 				$dels = implode(',',$_POST['e-multiselect']);
 				//$e107::getDb()->insert('banlist',
+			}
+
+			$allFailedTotal = e107::getDB()->count('generic', '(*)', "gen_type='failed_login'");
+
+			$this->batchOptions = array('delete-all'=>"Delete all ".$allFailedTotal." failed logins from database");
+
+			if(!empty($_POST['etrigger_batch']) && $_POST['etrigger_batch'] == "delete-all")
+			{
+				$this->deleteAllFailed();
+			}
+
+		
+		}
+
+		private function deleteAllFailed()
+		{
+
+			if(e107::getDB()->delete('generic', "gen_type='failed_login'"))
+			{
+				e107::getMessage()->addSuccess(LAN_DELETED);
 			}
 		}
 
@@ -1582,7 +1590,7 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 			}
 			$qry = "REPLACE INTO `#banlist` (".implode(',', array_keys($field_list)).") values ('".implode("', '", $field_list)."')";
 			//	  echo count($field_list)." elements, query: ".$qry."<br />";
-			if (!$sql->db_Select_gen($qry))
+			if (!$sql->gen($qry))
 			{
 				$mes->addError(BANLAN_50.$line_num);
 				return BANLAN_50.$line_num;
@@ -1643,3 +1651,4 @@ function headerjs()
 
 require_once(e_ADMIN."footer.php");
 exit;
+?>

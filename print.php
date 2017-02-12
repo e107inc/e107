@@ -1,38 +1,51 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     Copyright (C) 2008-2009 e107 Inc 
-|     http://e107.org
-|
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.8/print.php,v $
-|     $Revision$
-|     $Date$
-|     $Author$
-+----------------------------------------------------------------------------+
+ * e107 website system
+ *
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+ *
+ * Printer Friendly
+ *
 */
+
 require_once("class2.php");
 //include_lan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_'.e_PAGE);
 
 e107::coreLan('print');
-
-/*
-$HEADER="";
-$FOOTER="";
-$CUSTOMHEADER = "";
-$CUSTOMFOOTER = "";
-*/
 
 $qs = explode(".", e_QUERY,2);
 if ($qs[0] == "") {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+
+$CSS = <<<CSS
+
+	body { background: #fff; color: #000 }
+
+@media print {
+
+	img {
+        display: block;
+    }
+    img, table, ul, ol, .code-snippet {
+        page-break-inside: avoid;
+        page-break-before: auto;
+        page-break-after: auto;
+    }
+
+  a[href]:after {
+    content: none;
+  }
+
+}
+CSS;
+
+
+e107::css('inline',$CSS);
+
 define('e_IFRAME', true); 
 
 $source = $qs[0];
@@ -50,19 +63,28 @@ if(strpos($source,'plugin:') !== FALSE)
 	}
 	else
 	{
-		echo "file missing.";
+		echo LAN_FILE_NOT_FOUND;
 		exit;
 	}
 }
 else
 {
-	$con = new convert;
-	$sql->db_Select("news", "*", "news_id='{$parms}'");
-	$row = $sql->db_Fetch(); 
-	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1'); 
-	extract($row);
-	define("e_PAGETITLE", $news_title);
-	$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
+	//$con = new convert;
+
+	$query = "SELECT n.*,c.* FROM `#news` AS n LEFT JOIN `#news_category` AS c ON n.news_category = c.category_id WHERE n.news_id=".intval($parms);
+
+	//$sql->db_Select("news", "*", "news_id='{$parms}'");
+	$sql = e107::getDb();
+	$sql->gen($query);
+	$row = $sql->fetch();
+	$newsUrl = e107::getUrl()->create('news/view/item', $row, 'full=1');
+
+
+//	extract($row);
+//	define("e_PAGETITLE", $news_title);
+	//$news_body = $tp->toHTML($news_body, TRUE, 'BODY');
+
+	/*
 	$news_extended = $tp->toHTML($news_extended, TRUE, 'BODY');
 	if ($news_author == 0)
 	{
@@ -72,29 +94,42 @@ else
 	else
 	{
 		$sql->db_Select("news_category", "category_id, category_name", "category_id='{$news_category}'");
-		list($category_id, $category_name) = $sql->db_Fetch(MYSQL_NUM);
+		list($category_id, $category_name) = $sql->db_Fetch('num');
 		$sql->db_Select("user", "user_id, user_name", "user_id='{$news_author}'");
-		list($a_id, $a_name) = $sql->db_Fetch(MYSQL_NUM);
+		list($a_id, $a_name) = $sql->db_Fetch('num');
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");
 	$print_text = "<span style=\"font-size: 13px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<b>".LAN_PRINT_135.$news_title."</b>
+	<h2>".LAN_PRINT_135.$news_title."</h2>
 	<br />
-	(".LAN_PRINT_86." ".$tp->toHTML($category_name,FALSE,"defs").")
+	(".LAN_CATEGORY." ".$tp->toHTML($category_name,FALSE,"defs").")
 	<br />
-	".LAN_PRINT_94." ".$a_name."<br />
+	".LAN_POSTED_BY." ".$a_name."<br />
 	".$news_datestamp."
 	<br /><br />".
 	$news_body;
 
-	if ($news_extended != ""){ $print_text .= "<br /><br />".$news_extended; }
-	if ($news_source != ""){ $print_text .= "<br /><br />".$news_source; }
-	if ($news_url != ""){ $print_text .= "<br />".$news_url; }
-	 
-	$print_text .= "<br /><br /></span><hr />".
-	LAN_PRINT_303.SITENAME."
+	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
+
+	if (!empty($news_extended)){ $print_text .= "<br /><br />".$news_extended; }
+	if (!empty($news_source)){ $print_text .= "<br /><br />".$news_source; }
+	if (!empty($news_url)){ $print_text .= "<br />".$news_url; }
+*/
+
+    $tmp = e107::getTemplate('news', 'news', 'view');
+	$template = $tmp['item'];
+	unset($tmp);
+//	ob_start();
+	require_once(e_HANDLER."news_class.php");
+	$ix = new news;
+
+	$print_text = $ix->render_newsitem($row, 'return', '', $template, null);
+	//$print_text = ob_get_flush();
+
+	$print_text .= "<br /><br /><hr />".
+	LAN_PRINT_303."<b>".SITENAME."</b>
 	<br />
-	( ".$newsUrl." )
+	".$newsUrl."
 	";
 	
 	
@@ -121,9 +156,9 @@ else
 {
 	echo "
 		<div style='background-color:white'>
-		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO}", TRUE)."</div><hr /><br />
+		<div style='text-align:".$align."'>".$tp->parseTemplate("{LOGO: h=100}", TRUE)."</div><hr />
 		<div style='text-align:".$align."'>".$print_text."</div><br /><br />
-		<form action=''><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
+		<form action='#'><div class='hidden-print' style='text-align:center'><input class='btn btn-primary ' type='button' value='".LAN_PRINT_307."' onclick='window.print()' /></div></form></div>";
 }
 require_once(FOOTERF);
 

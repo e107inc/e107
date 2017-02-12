@@ -16,5 +16,5 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$text = "The theme manager allows you to set your site's public theme and your admin areas theme.";
+$text = "The theme manager allows you to set your site's public theme and your admin areas theme.<br /><br />Look at the tooltips (when available) for description  ";
 $ns -> tablerender("Theme Manager Help", $text);

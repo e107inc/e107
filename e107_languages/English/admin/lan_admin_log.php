@@ -71,6 +71,7 @@ define("RL_LAN_069", "Download Name");
 define("RL_LAN_071", "User registration (ignores class setting above)");
 define("RL_LAN_072", "Signup email acknowledgement (ignores class setting above)");
 define("RL_LAN_073", "Login/Logout");
+
 define("RL_LAN_075", "Change display name");
 define("RL_LAN_076", "Change password");
 define("RL_LAN_077", "Change email address");
@@ -81,6 +82,8 @@ define("RL_LAN_081", "Mail bounces");
 define("RL_LAN_082", "User bans");
 define("RL_LAN_083", "Mail bounce resets");
 define("RL_LAN_084", "Temporary accounts");
+define("RL_LAN_087", "Details");
+
 // Intentional gap
 define("RL_LAN_090", "Download ID");
 define("RL_LAN_091", "Detailed timings");
@@ -121,5 +124,10 @@ define("RL_LAN_123", "User audit trail class");
 define("RL_LAN_124", "User audit trail actions");
 define("RL_LAN_125", "System Logs Maintenance");
 define("RL_LAN_126", "Total [x] entries matching search condition");
+
+define("RL_LAN_132", "Informative");
+define("RL_LAN_133", "Notice");
+define("RL_LAN_134", "Warning");
+define("RL_LAN_135", "Fatal");
 // define("RL_LAN_JS_CONFIRM", "Are you sure?");
 ?>

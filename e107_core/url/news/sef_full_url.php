@@ -39,8 +39,9 @@ class core_news_sef_full_url extends eUrlConfig
 				'Short/<id:{number}>' 						=> array('list/short', 	'allowVars' => array('page'), 'mapVars' => array('category_id' => 'id'), 'legacyQuery' => 'cat.{id}.{page}'),				
 				'Day/<id:{number}>' 						=> array('list/day', 	'allowVars' => array('page'), 'legacyQuery' => 'day.{id}.{page}'),
 				'Month/<id:{number}>' 						=> array('list/month', 	'allowVars' => array('page'), 'legacyQuery' => 'month.{id}.{page}'),
-				'Tag/<tag:{secure}>' 						=> array('list/tag', 	'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}'),
-				
+				'Tag/<tag:{secure}>' 						=> array('list/tag', 	'allowVars' => array('page'), 'legacyQuery' => 'tag={tag}&page={page}'),
+				'Author/<author:{secure}>' 					=> array('list/author', 'allowVars' => array('page'), 'legacyQuery' => 'author={author}&page={$page}'),
+
 				'<category:{sefsecure}>/<name:{sefsecure}>' => array('view/item', 'mapVars' => array('category_sef' => 'category', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				'<name:{sefsecure}>' 						=> array('view/item', 'mapVars' => array('news_id' => 'id', 'news_sef' => 'name'), 'legacyQuery' => 'extend.{name}', 'parseCallback' => 'itemIdByTitle'),
 				'<id:{number}>' 							=> array('view/item', 'mapVars' => array('news_id' => 'id'), 'legacyQuery' => 'extend.{id}'),
@@ -94,9 +95,9 @@ class core_news_sef_full_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$name = e107::getParser()->toDB($name);
-		if($sql->db_Select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
+		if($sql->select('news', 'news_id', "news_sef='{$name}'")) // TODO - it'll be news_sef (new) field
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['news_id']);
 		}
 		else $request->setRequestParam('name', 0);
@@ -122,9 +123,9 @@ class core_news_sef_full_url extends eUrlConfig
 		
 		$sql = e107::getDb('url');
 		$id = e107::getParser()->toDB($name);
-		if($sql->db_Select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
+		if($sql->select('news_category', 'category_id', "category_sef='{$name}'")) // TODO - it'll be category_sef (new) field
 		{
-			$name = $sql->db_Fetch();
+			$name = $sql->fetch();
 			$request->setRequestParam('name', $name['category_id']);
 		}
 		else $request->setRequestParam('name', 0);

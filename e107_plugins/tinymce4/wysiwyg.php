@@ -8,7 +8,10 @@
 +----------------------------------------------------------------------------+
 */
 $_E107['no_online'] = true;
-require_once("../../class2.php");
+$_E107['no_forceuserupdate'] = true;
+$_E107['no_menus'] = true;
+$_E107['no_maintenance'] = true;
+require_once("../../class2.php"); //TODO Prevent Theme loading.
 
 /*
 echo '
@@ -110,32 +113,46 @@ $output = str_replace("{e_PLUGIN_ABS}", e_PLUGIN_ABS, $text);
 
 $wy = new wysiwyg();
 
-$gen = $wy->renderConfig();
+
+$config = varset($_GET['config'],false); // e_QUERY;
+
+$gen = $wy->renderConfig($config);
 
 define('USE_GZIP', true);
 
+if(strstr(varset($_SERVER['HTTP_ACCEPT_ENCODING'], ''), 'gzip'))
+{
+	$compression_browser_support = true;
+}
 
-if(ADMIN && e_QUERY == 'debug')
+if(ini_get("zlib.output_compression")=='' && function_exists("gzencode"))
+{
+	$compression_server_support = true;
+}
+
+
+if(ADMIN && e_QUERY == 'debug' || !empty($_GET['debug']))
 {
 	define('e_IFRAME', true); 
 	require_once(HEADERF);
 
-	echo "<table class='table'><tr><td>";
-
-	print_a($output);
-
-	echo "</td>
+	echo "<table class='table'><tr>";
+	echo "
 	<td>
 	".print_a($gen,true)."
 	</td>
 	</tr></table>";
+
+	echo "<br />Browser gZip support: ".$compression_browser_support;
+	echo "<br />Server gZip support: ". $compression_server_support;
 	
 	require_once(FOOTERF);
 
 }
-elseif(USE_GZIP === true)
+elseif((USE_GZIP === true) && $compression_browser_support && $compression_server_support)
 {
-	header('Content-type: text/javascript', TRUE);
+	while (@ob_end_clean()); // clear out anything that may have been echoed from class2.php or theme
+	header('Content-type: text/javascript;charset=UTF-8', true);
 	header('Content-Encoding: gzip');
 
 	$minified = e107::minify($gen);
@@ -146,6 +163,7 @@ elseif(USE_GZIP === true)
 }
 else
 {
+	while (@ob_end_clean()); // clear out anything that may have been echoed from class2.php or theme.
 	ob_start();
 	ob_implicit_flush(0);
 	header('Content-type: text/javascript', TRUE);
@@ -199,33 +217,107 @@ class wysiwyg
 
 	function tinymce_lang()
 	{
-		$lang = 'English'; //Quick Fix e_LANGUAGE
+		$lang = e_LANGUAGE;
+
+		// Languages supported by TinyMce.
+		// Commented out languages are not found in e107's language_class.php.
 		$tinylang = array(
-			"Arabic" 	=> "ar",
-			"Bulgarian"	=> "bg",
-			"Danish" 	=> "da",
-			"Dutch" 	=> "nl",
-			"English" 	=> "en",
-			"Persian" 	=> "fa",
-			"French" 	=> "fr",
-			"German"	=> "de",
-			"Greek" 	=> "el",
-			"Hebrew" 	=> " ",
-			"Hungarian" => "hu",
-			"Italian" 	=> "it",
-			"Japanese" 	=> "ja",
-			"Korean" 	=> "ko",
-			"Norwegian" => "nb",
-			"Polish" 	=> "pl",
-			"Russian" 	=> "ru",
-			"Slovak" 	=> "sk",
-			"Spanish" 	=> "es",
-			"Swedish" 	=> "sv"
+			'Arabic'        => 'ar',
+			// 'Arabic (Saudi Arabia)' => 'ar_SA',
+			'Armenian'      => 'hy',
+			'Azerbaijani'   => 'az',
+			'Basque'        => 'eu',
+			'Belarusian'    => 'be',
+			'Bengali'       => 'bn_BD',
+			'Bosnian'       => 'bs',
+			'Bulgarian'     => 'bg_BG',
+			'Catalan'       => 'ca',
+			'ChineseSimp'   => 'zh_CN',
+			'ChineseTrad'   => 'zh_TW',
+			'Croatian'      => 'hr',
+			'Czech'         => 'cs',
+			// 'Czech (Czech Republic)' => 'cs_CZ',
+			'Danish'        => 'da',
+			// 'Divehi' => 'dv',
+			'Dutch'         => 'nl',
+			'English'       => 'en', // Default language file.
+			// 'English (Canada)' => 'en_CA',
+			// 'English (United Kingdom)' => 'en_GB',
+			'Esperanto'     => 'eo',
+			'Estonian'      => 'et',
+			'Faroese'       => 'fo',
+			'Finnish'       => 'fi',
+			'French'        => 'fr_FR',
+			// 'French (Switzerland)' => 'fr_CH',
+			'Gaelic'        => 'gd',
+			'Gallegan'      => 'gl',
+			'Georgian'      => 'ka_GE',
+			'German'        => 'de',
+			// 'German (Austria)' => 'de_AT',
+			'Greek'         => 'el',
+			'Hebrew'        => 'he_IL',
+			'Hindi'         => 'hi_IN',
+			'Hungarian'     => 'hu_HU',
+			'Icelandic'     => 'is_IS',
+			'Indonesian'    => 'id',
+			'Irish'         => 'ga',
+			'Italian'       => 'it',
+			'Japanese'      => 'ja',
+			// 'Kabyle' => 'kab',
+			'Kazakh'        => 'kk',
+			'Khmer'         => 'km_KH',
+			'Korean'        => 'ko',
+			// 'Korean (Korea)' => 'ko_KR',
+			'Kurdish'       => 'ku',
+			// 'Kurdish (Iraq)' => 'ku_IQ',
+			'Latvian'       => 'lv',
+			'Lithuanian'    => 'lt',
+			'Letzeburgesch' => 'lb',
+			'Macedonian'    => 'mk_MK',
+			'Malayalam'     => 'ml',
+			// 'Malayalam (India)' => 'ml_IN',
+			'Mongolian'     => 'mn_MN',
+			'Norwegian'     => 'nb_NO',
+			'Persian'       => 'fa',
+			// 'Persian (Iran)' => 'fa_IR',
+			'Polish'        => 'pl',
+			// 'Portuguese (Brazil)' => 'pt_BR',
+			'Portuguese'    => 'pt_PT',
+			'Romanian'      => 'ro',
+			'Russian'       => 'ru',
+			// 'Russian (Russia)' => 'ru_RU',
+			'Serbian'       => 'sr',
+			'Sinhala'       => 'si_LK',
+			'Slovak'        => 'sk',
+			'Slovenian'     => 'sl_SI',
+			'Spanish'       => 'es',
+			// 'Spanish (Mexico)' => 'es_MX',
+			'Swedish'       => 'sv_SE',
+			'Tajik'         => 'tg',
+			'Tamil'         => 'ta',
+			// 'Tamil (India)' => 'ta_IN',
+			'Tatar'         => 'tt',
+			'Thai'          => 'th_TH',
+			'Turkish'       => 'tr',
+			// 'Turkish (Turkey)' => 'tr_TR',
+			'Uighur'        => 'ug',
+			'Ukrainian'     => 'uk',
+			// 'Ukrainian (Ukraine)' => 'uk_UA',
+			'Vietnamese'    => 'vi',
+			// 'Vietnamese (Viet Nam)' => 'vi_VN',
+			'Welsh'         => 'cy',
 		);
 
-		if(!$tinylang[$lang])
+		if(!isset($tinylang[$lang]))
 		{
-		 	$tinylang[$lang] = "en";
+			$tinylang[$lang] = "en";
+		}
+
+		// If language file is not present, use default.
+		$jsFile = e_PLUGIN . 'tinymce4/langs/' . $tinylang[$lang] . '.js';
+		if($tinylang[$lang] != 'en' && !file_exists($jsFile))
+		{
+			$tinylang[$lang] = "en";
 		}
 
 		return $tinylang[$lang];
@@ -306,23 +398,37 @@ class wysiwyg
 		$tp = e107::getParser();	
 		$fl = e107::getFile();
 
-				
-		if(getperms('0'))
+		if($config !== false)
 		{
-			$template = "mainadmin.xml";		
-		}
-		elseif(ADMIN)
-		{
-			$template = "admin.xml";			
-		}
-		elseif(USER)
-		{
-			$template = "member.xml";			
+			$template = $tp->filter($config).".xml";
 		}
 		else
 		{
-			$template = "public.xml";			
+			if(getperms('0'))
+			{
+				$template = "mainadmin.xml";
+			}
+			elseif(ADMIN)
+			{
+				$template = "admin.xml";
+			}
+			elseif(USER)
+			{
+				$template = "member.xml";
+			}
+			else
+			{
+				$template = "public.xml";
+			}
+
+
 		}
+
+		if(($template == 'mainadmin.xml' && !getperms('0')) || ($template == 'admin.xml' && !ADMIN))
+		{
+			$template = 'public.xml';
+		}
+
 		
 		$configPath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
 		$config 	= e107::getXml()->loadXMLfile($configPath, true); 
@@ -331,16 +437,21 @@ class wysiwyg
 
 		$this->configName = $config['@attributes']['name'];
 
+		$tinyMceLanguage    = $this->tinymce_lang();
+
 		unset($config['@attributes']);
 
 		$ret = array(
 			'selector' 			=> '.e-wysiwyg',
 		//	'editor_selector'   => 'advancedEditor',
-			'language'			=> $this->tinymce_lang()
-			
+			'language'			=> $tinyMceLanguage,
+			'language_url'      => SITEURLBASE.e_PLUGIN_ABS."tinymce4/langs/" . $tinyMceLanguage . ".js"
 		);
 
-
+	//	if(e_ADMIN_AREA)
+		{
+	//		$ret['skin_url']     = e_PLUGIN_ABS.'tinymce4/skins/eskin';
+		}
 		
 		// Loop thru XML parms. 
 		foreach($config as $k=>$xml)
@@ -384,11 +495,11 @@ class wysiwyg
 		// plugins: "visualblocks",
 
 
-
+/*
 		$formats = array(
 			'hilitecolor' => array('inline'=> 'span', 'classes'=> 'hilitecolor', 'styles'=> array('backgroundColor'=> '%value'))
 			//	block : 'h1', attributes : {title : "Header"}, styles : {color : red}
-		);
+		);*/
 
 		//@see http://www.tinymce.com/wiki.php/Configuration:formats
 
@@ -416,9 +527,17 @@ class wysiwyg
                 {title: 'Blocks', items: [
                     {title: 'Paragraph', block: 'p'},
                     {title: 'Blockquote', block: 'blockquote'},
+                    {title: 'Blockquote alt.', block: 'blockquote', classes: 'blockquote-alt blockquote__alternative'},
                     {title: 'Div', block: 'div'},
                     {title: 'Pre', block: 'pre'},
                     {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
+                ]},
+
+                  {title: 'Lists', items: [
+                    {title: 'FontAwesome', selector: 'ul', classes: 'fa-ul' },
+                    {title: 'FontAwesome List Icon', selector: 'i', classes: 'fa-li' },
+                    {title: 'Bootstrap Listgroup', selector: 'ul', classes: 'list-group' },
+                    {title: 'Bootstrap Listgroup Item', selector: 'li', classes: 'list-group-item' },
                 ]},
 
                 {title: 'Alignment', items: [
@@ -426,7 +545,8 @@ class wysiwyg
                     {title: 'Center', block: 'div',classes: 'text-center', icon: 'aligncenter'},
                     {title: 'Right', block: 'div', classes: 'text-right',  icon: 'alignright'},
                     {title: 'Justify', block: 'div', classes: 'text-justify', icon: 'alignjustify'},
-                    {title: 'No-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
+                    {title: 'No Text-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
+                    {title: 'Clear Float', block: 'div', classes: 'clearfix'},
                     {title: 'Image Left', selector: 'img', classes: 'pull-left', styles: {'margin': '0 10px 5px 0'  },  icon: 'alignleft'},
                     {title: 'Image Right', selector: 'img', classes: 'pull-right', styles: { 'margin': '0 0 5px 10px'}, icon: 'alignright'}
 
@@ -447,9 +567,9 @@ class wysiwyg
                  {title: 'Alert (Info)', block: 'div', classes: 'alert alert-info'},
                  {title: 'Alert (Warning)', block: 'div', classes: 'alert alert-warning'},
                  {title: 'Alert (Danger)', block: 'div', classes: 'alert alert-block alert-danger'},
-                 {title: 'Float Clear', block: 'div', classes: 'clearfix'},
                  {title: 'Lead', block: 'p', classes: 'lead'},
                  {title: 'Well', block: 'div', classes: 'well'},
+				 {title: 'Row', block: 'div', classes: 'row'},
                  {title: '1/4 Width Block', block: 'div', classes: 'col-md-3 col-sm-12'},
                  {title: '3/4 Width Block', block: 'div', classes: 'col-md-9 col-sm-12'},
                  {title: '1/3 Width Block', block: 'div', classes: 'col-md-4 col-sm-12'},
@@ -467,8 +587,8 @@ class wysiwyg
                 ]},
 
 				 {title: 'Bootstrap Images', items: [
-				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive'},
-				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded'},
+				 {title: 'Responsive (recommended)',  selector: 'img', classes: 'img-responsive img-fluid'},
+				 {title: 'Rounded',  selector: 'img', classes: 'img-rounded rounded'},
 				 {title: 'Circle', selector: 'img', classes: 'img-circle'},
                  {title: 'Thumbnail', selector: 'img', classes: 'img-thumbnail'},
                 ]},
@@ -503,6 +623,17 @@ class wysiwyg
     ]";
 
 
+
+	/*	$ret['setup'] = "function(ed) {
+      ed.addMenuItem('test', {
+         text: 'Clear Floats',
+         context: 'insert',
+         icon: false,
+         onclick: function() {
+            ed.insertContent('<div class=\"clearfix\" ></div>');
+         }
+      });
+      }";*/
 // https://github.com/valtlfelipe/TinyMCE-LocalAutoSave
 
 
@@ -571,7 +702,7 @@ class wysiwyg
 			foreach($emo as $path=>$co)
 			{
 				$codes = explode(" ",$co);
-				$url = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pack . "/" . str_replace("!",".",$path);
+				$url = e_IMAGE_ABS."emotes/" . $pack . "/" . str_replace("!",".",$path);
 				$emotes[$i][] = array('shortcut'=>$codes, 'url'=>$url, 'title'=>ucfirst($path));
 
 				if($c == 6)
@@ -593,15 +724,39 @@ class wysiwyg
 	//	$ret['skin']                    = 'e107admin';
 	//	$ret['skin_url']                = SITEURLBASE.e_PLUGIN_ABS.'tinymce4/skins/e107admin';
 
-
-
 		$ret['convert_fonts_to_spans']	= false;
-		$ret['content_css']				= e_PLUGIN_ABS.'tinymce4/editor.css,https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css,http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css';
-		
-		$ret['relative_urls']			= false;  //Media Manager prefers it like this. 
+
+/*
+		$editorCSS = array(
+
+			'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css',
+			'http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
+			e_PLUGIN_ABS.'tinymce4/editor.css',
+		);
+*/
+		$pathBS = e107::getLibrary()->getProperty('bootstrap', 'library_path');
+		$pathBS .= '/';
+		$pathBS .= e107::getLibrary()->getProperty('bootstrap', 'path'); // sub-folder
+
+		$pathFA = e107::getLibrary()->getProperty('fontawesome', 'library_path');
+		$pathFA .= '/';
+		$pathFA .= e107::getLibrary()->getProperty('fontawesome', 'path'); // sub-folder
+
+		$editorCSS = array(
+			0 => $pathBS . '/dist/css/bootstrap.min.css',
+			1 => $pathFA . '/css/font-awesome.min.css',
+			2 => e_PLUGIN_ABS . 'tinymce4/editor.css',
+		);
+
+		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
+
+		$ret['content_css']				= json_encode($editorCSS);
+		$ret['content_style']           = "div.clearfix { border-top:1px solid red } ";
+		$ret['relative_urls']			= false;  //Media Manager prefers it like this.
 		$ret['preformatted']			= true;
 		$ret['document_base_url']		= SITEURL;
-
+		$ret['schema']                  = "html5";
+		$ret['element_format']          = "html";
 
 	//	$ret['table_default_attributes'] = json_encode(array('class'=>'table table-striped' ));
 
@@ -610,6 +765,16 @@ class wysiwyg
 		{
 			$ret['templates']				 = $tp->replaceConstants($ret['templates'],'abs'); // $this->getTemplates(); 
 		}
+
+		if(ADMIN)
+		{
+			$ret['templates'] = $this->getSnippets();
+		}
+
+
+
+
+
 		//	$this->config['verify_css_classes']	= 'false';
 		
 		$text = array();
@@ -633,18 +798,7 @@ class wysiwyg
 		// -------------------------------------------------------------------------------------
 		
 		
-	
-		$cssFiles = $fl->get_files(THEME,"\.css",'',2);
-		
-		
-		foreach($cssFiles as $val)
-		{
-			$css[] = str_replace(THEME,THEME_ABS,$val['path'].$val['fname']);	
-		}
-		$css[] = "{e_WEB_ABS}js/bootstrap/css/bootstrap.min.css";
-		$content_css = vartrue($config['content_css'], implode(",",$css)); 
-		
-		$content_styles = array('Bootstrap Button' => 'btn btn-primary', 'Bootstrap Table' => 'table');
+/*
 
 
 
@@ -674,7 +828,7 @@ class wysiwyg
            //     'end_container_on_empty_block' => true,
         
                 // HTML5 formats
-                /*
+
                 'style_formats' => "[
                         {title : 'h1', block : 'h1'},
                         {title : 'h2', block : 'h2'},
@@ -692,7 +846,7 @@ class wysiwyg
                         {title : 'aside', block : 'aside', wrapper: true},
                         {title : 'figure', block : 'figure', wrapper: true}
                 ]",
-        		*/
+
 	       // --------------------------------
 		
 			
@@ -762,17 +916,39 @@ class wysiwyg
 		if(ADMIN)
 		{
 	//		$this->config['external_link_list_url'] = e_PLUGIN_ABS."tiny_mce/filelist.php";
-		}
+		}*/
 	}
 
 
 	function getTemplates()
 	{
-		$templatePath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
+	//	$templatePath = (is_readable(THEME."templates/tinymce/".$template)) ? THEME."templates/tinymce/".$template : e_PLUGIN."tinymce4/templates/".$template;
 		
 		
 		
 		
+	}
+
+
+	private function getSnippets()
+	{
+		$files = e107::getFile()->get_files(e_PLUGIN."tinymce4/snippets");
+
+		$ret = array();
+		foreach($files as $f)
+		{
+			$content = file_get_contents($f['path'].$f['fname'], null, null, null, 140);
+
+			preg_match('/<!--[^\w]*Title:[\s]([^\r\n]*)[\s]*Info: ?([^\r\n]*)/is', $content, $m);
+			if(!empty($m[1]))
+			{
+				$url = e_PLUGIN_ABS."tinymce4/snippets/".$f['fname'];
+				$ret[] = array('title'=>trim($m[1]), 'url'=>$url, 'description'=>trim($m[2]));
+			}
+		}
+
+		return json_encode($ret);
+
 	}
 
 
