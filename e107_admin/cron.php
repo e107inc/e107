@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -168,7 +168,7 @@ class cron_admin_ui extends e_admin_ui
 					'name' 			=> LAN_CRON_20_4,
 					'category'		=> 'update',
 					'function' 		=> 'gitrepo',
-					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_CRON_20_7."</span> ".LAN_CRON_20_8,
+					'description' 	=> LAN_CRON_20_5."<br />".LAN_CRON_20_6."<br /><span class='label label-warning'>".LAN_WARNING."</span> ".LAN_CRON_20_8,
 				//	'available' 	=> e107::getPref('ban_retrigger')
 				);
 

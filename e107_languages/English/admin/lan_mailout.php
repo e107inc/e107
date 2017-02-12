@@ -52,7 +52,7 @@ define("LAN_MAILOUT_38", "Cancel");
 define("LAN_MAILOUT_39", "Emailing");
 define("LAN_MAILOUT_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
 define("LAN_MAILOUT_41", "before sending mail from this page.");
-define("LAN_MAILOUT_42", "Warning");
+//define("LAN_MAILOUT_42", "Warning");//NOT_USED
 define("LAN_MAILOUT_43", "Username");
 define("LAN_MAILOUT_44", "User Login");
 define("LAN_MAILOUT_45", "User Email");
