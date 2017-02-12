@@ -1801,6 +1801,11 @@ class e_form
 	public function pagination($url='', $total=0, $from=0, $perPage=10, $options=array())
 	{
 
+		if(empty($total))
+		{
+			return '';
+		}
+
 		if(!is_numeric($total))
 		{
 			return '<ul class="pager"><li><a href="'.$url.'">'.$total.'</a></li></ul>';
