@@ -1023,17 +1023,15 @@ class plugin_online_ui extends e_admin_ui
 
 		function pluginCheck($force=false)
 		{
-			global $plugin;
-
 			if(!PLUGIN_SCAN_INTERVAL)
 			{
-				$plugin->update_plugins_table('update');
+				e107::getPlugin()->update_plugins_table('update');
 				return;
 			}
 
 			if((time() > vartrue($_SESSION['nextPluginFolderScan'],0)) || $force == true)
 			{
-				$plugin->update_plugins_table('update');
+				e107::getPlugin()->update_plugins_table('update');
 			}
 
 			$_SESSION['nextPluginFolderScan'] = time() + PLUGIN_SCAN_INTERVAL;
