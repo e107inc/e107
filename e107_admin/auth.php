@@ -37,7 +37,7 @@ if($core->get('admintheme') != 'bootstrap3')
 	$core->update('admincss','admin_dark.css');
 	$core->set('e_jslib_core',array('prototype' => 'none', 'jquery'=> 'auto'));
 	$core->save();	
-	e107::getRedirect()->redirect(e_REQUEST_SELF);
+	e107::getRedirect()->redirect(e_SELF);		
 }
 
 $admincss = trim($core->get('admincss'));
@@ -45,7 +45,7 @@ if(empty($admincss) || $admincss === 'style.css'|| $admincss === 'admin_dark.css
 {
 	$core->update('admincss','css/bootstrap-dark.min.css');
 	$core->save(false,true);
-	e107::getRedirect()->redirect(e_REQUEST_SELF);
+	e107::getRedirect()->redirect(e_SELF);
 }
 
 // Check Admin-Perms for current language and redirect if necessary. 
@@ -58,7 +58,7 @@ if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANG
 	{
 		if($lng->isValid($ln))
 		{
-			$redirect = deftrue("MULTILANG_SUBDOMAIN") ? $lng->subdomainUrl($ln) : e_REQUEST_SELF."?elan=".$ln;
+			$redirect = deftrue("MULTILANG_SUBDOMAIN") ? $lng->subdomainUrl($ln) : e_SELF."?elan=".$ln;
 			//		echo "redirect to: ".$redirect;
 			e107::getRedirect()->go($redirect);
 		//	break;
@@ -313,7 +313,7 @@ class auth
 
 
 
-		$text = "<form id='admin-login' method='post' action='".e_REQUEST_SELF."' {$incChap} >
+		$text = "<form id='admin-login' method='post' action='".e_SELF."' {$incChap} >
 		<div id='logo' ><img src='".e_IMAGE."logo_template_large.png' alt='".LAN_LOGIN."' /></div>
 		<div id='login-admin' class='center'>
 		<div>";
