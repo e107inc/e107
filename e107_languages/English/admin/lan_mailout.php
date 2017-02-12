@@ -1,12 +1,14 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
  *
- * Admin Language File
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
-*/
+ */
 
-// TODO - MAJOR LAN REWRITE NEEDED 
+// TODO - LANS - MAJOR LAN REWRITE NEEDED 
 
 define("CORE_DATE_ORDER", "dmy");			// Temporary until we find somewhere better to put it.
 											// Defines order of field entry/display in date boxes
@@ -106,7 +108,7 @@ define("LAN_MAILOUT_92", "SSL");
 define("LAN_MAILOUT_93", "TLS");
 define("LAN_MAILOUT_94", "(Use SSL for gmail/googlemail)");
 define("LAN_MAILOUT_95", "Use VERP for bulk mailing");
-define("LAN_MAILOUT_96", "none");
+//define("LAN_MAILOUT_96", "none");//LAN_NONE
 define("LAN_MAILOUT_97", "Mailer Results");
 define("LAN_MAILOUT_98", "Orphaned entries");
 define("LAN_MAILOUT_99", "Confirm retry mailshot");

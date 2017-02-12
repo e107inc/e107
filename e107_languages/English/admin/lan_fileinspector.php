@@ -72,7 +72,7 @@ releases, then you will discover files have failed integrity check because they 
 after the latest core image snapshot was created.");
 define("FR_LAN_19", "files failed");
 define("FR_LAN_20", "All files passed");
-define("FR_LAN_21", "none");
+//define("FR_LAN_21", "none");//NOT USED
 define("FR_LAN_22", "Missing core files");
 define("FR_LAN_23", "No matches found.");
 define("FR_LAN_24", "Old core files");
