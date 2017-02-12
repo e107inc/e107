@@ -194,6 +194,7 @@ class e107
 		'e_navigation'                   => '{e_HANDLER}sitelinks_class.php',
 		'e_news_item'                    => '{e_HANDLER}news_class.php',
 		'e_news_tree'                    => '{e_HANDLER}news_class.php',
+		'e_news_category_tree'           => '{e_HANDLER}news_class.php',
 		'e_object'                       => '{e_HANDLER}model_class.php',
 		'e_online'                       => '{e_HANDLER}online_class.php',
 		'e_parse'                        => '{e_HANDLER}e_parse_class.php',
