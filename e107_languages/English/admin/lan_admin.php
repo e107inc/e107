@@ -385,8 +385,7 @@ define("LAN_PURCHASE", "Purchase ");
 define("LAN_DOWN_THEME", "Downloading ");
 
 define("LAN_ID", "ID");
-
-
+define("LAN_TEST", "Test");
 
 define("LAN_VISIBILITY", "Visibility");
 define("LAN_VISIBLE_TO", "Visible To");
@@ -486,6 +485,7 @@ define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
 define("LAN_CAPTION", "Caption");
 define("LAN_LIMIT", "Limit");
 define("LAN_BASIC", "Basic");
+define("LAN_EXTENDED", "Extended");
 define("LAN_ADVANCED", "Advanced");
 define("LAN_FOLDER", "Folder");
 define("LAN_PERSONALIZE_ICONS", "Personalize Icons");
