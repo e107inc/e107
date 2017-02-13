@@ -2171,9 +2171,15 @@ class e_parse extends e_parser
 	 * We use HTML-safe strings, with several characters escaped.
 	 *
 	 * @param mixed $var
+	 *  PHP variable.
+	 * @param bool $force_object
+	 *  True: Outputs an object rather than an array when a non-associative
+	 *  array is used. Especially useful when the recipient of the output
+	 *  is expecting an object and the array is empty.
+	 *
 	 * @return string
 	 */
-	public function toJSON($var)
+	public function toJSON($var, $force_object = false)
 	{
 		// The PHP version cannot change within a request.
 		static $php530;
@@ -2185,6 +2191,12 @@ class e_parse extends e_parser
 
 		if($php530)
 		{
+			if($force_object === true)
+			{
+				// Encode <, >, ', &, and " using the json_encode() options parameter.
+				return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_FORCE_OBJECT);
+			}
+
 			// Encode <, >, ', &, and " using the json_encode() options parameter.
 			return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 		}

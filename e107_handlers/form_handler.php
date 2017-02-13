@@ -3919,7 +3919,7 @@ class e_form
 			}
 		}
 
-		$source = e107::getParser()->toJSON($jsonArray);
+		$source = e107::getParser()->toJSON($jsonArray, true);
 		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 
