@@ -400,8 +400,8 @@ class notify
 
 		$template = "<h4><a href='{NEWS_URL}'>{NEWS_TITLE}</a></h4>
 					<div class='summary'>{NEWS_SUMMARY}</div>
-					<div class='author'>by {NEWS_AUTHOR}</div>
-					<div><a class='btn btn-primary' href='{NEWS_URL}'>View now</a></div>
+					<div class='author'>".LAN_POSTED_BY.": {NEWS_AUTHOR}</div>
+					<div><a class='btn btn-primary' href='{NEWS_URL}'>".LAN_CLICK_TO_VIEW."</a></div>
 					";
 
 		$shortcodes = array(
