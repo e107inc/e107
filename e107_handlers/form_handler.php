@@ -1801,6 +1801,11 @@ class e_form
 	public function pagination($url='', $total=0, $from=0, $perPage=10, $options=array())
 	{
 
+		if(empty($total))
+		{
+			return '';
+		}
+
 		if(!is_numeric($total))
 		{
 			return '<ul class="pager"><li><a href="'.$url.'">'.$total.'</a></li></ul>';
@@ -2322,6 +2327,15 @@ class e_form
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
 
+		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true)
+		{
+			$options['switch'] = 'small';
+
+			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
+			$label_disabled = ($label_disabled) ?  strtoupper($label_disabled): strtoupper(LAN_OFF);
+
+		}
+
 		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
 		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
 
@@ -2338,8 +2352,15 @@ class e_form
 					'size'    => $options['switch'],
 					'onText'  => $options_on['label'],
 					'offText' => $options_off['label'],
+
 				),
 			);
+
+			if(e_ADMIN_AREA === true)
+			{
+				$js_options[$name]['wrapperClass'] =  'wrapper form-control';
+			}
+
 
 			e107::library('load', 'bootstrap.switch');
 			e107::js('settings', array('bsSwitch' => $js_options));
@@ -3898,7 +3919,7 @@ class e_form
 			}
 		}
 
-		$source = e107::getParser()->toJSON($jsonArray);
+		$source = e107::getParser()->toJSON($jsonArray, true);
 		
 		$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 

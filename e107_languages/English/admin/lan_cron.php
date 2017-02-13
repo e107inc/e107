@@ -1,8 +1,10 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
  *
- * Admin Language File
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
 */
 
@@ -61,7 +63,7 @@ define("LAN_CRON_20_3", "Recommended to keep system up to date.");
 define("LAN_CRON_20_4", "Update this Git repository");
 define("LAN_CRON_20_5", "Update this e107 installation with the very latest files from github.");
 define("LAN_CRON_20_6", "Recommended for developers only.");
-define("LAN_CRON_20_7", "Warning!");
+//define("LAN_CRON_20_7", "Warning!");//LAN_WARNING
 define("LAN_CRON_20_8", "May cause site instability!");
 
 define("LAN_CRON_30", "Every Minute");

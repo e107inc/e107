@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1604,10 +1604,10 @@ class mailoutAdminClass extends e107MailManager
 		// Show the table of advanced options
 
 		$text .= "<div class='buttons-bar center'>";
-		$text .= "<a href='".e_SELF."?mode=main&action=sendnow&id=".$mailMainID."' class='btn btn-primary'>Send Now</a>";
+		$text .= "<a href='".e_SELF."?mode=main&action=sendnow&id=".$mailMainID."' class='btn btn-primary'>".LAN_MAILOUT_158."</a>";
 		 
 	//	$text .= $frm->admin_button('email_sendnow', "Send Now", 'primary');
-		$text .= $frm->admin_button('email_send', "Send Later");
+		$text .= $frm->admin_button('email_send', LAN_MAILOUT_269);
 
 		// $text .= "<input  type='submit' name='email_send' value=\"".LAN_SEND."\" />";
 
@@ -2165,7 +2165,7 @@ class mailoutAdminClass extends e107MailManager
 		<td>".LAN_MAILOUT_90."</td><td>
 		<select class='tbox' name='smtp_options'>\n
 
-		<option value=''>".LAN_MAILOUT_96."</option>\n";
+		<option value=''>".LAN_NONE."</option>\n";
 		$selected = (in_array('secure=SSL',$smtp_opts) ? " selected='selected'" : '');
 		$text .= "<option value='smtp_ssl'{$selected}>".LAN_MAILOUT_92."</option>\n";
 		$selected = (in_array('secure=TLS',$smtp_opts) ? " selected='selected'" : '');

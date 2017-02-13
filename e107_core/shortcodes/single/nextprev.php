@@ -286,6 +286,9 @@ function nextprev_shortcode($parm = '')
 			}
 		}
 
+
+
+
 		// Add 'first', 'previous' navigation
 		if($show_prev)
 		{
@@ -305,6 +308,21 @@ function nextprev_shortcode($parm = '')
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_prev'], $e_vars);
 			}
 		}
+
+
+		if($tprefix === 'basic_' && $show_prev === false)
+		{
+			if(!empty($tmpl[$tprefix.'nav_prev']))
+			{
+				$e_vars->url = '#';
+				$e_vars->label = $LAN_NP_PREVIOUS;
+				$e_vars->url_label = '';
+				$e_vars->disabled = "disabled";
+				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_prev'], $e_vars);
+				$e_vars->disabled = '';
+			}
+		}
+
 
 		$e_vars_loop = new e_vars();
 		$e_vars_loop->bullet = stripslashes($bullet); // fix magicquotes 
@@ -352,6 +370,22 @@ function nextprev_shortcode($parm = '')
 				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_last'], $e_vars);
 			}
 		}
+
+		if($tprefix === 'basic_' && $show_next === false)
+		{
+			if(!empty($tmpl[$tprefix.'nav_next']))
+			{
+				$e_vars->url = '#';
+				$e_vars->label = $LAN_NP_NEXT;
+				$e_vars->url_label = '';
+				$e_vars->disabled = "disabled";
+				$ret_array[] = $tp->simpleParse($tmpl[$tprefix.'nav_next'], $e_vars);
+				$e_vars->disabled = '';
+			}
+		}
+
+
+
 
 		$ret .= implode($tmpl[$tprefix.'separator'], $ret_array);
 

@@ -32,7 +32,7 @@ define("UPLLAN_21", "unmoderated public upload");
 //define("UPLLAN_22", "ID");//LAN_ID
 //define("UPLLAN_23", "Name");//LAN_NAME
 define("UPLLAN_24", "Filetype");
-define("UPLLAN_25", "Uploads Enabled?");
+define("UPLLAN_25", "Allow File Uploads");
 define("UPLLAN_26", "No public uploads will be permitted if disabled");
 define("UPLLAN_27", "unmoderated public uploads");
 

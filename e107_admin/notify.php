@@ -359,7 +359,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 		if(isset($this->notify_prefs['event'][$id]['class']) && $this->notify_prefs['event'][$id]['class'] != e_UC_NOBODY)
 		{
-			$text .= $frm->button('test['.$id.']', $id, 'confirm', 'Test');
+			$text .= $frm->button('test['.$id.']', $id, 'confirm', LAN_TEST);
 		}
 
 
@@ -939,7 +939,7 @@ class notify_config
 
 		if(isset($this->notify_prefs['event'][$id]['class']) && $this->notify_prefs['event'][$id]['class'] != e_UC_NOBODY)
 		{
-			$text .= $frm->button('test['.$id.']', $id, 'confirm', 'Test');
+			$text .= $frm->button('test['.$id.']', $id, 'confirm', LAN_TEST);
 		}
 
 
