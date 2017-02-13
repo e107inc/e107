@@ -1023,17 +1023,15 @@ class plugin_online_ui extends e_admin_ui
 
 		function pluginCheck($force=false)
 		{
-			global $plugin;
-
 			if(!PLUGIN_SCAN_INTERVAL)
 			{
-				$plugin->update_plugins_table('update');
+				e107::getPlugin()->update_plugins_table('update');
 				return;
 			}
 
 			if((time() > vartrue($_SESSION['nextPluginFolderScan'],0)) || $force == true)
 			{
-				$plugin->update_plugins_table('update');
+				e107::getPlugin()->update_plugins_table('update');
 			}
 
 			$_SESSION['nextPluginFolderScan'] = time() + PLUGIN_SCAN_INTERVAL;
@@ -1149,6 +1147,11 @@ class plugin_online_ui extends e_admin_ui
 
 		}
 		*/
+		if($data['plugin_installflag'])
+		{
+			return null;
+		}
+
 
 
 		//$url = e_SELF."?src=".base64_encode($d);
@@ -1189,7 +1192,7 @@ class plugin_online_ui extends e_admin_ui
 
 	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 
-		return "<div id='{$id}' class='right' >
+		return "<div id='{$id}' class='center' >
 		{$dicon}
 		</div>";
 	}
@@ -1312,7 +1315,8 @@ class plugin_online_ui extends e_admin_ui
 						'plugin_url'			=> $row['urlView'],
 						'plugin_notes'			=> '',
 						'plugin_price'			=> $row['price'],
-						'plugin_license'		=> $price
+						'plugin_license'		=> $price,
+						'plugin_installflag'    => e107::isInstalled($row['folder'])
 					);
 
 				$c++;
@@ -1361,7 +1365,7 @@ class plugin_online_ui extends e_admin_ui
 					// echo '<br />v='.$v;
 					$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $_value, $this->fields[$v], $key)."</td>\n";
 				}
-				$text .= "<td class='right'>".$this->options($val)."</td>";
+				$text .= "<td class='center'>".$this->options($val)."</td>";
 				$text .= "</tr>";
 
 			}
