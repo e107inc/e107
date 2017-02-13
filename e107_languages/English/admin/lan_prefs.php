@@ -292,3 +292,4 @@ define("PRFLAN_271", "Ignore form submissions containing these words or phrases.
 
 define("PRFLAN_272", "Session Lifetime");
 define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");
+define("PRFLAN_274", "Contact form will only be visible to this userclass group.");

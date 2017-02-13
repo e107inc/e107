@@ -256,7 +256,8 @@ define("LAN_ERRORS", "Errors");
 define("LAN_MESSAGES", "Messages");
 define("LAN_DATA", "Data");
 
-define("LAN_OPTIONS","Options");
+define("LAN_OPTIONS", "Options");
+define("LAN_BASIC_OPTIONS", "Basic Options");
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");
 define("LAN_UPDATED","Successfully updated");
