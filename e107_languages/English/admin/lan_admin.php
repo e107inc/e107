@@ -330,7 +330,7 @@ define("LAN_POSTED_BY_X","Posted by [x] [y]");
 define("LAN_VIEW_ALL","View All");
 
 define("LAN_BAN","Ban");
-
+define("LAN_PATH", "Path");
 
 define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOADS","Uploads");
