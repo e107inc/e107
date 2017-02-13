@@ -131,4 +131,5 @@ define("LAN_EURL_SYSTEM_REWRITE_DESCR", "URLs for pages like Not Found, Access d
 define("LAN_EURL_CORE_INDEX", "Front Page");
 define("LAN_EURL_CORE_INDEX_INFO", "Front Page can't have an alias.");
 define("LAN_EURL_REBUILD",    "Rebuild");
-//define("LAN_EURL_", "");
+define("LAN_EURL_REGULAR_EXPRESSION", "Regular Expression");
+define("LAN_EURL_KEY", "Key");
