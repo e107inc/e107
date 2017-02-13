@@ -51,7 +51,7 @@ $ONLINE_MENU_WRAPPER['default']['ONLINE_MEMBERS']                  = "<li>".LAN_
 $ONLINE_MENU_WRAPPER['default']['ONLINE_MEMBERS_LIST']             = "<ul>{---}</ul>";
 $ONLINE_MENU_WRAPPER['default']['ONLINE_MEMBERS_LIST_EXTENDED']    = "<ul class='unstyled list-unstyled'>{---}</ul>";
 $ONLINE_MENU_WRAPPER['default']['ONLINE_ONPAGE']                   = "<li>".LAN_ONLINE_3."{---}</li>";
-$ONLINE_MENU_WRAPPER['default']['ONLINE_MEMBER_TOTAL']             = "<li>".LAN_ONLINE_2."{---}</li>";
+$ONLINE_MENU_WRAPPER['default']['ONLINE_MEMBERS_TOTAL']             = "<li>".LAN_ONLINE_2."{---}</li>";
 $ONLINE_MENU_WRAPPER['default']['ONLINE_MEMBER_NEWEST']            = "<li>".LAN_ONLINE_6."{---}</li>";
 $ONLINE_MENU_WRAPPER['default']['ONLINE_MOST']                     = LAN_ONLINE_8."{---}<br />";
 $ONLINE_MENU_WRAPPER['default']['ONLINE_MOST_MEMBERS']             = LAN_ONLINE_2."{---}";
