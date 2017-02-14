@@ -62,6 +62,11 @@ class news_shortcodes extends e_shortcode
 			$text = e107::getParser()->toAttribute($text);
 		}
 
+		if(!empty($this->param['titleLimit']))
+		{
+			$parm['limit'] = $this->param['titleLimit'];
+		}
+
 		if(!empty($parm['limit']))
 		{
 			$text = e107::getParser()->text_truncate($text, $parm['limit']);
@@ -582,6 +587,12 @@ class news_shortcodes extends e_shortcode
 				$text = trim($tmp[0]).trim($tmp[1]);
 			}
 		}
+
+		if(!empty($this->param['summaryLimit']))
+		{
+			$parm['limit'] = $this->param['summaryLimit'];
+		}
+
 
 		if(!empty($parm['limit']))
 		{

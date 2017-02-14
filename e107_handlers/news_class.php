@@ -689,6 +689,7 @@ class e_news_tree extends e_front_tree_model
 
 		$ret = array();
 		$tp = e107::getParser();
+		$param = $parms;
 		$param['current_action'] = 'list';
 		// TODO more default parameters
 
