@@ -51,6 +51,55 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		}
 	};
 
+	/**
+	 * Run tips on .field-help.
+	 *
+	 * @type {{attach: e107.behaviors.fieldHelpTooltip.attach}}
+	 */
+	e107.behaviors.fieldHelpTooltip = {
+		attach: function (context, settings)
+		{
+			var selector = 'div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control';
+
+			$(context).find(selector).once('field-help-tooltip').each(function ()
+			{
+				var $this = $(this);
+				var $fieldHelp = $this.nextAll(".field-help");
+				var placement = 'bottom';
+
+				if($this.is("textarea"))
+				{
+					placement = 'top';
+				}
+
+				var custPlace = $fieldHelp.attr('data-placement'); // ie top|left|bottom|right
+
+				if(custPlace !== undefined)
+				{
+					placement = custPlace;
+				}
+
+				$fieldHelp.hide();
+
+				$this.tooltip({
+					title: function ()
+					{
+						return $fieldHelp.html();
+					},
+					fade: true,
+					html: true,
+					opacity: 1.0,
+					placement: placement,
+					container: 'body',
+					delay: {
+						show: 300,
+						hide: 600
+					}
+				});
+			});
+		}
+	};
+
 })(jQuery);
 
 (function (jQuery)
@@ -453,42 +502,7 @@ $(document).ready(function()
 			
 		});
 		
-			// run tips on .field-help 
-		$("div.tbox,div.checkboxes,input,textarea,select,label,.e-tip,div.form-control").each(function(c) {
-						
-			var t = $(this).nextAll(".field-help");
 
-			var placement = 'bottom';
-			
-			if($(this).is("textarea"))
-			{
-				var placement = 'top';	
-			}
-
-            var custplace = $(t).attr('data-placement'); // ie top|left|bottom|right
-
-            if(custplace !== undefined)
-            {
-                placement = custplace;
-            }
-			
-			
-			t.hide();
-		//	alert('hello');
-			$(this).tooltip({
-				title: function() {
-					var tip = t.html();			
-					return tip; 
-				},
-				fade: true,
-				html: true,
-				opacity: 1.0,
-				placement: placement,
-				container: 'body',
-				delay: { show: 300, hide: 600 } 
-			});
-		
-		});
 	
 	//	 $(".e-spinner").spinner(); //FIXME breaks tooltips etc. 
 
