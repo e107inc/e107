@@ -6223,7 +6223,7 @@ class e_form
 						
 					}
 
-					$triggers = vartrue($fdata['triggers'], 'auto');
+					$triggers = (empty($fdata['triggers']) && $fdata['triggers'] !== false) ? 'auto' : $fdata['triggers']; // vartrue($fdata['triggers'], 'auto');
 					if(is_string($triggers) && 'auto' === $triggers)
 					{
 						$triggers = array();
@@ -6238,42 +6238,45 @@ class e_form
 						$triggers['cancel'] = array(LAN_CANCEL, 'cancel');
 					}
 
-					foreach ($triggers as $trigger => $tdata)
+					if(!empty($triggers))
 					{
-						$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
-						$text .= $this->admin_button('etrigger_'.$trigger, $tdata[1], $tdata[1], $tdata[0]);
-						
-						if($trigger == 'submit' && $submitopt)
+						foreach ($triggers as $trigger => $tdata)
 						{
-						
-							$text .= 
-							'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
-									<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu col-selection">
-									<li class="dropdown-header nav-header">'.LAN_EFORM_016.'</li>
-							';
-							
-							foreach($submitopt as $k=>$v)
+							$text .= ($trigger == 'submit') ? "<div class=' btn-group'>" : "";
+							$text .= $this->admin_button('etrigger_'.$trigger, $tdata[1], $tdata[1], $tdata[0]);
+
+							if($trigger == 'submit' && $submitopt)
 							{
-								$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
+
+								$text .=
+								'<button class="btn btn-success dropdown-toggle left" data-toggle="dropdown">
+										<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu col-selection">
+										<li class="dropdown-header nav-header">'.LAN_EFORM_016.'</li>
+								';
+
+								foreach($submitopt as $k=>$v)
+								{
+									$text .= "<li class='after-submit'>".$this->radio('__after_submit_action', $k, $selected == $k, "label=".$v)."</li>";
+								}
+
+								//$text .= '
+								//		<li role="menuitem">
+								//			<div class="options left" style="padding:5px">
+								//			'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
+								//			</div></li>';
+
+
+								$text .= '</ul>';
 							}
-							
-							//$text .= '
-							//		<li role="menuitem">
-							//			<div class="options left" style="padding:5px">
-							//			'.$this->radio_multi('__after_submit_action', $submitopt, $selected, true).'
-							//			</div></li>';
-										
-									
-							$text .= '</ul>';
-						} 
-								
-						$text .= ($trigger == 'submit') ?"</div>" : "";
-						
-						if(isset($tdata[2]))
-						{
-							$text .= $this->hidden($trigger.'_value', $tdata[2]);
+
+							$text .= ($trigger == 'submit') ?"</div>" : "";
+
+							if(isset($tdata[2]))
+							{
+								$text .= $this->hidden($trigger.'_value', $tdata[2]);
+							}
 						}
 					}
 
