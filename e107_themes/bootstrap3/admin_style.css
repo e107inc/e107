@@ -18,6 +18,8 @@ button, button:active                      { outline: 0; }
 .tooltip 					{ font-size: 13px; }    
 .tooltip-inner 				{  }
 
+/* Fix for tooltips inside modal. */
+.modal-open .tooltip { z-index: 10002; }
  
 /* Core Formatting */
 .left						{ text-align: left }
