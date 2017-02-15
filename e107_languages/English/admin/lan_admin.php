@@ -513,5 +513,7 @@ define("LAN_ITEM", "Item");
 define("LAN_LOCK", "Lock");
 define("LAN_SYSTEM_USER", "System user");
 define("LAN_ENGINE", "Engine");
+define("LAN_SOURCE", "Source");
+define("LAN_LAYOUT", "Layout");
 
 define("LAN_ERROR_CONNECTION","Unable to connect for updates. Please check firewall and/or internet connection.");
