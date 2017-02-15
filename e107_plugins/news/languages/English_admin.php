@@ -19,4 +19,7 @@ define("LAN_NEWS_ADMIN_05", "Number of Items to Display");
 define("LAN_NEWS_ADMIN_06", "Title Character Limit");
 define("LAN_NEWS_ADMIN_07", "Summary Character Limit");
 define("LAN_NEWS_ADMIN_08", "Display Archive Link");
+define("LAN_NEWS_ADMIN_09", "Limits");
+define("LAN_NEWS_ADMIN_10", "Number of Feature Items");
+define("LAN_NEWS_ADMIN_11", "Assigned items are those with a template assigned to 'News Carousel'");
 ?>
