@@ -43,7 +43,7 @@ class news_search extends e_search // include plugin-folder in the name.
 
 			
 		$search = array(
-			'name'			=> "News",
+			'name'			=> LAN_NEWS,
 			'table'			=> 'news AS n LEFT JOIN #news_category AS c ON n.news_category = c.category_id',
 
 			'advanced' 		=> array(
