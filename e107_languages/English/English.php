@@ -139,5 +139,5 @@ define("LAN_SUMMARY", "Summary");  // TODO   more files use summary replace
 define("LAN_REQUIRED_BLANK", "Required field(s) were left blank.");
 define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_CHOOSE_FILE", "Choose a file");
-
+define("LAN_NEWS", "News");
 ?>
