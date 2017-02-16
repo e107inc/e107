@@ -414,6 +414,16 @@ class news_shortcodes extends e_shortcode
 			break;
 		}
 	}
+	
+  	/**
+	* Gets the avatar of the author as an html image tag. New in e107 v2.0
+	* @see user_avatar_shortcode()
+	*/
+	function sc_newsavatar()
+	{
+		require_once(e_HANDLER."avatar_handler.php");
+		return isset($this->news_item['user_id']) ? avatar($this->news_item['user_id']) : '';
+	}
 
 
 	function sc_newsavatar($parm=null)
