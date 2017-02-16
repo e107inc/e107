@@ -278,7 +278,7 @@ class comment
 			$indent = ($action == 'reply') ? " class='media col-md-offset-1 offset1' " : " class='media' ";
 			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
 			
-			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
+			$text = "\n<div id='{$formid}' {$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
 			
 		//	$text .= "Indent = ".$indent;
 			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
