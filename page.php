@@ -2,15 +2,11 @@
 /*
  * e107 website system
  *
- * Copyright (C) e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
- * URL and front controller Management
- *
- * $URL$
- * $Id$
-*/
+ */
 
 require_once("class2.php");
 e107::coreLan('page');
@@ -808,7 +804,7 @@ class pageClass
 				$extend->label = LAN_PASSWORD;
 				$extend->password = $frm->password('page_pw','',50,'size=xlarge&required=1');
 				$extend->icon = e_IMAGE_ABS.'generic/password.png';
-				$extend->submit = $frm->submit('submit_page_pw', LAN_PAGE_10);
+				$extend->submit = $frm->submit('submit_page_pw', LAN_SUBMIT);
 				// FIXME - add form open/close e_form methods
 				$extend->form_open = '<form method="post" class="form-inline" action="'.e_REQUEST_URI.'" id="pwform">';
 				$extend->form_close = '</form>';

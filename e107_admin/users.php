@@ -268,7 +268,7 @@ class users_admin_ui extends e_admin_ui
 	 */
 	protected $disallow = array('create');
 
-	protected $tabs		= array('Basic', 'Extended');
+	protected $tabs		= array(LAN_BASIC, LAN_EXTENDED);
 	
 	//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
 	protected $fields = array(

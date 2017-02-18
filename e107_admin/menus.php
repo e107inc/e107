@@ -177,72 +177,63 @@ TEMPL;
 
 	e107::getJs()->footerInline("
 		$(function() {
-						
 			// Visibility/Instance Options etc.
-
 			$('.e-menumanager-option').on('click', function(){
-    			
-    			var link = $(this).attr('href');
+				var link = $(this).attr('href');
 				var caption = $(this).attr('data-modal-caption');
-				window.parent.$('#uiModal .modal-caption').text(caption);	
-				window.parent.$('#uiModal .modal-body').load(link, function(){
-				 					   
-				 	window.parent.$('.modal-body :input').on('change', function(){
 
+				window.parent.$('#uiModal .modal-caption').text(caption);	
+
+				window.parent.$('#uiModal .modal-body').load(link, function(){
+					window.parent.$('.modal-body :input').on('change', function(){
 						var target 	= window.parent.$('#e-save-form').attr('action');
 						var data 	= window.parent.$('#e-save-form').serialize();
-
-					//	alert(data);
-				//	alert(target);
+		
 						$.post(target, data ,function(ret)
 						{
-					//	alert('Posted: '+ret);
-						//	console.log('Posted: '+ ret);
-
 							if(ret == '')
 							{
 								return false;
 							}
-
-						  	var a = $.parseJSON(ret);
-
+		
+							var a = $.parseJSON(ret);
+		
 							if(a.error)
 							{
 								alert(a.msg);
 							}
-						
 						});
-					
-					});					   
+					});
+
+					// Attach all registered behaviors to the new content.
+					window.parent.e107.attachBehaviors();
 				});
-					
-					
+	
 				window.parent.$('#uiModal').modal('show');
-				
-    			return false;
-    			
-			}) ;	
-				
-				
-				
-			// Delete Button (Remove Menu) Function
-				
-			$('.e-menumanager-delete').on('click', function(e){
-			e.preventDefault();
-			var area = 'remove';
-			var remove = $(this).attr('id');
-			var opt = remove.split('-');
-			var hidem = '#block-' + opt[1] +'-' + opt[2];
-			$(hidem).hide('slow');
-			// alert(hidem);
-			$.ajax({
-				  type: 'POST',
-				  url: 'menus.php',
-				  data: { removeid: remove, area: area, mode: 'delete' }
-		
-				}).done(function( data ) {
 					
-			
+				return false;		
+			});	
+
+			// Delete Button (Remove Menu) Function
+			$('.e-menumanager-delete').on('click', function(e) {
+				e.preventDefault();
+
+				var area = 'remove';
+				var remove = $(this).attr('id');
+				var opt = remove.split('-');
+				var hidem = '#block-' + opt[1] +'-' + opt[2];
+
+				$(hidem).hide('slow');
+
+				$.ajax({
+					type: 'POST',
+					url: 'menus.php',
+					data: {
+						removeid: remove, 
+						area: area, 
+						mode: 'delete'
+					}
+				}).done(function(data) {
 					var a = $.parseJSON(data);
 					
 					if(a.error)
@@ -251,21 +242,11 @@ TEMPL;
 					}
 				});		
 			});
-				
-				
-							
-				
-				
+
 	  	});
-
-
-
-
-
-
 	");
-	
-	
+
+
 	e107::getJs()->inlineCSS("	.column { width:100%;  padding-bottom: 100px; }
 	
 
@@ -475,7 +456,7 @@ TEMPL;
 	
 	.regularMenu {  border-bottom:1px dotted silver; margin-bottom:6px; padding-left:3px; padding-right:3px; padding-top:10px; padding-bottom:10px;background-color: #E0EBF1; border-radius: 5px; }
 	.regularMenu span {padding:3px; font-weight:bold; color:#2F2F2F;text-align:left; }
-	.ui-draggable	{  background-color: rgb(245, 245, 245); min-width:100px;}
+	.ui-draggable	{ min-width:100px;}
 
 	.regularMenu:hover { background-color: #B1D7EA; }
 
@@ -991,7 +972,7 @@ class e_menu_layout
 
 		    <div class="dropdown pull-right">
 
-		        <a class="btn btn-default btn-sm e-mm-selector " title="Activate">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
+		        <a class="btn btn-default btn-sm e-mm-selector " title="'.LAN_ACTIVATE.'">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
 
 				$menuButtonLabel = defset("MENLAN_59", "Area [x]");
 

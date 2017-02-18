@@ -253,12 +253,17 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 		//  e107::getDebug()->log($sefActive);
 
+		$plg = e107::getPlug();
+
 		foreach($eUrl as $plug=>$val)
 		{
+
+			$plg->load($plug);
+
 			$active = !empty($sefActive[$plug]) ? true : false;
 			$text .= "<table class='table table-striped table-bordered' style='margin-bottom:40px'>
 			<colgroup>
-				<col style='min-width:200px' />
+				<col style='min-width:220px' />
 				<col style='width:45%' />
 				<col style='width:45%' />
 			</colgroup>";
@@ -269,8 +274,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 				'switch' => 'mini',
 			));
 
-			$text .= "<tr class='active'><td ><h4>" . $plug . "</h4></td><td colspan='2'>" . $switch . "</td></tr>";
-			$text .= "<tr><th>Key</th><th>Regular Expression</th>
+			$text .= "<tr class='active'><td><h4>" . $plg->getName() . "</h4></td><td colspan='2'>" . $switch . "</td></tr>";
+			$text .= "<tr><th>".LAN_EURL_KEY."</th><th>".LAN_EURL_REGULAR_EXPRESSION."</th>
 
 
 			<th>".LAN_URL."</th>
@@ -642,7 +647,7 @@ class eurl_admin_form_ui extends e_admin_form_ui
         $text .= '</p>
                 </div>
                 <div class="modal-footer">
-                <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+                <a href="#" data-dismiss="modal" class="btn btn-primary">'.LAN_CLOSE.'</a>
                 </div>
                 </div>';           
         

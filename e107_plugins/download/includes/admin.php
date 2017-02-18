@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -1277,7 +1277,7 @@ $columnInfo = array(
 	                    </tr>
 	                    <tr>
 	                       <td>".DOWLAN_66."</td>
-	                       <td>
+	                       <td class='form-inline'>
 	                          <input class='form-control' type='text' name='download_filesize_external' size='8' value='{$download_filesize}' maxlength='10'/>
 	                       	 <select class='form-control' name='download_filesize_unit'>
 						      <option value='B'{$b_sel}>".CORE_LAN_B."</option>
@@ -1917,7 +1917,7 @@ $columnInfo = array(
 	            <tr>
 	            <td style='width: 10%; text-align: center;'>$mirror_id</td>
 	            <td style='width: 30%;'>".$tp -> toHTML($mirror_name)."</td>
-	            <td style='width: 30%;'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt=''/>" : DOWLAN_28)."</td>
+	            <td style='width: 30%;'>".($mirror_image ? "<img src='".e_FILE."downloadimages/".$mirror_image."' alt=''/>" : LAN_NONE)."</td>
 	            <td style='width: 30%; text-align: center;'>
 	            <a href='".e_SELF."?mirror.edit.{$mirror_id}'>".ADMIN_EDIT_ICON."</a>
 	            <input type='image' title='".LAN_DELETE."' name='delete[mirror_{$mirror_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".DOWLAN_137." [ID: $mirror_id ]')\"/>

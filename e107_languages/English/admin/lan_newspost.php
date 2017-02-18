@@ -234,5 +234,7 @@ define("LAN_NEWS_107", "Checking for Ping Status");
 
 //v2.1.4
 define("LAN_NEWS_108", "The SEF URL is unlike the title of your news item.");
-
+define("LAN_NEWS_109", "Trigger an email notification when you submit this form.");
+define("LAN_NEWS_110", "News Cache Timeout");
+define("LAN_NEWS_111", "Time in minutes. Applies only when system cache is enabled.");
 ?>

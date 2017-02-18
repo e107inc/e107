@@ -194,6 +194,7 @@ class e107
 		'e_navigation'                   => '{e_HANDLER}sitelinks_class.php',
 		'e_news_item'                    => '{e_HANDLER}news_class.php',
 		'e_news_tree'                    => '{e_HANDLER}news_class.php',
+		'e_news_category_tree'           => '{e_HANDLER}news_class.php',
 		'e_object'                       => '{e_HANDLER}model_class.php',
 		'e_online'                       => '{e_HANDLER}online_class.php',
 		'e_parse'                        => '{e_HANDLER}e_parse_class.php',
@@ -400,6 +401,12 @@ class e107
 
 			// set some core URLs (e_LOGIN/SIGNUP)
 			$this->set_urls();
+
+			if(!is_dir(e_SYSTEM))
+			{
+				mkdir(e_SYSTEM, 0755);
+			}
+
 		}
 
 		
@@ -3028,7 +3035,7 @@ class e107
 
 		$path = $theme.$fname.'.php';
 		
-		if(E107_DBG_INCLUDES)
+		if(deftrue('E107_DBG_INCLUDES'))
 		{
 			self::getMessage()->addDebug("Attempting to Load: ".$path);
 		}	
@@ -3830,7 +3837,7 @@ class e107
 	{
 		// ssl_enabled pref not needed anymore, scheme is auto-detected
 		$this->HTTP_SCHEME = 'http';
-		if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443)
 		{
 			$this->HTTP_SCHEME =  'https';
 		}
@@ -3846,6 +3853,7 @@ class e107
 				$i++;
 			}
 		}
+
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
 
 		$http_path = dirname($_SERVER['PHP_SELF']);
@@ -3858,8 +3866,14 @@ class e107
 			$j++;
 		}
 		$http_path = array_reverse($http_path);
+
+
+
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
+
+//var_dump($this->server_path);
+//exit;
 
 		if ($this->server_path == "//")
 		{
@@ -3887,7 +3901,11 @@ class e107
 
 		if(!defined('e_HTTP') || !defined('e_ADMIN') )
 		{
-			define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+			if(!defined('e_HTTP'))
+			{
+				define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
+			}
+
 		  	define('e_BASE', $this->relative_base_path);
 
 			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
@@ -4008,7 +4026,7 @@ class e107
 			// Special
 			
 			define('e_BOOTSTRAP', e_WEB."bootstrap/");
-			
+
 
 		}
 		return $this;
@@ -4129,7 +4147,7 @@ class e107
 		$tmp2 = explode('?', e_REQUEST_URI);
 		define('e_REQUEST_HTTP', array_shift($tmp2)); // SELF URL without the QUERY string and leading domain part
 
-		if(!deftrue('e_SINGLE_ENTRY'))
+		if(!deftrue('e_SINGLE_ENTRY') && !deftrue('e_SELF_OVERRIDE') )
 		{
 			$page = substr(strrchr($_SERVER['PHP_SELF'], '/'), 1);
 
@@ -4145,6 +4163,11 @@ class e107
 		else
 		{
 			define('e_SELF', e_REQUEST_SELF);
+
+			if(deftrue('e_SELF_OVERRIDE')) // see multisite plugin.
+			{
+				define('e_PAGE', basename($_SERVER['SCRIPT_FILENAME']));
+			}
 		}
 
 
@@ -4156,14 +4179,15 @@ class e107
 		$inAdminDir = FALSE;
 		$isPluginDir = strpos($_self,'/'.$PLUGINS_DIRECTORY) !== FALSE;		// True if we're in a plugin
 		$e107Path = str_replace($this->base_path, '', $_self);				// Knock off the initial bits
+		$curPage = basename($_SERVER['SCRIPT_FILENAME']);
 
 		if	(
 			 (!$isPluginDir && strpos($e107Path, $ADMIN_DIRECTORY) === 0 ) 									// Core admin directory
-			  || ($isPluginDir && (strpos(e_PAGE,'_admin.php') !== false || strpos(e_PAGE,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
+			  || ($isPluginDir && (strpos($curPage,'_admin.php') !== false || strpos($curPage,'admin_') === 0 || strpos($e107Path, 'admin/') !== FALSE)) // Plugin admin file or directory
 			  || (vartrue($eplug_admin) || deftrue('ADMIN_AREA'))		// Admin forced
 			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
-			  || ($isPluginDir && e_PAGE === 'prefs.php') //BC Fix for old plugins
-			  || ($isPluginDir && e_PAGE === 'config.php') // BC Fix for old plugins
+			  || ($isPluginDir && $curPage === 'prefs.php') //BC Fix for old plugins
+			  || ($isPluginDir && $curPage === 'config.php') // BC Fix for old plugins
 			)
 		{
 			$inAdminDir = TRUE;

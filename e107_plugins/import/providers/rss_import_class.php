@@ -38,6 +38,8 @@ class rss_import extends base_import_class
 
 	var $feedUrl			= null;
 	var $defaultClass 		= false;
+
+	private $foundImages = array();
 	
 
 	function init()
@@ -137,6 +139,7 @@ class rss_import extends base_import_class
 	 */
 	function copyNewsData(&$target, &$source)
 	{
+		$this->foundImages = array();
 		
 		if(!$content = $this->process('content_encoded',$source))
 		{
@@ -181,7 +184,7 @@ class rss_import extends base_import_class
 		//	$target['news_render_type']			= '';
 		//	$target['news_comment_total']		= $source['comment_count'];
 		//	$target['news_summary']				= $source['post_excerpt'];
-		//	$target['news_thumbnail']			= '';
+			$target['news_thumbnail']			= !empty($this->foundImages[0]) ? $this->foundImages[0] : '';
 		//	$target['news_sticky']				= '';
 
 		
@@ -331,7 +334,9 @@ class rss_import extends base_import_class
 				if(filesize(e_MEDIA.$relPath."/".$filename) > 0)
 				{
 					$search[] = $att['src'];
-					$replace[] = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);	
+					$src = $tp->createConstants(e_MEDIA.$relPath."/".$filename,1);
+					$this->foundImages[] = $src;
+					$replace[] = $src;
 				}
 			}	
 		
@@ -351,7 +356,7 @@ class rss_import extends base_import_class
 		return str_replace($search,$replace,$body);
 		
 		
-		
+		/*
 		
 	//	echo htmlentities($body);
 		preg_match_all("/(((http:\/\/www)|(http:\/\/)|(www))[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)\.(jpg|jpeg|gif|png|svg)/im",$body,$matches);
@@ -387,7 +392,7 @@ class rss_import extends base_import_class
 			$med->import($cat,e_MEDIA.$relPath);	
 		}
 		
-		return str_replace($search,$replace,$body);
+		return str_replace($search,$replace,$body);*/
 		
 	}
 	

@@ -126,9 +126,9 @@ $LOGIN_TEMPLATE['page']['body'] .= '
  ';
 
 $LOGIN_TEMPLATE['page']['footer'] =  "
-			<div style='margin-bottom:100px; margin-right:auto;margin-left:auto'>
-				<div style='text-align:right'><p>{LOGIN_TABLE_SIGNUP_LINK}</p></div>
-				<div style='text-align:right'><p>{LOGIN_TABLE_FPW_LINK}</p></div>
+			<div class='login-page-footer'>
+				<div class='login-page-signup-link'><p>{LOGIN_TABLE_SIGNUP_LINK}</p></div>
+				<div class='login-page-fpw-link'><p>{LOGIN_TABLE_FPW_LINK}</p></div>
 			</div>
 	</div>";
 	

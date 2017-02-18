@@ -18,6 +18,8 @@ button, button:active                      { outline: 0; }
 .tooltip 					{ font-size: 13px; }    
 .tooltip-inner 				{  }
 
+/* Fix for tooltips inside modal. */
+.modal-open .tooltip { z-index: 10002; }
  
 /* Core Formatting */
 .left						{ text-align: left }
@@ -119,6 +121,7 @@ table input.form-control, table textarea.form-control,  table select.form-contro
 .plugin-navigation li a.link-active:before { content: "\f054"; font-family:FontAwesome; margin-left:-10px }
 */
 
+.form-control.input-block-level,
 table textarea.input-block-level,
 input.input-block-level,
 input.form-control.input-block-level,
@@ -217,8 +220,13 @@ a.tweet_action				{ font-size:8px }
 
 /* Bootstrap Bug Fix  See: https://github.com/twitter/bootstrap/issues/3494  Specific for e107-admin InfoPanel */
 
-.row-fluid ul.thumbnails li.span12 + li { margin-left : 0px; }
-.row-fluid div.s-message + div { margin-left : 0px; }
+.row-fluid ul.thumbnails li.span12 + li { margin-left : 0; }
+.row-fluid div.s-message + div { margin-left : 0; }
+
+.bootstrap-switch .bootstrap-switch-label { background: inherit }
+.bootstrap-switch.form-control { padding:0; height:auto }
+td.center .bootstrap-switch.form-control { margin-left: auto; margin-right: auto; }
+
 
 /*
 .row-fluid ul.thumbXnails li.span6:nth-child(2n + 3) { margin-left : 0px; }
@@ -1005,7 +1013,10 @@ footer 		{ padding-top:150px; padding-bottom:20px; color: rgb(153, 153, 153); }
 }
 
 
+.plugin-navigation .nav-header {
+	padding: 10px 15px;
 
+}
 
 
 /* Attempt to Hide the white arrow */
@@ -1408,7 +1419,7 @@ td.forumheader3 .form-control { display:inherit }
 
 .navbar-nav > li > a.admin-icon-avatar { padding-top: 11px; padding-bottom: 10px;}
 
-form#simplesef h4 { margin: 0 }
+form#simplesef h4 { margin: 4px }
 .adminlist tr > td { min-height:50px; }
 
 .admin-icon-debug i {  margin-right:10px; cursor:help}

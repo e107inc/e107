@@ -28,7 +28,7 @@ define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('siz
 
 
 global $user_pref;
-
+/*
 
 if(!deftrue('e_DEBUG_PLUGMANAGER'))
 {
@@ -39,7 +39,7 @@ if(!deftrue('e_DEBUG_PLUGMANAGER'))
 
 	define("e_PAGETITLE",ADLAN_98." - ".$pman->pagetitle);
 }
-
+*/
 
 if(isset($_POST['uninstall_cancel']))
 {
@@ -132,17 +132,17 @@ class plugman_adminArea extends e_admin_dispatcher
 				'plugin_icon'        => array('title' => LAN_ICON, 'type' => 'icon', 'data' => false, "width" => "5%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		        'plugin_name'        => array('title' => LAN_TITLE, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		        'plugin_version'     => array('title' => LAN_VERSION, 'type' => 'text', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
-				'plugin_date'       => array('title' => "Released", 'type' => 'text', 'data' => false,  "width" => "8%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+				'plugin_date'       => array('title' => LAN_RELEASED, 'type' => 'text', 'data' => false,  "width" => "8%", 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 			    'plugin_category'    => array('title' => LAN_CATEGORY, 'type' => 'dropdown', 'data' => 'str', 'width' => 'auto', 'batch' => true, 'filter' => true, 'inline' => true, 'help' => '', 'readParms' => '', 'writeParms' => array(), 'class' => 'left', 'thclass' => 'left',),
 
 				'plugin_author'      => array('title' => LAN_AUTHOR, 'type' => 'text', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 				"plugin_license"	 => array("title" => "License", 	 'nolist'=>false,'data'=>false,	 "type"=>"text", "width" => "5%", "thclass" => "left"),
-  				'plugin_compatible'  => array('title' => "Compatible", 'type' => 'method', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
+  				'plugin_compatible'  => array('title' => EPL_ADLAN_13, 'type' => 'method', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
 				'plugin_description' => array('title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => false, 'width' => 'auto', 'help' => '', 'readParms' => 'expand=1&truncate=180&bb=1', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 
-				'plugin_path'        => array('title' => 'Path', 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
-		        'plugin_installflag' => array('title' => 'Installed', 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'filter' => false, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
-		        'plugin_addons'      => array('title' => 'Addons', 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+				'plugin_path'        => array('title' => LAN_PATH, 'type' => 'text', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
+		        'plugin_installflag' => array('title' => EPL_ADLAN_22, 'type' => 'boolean', 'data' => 'int', 'width' => 'auto', 'filter' => false, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',),
+		        'plugin_addons'      => array('title' => LAN_ADDONS, 'type' => 'method', 'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',),
 		         'options'            => array('title' => LAN_OPTIONS, 'type' => 'method', 'data' => null, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last', 'forced' => '1',),
 		);
 
@@ -206,7 +206,10 @@ class plugin_ui extends e_admin_ui
 		public function init()
 		{
 
-
+			if(!e_QUERY)
+			{
+				e107::getPlug()->clearCache();
+			}
 
 
 
@@ -304,12 +307,15 @@ class plugin_ui extends e_admin_ui
 			}
 
 
-			$text = "<ul class='list-unstyled'>";
+			$text = "<ul class='media-list'>";
 			foreach($list as $path=>$ver)
 			{
 				$plg->load($path);
 				$url = e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$path;
-				$text .= "<li><a href='".$url."'>".$plg->getIcon(32)." ".$plg->getName()."</a></li>";
+				$text .= "<li class='media'>
+				<div class='media-left'>
+					<a href='".$url."'>".$plg->getIcon(32)."</a>
+					</div><div class='media-body'><a href='".$url."'>".$plg->getName()."</a></div></li>";
 
 			}
 			$text .= "</ul>";
@@ -359,7 +365,15 @@ class plugin_ui extends e_admin_ui
 		function buildPage()
 		{
 			$pc = new pluginBuilder;
-			return false;
+			$ret = $pc->run();
+
+			if(is_array($ret))
+			{
+				$this->addTitle($ret['caption']);
+				return $ret['text'];
+			}
+
+			return $ret;
 		}
 
 
@@ -434,8 +448,7 @@ class plugin_ui extends e_admin_ui
 
 		function upgradePage()
 		{
-
-
+			$this->pluginUpgrade();
 		}
 
 
@@ -1010,17 +1023,15 @@ class plugin_online_ui extends e_admin_ui
 
 		function pluginCheck($force=false)
 		{
-			global $plugin;
-
 			if(!PLUGIN_SCAN_INTERVAL)
 			{
-				$plugin->update_plugins_table('update');
+				e107::getPlugin()->update_plugins_table('update');
 				return;
 			}
 
 			if((time() > vartrue($_SESSION['nextPluginFolderScan'],0)) || $force == true)
 			{
-				$plugin->update_plugins_table('update');
+				e107::getPlugin()->update_plugins_table('update');
 			}
 
 			$_SESSION['nextPluginFolderScan'] = time() + PLUGIN_SCAN_INTERVAL;
@@ -1136,6 +1147,11 @@ class plugin_online_ui extends e_admin_ui
 
 		}
 		*/
+		if($data['plugin_installflag'])
+		{
+			return null;
+		}
+
 
 
 		//$url = e_SELF."?src=".base64_encode($d);
@@ -1176,7 +1192,7 @@ class plugin_online_ui extends e_admin_ui
 
 	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
 
-		return "<div id='{$id}' class='right' >
+		return "<div id='{$id}' class='center' >
 		{$dicon}
 		</div>";
 	}
@@ -1299,7 +1315,8 @@ class plugin_online_ui extends e_admin_ui
 						'plugin_url'			=> $row['urlView'],
 						'plugin_notes'			=> '',
 						'plugin_price'			=> $row['price'],
-						'plugin_license'		=> $price
+						'plugin_license'		=> $price,
+						'plugin_installflag'    => e107::isInstalled($row['folder'])
 					);
 
 				$c++;
@@ -1348,7 +1365,7 @@ class plugin_online_ui extends e_admin_ui
 					// echo '<br />v='.$v;
 					$text .= "<td style='height: 40px' class='".vartrue($this->fields[$v]['class'],'left')."'>".$frm->renderValue($v, $_value, $this->fields[$v], $key)."</td>\n";
 				}
-				$text .= "<td class='right'>".$this->options($val)."</td>";
+				$text .= "<td class='center'>".$this->options($val)."</td>";
 				$text .= "</tr>";
 
 			}
@@ -1498,7 +1515,7 @@ class plugin_form_online_ui extends e_admin_form_ui
 
 
 
-if(deftrue('e_DEBUG_PLUGMANAGER'))
+//if(deftrue('e_DEBUG_PLUGMANAGER'))
 {
 	new plugman_adminArea();
 	require_once(e_ADMIN."auth.php");
@@ -1534,7 +1551,7 @@ if(deftrue('e_DEBUG_PLUGMANAGER'))
 
 // --------------------------------------
 
-
+/*
 class pluginmanager_form extends e_form
 {
 	
@@ -1635,27 +1652,19 @@ class pluginmanager_form extends e_form
 
 	
 }
-
-
+*/
+/*
 require_once("auth.php");
 $pman->pluginObserver();
 $mes = e107::getMessage();
-$frm = e107::getForm();
-
-function e_help()
-{
-	$help_text = str_replace('[x]', (PLUGIN_SCAN_INTERVAL ? PLUGIN_SCAN_INTERVAL / 60 : 0), EPL_ADLAN_228);
-	return array(
-		'caption'	=> EPL_ADLAN_227,
-		'text'		=> $help_text."<p><a class='btn btn-xs btn-mini btn-primary' href='".e_SELF."?refresh'>".EPL_ADLAN_229."</a></p>"
-	);
-}
+$frm = e107::getForm();*/
 
 require_once("footer.php");
 exit;
 
 
 // FIXME switch to admin UI
+/*
 class pluginManager{
 
 	var $plugArray;
@@ -1666,10 +1675,7 @@ class pluginManager{
 	var $titlearray 		= array();
 	var $pagetitle;
 	
-	/**
-	 * Marketplace handler instance
-	 * @var e_marketplace
-	 */
+
 	var $mp;
 		
 	protected $pid = 'plugin_id';
@@ -1725,26 +1731,11 @@ class pluginManager{
         $keys = array_keys($this -> titlearray);
 		$this->pagetitle = (in_array($this->action,$keys)) ? $this -> titlearray[$this->action] : $this -> titlearray['installed'];
 
-/*		if(isset($_POST['uninstall-selected']))
-		{
-        	foreach($_POST['checkboxes'] as $val)
-			{
-            	$this -> id = intval($val);
-                $this -> pluginUninstall();
-			}
-      		$this -> action = "installed";
-			$this -> pluginRenderList();
-			return;
 
-			// Complicated, as each uninstall system is different.
-		}*/
 
     }
 
-	/**
-	 * Temporary, e107::getMarketplace() coming soon
-	 * @return e_marketplace
-	 */
+
 	public function getMarketplace()
 	{
 		if(null === $this->mp)
@@ -1954,20 +1945,7 @@ class pluginManager{
 		$total = $xdata['params']['count'];
 	
 		// OLD BIT OF CODE ------------------------------->
-	/*
-	//	$file = SITEURLBASE.e_PLUGIN_ABS."release/release.php";  // temporary testing
-		$file = "http://e107.org/feed?type=plugin&frm=".$from."&srch=".$srch."&limit=10";
-		
-		$xml->setOptArrayTags('plugin'); // make sure 'plugin' tag always returns an array
-		$xdata = $xml->loadXMLfile($file,'advanced');
 
-		$total = $xdata['@attributes']['total'];
-		
-		echo 'file='.$file;
-	//	print_a($xdata);
-		
-		$xdata['data'] = $xdata['plugin'];
-		*/
 		// OLD BIT OF CODE END ------------------------------->
 		
 		
@@ -2091,14 +2069,7 @@ class pluginManager{
 	{
 			
 	//	print_a($data);
-		
-		/*
-		if(!e107::getFile()->hasAuthKey())
-		{
-		//	return "<a href='".e_SELF."' class='btn btn-primary e-modal' >Download and Install</a>"; 	
-			
-		}
-		*/
+
 				
 
 		//$url = e_SELF."?src=".base64_encode($d);
@@ -2120,22 +2091,13 @@ class pluginManager{
 		$url = e_SELF.'?mode=download&src='.base64_encode($d);
 		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
 
-		/*
 
-		// DEBUGGER .
-		$base64 = base64_encode($d);
-		$tmp = base64_decode($base64);
-		parse_str($tmp, $data);
 
-	//  XXX Suhosin has a 512 char limit for $_GET strings.
-		e107::getDebug()->log($data['plugin_name'].' : '.strlen($base64)."<br />".print_a($data,true)); //FIXME - enable when needed to debug.
-		*/
-
-		// Temporary Pop-up version. 
+		// Temporary Pop-up version.
 	//	$dicon = '<a class="e-modal" href="'.$data['plugin_url'].'" rel="external" data-modal-caption="'.$data['plugin_name']." ".$data['plugin_version'].'"  target="_blank" ><img class="top" src="'.e_IMAGE_ABS.'icons/download_32.png" alt=""  /></a>';
-		
+
 	//	$dicon = "<a data-toggle='modal' data-modal-caption=\"Downloading ".$data['plugin_name']." ".$data['plugin_version']."\" href='{$url}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";
-	
+
 		return "<div id='{$id}' class='right' >
 		{$dicon}
 		</div>";				
@@ -2277,99 +2239,7 @@ class pluginManager{
 			
 			return true;
 
-			// ----------------- Everything below is unused. 
-	/*
-			extract($_FILES);
 
-			if(!is_writable(e_PLUGIN))
-			{
-				// still not writable - spawn error message 
-				e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_39);
-			}
-			else
-			{
-				// e_PLUGIN is writable
-				require_once(e_HANDLER."upload_handler.php");
-				$fileName = $file_userfile['name'][0];
-				$fileSize = $file_userfile['size'][0];
-				$fileType = $file_userfile['type'][0];
-
-				if(strstr($file_userfile['type'][0], "gzip"))
-				{
-					$fileType = "tar";
-				}
-				else if (strstr($file_userfile['type'][0], "zip"))
-				{
-					$fileType = "zip";
-				}
-				else
-				{
-					// not zip or tar - spawn error message
-					e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_41);
-					return false; 
-				}
-
-				if ($fileSize)
-				{
-					$uploaded = file_upload(e_PLUGIN);
-					$archiveName = $uploaded[0]['name'];
-
-					// attempt to unarchive 
-
-					if($fileType == "zip")
-					{
-						require_once(e_HANDLER."pclzip.lib.php");
-						$archive = new PclZip(e_PLUGIN.$archiveName);
-						$unarc = ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_PLUGIN, PCLZIP_OPT_SET_CHMOD, 0666));
-					}
-					else
-					{
-						require_once(e_HANDLER."pcltar.lib.php");
-						$unarc = ($fileList = PclTarExtract($archiveName, e_PLUGIN));
-					}
-
-					if(!$unarc)
-					{
-						// unarc failed ... 
-						if($fileType == "zip")
-						{
-							$error = EPL_ADLAN_46." '".$archive -> errorName(TRUE)."'";
-						}
-						else
-						{
-							$error = EPL_ADLAN_47.PclErrorString().", ".EPL_ADLAN_48.intval(PclErrorCode());
-						}
-						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_42." ".$archiveName." ".$error);
-						require_once("footer.php");
-						exit;
-					}
-
-					// ok it looks like the unarc succeeded - continue
-
-					// get folder name ...  
-					
-					$folderName = substr($fileList[0]['stored_filename'], 0, (strpos($fileList[0]['stored_filename'], "/")));
-
-					if(file_exists(e_PLUGIN.$folderName."/plugin.php") || file_exists(e_PLUGIN.$folderName."/plugin.xml"))
-					{
-
-						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_43);
-					}
-					elseif(file_exists(e_PLUGIN.$folderName."/theme.php") || file_exists(e_PLUGIN.$folderName."/theme.xml"))
-					{
-
-						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_45);
-					}
-					else
-					{
-						// upload is unlocatable
-						e107::getRender()->tablerender(EPL_ADLAN_40, EPL_ADLAN_98.' '.$fileList[0]['stored_filename']);
-					}
-
-					// attempt to delete uploaded archive
-					@unlink(e_PLUGIN.$archiveName);
-				}
-			}*/
    }
 
 
@@ -2567,7 +2437,6 @@ class pluginManager{
 
 		//TODO 'install' checkbox in plugin upload form. (as it is for theme upload)
 
-		/* plugin upload form */
 
 			if(!is_writable(e_PLUGIN))
 			{
@@ -2804,16 +2673,7 @@ class pluginManager{
 					$pgf->plug		= $plug;
 					$text 			.= $pgf->renderTableRow($this->fields, $this->fieldpref, $data, 'plugin_id');
 
-/*
-					$folder = $plug['plugin_path'];
-					if(!empty($versions[$folder]['version']) && version_compare( $plug['plugin_version'], $versions[$folder]['version'], '<'))
-					{
-						$link = "<a rel='external' href='".$versions[$folder]['url']."'>".$versions[$folder]['name']."</a>";
 
-						$lan = "A newer version of [x] is available for download.";
-						e107::getMessage()->addInfo($tp->lanVars($lan,$link));
-						e107::getMessage()->addDebug("Local version: ".$plug['plugin_version']." Remote version: ".$versions[$folder]['version']);
-					}*/
 
 				}
 			}
@@ -3011,17 +2871,14 @@ class pluginManager{
 			$text .= $frm->admin_button('uninstall_confirm',EPL_ADLAN_3,'submit');
 			$text .= $frm->admin_button('uninstall_cancel',EPL_ADLAN_62,'cancel');
 
-			/*
-			$text .= "<input class='btn' type='submit' name='uninstall_confirm' value=\"".EPL_ADLAN_3."\" />&nbsp;&nbsp;
-			<input class='btn' type='submit' name='uninstall_cancel' value='".EPL_ADLAN_62."' onclick=\"location.href='".e_SELF."'; return false;\"/>";
-			*/
+
              //   $frm->admin_button($name, $value, $action = 'submit', $label = '', $options = array());
 
 			$text .= "</div>
 			</fieldset>
 			</form>
 			";
-			e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
+		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 
@@ -3080,14 +2937,14 @@ class pluginManager{
 		
 
 } // end of Class.
+*/
 
-
-
+/*
 function plugin_adminmenu()
 {
 	global $pman;
 	$pman -> pluginMenuOptions();
-}
+}*/
 
 
 
@@ -3570,27 +3427,31 @@ class pluginBuilder
 			$this->special['checkboxes'] =  array('title'=> '','type' => null, 'data' => null,	 'width'=>'5%', 'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect', 'fieldpref'=>true);
 			$this->special['options'] = array( 'title'=> 'LAN_OPTIONS', 'type' => null, 'data' => null, 'width' => '10%',	'thclass' => 'center last', 'class' => 'center last', 'forced'=>TRUE, 'fieldpref'=>true);		
 			
+
+		}
+
+
+		function run()
+		{
+
 			if(!empty($_GET['newplugin']))
 			{
 				$this->pluginName = e107::getParser()->filter($_GET['newplugin'],'file');
 			}
-			
+
 			if(!empty($_GET['createFiles']))
 			{
-				$this->createFiles	= true; 
+				$this->createFiles	= true;
 			}
 
 			if(vartrue($_POST['step']) == 4)
 			{
-				$this->step4();
-				return null;
+				return $this->step4();
 			}
 
 			if(vartrue($_GET['step']) == 3)
 			{
-
-				$this->step3();
-				return null;
+				return $this->step3();
 			}
 
 
@@ -3604,6 +3465,8 @@ class pluginBuilder
 
 
 			return $this->step1();
+
+
 		}
 
 
@@ -3676,9 +3539,9 @@ class pluginBuilder
 
 			$text .= $frm->close();
 
+			return $text;
 
-
-			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114, $mes->render() . $text);
+		//	$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114, $mes->render() . $text);
 			
 			
 			
@@ -3728,8 +3591,9 @@ class pluginBuilder
 		function step3()
 		{
 			
-			require_once(e_HANDLER."db_verify_class.php");
-			$dv = new db_verify;
+		//	require_once(e_HANDLER."db_verify_class.php");
+		//	$dv = new db_verify;
+			$dv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
 			
 			$frm = e107::getForm();
 			$ns = e107::getRender();
@@ -3760,7 +3624,7 @@ class pluginBuilder
 		//		$this->buildTable = true;
 			}
 		
-			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
+			$text = $frm->open('newplugin-step3','post', e_SELF.'?mode=create&action=build&newplugin='.$newplug.'&createFiles='.$this->createFiles.'&step=3');
 			
 			$text .= "<ul class='nav nav-tabs'>\n";
 			$text .= "<li class='active'><a data-toggle='tab' href='#xml'>".EPL_ADLAN_109."</a></li>";
@@ -3834,8 +3698,8 @@ class pluginBuilder
 
 			$mes->addInfo(EPL_ADLAN_113);
 		
-			
-			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115, $mes->render() . $text);
+			return array('caption'=>EPL_ADLAN_115, 'text'=> $text);
+		//	$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP., $mes->render() . $text);
 		}
 
 
@@ -3904,7 +3768,8 @@ class pluginBuilder
 
 			');*/
 			$ns = e107::getRender();
-			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115,  $text);
+			return array('caption'=>EPL_ADLAN_115, 'text'=>$text);
+		//	$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_115,  $text);
 
 
 			return $text;
@@ -4321,7 +4186,7 @@ class pluginBuilder
 					'about'		=> EPL_ADLAN_154
 					);
 				
-					$text = $frm->select($name, $options, $default,'required=1&class=null', true);	
+					$text = $frm->select($name, $options, $default,'required=1&class=form-control', true);
 				break;
 
 				case 'keywordDropDown':
@@ -4350,7 +4215,7 @@ class pluginBuilder
 
 					sort($options);
 
-					$text = $frm->select($name, $options, $default,'required=1&class=null&useValues=1', true);
+					$text = $frm->select($name, $options, $default,'required=1&class=form-control&useValues=1', true);
 
 
 				break;
@@ -5348,7 +5213,7 @@ exit;
 			{
 				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
 				{
-					$message = str_replace("[x]", "<a href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
+					$message = str_replace("[x]", "<a class='alert-link' href='".$generatedFile."'>".EPL_ADLAN_216."</a>", EPL_ADLAN_217);
 					$mes->addSuccess($message);
 				}	
 				else 
@@ -5358,21 +5223,28 @@ exit;
 			}
 			else
 			{
-				$mes->addInfo(EPL_ADLAN_219);
+				$mes->addSuccess(EPL_ADLAN_219);
 			}
 
 
 
 
 			
-			echo $mes->render();
+		//	echo $mes->render();
+
+			$ret = "<h3>plugin.xml</h3>";
+			$ret .= "<pre style='font-size:80%'>".$xmlText."</pre>";
+			$ret .= "<h3>admin_config.php</h3>";
+			$ret .= "<pre style='font-size:80%'>".$text."</pre>";
+
+			return array('caption'=>EPL_ADLAN_253, 'text'=> $ret);
 			
-			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>");
+		//	$text =$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>", 'default', true);
 
 
 
 			
-			$ns->tablerender("admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
+			$text .= $ns->tablerender("admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
 			
 		//	
 			return;

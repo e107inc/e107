@@ -41,10 +41,21 @@ class e_menu
 	 */
 	protected $_visibility_cache = array();
 
-
+	/**
+	 * @var null
+	 */
 	protected $_current_menu = null;
 
+	/**
+	 * @var array
+	 */
 	protected $_current_parms = array();
+
+	/**
+	 * Params of all active menus.
+	 * @var array
+	 */
+	protected $_menu_parms = array();
 
 	/**
 	 * Constructor
@@ -101,6 +112,13 @@ class e_menu
 						$total[$area] = 0;
 					}
 					$this->eMenuActive[$area][] = $row;
+
+					if(!empty($row['menu_parms']))
+					{
+						$key = $row['menu_name'];
+						$this->_menu_parms[$area][$key][] = $row['menu_parms'];
+					}
+
 					$total[$area]++;
 				}
 			}
@@ -141,6 +159,36 @@ class e_menu
 	public function pref()
 	{
 		return (empty($this->_current_parms)) ?  array() : $this->_current_parms;
+	}
+
+
+	/**
+	 * Return the parameters of an active Menu.
+	 * @param string $menuName
+	 * @param int $area
+	 * @example $parms = $tmp->getParams('news_months_menu',1);
+	 * @return array|bool
+	 */
+	public function getParams($menuName, $area)
+	{
+
+		if(empty($area) || empty($menuName))
+		{
+			return false;
+		}
+
+		if(!empty($this->_menu_parms[$area][$menuName]))
+		{
+			$arr = array();
+			foreach($this->_menu_parms[$area][$menuName] as $val)
+			{
+				$arr[] = e107::unserialize($val);
+			}
+
+			return $arr;
+		}
+
+		return false;
 	}
 
 
