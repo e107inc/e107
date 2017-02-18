@@ -1383,7 +1383,7 @@ class lancheck
 
 				$editUrl = e_REQUEST_SELF."?".http_build_query($parms,'&amp;');
 				$text .="<td class='center' style='width:5%'>
-				<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button' style='width:60px'>".LAN_EDIT."</a>";
+				<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button' style='width:auto'>".LAN_EDIT."</a>";
 				$text .="</td></tr>";
 
 		}
