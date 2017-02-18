@@ -698,10 +698,16 @@ class e107_db_debug {
 				<td class='forumheader3'>SQL Language</td>
 				<td class='forumheader3'>".$sql->mySQLlanguage."</td>
 			</tr>
+";
+	if($_SERVER['E_DEV'] == 'true')
+	{
+			$text .= "
+				<tr>
+					<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($e107,TRUE))."</pre></td>
+				</tr>";
+	}
 
-			<tr>
-				<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($e107,TRUE))."</pre></td>
-			</tr>
+		$text .="
 			<tr>
 				<td class='fcaption' colspan='2'><h2>Session</h2></td>
 			</tr>

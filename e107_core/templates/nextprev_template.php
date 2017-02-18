@@ -95,9 +95,9 @@ $NEXTPREV_TEMPLATE['basic_start'] 				= '<!-- Start of Next/Prev --><div class="
 $NEXTPREV_TEMPLATE['basic_end'] 				= '</div><!-- End of Next/Prev -->';
 $NEXTPREV_TEMPLATE['basic_nav_caption'] 		= ''; 
 $NEXTPREV_TEMPLATE['basic_nav_first'] 			= '';
-$NEXTPREV_TEMPLATE['basic_nav_prev'] 			= '<a class="btn btn-default nextprev-item prev" href="{url}" title="{url_label}"><i class="fa fa-backward"></i></a>';
+$NEXTPREV_TEMPLATE['basic_nav_prev'] 			= '<a class="btn btn-default nextprev-item prev" href="{url}" title="{url_label}" {disabled}><i class="fa fa-backward"></i></a>';
 $NEXTPREV_TEMPLATE['basic_nav_last'] 			= ''; 
-$NEXTPREV_TEMPLATE['basic_nav_next'] 			= '<a class="btn btn-default nextprev-item next " href="{url}" title="{url_label}"><i class="fa fa-forward"></i></a>';
+$NEXTPREV_TEMPLATE['basic_nav_next'] 			= '<a class="btn btn-default nextprev-item next " href="{url}" title="{url_label}" {disabled}><i class="fa fa-forward"></i></a>';
 $NEXTPREV_TEMPLATE['basic_items_start'] 		= '';
 $NEXTPREV_TEMPLATE['basic_item'] 				= ''; 
 $NEXTPREV_TEMPLATE['basic_item_current'] 		= '<a class="btn btn-default">{label}</a>';

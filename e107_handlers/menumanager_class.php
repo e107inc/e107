@@ -582,6 +582,43 @@ class e_menuManager {
 		return $link_class;
 	}
 
+	private function menuParamForm($id, $fields,$tabs, e_form $ui, $values=array())
+	{
+		$fields['menu_id'] = array('type'=>'hidden', 'writeParms'=>array('value'=>$id));
+		$fields['mode']  = array('type'=>'hidden', 'writeParms'=>array('value'=>'parms'));
+
+		$forms = $models = array();
+		$forms[] = array(
+				'id'  => 'e-save',
+				'header' => '',
+				'footer' => '',
+				'url' => e_SELF,
+				'query' => "lay=".$this->curLayout,
+				'fieldsets' => array(
+					'create' => array(
+						'tabs'	=>  $tabs, //used within a single form.
+						'legend' => '',
+						'fields' => $fields, //see e_admin_ui::$fields
+						'header' => '', //XXX Unused?
+						'footer' => '',
+						'after_submit_options' => '', // or true for default redirect options
+						'after_submit_default' => '', // or true for default redirect options
+						'triggers' => false, // standard create/update-cancel triggers
+					)
+				)
+		);
+	//	$models[] = $controller->getModel();
+		$models[] = e107::getModel()->setData($values);
+
+		return $ui->renderCreateForm($forms, $models, e_AJAX_REQUEST);
+
+
+
+
+	}
+
+
+
 	/**
 	 * This one will be greatly extended, allowing menus to offer UI and us 
 	 * settings per instance later ($parm variable available for menus - same as shortcode's $parm)
@@ -596,9 +633,11 @@ class e_menuManager {
 		if(!$sql->select("menus", "*", "menu_id=".$id))
 		{
         	$this->menuAddMessage("Couldn't Load Menu",E_MESSAGE_ERROR);
-            return;
+            return null;
 		};
 		$row = $sql->fetch();
+
+
 
 		$text = "<div style='text-align:center;'>
 		<form  id='e-save-form' method='post' action='".e_SELF."?lay=".$this->curLayout."'>
@@ -617,6 +656,9 @@ class e_menuManager {
 			$plug = rtrim($row['menu_path'],'/');
 			$obj = e107::getAddon($plug,'e_menu');
 
+
+
+
 			if(!is_object($obj))
 			{
 				$text .= "<tr><td colspan='2' class='alert alert-danger'>".e107::getParser()->lanVars(MENLAN_46, $plug)."</td></tr>";
@@ -628,16 +670,27 @@ class e_menuManager {
 
 			$menuName = varset($menuName);
 			$fields = e107::callMethod($obj,'config',$menuName);
+			$tabs = isset($obj->tabs) ? $obj->tabs : array(LAN_CONFIGURE);
+
 
 			if(!$form = e107::getAddon($plug,'e_menu',$plug."_menu_form"))
 			{
 				$form = $frm;
 			}
 
+
+
 			$value = e107::unserialize($row['menu_parms']);
+
+
+
 
 			if(!empty($fields))
 			{
+
+				return $this->menuParamForm($id, $fields,$tabs,$form,$value);
+				/*
+
 				foreach($fields as $k=>$v)
 				{
 					$text .= "<tr><td class='text-left'>".$v['title']."</td>";
@@ -654,16 +707,20 @@ class e_menuManager {
 
 					}
 
-					if(!empty($v['help']))
-					{
-						$v['writeParms']['title'] = e107::getParser()->toAttribute($v['help']);
-					}
 
 					$text .= "<td class='text-left'>".$form->renderElement($i, $value[$k], $v);
 
 
+
+					if(!empty($v['help']))
+					{
+						//$v['writeParms']['title'] = e107::getParser()->toAttribute($v['help']);
+						$text .= "<div class='field-help'>".$v['help']."</div>";
+					}
+
 					$text .= "</td></tr>";
-				}
+				}*/
+
 			}
 			else
 			{

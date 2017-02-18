@@ -18,11 +18,11 @@
 		<image>preview_frontend.png</image>
 	</screenshots>
 	<stylesheets>
-		<css file="style.css" name="Default" library='bootstrap,fontawesome'  />
-        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' library='false' />
-		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" scope='admin' library='false' />
-        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" library='false' scope='admin' />
-        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" library='false' scope='admin' />
+		<css file="style.css" name="Default" library="bootstrap,fontawesome" />
+        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' library='fontawesome' />
+		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" scope='admin' library='fontawesome' />
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" library='fontawesome' scope='admin' />
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" library='fontawesome' scope='admin' />
         <css file="*" name="*"  />
 	</stylesheets>
 	<layouts>

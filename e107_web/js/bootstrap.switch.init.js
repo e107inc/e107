@@ -21,7 +21,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					$(this).bootstrapSwitch({
 						size: options.size || 'mini',
 						onText: options.onText || null,
-						offText: options.offText || null
+						offText: options.offText || null,
+						wrapperClass: options.wrapperClass || null
 					});
 				});
 			});

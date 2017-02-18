@@ -60,14 +60,14 @@ if(false === $cached)
 	}
 	else // New in v2.1.5
 	{
-		$tmpl = !empty($parms['template']) ? $parms['template'] : 'default';
+		$tmpl = !empty($parms['layout']) ? $parms['layout'] : 'col-md-4';
 		$template = e107::getTemplate('news', 'news_grid', $tmpl);
 		$parms['tmpl']      = 'news_grid';
 		$parms['tmpl_key']  = $tmpl;
 
 	}
 
-	$gridSize       = vartrue($parms['layout'],'col-md-4');
+//	$gridSize       = vartrue($parms['layout'],'col-md-4');
 
 	$parmSrch       = array(
 						'{NEWSGRID}',
@@ -76,12 +76,12 @@ if(false === $cached)
 					);
 
 	$parmReplace    = array(
-						$gridSize,
-						vartrue($parms['titleLimit'], 0),
-						vartrue($parms['summaryLimit'], 0)
+					//	$gridSize,
+					//	vartrue($parms['titleLimit'], 0),
+				//		vartrue($parms['summaryLimit'], 0)
 					);
 
-	$template = str_replace($parmSrch , $parmReplace, $template);
+	$template = str_replace($parmSrch , '', $template); // clean up deprecated elements.
 
 	$render = (empty($parms['caption'])) ? false: true;
 

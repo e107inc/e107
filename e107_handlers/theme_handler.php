@@ -2418,10 +2418,6 @@ class themeHandler
 
 				case 2: // admin
 
-					if(e_DEVELOPER !== true || e_DEBUG !== true)
-					{
-						return array();
-					}
 
 					if($vl['name'] == "style.css" || empty($vl['info'])) // Hide the admin css unless it has a header. eg. /* info: Default stylesheet */
 					{

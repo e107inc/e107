@@ -255,13 +255,13 @@ class e_marketplace
 
 			$d = http_build_query($srcData,false,'&');
 
-			if(deftrue('e_DEBUG_PLUGMANAGER'))
+		//	if(deftrue('e_DEBUG_PLUGMANAGER'))
 			{
 				$url = e_ADMIN.'plugin.php?mode=online&action=download&src='.base64_encode($d);
 			}
-			else
+		//	else
 			{
-				$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
+			//	$url = e_ADMIN.'plugin.php?mode=download&src='.base64_encode($d);
 			}
 
 
@@ -324,10 +324,14 @@ class e_marketplace
 
 		}
 
-// print_a($xdata['data']);
 
-		$data = e107::serialize($arr);
-		$cache->set($tag, $data, true, null, true);
+		if(empty($arr))
+		{
+			$arr = array('-unable-to-connect'); // make sure something is cached so further lookups stop.
+		}
+
+		$data = e107::serialize($arr, 'json');
+		$cache->set($tag, $data, true, true, true);
 
 		return $arr;
 
@@ -561,18 +565,20 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 			'exception' 			=> true,
 		    "uri" 					=> "http://server.soap.e107.inc.com/",
 		    'cache_wsdl'			=> WSDL_CACHE_NONE,
-		    'connection_timeout' 	=> 60,
+		    'connection_timeout' 	=> 5,
 		);
 
 
 		try
 		{
+			//libxml_disable_entity_loader(false);
             $this->client = new SoapClient($this->serviceUrl, $options);
         }
         catch (Exception $e)
         {
-           e107::getMessage()->addError(TPVLAN_90);
-           e107::getMessage()->addDebug($e->getMessage());
+	        $message = deftrue('LAN_ERROR_CONNECTION', "Unable to connect for updates. Please check firewall and/or internet connection.");
+            e107::getMessage()->addInfo($message);
+            e107::getMessage()->addDebug($e->getMessage());
         }
 
 

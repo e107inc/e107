@@ -689,6 +689,7 @@ class e_news_tree extends e_front_tree_model
 
 		$ret = array();
 		$tp = e107::getParser();
+		$param = $parms;
 		$param['current_action'] = 'list';
 		// TODO more default parameters
 
@@ -712,7 +713,15 @@ class e_news_tree extends e_front_tree_model
 
 		if(!empty($items))
 		{
-			$start = $parser->parseTemplate($template['start'], true, $vars); // must be here in case {SETIMAGE} is present and used for items below.
+
+			foreach ($items as $news)
+			{
+				$d = $news->toArray();
+				$batch->setScVar('news_item',$d); // set news category.
+				break;
+			}
+
+			$start = $parser->parseTemplate($template['start'], true,$batch,$vars); // must be here in case {SETIMAGE} is present and used for items below.
 		}
 
 

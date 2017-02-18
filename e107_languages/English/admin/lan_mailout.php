@@ -1,12 +1,14 @@
 <?php
 /*
- * Copyright (C) 2008-2013 e107 Inc (e107.org), Licensed under GNU GPL (http://www.gnu.org/licenses/gpl.txt)
+ * e107 website system
  *
- * Admin Language File
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
+ * Released under the terms and conditions of the
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
-*/
+ */
 
-// TODO - MAJOR LAN REWRITE NEEDED 
+// TODO - LANS - MAJOR LAN REWRITE NEEDED 
 
 define("CORE_DATE_ORDER", "dmy");			// Temporary until we find somewhere better to put it.
 											// Defines order of field entry/display in date boxes
@@ -52,7 +54,7 @@ define("LAN_MAILOUT_38", "Cancel");
 define("LAN_MAILOUT_39", "Emailing");
 define("LAN_MAILOUT_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
 define("LAN_MAILOUT_41", "before sending mail from this page.");
-define("LAN_MAILOUT_42", "Warning");
+//define("LAN_MAILOUT_42", "Warning");//NOT_USED
 define("LAN_MAILOUT_43", "Username");
 define("LAN_MAILOUT_44", "User Login");
 define("LAN_MAILOUT_45", "User Email");
@@ -106,7 +108,7 @@ define("LAN_MAILOUT_92", "SSL");
 define("LAN_MAILOUT_93", "TLS");
 define("LAN_MAILOUT_94", "(Use SSL for gmail/googlemail)");
 define("LAN_MAILOUT_95", "Use VERP for bulk mailing");
-define("LAN_MAILOUT_96", "none");
+//define("LAN_MAILOUT_96", "none");//LAN_NONE
 define("LAN_MAILOUT_97", "Mailer Results");
 define("LAN_MAILOUT_98", "Orphaned entries");
 define("LAN_MAILOUT_99", "Confirm retry mailshot");
@@ -287,6 +289,6 @@ define("LAN_MAILOUT_265", "Pending");
 define("LAN_MAILOUT_266", "Max Active");
 define("LAN_MAILOUT_267", "Generate Public/Private keys");
 define("LAN_MAILOUT_268", "Developer Mode Only");
-//define("LAN_SUBMIT", "Do it!"); LAN_RUN
+define("LAN_MAILOUT_269", "Send Later");
 
 ?>

@@ -667,10 +667,13 @@ class admin_shortcodes
 		}
 		unset($tmp);
 
+
+		$curScript = basename($_SERVER['SCRIPT_FILENAME']);
+
 		// Obsolete
 		ob_start();
 		//Show upper_right menu if the function exists
-		$tmp = explode('.',e_PAGE);
+		$tmp = explode('.',$curScript);
         $adminmenu_parms = "";
 
 		$adminmenu_func = $tmp[0].'_adminmenu';
@@ -687,6 +690,8 @@ class admin_shortcodes
 			}
 		}
 		$plugindir = (str_replace('/','',str_replace('..', '', e_PLUGIN)).'/');
+
+		// FIXME @TODO $plugPath is using the URL to detect the path. It should use $_SERVER['SCRIPT_FILENAME']
 		$plugpath = e_PLUGIN.str_replace(basename(e_SELF),'',str_replace('/'.$plugindir,'','/'.strstr(e_SELF,$plugindir))).'admin_menu.php';
 		
 		if(file_exists($plugpath))
@@ -1348,7 +1353,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$tp = e107::getParser();
 		$ns->setUniqueId('e-addon-updates');
-		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);
 
 
 	}
@@ -1429,7 +1434,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			    <div class="media-body">
 			      <h4 class="media-heading">'.$ls.$row['name'].$le.'</h4>
 			      <p>'.$row['version'].'<br />
-			       <small class="text-muted">Released: '.($row['date']).'</small>
+			       <small class="text-muted">'.LAN_RELEASED.': '.($row['date']).'</small>
 			       </p>
 
 			    </div>

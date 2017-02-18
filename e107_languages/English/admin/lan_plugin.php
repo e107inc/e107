@@ -292,7 +292,9 @@ define ("EPL_ADLAN_246","Deleting All Media Categories owned by : [x]");
 define ("EPL_ADLAN_249","Adding Extended Field: ");  
 define ("EPL_ADLAN_250","Removing Extended Field: ");  
 define ("EPL_ADLAN_251","Extended Field left in place: ");  
-define ("EPL_ADLAN_252","Perm: ");  
+define ("EPL_ADLAN_252","Perm: ");
+
+define("EPL_ADLAN_253", "Completed");
 
 define ("LAN_RELEASED", "Released");
 define ("LAN_REPAIR_PLUGIN_SETTINGS", "Repair plugin settings");
@@ -304,5 +306,6 @@ define("LAN_INSTALL_SUCCESSFUL", "Installation successful");
 define("LAN_INSTALL_FAIL", "Installation failed!");
 define("LAN_UNINSTALL_FAIL", "Unable to uninstall!");
 define("LAN_PLUGIN_IS_USED", "[x] plugin is used by:");
+
 
 ?>
