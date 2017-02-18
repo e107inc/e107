@@ -15,8 +15,7 @@ if( !e107::isInstalled('tinymce4'))
 	exit();
 }
 
-
-
+e107::lan('tinymce4','admin', 'true');
 
 	class tinymce4_admin extends e_admin_dispatcher
 	{
@@ -57,9 +56,9 @@ if( !e107::isInstalled('tinymce4'))
 
 
 		protected $prefs = array(
-			'paste_as_text'		=> array('title'=> 'Paste as text by default', 'type'=>'boolean', 'data' => 'int','help'=> ''),
-			'browser_spellcheck' =>  array('title'=> 'Browser spellcheck', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable this if the browser internal spellchecker should be used.'),
-			'visualblocks' =>  array('title'=> 'Visual Blocks', 'type'=>'boolean', 'data' => 'int','help'=> 'Enable to make html blocks visible during editing.'),
+			'paste_as_text'		=> array('title'=> ADTINYMCE4_LAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
+			'browser_spellcheck' =>  array('title'=> ADTINYMCE4_LAN_2, 'type'=>'boolean', 'data' => 'int','help'=> ADTINYMCE4_LAN_3),
+			'visualblocks' =>  array('title'=> ADTINYMCE4_LAN_4, 'type'=>'boolean', 'data' => 'int','help'=> ADTINYMCE4_LAN_5),
 
 		);
 
