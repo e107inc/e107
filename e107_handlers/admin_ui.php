@@ -1123,11 +1123,13 @@ class e_admin_dispatcher
 		{
 			return false;
 		}
+		
 		// generic dispatcher admin permission  (former getperms())
 		if(null !== $this->perm && is_string($this->perm) && !e107::getUser()->checkAdminPerms($this->perm))
 		{
 			return false;
 		}
+
 		return true;
 	}
 	
@@ -1138,7 +1140,7 @@ class e_admin_dispatcher
 			return false;
 		}
 
-		if(is_array($this->perm) && !empty($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
+		if(is_array($this->perm) && isset($this->perm[$route]) && !e107::getUser()->checkAdminPerms($this->perm[$route]))
 		{
 			return false;
 		}
