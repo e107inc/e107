@@ -74,14 +74,14 @@ class news_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> LAN_LIST, 'perm' => 'H'),
-		'main/create' 		=> array('caption'=> NWSLAN_45, 'perm' => 'H'),  // Create/Edit News Item
+		'main/list'			=> array('caption'=> LAN_LIST),
+		'main/create' 		=> array('caption'=> NWSLAN_45),  // Create/Edit News Item
 	//	'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Category List
-		'cat/list' 			=> array('caption'=> LAN_CATEGORIES, 'perm' => 'H'), // Create Category. 
-		'cat/create' 		=> array('caption'=> LAN_NEWS_63, 'perm' => 'H'), // Category List
-		'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'), // Preferences
+		'cat/list' 			=> array('caption'=> LAN_CATEGORIES), // Create Category.
+		'cat/create' 		=> array('caption'=> LAN_NEWS_63), // Category List
+		'main/settings' 	=> array('caption'=> LAN_PREFS), // Preferences
 	//	'main/submitted'	=> array('caption'=> LAN_NEWS_64, 'perm' => 'N'), // Submitted News
-		'sub/list'			=> array('caption'=> NWSLAN_47, 'perm' => 'N'), // Submitted News
+		'sub/list'			=> array('caption'=> NWSLAN_47), // Submitted News
 	//	'main/maint'		=> array('caption'=> LAN_NEWS_55, 'perm' => '0') // Maintenance
 	);
 
