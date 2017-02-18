@@ -614,11 +614,11 @@ class logConsolidate
 
 					if($this->collatePageInfo($pageTotal, $datestamp))
 					{
-						$mes->addSuccess( "Data saved to database with id: ".$datestamp);
+						$mes->addSuccess(ADSTAT_LAN_90." ".$datestamp);
 					}
 					else
 					{
-						$mes->addError( "Couldn't save data to database with id: ".$datestamp);
+						$mes->addError(ADSTAT_LAN_91." ".$datestamp);
 					}
 				}
 
