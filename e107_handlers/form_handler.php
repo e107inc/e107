@@ -2327,7 +2327,7 @@ class e_form
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
 
-		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true)
+		if(e_ADMIN_AREA === true)
 		{
 			$options['switch'] = 'small';
 

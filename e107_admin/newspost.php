@@ -1467,11 +1467,12 @@ class news_form_ui extends e_admin_form_ui
 
 		if(!getperms('0') && !check_class($pref['news_editauthor']))
 		{
+
 			$auth = ($curVal) ? intval($curVal) : USERID;
 			$sql->select("user", "user_name", "user_id={$auth} LIMIT 1");
 			$row = $sql->fetch();
 			$text .= "<input type='hidden' name='news_author' value='".$auth.chr(35).$row['user_name']."' />";
-			$text .= "<a href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$curVal."'>".$row['user_name'])."</a>";
+			$text .= "<a href='".e107::getUrl()->create('user/profile/view', 'name='.$row['user_name'].'&id='.$curVal)."'>".$row['user_name']."</a>";
 		}
 		else // allow master admin to
 		{
@@ -1681,6 +1682,7 @@ class news_form_ui extends e_admin_form_ui
 new news_admin();
 require_once(e_ADMIN."auth.php");
 e107::getAdminUI()->runPage();
+
 
 
 if(!e_AJAX_REQUEST)
