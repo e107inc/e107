@@ -3445,7 +3445,7 @@ class e_form
 			case 'radio':
 				//$def_options['class'] = ' ';
 				$def_options = array('class' => '', 'id'=>'');
-				unset($def_options['size'], $def_options['selected']);
+//				unset($def_options['size'], $def_options['selected']);  // Unneeded unset, array is totally redefined line above
 				break;
 
 			case 'checkbox':
