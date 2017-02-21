@@ -9,9 +9,9 @@
 |        $Author: Yesszus $
 +---------------------------------------------------------------+
 */
-define("ADTINYMCE4_LAN_1", "Paste as text by default");
-define("ADTINYMCE4_LAN_2", "Browser spellcheck");
-define("ADTINYMCE4_LAN_3", "Enable this if the browser internal spellchecker should be used.");
-define("ADTINYMCE4_LAN_4", "Visual Blocks");
-define("ADTINYMCE4_LAN_5", "Enable to make html blocks visible during editing.");
+define("TMCEALAN_1", "Paste as text by default");
+define("TMCEALAN_2", "Browser spellcheck");
+define("TMCEALAN_3", "Enable this if the browser internal spellchecker should be used.");
+define("TMCEALAN_4", "Visual Blocks");
+define("TMCEALAN_5", "Enable to make html blocks visible during editing.");
 ?>
