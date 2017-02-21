@@ -5443,11 +5443,11 @@ class e_form
 				}
 				else
 				{
-/////////------------					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
-/////////------------					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
 				  if(!is_array($parms['label'])) list($lenabled, $ldisabled) = explode('&', $parms['label']);
   				$lenabled = vartrue($lenabled, 'LAN_ON');
   				$ldisabled = vartrue($ldisabled, 'LAN_OFF');
+/////////------------					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
+/////////------------					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
 				}
 //---------------------				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 
