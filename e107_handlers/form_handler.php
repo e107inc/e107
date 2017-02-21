@@ -4639,8 +4639,6 @@ class e_form
 					$uv[] = $this->_uc->getName($cid);
 				}
 
-
-
 				$dispvalue = implode(vartrue($parms['separator'],"<br />"), $uv);
 
 				// Inline Editing.  
@@ -4716,7 +4714,6 @@ class e_form
 						}
 					}
 				}
-
 
 				if(!empty($parms['link']) && $id && $ttl && is_numeric($id))
 				{
@@ -4845,8 +4842,6 @@ class e_form
 						$attributes['inline'] = $methodParms['inlineType'];
 						$methodParms = (!empty($methodParms['inlineData'])) ? $methodParms['inlineData'] : null;
 					}
-
-
 
 					if(is_string($attributes['inline'])) // text, textarea, select, checklist. 
 					{
@@ -5040,8 +5035,6 @@ class e_form
 			}
 		}
 
-
-
 		// XXX Fixes For the above.  - use optArray variable. eg. $field['key']['writeParms']['optArray'] = array('one','two','three');
 		if(($attributes['type'] == 'dropdown' || $attributes['type'] == 'radio' || $attributes['type'] == 'checkboxes') && !empty($parms['optArray']))
 		{
@@ -5129,7 +5122,6 @@ class e_form
 					$ret =  vartrue($parms['pre']).$this->text($key, $value, $maxlength, $parms).vartrue($parms['post']); // vartrue($parms['__options']) is limited. See 'required'=>true
 				}
 
-
 				if(!empty($attributes['multilan']))
 				{
 					$ret = "<span class='input-group input-xxlarge'>".$ret."</span>";
@@ -5159,7 +5151,6 @@ class e_form
 				{
 					$parms['size'] = 'xxlarge';
 				}
-
 
 				$text .= vartrue($parms['pre']).$this->textarea($key, $value, vartrue($parms['rows'], 5), vartrue($parms['cols'], 40), vartrue($parms['__options'],$parms), varset($parms['counter'], false)).vartrue($parms['post']);
 				$ret =  $text;
@@ -5323,14 +5314,11 @@ class e_form
 						$value = explode(",",$value);		
 					}
 
-
 					$ret =  vartrue($eloptions['pre']).$this->checkboxes($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
-
 
 				}
 				return $ret;
 			break;
-
 
 			case 'dropdown':
 			case 'comma':
@@ -5350,15 +5338,12 @@ class e_form
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
 
-
-
 				// Allow Ajax API.
 				if(!empty($ajaxParms))
 				{
 					$eloptions = array_merge_recursive($eloptions, $ajaxParms);
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
-
 
 				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
@@ -5390,7 +5375,6 @@ class e_form
 				//user_id expected
 				// Just temporary solution, could be changed soon
 
-
 				if(!isset($parms['__options'])) $parms['__options'] = array();
 				if(!is_array($parms['__options'])) parse_str($parms['__options'], $parms['__options']);
 
@@ -5403,10 +5387,6 @@ class e_form
 					}
 
 				}
-
-
-
-
 
 		//		if(!is_array($value))
 		//		{
@@ -5429,9 +5409,6 @@ class e_form
 
 			//	$ret =  $this->userpicker(vartrue($parms['nameField'], $key), $key, $uname, $value, vartrue($parms['__options']));
 			break;
-
-
-
 
 			case 'bool':
 			case 'boolean':
