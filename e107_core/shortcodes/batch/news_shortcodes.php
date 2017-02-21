@@ -835,6 +835,9 @@ class news_shortcodes extends e_shortcode
 
 
 		$tmp = $this->handleMultiple($parm);
+
+
+
 		$srcPath = $tmp['file'];
 		
 		$class = (!empty($parm['class'])) ? $parm['class'] : "news_image news-image img-responsive img-fluid img-rounded rounded";
@@ -844,22 +847,20 @@ class news_shortcodes extends e_shortcode
 			
 		if($tp->isVideo($srcPath))
 		{
-			return; 
+
+			return null;
 		}
 		else 
 		{
 		
-			if(!$srcPath)
+			if(empty($srcPath))
 			{
 				if(varset($parm['type']) == 'placeholder' || vartrue($parm['placeholder']))
 				{
 					$src = 	$tp->thumbUrl(); // placeholder;
 					$dimensions = $tp->thumbDimensions();
 				}
-				else
-				{
-					return;
-				}
+
 			}
 			elseif($srcPath[0] == '{' ) // Always resize. Use {SETIMAGE: w=x&y=x&crop=0} PRIOR to calling shortcode to change. 
 			{
@@ -871,19 +872,20 @@ class news_shortcodes extends e_shortcode
 			else
 			{
 				// We store SC path in DB now + BC
+
 				$src = $srcPath[0] == '{' ? $tp->replaceConstants($srcPath, 'abs') : e_IMAGE_ABS."newspost_images/".$srcPath;			
 			}
 		}
 		
 	
 		
-		if(vartrue($parm['nolegacy'])) // Remove legacy thumbnails. 
+		if(!empty($parm['nolegacy'])) // Remove legacy thumbnails.
 		{
 			$legSrc = urldecode($src);
 
 		 	if(strpos($legSrc,'newspost_images/thumb_')!==false)
 			{
-				return;	
+				return null;
 			}
 		}
 		
@@ -906,7 +908,7 @@ class news_shortcodes extends e_shortcode
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
-				return $src;
+				return empty($src) ? e_IMAGE_ABS."generic/nomedia.png" : $src;
 			break;
 
 			case 'tag':
@@ -947,7 +949,11 @@ class news_shortcodes extends e_shortcode
 		{
 			return $url;
 		}
-		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".e107::getParser()->toHTML($this->news_item['news_title'], TRUE, "TITLE").'</a>';
+
+		unset($parm['link']);
+		$title = $this->sc_news_title($parm);
+
+		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$title.'</a>';
 	}
 
 	function sc_newsurl($parm=null)
