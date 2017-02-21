@@ -2307,20 +2307,22 @@ class e_form
 	 */
 	function radio_switch($name, $checked_enabled = false, $label_enabled = '', $label_disabled = '', $options = array())
 	{
+
 		if(!is_array($options))
 		{
 			parse_str($options, $options);
 		}
 
-		$options_on = varset($options['enabled'], array());
-		$options_off = varset($options['disabled'], array());
+/////----------		$options_on = varset($options['enabled'], array());
+/////----------		$options_off = varset($options['disabled'], array());
 
-		unset($options['enabled'], $options['disabled']);
+//////////////////////-----------------		unset($options['enabled'], $options['disabled']);
 
-		$options_on = array_merge($options_on, $options);
-		$options_off = array_merge($options_off, $options);
+/////----------		$options_on = array_merge($options_on, $options);
+/////----------		$options_off = array_merge($options_off, $options);
 
-
+		$options_on = $options_off = $options;
+    
 		if(vartrue($options['class']) == 'e-expandit' || vartrue($options['expandit'])) // See admin->prefs 'Single Login' for an example. 
 		{
 			$options_on = array_merge($options, array('class' => 'e-expandit-on'));
@@ -3444,7 +3446,7 @@ class e_form
 
 			case 'radio':
 				//$def_options['class'] = ' ';
-				$def_options = array('class' => '', 'id'=>'');
+				$def_options = array('class' => '', 'id'=>'', 'disabled'=>false);
 				unset($def_options['size'], $def_options['selected']);
 				break;
 
@@ -5441,10 +5443,14 @@ class e_form
 				}
 				else
 				{
-					$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
-					$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
+/////////------------					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
+/////////------------					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
+				  if(!is_array($parms['label'])) list($lenabled, $ldisabled) = explode('&', $parms['label']);
+  				$lenabled = vartrue($lenabled, 'LAN_ON');
+  				$ldisabled = vartrue($ldisabled, 'LAN_OFF');
 				}
-				unset($parms['enabled'], $parms['disabled'], $parms['label']);
+//---------------------				unset($parms['enabled'], $parms['disabled'], $parms['label']);
+
 				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);
 			break;
 
