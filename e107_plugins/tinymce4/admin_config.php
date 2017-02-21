@@ -56,9 +56,9 @@ e107::lan('tinymce4','admin', 'true');
 
 
 		protected $prefs = array(
-			'paste_as_text'		=> array('title'=> ADTINYMCE4_LAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
-			'browser_spellcheck' =>  array('title'=> ADTINYMCE4_LAN_2, 'type'=>'boolean', 'data' => 'int','help'=> ADTINYMCE4_LAN_3),
-			'visualblocks' =>  array('title'=> ADTINYMCE4_LAN_4, 'type'=>'boolean', 'data' => 'int','help'=> ADTINYMCE4_LAN_5),
+			'paste_as_text'		=> array('title'=> TMCEALAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
+			'browser_spellcheck' =>  array('title'=> TMCEALAN_2, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_3),
+			'visualblocks' =>  array('title'=> TMCEALAN_4, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_5),
 
 		);
 
