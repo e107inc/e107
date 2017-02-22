@@ -65,7 +65,7 @@ $security_risks = array(
 	{
 		if(!is_writable($sessionSavePath) && $sessionSaveMethod === 'files')
 		{
-			$mes->addError("<b>session.save_path</b> ".PHP_LAN_6);	
+			$mes->addError(e107::getParser()->toHTML(PHP_LAN_6, true));	
 		}
 	}
 
