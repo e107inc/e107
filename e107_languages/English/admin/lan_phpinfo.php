@@ -15,5 +15,5 @@ define("PHP_LAN_2", "This is a security risk and is not needed by e107.");
 define("PHP_LAN_3", "On a production server, it is better to disable the displaying of errors in the browser.");
 define("PHP_LAN_4", "Disabling this will hide your PHP version from browsers.");
 define("PHP_LAN_5", "This is a security risk and should be disabled.");
-define("PHP_LAN_6", "is not writable! That can cause major issues with your site.");
+define("PHP_LAN_6", "[b]session.save_path[/b] is not writable! That can cause major issues with your site.");
 ?>
