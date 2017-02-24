@@ -69,7 +69,7 @@ define("ADSTAT_L49", "sort alphabetically");
 define("ADSTAT_L50", "All-time stats");
 define("ADSTAT_L51", "Current month stats");
 define("ADSTAT_L52", "Previous month stats");
-define("ADSTAT_L53", "");
+define("ADSTAT_L53", "Information");
 define("ADSTAT_L54", "");
 define("ADSTAT_L55", "");
 define("ADSTAT_L56", "");
