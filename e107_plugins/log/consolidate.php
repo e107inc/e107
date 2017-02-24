@@ -614,11 +614,11 @@ class logConsolidate
 
 					if($this->collatePageInfo($pageTotal, $datestamp))
 					{
-						$mes->addSuccess(ADSTAT_LAN_90." ".$datestamp);
+						$mes->addSuccess(ADSTAT_LAN_90.$datestamp);
 					}
 					else
 					{
-						$mes->addError(ADSTAT_LAN_91." ".$datestamp);
+						$mes->addError(ADSTAT_LAN_91.$datestamp);
 					}
 				}
 
