@@ -1100,7 +1100,7 @@ class lancheck
 		<input type='hidden' name='language' value='".$lan."' />
 		<input type='hidden' name='errorsonly' value='".$_SESSION['lancheck-errors-only']."' />    
 	    <input class='btn btn-primary' type='submit' name='ziplang[".$lan."]' value=\"".$just_go_diz."\"  onclick=\"this.value = '".$lan_pleasewait."'\" />
-	    <a href='".e_REQUEST_URI."' class='btn btn-default'>".$lang_sel_diz."</a>
+	    <a href='".e_REQUEST_URI."' class='btn btn-default' style='margin-top:0;'>".$lang_sel_diz."</a>
 		</div>
 	    </form>
 		";
