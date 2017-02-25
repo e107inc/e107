@@ -725,7 +725,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
-		<a class='btn btn-default button'  href='".e_REFERER_SELF."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -843,7 +843,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='move_thread' value='".LAN_FORUM_5019."' />
-		<a class='btn btn-default button'  href='".e_REFERER_SELF."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
