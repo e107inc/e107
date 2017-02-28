@@ -341,3 +341,7 @@ div.e-debug { margin-top:50px; background-color: white }
 #login-template .logo { padding-top:50px; margin-left:auto; margin-right: auto }
 #login-template .login-page-footer { margin-bottom:100px; margin-right:auto;margin-left:auto }
 div.login-page-signup-link, div.login-page-fpw-link { text-align:center }
+
+/* Navigation */
+.nav-side.listgroup { padding-left:0; }
+.nav-side li.list-group-item.active { padding:0}
