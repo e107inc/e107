@@ -319,7 +319,7 @@ class sitelinks
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
-		elseif($linkInfo['link_url'][0] != '/')
+		elseif($linkInfo['link_url'][0] != '/' && strpos($linkInfo['link_url'],'http') !== 0)
 		{
 			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
@@ -1722,6 +1722,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	public function isActive(&$data='', $removeOnly = false, $exactMatch = false)
 	{
 		if(empty($data)) return;
+
 		
 		### experimental active match added to the URL (and removed after parsing)
 		### Example of main link: {e_BASE}some/url/#?match/string1^match/string2
@@ -1757,6 +1758,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	//	$dbLink =  e107::getParser()->replaceConstants($data['link_url'], TRUE, TRUE);
 
 		$dbLink = str_replace("//","/",$dbLink); // precaution for e_HTTP inclusion above.
+
+		if(!empty($data['link_owner']) && !empty($data['link_sefurl']))
+		{
+			$dbLink = e107::url($data['link_owner'],$data['link_sefurl']);
+		}
 
 		if(E107_DBG_PATH)
 		{
