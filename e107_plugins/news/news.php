@@ -258,20 +258,22 @@ class news_front
 	{
 		echo "<div class='alert alert-info'>";
 		echo "<h4>News Debug Info</h4>";
-		echo "<b>action:</b> ".$this->action."  ";
-		echo "<br /><b>subaction:</b> ".$this->subAction."  ";
-		echo "<br /><b>route:</b> ".$this->route."  ";
-		echo "<br /><b>e_QUERY:</b> ".e_QUERY."  ";
-		echo "<br /><b>CacheTimeout:</b> ".$this->cacheRefreshTime." ";
-		echo "<br /><b>_GET:</b> ".print_r($_GET,true);
+		echo "<table class='table table-striped table-bordered'>";
+		echo "<tr><td><b>action:</b></td><td>".$this->action."</td></tr>";
+		echo "<tr><td><b>subaction:</b></td><td>".$this->subAction."</td></tr>";
+		echo "<tr><td><b>route:</b></td><td>".$this->route."</td></tr>";
+		echo "<tr><td><b>e_QUERY:</b></td><td>".e_QUERY."</td></tr>";
+		echo "<tr><td><b>e_PAGETITLE:</b></td><td>".defset('e_PAGETITLE','(unassigned)')."</td></tr>";
+		echo "<tr><td><b>PAGE_NAME:</b></td><td>".defset('PAGE_NAME','(unassigned)')."</td></tr>";
+		echo "<tr><td><b>CacheTimeout:</b></td><td>".$this->cacheRefreshTime."</td></tr>";
+		echo "<tr><td><b>_GET:</b></td><td>".print_r($_GET,true)."</td></tr>";
 
 		foreach($this->debugInfo as $key=>$val)
 		{
-			echo "<br /><b>".$key.":</b> ".$val;
+			echo "<tr><td><b>".$key.":</b></td><td>".$val."</tr>";
 		}
 
-
-		echo "</div>";
+		echo "</table></div>";
 
 
 	}
@@ -366,6 +368,8 @@ class news_front
 	{
 
 		$tp = e107::getParser();
+
+		$this->addDebug('setNewsFrontMeta (type)',$type);
 
 		if($type == 'news')
 		{
