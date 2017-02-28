@@ -70,7 +70,8 @@ class news_front
 	private function detect()
 	{
 
-		if ($this->action == 'cat' || $this->action == 'all' || !empty($_GET['tag']) || !empty($_GET['author']))
+
+		if ($this->action === 'cat' || $this->action === 'all' || $this->action === 'tag' || $this->action === 'author')
 		{	// --> Cache
 			$this->text = $this->renderListTemplate();
 			$this->text .= $this->render_newscats();
@@ -147,6 +148,18 @@ class news_front
 		if ($action == 'all' || $action == 'cat')
 		{
 			$sub_action = intval(varset($tmp[1],0));
+		}
+
+		if(!empty($_GET['tag']))
+		{
+			$action = 'tag';
+			$sub_action = $_GET['tag'];
+		}
+
+		if(!empty($_GET['author']))
+		{
+			$action = 'author';
+			$sub_action = $_GET['author'];
 		}
 
 		$this->action = $action;
@@ -370,6 +383,54 @@ class news_front
 		$tp = e107::getParser();
 
 		$this->addDebug('setNewsFrontMeta (type)',$type);
+	//	$this->addDebug('setNewsFrontMeta (data)',$news);
+
+
+		switch($type)
+		{
+			case "tag":
+			case "author":
+				if(!defined('e_PAGETITLE'))
+				{
+					define('e_PAGETITLE', $this->subAction);
+					e107::meta('og:title', $this->subAction);
+				}
+				break;
+
+			case "list":
+				$title = $tp->toHtml($news['category_name'],false,'TITLE_PLAIN');
+				if(!defined('e_PAGETITLE'))
+				{
+					define('e_PAGETITLE', $title );
+					e107::meta('og:title', $title);
+				}
+				break;
+
+			case "day":
+			case "month":
+				$item = intval($this->subAction).'20000101';
+				$year = substr($item, 0, 4);
+				$month = substr($item, 4,2);
+				$day = substr($item, 6, 2);
+
+				$unix = strtotime($year.'-'.$month.'-'.$day);
+
+				$format = ($type === 'day') ? 'dd MM yyyy' : 'MM yyyy';
+
+				$title = e107::getParser()->toDate($unix, $format);
+
+				if(!defined('e_PAGETITLE'))
+				{
+					define('e_PAGETITLE', $title );
+					e107::meta('og:title', $title);
+				}
+				break;
+
+
+			default:
+				//
+		}
+
 
 		if($type == 'news')
 		{
@@ -458,7 +519,7 @@ class news_front
 
 
 
-		if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'category')
+		if($news['category_name'] && !defined('e_PAGETITLE') && $type == 'cat')
 		{
 			define('e_PAGETITLE', $tp->toHtml($news['category_name'],false,'TITLE_PLAIN'));
 		}
@@ -656,7 +717,7 @@ class news_front
 			ORDER BY n.news_datestamp DESC
 			LIMIT ".intval($this->from).",".NEWSLIST_LIMIT;
 		}
-		elseif(vartrue($_GET['tag']))
+		elseif($this->action === 'tag')
 		{
 			$tagsearch = e107::getParser()->filter($_GET['tag']);
 
@@ -674,7 +735,7 @@ class news_front
 			$category_name = 'Tag: "'.$tagsearch.'"';
 
 		}
-		elseif(!empty($_GET['author']))
+		elseif($this->action === 'author')
 		{
 			$authorSearch = e107::getParser()->filter($_GET['author']);
 
@@ -731,10 +792,9 @@ class news_front
 		}
 
 
-		if($this->action == 'cat')
-		{
-			$this->setNewsFrontMeta($newsList[1], 'category');
-		}
+		$this->setNewsFrontMeta($newsList[1], $this->action);
+
+
 	//	elseif($category_name)
 	//	{
 	//		define('e_PAGETITLE', $tp->toHTML($category_name,FALSE,'TITLE'));
@@ -1285,9 +1345,10 @@ class news_front
 				$this->setNewsFrontMeta($newsAr[1]);
 				break;
 
+
 			case 'list':
 			default:
-				$this->setNewsFrontMeta($newsAr[1], 'list');
+				$this->setNewsFrontMeta($newsAr[1], $this->action);
 				break;
 		}
 
