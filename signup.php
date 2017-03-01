@@ -1021,7 +1021,7 @@ $qs = ($error ? "stage" : e_QUERY);
 if ($pref['use_coppa'] == 1 && strpos($qs, "stage") === FALSE)
 {
 	$text = $tp->parseTemplate($COPPA_TEMPLATE, TRUE, $signup_shortcodes);
-	$ns->tablerender(LAN_SIGNUP_78, $text);
+	$ns->tablerender(LAN_SIGNUP_78, $text, 'coppa');
 	require_once(FOOTERF);
 	exit;
 }
@@ -1050,7 +1050,7 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
 $text = $tp->parseTemplate($SIGNUP_BEGIN.$SIGNUP_BODY.$SIGNUP_END, TRUE, $signup_shortcodes);
-$ns->tablerender(LAN_SIGNUP_79, e107::getMessage()->render('default', true).$text);
+$ns->tablerender(LAN_SIGNUP_79, e107::getMessage()->render('default', true).$text, 'signup' );
 require_once(FOOTERF);
 exit;
 
