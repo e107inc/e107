@@ -1760,28 +1760,27 @@ $mes = e107::getMessage();
 if(e_AJAX_REQUEST)
 {
 	
-	if(vartrue($_GET['enc']))
+	if(!empty($_GET['enc']))
 	{
 		$string = base64_decode($_GET['enc']);
 		parse_str($string,$_GET);
-		
-	//	 print_a($_GET);			
+
 	}
 //	print_a($_POST);
 	
-	if(vartrue($_GET['vis']))
+	if(!empty($_GET['vis']))
 	{
 		$text = $men->menuVisibilityOptions();
 	}
 	
 	// print_a($_GET);
 	
-	if(vartrue($_GET['parmsId']))
+	if(!empty($_GET['parmsId']))
 	{
 		$text = $men->menuInstanceParameters();
 	}
 		
-	if(vartrue($_POST['mode']))
+	if(!empty($_POST['mode']))
 	{
 		// print_r($_POST);
 	//	$men->setMenuId($this->menuId);
