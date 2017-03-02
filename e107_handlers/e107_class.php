@@ -1404,7 +1404,6 @@ class e107
 
 		if(!defined('E107_INSTALL'))
 		{
-
 			if($themedir === 'front')
 			{
 				$themedir= self::getPref('sitetheme');
@@ -1416,6 +1415,19 @@ class e107
 			}
 		}
 
+		// Get the currently used theme.
+		if ($themedir == 'current')
+		{
+			// If we are in the admin area.
+			if (deftrue('e_ADMIN_AREA', false))
+			{
+				$themedir = self::getPref('admintheme');
+			}
+			else
+			{
+				$themedir= self::getPref('sitetheme');
+			}
+		}
 
 		return self::getSingleton('e_theme', true, null, array('themedir'=> $themedir, 'force'=> $clearCache));
 	}
