@@ -2353,7 +2353,7 @@ class e_form
 					'size'    => $options['switch'],
 					'onText'  => $options_on['label'],
 					'offText' => $options_off['label'],
-
+					'inverse' => !empty($options['inverse']),
 				),
 			);
 
@@ -2362,12 +2362,12 @@ class e_form
 				$js_options[$name]['wrapperClass'] =  'wrapper form-control';
 			}
 
-
 			e107::library('load', 'bootstrap.switch');
 			e107::js('settings', array('bsSwitch' => $js_options));
 			e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
 
-			$text = $this->checkbox($name, 1, $checked_enabled);
+			$text = $this->hidden($name, (int) $checked_enabled);
+			$text .= $this->checkbox($name, 1, $checked_enabled);
 		}
 		elseif(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'
 		{
