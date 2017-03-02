@@ -20,10 +20,6 @@ define("SEP", " <span class='fa fa-play e-breadcrumb'></span> ");
 define("BOOTSTRAP", 3);
 define('FONTAWESOME', 4);
 
-e107::library('load', 'bootstrap');
-e107::library('load', 'fontawesome');
-e107::library('load', 'bootstrap.editable');
-
 $adminStyle = e107::pref('core', 'admincss', 'css/bootstrap-dark.min.css');
 e107::css('theme', $adminStyle);
 e107::css('theme', 'admin_style.css');
