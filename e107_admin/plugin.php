@@ -212,7 +212,6 @@ class plugin_ui extends e_admin_ui
 			}
 
 
-
 			if($this->getMode()=== 'avail')
 			{
 				$this->listQry  = "SELECT * FROM `#plugin` WHERE plugin_installflag = 0 AND plugin_category != 'menu'  ";
@@ -397,7 +396,10 @@ class plugin_ui extends e_admin_ui
 
 			$post = e107::getParser()->filter($_POST);
 
-
+			if(empty($_POST['e-token']))
+			{
+				return false;
+			}
 
 		//	$id = e107::getPlugin
 
@@ -811,13 +813,15 @@ class plugin_ui extends e_admin_ui
 			*/
              //   $frm->admin_button($name, $value, $action = 'submit', $label = '', $options = array());
 
-			$text .= "</div>
+
+
+			$text .= "<input type='hidden' name='e-token' value='".e_TOKEN."' /></div>
 			</fieldset>
 			</form>
 			";
 
 			return $text;
-			e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
+		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 	/*
