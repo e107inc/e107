@@ -20,9 +20,6 @@ define("BOOTSTRAP", 3);
 define("FONTAWESOME", 4);
 define('VIEWPORT', "width=device-width, initial-scale=1.0");
 
-e107::library('load', 'bootstrap');
-e107::library('load', 'fontawesome');
-
 // CDN provider for Bootswatch.
 $cndPref = e107::pref('theme', 'cdn', 'cdnjs');
 $bootswatch = e107::pref('theme', 'bootswatch', false);

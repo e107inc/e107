@@ -111,6 +111,10 @@ function loadJSAddons()
 
 }
 
+// Load library dependencies.
+e107::getTheme('current', true)->loadLibrary();
+
+// Load other JS files.
 loadJSAddons();
 
 
