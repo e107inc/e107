@@ -28,8 +28,9 @@ class tagcloud_menu
 		
 	}	
 	
-	function render()
+	function render($parm=null)
 	{
+
 		$cloud = new TagCloud();
 		$sql = e107::getDb();
 		
@@ -68,7 +69,10 @@ class tagcloud_menu
 		});
 		
 		$cloud->setOrder('tag','ASC');
-		$cloud->setLimit(50);
+
+		$limit = !empty($parm['tagcloud_limit']) ? intval($parm['tagcloud_limit']) : 50;
+
+		$cloud->setLimit($limit);
 		
 		$text = $cloud->render();
 		
@@ -86,7 +90,7 @@ class tagcloud_menu
 
 
 $tag = new tagcloud_menu;
-$text = $tag->render();
+$text = $tag->render($parm);
 
 
 if(!empty($parm))
