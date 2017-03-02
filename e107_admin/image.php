@@ -55,7 +55,7 @@ e107::coreLan('image', true);
 
 if($_GET['action'] == 'dialog')
 {
-	e107::css('inline', "body { background-color: #373737 } ");
+//	e107::css('inline', "body { background-color: #373737 } ");
 }
 
 if(vartrue($_GET['action']) == 'nav' && e_AJAX_REQUEST) //XXX Doesn't work correctly inside the class for some reason 
@@ -1127,10 +1127,10 @@ class media_admin_ui extends e_admin_ui
 
 		$text .= "<tr>
 				<td class='text-nowrap'>".IMALAN_148.":</td>
-				<td><input type='text' name='upload_url' size='255' style='width:100%' placeholder='eg. http://website.com/some-image.jpg' /></td>
+				<td><input class='form-control' type='text' name='upload_url' size='255' style='width:100%' placeholder='eg. http://website.com/some-image.jpg' /></td>
 				<td style='text-align:left'>".$frm->admin_button('upload_remote_url',1,'create',IMALAN_149)."</td>
 				</tr>";
-		$text .= "<tr><td>".LAN_CAPTION." (".LAN_OPTIONAL."):</td><td><input type='text' name='upload_caption' size='255' style='width:100%' placeholder='eg. My Image Caption' /></td>
+		$text .= "<tr><td>".LAN_CAPTION." (".LAN_OPTIONAL."):</td><td><input type='text' class='form-control' name='upload_caption' size='255' style='width:100%' placeholder='eg. My Image Caption' /></td>
 <td></td></tr>";
 
 		$text .= "</table>";

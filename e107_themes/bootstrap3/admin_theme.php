@@ -48,7 +48,7 @@ body.forceColors li a              { color: silver}
 
 div#media-manager div.mce-window-head  { background-color: #373737; !important }
 div#media-manager div.mce-title        { color:white; }
-div#media-manager, html                { color: silver; background-color: #2F2F2F; !important}
+/* div#media-manager, html                { color: silver; background-color: #2F2F2F; !important} */
 ");
 
 /*

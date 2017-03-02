@@ -697,7 +697,7 @@ class e_media
 			// Inline style to override jquery-ui stuff. 
 			$text .= "<div>
 			<div id='admin-ui-media-manager-search' class='input-append form-inline' style='margin-top:10px;font-size:12px'>
-			<input type='text' id='media-search' placeholder='".LAN_SEARCH."' name='search' value='' class='e-tip' data-target='media-select-container' data-src='".$data_src."' />
+			<input type='text' id='media-search' placeholder='".LAN_SEARCH."' name='search' value='' class='form-control e-tip' data-target='media-select-container' data-src='".$data_src."' />
 			";
 		//	$text .= "<input type='button' value='Go' class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$this->mediaSelectNav($category,"tagid=".$tagid."&bbcode=".$bbcode)."&amp;from=0' /> "; // Manual filter, if onkeyup ajax fails for some reason. 
 			$text .= "<button type='button'  class='btn btn-primary e-media-nav' data-target='media-select-container' data-src='".$data_src."' >".LAN_GO."</button>"; // Manual filter, if onkeyup ajax fails for some reason.
