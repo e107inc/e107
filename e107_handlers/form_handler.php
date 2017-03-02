@@ -4990,6 +4990,7 @@ class e_form
 		{
 			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
 			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>";
+			$key = $key.'['.e_LANGUAGE.']';
 		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 

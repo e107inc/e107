@@ -30,7 +30,7 @@ class tagcloud_menu
 	{
 		$fields = array();
 		$fields['tagcloud_caption']       = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
-
+		$fields['tagcloud_limit']       = array('title'=> LAN_LIMIT, 'type'=>'number');
         return $fields;
 
 	}

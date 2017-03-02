@@ -5549,7 +5549,9 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				else
 				{
-					$this->getConfig()->setData($key.'/'.e_LANGUAGE, str_replace("'", '&#39;', $val));
+					$lang = key($val);
+					$value = $val[$lang];
+					$this->getConfig()->setData($key.'/'.$lang, str_replace("'", '&#39;', $value));
 				}
 
 			}
