@@ -10,6 +10,10 @@
  *
  */
 
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = '';
+}
 require_once ("../class2.php");
 
 if(isset($_POST['newver']))
@@ -309,6 +313,7 @@ $pref['membersonly_exceptions'] = implode("\n",$pref['membersonly_exceptions']);
 $text = "
 <div id='core-prefs'>
 	<form class='admin-menu' method='post' action='".e_SELF."' autocomplete='off'>
+	<input type='hidden' name='e-token' value='".e_TOKEN."' />
 		<fieldset id='core-prefs-main'>
 			<legend>".PRFLAN_1."</legend>
 			<table class='table adminform'>
