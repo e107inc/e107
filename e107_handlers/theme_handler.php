@@ -80,12 +80,64 @@ class e_theme
 	}
 
 	/**
-	 * Get info on the current front or admin theme and selected style. (ie. as found in theme.xml <stylesheets>)
-	 * @param string $mode
-	 * @param null $var file | name | scope | library
-	 * @return bool
+	 * Load library dependencies.
+	 *
+	 * @param string $scope
+	 *  front | admin | all | auto
 	 */
-	public function cssAttribute($mode='front', $var=null)
+	public function loadLibrary($scope = 'auto')
+	{
+		if($scope === 'auto')
+		{
+			$scope = 'front';
+
+			if(deftrue('e_ADMIN_AREA', false))
+			{
+				$scope = 'admin';
+			}
+		}
+
+		$libraries = $this->get('library');
+
+		if(empty($libraries))
+		{
+			return;
+		}
+
+		foreach($libraries as $library)
+		{
+			if(empty($library['name']))
+			{
+				continue;
+			}
+
+			// If no scope set, we load library on both areas.
+			if(empty($library['scope']) || $library['scope'] === 'all')
+			{
+				e107::library('load', $library['name']);
+				continue;
+			}
+
+			if($library['scope'] === $scope)
+			{
+				e107::library('load', $library['name']);
+				continue;
+			}
+		}
+	}
+
+	/**
+	 * Get info on the current front or admin theme and selected style.
+	 * (ie. as found in theme.xml <stylesheets>)
+	 *
+	 * @param string $mode
+	 *  front | admin | auto
+	 * @param string $var
+	 *  file | name | scope | exclude
+	 *
+	 * @return mixed
+	 */
+	public function cssAttribute($mode = 'front', $var = null)
 	{
 		$css = $this->get('css');
 
@@ -94,23 +146,30 @@ class e_theme
 			return false;
 		}
 
-		foreach($css as $k=>$v)
+		if($mode === 'auto')
+		{
+			$mode = 'front';
+
+			if(deftrue('e_ADMIN_AREA', false))
+			{
+				$mode = 'admin';
+			}
+		}
+
+		foreach($css as $k => $v)
 		{
 			if($mode === 'front' && $v['name'] === $this->_frontcss)
 			{
-				return !empty($var) ? varset($v[$var],null) : $v;
+				return !empty($var) ? varset($v[$var], null) : $v;
 			}
 
 			if($mode === 'admin' && $v['name'] === $this->_admincss)
 			{
-				return !empty($var) ? varset($v[$var],null) : $v;
+				return !empty($var) ? varset($v[$var], null) : $v;
 			}
-
-
 		}
 
 		return false;
-
 	}
 
 
@@ -622,10 +681,26 @@ class e_theme
 		}
 
 
-		$vars['layouts'] 		= $lays;
-		$vars['path'] 			= $path;
-		$vars['custompages'] 	= $custom;
-		$vars['legacy']         = false;
+		$vars['layouts'] = $lays;
+		$vars['path'] = $path;
+		$vars['custompages'] = $custom;
+		$vars['legacy'] = false;
+		$vars['library'] = array();
+
+		if(!empty($vars['libraries']['library']))
+		{
+			$vars['css'] = array();
+
+			foreach($vars['libraries']['library'] as $val)
+			{
+				$vars['library'][] = array(
+					'name'  => $val['@attributes']['name'],
+					'scope' => varset($val['@attributes']['scope']),
+				);
+			}
+
+			unset($vars['libraries']);
+		}
 
 		if(!empty($vars['stylesheets']['css']))
 		{
@@ -641,7 +716,7 @@ class e_theme
 					"info"      => $val['@attributes']['name'],
 					"nonadmin"  => $notadmin,
 					'scope'     => vartrue($val['@attributes']['scope']),
-					'library'   => vartrue($val['@attributes']['library'])
+					'exclude'   => vartrue($val['@attributes']['exclude'])
 
 				);
 			}
