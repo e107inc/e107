@@ -303,7 +303,6 @@ class news_shortcodes extends e_shortcode
 
 	public function sc_news_author_signature($parm=null)
 	{
-
 		$user = e107::user($this->news_item['user_id']);
 
 		if(!empty($user['user_signature']))
@@ -420,7 +419,9 @@ class news_shortcodes extends e_shortcode
 	{
 		if(!empty($this->news_item['user_id']))
 		{
-			return e107::getParser()->toAvatar($this->news_item['user_id'], $parm);
+
+
+			return e107::getParser()->toAvatar($this->news_item, $parm);
 		}
 	} 
 
