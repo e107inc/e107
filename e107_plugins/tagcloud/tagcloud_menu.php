@@ -68,7 +68,7 @@ class tagcloud_menu
 			return "<a class='tag' href='".$tag['url']."'><span class='size".$size."'>".$tag['tag']."</span></a> ";
 		});
 		
-		$cloud->setOrder('tag','ASC');
+		$cloud->setOrder('size','DESC');
 
 		$limit = !empty($parm['tagcloud_limit']) ? intval($parm['tagcloud_limit']) : 50;
 
