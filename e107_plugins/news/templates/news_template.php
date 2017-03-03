@@ -80,8 +80,14 @@ $NEWS_TEMPLATE['default']['item'] = '
 ';
 */
 
+
+
+
+
 $NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
+
+$NEWS_TEMPLATE['default']['start']	= '';
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=400&h=400}
 		<div class="default-item">
@@ -110,7 +116,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 		</div>
 ';
 
-
+$NEWS_TEMPLATE['default']['end']	= '';
 
 ###### Default view item (temporary)  ######
 //$NEWS_MENU_TEMPLATE['view']['start']       = '<ul class="nav nav-list news-menu-months">';

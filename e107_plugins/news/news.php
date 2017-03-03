@@ -851,7 +851,7 @@ class news_front
 
 		$text = '';
 
-		if(vartrue($template['start']))
+		if(!empty($template['start']))
 		{
 			$text .= $tp->parseTemplate($template['start'], true);
 		}
@@ -868,7 +868,7 @@ class news_front
 			$text .= "<div class='news-empty'><div class='alert alert-info'>".(strstr(e_QUERY, "month") ? LAN_NEWS_462 : LAN_NEWS_83)."</div></div>";
 		}
 
-		if(vartrue($template['end']))
+		if(!empty($template['end']))
 		{
 			$text .= $tp->parseTemplate($template['end'], true);
 		}
@@ -891,7 +891,7 @@ class news_front
 
 		$text  		.= $tp->parseTemplate("{NEXTPREV={$parms}}");
 
-		if(varset($template['caption'])) // v2.x
+		if(isset($template['caption'])) // v2.x
 		{
 			$NEWSLISTTITLE = str_replace("{NEWSCATEGORY}",$tp->toHTML($category_name,FALSE,'TITLE'), $template['caption']);
 		}
@@ -1460,6 +1460,7 @@ class news_front
 				unset($tmp);
 			}
 			*/
+			//@todo remove
 			if (!defined("DATEHEADERCLASS")) {
 				define("DATEHEADERCLASS", "nextprev");
 				// if not defined in the theme, default class nextprev will be used for new date header
@@ -1479,15 +1480,20 @@ class news_front
 			}
 			else
 			{
-				$tmp = e107::getTemplate('news', 'news', 'default'); // default - we show the full items, except for the 'extended' part..
-				$template = $tmp['item'];
-				unset($tmp);
+				$tmpl = e107::getTemplate('news', 'news', 'default'); // default - we show the full items, except for the 'extended' part..
+				$template = $tmpl['item'];
+			//	unset($tmp);
 			}
 
 
 
-			// NEW - news category title when in list
-			if($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name']))
+			if(!empty($tmpl['start'])) //v2.1.5
+			{
+				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
+				echo $tp->parseTemplate($tmpl['start'],true,$nsc);
+
+			}
+			elseif($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name'])) //old
 			{
 				// we know category name - pass it to the nexprev url
 				$category_name = $newsAr[1]['category_name'];
@@ -1502,6 +1508,7 @@ class news_front
 				}
 				echo $NEWSLISTCATTITLE;
 			}
+
 
 			$i= 1;
 
@@ -1549,6 +1556,15 @@ class news_front
 
 				$i++;
 			}
+
+			if(!empty($tmpl['end']))
+			{
+				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
+				echo $tp->parseTemplate($tmpl['end'], true, $nsc);
+			}
+
+
+
 
 			$amount = ITEMVIEW;
 			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
