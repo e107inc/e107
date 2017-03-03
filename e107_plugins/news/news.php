@@ -1478,13 +1478,21 @@ class news_front
 			{
 				$template =  $NEWSSTYLE;
 			}
-			else
+			else // v2.x
 			{
-				$tmpl = e107::getTemplate('news', 'news', 'default'); // default - we show the full items, except for the 'extended' part..
+				$layout = e107::getTemplate('news', 'news');
+				$tmpl = $layout['default']; // default - we show the full items, except for the 'extended' part..
 				$template = $tmpl['item'];
 			//	unset($tmp);
 			}
 
+			// load the category template if found.
+			if($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
+			{
+				$tmpl = $layout['category'];
+				$template = $tmpl['item'];
+				$param['template_key'] = 'category';
+			}
 
 
 			if(!empty($tmpl['start'])) //v2.1.5
@@ -1493,7 +1501,7 @@ class news_front
 				echo $tp->parseTemplate($tmpl['start'],true,$nsc);
 
 			}
-			elseif($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name'])) //old
+			elseif($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name'])) //old v1.x stuff
 			{
 				// we know category name - pass it to the nexprev url
 				$category_name = $newsAr[1]['category_name'];

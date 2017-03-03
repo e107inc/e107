@@ -87,7 +87,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 $NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
 
-$NEWS_TEMPLATE['default']['start']	= '';
+$NEWS_TEMPLATE['default']['start']	= '<!-- Default News Template -->';
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=400&h=400}
 		<div class="default-item">
@@ -117,6 +117,13 @@ $NEWS_TEMPLATE['default']['item'] = '
 ';
 
 $NEWS_TEMPLATE['default']['end']	= '';
+
+$NEWS_TEMPLATE['category']          = $NEWS_TEMPLATE['default'];
+$NEWS_TEMPLATE['category']['start']	= '<!-- Category News Template -->';
+
+
+
+
 
 ###### Default view item (temporary)  ######
 //$NEWS_MENU_TEMPLATE['view']['start']       = '<ul class="nav nav-list news-menu-months">';
@@ -176,17 +183,11 @@ $NEWS_TEMPLATE['view']['item'] = '
 		</div>
 
 
-
-
 		<hr>
 		
 		<div class="options hidden-print ">
 			<div class="btn-group">{NEWSCOMMENTLINK: glyph=comments&class=btn btn-default}{PRINTICON: class=btn btn-default}{ADMINOPTIONS: class=btn btn-default}{SOCIALSHARE}</div>
 		</div>
-
-
-
-
 
 	</div>
 
@@ -214,28 +215,8 @@ $NEWS_TEMPLATE['view']['item'] = '
 //$NEWS_MENU_TEMPLATE['view']['separator']   = '<br />';
 
 
-###### news_categories.sc 
-$NEWS_TEMPLATE['category']['body'] = '
-	<div style="padding:5px"><div style="border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px">
-	{NEWSCATICON}&nbsp;{NEWSCATEGORY}
-	</div>
-	{NEWSCAT_ITEM}
-	</div>
-';
 
-$NEWS_TEMPLATE['category']['item'] = '
-	<div style="width:100%;padding-bottom:2px">
-	<table style="width:100%" cellpadding="0" cellspacing="0" border="0">
-	<tr>
-	<td style="width:2px;vertical-align:top">&#8226;
-	</td>
-	<td style="text-align:left;vertical-align:top;padding-left:3px">
-	{NEWSTITLELINK}
-	<br />
-	</td></tr>
-	</table>
-	</div>
-';
+
 
 ### Related 'start' - Options: Core 'single' shortcodes including {SETIMAGE}
 ### Related 'item' - Options: {RELATED_URL} {RELATED_IMAGE} {RELATED_TITLE} {RELATED_SUMMARY}
