@@ -2405,7 +2405,7 @@ class e_form
 
 		if(e_ADMIN_AREA === true)
 		{
-			$js_options[$name]['wrapperClass'] =  'wrapper form-control';
+			$js_options[$switchName]['wrapperClass'] =  'wrapper form-control';
 		}
 
 		e107::library('load', 'bootstrap.switch');
