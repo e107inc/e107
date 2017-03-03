@@ -35,11 +35,12 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	}
 
 	// News templates with BC
-	if(!$NEWSCAT)
+	/* if(!$NEWSCAT)
 	{
 		$tmpl = e107::getTemplate('news', 'news', 'category');
 		$NEWSCAT = $tmpl['body'];
 	}
+	*/
 	if(!$NEWSCAT)
 	{
 		$NEWSCAT = "
@@ -52,11 +53,13 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	}
 	
 	// News templates with BC
+	/*
 	if(!$NEWSCAT_ITEM)
 	{
 		$tmpl = e107::getTemplate('news', 'news', 'category');
 		$NEWSCAT_ITEM = $tmpl['item'];
 	}
+	*/
 	if(!$NEWSCAT_ITEM)
 	{
 		$NEWSCAT_ITEM = "
