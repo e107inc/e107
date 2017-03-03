@@ -684,7 +684,7 @@ class news_front
 
 		//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")". str_replace("n.news", "news", $renTypeQry));
 			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 			nc.category_meta_keywords, nc.category_meta_description
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -706,7 +706,7 @@ class news_front
 		//	$news_total = $sql->count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
 
 			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -722,7 +722,7 @@ class news_front
 			$tagsearch = e107::getParser()->filter($_GET['tag']);
 
 			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -740,7 +740,7 @@ class news_front
 			$authorSearch = e107::getParser()->filter($_GET['author']);
 
 			$query = "
-			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+			SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
 			FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -949,7 +949,7 @@ class news_front
 		if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
 		{
 			$query = "
-		    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef,
+		    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
 			nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
 		    FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -963,7 +963,7 @@ class news_front
 		else
 		{
 			$query = "
-		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
+		    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords,
 			nc.category_meta_description
 		    FROM #news AS n
 			LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1120,7 +1120,7 @@ class news_front
 	private function getQuery()
 	{
 		$query = "
-				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 				nc.category_meta_keywords, nc.category_meta_description
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1155,7 +1155,7 @@ class news_front
 				$sub_action = intval($this->subAction);
 				//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 				$query = "
-				SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef,
+				SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
 				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1175,7 +1175,7 @@ class news_front
 				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled'])
 				{
 					$query = "
-			    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef,
+			    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
 				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1188,7 +1188,7 @@ class news_front
 				else
 				{
 					$query = "
-			    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
+			    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
 				nc.category_meta_keywords, nc.category_meta_description
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1226,7 +1226,7 @@ class news_front
 				$enddate = mktime(23, 59, 59, $month, $lastday, $year);
 
 				$query = "
-				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id, nc.category_name, nc.category_sef,
+				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
 				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1255,7 +1255,7 @@ class news_front
 				// Get number of news item to show
 				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled']) {
 					$query = "
-				SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_id,
+				SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id,
 				nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description,
 				COUNT(*) AS tbcount
 				FROM #news AS n
