@@ -2332,7 +2332,6 @@ class e_form
 			$options['switch'] = 'small';
 			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
 			$label_disabled = ($label_disabled) ?  strtoupper($label_disabled): strtoupper(LAN_OFF);
-
 		}
 
 
@@ -2368,8 +2367,13 @@ class e_form
 	 * @param array $options
 	 * @return string
 	 */
-	public function flipswitch($name, $checked_enabled = false, $labels=array('on' =>LAN_ON, 'off' =>LAN_OFF), $options = array())
+	public function flipswitch($name, $checked_enabled = false, $labels=null, $options = array())
 	{
+
+		if(empty($labels))
+		{
+			$labels = array('on' =>LAN_ON, 'off' =>LAN_OFF);
+		}
 
 		$value = $checked_enabled;
 
@@ -2396,7 +2400,6 @@ class e_form
 				'onText'  => $labels['on'],
 				'offText' => $labels['off'],
 				'inverse' => !empty($options['inverse']),
-
 			),
 		);
 
@@ -2410,7 +2413,7 @@ class e_form
 		e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
 
 		$text = $this->hidden($name, (int) $value);
-		$text .= $this->checkbox($switchName, (int) $checked_enabled, $checked_enabled);
+		$text .= $this->checkbox($switchName, (int) $checked_enabled, $checked_enabled, $options);
 
 		return $text;
 	}
