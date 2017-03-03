@@ -2330,7 +2330,6 @@ class e_form
 		if(e_ADMIN_AREA === true)
 		{
 			$options['switch'] = 'small';
-
 			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
 			$label_disabled = ($label_disabled) ?  strtoupper($label_disabled): strtoupper(LAN_OFF);
 
@@ -2342,32 +2341,7 @@ class e_form
 
 		if(!empty($options['switch']))
 		{
-			if(!empty($options['inverse']))
-			{
-				$checked_enabled = !$checked_enabled;
-			}
-
-			$js_options = array(
-				// Each form element has its own options.
-				$name => array(
-					'size'    => $options['switch'],
-					'onText'  => $options_on['label'],
-					'offText' => $options_off['label'],
-					'inverse' => !empty($options['inverse']),
-				),
-			);
-
-			if(e_ADMIN_AREA === true)
-			{
-				$js_options[$name]['wrapperClass'] =  'wrapper form-control';
-			}
-
-			e107::library('load', 'bootstrap.switch');
-			e107::js('settings', array('bsSwitch' => $js_options));
-			e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
-
-			$text = $this->hidden($name, (int) $checked_enabled);
-			$text .= $this->checkbox($name, 1, $checked_enabled);
+			return $this->switch($name,$checked_enabled, array('on'=>$options_on['label'],'off'=>$options_off['label']),$options);
 		}
 		elseif(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'
 		{
@@ -2385,6 +2359,60 @@ class e_form
 
 		return $text;
 	}
+
+
+	/**
+	 * @param string $name
+	 * @param bool|false $checked_enabled
+	 * @param array $labels on & off
+	 * @param array $options
+	 * @return string
+	 */
+	public function switch($name, $checked_enabled = false, $labels=array('on' =>LAN_ON, 'off' =>LAN_OFF), $options = array())
+	{
+
+		if(!empty($options['inverse']))
+		{
+			$checked_enabled = !$checked_enabled;
+		}
+
+		if(!empty($options['reverse']))
+		{
+			$on = $labels['on'];
+			$options_on['label'] = $labels['off'];
+			$options_off['label'] = $on;
+			unset($on);
+
+		}
+
+		$js_options = array(
+				// Each form element has its own options.
+			$name => array(
+				'size'    => $options['switch'],
+				'onText'  => $labels['on'],
+				'offText' => $labels['off'],
+				'inverse' => !empty($options['inverse']),
+
+			),
+		);
+
+		if(e_ADMIN_AREA === true)
+		{
+			$js_options[$name]['wrapperClass'] =  'wrapper form-control';
+		}
+
+		e107::library('load', 'bootstrap.switch');
+		e107::js('settings', array('bsSwitch' => $js_options));
+		e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
+
+		$text = $this->hidden($name, (int) $checked_enabled);
+		$text .= $this->checkbox($name, $checked_enabled, $checked_enabled);
+
+		return $text;
+	}
+
+
+
 
 
 	/**
