@@ -3,6 +3,9 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 (function ($)
 {
 
+
+
+
 	/**
 	 * @type {{attach: e107.behaviors.bootstrapSwitchInit.attach}}
 	 */
@@ -24,13 +27,19 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							size: options.size || 'mini',
 							onText: options.onText || null,
 							offText: options.offText || null,
-							wrapperClass: options.wrapperClass || null
-						//	state:
+							wrapperClass: options.wrapperClass || null,
+						//	disabled: false
+						//	state: $('input[type="hidden"][name="' + name + '"]').data('on')
 							// inverse: options.inverse // this is 'reverse' - default values but reversed order.
 						});
 
+
+
 						$(this).on('switchChange.bootstrapSwitch', function (event, state) {
-							var name = $(this).attr('name');
+
+							var tmp = $(this).attr('name').split('__');
+
+							var name = tmp[0]; // $(this).attr('name');
 							var checked = true;
 
 							if(state === false)
@@ -47,7 +56,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 							$('input[type="hidden"][name="' + name + '"]').val(value);
 
-							event.preventDefault();
+						//	event.preventDefault();
 						});
 					}
 				});
