@@ -25,6 +25,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							onText: options.onText || null,
 							offText: options.offText || null,
 							wrapperClass: options.wrapperClass || null
+						//	state:
+							// inverse: options.inverse // this is 'reverse' - default values but reversed order.
 						});
 
 						$(this).on('switchChange.bootstrapSwitch', function (event, state) {
@@ -40,7 +42,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 							if(options.inverse)
 							{
-								// value = checked ? 0 : 1;
+								 value = checked ? 0 : 1;
 							}
 
 							$('input[type="hidden"][name="' + name + '"]').val(value);
