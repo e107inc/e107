@@ -18,12 +18,36 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				$('input[name="' + name + '"]', context).once('bootstrap-switch-init').each(function ()
 				{
-					$(this).bootstrapSwitch({
-						size: options.size || 'mini',
-						onText: options.onText || null,
-						offText: options.offText || null,
-						wrapperClass: options.wrapperClass || null
-					});
+					if($(this).attr('type') != 'hidden')
+					{
+						$(this).bootstrapSwitch({
+							size: options.size || 'mini',
+							onText: options.onText || null,
+							offText: options.offText || null,
+							wrapperClass: options.wrapperClass || null
+						});
+
+						$(this).on('switchChange.bootstrapSwitch', function (event, state) {
+							var name = $(this).attr('name');
+							var checked = true;
+
+							if(state === false)
+							{
+								checked = false;
+							}
+
+							var value = checked ? 1 : 0;
+
+							if(options.inverse)
+							{
+								// value = checked ? 0 : 1;
+							}
+
+							$('input[type="hidden"][name="' + name + '"]').val(value);
+
+							event.preventDefault();
+						});
+					}
 				});
 			});
 		}
