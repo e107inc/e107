@@ -2371,6 +2371,8 @@ class e_form
 	public function flipswitch($name, $checked_enabled = false, $labels=array('on' =>LAN_ON, 'off' =>LAN_OFF), $options = array())
 	{
 
+		$value = $checked_enabled;
+
 		if(!empty($options['inverse']))
 		{
 			$checked_enabled = !$checked_enabled;
@@ -2407,7 +2409,7 @@ class e_form
 		e107::js('settings', array('bsSwitch' => $js_options));
 		e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
 
-		$text = $this->hidden($name, (int) $checked_enabled);
+		$text = $this->hidden($name, (int) $value);
 		$text .= $this->checkbox($switchName, (int) $checked_enabled, $checked_enabled);
 
 		return $text;
