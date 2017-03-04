@@ -419,6 +419,8 @@ class news_front
 
 				$title = e107::getParser()->toDate($unix, $format);
 
+				$title = strip_tags($title);
+
 				if(!defined('e_PAGETITLE'))
 				{
 					define('e_PAGETITLE', $title );
@@ -1322,8 +1324,9 @@ class news_front
 		}
 
 
-		if (!($news_total = $sql->gen($query)))
-		{  // No news items
+		if (!($news_total = $sql->gen($query)))  // No news items
+		{
+			$this->setNewsFrontMeta(null,$this->action);
 			return "<div class='news-empty'><div class='alert alert-info' style='text-align:center'>".$noNewsMessage."</div></div>";
 
 		}
