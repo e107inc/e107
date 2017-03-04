@@ -4009,11 +4009,13 @@ class pluginBuilder
 		//		print_a($p);
 				$defaults = array(
 					"main-name"					=> varset($p['@attributes']['name']),
+					"main-lang"					=> varset($p['@attributes']['lan']),
 					"author-name"				=> varset($p['author']['@attributes']['name']),
 					"author-url"				=> varset($p['author']['@attributes']['url']),
 					"description-description"	=> varset($p['description']),
 					"summary-summary"			=> varset($p['summary'], $p['description']),
 					"category-category"			=> varset($p['category']),
+					"copyright-copyright"			=> varset($p['copyright']),
 					"keywords-one"				=> varset($p['keywords']['word'][0]),
 					"keywords-two"				=> varset($p['keywords']['word'][1]),
 					"keywords-three"			=> varset($p['keywords']['word'][2]),
