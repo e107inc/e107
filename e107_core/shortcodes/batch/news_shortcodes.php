@@ -733,7 +733,7 @@ class news_shortcodes extends e_shortcode
 		$this->imageItem = varset($media[$parm['item']]); // Set the current Image for other image shortcodes. 
 
 
-		if(vartrue($parm['placeholder']))
+		if(!empty($parm['placeholder']))
 		{
 			return $this->sc_newsimage('placeholder');	
 		}
@@ -853,10 +853,10 @@ class news_shortcodes extends e_shortcode
 		}
 		else 
 		{
-		
+
 			if(empty($srcPath))
 			{
-				if(varset($parm['type']) == 'placeholder' || vartrue($parm['placeholder']))
+				if(varset($parm['type']) == 'placeholder' || !empty($parm['placeholder']))
 				{
 					$src = 	$tp->thumbUrl(); // placeholder;
 					$dimensions = $tp->thumbDimensions();
@@ -899,8 +899,9 @@ class news_shortcodes extends e_shortcode
 
 		$imgParms = array(
 			'class'=>$class,
-			'alt'=>basename($src),
-			'style'=>$style
+			'alt'=>basename($srcPath),
+			'style'=>$style,
+			'placeholder'=>varset($parm['placeholder'])
 		);
 
 
