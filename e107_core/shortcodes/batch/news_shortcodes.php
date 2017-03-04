@@ -935,7 +935,7 @@ class news_shortcodes extends e_shortcode
 
 
 
-	function sc_newstitlelink($parm = '')
+	function sc_newstitlelink($parm = null)
 	{
 		if(is_string($parm))
 		{
@@ -947,12 +947,17 @@ class news_shortcodes extends e_shortcode
 		}
 
 		$url = e107::getUrl()->create('news/view/item', $this->news_item);
+
 		if(isset($parms['href']))
 		{
 			return $url;
 		}
 
-		unset($parm['link']);
+		if(isset($parm['link']))
+		{
+			unset($parm['link']);
+		}
+		
 		$title = $this->sc_news_title($parm);
 
 		return "<a style='".(isset($this->param['itemlink']) ? $this->param['itemlink'] : 'null')."' href='{$url}'>".$title.'</a>';
