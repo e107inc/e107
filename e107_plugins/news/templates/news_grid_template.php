@@ -78,8 +78,8 @@
 	$NEWS_GRID_TEMPLATE['other']['featured'] = '<div class="featured item col-sm-6" >
 														{SETIMAGE: w=600&h=400&crop=1}
 														{NEWSTHUMBNAIL=placeholder}
-														 <h3>{NEWS_TITLE}</h3>
-														 <p>{NEWS_SUMMARY}</p>
+														 <h3><a href="{NEWS_URL}">{NEWS_TITLE}</a></h3>
+														 <p>{NEWS_SUMMARY: limit=60}</p>
 													</div>
 
 
@@ -91,13 +91,13 @@
 												<ul class="media-list">
 													<li class="media">
 													  <div class="media-left media-top">
-													    <a href="#">
-													      {NEWS_IMAGE: class=media-object img-rounded}
+													    <a href="{NEWS_URL}">
+													      {NEWS_IMAGE: class=media-object img-rounded&placeholder=1}
 													    </a>
 													  </div>
 													  <div class="media-body">
-													    <h4 class="media-heading">{NEWS_TITLE}</h4>
-													    <p>{NEWS_SUMMARY}</p>
+													    <h4 class="media-heading"><a href="{NEWS_URL}">{NEWS_TITLE}</a></h4>
+													    <p>{NEWS_SUMMARY: limit=60}</p>
 													  </div>
 													  </li>
 													</ul>
