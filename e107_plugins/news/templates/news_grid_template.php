@@ -37,7 +37,7 @@
 	$NEWS_GRID_TEMPLATE['col-md-6']['end'] = '</div>';
 
 
-
+// ------------------ col-md-4 -----------------
 
 	$NEWS_GRID_TEMPLATE['col-md-4']['start']    = $NEWS_GRID_TEMPLATE['col-md-6']['start'];
 	$NEWS_GRID_TEMPLATE['col-md-4']['featured'] = $NEWS_GRID_TEMPLATE['col-md-6']['featured'];
@@ -52,7 +52,7 @@
 
 
 
-
+// ------------------ col-md-3 -----------------
 
 
 	$NEWS_GRID_TEMPLATE['col-md-3']['start']    = $NEWS_GRID_TEMPLATE['col-md-6']['start'];
@@ -69,13 +69,13 @@
 
 
 
+// ------------------ media-list -----------------
 
 
 
-	//@todo find a better name than 'other'
-	$NEWS_GRID_TEMPLATE['other']['start'] = '<div class="row news-grid-other">';
+	$NEWS_GRID_TEMPLATE['media-list']['start'] = '<div class="row news-grid-default">';
 
-	$NEWS_GRID_TEMPLATE['other']['featured'] = '<div class="featured item col-sm-6" >
+	$NEWS_GRID_TEMPLATE['media-list']['featured'] = '<div class="featured item col-sm-6" >
 														{SETIMAGE: w=600&h=400&crop=1}
 														{NEWSTHUMBNAIL=placeholder}
 														 <h3><a href="{NEWS_URL}">{NEWS_TITLE}</a></h3>
@@ -86,13 +86,13 @@
             							          ';
 
 
-	$NEWS_GRID_TEMPLATE['other']['item'] = '<div class="item col-sm-6">
+	$NEWS_GRID_TEMPLATE['media-list']['item'] = '<div class="item col-sm-6">
 												{SETIMAGE: w=120&h=120&crop=1}
 												<ul class="media-list">
 													<li class="media">
 													  <div class="media-left media-top">
 													    <a href="{NEWS_URL}">
-													      {NEWS_IMAGE: class=media-object img-rounded&placeholder=1}
+													      {NEWS_IMAGE: type=tag&class=media-object img-rounded&placeholder=1}
 													    </a>
 													  </div>
 													  <div class="media-body">
@@ -105,7 +105,5 @@
             							    </div>';
 
 
-
-
-	$NEWS_GRID_TEMPLATE['other']['end'] = '</div>';
+	$NEWS_GRID_TEMPLATE['media-list']['end'] = '</div>';
 
