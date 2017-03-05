@@ -22,10 +22,12 @@ if (!defined('e107_INIT'))
 require_once (e_PLUGIN."comment_menu/comment_menu_shortcodes.php");
 
 $cobj = e107::getObject('comment');
-//require_once (e_HANDLER."comment_class.php");
-//$cobj = new comment;
 
-if (file_exists(THEME."comment_menu_template.php"))
+if (file_exists(THEME."templates/comment_menu/comment_menu_template.php"))
+{
+	require_once (THEME."templates/comment_menu/comment_menu_template.php");
+}
+elseif (file_exists(THEME."comment_menu_template.php"))
 {
 	require_once (THEME."comment_menu_template.php");
 }
