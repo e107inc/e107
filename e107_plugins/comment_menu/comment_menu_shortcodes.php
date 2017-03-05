@@ -68,6 +68,12 @@ class comment_menu_shortcodes extends e_shortcode
 	{
 		return $this->var['comment_author'];
 	}
+
+	function sc_cm_author_avatar($parm=null)
+	{
+		$data = array('user_id'=>$this->var['comment_author_id'], 'user_image'=>$this->var['comment_author_image']);
+		return e107::getParser()->toAvatar($data, $parm);
+	}
 	
 	
 	function sc_cm_comment($parm='')
