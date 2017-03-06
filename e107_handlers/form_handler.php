@@ -1639,7 +1639,7 @@ class e_form
 
 		$parms = array(
 			'selectize' => array(
-				'loadPath' => e_BASE . 'user.php',
+				'loadPath' => e_HTTP.'user.php',
 				'create'   => false,
 				'maxItems' => 1,
 				'mode'     => 'multi',
