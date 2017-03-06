@@ -974,12 +974,13 @@ class e_menuManager {
 
 		$id = intval($_POST['menu_id']);
 
-		if(isset($_POST['menu_parms']))
+		if(isset($_POST['menu_parms'])) // generic params
 		{
 			$parms = $tp->filter($_POST['menu_parms']);
 			$parms = $sql->escape(strip_tags($parms));
+			$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
 		}
-		else
+		else // e_menu.php
 		{
 			unset($_POST['menu_id'], $_POST['mode'], $_POST['menuActivate'], $_POST['menuSetCustomPages'], $_POST['e-token']);
 
@@ -997,10 +998,13 @@ class e_menuManager {
 			{
 			//	return array('msg'=>print_r($parms,true),'error'=>true);
 			}
+
 			$parms = $_POST;
+
+			$check = e107::getMenu()->updateParms($id,$parms); //
 		}
 
-		$check = e107::getMenu()->updateParms($id,$parms); // $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
+
 
 		if($check)
 		{
