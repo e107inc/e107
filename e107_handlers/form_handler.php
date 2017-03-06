@@ -2391,25 +2391,25 @@ class e_form
 
 		}
 
-		$switchName = $name.'__switch';
+		$switchName = $name . '__switch';
 
-		$js_options = array(
-				// Each form element has its own options.
-			$switchName => array(
-				'size'    => $options['switch'],
-				'onText'  => $labels['on'],
-				'offText' => $labels['off'],
-				'inverse' => !empty($options['inverse']),
-			),
+		$switchAttributes = array(
+			'data-type'    => 'switch',
+			'data-name'    => $name,
+			'data-size'    => $options['switch'],
+			'data-on'      => $labels['on'],
+			'data-off'     => $labels['off'],
+			'data-inverse' => (int) !empty($options['inverse']),
 		);
+
+		$options += $switchAttributes;
 
 		if(e_ADMIN_AREA === true)
 		{
-			$js_options[$switchName]['wrapperClass'] =  'wrapper form-control';
+			$options['data-wrapper'] = 'wrapper form-control';
 		}
 
 		e107::library('load', 'bootstrap.switch');
-		e107::js('settings', array('bsSwitch' => $js_options));
 		e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
 
 		$text = $this->hidden($name, (int) $value);

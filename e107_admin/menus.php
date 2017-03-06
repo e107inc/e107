@@ -42,38 +42,27 @@ require_once("../class2.php");
 
 if(e_MENUMANAGER_ACTIVE === false )
 {
+	e107::library('load', 'bootstrap.switch');
+	e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
+
 	if(!deftrue("e_DEBUG"))
 	{
 		e107::getJs()->inlineCSS('
-
-		body { overflow:hidden }
-
-
+			body { overflow:hidden }
 		');
 	}
 	else
 	{
 		e107::js('footer-inline',"
-
 			$('#menu_iframe').attr('scrolling','no');
 			$('#menu_iframe').load(function() {
-		//	$('#menu_iframe').bind('load', function() {
-
-			  var height = this.contentWindow.document.body.offsetHeight + 400 + 'px';
-
-			//	$(this).css('overflow-y','visible');
+				var height = this.contentWindow.document.body.offsetHeight + 400 + 'px';
 				$(this).css('height',height);
-			 // alert(this.style.height);
-
 			});
-
-
 		");
-
 	}
 
 	e107::getJs()->inlineCSS("
-
 		.menu-manager-items          { padding-right:15px}
 		.menu-manager-items div.item { padding:5px; margin:5px 0; border:1px solid rgba(255,255,255,0.3); border-radius:3px; cursor: move }
 		.menu-manager-sticky {
@@ -118,7 +107,6 @@ if(e_MENUMANAGER_ACTIVE === false )
 			}
 
 			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }
-
 		");
 }
 
