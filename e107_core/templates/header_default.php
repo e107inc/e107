@@ -121,7 +121,8 @@ if (!function_exists("parseheader"))
 if(!defined("XHTML4"))
 {
 	echo "<!doctype html>\n";
-	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
+	$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
+	echo deftrue('HTMLTAG', $htmlTag)."\n";
 	echo "<head>\n";
 	echo "<meta charset='utf-8' />\n";
 }
