@@ -1778,6 +1778,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		{
 			return true;	
 		}
+		elseif(e_REQUEST_HTTP."index.php" == $dbLink)
+		{
+			return true;	
+		}
 		
 		if(vartrue($data['link_active'])) // Can be used by e_sitelink.php
 		{
