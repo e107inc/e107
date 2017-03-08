@@ -4161,9 +4161,9 @@ class e_parser
 	 */
 	public function isUTF8($string)
 	{
-		if (function_exists('mb_detect_encoding'))
+		if (function_exists('mb_check_encoding'))
 		{
-			return (mb_detect_encoding($string) == "UTF-8");
+			return (mb_check_encoding($string, 'UTF-8'));
 		}
 
 		return (bool) preg_match('%(?:
