@@ -4844,7 +4844,7 @@ TEMPLATE;
 				$addonResults = $this->createAddons($_POST['addons']);
 			}
 			
-			
+		//	e107::getDebug()->log($_POST);
 			
 			unset($_POST['step'],$_POST['xml'], $_POST['addons']);
 		$thePlugin = $tp->filter($_POST['newplugin'],'file');
@@ -4869,12 +4869,11 @@ class ".$thePlugin."_adminArea extends e_admin_dispatcher
 	";
 	
 
-	unset($_POST['newplugin']);
+	unset($_POST['newplugin'], $_POST['mode']);
 
-	
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
+				if(!empty($vars['mode']) && $vars['mode'] != 'exclude')
 				{
 
 					$vars['mode'] = $tp->filter($vars['mode']);
@@ -4908,7 +4907,7 @@ $text .= "
 ";
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
+				if(!empty($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
 				{
 
 						$vars['mode'] = $tp->filter($vars['mode']);
