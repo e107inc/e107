@@ -3922,7 +3922,7 @@ class pluginBuilder
 				$frm->text("pluginPrefs[".$i."][value]", '',50,'placeholder='.EPL_ADLAN_130)."</td><td>".
 				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', EPL_ADLAN_131)."</td><td>".
 				$frm->text("pluginPrefs[".$i."][help]", '',80,'size=xxlarge&placeholder='.EPL_ADLAN_174)."</td>".
-				"</td></tr>";
+				"</tr>";
 			}
 
 			$text .= "</table>";
