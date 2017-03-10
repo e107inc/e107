@@ -15,6 +15,9 @@ if(!getperms("0"))
 	e107::redirect('admin');
     exit;
 }
+
+e107::coreLan('phpinfo', true);
+
 $e_sub_cat = 'phpinfo';
 require_once("auth.php");
 
@@ -38,11 +41,11 @@ $phpinfo = preg_replace('/<table[^>]*>/i', '<table class="table table-striped ad
 $mes = e107::getMessage();
 
 $security_risks = array(
-    "allow_url_fopen"   => 'If you have Curl enabled, you should consider disabling this feature.',
-    "allow_url_include" => 'This is a security risk and is not needed by e107.',
-    "display_errors"    => 'On a production server, it is better to disable the displaying of errors in the browser.',
-    "expose_php"        => 'Disabling this will hide your PHP version from browsers.',
-    "register_globals"  => 'This is a security risk and should be disabled.'
+    "allow_url_fopen"   => PHP_LAN_1,
+    "allow_url_include" => PHP_LAN_2,
+    "display_errors"    => PHP_LAN_3,
+    "expose_php"        => PHP_LAN_4,
+    "register_globals"  => PHP_LAN_5
     );
 
     foreach($security_risks as $risk=>$diz)
@@ -62,7 +65,7 @@ $security_risks = array(
 	{
 		if(!is_writable($sessionSavePath) && $sessionSaveMethod === 'files')
 		{
-			$mes->addError("<b>session.save_path</b> is not writable! That can cause major issues with your site.");	
+			$mes->addError(e107::getParser()->toHTML(PHP_LAN_6, true));	
 		}
 	}
 
