@@ -276,12 +276,12 @@ class comment
 			// -------------------------------------------------------------
 			
 			$indent = ($action == 'reply') ? " class='media col-md-offset-1 offset1' " : " class='media' ";
-			$formid = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
+			$formclass = ($action == 'reply') ? "e-comment-form-reply" : "e-comment-form";
 			
 			$text = "\n<div{$indent}>\n".e107::getMessage()->render('postcomment', true, false, false);//temporary here
 			
 		//	$text .= "Indent = ".$indent;
-			$text .= "<form id='{$formid}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
+			$text .= "<form class='{$formclass}' method='post' action='".str_replace('http:', '', $_SERVER['REQUEST_URI'])."'  >";	
 					
 			$data = array(
 				'action'	=> $action,
@@ -1156,11 +1156,11 @@ class comment
 		if($text)
 		{
 			//XXX Do NOT add to template - too important to allow for modification. 
-			$text = "<ul class='media-list' id='comments-container'>\n".$text."\n</ul>";
+			$text = "<ul class='media-list comments-container'>\n".$text."\n</ul>";
 		}
 		else
 		{
-			$text = "<ul class='media-list' id='comments-container'><li><!-- --></li></ul>";	
+			$text = "<ul class='media-list comments-container'><li><!-- --></li></ul>";	
 		}
 		
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
@@ -1176,7 +1176,7 @@ class comment
 			if ($tablerender)
 			{
 					
-					echo $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', TRUE);
+					echo $ns->tablerender("<span class='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', TRUE);
 			}
 			else
 			{
@@ -1185,7 +1185,7 @@ class comment
 		}
 		elseif($return === 'html')
 		{
-			return $ns->tablerender("<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
+			return $ns->tablerender("<span class='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS, $TEMPL, 'comment', true);
 		}
 			//echo $modcomment.$comment;
 			//echo $text;
@@ -1201,7 +1201,7 @@ class comment
 		$ret['comment'] = $text;
 		$ret['moderate'] = $modcomment;
 		$ret['comment_form'] = $comment;
-		$ret['caption'] = "<span id='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
+		$ret['caption'] = "<span class='e-comment-total'>".$this->totalComments."</span> ".LAN_COMMENTS;
 
 		return (!$return) ? "" : $ret;
 	}
