@@ -1323,6 +1323,7 @@ class users_admin_ui extends e_admin_ui
 		$sql 			= e107::getDb();
 		$e_event 		= e107::getEvent();
 		$admin_log		= e107::getAdminLog();
+		$pref = e107::getPref();
 		
 		if (!$_POST['ac'] == md5(ADMINPWCHANGE))
 		{
