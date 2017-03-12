@@ -185,7 +185,7 @@ class page_chapters_ui extends e_admin_ui
 		
 		);
 
-		protected $fieldpref = array('checkboxes', 'chapter_icon', 'chapter_id', 'chapter_name', 'chapter_description','chapter_template', 'chapter_manager', 'chapter_order', 'options');
+		protected $fieldpref = array('checkboxes', 'chapter_icon', 'chapter_id', 'chapter_name', 'chapter_description','chapter_template', 'chapter_visibility', 'chapter_order', 'options');
 
 		protected $books = array();
 	
