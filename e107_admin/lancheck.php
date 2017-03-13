@@ -1100,7 +1100,7 @@ class lancheck
 		<input type='hidden' name='language' value='".$lan."' />
 		<input type='hidden' name='errorsonly' value='".$_SESSION['lancheck-errors-only']."' />    
 	    <input class='btn btn-primary' type='submit' name='ziplang[".$lan."]' value=\"".$just_go_diz."\"  onclick=\"this.value = '".$lan_pleasewait."'\" />
-	    <a href='".e_REQUEST_URI."' class='btn btn-default'>".$lang_sel_diz."</a>
+	    <a href='".e_REQUEST_URI."' class='btn btn-default' style='margin-top:0;'>".$lang_sel_diz."</a>
 		</div>
 	    </form>
 		";
@@ -1738,7 +1738,7 @@ class lancheck
 	
 			$text .="<td class='forumheader3' style='width:5%;text-align:center'>";
 
-		//	$text .= "<input class='btn btn-primary' type='button' style='width:60px' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;mode={$mode}'\" /> ";
+		//	$text .= "<input class='btn btn-primary' type='button' name='but_$i' value=\"".LAN_EDIT."\" onclick=\"window.location='".e_SELF."?f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;mode={$mode}'\" /> ";
 
 			$parms = $_GET;
 			$parms['sub'] = 'edit';
@@ -1749,8 +1749,8 @@ class lancheck
 
 			$editUrl = e_REQUEST_SELF."?".http_build_query($parms,'&amp;');
 
-			$text .= "<a href='".$editUrl."'  class='e-modal btn btn-primary' data-modal-caption='".str_replace("../","",$comp_dir)."' style='width:60px' >".LAN_EDIT."</a> "; // href='".e_REQUEST_URI."&amp;f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;type={$mode}'
-		//	<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button' style='width:60px'>".LAN_EDIT."</a>";
+			$text .= "<a href='".$editUrl."'  class='e-modal btn btn-primary' data-modal-caption='".str_replace("../","",$comp_dir)."'>".LAN_EDIT."</a> "; // href='".e_REQUEST_URI."&amp;f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;type={$mode}'
+		//	<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button'>".LAN_EDIT."</a>";
 
 
 			$text .="</td></tr>";
