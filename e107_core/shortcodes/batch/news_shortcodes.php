@@ -239,6 +239,13 @@ class news_shortcodes extends e_shortcode
 	}
 
 
+
+	function sc_news_category_id($parm=null)
+	{
+		return (int) $this->news_item['category_id'];
+	}
+
+
 	function sc_news_category_icon($parm=null)
 	{
 		return $this->sc_newscaticon($parm);
@@ -272,6 +279,8 @@ class news_shortcodes extends e_shortcode
 			return e107::getParser()->toHTML($this->news_item['category_meta_description'], false ,'BODY');
 		}
 	}
+
+
 
 
 	//New v2.x Aliases
