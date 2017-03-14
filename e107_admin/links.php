@@ -71,7 +71,7 @@ class links_admin_ui extends e_admin_ui
 
 	protected $fields = array(
 		'checkboxes' 		=> array('title'=> '',				'width' => '3%',		'forced' => true,	'thclass'=>'center first',	'class'=>'center first'),
-		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',		'writeParms'=>'glyphs=1'),
+		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',	'readParms'=>array('legacy'=>'{e_IMAGE}icons/'),	'writeParms'=>'glyphs=1'),
 		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method',		'readParms'=>'',	'noedit'=>TRUE),
 		'link_name'			=> array('title'=> LAN_NAME,		'type'=>'text',			'inline'=>true,		'required'=>false,		'validate'=>false,	'width'=>'auto'), // not required as only an icon may be used.
 		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',		'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto'),
