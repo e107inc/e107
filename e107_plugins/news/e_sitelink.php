@@ -41,42 +41,12 @@ class news_sitelink // include plugin-folder in the name.
 			'description' 	=> ""
 		);
 
-		$links[] = array(
-			'name'			=> "Last 10 News Items (News Grid)",
-			'function'		=> "last_ten_newsgrid",
-			'description' 	=> ""
-		);
 		
 		return $links;
 	}
 
 
-	function last_ten_newsgrid()
-	{
 
-		$text = '<div class="dropdown-menu mega-dropdown-menu">
-                    <div class="container">';
-
-		$parm = array();
-		$parm['limit'] = 9;
-		$parm['category'] = 0;
-		$parm['source'] = 'latest';
-		$parm['featured'] = 1;
-		$parm['layout'] = 'sitelink-last-ten';
-
-		$mega = e107::getObject('news')->render_newsgrid($parm);
-
-	//	e107::getDebug()->log($mega);
-
-		$text .= $mega;
-
-		$text .= '
-                    </div>
-				</div>			';
-
-		return $text;
-
-	}
 
 	function news_category_page()
 	{
