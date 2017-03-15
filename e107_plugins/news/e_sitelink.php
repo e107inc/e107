@@ -39,12 +39,45 @@ class news_sitelink // include plugin-folder in the name.
 			'name'			=> "Last 10 News Items",
 			'function'		=> "last_ten",
 			'description' 	=> ""
-		);	
+		);
+
+		$links[] = array(
+			'name'			=> "Last 10 News Items (News Grid)",
+			'function'		=> "last_ten_newsgrid",
+			'description' 	=> ""
+		);
 		
 		return $links;
 	}
 
-	
+
+	function last_ten_newsgrid()
+	{
+
+		$text = '<div class="dropdown-menu mega-dropdown-menu">
+                    <div class="container">';
+
+		$parm = array();
+		$parm['limit'] = 9;
+		$parm['category'] = 0;
+		$parm['source'] = 'latest';
+		$parm['featured'] = 1;
+		$parm['layout'] = 'sitelink-last-ten';
+
+		$mega = e107::getObject('news')->render_newsgrid($parm);
+
+	//	e107::getDebug()->log($mega);
+
+		$text .= $mega;
+
+		$text .= '
+                    </div>
+				</div>			';
+
+		return $text;
+
+	}
+
 	function news_category_page()
 	{
 		return $this->news_category_list('category');	
@@ -110,14 +143,15 @@ class news_sitelink // include plugin-folder in the name.
 	}
 
 
-	function last_ten() 
+	function last_ten()
 	{
 		$sql = e107::getDb();
 		$sublinks = array();
 		
 		$nobody_regexp = "'(^|,)(".str_replace(",", "|", e_UC_NOBODY).")(,|$)'";
 		$query = "SELECT * FROM #news WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") ORDER BY news_datestamp DESC LIMIT 10";
-		
+
+
 		if($sql->gen($query))
 		{		
 			while($row = $sql->fetch())
@@ -133,6 +167,8 @@ class news_sitelink // include plugin-folder in the name.
 					'link_open'			=> '',
 					'link_class'		=> intval($row['news_class'])
 				);
+
+
 			}
 			
 			$sublinks[] = array(
@@ -146,6 +182,9 @@ class news_sitelink // include plugin-folder in the name.
 					'link_open'			=> '',
 					'link_class'		=> intval($row['news_class'])
 				);
+
+
+
 				
 			return $sublinks;
 	    };

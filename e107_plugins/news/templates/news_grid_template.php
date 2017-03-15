@@ -100,10 +100,17 @@
 													    <p>{NEWS_SUMMARY: limit=60}</p>
 													  </div>
 													  </li>
-													</ul>
+
 												</ul>
             							    </div>';
 
 
 	$NEWS_GRID_TEMPLATE['media-list']['end'] = '</div>';
+
+
+	// @see sitelink function "Last 10 News Items (News Grid)"
+	$NEWS_GRID_TEMPLATE['sitelink-last-ten'] = $NEWS_GRID_TEMPLATE['media-list'];
+
+
+
 
