@@ -79,6 +79,9 @@ define("LINKLAN_6", "Create sublinks from");
 define("LINKLAN_7", "Create sublinks under which link?");
 define("LINKLAN_8", "News Categories");
 define("LINKLAN_9", "Download Categories");
+
+define("LINKLAN_10", "Theme Shortcodes");
+_
 // define("LINKLAN_10", "Create Sublink");
 // define('LINKLAN_11', 'Nothing changed - not updated');
 

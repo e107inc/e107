@@ -108,8 +108,6 @@
 	$NEWS_GRID_TEMPLATE['media-list']['end'] = '</div>';
 
 
-	// @see sitelink function "Last 10 News Items (News Grid)"
-	$NEWS_GRID_TEMPLATE['sitelink-last-ten'] = $NEWS_GRID_TEMPLATE['media-list'];
 
 
 
