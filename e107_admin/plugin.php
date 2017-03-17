@@ -212,7 +212,6 @@ class plugin_ui extends e_admin_ui
 			}
 
 
-
 			if($this->getMode()=== 'avail')
 			{
 				$this->listQry  = "SELECT * FROM `#plugin` WHERE plugin_installflag = 0 AND plugin_category != 'menu'  ";
@@ -397,7 +396,10 @@ class plugin_ui extends e_admin_ui
 
 			$post = e107::getParser()->filter($_POST);
 
-
+			if(empty($_POST['e-token']))
+			{
+				return false;
+			}
 
 		//	$id = e107::getPlugin
 
@@ -811,13 +813,15 @@ class plugin_ui extends e_admin_ui
 			*/
              //   $frm->admin_button($name, $value, $action = 'submit', $label = '', $options = array());
 
-			$text .= "</div>
+
+
+			$text .= "<input type='hidden' name='e-token' value='".e_TOKEN."' /></div>
 			</fieldset>
 			</form>
 			";
 
 			return $text;
-			e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
+		//	e107::getRender()->tablerender(EPL_ADLAN_63.SEP.$tp->toHtml($plug_vars['@attributes']['name'], "", "defs,emotes_off, no_make_clickable"),$mes->render(). $text);
 
 		}
 	/*
@@ -3918,7 +3922,7 @@ class pluginBuilder
 				$frm->text("pluginPrefs[".$i."][value]", '',50,'placeholder='.EPL_ADLAN_130)."</td><td>".
 				$frm->select("pluginPrefs[".$i."][type]", $options, '', 'class=null', EPL_ADLAN_131)."</td><td>".
 				$frm->text("pluginPrefs[".$i."][help]", '',80,'size=xxlarge&placeholder='.EPL_ADLAN_174)."</td>".
-				"</td></tr>";
+				"</tr>";
 			}
 
 			$text .= "</table>";
@@ -4005,11 +4009,13 @@ class pluginBuilder
 		//		print_a($p);
 				$defaults = array(
 					"main-name"					=> varset($p['@attributes']['name']),
+					"main-lang"					=> varset($p['@attributes']['lan']),
 					"author-name"				=> varset($p['author']['@attributes']['name']),
 					"author-url"				=> varset($p['author']['@attributes']['url']),
 					"description-description"	=> varset($p['description']),
 					"summary-summary"			=> varset($p['summary'], $p['description']),
 					"category-category"			=> varset($p['category']),
+					"copyright-copyright"			=> varset($p['copyright']),
 					"keywords-one"				=> varset($p['keywords']['word'][0]),
 					"keywords-two"				=> varset($p['keywords']['word'][1]),
 					"keywords-three"			=> varset($p['keywords']['word'][2]),
@@ -4838,7 +4844,7 @@ TEMPLATE;
 				$addonResults = $this->createAddons($_POST['addons']);
 			}
 			
-			
+		//	e107::getDebug()->log($_POST);
 			
 			unset($_POST['step'],$_POST['xml'], $_POST['addons']);
 		$thePlugin = $tp->filter($_POST['newplugin'],'file');
@@ -4863,12 +4869,11 @@ class ".$thePlugin."_adminArea extends e_admin_dispatcher
 	";
 	
 
-	unset($_POST['newplugin']);
+	unset($_POST['newplugin'], $_POST['mode']);
 
-	
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude')
+				if(!empty($vars['mode']) && $vars['mode'] != 'exclude')
 				{
 
 					$vars['mode'] = $tp->filter($vars['mode']);
@@ -4902,7 +4907,7 @@ $text .= "
 ";
 			foreach($_POST as $table => $vars) // LOOP Through Tables. 
 			{
-				if(vartrue($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
+				if(!empty($vars['mode']) && $vars['mode'] != 'exclude' && !empty($vars['table']))
 				{
 
 						$vars['mode'] = $tp->filter($vars['mode']);

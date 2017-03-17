@@ -319,7 +319,7 @@ class sitelinks
 		{
 			$linkInfo['link_url'] = $tp->parseTemplate($linkInfo['link_url'], TRUE); // shortcode in URL support - dynamic urls for multilanguage.
 		}
-		elseif($linkInfo['link_url'][0] != '/')
+		elseif($linkInfo['link_url'][0] != '/' && strpos($linkInfo['link_url'],'http') !== 0)
 		{
 			$linkInfo['link_url'] = e_HTTP.ltrim($linkInfo['link_url'],'/');
 		}
@@ -1688,25 +1688,33 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			return $row['link_sub'];	
 		}
 		
-		if(vartrue($row['link_function']))
+		if(!empty($row['link_function']))
 		{	
 			$parm = false;	
 			
 			list($path,$method) = explode("::",$row['link_function']);
+
+			if($path === 'theme')
+			{
+				$text = e107::callMethod('theme_shortcodes',$method, $row); // no parms as theme_shortcodes may be added as needed.
+
+				if(!empty($text))
+				{
+					return '<div class="dropdown-menu">'.$text.'</div>'; // @todo use template?
+				}
+			}
 			
 			if(strpos($method,"("))
 			{
 				list($method,$prm) = explode("(",$method);
 				$parm = rtrim($prm,")");	
 			}
-			
+
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
 				$class = $path."_sitelink";
 				if($sublinkArray = e107::callMethod($class,$method,$parm,$row)) //TODO Cache it.
 				{
-
-
 					return $sublinkArray;
 				} 
 			}
@@ -1722,6 +1730,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	public function isActive(&$data='', $removeOnly = false, $exactMatch = false)
 	{
 		if(empty($data)) return;
+
 		
 		### experimental active match added to the URL (and removed after parsing)
 		### Example of main link: {e_BASE}some/url/#?match/string1^match/string2
@@ -1758,6 +1767,11 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$dbLink = str_replace("//","/",$dbLink); // precaution for e_HTTP inclusion above.
 
+		if(!empty($data['link_owner']) && !empty($data['link_sefurl']))
+		{
+			$dbLink = e107::url($data['link_owner'],$data['link_sefurl']);
+		}
+
 		if(E107_DBG_PATH)
 		{
 		//	e107::getDebug()->log("db=".$dbLink."<br />url=".e_REQUEST_URI."<br /><br />");
@@ -1769,6 +1783,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		}
 		// XXX this one should go soon - no cotroll at all
 		elseif(e_REQUEST_HTTP == $dbLink)
+		{
+			return true;	
+		}
+		elseif(e_REQUEST_HTTP."index.php" == $dbLink)
 		{
 			return true;	
 		}

@@ -21,7 +21,7 @@ class news_menu
 
 	function __construct()
 	{
-		// e107::lan('news','admin', 'true');
+		e107::lan('news','admin', 'true');
 
 	}
 
@@ -29,12 +29,12 @@ class news_menu
 	 * Configuration Fields.
 	 * @return array
 	 */
-	public function config($menu='') //TODO LAN
+	public function config($menu='') 
 	{
 		$fields = array();
 		$categories = array();
 
-		$sources = array('latest'=> "Latest News Items", 'sticky' => "Sticky News Items", 'template'=>"Assigned News items");
+		$sources = array('latest'=> LAN_NEWS_ADMIN_00, 'sticky' => LAN_NEWS_ADMIN_01, 'template'=> LAN_NEWS_ADMIN_02);
 
 		$tmp =  e107::getDb()->retrieve('news_category','category_id,category_name',null, true);
 
@@ -52,29 +52,29 @@ class news_menu
 
 					$fields['caption']      = array('title'=> LAN_CAPTION, 'tab'=>0, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 					$fields['count']        = array('title'=> LAN_LIMIT, 'tab'=>1, 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*', 'size'=>'mini'));
-					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>'blank'), 'help'=>'Help Text');
+					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>'blank'), 'help'=>'');
 			break;
 
 			case "news_grid":
-					$this->tabs = array(0 => LAN_PREFS, 1 => "Limits");
+					$this->tabs = array(0 => LAN_PREFS, 1 => LAN_NEWS_ADMIN_09);
 
 					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'tab'=>0, 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'), 'help'=>LAN_OPTIONAL);
-					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$categories, 'default'=>"(".LAN_ALL.")"), 'help'=>"Limit news items to a specific category");
-					$fields['source']       = array('title'=> "Source", 'type'=>'dropdown','tab'=>0, 'writeParms'=>array('optArray'=>$sources), 'help'=>"Assigned items are those with a template assigned to 'News Grid Menu' ");
+					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$categories, 'default'=>"(".LAN_ALL.")"), 'help'=> LAN_NEWS_ADMIN_03);
+					$fields['source']       = array('title'=> LAN_SOURCE, 'type'=>'dropdown','tab'=>0, 'writeParms'=>array('optArray'=>$sources), 'help'=> LAN_NEWS_ADMIN_04);
 					$fields['layout']     = array('title'=> LAN_TEMPLATE, 'type'=>'dropdown', 'tab'=>0, 'writeParms'=>array('optArray'=>$templates));
 				//	$fields['layout']       = array('title'=> "Layout", 'type'=>'method',  'tab'=>0,'writeParms'=>'');
-					$fields['count']        = array('title'=> "Number of Items to Display", 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
-					$fields['feature']      = array('title'=> "Number of Feature Items", 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>0));
-					$fields['titleLimit']   = array('title'=> "Title Character Limit", 'tab'=>1,  'type'=>'number', 'writeParms'=>'');
-					$fields['summaryLimit'] = array('title'=> "Summary Character Limit",'tab'=>1,  'type'=>'number', 'writeParms'=>'');
+					$fields['count']        = array('title'=> LAN_NEWS_ADMIN_05, 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
+					$fields['feature']      = array('title'=> LAN_NEWS_ADMIN_10, 'tab'=>1, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>0));
+					$fields['titleLimit']   = array('title'=> LAN_NEWS_ADMIN_06, 'tab'=>1,  'type'=>'number', 'writeParms'=>'');
+					$fields['summaryLimit'] = array('title'=> LAN_NEWS_ADMIN_07,'tab'=>1,  'type'=>'number', 'writeParms'=>'');
 
 			break;
 
 			case "news_carousel":
 					$fields['caption']      = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'), 'help'=>LAN_OPTIONAL);
-					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>"(".LAN_ALL.")"), 'help'=>"Limit news items to a specific category");
-					$fields['source']       = array('title'=> "Source", 'type'=>'dropdown','writeParms'=>array('optArray'=>$sources), 'help'=>"Assigned items are those with a template assigned to 'News Carousel' ");
-					$fields['count']        = array('title'=> "Number of Items to Display", 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
+					$fields['category']     = array('title'=> LAN_CATEGORY, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$categories, 'default'=>"(".LAN_ALL.")"), 'help'=> LAN_NEWS_ADMIN_03);
+					$fields['source']       = array('title'=> LAN_SOURCE, 'type'=>'dropdown','writeParms'=>array('optArray'=>$sources), 'help'=> LAN_NEWS_ADMIN_11);
+					$fields['count']        = array('title'=> LAN_NEWS_ADMIN_05, 'type'=>'number', 'writeParms'=>array('pattern'=>'[0-9]*', 'default'=>4));
 			break;
 
 
@@ -84,7 +84,7 @@ class news_menu
 				break;
 
 			case "news_months":
-					$fields['showarchive']  = array('title'=> "Display Archive Link", 'type'=>'boolean');
+					$fields['showarchive']  = array('title'=> LAN_NEWS_ADMIN_08, 'type'=>'boolean');
 					$fields['year']         = array('title'=> "Year", 'type'=>'text', 'writeParms'=>array('pattern'=>'[0-9]*', 'size'=>'mini'));
 				break;
 

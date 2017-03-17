@@ -44,14 +44,28 @@ class comment_menu_shortcodes extends e_shortcode
 		return e107::getParser()->toDate($this->var['comment_datestamp'], "relative");
 	}
 		
-	function sc_cm_heading()
+	function sc_cm_heading($parm=null)
 	{
-		return $this->var['comment_title'];
+		if(!empty($parm['limit'])) // new v2.1.5
+		{
+			$text = e107::getParser()->text_truncate($this->var['comment_title'], $parm['limit']);
+		}
+		else
+		{
+			$text = $this->var['comment_title'];
+		}
+
+		return e107::getParser()->toHtml($text,false,'TITLE');
 	}
 		
 	function sc_cm_url_pre()
 	{
 		return ($this->var['comment_url'] ? "<a href='".$this->var['comment_url']."'>" : "");
+	}
+
+	function sc_cm_url() // new v2.1.5
+	{
+		return (!empty($this->var['comment_url'])) ? $this->var['comment_url'] : '#';
 	}
 		
 	function sc_cm_url_post()
@@ -68,13 +82,26 @@ class comment_menu_shortcodes extends e_shortcode
 	{
 		return $this->var['comment_author'];
 	}
+
+	function sc_cm_author_avatar($parm=null) // new v2.1.5
+	{
+		$data = array('user_id'=>$this->var['comment_author_id'], 'user_image'=>$this->var['comment_author_image']);
+		return e107::getParser()->toAvatar($data, $parm);
+	}
 	
 	
-	function sc_cm_comment($parm='')
+	function sc_cm_comment($parm=null)
 	{
 		$menu_pref 	= e107::getConfig('menu')->getPref();
 		$tp 		= e107::getParser();
 		$COMMENT 	= '';
+
+
+		if(!empty($parm['limit'])) // override using shortcode parm.  // new v2.1.5
+		{
+			$menu_pref['comment_characters'] = intval($parm['limit']);
+		}
+
 		
 		if($menu_pref['comment_characters'] > 0)
 		{

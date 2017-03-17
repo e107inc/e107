@@ -199,7 +199,7 @@ define("USRLAN_195", "Last Post");
 
 //User Ranks phrases
 // define("USRLAN_196", "User ranks"); // use LAN_USER_RANKS
-define("USRLAN_197", "Source");
+//define("USRLAN_197", "Source"); // Moved to lan_admin.php
 define("USRLAN_198", "Field Name");
 define("USRLAN_199", "Operation");
 define("USRLAN_200", "Value");

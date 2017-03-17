@@ -4,57 +4,75 @@
 
 class TagCloud
 {
-	/**
-	 * Tag cloud version
-	 */
-	public $version = '4.0.0';
+  /**
+   * Tag cloud version
+   *
+   * @var string
+   */
+  public $version = '4.0.1';
 
-	/*
-	 * Tag array container
-	 */
-	protected $_tagsArray = array();
+  /**
+   * Tag array container
+   *
+   * @var array
+   */
+  protected $tagsArray = array();
 
-	/**
-	 * List of tags to remove from final output
-	 */
-	protected $_removeTags = array();
+  /**
+   * List of tags to remove from final output
+   *
+   * @var array
+   */
+  protected $removeTags = array();
 
-	/**
-	 * Cached attributes for order comparison
-	 */
-	protected $_attributes = array();
+  /**
+   * Cached attributes for order comparison
+   *
+   * @var array
+   */
+  protected $attributes = array();
 
-	/*
-	 * Amount to limit cloud by
-	 */
-	protected $_limit = null;
+  /**
+   * Amount to limit cloud by
+   *
+   * @var null
+   */
+  protected $limit = null;
 
-	/*
-	 * Minimum length of string to filtered in string
-	 */
-	protected $_minLength = null;
+  /**
+   * Minimum length of string to filtered in string
+   *
+   * @var null
+   */
+  protected $minLength = null;
 
-	/*
-	 * Custom format output of tags
-	 *
-	 * transformation: upper and lower for change of case
-	 * trim: bool, applies trimming to tag
-	 */
-	protected $_formatting = array(
-		'transformation' => 'lower',
-		'trim' => true
-	);
+  /**
+   * Custom format output of tags
+   *
+   * transformation: upper and lower for change of case
+   * transliterate: true\false
+   * trim: bool, applies trimming to tag
+   *
+   * @var array
+   */
+  protected $options = array(
+    'transformation' => 'lower',
+    'transliterate' => true,
+    'trim' => true
+  );
 
-	/**
-	 * Custom function to create the tag-output
-	 */
-	protected $_htmlizeTagFunction = null;
+  /**
+   * Custom function to create the tag-output
+   *
+   * @var null
+   */
+  protected $htmlizeTagFunction = null;
 
   /**
    * @var array Conversion map
    */
-  protected $_transliterationTable = array(
-    'á' => 'a', 'Á' => 'A', 'à' => 'a', 'À' => 'A', 'ă' => 'a','Ă' => 'A', 'â' => 'a', 'Â' => 'A',
+  protected $transliterationTable = array(
+    'á' => 'a', 'Á' => 'A', 'à' => 'a', 'À' => 'A', 'ă' => 'a', 'Ă' => 'A', 'â' => 'a', 'Â' => 'A',
     'å' => 'a', 'Å' => 'A', 'ã' => 'a', 'Ã' => 'A', 'ą' => 'a', 'Ą' => 'A', 'ā' => 'a', 'Ā' => 'A',
     'ä' => 'ae', 'Ä' => 'AE', 'æ' => 'ae', 'Æ' => 'AE', 'ḃ' => 'b', 'Ḃ' => 'B', 'ć' => 'c', 'Ć' => 'C',
     'ĉ' => 'c', 'Ĉ' => 'C', 'č' => 'c', 'Č' => 'C', 'ċ' => 'c', 'Ċ' => 'C', 'ç' => 'c', 'Ç' => 'C',
@@ -90,500 +108,547 @@ class TagCloud
     'ь' => '', 'Ь' => '', 'э' => 'e', 'Э' => 'e', 'ю' => 'ju', 'Ю' => 'ju', 'я' => 'ja', 'Я' => 'ja'
   );
 
-	/*
-	 * Constructor
-	 *
-	 * @param array $tags
-	 *
-	 * @return void
-	 */
-	public function __construct($tags = false)
-	{
-		if ($tags !== false) {
-			if (is_string($tags)) {
-				$this->addString($tags);
-			} elseif (count($tags)) {
-				foreach ($tags as $key => $value) {
-					$this->addTag($value);
-				}
-			}
-		}
-	}
+  /**
+   * Takes the tags and calls the correct
+   * setter based on the type of input
+   *
+   * @constructor
+   *
+   * @param mixed $tags String or Collection of tags
+   */
+  public function __construct($tags = false)
+  {
+    if ($tags !== false) {
+      if (is_string($tags)) {
+        $this->addString($tags);
+      } else if (count($tags)) {
+        foreach ($tags as $tag) {
+          $this->addTag($tag);
+        }
+      }
+    }
+  }
 
-	/*
-	 * Convert a string into a array
-	 *
-	 * @param string $string    The string to use
-	 * @param string $seperator The seperator to extract the tags
-	 *
-	 * @return void
-	 */
-	public function addString($string, $seperator = ' ')
-	{
-		$inputArray = explode($seperator, $string);
-		$tagArray = array();
-		foreach ($inputArray as $inputTag) {
-			$tagArray[]=$this->formatTag($inputTag);
-		}
-		$this->addTags($tagArray);
-	}
+  /**
+   * Convert a string into a array
+   *
+   * @param string $string    The string to use
+   * @param string $separator The separator to extract the tags
+   *
+   * @return $this
+   */
+  public function addString($string, $separator = ' ')
+  {
+    $inputArray = explode($separator, $string);
+    $tagArray = array();
+    foreach ($inputArray as $inputTag) {
+      $tagArray[] = $this->formatTag($inputTag);
+    }
+    $this->addTags($tagArray);
 
-	/*
-	 * Parse tag into safe format
-	 *
-	 * @param string $string
-	 *
-	 * @return string
-	 */
-	public function formatTag($string)
-	{
-    $string = $this->_convertCharacters($string);
-		if ($this->_formatting['transformation']) {
-			switch ($this->_formatting['transformation']) {
-				case 'upper':
-					$string = strtoupper($string);
-					break;
-				default:
-					$string = strtolower($string);
-			}
-		}
-		if ($this->_formatting['trim']) {
-			$string = trim($string);
-		}
-		return preg_replace('/[^\w ]/u', '', strip_tags($string));
-	}
+    return $this;
+  }
 
-	/*
-	 * Assign tag to array
-	 *
-	 * @param array $tagAttributes Tags or tag attributes array
-	 *
-	 * @return array $this->tagsArray
-	 */
-	public function addTag($tagAttributes = array())
-	{
-		if (is_string($tagAttributes)) {
-			$tagAttributes = array('tag' => $tagAttributes);
-		}
-		$tagAttributes['tag'] = $this->formatTag($tagAttributes['tag']);
-		if (!array_key_exists('size', $tagAttributes)) {
-			$tagAttributes = array_merge($tagAttributes, array('size' => 1));
-		}
-		if (!array_key_exists('tag', $tagAttributes)) {
-			return false;
-		}
-		$tag = $tagAttributes['tag'];
-		if (empty($this->_tagsArray[$tag])) {
-			$this->_tagsArray[$tag] = array();
-		}
-		if (!empty($this->_tagsArray[$tag]['size']) && !empty($tagAttributes['size'])) {
-			$tagAttributes['size'] = ($this->_tagsArray[$tag]['size'] + $tagAttributes['size']);
-		} elseif (!empty($this->_tagsArray[$tag]['size'])) {
-			$tagAttributes['size'] = $this->_tagsArray[$tag]['size'];
-		}
-		$this->_tagsArray[$tag] = $tagAttributes;
-		$this->addAttributes($tagAttributes);
-		return $this->_tagsArray[$tag];
-	}
+  /**
+   * Set option value
+   *
+   * @param string $option Option property name
+   * @param string $value  New property value
+   *
+   * @return $this
+   */
+  public function setOption($option, $value)
+  {
+    $this->options[$option] = $value;
+    return $this;
+  }
 
-	/*
-	 * Add all attributes to cached array
-	 *
-	 * @return void
-	 */
-	public function addAttributes($attributes)
-	{
-		$this->_attributes = array_unique(
-			array_merge(
-				$this->_attributes,
-				array_keys($attributes)
-			)
-		);
-	}
+  /**
+   * Get option by name otherwise return all options
+   *
+   * @param string $option Option property name
+   *
+   * @return array
+   */
+  public function getOption($option = null)
+  {
+    if ($option !== null) {
+      return $this->options[$option];
+    }
+    return $this->options;
+  }
 
-	/*
-	 * Get attributes from cache
-	 *
-	 * @return array $this->_attibutes
-	 */
-	public function getAttributes()
-	{
-		return $this->_attributes;
-	}
+  /**
+   * Parse tag into safe format
+   *
+   * @param string $string Tag to be formatted
+   *
+   * @return mixed
+   */
+  public function formatTag($string)
+  {
+    if ($this->options['transliterate']) {
+      $string = $this->transliterate($string);
+    }
 
-	/*
-	 * Assign multiple tags to array
-	 *
-	 * @param array $tags
-	 *
-	 * @return void
-	 */
-	public function addTags($tags = array())
-	{
-		if (!is_array($tags)) {
-			$tags = func_get_args();
-		}
-		foreach ($tags as $tagAttributes) {
-			$this->addTag($tagAttributes);
-		}
-	}
+    if ($this->options['transformation']) {
+      switch ($this->options['transformation']) {
+        case 'upper':
+          $string = $this->options['transliterate'] ? strtoupper($string) : mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
+          break;
+        default:
+          $string = $this->options['transliterate'] ? strtolower($string) : mb_convert_case($string, MB_CASE_LOWER, "UTF-8");
+      }
+    }
+    if ($this->options['trim']) {
+      $string = trim($string);
+    }
+    return preg_replace('/[^\w ]/u', '', strip_tags($string));
+  }
 
-	/*
-	 * Sets a minimum string length for the
-	 * tags to display
-	 *
-	 * @param int $minLength
-	 *
-	 * @returns obj $this
-	 */
-	public function setMinLength($minLength)
-	{
-		$this->_minLength = $minLength;
-		return $this;
-	}
+  /**
+   * Assign tag to array
+   *
+   * @param array $tagAttributes Tags or tag attributes array
+   *
+   * @return bool
+   */
+  public function addTag($tagAttributes = array())
+  {
+    if (is_string($tagAttributes)) {
+      $tagAttributes = array('tag' => $tagAttributes);
+    }
+    $tagAttributes['tag'] = $this->formatTag($tagAttributes['tag']);
+    if (!array_key_exists('size', $tagAttributes)) {
+      $tagAttributes = array_merge($tagAttributes, array('size' => 1));
+    }
+    if (!array_key_exists('tag', $tagAttributes)) {
+      return false;
+    }
+    $tag = $tagAttributes['tag'];
+    if (empty($this->tagsArray[$tag])) {
+      $this->tagsArray[$tag] = array();
+    }
+    if (!empty($this->tagsArray[$tag]['size']) && !empty($tagAttributes['size'])) {
+      $tagAttributes['size'] = ($this->tagsArray[$tag]['size'] + $tagAttributes['size']);
+    } elseif (!empty($this->tagsArray[$tag]['size'])) {
+      $tagAttributes['size'] = $this->tagsArray[$tag]['size'];
+    }
+    $this->tagsArray[$tag] = $tagAttributes;
+    $this->addAttributes($tagAttributes);
+    return $this->tagsArray[$tag];
+  }
+
+  /**
+   * Add all attributes to cached array
+   *
+   * @param $attributes
+   *
+   * @return $this
+   */
+  public function addAttributes($attributes)
+  {
+    $this->attributes = array_unique(
+      array_merge(
+        $this->attributes,
+        array_keys($attributes)
+      )
+    );
+    return $this;
+  }
+
+  /**
+   * Get attributes from cache
+   *
+   * @return array Collection of Attributes
+   */
+  public function getAttributes()
+  {
+    return $this->attributes;
+  }
+
+  /**
+   * Assign multiple tags to array
+   *
+   * @param array $tags A collection of multiple tabs
+   *
+   * @return $this
+   */
+  public function addTags($tags = array())
+  {
+    if (!is_array($tags)) {
+      $tags = func_get_args();
+    }
+    foreach ($tags as $tagAttributes) {
+      $this->addTag($tagAttributes);
+    }
+    return $this;
+  }
+
+  /**
+   * Sets a minimum string length for the tags to display
+   *
+   * @param int $minLength The minimum string length of a tag
+   *
+   * @return $this
+   */
+  public function setMinLength($minLength)
+  {
+    $this->minLength = $minLength;
+    return $this;
+  }
+
+  /**
+   * Gets the minimum length value
+   *
+   * @return int
+   */
+  public function getMinLength()
+  {
+    return $this->minLength;
+  }
 
 
-	/*
-	 * Gets the minimum length value
-	 *
-	 * @returns void
-	 */
-	public function getMinLength()
-	{
-		return $this->_minLength;
-	}
+  /**
+   * Sets a limit for the amount of clouds
+   *
+   * @param int $limit The maximum number to display
+   *
+   * @return $this
+   */
+  public function setLimit($limit)
+  {
+    $this->limit = $limit;
+    return $this;
+  }
 
+  /**
+   * Get the limit for the amount tags to display
+   *
+   * @return int The maximum number
+   */
+  public function getLimit()
+  {
+    return $this->limit;
+  }
 
-	/*
-	 * Sets a limit for the amount of clouds
-	 *
-	 * @param int $limit
-	 *
-	 * @returns obj $this
-	 */
-	public function setLimit($limit)
-	{
-		$this->_limit = $limit;
-		return $this;
-	}
+  /**
+   * Assign a tag to be removed from the array
+   *
+   * @param string $tag The tag value
+   *
+   * @return $this
+   */
+  public function setRemoveTag($tag)
+  {
+    $this->removeTags[] = $this->formatTag($tag);
+    return $this;
+  }
 
-	/*
-	 * Get the limit for the amount tags
-	 * to display
-	 *
-	 * @param int $limit
-	 *
-	 * @returns int $this->_limit
-	 */
-	public function getLimit()
-	{
-		return $this->_limit;
-	}
+  /**
+   * Remove multiple tags from the array
+   *
+   * @param $tags A collection of removable tags
+   *
+   * @return $this
+   */
+  public function setRemoveTags($tags)
+  {
+    foreach ($tags as $tag) {
+      $this->setRemoveTag($tag);
+    }
+    return $this;
+  }
 
-	/*
-	 * Remove a tag from the array
-	 *
-	 * @param string $tag
-	 *
-	 * @returns obj $this
-	 */
-	public function setRemoveTag($tag)
-	{
-		$this->_removeTags[] = $this->formatTag($tag);
-		return $this;
-	}
+  /**
+   * Get the list of remove tags
+   *
+   * @return array A collection of tags to remove
+   */
+  public function getRemoveTags()
+  {
+    return $this->removeTags;
+  }
 
-	/*
-	 * Remove multiple tags from the array
-	 *
-	 * @param array $tags
-	 *
-	 * @returns obj $this
-	 */
-	public function setRemoveTags($tags)
-	{
-		foreach ($tags as $tag) {
-			$this->setRemoveTag($tag);
-		}
-		return $this;
-	}
+  /**
+   * Assign the order field and order direction of the array
+   *
+   * Order by tag or size / defaults to random
+   *
+   * @param string $field     The name of the field to sort by
+   * @param string $direction The sort direction ASC|DESC
+   *
+   * @return $this
+   */
+  public function setOrder($field, $direction = 'ASC')
+  {
+    $this->orderBy = array(
+      'field' => $field,
+      'direction' => $direction
+    );
+    return $this;
+  }
 
-	/*
-	 * Get the list of remove tags
-	 *
-	 * @returns array $this->_removeTags
-	 */
-	public function getRemoveTags()
-	{
-		return $this->_removeTags;
-	}
+  /**
+   * Inject a custom function/closure for generating the rendered HTML
+   *
+   * @param callable $htmlizeTagFunction The function/closure
+   *
+   * @return mixed
+   */
+  public function setHtmlizeTagFunction($htmlizeTagFunction)
+  {
+    $this->htmlizeTagFunction = $htmlizeTagFunction;
+    return $this;
+  }
 
-	/*
-	 * Assign the order field and order direction of the array
-	 *
-	 * Order by tag or size / defaults to random
-	 *
-	 * @param array  $field
-	 * @param string $direction
-	 *
-	 * @returns $this->orderBy
-	 */
-	public function setOrder($field, $direction = 'ASC')
-	{
-		return $this->orderBy = array(
-			'field' => $field,
-			'direction' => $direction
-		);
-	}
+  /**
+   * Generate the output for each tag.
+   *
+   * @param string $returnType The type of data to return [html|array]
+   *
+   * @return array|null|string
+   */
+  public function render($returnType = 'html')
+  {
+    $this->remove();
+    $this->minLength();
+    if (empty($this->orderBy)) {
+      $this->shuffle();
+    } else {
+      $orderDirection = strtolower($this->orderBy['direction']) == 'desc' ? 'SORT_DESC' : 'SORT_ASC';
+      $this->tagsArray = $this->order(
+        $this->tagsArray,
+        $this->orderBy['field'],
+        $orderDirection
+      );
+    }
 
-	/*
-	 * Inject a custom function for generatinng the rendered HTML
-	 *
-	 * @param function $htmlizer
-	 *
-	 * @return $this->_htmlizeTagFunction
-	 */
-	public function setHtmlizeTagFunction($htmlizer)
-	{
-		return $this->_htmlizeTagFunction = $htmlizer;
-	}
+    $this->limit();
+    $max = $this->getMax();
+    if (count($this->tagsArray)) {
+      $return = ($returnType == 'html' ? '' : ($returnType == 'array' ? array() : ''));
+      foreach ($this->tagsArray as $tag => $arrayInfo) {
+        $sizeRange = $this->getClassFromPercent(($arrayInfo['size'] / $max) * 100);
+        $arrayInfo['range'] = $sizeRange;
+        if ($returnType == 'array') {
+          $return [$tag] = $arrayInfo;
+        } elseif ($returnType == 'html') {
+          $return .= $this->htmlizeTag($arrayInfo, $sizeRange);
+        }
+      }
+      return $return;
+    }
+    return null;
+  }
 
-	/*
-	 * Generate the output for each tag.
-	 *
-	 * @returns string/array $return
-	 */
-	public function render($returnType = 'html')
-	{
-		$this->_remove();
-		$this->_minLength();
-		if (empty($this->orderBy)) {
-			$this->_shuffle();
-		} else {
-			$orderDirection = strtolower($this->orderBy['direction']) == 'desc' ? 'SORT_DESC' : 'SORT_ASC';
-			$this->_tagsArray = $this->_order(
-				$this->_tagsArray,
-				$this->orderBy['field'],
-				$orderDirection
-			);
-		}
-
-    $this->_limit();
-		$max = $this->_getMax();
-		if (count($this->_tagsArray)) {
-			$return = ($returnType == 'html' ? '' : ($returnType == 'array' ? array() : ''));
-			foreach ($this->_tagsArray as $tag => $arrayInfo) {
-				$sizeRange = $this->_getClassFromPercent(($arrayInfo['size'] / $max) * 100);
-				$arrayInfo['range'] = $sizeRange;
-				if ($returnType == 'array') {
-					$return [$tag] = $arrayInfo;
-				} elseif ($returnType == 'html') {
-					$return .= $this->htmlizeTag( $arrayInfo, $sizeRange );
-				}
-			}
-			return $return;
-		}
-		return null;
-	}
-
-	/**
-	 * Convert a tag into an html-snippet
-	 *
-	 * This function is mainly an anchor to decide if a user-supplied
-	 * custom function should be used or the normal output method.
-	 *
-	 * This will most likely only work in PHP >= 5.3
-	 *
-	 * @param array  $arrayInfo
-	 * @param string $sizeRange
-	 *
-	 * @return string
-	 */
-	public function htmlizeTag($arrayInfo, $sizeRange)
-	{
-    $htmlizeTagFunction = $this->_htmlizeTagFunction;
-		if (isset($htmlizeTagFunction) &&
-        is_callable($htmlizeTagFunction)
+  /**
+   * Convert a tag into an html-snippet
+   *
+   * This function is mainly an anchor to decide if a user-supplied
+   * custom function should be used or the normal output method.
+   *
+   * This will most likely only work in PHP >= 5.3
+   *
+   * @param array  $arrayInfo The data to pass into the closure
+   * @param string $sizeRange The size to pass into the closure
+   *
+   * @return string
+   */
+  public function htmlizeTag($arrayInfo, $sizeRange)
+  {
+    $htmlizeTagFunction = $this->htmlizeTagFunction;
+    if (isset($htmlizeTagFunction) &&
+      is_callable($htmlizeTagFunction)
     ) {
-			// this cannot be written in one line or the PHP interpreter will puke
-			// apparently, it's okay to have a function in a variable,
-			// but it's not okay to have it in an instance-variable.
-			return $htmlizeTagFunction($arrayInfo, $sizeRange);
-		} else {
-			return "<span class='tag size{$sizeRange}'> &nbsp; {$arrayInfo['tag']} &nbsp; </span>";
-		}
-	}
+      // this cannot be written in one line or the PHP interpreter will puke
+      // apparently, it's okay to have a function in a variable,
+      // but it's not okay to have it in an instance-variable.
+      return $htmlizeTagFunction($arrayInfo, $sizeRange);
+    } else {
+      return "<span class='tag size{$sizeRange}'> &nbsp; {$arrayInfo['tag']} &nbsp; </span>";
+    }
+  }
 
-	/*
-	 * Removes tags from the whole array
-	 *
-	 * @returns array $this->_tagsArray
-	 */
-	protected function _remove()
-	{
+  /**
+   * Removes tags from the whole array
+   *
+   * @return array The tag array excluding the removed tags
+   */
+  protected function remove()
+  {
     $_tagsArray = array();
-		foreach ($this->_tagsArray as $key => $value) {
-			if (!in_array($value['tag'], $this->getRemoveTags())) {
-				$_tagsArray[$value['tag']] = $value;
-			}
-		}
-		$this->_tagsArray = array();
-		$this->_tagsArray = $_tagsArray;
-		return $this->_tagsArray;
-	}
+    foreach ($this->tagsArray as $key => $value) {
+      if (!in_array($value['tag'], $this->getRemoveTags())) {
+        $_tagsArray[$value['tag']] = $value;
+      }
+    }
+    $this->tagsArray = array();
+    $this->tagsArray = $_tagsArray;
+    return $this->tagsArray;
+  }
 
-	/*
-	 * Orders the cloud by a specific field
-	 *
-	 * @param array $unsortedArray
-	 * @param string $sortField
-	 * @param string $sortWay
-	 *
-	 * @returns array $unsortedArray
-	 */
-	protected function _order($unsortedArray, $sortField, $sortWay = 'SORT_ASC')
-	{
-		$sortedArray = array();
-		foreach ($unsortedArray as $uniqid => $row) {
-			foreach ($this->getAttributes() as $attr) {
-				if (isset($row[$attr])) {
-					$sortedArray[$attr][$uniqid] = $unsortedArray[$uniqid][$attr];
-				} else {
-					$sortedArray[$attr][$uniqid] = null;
-				}
-			}
-		}
-		if ($sortWay) {
-			array_multisort($sortedArray[$sortField], constant($sortWay), $unsortedArray);
-		}
-		return $unsortedArray;
-	}
+  /**
+   * Orders the cloud by a specific field
+   *
+   * @param array  $unsortedArray Collection of unsorted data
+   * @param string $sortField     The field that should be sorted
+   * @param string $sortWay       The direction to sort the data [SORT_ASC|SORT_DESC]
+   *
+   * @return mixed
+   */
+  protected function order($unsortedArray, $sortField, $sortWay = 'SORT_ASC')
+  {
+    $sortedArray = array();
+    foreach ($unsortedArray as $uniqid => $row) {
+      foreach ($this->getAttributes() as $attr) {
+        if (isset($row[$attr])) {
+          $sortedArray[$attr][$uniqid] = $unsortedArray[$uniqid][$attr];
+        } else {
+          $sortedArray[$attr][$uniqid] = null;
+        }
+      }
+    }
+    if ($sortWay) {
+      array_multisort($sortedArray[$sortField], constant($sortWay), $unsortedArray);
+    }
+    return $unsortedArray;
+  }
 
-	/*
-	 * Parses the array and retuns
-	 * limited amount of items
-	 *
-	 * @returns array $this->_tagsArray
-	 */
-	protected function _limit()
-	{
-		$limit = $this->getLimit();
-		if ($limit !== null) {
-			$i = 0;
-			$_tagsArray = array();
-			foreach ($this->_tagsArray as $key => $value) {
-				if ($i < $limit) {
-					$_tagsArray[$value['tag']] = $value;
-				}
-				$i++;
-			}
-			$this->_tagsArray = array();
-			$this->_tagsArray = $_tagsArray;
-		}
-		return $this->_tagsArray;
-	}
+  /**
+   * Parses the array and returns limited amount of items
+   *
+   * @return array The collection limited to the amount defined
+   */
+  protected function limit()
+  {
+    $limit = $this->getLimit();
+    if ($limit !== null) {
+      $i = 0;
+      $_tagsArray = array();
+      foreach ($this->tagsArray as $key => $value) {
+        if ($i < $limit) {
+          $_tagsArray[$value['tag']] = $value;
+        }
+        $i++;
+      }
+      $this->tagsArray = array();
+      $this->tagsArray = $_tagsArray;
+    }
+    return $this->tagsArray;
+  }
 
-	/*
-	 * Reduces the array by removing strings
-	 * with a length shorter than the minLength
-	 *
-	 * @returns array $this->_tagsArray
-	 */
-	protected function _minLength()
-	{
-		$limit = $this->getMinLength();
-		if ($limit !== null) {
-			$i = 0;
-			$_tagsArray = array();
-			foreach ($this->_tagsArray as $key => $value) {
-				if (strlen($value['tag']) >= $limit) {
-					$_tagsArray[$value['tag']] = $value;
-				}
-				$i++;
-			}
-			$this->_tagsArray = array();
-			$this->_tagsArray = $_tagsArray;
-		}
-		return $this->_tagsArray;
-	}
+  /**
+   * Reduces the array by removing strings with a
+   * length shorter than the minLength
+   *
+   * @return array The collection of items within
+   * the string length boundaries
+   */
+  protected function minLength()
+  {
+    $limit = $this->getMinLength();
+    if ($limit !== null) {
+      $i = 0;
+      $_tagsArray = array();
+      foreach ($this->tagsArray as $key => $value) {
+        if (strlen($value['tag']) >= $limit) {
+          $_tagsArray[$value['tag']] = $value;
+        }
+        $i++;
+      }
+      $this->tagsArray = array();
+      $this->tagsArray = $_tagsArray;
+    }
+    return $this->tagsArray;
+  }
 
-	/*
-	 * Finds the maximum 'size' value of an array
-	 *
-	 * @returns string $max
-	 */
-	protected function _getMax()
-	{
-		$max = 0;
-		if (!empty($this->_tagsArray)) {
-			$p_size = 0;
-			foreach ($this->_tagsArray as $cKey => $cVal) {
-				$c_size = $cVal['size'];
-				if ($c_size > $p_size) {
-					$max = $c_size;
-					$p_size = $c_size;
-				}
-			}
-		}
-		return $max;
-	}
+  /**
+   * Finds the maximum 'size' value of an array
+   *
+   * @return int The maximum size value in the entire collection
+   */
+  protected function getMax()
+  {
+    $max = 0;
+    if (!empty($this->tagsArray)) {
+      $p_size = 0;
+      foreach ($this->tagsArray as $cKey => $cVal) {
+        $c_size = $cVal['size'];
+        if ($c_size > $p_size) {
+          $max = $c_size;
+          $p_size = $c_size;
+        }
+      }
+    }
+    return $max;
+  }
 
-	/*
-	 * Shuffle associated names in array
-	 *
-	 * @return array $this->_tagsArray The shuffled array
-	 */
-	protected function _shuffle()
-	{
-		$keys = array_keys($this->_tagsArray);
-		shuffle($keys);
-		if (count($keys) && is_array($keys)) {
-			$tmpArray = $this->_tagsArray;
-			$this->_tagsArray = array();
-			foreach ($keys as $key => $value)
-				$this->_tagsArray[$value] = $tmpArray[$value];
-		}
-		return $this->_tagsArray;
-	}
+  /**
+   * Shuffle associated names in array
+   *
+   * @return array The shuffled collection
+   */
+  protected function shuffle()
+  {
+    $keys = array_keys($this->tagsArray);
+    shuffle($keys);
+    if (count($keys) && is_array($keys)) {
+      $tmpArray = $this->tagsArray;
+      $this->tagsArray = array();
+      foreach ($keys as $key => $value)
+        $this->tagsArray[$value] = $tmpArray[$value];
+    }
+    return $this->tagsArray;
+  }
 
-	/*
-	 * Get the class range using a percentage
-	 *
-	 * @returns int $class The respective class
-	 * name based on the percentage value
-	 */
-	protected function _getClassFromPercent($percent)
-	{
-		$class = floor(($percent / 10));
+  /**
+   * Get the class range using a percentage
+   *
+   * @param $percent
+   *
+   * @return float|int The respective class name based on the percentage value
+   */
+  protected function getClassFromPercent($percent)
+  {
+    $class = floor(($percent / 10));
 
-		if ($percent >= 5) {
-			$class++;
-		}
+    if ($percent >= 5) {
+      $class++;
+    }
 
-		if ($percent >= 80 && $percent < 100) {
-			$class = 8;
-		} elseif ($percent == 100) {
-			$class = 9;
-		}
+    if ($percent >= 80 && $percent < 100) {
+      $class = 8;
+    } elseif ($percent == 100) {
+      $class = 9;
+    }
 
-		return $class;
-	}
+    return $class;
+  }
 
   /**
    * Calculate the class given to a tag from the
    * weight percentage of the given tag.
+   *
+   * @param int $percent The percentage value
+   *
+   * @return float|int
    */
   public function calculateClassFromPercent($percent)
   {
-    return $this->_getClassFromPercent($percent);
+    return $this->getClassFromPercent($percent);
   }
 
   /**
    * Convert accented chars into basic latin chars
+   * @see http://stackoverflow.com/questions/6837148/change-foreign-characters-to-normal-equivalent
    *
-   * Taken from http://stackoverflow.com/questions/6837148/change-foreign-characters-to-normal-equivalent
+   * @param string $string Non transliterated string
+   *
+   * @return mixed Transliterated string
    */
-  function _convertCharacters($string) {
-    return str_replace(array_keys($this->_transliterationTable), array_values($this->_transliterationTable), $string);
+  protected function transliterate($string)
+  {
+    return str_replace(array_keys($this->transliterationTable), array_values($this->transliterationTable), $string);
   }
 }

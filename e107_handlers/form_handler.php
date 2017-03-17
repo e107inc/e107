@@ -1639,7 +1639,7 @@ class e_form
 
 		$parms = array(
 			'selectize' => array(
-				'loadPath' => e_BASE . 'user.php',
+				'loadPath' => e_HTTP.'user.php',
 				'create'   => false,
 				'maxItems' => 1,
 				'mode'     => 'multi',
@@ -2251,7 +2251,7 @@ class e_form
 
 		if(empty($options['id']))
 		{
-			$options['id'] = '';
+			unset($options['id']);
 		}
 		// $options['class'] = 'inline';	
 		$text = "";
@@ -2327,46 +2327,20 @@ class e_form
 			$options_off = array_merge($options, array('class' => 'e-expandit-off'));
 		}
 
-		if(deftrue('e_DEBUG') && e_ADMIN_AREA === true)
+		if(e_ADMIN_AREA === true)
 		{
 			$options['switch'] = 'small';
-
 			$label_enabled = ($label_enabled) ? strtoupper($label_enabled) : strtoupper(LAN_ON);
 			$label_disabled = ($label_disabled) ?  strtoupper($label_disabled): strtoupper(LAN_OFF);
-
 		}
+
 
 		$options_on['label'] = $label_enabled ? defset($label_enabled, $label_enabled) : LAN_ENABLED;
 		$options_off['label'] = $label_disabled ? defset($label_disabled, $label_disabled) : LAN_DISABLED;
 
 		if(!empty($options['switch']))
 		{
-			if(!empty($options['inverse']))
-			{
-				$checked_enabled = !$checked_enabled;
-			}
-
-			$js_options = array(
-				// Each form element has its own options.
-				$name => array(
-					'size'    => $options['switch'],
-					'onText'  => $options_on['label'],
-					'offText' => $options_off['label'],
-
-				),
-			);
-
-			if(e_ADMIN_AREA === true)
-			{
-				$js_options[$name]['wrapperClass'] =  'wrapper form-control';
-			}
-
-
-			e107::library('load', 'bootstrap.switch');
-			e107::js('settings', array('bsSwitch' => $js_options));
-			e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
-
-			$text = $this->checkbox($name, 1, $checked_enabled);
+			return $this->flipswitch($name,$checked_enabled, array('on'=>$options_on['label'],'off'=>$options_off['label']),$options);
 		}
 		elseif(!empty($options['inverse'])) // Same as 'writeParms'=>'reverse=1&enabled=LAN_DISABLED&disabled=LAN_ENABLED'
 		{
@@ -2384,6 +2358,68 @@ class e_form
 
 		return $text;
 	}
+
+
+	/**
+	 * @param string $name
+	 * @param bool|false $checked_enabled
+	 * @param array $labels on & off
+	 * @param array $options
+	 * @return string
+	 */
+	public function flipswitch($name, $checked_enabled = false, $labels=null, $options = array())
+	{
+
+		if(empty($labels))
+		{
+			$labels = array('on' =>LAN_ON, 'off' =>LAN_OFF);
+		}
+
+		$value = $checked_enabled;
+
+		if(!empty($options['inverse']))
+		{
+			$checked_enabled = !$checked_enabled;
+		}
+
+		if(!empty($options['reverse']))
+		{
+			$on = $labels['on'];
+			$options_on['label'] = $labels['off'];
+			$options_off['label'] = $on;
+			unset($on);
+
+		}
+
+		$switchName = $name . '__switch';
+
+		$switchAttributes = array(
+			'data-type'    => 'switch',
+			'data-name'    => $name,
+			'data-size'    => $options['switch'],
+			'data-on'      => $labels['on'],
+			'data-off'     => $labels['off'],
+			'data-inverse' => (int) !empty($options['inverse']),
+		);
+
+		$options += $switchAttributes;
+
+		if(e_ADMIN_AREA === true)
+		{
+			$options['data-wrapper'] = 'wrapper form-control';
+		}
+
+		e107::library('load', 'bootstrap.switch');
+		e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
+
+		$text = $this->hidden($name, (int) $value);
+		$text .= $this->checkbox($switchName, (int) $checked_enabled, $checked_enabled, $options);
+
+		return $text;
+	}
+
+
+
 
 
 	/**
@@ -2833,6 +2869,7 @@ class e_form
 	function hidden($name, $value, $options = array())
 	{
 		$options = $this->format_options('hidden', $name, $options);
+
 		return "<input type='hidden' name='{$name}' value='{$value}'".$this->get_attributes($options, $name, $value)." />";
 	}
 
@@ -4989,6 +5026,7 @@ class e_form
 		{
 			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
 			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>";
+			$key = $key.'['.e_LANGUAGE.']';
 		}
 		
 		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
@@ -5441,8 +5479,8 @@ class e_form
 				}
 				else
 				{
-					$lenabled = vartrue($parms['enabled'], 'LAN_ENABLED');
-					$ldisabled = vartrue($parms['disabled'], 'LAN_DISABLED');
+					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
+					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
 				}
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);

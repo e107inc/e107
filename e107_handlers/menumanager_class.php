@@ -974,25 +974,37 @@ class e_menuManager {
 
 		$id = intval($_POST['menu_id']);
 
-		if(isset($_POST['menu_parms']))
+		if(isset($_POST['menu_parms'])) // generic params
 		{
 			$parms = $tp->filter($_POST['menu_parms']);
 			$parms = $sql->escape(strip_tags($parms));
+			$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
 		}
-		else
+		else // e_menu.php
 		{
-			unset($_POST['menu_id'], $_POST['mode'], $_POST['menuActivate'], $_POST['menuSetCustomPages']);
+			unset($_POST['menu_id'], $_POST['mode'], $_POST['menuActivate'], $_POST['menuSetCustomPages'], $_POST['e-token']);
 
-			$parms = $tp->filter($_POST);
-			$parms = $sql->escape(e107::serialize($parms));
+		/*	$tmp = $sql->retrieve("menus", "menu_parms", " menu_id=".$id);
+			$parms = !empty($tmp) ? e107::unserialize($tmp) : array();
 
-			if(e_DEBUG == true)
+			foreach($_POST as $k=>$v)
 			{
-			//	return array('msg'=>print_r($_POST,true),'error'=>true);
+				$parms[$k] = $tp->filter($v);
 			}
+
+			$parms = e107::serialize($parms, 'json');*/
+
+		//	if(e_DEBUG == true)
+			{
+			//	return array('msg'=>print_r($parms,true),'error'=>true);
+			}
+
+			$parms = $_POST;
+
+			$check = e107::getMenu()->updateParms($id,$parms); //
 		}
 
-		$check = $sql->update("menus", "menu_parms=\"".$parms."\" WHERE menu_id=".$id."");
+
 
 		if($check)
 		{
@@ -1796,7 +1808,7 @@ class e_menuManager {
 		
 			$ret = $this->menuSaveVisibility();	
 		//	echo json_encode($ret);
-			return;		
+			return null;
 		}		
 		
 		if($mode == 'delete')
@@ -1811,7 +1823,7 @@ class e_menuManager {
 				$ret = $this->menuDeactivate();	
 			//	echo json_encode($ret);
 				
-				return;
+				return null;
 			}	
 			
 		}
@@ -1822,9 +1834,9 @@ class e_menuManager {
 			$ret = $this->menuSaveParameters();
 			if(!empty($ret['error']))
 			{
-				echo json_encode($ret);
+				return json_encode($ret);
 			}
-			return;
+			return null;
 		}
 		
 		

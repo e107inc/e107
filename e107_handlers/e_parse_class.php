@@ -3962,28 +3962,33 @@ class e_parser
 	public function toImage($file, $parm=array())
 	{
 
-		if(empty($file))
-		{
-			return null;
-		}
-
 		if(strpos($file,'e_AVATAR')!==false)
 		{
 			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for ".$file."</div>"; // debug info only.
 
 		}
 
-		$srcset     = null;
-		$path       = null;
-		$file       = trim($file);
-		$ext        = pathinfo($file, PATHINFO_EXTENSION);
-		$accepted   = array('jpg','gif','png','jpeg');
-		$tp         = $this;
-
-		if(!in_array($ext,$accepted))
+		if(empty($file) && empty($parm['placeholder']))
 		{
 			return null;
 		}
+
+		if(!empty($file))
+		{
+			$srcset     = null;
+			$path       = null;
+			$file       = trim($file);
+			$ext        = pathinfo($file, PATHINFO_EXTENSION);
+			$accepted   = array('jpg','gif','png','jpeg');
+
+
+			if(!in_array($ext,$accepted))
+			{
+				return null;
+			}
+		}
+
+		$tp  = $this;
 
 	//		e107::getDebug()->log($file);
 	//	e107::getDebug()->log($parm);
@@ -4047,7 +4052,10 @@ class e_parser
 			$path = $file;
 		}
 
-
+		if(empty($path) && !empty($parm['placeholder']))
+		{
+			$path = $tp->thumbUrl($file,$parm);
+		}
 
 		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
 		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive img-fluid";
@@ -4153,9 +4161,9 @@ class e_parser
 	 */
 	public function isUTF8($string)
 	{
-		if (function_exists('mb_detect_encoding'))
+		if (function_exists('mb_check_encoding'))
 		{
-			return (mb_detect_encoding($string) == "UTF-8");
+			return (mb_check_encoding($string, 'UTF-8'));
 		}
 
 		return (bool) preg_match('%(?:

@@ -20,10 +20,6 @@ define("SEP", " <span class='fa fa-play e-breadcrumb'></span> ");
 define("BOOTSTRAP", 3);
 define('FONTAWESOME', 4);
 
-e107::library('load', 'bootstrap');
-e107::library('load', 'fontawesome');
-e107::library('load', 'bootstrap.editable');
-
 $adminStyle = e107::pref('core', 'admincss', 'css/bootstrap-dark.min.css');
 e107::css('theme', $adminStyle);
 e107::css('theme', 'admin_style.css');
@@ -48,7 +44,7 @@ body.forceColors li a              { color: silver}
 
 div#media-manager div.mce-window-head  { background-color: #373737; !important }
 div#media-manager div.mce-title        { color:white; }
-div#media-manager, html                { color: silver; background-color: #2F2F2F; !important}
+/* div#media-manager, html                { color: silver; background-color: #2F2F2F; !important} */
 ");
 
 /*

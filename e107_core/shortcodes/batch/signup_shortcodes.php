@@ -21,7 +21,7 @@ e107::coreLan('signup');
 class signup_shortcodes extends e_shortcode
 {
 	
-	function sc_signup_coppa_form()
+	function sc_signup_coppa_form($parm)
 	{
 		if (strpos(LAN_SIGNUP_77, "stage") !== FALSE)
 		{
@@ -29,6 +29,7 @@ class signup_shortcodes extends e_shortcode
 		}
 		else
 		{
+			$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-primary button';
 			return "
 			<form method='post' action='".e_SELF."?stage1' autocomplete='off'>\n
 			<div><br />
@@ -36,7 +37,7 @@ class signup_shortcodes extends e_shortcode
 			<input type='radio' name='coppa' value='1' id='coppa_yes' /> <label class='control-label' for='coppa_yes'>".LAN_YES."</label>
 			<br />
 			<br />
-			<input class='btn btn-primary button' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
+			<input class='".$class."' type='submit' name='newver' value=\"".LAN_CONTINUE."\" />
 			</div></form>
 		";
 		}
