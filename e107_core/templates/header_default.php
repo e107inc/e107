@@ -23,7 +23,8 @@ $sql = e107::getDb();
 
 $sql->db_Mark_Time('(Header Top)');
 
-
+// Load library dependencies.
+e107::getTheme('current', true)->loadLibrary();
 
 //e107::js('core',	'bootstrap/js/bootstrap-tooltip.js','jquery');
 // e107::css('core',	'bootstrap/css/tooltip.css','jquery');
@@ -120,7 +121,8 @@ if (!function_exists("parseheader"))
 if(!defined("XHTML4"))
 {
 	echo "<!doctype html>\n";
-	echo "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">\n";	
+	$htmlTag = "<html".(defined("TEXTDIRECTION") ? " dir='".TEXTDIRECTION."'" : "").(defined("CORE_LC") ? " lang=\"".CORE_LC."\"" : "").">";
+	echo deftrue('HTMLTAG', $htmlTag)."\n";
 	echo "<head>\n";
 	echo "<meta charset='utf-8' />\n";
 }

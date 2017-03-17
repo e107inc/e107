@@ -262,6 +262,48 @@ class e_menu
 
 
 	/**
+	 * @param int $id menu_id
+	 * @param array $parms
+	 * @return mixed
+	 */
+	public function updateParms($id, $parms)
+	{
+		$model = e107::getModel();
+		$model->setModelTable("menus");
+		$model->setFieldIdName("menu_id");
+		$model->setDataFields(array('menu_parms'=>'json'));
+
+		$model->load($id, true);
+
+		$d = $model->get('menu_parms');
+
+		$model->setPostedData('menu_parms', e107::unserialize($d));
+
+		foreach($parms as $key=>$value)
+		{
+			if(!is_array($value))
+			{
+				$model->setPostedData('menu_parms/'.$key, $value);
+			}
+			else
+			{
+				$lang = key($value);
+				$val = $value[$lang];
+				$model->setPostedData('menu_parms/'.$key.'/'.$lang, $val);
+			}
+		}
+
+
+		return $model->save();
+
+		// return $model;
+
+	}
+
+
+
+
+	/**
 	 * Add a Menu to the Menu Table.
 	 * @param string $plugin folder name
 	 * @param string $menufile name without the .php

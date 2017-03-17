@@ -45,14 +45,21 @@ class siteinfo_shortcodes // must match the folder name of the plugin.
 		}
 	}
 
+	/**
+	 * YYYY is automatically replaced with the current year.
+	 * @return string
+	 */
 	function sc_sitedisclaimer()
 	{
 		$default = "Proudly powered by <a href='http://e107.org'>e107</a> which is released under the terms of the GNU GPL License.";
 
 		$text = deftrue('SITEDISCLAIMER',$default);
 
+		$text = str_replace("YYYY", date('Y'), $text);
+
 		return e107::getParser()->toHtml($text, true, 'SUMMARY');
 	}
+
 	
 	function sc_siteurl($parm='')
 	{

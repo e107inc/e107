@@ -875,10 +875,11 @@ class e_install
 */
 
 		$extensionCheck = array(
-			'xml'       => array('label'=> LANINS_050,      'status'=> function_exists('utf8_encode'),      'url'=> 'http://php.net/manual/en/ref.xml.php'),
-			'exif'      => array('label'=> LANINS_048,      'status'=> function_exists('exif_imagetype'),   'url'=> 'http://php.net/manual/en/book.exif.php'),
-			'gd'        => array('label'=> 'GD Library',    'status'=> function_exists('gd_info'),          'url'=> 'http://php.net/manual/en/book.image.php'),
-			'curl'      => array('label'=>'Curl Library',   'status'=> function_exists('curl_version'),     'url'=>'http://php.net/manual/en/book.curl.php')
+			'xml'   => array('label'=> LANINS_050,          'status' => function_exists('utf8_encode'),         'url'=> 'http://php.net/manual/en/ref.xml.php'),
+			'exif'  => array('label'=> LANINS_048,          'status' => function_exists('exif_imagetype'),      'url'=> 'http://php.net/manual/en/book.exif.php'),
+			'curl'  => array('label'=> 'Curl Library',      'status' => function_exists('curl_version'),        'url'=> 'http://php.net/manual/en/book.curl.php'),
+			'gd'    => array('label'=> 'GD Library',        'status' => function_exists('gd_info'),             'url'=> 'http://php.net/manual/en/book.image.php'),
+			'mb'    => array('label'=> 'MB String Library', 'status' => function_exists('mb_strimwidth'),       'url'=> 'http://php.net/manual/en/book.mbstring.php'),
 		);
 
 
@@ -1970,6 +1971,8 @@ function create_tables_unattended()
 	{
 		return false;
 	}
+
+	$mySQLserver = null;
 	
 	if(file_exists('e107_config.php'))
 	{

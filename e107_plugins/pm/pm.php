@@ -616,7 +616,9 @@ function pm_user_lookup()
 {
 	$sql = e107::getDb();
 
-	$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$_POST['keyword']."' ";
+	$tp = e107::getParser();
+
+	$query = "SELECT * FROM #user WHERE user_name REGEXP '^".$tp->filter($_POST['keyword'],'w')."' ";
 	if($sql->gen($query))
 	{
 		echo '[';

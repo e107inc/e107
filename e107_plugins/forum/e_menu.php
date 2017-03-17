@@ -27,14 +27,17 @@ class forum_menu
 	public function config($menu='')
 	{
 
+		$layouts = e107::getLayouts('forum','newforumposts_menu');
+
 		$fields = array();
 		$fields['caption']      = array('title'=> LAN_FORUM_MENU_004, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 		$fields['display']      = array('title'=> LAN_FORUM_MENU_005, 'type'=>'text',  'writeParms'=>array('size'=>'mini','pattern'=>'[0-9]*'));
 		$fields['maxage']       = array('title'=> LAN_FORUM_MENU_0012, 'type'=>'text', 'help'=>LAN_FORUM_MENU_0013, 'writeParms'=>array('size'=>'mini','pattern'=>'[0-9]*'));
 		$fields['characters']   = array('title'=> LAN_FORUM_MENU_006, 'type'=>'text',  'writeParms'=>array('size'=>'mini','pattern'=>'[0-9]*'));
 		$fields['postfix']      = array('title'=> LAN_FORUM_MENU_007, 'type'=>'text', 'writeParms'=>array('size'=>'mini'));
-		$fields['title']        = array('title'=> LAN_FORUM_MENU_008, 'type'=>'boolean');
-
+	//	$fields['title']        = array('title'=> LAN_FORUM_MENU_008, 'type'=>'boolean');
+		$fields['layout']       = array('title'=> LAN_TEMPLATE, 'type'=>'dropdown', 'writeParms'=>array('optArray'=>$layouts[0]));
+		
         return $fields;
 
 	}

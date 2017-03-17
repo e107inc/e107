@@ -71,18 +71,18 @@ class links_admin_ui extends e_admin_ui
 
 	protected $fields = array(
 		'checkboxes' 		=> array('title'=> '',				'width' => '3%',		'forced' => true,	'thclass'=>'center first',	'class'=>'center first'),
-		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',		'writeParms'=>'glyphs=1'),
+		'link_button'		=> array('title'=> LAN_ICON, 		'type'=>'icon',			'width'=>'5%',		'thclass'=>'center',		'class'=>'center',	'readParms'=>array('legacy'=>'{e_IMAGE}icons/'),	'writeParms'=>'glyphs=1'),
 		'link_id'			=> array('title'=> LAN_ID, 			'type'=>'method',		'readParms'=>'',	'noedit'=>TRUE),
-		'link_name'			=> array('title'=> LAN_NAME,		'type'=>'text',			'inline'=>true,		'required'=>false,		'validate'=>false,	'width'=>'auto'), // not required as only an icon may be used.
-		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',		'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto'),
+		'link_name'			=> array('title'=> LAN_NAME,		'type'=>'text',			'inline'=>true,		'required'=>false,		'validate'=>false,	'width'=>'auto', 'writeParms'=>array('size'=>'xlarge')), // not required as only an icon may be used.
+		'link_category'		=> array('title'=> LAN_TEMPLATE,	'type'=>'dropdown',		'inline'=>true,		'batch'=>true,			'filter'=>true,		'width'=>'auto', 'writeParms'=>array('size'=>'xlarge')),
 
-		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first'),
+		'link_parent'		=> array('title'=> LAN_PARENT,		'type' => 'method',		'data'=>'int',		'width'=>'auto',		'batch'=>true,		'filter'=>true,		'thclass'=>'left first', 'writeParms'=>array('size'=>'xlarge')),
 		'link_url'	   		=> array('title'=> LAN_URL, 		'width'=>'auto', 'type'=>'method', 'inline'=>true, 'required'=>true,'validate' => true, 'writeParms'=>'size=xxlarge'),
 		'link_sefurl' 		=> array('title'=> LAN_SEFURL, 		'type' => 'method', 'inline'=>false, 'width' => 'auto', 'help'=>LCLAN_107),
 		'link_class' 		=> array('title'=> LAN_USERCLASS, 	'type' => 'userclass','inline'=>true, 'writeParms' => 'classlist=public,guest,nobody,member,classes,admin,main', 'batch'=>true, 'filter'=>true, 'width' => 'auto'),
 		'link_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea', 'width' => 'auto'), // 'method'=>'tinymce_plugins',  ?
 		'link_order' 		=> array('title'=> LAN_ORDER, 		'type' => 'number', 'width' => 'auto', 'nolist'=>false, 'inline' => true),
-		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first'),
+		'link_open'			=> array('title'=> LCLAN_19, 		'type' => 'dropdown', 'inline'=>true, 'width' => 'auto', 'batch'=>true, 'filter'=>true, 'thclass' => 'left first', 'writeParms'=>array('size'=>'xlarge')),
 		'link_function'		=> array('title'=> LCLAN_105, 		'type' => 'method', 'data'=>'str', 'width' => 'auto', 'thclass' => 'left first'),
 		'link_owner'		=> array('title'=> LCLAN_106,		'type' => 'hidden', 'data'=>'str'),
 		'options' 			=> array('title'=> LAN_OPTIONS, 	'type'	=> null, 'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class'=>'center','readParms'=>'sort=1') // quick workaround
@@ -117,7 +117,7 @@ class links_admin_ui extends e_admin_ui
 
 	function init()
 	{
-		$this->fields['link_category']['writeParms'] = array(
+		$this->fields['link_category']['writeParms']['optArray'] = array(
 			1	=> "1 - Main",
 			2	=> "2 - Sidebar",
 			3	=> "3 - Footer",
@@ -131,7 +131,8 @@ class links_admin_ui extends e_admin_ui
 	       255 => "(Unassigned)",
 		);
 
-		$this->fields['link_open']['writeParms'] = array(
+
+		$this->fields['link_open']['writeParms']['optArray'] = array(
 			0 => LCLAN_20, // 0 = same window
 			1 => LCLAN_23, // new window
 			4 => LCLAN_24, // 4 = miniwindow  600x400
@@ -616,6 +617,37 @@ class links_admin_form_ui extends e_admin_form_ui
 			}
 			$this->linkFunctions[$cat] = $func;
 		}
+
+		$sitetheme = e107::getPref('sitetheme');
+
+		if(!file_exists(e_THEME.$sitetheme.'/theme_shortcodes.php'))
+		{
+			return null;
+		}
+
+		require_once(e_THEME.$sitetheme.'/theme_shortcodes.php');
+		$methods = get_class_methods('theme_shortcodes');
+
+		asort($methods);
+
+		$cat = defset('LINKLAN_10',"Theme Shortcodes");
+
+		foreach($methods as $func)
+		{
+			if(strpos($func,'sc_') !== 0)
+			{
+				continue;
+			}
+
+			$newkey = 'theme::'.$func;
+
+			$this->linkFunctions[$cat][$newkey] = str_replace('sc_','',$func);
+		}
+
+
+	//	var_dump($methods );
+
+
 	}
 	
 	function link_parent($value, $mode)
@@ -647,7 +679,7 @@ class links_admin_form_ui extends e_admin_form_ui
 				$cats	= $this->getController()->getLinkArray($catid);
 				$ret	= array();
 				$this->_parent_select_array(0, $cats, $ret);
-				return $this->selectbox('link_parent', $ret, $value, array('default' => LAN_SELECT));
+				return $this->selectbox('link_parent', $ret, $value, array('size'=>'xlarge','default' => LAN_SELECT));
 			break;
 
 			case 'batch':
@@ -670,7 +702,7 @@ class links_admin_form_ui extends e_admin_form_ui
 
 		if($mode == 'write')
 		{			
-			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('default'=> "(".LAN_OPTIONAL.")"));
+			return $this->selectbox('link_function',$this->linkFunctions,$curVal,array('size'=>'xlarge','default'=> "(".LAN_OPTIONAL.")"));
 		}
 
 		else

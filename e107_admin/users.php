@@ -1323,6 +1323,7 @@ class users_admin_ui extends e_admin_ui
 		$sql 			= e107::getDb();
 		$e_event 		= e107::getEvent();
 		$admin_log		= e107::getAdminLog();
+		$pref = e107::getPref();
 		
 		if (!$_POST['ac'] == md5(ADMINPWCHANGE))
 		{
@@ -1401,7 +1402,7 @@ class users_admin_ui extends e_admin_ui
 
 
 
-		$user_data['user_password'] = $userMethods->HashPassword($savePassword, $user_data['user_login']);
+		$user_data['user_password'] = $userMethods->HashPassword($savePassword, $user_data['user_loginname']);
 		$user_data['user_join'] = time();
 
 		e107::getMessage()->addDebug("Password Hash: ".$user_data['user_password']);

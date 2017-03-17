@@ -241,7 +241,8 @@ class social_shortcodes extends e_shortcode
 
 		if(empty($parm['providers'])) // No parms so use prefs instead.
 		{
-			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : array_keys($providers);
+			$defaultProviders = array('email' ,'facebook-like', 'facebook-share', 'twitter',  'google-plus1',  'pinterest' ,  'stumbleupon', 'reddit', 'digg' );
+			$parm['providers']  = !empty($pref['sharing_providers']) ? array_keys($pref['sharing_providers']) : $defaultProviders;
 		}
 		else
 		{

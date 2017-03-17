@@ -575,7 +575,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			}
 
 
-			if($parm != '')
+			if(!empty($parm))
 			{
 				$extra = '.'.$parm;
 			}

@@ -1383,7 +1383,7 @@ class lancheck
 
 				$editUrl = e_REQUEST_SELF."?".http_build_query($parms,'&amp;');
 				$text .="<td class='center' style='width:5%'>
-				<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button' style='width:60px'>".LAN_EDIT."</a>";
+				<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button'>".LAN_EDIT."</a>";
 				$text .="</td></tr>";
 
 		}
@@ -1749,7 +1749,7 @@ class lancheck
 
 			$editUrl = e_REQUEST_SELF."?".http_build_query($parms,'&amp;');
 
-			$text .= "<a href='".$editUrl."'  class='e-modal btn btn-primary' data-modal-caption='".str_replace("../","",$comp_dir)."' style='width:60px' >".LAN_EDIT."</a> "; // href='".e_REQUEST_URI."&amp;f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;type={$mode}'
+			$text .= "<a href='".$editUrl."'  class='e-modal btn btn-primary' data-modal-caption='".str_replace("../","",$comp_dir)."'>".LAN_EDIT."</a> "; // href='".e_REQUEST_URI."&amp;f=".$comp_dir."/languages/".$lnk."&amp;lan=".$target_lan."&amp;type={$mode}'
 		//	<a href='".$editUrl."'  data-modal-caption='".$subpath."' class='e-modal btn btn-primary' type='button' style='width:60px'>".LAN_EDIT."</a>";
 
 
