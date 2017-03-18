@@ -226,7 +226,7 @@ class e_search
 			
 			foreach ($search_fields as $field_key => $field) 
 			{
-				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)))";
+				$search_query[] = "(". varset($weights[$field_key],0.6)." * (MATCH(".$field.") AGAINST ('".str_replace(" ","+",$this -> query)."' IN BOOLEAN MODE)))";
 				$field_query[] = "MATCH(".$field.") AGAINST ('".$this -> query."' IN BOOLEAN MODE)";
 			}
 			
@@ -239,8 +239,8 @@ class e_search
 			{
 				$sql_order .= ', '.$sort_key.' '.$sort_value;
 			}
-			
-			$limit = " LIMIT ".$result_flag.",".$search_res;
+
+			$limit = " LIMIT ".intval($result_flag).",".$search_res;
 			
 			$sql_query = "SELECT SQL_CALC_FOUND_ROWS ".$return_fields.", (".$match_query.") AS relevance FROM #".$table." WHERE ".$where." (".$field_query.") HAVING relevance > 0 ORDER BY relevance DESC ".$sql_order.$limit.";";
 
@@ -250,7 +250,7 @@ class e_search
 
 		if(E107_DBG_SQLQUERIES)
 		{
-			echo e107::getMessage()->addDebug($sql_query)->render();
+			echo e107::getMessage()->addDebug(str_replace('#',MPREFIX,$sql_query))->render();
 		}
 
 

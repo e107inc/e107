@@ -51,7 +51,8 @@ class search extends e_shortcode
 	private $auto_order = 1000;
 	private $enhanced = false;
 	private $query = null;
-	private $result_flag = false;
+	private $doSearch = false;
+	private $result_flag = 0; // same as 'from'
 	private $message = '';
 	public 	$template = array();
 	private $enhancedTypes = array(
@@ -894,7 +895,7 @@ class search extends e_shortcode
 				$_GET = $this->magic_search($_GET);
 			}
 			
-			$full_query = $tp->filter($_GET['q'],'w');
+			$full_query = $tp->filter($_GET['q']);
 			
 			if ($_GET['in']) 
 			{
@@ -976,8 +977,10 @@ class search extends e_shortcode
 
 			if ($this->query)
 			{
-				$this->result_flag = true; // intval($_GET['r']);
+				$this->result_flag = intval($_GET['r']);
+				$this->doSearch = true;
 			}
+			
 
 			return $this->query;
 		}	
@@ -988,7 +991,7 @@ class search extends e_shortcode
 	
 	public function doSearch()
 	{
-		return $this->result_flag;
+		return $this->doSearch;
 
 	}
 	
