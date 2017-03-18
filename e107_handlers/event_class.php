@@ -97,7 +97,7 @@ class e107_event
 
 			),
 
-			NN_LAN_7	=> array(
+			ADLAN_0	=> array(
 
 				'admin_news_created'	=> NN_LAN_3,
 				'admin_news_updated'	=> NN_LAN_4,
