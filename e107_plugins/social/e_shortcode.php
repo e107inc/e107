@@ -61,7 +61,9 @@ class social_shortcodes extends e_shortcode
 	function sc_xurl_icons($parm='')
 	{
 		$tp = e107::getParser();
-		$template = e107::getTemplate('social','social','xurl_icons');
+		$tmpl = !empty($parm['template']) ? $parm['template'] : 'default';
+
+		$template = e107::getTemplate('social','social_xurl',$tmpl);
 
 		$social = array(
 			'rss'			=> array('href'=> (e107::isInstalled('rss_menu') ? e107::url('rss_menu', 'index', array('rss_url'=>'news')) : ''), 'title'=>'RSS/Atom Feed'),
