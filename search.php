@@ -980,7 +980,7 @@ class search extends e_shortcode
 				$this->result_flag = intval($_GET['r']);
 				$this->doSearch = true;
 			}
-			
+
 
 			return $this->query;
 		}	

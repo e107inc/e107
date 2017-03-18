@@ -16,7 +16,7 @@ if (!getperms('X'))
 	e107::redirect('admin');
 	exit;
 }
-
+e107::coreLan('search');// need LAN_SEARCH_98
 e107::coreLan('search', true);
 
 $e_sub_cat = 'search';
