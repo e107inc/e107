@@ -22,3 +22,8 @@ define("LAN_FAQS_MODERATE_COMMENTS", "moderate comments");
 define("LAN_FAQS_BACK_TO_CATEGORIES", "Back to Categories");
 define("LAN_FAQS_ASK_A_QUESTION", "Ask a Question");
 define("LAN_FAQS_FAQ", "FAQ");
+define("LAN_FAQS_ENTER_A_QUESTION_HERE", "Enter your question here...");
+define("LAN_FAQS_CHAR_LIMIT", "character limit");
+define("LAN_FAQS_PLEASE_REGISTER", "Please [register] and/or login to post a question.");
+define("LAN_FAQS_NOT_PERMITTED", "Not permitted.");
+define("LAN_FAQS_YOUR_REQUESTED_FAQS", "You have requested answers to the following questions:");
