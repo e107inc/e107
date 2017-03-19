@@ -5,9 +5,9 @@ e107::includeLan(e_PLUGIN."search_menu/languages/".e_LANGUAGE.".php");
 $text = "";
 if (!isset($SEARCH_SHORTCODE)) 
 {
-	if (file_exists(THEME."search_template.php")) 
+	if (file_exists(THEME."templates/search_template.php")) 
 	{
-			include(THEME."search_template.php");
+			include(THEME."templates/search_template.php");
 	} 
 	else 
 	{
