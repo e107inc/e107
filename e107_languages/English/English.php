@@ -50,6 +50,7 @@ define("EMESSLAN_TITLE_SUCCESS", "Success");
 define("EMESSLAN_TITLE_WARNING", "Warning");
 define("EMESSLAN_TITLE_DEBUG", "System Debug");
 
+define("LAN_NO_PERMISSIONS", "You do not have permission to view this page.");
 define("LAN_EDIT","Edit");
 define("LAN_DELETE","Delete");
 define("LAN_DEFAULT","Default");
