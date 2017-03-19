@@ -1092,7 +1092,7 @@ class e_admin_dispatcher
 		if(!$this->checkModeAccess($currentMode))
 		{
 			$request->setAction('e403');
-			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
 				->addDebug('Mode access restriction triggered.');
 			return false;
 		}
@@ -1103,7 +1103,7 @@ class e_admin_dispatcher
 		if(!$this->checkRouteAccess($route))
 		{
 			$request->setAction('e403');
-			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
 				->addDebug('Route access restriction triggered:'.$route);
 			return false;
 		}
@@ -1675,7 +1675,7 @@ class e_admin_controller
 		if(!empty($this->disallow) && in_array($currentAction, $this->disallow))
 		{
 			$request->setAction('e403');
-			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
 				->addDebug('Controller action disallowed restriction triggered.');
 			return false;
 		}
@@ -1684,7 +1684,7 @@ class e_admin_controller
 		if(!empty($this->allow) && !in_array($currentAction, $this->allow))
 		{
 			$request->setAction('e403');
-			e107::getMessage()->addError('You don\'t have permissions to view this page.')
+			e107::getMessage()->addError(LAN_NO_PERMISSIONS)
 				->addDebug('Controller action not in allowed list restriction triggered.');
 			return false;
 		}
@@ -2167,7 +2167,7 @@ class e_admin_controller
 
 	public function E404Page()
 	{
-		return '<div class="center">'.LAN_UI_404_BODY_ERROR.'</div>'; // TODO - lan
+		return '<div class="center">'.LAN_UI_404_BODY_ERROR.'</div>';
 	}
 
 
@@ -2184,7 +2184,7 @@ class e_admin_controller
 
 	public function E403Page()
 	{
-		return '<div class="center">'.LAN_UI_403_BODY_ERROR.'</div>'; // TODO - lan
+		return '<div class="center">'.LAN_UI_403_BODY_ERROR.'</div>';
 	}
 
 
@@ -3246,8 +3246,7 @@ class e_admin_controller_ui extends e_admin_controller
 					// check userclass manager class
 					if (!isset($e_userclass->class_tree[$id]) || !$user->checkClass($e_userclass->class_tree[$id]))
 					{
-						// TODO lan
-						$msg = $tp->lanVars("You don't have management permissions on [x]",$label);
+						$msg = $tp->lanVars(LAN_NO_ADMIN_PERMISSION,$label);
 						$this->getTreeModel()->addMessageWarning($msg);
 						unset($classes[$id],$msg);
 					}
@@ -3304,11 +3303,11 @@ class e_admin_controller_ui extends e_admin_controller
 			case 'datestamp':
 							
 				$dateConvert = array(
-					"hour"	=> "1 hour ago",
-					"day"	=> "24 hours ago",
-					"week"	=> "1 week ago",
-					"month"	=> "1 month ago",
-					"year"	=> "1 year ago"
+					"hour"	=> LAN_UI_FILTER_PAST_HOUR,//"1 hour ago",//etc
+					"day"	=> LAN_UI_FILTER_PAST_24_HOURS,
+					"week"	=> LAN_UI_FILTER_PAST_WEEK,
+					"month"	=> LAN_UI_FILTER_PAST_MONTH,
+					"year"	=> LAN_UI_FILTER_PAST_YEAR
 				);
 				
 				$ky = $filter[2];
@@ -4669,32 +4668,32 @@ class e_admin_ui extends e_admin_controller_ui
             
             $res = $sql->insert('links', $linkArray);
             
-            // FIXME lans
             if($res !== FALSE)
             {
-                 e107::getMessage()->addSuccess('Created Sitelink: <b>'.($name ? $name : 'n/a')."</b>");   
-				 $scount++; 
+				e107::getMessage()->addSuccess(LAN_CREATED.": ".LAN_SITELINK.": ".($name ? $name : 'n/a'));   
+				$scount++; 
             }
             else 
             {
                 if($sql->getLastErrorNumber())
                 {
-                    e107::getMessage()->addError('SQL Link Creation Error'); //TODO - Lan
+					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".LAN_SITELINK.": ".$name.": ".LAN_SQL_ERROR);
                     e107::getMessage()->addDebug('SQL Link Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
-                }  
+                }
 				else
 				{
-					e107::getMessage()->addError('Unknown error: <b>'.$name."</b> not added");  
+					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".LAN_SITELINK.": ".$name.": ".LAN_UNKNOWN_ERROR);//Unknown Error  
 				}
             }
-                         
+
         }
         
-        if($scount > 0)
-        {
-            e107::getMessage()->addSuccess("<br /><strong>{$scount}</strong> new sitelinks were added but are currently unassigned. You should now modify these links to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>Modify Links</a>");
+		if($scount > 0)
+		{
+			e107::getMessage()->addSuccess(LAN_CREATED." (".$scount.") ".ADLAN_138);
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_ADMIN_ABS."links.php?searchquery=&filter_options=link_category__255'>".LAN_CONFIGURE." ".ADLAN_138."</a>");
 			return $scount;        
-        }
+		}
         
         return false; 
  
@@ -4749,30 +4748,29 @@ class e_admin_ui extends e_admin_controller_ui
 
             $res = $sql->insert('featurebox', $fbArray);
 
-            // FIXME lans
             if($res !== FALSE)
             {
-                 e107::getMessage()->addSuccess('Created Featurebox Item: <b>'.($name ? $name : 'n/a')."</b>");   
-				 $scount++; 
+				e107::getMessage()->addSuccess(LAN_CREATED.": ".LAN_PLUGIN_FEATUREBOX_NAME.": ".($name ? $name : 'n/a'));
+				$scount++; 
             }
             else
             {
                 if($sql->getLastErrorNumber())
                 {
-                    e107::getMessage()->addError('SQL Featurebox Creation Error'); //TODO - Lan
-                    e107::getMessage()->addDebug('SQL Featurebox Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
+					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".LAN_PLUGIN_FEATUREBOX_NAME.": ".$name.": ".LAN_SQL_ERROR);
+					e107::getMessage()->addDebug('SQL Featurebox Creation Error #'.$sql->getLastErrorNumber().': '.$sql->getLastErrorText());
                 }  
 				else
 				{
-					e107::getMessage()->addError('Unknown error: <b>'.$name."</b> not added");  
+					e107::getMessage()->addError(LAN_CREATED_FAILED.": ".$name.": ".LAN_UNKNOWN_ERROR);  
 				}
             }
-                         
         }
         
         if($scount > 0)
         {
-            e107::getMessage()->addSuccess("<br /><strong>{$scount}</strong> new featurebox items were added but are currently unassigned. You should now modify these items to your liking.<br /><br /><a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'>Modify Featurebox Items</a>");
+			e107::getMessage()->addSuccess(LAN_CREATED." (".$scount.") ".LAN_PLUGIN_FEATUREBOX_NAME);  
+			e107::getMessage()->addSuccess("<a class='btn btn-small btn-primary' href='".e_PLUGIN_ABS."featurebox/admin_config.php?searchquery=&filter_options=fb_category__{$category}'".LAN_CONFIGURE." ".LAN_PLUGIN_FEATUREBOX_NAME."</a>");
 			return $scount;        
         }
         
@@ -4891,8 +4889,8 @@ class e_admin_ui extends e_admin_controller_ui
 				}
 				else
 				{
-					// TODO lan
-					$this->getTreeModel()->addMessageWarning("Comma list is empty, aborting.")->setMessages();
+					$this->getTreeModel()->addMessageWarning(LAN_UPDATED_FAILED)->setMessages();//"Comma list is empty, aborting."
+					$this->getTreeModel()->addDebug(LAN_UPDATED_FAILED.": Comma list is empty, aborting.")->setMessages();
 				}
 			break;
 				
@@ -5139,7 +5137,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			header($protocol.': 404 Not Found', true, 404);
 			header("Status: 404 Not Found", true, 404);
-			echo 'Field not found'; // FIXME lan
+			echo LAN_FIELD.": ".$this->fields[$_POST['name']].": ".LAN_NOT_FOUND; // Field: x: not found!
 			$this->logajax('Field not found');
 			return;
 		}
@@ -5154,7 +5152,7 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			header($protocol.': 403 Forbidden', true, 403);
 			header("Status: 403 Forbidden", true, 403);
-			echo 'Forbidden'; // FIXME lan
+			echo ADLAN_86; //Forbidden
 			$this->logajax("Forbidden");
 			return;
 		}
@@ -5877,7 +5875,6 @@ class e_admin_form_ui extends e_form
 	}
 
 	/**
-	 * TODO - lans
 	 * Generic DB Record Creation Form.
 	 * @return string
 	 */
@@ -5942,7 +5939,6 @@ class e_admin_form_ui extends e_form
 	}
 
 	/**
-	 * TODO - lans
 	 * Generic Settings Form.
 	 * @return string
 	 */
@@ -6536,12 +6532,12 @@ class e_admin_form_ui extends e_form
 
 							if(isset($options['addAll']))
 							{
-								$option['attach_all__'.$key] = vartrue($options['addAll'], '(add all)');	
+								$option['attach_all__'.$key] = vartrue($options['addAll'], "(".LAN_ADD_ALL.")");
 								unset($options['addAll']);
 							}
 							if(isset($options['clearAll']))
 							{
-								$_option['deattach_all__'.$key] = vartrue($options['clearAll'], '(clear all)');	
+								$_option['deattach_all__'.$key] = vartrue($options['clearAll'], "(".LAN_CLEAR_ALL.")");
 								unset($options['clearAll']);
 							}
 							
@@ -6549,16 +6545,16 @@ class e_admin_form_ui extends e_form
 							{
 								foreach ($options as $value) 
 								{
-									$option['attach__'.$key.'__'.$value] = 'Add '.$value;	
-									$_option['deattach__'.$key.'__'.$value] = 'Remove '.$value;	
+									$option['attach__'.$key.'__'.$value] = LAN_ADD." ".$value;
+									$_option['deattach__'.$key.'__'.$value] = LAN_REMOVE." ".$value;
 								}
 							}
 							else 
 							{
 								foreach ($options as $value => $label) 
 								{
-									$option['attach__'.$key.'__'.$value] = 'Add '.$label;	
-									$_option['deattach__'.$key.'__'.$value] = 'Remove '.$label;	
+									$option['attach__'.$key.'__'.$value] = LAN_ADD." ".$label;	
+									$_option['deattach__'.$key.'__'.$value] = LAN_REMOVE." ".$label;	
 								}
 							}
 							$option = array_merge($option, $_option);
@@ -6648,14 +6644,12 @@ class e_admin_form_ui extends e_form
 					break;
 
 					case 'datestamp': 
-					    //TODO today, yesterday, this-month, last-month .
-					    
-					    $dateFilters = array (
+						$dateFilters = array (
 							'hour'		=> LAN_UI_FILTER_PAST_HOUR,
-					    	"day"		=> LAN_UI_FILTER_PAST_24_HOURS,
-					    	"week"		=> LAN_UI_FILTER_PAST_WEEK,
-					    	"month"		=> LAN_UI_FILTER_PAST_MONTH,
-					    	"year"		=> LAN_UI_FILTER_PAST_YEAR
+							"day"		=> LAN_UI_FILTER_PAST_24_HOURS,
+							"week"		=> LAN_UI_FILTER_PAST_WEEK,
+							"month"		=> LAN_UI_FILTER_PAST_MONTH,
+							"year"		=> LAN_UI_FILTER_PAST_YEAR
 						);
 					    
 						foreach($dateFilters as $k => $name)
@@ -6679,14 +6673,13 @@ class e_admin_form_ui extends e_form
 						
 						if($type === 'batch')
 						{
-							// FIXME Lan
 							foreach ($classes as $k => $v) 
 							{
-								$option['ucadd__'.$key.'__'.$k] = LAN_ADD.' '.$v;	
-								$_option['ucremove__'.$key.'__'.$k] = 'Remove '.$v;	
+								$option['ucadd__'.$key.'__'.$k] = LAN_ADD.' '.$v;
+								$_option['ucremove__'.$key.'__'.$k] = LAN_REMOVE." ".$v;
 							}
-							$option['ucaddall__'.$key] = '(add all)';	
-							$_option['ucdelall__'.$key] = '(clear all)';
+							$option['ucaddall__'.$key] = "(".LAN_ADD_ALL.")";
+							$_option['ucdelall__'.$key] = "(".LAN_CLEAR_ALL.")";
 							$option = array_merge($option, $_option);
 						}
 						else
@@ -6741,7 +6734,7 @@ class e_admin_form_ui extends e_form
 							}
 							else 
 							{
-								$option[$key.'__'.$k] = vartrue($data['user_name'],'Unknown');		
+								$option[$key.'__'.$k] = vartrue($data['user_name'],LAN_UNKNOWN);
 							}
 							
 							
