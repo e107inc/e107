@@ -51,7 +51,8 @@ class search extends e_shortcode
 	private $auto_order = 1000;
 	private $enhanced = false;
 	private $query = null;
-	private $result_flag = 0;
+	private $doSearch = false;
+	private $result_flag = 0; // same as 'from'
 	private $message = '';
 	public 	$template = array();
 	private $enhancedTypes = array(
@@ -746,6 +747,7 @@ class search extends e_shortcode
 	
 	function renderResults()
 	{
+
 		global $query, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag, $advanced_caption;
 		
 		$ns = e107::getRender();
@@ -778,7 +780,7 @@ class search extends e_shortcode
 					$search_chars 	= $this->search_info[$key]['chars'];
 					$search_res 	= $this->search_info[$key]['results'];
 			
-					if(vartrue($this->search_info[$key]['sfile']) && file_exists($this->search_info[$key]['sfile'])) // Legacy
+					if(!empty($this->search_info[$key]['sfile']) && file_exists($this->search_info[$key]['sfile'])) // Legacy
 					{
 						$text .= '<div class="search-block">';
 						require_once($this->search_info[$key]['sfile']);
@@ -884,6 +886,7 @@ class search extends e_shortcode
 		global $perform_search;
 		$tp = e107::getParser();
 		$sql = e107::getDb();
+
 		
 		if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET['ep']) || isset($_GET['beg'])) 
 		{
@@ -892,7 +895,7 @@ class search extends e_shortcode
 				$_GET = $this->magic_search($_GET);
 			}
 			
-			$full_query = $tp->filter($_GET['q'],'w');
+			$full_query = $tp->filter($_GET['q']);
 			
 			if ($_GET['in']) 
 			{
@@ -931,7 +934,7 @@ class search extends e_shortcode
 			{
 				$perform_search = false;
 				$this->message = LAN_SEARCH_201;
-				$this->result_flag = 0;
+				$this->result_flag = false;
 			} 
 			else if (strlen($full_query) == 0) 
 			{
@@ -968,23 +971,29 @@ class search extends e_shortcode
 				}
 			}
 			
-			if ($perform_search) 
+
+			
+			$this->query = trim($full_query);
+
+			if ($this->query)
 			{
 				$this->result_flag = intval($_GET['r']);
+				$this->doSearch = true;
 			}
 
-			$query = trim($full_query);
-			
-			$this->query = $query;
-			
-			return $query;
+
+			return $this->query;
 		}	
 		
 		
 		
 	}	
 	
-	
+	public function doSearch()
+	{
+		return $this->doSearch;
+
+	}
 	
 }
 
@@ -993,101 +1002,11 @@ $srchObj 		= new search;
 $search_info 	= $srchObj->getConfig();
 $search_prefs	= $srchObj->getPrefs();
 
-// validate search query
-$perform_search = true;
-
-// simple parse object
 $SEARCH_VARS = new e_vars();
 
-/*
-function magic_search($data) {
-	foreach ($data as $key => $value) {
-		if (is_array($value)) {
-			$data[$key] = magic_search($value);
-		} else {
-			$data[$key] = stripslashes($value);
-		}
-	}
-	return $data;
-}
-
-if (!e_QUERY) {
-	$enhanced = true;
-}
-*/
-
-/*
-
-if (isset($_GET['q']) || isset($_GET['in']) || isset($_GET['ex']) || isset($_GET['ep']) || isset($_GET['beg'])) {
-	if (MAGIC_QUOTES_GPC == true) {
-		$_GET = magic_search($_GET);
-	}
-	$full_query = $_GET['q'];
-	if ($_GET['in']) {
-		$en_in = explode(' ', $_GET['in']);
-		foreach ($en_in as $en_in_key) {
-			$full_query .= " +".$en_in_key;
-		}
-		$enhanced = true;
-	}
-	if ($_GET['ex']) {
-		$en_ex = explode(' ', $_GET['ex']);
-		foreach ($en_ex as $en_ex_key) {
-			$full_query .= " -".$en_ex_key;
-		}
-		$enhanced = true;
-	}
-	if ($_GET['ep']) {
-		$full_query .= " \"".$_GET['ep']."\"";
-		$enhanced = true;
-	}
-	if ($_GET['be']) {
-		$en_be = explode(' ', $_GET['be']);
-		foreach ($en_be as $en_be_key) {
-			$full_query .= " ".$en_be_key."*";
-		}
-		$enhanced = true;
-	}
-
-	if (isset($_GET['r']) && !is_numeric($_GET['r'])) {
-		$perform_search = false;
-		$SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_201;
-		$result_flag = 0;
-	} else if (strlen($full_query) == 0) {
-		$perform_search = false;
-		$SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_201;
-	} 
-	elseif (strlen($full_query) < ($char_count = ($search_prefs['mysql_sort'] ? 4 : 3))) 
-	{
-		$perform_search = false;
-		$SEARCH_VARS->SEARCH_MESSAGE = str_replace('--CHARS--', $char_count, LAN_417);
-	} 
-	elseif ($search_prefs['time_restrict']) {
-		$time = time() - $search_prefs['time_secs'];
-		$query_check = $tp -> toDB($full_query);
-		$ip = e107::getIPHandler()->getIP(FALSE);
-		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
-			$row = $sql -> db_Fetch();
-			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
-				$perform_search = false;
-				$SEARCH_VARS->SEARCH_MESSAGE = LAN_SEARCH_17.$search_prefs['time_secs'].LAN_SEARCH_18;
-			} else {
-				$sql -> db_Update("tmp", "tmp_time='".time()."', tmp_info='type_search ".$query_check."' WHERE tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'");
-			}
-		} else {
-			$sql -> db_Insert("tmp", "'".$ip."', '".time()."', 'type_search ".$query_check."'");
-		}
-	}
-	if ($perform_search) {
-		$result_flag = $_GET['r'];
-	}
-	$query = trim($full_query);
-}*/
-
-
 $query =  $srchObj->searchQuery();
-
-
+$perform_search = $srchObj->doSearch();
+$perform_search = true; 
 // forward user if searching in google
 $search_count = count($search_info);
 $google_id = $search_count + 1;
@@ -1117,77 +1036,6 @@ if ($perform_search)
 }
 
 $searchtype = $srchObj->searchType();
-
-
-
-
-// determine areas being searched
-/*
-if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
-	foreach($search_info as $key => $value) {
-		$searchtype[$key] = true;
-	}
-} else {
-	if (isset($_GET['t'])) {
-		if (is_array($_GET['t'])) {
-			$searchtype = $_GET['t'];
-		} else {
-			$searchtype[$_GET['t']] = true;
-		}
-	} else {
-		if (isset($_GET['ref'])) {
-			foreach($search_info as $key => $value) {
-				if ($value['id'] == $_GET['ref']) {
-					$searchtype[$key] = true;
-					$_GET['t'] = $key;
-				}
-			}
-		} else if (e_QUERY) {
-			if (isset($_SERVER['HTTP_REFERER'])) {
-				if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
-					$refpage = "index.php";
-				}
-			} else {
-				$refpage = "";
-			}
-
-			foreach($search_info as $key => $value) {
-				if ($value['refpage']) {
-					if (strpos($refpage, $value['refpage']) !== FALSE) {
-						$searchtype[$key] = true;
-						$_GET['t'] = $key;
-					}
-				}
-			}
-		}
-
-		if (!isset($searchtype) && isset($query)) {
-			if ($search_prefs['multisearch']) {
-				$searchtype['all'] = true;
-			} else {
-				$searchtype[0] = true;
-			}
-		}
-	}
-}
-*/
-
-
-//$value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
-//$SEARCH_VARS->SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
-
-
-/*
-if ($search_prefs['selector'] == 1) 
-{
-  $SEARCH_VARS->SEARCH_MAIN_CHECKALL = "<input  type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
-  $SEARCH_VARS->SEARCH_MAIN_UNCHECKALL = "<input  type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
-}
-*/
-//$SEARCH_VARS->SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input type='submit' name='s' value='".LAN_SEARCH."' />";
-
-//$SEARCH_VARS->ENHANCED_ICON = "<img src='".e_IMAGE_ABS."generic/search_basic.png' style='width: 16px; height: 16px; vertical-align: top'
-//alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 
 $enhanced_types['in'] = LAN_SEARCH_24.':';
 $enhanced_types['ex'] = LAN_SEARCH_25.':';

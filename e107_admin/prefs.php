@@ -1274,19 +1274,28 @@ $text .= "
 				</colgroup>
 				<tbody>";
 
-	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')     // Only allow if an SSL login has been made.
-	{
+
 		$text .="
 					<tr>
 						<td><label for='ssl-enabled'>".PRFLAN_60."</label></td>
 
-						<td>
-							".$frm->radio_switch('ssl_enabled', $pref['ssl_enabled'])."
-							<div class='field-help'>".PRFLAN_61."</div>
+						<td>";
+
+							if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')     // Only allow if an SSL login has been made.
+							{
+								$text .= $frm->radio_switch('ssl_enabled', $pref['ssl_enabled']);
+								$text .= "<div class='field-help'>".PRFLAN_61."</div>";
+							}
+							else
+							{
+								$text .= "<div class='label label-primary e-tip' title=\"".PRFLAN_61."\">".PRFLAN_275."</div>";
+							}
+
+						$text .= "
 						</td>
 					</tr>
 			";
-	}
+
 	// Secure Image/ Captcha
 	$secureImage = array('signcode'=>PRFLAN_76, 'logcode'=>PRFLAN_81, "fpwcode"=>PRFLAN_138,'admincode'=>PRFLAN_222);
 	
