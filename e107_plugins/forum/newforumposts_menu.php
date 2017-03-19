@@ -111,7 +111,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 			$sc = e107::getScBatch('view', 'forum')->setScVar('param',$param);
 
-			$list = $tp->parseTemplate($template['start'],true);
+			$list = $tp->parseTemplate($template['start'], true);
 
 			while($row = $sql->fetch())
 			{
@@ -119,7 +119,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 				$sc->setScVar('postInfo', $row);
 				$sc->setVars($row);
-				$list .= $tp->parseTemplate($template['item'],false,$sc);
+				$list .= $tp->parseTemplate($template['item'], true, $sc);
 
 
 /*
@@ -189,7 +189,7 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 
 
 
-			$list .= $tp->parseTemplate($template['end'],true);
+			$list .= $tp->parseTemplate($template['end'], true);
 
 
 			$text = $list;
