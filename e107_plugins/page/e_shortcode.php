@@ -138,7 +138,7 @@ class page_shortcodes extends e_shortcode
 		function sc_chapter_menus($parm=null)
 		{
 			$tp = e107::getParser();
-			$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $tp->filter($parm['name'],'str') . "' ORDER BY p.page_order ASC ";
+			$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND p.menu_class IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $tp->filter($parm['name'],'str') . "' ORDER BY p.page_order ASC ";
 
 			$text = '';
 

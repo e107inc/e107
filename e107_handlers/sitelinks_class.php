@@ -1688,25 +1688,33 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			return $row['link_sub'];	
 		}
 		
-		if(vartrue($row['link_function']))
+		if(!empty($row['link_function']))
 		{	
 			$parm = false;	
 			
 			list($path,$method) = explode("::",$row['link_function']);
+
+			if($path === 'theme')
+			{
+				$text = e107::callMethod('theme_shortcodes',$method, $row); // no parms as theme_shortcodes may be added as needed.
+
+				if(!empty($text))
+				{
+					return '<div class="dropdown-menu">'.$text.'</div>'; // @todo use template?
+				}
+			}
 			
 			if(strpos($method,"("))
 			{
 				list($method,$prm) = explode("(",$method);
 				$parm = rtrim($prm,")");	
 			}
-			
+
 			if(include_once(e_PLUGIN.$path."/e_sitelink.php"))
 			{
 				$class = $path."_sitelink";
 				if($sublinkArray = e107::callMethod($class,$method,$parm,$row)) //TODO Cache it.
 				{
-
-
 					return $sublinkArray;
 				} 
 			}
