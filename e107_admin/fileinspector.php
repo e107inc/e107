@@ -204,9 +204,6 @@ class file_inspector {
 		 $this->langs = $langs;
 		 $this->lang_short = $lang_short;
 
-
-		//TODO LAN
-
 		$this->glyph = array(
 			'folder_close'      => array('<i class="fa fa-times-circle-o"></i>'),
 			'folder_up'         => array('<i class="fa fa-folder-open-o"></i>'),
@@ -1253,7 +1250,7 @@ class file_inspector {
 		$data .= "|     Released under the terms and conditions of the\n";
 		$data .= "|     GNU General Public License (http://gnu.org).\n";
 		$data .= "|\n";
-		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
+		$data .= "|  ";
 		$data .= "|     \$Revision$\n";
 		$data .= "|     \$Id$\n";
 		$data .= "|     \$Author$\n";
