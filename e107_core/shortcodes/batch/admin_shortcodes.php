@@ -157,6 +157,7 @@ class admin_shortcodes
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
+			$ns->setUniqueId('sc-admin-help');
 			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
