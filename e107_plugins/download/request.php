@@ -147,7 +147,7 @@ if ($type == "file")
 				$search = array("[","]");
 				$replace = array("<a href='".e_HTTP."download.php'>", "</a>");
 
-				$ns->tablerender(LAN_ERROR, "<div class='alert alert-warning' style='text-align:center'>".str_replace($search, $replace, LAN_dl_78).'</div>');
+				$ns->tablerender(LAN_ERROR, "<div class='alert alert-warning'>".str_replace($search, $replace, LAN_dl_78).'</div>');
 				require_once(FOOTERF);
 				exit();
 			}
