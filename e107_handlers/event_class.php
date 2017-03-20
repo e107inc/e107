@@ -75,7 +75,7 @@ class e107_event
 
 		$this->coreEvents = array( // used by e_notify admin area.
 
-			LAN_SESSION	=> array(
+			'session' => array(
 
 				'user_signup_submitted'		=> NU_LAN_2,
 				'user_signup_activated'		=> NU_LAN_3,
@@ -90,14 +90,14 @@ class e107_event
 
 			),
 
-			LAN_ADMIN	=> array(
+			'administrators'	=> array(
 				'admin_password_update'		=> NA_LAN_1,
 				'admin_user_created'		=> NA_LAN_2,
 				'admin_user_activated'		=> NA_LAN_3
 
 			),
 
-			ADLAN_0	=> array(
+			'news'	=> array(
 
 				'admin_news_created'	=> NN_LAN_3,
 				'admin_news_updated'	=> NN_LAN_4,
@@ -107,12 +107,12 @@ class e107_event
 
 			),
 
-			'Email'	=> array(
+			'mail'	=> array(
 
 				'maildone'			=> NM_LAN_2,
 			),
 
-			LAN_FILE	=> array(
+			'file'	=> array(
 
 				//		'fileupload'		=> NF_LAN_2,
 				'user_file_upload'	=> NF_LAN_2,
