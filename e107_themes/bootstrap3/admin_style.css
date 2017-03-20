@@ -1488,6 +1488,81 @@ footer {
 */
 
 
+
+
+
+body#admin-menus > .container-fluid > .row,
+body#admin-menus .admin-left-panel,
+
+.row-flex,
+.row-flex > div[class*='col-'] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+
+}
+
+body#admin-menus > .container-fluid > .row {
+	height: 92vh;
+}
+
+body#admin-menus .admin-left-panel {
+flex-flow: column nowrap;
+}
+
+.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
+	 margin:-.2px; /* hack adjust for wrapping */
+}
+
+.container-flex > div[class*='col-'] div,
+.row-flex > div[class*='col-'] div {
+	width:100%;
+}
+
+body#admin-menus #sc-admin-help,
+body#admin-menus #sc-admin-help .panel-body,
+.flex-col {
+    display: flex;
+    display: -webkit-flex;
+    flex: 1 100%;
+	flex-flow: column nowrap;
+}
+
+.flex-grow {
+	display: flex;
+    -webkit-flex: 2;
+    flex: 2;
+}
+
+body#admin-menus #sc-admin-help  {
+	overflow-y:hidden;
+	}
+
+body#admin-menus #sc-admin-help .panel-body {
+	overflow-y:scroll;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
 }
