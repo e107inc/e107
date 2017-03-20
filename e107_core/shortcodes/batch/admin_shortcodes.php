@@ -161,9 +161,15 @@ class admin_shortcodes
 			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
+		if(e_PAGE === "menus.php") // quite fix to disable e107_admin/menus.php help file in all languages.
+		{
+			return $help_text;
+		}
+
+
 		$helpfile = '';
 		
-		if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
+		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
 		{
 			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
 			{
