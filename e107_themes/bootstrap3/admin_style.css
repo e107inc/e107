@@ -1545,7 +1545,7 @@ body#admin-menus #sc-admin-help .panel-body {
 	overflow-y:scroll;
 	}
 
-
+.form-control[disabled] { opacity: 0.5; 	}
 
 
 
