@@ -96,6 +96,12 @@ if(isset($_POST['updateprefs']))
 		$mes->addError(PRFLAN_211);
     }
 
+
+	if(!empty($_POST['passwordEncoding']) || !empty($_POST['ssl_enabled']))
+	{
+		$_POST['password_CHAP'] = 0; // disable chap unless using md5 without SSL.
+	}
+
 	// Table of range checking values - min and max for numerics. Only do the important ones
 	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30),
 					'displayname_maxlength' => array('min' => 5, 'max' => 100, 'default' => 15),
@@ -1427,7 +1433,10 @@ $text .= "
 	
 					$text .= "
 						<td><label for='password-chap'>".PRFLAN_178."</label></td>
-						<td>".$frm->select('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
+						<td>";
+
+						$CHAPopt = !empty($pref['ssl_enabled']) || !empty($pref['passwordEncoding']) ? array('disabled'=>1) : null;
+						$text .=  $frm->select('password_CHAP',$CHAP_list,$pref['password_CHAP'], $CHAPopt );
 						//."	".$frm->select_open('password_CHAP');
 							
 						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
