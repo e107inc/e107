@@ -45,7 +45,9 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		$qry = "
 		SELECT
 			p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
-			t.thread_id, t.thread_datestamp, t.thread_name, u.user_id, u.user_name, u.user_image, u.user_currentvisit, f.forum_sef
+			t.*,
+			u.user_id, u.user_name, u.user_image, u.user_currentvisit,
+			f.forum_name, f.forum_sef
 		FROM `#forum_post` as p
 
 		LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
@@ -73,19 +75,54 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		$list = null;
 		$text = null;
 
+		$layout = 'minimal';
+
+		if (!empty($this->menuPref['title']) && intval($this->menuPref['title']) === 1) // legacy pref value
+		{
+			$layout = 'default';
+		}
+
+		if(!empty($this->menuPref['layout']))//@todo e_menu add 'layout' dropdown.
+		{
+			$layout = $this->menuPref['layout'];
+		}
+
+		$template = e107::getTemplate('forum','newforumposts_menu',$layout);
+
+
+
+
+		$param = array();
+
+		foreach($this->menuPref as $k=>$v)
+		{
+			$param['nfp_'.$k] = $v;
+		}
+
+
+
 		if($results = $sql->gen($qry))
 		{
 
-			if($tp->thumbWidth()  > 250) // Fix for unset image size.
+		/*	if($tp->thumbWidth()  > 250) // Fix for unset image size.
 			{
 				$tp->setThumbSize(40,40,true);
-			}
+			}*/
 
-			$list = "<ul class='media-list newforumposts-menu'>";
+			$sc = e107::getScBatch('view', 'forum')->setScVar('param',$param);
+
+			$list = $tp->parseTemplate($template['start'], true);
 
 			while($row = $sql->fetch())
 			{
+				$row['thread_sef'] = $this->forumObj->getThreadSef($row);
 
+				$sc->setScVar('postInfo', $row);
+				$sc->setVars($row);
+				$list .= $tp->parseTemplate($template['item'], true, $sc);
+
+
+/*
 				$datestamp 	= $tp->toDate($row['post_datestamp'], 'relative');
 				$id 		= $row['thread_id'];
 				$topic 		= ($row['thread_datestamp'] == $row['post_datestamp'] ?  '' : 'Re:');
@@ -145,12 +182,15 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 				}
 
 				$list .= "</div></li>";
-
+*/
 
 
 			}
 
-			$list .= "</ul>";
+
+
+			$list .= $tp->parseTemplate($template['end'], true);
+
 
 			$text = $list;
 		}
@@ -164,7 +204,9 @@ class forum_newforumposts_menu // plugin folder + menu name (without the .php)
 		{
 			$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
 		}
-		else
+
+
+		if(empty($caption))
 		{
 			$caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
 		}

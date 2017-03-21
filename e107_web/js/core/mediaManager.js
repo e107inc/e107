@@ -14,71 +14,88 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	e107.behaviors.initMediaManager = {
 		attach: function (context, settings)
 		{
-			$(context).find('body').once('init-media-manager').each(function ()
+			$(context).find('.e-media-attribute').once('media-manager-e-media-attribute').each(function ()
 			{
-				e107.mediaManager.setEventListeners();
+				$(this).keyup(function ()
+				{
+					e107.mediaManager.eMediaAttribute(this);
+				});
+			});
+
+			$(context).find('#float').once('media-manager-float').each(function ()
+			{
+				$(this).change(function ()
+				{
+					e107.mediaManager.eMediaAttribute(this);
+				});
+			});
+
+			$(context).find('.e-media-select-file-none').once('media-manager-e-media-select-file-none').each(function ()
+			{
+				$(this).click(function ()
+				{
+					e107.mediaManager.eMediaSelectFileNone(this);
+				});
+			});
+
+			$(context).find('.e-media-select').once('media-manager-e-media-select').each(function ()
+			{
+				$(this).click(function ()
+				{
+					e107.mediaManager.eMediaSelect(this);
+				});
+			});
+
+			// Must be defined after e-media-select.
+			$(context).find('.e-dialog-save').once('media-manager-e-dialog-save').each(function ()
+			{
+				$(this).click(function ()
+				{
+					e107.mediaManager.eDialogSave(this);
+				});
+			});
+
+			// Must be defined after e-media-select.
+			$(context).find('.e-media-nav').once('media-manager-e-media-nav').each(function ()
+			{
+				$(this).click(function ()
+				{
+					e107.mediaManager.mediaNav(this, '.e-media-nav');
+				});
+			});
+
+			$(context).find('#media-search').once('media-manager-media-search').each(function ()
+			{
+				$(this).keyup(function ()
+				{
+					var that = this;
+
+					e107.callbacks.waitForFinalEvent(function ()
+					{
+						e107.mediaManager.mediaNav(that, null);
+					}, 300, "mediaSearch");
+				});
+			});
+
+			// Ajax keyup search. Used by media-browser.
+			$(context).find('.e-ajax-keyup').once('media-manager-e-ajax-keyup').each(function ()
+			{
+				$(this).keyup(function ()
+				{
+					var that = this;
+
+					e107.callbacks.waitForFinalEvent(function ()
+					{
+						e107.mediaManager.eAjaxKeyUp(that);
+					}, 300, "eAjaxKeyUp");
+				});
+			});
+
+			$(context).find('body').once('media-manager-plupload').each(function ()
+			{
 				e107.mediaManager.initPlUpload();
 			});
 		}
-	};
-
-	/**
-	 * Add event listeners to the Media Manager elements.
-	 */
-	e107.mediaManager.setEventListeners = function ()
-	{
-		$(".e-media-attribute").keyup(function ()
-		{
-			e107.mediaManager.eMediaAttribute(this);
-		});
-
-		$("#float").change(function ()
-		{
-			e107.mediaManager.eMediaAttribute(this);
-		});
-
-		$(".e-media-select-file-none").click(function ()
-		{
-			e107.mediaManager.eMediaSelectFileNone(this);
-		});
-
-		$(".e-media-select").click(function ()
-		{
-			e107.mediaManager.eMediaSelect(this);
-		});
-
-		// Must be defined after e-media-select.
-		$(".e-dialog-save").click(function ()
-		{
-			e107.mediaManager.eDialogSave(this);
-		});
-
-		// Must be defined after e-media-select.
-		$(".e-media-nav").click(function ()
-		{
-			e107.mediaManager.mediaNav(this, '.e-media-nav');
-		});
-
-		$("#media-search").keyup(function ()
-		{
-			var that = this;
-
-			e107.callbacks.waitForFinalEvent(function ()
-			{
-				e107.mediaManager.mediaNav(that, null);
-			}, 300, "mediaSearch");
-		});
-
-		// Ajax keyup search. Used by media-browser.
-		$(".e-ajax-keyup").keyup(function ()
-		{
-			var that = this;
-
-			e107.callbacks.waitForFinalEvent(function ()
-			{
-				e107.mediaManager.eAjaxKeyUp(that);
-			}, 300, "eAjaxKeyUp");
-		});
 	};
 
 	/**
@@ -427,8 +444,21 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			return true;
 		}
 
-		// http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
-		$('#' + target, window.top.document).atCaret('insert', newval);
+		var $target = $('#' + target, window.top.document);
+
+		if ($target.length > 0)
+		{
+			var targetType = $target.attr('type');
+
+			// The input element's type ('hidden') does not support selection.
+			if (targetType == 'hidden')
+			{
+				return true;
+			}
+
+			// http://code.google.com/p/jquery-at-caret/wiki/GettingStarted
+			$('#' + target, window.top.document).atCaret('insert', newval);
+		}
 
 		if(close == 'true')
 		{
@@ -557,6 +587,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		$target.load(src, function ()
 		{
 			$target.fadeIn('fast'); // .slideLeft();
+			e107.attachBehaviors();
 		});
 	};
 

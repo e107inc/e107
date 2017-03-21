@@ -145,7 +145,7 @@ define("LAN_MAILOUT_129", "Expiry Date");
 define("LAN_MAILOUT_130", "Creation Date");
 define("LAN_MAILOUT_131", "Sending Started");
 define("LAN_MAILOUT_132", "Sending Complete");
-define("LAN_MAILOUT_133", "Source");
+//define("LAN_MAILOUT_133", "Source"); // Moved to lan_admin.php
 define("LAN_MAILOUT_134", "Priority");
 //define("LAN_MAILOUT_135", "Title");//LAN_TITLE
 define("LAN_MAILOUT_136", "Mailout Status");
@@ -289,6 +289,6 @@ define("LAN_MAILOUT_265", "Pending");
 define("LAN_MAILOUT_266", "Max Active");
 define("LAN_MAILOUT_267", "Generate Public/Private keys");
 define("LAN_MAILOUT_268", "Developer Mode Only");
-//define("LAN_SUBMIT", "Do it!"); LAN_RUN
+define("LAN_MAILOUT_269", "Send Later");
 
 ?>

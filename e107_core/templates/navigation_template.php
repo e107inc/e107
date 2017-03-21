@@ -8,7 +8,7 @@
 
  
 // TEMPLATE FOR {NAVIGATION=main}
-$NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav">';
+$NAVIGATION_TEMPLATE['main']['start'] = '<ul class="nav navbar-nav nav-main">';
 
 // Main Link
 $NAVIGATION_TEMPLATE['main']['item'] = '
@@ -98,16 +98,16 @@ $NAVIGATION_TEMPLATE['main']['submenu_lowerend'] = '</ul>';
 
 // TEMPLATE FOR {NAVIGATION=side}
 
-$NAVIGATION_TEMPLATE['side']['start'] 				= '<ul class="nav nav-list"><li class="nav-header">Sidebar</li>
+$NAVIGATION_TEMPLATE['side']['start'] 				= '<ul class="listgroup nav-side">
 														';
 
-$NAVIGATION_TEMPLATE['side']['item'] 				= '<li><a href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">{LINK_ICON}{LINK_NAME}</a></li>
+$NAVIGATION_TEMPLATE['side']['item'] 				= '<li class="list-group-item"><a href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">{LINK_ICON}{LINK_NAME}</a></li>
 														';
 
 $NAVIGATION_TEMPLATE['side']['item_submenu'] 		= '<li class="nav-header">{LINK_ICON}{LINK_NAME}{LINK_SUB}</li>
 														';
 
-$NAVIGATION_TEMPLATE['side']['item_active'] 		= '<li class="active"{LINK_OPEN}><a href="{LINK_URL}" title="{LINK_DESCRIPTION}">{LINK_ICON}{LINK_NAME}</a></li>
+$NAVIGATION_TEMPLATE['side']['item_active'] 		= '<li class="list-group-item active"{LINK_OPEN}><a class="list-group-item active" href="{LINK_URL}" title="{LINK_DESCRIPTION}">{LINK_ICON}{LINK_NAME}</a></li>
 														';
 
 $NAVIGATION_TEMPLATE['side']['end'] 				= '</ul>
@@ -115,7 +115,7 @@ $NAVIGATION_TEMPLATE['side']['end'] 				= '</ul>
 
 $NAVIGATION_TEMPLATE['side']['submenu_start'] 		= '';
 
-$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li><a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>';
+$NAVIGATION_TEMPLATE['side']['submenu_item']		= '<li class="list-group-item" ><a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>';
 
 $NAVIGATION_TEMPLATE['side']['submenu_loweritem'] = '
 			<li role="menuitem" class="dropdown-submenu">
@@ -143,10 +143,44 @@ $NAVIGATION_TEMPLATE["footer"]["submenu_item_active"] 	= "<li class='active'><a 
 $NAVIGATION_TEMPLATE["footer"]["submenu_end"] 			= "</ul>";
 
 
+$NAVIGATION_TEMPLATE['alt']['start'] 				= '<ul class="nav nav-list">
+														';
+
+$NAVIGATION_TEMPLATE['alt']['item'] 				= '<li><a href="{LINK_URL}"{LINK_OPEN} title="{LINK_DESCRIPTION}">{LINK_ICON}{LINK_NAME}</a></li>
+														';
+
+$NAVIGATION_TEMPLATE['alt']['item_submenu'] 		= '<li class="nav-header">{LINK_ICON}{LINK_NAME}{LINK_SUB}</li>
+														';
+
+$NAVIGATION_TEMPLATE['alt']['item_active'] 		= '<li class="active"{LINK_OPEN}><a href="{LINK_URL}" title="{LINK_DESCRIPTION}">{LINK_ICON}{LINK_NAME}</a></li>
+														';
+
+$NAVIGATION_TEMPLATE['alt']['end'] 				= '</ul>
+														';
+
+$NAVIGATION_TEMPLATE['alt']['submenu_start'] 		= '';
+
+$NAVIGATION_TEMPLATE['alt']['submenu_item']		= '<li><a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a></li>';
+
+$NAVIGATION_TEMPLATE['alt']['submenu_loweritem'] = '
+			<li role="menuitem" class="dropdown-submenu">
+				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
+				{LINK_SUB}
+			</li>
+';
+
+$NAVIGATION_TEMPLATE['alt']['submenu_item_active'] = '<li class="active"><a href="{LINK_URL}">{LINK_ICON}{LINK_NAME}</a></li>';
+
+$NAVIGATION_TEMPLATE['alt']['submenu_end'] 		= '';
 
 
-$NAVIGATION_TEMPLATE['alt'] 						= $NAVIGATION_TEMPLATE['side'];
-$NAVIGATION_TEMPLATE['alt5'] 						= $NAVIGATION_TEMPLATE['side'];
-$NAVIGATION_TEMPLATE['alt6'] 						= $NAVIGATION_TEMPLATE['side'];
+$NAVIGATION_TEMPLATE['alt5'] 						= $NAVIGATION_TEMPLATE['alt'];
+$NAVIGATION_TEMPLATE['alt6'] 						= $NAVIGATION_TEMPLATE['alt'];
+
+$NAVIGATION_TEMPLATE['alt5']['start'] 				= '<ul class="nav nav-list nav-alt5">';
+$NAVIGATION_TEMPLATE['alt6']['start'] 				= '<ul class="nav nav-list nav-alt6">';
+
+
+
 
 ?>

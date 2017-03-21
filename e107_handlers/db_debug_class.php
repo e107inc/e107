@@ -698,10 +698,16 @@ class e107_db_debug {
 				<td class='forumheader3'>SQL Language</td>
 				<td class='forumheader3'>".$sql->mySQLlanguage."</td>
 			</tr>
+";
+	if($_SERVER['E_DEV'] == 'true')
+	{
+			$text .= "
+				<tr>
+					<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($e107,TRUE))."</pre></td>
+				</tr>";
+	}
 
-			<tr>
-				<td class='forumheader3' colspan='2'><pre>".htmlspecialchars(print_r($e107,TRUE))."</pre></td>
-			</tr>
+		$text .="
 			<tr>
 				<td class='fcaption' colspan='2'><h2>Session</h2></td>
 			</tr>
@@ -776,7 +782,7 @@ class e107_db_debug {
 			$message = "<pre>".print_r($message,true)."</pre>";
 		}
 
-		if (!E107_DBG_BASIC && !E107_DBG_ALLERRORS && !E107_DBG_SQLDETAILS && !E107_DBG_NOTICES)
+		if (!deftrue('E107_DBG_BASIC') && !deftrue('E107_DBG_ALLERRORS') && !deftrue('E107_DBG_SQLDETAILS') && !deftrue('E107_DBG_NOTICES'))
 		{
 			return false;
 		}

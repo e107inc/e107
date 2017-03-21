@@ -349,7 +349,7 @@ class e107Update
 			";
 	
 	
-		$ns->tablerender("Updates",$mes->render() . $text);
+		$ns->tablerender(LAN_UPDATES,$mes->render() . $text);
 	
 	}
 	
@@ -565,6 +565,7 @@ function update_core_database($type = '')
 		$sql = e107::getDb();
 		$log = e107::getLog();
 		$just_check = ($type == 'do') ? false : true;
+		$pref = e107::getPref();
 
 
 		if(!$sql->select('core_media_cat', 'media_cat_id', "media_cat_category = '_icon_svg' LIMIT 1"))
@@ -578,6 +579,16 @@ function update_core_database($type = '')
 
 			$sql->gen($query);
 
+		}
+
+		if(isset($pref['e_header_list']['social']))
+		{
+			if($just_check)
+			{
+				return update_needed("Social Plugin Needs to be refreshed. ");
+			}
+			
+			e107::getPlugin()->refresh('social');
 		}
 
 		return $just_check;

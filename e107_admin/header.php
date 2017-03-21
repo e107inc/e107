@@ -111,6 +111,10 @@ function loadJSAddons()
 
 }
 
+// Load library dependencies.
+e107::getTheme('current', true)->loadLibrary();
+
+// Load other JS files.
 loadJSAddons();
 
 
@@ -460,6 +464,10 @@ if (count($js_body_onload)) $body_onload = " onload=\"".implode(" ",$js_body_onl
 if(deftrue('e_MENUMANAGER_ACTIVE'))
 {
 	$body_onload .= " id=\"layout-".e107::getForm()->name2id(THEME_LAYOUT)."\" ";
+}
+else
+{
+	$body_onload .= " id=\"admin-".str_replace(".php","",e_PAGE)."\" ";
 }
 
 //

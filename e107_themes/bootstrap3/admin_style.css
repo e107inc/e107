@@ -18,6 +18,8 @@ button, button:active                      { outline: 0; }
 .tooltip 					{ font-size: 13px; }    
 .tooltip-inner 				{  }
 
+/* Fix for tooltips inside modal. */
+.modal-open .tooltip { z-index: 10002; }
  
 /* Core Formatting */
 .left						{ text-align: left }
@@ -416,7 +418,7 @@ i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  
 
 .s-message-body { padding-left: 42px; }
 .s-message-item {}
-.s-message-item a.btn { margin-top: 15px; }
+.s-message-item .btn { margin-top: 15px; }
 
 .e-footer-info 		{ text-align: center }
 
@@ -1484,6 +1486,81 @@ footer {
     color: rgb(119, 119, 119);
 }
 */
+
+
+
+
+
+body#admin-menus > .container-fluid > .row,
+body#admin-menus .admin-left-panel,
+
+.row-flex,
+.row-flex > div[class*='col-'] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+
+}
+
+body#admin-menus > .container-fluid > .row {
+	height: 92vh;
+}
+
+body#admin-menus .admin-left-panel {
+flex-flow: column nowrap;
+}
+
+.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
+	 margin:-.2px; /* hack adjust for wrapping */
+}
+
+.container-flex > div[class*='col-'] div,
+.row-flex > div[class*='col-'] div {
+	width:100%;
+}
+
+body#admin-menus #sc-admin-help,
+body#admin-menus #sc-admin-help .panel-body,
+.flex-col {
+    display: flex;
+    display: -webkit-flex;
+    flex: 1 100%;
+	flex-flow: column nowrap;
+}
+
+.flex-grow {
+	display: flex;
+    -webkit-flex: 2;
+    flex: 2;
+}
+
+body#admin-menus #sc-admin-help  {
+	overflow-y:hidden;
+	}
+
+body#admin-menus #sc-admin-help .panel-body {
+	overflow-y:scroll;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @media (min-width: 1101px ){

@@ -239,6 +239,7 @@ Below is the list of files that could potentially be malicious:");
 define("LAN_CREATE","Create");
 define("LAN_MANAGE","Manage");
 define("LAN_UPDATE","Update");
+define("LAN_UPDATES", "Updates");
 define("LAN_INSTALLED","Installed");//TODO elsewhere
 define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
@@ -255,7 +256,8 @@ define("LAN_ERRORS", "Errors");
 define("LAN_MESSAGES", "Messages");
 define("LAN_DATA", "Data");
 
-define("LAN_OPTIONS","Options");
+define("LAN_OPTIONS", "Options");
+define("LAN_BASIC_OPTIONS", "Basic Options");
 define("LAN_PREFS","Preferences");
 define("LAN_DELETED","Successfully deleted");
 define("LAN_UPDATED","Successfully updated");
@@ -270,6 +272,9 @@ define("LAN_NEVER", "Never");
 define("LAN_PRUNE", "Prune");
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
+define("LAN_ADD_ALL", "Add All");
+define("LAN_CLEAR_ALL", "Clear All"); 
+define("LAN_UNKNOWN", "Unknown");
 define("LAN_ALL","All");
 define("LAN_IMPORT","Import");
 // define("LAN_OK","OK");     // defined in e107_languages/English/English.php
@@ -320,7 +325,7 @@ define("LAN_LANG","Lang.");
 define("LAN_APPROVE","Approve");
 define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
-//define("LAN_ACTIVE","Active");//English.php 
+define("LAN_ACTIVATE","Activate");
 define("LAN_ACCEPT","Accept");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
@@ -328,7 +333,7 @@ define("LAN_POSTED_BY_X","Posted by [x] [y]");
 define("LAN_VIEW_ALL","View All");
 
 define("LAN_BAN","Ban");
-
+define("LAN_PATH", "Path");
 
 define("LAN_UPLOAD", "Upload");
 define("LAN_UPLOADS","Uploads");
@@ -355,6 +360,7 @@ define("LAN_CONFIGURE", "Configure");
 // define("LAN_BACK", "Back"); @see e107_languages/English.php
 
 define("LAN_NOPERMISSION", "no permissions");
+define("LAN_NO_ADMIN_PERMISSION", "You do not have administrator permissions for [x]");
 
 define("LAN_CREDITS","Credits");
 define("LAN_NEWVERSION","e107 v[x] Available");
@@ -385,7 +391,7 @@ define("LAN_PURCHASE", "Purchase ");
 define("LAN_DOWN_THEME", "Downloading ");
 
 define("LAN_ID", "ID");
-
+define("LAN_TEST", "Test");
 
 
 define("LAN_VISIBILITY", "Visibility");
@@ -442,6 +448,8 @@ define("LAN_UI_404_METHOD_ERROR", "Action [x] not found!");
 define("LAN_UI_403_BODY_ERROR", "Access to the requested page is denied.");
 define("LAN_UI_403_TITLE_ERROR", "Access denied");
 define("LAN_UI_FORM_METHOD_ERROR", "FATAL ERROR: The field name [x] is not allowed. Please rename the key [x] to something else in your fields array and database table (if required).");
+define("LAN_UNKNOWN_ERROR", "Unknown Error");
+define("LAN_SQL_ERROR", "SQL Error");
 
 define("LAN_UI_BATCH_UPDATE_SUCCESS", "[x] set for [y] record(s).");
 define("LAN_UI_BATCH_REVERSED_SUCCESS", "[x] records successfully reversed.");
@@ -455,7 +463,7 @@ define("LAN_UI_DELETE_LABEL", "Confirm Delete");
 define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
 define("LAN_UI_DELETED", "[x] record(s) successfully deleted!");
-define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");\
+define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");
 define("LAN_UI_BATCH_EXPORT", "Export");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");
@@ -478,7 +486,6 @@ define("LAN_CUSTOM_URL", "Custom URL");
 define("LAN_CUSTOM_URL_DISABLED", "Disabled or Enter Custom URL");
 
 define("LAN_GENERAL", "General");
-//define("LAN_GENERATE", "Generate"); //moved to English php
 define("LAN_GEN_PW", "Generate a password");
 define("LAN_DISPL_PW", "Display the password");
 define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
@@ -486,6 +493,7 @@ define("LAN_WILL_OVERWRITE_SEF", "This will overwrite your existing SEF URL.");
 define("LAN_CAPTION", "Caption");
 define("LAN_LIMIT", "Limit");
 define("LAN_BASIC", "Basic");
+define("LAN_EXTENDED", "Extended");
 define("LAN_ADVANCED", "Advanced");
 define("LAN_FOLDER", "Folder");
 define("LAN_PERSONALIZE_ICONS", "Personalize Icons");
@@ -493,21 +501,14 @@ define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
 define("LAN_LATEST_COMMENTS", "Latest Comments");
 define("LAN_COMMENTS_ALLOWED", "Comments Allowed");
 define("LAN_PERSONALIZE", "Personalize");
-//define("LAN_SELECT_COLUMNS_TO_DISPLAY", "Select columns to display"); // Moved to lan_form_handler.php
-//define("LAN_DISPLAY_COLUMNS", "Display Columns"); // Moved to lan_form_handler.php
+
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
 define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
-//define("LAN_AFTER_SUBMIT", "After submit:"); // Moved to lan_form_handler.php
 define("LAN_UNAVAILABLE", "Unavailable");
-//define("LAN_READY_UP_FOLDER_FIELDS", "Ready to use upload form fields, optional - file list view"); // Not used only debug
 define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
 define("LAN_NOT_FOUND", "Not Found!");
-//define("LAN_QUICK_VIEW", "Quick View"); // Moved to lan_form_handler.php
-//define("LAN_GO_TO_USER_PROFILE", "Go to user profile"); // Moved to lan_form_handler.php
-//define("LAN_MULTI_LANGUAGE_FIELD", "Multi-language field"); // Moved to lan_form_handler.php
-//define("LAN_GO_TO_LIST", "go to list"); // Moved to lan_form_handler.php
-//define("LAN_CREATE_ANOTHER", "create another"); // Moved to lan_form_handler.php
-//define("LAN_EDIT_CURRENT", "edit current"); // Moved to lan_form_handler.php
+define("LAN_FIELD", "Field");
+
 define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
 define("LAN_CHANGE_LANGUAGE", "Change Language");
@@ -519,5 +520,6 @@ define("LAN_ITEM", "Item");
 define("LAN_LOCK", "Lock");
 define("LAN_SYSTEM_USER", "System user");
 define("LAN_ENGINE", "Engine");
+define("LAN_SOURCE", "Source");
 
 define("LAN_ERROR_CONNECTION","Unable to connect for updates. Please check firewall and/or internet connection.");

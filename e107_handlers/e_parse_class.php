@@ -2171,9 +2171,15 @@ class e_parse extends e_parser
 	 * We use HTML-safe strings, with several characters escaped.
 	 *
 	 * @param mixed $var
+	 *  PHP variable.
+	 * @param bool $force_object
+	 *  True: Outputs an object rather than an array when a non-associative
+	 *  array is used. Especially useful when the recipient of the output
+	 *  is expecting an object and the array is empty.
+	 *
 	 * @return string
 	 */
-	public function toJSON($var)
+	public function toJSON($var, $force_object = false)
 	{
 		// The PHP version cannot change within a request.
 		static $php530;
@@ -2185,6 +2191,12 @@ class e_parse extends e_parser
 
 		if($php530)
 		{
+			if($force_object === true)
+			{
+				// Encode <, >, ', &, and " using the json_encode() options parameter.
+				return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_FORCE_OBJECT);
+			}
+
 			// Encode <, >, ', &, and " using the json_encode() options parameter.
 			return json_encode($var, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 		}
@@ -3950,28 +3962,33 @@ class e_parser
 	public function toImage($file, $parm=array())
 	{
 
-		if(empty($file))
-		{
-			return null;
-		}
-
 		if(strpos($file,'e_AVATAR')!==false)
 		{
 			return "<div class='alert alert-danger'>Use \$tp->toAvatar() instead of toImage() for ".$file."</div>"; // debug info only.
 
 		}
 
-		$srcset     = null;
-		$path       = null;
-		$file       = trim($file);
-		$ext        = pathinfo($file, PATHINFO_EXTENSION);
-		$accepted   = array('jpg','gif','png','jpeg');
-		$tp         = $this;
-
-		if(!in_array($ext,$accepted))
+		if(empty($file) && empty($parm['placeholder']))
 		{
 			return null;
 		}
+
+		if(!empty($file))
+		{
+			$srcset     = null;
+			$path       = null;
+			$file       = trim($file);
+			$ext        = pathinfo($file, PATHINFO_EXTENSION);
+			$accepted   = array('jpg','gif','png','jpeg');
+
+
+			if(!in_array($ext,$accepted))
+			{
+				return null;
+			}
+		}
+
+		$tp  = $this;
 
 	//		e107::getDebug()->log($file);
 	//	e107::getDebug()->log($parm);
@@ -4035,7 +4052,10 @@ class e_parser
 			$path = $file;
 		}
 
-
+		if(empty($path) && !empty($parm['placeholder']))
+		{
+			$path = $tp->thumbUrl($file,$parm);
+		}
 
 		$id     = (!empty($parm['id']))     ? "id=\"".$parm['id']."\" " :  ""  ;
 		$class  = (!empty($parm['class']))  ? $parm['class'] : "img-responsive img-fluid";
@@ -4141,9 +4161,9 @@ class e_parser
 	 */
 	public function isUTF8($string)
 	{
-		if (function_exists('mb_detect_encoding'))
+		if (function_exists('mb_check_encoding'))
 		{
-			return (mb_detect_encoding($string) == "UTF-8");
+			return (mb_check_encoding($string, 'UTF-8'));
 		}
 
 		return (bool) preg_match('%(?:

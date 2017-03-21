@@ -1877,13 +1877,63 @@ class e_library_manager
 					$coreLib = $coreLibs[$library['machine_name']];
 					$library['files'] = $coreLib['files'];
 					$library['variants'] = $coreLib['variants'];
-
-					// Admin UI uses its own CSS.
-					unset($library['files']['css']);
-					unset($library['variants']['dev']['files']['css']);
 					break;
 			}
 		}
+
+		$excluded = $this->getExcludedLibraries();
+
+		if(empty($excluded))
+		{
+			return;
+		}
+
+		// Make sure we have the name without cdn prefix.
+		$basename = str_replace('cdn.', '', $library['machine_name']);
+
+		// If this library (or the CDN version of this library) is excluded
+		// by the theme is currently used.
+		if (in_array($basename, $excluded) || in_array('cdn.' . $basename, $excluded))
+		{
+			unset($library['files']['css']);
+
+			if (!empty($library['variants']))
+			{
+				foreach($library['variants'] as &$variant)
+				{
+					if(!empty($variant['files']['css']))
+					{
+						unset($variant['files']['css']);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get excluded libraries.
+	 *
+	 * @return array
+	 */
+	public function getExcludedLibraries()
+	{
+		// This static cache is re-used by preLoad() to save memory.
+		static $excludedLibraries;
+
+		if(!isset($excludedLibraries))
+		{
+			$excludedLibraries = array();
+
+			$exclude = e107::getTheme('current', true)->cssAttribute('auto', 'exclude');
+
+			if($exclude)
+			{
+				// Split string into array and remove whitespaces.
+				$excludedLibraries = array_map('trim', explode(',', $exclude));
+			}
+		}
+
+		return $excludedLibraries;
 	}
 
 }

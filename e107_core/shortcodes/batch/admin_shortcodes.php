@@ -157,12 +157,19 @@ class admin_shortcodes
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
+			$ns->setUniqueId('sc-admin-help');
 			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
+		if(e_PAGE === "menus.php") // quite fix to disable e107_admin/menus.php help file in all languages.
+		{
+			return $help_text;
+		}
+
+
 		$helpfile = '';
 		
-		if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
+		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
 		{
 			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
 			{
@@ -1353,7 +1360,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$tp = e107::getParser();
 		$ns->setUniqueId('e-addon-updates');
-		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').'Updates Available',$text,'default',true);
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);
 
 
 	}
@@ -1434,7 +1441,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			    <div class="media-body">
 			      <h4 class="media-heading">'.$ls.$row['name'].$le.'</h4>
 			      <p>'.$row['version'].'<br />
-			       <small class="text-muted">Released: '.($row['date']).'</small>
+			       <small class="text-muted">'.LAN_RELEASED.': '.($row['date']).'</small>
 			       </p>
 
 			    </div>

@@ -302,7 +302,7 @@ class mailout_main_ui extends e_admin_ui
 			'mail_end_send' 		=> array('title' => LAN_MAILOUT_132, 'noedit'=>true,  'type'=>'datestamp'),
 			'mail_create_date' 		=> array('title' => LAN_MAILOUT_130, 'type'=>null, 'noedit'=>true, 'data'=>'int'),
 			'mail_creator' 			=> array('title' => LAN_MAILOUT_85, 'type'=>null, 'noedit'=>true, 'data'=>'int'),
-			'mail_create_app' 		=> array('title' => LAN_MAILOUT_133, 'type'=>null, 'noedit'=>true,'data'=>'str'),
+			'mail_create_app' 		=> array('title' => LAN_SOURCE, 'type'=>null, 'noedit'=>true,'data'=>'str'),
 			'mail_e107_priority' 	=> array('title' => LAN_MAILOUT_134, 'noedit'=>true),
 			'mail_notify_complete' => array('title' => LAN_MAILOUT_243,  'noedit'=>true, 'nolist' => true),
 			'mail_last_date' 		=> array('title' => LAN_MAILOUT_129, 'noedit'=>true, 'type'=>'int', 'proc' => 'sdatetime'),
@@ -1588,7 +1588,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 			$preview = e_SELF."?mode=main&action=preview&id=".$id;
 			$text .= "<span class='btn-group'>";
 			$text .= "<a href='".$link."' class='btn btn-default' title='".LAN_MAILOUT_08."'>".E_32_MAIL."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 
 			$text .= $this->renderValue('options',$value,$attributes,$id);
 
@@ -1603,7 +1603,7 @@ class mailout_admin_form_ui extends e_admin_form_ui
 
 			$text = "<span class='btn-group'>";
 			$text .= "<a href='".$link."' class='btn btn-default e-modal' data-modal-caption='Recipients for Mail #".$id."' title='".LAN_MAILOUT_173."'>".E_32_USER."</a>";
-			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
+			$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."'  title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 
 			$attributes['readParms']['editClass'] = e_UC_NOBODY;
 			$text .= $this->renderValue('options',$value,$attributes,$id);
@@ -1774,7 +1774,7 @@ class mailout_recipients_form_ui extends e_admin_form_ui
 		$preview = e_SELF."?mode=main&action=preview&id=".$eid.'&user='.$user;
 
 		$text = "<span class='btn-group'>";
-		$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='Email preview' href='".$preview."' class='btn' title='Preview'>".E_32_SEARCH."</a>";
+		$text .= "<a rel='external' class='btn btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$preview."' class='btn' title='".LAN_PREVIEW."'>".E_32_SEARCH."</a>";
 		
 
 
