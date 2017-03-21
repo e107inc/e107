@@ -12,7 +12,7 @@
 define("LAN_LOGIN_1", "User name");
 define("LAN_LOGIN_2", "User password");
 define("LAN_LOGIN_3", "Protected server");
-define("LAN_LOGIN_4", "Please sign in"); // XXX Modified 
+define("LAN_LOGIN_4", "Please sign in"); // XXX Modified
 define("LAN_LOGIN_5", "Click here to Sign-Up");
 define("LAN_LOGIN_6", "Not accepting new members at this time");
 define("LAN_LOGIN_7", "Enter visible code");
@@ -40,5 +40,8 @@ define("LAN_LOGIN_28", "Email");
 define("LAN_LOGIN_29", "Username or Email");
 define("LAN_LOGIN_30", "Error adding new alt_auth user to DB");
 define("LAN_LOGIN_31", "Your credentials could not be added to the system");
-
+define("LAN_LOGIN_32", "You are seeing this message because you are currently logged in as the Main Admin.");
+define("LAN_LOGIN_33", "[Return to the homepage]"); // the [ ] brackets are replaced with a button link
+define("LAN_LOGIN_34", "User registration and/or login is currently disabled.");
+define("LAN_LOGIN_35", "[Enable it]"); // the [ ] brackets are replaced with a button link
 ?>
