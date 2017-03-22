@@ -96,6 +96,7 @@ class import_main_ui extends e_admin_ui
 		'users' 		=> array('message' => LAN_CONVERT_25, 			'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
 		'news' 			=> array('message' => LAN_CONVERT_28,			'classfile' => 'import_news_class.php', 'classname' => 'news_import'),
 		'page' 			=> array('message' => "Pages",					'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
+		'pagechapter' 	=> array('message' => "Page Chapters",			'classfile' => 'import_pagechapter_class.php', 'classname' => 'pagechapter_import'),
 		'links' 		=> array('message' => "Links", 					'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
 		'media' 		=> array('message' => "Media", 					'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
 		'forum' 		=> array('message' => "Forum", 					'classfile' => 'import_forum_class.php', 'classname' => 'forum_import'),
@@ -547,7 +548,8 @@ class import_main_ui extends e_admin_ui
 		$text .= "
 			<tr>
 				<td>".LAN_CONVERT_38."</td>
-				<td>".$frm->checkbox('import_delete_existing_data', 1,$_POST['import_delete_existing_data'], array('label'=>'&nbsp;','title'=>LAN_CONVERT_39))."</td>
+				<td>".$frm->radio_switch('import_delete_existing_data', $_POST['import_delete_existing_data'])."
+				<div class='field-help'>".LAN_CONVERT_39."</div></td>
 			</tr>";
 		
 		//TODO 
@@ -732,6 +734,7 @@ class import_main_ui extends e_admin_ui
 					
 			if ($this->deleteExisting == true)
 			{
+				$mes->addDebug("dbImport(): Emptying target table. ");
 				$exporter->emptyTargetDB();		// Clean output DB - reasonably safe now	
 			} 
 					

@@ -71,6 +71,10 @@ class base_import_class
 				return $this->savePageData($dataRecord);
 			break;
 
+			case 'pagechapter' :
+				return $this->savePageChapterData($dataRecord);
+			break;
+
 			case 'links' :
 				return $this->saveLinksData($dataRecord);
 			break;
@@ -110,7 +114,7 @@ class base_import_class
 	{
 		if($mode == 'db')
 		{
-			$result = $this->ourDB->db_Fetch();	
+			$result = $this->ourDB->fetch();
 		}
 		else
 		{
@@ -132,6 +136,10 @@ class base_import_class
 			
 			case 'page' :
 				return $this->copyPageData($initial, $result);
+	  		break;
+
+			case 'pagechapter' :
+				return $this->copyPageChapterData($initial, $result);
 	  		break;
 
 			case 'links' :
@@ -197,7 +205,12 @@ class base_import_class
 	{
 		return $target;
 	}
-	
+
+	function copyPageChapterData(&$target, &$source)
+	{
+		return $target;
+	}
+
 	function copyLinksData(&$target, &$source)
 	{
 		return $target;
