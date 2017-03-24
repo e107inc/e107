@@ -131,10 +131,10 @@ class contact_shortcodes extends e_shortcode
 		{
 			$size = 'input-xxlarge';	
 		}
-
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox '.$size.' form-control';
 
 		
-		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' ".$placeholder." required='required' class='tbox {$size} form-control'>".stripslashes(varset($_POST['body']))."</textarea>";
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' ".$placeholder." required='required' class='".$class."'>".stripslashes(varset($_POST['body']))."</textarea>";
 	}
 	
 	
