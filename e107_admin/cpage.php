@@ -17,6 +17,7 @@ if (!getperms("5|J")) { e107::redirect('admin'); exit; }
 e107::css('inline',"
 
 .e-wysiwyg { height: 400px }
+td.menu-field { background-color: rgba(0,0,0,0.07); }
 ");
 
 e107::coreLan('cpage', true);
@@ -29,6 +30,12 @@ class page_admin extends e_admin_dispatcher
 
 	protected $modes = array(
 		'page'		=> array(
+			'controller' 	=> 'page_admin_ui',
+			'path' 			=> null,
+			'ui' 			=> 'page_admin_form_ui',
+			'uipath' 		=> null
+		),
+		'overview'		=> array(
 			'controller' 	=> 'page_admin_ui',
 			'path' 			=> null,
 			'ui' 			=> 'page_admin_form_ui',
@@ -56,8 +63,10 @@ class page_admin extends e_admin_dispatcher
 	);	
 	
 	protected $adminMenu = array(
+		'overview/list'	=> array('caption'=> "Overview", 'perm' => '5|J'), //TODO LAN
 		'page/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
-		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),	
+		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),
+
 		'page/create' 	=> array('caption'=> CUSLAN_12, 'perm' => '5'),
 		'other' 		=> array('divider'=> true),
 		'cat/list' 		=> array('caption'=> CUSLAN_50, 'perm' => '5'), // Create Category.
@@ -72,6 +81,7 @@ class page_admin extends e_admin_dispatcher
 	
 
 	protected $adminMenuAliases = array(
+		'overview/edit' => 'overview/list',
 		'page/edit'		=> 'page/list',
 		'menu/edit'		=> 'menu/create',
 		'cat/edit'      => 'cat/list'
@@ -134,9 +144,11 @@ class page_admin_form_ui extends e_admin_form_ui
 				
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
-			
-			$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
-			
+
+			if($this->getController()->getMode() === 'overview')
+			{
+				$text .= $this->submit_image('menu_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', array('class' => 'action delete btn btn-default'));
+			}
 			return $text;
 		}
 	}
@@ -556,7 +568,7 @@ class page_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'3%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
-            'page_title'	   	=> array('title'=> LAN_TITLE, 		'tab' => 0,	'type' => 'text', 	'data'=>'str', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
+            'page_title'	   	=> array('title'=> "Page Title", 		'tab' => 0,	'type' => 'text', 	'data'=>'str', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
 		    'page_chapter' 		=> array('title'=> CUSLAN_63, 	    'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
        
 			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>array()),
@@ -597,7 +609,7 @@ class page_admin_ui extends e_admin_ui
 	
 	   	//	'page_ip_restrict' 	=> array('title'=> LXXAN_USER_07, 'type' => 'text', 'width' => 'auto'),	 // Avatar
 
-			'options' 	=> array('title'=> LAN_OPTIONS,   'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center','readParms'=>'sort=1')
+			'options' 	=> array('title'=> LAN_OPTIONS,   'type' => null,	'forced'=>TRUE, 'width' => '10%', 'thclass' => 'center last', 'class' => 'center last','readParms'=>'sort=1&deleteClass=e_UC_NOBODY')
 		);
 	
 		protected $fieldpref = array("page_id","page_title","page_chapter","page_template","page_author","page_class");
@@ -606,7 +618,8 @@ class page_admin_ui extends e_admin_ui
 			'listPages'	   			=> array('title'=> CUSLAN_29, 						'type'=>'boolean'),
 			'listBooks'	   			=> array('title'=> CUSLAN_50, 			            'type'=>'boolean'),
 			'listBooksTemplate'   	=> array('title'=> CUSLAN_72, 	                    'type'=>'dropdown'),
-			'pageCookieExpire'		=> array('title'=> CUSLAN_30, 						'type'=>'number') //TODO Set default value to  84600
+			'pageCookieExpire'		=> array('title'=> CUSLAN_30, 						'type'=>'number'), //TODO Set default value to  84600
+			'admin_page_perpage'    => array('title'=> "Items per Page", 				'type'=>'number'), //TODO Set default value to  84600
 		);
 
 		protected $books = array();
@@ -617,7 +630,30 @@ class page_admin_ui extends e_admin_ui
 		function init()
 		{
 
+			if($this->getMode() === 'overview')
+			{
+				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id  "; // without any Order or Limit.
+				$this->fieldpref = array("page_id", "page_title", 'page_chapter', 'page_template', "menu_title", 'menu_image', 'menu_template' );
 
+				$this->sortField = false;
+
+				$this->fields['menu_title']['width'] = 'auto';
+
+				$this->fields['page_title']['width'] = 'auto';
+
+				$this->fields['options']['type'] = 'method';
+
+
+				foreach($this->fields as $k=>$fld)
+				{
+					$this->fields[$k]['nolist'] = false;
+
+					if(strpos($k,'menu_') === 0)
+					{
+						$this->fields[$k]['class'] = 'menu-field '.$fld['class'];
+					}
+				}
+			}
 
 			
 			if(vartrue($_POST['menu_delete'])) // Delete a Menu (or rather, remove it's data )
@@ -631,7 +667,7 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
-			if($this->getMode() == 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
+			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
 			{
 			
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
