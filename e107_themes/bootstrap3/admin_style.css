@@ -1549,7 +1549,7 @@ body#admin-menus #sc-admin-help .panel-body {
 
 .e-image-preview { display:inline-block }
 
-
+td img.thumbnail { margin-bottom:0 }
 
 
 
