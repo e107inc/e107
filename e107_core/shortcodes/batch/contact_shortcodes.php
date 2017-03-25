@@ -104,12 +104,18 @@ class contact_shortcodes extends e_shortcode
 
 
 
+	/* example {CONTACT_EMAIL} */
+	/* example {CONTACT_EMAIL: class=form-control} */
+	/* example {CONTACT_EMAIL: class=col-md-12&placeholder=".LANCONTACT_04." *} */
+
 	function sc_contact_email($parm='')
 	{
 		$userEmail = deftrue('USEREMAIL');
 		$disabled = (!empty($userEmail)) ? 'readonly' : ''; // don't allow change from a verified email address.
 
-		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' name='email_send' required='required' size='30' class='tbox form-control' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
+		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
+		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
 	}
 	
 	
