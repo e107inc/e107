@@ -638,20 +638,29 @@ class page_admin_ui extends e_admin_ui
 				$this->sortField = false;
 
 				$this->fields['menu_title']['width'] = 'auto';
+				$this->fields['menu_image']['readParms'] = 'thumb=60x55';
+				$this->fields['menu_image']['width'] = 'auto';
 
 				$this->fields['page_title']['width'] = 'auto';
 
 				$this->fields['options']['type'] = 'method';
 
 
-				foreach($this->fields as $k=>$fld)
+				foreach($this->fieldpref as $k)
 				{
 					$this->fields[$k]['nolist'] = false;
 
+					if($k === 'page_id')
+					{
+						continue;
+					}
+
 					if(strpos($k,'menu_') === 0)
 					{
-						$this->fields[$k]['class'] = 'menu-field '.$fld['class'];
+						$this->fields[$k]['class'] = 'menu-field '.$this->fields[$k]['class'];
 					}
+
+					$this->fields[$k]['width'] = '13%';
 				}
 			}
 
