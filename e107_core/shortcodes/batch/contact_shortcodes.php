@@ -154,9 +154,13 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 	
+	/* example {CONTACT_SUBMIT_BUTTON} */
+	/* example {CONTACT_SUBMIT_BUTTON: class=contact submit btn btn-minimal} */
 	function sc_contact_submit_button($parm='')
 	{
-		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='btn btn-primary button' />";	
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'btn btn-primary button';
+		
+		return "<input type='submit' name='send-contactus' value=\"".LANCONTACT_08."\" class='".$class."' />";	
 	}
 
 }
