@@ -90,12 +90,16 @@ class contact_shortcodes extends e_shortcode
 	}
 	
 	
+	/* example {CONTACT_NAME} */
+	/* example {CONTACT_NAME: class=form-control} */
+	/* example {CONTACT_NAME: class=col-md-12&placeholder=".LANCONTACT_03." *} */
+		
 	function sc_contact_name($parm='')
 	{
 		$userName = deftrue('USERNAME');
-
-		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['author_name'],$userName)."\" />";
-
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
+		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';		    
+		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".varset($_POST['author_name'],$userName)."\" />";
 	}
 
 
