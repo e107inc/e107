@@ -1547,7 +1547,7 @@ body#admin-menus #sc-admin-help .panel-body {
 
 .form-control[disabled] { opacity: 0.5; 	}
 
-
+.e-image-preview { display:inline-block }
 
 
 
