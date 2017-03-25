@@ -120,9 +120,15 @@ class contact_shortcodes extends e_shortcode
 	
 	
 	
+	/* example {CONTACT_SUBJECT} */
+	/* example {CONTACT_SUBJECT: class=form-control} */
+	/* example {CONTACT_SUBJECT: class=col-md-12&placeholder=".LANCONTACT_05." *} */
+	
 	function sc_contact_subject($parm='')
 	{
-		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' class='tbox form-control' value=\"".varset($_POST['subject'])."\" />";
+		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
+		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
+		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".varset($_POST['subject'])."\" />";
 	}
 	
 	
