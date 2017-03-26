@@ -996,7 +996,7 @@ class download_shortcodes extends e_shortcode
 	   if (!$source) return "&nbsp;";
 	 //  list($ret[TRUE],$ret[FALSE]) = explode(chr(1), $source.chr(1)); //XXX ???
 	//   if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE]; //XXX ???
-	    $parms = array('legacy'=> e_IMAGE."icons/");
+	    $parms = array('legacy'=> "{e_IMAGE}icons/");
 	   return e107::getParser()->toIcon($source, $parms);
 		//return "<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='*'/>";
 	}
