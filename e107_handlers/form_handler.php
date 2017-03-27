@@ -2995,9 +2995,14 @@ class e_form
 		
 		$text = '<ul class="breadcrumb">
 			<li>';
-	
+
 		foreach($array as $val)
 		{
+			if($val['url'] === e_REQUEST_URI) // automatic link removal for current page.
+			{
+				$val['url']= null;
+			}
+
 			$ret = "";
 			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";			
 			$ret .= vartrue($val['text'],'');
