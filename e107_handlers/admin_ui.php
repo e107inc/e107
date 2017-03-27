@@ -2345,6 +2345,10 @@ class e_admin_controller_ui extends e_admin_controller
 	/**
 	 * @var array UI field data
 	 */
+
+
+	protected $pid;
+
 	protected $fields = array();
 
 	/**
@@ -2415,6 +2419,12 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var string field containing the order number
 	 */
 	protected $sortField = null;
+
+
+	/**
+	 * @var string field containing the parent field
+	 */
+	protected $sortParent = null;
 	
 	/**
 	 * @var int reorder step
@@ -3997,10 +4007,23 @@ class e_admin_controller_ui extends e_admin_controller
 				$qry .=  "\n".implode("\n", $joins);
 			}
 		}
-		else
+		else    // default listQry
 		{
+			if(!empty($listQry))
+			{
+				$qry = $this->parseCustomListQry($listQry);
+			}
+			elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
+			{
+				$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
+				$this->listOrder		= 'treesort,'.$this->sortField;
+				$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
+			}
+			else
+			{
+				$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
+			}
 
-			$qry = $listQry ? $this->parseCustomListQry($listQry) : "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
 		}
 
 		// group field - currently auto-added only if there are joins

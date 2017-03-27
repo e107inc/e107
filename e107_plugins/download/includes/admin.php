@@ -131,10 +131,16 @@ class download_cat_ui extends e_admin_ui
 		protected $table 		= "download_category";
 		protected $pid			= "download_category_id";
 		protected $perPage 		= 0; //no limit
-		protected $listOrder = 'download_category_order';
-		// protected $defaultOrderField = 'download_category_parent,download_category_order';
-	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
-	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
+		//	protected $listOrder = 'download_category_parent,download_category_order';
+
+		protected $batchCopy		= true;
+
+		// initiate as a parent/child tree.
+		protected $sortField		= 'download_category_order';
+		protected $sortParent       = 'download_category_parent';
+
+		protected $listOrder		= null; // automatic
+
 	 	 	
 		protected $fields = array(
 			'checkboxes'						=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -147,7 +153,7 @@ class download_cat_ui extends e_admin_ui
 		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
-			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort'=>1)
 		);	
 		
 
@@ -622,11 +628,11 @@ $columnInfo = array(
 					<tr>
 					<td>".$row['limit_id']."</td>
 					<td>".r_userclass_name($row['limit_classnum'])."</td>
-					<td>
+					<td class='form-inline'>
 						<input type='text' class='form-control' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
 						<input type='text' class='form-control' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
 					</td>
-					<td>
+					<td class='form-inline'>
 						<input type='text' class='form-control' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
 						<input type='text' class='form-control' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
 					</td>
@@ -646,11 +652,11 @@ $columnInfo = array(
 			</tr>
 			<tr>
 			<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
-			<td>
+			<td class='form-inline'>
 				<input type='text' class='form-control' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
 				<input type='text' class='form-control' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
 			</td>
-			<td>
+			<td class='form-inline'>
 				<input type='text' class='form-control' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
 				<input type='text' class='form-control' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
 			</td>
