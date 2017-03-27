@@ -95,7 +95,8 @@
 	}
 	else*/
 	{
-		$tmp = e107::getAddonConfig('e_url');
+	//	$tmp = e107::getAddonConfig('e_url');
+		$tmp = e107::getUrlConfig();
 	//	e107::getCache()->set('Addon_url',e107::serialize($tmp,'json'),true,true,true);
 	}
 
@@ -104,6 +105,8 @@
 		
 	if(count($tmp))
 	{
+		$rootNamespace = e107::getPref('url_main_module');
+		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
 
 		foreach($tmp as $plug=>$cfg)
 		{
@@ -127,7 +130,15 @@
 				{
 					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];
 				//	e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
-					$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
+					if(!empty($rootNamespace) && $rootNamespace === $plug)
+					{
+						$v['regex'] = str_replace($replaceAlias, '', $v['regex']);
+					}
+					else
+					{
+
+						$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
+					}
 				}
 
 			
@@ -163,7 +174,15 @@
 					}
 					elseif(getperms('0')) 
 					{
+						require_once(HEADERF);
+						echo "<div class='alert alert-warning'>";
+						echo "<h3>SEF Debug Info</h3>";
 						echo "File missing: ".$file;
+						echo "<br />Matched key: <b>".$k."</b>";
+
+						print_a($v);
+						echo "</div>";
+						require_once(FOOTERF);
 						exit;	
 					}
 
