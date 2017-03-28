@@ -4031,6 +4031,7 @@ class e_form
 		}
 
 
+
 		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
@@ -4872,11 +4873,11 @@ class e_form
 				}
 			//	 print_a($attributes);
 					// Inline Editing.  
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
+				if(empty($attributes['noedit']) && !empty($parms['editable'])) // avoid bad markup, better solution coming up
 				{
 					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
+					$methodParms = call_user_func_array(array($this, $meth), array($value, 'inline', $parms));
 
 					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
 

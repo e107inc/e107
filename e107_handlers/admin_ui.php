@@ -2420,6 +2420,10 @@ class e_admin_controller_ui extends e_admin_controller
 	 */
 	protected $sortField = null;
 
+	/**
+	 * @var string field containing the order number
+	 */
+	protected $treePrefix = null;
 
 	/**
 	 * @var string field containing the parent field
@@ -2620,6 +2624,26 @@ class e_admin_controller_ui extends e_admin_controller
 	public function getSortField()
 	{
 		return $this->sortField;
+	}
+
+	/**
+	 * Get Sort Field data
+	 * @return string
+	 */
+	public function getSortParent()
+	{
+		return $this->sortParent;
+	}
+
+
+
+		/**
+	 * Get Sort Field data
+	 * @return string
+	 */
+	public function getTreePrefix()
+	{
+		return $this->treePrefix;
 	}
 	
 	/**
@@ -4015,9 +4039,10 @@ class e_admin_controller_ui extends e_admin_controller
 			}
 			elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
 			{
-				$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$this->listOrder		= 'treesort,'.$this->sortField;
-				$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
+			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
+				$qry                = $this->getParentChildQuery();
+				$this->listOrder	= '_treesort '; // .$this->sortField;
+			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
 			}
 			else
 			{
@@ -4139,6 +4164,75 @@ class e_admin_controller_ui extends e_admin_controller
 
 		return $qry;
 	}
+
+
+	protected function getParentChildQuery()
+	{
+
+		$parent= $this->getSortParent();
+		$table = $this->getTableName();
+		$pid = $this->getPrimaryName();
+		$order = $this->getSortField();
+
+		$sql = "
+
+		DROP FUNCTION IF EXISTS `getDepth` ;
+		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
+		BEGIN
+		    DECLARE depth INT;
+		    SET depth=1;
+
+		    WHILE project_id > 0 DO
+		        SELECT IFNULL(".$parent.",-1)
+		        INTO project_id
+		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) t;
+
+		        IF project_id > 0 THEN
+		            SET depth = depth + 1;
+		        END IF;
+
+		    END WHILE;
+
+		    RETURN depth;
+
+		END
+		;
+
+
+
+        DROP FUNCTION IF EXISTS `getTreeSort`;
+        CREATE FUNCTION getTreeSort(incid INT)
+        RETURNS CHAR(255)
+        BEGIN
+                SET @parentstr = CONVERT(incid, CHAR);
+                SET @parent = -1;
+                label1: WHILE @parent != 0 DO
+                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,3,0), @parentstr);
+                        SET incid = @parent;
+                END WHILE label1;
+
+                RETURN @parentstr;
+        END
+   ;
+
+        ";
+
+	// FIXME - make order work correctly (modify @order) when twin digits or higher are used.
+
+        e107::getDb()->gen($sql);
+
+        return  "SELECT *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
+
+
+
+	}
+
+
+
+
+
 
 	/**
 	 * Manage submit item
@@ -4318,6 +4412,7 @@ class e_admin_ui extends e_admin_controller_ui
 	protected $sortField;
 	protected $sortParent;
 	protected $orderStep;
+	protected $treePrefix;
 
 
 	/**
@@ -5276,9 +5371,17 @@ class e_admin_ui extends e_admin_controller_ui
 				$updated[] = "#".$id."  --  ".$this->sortField." = ".$c;
 			}
 			// echo($sql->getLastQuery()."\n");
-			$c += $step;
+			$c++; //  += $step;
 
 		}
+
+
+		if(!empty($this->sortParent) && !empty($this->sortField) )
+		{
+			return null;
+		}
+
+	//file_put_contents(e_LOG."sortAjax.log", print_r($_POST['all'],true));
 
 		// Increment every other record after the current page of records.
 	//	$changed = (intval($_POST['neworder']) * $step) + $from ;
@@ -5289,10 +5392,10 @@ class e_admin_ui extends e_admin_controller_ui
 
 
 		// ------------ Fix Child Order when parent is used. ----------------
-
+/*
 		if(!empty($this->sortParent) && !empty($this->sortField) ) // Make sure there is space for at least 99
 		{
-
+			$parent = array();
 
 			$data2 = $sql->retrieve($this->table,$this->pid.','.$this->sortField,$this->sortParent .' = 0',true);
 			foreach($data2 as $val)
@@ -5322,7 +5425,7 @@ class e_admin_ui extends e_admin_controller_ui
 				$sql->update($this->table, $this->sortField . ' = '.$c.' WHERE '.$this->pid.' = '.intval($row[$this->pid]).' LIMIT 1');
 
 			}
-
+*/
 
 
 
@@ -5897,6 +6000,76 @@ class e_admin_form_ui extends e_form
 	{
 	}
 
+
+	/**
+	 * @todo Get a 'depth/level' field working with mysql and change the 'level' accordingly
+	 * @param mixed $curVal
+	 * @param string $mode read|write|inline
+	 * @param array $parm
+	 * @return array|string
+	 */
+	public function treePrefix($curVal, $mode, $parm)
+	{
+		$controller         = $this->getController();
+		$parentField        = $controller->getSortParent();
+		$treePrefixField    = $controller->getTreePrefix();
+		$parent 	        = $controller->getListModel()->get($parentField);
+		$level              = $controller->getListModel()->get("_depth");
+
+
+		if($mode === 'read')
+		{
+
+			$inline = $this->getController()->getFieldAttr($treePrefixField,'inline');
+
+			if($inline === true)
+			{
+				return $curVal;
+			}
+
+			$level_image = $parent ? str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON) : '';
+
+			return ($parent) ?  $level_image.$curVal : $curVal;
+
+		}
+
+
+		if($mode === 'inline')
+		{
+			$ret = array('inlineType'=>'text');
+
+			if(!empty($parent))
+			{
+				$ret['inlineParms'] = array('pre'=> str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON));
+			}
+
+
+			return $ret;
+		}
+
+
+/*
+			if($mode == 'write') //  not used.
+			{
+			//	return $frm->text('forum_name',$curVal,255,'size=xxlarge');
+			}
+
+			if($mode == 'filter')
+			{
+				return;
+			}
+			if($mode == 'batch')
+			{
+				return;
+			}
+*/
+
+
+
+
+	}
+
+
 	/**
 	 * Generic DB Record Creation Form.
 	 * @return string
@@ -6051,6 +6224,22 @@ class e_admin_form_ui extends e_form
 		{
 			$fields['options']['sort'] = false;
 		}
+
+		if($treefld = $controller->getTreePrefix())
+		{
+			$fields[$treefld]['type'] = 'method';
+			$fields[$treefld]['method'] = 'treePrefix'; /* @see e_admin_form_ui::treePrefix(); */
+
+			$tr = $controller->getTreeModel()->toArray();
+
+			foreach($tr as $row)
+			{
+				e107::getDebug()->log($row[$treefld].' >  '.$row['_treesort']);
+			}
+
+		}
+
+
 
 		// ------------------------------------------
 
