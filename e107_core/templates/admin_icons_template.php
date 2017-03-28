@@ -440,7 +440,7 @@ if (!defined('E_16_FAILEDLOGIN')) {
 define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 
-
+	define("ADMIN_CHILD_ICON", '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="level-x icon" alt="" />'); // must use single quotes.
 	define("ADMIN_TRUE_ICON", "<i class='fa fa-check text-success'></i>");
 	define("ADMIN_FALSE_ICON", "<i class='fa fa-times text-danger'></i>");
 	define("ADMIN_WARNING_ICON", "<i class='fa fa-warning text-warning'></i>");

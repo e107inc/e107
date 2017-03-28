@@ -822,7 +822,9 @@ if(!deftrue('OLD_FORUMADMIN'))
 				}
 
 				$linkQ = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";
-				$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
+			//	$level_image = $parent ? '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="icon" alt="" style="margin-left: '.($level * 20).'px" />&nbsp;' : '';
+
+				$level_image = $parent ? str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON) : '';
 
 				return ($parent) ?  $level_image.$curVal : $curVal;
 			}
@@ -858,7 +860,10 @@ if(!deftrue('OLD_FORUMADMIN'))
 						$level = 2;
 					}
 
-					$ret['inlineParms'] = array('pre'=>'<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="level-'.$level.' icon" alt="" />');
+				//	$ret['inlineParms'] = array('pre'=>'<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="level-'.$level.' icon" alt="" />');
+
+					$ret['inlineParms'] = array('pre'=> str_replace('level-x','level-'.$level, ADMIN_CHILD_ICON));
+
 				}
 
 
