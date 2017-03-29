@@ -4174,9 +4174,14 @@ class e_admin_controller_ui extends e_admin_controller
 		$pid = $this->getPrimaryName();
 		$order = $this->getSortField();
 
-		$sql = "
 
-		DROP FUNCTION IF EXISTS `getDepth` ;
+
+		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
+
+		e107::getDb()->gen($sql);
+
+
+		$sql = "
 		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
 		BEGIN
 		    DECLARE depth INT;
@@ -4197,10 +4202,15 @@ class e_admin_controller_ui extends e_admin_controller
 
 		END
 		;
+		";
 
 
+		e107::getDb()->gen($sql);
 
-        DROP FUNCTION IF EXISTS `getTreeSort`;
+		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
+
+		e107::getDb()->gen($sql);
+        $sql = "
         CREATE FUNCTION getTreeSort(incid INT)
         RETURNS CHAR(255)
         BEGIN
@@ -4219,7 +4229,6 @@ class e_admin_controller_ui extends e_admin_controller
 
         ";
 
-	// FIXME - make order work correctly (modify @order) when twin digits or higher are used.
 
         e107::getDb()->gen($sql);
 
