@@ -5425,13 +5425,13 @@ class e_admin_ui extends e_admin_controller_ui
 				$sql->update($this->table, $this->sortField . ' = '.$c.' WHERE '.$this->pid.' = '.intval($row[$this->pid]).' LIMIT 1');
 
 			}
-*/
+
 
 
 
 
 		}
-
+*/
 		$this->afterSort($result, $_POST);
 
 	//	e107::getLog()->addDebug(print_r($_POST,true))->toFile('SortAjax','Admin-UI Ajax Sort Log', true);
