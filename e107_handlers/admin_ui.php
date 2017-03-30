@@ -4238,7 +4238,7 @@ class e_admin_controller_ui extends e_admin_controller
 
         e107::getDb()->gen($sql);
 
-        $qry =  "SELECT *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
+        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
 
 		if($orderby === true)
 		{
