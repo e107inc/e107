@@ -158,6 +158,7 @@ class download_cat_ui extends e_admin_ui
 
 		protected $fieldpref = array('download_category_icon', 'download_category_id', 'download_category_name', 'download_category_sef', 'download_category_class', 'download_category_order');
 
+	protected $downloadCats = array();
 
 	function init()
 	{
@@ -166,27 +167,47 @@ class download_cat_ui extends e_admin_ui
 			$this->fields['download_category_order']['nolist'] = false;
 		}
 
+		$this->setDownloadCategoryTree();
+
 	}
 
 
-	function getDownloadCategoryTree($id = false, $default = 'n/a')
+	private function setDownloadCategoryTree()
 	{
-		// TODO get faq category tree
+
+
 		$sql = e107::getDb();
-		$sql -> gen('SELECT * FROM #download_category ORDER BY download_category_order');
-		$cats = array();
-		$cats[0] = $default;
+		$qry = $this->getParentChildQry(true);
+		$sql->gen($qry);
+
+		$this->downloadCats[0] = LAN_NONE;
+
 		while($row = $sql->fetch())
 		{
-			$cats[$row['download_category_id']] = $row['download_category_name'];
+			$num = $row['_depth'] - 1;
+			$id = $row['download_category_id'];
+			$this->downloadCats[$id] = str_repeat("&nbsp;&nbsp;",$num).$row['download_category_name'];
 		}
-		
+
+		if($this->getAction() === 'edit') // make sure parent is not the same as ID.
+		{
+			$r = $this->getId();
+			unset($this->downloadCats[$r]);
+		}
+
+	}
+
+
+
+	function getDownloadCategoryTree($id = false)
+	{
+
 		if($id)
 		{
-			return $cats[$id];
+			return $this->downloadCats[$id];
 		}
 		
-		return $cats;
+		return $this->downloadCats;
 	}	
 		
 }
@@ -205,7 +226,7 @@ class download_cat_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write':
-				return $this->selectbox('download_category_parent', $controller->getDownloadCategoryTree(), $curVal);
+				return $this->select('download_category_parent', $controller->getDownloadCategoryTree(), $curVal);
 			break;
 			
 			case 'filter':

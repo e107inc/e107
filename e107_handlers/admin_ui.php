@@ -4040,7 +4040,7 @@ class e_admin_controller_ui extends e_admin_controller
 			elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
 			{
 			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$qry                = $this->getParentChildQuery();
+				$qry                = $this->getParentChildQry();
 				$this->listOrder	= '_treesort '; // .$this->sortField;
 			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
 			}
@@ -4166,7 +4166,12 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 
-	protected function getParentChildQuery()
+	/**
+	 * Return a Parent/Child SQL Query based on sortParent and sortField variables
+	 * @param bool|false $orderby - include 'ORDER BY' in the qry.
+	 * @return string
+	 */
+	public function getParentChildQry($orderby=false)
 	{
 
 		$parent= $this->getSortParent();
@@ -4188,9 +4193,10 @@ class e_admin_controller_ui extends e_admin_controller
 		    SET depth=1;
 
 		    WHILE project_id > 0 DO
+
 		        SELECT IFNULL(".$parent.",-1)
 		        INTO project_id
-		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) t;
+		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
 
 		        IF project_id > 0 THEN
 		            SET depth = depth + 1;
@@ -4232,10 +4238,14 @@ class e_admin_controller_ui extends e_admin_controller
 
         e107::getDb()->gen($sql);
 
-        return  "SELECT *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
+        $qry =  "SELECT *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
 
+		if($orderby === true)
+		{
+			$qry .= " ORDER BY _treesort";
+		}
 
-
+		return $qry;
 	}
 
 
@@ -4289,7 +4299,26 @@ class e_admin_controller_ui extends e_admin_controller
 
 		// - Autoincrement sortField on 'Create'.
 
-		if(($_posted['etrigger_submit'] === 'create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
+
+		// Prevent parent being assigned as self.
+		if(!empty($this->sortParent) && $this->getAction() === 'edit' && ($model->getId() == $_posted[$this->sortParent] ) )
+		{
+			$vars = array(
+				'x'=> $this->getFieldAttr($this->sortParent,'title'),
+				'y'=> $this->getFieldAttr($this->pid,'title'),
+			);
+
+			$message = e107::getParser()->lanVars(LAN_UI_X_CANT_EQUAL_Y, $vars);
+			$model->addMessageWarning($message);
+			$model->setMessages();
+			$this->getUI()->addWarning($this->sortParent);
+			return false;
+		}
+
+
+
+
+		if(($this->getAction() === 'create') && !empty($this->sortField) && empty($this->sortParent) && empty($_posted[$this->sortField])  )
 		{
 
 			$incVal = e107::getDb()->max($this->table, $this->sortField) + 1;
@@ -5954,6 +5983,7 @@ class e_admin_form_ui extends e_form
 	 * @var e_admin_ui
 	 */
 	protected $_controller = null;
+
 
 
 	/**
