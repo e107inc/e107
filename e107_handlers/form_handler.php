@@ -66,6 +66,7 @@ class e_form
 	protected $_tabindex_counter = 0;
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
+	protected $_field_warnings = array();
 
 
 
@@ -82,6 +83,13 @@ class e_form
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
+	}
+
+
+	public function addWarning($field)
+	{
+		$this->_field_warnings[] = $field;
+
 	}
 
 	/**
@@ -5967,7 +5975,17 @@ class e_form
 				}
 				*/
 
-				 
+				if(in_array($key,$this->_field_warnings))
+				{
+					if(is_string($writeParms))
+					{
+						parse_str($writeParms,$writeParms);
+					}
+
+					$writeParms['tdClassRight'] .=   ' has-warning';
+
+				}
+
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 
