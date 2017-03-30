@@ -1555,9 +1555,9 @@ td img.thumbnail { margin-bottom:0 }
 /* Parent/Child Indicator */
 .treeprefix {margin-right:4px}
 .treeprefix.level-2 { margin-left:10px }
-.treeprefix.level-3 { margin-left:30px }
-.treeprefix.level-4 { margin-left:50px }
-.treeprefix.level-5 { margin-left:70px }
+.treeprefix.level-3 { margin-left:35px }
+.treeprefix.level-4 { margin-left:60px }
+.treeprefix.level-5 { margin-left:85px }
 
 
 

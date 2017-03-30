@@ -126,11 +126,11 @@ class plugin_download_admin extends e_admin_dispatcher
 
 class download_cat_ui extends e_admin_ui
 { 	 	 
-		protected $pluginTitle	= LAN_PLUGIN_DOWNLOAD_NAME;
-		protected $pluginName	= 'download';
-		protected $table 		= "download_category";
-		protected $pid			= "download_category_id";
-		protected $perPage 		= 0; //no limit
+		protected $pluginTitle	    = LAN_PLUGIN_DOWNLOAD_NAME;
+		protected $pluginName	    = 'download';
+		protected $table 		    = "download_category";
+		protected $pid			    = "download_category_id";
+		protected $perPage 		    = 0; //no limit
 
 		protected $batchCopy		= true;
 
@@ -138,14 +138,17 @@ class download_cat_ui extends e_admin_ui
 		protected $sortField		= 'download_category_order';
 		protected $sortParent       = 'download_category_parent';
 		protected $treePrefix       = 'download_category_name';
-	//	protected $orderStep		= 1000;
-	//	protected $listOrder		= null; // automatic
+	//	protected $orderStep		= // automatic
+	//	protected $listOrder		= // automatic
+
+		//legacy URL scheme
+		protected $url         		= array('route'=>'download/list/category', 'vars' => array('id' => 'download_category_id', 'name' => 'download_category_sef'), 'name' => 'download_category_name', 'description' => ''); // 'link' only needed if profile not provided.
 
 	 	 	
 		protected $fields = array(
 			'checkboxes'						=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'method',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),
-			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),     		
+			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
          	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=>'str',	'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
        		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',		'data'=>'str',	'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
          
@@ -307,7 +310,7 @@ class download_main_admin_ui extends e_admin_ui
             'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
             'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE, 'writeParms'=>'sef=download_name'),
-		  	'download_keywords'	   	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
+		  	'download_keywords'	    	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
 		
 			'download_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'download_author_email' 	=> array('title'=> DOWLAN_16, 			'type' => 'email', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),  
