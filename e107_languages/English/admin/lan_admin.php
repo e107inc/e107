@@ -244,6 +244,7 @@ define("LAN_INSTALLED","Installed");//TODO elsewhere
 define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
 define("LAN_ADD", "Add");
+define("LAN_REMOVE", "Remove");
 define("LAN_ADD_MORE", "Add More");
 define("LAN_MULTIPLE_CHOICE", "Multiple Choice");
 
@@ -273,7 +274,7 @@ define("LAN_PRUNE", "Prune");
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
 define("LAN_ADD_ALL", "Add All");
-define("LAN_CLEAR_ALL", "Clear All"); 
+define("LAN_CLEAR_ALL", "Clear All");
 define("LAN_UNKNOWN", "Unknown");
 define("LAN_ALL","All");
 define("LAN_IMPORT","Import");
