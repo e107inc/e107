@@ -141,7 +141,7 @@ class import_main_ui extends e_admin_ui
 		}	
 		
 	
-		
+		natsort($this->providers);
 		
 	}	
 	
@@ -236,7 +236,7 @@ class import_main_ui extends e_admin_ui
 				<legend class='e-hideme'>".'DBLAN_10'."</legend>
 				".$frm->hidden('mode','main')."
 				".$frm->hidden('action','import')."
-		            <table class='table adminlist'>
+		            <table class='table adminlist table-striped table-bordered'>
 					<colgroup>
 					<col />
 					<col />
@@ -501,16 +501,18 @@ class import_main_ui extends e_admin_ui
 	
 		if(method_exists($proObj,"config")) // Config Found in Class - render options from it. 
 		{
-			$ops  = $proObj->config();
-			foreach($ops as $key=>$val)
+			if($ops  = $proObj->config())
 			{
-				$text .= "<tr>
-					<td>".$val['caption']."</td>
-					<td>".$val['html'];
-				$text .= (vartrue($val['help'])) ? "<div class='field-help'>".$val['help']."</div>" : "";	
-				$text .= "</td>
-				</tr>\n";		
-			}		
+				foreach($ops as $key=>$val)
+				{
+					$text .= "<tr>
+						<td>".$val['caption']."</td>
+						<td>".$val['html'];
+					$text .= (vartrue($val['help'])) ? "<div class='field-help'>".$val['help']."</div>" : "";
+					$text .= "</td>
+					</tr>\n";
+				}
+			}
 		}
 	
 	
@@ -1572,6 +1574,7 @@ function csv_split(&$data,$delim=',',$enveloper='')
 
 function headerjs()
 {
+	return;
 //  global $import_class_names;		// Keys are the various db options
   global $import_class_support;
   global $db_import_blocks;
