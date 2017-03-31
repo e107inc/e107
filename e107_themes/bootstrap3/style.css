@@ -156,6 +156,23 @@ li.dropdown-submenu.lower ul.submenu-start li:hover { background-color:#f5f5f5; 
 .news-grid-default .featured { margin-bottom:30px; }
 .news-grid-other .featured { margin-bottom:30px; }
 
+
+/* MENU MENU Example*/
+
+
+
+.theme-sc-bootstrap-megamenu-example { position: static !important; }
+
+.theme-sc-bootstrap-megamenu-example .dropdown-menu {
+  padding: 20px 15px 15px;
+  width: 100%;
+}
+.theme-sc-bootstrap-megamenu-example .dropdown-menu  ul.media-list {
+margin-bottom: 10px;
+    }
+
+
+
 /* CUSTOM Responsive Styles */
 
 
