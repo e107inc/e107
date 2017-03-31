@@ -415,6 +415,7 @@ class download
 		$sc->setVars($dlrow);
 		$this->setMeta($dlrow);
 
+
 	    if(!isset($DL_VIEW_PAGETITLE))
 		{
 	    	$DL_VIEW_PAGETITLE = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / ".LAN_PLUGIN_DOWNLOAD_NAME;

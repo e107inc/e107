@@ -168,10 +168,6 @@ echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
-
-
-
-
 //
 // D: Register CSS
 //
@@ -465,7 +461,7 @@ if(function_exists('theme_head'))
 	echo theme_head();
 }
 
-// FIXME description and keywords meta tags shouldn't be sent on all pages
+/* @deprecated */
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
@@ -493,9 +489,15 @@ function render_meta($type)
 	}
 }
 
-echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
-echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
-
+// legay meta-tag checks. 
+if(empty(e107::getUrl()->response()->getMetaKeywords()))
+{
+	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+}
+if(empty(e107::getUrl()->response()->getMetaDescription()))
+{
+	echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
+}
 
 //echo render_meta('copyright');
 //echo render_meta('author');
