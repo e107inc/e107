@@ -327,7 +327,6 @@ class download
 		$metaImage                      = $tp->thumbUrl($row['download_image'], array('w'=>500), null, true);
 		$metaDescription                = $tp->toHtml($row['download_description'],true);
 
-		define('e_PAGETITLE',           $tp->toText($row['download_name']));
 		e107::meta('description',       $tp->toText($metaDescription));
 		e107::meta('keywords',          $row['download_keywords']);
 		e107::meta('og:description',    $tp->toText($metaDescription));
@@ -354,7 +353,7 @@ class download
 			$DOWNLOAD_VIEW_TABLE		= $template['item'];
 			$DOWNLOAD_VIEW_TABLE_END	= varset($template['end']);
 			$DL_VIEW_NEXTPREV			= varset($template['nextprev']);
-		//	$DL_VIEW_PAGETITLE			= varset($template['pagetitle']);
+			$DL_VIEW_PAGETITLE			= varset($template['pagetitle']);
 			$DL_VIEW_CAPTION			= varset($template['caption'],"{DOWNLOAD_VIEW_CAPTION}");
 		}
 		else // Legacy v1.x 
@@ -406,29 +405,25 @@ class download
 			//require_once(FOOTERF);
 			//exit;
 		}
-	
-	
-		$dlrow = $sql->fetch();
-		$sc->setVars($dlrow);
 
-		$this->setMeta($dlrow);
-
-
-		
 		if(!defined("DL_IMAGESTYLE"))
 		{
 			define("DL_IMAGESTYLE","border:0px");
 		}
-		
+	
+		$dlrow = $sql->fetch();
+		$sc->setVars($dlrow);
+		$this->setMeta($dlrow);
+
 	    if(!isset($DL_VIEW_PAGETITLE))
 		{
-	    	$DL_VIEW_PAGETITLE = LAN_PLUGIN_DOWNLOAD_NAME." / {DOWNLOAD_CATEGORY} / {DOWNLOAD_VIEW_NAME}";
+	    	$DL_VIEW_PAGETITLE = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / ".LAN_PLUGIN_DOWNLOAD_NAME;
 		}
 	
 	    $DL_TITLE = $tp->parseTemplate($DL_VIEW_PAGETITLE, TRUE, $sc);
-	
+
 		define("e_PAGETITLE", $DL_TITLE);
-	
+
 		$DL_TEMPLATE = $DOWNLOAD_VIEW_TABLE_START.$DOWNLOAD_VIEW_TABLE.$DOWNLOAD_VIEW_TABLE_END;
 		
 		
