@@ -72,7 +72,7 @@ class smf_import extends base_import_class
 				
 				
  			case 'forum' :
- 			    $qry = "SELECT f.*, m.id_member, m.poster_name, m.poster_time FROM `{$this->DBPrefix}boards` AS f LEFT JOIN `{$this->DBPrefix}messages` AS m ON f.id_last_msg = m.id_msg GROUP BY f.id_board ";
+ 			    $qry = "SELECT f.*, m.id_member, m.poster_name, m.poster_time FROM {$this->DBPrefix}boards AS f LEFT JOIN {$this->DBPrefix}messages AS m ON f.id_last_msg = m.id_msg GROUP BY f.id_board ";
 
 				$result = $this->ourDB->gen($qry);
 				if ($result === false)
@@ -85,9 +85,9 @@ class smf_import extends base_import_class
 				
 			case 'forumthread' :
 
-				$qry = "SELECT t.*, m.poster_name, m.poster_time, m.id_member, l.poster_name as lastpost_name, l.poster_time as lastpost_time, l.id_member as lastpost_user FROM `{$this->DBPrefix}topics` AS t
-						LEFT JOIN `{$this->DBPrefix}messages` AS m ON t.id_first_msg = m.id_msg
-						LEFT JOIN `{$this->DBPrefix}messages` AS l ON t.id_last_msg = l.id_msg
+				$qry = "SELECT t.*, m.poster_name, m.subject, m.poster_time, m.id_member, l.poster_name as lastpost_name, l.poster_time as lastpost_time, l.id_member as lastpost_user FROM {$this->DBPrefix}topics AS t
+						LEFT JOIN {$this->DBPrefix}messages AS m ON t.id_first_msg = m.id_msg
+						LEFT JOIN {$this->DBPrefix}messages AS l ON t.id_last_msg = l.id_msg
 						GROUP BY t.id_topic";
 
 				$result = $this->ourDB->gen($qry);
@@ -97,7 +97,7 @@ class smf_import extends base_import_class
 				
 			case 'forumpost' :
 
-				$qry = "SELECT m.*, a.filename, a.fileext, a.size FROM `{$this->DBPrefix}messages` AS m LEFT JOIN `{$this->DBPrefix}attachments` AS a ON m.id_msg = a.id_msg GROUP BY m.id_msg ORDER BY m.id_msg ASC ";
+				$qry = "SELECT m.*, a.filename, a.fileext, a.size FROM {$this->DBPrefix}messages AS m LEFT JOIN {$this->DBPrefix}attachments AS a ON m.id_msg = a.id_msg GROUP BY m.id_msg ORDER BY m.id_msg ASC ";
 
 				$result = $this->ourDB->gen($qry);
 				if ($result === false) return false;
@@ -236,6 +236,7 @@ class smf_import extends base_import_class
 		$target['forum_postclass']	        = e_UC_MEMBER;
 		$target['forum_threadclass']	    = e_UC_MEMBER;
 		$target['forum_options']	        = e_UC_MEMBER;
+		$target['forum_sef']                = eHelper::title2sef($source['name'],'dashl');
 		
 		return $target;
 
