@@ -261,6 +261,36 @@ class theme_shortcodes extends e_shortcode
 	}
 
 
+	/**
+	 * Mega-Menu Shortcode Example.
+	 * @usage Select "bootstrap_megamenu_example" in Admin > Sitelinks > Create/Edit > Function
+	 * @notes Changing the method name will require changing .theme-sc-bootstrap-megamenu-example in style.css
+	 * @param null $data Link data.
+	 * @return string
+	 */
+	function sc_bootstrap_megamenu_example($data)
+	{
+		// include a plugin, custom code, whatever you wish.
+
+		// return print_a($data,true);
+
+		$parm= array();
+		$parm['caption']        = '';
+		$parm['titleLimit']     = 25; //    number of chars fo news title
+		$parm['summaryLimit']   = 50; //   number of chars for new summary
+		$parm['source']         = 'latest'; //      latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
+		$parm['order']          = 'DESC'; //       n.news_datestamp DESC
+		$parm['limit']          = '6'; //     10
+		$parm['layout']         = 'media-list'; //    default | or any key as defined in news_grid_template.php
+		$parm['featured']       = 0;
+
+
+		return "<div class='container'>". e107::getObject('news')->render_newsgrid($parm) ."</div>";
+
+
+	}
+
+
 
 
 
