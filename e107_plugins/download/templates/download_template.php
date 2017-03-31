@@ -438,8 +438,9 @@ $DOWNLOAD_WRAPPER['view']['DOWNLOAD_VIEW_AUTHORWEBSITE'] 		= "<td style='width:8
 $DOWNLOAD_WRAPPER['view']['DOWNLOAD_REPORT_LINK'] 				= "<tr><td style='width:20%' colspan='2'>{---}</td></tr>";
 
 
-$DOWNLOAD_TEMPLATE['view']['caption'] = LAN_PLUGIN_DOWNLOAD_NAME;
-$DOWNLOAD_TEMPLATE['view']['start'] = " ";
+$DOWNLOAD_TEMPLATE['view']['caption']       = LAN_PLUGIN_DOWNLOAD_NAME;
+$DOWNLOAD_TEMPLATE['view']['pagetitle']     = "{DOWNLOAD_VIEW_NAME} / {DOWNLOAD_CATEGORY} / ".LAN_PLUGIN_DOWNLOAD_NAME;
+$DOWNLOAD_TEMPLATE['view']['start']         = "";
 
 $DOWNLOAD_TEMPLATE['view']['item'] = "
       <div id='download'>
