@@ -315,8 +315,26 @@ class download
 	}
 
 
+	/**
+	 * Meta for 'view' mode..to be expanded to handle list and maincats etc.
+	 * @param array $row
+	 * @todo modes for different actions based on $this->qry['action']
+	 */
+	private function setMeta($row)
+	{
+		$tp = e107::getParser();
 
+		$metaImage                      = $tp->thumbUrl($row['download_image'], array('w'=>500), null, true);
+		$metaDescription                = $tp->toHtml($row['download_description'],true);
 
+		define('e_PAGETITLE',           $tp->toText($row['download_name']));
+		e107::meta('description',       $tp->toText($metaDescription));
+		e107::meta('keywords',          $row['download_keywords']);
+		e107::meta('og:description',    $tp->toText($metaDescription));
+		e107::meta('og:image',          $metaImage);
+		e107::meta('twitter:image:src', $metaImage);
+
+	}
 
 
 
@@ -392,8 +410,10 @@ class download
 	
 		$dlrow = $sql->fetch();
 		$sc->setVars($dlrow);
-	
-	//	$comment_edit_query = 'comment.download.'.$id;
+
+		$this->setMeta($dlrow);
+
+
 		
 		if(!defined("DL_IMAGESTYLE"))
 		{
