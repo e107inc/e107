@@ -463,8 +463,9 @@ class import_main_ui extends e_admin_ui
 		
 		if($proObj->sourceType == 'db' || !$proObj->sourceType) // STANDARD db Setup 
 		{
-	    	
-	
+	    	$databases = $this->getDatabases();
+	    	$prefix = (varset($_POST['dbParamPrefix']) ? $_POST['dbParamPrefix'] : $proObj->mprefix);
+	/*
 	    	$text .= "
 			<tr>
 			<td>$importType ".LAN_CONVERT_19."</td>
@@ -481,13 +482,16 @@ class import_main_ui extends e_admin_ui
 			<td >$importType ".LAN_CONVERT_21."</td>
 			<td ><input class='tbox' type='text' name='dbParamPassword' size='30' value='".varset($_POST['dbParamPassword'])."' maxlength='100' /></td>
 			</tr>
+			";*/
+
+			$text .= "
 			<tr>
 			<td >$importType ".LAN_CONVERT_22."</td>
-			<td ><input class='tbox' type='text' name='dbParamDatabase' size='30' value='".varset($_POST['dbParamDatabase'])."' maxlength='100' required /></td>
+			<td >".$frm->select('dbParamDatabase', $databases, null, array('required'=>1), LAN_SELECT)."</td>
 			</tr>
 			<tr>
 			<td >$importType ".LAN_CONVERT_23."</td>
-			<td ><input class='tbox' type='text' name='dbParamPrefix' size='30' value='".(varset($_POST['dbParamPrefix']) ? $_POST['dbParamPrefix'] : $proObj->mprefix)."' maxlength='100' />
+			<td >".$frm->text('dbParamPrefix', $prefix, 100)."
 			<input type='hidden' name='import_source' value='db' />
 	  		</td>
 			</tr>";
@@ -597,7 +601,32 @@ class import_main_ui extends e_admin_ui
 	}
 	
 	
+	private function getDatabases()
+	{
+		$tmp = e107::getDb()->gen("SHOW DATABASES");
+		$databases = e107::getDb()->db_getList();
 
+		$arr = array();
+
+		$exclude = array('mysql', 'information_schema', 'performance_schema', 'phpmyadmin');
+
+		foreach($databases as $v)
+		{
+			$id = $v['Database'];
+
+			if(in_array($id,$exclude))
+			{
+				continue;
+			}
+
+			$arr[$id] = $id;
+
+		}
+
+	    return $arr;
+
+
+	}
 
 	
 		
@@ -637,7 +666,7 @@ class import_main_ui extends e_admin_ui
 		if (class_exists($this->importClass))
 		{
 			$mes->addDebug("dbImport(): Converter Class Available: ".$this->importClass);   
-			$converter = new $this->importClass;
+			$converter = new $this->importClass ;
 			$converter->init();
 		}
 		else
@@ -651,14 +680,17 @@ class import_main_ui extends e_admin_ui
 
 		if($mode == 'db') // Don't do DB check on RSS/XML 
 		{
-			if (!isset($_POST['dbParamHost']) || !isset($_POST['dbParamUsername']) || !isset($_POST['dbParamPassword']) || !isset($_POST['dbParamDatabase']))
+			if (empty($_POST['dbParamDatabase']))
 			{
 				$mes->addError(LAN_CONVERT_41);
 				return false;
 			}
 		
-			$result = $converter->db_Connect($tp->filter($_POST['dbParamHost']),	$tp->filter($_POST['dbParamUsername']), $tp->filter($_POST['dbParamPassword']), $tp->filter($_POST['dbParamDatabase']),  $tp->filter($_POST['dbParamPrefix']));
-			if ($result !== TRUE)
+			$result = $converter->database($tp->filter($_POST['dbParamDatabase']),  $tp->filter($_POST['dbParamPrefix']));
+
+		//	$result = $converter->database($tp->filter($_POST['dbParamDatabase']),  $tp->filter($_POST['dbParamPrefix']), true);
+
+			if ($result !== true)
 			{
 				$mes->addError(LAN_CONVERT_43.": ".$result);  // db connect failed
 				return false;
@@ -716,7 +748,7 @@ class import_main_ui extends e_admin_ui
 			
 		  	$result = $converter->setupQuery($k, !$this->deleteExisting);
 							
-			if ($result !== TRUE)
+			if ($result !== true)
 			{
 				$mes->addError(LAN_CONVERT_44.' '.$k);   // couldn't set query
 				break;
