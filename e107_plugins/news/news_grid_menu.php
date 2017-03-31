@@ -24,6 +24,4 @@ if (!defined('e107_INIT')) { exit; }
 
 $cached = e107::getObject('news')->render_newsgrid($parm);
 
-var_dump($parm);
-
 echo $cached;
