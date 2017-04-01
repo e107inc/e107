@@ -1350,15 +1350,16 @@ class e_parse extends e_parser
 
 		$text = html_entity_decode($text,ENT_QUOTES,'utf-8');
 
-		return mb_strimwidth($text, 0, $len, $more);
+		if(function_exists('mb_strimwidth'))
+		{
+			return mb_strimwidth($text, 0, $len, $more);
+		}
 		
-	//	$ret = $this->usubstr($text, 0, $len);
+		$ret = $this->usubstr($text, 0, $len);
 
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
 		// it should work for any characters encoding
-
-/*
 
 		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
 		if($leftAmp)
@@ -1366,7 +1367,8 @@ class e_parse extends e_parser
 			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
 		}
 
-		return $ret.$more;*/
+		return $ret.$more;
+
 	}
 
 
