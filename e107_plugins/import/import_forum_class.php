@@ -93,13 +93,13 @@ class forum_import
 	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
 	{
 		$errorTexts = array(
-	    	0 => 'No error', 
-	    	1 => 'Can\'t change main admin data', 
-	    	2 => 'invalid field passed',
-			3 => 'Mandatory field not set', 
-			4 => 'Entry already exists', 
-			5 => 'Invalid characters in user or login name',
-			6 => 'Error saving extended user fields'
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
 		);
 			
 		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];
@@ -197,13 +197,13 @@ class forumthread_import
 	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
 	{
 		$errorTexts = array(
-	    	0 => 'No error', 
-	    	1 => 'Can\'t change main admin data', 
-	    	2 => 'invalid field passed',
-			3 => 'Mandatory field not set', 
-			4 => 'Entry already exists', 
-			5 => 'Invalid characters in user or login name',
-			6 => 'Error saving extended user fields'
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
 		);
 			
 		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];
@@ -307,13 +307,13 @@ class forumpost_import
 	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
 	{
 		$errorTexts = array(
-	    	0 => 'No error', 
-	    	1 => 'Can\'t change main admin data', 
-	    	2 => 'invalid field passed',
-			3 => 'Mandatory field not set', 
-			4 => 'Entry already exists', 
-			5 => 'Invalid characters in user or login name',
-			6 => 'Error saving extended user fields'
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
 		);
 			
 		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];
@@ -402,13 +402,13 @@ class forumtrack_import
 	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
 	{
 		$errorTexts = array(
-	    	0 => 'No error', 
-	    	1 => 'Can\'t change main admin data', 
-	    	2 => 'invalid field passed',
-			3 => 'Mandatory field not set', 
-			4 => 'Entry already exists', 
-			5 => 'Invalid characters in user or login name',
-			6 => 'Error saving extended user fields'
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
 		);
 			
 		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];

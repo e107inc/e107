@@ -95,14 +95,14 @@ class import_main_ui extends e_admin_ui
 	protected $importTables = array(
 		'users' 		=> array('message' => LAN_CONVERT_25, 			'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
 		'news' 			=> array('message' => LAN_CONVERT_28,			'classfile' => 'import_news_class.php', 'classname' => 'news_import'),
-		'page' 			=> array('message' => "Pages",					'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
-		'pagechapter' 	=> array('message' => "Page Chapters",			'classfile' => 'import_pagechapter_class.php', 'classname' => 'pagechapter_import'),
-		'links' 		=> array('message' => "Links", 					'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
-		'media' 		=> array('message' => "Media", 					'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
-		'forum' 		=> array('message' => "Forum", 					'classfile' => 'import_forum_class.php', 'classname' => 'forum_import'),
-		'forumthread' 	=> array('message' => "Forum Topics/Threads", 	'classfile' => 'import_forum_class.php', 'classname' => 'forumthread_import', 'nolist'=>true),
-		'forumpost' 	=> array('message' => "Forum Posts", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumpost_import', 'nolist'=>true),
-		'forumtrack' 	=> array('message' => "Forum Track", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumtrack_import', 'nolist'=>true),
+		'page' 			=> array('message' => LAN_CONVERT_65,					'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
+		'pagechapter' 	=> array('message' => LAN_CONVERT_66,			'classfile' => 'import_pagechapter_class.php', 'classname' => 'pagechapter_import'),
+		'links' 		=> array('message' => LAN_CONVERT_67, 					'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
+		'media' 		=> array('message' => LAN_CONVERT_68, 					'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
+		'forum' 		=> array('message' => LAN_CONVERT_69, 					'classfile' => 'import_forum_class.php', 'classname' => 'forum_import'),
+		'forumthread' 	=> array('message' => LAN_CONVERT_70, 	'classfile' => 'import_forum_class.php', 'classname' => 'forumthread_import', 'nolist'=>true),
+		'forumpost' 	=> array('message' => LAN_CONVERT_71, 			'classfile' => 'import_forum_class.php', 'classname' => 'forumpost_import', 'nolist'=>true),
+		'forumtrack' 	=> array('message' => LAN_CONVERT_7, 			'classfile' => 'import_forum_class.php', 'classname' => 'forumtrack_import', 'nolist'=>true),
 	//	'forumpost' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
 		'comments' 		=> array('message'=> LAN_COMMENTS),
 	//	'forumdefs' 	=> array('message' => LAN_CONVERT_26),
@@ -296,7 +296,7 @@ class import_main_ui extends e_admin_ui
 		             $text .= "
 					 	<td class='center middle'>";
 						
-						$text .= $frm->admin_button('type', $k, 'other',"Select");
+						$text .= $frm->admin_button('type', $k, 'other',LAN_CONVERT_64);
 					// 	$text .= $frm->admin_button('import_type', $k, 'other',"Select");
 						
 						$text .= "
