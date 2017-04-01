@@ -229,25 +229,25 @@ class faq_main_ui extends e_admin_ui
 		 
 		protected $fieldpref = array('checkboxes', 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp', 'options');
 
-		protected $preftabs				= array(LAN_GENERAL, LAN_DISPLAY, LAN_PLUGIN_FAQS_NAME, LAN_CATEGORIES);
+		protected $preftabs				= array(LAN_GENERAL, LAN_FAQS_ASK_A_QUESTION, LAN_MANAGE.": ".LANA_FAQ_QUESTIONS, LAN_MANAGE.": ".LAN_CATEGORIES);
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
-			'add_faq'					=> array('title'=> LANA_FAQ_PREF_1, 'tab'=>0, 'type'=>'userclass' ),
-			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>0, 'type'=>'userclass' ),
-			'submit_question_limit'		=> array('title'=> LANA_FAQ_PREF_4, 'tab'=>0, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1),
-			'submit_question_char_limit'=> array('title'=> LANA_FAQ_PREF_5, 'tab'=>0, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=>array('max'=>255, 'default'=>255)),
-			'submit_question_language'	=> array('title'=> LANA_FAQ_PREF_6, 'tab'=>0, 'type'=>'dropdown' ),
-			'submit_question_acknowledgement'=> array('title'=> LANA_FAQ_PREF_7, 'tab'=>0, 'type'=>'textarea', 'help'=>LANA_FAQ_PREF_HELP_2),
+			'add_faq'					=> array('title'=> LANA_FAQ_PREF_1, 'tab'=>1, 'type'=>'userclass' ),
+			'submit_question'	   		=> array('title'=> LANA_FAQ_PREF_2, 'tab'=>1, 'type'=>'userclass' ),
+			'submit_question_limit'		=> array('title'=> LANA_FAQ_PREF_4, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1),
+			'submit_question_char_limit'=> array('title'=> LANA_FAQ_PREF_5, 'tab'=>1, 'type'=>'number', 'data'=>'int', 'help'=>LANA_FAQ_PREF_HELP_1, 'writeParms'=>array('max'=>255, 'default'=>255)),
+			'submit_question_language'	=> array('title'=> LANA_FAQ_PREF_6, 'tab'=>1, 'type'=>'dropdown' ),
+			'submit_question_acknowledgement'=> array('title'=> LANA_FAQ_PREF_7, 'tab'=>1, 'type'=>'textarea', 'help'=>LANA_FAQ_PREF_HELP_2),
 //new display tab
-			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3,  'tab'=>1, 'type'=>'boolean' ),
-			'list_type'					=> array('title'=> LANA_FAQ_PREF_8,  'tab'=>1, 'type'=>'dropdown', 'writeParms'=>array('ul'=>LANA_FAQ_PREF_9, 'ol'=>LANA_FAQ_PREF_10)),
-			'page_title'				=> array('title'=> LANA_FAQ_PREF_11, 'tab'=>1, 'type'=>'text', 'multilan'=>true, 'help'=>LANA_FAQ_PREF_HELP_2),
-			'new'						=> array('title'=> LANA_FAQ_PREF_12, 'tab'=>1, 'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>LANA_FAQ_PREF_HELP_2),
-			'display_total'				=> array('title'=> LANA_FAQ_PREF_13, 'tab'=>1, 'type'=>'boolean', 'data'=>'int' ),
-			'display_datestamp'			=> array('title'=> LANA_FAQ_PREF_14, 'tab'=>1, 'type'=>'boolean', 'data'=>'int' ),
-			'display_social'			=> array('title'=> LANA_FAQ_PREF_15, 'tab'=>1, 'type'=>'boolean', 'data'=>'int' ),
-			'orderby'					=> array('title'=> LAN_ORDER,        'tab'=>1, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>LANA_FAQ_PREF_16, 'faq_id-ASC'=>LAN_ID." ".LAN_ASC, 'faq_id-DESC'=>LAN_ID." ".LAN_DESC, 'faq_datestamp-ASC'=>LAN_DATE." ".LAN_ASC, 'faq_datestamp-DESC'=>LAN_DATE."-".LAN_DESC)),
+			'classic_look'				=> array('title'=> LANA_FAQ_PREF_3,  'tab'=>0, 'type'=>'boolean' ),
+			'list_type'					=> array('title'=> LANA_FAQ_PREF_8,  'tab'=>0, 'type'=>'dropdown', 'writeParms'=>array('ul'=>LANA_FAQ_PREF_9, 'ol'=>LANA_FAQ_PREF_10)),
+			'page_title'				=> array('title'=> LANA_FAQ_PREF_11, 'tab'=>0, 'type'=>'text', 'multilan'=>true, 'help'=>LANA_FAQ_PREF_HELP_2),
+			'new'						=> array('title'=> LANA_FAQ_PREF_12, 'tab'=>0, 'type'=>'number', 'writeParms'=>'size=mini&default=0&post=days old', 'help'=>LANA_FAQ_PREF_HELP_2),
+			'display_total'				=> array('title'=> LANA_FAQ_PREF_13, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
+			'display_datestamp'			=> array('title'=> LANA_FAQ_PREF_14, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
+			'display_social'			=> array('title'=> LANA_FAQ_PREF_15, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
+			'orderby'					=> array('title'=> LAN_ORDER,        'tab'=>0, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>LANA_FAQ_PREF_16, 'faq_id-ASC'=>LAN_ID." ".LAN_ASC, 'faq_id-DESC'=>LAN_ID." ".LAN_DESC, 'faq_datestamp-ASC'=>LAN_DATE." ".LAN_ASC, 'faq_datestamp-DESC'=>LAN_DATE."-".LAN_DESC)),
 
 			'admin_faq_create'			=> array('title'=> LAN_CREATE_ITEM,  'tab'=>2, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
 			'admin_faq_edit'			=> array('title'=> LAN_EDIT,         'tab'=>2, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),

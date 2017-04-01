@@ -6,6 +6,7 @@
 * "FAQ plugin" admin-area language definitions
 */
 define("LANA_FAQ_QUESTION", "Question");
+define("LANA_FAQ_QUESTIONS", "Questions");
 define("LANA_FAQ_ANSWER", "Answer");
 define("LANA_FAQ_UNANSWERED", "Unanswered");
 define("LANA_FAQ_COMMENT", "Comment Class"); 
