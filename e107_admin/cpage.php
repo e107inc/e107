@@ -63,7 +63,7 @@ class page_admin extends e_admin_dispatcher
 	);	
 	
 	protected $adminMenu = array(
-		'overview/list'	=> array('caption'=> "Overview", 'perm' => '5|J'), //TODO LAN
+		'overview/list'	=> array('caption'=> CUSLAN_1, 'perm' => '5|J'), 
 		'page/list'		=> array('caption'=> CUSLAN_48, 'perm' => '5'),
 		'menu/list'		=> array('caption'=> CUSLAN_49, 'perm' => 'J', 'tab' => 2),
 
@@ -568,7 +568,7 @@ class page_admin_ui extends e_admin_ui
 		protected $fields = array(
 			'checkboxes'		=> array('title'=> '',				'type' => null, 		'width' =>'3%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'page_id'			=> array('title'=> LAN_ID,			'type' => 'text', 'tab' => 0,	'width'=>'5%', 			'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
-            'page_title'	   	=> array('title'=> "Page Title", 		'tab' => 0,	'type' => 'text', 	'data'=>'str', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
+            'page_title'	   	=> array('title'=> CUSLAN_2, 		'tab' => 0,	'type' => 'text', 	'data'=>'str', 'inline'=>true,		'width'=>'25%', 'writeParms'=>'size=block-level'),
 		    'page_chapter' 		=> array('title'=> CUSLAN_63, 	    'tab' => 0,	'type' => 'dropdown', 	'width' => '20%', 'filter' => true, 'batch'=>true, 'inline'=>true),
        
 			'page_template' 	=> array('title'=> LAN_TEMPLATE, 		'tab' => 0,	'type' => 'dropdown', 	'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>array()),
@@ -619,7 +619,7 @@ class page_admin_ui extends e_admin_ui
 			'listBooks'	   			=> array('title'=> CUSLAN_50, 			            'type'=>'boolean'),
 			'listBooksTemplate'   	=> array('title'=> CUSLAN_72, 	                    'type'=>'dropdown'),
 			'pageCookieExpire'		=> array('title'=> CUSLAN_30, 						'type'=>'number'), //TODO Set default value to  84600
-			'admin_page_perpage'    => array('title'=> "Items per Page", 				'type'=>'number'), //TODO Set default value to  84600
+			'admin_page_perpage'    => array('title'=> CUSLAN_3, 				'type'=>'number'), //TODO Set default value to  84600
 		);
 
 		protected $books = array();
