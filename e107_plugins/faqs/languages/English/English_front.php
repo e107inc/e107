@@ -20,7 +20,6 @@ define("LAN_FAQS_RESET", "Reset");
 define("LAN_FAQS_X_NOT_FOUND", "[x]: Not found in search results.");
 define("LAN_FAQS_MODERATE_COMMENTS", "moderate comments");
 define("LAN_FAQS_BACK_TO_CATEGORIES", "Back to Categories");
-define("LAN_FAQS_ASK_A_QUESTION", "Ask a Question");
 define("LAN_FAQS_FAQ", "FAQ");
 define("LAN_FAQS_ENTER_A_QUESTION_HERE", "Enter your question here...");
 define("LAN_FAQS_CHAR_LIMIT", "character limit");
