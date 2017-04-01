@@ -25,6 +25,7 @@
 	<stylesheets>
 		<css file="style.css" name="Default"/>
         <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' exclude='bootstrap'/>
+		<css file="css/corporate.css" name="Corporate" scope='admin' exclude='bootstrap' />
 		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" scope='admin' exclude='bootstrap'/>
         <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" scope='admin' exclude='bootstrap'/>
         <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" scope='admin' exclude='bootstrap'/>

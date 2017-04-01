@@ -1,106 +1,206 @@
 <?php
-/*
- * e107 website system
- *
- * Copyright (C) 2008-2009 e107 Inc (e107.org)
- * Released under the terms and conditions of the
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
- *
- *
- *
- * $Source: /cvs_backup/e107_0.8/e107_plugins/import/PHPFusion_import_class.php,v $
- * $Revision$
- * $Date$
- * $Author$
- */
+	/**
+	 * e107 website system
+	 *
+	 * Copyright (C) 2008-2017 e107 Inc (e107.org)
+	 * Released under the terms and conditions of the
+	 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+	 *
+	 */
 
-// Each import file has an identifier which must be the same for:
-//		a) This file name - add '_class.php' to get the file name
-//		b) The array index of certain variables
-// Array element key defines the function prefix and the class name; value is displayed in drop-down selection box
 
 require_once('import_classes.php');
 
-class PHPFusion_import extends base_import_class
+/**
+* @usage replace 'template' with the name of the other cms and rename this file.
+*/
+class template_import extends base_import_class
 {
+	public $title		= 'Template';
+	public $description	= 'Import Users, News, Content and Links';
+	public $supported	= array('users','news','page','links'); // import methods which are completed. 
+	public $mprefix		= 'template_';	// default prefix used by other CMS.
+
+	private $myparam    = false; // custom param. 
+
 	
-	public $title		= 'PHP Fusion';
-	public $description	= 'Based on v9';
-	public $supported	=  array('users', 'userclass');
-	public $mprefix		= 'fusion_';
-	
-  // Set up a query for the specified task.
-  // Returns TRUE on success. FALSE on error
-	function setupQuery($task, $blank_user=FALSE)
+	function init()
 	{
-	    if ($this->ourDB == NULL) return FALSE;
-	    switch ($task)
+		// check $_POST; from config() if required. 
+		
+		$this->myparam	= intval($_POST['news_author']);
+		
+	} 	
+	
+	function config()
+	{
+
+		$frm = e107::getForm();
+		
+		$mylist = array(1=>'Param 1', 2=>'Param 2');
+		
+		$var[0]['caption']	= "Optional Parameter";
+		$var[0]['html'] 	= $frm->select('myparam',$mylist);
+		$var[0]['help'] 	= "Change the author of the news items";
+		
+	//	$var[1]['caption']	= "Include revisions";
+	//	$var[1]['html'] 	= $frm->checkbox('news_revisions',1);
+	//	$var[1]['help'] 	= "Change the author of the news items";
+
+		return $var;
+	}	
+			
+
+	/**
+	 * Set up a query for the specified task.
+	 * @param $task
+	 * @param bool|false $blank_user
+	 * @return bool TRUE on success. false on error
+	 */
+	function setupQuery($task, $blank_user=false)
+	{
+    	if ($this->ourDB == NULL) return false;
+		
+    	switch ($task)
 		{
-		  case 'users' :
-		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users");
-			if ($result === FALSE) return FALSE;
+	  		case 'users' :
+	  			$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			
+			break;
+
+			case 'userclass' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+		
+			case 'news' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'newschapter' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+			
+			case 'page' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'pagechapter' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'media' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+				
+			case 'links':
+			 	$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
 			break;
 
 
-		 case 'userclass' :
-		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}user_groups");
-			if ($result === FALSE) return FALSE;
-			break;
+		    case 'forum' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
+		  	case 'forumthread' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
+	  		case 'forumpost' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
+		  	case 'forumtrack' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
 
 
-		  default :
-		    return FALSE;
-		}
-		$this->copyUserInfo = !$blank_user;
-		$this->currentTask = $task;
-		return TRUE;
+			default :
+			return false;
 	}
+
+	$this->copyUserInfo = !$blank_user;
+	$this->currentTask = $task;
+	return TRUE;
+  }
 
 
   //------------------------------------
   //	Internal functions below here
   //------------------------------------
   
-  // Copy data read from the DB into the record to be returned.
-	  function copyUserData(&$target, &$source)
-	  {
-		if ($this->copyUserInfo) $target['user_id'] = $source['user_id'];
-		$target['user_name'] = $source['user_name'];
-		$target['user_loginname'] = $source['user_name'];
-		$target['user_password'] = $source['user_password'];
-		$target['user_email'] = $source['user_email'];
-		$target['user_hideemail'] = $source['user_hide_email'];
-	    $target['user_image'] = $source['user_avatar'];
-		$target['user_signature'] = $source['user_sig'];
-		$target['user_forums'] = $source['user_posts'];
-		$target['user_join'] = $source['user_joined'];
-		$target['user_lastvisit'] = $source['user_lastvisit'];
-		$target['user_location'] = $source['user_location'];
-		$target['user_birthday'] = $source['user_birthdate'];
-		$target['user_aim'] = $source['user_aim'];
-		$target['user_icq'] = $source['user_icq'];
-		$target['user_msn'] = $source['user_msn'];
-		$target['user_yahoo'] = $source['user_yahoo'];
-		$target['user_homepage'] = $source['user_web'];
-		$target['user_timezone'] = $source['user_offset'];		// guess - may need conversion
-		$target['user_ip'] = $source['user_ip'];
-	//	$target['user_'] = $source[''];
-	//	$target['user_'] = $source[''];
-
-	//	$target['user_ban'] = ($source['user_status'] ? 2 : 0);					// Guess
-
-
-
-		//return $target;
+	/**
+	 * Align source data to e107 User Table 
+	 * @param $target array - default e107 target values for e107_user table. 
+	 * @param $source array - WordPress table data
+	 */
+	function copyUserData(&$target, &$source)
+	{
+		$target['user_name'] 		    = $source[''];
+		$target['user_loginname'] 	    = $source[''];
+		$target['user_password']    	= $source[''];
+		$target['user_email'] 		    = $source[''];
+		$target['user_hideemail'] 	    = $source[''];
+		$target['user_join'] 		    = $source[''];
+		$target['user_admin'] 		    = $source[''];
+		$target['user_lastvisit'] 	    = $source[''];
+		$target['user_login'] 		    = $source[''];
+		$target['user_ban'] 		    = $source[''];
+		$target['user_customtitle']     = $source[''];
+		$target['user_sess'] 		    = $source[''];	// Photo
+		$target['user_signature'] 	    = $source[''];
+		$target['user_image'] 		    = $source[''];	// Avatar
+		$target['user_currentvisit']    = $source[''];
+		$target['user_lastpost'] 	    = $source[''];
+		$target['user_chats'] 		    = $source[''];
+		$target['user_comments'] 	    = $source[''];
+	
+		$target['user_ip'] 			    = $source[''];
+		$target['user_prefs'] 		    = $source[''];
+		$target['user_visits'] 		    = $source[''];
+		$target['user_class'] 		    = $source[''];
+		$target['user_perms'] 		    = $source[''];
+		$target['user_xup'] 		    = $source[''];
+		$target['user_language'] 	    = $source[''];
+		$target['user_country'] 	    = $source[''];
+		$target['user_location'] 	    = $source[''];
+		$target['user_aim'] 		    = $source[''];
+		$target['user_icq'] 		    = $source[''];
+		$target['user_yahoo'] 		    = $source[''];
+		$target['user_msn'] 		    = $source[''];
+		$target['user_homepage'] 	    = $source[''];
+		$target['user_birthday'] 	    = $source[''];
+		$target['user_timezone'] 	    = $source[''];
 
 		$this->debug($source,$target);
-	  }
+		
+		//return $target;
+	}
 
-
-
-
-
-		/**
+	/**
 	 * Align source data to e107 User Table
 	 * @param $target array - default e107 target values for e107_user table.
 	 * @param $source array - WordPress table data
@@ -108,25 +208,20 @@ class PHPFusion_import extends base_import_class
 	function copyUserClassData(&$target, &$source)
 	{
 
-		$target['userclass_id']             = $source['group_id'];
-		$target['userclass_name']           = $source['group_name'];
-		$target['userclass_description']    = $source['group_description'];
-		$target['userclass_editclass']      = e_UC_ADMIN;
-		$target['userclass_parent']         = 0;
-		$target['userclass_accum']          = '';
-		$target['userclass_visibility']     = e_UC_ADMIN;
-		$target['userclass_type']           = '';
-		$target['userclass_icon']           = '';
-		$target['userclass_perms']          = '';
+		$target['userclass_id']             = $source[''];
+		$target['userclass_name']           = $source[''];
+		$target['userclass_description']    = $source[''];
+		$target['userclass_editclass']      = $source[''];
+		$target['userclass_parent']         = $source[''];
+		$target['userclass_accum']          = $source[''];
+		$target['userclass_visibility']     = $source[''];
+		$target['userclass_type']           = $source[''];
+		$target['userclass_icon']           = $source[''];
+		$target['userclass_perms']          = $source[''];
 
-	//	return $target;
-
-		$this->debug($source,$target);
+		return $target;
 
 	}
-
-
-
 
 
 	/**
@@ -305,8 +400,8 @@ class PHPFusion_import extends base_import_class
 	}
 
 	/**
-	 * Align source data to e107 Links Table
-	 * @param $target array - default e107 target values for e107_links table.
+	 * Align source data to e107 Links Table 
+	 * @param $target array - default e107 target values for e107_links table. 
 	 * @param $source array - WordPress table data
 	 */
 	function copyLinksData(&$target, &$source)
@@ -318,7 +413,7 @@ class PHPFusion_import extends base_import_class
 		4 => LCLAN_24, // 4 = miniwindow  600x400
 		5 => LINKLAN_1 // 5 = miniwindow  800x600
 		*/
-
+		
 		$target['link_id']			    = $source[''];	  // leave blank to auto-increment
 		$target['link_name']			= $source[''];
 		$target['link_url']				= $source[''];
@@ -338,17 +433,34 @@ class PHPFusion_import extends base_import_class
 
 		$this->debug($source,$target);
 
-
+		
 	}
 
 
+	/**
+	 * Custom Method if needed.
+	 * @param $text
+	 * @return string
+	 */
+	private function convertText($text)
+	{
+		//$text = e107::getParser()->toDb($text);
+		return $text;
+					
+		$text 		= html_entity_decode($text,ENT_QUOTES,'UTF-8');
 
+		$detected 	= mb_detect_encoding($text); // 'ISO-8859-1'
+		$text 		= iconv($detected,'UTF-8',$text);
 
+		
 
+		return $text;
+	}
 
+	
 
 
 }
 
 
-?>
+?>	 

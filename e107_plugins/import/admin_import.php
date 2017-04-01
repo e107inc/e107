@@ -94,19 +94,21 @@ class import_main_ui extends e_admin_ui
 	// Definitions of available areas to import
 	protected $importTables = array(
 		'users' 		=> array('message' => LAN_CONVERT_25, 			'classfile' => 'import_user_class.php', 'classname' => 'user_import'),
+		'userclass' 	=> array('message' => "Userclasses", 			'nolist'=>true, 'classfile' => 'import_user_class.php', 'classname' => 'userclass_import'),
+
 		'news' 			=> array('message' => LAN_CONVERT_28,			'classfile' => 'import_news_class.php', 'classname' => 'news_import'),
-		'page' 			=> array('message' => "Pages",					'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
-		'pagechapter' 	=> array('message' => "Page Chapters",			'classfile' => 'import_pagechapter_class.php', 'classname' => 'pagechapter_import'),
+		'newscategory' 	=> array('message' => "News Categories",		'nolist'=>true, 'classfile' => 'import_news_class.php', 'classname' => 'newscategory_import'),
+
+		'page' 			=> array('message' => "Pages",				    'classfile' => 'import_page_class.php', 'classname' => 'page_import'),
+		'pagechapter' 	=> array('message' => "Page Chapters",			'nolist'=>true, 'classfile' => 'import_page_class.php', 'classname' => 'pagechapter_import'),
 		'links' 		=> array('message' => "Links", 					'classfile' => 'import_links_class.php', 'classname' => 'links_import'),	
 		'media' 		=> array('message' => "Media", 					'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
 		'forum' 		=> array('message' => "Forum", 					'classfile' => 'import_forum_class.php', 'classname' => 'forum_import'),
 		'forumthread' 	=> array('message' => "Forum Topics/Threads", 	'classfile' => 'import_forum_class.php', 'classname' => 'forumthread_import', 'nolist'=>true),
 		'forumpost' 	=> array('message' => "Forum Posts", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumpost_import', 'nolist'=>true),
 		'forumtrack' 	=> array('message' => "Forum Track", 			'classfile' => 'import_forum_class.php', 'classname' => 'forumtrack_import', 'nolist'=>true),
-	//	'forumpost' 		=> array('message' => "Media", 			'classfile' => 'import_media_class.php', 'classname' => 'media_import'),
-		'comments' 		=> array('message'=> LAN_COMMENTS),
-	//	'forumdefs' 	=> array('message' => LAN_CONVERT_26),
-	//	'forumposts' 	=> array('message' => LAN_CONVERT_48), 
+		//	'comments' 		=> array('message'=> LAN_COMMENTS),
+
 	//	'polls' 		=> array('message' => LAN_CONVERT_27)
 	);	
 	
@@ -122,26 +124,31 @@ class import_main_ui extends e_admin_ui
 		
 		foreach($importClassList as $file)
 		{
+
+
 			$tag = str_replace('_class.php','',$file['fname']);
 			
 			$key = str_replace("_import_class.php","",$file['fname']);
+
+			if($key === 'template')
+			{
+				continue;
+			}
 
 			include_once($file['path'].$file['fname']);		// This will set up the variables
 			
 			$this->providers[$key] = $this->getMeta($tag);
 
-			if(vartrue($_GET['type']))
+			if(!empty($_GET['type']))
 			{
-				$this->importClass = $_GET['type']."_import";
-				
+				$this->importClass = filter_var($_GET['type'])."_import";
 			}
-					
-				
 			
 		}	
-		
-	
-		natsort($this->providers);
+
+
+		uksort($this->providers,'strcasecmp');
+
 		
 	}	
 	
@@ -236,13 +243,20 @@ class import_main_ui extends e_admin_ui
 				<legend class='e-hideme'>".'DBLAN_10'."</legend>
 				".$frm->hidden('mode','main')."
 				".$frm->hidden('action','import')."
-		            <table class='table adminlist table-striped table-bordered'>
+		            <table class='table table-striped table-bordered'>
 					<colgroup>
+					<col />";
+
+					 foreach($this->importTables as $key=>$val)
+					 {
+					 	if(!empty($val['nolist'])){ continue; }
+		 			 	$text .= "<col style='width:5%' />\n";
+					 }
+
+
+					$text .= "
 					<col />
-					<col />
-					<col />
-					<col />
-					<col />
+
 					</colgroup>
 					<thead>
 					<tr>
@@ -282,7 +296,7 @@ class import_main_ui extends e_admin_ui
 					
 					$iconFile = e_PLUGIN."import/images/".str_replace("_import","",strtolower($k)).".png";		
 					
-					$icon = (file_exists($iconFile)) ? "<img src='{$iconFile}' alt='' style='float:left;height:32px;width:32px;margin-right:4px'>" : "";
+					$icon = (file_exists($iconFile)) ? "<img src='{$iconFile}' alt='' style='float:left;height:32px;width:32px;margin-right:8px'>" : "";
 					
 		          	$text .= "<!-- $title -->
 					<tr><td >".$icon.$title."<div class='smalltext'>".$info['description']."</div></td>\n";
