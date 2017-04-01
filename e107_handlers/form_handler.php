@@ -810,10 +810,22 @@ class e_form
 	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
-		if (empty($options['maxlength'])) $maxlength = $options['maxlength'];
+
+		if(!empty($options['maxlength']))
+		{
+			 $maxlength = $options['maxlength'];
+		}
+
 		unset($options['maxlength']);
-		if(empty($options['size'])) $options['size'] = 15;
-		if(empty($options['class'])) $options['class'] = 'tbox number e-spinner input-small ';
+
+		if(empty($options['size']))
+		{
+			 $options['size'] = 15;
+		}
+		if(empty($options['class']))
+		{
+			 $options['class'] = 'tbox number e-spinner input-small ';
+		}
 		
 		if(!empty($options['size']))
 		{

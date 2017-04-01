@@ -489,7 +489,7 @@ function render_meta($type)
 	}
 }
 
-// legay meta-tag checks. 
+// legay meta-tag checks.
 if(empty(e107::getUrl()->response()->getMetaKeywords()))
 {
 	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
