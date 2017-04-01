@@ -283,7 +283,7 @@ class users_admin_ui extends e_admin_ui
  		'user_login' 		=> array('title' => LAN_USER_03,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // Real name (no real vetting)
  		'user_customtitle' 	=> array('title' => LAN_USER_04,	'tab'=>0, 'type' => 'text',	'inline'=>true, 'data'=>'str', 'width' => 'auto'), // No real vetting
  		'user_password' 	=> array('title' => LAN_PASSWORD,	'tab'=>0, 'type' => 'method',	'data'=>'safestr', 'width' => 'auto'), //TODO add md5 option to form handler?
-		'user_sess' 		=> array('title' => USRLAN_175,		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
+		'user_sess' 		=> array('title' => LAN_SESSION,		'tab'=>0, 'noedit'=>true, 'type' => 'text',	'width' => 'auto'), // Photo
  		'user_image' 		=> array('title' => LAN_USER_07,	'tab'=>0, 'type' => 'dropdown',	'data'=>'str', 'width' => 'auto'), // Avatar
  		'user_email' 		=> array('title' => LAN_EMAIL,		'tab'=>0, 'type' => 'text', 'inline'=>true, 'data'=>'str',	'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 		'user_hideemail' 	=> array('title' => LAN_USER_10,	'tab'=>0, 'type' => 'boolean', 'data'=>'int',	'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
