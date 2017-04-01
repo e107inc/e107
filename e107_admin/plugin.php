@@ -5025,8 +5025,11 @@ class ".$table." extends e_admin_ui
 		protected \$batchDelete		= true;
 		protected \$batchExport     = true;
 		protected \$batchCopy		= true;
+
 	//	protected \$sortField		= 'somefield_order';
-	//	protected \$orderStep		= 10;
+	//	protected \$sortParent      = 'somefield_parent';
+	//	protected \$treePrefix      = 'somefield_title';
+
 	//	protected \$tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the \$fields below to enable. 
 		
 	//	protected \$listQry      	= \"SELECT * FROM `#tableName` WHERE field != '' \"; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
