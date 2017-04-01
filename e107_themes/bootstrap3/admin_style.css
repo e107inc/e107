@@ -1559,9 +1559,22 @@ td img.thumbnail { margin-bottom:0 }
 .treeprefix.level-4 { margin-left:60px }
 .treeprefix.level-5 { margin-left:85px }
 
+/* Cleanup tables for light themes */
+.adminlist.table-bordered > thead > tr > th,
+.adminlist.table-bordered > thead > tr > td,
+.adminlist.table-bordered > tbody > tr > th,
+.adminlist.table-bordered > tbody > tr > td,
+.adminlist.table-bordered > tfoot > tr > th,
+.adminlist.table-bordered > tfoot > tr > td {
+    border-left: 0;
+    border-right:0;
+}
 
+/* Cleanup table borders/headers */
+#admin-ui-list-batch ,
+.adminlist > thead > tr { background-color: rgba(0,0,0,0.1); }
 
-
+.adminlist { border:1px solid rgba(0,0,0,0.1);  }
 
 
 
