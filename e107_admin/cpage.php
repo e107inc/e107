@@ -205,7 +205,7 @@ class page_chapters_ui extends e_admin_ui
 		{
 			$this->addTitle(CUSLAN_63);
 		//	e107::getMessage()->addWarning("Experimental: Custom Fields");
-			$this->tabs = array(LAN_GENERAL,"Custom Fields");
+			$this->tabs = array(LAN_GENERAL,CUSLAN_4);
 			$this->fields['chapter_fields'] = array('title'=>"Fields", 'tab'=>1, 'type'=>'method', 'data'=>'json', 'writeParms'=>array('nolabel'=>2));
 
 			if($this->getAction() === 'list')
@@ -220,7 +220,7 @@ class page_chapters_ui extends e_admin_ui
 
 			$sql = e107::getDb();
 			$sql->gen("SELECT chapter_id,chapter_name FROM #page_chapters WHERE chapter_parent =0");
-			$this->books[0] = "(New Book)";
+			$this->books[0] = CUSLAN_5;
 			
 			while($row = $sql->fetch())
 			{
