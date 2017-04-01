@@ -155,7 +155,7 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 		</div>
  */
 
-$inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
+// $inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
     
 
 $ADMIN_MODAL = '
