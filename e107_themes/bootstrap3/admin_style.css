@@ -1586,7 +1586,7 @@ td img.thumbnail { margin-bottom:0 }
 
 @media (max-width: 1400px ){
 
-ul.navbar-nav.navbar-left > li > a > i { display:none; }
+/* ul.navbar-nav.navbar-left > li > a > i { display:none; } */
 
 }
 
