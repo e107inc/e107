@@ -28,7 +28,7 @@ $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
 		 {LINK_IMAGE} <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
-		<b class="caret"></b>
+
 		</a> 
 		{SUB_MENU}
 	</li>
@@ -39,8 +39,8 @@ $E_ADMIN_NAVIGATION['button'] = '
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		 {LINK_IMAGE}
-		<b class="caret"></b>
+		 {LINK_IMAGE}  <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+
 		</a>
 		{SUB_MENU}
 	</li>
