@@ -1350,15 +1350,16 @@ class e_parse extends e_parser
 
 		$text = html_entity_decode($text,ENT_QUOTES,'utf-8');
 
-		return mb_strimwidth($text, 0, $len, $more);
+		if(function_exists('mb_strimwidth'))
+		{
+			return mb_strimwidth($text, 0, $len, $more);
+		}
 		
-	//	$ret = $this->usubstr($text, 0, $len);
+		$ret = $this->usubstr($text, 0, $len);
 
 		// search for possible broken html entities
 		// - if an & is in the last 8 chars, removing it and whatever follows shouldn't hurt
 		// it should work for any characters encoding
-
-/*
 
 		$leftAmp = $this->ustrrpos($this->usubstr($ret, -8), '&');
 		if($leftAmp)
@@ -1366,7 +1367,8 @@ class e_parse extends e_parser
 			$ret = $this->usubstr($ret, 0, $this->ustrlen($ret) - 8 + $leftAmp);
 		}
 
-		return $ret.$more;*/
+		return $ret.$more;
+
 	}
 
 
@@ -1539,17 +1541,25 @@ class e_parse extends e_parser
 		}
 
 		// Turn off a few things if not enabled in options
-		if(!vartrue($pref['smiley_activate']))
+		if(empty($pref['smiley_activate']))
 		{
-			$opts['emotes'] = FALSE;
+			$opts['emotes'] = false;
 		}
-		if(!vartrue($pref['make_clickable']))
+
+		if(empty($pref['make_clickable']))
 		{
-			$opts['link_click'] = FALSE;
+			$opts['link_click'] = false;
 		}
-		if(!vartrue($pref['link_replace']))
+
+		if(empty($pref['link_replace']))
 		{
-			$opts['link_replace'] = FALSE;
+			$opts['link_replace'] = false;
+		}
+
+		if($this->isHtml($text)) //BC FIx for when HTML is saved without [html][/html]
+		{
+			$opts['nobreak'] = true;
+			$text = trim($text);
 		}
 
 		$fromadmin = $opts['fromadmin'];
@@ -1568,7 +1578,7 @@ class e_parse extends e_parser
 			$text = strip_tags($text);
 		}
 		
-		if (MAGIC_QUOTES_GPC == TRUE) // precaution for badly saved data. 
+		if (MAGIC_QUOTES_GPC === true) // precaution for badly saved data.
 		{
 			$text = stripslashes($text);
 		}
@@ -1590,7 +1600,7 @@ class e_parse extends e_parser
 		
 		
 		
-		if ($parseBB == FALSE)
+		if ($parseBB == false)
 		{
 			$content = array($text);
 		}
@@ -4077,16 +4087,24 @@ class e_parser
 	 */
 	function isBBcode($text)
 	{
-		$bbsearch = array('[/h]','[/b]','[/link]', '[/right]');
-
-		if(str_replace($bbsearch,'',$text))
-		{
-			return true;
-		}
-		else
+		if(preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
 		{
 			return false;
 		}
+
+		$bbsearch = array('[/h]', '[/b]', '[/link]', '[/right]', '[/center]', '[/flash]', '[/code]', '[/table]');
+
+		foreach($bbsearch as $v)
+		{
+			if(strpos($text,$v)!==false)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+
 
 	}
 

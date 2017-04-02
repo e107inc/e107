@@ -1488,6 +1488,98 @@ footer {
 */
 
 
+
+
+
+body#admin-menus > .container-fluid > .row,
+body#admin-menus .admin-left-panel,
+
+.row-flex,
+.row-flex > div[class*='col-'] {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    flex:1 1 auto;
+
+}
+
+body#admin-menus > .container-fluid > .row {
+	height: 92vh;
+}
+
+body#admin-menus .admin-left-panel {
+flex-flow: column nowrap;
+}
+
+.row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
+	 margin:-.2px; /* hack adjust for wrapping */
+}
+
+.container-flex > div[class*='col-'] div,
+.row-flex > div[class*='col-'] div {
+	width:100%;
+}
+
+body#admin-menus #sc-admin-help,
+body#admin-menus #sc-admin-help .panel-body,
+.flex-col {
+    display: flex;
+    display: -webkit-flex;
+    flex: 1 100%;
+	flex-flow: column nowrap;
+}
+
+.flex-grow {
+	display: flex;
+    -webkit-flex: 2;
+    flex: 2;
+}
+
+body#admin-menus #sc-admin-help  {
+	overflow-y:hidden;
+	}
+
+body#admin-menus #sc-admin-help .panel-body {
+	overflow-y:scroll;
+	}
+
+.form-control[disabled] { opacity: 0.5; 	}
+
+.e-image-preview { display:inline-block }
+
+td img.thumbnail { margin-bottom:0 }
+
+
+/* Parent/Child Indicator */
+.treeprefix {margin-right:4px}
+.treeprefix.level-2 { margin-left:10px }
+.treeprefix.level-3 { margin-left:35px }
+.treeprefix.level-4 { margin-left:60px }
+.treeprefix.level-5 { margin-left:85px }
+
+/* Cleanup tables for light themes */
+.adminlist.table-bordered > thead > tr > th,
+.adminlist.table-bordered > thead > tr > td,
+.adminlist.table-bordered > tbody > tr > th,
+.adminlist.table-bordered > tbody > tr > td,
+.adminlist.table-bordered > tfoot > tr > th,
+.adminlist.table-bordered > tfoot > tr > td {
+    border-left: 0;
+    border-right:0;
+}
+
+/* Cleanup table borders/headers */
+#admin-ui-list-batch ,
+.adminlist > thead > tr { background-color: rgba(0,0,0,0.1); }
+
+.adminlist { border:1px solid rgba(0,0,0,0.1);  }
+
+.nav-admin .fa { font-size:18px }
+
+
+
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
 }

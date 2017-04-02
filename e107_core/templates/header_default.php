@@ -168,10 +168,6 @@ echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
 
-
-
-
-
 //
 // D: Register CSS
 //
@@ -227,7 +223,7 @@ if (is_array($pref['e_meta_list']))
 
 if(isset($pref['sitebutton']))
 {
-	$appleIcon = $tp->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',true);
+	$appleIcon = $tp->thumbUrl($pref['sitebutton'],'w=144&h=144&crop=1',null, true);
 	echo "<link rel='apple-touch-icon' href='".$appleIcon."' />\n";	
 	unset($appleIcon);
 }
@@ -273,30 +269,21 @@ else
 		// Theme default
 		
 		$e_js->themeCSS(THEME_STYLE, $css_default);
-		
-		/* Moved to class2 and defined as THEME_STYLE
-		if($e_pref->get('themecss') && file_exists(THEME.$e_pref->get('themecss')))
+
+		// Support for style.css - override theme default CSS
+		if(file_exists(THEME."style_custom.css"))
 		{
-			//echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' media='{$css_default}' />\n";
-			$e_js->themeCSS($e_pref->get('themecss'), $css_default);
+			$e_js->themeCSS('style_custom.css',$css_default);
 		}
-		else
-		{
-		//	echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
-			$e_js->themeCSS('style.css', $css_default);
-		}
-		*/
+
 		// Support for print and handheld media - override theme default CSS
 		if(file_exists(THEME."style_mobile.css"))
 		{
-            //echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";
-			//$css_default = "screen";
 			$e_js->themeCSS('style_mobile.css', 'handheld');
 		}
+
 		if(file_exists(THEME."style_print.css"))
 		{
-            // echo "<link rel='stylesheet' href='".THEME_ABS."style_print.css' type='text/css' media='print' />\n";
-            // $css_default = "screen";
 			$e_js->themeCSS('style_print.css', 'print');
 		}
 	}
@@ -474,7 +461,7 @@ if(function_exists('theme_head'))
 	echo theme_head();
 }
 
-// FIXME description and keywords meta tags shouldn't be sent on all pages
+/* @deprecated */
 $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 
@@ -502,9 +489,15 @@ function render_meta($type)
 	}
 }
 
-echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
-echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
-
+// legay meta-tag checks.
+if(empty(e107::getUrl()->response()->getMetaKeywords()))
+{
+	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
+}
+if(empty(e107::getUrl()->response()->getMetaDescription()))
+{
+	echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
+}
 
 //echo render_meta('copyright');
 //echo render_meta('author');

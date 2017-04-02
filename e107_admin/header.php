@@ -465,6 +465,10 @@ if(deftrue('e_MENUMANAGER_ACTIVE'))
 {
 	$body_onload .= " id=\"layout-".e107::getForm()->name2id(THEME_LAYOUT)."\" ";
 }
+else
+{
+	$body_onload .= " id=\"admin-".str_replace(".php","",e_PAGE)."\" ";
+}
 
 //
 // J: Send end of <head> and start of <body>

@@ -157,12 +157,19 @@ class admin_shortcodes
 	
 		if(function_exists('e_help') && ($tmp =  e_help())) // new in v2.x for non-admin-ui admin pages. 
 		{
+			$ns->setUniqueId('sc-admin-help');
 			$help_text = $ns->tablerender($tmp['caption'],$tmp['text'],'e_help',true);
 		}
 
+		if(e_PAGE === "menus.php") // quite fix to disable e107_admin/menus.php help file in all languages.
+		{
+			return $help_text;
+		}
+
+
 		$helpfile = '';
 		
-		if(strpos(e_SELF, e_ADMIN_ABS) !== FALSE)
+		if(strpos(e_SELF, e_ADMIN_ABS) !== false)
 		{
 			if (is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/admin/help/'.e_PAGE))
 			{
@@ -2169,12 +2176,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$c = 0;
 				foreach($languages as $lng)
 				{			
-					$checked = "<i >&nbsp;</i>&nbsp;";
+					$checked = "<i class='fa fa-fw'>&nbsp;</i>&nbsp;";
 					$code = $slng->convert($lng);
 					
 					if($lng == e_LANGUAGE)
 					{
-						$checked = $tp->toGlyph('ok')." ";
+						$checked = $tp->toGlyph('fa-check', array('fw'=>1))." ";
 						$link = '#';
 					}
 					elseif(in_array(e_DOMAIN,$multiDoms))

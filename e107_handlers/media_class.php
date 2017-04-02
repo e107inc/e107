@@ -1405,7 +1405,7 @@ class e_media
 				$searchPlaceholder = varset($parm['searchPlaceholder'], LAN_SEARCH);
 				
 				$text = '<div class="btn-group"><span class="input-append form-inline">';
-				$text .= "<input type='text' class='e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
+				$text .= "<input type='text' class='form-control e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
 		//		$text .= "<span class='field-help'>bablalal</span>";
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
 				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';

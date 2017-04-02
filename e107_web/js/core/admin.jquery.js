@@ -775,8 +775,12 @@ $(document).ready(function()
 		
 			$(selector).toggle();
 
+		//	$('.menu-selector input[type="checkbox"]').removeAttr("checked");
+
 			return false; 
 		});
+
+		
 
 
 		$(".e-mm-selector li input").click(function(e){

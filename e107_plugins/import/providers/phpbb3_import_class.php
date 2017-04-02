@@ -80,19 +80,19 @@ class phpbb3_import extends base_import_class
 			break;
 			
 		  	case 'forum' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}forums");
 				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumthread' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}topics`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}topics");
 				
 				if ($result === FALSE) return FALSE;	  
 			break;
 				
 			case 'forumpost' :
 								
-				if($this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}attachments`"))
+				if($this->ourDB->gen("SELECT * FROM {$this->DBPrefix}attachments"))
 				{
 					while($row = $this->ourDB->fetch())
 					{
@@ -101,12 +101,12 @@ class phpbb3_import extends base_import_class
 						$this->forum_attachments[$id][$key] = $row['real_filename'];	
 					}
 				}
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}posts`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}posts");
 				if ($result === FALSE) return FALSE;	  
 			break;				
 
 			case 'forumtrack' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}forums_track`");
+				$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}forums_track");
 				if ($result === FALSE) return FALSE;	  
 			break;
 

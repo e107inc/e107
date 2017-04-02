@@ -66,6 +66,7 @@ class e_form
 	protected $_tabindex_counter = 0;
 	protected $_tabindex_enabled = true;
 	protected $_cached_attributes = array();
+	protected $_field_warnings = array();
 
 
 
@@ -82,6 +83,13 @@ class e_form
 		$this->_tabindex_enabled = $enable_tabindex;
 		$this->_uc = e107::getUserClass();
 		$this->setRequiredString('<span class="required">*&nbsp;</span>');
+	}
+
+
+	public function addWarning($field)
+	{
+		$this->_field_warnings[] = $field;
+
 	}
 
 	/**
@@ -802,10 +810,22 @@ class e_form
 	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
-		if (empty($options['maxlength'])) $maxlength = $options['maxlength'];
+
+		if(!empty($options['maxlength']))
+		{
+			 $maxlength = $options['maxlength'];
+		}
+
 		unset($options['maxlength']);
-		if(empty($options['size'])) $options['size'] = 15;
-		if(empty($options['class'])) $options['class'] = 'tbox number e-spinner input-small ';
+
+		if(empty($options['size']))
+		{
+			 $options['size'] = 15;
+		}
+		if(empty($options['class']))
+		{
+			 $options['class'] = 'tbox number e-spinner input-small ';
+		}
 		
 		if(!empty($options['size']))
 		{
@@ -2995,9 +3015,14 @@ class e_form
 		
 		$text = '<ul class="breadcrumb">
 			<li>';
-	
+
 		foreach($array as $val)
 		{
+			if($val['url'] === e_REQUEST_URI) // automatic link removal for current page.
+			{
+				$val['url']= null;
+			}
+
 			$ret = "";
 			$ret .= vartrue($val['url']) ? "<a href='".$val['url']."'>" : "";			
 			$ret .= vartrue($val['text'],'');
@@ -3995,6 +4020,67 @@ class e_form
 		return $text;	
 	}
 
+	/**
+	 * Check if a value should be linked and wrap in <a> tag if required.
+	 * @todo global pref for the target option?
+	 * @param mixed $value
+	 * @param array $parms
+	 * @param $id
+	 * @return string
+	 */
+	private function renderLink($value, $parms, $id=null)
+	{
+		if(empty($parms['link']) && empty($parms['url']))
+		{
+			return $value;
+		}
+
+		$dialog     = vartrue($parms['target']) =='dialog' ? " e-modal" : ""; // iframe
+		$ext        = vartrue($parms['target']) =='blank' ? " rel='external' " : ""; // new window
+		$modal      = vartrue($parms['target']) =='modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
+
+
+		if(!empty($parms['url'])) // ie. use e_url.php
+		{
+			$plugin = $this->getController()->getPluginName();
+			$data = $this->getController()->getListModel()->getData();
+			$link = e107::url($plugin,$parms['url'],$data);
+		}
+		else // old way.
+		{
+			$tp = e107::getParser();
+
+			$link       = str_replace('[id]',$id,$parms['link']);
+			$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
+
+
+			if($parms['link'] === 'sef' && $this->getController()->getListModel())
+			{
+				$model = $this->getController()->getListModel();
+
+				if(!$model->getUrl())
+				{
+					$model->setUrl($this->getController()->getUrl());
+				}
+							// assemble the url
+				$link = $model->url(null);
+			}
+			elseif(!empty($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
+			{
+				$data = $this->getController()->getListModel()->getData();
+				$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
+			}
+		}
+					// in case something goes wrong...
+		if($link)
+		{
+			return "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
+		}
+
+		return $value;
+
+	}
+
 
 
 	/**
@@ -4026,6 +4112,7 @@ class e_form
 		}
 
 
+
 		if(!empty($attributes['inline'])) $parms['editable'] = true; // attribute alias
 		if(!empty($attributes['sort'])) $parms['sort'] = true; // attribute alias
 		
@@ -4033,6 +4120,9 @@ class e_form
 		{
 			$attributes['type'] = $parms['type'];	
 		}
+
+
+
 
 		$this->renderValueTrigger($field, $value, $parms, $id);
 
@@ -4152,11 +4242,16 @@ class e_form
 				}
 				
 				
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='text' data-pk='".$id."' data-url='".e_SELF."?mode={$mode}&action=inline&id={$id}&ajax_used=1' href='#'>".$value."</a>";
 				}
+				else
+				{
+					$value = $this->renderLink($value,$parms,$id);
+				}
+
 				
 				$value = vartrue($parms['pre']).$value.vartrue($parms['post']);
 				// else same
@@ -4303,19 +4398,22 @@ class e_form
 					$value = defset($value, $value);
 				}
 
-				if(vartrue($parms['truncate']))
+				if(!empty($parms['truncate']))
 				{
 					$value = $tp->text_truncate($value, $parms['truncate'], '...');
 				}
-				elseif(vartrue($parms['htmltruncate']))
+				elseif(!empty($parms['htmltruncate']))
 				{
 					$value = $tp->html_truncate($value, $parms['htmltruncate'], '...');
 				}
-				if(vartrue($parms['wrap']))
+				if(!empty($parms['wrap']))
 				{
 					$value = $tp->htmlwrap($value, (int) $parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
-				if(vartrue($parms['link']) && $id/* && is_numeric($id)*/)
+
+				$value = $this->renderLink($value,$parms,$id);
+				/*
+				if(!empty($parms['link']) && $id)
 				{
 					$link = str_replace('[id]', $id, $parms['link']);
 					$link = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
@@ -4324,9 +4422,7 @@ class e_form
 					$ext = vartrue($parms['target']) == 'blank' ? " rel='external' " : ""; // new window
 					$modal = vartrue($parms['target']) == 'modal' ? " data-toggle='modal' data-cache='false' data-target='#uiModal' " : "";
 
-					if($parms['link'] == 'sef' && $this->getController()
-							->getListModel()
-					)
+					if($parms['link'] == 'sef' && $this->getController()->getListModel())
 					{
 						$model = $this->getController()->getListModel();
 						// copy url config
@@ -4337,6 +4433,7 @@ class e_form
 						// assemble the url
 						$link = $model->url();
 					}
+
 					elseif(vartrue($data[$parms['link']])) // support for a field-name as the link. eg. link_url.
 					{
 						$link = $tp->replaceConstants(vartrue($data[$parms['link']]));
@@ -4347,7 +4444,7 @@ class e_form
 					{
 						$value = "<a class='e-tip{$dialog}' {$ext} href='" . $link . "' {$modal} title='".LAN_EFORM_010."' >" . $value . "</a>";
 					}
-				}
+				}*/
 
 				if(empty($value))
 				{
@@ -4403,7 +4500,11 @@ class e_form
 				{
 					$value = $tp->htmlwrap($value, (int)$parms['wrap'], varset($parms['wrapChar'], ' '));
 				}
-				if(vartrue($parms['link']) && $id/* && is_numeric($id)*/) 
+
+				$value = $this->renderLink($value,$parms,$id);
+
+				/*
+				if(vartrue($parms['link']) && $id)
 				{
 					$link       = str_replace('[id]',$id,$parms['link']);
 					$link       = $tp->replaceConstants($link); // SEF URL is not important since we're in admin.
@@ -4427,7 +4528,7 @@ class e_form
                     
 					// in case something goes wrong...
                     if($link) $value = "<a class='e-tip{$dialog}' {$ext} href='".$link."' {$modal} title='".LAN_EFORM_010."' >".$value."</a>";
-				}
+				}*/
 
 				if(empty($value))
 				{
@@ -4867,11 +4968,11 @@ class e_form
 				}
 			//	 print_a($attributes);
 					// Inline Editing.  
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable'])) // avoid bad markup, better solution coming up
+				if(empty($attributes['noedit']) && !empty($parms['editable'])) // avoid bad markup, better solution coming up
 				{
 					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$methodParms = call_user_func_array(array($this, $method), array($value, 'inline', $parms));
+					$methodParms = call_user_func_array(array($this, $meth), array($value, 'inline', $parms));
 
 					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
 
@@ -4979,6 +5080,7 @@ class e_form
 			//TODO - order
 
 			default:
+				$value = $this->renderLink($value,$parms,$id);
 				//unknown type
 			break;
 		}
@@ -5961,7 +6063,17 @@ class e_form
 				}
 				*/
 
-				 
+				if(in_array($key,$this->_field_warnings))
+				{
+					if(is_string($writeParms))
+					{
+						parse_str($writeParms,$writeParms);
+					}
+
+					$writeParms['tdClassRight'] .=   ' has-warning';
+
+				}
+
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 

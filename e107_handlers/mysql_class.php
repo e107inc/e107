@@ -328,7 +328,10 @@ class e_db_mysql
 		$this->db_Set_Charset();
 		$this->setSQLMode();
 		
-		if ($db_ConnectionID == NULL){ 	$db_ConnectionID = $this->mySQLaccess; }
+		//if ($db_ConnectionID == NULL){
+			$db_ConnectionID = $this->mySQLaccess;
+
+	//	}
 		
 		return true;
 	}
@@ -347,18 +350,26 @@ class e_db_mysql
 
 	/**
 	 * Select the database to use. 
-	 * @param string database name
-	 * @param string table prefix . eg. e107_
+	 * @param string $database name
+	 * @param string $table prefix . eg. e107_
+	 * @param boolean $multiple set to maintain connection to a secondary database.
 	 * @return boolean true when database selection was successful otherwise false. 
 	 */
-	public function database($database, $prefix = MPREFIX)
+	public function database($database, $prefix = MPREFIX, $multiple=false)
 	{
 		$this->mySQLdefaultdb 	= $database;
 		$this->mySQLPrefix 		= $prefix;
-		
+
+		if($multiple === true)
+		{
+			$this->mySQLPrefix 		= "`".$database."`.".$prefix;
+			return true;
+		}
+
 		if($this->pdo)
 		{
-			try 
+
+			try
 			{
 				$this->mySQLaccess->query("use ".$database);
         		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
@@ -1816,7 +1827,8 @@ class e_db_mysql
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
-		return ' `'.$this->mySQLPrefix.$table.'`'.substr($matches[0],-1);
+
+		return " ".$this->mySQLPrefix.$table.substr($matches[0],-1);
 	}
 
 

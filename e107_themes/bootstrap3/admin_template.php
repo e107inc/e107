@@ -20,14 +20,14 @@ if (!defined('e107_INIT')) { exit(); }
 //e107::lan('theme', 'admin',true);
 
 
-$E_ADMIN_NAVIGATION['start'] = '<ul class="nav navbar-nav navbar-left">';
+$E_ADMIN_NAVIGATION['start'] = '<ul class="nav nav-admin navbar-nav navbar-left">';
 
-$E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav navbar-nav navbar-right">';
+$E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar-right">';
 
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE} {LINK_TEXT}
+		 {LINK_IMAGE}
 		<b class="caret"></b>
 		</a> 
 		{SUB_MENU}
@@ -39,7 +39,7 @@ $E_ADMIN_NAVIGATION['button'] = '
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		 {LINK_IMAGE} {LINK_TEXT}
+		 {LINK_IMAGE}
 		<b class="caret"></b>
 		</a>
 		{SUB_MENU}
@@ -155,7 +155,7 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 		</div>
  */
 
-$inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
+// $inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
     
 
 $ADMIN_MODAL = '

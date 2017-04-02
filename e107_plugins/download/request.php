@@ -215,8 +215,11 @@ if ($type == "file")
 				echo $binary_data;
 				exit();
 			}
-			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://")) {
-				header("Location: {$download_url}");
+			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://"))
+			{
+				$download_url = e107::getParser()->parseTemplate($download_url,true); // support for shortcode-driven dynamic URLS.
+				e107::redirect($download_url);
+				// header("Location: {$download_url}");
 				exit();
 			} 
 			else 

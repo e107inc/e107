@@ -6,6 +6,12 @@
  *
 */
 
+define("CUSLAN_1", "Overview");
+define("CUSLAN_2", "Page Title");
+define("CUSLAN_3", "Items per Page");
+define("CUSLAN_4", "Custom Fields");
+define("CUSLAN_5", "(New Book)");
+
 define("CUSLAN_9", 	"Text");
 define("CUSLAN_11", "Meta description");
 define("CUSLAN_12", "Create Page/Menu");

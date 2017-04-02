@@ -238,19 +238,126 @@ class user_import
 	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
 	{
 		$errorTexts = array(
-	    	0 => 'No error', 
-	    	1 => 'Can\'t change main admin data', 
-	    	2 => 'invalid field passed',
-			3 => 'Mandatory field not set', 
-			4 => 'User already exists', 
-			5 => 'Invalid characters in user or login name',
-			6 => 'Error saving extended user fields'
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
 		);
 		
 		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];
 		return 'Unknown: '.$errnum;
 	}
 }
+
+
+
+
+class userclass_import
+{
+	var $ucdb = null;
+	var $blockMainAdmin = true;
+	var $error;
+
+	var $defaults = array(
+		'userclass_id'              => 0,
+		'userclass_name'            => 0,
+		'userclass_description'     => 0,
+		'userclass_editclass'       => 0,
+		'userclass_parent'          => 0,
+		'userclass_accum'           => 0,
+		'userclass_visibility'      => 0,
+		'userclass_type'            => 0,
+		'userclass_icon'            => 0,
+		'userclass_perms'           => 0,
+
+	);
+
+	// Fields which must be set up by the caller.
+	var $mandatory = array(
+		'userclass_name'
+	);
+
+	// Constructor
+	function __construct()
+	{
+	    $this->ucdb = e107::getDb('pagechapter');	// Have our own database object to write to the table
+	}
+
+
+	// Empty the  DB
+	function emptyTargetDB($inc_admin = FALSE)
+	{
+		$this->ucdb->truncate('userclass_classes');
+
+	}
+
+
+	// Set a new default for a particular field
+	function overrideDefault($key, $value)
+	{
+//    echo "Override: {$key} => {$value}<br />";
+    	if (!isset($this->defaults[$key])) return FALSE;
+		$this->defaults[$key] = $value;
+	}
+
+
+  // Returns an array with all relevant fields set to the current default
+	function getDefaults()
+	{
+		return $this->defaults;
+	}
+
+	/**
+	 * Insert data into e107 DB
+	 * @param row - array of table data
+	 * @return integer, boolean - error code on failure, TRUE on success
+	 */
+	function saveData($row)
+	{
+
+		if(empty($row['userclass_name']))
+		{
+			return 3;
+		}
+
+
+		if(!$result = $this->ucdb->insert('userclass_classes',$row))
+		{
+	     	return 4;
+		}
+
+		//if ($result === FALSE) return 6;
+
+		return true;
+	}
+
+
+
+	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
+	{
+		$errorTexts = array(
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
+		);
+
+		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];
+
+		return $this->ucdb->getLastErrorText();
+
+	}
+
+
+
+}
+
 
 
 ?>

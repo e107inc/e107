@@ -192,7 +192,12 @@ class bootstrap3_admintheme
 
 			case 'core-infopanel':
 			case 'site_info':
-				echo '<div class="panel ' . $panelType[$style] . '">
+				echo '<div class="panel ' . $panelType[$style] . '"';
+				if(!empty($data['uniqueId']))
+				{
+					echo ' id="'.$data['uniqueId'].'" ';
+				}
+				echo ' >
 					  <div class="panel-heading">
 					    <h3 class="panel-title">' . $caption . '</h3>
 					  </div>
