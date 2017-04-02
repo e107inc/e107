@@ -150,7 +150,7 @@ class download_cat_ui extends e_admin_ui
 			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'method',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),
 			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
          	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=>'str',	'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
-       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',		'data'=>'str',	'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
+       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',		'data'=>'str',	'batch'=>true, 'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'sef=download_category_name&size=xxlarge'),
          
 	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		

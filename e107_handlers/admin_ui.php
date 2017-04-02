@@ -3174,7 +3174,22 @@ class e_admin_controller_ui extends e_admin_controller
 		switch($trigger[0])
 		{
 
+			case 'sefgen':
+				$field = $trigger[1];
+				$value = $trigger[2];
+
+				//handleListBatch(); for custom handling of all field names
+				if(empty($selected)) return $this;
+				$method = 'handle'.$this->getRequest()->getActionName().'SefgenBatch';
+				if(method_exists($this, $method)) // callback handling
+				{
+					$this->$method($selected, $field, $value);
+				}
+			break;
+
+
 			case 'export':
+				if(empty($selected)) return $this;
 				$method = 'handle'.$this->getRequest()->getActionName().'ExportBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
@@ -4756,6 +4771,59 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 
+		/**
+	 * Batch Export trigger
+	 * @param array $selected
+	 * @return void
+	 */
+	protected function handleListSefgenBatch($selected, $field, $value)
+	{
+
+		$tree = $this->getTreeModel();
+		$c= 0;
+		foreach($selected as $id)
+        {
+        	if(!$tree->hasNode($id))
+        	{
+        		e107::getMessage()->addError('Item #ID '.htmlspecialchars($id).' not found.');
+        		continue;
+        	}
+
+        	$model = $tree->getNode($id);
+
+        	$name = $model->get($value);
+
+        	$sef = eHelper::title2sef($name,'dashl');
+
+
+
+
+
+        	$model->set($field, $sef);
+
+
+        	$model->save();
+
+        	$data = $model->getData();
+
+        	if($model->isModified())
+	        {
+	           	$this->getModel()->setData($data)->save(false,true);
+		        $c++;
+	        }
+        }
+
+
+
+		$caption = e107::getParser()->lanVars(LAN_UI_BATCH_BOOL_SUCCESS, $c, true);
+		e107::getMessage()->addSuccess($caption);
+
+	//	e107::getMessage()->moveToSession();
+		// redirect
+	//	$this->redirect();
+	}
+
+
 
     /** 
      * Batch URL trigger
@@ -5138,7 +5206,10 @@ class e_admin_ui extends e_admin_controller_ui
 		{
 			return; 
 		}
-		
+
+
+
+
 		$cnt = $this->getTreeModel()->update($field, $val, $selected, true, false);
 		if($cnt)
 		{
@@ -6287,7 +6358,8 @@ class e_admin_form_ui extends e_form
 			'copy'          => $controller->getBatchCopy(),
 			'url'           => $controller->getBatchLink(),
 			'featurebox'    => $controller->getBatchFeaturebox(),
-			'export'        => $controller->getBatchExport()
+			'export'        => $controller->getBatchExport(),
+
 
 		);
 
@@ -6646,8 +6718,8 @@ class e_admin_form_ui extends e_form
 				<div class='span6 col-md-6'>";
 
 		$selectStart = "<div class='form-inline input-inline'>
-	         		<img src='".e_IMAGE_ABS."generic/branchbottom.gif' alt='' class='icon action'  />
-	         		<div class='input-group input-append'>
+					".ADMIN_CHILD_ICON."
+	         		 		<div class='input-group input-append'>
 						".$this->select_open('etrigger_batch', array('class' => 'tbox form-control input-large select batch e-autosubmit reset', 'id' => false))."
 						".$this->option(LAN_BATCH_LABEL_SELECTED, '', false);
 
@@ -6660,6 +6732,10 @@ class e_admin_form_ui extends e_form
 			$selectOpt .= !empty($options['export']) ? $this->option(LAN_UI_BATCH_EXPORT, 'export', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
 			$selectOpt .= !empty($options['url']) ? $this->option(LAN_UI_BATCH_CREATELINK, 'url', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
 			$selectOpt .= !empty($options['featurebox']) ? $this->option(LAN_PLUGIN_FEATUREBOX_BATCH, 'featurebox', false, array('class' => 'ui-batch-option class', 'other' => 'style="padding-left: 15px"')) : '';
+
+		//	if(!empty($parms['sef'])
+
+
 
 			if(!empty($customBatchOptions))
 			{
@@ -6746,6 +6822,17 @@ class e_admin_form_ui extends e_form
 
 			switch($val['type'])
 			{
+
+					case 'text';
+
+						if(!empty($parms['sef']))
+						{
+							$option['sefgen__'.$key.'__'.$parms['sef']] = LAN_GENERATE;
+						}
+
+					break;
+
+
 					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
 						if(vartrue($parms['reverse'])) // reverse true/false values; 
