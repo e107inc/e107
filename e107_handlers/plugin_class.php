@@ -474,11 +474,13 @@ class e_plugin
 
 		$arr = array();
 
+		var_dump($dirs);
+
 		foreach($dirs as $plugName)
 		{
 			$ret = null;
 
-			if(empty($plugName) || $plugName === '.' || $plugName === '..' || !is_dir(e_PLUGIN.$plugName))
+			if((htmlentities($plugName) != $plugName) || empty($plugName) || $plugName === '.' || $plugName === '..' || !is_dir(e_PLUGIN.$plugName))
 			{
 				continue;
 			}
