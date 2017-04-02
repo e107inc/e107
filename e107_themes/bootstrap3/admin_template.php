@@ -27,7 +27,7 @@ $E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE}
+		 {LINK_IMAGE} <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
 		<b class="caret"></b>
 		</a> 
 		{SUB_MENU}
