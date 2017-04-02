@@ -473,7 +473,7 @@ class e_plugin
 		$dirs = scandir(e_PLUGIN);
 
 		$arr = array();
-		
+
 		foreach($dirs as $plugName)
 		{
 			$ret = null;
