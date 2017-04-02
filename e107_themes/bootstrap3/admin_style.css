@@ -1579,6 +1579,7 @@ td img.thumbnail { margin-bottom:0 }
 .nav-admin .fa { font-size:18px }
 .nav-admin.navbar-left li a { padding-left:20px; padding-right:20px}
 
+#e-addon-updates .media-list img { width: 64px}
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
