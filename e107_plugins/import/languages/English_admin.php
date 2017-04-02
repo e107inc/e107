@@ -99,3 +99,5 @@ define("LAN_CONVERT_69", "Forum");
 define("LAN_CONVERT_70", "Forum Topics/Threads");
 define("LAN_CONVERT_71", "Forum Posts");
 define("LAN_CONVERT_72", "Forum Track");
+define("LAN_CONVERT_73", "Userclasses");
+define("LAN_CONVERT_74", "News Categories");
