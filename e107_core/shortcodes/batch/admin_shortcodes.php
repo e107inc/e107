@@ -2176,12 +2176,12 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				$c = 0;
 				foreach($languages as $lng)
 				{			
-					$checked = "<i >&nbsp;</i>&nbsp;";
+					$checked = "<i class='fa fa-fw'>&nbsp;</i>&nbsp;";
 					$code = $slng->convert($lng);
 					
 					if($lng == e_LANGUAGE)
 					{
-						$checked = $tp->toGlyph('ok')." ";
+						$checked = $tp->toGlyph('fa-check', array('fw'=>1))." ";
 						$link = '#';
 					}
 					elseif(in_array(e_DOMAIN,$multiDoms))
