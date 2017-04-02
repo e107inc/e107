@@ -45,14 +45,14 @@ if(e_MENUMANAGER_ACTIVE === false )
 	e107::library('load', 'bootstrap.switch');
 	e107::js('footer', '{e_WEB}js/bootstrap.switch.init.js', 'jquery', 5);
 
-	if(!deftrue("e_DEBUG"))
+//	if(!deftrue("e_DEBUG"))
 	{
 		e107::getJs()->inlineCSS('
 			body { overflow:hidden }
 		');
 	}
-	else
-	{
+//	else
+/*	{
 		e107::js('footer-inline',"
 			$('#menu_iframe').attr('scrolling','no');
 			$('#menu_iframe').load(function() {
@@ -60,7 +60,7 @@ if(e_MENUMANAGER_ACTIVE === false )
 				$(this).css('height',height);
 			});
 		");
-	}
+	}*/
 
 	e107::getJs()->inlineCSS("
 		.menu-manager-items          { padding-right:15px}
@@ -90,20 +90,20 @@ if(e_MENUMANAGER_ACTIVE === false )
 
 			.menu-selector ul li:nth-child(odd){ background-color:rgba(0,0,0,0.2) }
 
-			.menu-selector { height:330px; display:block; padding-bottom:50px; overflow-y:scroll; margin-bottom:10px }
+			.menu-selector { /*height:330px; */ display:block; padding-bottom:50px; /*overflow-y:scroll;*/ margin-bottom:10px }
 
 			.menu-selector input:checked + span {  color: white; }
 
 			@media all and (min-height: 1000px) {
 
-				.menu-selector { height:500px }
+				/*.menu-selector { height:200px }*/
 			}
 
 			@media all and (max-height: 800px) {
 
-				.menu-selector { height:250px }
+				/*.menu-selector { height:250px }*/
 				iframe#menu_iframe { height: 87vh }
-				.menu-selector ul li { font-size: 0.8em }
+				/*.menu-selector ul li { font-size: 0.8em }*/
 			}
 
 			ul.dropdown-menu.e-mm-selector { padding: 10px; margin-top: -2px; margin-right:-2px; }

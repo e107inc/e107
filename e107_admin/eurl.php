@@ -207,7 +207,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	protected function simplePage()
 	{
 		// $this->addTitle("Simple Redirects");
-		$eUrl =e107::getAddonConfig('e_url');
+		$eUrl =e107::getUrlConfig();
 		$frm = e107::getForm();
 		$tp = e107::getParser();
 		$cfg = e107::getConfig();
@@ -315,8 +315,17 @@ class eurl_admin_ui extends e_admin_controller_ui
 	{
 		// main module pref dropdown
 		$this->prefs['url_main_module']['writeParms'][''] = 'None';
+
+		// e_url.php aliases
+		$tmp = e107::getUrlConfig('alias');
+		foreach($tmp as $plugin=>$alias)
+		{
+			$this->prefs['url_main_module']['writeParms'][$alias] = eHelper::labelize($plugin);
+		}
+
+		// legacy URL (news, pages )
 		$modules = e107::getPref('url_config', array());
-		ksort($modules);
+
 		foreach ($modules as $module => $location) 
 		{
 			$labels = array();
@@ -326,10 +335,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 			if(!$config || !vartrue($config['config']['allowMain'])) continue;
 			$admin = $obj->admin();
 			$labels = vartrue($admin['labels'], array());
-			
-			
+
 			$this->prefs['url_main_module']['writeParms'][$module] = vartrue($section['name'], eHelper::labelize($module));
 		}
+
+		ksort($this->prefs['url_main_module']['writeParms']);
 		
 		// title2sef transform type pref  
 		$types = explode('|', 'none|dashl|dashc|dash|underscorel|underscorec|underscore|plusl|plusc|plus');

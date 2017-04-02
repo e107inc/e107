@@ -340,6 +340,17 @@
 			<field name="media_cat_image">{e_THEME}landingzero/install/beach.jpg</field>
 			<field name="media_cat_order">0</field>
 		</item>
+		<item>
+			<field name="media_cat_id">14</field>
+			<field name="media_cat_owner">_icon</field>
+			<field name="media_cat_category">_icon_svg</field>
+			<field name="media_cat_title">Icons SVG</field>
+			<field name="media_cat_sef"></field>
+			<field name="media_cat_diz">Available where icons are used in admin.</field>
+			<field name="media_cat_class">253</field>
+			<field name="media_cat_image"></field>
+			<field name="media_cat_order">0</field>
+		</item>
 	</dbTable>
 	<dbTable name="links">
 		<item>

@@ -244,6 +244,7 @@ define("LAN_INSTALLED","Installed");//TODO elsewhere
 define("LAN_LAST_UPDATED","Last Updated");
 define("LAN_UPDATE_AVAILABLE","Update Available");
 define("LAN_ADD", "Add");
+define("LAN_REMOVE", "Remove");
 define("LAN_ADD_MORE", "Add More");
 define("LAN_MULTIPLE_CHOICE", "Multiple Choice");
 
@@ -272,6 +273,9 @@ define("LAN_NEVER", "Never");
 define("LAN_PRUNE", "Prune");
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
+define("LAN_ADD_ALL", "Add All");
+define("LAN_CLEAR_ALL", "Clear All");
+define("LAN_UNKNOWN", "Unknown");
 define("LAN_ALL","All");
 define("LAN_IMPORT","Import");
 // define("LAN_OK","OK");     // defined in e107_languages/English/English.php
@@ -357,6 +361,7 @@ define("LAN_CONFIGURE", "Configure");
 // define("LAN_BACK", "Back"); @see e107_languages/English.php
 
 define("LAN_NOPERMISSION", "no permissions");
+define("LAN_NO_ADMIN_PERMISSION", "You do not have administrator permissions for [x]");
 
 define("LAN_CREDITS","Credits");
 define("LAN_NEWVERSION","e107 v[x] Available");
@@ -444,6 +449,8 @@ define("LAN_UI_404_METHOD_ERROR", "Action [x] not found!");
 define("LAN_UI_403_BODY_ERROR", "Access to the requested page is denied.");
 define("LAN_UI_403_TITLE_ERROR", "Access denied");
 define("LAN_UI_FORM_METHOD_ERROR", "FATAL ERROR: The field name [x] is not allowed. Please rename the key [x] to something else in your fields array and database table (if required).");
+define("LAN_UNKNOWN_ERROR", "Unknown Error");
+define("LAN_SQL_ERROR", "SQL Error");
 
 define("LAN_UI_BATCH_UPDATE_SUCCESS", "[x] set for [y] record(s).");
 define("LAN_UI_BATCH_REVERSED_SUCCESS", "[x] records successfully reversed.");
@@ -501,6 +508,7 @@ define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
 define("LAN_UNAVAILABLE", "Unavailable");
 define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
 define("LAN_NOT_FOUND", "Not Found!");
+define("LAN_FIELD", "Field");
 
 define("LAN_MAINTENANCE", "Maintenance");
 define("LAN_RETURN_TO_FRONT_PANEL", "Return to Front Panel");
@@ -516,3 +524,5 @@ define("LAN_ENGINE", "Engine");
 define("LAN_SOURCE", "Source");
 
 define("LAN_ERROR_CONNECTION","Unable to connect for updates. Please check firewall and/or internet connection.");
+
+define("LAN_UI_X_CANT_EQUAL_Y", "[x] cannot be the same as [y]");

@@ -440,7 +440,7 @@ class news_admin_ui extends e_admin_ui
 
 		'news_meta_keywords'	=> array('title' => LAN_KEYWORDS, 	'type' => 'tags', 	  'data'=>'str',  'tab'=>1,	'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_meta_description'	=> array('title' => LAN_DESCRIPTION,'type' => 'textarea', 'data'=>'str',	'tab'=>1,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge')),
-		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',      'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
+		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',    'batch'=>1,  'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
 		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
 		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
@@ -1118,14 +1118,14 @@ class news_admin_ui extends e_admin_ui
 							<tr>
 								<td>".NWSLAN_88."</td>
 								<td>
-									".$frm->select('newsposts', $this->_optrange(50, false), $pref['newsposts'], 'class=tbox')."
+									".$frm->select('newsposts', $this->_optrange(50, false), $pref['newsposts'])."
 								</td>
 							</tr>
 
 							<tr>
 								<td>".LAN_NEWS_91."</td>
 								<td>
-									".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'], 'class=tbox')."
+									".$frm->select('news_list_limit', $this->_optrange(50, false), $pref['news_list_limit'])."
 									<div class='field-help'>".LAN_NEWS_92."</div>
 								</td>
 							</tr>
@@ -1167,13 +1167,13 @@ class news_admin_ui extends e_admin_ui
 							<tr>
 								<td>".NWSLAN_87."</td>
 								<td>
-									".$frm->select('nbr_cols', $this->_optrange(6, false), $pref['nbr_cols'], 'class=tbox')."
+									".$frm->select('nbr_cols', $this->_optrange(6, false), $pref['nbr_cols'])."
 								</td>
 							</tr>
 							<tr>
 								<td>".NWSLAN_115."</td>
 								<td id='newsposts-archive-cont'>
-									".$frm->select('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']), 'class=tbox')."
+									".$frm->select('newsposts_archive', $this->_optrange(intval($pref['newsposts']) - 1), intval($pref['newsposts_archive']))."
 									<div class='field-help'>".NWSLAN_116."</div>
 								</td>
 							</tr>

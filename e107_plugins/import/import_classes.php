@@ -20,26 +20,27 @@ Root classes for import and saving of data. Application-specific classes build o
 
 class base_import_class
 {
-	var $ourDB = NULL;
-	var $DBPrefix = '';
-	var $currentTask = '';
-	var $copyUserInfo = TRUE;
+	var $ourDB          = null;
+	var $DBPrefix       = '';
+	var $currentTask    = '';
+	var $copyUserInfo   = true;
 	protected $arrayData = array();
 
 	/**
 	 * Connect to the external DB if not already connected
 	 */
-	function db_Connect($server, $user, $password, $database, $prefix)
+	function database($database, $prefix)
 	{		
 		if ($this->ourDB == NULL)
 		{
 	  		$this->ourDB = e107::getDb('ourDB');
-	  		$result = $this->ourDB->db_Connect($server, $user, $password, $database);
-	  		$this->DBPrefix = $prefix;
+	  		$result = $this->ourDB->database($database,$prefix,true);
+	  		$this->DBPrefix = "`".$database."`.".$prefix;
 	  		if ($result)
 	  		{
 	  	 		return $result;
 	  		}
+
 		}
 		
 		return TRUE;
@@ -62,13 +63,25 @@ class base_import_class
 	  		case 'users' :
 	    		return $this->saveUserData($dataRecord);
 	    	break;
-			
+
+	  		case 'userclass' :
+	    		return $this->saveUserClassData($dataRecord);
+	    	break;
+
 			case 'news' :
 				return $this->saveNewsData($dataRecord);
+			break;
+
+			case 'newscategory' :
+				return $this->saveNewsCategoryData($dataRecord);
 			break;
 			
 			case 'page' :
 				return $this->savePageData($dataRecord);
+			break;
+
+			case 'pagechapter' :
+				return $this->savePageChapterData($dataRecord);
 			break;
 
 			case 'links' :
@@ -110,7 +123,7 @@ class base_import_class
 	{
 		if($mode == 'db')
 		{
-			$result = $this->ourDB->db_Fetch();	
+			$result = $this->ourDB->fetch();
 		}
 		else
 		{
@@ -125,13 +138,25 @@ class base_import_class
 	  		case 'users' :
 				return $this->copyUserData($initial, $result);
 			break;
-			
+
+	  		case 'userclass' :
+				return $this->copyUserClassData($initial, $result);
+			break;
+
 			case 'news' :
 				return $this->copyNewsData($initial, $result);
 	  		break;
-			
+
+			case 'newscategory' :
+				return $this->copyNewsCategoryData($initial, $result);
+	  		break;
+
 			case 'page' :
 				return $this->copyPageData($initial, $result);
+	  		break;
+
+			case 'pagechapter' :
+				return $this->copyPageChapterData($initial, $result);
 	  		break;
 
 			case 'links' :
@@ -187,8 +212,18 @@ class base_import_class
 	{
 		return $target;
 	}
+
+	function copyUserClassData(&$target, &$source)
+	{
+		return $target;
+	}
 	
 	function copyNewsData(&$target, &$source)
+	{
+		return $target;
+	}
+
+	function copyNewsCategoryData(&$target, &$source)
 	{
 		return $target;
 	}
@@ -197,7 +232,12 @@ class base_import_class
 	{
 		return $target;
 	}
-	
+
+	function copyPageChapterData(&$target, &$source)
+	{
+		return $target;
+	}
+
 	function copyLinksData(&$target, &$source)
 	{
 		return $target;
@@ -228,7 +268,44 @@ class base_import_class
 		return $target;
 	}
 
+	/**
+	 * @param $source
+	 * @param $target
+	 */
+	public function debug($source,$target)
+	{
+		echo "<table style='width:100%'>
+			<tr><th>Source CMS</th><th>Target e107</th></tr>
+				<tr>
+				<td style='vertical-align:top'>".$this->renderTable($source)."</td>
+				<td style='vertical-align:top'>".$this->renderTable($target)."</td>
+				</tr>
+			</table>";
 
+	}
+
+	private function renderTable($source)
+	{
+		$text = "<table class='table table-striped table-bordered'>
+			<tr><th>Field</th><th>Data</th></tr>";
+
+		foreach($source as $k=>$v)
+		{
+				$text .= "<tr>
+					<td style='width:50%;'>".$k."</td>
+					<td>".htmlentities($v)."</td>
+				</tr>";
+
+
+		}
+
+		$text .= "
+			</table>
+		";
+
+		return $text;
+
+	}
 	
 	//===========================================================
 	//				UTILITY ROUTINES

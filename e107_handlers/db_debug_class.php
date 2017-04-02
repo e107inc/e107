@@ -782,7 +782,7 @@ class e107_db_debug {
 			$message = "<pre>".print_r($message,true)."</pre>";
 		}
 
-		if (!E107_DBG_BASIC && !E107_DBG_ALLERRORS && !E107_DBG_SQLDETAILS && !E107_DBG_NOTICES)
+		if (!deftrue('E107_DBG_BASIC') && !deftrue('E107_DBG_ALLERRORS') && !deftrue('E107_DBG_SQLDETAILS') && !deftrue('E107_DBG_NOTICES'))
 		{
 			return false;
 		}

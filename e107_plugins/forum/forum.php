@@ -390,7 +390,7 @@ foreach ($forumList['parents'] as $parent)
 
 	$sc->setVars($parent);
 	$sc->wrapper('forum/main/parent');
-	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, false, $sc);
+	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT, true, $sc);
 	if (!count($forumList['forums'][$parent['forum_id']]))
 	{
 		$text .= "<td colspan='5' style='text-align:center' class='forumheader3'>".LAN_FORUM_0068."</td>";
@@ -424,7 +424,7 @@ foreach ($forumList['parents'] as $parent)
 		if (isset($FORUM_MAIN_PARENT_END))
 		{
 //--			$forum_string .= $tp->simpleParse($FORUM_MAIN_PARENT_END, $pVars);
-    	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT_END, false, $sc);
+    	$forum_string .= $tp->parseTemplate($FORUM_MAIN_PARENT_END, true, $sc);
 		}
 	}
 }
@@ -629,20 +629,20 @@ if (e_QUERY == 'new')
 
 //--		$forum_newstring .= $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
 				$sc->setVars($thread);
-		$forum_newstring .= $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, false, $sc);
+		$forum_newstring .= $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, true, $sc);
 	}
 
 	if (empty($newThreadList))
 	{
 //--		$nVars->NEWSPOSTNAME = LAN_FORUM_0029;
 //--		$forum_newstring = $tp->simpleParse($FORUM_NEWPOSTS_MAIN, $nVars);
-		$forum_newstring = $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, false, $sc);
+		$forum_newstring = $tp->parseTemplate($FORUM_NEWPOSTS_MAIN, true, $sc);
 
 	}
 //--	$forum_new_start = $tp->simpleParse($FORUM_NEWPOSTS_START, $nVars);
 //--	$forum_new_end = $tp->simpleParse($FORUM_NEWPOSTS_END, $nVars);
-	$forum_new_start = $tp->parseTemplate($FORUM_NEWPOSTS_START, false, $sc);
-	$forum_new_end = $tp->parseTemplate($FORUM_NEWPOSTS_END, false, $sc);
+	$forum_new_start = $tp->parseTemplate($FORUM_NEWPOSTS_START, true, $sc);
+	$forum_new_end = $tp->parseTemplate($FORUM_NEWPOSTS_END, true, $sc);
 
 	if ($forum->prefs->get('enclose'))
 	{
@@ -664,11 +664,11 @@ $breadarray = array(
 
 //--  $forum_main_start = $tp->simpleParse($FORUM_MAIN_START, $fVars);
 $sc->wrapper('forum/main/start');
-$forum_main_start = $tp->parseTemplate($FORUM_MAIN_START, false, $sc);
+$forum_main_start = $tp->parseTemplate($FORUM_MAIN_START, true, $sc);
 //--  $forum_main_end = $tp->simpleParse($FORUM_MAIN_END, $fVars);
 
 $sc->wrapper('forum/main/end');
-$forum_main_end = $tp->parseTemplate($FORUM_MAIN_END, false, $sc);
+$forum_main_end = $tp->parseTemplate($FORUM_MAIN_END, true, $sc);
 
 if ($forum->prefs->get('enclose'))
 {

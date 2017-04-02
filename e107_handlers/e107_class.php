@@ -2416,6 +2416,73 @@ class e107
 		return FALSE;
 	}
 
+	/**
+	 * Retrieves the e_url config  - new v2.1.6
+	 * @return array
+	 */
+	public static function getUrlConfig($mode='config')
+	{
+		$new_addon = array();
+
+		$filename = 'e_url';
+		$elist = self::getPref($filename.'_list');
+		$className = substr($filename, 2); // remove 'e_'
+		$methodName = 'config';
+
+		$profile = null; // for future use.
+
+		if(!empty($elist))
+		{
+			foreach(array_keys($elist) as $key)
+			{
+				if(is_readable(e_PLUGIN.$key.'/'.$filename.'.php'))
+				{
+					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
+
+					$class_name = $key.'_'.$className;
+
+					if(is_object($class_name))
+					{
+						$obj = $class_name;
+						$class_name = get_class($obj);
+					}
+					else
+					{
+						$obj = new $class_name;
+					}
+
+					if($mode === 'alias')
+					{
+						if(!empty($obj->alias))
+						{
+							$new_addon[$key] = $obj->alias;
+						}
+
+						continue;
+					}
+
+					$array = self::callMethod($obj, $methodName,$profile);
+
+					if($array)
+					{
+						foreach($array as $k=>$v)
+						{
+							if(empty($v['alias']) && !empty($obj->alias))
+							{
+								$v['alias'] = $obj->alias;
+							}
+							$new_addon[$key][$k] = $v;
+
+						}
+
+					}
+
+				}
+			}
+		}
+
+		return $new_addon;
+	}
 
 	/**
 	 * Get theme name or path.
@@ -3157,7 +3224,7 @@ class e107
 
 		if(!$tmp = self::getRegistry('core/e107/addons/e_url'))
 		{
-			$tmp = self::getAddonConfig('e_url');
+			$tmp = self::getUrlConfig();
 			self::setRegistry('core/e107/addons/e_url',$tmp);
 		}
 
@@ -3165,6 +3232,8 @@ class e107
 
 		$pref = self::getPref('e_url_alias');
 		$sefActive = self::getPref('e_url_list');
+		$rootNamespace = self::getPref('url_main_module');
+
 
 		if(is_string($options)) // backwards compat.
 		{
@@ -3185,12 +3254,22 @@ class e107
 			$options['fragment'] = '#' . $options['fragment'];
 		}
 
-		if(varset($tmp[$plugin][$key]['sef']))
+		if(!empty($tmp[$plugin][$key]['sef']))
 		{
 			if(!empty($tmp[$plugin][$key]['alias']))
 			{
 				$alias = (!empty($pref[e_LAN][$plugin][$key])) ? $pref[e_LAN][$plugin][$key] : $tmp[$plugin][$key]['alias'];
-				$tmp[$plugin][$key]['sef'] = str_replace('{alias}', $alias, $tmp[$plugin][$key]['sef']);
+
+				if(!empty($rootNamespace) && $rootNamespace === $plugin)
+				{
+					$replaceAlias = array('{alias}\/','{alias}/');
+					$tmp[$plugin][$key]['sef'] = str_replace($replaceAlias, '', $tmp[$plugin][$key]['sef']);
+				}
+				else
+				{
+					$tmp[$plugin][$key]['sef'] = str_replace('{alias}', $alias, $tmp[$plugin][$key]['sef']);
+				}
+
 			}
 
 

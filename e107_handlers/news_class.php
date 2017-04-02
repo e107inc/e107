@@ -882,6 +882,12 @@ class e_news_tree extends e_front_tree_model
 			if($tablerender)
 			{
 				$caption = vartrue($parms['caption']) ? defset($parms['caption'], $parms['caption']) : LAN_NEWSLATEST_MENU_TITLE; // found in plugins/news/languages/English.php
+
+				if(!empty($parms['caption'][e_LANGUAGE]))
+				{
+					$caption = $parms['caption'][e_LANGUAGE];
+				}
+
 				$mod = true === $tablerender ? 'news_latest_menu' : $tablerender;
 				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}
@@ -1096,6 +1102,12 @@ class e_news_category_tree extends e_front_tree_model
 			if($tablerender)
 			{
 				$caption = vartrue($parms['caption']) ? defset($parms['caption'], $parms['caption']) : LAN_NEWSCAT_MENU_TITLE; // found in plugins/news/languages/English.php
+
+				if(!empty($parms['caption'][e_LANGUAGE]))
+				{
+					$caption = $parms['caption'][e_LANGUAGE];
+				}
+
 				$mod = true === $tablerender ? 'news_categories_menu' : $tablerender;
 				return e107::getRender()->tablerender($caption, $ret, varset($parms['mode'], $mod), $return);
 			}

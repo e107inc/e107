@@ -25,6 +25,9 @@ class download_shortcodes extends e_shortcode
 	public $dlsubrow;
 	public $dlsubsubrow;
 	public $mirror;
+
+	public $parent;
+	public $grandparent;
 	
    /**
     * download_shortcodes constructor
@@ -43,6 +46,7 @@ class download_shortcodes extends e_shortcode
 
 		$breadcrumb 	= array();
 
+
 		switch ($this->qry['action']) 
 		{
 			case 'mirror':
@@ -58,6 +62,17 @@ class download_shortcodes extends e_shortcode
 			
 			default:
 				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => $url->create('download/index'));
+
+				if(!empty($this->grandparent))
+				{
+					$breadcrumb[]	= array('text' => $this->grandparent['download_category_name'],	'url' => ($this->grandparent['download_category_id']) ? $url->create('download/list/category', array('id'=>$this->grandparent['download_category_id'],'name'=>$this->grandparent['download_category_sef'])) : null);
+				}
+
+				if(!empty($this->parent))
+				{
+					$breadcrumb[]	= array('text' => $this->parent['download_category_name'],	'url' => ($this->parent['download_category_id']) ? $url->create('download/list/category', array('id'=>$this->parent['download_category_id'],'name'=>$this->parent['download_category_sef'])) : null);
+				}
+
 				$breadcrumb[]	= array('text' => $this->var['download_category_name'],	'url' => ($this->var['download_category_id']) ? $url->create('download/list/category', array('id'=>$this->var['download_category_id'],'name'=>$this->var['download_category_sef'])) : null);
 				$breadcrumb[]	= array('text' => $this->var['download_name'],			'url' => null);
 			break;
@@ -154,7 +169,9 @@ class download_shortcodes extends e_shortcode
 	  $tp = e107::getParser();
       if ($this->dlsubsubrow['d_count'])
       {
-         return "<a class='".$class."' href='".e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubsubrow['download_category_id']."'>".$tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
+         $url = e107::getUrl()->create('download/list/category', array('id'=>$this->dlsubsubrow['download_category_id'], 'name'=> vartrue($this->dlsubsubrow['download_category_sef'],'--sef-not-set--')));
+			// e_PLUGIN_ABS."download/download.php?action=list&id=".$this->dlsubsubrow['download_category_id']
+         return "<a class='".$class."' href='".$url."'>".$tp->toHTML($this->dlsubsubrow['download_category_name'], FALSE, 'TITLE')."</a>";
       }
       else
       {
@@ -944,7 +961,18 @@ class download_shortcodes extends e_shortcode
    
    function sc_download_back_to_category_list()
    {
-      	return "<a class='btn btn-default btn-xs btn-mini' href='".e_SELF."'>".LAN_dl_9."</a>";
+		$url = e107::getUrl();
+
+		if(!empty($this->parent))
+		{
+			$link = $url->create('download/list/category', array('id'=>$this->parent['download_category_id'],'name'=>$this->parent['download_category_sef']));
+		}
+		else
+		{
+			$link = ($this->var['download_category_id']) ? $url->create('download/list/category', array('id'=>$this->var['download_category_id'],'name'=>$this->var['download_category_sef'])) : null;
+		}
+
+      	return "<a class='btn btn-default btn-xs btn-mini' href='".$link."'>".LAN_dl_9."</a>";
    }
    
    
@@ -996,7 +1024,7 @@ class download_shortcodes extends e_shortcode
 	   if (!$source) return "&nbsp;";
 	 //  list($ret[TRUE],$ret[FALSE]) = explode(chr(1), $source.chr(1)); //XXX ???
 	//   if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE]; //XXX ???
-	    $parms = array('legacy'=> e_IMAGE."icons/");
+	    $parms = array('legacy'=> "{e_IMAGE}icons/");
 	   return e107::getParser()->toIcon($source, $parms);
 		//return "<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='*'/>";
 	}

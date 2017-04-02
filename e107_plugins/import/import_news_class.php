@@ -66,16 +66,14 @@ class news_import
 	// Constructor
 	function __construct()
 	{
-	  	global $sql;
-	    $this->newsDB = new db;	// Have our own database object to write to the news table	
+	    $this->newsDB = e107::getDb('news');	// Have our own database object to write to the news table
 	}
 
 
 	// Empty the news DB
 	function emptyTargetDB($inc_admin = FALSE)
 	{
-		// leave existing 
-		// $this->newsDB->db_Delete('news');
+		 $this->newsDB->truncate('news');
 	}
   
   
@@ -103,7 +101,7 @@ class news_import
 	 */
 	function saveData($row)
 	{
-		if(!$result = $this->newsDB->db_Insert('news',$row))
+		if(!$result = $this->newsDB->insert('news',$row))
 		{
 	     	return 4;
 		}
@@ -118,13 +116,13 @@ class news_import
 	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
 	{
 		$errorTexts = array(
-	    	0 => 'No error', 
-	    	1 => 'Can\'t change main admin data', 
-	    	2 => 'invalid field passed',
-			3 => 'Mandatory field not set', 
-			4 => 'Entry already exists', 
-			5 => 'Invalid characters in user or login name',
-			6 => 'Error saving extended user fields'
+	    	0 => LAN_CONVERT_57, 
+	    	1 => LAN_CONVERT_58, 
+	    	2 => LAN_CONVERT_59,
+			3 => LAN_CONVERT_60, 
+			4 => LAN_CONVERT_61, 
+			5 => LAN_CONVERT_62,
+			6 => LAN_CONVERT_63
 		);
 			
 		if (isset($errorTexts[$errnum])) return $errorTexts[$errnum];
@@ -135,6 +133,90 @@ class news_import
   
   
   
+}
+
+
+
+class newscategory_import
+{
+	var $newsDB = NULL;
+	var $blockMainAdmin = TRUE;
+	var $error;
+
+	var $default = array(
+
+	//		'category_id'			=> '',  // auto-increment
+			'category_name'			        => '',
+			'category_sef'			        => '',
+			'category_meta_description'		=> '',
+			'category_meta_keywords'		=> '',
+			'category_manager'			    => e_UC_ADMIN,
+			'category_icon'			        => '',
+			'category_order'			    => 0,
+	);
+
+	/* Fields which must be set up by the caller.  */
+	var $mandatory = array(
+			'category_id',
+			'category_name',
+	);
+
+	// Constructor
+	function __construct()
+	{
+	    $this->newsDB = e107::getDb('newscat');		// Have our own database object to write to the news table
+	}
+
+
+	// Empty the news DB
+	function emptyTargetDB($inc_admin = FALSE)
+	{
+		 $this->newsDB->truncate('news_category');
+	}
+
+
+	// Set a new default for a particular field
+	function overrideDefault($key, $value)
+	{
+//    echo "Override: {$key} => {$value}<br />";
+    	if (!isset($this->default[$key])) return FALSE;
+		$this->default[$key] = $value;
+	}
+
+
+  // Returns an array with all relevant fields set to the current default
+	function getDefaults()
+	{
+		return $this->default;
+	}
+
+
+
+	/**
+	 * Insert data into e107 DB
+	 * @param row - array of table data
+	 * @return integer, boolean - error code on failure, TRUE on success
+	 */
+	function saveData($row)
+	{
+		if(!$result = $this->newsDB->insert('news_category',$row))
+		{
+	     	return 4;
+		}
+
+
+		return true;
+	}
+
+
+
+	function getErrorText($errnum)    // these errors are presumptuous and misleading. especially '4' .
+	{
+		return $this->newsDB->getLastErrorText();
+	}
+
+
+
 }
 
 
