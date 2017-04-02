@@ -4225,7 +4225,7 @@ class e_admin_controller_ui extends e_admin_controller
                 label1: WHILE @parent != 0 DO
                         SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
                         SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,3,0), @parentstr);
+                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
                         SET incid = @parent;
                 END WHILE label1;
 
