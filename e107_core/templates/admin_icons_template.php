@@ -454,6 +454,8 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 //	define("ADMIN_TRUE_ICON", "<i class='S16 e-true-16'></i>");
 //	define("ADMIN_FALSE_ICON", "<i class='S16 e-false-16'></i>");
 //	define("ADMIN_WARNING_ICON", "<i class='S16 e-warning-16'></i>");
+
+
 	define("ADMIN_EDIT_ICON", "<i class='S32 e-edit-32'></i>");
 	define("ADMIN_DELETE_ICON", "<i class='S32 e-delete-32'></i>");
 
