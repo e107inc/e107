@@ -418,15 +418,18 @@ class plugin_ui extends e_admin_ui
 		{
 			$id = $this->getId();
 
-			if(!e107::isInstalled($id))
+			if(!is_dir(e_PLUGIN.$id))
 			{
+				e107::getMessage()->addError("Bad Link");
 				return false;
 			}
 
 			e107::getSingleton('e107plugin')->refresh($id);
 			e107::getLog()->add('PLUGMAN_04', $id, E_LOG_INFORMATIVE, '');
 
-			$this->redirectAction('list');
+			e107::getMessage()->addSuccess("Repair Complete (".$id.")"); // Repair Complete ([x])
+
+			 $this->redirectAction('list');
 		}
 
 
