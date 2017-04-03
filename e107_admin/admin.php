@@ -101,7 +101,8 @@ class admin_start
 			'ratings'		=> 4.2,
 			'lightbox'		=> 1.5,
 			'e107slider'	=> 0.1,
-			'forumthanks'   => 0.5
+			'forumthanks'   => 0.5,
+			'eclassifieds'   => 1.11
 
 	);
 
