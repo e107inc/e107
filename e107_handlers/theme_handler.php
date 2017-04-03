@@ -2325,7 +2325,7 @@ class themeHandler
 							<td colspan='2' style='vertical-align:top'>
 							<table class='table table-bordered table-striped' >
 							<tr>
-			                	<td class='center' style='width:10%'>".TPVLAN_55."</td>
+			                	<td class='center' style='width:10%'>".TPVLAN_93."</td>
 						  		<td style='width:20%'>".TPVLAN_52."</td>
 								<td class='left'>".TPVLAN_7."</td>
 							</tr>";
