@@ -38,6 +38,27 @@ else
 	if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
 }
 
+define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PLUGIN_PM_INBOX."' title='".LAN_PLUGIN_PM_INBOX."' />");
+define('PM_OUTBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PLUGIN_PM_OUTBOX."' title='".LAN_PLUGIN_PM_OUTBOX."' />");
+define('PM_SEND_LINK', LAN_PLUGIN_PM_NEW);
+define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
+
+
+$sc_style['PM_SEND_PM_LINK']['pre'] = "<br /><br />";
+$sc_style['PM_SEND_PM_LINK']['post'] = "";
+
+$sc_style['PM_INBOX_FILLED']['pre'] = "[";
+$sc_style['PM_INBOX_FILLED']['post'] = "%]";
+
+$sc_style['PM_OUTBOX_FILLED']['pre'] = "[";
+$sc_style['PM_OUTBOX_FILLED']['post'] = "%]";
+
+$sc_style['PM_NEWPM_ANIMATE']['pre'] = "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>";
+$sc_style['PM_NEWPM_ANIMATE']['post'] = "</a>";
+
+$sc_style['PM_BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>";
+$sc_style['PM_BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
+
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 $sc_style['PM_ATTACHMENTS']['pre'] = "<div class='alert alert-block alert-info'>";
 $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
