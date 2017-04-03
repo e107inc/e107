@@ -378,11 +378,11 @@ class private_message
 	{
 	//	require_once(e_HANDLER.'mail.php');
 
-		$tpl_file = THEME.'pm_template.php';
+		$tpl_file = THEME.'templates/pm/pm_template.php';
 
 		$PM_NOTIFY = null; // loaded in template below.
 
-		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
 
 		$template = $PM_NOTIFY;
 
