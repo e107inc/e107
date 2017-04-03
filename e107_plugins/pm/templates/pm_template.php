@@ -59,6 +59,20 @@ $sc_style['PM_NEWPM_ANIMATE']['post'] = "</a>";
 $sc_style['PM_BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>";
 $sc_style['PM_BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
 
+$PM_MENU = "
+<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
+<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PLUGIN_PM_INBOX."</a>
+{PM_NEWPM_ANIMATE}
+<br />
+{PM_INBOX_TOTAL} ".LAN_PM_36.", {PM_INBOX_UNREAD} ".LAN_PM_37." {PM_INBOX_FILLED}
+<br />
+<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a>
+<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PLUGIN_PM_OUTBOX."</a><br />
+{PM_OUTBOX_TOTAL} ".LAN_PM_36.", {PM_OUTBOX_UNREAD} ".LAN_PM_37." {PM_OUTBOX_FILLED}
+{PM_SEND_PM_LINK}
+{PM_BLOCKED_SENDERS_MANAGE}
+";
+
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 $sc_style['PM_ATTACHMENTS']['pre'] = "<div class='alert alert-block alert-info'>";
 $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
