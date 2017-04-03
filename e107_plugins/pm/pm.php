@@ -176,8 +176,8 @@ class pm_extended extends private_message
 		{
 			return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
 		}
-		$tpl_file = THEME.'pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$tpl_file = THEME.'templates/pm/pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
 		$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
 	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
 		
@@ -205,8 +205,8 @@ class pm_extended extends private_message
 	{
 		$tp = e107::getParser();
 		
-		$tpl_file = THEME.'pm_template.php';
-		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$tpl_file = THEME.'templates/pm/pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
 		
 		$pm_blocks = $this->block_get();
 		$pmlist = $this->pm_get_inbox(USERID, $start, $this->pmPrefs['perpage']);
@@ -257,8 +257,8 @@ class pm_extended extends private_message
 	{
 		$tp = e107::getParser();
 		
-		$tpl_file = THEME.'pm_template.php';
-		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$tpl_file = THEME.'templates/pm/pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
 		$pmlist = $this->pm_get_outbox(USERID, $start, $this->pmPrefs['perpage']);
 	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
 		
@@ -304,8 +304,8 @@ class pm_extended extends private_message
 	{
 		$ns = e107::getRender();
 
-		$tpl_file = THEME.'pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$tpl_file = THEME.'templates/pm/pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
 		$pm_info = $this->pm_get($pmid);
 
 		$sc = e107::getScBatch('pm',true, 'pm');
@@ -373,8 +373,8 @@ class pm_extended extends private_message
 	public function showBlocked($start = 0)
 	{
 		$tp = e107::getParser();
-		$tpl_file = THEME.'pm_template.php';
-		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+		$tpl_file = THEME.'templates/pm/pm_template.php';
+		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
 		$pmBlocks = $this->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
 
 		$sc = e107::getScBatch('pm',TRUE, 'pm');
