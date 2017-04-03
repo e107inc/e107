@@ -78,7 +78,18 @@ if(!function_exists('pm_show_popup'))
 $pm_prefs = e107::getPlugPref('pm');
 //global $sysprefs, $pm_prefs;
 
-
+if (file_exists(THEME."templates/pm_template.php"))
+ 	{
+		include(THEME."templates/pm_template.php");
+ 	}
+	elseif (file_exists(THEME."pm_template.php"))
+	{
+			include(THEME."pm_template.php");
+	} 
+	else 
+	{
+	  		include(e_CORE."templates/pm_template.php");
+	}
 
 //if(!isset($pm_prefs['perpage']))
 //{
@@ -97,7 +108,7 @@ $pmManager = new pmbox_manager($pm_prefs);
 
 //setScVar('pm_handler_shortcodes','pmManager', $pmManager);
 
-if(!isset($pm_menu_template))
+if(!isset($PM_MENU))
 {
 	//FIXME URL Breaks
 	/*
@@ -116,7 +127,7 @@ if(!isset($pm_menu_template))
 	";
 	*/
 	
-	$pm_menu_template = "
+	$PM_MENU = "
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PLUGIN_PM_INBOX."</a>
 	{PM_NEWPM_ANIMATE}
@@ -139,7 +150,7 @@ if(check_class($pm_prefs['pm_class']))
 	
 	$pm_inbox = $pmManager->pm_getInfo('inbox');
 
-	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE, $sc);
+	$txt = "\n".$tp->parseTemplate($PM_MENU, TRUE, $sc);
 	
 	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
 	{
