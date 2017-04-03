@@ -88,7 +88,7 @@ if (file_exists(THEME."templates/pm_template.php"))
 	} 
 	else 
 	{
-	  		include(e_CORE."templates/pm_template.php");
+	  		include(e_PLUGIN.'pm/templates/pm_template.php');
 	}
 
 //if(!isset($pm_prefs['perpage']))
