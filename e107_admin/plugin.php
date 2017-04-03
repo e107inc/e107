@@ -1015,6 +1015,7 @@ class plugin_online_ui extends e_admin_ui
 			$this->fields = plugman_adminArea::getPluginManagerFields();
 			$this->fields['plugin_category']['writeParms']['optArray'] = e107::getPlug()->getCategoryList(); // array('plugin_category_0','plugin_category_1', 'plugin_category_2'); // Example Drop-down array.
 			$this->fields["plugin_license"]['nolist'] = false;
+			$this->fields['plugin_category']['inline'] = false;
 			parent:: __construct($request, $response, $params);
 
 		}
