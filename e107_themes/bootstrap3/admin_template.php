@@ -47,6 +47,8 @@ $E_ADMIN_NAVIGATION['button_active'] = '
 ';
 
 
+
+
 // Leave Admin Area. 
 $E_ADMIN_NAVIGATION['button_enav_home'] = '
 	<li class="dropdown">
@@ -196,6 +198,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		</div>
 		<div class="navbar-collapse collapse">
 			{ADMIN_NAVIGATION=no-main}
+			{ADMIN_NAVIGATION=enav_popover}
 			<div>
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
