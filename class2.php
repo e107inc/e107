@@ -1351,6 +1351,17 @@ if(!defined("THEME_LAYOUT"))
 					$def =  $lyout;
 					break 2;
 				}
+
+				// Allow to use "*" wildcard.
+				if(!empty($kpage))
+				{
+					$match = matchPath($c_url, $kpage);
+					if($match)
+					{
+						$def = $lyout;
+						break 2;
+					}
+				}
 			}
 		}
 	}
@@ -1387,6 +1398,34 @@ if(!defined("THEME_LAYOUT"))
 
     unset($def,$lyout,$cusPagePref,$menus_equery,$deflayout);
 
+}
+
+/**
+ * Check if a path matches a pattern.
+ *
+ * Example usage:
+ * @code
+ *  matchPath('my/path/here', 'my/path/*'); // returns true
+ *  matchPath('my/path/here', '*path*'); // returns true
+ * @endcode
+ *
+ * @param $path
+ *   The path to match.
+ * @param $pattern
+ *   String containing a pattern.
+ *
+ * @return bool
+ *   Boolean value: TRUE if the path matches a pattern, FALSE otherwise.
+ */
+function matchPath($path, $pattern)
+{
+	$path = str_replace(SITEURL, '', $path);
+	$pattern = trim($pattern);
+	$pattern = preg_quote($pattern, '/');
+	$pattern = str_replace('*', '.*', $pattern);
+	$pattern = str_replace('\.*', '.*', $pattern);
+	$regexps = '/^(' . $pattern . ')$/';
+	return (bool) preg_match($regexps, $path);
 }
 
 // -----------------------------------------------------------------------
