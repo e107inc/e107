@@ -2789,11 +2789,23 @@ class e_admin_controller_ui extends e_admin_controller
 
 	public function getPerPage()
 	{
+		if($this->getAction() === 'grid')
+		{
+			return $this->getGrid('perPage');
+		}
+
+
 		return $this->perPage;
 	}
 
-	public function getGrid()
+	public function getGrid($key=null)
 	{
+		if($key !== null)
+		{
+			return $this->grid[$key];
+		}
+
+
 		return $this->grid;
 	}
 
@@ -5352,7 +5364,7 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
-		$this->addTitle(); 
+		$this->addTitle();
 	}
 
 	/**
@@ -5360,8 +5372,13 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	public function GridObserver()
 	{
-		$this->action = 'list';
-		$this->ListObserver();
+
+		$table = $this->getTableName();
+		if(empty($table))
+		{
+			return;
+		}
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 	}
 
 	/**
@@ -6415,37 +6432,34 @@ class e_admin_form_ui extends e_form
 			'featurebox'    => $controller->getBatchFeaturebox(),
 			'export'        => $controller->getBatchExport(),
 
-
 		);
 
 
 		$options[$id] = array(
-			'id' => $this->getElementId(), // unique string used for building element ids, REQUIRED
-			'pid' => $controller->getPrimaryName(), // primary field name, REQUIRED
-			//'url' => e_SELF, default
-			'query'	=> $controller->getFormQuery(), // work around - see form in newspost.php (submitted news)
-			//'query' => $request->buildQueryString(array(), true, 'ajax_used'), - ajax_used is now removed from QUERY_STRING - class2
-			'head_query' => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
-			'np_query' => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
-			'legend' => $controller->getPluginTitle(), // hidden by default
-			'form_pre' => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
-			'form_post' => '', // markup to be added after closing form element
-			'fields' => $fields, // see e_admin_ui::$fields
-			'fieldpref' => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
-			'table_pre' => '', // markup to be added before opening table element
+			'id'            => $this->getElementId(), // unique string used for building element ids, REQUIRED
+			'pid'           => $controller->getPrimaryName(), // primary field name, REQUIRED
+			'query'	        => $controller->getFormQuery(), // work around - see form in newspost.php (submitted news)
+			'head_query'    => $request->buildQueryString('field=[FIELD]&asc=[ASC]&from=[FROM]', false), // without field, asc and from vars, REQUIRED
+			'np_query'      => $request->buildQueryString(array(), false, 'from'), // without from var, REQUIRED for next/prev functionality
+			'legend'        => $controller->getPluginTitle(), // hidden by default
+			'form_pre'      => !$ajax ? $this->renderFilter($tp->post_toForm(array($controller->getQuery('searchquery'), $controller->getQuery('filter_options'))), $controller->getMode().'/'.$controller->getAction()) : '', // needs to be visible when a search returns nothing
+			'form_post'     => '', // markup to be added after closing form element
+			'fields'        => $fields, // see e_admin_ui::$fields
+			'fieldpref'     => $controller->getFieldPref(), // see e_admin_ui::$fieldpref
+			'table_pre'     => '', // markup to be added before opening table element
 		//	'table_post' => !$tree[$id]->isEmpty() ? $this->renderBatch($controller->getBatchDelete(),$controller->getBatchCopy(),$controller->getBatchLink(),$controller->getBatchFeaturebox()) : '',
 
-
-			'table_post' => $this->renderBatch($coreBatchOptions, $controller->getBatchOptions()),
-	
-			'fieldset_pre' => '', // markup to be added before opening fieldset element
+			'table_post'    => $this->renderBatch($coreBatchOptions, $controller->getBatchOptions()),
+			'fieldset_pre'  => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
-			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
-			'grid'      => $controller->getGrid(),
-			'from' => $controller->getQuery('from', 0), // current page, default 0
-			'field' => $controller->getQuery('field'), //current order field name, default - primary field
-			'asc' => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
+			'grid'          =>  $controller->getGrid(),
+			'perPage'       => $controller->getPerPage(), // if 0 - no next/prev navigation
+			'from'          => $controller->getQuery('from', 0), // current page, default 0
+			'field'         => $controller->getQuery('field'), //current order field name, default - primary field
+			'asc'           => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
 		);
+
+
 
 		if($view === 'grid')
 		{
