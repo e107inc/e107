@@ -2911,6 +2911,13 @@ class e_form
 	function submit_image($name, $value, $image, $title='', $options = array())
 	{
 		$tp = e107::getParser();
+
+		if(!empty($options['icon']))
+		{
+			$customIcon = $options['icon'];
+			unset($options['icon']);
+		}
+
 		$options = $this->format_options('submit_image', $name, $options);
 		switch ($image)
 		{
@@ -2935,7 +2942,13 @@ class e_form
 				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
 			break;
 		}
+
 		$options['title'] = $title;//shorthand
+
+		if(!empty($customIcon))
+		{
+			$icon = $customIcon;
+		}
 		
 		return  "<button type='submit' name='{$name}' data-placement='left' value='{$value}'".$this->get_attributes($options, $name, $value)."  >".$icon."</button>";
 
@@ -4081,7 +4094,88 @@ class e_form
 
 	}
 
+	private function renderOptions($parms, $value='', $id, $attributes)
+	{
+		$tp = e107::getParser();
+		$cls = false;
 
+		$editIconDefault = deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'));
+		$deleteIconDefault = deftrue('ADMIN_DELETE_ICON', $tp->toGlyph('fa-trash'));
+
+		if($attributes['grid'])
+		{
+			$editIconDefault = $tp->toGlyph('fa-edit');
+			$deleteIconDefault = $tp->toGlyph('fa-trash');
+		}
+
+
+		$value = "<div class='btn-group'>";
+
+		if(!empty($parms['sort']) && empty($attributes['grid']))//FIXME use a global variable such as $fieldpref
+		{
+			$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
+			$from = intval(vartrue($_GET['from'],0));
+			$value .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='".LAN_RE_ORDER."'>".ADMIN_SORT_ICON."</a> ";
+		}
+
+
+		if(varset($parms['editClass']))
+		{
+			$cls = (deftrue($parms['editClass'])) ? constant($parms['editClass']) : $parms['editClass'];
+		}
+
+		if((false === $cls || check_class($cls)) && varset($parms['edit'],1) == 1)
+		{
+
+			parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
+				// keep other vars in tact
+			$query['action'] = 'edit';
+			$query['id'] = $id;
+
+
+			if(!empty($parms['target']) && $parms['target']=='modal')
+			{
+				$eModal = " e-modal ";
+				$eModalCap = "data-modal-caption='#".$id."'";
+				$query['iframe'] = 1;
+			}
+			else
+			{
+				$eModal = "";
+				$eModalCap = "";
+			}
+
+			$query = http_build_query($query);
+			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+				".$editIconDefault."</a>";
+		}
+
+		$delcls = !empty($attributes['noConfirm']) ? ' no-confirm' : '';
+		if(varset($parms['deleteClass']) && varset($parms['delete'],1) == 1)
+		{
+			$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
+
+			if(check_class($cls))
+			{
+				$parms['class'] =  'action delete btn btn-default'.$delcls;
+				unset($parms['deleteClass']);
+				$parms['icon'] = $deleteIconDefault;
+				$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
+			}
+		}
+		else
+		{
+			$parms['class'] =  'action delete btn btn-default'.$delcls;
+			$parms['icon'] = $deleteIconDefault;
+			$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
+		}
+
+				//$attributes['type'] = 'text';
+		$value .= "</div>";
+
+		return $value;
+
+	}
 
 	/**
 	 * Render Field Value
@@ -4092,6 +4186,8 @@ class e_form
 	 */
 	function renderValue($field, $value, $attributes, $id = 0)
 	{
+
+
 		if(!empty($attributes['multilan']) && is_array($value))
 		{
 			$value = varset($value[e_LANGUAGE],'');
@@ -4151,70 +4247,9 @@ class e_form
 
 				if(!$value)
 				{
-
-					
-					$value = "<div class='btn-group'>";
-					
-					if(!empty($parms['sort']))//FIXME use a global variable such as $fieldpref
-					{
-						$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-						$from = intval(vartrue($_GET['from'],0));
-						$value .= "<a class='e-sort sort-trigger btn btn-default' style='cursor:move' data-target='".e_SELF."?mode={$mode}&action=sort&ajax_used=1&from={$from}' title='".LAN_RE_ORDER."'>".ADMIN_SORT_ICON."</a> ";	
-					}	
-					
-					$cls = false;
-					if(varset($parms['editClass']))
-					{
-						$cls = (deftrue($parms['editClass'])) ? constant($parms['editClass']) : $parms['editClass'];
-
-					}	
-					if((false === $cls || check_class($cls)) && varset($parms['edit'],1) == 1)
-					{
-
-						parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
-
-						// keep other vars in tact
-						$query['action'] = 'edit';
-						$query['id'] = $id;
-
-
-						if(!empty($parms['target']) && $parms['target']=='modal')
-						{
-							$eModal = " e-modal ";
-							$eModalCap = "data-modal-caption='#".$id."'";
-							$query['iframe'] = 1;
-						}
-						else
-						{
-							$eModal = "";
-							$eModalCap = "";
-						}
-
-						$query = http_build_query($query);
-
-						$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
-						".deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'))."</a>";
-					}
-
-					$delcls = !empty($attributes['noConfirm']) ? ' no-confirm' : '';
-					if(varset($parms['deleteClass']) && varset($parms['delete'],1) == 1)
-					{
-						$cls = (deftrue($parms['deleteClass'])) ? constant($parms['deleteClass']) : $parms['deleteClass'];
-						if(check_class($cls))
-						{
-							$parms['class'] =  'action delete btn btn-default'.$delcls;
-							unset($parms['deleteClass']);
-							$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
-						}
-					}
-					else
-					{
-						$parms['class'] =  'action delete btn btn-default'.$delcls;
-						$value .= $this->submit_image('etrigger_delete['.$id.']', $id, 'delete', LAN_DELETE.' [ ID: '.$id.' ]', $parms);
-					}
+					$value = $this->renderOptions($parms, $value, $id, $attributes);
 				}
-				//$attributes['type'] = 'text';
-				$value .= "</div>";
+
 				return $value;
 			break;
 
@@ -5756,6 +5791,7 @@ class e_form
 					e107::setRegistry('core/adminUI/currentListModel', $model);
 					$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 				}
+
 				e107::setRegistry('core/adminUI/currentListModel', null);
 				
 				$text .= "</tbody>
@@ -5777,6 +5813,157 @@ class e_form
 					$parms .= '&tmpl_prefix=admin';
 				}
 				
+				// NOTE - the whole url is double encoded - reason is to not break parms query string
+				// 'np_query' should be proper (urlencode'd) url query string
+				$url = rawurlencode($url.'?'.(varset($options['np_query']) ? str_replace(array('&amp;', '&'), array('&', '&amp;'),  $options['np_query']).'&amp;' : '').'from=[FROM]');
+				$parms .= '&url='.$url;
+				//$parms = $total.",".$amount.",".$from.",".$url.'?'.($options['np_query'] ? $options['np_query'].'&amp;' : '').'from=[FROM]';
+		    	//$text .= $tp->parseTemplate("{NEXTPREV={$parms}}");
+				$nextprev = $tp->parseTemplate("{NEXTPREV={$parms}}");
+				if ($nextprev)
+				{
+					$text .= "<div class='nextprev-bar'>".$nextprev."</div>";
+				}
+			}
+
+			$text .= "
+					</fieldset>
+					".vartrue($options['fieldset_post'])."
+				</div>
+				</form>
+			";
+		}
+		if(!$nocontainer)
+		{
+			$text = '<div class="e-container">'.$text.'</div>';
+		}
+		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
+	}
+
+	public function renderGridForm($form_options, $tree_models, $nocontainer = false)
+	{
+		$tp = e107::getParser();
+		$text = '';
+
+
+		// print_a($form_options);
+
+		foreach ($form_options as $fid => $options)
+		{
+			$tree_model = $tree_models[$fid];
+			$tree = $tree_model->getTree();
+			$total = $tree_model->getTotal();
+
+			$amount = $options['perPage'];
+			$from = vartrue($options['from'], 0);
+			$field = vartrue($options['field'], $options['pid']);
+			$asc = strtoupper(vartrue($options['asc'], 'asc'));
+			$elid = $fid;//$options['id'];
+			$query = vartrue($options['query'],e_QUERY); //  ? $options['query'] :  ;
+			if(vartrue($_GET['action']) == 'list')
+			{
+				$query = e_QUERY; //XXX Quick fix for loss of pagination after 'delete'.
+			}
+			$url = (isset($options['url']) ? $tp->replaceConstants($options['url'], 'abs') : e_SELF);
+			$formurl = $url.($query ? '?'.$query : '');
+			$fields = $options['fields'];
+			$current_fields = varset($options['fieldpref']) ? $options['fieldpref'] : array_keys($options['fields']);
+			$legend_class = vartrue($options['legend_class'], 'e-hideme');
+
+
+
+	        $text .= "
+				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
+				<div>".$this->token()."
+					".vartrue($options['fieldset_pre'])."
+					<fieldset id='{$elid}-list'>
+						<legend class='{$legend_class}'>".$options['legend']."</legend>
+						".vartrue($options['table_pre'])."
+						<div class='row admingrid ' id='{$elid}-list-grid'>
+						";
+
+
+			if(!$tree)
+			{
+				$text .= "</div>";
+				$text .= "<div id='admin-ui-list-no-records-found' class=' alert alert-block alert-info center middle'>".LAN_NO_RECORDS_FOUND."</div>"; // not prone to column-count issues.
+			}
+			else
+			{
+/*
+					<div class="panel-body">
+
+                            </div>*/
+
+					$template = '<div class="panel panel-default">';
+					$template .= '{IMAGE}';
+					$template .= (!empty($options['grid']['body'])) ? '<div class="panel-body">{BODY}</div>' : '';
+                    $template .= '<div class="panel-footer clearfix">
+									{CHECKBOX} {TITLE} <span class="pull-right">{OPTIONS}</span>
+			                    </div>
+                            </div>';
+
+
+
+				$cls = !empty($options['grid']['class']) ? $options['grid']['class'] : 'col-md-2';
+				$height = !empty($options['grid']['height']) ? $options['grid']['height'] : '220px';
+				$pid = $options['pid'];
+				$title = $options['grid']['title'];
+				$pic    = $options['grid']['image'];
+				$body   = $options['grid']['body'];
+				$fields['options']['grid'] = true;
+
+				foreach($tree as $model)
+				{
+					e107::setRegistry('core/adminUI/currentListModel', $model);
+
+					$data = $model->getData();
+
+					$id   = $data[$pid];
+
+					$vars = array(
+						'CHECKBOX'  => $this->renderValue('checkboxes',$data['checkboxes'],$fields['checkboxes'],$id),
+						'TITLE'     => $this->renderValue($title,$data[$title],$fields[$title],$id),
+						'IMAGE'      => $this->renderValue($pic,$data[$pic],$fields[$pic],$id),
+						'OPTIONS'   => $this->renderValue('options',$data['options'], $fields['options'], $id)
+					);
+
+					if(!empty($options['grid']['body']))
+					{
+						$vars['BODY'] = $this->renderValue($body,$data[$body],$fields[$body],$id);
+					}
+
+					$text .= "<div class='".$cls." admin-grid' style='height:".$height.";overflow:hidden;margin-bottom:2em'>";
+
+					$text .= $tp->simpleParse($template,$vars);
+
+
+				//	$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
+					$text .= "</div>";
+
+				}
+
+				e107::setRegistry('core/adminUI/currentListModel', null);
+
+				$text .= "</div>
+				<div class='clearfix'></div>";
+			}
+
+
+			$text .= vartrue($options['table_post']);
+
+
+			if($tree && $amount)
+			{
+				// New nextprev SC parameters
+				$parms = 'total='.$total;
+				$parms .= '&amount='.$amount;
+				$parms .= '&current='.$from;
+				if(ADMIN_AREA)
+				{
+					$parms .= '&tmpl_prefix=admin';
+				}
+
 				// NOTE - the whole url is double encoded - reason is to not break parms query string
 				// 'np_query' should be proper (urlencode'd) url query string
 				$url = rawurlencode($url.'?'.(varset($options['np_query']) ? str_replace(array('&amp;', '&'), array('&', '&amp;'),  $options['np_query']).'&amp;' : '').'from=[FROM]');

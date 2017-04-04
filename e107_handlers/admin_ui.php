@@ -2517,6 +2517,13 @@ class e_admin_controller_ui extends e_admin_controller
 	 * @var integer
 	 */
 	protected $perPage = 20;
+
+
+	/**
+	 * Data for grid layout.
+	 * @var array
+	 */
+	protected $grid = array();
 	
 		/**
 	 * @var e_admin_model
@@ -2784,7 +2791,13 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		return $this->perPage;
 	}
-	
+
+	public function getGrid()
+	{
+		return $this->grid;
+	}
+
+
 	public function getFormQuery()
 	{
 		return $this->formQuery;
@@ -2864,7 +2877,7 @@ class e_admin_controller_ui extends e_admin_controller
 			return null;
 		}
 
-		if($this->getAction() === 'list')
+		if($this->getAction() === 'list' || $this->getAction() === 'grid')
 		{
 			return $this->getListModel()->get($key);
 		}
@@ -5343,6 +5356,15 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
+	 * Grid action observer
+	 */
+	public function GridObserver()
+	{
+		$this->action = 'list';
+		$this->ListObserver();
+	}
+
+	/**
 	 * Filter response ajax page
 	 * @return string
 	 */
@@ -5566,12 +5588,37 @@ class e_admin_ui extends e_admin_controller_ui
 	}
 
 	/**
+	 * Generic List action page
+	 * @return string
+	 */
+	public function GridPage()
+	{
+		if($this->deleteConfirmScreen && !$this->getPosted('etrigger_delete_confirm') && $this->getPosted('delete_confirm_value'))
+		{
+			// 'edelete_confirm_data' set by single/batch delete trigger
+			return $this->getUI()->getConfirmDelete($this->getPosted('delete_confirm_value')); // User confirmation expected
+		}
+
+		return $this->getUI()->getList(null,'grid');
+	}
+
+	/**
 	 * List action observer
 	 * @return void
 	 */
 	public function ListAjaxObserver()
 	{
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+	}
+
+
+	/**
+	 * List action observer
+	 * @return void
+	 */
+	public function GridAjaxObserver()
+	{
+		$this->ListAjaxObserver();
 	}
 
 	/**
@@ -5581,6 +5628,12 @@ class e_admin_ui extends e_admin_controller_ui
 	public function ListAjaxPage()
 	{
 		return $this->getUI()->getList(true);
+	}
+
+
+	public function GridAjaxPage()
+	{
+		return $this->getUI()->getList(true,'grid');
 	}
 
 	/**
@@ -6279,6 +6332,8 @@ class e_admin_form_ui extends e_form
 
 
 
+
+
 	/**
 	 * Create list view
 	 * Search for the following GET variables:
@@ -6286,7 +6341,7 @@ class e_admin_form_ui extends e_form
 	 *
 	 * @return string
 	 */
-	public function getList($ajax = false)
+	public function getList($ajax = false, $view='default')
 	{
 		$tp = e107::getParser();
 		$controller = $this->getController();
@@ -6386,13 +6441,16 @@ class e_admin_form_ui extends e_form
 			'fieldset_pre' => '', // markup to be added before opening fieldset element
 			'fieldset_post' => '', // markup to be added after closing fieldset element
 			'perPage' => $controller->getPerPage(), // if 0 - no next/prev navigation
+			'grid'      => $controller->getGrid(),
 			'from' => $controller->getQuery('from', 0), // current page, default 0
 			'field' => $controller->getQuery('field'), //current order field name, default - primary field
 			'asc' => $controller->getQuery('asc', 'desc'), //current 'order by' rule, default 'asc'
 		);
 
-
-
+		if($view === 'grid')
+		{
+			return $this->renderGridForm($options, $tree, $ajax);
+		}
 
 		return $this->renderListForm($options, $tree, $ajax);
 	}
