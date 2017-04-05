@@ -590,9 +590,11 @@ class e_form
 	 */
 	function carousel($name="e-carousel", $array, $options = null)
 	{
-		$interval = null;
-		$wrap = null;
-		$pause = null;
+		$interval   = null;
+		$wrap       = null;
+		$pause      = null;
+		$indicators = '';
+		$controls   = '';
 				
 		$act = varset($options['default'], 0);
 		
@@ -611,14 +613,14 @@ class e_form
 			$interval = 'data-pause="'.$options['pause'].'"';	
 		}
 		
-		$text  ='
+		$start  ='
 		<!-- Carousel -->
 		
 		<div id="'.$name.'" class="carousel slide" data-ride="carousel" '.$interval.' '.$wrap.' '.$pause.'>';
 
 		if(count($array) > 1)
 		{
-			$text .= '
+			$indicators = '
 	        <!-- Indicators -->
 	        <ol class="carousel-indicators">
 			';
@@ -627,15 +629,15 @@ class e_form
 			foreach($array as $key=>$tab)
 			{
 				$active = ($c == $act) ? ' class="active"' : '';
-				$text .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
+				$indicators .=  '<li data-target="#'.$name.'" data-slide-to="'.$c.'" '.$active.'></li>';
 				$c++;
 			}
 
-			$text .= '
+			$indicators .= '
 			</ol>';
 		}
 
-		$text .= '
+		$inner = '
 
 		<div class="carousel-inner">
 		';
@@ -645,24 +647,24 @@ class e_form
 		foreach($array as $key=>$tab)
 		{
 			$active = ($c == $act) ? ' active' : '';
-			$text .= '<div class="item'.$active.'" id="'.$key.'">';
-			$text .= $tab['text'];
+			$inner .= '<div class="item'.$active.'" id="'.$key.'">';
+			$inner .= $tab['text'];
 			
 			if(!empty($tab['caption']))
 			{
-				$text .= '<div class="carousel-caption">'.$tab['caption'].'</div>';	
+				$inner .= '<div class="carousel-caption">'.$tab['caption'].'</div>';
 			}
 			
-			$text .= '</div>';
+			$inner .= '</div>';
 			$c++;
 		}
 		
-		$text .= '
+		$inner .= '
 		</div>';
 
 		if(count($array) > 1)
 		{
-			$text .= '
+			$controls = '
 			<a class="left carousel-control" href="#'.$name.'" role="button" data-slide="prev">
 	        <span class="glyphicon glyphicon-chevron-left"></span>
 			</a>
@@ -671,9 +673,20 @@ class e_form
 			</a>';
 		}
 
-		$text .= '</div><!-- End Carousel -->';
+		$end = '</div><!-- End Carousel -->';
 
-		return $text;
+		if(!empty($options['data']))
+		{
+			return array(
+				'start'         => $start,
+				'indicators'    => $indicators,
+				'inner'         => $inner,
+				'controls'      => $controls,
+				'end'           => $end
+			);
+		}
+
+		return $start.$indicators.$inner.$controls.$end; // $text;
 
 	}	
 
@@ -5866,6 +5879,41 @@ class e_form
 
 
 	/**
+	 * Used with 'carousel' generates slides with X number of cells/blocks per slide.
+	 * @param $cells
+	 * @param int $perPage
+	 * @return array
+	 */
+	private function slides($cells, $perPage=12)
+	{
+		$tmp = '';
+		$s = 0;
+		$slides = array();
+		foreach($cells as $cell)
+		{
+			$tmp .= $cell;
+
+			$s++;
+			if($s == $perPage)
+			{
+				$slides[] = array('text'=>$tmp);
+				$tmp = '';
+				$s = 0;
+			}
+		}
+
+		if($s != $perPage)
+		{
+			$slides[] = array('text'=>$tmp);
+		}
+
+		return $slides;
+
+
+	}
+
+
+	/**
 	 * Render Grid-list layout.  used internally by admin UI
 	 * @param $form_options
 	 * @param $tree_models
@@ -5907,7 +5955,10 @@ class e_form
 	        $text .= "
 				<form method='post' action='{$formurl}' id='{$elid}-list-form'>
 				<div>".$this->token()."
-					".vartrue($options['fieldset_pre'])."
+					".vartrue($options['fieldset_pre']);
+
+					$text .= "
+
 					<fieldset id='{$elid}-list'>
 						<legend class='{$legend_class}'>".$options['legend']."</legend>
 						".vartrue($options['table_pre'])."
@@ -5943,14 +5994,17 @@ class e_form
 
 				$cls        = !empty($options['grid']['class']) ? $options['grid']['class'] : 'col-md-2';
 				$pid        = $options['pid'];
+				$perPage    = $options['grid']['perPage'];
+
+
 
 				$gridFields =  $options['grid'];
 				$gridFields['options'] = 'options';
 				$gridFields['checkbox'] = 'checkboxes';
 
-				unset($gridFields['class'],$gridFields['perPage']);
+				unset($gridFields['class'],$gridFields['perPage'], $gridFields['carousel']);
 
-
+				$cells = array();
 				foreach($tree as $model)
 				{
 					e107::setRegistry('core/adminUI/currentListModel', $model);
@@ -5967,11 +6021,24 @@ class e_form
 						$vars[$key] = $this->renderValue($v,$data[$v],$fields[$v],$id);
 					}
 
-					$text .= "<div class='".$cls." admin-ui-grid'>";
-					$text .= $tp->simpleParse($template,$vars);
-					$text .= "</div>";
+					$cells[] = "<div class='".$cls." admin-ui-grid'>". $tp->simpleParse($template,$vars). "</div>";
 
 				}
+
+
+				if($options['grid']['carousel'] === true)
+				{
+					$slides         = $this->slides($cells, $perPage);
+					$carouselData   = $this->carousel('admin-ui-carousel',$slides, array('wrap'=>false, 'interval'=>false, 'data'=>true));
+
+					$text .= $carouselData['start'].$carouselData['inner'].$carouselData['end'];
+
+				}
+				else
+				{
+					$text .= implode("\n",$cells);
+				}
+
 
 				e107::setRegistry('core/adminUI/currentListModel', null);
 

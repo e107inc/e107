@@ -869,6 +869,17 @@ class themeHandler
 		
 		$this->fl = e107::getFile();
 		
+		$this->postObserver();
+
+	
+	}
+
+	public function postObserver()
+	{
+
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+
 		if(!empty($_POST['upload']))
 		{
 			$unzippedTheme = $this->themeUpload();
@@ -878,12 +889,12 @@ class themeHandler
 		{
 			$this->curTheme = e107::getParser()->filter($_POST['curTheme'],'file');
 		}
-		
-		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme)) 
+
+		if(!empty($_POST['setUploadTheme']) && !empty($unzippedTheme))
 		{
 			$themeArray = $this->getThemes();
 			$this->id = $themeArray[$unzippedTheme]['id'];
-			
+
 			if($this->setTheme())
 			{
 				$mes->addSuccess(TPVLAN_3);
@@ -892,19 +903,19 @@ class themeHandler
 			{
 				$mes->addError(TPVLAN_86);
 			}
-			
+
 		}
-		
+
 		if(!empty($_POST['installContent']))
 		{
-			$this->installContent($_POST['installContent']);		
+			$this->installContent($_POST['installContent']);
 		}
-		
-		
+
+
 		$this->themeArray = (defined('E107_INSTALL')) ? $this->getThemes('xml') : $this->getThemes();
-		
+
 		//     print_a($this -> themeArray);
-		
+
 		foreach ($_POST as $key=>$post)
 		{
 			if(strstr($key, "preview"))
@@ -926,7 +937,7 @@ class themeHandler
 					$mes->addError(TPVLAN_3);
 				}
 			}
-			
+
 			if(strstr($key, "selectadmin"))
 			{
 				$this->id = key($post);
@@ -935,7 +946,7 @@ class themeHandler
 			}
 		}
 
-		
+
 		if(isset($_POST['submit_adminstyle']))
 		{
 			$this->id = $this->curTheme;
@@ -945,17 +956,17 @@ class themeHandler
 			}
 			e107::getConfig()->save(true);
 		}
-		
+
 		if(isset($_POST['submit_style']))
 		{
 			$this->id = $this->curTheme;
-			
-			$this->setLayouts(); // Update the layouts in case they have been manually changed. 
+
+			$this->setLayouts(); // Update the layouts in case they have been manually changed.
 			$this->SetCustomPages($_POST['custompages']);
 			$this->setStyle();
-			
+
 			e107::getConfig()->save(true);
-		
+
 		}
 
 		if(!empty($_POST['git_pull']))
@@ -963,19 +974,19 @@ class themeHandler
 			$return = e107::getFile()->gitPull($this->curTheme, 'theme');
 			$mes->addSuccess($return);
 		}
-		
+
 		if(isset($_POST['installplugin']))
 		{
 			$key = key($_POST['installplugin']);
-			
+
 			e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_plugin.php");
 			require_once (e_HANDLER."plugin_class.php");
-			
+
 			$eplug = new e107plugin;
 			$message = $eplug->install_plugin($key);
 			$mes->add($message, E_MESSAGE_SUCCESS);
 		}
-		
+
 		if(isset($_POST['setMenuPreset']))
 		{
 			$key = key($_POST['setMenuPreset']);
@@ -985,9 +996,11 @@ class themeHandler
 			$men->curLayout = $key;
 			//menu_layout is left blank when it's default.
 			$men->dbLayout = ($men->curLayout != $pref['sitetheme_deflayout']) ? $men->curLayout : "";
-			
+
+
 			if($areas = $men->menuSetPreset())
 			{
+				$message = '';
 				foreach ($areas as $val)
 				{
 					$ar[$val['menu_location']][] = $val['menu_name'];
@@ -996,15 +1009,14 @@ class themeHandler
 				{
 					$message .= MENLAN_14." ".$k." : ".implode(", ", $v)."<br />";
 				}
-				
+
 				$mes->add(MENLAN_43." : ".$key."<br />".$message, E_MESSAGE_SUCCESS);
 			}
-		
+
 		}
 
-	
-	}
 
+	}
 	
 	function getThemes($mode = FALSE)
 	{
@@ -1605,7 +1617,7 @@ class themeHandler
 			</form>
 			";
 		}
-		
+
 		$ns->tablerender(TPVLAN_26.SEP.TPVLAN_38, $mes->render().$text);
 	}
 
@@ -1930,6 +1942,8 @@ class themeHandler
 		$info_icon 		= "<a class='btn btn-default btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
 		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+
+
 		$price 			= '';
 
 
@@ -2075,9 +2089,11 @@ class themeHandler
 		
 		// load customn theme configuration fields.
 		$this->loadThemeConfig();
-		
-		$text = "
-		<h2 class='caption'>".$theme['name']."</h2>
+
+		$text = '';
+	//	$text .= "<h2 class='caption'>".$theme['name']."</h2>";
+
+		$text .= "
         
         <ul class='nav nav-tabs'>
         <li class='active'><a data-toggle='tab' href='#core-thememanager-configure'>".LAN_CONFIGURE."</a></li>";
