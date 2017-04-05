@@ -733,6 +733,75 @@ $(document).ready(function()
 
 
 
+		$('.carousel').on('slid.bs.carousel', function () {
+		  var currentIndex = $(this).find('.active').index();
+		  var text = (currentIndex + 1);
+		  $('#admin-ui-carousel-index').text(text);
+		});
+		
+
+		$(window).load(function() {
+
+			$('.carousel').each(function(){
+
+				$(this).carouselHeights();
+
+			});
+
+		});
+
+		// Normalize Bootstrap Carousel Heights
+
+		$.fn.carouselHeights = function() {
+
+			var items = $(this).find('.item'), // grab all slides
+
+				heights = [], // create empty array to store height values
+
+				tallest, // create variable to make note of the tallest slide
+
+				call;
+
+			var normalizeHeights = function() {
+
+				items.each(function() { // add heights to array
+
+					heights.push($(this).outerHeight());
+
+				});
+
+				tallest = Math.max.apply(null, heights); // cache largest value
+
+				items.css('height', tallest);
+
+			};
+
+			normalizeHeights();
+
+			$(window).on('resize orientationchange', function() {
+
+				// reset vars
+
+				tallest = 0;
+
+				heights.length = 0;
+
+				items.css('height', ''); // reset height
+
+				if(call){
+
+					clearTimeout(call);
+
+				};
+
+				call = setTimeout(normalizeHeights, 100); // run it again
+
+			});
+
+		};
+
+
+
 		$("a.menuManagerSelect").click(function(e){
 
 

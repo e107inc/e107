@@ -719,12 +719,7 @@ $(document).ready(function()
 		$(".e-expandit").show();   	
 	
     //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-	 
-		$('.carousel').on('slid.bs.carousel', function () {
-		  var currentIndex = $(this).find('.active').index();
-		  var text = (currentIndex + 1);
-		  $('#admin-ui-carousel-index').text(text);
-		});
+
     	 
 		 //check all
 		 $("#check-all").click(function(event){
