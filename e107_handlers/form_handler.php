@@ -4758,7 +4758,7 @@ class e_form
 					//	$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
 
 						$thparms['alt'] = $alt;
-						$thparms['class'] = "thumbnail e-thumb img-responsive";
+						$thparms['class'] = "thumbnail e-thumb";
 
 
 
@@ -4783,7 +4783,7 @@ class e_form
 				elseif(!empty($parms['fallback']))
 				{
 					$value = $parms['fallback'];
-					$thparms['class'] = "thumbnail e-thumb img-responsive fallback";
+					$thparms['class'] = "thumbnail e-thumb fallback";
 					return $tp->toImage($value, $thparms);
 				}
 			break;
@@ -5902,7 +5902,7 @@ class e_form
 			}
 		}
 
-		if($s != $perPage)
+		if($s != $perPage && $s != 0)
 		{
 			$slides[] = array('text'=>$tmp);
 		}
