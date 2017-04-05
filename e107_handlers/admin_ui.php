@@ -4802,7 +4802,7 @@ class e_admin_ui extends e_admin_controller_ui
 	protected function handleListCopyBatch($selected)
 	{
 		// Batch Copy
-		
+
 		$res = $this->getTreeModel()->copy($selected);
 		// callback
 		$this->afterCopy($res, $selected);

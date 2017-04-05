@@ -723,7 +723,7 @@ class admin_shortcodes
 	{
 		if(e_DEBUG !== false)
 		{
-			return "<div class='navbar-right navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug', array('class'=>'text-warning'))."&nbsp;&nbsp;</div>";
+			return "<div class='navbar-right nav-admin navbar-text admin-icon-debug' title='DEBUG MODE ACTIVE'>".e107::getParser()->toGlyph('fa-bug', array('class'=>'text-warning'))."&nbsp;&nbsp;</div>";
 		}
 
 	}
@@ -754,7 +754,7 @@ class admin_shortcodes
 		$outboxUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=list&amp;iframe=1';
 		$composeUrl = e_PLUGIN.'pm/admin_config.php?mode=outbox&amp;action=create&amp;iframe=1';
 
-       $text = '<ul class="nav navbar-nav navbar-right">
+       $text = '<ul class="nav nav-admin navbar-nav navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
                 '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
