@@ -3011,6 +3011,7 @@ class e_admin_controller_ui extends e_admin_controller
 	public function setTreeModel($tree_model)
 	{
 		$this->_tree_model = $tree_model;
+
 		return $this;
 	}
 
@@ -5364,6 +5365,7 @@ class e_admin_ui extends e_admin_controller_ui
 			return;
 		}
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
+
 		$this->addTitle();
 	}
 
@@ -6577,6 +6579,10 @@ class e_admin_form_ui extends e_form
 		$perPage = $this->getController()->getPerPage();
 		$fromPage = $this->getController()->getQuery('from', 0);
 
+		$vars = $this->getController()->getQuery();
+		$vars['from'] = '[FROM]';
+	//	var_dump($vars);
+		$paginate = http_build_query($vars);
 
 		$text = "
 			<form method='get' action='".e_REQUEST_SELF."'>
@@ -6596,8 +6602,8 @@ class e_admin_form_ui extends e_form
 							".$this->select_close()."
 							<div class='e-autocomplete'></div>
 							".implode("\n", $filter_preserve_var)."
-							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', LAN_FILTER, array('id' => false))."
-							".$this->pagination(e_REQUEST_SELF.'?from=[FROM]',$totalRecords,$fromPage,$perPage,array('template'=>'basic'))."
+							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false,'title'=>LAN_FILTER))."
+							".$this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'))."
 							<span class='indicator' style='display: none;'>
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 							</span>

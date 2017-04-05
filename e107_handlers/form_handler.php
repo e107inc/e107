@@ -3141,7 +3141,7 @@ class e_form
 
 			case 'filter':
 			case 'filter e-hide-if-js':
-				// FIXME hide-js shouldn't be here.
+				$options['class'] = 'btn btn-default';
 				break;
 		}
 
@@ -4101,13 +4101,13 @@ class e_form
 
 		$editIconDefault = deftrue('ADMIN_EDIT_ICON', $tp->toGlyph('fa-edit'));
 		$deleteIconDefault = deftrue('ADMIN_DELETE_ICON', $tp->toGlyph('fa-trash'));
-
+/*
 		if($attributes['grid'])
 		{
 			$editIconDefault = $tp->toGlyph('fa-edit');
 			$deleteIconDefault = $tp->toGlyph('fa-trash');
 		}
-
+*/
 
 		$value = "<div class='btn-group'>";
 
@@ -4241,6 +4241,7 @@ class e_form
 						//return  $this->options($field, $value, $attributes, $id); 
 						// consistent method arguments, fixed in admin cron administration
 						$attributes['type'] = null; // prevent infinite loop.
+
 						return $this->options($parms, $value, $id, $attributes);
 					}
 				}
@@ -4662,6 +4663,20 @@ class e_form
 			break;
 
 			case 'image': //js tooltip...
+
+				$thparms = array();
+				$createLink = true;
+
+						// Support readParms example: thumb=1&w=200&h=300
+						// Support readParms example: thumb=1&aw=80&ah=30
+				if(isset($parms['h']))		{ 	$thparms['h'] 	= intval($parms['h']); 		}
+				if(isset($parms['ah']))		{ 	$thparms['ah'] 	= intval($parms['ah']); 	}
+				if(isset($parms['w']))		{ 	$thparms['w'] 	= intval($parms['w']); 		}
+				if(isset($parms['aw']))		{ 	$thparms['aw'] 	= intval($parms['aw']); 	}
+				if(isset($parms['crop']))	{ 	$thparms['crop'] = $parms['crop']; 	}
+
+
+
 				if($value)
 				{
 					
@@ -4693,16 +4708,13 @@ class e_form
 
 
 					
-					if(vartrue($parms['thumb']))
+					if(!empty($parms['thumb']))
 					{
-						$thparms = array();
-						
-						// Support readParms example: thumb=1&w=200&h=300
-						// Support readParms example: thumb=1&aw=80&ah=30
-						if(isset($parms['h']))		{ 	$thparms['h'] 	= intval($parms['h']); 		}
-						if(isset($parms['ah']))		{ 	$thparms['ah'] 	= intval($parms['ah']); 	}		
-						if(isset($parms['w']))		{ 	$thparms['w'] 	= intval($parms['w']); 		}
-						if(isset($parms['aw']))		{ 	$thparms['aw'] 	= intval($parms['aw']); 	}
+
+						if(isset($parms['link']) && empty($parms['link']))
+						{
+							$createLink = false;
+						}
 						
 						// Support readParms example: thumb=200x300 (wxh)
 						if(strpos($parms['thumb'],'x')!==false)
@@ -4728,15 +4740,21 @@ class e_form
 					//	return print_a($thparms,true); 
 					
 						$src = $tp->replaceConstants(vartrue($parms['pre']).$value, 'abs');
-						$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
+				//		$thsrc = $tp->thumbUrl(vartrue($parms['pre']).$value, $thparms, varset($parms['thumb_urlraw']));
 						$alt = basename($src);
 					//	$ttl = '<img src="'.$thsrc.'" alt="'.$alt.'" class="thumbnail e-thumb" />';
 
 						$thparms['alt'] = $alt;
-						$thparms['class'] = "thumbnail e-thumb";
+						$thparms['class'] = "thumbnail e-thumb img-responsive";
+
+
 
 						$ttl = $tp->toImage($value, $thparms);
 
+						if($createLink === false)
+						{
+							return $ttl;
+						}
 
 
 						$value = '<a href="'.$src.'" data-modal-caption="'.$alt.'" data-target="#uiModal" class="e-modal e-image-preview" title="'.$alt.'" rel="external">'.$ttl.'</a>';
@@ -4748,6 +4766,12 @@ class e_form
 						$ttl = vartrue($parms['title'], 'LAN_PREVIEW');
 						$value = '<a href="'.$src.'" class="e-image-preview" title="'.$alt.'" rel="external">'.defset($ttl, $ttl).'</a>';
 					}
+				}
+				elseif(!empty($parms['fallback']))
+				{
+					$value = $parms['fallback'];
+					$thparms['class'] = "thumbnail e-thumb img-responsive fallback";
+					return $tp->toImage($value, $thparms);
 				}
 			break;
 			
@@ -5697,7 +5721,7 @@ class e_form
 	}
 
 	/**
-	 * Generic List Form, used internal by admin UI
+	 * Generic List Form, used internally by admin UI
 	 * Expected options array format:
 	 * <code>
 	 * <?php
@@ -5840,6 +5864,14 @@ class e_form
 		return (vartrue($options['form_pre']).$text.vartrue($options['form_post']));
 	}
 
+
+	/**
+	 * Render Grid-list layout.  used internally by admin UI
+	 * @param $form_options
+	 * @param $tree_models
+	 * @param bool|false $nocontainer
+	 * @return string
+	 */
 	public function renderGridForm($form_options, $tree_models, $nocontainer = false)
 	{
 		$tp = e107::getParser();
@@ -5890,28 +5922,34 @@ class e_form
 			}
 			else
 			{
-/*
-					<div class="panel-body">
-
-                            </div>*/
-
-					$template = '<div class="panel panel-default">';
-					$template .= '{IMAGE}';
-					$template .= (!empty($options['grid']['body'])) ? '<div class="panel-body">{BODY}</div>' : '';
-                    $template .= '<div class="panel-footer clearfix">
-									{CHECKBOX} {TITLE} <span class="pull-right">{OPTIONS}</span>
-			                    </div>
-                            </div>';
 
 
+				if(empty($options['grid']['template']))
+				{
+					$template = '<div class="panel panel-default">
+					<div class="e-overlay" >{IMAGE}
+						<div class="e-overlay-content">
+						{OPTIONS}
+						</div>
+					</div>
+					<div class="panel-footer">{TITLE}<span class="pull-right">{CHECKBOX}</span></div>
+					</div>';
+				}
+				else
+				{
+					$template = $options['grid']['template'];
+				}
 
-				$cls = !empty($options['grid']['class']) ? $options['grid']['class'] : 'col-md-2';
-				$height = !empty($options['grid']['height']) ? $options['grid']['height'] : '220px';
-				$pid = $options['pid'];
-				$title = $options['grid']['title'];
-				$pic    = $options['grid']['image'];
-				$body   = $options['grid']['body'];
-				$fields['options']['grid'] = true;
+
+				$cls        = !empty($options['grid']['class']) ? $options['grid']['class'] : 'col-md-2';
+				$pid        = $options['pid'];
+
+				$gridFields =  $options['grid'];
+				$gridFields['options'] = 'options';
+				$gridFields['checkbox'] = 'checkboxes';
+
+				unset($gridFields['class'],$gridFields['perPage']);
+
 
 				foreach($tree as $model)
 				{
@@ -5920,25 +5958,17 @@ class e_form
 					$data = $model->getData();
 
 					$id   = $data[$pid];
+					$vars = array();
 
-					$vars = array(
-						'CHECKBOX'  => $this->renderValue('checkboxes',$data['checkboxes'],$fields['checkboxes'],$id),
-						'TITLE'     => $this->renderValue($title,$data[$title],$fields[$title],$id),
-						'IMAGE'      => $this->renderValue($pic,$data[$pic],$fields[$pic],$id),
-						'OPTIONS'   => $this->renderValue('options',$data['options'], $fields['options'], $id)
-					);
-
-					if(!empty($options['grid']['body']))
+					foreach($gridFields as $k=>$v)
 					{
-						$vars['BODY'] = $this->renderValue($body,$data[$body],$fields[$body],$id);
+						$key = strtoupper($k);
+						$fields[$v]['grid'] = true;
+						$vars[$key] = $this->renderValue($v,$data[$v],$fields[$v],$id);
 					}
 
-					$text .= "<div class='".$cls." admin-grid' style='height:".$height.";overflow:hidden;margin-bottom:2em'>";
-
+					$text .= "<div class='".$cls." admin-ui-grid'>";
 					$text .= $tp->simpleParse($template,$vars);
-
-
-				//	$text .= $this->renderTableRow($fields, $current_fields, $model->getData(), $options['pid']);
 					$text .= "</div>";
 
 				}
@@ -5959,6 +5989,7 @@ class e_form
 				$parms = 'total='.$total;
 				$parms .= '&amount='.$amount;
 				$parms .= '&current='.$from;
+
 				if(ADMIN_AREA)
 				{
 					$parms .= '&tmpl_prefix=admin';
