@@ -4003,8 +4003,11 @@ class e_parser
 	//		e107::getDebug()->log($file);
 	//	e107::getDebug()->log($parm);
 
-
-		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false || strpos($file,'{e_IMAGE}')!==false) //v2.x path.
+		if(strpos($file,'http')===0)
+		{
+			$path = $file;
+		}
+		elseif(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false || strpos($file,'{e_IMAGE}')!==false) //v2.x path.
 		{
 
 			if(!isset($parm['w']) && !isset($parm['h']))
@@ -4030,10 +4033,6 @@ class e_parser
 				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
 			}
 
-		}
-		elseif(strpos($file,'http')===0)
-		{
-			$path = $file;
 		}
 		elseif($file[0] === '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{

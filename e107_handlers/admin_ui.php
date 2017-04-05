@@ -2789,8 +2789,14 @@ class e_admin_controller_ui extends e_admin_controller
 
 	public function getPerPage()
 	{
+
 		if($this->getAction() === 'grid')
 		{
+			if($this->getGrid('carousel') === true)
+			{
+				return 0;
+			}
+
 			return $this->getGrid('perPage');
 		}
 
@@ -2804,7 +2810,6 @@ class e_admin_controller_ui extends e_admin_controller
 		{
 			return $this->grid[$key];
 		}
-
 
 		return $this->grid;
 	}
@@ -6526,6 +6531,21 @@ class e_admin_form_ui extends e_form
 		return $this->renderForm($forms, $ajax);
 	}
 
+
+	public function renderPagination()
+	{
+		if($this->getController()->getGrid('carousel') === true)
+		{
+			return '<div class="btn-group" >
+		<a class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
+		<a id="admin-ui-carousel-index" class="btn btn-default">1</a>
+		<a class="btn btn-default" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
+		</div>';
+		}
+
+
+	}
+
 	function renderFilter($current_query = array(), $location = '', $input_options = array())
 	{
 		if(!$input_options) $input_options = array('size' => 20);
@@ -6604,6 +6624,7 @@ class e_admin_form_ui extends e_form
 							".implode("\n", $filter_preserve_var)."
 							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false,'title'=>LAN_FILTER))."
 							".$this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'))."
+							".$this->renderPagination()."
 							<span class='indicator' style='display: none;'>
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 							</span>
@@ -6855,20 +6876,21 @@ class e_admin_form_ui extends e_form
 				$text .= "<div class='input-group-btn input-append'>
 				".$this->admin_button('e__execute_batch', 'e__execute_batch', 'batch e-hide-if-js', LAN_GO, array('id' => false))."
 				</div>";
+				$text .= "</div></div>";
 			}
 
+			$text .= "</div>";
 
-			$text .= "</div></div>
-			";
 		}
 
 		
 		$text .= "
-				</div>
+
 				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
 			</div>
 		";
-	
+
+
 		return $text;
 	}
 

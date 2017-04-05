@@ -74,7 +74,7 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 .e-overlay .thumbnail           { margin:0; }
 
 .admin-ui-grid img.fallback { opacity: 0.3; }
-
+#admin-ui-carousel .carousel-inner { min-height: 65vh; }
 
 
 
