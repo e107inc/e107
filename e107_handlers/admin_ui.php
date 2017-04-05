@@ -3158,6 +3158,8 @@ class e_admin_controller_ui extends e_admin_controller
 		}
 	}
 
+
+
 	/**
 	 * Handle posted batch options routine
 	 * @param string $batch_trigger
@@ -3201,7 +3203,15 @@ class e_admin_controller_ui extends e_admin_controller
 
 
 		$this->setTriggersEnabled(false); //disable further triggering
-		
+
+		$actionName = $this->getRequest()->getActionName();
+
+		if($actionName === 'Grid')
+		{
+			$actionName = 'List';
+		}
+
+
 		switch($trigger[0])
 		{
 
@@ -3211,7 +3221,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 				//handleListBatch(); for custom handling of all field names
 				if(empty($selected)) return $this;
-				$method = 'handle'.$this->getRequest()->getActionName().'SefgenBatch';
+				$method = 'handle'.$actionName.'SefgenBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $field, $value);
@@ -3221,7 +3231,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 			case 'export':
 				if(empty($selected)) return $this;
-				$method = 'handle'.$this->getRequest()->getActionName().'ExportBatch';
+				$method = 'handle'.$actionName.'ExportBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected);
@@ -3233,7 +3243,7 @@ class e_admin_controller_ui extends e_admin_controller
 				//method handleListDeleteBatch(); for custom handling of 'delete' batch
 				// if(empty($selected)) return $this;
 				// don't check selected data - subclass need to check additional post variables(confirm screen)
-				$method = 'handle'.$this->getRequest()->getActionName().'DeleteBatch';
+				$method = 'handle'.$actionName.'DeleteBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected);
@@ -3245,7 +3255,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$field = $trigger[1];
 				$value = $trigger[2] ? 1 : 0;
 				//something like handleListBoolBatch(); for custom handling of 'bool' batch
-				$method = 'handle'.$this->getRequest()->getActionName().'BoolBatch';
+				$method = 'handle'.$actionName.'BoolBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $field, $value);
@@ -3256,7 +3266,7 @@ class e_admin_controller_ui extends e_admin_controller
 				if(empty($selected)) return $this;
 				$field = $trigger[1];
 				//something like handleListBoolreverseBatch(); for custom handling of 'boolreverse' batch
-				$method = 'handle'.$this->getRequest()->getActionName().'BoolreverseBatch';
+				$method = 'handle'.$actionName.'BoolreverseBatch';
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $field);
@@ -3339,7 +3349,7 @@ class e_admin_controller_ui extends e_admin_controller
 				$value = $trigger[1];
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
-				$method = 'handle'.$this->getRequest()->getActionName().$this->getRequest()->camelize($field).'Batch';
+				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $value);
@@ -3348,11 +3358,13 @@ class e_admin_controller_ui extends e_admin_controller
 
 				//handleListBatch(); for custom handling of all field names
 				if(empty($selected)) return $this;
-				$method = 'handle'.$this->getRequest()->getActionName().'Batch';
+				$method = 'handle'.$actionName.'Batch';
 				if(method_exists($this, $method))
 				{
 					$this->$method($selected, $field, $value);
 				}
+
+
 
 			break;
 		}
@@ -4687,6 +4699,26 @@ class e_admin_ui extends e_admin_controller_ui
 		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm'))) $this->_handleListBatch($batch_trigger);
 	}
 
+		/**
+	 * Catch batch submit
+	 * @param string $batch_trigger
+	 * @return none
+	 */
+	public function GridBatchTrigger($batch_trigger)
+	{
+		$this->setPosted('etrigger_batch', null);
+
+		if($this->getPosted('etrigger_cancel'))
+		{
+			$this->setPosted(array());
+			return; // always break on cancel!
+		}
+		$this->deleteConfirmScreen = true; // Confirm screen ALWAYS enabled when multi-deleting!
+
+		// proceed ONLY if there is no other trigger, except delete confirmation
+		if($batch_trigger && !$this->hasTrigger(array('etrigger_delete_confirm'))) $this->_handleListBatch($batch_trigger);
+	}
+
 	/**
 	 * Batch delete trigger
 	 * @param array $selected
@@ -4769,7 +4801,8 @@ class e_admin_ui extends e_admin_controller_ui
 	 */
 	protected function handleListCopyBatch($selected)
 	{
-		// Batch Copy 
+		// Batch Copy
+		
 		$res = $this->getTreeModel()->copy($selected);
 		// callback
 		$this->afterCopy($res, $selected);
@@ -4778,7 +4811,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// send messages to session
 		e107::getMessage()->moveToSession();
 		// redirect
-		$this->redirect();
+	//	$this->redirect();
 	}
 
 
