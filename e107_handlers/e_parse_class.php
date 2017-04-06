@@ -3405,7 +3405,7 @@ class e_parser
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
-                                    'script'	=> array('type', 'src', 'language'),
+                                    'script'	=> array('type', 'src', 'language', 'async'),
                                     'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
 	                                'input'     => array('type','name','value','class','style'),
 	                                'form'      => array('action','method','target'),
@@ -3427,9 +3427,9 @@ class e_parser
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
-                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'ins'
+                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite'
                                    );
-    protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object'); //allowed when $pref['post_script'] is enabled.
+    protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
 
@@ -4797,6 +4797,12 @@ return;
 
                 if(!in_array($name, $allow))
                 {
+
+                    if(strpos($name,'data-') === 0 && $this->scriptAccess == true)
+                    {
+                        continue;
+                    }
+
                     $removeAttributes[] = $name;
                     //$node->removeAttribute($name);
                     $this->removedList['attributes'][] = $name. " from <".$tag.">";
