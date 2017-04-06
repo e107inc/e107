@@ -208,6 +208,16 @@ class e_chart
 		return json_encode($this->options);	
 	}
 
+	public function debug($flag=false)
+	{
+		if($flag === true)
+		{
+			e107::getDebug()->log($this->data);
+		}
+
+		return $this;
+	}
+
 	/**
 	 * Set the type of graph
 	 * @param string $type - line | bar | pie | radar | doughnut | polar
