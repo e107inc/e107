@@ -9,7 +9,7 @@
  */
 
 if (!defined('e107_INIT')) { exit; }
-
+/*
 $caption = "Dashboard";
 $text = "This page provides you with an overview of site activity.<br /><br />";
 
@@ -20,3 +20,4 @@ if(e107::getPref('admincss')=='admin_dark.css' && deftrue('BOOTSTRAP') !== 3)
 }
 
 e107::getRender()->tablerender($caption, $text);
+*/
