@@ -1800,7 +1800,7 @@ class e107
 	 */
 	public static function getChart()
 	{
-		return self::getSingleton('e_chart', true);
+		return self::getObject('e_chart', null, true);
 	}
 
 
