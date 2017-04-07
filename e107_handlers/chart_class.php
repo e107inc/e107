@@ -419,12 +419,16 @@ class e_chart
 				{
 		
 					case 'bar':					
-						//
+						$js .= "var chart = new google.visualization.BarChart(document.getElementById('".$id."'));	";
 					break;
 		
 					case 'column':
 						$js .= "var chart = new google.visualization.ColumnChart(document.getElementById('".$id."'));	";
 						
+					break;
+
+					case 'geo':
+						$js .= "var chart = new google.visualization.GeoChart(document.getElementById('".$id."'));	";
 					break;
 		
 					case 'polar':
