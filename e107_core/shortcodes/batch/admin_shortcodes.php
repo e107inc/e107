@@ -757,7 +757,7 @@ class admin_shortcodes
        $text = '<ul class="nav nav-admin navbar-nav navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle" title="'.LAN_PM.'" role="button" data-toggle="dropdown" href="#" >
-                '.$tp->toGlyph('fa-envelope').$countDisp.'<b class="caret"></b>
+                '.$tp->toGlyph('fa-envelope').$countDisp.'
             </a> 
             <ul class="dropdown-menu" role="menu" >
                 <li class="nav-header navbar-header dropdown-header">'.LAN_PM.'</li>
@@ -2285,6 +2285,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$icon  = e107::getParser()->toIcon('e-menus-24');
 		$caption = $icon."<span>".ADLAN_6."</span>";
+
+				$diz = MENLAN_58;
+
+		$caption .= "<span class='pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
 
 	   return e107::getNav()->admin($caption,$action, $var);
 
