@@ -463,7 +463,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 
 	define("ADMIN_ADD_ICON", "<i class='S32 e-add-32'></i>");
-	define("ADMIN_INFO_ICON", "<i class='S16 e-info-16'></i>");
+	define("ADMIN_INFO_ICON", "<i class='fa fa-question-circle'></i>");
 	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-settings-32'></i>");
 	define("ADMIN_VIEW_ICON", "<i class='S32 e-search-32'></i>");	
 	define("ADMIN_URL_ICON", "<i class='S16 e-forums-16'></i>");

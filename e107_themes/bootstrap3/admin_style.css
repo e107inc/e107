@@ -88,6 +88,11 @@ right: 5px; }
 
 body#admin-menus #sc-admin-help { position: relative }
 
+.admin-menu .panel-title .e-help-icon a {
+display: inline-block;
+vertical-align: middle;
+cursor: help;
+}
 
 
 /* TODO - use col-xx-x markup where core-mainpanel-block occurs. ? */
