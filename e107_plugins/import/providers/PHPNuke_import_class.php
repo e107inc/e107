@@ -142,7 +142,7 @@ class PHPNuke_import extends base_import_class
 		$target['user_password']    = $source['user_password']; //MD5
 		$target['user_join']        = strtotime($source['user_regdate']);
 		$target['user_email']       = $source['user_email'];
-		$target['user_hideemail']   = $source['user_viewemail'];
+		$target['user_hideemail']   = !$source['user_viewemail'];
 	    $target['user_image']       = $source['user_avatar'];
 		$target['user_signature']   = $source['user_sig'];
 		$target['user_forums']      = $source['user_posts'];
