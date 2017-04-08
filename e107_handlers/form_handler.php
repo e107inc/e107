@@ -5384,6 +5384,14 @@ class e_form
 			case 'video':
 			case 'image': //TODO - thumb, image list shortcode, js tooltip...
 				$label = varset($parms['label'], 'LAN_EDIT');
+
+				if(!empty($parms['optArray']))
+				{
+
+					return $this->imageradio($key,$value,$parms);
+				}
+
+
 				unset($parms['label']);
 
 				if($attributes['type'] === 'video')
@@ -5391,6 +5399,7 @@ class e_form
 					$parms['video'] = 2; // ie. video only.
 					$parms['w'] = 280;
 				}
+
 
 				$ret =  $this->imagepicker($key, $value, defset($label, $label), $parms);
 			break;
@@ -5732,6 +5741,46 @@ class e_form
 
 		return $ret;
 	}
+
+
+	private function imageradio($name,$value,$parms)
+	{
+
+		if(!empty($parms['path']))
+		{
+			$parms['legacy'] = $parms['path'];
+		}
+
+
+		$text = '<div class="clearfix">';
+
+
+
+		foreach($parms['optArray'] as $key=>$val)
+		{
+			$thumbnail    = e107::getParser()->toImage($val,$parms);
+
+		//	$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
+
+
+					$selected = ($val == $value) ? " checked" : "";
+
+					$text .= "
+									<div class='col-md-2 e-image-radio' >
+										<label class='theme-selection' title=\"".$key."\"><input type='radio' name='".$name."' value='{$val}' required='required' $selected />
+										<div>".$thumbnail."</div>
+										</label>
+									</div>";
+
+		}
+
+		$text .= "</div>";
+
+		return $text;
+
+	}
+
+
 
 	/**
 	 * Generic List Form, used internally by admin UI
