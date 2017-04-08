@@ -2288,7 +2288,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 				$diz = MENLAN_58;
 
-		$caption .= "<span class='pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
+		$caption .= "<span class='e-help-icon pull-right'><a data-placement=\"bottom\" class='e-tip' title=\"".e107::getParser()->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
 
 	   return e107::getNav()->admin($caption,$action, $var);
 
