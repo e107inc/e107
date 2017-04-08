@@ -82,9 +82,11 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
 */
 
+div.e-mm-selector-container { position: absolute;
+top: 4px;
+right: 5px; }
 
-
-
+body#admin-menus #sc-admin-help { position: relative }
 
 
 

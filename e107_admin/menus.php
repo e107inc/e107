@@ -956,9 +956,10 @@ class e_menu_layout
 
 	//	$text .= print_a($layouts['menus'],true);
 
+
 		$text .= '
 
-		    <div class="dropdown pull-right">
+		    <div class="dropdown pull-right e-mm-selector-container">
 
 		        <a class="btn btn-default btn-sm e-mm-selector " title="'.LAN_ACTIVATE.'">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
 
@@ -997,9 +998,7 @@ class e_menu_layout
 
 		;
 
-		$diz = MENLAN_58;
 
-		$caption .= "<span class='pull-right'><a class='e-tip' title=\"".$tp->toAttribute($diz)."\">".ADMIN_INFO_ICON."</a></span>";
 
 
 		return array('caption'=>$caption,'text'=>$text);
