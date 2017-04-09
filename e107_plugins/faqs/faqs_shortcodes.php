@@ -277,7 +277,7 @@ class faqs_shortcodes extends e_shortcode
 		if(!empty($parms['expand']) && $faqpref['submit_question'] != e_UC_NOBODY)
 		{
 			$hide = 'e-hideme';
-			$button = "<a class='btn btn-primary e-expandit faq-submit-question' href='#form-ask-a-question'>Ask a Question</a>";
+			$button = "<a class='btn btn-primary e-expandit faq-submit-question' href='#form-ask-a-question'>".LAN_FAQS_ASK_A_QUESTION."</a>";
 		}
 		else
 		{
@@ -297,8 +297,8 @@ class faqs_shortcodes extends e_shortcode
 			{
 				$text .= $frm->open('faq-ask-question','post');
 				//TODO LAN ie. [x] character limit.
-				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength'=>$this->questionCharLimit, 'size'=>'xxlarge','placeholder'=>'Type your question here..', 'wrap'=>'soft'))."
-				<div class='faq-char-limit'><small>".$this->questionCharLimit." character limit</small></div>".$frm->submit('submit_a_question','Submit')."</div>";
+				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength'=>$this->questionCharLimit, 'size'=>'xxlarge','placeholder'=>LAN_FAQS_ENTER_A_QUESTION_HERE, 'wrap'=>'soft'))."
+				<div class='faq-char-limit'><small>".$this->questionCharLimit." ".LAN_FAQS_CHAR_LIMIT".</small></div>".$frm->submit('submit_a_question',LAN_SUBMIT)."</div>";
 
 				$text .= $frm->close();
 			}
@@ -308,13 +308,13 @@ class faqs_shortcodes extends e_shortcode
 					'[' => "<a href='".e_SIGNUP."'>",
 					']' => "</a>"
 				);
-				//TODO LAN
-				$text .= str_replace(array_keys($srp), array_values($srp), "Please [register] and/or login to post a question.");
+
+				$text .= str_replace(array_keys($srp), array_values($srp), LAN_FAQS_PLEASE_REGISTER);
 			}
 			else
 			{
-				//TODO LAN
-				$text .= "Not permitted at this time.";
+
+			$text .= LAN_FAQS_NOT_PERMITTED;
 			}
 
 			$text .= "</div>";
@@ -339,9 +339,9 @@ class faqs_shortcodes extends e_shortcode
 
 			if(!empty($list))
 			{
-				//TODO LAN
+
 				$text = "<div class='alert alert-warning alert-block faq-submit-question-list'>";
-				$text .= "<h4>You have requested answers to the following questions:</h4>";
+				$text .= "<h4>".LAN_FAQS_YOUR_REQUESTED_FAQS."</h4>";
 				$text .= "<ul>";
 
 				foreach($list as $row)
