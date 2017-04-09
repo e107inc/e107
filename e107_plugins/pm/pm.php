@@ -176,13 +176,17 @@ class pm_extended extends private_message
 		{
 			return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
 		}
-		$tpl_file = THEME.'templates/pm/pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
+//		$tpl_file = THEME.'pm_template.php';
+//		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+
+    $PM_SEND_PM = e107::getTemplate('pm', 'pm', 'send');
+
 		$enc = (check_class($this->pmPrefs['attach_class']) ? "enctype='multipart/form-data'" : '');
 	//	setScVar('pm_handler_shortcodes','pmInfo', $pm_info);
 		
 		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->setVars($pm_info);
+  $sc->wrapper('pm');
 		
 		$PM_SEND_PM = $this->updateTemplate($PM_SEND_PM);
 		
@@ -205,8 +209,10 @@ class pm_extended extends private_message
 	{
 		$tp = e107::getParser();
 		
-		$tpl_file = THEME.'templates/pm/pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
+//		$tpl_file = THEME.'pm_template.php';
+//		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+
+    $PM_INBOX = e107::getTemplate('pm', 'pm', 'inbox');
 		
 		$pm_blocks = $this->block_get();
 		$pmlist = $this->pm_get_inbox(USERID, $start, $this->pmPrefs['perpage']);
@@ -215,12 +221,13 @@ class pm_extended extends private_message
 		
 		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
+  $sc->wrapper('pm');
 		
-		
-		$PM_INBOX_HEADER = $this->updateTemplate($PM_INBOX_HEADER);
-		$PM_INBOX_TABLE = $this->updateTemplate($PM_INBOX_TABLE);
-		$PM_INBOX_EMPTY = $this->updateTemplate($PM_INBOX_EMPTY);
-		$PM_INBOX_FOOTER = $this->updateTemplate($PM_INBOX_FOOTER);
+// Is updateTemplate really necessary for v2.x templates?
+		$PM_INBOX_HEADER = $this->updateTemplate($PM_INBOX['start']);
+		$PM_INBOX_TABLE = $this->updateTemplate($PM_INBOX['item']);
+		$PM_INBOX_EMPTY = $this->updateTemplate($PM_INBOX['empty']);
+		$PM_INBOX_FOOTER = $this->updateTemplate($PM_INBOX['end']);
 		
 		$txt = "<form method='post' action='".e_REQUEST_SELF."?".e_QUERY."'>";
 		$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $sc);
@@ -257,18 +264,23 @@ class pm_extended extends private_message
 	{
 		$tp = e107::getParser();
 		
-		$tpl_file = THEME.'templates/pm/pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
+//		$tpl_file = THEME.'pm_template.php';
+//		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+
+    $PM_OUTBOX = e107::getTemplate('pm', 'pm', 'outbox');
+
 		$pmlist = $this->pm_get_outbox(USERID, $start, $this->pmPrefs['perpage']);
 	//	setScVar('pm_handler_shortcodes', 'pmNextPrev', array('start' => $start, 'total' => $pmlist['total_messages']));
 		
 		$sc = e107::getScBatch('pm', true, 'pm');
 		$sc->pmNextPrev = array('start' => $start, 'total' => $pmlist['total_messages']);
+  $sc->wrapper('pm');
 		
-		$PM_OUTBOX_HEADER = $this->updateTemplate($PM_OUTBOX_HEADER);
-		$PM_OUTBOX_TABLE = $this->updateTemplate($PM_OUTBOX_TABLE);
-		$PM_OUTBOX_EMPTY = $this->updateTemplate($PM_OUTBOX_EMPTY);
-		$PM_OUTBOX_FOOTER = $this->updateTemplate($PM_OUTBOX_FOOTER);	
+// Is updateTemplate really necessary for v2.x templates?
+		$PM_OUTBOX_HEADER = $this->updateTemplate($PM_OUTBOX['start']);
+		$PM_OUTBOX_TABLE = $this->updateTemplate($PM_OUTBOX['item']);
+		$PM_OUTBOX_EMPTY = $this->updateTemplate($PM_OUTBOX['empty']);
+		$PM_OUTBOX_FOOTER = $this->updateTemplate($PM_OUTBOX['end']);	
 		
 		
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
@@ -304,12 +316,15 @@ class pm_extended extends private_message
 	{
 		$ns = e107::getRender();
 
-		$tpl_file = THEME.'templates/pm/pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
+//		$tpl_file = THEME.'pm_template.php';
+//		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+    $PM_SHOW = e107::getTemplate('pm', 'pm', 'show');
+
 		$pm_info = $this->pm_get($pmid);
 
 		$sc = e107::getScBatch('pm',true, 'pm');
 		$sc->setVars($pm_info);	
+  $sc->wrapper('pm');
 
 		if($pm_info['pm_to'] != USERID && $pm_info['pm_from'] != USERID)
 		{
@@ -373,17 +388,21 @@ class pm_extended extends private_message
 	public function showBlocked($start = 0)
 	{
 		$tp = e107::getParser();
-		$tpl_file = THEME.'templates/pm/pm_template.php';
-		include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/templates/pm_template.php');
+//		$tpl_file = THEME.'pm_template.php';
+//		include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN.'pm/pm_template.php');
+    $PM_BLOCKED = e107::getTemplate('pm', 'pm', 'blocked');
+
 		$pmBlocks = $this->block_get_user();			// TODO - handle pagination, maybe (is it likely to be necessary?)
 
 		$sc = e107::getScBatch('pm',TRUE, 'pm');
 		$sc->pmBlocks = $pmBlocks; 
+  $sc->wrapper('pm');
 	
-		$PM_BLOCKED_HEADER = $this->updateTemplate($PM_BLOCKED_HEADER);
-		$PM_BLOCKED_TABLE  = $this->updateTemplate($PM_BLOCKED_TABLE);
-		$PM_BLOCKED_EMPTY  = $this->updateTemplate($PM_BLOCKED_EMPTY);
-		$PM_BLOCKED_FOOTER  = $this->updateTemplate($PM_BLOCKED_FOOTER);
+// Is updateTemplate really necessary for v2.x templates?
+		$PM_BLOCKED_HEADER = $this->updateTemplate($PM_BLOCKED['start']);
+		$PM_BLOCKED_TABLE  = $this->updateTemplate($PM_BLOCKED['item']);
+		$PM_BLOCKED_EMPTY  = $this->updateTemplate($PM_BLOCKED['empty']);
+		$PM_BLOCKED_FOOTER  = $this->updateTemplate($PM_BLOCKED['end']);
 	
 	
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
