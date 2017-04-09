@@ -21,6 +21,9 @@ if (!defined('e107_INIT')) { exit; }
 
 class download_url // plugin-folder + '_url'
 {
+
+	public $alias = 'download';
+
 	function config()
 	{
 		$config = array();
@@ -33,6 +36,20 @@ class download_url // plugin-folder + '_url'
 
 		);
 
+		$config['category'] = array(
+
+
+		);
+
+		$config['item']     = array(
+
+
+		);
+
+		$config['get']     = array(
+
+
+		);
 
 		return $config;
 	}
