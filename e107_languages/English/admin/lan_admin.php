@@ -309,6 +309,8 @@ define("LAN_WEBSITE_STATUS","Website Status");
 define("LAN_STATS","Stats");
 define("LAN_ONLINE","Online");
 define("LAN_ORDER","Order");
+define("LAN_ASC","ASC");
+define("LAN_DESC","DESC");
 
 define("LAN_SELECT","Select ...");
 define("LAN_ADMIN","Admin");
@@ -352,8 +354,10 @@ define("LAN_DISABLED","Disabled");
 define("LAN_ENABLED", "Enabled");
 define("LAN_BOOL_REVERSE", "Invert");
 
+define("LAN_DETAILS", "Details");
 define("LAN_NOT_AVAILABLE","Not available");
 define("LAN_AUTO_GENERATED","Auto-generated");
+define("LAN_AUTOMATION","Automation");
 
 define("LAN_PRESET_CONFIRMSAVE","Save current form values as the default for this page?");
 define("LAN_CONFIGURE", "Configure");
@@ -423,7 +427,7 @@ define("LAN_END", "End");
 define("LAN_PREVIEW", "Preview");
 
 define("LAN_CREATE_CATEGORY", "Create Category");
-define("LAN_CREATE_ITEM",	"Create Item");
+define("LAN_CREATE_ITEM", "Create Item");
 
 
 define("LAN_SECURITYL_0", "Looking for trouble (none)");
@@ -496,6 +500,7 @@ define("LAN_LIMIT", "Limit");
 define("LAN_BASIC", "Basic");
 define("LAN_EXTENDED", "Extended");
 define("LAN_ADVANCED", "Advanced");
+define("LAN_DISPLAY", "Display");
 define("LAN_FOLDER", "Folder");
 define("LAN_PERSONALIZE_ICONS", "Personalize Icons");
 define("LAN_PERSONALIZE_MENUS", "Personalize Menus");
