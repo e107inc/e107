@@ -2418,6 +2418,7 @@ class e107
 
 	/**
 	 * Retrieves the e_url config  - new v2.1.6
+	 * @param string $mode config | alias | profile
 	 * @return array
 	 */
 	public static function getUrlConfig($mode='config')
@@ -2429,7 +2430,7 @@ class e107
 		$className = substr($filename, 2); // remove 'e_'
 		$methodName = 'config';
 
-		$profile = null; // for future use.
+		$url_profiles = e107::getPref('url_profiles');
 
 		if(!empty($elist))
 		{
@@ -2437,6 +2438,8 @@ class e107
 			{
 				if(is_readable(e_PLUGIN.$key.'/'.$filename.'.php'))
 				{
+
+
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 
 					$class_name = $key.'_'.$className;
@@ -2460,6 +2463,18 @@ class e107
 
 						continue;
 					}
+
+					if($mode === 'profiles')
+					{
+						if(!empty($obj->profiles))
+						{
+							$new_addon[$key] = $obj->profiles;
+						}
+
+						continue;
+					}
+
+					$profile = !empty($url_profiles[$key]) ? $url_profiles[$key] : null;
 
 					$array = self::callMethod($obj, $methodName,$profile);
 
