@@ -40,6 +40,7 @@ define("NN_LAN_6", "News notification triggered");
 
 define("NM_LAN_1", "Mail Events");
 define("NM_LAN_2", "Bulk email run complete");
+define("NM_LAN_3", "Email Address =>");
 
 define("NF_LAN_1", "File Events");
 define("NF_LAN_2", "File uploaded by user");
