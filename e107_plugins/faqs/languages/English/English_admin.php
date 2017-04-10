@@ -38,9 +38,3 @@ define("LANA_FAQ_PREF_17", "All Languages");
 define("LANA_FAQ_PREF_HELP_1", "0 = no limit");
 define("LANA_FAQ_PREF_HELP_2", "Leave blank to use default");
 
-define("LANA_FAQ_CRON_1", "Unanswered Questions Report");
-define("LANA_FAQ_CRON_2", "Mails a report of unanswered questions to [x].");
-define("LANA_FAQ_CRON_3", "[x] Unanswered Questions at [y]");
-define("LANA_FAQ_CRON_4", "Please login to your site to review and answer these questions using the link below.");
-define("LANA_FAQ_CRON_5", "The [x] most recent questions are displayed below.");
-define("LANA_FAQ_CRON_6", "[x] Unanswered Question as of [y].");
