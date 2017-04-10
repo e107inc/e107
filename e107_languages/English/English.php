@@ -141,4 +141,13 @@ define("LAN_REQUIRED_BLANK", "Required field(s) were left blank.");
 define("LAN_PLEASEWAIT", "Please Wait");
 define("LAN_CHOOSE_FILE", "Choose a file");
 
+//FAQ
+define("LANA_FAQ_CRON_1", "Unanswered Questions Report");
+define("LANA_FAQ_CRON_2", "Mails a report of unanswered questions to [x].");
+define("LANA_FAQ_CRON_3", "[x] Unanswered Questions at [y]");
+define("LANA_FAQ_CRON_4", "Please login to your site to review and answer these questions using the link below.");
+define("LANA_FAQ_CRON_5", "The [x] most recent questions are displayed below.");
+define("LANA_FAQ_CRON_6", "[x] Unanswered Question as of [y].");
+define("LAN_CLICK_HERE", "CLICK HERE");
+
 ?>
