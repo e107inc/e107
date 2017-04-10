@@ -55,11 +55,11 @@ class download_shortcodes extends e_shortcode
 			break;
 			
 			case 'maincats':
-				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => e107::url('download/index'));
+				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => e107::url('download','index'));
 			break;
 			
 			default:
-				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => e107::url('download/index'));
+				$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,							'url' => e107::url('download','index'));
 
 				if(!empty($this->grandparent))
 				{
