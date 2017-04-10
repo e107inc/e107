@@ -412,6 +412,15 @@ class download
 		}
 	
 		$dlrow = $sql->fetch();
+
+		$sc->parent = $this->getParent($dlrow['download_category_id']);
+
+		if(!empty( $sc->parent['download_category_parent']))
+		{
+			$sc->grandparent = $this->getParent( $sc->parent['download_category_id']);
+		}
+
+
 		$sc->setVars($dlrow);
 		$this->setMeta($dlrow);
 

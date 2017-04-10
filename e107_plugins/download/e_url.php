@@ -24,39 +24,95 @@ class download_url // plugin-folder + '_url'
 
 	public $alias = 'download';
 
+	/**
+	 * Support for different URL profiles (optional)
+	 * @return array
+	 */
+	public $profiles = array(
+		'default'       => array('label' => 'Friendly Default',         'examples' => array('{SITEURL}download/category/3/my-category-name')),
+		'non-numeric'   => array('label' => 'Friendly (experimental)',  'examples' => array('{SITEURL}download/my-category/my-sub-category/my-file-name')),
+	);
+
+
 	function config($profile=null)
 	{
-		$config = $this->profile1();
+
+		switch($profile)
+		{
+			case "non-numeric":
+				$config = $this->profile2();
+				break;
+
+			case "default":
+			default:
+				$config = $this->profile1();
+
+		}
 
 		return $config;
 	}
 
 
-	function profile1()
+
+
+	private function profile2()
+	{
+		$config = $this->profile1();
+
+		$config['subcategory'] = array(
+			'regex'			=> '^{alias}/([^\/]*)/([^\/]*)/?$',
+			'redirect'		=> '{e_PLUGIN}vstore/vstore.php?catsef=$2',
+			'sef'			=> '{alias}/{cat_sef}/{subcat_sef}'
+		);
+
+
+		$config['category'] = array(
+			'regex'			=> '^{alias}/category/([\d]*)/(.*)$',
+			'redirect'		=> '{e_PLUGIN}download/download.php?action=list&id=$1',
+			'sef'           => '{alias}/{download_category_sef}',
+		);
+
+
+		return $config;
+	}
+
+
+	private function profile1()
 	{
 		$config = array();
 
-		$config['category'] = array(
+/*
 
-			'sef'   => '{alias}/category/{download_category_id}/{download_category_sef}/',
+		$config['subcategory'] = array(
+			'regex'			=> '^{alias}/([^\/]*)/([^\/]*)/?$',
+			'redirect'		=> '{e_PLUGIN}vstore/vstore.php?catsef=$2',
+			'sef'			=> '{alias}/{cat_sef}/{subcat_sef}'
+		);
+*/
+
+		$config['category'] = array(
+			'regex'			=> '^{alias}/category/([\d]*)/(.*)$',
+			'redirect'		=> '{e_PLUGIN}download/download.php?action=list&id=$1',
+			'sef'           => '{alias}/category/{download_category_id}/{download_category_sef}/',
 		);
 
 		$config['item']     = array(
-			'sef'       => '{alias}/{download_id}/{download_sef}'
+			'regex'		    => '^{alias}/([\d]*)/(.*)$',
+			'redirect'	    => '{e_PLUGIN}download/download.php?action=view&id=$1',
+			'sef'           => '{alias}/{download_id}/{download_sef}'
 		);
 
 		$config['get']     = array(
-			'regex'		=> '^{alias}/get/([\d]*)/(.*)$',
-			'sef'       => '{alias}/get/{download_id}/{download_sef}',
-			'redirect'	=> '{e_PLUGIN}download/request.php?id=$1', 		// file-path of what to load when the regex returns true.
+			'regex'		    => '^{alias}/get/([\d]*)/(.*)$',
+			'sef'           => '{alias}/get/{download_id}/{download_sef}',
+			'redirect'	    => '{e_PLUGIN}download/request.php?id=$1', 		// file-path of what to load when the regex returns true.
 		);
 
 
 		$config['index'] = array(
-		//	'regex'			=> '^download/?$',
-			'alias'     => 'download',
-			'sef'		=> '{alias}',
-			'redirect'	=> '{e_PLUGIN}download/download.php',
+			'regex'		    => '{alias}/?$',
+			'sef'		    => '{alias}',
+			'redirect'	    => '{e_PLUGIN}download/download.php',
 		);
 
 
