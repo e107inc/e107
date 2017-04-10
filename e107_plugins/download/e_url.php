@@ -24,32 +24,41 @@ class download_url // plugin-folder + '_url'
 
 	public $alias = 'download';
 
-	function config()
+	function config($profile=null)
+	{
+		$config = $this->profile1();
+
+		return $config;
+	}
+
+
+	function profile1()
 	{
 		$config = array();
 
-		$config['index'] = array(
-		//	'regex'			=> '^download/?$', 						// matched against url, and if true, redirected to 'redirect' below.
-			'alias'         => 'download',
-			'sef'			=> '{alias}', 							// used by e107::url(); to create a url from the db table.
-			'redirect'		=> '{e_PLUGIN}download/download.php', 		// file-path of what to load when the regex returns true.
-
-		);
-
 		$config['category'] = array(
 
-
+			'sef'   => '{alias}/category/{download_category_id}/{download_category_sef}/',
 		);
 
 		$config['item']     = array(
-
-
+			'sef'       => '{alias}/{download_id}/{download_sef}'
 		);
 
 		$config['get']     = array(
-
-
+			'regex'		=> '^{alias}/get/([\d]*)/(.*)$',
+			'sef'       => '{alias}/get/{download_id}/{download_sef}',
+			'redirect'	=> '{e_PLUGIN}download/request.php?id=$1', 		// file-path of what to load when the regex returns true.
 		);
+
+
+		$config['index'] = array(
+		//	'regex'			=> '^download/?$',
+			'alias'     => 'download',
+			'sef'		=> '{alias}',
+			'redirect'	=> '{e_PLUGIN}download/download.php',
+		);
+
 
 		return $config;
 	}
