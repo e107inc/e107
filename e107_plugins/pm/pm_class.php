@@ -386,16 +386,13 @@ class private_message
 
 		$template = $PM_NOTIFY;
 */
-	if(THEME_LEGACY){
-		include_once(THEME.'pm_template.php');
-		$template = $PM_NOTIFY;
-	}
-	if (!$PM_NOTIFY){$template = e107::getTemplate('pm', 'pm', 'notify');}
+	if(THEME_LEGACY){include_once(THEME.'pm_template.php');}
+	if (!$PM_NOTIFY){$PM_NOTIFY = e107::getTemplate('pm', 'pm', 'notify');}
 
-		if(empty($template)) // BC Fallback.
+		if(empty($PM_NOTIFY)) // BC Fallback.
 		{
 
-			$template =
+			$PM_NOTIFY =
 			"<div>
 			<h4>".LAN_PM_101."{SITENAME}</h4>
 			<table class='table table-striped'>
@@ -422,7 +419,7 @@ class private_message
 		$data['PM_URL']         = $url;// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 		$data['PM_BUTTON']      = "<a class='btn btn-primary' href='".$url."'>".LAN_PM_113."</a>";// e107::url('pm','index', null, array('mode'=>'full')).'?show.'.$pmid;
 
-		$text = e107::getParser()->simpleParse($template, $data);
+		$text = e107::getParser()->simpleParse($PM_NOTIFY, $data);
 
 		$eml = array();
 		$eml['email_subject']		= LAN_PM_100.USERNAME;
