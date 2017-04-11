@@ -330,6 +330,8 @@ City, State, Country
   'system' => 'core',
   'user' => 'core',
 )]]></core>
+<core name="url_profiles"><![CDATA[array (
+)]]></core>
 		<core name="url_disable_pathinfo">1</core>
 		<core name="url_error_redirect">0</core>
 		<core name="url_locations"><![CDATA[array (

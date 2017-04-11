@@ -401,8 +401,8 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 	            	  {DOWNLOAD_CAT_SUBSUB_ICON}
 	            	</td>
 	            	<td >
-	            	<div class='offset1'>
-	            	{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
+	            	<div class='col-md-offset-1'>
+	            		{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
 	            		<small class='muted text-muted'>
 	            	 		{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
 	            		</small>
