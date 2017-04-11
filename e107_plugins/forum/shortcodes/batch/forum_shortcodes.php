@@ -479,6 +479,8 @@ class forum_shortcodes extends e_shortcode
 		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
 		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
 		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
+		$shortDate = e107::getParser()->toDate($lastpost_datestamp,'short');
+		$longDate = e107::getParser()->toDate($lastpost_datestamp,'long');
 		$relativeDate = e107::getParser()->toDate($lastpost_datestamp,'relative');
 
 		if(!empty($parm['type']))
@@ -494,6 +496,15 @@ class forum_shortcodes extends e_shortcode
 					return "<a href='".$url."'>". $relativeDate."</a>";
 //				break;
 				case "date":
+					return $relativeDate;
+//				break;
+				case "date-short":
+					return $shortDate;
+//				break;
+				case "date-long":
+					return $longDate;
+//				break;
+				case "date-relative":
 					return $relativeDate;
 
 				case "url":
