@@ -610,9 +610,10 @@ class e_form
 		
 		if(isset($options['pause']))
 		{
-			$interval = 'data-pause="'.$options['pause'].'"';	
+			$pause = 'data-pause="'.$options['pause'].'"';
 		}
-		
+
+
 		$start  ='
 		<!-- Carousel -->
 		
