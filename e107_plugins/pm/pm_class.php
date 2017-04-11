@@ -386,7 +386,11 @@ class private_message
 
 		$template = $PM_NOTIFY;
 */
-    $template = e107::getTemplate('pm', 'pm', 'notify');
+	if(THEME_LEGACY){
+		include_once(THEME.'pm_template.php');
+		$template = $PM_NOTIFY;
+	}
+	if (!$PM_NOTIFY){$template = e107::getTemplate('pm', 'pm', 'notify');}
 
 		if(empty($template)) // BC Fallback.
 		{
