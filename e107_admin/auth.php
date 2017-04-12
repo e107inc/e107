@@ -178,8 +178,16 @@ else
 			$edata_li = array("user_id"=>$row['user_id'], "user_name"=>$row['user_name'], 'class_list'=>implode(',', $class_list), 'user_admin'=> $row['user_admin']);
 			
 			// Fix - set cookie before login trigger
-			session_set(e_COOKIE, $cookieval, (time() + 3600 * 24 * 30));
-			
+			$sessionLife = (int) e107::getPref('session_lifetime', ( 3600 * 24 * 30)); // default 1 month.
+
+			if($sessionLife > 0)
+			{
+				$sessionLife = time() + $sessionLife;
+			}
+
+			session_set(e_COOKIE, $cookieval, $sessionLife);
+
+			unset($sessionLife,$cookieval);
 		
 			// ---
 			
