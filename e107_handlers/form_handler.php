@@ -2425,7 +2425,8 @@ class e_form
 
 		}
 
-		$switchName = $name . '__switch';
+
+		$switchName = $this->name2id($name) . '__switch'; // fixes array names.
 
 		$switchAttributes = array(
 			'data-type'    => 'switch',
