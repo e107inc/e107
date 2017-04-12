@@ -22,7 +22,9 @@
  *	@subpackage	pm
  *	@version 	$Id$;
  */
-
+$pm_prefs = e107::getPlugPref('pm');
+if(check_class($pm_prefs['pm_class']))
+{
 if (!defined('e107_INIT')) { exit; }
 if (!e107::isInstalled('pm')) { return ''; }
 
@@ -75,7 +77,7 @@ if(!function_exists('pm_show_popup'))
 }
 
 
-$pm_prefs = e107::getPlugPref('pm');
+//$pm_prefs = e107::getPlugPref('pm');
 //global $sysprefs, $pm_prefs;
 
 
@@ -97,29 +99,10 @@ $pmManager = new pmbox_manager($pm_prefs);
 
 //setScVar('pm_handler_shortcodes','pmManager', $pmManager);
 
-define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PLUGIN_PM_INBOX."' title='".LAN_PLUGIN_PM_INBOX."' />");
-define('PM_OUTBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PLUGIN_PM_OUTBOX."' title='".LAN_PLUGIN_PM_OUTBOX."' />");
-define('PM_SEND_LINK', LAN_PLUGIN_PM_NEW);
-define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
+$template = e107::getTemplate('pm', 'pm_menu');
 
-
-$sc_style['PM_SEND_PM_LINK']['pre'] = "<br /><br />";
-$sc_style['PM_SEND_PM_LINK']['post'] = "";
-
-$sc_style['PM_INBOX_FILLED']['pre'] = "[";
-$sc_style['PM_INBOX_FILLED']['post'] = "%]";
-
-$sc_style['PM_OUTBOX_FILLED']['pre'] = "[";
-$sc_style['PM_OUTBOX_FILLED']['post'] = "%]";
-
-$sc_style['PM_NEWPM_ANIMATE']['pre'] = "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>";
-$sc_style['PM_NEWPM_ANIMATE']['post'] = "</a>";
-
-$sc_style['PM_BLOCKED_SENDERS_MANAGE']['pre'] = "<br />[ <a href='".e_PLUGIN_ABS."pm/pm.php?blocked'>";
-$sc_style['PM_BLOCKED_SENDERS_MANAGE']['post'] = '</a> ]';
-
-
-if(!isset($pm_menu_template))
+//if(!isset($pm_menu_template))
+if(!isset($PM_MENU_TEMPLATE))
 {
 	//FIXME URL Breaks
 	/*
@@ -138,7 +121,8 @@ if(!isset($pm_menu_template))
 	";
 	*/
 	
-	$pm_menu_template = "
+//	$pm_menu_template = "
+	$PM_MENU_TEMPLATE = "
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PLUGIN_PM_INBOX."</a>
 	{PM_NEWPM_ANIMATE}
@@ -153,15 +137,16 @@ if(!isset($pm_menu_template))
 	";
 }
 
-
-if(check_class($pm_prefs['pm_class']))
-{
+//if(check_class($pm_prefs['pm_class']))
+//{
 	$tp = e107::getParser();
 	$sc = e107::getScBatch('pm',TRUE, 'pm');
 	
 	$pm_inbox = $pmManager->pm_getInfo('inbox');
+  $sc->wrapper('pm_menu');
 
-	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE, $sc);
+//	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE, $sc);
+	$txt = "\n".$tp->parseTemplate($PM_MENU_TEMPLATE, TRUE, $sc);
 	
 	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
 	{
