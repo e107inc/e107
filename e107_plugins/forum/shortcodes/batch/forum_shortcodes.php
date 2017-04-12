@@ -449,7 +449,7 @@ class forum_shortcodes extends e_shortcode
 		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
 
 
-		$format = !empty($options['date-format']) ? $options['date-format'] : 'relative';
+		$format = !empty($parm['date-format']) ? $parm['date-format'] : 'relative';
 
 		$relativeDate = e107::getParser()->toDate($lastpost_datestamp, $format);
 
