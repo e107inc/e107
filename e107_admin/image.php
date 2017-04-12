@@ -933,6 +933,11 @@ class media_admin_ui extends e_admin_ui
 		e107::getCache()->clearAll('image');
 		
 	//	print_a($_GET);
+
+
+
+
+
 		
 		if($this->getAction() == 'youtube')
 		{
