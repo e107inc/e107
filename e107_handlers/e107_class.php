@@ -1026,6 +1026,21 @@ class e107
 		return self::$_plug_config_arr[$plug_name.$multi_row];
 	}
 
+
+
+	/**
+	 * Retrieve the global LAN for a specific plugin.
+	 * @param $dir
+	 * @param string $type
+	 * @return mixed
+	 */
+	public static function getPlugLan($dir, $type='name')
+	{
+		$lan = "LAN_PLUGIN_".strtoupper($dir)."_".strtoupper($type);
+
+		return defset($lan,false);
+	}
+
 	/**
 	 * Retrieve plugin preference value.
 	 * Shorthand of  self::getPluginConfig()->get()

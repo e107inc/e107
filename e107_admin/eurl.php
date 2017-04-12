@@ -546,7 +546,9 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 			$selector = $form->select('eurl_profile['.$plug.']',$arr,$sel, array('size'=>'block-level'));
 
-			$text .= "<tr><td>".$plug."</td><td>".$selector."</td></tr>";
+			$label = e107::getPlugLan($plug,'name');
+
+			$text .= "<tr><td>".$label."</td><td>".$selector."</td></tr>";
 
 		}
 
