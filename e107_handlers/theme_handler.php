@@ -1825,7 +1825,7 @@ class themeHandler
 		$mes = e107::getMessage();
 		$frm = e107::getForm();
 		$pref = e107::getConfig()->getPref();
-		$mes->addDebug("Rendering Theme Config");
+		e107::getDebug()->log("Rendering Theme Config");
 		
 		$this->loadThemeConfig();
 
