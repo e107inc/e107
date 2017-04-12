@@ -4116,14 +4116,23 @@ class e_parser
 	function isHtml($text)
 	{
 
-		if(strpos($text,'[html]') !== false || (htmlentities($text, ENT_NOQUOTES,'UTF-8') != $text && $this->isBBcode($text) === false ) || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		if(strpos($text,'[html]'))
 		{
 			return true;
 		}
-		else
+
+		if($this->isBBcode($text))
 		{
 			return false;
 		}
+
+		if(preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		{
+			return true;
+		}
+
+		return false;
+
 
 	}
 
