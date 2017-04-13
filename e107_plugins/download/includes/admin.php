@@ -328,7 +328,7 @@ class download_main_admin_ui extends e_admin_ui
 			'download_comment'			=> array('title'=> DOWLAN_102,			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			
 			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
-			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
+			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'inline'=>true,	'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			
 			'download_mirror' 			=> array('title'=> DOWLAN_128,			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
 			'download_mirror_type' 		=> array('title'=> DOWLAN_195,			'type' => 'method', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),

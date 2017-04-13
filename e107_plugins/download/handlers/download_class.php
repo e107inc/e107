@@ -535,9 +535,10 @@ class download
 		}
 		
 		
-		$sql = e107::getDb();
+		$sql = e107::getDb('dlrow');
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+		$pref = e107::getPref();
 		
 	//	$sc 		= new download_shortcodes;
 		$sc = e107::getScBatch('download',true);
@@ -688,10 +689,12 @@ class download
 			
 		$dlft = ($filetotal < $this->qry['view'] ? $filetotal: $this->qry['view']);
 
+		$current_row = 1;
+
 		while($dlrow = $sql->fetch())
 		{
-				$sc->setVars($dlrow);	
-				
+				$sc->setVars($dlrow);
+
 				$agreetext = $tp->toHTML($pref['agree_text'], TRUE, 'DESCRIPTION');
 				$current_row = ($current_row) ? 0: 1;
 				// Alternating CSS for each row.(backwards compatible)
@@ -700,9 +703,6 @@ class download
 				$dltdownloads += $dlrow['download_requested'];
 				
 				$dl_text .= $tp->parseTemplate($template, TRUE, $sc);
-				
-			
-				
 		}
 
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $sc);
