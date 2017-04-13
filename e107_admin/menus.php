@@ -968,7 +968,7 @@ class e_menu_layout
 		        foreach($layouts['menus'] as $name=>$areas)
 		        {
 					$text .= '<ul class="dropdown-menu e-mm-selector '.$name.'" >
-					<li><div class="btn-group">';
+					<li><div>';
 
 					foreach ($areas as $menu_act)
 					{
