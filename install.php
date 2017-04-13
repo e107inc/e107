@@ -477,7 +477,7 @@ class e_install
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
 					<td style='border-top: 1px solid #999;'>
-						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='localhost' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='".varset($this->previous_steps['mysql']['server'],'localhost')."' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_030."</span>
 					</td>
 				</tr>
@@ -485,7 +485,7 @@ class e_install
 				<tr>
 					<td><label for='name'>".LANINS_025."</label></td>
 					<td>
-						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40' value='' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40'  maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_031."</span>
 					</td>
 				</tr>
@@ -501,7 +501,7 @@ class e_install
 				<tr>
 					<td><label for='db'>".LANINS_027."</label></td>
 					<td class='form-inline'>
-						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
+						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						<span class='field-help'>".LANINS_033."</span>
 					</td>
@@ -664,7 +664,7 @@ class e_install
 				
 				$alertType = 'error';
 			}
-			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && $sql->database($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['server']))
+			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && $sql->database($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['prefix']))
 			{
 				$success = false; 
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
