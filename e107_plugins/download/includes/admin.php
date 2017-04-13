@@ -417,15 +417,18 @@ $columnInfo = array(
 			}
 		}
 		
-		
+
+
+
 		
 		// optional
 		public function init()
 		{
-			
-			$this->action 		= vartrue($_GET['mode']);
-			$this->subAction 	= vartrue($_GET['action']);
-			$this->id			= vartrue($_GET['id']);
+
+
+			$this->action 		= $this->getMode(); // vartrue($_GET['mode']);
+			$this->subAction 	= $this->getAction(); // vartrue($_GET['action']);
+			$this->id			= $this->getId(); // vartrue($_GET['id']);
 			
 			$this->observe();
 			

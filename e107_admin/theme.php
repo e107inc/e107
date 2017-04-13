@@ -301,7 +301,15 @@ class theme_admin_ui extends e_admin_ui
 
 		public function MainPage()
 		{
-			return $this->renderThemeConfig('front');
+			if(empty($_POST) && deftrue('e_DEVELOPER') || deftrue('e_DEBUG')) // check for new theme media and import.
+			{
+				$name = e107::getPref('sitetheme');
+				e107::getMedia()->import('_common_image', e_THEME.$name, '', 'min-size=10000');
+				e107::getMessage()->addInfo('Developer/Debug Mode: Scanning theme images folder for new media to import. ');
+			}
+
+			$message = e107::getMessage()->render();
+			return $message.$this->renderThemeConfig('front');
 		}
 
 		public function AdminPage()
