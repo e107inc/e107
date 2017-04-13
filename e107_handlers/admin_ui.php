@@ -6565,17 +6565,32 @@ class e_admin_form_ui extends e_form
 	}
 
 
+	/**
+	 * Render pagination
+	 * @return string
+	 */
 	public function renderPagination()
 	{
 		if($this->getController()->getGrid('carousel') === true)
 		{
 			return '<div class="btn-group" >
-		<a class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
-		<a id="admin-ui-carousel-index" class="btn btn-default">1</a>
-		<a class="btn btn-default" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
-		</div>';
+			<a id="admin-ui-carousel-prev" class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
+			<a id="admin-ui-carousel-index" class="btn btn-default">1</a>
+			<a id="admin-ui-carousel-next" class="btn btn-default" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
+			</div>';
 		}
 
+		$tree           = $this->getController()->getTreeModel();
+		$totalRecords   = $tree->getTotal();
+		$perPage        = $this->getController()->getPerPage();
+		$fromPage       = $this->getController()->getQuery('from', 0);
+
+		$vars           = $this->getController()->getQuery();
+		$vars['from']   = '[FROM]';
+
+		$paginate       = http_build_query($vars);
+
+		return $this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'));
 
 	}
 
@@ -6627,15 +6642,7 @@ class e_admin_form_ui extends e_form
 
 		//	$tree = $this->getTree();
 		//	$total = $this->getTotal();
-		$tree = $this->getController()->getTreeModel();
-		$totalRecords = $tree->getTotal();
-		$perPage = $this->getController()->getPerPage();
-		$fromPage = $this->getController()->getQuery('from', 0);
 
-		$vars = $this->getController()->getQuery();
-		$vars['from'] = '[FROM]';
-	//	var_dump($vars);
-		$paginate = http_build_query($vars);
 
 		$text = "
 			<form method='get' action='".e_REQUEST_SELF."'>
@@ -6656,7 +6663,7 @@ class e_admin_form_ui extends e_form
 							<div class='e-autocomplete'></div>
 							".implode("\n", $filter_preserve_var)."
 							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false,'title'=>LAN_FILTER))."
-							".$this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'))."
+
 							".$this->renderPagination()."
 							<span class='indicator' style='display: none;'>
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />

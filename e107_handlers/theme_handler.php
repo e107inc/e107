@@ -897,6 +897,7 @@ class themeHandler
 
 			if($this->setTheme())
 			{
+
 				$mes->addSuccess(TPVLAN_3);
 			}
 			else
@@ -916,6 +917,7 @@ class themeHandler
 
 		//     print_a($this -> themeArray);
 
+
 		foreach ($_POST as $key=>$post)
 		{
 			if(strstr($key, "preview"))
@@ -924,7 +926,8 @@ class themeHandler
 				$this->id = key($post);
 				$this->themePreview();
 			}
-			if(strstr($key, "selectmain"))
+
+		/*	if(strstr($key, "selectmain"))
 			{
 				//	$this -> id = str_replace("selectmain_", "", $key);
 				$this->id = key($post);
@@ -936,7 +939,7 @@ class themeHandler
 				{
 					$mes->addError(TPVLAN_3);
 				}
-			}
+			}*/
 
 			if(strstr($key, "selectadmin"))
 			{

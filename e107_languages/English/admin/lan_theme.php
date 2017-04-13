@@ -128,4 +128,5 @@ define("TPVLAN_91", "Create a new theme based on");
 define("TPVLAN_92", "New Theme Folder");
 
 define("TPVLAN_93", "Selection");
+define("TPVLAN_94", "Site theme changed to [x].");
 
