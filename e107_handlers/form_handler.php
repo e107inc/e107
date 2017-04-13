@@ -2623,12 +2623,12 @@ class e_form
 			$text .= $this->option($diz, '');
 		}
 		
-		if(varset($options['useValues'])) // use values as keys. 
+		if(!empty($options['useValues'])) // use values as keys.
 		{
 			$new = array();
 			foreach($option_array as $v)
 			{
-				$new[$v] = $v;	
+				$new[$v] = (string) $v;
 			}	
 			$option_array = $new;	
 		}
