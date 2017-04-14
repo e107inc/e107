@@ -2489,6 +2489,16 @@ class e107
 						continue;
 					}
 
+					if($mode === 'generate')
+					{
+						if(!empty($obj->generate))
+						{
+							$new_addon[$key] = $obj->generate;
+						}
+
+						continue;
+					}
+
 					$profile = !empty($url_profiles[$key]) ? $url_profiles[$key] : null;
 
 					$array = self::callMethod($obj, $methodName,$profile);

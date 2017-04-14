@@ -125,6 +125,10 @@ class eurl_admin_ui extends e_admin_controller_ui
 			list($primary, $input, $output) = explode("::",$_POST['rebuild'][$table]);
 			$this->rebuild($table, $primary, $input, $output);	
 		}
+
+
+
+
 		
 		
 		$this->api = e107::getInstance();
@@ -144,7 +148,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	 * @param input field (title)
 	 * @param output field (sef)
 	 */
-	private function rebuild($table, $primary, $input,$output)
+	private function rebuild($table, $primary='', $input='',$output='')
 	{
 		if(empty($table) || empty($input) || empty($output) || empty($primary))
 		{
@@ -178,12 +182,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 		if($success)
 		{
-			e107::getMessage()->addSuccess($success. LAN_EURL_SURL_UPD);
+			e107::getMessage()->addSuccess(LAN_EURL_TABLE.": <b>".$table."</b><br />".$success. LAN_EURL_SURL_UPD);
 		}
 		
 		if($failed)
 		{
-			e107::getMessage()->addError($failed. LAN_EURL_SURL_NUPD);	
+			e107::getMessage()->addError(LAN_EURL_TABLE.": <b>".$table."</b><br />".$failed. LAN_EURL_SURL_NUPD);
 		}
 		
 		
@@ -432,6 +436,28 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function ConfigObserver()
 	{
+
+		if(!empty($_POST['generate']))
+		{
+			$gen = e107::getUrlConfig('generate');
+			$id = key($_POST['generate']);
+
+			if(empty($gen[$id]))
+			{
+				e107::getMessage()->addDebug("Empty");
+				return null;
+			}
+
+			foreach($gen[$id] as $conf)
+			{
+				$this->rebuild($conf['table'], $conf['primary'], $conf['input'], $conf['output']);
+			}
+
+		}
+
+
+
+
 		if(isset($_POST['update']))
 		{
 			$config = is_array($_POST['eurl_config']) ? e107::getParser()->post_toForm($_POST['eurl_config']) : '';
@@ -527,6 +553,7 @@ class eurl_admin_ui extends e_admin_controller_ui
         $repl = array(SITEURL,SITEURL.$PLUGINS_DIRECTORY);
 
 		$profiles = e107::getUrlConfig('profiles');
+		$generate = e107::getUrlConfig('generate');
 
 		$form = $this->getUI();
 
@@ -548,7 +575,14 @@ class eurl_admin_ui extends e_admin_controller_ui
 
 			$label = e107::getPlugLan($plug,'name');
 
-			$text .= "<tr><td>".$label."</td><td>".$selector."</td></tr>";
+			$text .= "<tr><td>".$label."</td><td>".$selector."</td><td>";
+
+
+
+
+			$text .= (!empty($generate[$plug])) ? $form->admin_button('generate['.$plug.']', $plug,'delete', LAN_EURL_REBUILD) : "";
+
+			$text .= "</td></tr>";
 
 		}
 
