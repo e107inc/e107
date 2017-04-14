@@ -33,6 +33,12 @@ class download_url // plugin-folder + '_url'
 		'non-numeric'   => array('label' => 'Friendly (experimental)',  'examples' => array('{SITEURL}download/my-category/my-sub-category/my-file-name')),
 	);
 
+	// Batch generate SEF URls on tables.
+	public $generate = array(
+		0 => array('table'=> 'download',            'primary'=>'download_id',           'input'=>'download_name',           'output'=>'download_sef'),
+		1 => array('table'=> 'download_category',   'primary'=>'download_category_id',  'input'=>'download_category_name',  'output'=>'download_category_sef')
+	);
+
 
 	function config($profile=null)
 	{
@@ -67,7 +73,7 @@ class download_url // plugin-folder + '_url'
 
 
 		$config['category'] = array(
-			'regex'			=> '^{alias}/category/([\d]*)/(.*)$',
+			'regex'			=> '^{alias}/([^\/]*)/(.*)$',
 			'redirect'		=> '{e_PLUGIN}download/download.php?action=list&id=$1',
 			'sef'           => '{alias}/{download_category_sef}',
 		);
