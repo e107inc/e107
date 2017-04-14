@@ -10,6 +10,7 @@
 
 	if (!defined('e107_INIT')) { exit; }
 
+    e107::lan('faqs', 'admin',true);
 
 	class faqs_cron // include plugin-folder in the name.
 	{
