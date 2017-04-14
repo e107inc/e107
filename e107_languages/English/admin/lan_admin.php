@@ -392,8 +392,8 @@ define("LAN_STATUS", "Status");
 define("LAN_URL", "URL");
 
 define("LAN_OWNER", "Owner");
-define("LAN_PURCHASE", "Purchase ");
-define("LAN_DOWN_THEME", "Downloading ");
+define("LAN_PURCHASE", "Purchase");
+define("LAN_DOWNLOADING", "Downloading");
 
 define("LAN_ID", "ID");
 define("LAN_TEST", "Test");
