@@ -275,6 +275,7 @@ define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
 define("LAN_ADD_ALL", "Add All");
 define("LAN_CLEAR_ALL", "Clear All");
+define("LAN_CLICK_HERE", "CLICK HERE");
 define("LAN_UNKNOWN", "Unknown");
 define("LAN_ALL","All");
 define("LAN_IMPORT","Import");
