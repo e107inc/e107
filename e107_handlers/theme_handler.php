@@ -1988,7 +1988,7 @@ class themeHandler
 		//	e107::getDebug()->log($theme['name'].': '.strlen($base64));
 			$url = e_SELF."?src=".$base64;
 			$id = $frm->name2id($theme['name']);
-			$LAN_DOWNLOAD = ($theme['price'] > 0) ? LAN_PURCHASE."/".LAN_DOWN_THEME : LAN_DOWN_THEME;
+			$LAN_DOWNLOAD = ($theme['price'] > 0) ? LAN_PURCHASE."/".LAN_DOWNLOAD : LAN_DOWNLOAD;
 			
 			/*
 			if($this->mp->hasAuthKey())
@@ -2011,7 +2011,7 @@ class themeHandler
 			//$main_icon = "<a data-src='".$downloadUrl."' href='{$downloadUrl}' data-target='{$id}' data-loading='".e_IMAGE."/generic/loading_32.gif' class='-e-ajax' title='".$LAN_DOWNLOAD."' ><img class='top' src='".e_IMAGE_ABS."icons/download_32.png' alt=''  /></a> ";		
 		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 			
-			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWN_THEME.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
+			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
 			$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
 		
 			

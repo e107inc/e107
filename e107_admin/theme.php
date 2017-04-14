@@ -903,7 +903,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 
 		$id = $this->name2id($theme['name']);
-		$LAN_DOWNLOAD = ($theme['price'] > 0) ? LAN_PURCHASE."/".LAN_DOWN_THEME : LAN_DOWN_THEME;
+		$LAN_DOWNLOAD = (!empty($theme['price'])) ? LAN_PURCHASE."/".LAN_DOWNLOAD : LAN_DOWNLOAD;
 
 		$downloadUrl = e_SELF.'?mode=main&iframe=1&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
 
@@ -912,7 +912,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 
 	//	$viewUrl = $theme['url'];
 
-		$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWN_THEME.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
+		$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
 		$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
 
 		$info_icon 	= "<a class='btn btn-default btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
