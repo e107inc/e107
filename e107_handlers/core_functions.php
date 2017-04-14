@@ -50,7 +50,7 @@ function varset(&$val, $default='')
  */
 function defset($str, $default='')
 {
-	if(!is_string($str))
+	if(is_array($str))
 	{
 		return false;
 	}
