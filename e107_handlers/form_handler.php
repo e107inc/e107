@@ -2601,7 +2601,7 @@ class e_form
 			$option_array = array(1 => LAN_YES, 0 => LAN_NO);
 		}
 
-		if(vartrue($options['multiple']))
+		if(!empty($options['multiple']))
 		{
 			$name = (strpos($name, '[') === false) ? $name.'[]' : $name;
 			if(!is_array($selected)) $selected = explode(",",$selected);
@@ -2829,7 +2829,10 @@ class e_form
     */
 	function option_multi($option_array, $selected = false, $options = array())
 	{
-		if(is_string($option_array)) parse_str($option_array, $option_array);
+		if(is_string($option_array))
+		{
+			parse_str($option_array, $option_array);
+		}
 
 		$text = '';
 
@@ -2837,6 +2840,7 @@ class e_form
 		{
 			return $this->option('','');
 		}
+
 
 		foreach ($option_array as $value => $label)
 		{
@@ -2847,6 +2851,7 @@ class e_form
 			}
 			else
 			{
+
 				$text .= $this->option($label, $value, (is_array($selected) ? in_array($value, $selected) : $selected == $value), $options)."\n";
 			}
 		}
