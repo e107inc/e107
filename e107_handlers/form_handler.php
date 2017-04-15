@@ -484,7 +484,7 @@ class e_form
 
 	  $defaults['selectize'] = array(
 		'create'   => true,
-		'maxItems' => 7,
+		'maxItems' => vartrue($options['maxItems'], 7),
 		'mode'     => 'multi',
 		'plugins'  => array('remove_button'),
 	  );
@@ -4523,7 +4523,7 @@ class e_form
 				{
 					$options['selectize'] = array(
 						'create'     => true,
-						'maxItems'   => 7,
+						'maxItems'   => vartrue($parms['maxItems'], 7),
 						'mode'       => 'multi',
 						'e_editable' => $field . '_' . $id,
 					);
