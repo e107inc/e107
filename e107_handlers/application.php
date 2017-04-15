@@ -4428,8 +4428,8 @@ class eHelper
 
 		$title = $tp->toASCII($title);
 
-		$title = str_replace(array('/',' '),' ',$title);
-		$title = str_replace(array("&",",","(",")"),'',$title);
+		$title = str_replace(array('/',' ',","),' ',$title);
+		$title = str_replace(array("&","(",")"),'',$title);
 		$title = preg_replace('/[^\w\d\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
 		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
 		$title = str_replace(array(' - ',' -','- ','--'),'-',$title); // cleanup to avoid ---
