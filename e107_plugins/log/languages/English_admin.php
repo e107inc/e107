@@ -99,7 +99,7 @@ define ('ADSTAT_LAN_86', 'Total Hits');
 define ('ADSTAT_LAN_87', 'Rebuild Statistic Summaries');
 define ('ADSTAT_LAN_88', 'Rebuild Stats'); 
 define ('ADSTAT_LAN_89', 'Rebuild');  
-define ('ADSTAT_LAN_90', 'Data saved to database with id:'); 
-define ('ADSTAT_LAN_91', 'Couldn\'t save data to database with id:'); 
+define("ADSTAT_LAN_90", "Data saved to database with id: [x]");
+define("ADSTAT_LAN_91", "Couldn't save data to database with id: [x]");
 
 ?>
