@@ -577,11 +577,13 @@ TMPO;
 
 			if(@unlink($file))
 			{
-				$mes->addSuccess("Deleted ".$file);
+				$message = e107::getParser()->lanVars(LAN_UI_FILE_DELETED, array('x'=>$file));
+				$mes->addSuccess($message);
 			}
 			else
 			{
-				$mes->addError("Unable to delete ".$file.". Please remove the file manually.");
+				$message = e107::getParser()->lanVars(LAN_UI_FILE_DELETED_FAILED, array('x'=>$file));
+				$mes->addError($message);
 			}
 		}
 
