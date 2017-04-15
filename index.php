@@ -84,7 +84,7 @@
 		
 	}
  */
- 
+
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
 
 	// XXX Cache didn't bring much benefit.
@@ -102,8 +102,9 @@
 
 
 	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
-		
-	if(count($tmp))
+
+
+	if(count($tmp) && !empty($req))
 	{
 		$rootNamespace = e107::getPref('url_main_module');
 		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
@@ -318,8 +319,7 @@
 	
 	
 	
-	
-	
+
 	
 	include_once(HEADERF);
 		eFront::instance()->getResponse()->send('default', false, true);
