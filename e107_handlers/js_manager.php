@@ -1628,7 +1628,8 @@ class e_jsmanager
 
         /* remove tabs, spaces, newlines, etc. */
     	$minify = str_replace( array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $minify );
-
+		$minify = str_replace("}","} ",$minify);
+		
         return $minify;
     }
 
