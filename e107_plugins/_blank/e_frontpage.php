@@ -13,6 +13,7 @@ if (!defined('e107_INIT')) { exit; }
 //v2.x spec.
 class _blank_frontpage // include plugin-folder in the name.
 {
+	// simple
 	function config()
 	{
 
@@ -20,6 +21,26 @@ class _blank_frontpage // include plugin-folder in the name.
 
 		return $frontPage;
 	}
+
+
+	
+	// multiple
+	/*function config()
+	{
+		$config = array();
+
+		$config['title']    = LAN_PLUGIN__BLANK_NAME;
+		$config['page']     = array(
+						0   => array('page' => '{e_PLUGIN}_blank/_blank.php', 'title'=>'Main Page'),
+		);
+
+		return $config;
+	}
+	*/
+
+
+
+
 }
 
 
