@@ -109,7 +109,7 @@ class banlist_ui extends e_admin_ui
 		protected $fields 	= array (  
 		  'checkboxes' 			=>   array ( 'title' => '', 				'type' => null, 		'data' => null, 'width' => '5%', 'thclass' => 'center', 'forced' => '1', 'class' => 'center', 'toggle' => 'e-multiselect',  ),
 		  'banlist_id'			 =>  array ( 'title' => LAN_ID, 			'data' => 'int',        'width' => '5%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		  'banlist_ip' 			=>   array ( 'title' => LAN_IP, 			'type' => 'ip', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
+		  'banlist_ip' 			=>   array ( 'title' => BANLAN_126, 			'type' => 'method', 		'data' => 'str', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_bantype' 	=>   array ( 'title' => LAN_TYPE, 			'type' => 'method', 	'data' => 'str', 'width' => 'auto', 'filter'=>true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_datestamp' 	=>   array ( 'title' => LAN_DATESTAMP, 		'type' => 'datestamp', 	'data' => 'int', 'width' => 'auto', 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => 'auto=1&hidden=1&readonly=1', 'class' => 'left', 'thclass' => 'left',  ),
 		  'banlist_banexpires' 	=>   array ( 'title' => BANLAN_124,	 		'type' => 'method', 	'data' => 'int', 'inline'=>true, 'width' => 'auto', 'batch' => true, 'filter' => true, 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
@@ -127,6 +127,19 @@ class banlist_ui extends e_admin_ui
 	//		'pref_folder' 				=> array('title'=> 'folder', 'type' => 'boolean', 'data' => 'integer'),
 	//		'pref_name' 				=> array('title'=> 'name', 'type' => 'text', 'data' => 'string', 'validate' => 'regex', 'rule' => '#^[\w]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')
 	//	);
+
+
+		function CreateObserver()
+		{
+			parent::CreateObserver();
+			$this->fields['banlist_ip']['title']= BANLAN_5;
+		}
+
+		function EditObserver()
+		{
+			parent::EditObserver();
+			$this->fields['banlist_ip']['title']= BANLAN_5;
+		}
 
 		
 		// optional
@@ -162,12 +175,24 @@ class banlist_ui extends e_admin_ui
 		public function beforeCreate($new_data, $old_data, $id)
 		{
 			$new_data['banlist_admin'] = ADMINID;
+
+			if(filter_var($new_data['banlist_ip'], FILTER_VALIDATE_IP)) // check it's an IP
+			{
+				$new_data['banlist_ip'] = e107::getIPHandler()->ipEncode($new_data['banlist_ip']);
+			}
+
 			return $new_data;
 		}
 
 		public function beforeUpdate($new_data, $old_data, $id)
 		{
 			$new_data['banlist_admin'] = ADMINID;
+
+			if(filter_var($new_data['banlist_ip'], FILTER_VALIDATE_IP)) // check it's an IP
+			{
+				$new_data['banlist_ip'] = e107::getIPHandler()->ipEncode($new_data['banlist_ip']);
+			}
+
 			return $new_data;
 		}
 
@@ -373,6 +398,37 @@ class banlist_form_ui extends e_admin_form_ui
 		}
 	}
 
+	// Custom Method/Function
+	function banlist_ip($curVal,$mode) //TODO
+	{
+
+		if(!empty($curVal))
+		{
+			$tmp = explode(":",$curVal);
+
+			if(count($tmp) === 8)
+			{
+				$curVal = e107::getIPHandler()->ipDecode($curVal);
+			}
+		}
+
+		switch($mode)
+		{
+			case 'read': // List Page
+				return $curVal;
+				break;
+
+			case 'write': // Edit Page
+
+				return $this->text('banlist_ip', $curVal, array());
+				break;
+
+			case 'filter':
+			case 'batch':
+
+				break;
+		}
+	}
 
 	
 	// Custom Method/Function 
