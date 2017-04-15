@@ -104,7 +104,7 @@
 	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
 
 
-	if(count($tmp) && !empty($req))
+	if(count($tmp) && !empty($req) && $req !== 'index.php')
 	{
 		$rootNamespace = e107::getPref('url_main_module');
 		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
