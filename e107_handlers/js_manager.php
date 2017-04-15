@@ -1493,6 +1493,11 @@ class e_jsmanager
 			else
 			{
 				echo "<link type='text/css' href='".e_WEB_ABS."cache/".$fileName."' rel='stylesheet' property='stylesheet'  />\n\n";
+				if(!empty($this->_cache_list['css_inline']))
+				{
+					echo $this->_cache_list['css_inline'];
+					unset($this->_cache_list['css_inline']);
+				}
 			}
 
 			// Remove from list, anything we have added.
@@ -1629,7 +1634,7 @@ class e_jsmanager
         /* remove tabs, spaces, newlines, etc. */
     	$minify = str_replace( array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $minify );
 		$minify = str_replace("}","} ",$minify);
-		
+
         return $minify;
     }
 
@@ -1716,14 +1721,26 @@ class e_jsmanager
 			break;
 
 			case 'css':
+				$text = '';
 				if($label && E107_DEBUG_LEVEL > 0) 
 				{
-					echo "<!-- [CSSManager] ".$label." -->\n";
+					$text .= "<!-- [CSSManager] ".$label." -->\n";
 				}
-				echo '<style rel="stylesheet" type="text/css" property="stylesheet">';
-				echo implode("\n\n", $content_array);
-				echo '</style>';
-				echo "\n";
+				$text .= '<style rel="stylesheet" type="text/css" property="stylesheet">';
+				$text .= implode("\n\n", $content_array);
+				$text .= '</style>';
+				$text .= "\n";
+
+				if($this->_cache_enabled != true)
+				{
+					echo $text;
+				}
+				else
+				{
+					$this->_cache_list['css_inline'] = $text;
+				}
+
+
 			break;
 		}
 	}
