@@ -614,11 +614,13 @@ class logConsolidate
 
 					if($this->collatePageInfo($pageTotal, $datestamp))
 					{
-						$mes->addSuccess( ADSTAT_LAN_90.$datestamp);
+						$message = e107::getParser()->lanVars(ADSTAT_LAN_90, array('x'=>$datestamp));
+				        $mes->addSuccess($message);
 					}
 					else
 					{
-						$mes->addError( ADSTAT_LAN_91.$datestamp);
+						$message = e107::getParser()->lanVars(ADSTAT_LAN_91, array('x'=>$datestamp));
+				        $mes->addError($message);
 					}
 				}
 
