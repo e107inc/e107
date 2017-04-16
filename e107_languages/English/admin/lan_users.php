@@ -176,7 +176,7 @@ define("USRLAN_171", "Random password");
 define("USRLAN_172", "User account has been created with the following:");
 // define("USRLAN_173", "Login name set");
 // define("USRLAN_174", "User name --NAME-- created");
-define("USRLAN_175", "Session");
+// define("USRLAN_175", "Session"); // Moved to lan_admin.php
 
 define("USRLAN_179", "User banned: ");
 define("USRLAN_180", "IP address of {IP} appears on whitelist; IP not banned.");
