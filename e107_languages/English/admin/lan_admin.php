@@ -290,6 +290,7 @@ define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or fo
 define("LAN_NOTREADABLE", "Not Readable");
 define("LAN_MISSING", "Missing");
 define("LAN_UNUSED", "Unused");
+define("LAN_SESSION", "Session");
 define("LAN_TOOLTIP", "Tooltip");
 
 define("LAN_TIME","Time");
