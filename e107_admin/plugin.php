@@ -1095,7 +1095,16 @@ class plugin_online_ui extends e_admin_ui
 				$this -> pluginCheck(true); // rescan the plugin directory
 				$text = e107::getPlugin()->install($pluginFolder);
 
+
+
 				$mes->addInfo($text);
+
+				$upgradable =  e107::getPlug()->getUpgradableList();
+				if(!empty($upgradable[$pluginFolder]))
+				{
+					$mes->addSuccess("<a target='_top' href='".e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$pluginFolder."' class='btn btn-primary'>".LAN_UPDATE."</a>");
+				}
+
 				echo $mes->render('default', 'success');
 			}
 			else

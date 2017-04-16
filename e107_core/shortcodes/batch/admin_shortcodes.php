@@ -1397,7 +1397,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 			if(!empty($versions[$folder]['version']) && version_compare( $version, $versions[$folder]['version'], '<'))
 			{
-				$versions[$folder]['modalDownload'] = $mp->getDownloadModal('theme', $versions[$folder]);
+				$versions[$folder]['modalDownload'] = $mp->getDownloadModal($type, $versions[$folder]);
 				$ret[] = $versions[$folder];
 				e107::getMessage()->addDebug("Local version: ".$version." Remote version: ".$versions[$folder]['version']);
 			}
