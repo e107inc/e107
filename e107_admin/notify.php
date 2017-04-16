@@ -144,7 +144,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 
 									$data = e107::callMethod($val."_notify", 'config');
 
-									$config_category = str_replace("_menu","",ucfirst($val))." Events";
+									$config_category = str_replace("_menu","",ucfirst($val))." ".LAN_NOTIFY_01;
 
 									foreach($data as $v)
 									{
@@ -313,7 +313,7 @@ class plugin_notify_admin_ui extends e_admin_ui
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		$uc = e107::getUserClass();
-		$uc->fixed_classes['email'] = 'Email Address =>';
+		$uc->fixed_classes['email'] = NM_LAN_3;
 		$uc->text_class_link['email'] = 'email';
 
 
@@ -593,7 +593,7 @@ class notify_config
 								
 								$data = e107::callMethod($val."_notify", 'config');
 								
-								$config_category = str_replace("_menu","",ucfirst($val))." Events";
+								$config_category = str_replace("_menu","",ucfirst($val))."  ".LAN_NOTIFY_01;
 								
 								foreach($data as $v)
 								{
@@ -893,7 +893,7 @@ class notify_config
 		$tp = e107::getParser();
 		$frm = e107::getForm();
 		$uc = e107::getUserClass();
-		$uc->fixed_classes['email'] = 'Email Address =>';
+		$uc->fixed_classes['email'] = NM_LAN_3;
 		$uc->text_class_link['email'] = 'email';
 
 		
