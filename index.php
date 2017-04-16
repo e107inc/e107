@@ -109,6 +109,15 @@
 		$rootNamespace = e107::getPref('url_main_module');
 		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
 
+		$plugs = array_keys($tmp);
+
+		if(in_array($rootNamespace,$plugs)) // Move rootnamespace check to the end of the list. 
+		{
+			$v = $tmp[$rootNamespace];
+			unset($tmp[$rootNamespace]);
+			$tmp[$rootNamespace] = $v;
+		}
+
 		foreach($tmp as $plug=>$cfg)
 		{
 			if(empty($pref['e_url_list'][$plug])) // disabled.
