@@ -1454,7 +1454,7 @@ class e_jsmanager
 	 */
 	public function renderCached($type)
 	{
-		if($this->_cache_enabled != true || $this->isInAdmin())
+		if($this->_cache_enabled != true || $this->isInAdmin() || deftrue('e_MENUMANAGER_ACTIVE'))
 		{
 			return false;
 		}
@@ -1731,7 +1731,7 @@ class e_jsmanager
 				$text .= '</style>';
 				$text .= "\n";
 
-				if($this->_cache_enabled != true || $this->isInAdmin())
+				if($this->_cache_enabled != true || $this->isInAdmin() || deftrue('e_MENUMANAGER_ACTIVE'))
 				{
 					echo $text;
 				}
