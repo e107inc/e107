@@ -1731,7 +1731,7 @@ class e_jsmanager
 				$text .= '</style>';
 				$text .= "\n";
 
-				if($this->_cache_enabled != true)
+				if($this->_cache_enabled != true || $this->isInAdmin())
 				{
 					echo $text;
 				}
