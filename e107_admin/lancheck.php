@@ -892,8 +892,8 @@ class lancheck
 		$text .= "<thead><tr><th>".LAN_OPTIONS."</th></tr></thead><tbody>";
 
 		$srch = array("[","]");
-		$repl = array("<a rel='external' href='http://e107.org/content/About-Us:The-Team#translation-team'>","</a>");
-		$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you're an [e107 certified translator].";
+		$repl = array("<a rel='external' href='https://github.com/orgs/e107translations/teams'>","</a>");
+		$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you are a member of the [e107 translation team].";
 
 		$checked = varset($_COOKIE['e107_certified']) == 1 ? true : false;
 
