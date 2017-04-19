@@ -1863,7 +1863,7 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_depth($parm='')
 	{
-		return $this->depth;
+		return isset($this->var['link_depth']) ? intval($this->var['link_depth']) : $this->depth;
 	}
 
 

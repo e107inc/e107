@@ -2026,6 +2026,127 @@ class e_db_mysql
 	}
 
 
+	/**
+	 * Return a sorted list of parent/child tree with an optional ordering field.
+	 * @param string $table Name of table (without the prefix)
+	 * @param string $parent Name of the parent field
+	 * @param string $pid  Name of the primary id
+	 * @param string $where (Optional ) where condition.
+	 * @param string $order Name of the order field.
+	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
+	 * @return boolean | integer with the addition of  _treesort and _depth fields in the results.
+	 */
+	public function selectTree($table, $parent, $pid, $where=null, $order=null)
+	{
+
+		if(empty($table) || empty($parent) || empty($pid))
+		{
+			$this->mySQLlastErrText = "missing variables in sql->categories()";
+			return false;
+		}
+
+		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
+
+		$this->gen($sql);
+
+		$sql = "
+		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
+		BEGIN
+		    DECLARE depth INT;
+		    SET depth=1;
+
+		    WHILE project_id > 0 DO
+
+		        SELECT IFNULL(".$parent.",-1)
+		        INTO project_id
+		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
+
+		        IF project_id > 0 THEN
+		            SET depth = depth + 1;
+		        END IF;
+
+		    END WHILE;
+
+		    RETURN depth;
+
+		END
+		;
+		";
+
+
+		$this->gen($sql);
+
+		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
+
+		$this->gen($sql);
+
+        $sql = "
+        CREATE FUNCTION getTreeSort(incid INT)
+        RETURNS CHAR(255)
+        BEGIN
+                SET @parentstr = CONVERT(incid, CHAR);
+                SET @parent = -1;
+                label1: WHILE @parent != 0 DO
+                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
+                        SET incid = @parent;
+                END WHILE label1;
+
+                RETURN @parentstr;
+        END
+   ;
+
+        ";
+
+
+        $this->gen($sql);
+
+        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
+
+		if($where !== null)
+		{
+			$qry .= " WHERE ".$where;
+		}
+
+
+		if($order === null)
+		{
+			$qry .= " ORDER BY _treesort";
+		}
+		else
+		{
+			$qry .= " ORDER BY ".$order;
+		}
+
+		return $this->gen($qry);
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	* @return integer
