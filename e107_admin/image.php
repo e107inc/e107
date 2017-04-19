@@ -757,7 +757,7 @@ class media_admin_ui extends e_admin_ui
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 			'media_caption' 		=> array('title'=> LAN_CAPTION,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
-   		    'media_sef'             => array('title'=> LAN_SEFURL,   'readonly'=>1,    'type'=>'method', 'data'=>false),
+   		    'media_sef'             => array('title'=> LAN_URL,   'readonly'=>1,    'type'=>'method', 'data'=>false),
 
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'size=xxlarge&counter=0'),
          	'media_type' 			=> array('title'=> IMALAN_118,		'type' => 'dropdown',		'data'=> 'str',		'filter'=>true, 'width' => 'auto', 'noedit'=>TRUE),
