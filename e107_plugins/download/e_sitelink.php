@@ -33,7 +33,7 @@ class download_sitelink // include plugin-folder in the name.
 			
 		$links[] = array(
 			'name'			=> "Download Categories",
-			'function'		=> "myCategories"
+			'function'		=> "categories"
 		);
 
 
@@ -43,7 +43,7 @@ class download_sitelink // include plugin-folder in the name.
 	
 
 
-	function myCategories()
+	function categories()
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
@@ -78,7 +78,7 @@ class download_sitelink // include plugin-folder in the name.
 			);
 		}
 
-		
+
 		return $sublinks;
 	    
 	}
