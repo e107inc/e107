@@ -2821,7 +2821,8 @@ class e_db_mysql
 	 */
 	protected function loadTableDef($defFile, $tableName)
 	{
-		$result = FALSE;
+		$result =false;
+
 		if (is_readable($defFile))
 		{
 			// Read the file using the array handler routines
@@ -2830,26 +2831,31 @@ class e_db_mysql
 			// Strip any comments  (only /*...*/ supported)
 			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
 			//echo "Check: {$defFile}, {$tableName}<br />";
-			if ($temp !== FALSE)
+			if ($temp !== false)
 			{
-				$array = e107::getArrayStorage();
-				$typeDefs = $array->ReadArray($temp);
+			//	$array = e107::getArrayStorage();
+				$typeDefs = e107::unserialize($temp);
+
 				unset($temp);
 				if (isset($typeDefs[$tableName]))
 				{
 					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
-					$fileData = $array->WriteArray($typeDefs[$tableName], FALSE);
-					if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
+
+					$fileData = e107::serialize($typeDefs[$tableName], false);
+
+					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
 					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+
 					}
-					$result = TRUE;
+
+					$result = true;
 				}
 			}
 		}
 
 		if (!$result)
 		{
-			$this->dbFieldDefs[$tableName] = FALSE;
+			$this->dbFieldDefs[$tableName] = false;
 		}
 		return $result;
 	}
@@ -2869,7 +2875,10 @@ class e_db_mysql
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
 		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+
 		$outDefs = array();
+
+
 		foreach ($fieldDefs as $k => $v)
 		{
 			switch ($v['type'])
@@ -2879,17 +2888,25 @@ class e_db_mysql
 					{
 						//break;		Probably include autoinc fields in array
 					}
+
 					$baseType = preg_replace('#\(\d+?\)#', '', $v['fieldtype']);		// Should strip any length
+
 					switch ($baseType)
 					{
 						case 'int' :
+						case 'integer':
 						case 'shortint' :
 						case 'tinyint' :
+						case 'mediumint':
 							$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
 							break;
+
 						case 'char' :
 						case 'text' :
 						case 'varchar' :
+						case 'tinytext' :
+						case 'mediumtext' :
+						case 'longtext' :
 							$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues. 
 							break;
 					}
@@ -2911,9 +2928,10 @@ class e_db_mysql
 					echo "Unexpected field type: {$k} => {$v['type']}<br />";
 			}
 		}
-		$array = e107::getArrayStorage();
+	//	$array = e107::getArrayStorage();
 		$this->dbFieldDefs[$tableName] = $outDefs;
-		$toSave = $array->WriteArray($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
+		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
+
 		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
 		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
 			$mes = e107::getMessage();
