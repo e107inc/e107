@@ -2610,6 +2610,8 @@ class e_parse extends e_parser
 	 */
 	function thumbSrcSet($src='', $width=null)
 	{
+		$multiply = null;
+
 		if(is_array($width))
 		{
 			$parm = $width;
@@ -2648,8 +2650,8 @@ class e_parse extends e_parser
 				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
-			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : ($this->thumbWidth * $multiply);
-			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : ($this->thumbHeight * $multiply);
+			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
+			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
 
 		}
 		else
