@@ -64,6 +64,15 @@ class PHPFusion_import extends base_import_class
   // Copy data read from the DB into the record to be returned.
 	  function copyUserData(&$target, &$source)
 	  {
+	    if($source['user_algo'] === 'sha256')
+		{
+			$hashType = '$5$';
+		}
+		else
+		{
+		    $hashType = '';
+		}
+
 		if ($this->copyUserInfo) $target['user_id'] = $source['user_id'];
 		$target['user_name'] = $source['user_name'];
 		$target['user_loginname'] = $source['user_name'];
