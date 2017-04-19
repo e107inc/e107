@@ -26,6 +26,8 @@ class e_url
 
 	private $_rootnamespace = null;
 
+	private $_alias         = array();
+
 	private $_legacy        = array();
 
 	private $_legacyAliases = array();
@@ -37,10 +39,14 @@ class e_url
 	function __construct()
 	{
 		$this->_request         = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
+
 		$this->_config          = e107::getUrlConfig();
+		$this->_alias           = e107::getPref('e_url_alias');
+
 		$this->_rootnamespace   = e107::getPref('url_main_module');
 		$this->_legacy          = e107::getPref('url_config');
 		$this->_legacyAliases   = e107::getPref('url_aliases');
+
 
 		$this->setRootNamespace();
 
@@ -59,7 +65,7 @@ class e_url
 
 		foreach($list as $leg)
 		{
-			if(strpos($this->_request,$leg.'/') === 0)
+			if(strpos($this->_request,$leg.'/') === 0 || $this->_request === $leg)
 			{
 				return true;
 			}
@@ -105,40 +111,6 @@ class e_url
 			return false;
 		}
 
-
-		/*if($cached = e107::getCache()->retrieve('Addon_url',5,true,true))
-		{
-			$tmp = e107::unserialize($cached);
-		}
-		else*/
-		{
-		//	$tmp = e107::getAddonConfig('e_url');
-
-		//	e107::getCache()->set('Addon_url',e107::serialize($tmp,'json'),true,true,true);
-		}
-
-
-
-	//	if(count($this->_config) && !empty($this->_request) && $this->_request !== 'index.php')
-		{
-
-
-
-	/*
-
-			$legacyConfig = array_keys(e107::getPref('url_config'));
-			foreach($legacyConfig as $leg)
-			{
-				if(strpos($this->req,$leg.'/') === 0)
-				{
-					var_dump("Found ".$leg);
-
-				}
-
-
-			}
-			*/
-
 		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
 
 		foreach($this->_config as $plug=>$cfg)
@@ -161,7 +133,7 @@ class e_url
 
 				if(!empty($v['alias']))
 				{
-					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];
+					$alias = (!empty($this->_alias[e_LAN][$plug][$k])) ? $this->_alias[e_LAN][$plug][$k] : $v['alias'];
 				//	e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
 					if(!empty($this->_rootnamespace) && $this->_rootnamespace === $plug)
 					{
@@ -217,7 +189,6 @@ class e_url
 					elseif(getperms('0'))
 					{
 
-
 						echo "<div class='alert alert-warning'>";
 						echo "<h3>SEF Debug Info</h3>";
 						echo "File missing: ".$file;
@@ -232,8 +203,8 @@ class e_url
 
 		}
 
-		unset($tmp,$redirect,$regex);
-	}
+
+
 
 	}
 
@@ -249,14 +220,6 @@ class e_url
 		    self::$_instance = new self();
 		}
 	  	return self::$_instance;
-	}
-
-
-	public function getConfig()
-	{
-
-
-
 	}
 
 
