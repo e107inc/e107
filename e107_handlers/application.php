@@ -10,11 +10,261 @@
 
 
 /**
- * e107 Single Entry Point handling
- * 
- * Currently this file contains all classes required for single entry point functionallity
- * They will be separated in different files in a proper way (soon)
+ * Class e_url
+ * New v2.1.6
  */
+class e_url
+{
+
+	private static $_instance;
+
+	private $_request       = null;
+
+	private $_config        = array();
+
+	private $_include       = null;
+
+	private $_rootnamespace = null;
+
+	private $_legacy        = array();
+
+	private $_legacyAliases = array();
+
+
+	/**
+	 * e_url constructor.
+	 */
+	function __construct()
+	{
+		$this->_request         = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
+		$this->_config          = e107::getUrlConfig();
+		$this->_rootnamespace   = e107::getPref('url_main_module');
+		$this->_legacy          = e107::getPref('url_config');
+		$this->_legacyAliases   = e107::getPref('url_aliases');
+
+		$this->setRootNamespace();
+
+	}
+
+	/**
+	 * Detect older e_url system.
+	 * @return bool
+	 */
+	private function isLegacy()
+	{
+
+		$arr = (!empty($this->_legacyAliases[e_LAN])) ?  array_merge($this->_legacy,$this->_legacyAliases[e_LAN]) : $this->_legacy;
+
+		$list = array_keys($arr);
+
+		foreach($list as $leg)
+		{
+			if(strpos($this->_request,$leg.'/') === 0)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getInclude()
+	{
+		return $this->_include;
+	}
+
+
+
+	private function setRootNamespace()
+	{
+
+		$plugs = array_keys($this->_config);
+
+		if(!empty($this->_rootnamespace) && in_array($this->_rootnamespace,$plugs)) // Move rootnamespace check to the end of the list.
+		{
+			$v = $this->_config[$this->_rootnamespace];
+			unset($this->_config[$this->_rootnamespace]);
+			$this->_config[$this->_rootnamespace] = $v;
+		}
+
+	}
+
+
+	public function run()
+	{
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+
+		if(empty($this->_config) || empty($this->_request) || $this->_request === 'index.php' || $this->isLegacy() === true)
+		{
+			return false;
+		}
+
+
+		/*if($cached = e107::getCache()->retrieve('Addon_url',5,true,true))
+		{
+			$tmp = e107::unserialize($cached);
+		}
+		else*/
+		{
+		//	$tmp = e107::getAddonConfig('e_url');
+
+		//	e107::getCache()->set('Addon_url',e107::serialize($tmp,'json'),true,true,true);
+		}
+
+
+
+	//	if(count($this->_config) && !empty($this->_request) && $this->_request !== 'index.php')
+		{
+
+
+
+	/*
+
+			$legacyConfig = array_keys(e107::getPref('url_config'));
+			foreach($legacyConfig as $leg)
+			{
+				if(strpos($this->req,$leg.'/') === 0)
+				{
+					var_dump("Found ".$leg);
+
+				}
+
+
+			}
+			*/
+
+		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
+
+		foreach($this->_config as $plug=>$cfg)
+		{
+			if(empty($pref['e_url_list'][$plug])) // disabled.
+			{
+				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> is disabled.');
+				continue;
+			}
+
+			foreach($cfg as $k=>$v)
+			{
+
+				if(empty($v['regex']))
+				{
+				//	e107::getMessage()->addDebug("Skipping empty regex: <b>".$k."</b>");
+					continue;
+				}
+
+
+				if(!empty($v['alias']))
+				{
+					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];
+				//	e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
+					if(!empty($this->_rootnamespace) && $this->_rootnamespace === $plug)
+					{
+						$v['regex'] = str_replace($replaceAlias, '', $v['regex']);
+					}
+					else
+					{
+
+						$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
+					}
+				}
+
+
+				$regex = '#'.$v['regex'].'#';
+
+				if(empty($v['redirect']))
+				{
+					continue;
+				}
+
+
+				$newLocation = preg_replace($regex, $v['redirect'], $this->_request);
+
+				if($newLocation != $this->_request)
+				{
+					$redirect = e107::getParser()->replaceConstants($newLocation);
+					list($file,$query) = explode("?",$redirect,2);
+
+					$get = array();
+					if(!empty($query))
+					{
+						parse_str($query,$get);
+					}
+
+
+					foreach($get as $gk=>$gv)
+					{
+						$_GET[$gk] = $gv;
+					}
+
+					e107::getDebug()->log('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true),1);
+
+					if(file_exists($file))
+					{
+						define('e_CURRENT_PLUGIN', $plug);
+						define('e_QUERY', $query); // do not add to e107_class.php
+						define('e_URL_LEGACY', $redirect);
+
+						$this->_include= $file;
+						return true;
+					//	exit;
+					}
+					elseif(getperms('0'))
+					{
+
+
+						echo "<div class='alert alert-warning'>";
+						echo "<h3>SEF Debug Info</h3>";
+						echo "File missing: ".$file;
+						echo "<br />Matched key: <b>".$k."</b>";
+						print_a($v);
+						echo "</div>";
+
+					}
+
+				}
+			}
+
+		}
+
+		unset($tmp,$redirect,$regex);
+	}
+
+	}
+
+
+	/**
+	 * Singleton implementation
+	 * @return e_url
+	 */
+	public static function instance()
+	{
+		if(null == self::$_instance)
+		{
+		    self::$_instance = new self();
+		}
+	  	return self::$_instance;
+	}
+
+
+	public function getConfig()
+	{
+
+
+
+	}
+
+
+
+}
+
+
+
 
  
 /**

@@ -212,6 +212,7 @@ class e107
 		'e_userperms'                    => '{e_HANDLER}user_handler.php',
 		'e_validator'                    => '{e_HANDLER}validator_class.php',
 		'e_vars'                         => '{e_HANDLER}model_class.php',
+		'e_url'                          => '{e_HANDLER}application.php',
 		'ecache'                         => '{e_HANDLER}cache_handler.php',
 		'eController'                    => '{e_HANDLER}application.php',
 		'eDispatcher'                    => '{e_HANDLER}application.php',
