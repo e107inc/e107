@@ -2027,7 +2027,7 @@ class e_db_mysql
 
 
 	/**
-	 * Return a sorted list of parent/child tree with an optional ordering field.
+	 * Return a sorted list of parent/child tree with an optional where clause.
 	 * @param string $table Name of table (without the prefix)
 	 * @param string $parent Name of the parent field
 	 * @param string $pid  Name of the primary id
@@ -2036,7 +2036,7 @@ class e_db_mysql
 	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
 	 * @return boolean | integer with the addition of  _treesort and _depth fields in the results.
 	 */
-	public function selectTree($table, $parent, $pid, $where=null, $order=null)
+	public function selectTree($table, $parent, $pid, $order, $where=null)
 	{
 
 		if(empty($table) || empty($parent) || empty($pid))
@@ -2110,14 +2110,8 @@ class e_db_mysql
 		}
 
 
-		if($order === null)
-		{
-			$qry .= " ORDER BY _treesort";
-		}
-		else
-		{
-			$qry .= " ORDER BY ".$order;
-		}
+		$qry .= " ORDER BY _treesort";
+
 
 		return $this->gen($qry);
 
