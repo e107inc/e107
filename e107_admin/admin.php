@@ -63,14 +63,19 @@ if(in_array($pref['adminstyle'], array('infopanel', 'flexpanel')))
 }
 
 
+
+
 define('e_ADMIN_HOME', true); // used by some admin shortcodes.
 
 require_once(e_ADMIN.'boot.php');
-require_once(e_ADMIN.'auth.php');
 require_once(e_HANDLER.'upload_handler.php');
+new admin_start;
+
+require_once(e_ADMIN.'auth.php');
+
 
 e107::getDb()->db_Mark_Time('(Start Admin Checks)');
-new admin_start;
+
 
 e107::getDb()->db_Mark_Time('(After Admin Checks)');
 $mes = e107::getMessage();
@@ -96,7 +101,8 @@ class admin_start
 			'ratings'		=> 4.2,
 			'lightbox'		=> 1.5,
 			'e107slider'	=> 0.1,
-			'forumthanks'   => 0.5
+			'forumthanks'   => 0.5,
+			'eclassifieds'   => 1.11
 
 	);
 
@@ -137,8 +143,9 @@ class admin_start
 			e_PLUGIN."online_extended_menu/languages/English.php",
 			e_PLUGIN."pm/sendpm.sc",
 			e_PLUGIN."pm/shortcodes/",
-			e_PLUGIN."social/e_header.php"
-
+			e_PLUGIN."social/e_header.php",
+			e_PLUGIN."download/url/url.php",
+			e_PLUGIN."download/url/sef_url.php",
 		);
 
 
@@ -254,6 +261,7 @@ class admin_start
 			return null;
 		}
 
+
 		$checked = e107::getSession()->get('core-update-checked');
 
 		if(!deftrue('e_DEBUG') &&  $checked === true && !deftrue('e_DEVELOPER'))
@@ -275,8 +283,25 @@ class admin_start
 		e107::getSession()->set('core-update-checked',true);
 		e107::getMessage()->addDebug("Checking for core updates");
 
+
 		if(update_check() === true)
 		{
+
+			$JS = <<<TMPO
+			$(function () {
+
+                 $('[data-toggle="popover"]').popover('show');
+                 $('.popover').on('click', function() {
+                     $('[data-toggle="popover"]').popover('hide');
+                  }
+				);
+			});
+
+TMPO;
+
+			e107::js('footer-inline', $JS);
+			e107::css('inline', '.hide.e-popover { display:block!important }');
+
 			if(e_DEBUG !== true)
 			{
 				$this->exit = true;

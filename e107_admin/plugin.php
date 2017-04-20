@@ -418,15 +418,18 @@ class plugin_ui extends e_admin_ui
 		{
 			$id = $this->getId();
 
-			if(!e107::isInstalled($id))
+			if(!is_dir(e_PLUGIN.$id))
 			{
+				e107::getMessage()->addError("Bad Link");
 				return false;
 			}
 
 			e107::getSingleton('e107plugin')->refresh($id);
 			e107::getLog()->add('PLUGMAN_04', $id, E_LOG_INFORMATIVE, '');
 
-			$this->redirectAction('list');
+			e107::getMessage()->addSuccess("Repair Complete (".$id.")"); // Repair Complete ([x])
+
+			 $this->redirectAction('list');
 		}
 
 
@@ -1015,6 +1018,7 @@ class plugin_online_ui extends e_admin_ui
 			$this->fields = plugman_adminArea::getPluginManagerFields();
 			$this->fields['plugin_category']['writeParms']['optArray'] = e107::getPlug()->getCategoryList(); // array('plugin_category_0','plugin_category_1', 'plugin_category_2'); // Example Drop-down array.
 			$this->fields["plugin_license"]['nolist'] = false;
+			$this->fields['plugin_category']['inline'] = false;
 			parent:: __construct($request, $response, $params);
 
 		}
@@ -1091,7 +1095,16 @@ class plugin_online_ui extends e_admin_ui
 				$this -> pluginCheck(true); // rescan the plugin directory
 				$text = e107::getPlugin()->install($pluginFolder);
 
+
+
 				$mes->addInfo($text);
+
+				$upgradable =  e107::getPlug()->getUpgradableList();
+				if(!empty($upgradable[$pluginFolder]))
+				{
+					$mes->addSuccess("<a target='_top' href='".e_ADMIN."plugin.php?mode=installed&action=upgrade&id=".$pluginFolder."' class='btn btn-primary'>".LAN_UPDATE."</a>");
+				}
+
 				echo $mes->render('default', 'success');
 			}
 			else

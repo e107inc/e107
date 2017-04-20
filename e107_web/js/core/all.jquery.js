@@ -719,7 +719,6 @@ $(document).ready(function()
 		$(".e-expandit").show();   	
 	
     //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-	 
 
     	 
 		 //check all

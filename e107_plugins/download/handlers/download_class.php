@@ -112,7 +112,7 @@ class download
 			$this->qry['id']		= intval($_GET['id']);
 			$this->qry['order'] 	= vartrue($_GET['order']) && in_array("download_".$_GET['order'],$this->orderOptions) ? $_GET['order'] : $this->qry['order'];
 			$this->qry['sort'] 		= (varset($_GET['sort']) == 'asc') ? "asc" : 'desc';	
-			$this->qry['from']		= vartrue($_GET['from'],0);
+			$this->qry['from']		= varset($_GET['from'],0);
 
 			if($this->qry['action'] == 'error')
 			{
@@ -412,6 +412,15 @@ class download
 		}
 	
 		$dlrow = $sql->fetch();
+
+		$sc->parent = $this->getParent($dlrow['download_category_id']);
+
+		if(!empty( $sc->parent['download_category_parent']))
+		{
+			$sc->grandparent = $this->getParent( $sc->parent['download_category_id']);
+		}
+
+
 		$sc->setVars($dlrow);
 		$this->setMeta($dlrow);
 
@@ -526,9 +535,10 @@ class download
 		}
 		
 		
-		$sql = e107::getDb();
+		$sql = e107::getDb('dlrow');
 		$tp = e107::getParser();
 		$ns = e107::getRender();
+		$pref = e107::getPref();
 		
 	//	$sc 		= new download_shortcodes;
 		$sc = e107::getScBatch('download',true);
@@ -546,7 +556,7 @@ class download
 		{
 	   	  //  $dlrow = $sql->fetch();
 
-
+			$catRows = $dlrow;
 	   	   $sc->setVars($dlrow);	// Used below for header / breadcrumb.
 
 	   	   $sc->parent = $this->getParent($this->qry['id']);
@@ -679,10 +689,12 @@ class download
 			
 		$dlft = ($filetotal < $this->qry['view'] ? $filetotal: $this->qry['view']);
 
+		$current_row = 1;
+
 		while($dlrow = $sql->fetch())
 		{
-				$sc->setVars($dlrow);	
-				
+				$sc->setVars($dlrow);
+
 				$agreetext = $tp->toHTML($pref['agree_text'], TRUE, 'DESCRIPTION');
 				$current_row = ($current_row) ? 0: 1;
 				// Alternating CSS for each row.(backwards compatible)
@@ -691,9 +703,6 @@ class download
 				$dltdownloads += $dlrow['download_requested'];
 				
 				$dl_text .= $tp->parseTemplate($template, TRUE, $sc);
-				
-			
-				
 		}
 
 		$dl_text .= $tp->parseTemplate($DOWNLOAD_LIST_TABLE_END, TRUE, $sc);
@@ -719,13 +728,12 @@ class download
 			</div>";
 		}
 
-		
-	//	$newUrl = e_SELF . "?action=list&id={$this->qry['id']}&from=[FROM]&view={$this->qry['view']}&order={$this->qry['order']}&sort={$this->qry['sort']}.";
-			
+
 		$nextprevQry = $this->qry;
 		$nextprevQry['from'] = '[FROM]';
-		
-		$newUrl = e107::getUrl()->create('download/list/category',$nextprevQry);
+		unset($nextprevQry['id'],$nextprevQry['name'],$nextprevQry['action']);
+
+		$newUrl = e107::url('download','category',$catRows, array('query'=>$nextprevQry));
 
 		$nextprev = array(
 				'tmpl_prefix'	=>'default',

@@ -375,10 +375,13 @@ $DOWNLOAD_TEMPLATE['categories']['parent'] = "
                   <td>
                      {DOWNLOAD_CAT_MAIN_ICON}
                   </td>
-                  <td colspan='4'>
+                  <td>
                      {DOWNLOAD_CAT_MAIN_NAME}<br/>
                      <small class='muted text-muted'>{DOWNLOAD_CAT_MAIN_DESCRIPTION}</small>
                   </td>
+                   <td>{DOWNLOAD_CAT_MAIN_COUNT} </td>
+                  <td>{DOWNLOAD_CAT_MAIN_SIZE} </td>
+                   <td>{DOWNLOAD_CAT_MAIN_DOWNLOADED} </td>
                </tr>";
 
 $DOWNLOAD_TEMPLATE['categories']['child'] = "
@@ -401,8 +404,8 @@ $DOWNLOAD_TEMPLATE['categories']['subchild'] = "
 	            	  {DOWNLOAD_CAT_SUBSUB_ICON}
 	            	</td>
 	            	<td >
-	            	<div class='offset1'>
-	            	{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
+	            	<div class='col-md-offset-1'>
+	            		{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}<br/>
 	            		<small class='muted text-muted'>
 	            	 		{DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
 	            		</small>

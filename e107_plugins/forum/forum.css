@@ -5,6 +5,7 @@
 #poll.tab-pane .form-group                              { margin-left: 0; margin-right:0}
 
 #forum-viewtopic                                        { margin-top: 15px }
+#forum-viewtopic li img                                    { max-width:100%}
 #forum-viewtopic li.forum-viewtopic-post                { border-top:1px solid rgba(100,100,100,0.2);  padding:15px 10px }
 #forum-viewtopic li.forum-viewtopic-post:nth-child(odd) { background-color: rgba(100,100,100,0.09) }
 #forum-viewtopic li ul.thumbnails                       { margin-top:15px }

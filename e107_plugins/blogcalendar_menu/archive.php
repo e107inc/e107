@@ -129,11 +129,11 @@ for($i = 1; $i <= 12; $i++)
 		// href the current month regardless of newsposts or any month with news
 		if (($req_year == $cur_year && $i == $cur_month) || $day_links[$i]) 
 		{
-			$archive .= "<a class='forumlink' href='".e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $i))."'>".$marray[$i-1]."</a>";
+			$archive .= "<a class='forumlink' href='".e107::getUrl()->create('news/list/month', 'id='.formatDate($req_year, $i))."'>".$marray[$i]."</a>";
 		} 
 		else 
 		{
-			$archive .= $marray[$i-1];
+			$archive .= $marray[$i];
 		}
 		 
 		$archive .= "</div>";

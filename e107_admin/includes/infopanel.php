@@ -192,7 +192,7 @@ class adminstyle_infopanel
 	//	"<form method='post' action='".e_SELF."?".e_QUERY."'>";
 		
 		$tp->parseTemplate("{SETSTYLE=core-infopanel}");
-		
+
 		// Personalized Panel 
 		// Rendering the saved configuration.
 		
@@ -238,6 +238,9 @@ class adminstyle_infopanel
 			</div>";
 
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
+
+		$text3 = $this->renderAddonDashboards();
+
 		$text = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107",true);
 		
 	
@@ -261,7 +264,9 @@ class adminstyle_infopanel
 
 
 		
-		$text2 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);	
+		$text3 .= $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(),"",true);
+
+
 		
 		
 	//	$text .= $ns->tablerender(ADLAN_LAT_1,$tp->parseTemplate("{ADMIN_LATEST=norender}"),"core-infopanel_latest",true);
@@ -326,7 +331,17 @@ class adminstyle_infopanel
 			// $ns->tablerender(ADLAN_47." ".ADMINNAME, $emessage->render().$text);	
 			echo $mes->render().'
 
+
+
 			<!-- INFOPANEL -->
+
+			<div class="row">
+				 <div class="span6 col-md-12">
+				    '.$text3.'
+				 </div>
+			</div>
+
+
 			<div class="row">
 				<div class="span6 col-md-6">
 				    '.$text.'
@@ -359,10 +374,10 @@ class adminstyle_infopanel
 		{
 			return $this->renderStats('log');
 		}
-		elseif(e107::isInstalled('awstats')) 
+	/*	elseif(e107::isInstalled('awstats'))
 		{
 			return $this->renderStats('awstats');
-		}
+		}*/
 		else
 		{
 			return $this->renderStats('demo');
@@ -374,53 +389,60 @@ class adminstyle_infopanel
 	function renderWebsiteStatus()
 	{
 		$tp = e107::getParser();
-		/* 
-		 // Settings button if needed. 
-		<div class="tab-header">
-		          <span class="pull-right">
-		          <span class="options">
-		            <div class="btn-group">
-		              <a class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-		              <ul class="dropdown-menu black-box-dropdown dropdown-left">
-		                <li><a href="#">Action</a></li>
-		                <li><a href="#">Another action</a></li>
-		                <li><a href="#">Something else here</a></li>
-		                <li class="divider"></li>
-		                <li><a href="#">Separated link</a></li>
-		              </ul>
-		            </div>
-		          </span>
-		        </span>
-		  </div>
-		 */
-		
+
 		$tab = array();
 		$tab['e-stats'] = array('caption'=>$tp->toGlyph('fa-signal').' '.LAN_STATS, 'text'=>$this->renderChart());
 		$tab['e-online'] = array('caption'=>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers());
-		
-
-
-		if($plugs = e107::getAddonConfig('e_dashboard',null, 'chart'))
-		{
-			foreach($plugs as $plug => $val)
-			{
-				foreach($val as $item)
-				{
-					if(!empty($item))
-					{
-						$tab[] = $item;	
-					}	
-				}			
-			}
-		}
 
 		return e107::getForm()->tabs($tab);
-		
 
 	}
 
 
+	function renderAddonDashboards()
+	{
+		$panel = array();
+		$ns = e107::getRender();
 
+		$text = '';
+		if($plugs = e107::getAddonConfig('e_dashboard',null, 'chart'))
+		{
+			foreach($plugs as $plug => $val)
+			{
+				foreach($val as $k=>$item)
+				{
+					if(!empty($item))
+					{
+					//	$var[] = $item;
+						$renderMode = 'plug-infopanel-'.$plug;
+
+
+						if(isset($item[$k]['text']))
+						{
+							foreach ($item as $key => $v) // make sure the ids are unique.
+							{
+								$newkey = eHelper::dasherize($plug.'-'.$k.'-'.$key);
+							    $item[$newkey] = $v;
+							    unset($item[$key]);
+							}
+
+							$t = e107::getForm()->tabs($item);
+							$cap = defset('LAN_PLUGIN_'.strtoupper($plug).'_NAME', ucfirst($plug));
+							$text .= $ns->tablerender($cap, $t, $renderMode, true);
+						}
+						else
+						{
+							$text .= $ns->tablerender($item['caption'], $item['text'], $renderMode, true);
+						}
+					}
+				}
+
+			}
+		}
+
+		return $text;
+
+	}
 
 
 	function renderOnlineUsers($data=false)
@@ -749,7 +771,7 @@ class adminstyle_infopanel
 	
 	private function getStats($type) 
 	{
-		
+		/*
 		
 		if(file_exists(e_PLUGIN."awstats/awstats.graph.php"))  
 		{
@@ -764,7 +786,7 @@ class adminstyle_infopanel
 		//	return;	
 		}
 
-		if($type == 'demo')
+	*/	if($type == 'demo')
 		{
 			$data = array();
 		

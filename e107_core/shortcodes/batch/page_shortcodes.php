@@ -249,6 +249,12 @@ class cpage_shortcodes extends e_shortcode
 		return '<a class="cpage" href="'.$url.'">'.$this->sc_cpagetitle().'</a>';
 	}
 	
+  	/**
+	 * @param null $parm
+	 * @example {CPAGEBUTTON}
+	 * @example {CPAGEBUTTON: class=btn large default mb&target=blank}
+	 * @return string
+	 */
 	function sc_cpagebutton($parm)
 	{
 		$tp = e107::getParser();
@@ -290,7 +296,10 @@ class cpage_shortcodes extends e_shortcode
 
 		$inc = ($size) ? " btn-".$size : "";
 		
-		return '<a class="cpage btn btn-primary btn-cpage'.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.'>'.$text.'</a>';
+		$class = (!empty($options['class'])) ? $options['class'] : 'cpage btn btn-primary btn-cpage';
+    	$buttonTarget = (!empty($options['target'])) ? ' target="'.$options['target'].'" ' : $buttonTarget;
+
+		return '<a class="'.$class.' '.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.'>'.$text.'</a>';
 	}	
 	
 	

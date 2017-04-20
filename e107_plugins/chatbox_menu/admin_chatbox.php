@@ -140,4 +140,19 @@ $text .= "
 $ns->tablerender(CHBLAN_20, $mes->render().$text);
 
 require_once(e_ADMIN."footer.php");
+
+function admin_chatbox_adminmenu()
+{
+	$mode = varset($_GET['mode'],'main');
+
+	$var['main']['text'] = LAN_PREFS;
+	$var['main']['link'] = e_SELF;
+
+	$icon  = e107::getParser()->toIcon(e_PLUGIN."chatbox_menu/images/chatbox_32.png");
+	$caption = $icon."<span>".LAN_PLUGIN_CHATBOX_MENU_NAME."</span>";
+
+	e107::getNav()->admin($caption, $mode, $var);
+}
+
+
 ?>
