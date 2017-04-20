@@ -25,10 +25,15 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PLUGIN_PM_INBOX."' title='".LAN_PLUGIN_PM_INBOX."' />");
-define('PM_OUTBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PLUGIN_PM_OUTBOX."' title='".LAN_PLUGIN_PM_OUTBOX."' />");
+//define('PM_INBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_get.png' class='icon S16' alt='".LAN_PLUGIN_PM_INBOX."' title='".LAN_PLUGIN_PM_INBOX."' />");
+define('PM_INBOX_ICON', e107::getParser()->toGlyph('fa-inbox'));
+//define('PM_OUTBOX_ICON', "<img src='".e_PLUGIN_ABS."pm/images/mail_send.png' class='icon S16' alt='".LAN_PLUGIN_PM_OUTBOX."' title='".LAN_PLUGIN_PM_OUTBOX."' />");
+// Icon candidate to stacked fontawesome icons...
+define('PM_OUTBOX_ICON', e107::getParser()->toGlyph('fa-inbox').e107::getParser()->toGlyph('fa-arrow-up'));
 //define('PM_SEND_LINK', LAN_PLUGIN_PM_NEW);
-define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
+//define('NEWPM_ANIMATION', "<img src='".e_PLUGIN_ABS."pm/images/newpm.gif' alt='' />");
+// Icon candidate to animated fontawesome icons...
+define('NEWPM_ANIMATION', e107::getParser()->toGlyph('fa-envelope'));
 /*
 $sc_style['PM_SEND_PM_LINK']['pre'] = "<br /><br />";
 $sc_style['PM_SEND_PM_LINK']['post'] = "";
