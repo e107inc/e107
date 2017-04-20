@@ -199,7 +199,7 @@ if(false === $cached)
 		{
 			$month_selector .= "<option value='".$val."'";
 			$month_selector .= ($index == $req_month)?" selected='selected'": "";
-			$month_selector .= ">".$marray[$index-1]."</option>";
+			$month_selector .= ">".$marray[$index]."</option>";
 		}
 		
 		$month_selector .= "</select></div>";		

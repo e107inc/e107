@@ -59,6 +59,52 @@ a.core-mainpanel-link-icon:hover { text-decoration: none; filter: none; }
 
 #admin-ui-nav-menu li.divider                  {   padding-top: 10px; 	border-bottom: 1px outset #262626; 	margin-bottom: 10px; }
 
+
+
+/* e-overlay */
+.e-overlay                      { position: relative; height: 100%; }
+.e-overlay .e-overlay-content   { position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #FFF; opacity: 0; 	}
+.e-overlay:hover .e-overlay-content { opacity: 1; padding-top:30%; transition: opacity .20s ease-in-out;
+									-moz-transition: opacity .20s ease-in-out;
+									-webkit-transition: opacity .20s ease-in-out;
+									vertical-align: middle;
+									  background: rgba(0, 0, 0, .7);
+									text-align:center;
+
+									}
+.e-overlay .thumbnail           { margin:0; }
+
+.admin-ui-grid img.fallback { opacity: 0.3; }
+.admin-ui-grid img.thumbnail { max-width: 100% }
+/*
+
+#admin-ui-carousel .carousel-inner { min-height: 65vh; }
+
+*/
+
+div.e-mm-selector-container { position: absolute;
+top: 4px;
+right: 5px; }
+
+body#admin-menus #sc-admin-help { position: relative }
+
+.admin-menu .panel-title .e-help-icon a {
+display: inline-block;
+vertical-align: middle;
+cursor: help;
+}
+
+
+		.e-image-radio             {  padding-left:0;}
+
+		.e-image-radio label > input { visibility: hidden;  position: absolute; 	}
+		.e-image-radio label > input + div{  cursor:pointer;  border:2px solid transparent; border-radius:4px;height: 60px; padding: 5px; vertical-align: middle; }
+		.e-image-radio label > input:checked + div {    border:2px solid #337ab7; 	}
+		.e-image-radio label > input + div span { visibility: hidden; float:right; margin-right:10px; color:#337ab7	}
+		.e-image-radio label > input:checked + div span { visibility: initial;	}
+
+
+
 /* TODO - use col-xx-x markup where core-mainpanel-block occurs. ? */
 @media (max-width: 1700px){ 
 	.core-mainpanel-block 		{ width:25%; }
@@ -1577,8 +1623,9 @@ td img.thumbnail { margin-bottom:0 }
 .adminlist { border:1px solid rgba(0,0,0,0.1);  }
 
 .nav-admin .fa { font-size:18px }
+.nav-admin.navbar-left li a { padding-left:20px; padding-right:20px}
 
-
+#e-addon-updates .media-list img { width: 64px}
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
@@ -1586,7 +1633,7 @@ td img.thumbnail { margin-bottom:0 }
 
 @media (max-width: 1400px ){
 
-ul.navbar-nav.navbar-left > li > a > i { display:none; }
+/* ul.navbar-nav.navbar-left > li > a > i { display:none; } */
 
 }
 

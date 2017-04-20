@@ -25,7 +25,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-global $sc_style;		// Needed for the PM_REPLY shortcode!
+//global $sc_style;		// Needed for the PM_REPLY shortcode!
 
 if(deftrue('BOOTSTRAP') && deftrue('FONTAWESOME'))
 {
@@ -37,7 +37,7 @@ else
 	if (!defined('PM_READ_ICON')) define('PM_READ_ICON', "<img src='".e_PLUGIN_ABS."pm/images/read.png' class='icon S16' alt='".LAN_PM_111."' />");
 	if (!defined('PM_UNREAD_ICON')) define('PM_UNREAD_ICON', "<img src='".e_PLUGIN_ABS."pm/images/unread.png' class='icon S16' alt='".LAN_PM_27."' />");
 }
-
+/*
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 $sc_style['PM_ATTACHMENTS']['pre'] = "<div class='alert alert-block alert-info'>";
 $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
@@ -73,8 +73,21 @@ $sc_style['PM_REPLY']['pre'] = "<tr>
 $sc_style['PM_REPLY']['post'] = "</td>
 	</tr>
 ";
+*/
 
-$PM_SEND_PM = "<div id='pm-send-pm'>
+$PM_WRAPPER['PM_ATTACHMENT_ICON']= " {---}";
+$PM_WRAPPER['PM_ATTACHMENTS']= "<div class='alert alert-block alert-info'>{---}</div>";
+
+//$sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ".LAN_PM_59;
+//$sc_style['PM_NEXTPREV']['post'] = "</td></tr>";
+
+$PM_WRAPPER['PM_EMOTES']= "<tr><td class='forumheader3'>".LAN_PM_7.": </td><td class='forumheader3'>{---}</td></tr>";
+$PM_WRAPPER['PM_ATTACHMENT']= "<tr><td class='forumheader3'>".LAN_PM_8.": </td><td class='forumheader3'>{---}</td></tr>";
+$PM_WRAPPER['PM_RECEIPT']= "<tr><td class='forumheader3'>".LAN_PM_9.": </td><td class='forumheader3'>{---}</td></tr>";
+$PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center' colspan='2'>{---}</td></tr>";
+
+//$PM_SEND_PM = "<div id='pm-send-pm'>
+$PM_TEMPLATE['send'] = "<div id='pm-send-pm'>
 <table class='table fborder'>
 <thead>
 <tr>
@@ -103,7 +116,8 @@ $PM_SEND_PM = "<div id='pm-send-pm'>
 </div>
 ";
 
-$PM_INBOX_HEADER = "
+//$PM_INBOX_HEADER = "
+$PM_TEMPLATE['inbox']['start'] = "
 <table class='table table-striped fborder'>
 <thead>
 <tr>
@@ -118,7 +132,8 @@ $PM_INBOX_HEADER = "
 	<tbody>
 ";
 
-$PM_INBOX_TABLE = "{SETIMAGE: w=30&h=30&crop=1}
+//$PM_INBOX_TABLE = "{SETIMAGE: w=30&h=30&crop=1}
+$PM_TEMPLATE['inbox']['item'] = "{SETIMAGE: w=30&h=30&crop=1}
 <tr class='{PM_STATUS_CLASS}'>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
@@ -130,13 +145,15 @@ $PM_INBOX_TABLE = "{SETIMAGE: w=30&h=30&crop=1}
 </tr>
 ";
 
-$PM_INBOX_EMPTY = "
+//$PM_INBOX_EMPTY = "
+$PM_TEMPLATE['inbox']['empty'] = "
 <tr>
 	<td colspan='6' class='forumheader'>".LAN_PM_34."</td>
 </tr>
 ";
 
-$PM_INBOX_FOOTER = "
+//$PM_INBOX_FOOTER = "
+$PM_TEMPLATE['inbox']['end'] = "
 <tr>
 	<td class='forumheader' colspan='3'>
 	<input type='hidden' name='pm_come_from' value='inbox' />
@@ -150,7 +167,8 @@ $PM_INBOX_FOOTER = "
 </table>
 ";
 
-$PM_OUTBOX_HEADER = "
+//$PM_OUTBOX_HEADER = "
+$PM_TEMPLATE['outbox']['start'] = "
 <table class='table table-striped fborder'>
 <thead>
 <tr>
@@ -165,7 +183,8 @@ $PM_OUTBOX_HEADER = "
 <tbody>
 ";
 
-$PM_OUTBOX_TABLE = "
+//$PM_OUTBOX_TABLE = "
+$PM_TEMPLATE['outbox']['item'] = "
 <tr>
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_ATTACHMENT_ICON}</td>
@@ -176,7 +195,8 @@ $PM_OUTBOX_TABLE = "
 </tr>
 ";
 
-$PM_OUTBOX_EMPTY = "
+//$PM_OUTBOX_EMPTY = "
+$PM_TEMPLATE['outbox']['empty'] = "
 <tr>
 	<td colspan='6' class='forumheader'>".LAN_PM_34."</td>
 </tr>
@@ -194,7 +214,8 @@ $PM_OUTBOX_FOOTER = "
 </table>
 ";*/
 
-$PM_OUTBOX_FOOTER = "
+//$PM_OUTBOX_FOOTER = "
+$PM_TEMPLATE['outbox']['end'] = "
 <tr>
 	<td class='forumheader' colspan='3'>
 	<input type='hidden' name='pm_come_from' value='inbox' />
@@ -210,7 +231,7 @@ $PM_OUTBOX_FOOTER = "
 
 
 
-$PM_BLOCKED_HEADER = "
+$PM_TEMPLATE['blocked']['start'] = "
 <table class='table table-striped fborder'>
 <tr>
 	<td class='fcaption' style='width:5%'>&nbsp;</td>
@@ -220,7 +241,7 @@ $PM_BLOCKED_HEADER = "
 </tr>
 ";
 
-$PM_BLOCKED_TABLE = "
+$PM_TEMPLATE['blocked']['item'] = "
 <tr>
 	<td class='forumheader3'>{PM_BLOCKED_SELECT}</td>
 	<td class='forumheader3'>{PM_BLOCKED_USER=link}</td>
@@ -229,13 +250,13 @@ $PM_BLOCKED_TABLE = "
 </tr>
 ";
 
-$PM_BLOCKED_EMPTY = "
+$PM_TEMPLATE['blocked']['empty'] = "
 <tr>
 	<td colspan='4' class='forumheader'>".LAN_PM_67."</td>
 </tr>
 ";
 
-$PM_BLOCKED_FOOTER = "
+$PM_TEMPLATE['blocked']['end'] = "
 <tr>
 	<td class='forumheader' colspan='4' style='text-align:center'>
 	{PM_DELETE_BLOCKED_SELECTED}
@@ -246,7 +267,8 @@ $PM_BLOCKED_FOOTER = "
 
 
 
-$PM_SHOW =
+//$PM_SHOW =
+$PM_TEMPLATE['show'] =
 "<div class='pm-show' style='text-align: center'>
 <table class='table table-bordered table-striped fborder'>
 <tr>
@@ -268,7 +290,8 @@ $PM_SHOW =
 ";
 
 
-$PM_NOTIFY =
+//$PM_NOTIFY =
+$PM_TEMPLATE['notify'] =
 "<div>
 <h4>".LAN_PM_101."{SITENAME}</h4>
 <table class='table table-striped'>

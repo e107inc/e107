@@ -2610,6 +2610,8 @@ class e_parse extends e_parser
 	 */
 	function thumbSrcSet($src='', $width=null)
 	{
+		$multiply = null;
+
 		if(is_array($width))
 		{
 			$parm = $width;
@@ -2648,8 +2650,8 @@ class e_parse extends e_parser
 				return $this->thumbUrl($src, $parm)." ".$parm['h']."h ".$multiply;
 			}
 
-			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : ($this->thumbWidth * $multiply);
-			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : ($this->thumbHeight * $multiply);
+			$width = (!empty($parm['w']) || !empty($parm['h'])) ? (intval($parm['w']) * $multiply) : (intval($this->thumbWidth) * $multiply);
+			$height = (!empty($parm['h']) || !empty($parm['w'])) ? (intval($parm['h']) * $multiply) : (intval($this->thumbHeight) * $multiply);
 
 		}
 		else
@@ -3405,7 +3407,7 @@ class e_parser
                                     'default'   => array('id', 'style', 'class'),
                                     'img'       => array('id', 'src', 'style', 'class', 'alt', 'title', 'width', 'height'),
                                     'a'         => array('id', 'href', 'style', 'class', 'title', 'target'),
-                                    'script'	=> array('type', 'src', 'language'),
+                                    'script'	=> array('type', 'src', 'language', 'async'),
                                     'iframe'	=> array('id', 'src', 'frameborder', 'class', 'width', 'height', 'style'),
 	                                'input'     => array('type','name','value','class','style'),
 	                                'form'      => array('action','method','target'),
@@ -3429,7 +3431,7 @@ class e_parser
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
                                         'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite'
                                    );
-    protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object'); //allowed when $pref['post_script'] is enabled.
+    protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
 	
 	protected $blockTags		= array('pre','div','h1','h2','h3','h4','h5','h6','blockquote'); // element includes its own line-break. 
 
@@ -4003,8 +4005,11 @@ class e_parser
 	//		e107::getDebug()->log($file);
 	//	e107::getDebug()->log($parm);
 
-
-		if(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false || strpos($file,'{e_IMAGE}')!==false) //v2.x path.
+		if(strpos($file,'http')===0)
+		{
+			$path = $file;
+		}
+		elseif(strpos($file,'e_MEDIA')!==false || strpos($file,'e_THEME')!==false || strpos($file,'e_PLUGIN')!==false || strpos($file,'{e_IMAGE}')!==false) //v2.x path.
 		{
 
 			if(!isset($parm['w']) && !isset($parm['h']))
@@ -4030,10 +4035,6 @@ class e_parser
 				$parm['srcset'] = $tp->thumbSrcSet($file, $srcSetParm);
 			}
 
-		}
-		elseif(strpos($file,'http')===0)
-		{
-			$path = $file;
 		}
 		elseif($file[0] === '{') // Legacy v1.x path. Example: {e_PLUGIN}myplugin/images/fixedimage.png
 		{
@@ -4117,14 +4118,23 @@ class e_parser
 	function isHtml($text)
 	{
 
-		if(strpos($text,'[html]') !== false || (htmlentities($text, ENT_NOQUOTES,'UTF-8') != $text && $this->isBBcode($text) === false ) || preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		if(strpos($text,'[html]'))
 		{
 			return true;
 		}
-		else
+
+		if($this->isBBcode($text))
 		{
 			return false;
 		}
+
+		if(preg_match('#(?<=<)\w+(?=[^<]*?>)#', $text))
+		{
+			return true;
+		}
+
+		return false;
+
 
 	}
 
@@ -4798,6 +4808,12 @@ return;
 
                 if(!in_array($name, $allow))
                 {
+
+                    if(strpos($name,'data-') === 0 && $this->scriptAccess == true)
+                    {
+                        continue;
+                    }
+
                     $removeAttributes[] = $name;
                     //$node->removeAttribute($name);
                     $this->removedList['attributes'][] = $name. " from <".$tag.">";

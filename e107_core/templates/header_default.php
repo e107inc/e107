@@ -490,11 +490,13 @@ function render_meta($type)
 }
 
 // legay meta-tag checks.
-if(empty(e107::getUrl()->response()->getMetaKeywords()))
+$isKeywords = e107::getUrl()->response()->getMetaKeywords();
+$isDescription = e107::getUrl()->response()->getMetaDescription();
+if(empty($isKeywords))
 {
 	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
 }
-if(empty(e107::getUrl()->response()->getMetaDescription()))
+if(empty($isDescription))
 {
 	echo (defined("META_DESCRIPTION")) ? "\n<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : render_meta('description');
 }
@@ -503,7 +505,7 @@ if(empty(e107::getUrl()->response()->getMetaDescription()))
 //echo render_meta('author');
 echo render_meta('tag');
 
-unset($key_merge,$diz_merge);
+unset($key_merge,$diz_merge,$isKeywords,$isDescription);
 
 // ---------- Favicon ---------
 if (file_exists(THEME."favicon.ico")) 

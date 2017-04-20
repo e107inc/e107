@@ -92,7 +92,7 @@ class convert
 			$marray = array();
 			for ($i=1; $i < 13; $i++) 
 			{ 
-				$marray[] = strftime($val,mktime(1,1,1,$i,1,2000));	
+				$marray[$i] = strftime($val,mktime(1,1,1,$i,1,2000));
 			}
 			
 			return $marray;

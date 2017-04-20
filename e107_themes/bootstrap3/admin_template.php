@@ -27,8 +27,8 @@ $E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE}
-		<b class="caret"></b>
+		 {LINK_IMAGE} <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+
 		</a> 
 		{SUB_MENU}
 	</li>
@@ -38,13 +38,15 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		 {LINK_IMAGE}
-		<b class="caret"></b>
+		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		 {LINK_IMAGE}  <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+
 		</a>
 		{SUB_MENU}
 	</li>
 ';
+
+
 
 
 // Leave Admin Area. 
@@ -196,6 +198,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		</div>
 		<div class="navbar-collapse collapse">
 			{ADMIN_NAVIGATION=no-main}
+			{ADMIN_NAVIGATION=enav_popover}
 			<div>
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}

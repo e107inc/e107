@@ -50,6 +50,11 @@ function varset(&$val, $default='')
  */
 function defset($str, $default='')
 {
+	if(is_array($str))
+	{
+		return false;
+	}
+
 	if (defined($str)) { return constant($str); }
 	return $default;
 }

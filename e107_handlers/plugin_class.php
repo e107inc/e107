@@ -478,7 +478,7 @@ class e_plugin
 		{
 			$ret = null;
 
-			if($plugName === '.' || $plugName === '..' || !is_dir(e_PLUGIN.$plugName))
+			if((htmlentities($plugName) != $plugName) || empty($plugName) || $plugName === '.' || $plugName === '..' || !is_dir(e_PLUGIN.$plugName))
 			{
 				continue;
 			}
@@ -492,8 +492,10 @@ class e_plugin
 				$ret = $this->parse_plugin_php($plugName);
 			}
 
-			$arr[$plugName] = $ret;
-
+			if(!empty($ret))
+			{
+				$arr[$plugName] = $ret;
+			}
 		}
 
 		if(empty($arr))

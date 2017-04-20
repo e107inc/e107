@@ -277,7 +277,7 @@ class e_marketplace
 			);
 
 			$d = http_build_query($srcData,false,'&');
-			$url = e_ADMIN.'theme.php?mode=download&src='.base64_encode($d);//$url.'&amp;action=download';
+			$url = e_ADMIN.'theme.php?mode=main&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
 
 		}
 

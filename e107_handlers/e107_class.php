@@ -212,6 +212,7 @@ class e107
 		'e_userperms'                    => '{e_HANDLER}user_handler.php',
 		'e_validator'                    => '{e_HANDLER}validator_class.php',
 		'e_vars'                         => '{e_HANDLER}model_class.php',
+		'e_url'                          => '{e_HANDLER}application.php',
 		'ecache'                         => '{e_HANDLER}cache_handler.php',
 		'eController'                    => '{e_HANDLER}application.php',
 		'eDispatcher'                    => '{e_HANDLER}application.php',
@@ -1026,6 +1027,21 @@ class e107
 		return self::$_plug_config_arr[$plug_name.$multi_row];
 	}
 
+
+
+	/**
+	 * Retrieve the global LAN for a specific plugin.
+	 * @param $dir
+	 * @param string $type
+	 * @return mixed
+	 */
+	public static function getPlugLan($dir, $type='name')
+	{
+		$lan = "LAN_PLUGIN_".strtoupper($dir)."_".strtoupper($type);
+
+		return defset($lan,false);
+	}
+
 	/**
 	 * Retrieve plugin preference value.
 	 * Shorthand of  self::getPluginConfig()->get()
@@ -1800,7 +1816,7 @@ class e107
 	 */
 	public static function getChart()
 	{
-		return self::getSingleton('e_chart', true);
+		return self::getObject('e_chart', null, true);
 	}
 
 
@@ -2418,6 +2434,7 @@ class e107
 
 	/**
 	 * Retrieves the e_url config  - new v2.1.6
+	 * @param string $mode config | alias | profile
 	 * @return array
 	 */
 	public static function getUrlConfig($mode='config')
@@ -2429,7 +2446,7 @@ class e107
 		$className = substr($filename, 2); // remove 'e_'
 		$methodName = 'config';
 
-		$profile = null; // for future use.
+		$url_profiles = e107::getPref('url_profiles');
 
 		if(!empty($elist))
 		{
@@ -2437,6 +2454,8 @@ class e107
 			{
 				if(is_readable(e_PLUGIN.$key.'/'.$filename.'.php'))
 				{
+
+
 					include_once(e_PLUGIN.$key.'/'.$filename.'.php');
 
 					$class_name = $key.'_'.$className;
@@ -2460,6 +2479,28 @@ class e107
 
 						continue;
 					}
+
+					if($mode === 'profiles')
+					{
+						if(!empty($obj->profiles))
+						{
+							$new_addon[$key] = $obj->profiles;
+						}
+
+						continue;
+					}
+
+					if($mode === 'generate')
+					{
+						if(!empty($obj->generate))
+						{
+							$new_addon[$key] = $obj->generate;
+						}
+
+						continue;
+					}
+
+					$profile = !empty($url_profiles[$key]) ? $url_profiles[$key] : null;
 
 					$array = self::callMethod($obj, $methodName,$profile);
 

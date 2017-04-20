@@ -133,3 +133,4 @@ define("LAN_EURL_CORE_INDEX_INFO", "Front Page can't have an alias.");
 define("LAN_EURL_REBUILD",    "Rebuild");
 define("LAN_EURL_REGULAR_EXPRESSION", "Regular Expression");
 define("LAN_EURL_KEY", "Key");
+define("LAN_EURL_TABLE", "Table");

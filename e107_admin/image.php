@@ -654,6 +654,39 @@ class media_form_ui extends e_admin_form_ui
 	}
 
 
+	function media_sef($curVal, $mode, $attributes, $id=null)
+	{
+
+		$val = $this->getController()->getFieldVar('media_url');
+
+		$parm = array('w'=>800);
+		$path = e107::getParser()->thumbUrl($val,$parm);
+
+		$base = '';
+		switch($mode)
+		{
+		/*	case 'read':
+				return ltrim($path, e_HTTP);
+			break;*/
+
+			case 'read':
+			case 'write':
+			//	$attributes['readParms'] = 'thumb=180&thumb_urlraw=0&thumb_aw=180';
+			//	$val 	= $this->getController()->getModel()->get('media_url');
+				$url = SITEURLBASE.$path;
+				return "<a href='".$url."' rel='external' title='".LAN_EFORM_010."'><small>".$url."</small></a>";
+			break;
+
+			case 'filter':
+			case 'batch':
+				return '';
+			break;
+		}
+
+
+	}
+
+
 /*
 	function media_category($curVal,$mode) // not really necessary since we can use 'dropdown' - but just an example of a custom function.
 	{
@@ -719,12 +752,13 @@ class media_admin_ui extends e_admin_ui
       		'media_preview'			=> array('title'=> LAN_PREVIEW, 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
       		'media_url' 			=> array('title'=> IMALAN_110,			'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
 			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
-			
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 			'media_caption' 		=> array('title'=> LAN_CAPTION,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
+   		    'media_sef'             => array('title'=> LAN_URL,   'readonly'=>1,    'type'=>'method', 'data'=>false),
+
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'size=xxlarge&counter=0'),
          	'media_type' 			=> array('title'=> IMALAN_118,		'type' => 'dropdown',		'data'=> 'str',		'filter'=>true, 'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
@@ -933,6 +967,11 @@ class media_admin_ui extends e_admin_ui
 		e107::getCache()->clearAll('image');
 		
 	//	print_a($_GET);
+
+
+
+
+
 		
 		if($this->getAction() == 'youtube')
 		{

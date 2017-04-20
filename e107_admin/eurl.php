@@ -125,6 +125,10 @@ class eurl_admin_ui extends e_admin_controller_ui
 			list($primary, $input, $output) = explode("::",$_POST['rebuild'][$table]);
 			$this->rebuild($table, $primary, $input, $output);	
 		}
+
+
+
+
 		
 		
 		$this->api = e107::getInstance();
@@ -144,7 +148,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 	 * @param input field (title)
 	 * @param output field (sef)
 	 */
-	private function rebuild($table, $primary, $input,$output)
+	private function rebuild($table, $primary='', $input='',$output='')
 	{
 		if(empty($table) || empty($input) || empty($output) || empty($primary))
 		{
@@ -178,12 +182,12 @@ class eurl_admin_ui extends e_admin_controller_ui
 			
 		if($success)
 		{
-			e107::getMessage()->addSuccess($success. LAN_EURL_SURL_UPD);
+			e107::getMessage()->addSuccess(LAN_EURL_TABLE.": <b>".$table."</b><br />".$success. LAN_EURL_SURL_UPD);
 		}
 		
 		if($failed)
 		{
-			e107::getMessage()->addError($failed. LAN_EURL_SURL_NUPD);	
+			e107::getMessage()->addError(LAN_EURL_TABLE.": <b>".$table."</b><br />".$failed. LAN_EURL_SURL_NUPD);
 		}
 		
 		
@@ -432,6 +436,28 @@ class eurl_admin_ui extends e_admin_controller_ui
 	
 	public function ConfigObserver()
 	{
+
+		if(!empty($_POST['generate']))
+		{
+			$gen = e107::getUrlConfig('generate');
+			$id = key($_POST['generate']);
+
+			if(empty($gen[$id]))
+			{
+				e107::getMessage()->addDebug("Empty");
+				return null;
+			}
+
+			foreach($gen[$id] as $conf)
+			{
+				$this->rebuild($conf['table'], $conf['primary'], $conf['input'], $conf['output']);
+			}
+
+		}
+
+
+
+
 		if(isset($_POST['update']))
 		{
 			$config = is_array($_POST['eurl_config']) ? e107::getParser()->post_toForm($_POST['eurl_config']) : '';
@@ -439,13 +465,23 @@ class eurl_admin_ui extends e_admin_controller_ui
 			$locations = eRouter::adminBuildLocations($modules);
 			
 			$aliases = eRouter::adminSyncAliases(e107::getPref('url_aliases'), $config);
-			
+
+			if(!empty($_POST['eurl_profile']))
+			{
+				e107::getConfig()->set('url_profiles', $_POST['eurl_profile']);
+				unset($locations['download']);
+				unset($config['download']);
+			}
+
 			e107::getConfig()
 				->set('url_aliases', $aliases)
 				->set('url_config', $config)
 				->set('url_modules', $modules)
 				->set('url_locations', $locations)
 				->save();
+
+
+
 				
 			eRouter::clearCache();
 		}
@@ -486,7 +522,11 @@ class eurl_admin_ui extends e_admin_controller_ui
 						
 						<tbody>
 		";
-		
+
+
+		$text .=  $this->renderProfiles();
+
+
 		$text .= $this->renderConfig($set['url_config'], $set['url_locations']);
 		
 		$text .= "
@@ -500,6 +540,54 @@ class eurl_admin_ui extends e_admin_controller_ui
 		";
 		
 		return $text;
+	}
+
+	/**
+	 * New in v2.1.6
+	 */
+	private function renderProfiles()
+	{
+
+		$PLUGINS_DIRECTORY = e107::getFolder("PLUGINS");
+        $srch = array("{SITEURL}","{e_PLUGIN_ABS}");
+        $repl = array(SITEURL,SITEURL.$PLUGINS_DIRECTORY);
+
+		$profiles = e107::getUrlConfig('profiles');
+		$generate = e107::getUrlConfig('generate');
+
+		$form = $this->getUI();
+
+		$text = '';
+
+		$active = e107::getPref('url_profiles');
+
+		foreach($profiles as $plug=>$prof)
+		{
+			$arr = array();
+			foreach($prof as $id=>$val)
+			{
+				$arr[$id] = $val['label'].": ". str_replace($srch,$repl,$val['examples'][0]);
+			}
+
+			$sel = $active[$plug];
+
+			$selector = $form->select('eurl_profile['.$plug.']',$arr,$sel, array('size'=>'block-level'));
+
+			$label = e107::getPlugLan($plug,'name');
+
+			$text .= "<tr><td>".$label."</td><td>".$selector."</td><td>";
+
+
+
+
+			$text .= (!empty($generate[$plug])) ? $form->admin_button('generate['.$plug.']', $plug,'delete', LAN_EURL_REBUILD) : "";
+
+			$text .= "</td></tr>";
+
+		}
+
+		return $text;
+
 	}
 
 	public function renderConfig($current, $locations)
@@ -637,19 +725,21 @@ class eurl_admin_form_ui extends e_admin_form_ui
        
         $id = 'eurl_'.$this->name2id($title);
         
-        $text .= "<a data-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
+        $text = "<a data-toggle='modal' href='#".$id."' data-cache='false' data-target='#".$id."' class='e-tip' title='".LAN_MOREINFO."'>";
         $text .= $title;  
         $text .= '</a>';
         
         $text .= '
 
-         <div id="'.$id.'" class="modal hide fade" tabindex="-1" role="dialog"  aria-hidden="true">
-                <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4>'.$tp->toHtml($title,false,'TITLE').'</h4>
-                </div>
-                <div class="modal-body">
-                <p>';
+         <div id="'.$id.'" class="modal fade" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+				<div class="modal-content">
+	                <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	               <h4>'.$tp->toHtml($title,false,'TITLE').'</h4>
+	                </div>
+	                <div class="modal-body">
+	                <p>';
         
         $text .= $info;
        
@@ -659,7 +749,8 @@ class eurl_admin_form_ui extends e_admin_form_ui
                 <div class="modal-footer">
                 <a href="#" data-dismiss="modal" class="btn btn-primary">'.LAN_CLOSE.'</a>
                 </div>
-                </div>';           
+                </div>
+                </div></div>';
         
         return $text;
         
@@ -687,6 +778,8 @@ class eurl_admin_form_ui extends e_admin_form_ui
         $PLUGINS_DIRECTORY = e107::getFolder("PLUGINS");
         $srch = array("{SITEURL}","{e_PLUGIN_ABS}");
         $repl = array(SITEURL,SITEURL.$PLUGINS_DIRECTORY);
+
+
         
 		foreach ($data as $obj) 
 		{
@@ -707,6 +800,9 @@ class eurl_admin_form_ui extends e_admin_form_ui
           */
             $opt = "";   
 			$info = "<table class='table table-striped'>";
+
+
+
             
 			foreach ($obj->locations as $index => $location) 
 			{
@@ -773,6 +869,8 @@ class eurl_admin_form_ui extends e_admin_form_ui
 			$info .= "</table>";
 
 			$title = vartrue($section['name'], eHelper::labelize($obj->module));
+
+
 			
 			$text .= "
                 <tr>

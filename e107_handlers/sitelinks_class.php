@@ -1863,7 +1863,7 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_depth($parm='')
 	{
-		return $this->depth;
+		return isset($this->var['link_depth']) ? intval($this->var['link_depth']) : $this->depth;
 	}
 
 
@@ -2019,7 +2019,7 @@ class navigation_shortcodes extends e_shortcode
 	//	else 
 		{
 			//$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-			return $tp->toIcon($this->var['link_button'],array('space'=>' ', 'legacy'=>"{e_IMAGE}icons/"));
+			return $tp->toIcon($this->var['link_button'],array('fw'=>true, 'space'=>' ', 'legacy'=>"{e_IMAGE}icons/"));
 			// return "<img class='icon' src='".$path."' alt=''  />";	
 		}
 

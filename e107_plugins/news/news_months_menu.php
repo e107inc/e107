@@ -116,7 +116,7 @@ if(false === $cached)
 		$vars->addData(array(
 			'active' => $index == $req_month ? " active" : '',
 			'url' => $val,
-			'month' => $marray[$index-1],
+			'month' => $marray[$index],
 			'count' => $xmonth_cnt[$index],
 		));
 		$menu_text[] = $tp->simpleParse($template['item'], $vars);

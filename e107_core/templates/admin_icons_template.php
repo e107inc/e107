@@ -441,6 +441,7 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 
 
 	define("ADMIN_CHILD_ICON", '<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="treeprefix level-x icon" alt="" />'); // must use single quotes.
+	define("ADMIN_FILTER_ICON",  "<i class='fa fa-filter'></i>");
 	define("ADMIN_TRUE_ICON", "<i class='fa fa-check text-success'></i>");
 	define("ADMIN_FALSE_ICON", "<i class='fa fa-times text-danger'></i>");
 	define("ADMIN_WARNING_ICON", "<i class='fa fa-warning text-warning'></i>");
@@ -454,13 +455,15 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 //	define("ADMIN_TRUE_ICON", "<i class='S16 e-true-16'></i>");
 //	define("ADMIN_FALSE_ICON", "<i class='S16 e-false-16'></i>");
 //	define("ADMIN_WARNING_ICON", "<i class='S16 e-warning-16'></i>");
+
+
 	define("ADMIN_EDIT_ICON", "<i class='S32 e-edit-32'></i>");
 	define("ADMIN_DELETE_ICON", "<i class='S32 e-delete-32'></i>");
 
 
 
 	define("ADMIN_ADD_ICON", "<i class='S32 e-add-32'></i>");
-	define("ADMIN_INFO_ICON", "<i class='S16 e-info-16'></i>");
+	define("ADMIN_INFO_ICON", "<i class='fa fa-question-circle'></i>");
 	define("ADMIN_CONFIGURE_ICON", "<i class='S32 e-settings-32'></i>");
 	define("ADMIN_VIEW_ICON", "<i class='S32 e-search-32'></i>");	
 	define("ADMIN_URL_ICON", "<i class='S16 e-forums-16'></i>");

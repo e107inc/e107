@@ -208,6 +208,79 @@ class e_chart
 		return json_encode($this->options);	
 	}
 
+	public function debug($flag=false)
+	{
+		if($flag === true)
+		{
+			e107::getDebug()->log($this->data);
+		}
+
+		return $this;
+	}
+
+	public function renderTable()
+	{
+
+		$head = array();
+		$body = array();
+
+		foreach($this->data as $k=>$v)
+		{
+			if($k == 0)
+			{
+				foreach($v as $key=> $val)
+				{
+					$head[] = $val;
+				}
+
+				continue;
+			}
+
+			foreach($v as $key=> $val)
+			{
+				$body[$k][$key] = $val;
+			}
+
+		}
+
+		$text = "<table class='table table-condensed table-striped table-bordered'>";
+		$text .= "<colgroup>";
+
+		foreach($head as $th)
+		{
+			$text .= "<col class='".eHelper::secureIdAttr($th)."' />";
+		}
+
+		$text .= "</colgroup>";
+
+
+
+		$text .= "<tr>";
+		foreach($head as $th)
+		{
+			$text .= "<th>".$th."</th>";
+		}
+
+		$text .= "</tr>";
+
+		foreach($body as $tr)
+		{
+			$text .= "<tr>";
+
+			foreach($tr as $td)
+			{
+				$text .= "<td>".$td."</td>";
+			}
+
+			$text .= "</tr>";
+		}
+
+		$text .= "</table>";
+
+		return $text;
+
+	}
+
 	/**
 	 * Set the type of graph
 	 * @param string $type - line | bar | pie | radar | doughnut | polar
@@ -346,12 +419,16 @@ class e_chart
 				{
 		
 					case 'bar':					
-						//
+						$js .= "var chart = new google.visualization.BarChart(document.getElementById('".$id."'));	";
 					break;
 		
 					case 'column':
 						$js .= "var chart = new google.visualization.ColumnChart(document.getElementById('".$id."'));	";
 						
+					break;
+
+					case 'geo':
+						$js .= "var chart = new google.visualization.GeoChart(document.getElementById('".$id."'));	";
 					break;
 		
 					case 'polar':
@@ -385,13 +462,17 @@ class e_chart
 					
 					});
 
+				$('a[data-toggle=\"tab\"]').on('shown.bs.tab', function (e) {
+			  		 ".$fName."();
+				});
+
 		      ";
 
 			e107::js('footer','https://www.google.com/jsapi');
 			e107::js('footer-inline', $js);
 
-			return "<div class='e-graph e-chart' id='".$id."' style='width: ".$width."; height: ".$height."px;'></div>";
 
+			return "<div class='e-graph e-chart' id='".$id."' style='width: ".$width."; height: ".$height."px;'></div>";
 
 		}
 		
