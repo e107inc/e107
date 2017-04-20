@@ -82,23 +82,55 @@ class download_shortcodes extends e_shortcode
 		
 	
 	// Category ************************************************************************************
-   function sc_download_cat_main_name() 
+   public function sc_download_cat_main_name()
    {
       $tp = e107::getParser();
+
+		if(!empty($this->var['d_count']))
+		{
+			$url = e107::url('download', 'category', $this->var);
+			return "<a href='".$url."'>".$tp->toHTML($this->var['download_category_name'], FALSE, 'TITLE')."</a>";
+		}
+
       return $tp->toHTML($this->var['download_category_name'], FALSE, 'TITLE');
    }
    
-   function sc_download_cat_main_description() 
+   public function sc_download_cat_main_description()
    {
       $tp = e107::getParser();
       return $tp->toHTML($this->var['download_category_description'], TRUE, 'DESCRIPTION');
    }
    
-   function sc_download_cat_main_icon() 
+   public function sc_download_cat_main_icon()
    {
       // Pass count as 1 to force non-empty icon
       return $this->_sc_cat_icons($this->var['download_category_icon'], 1, $this->var['download_category_name']);
    }
+
+	public function sc_download_cat_main_count()
+	{
+		if(!empty($this->var['d_count']))
+		{
+			return intval($this->var['d_count']);
+		}
+	}
+
+	public function sc_download_cat_main_size()
+	{
+		if(!empty($this->var['d_count']))
+		{
+			return eHelper::parseMemorySize($this->var['d_size']);
+		}
+	}
+
+
+	public function sc_download_cat_main_downloaded()
+	{
+		if(!empty($this->var['d_count']))
+		{
+			return intval($this->var['d_requests']);
+		}
+	}
    
 	// Sub-Category ********************************************************************************
    function sc_download_cat_sub_name() 
