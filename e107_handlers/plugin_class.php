@@ -1050,10 +1050,9 @@ class e107plugin
 		{
 			return FALSE;
 		}
-		
-	//	require_once(e_HANDLER."db_verify_class.php");
-		$dbv = e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
-		
+
+
+		$dbv = e107::getObject('db_verify',  "{e_HANDLER}db_verify_class.php");
 
 		$plg = e107::getPlug();
 
@@ -1075,6 +1074,7 @@ class e107plugin
 					
 				if($dbv->errors())
 				{
+					$mes->addDebug("Plugin Update(s) Required - db structure change [".$path."]");
 					$needed[$path] = $data;
 				}
 			}
@@ -1119,7 +1119,7 @@ class e107plugin
 		{
 			$log->addDebug("Plugin: <strong>{$path}</strong> requires an update.");	
 		}	
-	
+
 		return count($needed) ? $needed : FALSE;		
 	}
 
