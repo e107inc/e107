@@ -1578,8 +1578,17 @@ class e_admin_dispatcher
 		if(!$selected) $selected = $request->getMode().'/'.$request->getAction();
 		$selected = vartrue($this->adminMenuAliases[$selected], $selected);
 
-		$icon = (deftrue('e_CURRENT_PLUGIN')) ? e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '') : e107::getParser()->toIcon($this->adminMenuIcon);
+		$icon = '';
 
+		if(!empty($this->adminMenuIcon))
+		{
+			$icon = e107::getParser()->toIcon($this->adminMenuIcon);
+		}
+		elseif(deftrue('e_CURRENT_PLUGIN'))
+		{
+			$icon = e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '');
+		}
+		
 		return e107::getNav()->admin($icon."<span>".$this->menuTitle."</span>", $selected, $var);
 	}
 
