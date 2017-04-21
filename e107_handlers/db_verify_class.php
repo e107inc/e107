@@ -55,7 +55,6 @@ class db_verify
 	function __construct()
 	{
 				
-
 		$sql = e107::getDb();
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 
@@ -74,14 +73,19 @@ class db_verify
 		}
 
 
-
-
 		$this->sqlLanguageTables = $this->getSqlLanguages();
 
 	//	$this->loadCreateTableData();
 
 		return $this;
 		
+	}
+
+	public function clearCache()
+	{
+
+		return e107::getCache()->clear(self::cachetag, true);
+
 	}
 
 	private function load()
@@ -232,6 +236,7 @@ class db_verify
 				}			
 			}
 		}
+
 	}
 	
 	

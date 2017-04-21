@@ -1588,7 +1588,7 @@ class e_admin_dispatcher
 		{
 			$icon = e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '');
 		}
-		
+
 		return e107::getNav()->admin($icon."<span>".$this->menuTitle."</span>", $selected, $var);
 	}
 
