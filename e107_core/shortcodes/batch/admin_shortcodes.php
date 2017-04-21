@@ -1838,7 +1838,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$template = $$tmpl;
 
-			return $template['start']. '<li><a tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="hide e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="bottom" title="'.$tp->toAttribute(LAN_UPDATE_AVAILABLE).'" data-content="'.$tp->toAttribute(ADLAN_120).'"><span class="text-info">'.$tp->toGlyph('fa-database').'</span></a></li>' .$template['end'];
+			return $template['start']. '<li><a tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="hide e-popover text-primary" role="button" data-container=".navbar-nav" data-toggle="popover" data-placement="right" data-trigger="bottom" title="'.$tp->toAttribute(LAN_UPDATE_AVAILABLE).'" data-content="'.$tp->toAttribute(ADLAN_120).'"><span class="text-info">'.$tp->toGlyph('fa-database').'</span></a></li>' .$template['end'];
 
 		}
 
