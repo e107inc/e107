@@ -211,7 +211,7 @@ class social_ui extends e_admin_ui
 				"Twitter" => array (
 					"enabled" => true,
 					"keys"    => array ( "key" => "", "secret" => "" )
-				),
+				)
 
 
 
