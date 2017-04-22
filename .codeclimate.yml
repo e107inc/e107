@@ -25,13 +25,13 @@ engines:
         enabled: false
       CleanCode/StaticAccess:
         enabled: false
-      CleanCode/BooleanArgumentFlag:
-        enabled: false
       UnusedFormalParameter:
         enabled: false
       Design/TooManyFields:
         enabled: false
       CleanCode/BooleanArgumentFlag:
+        enabled: false
+      CleanCode/ElseExpression:
         enabled: false
     config:
       file_extensions: "php"
