@@ -96,6 +96,10 @@ define ('ADSTAT_LAN_83', 'Following log ID entries removed:');
 define ('ADSTAT_LAN_84', 'This proceedure will overwrite the log statistic summaries in your database. (raw log files are left unchanged) Once replaced, the data cannot be recovered. Please backup or export your database first');
 define ('ADSTAT_LAN_85', '[x] log files have been found. Click the button below to process these files.');
 define ('ADSTAT_LAN_86', 'Total Hits');
-
+define ('ADSTAT_LAN_87', 'Rebuild Statistic Summaries');
+define ('ADSTAT_LAN_88', 'Rebuild Stats'); 
+define ('ADSTAT_LAN_89', 'Rebuild');  
+define ('ADSTAT_LAN_90', "Data saved to database with id: [x]");
+define ('ADSTAT_LAN_91', "Couldn't save data to database with id: [x]");
 
 ?>

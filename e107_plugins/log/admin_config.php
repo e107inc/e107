@@ -148,7 +148,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			'main/datasets'		=> array('caption'=> ADSTAT_LAN_63, 'perm' => 'P'),
 			'main/rempage'		=> array('caption'=> ADSTAT_LAN_26, 'perm' => 'P'),
 			'main/history'		=> array('caption'=> ADSTAT_LAN_69, 'perm' => 'P'),
-			'main/rebuild'      => array('caption'=>'Rebuild Statistic Summaries', 'perm'=> 'P'),
+			'main/rebuild'      => array('caption'=> ADSTAT_LAN_87, 'perm'=> 'P'),
 		);
 
 
@@ -159,7 +159,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 			'main/edit'	=> 'main/list'
 		);
 
-		protected $menuTitle = 'Statistic Logging';
+		protected $menuTitle = ADSTAT_L3;
 	}
 
 
@@ -196,7 +196,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 	class logstats_ui extends e_admin_ui
 	{
 
-		protected $pluginTitle		= 'Statistic Logging';
+		protected $pluginTitle		= ADSTAT_L3;
 		protected $pluginName		= 'log';
 		//	protected $eventName		= 'log-logstats'; // remove comment to enable event triggers in admin.
 		protected $table			= 'logstats';
@@ -741,7 +741,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 			if(!empty($_SESSION['stats_log_files_total']))
 			{
-				$text .= $frm->progressBar('rebuild-progress',0,array("btn-label"=>"Rebuild Stats", 'url'=>e_REQUEST_URI));
+				$text .= $frm->progressBar('rebuild-progress',0,array("btn-label"=> ADSTAT_LAN_88, 'url'=>e_REQUEST_URI));
 			}
 
 			$text .= $frm->close();
@@ -1112,7 +1112,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 			if($date == 'pageTotal')
 			{
-				return $this->button('rebuildTotal', 1, 'delete', 'Rebuild');
+				return $this->button('rebuildTotal', 1, 'delete', ADSTAT_LAN_89);
 			}
 
 
@@ -1129,7 +1129,7 @@ e107::css('inline', 'td.last.options { padding-right:20px } ');
 
 			if(is_readable($file))
 			{
-				return $this->button('rebuild', $datestamp, 'delete', 'Rebuild');
+				return $this->button('rebuild', $datestamp, 'delete', ADSTAT_LAN_89);
 			}
 			else
 			{
