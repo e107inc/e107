@@ -14,6 +14,7 @@
  *    $Author: e107coders $
 */
 
+e107::lan('social', false, true);
 
 class core_system_xup_controller extends eController
 {
@@ -82,11 +83,11 @@ class core_system_xup_controller extends eController
 	
 	public function actionTest()
 	{
-		echo '<h3>Social Login Tester</h3>';
+		echo '<h3>'.LAN_SOCIAL_206.'</h3>';
 		
 		if(getperms('0'))
 		{
-			echo e107::getMessage()->addError("Please logout of e107 before testing the new-user login/signup procedure.")->render();
+			echo e107::getMessage()->addError(LAN_SOCIAL_207)->render();
 			return; 	
 		}
 		
