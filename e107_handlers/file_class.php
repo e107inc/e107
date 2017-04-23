@@ -1511,4 +1511,143 @@ class e_file
 		return $limits; 
 	}
 
+
+
+
+
+	public function unzipGithubArchive($url='core')
+	{
+
+		switch($url)
+		{
+			case "core":
+				$localfile      = 'e107-master.zip';
+				$remotefile     = 'https://codeload.github.com/e107inc/e107/zip/master';
+				$excludes       = array('e107-master/install.php','e107-master/favicon.ico');
+				$excludeMatch   = false;
+				break;
+
+			// language.
+			// eg. https://github.com/e107translations/Spanish/archive/v2.1.5.zip
+			default:
+				$localfile      = str_replace('https://github.com/e107translations/','',$url); // 'e107-master.zip';
+				$localfile      = str_replace('/archive/v','-',$localfile); //remove dirs.
+				$remotefile     = $url;
+				$excludes       = array();
+				$excludeMatch   = array('alt_auth','tagwords','faqs');
+
+		}
+
+		// Delete any existing file.
+		if(file_exists(e_TEMP.$localfile))
+		{
+			unlink(e_TEMP.$localfile);
+		}
+
+		$result = $this->getRemoteFile($remotefile, $localfile, 'temp');
+
+		if($result === false)
+		{
+			return false;
+		}
+
+
+
+		chmod(e_TEMP.$localfile, 0755);
+		require_once(e_HANDLER."pclzip.lib.php");
+
+		$zipBase = str_replace('.zip','',$localfile); // eg. e107-master
+		$excludes[] = $zipBase;
+
+		$newFolders = array(
+			$zipBase.'/e107_admin/'       => e_BASE.e107::getFolder('ADMIN'),
+			$zipBase.'/e107_core/'        => e_BASE.e107::getFolder('CORE'),
+			$zipBase.'/e107_docs/'        => e_BASE.e107::getFolder('DOCS'),
+			$zipBase.'/e107_handlers/'    => e_BASE.e107::getFolder('HANDLERS'),
+			$zipBase.'/e107_images/'      => e_BASE.e107::getFolder('IMAGES'),
+			$zipBase.'/e107_languages/'   => e_BASE.e107::getFolder('LANGUAGES'),
+			$zipBase.'/e107_media/'       => e_BASE.e107::getFolder('MEDIA'),
+			$zipBase.'/e107_plugins/'     => e_BASE.e107::getFolder('PLUGINS'),
+			$zipBase.'/e107_system/'      => e_BASE.e107::getFolder('SYSTEM'),
+			$zipBase.'/e107_themes/'      => e_BASE.e107::getFolder('THEMES'),
+			$zipBase.'/e107_web/'         => e_BASE.e107::getFolder('WEB'),
+			$zipBase.'/'                  => e_BASE
+		);
+
+		$srch = array_keys($newFolders);
+		$repl = array_values($newFolders);
+
+		$archive 	= new PclZip(e_TEMP.$localfile);
+		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+
+		$error = array();
+		$success = array();
+	//	$skipped = array();
+
+
+
+		foreach($unarc as $k=>$v)
+		{
+			if($this->matchFound($v['stored_filename'],$excludeMatch))
+			{
+				continue;
+			}
+
+			if(in_array($v['stored_filename'],$excludes))
+			{
+				continue;
+			}
+
+			$oldPath = $v['filename'];
+			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
+
+/*
+			$success[] = $newPath;
+			continue;*/
+
+			if($v['folder'] ==1 && is_dir($newPath))
+			{
+				// $skipped[] =  $newPath. " (already exists)";
+				continue;
+			}
+
+			if(!rename($oldPath,$newPath))
+			{
+				$error[] =  $newPath;
+			}
+			else
+			{
+				$success[] = $newPath;
+			}
+
+		}
+
+
+		return array('success'=>$success, 'error'=>$error);
+
+	}
+
+
+
+
+	private function matchFound($file,$array)
+	{
+		if(empty($array))
+		{
+			return false;
+		}
+
+		foreach($array as $term)
+		{
+			if(strpos($file,$term)!==false)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+
+	}
+
 }

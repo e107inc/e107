@@ -894,13 +894,13 @@ class e107plugin
 
 
 	protected $core_plugins = array(
-		"_blank","admin_menu","alt_auth","banner","blogcalendar_menu",
+		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu",	"clock_menu","comment_menu",
-		"contact", "download","faqs", "featurebox", "forum","gallery", 
+		"contact", "download", "featurebox", "forum","gallery",
 		"gsitemap","import", "linkwords", "list_new", "log", "login_menu",
 		"metaweblog", "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
-		"rss_menu","search_menu","siteinfo", "social", "tagwords", "tinymce4",
+		"rss_menu","search_menu","siteinfo", "social", "tagcloud", "tinymce4",
 		"trackback","tree_menu","user"
 	);
 
