@@ -314,6 +314,7 @@ class lancheck
 
 	private $deprecatedFiles = array('lan_download.php', 'lan_parser_functions.php', 'lan_prefs.php', 'admin/lan_download.php', 'admin/lan_modcomment.php');
 
+	private $installed_languages = array();
 
 	function __construct()
 	{
@@ -346,8 +347,12 @@ class lancheck
 		$pref = e107::getPref();
 		
 		// Check current theme also (but do NOT add to generated zip)
-		$this->core_themes[] = $pref['sitetheme'];
-		$this->core_themes = array_unique($this->core_themes);
+
+		if(deftrue('e_DEBUG'))
+		{
+			$this->core_themes[] = $pref['sitetheme'];
+			$this->core_themes = array_unique($this->core_themes);
+		}
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
@@ -791,63 +796,34 @@ class lancheck
 		return $pzip;
 	}
 
-
-
 	/**
-	 * List the installed language packs.
-	 * @return
+	 * Get Installed Language-Pack Meta Data.
+	 * @return array
 	 */
-	function showLanguagePacks()
+	function getLocalLanguagePacks()
 	{
-		$frm = e107::getForm();
-		$ns = e107::getRender();
-		$tp = e107::getParser();
+		$this->installed_languages = e107::getLanguage()->installed();
 
-		if(is_readable(e_ADMIN."ver.php"))
-		{
-			include(e_ADMIN."ver.php");
-			list($ver, $tmp) = explode(" ", $e107info['e107_version']);
-		}
+		$xml = e107::getXml();
 
-		$lans = e107::getLanguage()->installed();
+		$arr = array();
 
-		$release_diz = defined("LANG_LAN_30") ? LANG_LAN_30 : "Release Date";
-		$compat_diz = defined("LANG_LAN_31") ?  LANG_LAN_31 : "Compatibility";
-		$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
-
-
-
-		$text = "<form id='lancheck' method='post' action='".e_REQUEST_URI."'>
-			<table class='table table-striped'>";
-		$text .= "<thead>
-		<tr>
-		<th>".ADLAN_132."</th>
-		<th>".$release_diz."</th>
-		<th>".$compat_diz."</th>
-		<th>".LAN_STATUS."</td>
-		<th style='width:25%;white-space:nowrap'>".LAN_OPTIONS."</td>
-		</tr>
-		</thead>
-		";
-
-		require_once(e_HANDLER."xml_class.php");
-		$xm = new XMLParse();
-
-		foreach($lans as $language)
+		foreach($this->installed_languages as $language)
 		{
 			if($language == "English")
 			{
 				continue;
 			}
+
 			$metaFile = e_LANGUAGEDIR.$language."/".$language.".xml";
 
 			if(is_readable($metaFile))
 			{
-				$rawData = file_get_contents($metaFile);
+				$rawData = $xml->loadXMLfile($metaFile,true);
+
 				if($rawData)
 				{
-					$array = $xm->parse($rawData);
-					$value = $array['e107Language']['attributes'];
+					$value = $rawData['@attributes'];
 				}
 				else
 				{
@@ -865,146 +841,66 @@ class lancheck
 				);
 			}
 
-			$errFound = (isset($_SESSION['lancheck'][$language]['total']) && $_SESSION['lancheck'][$language]['total'] > 0) ?  TRUE : FALSE;
+			$value['type'] = 'local';
 
-
-			$text .= "<tr>
-			<td >".$language."</td>
-			<td>".$value['date']."</td>
-			<td>".$value['compatibility']."</td>
-			<td>".($ver != $value['compatibility'] || $errFound ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON )."</td>
-			<td>";
-
-		//	$text .= "<input type='submit' name='language_sel[{$language}]' value=\"".LAN_CHECK_2."\" class='btn btn-primary' />";
-			$text .= "<a href='".e_REQUEST_URI."&amp;sub=verify&amp;lan=".$language."' class='btn btn-primary' >".LAN_CHECK_2."</a>";
-
-			$text .= "
-			<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='btn btn-default' onclick=\"this.value = '".$lan_pleasewait."'\" /></td>
-			</tr>";
+			$arr[$language] = $value;
 		}
 
-		$text .= "
-
-		</tr></table>";
-
-		$text .= "<table class='table table-striped'>";
-
-		$text .= "<thead><tr><th>".LAN_OPTIONS."</th></tr></thead><tbody>";
-
-		$srch = array("[","]");
-		$repl = array("<a rel='external' href='https://github.com/orgs/e107translations/teams'>","</a>");
-		$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you are a member of the [e107 translation team].";
-
-		$checked = varset($_COOKIE['e107_certified']) == 1 ? true : false;
-
-		$text .= "<tr><td>";
-		$text .= $frm->checkbox('contribute_pack',1,$checked,array('label'=>str_replace($srch,$repl,$diz)));
-		;
-
-
-		$text .= "</td>
-		</tr>
-		<tr>
-		<td>";
-
-	//	$echecked = varset($_SESSION['lancheck-errors-only']) == 1 ? true : false;
-	//	$text .= $frm->checkbox('errorsonly',1,$echecked,array('label'=>$lan_displayerrors));
-		$text .= " </td>
-
-		</tr>";
-
-//		$text .= "
-//		<tr>
-//		<td>".$frm->checkbox('non-core-plugs-themes',1,$echecked,array('label'=>$lan_displayerrors))."</td>
-//		</tr>
-//		";
-
-		$text .= "</tbody></table>";
-
-
-		$text .= "</form>";
-
-		$text .= "<div class='smalltext center' style='padding-top:50px'>".LANG_LAN_AGR."</div>";
-
-		$text .= $this->onlineLanguagePacks();
-
-		return $text;
-
-		return;
-
+		return $arr;
 	}
 
 
-	private function onlineLanguagePacks()
+
+
+	/**
+	 * Get Online Language-Pack Meta Data.
+	 * @return array|bool
+	 */
+	public function getOnlineLanguagePacks()
 	{
 		$xml = e107::getXml();
 
-		$feed = e107::getPref('xmlfeed_languagepacks');
+		$feed = 'https://e107.org/languagepacks.xml';
 
-		$text = '';
+		$languages = array();
 
 		if($rawData = $xml -> loadXMLfile($feed, TRUE))
 		{
-			if(!varset($rawData['language']))
+
+			if(empty($rawData['language']))
 			{
-				return FALSE;
+				return false;
 			}
 
-			$text .= "<div class='block-text'>".LANG_LAN_35."</div>";
-			$text .= "<table class='table adminlist'>";
 			foreach($rawData['language'] as $val)
 			{
 				$att = $val['@attributes'];
-				$name = $att['folder'];
-				$languages[$name] = array(
-					'name' => $att['name'],
-					'author' => $att['author'],
-					'authorURL' => $att['authorURL'],
-					'folder' => $att['folder'],
-					'version' => $att['version'],
-					'date' => $att['date'],
+
+				$id = $att['name'];
+
+				$languages[$id] = array(
+					'name'          => $att['name'],
+					'author'        => $att['author'],
+					'infoURL'       => $att['infourl'],
+				//	'folder'        => $att['folder'],
+					'version'       => $att['version'],
+					'date'          => $att['date'],
 					'compatibility' => $att['compatibility'],
-					'url' => $att['url']
+					'url'           => $att['url'],
+					'type'          => 'online'
+
 				);
 			}
 
-			ksort($languages);
-
-			$text .= "<thead>
-				<tr>
-				<th>".LAN_NAME."</th>
-				<th>".LAN_VERSION."</th>
-				<th>".LAN_AUTHOR."</th>
-				<th>".LANG_LAN_111."</th>
-				<th>".LANG_LAN_112."</th>
-				<th>".LAN_DOWNLOAD."</th>
-				</tr>
-				</thead>
-				<tbody>";
-
-			foreach($languages as $value)
-			{
-				$text .= "<tr>
-					<td>".$value['name']."</td>
-					<td>".$value['version']."</td>
-					<td><a href='".$value['authorURL']."'>".$value['author']."</a></td>
-					<td>".$value['date']."</td>
-					<td>".$value['compatibility']."</td>
-
-					<td><a href='".$value['url']."'>".LANG_LAN_114."</a></td>
-					</tr>";
-			}
-
-			$text .= "</tbody></table>";
 
 		}
 
 
-		return $text;
-
-
-
+		return $languages;
 	}
+
+
+
 
 
 	function check_all($mode='render', $lan=null)
@@ -1081,14 +977,14 @@ class lancheck
 		}
 	
 		$message = "
-		<form id='lancheck' method='post' action='".e_ADMIN."language.php?tools'>
+		<form id='lancheck' method='post' action='".e_ADMIN."language.php?mode=main&action=tools'>
 		<div>\n";
 		
 		$icon = ($_SESSION['lancheck'][$lan]['total']>0) ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON;
 		
 		
 		$errors_diz = (deftrue('LAN_CHECK_23')) ? LAN_CHECK_23 : "Errors Found";
-		
+
 		$message .= $errors_diz.": ".$_SESSION['lancheck'][$lan]['total'];
 	
 		$just_go_diz = (deftrue('LAN_CHECK_20')) ? LAN_CHECK_20 : "Generate Language Pack";
@@ -1361,7 +1257,7 @@ class lancheck
 					$style = ($er) ? "forumheader2" : "forumheader3";
 					$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 					$text .= $bom_error . $utf_error;
-					$text .= (!$er && !$bom_error && !$utf_error) ? "<img src='".e_IMAGE."fileinspector/integrity_pass.png' alt='".LAN_OK."' />" : $er."<br />";
+					$text .= (!$er && !$bom_error && !$utf_error) ? ADMIN_TRUE_ICON : $er."<br />";
 					$text .= "</div></td>";
 				}
 				else
@@ -1722,7 +1618,7 @@ class lancheck
 				$style = ($er) ? "forumheader2" : "forumheader3";
 				$text .= "<td class='{$style}' style='width:50%'><div class='smalltext'>";
 				$text .= $bom_error . $utf_error;
-				$text .= (!$er && !$bom_error && !$utf_error) ? "<img src='".e_IMAGE."fileinspector/integrity_pass.png' alt='".LAN_OK."' />" : $er."<br />";
+				$text .= (!$er && !$bom_error && !$utf_error) ? ADMIN_TRUE_ICON : $er."<br />";
 				$text .= "</div></td>";
 			}
 			else
