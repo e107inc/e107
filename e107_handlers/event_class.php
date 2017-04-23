@@ -81,19 +81,19 @@ class e107_event
 				'user_signup_activated'		=> NU_LAN_3,
 				'login' 					=> NU_LAN_4,
 				'logout'					=> NU_LAN_5,
-				'user_xup_login'			=> 'User social login',
-				'user_xup_signup'			=> 'User social signup',
+				'user_xup_login'			=> NU_LAN_6,
+				'user_xup_signup'			=> NU_LAN_7,
 				'user_ban_flood'			=> NS_LAN_2,
-				'user_ban_failed_login'		=> 'IP banned for multiple failed login attempts',
-				'user_profile_display'      => "User views profile",
-				'user_profile_edit'         => "User edits profile"
+				'user_ban_failed_login'		=> NS_LAN_3,
+				'user_profile_display'      => NU_LAN_8,
+				'user_profile_edit'         => NU_LAN_9
 
 			),
 
 			'administrators'	=> array(
-				'admin_password_update'		=> "Administrator updates their password",
-				'admin_user_created'		=> 'Administrator creates a new user',
-				'admin_user_activated'		=> "Administrator activates a new user"
+				'admin_password_update'		=> NA_LAN_1,
+				'admin_user_created'		=> NA_LAN_2,
+				'admin_user_activated'		=> NA_LAN_3
 
 			),
 
@@ -102,7 +102,7 @@ class e107_event
 				'admin_news_created'	=> NN_LAN_3,
 				'admin_news_updated'	=> NN_LAN_4,
 				'admin_news_deleted'	=> NN_LAN_5,
-				'admin_news_notify'     => "News notification triggered", // TODO LAN
+				'admin_news_notify'     => NN_LAN_6,
 				'user_news_submit'		=> NN_LAN_2,
 
 			),
