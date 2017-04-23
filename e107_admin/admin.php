@@ -155,7 +155,7 @@ class admin_start
 			$this->deleteDeprecated();
 		}
 
-
+		unset($_SESSION['lancheck']);
 
 
 		e107::getDb()->db_Mark_Time('Check Paths');
