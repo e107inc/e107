@@ -123,7 +123,12 @@ define("LAN_XUP_ERRM_03", "Log in Failed! Wrong provider.");
 define("LAN_XUP_ERRM_04", "Signup failed! User already signed in.");
 define("LAN_XUP_ERRM_05", "Signup failed! User already exists. Please use 'login' instead.");
 define("LAN_XUP_ERRM_06", "Signup failed! Can't access user email - registration without an email is impossible.");
-
+define("LAN_XUP_ERRM_07", "Social Login Tester");
+define("LAN_XUP_ERRM_08", "Please logout of e107 before testing the new-user login/signup procedure.");
+define("LAN_XUP_ERRM_09", "Test login only with [x]");
+define("LAN_XUP_ERRM_10", "Test signup/login with [x]");
+define("LAN_XUP_ERRM_11", "Logged in:");
+define("LAN_XUP_ERRM_12", "Test logout");
 
 // Error messages for when user data is missing. Done this way so that other code can override the default messages
 
