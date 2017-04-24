@@ -102,7 +102,7 @@ $pmManager = new pmbox_manager($pm_prefs);
 $template = e107::getTemplate('pm', 'pm_menu');
 
 //if(!isset($pm_menu_template))
-if(!isset($PM_MENU_TEMPLATE))
+if(!isset($template))
 {
 	//FIXME URL Breaks
 	/*
@@ -122,7 +122,7 @@ if(!isset($PM_MENU_TEMPLATE))
 	*/
 	
 //	$pm_menu_template = "
-	$PM_MENU_TEMPLATE = "
+	$template = "
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PLUGIN_PM_INBOX."</a>
 	{PM_NEWPM_ANIMATE}
@@ -146,7 +146,7 @@ if(!isset($PM_MENU_TEMPLATE))
   $sc->wrapper('pm_menu');
 
 //	$txt = "\n".$tp->parseTemplate($pm_menu_template, TRUE, $sc);
-	$txt = "\n".$tp->parseTemplate($PM_MENU_TEMPLATE, TRUE, $sc);
+	$txt = "\n".$tp->parseTemplate($template, TRUE, $sc);
 	
 	if($pm_inbox['inbox']['new'] > 0 && $pm_prefs['popup'] && strpos(e_SELF, 'pm.php') === FALSE && $_COOKIE['pm-alert'] != 'ON')
 	{
