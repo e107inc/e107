@@ -645,10 +645,11 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 			if($pm_outbox['outbox']['filled'] < 100)
 			{
-				$link = $this->url('action/new');
-				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".PM_SEND_LINK."</a>";
+//				$link = $this->url('action/new');
+//				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".LAN_PLUGIN_PM_NEW."</a>";
+				return $this->url('action/new');
 			}
-			return '';
+//			return '';
 		}
 
 
