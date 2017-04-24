@@ -1052,7 +1052,7 @@ class e107plugin
 		}
 
 
-		$dbv = e107::getObject('db_verify',  "{e_HANDLER}db_verify_class.php");
+		$dbv = e107::getObject('db_verify', null, "{e_HANDLER}db_verify_class.php");
 
 		$plg = e107::getPlug();
 
