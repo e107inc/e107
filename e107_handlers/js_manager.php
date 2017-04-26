@@ -1255,7 +1255,8 @@ class e_jsmanager
 					$path = $path[1];
 					if(strpos($path, 'http') !== 0)
 					{
-						$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+						$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
+						$path = $this->url($path,'css');
 					}
 					
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
@@ -1274,7 +1275,8 @@ class e_jsmanager
 					if($post) $post = "\n".$post;
 					$path = $path[0];
 					
-					$path = $tp->replaceConstants($path, 'abs').'?external=1&amp;'.$this->getCacheId();
+					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
+					$path = $this->url($path,'js');
 					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
 					echo "\n";
 					continue;
@@ -1325,7 +1327,8 @@ class e_jsmanager
 						{
 							continue;
 						}
-						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+						$path = $tp->replaceConstants($path, 'abs'); // .'?'.$this->getCacheId();
+						$path = $this->url($path, 'css');
 					}
 					elseif($this->isValidUrl($path) === false)
 					{
@@ -1365,7 +1368,8 @@ class e_jsmanager
 							if(!e107::getPref('e_jslib_nocombine')) continue;
 						}
 
-						$path = $tp->replaceConstants($path, 'abs').'?'.$this->getCacheId();
+						$path = $tp->replaceConstants($path, 'abs'); //.'?'.$this->getCacheId();
+						$path = $this->url($path, 'js');
 					}
 
 					if($isExternal === true && $this->isValidUrl($path) == false)
@@ -1394,6 +1398,47 @@ class e_jsmanager
 
 		return $lmodified;
 	}
+
+
+
+	private function url($path,$type)
+	{
+		if(e_MOD_REWRITE_STATIC === true && $this->isInAdmin() !== true)
+		{
+			$base = 'static/';
+
+			$srch = array(
+				e_PLUGIN_ABS,
+				e_THEME_ABS,
+				e_WEB_ABS
+			);
+
+
+			$repl = array(
+				e_HTTP.$base.$this->getCacheId().'/'.e107::getFolder('plugins'),
+				e_HTTP.$base.$this->getCacheId().'/'.e107::getFolder('themes'),
+				e_HTTP.$base.$this->getCacheId().'/'.e107::getFolder('web')
+			);
+
+			$folder = str_replace($srch,$repl,$path);
+
+			return trim($folder);
+		}
+
+
+		if(strpos($path,'?')!==false)
+		{
+			$path .= "&amp;".$this->getCacheId();
+		}
+		else
+		{
+			$path .= "?".$this->getCacheId();
+		}
+
+		return $path;
+
+	}
+
 
 
 	/**
