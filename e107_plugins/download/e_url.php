@@ -114,6 +114,11 @@ class download_url // plugin-folder + '_url'
 			'redirect'	    => '{e_PLUGIN}download/request.php?id=$1', 		// file-path of what to load when the regex returns true.
 		);
 
+		$config['image']     = array(
+			'regex'		    => '^{alias}/image/([\d]*)/(.*)$',
+			'sef'           => '{alias}/image/{download_id}/{download_sef}',
+			'redirect'	    => '{e_PLUGIN}download/request.php?download.$1', 		// file-path of what to load when the regex returns true.
+		);
 
 		$config['index'] = array(
 			'regex'		    => '{alias}/?(.*)$',
