@@ -1623,6 +1623,16 @@ body#admin-menus #sc-admin-help .panel-body,
     flex: 2;
 }
 
+body#admin-menus .admin-left-panel .panel {
+  max-height: 50%;
+}
+body#admin-menus .admin-left-panel .admin-menu  {
+  overflow-y: auto;
+  display: flex;
+  display: -webkit-flex;
+  flex: 1 100%;
+  flex-flow: column nowrap;
+}
 body#admin-menus #sc-admin-help  {
 	overflow-y:hidden;
 	}
