@@ -13,7 +13,6 @@ $id = FALSE;
 
 
 
-
 if (!is_numeric(e_QUERY) && empty($_GET['id'])) 
 {
 	if ($sql->select('download', 'download_id', "download_url='".$tp->toDB(e_QUERY)."'")) 
@@ -33,6 +32,7 @@ if (!is_numeric(e_QUERY) && empty($_GET['id']))
 		exit();
 	}
 }
+
 
 
 
@@ -104,7 +104,6 @@ if(vartrue($_GET['id'])) // SEF URL
 
 
 
-
 if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) 
 {
 	if(strstr(e_QUERY, "pub_"))
@@ -137,7 +136,7 @@ if ($type == "file")
 	{
 		$row = $sql->fetch();
 		
-		$row['download_url'] = $tp->replaceConstants($row['download_url']);
+		$row['download_url'] = $tp->replaceConstants($row['download_url'],'abs');
 
 		if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
 		{
@@ -325,15 +324,15 @@ else
 
 		if (file_exists(e_FILE."download/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE."download/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE_ABS."download/{$image}' alt='' /></div>";
 		}
 		else if(file_exists(e_FILE."downloadimages/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE_ABS."downloadimages/{$image}' alt='' /></div>";
 		} 
 		else 
 		{
-             $image = $tp->replaceConstants($image);
+             $image = $tp->replaceConstants($image,'abs');
 			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".$image."' alt='' /></div>";
 		}
 
@@ -350,7 +349,7 @@ else
 		} 
 		elseif(is_file(e_FILE."downloadimages/{$image}")) 
 		{
-			echo "<img src='".e_FILE."downloadimages/{$image}' alt='' />";
+			echo "<img src='".e_FILE_ABS."downloadimages/{$image}' alt='' />";
 		} 
 		else 
 		{
