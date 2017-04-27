@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Downloads" lan="LAN_PLUGIN_DOWNLOAD_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Downloads" lan="LAN_PLUGIN_DOWNLOAD_NAME" version="1.1" date="2017-04-27" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
 	<description lan="LAN_PLUGIN_DOWNLOAD_DIZ">This plugin is a fully featured File-download system</description>
 	<category>content</category>
 	<adminLinks>
 		<link url='admin_download.php' description='LAN_CONFIGURE' icon='images/downloads_32.png' iconSmall='images/downloads_16.png' primary='true' >DOWLAN_CAPTION</link>		
-		<link url='admin_download.php' description='' icon='manage' iconSmall=''>DOWLAN_29</link>
-		<link url='admin_download.php?create' description='' icon='add' iconSmall=''>DOWLAN_30</link>
-		<link url='admin_download.php?cat' description='' icon='images/downloads_32.png' iconSmall=''>DOWLAN_31</link>
-		<link url='admin_download.php?opt' description='' icon='settings' iconSmall=''>DOWLAN_32</link>	
-		<link url='admin_download.php?limits' description='' icon='images/downloads_32.png' iconSmall=''>DOWLAN_112</link>
-		<link url='admin_download.php?mirror' description='' icon='images/downloads_32.png' iconSmall=''>DOWLAN_128</link>		
 	</adminLinks>
 	<siteLinks>
 		<link url="{e_PLUGIN}download/download.php" sef='index' perm="everyone">LAN_PLUGIN_DOWNLOAD_NAME</link>
