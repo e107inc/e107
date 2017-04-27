@@ -749,6 +749,8 @@ define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_of
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
 define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
 define('e_DEVELOPER', $developerMode);
+define('e_VERSION', varset($pref['version'],''));
+
 unset($developerMode);
 
 if(!empty($pref['xurl']) && is_array($pref['xurl']))

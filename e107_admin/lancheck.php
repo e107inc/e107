@@ -654,11 +654,11 @@ class lancheck
 
 		if(is_readable(e_ADMIN."ver.php"))
 		{
-			include(e_ADMIN."ver.php");
+		//	include(e_ADMIN."ver.php");
 		}
 
 		require_once(e_HANDLER.'pclzip.lib.php');
-		list($ver, $tmp) = explode(" ", $e107info['e107_version']);
+		list($ver, $tmp) = explode(" ", e_VERSION);
 		if(!$locale = $this->findLocale($language))
 		{
 			$ret['error'] = TRUE;

@@ -666,13 +666,13 @@ class rssCreate
 					<link rel='self' href='".$tp->toRss(e107::url('rss_menu','atom', array('rss_url'=>$this->contentType, 'rss_topicid'=>$this->topicid),'full'))."' />\n";
 
 					// Optional
-					include(e_ADMIN."ver.php");
+				//	include(e_ADMIN."ver.php");
 					echo "
 					<category term='e107'/>\n
 					<contributor>\n
 						<name>e107</name>\n
 					</contributor>\n
-					<generator uri='http://e107.org/' version='".$e107info['e107_version']."'>e107</generator>\n";
+					<generator uri='http://e107.org/' version='".e_VERSION."'>e107</generator>\n";
 					//<icon>/icon.jpg</icon>\n
 					echo "
 					<logo>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", SITEBUTTON))."</logo>\n

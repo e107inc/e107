@@ -1022,14 +1022,14 @@ class admin_shortcodes
 		{
 			global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 
-			if (file_exists(e_ADMIN.'ver.php'))
+		//	if (file_exists(e_ADMIN.'ver.php'))
 			{
-				include(e_ADMIN.'ver.php');
+			//	include(e_ADMIN.'ver.php');
 			}
 			
 			if($parm == "version")
 			{
-				return $e107info['e107_version'];
+				return e_VERSION;
 			}
 
 			$obj = e107::getDateConvert();
