@@ -254,10 +254,10 @@ if(!empty($_GET['iframe']))
 			$ns = e107::getRender();
 			$tp = e107::getParser();
 
-			if(is_readable(e_ADMIN."ver.php"))
+		//	if(is_readable(e_ADMIN."ver.php"))
 			{
-				include(e_ADMIN."ver.php");
-				list($ver, $tmp) = explode(" ", $e107info['e107_version']);
+			//	include(e_ADMIN."ver.php");
+				list($ver, $tmp) = explode(" ", e_VERSION);
 			}
 
 			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
