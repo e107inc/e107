@@ -932,7 +932,12 @@ class wysiwyg
 
 	private function getSnippets()
 	{
-		$files = e107::getFile()->get_files(e_PLUGIN."tinymce4/snippets");
+
+		$customPath = THEME."templates/tinymce/snippets";
+
+		$path = is_dir($customPath) ?  $customPath : e_PLUGIN."tinymce4/snippets";
+
+		$files = e107::getFile()->get_files($path);
 
 		$ret = array();
 		foreach($files as $f)
@@ -942,7 +947,8 @@ class wysiwyg
 			preg_match('/<!--[^\w]*Title:[\s]([^\r\n]*)[\s]*Info: ?([^\r\n]*)/is', $content, $m);
 			if(!empty($m[1]))
 			{
-				$url = e_PLUGIN_ABS."tinymce4/snippets/".$f['fname'];
+			//	$url = e_PLUGIN_ABS."tinymce4/snippets/".$f['fname'];
+				$url =$path."/".$f['fname'];
 				$ret[] = array('title'=>trim($m[1]), 'url'=>$url, 'description'=>trim($m[2]));
 			}
 		}
