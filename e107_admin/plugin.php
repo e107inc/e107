@@ -322,7 +322,7 @@ class plugin_ui extends e_admin_ui
 
 
 
-			return array('caption'=>"Updates to be Installed", 'text'=>$text);
+			return array('caption'=>EPL_ADLAN_247, 'text'=>$text);
 
 		}
 
