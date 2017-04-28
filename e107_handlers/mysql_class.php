@@ -189,14 +189,14 @@ class e_db_mysql
 		if($this->pdo)
 		{	
 		
-			if(strpos($mySQLserver,':')!==false)
+			if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
 			{
 				list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 			}
 
-			if($this->mySQLserver === 'localhost')
+		//	if($this->mySQLserver === 'localhost') // problematic.
 			{
-				$this->mySQLserver = '127.0.0.1';  // faster by almost 1 second
+		//		$this->mySQLserver = '127.0.0.1';  // faster by almost 1 second
 			}
 
 			try
@@ -285,14 +285,14 @@ class e_db_mysql
 		$this->mySQLpassword 	= $mySQLpassword;
 		$this->mySQLerror 		= false;
 
-		if(strpos($mySQLserver,':')!==false)
+		if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
 		{
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-		if($this->mySQLserver === 'localhost')
+	//	if($this->mySQLserver === 'localhost') // problematic.
 		{
-			$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second. 
+	//		$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second.
 		}
 
 
