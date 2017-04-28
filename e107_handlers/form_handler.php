@@ -2754,7 +2754,7 @@ class e_form
 
 		if(!empty($select_options['multiple']) && substr($name,-1) != ']')
 		{
-			$name .= '[]';
+		//	$name .= '[]';
 		}
 
 		if(empty($current_value) && !empty($uc_options)) // make the first in the opt list the default value.
