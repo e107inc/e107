@@ -1413,11 +1413,12 @@ class e_jsmanager
 				e_WEB_ABS
 			);
 
+			$http = deftrue('e_HTTP_STATIC', e_HTTP);
 
 			$repl = array(
-				e_HTTP.$base.$this->getCacheId().'/'.e107::getFolder('plugins'),
-				e_HTTP.$base.$this->getCacheId().'/'.e107::getFolder('themes'),
-				e_HTTP.$base.$this->getCacheId().'/'.e107::getFolder('web')
+				$http.$base.$this->getCacheId().'/'.e107::getFolder('plugins'),
+				$http.$base.$this->getCacheId().'/'.e107::getFolder('themes'),
+				$http.$base.$this->getCacheId().'/'.e107::getFolder('web')
 			);
 
 			$folder = str_replace($srch,$repl,$path);
