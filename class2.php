@@ -2672,12 +2672,6 @@ class e_http_header
 			$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html. 
 		}
 
-		if(defined('e_HTTP_STATIC'))
-		{
-		//	$this->setHeader("Access-Control-Allow-Origin: *",true);
-			$this->setHeader("Access-Control-Allow-Origin: ".rtrim(e_HTTP_STATIC,'/'), true);
-		}
-
 		if($this->compression_server_support == true)
 		{
 			$this->setHeader('Vary: Accept-Encoding');	

@@ -1256,7 +1256,7 @@ class e_jsmanager
 					if(strpos($path, 'http') !== 0)
 					{
 						$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
-						$path = $this->url($path,'css');
+						$path = $this->url($path);
 					}
 					
 					echo $pre.'<link rel="stylesheet" media="'.$media.'" type="text/css" href="'.$path.'" />'.$post;
@@ -1276,7 +1276,7 @@ class e_jsmanager
 					$path = $path[0];
 					
 					$path = $tp->replaceConstants($path, 'abs').'?external=1'; // &amp;'.$this->getCacheId();
-					$path = $this->url($path,'js');
+					$path = $this->url($path);
 					echo $pre.'<script type="text/javascript" src="'.$path.'"></script>'.$post;
 					echo "\n";
 					continue;
@@ -1328,7 +1328,7 @@ class e_jsmanager
 							continue;
 						}
 						$path = $tp->replaceConstants($path, 'abs'); // .'?'.$this->getCacheId();
-						$path = $this->url($path, 'css');
+						$path = $this->url($path);
 					}
 					elseif($this->isValidUrl($path) === false)
 					{
@@ -1401,11 +1401,10 @@ class e_jsmanager
 
 
 
-	private function url($path,$type)
+	private function url($path,$cacheId = true)
 	{
-		if(e_MOD_REWRITE_STATIC === true && $this->isInAdmin() !== true)
+		if((e_MOD_REWRITE_STATIC === true || defined('e_HTTP_STATIC')) && $this->isInAdmin() !== true)
 		{
-			$base = 'static/';
 
 			$srch = array(
 				e_PLUGIN_ABS,
@@ -1413,17 +1412,25 @@ class e_jsmanager
 				e_WEB_ABS
 			);
 
+
 			$http = deftrue('e_HTTP_STATIC', e_HTTP);
 
+			$base = (e_MOD_REWRITE_STATIC === true) ? 'static/'.$this->getCacheId().'/' : '';
+
 			$repl = array(
-				$http.$base.$this->getCacheId().'/'.e107::getFolder('plugins'),
-				$http.$base.$this->getCacheId().'/'.e107::getFolder('themes'),
-				$http.$base.$this->getCacheId().'/'.e107::getFolder('web')
+				$http.$base.e107::getFolder('plugins'),
+				$http.$base.e107::getFolder('themes'),
+				$http.$base.e107::getFolder('web')
 			);
 
 			$folder = str_replace($srch,$repl,$path);
 
-			return trim($folder);
+			if(e_MOD_REWRITE_STATIC === true)
+			{
+				return trim($folder);
+			}
+
+			$path = $folder;
 		}
 
 
@@ -1534,11 +1541,11 @@ class e_jsmanager
 
 			if($type == 'js')
 			{
-				echo "<script type='text/javascript' src='".e_WEB_ABS."cache/".$fileName."'></script>\n\n";
+				echo "<script type='text/javascript' src='".$this->url(e_WEB_ABS."cache/".$fileName,'js','cache')."'></script>\n\n";
 			}
 			else
 			{
-				echo "<link type='text/css' href='".e_WEB_ABS."cache/".$fileName."' rel='stylesheet' property='stylesheet'  />\n\n";
+				echo "<link type='text/css' href='".$this->url(e_WEB_ABS."cache/".$fileName,'cache')."' rel='stylesheet' property='stylesheet'  />\n\n";
 				if(!empty($this->_cache_list['css_inline']))
 				{
 					echo $this->_cache_list['css_inline'];

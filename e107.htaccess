@@ -13,6 +13,8 @@
 ### Security
 	ServerSignature Off
 
+#Header unset Pragma
+
 # secure htaccess file
 <Files .htaccess>
 	order allow,deny
@@ -103,11 +105,11 @@
     AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/xml text/xml application/rss+xml
 </ifmodule>
 
-<FilesMatch "\.(js|css|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|eot|otf|ttc|ttf|woff)$">
+<FilesMatch "\.(js|css|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)$">
     Header set Cache-Control "public"
     Header unset Cookie
     Header unset Set-Cookie
-  # Header set Access-Control-Allow-Origin "http://static.mydomain.com"
+  # Header set Access-Control-Allow-Origin "http://mydomain.com"
 </FilesMatch>
 
 

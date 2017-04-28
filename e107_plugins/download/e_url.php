@@ -105,7 +105,7 @@ class download_url // plugin-folder + '_url'
 		$config['item']     = array(
 			'regex'		    => '^{alias}/([\d]*)/(.*)$',
 			'redirect'	    => '{e_PLUGIN}download/download.php?action=view&id=$1',
-			'sef'           => '{alias}/{download_id}/{download_sef}'
+			'sef'           => '{alias}/{download_id}/{download_sef}',
 		);
 
 		$config['get']     = array(
