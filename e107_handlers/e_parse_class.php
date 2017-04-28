@@ -2529,6 +2529,11 @@ class e_parse extends e_parser
 		if($raw) $url = $this->createConstants($url, 'mix');
 		
 		$baseurl = ($full ? SITEURL : e_HTTP).'thumb.php?';
+
+		if(defined('e_HTTP_STATIC'))
+		{
+			$baseurl = e_HTTP_STATIC.'thumb.php?';
+		}
         
 		$thurl = 'src='.urlencode($url).'&amp;';
 
@@ -2721,6 +2726,11 @@ class e_parse extends e_parser
 		else
 		{
 			$base = (!empty($options['ebase'])) ? '{e_BASE}' : e_HTTP;
+		}
+
+		if(defined('e_HTTP_STATIC'))
+		{
+			$base = e_HTTP_STATIC;
 		}
 	//	$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
 
@@ -5114,6 +5124,8 @@ class e_emotefilter
 			return;
 		}
 
+		$base = deftrue('e_HTTP_STATIC', SITEURLBASE);
+
 		foreach($this->emotes as $key => $value)
 		{
 
@@ -5130,8 +5142,10 @@ class e_emotefilter
 			  $key = str_replace("!", "_", $key);
 
 			  $filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
+
+
 			  
-			  $fileloc = SITEURLBASE.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
+			  $fileloc = $base.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
 
 			  $alt = str_replace(array('.png','.gif', '.jpg'),'', $key);
 
