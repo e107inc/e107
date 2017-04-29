@@ -27,3 +27,5 @@ define("LAN_SOCIAL_203",  "Type your tweet here.");
 define("LAN_SOCIAL_204",  "Share");
 define("LAN_SOCIAL_205",  "Unable to render comments. Missing Facebook appID.");
 define("LAN_SOCIAL_WARNING", "Facebook comments requires that you have a facebook App ID. See the 'social login' area in admin-preferences to add one.");
+define("LAN_SOCIAL_206",  "Social Login Tester");
+define("LAN_SOCIAL_207",  "Please logout of e107 before testing the new-user login/signup procedure.");
