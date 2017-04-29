@@ -1317,16 +1317,16 @@ class lancheck
 
 		if($eng_line == $trans_line && !empty($eng_line))
 		{
-			$warning[] = "<span class='text-warning'>".$def. ": Identical string (warning only) </span>";
+			$warning[] = "<span class='text-warning'>".$def. ": ".LAN_CHECK_29."</span>";
 		}
 		
 		if((strpos($eng_line,"[link=")!==FALSE && strpos($trans_line,"[link=")===FALSE) || (strpos($eng_line,"[b]")!==FALSE && strpos($trans_line,"[b]")===FALSE))
 		{
-			$error[] = $def. ": Missing bbcodes";
+			$error[] = $def. ": ".LAN_CHECK_30;
 		}
 		elseif((strpos($eng_line,"[")!==FALSE && strpos($trans_line,"[")===FALSE) || (strpos($eng_line,"]")!==FALSE && strpos($trans_line, "]")===FALSE))
 		{
-			$error[] = $def. ": Missing [ and/or ] character(s)";
+			$error[] = $def. ": ".LAN_CHECK_31;
 		}
 		
 		if((strpos($eng_line,"--LINK--")!==false && strpos($trans_line,"--LINK--")===false))
@@ -1351,7 +1351,7 @@ class lancheck
 			if(($stripped == $trans_line))
 			{					
 				// echo "<br /><br />".$def. "<br />".$stripped."<br />".$trans_line;
-				$error[] = $def. ": Missing HTML tags" ; 		
+				$error[] = $def. ": ".LAN_CHECK_32; 		
 			}
 		}
 		
