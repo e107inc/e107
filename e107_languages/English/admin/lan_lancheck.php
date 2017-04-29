@@ -25,7 +25,10 @@ define("LAN_CHECK_26", "Front");
 define("LAN_CHECK_PAGE_TITLE", "Languages");
 define("LAN_CHECK_27", "Number of language-pack errors found");
 define("LAN_CHECK_28", "Identical");
-//define("LAN_CHECK_29", "Missing");
+define("LAN_CHECK_29", "Identical string (warning only)");
+define("LAN_CHECK_30", "Missing bbcodes");
+define("LAN_CHECK_31", "Missing [ and/or ] character(s)");
+define("LAN_CHECK_32", "Missing HTML tags");
 
 define("LANG_LAN_23", "Create Language-Pack (zip)");
 define("LANG_LAN_30", "Release Date");
