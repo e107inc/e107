@@ -935,7 +935,17 @@ class wysiwyg
 
 		$customPath = THEME."templates/tinymce/snippets";
 
-		$path = is_dir($customPath) ?  $customPath : e_PLUGIN."tinymce4/snippets";
+		if(is_dir($customPath))
+		{
+			$path = $customPath;
+			$base = THEME_ABS."templates/tinymce/snippets";
+		}
+		else
+		{
+			$path = e_PLUGIN."tinymce4/snippets";
+			$base = e_PLUGIN_ABS."tinymce4/snippets";
+		}
+
 
 		$files = e107::getFile()->get_files($path);
 
@@ -948,7 +958,8 @@ class wysiwyg
 			if(!empty($m[1]))
 			{
 			//	$url = e_PLUGIN_ABS."tinymce4/snippets/".$f['fname'];
-				$url =$path."/".$f['fname'];
+			
+				$url = $base."/".$f['fname'];
 				$ret[] = array('title'=>trim($m[1]), 'url'=>$url, 'description'=>trim($m[2]));
 			}
 		}
