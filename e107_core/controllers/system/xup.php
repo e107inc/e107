@@ -14,6 +14,7 @@
  *    $Author: e107coders $
 */
 
+e107::coreLan('user');
 
 class core_system_xup_controller extends eController
 {
@@ -82,11 +83,11 @@ class core_system_xup_controller extends eController
 	
 	public function actionTest()
 	{
-		echo '<h3>Social Login Tester</h3>';
+		echo '<h3>'.LAN_XUP_ERRM_07.'</h3>';
 		
 		if(getperms('0'))
 		{
-			echo e107::getMessage()->addError("Please logout of e107 before testing the new-user login/signup procedure.")->render();
+			echo e107::getMessage()->addError(LAN_XUP_ERRM_08)->render();
 			return; 	
 		}
 		
@@ -109,7 +110,7 @@ class core_system_xup_controller extends eController
 			 
 		}
 		
-		echo 'Logged in: '.(e107::getUser()->isUser() && !empty($profileData) ? '<span class="label label-success">true</span>' : '<span class="label label-danger">false</span>');
+		echo ' '.LAN_XUP_ERRM_11.' '.(e107::getUser()->isUser() && !empty($profileData) ? '<span class="label label-success">true</span>' : '<span class="label label-danger">false</span>');
 	
 	
 		$testUrl = SITEURL."?route=system/xup/test"; 
@@ -120,8 +121,8 @@ class core_system_xup_controller extends eController
 			if($var['enabled'] == 1)
 			{
 				echo '<h3>'.$key.'</h3><ul>';
-				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">Test login only with '.$key.'</a></li>';
-				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">Test signup/login with '.$key.'</a></li>';		
+				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_09, array('x'=>$key)).'</a></li>';
+				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></li>';		
 			
 				echo "</ul>";
 			}
@@ -129,7 +130,7 @@ class core_system_xup_controller extends eController
 		//	print_a($var);
 		}
 		
-			echo '<br /><br /><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/test?lgt').'">Test logout</a>';
+			echo '<br /><br /><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/test?lgt').'">'.LAN_XUP_ERRM_12.'</a>';
 		
 		/*
 		echo '<h3>Facebook</h3>';
