@@ -145,7 +145,7 @@ class alt_auth_admin extends alt_auth_base
 				if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
 				$ret .= $v['prompt'].':';
 			
-				$ret .= "</td><td$log>";
+				$ret .= "</td><td class='form-inline' $log>";
 	//			$fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
 				$value = varset($v['default'],'');
@@ -367,14 +367,14 @@ class alt_auth_admin extends alt_auth_base
 	 */
 	public function alt_auth_test_form($prefix, $frm)
 	{
-		$text = $frm -> form_open('post', e_SELF, 'testform');
-		$text .= "<table class='table adminform'>
-		<tr><td colspan='2' class='forumheader2' style='text-align:center;'>".LAN_ALT_42."</td></tr>";
+		$text = '';
 
-		if (isset($_POST['testauth']))
+		if(!empty($_POST['testauth']))
 		{
 			// Try and connect to DB/server, and maybe validate user name
 			require_once(e_PLUGIN.'alt_auth/'.$prefix.'_auth.php');
+			e107::getDebug()->log('Loading: alt_auth/'.$prefix.'_auth.php');
+
 			$_login = new auth_login;
 			$log_result = AUTH_UNKNOWN;
 			$pass_vars = array();
@@ -389,16 +389,27 @@ class alt_auth_admin extends alt_auth_base
 				$log_result = $_login->login($val_name, $_POST['passtovalidate'], $pass_vars, ($val_name == ''));
 			}
 
-			$text .= "<tr><td>".LAN_ALT_48;
+			$text = "<table class='table'>
+	<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+			<tr><th colspan='2'>".LAN_ALT_48."</th></tr>";
+			$text .= "<tr><td>";
+
 			if ($val_name)
 			{
-				$text .= "<br />".LAN_ALT_49.$val_name.'<br />'.LAN_ALT_50;
+				$text .= LAN_ALT_49.": ".$val_name.'<br />'.LAN_ALT_50.": ";
 				if (varset($_POST['passtovalidate'],'')) $text .= str_repeat('*',strlen($_POST['passtovalidate'])); else $text .= LAN_ALT_51;
 			}
-			$text .= "</td><td $log>";
+			$text .= "</td><td>";
+
+			$err = '';
+
 			switch ($log_result)
 			{
 				case AUTH_SUCCESS :
+					$text .= "<div class='alert alert-success' style='margin:0'>";
 					$text .= LAN_ALT_58;
 					if (count($pass_vars))
 					{
@@ -408,45 +419,75 @@ class alt_auth_admin extends alt_auth_base
 						$text .= '<br />&nbsp;&nbsp;'.$k.'=>'.$v;
 					  }
 					}
+					$text .= "</div>";
 					break;
 				case AUTH_NOUSER :
-					$text .= LAN_ALT_52.LAN_ALT_55;
+					$err = LAN_ALT_52.LAN_ALT_55;
 					break;
 				case AUTH_BADPASSWORD :
-					$text .= LAN_ALT_52.LAN_ALT_56;
+					$err = LAN_ALT_52.LAN_ALT_56;
 					break;
 				case AUTH_NOCONNECT :
-					$text .= LAN_ALT_52.LAN_ALT_54;
+					$err = LAN_ALT_52.LAN_ALT_54;
 					break;
 				case AUTH_UNKNOWN :
-					$text .= LAN_ALT_52.LAN_ALT_53;
+					$err = LAN_ALT_52.LAN_ALT_53;
 					break;
 				case AUTH_NOT_AVAILABLE :
-					$text .= LAN_ALT_52.LAN_ALT_57;
+					$err = LAN_ALT_52.LAN_ALT_57;
 					break;
+				case LOGIN_CONTINUE:
+					$err = "wrong encoding?";
+				break;
 				default :
-					$text .= "Coding error";
+					$err = "Coding error";
+					var_dump($log_result);
 			}
-			if (isset($_login ->ErrorText)) $text .= '<br />'.$_login ->ErrorText;
-			$text .= "</td></tr>";
+
+			if(!empty($err))
+			{
+				$text .= "<div class='alert alert-danger' style='margin:0'>".$err."</div>";
+			}
+
+			if(!empty($_login ->ErrorText))
+			{
+				$text .= "<div class='alert alert-danger' style='margin:0'>".$_login ->ErrorText."</div>";
+			}
+
+			$text .= "</td></tr></table>";
+
+		//	$text = "<div class='alert'>".$text."</div>";
 		}
 
+		$text .= $frm -> form_open('post', e_SELF, 'testform');
+		$text .= "<table class='table adminlist'>
+		<colgroup>
+		<col class='col-label' />
+		<col class='col-control' />
+		</colgroup>
+		<tr><th colspan='2'>".LAN_ALT_42."</th></tr>";
+
 		$text .= "<tr><td $log>".LAN_ALT_33."</td><td $log>";
-		$text .= $frm->form_text('nametovalidate', 35, '', 120);
+	//	$text .= $frm->form_text('nametovalidate', 35, '', 120);
+		$text .= e107::getForm()->text('nametovalidate','',35);
 		$text .= "</td></tr>";
 
 		$text .= "<tr><td $log>".LAN_ALT_34."</td><td $log>";
 		$text .= $frm->form_password('passtovalidate', 35, '', 120);
 		$text .= "</td></tr>";
 
-		$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>";
-	//	$text .= $frm->form_button("submit", 'testauth', LAN_ALT_47);
-		$text .= e107::getForm()->admin_button('testauth', LAN_ALT_47,'other');
-		$text .= "</td></tr>";
+
 
 		$text .= "</table>";
+
+			$text .= "<div class='buttons-bar center'>";
+	//	$text .= $frm->form_button("submit", 'testauth', LAN_ALT_47);
+		$text .= e107::getForm()->admin_button('testauth', LAN_ALT_47,'other');
+		$text .= "</div>";
+
 		$text .= $frm->form_close();
-		return $text;
+
+		return e107::getMessage()->render().$text;
 	}
 
 
@@ -507,7 +548,14 @@ function alt_auth_adminmenu()
 
 	$var['main']['text'] = LAN_ALT_31;
 	$var['main']['link'] = e_PLUGIN.'alt_auth/alt_auth_conf.php';
-	show_admin_menu('alt auth', ALT_AUTH_ACTION, $var);
+
+
+	$icon  = e107::getParser()->toIcon(e_PLUGIN.'alt_auth/images/alt_auth_32.png');
+	$caption = $icon."<span>alt auth</span>";
+
+	show_admin_menu($caption, ALT_AUTH_ACTION, $var);
+
+	
 	$var = array();
 	foreach($authlist as $a)
 	{
@@ -517,6 +565,9 @@ function alt_auth_adminmenu()
 		$var[$a]['link'] = e_PLUGIN."alt_auth/{$a}_conf.php";
 	  }
 	}
+
+
+
 	show_admin_menu(LAN_ALT_29, ALT_AUTH_ACTION, $var);
 }
 ?>

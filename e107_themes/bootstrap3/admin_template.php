@@ -281,7 +281,7 @@ $ADMIN_FOOTER = '
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $E_ADMIN_MENU['start'] = '
-<div class="panel-body">
+<div class="nav-panel-body">
 <ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 

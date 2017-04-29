@@ -107,14 +107,27 @@ else
 	$authExtended = array();
 }
 
-
-if(isset($message))
+if(e107::getDb()->getPDO() === false)
 {
-	e107::getRender()->tablerender('', "<div style='text-align:center'><b>".$message."</b></div>");
+	$mess = "PDO is required to use alt-auth. To enable add: <code>define('e_PDO', true);</code> to e107_config.php.<br />
+	<small>Warning: If PDO is not correctly configured on your server then your site may fail to connect with the database.</small>";
+	echo e107::getMessage()->addInfo($mess)->render();
+}
+
+if(!empty($message))
+{
+	echo e107::getMessage()->addSuccess($message)->render();
 }
 
 
+
+
+
 $altAuthAdmin = new alt_auth_admin();
+
+
+
+
 
 
 $text = "
