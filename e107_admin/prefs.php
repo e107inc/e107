@@ -1411,7 +1411,7 @@ $text .= "
 
 						if(function_exists('password_verify')) // ie. php 5.5 or higher
 						{
-							$pwdEncodeOpts[3]	 = "PHP Default (Preferred)";
+							$pwdEncodeOpts[3]	 = PRFLAN_276;
 
 						}
 
