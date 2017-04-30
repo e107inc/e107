@@ -1550,7 +1550,6 @@ body#admin-menus .admin-left-panel,
     display: -webkit-flex;
     display: flex;
     flex:1 1 auto;
-
 }
 
 .row-flex-wrap {
@@ -1559,7 +1558,6 @@ body#admin-menus .admin-left-panel,
     flex:0;
 }
 
-
 .row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
 	 margin:-.2px;
 
@@ -1567,6 +1565,7 @@ body#admin-menus .admin-left-panel,
 
 .row-flex .draggable-panels {
 	width: 100%;
+	margin-bottom: 15px;
 }
 
 .flex-col {
