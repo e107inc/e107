@@ -1550,7 +1550,6 @@ body#admin-menus .admin-left-panel,
     display: -webkit-flex;
     display: flex;
     flex:1 1 auto;
-
 }
 
 .row-flex-wrap {
@@ -1559,17 +1558,15 @@ body#admin-menus .admin-left-panel,
     flex:0;
 }
 
-
 .row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
 	 margin:-.2px;
 
 }
 
-
-.container-flex > div[class*='col-'] div,.row-flex > div[class*='col-'] div {
-	width:100%;
+.row-flex .draggable-panels {
+	width: 100%;
+	margin-bottom: 15px;
 }
-
 
 .flex-col {
     display: flex;
@@ -1586,11 +1583,6 @@ body#admin-menus .admin-left-panel,
 
 .row-flex .panel { height: 100%;  }
 
-.admin-main-content .row-flex { margin-bottom:20px }
-
-
-
-
 body#admin-menus > .container-fluid > .row {
 	height: 92vh;
 }
@@ -1601,11 +1593,6 @@ flex-flow: column nowrap;
 
 .row-flex > div[class*='col-'], .container-flex > div[class*='col-'] {
 	 margin:-.2px; /* hack adjust for wrapping */
-}
-
-.container-flex > div[class*='col-'] div,
-.row-flex > div[class*='col-'] div {
-	width:100%;
 }
 
 body#admin-menus #sc-admin-help,
