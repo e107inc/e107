@@ -466,6 +466,7 @@ define("LAN_UI_BATCH_DEATTACH_SUCCESS", "[x] removed from [y] record(s).");
 define("LAN_UI_EDIT_LABEL", "Update record #[x]");
 define("LAN_UI_CREATE_LABEL", "Create new record");
 define("LAN_UI_PREF_LABEL", "Settings");
+define("LAN_UI_PASSWORD_WARNING", "It is HIGHLY recommended that you [change your password encoding] to the PHP Default. (Password hashes will be automatically upgraded during user login.)");
 define("LAN_UI_DELETE_LABEL", "Confirm Delete");
 define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please confirm to continue.");
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
