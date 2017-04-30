@@ -535,7 +535,7 @@ TMPO;
 
 		if($us->passwordAPIExists() === true && $us->getDefaultHashType() !== PASSWORD_E107_PHP && e107::pref('core','password_CHAP')==0)
 		{
-			$message = LAN_UI_PASSWORD_WARNING;
+			$message = e107::getParser()->toHTML(LAN_UI_PASSWORD_WARNING, true);
 			$srch = array('[',']');
 			$repl = array("<a class='alert-link' href='".e_ADMIN."prefs.php#nav-core-prefs-security'>","</a>");
 			$mes->addWarning(str_replace($srch,$repl,$message));
