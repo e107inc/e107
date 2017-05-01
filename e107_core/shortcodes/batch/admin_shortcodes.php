@@ -1057,7 +1057,7 @@ class admin_shortcodes
 			<br />
 			<b>e107</b>
 			<br />
-			".FOOTLAN_3." ".$e107info['e107_version']."
+			".FOOTLAN_3." ".e_VERSION."
 			<br /><br />
 			<b>".FOOTLAN_20."</b>
 			<br />
