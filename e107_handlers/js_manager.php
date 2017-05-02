@@ -1597,7 +1597,7 @@ class e_jsmanager
 
 		foreach($match[1] as $k=>$v)
 		{
-			if(substr($v,5) == 'data:' || substr($v,4) == 'http')
+			if(strpos($v,'data:') === 0 || strpos($v,'http') === 0)
 			{
 				unset($match[0][$k]);
 				continue;
