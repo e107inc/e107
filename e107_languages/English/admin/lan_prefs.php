@@ -294,3 +294,4 @@ define("PRFLAN_272", "Session Lifetime");
 define("PRFLAN_273", "Lifetime in seconds. 0 = until the browser is closed. ");
 define("PRFLAN_274", "Contact form will only be visible to this userclass group.");
 define("PRFLAN_275", "View this page using https (SSL) to modify this option");
+define("PRFLAN_276", "PHP Default (Preferred)");

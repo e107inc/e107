@@ -332,6 +332,7 @@ define("LAN_OPTIONAL", "optional");
 define("LAN_INACTIVE","Inactive");
 define("LAN_ACTIVATE","Activate");
 define("LAN_ACCEPT","Accept");
+define("LAN_PASSWORD_WARNING", "It is HIGHLY recommended that you [change your password encoding] to the PHP Default. (Password hashes will be automatically upgraded during user login.)");
 define("LAN_PENDING","Pending");
 define("LAN_SUBMITTED","Submitted");
 define("LAN_POSTED_BY_X","Posted by [x] [y]");
