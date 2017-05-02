@@ -61,8 +61,6 @@ class auth_login extends alt_auth_base
 	private function makeErrorText($extra = '')
 	{
 		$this->ErrorText = $extra;
-		//global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $sql;
-		//$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 	}
 
 
@@ -83,7 +81,7 @@ class auth_login extends alt_auth_base
 	{
 		/* Begin - Deltik's PDO Workaround (part 1/2) */
 		$dsn = 'mysql:dbname=' . $this->conf['otherdb_database'] . ';host=' . $this->conf['otherdb_server'];
-		
+
 		try
 		{
 			$dbh = new PDO($dsn, $this->conf['otherdb_username'], $this->conf['otherdb_password']);
@@ -121,11 +119,13 @@ class auth_login extends alt_auth_base
 				$sel_fields[] = $v;
 			}
 		}
+
 		$sel_fields[] = $this->conf['otherdb_password_field'];
 		$user_field = $this->conf['otherdb_user_field'];
-		if (isset($this->conf['otherdb_salt_field']))
+
+		if(!empty($this->conf['otherdb_password_salt']))
 		{
-			$sel_fields[] = $this->conf['otherdb_salt_field'];
+			$sel_fields[] = $this->conf['otherdb_password_salt'];
 		}
 
 		//Get record containing supplied login name
@@ -136,6 +136,7 @@ class auth_login extends alt_auth_base
 		if (!$r1 = $dbh->query($qry))
 		{
 			$this->makeErrorText('Lookup query failed');
+			e107::getMessage()->addDebug($qry);
 			return AUTH_NOCONNECT;
 		}
 		if (!$row = $r1->fetch(PDO::FETCH_BOTH))
@@ -173,7 +174,12 @@ class auth_login extends alt_auth_base
 		}
 
 		$pwFromDB = $row[$this->conf['otherdb_password_field']];					// Password stored in DB
-		if ($salt_field) $pwFromDB .= ':'.$row[$salt_field];
+		$salt_field = $this->conf['otherdb_password_salt'];
+
+		if(!empty($salt_field))
+		{
+			$pwFromDB .= ':'.$row[$salt_field];
+		}
 
 		if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
 		{

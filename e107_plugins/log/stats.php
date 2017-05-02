@@ -1662,7 +1662,7 @@ class siteStats
 			<table class='table table-striped fborder' style='width: 100%;'>
 			<tr>
 				<th class='fcaption' style='width: 30%;'>".ADSTAT_L18."</th>
-				<th class='fcaption' style='width: 70%;'>Information</th>
+				<th class='fcaption' style='width: 70%;'>".ADSTAT_L53."</th>
 			</tr>\n";
 
 		foreach($recentArray as $key => $info) 

@@ -875,11 +875,11 @@ class xmlClass
 	public function e107Export($xmlprefs, $tables, $plugPrefs, $options = array())
 	{
 	//	error_reporting(0);
-		$e107info = array();
-		require_once(e_ADMIN."ver.php");
+	//	$e107info = array();
+	//	require_once(e_ADMIN."ver.php");
 
 		$text = "<?xml version='1.0' encoding='utf-8' ?".">\n";
-		$text .= "<e107Export version=\"".$e107info['e107_version']."\" timestamp=\"".time()."\" >\n";
+		$text .= "<e107Export version=\"".e_VERSION."\" timestamp=\"".time()."\" >\n";
 
 		$default = array();
 		$excludes = array();

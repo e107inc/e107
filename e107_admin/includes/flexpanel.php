@@ -212,11 +212,11 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// --------------------- Website Status ---------------------------
-		$ns->setStyle('flexpanel');
+	/*	$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_website_status');
-		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-infopanel_website_status", true);
+		$coreInfoPanelWebsiteStatus = '';// 'hi';/// "<div id='core-infopanel_website_status'>".$this->renderAddonDashboards()."</div>";  $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderAddonDashboards(), "core-infopanel_website_status", true);
 		$info = $this->getMenuPosition('core-infopanel_website_status');
-		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;
+		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;*/
 
 
 		// --------------------- Latest Comments --------------------------
@@ -253,6 +253,26 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 				$panels[$info['area']][$info['weight']] .= $inc;
 			}
 		}
+
+
+	// --------------------- Plugin Addon Dashboards ---------------------- eg. e107_plugin/user/e_dashboard.php
+		$dashboards = $this->getAddonDashboards();
+		if(!empty($dashboards))
+		{
+			$ns->setStyle('flexpanel');
+			foreach($dashboards as $val)
+			{
+				$id = $val['mode'];
+				$ns->setUniqueId($id);
+				$inc = $ns->tablerender($val['caption'], $val['text'], $val['mode'], true);
+
+				$info = $this->getMenuPosition($id);
+
+				$panels[$info['area']][$info['weight']] .= $inc;
+			}
+
+		}
+
 
 		// Sorting panels.
 		foreach($panels as $key => $value)
@@ -292,7 +312,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	{
 		$user_pref = $this->getUserPref();
 
-		if(varset($user_pref['core-flexpanel-order'][$id]))
+		if(!empty($user_pref['core-flexpanel-order'][$id]))
 		{
 			return $user_pref['core-flexpanel-order'][$id];
 		}
@@ -309,6 +329,14 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		if(!empty($positions[$layout][$id]))
 		{
 			return $positions[$layout][$id];
+		}
+
+		if(strpos($id,'plug-infopanel-') === 0) // addon dashboards default to area 2.
+		{
+			$default = array(
+				'area'   => 'menu-area-02',
+				'weight' => 1000,
+			);
 		}
 
 		return $default;

@@ -749,6 +749,8 @@ define('SITECONTACTINFO', $tp->toHTML($pref['sitecontactinfo'], true, 'emotes_of
 define('SITEEMAIL', vartrue($pref['replyto_email'],$pref['siteadminemail']));
 define('USER_REGISTRATION', vartrue($pref['user_reg'],false)); // User Registration System Active or Not.
 define('e_DEVELOPER', $developerMode);
+define('e_VERSION', varset($pref['version'],''));
+
 unset($developerMode);
 
 if(!empty($pref['xurl']) && is_array($pref['xurl']))
@@ -2669,7 +2671,7 @@ class e_http_header
 		{
 			$this->setHeader("X-Powered-By: e107", true); // no less secure than e107-specific html. 
 		}
-		
+
 		if($this->compression_server_support == true)
 		{
 			$this->setHeader('Vary: Accept-Encoding');	

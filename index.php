@@ -64,9 +64,7 @@
 
 	if($file = $eUrl->getInclude())
 	{
-		include_once(HEADERF);
 		include_once($file);
-		include_once(FOOTERF);
 		exit;
 	}
 

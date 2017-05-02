@@ -37,7 +37,7 @@ $FLEXPANEL_LAYOUT = '
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row row-flex">
 				<div class="col-sm-4">
 					<div class="draggable-panels" id="menu-area-03">
 						{MENU_AREA_03}
@@ -65,7 +65,7 @@ $FLEXPANEL_LAYOUT = '
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row row-flex">
 				<div class="col-sm-6">
 					<div class="draggable-panels" id="menu-area-07">
 						{MENU_AREA_07}

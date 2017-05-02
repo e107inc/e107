@@ -144,18 +144,18 @@ class admin_start
 			e_PLUGIN."pm/sendpm.sc",
 			e_PLUGIN."pm/shortcodes/",
 			e_PLUGIN."social/e_header.php",
-			e_PLUGIN."download/url/url.php",
-			e_PLUGIN."download/url/sef_url.php",
+		//	e_PLUGIN."download/url/url.php",
+		//	e_PLUGIN."download/url/sef_url.php",
 		);
 
-
+		$this->checkCoreVersion();
 
 		if(!empty($_POST['delete-deprecated']))
 		{
 			$this->deleteDeprecated();
 		}
 
-
+		unset($_SESSION['lancheck']);
 
 
 		e107::getDb()->db_Mark_Time('Check Paths');
@@ -251,6 +251,28 @@ class admin_start
 		}
 
 	}
+
+
+	private function checkCoreVersion()
+	{
+
+		$e107info = array();
+
+		require(e_ADMIN."ver.php");
+
+		if(!empty($e107info['e107_version']) && (e_VERSION !==  $e107info['e107_version']))
+		{
+			e107::getConfig()->set('version', $e107info['e107_version'])->save(false,true,false);
+
+			// When version has changed, clear plugin/theme version cache.
+			e107::getPlug()->clearCache();
+			e107::getTheme()->clearCache();
+
+			e107::getDebug()->log("Updating core version pref");
+		}
+
+	}
+
 
 
 	private function checkCoreUpdate()
@@ -577,11 +599,13 @@ TMPO;
 
 			if(@unlink($file))
 			{
-				$mes->addSuccess("Deleted ".$file);
+				$message = e107::getParser()->lanVars(LAN_UI_FILE_DELETED, array('x'=>$file));
+				$mes->addSuccess($message);
 			}
 			else
 			{
-				$mes->addError("Unable to delete ".$file.". Please remove the file manually.");
+				$message = e107::getParser()->lanVars(LAN_UI_FILE_DELETED_FAILED, array('x'=>$file));
+				$mes->addError($message);
 			}
 		}
 

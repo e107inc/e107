@@ -638,7 +638,8 @@ class download
 				
 				$subText .= $tp->parseTemplate($DOWNLOAD_CAT_TABLE_END, TRUE, $sc);
 				
-		 	   $dl_text .= $ns->tablerender($dl_title, $subText, 'download-list', true);
+		 	 //  $dl_text .= $ns->tablerender($dl_title, $subText, 'download-list', true);
+		 	     $dl_text .=  $subText;
 			}
 			
 		}// End of subcategory display

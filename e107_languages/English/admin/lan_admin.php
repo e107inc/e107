@@ -290,6 +290,7 @@ define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the file or fo
 define("LAN_NOTREADABLE", "Not Readable");
 define("LAN_MISSING", "Missing");
 define("LAN_UNUSED", "Unused");
+define("LAN_SESSION", "Session");
 define("LAN_TOOLTIP", "Tooltip");
 
 define("LAN_TIME","Time");
@@ -470,6 +471,8 @@ define("LAN_UI_DELETE_WARNING", "You are about to delete [x] records. Please con
 define("LAN_UI_BATCH_CREATELINK", "Create Link");
 define("LAN_UI_DELETED", "[x] record(s) successfully deleted!");
 define("LAN_UI_DELETED_FAILED", "[x] records not found and not deleted!");
+define("LAN_UI_FILE_DELETED", "[x] file successfully deleted!");
+define("LAN_UI_FILE_DELETED_FAILED", "Unable to delete [x]! Please remove the file manually.");
 define("LAN_UI_BATCH_EXPORT", "Export");
 
 define("LAN_UI_USING_DATABASE_TABLE", "Using [x] database table");

@@ -359,89 +359,18 @@ class system_tools
 	// Developer Mode ONly.. No LANS.
 	private function githubSyncProcess()
 	{
+		$result = e107::getFile()->unzipGithubArchive('core');
 
-		// Delete any existing file.
-		if(file_exists(e_TEMP."e107-master.zip"))
-		{
-			unlink(e_TEMP."e107-master.zip");
-		}
-
-		$result = e107::getFile()->getRemoteFile('https://codeload.github.com/e107inc/e107/zip/master', 'e107-master.zip', 'temp');
-
-		if($result == false)
+		if($result === false)
 		{
 			e107::getMessage()->addError( DBLAN_118 );
+			return null;
 		}
 
+		$success = $result['success'];
+		$error = $result['error'];
 
-		$localfile = 'e107-master.zip';
-
-		chmod(e_TEMP.$localfile, 0755);
-		require_once(e_HANDLER."pclzip.lib.php");
-
-//	$base = realpath(dirname(__FILE__));
-
-
-		$newFolders = array(
-			'e107-master/e107_admin/'       => e_BASE.e107::getFolder('ADMIN'),
-			'e107-master/e107_core/'        => e_BASE.e107::getFolder('CORE'),
-			'e107-master/e107_docs/'        => e_BASE.e107::getFolder('DOCS'),
-			'e107-master/e107_handlers/'    => e_BASE.e107::getFolder('HANDLERS'),
-			'e107-master/e107_images/'      => e_BASE.e107::getFolder('IMAGES'),
-			'e107-master/e107_languages/'   => e_BASE.e107::getFolder('LANGUAGES'),
-			'e107-master/e107_media/'       => e_BASE.e107::getFolder('MEDIA'),
-			'e107-master/e107_plugins/'     => e_BASE.e107::getFolder('PLUGINS'),
-			'e107-master/e107_system/'      => e_BASE.e107::getFolder('SYSTEM'),
-			'e107-master/e107_themes/'      => e_BASE.e107::getFolder('THEMES'),
-			'e107-master/e107_web/'         => e_BASE.e107::getFolder('WEB'),
-			'e107-master/'                  => e_BASE
-		);
-
-		$srch = array_keys($newFolders);
-		$repl = array_values($newFolders);
-
-		$archive 	= new PclZip(e_TEMP.$localfile);
-		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
-
-		$error = array();
-		$success = array();
-		$skipped = array();
-//	print_a($unarc);
-
-
-		$excludes = array('e107-master/','e107-master/install.php','e107-master/favicon.ico');
-
-		foreach($unarc as $k=>$v)
-		{
-			if(in_array($v['stored_filename'],$excludes))
-			{
-				continue;
-			}
-
-			$oldPath = $v['filename'];
-			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
-
-			$message = e107::getParser()->lanVars(DBLAN_121, array('x'=>$oldPath, 'y'=>$newPath));
-
-			if($v['folder'] ==1 && is_dir($newPath))
-			{
-				// $skipped[] =  $newPath. " (already exists)";
-				continue;
-			}
-
-			if(!rename($oldPath,$newPath))
-			{
-				$error[] =  $message;
-			}
-			else
-			{
-				$success[] = $message;
-			}
-
-
-			//	echo $message."<br />";
-
-		}
+	//		$message = e107::getParser()->lanVars(DBLAN_121, array('x'=>$oldPath, 'y'=>$newPath));
 
 		if(!empty($success))
 		{
@@ -457,9 +386,6 @@ class system_tools
 		{
 			e107::getMessage()->addError(print_a($error,true));
 		}
-
-
-
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_112, e107::getMessage()->render());
 

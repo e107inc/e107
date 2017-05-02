@@ -22,14 +22,14 @@
  *	@version 	$Id$;
  */
 
-define('E107DB_LAN_1', 'E107 format database');
+define('E107DB_LAN_1', 'e107 format database');
 define('E107DB_LAN_9', 'Password Method:');
-define('E107DB_LAN_10', 'Configure E107 db auth');
+define('E107DB_LAN_10', 'Configure e107 db auth');
 define('E107DB_LAN_11', 'Check the box against any field you wish to be transferred to the local database:');
 
 
-define('IMPORTDB_LAN_7', 'MD5 (E107 original)');
-define('IMPORTDB_LAN_8', 'E107 salted (option 2.0 on)');
+define('IMPORTDB_LAN_7', 'MD5 (e107 original)');
+define('IMPORTDB_LAN_8', 'e107 salted (option 2.0 on)');
 
 
 define('LAN_AUTHENTICATE_HELP','This authentication method is to be used with a second E107 database, which may use a different password format to this system. The
