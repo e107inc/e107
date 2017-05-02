@@ -14,20 +14,261 @@ if (!defined('e107_INIT')) { exit; }
 
 class user_dashboard // plugin-folder + '_url'
 {
-	private $title; 
-	
+	private $title;
+
+	public $chartCaption = LAN_WEBSITE_STATUS;
+
 	function chart() 
 	{
 		$config = array();
-	
+		$tp = e107::getParser();
+
 		$config[] = array(
-			
-			'text'		=> $this->registered('thismonth'),
-			'caption'	=> $this->title,
+			0 => array(	'text'		=> $this->renderChart(), 'caption'	=> $tp->toGlyph('fa-signal').' '.LAN_STATS),
+			1 => array('caption'    =>$tp->toGlyph('fa-user').' '.LAN_ONLINE.' ('.$this->renderOnlineUsers('count').')', 'text'=>$this->renderOnlineUsers()),
+
+			2 => array(	'text'		=> $this->registered('user_new_thismonth'), 'caption'	=> $this->title),
 		);
 		
 		return $config;
 	}
+
+
+	private function renderChart()
+	{
+		if (e107::isInstalled('log'))
+		{
+			return $this->renderStats('log');
+		}
+		else
+		{
+			return $this->renderStats('demo');
+		}
+
+	}
+
+
+	private function getStats($type)
+	{
+
+		if($type == 'demo')
+		{
+			$data = array();
+
+			$months = e107::getDate()->terms('month');
+
+			$data['labels'] = array($months[0], //"January",
+ 						$months[1], //"February",
+ 						$months[2], //"March",
+ 						$months[3], //"April",
+ 						$months[4], //"May",
+ 						$months[5], //"June",
+ 						$months[6]  //"July"
+ 			);
+
+			$data['datasets'][]	= array(
+							'fillColor'			=> "rgba(220,220,220,0.5)",
+							'strokeColor'		=> "rgba(220,220,220,1)",
+							'pointColor '		=> "rgba(220,220,220,1)",
+							'pointStrokeColor'	=> "#fff",
+							'data'				=> array(65,59,90,81,56,55,40),
+							'title'				=> ADLAN_168// "Visits"
+			);
+
+			$data['datasets'][]	= array(
+							'fillColor'			=> "rgba(151,187,205,0.5)",
+							'strokeColor'		=> "rgba(151,187,205,1)",
+							'pointColor '		=> "rgba(151,187,205,1)",
+							'pointStrokeColor'	=> "#fff",
+							'data'				=> array(28,48,40,19,96,27,100),
+							'title'				=> ADLAN_169 //"Unique Visits"
+			);
+
+			return $data;
+		}
+
+
+
+		$sql = e107::getDB();
+
+		$td = date("Y-m-j", time());
+		$dayarray[$td] = array();
+		$pagearray = array();
+
+		$qry = "
+		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
+		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
+		DESC LIMIT 0,9
+		";
+
+		if($amount = $sql->gen($qry))
+		{
+			$array = $sql->db_getList();
+
+			$ttotal = 0;
+			$utotal = 0;
+
+			foreach($array as $key => $value)
+			{
+				extract($value);
+				$log_id = substr($log_id, 0, 4).'-'.substr($log_id, 5, 2).'-'.str_pad(substr($log_id, 8), 2, '0', STR_PAD_LEFT);
+				if(is_array($log_data)) {
+					$entries[0] = $log_data['host'];
+					$entries[1] = $log_data['date'];
+					$entries[2] = $log_data['os'];
+					$entries[3] = $log_data['browser'];
+					$entries[4] = $log_data['screen'];
+					$entries[5] = $log_data['referer'];
+				}
+				else
+				{
+					$entries = explode(chr(1), $log_data);
+				}
+
+				$dayarray[$log_id]['daytotal'] = $entries[0];
+				$dayarray[$log_id]['dayunique'] = $entries[1];
+
+				unset($entries[0]);
+				unset($entries[1]);
+
+				foreach($entries as $entry)
+				{
+					if($entry)
+					{
+						list($url, $total, $unique) = explode("|", $entry);
+						if(strstr($url, "/"))
+						{
+							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
+						}
+						else
+						{
+							$urlname = preg_replace("/\.php|\?.*/", "", $url);
+						}
+						$dayarray[$log_id][$urlname] = array('url' => $url, 'total' => $total, 'unique' => $unique);
+						if (!isset($pagearray[$urlname]['total'])) $pagearray[$urlname]['total'] = 0;
+						if (!isset($pagearray[$urlname]['unique'])) $pagearray[$urlname]['unique'] = 0;
+						$pagearray[$urlname]['total'] += $total;
+						$pagearray[$urlname]['unique'] += $unique;
+						$ttotal += $total;
+						$utotal += $unique;
+					}
+				}
+			}
+		}
+
+		$logfile = e_LOG.'logp_'.date('z.Y', time()).'.php'; // was logi_ ??
+		if(is_readable($logfile))
+		{
+			require($logfile);
+		}
+
+
+
+		if(vartrue($pageInfo))
+		{
+			foreach($pageInfo as $fkey => $fvalue)
+			{
+				$dayarray[$td][$fkey]['total'] += $fvalue['ttl'];
+				$dayarray[$td][$fkey]['unique'] += $fvalue['unq'];
+				$dayarray[$td]['daytotal'] += $fvalue['ttl'];
+				$dayarray[$td]['dayunique'] += $fvalue['unq'];
+				$pagearray[$fkey]['total'] += $fvalue['ttl'];
+				$pagearray[$fkey]['unique'] += $fvalue['unq'];
+				$ttotal += $fvalue['ttl'];
+				$utotal += $fvalue['unq'];
+			}
+		}
+
+
+		$visitors = array();
+		$unique = array();
+
+
+		ksort($dayarray);
+		foreach($dayarray as $k=>$v)
+		{
+			$unix = strtotime($k);
+
+			$visitors[] = intval(vartrue($v['daytotal']));
+			$unique[] = intval(vartrue($v['dayunique']));
+			$label[] = "'".date("D",$unix)."'";
+		}
+
+		$data = array();
+
+		$data['labels'] 	= $label;
+
+		//visitors
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(220,220,220,0.5)",
+							'strokeColor'  		=>  "rgba(220,220,220,1)",
+							'pointColor '  		=>  "rgba(220,220,220,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> $visitors
+
+		);
+
+
+		//Unique Visitors
+		$data['datasets'][]	= array(
+							'fillColor' 		=> "rgba(151,187,205,0.5)",
+							'strokeColor'  		=>  "rgba(151,187,205,1)",
+							'pointColor '  		=>  "rgba(151,187,205,1)",
+							'pointStrokeColor'  =>  "#fff",
+							'data'				=> $unique
+		);
+
+
+
+		return $data;
+
+
+	}
+
+
+	private function renderStats($type)
+	{
+
+		$data = $this->getStats($type);
+
+
+		$cht = e107::getChart();
+		$cht->setType('line');
+		$cht->setOptions(array(
+			'annotateDisplay' => true,
+			'annotateFontSize' => 8
+		));
+		$cht->setData($data,'canvas');
+		$text = $cht->render('canvas');
+
+
+		if($type == 'demo')
+		{
+			$text .= "<div class='center'><small>".ADLAN_170."<a class='btn btn-xs btn-mini' href='".e_ADMIN."plugin.php?avail'>".ADLAN_171."</a></small></div>";
+		}
+		else
+		{
+			$text .= "<div class='center'><small>
+			<span style='color:rgba(220,220,220,0.5)'>&diams;</span>".ADLAN_168."&nbsp;&nbsp;
+			<span style='color:rgba(151,187,205,1)'>&diams;</span>".ADLAN_169."
+			</small></div>";
+		}
+
+
+		return $text;
+
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 
 	/**
@@ -120,7 +361,7 @@ class user_dashboard // plugin-folder + '_url'
 		$cht->setData($data);
 		
 		// redraw to fix sizing issue.
-		e107::js('footer-inline', "
+	/*	e107::js('footer-inline', "
 		
 			
 			$('a[data-toggle=\"tab\"]').on('shown.bs.tab', function (e) {
@@ -129,14 +370,135 @@ class user_dashboard // plugin-folder + '_url'
 			})
 						
 			
-		");
+		");*/
 		
 		
 		return "<div class='height:50%'>".$cht->render($id, $width, $height)."</div>";
 		
 		// return "<div class='height:50%'>".$cht->render('projection', 320, 380)."</div>";
 		
-	}	
+	}
+
+
+
+	function renderOnlineUsers($data=false)
+	{
+
+		$ol = e107::getOnline();
+		$tp = e107::getParser();
+		$multilan = e107::getPref('multilanguage');
+
+		$panelOnline = "
+
+				<table class='table table-condensed table-striped' >
+				<colgroup>
+					<col style='width: 10%' />
+		            <col style='width: 25%' />
+					<col style='width: 10%' />
+					<col style='width: 40%' />
+					<col style='width: auto' />";
+
+
+		$panelOnline .= (!empty($multilan)) ? "<col style='width: auto' />" : "";
+
+
+		$panelOnline .= "
+
+				</colgroup>
+				<thead>
+					<tr class='first'>
+						<th>".LAN_TIMESTAMP."</th>
+						<th>".LAN_USER."</th>
+						<th>".LAN_IP."</th>
+						<th>".LAN_PAGE."</th>
+						<th class='center'>".LAN_AGENT."</th>";
+
+		$panelOnline .= (!empty($multilan)) ? "<th class='center'>".LAN_LANG."</th>" : "";
+
+		$panelOnline .= "
+					</tr>
+				</thead>
+				<tbody>";
+
+
+
+		$online = $ol->userList() + $ol->guestList();
+
+		if($data == 'count')
+		{
+			return count($online);
+		}
+
+	//		echo "Users: ".print_a($online);
+
+		$lng = e107::getLanguage();
+
+		foreach ($online as $val)
+		{
+			$panelOnline .= "
+			<tr>
+				<td class='nowrap'>".e107::getDateConvert()->convert_date($val['user_currentvisit'],'%H:%M:%S')."</td>
+				<td>".$this->renderOnlineName($val['online_user_id'])."</td>
+				<td>".e107::getIPHandler()->ipDecode($val['user_ip'])."</td>
+				<td><a class='e-tip' href='".$val['user_location']."' title='".$val['user_location']."'>".$tp->html_truncate(basename($val['user_location']),50,"...")."</a></td>
+				<td class='center'><a class='e-tip' href='#' title='".$val['user_agent']."'>".$this->browserIcon($val)."</a></td>";
+
+			$panelOnline .= (!empty($multilan)) ? "<td class='center'><a class='e-tip' href='#' title=\"".$lng->convert($val['user_language'])."\">".$val['user_language']."</a></td>" : "";
+
+
+			$panelOnline .= "
+			</tr>
+			";
+		}
+
+
+		$panelOnline .= "</tbody></table>";
+
+		return $panelOnline;
+	}
+
+
+	function browserIcon($row)
+	{
+
+		$types = array(
+			"ie" 		=> "MSIE",
+			'chrome'	=> 'Chrome',
+			'firefox'	=> 'Firefox',
+			'seamonkey'	=> 'Seamonkey',
+		//	'Chromium/xyz
+			'safari'	=> "Safari",
+			'opera'		=> "Opera"
+		);
+
+
+		if($row['user_bot'] === true)
+		{
+			return "<i class='browser e-bot-16'></i>";
+		}
+
+		foreach($types as $icon=>$b)
+		{
+			if(strpos($row['user_agent'], $b)!==false)
+			{
+				return "<i class='browsers e-".$icon."-16' ></i>";
+			}
+		}
+
+		return "<i class='browsers e-firefox-16'></i>"; // FIXME find a default icon.
+	}
+
+
+	private function renderOnlineName($val)
+	{
+		if($val==0)
+		{
+			return LAN_GUEST;
+		}
+		return $val;
+	}
+
+
 
 	
 }

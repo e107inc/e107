@@ -54,7 +54,8 @@ if(!empty($_GET['iframe']))
 		);
 
 		protected $adminMenuAliases = array(
-			'main/edit'	=> 'main/list'
+			'main/edit'	=> 'main/list',
+	//		'main/download'	=> 'main/tools'
 		);
 
 		protected $adminMenuIcon = 'e-language-24';
@@ -123,12 +124,31 @@ if(!empty($_GET['iframe']))
 		);
 
 		protected $installedLanguages = array();
+		protected $localPacks = array();
+		protected $onlinePacks = array();
 
 		public function init()
 		{
 			$this->installedLanguages = e107::getLanguage()->installed();
 			$this->prefs['sitelanguage']['writeParms']['optArray'] = $this->installedLanguages;
 			$this->prefs['adminlanguage']['writeParms']['optArray'] = $this->installedLanguages;
+
+			e107::css('inline', "
+
+				.language-name { padding-left:15px }
+
+			");
+
+
+		}
+
+		private function loadPackInfo()
+		{
+			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
+
+			$this->onlinePacks  = $lck->getOnlineLanguagePacks();
+			$this->localPacks   = $lck->getLocalLanguagePacks();
+
 		}
 
 
@@ -153,8 +173,11 @@ if(!empty($_GET['iframe']))
 			return $text;
 		}
 
-		function toolsPage()
+
+
+		function ToolsPage()
 		{
+			$this->loadPackInfo();
 			$pref = e107::getPref();
 			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
 
@@ -172,22 +195,232 @@ if(!empty($_GET['iframe']))
 			}
 
 
-			$text = $lck->showLanguagePacks();
+			return $this->renderLanguagePacks();
 
 
-			//e107::getRender()->tablerender(ADLAN_132.SEP.LANG_LAN_32, $text);
-
-			//return;
+		}
 
 
 
 
-		//	e107::getRender()->tablerender(ADLAN_132.SEP."Core Language-Pack Developer", );
+		function DownloadPage()
+		{
+			$this->loadPackInfo();
+
+			$lan = $this->getId();
+
+			if(empty($lan))
+			{
+				return LAN_ERROR;
+			}
+
+			if(empty($this->onlinePacks[$lan]['url']))
+			{
+				return LAN_ERROR;
+			}
+
+
+			$result = e107::getFile()->unzipGithubArchive($this->onlinePacks[$lan]['url']);
+
+			if(!empty($result['success']))
+			{
+				e107::getMessage()->addSuccess(print_a($result['success'],true));
+				$_SESSION['lancheck'][$lan]['total'] = 0; // reset errors to zero.
+			}
+
+			if(!empty($result['error']))
+			{
+				e107::getMessage()->addError(print_a($result['error'],true));
+			}
+
+			$this->addTitle(LANG_LAN_114);
+			$this->addTitle($lan);
+
+
+			return e107::getMessage()->render();
+		}
+
+
+
+
+
+		/**
+		 * List the installed language packs.
+		 * @return string
+		 */
+		private function renderLanguagePacks()
+		{
+			$frm = e107::getForm();
+			$ns = e107::getRender();
+			$tp = e107::getParser();
+
+		//	if(is_readable(e_ADMIN."ver.php"))
+			{
+			//	include(e_ADMIN."ver.php");
+				list($ver, $tmp) = explode(" ", e_VERSION);
+			}
+
+			$lck = e107::getSingleton('lancheck', e_ADMIN."lancheck.php");
+
+			$release_diz = defset("LANG_LAN_30","Release Date");
+			$compat_diz = defset("LANG_LAN_31", "Compatibility");
+			$lan_pleasewait = (deftrue('LAN_PLEASEWAIT')) ?  $tp->toJS(LAN_PLEASEWAIT) : "Please Wait";
+
+
+			$text = "<form id='lancheck' method='post' action='".e_REQUEST_URI."'>
+				<table class='table adminlist table-striped'>
+				<colgroup>
+					<col style='width:20%' />
+					<col style='width:20%' />
+					<col style='width:20%' />
+					<col style='width:15%' />
+					<col style='width:25%' />
+				</colgroup>";
+			$text .= "<thead>
+			<tr>
+			<th>".ADLAN_132."</th>
+			<th class='text-center'>".$release_diz."</th>
+			<th class='text-center'>".$compat_diz."</th>
+			<th class='text-center'>".LAN_STATUS."</td>
+			<th class='text-right' style='white-space:nowrap'>".LAN_OPTIONS."</td>
+			</tr>
+			</thead>
+			";
+
+			$text .= "<tr><th colspan='5'>".LAN_INSTALLED."</th></tr>";
+
+		//	$onlinePacks = $lck->getOnlineLanguagePacks();
+		//	$localPacks = $lck->getLocalLanguagePacks();
+
+			foreach($this->localPacks as $language=>$value)
+			{
+
+				$errFound = (isset($_SESSION['lancheck'][$language]['total']) && $_SESSION['lancheck'][$language]['total'] > 0) ?  TRUE : FALSE;
+
+
+				$text .= "<tr>
+				<td><span class='language-name'>".$language."</a></td>
+				<td class='text-center'>".$value['date']."</td>
+				<td class='text-center'>".$value['compatibility']."</td>
+				<td class='text-center'>".( $errFound ? ADMIN_FALSE_ICON : ADMIN_TRUE_ICON )."</td>
+				<td class='text-right'>";
+
+			//	$text .= "<input type='submit' name='language_sel[{$language}]' value=\"".LAN_CHECK_2."\" class='btn btn-primary' />";
+				$text .= "<a href='".e_REQUEST_URI."&amp;sub=verify&amp;lan=".$language."' class='btn btn-default' >".$tp->toGlyph('fa-search').LAN_CHECK_2."</a>";
+
+			/*	$text .= "
+				<input type='submit' name='ziplang[{$language}]' value=\"".LANG_LAN_23."\" class='btn btn-default' onclick=\"this.value = '".$lan_pleasewait."'\" />";
+			*/
+				$text .= "</td>
+				</tr>";
+			}
+
+			$text .= "<tr><th colspan='5'>".defset('LANG_LAN_151','Available')."</th></tr>"; // don't translate this.
+
+			$text .= $this->renderOnlineLanguagePacks();
+
+			$text .= "
+			</tr></table>";
+
+			$creditLan = defset('LANG_LAN_152', "Courtesy of the [e107 translation team]"); // don't translate this.
+
+			$srch = array("[","]");
+			$repl = array("<a rel='external' href='https://github.com/orgs/e107translations/teams'>","</a>");
+
+			$text .= "<div class='nav navbar'><small class='navbar-text'>".str_replace($srch,$repl,$creditLan)."</small></div>";
+
+
+
+/*
+			$text .= "<table class='table table-striped'>";
+
+			$text .= "<thead><tr><th>".LAN_OPTIONS."</th></tr></thead><tbody>";
+
+			$srch = array("[","]");
+			$repl = array("<a rel='external' href='https://github.com/orgs/e107translations/teams'>","</a>");
+			$diz = (deftrue("LANG_LAN_28")) ? LANG_LAN_28 : "Check this box if you are a member of the [e107 translation team].";
+
+			$checked = varset($_COOKIE['e107_certified']) == 1 ? true : false;
+
+			$text .= "<tr><td>";
+			$text .= $frm->checkbox('contribute_pack',1,$checked,array('label'=>str_replace($srch,$repl,$diz)));
+			;
+
+
+			$text .= "</td>
+			</tr>
+			<tr>
+			<td>";
+
+			$text .= " </td>
+			</tr>";
+
+			$text .= "</tbody></table>";
+			*/
+
+			$text .= "</form>";
+
+		//	$text .= "<div class='text-right text-muted' style='padding-top:50px'><small>".LANG_LAN_AGR."</small></div>";
+
 
 
 			return $text;
 
+
+
 		}
+
+
+		private function renderOnlineLanguagePacks()
+		{
+
+			$text = '';
+
+			$tp = e107::getParser();
+
+			foreach($this->onlinePacks as $lan=>$value)
+			{
+
+				if(!empty($this->localPacks[$lan]))
+				{
+
+					if($this->localPacks[$lan]['compatibility'] == $value['compatibility'] && !deftrue('e_DEBUG'))
+					{
+						continue;
+					}
+
+				//	$status = $tp->toGlyph('fa-star');
+					$class = 'btn-primary';
+				}
+				else
+				{
+					$status = "&nbsp;";
+					$class = 'btn-default';
+				}
+
+
+				$text .= "<tr>
+					<td><span class='language-name'><a rel='external' href='".$value['infoURL']."' title=\"".LAN_MOREINFO."\">".$value['name']."</a></span></td>";
+
+			/*		$text .= "
+						<td>".$value['version']."</td>
+						<td><a href='".$value['authorURL']."'>".$value['author']."</a></td>";*/
+
+
+				$url = 'language.php?mode=main&action=download&id='.$value['name']; // $value['url']
+
+				$text .= "
+					<td class='text-center'>".$value['date']."</td>
+					<td class='text-center'>".$value['compatibility']."</td>
+					<td class='text-center'>".$status."</td>
+					<td class='text-right'><a  class='btn ".$class."' href='".$url."'><i class='fa fa-arrow-down'></i> ".ADLAN_121."</a></td>
+					</tr>";
+			}
+
+			return $text;
+
+		}
+
 
 
 		private function getTables()

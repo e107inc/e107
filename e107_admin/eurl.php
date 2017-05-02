@@ -469,8 +469,8 @@ class eurl_admin_ui extends e_admin_controller_ui
 			if(!empty($_POST['eurl_profile']))
 			{
 				e107::getConfig()->set('url_profiles', $_POST['eurl_profile']);
-				unset($locations['download']);
-				unset($config['download']);
+			//	unset($locations['download']);
+			//	unset($config['download']);
 			}
 
 			e107::getConfig()

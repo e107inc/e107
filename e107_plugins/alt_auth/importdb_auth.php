@@ -92,7 +92,17 @@ class auth_login extends alt_auth_base
 		require_once(e_PLUGIN.'alt_auth/extended_password_handler.php');		// This auto-loads the 'standard' password handler as well
 		$pass_check = new ExtendedPasswordHandler();
 
+		if(empty($this->conf['importdb_password_method']))
+		{
+			$this->makeErrorText('importdb_password_method not set');
+		}
+
+
+
 		$passMethod = $pass_check->passwordMapping($this->conf['importdb_password_method']);
+
+		e107::getMessage()->addInfo("Testing with Password Method: ".$this->conf['importdb_password_method']);
+
 		if ($passMethod === FALSE) 
 		{
 			$this->makeErrorText('Password error - invalid method');
@@ -100,6 +110,9 @@ class auth_login extends alt_auth_base
 		}
 
 		$pwFromDB = $row['user_password'];					// Password stored in DB
+
+		e107::getMessage()->addDebug("Stored Password: ".$pwFromDB);
+
 		if ($pass_check->checkPassword($pword, $uname, $pwFromDB, $passMethod) !== PASSWORD_VALID)
 		{
 			$this->makeErrorText('Password incorrect');

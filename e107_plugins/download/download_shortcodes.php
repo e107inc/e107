@@ -637,7 +637,8 @@ class download_shortcodes extends e_shortcode
    {
       $tp = e107::getParser();
 
-		$url = e107::url('download', 'get', $this->var);
+		$url = e107::url('download', 'image', $this->var);
+	//$url =  e_PLUGIN_ABS . "download/request.php?download." . $this->var['download_id'];
 
       if($this->var['download_thumb'])
       {

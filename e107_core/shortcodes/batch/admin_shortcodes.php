@@ -1022,14 +1022,14 @@ class admin_shortcodes
 		{
 			global $ns, $pref, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
 
-			if (file_exists(e_ADMIN.'ver.php'))
+		//	if (file_exists(e_ADMIN.'ver.php'))
 			{
-				include(e_ADMIN.'ver.php');
+			//	include(e_ADMIN.'ver.php');
 			}
 			
 			if($parm == "version")
 			{
-				return $e107info['e107_version'];
+				return e_VERSION;
 			}
 
 			$obj = e107::getDateConvert();
@@ -1057,7 +1057,7 @@ class admin_shortcodes
 			<br />
 			<b>e107</b>
 			<br />
-			".FOOTLAN_3." ".$e107info['e107_version']."
+			".FOOTLAN_3." ".e_VERSION."
 			<br /><br />
 			<b>".FOOTLAN_20."</b>
 			<br />
@@ -1838,7 +1838,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			$template = $$tmpl;
 
-			return $template['start']. '<li><a tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="hide e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="bottom" title="'.$tp->toAttribute(LAN_UPDATE_AVAILABLE).'" data-content="'.$tp->toAttribute(ADLAN_120).'"><span class="text-info">'.$tp->toGlyph('fa-database').'</span></a></li>' .$template['end'];
+			return $template['start']. '<li><a tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="hide e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'"><span class="text-info">'.$tp->toGlyph('fa-database').'</span></a></li>' .$template['end'];
 
 		}
 
