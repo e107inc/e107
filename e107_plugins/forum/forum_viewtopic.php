@@ -646,9 +646,12 @@ function showmodoptions()
 	$forum_id = $thread->threadInfo['forum_id'];
 	if ($postInfo['thread_start'])
 	{
+
 		$type = 'Thread';
 		// XXX _URL_ thread name?
-		$ret = "<form method='post' action='" . $e107->url->create('forum/thread/view', array('id' => $postInfo['post_thread']))."' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
+	//	$formUrl = $e107->url->create('forum/thread/view', array('id' => $postInfo['post_thread']));
+		$formUrl = e_REQUEST_URI; // e107::url('forum', 'topic',
+		$ret = "<form method='post' action='" . $formUrl."' id='frmMod_{$postInfo['post_forum']}_{$postInfo['post_thread']}'>";
 		$delId = $postInfo['post_thread'];
 	}
 	else
@@ -674,7 +677,9 @@ function showmodoptions()
 	}
 	else
 	{
-		$ret .= "<a href='" . $e107->url->create('forum/thread/split', array('id' => $postInfo['post_id']))."'>" . defset('IMAGE_admin_split') . '</a>';
+	//	$splitUrl = $e107->url->create('forum/thread/split', array('id' => $postInfo['post_id']));
+		$splitUrl =  e107::url('forum','split', array('thread_id'=>$postInfo['post_thread'], 'post_id'=>$postInfo['post_id']));
+		$ret .= "<a href='" .$splitUrl ."'>" . defset('IMAGE_admin_split') . '</a>';
 
 	}
 	$ret .= "
