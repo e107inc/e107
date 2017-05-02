@@ -626,8 +626,8 @@ class forumStats
 					$POSTER = $row['thread_user_anon'];
 				}
 
-				$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
-				$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
+			//	$LINKTOTHREAD = e107::url('forum/thread/view', array('id' =>$row['thread_id'])); //$e107->url->getUrl('forum', 'thread', "func=view&id={$row['thread_id']}");
+			//	$LINKTOFORUM = e107::url('forum/forum/view', array('id' => $row['thread_forum_id'])); //$e107->url->getUrl('forum', 'forum', "func=view&id={$row['thread_forum_id']}");
 
 				$lastpost_datestamp = $gen->convert_date($row['thread_lastpost'], 'forum');
 
