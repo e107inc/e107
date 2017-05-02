@@ -55,8 +55,10 @@ class login_shortcodes extends e_shortcode
 		$ulabel = array(LAN_LOGIN_1,LAN_LOGIN_28,LAN_LOGIN_29);
 		$placeholder =  $ulabel[$allowEmailLogin];	
 		
-		
-		return "<input class='tbox form-control input-block-level' type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
+		$parms = eHelper::scParams($parm);
+		$class = vartrue($parms['class']) ? "class='".$parms['class']."'" : "class='tbox form-control input-block-level'";
+		return "<input ".$class." type='text' name='username' id='username' size='40' maxlength='100' placeholder=\"".$placeholder."\"  />";
+
 	}
 	
 	function sc_login_table_password($parm='') //FIXME use $frm
@@ -66,8 +68,11 @@ class login_shortcodes extends e_shortcode
 			return null;
 		}
 
+		$parms = eHelper::scParams($parm);
+		$class = vartrue($parms['class']) ? "class='".$parms['class']."'" : "class='tbox form-control input-block-level'";
+
 		$pref = e107::getPref();
-		$text = "<input class='tbox form-control input-block-level' type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
+		$text = "<input ".$class." type='password' name='userpass' id='userpass' size='40' maxlength='100' placeholder=\"".LAN_LOGIN_2."\" />";
 		
 		if (!USER && e107::getSession()->is('challenge') && varset($pref['password_CHAP'],0)) 
 		{
