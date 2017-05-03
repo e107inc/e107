@@ -1120,7 +1120,15 @@ class news_shortcodes extends e_shortcode
 
 	function sc_newsmetadiz($parm=null)
 	{
-  		return e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
+  		$text = e107::getParser()->toHtml($this->news_item['news_meta_description'],true);
+
+		if(!empty($parm['limit']))
+		{
+			$text = e107::getParser()->text_truncate($text, $parm['limit']);
+		}
+
+		return $text;
+
 	}
 
 }
