@@ -80,7 +80,7 @@ class forum_setup
 
 		$sql = e107::getDb();
 
-		if(!$sql->isTable('forum_t')) // no table, so run a default plugin install procedure.
+		if(!$sql->isTable('forum_t') || !$sql->isEmpty('forum_thread')) // no table, so run a default plugin install procedure.
 		{
 			return false;
 		//	e107::getSingleton('e107plugin')->refresh('forum');
