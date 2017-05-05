@@ -781,7 +781,14 @@ class download_shortcodes extends e_shortcode
 	function sc_download_report_link()
 	{
 		$pref = e107::getPref();
-		return (check_class($pref['download_reportbroken'])) ? "<a href='".e_PLUGIN_ABS."download/download.php?action=report&id=".$this->var['download_id']."'>".LAN_dl_45."</a>" : "";
+		if(check_class($pref['download_reportbroken']))
+		{
+			//$url = e_PLUGIN_ABS."download/download.php?action=report&id=".$this->var['download_id'];
+			$url = e107::url('download','report', $this->var);
+			return "<a href='".$url."'>".LAN_dl_45."</a>";
+		}
+
+		return '';
 	}
    
 	function sc_download_view_caption()
