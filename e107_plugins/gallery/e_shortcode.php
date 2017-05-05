@@ -215,11 +215,11 @@ class gallery_shortcodes extends e_shortcode
 	 * Amount per row differs according to device, so they are not set here, only the amount.
 	 * @example {GALLERY_PORTFOLIO: placeholder=1&category=2}
 	 */
-	function sc_gallery_portfolio($parms = '')
+	function sc_gallery_portfolio($parm=null)
 	{
 		$ns = e107::getRender();
 		$tp = e107::getParser();
-		$parm = eHelper::scParams($parms);
+	//	$parm = eHelper::scParams($parms);
 		$cat = (!empty($parm['category'])) ? $parm['category'] : vartrue(e107::getPlugPref('gallery', 'slideshow_category'), false); //TODO Separate pref?
 
 		$tmpl = e107::getTemplate('gallery', 'gallery');
