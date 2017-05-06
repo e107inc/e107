@@ -183,6 +183,8 @@ else
 			if($sessionLife > 0)
 			{
 				$sessionLife = time() + $sessionLife;
+			}else{
+			     $sessionLife = $sessionLife;
 			}
 
 			session_set(e_COOKIE, $cookieval, $sessionLife);
