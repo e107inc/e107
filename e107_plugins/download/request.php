@@ -136,7 +136,7 @@ if ($type == "file")
 	{
 		$row = $sql->fetch();
 		
-		$row['download_url'] = $tp->replaceConstants($row['download_url'],'abs');
+		$row['download_url'] = $tp->replaceConstants($row['download_url']); // must be relative file-path.
 
 		if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
 		{
