@@ -6415,10 +6415,21 @@ class e_form
 
 				}
 
+				if(vartrue($att['type']) == 'header')
+				{
+					$required_class = ' class="text-primary"';
+        		}
+
 				$leftCell = $required."<span{$required_class}>".defset(vartrue($att['title']), vartrue($att['title']))."</span>".$label;
 				$rightCell = $this->renderElement($keyName, $model->getIfPosted($valPath), $att, varset($model_required[$key], array()), $model->getId())." {$help}";
 
-				if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
+				if(vartrue($att['type']) == 'header')
+				{
+					$text .= "<tr><td colspan='2'>";
+					$text .= $leftCell;
+					$text .= "</td></tr>";	
+				}
+				else if(vartrue($att['type']) == 'bbarea' || !empty($writeParms['nolabel']))
 				{
 					$text .= "
 					<tr><td colspan='2'>";
