@@ -80,7 +80,7 @@ class forum_setup
 
 		$sql = e107::getDb();
 
-		if(!$sql->isTable('forum_t')) // no table, so run a default plugin install procedure.
+		if(!$sql->isTable('forum_t') || !$sql->isEmpty('forum_thread')) // no table, so run a default plugin install procedure.
 		{
 			return false;
 		//	e107::getSingleton('e107plugin')->refresh('forum');
@@ -97,6 +97,30 @@ class forum_setup
 	function upgrade_post($var)
 	{
 		$sql = e107::getDb();
+
+		$config = e107::getPref('url_config');
+
+		if(!empty($config['forum']))
+		{
+			e107::getConfig()
+			->removePref('url_config/forum')
+			->removePref('url_locations/forum')
+			->save(false,true);
+
+			if(file_exists(e_PLUGIN."forum/url/url.php"))
+			{
+				@unlink(e_PLUGIN."forum/url/url.php");
+				@unlink(e_PLUGIN."forum/url/rewrite_url.php");
+			}
+
+			$bld = new eRouter;
+			$bld->buildGlobalConfig();
+
+		}
+
+
+
+
 
 		if($sql->isEmpty('forum_thread') === true && $sql->isTable('forum_t') && $sql->isEmpty('forum_t') === false)
 		{

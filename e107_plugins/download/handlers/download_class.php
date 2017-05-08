@@ -781,12 +781,21 @@ class download
 	
 		$dlrow = $sql->fetch();
 		
-		extract($dlrow);
+	//	extract($dlrow);
+
+		$download_name = $tp->toDB($dlrow['download_name']);
+		$download_id = (int) $dlrow['download_id'];
+
+				$breadcrumb 	= array();
+			$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,			'url' => e107::url('download','index', $dlrow));
+			$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e107::url('download','category', $dlrow)); // e_SELF."?action=list&id=".$dlrow['download_category_id']);
+			$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => e107::url('download','item', $dlrow)); //e_SELF."?action=view&id=".$dlrow['download_id']);
+			$breadcrumb[]	= array('text' => LAN_dl_45,						'url' => null);
 	
 		if (isset($_POST['report_download'])) 
 		{
 			$report_add = $tp->toDB($_POST['report_add']);
-			$download_name = $tp->toDB($download_name);
+
 			$user = USER ? USERNAME : LAN_GUEST;
 	
 			if ($pref['download_email']) 
@@ -798,36 +807,38 @@ class download
 				sendemail(SITEADMINEMAIL, $subject, $report);
 			}
 	
-			$sql->insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$id}, '{$report_add}'");
+			$sql->insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$download_id}, '{$report_add}'");
 	
-			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".LAN_dl_47);
-			
+			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".LAN_dl_45);
+
+			$text = $frm->breadcrumb($breadcrumb);
 	
-			$text = LAN_dl_48."<br /><br /><a href='".e_PLUGIN."download/download.php?action=view&id=".$download_id."'>".LAN_dl_49."</a>";
+			$text .= "<div class='alert alert-success'>".LAN_dl_48."</div>
+			<a class='btn btn-primary' href='".e107::url('download','item', $dlrow)."'>".LAN_dl_49."</a>";
 
 	   
 			return $ns->tablerender(LAN_PLUGIN_DOWNLOAD_NAME, $text, 'download-report', true);
 		}
 		else 
 		{
-			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".LAN_dl_51." ".$download_name);
+			define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME." / ".LAN_dl_45." ".$download_name);
 		//	require_once(HEADERF);
 		
-			$breadcrumb 	= array();
-			$breadcrumb[]	= array('text' => LAN_PLUGIN_DOWNLOAD_NAME,						'url' => e_SELF);
-			$breadcrumb[]	= array('text' => $dlrow['download_category_name'],	'url' => e_SELF."?action=list&id=".$dlrow['download_category_id']);
-			$breadcrumb[]	= array('text' => $dlrow['download_name'],			'url' => e_SELF."?action=view&id=".$dlrow['download_id']);
-			$breadcrumb[]	= array('text' => LAN_dl_50,						'url' => null);
+
 		
 			$text = $frm->breadcrumb($breadcrumb);
-	
-			$text .= "<form action='".e_SELF."?report.{$download_id}' method='post'>
-			   <div>
-			   	      ".LAN_DOWNLOAD.": <a href='".e_PLUGIN."download/download?action=view&id={$download_id}'>".$download_name."</a>
-			   </div>
-			   <div>".LAN_dl_54."<br />".LAN_dl_55."</div>
-			   <div> ".$frm->textarea('report_add')."</div>
-				<div class='text-center'>
+
+
+			$formUrl = e107::url('download', 'report', $dlrow);
+			$fileUrl = e107::url('download', 'view', $dlrow);
+
+			$text .= "<form action='".$formUrl."' method='post'>
+			   <div class='form-group'>
+			   	     <p> ".LAN_DOWNLOAD.": <a href='".$fileUrl."'>".$download_name."</a></p>
+			        <p>".LAN_dl_54."<br />".LAN_dl_55."</p>
+			  </div>
+			   <div class='form-group clearfix'> ".$frm->textarea('report_add', '')."</div>
+				<div class='form-group text-center'>
 					".$frm->button('report_download',LAN_dl_45,'submit')."
 				</div>
 		   </form>";

@@ -117,8 +117,8 @@ if(!empty($_GET['iframe']))
 			'adminlanguage'		        => array('title'=> LANG_LAN_50, 'type'=>'dropdown', 'data' => 'str','help'=>'', 'writeParms'=>array('useValues'=>1,"default" => LANG_LAN_14)),
 			'multilanguage'		        => array('title'=> LANG_LAN_12, 'type'=>'boolean', 'data' => 'int','help'=>''),
 			'noLanguageSubs'            => array('title'=> LANG_LAN_26, 'type'=>'boolean', 'data'=>'int', 'help'=> LANG_LAN_27),
-			'multilanguage_subdomain'   => array('title'=> LANG_LAN_18, 'type'=>'textarea', 'data'=>'str', 'help'=> LANG_LAN_19, 'writeParms'=>array('rows'=>3)),
-			'multilanguage_domain'      => array('title'=> LANG_LAN_106, 'type'=>'method', 'data'=>'str', 'help'=> LANG_LAN_19),
+			'multilanguage_subdomain'   => array('title'=> LANG_LAN_18, 'type'=>'textarea', 'data'=>'str', 'help'=> LANG_LAN_19, 'writeParms'=>array('rows'=>3, 'placeholder'=>'mydomain.com')),
+			'multilanguage_domain'      => array('title'=> LANG_LAN_106, 'type'=>'method', 'data'=>'str', 'help'=> LANG_LAN_107),
 			'multilanguage_verify_errorsonly'    => array('title'=> LANG_LAN_33, 'type'=>'boolean', 'data' => 'int','help'=>''),
 
 		);
@@ -1149,7 +1149,7 @@ function multilang_prefs()
 							<small>".LANG_LAN_19."</small>
 						</td>
 						<td>
-							<textarea name='multilanguage_subdomain' rows='5' cols='15'>{$pref['multilanguage_subdomain']}</textarea>
+							<textarea name='multilanguage_subdomain' rows='5' cols='15' placeholder='mydomain.com'>{$pref['multilanguage_subdomain']}</textarea>
 							<div class='smalltext field-help'>".LANG_LAN_20."</div>
 						</td>
 						

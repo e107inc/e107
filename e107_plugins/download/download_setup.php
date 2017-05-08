@@ -83,8 +83,6 @@ class download_setup
 			$bld = new eRouter;
 			$bld->buildGlobalConfig();
 
-
-
 		}
 
 		return $this->upgradeFilePaths($needed);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="Forum" lan="LAN_PLUGIN_FORUM_NAME" version="2.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="Forum" lan="LAN_PLUGIN_FORUM_NAME" version="2.1" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
 	<description lan="LAN_PLUGIN_FORUM_DESC">This plugin is a fully featured forum system</description>
 	<category>content</category> 

@@ -554,7 +554,10 @@
 			{
 				//	global $gen;
 				$tmp = explode('.', $this->var['forum_lastpost_info']);
-				$lp_thread = "<a href='" . e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1])) . "'>" . IMAGE_post2 . '</a>';
+			//	$lp_url = e107::getUrl()->create('forum/thread/last', array('id' => $tmp[1]));
+				$lp_url = $threadUrl = e107::url('forum','topic',$this->var, array('query'=>array('last'=>1)));
+
+				$lp_thread = "<a href='" . $lp_url . "'>" . IMAGE_post2 . '</a>';
 				$lp_date = $this->gen->convert_date($tmp[0], 'forum');
 
 				/*--
