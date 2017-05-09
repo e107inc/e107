@@ -4129,9 +4129,16 @@ class e_form
 		}
 */
 
+		$sf = $this->getController()->getSortField();
+
+		if(!isset($parms['sort']) && !empty($sf))
+		{
+			$parms['sort'] = true;
+		}
+
 		$value = "<div class='btn-group'>";
 
-		if(!empty($parms['sort']) && empty($attributes['grid']))//FIXME use a global variable such as $fieldpref
+		if(!empty($parms['sort']) && empty($attributes['grid']))
 		{
 			$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 			$from = intval(vartrue($_GET['from'],0));

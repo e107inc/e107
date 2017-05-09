@@ -7256,6 +7256,7 @@ class e_admin_form_ui extends e_form
 	 */
 	public function getController()
 	{
+
 		return $this->_controller;
 	}
 }
