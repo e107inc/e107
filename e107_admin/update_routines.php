@@ -594,6 +594,20 @@ function update_core_database($type = '')
 			e107::getPlugin()->refresh('social');
 		}
 
+
+		if(empty($pref['themecss'])) // FIX
+		{
+			if($just_check)
+			{
+				return update_needed("Theme CSS pref value is blank.");
+			}
+
+			e107::getConfig()->set('themecss','style.css')->save(false,true,false);
+		}
+
+
+
+
 		return $just_check;
 
 			// List of changed menu locations.
