@@ -498,7 +498,7 @@ class core_library
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap.switch',
-			'path'              => '3.3.2',
+			'path'              => '3.3.4',
 		);
 
 		// Bootstrap Switch (local).
