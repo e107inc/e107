@@ -671,7 +671,7 @@ class page_admin_ui extends e_admin_ui
 				
 				if($key)
 				{
-					e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
+					e107::getDb()->delete('page',"page_id=".intval($key)."");
 				}
 			}
 
