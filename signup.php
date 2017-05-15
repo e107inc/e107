@@ -280,7 +280,7 @@ class signup
 		}
 		else
 		{
-			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
+			e107::getMessage()->setTitle(LAN_SIGNUP_61,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
 			$ns->tablerender(null,e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_61;
 		}
