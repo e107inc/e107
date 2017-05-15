@@ -1205,9 +1205,12 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";
 			
-			$label .= $tp->toIcon($default_url);
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector img-responsive img-fluid' >";			
+			$label .= $tp->toIcon($default_url,array('class'=>'img-responsive img-fluid'));
+
+            //$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";			
+			//$label .= $tp->toIcon($default_url);
 			
 			$label .= "				
 			</div>";
