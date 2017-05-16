@@ -5680,8 +5680,9 @@ class e_form
 				else
 				{
 					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
-					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
+					$ldisabled = (!empty($parms['disabled']) && is_string($parms['disabled'])) ?  $parms['disabled'] : 'LAN_OFF';
 				}
+
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);
 			break;
