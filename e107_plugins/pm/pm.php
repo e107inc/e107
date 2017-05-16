@@ -682,7 +682,7 @@
 		}
 
 
-		function breadcrumb($type = '', $other)
+		function breadcrumb($type = '', $other='')
 		{
 			if(!deftrue('BOOTSTRAP'))
 			{
@@ -701,7 +701,7 @@
 				$array[1] = $type;
 			}
 
-			if($other)
+			if(!empty($other))
 			{
 				$array[2] = array('text' => $other, 'url' => null);
 			}
