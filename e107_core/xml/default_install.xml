@@ -1208,7 +1208,7 @@ City, State, Country
 			<item>
 				<field name="category_id">1</field>
 				<field name="category_name">Misc</field>
-				<field name="category_sef"></field>
+				<field name="category_sef">misc</field>
 				<field name="category_meta_description"></field>
 				<field name="category_meta_keywords"></field>
 				<field name="category_manager">254</field>
