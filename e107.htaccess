@@ -106,10 +106,12 @@
 </ifmodule>
 
 <FilesMatch "\.(js|css|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)$">
-    Header set Cache-Control "public"
-    Header unset Cookie
-    Header unset Set-Cookie
-  # Header set Access-Control-Allow-Origin "http://mydomain.com"
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public"
+        Header unset Cookie
+        Header unset Set-Cookie
+      # Header set Access-Control-Allow-Origin "http://mydomain.com"
+  </IfModule>
 </FilesMatch>
 
 
