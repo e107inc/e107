@@ -75,7 +75,7 @@
 
 
 			$eml = array(
-					'subject' 		=> $tp->lanVars(LANA_FAQ_CRON_6, array('x'=>count($count), 'y'=> date('d-M-Y'))),
+			'subject' 		=> $tp->lanVars(LANA_FAQ_CRON_6, array('x'=>count($count), 'y'=> date('d-M-Y'))),
 				//	'sender_email'	=> $email,
 					'sender_name'	=> SITENAME." ".LAN_AUTOMATION,
 			//		'replyto'		=> $email,
