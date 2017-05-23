@@ -61,7 +61,7 @@ class theme_shortcodes extends e_shortcode
 
 		if(!$videourl = e107::pref('theme', 'videourl', false))
 		{
-			$videourl = "https://s3-us-west-2.amazonaws.com/coverr/mp4/Traffic-blurred2.mp4";
+			$videourl = "https://themes.e107.org/landingzero/e107_media/landingzero.mp4";
 		}
 
 	    $text = '
