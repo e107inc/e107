@@ -383,8 +383,8 @@ class forum_shortcodes extends e_shortcode
 		//    global $f, $restricted_string;
 	    global $restricted_string;
 		//	$tp = e107::getParser();
-		$this->var['forum_description'] = e107::getParser()->toHTML($this->var['forum_description'], true, 'no_hook');
-		return $this->var['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
+//		$this->var['forum_description'] = e107::getParser()->toHTML($this->var['forum_description'], true, 'no_hook');
+		return e107::getParser()->parseTemplate($this->var['forum_description'], true).($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
     }
 
 
