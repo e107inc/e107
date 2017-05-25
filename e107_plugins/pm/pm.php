@@ -238,7 +238,9 @@
 				$PM_INBOX['end'] = $this->updateTemplate($PM_INBOX_FOOTER);
 			}
 
-			if(empty($PM_INBOX))
+
+
+			if(empty($PM_INBOX['item']))
 			{
 				$PM_INBOX = e107::getTemplate('pm', 'pm', 'inbox');
 			}
@@ -270,6 +272,7 @@
 					{
 						$rec['pm_subject'] = '[' . LAN_PM_61 . ']';
 					}
+
 					$sc->setVars($rec);
 					$txt .= $tp->parseTemplate($PM_INBOX['item'], true, $sc);
 				}
