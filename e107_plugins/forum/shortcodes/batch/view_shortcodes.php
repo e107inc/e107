@@ -772,7 +772,7 @@
 				if($type == 'thread')
 				{
 					$url = e107::url('forum', 'move', array('thread_id' => $this->postInfo['post_thread']));
-					$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('move') . "</a></a></li>";
+					$text .= "<li class='text-right'><a href='" . $url . "'>" . LAN_FORUM_2042 . " " . $tp->toGlyph('move') . "</a></li>";
 				}
 				elseif(e_DEVELOPER === true) //TODO
 				{
