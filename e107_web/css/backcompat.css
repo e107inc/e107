@@ -41,6 +41,8 @@ ul.breadcrumb li span.divider { padding-left:5px; }
 .img-responsive { max-width:100%; }
 .logo.img-responsive { height: auto; }
 
+table.table { width: 100% }
+
 .media-list {
     padding-left: 0;
     list-style: none;

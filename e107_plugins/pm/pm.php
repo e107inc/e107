@@ -314,7 +314,7 @@
 				$PM_OUTBOX['end'] = $this->updateTemplate($PM_OUTBOX_FOOTER);
 			}
 
-			if(empty($PM_OUTBOX))
+			if(empty($PM_OUTBOX['item']))
 			{
 				$PM_OUTBOX = e107::getTemplate('pm', 'pm', 'outbox');
 			}
