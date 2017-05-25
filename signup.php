@@ -280,7 +280,7 @@ class signup
 		}
 		else
 		{
-			e107::getMessage()->setTitle(LAN_ERROR,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
+			e107::getMessage()->setTitle(LAN_SIGNUP_61,E_MESSAGE_SUCCESS)->addSuccess(LAN_SIGNUP_44." ".$row['user_email']." - ".LAN_SIGNUP_45);
 			$ns->tablerender(null,e107::getMessage()->render());
 			$do_log['signup_result'] = LAN_SIGNUP_61;
 		}
@@ -308,7 +308,7 @@ class signup
 		<tr>
 			<td class='forumheader3' style='width:30%'>".LAN_SIGNUP_48."</td>
             <td class='forumheader3'>".$frm->text('resend_email','',80)."
-            <a class='e-expandit' href='#different'>Use a different email address</a></td>
+            <a class='e-expandit' href='#different'>".LAN_SIGNUP_121."</a></td>
 		</tr>
 		</table>
 

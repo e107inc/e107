@@ -687,7 +687,11 @@
 			return e107::getFile()->getUploaded("attachments", $type, array('max_file_count' => 3));
 		}
 
-/*---
+
+/*--
+
+
+
 		function breadcrumb($type = '', $other='')
 		{
 			if(!deftrue('BOOTSTRAP'))

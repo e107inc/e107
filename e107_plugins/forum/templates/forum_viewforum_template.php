@@ -307,21 +307,19 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 
 
 $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
-													<td>{ICON}</td>
-													<td>
-													<div class='row'>
-														<div class='col-xs-12 col-md-9'>
-														{THREADNAME}
-														<div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
-														</div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
-														</div>
-														<div class='row'>
+												    <td>{ICON}</td>
+												    <td>
+												        <div class='row'>
+												            <div class='col-xs-12 col-md-9'>
+												            {THREADNAME}
+												            <div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+												            </div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
+												        </div>
+												    </td>
+												    <td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
+												    <td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
+												</tr>\n";
 
-													</td>
-													</div>
-														<td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
-													<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
-													</tr>\n";
 
 $FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";

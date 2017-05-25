@@ -2679,7 +2679,7 @@ class e_db_mysql
 		$header = "-- e107 Database Backup File \n";	
 		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
 		$header .= "-- Generation Time: ".date('r')."\n";
-		$header .= "-- Encoding: ANSI\n\n\n";
+		$header .= "-- Encoding: UTF-8\n\n\n";
 		
 		file_put_contents($backupFile,$header, FILE_APPEND);	
 		
@@ -2710,12 +2710,12 @@ class e_db_mysql
 				$d = array();
 				foreach($fields as $val)
 				{
-					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".mysqli_real_escape_string($row[$val])."'"; 				
+					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".$this->escape($row[$val])."'";
 				}
 	
 				$data_array = "(".implode(", ",$d).");\n"; 
 				file_put_contents($backupFile, $data_array, FILE_APPEND); // Do this here to save memory. 
-		
+
 			}
 				
 			$text = "\n\n\n";		

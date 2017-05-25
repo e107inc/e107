@@ -1205,9 +1205,12 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";
 			
-			$label .= $tp->toIcon($default_url);
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector img-responsive img-fluid' >";			
+			$label .= $tp->toIcon($default_url,array('class'=>'img-responsive img-fluid'));
+
+            //$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";			
+			//$label .= $tp->toIcon($default_url);
 			
 			$label .= "				
 			</div>";
@@ -4129,9 +4132,16 @@ class e_form
 		}
 */
 
+		$sf = $this->getController()->getSortField();
+
+		if(!isset($parms['sort']) && !empty($sf))
+		{
+			$parms['sort'] = true;
+		}
+
 		$value = "<div class='btn-group'>";
 
-		if(!empty($parms['sort']) && empty($attributes['grid']))//FIXME use a global variable such as $fieldpref
+		if(!empty($parms['sort']) && empty($attributes['grid']))
 		{
 			$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 			$from = intval(vartrue($_GET['from'],0));
@@ -5670,8 +5680,9 @@ class e_form
 				else
 				{
 					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
-					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
+					$ldisabled = (!empty($parms['disabled']) && is_string($parms['disabled'])) ?  $parms['disabled'] : 'LAN_OFF';
 				}
+
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);
 			break;
