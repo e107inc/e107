@@ -632,7 +632,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				// pm_id is mapped insisde the config to id key
 				$ret = "
 				<form method='post' action='".$this->url('action/reply', $this->var)."'>
-				<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
+				<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp;<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
 				</form>
 				";
 				return $ret;
