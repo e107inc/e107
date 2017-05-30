@@ -1,0 +1,10 @@
+<div class='forumheader4'>Q>	Qu'est un forum parent?
+A>	Un forum parent est un titre sous lequel se regroupent d'autres forums , ceci facilite la navigation dans vos forums.
+</div><div class='forumheader4'>Q>	Je veux donner à un certain administateur le statut de modérateur de forum mais son nom n'apparait pas dans la liste - Pour quelle raison?
+A>	Seuls sont listés les administrateurs qui ont une permission correctement établie pour ê président de forum.
+    Accédez à la section d'administrateurs et éditez l'admin en question, et assurez-vous que la mention 'Modérer les forums' est cochée.
+</div><div class='forumheader4'>Q>	Qu'est-ce que tracking (pister-suivre)?
+A>	Si vous autorisez le suivi, cela permettra à des utilisateurs de ne pas perdre le fil de la discussion des forums auxquels ils participent, ils recevront un courriel pour toute réponse aux ajouts qu'ils ont postés.
+</div><div class='forumheader4'>Q>	Qu'est-ce que purger?
+A>	Cela vous permettra d'enlever de vieux fils de dicussion qui ne reçoivent plus plus de réponses depuis un certain temps.  Veuillez faire attention avec cette fonction, les fils de discussion supprimés ne pourront plus faire l'objet de recherche.
+</div>

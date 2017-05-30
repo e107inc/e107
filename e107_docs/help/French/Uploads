@@ -1,0 +1,9 @@
+<div class='forumheader4'>Q>	Je voudrais accorder à des personnes la possibilité de faire des envois de fichiers sur le serveur du site; mais je m'inquiète quant aux problèmes la sécurité que cela poserait...
+A>	il y a un deux des choses à faire pour améliorer la sécurité.  
+D'abord, employez le stockage binaire, les fichiers uploader sur le serveur seront alors stockés dans la base de données mySQL.
+Ainsi à part de l'espace de téléchargement ils ne seront pas accessible à n'importe qui.  
+En outre, établissez une liste des types de fichiers autorisés à être envoyer sur le serveur , ainsi si quelqu'un essaye d'uploader un type de fichier autre que ceux que vous avez définis 
+il sera supprimé immédiatement de votre serveur.
+</div><div class='forumheader4'>Q>	Est-ce que je téléchargement quelques dossiers, que j'ai fait maintenant?
+A>	vous avez l'option pour copier le dossier à votre directeur de téléchargement, pour permettre à d'autres de le télécharger, et de copier l'information de téléchargement à votre section d'actualité, pour faire une annonce de actualité à son sujet.
+</div>

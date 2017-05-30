@@ -1,0 +1,8 @@
+<div class='forumheader4'>Q>	A quoi sert cette section ?
+A>	Régler le système de cache sur on (activé) sauvegardera certains secteurs du site dans votre base de données.Cela réduit les appels à mySQL, et accélère énormément votre site.
+</div><div class='forumheader4'>Q>	J'ai apporter quelques modification au thème du site que j'emploie mais elles n'ont pas été prises en compte, le thème reste inchangé - Est-ce parce qu'il fait partie du cache ?
+A>	Très probablement. Quand vous modifiez un thème le cache se vide mais altère le code dans votre script theme.php.
+		Ne videz pas le cache mais réglez le système de cache sur off (desactivé) jusqu'à ce que vous ayez fini. 
+</div><div class='forumheader4'>Q>	Can I save the cache to files on the hardrive?
+A>	Yes. Just make sure that your e107_files/cache directory is writable (chmod 777). And then click the option on the cache page.
+</div>

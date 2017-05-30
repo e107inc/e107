@@ -1,0 +1,10 @@
+<div class='forumheader4'>Q>	Qu'est ce que le BBCode?
+A>	Un <strong><i>BBCode</i></strong> est un <strong><i>raccourci</i></strong> <strong><i>d'une étiquette (Tag) HTML</i></strong>, par exemple entrant [ b ] je suis du texte bold!  [/b ] dans n'importe laquelle de vos boîtes à textes d'admin cela mettra le texte à l'intérieur du [b ] et [/b ] et s'affichera en gras, ainsi [b]Je suis du text Bold![/b] devrait être affiché en ce moment en gras à l'écran.
+</div><div class='forumheader4'>Q>	Mais c'est pourquoi faire?
+A>	Il vous économise du temps lorsque vous entrer les étiquettes (Tag) HTML. Vous pouvez employer les étiquettes normales HTML dans des vos boîtes d'enregistrement de texte mais utiliser les BBCodes accélérera vraiment votre enregistrement de texte.
+</div><div class='forumheader4'>Q>	Quand je clique sur un des boutons BBCode pour écrire le code, il l'écrit à la fin de mon texte, pas à l'endroit où le curseur se trouve, pourquoi cela?
+A>	Il y a un bogue dans Internet Explorer qui peut faire le faire se cracher si e107 essaye d'écrire le code à la position de curseur, ainsi dans l'intérêt de la compatibilité le code est écrit à la fin de votre texte.
+</div><div class='forumheader4'>Q>	Quels BBCodes puis-je utiliser?
+A>	Placer votre indicateur de souris au-dessus de n'importe laquelle de ces boîtes de bbcode, vous verrez une petite explication apparaître juste au-dessus des boutons. 
+    Il y a également des codes pour les liens [ URL ] [ /URL ] et le courriel [ email ] [ /email ], bien qu'encore utiliser les étiquettes normales de HTML demeure correct. Toutes les adresses web et courriel que vous écrirez seront automatiquement transformées en des hyperliens cliquable.
+</div>

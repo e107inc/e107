@@ -1,0 +1,11 @@
+<div class='forumheader4'>Q>	A quoi sert la section Remplacez les Liens?
+A>	Vous pouvez convertir tous les liens entrés dans votre chatbox en textes, ou en images.  Ceci empêche votre chatbox d'être submergé de longues adresses de website.
+    Pour employer une image, le cochage remplacent les liens, et dans la boîte ci-dessous écrivez &lt;img src='path_to_your_image' alt='' />, ainsi tous les liens écrits seront converti par l' image que vous avez entrez.
+</div><div class='forumheader4'>Q>	A quoi sert la 'Wordwrap'?
+A>	Si quelqu'un écrivait un mot très long dans votre chatbox il pourrait perturber la disposition de votre site.  
+    Si vous deviez écrire 40 dans la boîte de Wordrap, tout ajout de plus que 40 caractères resterait disimulé, la colonne de votre chatbox ne subirait aucun extention.  
+		Vous devez pouvoir changer cette valeur et ceci en correspondance avec le thème que vous employez et la largeur de la colonne de votre chatbox.
+</div><div class='forumheader4'>Q>	Mon site est pour tous les âges.Pourtant quelqu'un ne peut s'empécher de proférer des jurons dans la chatbox - comment est-ce que je peux mettre un terme à cela?
+A>	Accédez à l'écran Préférences dans votre espace administrateur, et trouvez les options de protection des mineurs.  
+		Options Protection pour les mineurs : Vous pouvez ajouter une liste de mots ici qui seront remplacés par un mot ou une phrase de votre choix, par exemple CENSURÉ! Ainsi le juron produit sur votre site sera maintenant à tout moment remplacé par le texte que vous avez écrit..
+</div>
