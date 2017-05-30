@@ -408,7 +408,6 @@ class comment
 	 */
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating = FALSE)
 	{
-
 		if($this->engine != 'e107')
 		{
 			return null;
@@ -430,6 +429,11 @@ class comment
 		{
 			return;
 		}
+
+                if (isset($row['comment_comment'])) 
+                {
+                    $row['comment_comment'] = filter_var($row['comment_comment'], FILTER_SANITIZE_STRING);
+                }
 				
 		global $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction,$thistable,$thisid,$e107;
@@ -1262,6 +1266,7 @@ class comment
 			
 			foreach ($rows as $row)
 			{
+                                $row['comment_comment'] = filter_var( $row['comment_comment'], FILTER_SANITIZE_STRING );
 				
 				if($this->isPending($row))
 				{
