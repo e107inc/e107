@@ -3427,6 +3427,7 @@ class e_parser
 	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
 	                                'col'       => array('id', 'span', 'class','style'),
 		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
+		                            'textarea'  => array('rows', 'cols', 'class','name', 'onselect','onclick', 'onkeyup'),
 
                                   );
 
@@ -3436,7 +3437,7 @@ class e_parser
         'default' => array()
     );
 
-    protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
+    protected $allowedTags        = array('html', 'body','div','a','img','textarea','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
                                         'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite'
