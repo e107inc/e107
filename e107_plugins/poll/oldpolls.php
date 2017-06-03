@@ -88,13 +88,13 @@ if(e_QUERY)
 
 		if ($comment_total = $sql->gen($query))
 		{
-			$text .= "<hr /><div>";
+			$text .= "<hr /><ul class='media-list' id='comments-container'>";
 
 			while ($row2 = $sql->fetch())
 			{
 				$text .= e107::getComment()->render_comment($row2, 'poll', 'comment');
 			}
-			$text .= "</div>";
+			$text .= "</ul>";
 		}
 
 
