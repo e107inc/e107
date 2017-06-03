@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -21,7 +21,8 @@ e107::coreLan('search', true);
 
 $e_sub_cat = 'search';
 require_once('auth.php');
-require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'userclass_class.php');//$e_userclass = e107::user_class_admin(); //FIXME breaks
+
 require_once(e_HANDLER.'search_class.php');
 
 $frm = e107::getForm();

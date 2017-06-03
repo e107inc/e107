@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2016 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -771,7 +771,7 @@ class e_menuManager {
 		$tp = e107::getParser();
 
 		
-		require_once(e_HANDLER."userclass_class.php");
+		require_once(e_HANDLER."userclass_class.php");//$e_userclass = e107::user_class_admin();//FIXME breaks
 		
 		if(!$sql->select("menus", "*", "menu_id=".intval($_GET['vis'])))
 		{

@@ -2,7 +2,7 @@
 /*
  * e107 website system
  *
- * Copyright (C) 2008-2013 e107 Inc (e107.org)
+ * Copyright (C) 2008-2017 e107 Inc (e107.org)
  * Released under the terms and conditions of the
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
  *
@@ -72,7 +72,7 @@ e107::coreLan('mailout', true);
 
 require_once(e_HANDLER.'ren_help.php');
 
-require_once(e_HANDLER.'userclass_class.php');
+require_once(e_HANDLER.'userclass_class.php');			//$e_userclass = e107::user_class_admin(); //FIXME breaks
 // require_once(e_HANDLER.'mailout_class.php');			// Class handler for core mailout functions
 require_once(e_HANDLER.'mailout_admin_class.php');		// Admin tasks handler
 require_once(e_HANDLER.'mail_manager_class.php');		// Mail DB API
