@@ -46,7 +46,7 @@ define("POLLAN_19", "User ID (only members can vote)");
 //define("POLLAN_25", "Clear form");//LAN_CLEAR
 //define("POLLAN_26", "votes");//NOT USED
 // define("POLLAN_27", "Comments");
-define("POLLAN_28", "Previous polls");
+define("POLLAN_28", "All Previous polls");
 //define("POLLAN_29", "posted by");//NOT USED
 //define("POLLAN_30", "Submit");//NOT USED
 define("POLLAN_31", "Votes");
