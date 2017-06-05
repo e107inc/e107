@@ -198,6 +198,9 @@ define("ADLAN_171", "Install Site Stats Plugin");
 
 define("ADLAN_185", "Toggle Sidebar");
 define("ADLAN_186", "The following old files can be safely deleted from your system:");
+define("ADLAN_187", "Unable to create [b][x][/b]. Please check your folder permissions.");
+define("ADLAN_188", "Your timezone setting [x] is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.");
+define("ADLAN_189", "The following plugins are not compatible with this version of e107 and should be uninstalled: [x] [y]");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
