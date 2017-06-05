@@ -199,5 +199,5 @@ define("IMALAN_177", "Click here for more information and to enter your api key"
 
 define("IMALAN_178", "Avatars Folder (user selectable)");
 define("IMALAN_179", "Avatars Folder (private)");
-
+define('IMALAN_180', "0 byte file found in: [x] [br]Please remove before proceeding.");
 
