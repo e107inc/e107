@@ -229,7 +229,8 @@ class admin_start
 				}
 				else
 				{
-					$mes->addWarning("Unable to create <b>".$dr."</b>. Please check your folder permissions.");
+					$message = e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_187, true), array('x'=>$dr));
+					$mes->addWarning($message);
 				}
 			}
 		}
@@ -245,7 +246,8 @@ class admin_start
 
 		if(e107::getDate()->isValidTimezone($timezone) == false)
 		{
-			$mes->addWarning("Your timezone setting (".$timezone.") is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.", 'default', true);
+			$message = e107::getParser()->lanVars(ADLAN_188, array('x'=>$timezone));
+			$mes->addWarning($message, 'default', true);
 			e107::getConfig()->set('timezone','UTC')->save(false,true,false);
 			$this->refresh = true;
 		}
@@ -522,7 +524,8 @@ TMPO;
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$mes->addWarning("The following plugins are not compatible with this version of e107 and should be uninstalled: ".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>");
+			$message = e107::getParser()->lanVars(ADLAN_189, array('x'=>$text, 'y'=>"<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>"));
+			$mes->addWarning($message);
 		}	
 		
 	}
