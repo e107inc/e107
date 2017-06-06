@@ -2545,8 +2545,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(empty($f))
 			{
-				$message = e107::getParser()->lanVars(IMALAN_180, array('x'=>e_IMPORT));
-				e107::getMessage()->addWarning($tp->toHtml($message, true));
+				e107::getMessage()->addWarning(IMALAN_180."&nbsp;".e_IMPORT."<br />".IMALAN_181);
 				////rename(e_IMPORT.$f['path'].$f['fname'],e_IMPOT.$f['path'].$f['fname']."-bad");
 				continue;
 			}
