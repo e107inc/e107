@@ -37,7 +37,7 @@ define("FBLAN_14", "Show this message only");
 define("FBLAN_22", "Render type");
 define("FBLAN_23", "In theme box");
 define("FBLAN_24", "Plain");
-define("FBLAN_25", "Create Category");
+define("FBLAN_25", "There are no featurebox items assigned to the [x] template.");
 define("FBLAN_26", "Image/Video"); 
 define("FBLAN_27", "Image Link"); 
 define("FBLAN_28", "Featurebox Menu Category"); 
