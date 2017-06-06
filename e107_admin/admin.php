@@ -229,7 +229,7 @@ class admin_start
 				}
 				else
 				{
-					$message = e107::getParser()->lanVars(e107::getParser()->toHTML(ADLAN_187, true), array('x'=>$dr));
+					$message = e107::getParser()->lanVars(ADLAN_187,$dr,true);
 					$mes->addWarning($message);
 				}
 			}
@@ -246,7 +246,7 @@ class admin_start
 
 		if(e107::getDate()->isValidTimezone($timezone) == false)
 		{
-			$message = e107::getParser()->lanVars(ADLAN_188, array('x'=>$timezone));
+			$message = e107::getParser()->lanVars(ADLAN_188, $timezone);
 			$mes->addWarning($message, 'default', true);
 			e107::getConfig()->set('timezone','UTC')->save(false,true,false);
 			$this->refresh = true;
@@ -524,8 +524,7 @@ TMPO;
 		if($inCompatText)
 		{
 			$text = "<ul>".$inCompatText."</ul>";
-			$message = e107::getParser()->lanVars(ADLAN_189, array('x'=>$text, 'y'=>"<a class='btn btn-default' href='".e_ADMIN."plugin.php'>uninstall</a>"));
-			$mes->addWarning($message);
+			$mes->addWarning(ADLAN_189."&nbsp;".$text."<a class='btn btn-default' href='".e_ADMIN."plugin.php'>".LAN_UNINSTALL."</a>");
 		}	
 		
 	}
