@@ -389,7 +389,8 @@ class eFront
 		$router = new eRouter();
 		$this->setRouter($router);
 		
-		$response = new eResponse();
+	//	$response = new eResponse();
+		$response = e107::getSingleton('eResponse');
 		$this->setResponse($response);
 		
 		return $this;
@@ -4273,8 +4274,8 @@ class eResponse
 		$attrData = '';
 
 		e107::getEvent()->trigger('system_meta_pre');
-		
-		foreach ($this->_meta as $attr) 
+
+		foreach ($this->_meta as $attr)
 		{
 			$attrData .= '<meta';
 			foreach ($attr as $p => $v) 
