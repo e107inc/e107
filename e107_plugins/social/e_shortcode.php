@@ -234,7 +234,8 @@ class social_shortcodes extends e_shortcode
 
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
-		$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+	//	$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+		$defaultDiz		= vartrue($this->var['description'], e107::getSingleton('eResponse')->getMetaDescription());
 		$defaultTags    = vartrue($this->var['tags'],'');
 		
 		$tp 			= e107::getParser();

@@ -163,7 +163,8 @@ if ($e_headers && is_array($e_headers))
 }
 unset($e_headers);
 
-echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
+// echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
+echo e107::getSingleton('eResponse')->renderMeta()."\n";
 
 echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
 
@@ -490,8 +491,15 @@ function render_meta($type)
 }
 
 // legay meta-tag checks.
+/*
 $isKeywords = e107::getUrl()->response()->getMetaKeywords();
 $isDescription = e107::getUrl()->response()->getMetaDescription();
+*/
+
+$isKeywords = e107::getSingleton('eResponse')->getMetaKeywords();
+$isDescription = e107::getSingleton('eResponse')->getMetaDescription();
+
+
 if(empty($isKeywords))
 {
 	echo (defined("META_KEYWORDS")) ? "\n<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : render_meta('keywords');
