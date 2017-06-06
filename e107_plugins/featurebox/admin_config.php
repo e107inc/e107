@@ -41,7 +41,7 @@ class fb_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> 'Featurebox&nbsp;'.LAN_LIST', 'perm' => 'P'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		'category/list' 	=> array('caption'=> LAN_CATEGORIES, 'perm' => 'P'),
-		'category/create'	=> array('caption'=> FBLAN_25, 'perm' => 'P'),
+		'category/create'	=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'P'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
 	);
