@@ -198,6 +198,9 @@ define("ADLAN_171", "Install Site Stats Plugin");
 
 define("ADLAN_185", "Toggle Sidebar");
 define("ADLAN_186", "The following old files can be safely deleted from your system:");
+define("ADLAN_187", "Unable to create [x]. Please check your folder permissions.");
+define("ADLAN_188", "Your timezone setting [x] is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.");
+define("ADLAN_189", "The following plugins are not compatible with this version of e107 and should be uninstalled: ");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
@@ -516,6 +519,7 @@ define("LAN_PERSONALIZE", "Personalize");
 define("LAN_SETTINGS_NOT_SAVED_NO_CHANGES_MADE", "Settings not saved as no changes were made.");
 define("LAN_DASHBOARD_LAYOUT", "Dashboard Layout");
 define("LAN_UNAVAILABLE", "Unavailable");
+define("LAN_UNINSTALL", "Uninstall");
 define("LAN_NO_LABEL_PROVIDED", "No Label Provided");
 define("LAN_NOT_FOUND", "Not Found!");
 define("LAN_FIELD", "Field");
