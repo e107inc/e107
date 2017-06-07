@@ -2545,7 +2545,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(empty($f))
 			{
-				e107::getMessage()->addWarning("0 byte file found in: ".e_IMPORT."<br />Please remove before proceeding.");
+				e107::getMessage()->addWarning(IMALAN_180."&nbsp;".e_IMPORT."<br />".IMALAN_181);
 				////rename(e_IMPORT.$f['path'].$f['fname'],e_IMPOT.$f['path'].$f['fname']."-bad");
 				continue;
 			}
