@@ -852,13 +852,11 @@ class e_form
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 
-		$min = varset($options['min']) ? 'min="'.$options['min'].'"' : '';
-		$max = vartrue($options['max']) ? 'max="'.$options['max'].'"' : '';
+		$min = isset($options['min']) ? 'min="'.$options['min'].'"' : '';
+		$max = isset($options['max']) ? 'max="'.$options['max'].'"' : '';
 
 		$options = $this->format_options('text', $name, $options);
-		
 
-		
 		//never allow id in format name-value for text fields
 		if(THEME_LEGACY === false)
 		{
