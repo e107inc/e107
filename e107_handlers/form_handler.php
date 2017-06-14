@@ -1836,7 +1836,7 @@ class e_form
 	public function pagination($url='', $total=0, $from=0, $perPage=10, $options=array())
 	{
 
-		if(empty($total))
+		if(empty($total) || empty($perPage))
 		{
 			return '';
 		}
