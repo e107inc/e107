@@ -82,23 +82,7 @@ if(e_QUERY)
 
 		}
 */
-		$query = "SELECT c.*, u.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-		WHERE comment_item_id=".intval($row['poll_id'])." AND comment_type='4' ORDER BY comment_datestamp";
-
-		if ($comment_total = $sql->gen($query))
-		{
-			$text .= "<hr /><div>";
-
-			while ($row2 = $sql->fetch())
-			{
-				$text .= e107::getComment()->render_comment($row2, 'poll', 'comment');
-			}
-			$text .= "</div>";
-		}
-
-
-	//	$text .= "</table>";
+		$text .= e107::getComment()->compose_comment('poll', 'comment', intval( $row['poll_id'] ), null, '', false, 'html');
 		$ns->tablerender(LAN_PLUGIN_POLL_NAME." #".$row['poll_id'], $text);
 		echo "<hr />";
 	}
