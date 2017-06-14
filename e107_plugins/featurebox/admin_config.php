@@ -38,7 +38,7 @@ class fb_admin extends e_admin_dispatcher
 	);	
 
 	protected $adminMenu = array(
-		'main/list'			=> array('caption'=> 'Featurebox&nbsp;'.LAN_LIST', 'perm' => 'P'),
+		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 		'category/list' 	=> array('caption'=> LAN_CATEGORIES, 'perm' => 'P'),
 		'category/create'	=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => 'P'),
@@ -68,11 +68,11 @@ class fb_category_ui extends e_admin_ui
 		'fb_category_id'		=> array('title'=> LAN_ID,				'type' => 'number',		'data' => 'int',	'width' =>'5%', 'forced'=> TRUE),     		
      	'fb_category_icon' 		=> array('title'=> LAN_ICON,			'type' => 'icon',		'data' => 'str', 	'width' => '5%', 'thclass' => 'center', 'class'=>'center'),
 		'fb_category_title' 	=> array('title'=> LAN_TITLE,			'type' => 'text',		'data' => 'str',  	'inline'=>true, 'width' => 'auto',  'help' => 'up to 200 characters', 'thclass' => 'left', 'writeParms'=>'size=xlarge'), 
-		'fb_category_template' 	=> array('title'=> FBLAN_30,	'type' => 'layouts',	'inline'=>true, 	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'plugin=featurebox&id=featurebox_category&merge=1', 'filter' => true),
+		'fb_category_template' 	=> array('title'=> FBLAN_30,	        'type' => 'layouts',	'inline'=>true, 	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'writeParms' => 'plugin=featurebox&id=featurebox_category&merge=1', 'filter' => true),
 		'fb_category_random' 	=> array('title'=> FBLAN_31,			'type' => 'boolean',	'data' => 'int', 	'width' => '5%', 'thclass' => 'center', 'class' => 'center', 'batch' => true, 'filter' => true),
 		'fb_category_class' 	=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'data' => 'int', 	'inline'=>true, 'width' => 'auto', 'filter' => true, 'batch' => true),
-		'fb_category_limit' 	=> array('title'=> LAN_LIMIT,				'type' => 'number',		'data' => 'int', 	'width' => '5%', 'thclass' => 'left', 'help' => 'number of items to be shown, 0 - show all'),
-		'fb_category_parms' 	=> array('title'=> FBLAN_32,		'type' => 'textarea',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'class' => 'left','writeParms' => 'expand='.LAN_ADVANCED.'&help='.FBLAN_33),		
+		'fb_category_limit' 	=> array('title'=> LAN_LIMIT,			'type' => 'number',		'data' => 'int', 	'width' => '5%', 'thclass' => 'left', 'help' => 'number of items to be shown, 0 - show all'),
+		'fb_category_parms' 	=> array('title'=> FBLAN_32,		    'type' => 'textarea',	'data' => 'str', 	'width' => 'auto', 'thclass' => 'left', 'class' => 'left','writeParms' => array('expand'=>LAN_ADVANCED), 'help'=>FBLAN_33),
 		
 		'options' 				=> array('title'=> LAN_OPTIONS,			'type' => null,								'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
 	);
