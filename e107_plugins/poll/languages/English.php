@@ -66,6 +66,8 @@ define("POLLAN_43", "You do not have the required permissions to vote in this po
 //define("POLLAN_45", "Poll successfully updated");//NOT USED
 //define("POLLAN_46", "Field(s) left blank");
 
+define("POLLAN_50", "Active from [x] to [y]");
+
 
 // TODO NEED TO BE RENAMED!
 

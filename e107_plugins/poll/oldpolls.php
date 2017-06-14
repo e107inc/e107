@@ -51,7 +51,7 @@ if(e_QUERY)
 
 		$text .= "
 		<div class='smalltext text-right'>
-		<small>".LAN_POSTED_BY." ".$userlink."<br /> ".LAN_ACTIVE.": ".LAN_FROM." ".$start_datestamp." ".LAN_TO." ".$end_datestamp."</small></div>
+		<small>".LAN_POSTED_BY." ".$userlink."<br /> ".$tp->lanVars(POLLAN_50, array('x'=>$start_datestamp, 'y'=> $end_datestamp))."</small></div>
 		";
 
 
