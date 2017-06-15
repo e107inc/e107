@@ -130,3 +130,15 @@ define("TPVLAN_92", "New Theme Folder");
 define("TPVLAN_93", "Selection");
 define("TPVLAN_94", "Site theme changed to [x].");
 
+// theme admin config
+define("TPVLAN_95", "Branding:");
+define("TPVLAN_96", "Navbar Alignment:");
+define("TPVLAN_97", "Signup/Login Placement:");
+define("TPVLAN_98", "Bootswatch Styles:");
+define("TPVLAN_99", "Site Name");
+define("TPVLAN_100", "Logo");
+define("TPVLAN_101", "Logo &amp; Site Name");
+define("TPVLAN_102", "left");
+define("TPVLAN_103", "right");
+define("TPVLAN_104", "top");
+define("TPVLAN_105", "bottom");
