@@ -11,7 +11,7 @@ class theme_config implements e_theme_config
 	function config($type='front')
 	{
 
-		$brandingOpts = array('sitename'=>LAN_THEMEPREF_04, 'logo' => LAN_THEMEPREF_05, 'sitenamelogo'=>LAN_THEMEPREF_06);
+		$brandingOpts = array('sitename'=>TPVLAN_99, 'logo' => TPVLAN_100, 'sitenamelogo'=>TPVLAN_101);
 
 		$bootswatch = array(
 			"cerulean"=> 'Cerulean',
@@ -36,10 +36,10 @@ class theme_config implements e_theme_config
 		$previewLink = " <a class='btn btn-default e-modal' data-modal-caption=\"Use the 'Themes' menu to view the selection.\" href='http://bootswatch.com/default/'>".LAN_PREVIEW."</a>";
 
 		$fields = array(
-			'branding'          => array('title'=>LAN_THEMEPREF_00, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $brandingOpts)),
-			'nav_alignment'     => array('title'=>LAN_THEMEPREF_01, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('left'=> LAN_THEMEPREF_07,'right'=> LAN_THEMEPREF_08))),
-			'usernav_placement' => array('title'=>LAN_THEMEPREF_02, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('top'=> LAN_THEMEPREF_09, 'bottom'=> LAN_THEMEPREF_10))),
-			'bootswatch'        => array('title'=>LAN_THEMEPREF_03, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $bootswatch, 'post'=>$previewLink, 'default'=>LAN_DEFAULT)),
+			'branding'          => array('title'=>TPVLAN_95, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $brandingOpts)),
+			'nav_alignment'     => array('title'=>TPVLAN_96, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('left'=> TPVLAN_102,'right'=> TPVLAN_103))),
+			'usernav_placement' => array('title'=>TPVLAN_97, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('top'=> TPVLAN_104, 'bottom'=> TPVLAN_105))),
+			'bootswatch'        => array('title'=>TPVLAN_98, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $bootswatch, 'post'=>$previewLink, 'default'=>LAN_DEFAULT)),
 		);
 
 		return $fields;

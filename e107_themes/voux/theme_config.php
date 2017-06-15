@@ -13,9 +13,9 @@ class theme_config implements e_theme_config
 
 
 		$fields = array(
-			'branding'          => array('title'=> "Branding", 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $brandingOpts)),
-			'nav_alignment'     => array('title'=> "Navbar Alignment", 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('left'=> "Left",'right'=> "Right"))),
-			'usernav_placement' => array('title'=> "Signup/Login Placement", 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('top'=> "Top", 'bottom'=> "Bottom"))),
+			'branding'          => array('title'=> TPVLAN_95, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> $brandingOpts)),
+			'nav_alignment'     => array('title'=> TPVLAN_96, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('left'=> TPVLAN_102,'right'=> TPVLAN_103))),
+			'usernav_placement' => array('title'=> TPVLAN_97, 'type'=>'dropdown', 'writeParms'=>array('optArray'=> array('top'=> TPVLAN_104, 'bottom'=> TPVLAN_105))),
 		);
 
 		return $fields;
