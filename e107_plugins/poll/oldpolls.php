@@ -143,7 +143,7 @@ if(e_QUERY)
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?".$row['poll_id']."'>{$poll_title}</a></td>
 		<td class='forumheader3' style='width: 15%;'>".$userlink."</td>
-		<td class='forumheader3' style='width: 30%;'>".$from." ".LAN_TO." ".$to."</td>
+		<td class='forumheader3' style='width: 30%;'>".$tp->lanVars(POLLAN_50, array('x'=>$from, 'y'=> $to))."</td>
 		</tr>\n";
 	}
 
