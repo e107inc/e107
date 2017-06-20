@@ -551,27 +551,27 @@ class system_tools
 		e107::lan('core','installer');
 
 		// Leave here until no longer experimental. - Should be placed inside lan_db.php and LANS renamed.
-		define('LANINS_130', "Parked Domain");
-		define('LANINS_131', "The parked domain which will become a new e107 website.");
+		define('DBLAN_122', "Parked Domain");
+		define('DBLAN_123', "The parked domain which will become a new e107 website.");
 		define('LANINS_132', "mydomain.com");
-		define('LANINS_133', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x]");
+		define('DBLAN_124', "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x]");
 
 
 		e107::getMySQLConfig('user'); // prefix|server|user|password|
 		
 		if(!isset($POST['create_multisite']))
 		{
-			$info = str_replace('[x]', e_DOMAIN, LANINS_133);
+			$info = str_replace('[x]', e_DOMAIN, DBLAN_124);
 			$mes->addInfo($info);
 		}
 		
 		$text = $frm->open('multisite')."
 			<table class='table table-striped' >
 			<tr>
-					<td><label for='server'>".LANINS_130."</label></td>
+					<td><label for='server'>".DBLAN_122."</label></td>
 					<td>
 						<input class='tbox' type='text' placeholder='".LANINS_132."' id='domain' name='domain' autofocus size='40' value='' maxlength='100' required='required' />
-						<span class='field-help'>".LANINS_131."</span>
+						<span class='field-help'>".DBLAN_123."</span>
 					</td>
 				</tr>
 				";

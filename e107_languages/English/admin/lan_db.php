@@ -128,7 +128,7 @@ define("DBLAN_107", "[folder] is not writable");
 define("DBLAN_108", "Created:");
 define("DBLAN_109", "Copied:");
 define("DBLAN_110", "Couldn't copy:");
-define("DBLAN_111", 		"Tables appear to be okay!");
+define("DBLAN_111", "Tables appear to be okay!");
 
 define("DBLAN_112", "Sync with Github");
 define("DBLAN_113", "Overwrite Files");
@@ -140,4 +140,7 @@ define("DBLAN_118", "Couldn't download .zip file");
 define("DBLAN_119", "Backup");
 define("DBLAN_120", "Starting backup....");
 define("DBLAN_121", "Moving [x] to [y].");
+define("DBLAN_122", "Parked Domain");
+define("DBLAN_123", "The parked domain which will become a new e107 website.");
+define("DBLAN_124", "This will create a fresh installation of e107 at the domain you specify. Using your server administration software (e.g. cPanel) - park your other domain on top of [x].");
 ?>
