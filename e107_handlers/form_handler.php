@@ -2710,9 +2710,9 @@ class e_form
 		
 		
 		
-		if(is_array($filter))
+		if(is_array($filterArray))
 		{
-			$text .= $this->selectbox($$filterName, $filterArray, $filterVal); 
+			$text .= $this->selectbox($filterName, $filterArray, $filterVal);
 		}
 		
 	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
