@@ -163,7 +163,7 @@ class news_front
 		}
 
 		$this->action = $action;
-		$this->subAction= $sub_action;
+		$this->subAction= e107::getParser()->filter($sub_action);
 
 
 	}
