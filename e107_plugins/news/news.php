@@ -461,11 +461,11 @@ class news_front
 				$tmp = explode(",", $iurl);
 				foreach($tmp as $mimg)
 				{
-					if(substr($mimg,-8) == '.youtube')
+					if(substr($mimg,-8) == '.youtube' || empty($mimg))
 					{
 						continue;
 					}
-					e107::meta('og:image',$tp->thumbUrl($tmp[0],'w=500',false,true) );
+					e107::meta('og:image',$tp->thumbUrl($mimg,'w=500',false,true) );
 				//	e107::meta('og:image',$mimg);
 				}
 
