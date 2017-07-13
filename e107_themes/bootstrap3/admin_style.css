@@ -1345,6 +1345,7 @@ li.rssRow > div {
 .selectize-control div.item { border-radius:3px; }
 .selectize-control div.item .remove { margin-top:3px }
 .selectize-input.focus { box-shadow: inherit; }
+.form-control.selectize-input { min-height:38px; height:auto; }
 
 
 /*
