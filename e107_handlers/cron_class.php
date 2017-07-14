@@ -1209,7 +1209,7 @@ class cronScheduler
 			$where = 'cron_active = 1';
 		}
 
-		if($sql->select("cron", 'cron_function,cron_tab,cron_active', $where))
+		if($sql->select("cron", '*', $where))
 		{
 			while($row = $sql->fetch())
 			{
@@ -1217,11 +1217,16 @@ class cronScheduler
 				$key = $class . "__" . $function;
 
 				$list[$key] = array(
-					'path'     => $class,
-					'active'   => $row['cron_active'],
-					'tab'      => $row['cron_tab'],
-					'function' => $function,
-					'class'    => $class,
+					'id'          => $row['cron_id'],
+					'name'        => $row['cron_name'],
+					'description' => $row['cron_description'],
+					'category'    => $row['cron_category'],
+					'path'        => $class,
+					'active'      => $row['cron_active'],
+					'lastrun'     => $row['cron_lastrun'],
+					'tab'         => $row['cron_tab'],
+					'function'    => $function,
+					'class'       => $class,
 				);
 			}
 		}
