@@ -1011,13 +1011,15 @@ class cronScheduler
 	 *   - 'function' string  function name
 	 *   - 'class'    string  class name
 	 *
-	 * @return bool
+	 * @return bool $status
 	 */
 	public function runJob($job)
 	{
+		$status = false;
+
 		if(empty($job['active']))
 		{
-			return false;
+			return $status;
 		}
 
 		// Calculate the last due time before this moment.
@@ -1031,12 +1033,12 @@ class cronScheduler
 
 		if($due <= (time() - 45))
 		{
-			return false;
+			return $status;
 		}
 
 		if($job['path'] != '_system' && !is_readable(e_PLUGIN . $job['path'] . "/e_cron.php"))
 		{
-			return false;
+			return $status;
 		}
 
 		if($this->debug)
@@ -1059,7 +1061,7 @@ class cronScheduler
 				echo "<br />Couldn't find class: " . $class;
 			}
 
-			return false;
+			return $status;
 		}
 
 		$obj = new $class;
@@ -1071,7 +1073,7 @@ class cronScheduler
 				echo "<br />Couldn't find method: " . $job['function'];
 			}
 
-			return false;
+			return $status;
 		}
 
 		if($this->debug)
@@ -1081,7 +1083,6 @@ class cronScheduler
 
 		// Exception handling.
 		$method = $job['function'];
-		$status = false;
 
 		try
 		{
@@ -1127,7 +1128,7 @@ class cronScheduler
 			$this->sendMail($mail);
 		}
 
-		return true;
+		return $status;
 	}
 
 	/**
