@@ -243,6 +243,7 @@ class mailout_admin extends e_admin_dispatcher
 		'sent/list'			=> array('caption'=> LAN_MAILOUT_192, 	'perm' => 'W'),
 		'other2' 			=> array('divider'=> true),
 		'prefs/prefs' 		=> array('caption'=> LAN_PREFS, 		'perm' => '0'),
+
 		'maint/maint'		=> array('caption'=> ADLAN_40, 			'perm' => '0'),
 		'main/templates'	=> array('caption'=> LAN_MAILOUT_262, 'perm' => '0'),
 	);
@@ -256,6 +257,19 @@ class mailout_admin extends e_admin_dispatcher
 	protected $adminMenuIcon = 'e-mail-24';
 	
 	protected $menuTitle = LAN_MAILOUT_15;
+
+
+	function init()
+	{
+		$mailer = e107::getPref('bulkmailer');
+
+		if($mailer === 'smtp' )
+		{
+			$this->adminMenu['other3'] =   array('divider'=> true);
+			$this->adminMenu['prefs/test'] =array('caption'=> LAN_MAILOUT_270, 'perm' => '0'); //TODO LAN
+		}
+
+	}
 }
 
 class mailout_main_ui extends e_admin_ui
@@ -603,7 +617,7 @@ class mailout_main_ui extends e_admin_ui
 		$options = array('mailer'=>$pref['bulkmailer']);
 
 			
-		if (!e107::getEmail($options)->sendEmail($sendto, LAN_MAILOUT_189, $eml))
+		if (e107::getEmail($options)->sendEmail($sendto, LAN_MAILOUT_189, $eml) !== true)
 		{
 			$mes->addError(($pref['bulkmailer'] == 'smtp')  ? LAN_MAILOUT_67 : LAN_MAILOUT_106);
 		}
@@ -961,8 +975,102 @@ class mailout_main_ui extends e_admin_ui
 		}
 	
 		return $text;	
-	}	
-	
+	}
+
+
+	/**
+	 * @TODO Do NOT translate, this is for debugging ONLY.
+	 *
+	*/
+	function testPage()
+	{
+
+		require_once(e_HANDLER. 'phpmailer/PHPMailerAutoload.php');
+
+		$smtp = new SMTP;
+		$smtp->do_debug = SMTP::DEBUG_CONNECTION;
+
+		$mes = e107::getMessage();
+		$pref = e107::getPref();
+
+		$username = $pref['smtp_username'];
+		$pwd     = $pref['smtp_password'];
+		$port = ($pref['smtp_port'] != 465) ? $pref['smtp_port'] : 25;
+
+	//	var_dump($pref['smtp_password']);
+	//	print_a($pref['smtp_password']);
+
+		ob_start();
+
+		try
+		{
+			//Connect to an SMTP server
+			if(!$smtp->connect($pref['smtp_server'], $port))
+			{
+				$mes->addError('Connect failed');
+			}
+			//Say hello
+			if(!$smtp->hello(gethostname()))
+			{
+				$mes->addError('EHLO failed: ' . $smtp->getError()['error']);
+			}
+			//Get the list of ESMTP services the server offers
+			$e = $smtp->getServerExtList();
+			//If server can do TLS encryption, use it
+			if(is_array($e) && array_key_exists('STARTTLS', $e))
+			{
+				$mes->addSuccess("TLS is supported. ");
+				$tlsok = $smtp->startTLS();
+				if(!$tlsok)
+				{
+					$mes->addError('Failed to start encryption: ' . $smtp->getError()['error']);
+				}
+				//Repeat EHLO after STARTTLS
+				if(!$smtp->hello(gethostname()))
+				{
+					$mes->addError('EHLO (2) failed: ' . $smtp->getError()['error']);
+				}
+				//Get new capabilities list, which will usually now include AUTH if it didn't before
+				$e = $smtp->getServerExtList();
+			}
+			else
+			{
+				$mes->addWarning("TLS is not supported. ");
+
+			}
+			//If server supports authentication, do it (even if no encryption)
+			if(is_array($e) && array_key_exists('AUTH', $e))
+			{
+				if($smtp->authenticate($username, $pwd))
+				{
+					$mes->addSuccess("Connected ok!");
+				}
+				else
+				{
+					$msg = e107::getParser()->lanVars(LAN_MAILOUT_271,array('x'=>$username, 'y'=>$pwd), true);
+					$mes->addError($msg . $smtp->getError()['error']);
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			$mes->addError('SMTP error: ' . $e->getMessage());
+		}
+		//Whatever happened, close the connection.
+		$smtp->quit(true);
+
+		$content = ob_get_contents();
+
+		ob_end_clean();
+
+		print_a($content);
+
+	}
+
+
+
+
+
 		
 	function sendPage()
 	{
