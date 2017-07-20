@@ -1134,7 +1134,7 @@ class media_admin_ui extends e_admin_ui
 			return;
 		}
 
-		$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE m.media_category = '".$cat."' "; // without any Order or Limit.
+		$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE FIND_IN_SET('".$cat."', m.media_category)  "; // without any Order or Limit.
 
 		unset($this->fields['checkboxes']);
 		$this->fields['options']['type'] = 'method';
