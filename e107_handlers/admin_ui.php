@@ -6731,13 +6731,12 @@ class e_admin_form_ui extends e_form
 		",'prototype');
 		
 		// TODO implement ajax queue
-		// FIXME - dirty way to register events after ajax update - DO IT RIGHT - see all.jquery, create object
-		// and use handler, re-register them global after ajax update (context)
+		// FIXME
+		// dirty way to register events after ajax update - DO IT RIGHT - see all.jquery, create object and use handler,
+		// re-register them global after ajax update (context)... use behaviors and call e107.attachBehaviors();
 		e107::js('footer-inline',"
 			var filterRunning = false, request;
 			var applyAfterAjax = function(context) {
-				\$('.e-hideme', context).hide();
-				\$('.e-expandit', context).show();
 		      	\$('.e-expandit', context).click(function () {
 		       		var href = (\$(this).is('a')) ? \$(this).attr('href') : '';
 		       		if(href == '' && \$(this).attr('data-target'))
@@ -6786,7 +6785,10 @@ class e_admin_form_ui extends e_form
 							return;
 						}
 						cont.html(data).css({ opacity: 1 });
+						// TODO remove applyAfterAjax() and use behaviors!
 						applyAfterAjax(cont);
+						// Attach behaviors to the newly loaded contents.
+						e107.attachBehaviors();
 					}, 700);
 				}, 'html')
 				.error(function() {
