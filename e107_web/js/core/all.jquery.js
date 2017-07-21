@@ -316,6 +316,36 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 	};
 
 	/**
+	 * Behavior to hide elements.
+	 *
+	 * @type {{attach: e107.behaviors.eHideMe.attach}}
+	 */
+	e107.behaviors.eHideMe = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-hideme').once('e-hide-me').each(function ()
+			{
+				$(this).hide();
+			});
+		}
+	};
+
+	/**
+	 * Behavior to show elements.
+	 *
+	 * @type {{attach: e107.behaviors.eExpandIt.attach}}
+	 */
+	e107.behaviors.eExpandIt = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-expandit').once('e-expand-it').each(function ()
+			{
+				$(this).show();
+			});
+		}
+	};
+
+	/**
 	 * Check if the selector is valid.
 	 *
 	 * @param selector
@@ -715,12 +745,6 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
-		$(".e-hideme").hide();
-		$(".e-expandit").show();   	
-	
-    //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-
-    	 
 		 //check all
 		 $("#check-all").click(function(event){
 		 		var val = $(this).val(), selector = '.field-spacer';
