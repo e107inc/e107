@@ -454,6 +454,7 @@ class social_ui extends e_admin_ui
 				'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
 				'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
 				'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
+				'steam'			=>	array('label'=>"Steam",		"placeholder"=>"eg. http://steamcommunity.com"),
 				'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
 			);
 

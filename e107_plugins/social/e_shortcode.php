@@ -76,6 +76,7 @@ class social_shortcodes extends e_shortcode
 			'flickr'		=> array('href'=> deftrue('XURL_FLICKR'),		'title'=>'Flickr'),
 			'instagram'		=> array('href'=> deftrue('XURL_INSTAGRAM'),	'title'=>'Instagram'),
 			'youtube'		=> array('href'=> deftrue('XURL_YOUTUBE'),		'title'=>'YouTube'),
+			'steam'			=> array('href'=> deftrue('XURL_STEAM'),		'title'=>'Steam'),
 			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo')
 		);
  			
