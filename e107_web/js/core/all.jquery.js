@@ -207,6 +207,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		{
 			$(context).find('.e-expandit').once('e-expandit').each(function ()
 			{
+				$(this).show();
+
 				// default 'toggle'.
 				$(this).click(function ()
 				{
@@ -254,8 +256,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 					if(href === "#" || href == "")
 					{
-						var idt = $(this).nextAll("div");
-						$(idt).slideToggle("slow");
+						$(this).nextAll("div").slideToggle("slow");
 						return true;
 					}
 
@@ -326,21 +327,6 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$(context).find('.e-hideme').once('e-hide-me').each(function ()
 			{
 				$(this).hide();
-			});
-		}
-	};
-
-	/**
-	 * Behavior to show elements.
-	 *
-	 * @type {{attach: e107.behaviors.eExpandIt.attach}}
-	 */
-	e107.behaviors.eExpandIt = {
-		attach: function (context, settings)
-		{
-			$(context).find('.e-expandit').once('e-expand-it').each(function ()
-			{
-				$(this).show();
 			});
 		}
 	};
