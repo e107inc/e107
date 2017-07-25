@@ -1429,11 +1429,10 @@ class e_form
 			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
 
-		// Load it in the footer.
-		// FIXME use Library Manager (e107::library()) instead?
+		// TODO use Library Manager...
 		e107::css('core', 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
-		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
-		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.init.js', 'jquery', 2);
+		e107::js('footer', '{e_WEB}js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 4);
+		e107::js('footer', '{e_WEB}js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.init.js', 'jquery', 5);
 
 		if(e_LANGUAGE !== 'English')
 		{
