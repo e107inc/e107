@@ -31,18 +31,17 @@ e107::getTheme('current', true)->loadLibrary();
 
 if(deftrue('BOOTSTRAP'))
 {
-	e107::js('core',	'bootstrap-notify/js/bootstrap-notify.js','jquery');
-	e107::css('core',	'bootstrap-notify/css/bootstrap-notify.css','jquery');
+	e107::js('footer', '{e_WEB}js/bootstrap-notify/js/bootstrap-notify.js', 'jquery', 2);
+	e107::css('core', 'bootstrap-notify/css/bootstrap-notify.css', 'jquery');
 }
 
 // ------------------
 
-// e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
-e107::js('core', 	'rate/js/jquery.raty.js', 'jquery', 2);
-e107::css('core', 	'core/all.jquery.css', 'jquery');
+e107::js('footer', '{e_WEB}js/rate/js/jquery.raty.js', 'jquery', 2);
+e107::css('core', 'core/all.jquery.css', 'jquery');
 
-e107::js("core",	"core/front.jquery.js","jquery",5); // Load all default functions.
-e107::js("core",	"core/all.jquery.js","jquery",5); // Load all default functions.
+e107::js('footer', '{e_WEB}js/core/front.jquery.js', 'jquery', 5); // Load all default functions.
+e107::js('footer', '{e_WEB}js/core/all.jquery.js', 'jquery', 5); // Load all default functions.
 
 $js_body_onload = array();		// Legacy array of code to load with page.
 
