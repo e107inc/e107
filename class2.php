@@ -764,6 +764,7 @@ if(!empty($pref['xurl']) && is_array($pref['xurl']))
 	define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
 	define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
 	define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
+	define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
 	define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
 }
 else
@@ -777,6 +778,7 @@ else
 	define('XURL_FLICKR', false);
 	define('XURL_INSTAGRAM', false);
 	define('XURL_PINTEREST', false);
+	define('XURL_STEAM', false);
 	define('XURL_VIMEO', false);
 }
 
