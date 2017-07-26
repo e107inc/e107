@@ -1026,7 +1026,7 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />";
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='".LAN_EFORM_001."' />";
 		}
 		else
 		{			
