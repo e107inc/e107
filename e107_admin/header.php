@@ -53,62 +53,42 @@ if(!deftrue('e_MENUMANAGER_ACTIVE'))
 
 function loadJSAddons()
 {
-	
 	if(deftrue('e_MENUMANAGER_ACTIVE'))
 	{
 		return; 
 	}
-	
-// e107::js('core',    'bootstrap/js/bootstrap-modal.js', 'jquery', 2);  // Special Version see: https://github.com/twitter/bootstrap/pull/4224
 
-	e107::css('core', 	'bootstrap-select/bootstrap-select.min.css', 'jquery');
-	e107::js('core', 	'bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
+	// TODO use Library Manager. Remove unused libraries...
+
+	e107::css('core', 'bootstrap-select/bootstrap-select.min.css', 'jquery');
+	e107::js('footer', '{e_WEB}js/bootstrap-select/bootstrap-select.min.js', 'jquery', 2);
 	
-//	e107::css('core', 	'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
-	e107::js('core', 	'bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
+	// e107::css('core', 'bootstrap-multiselect/css/bootstrap-multiselect.css', 'jquery');
+	e107::js('footer', '{e_WEB}js/bootstrap-multiselect/js/bootstrap-multiselect.js', 'jquery', 2);
 
 	// TODO: remove typeahead.
-	e107::js('core', 	'bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
+	e107::js('footer', '{e_WEB}js/bootstrap-jasny/js/jasny-bootstrap.js', 'jquery', 2);
 	
-	e107::css('core', 	'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
-	e107::js('core', 	'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
+	e107::css('core', 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
+	e107::js('footer', '{e_WEB}js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
 	
-	e107::js('core',	'jquery.h5validate.min.js','jquery',2);
+	e107::js('footer','{e_WEB}js/jquery.h5validate.min.js','jquery', 2);
 	
-	e107::js('core', 	'jquery.elastic.js', 'jquery', 2);
-	e107::js('core', 	'jquery.at.caret.min.js', 'jquery', 2);
-	
-	// e107::js('core', 	'jquery-ui-timepicker-addon.js', 'jquery', 2);
-	
-	
-	//e107::css('core', 	'chosen/chosen.css', 'jquery');
-	//e107::js('core', 	'chosen/chosen.jquery.min.js', 'jquery', 2);
-	
-	// e107::js('core', 	'password/jquery.pwdMeter.js', 'jquery', 2); // loaded in form-handler.
-	
-	// e107::css('core', 	'bootstrap-tag/bootstrap-tag.css', 'jquery');
-//	e107::js('core', 	'bootstrap-tag/bootstrap-tag.js', 'jquery', 2);
-	
-		
-//	e107::js("core",	"tags/jquery.tagit.js","jquery",3);
-//	e107::css('core', 	'tags/jquery.tagit.css', 'jquery');
+	e107::js('footer', '{e_WEB}js/jquery.elastic.js', 'jquery', 2);
+	e107::js('footer', '{e_WEB}js/jquery.at.caret.min.js', 'jquery', 2);
 
-	e107::css('core', 	'core/admin.jquery.css', 'jquery');
-	e107::js("core",	"core/admin.jquery.js","jquery",4); // Load all default functions.
-	e107::css('core', 	'core/all.jquery.css', 'jquery');
+	e107::css('core', 'core/admin.jquery.css', 'jquery');
+	e107::css('core', 'core/all.jquery.css', 'jquery');
 
-	e107::js("core",	"core/all.jquery.js","jquery",4); // Load all default functions.
+	e107::js('footer', '{e_WEB}js/core/admin.jquery.js', 'jquery', 5); // Load all default functions.
+	e107::js('footer', '{e_WEB}js/core/all.jquery.js', 'jquery', 5); // Load all default functions.
 
-	$plUpload = "plupload/i18n/".e_LAN.".js";
+	$plUpload = '{e_WEB}js/plupload/i18n/' . e_LAN . '.js';
 
-	if(e_LAN != 'en' && file_exists(e_WEB_JS.$plUpload))
+	if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
 	{
-		e107::js('core', $plUpload); 
+		e107::js('footer', $plUpload, 'jquery', 5);
 	}
-
-
-
-
 }
 
 // Load library dependencies.
