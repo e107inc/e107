@@ -378,7 +378,7 @@ class redirection
 			echo "Debug active";
 			print_a($message);
 			echo "Go to : <a href='".$url."'>".$url."</a>";
-			e107::getLog()->toFile('redirect.log',true);
+			e107::getLog()->toFile('redirect.log',"Redirect Log", true);
 			return; 
 		}
 		
