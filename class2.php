@@ -764,6 +764,7 @@ if(!empty($pref['xurl']) && is_array($pref['xurl']))
 	define('XURL_FLICKR', vartrue($pref['xurl']['flickr'], false));
 	define('XURL_INSTAGRAM', vartrue($pref['xurl']['instagram'], false));
 	define('XURL_PINTEREST', vartrue($pref['xurl']['pinterest'], false));
+	define('XURL_STEAM', vartrue($pref['xurl']['steam'], false));
 	define('XURL_VIMEO', vartrue($pref['xurl']['vimeo'], false));
 }
 else
@@ -777,6 +778,7 @@ else
 	define('XURL_FLICKR', false);
 	define('XURL_INSTAGRAM', false);
 	define('XURL_PINTEREST', false);
+	define('XURL_STEAM', false);
 	define('XURL_VIMEO', false);
 }
 
@@ -2503,7 +2505,7 @@ class e_http_header
 
 		if($this->compression_server_support == true && $this->compression_browser_support == true)
 		{
-			$this->compress_output = varset(e107::getPref('compress_output'),false);
+			$this->compress_output = (bool) varset(e107::getPref('compress_output'),false);
 		}
 		else
 		{
@@ -2594,7 +2596,7 @@ class e_http_header
 
 		$text .=print_a($server,true);
 
-		if($this->compress_output == true)
+		if($this->compress_output === true)
 		{
 
 			$text = gzencode($text, $this->compression_level);
@@ -2642,28 +2644,18 @@ class e_http_header
 		}
 		
 
-		if($this->compress_output != false)
+		if($this->compress_output !== false)
 		{
-		//	$this->setHeader("ETag: \"{$this->etag}-gzip\"");
-			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
+			$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);
 			$this->content = gzencode($this->content, $this->compression_level);
+			$this->length = strlen($this->content);
 			$this->setHeader('Content-Encoding: gzip', true);
 			$this->setHeader("Content-Length: ".$this->length, true);
-
 		} 
 		else 
 		{
 
-/*
-			if($this->compression_browser_support ==true) 
-			{
-				$this->setHeader('ETag: "'.$this->etag.'-gzip"', true);	
-			}
-			else
-			{*/
-				$this->setHeader('ETag: "'.$this->etag.'"', true);	
-		//	}
-			
+			$this->setHeader('ETag: "'.$this->etag.'"', true);
 			$this->setHeader("Content-Length: ".$this->length, true);
 		}
 		

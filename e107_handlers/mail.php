@@ -297,11 +297,11 @@ class e107Email extends PHPMailer
 					{
 						case 'TLS' :
 							$this->SMTPSecure = 'tls';
-							$this->Port = $smtpPort;		// Can also use port 587, and maybe even 25
+							$this->Port = ($smtpPort != 465) ? $smtpPort : 25;		// Can also use port 587, and maybe even 25
 							break;
 						case 'SSL' :
 							$this->SMTPSecure = 'ssl';
-							$this->Port = $smtpPort;
+							$this->Port = ($smtpPort != 587) ? $smtpPort : 465;
 							break;
 						default :
 							if ($this->debug) echo "Invalid option: {$smtp_options['secure']}<br />";
@@ -1071,10 +1071,13 @@ class e107Email extends PHPMailer
 			if(!empty($eml['SMTPDebug']))
 			{
 				e107::getMessage()->addError($this->ErrorInfo);
+				$tmp = $this;
+				$tmp->pref = array();
+				e107::getMessage()->addDebug(print_a($tmp,true));
 			}
 		}
-		
-		
+
+
 		$this->clearAddresses();			// In case we send another email
 		$this->clearCustomHeaders();
 

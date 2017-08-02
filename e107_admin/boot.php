@@ -56,7 +56,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 			$text .= '
 			<div class="media">
 			  <div class="media-body">
-			    <h4 class="media-heading"><a href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
+			    <h4 class="media-heading"><a target="_blank" href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
 			   '.$tp->text_truncate($description,150).'
 			  </div></div>';
 			  $count++;
@@ -103,7 +103,7 @@ if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']
 		$rows = e107::getXml()->parseXml($data, 'advanced');
 //	print_a($rows);
 //  exit;
-		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=online";
+		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=main&action=online";
 
 		$text = "<div style='margin-top:10px'>";
 

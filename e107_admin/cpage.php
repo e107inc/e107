@@ -665,13 +665,14 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			
-			if(vartrue($_POST['menu_delete'])) // Delete a Menu (or rather, remove it's data )
+			if(!empty($_POST['menu_delete'])) // Delete a Page/Menu combination (or rather, remove it's data )
 			{
 				$key = key($_POST['menu_delete']);
 				
 				if($key)
 				{
-					e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
+					//e107::getDb()->update('page',"menu_name = '' WHERE page_id=".intval($key)." LIMIT 1");
+					e107::getDb()->delete('page',"page_id=".intval($key));
 				}
 			}
 

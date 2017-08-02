@@ -51,7 +51,7 @@ if(e_QUERY)
 
 		$text .= "
 		<div class='smalltext text-right'>
-		<small>".LAN_POSTED_BY." ".$userlink."<br /> ".LAN_ACTIVE.": ".LAN_FROM." ".$start_datestamp." ".LAN_TO." ".$end_datestamp."</small></div>
+		<small>".LAN_POSTED_BY." ".$userlink."<br /> ".$tp->lanVars(POLLAN_50, array('x'=>$start_datestamp, 'y'=> $end_datestamp))."</small></div>
 		";
 
 
@@ -82,23 +82,7 @@ if(e_QUERY)
 
 		}
 */
-		$query = "SELECT c.*, u.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author_id = u.user_id
-		WHERE comment_item_id=".intval($row['poll_id'])." AND comment_type='4' ORDER BY comment_datestamp";
-
-		if ($comment_total = $sql->gen($query))
-		{
-			$text .= "<hr /><div>";
-
-			while ($row2 = $sql->fetch())
-			{
-				$text .= e107::getComment()->render_comment($row2, 'poll', 'comment');
-			}
-			$text .= "</div>";
-		}
-
-
-	//	$text .= "</table>";
+		$text .= e107::getComment()->compose_comment('poll', 'comment', intval( $row['poll_id'] ), null, '', false, 'html');
 		$ns->tablerender(LAN_PLUGIN_POLL_NAME." #".$row['poll_id'], $text);
 		echo "<hr />";
 	}
@@ -159,7 +143,7 @@ if(e_QUERY)
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?".$row['poll_id']."'>{$poll_title}</a></td>
 		<td class='forumheader3' style='width: 15%;'>".$userlink."</td>
-		<td class='forumheader3' style='width: 30%;'>".$from." ".LAN_TO." ".$to."</td>
+		<td class='forumheader3' style='width: 30%;'>".$tp->lanVars(POLLAN_50, array('x'=>$from, 'y'=> $to))."</td>
 		</tr>\n";
 	}
 

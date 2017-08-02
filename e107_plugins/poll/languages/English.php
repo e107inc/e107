@@ -46,7 +46,7 @@ define("POLLAN_19", "User ID (only members can vote)");
 //define("POLLAN_25", "Clear form");//LAN_CLEAR
 //define("POLLAN_26", "votes");//NOT USED
 // define("POLLAN_27", "Comments");
-define("POLLAN_28", "Previous polls");
+define("POLLAN_28", "All Previous polls");
 //define("POLLAN_29", "posted by");//NOT USED
 //define("POLLAN_30", "Submit");//NOT USED
 define("POLLAN_31", "Votes");
@@ -65,6 +65,8 @@ define("POLLAN_43", "You do not have the required permissions to vote in this po
 //define("POLLAN_44", "Delete this poll?");//NOT USED
 //define("POLLAN_45", "Poll successfully updated");//NOT USED
 //define("POLLAN_46", "Field(s) left blank");
+
+define("POLLAN_50", "Active from [x] to [y]");
 
 
 // TODO NEED TO BE RENAMED!

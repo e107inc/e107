@@ -621,7 +621,7 @@ class media_form_ui extends e_admin_form_ui
 		{
 			$text = $this->renderValue('options',$value,'',$id);
 		}
-		
+
 		return "<div class='nowrap'>".$text."</div>";
 		
 	}
@@ -896,6 +896,8 @@ class media_admin_ui extends e_admin_ui
 
 	function init()
 	{
+
+
 		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>";
 
 		if(E107_DEBUG_LEVEL > 0)
@@ -1021,10 +1023,11 @@ class media_admin_ui extends e_admin_ui
 		}
 		
 		
-		
+
 
 		if($this->getQuery('iframe'))
 		{
+
 		// 	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			
@@ -1050,9 +1053,8 @@ class media_admin_ui extends e_admin_ui
 
 	function navPage() // no functioning correctly - see e_AJAX_REQUEST above. 
 	{
-	
-		
-		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
+
+		$bbcodeMode = ($this->getQuery('bbcode') =='img' ) ? 'bbcode=img' : FALSE;
 						
 		if($_GET['from'])
 		{
@@ -1068,11 +1070,26 @@ class media_admin_ui extends e_admin_ui
 	}
 	
 
-		
+	public function ListAjaxObserver()
+	{
+		$cat = $this->getQuery('for');
+		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? true : false;
+
+		if($file === true) // Make sure dialog mode is used when ajax searches occur.
+		{
+			$this->setQuery('action','dialog');
+			$this->setFileListMode($cat);
+		}
+
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+	}
+
 
 
 	function dialogPage() // Popup dialogPage for Image Selection. 
 	{
+
+
 		$cat = $this->getQuery('for');		
 		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? TRUE : FALSE;
 		$mes = e107::getMessage();
@@ -1091,35 +1108,13 @@ class media_admin_ui extends e_admin_ui
 		
 		if($file)
 		{
-			$cat = e107::getParser()->toDB($cat);
-			if(!isset($this->cats[$cat]))
-			{
-				return;
-			}
-			
-			$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE m.media_category = '".$cat."' "; // without any Order or Limit.
-			
-			unset($this->fields['checkboxes']);
-			$this->fields['options']['type'] = 'method';
-			$this->fields['media_category']['nolist'] = true;
-			$this->fields['media_userclass']['nolist'] = true;
-			$this->fields['media_dimensions']['nolist'] = true;
-			$this->fields['media_description']['nolist'] = true;
-			$this->fields['media_type']['nolist'] = true;
-			
-			foreach($this->fields as $k=>$v)
-			{
-				$this->fields[$k]['filter'] = false;	
-			}	
-
-
+			$this->setFileListMode($cat);
 
 			echo $this->mediaSelectUpload('file');
 
 			$tagid = e107::getParser()->filter($this->getQuery('tagid'));
 
 			echo '<div class="media-select-file-footer"><a class="btn btn-danger e-media-select-file-none e-dialog-close" data-target="'.$tagid.'"  data-target-label="'.LAN_CHOOSE_FILE.'" href="#" ><span><i class="fa fa-ban"></i> '.IMALAN_167.'</span></a></div>';
-
 
 
 		}
@@ -1130,7 +1125,34 @@ class media_admin_ui extends e_admin_ui
 		
 	}
 	
-	
+	private function setFileListMode($cat)
+	{
+		$cat = e107::getParser()->toDB($cat);
+
+		if(!isset($this->cats[$cat]))
+		{
+			return;
+		}
+
+		$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE FIND_IN_SET('".$cat."', m.media_category)  "; // without any Order or Limit.
+
+		unset($this->fields['checkboxes']);
+		$this->fields['options']['type'] = 'method';
+		$this->fields['media_category']['nolist'] = true;
+		$this->fields['media_userclass']['nolist'] = true;
+		$this->fields['media_dimensions']['nolist'] = true;
+		$this->fields['media_description']['nolist'] = true;
+		$this->fields['media_type']['nolist'] = true;
+		$this->fields['media_url']['nolist'] = true;
+		$this->fields['media_sef']['nolist'] = true;
+
+		foreach($this->fields as $k=>$v)
+		{
+			$this->fields[$k]['filter'] = false;
+		}
+
+
+	}
 	
 	
 	function uploadTab()
@@ -2545,7 +2567,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(empty($f))
 			{
-				e107::getMessage()->addWarning("0 byte file found in: ".e_IMPORT."<br />Please remove before proceeding.");
+				e107::getMessage()->addWarning(IMALAN_180."&nbsp;".e_IMPORT."<br />".IMALAN_181);
 				////rename(e_IMPORT.$f['path'].$f['fname'],e_IMPOT.$f['path'].$f['fname']."-bad");
 				continue;
 			}

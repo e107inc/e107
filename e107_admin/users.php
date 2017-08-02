@@ -1771,7 +1771,7 @@ class users_admin_ui extends e_admin_ui
 			'rankName' => array('title' => USRLAN_208, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
 			'lowThresh' => array('title' => USRLAN_209, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
 			'langPrefix' => array('title' => USRLAN_210, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
-			'rankImage' => array('title' => USRLAN_210, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
+			'rankImage' => array('title' => USRLAN_211, 'type' => 'text', 'width' => 'auto', 'thclass' => 'left', 'class' => 'left'),
 		);
 	
 	

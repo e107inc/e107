@@ -814,7 +814,8 @@ class e_parse_shortcode
 
 				if(isset($this->editableCodes['perms']) && getperms($this->editableCodes['perms']))
 				{
-					e107::js('core', 'jquery.contenteditable.js', 'jquery');
+					// TODO use Library Manager...
+					e107::js('footer', '{e_WEB}js/jquery.contenteditable.js', 'jquery', 2);
 
 					$_SESSION['editable'][e_TOKEN] = $this->editableCodes;
 

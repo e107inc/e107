@@ -84,7 +84,7 @@ $PM_WRAPPER['PM_ATTACHMENTS']= "<div class='alert alert-block alert-info'>{---}<
 $PM_WRAPPER['PM_EMOTES']= "<tr><td class='forumheader3'>".LAN_PM_7.": </td><td class='forumheader3'>{---}</td></tr>";
 $PM_WRAPPER['PM_ATTACHMENT']= "<tr><td class='forumheader3'>".LAN_PM_8.": </td><td class='forumheader3'>{---}</td></tr>";
 $PM_WRAPPER['PM_RECEIPT']= "<tr><td class='forumheader3'>".LAN_PM_9.": </td><td class='forumheader3'>{---}</td></tr>";
-$PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center' colspan='2'>{---}</td></tr>";
+$PM_WRAPPER['PM_REPLY']= "<tr><td class='forumheader' style='text-align:center'>{---}</td></tr>";
 
 //$PM_SEND_PM = "<div id='pm-send-pm'>
 $PM_TEMPLATE['send'] = "<div id='pm-send-pm'>
@@ -272,7 +272,7 @@ $PM_TEMPLATE['show'] =
 "<div class='pm-show' style='text-align: center'>
 <table class='table table-bordered table-striped fborder'>
 <tr>
-	<td class='fcaption text-left' colspan='2'>
+	<td class='fcaption text-left'>
 	<h3>{PM_SUBJECT} <small class='pull-right'>{PM_DATE}</small></h3>
 	<small>{PM_FROM_TO}</small>
 	<small class='pull-right' >{PM_READ} {PM_DELETE}</small></td>

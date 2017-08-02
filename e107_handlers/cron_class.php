@@ -920,4 +920,324 @@ class CronParser
 	}
 
 }
-?>
+
+
+/**
+ * Class cronScheduler.
+ *
+ * @see cron.php
+ *
+ * TODO:
+ * - Log error in admin log.
+ * - Pref for sending email to Administrator.
+ * - LANs
+ */
+class cronScheduler
+{
+
+	/**
+	 * Cron parser class.
+	 *
+	 * @var \CronParser.
+	 */
+	private $cron;
+
+	/**
+	 * Debug mode.
+	 *
+	 * @var bool
+	 */
+	private $debug;
+
+	/**
+	 * System preferences.
+	 *
+	 * @var array|mixed
+	 */
+	private $pref;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+		global $_E107, $pref;
+
+		$this->cron = new CronParser();
+		$this->debug = $_E107['debug'];
+		$this->pref = $pref;
+	}
+
+	/**
+	 * Runs all cron jobs.
+	 *
+	 * @return bool
+	 */
+	public function run()
+	{
+		$valid = $this->validateToken();
+
+		if(!$valid)
+		{
+			return false;
+		}
+
+		@file_put_contents(e_CACHE . 'cronLastLoad.php', time());
+
+		// Get active cron jobs.
+		$cron_jobs = $this->getCronJobs(true);
+
+		if($this->debug && $_SERVER['QUERY_STRING'])
+		{
+			echo "<h1>Cron Lists</h1>";
+			print_a($cron_jobs);
+		}
+
+		foreach($cron_jobs as $job)
+		{
+			$this->runJob($job);
+		}
+	}
+
+	/**
+	 * Runs a cron job.
+	 *
+	 * @param array $job
+	 *   Contains the current cron job. Each element is an array with following
+	 *   properties:
+	 *   - 'path'     string  '_system' or plugin name.
+	 *   - 'active'   int     1 if active, 0 if inactive
+	 *   - 'tab'      string  cron tab
+	 *   - 'function' string  function name
+	 *   - 'class'    string  class name
+	 *
+	 * @return bool $status
+	 */
+	public function runJob($job)
+	{
+		$status = false;
+
+		if(empty($job['active']))
+		{
+			return $status;
+		}
+
+		// Calculate the last due time before this moment.
+		$this->cron->calcLastRan($job['tab']);
+		$due = $this->cron->getLastRanUnix();
+
+		if($this->debug)
+		{
+			echo "<br />Cron: " . $job['function'];
+		}
+
+		if($due <= (time() - 45))
+		{
+			return $status;
+		}
+
+		if($job['path'] != '_system' && !is_readable(e_PLUGIN . $job['path'] . "/e_cron.php"))
+		{
+			return $status;
+		}
+
+		if($this->debug)
+		{
+			echo "<br />Running Now...<br />path: " . $job['path'];
+		}
+
+		// This is correct.
+		if($job['path'] != '_system')
+		{
+			include_once(e_PLUGIN . $job['path'] . "/e_cron.php");
+		}
+
+		$class = $job['class'] . "_cron";
+
+		if(!class_exists($class, false))
+		{
+			if($this->debug)
+			{
+				echo "<br />Couldn't find class: " . $class;
+			}
+
+			return $status;
+		}
+
+		$obj = new $class;
+
+		if(!method_exists($obj, $job['function']))
+		{
+			if($this->debug)
+			{
+				echo "<br />Couldn't find method: " . $job['function'];
+			}
+
+			return $status;
+		}
+
+		if($this->debug)
+		{
+			echo "<br />Method Found: " . $class . "::" . $job['function'] . "()";
+		}
+
+		// Exception handling.
+		$method = $job['function'];
+
+		try
+		{
+			$status = $obj->$method();
+		} catch(Exception $e)
+		{
+			$msg = $e->getFile() . ' ' . $e->getLine();
+			$msg .= "\n\n" . $e->getCode() . '' . $e->getMessage();
+			$msg .= "\n\n" . implode("\n", $e->getTrace());
+
+			$mail = array(
+				'to_mail'   => $this->pref['siteadminemail'],
+				'to_name'   => $this->pref['siteadmin'],
+				'from_mail' => $this->pref['siteadminemail'],
+				'from_name' => $this->pref['siteadmin'],
+				'message'   => $msg,
+				'subject'   => 'e107 - Cron Schedule Exception',
+			);
+
+			$this->sendMail($mail);
+		}
+
+		// If task returns value which is not boolean (BC), it will be used as a
+		// message (send email, logs).
+		if($status && true !== $status)
+		{
+			if($this->debug)
+			{
+				echo "<br />Method returned message: [{$class}::" . $job['function'] . '] ' . $status;
+			}
+
+			$msg = 'Method returned message: [{' . $class . '}::' . $job['function'] . '] ' . $status;
+
+			$mail = array(
+				'to_mail'   => $this->pref['siteadminemail'],
+				'to_name'   => $this->pref['siteadmin'],
+				'from_mail' => $this->pref['siteadminemail'],
+				'from_name' => $this->pref['siteadmin'],
+				'message'   => $msg,
+				'subject'   => 'e107 - Cron Schedule Task Report',
+			);
+
+			$this->sendMail($mail);
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Validate Cron Token.
+	 *
+	 * @return bool
+	 */
+	public function validateToken()
+	{
+		$pwd = ($this->debug && $_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : trim($_SERVER['argv'][1]);
+
+		if(!empty($_GET['token']))
+		{
+			$pwd = e107::getParser()->filter($_GET['token']);
+		}
+		else
+		{
+			$pwd = str_replace('token=', '', $pwd);
+		}
+
+		if(($this->pref['e_cron_pwd'] != $pwd) || empty($this->pref['e_cron_pwd']))
+		{
+			if(!empty($pwd))
+			{
+				$msg = "Your Cron Schedule is not configured correctly. Your passwords do not match.";
+				$msg .= "<br /><br />";
+				$msg .= "Sent from cron: " . $pwd;
+				$msg .= "<br />";
+				$msg .= "Stored in e107: " . $this->pref['e_cron_pwd'];
+				$msg .= "<br /><br />";
+				$msg .= "You should regenerate the cron command in admin and enter it again in your server configuration.";
+
+				$msg .= "<h2>" . "Debug Info" . "</h2>";
+				$msg .= "<h3>_SERVER</h3>";
+				$msg .= print_a($_SERVER, true);
+				$msg .= "<h3>_ENV</h3>";
+				$msg .= print_a($_ENV, true);
+				$msg .= "<h3>_GET</h3>";
+				$msg .= print_a($_GET, true);
+
+				$mail = array(
+					'to_mail'   => $this->pref['siteadminemail'],
+					'to_name'   => $this->pref['siteadmin'],
+					'from_mail' => $this->pref['siteadminemail'],
+					'from_name' => $this->pref['siteadmin'],
+					'message'   => $msg,
+					'subject'   => 'e107 - Cron Schedule Misconfigured',
+				);
+
+				$this->sendMail($mail);
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get available Cron jobs.
+	 *
+	 * @param bool $only_active
+	 *   Set to TRUE for active cron jobs.
+	 *
+	 * @return array
+	 *   Array contains cron jobs.
+	 */
+	public function getCronJobs($only_active = false)
+	{
+		$list = array();
+
+		$sql = e107::getDb();
+
+		$where = '1';
+
+		if($only_active === true)
+		{
+			$where = 'cron_active = 1';
+		}
+
+		if($sql->select("cron", 'cron_function,cron_tab,cron_active', $where))
+		{
+			while($row = $sql->fetch())
+			{
+				list($class, $function) = explode("::", $row['cron_function'], 2);
+				$key = $class . "__" . $function;
+
+				$list[$key] = array(
+					'path'     => $class,
+					'active'   => $row['cron_active'],
+					'tab'      => $row['cron_tab'],
+					'function' => $function,
+					'class'    => $class,
+				);
+			}
+		}
+
+		return $list;
+	}
+
+	/**
+	 * Helper method to send email message.
+	 *
+	 * @param array $mail
+	 */
+	public function sendMail($mail)
+	{
+		require_once(e_HANDLER . "mail.php");
+		sendemail($mail['to_mail'], $mail['subject'], $mail['message'], $mail['to_name'], $mail['from_mail'], $mail['from_name']);
+	}
+
+}

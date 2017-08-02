@@ -291,4 +291,10 @@ define("LAN_MAILOUT_267", "Generate Public/Private keys");
 define("LAN_MAILOUT_268", "Developer Mode Only");
 define("LAN_MAILOUT_269", "Send Later");
 
+define("LAN_MAILOUT_270", "Test SMTP Connection");
+define("LAN_MAILOUT_271", "Authentication failed with username ([x]) and password ([y]):");
+
+
+
+
 ?>
