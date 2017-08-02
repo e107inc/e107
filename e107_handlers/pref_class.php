@@ -469,10 +469,10 @@ class e_pref extends e_front_model
 		$id = $this->prefid;
 		$data = $force ? false : $this->getPrefCache(true);
 
-		if($data !== false)
+		if(!empty($data))
 		{
 			$this->pref_cache = e107::getArrayStorage()->WriteArray($data, false); //runtime cache
-			$this->loadData($data, false);
+			$this->loadData((array) $data, false);
 			return $this;
 		}
 

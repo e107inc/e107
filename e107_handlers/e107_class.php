@@ -2276,17 +2276,20 @@ class e107
 	 */
 	public static function meta($name = null, $content = null, $extended = array())
 	{
+		$response = self::getSingleton('eResponse');
+
 		if($name === 'description')
 		{
-			self::getUrl()->response()->addMetaDescription($content);	//Cam: TBD
+			$response->addMetaDescription($content);	//Cam: TBD
 		}
 		
 		if($name === 'keywords')
 		{
-			self::getUrl()->response()->addMetaKeywords($content);	//Cam: TBD
+			$response->addMetaKeywords($content);	//Cam: TBD
 		}
-		
-		return self::getUrl()->response()->addMeta($name, $content, $extended);
+
+		return $response->addMeta($name, $content, $extended);
+	//	return self::getUrl()->response()->addMeta($name, $content, $extended);
 	}
 
 	/**

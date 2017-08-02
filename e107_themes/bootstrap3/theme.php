@@ -52,7 +52,7 @@ define('OTHERNEWS_COLS',false); // no tables, only divs.
 define('OTHERNEWS_LIMIT', 3); // Limit to 3. 
 define('OTHERNEWS2_COLS',false); // no tables, only divs. 
 define('OTHERNEWS2_LIMIT', 3); // Limit to 3. 
-define('COMMENTLINK', 	e107::getParser()->toGlyph('fa-comment'));
+// define('COMMENTLINK', 	e107::getParser()->toGlyph('fa-comment'));
 define('COMMENTOFFSTRING', '');
 
 define('PRE_EXTENDEDSTRING', '<br />');

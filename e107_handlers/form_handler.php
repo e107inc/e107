@@ -852,13 +852,11 @@ class e_form
 		
 		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 
-		$min = varset($options['min']) ? 'min="'.$options['min'].'"' : '';
-		$max = vartrue($options['max']) ? 'max="'.$options['max'].'"' : '';
+		$min = isset($options['min']) ? 'min="'.$options['min'].'"' : '';
+		$max = isset($options['max']) ? 'max="'.$options['max'].'"' : '';
 
 		$options = $this->format_options('text', $name, $options);
-		
 
-		
 		//never allow id in format name-value for text fields
 		if(THEME_LEGACY === false)
 		{
@@ -1028,7 +1026,7 @@ class e_form
 		if($localonly == true)
 		{
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='hidden' name='image' value='{$curVal}'  />";
-			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='Click on the avatar to change it' />";
+			$text .= "<img src='".$img."' id='{$previnput}' class='img-rounded rounded e-expandit e-tip avatar' style='cursor:pointer; width:".$pref['im_width']."px; height:".$pref['im_height']."px' title='".LAN_EFORM_001."' alt='".LAN_EFORM_001."' />";
 		}
 		else
 		{			
@@ -1205,9 +1203,12 @@ class e_form
 		{
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";
 			
-			$label .= $tp->toIcon($default_url);
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector img-responsive img-fluid' >";			
+			$label .= $tp->toIcon($default_url,array('class'=>'img-responsive img-fluid'));
+
+            //$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";			
+			//$label .= $tp->toIcon($default_url);
 			
 			$label .= "				
 			</div>";
@@ -1428,11 +1429,10 @@ class e_form
 			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
 
-		// Load it in the footer.
-		// FIXME use Library Manager (e107::library()) instead?
+		// TODO use Library Manager...
 		e107::css('core', 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css', 'jquery');
-		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 2);
-		e107::js('core', 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.init.js', 'jquery', 2);
+		e107::js('footer', '{e_WEB}js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js', 'jquery', 4);
+		e107::js('footer', '{e_WEB}js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.init.js', 'jquery', 5);
 
 		if(e_LANGUAGE !== 'English')
 		{
@@ -1835,7 +1835,7 @@ class e_form
 	public function pagination($url='', $total=0, $from=0, $perPage=10, $options=array())
 	{
 
-		if(empty($total))
+		if(empty($total) || empty($perPage))
 		{
 			return '';
 		}
@@ -2709,9 +2709,9 @@ class e_form
 		
 		
 		
-		if(is_array($filter))
+		if(is_array($filterArray))
 		{
-			$text .= $this->selectbox($$filterName, $filterArray, $filterVal); 
+			$text .= $this->selectbox($filterName, $filterArray, $filterVal);
 		}
 		
 	//	$text .= $this->admin_button($submitName,LAN_SEARCH,'search');
@@ -4129,9 +4129,16 @@ class e_form
 		}
 */
 
+		$sf = $this->getController()->getSortField();
+
+		if(!isset($parms['sort']) && !empty($sf))
+		{
+			$parms['sort'] = true;
+		}
+
 		$value = "<div class='btn-group'>";
 
-		if(!empty($parms['sort']) && empty($attributes['grid']))//FIXME use a global variable such as $fieldpref
+		if(!empty($parms['sort']) && empty($attributes['grid']))
 		{
 			$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
 			$from = intval(vartrue($_GET['from'],0));
@@ -5670,8 +5677,9 @@ class e_form
 				else
 				{
 					$lenabled = vartrue($parms['enabled'], 'LAN_ON');
-					$ldisabled = vartrue($parms['disabled'], 'LAN_OFF');
+					$ldisabled = (!empty($parms['disabled']) && is_string($parms['disabled'])) ?  $parms['disabled'] : 'LAN_OFF';
 				}
+
 				unset($parms['enabled'], $parms['disabled'], $parms['label']);
 				$ret =  vartrue($parms['pre']).$this->radio_switch($key, $value, defset($lenabled, $lenabled), defset($ldisabled, $ldisabled),$parms).vartrue($parms['post']);
 			break;

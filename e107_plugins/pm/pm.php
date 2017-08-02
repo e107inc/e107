@@ -238,7 +238,9 @@
 				$PM_INBOX['end'] = $this->updateTemplate($PM_INBOX_FOOTER);
 			}
 
-			if(empty($PM_INBOX))
+
+
+			if(empty($PM_INBOX['item']))
 			{
 				$PM_INBOX = e107::getTemplate('pm', 'pm', 'inbox');
 			}
@@ -270,6 +272,7 @@
 					{
 						$rec['pm_subject'] = '[' . LAN_PM_61 . ']';
 					}
+
 					$sc->setVars($rec);
 					$txt .= $tp->parseTemplate($PM_INBOX['item'], true, $sc);
 				}
@@ -311,7 +314,7 @@
 				$PM_OUTBOX['end'] = $this->updateTemplate($PM_OUTBOX_FOOTER);
 			}
 
-			if(empty($PM_OUTBOX))
+			if(empty($PM_OUTBOX['item']))
 			{
 				$PM_OUTBOX = e107::getTemplate('pm', 'pm', 'outbox');
 			}
@@ -682,7 +685,7 @@
 		}
 
 
-		function breadcrumb($type = '', $other)
+		function breadcrumb($type = '', $other='')
 		{
 			if(!deftrue('BOOTSTRAP'))
 			{
@@ -701,7 +704,7 @@
 				$array[1] = $type;
 			}
 
-			if($other)
+			if(!empty($other))
 			{
 				$array[2] = array('text' => $other, 'url' => null);
 			}

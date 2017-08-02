@@ -11,6 +11,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_PLUGIN.'poll/languages/'.e_LANGUAGE.'.php');
+e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/admin/lan_admin.php');
 define('POLLCLASS', TRUE);
 define('POLL_MODE_COOKIE', 0);
 define('POLL_MODE_IP', 1);
@@ -333,8 +334,20 @@ class poll
 		$ns = e107::getRender();
 		$tp = e107::getParser();
 		$sql = e107::getDb();
-		
+
+		$sc = e107::getScBatch('poll');
+
 		global $POLLSTYLE;
+
+		if ($type == 'preview')
+		{
+			$POLLMODE = 'notvoted';
+			$sc->pollType = $type;
+		}
+		elseif ($type == 'forum')
+		{
+			$sc->pollPreview = true;
+		}
 		
 		switch ($POLLMODE)
 		{
@@ -358,6 +371,9 @@ class poll
 			case 'oldpolls':
 				$POLLMODE = 'results';
 			break;
+
+			case 'notvoted':
+				break;
 
 			default:
 			if(ADMIN)
@@ -452,7 +468,6 @@ class poll
 		}
 
 
-		$sc = e107::getScBatch('poll');
 		$sc->setVars($pollArray);
 
 		if ($pollArray['poll_comment']) // Only get comments if they're allowed on poll. And we only need the count ATM
@@ -466,14 +481,7 @@ class poll
 		$sc->pollRenderType = $type;
 
 
-		if ($type == 'preview')
-		{
-			$POLLMODE = 'notvoted';
-		}
-		elseif ($type == 'forum')
-		{
-			$sc->pollPreview = true;
-		}
+
 
 
 		$text = '';

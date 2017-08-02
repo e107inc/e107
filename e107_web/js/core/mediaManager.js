@@ -313,8 +313,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		var $preview = $('#preview');
 		var $path = $('#path');
 
-		$this.addClass("media-select-active");
-		$this.closest("img").addClass("active");
+		// Remove "selected" class from elements.
+		$('.e-media-select').removeClass('media-select-active');
+
+		// Add "selected" class to clicked element.
+		$this.addClass('media-select-active');
+		$this.closest('img').addClass('active');
 
 		if(bbcode == "file") // not needed for Tinymce
 		{
@@ -540,19 +544,22 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		$('#e-modal-loading', window.parent.document).show();
 		$('iframe', window.parent.document).attr('scrolling', 'no'); // hide the scrollbar.
 
+		// TODO use loading screen instead?
 		$(id).hide('slide', {direction: outDir}, 1500, function ()
 		{
-		});
-
-		$.get(src, function (data)
-		{
-			$(id).html(data);
-			newVal = $('#admin-ui-media-select-count-hidden').text();
-			$('#admin-ui-media-select-count').text(newVal).fadeIn();
-
-			$(id).show('slide', {direction: inDir}, 500, function ()
+			$.get(src, function (data)
 			{
-				$('#e-modal-loading', window.parent.document).hide();
+				$(id).html(data);
+				newVal = $('#admin-ui-media-select-count-hidden').text();
+				$('#admin-ui-media-select-count').text(newVal).fadeIn();
+
+				$(id).show('slide', {direction: inDir}, 500, function ()
+				{
+					$('#e-modal-loading', window.parent.document).hide();
+				});
+
+				// We need to attach behaviors to the newly loaded contents.
+				e107.attachBehaviors();
 			});
 		});
 

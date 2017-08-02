@@ -207,6 +207,8 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		{
 			$(context).find('.e-expandit').once('e-expandit').each(function ()
 			{
+				$(this).show();
+
 				// default 'toggle'.
 				$(this).click(function ()
 				{
@@ -254,8 +256,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 					if(href === "#" || href == "")
 					{
-						var idt = $(this).nextAll("div");
-						$(idt).slideToggle("slow");
+						$(this).nextAll("div").slideToggle("slow");
 						return true;
 					}
 
@@ -311,6 +312,21 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						$parentDismiss.trigger({type: 'click'});
 					}
 				});
+			});
+		}
+	};
+
+	/**
+	 * Behavior to hide elements.
+	 *
+	 * @type {{attach: e107.behaviors.eHideMe.attach}}
+	 */
+	e107.behaviors.eHideMe = {
+		attach: function (context, settings)
+		{
+			$(context).find('.e-hideme').once('e-hide-me').each(function ()
+			{
+				$(this).hide();
 			});
 		}
 	};
@@ -715,12 +731,6 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
-		$(".e-hideme").hide();
-		$(".e-expandit").show();   	
-	
-    //	 $(".e-spinner").spinner(); //FIXME breaks tooltips
-
-    	 
 		 //check all
 		 $("#check-all").click(function(event){
 		 		var val = $(this).val(), selector = '.field-spacer';

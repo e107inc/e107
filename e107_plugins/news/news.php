@@ -163,7 +163,7 @@ class news_front
 		}
 
 		$this->action = $action;
-		$this->subAction= $sub_action;
+		$this->subAction= e107::getParser()->filter($sub_action);
 
 
 	}
@@ -461,11 +461,11 @@ class news_front
 				$tmp = explode(",", $iurl);
 				foreach($tmp as $mimg)
 				{
-					if(substr($mimg,-8) == '.youtube')
+					if(substr($mimg,-8) == '.youtube' || empty($mimg))
 					{
 						continue;
 					}
-					e107::meta('og:image',$tp->thumbUrl($tmp[0],'w=500',false,true) );
+					e107::meta('og:image',$tp->thumbUrl($mimg,'w=500',false,true) );
 				//	e107::meta('og:image',$mimg);
 				}
 
@@ -1529,6 +1529,11 @@ class news_front
 			{
 				$news = $newsAr[$i];
 
+				if(!isset($this->newsUrlparms['category_sef']) && !empty($news['category_sef']))
+				{
+					$this->newsUrlparms['category_sef'] = $news['category_sef'];
+				}
+
 				// Set the Values for the social shortcode usage.
 				if($socialInstalled == true)
 				{
@@ -1580,6 +1585,7 @@ class news_front
 			$amount = ITEMVIEW;
 			$nitems = defined('NEWS_NEXTPREV_NAVCOUNT') ? '&navcount='.NEWS_NEXTPREV_NAVCOUNT : '' ;
 			$url = rawurlencode(e107::getUrl()->create($this->route, $this->newsUrlparms));
+			
 			// Example of passing route data instead building the URL outside the shortcode - for a reference only
 			// $url = rawurlencode('url::'.$newsRoute.'::'.http_build_query($newsUrlparms, null, '&'));
 			$parms  = 'tmpl_prefix='.deftrue('NEWS_NEXTPREV_TMPL', 'default').'&total='.$news_total.'&amount='.$amount.'&current='.$this->from.$nitems.'&url='.$url;
