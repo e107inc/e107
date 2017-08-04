@@ -33,6 +33,16 @@ class e107
 	const LOCALHOST_IP = '0000:0000:0000:0000:0000:ffff:7f00:0001';
 	const LOCALHOST_IP2 = '0000:0000:0000:0000:0000:0000:0000:0001';
 
+	/**
+	 * Flag used by prepareDirectory() method -- create directory if not present.
+	 */
+	const FILE_CREATE_DIRECTORY = 1;
+
+	/**
+	 * Flag used by prepareDirectory() method -- file permissions may be changed.
+	 */
+	const FILE_MODIFY_PERMISSIONS = 2;
+
 	public $server_path;
 
 	public $e107_dirs = array();
@@ -380,9 +390,17 @@ class e107
 
 			// mysql connection info
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
-			
-			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs() 
-			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']); 
+
+			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs()
+			if (!empty($e107_config_override['site_path']))
+			{
+				// $E107_CONFIG['site_path']
+				$this->site_path = $e107_config_override['site_path'];
+			}
+			else
+			{
+				$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
+			}
 		
 			// Set default folder (and override paths) if missing from e107_config.php
 			$this->setDirs($e107_paths, $e107_config_override);
@@ -414,11 +432,12 @@ class e107
 		return $this;
 	}
 
-	// Create a unique hash for each database configuration (multi-site support)
-	function makeSiteHash($db,$prefix) // also used by install. 
+	/**
+	 * Create a unique hash for each database configuration (multi-site support).
+	 */
+	function makeSiteHash($db, $prefix) // also used by install.
 	{
-		return substr(md5($db.".".$prefix),0,10);	
-		
+		return substr(md5($db . "." . $prefix), 0, 10);
 	}
 
 	/**
@@ -449,11 +468,15 @@ class e107
 		$this->e107_dirs['MEDIA_BASE_DIRECTORY'] = $this->e107_dirs['MEDIA_DIRECTORY'];
 		$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY'];
 
+		// FIXME - remove this condition because:
+		// $this->site_path is appended to MEDIA_DIRECTORY in defaultDirs(), which is called above.
 		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['MEDIA_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
 		}
-		
+
+		// FIXME - remove this condition because:
+		// $this->site_path is appended to SYSTEM_DIRECTORY in defaultDirs(), which is called above.
 		if(strpos($this->e107_dirs['SYSTEM_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['SYSTEM_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
@@ -463,6 +486,33 @@ class e107
 		if(strpos($this->e107_dirs['CACHE_DIRECTORY'], $this->site_path) === false)
 		{
 			$this->e107_dirs['CACHE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY']."cache/"; // multisite support.  
+		}
+
+		// Essential directories which should be created and writable.
+		$essential_directories = array(
+			'MEDIA_DIRECTORY',
+			'SYSTEM_DIRECTORY',
+			'CACHE_DIRECTORY',
+
+			'CACHE_CONTENT_DIRECTORY',
+			'CACHE_IMAGE_DIRECTORY',
+			'CACHE_DB_DIRECTORY',
+			'CACHE_URL_DIRECTORY',
+
+			'LOGS_DIRECTORY',
+			'BACKUP_DIRECTORY',
+			'TEMP_DIRECTORY',
+			'IMPORT_DIRECTORY',
+		);
+
+		// Create directories which don't exist.
+		foreach($essential_directories as $directory)
+		{
+			if (!isset($this->e107_dirs[$directory])) {
+				continue;
+			}
+
+			$this->prepareDirectory($this->e107_dirs[$directory], self::FILE_CREATE_DIRECTORY);
 		}
 		
 		return $this;
@@ -531,9 +581,118 @@ class e107
 		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
 		$ret['TEMP_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'temp/';
 		$ret['IMPORT_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'import/';
-		//TODO create directories which don't exist. 
 
 		return $ret;
+	}
+
+	/**
+	 * FIXME - move this to a file-related class? But must be available before any includes (e107 init).
+	 *
+	 * Checks that the directory exists and is writable.
+	 *
+	 * @param string $directory
+	 *   A string containing the name of a directory path. A trailing slash will be trimmed from a path.
+	 * @param int $options
+	 *   A bitmask to indicate if the directory should be created if it does not exist (e107::FILE_CREATE_DIRECTORY) or
+	 *   made writable if it is read-only (e107::FILE_MODIFY_PERMISSIONS).
+	 *
+	 * @return bool
+	 *   TRUE if the directory exists (or was created) and is writable. FALSE otherwise.
+	 */
+	function prepareDirectory($directory, $options = self::FILE_MODIFY_PERMISSIONS)
+	{
+		$directory = rtrim($directory, '/\\');
+
+		// Check if directory exists.
+		if(!is_dir($directory))
+		{
+			// Let mkdir() recursively create directories and use the default directory permissions.
+			if(($options & self::FILE_CREATE_DIRECTORY) && @$this->mkDir($directory, null, true))
+			{
+				return $this->chMod($directory);
+			}
+
+			return false;
+		}
+
+		// The directory exists, so check to see if it is writable.
+		$writable = is_writable($directory);
+
+		if(!$writable && ($options & self::FILE_MODIFY_PERMISSIONS))
+		{
+			return $this->chMod($directory);
+		}
+
+		return $writable;
+	}
+
+	/**
+	 * FIXME - move this to a file-related class? But must be available before any includes (e107 init).
+	 *
+	 * Sets the permissions on a file or directory.
+	 *
+	 * @param string $path
+	 *   A string containing a file, or directory path.
+	 * @param int $mode
+	 *   Integer value for the permissions. Consult PHP chmod() documentation for more information.
+	 *
+	 * @return bool
+	 *   TRUE for success, FALSE in the event of an error.
+	 */
+	function chMod($path, $mode = null)
+	{
+		if(!isset($mode))
+		{
+			if(is_dir($path))
+			{
+				$mode = 0775;
+			}
+			else
+			{
+				$mode = 0664;
+			}
+		}
+
+		if(@chmod($path, $mode))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * FIXME - move this to a file-related class? But must be available before any includes (e107 init).
+	 *
+	 * Creates a directory.
+	 *
+	 * @param string $path
+	 *   A string containing a file path.
+	 * @param int $mode
+	 *   Mode is used.
+	 * @param bool $recursive
+	 *   Default to FALSE.
+	 * @param null $context
+	 *   Refer to http://php.net/manual/ref.stream.php
+	 *
+	 * @return bool
+	 *   Boolean TRUE on success, or FALSE on failure.
+	 */
+	function mkDir($path, $mode = null, $recursive = false, $context = null)
+	{
+		if(!isset($mode))
+		{
+			$mode = 0775;
+		}
+
+		if(!isset($context))
+		{
+			return mkdir($path, $mode, $recursive);
+		}
+		else
+		{
+			return mkdir($path, $mode, $recursive, $context);
+		}
 	}
 
 	/**
