@@ -514,7 +514,8 @@ class e107
 				continue;
 			}
 
-			$file->prepareDirectory($this->e107_dirs[$directory], FILE_CREATE_DIRECTORY);
+			$path = e_ROOT . $this->e107_dirs[$directory];
+			$file->prepareDirectory($path, FILE_CREATE_DIRECTORY);
 		}
 	}
 
