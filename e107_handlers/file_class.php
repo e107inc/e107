@@ -1674,6 +1674,7 @@ class e_file
 	 */
 	public function prepareDirectory($directory, $options = FILE_MODIFY_PERMISSIONS)
 	{
+		$directory = e107::getParser()->replaceConstants($directory);
 		$directory = rtrim($directory, '/\\');
 
 		// Check if directory exists.
