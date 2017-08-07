@@ -33,16 +33,6 @@ class e107
 	const LOCALHOST_IP = '0000:0000:0000:0000:0000:ffff:7f00:0001';
 	const LOCALHOST_IP2 = '0000:0000:0000:0000:0000:0000:0000:0001';
 
-	/**
-	 * Flag used by prepareDirectory() method -- create directory if not present.
-	 */
-	const FILE_CREATE_DIRECTORY = 1;
-
-	/**
-	 * Flag used by prepareDirectory() method -- file permissions may be changed.
-	 */
-	const FILE_MODIFY_PERMISSIONS = 2;
-
 	public $server_path;
 
 	public $e107_dirs = array();
@@ -426,6 +416,8 @@ class e107
 				mkdir(e_SYSTEM, 0755);
 			}
 
+			// Prepare essential directories.
+			$this->prepareDirs();
 		}
 
 		
@@ -487,6 +479,16 @@ class e107
 		{
 			$this->e107_dirs['CACHE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY']."cache/"; // multisite support.  
 		}
+		
+		return $this;
+	}
+
+	/**
+	 * Prepares essential directories.
+	 */
+	public function prepareDirs()
+	{
+		$file = e107::getFile();
 
 		// Essential directories which should be created and writable.
 		$essential_directories = array(
@@ -512,10 +514,8 @@ class e107
 				continue;
 			}
 
-			$this->prepareDirectory($this->e107_dirs[$directory], self::FILE_CREATE_DIRECTORY);
+			$file->prepareDirectory($this->e107_dirs[$directory], FILE_CREATE_DIRECTORY);
 		}
-		
-		return $this;
 	}
 
 	/**
