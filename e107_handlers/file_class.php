@@ -62,6 +62,16 @@ Note:
 
 */
 
+/**
+ * Flag used by prepareDirectory() method -- create directory if not present.
+ */
+define('FILE_CREATE_DIRECTORY', 1);
+
+/**
+ * Flag used by prepareDirectory() method -- file permissions may be changed.
+ */
+define('FILE_MODIFY_PERMISSIONS', 2);
+
 
 class e_file
 {
@@ -1648,6 +1658,110 @@ class e_file
 
 		return false;
 
+	}
+
+	/**
+	 * Checks that the directory exists and is writable.
+	 *
+	 * @param string $directory
+	 *   A string containing the name of a directory path. A trailing slash will be trimmed from a path.
+	 * @param int $options
+	 *   A bitmask to indicate if the directory should be created if it does not exist (FILE_CREATE_DIRECTORY) or
+	 *   made writable if it is read-only (FILE_MODIFY_PERMISSIONS).
+	 *
+	 * @return bool
+	 *   TRUE if the directory exists (or was created) and is writable. FALSE otherwise.
+	 */
+	public function prepareDirectory($directory, $options = FILE_MODIFY_PERMISSIONS)
+	{
+		$directory = rtrim($directory, '/\\');
+
+		// Check if directory exists.
+		if(!is_dir($directory))
+		{
+			// Let mkdir() recursively create directories and use the default directory permissions.
+			if(($options & FILE_CREATE_DIRECTORY) && @$this->mkDir($directory, null, true))
+			{
+				return $this->_chMod($directory);
+			}
+
+			return false;
+		}
+
+		// The directory exists, so check to see if it is writable.
+		$writable = is_writable($directory);
+
+		if(!$writable && ($options & FILE_MODIFY_PERMISSIONS))
+		{
+			return $this->_chMod($directory);
+		}
+
+		return $writable;
+	}
+
+	/**
+	 * (Non-Recursive) Sets the permissions on a file or directory.
+	 *
+	 * @param string $path
+	 *   A string containing a file, or directory path.
+	 * @param int $mode
+	 *   Integer value for the permissions. Consult PHP chmod() documentation for more information.
+	 *
+	 * @return bool
+	 *   TRUE for success, FALSE in the event of an error.
+	 */
+	public function _chMod($path, $mode = null)
+	{
+		if(!isset($mode))
+		{
+			if(is_dir($path))
+			{
+				$mode = 0775;
+			}
+			else
+			{
+				$mode = 0664;
+			}
+		}
+
+		if(@chmod($path, $mode))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Creates a directory.
+	 *
+	 * @param string $path
+	 *   A string containing a file path.
+	 * @param int $mode
+	 *   Mode is used.
+	 * @param bool $recursive
+	 *   Default to FALSE.
+	 * @param null $context
+	 *   Refer to http://php.net/manual/ref.stream.php
+	 *
+	 * @return bool
+	 *   Boolean TRUE on success, or FALSE on failure.
+	 */
+	public function mkDir($path, $mode = null, $recursive = false, $context = null)
+	{
+		if(!isset($mode))
+		{
+			$mode = 0775;
+		}
+
+		if(!isset($context))
+		{
+			return mkdir($path, $mode, $recursive);
+		}
+		else
+		{
+			return mkdir($path, $mode, $recursive, $context);
+		}
 	}
 
 }
