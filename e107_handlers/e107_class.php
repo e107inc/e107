@@ -380,9 +380,17 @@ class e107
 
 			// mysql connection info
 			$this->e107_config_mysql_info = $e107_config_mysql_info;
-			
-			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs() 
-			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']); 
+
+			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs()
+			if (!empty($e107_config_override['site_path']))
+			{
+				// $E107_CONFIG['site_path']
+				$this->site_path = $e107_config_override['site_path'];
+			}
+			else
+			{
+				$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
+			}
 		
 			// Set default folder (and override paths) if missing from e107_config.php
 			$this->setDirs($e107_paths, $e107_config_override);
@@ -408,17 +416,20 @@ class e107
 				mkdir(e_SYSTEM, 0755);
 			}
 
+			// Prepare essential directories.
+			$this->prepareDirs();
 		}
 
 		
 		return $this;
 	}
 
-	// Create a unique hash for each database configuration (multi-site support)
-	function makeSiteHash($db,$prefix) // also used by install. 
+	/**
+	 * Create a unique hash for each database configuration (multi-site support).
+	 */
+	function makeSiteHash($db, $prefix) // also used by install.
 	{
-		return substr(md5($db.".".$prefix),0,10);	
-		
+		return substr(md5($db . "." . $prefix), 0, 10);
 	}
 
 	/**
@@ -449,11 +460,15 @@ class e107
 		$this->e107_dirs['MEDIA_BASE_DIRECTORY'] = $this->e107_dirs['MEDIA_DIRECTORY'];
 		$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY'];
 
+		// FIXME - remove this condition because:
+		// $this->site_path is appended to MEDIA_DIRECTORY in defaultDirs(), which is called above.
 		if(strpos($this->e107_dirs['MEDIA_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['MEDIA_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
 		}
-		
+
+		// FIXME - remove this condition because:
+		// $this->site_path is appended to SYSTEM_DIRECTORY in defaultDirs(), which is called above.
 		if(strpos($this->e107_dirs['SYSTEM_DIRECTORY'],$this->site_path) === false)
 		{
 			$this->e107_dirs['SYSTEM_DIRECTORY'] .= $this->site_path."/"; // multisite support.  
@@ -466,6 +481,42 @@ class e107
 		}
 		
 		return $this;
+	}
+
+	/**
+	 * Prepares essential directories.
+	 */
+	public function prepareDirs()
+	{
+		$file = e107::getFile();
+
+		// Essential directories which should be created and writable.
+		$essential_directories = array(
+			'MEDIA_DIRECTORY',
+			'SYSTEM_DIRECTORY',
+			'CACHE_DIRECTORY',
+
+			'CACHE_CONTENT_DIRECTORY',
+			'CACHE_IMAGE_DIRECTORY',
+			'CACHE_DB_DIRECTORY',
+			'CACHE_URL_DIRECTORY',
+
+			'LOGS_DIRECTORY',
+			'BACKUP_DIRECTORY',
+			'TEMP_DIRECTORY',
+			'IMPORT_DIRECTORY',
+		);
+
+		// Create directories which don't exist.
+		foreach($essential_directories as $directory)
+		{
+			if (!isset($this->e107_dirs[$directory])) {
+				continue;
+			}
+
+			$path = e_ROOT . $this->e107_dirs[$directory];
+			$file->prepareDirectory($path, FILE_CREATE_DIRECTORY);
+		}
 	}
 
 	/**
@@ -531,7 +582,6 @@ class e107
 		$ret['BACKUP_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'backup/';
 		$ret['TEMP_DIRECTORY'] 				= $ret['SYSTEM_DIRECTORY'].'temp/';
 		$ret['IMPORT_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'import/';
-		//TODO create directories which don't exist. 
 
 		return $ret;
 	}
