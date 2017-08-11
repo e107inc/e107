@@ -1569,6 +1569,10 @@ body#admin-menus .admin-left-panel,
 	margin-bottom: 15px;
 }
 
+.row-flex .draggable-panels.empty {
+	margin-bottom: 0;
+}
+
 .flex-col {
     display: flex;
     display: -webkit-flex;
