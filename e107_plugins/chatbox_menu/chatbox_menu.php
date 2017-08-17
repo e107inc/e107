@@ -179,11 +179,15 @@ if((isset($_POST['chat_submit']) || e_AJAX_REQUEST) && $_POST['cmessage'] != '')
 					}
 					if(!$emessage)
 					{
-						$sql->insert("chatbox", "0, '$nick', '$cmessage', '".time()."', '0' , '$ip' ");
-						$edata_cb = array("cmessage" => $cmessage, "ip" => $ip);
-						$e_event->trigger("cboxpost", $edata_cb); // deprecated
-						e107::getEvent()->trigger('user_chatbox_post_created', $edata_cb);
-						$e107cache->clear("nq_chatbox");
+						$insertId = $sql->insert("chatbox", "0, '{$nick}', '{$cmessage}', '{$datestamp}', '0' , '{$ip}' ");
+						
+						if($insertId)
+						{
+							$edata_cb = array("id" => $insertId, "nick" => $nick, "cmessage" => $cmessage, "datestamp" => $datestamp, "ip" => $ip);
+							$e_event->trigger("cboxpost", $edata_cb); // deprecated
+							e107::getEvent()->trigger('user_chatbox_post_created', $edata_cb);
+							$e107cache->clear("nq_chatbox");
+						}
 					}
 				}
 			}
