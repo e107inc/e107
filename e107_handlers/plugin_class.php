@@ -896,7 +896,7 @@ class e107plugin
 	protected $core_plugins = array(
 		"_blank","admin_menu","banner","blogcalendar_menu",
 		"chatbox_menu",	"clock_menu","comment_menu",
-		"contact", "download", "featurebox", "forum","gallery",
+		"contact", "download", "faqs", "featurebox", "forum","gallery",
 		"gsitemap","import", "linkwords", "list_new", "log", "login_menu",
 		"metaweblog", "newforumposts_main", "news", "newsfeed",
 		"newsletter","online", "page", "pm","poll",
