@@ -441,7 +441,7 @@ class xmlClass
 	{		
 		$_file = e107::getFile();
 		$this->xmlFileContents = $_file->getRemoteContent($address, array('timeout' => $timeout, 'post' => $postData));
-		$this->error = $_file->getErrorMessage();
+		$this->errors = $_file->getErrorMessage();
 		
 		return $this->xmlFileContents;
 
@@ -1230,7 +1230,10 @@ class xmlClass
 
 
 
-	
+	public function getLastErrorMessage()
+	{
+		return $this->errors;
+	}
 
 
 
