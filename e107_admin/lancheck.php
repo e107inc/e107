@@ -864,7 +864,7 @@ class lancheck
 
 		$languages = array();
 
-		if($rawData = $xml -> loadXMLfile($feed, TRUE))
+		if($rawData = $xml -> loadXMLfile($feed, true))
 		{
 
 			if(empty($rawData['language']))
@@ -893,6 +893,10 @@ class lancheck
 			}
 
 
+		}
+		else
+		{
+			e107::getDebug()->log("Language Pack Feed Failed: ".$xml->getLastErrorMessage());
 		}
 
 
