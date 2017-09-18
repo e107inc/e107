@@ -82,6 +82,12 @@ class plugman_adminArea extends e_admin_dispatcher
 			'ui' 			=> 'plugin_form_ui',
 			'uipath' 		=> null
 		),
+		'lans'      => array(
+			'controller' 	=> 'pluginLanguage',
+			'path' 			=> null,
+			'ui' 			=> 'plugin_form_ui',
+			'uipath' 		=> null
+		),
 
 	);
 
@@ -104,8 +110,8 @@ class plugman_adminArea extends e_admin_dispatcher
 
 
 	protected $adminMenuAliases = array(
-		'installed/uninstall'	=> 'installed/list'
-
+		'installed/uninstall'	=> 'installed/list',
+		'lans/list'             => 'create/build'
 	);
 
 	protected $adminMenuIcon = 'e-plugmanager-24';
@@ -376,7 +382,12 @@ class plugin_ui extends e_admin_ui
 		}
 
 
+		function lanPage()
+		{
 
+
+
+		}
 
 		function uninstallPage()
 		{
@@ -1519,6 +1530,457 @@ class plugin_form_online_ui extends e_admin_form_ui
 	}
 
 }
+
+
+
+
+
+class pluginLanguage extends e_admin_ui
+{
+
+	private $scriptFiles 	= array();
+	private $lanFiles 		= array();
+
+	private $lanDefs 		= array();
+	private $scriptDefs 	= array();
+
+	private $lanDefsData 	= array();
+	private $scriptDefsData = array();
+
+	private $unused			= array();
+	private $unsure			= array();
+
+	private $excludeLans 	= array('CORE_LC', 'CORE_LC2', 'e_LAN', 'e_LANGUAGE', 'e_LANGUAGEDIR', 'LAN', 'LANGUAGE');
+
+	private $useSimilar		= false;
+
+
+	function listPage()
+	{
+		if(!empty($_GET['newplugin']) && $_GET['step']==2)
+		{
+				$plugin = e107::getParser()->filter($_GET['newplugin'],'file');
+				return $this->step2($plugin);
+
+		}
+
+	}
+
+
+
+
+
+	function step2($path)
+	{
+			$this->plugin = $path;
+
+			$fl = e107::getFile();
+
+			$files = $fl->get_files(e_PLUGIN.$path.'/languages',null,null,3);
+			$files2 = $fl->get_files(e_PLUGIN.$path,'\.php|\.sc|\.bb|\.xml','languages',3);
+
+			$this->scanLanFile(e_LANGUAGEDIR."English/English.php");
+			$this->scanLanFile(e_LANGUAGEDIR."English/admin/lan_admin.php");
+
+			foreach($files as $v)
+			{
+				if(strpos($v['path'],'English')!==false OR strpos($v['fname'],'English')!==false)
+				{
+					$path = $v['path'].$v['fname'];
+					$this->lanFiles[] = $path;
+
+					$this->scanLanFile($path);
+				}
+			}
+
+			foreach($files2 as $v)
+			{
+				$path = $v['path'].$v['fname'];
+				$this->scriptFiles[] = 	$path;
+				$this->scanScriptFile($path);
+			}
+
+
+			return $this->renderResults();
+
+	}
+
+
+		function findSimilar($data)
+		{
+			$sim = array();
+
+			foreach($this->lanDefsData as $k=>$v)
+			{
+				if(empty($v['value']))
+				{
+					continue;
+				}
+
+				if($this->useSimilar == true)
+				{
+					similar_text($v['value'], $data['value'], $percentSimilar);
+				}
+				else
+				{
+					$percentSimilar = 0;
+				}
+
+				if((($v['value'] == $data['value'] || $percentSimilar > 89) && $data['file'] != $v['file']))
+				{
+					if(strpos($v['lan'],'LAN')===false) // Defined constants that don't contain 'LAN'.
+					{
+						$v['status'] = 2;
+					}
+					else
+					{
+						$v['status'] = (in_array($v['lan'],$this->used)) ? 1 : 0;
+					}
+
+					$sim[] = $v;
+
+				}
+			}
+
+
+
+			return $sim;
+
+		}
+
+
+		function renderSimilar($data,$mode='')
+		{
+
+			$sim = $this->findSimilar($data);
+
+
+			if(empty($sim) || ($mode == 'script' && count($sim) < 2))
+			{
+				return; //  ADMIN_TRUE_ICON;
+			}
+
+			$text = "<table class='table table-striped table-bordered'>
+			";
+
+			foreach($sim as $k=>$val)
+			{
+				$text .= "<tr>
+				<td style='width:30%'>".$this->shortPath($val['file'])."</td>
+				<td style='width:45%'>".$val['lan']."<br /><small>".$val['value']."</small></td>
+				<td style='width:25%'>".$this->renderStatus($val['status'])."</td>
+				</tr>";
+
+			}
+
+			$text .= "</table>";
+			return $text;
+
+		}
+
+		function renderFilesList($list)
+		{
+			$l= array();
+			foreach($list as $v)
+			{
+				$l[] = $this->shortPath($v,'script');
+
+
+			}
+
+			if(!empty($l))
+			{
+				return implode("<br />",$l);
+			}
+
+
+		}
+
+		function renderStatus($val,$mode='lan')
+		{
+			$diz = array(
+				'lan'		=> array(0 => 'Unused by '.$this->plugin, 1=>'Used by '.$this->plugin, 2=>'Unsure'),
+				'script'	=> array(0=> 'Missing from Language Files', 1=>'Found in Language Files', 3=>"Generic")
+			);
+
+
+
+			if($val ==1)
+			{
+				return "<span class='label label-success'>".$diz[$mode][$val]."</span>";
+			}
+
+			if($val == 2)
+			{
+				return "<span class='label label-warning'>".$diz[$mode][$val]."</span>";
+			}
+
+			return "<span class='label label-important label-danger'>".$diz[$mode][$val]."</span>";
+		}
+
+		function shortPath($path,$mode='lan')
+		{
+
+			if($path == e_LANGUAGEDIR.'English/English.php')
+			{
+				return "<i>Core Frontend Language File</i>";
+			}
+
+			if($path == e_LANGUAGEDIR.'English/admin/lan_admin.php')
+			{
+				return "<i>Core Admin-area Language File</i>";
+			}
+
+			if($mode == 'script')
+			{
+				return str_replace(e_PLUGIN.$this->plugin.'/','',$path);
+			}
+			else
+			{
+
+				$text = str_replace(e_PLUGIN.$this->plugin.'/languages/','',$path);
+
+				if(strpos($path,'_front.php')===false && strpos($path,'_admin.php')===false && strpos($path,'_global.php')===false && strpos($path,'_menu.php')===false && strpos($path,'_notify.php')===false && strpos($path,'_search.php')===false)
+				{
+					return "<span class='text-error e-tip' title='File name should be either English_front.php, English_admin.php or English_global.php'>".$text."</span>";
+				}
+
+				return $text;
+
+			}
+
+		}
+
+
+		function renderTable($array,$mode)
+		{
+			if(empty($array))
+			{
+				return "<div class='alert alert-info alert-block'>No Matches</div>";
+			}
+
+			$text2 = '';
+
+			if($mode == 'unsure')
+			{
+				$text2 .= "<div class='alert alert-info alert-block'>LAN items in this list have been named incorrectly. They should include 'LAN' in their name. eg. LAN_".strtoupper($this->plugin)."_001</div>";
+
+			}
+
+			$text2 .= "<table class='table table-striped  table-bordered'>
+			<tr>
+			<th>LAN</th>
+			<th>File</th>
+			<th>Value</th>
+			<th>Duplicate or Similar Value</th>
+			</tr>
+			";
+
+			foreach($array as $k=>$v)
+			{
+				$text2 .= "<tr>
+					<td style='width:5%'>".$v."</td>
+					<td>".$this->shortPath($this->lanDefsData[$k]['file'])."</td>
+					<td style='width:20%'>".$this->lanDefsData[$k]['value']."</td>
+					<td>".$this->renderSimilar($this->lanDefsData[$k])."</td>
+					</tr>";
+
+			}
+
+
+			$text2 .= "</table>";
+
+			return $text2;
+		}
+
+		function renderScriptTable()
+		{
+
+		//	return print_a($this->scriptDefsData,true);
+
+			$text2 = "<table class='table table-striped table-bordered'>
+			<tr>
+			<th>id</th>
+			<th>File</th>
+			<th>Detected LAN</th>
+			<th>LAN Value</th>
+			<th class='right'>Found on Line</th>
+			<th style='width:10%'>Status</th>
+			<th>Duplicates / Possible Substitions</th>
+			</tr>
+			";
+
+			foreach($this->scriptDefsData as $k=>$v)
+			{
+				$status = in_array($v['lan'],$this->lanDefs) ? 1 : 0;
+			//	$lan = $v['lan'];
+			//	$v['value'] = $this->lanDefsRaw[$lan];
+			//	$sim = $this->findSimilar($v);
+
+				$text2 .= "<tr>
+					<td style='width:5%'>".$k."</td>
+					<td>".$this->shortPath($v['file'],'script')."</td>
+					<td >".$v['lan']."</td>
+					<td ><small>".$this->lanDefsRaw[$v['lan']]."</small></td>
+					<td class='right'>".$v['line']."</td>
+					<td>".$this->renderStatus($status,'script')."</td>
+					<td>".$this->renderSimilar($v,'script')."</td> 
+					</tr>";
+
+			}
+
+
+			$text2 .= "</table>";
+
+			return $text2;
+
+		}
+
+
+		function renderResults()
+		{
+			$frm = e107::getForm();
+			$ns = e107::getRender();
+
+			$this->unused = array_diff($this->lanDefs,$this->scriptDefs);
+
+			$this->used = array_intersect($this->lanDefs,$this->scriptDefs);
+
+			foreach($this->unused as $k=>$v)
+			{
+				if(strpos($v,'LAN')===false)
+				{
+					unset($this->unused[$k]);
+					$this->unsure[$k] = $v;
+				}
+
+				if(strpos($this->lanDefsData[$k]['file'],$this->plugin) === false || in_array($v,$this->excludeLans))
+				{
+					unset($this->unused[$k]);
+					unset($this->unsure[$k]);
+				}
+
+
+			}
+
+//			print_a($this->scriptData);
+
+			$used =  $this->renderTable($this->used, 'used');
+			$unused =  $this->renderTable($this->unused,'unused');
+			$unsure =  $this->renderTable($this->unsure,'unsure');
+
+
+			// echo $text2;
+			$tabs = array (
+				0	=> array('caption'=>EPL_ADLAN_222, 'text'=> $this->renderScriptTable()),
+				1 => array('caption'=>EPL_ADLAN_223, 'text'=>$used),
+				2 => array('caption'=>EPL_ADLAN_224, 'text'=>$unused),
+				3 => array('caption'=>EPL_ADLAN_225, 'text'=>$unsure),
+
+
+			);
+
+
+			$this->addTitle(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_221.SEP.$this->plugin);
+
+			$text = "<div class='center'><a class='btn btn-default' href='".e_ADMIN_ABS."plugin.php?mode=create&action=build'>".LAN_BACK."</a></div>";
+
+			return  $frm->tabs($tabs).$text;
+
+			//$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_221.SEP.$this->plugin, $frm->tabs($tabs));
+
+		}
+
+
+
+
+
+
+		function scanScriptFile($path)
+		{
+			$lines = file($path, FILE_IGNORE_NEW_LINES);
+
+			foreach($lines as $ln=>$row)
+			{
+				$row = trim($row);
+				if(substr($row,0,2) == '/*')
+				{
+				//	$skip =true; ;
+
+				}
+				if(substr($row,0,2) == '*/')
+				{
+				//	$skip =false;
+				//	continue;
+				}
+
+				if(empty($row) || $skip == true || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
+				{
+					continue;
+				}
+
+				if(preg_match_all("/([\w_]*LAN[\w_]*)/", $row, $match))
+				{
+					foreach($match[1] as $lan)
+					{
+						if(!in_array($lan,$this->excludeLans))
+						{
+							$this->scriptDefs[] = $lan;
+							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan, 'value'=>$this->lanDefsRaw[$lan]);
+						//	$this->scriptData[$path][$ln] = $row;
+						}
+					}
+				}
+			}
+
+
+		}
+
+
+		function scanLanFile($path)
+		{
+
+
+			$data = file_get_contents($path);
+
+			if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
+			{
+				$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments.
+			}
+
+
+			$type = basename($path);
+
+			if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/im',$data,$matches))
+			{
+				$def = $matches[2];
+				$values = $matches[5];
+
+				foreach($def as $k=>$d)
+				{
+					if($d == 'e_PAGETITLE' || $d == 'PAGE_NAME' || $d =='CORE_LC' && $d =='CORE_LC2')
+					{
+							continue;
+					}
+
+					$retloc[$type][$d]= $values[$k];
+					$this->lanDefs[] = $d;
+					$this->lanDefsData[] = array('file'=>$path, 'lan'=>$d, 'value'=>$values[$k]);
+					$this->lanDefsRaw[$d] = $values[$k];
+				}
+			}
+
+		//print_a($this->lanDefsData);
+			return;
+		}
+
+
+
+
+
+
+}
+
 
 
 
@@ -2965,457 +3427,6 @@ function plugin_adminmenu()
 
 
 
-class pluginLanguage
-{
-	
-	private $scriptFiles 	= array();
-	private $lanFiles 		= array(); 
-	
-	private $lanDefs 		= array();
-	private $scriptDefs 	= array(); 
-	
-	private $lanDefsData 	= array();
-	private $scriptDefsData = array(); 
-	
-	private $unused			= array();
-	private $unsure			= array();
-
-	private $excludeLans 	= array('CORE_LC', 'CORE_LC2', 'e_LAN', 'e_LANGUAGE', 'e_LANGUAGEDIR', 'LAN', 'LANGUAGE');
-	
-	private $useSimilar		= false; 
-	
-	
-	function __construct()
-		{
-		
-			if(!empty($_GET['newplugin']) && $_GET['step']==2)
-			{
-				$plugin = e107::getParser()->filter($_GET['newplugin'],'file');
-				$this->step2($plugin);
-				return false;
-			}
-			
-		
-		
-			// return $this->step1();
-		}
-
-
-
-	
-	
-		function step2($path)
-		{
-			$this->plugin = $path; 
-			
-			$fl = e107::getFile();
-			
-			$files = $fl->get_files(e_PLUGIN.$path.'/languages',null,null,3);	
-			$files2 = $fl->get_files(e_PLUGIN.$path,'\.php|\.sc|\.bb|\.xml','languages',3);	
-			
-			$this->scanLanFile(e_LANGUAGEDIR."English/English.php");
-			$this->scanLanFile(e_LANGUAGEDIR."English/admin/lan_admin.php");		
-			
-			foreach($files as $v)
-			{
-				if(strpos($v['path'],'English')!==false OR strpos($v['fname'],'English')!==false)
-				{
-					$path = $v['path'].$v['fname'];
-					$this->lanFiles[] = $path;
-					
-					$this->scanLanFile($path);	
-				}
-			}
-				
-			foreach($files2 as $v)
-			{
-				$path = $v['path'].$v['fname'];
-				$this->scriptFiles[] = 	$path;
-				$this->scanScriptFile($path);
-			}
-				
-		
-			$this->renderResults(); 
-
-			return true;
-		}
-		
-		
-		function findSimilar($data)
-		{
-			$sim = array(); 
-			
-			foreach($this->lanDefsData as $k=>$v)
-			{
-				if(empty($v['value']))
-				{
-					continue; 	
-				}
-				
-				if($this->useSimilar == true)
-				{
-					similar_text($v['value'], $data['value'], $percentSimilar);
-				}
-				else
-				{
-					$percentSimilar = 0; 	
-				}
-				
-				if((($v['value'] == $data['value'] || $percentSimilar > 89) && $data['file'] != $v['file']))
-				{
-					if(strpos($v['lan'],'LAN')===false) // Defined constants that don't contain 'LAN'. 
-					{
-						$v['status'] = 2; 
-					}
-					else
-					{
-						$v['status'] = (in_array($v['lan'],$this->used)) ? 1 : 0; 	
-					}
-					
-					$sim[] = $v; 
-				
-				}	
-			}	
-			
-			
-			
-			return $sim; 	
-			
-		}
-		
-		
-		function renderSimilar($data,$mode='')
-		{
-			
-			$sim = $this->findSimilar($data); 
-			
-			
-			if(empty($sim) || ($mode == 'script' && count($sim) < 2))
-			{
-				return; //  ADMIN_TRUE_ICON; 	
-			}
-			
-			$text = "<table class='table table-striped table-bordered'>
-			";
-			
-			foreach($sim as $k=>$val)
-			{
-				$text .= "<tr>
-				<td style='width:30%'>".$this->shortPath($val['file'])."</td>
-				<td style='width:45%'>".$val['lan']."<br /><small>".$val['value']."</small></td>
-				<td style='width:25%'>".$this->renderStatus($val['status'])."</td>
-				</tr>";	
-				
-			}
-			
-			$text .= "</table>";
-			return $text;
-			
-		}
-		
-		function renderFilesList($list)
-		{
-			$l= array(); 
-			foreach($list as $v)
-			{
-				$l[] = $this->shortPath($v,'script');
-					
-				
-			}	
-			
-			if(!empty($l))
-			{
-				return implode("<br />",$l);	
-			}
-			
-			
-		}
-		
-		function renderStatus($val,$mode='lan')
-		{
-			$diz = array(
-				'lan'		=> array(0 => 'Unused by '.$this->plugin, 1=>'Used by '.$this->plugin, 2=>'Unsure'),
-				'script'	=> array(0=> 'Missing from Language Files', 1=>'Found in Language Files', 3=>"Generic")
-			);
-			
-			
-			
-			if($val ==1)
-			{
-				return "<span class='label label-success'>".$diz[$mode][$val]."</span>";		
-			}
-			
-			if($val == 2)
-			{
-				return "<span class='label label-warning'>".$diz[$mode][$val]."</span>";			
-			}
-			
-			return "<span class='label label-important label-danger'>".$diz[$mode][$val]."</span>";
-		}
-		
-		function shortPath($path,$mode='lan')
-		{
-			
-			if($path == e_LANGUAGEDIR.'English/English.php')
-			{
-				return "<i>Core Frontend Language File</i>";	
-			}
-			
-			if($path == e_LANGUAGEDIR.'English/admin/lan_admin.php')
-			{
-				return "<i>Core Admin-area Language File</i>";	
-			}
-			
-			if($mode == 'script')
-			{
-				return str_replace(e_PLUGIN.$this->plugin.'/','',$path); 		
-			}
-			else
-			{
-			
-				$text = str_replace(e_PLUGIN.$this->plugin.'/languages/','',$path); 
-				
-				if(strpos($path,'_front.php')===false && strpos($path,'_admin.php')===false && strpos($path,'_global.php')===false && strpos($path,'_menu.php')===false && strpos($path,'_notify.php')===false && strpos($path,'_search.php')===false)
-				{
-					return "<span class='text-error e-tip' title='File name should be either English_front.php, English_admin.php or English_global.php'>".$text."</span>";	
-				} 
-				
-				return $text;
-				
-			}
-				
-		}
-		
-
-		function renderTable($array,$mode)
-		{
-			if(empty($array))
-			{
-				return "<div class='alert alert-info alert-block'>No Matches</div>";
-			}
-			
-			$text2 = '';
-			
-			if($mode == 'unsure')
-			{
-				$text2 .= "<div class='alert alert-info alert-block'>LAN items in this list have been named incorrectly. They should include 'LAN' in their name. eg. LAN_".strtoupper($this->plugin)."_001</div>";	
-				
-			}
-			
-			$text2 .= "<table class='table table-striped  table-bordered'>
-			<tr>
-			<th>LAN</th>
-			<th>File</th>
-			<th>Value</th>
-			<th>Duplicate or Similar Value</th>
-			</tr>
-			";
-			
-			foreach($array as $k=>$v)
-			{
-				$text2 .= "<tr>
-					<td style='width:5%'>".$v."</td>
-					<td>".$this->shortPath($this->lanDefsData[$k]['file'])."</td>
-					<td style='width:20%'>".$this->lanDefsData[$k]['value']."</td>
-					<td>".$this->renderSimilar($this->lanDefsData[$k])."</td>
-					</tr>";	
-				
-			}
-			
-			
-			$text2 .= "</table>";	
-			
-			return $text2;
-		}
-
-		function renderScriptTable()
-		{
-			
-		//	return print_a($this->scriptDefsData,true);
-			
-			$text2 = "<table class='table table-striped table-bordered'>
-			<tr>
-			<th>id</th>
-			<th>File</th>
-			<th>Detected LAN</th>
-			<th>LAN Value</th>
-			<th class='right'>Found on Line</th>
-			<th style='width:10%'>Status</th>
-			<th>Duplicates / Possible Substitions</th>
-			</tr>
-			";
-			
-			foreach($this->scriptDefsData as $k=>$v)
-			{
-				$status = in_array($v['lan'],$this->lanDefs) ? 1 : 0;
-			//	$lan = $v['lan'];
-			//	$v['value'] = $this->lanDefsRaw[$lan];
-			//	$sim = $this->findSimilar($v);
-				
-				$text2 .= "<tr>
-					<td style='width:5%'>".$k."</td>
-					<td>".$this->shortPath($v['file'],'script')."</td>
-					<td >".$v['lan']."</td>
-					<td ><small>".$this->lanDefsRaw[$v['lan']]."</small></td>
-					<td class='right'>".$v['line']."</td>
-					<td>".$this->renderStatus($status,'script')."</td>
-					<td>".$this->renderSimilar($v,'script')."</td> 
-					</tr>";	
-				
-			}
-			
-			
-			$text2 .= "</table>";	
-			
-			return $text2;	
-			
-		}
-
-		
-		function renderResults()
-		{
-			$frm = e107::getForm();
-			$ns = e107::getRender();
-			
-			$this->unused = array_diff($this->lanDefs,$this->scriptDefs); 
-				
-			$this->used = array_intersect($this->lanDefs,$this->scriptDefs); 
-				
-			foreach($this->unused as $k=>$v)
-			{
-				if(strpos($v,'LAN')===false)
-				{
-					unset($this->unused[$k]);
-					$this->unsure[$k] = $v;
-				}
-				
-				if(strpos($this->lanDefsData[$k]['file'],$this->plugin) === false || in_array($v,$this->excludeLans))
-				{
-					unset($this->unused[$k]);
-					unset($this->unsure[$k]);
-				}
-					
-		
-			}	
-
-//			print_a($this->scriptData); 
-			
-			$used =  $this->renderTable($this->used, 'used'); 
-			$unused =  $this->renderTable($this->unused,'unused'); 
-			$unsure =  $this->renderTable($this->unsure,'unsure'); 
-			
-			
-			// echo $text2;
-			$tabs = array (
-				0	=> array('caption'=>EPL_ADLAN_222, 'text'=> $this->renderScriptTable()),
-				1 => array('caption'=>EPL_ADLAN_223, 'text'=>$used),
-				2 => array('caption'=>EPL_ADLAN_224, 'text'=>$unused),
-				3 => array('caption'=>EPL_ADLAN_225, 'text'=>$unsure),
-				
-
-			);
-		
-		
-			
-			$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP.EPL_ADLAN_221.SEP.$this->plugin, $frm->tabs($tabs));
-				
-		}
-					
-				
-			
-		
-		
-		
-		function scanScriptFile($path)
-		{
-			$lines = file($path, FILE_IGNORE_NEW_LINES);  
-			
-			foreach($lines as $ln=>$row)
-			{
-				$row = trim($row); 
-				if(substr($row,0,2) == '/*')
-				{
-				//	$skip =true; ;
-						
-				}	
-				if(substr($row,0,2) == '*/')
-				{
-				//	$skip =false;
-				//	continue; 	
-				}	
-				
-				if(empty($row) || $skip == true || substr($row,0,5) == '<?php' || substr($row,0,2) == '?>' || substr($row,0,2)=='//')
-				{
-					continue; 	
-				}
-				
-				if(preg_match_all("/([\w_]*LAN[\w_]*)/", $row, $match))
-				{
-					foreach($match[1] as $lan)
-					{
-						if(!in_array($lan,$this->excludeLans))
-						{
-							$this->scriptDefs[] = $lan;
-							$this->scriptDefsData[] = array('file'=>$path, 'line'=>$ln, 'lan'=>$lan, 'value'=>$this->lanDefsRaw[$lan]); 
-						//	$this->scriptData[$path][$ln] = $row; 
-						}
-					}
-				}	
-			}
-			
-	
-		}	
-					
-			
-		function scanLanFile($path)
-		{
-			
-			
-			$data = file_get_contents($path); 
-			
-			if(preg_match_all('/(\/\*[\s\S]*?\*\/)/i',$data, $multiComment))
-			{
-				$data = str_replace($multiComment[1],'',$data);	// strip multi-line comments. 	
-			}
-				
-			
-			$type = basename($path); 
-			
-			if(preg_match_all('/^\s*?define\s*?\(\s*?(\'|\")([\w]+)(\'|\")\s*?,\s*?(\'|\")([\s\S]*?)\s*?(\'|\")\s*?\)\s*?;/im',$data,$matches))
-			{
-				$def = $matches[2];
-				$values = $matches[5];	
-		
-				foreach($def as $k=>$d)
-				{
-					if($d == 'e_PAGETITLE' || $d == 'PAGE_NAME' || $d =='CORE_LC' && $d =='CORE_LC2')
-					{
-							continue; 
-					}
-					
-					$retloc[$type][$d]= $values[$k];
-					$this->lanDefs[] = $d;
-					$this->lanDefsData[] = array('file'=>$path, 'lan'=>$d, 'value'=>$values[$k]); 
-					$this->lanDefsRaw[$d] = $values[$k];
-				}	
-			}
-			
-		//print_a($this->lanDefsData); 
-			return; 
-		}				
-						
-					
-				
-			
-	
-	
-}
-
-
-
-
-
-
 
 /**
  * Plugin Admin Generator by CaMer0n. //TODO - Added dummy template and shortcode creation, plus e_search, e_cron, e_xxxxx etc. 
@@ -3508,6 +3519,7 @@ class pluginBuilder
 				$newDir[$dir] = $dir;
 			}
 
+
 			$info = EPL_ADLAN_102;
 			$info .= "<ul>";
 			$info .= "<li>".str_replace('[x]', e_PLUGIN, EPL_ADLAN_103)."</li>";
@@ -3516,23 +3528,27 @@ class pluginBuilder
 			$info .= "<li>".EPL_ADLAN_106."</li>";
 			$info .= "</ul>";
 
-			$mes->addInfo($tp->toHtml($info,true));
+		//	$mes->addInfo($tp->toHtml($info,true));
 			
 			$text = $frm->open('createPlugin','get', e_SELF);
 			$text .= $frm->hidden('action', 'build');
+
 			$text .= "<table class='table adminform'>
 						<colgroup>
 							<col class='col-label' />
 							<col class='col-control' />
+							<col class='col-control' />
 						</colgroup>
 				<tr>
 					<td>".EPL_ADLAN_107."</td>
-					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir).$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_232).$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_232).$frm->close()."</td>
+					<td><div class='alert alert-info'>".$info."</div></td>
 				</tr>
 				
 				<tr>
 					<td>".EPL_ADLAN_108."</td>
-					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir).$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('checkPluginLangs','get',e_SELF."?mode=lans").$frm->select("newplugin",$lanDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->close()."</td>
+					<td><div class='alert alert-info'>".EPL_ADLAN_254."</div></td>
 				</tr>";
 				
 					
