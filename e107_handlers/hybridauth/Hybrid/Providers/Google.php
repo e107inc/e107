@@ -19,7 +19,7 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 	 * default permissions
 	 * {@inheritdoc}
 	 */
-	public $scope = "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read https://www.google.com/m8/feeds/";
+	public $scope = "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/plus.profile.emails.read https://www.google.com/m8/feeds/";
 
 	/**
 	 * {@inheritdoc}
@@ -158,16 +158,16 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 		} else {
 			$this->user->profile->webSiteURL = '';
 		}
-		// google API returns age ranges or min. age only (with plus.login scope)
+		// google API returns age ranges min and/or max as of https://developers.google.com/+/web/api/rest/latest/people#resource
 		if (property_exists($response, 'ageRange')) {
 			if (property_exists($response->ageRange, 'min') && property_exists($response->ageRange, 'max')) {
 				$this->user->profile->age = $response->ageRange->min . ' - ' . $response->ageRange->max;
 			} else {
 				if (property_exists($response->ageRange, 'min')) {
-					$this->user->profile->age = '> ' . $response->ageRange->min;
+					$this->user->profile->age = '>= ' . $response->ageRange->min;
 				} else {
 					if (property_exists($response->ageRange, 'max')) {
-						$this->user->profile->age = '< ' . $response->ageRange->max;
+						$this->user->profile->age = '<= ' . $response->ageRange->max;
 					} else {
 						$this->user->profile->age = '';
 					}
@@ -198,22 +198,22 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 	function getUserContacts() {
 		// refresh tokens if needed
 		$this->refreshToken();
-
+		
 		$contacts = array();
 		if (!isset($this->config['contacts_param'])) {
 			$this->config['contacts_param'] = array("max-results" => 500);
 		}
-
+		
 		// Google Gmail and Android contacts
 		if (strpos($this->scope, '/m8/feeds/') !== false) {
-
+			
 			$response = $this->api->api("https://www.google.com/m8/feeds/contacts/default/full?"
-					. http_build_query(array_merge(array('alt' => 'json', 'v' => '3.0'), $this->config['contacts_param'])));
-
+					. http_build_query(array_merge(array('alt' => 'json'), $this->config['contacts_param'])));
+			
 			if (!$response) {
 				return array();
 			}
-
+			
 			if (isset($response->feed->entry)) {
 				foreach ($response->feed->entry as $idx => $entry) {
 					$uc = new Hybrid_User_Contact();
@@ -249,40 +249,40 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 					} else {
 						$uc->webSiteURL = '';
 					}
-
+					
 					$contacts[] = $uc;
 				}
 			}
 		}
-
+		
 		// Google social contacts
 		if (strpos($this->scope, '/auth/plus.login') !== false) {
-
+			
 			$response = $this->api->api("https://www.googleapis.com/plus/v1/people/me/people/visible?"
 					. http_build_query($this->config['contacts_param']));
-
+			
 			if (!$response) {
 				return array();
 			}
-
+			
 			foreach ($response->items as $idx => $item) {
 				$uc = new Hybrid_User_Contact();
 				$uc->email = (property_exists($item, 'email')) ? $item->email : '';
 				$uc->displayName = (property_exists($item, 'displayName')) ? $item->displayName : '';
 				$uc->identifier = (property_exists($item, 'id')) ? $item->id : '';
-
+				
 				$uc->description = (property_exists($item, 'objectType')) ? $item->objectType : '';
 				$uc->photoURL = (property_exists($item, 'image')) ? ((property_exists($item->image, 'url')) ? $item->image->url : '') : '';
 				$uc->profileURL = (property_exists($item, 'url')) ? $item->url : '';
 				$uc->webSiteURL = '';
-
+				
 				$contacts[] = $uc;
 			}
 		}
-
+		
 		return $contacts;
 	}
-
+	
 	/**
 	 * Add query parameters to the $url
 	 *
@@ -290,7 +290,7 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 	 * @param array  $params Parameters to add
 	 * @return string
 	 */
-	function addUrlParam($url, array $params) {
+	function addUrlParam($url, array $params){		
 		$query = parse_url($url, PHP_URL_QUERY);
 
 		// Returns the URL string with new parameters
@@ -303,3 +303,4 @@ class Hybrid_Providers_Google extends Hybrid_Provider_Model_OAuth2 {
 	}
 
 }
+
