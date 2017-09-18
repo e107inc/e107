@@ -147,7 +147,9 @@ class core_system_xup_controller extends eController
 	public function actionEndpoint()
 	{
 		require_once( e_HANDLER."hybridauth/Hybrid/Auth.php" );
-		require_once( e_HANDLER."hybridauth/Hybrid/Endpoint.php" ); 
+		require_once( e_HANDLER."hybridauth/Hybrid/Endpoint.php" );
+		require_once( e_HANDLER."hybridauth/vendor/autoload.php");
+
 		try 
 		{
 			Hybrid_Endpoint::process();
