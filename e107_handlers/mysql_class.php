@@ -1877,7 +1877,7 @@ class e_db_mysql
 
 	/**
 	* Check for the existence of a matching language table when multi-language tables are active.
-	* @param string $table Name of table, without the prefix. or an array of table names.
+	* @param string|array $table Name of table, without the prefix. or an array of table names.
 	* @access private
 	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
