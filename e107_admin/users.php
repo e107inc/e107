@@ -1209,7 +1209,7 @@ class users_admin_ui extends e_admin_ui
 		}
 		else
 		{
-			$mes->addError($email.' - '.USRLAN_234, 'default', true);
+			$mes->addError($email.' - '.USRLAN_234, 'default', true); // Invalid.
 			$this->redirect('list', 'main', true);
 		}
 
