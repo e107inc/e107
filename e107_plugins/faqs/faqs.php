@@ -81,8 +81,8 @@ if (isset($_POST['faq_submit']))
 	{
 		$faq_question = $aj->formtpa($_POST['faq_question'], "on");
 		$data = $aj->formtpa($_POST['data'], "on");
-		$count = ($sql->db_Count("faqs", "(*)", "WHERE faq_parent='".$_POST['faq_parent']."' ") + 1);
-		$sql->db_Insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".$_POST['faq_comment']."', '".time()."', '".USERID."', '".$count."' ");
+		$count = ($sql->db_Count("faqs", "(*)", "WHERE faq_parent='".intval($_POST['faq_parent'])."' ") + 1);
+		$sql->db_Insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".filter_var($_POST['faq_comment'], FILTER_SANITIZE_STRING)."', '".time()."', '".USERID."', '".$count."' ");
 		$message = FAQ_ADLAN_32;
 		unset($faq_question, $data);
 	}
@@ -100,7 +100,7 @@ if (isset($_POST['faq_edit_submit']))
 		$faq_question = $aj->formtpa($_POST['faq_question'], "on");
 		$data = $aj->formtpa($_POST['data'], "on");
 
-		$sql->db_Update("faqs", "faq_parent='".$_POST['faq_parent']."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
+		$sql->db_Update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
 		$message = FAQ_ADLAN_29;
 		unset($faq_question, $data);
 	}

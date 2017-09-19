@@ -183,7 +183,8 @@ class signup_shortcodes extends e_shortcode
 		if (check_class($pref['displayname_class']))
 		{
 			$dis_name_len = varset($pref['displayname_maxlength'],15);
-			return e107::getForm()->text('username', ($_POST['username'] ? $_POST['username'] : ''),  $dis_name_len);
+			$val = ($_POST['username']) ? filter_var($_POST['username'], FILTER_SANITIZE_STRING) : '';
+			return e107::getForm()->text('username', $val,  $dis_name_len);
 
 		}
 	}
@@ -210,8 +211,10 @@ class signup_shortcodes extends e_shortcode
 			$options['pattern'] = '[\S]*';
 			$options['class'] = vartrue($parm['class'],'');
 			$options['placeholder'] = vartrue($parm['placeholder']) ? $parm['placeholder']  : '';
-		
-			return e107::getForm()->text('loginname', ($_POST['loginname'] ? $_POST['loginname'] : ''), $log_name_length, $options);
+
+			$val = ($_POST['loginname']) ? filter_var($_POST['loginname'], FILTER_SANITIZE_STRING) : '';
+
+			return e107::getForm()->text('loginname', $val, $log_name_length, $options);
 		}
 	}
 	
@@ -230,8 +233,10 @@ class signup_shortcodes extends e_shortcode
 		$options['title']		= LAN_SIGNUP_110;
 		$options['class']   = vartrue($parm['class'],'');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
-				
-		return e107::getForm()->text('realname', ($_POST['realname'] ? $_POST['realname'] : ''), 100, $options);
+
+		$val = ($_POST['realname']) ? filter_var($_POST['realname'], FILTER_SANITIZE_STRING) : '';
+
+		return e107::getForm()->text('realname', $val, 100, $options);
 
 	}
 	
@@ -325,9 +330,11 @@ class signup_shortcodes extends e_shortcode
 		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control e-email');
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
 		$options['class']   = vartrue($parm['class'],'');
-		$options['placeholder'] = vartrue($parm['placeholder'],'');   
+		$options['placeholder'] = vartrue($parm['placeholder'],'');
 
-		$text = e107::getForm()->email('email',vartrue($_POST['email'], ''),100,$options);
+		$val = !empty($_POST['email']) ? filter_var($_POST['email'], FILTER_SANITIZE_EMAIL) : '';
+
+		$text = e107::getForm()->email('email', $val,100,$options);
 		$text .= "<div class='e-email-hint alert-warning' style='display:none; padding:10px' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
 		$text .= "<input type='text' name='email2' value='' style='display:none' />"; // spam-trap. 
 		return $text;
@@ -348,8 +355,10 @@ class signup_shortcodes extends e_shortcode
 		$options['class'] 		= 'tbox input-text e-email';  
 		$options['class']     = vartrue($parm['class'],'tbox input-text e-email');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
-				
-		return e107::getForm()->email('email_confirm', vartrue($_POST['email_confirm']), 100, $options);
+
+		$val = !empty($_POST['email_confirm']) ? filter_var($_POST['email_confirm'], FILTER_SANITIZE_EMAIL) : '';
+
+		return e107::getForm()->email('email_confirm', $val, 100, $options);
 
 	}
 	
