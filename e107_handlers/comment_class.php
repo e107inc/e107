@@ -648,6 +648,11 @@ class comment
 		}
 
 		$tp = e107::getParser();
+
+	//	if(THEME_LEGACY !== true) // old themes might still use bbcodes.
+		{
+			$comment = $tp->toText($comment);
+		}
 		
 		$comment = trim($comment);
 		
@@ -711,7 +716,8 @@ class comment
 		{
 			$author_name = $data; //BC Fix. 	
 		}
-		
+
+
 		
 		global $e107,$rater;
 
@@ -719,6 +725,11 @@ class comment
 		$sql2 		= e107::getDb('sql2');
 		$tp 		= e107::getParser();
 		$pref 		= e107::getPref();
+
+	//	if(THEME_LEGACY !== true) // old themes might still use bbcodes.
+		{
+			$comment = $tp->toText($comment);
+		}
 
 		if ($this->getCommentPermissions() != 'rw') return;
 

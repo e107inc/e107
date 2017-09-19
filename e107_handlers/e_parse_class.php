@@ -2374,7 +2374,12 @@ class e_parse extends e_parser
 	function toText($text)
 	{
 
-		if($this->isHtml($text)==true)
+		if($this->isBbcode($text) === true) // convert any bbcodes to html
+		{
+			$text = $this->toHtml($text,true);
+		}
+
+		if($this->isHtml($text) === true) // strip any html.
 		{
 			$text = $this->toHtml($text,true);
 			$text = strip_tags($text);
@@ -4103,7 +4108,7 @@ class e_parser
 			return false;
 		}
 
-		$bbsearch = array('[/h]', '[/b]', '[/link]', '[/right]', '[/center]', '[/flash]', '[/code]', '[/table]');
+		$bbsearch = array('[/img]','[/h]', '[/b]', '[/link]', '[/right]', '[/center]', '[/flash]', '[/code]', '[/table]');
 
 		foreach($bbsearch as $v)
 		{

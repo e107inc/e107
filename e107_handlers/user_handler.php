@@ -844,7 +844,7 @@ Following fields auto-filled in code as required:
 			{
 				$errMsg = ERR_INVALID_EMAIL;
 			}
-			elseif ($u_sql->db_Count('user', '(*)', "WHERE `user_email`='".$v."' AND `user_ban`=1 "))
+			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".filter_var($v,FILTER_SANITIZE_EMAIL)."' AND `user_ban`=1 "))
 			{
 				$errMsg = ERR_BANNED_USER; 
 			}
