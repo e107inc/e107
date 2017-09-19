@@ -182,7 +182,7 @@ class social_ui extends e_admin_ui
 
 				"LinkedIn" => array (
 					"enabled" => true,
-					"keys"    => array ( "key" => "", "secret" => "" )
+					"keys"    => array ( "id" => "", "secret" => "" )
 				),
 
 				// windows live
@@ -212,7 +212,7 @@ class social_ui extends e_admin_ui
 					"keys"    => array ( "key" => "", "secret" => "" ),
 					"includeEmail" => true,
 				),
-				
+
 
 				"Yahoo" => array (
 					"enabled" => true,
