@@ -5155,6 +5155,15 @@ $text .= "
 			// do something		
 		}		
 		
+		// left-panel help menu area. 
+		public function renderHelp()
+		{
+			\$caption = LAN_HELP;
+			\$text = 'Some help text';
+
+			return array('caption'=>\$caption,'text'=> \$text);
+
+		}
 			
 	/*	
 		// optional - a custom page.  
@@ -5165,6 +5174,10 @@ $text .= "
 			return \$text;
 			
 		}
+		
+	
+		
+		
 	*/
 			
 }
