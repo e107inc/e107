@@ -882,7 +882,8 @@ class e107plugin
 		'e_rss'         => "Give your plugin an rss feed.",
 		'e_upload'      => "Use data from your plugin in the user upload form.",
 		'e_user'        => "Have your plugin include data on the user-profile page.",
-		'e_library'     => "Include a third-party library"
+		'e_library'     => "Include a third-party library",
+		'e_parse'       => "Hook into e107's text/html parser"
 
 	);
 
