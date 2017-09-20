@@ -5,7 +5,7 @@ $parms = explode("^",$parm);
 
 if(deftrue('BOOTSTRAP'))
 {
-	$img = "<i class='icon-print'></i>"; 
+	$img = "<span class='glyphicon glyphicon-print' aria-hidden='true'></span>";
 }
 elseif (defined("ICONPRINT") && file_exists(THEME."images/".ICONPRINT))
 {

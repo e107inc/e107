@@ -10,7 +10,7 @@ $parms = explode("^",$parm);
 
 if(deftrue('BOOTSTRAP'))
 {
-	$img = "<i class='icon-envelope'></i>";	
+	$img = "<span class='glyphicon glyphicon-envelope' aria-hidden='true'></span>";
 }
 elseif (defined("ICONMAIL") && file_exists(THEME."images/".ICONMAIL)) 
 {
