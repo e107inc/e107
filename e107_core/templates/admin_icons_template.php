@@ -445,6 +445,9 @@ define("E_32_TRUE", "<i class='S32 e-true-32'></i>");
 	define("ADMIN_TRUE_ICON", "<i class='fa fa-check text-success'></i>");
 	define("ADMIN_FALSE_ICON", "<i class='fa fa-times text-danger'></i>");
 	define("ADMIN_WARNING_ICON", "<i class='fa fa-warning text-warning'></i>");
+	define("ADMIN_GRID_ICON",  "<i class='fa fa-th'></i>");
+	define("ADMIN_LIST_ICON",  "<i class='fa fa-th-list'></i>");
+
 /*
 	define("ADMIN_EDIT_ICON", "<i class='fa fa-edit fa-2x fa-fw'></i>");
 	define("ADMIN_DELETE_ICON", "<i class='fa fa-trash fa-2x fa-fw'></i>");

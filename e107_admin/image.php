@@ -157,7 +157,8 @@ class media_admin extends e_admin_dispatcher
 
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'
+		'main/edit'	=> 'main/list',
+		'main/grid' => 'main/list'
 	);
 
 	protected $menuTitle = LAN_MEDIAMANAGER;
@@ -178,6 +179,8 @@ class media_cat_ui extends e_admin_ui
 		protected $listOrder = 'media_cat_owner asc';
 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
+
+
 
 		protected $fields = array(
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -635,6 +638,14 @@ class media_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read':
+				if($this->getController()->getAction() === 'grid')
+				{
+					$tp = e107::getParser();
+					$img = $this->getController()->getFieldVar('media_url');
+					$size = 400;
+					return $tp->toImage($img, array('w'=>$size,'h'=>$size, 'crop'=>1));
+				}
+
 				$attributes['readParms'] = 'thumb=60&thumb_urlraw=0&thumb_aw=60';
 				$val 	= $this->getController()->getListModel()->get('media_url');	
 			break;
@@ -742,6 +753,9 @@ class media_admin_ui extends e_admin_ui
 		protected $listOrder = 'm.media_id desc'; // show newest images first. 
 		public $deleteConfirmScreen = true;
 		public $deleteConfirmMessage = IMALAN_129;
+
+		protected $grid             = array('title'=>'media_name', 'image'=>'media_preview', 'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>false);
+
 
 
     	protected $preftabs			= array(IMALAN_78,IMALAN_89, "Youtube"); 
