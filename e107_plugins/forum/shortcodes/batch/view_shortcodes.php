@@ -39,6 +39,8 @@
 		 * Only by nfp menu at this time.
 		*/
 
+	// @todo new post shortcodes
+
 		function sc_post_url($parm=null)
 		{
 				$url = e107::url('forum', 'topic', $this->var, array(
@@ -81,12 +83,13 @@
 			return $this->sc_avatar($parm);
 		}
 
-	// thread/topic
+	// @todo new thread/topic shortcodes
 
 		function sc_topic_name($parm=null)
 		{
 			return $this->sc_threadname($parm);
 		}
+
 
 		function sc_topic_url($parm=null)
 		{
@@ -109,11 +112,69 @@
 
 		function sc_topic_lastpost_date($parm=null)
 		{
+			$mode = empty($parm['format']) ? 'forum' : $parm['format'];
+			return e107::getParser()->toDate($this->var['thread_lastpost'], $mode);
+		}
 
+
+		function sc_topic_lastpost_author($parm=null)
+		{
+			if($this->var['thread_views'] || $this->var['thread_total_replies'] > 0)
+			{
+
+				if($this->var['thread_lastuser_username'])
+				{
+					$url = e107::getUrl()->create('user/profile/view', "name={$this->var['thread_lastuser_username']}&id={$this->var['thread_lastuser']}");
+					return "<a href='{$url}'>" . $this->var['thread_lastuser_username'] . "</a>";
+				}
+				elseif($this->var['thread_lastuser_anon'])
+				{
+					return e107::getParser()->toHTML($this->var['thread_lastuser_anon']);
+				}
+				else
+				{
+					return LAN_FORUM_1015;
+
+				}
+			}
 
 		}
 
-	// forum
+
+		function sc_topic_icon($parm=null)
+		{
+
+			$newflag = (USER && $this->var['thread_lastpost'] > USERLV && !in_array($this->var['thread_id'], $this->forum->threadGetUserViewed()));
+
+			$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
+
+			if($this->var['thread_total_replies'] >= vartrue($this->pref['popular'], 10))
+			{
+				$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
+			}
+			elseif(empty($this->var['thread_total_replies']) && defined('IMAGE_noreplies'))
+			{
+				$ICON = IMAGE_noreplies;
+			}
+
+			if($this->var['thread_sticky'] == 1)
+			{
+				$ICON = ($this->var['thread_active'] ? IMAGE_sticky : IMAGE_stickyclosed);
+			}
+			elseif($this->var['thread_sticky'] == 2)
+			{
+				$ICON = IMAGE_announce;
+			}
+			elseif(!$this->var['thread_active'])
+			{
+				$ICON = IMAGE_closed;
+			}
+
+			return $ICON;
+		}
+
+
+	// @todo new forum shortcodes
 
 		function sc_forum_name($parm=null)
 		{
@@ -136,11 +197,6 @@
 		// More sc_topic_xxxxx and sc_forum_xxxx in the same format.
 
 	// ---------------------------------------
-
-
-
-
-
 
 
 
