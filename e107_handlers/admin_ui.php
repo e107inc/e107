@@ -6580,7 +6580,7 @@ class e_admin_form_ui extends e_form
 	 */
 	public function renderPagination()
 	{
-		if($this->getController()->getGrid('carousel') === true)
+		if($this->getController()->getAction() === 'grid' && $this->getController()->getGrid('carousel') === true)
 		{
 			return '<div class="btn-group" >
 			<a id="admin-ui-carousel-prev" class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
@@ -6651,6 +6651,19 @@ class e_admin_form_ui extends e_form
 
 		//	$tree = $this->getTree();
 		//	$total = $this->getTotal();
+		$grid = $this->getController()->getGrid();
+		$gridToggle = '';
+
+		if(!empty($grid))
+		{
+			$gridAction = $this->getController()->getAction() === 'grid' ? 'list' : 'grid';
+			$gridQuery = (array) $_GET;
+			$gridQuery['action'] = $gridAction;
+			$toggleUrl = e_REQUEST_SELF."?".http_build_query($gridQuery);
+			$gridIcon = ($gridAction === 'grid') ? ADMIN_GRID_ICON : ADMIN_LIST_ICON;
+			$gridTitle = ($gridAction === 'grid') ? LAN_UI_VIEW_GRID_LABEL : LAN_UI_VIEW_LIST_LABEL;
+			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle."\">".$gridIcon."</a>";
+		}
 
 
 		$text = "
@@ -6672,15 +6685,16 @@ class e_admin_form_ui extends e_form
 							<div class='e-autocomplete'></div>
 							".implode("\n", $filter_preserve_var)."
 							".$this->admin_button('etrigger_filter', 'etrigger_filter', 'filter e-hide-if-js', ADMIN_FILTER_ICON, array('id' => false,'title'=>LAN_FILTER))."
-
+							
 							".$this->renderPagination()."
 							<span class='indicator' style='display: none;'>
 								<img src='".e_IMAGE_ABS."generic/loading_16.gif' class='icon action S16' alt='".LAN_LOADING."' />
 							</span>
+							".$gridToggle."
 						</div>
 						<div id='admin-ui-list-db-language' class='span4 col-md-4 text-right' >";
 
-						
+
 						// Let Admin know which language table is being saved to. (avoid default table overwrites) 
 						$text .= $this->renderLanguageTableInfo();
 						
