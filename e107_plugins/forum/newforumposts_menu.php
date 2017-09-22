@@ -22,12 +22,23 @@ if(!class_exists('forum_newforumposts_menu'))
 		private $plugPref = null;
 		private $menuPref = null;
 		private $forumObj = null;
+		private $total = array();
 
 		function __construct()
 		{
 			$this->forumObj = new e107forum;
 			$this->plugPref = e107::pref('forum'); // general forum preferences.
 			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
+
+			$sql = e107::getDb();
+
+			$this->total['topics'] = $sql->count("forum_thread");
+			$this->total['replies'] = $sql->count("forum_post");
+
+			$sql->gen("SELECT sum(thread_views) as sum FROM #forum_thread");
+			$tmp = $sql->fetch();
+			$this->total['views'] = intval($tmp["sum"]);
+
 
 			$this->render();
 
@@ -190,10 +201,9 @@ if(!class_exists('forum_newforumposts_menu'))
 
 				}
 
+				$TOTALS = array('TOTAL_TOPICS'=>$this->total['topics'], 'TOTAL_VIEWS'=>$this->total['views'], 'TOTAL_REPLIES'=>$this->total['replies']);
 
-
-				$list .= $tp->parseTemplate($template['end'], true, $sc);
-
+				$list .= $tp->parseTemplate($template['end'], true, $TOTALS);
 
 				$text = $list;
 			}
@@ -222,6 +232,8 @@ if(!class_exists('forum_newforumposts_menu'))
 
 	}
 }
+
+
 new forum_newforumposts_menu;
 
 
