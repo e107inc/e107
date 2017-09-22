@@ -46,8 +46,8 @@
 														</tr>";
 
 	$NEWFORUMPOSTS_MENU_TEMPLATE['main']['item']        = "<tr>
-														<td style='width:5%; text-align:center' class='forumheader3'>{ICON}</td>
-														<td style='width:45%' class='forumheader3'><a href='{TOPIC_URL}'>{TOPIC_NAME}</a> <small class='smalltext'>(<a href='{FORUM_URL}'>{FORUM_NAME}</a>)</small></td>
+														<td style='width:5%; text-align:center' class='forumheader3'>{TOPIC_ICON}</td>
+														<td style='width:45%' class='forumheader3'><a href='{POST_URL}'>{TOPIC_NAME}</a> <small class='smalltext'>(<a href='{FORUM_URL}'>{FORUM_NAME}</a>)</small></td>
 														<td style='width:15%; text-align:center' class='forumheader3'>{POST_AUTHOR_NAME}</td>
 														<td style='width:5%; text-align:center' class='forumheader3'>{TOPIC_VIEWS}</td>
 														<td style='width:5%; text-align:center' class='forumheader3'>{TOPIC_REPLIES}</td>

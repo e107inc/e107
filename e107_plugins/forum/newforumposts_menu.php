@@ -48,12 +48,14 @@ if(!class_exists('forum_newforumposts_menu'))
 				p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
 				t.*,
 				u.user_id, u.user_name, u.user_image, u.user_currentvisit,
+				lu.user_name as thread_lastuser_username, 
 				f.forum_name, f.forum_sef
 			FROM `#forum_post` as p
 
 			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
 			LEFT JOIN `#forum` as f ON f.forum_id = t.thread_forum_id
 			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
+			LEFT JOIN `#user` AS lu ON t.thread_lastuser = lu.user_id
 			WHERE {$max_age} p.post_forum IN ({$forumList})
 			ORDER BY p.post_datestamp DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
 
@@ -83,7 +85,7 @@ if(!class_exists('forum_newforumposts_menu'))
 				$layout = 'default';
 			}
 
-			if(!empty($this->menuPref['layout']))//@todo e_menu add 'layout' dropdown.
+			if(!empty($this->menuPref['layout'])) // @see e_menu
 			{
 				$layout = $this->menuPref['layout'];
 			}
@@ -190,7 +192,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 
 
-				$list .= $tp->parseTemplate($template['end'], true);
+				$list .= $tp->parseTemplate($template['end'], true, $sc);
 
 
 				$text = $list;
