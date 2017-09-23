@@ -437,10 +437,9 @@ class e_bbcode
 
 		
 
-		
 		$ret = array();
 		
-		if(is_array($mtch[1]))
+		if(!empty($mtch) && is_array($mtch[1]))
 		{
 			$tp = e107::getParser();
 			foreach($mtch[1] as $i)
