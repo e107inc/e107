@@ -11,6 +11,8 @@
 
 
 // news rewrite for v2.x
+
+
 if (!defined('e107_INIT'))
 {
 	require_once("../../class2.php");
@@ -111,6 +113,8 @@ class news_front
 
 		$this->defaultTemplate = e107::getPref('news_default_template');
 
+		$opt = array('default'=>'', 'list'=>'all');
+
 		if (e_QUERY) //TODO add support for $_GET['cat'] and $_GET['mode'] and phase-out the x.x.x format.
 		{
 
@@ -120,11 +124,15 @@ class news_front
 			//	$id = varset($tmp[2],'');					// ID of specific news item where required
 			$this->from = intval(varset($tmp[2],0));	// Item number for first item on multi-page lists
 			$this->cacheString = 'news.php_'.e_QUERY;
+
+			if($action === 'default')
+			{
+				$action = $action = varset($opt[$this->defaultTemplate],'');
+			}
 		}
 		else
 		{
 
-			$opt = array('default'=>'', 'list'=>'all');
 			$action = varset($opt[$this->defaultTemplate],'');
 			$sub_action = '';
 			$tmp = array();
