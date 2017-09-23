@@ -443,14 +443,18 @@ class news_admin_ui extends e_admin_ui
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',    'batch'=>1,  'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
 		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
-		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>2, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 'data'=>'int', 'tab'=>2,   'writeParms'=>'type=datetime',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
         'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown',   'data'=>'int', 'tab'=>0, 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_start'			=> array('title' => LAN_START, 	    'type' => 'datestamp', 'data'=>'int', 'tab'=>2,   'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        	'news_end'				=> array('title' => LAN_END, 		'type' => 'datestamp',  'data'=>'int', 'tab'=>2,  'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
         'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclass',  'tab'=>2,   'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null,  'batch'=>true, 'filter'=>true),
-		'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'dropdown',  'data'=>'str',  'tab'=>0,  'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
-		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',   'data'=>'int', 'tab'=>2, 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
+
+		'news_template'		    => array('title' => LAN_TEMPLATE, 	'type' => 'method',  'data'=>'str',  'tab'=>0,  'inline'=>true, 'writeParms'=>'', 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+
+		'news_render_type'		=> array('title' => LAN_LOCATION, 	'type' => 'dropdown',  'data'=>'str',  'tab'=>0,  'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+
+			'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',   'data'=>'int', 'tab'=>2, 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
         'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',  'data'=>'int',  'tab'=>2,	'writeParms'=>'inverse=1',  'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',    'data'=>'int', 'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
@@ -742,8 +746,9 @@ class news_admin_ui extends e_admin_ui
 		'news_category',
 		'news_title' ,
 		'news_summary',
+		'news_template',
 		'news_render_type',
-		'news_author' ,
+
 		'news_body',
 		'news_extended',
 		'news_thumbnail',
@@ -757,6 +762,7 @@ class news_admin_ui extends e_admin_ui
 		'news_allow_comments' ,
 		'news_start' ,
 		'news_end' ,
+		'news_author' ,
 		'news_datestamp' ,
 		'news_class',
 		'news_sticky',
@@ -1442,6 +1448,39 @@ class news_admin_ui extends e_admin_ui
 class news_form_ui extends e_admin_form_ui
 {
 
+	function news_template($curVal,$mode)
+	{
+		if($mode === 'read')
+		{
+			return $curVal;
+		}
+
+
+		if($mode === 'write')
+		{
+			if($tmp = e107::getTemplate('news', 'news', 'view'))
+			{
+				return LAN_DEFAULT;
+			}
+
+			if($tmp = e107::getTemplateInfo('news', 'news_view'))
+			{
+				$opt = array();
+				foreach($tmp as $k=>$val)
+				{
+					$opt[$k] = $val['title'];
+
+				}
+				return $this->select('news_template', $opt, $curVal, array('size'=>'xlarge'));
+			}
+
+
+
+			return LAN_DEFAULT;
+		}
+
+	}
+
 
 	function news_author($curVal, $mode)
 	{
@@ -1476,7 +1515,7 @@ class news_form_ui extends e_admin_form_ui
 		}
 		else // allow master admin to
 		{
-			$text .= $this->select_open('news_author');
+			$text .= $this->select_open('news_author', array('size'=>'xlarge'));
 			$qry = "SELECT user_id,user_name,user_admin FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
 
 			if(!empty($curVal))

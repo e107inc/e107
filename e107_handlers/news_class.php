@@ -374,7 +374,7 @@ class news {
 
 		// Retrieve batch sc object, set required vars
 
-		$wrapperKey = (!empty($param['template_key'])) ? 'news/'.$param['template_key'].'/item' : 'news/view/item';
+		$wrapperKey = (!empty($param['template_key'])) ? $param['template_key'].'/item' : 'news/view/item';
 
 		$editable = array(
 			'table' => 'news',

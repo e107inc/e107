@@ -131,7 +131,9 @@ $NEWS_TEMPLATE['category']['start']	= '<!-- Category News Template -->';
 
 // As displayed by news.php?extend.1
 
+//@XXX SEE news_view_template.php
 
+/*
 $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
 $NEWS_TEMPLATE['view']['item'] = '
@@ -197,7 +199,7 @@ $NEWS_TEMPLATE['view']['item'] = '
 	{NEWSNAVLINK}
 
 ';
-
+*/
 /*
  * 	<hr />
 	<h3>About the Author</h3>
