@@ -6173,6 +6173,7 @@ class e_admin_form_ui extends e_form
 	 * @var e_admin_ui
 	 */
 	protected $_controller = null;
+	protected $_list_view  = null;
 
 
 
@@ -6410,6 +6411,7 @@ class e_admin_form_ui extends e_form
 	public function getList($ajax = false, $view='default')
 	{
 		$tp = e107::getParser();
+		$this->_list_view = $view;
 		$controller = $this->getController();
 
 		$request = $controller->getRequest();
@@ -6580,7 +6582,7 @@ class e_admin_form_ui extends e_form
 	 */
 	public function renderPagination()
 	{
-		if($this->getController()->getAction() === 'grid' && $this->getController()->getGrid('carousel') === true)
+		if($this->_list_view === 'grid' && $this->getController()->getGrid('carousel') === true)
 		{
 			return '<div class="btn-group" >
 			<a id="admin-ui-carousel-prev" class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
@@ -6652,9 +6654,11 @@ class e_admin_form_ui extends e_form
 		//	$tree = $this->getTree();
 		//	$total = $this->getTotal();
 		$grid = $this->getController()->getGrid();
+
+
 		$gridToggle = '';
 
-		if(!empty($grid))
+		if(!empty($grid) && varset($grid['toggleButton']) !==false)
 		{
 			$gridAction = $this->getController()->getAction() === 'grid' ? 'list' : 'grid';
 			$gridQuery = (array) $_GET;
