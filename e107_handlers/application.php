@@ -333,7 +333,7 @@ class eFront
 		$request->setDispatched(true);
 
 		$router = $this->getRouter();
-		
+
 		// If current request not already routed outside the dispatch method, route it
 		if(!$request->routed) $router->route($request); 
 
@@ -1034,7 +1034,7 @@ class eRouter
 	 */
 	protected function _init()
 	{
-		// Gather all rules, add-on info, cache, module for main namespace etc 
+		// Gather all rules, add-on info, cache, module for main namespace etc
 		$this->_loadConfig()
 			->setAliases();
 		// we need config first as setter does some checks if module can be set as main
@@ -1101,8 +1101,8 @@ class eRouter
 			$config[$module] = $config[$module]['config'];
 		}
 		$this->_globalConfig = $config;
-		$this->setRuleSets($rules); 
-		
+		$this->setRuleSets($rules);
+
 		return $this;
 	}
 	
@@ -1645,7 +1645,7 @@ class eRouter
 			$aliases = e107::findPref('url_aliases/'.$lanCode, array());
 		}
 		$this->_aliases = $aliases;
-		
+
 		return $this;
 	}
 	
@@ -1757,7 +1757,7 @@ class eRouter
 	}
 
 
-	private function _debug($label,$val, $line)
+	private function _debug($label,$val=null, $line=null)
 	{
 		if(!deftrue('e_DEBUG_SEF'))
 		{
@@ -1990,7 +1990,7 @@ class eRouter
 	public function checkLegacy(eRequest $request)
 	{
 		$module = $request->getModule();
-		
+
 		// forward from controller to a legacy module - bad stuff
 		if(!$request->isDispatched() && $this->getConfigValue($module, 'legacy'))
 		{

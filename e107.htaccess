@@ -34,7 +34,7 @@
 	Deny from env=HTTP_SAFE_BADBOT
 
 ### Disable directory listing
-	Options -Indexes
+	Options -Indexes -MultiViews
 
 ### limit file uploads to 10mb
 ### LimitRequestBody 10240000
