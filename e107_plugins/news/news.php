@@ -854,7 +854,7 @@ class news_front
 		$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 		$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : defset('ICONSTYLE','');
 		$param['current_action'] = $action;
-		$param['template_key'] = 'list';
+		$param['template_key'] = 'news/list';
 
 		// NEW - allow news batch shortcode override (e.g. e107::getScBatch('news', 'myplugin', true); )
 		e107::getEvent()->trigger('news_list_parse', $newsList);
@@ -1053,7 +1053,7 @@ class news_front
 
 			$param = array();
 			$param['current_action'] = $action;
-			$param['template_key'] = 'view';
+			$param['template_key'] = 'news/view';
 
 			if(vartrue($NEWSSTYLE))
 			{
@@ -1066,6 +1066,14 @@ class news_front
 			else
 			{
 				$tmp = e107::getTemplate('news', 'news', 'view');
+
+				if(empty($tmp))
+				{
+					$newsViewTemplate = !empty($news['news_template']) ? $news['news_template'] : 'default';
+					$tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
+					$param['template_key'] = 'news_view/'.$newsViewTemplate;
+				}
+
 				$template = $tmp['item'];
 				unset($tmp);
 			}
@@ -1480,7 +1488,7 @@ class news_front
 			// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 			$param = array();
 			$param['current_action'] = $action;
-			$param['template_key'] = 'default';
+			$param['template_key'] = 'news/default';
 
 			// Get Correct Template
 			// XXX we use $NEWSLISTSTYLE above - correct as we are currently in list mode - XXX No this is not NEWSLISTSTYLE - which provides only summaries.
@@ -1502,7 +1510,7 @@ class news_front
 			{
 				$tmpl = $layout['category'];
 				$template = $tmpl['item'];
-				$param['template_key'] = 'category';
+				$param['template_key'] = 'news/category';
 			}
 
 
