@@ -80,7 +80,8 @@
 
 		function sc_post_author_avatar($parm=null)
 		{
-			return $this->sc_avatar($parm);
+			return e107::getParser()->toAvatar($this->postInfo, $parm);
+		//	return $this->sc_avatar($parm);
 		}
 
 	// @todo new thread/topic shortcodes
@@ -89,6 +90,46 @@
 		{
 			return $this->sc_threadname($parm);
 		}
+
+
+		function sc_topic_author_name($parm=null)
+		{
+			if($this->var['thread_user_username'])
+			{
+				return "<a href='" . e107::getUrl()->create('user/profile/view', array('name' => $this->postInfo['thread_user_username'], 'id' => $this->postInfo['thread_user'])) . "'>{$this->postInfo['thread_user_username']}</a>";
+			}
+			else
+			{
+				return '<b>' . e107::getParser()->toHTML($this->postInfo['thread_user_anon']) . '</b>';
+			}
+		}
+
+
+		function sc_topic_author_url($parm=null)
+		{
+			if(empty($this->var['thread_user_username']) || empty($this->var['thread_user']))
+			{
+				return '';
+			}
+
+			return e107::getUrl()->create('user/profile/view', array('name' => $this->var['thread_user_username'], 'id' => $this->var['thread_user']));
+		}
+
+
+		function sc_topic_author_avatar($parm=null)
+		{
+			$arr = array(
+				'user_id'           => $this->var['thread_user'],           // standardized field names.
+				'user_name'         => $this->var['thread_user_username'],
+				'user_image'        => $this->var['thread_user_userimage'],
+				'user_currentvisit' => $this->var['thread_user_usercurrentvisit']
+			);
+
+			return e107::getParser()->toAvatar($arr, $parm);
+		//	return $this->sc_avatar($parm);
+		}
+
+
 
 
 		function sc_topic_url($parm=null)
