@@ -54,21 +54,49 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			$forumList = implode(',', $this->forumObj->getForumPermList('view'));
 
-			$qry = "
-			SELECT
-				p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
-				t.*,
-				u.user_id, u.user_name, u.user_image, u.user_currentvisit,
-				lu.user_name as thread_lastuser_username, 
-				f.forum_name, f.forum_sef
-			FROM `#forum_post` as p
+			$qry = '';
 
-			LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
-			LEFT JOIN `#forum` as f ON f.forum_id = t.thread_forum_id
-			LEFT JOIN `#user` AS u ON u.user_id = p.post_user
-			LEFT JOIN `#user` AS lu ON t.thread_lastuser = lu.user_id
-			WHERE {$max_age} p.post_forum IN ({$forumList})
-			ORDER BY p.post_datestamp DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
+			switch($this->menuPref['layout'])
+			{
+				case "minimal":
+				case "default":
+
+					$qry = "
+					SELECT
+					p.post_user, p.post_id, p.post_datestamp, p.post_user_anon, p.post_entry,
+					t.*,
+					u.user_id, u.user_name, u.user_image, u.user_currentvisit,
+					lu.user_name as thread_lastuser_username, 
+					f.forum_name, f.forum_sef
+					FROM `#forum_post` as p
+					LEFT JOIN `#forum_thread` AS t ON t.thread_id = p.post_thread
+					LEFT JOIN `#forum` as f ON f.forum_id = t.thread_forum_id
+					LEFT JOIN `#user` AS u ON u.user_id = p.post_user
+					LEFT JOIN `#user` AS lu ON t.thread_lastuser = lu.user_id
+					WHERE {$max_age} p.post_forum IN ({$forumList})
+					ORDER BY p.post_datestamp DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
+					break;
+
+				 // standardized field names.  thread_user_[user table fields without the '_')
+				default:
+					 $qry = "
+					SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, t.thread_active, 
+					f.forum_id, f.forum_name, f.forum_class, f.forum_sef, 
+					u.user_name as thread_user_username,  
+					u.user_image as thread_user_userimage, 
+					u.user_currentvisit as thread_user_usercurrentvisit,
+					fp.forum_class,  fp.forum_sef as forum_parent_sef,
+					lp.user_name AS thread_lastuser_username
+					FROM #forum_thread AS t
+					LEFT JOIN #user AS u ON t.thread_user = u.user_id
+					LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id
+					LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+					LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+					WHERE f.forum_id = t.thread_forum_id AND f.forum_class IN (".USERCLASS_LIST.")
+					AND fp.forum_class IN (".USERCLASS_LIST.")
+					ORDER BY t.thread_lastpost DESC LIMIT 0, ".vartrue($this->menuPref['display'],10);
+					}
+
 
 			return $qry;
 		}
@@ -130,6 +158,8 @@ if(!class_exists('forum_newforumposts_menu'))
 				while($row = $sql->fetch())
 				{
 					$row['thread_sef'] = $this->forumObj->getThreadSef($row);
+
+
 
 					$sc->setScVar('postInfo', $row);
 					$sc->setVars($row);
