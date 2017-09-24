@@ -18,10 +18,12 @@ define("LAN_FORUM_MENU_006", "Number of characters to display?");
 define("LAN_FORUM_MENU_007", "Postfix for too long posts?");
 define("LAN_FORUM_MENU_008", "Show original topics in menu?");
 define("LAN_FORUM_MENU_009", "Update menu Settings");
-define("LAN_FORUM_MENU_0010", "New Forum Posts Menu Configuration");
+// define("LAN_FORUM_MENU_010", "New Forum Posts Menu Configuration");
 
-define("LAN_FORUM_MENU_0012", "Maximum age of displayed posts");
-define("LAN_FORUM_MENU_0013", "Use zero on a quiet site; setting a value in days will reduce database time on a busy site");
+define("LAN_FORUM_MENU_012", "Maximum age of displayed posts");
+define("LAN_FORUM_MENU_013", "Use zero on a quiet site; setting a value in days will reduce database time on a busy site");
 
+define("LAN_FORUM_MENU_014", "Scrolling layer height (in pixels)");
+define("LAN_FORUM_MENU_015", "Leave blank for no scrolling");
 	
 ?>

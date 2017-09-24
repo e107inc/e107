@@ -224,6 +224,10 @@ if(!class_exists('forum_newforumposts_menu'))
 				$caption = LAN_PLUGIN_FORUM_LATESTPOSTS;
 			}
 
+			if(!empty($this->menuPref['scroll']))
+			{
+				$text = "<div class='newforumposts-menu-scroll' style='border: 0; width: auto; height: ".intval($this->menuPref['scroll'])."px; overflow: auto; '>".$text."</div>";
+			}
 		//	e107::debug('menuPref', $this->menuPref);
 
 			$ns->tablerender($caption, $text, 'nfp_menu');
