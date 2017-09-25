@@ -1861,22 +1861,16 @@ class e_library_manager
 		{
 			$coreLibrary = new core_library();
 			$coreLibs = $coreLibrary->config();
+			$coreLib = $coreLibs[$library['machine_name']];
 
 			switch($library['machine_name'])
 			{
-				// Force to use default (original) files on Admin UI.
+				// Prevent plugins/themes from altering libraries on Admin UI.
 				case 'cdn.jquery.ui':
 				case 'jquery.ui':
-					$coreLib = $coreLibs[$library['machine_name']];
-					$library['files'] = $coreLib['files'];
-					$library['variants'] = $coreLib['variants'];
-					break;
-
 				case 'cdn.bootstrap':
 				case 'bootstrap':
-					$coreLib = $coreLibs[$library['machine_name']];
-					$library['files'] = $coreLib['files'];
-					$library['variants'] = $coreLib['variants'];
+					$library = $coreLib;
 					break;
 			}
 		}
