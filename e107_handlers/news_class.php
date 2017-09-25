@@ -818,8 +818,16 @@ class e_news_tree extends e_front_tree_model
 			return '';
 		}
 
+		if(is_string($template) || empty($template))
+		{
+			return "<div class='alert alert-danger'>Couldn't find template/layout with the following params: ".print_a($parms,true)."</div>";
+		}
+
 		$ret = array();
 		$tp = e107::getParser();
+		$start = '';
+		$end = '';
+
 		$param = $parms;
 		$param['current_action'] = 'list';
 		// TODO more default parameters
