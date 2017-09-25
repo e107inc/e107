@@ -150,7 +150,23 @@
 			return e107::getParser()->toBadge($val);
 		}
 
+		/**
+		 * @example {TOPIC_DATESTAMP: format=relative}
+		 * @param string $parm['format'] short|long|forum|relative
+		 * @return HTML
+		 */
+		function sc_topic_datestamp($parm=null)
+		{
+			$mode = empty($parm['format']) ? 'forum' : $parm['format'];
+			return e107::getParser()->toDate($this->var['thread_datestamp'], $mode);
+		}
 
+
+		/**
+		 * @example {TOPIC_LASTPOST_DATE: format=relative}
+		 * @param string $parm['format'] short|long|forum|relative
+		 * @return HTML
+		 */
 		function sc_topic_lastpost_date($parm=null)
 		{
 			$mode = empty($parm['format']) ? 'forum' : $parm['format'];
@@ -277,9 +293,7 @@
 			}
 		}
 
-		/**
-		 * What does this do?
-		 */
+
 		function sc_threaddatestamp($parm = '')
 		{
 			$gen = e107::getDateConvert(); // XXX _URL_ check if all required info is there
