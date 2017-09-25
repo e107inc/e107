@@ -126,6 +126,7 @@
   'rss_menu' => 'rss_sql',
 )]]></core>
 		<core name="e_url_list"><![CDATA[array (
+  'news' => 'news',
   'rss_menu' => 'rss_menu',
 )]]></core>
 		<core name="email_text"></core>
@@ -861,8 +862,8 @@ City, State, Country
 				<field name="link_open">0</field>
 				<field name="link_class">0</field>
 				<field name="link_function"></field>
-				<field name="link_sefurl"></field>
-			    <field name="link_owner"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">news</field>
 			</item>
 			<item>
 				<field name="link_id">7</field>
