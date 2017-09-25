@@ -454,9 +454,7 @@ class eurl_admin_ui extends e_admin_controller_ui
 			}
 
 		}
-
-
-
+		
 
 		if(isset($_POST['update']))
 		{
@@ -480,10 +478,10 @@ class eurl_admin_ui extends e_admin_controller_ui
 				->set('url_locations', $locations)
 				->save();
 
-
-
 				
 			eRouter::clearCache();
+			e107::getCache()->clearAll('content'); // clear content - it may be using old url scheme.
+
 		}
 	}
 	
