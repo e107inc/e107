@@ -1098,9 +1098,21 @@ class news_admin_ui extends e_admin_ui
 			$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
 			$pingOpt = array('placeholder'=>LAN_NEWS_87);
 			$pingVal = (!empty($pref['news_ping_services'])) ? implode("\n",$pref['news_ping_services']) : '';
-			$newsTemplates = array('default'=>LAN_DEFAULT, 'list'=>LAN_LIST); //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
 
+			$newsTemplates = array();
 
+			if($newInfo = e107::getTemplateInfo('news', 'news'))  //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
+			{
+				foreach($newInfo as $k=>$val)
+				{
+					$newsTemplates[$k] = $val['title'];
+				}
+
+			}
+			else
+			{
+				$newsTemplates = array('default'=>LAN_DEFAULT, 'list'=>LAN_LIST);
+			}
 
 			$text = "
 			<form method='post' action='".e_REQUEST_URI."' id='core-newspost-settings-form'>";

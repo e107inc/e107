@@ -1161,8 +1161,6 @@ class news_front
 		$tp = e107::getParser();
 		$sql = e107::getDb();
 
-
-
 		$interval = $this->pref['newsposts'];
 
 		global $NEWSSTYLE;
@@ -1500,7 +1498,18 @@ class news_front
 			else // v2.x
 			{
 				$layout = e107::getTemplate('news', 'news');
-				$tmpl = $layout['default']; // default - we show the full items, except for the 'extended' part..
+				if(!empty($layout[$this->defaultTemplate]))
+				{
+					$tmpl = $layout[$this->defaultTemplate];
+					$this->addDebug('Template key',$this->defaultTemplate);
+				}
+				else
+				{
+					$tmpl = $layout['default'] ;
+					$this->addDebug('Template key','default');
+				}
+			//	$tmpl = !empty($layout[$this->defaultTemplate]) ? $layout[$this->defaultTemplate] : $layout['default'] ; // default - we show the full items, except for the 'extended' part..
+
 				$template = $tmpl['item'];
 			//	unset($tmp);
 			}

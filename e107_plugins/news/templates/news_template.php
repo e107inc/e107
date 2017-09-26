@@ -14,8 +14,19 @@ global $sc_style;
 //$NEWS_MENU_TEMPLATE['list']['start']       = '<ul class="nav nav-list news-menu-months">';
 //$NEWS_MENU_TEMPLATE['list']['end']         = '</ul>';
 
+
+$NEWS_TEMPLATE = array();
+
+
 $NEWS_MENU_TEMPLATE['list']['start']       = '<div class="thumbnails">';
 $NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
+
+
+$NEWS_INFO = array(
+	'default' 	=> array('title' => LAN_DEFAULT, 	'description' => 'unused'),
+	'list' 	    => array('title' => LAN_LIST, 		'description' => 'unused'),
+//	'2-column'  => array('title' => "2 Column",     'description' => 'unused'), //@todo more default listing options.
+);
 
 
 // XXX The ListStyle template offers a listed summary of items with a minimum of 10 items per page. 
@@ -121,8 +132,19 @@ $NEWS_TEMPLATE['default']['end']	= '';
 $NEWS_TEMPLATE['category']          = $NEWS_TEMPLATE['default'];
 $NEWS_TEMPLATE['category']['start']	= '<!-- Category News Template -->';
 
-
-
+/**
+ * @todo
+ */
+$NEWS_TEMPLATE['2-column']['caption']	= '';
+$NEWS_TEMPLATE['2-column']['start']    = '<div class="row">';
+$NEWS_TEMPLATE['2-column']['item']     = '<div class="item col-md-6">
+											{SETIMAGE: w=400&h=400&crop=1}
+											{NEWSTHUMBNAIL=placeholder}
+	                                            <h3>{NEWS_TITLE}</h3>
+	                                            <p>{NEWS_SUMMARY}</p>
+	                                         	<p class="text-right"><a class="btn btn-primary btn-othernews" href="{NEWSURL}">' . LAN_READ_MORE . '</a></p>
+            							  </div>';
+$NEWS_TEMPLATE['2-column']['end']      = '</div>';
 
 
 ###### Default view item (temporary)  ######
