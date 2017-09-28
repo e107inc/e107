@@ -123,6 +123,8 @@ class news_cat_ui extends e_admin_ui
 		protected $batchExport = true;
 		protected $sortField = 'category_order';
 		protected $listOrder	= "category_order ASC";
+
+		protected $tabs = array(LAN_GENERAL, LAN_ADVANCED);
 		
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -133,8 +135,9 @@ class news_cat_ui extends e_admin_ui
          	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',	'data'=>'str',	'inline'=>true, 'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE, 'writeParms'=>array('size'=>'xxlarge')),
 			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'tags',		'data'=>'str',	'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text', 'data'=>'str',	'inline'=>true,	'width' => 'auto', 'readonly'=>FALSE, 'writeParms'=>array('size'=>'xxlarge', 'sef'=>'category_name')), // Display name
-			'category_manager' 			=> array('title'=> LAN_MANAGER,'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
-			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
+			'category_manager' 			=> array('title'=> LAN_MANAGER,'type' => 'userclass',	'tab'=>1,	'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',	'tab'=>1,		'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),
+			'category_template'         => array('title'=> LAN_TEMPLATE,        'type' => 'layouts', 'tab'=>1, 'width'=>'auto', 'thclass' => 'right', 'class'=> 'right', 'writeParms' => 'plugin=news&id=news&merge=0','help'=>'Template to use as the default view' ),
 			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
 		);
 
@@ -189,11 +192,17 @@ class news_cat_ui extends e_admin_ui
 			}
 
 			$sef = e107::getParser()->toDB($new_data['category_sef']);
-			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id!=".intval($id)))
+
+		/*	$message = "Error: sef: ".$sef."   id: ".$id."\n";
+			$message .= print_r($new_data,true);
+			file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);*/
+
+			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id !=".intval($id)))
 			{
 				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
 			}
+
 			return $new_data;
 		}
 

@@ -5496,7 +5496,21 @@ class e_form
 				$where = vartrue($parms['area'], 'front'); //default is 'front'
 				$filter = varset($parms['filter']);
 				$merge = vartrue($parms['merge']) ? true : false;
+
+
+				if($tmp = e107::getTemplateInfo($location,$ilocation, null,true,$merge)) // read xxxx_INFO array from template file.
+				{
+					$opt = array();
+					foreach($tmp as $k=>$inf)
+					{
+						$opt[$k] = $inf['title'];
+					}
+
+					return vartrue($parms['pre'],'').$this->select($key,$opt,$value,$parms).vartrue($parms['post'],'');
+				}
+
 				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, true);
+
 				if(varset($parms['default']) && !isset($layouts[0]['default']))
 				{
 					$layouts[0] = array('default' => $parms['default']) + $layouts[0];
