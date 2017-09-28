@@ -344,6 +344,7 @@ CREATE TABLE news_category (
   category_manager tinyint(3) unsigned NOT NULL default '254',
   category_icon varchar(250) NOT NULL default '',
   category_order tinyint(3) unsigned NOT NULL default '0',
+  category_template varchar(50) NOT NULL default '',
   PRIMARY KEY  (category_id),
   KEY category_order (category_order)
 ) ENGINE=MyISAM;
