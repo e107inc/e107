@@ -970,6 +970,7 @@ if (!class_exists('e107table', false))
 		public function setUniqueId($id)
 		{
 			$this->uniqueId = $id;
+			return $this;
 		}
 
 

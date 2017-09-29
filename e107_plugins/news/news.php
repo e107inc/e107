@@ -37,6 +37,8 @@ class news_front
 	private $debugInfo = array();
 	private $cacheRefreshTime = false;
 	private $caption = null;
+	private $templateKey = null;
+	private $categorySEF = null;
 //	private $interval = 1;
 
 	function __construct()
@@ -112,7 +114,19 @@ class news_front
 	{
 		if($this->caption !== null)
 		{
-			e107::getRender()->tablerender($this->caption, $this->text, 'news');
+			$tmp = explode('/',$this->route);
+			$tmp[] = $this->templateKey;
+
+			if(!empty($this->categorySEF))
+			{
+				$tmp[] = $this->categorySEF;
+			}
+
+			$unique = implode('-',$tmp);
+
+			$this->addDebug("tablerender ID", $unique);
+
+			e107::getRender()->setUniqueId($unique)->tablerender($this->caption, $this->text, 'news');
 			return true;
 		}
 
@@ -930,15 +944,14 @@ class news_front
 			$text .= "<div class='center news-list-footer'><a class='btn btn-default' href='".e107::getUrl()->create('news/list/all')."'>".LAN_NEWS_84."</a></div>";
 		}
 
-
-		$cache_data = e107::getRender()->tablerender($NEWSLISTTITLE, $text, 'news', true);
+		$this->caption = $NEWSLISTTITLE;
+		$this->templateKey = 'list';
+		$cache_data = $text; // e107::getRender()->tablerender($NEWSLISTTITLE, $text, 'news', true);
 
 		$this->setNewsCache($this->cacheString, $cache_data);
 
 
 		return $cache_data;
-
-
 
 
 	}
@@ -1510,20 +1523,22 @@ class news_front
 			{
 				$layout = e107::getTemplate('news', 'news');
 
-
 				// v2.1.7 load the category template if found.
 				if(!empty($newsAr[1]['category_template']))
 				{
-					$templateKey = $newsAr[1]['category_template'];
-					$tmpl = $layout[$templateKey];
+					$this->templateKey = $newsAr[1]['category_template'];
+					$this->categorySEF = $newsAr[1]['category_sef'];
+					$tmpl = $layout[$this->templateKey];
 				//	$template = $tmpl['item'];
-					$param['template_key'] = 'news/'.$templateKey;
-					$this->addDebug('Template key',$templateKey);
+					$param['template_key'] = 'news/'.$this->templateKey;
+					$this->addDebug('Template key',$this->templateKey);
 
 				}
 				elseif($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
 				{
 					$tmpl = $layout['category'];
+					$this->templateKey = 'category';
+				//	$this->categorySEF = $newsAr[1]['category_sef'];
 				//	$template = $tmpl['item'];
 					$param['template_key'] = 'news/category';
 					$this->addDebug('Template key','category');
@@ -1531,11 +1546,13 @@ class news_front
 				elseif(!empty($layout[$this->defaultTemplate]))
 				{
 					$tmpl = $layout[$this->defaultTemplate];
+					$this->templateKey = $this->defaultTemplate;
 					$this->addDebug('Template key',$this->defaultTemplate);
 				}
 				else
 				{
 					$tmpl = $layout['default'] ;
+					$this->defaultTemplate = 'default';
 					$this->addDebug('Template key','default');
 				}
 			//	$tmpl = !empty($layout[$this->defaultTemplate]) ? $layout[$this->defaultTemplate] : $layout['default'] ; // default - we show the full items, except for the 'extended' part..
@@ -1546,10 +1563,10 @@ class news_front
 
 
 
-			if(!empty($tmpl['caption']))
+			if(isset($tmpl['caption']))
 			{
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
-				$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
+					$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
 			}
 
 			if(!empty($tmpl['start'])) //v2.1.5
