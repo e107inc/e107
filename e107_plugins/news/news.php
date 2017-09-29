@@ -1565,8 +1565,15 @@ class news_front
 
 			if(isset($tmpl['caption']))
 			{
-				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
-					$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
+				$row = $newsAr[1];
+
+				if(empty($this->action)) // default page.
+				{
+					$row['category_name'] = PAGE_NAME;
+				}
+
+				$nsc = e107::getScBatch('news')->setScVar('news_item', $row)->setScVar('param', $param);
+				$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
 			}
 
 			if(!empty($tmpl['start'])) //v2.1.5
