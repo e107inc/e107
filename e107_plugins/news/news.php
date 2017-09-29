@@ -36,6 +36,7 @@ class news_front
 	private $pref = array();
 	private $debugInfo = array();
 	private $cacheRefreshTime = false;
+	private $caption = null;
 //	private $interval = 1;
 
 	function __construct()
@@ -72,7 +73,6 @@ class news_front
 	private function detect()
 	{
 
-
 		if ($this->action === 'cat' || $this->action === 'all' || $this->action === 'tag' || $this->action === 'author')
 		{	// --> Cache
 			$this->text = $this->renderListTemplate();
@@ -103,8 +103,19 @@ class news_front
 
 	}
 
+
+	/**
+	 * When the template contains a 'caption' - tablerender() is used, otherwise a simple echo is used.
+	* @return bool
+	*/
 	public function render()
 	{
+		if($this->caption !== null)
+		{
+			e107::getRender()->tablerender($this->caption, $this->text, 'news');
+			return true;
+		}
+
 		echo $this->text;
 	}
 
@@ -1139,7 +1150,7 @@ class news_front
 	{
 		$query = "
 				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1172,7 +1183,7 @@ class news_front
 				//	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category={$sub_action} AND news_class REGEXP '".e_CLASS_REGEXP."' AND NOT (news_class REGEXP ".$nobody_regexp.") AND news_start < ".time()." AND (news_end=0 || news_end>".time().")");
 				$query = "
 				SELECT  SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1192,7 +1203,7 @@ class news_front
 				{
 					$query = "
 			    SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1205,7 +1216,7 @@ class news_front
 				{
 					$query = "
 			    SELECT n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id, nc.category_name, nc.category_sef, nc.category_icon,
-				nc.category_meta_keywords, nc.category_meta_description
+				nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1243,7 +1254,7 @@ class news_front
 
 				$query = "
 				SELECT SQL_CALC_FOUND_ROWS n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image, nc.category_id, nc.category_name, nc.category_sef,
-				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description
+				nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template 
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -1272,7 +1283,7 @@ class news_front
 				if(isset($this->pref['trackbackEnabled']) && $this->pref['trackbackEnabled']) {
 					$query = "
 				SELECT SQL_CALC_FOUND_ROWS COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, u.user_image,  nc.category_id,
-				nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description,
+				nc.category_name, nc.category_sef, nc.category_icon, nc.category_meta_keywords, nc.category_meta_description, nc.category_template, 
 				COUNT(*) AS tbcount
 				FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -1498,7 +1509,26 @@ class news_front
 			else // v2.x
 			{
 				$layout = e107::getTemplate('news', 'news');
-				if(!empty($layout[$this->defaultTemplate]))
+
+
+				// v2.1.7 load the category template if found.
+				if(!empty($newsAr[1]['category_template']))
+				{
+					$templateKey = $newsAr[1]['category_template'];
+					$tmpl = $layout[$templateKey];
+				//	$template = $tmpl['item'];
+					$param['template_key'] = 'news/'.$templateKey;
+					$this->addDebug('Template key',$templateKey);
+
+				}
+				elseif($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
+				{
+					$tmpl = $layout['category'];
+				//	$template = $tmpl['item'];
+					$param['template_key'] = 'news/category';
+					$this->addDebug('Template key','category');
+				}
+				elseif(!empty($layout[$this->defaultTemplate]))
 				{
 					$tmpl = $layout[$this->defaultTemplate];
 					$this->addDebug('Template key',$this->defaultTemplate);
@@ -1514,20 +1544,18 @@ class news_front
 			//	unset($tmp);
 			}
 
-			// load the category template if found.
-			if($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
-			{
-				$tmpl = $layout['category'];
-				$template = $tmpl['item'];
-				$param['template_key'] = 'news/category';
-			}
 
+
+			if(!empty($tmpl['caption']))
+			{
+				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
+				$this->caption = $tp->parseTemplate($tmpl['caption'], true, $nsc);
+			}
 
 			if(!empty($tmpl['start'])) //v2.1.5
 			{
 				$nsc = e107::getScBatch('news')->setScVar('news_item', $newsAr[1])->setScVar('param', $param);
 				echo $tp->parseTemplate($tmpl['start'],true,$nsc);
-
 			}
 			elseif($sub_action && 'list' == $action && vartrue($newsAr[1]['category_name'])) //old v1.x stuff
 			{
@@ -1592,6 +1620,9 @@ class news_front
 					//e107::getDebug()->log($news);
 				}
 				// $template = false;
+
+
+
 				$this->ix->render_newsitem($news, 'default', '', $template, $param);
 
 

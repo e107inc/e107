@@ -10,9 +10,6 @@ if (!defined('e107_INIT'))  exit;
 
 global $sc_style;
 
-###### Default list item (temporary) - TODO rewrite news ######
-//$NEWS_MENU_TEMPLATE['list']['start']       = '<ul class="nav nav-list news-menu-months">';
-//$NEWS_MENU_TEMPLATE['list']['end']         = '</ul>';
 
 
 $NEWS_TEMPLATE = array();
@@ -25,7 +22,7 @@ $NEWS_MENU_TEMPLATE['list']['end']         = '</div>';
 $NEWS_INFO = array(
 	'default' 	=> array('title' => LAN_DEFAULT, 	'description' => 'unused'),
 	'list' 	    => array('title' => LAN_LIST, 		'description' => 'unused'),
-//	'2-column'  => array('title' => "2 Column",     'description' => 'unused'), //@todo more default listing options.
+	'2-column'  => array('title' => "2 Column (experimental)",     'description' => 'unused'), //@todo more default listing options.
 );
 
 
@@ -97,7 +94,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 $NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-main pull-left col-xs-12 col-sm-6 col-md-6">{---}</span>';
 
-
+$NEWS_TEMPLATE['default']['caption'] = null; // add a value to user tablerender()
 $NEWS_TEMPLATE['default']['start']	= '<!-- Default News Template -->';
 $NEWS_TEMPLATE['default']['item'] = '
 		{SETIMAGE: w=400&h=400}
@@ -133,9 +130,9 @@ $NEWS_TEMPLATE['category']          = $NEWS_TEMPLATE['default'];
 $NEWS_TEMPLATE['category']['start']	= '<!-- Category News Template -->';
 
 /**
- * @todo
+ * @todo (experimental)
  */
-$NEWS_TEMPLATE['2-column']['caption']	= '';
+$NEWS_TEMPLATE['2-column']['caption']  = '{NEWS_CATEGORY_NAME}';
 $NEWS_TEMPLATE['2-column']['start']    = '<div class="row">';
 $NEWS_TEMPLATE['2-column']['item']     = '<div class="item col-md-6">
 											{SETIMAGE: w=400&h=400&crop=1}
