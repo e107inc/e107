@@ -382,6 +382,11 @@ class news_shortcodes extends e_shortcode
 
 	}
 
+	public function sc_news_rate($parm=null)
+	{
+		return e107::getRate()->render("news", $this->news_item['news_id']);
+	}
+
 
 // ----------------------------------- BC compatible Shortcodes ------------------------------------------- //
 
