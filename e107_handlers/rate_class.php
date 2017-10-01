@@ -70,13 +70,8 @@ class rater {
 		
 		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
 
-		$identifier = $table.'-'.$id;
+		$identifier = $table.'-'.$id.'-'.vartrue($options['uniqueId'],'rate');
 
-		if(!empty($options['uniqueId']))
-		{
-			$identifier .= '-'.$options['uniqueId'];
-		}
-		
 		$TEMPLATE['STATUS'] = "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$identifier}' style='display:none'>".$label."</span>";
 		$TEMPLATE['RATE']   = "<div class='e-rate e-rate-{$table}' id='{$identifier}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
 		$TEMPLATE['VOTES']  = "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$identifier}'><small>".$this->renderVotes($votes,$score)."</small></div>";
