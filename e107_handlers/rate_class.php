@@ -29,8 +29,15 @@ class rater {
 		}
 		
 		$label = varset($options['label'],RATELAN_5);
-			
-		$readonly = $this->checkrated($table, $id) ? '1' : '0';
+
+		if(!empty($options['readonly']))
+		{
+			$readonly = '1';
+		}
+		else
+		{
+			$readonly = $this->checkrated($table, $id) ? '1' : '0';
+		}
 		
 		$hintArray = array(RATELAN_POOR,RATELAN_FAIR,RATELAN_GOOD,RATELAN_VERYGOOD,RATELAN_EXCELLENT);
 
