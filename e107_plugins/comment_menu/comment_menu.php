@@ -80,5 +80,12 @@ if(!empty($title[e_LANGUAGE]))
 	$title = $title[e_LANGUAGE];
 }
 
+if(empty($title))
+{
+	$title = LAN_COMMENTS;
+}
+
 e107::getRender()->tablerender(defset($title, $title), $text, 'comment_menu');
+
+
 ?>
