@@ -20,7 +20,7 @@ if (!defined('e107_INIT'))
 }
 
 	/**
-	 * @todo upgrade prefs usage and use e_menu.php instead of config.php 
+	 * @todo upgrade prefs usage and use e_menu.php instead of config.php
 	 */
 
 /*
@@ -92,14 +92,15 @@ $text .= $tp->parseTemplate($TEMPLATE['end'], true, $comment_menu_shortcodes);
 
 $title = e107::getConfig('menu')->get('comment_caption');
 
-if(!empty($title[e_LANGUAGE]))
-{
-	$title = $title[e_LANGUAGE];
-}
-elseif(!empty($title[e_LANGUAGE][e_LANGUAGE])) // fix for saving bug.
+if(!empty($title[e_LANGUAGE][e_LANGUAGE])) // fix for saving bug.
 {
 	$title = $title[e_LANGUAGE][e_LANGUAGE];
 }
+elseif(!empty($title[e_LANGUAGE]))
+{
+	$title = $title[e_LANGUAGE];
+}
+
 
 if(empty($title))
 {
