@@ -199,6 +199,11 @@ class news_front
 		$this->action = $action;
 		$this->subAction= e107::getParser()->filter($sub_action);
 
+		if(defined('NEWS_LAYOUT'))
+		{
+			$this->templateKey = NEWS_LAYOUT;
+		}
+
 
 	}
 
@@ -1525,7 +1530,17 @@ class news_front
 				$layout = e107::getTemplate('news', 'news');
 
 				// v2.1.7 load the category template if found.
-				if(!empty($newsAr[1]['category_template']))
+
+				if(!empty($this->templateKey))
+				{
+					$tmpl = $layout[$this->templateKey];
+				//	$template = $tmpl['item'];
+					$param['template_key'] = 'news/'.$this->templateKey;
+					$this->addDebug('Template key',$this->templateKey);
+
+
+				}
+				elseif(!empty($newsAr[1]['category_template']))
 				{
 					$this->templateKey = $newsAr[1]['category_template'];
 					$this->categorySEF = $newsAr[1]['category_sef'];
