@@ -41,8 +41,8 @@ if (isset($_POST['update_menu']))
 	{
 		if($key == "comment_caption")
 		{
-			$temp['comment_caption'][e_LANGUAGE] = $tp->toDB($value);
-			continue;
+		//	$temp['comment_caption'][e_LANGUAGE] = $tp->toDB($value);
+		//	continue;
 		}
 
 

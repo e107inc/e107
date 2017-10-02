@@ -19,6 +19,21 @@ if (!defined('e107_INIT'))
 	exit;
 }
 
+	/**
+	 * @todo upgrade prefs usage and use e_menu.php instead of config.php 
+	 */
+
+/*
+	if(is_string($parm))
+	{
+		parse_str($parm, $parms);
+	}
+	else
+	{
+		$parms = $parm;
+	}
+*/
+
 require_once (e_PLUGIN."comment_menu/comment_menu_shortcodes.php");
 
 $cobj = e107::getObject('comment');
@@ -36,6 +51,8 @@ else
 	require_once(e_PLUGIN."comment_menu/comment_menu_template.php");
 }
 global $menu_pref;
+
+
 
 $data = $cobj->getCommentData(intval($menu_pref['comment_display']));
 
@@ -78,6 +95,10 @@ $title = e107::getConfig('menu')->get('comment_caption');
 if(!empty($title[e_LANGUAGE]))
 {
 	$title = $title[e_LANGUAGE];
+}
+elseif(!empty($title[e_LANGUAGE][e_LANGUAGE])) // fix for saving bug.
+{
+	$title = $title[e_LANGUAGE][e_LANGUAGE];
 }
 
 if(empty($title))
