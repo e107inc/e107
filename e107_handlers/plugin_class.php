@@ -3434,10 +3434,14 @@ class e107plugin
 
 		$config = ($mode == 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
 
+
+
 		foreach ($prefArray['pref'] as $tag)
 		{
 			$key = varset($tag['@attributes']['name']);
-			$value = vartrue($tag['@value']);
+			$value = varset($tag['@value']);
+
+		//	$this->log("&nbsp;   Pref:  ".$key." => ".$value);
 			
 			if(substr($value,0,5) == "e_UC_") // Convert Userclass constants. 
 			{

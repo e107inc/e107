@@ -22,6 +22,7 @@
 	<pluginPrefs>
 		<pref name="blank_pref_1">1</pref>
 		<pref name="blank_pref_2">[more...]</pref>
+		<pref name="blank_pref_3">0</pref>
 	</pluginPrefs>
 	<userClasses>
 		<class name="blank_userclass" description="Blank Userclass Description" />		
