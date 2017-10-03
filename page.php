@@ -441,7 +441,8 @@ class pageClass
 			'chapter_name'	=> $tp->toHtml($row['chapter_name']),
 			'chapter_sef'	=> $bookSef,
 			'book_sef'		=> $bookSef,
-			'page_sef'		=> ''
+			'page_sef'		=> '',
+			'book_id'       => $row['chapter_parent']
 		);
 		
 		
@@ -451,7 +452,7 @@ class pageClass
 		$tmpl = varset($tml[$layout]);
 		
 		$bread = array(
-			0 => array('text' => $tp->toHtml($bookTitle), 'url'=> e107::getUrl()->create('page/book/index', $urlData,'allow=chapter_id,chapter_sef,book_sef,page_sef'))
+			0 => array('text' => $tp->toHtml($bookTitle), 'url'=> e107::getUrl()->create('page/book/index', $urlData,'allow=chapter_id,chapter_sef,book_id,book_sef,page_sef'))
 		);
 	
 		$var = array(
