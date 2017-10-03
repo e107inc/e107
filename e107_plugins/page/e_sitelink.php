@@ -103,7 +103,7 @@ class page_sitelink // include plugin-folder in the name.
 	}
 
 
-	private function pageList($parm)
+	public function pageList($parm)
 	{
 		$sql = e107::getDb();
 		$arr = array();
