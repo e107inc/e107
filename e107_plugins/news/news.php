@@ -111,11 +111,9 @@ class news_front
 	{
 		$tmp = explode('/',$this->route);
 
-		$tmp[] = $this->templateKey;
-
-		if(!empty($this->categorySEF))
+		if(!empty($this->templateKey))
 		{
-			$tmp[] = $this->categorySEF;
+			$tmp[] = $this->templateKey;
 		}
 
 		$unique = implode('-',$tmp);
@@ -1555,41 +1553,25 @@ class news_front
 				elseif(!empty($newsAr[1]['category_template']) && !empty($layout[$catTemplate])) // defined by news_category field.
 				{
 					$this->templateKey = $catTemplate;
-					$this->categorySEF = $newsAr[1]['category_sef'];
 					$tmpl = $layout[$this->templateKey];
-				//	$template = $tmpl['item'];
 					$param['template_key'] = 'news/'.$this->templateKey;
 				}
 				elseif($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
 				{
 					$tmpl = $layout['category'];
 					$this->templateKey = 'category';
-				//	$this->categorySEF = $newsAr[1]['category_sef'];
-				//	$template = $tmpl['item'];
 					$param['template_key'] = 'news/category';
 				}
 				elseif(!empty($layout[$this->defaultTemplate])) // defined by default template 'news' pref.  (newspost.php?mode=main&action=settings)
 				{
 					$tmpl = $layout[$this->defaultTemplate];
 					$this->templateKey = $this->defaultTemplate;
-
-					if($this->route === 'news/list/category')
-					{
-						$this->categorySEF = $newsAr[1]['category_sef'];
-					}
-
 				}
 				else // fallback.
 				{
 					$tmpl = $layout['default'] ;
 					$this->defaultTemplate = 'default';
 					$this->templateKey = 'default';
-
-					if($this->route === 'news/list/category')
-					{
-						$this->categorySEF = $newsAr[1]['category_sef'];
-					}
-
 				}
 
 				$this->addDebug('Template key',$this->templateKey);
