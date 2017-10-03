@@ -107,23 +107,32 @@ class news_front
 	}
 
 
+	private function getRenderId()
+	{
+		$tmp = explode('/',$this->route);
+		$tmp[] = $this->templateKey;
+
+		if(!empty($this->categorySEF))
+		{
+			$tmp[] = $this->categorySEF;
+		}
+
+		$unique = implode('-',$tmp);
+
+		return $unique;
+
+	}
+
+
 	/**
 	 * When the template contains a 'caption' - tablerender() is used, otherwise a simple echo is used.
 	* @return bool
 	*/
-	public function render()
+	public function render($return = false)
 	{
 		if($this->caption !== null)
 		{
-			$tmp = explode('/',$this->route);
-			$tmp[] = $this->templateKey;
-
-			if(!empty($this->categorySEF))
-			{
-				$tmp[] = $this->categorySEF;
-			}
-
-			$unique = implode('-',$tmp);
+			$unique = $this->getRenderId();
 
 			$this->addDebug("tablerender ID", $unique);
 
@@ -587,6 +596,7 @@ class news_front
 		$e107cache->setMD5(null,true);
 
 		$e107cache->set($cache_tag, $cache_data);
+		$e107cache->set($cache_tag."_caption", $this->caption);
 		$e107cache->set($cache_tag."_title", defined("e_PAGETITLE") ? e_PAGETITLE : '');
 		$e107cache->set($cache_tag."_diz", defined("META_DESCRIPTION") ? META_DESCRIPTION : '');
 
@@ -655,19 +665,15 @@ class news_front
 	}
 
 
-	private function renderCache($cache, $nfp = FALSE)
+	private function renderCache($caption, $text)
 	{
 		global $pref,$tp,$sql,$CUSTOMFOOTER, $FOOTER,$cust_footer,$ph;
 		global $db_debug,$ns,$eTimingStart, $error_handler, $db_time, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb,$e107;
 
-		return $cache;
+		$this->text = $text;
+		$this->caption = $caption;
 
-		/*if (isset($nfp) && isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2)
-		{
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-		}
-		//	render_newscats(); //fixme this shouldn't be here.
-		return $cache;*/
+		return $this->text;
 	}
 
 
@@ -697,7 +703,8 @@ class news_front
 		if($newsCachedPage = $this->checkCache($this->cacheString))
 		{
 			$this->addDebug("Cache", 'active');
-			return $this->renderCache($newsCachedPage, TRUE);
+			$caption = $this->getNewsCache($this->cacheString,'caption');
+			return $this->renderCache($caption, $newsCachedPage);
 		}
 		else
 		{
@@ -971,10 +978,11 @@ class news_front
 		{
 			$this->addDebug("Cache",'active');
 			$rows = $this->getNewsCache($this->cacheString,'rows');
+			$caption = $this->getNewsCache($this->cacheString,'caption');
 			e107::getEvent()->trigger('user_news_item_viewed', $rows);
 			$this->addDebug("Event-triggered:user_news_item_viewed", $rows);
 			$this->setNewsFrontMeta($rows);
-			$text = $this->renderCache($newsCachedPage, TRUE);		// This exits if cache used
+			$text = $this->renderCache($caption, $newsCachedPage);		// This exits if cache used
 			$text .= $this->renderComments($rows);
 			return $text;
 		}
@@ -1364,7 +1372,8 @@ class news_front
 					}
 				}
 			}
-			$this->renderCache($newsCachedPage, TRUE);
+
+			$this->renderCache($this->caption, $newsCachedPage);
 		}
 
 
@@ -1528,6 +1537,7 @@ class news_front
 			else // v2.x
 			{
 				$layout = e107::getTemplate('news', 'news');
+				$catTemplate = $newsAr[1]['category_template'];
 
 				// v2.1.7 load the category template if found.
 
@@ -1540,9 +1550,9 @@ class news_front
 
 
 				}
-				elseif(!empty($newsAr[1]['category_template']))
+				elseif(!empty($newsAr[1]['category_template']) && !empty($layout[$catTemplate]))
 				{
-					$this->templateKey = $newsAr[1]['category_template'];
+					$this->templateKey = $catTemplate;
 					$this->categorySEF = $newsAr[1]['category_sef'];
 					$tmpl = $layout[$this->templateKey];
 				//	$template = $tmpl['item'];
