@@ -110,6 +110,7 @@ class news_front
 	private function getRenderId()
 	{
 		$tmp = explode('/',$this->route);
+
 		$tmp[] = $this->templateKey;
 
 		if(!empty($this->categorySEF))
@@ -130,15 +131,19 @@ class news_front
 	*/
 	public function render($return = false)
 	{
+		$unique = $this->getRenderId();
+
 		if($this->caption !== null)
 		{
-			$unique = $this->getRenderId();
+
 
 			$this->addDebug("tablerender ID", $unique);
 
 			e107::getRender()->setUniqueId($unique)->tablerender($this->caption, $this->text, 'news');
 			return true;
 		}
+
+		$this->addDebug("tablerender ID (not used)", $unique);
 
 		echo $this->text;
 	}
@@ -672,6 +677,7 @@ class news_front
 
 		$this->text = $text;
 		$this->caption = $caption;
+		$this->addDebug("Cache", 'active');
 
 		return $this->text;
 	}
@@ -702,7 +708,7 @@ class news_front
 
 		if($newsCachedPage = $this->checkCache($this->cacheString))
 		{
-			$this->addDebug("Cache", 'active');
+
 			$caption = $this->getNewsCache($this->cacheString,'caption');
 			return $this->renderCache($caption, $newsCachedPage);
 		}
@@ -1374,6 +1380,7 @@ class news_front
 			}
 
 			$this->renderCache($this->caption, $newsCachedPage);
+			return null;
 		}
 
 
@@ -1540,25 +1547,18 @@ class news_front
 				$catTemplate = $newsAr[1]['category_template'];
 
 				// v2.1.7 load the category template if found.
-
-				if(!empty($this->templateKey))
+				if(!empty($this->templateKey)) // predefined by NEWS_LAYOUT;
 				{
 					$tmpl = $layout[$this->templateKey];
-				//	$template = $tmpl['item'];
 					$param['template_key'] = 'news/'.$this->templateKey;
-					$this->addDebug('Template key',$this->templateKey);
-
-
 				}
-				elseif(!empty($newsAr[1]['category_template']) && !empty($layout[$catTemplate]))
+				elseif(!empty($newsAr[1]['category_template']) && !empty($layout[$catTemplate])) // defined by news_category field.
 				{
 					$this->templateKey = $catTemplate;
 					$this->categorySEF = $newsAr[1]['category_sef'];
 					$tmpl = $layout[$this->templateKey];
 				//	$template = $tmpl['item'];
 					$param['template_key'] = 'news/'.$this->templateKey;
-					$this->addDebug('Template key',$this->templateKey);
-
 				}
 				elseif($this->action === 'list' && isset($layout['category']) && !isset($layout['category']['body'])) // make sure it's not old news_categories.sc
 				{
@@ -1567,26 +1567,36 @@ class news_front
 				//	$this->categorySEF = $newsAr[1]['category_sef'];
 				//	$template = $tmpl['item'];
 					$param['template_key'] = 'news/category';
-					$this->addDebug('Template key','category');
 				}
-				elseif(!empty($layout[$this->defaultTemplate]))
+				elseif(!empty($layout[$this->defaultTemplate])) // defined by default template 'news' pref.  (newspost.php?mode=main&action=settings)
 				{
 					$tmpl = $layout[$this->defaultTemplate];
 					$this->templateKey = $this->defaultTemplate;
-					$this->addDebug('Template key',$this->defaultTemplate);
+
+					if($this->route === 'news/list/category')
+					{
+						$this->categorySEF = $newsAr[1]['category_sef'];
+					}
+
 				}
-				else
+				else // fallback.
 				{
 					$tmpl = $layout['default'] ;
 					$this->defaultTemplate = 'default';
-					$this->addDebug('Template key','default');
+					$this->templateKey = 'default';
+
+					if($this->route === 'news/list/category')
+					{
+						$this->categorySEF = $newsAr[1]['category_sef'];
+					}
+
 				}
-			//	$tmpl = !empty($layout[$this->defaultTemplate]) ? $layout[$this->defaultTemplate] : $layout['default'] ; // default - we show the full items, except for the 'extended' part..
+
+				$this->addDebug('Template key',$this->templateKey);
 
 				$template = $tmpl['item'];
-			//	unset($tmp);
-			}
 
+			}
 
 
 			if(isset($tmpl['caption']))
