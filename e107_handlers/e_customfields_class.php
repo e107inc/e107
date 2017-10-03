@@ -14,7 +14,7 @@
 		private $_fieldTypes = array(
 			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
 			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
-			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country', 'video'
+			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country', 'video', 'progressbar'
 
 		);
 
@@ -150,6 +150,8 @@
 					return ($raw) ? 'https://www.youtube.com/watch?v='.str_replace(".youtube", '', $value) : $tp->toVideo($value);
 				break;
 
+
+
 				case "image":
 					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
 					break;
@@ -190,6 +192,10 @@
 
 				case "userclass":
 					return ($raw) ? $value : e107::getUserClass()->getName($value);
+					break;
+
+				case "progressbar":
+					return ($raw) ? $value.'%' : e107::getForm()->progressBar($key,$value,$this->_config[$key]);
 					break;
 
 				case "textarea":

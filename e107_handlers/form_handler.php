@@ -1869,7 +1869,7 @@ class e_form
 	/**
 	 * Render a bootStrap ProgressBar. 
 	 * @param string $name
-	 * @param number $value
+	 * @param number|string $value
 	 * @param array $options
 	 * @example  Use 
 	 */
@@ -1891,11 +1891,28 @@ class e_form
 		
 		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
 
-		$percVal = number_format($value,0).'%';
+		if(strpos($value,'/')!==false)
+		{
+			$label = $value;
+			list($score,$denom) = explode('/',$value);
+
+			$multiplier = 100 / (int) $denom;
+
+			$value = (int) $score * (int) $multiplier;
+			$percVal = number_format($value,0).'%';
+		}
+		else
+		{
+			$percVal = number_format($value,0).'%';
+			$label = $percVal;
+		}
+
+
+
 
 		$text =	"<div class='progress ".$class."{$striped}' >
    		 	<div id='".$target."' class='progress-bar bar' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
-   		$text .= $percVal;
+   		$text .= $label;
    		 	$text .= "</div>
     	</div>";
 		
@@ -5323,6 +5340,7 @@ class e_form
 			break; 
 
 			case 'text':
+			case 'progressbar':
 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
