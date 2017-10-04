@@ -36,6 +36,8 @@ class cpage_shortcodes extends e_shortcode
 
 
 			$this->chapterData[$id]			= $row;
+
+
 		}	
 
 
@@ -622,6 +624,7 @@ class cpage_shortcodes extends e_shortcode
 
 	function sc_cpagefieldtitle($parm=null)
 	{
+
 		if(empty($parm['name']) || empty($this->var['page_fields']))
 		{
 			return null;
@@ -629,6 +632,12 @@ class cpage_shortcodes extends e_shortcode
 
 		$chap       = $this->var['page_chapter'];
 		$key        = $parm['name'];
+
+
+		if(!empty($this->chapterData[$chap]['chapter_fields']) && is_string($this->chapterData[$chap]['chapter_fields']))
+		{
+			$this->chapterData[$chap]['chapter_fields'] = e107::unserialize($this->chapterData[$chap]['chapter_fields']);
+		}
 
 
 		if(!empty($this->chapterData[$chap]['chapter_fields'][$key]['title']))
