@@ -112,7 +112,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 $(document).ready(function()
 {
-		$(":input").tooltip();	
+
+	 if (typeof tooltip === "function")
+	 {
+		$(":input").tooltip();
+	 }
 	/*	
 		$(":input,label,.e-tip").each(function() {
 			

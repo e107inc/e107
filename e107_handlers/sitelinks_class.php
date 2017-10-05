@@ -19,6 +19,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 class sitelinks
 {
 	var $eLinkList = array();
+	var $eSubLinkLevel = 0;
 	var $sefList = array();
 
 	const LINK_DISPLAY_FLAT     = 1;
@@ -106,6 +107,8 @@ class sitelinks
 
 		$this->getlinks($cat);
 
+        if (empty($this->eLinkList))  { return ''; }
+
 		// are these defines used at all ?
 		if(!defined('PRELINKTITLE'))
 		{
@@ -140,6 +143,11 @@ class sitelinks
 			$style['sublinkclass'] = defined('SUBLINKCLASS') ? SUBLINKCLASS : '';
 		}
 
+		if(!varset($style['linkseparator']))
+		{
+			$style['linkseparator'] = '';
+		}
+
 		// Sublink styles.- replacing the tree-menu.
 		if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink']))
 		{
@@ -170,7 +178,7 @@ class sitelinks
 			foreach($this->eLinkList['head_menu'] as $key => $link)
 			{
 				$main_linkid = "sub_" . $link['link_id'];
-				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ? true : false;
+				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ? true : false;
 				$render_link[$key] = $this->makeLink($link, '', $style, $css_class);
 
 				if(!defined("LINKSRENDERONLYMAIN") && !isset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
@@ -275,6 +283,7 @@ class sitelinks
 			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;
 			$class = "sublink-level-".($level+1);
 			$class .= ($css_class) ? " ".$css_class : "";
+			$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
 			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
 			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
 		}
@@ -293,16 +302,25 @@ class sitelinks
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
 		
+		if(!isset($style['linkstart_hilite'])) // Notice removal
+		{
+			$style['linkstart_hilite'] = "";	
+		}
+		
+		if(!isset($style['linkclass_hilite']))
+		{
+			$style['linkclass_hilite'] = "";	
+		}
+
 		if(vartrue($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
 		{
 			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
-
 		}
 
 
 
 		// If submenu: Fix Name, Add Indentation.
-		if ($submenu == TRUE) 
+		if ($submenu == true)
 		{
 			if(substr($linkInfo['link_name'],0,8) == "submenu.")
 			{
@@ -334,7 +352,7 @@ class sitelinks
 		
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
-		$linkadd = ($css_class) ? " class='".$css_class."'" : $linkadd;
+		$linkadd = ($css_class) ? " class='".$style['linkclass'].$css_class."'" : $linkadd;
 
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
@@ -380,7 +398,7 @@ class sitelinks
 			// Open link in a new window.  (equivalent of target='_blank' )
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 		}
-e107::getDebug()->log($linkInfo['link_url']);
+
 		// Remove default images if its a button and add new image at the start.
 		if ($linkInfo['link_button'])
 		{
@@ -417,14 +435,10 @@ e107::getDebug()->log($linkInfo['link_url']);
 		}
 
 		$_link = $linkstart.$indent.$_link;
+        return $_link.$style['linkend']."\n";
 
-			e107::getDebug()->log($linkInfo['link_url']);
 
-		global $SITELINKSTYLE;
-		if(!$SITELINKSTYLE)
-		{
-			$SITELINKSTYLE = "{LINK}";
-		}
+		/*
 
 		$search[0] = "/\{LINK\}(.*?)/si";
 		$replace[0] = $_link.$style['linkend']."\n";
@@ -433,7 +447,7 @@ e107::getDebug()->log($linkInfo['link_url']);
 
 		$text = preg_replace($search, $replace, $SITELINKSTYLE);
 
-		return $text;
+		return $text;*/
 	}
 
 	/**
