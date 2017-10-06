@@ -921,20 +921,27 @@ class news_shortcodes extends e_shortcode
 
 		$imgTag = $tp->toImage($srcPath,$imgParms);
 
+		if(empty($imgTag))
+		{
+			return null; 
+		}
+
 		switch(vartrue($parm['type']))
 		{
 			case 'src':
 				return empty($src) ? e_IMAGE_ABS."generic/nomedia.png" : $src;
 			break;
 
+			case 'url':
+				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
+			break;
+
 			case 'tag':
+			default:
 				return $imgTag; // "<img class='{$class}' src='".$src."' alt='' style='".$style."' {$dimensions} {$srcset} />";
 			break;
 
-			case 'url':
-			default:
-				return "<a href='".e107::getUrl()->create('news/view/item', $this->news_item)."'>".$imgTag."</a>";
-			break;
+
 		}
 	}
 
