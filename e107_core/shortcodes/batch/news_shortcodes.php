@@ -923,7 +923,7 @@ class news_shortcodes extends e_shortcode
 
 		if(empty($imgTag))
 		{
-			return null; 
+			return null;
 		}
 
 		switch(vartrue($parm['type']))
