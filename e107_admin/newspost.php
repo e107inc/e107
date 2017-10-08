@@ -77,8 +77,10 @@ class news_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_LIST),
 		'main/create' 		=> array('caption'=> NWSLAN_45),  // Create/Edit News Item
 	//	'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Category List
+		'other' 		=> array('divider'=> true),
 		'cat/list' 			=> array('caption'=> LAN_CATEGORIES), // Create Category.
 		'cat/create' 		=> array('caption'=> LAN_NEWS_63), // Category List
+		'other2' 		=> array('divider'=> true),
 		'main/settings' 	=> array('caption'=> LAN_PREFS), // Preferences
 	//	'main/submitted'	=> array('caption'=> LAN_NEWS_64, 'perm' => 'N'), // Submitted News
 		'sub/list'			=> array('caption'=> NWSLAN_47), // Submitted News

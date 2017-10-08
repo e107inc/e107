@@ -910,9 +910,13 @@ class news_front
 
 		if(!empty($newsList))
 		{
+			$c = 1;
 			foreach($newsList as $row)
 			{
-				$text .= $this->ix->render_newsitem($row, 'return', '', $template['item'], $param);
+				$tpl = ($c === 1 && !empty($template['first'])) ? $template['first'] : $template['item'];
+
+				$text .= $this->ix->render_newsitem($row, 'return', '', $tpl, $param);
+				$c++;
 			}
 		}
 		else // No News - empty.
