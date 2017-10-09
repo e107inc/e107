@@ -318,7 +318,7 @@ CREATE TABLE news (
   news_summary text NOT NULL,
   news_thumbnail text NOT NULL,
   news_sticky tinyint(3) unsigned NOT NULL default '0',
-  news_template varchar(50) NOT NULL default '',
+  news_template varchar(50),
   PRIMARY KEY  (news_id),
   KEY news_category  (news_category),
   KEY news_start_end (news_start,news_end),
@@ -344,7 +344,7 @@ CREATE TABLE news_category (
   category_manager tinyint(3) unsigned NOT NULL default '254',
   category_icon varchar(250) NOT NULL default '',
   category_order tinyint(3) unsigned NOT NULL default '0',
-  category_template varchar(50) NOT NULL default '',
+  category_template varchar(50),
   PRIMARY KEY  (category_id),
   KEY category_order (category_order)
 ) ENGINE=MyISAM;
