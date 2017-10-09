@@ -301,7 +301,7 @@ class cpage_shortcodes extends e_shortcode
 		$class = (!empty($options['class'])) ? $options['class'] : 'cpage btn btn-primary btn-cpage';
     	$buttonTarget = (!empty($options['target'])) ? ' target="'.$options['target'].'" ' : $buttonTarget;
 
-		return '<a class="'.$class.' '.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.'>'.$text.'</a>';
+		return '<a class="'.$class.' '.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.' title="'.$text.'">'.$text.'</a>';
 	}	
 	
 	
