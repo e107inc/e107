@@ -1,0 +1,78 @@
+<?php
+	/**
+	 * e107 website system
+	 *
+	 * Copyright (C) 2008-2017 e107 Inc (e107.org)
+	 * Released under the terms and conditions of the
+	 * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+	 *
+	 */
+
+
+$nw = e107::getObject('e_news_tree');
+$tp = e107::getParser();
+
+$tmp = $nw->loadJoinActive()->toArray();
+
+$monthLabels = e107::getDate()->terms();
+
+$arr = array();
+foreach($tmp as $id => $val)
+{
+	$d = date('Y-n',$val['news_datestamp']);
+	list($year,$month) = explode('-',$d);
+	$arr[$year][$month][] = $val;
+}
+
+$text = "<ul class='news-archive-menu'>";
+
+foreach($arr as $year=>$val)
+{
+	if($year == date('Y'))
+	{
+		$displayYear = 'block';
+		$expandOpen = 'open';
+	}
+	else
+	{
+		$displayYear = 'none';
+		$expandOpen = '';
+	}
+
+	$id = "news-archive-".$year;
+	$text .= "<li>";
+	$text .= "<a class='e-expandit {$expandOpen}' href='#".$id."'>".$year."</a>";
+	$text .= "<ul id='".$id."' class='news-archive-menu-months' style='display:".$displayYear."'>";
+
+		foreach($val as $month=>$items)
+		{
+			//$displayMonth = ($mCount === 1) ? 'display:block': 'display:none';
+
+			$idm = "news-archive-".$month;
+
+			$text .= "<li >";
+			$text .= "<a class='e-expandit' href='#".$idm."'>".$monthLabels[$month]."</a>";
+			$text .= "<ul id='".$idm."' class='news-archive-menu-items' style='display:none'>";
+
+			foreach($items as $row)
+			{
+				$url = e107::getUrl()->create('news/view/item', $row, array('allow' => 'news_sef,news_title,news_id,category_sef,category_name,category_id'));
+				$text .= "<li><a href='".$url."'>".$tp->toHtml($row['news_title'],false,'TITLE')."</a></li>";
+
+			}
+			$text .= "</ul>";
+			$text .= "</li>";
+
+		}
+	$text .= "</ul>";
+	$text .= "</li>";
+
+}
+$text .= "</ul>";
+
+e107::plugLan('news');
+
+e107::getRender()->tablerender(LAN_NEWSARCHIVE_MENU_TITLE, $text);
+
+e107::getDebug()->log($arr);
+

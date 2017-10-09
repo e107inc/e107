@@ -212,6 +212,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				// default 'toggle'.
 				$(this).click(function ()
 				{
+
 					var $this = $(this);
 					var href = ($this.is("a")) ? $this.attr("href") : '';
 					var $button = $this.find('button');
@@ -264,6 +265,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						if($(this).is(':visible'))
 						{
+							$this.addClass('open');
 							if($this.hasClass('e-expandit-inline'))
 							{
 								$(this).css('display', 'initial');
@@ -272,6 +274,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							{
 								$(this).css('display', 'block'); //XXX 'initial' broke the default behavior.
 							}
+						}
+						else
+						{
+							$this.removeClass('open');
 						}
 					});
 
