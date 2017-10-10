@@ -988,7 +988,8 @@ class pageClass
 				$e107cache->clear("comment.page.".$this->pageID);
 				$e107cache->clear($this->cacheString);
 			}
-            return $cobj->compose_comment("page", "comment", $this->pageID, 0, $this->title, false, true);
+
+            return $cobj->compose_comment("page", "comment", $this->pageID, 0, $this->page['page_title'], false, true);
 		}
 	}
 
