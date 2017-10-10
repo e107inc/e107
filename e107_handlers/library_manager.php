@@ -957,7 +957,8 @@ class e_library_manager
 		if(!isset($loaded[$name]))
 		{
 			$cache = e107::getCache();
-			$cacheID = 'Library_' . e107::getParser()->filter($name, 'file');
+			$cache_context = (defset('e_ADMIN_AREA', false) == true) ? 'AdminArea' : 'UserArea';
+			$cacheID = 'Library_' . $cache_context . '_' . e107::getParser()->filter($name, 'file');
 			$cached = $cache->retrieve($cacheID, false, true, true);
 
 			if($cached)
@@ -1288,7 +1289,7 @@ class e_library_manager
 
 		$library['callbacks'] += array(
 			'info'                  => array(),
-			'pre_detect'            => array(),
+			'pre_detect'            => array('preDetect'),
 			'post_detect'           => array(),
 			'pre_dependencies_load' => array(),
 			'pre_load'              => array('preLoad'),
@@ -1848,31 +1849,36 @@ class e_library_manager
 	}
 
 	/**
-	 * Alter library information before loading.
+	 * Alters library information before detecting.
 	 */
-	private function preLoad(&$library)
+	private function preDetect(&$library)
 	{
 		if(empty($library['machine_name']))
 		{
 			return;
 		}
 
+		// Prevent plugins/themes from altering libraries on Admin UI.
 		if(defset('e_ADMIN_AREA', false) == true)
 		{
 			$coreLibrary = new core_library();
 			$coreLibs = $coreLibrary->config();
-			$coreLib = $coreLibs[$library['machine_name']];
 
-			switch($library['machine_name'])
-			{
-				// Prevent plugins/themes from altering libraries on Admin UI.
-				case 'cdn.jquery.ui':
-				case 'jquery.ui':
-				case 'cdn.bootstrap':
-				case 'bootstrap':
-					$library = $coreLib;
-					break;
+			if (isset($coreLibs[$library['machine_name']])) {
+				$coreLib = $coreLibs[$library['machine_name']];
+				$library = array_replace_recursive($coreLib, array_replace_recursive($library, $coreLib));
 			}
+		}
+	}
+
+	/**
+	 * Alters library information before loading.
+	 */
+	private function preLoad(&$library)
+	{
+		if(empty($library['machine_name']))
+		{
+			return;
 		}
 
 		$excluded = $this->getExcludedLibraries();
