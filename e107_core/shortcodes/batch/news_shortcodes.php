@@ -370,6 +370,41 @@ class news_shortcodes extends e_shortcode
 		return $this->sc_newsimage($parm);
 	}
 
+	private function news_carousel($parm)
+	{
+		if(empty($this->news_item['news_thumbnail']))
+		{
+			return null;
+		}
+
+		$options = $parm;
+
+		if(!isset($options['interval']))
+		{
+			$options['interval'] = 'false';
+		}
+
+
+		$tp = e107::getParser();
+
+		$media = explode(",", $this->news_item['news_thumbnail']);
+		$images = array();
+
+		foreach($media as $file)
+		{
+			if($tp->isVideo($file) || empty($file))
+			{
+				continue;
+			}
+
+			$images[] = array('caption'=>'', 'text'=> $tp->toImage($file,$parm));
+		}
+
+	//	return print_a($images,true);
+
+		return e107::getForm()->carousel('news-carousel-'.$this->news_item['news_id'],$images, $options);
+	}
+
 	public function sc_news_related($parm=null)
 	{
 		return $this->sc_newsrelated($parm);
@@ -841,6 +876,11 @@ class news_shortcodes extends e_shortcode
 	 */
 	function sc_newsimage($parm = null)
 	{
+		if(!empty($parm['carousel']))
+		{
+			return $this->news_carousel($parm);
+		}
+
 		$tp = e107::getParser();
 		
 		if(is_string($parm))

@@ -580,7 +580,7 @@ class e_form
 	 * @param string $name : A unique name
 	 * @param array $array
 	 * @param array $options : default, interval, pause, wrap
-	 * @return string
+	 * @return string|array
 	 * @example
 	 * $array = array(
 	 *        'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
