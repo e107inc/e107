@@ -30,7 +30,7 @@ class gallery_url // plugin-folder + '_url'
 			'alias'         => 'gallery',
 			'sef'			=> '{alias}', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}gallery/gallery.php', 		// file-path of what to load when the regex returns true.
-
+			'legacy'        => '{e_PLUGIN}gallery/gallery.php',
 		);
 
 
