@@ -21,12 +21,17 @@ define('MAKE_INSTALL_LOG', true);
 /* Default Options and Paths for Installer */
 $MySQLprefix	     = 'e107_';
 $HANDLERS_DIRECTORY  = "e107_handlers/"; // needed for e107 class init
+
 header('Content-type: text/html; charset=utf-8');
 
 define("e107_INIT", TRUE);
+define("DEFAULT_INSTALL_THEME", 'voux');
+
 require_once("e107_admin/ver.php");
 
 define("e_VERSION", $e107info['e107_version']);
+
+
 
 /*define("e_UC_PUBLIC", 0);
 define("e_UC_MAINADMIN", 250);
@@ -1140,7 +1145,7 @@ class e_install
 					$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
 
 
-					$selected = ($val == 'landingzero') ? " checked" : "";
+					$selected = ($val === DEFAULT_INSTALL_THEME) ? " checked" : "";
 
 					$output .= "
 									<div class='col-md-6 theme-cell' >
