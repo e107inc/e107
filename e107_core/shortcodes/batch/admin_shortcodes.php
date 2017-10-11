@@ -700,7 +700,9 @@ class admin_shortcodes
 
 		// FIXME @TODO $plugPath is using the URL to detect the path. It should use $_SERVER['SCRIPT_FILENAME']
 		$plugpath = e_PLUGIN.str_replace(basename(e_SELF),'',str_replace('/'.$plugindir,'','/'.strstr(e_SELF,$plugindir))).'admin_menu.php';
-		
+
+		$action = e_QUERY; // required.
+
 		if(file_exists($plugpath))
 		{
 			if (!$parm)
