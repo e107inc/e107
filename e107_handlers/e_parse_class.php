@@ -5301,3 +5301,64 @@ class e_profanityFilter
 		return preg_replace("#a|e|i|o|u#i", "*" , $matches[0]);
 	}
 }
+
+
+/**
+ * Backwards Compatibility Class textparse
+ */
+class textparse {
+
+	function editparse($text, $mode = "off")
+	{
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toForm($text);
+	}
+
+	function tpa($text, $mode = '', $referrer = '', $highlight_search = false, $poster_id = '')
+	{
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toHTML($text, true, $mode, $poster_id);
+	}
+
+	function tpj($text)
+	{
+
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return $text;
+	}
+
+	function formtpa($text, $mode = '')
+	{
+
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toDB($text);
+	}
+
+	function formtparev($text)
+	{
+
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toForm($text);
+	}
+
+}

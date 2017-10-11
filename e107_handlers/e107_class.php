@@ -4378,6 +4378,7 @@ class e107
 			  || (preg_match('/^\/(.*?)\/user(settings\.php|\/edit)(\?|\/)(\d+)$/i', $_SERVER['REQUEST_URI']) && ADMIN)
 			  || ($isPluginDir && $curPage === 'prefs.php') //BC Fix for old plugins
 			  || ($isPluginDir && $curPage === 'config.php') // BC Fix for old plugins
+			  || ($isPluginDir && strpos($curPage,'_config.php')!==false) // BC Fix for old plugins eg. dtree_menu
 			)
 		{
 			$inAdminDir = TRUE;
