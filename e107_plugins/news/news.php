@@ -492,6 +492,7 @@ class news_front
 				define('e_PAGETITLE', $news['news_title']);
 				e107::meta('og:title',$news['news_title']);
 				e107::meta('og:type','article');
+				e107::meta('twitter:card', 'summary');
 			}
 
 			if($news['news_meta_description'] && !defined('META_DESCRIPTION'))

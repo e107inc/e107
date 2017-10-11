@@ -25,7 +25,11 @@ if(e_ADMIN_AREA !==true)
 		unset($ogImage);
 	}
 
-
+	if(deftrue('XURL_TWITTER') && XURL_TWITTER !== '#')
+	{
+		$screenName = basename(XURL_TWITTER);
+		e107::meta('twitter:site','@'.$screenName);
+	}
 
 	if(!empty($appID))
 	{
