@@ -409,7 +409,7 @@ a.link-active i 			{ opacity: 1.0; }
 
 a.dropdown-toggle i 		{ transition: opacity .20s ease-in-out; -moz-transition: opacity .20s ease-in-out; -webkit-transition: opacity .20s ease-in-out;
 						
-								opacity: 0.4	
+								opacity: 0.7	
 							}
 
 a.dropdown-toggle:hover i  { opacity: 1.0	}
@@ -1666,8 +1666,41 @@ td img.thumbnail { margin-bottom:0 }
 
 .nav-admin .fa { font-size:18px }
 .nav-admin.navbar-left li a { padding-left:20px; padding-right:20px}
+.navbar-nav > li.active a.dropdown-toggle i {
+    opacity:1;
+}
 
 #e-addon-updates .media-list img { width: 64px}
+
+@-webkit-keyframes spinIt {
+    from {-webkit-transform: rotate(0deg); transform: rotate(0deg);}
+    to   {-webkit-transform: rotate(359deg); transform: rotate(359deg);}
+}
+@-moz-keyframes spinIt {
+    from {-webkit-transform: rotate(0deg); transform: rotate(0deg);}
+    to   {-webkit-transform: rotate(359deg); transform: rotate(359deg);}
+}
+
+.editableform-loading {
+	background: none;
+    height: 25px;
+    width: auto;
+    min-width: 25px;
+    text-align:center;
+     -webkit-animation: spinIt 2s infinite linear;
+  animation: spinIt 2s infinite linear;
+}
+
+
+
+
+.editableform-loading:before { font-size:24px; font-family: "FontAwesome"; content: '\f110';
+}
+
+
+
+
+
 
 @media (min-width: 1101px ){
 .navbar-fixed-top { height: 51px; }
