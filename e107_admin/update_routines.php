@@ -1559,70 +1559,70 @@ function update_706_to_800($type='')
 	}
 	
 	// Check for Legacy Download Images. 
+    if(e107::isInstalled('download')) {
+		$fl = e107::getFile();
+		$dl_images = $fl->get_files(e_FILE.'downloadimages');
 
-	$fl = e107::getFile();
-	$dl_images = $fl->get_files(e_FILE.'downloadimages');
-
-	if(count($dl_images) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_image' "))
-	{
-		if ($just_check) return update_needed('Import Download Images into Media Manager');
-		$med->import('download_image',e_FILE.'downloadimages');
-		$med->import('download_thumb',e_FILE.'downloadthumbs');	
-	}
-	
-	$dl_files = $fl->get_files(e_FILE.'downloads', "","standard",5); // don't use e_DOWNLOAD or a loop may occur.
-
-	
-	$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
-//	$publicFilter = array(1);
-	$public_files = $fl->get_files(e_FILE.'public','',$publicFilter);
-	
-	if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' OR  `media_category` = '_common_file' "))
-	{
-		if ($just_check) return update_needed('Import '.count($dl_files).' Download File(s) and '.count($public_files).' Public File(s) into Media Manager');
-
-		if($sql->gen("SELECT download_url FROM `#download` "))
+		if(count($dl_images) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_image' "))
 		{
-			$allowed_types = array();
-			
-			while($row = $sql->fetch())
-			{
-				$ext = strrchr($row['download_url'], "."); 
-				$suffix = ltrim($ext,".");
+			if ($just_check) return update_needed('Import Download Images into Media Manager');
+			$med->import('download_image',e_FILE.'downloadimages');
+			$med->import('download_thumb',e_FILE.'downloadthumbs');	
+		}
 
+		$dl_files = $fl->get_files(e_FILE.'downloads', "","standard",5); // don't use e_DOWNLOAD or a loop may occur.
+
+
+		$publicFilter = array('_FT', '^thumbs\.db$','^Thumbs\.db$','.*\._$','^\.htaccess$','^\.cvsignore$','^\.ftpquota$','^index\.html$','^null\.txt$','\.bak$','^.tmp'); // Default file filter (regex format)
+	//	$publicFilter = array(1);
+		$public_files = $fl->get_files(e_FILE.'public','',$publicFilter);
+
+		if((count($dl_files) || count($public_files)) && !$sql->gen("SELECT * FROM `#core_media` WHERE `media_category` = 'download_file' OR  `media_category` = '_common_file' "))
+		{
+			if ($just_check) return update_needed('Import '.count($dl_files).' Download File(s) and '.count($public_files).' Public File(s) into Media Manager');
+
+			if($sql->gen("SELECT download_url FROM `#download` "))
+			{
+				$allowed_types = array();
+
+				while($row = $sql->fetch())
+				{
+					$ext = strrchr($row['download_url'], "."); 
+					$suffix = ltrim($ext,".");
+
+					if(!isset($allowed_types[$suffix]))
+					{
+						$allowed_types[$suffix] = $suffix;		
+					}
+
+				}
+
+				$allowed_types = array_unique($allowed_types);
+			}		
+			else
+			{
+				$allowed_types = array('zip','gz','pdf');	
+			}
+
+			$fmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
+
+			$med->import('download_file',e_DOWNLOAD, $fmask);
+
+			// add found Public file-types.
+			foreach($public_files as $v)
+			{
+				$ext = strrchr($v['fname'], ".");
+				$suffix = ltrim($ext,".");
 				if(!isset($allowed_types[$suffix]))
 				{
-					$allowed_types[$suffix] = $suffix;		
+					$allowed_types[$suffix] = $suffix;
 				}
-				
 			}
-			
-			$allowed_types = array_unique($allowed_types);
-		}		
-		else
-		{
-			$allowed_types = array('zip','gz','pdf');	
+
+			$publicFmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
+			$med->import('_common_file', e_FILE.'public', $publicFmask);
 		}
-		
-		$fmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
-
-		$med->import('download_file',e_DOWNLOAD, $fmask);
-
-		// add found Public file-types.
-		foreach($public_files as $v)
-		{
-			$ext = strrchr($v['fname'], ".");
-			$suffix = ltrim($ext,".");
-			if(!isset($allowed_types[$suffix]))
-			{
-				$allowed_types[$suffix] = $suffix;
-			}
-		}
-
-		$publicFmask = '[a-zA-Z0-9_.-]+\.('.implode('|',$allowed_types).')$';
-		$med->import('_common_file', e_FILE.'public', $publicFmask);
 	}
-
 
 	 
 			
