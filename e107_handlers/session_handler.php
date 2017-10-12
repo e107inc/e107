@@ -478,7 +478,14 @@ class e_session
 
 		if (empty($this->_options['path']))
 		{
-			$this->_options['path'] = defined('e_HTTP') ? e_HTTP : '/';
+			if(defined('e_MULTISITE_MATCH')) // multisite support.
+			{
+				$this->_options['path'] = '/';
+			}
+			else
+			{
+				$this->_options['path'] = defined('e_HTTP') ? e_HTTP : '/';
+			}
 		}
 
 		// session name before options - problems reported on php.net

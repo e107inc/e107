@@ -2064,7 +2064,12 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 		if(($domain == '' && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
 		{
 			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
-		}	
+		}
+
+		if(defined('e_MULTISITE_MATCH'))
+		{
+			$path = '/';
+		}
 		
 		setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
