@@ -14497,7 +14497,7 @@ margin-bottom: 15px;
  }
 
 /* Large devices (large desktops, 1200px and up).col-lg  */
-@media all and (min-width: 1200px) {
+@media all and (min-width: 1800px) {
 
 	.col-lg-2 { width: 12% }
 	.col-lg-10 { width: 88% }
