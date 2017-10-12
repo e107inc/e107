@@ -203,6 +203,7 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
+				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 				{ADMIN_UPDATE}

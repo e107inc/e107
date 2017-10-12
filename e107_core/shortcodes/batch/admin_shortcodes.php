@@ -803,6 +803,52 @@ class admin_shortcodes
 	}
 
 
+	function sc_admin_multisite($parm=null)
+	{
+		$file = e_SYSTEM_BASE."multisite.json";
+
+		if(!getperms('0') || !file_exists($file))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+		$parsed = file_get_contents($file);
+		$tmp = e107::unserialize($parsed);
+
+	//	e107::getDebug()->log($tmp);
+
+		  $text = '<ul class="nav nav-admin navbar-nav navbar-right">
+        <li class="dropdown">
+            <a class="dropdown-toggle" title="Multisite" role="button" data-toggle="dropdown" href="#" >
+                '.$tp->toGlyph('fa-clone').'
+            </a> 
+            <ul class="dropdown-menu" role="menu" >';
+
+			$srch = array();
+			foreach($tmp as $k=>$val)
+            {
+                $srch[] = '/'.$val['match'].'/';
+            }
+
+            foreach($tmp as $k=>$val)
+            {
+				$active = (e_MULTISITE_MATCH === $val['match']) ? ' class="active"' : '';
+				$url = str_replace($srch,'/'.$val['match'].'/',e_REQUEST_SELF);
+                $text .= '<li '.$active.'><a href="'.$url.'">'.$val['name'].'</a></li>';
+            }
+
+                $text .= '
+             </ul>
+        </li>
+        </ul>
+        ';
+
+		// e107::getDebug()->log(e_MULTISITE_IN_USE);
+
+        return $text;
+
+	}
 
 
 	function sc_admin_msg($parm)
