@@ -745,7 +745,7 @@ class admin_shortcodes
        
        if ($count >0)
        {
-            $countDisp = ' <span class="label label-primary">'.$count.'</span> ' ;
+            $countDisp = ' <span class="badge badge-primary">'.$count.'</span> ' ;
        }
        else
       {
