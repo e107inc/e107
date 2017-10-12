@@ -138,9 +138,10 @@ class news_cat_ui extends e_admin_ui
 			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'tags',		'data'=>'str',	'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text', 'data'=>'str',	'inline'=>true,	'width' => 'auto', 'readonly'=>FALSE, 'writeParms'=>array('size'=>'xxlarge', 'sef'=>'category_name')), // Display name
 			'category_manager' 			=> array('title'=> LAN_MANAGER,'type' => 'userclass',	'tab'=>1,	'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
-			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',	'tab'=>1,		'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),
-			'category_template'         => array('title'=> LAN_TEMPLATE,        'type' => 'layouts', 'tab'=>1, 'width'=>'auto', 'thclass' => 'right', 'class'=> 'right', 'writeParms' => 'plugin=news&id=news&merge=0','help'=>'Template to use as the default view' ),
-			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,		'batch'=>true, 'filter'=>true,		'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
+				'category_template'         => array('title'=> LAN_TEMPLATE,        'type' => 'layouts', 'tab'=>1, 'width'=>'auto', 'thclass' => 'left', 'class'=> 'left', 'writeParms' => 'plugin=news&id=news&merge=0','help'=>'Template to use as the default view' ),
+	
+					'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',	'tab'=>1,		'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),
+		'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,		'batch'=>true, 'filter'=>true,		'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
 		);
 
 		protected $fieldpref = array('checkboxes', 'category_icon', 'category_id', 'category_name', 'category_description', 'category_sef', 'category_manager', 'category_order', 'options');
