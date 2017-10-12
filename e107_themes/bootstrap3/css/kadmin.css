@@ -14389,13 +14389,25 @@ body { padding-top: 41px }
 
 .navbar-fixed-top { background-color: #1e1e1e; color: #ffffff; border:0; margin:0!important }
 .navbar-fixed-top a { color: #ffffff }
+
+.navbar-fixed-top li > a span.badge {
+    position: absolute;
+    top: 5px;
+    right: 30px;
+    padding: 3px 6px;
+    color: #ffffff;
+}
+
+footer { position:absolute; left:30%; right:30%; bottom:-500px;}
+
+
 a.dropdown-toggle i { opacity: 0.9 }
 .navbar-default .navbar-nav > li > a {
     color: #fff;
 }
 .admin-left-panel {
 background-color: #303030;
-height: 3000px;
+height: 1500px;
 
 margin-top: -37px;
 padding-right: 0;
@@ -14450,6 +14462,9 @@ font-weight: bold;
 font-family: 'Oswald';
 margin-bottom: 15px;
   }
+
+
+
 
 /*
 
