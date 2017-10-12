@@ -14422,7 +14422,7 @@ border-bottom: 5px solid #e5e5e5 !important;
     color: #fff;
 
 }
-
+.admin-left-panel li.list-group-item { background:none; border:0;}
 
 i.searchquery { margin-top: 10px; }
 
