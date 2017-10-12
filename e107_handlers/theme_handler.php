@@ -716,8 +716,9 @@ class e_theme
 					"info"      => $val['@attributes']['name'],
 					"nonadmin"  => $notadmin,
 					'scope'     => vartrue($val['@attributes']['scope']),
-					'exclude'   => vartrue($val['@attributes']['exclude'])
-
+					'exclude'   => vartrue($val['@attributes']['exclude']),
+					'description'   => vartrue($val['@attributes']['description']),
+					'thumbnail'   => vartrue($val['@attributes']['thumbnail'])
 				);
 			}
 
@@ -2349,7 +2350,6 @@ class themeHandler
 								<td class='left'>".TPVLAN_7."</td>
 							</tr>";
 			
-						
 						foreach ($theme['css'] as $css)
 						{
 								
@@ -2362,8 +2362,8 @@ class themeHandler
 									$text2 = "<td class='center'>";
 									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'], array('id'=>$for));
 									$text2 .= "</td>";
-									$text2 .= "<td><label for='".$for."'>".$css['info']."</label></td>";
-									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+									$text2 .= "<td><label for='".$for."' title=\"".$css['name']."\">".$css['info']."</label></td>";
+									$text2 .= "<td>".($css['description'] ? $css['description'] : '')."</td>\n";
 									break;
 
 								case self::RENDER_SITEPREFS: // front 'sitetheme' mode.
