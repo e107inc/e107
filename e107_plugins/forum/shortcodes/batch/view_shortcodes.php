@@ -165,10 +165,16 @@
 		/**
 		 * @example {TOPIC_LASTPOST_DATE: format=relative}
 		 * @param string $parm['format'] short|long|forum|relative
-		 * @return HTML
+		 * @return string
 		 */
 		function sc_topic_lastpost_date($parm=null)
 		{
+			if(empty($this->var['thread_total_replies']))
+			{
+				return '';
+			}
+			
+		
 			$mode = empty($parm['format']) ? 'forum' : $parm['format'];
 			return e107::getParser()->toDate($this->var['thread_lastpost'], $mode);
 		}
@@ -176,7 +182,8 @@
 
 		function sc_topic_lastpost_author($parm=null)
 		{
-			if($this->var['thread_views'] || $this->var['thread_total_replies'] > 0)
+
+			if($this->var['thread_views'] || !empty($this->var['thread_total_replies']))
 			{
 
 				if($this->var['thread_lastuser_username'])
@@ -194,6 +201,8 @@
 
 				}
 			}
+
+			return ' - ';
 
 		}
 
