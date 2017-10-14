@@ -1049,7 +1049,7 @@ class lancheck
 	function write_lanfile($lan='')
 	{
 		if(!$lan){ 	return; }
-		
+
 		global $ns;
 		
 		unset($input);
@@ -1129,6 +1129,11 @@ class lancheck
 			else
 			{
 				$defvar = $_POST['newdef'][$i];
+			}
+
+			if(empty($deflang))
+			{
+				continue; 
 			}
 	
 			if($_POST['newdef'][$i] == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
