@@ -1150,8 +1150,9 @@ class lancheck
 	
 		$message .="<br />";
 		$message .="</div>";
-		$input .= "\n\n?>";
-			//<?
+		/*
+		 $input .= "\n\n?>";
+		*/
 		// Write to file.
 		
 		$writeit = str_replace("//","/",$writeit); // Quick Fix. 
