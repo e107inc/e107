@@ -302,7 +302,7 @@ class lancheck
 	
 	var $core_plugins = array();
 
-	var $core_themes = array("bootstrap3");
+	var $core_themes = array("bootstrap3", "voux", "landingzero");
 			
 	private $errorsOnly = false;
 	
@@ -1460,6 +1460,12 @@ class lancheck
 			$regexp = "#.php#";
 			$mode = 'core';
 		}
+		elseif(strpos($comp_dir,e_THEME) !== false)
+		{
+			$regexp = "#".$lang."#";
+			$mode = 'themes';
+			//	var_dump($lang_array);
+		}
 		else
 		{
 			$regexp = "#".$lang."#";
@@ -1467,7 +1473,9 @@ class lancheck
 		}
 
 	//	$regexp = (strpos($comp_dir,e_LANGUAGEDIR) !== FALSE) ? "#.php#" : "#".$lang."#";
-	
+
+
+
 		foreach($lang_array as $f)
 		{
 			if($mode == 'plugins')
@@ -1478,6 +1486,19 @@ class lancheck
 
 
 				if($mode == 'plugins' && ($this->thirdPartyPlugins !== true) && !in_array($pluginDirectory, $this->core_plugins))
+				{
+					continue;
+				}
+			}
+
+			if($mode == 'themes')
+			{
+				$tmpDir = str_replace($comp_dir,'',$f['path']);
+			//	echo "<br />".$tmpDir;
+				list($themeDirectory, $other) = explode("/",$tmpDir, 2);
+
+
+				if($mode == 'themes' && ($this->thirdPartyPlugins !== true) && !in_array($themeDirectory, $this->core_themes))
 				{
 					continue;
 				}
