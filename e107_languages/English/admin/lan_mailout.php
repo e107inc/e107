@@ -222,8 +222,7 @@ define("LAN_MAILOUT_205", "Email send format error");
 define("LAN_MAILOUT_206", "Invalid mail ID (--ID--) specified");
 define("LAN_MAILOUT_207", "Template load error");
 define("LAN_MAILOUT_208", "Template conversion error");
-define("LAN_MAILOUT_209", "");
-define("LAN_MAILOUT_210", "");
+
 
 // Block of status messages kept together
 define("LAN_MAILOUT_211", "Sent");
