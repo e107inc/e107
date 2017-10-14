@@ -197,7 +197,7 @@ define("LAN_NEWS_62", "Error accessing database, or no news items found");
 define("LAN_NEWS_63", "Create Category");
 define("LAN_NEWS_64", "Old Submitted");
 define("LAN_NEWS_65", "Please choose unique SEF URL string for this category");
-define("LAN_NEWS_66", ""); // Unused
+
 define("LAN_NEWS_67", "Close");
 define("LAN_NEWS_68", "Submitted Item");
 
