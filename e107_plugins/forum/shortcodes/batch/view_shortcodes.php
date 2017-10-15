@@ -183,7 +183,7 @@
 		function sc_topic_lastpost_author($parm=null)
 		{
 
-			if($this->var['thread_views'] || !empty($this->var['thread_total_replies']))
+			if($this->var['thread_views'] && !empty($this->var['thread_total_replies']))
 			{
 
 				if($this->var['thread_lastuser_username'])
