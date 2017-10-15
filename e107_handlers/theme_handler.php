@@ -975,7 +975,8 @@ class themeHandler
 
 		if(!empty($_POST['git_pull']))
 		{
-			$return = e107::getFile()->gitPull($this->curTheme, 'theme');
+			$gitTheme = e107::getParser()->filter($_POST['git_pull'],'w');
+			$return = e107::getFile()->gitPull($gitTheme, 'theme');
 			$mes->addSuccess($return);
 		}
 
@@ -1648,8 +1649,8 @@ class themeHandler
 		$compat			= (version_compare(1.9,$theme['compatibility'],'<')) ? "<span class='label label-warning'>".$theme['compatibility']."</span><span class='text-warning'> ".TPVLAN_77."</span>": vartrue($theme['compatibility'],'1.0');
 		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 
-
-		$text = "<table class='table table-striped'>";
+		$text = e107::getForm()->open('theme-info','post');
+		$text .= "<table class='table table-striped'>";
 
 
 
@@ -1676,7 +1677,11 @@ class themeHandler
 			$text .= "<tr><td><b>".LAN_CATEGORY."</b></td><td>".$theme['category']."</td></tr>";			
 		}
 		
-
+		if(is_dir(e_THEME.$theme['path']."/.git"))
+		{
+			$text .= "<tr><td><b>Developer</b></td>
+				<td >".$this->frm->admin_button('git_pull', $theme['path'], 'primary', e107::getParser()->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
+		}
 	
 		$itext = '';
 
@@ -1742,6 +1747,8 @@ class themeHandler
 	//	$text .= "</td></tr>";
 		
 		$text .= $itext."</table>";
+
+		$text .= e107::getForm()->close();
 		
 		if(count($theme['preview']))
 			{
@@ -1767,7 +1774,7 @@ class themeHandler
 		
 		
 	//	$text .= "<div class='right'><a href='#themeInfo_".$theme['id']."' class='e-expandit'>Close</a></div>";
-	
+
 		if(E107_DEBUG_LEVEL > 0)
 		{
 		//	$text .= print_a($theme, true);
@@ -2143,11 +2150,11 @@ class themeHandler
 					$text .= "</td></tr>";
 
 
-						if(is_dir(e_THEME.$this->id."/.git"))
-						{
-							$text .= "<tr><td><b>Developer</b></td>
-								<td >".$this->frm->admin_button('git_pull', 1, 'primary', $tp->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
-						}
+					if(is_dir(e_THEME.$this->id."/.git"))
+					{
+						$text .= "<tr><td><b>Developer</b></td>
+							<td >".$this->frm->admin_button('git_pull', $this->id, 'primary', $tp->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
+					}
 
 		
 					// site theme..
