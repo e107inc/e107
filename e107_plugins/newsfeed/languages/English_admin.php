@@ -67,7 +67,7 @@ define("NFLAN_42", "[h=4]Newsfeed Title[/h]
 	Enter the number of seconds before the feed is updated. 
 	For example, 1800 = 30 Minutes, 3600 = 1 Hour, 86400 = 1 Day.
 	[h=4]Activation[/h]
-	Newsfeeds can be displayed in the menu only or on the newsfeed page. Enter the details where feeds should be displayed. To see newsfeeds in e107 menus you will need to activate the [b]Newsfeeds Menu[b/] in [link=".e_ADMIN."menus.php]Menu Manager[/link].
+	Newsfeeds can be displayed in the menu only or on the newsfeed page. Enter the details where feeds should be displayed. To see newsfeeds in e107 menus you will need to activate the [b]Newsfeeds Menu[/b] in [link=".e_ADMIN."menus.php]Menu Manager[/link].
 	[h=4]Tip[/h]
 	There are many feed direcotries on the web, try [link=https://www.dmoz.org/Computers/Internet/On_the_Web/Syndication_and_Feeds/RSS/Directories/ external]dmoz[/link] or [link=http://www.feedster.com/ external]feedster.com[/link]");
 
