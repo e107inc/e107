@@ -1347,6 +1347,12 @@ class e_file
 		$text = `$cmd2 2>&1`;
 		$text .= `$cmd3 2>&1`;
 
+		if(deftrue('e_DEBUG'))
+		{
+			$message = date('r')."\t\tgitPull()\t\t".$text;
+			file_put_contents(e_LOG."fileClass.log",$message,FILE_APPEND);
+		}
+
 	//	$text .= `$cmd4 2>&1`;
 
 	//	$text .= `$cmd5 2>&1`;
