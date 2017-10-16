@@ -1708,7 +1708,7 @@ class lancheck
 		if(!file_exists($newfile))
 		{
 		//	echo "<br />file: ".$newfile;
-			$data = chr(60)."?php\n\ndefine(\"EXAMPLE\",\"Generated Empty Language File\");";
+			$data = chr(60)."?php\n\n// define(\"EXAMPLE\",\"Generated Empty Language File\");";
 			file_put_contents($newfile,$data);	
 		}
 	}
