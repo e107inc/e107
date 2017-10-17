@@ -768,7 +768,31 @@ class e107_db_debug {
 			return $text;
 		}
 	}
-	
+
+
+	/**
+	 * var_dump to debug log
+	 * @param mixed $message
+	 */
+	function dump($message, $TraceLev= 1)
+	{
+		ob_start();
+	    var_dump($message);
+	    $content = ob_get_contents();
+	    ob_end_clean();
+
+	    $bt = debug_backtrace();
+
+		$this->aLog[] =	array(
+			'Message'   => $content,
+			'Function'	=> (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'].$bt[$TraceLev]['type'].$bt[$TraceLev]['function'].'()' : $bt[$TraceLev]['function']).'()',
+				'File'	=> varset($bt[$TraceLev]['file']),
+				'Line'	=> varset($bt[$TraceLev]['line'])
+			);
+
+	   // $this->aLog[] =	array ('Message'   => $content, 'Function' => '', 	'File' => '', 'Line' => '' 	);
+
+	}
 //
 // Simple debug-level 'console' log
 // Record a "nice" debug message with
@@ -776,6 +800,8 @@ class e107_db_debug {
 //
 	function log($message,$TraceLev=1)
 	{
+
+
 
 		if(is_array($message) || is_object($message))
 		{

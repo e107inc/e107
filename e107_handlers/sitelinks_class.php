@@ -1805,7 +1805,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			return true;	
 		}
 		
-		if(vartrue($data['link_active'])) // Can be used by e_sitelink.php
+		if(!empty($data['link_active'])) // Can be used by e_sitelink.php
 		{
 			return true;		
 		}
@@ -1894,9 +1894,9 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_name($parm='')
 	{
-		if(!varset($this->var['link_name']))
+		if(empty($this->var['link_name']))
 		{
-			return;	
+			return null;
 		}
 		
 		if(substr($this->var['link_name'],0,8) == 'submenu.') // BC Fix. 
@@ -2024,7 +2024,7 @@ class navigation_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 				
-		if (!vartrue($this->var['link_button'])) return '';
+		if (empty($this->var['link_button'])) return '';
 		
 	//	if($icon = $tp->toGlyph($this->var['link_button']))
 	//	{
@@ -2089,7 +2089,7 @@ class navigation_shortcodes extends e_shortcode
 		{
 			$active	= (e107::getNav()->isActive($val, $this->activeSubFound, true)) ? "_active" : "";
 			$this->setVars($val);	// isActive is allowed to alter data
-			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);	
+			$tmpl = !empty($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);
 			if($active) $this->activeSubFound = true;		
 		}
