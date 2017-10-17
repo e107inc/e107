@@ -136,7 +136,7 @@ class plugin_gallery_index_controller extends eControllerFront
 
 		$text .= e107::getParser()->parseTemplate($template['cat']['end'], true, $sc);
 
-		if(isset($template['cat_caption']))
+		if(isset($template['cat']['caption']))
 		{
 			$title = e107::getParser()->parseTemplate($template['cat']['caption'], true, $sc);
 
@@ -183,6 +183,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$tp = e107::getParser();
 		$template = $this->getTemplate();
 		$template = array_change_key_case($template);
+
 		$sc = e107::getScBatch('gallery', true);
 
 		if(defset('BOOTSTRAP') === true || defset('BOOTSTRAP') === 2) // Convert bootsrap3 to bootstrap2 compat.
@@ -215,7 +216,7 @@ class plugin_gallery_index_controller extends eControllerFront
 		$text .= $inner;
 		$text .= $tp->parseTemplate($template['list']['end'], true, $sc);
 
-		if(isset($template['list_caption']))
+		if(isset($template['list']['caption']))
 		{
 			$title = $tp->parseTemplate($template['list']['caption'], true, $sc);
 			$this->addTitle($title)->addBody($text);
