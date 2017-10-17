@@ -1309,7 +1309,7 @@ class lancheck
 
 
 	
-	function check_lan_errors($english,$translation,$def)
+	function check_lan_errors($english,$translation,$def, $opts=array())
 	{
 		$eng_line = $english[$def];
 		$trans_line = !empty($translation[$def]) ? $translation[$def] : '';
@@ -1325,7 +1325,7 @@ class lancheck
 			return $def.": ".LAN_CHECK_5."<br />";
 		}
 
-		if($eng_line == $trans_line && !empty($eng_line))
+		if(empty($opts['no-warning']) && ($eng_line == $trans_line && !empty($eng_line)))
 		{
 			$warning[] = "<span class='text-warning'>".$def. ": ".LAN_CHECK_29."</span>";
 		}
