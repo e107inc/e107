@@ -1901,7 +1901,7 @@ class lancheck
 	
 
 	/**
-	 * Clean-up out definitions in a language file.
+	 * Clean-up definitions in a language file removed closing php tags and strip specific html..
 	 * @param array $defKeys array of constants to comment out.
 	 * @param string $path path to the language file to edit.
 	 */
@@ -1916,7 +1916,14 @@ class lancheck
 		$lines = explode("\n",$content);
 
 		$srch = array();
-		$repl =array();
+		$repl = array();
+
+		$srch[] = '<b>';
+		$srch[] = '</b>';
+
+		$repl[] = '[b]';
+		$repl[] = '[/b]';
+
 
 		if(!empty($defKeys))
 		{
