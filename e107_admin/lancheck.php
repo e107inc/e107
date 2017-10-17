@@ -1901,17 +1901,16 @@ class lancheck
 	
 
 	/**
-	 * Comment out definitions in a language file.
+	 * Clean-up out definitions in a language file.
 	 * @param array $defKeys array of constants to comment out.
 	 * @param string $path path to the language file to edit.
 	 */
-	function commentOut($defKeys, $path)
+	function cleanFile($path, $defKeys=null)
 	{
-		if(empty($defKeys) || empty($path) || !file_exists($path) || stripos($path,'English')!==false)
+		if(empty($path) || !file_exists($path) || stripos($path,'English')!==false)
 		{
 			return null;
 		}
-
 
 		$content = file_get_contents($path);
 		$lines = explode("\n",$content);
@@ -1919,13 +1918,16 @@ class lancheck
 		$srch = array();
 		$repl =array();
 
-		foreach($defKeys as $const)
+		if(!empty($defKeys))
 		{
-			$srch[] = "define('".$const."'";
-			$srch[] = 'define("'.$const.'"';
+			foreach($defKeys as $const)
+			{
+				$srch[] = "define('".$const."'";
+				$srch[] = 'define("'.$const.'"';
 
-			$repl[] = "// define('".$const."'";
-			$repl[] = '// define("'.$const.'"';
+				$repl[] = "// define('".$const."'";
+				$repl[] = '// define("'.$const.'"';
+			}
 		}
 
 		$new = '';
@@ -1942,7 +1944,14 @@ class lancheck
 				continue;
 			}
 
-			$new .= str_replace($srch,$repl,$ln)."\n";
+			if(!empty($srch))
+			{
+				$new .= str_replace($srch,$repl,$ln)."\n";
+			}
+			else
+			{
+				$new .= $ln."\n";
+			}
 		}
 
 		if(file_put_contents($path,$new))
