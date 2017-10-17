@@ -1899,7 +1899,64 @@ class lancheck
 		return (preg_match('/^.{1}/us',$str,$ar) == 1);
 	}
 	
-	
+
+	/**
+	 * Comment out definitions in a language file.
+	 * @param array $defKeys array of constants to comment out.
+	 * @param string $path path to the language file to edit.
+	 */
+	function commentOut($defKeys, $path)
+	{
+		if(empty($defKeys) || empty($path) || !file_exists($path) || stripos($path,'English')!==false)
+		{
+			return null;
+		}
+
+
+		$content = file_get_contents($path);
+		$lines = explode("\n",$content);
+
+		$srch = array();
+		$repl =array();
+
+		foreach($defKeys as $const)
+		{
+			$srch[] = "define('".$const."'";
+			$srch[] = 'define("'.$const.'"';
+
+			$repl[] = "// define('".$const."'";
+			$repl[] = '// define("'.$const.'"';
+		}
+
+		$new = '';
+		foreach($lines as $ln)
+		{
+			if(strpos($ln,'?>') !==false)
+			{   continue;
+
+			}
+
+			if(strpos($ln,'//') !==false)
+			{
+				$new .= $ln."\n";
+				continue;
+			}
+
+			$new .= str_replace($srch,$repl,$ln)."\n";
+		}
+
+		if(file_put_contents($path,$new))
+		{
+			return true;
+		}
+
+		return false;
+
+
+	}
+
+
+
 }
 
 
