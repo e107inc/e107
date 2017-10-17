@@ -280,6 +280,12 @@ class news_shortcodes extends e_shortcode
 		}
 	}
 
+	function sc_news_category_url($parm=null)
+	{
+		$category = array('id' => $this->news_item['category_id'], 'name' => $this->news_item['category_sef'] );
+
+		return e107::getUrl()->create('news/list/category', $category);	
+	}
 
 
 
