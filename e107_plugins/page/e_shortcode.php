@@ -41,7 +41,7 @@ class page_shortcodes extends e_shortcode
 		 * Page Navigation
 		 * @example {PAGE_NAVIGATION: template=navdoc&auto=1} in your Theme template. 
 		 */	
-		function sc_page_navigation($parm='') // TODO when No $parm provided, auto-detect based on URL which book/chapters to display. 
+		function sc_page_navigation($parm=null) // TODO when No $parm provided, auto-detect based on URL which book/chapters to display.
 		{
 		//	$parm = eHelper::scParams($parm);
 				
@@ -102,7 +102,7 @@ class page_shortcodes extends e_shortcode
 				$data = $data['body'];
 			}
 			
-			if(empty($data)){ return; }
+			if(empty($data)){ return null; }
 			
 			return e107::getNav()->render($data, $template) ;
 			

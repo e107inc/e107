@@ -20,7 +20,7 @@ $parm = eHelper::scParams($parm);
 $tmpl = e107::getCoreTemplate('chapter','nav',true,true); // always merge and allow override
 
 $template = $tmpl['showPage'];
-
+/*
 $request = e107::getRegistry('core/page/request');
 if($request && is_array($request))
 {
@@ -58,7 +58,11 @@ if(isset($data['title']) && !vartrue($template['noAutoTitle']))
 }
 
 if(empty($data)) return;
-$text = e107::getNav()->render($data, $template) ;
+$text = e107::getNav()->render($data, $template) ;*/
+$pg = new page_shortcodes;
+$text = $pg->sc_page_navigation($parm);
+
+
 
 /**
  * Expandable menu support. 
@@ -75,4 +79,3 @@ if($expandable)
 ### Render
 e107::getRender()->tablerender($template['caption'], $text, 'page-navigation-menu');
 
-?>
