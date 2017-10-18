@@ -411,6 +411,14 @@ class news_shortcodes extends e_shortcode
 		return e107::getForm()->carousel('news-carousel-'.$this->news_item['news_id'],$images, $options);
 	}
 
+	/**
+	*
+	* @param array $array
+	* @param string $array['types']
+	* @param int $array['limit']
+	* @example {NEWS_RELATED: types=news&limit-3}
+	* @return string
+	*/
 	public function sc_news_related($parm=null)
 	{
 		return $this->sc_newsrelated($parm);
@@ -1160,9 +1168,9 @@ class news_shortcodes extends e_shortcode
 			return LAN_NONE;
 		}			
 	}
-	
-	
-	
+
+
+
 	function sc_newsrelated($array=array())
 	{
 		if(!varset($array['types']))
