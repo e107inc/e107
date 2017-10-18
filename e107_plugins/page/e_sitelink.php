@@ -289,38 +289,40 @@ class page_sitelink // include plugin-folder in the name.
 			{
 				parse_str($parm,$options);
 			}
-
-			$options = $parm;
+			elseif(is_array($parm))
+			{
+				$options = $parm;
+			}
 		}
 
 		$sql 		= e107::getDb();
 		$sublinks 	= array();
 		$arr 		= array();	
-		
+
 		// map current when in auto mode
-		if(vartrue($options['auto']))
+		if(!empty($options['auto']))
 		{
 			// current book found, top book not set
-			if(vartrue($options['cbook']) && !vartrue($options['book']))
+			if(!empty($options['cbook']) && empty($options['book']))
 			{
 				$options['book'] = $options['cbook'];
 			}
 			
 			// current chapter found, top chapter not set
-			if(vartrue($options['cchapter']) && !vartrue($options['chapter']))
+			if(!empty($options['cchapter']) && empty($options['chapter']))
 			{
 				$options['chapter'] = $options['cchapter'];
 			}
 			
 			// current chapter found, top chapter not set
-			if(vartrue($options['cpage']) && !vartrue($options['page']))
+			if(!empty($options['cpage']) && empty($options['page']))
 			{
 				$options['page'] = $options['cpage'];
 			}
 		}
 		
 		// find the chapter if required
-		if(vartrue($options['page']) && !vartrue($options['chapter']))
+		if(!empty($options['page']) && empty($options['chapter']))
 		{
 			$options['chapter'] = $sql->retrieve('page', 'page_chapter', 'page_id='.intval($options['page']));
 		}	
