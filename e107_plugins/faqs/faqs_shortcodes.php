@@ -386,7 +386,8 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_breadcrumb() //TODO Category Detection. and proper SEF Urls with category names. 
 	{
 		$array = array();
-		$array[0] = array('url'=> e_REQUEST_SELF, 'text'=>LAN_PLUGIN_FAQS_NAME);
+	//	$array[0] = array('url'=> e_REQUEST_SELF, 'text'=>LAN_PLUGIN_FAQS_NAME);
+		$array[0] = array('url'=> e107::url('faqs','index'), 'text'=>LAN_PLUGIN_FAQS_NAME);
 			
 		return e107::getForm()->breadcrumb($array);
 		
