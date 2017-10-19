@@ -45,7 +45,7 @@ switch($cndPref)
 /* @example prefetch  */
 //e107::link(array('rel'=>'prefetch', 'href'=>THEME.'images/browsers.png'));
 
-e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'})"); // activate bootstrap tooltips. 
+e107::js("footer-inline", 	"$('.e-tip').tooltip({container: 'body'});"); // activate bootstrap tooltips.
 
 // Legacy Stuff.
 define('OTHERNEWS_COLS',false); // no tables, only divs. 
