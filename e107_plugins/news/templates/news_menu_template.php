@@ -127,3 +127,9 @@ $NEWS_MENU_TEMPLATE['carousel']['item'] = '<!-- Start Item -->
 
 
 $NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-slide-to="{COUNT}" class="{ACTIVE}"><a href="#">{NEWS_SUMMARY}</a></li>';
+
+
+// TODO
+$NEWS_MENU_TEMPLATE['archive'] = array();
+
+

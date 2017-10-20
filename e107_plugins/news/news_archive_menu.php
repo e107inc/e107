@@ -24,6 +24,7 @@ foreach($tmp as $id => $val)
 	$arr[$year][$month][] = $val;
 }
 
+
 $text = "<ul class='news-archive-menu'>";
 
 foreach($arr as $year=>$val)
@@ -50,8 +51,16 @@ foreach($arr as $year=>$val)
 
 			$idm = "news-archive-".$month;
 
-			$text .= "<li >";
-			$text .= "<a class='e-expandit' href='#".$idm."'>".$monthLabels[$month]."</a>";
+			$text .= "<li>";
+			$text .= "<a class='e-expandit' href='#".$idm."'>".$monthLabels[$month];
+
+			if(!empty($parm['badges'])) // param only (no menu-manager config. To be replaced by template.
+			{
+				$num = count($items);
+				$text .= "<span class='badge'>".$num."</span>";
+			}
+
+			$text .= "</a>";
 			$text .= "<ul id='".$idm."' class='news-archive-menu-items' style='display:none'>";
 
 			foreach($items as $row)
@@ -70,9 +79,13 @@ foreach($arr as $year=>$val)
 }
 $text .= "</ul>";
 
+
+
+$caption = !empty($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] : LAN_NEWSARCHIVE_MENU_TITLE;
+
 e107::plugLan('news');
 
-e107::getRender()->tablerender(LAN_NEWSARCHIVE_MENU_TITLE, $text);
+e107::getRender()->tablerender($caption, $text);
 
 //e107::getDebug()->log($arr);
 
