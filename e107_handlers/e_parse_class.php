@@ -3647,32 +3647,36 @@ class e_parser
 	
 	
 	/**
-	 * Parse xxxxx.glyph file to bootstrap glyph format. 
-	 * @param string $text 
-	 * @param array of $parms
+	 * Parse xxxxx.glyph file to bootstrap glyph format.
+	 * @param string $text
+	 * @param array|string $options
+	 * @param bool $options['size'] 2x, 3x, 4x, or 5x
+	 * @param bool $options['fw'] Fixed-Width
+	 * @param bool $options['spin'] Spin
+	 * @param int $options['rotate'] Rotate in Degrees.
 	 * @example $tp->toGlyph('fa-spinner', 'spin=1');
 	 * @example $tp->toGlyph('fa-spinner', array('spin'=>1));
 	 * @example $tp->toGlyph('fa-shield', array('rotate'=>90, 'size'=>'2x'));
-	 */ 
-	public function toGlyph($text, $space=" ")
+	 */
+	public function toGlyph($text, $options=" ")
 	{
 
 		if(empty($text))
 		{
-			return false;	
+			return false;
 		}
 
-		if(is_array($space)) 
+		if(is_array($options))
 		{
-			$parm = $space;
-			$space = varset($parm['space'],'');
+			$parm = $options;
+			$options = varset($parm['space'],'');
 		}
-		elseif(strpos($space,'='))
+		elseif(strpos($options,'='))
 		{
-			parse_str($space,$parm);
-			$space = varset($parm['space'],'');	
+			parse_str($options,$parm);
+			$options = varset($parm['space'],'');
 		}
-		else 
+		else
 		{
 			$parm = array();
 		}
@@ -3689,19 +3693,19 @@ class e_parser
 			return "<i class='".$size." ".$text."'></i>";
 		}
 
-		// Get Glyph names. 
+		// Get Glyph names.
 		$bs3 = e107::getMedia()->getGlyphs('bs3','');
 		$fa4 = e107::getMedia()->getGlyphs('fa4','');
-		
-		
-			
+
+
+
 		list($cls) = explode('.glyph',$text,2);
 	//	list($type, $tmp2) = explode("-",$text,2);
-		
+
 	//	return $cls;
-		
+
 		$removePrefix = array('glyphicon-','icon-','fa-');
-		
+
 		$id = str_replace($removePrefix, "", $cls);
 
 		$spin = null;
@@ -3712,17 +3716,17 @@ class e_parser
 		$tag = 'span';
 
 	//	return print_r($fa4,true);
-		
-		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also. 
+
+		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also.
 		{
 			$prefix = 'fa fa-';
-			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
+			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
 			$tag 	= 'i';
 			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
 			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
 			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
 		}
-		elseif(deftrue("BOOTSTRAP")) 
+		elseif(deftrue("BOOTSTRAP"))
 		{
 			if(BOOTSTRAP === 3 && in_array($id ,$bs3))
 			{
@@ -3734,23 +3738,23 @@ class e_parser
 		//		$prefix = 'icon-';
 				$tag = 'i';
 			}
-			
+
 			$size = '';
-			
+
 		}
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
 		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
-		
+
 		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
-		$text .= ($space !== false) ? $space : "";
-		
+		$text .= ($options !== false) ? $options : "";
+
 		return $text;
 
-		
-		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
-		// return $text;	
+
+		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text);
+		// return $text;
 	}
 
 
