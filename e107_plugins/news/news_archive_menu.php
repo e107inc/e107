@@ -74,5 +74,5 @@ e107::plugLan('news');
 
 e107::getRender()->tablerender(LAN_NEWSARCHIVE_MENU_TITLE, $text);
 
-e107::getDebug()->log($arr);
+//e107::getDebug()->log($arr);
 
