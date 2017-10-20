@@ -164,10 +164,12 @@ class social_shortcodes extends e_shortcode
 	function sc_social_login($parm=null)
 	{
 		$pref = e107::pref('core', 'social_login_active');
-		
+
+
+
 		if(empty($pref))
 		{
-			return; 
+			return null;
 		}
 		
 		$sc = e107::getScBatch('signup');
