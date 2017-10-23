@@ -1275,6 +1275,14 @@ class e_install
 \$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
 \$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
 
+
+// -- Optional --
+// define('e_HTTP_STATIC', 'https://static.mydomain.com/');  // Use a static subdomain for js/css/images etc. 
+// define('e_MOD_REWRITE_STATIC', true); // Rewrite static image urls. 
+// define('e_LOG_CRITICAL', true); // log critical errors but do not display them to user. 
+// define('e_GIT', 'path-to-git');  // Path to GIT for developers
+
+
 ";
 /*
 if($this->pdo == true)
