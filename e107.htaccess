@@ -111,6 +111,7 @@
         Header unset Cookie
         Header unset Set-Cookie
       # Header set Access-Control-Allow-Origin "http://mydomain.com"
+      # Header set Access-Control-Allow-Origin "*" # if you're really stuck.
   </IfModule>
 </FilesMatch>
 
