@@ -2611,7 +2611,14 @@ class e_http_header
 		echo $text;
 		
 	}			
-		
+
+	private function unsetHeader($header)
+	{
+		header_remove($header);
+	}
+
+
+
 	
 	function send()
 	{
@@ -2625,7 +2632,35 @@ class e_http_header
 		$this->setHeader("Cache-Control: max-age=0", false);
 		*/
 	//	$this->setHeader("Cache-Control: public", true);
-	
+
+/*
+		if(defined('e_HTTP_STATIC'))
+		{
+			unset($_COOKIE);
+
+			$siteurl = str_replace('https','http',SITEURL);
+			$static = str_replace('https','http', e_HTTP_STATIC);
+
+			if($siteurl === $static && deftrue('e_SUBDOMAIN'))
+			{
+				$accessControl = str_replace(e_SUBDOMAIN.'.', '', SITEURLBASE);
+
+				$this->unsetHeader("Cache-Control");
+			//	$this->unsetHeader("Content-Type");
+				$this->unsetHeader("Set-Cookie");
+				$this->unsetHeader("Pragma");
+				$this->unsetHeader("Expires");
+
+				$this->setHeader("Access-Control-Allow-Origin: ".$accessControl, true);
+				$this->setHeader("Cache-Control: public", true);
+			}
+			else
+			{
+				$this->setHeader("Access-Control-Allow-Origin: ".$static, true);
+			}
+		}
+*/
+
 	
 		$canCache = e107::canCache();
 		
@@ -2678,7 +2713,9 @@ class e_http_header
 		{
 			$this->setHeader('Vary: Accept');
 		}
-		
+
+
+
 		// should come after the Etag header
 		if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
 		{
