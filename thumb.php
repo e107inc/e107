@@ -264,10 +264,10 @@ class e_thumbpage
 		//	return false;
 		}
 
-		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality. $options['c']);
-		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
+	//	$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
+	//	$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
-
+		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 
 		if(($this->_cache === true) && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
 		{

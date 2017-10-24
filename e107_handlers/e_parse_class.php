@@ -2487,6 +2487,51 @@ class e_parse extends e_parser
 		
 	}
 
+	/**
+	 * Generated a Thumb Cache File Name from path and options.
+	 * @param string $path
+	 * @param array $options
+	 * @return null|string
+	 */
+	public function thumbCacheFile($path, $options=array())
+	{
+		if(empty($path))
+		{
+			return null;
+		}
+
+		$filename   = basename($path);
+		$tmp        = explode('.',$filename);
+		$ext        = end($tmp);
+		$len        = strlen($ext) + 1;
+		$start      = substr($filename,0,- $len);
+
+		if(!empty($options['aw']))
+		{
+			$options['w'] = $options['aw'];
+		}
+
+		if(!empty($options['ah']))
+		{
+			$options['h'] = $options['ah'];
+		}
+
+		$size = varset($options['w'],0).'x'.varset($options['h'],0);
+
+		$thumbQuality = e107::getPref('thumbnail_quality',65);
+
+		$cache_str = md5(serialize($options).$path. $thumbQuality);
+
+		// TODO Remove these.
+		$pre = 'thumb_';
+		$post = '.cache.bin';
+	//	$post = '';
+
+		$fname = $pre.strtolower($start.'_'.$cache_str.'_'.$size.'.'.$ext).$post;
+
+		return $fname;
+	}
+
 
 	/**
 	 * Generate an auto-sized Image URL.
