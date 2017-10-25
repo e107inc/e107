@@ -416,6 +416,11 @@ class e107
 				mkdir(e_SYSTEM, 0755);
 			}
 
+			if(!is_dir(e_CACHE_IMAGE))
+			{
+				mkdir(e_CACHE_IMAGE, 0755);
+			}
+
 			// Prepare essential directories.
 			$this->prepareDirs();
 		}
@@ -571,7 +576,16 @@ class e107
 
 		$ret['CACHE_DIRECTORY'] 			= $ret['SYSTEM_DIRECTORY'].'cache/';
 		$ret['CACHE_CONTENT_DIRECTORY'] 	= $ret['CACHE_DIRECTORY'].'content/';
-		$ret['CACHE_IMAGE_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'images/'; //TODO Change to MEDIA Directory.
+
+		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+		{
+			$ret['CACHE_IMAGE_DIRECTORY'] 	= $ret['MEDIA_IMAGES_DIRECTORY'].'cache/';
+		}
+		else
+		{
+			$ret['CACHE_IMAGE_DIRECTORY'] 	= $ret['CACHE_DIRECTORY'].'images/';
+		}
+
 		$ret['CACHE_DB_DIRECTORY'] 			= $ret['CACHE_DIRECTORY'].'db/';
 		$ret['CACHE_URL_DIRECTORY'] 		= $ret['CACHE_DIRECTORY'].'url/';
 		
@@ -4212,6 +4226,11 @@ class e107
 			define('e_AVATAR_ABS', $this->get_override_http('AVATARS'));
 			define('e_AVATAR_UPLOAD_ABS', $this->get_override_http('AVATARS_UPLOAD'));
 			define('e_AVATAR_DEFAULT_ABS', $this->get_override_http('AVATARS_DEFAULT'));
+
+			if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+			{
+				define('e_CACHE_IMAGE_ABS', $this->get_override_http('CACHE_IMAGE'));
+			}
 			
 			// Special
 			

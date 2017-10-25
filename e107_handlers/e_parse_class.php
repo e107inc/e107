@@ -2493,18 +2493,46 @@ class e_parse extends e_parser
 	 * @param array $options
 	 * @return null|string
 	 */
-	public function thumbCacheFile($path, $options=array())
+	public function thumbCacheFile($path, $options=null, $log=null)
 	{
 		if(empty($path))
 		{
 			return null;
 		}
 
+		if(is_string($options))
+		{
+			parse_str($options,$options);
+		}
+
+		$path = str_replace($this->getUrlConstants('raw'), $this->getUrlConstants('sc'), $path);
+		$path = $this->replaceConstants(str_replace('..', '', $path));
+
 		$filename   = basename($path);
 		$tmp        = explode('.',$filename);
 		$ext        = end($tmp);
 		$len        = strlen($ext) + 1;
 		$start      = substr($filename,0,- $len);
+
+
+		// cleanup.
+		$newOpts = array(
+			'w'     => (string) intval($options['w']),
+			'h'     => (string) intval($options['h']),
+			'aw'    => (string) intval($options['aw']),
+			'ah'    => (string) intval($options['ah']),
+			'c'     => strtoupper(vartrue($options['c'],'0'))
+		);
+
+		if($log !== null)
+		{
+			file_put_contents(e_LOG.$log, "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
+			$message = $path."\n".print_r($newOpts,true)."\n\n\n";
+			file_put_contents(e_LOG.$log, $message, FILE_APPEND);
+
+		//	file_put_contents(e_LOG.$log, "\t\tFOUND!!\n\n\n", FILE_APPEND);
+		}
+
 
 		if(!empty($options['aw']))
 		{
@@ -2516,16 +2544,23 @@ class e_parse extends e_parser
 			$options['h'] = $options['ah'];
 		}
 
+
 		$size = varset($options['w'],0).'x'.varset($options['h'],0);
 
 		$thumbQuality = e107::getPref('thumbnail_quality',65);
 
-		$cache_str = md5(serialize($options).$path. $thumbQuality);
+		$cache_str = md5(serialize($newOpts).$path. $thumbQuality);
 
-		// TODO Remove these.
 		$pre = 'thumb_';
 		$post = '.cache.bin';
-	//	$post = '';
+
+	//	$cache_str = http_build_query($newOpts,null,'_'); // testing files.
+
+		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+		{
+			$pre = '';
+			$post = '';
+		}
 
 		$fname = $pre.strtolower($start.'_'.$cache_str.'_'.$size.'.'.$ext).$post;
 
@@ -2635,6 +2670,23 @@ class e_parse extends e_parser
 		}
 
 
+		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+		{
+			$opts = str_replace('&amp;', '&', $thurl);
+
+			$staticFile = $this->thumbCacheFile($url, $opts);
+
+			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE.$staticFile))
+			{
+				//file_put_contents(e_LOG."thumbCache.log",$staticFile."\n",FILE_APPEND);
+				return e_CACHE_IMAGE_ABS.$staticFile;
+			}
+
+			$options['nosef'] = true;
+			// file_put_contents(e_LOG."thumb.log", "\n++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
+		}
+
+
 		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']) )// Experimental SEF URL support.
 		{
 			$options['full'] = $full;
@@ -2655,6 +2707,8 @@ class e_parse extends e_parser
 
 		return $baseurl.$thurl;
 	}
+
+
 
 
 	/**
