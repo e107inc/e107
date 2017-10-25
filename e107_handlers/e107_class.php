@@ -4029,7 +4029,10 @@ class e107
 		{
 			return $this->e107_dirs[$dir.'_HTTP'];
 		}
-		return e_HTTP.$this->e107_dirs[$dir.'_DIRECTORY'];
+
+		$http = ($dir === "CACHE_IMAGE" && defined('e_MEDIA_STATIC') && defined('e_HTTP_STATIC')) ? e_HTTP_STATIC : e_HTTP;
+
+		return $http.$this->e107_dirs[$dir.'_DIRECTORY'];
 	}
 
 	/**
