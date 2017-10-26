@@ -2598,9 +2598,9 @@ class e_parse extends e_parser
 	{
 		if(!defined('e_HTTP_STATIC'))
 		{
+			// e107::getDebug()->log("e_HTTP_STATIC not defined");
 			return ($path === null) ? e_HTTP : $path;
 		}
-
 
 
 		$staticArray = e_HTTP_STATIC;
@@ -2766,10 +2766,13 @@ class e_parse extends e_parser
 
 			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE.$staticFile))
 			{
-				return $this->staticUrl(e_CACHE_IMAGE.$staticFile);
+				$staticImg = $this->staticUrl(e_CACHE_IMAGE_ABS.$staticFile);
+			//	var_dump($staticImg);
+				return $staticImg;
 			}
 
 			$options['nosef'] = true;
+			$options['x'] = null;
 			// file_put_contents(e_LOG."thumb.log", "\n++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
 		}
 
