@@ -62,6 +62,8 @@ class e_parse extends e_parser
 
 	private $thumbEncode = 0;
 
+	private $staticCount = 0;
+
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
 
@@ -2568,6 +2570,90 @@ class e_parse extends e_parser
 	}
 
 
+
+	private function staticCount($val=false)
+	{
+
+		$count = $this->staticCount;
+
+		if($val === 0)
+		{
+			$this->staticCount = 0;
+		}
+		elseif($val !== false)
+		{
+			$this->staticCount = $this->staticCount + (int) $val;
+		}
+
+		return (int) $count;
+
+	}
+
+
+	/**
+	 * @param string $path - absolute path
+	 * @return string - static path.
+	 */
+	public function staticUrl($path=null)
+	{
+		if(!defined('e_HTTP_STATIC'))
+		{
+			return ($path === null) ? e_HTTP : $path;
+		}
+
+
+
+		$staticArray = e_HTTP_STATIC;
+
+		if(is_array($staticArray))
+		{
+			$cnt = count($staticArray);
+			$staticCount = $this->staticCount();
+			if($staticCount > ($cnt -1))
+			{
+				$staticCount = 0;
+				$this->staticCount(0);
+			}
+
+			$http = !empty($staticArray[$staticCount]) ? $staticArray[$staticCount] : e_HTTP;
+
+		}
+		else
+		{
+			$http = e_HTTP_STATIC;
+		}
+
+		$this->staticCount(1);
+
+		if(empty($path))
+		{
+			return $http;
+		}
+
+		$base = '';
+
+		$srch = array(
+			e_PLUGIN_ABS,
+			e_THEME_ABS,
+			e_WEB_ABS,
+			e_CACHE_IMAGE_ABS,
+		);
+
+
+		$repl = array(
+			$http.$base.e107::getFolder('plugins'),
+			$http.$base.e107::getFolder('themes'),
+			$http.$base.e107::getFolder('web'),
+			$http.$base.str_replace('../', '', e_CACHE_IMAGE),
+		);
+
+		$ret = str_replace($srch,$repl,$path);
+
+		return $ret;
+
+	}
+
+
 	/**
 	 * Generate an auto-sized Image URL.
 	 * @param $url - path to image or leave blank for a placeholder. eg. {e_MEDIA}folder/my-image.jpg
@@ -2584,6 +2670,8 @@ class e_parse extends e_parser
 	 */
 	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
+		$this->staticCount++; // increment counter.
+
 		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
@@ -2591,7 +2679,7 @@ class e_parse extends e_parser
 			$url = str_replace($this->getUrlConstants('sc'), $this->getUrlConstants('raw'), $url);	
 		}
 				
-		if(!is_array($options))
+		if(is_string($options))
 		{
 			parse_str($options, $options);
 		}
@@ -2617,7 +2705,7 @@ class e_parse extends e_parser
 
 		if(defined('e_HTTP_STATIC'))
 		{
-			$baseurl = e_HTTP_STATIC.'thumb.php?';
+			$baseurl = $this->staticUrl().'thumb.php?';
 		}
         
 		$thurl = 'src='.urlencode($url).'&amp;';
@@ -2678,8 +2766,7 @@ class e_parse extends e_parser
 
 			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE.$staticFile))
 			{
-				//file_put_contents(e_LOG."thumbCache.log",$staticFile."\n",FILE_APPEND);
-				return e_CACHE_IMAGE_ABS.$staticFile;
+				return $this->staticUrl(e_CACHE_IMAGE.$staticFile);
 			}
 
 			$options['nosef'] = true;
@@ -2834,7 +2921,7 @@ class e_parse extends e_parser
 
 		if(defined('e_HTTP_STATIC'))
 		{
-			$base = e_HTTP_STATIC;
+			$base = $this->staticUrl();
 		}
 	//	$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
 
