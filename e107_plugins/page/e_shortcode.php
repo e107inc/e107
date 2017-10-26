@@ -133,19 +133,33 @@ class page_shortcodes extends e_shortcode
 		 * Render All visible Menus from a specific chapter.
 		 * @param null $parm
 		 * @example {CHAPTER_MENUS: name=chapter-sef-url}
+		 * @example {CHAPTER_MENUS: name=chapter-sef-url&template=xxxxx}
 		 * @return string
 		 */
 		function sc_chapter_menus($parm=null)
 		{
 			$tp = e107::getParser();
-			$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND p.menu_class IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $tp->filter($parm['name'],'str') . "' ORDER BY p.page_order ASC ";
 
 			$text = '';
+			$start = '';
 
-			if(!$pageArray = e107::getDb()->retrieve($query, true))
+			$sef = $tp->filter($parm['name'],'str');
+
+			$registry = 'e_shortcode/sc_chapter_menus/'.$sef;
+
+			if(!$pageArray = e107::getRegistry($registry))
 			{
-				e107::getDebug()->log('{CHAPTER_MENUS: name='.$parm['name'].'} failed.<br />Query: '.$query);
-				return null;
+				$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND p.menu_class IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $sef . "' ORDER BY p.page_order ASC ";
+
+				e107::getDebug()->log("Loading page Chapters");
+
+				if(!$pageArray = e107::getDb()->retrieve($query, true))
+				{
+					e107::getDebug()->log('{CHAPTER_MENUS: name='.$parm['name'].'} failed.<br />Query: '.$query);
+					return null;
+				}
+
+				e107::setRegistry($registry, $pageArray);
 			}
 
 			$template = e107::getCoreTemplate('menu',null,true,true);
@@ -154,18 +168,47 @@ class page_shortcodes extends e_shortcode
 			$sc->setVars($pageArray[0]);
 			$tpl = varset($pageArray[0]['menu_template'],'default'); // use start template from first row.
 
-			$start = $tp->parseTemplate($template[$tpl]['start'],true,$sc);
-
-			foreach($pageArray as $row)
+			if(!empty($parm['template']))
 			{
-				$tpl = varset($row['menu_template'],'default');
-				$sc->setVars($row);
 
-				$text .= $tp->parseTemplate($template[$tpl]['body'],true,$sc);
+				$tpl = $parm['template'];
+				$start .= "<!-- CHAPTER_MENUS Start Template: ". $tpl." -->";
+
+				if(empty($template[$tpl]))
+				{
+					e107::getDebug()->log('{CHAPTER_MENUS: '.http_build_query($parm).'} has an empty template.');
+				}
 
 			}
 
+			$active = varset($parm['active'],1);
+
+			$start .= $tp->parseTemplate($template[$tpl]['start'],true,$sc);
+
+			$c=1;
+			foreach($pageArray as $row)
+			{
+				$row['cmenu_tab_active'] = ($c === $active) ? true : false;
+
+				if(empty($parm['template']))
+				{
+					$tpl = varset($row['menu_template'],'default');
+				}
+
+				$sc->setVars($row);
+
+				$text .= $tp->parseTemplate($template[$tpl]['body'],true,$sc);
+				$c++;
+			}
+
 			$end = $tp->parseTemplate($template[$tpl]['end'],true,$sc);
+
+			$end .= "<!-- ".http_build_query($parm)." -->";
+
+			if(!empty($parm['template']))
+			{
+				$end .= "<!-- CHAPTER_MENUS end template: ". $parm['template']." -->";
+			}
 
 			if(!empty($text))
 			{
