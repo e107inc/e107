@@ -344,22 +344,42 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-		if($video = $tp->toVideo($this->var['menu_image']))
-		{
-			return $video;	
-		}
-		
-
 		if($parm == 'url')
 		{
-			$img = $tp->thumbUrl($this->var['menu_image']);
-			return $img;	
+			$img = ($tp->isVideo($this->var['menu_image'])) ? $tp->toVideo($this->var['menu_image'], array('thumb'=>'src')) : $tp->thumbUrl($this->var['menu_image']);
+			return $img;
+		}
+
+		if($video = $tp->toVideo($this->var['menu_image']))
+		{
+			return $video;
 		}
 
 		return $tp->toImage($this->var['menu_image'], $parm);
 
-		//return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
 	}
+
+
+	function sc_cmenu_tab_active($parm=null)
+	{
+		if(!empty($this->var['cmenu_tab_active']))
+		{
+			return 'active';
+		}
+
+		return null;
+	}
+
+	function sc_cmenu_button_text($parm=null)
+	{
+		return (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
+	}
+
+	function sc_cmenu_button_url($parm=null)
+	{
+		return $this->sc_cmenuurl($parm);
+	}
+
 	
 	function sc_cmenuicon($parm='')
 	{
