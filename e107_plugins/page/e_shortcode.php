@@ -170,7 +170,7 @@ class page_shortcodes extends e_shortcode
 
 			if(!empty($parm['template']))
 			{
-
+				e107::getDebug()->log('{CHAPTER_MENUS CUSTOM TEMPLATE}');
 				$tpl = $parm['template'];
 				$start .= "<!-- CHAPTER_MENUS Start Template: ". $tpl." -->";
 
@@ -188,7 +188,7 @@ class page_shortcodes extends e_shortcode
 			$c=1;
 			foreach($pageArray as $row)
 			{
-				$row['cmenu_tab_active'] = ($c === $active) ? true : false;
+				$row['cmenu_tab_active'] = ($c === (int) $active) ? true : false;
 
 				if(empty($parm['template']))
 				{
