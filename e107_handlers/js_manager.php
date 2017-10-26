@@ -1400,13 +1400,19 @@ class e_jsmanager
 	}
 
 
-
-	private function url($path,$cacheId = true)
+	/**
+	 * Return the URL while checking for staticUrl configuration.
+	 * @param      $path
+	 * @param bool $cacheId
+	 * @return mixed|string
+	 */
+	private function url($path, $cacheId = true)
 	{
-		if((e_MOD_REWRITE_STATIC === true || defined('e_HTTP_STATIC')) && $this->isInAdmin() !== true)
+
+		if(/*(e_MOD_REWRITE_STATIC === true || defined('e_HTTP_STATIC')) &&*/ $this->isInAdmin() !== true)
 		{
 
-			$srch = array(
+		/*	$srch = array(
 				e_PLUGIN_ABS,
 				e_THEME_ABS,
 				e_WEB_ABS
@@ -1430,8 +1436,13 @@ class e_jsmanager
 				return trim($folder);
 			}
 
-			$path = $folder;
+			$path = $folder;*/
+
+			$path = e107::getParser()->staticUrl($path);
 		}
+
+
+
 
 
 		if(strpos($path,'?')!==false)
