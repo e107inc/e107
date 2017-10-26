@@ -5319,7 +5319,7 @@ class e_emotefilter
 			return;
 		}
 
-		$base = deftrue('e_HTTP_STATIC', SITEURLBASE);
+		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC) ? e_HTTP_STATIC : SITEURLBASE;
 
 		foreach($this->emotes as $key => $value)
 		{
