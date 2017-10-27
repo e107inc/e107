@@ -142,6 +142,7 @@ class page_shortcodes extends e_shortcode
 
 			$text = '';
 			$start = '';
+			$classCount = 0;
 
 			$sef = $tp->filter($parm['name'],'str');
 
@@ -151,7 +152,7 @@ class page_shortcodes extends e_shortcode
 			{
 				$query = "SELECT * FROM #page AS p LEFT JOIN #page_chapters as ch ON p.page_chapter=ch.chapter_id WHERE ch.chapter_visibility IN (" . USERCLASS_LIST . ") AND p.menu_class IN (" . USERCLASS_LIST . ") AND ch.chapter_sef = '" . $sef . "' ORDER BY p.page_order ASC ";
 
-				e107::getDebug()->log("Loading page Chapters");
+				e107::getDebug()->log("Loading Page Chapters (".$sef.")");
 
 				if(!$pageArray = e107::getDb()->retrieve($query, true))
 				{
@@ -181,11 +182,19 @@ class page_shortcodes extends e_shortcode
 
 			}
 
+			if(!empty($parm['class']) && is_array($parm['class']))
+			{
+				$classArray = $parm['class'];
+				$classCount = count($parm['class']);
+			}
+
+
 			$active = varset($parm['active'],1);
 
 			$start .= $tp->parseTemplate($template[$tpl]['start'],true,$sc);
 
 			$c=1;
+			$i = 0;
 			foreach($pageArray as $row)
 			{
 				$row['cmenu_tab_active'] = ($c === (int) $active) ? true : false;
@@ -195,9 +204,22 @@ class page_shortcodes extends e_shortcode
 					$tpl = varset($row['menu_template'],'default');
 				}
 
+				$itemTemplate = $template[$tpl]['body'];
+
 				$sc->setVars($row);
 
-				$text .= $tp->parseTemplate($template[$tpl]['body'],true,$sc);
+				if(!empty($classArray))
+				{
+					$itemTemplate = str_replace('{CLASS}',$classArray[$i],$itemTemplate);
+
+					$i++;
+					if($classCount === $i)
+					{
+						$i = 0;
+					}
+				}
+
+				$text .= $tp->parseTemplate($itemTemplate,true,$sc);
 				$c++;
 			}
 
