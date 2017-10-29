@@ -2,11 +2,13 @@ body { padding: 10px;  }
 div.clearfix:before { color:silver; content: "CLEAR FLOATS"; font-size:0.7em; padding-left:49%; padding-top:15px;   }
 div.clearfix { margin-bottom:10px;  }
 ul.fa-ul { padding-left:5px}
+li { padding:4px }
+ul { padding-bottom:8px }
 .mce-visualblocks li { outline: 1px dashed silver; }
 .mce-visualblocks ul.fa-ul { padding-left:30px }
 .mce-visualblocks .animated {	border: 1px dashed red !important; }
 .mce-visualblocks .animated:after { border-left:1px dashed red; border-bottom:1px dashed red; padding:1px 4px; font-size:0.7em; color:red; position:absolute; right:0; top:0; }
-.mce-visualblocks .animated.bounce:after { content: "bounce" !important }
+/*.mce-visualblocks .animated.bounce:after { content: "bounce" !important }
 .mce-visualblocks .animated.flash:after { content: "flash" !important }
 .mce-visualblocks .animated.pulse:after { content: "pulse" !important }
 .mce-visualblocks .animated.rubberBand:after { content: "rubberBand" !important }
@@ -82,4 +84,5 @@ ul.fa-ul { padding-left:5px}
 .mce-visualblocks .animated.slideOutDown:after { content: "slideOutDown" !important }
 .mce-visualblocks .animated.slideOutLeft:after { content: "slideOutLeft" !important }
 .mce-visualblocks .animated.slideOutRight:after { content: "slideOutRight" !important }
-.mce-visualblocks .animated.slideOutUp:after { content: "slideOutUp" !important }
+.mce-visualblocks .animated.slideOutUp:after { content: "slideOutUp" !important }*/
+.mce-visualblocks .animated:after { content: attr(class); !important }
