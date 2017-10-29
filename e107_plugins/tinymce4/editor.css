@@ -4,3 +4,5 @@ div.clearfix { margin-bottom:10px;  }
 ul.fa-ul { padding-left:5px}
 .mce-visualblocks li { outline: 1px dashed silver; }
 .mce-visualblocks ul.fa-ul { padding-left:30px }
+.mce-visualblocks .animated {	border: 1px dashed red !important; }
+.mce-visualblocks .animated:after { font-family: "FontAwesome"; content: "\f04b"; border-left:1px dashed red; border-bottom:1px dashed red; padding:1px 4px; font-size:0.6em; color:red; position:absolute; right:0; top:0; }

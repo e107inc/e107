@@ -611,6 +611,40 @@ class core_library
 			'path'              => '4.7.0',
 		);
 
+
+			// Font-Awesome (local).
+		$libraries['animate.css'] = array(
+			'name'              => 'Animate.css (local)',
+			'vendor_url'        => 'https://daneden.github.io/animate.css/',
+			'version_arguments' => array(
+				'file'    => 'animate.min.css',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'css' => array(
+					'animate.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+		/*	'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'css' => array(
+							'css/font-awesome.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),*/
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/animate.css',
+		//	'path'              => '3.5.2',
+		);
+
 		return $libraries;
 	}
 
