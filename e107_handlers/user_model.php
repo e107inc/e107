@@ -1212,6 +1212,11 @@ class e_system_user extends e_user_model
 			return true;
 		}
 
+		if(!empty($options['debug']))
+		{
+			return $mailer->preview($eml);
+		}
+
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}

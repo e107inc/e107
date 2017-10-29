@@ -167,7 +167,7 @@ JS;
 				case 'resend':
 				case 'loginas':
 				case 'unadmin':
-					$_POST['etrigger_'.$_POST['useraction']] = $_POST['userid'];
+					$_POST['etrigger_'.$_POST['useraction']] = intval($_POST['userid']);
 				break;
 
 
@@ -680,12 +680,19 @@ class users_admin_ui extends e_admin_ui
 				->set('user_sess', '');
 				
 			$row = $sysuser->getData();
-			if ($userMethods->userClassUpdate($row, 'userall'))
+			
+			if ($initUserclasses = $userMethods->userClassUpdate($row, 'userall'))
 			{
-				$sysuser->set('user_class', $row['user_class']);
+				$row['user_class'] = $initUserclasses;
 			}
+
 			$userMethods->addNonDefaulted($row);
-			$sysuser->setData($row)->save();
+			$sysuser->setData($row);
+
+		//	$res = $sysuser->getData();
+		//	e107::getDebug()->log($res);
+
+			$sysuser->save();
 			
 			e107::getLog()->add('USET_10', str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_166), E_LOG_INFORMATIVE);
 			e107::getEvent()->trigger('userfull', $row); //BC
@@ -704,7 +711,10 @@ class users_admin_ui extends e_admin_ui
 					'mail_subject' => USRLAN_113.' '.SITENAME,
 					'mail_body' => nl2br($message),
 				);
-				if($sysuser->email('email', $options))
+
+			//	$options['debug'] = 1;
+
+				if($ret =$sysuser->email('email', $options))
 				{
 					$mes->addSuccess(USRLAN_224." ".$sysuser->getName().' ('.$sysuser->getValue('email').')');
 				}
