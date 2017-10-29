@@ -599,6 +599,108 @@ class wysiwyg
 				 {title: 'Hover', selector: 'table', classes: 'table-hover'},
                  {title: 'Striped', selector: 'table', classes: 'table-striped'},
                 ]},
+                
+                {title: 'Animate.css Style', items: [
+					{title: 'bounce',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounce'},
+					{title: 'flash',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flash'},
+					{title: 'pulse',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated pulse'},
+					{title: 'rubberBand',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rubberBand'},
+					{title: 'shake',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated shake'},
+					{title: 'headShake',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated headShake'},
+					{title: 'swing',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated swing'},
+					{title: 'tada',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated tada'},
+					{title: 'wobble',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated wobble'},
+					{title: 'jello',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated jello'},
+					{title: 'bounceIn',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceIn'},
+					{title: 'bounceInDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceInDown'},
+					{title: 'bounceInLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceInLeft'},
+					{title: 'bounceInRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceInRight'},
+					{title: 'bounceInUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceInUp'},
+					{title: 'bounceOut',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceOut'},
+					{title: 'bounceOutDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceOutDown'},
+					{title: 'bounceOutLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceOutLeft'},
+					{title: 'bounceOutRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceOutRight'},
+					{title: 'bounceOutUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated bounceOutUp'},
+					{title: 'fadeIn',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeIn'},
+					{title: 'fadeInDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInDown'},
+					{title: 'fadeInDownBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInDownBig'},
+					{title: 'fadeInLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInLeft'},
+					{title: 'fadeInLeftBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInLeftBig'},
+					{title: 'fadeInRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInRight'},
+					{title: 'fadeInRightBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInRightBig'},
+					{title: 'fadeInUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInUp'},
+					{title: 'fadeInUpBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeInUpBig'},
+					{title: 'fadeOut',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOut'},
+					{title: 'fadeOutDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutDown'},
+					{title: 'fadeOutDownBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutDownBig'},
+					{title: 'fadeOutLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutLeft'},
+					{title: 'fadeOutLeftBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutLeftBig'},
+					{title: 'fadeOutRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutRight'},
+					{title: 'fadeOutRightBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutRightBig'},
+					{title: 'fadeOutUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutUp'},
+					{title: 'fadeOutUpBig',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated fadeOutUpBig'},
+					{title: 'flip',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flip'},
+					{title: 'flipInX',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flipInX'},
+					{title: 'flipInY',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flipInY'},
+					{title: 'flipOutX',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flipOutX'},
+					{title: 'flipOutY',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated flipOutY'},
+					{title: 'lightSpeedIn',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated lightSpeedIn'},
+					{title: 'lightSpeedOut',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated lightSpeedOut'},
+					{title: 'rotateIn',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateIn'},
+					{title: 'rotateInDownLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateInDownLeft'},
+					{title: 'rotateInDownRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateInDownRight'},
+					{title: 'rotateInUpLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateInUpLeft'},
+					{title: 'rotateInUpRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateInUpRight'},
+					{title: 'rotateOut',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateOut'},
+					{title: 'rotateOutDownLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateOutDownLeft'},
+					{title: 'rotateOutDownRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateOutDownRight'},
+					{title: 'rotateOutUpLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateOutUpLeft'},
+					{title: 'rotateOutUpRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rotateOutUpRight'},
+					{title: 'hinge',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated hinge'},
+					{title: 'jackInTheBox',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated jackInTheBox'},
+					{title: 'rollIn',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rollIn'},
+					{title: 'rollOut',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated rollOut'},
+					{title: 'zoomIn',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomIn'},
+					{title: 'zoomInDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomInDown'},
+					{title: 'zoomInLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomInLeft'},
+					{title: 'zoomInRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomInRight'},
+					{title: 'zoomInUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomInUp'},
+					{title: 'zoomOut',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomOut'},
+					{title: 'zoomOutDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomOutDown'},
+					{title: 'zoomOutLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomOutLeft'},
+					{title: 'zoomOutRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomOutRight'},
+					{title: 'zoomOutUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated zoomOutUp'},
+					{title: 'slideInDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideInDown'},
+					{title: 'slideInLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideInLeft'},
+					{title: 'slideInRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideInRight'},
+					{title: 'slideInUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideInUp'},
+					{title: 'slideOutDown',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutDown'},
+					{title: 'slideOutLeft',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutLeft'},
+					{title: 'slideOutRight',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutRight'},
+					{title: 'slideOutUp',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animated slideOutUp'},
+		
+                ]},
+
+
+				 {title: 'Animate.css Delay', items: [
+					{title: '2 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-2'},
+					{title: '4 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-4'},
+					{title: '6 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-6'},
+					{title: '8 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-8'},
+					{title: '10 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-10'},
+					{title: '12 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-12'},
+					{title: '14 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-14'},
+					{title: '16 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-16'},
+					{title: '18 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-18'},
+					{title: '20 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-20'},
+					{title: '22 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-22'},
+					{title: '24 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-24'},
+					{title: '26 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-26'},
+					{title: '28 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-28'},
+					{title: '30 sec.',  selector: 'p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table,img', classes: 'animation-delay-30'},
+                ]},
+
+
 
 
             ]";
@@ -742,10 +844,16 @@ class wysiwyg
 		$pathFA .= '/';
 		$pathFA .= e107::getLibrary()->getProperty('fontawesome', 'path'); // sub-folder
 
+		$pathAn = e107::getLibrary()->getProperty('animate.css', 'library_path');
+		$pathAn .= '/';
+		$pathAn .= e107::getLibrary()->getProperty('animate.css', 'path'); // sub-folder
+
 		$editorCSS = array(
 			0 => $pathBS . '/dist/css/bootstrap.min.css',
 			1 => $pathFA . '/css/font-awesome.min.css',
 			2 => e_PLUGIN_ABS . 'tinymce4/editor.css',
+			3 => $pathAn . '/animate.min.css',
+
 		);
 
 		$editorCSS = $tp->replaceConstants($editorCSS, 'abs');
