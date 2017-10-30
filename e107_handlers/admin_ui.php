@@ -4820,7 +4820,7 @@ class e_admin_ui extends e_admin_controller_ui
 		// send messages to session
 		e107::getMessage()->moveToSession();
 		// redirect
-	//	$this->redirect();
+		$this->redirect();
 	}
 
 
