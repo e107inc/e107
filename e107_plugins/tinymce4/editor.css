@@ -7,7 +7,7 @@ ul { padding-bottom:8px }
 .mce-visualblocks li { outline: 1px dashed silver; }
 .mce-visualblocks ul.fa-ul { padding-left:30px }
 .mce-visualblocks .animated {	border: 1px dashed red !important; }
-.mce-visualblocks .animated:after { border-left:1px dashed red; border-bottom:1px dashed red; padding:1px 4px; font-size:0.7em; color:red; position:absolute; right:0; top:0; }
+.mce-visualblocks .animated:after { border-left:1px dashed red; border-bottom:1px dashed red; padding:1px 4px; font-size:8pt; color:red; position:absolute; right:0; top:0; }
 /*.mce-visualblocks .animated.bounce:after { content: "bounce" !important }
 .mce-visualblocks .animated.flash:after { content: "flash" !important }
 .mce-visualblocks .animated.pulse:after { content: "pulse" !important }
