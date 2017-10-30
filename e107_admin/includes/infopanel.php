@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 }
 
 
-define('ADMINFEEDMORE', 'http://e107.org/blog');
+define('ADMINFEEDMORE', 'https://e107.org/blog');
 
 
 

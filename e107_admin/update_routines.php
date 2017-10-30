@@ -2022,7 +2022,7 @@ function theme_foot()
 	{
 		$data = array('name'=>SITENAME, 'theme'=>$pref['sitetheme'], 'language'=>e_LANGUAGE, 'url'=>SITEURL, 'type'=>'upgrade');
 		$base = base64_encode(http_build_query($data, null, '&'));
-		$url = "http://e107.org/e-install/".$base;
+		$url = "https://e107.org/e-install/".$base;
 		return "<img src='".$url."' style='width:1px; height:1px;border:0' />";
 	}
 
