@@ -3875,7 +3875,7 @@ class e107
 				exit();
 			}
 
-			if(($key == "QUERY_STRING") && empty($_GET['hauth_done']) && ( // exception for hybridAuth.
+			if(($key == "QUERY_STRING") && empty($_GET['hauth_done']) && empty($_GET['hauth.done']) && ( // exception for hybridAuth.
 				strpos(strtolower($input),"=http")!==FALSE
 				|| strpos(strtolower($input),strtolower("http%3A%2F%2F"))!==FALSE
 				))
