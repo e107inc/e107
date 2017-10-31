@@ -1368,7 +1368,11 @@ if(!defined("THEME_LAYOUT"))
 	}
 	*/
 
-	if(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
+	if(deftrue('e_ADMIN_AREA'))
+	{
+		define("THEME_STYLE", $pref['admincss']);
+	}
+	elseif(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
 	{
 		define("THEME_STYLE", $pref['themecss']);
 	}

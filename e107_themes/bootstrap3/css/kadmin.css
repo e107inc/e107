@@ -14463,6 +14463,9 @@ font-family: 'Oswald';
 margin-bottom: 15px;
   }
 
+.popover {  }
+.popover .popover-title { background-color: #d9534f; color:white; font-weight:bold }
+
 
 
 
