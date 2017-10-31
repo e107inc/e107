@@ -22,6 +22,13 @@
 				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
 			});
 
+			ed.on('change', function(e) {
+			//	  console.log('the event object ', e);
+			//	console.log(e);
+           	//	console.log('the editor object ', ed);
+           //		console.log('the content ', ed.getContent());
+			});
+
 
 		//	ed.contentCSS.push(url+'/e107.css');
 
