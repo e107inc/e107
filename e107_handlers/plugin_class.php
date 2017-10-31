@@ -336,8 +336,11 @@ class e_plugin
 
 		}
 
+
 		$detected = $this->getDetected();
 		$runUpdate = false;
+
+
 
 		foreach($detected as $path) // add a missing plugin to the database table.
 		{
@@ -356,6 +359,8 @@ class e_plugin
 				{
 					$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;
 					$runUpdate = true;
+
+					e107::getDebug()->log("Inserting plugin data into table".print_a($row,true));
 
 					if($row['plugin_installflag'] == 1)
 					{
