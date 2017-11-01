@@ -6,7 +6,8 @@ li { padding:4px }
 ul { padding-bottom:8px }
 .mce-visualblocks li { outline: 1px dashed silver; }
 .mce-visualblocks ul.fa-ul { padding-left:30px }
-.mce-visualblocks .animated {	border: 1px dashed red !important; }
+.mce-visualblocks .animated,
+.mce-visualblocks .wow {	border: 1px dashed red !important; position:relative }
 .mce-visualblocks .animated:after,
 .mce-visualblocks .wow:after { border-left:1px dashed red; border-bottom:1px dashed red; padding:1px 4px; font-size:8pt; color:red; position:absolute; right:0; top:0; }
 /*.mce-visualblocks .animated.bounce:after { content: "bounce" !important }
