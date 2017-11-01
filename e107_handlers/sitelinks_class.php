@@ -1647,17 +1647,40 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 * --------------- CODE-EFFICIENT APPROACH -------------------------
 	 * FIXME syscache
 	 */
-	public function initData($cat=1)
+	public function initData($cat=1, $opt=array())
 	{	
 		$sql 		= e107::getDb('sqlSiteLinks');
-		$ins 		= ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
+
+		$ins = ($cat > 0) ? " link_category = ".intval($cat)." AND " : "";
+
 		$query 		= "SELECT * FROM #links WHERE ".$ins." ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND link_class NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order,link_parent ASC";
 
 		$outArray 	= array();
 		$data 		= $sql->retrieve($query,true);
 
+		if(!empty($opt['flat']))
+		{
+			$newArr = array();
+			foreach($data as $row)
+			{
+				//$tmp = $this->isDynamic($row); //FIXME TODO Flatten dynamic links and add to $newArr
+
+				if(!empty($opt['noempty']) && (empty($row['link_url']) || $row['link_url'] === '#'))
+				{
+					continue;
+				}
+
+				$newArr[] = $row;
+
+			}
+
+			return $newArr;
+		}
+
 
 		$ret = $this->compile($data, $outArray);
+
+
 
 		return $ret;
 	}
