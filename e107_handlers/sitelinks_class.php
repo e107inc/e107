@@ -1658,29 +1658,56 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$outArray 	= array();
 		$data 		= $sql->retrieve($query,true);
 
-		if(!empty($opt['flat']))
-		{
-			$newArr = array();
-			foreach($data as $row)
-			{
-				//$tmp = $this->isDynamic($row); //FIXME TODO Flatten dynamic links and add to $newArr
 
-				if(!empty($opt['noempty']) && (empty($row['link_url']) || $row['link_url'] === '#'))
-				{
-					continue;
-				}
-
-				$newArr[] = $row;
-
-			}
-
-			return $newArr;
-		}
 
 
 		$ret = $this->compile($data, $outArray);
 
+		if(!empty($opt['flat']))
+		{
+			$newArr = array();
+			foreach($ret as $row)
+			{
+				$ignore = (!empty($opt['noempty']) && (empty($row['link_url']) || $row['link_url'] === '#')) ? true : false;
 
+				$tmp = (array) $row['link_sub'];
+
+				unset($row['link_sub']);
+
+				if($ignore !== true)
+				{
+					$newArr[] = $row;
+				}
+
+				if(!empty($tmp))
+				{
+					foreach($tmp as $val)
+					{
+						$tmp2 = (array) $val['link_sub'];
+						unset($val['link_sub']);
+						$newArr[] = $val;
+						if(!empty($tmp2))
+						{
+							foreach($tmp2 as $k=>$v)
+							{
+								$tmp3 = (array) $v['link_sub'];
+								unset($v['link_sub']);
+								$newArr[] = $v;
+								foreach($tmp3 as $sub)
+								{
+									$newArr[] = $sub;
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+	//e107::getDebug()->log($newArr);
+
+			return $newArr;
+		}
 
 		return $ret;
 	}
