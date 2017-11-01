@@ -370,8 +370,20 @@ class cpage_shortcodes extends e_shortcode
 		return null;
 	}
 
+	function sc_cmenu_button($parm=null)
+	{
+		return $this->sc_cpagebutton($parm);
+	}
+
+
 	function sc_cmenu_button_text($parm=null)
 	{
+		if(empty($this->var['menu_button_url']) && empty($this->var['page_text']))
+		{
+			return null;
+		}
+
+
 		return (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
 	}
 
