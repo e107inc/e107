@@ -44,8 +44,7 @@
 	$nav			= e107::getNav();
 
 	$template		= e107::getCoreTemplate('navigation', $tmpl);	
-	$data 			= $nav->initData($category);
-//	$data 			= $nav->collection($category);
+	$data 			= $nav->initData($category,$parm);
 
 	return $nav->render($data, $template);
 
