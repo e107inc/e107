@@ -4071,6 +4071,7 @@ class e_parser
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
 
+
 		if(!empty($options['type']) && $options['type'] === 'url')
 		{
 			return $img;
@@ -4082,8 +4083,10 @@ class e_parser
 
 		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? " user-avatar-online" : '';
 
+		$class = !empty($options['class']) ? $options['class'] : $shape." user-avatar";
+
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$shape." user-avatar".$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
 	//	return $img;
 		return $text;
