@@ -4239,7 +4239,7 @@ class e_parser
 			{
 				$parm['srcset'] = false;
 			}
-			else
+			elseif(!isset($parm['srcset']))
 			{
 				$srcSetParm = $parm;
 				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
