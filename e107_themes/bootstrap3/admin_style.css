@@ -1698,8 +1698,9 @@ td img.thumbnail { margin-bottom:0 }
 
 
 
-.editableform-loading:before { font-size:24px; font-family: "FontAwesome"; content: '\f110';
-}
+.editableform-loading:before { font-size:24px; font-family: "FontAwesome"; content: '\f110'; }
+
+.editable-input input[type=text] { padding-top: 1px; padding-bottom: 1px; }
 
 tr.highlight-odd, .table-striped > tbody > tr.highlight-odd			{ background-color: rgba(0,0,0,0.15); }
 tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-color: rgba(0,0,0,0.15);  }
