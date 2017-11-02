@@ -814,6 +814,7 @@ class themeHandler
 	var $frm;
 	var $fl;
 	var $themeConfigObj = null;
+	var $themeConfigFormObj= null;
 	var $noLog = FALSE;
 	private $curTheme = null;
 	
@@ -1816,6 +1817,11 @@ class themeHandler
 			if(class_exists('theme_config')) // new v2.1.4 theme_config is the class name.
 			{
 				$this->themeConfigObj = new theme_config();
+
+				if(class_exists('theme_config_form')) // new v2.1.7
+				{
+					$this->themeConfigFormObj = new theme_config_form();
+				}
 			}
 			elseif(class_exists($className)) // old way.
 			{
@@ -1834,7 +1840,9 @@ class themeHandler
 	{
 		
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
+
+		$frm = ($this->themeConfigFormObj !== null) ?  $this->themeConfigFormObj : e107::getForm();
+
 		$pref = e107::getConfig()->getPref();
 		e107::getDebug()->log("Rendering Theme Config");
 		
@@ -1851,13 +1859,12 @@ class themeHandler
 		{
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
 			$text = ''; // avoid notice
-			
+
 			foreach ($var as $field=>$val)
 			{
 				if(is_numeric($field))
 				{
-					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
-</td></tr>";
+					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div></td></tr>";
 				}
 				else
 				{
@@ -1867,8 +1874,7 @@ class themeHandler
 					}
 
 					$tdClass = !empty($val['writeParms']['post']) ? 'form-inline' : '';
-					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div>
-</td></tr>";
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div></td></tr>";
 				}
 			}
 
