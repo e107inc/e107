@@ -53,5 +53,17 @@ class theme_config implements e_theme_config
 	}
 }
 
+/*
+// Custom Methods
+class theme_config_form extends e_form
+{
 
-?>
+	function custom_method($value,$mode,$parms) // named the same as $fields key.(eg. 'branding') Used when type = 'method'
+	{
+
+		return $this->text('custom_method', $value);
+
+	}
+
+}
+*/
