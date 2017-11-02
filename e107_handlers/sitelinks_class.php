@@ -1653,12 +1653,10 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$ins = ($cat > 0) ? " link_category = ".intval($cat)." AND " : "";
 
-		$query 		= "SELECT * FROM #links WHERE ".$ins." ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND link_class NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order,link_parent ASC";
+		$query 		= "SELECT * FROM #links WHERE ".$ins." ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND ABS(link_class) NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order,link_parent ASC";
 
 		$outArray 	= array();
 		$data 		= $sql->retrieve($query,true);
-
-
 
 
 		$ret = $this->compile($data, $outArray);
