@@ -60,8 +60,18 @@ else
 	$e107CorePage->processViewPage();
     $e107CorePage->setPage();
 
+
+
 	require_once(HEADERF);
-	e107::getRender()->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage');
+
+	$ns = e107::getRender();
+
+	if(!empty($e107CorePage->pageOutput['title']))
+	{
+		$ns->setContent('title',$e107CorePage->pageOutput['title']);
+	}
+
+	$ns->tablerender($e107CorePage->pageOutput['caption'], $e107CorePage->pageOutput['text'], 'cpage');
 	require_once(FOOTERF);
 	exit;
 }
@@ -774,7 +784,7 @@ class pageClass
 			if(is_object($vars) && $vars->cachecontrol) $this->setCache($ret, $this->batch->sc_cpagetitle(), $this->page['page_comment_flag']);
 			
 			//return str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret);
-            $this->pageOutput = array('text' => str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret), 'caption'=>$arr['caption'],'mode'=>$arr['mode']);
+            $this->pageOutput = array('text' => str_replace('[[PAGECOMMENTS]]', $this->batch->cpagecomments(), $ret), 'caption'=>$arr['caption'],'mode'=>$arr['mode'], 'title'=>$this->page['page_metadscr']);
 
             return null;
 		}
@@ -823,7 +833,7 @@ class pageClass
 
 		// return $this->renderPage($template, $extend);
 		$tmp = $this->renderPage($template, $extend);
-        $this->pageOutput = array('text' => $tmp['text'], 'caption'=>$tmp['caption'], 'mode'=>$tmp['mode']);
+        $this->pageOutput = array('text' => $tmp['text'], 'caption'=>$tmp['caption'], 'mode'=>$tmp['mode'], 'title'=>$tmp['title']);
 	}
 	
 	public function renderPage($template, $vars = null)
@@ -847,7 +857,10 @@ class pageClass
             $mode = vartrue($this->template['tableRender'], 'cpage-page-view');
         }
 
-		return array('caption'=>$this->page['page_title'], 'text'=>$ret, 'mode'=>$mode);
+	//	var_dump($this->batch->page_metadescr);
+
+
+		return array('caption'=>$this->page['page_title'], 'text'=>$ret, 'mode'=>$mode, 'title'=>$this->page['page_metadscr']);
 
 	//	return e107::getRender()->tablerender($this->page['page_title'], $ret, $mode, true); //table style not parsed in hearder yet.
 		
