@@ -3541,7 +3541,7 @@ class pluginBuilder
 						</colgroup>
 				<tr>
 					<td>".EPL_ADLAN_107."</td>
-					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_232).$frm->close()."</td>
+					<td><div class='input-append form-inline'>".$frm->open('createPlugin','get',e_SELF."?mode=create").$frm->select("newplugin",$newDir, false, 'size=xlarge').$frm->admin_button('step', 2,'other',LAN_GO)."</div> ".$frm->checkbox('createFiles',1,1,EPL_ADLAN_255).$frm->close()."</td>
 					<td><div class='alert alert-info'>".$info."</div></td>
 				</tr>
 				
@@ -3610,7 +3610,7 @@ class pluginBuilder
 			{
 				$createData = str_replace("`".MPREFIX, '`', $data[1]);
 				$createData .= ";";
-				if(!file_exists($file))
+				if(!file_exists($file) && empty($this->createFiles))
 				{
 					file_put_contents($file,$createData);
 				}
@@ -3813,7 +3813,121 @@ class pluginBuilder
 
 
 
+		private function buildTemplateFile()
+		{
+			$dirName  = e_PLUGIN.$this->pluginName. "/templates";
 
+			if(!is_dir($dirName))
+			{
+				mkdir($dirName,0755);
+			}
+
+
+			$file    = $dirName. "/".$this->pluginName."_template.php";
+			$shortFileName = "templates/".$this->pluginName."_template.php";
+
+			if(file_exists($file) && empty($this->createFiles))
+			{
+				return e107::getParser()->lanVars(EPL_ADLAN_256,$shortFileName);
+			}
+
+
+$content = <<<TMPL
+<?php
+
+// Template File
+TMPL;
+
+$upperName = strtoupper($this->pluginName);
+
+$content .=  "
+// ".$this->pluginName." Template file
+
+if (!defined('e107_INIT')) { exit; }
+
+
+\$".$upperName."_TEMPLATE = array();
+
+\$".$upperName."_TEMPLATE['default']['start'] \t= '{SETIMAGE: w=400&h=300}';
+
+\$".$upperName."_TEMPLATE['default']['item'] \t= '';
+
+\$".$upperName."_TEMPLATE['default']['end'] \t= '';
+
+
+
+";
+
+
+			return file_put_contents($file,$content)? LAN_CREATED.': '.$shortFileName : LAN_CREATED_FAILED.': '.$shortFileName;
+		}
+
+
+
+
+
+		private function buildShortcodesFile()
+		{
+			$file    = e_PLUGIN.$this->pluginName. "/".$this->pluginName."_shortcodes.php";
+
+$content = <<<TMPL
+<?php
+	
+
+TMPL;
+
+$content .=  "
+// ".$this->pluginName." Shortcodes file
+
+if (!defined('e107_INIT')) { exit; }
+
+class plugin_".$this->pluginName."_shortcodes extends e_shortcode
+{
+
+";
+
+		if(!empty($_POST['bullets_ui']['fields']))
+		{
+			foreach($_POST['bullets_ui']['fields'] as $key=>$row)
+			{
+
+				if($key === 'options' || $key === 'checkboxes')
+				{
+					continue;
+				}
+
+$content .= "
+	/**
+	* {".strtoupper($key)."}
+	*/
+	public function sc_".$key."(\$parm=null)
+	{
+	
+		return \$this->var['".$key."'];
+	}
+	
+
+";
+
+
+
+
+
+
+
+
+
+
+			}
+
+
+		}
+
+
+
+
+			return file_put_contents($file,$content)? LAN_CREATED.': '.$this->pluginName."_shortcodes.php" : LAN_CREATED_FAILED.': '.$this->pluginName."_shortcodes.php";
+		}
 
 
 		private function createAddons($list)
@@ -3828,9 +3942,21 @@ class pluginBuilder
 				$source         = e_PLUGIN."_blank/".$addon.".php";
 				$destination    = e_PLUGIN.$this->pluginName. "/".$addonDest.".php";
 
-				if(file_exists($destination))
+				if(file_exists($destination) && empty($this->createFiles))
 				{
-					$result[] = "Skipped (already exists) : ".$addonDest;
+					$result[] = e107::getParser()->lanVars(EPL_ADLAN_256,$addonDest.'.php');
+					continue;
+				}
+
+				if($addon === '_blank_template')
+				{
+					$result[] = $this->buildTemplateFile();
+					continue;
+				}
+
+				if($addon === '_blank_shortcodes')
+				{
+					$result[] = $this->buildShortcodesFile();
 					continue;
 				}
 
@@ -3838,16 +3964,16 @@ class pluginBuilder
 				{
 					$content = str_replace($srch, $this->pluginName, $content);
 
-					if(!file_exists($destination))
+					if(file_exists($destination) && empty($this->createFiles))
 					{
-						if(file_put_contents($destination,$content))
-						{
-							$result[] = LAN_CREATED." : ".$addonDest;
-						}
+						$result[] = e107::getParser()->lanVars(EPL_ADLAN_256,$addonDest.'.php');
 					}
 					else
 					{
-						$result[] = "Skipped (already exists) : ".$addonDest;
+						if(file_put_contents($destination,$content))
+						{
+							$result[] = LAN_CREATED." : ".$addonDest.".php";
+						}
 					}
 				}
 				else
@@ -3876,10 +4002,12 @@ class pluginBuilder
 			$dizOther = array(
 				'_blank' => "Simple frontend script",
 				'_blank_setup' => "Create default table data during install, upgrade, uninstall etc",
-				'_blank_menu' => "Menu item for use in the menu manager."
+				'_blank_menu' => "Menu item for use in the menu manager.",
+				'_blank_template' => "Template to allow layout customization by themes.",
+				'_blank_shortcodes' => "Shortcodes for the template."
 			);
 
-			array_unshift($list,'_blank', '_blank_setup', '_blank_menu');
+			array_unshift($list,'_blank', '_blank_setup', '_blank_menu', '_blank_template', '_blank_shortcodes');
 
 			$templateFiles = scandir(e_PLUGIN."_blank");
 
@@ -3892,7 +4020,7 @@ class pluginBuilder
 			foreach($list as $v)
 			{
 
-				if(!in_array($v.".php", $templateFiles))
+				if(!in_array($v.".php", $templateFiles) && $v != '_blank_template' && $v!='_blank_shortcodes')
 				{
 					continue;
 				}
@@ -4358,7 +4486,12 @@ TEMPLATE;
 			$result = e107::getParser()->simpleParse($template, $newArray);
 			$path = e_PLUGIN.$this->pluginName."/plugin.xml";
 			
-			
+			if(file_exists($path) && empty($this->createFiles))
+			{
+				return  htmlentities($result);
+			}
+
+
 			if($this->createFiles == true)
 			{
 				if(file_put_contents($path,$result) )
@@ -5259,7 +5392,12 @@ exit;
 				}
 			}
 
-			if($this->createFiles == true)
+			if(file_exists($generatedFile) && empty($this->createFiles))
+			{
+				$message = e107::getParser()->lanVars(EPL_ADLAN_256,"admin_config.php");
+				$mes->addSuccess($message);
+			}
+			else
 			{
 				if(file_put_contents($generatedFile, $startPHP .$text . $endPHP))
 				{
@@ -5271,15 +5409,7 @@ exit;
 					$mes->addError(str_replace('[x]', $generatedFile, EPL_ADLAN_218));
 				}
 			}
-			else
-			{
-				$mes->addSuccess(EPL_ADLAN_219);
-			}
 
-
-
-
-			
 		//	echo $mes->render();
 
 			$ret = "<h3>plugin.xml</h3>";
@@ -5288,16 +5418,7 @@ exit;
 			$ret .= "<pre style='font-size:80%'>".$text."</pre>";
 
 			return array('caption'=>EPL_ADLAN_253, 'text'=> $ret);
-			
-		//	$text =$ns->tablerender(ADLAN_98.SEP.EPL_ADLAN_114.SEP." plugin.xml", "<pre style='font-size:80%'>".$xmlText."</pre>", 'default', true);
 
-
-
-			
-			$text .= $ns->tablerender("admin_config.php", "<pre style='font-size:80%'>".$text."</pre>");
-			
-		//	
-			return;
 	
 		}
 }
