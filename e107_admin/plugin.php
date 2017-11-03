@@ -3924,7 +3924,7 @@ $content .= "
 		}
 
 
-
+$content .= '}';
 
 			return file_put_contents($file,$content)? LAN_CREATED.': '.$this->pluginName."_shortcodes.php" : LAN_CREATED_FAILED.': '.$this->pluginName."_shortcodes.php";
 		}
