@@ -37,6 +37,9 @@ class _blank_front
 		$frm = e107::getForm(); 				// Form element class.
 		$ns = e107::getRender();				// render in theme box.
 
+	//	$sc = e107::getScBatch('_blank',true, '_blank');
+	//	$template = e107::getTemplate('_blank','_blank','default');
+
 		$text = '';
 
 		if($rows = $sql->retrieve('blank','*',false,'',true)) 	// combined select and fetch function - returns an array.

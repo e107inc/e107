@@ -3881,7 +3881,7 @@ $content .=  "
 
 if (!defined('e107_INIT')) { exit; }
 
-class plugin_".$this->pluginName."_shortcodes extends e_shortcode
+class plugin_".$this->pluginName."_".$this->pluginName."_shortcodes extends e_shortcode
 {
 
 ";
