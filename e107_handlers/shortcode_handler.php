@@ -353,6 +353,7 @@ class e_parse_shortcode
 		*/
 
 		$path = null;
+		$manualCall = false;
 		
 		if(trim($className)==""){ return null; }
 
@@ -450,6 +451,8 @@ class e_parse_shortcode
 		if (is_readable($path))
 		{
 			require_once($path);
+			// e107::getDebug()->log("Loading Class '".$className."' in <b>".$path."</b>");
+
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
 				// register instance directly to allow override
@@ -463,9 +466,9 @@ class e_parse_shortcode
 				echo "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>";
 			}
 		}
-		elseif(E107_DBG_INCLUDES)
+		else
 		{
-		// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
+			e107::getDebug()->log("Couldn't Find Class '".$className."' in <b>".$path."</b>");
 		}
 
 	//	e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
