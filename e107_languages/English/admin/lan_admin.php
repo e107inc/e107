@@ -201,6 +201,8 @@ define("ADLAN_186", "The following old files can be safely deleted from your sys
 define("ADLAN_187", "Unable to create [x]. Please check your folder permissions.");
 define("ADLAN_188", "Your timezone setting [x] is invalid. It has been reset to UTC. To Modify, please go to Admin -> Preferences -> Date Display Options.");
 define("ADLAN_189", "The following plugins are not compatible with this version of e107 and should be uninstalled: ");
+define("ADLAN_190", "Need Help?");
+define("ADLAN_191", "Connect with our community for <a href='https://e107help.org' rel='external'>free support</a> with any e107 issues you may encounter.");
 
 // define("ADLAN_CL_1", "Settings");
 define("ADLAN_CL_2", "Users");
