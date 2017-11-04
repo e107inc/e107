@@ -1244,6 +1244,11 @@ class e107
 				}
 
 				$arr[] = $glyphConfig;
+
+				if(E107_DBG_INCLUDES)
+				{
+					e107::getDebug()->log("Loading Glyph Icons: ".print_a($glyphConfig,true));
+				}
 			}
 
 		}
