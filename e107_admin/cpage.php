@@ -635,11 +635,15 @@ class page_admin_ui extends e_admin_ui
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id  "; // without any Order or Limit.
 				$this->fieldpref = array("page_id", "page_title", 'page_chapter', 'page_template', "menu_title", 'menu_image', 'menu_template' );
 
+
+
 				$this->sortField = false;
 
 				$this->fields['menu_title']['width'] = 'auto';
 				$this->fields['menu_image']['readParms'] = 'thumb=60x55';
 				$this->fields['menu_image']['width'] = 'auto';
+				$this->fields['menu_button_text']['nolist'] = false; 
+				$this->fields['menu_button_url']['nolist'] = false;
 
 				$this->fields['page_title']['width'] = 'auto';
 
