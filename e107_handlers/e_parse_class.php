@@ -3883,8 +3883,8 @@ class e_parser
 		}
 
 		// Get Glyph names.
-		$bs3 = e107::getMedia()->getGlyphs('bs3','');
-		$fa4 = e107::getMedia()->getGlyphs('fa4','');
+	//	$bs3 = e107::getMedia()->getGlyphs('bs3','');
+	//	$fa4 = e107::getMedia()->getGlyphs('fa4','');
 
 
 
@@ -3893,19 +3893,21 @@ class e_parser
 
 	//	return $cls;
 
-		$removePrefix = array('glyphicon-','icon-','fa-');
+	//	$removePrefix = array('glyphicon-','icon-','fa-');
 
-		$id = str_replace($removePrefix, "", $cls);
+	//	$id = str_replace($removePrefix, "", $cls);
 
-		$spin = null;
-		$rotate = null;
-		$fixedW = null;
-		$prefix = null;
-		$size = null;
-		$tag = 'span';
+		$id = $cls;
+
+		$spin       = null;
+		$rotate     = null;
+		$fixedW     = null;
+		$prefix     = 'fa fa-'; // fallback
+		$size       = null;
+		$tag        = 'span';
 
 	//	return print_r($fa4,true);
-
+/*
 		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also.
 		{
 			$prefix = 'fa fa-';
@@ -3931,6 +3933,45 @@ class e_parser
 			$size = '';
 
 		}
+		*/
+		if(strpos($text, 'fa-') === 0) // Font-Awesome
+		{
+			$prefix = 'fa ';
+			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
+			$tag 	= 'i';
+			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
+			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
+			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
+		}
+		elseif(strpos($text, 'glyphicon-') === 0) // Bootstrap 3
+		{
+			$prefix = 'glyphicon ';
+			$tag = 'span';
+
+		}
+		elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
+		{
+			$prefix = '';
+			$tag = 'i';
+
+		}
+		elseif($custom = e107::getThemeGlyphs()) // Custom Glyphs
+		{
+			foreach($custom as $glyphConfig)
+			{
+				if(strpos($text, $glyphConfig['prefix']) === 0)
+				{
+					$prefix = $glyphConfig['class'] . " ";
+					$tag = $glyphConfig['tag'];
+					continue;
+				}
+			}
+
+		}
+
+
+
+
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
@@ -3942,8 +3983,6 @@ class e_parser
 		return $text;
 
 
-		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text);
-		// return $text;
 	}
 
 

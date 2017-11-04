@@ -736,6 +736,7 @@ class e_theme
 						'name'      => $val['@attributes']['name'],
 						'pattern'   => $val['@attributes']['pattern'],
 						'path'      => $val['@attributes']['path'],
+						'class'     => $val['@attributes']['class'],
 						'prefix'    => $val['@attributes']['prefix'],
 						'tag'       => $val['@attributes']['tag'],
 				);
