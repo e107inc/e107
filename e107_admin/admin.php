@@ -454,7 +454,7 @@ TMPO;
 		}
 		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
 		{
-			$message = ADLAN_191;
+			$message = str_replace(array('[',']'), array("<a href='https://e107help.org' rel='external'>","</a>"), ADLAN_191);
 			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>Don't show again</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
 			echo e107::getMessage()->setTitle('Upgrading?',E_MESSAGE_INFO)->addInfo($message)->render();
 		}
