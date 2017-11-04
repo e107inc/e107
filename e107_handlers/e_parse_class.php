@@ -3904,7 +3904,7 @@ class e_parser
 		$fixedW     = null;
 		$prefix     = 'fa fa-'; // fallback
 		$size       = null;
-		$tag        = 'span';
+		$tag        = 'i';
 
 	//	return print_r($fa4,true);
 /*
@@ -3968,10 +3968,7 @@ class e_parser
 			}
 
 		}
-
-
-
-
+		
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
