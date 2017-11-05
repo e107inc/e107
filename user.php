@@ -309,9 +309,10 @@ function renderuser($uid, $mode = "verbose")
 			return FALSE;
 		}
 	}
-	
+
 	$user_shortcodes->setVars($user);
 
+	e107::setRegistry('core/user/profile', $user);
 
 	if($mode == 'verbose')
 	{
