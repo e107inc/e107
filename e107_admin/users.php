@@ -269,12 +269,19 @@ class users_admin_ui extends e_admin_ui
 	protected $disallow = array('create');
 
 	protected $tabs		= array(LAN_BASIC, LAN_EXTENDED);
+
+	  protected $url          = array(
+    	'route'=>'user/profile/view',
+    	'name' => 'user_name',
+    	'description' => 'user_name',
+    	'vars'=> array('user_id' => true, 'user_name' => true)
+	);
 	
 	//TODO - finish 'user' type, set 'data' to all editable fields, set 'noedit' for all non-editable fields
 	protected $fields = array(
 		'checkboxes'		=> array('title'=> '',				'type' => null, 'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 	
-		'user_id' 			=> array('title' => LAN_ID,			'tab'=>0, 'type' =>'integer',		'width' => '5%','forced' => true),
+		'user_id' 			=> array('title' => LAN_ID,			'tab'=>0, 'type' =>'text',	'data'=>'int',	'width' => '5%','forced' => true, 'readParms'=>'link=sef&target=blank'),
 //		'user_status' 		=> array('title' => LAN_STATUS,		'type' => 'method',	'alias'=>'user_status', 'width' => 'auto','forced' => true, 'nosort'=>TRUE),
 		'user_ban' 			=> array('title' => LAN_STATUS,		'tab'=>0, 'type' => 'method', 'width' => 'auto', 'filter'=>true, 'batch'=>true,'thclass'=>'center', 'class'=>'center'),
 	
