@@ -243,7 +243,7 @@ define("LAN_MAILOUT_223", "(Used for some system-generated emails)");
 define("LAN_MAILOUT_224", "Inc. Images");
 define("LAN_MAILOUT_225", "Include images in email");
 define("LAN_MAILOUT_226", "[x] orphaned recipient record(s) removed");
-define("LAN_MAILOUT_227", "Deleted [x] records from --TABLE--");
+define("LAN_MAILOUT_227", "Deleted [x] records from [y]");
 define("LAN_MAILOUT_228", "[x] anomalies in mail_content corrected; records: [y]");
 define("LAN_MAILOUT_229", "Email ID [x] put on hold");
 define("LAN_MAILOUT_230", "Error holding email with ID [x]");

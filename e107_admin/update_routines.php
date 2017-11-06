@@ -1959,7 +1959,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 		{
 			return !$just_check;		// Nothing to do it table is optional and not there
 		}
-		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_54);
+		$updateMessages[] = str_replace(array('[y]','[x]'),array($target,$indexSpec),LAN_UPDATE_54);
 		return !$just_check;		// No point carrying on - return 'nothing to do'
 	}
 	if ($sql->gen("SHOW INDEX FROM ".MPREFIX.$target))
@@ -1978,7 +1978,7 @@ function addIndexToTable($target, $indexSpec, $just_check, &$updateMessages, $op
 			return 'Required to add index to '.$target;
 		}
 		$sql->gen("ALTER TABLE `".MPREFIX.$target."` ADD INDEX `".$indexSpec."` (`".$indexSpec."`);");
-		$updateMessages[] = str_replace(array('--TABLE--','--INDEX--'),array($target,$indexSpec),LAN_UPDATE_37);
+		$updateMessages[] = str_replace(array('[y]','[x]'),array($target,$indexSpec),LAN_UPDATE_37);
 	}
 	return FALSE;
 }
