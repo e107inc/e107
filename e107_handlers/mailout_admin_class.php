@@ -1872,7 +1872,7 @@ class mailoutAdminClass extends e107MailManager
 			if($res)
 				$results[] = str_replace(array(
 					'[x]',
-					'--TABLE--'
+					'[y]'
 				), array(
 					$res,
 					'mail_content'
@@ -1888,7 +1888,7 @@ class mailoutAdminClass extends e107MailManager
 			if($res)
 				$results[] = str_replace(array(
 					'[x]',
-					'--TABLE--'
+					'[y]'
 				), array(
 					$res,
 					'mail_recipients'

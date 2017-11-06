@@ -35,7 +35,7 @@ define("LAN_UPDATE_29", "Depending on your particular configuration, you may nee
 
 // define("LAN_UPDATE_35", "Error modifying data in comment table");
 // define("LAN_UPDATE_36", "Error deleting old field in comment table");
-define("LAN_UPDATE_37", "Add index --INDEX-- to table --TABLE--");
+define("LAN_UPDATE_37", "Add index [x] to table [y]");
 define("LAN_UPDATE_38", "Update front page settings");
 // define("LAN_UPDATE_39", "Update linkwords table");
 define("LAN_UPDATE_40", "Update newsfeeds table");
@@ -50,7 +50,7 @@ define("LAN_UPDATE_50", "Obsolete prefs deleted: ");
 define("LAN_UPDATE_51", "Update plugin table definition: ");
 define("LAN_UPDATE_52", "Update downloads table");
 define("LAN_UPDATE_53", "Update download mirror table");
-define("LAN_UPDATE_54", "Missing table --TABLE-- - cannot add index --INDEX--");
+define("LAN_UPDATE_54", "Missing table [y] - cannot add index [x]");
 define("LAN_UPDATE_55", "Description");
 define("LAN_UPDATE_56", "System Update");
 
