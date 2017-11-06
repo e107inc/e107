@@ -351,7 +351,7 @@ class admin_log_ui extends e_admin_ui
 				if($del_count = $sql->delete($db_table, $qry))
 				{
 					// Add in a log event
-					$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
+					$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
 					$mes->addSuccess($message);
 					$log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$back_count} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 				}
@@ -1008,7 +1008,7 @@ if(($action == "backdel") && isset($_POST['backdeltype']))
 		if($del_count = $sql->db_Delete($db_table, $qry))
 		{
 			// Add in a log event
-			$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
+			$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
 			$mes->addSuccess($message);
 			e107::getLog()->add($db_msg, "db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 		}

@@ -76,8 +76,8 @@ define("ADMSLAN_62", "Plugin Manager");
 // define("ADMSLAN_70", "Return to Administrator Listing");
 define("ADMSLAN_71", "Click here to display privileges");
 
-define("ADMSLAN_72", "Admin ID: --ID-- name: --NAME-- new permissions: ");
-define("ADMSLAN_73", "Admin ID: --ID-- name: --NAME--");
+define("ADMSLAN_72", "Admin ID: [x] name: [y] new permissions: ");
+define("ADMSLAN_73", "Admin ID: [x] name: [y]");
 
 // define("ADMSLAN_75", "");
 //define("ADMSLAN_76", "Manage language-packs");//ADLAN_132

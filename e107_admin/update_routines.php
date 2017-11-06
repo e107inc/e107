@@ -1277,7 +1277,7 @@ function update_706_to_800($type='')
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		// Could we use $sysprefs->set($s_prefs,'notify_prefs') instead - avoids caching problems  ????
 		$status = ($sql -> update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'") !== FALSE) ? E_MESSAGE_DEBUG : E_MESSAGE_ERROR;
-		$message = str_replace('--COUNT--',$nt_changed,LAN_UPDATE_20);
+		$message = str_replace('[x]',$nt_changed,LAN_UPDATE_20);
 		$log->logMessage($message, $status);
 	}
 
@@ -1320,7 +1320,7 @@ function update_706_to_800($type='')
 			$i++;
 		}
 		unset($mailHandler);
-		$log->logMessage(str_replace('--COUNT--', $i, LAN_UPDATE_28));
+		$log->logMessage(str_replace('[x]', $i, LAN_UPDATE_28));
 	}
 	
 	

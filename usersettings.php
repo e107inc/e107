@@ -636,7 +636,7 @@ class usersettings_front // Begin Usersettings rewrite.
 					{
 						$log_action = USER_AUDIT_ADMIN;						// If an admin did the mod, different heading
 						// Embed a message saying who changed the data
-						$changedUserData['message'] = str_replace(array('--ID--', '--LOGNAME--'), array(USERID, USERNAME), LAN_USET_18);
+						$changedUserData['message'] = str_replace(array('[x]', '[y]'), array(USERID, USERNAME), LAN_USET_18);
 						e107::getLog()->user_audit($log_action, $do_log, $udata['user_id'], $udata['user_loginname']);
 					}
 					else

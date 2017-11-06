@@ -84,7 +84,7 @@ define("LAN_USET_14", "Login name too long. Please choose another");
 define("LAN_USET_15", "Display name too long. Please choose another");
 define("LAN_USET_16", "Tick box to delete existing photo without uploading another");
 define("LAN_USET_17", "Display name already used. Please choose another");
-define("LAN_USET_18", "User data changed by admin: --ID--, login name: --LOGNAME--");
+define("LAN_USET_18", "User data changed by admin: [x], login name: [y]");
 //define("LAN_USET_19", "Custom Title");			Now LAN_USER_74
 define("LAN_USET_20", "You must also change the user's password if you are changing their login name or email address");
 define("LAN_USET_21", "Please validate the changes by re-entering your password: ");
