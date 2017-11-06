@@ -102,7 +102,7 @@ define("LAN_USER_71", "Signature: ");							// LAN_120
 define("LAN_USER_72", "Avatar: ");								// LAN_121
 define("LAN_USER_73", "choice of Content/Mail-lists");
 define("LAN_USER_74", "Custom Title");
-define("LAN_USER_75", "Your --SOMETHING-- is required");		// Replaces LAN_SIGNUP_6, LAN_SIGNUP_7 combination
+define("LAN_USER_75", "Your [x] is required");		// Replaces LAN_SIGNUP_6, LAN_SIGNUP_7 combination
 define("LAN_USER_76", "Subscribed to");							// LAN_USET_5
 define("LAN_USER_77", "Your password must be at least [x] characters long.");	// Replaces LAN_SIGNUP_4, LAN_SIGNUP_5 combination
 define("LAN_USER_78", "Min.");									// LAN_SIGNUP_1

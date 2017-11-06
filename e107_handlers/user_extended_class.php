@@ -344,7 +344,7 @@ class e107_user_extended
 						$err = $this->user_extended_validate_entry($val, $defs); 
 						if ($err === true)
 						{  // General error - usually empty field; could be unacceptable value, or regex fail and no error message defined
-							$eufVals['errortext'][$f] = str_replace('--SOMETHING--',$tp->toHtml(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
+							$eufVals['errortext'][$f] = str_replace('[x]',$tp->toHtml(defset($defs['user_extended_struct_text'], $defs['user_extended_struct_text']),FALSE,'defs'),LAN_USER_75);
 							$eufVals['errors'][$f] = ERR_GENERIC;
 						}
 						elseif ($err)
