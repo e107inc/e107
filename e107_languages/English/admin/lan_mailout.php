@@ -209,8 +209,8 @@ define("LAN_MAILOUT_191", "Saved emails");
 define("LAN_MAILOUT_192", "Completed Mailshots");
 define("LAN_MAILOUT_193", "Pending Mailshots");
 define("LAN_MAILOUT_194", "Held Mailshots");
-define("LAN_MAILOUT_195", "");
-define("LAN_MAILOUT_196", "");
+// define("LAN_MAILOUT_195", "");
+// define("LAN_MAILOUT_196", "");
 
 // Block of error messages kept together
 define("LAN_MAILOUT_200", "No subject specified");
@@ -296,4 +296,3 @@ define("LAN_MAILOUT_271", "Authentication failed with username ([x]) and passwor
 
 
 
-?>
