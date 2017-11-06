@@ -1988,7 +1988,8 @@ class e_userperms
 		if(!$sysuser->isAdmin())
 		{
 			$sysuser->set('user_admin', 1)->save();
-			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+			$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=>$sysuser->getValue('email'));
+			$lan = e107::getParser()->lanVars( USRLAN_164, $vars);
 			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
 		}
 		
