@@ -1041,7 +1041,7 @@ class e_form
 		$count = 0;
 		if (vartrue($pref['avatar_upload']) && FILE_UPLOADS && vartrue($options['upload']))
 		{
-				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
+				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('[x]-','[y]'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
 	
 				$text .= "<div style='margin-bottom:10px'>".LAN_USET_26."
 				<input  class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
