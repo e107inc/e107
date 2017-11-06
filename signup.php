@@ -707,7 +707,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			if ($pref['signup_option_'.$value] == 2 && !isset($alldata['data']['user_'.$value]) && !isset($alldata['errors']['user_'.$value]))
 			{
 				$alldata['errors']['user_'.$value] = ERR_GENERIC;
-				$alldata['errortext']['user_'.$value] = str_replace('--SOMETHING--',$signup_option_title[$key],LAN_USER_75);
+				$alldata['errortext']['user_'.$value] = str_replace('[x]',$signup_option_title[$key],LAN_USER_75);
 			}
 		}
 
