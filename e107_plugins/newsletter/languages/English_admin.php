@@ -51,7 +51,7 @@ define("NLLAN_36", "Update Newsletter Issue");
 define("NLLAN_37", "Create Newsletter Issue");
 //define("NLLAN_38", "Newsletter updated in database.");
 define("NLLAN_39", "Newsletter issue saved in database - to send out, click the \"Release Issue\" button in the Options menu.");
-define("NLLAN_40", "Mailout added to mailout queue - issue sent to --COUNT-- subscriber(s).");
+define("NLLAN_40", "Mailout added to mailout queue - issue sent to [x] subscriber(s).");
 define("NLLAN_41", "No subscribers found - email cancelled");
 //define("NLLAN_42", "Newsletter deleted.");
 //define("NLLAN_43", "Newsletter issue deleted.");

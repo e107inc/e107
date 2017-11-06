@@ -28,7 +28,7 @@ define("LAN_UPDATE_24", "Deleting Deprecated Table Field: ");
 define("LAN_UPDATE_25", "Deleting obsolete table: ");
 define("LAN_UPDATE_26", "Extending IP address field: ");
 define("LAN_UPDATE_27",	"Adding Table: ");
-define("LAN_UPDATE_28", "--COUNT-- saved emails moved");
+define("LAN_UPDATE_28", "[x] saved emails moved");
 define("LAN_UPDATE_29", "Depending on your particular configuration, you may need to run the upgrade process several times.");
 
 // Everything below here needs reviewing. 

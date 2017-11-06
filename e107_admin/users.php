@@ -2360,7 +2360,7 @@ class users_admin_ui extends e_admin_ui
 			// $sql->db_Delete("user","user_id='{$u['user_id']}' ");
 			// $sql->db_Delete("user_extended","user_extended_id='{$u['user_id']}' ");
 		// }
-		// e107::getLog()->add('USET_04',str_replace(array('--COUNT--','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE);
+		// e107::getLog()->add('USET_04',str_replace(array('[x]','--TYPE--'),array(count($uList),$bantype),USRLAN_160),E_LOG_INFORMATIVE);
 	// }
 	// $ns->tablerender(USRLAN_57,"<div style='text-align:center'><b>".$text."</b></div>");
 	// unset ($text);

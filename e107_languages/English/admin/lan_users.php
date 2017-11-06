@@ -159,7 +159,7 @@ define("USRLAN_154", "Clear email for checked");
 define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
 define("USRLAN_156", "Email address is already in use");
 
-// define("USRLAN_160", "Total --COUNT-- users of type --TYPE-- pruned");
+// define("USRLAN_160", "Total [x] users of type --TYPE-- pruned");
 define("USRLAN_161", "User ID [x] name [y] banned");
 define("USRLAN_162", "User ID [x] name [y] unbanned");
 // define("USRLAN_163", "User ID --UID-- deleted");
@@ -169,7 +169,7 @@ define("USRLAN_166", "User ID [x] name [y] approved");
 //FIX ME USERLAN_160 - USERLAN_166 need to be reworked avoid duplication. 
 
 define("USRLAN_167", "Validation email ID [x] resent to [y] at [z]");
-// define("USRLAN_168", "Re-send --COUNT-- validation emails");
+// define("USRLAN_168", "Re-send [x] validation emails");
 define("USRLAN_169", "Total [x] bounced emails deleted");
 define("USRLAN_170", "Random user name");
 define("USRLAN_171", "Random password");

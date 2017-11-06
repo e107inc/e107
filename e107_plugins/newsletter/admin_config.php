@@ -507,8 +507,8 @@ class newsletter
 		else
 		{
 			$mailer->activateEmail($mailMainID, FALSE);					// Actually mark the email for sending
-			//$this->message = str_replace('--COUNT--', $counters['add'],NLLAN_40);
-			$mes->addSuccess(str_replace('--COUNT--', $counters['add'], NLLAN_40));
+			//$this->message = str_replace('[x]', $counters['add'],NLLAN_40);
+			$mes->addSuccess(str_replace('[x]', $counters['add'], NLLAN_40));
 		}
 		$sql->update('newsletter', "newsletter_flag='1' WHERE newsletter_id=".$issue);
 

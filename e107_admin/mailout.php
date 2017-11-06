@@ -754,7 +754,7 @@ class mailout_main_ui extends e_admin_ui
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_188);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_188);
 		}
 	}
 	
@@ -764,11 +764,11 @@ class mailout_main_ui extends e_admin_ui
 	{
 		if ($this->mailAdmin->activateEmail($mailId, TRUE))
 		{
-			e107::getMessage()->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_187));
+			e107::getMessage()->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_187));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_166);
 		}
 	}
 	
@@ -778,11 +778,11 @@ class mailout_main_ui extends e_admin_ui
 	{
 		if ($this->mailAdmin->cancelEmail($mailId))
 		{
-			e107::getMessage()->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_220));
+			e107::getMessage()->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_220));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_221);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_221);
 		}
 	}	
 	
@@ -2134,11 +2134,11 @@ switch ($action)
 		$action = 'held';
 		if ($mailAdmin->holdEmail($mailId))
 		{
-			$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_229));
+			$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_229));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_230);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_230);
 		}
 		break;
 
@@ -2146,11 +2146,11 @@ switch ($action)
 		$action = $pageMode;		// Want to return to some other page
 		if ($mailAdmin->cancelEmail($mailId))
 		{
-			$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_220));
+			$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_220));
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_221);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_221);
 		}
 		break;
 
@@ -2168,11 +2168,11 @@ switch ($action)
 		{
 			if ($mailAdmin->activateEmail($mailId, TRUE))
 			{
-				$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_187));
+				$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_187));
 			}
 			else
 			{
-				$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+				$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_166);
 			}
 			$action = 'held';
 		}
@@ -2200,7 +2200,7 @@ switch ($action)
 		$midAction = 'midDeleteEmail';
 		if (!isset($_POST['mailIDConf']) || (intval($_POST['mailIDConf']) != $mailId))
 		{
-			$errors[] = str_replace(array('--ID--', '--CHECK--'), array($mailId, intval($_POST['mailIDConf'])), LAN_MAILOUT_174);
+			$errors[] = str_replace(array('[x]', '[z]'), array($mailId, intval($_POST['mailIDConf'])), LAN_MAILOUT_174);
 			break;
 		}
 		break;
@@ -2265,7 +2265,7 @@ switch ($midAction)
 		e107::getLog()->add('MAIL_04','ID: '.$mailId,E_LOG_INFORMATIVE,'');
 		if (($result === FALSE) || !is_array($result))
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_166);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_166);
 		}
 		else
 		{
@@ -2273,22 +2273,22 @@ switch ($midAction)
 			{
 				if ($result['content'] === FALSE)
 				{
-					$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_167);
+					$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_167);
 				}
 				else
 				{
-					$mes->addSuccess(str_replace('--ID--', $mailId, LAN_MAILOUT_167));
+					$mes->addSuccess(str_replace('[x]', $mailId, LAN_MAILOUT_167));
 				}
 			}
 			if (isset($result['recipients']))
 			{
 				if ($result['recipients'] === FALSE)
 				{
-					$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_169);
+					$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_169);
 				}
 				else
 				{
-					$mes->addSuccess(str_replace(array('--ID--', '--NUM--'), array($mailId, $result['recipients']), LAN_MAILOUT_170));
+					$mes->addSuccess(str_replace(array('[x]', '[y]'), array($mailId, $result['recipients']), LAN_MAILOUT_170));
 				}
 			}
 		}
@@ -2313,7 +2313,7 @@ switch ($midAction)
 		}
 		else
 		{
-			$errors[] = str_replace('--ID--', $mailId, LAN_MAILOUT_188);
+			$errors[] = str_replace('[x]', $mailId, LAN_MAILOUT_188);
 		}
 		break;
 }
