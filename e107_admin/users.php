@@ -2335,7 +2335,7 @@ class users_admin_ui extends e_admin_ui
 		$ed = $sql->db_Update('user',"user_ban=3 WHERE (`user_id` IN (".$all_ids.") OR `user_email` IN (".$all_emails.")) AND user_sess !='' ");
 		if (!$ed)
 			$ed = '0';
-		$this->show_message(str_replace(array('{TOTAL}','{DELCOUNT}','{DELUSER}','{FOUND}'),array($tot,$del_count,$ed,$found),USRLAN_155).$text);
+		$this->show_message(str_replace(array('[w]','[x]','[y]','[z]'),array($tot,$del_count,$ed,$found),USRLAN_155).$text);
 	}
 	
 // ------- FIXME  Prune Users move to cron --------------

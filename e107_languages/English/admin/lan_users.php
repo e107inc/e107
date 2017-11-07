@@ -156,7 +156,7 @@ define("USRLAN_151", "Clear bounce, require Activation");
 define("USRLAN_152", "Clear bounce and Activate");
 define("USRLAN_153", "Delete non-bounce emails");
 define("USRLAN_154", "Clear email for checked");
-define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
+define("USRLAN_155", "Total [w] emails found. [x] deleted through options.[br][y] users marked as 'bounced' (out of [z] emails)");
 define("USRLAN_156", "Email address is already in use");
 
 // define("USRLAN_160", "Total [x] users of type --TYPE-- pruned");
