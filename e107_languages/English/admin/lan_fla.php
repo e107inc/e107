@@ -23,7 +23,7 @@ define("FLALAN_10", "Delete / Ban checked entries");
 define("FLALAN_15", "The following IP address(es) have been auto-banned - user attempted more than ten failed logins");
 define("FLALAN_16", "delete this auto ban list");
 define("FLALAN_17", "Auto-ban list deleted");
-define('FLALAN_18', "Could not ban IP address --IP-- - on whitelist");
+// define('FLALAN_18', "Could not ban IP address --IP-- - on whitelist");
 
 // define('FLALAN_19', "Check All Delete");
 ?>
