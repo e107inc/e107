@@ -450,11 +450,11 @@ TMPO;
 
 		if($numDays < 3) // installed in the past 3 days.
 		{
-			echo e107::getMessage()->setTitle('Need Help?',E_MESSAGE_INFO)->addInfo("<p>Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any e107 issues you may encounter. </p>")->render();
+			echo e107::getMessage()->setTitle(ADLAN_190,E_MESSAGE_INFO)->addInfo("<p>".ADLAN_191."</p>")->render();
 		}
 		elseif($pref < $v2ReleaseDate && !file_exists($upgradeAlertFlag)) // installed prior to v2 release.
 		{
-			$message = "Connect with our community for <a href='http://e107help.org' rel='external'>free support</a> with any upgrading issues you may encounter.";
+			$message = str_replace(array('[',']'), array("<a href='https://e107help.org' rel='external'>","</a>"), ADLAN_191);
 			$message .= "<div class='text-right'><a class='btn btn-xs btn-primary ' href='admin.php?dismiss=upgrade'>Don't show again</a></div>"; //todo do it with class=e-ajax and data-dismiss='alert'
 			echo e107::getMessage()->setTitle('Upgrading?',E_MESSAGE_INFO)->addInfo($message)->render();
 		}
