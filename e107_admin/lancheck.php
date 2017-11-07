@@ -1058,13 +1058,14 @@ class lancheck
 		$kom_start = chr(47)."*";
 		$kom_end = "*".chr(47);
 	
-		if(vartrue($_SESSION['lancheck-edit-file']))
+		if(!empty($_SESSION['lancheck-edit-file']))
 		{
 			$writeit = $_SESSION['lancheck-edit-file'];
 		}
 		else
 		{
-			return;	
+			e107::getMessage()->addError("There is a problem with sessions");
+			return;
 		}
 	
 		$old_kom = "";
