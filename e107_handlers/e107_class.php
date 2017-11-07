@@ -3966,33 +3966,31 @@ class e107
 			define('e_MOD_REWRITE_STATIC', (getenv('HTTP_MOD_REWRITE_STATIC')=='On' || getenv('REDIRECT_HTTP_MOD_REWRITE_STATIC')=='On'  ? true : false));
 		}
 
+		$subdomain = false;
+
 		// Define the domain name and subdomain name.
 		if(is_numeric(str_replace(".","",$_SERVER['HTTP_HOST'])))
 		{
-			$domain = FALSE;
-			$subdomain = FALSE;
+			$domain = false;
+			$subdomain = false;
 		}
 		else
-		{	
-			if(preg_match("/\.?([a-z0-9-]+)(\.(com|net|org|co|me|ltd|plc|gov)\.[a-z]{2})$/i", $_SERVER['HTTP_HOST'], $m)) //eg. mysite.co.uk
+		{
+			$domain = preg_replace('/^www\./', '' ,$_SERVER['HTTP_HOST']);
+
+			$dtemp = explode(".", $domain);
+
+			if(count($dtemp) > 2 && strlen($dtemp[0]) === 2) // eg. fr.mysite.com or fr.mysite.com.fr
 			{
-		        $domain = $m[1].$m[2];
-		    }
-			elseif(preg_match("/\.?([a-z0-9-]+)(\.[a-z]{2,})$/i", $_SERVER['HTTP_HOST'], $m))//  eg. .com/net/org/ws/biz/info
-			{       
-		        $domain = $m[1].$m[2];		
-		    }
-			else
-			{
-				$domain = FALSE; //invalid domain
+				$subdomain = $dtemp[0];
+				unset($dtemp[0]);
+				$domain = implode('.',$dtemp); // remove subdomain because it's a language-code.
 			}
-			
-			$replace = array(".".$domain,"www.","www",$domain);
-			$subdomain = str_replace($replace,'',$_SERVER['HTTP_HOST']);
+
 		}
 
 		define("e_DOMAIN", $domain);
-		define("e_SUBDOMAIN",($subdomain) ? $subdomain : FALSE);
+		define("e_SUBDOMAIN", ($subdomain) ? $subdomain : false);
 		
 		define('e_UC_PUBLIC', 0);
 		define('e_UC_MAINADMIN', 250);
