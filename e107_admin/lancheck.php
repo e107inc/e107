@@ -684,17 +684,7 @@ class lancheck
 
 		$archive = new PclZip($newfile);
 
-		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,''); // includes admin area.
-	//	$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'');
-		$core_admin = array();
-		$plugs      = $this->getFilePaths(e_BASE.$PLUGINS_DIRECTORY, $language, $this->core_plugins); // standardized path.
-		$theme      = $this->getFilePaths(e_BASE.$THEMES_DIRECTORY, $language, $this->core_themes);
-		$docs       = $this->getFilePaths(e_BASE.$HELP_DIRECTORY,$language);
-		$handlers   = $this->getFilePaths(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path.
-
-		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
-
-		$file = array_unique($file);
+		$file = $this->getFileList($language);
 
 		$data = implode(",", $file);
 
@@ -738,6 +728,45 @@ class lancheck
 			return $ret;
 		}
 	}
+
+
+	private function getFileList($language)
+	{
+		if(empty($language))
+		{
+			return false;
+		}
+
+		$PLUGINS_DIRECTORY      = e107::getFolder('plugins');
+		$THEMES_DIRECTORY       = e107::getFolder('themes');
+		$HELP_DIRECTORY         = e107::getFolder('help');
+		$HANDLERS_DIRECTORY     = e107::getFolder('handlers');
+
+		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,''); // includes admin area.
+	//	$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'');
+		$core_admin = array();
+		$plugs      = $this->getFilePaths(e_BASE.$PLUGINS_DIRECTORY, $language, $this->core_plugins); // standardized path.
+		$theme      = $this->getFilePaths(e_BASE.$THEMES_DIRECTORY, $language, $this->core_themes);
+		$docs       = $this->getFilePaths(e_BASE.$HELP_DIRECTORY,$language);
+		$handlers   = $this->getFilePaths(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path.
+
+		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
+
+		$file = array_unique($file);
+
+		return $file;
+
+
+	}
+
+	function removeLanguagePack($language)
+	{
+		$files = $this->getFileList($language);
+
+
+
+	}
+
 
 
 	/**
@@ -862,7 +891,17 @@ class lancheck
 	{
 		$xml = e107::getXml();
 
+
+
+
 		$feed = 'https://e107.org/languagepacks.xml';
+
+		if(!empty(e_VERSION))
+		{
+			$feed .= "?ver=". preg_replace('/[^\d\.]/','',e_VERSION);
+		}
+
+
 
 		$languages = array();
 
@@ -884,6 +923,7 @@ class lancheck
 					'name'          => $att['name'],
 					'author'        => $att['author'],
 					'infoURL'       => $att['infourl'],
+					'tag'           => $att['tag'],
 				//	'folder'        => $att['folder'],
 					'version'       => $att['version'],
 					'date'          => $att['date'],
