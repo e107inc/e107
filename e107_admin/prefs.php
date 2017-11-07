@@ -165,12 +165,12 @@ if(isset($_POST['updateprefs']))
 				if($value < $pref_limits[$key]['min'])
 				{
 					$value = $pref_limits[$key]['min'];
-					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213));
+					$mes->addWarning(str_replace(array('[x]','[y]'),array($key,$value),PRFLAN_213));
 				}
 				if($value > $pref_limits[$key]['max'])
 				{
 					$value = $pref_limits[$key]['max'];
-					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212));
+					$mes->addWarning(str_replace(array('[x]','[y]'),array($key,$value),PRFLAN_212));
 				}
 			}
 			else
