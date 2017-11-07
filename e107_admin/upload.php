@@ -704,7 +704,7 @@ switch ($action)
 		</colgroup>
 	  <tr>
 		<td class='forumheader3' colspan='4'><input type='hidden' name='upload_do_edit' value='1'>".
-			str_replace(array('--SOURCE--', '--DEST--'),array(e_UPLOAD_TEMP_DIR.e_SAVE_FILETYPES,e_ADMIN.e_READ_FILETYPES),UPLLAN_52)."</td>
+			str_replace(array('[x]', '[y]'),array(e_UPLOAD_TEMP_DIR.e_SAVE_FILETYPES,e_ADMIN.e_READ_FILETYPES),UPLLAN_52)."</td>
 	  </tr>
 	  <tr>
 		<td class='forumheader3' colspan='4'>".UPLLAN_57.$source_file."</td>

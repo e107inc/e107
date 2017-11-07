@@ -69,7 +69,7 @@ the upload of .php files or any other type of executable script.");
 //define("UPLLAN_49", "File Types");LAN_FILETYPES
 //define("UPLLAN_50", "Options");//LAN_OPTIONS
 define("UPLLAN_51", "List Uploads");
-define("UPLLAN_52", "This page helps you create a file for managing file upload permissions. The file is saved as --SOURCE--, and must be copied to --DEST-- before it takes effect.");
+define("UPLLAN_52", "This page helps you create a file for managing file upload permissions. The file is saved as [x], and must be copied to [y] before it takes effect.");
 //define("UPLLAN_53", "User Class");//LAN_USERCLASS
 define("UPLLAN_54", "File Extensions");
 define("UPLLAN_55", "Max upload size");
