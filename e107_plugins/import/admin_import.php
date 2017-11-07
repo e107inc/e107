@@ -795,7 +795,7 @@ class import_main_ui extends e_admin_ui
 					$errorCounter++;
 					$line_error = $exporter->getErrorText($result);
 				//	if ($msg) $msg .= "<br />";
-					$msg = str_replace(array('--ERRNUM--','--DB--'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
+					$msg = str_replace(array('[x]','[y]'),array($line_error,$k),LAN_CONVERT_46).$loopCounter;
 					$mes->addError($msg);   // couldn't set query
 				}
 			}
@@ -805,7 +805,7 @@ class import_main_ui extends e_admin_ui
 			unset($exporter);
 					
 					
-			$msg = str_replace(array('--LINES--','--USERS--', '--ERRORS--','--BLOCK--'),
+			$msg = str_replace(array('[x]','[y]', '[z]','[w]'),
 			array($loopCounter,$loopCounter-$errorCounter,$errorCounter, $k),LAN_CONVERT_47);
 			$mes->addSuccess($msg);   // couldn't set query				
 		}
