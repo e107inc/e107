@@ -52,6 +52,8 @@
   14 => 'e-users',
   15 => 'e-wmessage',
 )]]></core>
+		<core name="db_updates"><![CDATA[array (
+)]]></core>
 		<core name="developer">0</core>
 		<core name="disable_emailcheck">0</core>
 		<core name="disallowMultiLogin">0</core>
@@ -397,7 +399,7 @@ City, State, Country
 		<core name="user_reg_secureveri">1</core>
 		<core name="user_reg_veri">1</core>
 		<core name="user_tracking">cookie</core>
-		<core name="version">2.1.6</core>
+		<core name="version">2.1.7</core>
 		<core name="wm_enclose">1</core>
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>

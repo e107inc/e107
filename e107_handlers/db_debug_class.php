@@ -354,6 +354,25 @@ class e107_db_debug {
 	}
 
 
+	function save($log)
+	{
+		e107::getMessage()->addDebug("Saving a log");
+
+		$titles = array_keys($this->aTimeMarks[0]);
+
+		$text = implode("\t\t\t",$titles)."\n\n";
+
+		foreach($this->aTimeMarks as $item)
+		{
+			$item['What'] = str_pad($item['What'],50," ",STR_PAD_RIGHT);
+			$text .= implode("\t\t\t",$item)."\n";
+		}
+
+		file_put_contents($log, $text, FILE_APPEND);
+
+	}
+
+
 	function Show_Performance()
 	{
 			//
