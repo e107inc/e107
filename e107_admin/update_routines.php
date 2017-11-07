@@ -123,7 +123,7 @@ if (!$dont_check_update)
 	$LAN_UPDATE_5 = deftrue('LAN_UPDATE_5', "Core database structure");
 
 
-	 $dbupdate['214_to_215'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.4','2.1.5')), 'message'=> null, 'hide_when_complete'=>true);
+	$dbupdate['214_to_215'] = array('master'=>false, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('2.1.4','2.1.5')), 'message'=> null, 'hide_when_complete'=>true);
 
 
 	$dbupdate['706_to_800'] = array('master'=>true, 'title'=> e107::getParser()->lanVars($LAN_UPDATE_4, array('1.x','2.0')), 'message'=> LAN_UPDATE_29, 'hide_when_complete'=>true);
@@ -369,40 +369,60 @@ function update_check()
 	$e107cache = e107::getCache();
 	$sql = e107::getDb();
 	$mes = e107::getMessage();
-		
+
 	global $dont_check_update, $e107info;
 	global $dbupdate, $dbupdatep, $e107cache;
 
 	$update_needed = FALSE;
 
+
+
 	if ($dont_check_update === FALSE)
 	{
-		
+		$dbUpdatesPref = array();
+
+		$skip = e107::getPref('db_updates');
+
 		foreach($dbupdate as $func => $rmks) // See which core functions need update
 		{
 
-		  if (function_exists('update_'.$func))
+			if(!empty($skip[$func]) && (!deftrue('e_DEBUG') || E107_DBG_TIMEDETAILS)) // skip version checking when debug is off and check already done.
+			{
+				continue;
+			}
+
+			if(function_exists('update_' . $func))
 			{
 
-				$sql->db_Mark_Time('Check Core Update_'.$func.' ');
-				if (!call_user_func('update_'.$func, FALSE))
+				$sql->db_Mark_Time('Check Core Update_' . $func . ' ');
+				if(!call_user_func('update_' . $func, false))
 				{
-				  $update_needed = TRUE;
-				  break;
+					$dbUpdatesPref[$func] = 0;
+					$update_needed = true;
+					break;
+				}
+				elseif(strpos($func, 'core_') !==0) // skip the pref and table check.
+				{
+					$dbUpdatesPref[$func] = 1;
+
 				}
 			}
+
+			e107::getConfig()->set('db_updates', $dbUpdatesPref)->save(false,true,false);
 		}
+
+
 
 		// Now check plugins - XXX DEPRECATED 
 		foreach($dbupdatep as $func => $rmks)
 		{
-			if (function_exists('update_'.$func))
+			if(function_exists('update_' . $func))
 			{
-			//	$sql->db_Mark_Time('Check Core Update_'.$func.' ');
-				if (!call_user_func('update_'.$func, FALSE))
+				//	$sql->db_Mark_Time('Check Core Update_'.$func.' ');
+				if(!call_user_func('update_' . $func, false))
 				{
-				  $update_needed = TRUE;
-				  break;
+					$update_needed = true;
+					break;
 				}
 			}
 		}
@@ -420,29 +440,6 @@ function update_check()
 	{
 		$update_needed = ($dont_check_update == '2');
 	}
-
-	if ($update_needed === TRUE)
-	{
-		$frm = e107::getForm();
-		$label = LAN_UPDATE." ".e107::getParser()->toGlyph('fa-arrow-right');
-
-		
-		$text = "
-		<form method='post' action='".e_ADMIN_ABS."e107_update.php'>
-		<div>
-			<p>".ADLAN_120."</p>
-			".$frm->admin_button('e107_system_update', 'update', 'other', $label)."
-		</div><br />
-		</form>
-		";
-
-
-	//	$text = ADLAN_120. "<a class='btn btn-xs btn-inline' href='".e_ADMIN_ABS."e107_update.php'>". e107::getParser()->toGlyph('fa-chevron-circle-right')."</a>";
-	//	$text .= "<hr />";
-	//	$mes->addInfo($text);
-
-	}
-
 
 	return $update_needed;
 }
@@ -2002,6 +1999,7 @@ function catch_error(&$target)
 
 function get_default_prefs()
 {
+	e107::getDebug()->log("Retrieving default prefs from xml file");
 	$xmlArray = e107::getSingleton('xmlClass')->loadXMLfile(e_CORE."xml/default_install.xml",'advanced');
 	$pref = e107::getSingleton('xmlClass')->e107ImportPrefs($xmlArray,'core');
 	return $pref;
