@@ -408,9 +408,9 @@ function update_check()
 				}
 			}
 
-			e107::getConfig()->set('db_updates', $dbUpdatesPref)->save(false,true,false);
 		}
 
+		e107::getConfig()->set('db_updates', $dbUpdatesPref)->save(false,true,false);
 
 
 		// Now check plugins - XXX DEPRECATED 
@@ -426,11 +426,11 @@ function update_check()
 				}
 			}
 		}
-		
+
 		// New in v2.x
 		if(e107::getPlugin()->updateRequired('boolean'))
 		{
-			 $update_needed = TRUE;		
+			 $update_needed = TRUE;
 		}
 	
 
