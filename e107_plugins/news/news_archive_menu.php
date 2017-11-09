@@ -85,7 +85,7 @@ $caption = !empty($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] :
 
 e107::plugLan('news');
 
-e107::getRender()->tablerender($caption, $text);
+e107::getRender()->tablerender($caption, $text, 'news-archive-menu');
 
 //e107::getDebug()->log($arr);
 
