@@ -14,4 +14,5 @@ define("TMCEALAN_2", "Browser spellcheck");
 define("TMCEALAN_3", "Enable this if the browser internal spellchecker should be used.");
 define("TMCEALAN_4", "Visual Blocks");
 define("TMCEALAN_5", "Enable to make html blocks visible during editing.");
-?>
+define("TMCEALAN_6", "Code-Highlight CSS class.");
+

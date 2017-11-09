@@ -503,6 +503,8 @@ class wysiwyg
 
 		//@see http://www.tinymce.com/wiki.php/Configuration:formats
 
+		$codeHighlightClass = varset($tPref['code_highlight_class'], 'prettyprint linenums');
+
 		$formats = "[
                 {title: 'Headers', items: [
                     {title: 'Heading 1', block: 'h1'},
@@ -530,7 +532,7 @@ class wysiwyg
                     {title: 'Blockquote alt.', block: 'blockquote', classes: 'blockquote-alt blockquote__alternative'},
                     {title: 'Div', block: 'div'},
                     {title: 'Pre', block: 'pre'},
-                    {title: 'Code Highlighted', block: 'pre', classes: 'prettyprint linenums' }
+                    {title: 'Code Highlighted', block: 'pre', classes: '".$codeHighlightClass."' }
                 ]},
 
                   {title: 'Lists', items: [

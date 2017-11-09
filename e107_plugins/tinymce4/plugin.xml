@@ -10,5 +10,6 @@
         <pref name="paste_as_text">0</pref>
         <pref name="browser_spellcheck">1</pref>
         <pref name="visualblocks">1</pref>
+        <pref name="code_highlight_class">prettyprint linenums</pref>
     </pluginPrefs>
 </e107Plugin>
