@@ -56,9 +56,10 @@ e107::lan('tinymce4','admin', 'true');
 
 
 		protected $prefs = array(
-			'paste_as_text'		=> array('title'=> TMCEALAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
-			'browser_spellcheck' =>  array('title'=> TMCEALAN_2, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_3),
-			'visualblocks' =>  array('title'=> TMCEALAN_4, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_5),
+			'paste_as_text'		    => array('title'=> TMCEALAN_1, 'type'=>'boolean', 'data' => 'int','help'=> ''),
+			'browser_spellcheck'    => array('title'=> TMCEALAN_2, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_3),
+			'visualblocks'          => array('title'=> TMCEALAN_4, 'type'=>'boolean', 'data' => 'int','help'=> TMCEALAN_5),
+			'code_highlight_class'  => array('title'=> TMCEALAN_6, 'type'=>'text', 'data' => 'str','help'=> ''),
 
 		);
 
