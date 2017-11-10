@@ -123,4 +123,14 @@ $CHAPTER_TEMPLATE['panel']['listPages']['start'] 				= "{CHAPTER_BREADCRUMB}<div
 $CHAPTER_TEMPLATE['panel']['listPages']['item'] 				= "<div class='section'><div class='row'>{CPAGEMENU}</div></div>";
 $CHAPTER_TEMPLATE['panel']['listPages']['end'] 					= "</div>";	
 
+
+$CHAPTER_TEMPLATE['grid']['listChapters']['start']				= "{SETIMAGE: w=450}<div class='row'>";
+$CHAPTER_TEMPLATE['grid']['listChapters']['item']				= "<div class='col-xs-12 col-md-4 text-center'>
+																	{CHAPTER_IMAGE}
+																	<h2><a href='{CHAPTER_URL}' >{CHAPTER_NAME}</a></h2><p>{CHAPTER_DESCRIPTION}</p><p>{CHAPTER_BUTTON}</p></div>";
+$CHAPTER_TEMPLATE['grid']['listChapters']['end']				= "</div>";
+
+
+
+
 ?>
