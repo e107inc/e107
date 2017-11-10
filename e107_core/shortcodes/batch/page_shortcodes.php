@@ -27,6 +27,7 @@ class cpage_shortcodes extends e_shortcode
 	// Grab all book/chapter data. 
 	function __construct()
 	{
+		parent::__construct();
 		
 		$books = e107::getDb()->retrieve("SELECT * FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				

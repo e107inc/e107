@@ -254,4 +254,82 @@ class page_shortcodes extends e_shortcode
 
 		}
 
+
+		/**
+		 * Render All visible Chapters from a specific Book.
+		 * Uses "listChapter" template key. ie. $CHAPTER_TEMPLATE[---TEMPLATE --]['listChapters']
+		 * @param null $parm
+		 * @example {BOOK_CHAPTERS: name=book-sef-url}
+		 * @example {BOOK_CHAPTERS: name=book-sef-url&template=xxxxx&limit=3}
+		 * @return string
+		 */
+		function sc_book_chapters($parm)
+		{
+			$tp = e107::getParser();
+
+			$sef = $tp->filter($parm['name'],'str');
+
+
+
+			$tmplKey = varset($parm['template'],'panel');
+			$limit = (int) varset($parm['limit'], 3);
+
+			$registry = 'e_shortcode/sc_book_chapters/'.$sef. '/'.$limit;
+
+			if(!$chapArray = e107::getRegistry($registry))
+			{
+				$bookID = e107::getDb()->retrieve('page_chapters', 'chapter_id', "chapter_sef = '" . $sef . "' LIMIT 1");
+
+				if(empty($bookID))
+				{
+					return null;
+				}
+
+				$query = "SELECT * FROM #page_chapters WHERE chapter_visibility IN (" . USERCLASS_LIST . ") AND chapter_parent = ".$bookID."  ORDER BY chapter_order ASC LIMIT ".$limit;
+
+				e107::getDebug()->log("Loading sc_book_chapters(".$sef.")");
+
+				if(!$chapArray = e107::getDb()->retrieve($query, true))
+				{
+					e107::getDebug()->log('{BOOK_CHAPTERS: name='.$parm['name'].'} failed.<br />Query: '.$query);
+					return null;
+				}
+
+				e107::setRegistry($registry, $chapArray);
+			}
+
+
+
+			$temp = e107::getCoreTemplate('chapter',$tmplKey,true,true);
+			$template = $temp['listChapters'];
+
+			$sc = e107::getScBatch('page', null, 'cpage');
+
+			$start = "<!-- sc_book_chapters Start Template: ". $tmplKey." -->";
+			$start .= $tp->parseTemplate($template['start'],true,$sc);
+
+			$text = '';
+
+			foreach($chapArray as $row)
+			{
+				$sc->setVars($row);
+				$sc->setChapter($row['chapter_id']);
+				$text .= $tp->parseTemplate($template['item'],true,$sc);
+			}
+
+			$end = $tp->parseTemplate($template['start'],true,$sc);
+			$end .= "<!-- sc_book_chapters end template: ". $tmplKey." -->";
+
+			if(!empty($text))
+			{
+				return $start . $text . $end;
+			}
+
+			return null;
+
+		}
+
+
+
+
 }
