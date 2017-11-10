@@ -166,7 +166,21 @@ class page_shortcodes extends e_shortcode
 			$template = e107::getCoreTemplate('menu',null,true,true);
 
 			$sc = e107::getScBatch('page', null, 'cpage');
+			$editable = array(
+				'table' => 'page',
+				'pid'   => 'page_id',
+				'perms' => '5',
+				'shortcodes' => array(
+					'cpagetitle' => array('field'=>'page_subtitle','type'=>'text', 'container'=>'span'),
+					'cpagebody' => array('field'=>'page_text','type'=>'html', 'container'=>'div'),
+					'cmenubody' => array('field'=>'menu_text','type'=>'html', 'container'=>'div'),
+
+				)
+			);
+
 			$sc->setVars($pageArray[0]);
+			$sc->editable($editable);
+
 			$tpl = varset($pageArray[0]['menu_template'],'default'); // use start template from first row.
 
 			if(!empty($parm['template']))
