@@ -1540,13 +1540,20 @@ footer {
 
 
 
-
-
-body#admin-menus > .container-fluid > .row,
-body#admin-menus .admin-left-panel,
-
+@media only screen and (min-width : 768px) {
+    .is-table-row {
+        display: table;
+    }
+    .is-table-row [class*="col-"] {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+    }
+}
 
 /* Flex Classes */
+body#admin-menus > .container-fluid > .row,
+body#admin-menus .admin-left-panel,
 .row-flex,
 .row-flex > div[class*='col-'] {
     display: -webkit-box;
