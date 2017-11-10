@@ -828,64 +828,88 @@ class e_parse_shortcode
 						var sc   = $(this).attr("data-edit-sc");
 						var id      = $(this).attr("data-edit-id");
 						var token    = "'.e_TOKEN.'";
+						var box     = $(this).parent("div, span"); 
+						var container = this; 
 
 						$(this).contentEditable({
 							"placeholder" : "",
-							"onBlur" : function(element){
-								var edited_content = element.content;
+							
+							  "onFocusIn" : function(element){
+							    var $input = $("<span id=\"e-editable-front-controls\"><span class=\"e-editable-front-save\" ><i class=\"fa fa-fw fa-save\"></i></span><span class=\"e-editable-front-cancel\" ><i class=\"fa fa-fw fa-ban\"></i></span></span>"); 
+							   $input.appendTo($(box)).hide().fadeIn(300);
+								$(container).addClass("active");
+				             
+				            },
+							"onFocusOut" : function(element){
+				            //   $(".e-editable-front-save").remove();
+				            }
+				            
+				          
+						});
+						
+						
+						$(box).on("click",".e-editable-front-cancel",function () 
+						{
+					        console.log("Cancelled");
+					        $(container).removeClass("active");
+					        $("#e-editable-front-controls").fadeOut(300, function() { $("#e-editable-front-controls").remove(); });	 
+						}); 
+						
+						$(box).on("click",".e-editable-front-save",function () 
+						{
+							$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-spin fa-spinner\"></i>");
+						
+					        $(container).removeClass("active");
+					        
+					        var edited_content = $(container).html();
 
-								$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data){
-									console.log(data);
-							        try
-									{
-										var d = $.parseJSON(data);
-									} catch(e)
-									{
-										// Not JSON.
-										return;
-									}
-
-
-									 console.log(d);
-
-
-
-							// Show pop-up message.
-							if(d.msg)
+							$.post("'.e_WEB_ABS.'js/inline.php",{ content : edited_content, sc: sc, id: id, token: token }, function (data)
 							{
-								var alertType = "info";
-
-								if(d.status == "ok")
+								console.log(data);
+								try
 								{
-									alertType = "success";
+									var d = $.parseJSON(data);
+								} 
+								catch(e)
+								{
+									// Not JSON.
+								//	return;
 								}
 
-								if(d.status == "error")
+								console.log(d);
+									 
+								if(d.msg)
 								{
-									alertType = "danger";
-								}
-
-								if(jQuery().notify)
-								{
-									$("#uiAlert").notify({
-										type: alertType,
-										message: {text: d.msg},
-										fadeOut: {enabled: true, delay: 3000}
-									}).show();
-								}
+	
+									if(d.status == "ok")
+									{
+										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-check\"></i>");	
+									}
+											
+									if(d.status == "error")
+									{
+										$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
+									}			
+										
+								}	
 								else
 								{
-									alert(d.msg);
-								//	location.reload();
-									return;
+									$("#e-editable-front-controls").html("<i class=\"fa fa-fw fa-cross\"></i>");	
 								}
-							}
-
-								});
-							}
-						});
+								
+								$("#e-editable-front-controls").fadeOut(2000, function() { $(this).remove(); });	 
+	
+							}) 
+					        
+						}); 
+										
+						
 
 					});
+					
+				
+
+
 
 
 					');
@@ -1500,7 +1524,15 @@ class e_parse_shortcode
 
 		$attributes = "title='".LAN_EDIT."' contenteditable='true' class='e-editable-front' data-edit-id='".$id."' data-edit-sc='".$lcode."' ";
 
-		return ($container == 'div') ? "<div ".$attributes." >".$text."</div>" : "<span  ".$attributes."  >".$text."</span>";
+		$ret = ($container == 'div') ?  "<div>" :  "<span>";
+		$ret .= ($container == 'div') ? "<div ".$attributes." >".$text."</div>" : "<span  ".$attributes."  >".$text."</span>";
+
+	//	$ret .= "<span class='input-group-btn'>";
+	//	$ret .= '<span id="'.$lcode."-".$id.'" class="e-editable-front-save" ><i class="fa fa-fw fa-save"></i></span>';
+	//	$ret .= "</span>";
+		$ret .= ($container == 'div') ?  "</div>" :  "</span>";
+
+		return $ret;
 
 	}
 
