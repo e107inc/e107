@@ -536,6 +536,14 @@ class cpage_shortcodes extends e_shortcode
 		return $tp->toIcon($row['chapter_icon']);
 	}
 
+	function sc_chapter_image($parm=null)
+	{
+		$tp = e107::getParser();
+		$row = $this->getChapter();
+
+		return $tp->toImage($row['chapter_image'],$parm);
+	}
+
 	/**
 	 * @example {CHAPTER_DESCRIPTION}
 	 */		
@@ -574,6 +582,9 @@ class cpage_shortcodes extends e_shortcode
 		
 		return '<a class="cpage btn btn-primary btn-chapter'.$inc.'" href="'.$url.'">'.$text.'</a>';	
 	}
+
+
+
 
 
 	function sc_chapter_breadcrumb()
