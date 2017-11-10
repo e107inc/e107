@@ -3976,7 +3976,8 @@ class e107
 		}
 		else
 		{
-			$domain = preg_replace('/^www\./', '' ,$_SERVER['HTTP_HOST']);
+			$host = !empty($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+			$domain = preg_replace('/^www\.|:\d*$/', '', $host); // remove www. and port numbers.
 
 			$dtemp = explode(".", $domain);
 
