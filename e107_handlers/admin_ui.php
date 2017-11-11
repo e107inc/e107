@@ -6331,7 +6331,7 @@ class e_admin_form_ui extends e_form
 			}
 			else
 			{
-				$head = "<div id='admin-ui-edit-db-language' class='text-right'>".$multiLangInfo."</div>";
+				$head = "<div id='admin-ui-edit-db-language' class='text-right tabs'>".$multiLangInfo."</div>";
 			}
 		}
 		else
