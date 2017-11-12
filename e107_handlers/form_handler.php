@@ -1907,11 +1907,14 @@ class e_form
 			$label = $percVal;
 		}
 
-
+		if(!empty($options['label']))
+		{
+			$label = $options['label'];
+		}
 
 
 		$text =	"<div class='progress ".$class."{$striped}' >
-   		 	<div id='".$target."' class='progress-bar bar' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
+   		 	<div id='".$target."' class='progress-bar bar ".$class."' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
    		$text .= $label;
    		 	$text .= "</div>
     	</div>";
