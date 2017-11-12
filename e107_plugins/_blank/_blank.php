@@ -37,19 +37,28 @@ class _blank_front
 		$frm = e107::getForm(); 				// Form element class.
 		$ns = e107::getRender();				// render in theme box.
 
+
+		$text = '';
+
+
 	//	$sc = e107::getScBatch('_blank',true, '_blank');
 	//	$template = e107::getTemplate('_blank','_blank','default');
 
-		$text = '';
+	//	$text = $tp->parseTemplate($template['start'],true, $sc);
 
 		if($rows = $sql->retrieve('blank','*',false,'',true)) 	// combined select and fetch function - returns an array.
 		{
 			// print_a($rows);
 			foreach($rows as $key=>$value)		// loop throug
 			{
-			//	$sc->setVars($value); // if shortcodes are enabled. 
+
+			//	$sc->setVars($value); // if shortcodes are enabled.
+			//	$text .= $tp->parseTemplate($template['item'],true, $sc);
+
 				$text .=  $tp->toHtml($value['blank_type'])."<br />";
 			}
+
+		//	$text .= $tp->parseTemplate($template['end'],true, $sc);
 
 			$ns->tablerender("My Caption", $text);
 
