@@ -186,6 +186,8 @@ table  label.checkbox                   { margin-left: 20px }
 .form-control-feedback-left              { left:0; top:0 }
 .has-feedback-left input                { padding-left:30px; }
 
+td .file.well                              { margin-bottom:0 }
+
 /* #admin-ui-list-filter #searchquery      { padding-left:22px;  }  */
 #admin-ui-list-db-language              { padding-top:20px ; padding-right:30px }
 #admin-ui-list-total-records            { padding-top:5px }

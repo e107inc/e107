@@ -1744,7 +1744,15 @@ class e_form
 	 */
 	function file($name, $options = array())
 	{
+		if(e_ADMIN_AREA && empty($options['class']))
+		{
+			$options = array('class'=>'tbox well file');
+		}
+
 		$options = $this->format_options('file', $name, $options);
+
+
+
 		//never allow id in format name-value for text fields
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
