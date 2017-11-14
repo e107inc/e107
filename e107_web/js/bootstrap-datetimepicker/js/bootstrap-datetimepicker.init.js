@@ -17,11 +17,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                 $item.on("change keyup", function () {
                     var $this = $(this);
                     var useUnix = $this.attr("data-date-unix");
+                    var newValue = $this.val();
 
-                    if (useUnix !== "true") {
+                    if (useUnix !== "true" || newValue == "") {
                         var id = $this.attr("id");
                         var newTarget = "#" + id.replace("e-datepicker-", "");
-                        var newValue = $this.val();
                         $(newTarget).val(newValue);
                     }
                 });
