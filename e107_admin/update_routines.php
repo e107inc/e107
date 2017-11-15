@@ -167,6 +167,10 @@ class e107Update
 			$this->updatePlugin($func);
 		}	
 
+			//	$dbv =  e107::getSingleton('db_verify', e_HANDLER."db_verify_class.php");
+
+	//	$dbv->clearCache();
+
 		
 		$this->renderForm();	
 	}
@@ -209,9 +213,9 @@ class e107Update
 			}
 			else 
 			{
-				$mes->addDebug("could run 'update_".$func);
+				$mes->addDebug("could not run 'update_".$func);
 			}
-		
+
 		//}
 		
 	}
@@ -268,7 +272,7 @@ class e107Update
 		
 		$text = "";
 
-
+		
 		
 		foreach($this->core as $func => $data)
 		{
@@ -536,7 +540,7 @@ function update_core_database($type = '')
 	$dbv->compareAll($exclude); // core & plugins, but not plugins calling for an update with xxxxx_setup.php
 
 
-	if(count($dbv->errors))
+	if($dbv->errors())
 	{
 		if ($just_check)
 		{
@@ -549,6 +553,8 @@ function update_core_database($type = '')
 
 		$dbv->compileResults();
 		$dbv->runFix(); // Fix entire core database structure and plugins too.
+
+
 	}
 
 
