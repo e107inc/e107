@@ -3888,7 +3888,7 @@ class e_parser
 
 
 
-		list($cls) = explode('.glyph',$text,2);
+		list($id) = explode('.glyph',$text,2);
 	//	list($type, $tmp2) = explode("-",$text,2);
 
 	//	return $cls;
@@ -3897,7 +3897,6 @@ class e_parser
 
 	//	$id = str_replace($removePrefix, "", $cls);
 
-		$id = $cls;
 
 		$spin       = null;
 		$rotate     = null;
@@ -3951,8 +3950,17 @@ class e_parser
 		}
 		elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
 		{
-			$prefix = '';
-			$tag = 'i';
+			if(deftrue('BOOTSTRAP') != 2) // bootrap 2 icon but running bootstrap3.
+			{
+				$prefix = 'glyphicon ';
+				$tag = 'span';
+				$id = str_replace("icon-", "glyphicon-", $id);
+			}
+			else
+			{
+				$prefix = '';
+				$tag = 'i';
+			}
 
 		}
 		elseif($custom = e107::getThemeGlyphs()) // Custom Glyphs
