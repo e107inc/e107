@@ -542,4 +542,5 @@ define("LAN_ERROR_CONNECTION","Unable to connect for updates. Please check firew
 define("LAN_UI_X_CANT_EQUAL_Y", "[x] cannot be the same as [y]");
 define("LAN_UI_VIEW_GRID_LABEL", "Grid view");
 define("LAN_UI_VIEW_LIST_LABEL", "List view");
+define("LAN_CHECKING_FOR_UPDATES", "Checking for updates");
 
