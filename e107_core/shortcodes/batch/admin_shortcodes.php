@@ -1393,6 +1393,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return null;
 		}
 
+		e107::getDb()->db_mark_time("sc_admin_addon_updates() // start");
 
 		$themes = $this->getUpdateable('theme');
 		$plugins = $this->getUpdateable('plugin');
@@ -1408,6 +1409,10 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$tp = e107::getParser();
 		$ns->setUniqueId('e-addon-updates');
+
+		e107::getDb()->db_mark_time("sc_admin_addon_updates() // end");
+
+
 		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);
 
 
@@ -1429,7 +1434,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			case "theme":
 				$versions = $mp->getVersionList('theme');
-				$list = e107::getTheme()->getThemeList('version');
+				$list = e107::getTheme()->getList('version');
 				break;
 
 			case "plugin":
@@ -1884,9 +1889,17 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		if($parm == 'enav_popover') // @todo move to template and make generic.
 		{
+			if('0' != ADMINPERMS)
+			{
+				return null;
+			}
+
 			$template = $$tmpl;
 
-			return $template['start']. '<li><a tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="hide e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'"><span class="text-info">'.$tp->toGlyph('fa-database').'</span></a></li>' .$template['end'];
+
+			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? "<span title=\"".ADLAN_120."\" class=\"text-info\"><i class=\"fa fa-database\"></i></span>" : '<!-- -->';
+
+			return $template['start']. '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .$template['end'];
 
 		}
 
