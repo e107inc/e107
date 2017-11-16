@@ -35,6 +35,24 @@ if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_
 	exit;
 }
 
+if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
+{
+
+		require_once(e_ADMIN.'update_routines.php');
+
+		e107::getSession()->set('core-update-checked',false);
+
+		$status = (update_check() === true) ? true : false;
+
+		e107::getSession()->set('core-update-status',$status);
+
+		echo json_encode($status);
+
+		exit;
+
+}
+
+
 if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
 {
 

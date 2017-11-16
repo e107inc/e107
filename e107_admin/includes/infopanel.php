@@ -29,13 +29,61 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
+
+		$coreUpdateCheck = '';
+
+
+		if( e107::getSession()->get('core-update-status') !== true)
+		{
+			$coreUpdateCheck = "
+				 $('#e-admin-core-update').html('<i title=\"Checking for updates\" class=\"fa fa-spinner fa-spin\"></i>');
+  		    
+  		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
+ 		    	
+  		    	var res = $.parseJSON(data);
+		    
+  		    	if(res === true)
+  		    	{
+  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
+  		    	    
+  		    	     $('[data-toggle=\"popover\"]').popover('show');
+	                 $('.popover').on('click', function() 
+	                 {
+	                     $('[data-toggle=\"popover\"]').popover('hide');
+	           		});
+  		    	}
+  		    	else
+  		    	{
+  		    		$('#e-admin-core-update').text('');
+  		    	}
+			   
+			});
+			
+			";
+
+		}
+
+
+
+
+
 		$code = "
 		jQuery(function($){
   			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+  		    
+  		    ".$coreUpdateCheck."
+		
 		});
 		";
+
+
+
+
+
+
+
 		
 		e107::js('inline',$code,'jquery');
 		
