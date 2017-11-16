@@ -36,8 +36,7 @@ class adminstyle_infopanel
 		if( e107::getSession()->get('core-update-status') !== true)
 		{
 			$coreUpdateCheck = "
-				 $('#e-admin-core-update').html('<i title=\"Checking for updates\" class=\"fa fa-spinner fa-spin\"></i>');
-  		    
+				$('#e-admin-core-update').html('<i title=\"Checking for updates\" class=\"fa fa-spinner fa-spin\"></i>');
   		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
  		    	
   		    	var res = $.parseJSON(data);
@@ -54,7 +53,8 @@ class adminstyle_infopanel
   		    	}
   		    	else
   		    	{
-  		    		$('#e-admin-core-update').text('');
+  		    	    // Hide li element.
+  		    		$('#e-admin-core-update').parent().hide();
   		    	}
 			   
 			});
