@@ -31,12 +31,13 @@ class adminstyle_infopanel
 	{
 
 		$coreUpdateCheck = '';
+		$addonUpdateCheck = '';
 
 
 		if( e107::getSession()->get('core-update-status') !== true)
 		{
 			$coreUpdateCheck = "
-				$('#e-admin-core-update').html('<i title=\"Checking for updates\" class=\"fa fa-spinner fa-spin\"></i>');
+				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
   		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
  		    	
   		    	var res = $.parseJSON(data);
@@ -63,7 +64,13 @@ class adminstyle_infopanel
 
 		}
 
+		if( e107::getSession()->get('addons-update-checked') !== true)
+		{
+			$addonUpdateCheck = "
+			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update');
+			";
 
+		}
 
 
 
@@ -74,6 +81,7 @@ class adminstyle_infopanel
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
   		    
   		    ".$coreUpdateCheck."
+  		    ".$addonUpdateCheck."
 		
 		});
 		";

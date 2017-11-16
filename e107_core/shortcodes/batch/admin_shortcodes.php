@@ -1393,6 +1393,17 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return null;
 		}
 
+		$res = e107::getSession()->get('addons-update-status');
+
+		if($res !== null)
+		{
+			return $res;
+		}
+
+		return "<div id='e-admin-addons-update'><!-- --></div>";
+
+/*
+
 		e107::getDb()->db_mark_time("sc_admin_addon_updates() // start");
 
 		$themes = $this->getUpdateable('theme');
@@ -1413,13 +1424,16 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		e107::getDb()->db_mark_time("sc_admin_addon_updates() // end");
 
 
-		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);
+
+
+
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);*/
 
 
 	}
 
 
-	private function getUpdateable($type)
+	public function getUpdateable($type)
 	{
 
 		if(empty($type))
@@ -1463,7 +1477,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-	private function renderAddonUpdate($list)
+	public function renderAddonUpdate($list)
 	{
 
 		if(empty($list))

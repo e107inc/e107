@@ -35,7 +35,7 @@ if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_
 	exit;
 }
 
-if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
+if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
 {
 
 		require_once(e_ADMIN.'update_routines.php');
@@ -49,6 +49,38 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 		echo json_encode($status);
 
 		exit;
+
+}
+
+if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
+{
+	e107::getSession()->set('addons-update-checked',true);
+
+	$sc = e107::getScBatch('admin');
+
+	$themes = $sc->getUpdateable('theme');
+	$plugins = $sc->getUpdateable('plugin');
+
+	$text = $sc->renderAddonUpdate($plugins);
+	$text .= $sc->renderAddonUpdate($themes);
+
+	if(empty($text))
+	{
+		exit;
+	}
+
+	$ns = e107::getRender();
+
+	$tp = e107::getParser();
+	$ns->setUniqueId('e-addon-updates');
+	$ns->setStyle('warning');
+	$ret = $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default', true);
+
+	echo $ret;
+
+	e107::getSession()->set('addons-update-status',$ret);
+
+	exit;
 
 }
 
