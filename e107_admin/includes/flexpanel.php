@@ -143,17 +143,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_help');
 		$info = $this->getMenuPosition('core-infopanel_help');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', false, $admin_sc);
 
 		// "Latest" box.
 		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-latest-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', false, $admin_sc);
 
 		// "Status" box.
 		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-status-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', false, $admin_sc);
 
 
 		// --------------------- Personalized Panel -----------------------
