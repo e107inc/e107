@@ -3901,7 +3901,7 @@ class e_parser
 		$spin       = null;
 		$rotate     = null;
 		$fixedW     = null;
-		$prefix     = 'fa fa-'; // fallback
+		$prefix     = 'glyphicon glyphicon-'; // fallback
 		$size       = null;
 		$tag        = 'i';
 
