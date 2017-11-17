@@ -87,7 +87,7 @@ class adminlog_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> RL_LAN_030, 'perm' => '5'),
 		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5'),
 		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5'),
-	
+		'divider/01'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => '5'),	
 		'main/maintenance'	=> array('caption'=> LAN_OPTIONS, 'perm' => '5')
 
@@ -202,7 +202,8 @@ class admin_log_ui extends e_admin_ui
 			foreach($row as $val)
 			{
 				$id = $val['dblog_eventcode'];
-				$this->eventTypes[$id] = deftrue($val['dblog_title'],$id);
+				$def = strpos($val['dblog_title'], "LAN") !== false ? $id : $val['dblog_title'];
+				$this->eventTypes[$id] = str_replace(': [x]', '', deftrue($val['dblog_title'],$def));
 			}
 
 			asort($this->eventTypes);
