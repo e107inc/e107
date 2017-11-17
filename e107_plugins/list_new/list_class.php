@@ -101,7 +101,7 @@ class listclass
 	 */
 	function getListPrefs()
 	{
-		return e107::pref('list_new'); //TODO Convert from old format to new. 
+		$listPrefs = e107::pref('list_new'); //TODO Convert from old format to new.   
 		
 		//insert default preferences
 		if (empty(	$listPrefs))
