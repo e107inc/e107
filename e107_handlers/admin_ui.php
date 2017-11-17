@@ -6669,6 +6669,7 @@ class e_admin_form_ui extends e_form
 			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle."\">".$gridIcon."</a>";
 		}
 
+	// <!--<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>-->
 
 		$text = "
 			<form method='get' action='".e_REQUEST_SELF."'>
@@ -6677,9 +6678,8 @@ class e_admin_form_ui extends e_form
 					".$filter_pre."
 					<div class='row-fluid'>
 						<div  class='left form-inline span8 col-md-8' >
-							<span class='form-group has-feedback has-feedback-left'>
-								".$this->text('searchquery', $current_query[0], 50, $input_options)."
-								<i class='fa fa-search searchquery form-control-feedback form-control-feedback-left'></i>
+							<span id='admin-ui-list-search' class='form-group has-feedback has-feedback-left'>
+								".$this->text('searchquery', $current_query[0], 50, $input_options)."					
 							</span>
 							".$this->select_open('filter_options', array('class' => 'form-control e-tip tbox select filter', 'id' => false, 'title'=>LAN_FILTER))."
 								".$this->option(LAN_FILTER_LABEL_DISPLAYALL, '')."
