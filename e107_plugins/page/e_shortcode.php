@@ -211,6 +211,12 @@ class page_shortcodes extends e_shortcode
 			$i = 0;
 			foreach($pageArray as $row)
 			{
+				if(!empty($parm['limit']) && $c > $parm['limit'])
+				{
+					break;
+				}
+
+
 				$row['cmenu_tab_active'] = ($c === (int) $active) ? true : false;
 
 				if(empty($parm['template']))
