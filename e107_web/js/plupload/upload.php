@@ -183,8 +183,22 @@
 		rename("{$filePath}.part", $filePath);
 	}
 
+	$filePath = str_replace('//','/',$filePath); // cleanup .
 
-// rename($targetDir.$fileName,e_MEDIA."images/2012-05/",$fileName);
+	$convertToJpeg = e107::getPref('convert_to_jpeg', 0);
+	$fileSize = filesize($filePath);
+
+	if(varset($_GET['for']) !== '_icon' && !empty($convertToJpeg))
+	{
+		if($jpegFile = e107::getMedia()->convertImageToJpeg($filePath, true))
+		{
+			$filePath = $jpegFile;
+			$fileName = basename($filePath);
+			$fileSize = filesize($jpegFile);
+		}
+
+	}
+
 	if($_GET['for'] != '') // leave in upload directory if no category given.
 	{
 		$uploadPath = varset($_GET['path'],null);
@@ -192,13 +206,17 @@
 	}
 
 
-	$log = $_GET;
-	$log['filepath'] = $filePath;
+	$log = e107::getParser()->filter($_GET,'str');
+	$log['filepath'] = str_replace('../','',$filePath);
 	$log['filename'] = $fileName;
+	$log['filesize'] = $fileSize;
 	$log['status'] = ($result) ? 'ok' : 'failed';
+
+	
+
 	$type = ($result) ? E_LOG_INFORMATIVE : E_LOG_WARNING;
 
-	e107::getLog()->add('Media Upload', print_r($log, true), $type, MEDIA_01);
+	e107::getLog()->add('LAN_AL_MEDIA_01', print_r($log, true), $type, 'MEDIA_01');
 
 	$array = array("jsonrpc" => "2.0", "result" => $result, "id" => "id");
 
