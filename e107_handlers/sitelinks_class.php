@@ -763,13 +763,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 		$this->admin_cat['title'][3] = ADLAN_CL_3;
 		$this->admin_cat['id'][3] = 'contMenu';
-		$this->admin_cat['img'][3] = 'file-text-o.glyph'; // $tp->toGlyph('e-cat_content-16');
+		$this->admin_cat['img'][3] = 'fa-file-text-o.glyph'; // $tp->toGlyph('e-cat_content-16');
 		$this->admin_cat['lrg_img'][3] = $tp->toGlyph('e-cat_content-32'); 
 		$this->admin_cat['sort'][3] = true;
 		
 		$this->admin_cat['title'][4] = ADLAN_CL_6;
 		$this->admin_cat['id'][4] = 'toolMenu';
-		$this->admin_cat['img'][4] = 'wrench.glyph'; // $tp->toGlyph('e-cat_tools-16');
+		$this->admin_cat['img'][4] = 'fa-wrench.glyph'; // $tp->toGlyph('e-cat_tools-16');
 		$this->admin_cat['lrg_img'][4] = $tp->toGlyph('e-cat_tools-32'); 
 		$this->admin_cat['sort'][4] = true;
 		
