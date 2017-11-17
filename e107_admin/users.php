@@ -2758,7 +2758,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			}
 			else
 			{
-				$btn .= '<li class="danger user-action-'.$k.'"><a class="user-action text-right"  data-action-user="'.$user_id.'" data-action-type="'.$k.'" >'.$v.'</a></li>';
+				$btn .= '<li class="user-action-'.$k.'"><a class="user-action text-right"  data-action-user="'.$user_id.'" data-action-type="'.$k.'" >'.$v.'</a></li>';
 			}
 		}
 
