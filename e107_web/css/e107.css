@@ -122,6 +122,7 @@ a.cpage-np.current { text-decoration: none; }
 div.bbarea.large, .tbox.large, .helpbox.large { width: 95% }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
+img.bbcode-img { max-width:100%}
 
 .bbcode-panel { width: 100% }
 .input-block-level { width: 100% !important }
