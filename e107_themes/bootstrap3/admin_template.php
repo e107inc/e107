@@ -211,8 +211,8 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		</div>
 	</div>
 </div>
-<div class="container-fluid">
-	<div class="row">
+<div class="admin-container container-fluid">
+	<div class="row is-table-row">
 ';
 
 $adminstyle = e107::getConfig()->get('adminstyle', 'infopanel');
@@ -220,7 +220,7 @@ if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET
 {
 	$ADMIN_HEADER .= '
 		<div class="col-sm-12">
-			<div class="admin-main-content">
+			<div class="admin-main-content is-table-row">
 	';
 }
 else
@@ -254,7 +254,9 @@ else
 			{ADMIN_LOG=request}
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
-	
+		
+			<!--<div class="admin-copyright"><small>Copyright &copy; 2008-2017 e107.org</small></div>-->
+		
 			{SETSTYLE=default}			
 		</div>
 		<div class="col-md-9 col-lg-10 admin-right-panel">
@@ -272,9 +274,7 @@ $ADMIN_FOOTER = '
 	</div><!--/.row-->
 </div><!--/.fluid-container-->
 
-<footer class="center mute"> 
-	Copyright &copy; 2008-2017 e107 Inc (e107.org)<br />
-</footer>
+
 ';
 
 

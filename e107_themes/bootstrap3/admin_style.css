@@ -1543,6 +1543,7 @@ footer {
 */
 
 
+/*
 
 @media only screen and (min-width : 768px) {
     .is-table-row {
@@ -1554,6 +1555,7 @@ footer {
         vertical-align: top;
     }
 }
+*/
 
 /* Flex Classes */
 body#admin-menus > .container-fluid > .row,
