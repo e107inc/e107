@@ -104,7 +104,7 @@ CREATE TABLE comments (
   comment_share tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id),
   KEY comment_blocked (comment_blocked),
-  KEY comment_author_id (comment_author_id) 
+  KEY comment_author_id (comment_author_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
 
@@ -359,14 +359,13 @@ CREATE TABLE online (
   online_flag tinyint(3) unsigned NOT NULL default '0',
   online_user_id varchar(100) NOT NULL default '',
   online_ip varchar(45) NOT NULL default '',
-  online_location text NOT NULL,        
+  online_location text NOT NULL,
   online_pagecount tinyint(3) unsigned NOT NULL default '0',
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
   online_language varchar(2) NOT NULL default '',
-  KEY online_ip (online_ip),
-  KEY online_user_id (online_user_id),
-  KEY online_timestamp (online_timestamp)
+  KEY `online_ip + online_user_id` (online_ip, online_user_id),
+  KEY `online_timestamp` (online_timestamp)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
@@ -392,16 +391,16 @@ CREATE TABLE page (
   page_template varchar(50) NOT NULL default '',
   page_order int(4) unsigned NOT NULL default '9999',
   page_fields mediumtext,
-  menu_name varchar(50) NOT NULL default '',  
-  menu_title varchar(250) NOT NULL default '',  
+  menu_name varchar(50) NOT NULL default '',
+  menu_title varchar(250) NOT NULL default '',
   menu_text mediumtext,
   menu_image varchar(250) NOT NULL default '',
   menu_icon varchar(250) NOT NULL default '',
   menu_template varchar(50) NOT NULL default '',
   menu_class varchar(250) NOT NULL default '0',
-  menu_button_url varchar(250) NOT NULL default '', 
-  menu_button_text varchar(250) NOT NULL default '',   
-  
+  menu_button_url varchar(250) NOT NULL default '',
+  menu_button_text varchar(250) NOT NULL default '',
+
   PRIMARY KEY  (page_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
@@ -620,4 +619,3 @@ CREATE TABLE user_extended_struct (
   PRIMARY KEY  (user_extended_struct_id)
 ) ENGINE=MyISAM;
 # --------------------------------------------------------
-

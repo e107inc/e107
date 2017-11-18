@@ -23,7 +23,7 @@
 
 
 /*
-TODO: 
+TODO:
 	1. Header
 	2. Support array of defaults for table
 	3. Get rid of all the globals (put into a class?)
@@ -106,7 +106,7 @@ class alt_auth_admin extends alt_auth_base
 
 
 	/**
-	 *	All user fields which might, just possibly, be transferred. The array key is the corresponding field in the E107 user database; code prefixes it 
+	 *	All user fields which might, just possibly, be transferred. The array key is the corresponding field in the E107 user database; code prefixes it
 	 *	with 'xf_' to get the parameter
 	 *	'default' may be a single value to set the same for all connect methods, or an array to set different defaults.
 	 */
@@ -144,7 +144,7 @@ class alt_auth_admin extends alt_auth_base
 				$ret .= "<tr><td$log>";
 				if ($v['optional'] == FALSE) $ret .= '*&nbsp;';
 				$ret .= $v['prompt'].':';
-			
+
 				$ret .= "</td><td class='form-inline' $log>";
 	//			$fieldname = $tableType.'_'.$v['optname'];
 				$fieldname = $tableType.'_xf_'.$f;			// Name of the input box
@@ -228,12 +228,12 @@ class alt_auth_admin extends alt_auth_base
 		{
 			if (isset($xFields[$f]))
 			{
-				$this->alt_auth_user_fields['x_'.$f] = array('prompt' => varset($xFields[$f]['user_extended_struct_text'],'').' ('.$f.')', 
+				$this->alt_auth_user_fields['x_'.$f] = array('prompt' => varset($xFields[$f]['user_extended_struct_text'],'').' ('.$f.')',
 														'default' => varset($xFields[$f]['default'],''),
 														'optional' => TRUE,
 														'showAll' => TRUE,			// Show for all methods - in principle, its likely to be wanted for all
 														'method'  => '*' 			// Specify all convert methods - have little idea what may be around
-														);			
+														);
 			}
 		}
 		$fieldsAdded = TRUE;
@@ -278,9 +278,17 @@ class alt_auth_admin extends alt_auth_base
 			if (in_array($fn,$opts))
 			{
 				$ret .= "<tr><td$log>".$cf['prompt'];
-				
+
 				$ret .= "</td><td$log>";
-				$ret .= $frm -> form_text($prefix.'_'.$cf['fieldname'], $cf['size'], $parm[$prefix.'_'.$cf['fieldname']], $cf['max_size']);
+				if ($cf['fieldname'] == 'password')
+				{
+					$ret .= $frm -> form_password($prefix.'_'.$cf['fieldname'], $cf['size'], $parm[$prefix.'_'.$cf['fieldname']], $cf['max_size']);
+				}
+				else
+				{
+					$ret .= $frm -> form_text($prefix.'_'.$cf['fieldname'], $cf['size'], $parm[$prefix.'_'.$cf['fieldname']], $cf['max_size']);
+				}
+				
 				if ($cf['help']) $ret .= "<br /><span class='field-help'>".$cf['help']."</span>";
 				$ret .= "</td></tr>\n";
 			}
@@ -339,10 +347,10 @@ class alt_auth_admin extends alt_auth_base
 	 *	@param $frm - form object to use
 	 *	@param string $currentSelection - current value (if any)
 	 *	@param boolean $getExtended - return all supported password types if TRUE, 'core' password types if FALSE
-	 */	
+	 */
 	public function altAuthGetPasswordSelector($name, $frm, $currentSelection = '', $getExtended = FALSE)
 	{
-		$password_methods = ExtendedPasswordHandler::GetPasswordTypes($getExtended); 
+		$password_methods = ExtendedPasswordHandler::GetPasswordTypes($getExtended);
 		$text = "";
 		$text .= $frm->form_select_open($name);
 		foreach($password_methods as $k => $v)
@@ -502,7 +510,7 @@ class alt_auth_admin extends alt_auth_base
 					'ucase' => LAN_ALT_72,
 					'lcase' => LAN_ALT_73,
 					'ucfirst' => LAN_ALT_74,
-					'ucwords' => LAN_ALT_75				
+					'ucwords' => LAN_ALT_75
 					);
 
 	/**
@@ -555,7 +563,7 @@ function alt_auth_adminmenu()
 
 	show_admin_menu($caption, ALT_AUTH_ACTION, $var);
 
-	
+
 	$var = array();
 	foreach($authlist as $a)
 	{
