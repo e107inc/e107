@@ -14385,7 +14385,7 @@ ul.chats li.out .message {
 
 /**************** Custom *************************/
 
-body { padding-top: 41px }
+body { padding-top: 51px !important }
 
 .navbar-fixed-top { background-color: #1e1e1e; color: #ffffff; border:0; margin:0!important }
 .navbar-fixed-top a { color: #ffffff }
@@ -14407,9 +14407,7 @@ a.dropdown-toggle i { opacity: 0.9 }
 }
 .admin-left-panel {
 background-color: #303030;
-height: 1500px;
-
-margin-top: -37px;
+/*margin-top: -37px;*/
 padding-right: 0;
 padding-left: 0; }
 
@@ -14417,14 +14415,15 @@ padding-left: 0; }
 .admin-menu.panel  { background: none; border:0}
 .admin-left-panel .panel-heading { padding-top:40px; }
 .admin-left-panel .panel-heading {  background: none; border:0; color: white}
-.admin-left-panel .panel-default .panel-heading { color:white; background:none; border-bottom: 1px solid #484848; }
+.admin-left-panel .panel-default .panel-heading { color:white; background:none; border-bottom: 1px solid #484848; padding-top: 28px; }
 #admin-ui-nav-menu li { border-bottom: 1px solid #484848; }
 
 .admin-right-panel { padding: 0; }
+.admin-main-content { display:block; min-height:1000px; }
 .admin-main-content  .block-text { padding: 0 15px }
 .admin-main-content div.block > .caption { background: white;
 padding: 15px;
-margin-top: -25px;
+margin-top: 0;
 font-size: 25px;
 font-weight: 300;
 border-bottom: 5px solid #e5e5e5 !important;
@@ -14434,6 +14433,9 @@ border-bottom: 5px solid #e5e5e5 !important;
     color: #fff;
 
 }
+
+.admin-copyright { margin-top:100px; padding-left:15px; display:block; padding-bottom:30px; position: relative; bottom: 0; }
+
 .admin-left-panel li.list-group-item { background:none; border:0;}
 
 i.searchquery { margin-top: 10px; }
@@ -14467,8 +14469,21 @@ margin-bottom: 15px;
 .popover .popover-title { background-color: #d9534f; color:white; font-weight:bold }
 
 
+@media only screen and (min-width : 768px) {
+    .is-table-row {
+        display: table;
+        width: 100%;
+       margin:0;
 
+    }
+    .is-table-row > .admin-right-panel, .is-table-row > .admin-left-panel{
+        float: none;
+        display: table-cell;
+       vertical-align: top;
+    }
+}
 
+.admin-container { padding:0 }
 /*
 
 .nav-pills li.active a {
