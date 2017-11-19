@@ -455,7 +455,7 @@ if(THEME_STYLE === 'css/kadmin.css')
 	define("ADMIN_DELETE_ICON", "<i class='fa fa-trash fa-2x fa-fw text-danger'></i>");
 	define("ADMIN_EXECUTE_ICON", "<i class='fa fa-power-off fa-2x fa-fw'></i>");
 	define("ADMIN_SORT_ICON", "<i class='fa fa-sort fa-2x fa-fw'></i>");
-
+	define("ADMIN_PAGES_ICON", "<i class='fa fa-file-text-o fa-2x fa-fw'></i>");
 }
 else
 {
@@ -463,7 +463,7 @@ else
 	define("ADMIN_DELETE_ICON", "<i class='S32 e-delete-32'></i>");
 	define("ADMIN_SORT_ICON", "<i class='S32 e-sort-32'></i>");
 	define("ADMIN_EXECUTE_ICON", "<i class='S32 e-execute-32'></i>");
-
+	define("ADMIN_PAGES_ICON", "<i class='S32 e-custom-32'></i>");
 
 
 }

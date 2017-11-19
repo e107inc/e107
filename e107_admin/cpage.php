@@ -398,7 +398,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 			if($parent != 0)
 			{
 				$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
-				$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".E_32_CUST."</a>";
+				$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".ADMIN_PAGES_ICON."</a>";  //
 			}
 
 
