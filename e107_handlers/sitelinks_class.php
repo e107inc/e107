@@ -1347,7 +1347,9 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$search[7] = '/\{LINK_CLASS\}(.*?)/si';
 		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
-		$search[10] = '/\{LINK_DATA\}/si';
+		$search[10] = '/\{LINK_SUB_OVERSIZED\}/si';
+		$search[11] = '/\{LINK_DATA\}/si';
+
 
 		foreach (array_keys($e107_vars) as $act)
 		{
@@ -1446,6 +1448,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$replace[9] = varset($e107_vars[$act]['image']);	
 			}
 
+			$replace[10] = count($e107_vars[$act]['sub']) > 20 ? 'oversized' : '';
+
 			if(!empty($e107_vars[$act]['link_data']))
 			{
 
@@ -1455,10 +1459,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					$dataTmp[] = $k.'="'.$v.'"';
 				}
 
-				$replace[10] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
+				$replace[11] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
 
 			}
-		
+
+
+
 			
 			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
 			{
@@ -2011,6 +2017,20 @@ class navigation_shortcodes extends e_shortcode
 		return $url;
 	}
 
+/*
+	function sc_link_sub_oversized($parm='')
+	{
+		$count = count($this->var['link_sub']);
+
+		if(!empty($parm) && $count > $parm)
+		{
+			return 'oversized';
+		}
+
+		return $count;
+
+	}
+*/
 
 	/**
 	 * Returns only the anchor target in the URL if one is found.

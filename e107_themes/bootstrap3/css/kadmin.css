@@ -14384,8 +14384,9 @@ ul.chats li.out .message {
 
 
 /**************** Custom *************************/
-
-body { padding-top: 51px !important }
+html { height: auto !important; }
+body { margin-top: 51px;
+padding: 0 !important; }
 
 .navbar-fixed-top { background-color: #1e1e1e; color: #ffffff; border:0; margin:0!important }
 .navbar-fixed-top a { color: #ffffff }
@@ -14467,6 +14468,11 @@ margin-bottom: 15px;
 
 .popover {  }
 .popover .popover-title { background-color: #d9534f; color:white; font-weight:bold }
+
+.dropdown-menu.oversized { width: 380px;  }
+.dropdown-menu.oversized li {  width: 190px; height:38px; float:left; display:inline-block; overflow:hidden; }
+
+
 
 
 @media only screen and (min-width : 768px) {
