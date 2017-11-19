@@ -128,7 +128,7 @@ $E_ADMIN_NAVIGATION['button_other'] = '
 ';
 
 $E_ADMIN_NAVIGATION['start_sub'] = '
-		<ul class="dropdown-menu" role="menu" >
+		<ul class="dropdown-menu {LINK_SUB_OVERSIZED}" role="menu" >
 ';
 
 $E_ADMIN_NAVIGATION['start_other_sub'] = '
