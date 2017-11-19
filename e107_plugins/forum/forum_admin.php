@@ -858,7 +858,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 					if(!empty($sub))
 					{
-						$level = 2;
+						$level = 3;
 					}
 
 				//	$ret['inlineParms'] = array('pre'=>'<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="level-'.$level.' icon" alt="" />');
