@@ -117,6 +117,13 @@ else
 */
 
     $tmp = e107::getTemplate('news', 'news', 'view');
+
+    if(empty($tmp))
+    {
+        $newsViewTemplate = !empty($row['news_template']) ? $row['news_template'] : 'default';
+        $tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
+    }
+
 	$template = $tmp['item'];
 	unset($tmp);
 //	ob_start();
