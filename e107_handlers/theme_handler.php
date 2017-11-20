@@ -2354,8 +2354,10 @@ class themeHandler
 					
 					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']))
 					{
+						$pLabel = (self::RENDER_ADMINPREFS === $mode) ? TPVLAN_95 : TPVLAN_22;
+
 						$text .= "
-							<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
+							<tr><td style='vertical-align:top;'><b>".$pLabel.":</b></td>
 							<td colspan='2' style='vertical-align:top'>
 							<table class='table table-bordered table-striped' >
 							<tr>

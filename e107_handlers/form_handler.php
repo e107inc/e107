@@ -4741,8 +4741,12 @@ class e_form
 						$value = $tmp[0];
 						unset($tmp);	
 					}		
-						
-					
+
+					if(empty($parms['thumb_aw']) && !empty($parms['thumb']) && strpos($parms['thumb'],'x')!==false)
+					{
+						list($parms['thumb_aw'],$parms['thumb_ah']) = explode('x',$parms['thumb']);
+					}
+
 					$vparm = array('thumb'=>'tag','w'=> vartrue($parms['thumb_aw'],'80'));
 					
 					if($video = e107::getParser()->toVideo($value,$vparm))

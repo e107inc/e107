@@ -83,7 +83,9 @@ class plugin_gallery_admin extends e_admin_dispatcher
 	 * @var array
 	 */
 	protected $adminMenu = array(
-		'main/prefs' => array('caption' => LAN_PREFS, 'perm' => 'P')
+		'main/prefs' => array('caption' => LAN_PREFS, 'perm' => 'P'),
+		'main/list'  => array('caption' => LAN_CATEGORIES, 'perm'    => 'P'),
+		'main/create'  => array('caption' => LAN_CREATE, 'perm'    => 'P'),
 	);
 
 	/**
@@ -98,6 +100,7 @@ class plugin_gallery_admin extends e_admin_dispatcher
 	 */
 	function init()
 	{
+
 		if(E107_DEBUG_LEVEL > 0)
 		{
 			$this->adminMenu['main/list'] = array(
@@ -214,6 +217,7 @@ class gallery_cat_admin_ui extends e_admin_ui
 			'width'    => 'auto',
 			'thclass'  => 'left',
 			'readonly' => false,
+			'inline'   => true,
 		),
 		'media_cat_sef'      => array(
 			'title'   => LAN_SEFURL,
@@ -538,6 +542,8 @@ class gallery_cat_admin_ui extends e_admin_ui
 		),
 	);
 
+	private $ownerCount;
+
 	/**
 	 * Initial function.
 	 */
@@ -571,23 +577,75 @@ class gallery_cat_admin_ui extends e_admin_ui
 
 		$message = $tp->lanVars(LAN_GALLERY_ADMIN_01, array($x, $y), true);
 		$mes->addInfo($message);
+
+		$this->setGalleryCount();
 	}
 
-	/**
-	 * User defined pre-create logic, return false to prevent DB query execution.
-	 *
-	 * @param $new_data
-	 *  Posted data.
-	 * @param $old_data
-	 *
-	 * @return boolean
-	 */
+
+
+	function setGalleryCount()
+	{
+
+		$sql = e107::getDb();
+
+		if($sql->gen("SELECT media_cat_owner,  MAX(CAST(SUBSTRING_INDEX(media_cat_category, '_', -1 ) AS UNSIGNED)) as maxnum, count(media_cat_id) as number FROM `#core_media_cat`  GROUP BY media_cat_owner"))
+		{
+			while($row = $sql->fetch())
+			{
+				$this->ownerCount[$row['media_cat_owner']] = $row['number'];
+				$own = $row['media_cat_owner'];
+			//	if(!in_array($own,$this->restricted))
+				{
+//					$this->fields['media_cat_owner']['writeParms'][$own] = $own;
+
+					if($row['maxnum'] > 0)
+					{
+						$this->ownerCount[$row['media_cat_owner']] = $row['maxnum']; // $maxnum;
+					}
+				}
+			}
+		}
+
+		e107::getMessage()->addDebug("Max value for category names: ".print_a($this->ownerCount,true));
+
+
+
+
+	}
+
+
 	public function beforeCreate($new_data, $old_data)
 	{
-		$replace = array("_", " ", "'", '"', "."); // FIXME Improve.
-		$new_data['media_cat_category'] = strtolower(str_replace($replace, "", $new_data['media_cat_title']));
+		$new_data = $this->setCategory($new_data);
+
 		return $new_data;
 	}
+
+
+	public function beforeUpdate($new_data, $old_data, $id)
+	{
+	//	$new_data = $this->setCategory($new_data);
+
+		return $new_data;
+	}
+
+	private function setCategory($new_data)
+	{
+		$type = 'image_';
+
+		$increment = ($this->ownerCount['gallery'] +1);
+
+		$new_data['media_cat_owner'] = 'gallery';
+		$new_data['media_cat_category'] = 'gallery_'.$type.$increment;
+
+		if(empty($new_data['media_cat_sef']))
+		{
+			 $new_data['media_cat_sef'] = eHelper::title2sef($new_data['media_cat_title']);
+		}
+
+		return $new_data;
+	}
+
 
 	function galleryPage()
 	{
