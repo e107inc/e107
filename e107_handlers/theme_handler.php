@@ -1376,6 +1376,10 @@ class themeHandler
 		//	print_a($xdata);
 	
 			$c = 1;
+
+			$filterName = '';
+			$filterArray = array();
+			$filterVal = '';
 		
 			$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 			$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
