@@ -84,6 +84,7 @@ class page_admin extends e_admin_dispatcher
 		'overview/edit' => 'overview/list',
 		'page/edit'		=> 'page/list',
 		'menu/edit'		=> 'menu/create',
+		'menu/grid'		=> 'menu/list',
 		'cat/edit'      => 'cat/list'
 	);	
 	
@@ -552,7 +553,13 @@ class page_admin_ui extends e_admin_ui
 		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef', 'other' => 'page_sef', 'chapter' => 'chapter_sef', 'book' => 'book_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided.
 		protected $tabs		 		= array(CUSLAN_59,CUSLAN_60,CUSLAN_61,CUSLAN_62);
 		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
-		
+
+
+		protected $grid             = array('title'=>'menu_title', 'image'=>'menu_image', 'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>false);
+
+
+
+
 		/*
 		 * 	'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true,  'width' => 'auto', 'thclass' => 'left'), 
      	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
@@ -633,7 +640,15 @@ class page_admin_ui extends e_admin_ui
 		function init()
 		{
 
-			if($this->getMode() === 'overview')
+			$mode = $this->getMode();
+
+
+			if($mode !== 'menu')
+			{
+				$this->grid = array();
+			}
+
+			if($mode === 'overview')
 			{
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id  "; // without any Order or Limit.
 				$this->fieldpref = array("page_id", "page_title", 'page_chapter', 'page_template', "menu_title", 'menu_image', 'menu_template' );
@@ -684,11 +699,11 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
-			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
+			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline' || $this->getAction() == 'grid'))
 			{
 			
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
-			
+		//	$this->gridQry = $this->listQry;
 				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 			
 				$this->batchDelete 	= false;
@@ -724,7 +739,11 @@ class page_admin_ui extends e_admin_ui
 					$this->fields['menu_name']['inline'] = true;
 				}
 
+				if($this->getAction() == 'grid')
+				{
+					$this->fields['menu_image']['readParms'] = 'thumb=400x400';
 
+				}
 
 
 
