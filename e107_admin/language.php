@@ -404,7 +404,7 @@ if(!empty($_GET['iframe']))
 
 					if(strpos($value['tag'],'-') !==false)
 					{
-						$text .= " <span class='label label-warning'>Pre-release</span>";
+						$text .= " <span class='label label-warning'>".LANG_LAN_153."</span>";
 					}
 
 
