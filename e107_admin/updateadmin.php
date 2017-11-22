@@ -104,7 +104,7 @@ else
 					<tr>
 						<td>".UDALAN_6.":</td>
 						<td>
-							<input class='tbox input-text' type='password' name='a_password2' size='60' value='' maxlength='20' />
+							<input class='tbox form-control input-text' type='password' name='a_password2' size='60' value='' maxlength='20' />
 						</td>
 					</tr>
 				</tbody>

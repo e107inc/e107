@@ -302,7 +302,7 @@ class lancheck
 	
 	var $core_plugins = array();
 
-	var $core_themes = array("bootstrap3");
+	var $core_themes = array("bootstrap3", "voux", "landingzero");
 			
 	private $errorsOnly = false;
 	
@@ -367,7 +367,9 @@ class lancheck
 			$core = array();	
 
 			$coredir = array('admin' => 'e107_admin', 'files' => 'e107_files', 'images' => 'e107_images', 'themes' => 'e107_themes', 'plugins' => 'e107_plugins', 'handlers' => 'e107_handlers', 'languages' => 'e107_languages', 'downloads' => 'e107_downloads', 'docs' => 'e107_docs');
-			
+
+			$core_image = array();
+
 			require_once(e_ADMIN."core_image.php");
 			
 			unset($core_image['e107_images'],$core_image['e107_files'],$core_image['e107_admin']);
@@ -682,17 +684,7 @@ class lancheck
 
 		$archive = new PclZip($newfile);
 
-		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,''); // includes admin area.
-	//	$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'');
-		$core_admin = array();
-		$plugs      = $this->getFilePaths(e_BASE.$PLUGINS_DIRECTORY, $language, $this->core_plugins); // standardized path.
-		$theme      = $this->getFilePaths(e_BASE.$THEMES_DIRECTORY, $language, $this->core_themes);
-		$docs       = $this->getFilePaths(e_BASE.$HELP_DIRECTORY,$language);
-		$handlers   = $this->getFilePaths(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path.
-
-		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
-
-		$file = array_unique($file);
+		$file = $this->getFileList($language);
 
 		$data = implode(",", $file);
 
@@ -736,6 +728,45 @@ class lancheck
 			return $ret;
 		}
 	}
+
+
+	private function getFileList($language)
+	{
+		if(empty($language))
+		{
+			return false;
+		}
+
+		$PLUGINS_DIRECTORY      = e107::getFolder('plugins');
+		$THEMES_DIRECTORY       = e107::getFolder('themes');
+		$HELP_DIRECTORY         = e107::getFolder('help');
+		$HANDLERS_DIRECTORY     = e107::getFolder('handlers');
+
+		$core       = $this->getFilePaths(e_LANGUAGEDIR.$language."/", $language,''); // includes admin area.
+	//	$core_admin = $this->getFilePaths(e_BASE.$LANGUAGES_DIRECTORY.$language."/admin/", $language,'');
+		$core_admin = array();
+		$plugs      = $this->getFilePaths(e_BASE.$PLUGINS_DIRECTORY, $language, $this->core_plugins); // standardized path.
+		$theme      = $this->getFilePaths(e_BASE.$THEMES_DIRECTORY, $language, $this->core_themes);
+		$docs       = $this->getFilePaths(e_BASE.$HELP_DIRECTORY,$language);
+		$handlers   = $this->getFilePaths(e_BASE.$HANDLERS_DIRECTORY,$language); // standardized path.
+
+		$file = array_merge($core,$core_admin, $plugs, $theme, $docs, $handlers);
+
+		$file = array_unique($file);
+
+		return $file;
+
+
+	}
+
+	function removeLanguagePack($language)
+	{
+		$files = $this->getFileList($language);
+
+
+
+	}
+
 
 
 	/**
@@ -860,11 +891,21 @@ class lancheck
 	{
 		$xml = e107::getXml();
 
+
+
+
 		$feed = 'https://e107.org/languagepacks.xml';
+
+		if(!empty(e_VERSION))
+		{
+			$feed .= "?ver=". preg_replace('/[^\d\.]/','',e_VERSION);
+		}
+
+
 
 		$languages = array();
 
-		if($rawData = $xml -> loadXMLfile($feed, TRUE))
+		if($rawData = $xml -> loadXMLfile($feed, true))
 		{
 
 			if(empty($rawData['language']))
@@ -882,6 +923,7 @@ class lancheck
 					'name'          => $att['name'],
 					'author'        => $att['author'],
 					'infoURL'       => $att['infourl'],
+					'tag'           => $att['tag'],
 				//	'folder'        => $att['folder'],
 					'version'       => $att['version'],
 					'date'          => $att['date'],
@@ -893,6 +935,10 @@ class lancheck
 			}
 
 
+		}
+		else
+		{
+			e107::getDebug()->log("Language Pack Feed Failed: ".$xml->getLastErrorMessage());
 		}
 
 
@@ -1045,20 +1091,21 @@ class lancheck
 	function write_lanfile($lan='')
 	{
 		if(!$lan){ 	return; }
-		
+
 		global $ns;
 		
 		unset($input);
 		$kom_start = chr(47)."*";
 		$kom_end = "*".chr(47);
 	
-		if(vartrue($_SESSION['lancheck-edit-file']))
+		if(!empty($_SESSION['lancheck-edit-file']))
 		{
 			$writeit = $_SESSION['lancheck-edit-file'];
 		}
 		else
 		{
-			return;	
+			e107::getMessage()->addError("There is a problem with sessions");
+			return;
 		}
 	
 		$old_kom = "";
@@ -1126,6 +1173,11 @@ class lancheck
 			{
 				$defvar = $_POST['newdef'][$i];
 			}
+
+			if(empty($deflang))
+			{
+				continue; 
+			}
 	
 			if($_POST['newdef'][$i] == "LC_ALL" && vartrue($_SESSION['lancheck-edit-file']))
 			{
@@ -1141,8 +1193,9 @@ class lancheck
 	
 		$message .="<br />";
 		$message .="</div>";
-		$input .= "\n\n?>";
-			//<?
+		/*
+		 $input .= "\n\n?>";
+		*/
 		// Write to file.
 		
 		$writeit = str_replace("//","/",$writeit); // Quick Fix. 
@@ -1299,7 +1352,7 @@ class lancheck
 
 
 	
-	function check_lan_errors($english,$translation,$def)
+	function check_lan_errors($english,$translation,$def, $opts=array())
 	{
 		$eng_line = $english[$def];
 		$trans_line = !empty($translation[$def]) ? $translation[$def] : '';
@@ -1309,13 +1362,13 @@ class lancheck
 		$error = array();
 		$warning = array();
 			
-		if((!array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
+		if((is_array($translation) && !array_key_exists($def,$translation) && $eng_line != "") || (trim($trans_line) == "" && $eng_line != ""))
 		{
 			$this->checkLog('def',1);
 			return $def.": ".LAN_CHECK_5."<br />";
 		}
 
-		if($eng_line == $trans_line && !empty($eng_line))
+		if(empty($opts['no-warning']) && ($eng_line == $trans_line && !empty($eng_line)))
 		{
 			$warning[] = "<span class='text-warning'>".$def. ": ".LAN_CHECK_29."</span>";
 		}
@@ -1456,6 +1509,12 @@ class lancheck
 			$regexp = "#.php#";
 			$mode = 'core';
 		}
+		elseif(strpos($comp_dir,e_THEME) !== false)
+		{
+			$regexp = "#".$lang."#";
+			$mode = 'themes';
+			//	var_dump($lang_array);
+		}
 		else
 		{
 			$regexp = "#".$lang."#";
@@ -1463,7 +1522,9 @@ class lancheck
 		}
 
 	//	$regexp = (strpos($comp_dir,e_LANGUAGEDIR) !== FALSE) ? "#.php#" : "#".$lang."#";
-	
+
+
+
 		foreach($lang_array as $f)
 		{
 			if($mode == 'plugins')
@@ -1474,6 +1535,19 @@ class lancheck
 
 
 				if($mode == 'plugins' && ($this->thirdPartyPlugins !== true) && !in_array($pluginDirectory, $this->core_plugins))
+				{
+					continue;
+				}
+			}
+
+			if($mode == 'themes')
+			{
+				$tmpDir = str_replace($comp_dir,'',$f['path']);
+			//	echo "<br />".$tmpDir;
+				list($themeDirectory, $other) = explode("/",$tmpDir, 2);
+
+
+				if($mode == 'themes' && ($this->thirdPartyPlugins !== true) && !in_array($themeDirectory, $this->core_themes))
 				{
 					continue;
 				}
@@ -1677,7 +1751,7 @@ class lancheck
 		if(!file_exists($newfile))
 		{
 		//	echo "<br />file: ".$newfile;
-			$data = chr(60)."?php\n\ndefine(\"EXAMPLE\",\"Generated Empty Language File\");";
+			$data = chr(60)."?php\n\n// define(\"EXAMPLE\",\"Generated Empty Language File\");";
 			file_put_contents($newfile,$data);	
 		}
 	}
@@ -1868,7 +1942,85 @@ class lancheck
 		return (preg_match('/^.{1}/us',$str,$ar) == 1);
 	}
 	
-	
+
+	/**
+	 * Clean-up definitions in a language file removed closing php tags and strip specific html..
+	 * @param array $defKeys array of constants to comment out.
+	 * @param string $path path to the language file to edit.
+	 */
+	function cleanFile($path, $defKeys=null)
+	{
+		if(empty($path) || !file_exists($path) || stripos($path,'English')!==false)
+		{
+			return null;
+		}
+
+		$content = file_get_contents($path);
+		$lines = explode("\n",$content);
+
+		$srch = array();
+		$repl = array();
+
+		$srch[] = '<b>';
+		$srch[] = '</b>';
+
+		$repl[] = '[b]';
+		$repl[] = '[/b]';
+
+
+		if(!empty($defKeys))
+		{
+			foreach($defKeys as $const)
+			{
+				$srch[] = "define('".$const."'";
+				$srch[] = 'define("'.$const.'"';
+
+				$repl[] = "// define('".$const."'";
+				$repl[] = '// define("'.$const.'"';
+			}
+		}
+
+		$new = '';
+		foreach($lines as $ln)
+		{
+			if(strpos($ln,'?>') !==false)
+			{   continue;
+
+			}
+
+			if(strpos($ln, '""') !== false || strpos($ln, "''") !== false) // empty
+			{
+				continue;
+			}
+
+			if(strpos($ln,'//') !==false)
+			{
+				$new .= $ln."\n";
+				continue;
+			}
+
+			if(!empty($srch))
+			{
+				$new .= str_replace($srch,$repl,$ln)."\n";
+			}
+			else
+			{
+				$new .= $ln."\n";
+			}
+		}
+
+		if(file_put_contents($path,$new))
+		{
+			return true;
+		}
+
+		return false;
+
+
+	}
+
+
+
 }
 
 

@@ -101,8 +101,8 @@ define("LAN_SIGNUP_65", "You have been assigned the following login name");
 define("LAN_SIGNUP_66", "Please make a note of it.");
 define("LAN_SIGNUP_67", "This will be assigned by the system after signup");
 //define("LAN_SIGNUP_68","Error: Unable to open remote XUP file");
-define("LAN_SIGNUP_69","");
-define("LAN_SIGNUP_70","");
+
+
 define("LAN_SIGNUP_71", "You have reached the site limit for account registrations. Please login using one of your other accounts.");		// LAN_202
 define("LAN_SIGNUP_72", "Thanks for signing up on [sitename]! We just sent you a confirmation email to [email]. Please click on the confirmation link in the email to complete your sign up and activate your account.");  	// LAN_405
 define("LAN_SIGNUP_73", "Thank you!");											// LAN_406

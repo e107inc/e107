@@ -132,9 +132,11 @@ class media_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_IMA_M_01, 'perm' => 'A'),
 	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
 		'main/import' 		=> array('caption'=> LAN_IMA_M_02, 'perm' => 'A|A1'),
+			'divider/01'        => array('divider'=>true),
 		'cat/list' 			=> array('caption'=> LAN_IMA_M_03, 'perm' => 'A|A2'),
 		'cat/create' 		=> array('caption'=> LAN_IMA_M_04, 'perm' => 'A|A2'), // is automatic.
 	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
+		'divider/02'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
 	);
@@ -157,7 +159,8 @@ class media_admin extends e_admin_dispatcher
 
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'
+		'main/edit'	=> 'main/list',
+		'main/grid' => 'main/list'
 	);
 
 	protected $menuTitle = LAN_MEDIAMANAGER;
@@ -178,6 +181,8 @@ class media_cat_ui extends e_admin_ui
 		protected $listOrder = 'media_cat_owner asc';
 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
+
+
 
 		protected $fields = array(
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -358,7 +363,7 @@ class media_form_ui extends e_admin_form_ui
 		asort($this->cats);*/
 	//	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
 				
-		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
@@ -368,14 +373,26 @@ class media_form_ui extends e_admin_form_ui
 		}
 		
 		
-		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->resizeImages($ids,$type);
 		}
+
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__convert_to_jpeg' ))
+		{
+		//	$type = str_replace('options__','',$_POST['etrigger_batch']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
+			$this->convertImagesToJpeg($ids);
+		}
 		
-		
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__convert_all_to_jpeg' ))
+		{
+		//	$type = str_replace('options__','',$_POST['etrigger_batch']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
+			$this->convertImagesToJpeg($ids,'all');
+		}
 		
 	}
 	
@@ -521,6 +538,55 @@ class media_form_ui extends e_admin_form_ui
 		
 		
 	}
+
+	private function convertImagesToJpeg($ids,$mode=null)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$mm = e107::getMedia();
+
+		$insert = empty($mode) ? "media_id IN (".$ids.") AND " : " media_size > 225000 AND ";
+
+		$data = $sql->retrieve("core_media","media_id,media_url", $insert."(media_type = 'image/png' OR media_type = 'image/gif') ", true, true);
+
+		if(empty($data))
+		{
+			return null;
+		}
+
+		foreach($data as $row)
+		{
+			$path = $tp->replaceConstants($row['media_url']);
+
+			if($jpegFile = $mm->convertImageToJpeg($path,true))
+			{
+				$url = $tp->createConstants($jpegFile);
+				$size = filesize($jpegFile);
+
+				$update = array (
+					'media_size'    => $size,
+					'media_url'     => $url,
+					'media_type'    => 'image/jpeg',
+					'WHERE'         => 'media_id = '.$row['media_id']
+				);
+
+				$message = basename($path).SEP.basename($url);
+
+				if($sql->update("core_media",$update))
+				{
+					e107::getMessage()->addSuccess($message);
+				}
+				else
+				{
+					e107::getMessage()->addError($message);
+				}
+
+			}
+
+		}
+
+
+	}
 	
 	
 	public function resize_dimensions($curval) // ie. never manually resize another image again!
@@ -576,16 +642,24 @@ class media_form_ui extends e_admin_form_ui
 		//return print_a($_GET,true);
 		if($value == 'batch')
 		{
-			return array(
-				"resize_2048"	=> "Reduce Oversized Images",
-				"rotate_cw"		=> "Rotate 90&deg; cw",
-				"rotate_ccw"	=> "Rotate 90&deg; ccw"				
-			);	
+			$arr =  array(
+					"resize_2048"	    => "Reduce Oversized Images",
+					"rotate_cw"		    => "Rotate 90&deg; cw",
+					"rotate_ccw"	    => "Rotate 90&deg; ccw",
+					'convert_to_jpeg'   => "Convert to jpeg format"
+			);
+
+			if(deftrue('e_DEBUG'))
+			{
+				$arr['convert_all_to_jpeg']   = "Convert All Oversized to jpeg format"; // rare situations.
+			}
+
+			return $arr;
 		}
 		
 		if($_GET['action'] == 'edit')
 		{
-			return;
+			return null;
 		}	
 		
 		$tagid = vartrue($_GET['tagid']);
@@ -635,6 +709,14 @@ class media_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read':
+				if($this->getController()->getAction() === 'grid')
+				{
+					$tp = e107::getParser();
+					$img = $this->getController()->getFieldVar('media_url');
+					$size = 400;
+					return $tp->toImage($img, array('w'=>$size,'h'=>$size, 'crop'=>1));
+				}
+
 				$attributes['readParms'] = 'thumb=60&thumb_urlraw=0&thumb_aw=60';
 				$val 	= $this->getController()->getListModel()->get('media_url');	
 			break;
@@ -743,6 +825,9 @@ class media_admin_ui extends e_admin_ui
 		public $deleteConfirmScreen = true;
 		public $deleteConfirmMessage = IMALAN_129;
 
+		protected $grid             = array('title'=>'media_name', 'image'=>'media_preview', 'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>false);
+
+
 
     	protected $preftabs			= array(IMALAN_78,IMALAN_89, "Youtube"); 
     	 
@@ -794,10 +879,13 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
-		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_74'),
-	
-		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
-		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
+		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_74),
+	//	'convert_to_jpeg'				=> array('title'=> IMALAN_182, 'type'=>'number', 'data'=>'int', 'writeParms'=> array('tdClassRight'=>'form-inline', 'post'=> CORE_LAN_KB), 'help'=>IMALAN_183),
+
+		'convert_to_jpeg'				=> array('title'=> IMALAN_182, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_183),
+
+		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
+		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
 		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
 		
 		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),

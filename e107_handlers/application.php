@@ -333,7 +333,7 @@ class eFront
 		$request->setDispatched(true);
 
 		$router = $this->getRouter();
-		
+
 		// If current request not already routed outside the dispatch method, route it
 		if(!$request->routed) $router->route($request); 
 
@@ -1034,7 +1034,7 @@ class eRouter
 	 */
 	protected function _init()
 	{
-		// Gather all rules, add-on info, cache, module for main namespace etc 
+		// Gather all rules, add-on info, cache, module for main namespace etc
 		$this->_loadConfig()
 			->setAliases();
 		// we need config first as setter does some checks if module can be set as main
@@ -1101,8 +1101,8 @@ class eRouter
 			$config[$module] = $config[$module]['config'];
 		}
 		$this->_globalConfig = $config;
-		$this->setRuleSets($rules); 
-		
+		$this->setRuleSets($rules);
+
 		return $this;
 	}
 	
@@ -1645,7 +1645,7 @@ class eRouter
 			$aliases = e107::findPref('url_aliases/'.$lanCode, array());
 		}
 		$this->_aliases = $aliases;
-		
+
 		return $this;
 	}
 	
@@ -1756,6 +1756,17 @@ class eRouter
 		return new eUrlRule($route, $pattern, $cache);
 	}
 
+
+	private function _debug($label,$val=null, $line=null)
+	{
+		if(!deftrue('e_DEBUG_SEF'))
+		{
+			return false;
+		}
+
+		e107::getDebug()->log("<h3>SEF: ".$label . " <small>".basename(__FILE__)." (".$line.")</small></h3>".print_a($val,true));
+	}
+
 	/**
 	 * Route current request
 	 * @param eRequest $request
@@ -1789,7 +1800,9 @@ class eRouter
 
 		// max number of parts is actually 4 - module/controller/action/[additional/pathinfo/vars], here for reference only
 		$parts = $rawPathInfo ? explode('/', $rawPathInfo, 4) : array();
-		
+
+		$this->_debug('parts',$parts,  __LINE__);
+
 		// find module - check aliases
 		$module = $this->retrieveModule($parts[0]);
 		$mainSwitch = false;
@@ -1804,12 +1817,18 @@ class eRouter
 		}
 		
 		$request->routePathInfo = $rawPathInfo;
+
+		$this->_debug('module',$module,  __LINE__);
+		$this->_debug('rawPathInfo',$rawPathInfo,  __LINE__);
+
 		
 		// valid module
 		if(null !== $module)
 		{
 			// we have valid module
-			$config = $this->getConfig($module); 
+			$config = $this->getConfig($module);
+
+			$this->_debug('config',$module,  __LINE__);
 			
 			// set legacy state
 			eFront::isLegacy(varset($config['legacy']));
@@ -1860,18 +1879,29 @@ class eRouter
 			// rules available - try to match an Url Rule
 			elseif($rules)
 			{
+			//	$this->_debug('rules',$rules,  __LINE__);
+
 				foreach ($rules as $rule) 
 				{
 					$route = $rule->parseUrl($this, $request, $pathInfo, $rawPathInfo);
+
+
+
 					if($route !== false)
 					{
 						eFront::isLegacy($rule->legacy); // legacy include override
-						
+
+						$this->_debug('rule->legacy',$rule->legacy,  __LINE__);
+						$this->_debug('rule->parseCallback',$rule->parseCallback,  __LINE__);
+
 						if($rule->parseCallback)
 						{
 							$this->configCallback($module, $rule->parseCallback, array($request), $config['location']);
 						}
-						// parse legacy query string if any		
+
+						// parse legacy query string if any
+						$this->_debug('rule->legacyQuery',$rule->legacyQuery,  __LINE__);
+
 						if(null !== $rule->legacyQuery)
 						{
 							$obj = eDispatcher::getConfigObject($module, $config['location']);
@@ -1892,6 +1922,8 @@ class eRouter
 								}
 							}
 							$obj->legacyQueryString = e107::getParser()->simpleParse($rule->legacyQuery, $vars, '0');
+
+							$this->_debug('obj->legacyQueryString',$obj->legacyQueryString,  __LINE__);
 							unset($vars, $obj);
 						}
 						break;
@@ -1940,7 +1972,9 @@ class eRouter
 				}
 			}
 		}
-		
+
+		$this->_debug('route',$route,  __LINE__);
+
 		$request->setRoute($route);
 		$request->addRouteHistory($route);
 		$request->routed = true;
@@ -1956,7 +1990,7 @@ class eRouter
 	public function checkLegacy(eRequest $request)
 	{
 		$module = $request->getModule();
-		
+
 		// forward from controller to a legacy module - bad stuff
 		if(!$request->isDispatched() && $this->getConfigValue($module, 'legacy'))
 		{

@@ -989,7 +989,7 @@ class download
 			case 1 :	// No permissions
 	            if (strlen($pref['download_denied']) > 0) 
 	            {
-					$errmsg = $tp->toHTML($pref['download_denied'],true);
+					$errmsg = $tp->toHTML($pref['download_denied'],true, 'DESCRIPTION');
 	   	      	} 
 	   	      	else 
 	   	      	{

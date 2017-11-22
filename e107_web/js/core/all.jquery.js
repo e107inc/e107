@@ -212,6 +212,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				// default 'toggle'.
 				$(this).click(function ()
 				{
+
 					var $this = $(this);
 					var href = ($this.is("a")) ? $this.attr("href") : '';
 					var $button = $this.find('button');
@@ -264,6 +265,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						if($(this).is(':visible'))
 						{
+							$this.addClass('open');
 							if($this.hasClass('e-expandit-inline'))
 							{
 								$(this).css('display', 'initial');
@@ -272,6 +274,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							{
 								$(this).css('display', 'block'); //XXX 'initial' broke the default behavior.
 							}
+						}
+						else
+						{
+							$this.removeClass('open');
 						}
 					});
 
@@ -327,6 +333,52 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			$(context).find('.e-hideme').once('e-hide-me').each(function ()
 			{
 				$(this).hide();
+			});
+		}
+	};
+
+	/**
+	 * Behavior to initialize submit buttons.
+	 *
+	 * @type {{attach: e107.behaviors.buttonSubmit.attach}}
+	 */
+	e107.behaviors.buttonSubmit = {
+		attach: function (context, settings)
+		{
+			$(context).find('button[type=submit]').once('button-submit').each(function ()
+			{
+				$(this).on('click', function ()
+					{
+						var $button = $(this);
+						var $form = $button.closest('form');
+
+						var type = $button.data('loading-icon');
+
+						if(type === undefined || $form.length === 0)
+						{
+							return true;
+						}
+
+						$form.submit(function ()
+						{
+							if ($form.find('.has-error').length > 0) {
+								return false;
+							}
+
+							var caption = "<i class='fa fa-spin " + type + " fa-fw'></i>";
+							caption += "<span>" + $button.text() + "</span>";
+
+							$button.html(caption);
+
+							if($button.attr('data-disable') == 'true')
+							{
+								$button.addClass('disabled');
+							}
+						});
+
+						return true;
+					}
+				);
 			});
 		}
 	};
@@ -851,42 +903,7 @@ $(document).ready(function()
 					
 			$(id).hide("slow");
 			return false;
-		}); 
-		
-
-
-		$('button[type=submit]').on('click', function()
-		{
-				var caption = $(this).text();
-				var type 	= $(this).attr('data-loading-icon');
-				var formid 	=  $(this).closest('form').attr('id');
-				var but		= $(this);
-
-				if(type === undefined || (formid === undefined))
-				{
-					return true;
-				}
-
-				$('#'+formid).submit(function(){ // only animate on successful submission.
-
-					caption = "<i class='fa fa-spin " + type + " fa-fw'></i><span>" + caption + "</span>";
-
-					$(but).html(caption);
-
-					if( $(but).attr('data-disable') == 'true')
-					{
-
-						$(but).addClass('disabled');
-					}
-
-				});
-
-
-				return true;
-			}
-		);
-
-
+		});
 		
 		// Dates --------------------------------------------------
 		

@@ -223,6 +223,11 @@ class e_thumbpage
 			return true;
 		}
 
+		if($this->_debug === true)
+		{
+			echo "File Not Found: ".$path;
+		}
+
 		$this->_placeholder = true;
 		return true;
 
@@ -232,6 +237,12 @@ class e_thumbpage
 	function sendImage()
 	{
 		//global $bench;
+		if($this->_debug === true)
+		{
+			var_dump($this->_request);
+		//	return false;
+		}
+
 	
 		if($this->_placeholder == true)
 		{
@@ -244,11 +255,7 @@ class e_thumbpage
 			return false;
 		}
 
-		if($this->_debug === true)
-		{
-			var_dump($this->_request);
-		//	return false;
-		}
+
 		
 		if(!$this->_src_path)
 		{
@@ -264,10 +271,10 @@ class e_thumbpage
 		//	return false;
 		}
 
-		$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality. $options['c']);
-		$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
+	//	$cache_str = md5(serialize($options). $this->_src_path. $this->_thumbQuality);
+	//	$fname = strtolower('Thumb_'.$thumbnfo['filename'].'_'.$cache_str.'.'.$thumbnfo['extension']).'.cache.bin';
 
-
+		$fname = e107::getParser()->thumbCacheFile($this->_src_path, $options);
 
 		if(($this->_cache === true) && is_file(e_CACHE_IMAGE.$fname) && is_readable(e_CACHE_IMAGE.$fname) && ($this->_debug !== true))
 		{
@@ -470,6 +477,12 @@ class e_thumbpage
 	// Display a placeholder image. 
 	function placeholder($parm)
 	{
+		if($this->_debug === true)
+		{
+			echo "Placeholder activated";
+			return null;
+		}
+
 		$getsize = isset($parm['size']) ? $parm['size'] : '100x100';
 
 		header('location: https://placehold.it/'.$getsize);

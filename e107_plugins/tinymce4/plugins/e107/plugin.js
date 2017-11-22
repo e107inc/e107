@@ -22,6 +22,14 @@
 				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
 			});
 
+			ed.on('change', function(e) {
+			//	  console.log('the event object ', e);
+			//	console.log(e);
+           	//	console.log('the editor object ', ed);
+           //		console.log('the content ', ed.getContent());
+			});
+
+
 		//	ed.contentCSS.push(url+'/e107.css');
 
 
@@ -118,7 +126,32 @@
 					});
 				}
 			});
-			
+
+
+		// TODO place animate.css options in here --------------
+  		ed.addButton('e107-animate', { //TODO  MUST added 'e107-animate' button to templates/mainadmin.xml
+
+            type: 'menubutton',
+
+            text: 'todo',
+
+           icon: 'charmap',
+
+            menu: [
+
+                { text: 'fadeIn', onclick: function() {tinymce.activeEditor.formatter.toggle('alignleft');}}, // TODO get this working to toggle css classes.
+
+                { text: 'fadeInDown', onclick: function() {tinymce.activeEditor.formatter.toggle('aligncenter');}},
+
+                { text: 'fadeInDownBig', onclick: function() {tinymce.activeEditor.formatter.toggle('alignright');}},
+
+                { text: 'fadeInLeft', onclick: function() {tinymce.activeEditor.formatter.toggle('alignjustify');}},
+
+            ]
+
+        });
+
+		// -------------------
 			
 		},
 

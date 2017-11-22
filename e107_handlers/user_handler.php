@@ -844,7 +844,7 @@ Following fields auto-filled in code as required:
 			{
 				$errMsg = ERR_INVALID_EMAIL;
 			}
-			elseif ($u_sql->db_Count('user', '(*)', "WHERE `user_email`='".$v."' AND `user_ban`=1 "))
+			elseif ($u_sql->count('user', '(*)', "WHERE `user_email`='".filter_var($v,FILTER_SANITIZE_EMAIL)."' AND `user_ban`=1 "))
 			{
 				$errMsg = ERR_BANNED_USER; 
 			}
@@ -1988,12 +1988,13 @@ class e_userperms
 		if(!$sysuser->isAdmin())
 		{
 			$sysuser->set('user_admin', 1)->save();
-			$lan = str_replace(array('--UID--', '--NAME--', '--EMAIL--'), array($sysuser->getId(), $sysuser->getName(), $sysuser->getValue('email')), USRLAN_164);
+			$vars = array('x'=>$sysuser->getId(), 'y'=> $sysuser->getName(), 'z'=>$sysuser->getValue('email'));
+			$lan = e107::getParser()->lanVars( USRLAN_164, $vars);
 			e107::getLog()->add('USET_08', $lan, E_LOG_INFORMATIVE);
 		}
 		
 		e107::getMessage()->addAuto($sysuser->set('user_perms', $perm)->save(), 'update', sprintf(LAN_UPDATED, $tp->toDB($_POST['ad_name'])), false, false);
-		$logMsg = str_replace(array('--ID--', '--NAME--'),array($modID, $a_name),ADMSLAN_72).$perm;
+		$logMsg = str_replace(array('[x]', '[y]'),array($modID, $a_name),ADMSLAN_72).$perm;
 		e107::getLog()->add('ADMIN_01',$logMsg,E_LOG_INFORMATIVE,'');
 	}
 

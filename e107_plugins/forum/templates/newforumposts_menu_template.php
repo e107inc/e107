@@ -14,7 +14,7 @@
 															<a href='{POST_URL}'>{POST_AUTHOR_AVATAR: shape=circle}</a>
 															</div>
 															<div class='media-body'>
-																<h4 class='media-header'><a href='{POST_URL}'>{POST_TOPIC}</a></h4>{POST_CONTENT}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {POST_AUTHOR} {POST_DATESTAMP}</small>
+																<h4 class='media-header'><a href='{POST_URL}'>{POST_TOPIC}</a></h4>{POST_CONTENT}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {POST_AUTHOR_NAME} {POST_DATESTAMP}</small>
 														</div></li>";
 	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['end']     = "</ul>";
 
@@ -46,9 +46,9 @@
 														</tr>";
 
 	$NEWFORUMPOSTS_MENU_TEMPLATE['main']['item']        = "<tr>
-														<td style='width:5%; text-align:center' class='forumheader3'>{ICON}</td>
-														<td style='width:45%' class='forumheader3'><a href='{TOPIC_URL}'>{TOPIC_NAME}</a> <small class='smalltext'>(<a href='{FORUM_URL}'>{FORUM_NAME}</a>)</small></td>
-														<td style='width:15%; text-align:center' class='forumheader3'>{POST_AUTHOR_NAME}</td>
+														<td style='width:5%; text-align:center' class='forumheader3'>{TOPIC_ICON}</td>
+														<td style='width:45%' class='forumheader3'><a href='{POST_URL}'>{TOPIC_NAME}</a> <small class='smalltext'>(<a href='{FORUM_URL}'>{FORUM_NAME}</a>)</small></td>
+														<td style='width:15%; text-align:center' class='forumheader3'>{TOPIC_AUTHOR_NAME}</td>
 														<td style='width:5%; text-align:center' class='forumheader3'>{TOPIC_VIEWS}</td>
 														<td style='width:5%; text-align:center' class='forumheader3'>{TOPIC_REPLIES}</td>
 														<td style='width:25%; text-align:center' class='forumheader3'>{TOPIC_LASTPOST_AUTHOR}<br /><span class='smalltext'>{TOPIC_LASTPOST_DATE}&nbsp;</span></td>

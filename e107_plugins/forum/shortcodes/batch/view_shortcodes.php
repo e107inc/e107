@@ -39,6 +39,8 @@
 		 * Only by nfp menu at this time.
 		*/
 
+	// @todo new post shortcodes
+
 		function sc_post_url($parm=null)
 		{
 				$url = e107::url('forum', 'topic', $this->var, array(
@@ -78,15 +80,57 @@
 
 		function sc_post_author_avatar($parm=null)
 		{
-			return $this->sc_avatar($parm);
+			return e107::getParser()->toAvatar($this->postInfo, $parm);
+		//	return $this->sc_avatar($parm);
 		}
 
-	// thread/topic
+	// @todo new thread/topic shortcodes
 
 		function sc_topic_name($parm=null)
 		{
 			return $this->sc_threadname($parm);
 		}
+
+
+		function sc_topic_author_name($parm=null)
+		{
+			if($this->var['thread_user_username'])
+			{
+				return "<a href='" . e107::getUrl()->create('user/profile/view', array('name' => $this->postInfo['thread_user_username'], 'id' => $this->postInfo['thread_user'])) . "'>{$this->postInfo['thread_user_username']}</a>";
+			}
+			else
+			{
+				return '<b>' . e107::getParser()->toHTML($this->postInfo['thread_user_anon']) . '</b>';
+			}
+		}
+
+
+		function sc_topic_author_url($parm=null)
+		{
+			if(empty($this->var['thread_user_username']) || empty($this->var['thread_user']))
+			{
+				return '';
+			}
+
+			return e107::getUrl()->create('user/profile/view', array('name' => $this->var['thread_user_username'], 'id' => $this->var['thread_user']));
+		}
+
+
+		function sc_topic_author_avatar($parm=null)
+		{
+			$arr = array(
+				'user_id'           => $this->var['thread_user'],           // standardized field names.
+				'user_name'         => $this->var['thread_user_username'],
+				'user_image'        => $this->var['thread_user_userimage'],
+				'user_currentvisit' => $this->var['thread_user_usercurrentvisit']
+			);
+
+			return e107::getParser()->toAvatar($arr, $parm);
+		//	return $this->sc_avatar($parm);
+		}
+
+
+
 
 		function sc_topic_url($parm=null)
 		{
@@ -106,14 +150,97 @@
 			return e107::getParser()->toBadge($val);
 		}
 
+		/**
+		 * @example {TOPIC_DATESTAMP: format=relative}
+		 * @param string $parm['format'] short|long|forum|relative
+		 * @return HTML
+		 */
+		function sc_topic_datestamp($parm=null)
+		{
+			$mode = empty($parm['format']) ? 'forum' : $parm['format'];
+			return e107::getParser()->toDate($this->var['thread_datestamp'], $mode);
+		}
 
+
+		/**
+		 * @example {TOPIC_LASTPOST_DATE: format=relative}
+		 * @param string $parm['format'] short|long|forum|relative
+		 * @return string
+		 */
 		function sc_topic_lastpost_date($parm=null)
 		{
+			if(empty($this->var['thread_total_replies']))
+			{
+				return '';
+			}
+			
+		
+			$mode = empty($parm['format']) ? 'forum' : $parm['format'];
+			return e107::getParser()->toDate($this->var['thread_lastpost'], $mode);
+		}
 
+
+		function sc_topic_lastpost_author($parm=null)
+		{
+
+			if($this->var['thread_views'] && !empty($this->var['thread_total_replies']))
+			{
+
+				if($this->var['thread_lastuser_username'])
+				{
+					$url = e107::getUrl()->create('user/profile/view', "name={$this->var['thread_lastuser_username']}&id={$this->var['thread_lastuser']}");
+					return "<a href='{$url}'>" . $this->var['thread_lastuser_username'] . "</a>";
+				}
+				elseif($this->var['thread_lastuser_anon'])
+				{
+					return e107::getParser()->toHTML($this->var['thread_lastuser_anon']);
+				}
+				else
+				{
+					return LAN_FORUM_1015;
+
+				}
+			}
+
+			return ' - ';
 
 		}
 
-	// forum
+
+		function sc_topic_icon($parm=null)
+		{
+
+			$newflag = (USER && $this->var['thread_lastpost'] > USERLV && !in_array($this->var['thread_id'], $this->forum->threadGetUserViewed()));
+
+			$ICON = ($newflag ? IMAGE_new : IMAGE_nonew);
+
+			if($this->var['thread_total_replies'] >= vartrue($this->pref['popular'], 10))
+			{
+				$ICON = ($newflag ? IMAGE_new_popular : IMAGE_nonew_popular);
+			}
+			elseif(empty($this->var['thread_total_replies']) && defined('IMAGE_noreplies'))
+			{
+				$ICON = IMAGE_noreplies;
+			}
+
+			if($this->var['thread_sticky'] == 1)
+			{
+				$ICON = ($this->var['thread_active'] ? IMAGE_sticky : IMAGE_stickyclosed);
+			}
+			elseif($this->var['thread_sticky'] == 2)
+			{
+				$ICON = IMAGE_announce;
+			}
+			elseif(!$this->var['thread_active'])
+			{
+				$ICON = IMAGE_closed;
+			}
+
+			return $ICON;
+		}
+
+
+	// @todo new forum shortcodes
 
 		function sc_forum_name($parm=null)
 		{
@@ -136,11 +263,6 @@
 		// More sc_topic_xxxxx and sc_forum_xxxx in the same format.
 
 	// ---------------------------------------
-
-
-
-
-
 
 
 
@@ -180,9 +302,7 @@
 			}
 		}
 
-		/**
-		 * What does this do?
-		 */
+
 		function sc_threaddatestamp($parm = '')
 		{
 			$gen = e107::getDateConvert(); // XXX _URL_ check if all required info is there

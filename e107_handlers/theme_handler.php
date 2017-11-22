@@ -716,8 +716,9 @@ class e_theme
 					"info"      => $val['@attributes']['name'],
 					"nonadmin"  => $notadmin,
 					'scope'     => vartrue($val['@attributes']['scope']),
-					'exclude'   => vartrue($val['@attributes']['exclude'])
-
+					'exclude'   => vartrue($val['@attributes']['exclude']),
+					'description'   => vartrue($val['@attributes']['description']),
+					'thumbnail'   => vartrue($val['@attributes']['thumbnail'])
 				);
 			}
 
@@ -735,6 +736,7 @@ class e_theme
 						'name'      => $val['@attributes']['name'],
 						'pattern'   => $val['@attributes']['pattern'],
 						'path'      => $val['@attributes']['path'],
+						'class'     => $val['@attributes']['class'],
 						'prefix'    => $val['@attributes']['prefix'],
 						'tag'       => $val['@attributes']['tag'],
 				);
@@ -813,6 +815,7 @@ class themeHandler
 	var $frm;
 	var $fl;
 	var $themeConfigObj = null;
+	var $themeConfigFormObj= null;
 	var $noLog = FALSE;
 	private $curTheme = null;
 	
@@ -974,7 +977,8 @@ class themeHandler
 
 		if(!empty($_POST['git_pull']))
 		{
-			$return = e107::getFile()->gitPull($this->curTheme, 'theme');
+			$gitTheme = e107::getParser()->filter($_POST['git_pull'],'w');
+			$return = e107::getFile()->gitPull($gitTheme, 'theme');
 			$mes->addSuccess($return);
 		}
 
@@ -1372,6 +1376,10 @@ class themeHandler
 		//	print_a($xdata);
 	
 			$c = 1;
+
+			$filterName = '';
+			$filterArray = array();
+			$filterVal = '';
 		
 			$text = "<form class='form-search' action='".e_SELF."?".e_QUERY."' id='core-plugin-list-form' method='get'>";
 			$text .= '<div id="myCarousel"  class="carousel slide" data-interval="false">';
@@ -1647,8 +1655,8 @@ class themeHandler
 		$compat			= (version_compare(1.9,$theme['compatibility'],'<')) ? "<span class='label label-warning'>".$theme['compatibility']."</span><span class='text-warning'> ".TPVLAN_77."</span>": vartrue($theme['compatibility'],'1.0');
 		$price 			= (!empty($theme['price'])) ? "<span class='label label-primary'><i class='icon-shopping-cart icon-white'></i> ".$theme['price']."</span>" : "<span class='label label-success'>".TPVLAN_76."</span>";
 
-
-		$text = "<table class='table table-striped'>";
+		$text = e107::getForm()->open('theme-info','post');
+		$text .= "<table class='table table-striped'>";
 
 
 
@@ -1675,7 +1683,11 @@ class themeHandler
 			$text .= "<tr><td><b>".LAN_CATEGORY."</b></td><td>".$theme['category']."</td></tr>";			
 		}
 		
-
+		if(is_dir(e_THEME.$theme['path']."/.git"))
+		{
+			$text .= "<tr><td><b>Developer</b></td>
+				<td >".$this->frm->admin_button('git_pull', $theme['path'], 'primary', e107::getParser()->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
+		}
 	
 		$itext = '';
 
@@ -1741,6 +1753,8 @@ class themeHandler
 	//	$text .= "</td></tr>";
 		
 		$text .= $itext."</table>";
+
+		$text .= e107::getForm()->close();
 		
 		if(count($theme['preview']))
 			{
@@ -1766,7 +1780,7 @@ class themeHandler
 		
 		
 	//	$text .= "<div class='right'><a href='#themeInfo_".$theme['id']."' class='e-expandit'>Close</a></div>";
-	
+
 		if(E107_DEBUG_LEVEL > 0)
 		{
 		//	$text .= print_a($theme, true);
@@ -1808,6 +1822,11 @@ class themeHandler
 			if(class_exists('theme_config')) // new v2.1.4 theme_config is the class name.
 			{
 				$this->themeConfigObj = new theme_config();
+
+				if(class_exists('theme_config_form')) // new v2.1.7
+				{
+					$this->themeConfigFormObj = new theme_config_form();
+				}
 			}
 			elseif(class_exists($className)) // old way.
 			{
@@ -1826,7 +1845,9 @@ class themeHandler
 	{
 		
 		$mes = e107::getMessage();
-		$frm = e107::getForm();
+
+		$frm = ($this->themeConfigFormObj !== null) ?  $this->themeConfigFormObj : e107::getForm();
+
 		$pref = e107::getConfig()->getPref();
 		e107::getDebug()->log("Rendering Theme Config");
 		
@@ -1843,13 +1864,12 @@ class themeHandler
 		{
 			$var = call_user_func(array(&$this->themeConfigObj, 'config'));
 			$text = ''; // avoid notice
-			
+
 			foreach ($var as $field=>$val)
 			{
 				if(is_numeric($field))
 				{
-					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div>
-</td></tr>";
+					$text .= "<tr><td><b>".$val['caption']."</b>:</td><td colspan='2'>".$val['html']."<div class='field-help'>".$val['help']."</div></td></tr>";
 				}
 				else
 				{
@@ -1859,8 +1879,7 @@ class themeHandler
 					}
 
 					$tdClass = !empty($val['writeParms']['post']) ? 'form-inline' : '';
-					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div>
-</td></tr>";
+					$text .= "<tr><td><b>".$val['title']."</b>:</td><td class='".$tdClass."' colspan='2'>".$frm->renderElement($field, $value[$field], $val)."<div class='field-help'>".$val['help']."</div></td></tr>";
 				}
 			}
 
@@ -2142,11 +2161,11 @@ class themeHandler
 					$text .= "</td></tr>";
 
 
-						if(is_dir(e_THEME.$this->id."/.git"))
-						{
-							$text .= "<tr><td><b>Developer</b></td>
-								<td >".$this->frm->admin_button('git_pull', 1, 'primary', $tp->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
-						}
+					if(is_dir(e_THEME.$this->id."/.git"))
+					{
+						$text .= "<tr><td><b>Developer</b></td>
+							<td >".$this->frm->admin_button('git_pull', $this->id, 'primary', $tp->toGlyph('fa-refresh'). "Git Sync")."</td></tr>";
+					}
 
 		
 					// site theme..
@@ -2339,8 +2358,10 @@ class themeHandler
 					
 					if(array_key_exists("multipleStylesheets", $theme) && $mode && !empty($theme['css']))
 					{
+						$pLabel = (self::RENDER_ADMINPREFS === $mode) ? TPVLAN_95 : TPVLAN_22;
+
 						$text .= "
-							<tr><td style='vertical-align:top;'><b>".TPVLAN_22.":</b></td>
+							<tr><td style='vertical-align:top;'><b>".$pLabel.":</b></td>
 							<td colspan='2' style='vertical-align:top'>
 							<table class='table table-bordered table-striped' >
 							<tr>
@@ -2349,7 +2370,6 @@ class themeHandler
 								<td class='left'>".TPVLAN_7."</td>
 							</tr>";
 			
-						
 						foreach ($theme['css'] as $css)
 						{
 								
@@ -2362,8 +2382,8 @@ class themeHandler
 									$text2 = "<td class='center'>";
 									$text2 .= $frm->radio('admincss', $css['name'], vartrue($pref['admincss'])== $css['name'], array('id'=>$for));
 									$text2 .= "</td>";
-									$text2 .= "<td><label for='".$for."'>".$css['info']."</label></td>";
-									$text2 .= "<td>".($css['info'] ? $css['info'] : ($css['name'] == "admin_style.css" ? TPVLAN_23 : TPVLAN_24))."</td>\n";
+									$text2 .= "<td><label for='".$for."' title=\"".$css['name']."\">".$css['info']."</label></td>";
+									$text2 .= "<td>".($css['description'] ? $css['description'] : '')."</td>\n";
 									break;
 
 								case self::RENDER_SITEPREFS: // front 'sitetheme' mode.

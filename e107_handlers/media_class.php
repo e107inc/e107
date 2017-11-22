@@ -1592,7 +1592,78 @@ class e_media
 	}
 
 
+	/**
+	 * Convert an image to jpeg format. 
+	 * @param string $oldFile path to png or gif file.
+	 * @param bool $deleteOld - set to true to delete original after conversion.
+	 * @return string path to new file.
+	 */
+	public function convertImageToJpeg($oldFile, $deleteOld=false)
+	{
+		if(substr($oldFile,-4) !== '.gif' && substr($oldFile,-4) !== '.png') //  jpg or some other format already
+		{
+			return false;
+		}
 
+		if(strpos($oldFile,".gif") !==false)
+		{
+			$type = '.gif';
+		}
+
+		if(strpos($oldFile,".png") !==false)
+		{
+			$type = '.png';
+		}
+
+		if(empty($type))
+		{
+			return $oldFile;
+		}
+
+		$jpgFile = str_replace($type, ".jpg", $oldFile);
+
+		$compression = e107::getPref('thumbnail_quality', 45); // 0 = worst / smaller file, 100 = better / bigger file
+
+		if(!file_exists($jpgFile))
+		{
+
+
+			switch($type)
+			{
+				case ".gif":
+					$image = imagecreatefromgif($oldFile);
+					break;
+
+				case ".png":
+					$image = imagecreatefrompng($oldFile);
+					break;
+
+			}
+
+			if(empty($image))
+			{
+				return false;
+			}
+
+			if(imagejpeg($image, $jpgFile, $compression) === true)
+			{
+				if($deleteOld === true)
+				{
+					unlink($oldFile);
+				}
+			}
+			else
+			{
+				$jpgFile  = false; // fallback to original
+			}
+
+		//	e107::getLog()->addSuccess("Converting <b>".$oldFile."</b> to <b>".$jpgFile."</b>");
+			imagedestroy($image);
+		}
+
+
+		return $jpgFile;
+	}
 
 
 }

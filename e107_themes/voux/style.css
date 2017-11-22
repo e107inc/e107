@@ -539,6 +539,37 @@ img.news-image-1 { margin-bottom:15px }
 .btn-sm { font-size: 0.8em }
 
 
+
+
+
+
+
+ul.news-archive-menu li { list-style:none; padding-bottom:10px }
+ul.news-archive-menu li a:hover,
+ul.news-archive-menu li a:active,
+ul.news-archive-menu li a:focus { text-decoration:none }
+
+ul.news-archive-menu li a:before { content: '► '}
+ul.news-archive-menu li a.e-expandit.open:before { content: '▼ '}
+ul.news-archive-menu-months li a.e-expandit.open:before { content: '▼ '}
+ul.news-archive-menu-items li a:before { content: '' }
+ul.news-archive-menu-months { padding-left:0; padding-top:5px }
+ul.news-archive-menu-months li { padding-bottom:8px }
+ul.news-archive-menu-items  { padding-left:3px}
+ul.news-archive-menu-items li { padding-bottom:0; padding-top:5px }
+
+article .news-carousel .carousel-control span { background-color: white; color: black; font-size:.8em; padding:4px; border-radius:50%;height:auto; width:auto;}
+article .news-carousel .carousel-control { background:none}
+article .news-carousel .carousel-indicators { display:none }
+
+
+
+
+
+
+
+
+
 /* Extra small devices Phones (<768px)  .col-xs */
 @media all and (max-width: 767px) { 
 	

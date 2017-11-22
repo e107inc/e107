@@ -700,7 +700,9 @@ class admin_shortcodes
 
 		// FIXME @TODO $plugPath is using the URL to detect the path. It should use $_SERVER['SCRIPT_FILENAME']
 		$plugpath = e_PLUGIN.str_replace(basename(e_SELF),'',str_replace('/'.$plugindir,'','/'.strstr(e_SELF,$plugindir))).'admin_menu.php';
-		
+
+		$action = e_QUERY; // required.
+
 		if(file_exists($plugpath))
 		{
 			if (!$parm)
@@ -743,7 +745,7 @@ class admin_shortcodes
        
        if ($count >0)
        {
-            $countDisp = ' <span class="label label-primary">'.$count.'</span> ' ;
+            $countDisp = ' <span class="badge badge-primary">'.$count.'</span> ' ;
        }
        else
       {
@@ -801,6 +803,52 @@ class admin_shortcodes
 	}
 
 
+	function sc_admin_multisite($parm=null)
+	{
+		$file = e_SYSTEM_BASE."multisite.json";
+
+		if(!getperms('0') || !file_exists($file))
+		{
+			return null;
+		}
+
+		$tp = e107::getParser();
+		$parsed = file_get_contents($file);
+		$tmp = e107::unserialize($parsed);
+
+	//	e107::getDebug()->log($tmp);
+
+		  $text = '<ul class="nav nav-admin navbar-nav navbar-right">
+        <li class="dropdown">
+            <a class="dropdown-toggle" title="Multisite" role="button" data-toggle="dropdown" href="#" >
+                '.$tp->toGlyph('fa-clone').'
+            </a> 
+            <ul class="dropdown-menu" role="menu" >';
+
+			$srch = array();
+			foreach($tmp as $k=>$val)
+            {
+                $srch[] = '/'.$val['match'].'/';
+            }
+
+            foreach($tmp as $k=>$val)
+            {
+				$active = (e_MULTISITE_MATCH === $val['match']) ? ' class="active"' : '';
+				$url = str_replace($srch,'/'.$val['match'].'/',e_REQUEST_SELF);
+                $text .= '<li '.$active.'><a href="'.$url.'">'.$val['name'].'</a></li>';
+            }
+
+                $text .= '
+             </ul>
+        </li>
+        </ul>
+        ';
+
+		// e107::getDebug()->log(e_MULTISITE_IN_USE);
+
+        return $text;
+
+	}
 
 
 	function sc_admin_msg($parm)
@@ -1345,6 +1393,18 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return null;
 		}
 
+		$res = e107::getSession()->get('addons-update-status');
+
+		if($res !== null)
+		{
+			return $res;
+		}
+
+		return "<div id='e-admin-addons-update'><!-- --></div>";
+
+/*
+
+		e107::getDb()->db_mark_time("sc_admin_addon_updates() // start");
 
 		$themes = $this->getUpdateable('theme');
 		$plugins = $this->getUpdateable('plugin');
@@ -1360,13 +1420,20 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		$tp = e107::getParser();
 		$ns->setUniqueId('e-addon-updates');
-		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);
+
+		e107::getDb()->db_mark_time("sc_admin_addon_updates() // end");
+
+
+
+
+
+		return $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default',true);*/
 
 
 	}
 
 
-	private function getUpdateable($type)
+	public function getUpdateable($type)
 	{
 
 		if(empty($type))
@@ -1381,7 +1448,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		{
 			case "theme":
 				$versions = $mp->getVersionList('theme');
-				$list = e107::getTheme()->getThemeList('version');
+				$list = e107::getTheme()->getList('version');
 				break;
 
 			case "plugin":
@@ -1410,7 +1477,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 
 
-	private function renderAddonUpdate($list)
+	public function renderAddonUpdate($list)
 	{
 
 		if(empty($list))
@@ -1836,9 +1903,17 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		if($parm == 'enav_popover') // @todo move to template and make generic.
 		{
+			if('0' != ADMINPERMS)
+			{
+				return null;
+			}
+
 			$template = $$tmpl;
 
-			return $template['start']. '<li><a tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="hide e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'"><span class="text-info">'.$tp->toGlyph('fa-database').'</span></a></li>' .$template['end'];
+
+			$upStatus =  (e107::getSession()->get('core-update-status') === true) ? "<span title=\"".ADLAN_120."\" class=\"text-info\"><i class=\"fa fa-database\"></i></span>" : '<!-- -->';
+
+			return $template['start']. '<li><a id="e-admin-core-update" tabindex="0" href="'.e_ADMIN_ABS.'e107_update.php" class="e-popover text-primary" role="button" data-container="body" data-toggle="popover" data-placement="right" data-trigger="bottom" data-content="'.$tp->toAttribute(ADLAN_120).'">'.$upStatus.'</a></li>' .$template['end'];
 
 		}
 

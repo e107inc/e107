@@ -348,6 +348,7 @@ if(is_array($FORUM_TEMPLATE) && THEME_LEGACY !== true) // new v2.x format.
 
 	$FORUM_MAIN_START		= $FORUM_TEMPLATE['main']['start'];
 	$FORUM_MAIN_PARENT 		= $FORUM_TEMPLATE['main']['parent'];
+	$FORUM_MAIN_PARENT_END 	= $FORUM_TEMPLATE['main']['parent_end'];
 	$FORUM_MAIN_FORUM		= $FORUM_TEMPLATE['main']['forum'];
 	$FORUM_MAIN_END			= $FORUM_TEMPLATE['main']['end'];
 

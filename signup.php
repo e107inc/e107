@@ -596,7 +596,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 {	
 	e107::getCache()->clear("online_menu_totals");
 	
-	if (isset($_POST['rand_num']) && $signup_imagecode)
+	if ($signup_imagecode)
 	{	
 		if ($badCodeMsg = e107::getSecureImg()->invalidCode($_POST['rand_num'], $_POST['code_verify'])) // better: allows class to return the error. 
 		{
@@ -707,7 +707,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 			if ($pref['signup_option_'.$value] == 2 && !isset($alldata['data']['user_'.$value]) && !isset($alldata['errors']['user_'.$value]))
 			{
 				$alldata['errors']['user_'.$value] = ERR_GENERIC;
-				$alldata['errortext']['user_'.$value] = str_replace('--SOMETHING--',$signup_option_title[$key],LAN_USER_75);
+				$alldata['errortext']['user_'.$value] = str_replace('[x]',$signup_option_title[$key],LAN_USER_75);
 			}
 		}
 
@@ -756,7 +756,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 	{
 		if(deftrue('BOOTSTRAP'))
 		{
-			e107::getMessage()->addError(implode('<br />', $temp)); 
+			e107::getMessage()->addError(implode('<br />', $extraErrors));
 		}
 		else
 		{

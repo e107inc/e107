@@ -648,6 +648,11 @@ class comment
 		}
 
 		$tp = e107::getParser();
+
+	//	if(THEME_LEGACY !== true) // old themes might still use bbcodes.
+		{
+			$comment = $tp->toText($comment);
+		}
 		
 		$comment = trim($comment);
 		
@@ -711,7 +716,8 @@ class comment
 		{
 			$author_name = $data; //BC Fix. 	
 		}
-		
+
+
 		
 		global $e107,$rater;
 
@@ -719,6 +725,11 @@ class comment
 		$sql2 		= e107::getDb('sql2');
 		$tp 		= e107::getParser();
 		$pref 		= e107::getPref();
+
+	//	if(THEME_LEGACY !== true) // old themes might still use bbcodes.
+		{
+			$comment = $tp->toText($comment);
+		}
 
 		if ($this->getCommentPermissions() != 'rw') return;
 
@@ -1138,7 +1149,8 @@ class comment
 					
 					
 			}
-			
+
+			$from = 0;
 			$modcomment .= 	$this->nextprev($table,$id,$from);
 			$modcomment .= "</div>";
 		}	
@@ -1164,6 +1176,7 @@ class comment
 		}
 		
 		$search = array("{MODERATE}","{COMMENTS}","{COMMENTFORM}","{COMMENTNAV}");
+		$pagination = '';
 		$replace = array($modcomment,$text,$comment,$pagination);
 		$TEMPL = str_replace($search,$replace,$this->template['layout']);		
 
@@ -1399,7 +1412,7 @@ class comment
 				{
 					unset($e_comment, $key);
 					include_once (e_PLUGIN.$file."/e_comment.php");
-					if ($e_comment && is_array($e_comment))
+					if (!empty($e_comment) && is_array($e_comment))
 					{
 						$key = $e_comment['eplug_comment_ids'];
 						if (isset($key) && $key != '')
@@ -1410,9 +1423,10 @@ class comment
 					else
 					{
 						//convert old method variables into the same array method
-						$key = $e_plug_table;
-						if (isset($key) && $key != '')
+
+						if (isset($e_plug_table) && $e_plug_table != '')
 						{
+							$key = $e_plug_table;
 							$e_comment['eplug_comment_ids'] = $e_plug_table;
 							$e_comment['plugin_name'] = $plugin_name;
 							$e_comment['plugin_path'] = $plugin_path;

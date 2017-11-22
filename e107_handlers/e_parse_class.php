@@ -62,6 +62,8 @@ class e_parse extends e_parser
 
 	private $thumbEncode = 0;
 
+	private $staticCount = 0;
+
 	// BBcode that contain preformatted code.
 	private $preformatted = array('html', 'markdown');
 
@@ -2374,7 +2376,12 @@ class e_parse extends e_parser
 	function toText($text)
 	{
 
-		if($this->isHtml($text)==true)
+		if($this->isBbcode($text) === true) // convert any bbcodes to html
+		{
+			$text = $this->toHtml($text,true);
+		}
+
+		if($this->isHtml($text) === true) // strip any html.
 		{
 			$text = $this->toHtml($text,true);
 			$text = strip_tags($text);
@@ -2482,6 +2489,170 @@ class e_parse extends e_parser
 		
 	}
 
+	/**
+	 * Generated a Thumb Cache File Name from path and options.
+	 * @param string $path
+	 * @param array $options
+	 * @return null|string
+	 */
+	public function thumbCacheFile($path, $options=null, $log=null)
+	{
+		if(empty($path))
+		{
+			return null;
+		}
+
+		if(is_string($options))
+		{
+			parse_str($options,$options);
+		}
+
+		$path = str_replace($this->getUrlConstants('raw'), $this->getUrlConstants('sc'), $path);
+		$path = $this->replaceConstants(str_replace('..', '', $path));
+
+		$filename   = basename($path);
+		$tmp        = explode('.',$filename);
+		$ext        = end($tmp);
+		$len        = strlen($ext) + 1;
+		$start      = substr($filename,0,- $len);
+
+
+		// cleanup.
+		$newOpts = array(
+			'w'     => (string) intval($options['w']),
+			'h'     => (string) intval($options['h']),
+			'aw'    => (string) intval($options['aw']),
+			'ah'    => (string) intval($options['ah']),
+			'c'     => strtoupper(vartrue($options['c'],'0'))
+		);
+
+		if($log !== null)
+		{
+			file_put_contents(e_LOG.$log, "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
+			$message = $path."\n".print_r($newOpts,true)."\n\n\n";
+			file_put_contents(e_LOG.$log, $message, FILE_APPEND);
+
+		//	file_put_contents(e_LOG.$log, "\t\tFOUND!!\n\n\n", FILE_APPEND);
+		}
+
+
+		if(!empty($options['aw']))
+		{
+			$options['w'] = $options['aw'];
+		}
+
+		if(!empty($options['ah']))
+		{
+			$options['h'] = $options['ah'];
+		}
+
+
+		$size = varset($options['w'],0).'x'.varset($options['h'],0);
+
+		$thumbQuality = e107::getPref('thumbnail_quality',65);
+
+		$cache_str = md5(serialize($newOpts).$path. $thumbQuality);
+
+		$pre = 'thumb_';
+		$post = '.cache.bin';
+
+	//	$cache_str = http_build_query($newOpts,null,'_'); // testing files.
+
+		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+		{
+			$pre = '';
+			$post = '';
+		}
+
+		$fname = $pre.strtolower($start.'_'.$cache_str.'_'.$size.'.'.$ext).$post;
+
+		return $fname;
+	}
+
+
+
+	private function staticCount($val=false)
+	{
+
+		$count = $this->staticCount;
+
+		if($val === 0)
+		{
+			$this->staticCount = 0;
+		}
+		elseif($val !== false)
+		{
+			$this->staticCount = $this->staticCount + (int) $val;
+		}
+
+		return (int) $count;
+
+	}
+
+
+	/**
+	 * @param string $path - absolute path
+	 * @return string - static path.
+	 */
+	public function staticUrl($path=null)
+	{
+		if(!defined('e_HTTP_STATIC'))
+		{
+			// e107::getDebug()->log("e_HTTP_STATIC not defined");
+			return ($path === null) ? e_HTTP : $path;
+		}
+
+
+		$staticArray = e_HTTP_STATIC;
+
+		if(is_array($staticArray))
+		{
+			$cnt = count($staticArray);
+			$staticCount = $this->staticCount();
+			if($staticCount > ($cnt -1))
+			{
+				$staticCount = 0;
+				$this->staticCount(0);
+			}
+
+			$http = !empty($staticArray[$staticCount]) ? $staticArray[$staticCount] : e_HTTP;
+
+		}
+		else
+		{
+			$http = e_HTTP_STATIC;
+		}
+
+		$this->staticCount(1);
+
+		if(empty($path))
+		{
+			return $http;
+		}
+
+		$base = '';
+
+		$srch = array(
+			e_PLUGIN_ABS,
+			e_THEME_ABS,
+			e_WEB_ABS,
+			e_CACHE_IMAGE_ABS,
+		);
+
+
+		$repl = array(
+			$http.$base.e107::getFolder('plugins'),
+			$http.$base.e107::getFolder('themes'),
+			$http.$base.e107::getFolder('web'),
+			$http.$base.str_replace('../', '', e_CACHE_IMAGE),
+		);
+
+		$ret = str_replace($srch,$repl,$path);
+
+		return $ret;
+
+	}
+
 
 	/**
 	 * Generate an auto-sized Image URL.
@@ -2499,6 +2670,8 @@ class e_parse extends e_parser
 	 */
 	public function thumbUrl($url=null, $options = array(), $raw = false, $full = false)
 	{
+		$this->staticCount++; // increment counter.
+
 		if(strpos($url,"{e_") === 0) // Fix for broken links that use {e_MEDIA} etc.
 		{
 			//$url = $this->replaceConstants($url,'abs');	
@@ -2506,7 +2679,7 @@ class e_parse extends e_parser
 			$url = str_replace($this->getUrlConstants('sc'), $this->getUrlConstants('raw'), $url);	
 		}
 				
-		if(!is_array($options))
+		if(is_string($options))
 		{
 			parse_str($options, $options);
 		}
@@ -2532,7 +2705,7 @@ class e_parse extends e_parser
 
 		if(defined('e_HTTP_STATIC'))
 		{
-			$baseurl = e_HTTP_STATIC.'thumb.php?';
+			$baseurl = $this->staticUrl().'thumb.php?';
 		}
         
 		$thurl = 'src='.urlencode($url).'&amp;';
@@ -2585,6 +2758,25 @@ class e_parse extends e_parser
 		}
 
 
+		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+		{
+			$opts = str_replace('&amp;', '&', $thurl);
+
+			$staticFile = $this->thumbCacheFile($url, $opts);
+
+			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE.$staticFile))
+			{
+				$staticImg = $this->staticUrl(e_CACHE_IMAGE_ABS.$staticFile);
+			//	var_dump($staticImg);
+				return $staticImg;
+			}
+
+			$options['nosef'] = true;
+			$options['x'] = null;
+			// file_put_contents(e_LOG."thumb.log", "\n++++++++++++++++++++++++++++++++++\n\n", FILE_APPEND);
+		}
+
+
 		if(e_MOD_REWRITE_MEDIA == true && empty($options['nosef']) )// Experimental SEF URL support.
 		{
 			$options['full'] = $full;
@@ -2605,6 +2797,8 @@ class e_parse extends e_parser
 
 		return $baseurl.$thurl;
 	}
+
+
 
 
 	/**
@@ -2730,7 +2924,7 @@ class e_parse extends e_parser
 
 		if(defined('e_HTTP_STATIC'))
 		{
-			$base = e_HTTP_STATIC;
+			$base = $this->staticUrl();
 		}
 	//	$base = (!empty($options['full'])) ? SITEURL : e_HTTP;
 
@@ -3642,32 +3836,36 @@ class e_parser
 	
 	
 	/**
-	 * Parse xxxxx.glyph file to bootstrap glyph format. 
-	 * @param string $text 
-	 * @param array of $parms
+	 * Parse xxxxx.glyph file to bootstrap glyph format.
+	 * @param string $text
+	 * @param array|string $options
+	 * @param bool $options['size'] 2x, 3x, 4x, or 5x
+	 * @param bool $options['fw'] Fixed-Width
+	 * @param bool $options['spin'] Spin
+	 * @param int $options['rotate'] Rotate in Degrees.
 	 * @example $tp->toGlyph('fa-spinner', 'spin=1');
 	 * @example $tp->toGlyph('fa-spinner', array('spin'=>1));
 	 * @example $tp->toGlyph('fa-shield', array('rotate'=>90, 'size'=>'2x'));
-	 */ 
-	public function toGlyph($text, $space=" ")
+	 */
+	public function toGlyph($text, $options=" ")
 	{
 
 		if(empty($text))
 		{
-			return false;	
+			return false;
 		}
 
-		if(is_array($space)) 
+		if(is_array($options))
 		{
-			$parm = $space;
-			$space = varset($parm['space'],'');
+			$parm = $options;
+			$options = varset($parm['space'],'');
 		}
-		elseif(strpos($space,'='))
+		elseif(strpos($options,'='))
 		{
-			parse_str($space,$parm);
-			$space = varset($parm['space'],'');	
+			parse_str($options,$parm);
+			$options = varset($parm['space'],'');
 		}
-		else 
+		else
 		{
 			$parm = array();
 		}
@@ -3684,40 +3882,41 @@ class e_parser
 			return "<i class='".$size." ".$text."'></i>";
 		}
 
-		// Get Glyph names. 
-		$bs3 = e107::getMedia()->getGlyphs('bs3','');
-		$fa4 = e107::getMedia()->getGlyphs('fa4','');
-		
-		
-			
-		list($cls) = explode('.glyph',$text,2);
-	//	list($type, $tmp2) = explode("-",$text,2);
-		
-	//	return $cls;
-		
-		$removePrefix = array('glyphicon-','icon-','fa-');
-		
-		$id = str_replace($removePrefix, "", $cls);
+		// Get Glyph names.
+	//	$bs3 = e107::getMedia()->getGlyphs('bs3','');
+	//	$fa4 = e107::getMedia()->getGlyphs('fa4','');
 
-		$spin = null;
-		$rotate = null;
-		$fixedW = null;
-		$prefix = null;
-		$size = null;
-		$tag = 'span';
+
+
+		list($id) = explode('.glyph',$text,2);
+	//	list($type, $tmp2) = explode("-",$text,2);
+
+	//	return $cls;
+
+	//	$removePrefix = array('glyphicon-','icon-','fa-');
+
+	//	$id = str_replace($removePrefix, "", $cls);
+
+
+		$spin       = null;
+		$rotate     = null;
+		$fixedW     = null;
+		$prefix     = 'glyphicon glyphicon-'; // fallback
+		$size       = null;
+		$tag        = 'i';
 
 	//	return print_r($fa4,true);
-		
-		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also. 
+/*
+		if(deftrue('FONTAWESOME') &&  in_array($id ,$fa4)) // Contains FontAwesome 3 set also.
 		{
 			$prefix = 'fa fa-';
-			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';	
+			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
 			$tag 	= 'i';
 			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
 			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
 			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
 		}
-		elseif(deftrue("BOOTSTRAP")) 
+		elseif(deftrue("BOOTSTRAP"))
 		{
 			if(BOOTSTRAP === 3 && in_array($id ,$bs3))
 			{
@@ -3729,23 +3928,66 @@ class e_parser
 		//		$prefix = 'icon-';
 				$tag = 'i';
 			}
-			
+
 			$size = '';
-			
+
 		}
+		*/
+		if(strpos($text, 'fa-') === 0) // Font-Awesome
+		{
+			$prefix = 'fa ';
+			$size 	= (vartrue($parm['size'])) ?  ' fa-'.$parm['size'] : '';
+			$tag 	= 'i';
+			$spin   = !empty($parm['spin']) ? ' fa-spin' : '';
+			$rotate = !empty($parm['rotate']) ? ' fa-rotate-'.intval($parm['rotate']) : '';
+			$fixedW = !empty($parm['fw']) ? ' fa-fw' : "";
+		}
+		elseif(strpos($text, 'glyphicon-') === 0) // Bootstrap 3
+		{
+			$prefix = 'glyphicon ';
+			$tag = 'span';
+
+		}
+		elseif(strpos($text, 'icon-') === 0) // Bootstrap 2
+		{
+			if(deftrue('BOOTSTRAP') != 2) // bootrap 2 icon but running bootstrap3.
+			{
+				$prefix = 'glyphicon ';
+				$tag = 'span';
+				$id = str_replace("icon-", "glyphicon-", $id);
+			}
+			else
+			{
+				$prefix = '';
+				$tag = 'i';
+			}
+
+		}
+		elseif($custom = e107::getThemeGlyphs()) // Custom Glyphs
+		{
+			foreach($custom as $glyphConfig)
+			{
+				if(strpos($text, $glyphConfig['prefix']) === 0)
+				{
+					$prefix = $glyphConfig['class'] . " ";
+					$tag = $glyphConfig['tag'];
+					continue;
+				}
+			}
+
+		}
+		
 
 		$idAtt = (!empty($parm['id'])) ? "id='".$parm['id']."' " : '';
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
 		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
-		
+
 		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
-		$text .= ($space !== false) ? $space : "";
-		
+		$text .= ($options !== false) ? $options : "";
+
 		return $text;
 
-		
-		//$text = preg_replace('/\[(i_[\w]*)\]/',"<i class='$1'></i>", $text); 		
-		// return $text;	
+
 	}
 
 
@@ -3873,6 +4115,7 @@ class e_parser
 		$title = (ADMIN) ? $image : $tp->toAttribute($userData['user_name']);
 		$shape = (!empty($options['shape'])) ? "img-".$options['shape'] : "img-rounded rounded";
 
+
 		if(!empty($options['type']) && $options['type'] === 'url')
 		{
 			return $img;
@@ -3884,8 +4127,10 @@ class e_parser
 
 		$classOnline = (!empty($userData['user_currentvisit']) && intval($userData['user_currentvisit']) > (time() - 300)) ? " user-avatar-online" : '';
 
+		$class = !empty($options['class']) ? $options['class'] : $shape." user-avatar";
+
 		$text = $linkStart;
-		$text .= "<img ".$id."class='".$shape." user-avatar".$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
+		$text .= "<img ".$id."class='".$class.$classOnline."' alt=\"".$title."\" src='".$img."'  width='".$width."' ".$heightInsert." />";
 		$text .= $linkEnd;
 	//	return $img;
 		return $text;
@@ -4038,7 +4283,7 @@ class e_parser
 			{
 				$parm['srcset'] = false;
 			}
-			else
+			elseif(!isset($parm['srcset']))
 			{
 				$srcSetParm = $parm;
 				$srcSetParm['size'] = ($parm['w'] < 100) ? '4x' : '2x';
@@ -4103,7 +4348,7 @@ class e_parser
 			return false;
 		}
 
-		$bbsearch = array('[/h]', '[/b]', '[/link]', '[/right]', '[/center]', '[/flash]', '[/code]', '[/table]');
+		$bbsearch = array('[/img]','[/h]', '[/b]', '[/link]', '[/right]', '[/center]', '[/flash]', '[/code]', '[/table]');
 
 		foreach($bbsearch as $v)
 		{
@@ -5124,7 +5369,7 @@ class e_emotefilter
 			return;
 		}
 
-		$base = deftrue('e_HTTP_STATIC', SITEURLBASE);
+		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC) ? e_HTTP_STATIC : SITEURLBASE;
 
 		foreach($this->emotes as $key => $value)
 		{
@@ -5295,4 +5540,65 @@ class e_profanityFilter
 
 		return preg_replace("#a|e|i|o|u#i", "*" , $matches[0]);
 	}
+}
+
+
+/**
+ * Backwards Compatibility Class textparse
+ */
+class textparse {
+
+	function editparse($text, $mode = "off")
+	{
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toForm($text);
+	}
+
+	function tpa($text, $mode = '', $referrer = '', $highlight_search = false, $poster_id = '')
+	{
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toHTML($text, true, $mode, $poster_id);
+	}
+
+	function tpj($text)
+	{
+
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return $text;
+	}
+
+	function formtpa($text, $mode = '')
+	{
+
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toDB($text);
+	}
+
+	function formtparev($text)
+	{
+
+		if(E107_DBG_DEPRECATED)
+		{
+			e107::getDebug()->logDeprecated();
+		}
+
+		return e107::getParser()->toForm($text);
+	}
+
 }

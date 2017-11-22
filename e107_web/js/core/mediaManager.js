@@ -320,23 +320,27 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		$this.addClass('media-select-active');
 		$this.closest('img').addClass('active');
 
-		if(bbcode == "file") // not needed for Tinymce
+		if(bbcode == "file" && $bbcodeHolder.length > 0) // not needed for Tinymce
 		{
 			bbpath = '[file=' + id + ']' + name + '[/file]';
-
-			if($bbcodeHolder.length > 0)
-			{
-				$bbcodeHolder.val(bbpath);
-			}
+			$bbcodeHolder.val(bbpath);
 			return;
 		}
 
-		if(bbcode == "video" || bbcode == 'glyph')
+		if(bbcode == "video" && $bbcodeHolder.length > 0)
 		{
 			bbpath = '[' + bbcode + ']' + path + '[/' + bbcode + ']';
+			$bbcodeHolder.val(bbpath);
+		}
 
-			if($bbcodeHolder.length > 0)
+		if(bbcode == "glyph" && $bbcodeHolder.length > 0)
+		{
+			var $target = $('div#' + target + "_prev", window.top.document);
+
+			// Only if  the triggering element is not an icon-picker.
+			if($target.length == 0 || !$target.hasClass('image-selector'))
 			{
+				bbpath = '[' + bbcode + ']' + path + '[/' + bbcode + ']';
 				$bbcodeHolder.val(bbpath);
 			}
 		}

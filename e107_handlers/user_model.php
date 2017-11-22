@@ -1212,6 +1212,11 @@ class e_system_user extends e_user_model
 			return true;
 		}
 
+		if(!empty($options['debug']))
+		{
+			return $mailer->preview($eml);
+		}
+
 		
 		return $mailer->sendEmail($userInfo['user_email'], $userInfo['user_name'], $eml, false);
 	}
@@ -1732,6 +1737,7 @@ class e_user extends e_user_model
 
 			$userdata['user_name']  = $sql->escape($profile->displayName);
 			$userdata['user_image'] = $profile->photoURL; // avatar
+			$userdata['user_email'] = $profile->email;
 
 			$id = $providerId.'_'.$profile->identifier;
 			$where[] = "user_xup='".$sql->escape($id)."'";
@@ -1739,7 +1745,7 @@ class e_user extends e_user_model
 
 
 		$where = implode(' OR ', $where);
-		if($sql->select('user', 'user_id, user_name, user_image, user_password, user_xup', $where))
+		if($sql->select('user', 'user_id, user_name, user_email, user_image, user_password, user_xup', $where))
 		{
 
 			$user = $sql->fetch();
@@ -1749,7 +1755,7 @@ class e_user extends e_user_model
 			$spref = e107::pref('social');
 
 			// Update display name or avatar image if they have changed.
-			if(!empty($spref['xup_login_update_username']) || !empty($spref['xup_login_update_avatar']) || ($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
+			if(( empty($user['user_email']) && !empty($userdata['user_email']) ) || !empty($spref['xup_login_update_username']) || !empty($spref['xup_login_update_avatar']) || ($userdata['user_name'] != $user['user_name']) || ($userdata['user_image'] != $user['user_image']))
 			{
 				$updateQry = array();
 
@@ -1763,17 +1769,22 @@ class e_user extends e_user_model
 					$updateQry['user_image'] = $userdata['user_image'];
 				}
 
+				if(empty($user['user_email']))
+				{
+					$updateQry['user_email'] = $userdata['user_email'];
+				}
+
 				$updateQry['WHERE'] = "user_id=".$user['user_id']." LIMIT 1";
 
 				if($sql->update('user', $updateQry) !==false)
 				{
 					$updatedProfile = array_replace($user, $userdata);
 					e107::getEvent()->trigger('user_xup_updated', $updatedProfile);
-					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
+					e107::getLog()->add('User Profile Updated', $userdata, E_LOG_INFORMATIVE, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name'], 'user_email'=>$userdata['user_email']));
 				}
 				else
 				{
-					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name']));
+					e107::getLog()->add('User Profile Update Failed', $userdata, E_LOG_WARNING, "XUP_LOGIN", LOG_TO_ADMIN, array('user_id'=>$user['user_id'],'user_name'=>$user['user_name'], 'user_email'=>$userdata['user_email']));
 				}
 			}
 

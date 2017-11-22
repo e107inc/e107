@@ -26,6 +26,8 @@ require_once ("update_routines.php");
 
 new e107Update($dbupdate);
 
+e107::getSession()->set('core-update-status', false); // reset update status.
+
 require_once ("footer.php");
 
 

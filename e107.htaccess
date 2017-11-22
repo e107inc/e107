@@ -34,7 +34,7 @@
 	Deny from env=HTTP_SAFE_BADBOT
 
 ### Disable directory listing
-	Options -Indexes
+	Options -Indexes -MultiViews
 
 ### limit file uploads to 10mb
 ### LimitRequestBody 10240000
@@ -111,6 +111,7 @@
         Header unset Cookie
         Header unset Set-Cookie
       # Header set Access-Control-Allow-Origin "http://mydomain.com"
+      # Header set Access-Control-Allow-Origin "*" # if you're really stuck.
   </IfModule>
 </FilesMatch>
 

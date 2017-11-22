@@ -84,6 +84,7 @@ class page_admin extends e_admin_dispatcher
 		'overview/edit' => 'overview/list',
 		'page/edit'		=> 'page/list',
 		'menu/edit'		=> 'menu/create',
+		'menu/grid'		=> 'menu/list',
 		'cat/edit'      => 'cat/list'
 	);	
 	
@@ -182,17 +183,20 @@ class page_chapters_ui extends e_admin_ui
 			'checkboxes'				=> array('title'=> '',						'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'chapter_id'				=> array('title'=> LAN_ID,					'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readonly'=>TRUE),
          	'chapter_icon' 				=> array('title'=> LAN_ICON,				'type' => 'icon', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center', 'writeParms'=> 'glyphs=1', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),			       		
+
          	'chapter_parent' 			=> array('title'=> CUSLAN_52,		   		'type' => 'dropdown',		'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'filter'=>true),
          	'chapter_name' 				=> array('title'=> CUSLAN_53,	            'type' => 'method',			'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE, 'writeParms'=>'size=xxlarge'),
          	'chapter_template' 			=> array('title'=> LAN_TEMPLATE, 			'type' => 'dropdown', 		'width' => 'auto','filter' => true, 'batch'=>true, 'inline'=>true, 'writeParms'=>''),
         
          	'chapter_meta_description'	=> array('title'=> LAN_DESCRIPTION,			'type' => 'textarea',		'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'writeParms'=>'size=xxlarge', 'readonly'=>FALSE),
-			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			    'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
+			'chapter_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,			'type' => 'tags',			'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'chapter_sef' 				=> array('title'=> LAN_SEFURL,	    	    'type' => 'text',			'width' => 'auto', 'readonly'=>FALSE, 'batch'=>true,  'inline'=>true, 'writeParms'=>'size=xxlarge&inline-empty=1&sef=chapter_name',  ), // Display name
 			'chapter_manager' 			=> array('title'=> CUSLAN_55,		        'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_order' 			=> array('title'=> LAN_ORDER,				'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
 			'chapter_visibility' 		=> array('title'=> LAN_VISIBILITY,			'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
 			'chapter_fields'            => array('title', 'hidden',                 'type'=>'hidden'),
+			'chapter_image' 	        => array('title'=> LAN_IMAGE,			    'type' => 'image', 			'data' => 'str',		'width' => '100px',	'thclass' => 'center', 'class'=>'center',  'readParms'=>'thumb=140&thumb_urlraw=0&thumb_aw=140', 'writeParms'=>'', 'readonly'=>FALSE,	'batch' => FALSE, 'filter'=>FALSE),
+
 			'options' 					=> array('title'=> LAN_OPTIONS,				'type' => 'method',			'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'left', 'readParms'=>'sort=1')
 		
 		);
@@ -395,7 +399,7 @@ class page_chapters_form_ui extends e_admin_form_ui
 			if($parent != 0)
 			{
 				$link = e_SELF."?searchquery=&filter_options=page_chapter__".$id."&mode=page&action=list";	
-				$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".E_32_CUST."</a>";
+				$text .= "<a href='".$link."' class='btn btn-default' title='".CUSLAN_58."'>".ADMIN_PAGES_ICON."</a>";  //
 			}
 
 
@@ -549,7 +553,13 @@ class page_admin_ui extends e_admin_ui
 		protected $url         		= array('route'=>'page/view/index', 'vars' => array('id' => 'page_id', 'name' => 'page_sef', 'other' => 'page_sef', 'chapter' => 'chapter_sef', 'book' => 'book_sef'), 'name' => 'page_title', 'description' => ''); // 'link' only needed if profile not provided.
 		protected $tabs		 		= array(CUSLAN_59,CUSLAN_60,CUSLAN_61,CUSLAN_62);
 		protected $featurebox		= array('name'=>'page_title', 'description'=>'page_text', 'image' => 'menu_image', 'visibility' => 'page_class', 'url' => true);
-		
+
+
+		protected $grid             = array('title'=>'menu_title', 'image'=>'menu_image', 'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>false);
+
+
+
+
 		/*
 		 * 	'fb_title' 			=> array('title'=> LAN_TITLE,			'type' => 'text',			'inline'=>true,  'width' => 'auto', 'thclass' => 'left'), 
      	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
@@ -630,16 +640,28 @@ class page_admin_ui extends e_admin_ui
 		function init()
 		{
 
-			if($this->getMode() === 'overview')
+			$mode = $this->getMode();
+
+
+			if($mode !== 'menu')
+			{
+				$this->grid = array();
+			}
+
+			if($mode === 'overview')
 			{
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id  "; // without any Order or Limit.
 				$this->fieldpref = array("page_id", "page_title", 'page_chapter', 'page_template', "menu_title", 'menu_image', 'menu_template' );
+
+
 
 				$this->sortField = false;
 
 				$this->fields['menu_title']['width'] = 'auto';
 				$this->fields['menu_image']['readParms'] = 'thumb=60x55';
 				$this->fields['menu_image']['width'] = 'auto';
+				$this->fields['menu_button_text']['nolist'] = false; 
+				$this->fields['menu_button_url']['nolist'] = false;
 
 				$this->fields['page_title']['width'] = 'auto';
 
@@ -677,11 +699,11 @@ class page_admin_ui extends e_admin_ui
 			}
 
 			// USED IN Menu LIST/INLINE-EDIT MODE ONLY. 
-			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline'))
+			if($this->getMode() === 'menu' && ($this->getAction() == 'list' || $this->getAction() == 'inline' || $this->getAction() == 'grid'))
 			{
 			
 				$this->listQry = "SELECT SQL_CALC_FOUND_ROWS p.*,u.user_id,u.user_name FROM #page AS p LEFT JOIN #user AS u ON p.page_author = u.user_id WHERE (p.menu_name != '' OR p.menu_image != '' OR p.menu_icon !='') "; // without any Order or Limit.
-			
+		//	$this->gridQry = $this->listQry;
 				$this->listOrder 		= 'p.page_order asc'; // 'p.page_id desc';
 			
 				$this->batchDelete 	= false;
@@ -717,7 +739,11 @@ class page_admin_ui extends e_admin_ui
 					$this->fields['menu_name']['inline'] = true;
 				}
 
+				if($this->getAction() == 'grid')
+				{
+					$this->fields['menu_image']['readParms'] = 'thumb=400x400';
 
+				}
 
 
 

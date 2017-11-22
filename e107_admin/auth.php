@@ -213,7 +213,7 @@ else
 		
 			body 				{ 	text-align: left; font-size:15px; line-height:1.5em; font-weight:normal; 
 									font-family:Arial, Helvetica, sans-serif; background-attachment: scroll; 
-									background-color: rgb(47, 47, 47); color: rgb(198, 198, 198);
+									/* background-color: rgb(47, 47, 47); color: rgb(198, 198, 198); */
 									
 									background-repeat: no-repeat; background-size: auto auto 
 								}

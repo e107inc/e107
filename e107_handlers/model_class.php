@@ -1395,12 +1395,24 @@ class e_model extends e_object
 	 *
 	 * @param string $message
 	 * @param boolean $session [optional]
+	 * @param array $logData [optional] array('TABLE'=>'', 'ERROR'=>'') etc.
 	 * @return e_model
 	 */
-	public function addMessageError($message, $session = false)
+	public function addMessageError($message, $session = false, $logData = array())
 	{
 		e107::getMessage()->addStack($message, $this->_message_stack, E_MESSAGE_ERROR, $session);
-		e107::getAdminLog()->addError($message,false)->save('ADMINUI_04');
+
+		if(!empty($logData))
+		{
+			e107::getAdminLog()->addArray($logData);
+		}
+		else
+		{
+			e107::getAdminLog()->addError($message,false);
+		}
+
+		e107::getAdminLog()->save('ADMINUI_04', E_LOG_WARNING);
+
 		return $this;
 	}
 
@@ -2979,7 +2991,9 @@ class e_admin_model extends e_front_model
 			$this->_db_errno = $sql->getLastErrorNumber();
 			$this->_db_errmsg = $sql->getLastErrorText();
 
-			$this->addMessageError('SQL Insert Error', $session_messages); //TODO - Lan
+			$logData = ($table != 'admin_log') ? array('TABLE'=>$table, 'ERROR'=>$this->_db_errmsg, 'QRY'=>print_r($sqlQry,true)) : false;
+
+			$this->addMessageError('SQL Insert Error', $session_messages, $logData); //TODO - Lan
 			$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$this->_db_errmsg);
 			$this->addMessageDebug('SQL QRY Error '.print_a($sqlQry,true));
 
@@ -3015,7 +3029,8 @@ class e_admin_model extends e_front_model
 			return 0;
 		}
 		$sql = e107::getDb();
-		$res = $sql->db_Insert($this->getModelTable(), $this->toSqlQuery('replace'));
+		$table = $this->getModelTable();
+		$res = $sql->db_Insert($table, $this->toSqlQuery('replace'));
         $this->_db_qry = $sql->getLastQuery();
 		if(!$res)
 		{
@@ -3024,6 +3039,8 @@ class e_admin_model extends e_front_model
 
 			if($this->_db_errno)
 			{
+				$logData = ($table != 'admin_log') ? array('TABLE'=>$table, 'ERROR'=>$this->_db_errmsg, 'QRY'=> print_r($this->_db_qry,true)) : false;
+
 				$this->addMessageError('SQL Replace Error', $session_messages); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
@@ -3073,7 +3090,9 @@ class e_admin_model extends e_front_model
 
 			if($this->_db_errno)
 			{
-				$this->addMessageError('SQL Delete Error', $session_messages); //TODO - Lan
+				$logData = ($table != 'admin_log') ? array('TABLE'=>$table, 'ERROR'=>$this->_db_errmsg, 'WHERE'=>$where) : false;
+
+				$this->addMessageError('SQL Delete Error', $session_messages, $logData); //TODO - Lan
 				$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 			}
 		}

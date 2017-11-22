@@ -344,7 +344,7 @@ class ecache {
 		if($type === 'image')
 		{
 			$path = e_CACHE_IMAGE;
-			$mask = ($mask == null) ? '.*\.cache\.bin' : $mask;		
+			$mask = ($mask == null) ? '.*(\.cache\.bin|\.jpg|\.jpeg|\.png|\.gif)' : $mask;
 		}
 
 		if($type === 'js')

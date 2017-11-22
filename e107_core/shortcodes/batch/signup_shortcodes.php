@@ -66,8 +66,10 @@ class signup_shortcodes extends e_shortcode
 		$pref = e107::getPref('social_login_active');
 		$tp = e107::getParser();
 			
-		$size = empty($parm['size']) ? '3x' : $parm['size'];	
-			
+		$size = empty($parm['size']) ? '3x' : $parm['size'];
+		$class = empty($parm['class']) ?  'btn btn-primary' : $parm['class'] ;
+
+
 		if(!empty($pref))
 		{
 			$text = "";
@@ -90,8 +92,8 @@ class signup_shortcodes extends e_shortcode
 					
 					// 'signup' Creates a new XUP user if not found, otherwise it logs the person in. 
 					
-					$button = (defset('FONTAWESOME') === 4) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size)) : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
-					$text .= " <a title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)." ' role='button' class='signup-xup  btn btn-primary' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
+					$button = (defset('FONTAWESOME') === 4) ? $tp->toGlyph('fa-'.$ic, array('size'=>$size, 'fw'=>true)) : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
+					$text .= " <a title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)." ' role='button' class='signup-xup  ".$class."' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";
 				}
 				//TODO different icon options. see: http://zocial.smcllns.com/
 			}	
@@ -106,6 +108,8 @@ class signup_shortcodes extends e_shortcode
 	{
 		$pref = e107::getPref('social_login_active');
 		$tp = e107::getParser();
+
+
 		
 		if(!empty($pref))
 		{
@@ -120,8 +124,11 @@ class signup_shortcodes extends e_shortcode
 				$class .= ' btn-lg';	
 			}
 
+
 			foreach($providers as $p=>$v)
 			{
+
+
 				$p = strtolower($p);
 				if($v['enabled'] == 1)
 				{
@@ -131,8 +138,8 @@ class signup_shortcodes extends e_shortcode
 					{
 						$ic = 'windows';
 					}
-					
-					$button = (defset('FONTAWESOME') === 4) ? "<span title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p)."'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size))."</span>" : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
+
+					$button = (defset('FONTAWESOME') === 4) ? "<span title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_REG, $p)."'>".$tp->toGlyph('fa-'.$ic, array('size'=>$size, 'fw'=>true))."</span>" : "<img class='e-tip' title='".$tp->lanVars(LAN_PLUGIN_SOCIAL_XUP_SIGNUP, $p)."' src='".e_IMAGE_ABS."xup/{$p}.png' alt='' />";
 				
 					$text .= " <a class='signup-xup ".$class."' role='button' href='".e107::getUrl()->create('system/xup/signup?provider='.$p.'&back='.base64_encode(e_REQUEST_URL))."'>".$button."</a> ";		
 				}
@@ -183,7 +190,8 @@ class signup_shortcodes extends e_shortcode
 		if (check_class($pref['displayname_class']))
 		{
 			$dis_name_len = varset($pref['displayname_maxlength'],15);
-			return e107::getForm()->text('username', ($_POST['username'] ? $_POST['username'] : ''),  $dis_name_len);
+			$val = ($_POST['username']) ? filter_var($_POST['username'], FILTER_SANITIZE_STRING) : '';
+			return e107::getForm()->text('username', $val,  $dis_name_len);
 
 		}
 	}
@@ -210,8 +218,10 @@ class signup_shortcodes extends e_shortcode
 			$options['pattern'] = '[\S]*';
 			$options['class'] = vartrue($parm['class'],'');
 			$options['placeholder'] = vartrue($parm['placeholder']) ? $parm['placeholder']  : '';
-		
-			return e107::getForm()->text('loginname', ($_POST['loginname'] ? $_POST['loginname'] : ''), $log_name_length, $options);
+
+			$val = ($_POST['loginname']) ? filter_var($_POST['loginname'], FILTER_SANITIZE_STRING) : '';
+
+			return e107::getForm()->text('loginname', $val, $log_name_length, $options);
 		}
 	}
 	
@@ -230,8 +240,10 @@ class signup_shortcodes extends e_shortcode
 		$options['title']		= LAN_SIGNUP_110;
 		$options['class']   = vartrue($parm['class'],'');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
-				
-		return e107::getForm()->text('realname', ($_POST['realname'] ? $_POST['realname'] : ''), 100, $options);
+
+		$val = ($_POST['realname']) ? filter_var($_POST['realname'], FILTER_SANITIZE_STRING) : '';
+
+		return e107::getForm()->text('realname', $val, 100, $options);
 
 	}
 	
@@ -325,9 +337,11 @@ class signup_shortcodes extends e_shortcode
 		$options = array('size'=>30,'required'=>1,'class'=>'tbox form-control e-email');
 		$options['title'] = LAN_SIGNUP_108; // Must be a valid email address.
 		$options['class']   = vartrue($parm['class'],'');
-		$options['placeholder'] = vartrue($parm['placeholder'],'');   
+		$options['placeholder'] = vartrue($parm['placeholder'],'');
 
-		$text = e107::getForm()->email('email',vartrue($_POST['email'], ''),100,$options);
+		$val = !empty($_POST['email']) ? filter_var($_POST['email'], FILTER_SANITIZE_EMAIL) : '';
+
+		$text = e107::getForm()->email('email', $val,100,$options);
 		$text .= "<div class='e-email-hint alert-warning' style='display:none; padding:10px' data-hint='Did you mean <b>[x]</b>?'><!-- --></div>";
 		$text .= "<input type='text' name='email2' value='' style='display:none' />"; // spam-trap. 
 		return $text;
@@ -348,8 +362,10 @@ class signup_shortcodes extends e_shortcode
 		$options['class'] 		= 'tbox input-text e-email';  
 		$options['class']     = vartrue($parm['class'],'tbox input-text e-email');
 		$options['placeholder'] = vartrue($parm['placeholder'],'');
-				
-		return e107::getForm()->email('email_confirm', vartrue($_POST['email_confirm']), 100, $options);
+
+		$val = !empty($_POST['email_confirm']) ? filter_var($_POST['email_confirm'], FILTER_SANITIZE_EMAIL) : '';
+
+		return e107::getForm()->email('email_confirm', $val, 100, $options);
 
 	}
 	

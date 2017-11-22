@@ -156,21 +156,21 @@ define("USRLAN_151", "Clear bounce, require Activation");
 define("USRLAN_152", "Clear bounce and Activate");
 define("USRLAN_153", "Delete non-bounce emails");
 define("USRLAN_154", "Clear email for checked");
-define("USRLAN_155", "Total {TOTAL} emails found. {DELCOUNT} deleted through options.<br />{DELUSER} users marked as 'bounced' (out of {FOUND} emails)");
+define("USRLAN_155", "Total [w] emails found. [x] deleted through options.[br][y] users marked as 'bounced' (out of [z] emails)");
 define("USRLAN_156", "Email address is already in use");
 
-define("USRLAN_160", "Total --COUNT-- users of type --TYPE-- pruned");
-define("USRLAN_161", "User ID --UID-- name --NAME-- banned");
-define("USRLAN_162", "User ID --UID-- name --NAME-- unbanned");
-define("USRLAN_163", "User ID --UID-- deleted");
-define("USRLAN_164", "User ID --UID-- name --NAME-- (--EMAIL--) made admin");
-define("USRLAN_165", "User ID --UID-- name --NAME-- admin status revoked");
-define("USRLAN_166", "User ID --UID-- name --NAME-- approved");
+// define("USRLAN_160", "Total [x] users of type --TYPE-- pruned");
+define("USRLAN_161", "User ID [x] name [y] banned");
+define("USRLAN_162", "User ID [x] name [y] unbanned");
+// define("USRLAN_163", "User ID --UID-- deleted");
+define("USRLAN_164", "User ID [x] name [y] ([z]) made admin");
+define("USRLAN_165", "User ID [x] name [y] admin status revoked");
+define("USRLAN_166", "User ID [x] name [y] approved");
 //FIX ME USERLAN_160 - USERLAN_166 need to be reworked avoid duplication. 
 
-define("USRLAN_167", "Validation email ID --ID-- resent to --NAME-- at --EMAIL--");
-define("USRLAN_168", "Re-send --COUNT-- validation emails");
-define("USRLAN_169", "Total --COUNT-- bounced emails deleted");
+define("USRLAN_167", "Validation email ID [x] resent to [y] at [z]");
+// define("USRLAN_168", "Re-send [x] validation emails");
+define("USRLAN_169", "Total [x] bounced emails deleted");
 define("USRLAN_170", "Random user name");
 define("USRLAN_171", "Random password");
 define("USRLAN_172", "User account has been created with the following:");
@@ -264,8 +264,8 @@ define("USRLAN_241", "Activate, Notify (password)");
 define("USRLAN_242", "Require Activation, Notify (password and activation link)");
 
 define("USRLAN_243", "Set Permissions");
-define("USRLAN_244", "Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to remove admin status from --UID-- (--NAME--, --EMAIL--)");
-define("USRLAN_245", "Security violation (not enough permissions) - Administrator --ADMIN_UID-- (--ADMIN_NAME--, --ADMIN_EMAIL--) tried to make --UID-- (--NAME--, --EMAIL--) system admin");
+define("USRLAN_244", "Security violation (not enough permissions) - Administrator [x] ([y], [z]) tried to remove admin status from [u] ([v], [w])");
+define("USRLAN_245", "Security violation (not enough permissions) - Administrator [x] ([y], [z]) tried to make [u] ([v], [w]) system admin");
 define("USRLAN_246", "(Not required)");
 define("USRLAN_247", "Us");
 define("USRLAN_248", "Us");
@@ -289,7 +289,7 @@ define("UCSLAN_7", "Set Classes");
 //define("UCSLAN_8", "Notify User");//incorrect//USRLAN_255
 define("UCSLAN_9", "Classes Updated.");
 define("UCSLAN_10", "Regards,");
-define("UCSLAN_11", "Class membership for user ID --UID-- changed to --CLASSES--");
+define("UCSLAN_11", "Class membership for user ID [x] changed to [y]");
 define("UCSLAN_12", "Member privileges only");
 
 

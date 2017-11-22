@@ -71,8 +71,8 @@ define("POLLAN_44", "Delete this poll?");
 
 // Log messages
 //define("LAN_AL_POLL_01","Poll deleted");//CHANGED TO EXISTING LANS
-//define("LAN_AL_POLL_02","Poll updated");//NOT USED
-//define("LAN_AL_POLL_03","Poll added");//NOT USED
-//define("LAN_AL_POLL_04","");//NOT USED
-//define("LAN_AL_POLL_05","");//NOT USED
+define("LAN_AL_POLL_02","Poll updated");//NOT USED
+define("LAN_AL_POLL_03","Poll added");//NOT USED
+// define("LAN_AL_POLL_04","");//NOT USED
+// define("LAN_AL_POLL_05","");//NOT USED
 

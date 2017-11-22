@@ -1871,8 +1871,8 @@ class mailoutAdminClass extends e107MailManager
 		{
 			if($res)
 				$results[] = str_replace(array(
-					'--COUNT--',
-					'--TABLE--'
+					'[x]',
+					'[y]'
 				), array(
 					$res,
 					'mail_content'
@@ -1887,8 +1887,8 @@ class mailoutAdminClass extends e107MailManager
 		{
 			if($res)
 				$results[] = str_replace(array(
-					'--COUNT--',
-					'--TABLE--'
+					'[x]',
+					'[y]'
 				), array(
 					$res,
 					'mail_recipients'
@@ -1906,7 +1906,7 @@ class mailoutAdminClass extends e107MailManager
 		elseif($res)
 		{
 			if($res)
-				$results[] = str_replace('--COUNT--', $res, LAN_MAILOUT_226);
+				$results[] = str_replace('[x]', $res, LAN_MAILOUT_226);
 		}
 
 		// Scan content table for anomalies, out of time records
@@ -1938,8 +1938,8 @@ class mailoutAdminClass extends e107MailManager
 			}
 			if(count($items))
 				$results[] = str_replace(array(
-					'--COUNT--',
-					'--RECORDS--'
+					'[x]',
+					'[y]'
 				), array(
 					count($items),
 					implode(', ', $items)
@@ -2047,7 +2047,7 @@ class mailoutAdminClass extends e107MailManager
 				}
 			}
 			if($changeCount)
-				$results[] = str_replace('--COUNT--', $changeCount, LAN_MAILOUT_237);
+				$results[] = str_replace('[x]', $changeCount, LAN_MAILOUT_237);
 		}
 
 		e107::getLog()->add('MAIL_05', implode('[!br!]', $results), E_LOG_INFORMATIVE, '');

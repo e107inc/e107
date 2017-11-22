@@ -68,6 +68,5 @@ define("LANG_LAN_150", "[b]Search ENTIRE core before commenting out ANY LAN from
 
 define("LANG_LAN_151", "Available");
 define("LANG_LAN_152", "Courtesy of the [e107 translations team]");
-
-
+define("LANG_LAN_153", "Pre-release");
 ?>
