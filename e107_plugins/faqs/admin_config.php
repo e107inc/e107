@@ -229,7 +229,7 @@ class faq_main_ui extends e_admin_ui
 		 
 		protected $fieldpref = array('checkboxes', 'faq_question', 'faq_answer', 'faq_parent', 'faq_datestamp', 'options');
 
-		protected $preftabs				= array(LAN_GENERAL, LAN_FAQS_ASK_A_QUESTION, LAN_MANAGE.": ".LANA_FAQ_QUESTIONS, LAN_MANAGE.": ".LAN_CATEGORIES);
+		protected $preftabs				= array(LAN_GENERAL, LAN_FAQS_ASK_A_QUESTION, LANA_FAQ_PREF_22, LANA_FAQ_PREF_23);
 		
 		// optional, if $pluginName == 'core', core prefs will be used, else e107::getPluginConfig($pluginName);
 		protected $prefs = array( 
@@ -247,7 +247,7 @@ class faq_main_ui extends e_admin_ui
 			'display_total'				=> array('title'=> LANA_FAQ_PREF_13, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
 			'display_datestamp'			=> array('title'=> LANA_FAQ_PREF_14, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
 			'display_social'			=> array('title'=> LANA_FAQ_PREF_15, 'tab'=>0, 'type'=>'boolean', 'data'=>'int' ),
-			'orderby'					=> array('title'=> LAN_ORDER,        'tab'=>0, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>LANA_FAQ_PREF_16, 'faq_id-ASC'=>LAN_ID." ".LAN_ASC, 'faq_id-DESC'=>LAN_ID." ".LAN_DESC, 'faq_datestamp-ASC'=>LAN_DATE." ".LAN_ASC, 'faq_datestamp-DESC'=>LAN_DATE."-".LAN_DESC)),
+			'orderby'					=> array('title'=> LAN_ORDER,        'tab'=>0, 'type'=>'dropdown', 'writeParms'=>array('faq_order-ASC'=>LANA_FAQ_PREF_16, 'faq_id-ASC'=>LANA_FAQ_PREF_18, 'faq_id-DESC'=>LANA_FAQ_PREF_19, 'faq_datestamp-ASC'=>LANA_FAQ_PREF_20, 'faq_datestamp-DESC'=>LANA_FAQ_PREF_21)),
 
 			'admin_faq_create'			=> array('title'=> LAN_CREATE_ITEM,  'tab'=>2, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),
 			'admin_faq_edit'			=> array('title'=> LAN_EDIT,         'tab'=>2, 'type'=>'userclass', 'writeParms'=>'default=254&classlist=main,admin,classes,no-excludes' ),

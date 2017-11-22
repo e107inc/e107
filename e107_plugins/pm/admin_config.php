@@ -596,7 +596,7 @@ class private_msg_ui extends e_admin_ui
 					}
 				}
 				$start = time();
-				$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_74);
+				$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_74);
 			}
 			if (isset($opts['rec']))		// Want pm_to = deleted user and pm_sent_del = 1
 			{
@@ -613,7 +613,7 @@ class private_msg_ui extends e_admin_ui
 					}
 				}
 				$start = max($start + 1, time());
-				$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_75);
+				$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_75);
 			}
 
 
@@ -623,23 +623,23 @@ class private_msg_ui extends e_admin_ui
 							WHERE `#user`.`user_id` IS NULL"))
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+					$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
 				}
 				else
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_69);
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_69);
 				}
 				if ($res = $db2->gen("DELETE `#private_msg_block` FROM `#private_msg_block` LEFT JOIN `#user` ON `#private_msg_block`.`pm_block_to` = `#user`.`user_id`
 							WHERE `#user`.`user_id` IS NULL"))
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_ERROR][$start] = str_replace(array('--NUM--', '--TEXT--'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
+					$results[E_MESSAGE_ERROR][$start] = str_replace(array('[y]', '[z]'), array($this->sql->getLastErrorNum, $this->sql->getLastErrorText), ADLAN_PM_70);
 				}
 				else
 				{
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $res, ADLAN_PM_68);
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $res, ADLAN_PM_68);
 				}
 			}
 
@@ -674,7 +674,7 @@ class private_msg_ui extends e_admin_ui
 						}
 					}
 					$start = max($start + 1, time());
-					$results[E_MESSAGE_SUCCESS][$start] = str_replace('--COUNT--', $cnt, ADLAN_PM_73);
+					$results[E_MESSAGE_SUCCESS][$start] = str_replace('[x]', $cnt, ADLAN_PM_73);
 				}
 				else
 				{
@@ -724,7 +724,7 @@ class private_msg_ui extends e_admin_ui
 						$orphans[] = $fd['fname'];
 					}
 				}
-				$attachMessage = str_replace(array('--ORPHANS--', '--MISSING--'), array(count($orphans), count($missing)), ADLAN_PM_79);
+				$attachMessage = str_replace(array('[x]', '[y]'), array(count($orphans), count($missing)), ADLAN_PM_79);
 				if (TRUE)
 				{	// Mostly for testing - probably disable this
 					if (count($orphans))

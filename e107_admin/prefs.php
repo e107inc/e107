@@ -165,12 +165,12 @@ if(isset($_POST['updateprefs']))
 				if($value < $pref_limits[$key]['min'])
 				{
 					$value = $pref_limits[$key]['min'];
-					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213));
+					$mes->addWarning(str_replace(array('[x]','[y]'),array($key,$value),PRFLAN_213));
 				}
 				if($value > $pref_limits[$key]['max'])
 				{
 					$value = $pref_limits[$key]['max'];
-					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212));
+					$mes->addWarning(str_replace(array('[x]','[y]'),array($key,$value),PRFLAN_212));
 				}
 			}
 			else
@@ -2016,6 +2016,7 @@ function pref_submit($post_id = '')
 
 function prefs_adminmenu()
 {
+		$var['core-prefs-header1']['header'] = LAN_BASIC_OPTIONS;
 	$var['core-prefs-main']['text'] = PRFLAN_1;
 	$var['core-prefs-email']['text'] = PRFLAN_254;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
@@ -2025,7 +2026,7 @@ function prefs_adminmenu()
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
 	$var['core-prefs-uploads']['text'] = PRFLAN_255;
 	
-	$var['core-prefs-header1']['header'] = PRFLAN_256;
+	$var['core-prefs-header2']['header'] = PRFLAN_256;
 	
 	$var['core-prefs-display']['text'] = PRFLAN_13;
 	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
@@ -2034,8 +2035,11 @@ function prefs_adminmenu()
 	$var['core-prefs-date']['text'] = PRFLAN_21;	
 	$var['core-prefs-javascript']['text'] = PRFLAN_257;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
-	
-	e107::getNav()->admin(LAN_BASIC_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
+
+	$icon = e107::getParser()->toIcon('e-prefs-24');
+	$caption = $icon."<span>".LAN_PREFS."</span>";
+
+	e107::getNav()->admin($caption.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
 /**

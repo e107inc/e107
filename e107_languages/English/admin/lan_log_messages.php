@@ -372,7 +372,7 @@ define("LAN_AL_MISC_03", "Login menu settings updated");
 define("LAN_AL_MISC_04", "Comment menu settings updated");
 define("LAN_AL_MISC_05", "Clock menu settings updated");
 define("LAN_AL_MISC_06", "Blog calendar menu settings updated");
-define("LAN_AL_MISC_07", "");
+//define("LAN_AL_MISC_07", "");
 
 
 define("LAN_AL_PING_01", "Ping to service");
@@ -384,5 +384,7 @@ define("LAN_AL_ADMINUI_04", "Admin-UI DB Error: [x]");
 
 define("LAN_AL_BACKUP", "Database backup");
 
+define("LAN_AL_MEDIA_01", "Media Upload");
 
-?>
+define("LAN_AL_USET_100", "Admin logged in as another user");
+define("LAN_AL_USET_101", "Admin logged out as another user");

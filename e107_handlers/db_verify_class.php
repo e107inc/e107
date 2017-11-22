@@ -411,8 +411,10 @@ class db_verify
 	{
 		foreach($this->results as $tabs => $field)
 		{
-			$file = varset($this->results[$tabs]['_file']);		
-			if(varset($this->errors[$tabs]['_status']) === 'missing_table') // Missing Table
+			$file = varset($this->results[$tabs]['_file']);
+			$errorStatus = !empty($this->errors[$tabs]['_status']) ? $this->errors[$tabs]['_status'] : null;
+
+			if($errorStatus === 'missing_table') // Missing Table
 			{				
 				$this->fixList[$file][$tabs]['all'][] = 'create';
 			}					
@@ -421,7 +423,11 @@ class db_verify
 				foreach($field as $k=>$f)
 				{
 					if($f['_status']=='ok') continue;
-					$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
+					$status = $f['_status'];
+					if(!empty($this->modes[$status]))
+					{
+						$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$status];
+					}
 				}	
 			}
 		}
@@ -720,7 +726,8 @@ class db_verify
 			{
 				
 				$id = $this->getId($this->sqlFileTables[$j]['tables'],$table);
-						
+				$toFix = count($val);
+
 				foreach($val as $field=>$fixes)
 				{
 					foreach($fixes as $mode)
@@ -773,7 +780,8 @@ class db_verify
 						 
 						if(e107::getDb()->gen($query) !== false)
 						{
-							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
+							$log->addDebug(LAN_UPDATED.'  ['.$query.']');
+							$toFix--;
 						} 
 						else 
 						{
@@ -786,8 +794,14 @@ class db_verify
 						}
 					}	
 				}
-		
-			}	// 
+
+				if(empty($toFix))
+				{
+					unset($this->errors[$table], $this->fixList[$j][$table]); // remove from error list since we are using a singleton
+				}
+			}	//
+
+
 		}
 
 		$log->flushMessages("Database Table(s) Modified");

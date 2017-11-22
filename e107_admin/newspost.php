@@ -77,8 +77,10 @@ class news_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_LIST),
 		'main/create' 		=> array('caption'=> NWSLAN_45),  // Create/Edit News Item
 	//	'cat/list' 			=> array('caption'=> NWSLAN_46, 'perm' => '7'), // Category List
+		'other' 		=> array('divider'=> true),
 		'cat/list' 			=> array('caption'=> LAN_CATEGORIES), // Create Category.
 		'cat/create' 		=> array('caption'=> LAN_NEWS_63), // Category List
+		'other2' 		=> array('divider'=> true),
 		'main/settings' 	=> array('caption'=> LAN_PREFS), // Preferences
 	//	'main/submitted'	=> array('caption'=> LAN_NEWS_64, 'perm' => 'N'), // Submitted News
 		'sub/list'			=> array('caption'=> NWSLAN_47), // Submitted News
@@ -123,6 +125,8 @@ class news_cat_ui extends e_admin_ui
 		protected $batchExport = true;
 		protected $sortField = 'category_order';
 		protected $listOrder	= "category_order ASC";
+
+		protected $tabs = array(LAN_GENERAL, LAN_ADVANCED);
 		
 		protected $fields = array(
 			'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -133,9 +137,11 @@ class news_cat_ui extends e_admin_ui
          	'category_meta_description' => array('title'=> LAN_DESCRIPTION,		'type' => 'textarea',	'data'=>'str',	'inline'=>true, 'width' => 'auto', 'thclass' => 'left','readParms' => 'expand=...&truncate=150&bb=1', 'readonly'=>FALSE, 'writeParms'=>array('size'=>'xxlarge')),
 			'category_meta_keywords' 	=> array('title'=> LAN_KEYWORDS,		'type' => 'tags',		'data'=>'str',	'inline'=>true, 'width' => 'auto', 'thclass' => 'left', 'readonly'=>FALSE),
 			'category_sef' 				=> array('title'=> LAN_SEFURL,	'type' => 'text', 'data'=>'str',	'inline'=>true,	'width' => 'auto', 'readonly'=>FALSE, 'writeParms'=>array('size'=>'xxlarge', 'sef'=>'category_name')), // Display name
-			'category_manager' 			=> array('title'=> LAN_MANAGER,'type' => 'userclass',		'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
-			'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',			'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),										
-			'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
+			'category_manager' 			=> array('title'=> LAN_MANAGER,'type' => 'userclass',	'tab'=>1,	'inline'=>true, 'width' => 'auto', 'data' => 'int','batch'=>TRUE, 'filter'=>TRUE),
+				'category_template'         => array('title'=> LAN_TEMPLATE,        'type' => 'layouts', 'tab'=>1, 'width'=>'auto', 'thclass' => 'left', 'class'=> 'left', 'writeParms' => 'plugin=news&id=news&merge=0','help'=>'Template to use as the default view' ),
+	
+					'category_order' 			=> array('title'=> LAN_ORDER,			'type' => 'text',	'tab'=>1,		'width' => 'auto', 'thclass' => 'right', 'class'=> 'right' ),
+		'options' 					=> array('title'=> LAN_OPTIONS,			'type' => null,		'batch'=>true, 'filter'=>true,		'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort' => true)
 		);
 
 		protected $fieldpref = array('checkboxes', 'category_icon', 'category_id', 'category_name', 'category_description', 'category_sef', 'category_manager', 'category_order', 'options');
@@ -189,11 +195,17 @@ class news_cat_ui extends e_admin_ui
 			}
 
 			$sef = e107::getParser()->toDB($new_data['category_sef']);
-			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id!=".intval($id)))
+
+		/*	$message = "Error: sef: ".$sef."   id: ".$id."\n";
+			$message .= print_r($new_data,true);
+			file_put_contents(e_LOG.'uiAjaxResponseInline.log', $message."\n\n", FILE_APPEND);*/
+
+			if(e107::getDb()->count('news_category', '(*)', "category_sef='{$sef}' AND category_id !=".intval($id)))
 			{
 				e107::getMessage()->addError(LAN_NEWS_65);
 				return false;
 			}
+
 			return $new_data;
 		}
 
@@ -443,14 +455,18 @@ class news_admin_ui extends e_admin_ui
 		'news_sef'				=> array('title' => LAN_SEFURL, 	'type' => 'text',    'batch'=>1,  'data'=>'str', 'tab'=>1,  'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'writeParms'=>array('size'=>'xxlarge', 'show'=>1, 'sef'=>'news_title')),
 		'news_ping'				=> array('title' => LAN_PING, 	    'type' => 'checkbox',   'tab'=>1, 'data'=>false, 'writeParms'=>'value=0',	'inline'=>true, 	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 
-		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>0, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
+		'news_author'			=> array('title' => LAN_AUTHOR, 	'type' => 'method', 	'tab'=>2, 	'readParms'=>'idField=user_id&nameField=user_name', 'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 		'news_datestamp'		=> array('title' => LAN_NEWS_32, 	'type' => 'datestamp', 'data'=>'int', 'tab'=>2,   'writeParms'=>'type=datetime',   'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y', 'filter'=>true),
         'news_category'			=> array('title' => NWSLAN_6, 		'type' => 'dropdown',   'data'=>'int', 'tab'=>0, 'inline'=>true,	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'batch'=>true, 'filter'=>true),
 		'news_start'			=> array('title' => LAN_START, 	    'type' => 'datestamp', 'data'=>'int', 'tab'=>2,   'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
        	'news_end'				=> array('title' => LAN_END, 		'type' => 'datestamp',  'data'=>'int', 'tab'=>2,  'writeParms'=>'type=datetime',	'width' => 'auto', 	'thclass' => '', 				'class' => null, 		'nosort' => false, 'parms' => 'mask=%A %d %B %Y'),
         'news_class'			=> array('title' => LAN_VISIBILITY, 'type' => 'userclass',  'tab'=>2,   'inline'=>true, 'width' => 'auto', 	'thclass' => '', 				'class' => null,  'batch'=>true, 'filter'=>true),
-		'news_render_type'		=> array('title' => LAN_TEMPLATE, 	'type' => 'dropdown',  'data'=>'int',  'tab'=>0,  		'inline'=>false, 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
-		'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',   'data'=>'int', 'tab'=>2, 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
+
+		'news_template'		    => array('title' => LAN_TEMPLATE, 	'type' => 'method',  'data'=>'str',  'tab'=>0,  'inline'=>true, 'writeParms'=>'', 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+
+		'news_render_type'		=> array('title' => LAN_LOCATION, 	'type' => 'dropdown',  'data'=>'str',  'tab'=>0,  'inline'=>true, 'readParms'=>array('type'=>'checkboxes'), 'width' => 'auto', 	'thclass' => 'left', 			'class' => 'left', 		'nosort' => false, 'batch'=>true, 'filter'=>true),
+
+			'news_sticky'			=> array('title' => LAN_NEWS_28, 	'type' => 'boolean',   'data'=>'int', 'tab'=>2, 'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false, 'batch'=>true, 'filter'=>true),
         'news_allow_comments' 	=> array('title' => LAN_COMMENTS, 		'type' => 'boolean',  'data'=>'int',  'tab'=>2,	'writeParms'=>'inverse=1',  'width' => 'auto', 	'thclass' => 'center', 			'class' => 'center', 	'nosort' => false,'batch'=>true, 'filter'=>true,'readParms'=>'reverse=1'),
         'news_comment_total' 	=> array('title' => LAN_NEWS_60, 	'type' => 'number',    'data'=>'int', 'tab'=>2,	'noedit'=>true, 'width' => '10%', 	'thclass' => '', 				'class' => null, 		'nosort' => false),
 	//	admin_news_notify
@@ -742,8 +758,9 @@ class news_admin_ui extends e_admin_ui
 		'news_category',
 		'news_title' ,
 		'news_summary',
+		'news_template',
 		'news_render_type',
-		'news_author' ,
+
 		'news_body',
 		'news_extended',
 		'news_thumbnail',
@@ -757,6 +774,7 @@ class news_admin_ui extends e_admin_ui
 		'news_allow_comments' ,
 		'news_start' ,
 		'news_end' ,
+		'news_author' ,
 		'news_datestamp' ,
 		'news_class',
 		'news_sticky',
@@ -1092,9 +1110,21 @@ class news_admin_ui extends e_admin_ui
 			$sefbaseDiz = str_replace(array("[br]","[","]"), array("<br />","<a href='".e_ADMIN_ABS."eurl.php'>","</a>"), NWSLAN_128 );
 			$pingOpt = array('placeholder'=>LAN_NEWS_87);
 			$pingVal = (!empty($pref['news_ping_services'])) ? implode("\n",$pref['news_ping_services']) : '';
-			$newsTemplates = array('default'=>LAN_DEFAULT, 'list'=>LAN_LIST); //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
 
+			$newsTemplates = array();
 
+			if($newInfo = e107::getTemplateInfo('news', 'news'))  //TODO  'category'=>'Categories'? research 'Use non-standard template for news layout' and integrate here.
+			{
+				foreach($newInfo as $k=>$val)
+				{
+					$newsTemplates[$k] = $val['title'];
+				}
+
+			}
+			else
+			{
+				$newsTemplates = array('default'=>LAN_DEFAULT, 'list'=>LAN_LIST);
+			}
 
 			$text = "
 			<form method='post' action='".e_REQUEST_URI."' id='core-newspost-settings-form'>";
@@ -1442,6 +1472,39 @@ class news_admin_ui extends e_admin_ui
 class news_form_ui extends e_admin_form_ui
 {
 
+	function news_template($curVal,$mode)
+	{
+		if($mode === 'read')
+		{
+			return $curVal;
+		}
+
+
+		if($mode === 'write')
+		{
+			if($tmp = e107::getTemplate('news', 'news', 'view'))
+			{
+				return LAN_DEFAULT;
+			}
+
+			if($tmp = e107::getTemplateInfo('news', 'news_view'))
+			{
+				$opt = array();
+				foreach($tmp as $k=>$val)
+				{
+					$opt[$k] = $val['title'];
+
+				}
+				return $this->select('news_template', $opt, $curVal, array('size'=>'xlarge'));
+			}
+
+
+
+			return LAN_DEFAULT;
+		}
+
+	}
+
 
 	function news_author($curVal, $mode)
 	{
@@ -1476,7 +1539,7 @@ class news_form_ui extends e_admin_form_ui
 		}
 		else // allow master admin to
 		{
-			$text .= $this->select_open('news_author');
+			$text .= $this->select_open('news_author', array('size'=>'xlarge'));
 			$qry = "SELECT user_id,user_name,user_admin FROM #user WHERE user_perms = '0' OR user_perms = '0.' OR user_perms REGEXP('(^|,)(H)(,|$)') ";
 
 			if(!empty($curVal))

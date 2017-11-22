@@ -400,7 +400,15 @@ if(!empty($_GET['iframe']))
 
 
 				$text .= "<tr>
-					<td><span class='language-name'><a rel='external' href='".$value['infoURL']."' title=\"".LAN_MOREINFO."\">".$value['name']."</a></span></td>";
+					<td><span class='language-name'><a rel='external' href='".$value['infoURL']."' title=\"".LAN_MOREINFO."\">".$value['name']."</a></span>";
+
+					if(strpos($value['tag'],'-') !==false)
+					{
+						$text .= " <span class='label label-warning'>".LANG_LAN_153."</span>";
+					}
+
+
+					$text .= "</td>";
 
 			/*		$text .= "
 						<td>".$value['version']."</td>

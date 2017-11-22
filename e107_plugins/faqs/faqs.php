@@ -81,8 +81,8 @@ if (isset($_POST['faq_submit']))
 	{
 		$faq_question = $aj->formtpa($_POST['faq_question'], "on");
 		$data = $aj->formtpa($_POST['data'], "on");
-		$count = ($sql->db_Count("faqs", "(*)", "WHERE faq_parent='".$_POST['faq_parent']."' ") + 1);
-		$sql->db_Insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".$_POST['faq_comment']."', '".time()."', '".USERID."', '".$count."' ");
+		$count = ($sql->db_Count("faqs", "(*)", "WHERE faq_parent='".intval($_POST['faq_parent'])."' ") + 1);
+		$sql->db_Insert("faqs", " 0, '".$_POST['faq_parent']."', '$faq_question', '$data', '".filter_var($_POST['faq_comment'], FILTER_SANITIZE_STRING)."', '".time()."', '".USERID."', '".$count."' ");
 		$message = FAQ_ADLAN_32;
 		unset($faq_question, $data);
 	}
@@ -100,7 +100,7 @@ if (isset($_POST['faq_edit_submit']))
 		$faq_question = $aj->formtpa($_POST['faq_question'], "on");
 		$data = $aj->formtpa($_POST['data'], "on");
 
-		$sql->db_Update("faqs", "faq_parent='".$_POST['faq_parent']."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
+		$sql->db_Update("faqs", "faq_parent='".intval($_POST['faq_parent'])."', faq_question ='$faq_question', faq_answer='$data', faq_comment='".$_POST['faq_comment']."'  WHERE faq_id='".$idx."' ");
 		$message = FAQ_ADLAN_29;
 		unset($faq_question, $data);
 	}
@@ -133,7 +133,7 @@ if (isset($_POST['commentsubmit']))
 		{
 			$srch = vartrue($_GET['srch']);
 			$ftmp = $faq->view_all($srch);
-			$caption = LAN_FAQS_FAQ;
+			$caption = LAN_FAQS_011;
 
 		}
 
@@ -178,7 +178,7 @@ if (isset($_POST['commentsubmit']))
 	if($action == "cat" && $idx)
 	{
 		 $ftmp = $faq->view_faq($idx) ;
-		 define("e_PAGETITLE",LAN_FAQS_FAQ." - ". $ftmp['title']);
+		 define("e_PAGETITLE",LAN_FAQS_011." - ". $ftmp['title']);
 		 require_once(HEADERF);
 		 $ns -> tablerender($ftmp['caption'], $ftmp['text']);
 	}
@@ -229,7 +229,7 @@ class faq
 
 			if(!empty($this->pref['submit_question_limit']) && $existing >= $this->pref['submit_question_limit'])
 			{
-				e107::getMessage()->setTitle(LAN_WARNING,E_MESSAGE_INFO)->addInfo(LAN_FAQS_LIMIT_REACHED);
+				e107::getMessage()->setTitle(LAN_WARNING,E_MESSAGE_INFO)->addInfo(LAN_FAQS_005);
 				return;
 			}
 
@@ -250,7 +250,7 @@ class faq
 
 			if($sql->insert('faqs',$insert))
 			{
-				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHtml($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_ASKQUESTION_AFTER;
+				$message = !empty($this->pref['submit_question_acknowledgement']) ? e107::getParser()->toHtml($this->pref['submit_question_acknowledgement'],true, 'BODY') : LAN_FAQS_004;
 				e107::getMessage()->addSuccess($message);
 			}
 
@@ -284,7 +284,7 @@ class faq
 	
 		$text .= $tp->parseTemplate($template['end'], true, $this->sc); // footer
 
-		$ret['title'] = LAN_FAQS_FAQ;
+		$ret['title'] = LAN_FAQS_011;
 		$ret['text'] = $text;
 
 		if (!empty($this->pref['page_title'][e_LANGUAGE]))
@@ -329,10 +329,10 @@ class faq
 			$insert = " AND (f.faq_question LIKE '%".$srch."%' OR f.faq_answer LIKE '%".$srch."%' OR FIND_IN_SET ('".$srch."', f.faq_tags) ) ";
 
 
-			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_REMOVE."' href='".$removeUrl."'>×</a></span>";
+		//	$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_006."' href='".$removeUrl."'>×</a></span>";
 
-			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
-			$text = e107::getMessage()->render();
+		//	e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_002,E_MESSAGE_INFO)->addInfo($message);
+		//	$text = e107::getMessage()->render();
 		}
 
 		if(!empty($_GET['id'])) // pull out just one specific FAQ.
@@ -355,9 +355,9 @@ class faq
 
 			$insert = " AND FIND_IN_SET ('".$srch."', f.faq_tags)  ";
 
-			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_REMOVE."' href='".$removeUrl."'>×</a></span>";
+			$message = "<span class='label label-lg label-info'>".$srch." <a class='e-tip' title='".LAN_FAQS_006."' href='".$removeUrl."'>×</a></span>";
 
-			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_FILTER_ACTIVE,E_MESSAGE_INFO)->addInfo($message);
+			e107::getMessage()->setClose(false,E_MESSAGE_INFO)->setTitle(LAN_FAQS_002,E_MESSAGE_INFO)->addInfo($message);
 			$text = e107::getMessage()->render();
 		}
 
@@ -368,7 +368,7 @@ class faq
 		
 		if(!$data = $sql->retrieve($query, true))
 		{
-			$message = 	(!empty($srch)) ? e107::getParser()->lanVars(LAN_FAQS_X_NOT_FOUND, $srch)."<a class='e-tip' title='".LAN_FAQS_RESET."' href='".$removeUrl."'>".LAN_FAQS_RESET."</a>" : LAN_FAQS_NONE_AVAILABLE;
+			$message = 	(!empty($srch)) ? e107::getParser()->lanVars(LAN_FAQS_008, $srch)."<a class='e-tip' title='".LAN_FAQS_007."' href='".$removeUrl."'>".LAN_FAQS_007."</a>" : LAN_FAQS_003;
 			return "<div class='alert alert-warning alert-block'>".$message."</div>" ; 
 		}
 		
@@ -475,7 +475,7 @@ class faq
 
 		$text .= $tp->parseTemplate($FAQ_LIST_END, true);
 
-		$ret['title'] = LAN_FAQS_FAQ." - ".$category_title;
+		$ret['title'] = LAN_FAQS_011." - ".$category_title;
 		$ret['text'] = $text.$this->faq_footer($id);
 		$ret['caption'] = $caption;
 		return $ret;
@@ -601,7 +601,7 @@ class faq
 				if (ADMIN && getperms("B"))
 				{
 					// bkwon 05-Jun-2004 fix URL to moderate comment
-					echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?faq.$faq_id'>".LAN_FAQS_MODERATE_COMMENTS."</a></div><br />";
+					echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?faq.$faq_id'>".LAN_FAQS_009."</a></div><br />";
 				}
 			}
 			$cobj->form_comment($action, $table, $idx.".".$id, $subject, $content_type);
@@ -614,7 +614,7 @@ class faq
 	{
         global $faqpref,$timing_start,$tp,$cust_footer, $CUSTOMPAGES, $CUSTOMHEADER, $CUSTOMHEADER;
         $text_menu .= "<div style='text-align:center;' ><br />
-        &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_BACK_TO_CATEGORIES."</a>&nbsp;]&nbsp;&nbsp;";
+        &nbsp;&nbsp;[&nbsp;<a href='faqs.php?main'>".LAN_FAQS_010."</a>&nbsp;]&nbsp;&nbsp;";
 
         if(check_class($faqpref['add_faq'])){
                 $text_menu .="[&nbsp;<a href='faqs.php?new.$id'>".LAN_FAQS_ASK_A_QUESTION."</a>&nbsp;]";

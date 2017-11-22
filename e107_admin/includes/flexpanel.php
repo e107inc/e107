@@ -143,17 +143,17 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_help');
 		$info = $this->getMenuPosition('core-infopanel_help');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', false, $admin_sc);
 
 		// "Latest" box.
 		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-latest-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', false, $admin_sc);
 
 		// "Status" box.
 		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-status-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', false, $admin_sc);
 
 
 		// --------------------- Personalized Panel -----------------------
@@ -226,7 +226,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		// --------------------- Add-on updates ---------------------------
 		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('e-addon-updates');
-		$addonUpdates = $tp->parseTemplate("{ADMIN_ADDON_UPDATES}", true, $admin_sc);
+		$addonUpdates = $admin_sc->sc_admin_addon_updates();
 		$info = $this->getMenuPosition('e-addon-updates');
 		$panels[$info['area']][$info['weight']] .= $addonUpdates;
 

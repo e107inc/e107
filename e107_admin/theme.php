@@ -190,7 +190,7 @@ class theme_admin_ui extends e_admin_ui
 	//	protected \$sortField		= 'somefield_order';
 	//	protected \$sortParent      = 'somefield_parent';
 	//	protected \$treePrefix      = 'somefield_title';
-		protected $grid             = array('price'=>'price', 'version'=>'version','title'=>'name', 'image'=>'thumbnail',  'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>true);
+		protected $grid             = array('price'=>'price', 'version'=>'version','title'=>'name', 'image'=>'thumbnail',  'body'=>'',  'class'=>'col-md-2 col-sm-3', 'perPage'=>12, 'carousel'=>true, 'toggleButton'=>false);
 
 
     	protected  $fields = array(

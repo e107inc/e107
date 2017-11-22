@@ -56,6 +56,12 @@ class core_page_url extends eUrlConfig
 		switch ($route[0]) 
 		{
 			case 'book':
+
+				if(!empty($params['book_id']))
+				{
+					$params['id'] = $params['book_id'];
+				}
+
 				$url .= "bk=".intval($params['id']);	
 			break;
 

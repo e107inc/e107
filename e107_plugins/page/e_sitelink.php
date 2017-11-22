@@ -15,23 +15,31 @@ class page_sitelink // include plugin-folder in the name.
 {
 	private $chapterSef = array();
 	private $chapterParent = array();
+	private $chapterName = array();
 	
 	function __construct()
 	{
 		$sql = e107::getDb();
 		
-		$books = $sql->retrieve("SELECT chapter_id,chapter_sef,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC" , true);
+		$books = $sql->retrieve("SELECT chapter_id,chapter_name,chapter_sef,chapter_parent FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
 		foreach($books as $row)
 		{
 			$id = $row['chapter_id'];
 			$this->chapterSef[$id] = $row['chapter_sef'];
 			$this->chapterParent[$id] = $row['chapter_parent'];
+			$this->chapterName[$id] = $row['chapter_name'];
 		}	
 		
 		
 	}
-	
+
+	private function getName($chapter)
+	{
+		return varset($this->chapterName[$chapter], null);
+	}
+
+
 	private function getSef($chapter)
 	{
 		return vartrue($this->chapterSef[$chapter],'--sef-not-assigned--');		
@@ -53,7 +61,20 @@ class page_sitelink // include plugin-folder in the name.
 			'function'		=> "bookNav",
 			'description' 	=> "A list of all books"
 		);
-		
+
+		/* // TODO - get these working.
+		$links[] = array(
+			'name'			=> "All Books &amp; chapters",
+			'function'		=> "bookNavChapters",
+			'description' 	=> "A list of all books and their chapters"
+		);
+
+		$links[] = array(
+			'name'			=> "All Books, Chapters &amp; Pages",
+			'function'		=> "bookNavChaptersPages",
+			'description' 	=> "A list of all books, chapters and pages"
+		);
+	*/
 		$books = $sql->retrieve("SELECT * FROM #page_chapters WHERE chapter_parent =0 ORDER BY chapter_order ASC" , true);
 				
 		foreach($books as $row)
@@ -63,6 +84,13 @@ class page_sitelink // include plugin-folder in the name.
 				'function'		=> "chapterNav",
 				'parm'			=> $row['chapter_id'],
 				'description' 	=> "A list of all chapters from the book ".$row['chapter_name']
+			);
+
+			$links[] = array(
+				'name'			=> "All Chapters &amp; Pages from ".$row['chapter_name'],
+				'function'		=> "chapterNavPages",
+				'parm'			=> $row['chapter_id'],
+				'description' 	=> "A list of all chapters and pages from the book ".$row['chapter_name']
 			);
 		}
 
@@ -91,19 +119,42 @@ class page_sitelink // include plugin-folder in the name.
 	/**
 	 * Return a tree of all books and their chapters. 
 	 */
-	public function bookNav($book)
+	public function bookNav($book=0)
 	{
-		return $this->pageNav('book=0');
+		$parm = array('book'=>$book);
+		return $this->pageNav($parm);
+	}
+
+
+	//TODO
+	public function bookNavChapters($book=0)
+	{
+		$parm = array('book'=>$book, 'chapters'=>true);
+		return $this->pageNav($parm);
+	}
+
+
+	//TODO
+	public function bookNavChaptersPages($book=0)
+	{
+		$parm = array('book'=>$book, 'chapters'=>true, 'pages'=>true);
+		return $this->pageNav($parm);
+	}
+
+
+
+	public function chapterNavPages($id)
+	{
+		return $this->chapterNav($id, true);
 	}
 
 	public function pagesFromChapter($id)
 	{
-
 		return $this->pageList($id);
 	}
 
 
-	private function pageList($parm)
+	public function pageList($parm)
 	{
 		$sql = e107::getDb();
 		$arr = array();
@@ -133,12 +184,22 @@ class page_sitelink // include plugin-folder in the name.
 			//	$row['chapter_sef'] = '--sef-not-assigned--';
 			}
 
-			$arr[]  = array(
+			$arr[]  = $this->pageArray($row);
+
+		}
+
+		return $arr;
+
+	}
+
+	private function pageArray($row,$options=array())
+	{
+		return array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
 				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
 				'link_description'	=> '',
-			//	'link_button'		=> $row['menu_image'],
+				'link_button'		=> (!empty($options['icon']) && $options['icon'] === 'menu_image') ? $row['menu_image'] : '',
 				'link_category'		=> '',
 				'link_order'		=> $row['page_order'],
 				'link_parent'		=> $row['page_chapter'],
@@ -149,31 +210,36 @@ class page_sitelink // include plugin-folder in the name.
 
 			);
 
-		}
-
-		return $arr;
 
 	}
 
 	/**
 	 * Return a list of all chapters from a sepcific book. 
 	 */
-	public function chapterNav($book)
+	public function chapterNav($book, $loadPages=false)
 	{
 		$sql = e107::getDb();
 		$tp = e107::getParser();
+
+
+
+
 		
 		if($sql->select("page_chapters", "*", "chapter_parent = ".intval($book)." AND chapter_visibility IN (".USERCLASS_LIST.")  ORDER BY chapter_order ASC "))
 		{
-			$sublinks = array();
-			
+			$chapters = array();
+			$ids = array();
+
 			while($row = $sql->fetch())
 			{
+				$ids[] = $row['chapter_id'];
+				$id = $row['chapter_id'];
+
 				$sef = $row;
 				$sef['chapter_sef'] = $this->getSef($row['chapter_id']);	
 				$sef['book_sef']	= $this->getSef($row['chapter_parent']);
 				
-				$sublinks[] = array(
+				$chapters[$id] = array(
 					'link_name'			=> $tp->toHtml($row['chapter_name'],'','TITLE'),
 					'link_url'			=> e107::getUrl()->create('page/chapter/index', $sef), // 'page.php?ch='.$row['chapter_id'],
 					'link_description'	=> '',
@@ -183,55 +249,80 @@ class page_sitelink // include plugin-folder in the name.
 					'link_parent'		=> $row['chapter_parent'],
 					'link_open'			=> '',
 					'link_class'		=> 0,
+					'link_sub'          => array(),
 					'link_identifier'	=> 'page-nav-'.intval($row['chapter_id']) // used for css id. 
 				);
 
 			}
+
+
+			if($loadPages === true)
+			{
+				$pages = $sql->retrieve("SELECT * FROM #page WHERE page_title !='' AND page_chapter IN (".implode(",",$ids).") AND page_class IN (".USERCLASS_LIST.") ORDER BY page_order", true);
+				foreach($pages as $row)
+				{
+					$chap = $row['page_chapter'];
+					$chapters[$chap]['link_sub'][] = $this->pageArray($row);
+
+				}
+
+			//	e107::getDebug()->log($pages);
+			}
+
+
+
+
 			
-			return $sublinks;
+			return $chapters;
 			
 		}
 	}
 
-	function pageNav($parm='') 
+	function pageNav($parm=null)
 	{
 		$frm = e107::getForm();
 		$options = array();
-		if(vartrue($parm))
-		{
-			parse_str($parm,$options);	
-		}
-			
 
-			
+		if(!empty($parm))
+		{
+			if(is_string($parm))
+			{
+				parse_str($parm,$options);
+			}
+			elseif(is_array($parm))
+			{
+				$options = $parm;
+			}
+		}
+
 		$sql 		= e107::getDb();
 		$sublinks 	= array();
 		$arr 		= array();	
-		
+
 		// map current when in auto mode
-		if(vartrue($options['auto']))
+		if(!empty($options['auto']))
 		{
 			// current book found, top book not set
-			if(vartrue($options['cbook']) && !vartrue($options['book']))
+			if(!empty($options['cbook']) && empty($options['book']))
 			{
 				$options['book'] = $options['cbook'];
 			}
 			
 			// current chapter found, top chapter not set
-			if(vartrue($options['cchapter']) && !vartrue($options['chapter']))
+			if(!empty($options['cchapter']) && empty($options['chapter']))
 			{
 				$options['chapter'] = $options['cchapter'];
 			}
 			
 			// current chapter found, top chapter not set
-			if(vartrue($options['cpage']) && !vartrue($options['page']))
+			if(!empty($options['cpage']) && empty($options['page']))
 			{
 				$options['page'] = $options['cpage'];
 			}
 		}
 		
 		// find the chapter if required
-		if(vartrue($options['page']) && !vartrue($options['chapter']))
+		if(!empty($options['page']) && empty($options['chapter']))
 		{
 			$options['chapter'] = $sql->retrieve('page', 'page_chapter', 'page_id='.intval($options['page']));
 		}	
@@ -254,7 +345,14 @@ class page_sitelink // include plugin-folder in the name.
 		
 		$data 		= $sql->retrieve($query, true);
 		$_pdata 	= array();
-				
+/*
+		if(empty($data))
+		{
+			e107::getDebug()->log($query);
+			e107::getDebug()->dump($data);
+		}
+*/
+
 		foreach($data as $row)
 		{
 			$pid = $row['page_chapter'];
@@ -268,7 +366,7 @@ class page_sitelink // include plugin-folder in the name.
 				$row['page_sef'] = '--sef-not-assigned--';	
 			}
 			
-			$sublinks[$pid][] = $_pdata[] = array(
+			$sublinks[$pid][] = $_pdata[] = $this->pageArray($row,$options); /* array(
 				'link_id'			=> $row['page_id'],
 				'link_name'			=> $row['page_title'] ? $row['page_title'] : 'No title', // FIXME lan
 				'link_url'			=> e107::getUrl()->create('page/view', $row, array('allow' => 'page_sef,page_title,page_id,chapter_sef,book_sef')),
@@ -282,33 +380,31 @@ class page_sitelink // include plugin-folder in the name.
 				'link_active'		=> (isset($options['cpage']) && $row['page_id'] == $options['cpage']),
 				'link_identifier'	=> 'page-nav-'.intval($row['page_id']) // used for css id. 
 	
-			);
+			);*/
 		}
 
 		$filter = "chapter_visibility IN (".USERCLASS_LIST.") " ;
 		
-		if(vartrue($options['chapter']))
+		if(!empty($options['chapter']))
 		{
-			//$filter = "chapter_id > ".intval($options['chapter']);
-			
 			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['chapter']).' AND chapter_visibility IN ('.USERCLASS_LIST.')' );
 			$outArray 	= array();
-			if(!$title) return e107::getNav()->compile($_pdata, $outArray, $options['chapter']);	
+
+			if(!$title)
+			{
+				return e107::getNav()->compile($_pdata, $outArray, $options['chapter']);
+			}
+
 			return array('title' => $title, 'body' => e107::getNav()->compile($_pdata, $outArray, $options['chapter']));
 		}
 
 		$parent = 0;
 		$title = false;
-		if(vartrue($options['book']))
+
+		if(!empty($options['book']))
 		{
-			
-			// XXX discuss the idea here
-			//$filter = "chapter_id > ".intval($options['book']);
 			$filter = "chapter_parent = ".intval($options['book']);
-			$parent = intval($options['book']);
-			$title = $sql->retrieve('page_chapters', 'chapter_name', 'chapter_id='.intval($options['book']));
-			
-		//	print_a('parent='.$parent);
+			$title = $this->getName($options['book']); // set the caption as main book title.
 		}
 
 		
@@ -317,17 +413,15 @@ class page_sitelink // include plugin-folder in the name.
 		{
 			$row['book_sef'] = $this->getSef($row['chapter_parent']);
 			
-			if(!vartrue($row['chapter_sef']))
+			if(empty($row['chapter_sef']))
 			{
 				$row['chapter_sef'] = '--sef-not-assigned--';		
 			}
-			
+
 			$arr[] = array(
 				'link_id'			=> $row['chapter_id'],
 				'link_name'			=> $row['chapter_name'],
 				'link_url'			=> ($row['chapter_parent'] == 0) ? e107::getUrl()->create('page/book/index', $row) : e107::getUrl()->create('page/chapter/index', $row), // ,'page.php?bk='.$row['chapter_id'] : 'page.php?ch='.$row['chapter_id'], 
-			//	'link_url'			=> vartrue($row['chapter_sef'],'#'),
-				
 				'link_description'	=> '',
 				'link_button'		=> $row['chapter_icon'],
 				'link_category'		=> '',
@@ -335,16 +429,21 @@ class page_sitelink // include plugin-folder in the name.
 				'link_parent'		=> $row['chapter_parent'],
 				'link_open'			=> '',
 				'link_class'		=> 0, 
-				'link_sub'			=> (!vartrue($options['book']) && !vartrue($options['auto'])) ? varset($sublinks[$row['chapter_id']]) : '', //XXX always test with docs template in bootstrap before changing. 
+				'link_sub'			=> ((empty($options['book']) || !empty($options['pages'])) && empty($options['auto'])) ? varset($sublinks[$row['chapter_id']]) : false, //XXX always test with docs template in bootstrap before changing.
 				'link_active'		=> $row['chapter_parent'] == 0 ? isset($options['cbook']) && $options['cbook'] == $row['chapter_id'] : isset($options['cchapter']) && $options['cchapter'] == $row['chapter_id'],
 				'link_identifier'	=> 'page-nav-'.intval($row['chapter_id']) // used for css id. 
 			);	
 			
 		}
+/*
+		if(!empty($options['book']))
+		{
+			e107::getDebug()->dump($arr);
+		}*/
 
-		
 		$outArray 	= array();
 		$parent = vartrue($options['book']) ? intval($options['book']) : 0;
+
 		$ret =  e107::getNav()->compile($arr, $outArray, $parent);		
 
 		if(!$title) return $ret;

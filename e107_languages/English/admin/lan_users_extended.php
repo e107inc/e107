@@ -88,7 +88,7 @@ define("EXTLAN_74", "is a reserved field name and can not be used.");
 define("EXTLAN_75", "Error adding field to database.");
 define("EXTLAN_76", "Invalid characters in field name - only A-Z, a-z, 0-9, allowed.");
 define("EXTLAN_77", "Category not deleted - must delete fields in category first: ");
-define("EXTLAN_78", "Cannot find file --FILE-- needed to create data table");
+define("EXTLAN_78", "Cannot find file [x] needed to create data table");
 
 define("EXTLAN_79", "Label");
 define("EXTLAN_80", "Validation error - aborted.");

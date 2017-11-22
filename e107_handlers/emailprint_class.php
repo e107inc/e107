@@ -21,7 +21,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_email.php");
 
 class emailprint 
 {
-	function render_emailprint($mode, $id, $look = 0,$parm=array()) 
+	static function render_emailprint($mode, $id, $look = 0,$parm=array())
 	{
 		// $look = 0  --->display all icons
 		// $look = 1  --->display email icon only

@@ -580,7 +580,7 @@ class e_form
 	 * @param string $name : A unique name
 	 * @param array $array
 	 * @param array $options : default, interval, pause, wrap
-	 * @return string
+	 * @return string|array
 	 * @example
 	 * $array = array(
 	 *        'slide1' => array('caption' => 'Slide 1', 'text' => 'first slide content' ),
@@ -1041,7 +1041,7 @@ class e_form
 		$count = 0;
 		if (vartrue($pref['avatar_upload']) && FILE_UPLOADS && vartrue($options['upload']))
 		{
-				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('--WIDTH--','--HEIGHT--'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
+				$diz = LAN_USET_32.($pref['im_width'] || $pref['im_height'] ? "\n".str_replace(array('[x]-','[y]'), array($pref['im_width'], $pref['im_height']), LAN_USER_86) : "");
 	
 				$text .= "<div style='margin-bottom:10px'>".LAN_USET_26."
 				<input  class='tbox' name='file_userfile[avatar]' type='file' size='47' title=\"{$diz}\" />
@@ -1744,7 +1744,15 @@ class e_form
 	 */
 	function file($name, $options = array())
 	{
+		if(e_ADMIN_AREA && empty($options['class']))
+		{
+			$options = array('class'=>'tbox well file');
+		}
+
 		$options = $this->format_options('file', $name, $options);
+
+
+
 		//never allow id in format name-value for text fields
 		return "<input type='file' name='{$name}'".$this->get_attributes($options, $name)." />";
 	}
@@ -1869,7 +1877,7 @@ class e_form
 	/**
 	 * Render a bootStrap ProgressBar. 
 	 * @param string $name
-	 * @param number $value
+	 * @param number|string $value
 	 * @param array $options
 	 * @example  Use 
 	 */
@@ -1891,11 +1899,31 @@ class e_form
 		
 		$striped = (vartrue($options['btn-label'])) ? ' progress-striped active' : '';	
 
-		$percVal = number_format($value,0).'%';
+		if(strpos($value,'/')!==false)
+		{
+			$label = $value;
+			list($score,$denom) = explode('/',$value);
+
+			$multiplier = 100 / (int) $denom;
+
+			$value = (int) $score * (int) $multiplier;
+			$percVal = number_format($value,0).'%';
+		}
+		else
+		{
+			$percVal = number_format($value,0).'%';
+			$label = $percVal;
+		}
+
+		if(!empty($options['label']))
+		{
+			$label = $options['label'];
+		}
+
 
 		$text =	"<div class='progress ".$class."{$striped}' >
-   		 	<div id='".$target."' class='progress-bar bar' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
-   		$text .= $percVal;
+   		 	<div id='".$target."' class='progress-bar bar ".$class."' role='progressbar' aria-valuenow='".intval($value)."' aria-valuemin='0' aria-valuemax='100' style='min-width: 2em;width: ".$percVal."'>";
+   		$text .= $label;
    		 	$text .= "</div>
     	</div>";
 		
@@ -4713,8 +4741,12 @@ class e_form
 						$value = $tmp[0];
 						unset($tmp);	
 					}		
-						
-					
+
+					if(empty($parms['thumb_aw']) && !empty($parms['thumb']) && strpos($parms['thumb'],'x')!==false)
+					{
+						list($parms['thumb_aw'],$parms['thumb_ah']) = explode('x',$parms['thumb']);
+					}
+
 					$vparm = array('thumb'=>'tag','w'=> vartrue($parms['thumb_aw'],'80'));
 					
 					if($video = e107::getParser()->toVideo($value,$vparm))
@@ -5323,6 +5355,7 @@ class e_form
 			break; 
 
 			case 'text':
+			case 'progressbar':
 
 				$maxlength = vartrue($parms['maxlength'], 255);
 				unset($parms['maxlength']);
@@ -5496,7 +5529,21 @@ class e_form
 				$where = vartrue($parms['area'], 'front'); //default is 'front'
 				$filter = varset($parms['filter']);
 				$merge = vartrue($parms['merge']) ? true : false;
+
+
+				if($tmp = e107::getTemplateInfo($location,$ilocation, null,true,$merge)) // read xxxx_INFO array from template file.
+				{
+					$opt = array();
+					foreach($tmp as $k=>$inf)
+					{
+						$opt[$k] = $inf['title'];
+					}
+
+					return vartrue($parms['pre'],'').$this->select($key,$opt,$value,$parms).vartrue($parms['post'],'');
+				}
+
 				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, true);
+
 				if(varset($parms['default']) && !isset($layouts[0]['default']))
 				{
 					$layouts[0] = array('default' => $parms['default']) + $layouts[0];

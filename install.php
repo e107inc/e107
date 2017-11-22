@@ -21,12 +21,17 @@ define('MAKE_INSTALL_LOG', true);
 /* Default Options and Paths for Installer */
 $MySQLprefix	     = 'e107_';
 $HANDLERS_DIRECTORY  = "e107_handlers/"; // needed for e107 class init
+
 header('Content-type: text/html; charset=utf-8');
 
 define("e107_INIT", TRUE);
+define("DEFAULT_INSTALL_THEME", 'voux');
+
 require_once("e107_admin/ver.php");
 
 define("e_VERSION", $e107info['e107_version']);
+
+
 
 /*define("e_UC_PUBLIC", 0);
 define("e_UC_MAINADMIN", 250);
@@ -1140,7 +1145,7 @@ class e_install
 					$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
 
 
-					$selected = ($val == 'landingzero') ? " checked" : "";
+					$selected = ($val === DEFAULT_INSTALL_THEME) ? " checked" : "";
 
 					$output .= "
 									<div class='col-md-6 theme-cell' >
@@ -1270,6 +1275,14 @@ class e_install
 \$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
 \$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
 
+
+// -- Optional --
+// define('e_HTTP_STATIC', 'https://static.mydomain.com/');  // Use a static subdomain for js/css/images etc. 
+// define('e_MOD_REWRITE_STATIC', true); // Rewrite static image urls. 
+// define('e_LOG_CRITICAL', true); // log critical errors but do not display them to user. 
+// define('e_GIT', 'path-to-git');  // Path to GIT for developers
+
+
 ";
 /*
 if($this->pdo == true)
@@ -1386,7 +1399,7 @@ if($this->pdo == true)
 
 		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER']);;
 		$base = base64_encode(http_build_query($data, null, '&'));
-		$url = "http://e107.org/e-install/".$base;
+		$url = "https://e107.org/e-install/".$base;
 		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
 
 	}

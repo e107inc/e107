@@ -477,6 +477,7 @@ $i = $thread->page;
 	$mes = e107::getMessage();
 //		$sc->setVars($thread->threadInfo);
 //--->$forend = $tp->simpleParse($FORUMEND, $tVars);
+$sc->wrapper('forum_viewtopic/end'); 
 $forend = $tp->parseTemplate($FORUMEND, true, $sc);
 
 

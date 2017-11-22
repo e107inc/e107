@@ -7,18 +7,46 @@ e107 is a free (open-source) content management system which allows you to easil
 
 ### Requirements
 
-* PHP v5.4 or higher
-* MySQL 4.x or higher 
+   #### Minimum
 
-### Installation
+   * A Web-Server (Apache or Microsoft IIS) running PHP v5.4 or higher and MySQL 4.x or 5.x.
+   * FTP access to your webserver and an FTP program such as Filezilla
+   * Username/Password to your MySQL Database
 
+   #### Recommended
+
+   * A Linux based Webserver running Apache 2.x, PHP 7.x and MySQL 5.x (LAMP)
+   * A registered Domain Name
+   * Access to a Server Control Panel (such as cPanel)
+
+
+### Standard Installation 
+
+* Unzip/Extract the compressed file onto your server. 
 * Point your browser to the *http://localhost/YOUR FOLDER/install.php* (depending on your webserver setup)
 * Follow the installation wizard
+
+
+
+### Git Installation (developer version)
+
+* Run the following commands ( where 'youraccount' is the folder above your public_html folder and xxx:xxx is the default owner for your files - this can be found using FileZilla and FTP)
+```
+     cd youraccount   
+     git clone https://github.com/e107inc/e107.git public_html	
+     chown -R xxx:xxx public_html 
+```    
+* Point your browser to the *http://localhost/YOUR FOLDER/install.php* (depending on your webserver setup)
+* Follow the installation wizard
+
+
 
 ### Reporting Bugs
 
 Be sure you are using the most recent version prior to reporting an issue. 
 You may report any bugs or feature requests on GitHub (https://github.com/e107inc/e107/issues)
+
+
 
 ### Pull-Requests
 
@@ -34,8 +62,12 @@ If you like e107 and wish to help it to improve - please consider making a small
 * Bitcoin address: 18C7W2YvkzSjvPoW1y46PjkTdCr9UzC3F7
 * Paypal: donate (at) e107.org
 
+
+
 ### Support
 * http://e107help.org 
+
+
 
 ### License
 

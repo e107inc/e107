@@ -86,7 +86,7 @@ define("RSS_LAN_ADMIN_27", "Uncheck All");
 //define("RSS_LAN_ADMIN_28", "Nothing changed - not saved");//LAN_NOCHANGE_NOTSAVED
 
 define("RSS_LAN_ADMIN_31", "rss entries limits updated");
-define("RSS_LAN_ADMIN_32", "");
+
 define("RSS_LAN_ADMIN_33", "Show image in News Feed?");
 
 define("RSS_LAN_0", "RSS");

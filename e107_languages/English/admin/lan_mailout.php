@@ -52,7 +52,7 @@ define("LAN_MAILOUT_36", "Delete Bounced Mails after checking");
 define("LAN_MAILOUT_37", "Proceed");
 define("LAN_MAILOUT_38", "Cancel");
 define("LAN_MAILOUT_39", "Emailing");
-define("LAN_MAILOUT_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
+// define("LAN_MAILOUT_40", "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in");
 define("LAN_MAILOUT_41", "before sending mail from this page.");
 //define("LAN_MAILOUT_42", "Warning");//NOT_USED
 define("LAN_MAILOUT_43", "Username");
@@ -178,15 +178,15 @@ define("LAN_MAILOUT_162", "IMPORTANT! You need to make this file executable");
 define("LAN_MAILOUT_163", "Edit/Send Mail");
 define("LAN_MAILOUT_164", "Email information not found");
 define("LAN_MAILOUT_165", "Confirm delete the following stored email, including any recipient records");
-define("LAN_MAILOUT_166", "General error deleting mail ref: --ID--");
-define("LAN_MAILOUT_167", "Error deleting mail content ref: --ID--");
-define("LAN_MAILOUT_168", "Mail content deleted ref: --ID--");
-define("LAN_MAILOUT_169", "Error deleting mail recipients ref: --ID--");
-define("LAN_MAILOUT_170", "Deleted --NUM-- recipients for mail ref: --ID--");
+define("LAN_MAILOUT_166", "General error deleting mail ref: [x]");
+define("LAN_MAILOUT_167", "Error deleting mail content ref: [x]");
+define("LAN_MAILOUT_168", "Mail content deleted ref: [x]");
+define("LAN_MAILOUT_169", "Error deleting mail recipients ref: [x]");
+define("LAN_MAILOUT_170", "Deleted [y] recipients for mail ref: [x]");
 define("LAN_MAILOUT_171", "Confirm email delete");
 define("LAN_MAILOUT_172", "Mail Type/Status");
 define("LAN_MAILOUT_173", "Recipients");
-define("LAN_MAILOUT_174", "Security check fail: --ID-- --CHECK--");
+define("LAN_MAILOUT_174", "Security check fail: [x] [z]");
 define("LAN_MAILOUT_175", "Before");
 define("LAN_MAILOUT_176", "Equal to");
 define("LAN_MAILOUT_177", "After");
@@ -198,9 +198,9 @@ define("LAN_MAILOUT_182", "Tidy database tables");
 define("LAN_MAILOUT_183", "Error tidying database");
 define("LAN_MAILOUT_184", "Database tidied");
 define("LAN_MAILOUT_185", "Emails added to send queue");
-define("LAN_MAILOUT_186", "General error putting mail ref: --ID-- on hold");
-define("LAN_MAILOUT_187", "Email --ID-- put on hold");
-define("LAN_MAILOUT_188", "General error sending mail ref: --ID--");
+define("LAN_MAILOUT_186", "General error putting mail ref: [x] on hold");
+define("LAN_MAILOUT_187", "Email [x] put on hold");
+define("LAN_MAILOUT_188", "General error sending mail ref: [x]");
 define("LAN_MAILOUT_189", "Test address");
 
 // Admin menu text
@@ -209,8 +209,8 @@ define("LAN_MAILOUT_191", "Saved emails");
 define("LAN_MAILOUT_192", "Completed Mailshots");
 define("LAN_MAILOUT_193", "Pending Mailshots");
 define("LAN_MAILOUT_194", "Held Mailshots");
-define("LAN_MAILOUT_195", "");
-define("LAN_MAILOUT_196", "");
+// define("LAN_MAILOUT_195", "");
+// define("LAN_MAILOUT_196", "");
 
 // Block of error messages kept together
 define("LAN_MAILOUT_200", "No subject specified");
@@ -219,11 +219,10 @@ define("LAN_MAILOUT_202", "No text in email body");
 define("LAN_MAILOUT_203", "No sender name specified");
 define("LAN_MAILOUT_204", "No sender email address specified");
 define("LAN_MAILOUT_205", "Email send format error");
-define("LAN_MAILOUT_206", "Invalid mail ID (--ID--) specified");
+define("LAN_MAILOUT_206", "Invalid mail ID ([x]) specified");
 define("LAN_MAILOUT_207", "Template load error");
 define("LAN_MAILOUT_208", "Template conversion error");
-define("LAN_MAILOUT_209", "");
-define("LAN_MAILOUT_210", "");
+
 
 // Block of status messages kept together
 define("LAN_MAILOUT_211", "Sent");
@@ -237,24 +236,24 @@ define("LAN_MAILOUT_218", "Cancelled");
 define("LAN_MAILOUT_219", "Partial");
 
 // General messages continued
-define("LAN_MAILOUT_220", "Email ID --ID-- cancelled");
-define("LAN_MAILOUT_221", "Error cancelling email with ID --ID--");
+define("LAN_MAILOUT_220", "Email ID [x] cancelled");
+define("LAN_MAILOUT_221", "Error cancelling email with ID [x]");
 define("LAN_MAILOUT_222", "Default email format");
 define("LAN_MAILOUT_223", "(Used for some system-generated emails)");
 define("LAN_MAILOUT_224", "Inc. Images");
 define("LAN_MAILOUT_225", "Include images in email");
-define("LAN_MAILOUT_226", "--COUNT-- orphaned recipient record(s) removed");
-define("LAN_MAILOUT_227", "Deleted --COUNT-- records from --TABLE--");
-define("LAN_MAILOUT_228", "--COUNT-- anomalies in mail_content corrected; records: --RECORDS--");
-define("LAN_MAILOUT_229", "Email ID --ID-- put on hold");
-define("LAN_MAILOUT_230", "Error holding email with ID --ID--");
+define("LAN_MAILOUT_226", "[x] orphaned recipient record(s) removed");
+define("LAN_MAILOUT_227", "Deleted [x] records from [y]");
+define("LAN_MAILOUT_228", "[x] anomalies in mail_content corrected; records: [y]");
+define("LAN_MAILOUT_229", "Email ID [x] put on hold");
+define("LAN_MAILOUT_230", "Error holding email with ID [x]");
 define("LAN_MAILOUT_231", "Bounced emails - Processing method");
 define("LAN_MAILOUT_232", "None");
 define("LAN_MAILOUT_233", "Auto-process script");
 define("LAN_MAILOUT_234", "Mail account");
 define("LAN_MAILOUT_235", "(Your server must forward or 'pipe' from the email address above to the script path above.)");
 define("LAN_MAILOUT_236", "Last Bounce Processed");
-define("LAN_MAILOUT_237", "Summary counters updated on --COUNT-- emails");
+define("LAN_MAILOUT_237", "Summary counters updated on [x] emails");
 define("LAN_MAILOUT_238", "Earliest time to send");
 define("LAN_MAILOUT_239", "Latest time to send");
 define("LAN_MAILOUT_240", "Notify me when run complete");
@@ -297,4 +296,3 @@ define("LAN_MAILOUT_271", "Authentication failed with username ([x]) and passwor
 
 
 
-?>

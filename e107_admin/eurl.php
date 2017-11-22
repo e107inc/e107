@@ -456,8 +456,6 @@ class eurl_admin_ui extends e_admin_controller_ui
 		}
 
 
-
-
 		if(isset($_POST['update']))
 		{
 			$config = is_array($_POST['eurl_config']) ? e107::getParser()->post_toForm($_POST['eurl_config']) : '';
@@ -480,10 +478,24 @@ class eurl_admin_ui extends e_admin_controller_ui
 				->set('url_locations', $locations)
 				->save();
 
+			if(!empty($_POST['eurl_config']['gallery'])) // disabled, so disable e_url on index also.
+			{
+				$val = ($_POST['eurl_config']['gallery'] === 'plugin') ? 0 : 'gallery';
+				e107::getConfig()->setPref('e_url_list/gallery', $val)->save(false,true,false);
+			}
 
+			if(!empty($_POST['eurl_config']['news'])) // disabled, so disable e_url on index also.
+			{
+				$val = ($_POST['eurl_config']['news'] === 'core') ? 0 : 'news';
+				e107::getConfig()->setPref('e_url_list/news', $val)->save(false,true,false);
+			}
+
+		//	var_dump($_POST['eurl_config']);
 
 				
 			eRouter::clearCache();
+			e107::getCache()->clearAll('content'); // clear content - it may be using old url scheme.
+
 		}
 	}
 	

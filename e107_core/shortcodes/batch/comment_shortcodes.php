@@ -196,7 +196,7 @@ class comment_shortcodes extends e_shortcode
 
 		// TODO put into a <ul> drop-down format.
 
-		e107::getDebug()->log($this->var);
+	//	e107::getDebug()->log($this->var);
 
 		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."'  data-type='".$this->var['comment_type']."' data-itemid='".$this->var['comment_item_id']."' class='e-comment-delete btn btn-default btn-mini btn-xs'>".LAN_DELETE."</a> ";
 

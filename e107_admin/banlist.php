@@ -1011,7 +1011,7 @@ switch ($action)
 
 		if (count($banLogEntries))
 		{
-			$text .= "&nbsp;&nbsp;&nbsp;".str_replace('--NUM--', $num_entry, BANLAN_87);
+			$text .= "&nbsp;&nbsp;&nbsp;".str_replace('[y]', $num_entry, BANLAN_87);
 		}
 		
 		echo $text; 
@@ -1037,7 +1037,7 @@ switch ($action)
 		{
 			$result = $sql->db_Delete('banlist',"`banlist_bantype` < ".eIPHandler::BAN_TYPE_WHITELIST." AND `banlist_banexpires` > 0 AND `banlist_banexpires` < ".time());
 			banlist_adminlog('12', $result);
-			$mes->addSuccess(str_replace('--NUM--', $result, BANLAN_48));
+			$mes->addSuccess(str_replace('[y]', $result, BANLAN_48));
 		}
 
 		list($ban_access_guest, $ban_access_member) = explode(',', varset($pref['ban_max_online_access'], '100,200'));
@@ -1657,8 +1657,8 @@ function process_csv($filename, $override_imports, $override_expiry, $separator 
 	if ($override_imports)
 		$sql->db_Delete('banlist', "`banlist_bantype` = ".eIPHandler::BAN_TYPE_TEMPORARY);
 	@unlink($filename);		// Delete file once done
-	$mes->addSuccess(str_replace('--NUM--', $line_num, BANLAN_51).$filename);
-	return str_replace('--NUM--', $line_num, BANLAN_51).$filename;
+	$mes->addSuccess(str_replace('[y]', $line_num, BANLAN_51).$filename);
+	return str_replace('[y]', $line_num, BANLAN_51).$filename;
 }
 
 

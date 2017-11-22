@@ -285,6 +285,8 @@ class admin_start
 			return null;
 		}
 
+		return null;
+
 
 		$checked = e107::getSession()->get('core-update-checked');
 

@@ -621,7 +621,7 @@ e107::js('footer-inline', js());
 						}
 						else
 						{
-							$ret .= str_replace('--FILE--',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
+							$ret .= str_replace('[x]',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
 						}
 					}
 				}
@@ -2373,7 +2373,7 @@ class users_ext
 				}
 					else
 					{
-						$ret .= str_replace('--FILE--',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
+						$ret .= str_replace('[x]',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
 					}
 				}
 			}

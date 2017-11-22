@@ -63,9 +63,12 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 						$draggablePanels.css('background-color', 'transparent');
 
 						e107.callbacks.flexPanelSavePanelOrder();
+                                                e107.callbacks.flexPanelEmptyPanels();
 					}
 				});
 			});
+
+                        e107.callbacks.flexPanelEmptyPanels();
 		}
 	};
 
@@ -98,6 +101,25 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 		});
 		
 		$.post(window.location.href, {'core-flexpanel-order': NewOrder});
+	};
+
+	e107.callbacks.flexPanelEmptyPanels = function ()
+	{
+		var selector = e107.settings.flexPanel.selector;
+
+		$(selector).each(function ()
+		{
+			var $this = $(this);
+
+			if($this.find('div').length > 0)
+			{
+				$this.removeClass('empty');
+			}
+			else
+			{
+				$this.addClass('empty');
+			}
+		});
 	};
 
 })(jQuery);

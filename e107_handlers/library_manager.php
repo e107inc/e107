@@ -611,6 +611,40 @@ class core_library
 			'path'              => '4.7.0',
 		);
 
+
+			// Font-Awesome (local).
+		$libraries['animate.css'] = array(
+			'name'              => 'Animate.css (local)',
+			'vendor_url'        => 'https://daneden.github.io/animate.css/',
+			'version_arguments' => array(
+				'file'    => 'animate.min.css',
+				'pattern' => '/(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'css' => array(
+					'animate.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+		/*	'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'css' => array(
+							'css/font-awesome.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),*/
+			// Override library path.
+			'library_path'      => '{e_WEB}lib/animate.css',
+		//	'path'              => '3.5.2',
+		);
+
 		return $libraries;
 	}
 
@@ -957,7 +991,8 @@ class e_library_manager
 		if(!isset($loaded[$name]))
 		{
 			$cache = e107::getCache();
-			$cacheID = 'Library_' . e107::getParser()->filter($name, 'file');
+			$cache_context = (defset('e_ADMIN_AREA', false) == true) ? 'AdminArea' : 'UserArea';
+			$cacheID = 'Library_' . $cache_context . '_' . e107::getParser()->filter($name, 'file');
 			$cached = $cache->retrieve($cacheID, false, true, true);
 
 			if($cached)
@@ -1288,7 +1323,7 @@ class e_library_manager
 
 		$library['callbacks'] += array(
 			'info'                  => array(),
-			'pre_detect'            => array(),
+			'pre_detect'            => array('preDetect'),
 			'post_detect'           => array(),
 			'pre_dependencies_load' => array(),
 			'pre_load'              => array('preLoad'),
@@ -1848,37 +1883,36 @@ class e_library_manager
 	}
 
 	/**
-	 * Alter library information before loading.
+	 * Alters library information before detecting.
 	 */
-	private function preLoad(&$library)
+	private function preDetect(&$library)
 	{
 		if(empty($library['machine_name']))
 		{
 			return;
 		}
 
+		// Prevent plugins/themes from altering libraries on Admin UI.
 		if(defset('e_ADMIN_AREA', false) == true)
 		{
 			$coreLibrary = new core_library();
 			$coreLibs = $coreLibrary->config();
 
-			switch($library['machine_name'])
-			{
-				// Force to use default (original) files on Admin UI.
-				case 'cdn.jquery.ui':
-				case 'jquery.ui':
-					$coreLib = $coreLibs[$library['machine_name']];
-					$library['files'] = $coreLib['files'];
-					$library['variants'] = $coreLib['variants'];
-					break;
-
-				case 'cdn.bootstrap':
-				case 'bootstrap':
-					$coreLib = $coreLibs[$library['machine_name']];
-					$library['files'] = $coreLib['files'];
-					$library['variants'] = $coreLib['variants'];
-					break;
+			if (isset($coreLibs[$library['machine_name']])) {
+				$coreLib = $coreLibs[$library['machine_name']];
+				$library = array_replace_recursive($coreLib, array_replace_recursive($library, $coreLib));
 			}
+		}
+	}
+
+	/**
+	 * Alters library information before loading.
+	 */
+	private function preLoad(&$library)
+	{
+		if(empty($library['machine_name']))
+		{
+			return;
 		}
 
 		$excluded = $this->getExcludedLibraries();

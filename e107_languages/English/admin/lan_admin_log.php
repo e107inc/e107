@@ -52,7 +52,7 @@ define("RL_LAN_053", "User Audit Log");
 define("RL_LAN_054", "Nothing to delete, or database error");
 // define("RL_LAN_055", "Cancel");
 //define("RL_LAN_056", "Nothing deleted");
-define("RL_LAN_057", " - events older than --OLD-- (--NUM-- entries) deleted");
+define("RL_LAN_057", " - events older than [x] ([y] entries) deleted");
 define("RL_LAN_058", "Priority Filter:");
 define("RL_LAN_059", "Caller Filter:");
 define("RL_LAN_060", "IP Address Filter:");

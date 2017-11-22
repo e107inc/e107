@@ -132,6 +132,11 @@ class e_plugin
 
 	public function getId()
 	{
+		if(empty($this->_plugdir))
+		{
+			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
+		}
+
 		if(isset($this->_ids[$this->_plugdir]))
 		{
 			return $this->_ids[$this->_plugdir];
@@ -155,6 +160,11 @@ class e_plugin
 	public function getInstallRequired()
 	{
 
+		if(empty($this->_plugdir))
+		{
+			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
+		}
+
 		if(isset($this->_data[$this->_plugdir]['@attributes']['installRequired']))
 		{
 			return ($this->_data[$this->_plugdir]['@attributes']['installRequired'] === 'true') ? true : false;
@@ -167,6 +177,10 @@ class e_plugin
 
 	public function getVersion()
 	{
+		if(empty($this->_plugdir))
+		{
+			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
+		}
 
 		if(isset($this->_data[$this->_plugdir]['@attributes']['version']))
 		{
@@ -288,6 +302,11 @@ class e_plugin
 	 */
 	public function isLegacy()
 	{
+		if(empty($this->_plugdir))
+		{
+			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
+		}
+
 		return $this->_data[$this->_plugdir]['legacy'];
 	}
 
@@ -336,8 +355,11 @@ class e_plugin
 
 		}
 
+
 		$detected = $this->getDetected();
 		$runUpdate = false;
+
+
 
 		foreach($detected as $path) // add a missing plugin to the database table.
 		{
@@ -356,6 +378,8 @@ class e_plugin
 				{
 					$this->_addons[$path] = !empty($row['plugin_addons']) ? explode(',',$row['plugin_addons']) : null;
 					$runUpdate = true;
+
+					e107::getDebug()->log("Inserting plugin data into table".print_a($row,true));
 
 					if($row['plugin_installflag'] == 1)
 					{
@@ -882,7 +906,8 @@ class e107plugin
 		'e_rss'         => "Give your plugin an rss feed.",
 		'e_upload'      => "Use data from your plugin in the user upload form.",
 		'e_user'        => "Have your plugin include data on the user-profile page.",
-		'e_library'     => "Include a third-party library"
+		'e_library'     => "Include a third-party library",
+		'e_parse'       => "Hook into e107's text/html parser"
 
 	);
 
@@ -1045,9 +1070,10 @@ class e107plugin
 		$mes 			= e107::getMessage();	
 		$needed 		= array();
 		$log 			= e107::getAdminLog();
-		
+
 		if(!$plugVersions = e107::getConfig('core')->get('plug_installed'))
 		{
+
 			return FALSE;
 		}
 
@@ -1056,16 +1082,17 @@ class e107plugin
 
 		$plg = e107::getPlug();
 
+
+
 		foreach($plugVersions as $path=>$version)
 		{
+
+			$data = $plg->load($path)->getMeta();
+
 			if($plg->isLegacy() === true)
 			{
 				continue;
 			}
-
-			$data = $plg->load($path)->getMeta();
-
-		//	$data = $xml->loadXMLfile($fullPath, true);
 
 			if(!isset($this->core_plugins[$path])) // check non-core plugins for sql file changes.
 			{
@@ -1087,24 +1114,26 @@ class e107plugin
 				
 				if($ret = $this->execute_function($path, 'upgrade', 'required', array($this, $curVal, $fileVal))) // Check {plugin}_setup.php and run a 'required' method, if true, then update is required. 
 				{
-					if($mode == 'boolean')
+					$mes->addDebug("Plugin Update(s) Required in ".$path."_seup.php [".$path."]");
+
+					if($mode === 'boolean')
 					{
-						$mes->addDebug("Plugin Update(s) Required in ".$path."_seup.php");
+
 						return TRUE;	
 					}
-				
+
 					$needed[$path] = $data;		
 				} 
 				
 				if(version_compare($curVal,$fileVal,"<")) // check pref version against file version.
 				{
-					
-					if($mode == 'boolean')
+					$mes->addDebug("Plugin Update(s) Required - different version [".$path."]");
+
+					if($mode === 'boolean')
 					{
-						$mes->addDebug("Plugin Update(s) Required - different version");
-						return TRUE;	
+						return TRUE;
 					}
-					
+
 				//	$mes->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
 					
 				//	$log->flushMessages();
@@ -1117,8 +1146,17 @@ class e107plugin
 		// Display debug and log to file. 
 		foreach($needed as $path=>$tmp)
 		{
-			$log->addDebug("Plugin: <strong>{$path}</strong> requires an update.");	
+			$log->addDebug("Plugin: <strong>{$path}</strong> requires an update.");
 		}	
+
+
+
+
+		if($mode === 'boolean')
+		{
+			return count($needed) ? true : FALSE;
+		}
+
 
 		return count($needed) ? $needed : FALSE;		
 	}
@@ -3433,10 +3471,14 @@ class e107plugin
 
 		$config = ($mode == 'core') ? e107::getConfig('core') : e107::getPlugConfig($mode);
 
+
+
 		foreach ($prefArray['pref'] as $tag)
 		{
 			$key = varset($tag['@attributes']['name']);
-			$value = vartrue($tag['@value']);
+			$value = varset($tag['@value']);
+
+		//	$this->log("&nbsp;   Pref:  ".$key." => ".$value);
 			
 			if(substr($value,0,5) == "e_UC_") // Convert Userclass constants. 
 			{

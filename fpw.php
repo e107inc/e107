@@ -380,8 +380,9 @@ if (!empty($_POST['pwsubmit']))
 	{
 		//$text = LAN_213;
 		//$ns->tablerender(LAN_214, "<div style='text-align:center'>".$text."</div>");
-		e107::getMessage()->addError(LAN_213); 
-		$ns->tablerender(LAN_214, e107::getMessage()->render()); 
+		//e107::getMessage()->addError(LAN_213); 
+		//$ns->tablerender(LAN_214, e107::getMessage()->render());
+		fpw_error(LAN_213);
 	}
 }
 

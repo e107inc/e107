@@ -970,6 +970,7 @@ if (!class_exists('e107table', false))
 		public function setUniqueId($id)
 		{
 			$this->uniqueId = $id;
+			return $this;
 		}
 
 
@@ -1367,7 +1368,11 @@ if(!defined("THEME_LAYOUT"))
 	}
 	*/
 
-	if(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
+	if(deftrue('e_ADMIN_AREA'))
+	{
+		define("THEME_STYLE", $pref['admincss']);
+	}
+	elseif(varset($pref['themecss']) && file_exists(THEME.$pref['themecss']))
 	{
 		define("THEME_STYLE", $pref['themecss']);
 	}
@@ -2063,7 +2068,12 @@ function session_set($name, $value, $expire='', $path = e_HTTP, $domain = '', $s
 		if(($domain == '' && !e_SUBDOMAIN) || (defined('MULTILANG_SUBDOMAIN') && MULTILANG_SUBDOMAIN === TRUE))
 		{
 			$domain = (e_DOMAIN != FALSE) ? ".".e_DOMAIN : "";
-		}	
+		}
+
+		if(defined('e_MULTISITE_MATCH'))
+		{
+			$path = '/';
+		}
 		
 		setcookie($name, $value, $expire, $path, $domain, $secure, true);
 		$_COOKIE[$name] = $value;
@@ -2605,7 +2615,14 @@ class e_http_header
 		echo $text;
 		
 	}			
-		
+
+	private function unsetHeader($header)
+	{
+		header_remove($header);
+	}
+
+
+
 	
 	function send()
 	{
@@ -2619,7 +2636,35 @@ class e_http_header
 		$this->setHeader("Cache-Control: max-age=0", false);
 		*/
 	//	$this->setHeader("Cache-Control: public", true);
-	
+
+/*
+		if(defined('e_HTTP_STATIC'))
+		{
+			unset($_COOKIE);
+
+			$siteurl = str_replace('https','http',SITEURL);
+			$static = str_replace('https','http', e_HTTP_STATIC);
+
+			if($siteurl === $static && deftrue('e_SUBDOMAIN'))
+			{
+				$accessControl = str_replace(e_SUBDOMAIN.'.', '', SITEURLBASE);
+
+				$this->unsetHeader("Cache-Control");
+			//	$this->unsetHeader("Content-Type");
+				$this->unsetHeader("Set-Cookie");
+				$this->unsetHeader("Pragma");
+				$this->unsetHeader("Expires");
+
+				$this->setHeader("Access-Control-Allow-Origin: ".$accessControl, true);
+				$this->setHeader("Cache-Control: public", true);
+			}
+			else
+			{
+				$this->setHeader("Access-Control-Allow-Origin: ".$static, true);
+			}
+		}
+*/
+
 	
 		$canCache = e107::canCache();
 		
@@ -2672,7 +2717,9 @@ class e_http_header
 		{
 			$this->setHeader('Vary: Accept');
 		}
-		
+
+
+
 		// should come after the Etag header
 		if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
 		{

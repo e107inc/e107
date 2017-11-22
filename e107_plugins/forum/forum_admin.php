@@ -141,7 +141,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		    'forum_sef'                 =>   array ( 'title' => LAN_SEFURL, 'type' => 'text', 'batch'=>true, 'inline'=>true, 'noedit'=>false, 'data' => 'str', 'width' => 'auto', 'help' => 'Leave blank to auto-generate it from the title above.', 'readParms' => '', 'writeParms' => 'sef=forum_name&size=xxlarge', 'class' => 'left', 'thclass' => 'left',  ),
             'forum_description'         =>   array ( 'title' => LAN_DESCRIPTION, 'type' => 'textarea', 'data' => 'str', 'width' => '30%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
 			'forum_parent'              =>   array ( 'title' => FORLAN_75, 'type' => 'dropdown', 'data' => 'int', 'width' => '10%', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'left', 'thclass' => 'left',  ),
-		    'forum_sub'                 =>   array ( 'title' => LAN_FORUM_1002, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
+		    'forum_sub'                 =>   array ( 'title' => LAN_FORUM_1002, 'type' => 'dropdown', 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => array(), 'writeParms' => array(), 'class' => 'center', 'thclass' => 'center',  ),
 		    'forum_moderators'          =>   array ( 'title' => LAN_FORUM_2003, 'type' => 'userclass', 'inline'=>true, 'data' => 'int', 'width' => 'auto', 'help' => '', 'readParms' => 'classlist=admin,main,classes', 'writeParms' => "classlist=admin,main,mods,classes", 'class' => 'left', 'thclass' => 'left',  ),
 		    'forum_threads'             =>   array ( 'title' => LAN_FORUM_1003, 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
 		    'forum_replies'             =>   array ( 'title' => LAN_FORUM_0003, 'type' => 'number', 'data' => 'int', 'noedit'=>true, 'width' => 'auto', 'help' => '', 'readParms' => '', 'writeParms' => '', 'class' => 'center', 'thclass' => 'center',  ),
@@ -288,6 +288,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 			$this->fields['forum_parent']['writeParms'] = $this->forumParents;
 			$this->fields['forum_sub']['writeParms']['optArray'] = $forumSubParents;
 			$this->fields['forum_sub']['writeParms']['default'] = 'blank';
+			
 		}
 
 
@@ -857,7 +858,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 
 					if(!empty($sub))
 					{
-						$level = 2;
+						$level = 3;
 					}
 
 				//	$ret['inlineParms'] = array('pre'=>'<img src="'.e_IMAGE_ABS.'generic/branchbottom.gif" class="level-'.$level.' icon" alt="" />');

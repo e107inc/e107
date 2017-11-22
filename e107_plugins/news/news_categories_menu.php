@@ -8,7 +8,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$cacheString = 'nq_news_categories_menu_'.md5(serialize($parm));
+$cacheString = 'nq_news_categories_menu_'.md5(serialize($parm).USERCLASS_LIST.e_LANGUAGE);
 $cached = e107::getCache()->retrieve($cacheString);
 if(false === $cached)
 {

@@ -93,6 +93,12 @@ class news_menu
 					$fields['caption']   = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
 				break;
 
+			case "news_archive":
+					$fields['caption']   = array('title'=> LAN_CAPTION, 'type'=>'text', 'multilan'=>true, 'writeParms'=>array('size'=>'xxlarge'));
+			//		$fields['badges']   = array('title'=> "Display Badges", 'type'=>'boolean');
+
+					break;
+
 		}
 
 		 return $fields;

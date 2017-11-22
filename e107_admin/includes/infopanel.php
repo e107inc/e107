@@ -16,7 +16,7 @@ if (!defined('e107_INIT'))
 }
 
 
-define('ADMINFEEDMORE', 'http://e107.org/blog');
+define('ADMINFEEDMORE', 'https://e107.org/blog');
 
 
 
@@ -29,13 +29,69 @@ class adminstyle_infopanel
 	
 	function __construct()
 	{
+
+		$coreUpdateCheck = '';
+		$addonUpdateCheck = '';
+
+
+		if( e107::getSession()->get('core-update-status') !== true)
+		{
+			$coreUpdateCheck = "
+				$('#e-admin-core-update').html('<i title=\"".LAN_CHECKING_FOR_UPDATES."\" class=\"fa fa-spinner fa-spin\"></i>');
+  		    	$.get('".e_ADMIN."admin.php?mode=core&type=update', function( data ) {
+ 		    	
+  		    	var res = $.parseJSON(data);
+		    
+  		    	if(res === true)
+  		    	{
+  		    	    $('#e-admin-core-update').html('<span class=\"text-info\"><i class=\"fa fa-database\"></i></span>');
+  		    	    
+  		    	     $('[data-toggle=\"popover\"]').popover('show');
+	                 $('.popover').on('click', function() 
+	                 {
+	                     $('[data-toggle=\"popover\"]').popover('hide');
+	           		});
+  		    	}
+  		    	else
+  		    	{
+  		    	    // Hide li element.
+  		    		$('#e-admin-core-update').parent().hide();
+  		    	}
+			   
+			});
+			
+			";
+
+		}
+
+		if( e107::getSession()->get('addons-update-checked') !== true)
+		{
+			$addonUpdateCheck = "
+			$('#e-admin-addons-update').load('".e_ADMIN."admin.php?mode=addons&type=update');
+			";
+
+		}
+
+
+
 		$code = "
 		jQuery(function($){
   			$('#e-adminfeed').load('".e_ADMIN."admin.php?mode=core&type=feed');
   		    $('#e-adminfeed-plugin').load('".e_ADMIN."admin.php?mode=addons&type=plugin');
   		    $('#e-adminfeed-theme').load('".e_ADMIN."admin.php?mode=addons&type=theme');
+  		    
+  		    ".$coreUpdateCheck."
+  		    ".$addonUpdateCheck."
+		
 		});
 		";
+
+
+
+
+
+
+
 		
 		e107::js('inline',$code,'jquery');
 		
