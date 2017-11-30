@@ -41,7 +41,7 @@ class download_search extends e_search // include plugin-folder in the name.
 			'table'			=> 'download AS d LEFT JOIN #download_category AS c ON d.download_category = c.download_category_id',
 
 			'advanced' 		=> array(
-								'cat'	=> array('type'	=> 'dropdown', 		'text' => LAN_SEARCH_55, 'list'=>$catList),
+								'cat'	=> array('type'	=> 'dropdown', 		'text' => LAN_SEARCH_63, 'list'=>$catList),
 								'date'	=> array('type'	=> 'date', 			'text' => LAN_DATE_POSTED),
 								'author'=> array('type'	=> 'author',		'text' => LAN_SEARCH_61)
 							),
@@ -69,7 +69,7 @@ class download_search extends e_search // include plugin-folder in the name.
 
 		$res = array();
 	
-		$datestamp = $tp -> toDate($row['download_datestamp'], "long");
+		$datestamp = $tp->toDate($row['download_datestamp'], "long");
 		
 		$res['link'] 		= e107::url('download', 'item', $row);
 		$res['pre_title'] 	= $tp->toHtml($row['download_category_name'],false,'TITLE_PLAIN')." | ";
@@ -90,7 +90,7 @@ class download_search extends e_search // include plugin-folder in the name.
 	 * Optional - Advanced Where
 	 * @param $parm - data returned from $_GET (ie. advanced fields included. in this case 'date' and 'author' )
 	 */
-	function where($parm='')
+	function where($parm=array())
 	{
 		$tp = e107::getParser();
 		
