@@ -30,6 +30,12 @@ class adminstyle_infopanel
 	function __construct()
 	{
 
+		if(!ADMIN)
+		{
+			return null;
+		}
+
+
 		$coreUpdateCheck = '';
 		$addonUpdateCheck = '';
 
