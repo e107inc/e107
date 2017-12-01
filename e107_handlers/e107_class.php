@@ -3990,6 +3990,11 @@ class e107
 
 		}
 
+		if($domain === 'localhost') // Fix for chrome.
+		{
+			$domain = false;
+		}
+
 		define("e_DOMAIN", $domain);
 		define("e_SUBDOMAIN", ($subdomain) ? $subdomain : false);
 		
