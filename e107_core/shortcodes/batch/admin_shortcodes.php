@@ -1964,7 +1964,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$active = '';
 		foreach ($array_functions as $key => $subitem)
 		{
-			if(!empty($subitem[3]) && !getperms($subitem[3]))
+
+			if(isset($subitem[3]) && $subitem[3] !== false && !getperms($subitem[3]))
 			{
 				continue;
 			}
@@ -2077,8 +2078,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		// ------------------------------------------------------------------
 
-	//	 print_a($menu_vars);
-
+		//	e107::getDebug()->log($menu_vars);
 
 
 		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, false, false);
