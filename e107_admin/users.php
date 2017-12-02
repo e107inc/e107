@@ -2379,7 +2379,12 @@ class users_admin_form_ui extends e_admin_form_ui
 //		$uid = $this->getController()->getModel()->get('user_id');
 		$perms = $this->getController()->getModel()->get('user_perms');
 
-		if($mode == 'read'  || (str_replace(".","",$perms) == '0'))
+		if($mode == 'filter' && getperms('3'))
+		{
+			return array(0=>LAN_NO, '1'=>LAN_YES);
+		}
+
+		if($mode == 'read'  || (str_replace(".","",$perms) == '0') || !getperms('3'))
 		{
 			return $this->renderValue('user_admin',$curval,$att);
 		}
@@ -2388,6 +2393,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			return $this->renderElement('user_admin',$curval,$att);
 		}
+
 
 
 	}
@@ -2443,10 +2449,9 @@ class users_admin_form_ui extends e_admin_form_ui
 		$perms = $this->getController()->getModel()->get('user_perms');
 		$uid = $this->getController()->getModel()->get('user_id');
 
-		if($mode == 'read' || (str_replace(".","",$perms) == '0' && $uid == USERID))
+		if($mode == 'read' || (str_replace(".","",$perms) == '0' && $uid == USERID) || !getperms('3'))
 		{
-
-			return e107::getUserPerms()->renderPerms($curval,$uid);		
+			return e107::getUserPerms()->renderPerms($curval,$uid);
 		}
 		if($mode == 'write')
 		{

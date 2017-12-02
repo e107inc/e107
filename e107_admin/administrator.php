@@ -156,7 +156,7 @@ function show_admins()
 						</td>
 						<td class='center'>
 		";
-		if($row['user_id'] != "1")
+		if($row['user_id'] != "1" && intval($row['user_id']) !== USERID)
 		{
     		$text .= "
 							".$frm->submit_image("edit_admin[{$row['user_id']}]", 'edit', 'edit', LAN_EDIT)."
