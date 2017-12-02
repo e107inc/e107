@@ -4562,7 +4562,11 @@ class e107plugin
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
 
-		e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName);
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$dbgArr = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+			e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName. print_a($dbgArr[1],true));
+		}
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');

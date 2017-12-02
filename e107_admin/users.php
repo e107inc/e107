@@ -15,6 +15,11 @@ if (!defined('e107_INIT'))
 	require_once("../class2.php");
 }
 
+if (!getperms('4|U0|U1|U2|U3'))
+{
+	e107::redirect('admin');
+	exit;
+}
 
 e107::coreLan('user');
 e107::coreLan('users', true);
@@ -52,7 +57,7 @@ class users_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
