@@ -1599,8 +1599,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			$items[] = array( 
 					'previewUrl'	=> 'fa fa-'.$val,
-					'saveValue'		=> $val.'.glyph',
-					'thumbUrl'		=> $val,
+					'saveValue'		=> 'fa-'.$val.'.glyph',
+					'thumbUrl'		=> 'fa-'.$val,
 					'title'			=> $val,
 					'slideCaption'	=> 'Font-Awesome 4',
 					'slideCategory'	=> 'font-awesome'
@@ -1617,6 +1617,7 @@ class media_admin_ui extends e_admin_ui
 			foreach($custom as $glyphConfig)
 			{
 
+
 				$tmp = e107::getMedia()->getGlyphs($glyphConfig,$glyphConfig['prefix']);
 
 				if(!empty($tmp))
@@ -1624,7 +1625,7 @@ class media_admin_ui extends e_admin_ui
 					foreach($tmp as $val)
 					{
 						$items[] = array(
-							'previewUrl'	=> $val,
+							'previewUrl'	=> $glyphConfig['class']." ".$val,
 							'saveValue'		=> $val.'.glyph',
 							'thumbUrl'		=> $val,
 							'title'			=> $val,
