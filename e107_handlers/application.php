@@ -4080,21 +4080,32 @@ class eResponse
 
 
 	/**
-	 * @param $name
-	 * @return $this
+	 * Removes a Meta tag by name/property.
+	 *
+	 * @param string $name
+	 *   'name' or 'property' for the meta tag we want to remove.
+	 *
+	 * @return eResponse $this
 	 */
 	public function removeMeta($name)
 	{
 		foreach($this->_meta as $k=>$v)
 		{
-			if($v['name'] === $name)
+			// Meta tags like: <meta content="..." name="description" />
+			if(isset($v['name']) && $v['name'] === $name)
+			{
+				unset($this->_meta[$k]);
+				continue;
+			}
+
+			// Meta tags like: <meta content="..." property="og:title" />
+			if(isset($v['property']) && $v['property'] === $name)
 			{
 				unset($this->_meta[$k]);
 			}
 		}
 
 		return $this;
-
 	}
 
 	
