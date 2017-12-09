@@ -3216,7 +3216,7 @@ class e107
 	 */
 	public static function themeLan($fname = '', $theme = null, $flat = false)
 	{
-		if(null === $theme) $theme = THEME.'/languages/';
+		if(null === $theme) $theme = THEME.'languages/';
 		else $theme = e_THEME.preg_replace('#[^\w/]#', '', $theme).'/languages/';
 		
 		$cstring  = 'themelan/'.$theme.$fname.($flat ? '_1' : '_0');
