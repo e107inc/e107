@@ -18,13 +18,6 @@ if(e_ADMIN_AREA !==true)
 
 	}
 
-	$ogImage = e107::pref('social','og_image', false);
-	if(!empty($ogImage))
-	{
-		e107::meta('og:image',e107::getParser()->thumbUrl($ogImage,'w=500',false,true));
-		unset($ogImage);
-	}
-
 	if(deftrue('XURL_TWITTER') && XURL_TWITTER !== '#')
 	{
 		$screenName = basename(XURL_TWITTER);
