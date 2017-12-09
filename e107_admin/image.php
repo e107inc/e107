@@ -2551,6 +2551,20 @@ class media_admin_ui extends e_admin_ui
 	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
 
+		if(!empty($deleted_data['media_url']))
+		{
+			$status = e107::getFile()->delete($deleted_data['media_url']);
+
+			$message = ($status !== false) ? LAN_UI_FILE_DELETED : LAN_UI_FILE_DELETED_FAILED;
+
+			$mes = e107::getParser()->lanVars($message,$deleted_data['media_url'], true);
+
+			$errType = ($status) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
+			e107::getMessage()->add($mes, $errType);
+
+		}
+
 	}
 
 	function getPath($mime)
