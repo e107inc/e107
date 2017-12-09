@@ -4307,7 +4307,7 @@ class eResponse
 	{
 		$attrData = '';
 
-		e107::getEvent()->trigger('system_meta_pre');
+		e107::getEvent()->trigger('system_meta_pre', $this->_meta);
 
 		foreach ($this->_meta as $attr)
 		{
