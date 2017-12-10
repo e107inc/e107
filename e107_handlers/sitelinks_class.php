@@ -1977,13 +1977,13 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_parent($parm='')
 	{
-		return intval($this->var['link_parent']);		
+		return intval($this->var['link_parent']);
 	}
 
 
 	function sc_link_identifier($parm='')
 	{
-		return $this->var['link_identifier'];	
+		return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
 	}
 
 	/**
