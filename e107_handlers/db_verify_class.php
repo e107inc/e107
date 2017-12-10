@@ -447,7 +447,8 @@ class db_verify
 				}				
 			}		
 		}
-	
+
+
 	}
 
 	/** 
@@ -926,29 +927,38 @@ class db_verify
 	function getIndex($data, $print = false)
 	{
 		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT|FOREIGN))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
 		preg_match_all($regex,$data,$m);
 		
 		$ret = array();
 		
-		if($print) var_dump($regex, $m);
+		if($print)
+		{
+			e107::getDebug()->log($m);
+		}
 		
-		// Standard Detection Method. 
+		// Standard Detection Method.
+
+		$fieldReplace = array("`"," ");
+
 		foreach($m[3] as $k=>$val)
 		{
 			if(!$val) continue;
 			$val = str_replace("`","",$val);
-			$ret[$val] = array(
+
+			$key = !empty($m[2][$k]) ? $m[2][$k] : $val;
+
+			$ret[$key] = array(
 				'type'		=> strtoupper($m[1][$k]),
-				'keyname'	=> (vartrue($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
-				'field'		=> str_replace("`","",$m[3][$k])
+				'keyname'	=> (!empty($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
+				'field'		=> str_replace($fieldReplace,"",$m[3][$k])
 			);
 		}
 		
 		//Alternate Index detection method. 
 		// eg.  `table_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 		
-		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT)\s?KEY\s?,/i";
+		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT|FOREIGN)\s?KEY\s?,/i";
 		preg_match_all($regex,$data,$m);
 		
 		foreach($m[1] as $k=>$val)
@@ -958,8 +968,13 @@ class db_verify
 		    $ret[$val] = array(
 				'type'		=> strtoupper($m[3][$k]),
 				'keyname'	=> $m[1][$k],
-				'field'		=> str_replace("`","",$m[1][$k])
+				'field'		=> str_replace($fieldReplace,"",$m[1][$k])
 			);	
+		}
+
+		if($print)
+		{
+			e107::getDebug()->log($ret);
 		}
 
 		return $ret;
