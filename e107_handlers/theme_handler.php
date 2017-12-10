@@ -725,28 +725,23 @@ class e_theme
 			unset($vars['stylesheets']);
 		}
 
-
 		$vars['glyphs'] = array();
 		if(!empty($vars['glyphicons']['glyph']))
 		{
-
 			foreach($vars['glyphicons']['glyph'] as $val)
 			{
 				$vars['glyphs'][] = array(
-						'name'      => $val['@attributes']['name'],
-						'pattern'   => $val['@attributes']['pattern'],
-						'path'      => $val['@attributes']['path'],
-						'class'     => $val['@attributes']['class'],
-						'prefix'    => $val['@attributes']['prefix'],
-						'tag'       => $val['@attributes']['tag'],
+					'name'    => isset($val['@attributes']['name']) ? $val['@attributes']['name'] : '',
+					'pattern' => isset($val['@attributes']['pattern']) ? $val['@attributes']['pattern'] : '',
+					'path'    => isset($val['@attributes']['path']) ? $val['@attributes']['path'] : '',
+					'class'   => isset($val['@attributes']['class']) ? $val['@attributes']['class'] : '',
+					'prefix'  => isset($val['@attributes']['prefix']) ? $val['@attributes']['prefix'] : '',
+					'tag'     => isset($val['@attributes']['tag']) ? $val['@attributes']['tag'] : '',
 				);
-
 			}
 
 			unset($vars['glyphicons']);
-
 		}
-
 
 		if($path == "landingzero" )
 		{
