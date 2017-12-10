@@ -738,7 +738,7 @@ class user_shortcodes extends e_shortcode
 			
 			$cat_name = true; //XXX TEMP Fix. 
 			
-			if($cat_name != FALSE && count($ueFieldList[$catnum]))
+			if($cat_name != FALSE && isset($ueFieldList[$catnum]) && count($ueFieldList[$catnum]))
 			{
 					
 				$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
