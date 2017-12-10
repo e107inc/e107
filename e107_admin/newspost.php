@@ -1271,7 +1271,7 @@ class news_admin_ui extends e_admin_ui
 								<tr>
 								<td>".LAN_NEWS_99."</td>
 								<td>
-									".$frm->select('subnews_attach_minsize', $imageSizes, $pref['subnews_attach_minsize'], null, LAN_NEWS_100)."
+									".$frm->select('subnews_attach_minsize', $imageSizes, varset($pref['subnews_attach_minsize'], null), null, LAN_NEWS_100)."
 								</td>
 							</tr>
 							<tr>
