@@ -57,14 +57,15 @@ class user_dashboard // plugin-folder + '_url'
 
 			$months = e107::getDate()->terms('month');
 
-			$data['labels'] = array($months[0], //"January",
- 						$months[1], //"February",
- 						$months[2], //"March",
- 						$months[3], //"April",
- 						$months[4], //"May",
- 						$months[5], //"June",
- 						$months[6]  //"July"
- 			);
+			foreach($months as $month)
+			{
+				// We need only the first 6 months for demo.
+				if (!empty($data['labels']) && count($data['labels']) >= 6)
+				{
+					continue;
+				}
+				$data['labels'][] = $month;
+			}
 
 			$data['datasets'][]	= array(
 							'fillColor'			=> "rgba(220,220,220,0.5)",
