@@ -94,7 +94,7 @@ $GALLERY_TEMPLATE['prettyphoto']['content'] = '
 				<div class="pp_content">
 					<div class="pp_loaderIcon"></div>
 					<div class="pp_fade">
-						<a href="#" class="pp_expand" title="'.LAN_GALLERY_FRONT_02.'">'.LAN_EXPAND.'</a>
+						<a href="#" class="pp_expand" title="'.LAN_EXPAND.'">'.LAN_EXPAND.'</a>
 						<div class="pp_hoverContainer">
 							<a class="pp_next" href="#">' . LAN_NEXT . '</a>
 							<a class="pp_previous" href="#">' . LAN_PREVIOUS . '</a>

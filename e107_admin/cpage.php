@@ -679,7 +679,7 @@ class page_admin_ui extends e_admin_ui
 
 					if(strpos($k,'menu_') === 0)
 					{
-						$this->fields[$k]['class'] = 'menu-field '.$this->fields[$k]['class'];
+						$this->fields[$k]['class'] = 'menu-field ' . varset($this->fields[$k]['class'], '');
 					}
 
 					$this->fields[$k]['width'] = '13%';
