@@ -107,7 +107,10 @@ class rater
 		$text = "";
 		foreach($tmp as $k)
 		{
-			$text .= $TEMPLATE[$k];	
+			if (!empty($TEMPLATE[$k]))
+			{
+				$text .= $TEMPLATE[$k];
+			}
 		}	
 		
 		return $text;

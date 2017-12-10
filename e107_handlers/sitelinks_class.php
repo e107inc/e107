@@ -1453,7 +1453,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$replace[9] = varset($e107_vars[$act]['image']);	
 			}
 
-			$replace[10] = count($e107_vars[$act]['sub']) > 20 ? 'oversized' : '';
+			$replace[10] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
 
 			if(!empty($e107_vars[$act]['link_data']))
 			{
@@ -1977,13 +1977,13 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_parent($parm='')
 	{
-		return intval($this->var['link_parent']);		
+		return intval($this->var['link_parent']);
 	}
 
 
 	function sc_link_identifier($parm='')
 	{
-		return $this->var['link_identifier'];	
+		return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
 	}
 
 	/**
