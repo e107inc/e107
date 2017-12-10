@@ -3553,7 +3553,7 @@ class e107
 	}
 
 
-	public static function minify($js,$options=null)
+	public static function minify($js,$options=array())
 	{
 		if(empty($js))
 		{
