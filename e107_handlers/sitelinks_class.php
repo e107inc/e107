@@ -1453,7 +1453,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$replace[9] = varset($e107_vars[$act]['image']);	
 			}
 
-			$replace[10] = count($e107_vars[$act]['sub']) > 20 ? 'oversized' : '';
+			$replace[10] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
 
 			if(!empty($e107_vars[$act]['link_data']))
 			{
