@@ -893,7 +893,7 @@ function get_image_mime($filename, $extended = false)
 		global $pref;
 		$admin_log = e107::getAdminLog();
 		// Work out maximum allowable file size
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 		{
 			$admin_log->
 				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "File size limits - user set: ".$pref['upload_maxfilesize']." Post_max_size: ".ini_get('post_max_size')." upload_max_size: ".ini_get('upload_max_size'), FALSE, FALSE);
@@ -909,7 +909,7 @@ function get_image_mime($filename, $extended = false)
 			if (varset($pref['upload_maxfilesize'], 0) > 0)
 				$max_upload_size = file_size_decode($pref['upload_maxfilesize'], $max_upload_size, 'lt');
 		}
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 			$admin_log->
 				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final max upload size: {$max_upload_size}", FALSE, FALSE);
 		return $max_upload_size;
