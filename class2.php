@@ -1851,6 +1851,8 @@ function init_session()
 	
 	// ----------------------------------------
 
+	// Set 'UTC' as default timezone to avoid PHP warnings.
+	date_default_timezone_set('UTC');
 
 	global $user_pref, $currentUser;
 
