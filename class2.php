@@ -221,6 +221,13 @@ if(!isset($ADMIN_DIRECTORY))
   exit();
 }
 
+// Upgrade Compatibility - Disable CL_WIDGETS before e107_class.php is loaded.
+$tmpPlugDir = realpath(dirname(__FILE__).'/'.$PLUGINS_DIRECTORY);
+if(is_dir($tmpPlugDir."/cl_widgets"))
+{
+	rename($tmpPlugDir."/cl_widgets",$tmpPlugDir."/cl_widgets__");
+}
+unset($tmpPlugDir);
 //
 // clever stuff that figures out where the paths are on the fly.. no more need for hard-coded e_HTTP :)
 //
@@ -230,6 +237,8 @@ $tmp = realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY);
 @require_once($tmp.'/core_functions.php');
 e107_require_once($tmp.'/e107_class.php');
 unset($tmp);
+
+
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
