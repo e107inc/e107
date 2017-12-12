@@ -3452,8 +3452,28 @@ class e107
 
 				$legacyUrl = preg_replace('/&?\$[\d]/i', "", $legacyUrl); // remove any left-over $x (including prefix of '&')
 
+
+				// Avoid duplicate query keys. eg. URL has ?id=x and $options['query']['id'] exists.
+				// @see forum/e_url.php - topic/redirect and forum/view_shortcodes.php sc_post_url()
+				list($legacyUrl,$tmp) = explode("?",$legacyUrl);
+
+				if(!empty($tmp))
+				{
+					parse_str($tmp,$qry);
+
+					foreach($qry as $k=>$v)
+					{
+						if(!isset($options['query'][$k])) // $options['query'] overrides any in the original URL.
+						{
+							$options['query'][$k] = $v;
+						}
+					}
+				}
+
 				// Append the query.
-				if (is_array($options['query']) && !empty($options['query'])) {
+				if (is_array($options['query']) && !empty($options['query']))
+				{
+
 					$legacyUrl .= (strpos($legacyUrl, '?') !== FALSE ? '&' : '?') . self::httpBuildQuery($options['query']);
 				}
 

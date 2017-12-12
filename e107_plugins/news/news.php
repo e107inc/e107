@@ -97,6 +97,11 @@ class news_front
 		{
 			$parms = array('layout'=>'main', 'display'=>$this->pref['nfp_amount']);
 
+			if(!empty($this->pref['nfp_layer']) && !empty($this->pref['nfp_layer_height']))
+			{
+				$parms['scroll'] = $this->pref['nfp_layer_height'];
+			}
+
 			$this->text .= e107::getMenu()->renderMenu('forum','newforumposts_menu', $parms, true);
 		}
 
