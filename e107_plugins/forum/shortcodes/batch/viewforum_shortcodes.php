@@ -57,6 +57,10 @@
 
 		function sc_threadpages()
 		{
+			if(empty($this->var['parms']))
+			{
+				return null;
+			}
 			return e107::getParser()->parseTemplate("{NEXTPREV={$this->var['parms']}}");
 		}
 
@@ -143,7 +147,7 @@
 
 		function sc_moderators()
 		{
-			return $this->var['modUser'];
+			return is_array($this->var['modUser']) ? implode(", ",$this->var['modUser']) : $this->var['modUser'];
 		}
 
 		function sc_browsers()
@@ -635,9 +639,15 @@
 		}
 
 
-		function sc_replies()
+		function sc_replies($parm='')
 		{
 			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+
+			if($parm === 'raw')
+			{
+				return $val;
+			}
+
 			return e107::getParser()->toBadge($val);
 		}
 
@@ -895,7 +905,14 @@
 		function sc_pages()
 		{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-			return fpages($this->var, $this->sc_replies());
+			$ret = fpages($this->var, $this->sc_replies('raw'));
+
+			if(!empty($ret))
+			{
+				return LAN_GOPAGE.": ".$ret;
+			}
+
+			return null;
 		}
 
 
