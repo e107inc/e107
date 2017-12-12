@@ -102,7 +102,8 @@ class admin_start
 			'lightbox'		=> 1.5,
 			'e107slider'	=> 0.1,
 			'forumthanks'   => 0.5,
-			'eclassifieds'   => 1.11
+			'eclassifieds'   => 1.11,
+			'jshelpers'     => '0.3b'
 
 	);
 

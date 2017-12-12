@@ -4667,16 +4667,15 @@ class e107
 
 	/**
 	 * Retrieve & cache host name
-	 *
+	 * @deprecated but needed by some old plugins/menus.
+	 * @todo Find old calls and replace with code within.
 	 * @param string $ip_address
 	 * @return string host name
-	 * FIXME - moved to ipHandler - check for calls elsewhere
 	 */
-	 /*
 	public function get_host_name($ip_address)
 	{
-
-	} */
+		return self::getIPHandler()->get_host_name($ip_address);
+	}
 
 	/**
 	 * MOVED TO eHelper::parseMemorySize()
