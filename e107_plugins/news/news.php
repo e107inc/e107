@@ -92,12 +92,12 @@ class news_front
 
 		$this->text .= $this->renderDefaultTemplate();
 
-		if(isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
+		// BC replacement for newforumposts_main
+		if(e107::isInstalled('newforumposts_main') && !empty($this->pref['nfp_display']))
 		{
-			ob_start();
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-			$this->text .= ob_get_contents();
-			ob_end_clean();
+			$parms = array('layout'=>'main', 'display'=>$this->pref['nfp_amount']);
+
+			$this->text .= e107::getMenu()->renderMenu('forum','newforumposts_menu', $parms, true);
 		}
 
 		$this->text .= $this->show_newsarchive();
@@ -105,6 +105,8 @@ class news_front
 		return null;
 
 	}
+
+
 
 
 	private function getRenderId()

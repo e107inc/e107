@@ -129,5 +129,11 @@ class pmbox_manager
 
 }
 
+// Backward compat. fix.
+function pm_getInfo($which = 'inbox')
+{
+	$pm = new pmbox_manager;
 
-?>
+	return $pm->pm_getInfo($which);
+
+}

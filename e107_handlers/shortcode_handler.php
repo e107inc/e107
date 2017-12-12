@@ -468,7 +468,7 @@ class e_parse_shortcode
 		}
 		else
 		{
-			e107::getDebug()->log("Couldn't Find Class '".$className."' in <b>".$path."</b>");
+			e107::getDebug()->log("File not available: <i>".$path."</i>. Couldn't Find Class '".$className."' in <b>".$path."</b>");
 		}
 
 	//	e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");
