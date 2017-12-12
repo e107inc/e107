@@ -77,6 +77,13 @@ function nextprev_shortcode($parm = '')
 
 		// Calculate
 		$total_items = intval($parm['total']);
+
+		if(empty($total_items))
+		{
+			e107::getDebug()->log("Next Prev has zero total items");
+			return null;
+		}
+
 		$check_render = true;
 
 		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))
@@ -156,6 +163,8 @@ function nextprev_shortcode($parm = '')
 			break;
 
 			default:
+				var_dump($total_items);
+
 				$total_pages = ceil($total_items/$perpage);
 				$last_page = ceil($total_pages*$perpage)-$perpage;
 				$current_page = ($current_start/$perpage) + 1;

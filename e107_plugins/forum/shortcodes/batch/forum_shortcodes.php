@@ -167,7 +167,7 @@ class forum_shortcodes extends e_shortcode
 	function sc_search()
 	{
 
-		 if(!$srchIcon = e107::getParser()->toGlyph('fa-search'))
+		if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
 		{
 			$srchIcon = LAN_SEARCH;
 		}
