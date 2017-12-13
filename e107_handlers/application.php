@@ -2853,7 +2853,10 @@ abstract class eUrlConfig
 	 * @param array $config
 	 * @return string route or false on error
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array()) { return false; }
+	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	{
+		return false;
+	}
 	
 	/**
 	 * Legacy callback, used called when config option legacy is not empty
