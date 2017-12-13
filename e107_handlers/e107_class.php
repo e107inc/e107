@@ -3168,7 +3168,7 @@ class e107
 			$fname = e_LANGUAGE."_front";
 		}
 
-		if($flat === true && is_dir(e_PLUGIN.$plugin."/languages/".e_LANGUAGE)) // support for alt_auth/languages/English/English_log.php etc.
+		if($flat === true) // support for alt_auth/languages/English/English_log.php etc.
 		{
 			$path = e_PLUGIN.$plugin.'/languages/'.e_LANGUAGE.'/'.$fname.'.php';	
 		} 
