@@ -3168,7 +3168,7 @@ class e107
 			$fname = e_LANGUAGE."_front";
 		}
 
-		if($flat === true && is_dir(e_PLUGIN.$plugin."/languages/".e_LANGUAGE)) // support for alt_auth/languages/English/English_log.php etc.
+		if($flat === true) // support for alt_auth/languages/English/English_log.php etc.
 		{
 			$path = e_PLUGIN.$plugin.'/languages/'.e_LANGUAGE.'/'.$fname.'.php';	
 		} 
@@ -3241,11 +3241,17 @@ class e107
 	/**
 	 * PREFERRED Generic Language File Loading Function for use by theme and plugin developers. 
 	 * Language-file equivalent to e107::js, e107::meta and e107::css
+	 *
 	 * FIXME disallow themes and plugins named 'core' and 'theme'
-	 * @param string $type : 'theme' or plugin name
-	 * @param $string $fname (optional): relative path to the theme or plugin language folder. (same as in the other functions)
-	 * when missing, [e_LANGUAGE]_front.php will be used, when true [e_LANGUAGE]_admin.php will be used
-	 * @param $options : Set to True for admin. 
+	 *
+	 * @param string $type
+	 *   'theme' or plugin name
+	 * @param string $fname
+	 *   (optional): relative path to the theme or plugin language folder. (same as in the other functions)
+	 *   when missing, [e_LANGUAGE]_front.php will be used, when true [e_LANGUAGE]_admin.php will be used
+	 * @param $options
+	 *   Set to True for admin.
+	 *
 	 * @example e107::lan('theme'); // Loads THEME."languages/English.php (if English is the current language)
 	 * @example e107::lan('gallery'); // Loads e_PLUGIN."gallery/languages/English_front.php (if English is the current language)
 	 * @example e107::lan('gallery', 'admin'); // Loads e_PLUGIN."gallery/languages/English/admin.php (if English is the current language)
@@ -3253,6 +3259,8 @@ class e107
 	 * @example e107::lan('gallery', 'admin/example'); // Loads e_PLUGIN."gallery/languages/English/admin/example.php (if English is the current language)
 	 * @example e107::lan('gallery', true); // Loads e_PLUGIN."gallery/languages/English_admin.php (if English is the current language)
 	 * @example e107::lan('gallery', "something", true); // Loads e_PLUGIN."gallery/languages/English_something.php (if English is the current language)
+	 * @example e107::lan('gallery', true, true); // Loads e_PLUGIN."gallery/languages/English/English_admin.php (if English is the current language)
+	 * @example e107::lan('gallery', false, true); // Loads e_PLUGIN."gallery/languages/English/English_front.php (if English is the current language)
 	 */
 	public static function lan($type, $fname = null, $options = null)
 	{
