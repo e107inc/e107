@@ -1495,6 +1495,7 @@ optgroup{background-color:#494949}
 .alert .alert-link,.alert a{color:#fff;text-decoration:underline}
 .alert .close,.alert a.btn{text-decoration:none}
 .alert .close{color:#000}
+.alert pre{background-color:rgba(0,0,0,.4);margin-top:10px;color:#fff}
 a.thumbnail.active,a.thumbnail:focus,a.thumbnail:hover{border-color:#0f0f0f}
 .jumbotron{border:1px solid rgba(0,0,0,.6)}
 .panel-danger .panel-heading,.panel-info .panel-heading,.panel-primary .panel-heading,.panel-success .panel-heading,.panel-warning .panel-heading{border-color:#000}
