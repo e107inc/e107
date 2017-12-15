@@ -137,6 +137,11 @@ function check_class($whatever='')
 	return true;
 }
 
+function getperms($arg, $ap = '')
+{
+	return true;
+}
+
 $override = array();
 
 if(isset($_POST['previous_steps']))
@@ -1608,7 +1613,7 @@ if($this->pdo == true)
 		$ret = e107::getXml()->e107Import($coreConfig, 'replace', true, false); // Add core pref values
 		$this->logLine('Attempting to Write Core Prefs.');
 		$this->logLine(print_r($ret, true));
-		
+		/*
 		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'. 
 		{
 			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
@@ -1616,7 +1621,7 @@ if($this->pdo == true)
 			$this->logLine(print_r($ret2, true));
 		}
 		
-		//Create default plugin-table entries.
+	*/	//Create default plugin-table entries.
 		// e107::getConfig('core')->clearPrefCache();
 		e107::getPlugin()->update_plugins_table('update');
 		$this->logLine('Plugins table updated');
@@ -1637,8 +1642,19 @@ if($this->pdo == true)
 			}
 		}
 
+
+
 		e107::getSingleton('e107plugin')->save_addon_prefs('update'); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
+
+		// do this AFTER any required plugins are installated. 
+		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'.
+		{
+			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries.
+			$this->logLine('Attempting to write Theme Prefs/Tables (install.xml)');
+			$this->logLine(print_r($ret2, true));
+		}
+
 
 		$tm = e107::getSingleton('themeHandler');
 		$tm->noLog = true; // false to enable log
@@ -1877,7 +1893,7 @@ if($this->pdo == true)
 
 	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
 	//	$tm = new themeHandler;
-		$xmlArray = e107::getTheme($theme_folder,true)->get();
+		$xmlArray = e107::getTheme($theme_folder)->get();
 
 		return (is_array($xmlArray)) ? $xmlArray : false;
 	}
