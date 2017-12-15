@@ -3621,7 +3621,7 @@ class e_parser
 	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
 	                                'col'       => array('id', 'span', 'class','style'),
 		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
-
+									'x-bbcode'  => array('alt'),
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -3633,7 +3633,7 @@ class e_parser
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
-                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite'
+                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode'
                                    );
     protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
 	
@@ -4654,29 +4654,31 @@ class e_parser
 	
 	
 	/** 
-	 * Parse new <bbcode> tags into bbcode output. 
-	 * @param $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it. 
-	 * @return html 
+	 * Parse new <x-bbcode> tags into bbcode output.
+	 * @param bool $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it.
+	 * @return string html
 	 */
 	function parseBBTags($text,$retainTags = false)
 	{
-		$bbcodes = $this->getTags($text, 'bbcode');
-			
+		$stext = str_replace("&quot;", '"', $text);
+
+		$bbcodes = $this->getTags($stext, 'x-bbcode');
+
 		foreach($bbcodes as $v)
 		{
 			foreach($v as $val)
 			{
-				$tag = urldecode($val['alt']);
+				$tag = base64_decode($val['alt']);
 				$repl = ($retainTags == true) ? '$1'.$tag.'$2' : $tag;
-				$text = preg_replace('/(<bbcode[^>]*>).*(<\/bbcode>)/s',$repl, $text); //FIXME - handle multiple instances of bbcodes. 
+				$text = preg_replace('/(<x-bbcode[^>]*>).*(<\/x-bbcode>)/i',$repl, $text); 
 			}	
 		}
+
 		return $text;
 	}
 
 
 
-	
     /**
      * Perform and render XSS Test Comparison
      */
@@ -5044,7 +5046,7 @@ return;
             }
 
 
-            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
+            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w\-]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
             {
 

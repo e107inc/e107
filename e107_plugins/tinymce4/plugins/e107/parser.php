@@ -135,7 +135,9 @@ TEMPL;
 			$content 		= str_replace("{e_BASE}",e_HTTP,$content); // We want {e_BASE} in the final data going to the DB, but not the editor.
 			$srch 			= array("<!-- bbcode-html-start -->","<!-- bbcode-html-end -->","[html]","[/html]");
 			$content 		= str_replace($srch,"",$content);
-			$content 		= e107::getBB()->parseBBCodes($content); // parse the <bbcode> tag so we see the HTML equivalent while editing!
+			$content 		= $tp->parseBBTags($content,true); // parse the <bbcode> tag so we see the HTML equivalent while editing!
+			$content 		= e107::getBB()->parseBBCodes($content); 
+
 
 			if(!empty($content) && E107_DEBUG_LEVEL > 0)
 			{
@@ -204,7 +206,7 @@ TEMPL;
 
 			//	$content 	= preg_replace($psrch, $prepl, $content);
 			$content = $this->updateImg($content);
-			$content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent
+		//	$content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent
 
 			if(strip_tags($content, '<i>') == '&nbsp;') // Avoid this: [html]<p>&nbsp;</p>[/html]
 			{
