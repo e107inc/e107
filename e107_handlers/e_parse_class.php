@@ -4670,7 +4670,9 @@ class e_parser
 			{
 				$tag = base64_decode($val['alt']);
 				$repl = ($retainTags == true) ? '$1'.$tag.'$2' : $tag;
-				$text = preg_replace('/(<x-bbcode[^>]*>).*(<\/x-bbcode>)/i',$repl, $text); 
+			//	$text = preg_replace('/(<x-bbcode[^>]*>).*(<\/x-bbcode>)/i',$repl, $text);
+				$text = preg_replace('/(<x-bbcode alt=&quot;'.$val['alt'].'&quot;>).*(<\/x-bbcode>)/i',$repl, $text);
+
 			}	
 		}
 
