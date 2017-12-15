@@ -607,7 +607,7 @@ class e_theme
 		$vars['email'] 			= varset($vars['author']['@attributes']['email']);
 		$vars['website'] 		= varset($vars['author']['@attributes']['url']);
 		$vars['author'] 		= varset($vars['author']['@attributes']['name']);
-		$vars['info'] 			= varset($vars['description']);
+		$vars['info'] 			= !empty($vars['description']['@value']) ? $vars['description']['@value'] : varset($vars['description']);
 		$vars['category'] 		= self::getThemeCategory(varset($vars['category']));
 		$vars['xhtmlcompliant'] = varset($vars['compliance']['@attributes']['xhtml']);
 		$vars['csscompliant'] 	= varset($vars['compliance']['@attributes']['css']);
