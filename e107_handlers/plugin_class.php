@@ -4769,8 +4769,9 @@ class e107plugin
 
 		if(E107_DEBUG_LEVEL > 0)
 		{
-			$dbgArr = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
-			e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName. print_a($dbgArr[1],true));
+			$dbgArr = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,3);
+			unset($dbgArr[0]);
+			e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName. print_a($dbgArr,true));
 		}
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
