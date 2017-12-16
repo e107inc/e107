@@ -615,8 +615,14 @@ class e_db_mysql
 					}
 				}
 
-			//	$query = var_export($query,true);
-			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+				if($this->pdo == true && $buglink instanceof PDO)
+				{
+					$db_debug->Mark_Query($query, 'PDO', $sQryRes, $aTrace, $mytime, $pTable);
+				}
+				else
+				{
+					$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+				}
 			}
 			else
 			{
