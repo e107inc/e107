@@ -3103,7 +3103,7 @@ class e107
 	 *
 	 * @param string $fname filename without the extension part (e.g. 'comment')
 	 * @param boolean $admin true if it's an administration language file
-	 * @return void
+	 * @return bool
 	 */
 	public static function coreLan($fname, $admin = false)
 	{
@@ -3114,7 +3114,8 @@ class e107
 		$path = e_LANGUAGEDIR.e_LANGUAGE.'/'.$fname;
 
 		self::setRegistry($cstring, true);
-		self::includeLan($path, false);
+
+		return self::includeLan($path, false);
 	}
 
 	/**
@@ -3143,7 +3144,7 @@ class e107
 	 * @param string $plugin plugin name
 	 * @param string $fname filename without the extension part (e.g. 'common')
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
-	 * @return void
+	 * @return bool
 	 */
 	public static function plugLan($plugin, $fname = '', $flat = false)
 	{
@@ -3152,8 +3153,11 @@ class e107
 
 		$plugin = preg_replace('/[^\w]/', '', $plugin);
 
-
-		if($fname && is_string($fname))
+		if($fname === 'global') // fix ambiguity
+		{
+			 $fname = e_LANGUAGE."_global";
+		}
+		elseif($fname && is_string($fname))
 		{
 			 $fname = e_LANGUAGE.($flat ? '_' : '/').preg_replace('#[^\w/]#', '', trim($fname, '/'));
 		}
@@ -3184,7 +3188,8 @@ class e107
 		
 		
 		self::setRegistry($cstring, true);
-		self::includeLan($path, false);
+
+		return self::includeLan($path, false);
 	}
 	
 	/**
@@ -3212,7 +3217,7 @@ class e107
 	 * @param string $fname filename without the extension part (e.g. 'common' for common.php)
 	 * @param string $theme theme name, if null current theme will be used
 	 * @param boolean $flat false (default, preferred) Language folder structure; true - prepend Language to file name
-	 * @return void
+	 * @return bool
 	 */
 	public static function themeLan($fname = '', $theme = null, $flat = false)
 	{
@@ -3233,7 +3238,8 @@ class e107
 		}	
 
 		self::setRegistry($cstring, true);
-		self::includeLan($path, false);
+
+		return self::includeLan($path, false);
 	}
 
 

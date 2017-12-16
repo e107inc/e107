@@ -690,7 +690,11 @@ if(isset($pref['lan_global_list']))
 {
 	foreach($pref['lan_global_list'] as $path)
 	{
-		e107::plugLan($path,'global',true);			
+		if(e107::plugLan($path, 'global', true) === false)
+		{
+			e107::plugLan($path, 'global', false);
+		}
+
 	}			
 }
 
