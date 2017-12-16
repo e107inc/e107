@@ -61,5 +61,3 @@ if(e_ADMIN_AREA !==true)
 
 }
 
-
-?>

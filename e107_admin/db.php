@@ -1470,6 +1470,8 @@ class system_tools
 		);
 	}
 
+
+
 	/**
 	 * Plugin Folder Scanner
 	 * @return none
@@ -1479,7 +1481,6 @@ class system_tools
 		$error_messages = array(0 => DBLAN_31, 1 => LAN_ERROR, 2 => DBLAN_33, 3 => DBLAN_34);
 	//	$error_image = array("integrity_pass.png", "integrity_fail.png", "warning.png", "blank.png");
 		$error_glyph = array(ADMIN_TRUE_ICON,ADMIN_FALSE_ICON,ADMIN_WARNING_ICON,"<i style='display:inline-block;width:17px;height:16px;'> </i>");
-		
 		$error_type = array('warning'=>2, 'error'=>1);
 
 
@@ -1489,16 +1490,10 @@ class system_tools
 		$frm = e107::getForm();
 		$mes = e107::getMessage();
 
-		require_once (e_HANDLER."plugin_class.php");
-		$ep = new e107plugin();
-		$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
-		$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
-
-		/* we all are awaiting for PHP5 only support - method chaining...
-		$mes->add(DBLAN_22.' - '.DBLAN_23, E_MESSAGE_SUCCESS)
-				 ->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS)
-				 ->add(DBLAN_30);
-		*/
+	//	require_once (e_HANDLER."plugin_class.php");
+	//	$ep = new e107plugin();
+	//	$ep->update_plugins_table($mode); // scan for e_xxx changes and save to plugin table.
+	//	$ep->save_addon_prefs($mode); // generate global e_xxx_list prefs from plugin table.
 
 		$mes->add(DBLAN_23, E_MESSAGE_SUCCESS);
 		$mes->add("<a href='".e_SELF."'>".LAN_BACK."</a>", E_MESSAGE_SUCCESS);
@@ -1526,13 +1521,80 @@ class system_tools
 							<tbody>
 			";
 
+
+		$plg = e107::getPlug()->clearCache();
+
+		$plg->buildAddonPrefLists();
+
+		foreach($plg->getDetected() as $folder)
+		{
+			$plg->load($folder);
+
+			$name   = $plg->getName();
+			$addons = $plg->getAddons();
+
+				$text .= "
+								<tr>
+									<td>".$name."</td>
+	               					<td>".$folder."</td>
+									<td>";
+
+				if(!empty($addons))
+				{
+
+					foreach(explode(',', $addons) as $this_addon)
+					{
+						$ret_code = 3; // Default to 'not checked
+						if((strpos($this_addon, 'e_') === 0) || (substr($this_addon, - 4, 4) == '_sql'))
+						{
+							$ret_code = $plg->getAddonErrors($this_addon); // See whether spaces before opening tag or after closing tag
+						}
+						elseif(strpos($this_addon, 'sc_') === 0)
+						{
+							$this_addon = substr($this_addon, 3). ' (sc)';
+						}
+
+						if(!is_numeric($ret_code))
+						{
+							$errorMessage = $ret_code['msg'];
+							$ret_code = $error_type[$ret_code['type']];
+						}
+						else
+						{
+							$errorMessage  = $error_messages[$ret_code];
+						}
+
+						$text .= "<span class='clear e-tip' style='cursor:pointer' title='".$errorMessage."'>";
+						$text .= $error_glyph[$ret_code]."&nbsp;";
+
+						$text .= trim($this_addon); // $ret_code - 0=OK, 1=content error, 2=access error
+						$text .= "</span><br />";
+					}
+				}
+
+
+				$text .= "	</td>
+								<td class='center'>";
+
+				$text .= ($plg->isInstalled() === true) ? "<span class='label label-warning'>".DBLAN_27."</span>" : " ";
+
+
+				$text .= " </td>
+							</tr>
+				";
+
+
+		}
+
+/*
+
 		$sql->select("plugin", "*", "plugin_id !='' order by plugin_path ASC"); // Must order by path to pick up duplicates. (plugin names may change).
 		$previous = '';
 		while($row = $sql->fetch())
 		{
 			e107::loadLanFiles($row['plugin_path'],'admin');
-			e107::plugLan($row['plugin_path'],'global',true);	
-			
+			e107::plugLan($row['plugin_path'],'global',true);
+
 			$text .= "
 								<tr>
 									<td>".$tp->toHtml($row['plugin_name'], FALSE, "defs,emotes_off")."</td>
@@ -1596,7 +1658,7 @@ class system_tools
 							</tr>
 				";
 			$previous = $row['plugin_path'];
-		}
+		}*/
 
 		$text .= "
 							</tbody>
@@ -1607,6 +1669,10 @@ class system_tools
 
 		e107::getRender()->tablerender(DBLAN_10.SEP.DBLAN_22, $mes->render().$text);
 	}
+
+
+
+
 }
 
 //XXX - what is this for (backup core)? <input type='hidden' name='sqltext' value='{$sqltext}' />
