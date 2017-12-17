@@ -527,9 +527,13 @@ if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 				$reg_threads++;
 			}
 
-			if($reg_threads === 1  && (THEME_LEGACY === true && $reg_threads === 1 && $stuck === true && $unstuck !== true)) //  Removed as not needed in new template. && !$unstuck && $stuck
+			if($reg_threads === 1) //  Removed as not needed in new template. && !$unstuck && $stuck
 			{
-				if(!empty($FORUM_NORMAL_ROW))
+				if(THEME_LEGACY === true && ($stuck === false || $unstuck === true))
+				{
+					// do nothing. 
+				}
+				elseif(!empty($FORUM_NORMAL_ROW))
 				{
 					$forum_view_forum .= $FORUM_NORMAL_ROW;
 				}
