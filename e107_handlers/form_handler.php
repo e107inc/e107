@@ -1927,7 +1927,7 @@ class e_form
    		 	$text .= "</div>
     	</div>";
 		
-		$loading = vartrue($options['loading'],LAN_LOADING);
+		$loading = vartrue($options['loading'], defset('LAN_LOADING', "Loading"));
 		
 		$buttonId = $target.'-start';
 		
