@@ -816,6 +816,10 @@ class admin_shortcodes
 		$parsed = file_get_contents($file);
 		$tmp = e107::unserialize($parsed);
 
+		if(!defined('e_MULTISITE_MATCH'))
+		{
+			define('e_MULTISITE_MATCH', null);
+		}
 	//	e107::getDebug()->log($tmp);
 
 		  $text = '<ul class="nav nav-admin navbar-nav navbar-right">

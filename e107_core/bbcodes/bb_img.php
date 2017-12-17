@@ -48,7 +48,7 @@ class bb_img extends e_bb_base
 
         $figcaption = false;
 
-        if($imgParms['figcaption'])
+        if(!empty($imgParms['figcaption']))
         {
             $figcaption = $imgParms['figcaption'];
             unset($imgParms['figcaption']);
