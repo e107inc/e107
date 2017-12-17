@@ -531,7 +531,7 @@ if(is_array($subList) && isset($subList[$forumInfo['forum_parent']][$forumId]))
 			{
 				if(THEME_LEGACY === true && ($stuck === false || $unstuck === true))
 				{
-					// do nothing. 
+					// do nothing.
 				}
 				elseif(!empty($FORUM_NORMAL_ROW))
 				{

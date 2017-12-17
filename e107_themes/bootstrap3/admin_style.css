@@ -1778,3 +1778,32 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 	}
 
 
+/*
+
+@media only screen and (min-width : 768px) {
+    .is-table-row {
+        display: table;
+        width: 100%;
+       margin:0;
+
+    }
+    .is-table-row > .admin-right-panel, .is-table-row > .admin-left-panel{
+        float: none;
+        display: table-cell;
+       vertical-align: top;
+
+    }
+}
+.admin-left-panel {
+background-color: #303030;
+!*margin-top: -37px;*!
+padding-right: 0;
+padding-left: 0;
+background:#3c3c3c;
+
+}
+
+.col-lg-2 { width: 12%}
+.col-lg-10 { width: 88%}
+
+*/
