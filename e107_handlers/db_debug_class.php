@@ -870,10 +870,10 @@ class e107_db_debug {
 			if (!$bRowHeaders)
 			{
 				$bRowHeaders = true;
-				$text .= "<tr class='fcaption'><td><b>".implode("</b></td><td><b>", array_keys($curLog))."</b></td></tr>\n";
+				$text .= "<tr><td class='fcaption' style='text-align:left'><b>".implode("</b></td><td class='fcaption' style='text-align:left'><b>", array_keys($curLog))."</b></td></tr>\n";
 			}
 
-			$text .= "<tr class='forumheader3'><td>".implode("&nbsp;</td><td>", array_values($curLog))."&nbsp;</td></tr>\n";
+			$text .= "<tr ><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($curLog))."&nbsp;</td></tr>\n";
 		}
 
 		$text .= "</table><br />\n";

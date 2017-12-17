@@ -2434,15 +2434,15 @@ class error_handler
 		{
 			$text .= "
 			<tr>
-				<td>".$key."</td>
-				<td>";
+				<td class='forumheader3'>".$key."</td>
+				<td class='forumheader3'>";
 			$text .= !empty($val['class']) ? $val['class']."->" : '';
 			$text .= !empty($val['include_filename']) ? "include: ". str_replace($this->docroot,'', $val['include_filename']) : '';
 			$text .= !empty($val['function']) ? $val['function']."(" : "";
 			$text .= !empty($val['params']) ? print_r($val['params'],true) : '';
 			$text .= !empty($val['function']) ? ")" : "";
 			$text .="</td>
-				<td>";
+				<td class='forumheader3'>";
 			$text .= str_replace($this->docroot,'', $val['file']).":".$val['line'];
 			$text .= "</td>
 			</tr>";
@@ -2480,7 +2480,7 @@ class error_handler
 		{
 			foreach ($this->errors as $key => $value)
 			{
-				$ret .= "<tr class='forumheader3'><td>{$value['short']}</td></tr>\n";
+				$ret .= "<tr><td class='forumheader3'>{$value['short']}</td></tr>\n";
 			}
 		}
 
