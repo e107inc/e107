@@ -4,6 +4,10 @@ div.clearfix { margin-bottom:10px;  }
 ul.fa-ul { padding-left:5px}
 li { padding:4px }
 ul { padding-bottom:8px }
+
+.bbcode-img-left { margin: 0 10px 5px 0 !important; float:left !important }
+.bbcode-img-right { margin: 0 0 5px 10px !important; float:right !important}
+
 .mce-visualblocks li { outline: 1px dashed silver; }
 .mce-visualblocks ul.fa-ul { padding-left:30px }
 .mce-visualblocks .animated,

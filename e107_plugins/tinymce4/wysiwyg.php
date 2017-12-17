@@ -549,8 +549,8 @@ class wysiwyg
                     {title: 'Justify', block: 'div', classes: 'text-justify', icon: 'alignjustify'},
                     {title: 'No Text-Wrap', block: 'div', classes: 'text-nowrap', icon: ''},
                     {title: 'Clear Float', block: 'div', classes: 'clearfix'},
-                    {title: 'Image Left', selector: 'img', classes: 'pull-left', styles: {'margin': '0 10px 5px 0'  },  icon: 'alignleft'},
-                    {title: 'Image Right', selector: 'img', classes: 'pull-right', styles: { 'margin': '0 0 5px 10px'}, icon: 'alignright'}
+                    {title: 'Image Left', selector: 'img', classes: 'bbcode-img-left',  icon: 'alignleft'},
+                    {title: 'Image Right', selector: 'img', classes: 'bbcode-img-right', icon: 'alignright'}
 
                 ]},
 
@@ -854,7 +854,7 @@ class wysiwyg
 			0 => $pathBS . '/dist/css/bootstrap.min.css',
 			1 => $pathFA . '/css/font-awesome.min.css',
 			2 => e_PLUGIN_ABS . 'tinymce4/editor.css',
-			3 => $pathAn . '/animate.min.css',
+			3 => $pathAn . 'animate.min.css',
 
 		);
 
