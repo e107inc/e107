@@ -834,7 +834,7 @@ class xmlClass
 	 * @param string $key key for the current value. Used for exception processing.
 	 * @return mixed
 	 */
-	private function e107ExportValue($val, $key = '')
+	public function e107ExportValue($val, $key = '')
 	{
 		if($key && isset($this->filePathPrepend[$key]))
 		{
@@ -859,6 +859,10 @@ class xmlClass
 		{
 			return "<![CDATA[". $val."]]>";
 		}
+
+
+
+		$val = str_replace(chr(1),'{\u0001}',$val);
 
 		return $val;
 	}
@@ -1093,7 +1097,7 @@ class xmlClass
 		{
 			//$message = print_r($xmlArray);
 			echo "<pre>".var_export($xmlArray,TRUE)."</pre>";
-			return;
+			return null;
 		}
 
 		$ret = array();
@@ -1179,7 +1183,7 @@ class xmlClass
 					foreach($item['field'] as $f)
 					{
 						$fieldkey = $f['@attributes']['name'];
-						$fieldval = (isset($f['@value'])) ? $f['@value'] : "";
+						$fieldval = (isset($f['@value'])) ? $this->e107ImportValue($f['@value']) : "";
 
 						$insert_array[$fieldkey] = $fieldval;
 
@@ -1209,6 +1213,14 @@ class xmlClass
 		}
 
 		return $ret;
+	}
+
+
+	function e107ImportValue($val)
+	{
+		$val = str_replace('{\u0001}', chr(1), $val);
+
+		return $val;
 	}
 
 
