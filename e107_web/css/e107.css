@@ -123,6 +123,10 @@ div.bbarea.large, .tbox.large, .helpbox.large { width: 95% }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
 img.bbcode-img { max-width:100%}
+img.bbcode-img-left { float:left !important;  margin: 0 10px 5px 0; }
+img.bbcode-img-right { float:right !important; margin: 0 0 5px 10px; }
+
+
 
 .bbcode-panel { width: 100% }
 .input-block-level { width: 100% !important }
