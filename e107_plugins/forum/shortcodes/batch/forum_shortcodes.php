@@ -174,7 +174,7 @@ class forum_shortcodes extends e_shortcode
 
 		// String candidate for USERLIST wrapper
 		return "
-		<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
+		<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
 		<div class='input-group'>
 		<input type='hidden' name='r' value='0' />
 		<input type='hidden' name='t' value='forum' />
