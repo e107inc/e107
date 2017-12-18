@@ -12,7 +12,9 @@
 $nw = e107::getObject('e_news_tree');
 $tp = e107::getParser();
 
-$tmp = $nw->loadJoinActive()->toArray();
+$nparm = array('db_limit' => 350 );
+
+$tmp = $nw->loadJoinActive(0, false, $nparm)->toArray();
 
 $monthLabels = e107::getDate()->terms();
 
@@ -21,8 +23,14 @@ foreach($tmp as $id => $val)
 {
 	$d = date('Y-n',$val['news_datestamp']);
 	list($year,$month) = explode('-',$d);
+	unset($val['news_body']);
 	$arr[$year][$month][] = $val;
+
+	// e107::getDebug()->log($val);
 }
+
+
+
 
 
 $text = "<ul class='news-archive-menu'>";
@@ -49,7 +57,7 @@ foreach($arr as $year=>$val)
 		{
 			//$displayMonth = ($mCount === 1) ? 'display:block': 'display:none';
 
-			$idm = "news-archive-".$month;
+			$idm = "news-archive-".$year.'-'.$month;
 
 			$text .= "<li>";
 			$text .= "<a class='e-expandit' href='#".$idm."'>".$monthLabels[$month];
