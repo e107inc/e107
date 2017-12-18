@@ -24,6 +24,7 @@ $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
 define('PLUGIN_SCAN_INTERVAL', !empty($_SERVER['E_DEV']) ? 0 : 360);
+define('PLUGIN_ITEMS_PER_PAGE', 10);
 define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('size'=>'2x', 'fw'=>1)));
 
 
@@ -173,7 +174,8 @@ class plugin_ui extends e_admin_ui
 	//	protected $eventName		= 'plugman-plugin'; // remove comment to enable event triggers in admin.
 		protected $table			= 'plugin';
 		protected $pid				= 'plugin_id';
-		protected $perPage			= 10;
+		protected $perPage			= PLUGIN_ITEMS_PER_PAGE;
+
 		protected $batchDelete		= false;
 		protected $batchExport     = false;
 		protected $batchCopy		= false;
@@ -999,7 +1001,7 @@ class plugin_online_ui extends e_admin_ui
 	//	protected $eventName		= 'plugman-plugin'; // remove comment to enable event triggers in admin.
 		protected $table			= false;
 		protected $pid				= '';
-		protected $perPage			= 10;
+		protected $perPage			= PLUGIN_ITEMS_PER_PAGE;
 		protected $batchDelete		= true;
 		protected $batchExport     = true;
 		protected $batchCopy		= true;
@@ -1289,7 +1291,7 @@ class plugin_online_ui extends e_admin_ui
 			// do the request, retrieve and parse data
 			$xdata = $mp->call('getList', array(
 				'type' => 'plugin',
-				'params' => array('limit' => 10, 'search' => $srch, 'from' => $from)
+				'params' => array('limit' => PLUGIN_ITEMS_PER_PAGE, 'search' => $srch, 'from' => $from)
 			));
 			$total = $xdata['params']['count'];
 
@@ -1407,7 +1409,7 @@ class plugin_online_ui extends e_admin_ui
 				</form>
 			";
 
-			$amount = 30;
+			$amount = PLUGIN_ITEMS_PER_PAGE;
 
 
 			if($total > $amount)
@@ -2523,7 +2525,7 @@ class pluginManager{
 			</form>
 		";
 		
-		$amount = 30;
+		$amount = PLUGIN_ITEMS_PER_PAGE;
 		
 		
 		if($total > $amount)
@@ -4211,7 +4213,7 @@ $content .= '}';
 			$frm = e107::getForm();	
 			list($cat,$type) = explode("-",$info);
 			
-			$size 		= 30;
+			$size 		= PLUGIN_ITEMS_PER_PAGE;
 			$help		= '';
 			$pattern	= "";
 			$required	= false;
