@@ -1482,22 +1482,16 @@ class news_form_ui extends e_admin_form_ui
 
 		if($mode === 'write')
 		{
+
 			if($tmp = e107::getTemplate('news', 'news', 'view'))
 			{
 				return LAN_DEFAULT;
 			}
 
-			if($tmp = e107::getTemplateInfo('news', 'news_view'))
+			if($tmp = e107::getLayouts('news', 'news_view', 'front', null, false, false))
 			{
-				$opt = array();
-				foreach($tmp as $k=>$val)
-				{
-					$opt[$k] = $val['title'];
-
-				}
-				return $this->select('news_template', $opt, $curVal, array('size'=>'xlarge'));
+				return $this->select('news_template', $tmp, $curVal, array('size'=>'xlarge'));
 			}
-
 
 
 			return LAN_DEFAULT;
