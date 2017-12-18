@@ -3018,6 +3018,76 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * Get ordered models by their parents
+	 * add extra
+	 * @lonalore
+	 * @return e_admin_tree_model
+	 */
+	public function getTreeModelSorted()
+	{
+		$tree = $this->getTreeModel();
+
+		$parentField = $this->getSortParent();
+		$orderField = $this->getSortField();
+
+		$arr = array();
+		foreach ($tree->getTree() as $id => $model)
+		{
+			$parent = $model->get($parentField);
+			$order = $model->get($orderField);
+
+			$model->set('_depth', '9999'); // include extra field in output, just as the MySQL function did.
+
+
+			$arr[$id] = $model;
+		}
+
+
+	//	usort($arr); array_multisort() ?
+
+		$tree->setTree($arr,true); // set the newly ordered tree.
+
+		var_dump($arr);
+
+		return $this->_tree_model;
+	}
+
+
+	/**
+	 * @lonalore - found online.
+	 * @param string $idField       The item's ID identifier (required)
+	 * @param string $parentField   The item's parent identifier (required)
+	 * @param array $els            The array (required)
+	 * @param int   $parentID       The parent ID for which to sort (internal)
+	 * @param array $result         The result set (internal)
+	 * @param int   $depth          The depth (internal)
+	 * @return array
+	 */
+	function parentChildSort_r($idField, $parentField, $els=array(), $parentID = 0, &$result = array(), &$depth = 0)
+	{
+	    foreach ($els as $key => $value)
+	    {
+	        if ($value[$parentField] == $parentID)
+	        {
+	            $value['depth'] = $depth;
+	            array_push($result, $value);
+	            unset($els[$key]);
+	            $oldParent = $parentID;
+	            $parentID = $value[$idField];
+	            $depth++;
+	            $this->parentChildSort_r($idField,$parentField, $els, $parentID, $result, $depth);
+	            $parentID = $oldParent;
+	            $depth--;
+	        }
+	    }
+
+	    return $result;
+	}
+
+
+
+
+	/**
 	 * Set controller tree model
 	 * @param e_admin_tree_model $tree_model
 	 * @return e_admin_controller_ui
@@ -4104,7 +4174,7 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				$qry = $this->parseCustomListQry($listQry);
 			}
-			elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
+			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
 			{
 			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
 				$qry                = $this->getParentChildQry();
@@ -6418,6 +6488,12 @@ class e_admin_form_ui extends e_form
 		$id = $this->getElementId();
 		$tree = $options = array();
 		$tree[$id] = $controller->getTreeModel();
+
+
+		if(deftrue('e_DEBUG_TREESORT') && $view === 'default')
+		{
+			$controller->getTreeModelSorted();
+		}
 
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
