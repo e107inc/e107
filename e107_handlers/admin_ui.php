@@ -1879,14 +1879,43 @@ class e_admin_controller
 			$_dispatcher = $this->getDispatcher();
 			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
-			if(isset($data[$search])) $res['caption'] = $data[$search];
+
+			if(isset($data[$search]))
+			{
+				 $res['caption'] = $data[$search];
+			}
 			else 
 			{
+
+
 				$data = $_dispatcher->getMenuData();
-				if(isset($data[$search])) $res = $data[$search];
-				else return $this;
+
+				if(isset($data[$search]))
+				{
+					 $res = $data[$search];
+				}
+				else
+				{
+					// check for an alias match.
+					$d = $_dispatcher->getMenuAliases();
+					if(isset($d[$search]))
+					{
+						$search = $d[$search];
+						$res = $data[$search];
+
+					}
+					else
+					{
+						 return $this;
+					}
+				//	var_dump($d);
+				//	var_dump("Couldnt find: ".$search);
+
+				}
 			}
 			$title = $res['caption'];
+
+
 		}
 		
 		//	echo "<h3>".__METHOD__." - ".$title."</h3>";
