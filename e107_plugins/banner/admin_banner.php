@@ -29,7 +29,7 @@ if (!getperms('D') && !getperms('P'))
 
 $e_sub_cat = 'banner';
 
-e107::lan('banner',false,'front'); 
+e107::lan('banner');
 e107::lan('banner',true);
 
 e107::css('inline', "
