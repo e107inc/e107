@@ -955,11 +955,15 @@ class e_form
 		}
 		else
 		{
-				$title = LAN_EDIT;
+			$title = LAN_EDIT;
 		}
 
+		$class = !empty($extras['class']) ? $extras['class']." " : '';
+		$title = !empty($extras['title']) ? $extras['title'] : $title;
+
+
 	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
-	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	    $ret = "<a title=\"{$title}\" class='".$class."e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap.
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
@@ -1114,7 +1118,7 @@ class e_form
 
 
 	/**
-	 * FIXME {IMAGESELECTOR} rewrite
+	 * Image Picker
 	
 	 * @param string $name input name
 	 * @param string $default default value
@@ -1140,6 +1144,10 @@ class e_form
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
+		}
+		elseif(empty($sc_parameters))
+		{
+			$sc_parameters = array();
 		}
 
 
@@ -1204,17 +1212,18 @@ class e_form
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
 			
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector img-responsive img-fluid' >";			
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector icon-selector img-responsive img-fluid' >";
 			$label .= $tp->toIcon($default_url,array('class'=>'img-responsive img-fluid'));
 
             //$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";			
 			//$label .= $tp->toIcon($default_url);
 			
-			$label .= "				
-			</div>";
+			$label .= "</div>";
 			
 		//	$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
-				
+
+
+			$ret = $this->mediaUrl($cat, $label, $name_id, $sc_parameters);
 		}
 		else // Images 
 		{
@@ -1235,34 +1244,39 @@ class e_form
 			 	$cat = $cat . "_image";		
 			}
 
+			$sc_parameters['class'] = 'btn btn-sm btn-default';
 
+			if($blank === true)
+			{
+				$sc_parameters['title'] = LAN_ADD;
+				$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$sc_parameters);
+				$previewIcon     = '';
+
+				// @todo drag-n-drop upload code in here.
+			}
+			else
+			{
+				$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$sc_parameters);
+				$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
+			}
+
+			$ret .= $label; // image
+
+			$ret .= '<div class="overlay">
+				    <div class="text">'.$editIcon.$previewIcon.'</div>
+				  </div>';
 		}
 
-		if(!empty($previewURL))
-		{
-			$default_url = $previewURL;
-		}
 
-
-		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
-
-		if($cat != '_icon' && $blank == false) // ICONS
-		{
-			$ret .= "<div class='text-right'><a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-block e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search')."</a></div>";
-		}
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 
-	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
-		return $ret;
-		
 
-		
-		
-		
-		// ----------------
+		return $ret;
 
 	}
+
+
 
 	private function imagepickerDefault($path, $parms=array())
 	{
