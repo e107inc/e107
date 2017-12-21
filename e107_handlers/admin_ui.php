@@ -3092,6 +3092,13 @@ class e_admin_controller_ui extends e_admin_controller
 			return ($weightA < $weightB) ? -1 : 1;
 		});
 
+		$direction = 'ASC';
+
+		if($direction == 'DESC')
+		{
+			$models = array_reverse($models, true);
+		}
+
 		// Now, we sort models by hierarchy.
 		foreach($levels as $level)
 		{
