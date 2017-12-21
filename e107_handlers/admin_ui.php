@@ -3047,38 +3047,71 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
-	 * Get ordered models by their parents
-	 * add extra
-	 * @lonalore
+	 * Get ordered models by their parents.
+	 *
 	 * @return e_admin_tree_model
 	 */
 	public function getTreeModelSorted()
 	{
 		$tree = $this->getTreeModel();
 
-		$parentField = $this->getSortParent();
-		$orderField = $this->getSortField();
+		// New tree model.
+		$_tree = array();
 
-		$arr = array();
-		foreach ($tree->getTree() as $id => $model)
+		/** @var e_admin_model $model */
+		foreach($tree->getTree() as $id => $model)
 		{
-			$parent = $model->get($parentField);
-			$order = $model->get($orderField);
-
-			$model->set('_depth', '9999'); // include extra field in output, just as the MySQL function did.
-
-
-			$arr[$id] = $model;
+			$depth = $this->calculateModelDepth($model);
+			$model->set('_depth', $depth);
+			$_tree[$id] = $model;
 		}
 
+		// usort($arr); array_multisort() ?
 
-	//	usort($arr); array_multisort() ?
+		// Set the newly ordered tree.
+		$tree->setTree($_tree, true);
 
-		$tree->setTree($arr,true); // set the newly ordered tree.
-
-		var_dump($arr);
+		print_a($_tree);
 
 		return $this->_tree_model;
+	}
+
+	/**
+	 * Calculates '_depth' property for the given model.
+	 *
+	 * @param e_admin_model $model
+	 *   Admin model we want to get '_depth' property for.
+	 *
+	 * @return int
+	 *   Depth for the e_admin_model object.
+	 */
+	public function calculateModelDepth($model)
+	{
+		$parentField = $this->getSortParent();
+		$parentID = (int) $model->get($parentField);
+
+		// Default depth.
+		$depth = 1;
+
+		// If no parent.
+		if($parentID === 0)
+		{
+			return $depth;
+		}
+
+		$tree = $this->getTreeModel();
+
+		/** @var e_admin_model $_model */
+		foreach($tree->getTree() as $id => $_model)
+		{
+			if($id == $parentID)
+			{
+				$depth += $this->calculateModelDepth($_model);
+				break;
+			}
+		}
+
+		return $depth;
 	}
 
 
