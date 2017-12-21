@@ -3055,23 +3055,67 @@ class e_admin_controller_ui extends e_admin_controller
 	{
 		$tree = $this->getTreeModel();
 
-		// New tree model.
-		$_tree = array();
+		// Helper arrays for preparing new tree model.
+		$models = array();
+		$levels = array();
 
+		// Calculate depth for each model.
 		/** @var e_admin_model $model */
 		foreach($tree->getTree() as $id => $model)
 		{
 			$depth = $this->calculateModelDepth($model);
+
+			if(!in_array($depth, $levels))
+			{
+				$levels[] = $depth;
+			}
+
 			$model->set('_depth', $depth);
-			$_tree[$id] = $model;
+			$model->set('_id', $id);
+			$models[$id] = $model;
 		}
 
-		// usort($arr); array_multisort() ?
+		// First, we sort models by $sortField.
+		uasort($models, function($modelA, $modelB) {
+			$sortField = $this->getSortField();
+
+			/** @var e_admin_model $modelA */
+			/** @var e_admin_model $modelB */
+
+			$weightA = (int) $modelA->get($sortField);
+			$weightB = (int) $modelB->get($sortField);
+
+			if ($weightA == $weightB) {
+				return 0;
+			}
+
+			return ($weightA < $weightB) ? -1 : 1;
+		});
+
+		// Now, we sort models by hierarchy.
+		foreach($levels as $level)
+		{
+			uasort($models, function($modelA, $modelB) {
+				$parentField = $this->getSortParent();
+
+				/** @var e_admin_model $modelA */
+				/** @var e_admin_model $modelB */
+
+				$parentA = (int) $modelA->get($parentField);
+				$parentB = (int) $modelB->get($parentField);
+				$idA = (int) $modelA->get('_id');
+
+				// If A is the parent of B or both parents are the same.
+				if ($idA == $parentB || $parentA == $parentB) {
+					return 0;
+				}
+
+				return 1;
+			});
+		}
 
 		// Set the newly ordered tree.
-		$tree->setTree($_tree, true);
-
-		print_a($_tree);
+		$tree->setTree($models, true);
 
 		return $this->_tree_model;
 	}
