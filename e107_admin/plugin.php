@@ -126,6 +126,11 @@ class plugman_adminArea extends e_admin_dispatcher
 		{
 			define('e_IFRAME', true);
 		}
+
+		if(deftrue('e_DEVELOPER'))
+		{
+			e107::getPlug()->clearCache();
+		}
 	}
 
 
