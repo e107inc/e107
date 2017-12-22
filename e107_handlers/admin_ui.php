@@ -3059,6 +3059,8 @@ class e_admin_controller_ui extends e_admin_controller
 		$models = array();
 		$levels = array();
 
+		
+
 		// Calculate depth for each model.
 		/** @var e_admin_model $model */
 		foreach($tree->getTree() as $id => $model)
@@ -4287,19 +4289,24 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				$qry = $this->parseCustomListQry($listQry);
 			}
-			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
+		/*	elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
 			{
-			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$qry                = $this->getParentChildQry();
-				$this->listOrder	= '_treesort '; // .$this->sortField;
+			//	$qry                = $this->getParentChildQry();
+		//		$this->listOrder	= '_treesort '; // .$this->sortField;
 			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
-			}
+			}*/
 			else
 			{
 				$qry = "SELECT SQL_CALC_FOUND_ROWS ".$tableSFields." FROM ".$tableFrom;
 			}
 
 		}
+
+		if(empty($this->listOrder) && $this->sortField && $this->sortParent)
+		{
+			$this->listOrder  = $this->sortField;
+		}
+
 
 		// group field - currently auto-added only if there are joins
 		// TODO - groupField property
@@ -6600,12 +6607,15 @@ class e_admin_form_ui extends e_form
 		$request = $controller->getRequest();
 		$id = $this->getElementId();
 		$tree = $options = array();
-		$tree[$id] = $controller->getTreeModel();
 
-
-		if(deftrue('e_DEBUG_TREESORT') && $view === 'default')
+		if($view === 'default' && $controller->getSortParent() && $controller->getSortField()) // parent / child sorted tree.
 		{
-			$controller->getTreeModelSorted();
+			e107::getDebug()->log("getTreeModelSorted");
+			$tree[$id] = $controller->getTreeModelSorted();
+		}
+		else
+		{
+			$tree[$id] = $controller->getTreeModel();
 		}
 
 		// if going through confirm screen - no JS confirm
