@@ -73,7 +73,7 @@ class plugman_adminArea extends e_admin_dispatcher
 		'online'	=> array(
 			'controller' 	=> 'plugin_online_ui',
 			'path' 			=> null,
-			'ui' 			=> 'plugin_form_ui',
+			'ui' 			=> 'plugin_form_online_ui',
 			'uipath' 		=> null
 		),
 		'create'	=> array(
@@ -923,7 +923,6 @@ class plugin_form_ui extends e_admin_form_ui
 
 		$mode = $this->getController()->getMode();
 
-
 	//	e107::getDebug()->log($var);
 
 		$_path = e_PLUGIN . $var['plugin_path'] . '/';
@@ -1018,7 +1017,7 @@ class plugin_online_ui extends e_admin_ui
 
 		protected $fields 		= array ();
 
-		protected $fieldpref = array('plugin_icon', 'plugin_name', 'plugin_version', 'plugin_license', 'plugin_description', 'plugin_compatible', 'plugin_released','plugin_author', 'plugin_category','plugin_installflag');
+		protected $fieldpref = array('plugin_icon', 'plugin_name', 'plugin_version', 'plugin_license', 'plugin_description', 'plugin_compatible', 'plugin_date','plugin_author', 'plugin_category','plugin_installflag');
 
 
 	//	protected $preftabs        = array('General', 'Other' );
@@ -1171,7 +1170,6 @@ class plugin_online_ui extends e_admin_ui
 	function options($data)
 	{
 
-	//	print_a($data);
 
 		/*
 		if(!e107::getFile()->hasAuthKey())
@@ -1337,6 +1335,7 @@ class plugin_online_ui extends e_admin_ui
 						'plugin_featured'		=> $featured,
 						'plugin_sef'			=> '',
 						'plugin_folder'			=> $row['folder'],
+						'plugin_path'			=> $row['folder'],
 						'plugin_date'			=> vartrue($row['date']),
 						'plugin_category'		=> vartrue($row['category'], 'n/a'),
 						'plugin_author'			=> vartrue($row['author']),
@@ -1380,7 +1379,6 @@ class plugin_online_ui extends e_admin_ui
 
 
 
-
 			foreach($data as $key=>$val	)
 			{
 			//	print_a($val);
@@ -1388,7 +1386,7 @@ class plugin_online_ui extends e_admin_ui
 
 				foreach($this->fields as $v=>$foo)
 				{
-					if(!in_array($v,$this->fieldpref) || $v == 'checkboxes')
+					if(!in_array($v,$this->fieldpref) || $v == 'checkboxes' || $v === 'options')
 					{
 						continue;
 					}
@@ -1532,6 +1530,42 @@ class plugin_form_online_ui extends e_admin_form_ui
 				return  array();
 			break;
 		}
+	}
+
+
+
+	// Custom Method/Function
+	function plugin_compatible($curVal,$mode)
+	{
+		$frm = e107::getForm();
+
+		switch($mode)
+		{
+			case 'read': // List Page
+
+				if(intval($curVal) > 1)
+				{
+					return "<span class='label label-warning'>".$curVal."</span>";
+				}
+
+				return $curVal;
+			break;
+
+			case 'write': // Edit Page
+				return $frm->text('plugin_name',$curVal, 255, 'size=large');
+			break;
+
+			case 'filter':
+			case 'batch':
+				return  array();
+			break;
+		}
+	}
+
+
+	function options($data)
+	{
+return null;
 	}
 
 }
