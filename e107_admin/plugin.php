@@ -24,7 +24,6 @@ $e_sub_cat = 'plug_manage';
 
 define('PLUGIN_SHOW_REFRESH', FALSE);
 define('PLUGIN_SCAN_INTERVAL', !empty($_SERVER['E_DEV']) ? 0 : 360);
-define('PLUGIN_ITEMS_PER_PAGE', 10);
 define("ADMIN_GITSYNC_ICON", e107::getParser()->toGlyph('fa-refresh', array('size'=>'2x', 'fw'=>1)));
 
 
@@ -174,7 +173,7 @@ class plugin_ui extends e_admin_ui
 	//	protected $eventName		= 'plugman-plugin'; // remove comment to enable event triggers in admin.
 		protected $table			= 'plugin';
 		protected $pid				= 'plugin_id';
-		protected $perPage			= PLUGIN_ITEMS_PER_PAGE;
+		protected $perPage			= 10;
 
 		protected $batchDelete		= false;
 		protected $batchExport     = false;
@@ -1001,7 +1000,7 @@ class plugin_online_ui extends e_admin_ui
 	//	protected $eventName		= 'plugman-plugin'; // remove comment to enable event triggers in admin.
 		protected $table			= false;
 		protected $pid				= '';
-		protected $perPage			= PLUGIN_ITEMS_PER_PAGE;
+		protected $perPage			= 10;
 		protected $batchDelete		= true;
 		protected $batchExport     = true;
 		protected $batchCopy		= true;
@@ -1291,7 +1290,7 @@ class plugin_online_ui extends e_admin_ui
 			// do the request, retrieve and parse data
 			$xdata = $mp->call('getList', array(
 				'type' => 'plugin',
-				'params' => array('limit' => PLUGIN_ITEMS_PER_PAGE, 'search' => $srch, 'from' => $from)
+				'params' => array('limit' => $this->perPage, 'search' => $srch, 'from' => $from)
 			));
 			$total = $xdata['params']['count'];
 
@@ -1409,12 +1408,9 @@ class plugin_online_ui extends e_admin_ui
 				</form>
 			";
 
-			$amount = PLUGIN_ITEMS_PER_PAGE;
-
-
-			if($total > $amount)
+			if($total > $this->perPage)
 			{
-				$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;action=list&amp;frm=[FROM]';
+				$parms = $total.",".$this->perPage.",".$from.",".e_SELF.'?mode=online&amp;action=list&amp;frm=[FROM]';
 
 				if(!empty($srch))
 				{
@@ -2525,12 +2521,9 @@ class pluginManager{
 			</form>
 		";
 		
-		$amount = PLUGIN_ITEMS_PER_PAGE;
-		
-		
-		if($total > $amount)
+		if($total > $this->perPage)
 		{
-			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
+			$parms = $total.",".$this->perPage.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
 
 			if(!empty($srch))
 			{
@@ -4213,7 +4206,7 @@ $content .= '}';
 			$frm = e107::getForm();	
 			list($cat,$type) = explode("-",$info);
 			
-			$size 		= PLUGIN_ITEMS_PER_PAGE;
+			$size 		= 30; // Textbox size.
 			$help		= '';
 			$pattern	= "";
 			$required	= false;
