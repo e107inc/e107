@@ -194,17 +194,6 @@ TEMPL;
 		{
 
 			$content = trim($content);
-
-		//	$srch 		= array('src="'.e_HTTP.'thumb.php?','src="/{e_MEDIA_IMAGE}');
-		//	$repl 		= array('src="{e_BASE}thumb.php?','src="{e_BASE}thumb.php?src=e_MEDIA_IMAGE/');
-		//	$content 	= str_replace($srch, $repl, $content);
-
-			// resize the thumbnail to match wysiwyg width/height.
-
-			//    $psrch 		= '/<img[^>]*src="{e_BASE}thumb.php\?src=([\S]*)w=([\d]*)&amp;h=([\d]*)"(.*)width="([\d]*)" height="([\d]*)"/i';
-			//    $prepl 		= '<img src="{e_BASE}thumb.php?src=$1w=$5&amp;h=$6"$4width="$5" height="$6" ';
-
-			//	$content 	= preg_replace($psrch, $prepl, $content);
 			$content = $this->updateImg($content);
 		//	$content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent
 
@@ -307,7 +296,7 @@ TEMPL;
 
 
 			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
-
+/*
 			$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
 			$height = vartrue($img['height'])	? ' height="'.$img['height'].'"' : '';
 			$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
@@ -315,6 +304,8 @@ TEMPL;
 			$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
 			$title 	= vartrue($img['title'])	? ' title="'.$img['title'].'"' : '';
 			$srcset = vartrue($img['srcset'])   ? 'srcset="'.$img['srcset'].'"' : '';
+			*/
+
 
 			$qr = $this->thumbUrlDecode($img['src']);
 
@@ -326,9 +317,43 @@ TEMPL;
 
 			$qr['ebase'] = true;
 
-			$src = e107::getParser()->thumbUrl($qr['src'],$qr);
+		//	$src = e107::getParser()->thumbUrl($qr['src'],$qr);
 
-			$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';
+		//	$replacement = '<img src="'.$src.'" '.$srcset.$style.$alt.$title.$class.$width.$height.' />';
+
+			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
+
+			if(!empty($img['class']))
+			{
+				$tmp = explode(" ",$img['class']);
+				$cls = array();
+				foreach($tmp as $v)
+				{
+					if($v === 'img-rounded' || $v === 'rounded' || $v === 'bbcode' || $v === 'bbcode-img-news' || $v === 'bbcode-img')
+					{
+						continue;
+					}
+
+					$cls[] = $v;
+
+				}
+
+				if(empty($cls))
+				{
+					unset($img['class']);
+				}
+				else
+				{
+					$img['class'] = implode(" ",$cls);
+				}
+
+			}
+
+			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
+
+			$code_text = str_replace(e107::getParser()->getUrlConstants('raw'), e107::getParser()->getUrlConstants('sc'), $qr['src']);
+
+			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
 
 			$text = preg_replace($regexp, $replacement, $text);
 

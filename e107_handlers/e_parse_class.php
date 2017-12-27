@@ -1479,6 +1479,34 @@ class e_parse extends e_parser
 
 	}
 
+
+
+	function parseBBCodes($text, $postID)
+	{
+		if (!is_object($this->e_bb))
+		{
+			require_once(e_HANDLER.'bbcode_handler.php');
+			$this->e_bb = new e_bbcode;
+		}
+
+
+		$text = $this->e_bb->parseBBCodes($text, $postID);
+
+		return $text;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * Converts the text (presumably retrieved from the database) for HTML output.
 	 *
@@ -1687,10 +1715,14 @@ class e_parse extends e_parser
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
 							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?
-							$full_text =$this->replaceConstants($full_text,'abs');
+
+							$full_text = $this->parseBBCodes($full_text, $postID); // parse any embedded bbcodes eg. [img]
+							$full_text = $this->replaceConstants($full_text,'abs'); // parse any other paths using {e_....
 							$full_text = $html_start.$full_text.$html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
+							$parseBB = false; // prevent further bbcode processing.
+
 
 							break;
 
@@ -2764,12 +2796,16 @@ class e_parse extends e_parser
 
 			$staticFile = $this->thumbCacheFile($url, $opts);
 
+
+
 			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE.$staticFile))
 			{
 				$staticImg = $this->staticUrl(e_CACHE_IMAGE_ABS.$staticFile);
 			//	var_dump($staticImg);
 				return $staticImg;
 			}
+
+		//	echo "<br />static-not-found: ".$staticFile;
 
 			$options['nosef'] = true;
 			$options['x'] = null;

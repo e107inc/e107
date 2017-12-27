@@ -70,7 +70,7 @@ class bb_img extends e_bb_base
     //    $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing.
     //    $parmStr = implode(" ",$p);
 
-   //     print_a($imgParms);
+
 
    //     $url = e107::getParser()->thumbUrl($code_text, $resize);
 
@@ -132,8 +132,10 @@ class bb_img extends e_bb_base
 		}
 
 	    $imgParms['title'] = $imgParms['alt'] ;
-        
-        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified
+
+	    $class = !empty($imgParms['class']) ? ' '.$imgParms['class'] : '';
+
+        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img').$class;  //  This will be overridden if a new class is specified
         
         if($mode == 'string')
 		{
@@ -165,7 +167,7 @@ class bb_img extends e_bb_base
         }
         
      
-    
+    var_dump($code_text);
         
 		if (preg_match("#\.php\?.*#",$code_text)){return "";} //XXX Breaks MediaManager Images, so do it after mediaManager check. 
 		
