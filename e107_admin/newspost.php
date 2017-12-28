@@ -110,6 +110,8 @@ class news_admin extends e_admin_dispatcher
 
 
 	}
+
+
 }
 
 
@@ -810,6 +812,42 @@ class news_admin_ui extends e_admin_ui
 
 	}
 
+	function handleListImageBbcodeBatch($selected, $field, $value)
+	{
+		$sql = e107::getDb();
+
+		$status = array();
+
+		$ids = implode(",", e107::getParser()->filter($selected,'int'));
+
+		if($data = $sql->retrieve("news","news_id,news_body","news_id IN (".$ids.") ",true))
+		{
+			foreach($data as $row)
+			{
+				$id = $row['news_id'];
+				$update = array(
+					'news_body' => e107::getBB()->imgToBBcode($row['news_body'], true),
+					'WHERE' => 'news_id = '.$row['news_id']
+				);
+
+				$status[$id] = $sql->update('news',$update) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+			}
+
+		}
+
+		$mes = e107::getMessage();
+
+		foreach($status as $k=>$v)
+		{
+			$mes->add(LAN_UPDATED.": ".$k, $v);
+		}
+
+		return true;
+	}
+
+
+
+
 
 	function init()
 	{
@@ -845,6 +883,13 @@ class news_admin_ui extends e_admin_ui
 			}
 
 		}
+
+
+		if(deftrue('e_DEBUG'))
+		{
+			$this->batchOptions['Modify News body'] = array('image_bbcode'=>"Convert all images in news-body to [img] bbcodes.");
+		}
+
 
 		if(deftrue("ADMINUI_NEWS_VISIBILITY_MULTIPLE")) // bc workaround for those who need it. Add to e107_config.php .
 		{

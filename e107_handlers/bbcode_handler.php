@@ -654,8 +654,104 @@ class e_bbcode
   
         return str_replace(array("<html><body>","</body></html>"),"",$html); 
     }
-        
-    
+
+
+	/**
+	 * Replace all instances of <img> tags with [img] bbcodes - allowing image tags and their 'src' values to remain dynamic.
+	 * @param string $html
+	 * @param bool $fromDB if html source is directly from the database, set to true to handle '&quot;' etc.
+	 * @return string html with <img> tags replaced by [img] bbcodes.
+	 */
+	function imgToBBcode($html, $fromDB = false)
+    {
+
+	    $tp = e107::getParser();
+
+	    if($fromDB === true)
+	    {
+	    	$html = str_replace('&quot;','"', $html);
+	    }
+
+		$arr = $tp->getTags($html,'img');
+
+		$srch = array("?","&");
+		$repl = array("\?","&amp;");
+
+		if(defined('TINYMCE_DEBUG'))
+		{
+			print_a($arr);
+		}
+
+		foreach($arr['img'] as $img)
+		{
+			if(substr($img['src'],0,4) == 'http' || strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			{
+				continue;
+			}
+
+			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
+
+			$qr = $tp->thumbUrlDecode($img['src']); // extract width/height and src from thumb URLs.
+
+			if(substr($qr['src'],0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
+			{
+				$qr['w'] = $img['width'];
+				$qr['h'] = $img['height'];
+			}
+
+			$qr['ebase'] = true;
+
+			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
+
+			if(!empty($img['class']))
+			{
+				$tmp = explode(" ",$img['class']);
+				$cls = array();
+				foreach($tmp as $v)
+				{
+					if($v === 'img-rounded' || $v === 'rounded' || $v === 'bbcode' || $v === 'bbcode-img-news' || $v === 'bbcode-img')
+					{
+						continue;
+					}
+
+					$cls[] = $v;
+
+				}
+
+				if(empty($cls))
+				{
+					unset($img['class']);
+				}
+				else
+				{
+					$img['class'] = implode(" ",$cls);
+				}
+
+			}
+
+			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
+
+			$code_text = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
+
+			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
+
+			$html = preg_replace($regexp, $replacement, $html);
+
+		}
+
+	    if($fromDB === true)
+	    {
+	    	$html = str_replace('"', '&quot;', $html);
+	    }
+
+		return $html;
+
+
+    }
+
+
+
+
     
 	/**
 	 * Convert HTML to bbcode. 

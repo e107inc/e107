@@ -3458,6 +3458,8 @@ class e_admin_controller_ui extends e_admin_controller
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
+
+				e107::getDebug()->log("Checking for batch method: ".$method);
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $value);
@@ -3467,6 +3469,7 @@ class e_admin_controller_ui extends e_admin_controller
 				//handleListBatch(); for custom handling of all field names
 				if(empty($selected)) return $this;
 				$method = 'handle'.$actionName.'Batch';
+				e107::getDebug()->log("Checking for batch method: ".$method);
 				if(method_exists($this, $method))
 				{
 					$this->$method($selected, $field, $value);
@@ -4786,6 +4789,19 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->setTriggersEnabled(false); //disable further triggering
 		parent::manageColumns();
 	}
+
+
+	/**
+	 * Detect if a batch function has been fired.
+	 * @param $batchKey
+	 * @return bool
+	 */
+	public function batchTriggered($batchKey)
+	{
+		return (!empty($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == $batchKey));
+	}
+
+
 
 	/**
 	 * Catch batch submit

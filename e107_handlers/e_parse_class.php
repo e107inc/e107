@@ -2836,6 +2836,56 @@ class e_parse extends e_parser
 
 
 
+	/**
+	 * Split a thumb.php url into an array which can be parsed back into the thumbUrl method. .
+	 * @param $src
+	 * @return array
+	 */
+	function thumbUrlDecode($src)
+	{
+		list($url,$qry) = explode("?",$src);
+
+		$ret = array();
+
+		if(strstr($url,"thumb.php") && !empty($qry)) // Regular
+		{
+			parse_str($qry,$val);
+			$ret = $val;
+		}
+		elseif(preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/',$url,$match)) // SEF
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_MEDIA_IMAGE/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+		}
+		elseif(preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // Theme-image SEF Urls
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_THEME/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+
+		}
+		elseif(defined('TINYMCE_DEBUG'))
+		{
+			print_a("thumbUrlDecode: No Matches");
+
+		}
+
+
+		return $ret;
+	}
+
+
 
 	/**
 	 * Experimental: Generate a Thumb URL for use in the img srcset attribute.
