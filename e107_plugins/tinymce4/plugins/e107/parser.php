@@ -194,7 +194,8 @@ TEMPL;
 		{
 
 			$content = trim($content);
-			$content = $this->updateImg($content);
+		//	$content = $this->updateImg($content);
+			$content = e107::getBB()->imgToBBcode($content);
 		//	$content = $tp->parseBBTags($content,true); // replace html with bbcode equivalent
 
 			if(strip_tags($content, '<i>') == '&nbsp;') // Avoid this: [html]<p>&nbsp;</p>[/html]
@@ -219,65 +220,18 @@ TEMPL;
 	}
 
 
-	/**
-	 * Split a thumb.php url into an array which can be parsed back into the thumbUrl method. .
-	 * @param $src
-	 * @return array
-	 */
-	function thumbUrlDecode($src)
-	{
-		list($url,$qry) = explode("?",$src);
-
-		$ret = array();
-
-		if(strstr($url,"thumb.php") && !empty($qry)) // Regular
-		{
-			parse_str($qry,$val);
-			$ret = $val;
-		}
-		elseif(preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/',$url,$match)) // SEF
-		{
-			$wKey = $match[1].'w';
-			$hKey = $match[3].'h';
-
-			$ret = array(
-				'src'=> 'e_MEDIA_IMAGE/'.$match[5],
-				$wKey => $match[2],
-				$hKey => $match[4]
-			);
-		}
-		elseif(preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // Theme-image SEF Urls
-		{
-			$wKey = $match[1].'w';
-			$hKey = $match[3].'h';
-
-			$ret = array(
-				'src'=> 'e_THEME/'.$match[5],
-				$wKey => $match[2],
-				$hKey => $match[4]
-			);
-
-		}
-		elseif(defined('TINYMCE_DEBUG'))
-		{
-			print_a("thumbUrlDecode: No Matches");
-
-		}
-
-
-		return $ret;
-	}
 
 
 	/**
 	 * Rebuld <img> tags with modified thumbnail size.
+	 * @deprecated @see e107::getBB()->imgToBBcode();
 	 * @param $text
 	 * @return mixed
 	 */
-	function updateImg($text)
+/*	function updateImg($text)
 	{
-
-		$arr = e107::getParser()->getTags($text,'img');
+		$tp = e107::getParser();
+		$arr = $tp->getTags($text,'img');
 
 		$srch = array("?","&");
 		$repl = array("\?","&amp;");
@@ -296,18 +250,19 @@ TEMPL;
 
 
 			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
-/*
-			$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
-			$height = vartrue($img['height'])	? ' height="'.$img['height'].'"' : '';
-			$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
-			$class 	= vartrue($img['class'])	? ' class="'.$img['class'].'"' : '';
-			$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
-			$title 	= vartrue($img['title'])	? ' title="'.$img['title'].'"' : '';
-			$srcset = vartrue($img['srcset'])   ? 'srcset="'.$img['srcset'].'"' : '';
-			*/
+
+	//		$width 	= vartrue($img['width']) 	? ' width="'.$img['width'].'"' : '';
+	//		$height = vartrue($img['height'])	? ' height="'.$img['height'].'"' : '';
+	//		$style 	= vartrue($img['style'])	? ' style="'.$img['style'].'"' : '';
+	//		$class 	= vartrue($img['class'])	? ' class="'.$img['class'].'"' : '';
+	//		$alt 	= vartrue($img['alt'])		? ' alt="'.$img['alt'].'"' : '';
+	//		$title 	= vartrue($img['title'])	? ' title="'.$img['title'].'"' : '';
+	//		$srcset = vartrue($img['srcset'])   ? 'srcset="'.$img['srcset'].'"' : '';
 
 
-			$qr = $this->thumbUrlDecode($img['src']);
+
+
+			$qr = $tp->thumbUrlDecode($img['src']);
 
 			if(substr($qr['src'],0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
 			{
@@ -351,7 +306,7 @@ TEMPL;
 
 			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
 
-			$code_text = str_replace(e107::getParser()->getUrlConstants('raw'), e107::getParser()->getUrlConstants('sc'), $qr['src']);
+			$code_text = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
 
 			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
 
@@ -360,7 +315,7 @@ TEMPL;
 		}
 
 		return $text;
-	}
+	}*/
 
 
 }
