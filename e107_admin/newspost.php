@@ -842,6 +842,8 @@ class news_admin_ui extends e_admin_ui
 			$mes->add(LAN_UPDATED.": ".$k, $v);
 		}
 
+		$this->clearCache();
+
 		return true;
 	}
 
