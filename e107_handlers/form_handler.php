@@ -3083,7 +3083,8 @@ class e_form
 		
 		$opt = array();
 		
-		$homeIcon = e107::getParser()->toGlyph('icon-home.glyph',false);
+		$homeicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-home' : 'icon-home.glyph'; 
+		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
 		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
