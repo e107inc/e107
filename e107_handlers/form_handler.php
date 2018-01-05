@@ -3089,7 +3089,7 @@ class e_form
 		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
 		$text = '<ul class="breadcrumb">
-			<li>';
+			<li class="breadcrumb-item">';
 
 		foreach($array as $val)
 		{
@@ -3111,7 +3111,7 @@ class e_form
 	
 		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
 	
-		$text .= implode($sep."</li><li>",$opt); 
+		$text .= implode($sep."</li><li class='breadcrumb-item'>",$opt); 
 	
 		$text .= "</li></ul>";
 		
