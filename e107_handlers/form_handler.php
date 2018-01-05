@@ -3109,7 +3109,7 @@ class e_form
 			}	
 		}
 	
-		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
+		$sep = (deftrue('BOOTSTRAP')) ? "" : "<span class='divider'>/</span>";
 	
 		$text .= implode($sep."</li><li class='breadcrumb-item'>",$opt); 
 	
