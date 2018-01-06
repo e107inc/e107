@@ -10,6 +10,8 @@
 *
 */
 
+
+$_E107['allow_guest'] = true;
 require_once('class2.php');
 
 e107::coreLan('fpw'); 
