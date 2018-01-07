@@ -395,9 +395,12 @@
 
 								$url = e_REQUEST_SELF . "?id=" . $this->postInfo['post_id'] . "&amp;dl=" . $key;
 
-								if(defset("BOOTSTRAP") == 3)
+								$saveicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-save' : 'icon-save.glyph'; 
+                				$saveicon = e107::getParser()->toGlyph($saveicon,false);
+								
+								if(defset("BOOTSTRAP"))
 								{
-									$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='" . $url . "'>" . $tp->toGlyph('glyphicon-save') . " {$name}</a><br />";
+									$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='" . $url . "'>" . $saveicon . " {$name}</a><br />";
 								}
 								else
 								{
