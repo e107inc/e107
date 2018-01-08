@@ -921,7 +921,7 @@ class news_front
 			$c = 1;
 			foreach($newsList as $row)
 			{
-				$tpl = ($c === 1 && !empty($template['first'])) ? $template['first'] : $template['item'];
+				$tpl = ($c === 1 && !empty($template['first']) && $this->from === 0) ? $template['first'] : $template['item'];
 
 				$text .= $this->ix->render_newsitem($row, 'return', '', $tpl, $param);
 				$c++;
