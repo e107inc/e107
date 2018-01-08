@@ -512,17 +512,13 @@ $DOWNLOAD_TEMPLATE['view']['nextprev'] = "
 */
 
 $DOWNLOAD_TEMPLATE['view']['nextprev'] = '
-    <ul class="pager download-view-nextprev">
-    <li class="previous">
-    	{DOWNLOAD_VIEW_PREV}
-    </li>
-	<li>
-    	{DOWNLOAD_BACK_TO_LIST}
-    </li>
-    <li class="next">
-    	{DOWNLOAD_VIEW_NEXT}
-    </li>
-    </ul>
+<div class="d-flex">
+<ul class="nav mx-auto   pager download-view-nextprev">
+    <li class="nav-item pager-prev pager-next">{DOWNLOAD_VIEW_PREV}</li>
+    <li class="nav-item">{DOWNLOAD_BACK_TO_LIST}</li>
+    <li class="nav-list ext">{DOWNLOAD_VIEW_NEXT}</li>
+</ul>
+</div>
 
 ';
 

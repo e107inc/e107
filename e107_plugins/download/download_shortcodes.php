@@ -409,16 +409,20 @@ class download_shortcodes extends e_shortcode
 		$tp = e107::getParser();
 		$pref = e107::getPref();
 
-      	$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
+				$agreetext = $tp->toJS($tp->toHTML($pref['agree_text'],FALSE,'DESCRIPTION'));
 
-		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
-      
-		if(deftrue('BOOTSTRAP'))
-		{
-			$img = e107::getParser()->toGlyph('icon-download.glyph',false); 
-		//	$img = '<i class="icon-download"></i>'; 
+		switch (deftrue('BOOTSTRAP')) {
+				case 4:
+						$img = e107::getParser()->toGlyph('fa-download',false);
+						break;
+				case 3:
+						$img = e107::getParser()->toGlyph('icon-download.glyph',false);
+						break;
+				default:
+						$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
+						break;
 		}
-	  	
+
      	if ($this->var['download_mirror_type'])
      	{
      		return "<a class='e-tip' title='".LAN_DOWNLOAD."' href='".e_PLUGIN_ABS."download/download.php?mirror.".$this->var['download_id']."'>{$img}</a>";
@@ -691,13 +695,18 @@ class download_shortcodes extends e_shortcode
 
 		$click = "";
 		
-		$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
       
-		if(deftrue('BOOTSTRAP'))
-		{
-			$img = e107::getParser()->toGlyph('download',$parm); // '<i class="icon-download"></i>'; 
-		}	
-		
+		switch (deftrue('BOOTSTRAP')) {
+				case 4:
+						$img = e107::getParser()->toGlyph('fa-download',false);
+						break;
+				case 3:
+						$img = e107::getParser()->toGlyph('icon-download.glyph',false);
+						break;
+				default:
+						$img = "<img src='".IMAGE_DOWNLOAD."' alt='".LAN_DOWNLOAD."' title='".LAN_DOWNLOAD."' />";
+						break;
+		}
 		if ($pref['agree_flag'] == 1) 
 		{
       		$click = " onclick='return confirm(\"".$tp->toJS($tp->toHTML($pref['agree_text'],true,'emotes, no_tags'))."\")'";
@@ -944,11 +953,21 @@ class download_shortcodes extends e_shortcode
       	{
       		$dlrowrow = $sql->fetch();
 			
-			$url = e107::url('download', 'item', $dlrowrow);
-
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-left') : '&lt;&lt;';
+					$url = e107::url('download', 'item', $dlrowrow);
+		
+					switch (deftrue('BOOTSTRAP')) {
+							case 4:
+									$icon =  $tp->toGlyph('fa-arrow-left');
+									break;
+							case 3:
+									$icon =  $tp->toGlyph('chevron-left');
+									break;
+							default:
+									echo '&lt;&lt;';
+									break;
+				}
 			
-	    	return "<a class='e-tip' href='".$url ."' title=\"".$dlrowrow['download_name']."\">".$icon." ".LAN_PREVIOUS."</a>\n";
+	    	return "<a class='nav-link e-tip' href='".$url ."' title=\"".$dlrowrow['download_name']."\">".$icon." ".LAN_PREVIOUS."</a>\n";
    		
       	//	return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$dlrowrow['download_id']."'>&lt;&lt; ".LAN_dl_33." [".$dlrowrow['download_name']."]</a>\n";
       	}
@@ -973,9 +992,19 @@ class download_shortcodes extends e_shortcode
 			extract($dlrowrow);
 			$url = 	$url = e107::url('download', 'item', $dlrowrow);
 
-			$icon = (deftrue('BOOTSTRAP')) ? $tp->toGlyph('chevron-right') : '&gt;&gt;';
+			switch (deftrue('BOOTSTRAP')) {
+				case 4:
+						$icon =  $tp->toGlyph('fa-arrow-right');
+						break;
+				case 3:
+						$icon =  $tp->toGlyph('chevron-right');
+						break;
+				default:
+						echo '&lt;&lt;';
+						break;
+			}
 
-			return "<a class='e-tip' href='".$url."' title=\"".$dlrowrow['download_name']."\">".LAN_NEXT." ".$icon."</a>\n";
+			return "<a class='nav-link e-tip' href='".$url."' title=\"".$dlrowrow['download_name']."\">".LAN_NEXT." ".$icon."</a>\n";
    		 
       //		return "<a href='".e_PLUGIN_ABS."download/download.php?action=view&id=".$dlrowrow['download_id']."'>[".$dlrowrow['download_name']."] ".LAN_dl_34." &gt;&gt;</a>\n";
       	}
@@ -996,7 +1025,7 @@ class download_shortcodes extends e_shortcode
 		$title = "Back to [x]";
 		
 		
-		return "<a class='e-tip' title=\"".e107::getParser()->lanVars($title,array('x'=>$this->var['download_category_name']))."\" href='".$url."'>".LAN_BACK."</a>";
+		return "<a class='nav-link e-tip' title=\"".e107::getParser()->lanVars($title,array('x'=>$this->var['download_category_name']))."\" href='".$url."'>".LAN_BACK."</a>";
    }
    
    function sc_download_back_to_category_list()
@@ -1062,7 +1091,7 @@ class download_shortcodes extends e_shortcode
 	   if (!$source) return "&nbsp;";
 	 //  list($ret[TRUE],$ret[FALSE]) = explode(chr(1), $source.chr(1)); //XXX ???
 	//   if (!$ret[FALSE]) $ret[FALSE] = $ret[TRUE]; //XXX ???
-	    $parms = array('legacy'=> "{e_IMAGE}icons/");
+	    $parms = array('legacy'=> "{e_IMAGE_ABS}icons/");
 	   return e107::getParser()->toIcon($source, $parms);
 		//return "<img src='".e_IMAGE."icons/{$ret[($count!=0)]}' alt='*'/>";
 	}
