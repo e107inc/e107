@@ -533,8 +533,8 @@ class e_form
 
 
 			
-			$active = ($key ==$initTab) ? ' class="active"' : '';
-			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
+			$active = ($key ==$initTab) ? ' class="nav-item active"' : ' class="nav-item"';
+			$text .= '<li'.$active.'><a class="nav-link" href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 		
