@@ -5540,14 +5540,18 @@ class e_form
 			break;
 
 			case 'layouts': //to do - exclude param (exact match)
-				$location = varset($parms['plugin']); // empty - core
-				$ilocation = vartrue($parms['id'], $location); // omit if same as plugin name
-				$where = vartrue($parms['area'], 'front'); //default is 'front'
-				$filter = varset($parms['filter']);
-				$merge = vartrue($parms['merge']) ? true : false;
 
+				$location   = varset($parms['plugin']); // empty - core
+				$ilocation  = vartrue($parms['id'], $location); // omit if same as plugin name
+				$where      = vartrue($parms['area'], 'front'); //default is 'front'
+				$filter     = varset($parms['filter']);
+				$merge      = isset($parms['merge']) ? (bool) $parms['merge'] : true;
 
-				if($tmp = e107::getTemplateInfo($location,$ilocation, null,true,$merge)) // read xxxx_INFO array from template file.
+				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, false);
+
+				return vartrue($parms['pre'],'').$this->select($key, $layouts,$value,$parms).vartrue($parms['post'],'');
+
+			/*	if($tmp = e107::getTemplateInfo($location,$ilocation, null,true,$merge)) // read xxxx_INFO array from template file.
 				{
 					$opt = array();
 					foreach($tmp as $k=>$inf)
@@ -5556,10 +5560,11 @@ class e_form
 					}
 
 					return vartrue($parms['pre'],'').$this->select($key,$opt,$value,$parms).vartrue($parms['post'],'');
-				}
+				}*/
 
-				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, true);
 
+
+/*
 				if(varset($parms['default']) && !isset($layouts[0]['default']))
 				{
 					$layouts[0] = array('default' => $parms['default']) + $layouts[0];
@@ -5574,8 +5579,10 @@ class e_form
 					}
 				}
 
+				*/
+
 				//$this->selectbox($key, $layouts, $value)
-				$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value,array('sep'=>"<br />"), $info));
+			//	$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value,array('sep'=>"<br />"), $info));
 			break;
 
 			case 'templates': //to do - exclude param (exact match)
