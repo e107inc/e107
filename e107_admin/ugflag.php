@@ -51,18 +51,19 @@ if(isset($_POST['updatesettings']))
 	{
 		e107::getLog()->add(($pref['maintainance_flag'] == 0) ? 'MAINT_02' : 'MAINT_01', $pref['maintainance_text'], E_LOG_INFORMATIVE, '');
 		save_prefs();
-		$mes->addSuccess(UGFLAN_1);
+	//	$mes->addSuccess(UGFLAN_1);
 	}
 	else
 	{
 		$mes->addInfo(LAN_NO_CHANGE);
 	}
 
+	$pref = e107::getConfig('core', true, true)->getPref();
 		
 	if(!e_AJAX_REQUEST)
 	{
-		header("location:".e_SELF);
-		exit();
+	//	header("location:".e_SELF);
+	//	exit();
 	}
 }
 
