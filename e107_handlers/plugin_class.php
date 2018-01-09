@@ -247,8 +247,8 @@ class e_plugin
 
 		$link = $this->_data[$this->_plugdir]['adminLinks']['link'][0]['@attributes'];
 
-		$k = array(16 => 'iconSmall', 32 => 'icon', 128=>'icon128');
-		$def = array(16 => E_16_PLUGIN, 32 => E_32_PLUGIN);
+		$k = array(16 => 'iconSmall', 24 => 'icon', 32 => 'icon', 128=>'icon128');
+		$def = array(16 => E_16_PLUGIN, 24 => E_24_PLUGIN, 32 => E_32_PLUGIN);
 
 		$key = $k[$size];
 
