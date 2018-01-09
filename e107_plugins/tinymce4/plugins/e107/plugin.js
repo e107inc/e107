@@ -219,6 +219,8 @@
 		_e107_bbcode2html : function(s, url) {
 			s = tinymce.trim(s);
 
+		// FIXME mod-security might block the ajax call below with Rules: 942230, 949110, 980130 - reason yet unknown.
+
 		//	return s;
 
 			var p = $.ajax({

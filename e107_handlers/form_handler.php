@@ -533,8 +533,8 @@ class e_form
 
 
 			
-			$active = ($key ==$initTab) ? ' class="active"' : '';
-			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
+			$active = ($key ==$initTab) ? ' class="nav-item active"' : ' class="nav-item"';
+			$text .= '<li'.$active.'><a class="nav-link" href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 		
@@ -3083,13 +3083,14 @@ class e_form
 		
 		$opt = array();
 		
-		$homeIcon = e107::getParser()->toGlyph('icon-home.glyph',false);
+		$homeicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-home' : 'icon-home.glyph'; 
+		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
 		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
 		$text = '<ul class="breadcrumb">
-			<li>';
+			<li class="breadcrumb-item">';
 
 		foreach($array as $val)
 		{
@@ -3109,9 +3110,9 @@ class e_form
 			}	
 		}
 	
-		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
+		$sep = (deftrue('BOOTSTRAP')) ? "" : "<span class='divider'>/</span>";
 	
-		$text .= implode($sep."</li><li>",$opt); 
+		$text .= implode($sep."</li><li class='breadcrumb-item'>",$opt); 
 	
 		$text .= "</li></ul>";
 		

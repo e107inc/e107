@@ -179,6 +179,7 @@ class plugin_ui extends e_admin_ui
 		protected $table			= 'plugin';
 		protected $pid				= 'plugin_id';
 		protected $perPage			= 10;
+
 		protected $batchDelete		= false;
 		protected $batchExport     = false;
 		protected $batchCopy		= false;
@@ -1292,7 +1293,7 @@ class plugin_online_ui extends e_admin_ui
 			// do the request, retrieve and parse data
 			$xdata = $mp->call('getList', array(
 				'type' => 'plugin',
-				'params' => array('limit' => 10, 'search' => $srch, 'from' => $from)
+				'params' => array('limit' => $this->perPage, 'search' => $srch, 'from' => $from)
 			));
 			$total = $xdata['params']['count'];
 
@@ -1410,12 +1411,9 @@ class plugin_online_ui extends e_admin_ui
 				</form>
 			";
 
-			$amount = 30;
-
-
-			if($total > $amount)
+			if($total > $this->perPage)
 			{
-				$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;action=list&amp;frm=[FROM]';
+				$parms = $total.",".$this->perPage.",".$from.",".e_SELF.'?mode=online&amp;action=list&amp;frm=[FROM]';
 
 				if(!empty($srch))
 				{
@@ -2562,12 +2560,9 @@ class pluginManager{
 			</form>
 		";
 		
-		$amount = 30;
-		
-		
-		if($total > $amount)
+		if($total > $this->perPage)
 		{
-			$parms = $total.",".$amount.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
+			$parms = $total.",".$this->perPage.",".$from.",".e_SELF.'?mode=online&amp;frm=[FROM]';
 
 			if(!empty($srch))
 			{
@@ -4250,7 +4245,7 @@ $content .= '}';
 			$frm = e107::getForm();	
 			list($cat,$type) = explode("-",$info);
 			
-			$size 		= 30;
+			$size 		= 30; // Textbox size.
 			$help		= '';
 			$pattern	= "";
 			$required	= false;
