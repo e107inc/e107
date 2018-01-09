@@ -5404,7 +5404,8 @@ class e_form
 
 				if(!empty($attributes['multilan']))
 				{
-					$ret = "<span class='input-group input-xxlarge'>".$ret."</span>";
+					$msize = vartrue($parms['size'], 'xxlarge');
+					$ret = "<span class='input-group input-".$msize."'>".$ret."</span>";
 				}
 				
 			break;
