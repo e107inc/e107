@@ -145,7 +145,7 @@ class admin_start
 			e_PLUGIN."pm/sendpm.sc",
 			e_PLUGIN."pm/shortcodes/",
 			e_PLUGIN."social/e_header.php",
-		//	e_PLUGIN."download/url/url.php",
+		//	e_PLUGIN."download/url/url.php", // removed by download_setup.php
 		//	e_PLUGIN."download/url/sef_url.php",
 		);
 
