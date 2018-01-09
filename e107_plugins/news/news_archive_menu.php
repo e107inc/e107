@@ -29,12 +29,8 @@ foreach($tmp as $id => $val)
 	// e107::getDebug()->log($val);
 }
 
-
-
-
-
-$text = "<ul class='news-archive-menu'>";
-
+$template = e107::getTemplate('news', 'news_menu', 'archive');      
+  
 foreach($arr as $year=>$val)
 {
 	if($year == date('Y'))
@@ -49,51 +45,61 @@ foreach($arr as $year=>$val)
 	}
 
 	$id = "news-archive-".$year;
-	$text .= "<li>";
-	$text .= "<a class='e-expandit {$expandOpen}' href='#".$id."'>".$year."</a>";
-	$text .= "<ul id='".$id."' class='news-archive-menu-months' style='display:".$displayYear."'>";
+ 
 
+  $var = array('EXPANDOPEN' => $expandOpen,
+               'YEAR_ID' => $id,
+               'YEAR_NAME' => $year,
+               'YEAR_DISPLAY' => $displayYear
+ 
+   );
+ 
+  $text .=  $tp->simpleParse($template['year_start'], $var);
+ 
 		foreach($val as $month=>$items)
 		{
 			//$displayMonth = ($mCount === 1) ? 'display:block': 'display:none';
 
 			$idm = "news-archive-".$year.'-'.$month;
 
-			$text .= "<li>";
-			$text .= "<a class='e-expandit' href='#".$idm."'>".$monthLabels[$month];
-
+      $var = array('MONTH_ID'   => $idm,
+                   'MONTH_NAME' => $monthLabels[$month],
+                   'MONTH_COUNT'=> count($items),
+      );
+         
+			$text .=  $tp->simpleParse($template['month_start'], $var);
+ 
+      /*
 			if(!empty($parm['badges'])) // param only (no menu-manager config. To be replaced by template.
 			{
 				$num = count($items);
 				$text .= "<span class='badge'>".$num."</span>";
-			}
-
-			$text .= "</a>";
-			$text .= "<ul id='".$idm."' class='news-archive-menu-items' style='display:none'>";
+			} */
+ 
 
 			foreach($items as $row)
 			{
 				$url = e107::getUrl()->create('news/view/item', $row, array('allow' => 'news_sef,news_title,news_id,category_sef,category_name,category_id'));
-				$text .= "<li><a href='".$url."'>".$tp->toHtml($row['news_title'],false,'TITLE')."</a></li>";
-
+        $var = array('ITEM_URL'   => $url,
+                     'ITEM_TITLE' => $tp->toHtml($row['news_title'],false,'TITLE'),
+        );      
+        $text .=  $tp->simpleParse($template['item'], $var);
 			}
-			$text .= "</ul>";
-			$text .= "</li>";
-
+			$text .= $template['month_end'];
 		}
-	$text .= "</ul>";
-	$text .= "</li>";
+ 
+	$text .= $template['year_end'];
 
 }
-$text .= "</ul>";
 
-
-
-$caption = !empty($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] : LAN_NEWSARCHIVE_MENU_TITLE;
+$start =  $template['start'];   
+$end = $template['end']; ;
 
 e107::plugLan('news');
 
-e107::getRender()->tablerender($caption, $text, 'news-archive-menu');
+$caption = !empty($parm['caption'][e_LANGUAGE]) ? $parm['caption'][e_LANGUAGE] : LAN_NEWSARCHIVE_MENU_TITLE;
+
+
+e107::getRender()->tablerender($caption, $start.$text.$end, 'news-archive-menu');
 
 //e107::getDebug()->log($arr);
-
