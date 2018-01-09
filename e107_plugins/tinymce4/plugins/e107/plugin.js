@@ -22,6 +22,14 @@
 				e.content = t['_' + dialect + '_bbcode2html'](e.content, url);
 			});
 
+			ed.on('change', function(e) {
+			//	  console.log('the event object ', e);
+			//	console.log(e);
+           	//	console.log('the editor object ', ed);
+           //		console.log('the content ', ed.getContent());
+			});
+
+
 		//	ed.contentCSS.push(url+'/e107.css');
 
 
@@ -41,29 +49,55 @@
 
 			});
 			
-		/*
+
 		// Emoticons 
-			ed.addButton('e107-bbcode', {
-				text: 'bbcode',
-				icon: 'emoticons',
+		//	ed.addButton('e107-bbcode', {
+				ed.addMenuItem('e107-bbcode', {
+				text: 'e107 BBcode',
+				context: 'insert',
+				icon: 'code',
 				onclick: function() {
 					// Open window
 										
 					ed.windowManager.open({
-						title: 'Example plugin',
+						title: 'Insert e107 BBcode',
 						body: [
-							{type: 'textbox', name: 'code', label: 'BbCode'},
-                            {type: 'textbox', name: 'parm', label: 'Parameters'}
+							{type: 'textbox', name: 'code', label: 'BbCode', text: 'widget', size: 80, tooltip: 'eg. [b]bold[/b]', autofocus: true} //,
+                        //    {type: 'textbox', name: 'parm', label: 'Parameters'}
 						],
 						onsubmit: function(e) {
+
+							s = e.data.code;
+							s = s.trim(s);
+
+							var html = $.ajax({
+								type: 'POST',
+								url: url +'/parser.php',
+								data: { content: s, mode: 'tohtml' },
+								async       : false,
+
+								dataType: 'html',
+								success: function(html) {
+								  return html;
+								}
+							}).responseText;
+
+							html = '<x-bbcode alt=\"'+btoa(s)+'\">' + html + '</x-bbcode>   ' ;
+
+
+
+							
+
 							// Insert content when the window form is submitted
-							ed.insertContent('Title: ' + e.data.title);
+					//		console.log(url);
+					//		console.log(html);
+							ed.insertContent(html);
 						}
 					});
 				}
 			});
 			
-			*/
+
 			// Media Manager Button 
 			ed.addButton('e107-image', {
 				text: '',
@@ -118,7 +152,32 @@
 					});
 				}
 			});
-			
+
+
+		// TODO place animate.css options in here --------------
+  		ed.addButton('e107-animate', { //TODO  MUST added 'e107-animate' button to templates/mainadmin.xml
+
+            type: 'menubutton',
+
+            text: 'todo',
+
+           icon: 'charmap',
+
+            menu: [
+
+                { text: 'fadeIn', onclick: function() {tinymce.activeEditor.formatter.toggle('alignleft');}}, // TODO get this working to toggle css classes.
+
+                { text: 'fadeInDown', onclick: function() {tinymce.activeEditor.formatter.toggle('aligncenter');}},
+
+                { text: 'fadeInDownBig', onclick: function() {tinymce.activeEditor.formatter.toggle('alignright');}},
+
+                { text: 'fadeInLeft', onclick: function() {tinymce.activeEditor.formatter.toggle('alignjustify');}},
+
+            ]
+
+        });
+
+		// -------------------
 			
 		},
 

@@ -132,9 +132,11 @@ class media_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_IMA_M_01, 'perm' => 'A'),
 	//	'main/create' 		=> array('caption'=> "Add New Media", 'perm' => 'A'), // Should be handled in Media-Import.
 		'main/import' 		=> array('caption'=> LAN_IMA_M_02, 'perm' => 'A|A1'),
+			'divider/01'        => array('divider'=>true),
 		'cat/list' 			=> array('caption'=> LAN_IMA_M_03, 'perm' => 'A|A2'),
 		'cat/create' 		=> array('caption'=> LAN_IMA_M_04, 'perm' => 'A|A2'), // is automatic.
 	//	'main/settings' 	=> array('caption'=> LAN_PREFS, 'perm' => 'A'), // legacy
+		'divider/02'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'A'),
 		'main/avatar'		=> array('caption'=> LAN_IMA_M_05, 'perm' => 'A')
 	);
@@ -157,7 +159,8 @@ class media_admin extends e_admin_dispatcher
 
 
 	protected $adminMenuAliases = array(
-		'main/edit'	=> 'main/list'
+		'main/edit'	=> 'main/list',
+		'main/grid' => 'main/list'
 	);
 
 	protected $menuTitle = LAN_MEDIAMANAGER;
@@ -178,6 +181,8 @@ class media_cat_ui extends e_admin_ui
 		protected $listOrder = 'media_cat_owner asc';
 
 	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
+
+
 
 		protected $fields = array(
 			//'checkboxes'				=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
@@ -358,7 +363,7 @@ class media_form_ui extends e_admin_form_ui
 		asort($this->cats);*/
 	//	require(e_HANDLER.'phpthumb/ThumbLib.inc.php');	// For resizing on import. 
 				
-		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__rotate_cw' || varset($_POST['etrigger_batch']) == 'options__rotate_ccw'))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
@@ -368,14 +373,26 @@ class media_form_ui extends e_admin_form_ui
 		}
 		
 		
-		if(varset($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__resize_2048' ))
 		{
 			$type = str_replace('options__','',$_POST['etrigger_batch']);
 			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
 			$this->resizeImages($ids,$type);
 		}
+
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__convert_to_jpeg' ))
+		{
+		//	$type = str_replace('options__','',$_POST['etrigger_batch']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
+			$this->convertImagesToJpeg($ids);
+		}
 		
-		
+		if(!empty($_POST['multiselect']) && varset($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == 'options__convert_all_to_jpeg' ))
+		{
+		//	$type = str_replace('options__','',$_POST['etrigger_batch']);
+			$ids = implode(",", e107::getParser()->filter($_POST['multiselect'],'int'));
+			$this->convertImagesToJpeg($ids,'all');
+		}
 		
 	}
 	
@@ -521,6 +538,55 @@ class media_form_ui extends e_admin_form_ui
 		
 		
 	}
+
+	private function convertImagesToJpeg($ids,$mode=null)
+	{
+		$sql = e107::getDb();
+		$tp = e107::getParser();
+		$mm = e107::getMedia();
+
+		$insert = empty($mode) ? "media_id IN (".$ids.") AND " : " media_size > 225000 AND ";
+
+		$data = $sql->retrieve("core_media","media_id,media_url", $insert."(media_type = 'image/png' OR media_type = 'image/gif') ", true, true);
+
+		if(empty($data))
+		{
+			return null;
+		}
+
+		foreach($data as $row)
+		{
+			$path = $tp->replaceConstants($row['media_url']);
+
+			if($jpegFile = $mm->convertImageToJpeg($path,true))
+			{
+				$url = $tp->createConstants($jpegFile);
+				$size = filesize($jpegFile);
+
+				$update = array (
+					'media_size'    => $size,
+					'media_url'     => $url,
+					'media_type'    => 'image/jpeg',
+					'WHERE'         => 'media_id = '.$row['media_id']
+				);
+
+				$message = basename($path).SEP.basename($url);
+
+				if($sql->update("core_media",$update))
+				{
+					e107::getMessage()->addSuccess($message);
+				}
+				else
+				{
+					e107::getMessage()->addError($message);
+				}
+
+			}
+
+		}
+
+
+	}
 	
 	
 	public function resize_dimensions($curval) // ie. never manually resize another image again!
@@ -576,16 +642,24 @@ class media_form_ui extends e_admin_form_ui
 		//return print_a($_GET,true);
 		if($value == 'batch')
 		{
-			return array(
-				"resize_2048"	=> "Reduce Oversized Images",
-				"rotate_cw"		=> "Rotate 90&deg; cw",
-				"rotate_ccw"	=> "Rotate 90&deg; ccw"				
-			);	
+			$arr =  array(
+					"resize_2048"	    => "Reduce Oversized Images",
+					"rotate_cw"		    => "Rotate 90&deg; cw",
+					"rotate_ccw"	    => "Rotate 90&deg; ccw",
+					'convert_to_jpeg'   => "Convert to jpeg format"
+			);
+
+			if(deftrue('e_DEBUG'))
+			{
+				$arr['convert_all_to_jpeg']   = "Convert All Oversized to jpeg format"; // rare situations.
+			}
+
+			return $arr;
 		}
 		
 		if($_GET['action'] == 'edit')
 		{
-			return;
+			return null;
 		}	
 		
 		$tagid = vartrue($_GET['tagid']);
@@ -621,7 +695,7 @@ class media_form_ui extends e_admin_form_ui
 		{
 			$text = $this->renderValue('options',$value,'',$id);
 		}
-		
+
 		return "<div class='nowrap'>".$text."</div>";
 		
 	}
@@ -635,6 +709,14 @@ class media_form_ui extends e_admin_form_ui
 		switch($mode)
 		{
 			case 'read':
+				if($this->getController()->getAction() === 'grid')
+				{
+					$tp = e107::getParser();
+					$img = $this->getController()->getFieldVar('media_url');
+					$size = 400;
+					return $tp->toImage($img, array('w'=>$size,'h'=>$size, 'crop'=>1));
+				}
+
 				$attributes['readParms'] = 'thumb=60&thumb_urlraw=0&thumb_aw=60';
 				$val 	= $this->getController()->getListModel()->get('media_url');	
 			break;
@@ -651,6 +733,39 @@ class media_form_ui extends e_admin_form_ui
 		}
 
 		return $this->renderValue('media_preview', $val, $attributes, $id);
+	}
+
+
+	function media_sef($curVal, $mode, $attributes, $id=null)
+	{
+
+		$val = $this->getController()->getFieldVar('media_url');
+
+		$parm = array('w'=>800);
+		$path = e107::getParser()->thumbUrl($val,$parm);
+
+		$base = '';
+		switch($mode)
+		{
+		/*	case 'read':
+				return ltrim($path, e_HTTP);
+			break;*/
+
+			case 'read':
+			case 'write':
+			//	$attributes['readParms'] = 'thumb=180&thumb_urlraw=0&thumb_aw=180';
+			//	$val 	= $this->getController()->getModel()->get('media_url');
+				$url = SITEURLBASE.$path;
+				return "<a href='".$url."' rel='external' title='".LAN_EFORM_010."'><small>".$url."</small></a>";
+			break;
+
+			case 'filter':
+			case 'batch':
+				return '';
+			break;
+		}
+
+
 	}
 
 
@@ -710,6 +825,9 @@ class media_admin_ui extends e_admin_ui
 		public $deleteConfirmScreen = true;
 		public $deleteConfirmMessage = IMALAN_129;
 
+		protected $grid             = array('title'=>'media_name', 'image'=>'media_preview', 'body'=>'',  'class'=>'col-md-2', 'perPage'=>12, 'carousel'=>false);
+
+
 
     	protected $preftabs			= array(IMALAN_78,IMALAN_89, "Youtube"); 
     	 
@@ -719,12 +837,13 @@ class media_admin_ui extends e_admin_ui
       		'media_preview'			=> array('title'=> LAN_PREVIEW, 		'type'=>'method', 		'data'=>false, 	'forced'=>true, 'width' => '110px', 'thclass' => 'center', 'class'=>'center'),
       		'media_url' 			=> array('title'=> IMALAN_110,			'type' => 'text',		'data'=> 'str',	'inline'=>false,	'thclass' => 'left', 'class'=>'left', 'width' => 'auto', 'writeParms'=>'size=xxlarge'),
 			'media_category' 		=> array('title'=> LAN_CATEGORY,	'type' => 'comma',	'inline'=>false,	'data'=> 'str',		'width' => '10%', 'filter' => true, 'batch' => true, 'class'=>'left'),
-			
 		// Upload should be managed completely separately via upload-handler.
        	//	'media_upload' 			=> array('title'=> "Upload File",	'type' => 'upload',		'data'=> false,		'readParms' => 'hidden', 'writeParms' => 'disable_button=1', 'width' => '10%', 'nolist' => true),
 			'media_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
 			'media_caption' 		=> array('title'=> LAN_CAPTION,		'type' => 'text',		'data'=> 'str',		'inline'=>true, 'width' => 'auto', 'writeParms'=>array('size'=>'xxlarge')),
          	// media_description is type = textarea until bbarea can be reduced to not include youtube etc
+   		    'media_sef'             => array('title'=> LAN_URL,   'readonly'=>1,    'type'=>'method', 'data'=>false),
+
          	'media_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'textarea',		'data'=> 'str',		'width' => 'auto', 'thclass' => 'left first', 'readParms' => 'truncate=100', 'writeParms' => 'size=xxlarge&counter=0'),
          	'media_type' 			=> array('title'=> IMALAN_118,		'type' => 'dropdown',		'data'=> 'str',		'filter'=>true, 'width' => 'auto', 'noedit'=>TRUE),
 			'media_author' 			=> array('title'=> LAN_USER,		'type' => 'user',		'data'=> 'int', 	'width' => 'auto', 'thclass' => 'center', 'class'=>'center','readParms' => 'link=1', 'filter' => true, 'batch' => true, 'noedit'=>TRUE	),
@@ -760,10 +879,13 @@ class media_admin_ui extends e_admin_ui
 		'image_post_class' 				=> array('title'=> IMALAN_10, 'type' => 'userclass', 'data'=>'int', 'writeParms'=>'help=IMALAN_11&classlist=public,guest,nobody,member,admin,main,classes' ),
 		'image_post_disabled_method'	=> array('title'=> IMALAN_12, 'type' => 'boolean','writeParms'=>'enabled=IMALAN_15&disabled=IMALAN_14'),
 		'resize_method'					=> array('title'=> IMALAN_3, 'type'=>'method', 'data'=>'str'),
-		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_74'),
-	
-		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
-		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'help=IMALAN_76'),
+		'thumbnail_quality'				=> array('title'=> IMALAN_73, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_74),
+	//	'convert_to_jpeg'				=> array('title'=> IMALAN_182, 'type'=>'number', 'data'=>'int', 'writeParms'=> array('tdClassRight'=>'form-inline', 'post'=> CORE_LAN_KB), 'help'=>IMALAN_183),
+
+		'convert_to_jpeg'				=> array('title'=> IMALAN_182, 'type'=>'boolean', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_183),
+
+		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
+		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
 		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
 		
 		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
@@ -862,6 +984,8 @@ class media_admin_ui extends e_admin_ui
 
 	function init()
 	{
+
+
 		$this->prefs['youtube_apikey']['writeParms']['post'] = " <a target='_blank' href='https://code.google.com/apis/console/'>".LAN_MORE."</a>";
 
 		if(E107_DEBUG_LEVEL > 0)
@@ -933,6 +1057,11 @@ class media_admin_ui extends e_admin_ui
 		e107::getCache()->clearAll('image');
 		
 	//	print_a($_GET);
+
+
+
+
+
 		
 		if($this->getAction() == 'youtube')
 		{
@@ -982,10 +1111,11 @@ class media_admin_ui extends e_admin_ui
 		}
 		
 		
-		
+
 
 		if($this->getQuery('iframe'))
 		{
+
 		// 	e107::js('tinymce4','plugins/compat3x/tiny_mce_popup.js');
  			$this->getResponse()->setIframeMod(); // disable header/footer menus etc. 
  			
@@ -1011,9 +1141,8 @@ class media_admin_ui extends e_admin_ui
 
 	function navPage() // no functioning correctly - see e_AJAX_REQUEST above. 
 	{
-	
-		
-		$bbcodeMode = ($this->getQuery('bbcode')=='img') ? 'bbcode=img' : FALSE;
+
+		$bbcodeMode = ($this->getQuery('bbcode') =='img' ) ? 'bbcode=img' : FALSE;
 						
 		if($_GET['from'])
 		{
@@ -1029,11 +1158,26 @@ class media_admin_ui extends e_admin_ui
 	}
 	
 
-		
+	public function ListAjaxObserver()
+	{
+		$cat = $this->getQuery('for');
+		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? true : false;
+
+		if($file === true) // Make sure dialog mode is used when ajax searches occur.
+		{
+			$this->setQuery('action','dialog');
+			$this->setFileListMode($cat);
+		}
+
+		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, 0, false, $this->listQry))->load();
+	}
+
 
 
 	function dialogPage() // Popup dialogPage for Image Selection. 
 	{
+
+
 		$cat = $this->getQuery('for');		
 		$file	= (preg_match('/_file(_[\d]{1,2})?$/',$cat)) ? TRUE : FALSE;
 		$mes = e107::getMessage();
@@ -1052,35 +1196,13 @@ class media_admin_ui extends e_admin_ui
 		
 		if($file)
 		{
-			$cat = e107::getParser()->toDB($cat);
-			if(!isset($this->cats[$cat]))
-			{
-				return;
-			}
-			
-			$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE m.media_category = '".$cat."' "; // without any Order or Limit.
-			
-			unset($this->fields['checkboxes']);
-			$this->fields['options']['type'] = 'method';
-			$this->fields['media_category']['nolist'] = true;
-			$this->fields['media_userclass']['nolist'] = true;
-			$this->fields['media_dimensions']['nolist'] = true;
-			$this->fields['media_description']['nolist'] = true;
-			$this->fields['media_type']['nolist'] = true;
-			
-			foreach($this->fields as $k=>$v)
-			{
-				$this->fields[$k]['filter'] = false;	
-			}	
-
-
+			$this->setFileListMode($cat);
 
 			echo $this->mediaSelectUpload('file');
 
 			$tagid = e107::getParser()->filter($this->getQuery('tagid'));
 
 			echo '<div class="media-select-file-footer"><a class="btn btn-danger e-media-select-file-none e-dialog-close" data-target="'.$tagid.'"  data-target-label="'.LAN_CHOOSE_FILE.'" href="#" ><span><i class="fa fa-ban"></i> '.IMALAN_167.'</span></a></div>';
-
 
 
 		}
@@ -1091,7 +1213,34 @@ class media_admin_ui extends e_admin_ui
 		
 	}
 	
-	
+	private function setFileListMode($cat)
+	{
+		$cat = e107::getParser()->toDB($cat);
+
+		if(!isset($this->cats[$cat]))
+		{
+			return;
+		}
+
+		$this->listQry = "SELECT m.*,u.user_id,u.user_name FROM #core_media AS m LEFT JOIN #user AS u ON m.media_author = u.user_id WHERE FIND_IN_SET('".$cat."', m.media_category)  "; // without any Order or Limit.
+
+		unset($this->fields['checkboxes']);
+		$this->fields['options']['type'] = 'method';
+		$this->fields['media_category']['nolist'] = true;
+		$this->fields['media_userclass']['nolist'] = true;
+		$this->fields['media_dimensions']['nolist'] = true;
+		$this->fields['media_description']['nolist'] = true;
+		$this->fields['media_type']['nolist'] = true;
+		$this->fields['media_url']['nolist'] = true;
+		$this->fields['media_sef']['nolist'] = true;
+
+		foreach($this->fields as $k=>$v)
+		{
+			$this->fields[$k]['filter'] = false;
+		}
+
+
+	}
 	
 	
 	function uploadTab()
@@ -1450,8 +1599,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			$items[] = array( 
 					'previewUrl'	=> 'fa fa-'.$val,
-					'saveValue'		=> $val.'.glyph',
-					'thumbUrl'		=> $val,
+					'saveValue'		=> 'fa-'.$val.'.glyph',
+					'thumbUrl'		=> 'fa-'.$val,
 					'title'			=> $val,
 					'slideCaption'	=> 'Font-Awesome 4',
 					'slideCategory'	=> 'font-awesome'
@@ -1468,6 +1617,7 @@ class media_admin_ui extends e_admin_ui
 			foreach($custom as $glyphConfig)
 			{
 
+
 				$tmp = e107::getMedia()->getGlyphs($glyphConfig,$glyphConfig['prefix']);
 
 				if(!empty($tmp))
@@ -1475,7 +1625,7 @@ class media_admin_ui extends e_admin_ui
 					foreach($tmp as $val)
 					{
 						$items[] = array(
-							'previewUrl'	=> $val,
+							'previewUrl'	=> $glyphConfig['class']." ".$val,
 							'saveValue'		=> $val.'.glyph',
 							'thumbUrl'		=> $val,
 							'title'			=> $val,
@@ -2401,6 +2551,20 @@ class media_admin_ui extends e_admin_ui
 	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
 
+		if(!empty($deleted_data['media_url']))
+		{
+			$status = e107::getFile()->delete($deleted_data['media_url']);
+
+			$message = ($status !== false) ? LAN_UI_FILE_DELETED : LAN_UI_FILE_DELETED_FAILED;
+
+			$mes = e107::getParser()->lanVars($message,$deleted_data['media_url'], true);
+
+			$errType = ($status) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
+			e107::getMessage()->add($mes, $errType);
+
+		}
+
 	}
 
 	function getPath($mime)
@@ -2506,7 +2670,7 @@ class media_admin_ui extends e_admin_ui
 		{
 			if(empty($f))
 			{
-				e107::getMessage()->addWarning("0 byte file found in: ".e_IMPORT."<br />Please remove before proceeding.");
+				e107::getMessage()->addWarning(IMALAN_180."&nbsp;".e_IMPORT."<br />".IMALAN_181);
 				////rename(e_IMPORT.$f['path'].$f['fname'],e_IMPOT.$f['path'].$f['fname']."-bad");
 				continue;
 			}

@@ -199,5 +199,9 @@ define("IMALAN_177", "Click here for more information and to enter your api key"
 
 define("IMALAN_178", "Avatars Folder (user selectable)");
 define("IMALAN_179", "Avatars Folder (private)");
+define('IMALAN_180', "0 byte file found in:");
+define("IMALAN_181", "Please remove before proceeding.");
 
+define("IMALAN_182", "Convert to jpeg during import");
+define("IMALAN_183", "PNG and GIF files will be automatically converted to jpeg format. (icons excluded)");
 

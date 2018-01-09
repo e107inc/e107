@@ -13,7 +13,6 @@ $id = FALSE;
 
 
 
-
 if (!is_numeric(e_QUERY) && empty($_GET['id'])) 
 {
 	if ($sql->select('download', 'download_id', "download_url='".$tp->toDB(e_QUERY)."'")) 
@@ -33,6 +32,7 @@ if (!is_numeric(e_QUERY) && empty($_GET['id']))
 		exit();
 	}
 }
+
 
 
 
@@ -76,7 +76,7 @@ if(strstr(e_QUERY, "mirror"))
 			exit();
 		}
 
-		$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
+		$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>1))); // ."?action=error&id=1";
 		e107::redirect($goUrl);
 		//header("Location: ".e_BASE."download.php?error.{$download_id}.1");
 		exit;
@@ -101,7 +101,6 @@ if(vartrue($_GET['id'])) // SEF URL
 	$id = intval($_GET['id']);	
 	$type = 'file';
 }
-
 
 
 
@@ -137,7 +136,7 @@ if ($type == "file")
 	{
 		$row = $sql->fetch();
 		
-		$row['download_url'] = $tp->replaceConstants($row['download_url']);
+		$row['download_url'] = $tp->replaceConstants($row['download_url']); // must be relative file-path.
 
 		if (check_class($row['download_category_class']) && check_class($row['download_class'])) 
 		{
@@ -215,8 +214,11 @@ if ($type == "file")
 				echo $binary_data;
 				exit();
 			}
-			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://")) {
-				header("Location: {$download_url}");
+			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://"))
+			{
+				$download_url = e107::getParser()->parseTemplate($download_url,true); // support for shortcode-driven dynamic URLS.
+				e107::redirect($download_url);
+				// header("Location: {$download_url}");
 				exit();
 			} 
 			else 
@@ -249,7 +251,8 @@ if ($type == "file")
 				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
 				))
 			{
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
+			//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=1";
+				$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>1)));
 				e107::redirect($goUrl);
 				exit();
 			}
@@ -321,15 +324,15 @@ else
 
 		if (file_exists(e_FILE."download/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE."download/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE_ABS."download/{$image}' alt='' /></div>";
 		}
 		else if(file_exists(e_FILE."downloadimages/{$image}")) 
 		{
-			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE."downloadimages/{$image}' alt='' /></div>";
+			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".e_FILE_ABS."downloadimages/{$image}' alt='' /></div>";
 		} 
 		else 
 		{
-             $image = $tp->replaceConstants($image);
+             $image = $tp->replaceConstants($image,'abs');
 			$disp = "<div style='text-align:center'><img class='img-responsive img-fluid' src='".$image."' alt='' /></div>";
 		}
 
@@ -346,7 +349,7 @@ else
 		} 
 		elseif(is_file(e_FILE."downloadimages/{$image}")) 
 		{
-			echo "<img src='".e_FILE."downloadimages/{$image}' alt='' />";
+			echo "<img src='".e_FILE_ABS."downloadimages/{$image}' alt='' />";
 		} 
 		else 
 		{
@@ -386,7 +389,8 @@ function check_download_limits()
 			if($row['count'] >= $limits['gen_intdata']) 
 			{
 				// Exceeded download count limit
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
+			//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
+				$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>2)));
 				e107::redirect($goUrl);
 			 // 	e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require_once(HEADERF);
@@ -418,7 +422,8 @@ function check_download_limits()
 			
 			if($row['total_bw'] / 1024 > $limit['gen_user_id']) 
 			{	//Exceed bandwith limit
-				$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
+			//	$goUrl = e107::getUrl()->create('download/index')."?action=error&id=2";
+				$goUrl = e107::url('download', 'index', null, array('query'=>array('action'=>'error','id'=>2)));
 				 e107::redirect($goUrl);
 			 // e107::redirect(e_BASE."download.php?error.{$cutoff}.2");
 				/* require(HEADERF);

@@ -87,7 +87,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 			<span class="news-category">{NEWSCATEGORY}</span>
 			<h2 class="news-title">{NEWSTITLELINK} </h2>
 		 </div>
-		 	{NEWSIMAGE: item=1}
+		 	<div class="news-carousel">{NEWSIMAGE: carousel=1&w=800&h=500&crop=1&}</div>
 			<div class="news-description">
 				{NEWSMETADIZ}
 				{ADMINOPTIONS}

@@ -19,6 +19,7 @@ e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE.'/lan_sitelinks.php');
 class sitelinks
 {
 	var $eLinkList = array();
+	var $eSubLinkLevel = 0;
 	var $sefList = array();
 
 	const LINK_DISPLAY_FLAT     = 1;
@@ -33,7 +34,7 @@ class sitelinks
 		$this->eLinkList = array(); // clear the array in case getlinks is called 2x on the same page.
 		$sql = e107::getDb('sqlSiteLinks');
 		$ins = ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
-		$query = "SELECT * FROM #links WHERE ".$ins."  ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND link_class NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order ASC";
+		$query = "SELECT * FROM #links WHERE ".$ins."  ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND ABS(link_class) NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order ASC";
 		if($sql->gen($query))
 		{
 			while ($row = $sql->fetch())
@@ -106,6 +107,8 @@ class sitelinks
 
 		$this->getlinks($cat);
 
+        if (empty($this->eLinkList))  { return ''; }
+
 		// are these defines used at all ?
 		if(!defined('PRELINKTITLE'))
 		{
@@ -140,6 +143,11 @@ class sitelinks
 			$style['sublinkclass'] = defined('SUBLINKCLASS') ? SUBLINKCLASS : '';
 		}
 
+		if(!varset($style['linkseparator']))
+		{
+			$style['linkseparator'] = '';
+		}
+
 		// Sublink styles.- replacing the tree-menu.
 		if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink']))
 		{
@@ -170,7 +178,7 @@ class sitelinks
 			foreach($this->eLinkList['head_menu'] as $key => $link)
 			{
 				$main_linkid = "sub_" . $link['link_id'];
-				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && !empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ? true : false;
+				$link['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ? true : false;
 				$render_link[$key] = $this->makeLink($link, '', $style, $css_class);
 
 				if(!defined("LINKSRENDERONLYMAIN") && !isset($style['linkmainonly']))  /* if this is defined in theme.php only main links will be rendered */
@@ -275,6 +283,7 @@ class sitelinks
 			$sub['link_expand'] = ((isset($pref['sitelinks_expandsub']) && $pref['sitelinks_expandsub']) && empty($style['linkmainonly']) && !defined("LINKSRENDERONLYMAIN") && isset($this->eLinkList[$id]) && is_array($this->eLinkList[$id])) ?  TRUE : FALSE;
 			$class = "sublink-level-".($level+1);
 			$class .= ($css_class) ? " ".$css_class : "";
+			$class .= ($aSubStyle['sublinkclass']) ? " ".$aSubStyle['sublinkclass'] : ""; // backwards compatible
 			$text .= $this->makeLink($sub, TRUE, $aSubStyle,$class );
 			$text .= $this->subLink($id,$aSubStyle,$css_class,($level+1));				
 		}
@@ -293,16 +302,25 @@ class sitelinks
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 		$highlighted = FALSE;
 		
+		if(!isset($style['linkstart_hilite'])) // Notice removal
+		{
+			$style['linkstart_hilite'] = "";	
+		}
+		
+		if(!isset($style['linkclass_hilite']))
+		{
+			$style['linkclass_hilite'] = "";	
+		}
+
 		if(vartrue($linkInfo['link_sefurl']) && !empty($linkInfo['link_owner']))
 		{
 			$linkInfo['link_url'] = e107::url($linkInfo['link_owner'],$linkInfo['link_sefurl']) ; //  $linkInfo['link_sefurl'];
-
 		}
 
 
 
 		// If submenu: Fix Name, Add Indentation.
-		if ($submenu == TRUE) 
+		if ($submenu == true)
 		{
 			if(substr($linkInfo['link_name'],0,8) == "submenu.")
 			{
@@ -334,7 +352,7 @@ class sitelinks
 		
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
-		$linkadd = ($css_class) ? " class='".$css_class."'" : $linkadd;
+		$linkadd = ($css_class) ? " class='".$style['linkclass'].$css_class."'" : $linkadd;
 
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
@@ -380,7 +398,7 @@ class sitelinks
 			// Open link in a new window.  (equivalent of target='_blank' )
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 		}
-e107::getDebug()->log($linkInfo['link_url']);
+
 		// Remove default images if its a button and add new image at the start.
 		if ($linkInfo['link_button'])
 		{
@@ -417,14 +435,10 @@ e107::getDebug()->log($linkInfo['link_url']);
 		}
 
 		$_link = $linkstart.$indent.$_link;
+        return $_link.$style['linkend']."\n";
 
-			e107::getDebug()->log($linkInfo['link_url']);
 
-		global $SITELINKSTYLE;
-		if(!$SITELINKSTYLE)
-		{
-			$SITELINKSTYLE = "{LINK}";
-		}
+		/*
 
 		$search[0] = "/\{LINK\}(.*?)/si";
 		$replace[0] = $_link.$style['linkend']."\n";
@@ -433,7 +447,7 @@ e107::getDebug()->log($linkInfo['link_url']);
 
 		$text = preg_replace($search, $replace, $SITELINKSTYLE);
 
-		return $text;
+		return $text;*/
 	}
 
 	/**
@@ -749,13 +763,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 		$this->admin_cat['title'][3] = ADLAN_CL_3;
 		$this->admin_cat['id'][3] = 'contMenu';
-		$this->admin_cat['img'][3] = 'file-text-o.glyph'; // $tp->toGlyph('e-cat_content-16');
+		$this->admin_cat['img'][3] = 'fa-file-text-o.glyph'; // $tp->toGlyph('e-cat_content-16');
 		$this->admin_cat['lrg_img'][3] = $tp->toGlyph('e-cat_content-32'); 
 		$this->admin_cat['sort'][3] = true;
 		
 		$this->admin_cat['title'][4] = ADLAN_CL_6;
 		$this->admin_cat['id'][4] = 'toolMenu';
-		$this->admin_cat['img'][4] = 'wrench.glyph'; // $tp->toGlyph('e-cat_tools-16');
+		$this->admin_cat['img'][4] = 'fa-wrench.glyph'; // $tp->toGlyph('e-cat_tools-16');
 		$this->admin_cat['lrg_img'][4] = $tp->toGlyph('e-cat_tools-32'); 
 		$this->admin_cat['sort'][4] = true;
 		
@@ -881,14 +895,15 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 			32 => array(e_ADMIN_ABS.'eurl.php', 		ADLAN_159,	ADLAN_160,	'K', 1, E_16_EURL, E_32_EURL),
 			33 => array(e_ADMIN_ABS.'plugin.php', 		ADLAN_98,	ADLAN_99,	'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
-			34 => array(e_ADMIN_ABS.'docs.php', 		ADLAN_12,	ADLAN_13,	'',	20, E_16_DOCS, E_32_DOCS),
+			34 => array(e_ADMIN_ABS.'docs.php', 		ADLAN_12,	ADLAN_13,	false,	20, E_16_DOCS, E_32_DOCS),
 		// TODO System Info.
 		//	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
-			36 => array(e_ADMIN_ABS.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_E107, E_32_E107),
+			36 => array(e_ADMIN_ABS.'credits.php', LAN_CREDITS, LAN_CREDITS, false, 20, E_16_E107, E_32_E107),
 		//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
 			38 => array(e_ADMIN_ABS.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT),
-		);	
-		
+		);
+
+
 		if($mode == 'legacy')
         {
             return $array_functions; // Old BC format.      
@@ -896,6 +911,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$newarray = asortbyindex($array_functions, 1);
     	$array_functions_assoc = $this->convert_core_icons($newarray);
+
+
         
        if($mode == 'core') // Core links only. 
         {          
@@ -923,7 +940,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
                 $array_functions_assoc[$key] = $val;   
             }
         }
-    
+
         return $array_functions_assoc;
     }
 
@@ -1304,10 +1321,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			unset($temp);
 		}
 	
-		if(!is_array($e107_vars))
+		if(empty($e107_vars))
 		{
-			return;	
+			return null;
 		}
+
+
 	
 		$kpost = '';
 		$text = '';
@@ -1333,11 +1352,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		$search[7] = '/\{LINK_CLASS\}(.*?)/si';
 		$search[8] = '/\{SUB_CLASS\}(.*?)/si';
 		$search[9] = '/\{LINK_IMAGE\}(.*?)/si';
-		$search[10] = '/\{LINK_DATA\}/si';
+		$search[10] = '/\{LINK_SUB_OVERSIZED\}/si';
+		$search[11] = '/\{LINK_DATA\}/si';
+
 
 		foreach (array_keys($e107_vars) as $act)
 		{
-			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
+			if (isset($e107_vars[$act]['perm']) && $e107_vars[$act]['perm'] !== false && !getperms($e107_vars[$act]['perm'])) // check perms first.
 			{
 				continue;
 			}
@@ -1432,6 +1453,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$replace[9] = varset($e107_vars[$act]['image']);	
 			}
 
+			$replace[10] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
+
 			if(!empty($e107_vars[$act]['link_data']))
 			{
 
@@ -1441,10 +1464,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					$dataTmp[] = $k.'="'.$v.'"';
 				}
 
-				$replace[10] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
+				$replace[11] = implode(" ", $dataTmp); // $e107_vars[$act]['link_data']
 
 			}
-		
+
+
+
 			
 			if($rid == 'logout' || $rid == 'home' || $rid == 'language')
 			{
@@ -1455,7 +1480,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$START_SUB = $tmpl['start_sub'];	
 			}		
 	
-			if (vartrue($e107_vars[$act]['sub']))
+			if(!empty($e107_vars[$act]['sub']))
 			{
 				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
@@ -1633,17 +1658,65 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 	 * --------------- CODE-EFFICIENT APPROACH -------------------------
 	 * FIXME syscache
 	 */
-	public function initData($cat=1)
+	public function initData($cat=1, $opt=array())
 	{	
 		$sql 		= e107::getDb('sqlSiteLinks');
-		$ins 		= ($cat > 0) ? "link_category = ".intval($cat)." AND " : "";
-		$query 		= "SELECT * FROM #links WHERE ".$ins." ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND link_class NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order,link_parent ASC";
+
+		$ins = ($cat > 0) ? " link_category = ".intval($cat)." AND " : "";
+
+		$query 		= "SELECT * FROM #links WHERE ".$ins." ((link_class >= 0 AND link_class IN (".USERCLASS_LIST.")) OR (link_class < 0 AND ABS(link_class) NOT IN (".USERCLASS_LIST.")) ) ORDER BY link_order,link_parent ASC";
 
 		$outArray 	= array();
 		$data 		= $sql->retrieve($query,true);
 
 
 		$ret = $this->compile($data, $outArray);
+
+		if(!empty($opt['flat']))
+		{
+			$newArr = array();
+			foreach($ret as $row)
+			{
+				$ignore = (!empty($opt['noempty']) && (empty($row['link_url']) || $row['link_url'] === '#')) ? true : false;
+
+				$tmp = (array) $row['link_sub'];
+
+				unset($row['link_sub']);
+
+				if($ignore !== true)
+				{
+					$newArr[] = $row;
+				}
+
+				if(!empty($tmp))
+				{
+					foreach($tmp as $val)
+					{
+						$tmp2 = (array) $val['link_sub'];
+						unset($val['link_sub']);
+						$newArr[] = $val;
+						if(!empty($tmp2))
+						{
+							foreach($tmp2 as $k=>$v)
+							{
+								$tmp3 = (array) $v['link_sub'];
+								unset($v['link_sub']);
+								$newArr[] = $v;
+								foreach($tmp3 as $sub)
+								{
+									$newArr[] = $sub;
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+	//e107::getDebug()->log($newArr);
+
+			return $newArr;
+		}
 
 		return $ret;
 	}
@@ -1791,7 +1864,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			return true;	
 		}
 		
-		if(vartrue($data['link_active'])) // Can be used by e_sitelink.php
+		if(!empty($data['link_active'])) // Can be used by e_sitelink.php
 		{
 			return true;		
 		}
@@ -1863,7 +1936,7 @@ class navigation_shortcodes extends e_shortcode
 
 	function sc_link_depth($parm='')
 	{
-		return $this->depth;
+		return isset($this->var['link_depth']) ? intval($this->var['link_depth']) : $this->depth;
 	}
 
 
@@ -1880,9 +1953,9 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_name($parm='')
 	{
-		if(!varset($this->var['link_name']))
+		if(empty($this->var['link_name']))
 		{
-			return;	
+			return null;
 		}
 		
 		if(substr($this->var['link_name'],0,8) == 'submenu.') // BC Fix. 
@@ -1904,13 +1977,13 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_parent($parm='')
 	{
-		return intval($this->var['link_parent']);		
+		return intval($this->var['link_parent']);
 	}
 
 
 	function sc_link_identifier($parm='')
 	{
-		return $this->var['link_identifier'];	
+		return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
 	}
 
 	/**
@@ -1949,6 +2022,20 @@ class navigation_shortcodes extends e_shortcode
 		return $url;
 	}
 
+/*
+	function sc_link_sub_oversized($parm='')
+	{
+		$count = count($this->var['link_sub']);
+
+		if(!empty($parm) && $count > $parm)
+		{
+			return 'oversized';
+		}
+
+		return $count;
+
+	}
+*/
 
 	/**
 	 * Returns only the anchor target in the URL if one is found.
@@ -2010,7 +2097,7 @@ class navigation_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 				
-		if (!vartrue($this->var['link_button'])) return '';
+		if (empty($this->var['link_button'])) return '';
 		
 	//	if($icon = $tp->toGlyph($this->var['link_button']))
 	//	{
@@ -2019,7 +2106,7 @@ class navigation_shortcodes extends e_shortcode
 	//	else 
 		{
 			//$path = e107::getParser()->replaceConstants($this->var['link_button'], 'full', TRUE);	
-			return $tp->toIcon($this->var['link_button'],array('space'=>' ', 'legacy'=>"{e_IMAGE}icons/"));
+			return $tp->toIcon($this->var['link_button'],array('fw'=>true, 'space'=>' ', 'legacy'=>"{e_IMAGE}icons/"));
 			// return "<img class='icon' src='".$path."' alt=''  />";	
 		}
 
@@ -2075,7 +2162,7 @@ class navigation_shortcodes extends e_shortcode
 		{
 			$active	= (e107::getNav()->isActive($val, $this->activeSubFound, true)) ? "_active" : "";
 			$this->setVars($val);	// isActive is allowed to alter data
-			$tmpl = vartrue($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);	
+			$tmpl = !empty($val['link_sub']) ? varset($this->template['submenu_loweritem'.$active]) : varset($this->template['submenu_item'.$active]);
 			$text .= e107::getParser()->parseTemplate($tmpl, TRUE, $this);
 			if($active) $this->activeSubFound = true;		
 		}

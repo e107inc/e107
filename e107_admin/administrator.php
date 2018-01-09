@@ -93,7 +93,7 @@ if (isset($_POST['del_admin']) && count($_POST['del_admin']))
 	}
 
 	$mes->addAuto($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$aID), 'update', ADMSLAN_61, LAN_DELETED_FAILED, false);
-	$logMsg = str_replace(array('--ID--', '--NAME--'),array($aID, $row['user_name']),ADMSLAN_73);
+	$logMsg = str_replace(array('[x]', '[y]'),array($aID, $row['user_name']),ADMSLAN_73);
 	e107::getLog()->add('ADMIN_02',$logMsg,E_LOG_INFORMATIVE,'');
 }
 
@@ -156,7 +156,7 @@ function show_admins()
 						</td>
 						<td class='center'>
 		";
-		if($row['user_id'] != "1")
+		if($row['user_id'] != "1" && intval($row['user_id']) !== USERID)
 		{
     		$text .= "
 							".$frm->submit_image("edit_admin[{$row['user_id']}]", 'edit', 'edit', LAN_EDIT)."

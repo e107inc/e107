@@ -99,22 +99,6 @@ class plugin_blank_admin_ui extends e_admin_ui
 		protected $table = "blank";
 
 		/**
-		 * If present this array will be used to build your list query
-		 * You can link fileds from $field array with 'table' parameter, which should equal to a key (table) from this array
-		 * 'leftField', 'rightField' and 'fields' attributes here are required, the rest is optional
-		 * Table alias is supported
-		 * Note:
-		 * - 'leftTable' could contain only table alias
-		 * - 'leftField' and 'rightField' shouldn't contain table aliases, they will be auto-added
-		 * - 'whereJoin' and 'where' should contain table aliases e.g. 'whereJoin' => 'AND u.user_ban=0'
-		 *
-		 * @var array [optional] table_name => array join parameters
-		 */
-		protected $tableJoin = array(
-			//'u.user' => array('leftField' => 'comment_author_id', 'rightField' => 'user_id', 'fields' => '*'/*, 'leftTable' => '', 'joinType' => 'LEFT JOIN', 'whereJoin' => '', 'where' => ''*/)
-		);
-
-		/**
 		 * This is only needed if you need to JOIN tables AND don't wanna use $tableJoin
 		 * Write your list query without any Order or Limit.
 		 *
@@ -132,14 +116,17 @@ class plugin_blank_admin_ui extends e_admin_ui
 		// optional
 		protected $perPage = 20;
 
-		// default - true - TODO - move to displaySettings
 		protected $batchDelete = true;
 
-		// UNDER CONSTRUCTION
-		protected $displaySettings = array();
+	//	protected \$sortField		= 'somefield_order';
 
-		// UNDER CONSTRUCTION
-		protected $disallowPages = array('main/create', 'main/prefs');
+
+	//	protected \$sortParent      = 'somefield_parent';
+
+
+	//	protected \$treePrefix      = 'somefield_title';
+
+
 
 		//TODO change the blank_url type back to URL before blank.
 		// required

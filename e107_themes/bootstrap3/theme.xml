@@ -24,10 +24,12 @@
 	</libraries>
 	<stylesheets>
 		<css file="style.css" name="Default"/>
-        <css file="css/bootstrap-dark.min.css" name="Bootstrap3 Dark Admin" scope='admin' exclude='bootstrap'/>
+        <css file="css/bootstrap-dark.min.css" name="Dark Admin" description="" thumbnail='images/admin_bootstrap-dark.jpg' scope='admin' exclude='bootstrap'/>
+        <css file="css/kadmin.css" name="K-Admin Inspired" scope='admin' description="(experimental)" thumbnail='images/admin_kadmin.jpg' url='http://themifycloud.com/demos/templates/KAdmin/KAdmin-Dark/dashboard.html' />
+		<css file="css/corporate.css" name="Corporate" scope='admin' thumbnail='images/admin_corporate.jpg' exclude='bootstrap' />
 		<css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" name="Flatly" scope='admin' exclude='bootstrap'/>
         <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/sandstone/bootstrap.min.css" name="Sandstone" scope='admin' exclude='bootstrap'/>
-        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" scope='admin' exclude='bootstrap'/>
+        <css file="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css" name="Superhero" thumbnail='images/admin_superhero.jpg' scope='admin' exclude='bootstrap'/>
         <css file="*" name="*"/>
 	</stylesheets>
 	<layouts>

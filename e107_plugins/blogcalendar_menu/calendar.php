@@ -142,7 +142,7 @@ function calendar($req_day, $req_month, $req_year, $links = NULL, $ws = "sunday"
 	{
 		$active = date("n-Y") == ($req_month."-".$req_year)  ? 'active' : '';
 		$text = "<div class='item {$active}'>";
-		$text .= "<h5>".$marray[$req_month - 1]." ".$req_year."</h5>";
+		$text .= "<h5>".$marray[$req_month]." ".$req_year."</h5>";
 		$text .= $calendar;
 		$text .= "</div>";
 	}

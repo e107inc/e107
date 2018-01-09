@@ -56,124 +56,18 @@
 	require_once("class2.php");
 
 // ----------------------------
-	
-/**
- * Simple URL ReWrite (experimental) //TODO test, discuss, benchmark, enhance and include in eFront etc. if all goes well.  
- * Why?: 
- * - To make simple url rewrites as quick and easy for plugin developers to implement as it currently is to do the same with .htaccess 
- * - To use the same familiar standard as used by e_cron, e_status, e_rss etc. etc. so even a novice developer can understand it. 
- * 
- * @example (.httaccess): 
- * RewriteRule ^ref-(.*)/?$ e107_plugins/myplugin/myplugin.php?ref=$1 [NC,L] 
- * 
- * @example (e_url.php file - in the 'myplugin' folder)
- * 
- *	class myplugin_url // plugin-folder + '_url' 
-	{
-		function config() 
-		{
-			$config = array();
-		
-			$config[] = array(
-				'regex'			=> '^ref-(.*)/?$',
-				'redirect'		=> '{e_PLUGIN}myplugin/myplugin.php?ref=$1',
-			);
-			
-			return $config;
-		}
-		
-	}
- */
- 
+
 	$sql->db_Mark_Time("Start Simple URL-ReWrite Routine");
 
-	// XXX Cache didn't bring much benefit.
+	$eUrl = e_url::instance();
+	$eUrl->run();
 
-	/*if($cached = e107::getCache()->retrieve('Addon_url',5,true,true))
+	if($file = $eUrl->getInclude())
 	{
-		$tmp = e107::unserialize($cached);
-	}
-	else*/
-	{
-		$tmp = e107::getAddonConfig('e_url');
-	//	e107::getCache()->set('Addon_url',e107::serialize($tmp,'json'),true,true,true);
+		include_once($file);
+		exit;
 	}
 
-
-	$req = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
-		
-	if(count($tmp))
-	{
-
-		foreach($tmp as $plug=>$cfg)
-		{
-			if(empty($pref['e_url_list'][$plug])) // disabled.
-			{
-				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> is disabled.');
-				continue;
-			}
-
-			foreach($cfg as $k=>$v)
-			{
-
-				if(empty($v['regex']))
-				{
-				//	e107::getMessage()->addDebug("Skipping empty regex: <b>".$k."</b>");
-					continue;
-				}
-
-
-				if(!empty($v['alias']))
-				{
-					$alias = (!empty($pref['e_url_alias'][e_LAN][$plug][$k])) ? $pref['e_url_alias'][e_LAN][$plug][$k] : $v['alias'];
-				//	e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
-					$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
-				}
-
-			
-				$regex = '#'.$v['regex'].'#';
-				
-				if(empty($v['redirect']))
-				{
-					continue;	
-				}
-			
-				
-				$newLocation = preg_replace($regex, $v['redirect'], $req);
-
-				if($newLocation != $req)
-				{
-					$redirect = e107::getParser()->replaceConstants($newLocation);
-					list($file,$query) = explode("?",$redirect,2);
-					
-					if(!empty($query))
-					{
-						parse_str($query,$_GET);
-					}
-					
-					e107::getDebug()->log('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true),1);
-
-					if(file_exists($file))
-					{
-						define('e_CURRENT_PLUGIN', $plug);
-						define('e_QUERY', $query); // do not add to e107_class.php
-						define('e_URL_LEGACY', $redirect);
-						include_once($file);
-						exit;
-					}
-					elseif(getperms('0')) 
-					{
-						echo "File missing: ".$file;
-						exit;	
-					}
-
-				}				
-			}	
-			
-		}
-		
-		unset($tmp,$redirect,$regex);
-	}
 
 
 // -----------------------------------------
@@ -190,7 +84,9 @@
 	
 	// If not already done - define legacy constants
 	$request->setLegacyQstring();
-	$request->setLegacyPage(); 
+	$request->setLegacyPage();
+
+
 	
 	$inc = $front->isLegacy(); 
 	if($inc)
@@ -292,8 +188,7 @@
 	
 	
 	
-	
-	
+
 	
 	include_once(HEADERF);
 		eFront::instance()->getResponse()->send('default', false, true);

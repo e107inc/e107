@@ -126,49 +126,91 @@ class plugin_download_admin extends e_admin_dispatcher
 
 class download_cat_ui extends e_admin_ui
 { 	 	 
-		protected $pluginTitle	= LAN_PLUGIN_DOWNLOAD_NAME;
-		protected $pluginName	= 'download';
-		protected $table 		= "download_category";
-		protected $pid			= "download_category_id";
-		protected $perPage 		= 0; //no limit
-		protected $listOrder = 'download_category_order';
-		// protected $defaultOrderField = 'download_category_parent,download_category_order';
-	//	protected $listQry = "SELECT * FROM #faq_info"; // without any Order or Limit. 
-	//	protected $editQry = "SELECT * FROM #faq_info WHERE faq_info_id = {ID}";
+		protected $pluginTitle	    = LAN_PLUGIN_DOWNLOAD_NAME;
+		protected $pluginName	    = 'download';
+		protected $table 		    = "download_category";
+		protected $pid			    = "download_category_id";
+		protected $perPage 		    = 0; //no limit
+
+		protected $batchCopy		= true;
+
+		// initiate as a parent/child tree.
+		protected $sortField		= 'download_category_order';
+		protected $sortParent       = 'download_category_parent';
+		protected $treePrefix       = 'download_category_name';
+	//	protected $orderStep		= // automatic
+	//	protected $listOrder		= // automatic
+
+		//legacy URL scheme
+		protected $url         		= array('route'=>'download/list/category', 'vars' => array('id' => 'download_category_id', 'name' => 'download_category_sef'), 'name' => 'download_category_name', 'description' => ''); // 'link' only needed if profile not provided.
+
 	 	 	
 		protected $fields = array(
 			'checkboxes'						=> array('title'=> '',				'type' => null, 			'width' =>'5%', 'forced'=> TRUE, 'thclass'=>'center', 'class'=>'center'),
 			'download_category_icon' 			=> array('title'=> LAN_ICON,		'type' => 'method',			'width' => '5%', 'thclass' => 'center','class'=>'center','writeParms'=>'glyphs=1' ),
-			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE),     		
-         	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',			'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
-       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',			'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
+			'download_category_id'				=> array('title'=> LAN_ID,			'type' => 'number',			'width' =>'5%', 'forced'=> TRUE, 'readParms'=>'link=sef&target=blank'),
+         	'download_category_name' 			=> array('title'=> LAN_TITLE,		'type' => 'text',		'data'=>'str',	'inline' => true, 'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'size=xxlarge'),
+       		'download_category_sef' 			=> array('title'=> LAN_SEFURL,		'type' => 'text',		'data'=>'str',	'batch'=>true, 'inline' => true,	'width' => 'auto', 'thclass' => 'left', 'writeParms'=>'sef=download_category_name&size=xxlarge'),
          
-	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
+	     	'download_category_description' 	=> array('title'=> LAN_DESCRIPTION,	'type' => 'bbarea',		'data'=>'str',	'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1'), // Display name
 		 	'download_category_parent' 			=> array('title'=> LAN_PARENT,		'type' => 'method',			'width' => '5%', 'batch' => TRUE, 'filter'=>TRUE),		
 			'download_category_class' 			=> array('title'=> LAN_VISIBILITY,	'type' => 'userclass',		'inline' => true, 'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
-			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
-			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center')
+			'download_category_order' 			=> array('title'=> LAN_ORDER,		'type' => 'number',	'nolist'=>true, 'data'=>'int',		'width' => '5%', 'thclass' => 'right', 'class'=> 'right' ),
+			'options' 							=> array('title'=> LAN_OPTIONS,		'type' => null,				'width' => '10%', 'forced'=>TRUE, 'thclass' => 'center last', 'class' => 'center', 'sort'=>1)
 		);	
-		
 
-	function getDownloadCategoryTree($id = false, $default = 'n/a')
+		protected $fieldpref = array('download_category_icon', 'download_category_id', 'download_category_name', 'download_category_sef', 'download_category_class', 'download_category_order');
+
+	protected $downloadCats = array();
+
+	function init()
 	{
-		// TODO get faq category tree
+		if(deftrue('e_DEBUG'))
+		{
+			$this->fields['download_category_order']['nolist'] = false;
+		}
+
+		$this->setDownloadCategoryTree();
+
+	}
+
+
+	private function setDownloadCategoryTree()
+	{
+
+
 		$sql = e107::getDb();
-		$sql -> gen('SELECT * FROM #download_category ORDER BY download_category_order');
-		$cats = array();
-		$cats[0] = $default;
+		$qry = $this->getParentChildQry(true);
+		$sql->gen($qry);
+
+		$this->downloadCats[0] = LAN_NONE;
+
 		while($row = $sql->fetch())
 		{
-			$cats[$row['download_category_id']] = $row['download_category_name'];
+			$num = $row['_depth'] - 1;
+			$id = $row['download_category_id'];
+			$this->downloadCats[$id] = str_repeat("&nbsp;&nbsp;",$num).$row['download_category_name'];
 		}
-		
+
+		if($this->getAction() === 'edit') // make sure parent is not the same as ID.
+		{
+			$r = $this->getId();
+			unset($this->downloadCats[$r]);
+		}
+
+	}
+
+
+
+	function getDownloadCategoryTree($id = false)
+	{
+
 		if($id)
 		{
-			return $cats[$id];
+			return $this->downloadCats[$id];
 		}
 		
-		return $cats;
+		return $this->downloadCats;
 	}	
 		
 }
@@ -187,7 +229,7 @@ class download_cat_form_ui extends e_admin_form_ui
 			break;
 			
 			case 'write':
-				return $this->selectbox('download_category_parent', $controller->getDownloadCategoryTree(), $curVal);
+				return $this->select('download_category_parent', $controller->getDownloadCategoryTree(), $curVal);
 			break;
 			
 			case 'filter':
@@ -258,14 +300,17 @@ class download_main_admin_ui extends e_admin_ui
 		// default - true - TODO - move to displaySettings
 		protected $batchDelete = true;
 
+		protected $url         		= array('route'=>'download/view/item', 'vars' => array('id' => 'download_id', 'name' => 'download_sef'), 'name' => 'download_name', 'description' => ''); // 'link' only needed if profile not provided.
+
+
 	
     	protected  $fields = array(
 			'checkboxes'				=> array('title'=> '', 					'type' => null,			'data' => null,			'width'=>'5%', 		'thclass' =>'center', 'forced'=> TRUE,  'class'=>'center', 'toggle' => 'e-multiselect'),
-			'download_id'				=> array('title'=> ID, 					'type' => 'number',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
+			'download_id'				=> array('title'=> LAN_ID, 				'type' => 'text',		'data' => 'int',		'width'=>'5%',		'thclass' => '',	'forced'=> TRUE, 'readParms'=>'link=sef&target=blank', 'primary'=>TRUE/*, 'noedit'=>TRUE*/), //Primary ID is not editable
             'download_name' 			=> array('title'=> LAN_TITLE, 			'type' => 'text', 		'data' => 'str',		'inline'=>true, 'width' => 'auto',	'thclass' => ''),		
             'download_url'	   			=> array('title'=> DOWLAN_13, 			'type' => 'url', 	'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE),
 		    'download_sef'	   			=> array('title'=> LAN_SEFURL, 			'type' => 'text', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => '', 'batch' => TRUE, 'filter'=>TRUE, 'writeParms'=>'sef=download_name'),
-		  	'download_keywords'	   	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
+		  	'download_keywords'	    	=> array('title'=> LAN_KEYWORDS, 		'type' => 'tags', 	'inline'=>true, 'data' => 'str',		'width'=>'auto',	'thclass' => ''),
 		
 			'download_author' 			=> array('title'=> LAN_AUTHOR,			'type' => 'user', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),
          	'download_author_email' 	=> array('title'=> DOWLAN_16, 			'type' => 'email', 		'data' => 'str',		'width' => 'auto',	'thclass' => 'left'),  
@@ -283,7 +328,7 @@ class download_main_admin_ui extends e_admin_ui
 			'download_comment'			=> array('title'=> DOWLAN_102,			'type' => 'boolean', 		'data' => 'int',		'width' => '5%',	'thclass' => 'center',	'batch' => TRUE, 'filter'=>TRUE, 'noedit' => true),
 			
 			'download_class' 			=> array('title'=> DOWLAN_113,			'type' => 'userclass',		'width' => 'auto', 'inline'=>true, 'data' => 'int','batch' => TRUE, 'filter'=>TRUE),		
-			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
+			'download_visible' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',	'inline'=>true,	'width' => 'auto', 'data' => 'int', 'batch' => TRUE, 'filter'=>TRUE),
 			
 			'download_mirror' 			=> array('title'=> DOWLAN_128,			'type' => 'text', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
 			'download_mirror_type' 		=> array('title'=> DOWLAN_195,			'type' => 'method', 		'data' => 'str',		'width' => '10%',	'thclass' => 'center' ),
@@ -372,15 +417,18 @@ $columnInfo = array(
 			}
 		}
 		
-		
+
+
+
 		
 		// optional
 		public function init()
 		{
-			
-			$this->action 		= vartrue($_GET['mode']);
-			$this->subAction 	= vartrue($_GET['action']);
-			$this->id			= vartrue($_GET['id']);
+
+
+			$this->action 		= $this->getMode(); // vartrue($_GET['mode']);
+			$this->subAction 	= $this->getAction(); // vartrue($_GET['action']);
+			$this->id			= $this->getId(); // vartrue($_GET['id']);
 			
 			$this->observe();
 			
@@ -619,11 +667,11 @@ $columnInfo = array(
 					<tr>
 					<td>".$row['limit_id']."</td>
 					<td>".r_userclass_name($row['limit_classnum'])."</td>
-					<td>
+					<td class='form-inline'>
 						<input type='text' class='form-control' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."'/> ".DOWLAN_109."
 						<input type='text' class='form-control' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."'/> ".DOWLAN_110."
 					</td>
-					<td>
+					<td class='form-inline'>
 						<input type='text' class='form-control' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."'/> ".DOWLAN_111." ".DOWLAN_109."
 						<input type='text' class='form-control' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."'/> ".DOWLAN_110."
 					</td>
@@ -643,11 +691,11 @@ $columnInfo = array(
 			</tr>
 			<tr>
 			<td colspan='2'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
-			<td>
+			<td class='form-inline'>
 				<input type='text' class='form-control' size='5' name='new_count_num' value=''/> ".DOWLAN_109."
 				<input type='text' class='form-control' size='5' name='new_count_days' value=''/> ".DOWLAN_110."
 			</td>
-			<td>
+			<td class='form-inline'>
 				<input type='text' class='form-control' size='5' name='new_bw_num' value=''/> ".DOWLAN_111." ".DOWLAN_109."
 				<input type='text' class='form-control' size='5' name='new_bw_days' value=''/> ".DOWLAN_110."
 			</td>

@@ -2,5 +2,94 @@ body { padding: 10px;  }
 div.clearfix:before { color:silver; content: "CLEAR FLOATS"; font-size:0.7em; padding-left:49%; padding-top:15px;   }
 div.clearfix { margin-bottom:10px;  }
 ul.fa-ul { padding-left:5px}
+li { padding:4px }
+ul { padding-bottom:8px }
+
+.bbcode-img-left { margin: 0 10px 5px 0 !important; float:left !important }
+.bbcode-img-right { margin: 0 0 5px 10px !important; float:right !important}
+
 .mce-visualblocks li { outline: 1px dashed silver; }
 .mce-visualblocks ul.fa-ul { padding-left:30px }
+.mce-visualblocks .animated,
+.mce-visualblocks .wow {	border: 1px dashed red !important; position:relative }
+.mce-visualblocks .animated:after,
+.mce-visualblocks .wow:after { border-left:1px dashed red; border-bottom:1px dashed red; padding:1px 4px; font-size:8pt; color:red; position:absolute; right:0; top:0; }
+/*.mce-visualblocks .animated.bounce:after { content: "bounce" !important }
+.mce-visualblocks .animated.flash:after { content: "flash" !important }
+.mce-visualblocks .animated.pulse:after { content: "pulse" !important }
+.mce-visualblocks .animated.rubberBand:after { content: "rubberBand" !important }
+.mce-visualblocks .animated.shake:after { content: "shake" !important }
+.mce-visualblocks .animated.headShake:after { content: "headShake" !important }
+.mce-visualblocks .animated.swing:after { content: "swing" !important }
+.mce-visualblocks .animated.tada:after { content: "tada" !important }
+.mce-visualblocks .animated.wobble:after { content: "wobble" !important }
+.mce-visualblocks .animated.jello:after { content: "jello" !important }
+.mce-visualblocks .animated.bounceIn:after { content: "bounceIn" !important }
+.mce-visualblocks .animated.bounceInDown:after { content: "bounceInDown" !important }
+.mce-visualblocks .animated.bounceInLeft:after { content: "bounceInLeft" !important }
+.mce-visualblocks .animated.bounceInRight:after { content: "bounceInRight" !important }
+.mce-visualblocks .animated.bounceInUp:after { content: "bounceInUp" !important }
+.mce-visualblocks .animated.bounceOut:after { content: "bounceOut" !important }
+.mce-visualblocks .animated.bounceOutDown:after { content: "bounceOutDown" !important }
+.mce-visualblocks .animated.bounceOutLeft:after { content: "bounceOutLeft" !important }
+.mce-visualblocks .animated.bounceOutRight:after { content: "bounceOutRight" !important }
+.mce-visualblocks .animated.bounceOutUp:after { content: "bounceOutUp" !important }
+.mce-visualblocks .animated.fadeIn:after { content: "fadeIn" !important }
+.mce-visualblocks .animated.fadeInDown:after { content: "fadeInDown" !important }
+.mce-visualblocks .animated.fadeInDownBig:after { content: "fadeInDownBig" !important }
+.mce-visualblocks .animated.fadeInLeft:after { content: "fadeInLeft" !important }
+.mce-visualblocks .animated.fadeInLeftBig:after { content: "fadeInLeftBig" !important }
+.mce-visualblocks .animated.fadeInRight:after { content: "fadeInRight" !important }
+.mce-visualblocks .animated.fadeInRightBig:after { content: "fadeInRightBig" !important }
+.mce-visualblocks .animated.fadeInUp:after { content: "fadeInUp" !important }
+.mce-visualblocks .animated.fadeInUpBig:after { content: "fadeInUpBig" !important }
+.mce-visualblocks .animated.fadeOut:after { content: "fadeOut" !important }
+.mce-visualblocks .animated.fadeOutDown:after { content: "fadeOutDown" !important }
+.mce-visualblocks .animated.fadeOutDownBig:after { content: "fadeOutDownBig" !important }
+.mce-visualblocks .animated.fadeOutLeft:after { content: "fadeOutLeft" !important }
+.mce-visualblocks .animated.fadeOutLeftBig:after { content: "fadeOutLeftBig" !important }
+.mce-visualblocks .animated.fadeOutRight:after { content: "fadeOutRight" !important }
+.mce-visualblocks .animated.fadeOutRightBig:after { content: "fadeOutRightBig" !important }
+.mce-visualblocks .animated.fadeOutUp:after { content: "fadeOutUp" !important }
+.mce-visualblocks .animated.fadeOutUpBig:after { content: "fadeOutUpBig" !important }
+.mce-visualblocks .animated.flip:after { content: "flip" !important }
+.mce-visualblocks .animated.flipInX:after { content: "flipInX" !important }
+.mce-visualblocks .animated.flipInY:after { content: "flipInY" !important }
+.mce-visualblocks .animated.flipOutX:after { content: "flipOutX" !important }
+.mce-visualblocks .animated.flipOutY:after { content: "flipOutY" !important }
+.mce-visualblocks .animated.lightSpeedIn:after { content: "lightSpeedIn" !important }
+.mce-visualblocks .animated.lightSpeedOut:after { content: "lightSpeedOut" !important }
+.mce-visualblocks .animated.rotateIn:after { content: "rotateIn" !important }
+.mce-visualblocks .animated.rotateInDownLeft:after { content: "rotateInDownLeft" !important }
+.mce-visualblocks .animated.rotateInDownRight:after { content: "rotateInDownRight" !important }
+.mce-visualblocks .animated.rotateInUpLeft:after { content: "rotateInUpLeft" !important }
+.mce-visualblocks .animated.rotateInUpRight:after { content: "rotateInUpRight" !important }
+.mce-visualblocks .animated.rotateOut:after { content: "rotateOut" !important }
+.mce-visualblocks .animated.rotateOutDownLeft:after { content: "rotateOutDownLeft" !important }
+.mce-visualblocks .animated.rotateOutDownRight:after { content: "rotateOutDownRight" !important }
+.mce-visualblocks .animated.rotateOutUpLeft:after { content: "rotateOutUpLeft" !important }
+.mce-visualblocks .animated.rotateOutUpRight:after { content: "rotateOutUpRight" !important }
+.mce-visualblocks .animated.hinge:after { content: "hinge" !important }
+.mce-visualblocks .animated.jackInTheBox:after { content: "jackInTheBox" !important }
+.mce-visualblocks .animated.rollIn:after { content: "rollIn" !important }
+.mce-visualblocks .animated.rollOut:after { content: "rollOut" !important }
+.mce-visualblocks .animated.zoomIn:after { content: "zoomIn" !important }
+.mce-visualblocks .animated.zoomInDown:after { content: "zoomInDown" !important }
+.mce-visualblocks .animated.zoomInLeft:after { content: "zoomInLeft" !important }
+.mce-visualblocks .animated.zoomInRight:after { content: "zoomInRight" !important }
+.mce-visualblocks .animated.zoomInUp:after { content: "zoomInUp" !important }
+.mce-visualblocks .animated.zoomOut:after { content: "zoomOut" !important }
+.mce-visualblocks .animated.zoomOutDown:after { content: "zoomOutDown" !important }
+.mce-visualblocks .animated.zoomOutLeft:after { content: "zoomOutLeft" !important }
+.mce-visualblocks .animated.zoomOutRight:after { content: "zoomOutRight" !important }
+.mce-visualblocks .animated.zoomOutUp:after { content: "zoomOutUp" !important }
+.mce-visualblocks .animated.slideInDown:after { content: "slideInDown" !important }
+.mce-visualblocks .animated.slideInLeft:after { content: "slideInLeft" !important }
+.mce-visualblocks .animated.slideInRight:after { content: "slideInRight" !important }
+.mce-visualblocks .animated.slideInUp:after { content: "slideInUp" !important }
+.mce-visualblocks .animated.slideOutDown:after { content: "slideOutDown" !important }
+.mce-visualblocks .animated.slideOutLeft:after { content: "slideOutLeft" !important }
+.mce-visualblocks .animated.slideOutRight:after { content: "slideOutRight" !important }
+.mce-visualblocks .animated.slideOutUp:after { content: "slideOutUp" !important }*/
+.mce-visualblocks .animated:after,
+.mce-visualblocks .wow:after { content: attr(class); !important }

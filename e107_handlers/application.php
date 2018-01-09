@@ -10,11 +10,224 @@
 
 
 /**
- * e107 Single Entry Point handling
- * 
- * Currently this file contains all classes required for single entry point functionallity
- * They will be separated in different files in a proper way (soon)
+ * Class e_url
+ * New v2.1.6
  */
+class e_url
+{
+
+	private static $_instance;
+
+	private $_request       = null;
+
+	private $_config        = array();
+
+	private $_include       = null;
+
+	private $_rootnamespace = null;
+
+	private $_alias         = array();
+
+	private $_legacy        = array();
+
+	private $_legacyAliases = array();
+
+
+	/**
+	 * e_url constructor.
+	 */
+	function __construct()
+	{
+		$this->_request         = (e_HTTP === '/') ? ltrim(e_REQUEST_URI,'/') : str_replace(e_HTTP,'', e_REQUEST_URI) ;
+
+		$this->_config          = e107::getUrlConfig();
+		$this->_alias           = e107::getPref('e_url_alias');
+
+		$this->_rootnamespace   = e107::getPref('url_main_module');
+		$this->_legacy          = e107::getPref('url_config');
+		$this->_legacyAliases   = e107::getPref('url_aliases');
+
+
+		$this->setRootNamespace();
+
+	}
+
+	/**
+	 * Detect older e_url system.
+	 * @return bool
+	 */
+	private function isLegacy()
+	{
+
+		$arr = (!empty($this->_legacyAliases[e_LAN])) ?  array_merge($this->_legacy,$this->_legacyAliases[e_LAN]) : $this->_legacy;
+
+		$list = array_keys($arr);
+
+		foreach($list as $leg)
+		{
+			if(strpos($this->_request,$leg.'/') === 0 || $this->_request === $leg)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getInclude()
+	{
+		return $this->_include;
+	}
+
+
+
+	private function setRootNamespace()
+	{
+
+		$plugs = array_keys($this->_config);
+
+		if(!empty($this->_rootnamespace) && in_array($this->_rootnamespace,$plugs)) // Move rootnamespace check to the end of the list.
+		{
+			$v = $this->_config[$this->_rootnamespace];
+			unset($this->_config[$this->_rootnamespace]);
+			$this->_config[$this->_rootnamespace] = $v;
+		}
+
+	}
+
+
+	public function run()
+	{
+		$pref = e107::getPref();
+		$tp = e107::getParser();
+
+		if(empty($this->_config) || empty($this->_request) || $this->_request === 'index.php' || $this->isLegacy() === true)
+		{
+			return false;
+		}
+
+		$replaceAlias = array('{alias}\/?','{alias}/?','{alias}\/','{alias}/',);
+
+		foreach($this->_config as $plug=>$cfg)
+		{
+			if(empty($pref['e_url_list'][$plug])) // disabled.
+			{
+				e107::getDebug()->log('e_URL for <b>'.$plug.'</b> is disabled.');
+				continue;
+			}
+
+			foreach($cfg as $k=>$v)
+			{
+
+				if(empty($v['regex']))
+				{
+				//	e107::getMessage()->addDebug("Skipping empty regex: <b>".$k."</b>");
+					continue;
+				}
+
+
+				if(!empty($v['alias']))
+				{
+					$alias = (!empty($this->_alias[e_LAN][$plug][$k])) ? $this->_alias[e_LAN][$plug][$k] : $v['alias'];
+				//	e107::getMessage()->addDebug("e_url alias found: <b>".$alias."</b>");
+					if(!empty($this->_rootnamespace) && $this->_rootnamespace === $plug)
+					{
+						$v['regex'] = str_replace($replaceAlias, '', $v['regex']);
+					}
+					else
+					{
+
+						$v['regex'] = str_replace('{alias}', $alias, $v['regex']);
+					}
+				}
+
+
+				$regex = '#'.$v['regex'].'#';
+
+				if(empty($v['redirect']))
+				{
+					continue;
+				}
+
+
+				$newLocation = preg_replace($regex, $v['redirect'], $this->_request);
+
+				if($newLocation != $this->_request)
+				{
+					$redirect = e107::getParser()->replaceConstants($newLocation);
+					list($file,$query) = explode("?",$redirect,2);
+
+					$get = array();
+					if(!empty($query))
+					{
+						parse_str($query,$get);
+					}
+
+
+					foreach($get as $gk=>$gv)
+					{
+						$_GET[$gk] = $gv;
+					}
+
+					e107::getDebug()->log('e_URL in <b>'.$plug.'</b> with key: <b>'.$k.'</b> matched <b>'.$v['regex'].'</b> and included: <b>'.$file.'</b> with $_GET: '.print_a($_GET,true),1);
+
+					if(file_exists($file))
+					{
+						define('e_CURRENT_PLUGIN', $plug);
+						define('e_QUERY', $query); // do not add to e107_class.php
+						define('e_URL_LEGACY', $redirect);
+
+						$this->_include= $file;
+						return true;
+					//	exit;
+					}
+					elseif(getperms('0'))
+					{
+
+						echo "<div class='alert alert-warning'>";
+						echo "<h3>SEF Debug Info</h3>";
+						echo "File missing: ".$file;
+						echo "<br />Matched key: <b>".$k."</b>";
+						print_a($v);
+						echo "</div>";
+
+					}
+
+				}
+			}
+
+		}
+
+
+
+
+	}
+
+
+	/**
+	 * Singleton implementation
+	 * @return e_url
+	 */
+	public static function instance()
+	{
+		if(null == self::$_instance)
+		{
+		    self::$_instance = new self();
+		}
+	  	return self::$_instance;
+	}
+
+
+
+}
+
+
+
 
  
 /**
@@ -120,7 +333,7 @@ class eFront
 		$request->setDispatched(true);
 
 		$router = $this->getRouter();
-		
+
 		// If current request not already routed outside the dispatch method, route it
 		if(!$request->routed) $router->route($request); 
 
@@ -176,7 +389,8 @@ class eFront
 		$router = new eRouter();
 		$this->setRouter($router);
 		
-		$response = new eResponse();
+	//	$response = new eResponse();
+		$response = e107::getSingleton('eResponse');
 		$this->setResponse($response);
 		
 		return $this;
@@ -820,7 +1034,7 @@ class eRouter
 	 */
 	protected function _init()
 	{
-		// Gather all rules, add-on info, cache, module for main namespace etc 
+		// Gather all rules, add-on info, cache, module for main namespace etc
 		$this->_loadConfig()
 			->setAliases();
 		// we need config first as setter does some checks if module can be set as main
@@ -887,8 +1101,8 @@ class eRouter
 			$config[$module] = $config[$module]['config'];
 		}
 		$this->_globalConfig = $config;
-		$this->setRuleSets($rules); 
-		
+		$this->setRuleSets($rules);
+
 		return $this;
 	}
 	
@@ -1431,7 +1645,7 @@ class eRouter
 			$aliases = e107::findPref('url_aliases/'.$lanCode, array());
 		}
 		$this->_aliases = $aliases;
-		
+
 		return $this;
 	}
 	
@@ -1542,6 +1756,17 @@ class eRouter
 		return new eUrlRule($route, $pattern, $cache);
 	}
 
+
+	private function _debug($label,$val=null, $line=null)
+	{
+		if(!deftrue('e_DEBUG_SEF'))
+		{
+			return false;
+		}
+
+		e107::getDebug()->log("<h3>SEF: ".$label . " <small>".basename(__FILE__)." (".$line.")</small></h3>".print_a($val,true));
+	}
+
 	/**
 	 * Route current request
 	 * @param eRequest $request
@@ -1575,7 +1800,9 @@ class eRouter
 
 		// max number of parts is actually 4 - module/controller/action/[additional/pathinfo/vars], here for reference only
 		$parts = $rawPathInfo ? explode('/', $rawPathInfo, 4) : array();
-		
+
+		$this->_debug('parts',$parts,  __LINE__);
+
 		// find module - check aliases
 		$module = $this->retrieveModule($parts[0]);
 		$mainSwitch = false;
@@ -1590,12 +1817,18 @@ class eRouter
 		}
 		
 		$request->routePathInfo = $rawPathInfo;
+
+		$this->_debug('module',$module,  __LINE__);
+		$this->_debug('rawPathInfo',$rawPathInfo,  __LINE__);
+
 		
 		// valid module
 		if(null !== $module)
 		{
 			// we have valid module
-			$config = $this->getConfig($module); 
+			$config = $this->getConfig($module);
+
+			$this->_debug('config',$module,  __LINE__);
 			
 			// set legacy state
 			eFront::isLegacy(varset($config['legacy']));
@@ -1646,18 +1879,29 @@ class eRouter
 			// rules available - try to match an Url Rule
 			elseif($rules)
 			{
+			//	$this->_debug('rules',$rules,  __LINE__);
+
 				foreach ($rules as $rule) 
 				{
 					$route = $rule->parseUrl($this, $request, $pathInfo, $rawPathInfo);
+
+
+
 					if($route !== false)
 					{
 						eFront::isLegacy($rule->legacy); // legacy include override
-						
+
+						$this->_debug('rule->legacy',$rule->legacy,  __LINE__);
+						$this->_debug('rule->parseCallback',$rule->parseCallback,  __LINE__);
+
 						if($rule->parseCallback)
 						{
 							$this->configCallback($module, $rule->parseCallback, array($request), $config['location']);
 						}
-						// parse legacy query string if any		
+
+						// parse legacy query string if any
+						$this->_debug('rule->legacyQuery',$rule->legacyQuery,  __LINE__);
+
 						if(null !== $rule->legacyQuery)
 						{
 							$obj = eDispatcher::getConfigObject($module, $config['location']);
@@ -1678,6 +1922,8 @@ class eRouter
 								}
 							}
 							$obj->legacyQueryString = e107::getParser()->simpleParse($rule->legacyQuery, $vars, '0');
+
+							$this->_debug('obj->legacyQueryString',$obj->legacyQueryString,  __LINE__);
 							unset($vars, $obj);
 						}
 						break;
@@ -1726,7 +1972,9 @@ class eRouter
 				}
 			}
 		}
-		
+
+		$this->_debug('route',$route,  __LINE__);
+
 		$request->setRoute($route);
 		$request->addRouteHistory($route);
 		$request->routed = true;
@@ -1742,7 +1990,7 @@ class eRouter
 	public function checkLegacy(eRequest $request)
 	{
 		$module = $request->getModule();
-		
+
 		// forward from controller to a legacy module - bad stuff
 		if(!$request->isDispatched() && $this->getConfigValue($module, 'legacy'))
 		{
@@ -2605,7 +2853,10 @@ abstract class eUrlConfig
 	 * @param array $config
 	 * @return string route or false on error
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array()) { return false; }
+	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	{
+		return false;
+	}
 	
 	/**
 	 * Legacy callback, used called when config option legacy is not empty
@@ -3832,21 +4083,32 @@ class eResponse
 
 
 	/**
-	 * @param $name
-	 * @return $this
+	 * Removes a Meta tag by name/property.
+	 *
+	 * @param string $name
+	 *   'name' or 'property' for the meta tag we want to remove.
+	 *
+	 * @return eResponse $this
 	 */
 	public function removeMeta($name)
 	{
 		foreach($this->_meta as $k=>$v)
 		{
-			if($v['name'] === $name)
+			// Meta tags like: <meta content="..." name="description" />
+			if(isset($v['name']) && $v['name'] === $name)
+			{
+				unset($this->_meta[$k]);
+				continue;
+			}
+
+			// Meta tags like: <meta content="..." property="og:title" />
+			if(isset($v['property']) && $v['property'] === $name)
 			{
 				unset($this->_meta[$k]);
 			}
 		}
 
 		return $this;
-
 	}
 
 	
@@ -4059,9 +4321,9 @@ class eResponse
 	{
 		$attrData = '';
 
-		e107::getEvent()->trigger('system_meta_pre');
-		
-		foreach ($this->_meta as $attr) 
+		e107::getEvent()->trigger('system_meta_pre', $this->_meta);
+
+		foreach ($this->_meta as $attr)
 		{
 			$attrData .= '<meta';
 			foreach ($attr as $p => $v) 
@@ -4428,8 +4690,8 @@ class eHelper
 
 		$title = $tp->toASCII($title);
 
-		$title = str_replace(array('/',' '),' ',$title);
-		$title = str_replace(array("&",",","(",")"),'',$title);
+		$title = str_replace(array('/',' ',","),' ',$title);
+		$title = str_replace(array("&","(",")"),'',$title);
 		$title = preg_replace('/[^\w\d\pL\s.-]/u', '', strip_tags(e107::getParser()->toHTML($title, TRUE)));
 		$title = trim(preg_replace('/[\s]+/', ' ', str_replace('_', ' ', $title)));
 		$title = str_replace(array(' - ',' -','- ','--'),'-',$title); // cleanup to avoid ---

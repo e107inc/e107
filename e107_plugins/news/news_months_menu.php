@@ -8,7 +8,7 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-$cString = 'nq_news_months_menu_'.md5(serialize($parm));
+$cString = 'nq_news_months_menu_'.md5(serialize($parm).USERCLASS_LIST.e_LANGUAGE);
 $cached = e107::getCache()->retrieve($cString);
 
 if(!empty($parm))
@@ -116,7 +116,7 @@ if(false === $cached)
 		$vars->addData(array(
 			'active' => $index == $req_month ? " active" : '',
 			'url' => $val,
-			'month' => $marray[$index-1],
+			'month' => $marray[$index],
 			'count' => $xmonth_cnt[$index],
 		));
 		$menu_text[] = $tp->simpleParse($template['item'], $vars);

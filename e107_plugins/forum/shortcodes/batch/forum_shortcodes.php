@@ -167,21 +167,21 @@ class forum_shortcodes extends e_shortcode
 	function sc_search()
 	{
 
-		 if(!$srchIcon = e107::getParser()->toGlyph('fa-search'))
+		if(!deftrue('FONTAWESOME') || !$srchIcon = e107::getParser()->toGlyph('fa-search'))
 		{
 			$srchIcon = LAN_SEARCH;
 		}
 
 		// String candidate for USERLIST wrapper
 		return "
-		<form method='get' class='form-inline input-append' action='".e_BASE."search.php'>
+		<form method='get' class='form-inline input-append' action='".e_HTTP."search.php'>
 		<div class='input-group'>
 		<input type='hidden' name='r' value='0' />
 		<input type='hidden' name='t' value='forum' />
 		<input type='hidden' name='forum' value='all' />
 		<input class='tbox form-control' type='text' name='q' size='20' value='' maxlength='50' />
 		<span class='input-group-btn'>
-		<button class='btn btn-default button' type='submit' name='s' value='search' />".$srchIcon."</button>
+		<button class='btn btn-default button' type='submit' name='s' value='search' >".$srchIcon."</button>
 		</span>
 		</div>
 
@@ -431,38 +431,6 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_lastpost($parm = null)
 	{
-/*
-		if(!empty($parm['type']))
-		{
-			switch($parm['type'])
-			{
-				case "date": // date only
-					// code
-					break;
-
-				case "datelink": // date with link
-					return $this->lastpostdata('date');
-					break;
-
-				case "url": // url
-					return $this->lastpostdata('url');
-					break;
-
-				case "username": // username of last-post user.
-					return $this->lastpostdata('user');
-					break;
-
-				case "name": //thread name
-					//  code
-					break;
-
-			}
-		}
-
-		return $this->lastpostdata('post');
-*/
-
-
 		if (empty($this->var['forum_lastpost_info']))
 		{
 			return false;
@@ -479,7 +447,11 @@ class forum_shortcodes extends e_shortcode
 		$urlData        = array('forum_sef'=>$this->var['forum_sef'], 'thread_id'=>$lastpost['post_thread'],'thread_sef'=>$lastpost['thread_sef']);
 		$url            = e107::url('forum', 'topic', $urlData)."?last=1#post-".$lastpost['post_id'];
 		$lastpost_username = empty($this->var['user_name']) ? e107::getParser()->toHTML($this->var['forum_lastpost_user_anon']) : "<a href='".e107::url('user/profile/view', array('name' => $this->var['user_name'], 'id' => $this->var['forum_lastpost_user']))."'>{$this->var['user_name']}</a>";
-		$relativeDate = e107::getParser()->toDate($lastpost_datestamp,'relative');
+
+
+		$format = !empty($parm['date-format']) ? $parm['date-format'] : 'relative';
+
+		$relativeDate = e107::getParser()->toDate($lastpost_datestamp, $format);
 
 		if(!empty($parm['type']))
 		{

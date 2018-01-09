@@ -15,22 +15,41 @@ class smf_import extends base_import_class
 {
 	
 	public $title			= 'SMF v2.x (Simple Machines Forum)';
-	public $description		= 'Supports users only';
-	public $supported		= array('users');
+	public $description		= 'Currently does not import membergroups or more than 1 post attachment ';
+	public $supported		= array('users','forum','forumthread','forumpost');
 	public $mprefix			= 'smf_';
 	public $sourceType 		= 'db';		
 	
 	function init()
 	{
-	
+
 		
-	} 	
+	}
+
+	function config()
+	{
+
+		return;
+
+		$frm = e107::getForm();
+
+		$var[0]['caption']	= "Path to phpBB3 Attachments folder (optional)";
+		$var[0]['html'] 	= $frm->text('forum_attachment_path',null,40,'size=xxlarge');
+		$var[0]['help'] 	= "Relative to the root folder of your e107 installation";
+
+		return $var;
+	}
+
 	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
 	function setupQuery($task, $blank_user=FALSE)
 	{
-		if ($this->ourDB == NULL) return FALSE;
+		if ($this->ourDB == null)
+		{
+			e107::getMessage()->addDebug("Unable to connext");
+		    return FALSE;
+		}
 		
 	    switch ($task)
 		{
@@ -43,23 +62,45 @@ class smf_import extends base_import_class
 				}	
 				
 		    	$result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}members WHERE `is_activated`=1");
-				if ($result === FALSE) return FALSE;
+				if ($result === false)
+				{
+					$message = $this->ourDB->getLastErrorText();
+	  		        e107::getMessage()->addError($message);
+					return false;
+				}
 			break;
 				
 				
  			case 'forum' :
-				$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}boards`");
-				if ($result === FALSE) return FALSE;	  
+ 			    $qry = "SELECT f.*, m.id_member, m.poster_name, m.poster_time FROM {$this->DBPrefix}boards AS f LEFT JOIN {$this->DBPrefix}messages AS m ON f.id_last_msg = m.id_msg GROUP BY f.id_board ";
+
+				$result = $this->ourDB->gen($qry);
+				if ($result === false)
+				{
+					$message = $this->ourDB->getLastErrorText();
+	  		        e107::getMessage()->addError($message);
+	  		        return false;
+				}
 			break;
 				
 			case 'forumthread' :
-				$result = $this->ourDB->gen("SELECT t.*,m.* FROM `{$this->DBPrefix}topics` AS t LEFT JOIN `{$this->DBPrefix}messages` AS m ON t.id_first_msg = m.id_msg GROUP BY t.id_topic");
-				if ($result === FALSE) return FALSE;	  
+
+				$qry = "SELECT t.*, m.poster_name, m.subject, m.poster_time, m.id_member, l.poster_name as lastpost_name, l.poster_time as lastpost_time, l.id_member as lastpost_user FROM {$this->DBPrefix}topics AS t
+						LEFT JOIN {$this->DBPrefix}messages AS m ON t.id_first_msg = m.id_msg
+						LEFT JOIN {$this->DBPrefix}messages AS l ON t.id_last_msg = l.id_msg
+						GROUP BY t.id_topic";
+
+				$result = $this->ourDB->gen($qry);
+				if ($result === false) return false;
+
 			break;
 				
 			case 'forumpost' :
-				//$result = $this->ourDB->gen("SELECT * FROM `{$this->DBPrefix}posts`");
-				//if ($result === FALSE) return FALSE;	  
+
+				$qry = "SELECT m.*, a.filename, a.fileext, a.size FROM {$this->DBPrefix}messages AS m LEFT JOIN {$this->DBPrefix}attachments AS a ON m.id_msg = a.id_msg GROUP BY m.id_msg ORDER BY m.id_msg ASC ";
+
+				$result = $this->ourDB->gen($qry);
+				if ($result === false) return false;
 			break;				
 
 			case 'forumtrack' :
@@ -80,12 +121,27 @@ class smf_import extends base_import_class
 	
 	function convertUserclass($data)
 	{
-		
-		if($data == 1)
+		if(empty($data))
 		{
-			
+			return 0;
 		}
-		
+
+		$convert = array(
+		//	1   => e_UC_ADMINMOD,
+			2   => e_UC_ADMINMOD,
+			3   => e_UC_MODS,
+			4   => e_UC_NEWUSER,
+
+		);
+
+		if(!empty($convert[$data]))
+		{
+			return $convert[$data];
+		}
+
+
+		return 0;
+
 		/*
 		1	Administrator		#FF0000	-1	0	5#staradmin.gif	1	0	-2
 		2	Global Moderator		#0000FF	-1	0	5#stargmod.gif	0	0	-2
@@ -143,8 +199,8 @@ class smf_import extends base_import_class
 		$target['user_ip'] 			= $source['member_ip'];
 		$target['user_homepage']	= $source['website_url'];
 		$target['user_birthday']	= $source['birthdate'];
-		$target['user_admin']		= $this->convertadmin($source['id_group']);
-		$target['user_class']		= $this->convertadmin($source['id_group']);
+		$target['user_admin']		= $this->convertAdmin($source['id_group']);
+		$target['user_class']		= $this->convertUserclass($source['id_group']);
 		
 		$target['user_plugin_forum_viewed'] = 0;
 		$target['user_plugin_forum_posts']	= $source['posts'];
@@ -166,54 +222,24 @@ class smf_import extends base_import_class
 		$target['forum_name'] 				= $source['name'];
 		$target['forum_description'] 		= $source['description'];
 		$target['forum_parent']				= $source['id_parent'];
-		$target['forum_sub']				= "";
+		$target['forum_sub']				= ($source['child_level'] > 1) ? $source['id_parent'] : 0;
 		$target['forum_datestamp']			= time();
 		$target['forum_moderators']			= "";
 	
 		$target['forum_threads'] 			= $source['num_topics'];
 		$target['forum_replies']			= $source['num_posts'];
-		$target['forum_lastpost_user']		= '';
-		$target['forum_lastpost_user_anon']	= '';
-		$target['forum_lastpost_info']		= '';
-		//	$target['forum_class']				= "";
+		$target['forum_lastpost_user']		= $source['id_member'];
+		$target['forum_lastpost_user_anon']	= empty($source['id_member']) ? $source['poster_name'] : null;
+		$target['forum_lastpost_info']		= $source['poster_time'].'.'.$source['id_last_msg'];
+		$target['forum_class']				= e_UC_MEMBER;
 		$target['forum_order']				= $source['board_order'];
-		// $target['forum_postclass']	
-		// $target['forum_threadclass']	
-		// $target['forum_options']	
+		$target['forum_postclass']	        = e_UC_MEMBER;
+		$target['forum_threadclass']	    = e_UC_MEMBER;
+		$target['forum_options']	        = e_UC_MEMBER;
+		$target['forum_sef']                = eHelper::title2sef($source['name'],'dashl');
 		
 		return $target;
-		
-		
-		/* 
 
-			 CREATE TABLE {$db_prefix}boards (
-		  id_board smallint(5) unsigned NOT NULL auto_increment,
-		  id_cat tinyint(4) unsigned NOT NULL default '0',
-		  child_level tinyint(4) unsigned NOT NULL default '0',
-		  id_parent smallint(5) unsigned NOT NULL default '0',
-		  board_order smallint(5) NOT NULL default '0',
-		  id_last_msg int(10) unsigned NOT NULL default '0',
-		  id_msg_updated int(10) unsigned NOT NULL default '0',
-		  member_groups varchar(255) NOT NULL default '-1,0',
-		  id_profile smallint(5) unsigned NOT NULL default '1',
-		  name varchar(255) NOT NULL default '',
-		  description text NOT NULL,
-		  num_topics mediumint(8) unsigned NOT NULL default '0',
-		  num_posts mediumint(8) unsigned NOT NULL default '0',
-		  count_posts tinyint(4) NOT NULL default '0',
-		  id_theme tinyint(4) unsigned NOT NULL default '0',
-		  override_theme tinyint(4) unsigned NOT NULL default '0',
-		  unapproved_posts smallint(5) NOT NULL default '0',
-		  unapproved_topics smallint(5) NOT NULL default '0',
-		  redirect varchar(255) NOT NULL default '',
-		  PRIMARY KEY (id_board),
-		  UNIQUE categories (id_cat, id_board),
-		  KEY id_parent (id_parent),
-		  KEY id_msg_updated (id_msg_updated),
-		  KEY member_groups (member_groups(48))
-		) ENGINE=MyISAM;
-	 * */
-	
 		
 	}
 
@@ -225,126 +251,96 @@ class smf_import extends base_import_class
 	function copyForumThreadData(&$target, &$source)
 	{
 		
-		$target['thread_id'] 				= $source['topic_id'];
-		$target['thread_name'] 				= $source['topic_title'];
-		$target['thread_forum_id'] 			= $source['forum_id'];
-		$target['thread_views'] 			= $source['topic_views'];
-	//	$target['thread_active'] 			= $source['topic_status'];
-		$target['thread_lastpost'] 			= $source['topic_last_post_id'];
-		$target['thread_sticky'] 			= $source['topic_time_limit'];
-		$target['thread_datestamp'] 		= $source['topic_time'];
-		$target['thread_user'] 				= $source['topic_poster'];
-		$target['thread_user_anon'] 		= $source['topic_first_poster_name'];
-		$target['thread_lastuser'] 			= $source['topic_last_poster_id'];
-		$target['thread_lastuser_anon'] 	= $source['topic_last_poster_name'];
-		$target['thread_total_replies'] 	= $source['topic_replies'];
-	//	$target['thread_options'] 			= $source['topic_'];
+		$target['thread_id'] 				= (int) $source['id_topic'];
+		$target['thread_name'] 				= $source['subject'];
+		$target['thread_forum_id'] 			= (int) $source['id_board'];
+		$target['thread_views'] 			= (int) $source['num_views'];
+		$target['thread_active'] 			= intval($source['locked']) === 0 ? 1 : 0;
+		$target['thread_lastpost'] 			= (int) $source['lastpost_time'];
+		$target['thread_sticky'] 			= (int) $source['id_sticky'];
+		$target['thread_datestamp'] 		= (int) $source['poster_time'];
+		$target['thread_user'] 				= (int) $source['id_member_started'];
+		$target['thread_user_anon'] 		= empty($source['id_member']) ? $source['poster_name'] : null;
+		$target['thread_lastuser'] 			= (int) $source['lastpost_user'];
+		$target['thread_lastuser_anon'] 	= empty($source['lastpost_user']) ? $source['lastpost_name'] : null;
+		$target['thread_total_replies'] 	= (int) $source['num_replies'];
+		$target['thread_options'] 			= null;
 	
 		return $target;
-		
-		/*
-		  CREATE TABLE {$db_prefix}topics (
-		  id_topic mediumint(8) unsigned NOT NULL auto_increment,
-		  is_sticky tinyint(4) NOT NULL default '0',
-		  id_board smallint(5) unsigned NOT NULL default '0',
-		  id_first_msg int(10) unsigned NOT NULL default '0',
-		  id_last_msg int(10) unsigned NOT NULL default '0',
-		  id_member_started mediumint(8) unsigned NOT NULL default '0',
-		  id_member_updated mediumint(8) unsigned NOT NULL default '0',
-		  id_poll mediumint(8) unsigned NOT NULL default '0',
-		  id_previous_board smallint(5) NOT NULL default '0',
-		  id_previous_topic mediumint(8) NOT NULL default '0',
-		  num_replies int(10) unsigned NOT NULL default '0',
-		  num_views int(10) unsigned NOT NULL default '0',
-		  locked tinyint(4) NOT NULL default '0',
-		  unapproved_posts smallint(5) NOT NULL default '0',
-		  approved tinyint(3) NOT NULL default '1',
-		  PRIMARY KEY (id_topic),
-		  UNIQUE last_message (id_last_msg, id_board),
-		  UNIQUE first_message (id_first_msg, id_board),
-		  UNIQUE poll (id_poll, id_topic),
-		  KEY is_sticky (is_sticky),
-		  KEY approved (approved),
-		  KEY id_board (id_board),
-		  KEY member_started (id_member_started, id_board),
-		  KEY last_message_sticky (id_board, is_sticky, id_last_msg),
-		  KEY board_news (id_board, id_first_msg)
-		) ENGINE=MyISAM;
-		 */
-		
 		
 	}
 
  	
 	/**
 	 * $target - e107_forum_post table
-	 * $source -smf //TODO
+	 * $source -smf
 	 */
 	function copyForumPostData(&$target, &$source)
 	{
-		$target['post_id'] 					= $source['post_id'];
-		$target['post_entry'] 				= $source['post_text'];
-		$target['post_thread'] 				= $source['topic_id'];
-		$target['post_forum'] 				= $source['forum_id'];
-	//	$target['post_status'] 				= $source[''];
-		$target['post_datestamp'] 			= $source['post_time'];
-		$target['post_user'] 				= $source['poster_id'];
-		$target['post_edit_datestamp'] 		= $source['post_edit_time'];
+		$target['post_id'] 					= (int)$source['id_msg'];
+		$target['post_entry'] 				= $source['body'];
+		$target['post_thread'] 				= (int) $source['id_topic'];
+		$target['post_forum'] 				= (int) $source['id_board'];
+		$target['post_status'] 				= intval($source['approved']) === 1 ?  0 : 1;
+		$target['post_datestamp'] 			= (int) $source['poster_time'];
+		$target['post_user'] 				= (int) $source['id_member'];
+		$target['post_edit_datestamp'] 		= (int) $source['modified_time'];
 		$target['post_edit_user'] 			= $source['post_edit_user'];
-		$target['post_ip'] 					= $source['poster_ip'];
-	//	$target['post_user_anon'] 			= $source[''];
-	//	$target['post_attachments'] 		= $source[''];
-	//	$target['post_options'] 			= $source[''];
-		
-		
+		$target['post_ip'] 					= e107::getIPHandler()->ipEncode($source['poster_ip']);
+		$target['post_user_anon'] 			= empty($source['id_member']) ? $source['poster_name'] : null;
+		$target['post_attachments'] 		= $this->processAttachments($source);
+		$target['post_options'] 			= null;
+
+
 		return $target;
 		
-		
-		/*CREATE TABLE {$db_prefix}messages (
-		  id_msg int(10) unsigned NOT NULL auto_increment,
-		  id_topic mediumint(8) unsigned NOT NULL default '0',
-		  id_board smallint(5) unsigned NOT NULL default '0',
-		  poster_time int(10) unsigned NOT NULL default '0',
-		  id_member mediumint(8) unsigned NOT NULL default '0',
-		  id_msg_modified int(10) unsigned NOT NULL default '0',
-		  subject varchar(255) NOT NULL default '',
-		  poster_name varchar(255) NOT NULL default '',
-		  poster_email varchar(255) NOT NULL default '',
-		  poster_ip varchar(255) NOT NULL default '',
-		  smileys_enabled tinyint(4) NOT NULL default '1',
-		  modified_time int(10) unsigned NOT NULL default '0',
-		  modified_name varchar(255) NOT NULL default '',
-		  body text NOT NULL,
-		  icon varchar(16) NOT NULL default 'xx',
-		  approved tinyint(3) NOT NULL default '1',
-		  PRIMARY KEY (id_msg),
-		  UNIQUE topic (id_topic, id_msg),
-		  UNIQUE id_board (id_board, id_msg),
-		  UNIQUE id_member (id_member, id_msg),
-		  KEY approved (approved),
-		  KEY ip_index (poster_ip(15), id_topic),
-		  KEY participation (id_member, id_topic),
-		  KEY show_posts (id_member, id_board),
-		  KEY id_topic (id_topic),
-		  KEY id_member_msg (id_member, approved, id_msg),
-		  KEY current_topic (id_topic, id_msg, id_member, approved),
-		  KEY related_ip (id_member, poster_ip, id_msg)
-		) ENGINE=MyISAM;
-		 * 
-		
-		INSERT INTO {$db_prefix}messages
-			(id_msg, id_msg_modified, id_topic, id_board, poster_time, subject, poster_name, poster_email, poster_ip, modified_name, body, icon)
-		VALUES (1, 1, 1, 1, UNIX_TIMESTAMP(), '{$default_topic_subject}', 'Simple Machines', 'info@simplemachines.org', '127.0.0.1', '', '{$default_topic_message}', 'xx');
-		 
-		 */
 
 	}
 
 
+	/**
+	 * todo copyForumPostAttachments()
+	 * @param $source
+	 * @return null|string
+	 */
+
+
+	/**
+	 * @todo Support for multiple attachments.
+	 * @param $source
+	 * @return null|string
+	 */
+	private function processAttachments($source)
+	{
+		if(empty($source['filename']))
+		{
+			return null;
+		}
+
+
+		if($source['fileext'] == 'png' || $source['fileext'] == 'jpg' || $source['fileext'] == 'jpg')
+		{
+			$type = 'img';
+		}
+		else
+		{
+			$type = 'file';
+		}
+
+		$arr = array();
+		$arr[$type][0] = array(
+			'file'  => $source['filename'],
+			'name'  => $source['filename'],
+			'size'  => $source['size']
+		);
+
+		return e107::serialize($arr);
+
+	}
 
 	/**
 	 * $target - e107_forum_track
-	 * $source	- phpbb_forums_track : https://wiki.phpbb.com/Table.phpbb_forums_track
+	 * $source	-???
 	 */
 	function copyForumTrackData(&$target, &$source)
 	{

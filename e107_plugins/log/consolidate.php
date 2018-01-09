@@ -163,8 +163,15 @@ class logConsolidate
 				if (!isset($$varname)) $$varname = array();		// Create monthly arrays if they don't exist
 			}
 
-			require($this->pathtologs.$this->pfileprev);		// Yesterday's page accesses - $pageInfo array
-			require($this->pathtologs.$this->ifileprev);		// Yesterdays browser accesses etc
+			if(file_exists($this->pathtologs.$this->pfileprev))
+			{
+				require($this->pathtologs.$this->pfileprev);		// Yesterday's page accesses - $pageInfo array
+			}
+
+			if(file_exists($this->pathtologs.$this->ifileprev))
+			{
+				require($this->pathtologs.$this->ifileprev);		// Yesterdays browser accesses etc
+			}
 
 			foreach($browserInfo as $name => $amount)
 			{
@@ -614,11 +621,13 @@ class logConsolidate
 
 					if($this->collatePageInfo($pageTotal, $datestamp))
 					{
-						$mes->addSuccess( "Data saved to database with id: ".$datestamp);
+						$message = e107::getParser()->lanVars(ADSTAT_LAN_90, array('x'=>$datestamp));
+				        $mes->addSuccess($message);
 					}
 					else
 					{
-						$mes->addError( "Couldn't save data to database with id: ".$datestamp);
+						$message = e107::getParser()->lanVars(ADSTAT_LAN_91, array('x'=>$datestamp));
+				        $mes->addError($message);
 					}
 				}
 

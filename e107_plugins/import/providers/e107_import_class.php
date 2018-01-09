@@ -34,11 +34,33 @@ class e107_import extends base_import_class
 	
 	public $title		= 'e107';
 	public $description	= 'Reads 0.7 and 0.8 version files';
-	public $supported	= array('users');
+	public $supported	= array('users', 'page', 'pagechapter');
 	public $mprefix		= 'e107_';
 	
-	
-	
+	function init()
+	{
+
+		$this->pcontent	= intval($_POST['pcontent']);
+
+	}
+
+
+	function config()
+	{
+		$frm = e107::getForm();
+
+		$present = e107::getDb()->isTable('pcontent');
+
+		$var[0]['caption']	= "Use old 'Content Management' tables for Pages";
+		$var[0]['html'] 	= $frm->radio_switch('pcontent',$present);
+	//	$var[0]['help'] 	= "Change the author of the news items";
+
+	//	$var[1]['caption']	= "Include revisions";
+	//	$var[1]['html'] 	= $frm->checkbox('news_revisions',1);
+	//	$var[1]['help'] 	= "Change the author of the news items";
+
+		return $var;
+	}
 	
   // Set up a query for the specified task.
   // Returns TRUE on success. FALSE on error
@@ -47,13 +69,27 @@ class e107_import extends base_import_class
 	    if ($this->ourDB == NULL) return FALSE;
 	    switch ($task)
 		{
-		  case 'users' :
-		  	$query =  "SELECT * FROM {$this->DBPrefix}user WHERE `user_id` != 1";
-		    $result = $this->ourDB->db_Select_gen($query);
+		    case 'users' :
+		  	    $query =  "SELECT * FROM {$this->DBPrefix}user WHERE `user_id` != 1";
+		        $result = $this->ourDB->db_Select_gen($query);
 	
-			if ($result === FALSE) return FALSE;
+				if ($result === false) return false;
 			break;
-	
+
+		    case 'page' :
+		  	    $query =  "SELECT * FROM {$this->DBPrefix}pcontent WHERE `content_parent` > 0";
+		        $result = $this->ourDB->gen($query);
+
+				if ($result === false) return false;
+			break;
+
+		    case 'pagechapter' :
+		  	    $query =  "SELECT * FROM {$this->DBPrefix}pcontent WHERE `content_parent` = '0'";
+		        $result = $this->ourDB->gen($query);
+
+				if ($result === false) return false;
+			break;
+
 	
 			
 		  default :
@@ -64,6 +100,81 @@ class e107_import extends base_import_class
 		
 		return TRUE;
   }
+
+
+	/**
+	 * Align source data to e107 Page Table
+	 * @param $target array - default e107 target values for e107_page table.
+	 * @param $source array - WordPress table data
+	 */
+	function copyPageData(&$target, &$source)
+	{
+
+
+
+		// 	$target['page_id']				= $source['ID']; //  auto increment
+			$target['page_title']			= $source['content_heading'];
+			$target['page_sef']				= eHelper::title2sef($source['content_heading'], 'dashl');
+			$target['page_text']			= $this->checkHtml($source['content_text']) ;
+			$target['page_chapter']		    = $source['content_parent'];
+		//	$target['page_metakeys']		= '';
+			$target['page_metadscr']		= $source['content_summary'];
+			$target['page_datestamp']		= $source['content_datestamp'];
+			$target['page_author']			= (int) $source['content_author'];
+		//	$target['page_category']		= '',
+			$target['page_comment_flag']	= (int) $source['content_comment'];
+			$target['page_rating_flag']     = (int) $source['content_rate'];
+		//	$target['page_password']		= $source['post_password'];
+			$target['page_order']           = (int) $source['content_order'];
+			$target['page_class']	        = (int) $source['content_class'];
+
+
+
+		return $target;  // comment out to debug
+
+
+	}
+
+
+	private function checkHtml($text)
+	{
+		$tp = e107::getParser();
+		if($tp->isHtml($text) && strpos($text,'[html]')!==0)
+		{
+			return "[html]".$text."[/html]";
+		}
+
+		return $text;
+
+	}
+
+	/**
+	 * Align source data to e107 Page Table
+	 * @param $target array - default e107 target values for e107_page table.
+	 * @param $source array - WordPress table data
+	 */
+	function copyPageChapterData(&$target, &$source)
+	{
+		$target['chapter_id']                   = $source['content_id'];
+		$target['chapter_parent']               = empty($source['content_parent']) ? 1 : (int) $source['content_parent'];
+		$target['chapter_name']                 = $source['content_heading'];
+		$target['chapter_sef']                  = eHelper::title2sef($source['content_heading'], 'dashl');
+		$target['chapter_meta_description']     = $source['content_text'];
+		$target['chapter_meta_keywords']        = '';
+		// $target['chapter_manager']         = '';
+		$target['chapter_icon']                 = $source['content_icon'];
+		$target['chapter_order']                = 0;
+		// $target['chapter_template']        = '';
+		// $target['chapter_visibility']      = 0;
+		// $target['chapter_fields']          = '';
+
+		return $target;  // comment out to debug
+
+
+	}
+
+
+
 
 
   //------------------------------------

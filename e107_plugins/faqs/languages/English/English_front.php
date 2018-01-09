@@ -10,15 +10,19 @@
  *
 */
 
-define("LAN_FAQS_TAGS", "Tags");
-define("LAN_FAQS_FILTER_ACTIVE", "Filter Active");
-define("LAN_FAQS_NONE_AVAILABLE", "There are currently no FAQs available.");
-define("LAN_FAQS_ASKQUESTION_AFTER", "Thank you. Your question has been saved and will be answered as soon as possible.");
-define("LAN_FAQS_LIMIT_REACHED", "You have reached the maximum number of new questions. You may ask more once your existing questions have been answered.");
-define("LAN_FAQS_REMOVE", "Remove");
-define("LAN_FAQS_RESET", "Reset");
-define("LAN_FAQS_X_NOT_FOUND", "[x]: Not found in search results.");
-define("LAN_FAQS_MODERATE_COMMENTS", "moderate comments");
-define("LAN_FAQS_BACK_TO_CATEGORIES", "Back to Categories");
-define("LAN_FAQS_ASK_A_QUESTION", "Ask a Question");
-define("LAN_FAQS_FAQ", "FAQ");
+define("LAN_FAQS_001", "Tags");
+define("LAN_FAQS_002", "Filter");
+define("LAN_FAQS_003", "There are currently no FAQs available.");
+define("LAN_FAQS_004", "Thank you. Your question has been saved and will be answered as soon as possible.");
+define("LAN_FAQS_005", "You have reached the maximum number of new questions. You may ask more once your existing questions have been answered.");
+define("LAN_FAQS_006", "Remove");
+define("LAN_FAQS_007", "Reset");
+define("LAN_FAQS_008", "[x]: Not found in search results.");
+define("LAN_FAQS_009", "moderate comments");
+define("LAN_FAQS_010", "Back to Categories");
+define("LAN_FAQS_011", "FAQ");
+define("LAN_FAQS_012", "Enter your question here...");
+define("LAN_FAQS_013", "character limit");
+define("LAN_FAQS_014", "Please [register] and/or login to post a question.");
+define("LAN_FAQS_015", "Not permitted.");
+define("LAN_FAQS_016", "You have requested answers to the following questions:");

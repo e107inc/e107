@@ -632,7 +632,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 				// pm_id is mapped insisde the config to id key
 				$ret = "
 				<form method='post' action='".$this->url('action/reply', $this->var)."'>
-				<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
+				<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp;<input class='btn btn-primary button' type='submit' name='reply' value='".LAN_PM_55."' />
 				</form>
 				";
 				return $ret;
@@ -645,10 +645,11 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			$pm_outbox = $this->pmManager->pm_getInfo('outbox');
 			if($pm_outbox['outbox']['filled'] < 100)
 			{
-				$link = $this->url('action/new');
-				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".PM_SEND_LINK."</a>";
+//				$link = $this->url('action/new');
+//				return "<a class='btn btn-mini btn-xs btn-default' href='{$link}'>".LAN_PLUGIN_PM_NEW."</a>";
+				return $this->url('action/new');
 			}
-			return '';
+//			return '';
 		}
 
 

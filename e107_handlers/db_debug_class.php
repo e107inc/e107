@@ -354,6 +354,25 @@ class e107_db_debug {
 	}
 
 
+	function save($log)
+	{
+		e107::getMessage()->addDebug("Saving a log");
+
+		$titles = array_keys($this->aTimeMarks[0]);
+
+		$text = implode("\t\t\t",$titles)."\n\n";
+
+		foreach($this->aTimeMarks as $item)
+		{
+			$item['What'] = str_pad($item['What'],50," ",STR_PAD_RIGHT);
+			$text .= implode("\t\t\t",$item)."\n";
+		}
+
+		file_put_contents($log, $text, FILE_APPEND);
+
+	}
+
+
 	function Show_Performance()
 	{
 			//
@@ -768,7 +787,31 @@ class e107_db_debug {
 			return $text;
 		}
 	}
-	
+
+
+	/**
+	 * var_dump to debug log
+	 * @param mixed $message
+	 */
+	function dump($message, $TraceLev= 1)
+	{
+		ob_start();
+	    var_dump($message);
+	    $content = ob_get_contents();
+	    ob_end_clean();
+
+	    $bt = debug_backtrace();
+
+		$this->aLog[] =	array(
+			'Message'   => $content,
+			'Function'	=> (isset($bt[$TraceLev]['type']) && ($bt[$TraceLev]['type'] == '::' || $bt[$TraceLev]['type'] == '->') ? $bt[$TraceLev]['class'].$bt[$TraceLev]['type'].$bt[$TraceLev]['function'].'()' : $bt[$TraceLev]['function']).'()',
+				'File'	=> varset($bt[$TraceLev]['file']),
+				'Line'	=> varset($bt[$TraceLev]['line'])
+			);
+
+	   // $this->aLog[] =	array ('Message'   => $content, 'Function' => '', 	'File' => '', 'Line' => '' 	);
+
+	}
 //
 // Simple debug-level 'console' log
 // Record a "nice" debug message with
@@ -776,6 +819,8 @@ class e107_db_debug {
 //
 	function log($message,$TraceLev=1)
 	{
+
+
 
 		if(is_array($message) || is_object($message))
 		{
@@ -825,10 +870,10 @@ class e107_db_debug {
 			if (!$bRowHeaders)
 			{
 				$bRowHeaders = true;
-				$text .= "<tr class='fcaption'><td><b>".implode("</b></td><td><b>", array_keys($curLog))."</b></td></tr>\n";
+				$text .= "<tr><td class='fcaption' style='text-align:left'><b>".implode("</b></td><td class='fcaption' style='text-align:left'><b>", array_keys($curLog))."</b></td></tr>\n";
 			}
 
-			$text .= "<tr class='forumheader3'><td>".implode("&nbsp;</td><td>", array_values($curLog))."&nbsp;</td></tr>\n";
+			$text .= "<tr ><td class='forumheader3'>".implode("&nbsp;</td><td class='forumheader3'>", array_values($curLog))."&nbsp;</td></tr>\n";
 		}
 
 		$text .= "</table><br />\n";

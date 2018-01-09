@@ -21,10 +21,6 @@ $FORUM_VIEW_START = "
 	<div class='spacer'>
 	<table style='".USER_WIDTH."' class='fborder table' >
 	<tr>
-	<td class='fcaption'>{BREADCRUMB}</td>
-	</tr>
-	{SUBFORUMS}
-	<tr>
 	<td style='width:80%' class='forumheader'>
 	<span class='mediumtext'>{FORUMTITLE}</span></td>
 	</tr>
@@ -165,7 +161,7 @@ if (empty($FORUM_VIEW_END))
 		<div class='spacer'>
 		<table class='fborder table' style='".USER_WIDTH."'>
 		<tr>
-		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
+		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{LAN=LAN_FORUM_1009}: {MODERATORS}</span></td>
 		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
 		</tr>
 		</table>
@@ -307,21 +303,19 @@ $FORUM_VIEWFORUM_TEMPLATE['header'] 			= "<div class=' row-fluid'><div>{BREADCRU
 
 
 $FORUM_VIEWFORUM_TEMPLATE['item'] 				= "<tr>
-													<td>{ICON}</td>
-													<td>
-													<div class='row'>
-														<div class='col-xs-12 col-md-9'>
-														{THREADNAME}
-														<div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
-														</div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
-														</div>
-														<div class='row'>
+												    <td>{ICON}</td>
+												    <td>
+												        <div class='row'>
+												            <div class='col-xs-12 col-md-9'>
+												            {THREADNAME}
+												            <div><small>".LAN_FORUM_1004.": {POSTER} {THREADTIMELAPSE} &nbsp;</small></div>
+												            </div><div class='col-xs-12 col-md-3 text-right'> {PAGESX}</div>
+												        </div>
+												    </td>
+												    <td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
+												    <td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
+												</tr>\n";
 
-													</td>
-													</div>
-														<td class='text-center'>{REPLIESX}</td><td class='hidden-xs text-center'>{VIEWSX}</td>
-													<td class='hidden-xs'><small>{LASTPOSTUSER} {LASTPOSTDATE} </small><div class='span2 right pull-right'>{ADMINOPTIONS}</div></td>
-													</tr>\n";
 
 $FORUM_VIEWFORUM_TEMPLATE['item-sticky'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";
 $FORUM_VIEWFORUM_TEMPLATE['item-announce'] 		= $FORUM_VIEWFORUM_TEMPLATE['item'] ; // "<tr><td>{THREADNAME}</td></tr>\n";

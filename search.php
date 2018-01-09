@@ -944,7 +944,7 @@ class search extends e_shortcode
 			elseif (strlen($full_query) < ($char_count = ($this->search_prefs['mysql_sort'] ? 4 : 3))) 
 			{
 				$perform_search = false;
-				$this->message = str_replace('--CHARS--', $char_count, LAN_417);
+				$this->message = str_replace('[x]', $char_count, LAN_417);
 			} 
 			elseif ($this->search_prefs['time_restrict']) 
 			{

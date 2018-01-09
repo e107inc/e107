@@ -52,6 +52,8 @@
   14 => 'e-users',
   15 => 'e-wmessage',
 )]]></core>
+		<core name="db_updates"><![CDATA[array (
+)]]></core>
 		<core name="developer">0</core>
 		<core name="disable_emailcheck">0</core>
 		<core name="disallowMultiLogin">0</core>
@@ -126,6 +128,7 @@
   'rss_menu' => 'rss_sql',
 )]]></core>
 		<core name="e_url_list"><![CDATA[array (
+  'news' => 'news',
   'rss_menu' => 'rss_menu',
 )]]></core>
 		<core name="email_text"></core>
@@ -330,6 +333,8 @@ City, State, Country
   'system' => 'core',
   'user' => 'core',
 )]]></core>
+<core name="url_profiles"><![CDATA[array (
+)]]></core>
 		<core name="url_disable_pathinfo">1</core>
 		<core name="url_error_redirect">0</core>
 		<core name="url_locations"><![CDATA[array (
@@ -394,6 +399,7 @@ City, State, Country
 		<core name="user_reg_secureveri">1</core>
 		<core name="user_reg_veri">1</core>
 		<core name="user_tracking">cookie</core>
+		<core name="version">2.1.7</core>
 		<core name="wm_enclose">1</core>
 		<core name="wmessage_sc">0</core>
 		<core name="wysiwyg">1</core>
@@ -858,8 +864,8 @@ City, State, Country
 				<field name="link_open">0</field>
 				<field name="link_class">0</field>
 				<field name="link_function"></field>
-				<field name="link_sefurl"></field>
-			    <field name="link_owner"></field>
+				<field name="link_sefurl">index</field>
+			    <field name="link_owner">news</field>
 			</item>
 			<item>
 				<field name="link_id">7</field>
@@ -1205,7 +1211,7 @@ City, State, Country
 			<item>
 				<field name="category_id">1</field>
 				<field name="category_name">Misc</field>
-				<field name="category_sef"></field>
+				<field name="category_sef">misc</field>
 				<field name="category_meta_description"></field>
 				<field name="category_meta_keywords"></field>
 				<field name="category_manager">254</field>

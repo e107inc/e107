@@ -289,11 +289,11 @@ e107::js('footer-inline', js());
 
 		protected $adminMenu = array(
 
-			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
-			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0'),
-			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0'),
-			'cat/list'		=> array('caption'=> LAN_CATEGORIES, 'perm' => '0'),
-			'cat/create'		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => '0'),
+			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
+			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0|4'),
+			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0|4'),
+			'cat/list'		=> array('caption'=> LAN_CATEGORIES, 'perm' => '0|4'),
+			'cat/create'		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => '0|4'),
 
 
 			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
@@ -621,7 +621,7 @@ e107::js('footer-inline', js());
 						}
 						else
 						{
-							$ret .= str_replace('--FILE--',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
+							$ret .= str_replace('[x]',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
 						}
 					}
 				}
@@ -2373,7 +2373,7 @@ class users_ext
 				}
 					else
 					{
-						$ret .= str_replace('--FILE--',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
+						$ret .= str_replace('[x]',e_CORE.'sql/extended_'.$f.'.php',EXTLAN_78);
 					}
 				}
 			}

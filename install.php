@@ -21,12 +21,17 @@ define('MAKE_INSTALL_LOG', true);
 /* Default Options and Paths for Installer */
 $MySQLprefix	     = 'e107_';
 $HANDLERS_DIRECTORY  = "e107_handlers/"; // needed for e107 class init
+
 header('Content-type: text/html; charset=utf-8');
 
 define("e107_INIT", TRUE);
+define("DEFAULT_INSTALL_THEME", 'voux');
+
 require_once("e107_admin/ver.php");
 
 define("e_VERSION", $e107info['e107_version']);
+
+
 
 /*define("e_UC_PUBLIC", 0);
 define("e_UC_MAINADMIN", 250);
@@ -128,6 +133,11 @@ include_once("./{$HANDLERS_DIRECTORY}core_functions.php");
 include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
 function check_class($whatever='')
+{
+	return true;
+}
+
+function getperms($arg, $ap = '')
 {
 	return true;
 }
@@ -477,7 +487,7 @@ class e_install
 				<tr>
 					<td style='border-top: 1px solid #999;'><label for='server'>".LANINS_024."</label></td>
 					<td style='border-top: 1px solid #999;'>
-						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='localhost' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' id='server' name='server' autofocus size='40' value='".varset($this->previous_steps['mysql']['server'],'localhost')."' maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_030."</span>
 					</td>
 				</tr>
@@ -485,7 +495,7 @@ class e_install
 				<tr>
 					<td><label for='name'>".LANINS_025."</label></td>
 					<td>
-						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40' value='' maxlength='100' required='required' />
+						<input class='form-control input-large' type='text' name='name' id='name' value='".varset($this->previous_steps['mysql']['user'])."' size='40'  maxlength='100' required='required' />
 						<span class='field-help'>".LANINS_031."</span>
 					</td>
 				</tr>
@@ -501,7 +511,7 @@ class e_install
 				<tr>
 					<td><label for='db'>".LANINS_027."</label></td>
 					<td class='form-inline'>
-						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
+						<input class='form-control input-large' type='text' name='db' size='20' id='db' value='".varset($this->previous_steps['mysql']['db'])."' maxlength='100' required='required' pattern='^[a-zA-Z0-9_-]*' />
 						<label class='checkbox-inline'><input type='checkbox' name='createdb' value='1' ".($this->previous_steps['mysql']['createdb'] ==1 ? "checked='checked'" : "")." /><small>".LANINS_028."</small></label>
 						<span class='field-help'>".LANINS_033."</span>
 					</td>
@@ -664,7 +674,7 @@ class e_install
 				
 				$alertType = 'error';
 			}
-			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && $sql->database($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['server']))
+			elseif(($this->previous_steps['mysql']['createdb'] == 1) && empty($this->previous_steps['mysql']['overwritedb']) && $sql->database($this->previous_steps['mysql']['db'], $this->previous_steps['mysql']['prefix']))
 			{
 				$success = false; 
 				$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
@@ -955,7 +965,7 @@ class e_install
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
 		$this->template->SetTag("stage_num", LANINS_046);
-		$this->template->SetTag("stage_title", LANINS_047);
+		$this->template->SetTag("stage_title", defset('LANINS_147', 'Administration'));
 		// $this->template->SetTag("onload", "document.getElementById('u_name').focus()");
 		$this->template->SetTag("percent", 60);
 		$this->template->SetTag("bartype", 'warning');
@@ -964,6 +974,10 @@ class e_install
 		$output = "
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			<table class='table table-striped table-bordered'>
+				<colgroup>
+					<col style='width:35%' />
+					<col  />
+				</colgroup>
 				<tr>
 					<td><label for='u_name'>".LANINS_072."</label></td>
 					<td>
@@ -1001,6 +1015,46 @@ class e_install
 					<td>
 						<input class='form-control' type='text' name='email' size='30' id='email' required='required' placeholder='admin@mysite.com' value='".(isset($this->previous_steps['admin']['email']) ? $this->previous_steps['admin']['email'] : '')."' maxlength='100' />
 					<span class='field-help'>".LANINS_081."</span>
+					</td>
+				</tr>
+				</table>
+				
+				<table class='table table-striped table-bordered'>
+				<colgroup>
+					<col style='width:35%' />
+					<col  />
+				</colgroup>
+				<tr>
+					<td><label for='admincss'>".LANINS_146."</label></td>
+					<td>";
+
+				$d = $this->get_theme_xml('bootstrap3');
+				$opts = array();
+
+				foreach($d['css'] as $val)
+				{
+					$key = $val['name'];
+
+					if(empty($val['thumbnail']))
+					{
+						continue;
+					}
+
+					$opts[$key] = array (
+							'title'         => $val['info'],
+							'preview'       => e_THEME."bootstrap3/".$val['thumbnail'],
+							'description'   =>'',
+							'category'=>''
+							);
+
+
+				}
+
+				$output .= $this->thumbnailSelector('admincss', $opts, 'css/bootstrap-dark.min.css');
+
+				$output .= "
+						
+					
 					</td>
 				</tr>
 			</table>
@@ -1067,6 +1121,11 @@ class e_install
 			}
 		}
 
+		if(!empty($_POST['admincss']))
+		{
+			$this->previous_steps['prefs']['admincss'] = $tp->filter($_POST['admincss']);
+		}
+
 		// -------------   Validate Step 5 Data. --------------------------
 		if(!vartrue($this->previous_steps['admin']['user']) || !vartrue($this->previous_steps['admin']['password']))
 		{
@@ -1118,6 +1177,8 @@ class e_install
 
 				$themes = $this->get_themes();
 
+				$opts = array();
+
 				foreach($themes as $val)
 				{
 
@@ -1126,21 +1187,33 @@ class e_install
 						continue;
 					}*/
 
+
+
 					$themeInfo 	= $this->get_theme_xml($val);
-					$title 		= vartrue($themeInfo['@attributes']['name']);
+
+
+					$opts[$val] = array(
+						'title' =>vartrue($themeInfo['@attributes']['name']),
+						'category' 	=> vartrue($themeInfo['category']),
+						'preview'   =>  e_THEME.$val."/".$themeInfo['thumbnail'],
+						'description'   => vartrue($themeInfo['info'])
+					);
+
+	/*				$title 		= vartrue($themeInfo['@attributes']['name']);
 					$category 	= vartrue($themeInfo['category']);
 					$preview    = e_THEME.$val."/".$themeInfo['thumbnail'];
-					$description = vartrue($themeInfo['description']);
+					$description = vartrue($themeInfo['info']);
 
 					if(!is_readable($preview))
 					{
 						continue;
 					}
 
+
 					$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$preview ."' alt='".$val."' />";
 
 
-					$selected = ($val == 'landingzero') ? " checked" : "";
+					$selected = ($val === DEFAULT_INSTALL_THEME) ? " checked" : "";
 
 					$output .= "
 									<div class='col-md-6 theme-cell' >
@@ -1149,8 +1222,11 @@ class e_install
 										<h5>".$title." <small>(".$category.")</small><span class='glyphicon glyphicon-ok text-success'></span></h5>
 										</div>
 										</label>
-									</div>";
+									</div>";*/
 				}
+
+				$output .= $this->thumbnailSelector('sitetheme', $opts, DEFAULT_INSTALL_THEME);
+
 
 				$output .= "
 
@@ -1182,6 +1258,43 @@ class e_install
 		$this->add_button("submit", LAN_CONTINUE);
 		$this->template->SetTag("stage_content", $e_forms->return_form());
 		$this->logLine('Stage 6 completed');
+	}
+
+
+	private function thumbnailSelector($name, $opts, $default='')
+	{
+
+		$ret = '';
+
+		foreach($opts as $key=>$val)
+		{
+
+			if(!is_readable($val['preview']) || !is_file($val['preview']))
+			{
+				continue;
+			}
+
+
+			$thumbnail = "<img class='img-responsive img-fluid thumbnail'  src='".$val['preview'] ."' alt='".$key."' />";
+
+
+			$selected = ($key === $default) ? " checked" : "";
+
+			$categoryInfo = !empty($val['category']) ? "<small>(".$val['category'].")</small>" : "";
+
+			$ret .= "
+					<div class='col-md-6 theme-cell' >
+						<label class='theme-selection' title=\"".$val['description']."\"><input type='radio' name='".$name."' value='{$key}' required='required' $selected />
+							<div>".$thumbnail."
+								<h5>".$val['title']." ".$categoryInfo."<span class='glyphicon glyphicon-ok text-success'></span></h5>
+							</div>
+						</label>
+					</div>";
+		}
+
+
+		return $ret;
+
 	}
 
 	private function stage_7()
@@ -1269,6 +1382,14 @@ class e_install
 \$HELP_DIRECTORY      = '{$this->e107->e107_dirs['HELP_DIRECTORY']}';
 \$MEDIA_DIRECTORY	  = '{$this->e107->e107_dirs['MEDIA_DIRECTORY']}';
 \$SYSTEM_DIRECTORY    = '{$this->e107->e107_dirs['SYSTEM_DIRECTORY']}';
+
+
+// -- Optional --
+// define('e_HTTP_STATIC', 'https://static.mydomain.com/');  // Use a static subdomain for js/css/images etc. 
+// define('e_MOD_REWRITE_STATIC', true); // Rewrite static image urls. 
+// define('e_LOG_CRITICAL', true); // log critical errors but do not display them to user. 
+// define('e_GIT', 'path-to-git');  // Path to GIT for developers
+
 
 ";
 /*
@@ -1386,7 +1507,7 @@ if($this->pdo == true)
 
 		$data = array('name'=>$this->previous_steps['prefs']['sitename'], 'theme'=>$this->previous_steps['prefs']['sitetheme'], 'language'=>$this->previous_steps['language'], 'url'=>$_SERVER['HTTP_REFERER']);;
 		$base = base64_encode(http_build_query($data, null, '&'));
-		$url = "http://e107.org/e-install/".$base;
+		$url = "https://e107.org/e-install/".$base;
 		$e_forms->add_plain_html("<img src='".$url."' style='width:1px; height:1px' />");
 
 	}
@@ -1492,7 +1613,7 @@ if($this->pdo == true)
 		$ret = e107::getXml()->e107Import($coreConfig, 'replace', true, false); // Add core pref values
 		$this->logLine('Attempting to Write Core Prefs.');
 		$this->logLine(print_r($ret, true));
-		
+		/*
 		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'. 
 		{
 			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries. 
@@ -1500,7 +1621,7 @@ if($this->pdo == true)
 			$this->logLine(print_r($ret2, true));
 		}
 		
-		//Create default plugin-table entries.
+	*/	//Create default plugin-table entries.
 		// e107::getConfig('core')->clearPrefCache();
 		e107::getPlugin()->update_plugins_table('update');
 		$this->logLine('Plugins table updated');
@@ -1521,8 +1642,19 @@ if($this->pdo == true)
 			}
 		}
 
+
+
 		e107::getSingleton('e107plugin')->save_addon_prefs('update'); // save plugin addon pref-lists. eg. e_latest_list.
 		$this->logLine('Addon prefs saved');
+
+		// do this AFTER any required plugins are installated. 
+		if($XMLImportfile) // We cannot rely on themes to include all prefs..so use 'replace'.
+		{
+			$ret2 = e107::getXml()->e107Import($XMLImportfile, 'replace', true, false); // Overwrite specific core pref and tables entries.
+			$this->logLine('Attempting to write Theme Prefs/Tables (install.xml)');
+			$this->logLine(print_r($ret2, true));
+		}
+
 
 		$tm = e107::getSingleton('themeHandler');
 		$tm->noLog = true; // false to enable log
@@ -1744,7 +1876,7 @@ if($this->pdo == true)
 	 * get_theme_xml - check theme.xml file of specific theme
 	 *
 	 * @param string $theme_folder
-	 * @return array $xmlArray OR boolean FALSE if result is no array
+	 * @return array|bool $xmlArray OR boolean FALSE if result is no array
 	 */	
 	function get_theme_xml($theme_folder)
 	{

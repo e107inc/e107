@@ -96,6 +96,12 @@ if(isset($_POST['updateprefs']))
 		$mes->addError(PRFLAN_211);
     }
 
+
+	if(!empty($_POST['passwordEncoding']) || !empty($_POST['ssl_enabled']))
+	{
+		$_POST['password_CHAP'] = 0; // disable chap unless using md5 without SSL.
+	}
+
 	// Table of range checking values - min and max for numerics. Only do the important ones
 	$pref_limits = array('loginname_maxlength' => array('min' => 10, 'max' => 100, 'default' => 30),
 					'displayname_maxlength' => array('min' => 5, 'max' => 100, 'default' => 15),
@@ -159,12 +165,12 @@ if(isset($_POST['updateprefs']))
 				if($value < $pref_limits[$key]['min'])
 				{
 					$value = $pref_limits[$key]['min'];
-					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_213));
+					$mes->addWarning(str_replace(array('[x]','[y]'),array($key,$value),PRFLAN_213));
 				}
 				if($value > $pref_limits[$key]['max'])
 				{
 					$value = $pref_limits[$key]['max'];
-					$mes->addWarning(str_replace(array('--FIELD--','--VALUE--'),array($key,$value),PRFLAN_212));
+					$mes->addWarning(str_replace(array('[x]','[y]'),array($key,$value),PRFLAN_212));
 				}
 			}
 			else
@@ -1148,7 +1154,7 @@ $text .= "
 					<tr>
 						<td><label for='profanity-words'>".PRFLAN_43.":</label></td>
 						<td>
-							".$frm->tags('profanity_words', $pref['profanity_words'])."
+							".$frm->tags('profanity_words', $pref['profanity_words'], 250, array('maxItems'=>40))."
 							<div class='field-help'>".PRFLAN_44."</div>
 						</td>
 					</tr>
@@ -1405,7 +1411,7 @@ $text .= "
 
 						if(function_exists('password_verify')) // ie. php 5.5 or higher
 						{
-							$pwdEncodeOpts[3]	 = "PHP Default (Preferred)";
+							$pwdEncodeOpts[3]	 = PRFLAN_276;
 
 						}
 
@@ -1427,7 +1433,10 @@ $text .= "
 	
 					$text .= "
 						<td><label for='password-chap'>".PRFLAN_178."</label></td>
-						<td>".$frm->select('password_CHAP',$CHAP_list,$pref['password_CHAP'] );
+						<td>";
+
+						$CHAPopt = !empty($pref['ssl_enabled']) || !empty($pref['passwordEncoding']) ? array('disabled'=>1) : null;
+						$text .=  $frm->select('password_CHAP',$CHAP_list,$pref['password_CHAP'], $CHAPopt );
 						//."	".$frm->select_open('password_CHAP');
 							
 						//TODO - user tracking session name - visible only if Cookie is enabled (JS)
@@ -2007,6 +2016,7 @@ function pref_submit($post_id = '')
 
 function prefs_adminmenu()
 {
+		$var['core-prefs-header1']['header'] = LAN_BASIC_OPTIONS;
 	$var['core-prefs-main']['text'] = PRFLAN_1;
 	$var['core-prefs-email']['text'] = PRFLAN_254;
 	$var['core-prefs-registration']['text'] = PRFLAN_28;
@@ -2016,7 +2026,7 @@ function prefs_adminmenu()
 	$var['core-prefs-comments']['text'] = PRFLAN_210;
 	$var['core-prefs-uploads']['text'] = PRFLAN_255;
 	
-	$var['core-prefs-header1']['header'] = PRFLAN_256;
+	$var['core-prefs-header2']['header'] = PRFLAN_256;
 	
 	$var['core-prefs-display']['text'] = PRFLAN_13;
 	$var['core-prefs-admindisp']['text'] = PRFLAN_77;
@@ -2025,8 +2035,11 @@ function prefs_adminmenu()
 	$var['core-prefs-date']['text'] = PRFLAN_21;	
 	$var['core-prefs-javascript']['text'] = PRFLAN_257;
 	$var['core-prefs-advanced']['text'] = PRFLAN_149;
-	
-	e107::getNav()->admin(LAN_BASIC_OPTIONS.'--id--prev_nav', 'core-prefs-main', $var);
+
+	$icon = e107::getParser()->toIcon('e-prefs-24');
+	$caption = $icon."<span>".LAN_PREFS."</span>";
+
+	e107::getNav()->admin($caption.'--id--prev_nav', 'core-prefs-main', $var);
 }
 
 /**

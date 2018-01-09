@@ -231,7 +231,7 @@ class e107MailManager
 
 		$this->mailOverrides = $overrides;
 		
-		if(deftrue('e_DEBUG'))
+		if(deftrue('e_DEBUG_BULKMAIL'))
 		{
 			$this->debugMode = true;
 		}

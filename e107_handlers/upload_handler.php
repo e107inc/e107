@@ -615,118 +615,132 @@ function get_image_mime($filename, $extended = false)
  */
 
  //TODO - Move this function to file_class.php
-function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = FALSE)
-{
-	// 1. Start by checking against filetypes - that's the easy one!
-	$file_ext = strtolower(substr(strrchr($target_name, '.'), 1));
-	if (!isset($allowed_filetypes[$file_ext]))
+	function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = false)
 	{
-		if (is_bool($unknown))
-			return 1; // Reject out of hand if no possible alternative extensions
-		// Otherwise, it could be in the supplementary list
-		$tmp = explode(',', $unknown);
-		for ($i = 0; $i < count($tmp); $i++)
-		{
-			$tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));
-		}
-		if (!in_array($file_ext, $tmp))
-			return 6;
-	}
 
-	// 2. For all files, read the first little bit to check for any flags etc
-	$res = fopen($filename, 'rb');
-	$tstr = fread($res, 100);
-	fclose($res);
-	if ($tstr === FALSE)
-	{
-		return 2; // If can't read file, not much use carrying on!
-	}
-	if (stristr($tstr, '<?php') !== FALSE)
-	{
-		return 3; // Pretty certain exploit
-	}
-	if (stristr($tstr,'<?') !== FALSE)				// Bit more tricky - can sometimes be OK
-	{
-		if (stristr($tstr, '<?xpacket') === FALSE)	// Allow the XMP header produced by CS4
-		{
-			return 7;
-		}
-	}
+		// 1. Start by checking against filetypes - that's the easy one!
+		$file_ext = strtolower(substr(strrchr($target_name, '.'), 1));
 
-	// 3. Now do what we can based on file extension
-	switch ($file_ext)
-	{
-	
-		case 'jpg':
-		case 'gif':
-		case 'png':
-		case 'jpeg':
-		case 'pjpeg':
-		case 'bmp':
-		case 'swf':
-		case 'fla':
-		case 'flv':
-		case 'swc':
-		case 'psd':
-		case 'ai':
-		case 'eps':
-		case 'svg':
-		case 'tiff':
-		case 'jpc': // http://fileinfo.com/extension/jpc
-		case 'jpx': // http://fileinfo.com/extension/jpx
-		case 'jb2': // http://fileinfo.com/extension/jb2
-		case 'jp2': // http://fileinfo.com/extension/jp2
-		case 'iff':
-		case 'wbmp':
-		case 'xbm':
-		case 'ico':
-			$ret = get_image_mime($filename);
-			if ($ret === false)
+		if(!isset($allowed_filetypes[$file_ext]))
+		{
+			if(is_bool($unknown))
 			{
-				return 4; // exif_imagetype didn't recognize the image mime
+				return 1;
+			} // Reject out of hand if no possible alternative extensions
+			// Otherwise, it could be in the supplementary list
+
+			$tmp = explode(',', $unknown);
+			for($i = 0; $i < count($tmp); $i++)
+			{
+				$tmp[$i] = strtolower(trim(str_replace('.', '', $tmp[$i])));
 			}
-			// getimagesize() is extremely slow + it can't handle all required media!!! Abandon this check!
-			//	return 5; // Zero size picture or bad file format
-		break;
 
-		case 'zip':
-		case 'gzip':
-		case 'gz':
-		case 'tar':
-		case 'bzip':
-		case 'pdf':
-		case 'doc':
-		case 'docx':
-		case 'xls':
-		case 'xlsx':
-		case 'rar':
-		case '7z':
-		case 'csv':
-		case 'mp3':
-		case 'wav':
-		case 'mp4':
-		case 'mpg':
-		case 'mpa':
-		case 'wma':
-		case 'wmv':
-		case 'flv': //Flash stream
-		case 'f4v': //Flash stream
-		case 'mov': //media
-		case 'avi': //media
-		break; // Just accept these
-
-		case 'php':
-		case 'htm':
-		case 'html':
-		case 'cgi':
-		case 'pl':
-			return 9; // Never accept these! Whatever the user thinks!
-
-		default:
-			if (is_bool($unknown))
-				return ($unknown ? TRUE : 8);
+			if(!in_array($file_ext, $tmp))
+			{
+				return 6;
+			}
 		}
-		return TRUE; // Accepted here
+
+		// 2. For all files, read the first little bit to check for any flags etc
+		$res = fopen($filename, 'rb');
+		$tstr = fread($res, 2048);
+		fclose($res);
+
+		if($tstr === false)
+		{
+			return 2; // If can't read file, not much use carrying on!
+		}
+
+		if(stripos($tstr, '<?php') !== false)
+		{
+			return 3; // Pretty certain exploit
+		}
+
+		if(strpos($tstr, '<?') !== false)                // Bit more tricky - can sometimes be OK
+		{
+			if(stripos($tstr, '<?xpacket') === false)    // Allow the XMP header produced by CS4
+			{
+				return 7;
+			}
+		}
+
+		// 3. Now do what we can based on file extension
+		switch($file_ext)
+		{
+
+			case 'jpg':
+			case 'gif':
+			case 'png':
+			case 'jpeg':
+			case 'pjpeg':
+			case 'bmp':
+			case 'swf':
+			case 'fla':
+			case 'flv':
+			case 'swc':
+			case 'psd':
+			case 'ai':
+			case 'eps':
+			case 'svg':
+			case 'tiff':
+			case 'jpc': // http://fileinfo.com/extension/jpc
+			case 'jpx': // http://fileinfo.com/extension/jpx
+			case 'jb2': // http://fileinfo.com/extension/jb2
+			case 'jp2': // http://fileinfo.com/extension/jp2
+			case 'iff':
+			case 'wbmp':
+			case 'xbm':
+			case 'ico':
+				$ret = get_image_mime($filename);
+				if($ret === false)
+				{
+					return 4; // exif_imagetype didn't recognize the image mime
+				}
+				// getimagesize() is extremely slow + it can't handle all required media!!! Abandon this check!
+				//	return 5; // Zero size picture or bad file format
+				break;
+
+			case 'zip':
+			case 'gzip':
+			case 'gz':
+			case 'tar':
+			case 'bzip':
+			case 'pdf':
+			case 'doc':
+			case 'docx':
+			case 'xls':
+			case 'xlsx':
+			case 'rar':
+			case '7z':
+			case 'csv':
+			case 'mp3':
+			case 'wav':
+			case 'mp4':
+			case 'mpg':
+			case 'mpa':
+			case 'wma':
+			case 'wmv':
+			case 'flv': //Flash stream
+			case 'f4v': //Flash stream
+			case 'mov': //media
+			case 'avi': //media
+				break; // Just accept these
+
+			case 'php':
+			case 'htm':
+			case 'html':
+			case 'cgi':
+			case 'pl':
+				return 9; // Never accept these! Whatever the user thinks!
+
+			default:
+				if(is_bool($unknown))
+				{
+					return ($unknown ? true : 8);
+				}
+		}
+
+		return true; // Accepted here
 	}
 
 
@@ -761,6 +775,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			$a_filetypes = trim(file_get_contents(e_ADMIN.$def_file));
 			$a_filetypes = explode(',', $a_filetypes);
 		}
+
 		foreach ($a_filetypes as $ftype)
 		{
 			$ftype = strtolower(trim(str_replace('.', '', $ftype)));
@@ -878,7 +893,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 		global $pref;
 		$admin_log = e107::getAdminLog();
 		// Work out maximum allowable file size
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 		{
 			$admin_log->
 				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "File size limits - user set: ".$pref['upload_maxfilesize']." Post_max_size: ".ini_get('post_max_size')." upload_max_size: ".ini_get('upload_max_size'), FALSE, FALSE);
@@ -894,7 +909,7 @@ function vet_file($filename, $target_name, $allowed_filetypes = '', $unknown = F
 			if (varset($pref['upload_maxfilesize'], 0) > 0)
 				$max_upload_size = file_size_decode($pref['upload_maxfilesize'], $max_upload_size, 'lt');
 		}
-		if (UH_DEBUG)
+		if (deftrue('UH_DEBUG'))
 			$admin_log->
 				e_log_event(10, __FILE__."|".__FUNCTION__."@".__LINE__, "DEBUG", "Upload Handler test", "Final max upload size: {$max_upload_size}", FALSE, FALSE);
 		return $max_upload_size;

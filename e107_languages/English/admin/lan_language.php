@@ -65,4 +65,8 @@ define("LANG_LAN_144", "Must be re-enabled");
 define("LANG_LAN_148", "Normal Mode");
 define("LANG_LAN_149", "Value");
 define("LANG_LAN_150", "[b]Search ENTIRE core before commenting out ANY LAN from ANY language file.[/b]");
+
+define("LANG_LAN_151", "Available");
+define("LANG_LAN_152", "Courtesy of the [e107 translations team]");
+define("LANG_LAN_153", "Pre-release");
 ?>

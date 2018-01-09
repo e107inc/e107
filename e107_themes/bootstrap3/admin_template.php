@@ -20,15 +20,15 @@ if (!defined('e107_INIT')) { exit(); }
 //e107::lan('theme', 'admin',true);
 
 
-$E_ADMIN_NAVIGATION['start'] = '<ul class="nav navbar-nav navbar-left">';
+$E_ADMIN_NAVIGATION['start'] = '<ul class="nav nav-admin navbar-nav navbar-left">';
 
-$E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav navbar-nav navbar-right">';
+$E_ADMIN_NAVIGATION['start_other'] = '<ul class="nav nav-admin navbar-nav navbar-right">';
 
 $E_ADMIN_NAVIGATION['button'] = '
 	<li class="dropdown">
 		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
-		 {LINK_IMAGE} {LINK_TEXT}
-		<b class="caret"></b>
+		 {LINK_IMAGE} <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+
 		</a> 
 		{SUB_MENU}
 	</li>
@@ -38,13 +38,15 @@ $E_ADMIN_NAVIGATION['button'] = '
 
 $E_ADMIN_NAVIGATION['button_active'] = '
 	<li class="dropdown active">
-		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}">
-		 {LINK_IMAGE} {LINK_TEXT}
-		<b class="caret"></b>
+		<a class="dropdown-toggle"  role="button" data-toggle="dropdown" data-target="#" href="{LINK_URL}" title="{LINK_TEXT}">
+		 {LINK_IMAGE}  <span class="hidden-md hidden-lg">{LINK_TEXT}</span>
+
 		</a>
 		{SUB_MENU}
 	</li>
 ';
+
+
 
 
 // Leave Admin Area. 
@@ -126,7 +128,7 @@ $E_ADMIN_NAVIGATION['button_other'] = '
 ';
 
 $E_ADMIN_NAVIGATION['start_sub'] = '
-		<ul class="dropdown-menu" role="menu" >
+		<ul class="dropdown-menu {LINK_SUB_OVERSIZED}" role="menu" >
 ';
 
 $E_ADMIN_NAVIGATION['start_other_sub'] = '
@@ -155,7 +157,7 @@ $E_ADMIN_NAVIGATION['end'] = '</ul>';
 		</div>
  */
 
-$inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
+// $inverse = (e107::getPref('admincss') == "admin_light.css") ? "navbar-inverse" : "";
     
 
 $ADMIN_MODAL = '
@@ -196,10 +198,12 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		</div>
 		<div class="navbar-collapse collapse">
 			{ADMIN_NAVIGATION=no-main}
+			{ADMIN_NAVIGATION=enav_popover}
 			<div>
 				{ADMIN_NAVIGATION=enav_logout}
 				{ADMIN_NAVIGATION=enav_language}
 				{ADMIN_NAVIGATION=enav_home}
+				{ADMIN_MULTISITE}
 				{ADMIN_PM}
 				{ADMIN_DEBUG}
 				{ADMIN_UPDATE}
@@ -207,8 +211,8 @@ $ADMIN_HEADER = $ADMIN_MODAL . '
 		</div>
 	</div>
 </div>
-<div class="container-fluid">
-	<div class="row">
+<div class="admin-container container-fluid">
+	<div class="row is-table-row">
 ';
 
 $adminstyle = e107::getConfig()->get('adminstyle', 'infopanel');
@@ -216,7 +220,7 @@ if(defset('e_PAGE') == 'admin.php' && $adminstyle == 'flexpanel' && varset($_GET
 {
 	$ADMIN_HEADER .= '
 		<div class="col-sm-12">
-			<div class="admin-main-content">
+			<div class="admin-main-content is-table-row">
 	';
 }
 else
@@ -250,7 +254,9 @@ else
 			{ADMIN_LOG=request}
 			{ADMIN_MSG=request}
 			{ADMIN_PLUGINS}
-	
+		
+			<!--<div class="admin-copyright"><small>Copyright &copy; 2008-2017 e107.org</small></div>-->
+		
 			{SETSTYLE=default}			
 		</div>
 		<div class="col-md-9 col-lg-10 admin-right-panel">
@@ -268,9 +274,7 @@ $ADMIN_FOOTER = '
 	</div><!--/.row-->
 </div><!--/.fluid-container-->
 
-<footer class="center mute"> 
-	Copyright &copy; 2008-2017 e107 Inc (e107.org)<br />
-</footer>
+
 ';
 
 
@@ -278,6 +282,7 @@ $ADMIN_FOOTER = '
  * see function e107::getNav()->admin() in e107_admin/header.php
  */
 $E_ADMIN_MENU['start'] = '
+<div class="nav-panel-body">
 <ul id="admin-ui-nav-menu" class="plugin-navigation nav nav-pills nav-stacked">
 ';
 
@@ -317,6 +322,7 @@ $E_ADMIN_MENU['end_sub'] = '
 
 $E_ADMIN_MENU['end'] = '
 </ul>
+</div>
 ';
 
 $E_ADMIN_MENU['divider'] = '<li role="separator" class="divider"></li>';

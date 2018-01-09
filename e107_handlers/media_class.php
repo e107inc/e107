@@ -1405,7 +1405,7 @@ class e_media
 				$searchPlaceholder = varset($parm['searchPlaceholder'], LAN_SEARCH);
 				
 				$text = '<div class="btn-group"><span class="input-append form-inline">';
-				$text .= "<input type='text' class='e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
+				$text .= "<input type='text' class='form-control e-ajax-keyup input-xxlarge ' placeholder= '".$searchPlaceholder."...' title=\"".$searchToolttip."\" name='search' value=''  data-target='media-browser-container-".$parm['action']."' data-src='".$data_src."' />";
 		//		$text .= "<span class='field-help'>bablalal</span>";
 			//	$text .= '<button class="btn btn-primary" name="'.$submitName.'" type="submit">'.LAN_GO.'</button>';
 				$text .= '<a class="btn btn-primary" href="#'.$carouselID.'" data-slide="prev">&lsaquo;</a><a class="btn btn-primary" href="#'.$carouselID.'" data-slide="next">&rsaquo;</a>';
@@ -1592,7 +1592,78 @@ class e_media
 	}
 
 
+	/**
+	 * Convert an image to jpeg format. 
+	 * @param string $oldFile path to png or gif file.
+	 * @param bool $deleteOld - set to true to delete original after conversion.
+	 * @return string path to new file.
+	 */
+	public function convertImageToJpeg($oldFile, $deleteOld=false)
+	{
+		if(substr($oldFile,-4) !== '.gif' && substr($oldFile,-4) !== '.png') //  jpg or some other format already
+		{
+			return false;
+		}
 
+		if(strpos($oldFile,".gif") !==false)
+		{
+			$type = '.gif';
+		}
+
+		if(strpos($oldFile,".png") !==false)
+		{
+			$type = '.png';
+		}
+
+		if(empty($type))
+		{
+			return $oldFile;
+		}
+
+		$jpgFile = str_replace($type, ".jpg", $oldFile);
+
+		$compression = e107::getPref('thumbnail_quality', 45); // 0 = worst / smaller file, 100 = better / bigger file
+
+		if(!file_exists($jpgFile))
+		{
+
+
+			switch($type)
+			{
+				case ".gif":
+					$image = imagecreatefromgif($oldFile);
+					break;
+
+				case ".png":
+					$image = imagecreatefrompng($oldFile);
+					break;
+
+			}
+
+			if(empty($image))
+			{
+				return false;
+			}
+
+			if(imagejpeg($image, $jpgFile, $compression) === true)
+			{
+				if($deleteOld === true)
+				{
+					unlink($oldFile);
+				}
+			}
+			else
+			{
+				$jpgFile  = false; // fallback to original
+			}
+
+		//	e107::getLog()->addSuccess("Converting <b>".$oldFile."</b> to <b>".$jpgFile."</b>");
+			imagedestroy($image);
+		}
+
+
+		return $jpgFile;
+	}
 
 
 }

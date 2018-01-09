@@ -13,6 +13,8 @@
 ### Security
 	ServerSignature Off
 
+#Header unset Pragma
+
 # secure htaccess file
 <Files .htaccess>
 	order allow,deny
@@ -32,7 +34,7 @@
 	Deny from env=HTTP_SAFE_BADBOT
 
 ### Disable directory listing
-	Options -Indexes
+	Options -Indexes -MultiViews
 
 ### limit file uploads to 10mb
 ### LimitRequestBody 10240000
@@ -42,6 +44,7 @@
     <IfModule mod_env.c>
         SetEnv HTTP_MOD_REWRITE On
         SetEnv HTTP_MOD_REWRITE_MEDIA On
+        SetEnv HTTP_MOD_REWRITE_STATIC On
     </IfModule>
 
 ### enable rewrites
@@ -64,6 +67,9 @@
     ReWriteRule ^media\/avatar\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_AVATAR/$5&$1w=$2&$3h=$4 [NC,L]
     RewriteRule ^media\/img\/([-A-Za-z0-9+/]*={0,3})\.(jpg|gif|png)?$ thumb.php?id=$1 [NC,L]
     ReWriteRule ^theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)?$ thumb.php?src=e_THEME/$5&$1w=$2&$3h=$4 [NC,L]
+
+### Rewrite for Static Scripts
+    ReWriteRule ^static\/[0-9]*\/(.*)$ $1 [NC,L]
 
 ### send 404 on missing files in these folders 
 	RewriteCond %{REQUEST_URI} !^/(e107_images|e107_files)/ 
@@ -98,6 +104,16 @@
 <ifmodule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css text/javascript application/x-javascript application/javascript application/xml text/xml application/rss+xml
 </ifmodule>
+
+<FilesMatch "\.(js|css|ico|pdf|flv|jpg|jpeg|png|gif|swf|mp3|mp4|eot|otf|ttc|ttf|woff|woff2)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public"
+        Header unset Cookie
+        Header unset Set-Cookie
+      # Header set Access-Control-Allow-Origin "http://mydomain.com"
+      # Header set Access-Control-Allow-Origin "*" # if you're really stuck.
+  </IfModule>
+</FilesMatch>
 
 
 ### Enable when developing locally. 

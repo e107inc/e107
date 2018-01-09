@@ -140,20 +140,34 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// "Help" box.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_help');
 		$info = $this->getMenuPosition('core-infopanel_help');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', true, $admin_sc);
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', false, $admin_sc);
+
 
 		// "Latest" box.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-latest-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', true, $admin_sc);
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', false, $admin_sc);
+
 
 		// "Status" box.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-status-list');
-		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', true, $admin_sc);
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
+		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', false, $admin_sc);
 
 
 		// --------------------- Personalized Panel -----------------------
@@ -179,7 +193,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 			);
 			$user_pref['core-infopanel-mye107'] = $defArray;
 		}
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$mainPanel = "<div id='core-infopanel_mye107'>";
 		$mainPanel .= "<div class='left'>";
 		foreach($this->iconlist as $key => $val)
@@ -191,11 +205,15 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		}
 		$mainPanel .= "</div></div>";
 		// Rendering the saved configuration.
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$caption = $tp->lanVars(LAN_CONTROL_PANEL, ucwords(USERNAME));
 		$ns->setUniqueId('core-infopanel_mye107');
 		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107", true);
 		$info = $this->getMenuPosition('core-infopanel_mye107');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $coreInfoPanelMyE107;
 
 
@@ -204,19 +222,23 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$newsTabs['coreFeed'] = array('caption' => LAN_GENERAL, 'text' => "<div id='e-adminfeed' style='min-height:300px'></div><div class='right'><a rel='external' href='" . ADMINFEEDMORE . "'>" . LAN_MORE . "</a></div>");
 		$newsTabs['pluginFeed'] = array('caption' => LAN_PLUGIN, 'text' => "<div id='e-adminfeed-plugin'></div>");
 		$newsTabs['themeFeed'] = array('caption' => LAN_THEMES, 'text' => "<div id='e-adminfeed-theme'></div>");
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_news');
 		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-infopanel_news", true);
 		$info = $this->getMenuPosition('core-infopanel_news');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $coreInfoPanelNews;
 
 
 		// --------------------- Website Status ---------------------------
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+	/*	$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_website_status');
-		$coreInfoPanelWebsiteStatus = $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderWebsiteStatus(), "core-infopanel_website_status", true);
+		$coreInfoPanelWebsiteStatus = '';// 'hi';/// "<div id='core-infopanel_website_status'>".$this->renderAddonDashboards()."</div>";  $ns->tablerender(LAN_WEBSITE_STATUS, $this->renderAddonDashboards(), "core-infopanel_website_status", true);
 		$info = $this->getMenuPosition('core-infopanel_website_status');
-		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;
+		$panels[$info['area']][$info['weight']] .= $coreInfoPanelWebsiteStatus;*/
 
 
 		// --------------------- Latest Comments --------------------------
@@ -224,17 +246,21 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 
 
 		// --------------------- Add-on updates ---------------------------
-		$tp->parseTemplate("{SETSTYLE=flexpanel}");
+		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('e-addon-updates');
-		$addonUpdates = $tp->parseTemplate("{ADMIN_ADDON_UPDATES}", true, $admin_sc);
+		$addonUpdates = $admin_sc->sc_admin_addon_updates();
 		$info = $this->getMenuPosition('e-addon-updates');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $addonUpdates;
 
 
 		// --------------------- User Selected Menus ----------------------
 		if(varset($user_pref['core-infopanel-menus']))
 		{
-			$tp->parseTemplate("{SETSTYLE=flexpanel}");
+			$ns->setStyle('flexpanel');
 			foreach($user_pref['core-infopanel-menus'] as $val)
 			{
 				// Custom menu.
@@ -250,9 +276,34 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
 				}
 				$info = $this->getMenuPosition($id);
+				if (!isset($panels[$info['area']][$info['weight']]))
+				{
+					$panels[$info['area']][$info['weight']] = '';
+				}
 				$panels[$info['area']][$info['weight']] .= $inc;
 			}
 		}
+
+
+	// --------------------- Plugin Addon Dashboards ---------------------- eg. e107_plugin/user/e_dashboard.php
+		$dashboards = $this->getAddonDashboards();
+		if(!empty($dashboards))
+		{
+			$ns->setStyle('flexpanel');
+			foreach($dashboards as $val)
+			{
+				$id = $val['mode'];
+				$ns->setUniqueId($id);
+				$inc = $ns->tablerender($val['caption'], $val['text'], $val['mode'], true);
+				$info = $this->getMenuPosition($id);
+				if (!isset($panels[$info['area']][$info['weight']]))
+				{
+					$panels[$info['area']][$info['weight']] = '';
+				}
+				$panels[$info['area']][$info['weight']] .= $inc;
+			}
+		}
+
 
 		// Sorting panels.
 		foreach($panels as $key => $value)
@@ -292,7 +343,7 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 	{
 		$user_pref = $this->getUserPref();
 
-		if(varset($user_pref['core-flexpanel-order'][$id]))
+		if(!empty($user_pref['core-flexpanel-order'][$id]))
 		{
 			return $user_pref['core-flexpanel-order'][$id];
 		}
@@ -309,6 +360,14 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		if(!empty($positions[$layout][$id]))
 		{
 			return $positions[$layout][$id];
+		}
+
+		if(strpos($id,'plug-infopanel-') === 0) // addon dashboards default to area 2.
+		{
+			$default = array(
+				'area'   => 'menu-area-02',
+				'weight' => 1000,
+			);
 		}
 
 		return $default;

@@ -277,7 +277,7 @@ class e_marketplace
 			);
 
 			$d = http_build_query($srcData,false,'&');
-			$url = e_ADMIN.'theme.php?mode=download&src='.base64_encode($d);//$url.'&amp;action=download';
+			$url = e_ADMIN.'theme.php?mode=main&action=download&src='.base64_encode($d);//$url.'&amp;action=download';
 
 		}
 
@@ -347,7 +347,7 @@ abstract class e_marketplace_adapter_abstract
 	 * e107.org download URL
 	 * @var string
 	 */
-	protected $downloadUrl = 'http://e107.org/request/';	
+	protected $downloadUrl = 'https://e107.org/request/';
 	
 	/**
 	 * e107.org service URL [adapter implementation required]
@@ -541,7 +541,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 	 * e107.org WSDL URL
 	 * @var string
 	 */
-	protected $serviceUrl = 'http://e107.org/service?wsdl';
+	protected $serviceUrl = 'https://e107.org/service?wsdl';
 	
 	/**
 	 * Request method POST || GET
@@ -617,7 +617,7 @@ class e_marketplace_adapter_wsdl extends e_marketplace_adapter_abstract
 		// authorize on every call, service class decides what to do on every method call
 		$auth = new stdClass;
 		$auth->authKey = $this->getAuthKey();
-		$header = new SoapHeader('http://e107.org/services/auth', 'checkAuthHeader', $auth);
+		$header = new SoapHeader('https://e107.org/services/auth', 'checkAuthHeader', $auth);
 
 		if(!is_object($this->client))
 		{
@@ -714,7 +714,7 @@ class e_marketplace_adapter_xmlrpc extends e_marketplace_adapter_abstract
 	 * e107.org XML-rpc service
 	 * @var xmlClass
 	 */
-	protected $serviceUrl = 'http://e107.org/xservice';
+	protected $serviceUrl = 'https://e107.org/xservice';
 	
 	/**
 	 * Request method POST || GET
@@ -944,25 +944,25 @@ class eAuth
 	 * e107.org manage client credentials (Consumer Key and Secret) URL 
 	 * @var string
 	 */
-	protected $eauthConsumerUrl = 'http://e107.org/eauth/client';
+	protected $eauthConsumerUrl = 'https://e107.org/eauth/client';
 	
 	/**
 	 * URL used to make temporary credential request (Request Token and Secret) to e107.org before the authorization phase
 	 * @var string
 	 */
-	protected $eauthRequestUrl = 'http://e107.org/eauth/initialize';
+	protected $eauthRequestUrl = 'https://e107.org/eauth/initialize';
 	
 	/**
 	 * URL used to redirect and authorize the resource owner (user) on e107.org using temporary (request) token
 	 * @var string
 	 */
-	protected $eauthAuthorizeUrl = 'http://e107.org/eauth/authorize';
+	protected $eauthAuthorizeUrl = 'https://e107.org/eauth/authorize';
 	
 	/**
 	 * URL used to obtain token credentials (Access Token and Secret) from e107.org using temporary (request) token
 	 * @var string
 	 */
-	protected $eauthAccessUrl = 'http://e107.org/eauth/token';
+	protected $eauthAccessUrl = 'https://e107.org/eauth/token';
 	
 	/**
 	 * Public client key (generated and obtained from e107.org)

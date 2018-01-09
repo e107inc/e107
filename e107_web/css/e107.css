@@ -122,6 +122,11 @@ a.cpage-np.current { text-decoration: none; }
 div.bbarea.large, .tbox.large, .helpbox.large { width: 95% }
 div.bbarea.medium, .tbox.medium, .helpbox.medium { width: 60% !important; }
 div.bbarea.small, .tbox.small, .helpbox.small { width: 250px !important; }
+img.bbcode-img { max-width:100%}
+img.bbcode-img-left { float:left !important;  margin: 0 10px 5px 0; }
+img.bbcode-img-right { float:right !important; margin: 0 0 5px 10px; }
+
+
 
 .bbcode-panel { width: 100% }
 .input-block-level { width: 100% !important }
@@ -325,16 +330,51 @@ optgroup.level-5 { padding-left:4em }
 
 /* Emoticons */
 img.e-emoticon { vertical-align:middle; border:0; width:24px }
+/*
 
 .e-editable-front:hover { background-color:#FCF8E3 }
 .e-editable-front a:hover { background-color:#FCF8E3 }
+
 .e-editable-front:hover:after { content: "\f044"; z-index:10000; position:relative; top:0; right:-5px; margin-right:4px; padding-right:5px; font-family:'FontAwesome'; font-size:0.8em }
+*/
+
+.e-editable-front { position:relative }
+
+.e-editable-front:hover,
+.e-editable-front a:hover { outline: 1px dashed red; }
+
+.e-editable-front.active {  -moz-box-shadow: inset 0 0 5px 2px #888;
+-webkit-box-shadow: inset 0 0 5px 2px#888;
+box-shadow: inset 0 0 5px 2px #888; }
+
+#e-editable-front-controls { position: absolute;
+top: 0px;
+font-size: 20px;
+right: -35px;
+background-color: #424242;
+border-radius:4px;
+padding:5px;
+cursor: pointer;
+    width:35px;
+    color:white;
+}
+
+#e-editable-front-controls .fa-check { color: lawngreen }
+.e-editable-front-save { color: lawngreen; width:35px; display:block;  }
+
+.e-editable-front-cancel {
+    display:block;
+	margin-top:5px;
+	 color: red;
+    width:35px;
+}
 
 
 #uiAlert    { z-index: 10001 }
 #uiAlert .alert { z-index:10000; box-shadow:1px 4px 5px rgba(0,0,0,0.4) }
 
 div.e-debug { margin-top:50px; background-color: white }
+div.e-debug td { color: black }
 
 #login-template { max-width: 330px;  margin-right: auto;  margin-left: auto;     }
 #login-template h2.caption { text-align:center; font-size:120%; opacity:0.8 }
@@ -345,5 +385,7 @@ div.login-page-signup-link, div.login-page-fpw-link { text-align:center }
 /* Navigation */
 .nav-side.listgroup { padding-left:0; }
 .nav-side li.list-group-item.active { padding:0}
+
+div.search-menu { text-align: center }
 
 

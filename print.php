@@ -71,7 +71,7 @@ else
 {
 	//$con = new convert;
 
-	$query = "SELECT n.*,c.* FROM `#news` AS n LEFT JOIN `#news_category` AS c ON n.news_category = c.category_id WHERE n.news_id=".intval($parms);
+	$query = "SELECT n.*, c.*, u.user_id, u.user_name FROM `#news` AS n LEFT JOIN `#news_category` AS c ON n.news_category = c.category_id LEFT JOIN `#user` AS u ON n.news_author = u.user_id WHERE n.news_id = " . intval($parms);
 
 	//$sql->db_Select("news", "*", "news_id='{$parms}'");
 	$sql = e107::getDb();
@@ -117,6 +117,13 @@ else
 */
 
     $tmp = e107::getTemplate('news', 'news', 'view');
+
+    if(empty($tmp))
+    {
+        $newsViewTemplate = !empty($row['news_template']) ? $row['news_template'] : 'default';
+        $tmp = e107::getTemplate('news', 'news_view', $newsViewTemplate);
+    }
+
 	$template = $tmp['item'];
 	unset($tmp);
 //	ob_start();

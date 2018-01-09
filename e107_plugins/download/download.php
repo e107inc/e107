@@ -21,8 +21,12 @@ if (!e107::isInstalled('download'))
 	e107::lan('download',false, true); // Loads e_PLUGIN.'download/languages/'.e_LANGUAGE.'/English_front.php'
 
 	$bcList = array(
-		'LAN_dl_19' => 'LAN_CATEGORY',
+		'LAN_dl_7'  => 'LAN_DESCRIPTION',
+		'LAN_dl_10' => 'LAN_SIZE',
+		'LAN_dl_11' => 'LAN_IMAGE',
 		'LAN_dl_17' => 'LAN_FILES',
+		'LAN_dl_18' => 'LAN_PLUGIN_DOWNLOAD_NAME',
+		'LAN_dl_19' => 'LAN_CATEGORY',
 		"LAN_dl_20" => "LAN_FILES",
 		"LAN_dl_21" => "LAN_SIZE",
 		"LAN_dl_22" => "LAN_DATE",
@@ -31,7 +35,9 @@ if (!e107::isInstalled('download'))
 		"LAN_dl_25" => "LAN_ASCENDING",
 		"LAN_dl_26" => "LAN_DESCENDING",
 		"LAN_dl_27" => "LAN_GO",
-		"LAN_dl_28" => "LAN_NAME"
+		"LAN_dl_28" => "LAN_NAME",
+		'LAN_dl_32' => "LAN_DOWNLOAD",
+		'LAN_dl_35' => "LAN_BACK",
 	);
 
 	e107::getLanguage()->bcDefs($bcList);
@@ -44,7 +50,6 @@ if (!e107::isInstalled('download'))
 
 	$dl = new download();
 
-	if(!defined("e_PAGETITLE")) {define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);}
 
 	if(!defined("USER_WIDTH") && !deftrue('BOOTSTRAP')) { define("USER_WIDTH","width:100%"); }
 
@@ -91,6 +96,9 @@ if (!e107::isInstalled('download'))
 
 
 	$texts = $dl->render(); // Load before header. 
+
+
+	if(!defined("e_PAGETITLE")) {define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);}
 
 	require_once (HEADERF);
 	

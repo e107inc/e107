@@ -59,14 +59,14 @@ $NAVIGATION_TEMPLATE['main']['submenu_start'] = '
 
 // Sub menu Link 
 $NAVIGATION_TEMPLATE['main']['submenu_item'] = '
-			<li role="menuitem" >
+			<li role="menuitem" class="link-depth-{LINK_DEPTH}">
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
 			</li>
 ';
 
 // Sub menu Link - active state
 $NAVIGATION_TEMPLATE['main']['submenu_item_active'] = '
-			<li role="menuitem" class="active">
+			<li role="menuitem" class="active link-depth-{LINK_DEPTH}">
 				<a href="{LINK_URL}"{LINK_OPEN}>{LINK_ICON}{LINK_NAME}</a>
 			</li>
 ';

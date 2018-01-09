@@ -76,6 +76,7 @@ class social_shortcodes extends e_shortcode
 			'flickr'		=> array('href'=> deftrue('XURL_FLICKR'),		'title'=>'Flickr'),
 			'instagram'		=> array('href'=> deftrue('XURL_INSTAGRAM'),	'title'=>'Instagram'),
 			'youtube'		=> array('href'=> deftrue('XURL_YOUTUBE'),		'title'=>'YouTube'),
+			'steam'			=> array('href'=> deftrue('XURL_STEAM'),		'title'=>'Steam'),
 			'vimeo'			=> array('href'=> deftrue('XURL_VIMEO'),		'title'=>'Vimeo')
 		);
  			
@@ -163,10 +164,12 @@ class social_shortcodes extends e_shortcode
 	function sc_social_login($parm=null)
 	{
 		$pref = e107::pref('core', 'social_login_active');
-		
+
+
+
 		if(empty($pref))
 		{
-			return; 
+			return null;
 		}
 		
 		$sc = e107::getScBatch('signup');
@@ -234,7 +237,8 @@ class social_shortcodes extends e_shortcode
 
 		$defaultUrl 	= vartrue($this->var['url'], e_REQUEST_URL);
 		$defaultTitle	= vartrue($this->var['title'], deftrue('e_PAGETITLE'). " | ". SITENAME);
-		$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+	//	$defaultDiz		= vartrue($this->var['description'], e107::getUrl()->response()->getMetaDescription());
+		$defaultDiz		= vartrue($this->var['description'], e107::getSingleton('eResponse')->getMetaDescription());
 		$defaultTags    = vartrue($this->var['tags'],'');
 		
 		$tp 			= e107::getParser();

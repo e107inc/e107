@@ -101,8 +101,15 @@ class listclass
 	 */
 	function getListPrefs()
 	{
-		return e107::pref('list_new'); //TODO Convert from old format to new. 
+		$listPrefs = e107::pref('list_new'); //TODO Convert from old format to new.   
 		
+		//insert default preferences
+		if (empty(	$listPrefs))
+		{
+       		$listPrefs = $this->list_pref = $this->getDefaultPrefs();
+       		e107::getPlugConfig('list_new')->reset()->setPref($listPrefs)->save(true);
+    	}
+    	return $listPrefs;
 		/*
 		$sql = e107::getDb();
 		//check preferences from database

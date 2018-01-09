@@ -13,14 +13,40 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
 
-class rater {
-	
-	
-	function render($table,$id,$options=array())
+class rater
+{
+	private $ratings = array();     // loaded values.
+	private $multi = false;         // multiple lookup .
+
+	function __construct()
 	{
-			
+
+
+	}
+
+	/**
+	 * Render ratings widget
+	 *
+	 * @param string $table eg. 'news'
+	 * @param integer $id
+	 * @param array $options
+	 * @param bool $options['multi'] - set to true if used in a loop. ie. mutliple table lookups.
+	 * @param bool $options['readonly']
+	 * @param string $options['label']
+	 * @param string $options['template'] - default is 'STATUS |RATE|VOTES'
+	 * @param string $options['uniqueId'] (optional)  = unique identifer to avoid ID conflicts;
+	 * 	 *
+	 * @return string
+	 */
+	function render($table, $id, $options=array())
+	{
+		if(!empty($options['multi']))
+		{
+			$this->multi = true;
+		}
+
 		list($votes,$score,$uvoted) = $this->getrating($table, $id);
-		
+
 	//	return "Table=".$table." itmeId=".$id." Votes=".$votes." score=".$score;
 		
 		if(is_string($options))
@@ -29,8 +55,15 @@ class rater {
 		}
 		
 		$label = varset($options['label'],RATELAN_5);
-			
-		$readonly = $this->checkrated($table, $id) ? '1' : '0';
+
+		if(!empty($options['readonly']))
+		{
+			$readonly = '1';
+		}
+		else
+		{
+			$readonly = $this->checkrated($table, $id) ? '1' : '0';
+		}
 		
 		$hintArray = array(RATELAN_POOR,RATELAN_FAIR,RATELAN_GOOD,RATELAN_VERYGOOD,RATELAN_EXCELLENT);
 
@@ -62,17 +95,22 @@ class rater {
 		}
 		
 		$template = vartrue($options['template'], " STATUS |RATE|VOTES");
-		
-		$TEMPLATE['STATUS'] = "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$table}-{$id}' style='display:none'>".$label."</span>";
-		$TEMPLATE['RATE']   = "<div class='e-rate e-rate-{$table}' id='{$table}-{$id}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
-		$TEMPLATE['VOTES']  = "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$table}-{$id}'><small>".$this->renderVotes($votes,$score)."</small></div>";
+
+		$identifier = $table.'-'.$id.'-'.vartrue($options['uniqueId'],'rate');
+
+		$TEMPLATE['STATUS'] = "&nbsp;<span class='e-rate-status e-rate-status-{$table}' id='e-rate-{$identifier}' style='display:none'>".$label."</span>";
+		$TEMPLATE['RATE']   = "<div class='e-rate e-rate-{$table}' id='{$identifier}'  data-hint=\"{$datahint}\" data-readonly='{$readonly}' data-score='{$score}' data-url='".e_HTTP."rate.php' data-path='{$path}'></div>";
+		$TEMPLATE['VOTES']  = "<div class='muted e-rate-votes e-rate-votes-{$table}' id='e-rate-votes-{$identifier}'><small>".$this->renderVotes($votes,$score)."</small></div>";
 
 		$tmp = explode("|",$template);
 		
 		$text = "";
 		foreach($tmp as $k)
 		{
-			$text .= $TEMPLATE[$k];	
+			if (!empty($TEMPLATE[$k]))
+			{
+				$text .= $TEMPLATE[$k];
+			}
 		}	
 		
 		return $text;
@@ -179,8 +217,13 @@ class rater {
 		}
 	}
 
-	function getrating($table, $id, $userid=FALSE) {
+	function getrating($table, $id, $userid=false)
+	{
+
 		//userid	: boolean, get rating for a single user, or get general total rating of the item
+
+
+
 
 		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
@@ -189,55 +232,109 @@ class rater {
 		{
 			return RATELAN_10;
 		}
-		$sep = chr(1);
+
+		if($this->multi === true)
+		{
+			if(isset($this->ratings[$table]))
+			{
+				if(!empty($this->ratings[$table][$id]))
+				{
+					return $this->ratings[$table][$id];
+				}
+
+				return array(0,0,0);
+
+			}
+
+			$tmp = e107::getDb('rate')->retrieve("rate", "*", "rate_table = '{$table}' ",true);
+			$val = array();
+			foreach($tmp as $row)
+			{
+				$rid = $row['rate_itemid'];
+				$val[$rid] = $this->processRow($row,$userid);
+			}
+
+			$this->ratings[$table] = $val;
+
+			if(!empty($this->ratings[$table][$id]))
+			{
+					return $this->ratings[$table][$id];
+			}
+
+			return array(0,0,0);
+
+		}
+
+	//	$sep = chr(1);
 
 		$sql = new db;
 		if (!$sql->select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) 
 		{
-			return FALSE;
+			return false;
 		}
 		 else 
 		 {
 			$rowgr = $sql->fetch();
-					
-			if($userid==TRUE)
+
+			return $this->processRow($rowgr,$userid);
+		}
+	}
+
+
+	/**
+	 * @param array $rowgr
+	 * @param bool $userid
+	 * @return array
+	 */
+	private function processRow($rowgr,$userid = false)
+	{
+		$sep = chr(1);
+
+		if($userid == true)
+		{
+			$rating = array();
+
+			$rateusers = explode(".", $rowgr['rate_voters']);
+			for($i = 0; $i < count($rateusers); $i++)
 			{
-				$rating = "";
-				$rateusers = explode(".", $rowgr['rate_voters']);
-				for($i=0;$i<count($rateusers);$i++){
-					if(strpos($rateusers[$i], $sep)){
-						$rateuserinfo[$i] = explode($sep, $rateusers[$i]);
-						if($userid == $rateuserinfo[$i][0]){
-							$rating[0] = 0;						//number of votes, not relevant in users rating
-							$rating[1] = $rateuserinfo[$i][1];	//the rating by this user
-							$rating[2] = 0;						//no remainder is present, because we have a single users rating
-							break;
-						}
-					}else{
-						$rating[0] = 0;		//number of votes, not relevant in users rating
-						$rating[1] = 0;		//the rating by this user
-						$rating[2] = 0;		//no remainder is present, because we have a single users rating
-					}
-				}
-			}
-			else
-			{
-				$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
-				$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
-				$tmp = (strpos($tmp,",")) ? explode(",", $tmp) : explode(".", $tmp);
-				$rating[1] = $tmp[0];
-				if(isset($tmp[1]))
+				if(strpos($rateusers[$i], $sep))
 				{
-					$rating[2] = substr($tmp[1], 0, 1);
+					$rateuserinfo[$i] = explode($sep, $rateusers[$i]);
+
+					if($userid == $rateuserinfo[$i][0])
+					{
+						$rating[0] = 0;                        //number of votes, not relevant in users rating
+						$rating[1] = $rateuserinfo[$i][1];    //the rating by this user
+						$rating[2] = 0;                        //no remainder is present, because we have a single users rating
+						break;
+					}
 				}
 				else
 				{
-					$rating[2] = "0";
+					$rating[0] = 0;        //number of votes, not relevant in users rating
+					$rating[1] = 0;        //the rating by this user
+					$rating[2] = 0;        //no remainder is present, because we have a single users rating
 				}
 			}
-
-			return $rating;
 		}
+		else
+		{
+			$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
+			$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
+			$tmp = (strpos($tmp, ",")) ? explode(",", $tmp) : explode(".", $tmp);
+			$rating[1] = $tmp[0];
+
+			if(isset($tmp[1]))
+			{
+				$rating[2] = substr($tmp[1], 0, 1);
+			}
+			else
+			{
+				$rating[2] = "0";
+			}
+		}
+
+		return $rating;
 	}
 
 

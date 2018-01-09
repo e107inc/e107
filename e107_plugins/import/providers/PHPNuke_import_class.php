@@ -26,25 +26,95 @@ class PHPNuke_import extends base_import_class
 	
 	
 	public $title			= 'PHP Nuke 8.2';
-	public $description		= 'Supports users only';
-	public $supported		= array('users'); // add news and page to test.
+	public $description		= '';
+	public $supported		= array('users', 'news', 'newscategory'); // add news and page to test.
 	public $mprefix			= 'nuke_';
 
 	
   // Set up a query for the specified task.
-  // Returns TRUE on success. FALSE on error
-	function setupQuery($task, $blank_user=FALSE)
+  // Returns TRUE on success. false on error
+	function setupQuery($task, $blank_user=false)
 	{
-		if ($this->ourDB == NULL) return FALSE;
+		if ($this->ourDB == NULL) return false;
 		switch ($task)
 		{
 		  case 'users' :
 		    $result = $this->ourDB->gen("SELECT * FROM {$this->DBPrefix}users WHERE `user_active`=1");
-			if ($result === FALSE) return FALSE;
+			if ($result === false) return false;
 			break;
+
+			case 'news' :
+				$query =  "SELECT *, UNIX_TIMESTAMP(time) as datestamp FROM {$this->DBPrefix}stories  ORDER BY sid";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'newscategory' :
+				$query =  "SELECT * FROM {$this->DBPrefix}topics  ORDER BY topicid";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+
+			case 'userclass' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'page' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'pagechapter' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'media' :
+				$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+			case 'links':
+			 	$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+			break;
+
+
+		    case 'forum' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
+		  	case 'forumthread' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
+	  		case 'forumpost' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
+		  	case 'forumtrack' :
+	    		$query =  "SELECT * FROM {$this->DBPrefix}mytable ORDER BY my_id";
+				$result = $this->ourDB->gen($query);
+				if ($result === false) return false;
+	    	break;
+
 		  default :
-		    return FALSE;
+		    return false;
 		}
+
 		$this->copyUserInfo = !$blank_user;
 		$this->currentTask = $task;
 		return TRUE;
@@ -72,7 +142,7 @@ class PHPNuke_import extends base_import_class
 		$target['user_password']    = $source['user_password']; //MD5
 		$target['user_join']        = strtotime($source['user_regdate']);
 		$target['user_email']       = $source['user_email'];
-		$target['user_hideemail']   = $source['user_viewemail'];
+		$target['user_hideemail']   = !$source['user_viewemail'];
 	    $target['user_image']       = $source['user_avatar'];
 		$target['user_signature']   = $source['user_sig'];
 		$target['user_forums']      = $source['user_posts'];
@@ -91,150 +161,75 @@ class PHPNuke_import extends base_import_class
 		$target['user_homepage']    = $source['user_website'];
 		$target['user_ip']          = $source['last_ip'];
 
-		return $target;
+		return $target; // comment out to debug.
 
-
-	// Php Nuke Field Reference.
-        $source['user_id'];
-		$source['name'];
-		$source['username'];
-		$source['user_email'];
-		$source['femail'];
-		$source['user_website'];
-		$source['user_avatar'];
-		$source['user_regdate'];
-		$source['user_icq'];
-		$source['user_occ'];
-		$source['user_from'];
-		$source['user_interests'];
-		$source['user_sig'];
-		$source['user_viewemail'];
-		$source['user_theme'];
-		$source['user_aim'];
-		$source['user_yim'];
-		$source['user_msnm'];
-		$source['user_password'];
-		$source['storynum'];
-		$source['umode'];
-		$source['uorder'];
-		$source['thold'];
-		$source['noscore'];
-		$source['bio'];
-		$source['ublockon'];
-		$source['ublock'];
-		$source['theme'];
-		$source['commentmax'];
-		$source['counter'];
-		$source['newsletter'];
-		$source['user_posts'];
-		$source['user_attachsig'];
-		$source['user_rank'];
-		$source['user_level'];
-		$source['broadcast'];
-		$source['popmeson'];
-		$source['user_active'];
-		$source['user_session_time'];
-		$source['user_session_page'];
-		$source['user_lastvisit'];
-		$source['user_timezone'];
-		$source['user_style'];
-		$source['user_lang'];
-		$source['user_dateformat'];
-		$source['user_new_privmsg'];
-		$source['user_unread_privmsg'];
-		$source['user_last_privmsg'];
-		$source['user_emailtime'];
-		$source['user_allowhtml'];
-		$source['user_allowbbcode'];
-		$source['user_allowsmile'];
-		$source['user_allowavatar'];
-		$source['user_allow_pm'];
-		$source['user_allow_viewonline'];
-		$source['user_notify'];
-		$source['user_notify_pm'];
-		$source['user_popup_pm'];
-		$source['user_avatar_type'];
-		$source['user_sig_bbcode_uid'];
-		$source['user_actkey'];
-		$source['user_newpasswd'];
-		$source['points'];
-		$source['last_ip'];
-		$source['karma'];
+		$this->debug($source,$target);
 
 
 
 
-	    // old data.
 
 
-
-		if ($this->copyUserInfo) $target['user_id'] = $source['user_id'];
-		$target['user_name'] = $source['username'];
-		$target['user_loginname'] = $source['username'];
-		$target['user_loginname'] = $source['name'];
-		$target['user_password'] = $source['user_password'];
-		$target['user_join'] = strtotime($source['user_regdate']);
-		$target['user_email'] = $source['user_email'];
-		$target['user_hideemail'] = $source['user_viewemail'];
-	    $target['user_image'] = $source['user_avatar'];
-		$target['user_signature'] = $source['user_sig'];
-		$target['user_forums'] = $source['user_posts'];
-		$target['user_lastvisit'] = $source['user_lastvisit'];
-	    $target['user_image'] = $source['user_avatar'];
-
-		$target['user_timezone'] = $source['user_timezone'];		// source is decimal(5,2)
-		$target['user_language'] = $source['user_lang'];			// May need conversion
-		$target['user_location'] = $source['user_from'];
-		$target['user_icq'] = $source['user_icq'];
-		$target['user_aim'] = $source['user_aim'];
-		$target['user_yahoo'] = $source['user_yim'];
-		$target['user_msn'] = $source['user_msnm'];
-		$target['user_homepage'] = $source['user_website'];
-		$target['user_ip'] = $source['last_ip'];
-	//	$target['user_'] = $source[''];
-
-	//	$source['user_rank'];
-	//	$target['user_admin'] = ($source['user_level'] == 1) ? 1 : 0;		// Guess
-	//	if ($target['user_admin'] != 0) $target['user_perms'] = '0.';
-	//	$target['user_ban'] = ($source['ublockon'] ? 2 : 0);					// Guess
 
   }
 
 
 
 
-		/**
+	/**
 	 * Align source data with e107 News Table
 	 * @param $target array - default e107 target values for e107_news table.
-	 * @param $source array - RSS data
+	 * @param $source array - other cms table data
 	 */
 	function copyNewsData(&$target, &$source)
 	{
 
+		$target['news_id']				    = (int) $source['sid'];
+		$target['news_title']				= $source['title'];
+		$target['news_sef']					= '';
+		$target['news_body']				= "[html]".$source['hometext']."[/html]";
+		$target['news_extended']			= "[html]".$source['bodytext']."[/html]";
+		$target['news_meta_keywords']		= '';
+		$target['news_meta_description']	= '';
+		$target['news_datestamp']			= $source['datestamp'];
+		$target['news_author']				= $source[''];
+		$target['news_category']			= (int) $source['topic'];
+		$target['news_allow_comments']		= (int) $source['acomm'];
+		$target['news_start']				= '';
+		$target['news_end']					= '';
+	//	$target['news_class']				= '';
+	//	$target['news_render_type']			= '';
+		$target['news_comment_total']		= $source['comments'];
+//		$target['news_summary']				= $source[''];
+		$target['news_thumbnail']			= '';
+		$target['news_sticky']				= '';
 
-	//	$target['news_title']					= '';
-	//	$target['news_sef']					    = '';
-	//	$target['news_body']					= "[html]something[/html]";
-		//	$target['news_extended']			= '';
-		//$target['news_meta_keywords']			= implode(",",$keywords);
-		//	$target['news_meta_description']	= '';
-	//		$target['news_datestamp']			= strtotime($source['pubDate'][0]);
-		//	$target['news_author']				= $source['post_author'];
-		//	$target['news_category']			= '';
-		//	$target['news_allow_comments']		= ($source['comment_status']=='open') ? 1 : 0;
-		//	$target['news_start']				= '';
-		//	$target['news_end']					= '';
-		///	$target['news_class']				= '';
-		//	$target['news_render_type']			= '';
-		//	$target['news_comment_total']		= $source['comment_count'];
-		//	$target['news_summary']				= $source['post_excerpt'];
-		//	$target['news_thumbnail']			= '';
-		//	$target['news_sticky']				= '';
+		return $target;  // comment out to debug.
 
-		return $target;  // comment out to debug
+		$this->debug($source,$target);
 
-	//	$this->renderDebug($source,$target);
+	}
 
+
+	/**
+	 * Align source data with e107 News Table
+	 * @param $target array - default e107 target values for e107_news table.
+	 * @param $source array - other cms table data
+	 */
+	function copyNewsCategoryData(&$target, &$source)
+	{
+		$target['category_id']                  = (int) $source['topicid'];
+		$target['category_name']                = $source['topictext'];
+		$target['category_sef']                 = eHelper::title2sef($source['topicname'],'dashl');
+	//	$target['category_meta_description']    = $source[''];
+	//	$target['category_meta_keywords']       = $source[''];
+		$target['category_manager']			    = e_UC_ADMIN;
+		$target['category_icon']                = $source['topicimage'];
+	//	$target['category_order']               = $source[''];
+
+		return $target;  // comment out to debug.
+
+		$this->debug($source,$target);
 
 	}
 
@@ -243,29 +238,127 @@ class PHPNuke_import extends base_import_class
 	/**
 	 * Align source data to e107 Page Table
 	 * @param $target array - default e107 target values for e107_page table.
-	 * @param $source array - WordPress table data
+	 * @param $source array - other cms table data
 	 */
 	function copyPageData(&$target, &$source)
 	{
 
 
-	// 	$target['page_id']				= $source['ID']; //  auto increment
-	//	$target['page_title']			= $source['post_title']);
-	//	$target['page_sef']				= $source['post_name'];
-	//	$target['page_text']			= (vartrue($source['post_content'])) ? "[html]".$source['post_content']."[/html]" : "";
-	//	$target['page_metakeys']		= '';
-	//	$target['page_metadscr']		= '';
-	//	$target['page_datestamp']		= strtotime($source['post_date']);
-	//	$target['page_author']			= $source['post_author'];
-	//	$target['page_category']		= '',
-	//	$target['page_comment_flag']	= ($source['comment_status']=='open') ? 1 : 0;
-	//	$target['page_password']		= $source['post_password'];
-	//	$target['page_class']	 = e_UC_ADMIN;
+		$target['page_id']				= $source[''];
+		$target['page_title']			= $source[''];
+		$target['page_sef']				= $source[''];
+		$target['page_text']			= $source[''];
+		$target['page_metakeys']		= $source[''];
+		$target['page_metadscr']		= $source[''];
+		$target['page_datestamp']		= $source[''];
+		$target['page_author']			= $source[''];
+		$target['page_category']		= $source[''];
+		$target['page_comment_flag']	= $source[''];
+		$target['page_password']		= $source[''];
+		$target['page_class']	        = $source[''];
 
-		return $target;  // comment out to debug
+	//	return $target;  // comment out to debug.
+
+		$this->debug($source,$target);
+
+	}
+
+
+
+
+ 	/**
+	 * $target - e107_forum table
+	 * $source - other cms
+	 */
+	function copyForumData(&$target, &$source)
+	{
+
+		$target['forum_id'] 				= $source[''];
+		$target['forum_name'] 				= $source[''];
+		$target['forum_description'] 		= $source[''];
+		$target['forum_parent']				= $source[''];
+		$target['forum_sub']				= $source[''];
+		$target['forum_datestamp']			= $source[''];
+		$target['forum_moderators']			= $source[''];
+
+		$target['forum_threads'] 			= $source[''];
+		$target['forum_replies']			= $source[''];
+		$target['forum_lastpost_user']		= $source[''];
+		$target['forum_lastpost_user_anon']	= $source[''];
+		$target['forum_lastpost_info']		= $source[''];
+		$target['forum_class']				= $source[''];
+		$target['forum_order']				= $source[''];
+		$target['forum_postclass']	        = $source[''];
+		$target['forum_threadclass']	    = $source[''];
+		$target['forum_options']	        = $source[''];
+		$target['forum_sef']                = $source[''];
+
+	//	return $target; // comment out to debug.
+
+		$this->debug($source,$target);
 
 
 	}
+
+
+	/**
+	 * $target - e107 forum_threads
+	 * $source - other cms
+	 */
+	function copyForumThreadData(&$target, &$source)
+	{
+
+		$target['thread_id'] 				= $source[''];
+		$target['thread_name'] 				= $source[''];
+		$target['thread_forum_id'] 			= $source[''];
+		$target['thread_views'] 			= $source[''];
+		$target['thread_active'] 			= $source[''];
+		$target['thread_lastpost'] 			= $source[''];
+		$target['thread_sticky'] 			= $source[''];
+		$target['thread_datestamp'] 		= $source[''];
+		$target['thread_user'] 				= $source[''];
+		$target['thread_user_anon'] 		= $source[''];
+		$target['thread_lastuser'] 			= $source[''];
+		$target['thread_lastuser_anon'] 	= $source[''];
+		$target['thread_total_replies'] 	= $source[''];
+		$target['thread_options'] 			= $source[''];
+
+	//	return $target; // comment out to debug.
+
+		$this->debug($source,$target);
+
+	}
+
+
+	/**
+	 * $target - e107_forum_post table
+	 * $source - other cms
+	 */
+	function copyForumPostData(&$target, &$source)
+	{
+
+		$target['post_id'] 					= $source[''];
+		$target['post_entry'] 				= $source[''];
+		$target['post_thread'] 				= $source[''];
+		$target['post_forum'] 				= $source[''];
+		$target['post_status'] 				= $source[''];
+		$target['post_datestamp'] 			= $source[''];
+		$target['post_user'] 				= $source[''];
+		$target['post_edit_datestamp'] 		= $source[''];
+		$target['post_edit_user'] 			= $source[''];
+		$target['post_ip'] 					= $source[''];
+		$target['post_user_anon'] 			= $source[''];
+		$target['post_attachments'] 		= $source[''];
+		$target['post_options'] 			= $source[''];
+
+
+	//	return $target; // comment out to debug.
+
+		$this->debug($source,$target);
+	}
+
+
+
 
 
 

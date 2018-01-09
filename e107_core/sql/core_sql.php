@@ -318,6 +318,7 @@ CREATE TABLE news (
   news_summary text NOT NULL,
   news_thumbnail text NOT NULL,
   news_sticky tinyint(3) unsigned NOT NULL default '0',
+  news_template varchar(50) default NULL,
   PRIMARY KEY  (news_id),
   KEY news_category  (news_category),
   KEY news_start_end (news_start,news_end),
@@ -343,6 +344,7 @@ CREATE TABLE news_category (
   category_manager tinyint(3) unsigned NOT NULL default '254',
   category_icon varchar(250) NOT NULL default '',
   category_order tinyint(3) unsigned NOT NULL default '0',
+  category_template varchar(50) default NULL,
   PRIMARY KEY  (category_id),
   KEY category_order (category_order)
 ) ENGINE=MyISAM;
@@ -362,7 +364,9 @@ CREATE TABLE online (
   online_active int(10) unsigned NOT NULL default '0',
   online_agent varchar(255) NOT NULL default '',
   online_language varchar(2) NOT NULL default '',
-  KEY online_ip (online_ip)
+  KEY online_ip (online_ip),
+  KEY online_ip_user_id (online_ip, online_user_id),
+  KEY online_timestamp (online_timestamp)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------
 
@@ -416,6 +420,7 @@ CREATE TABLE page_chapters (
   chapter_meta_keywords  varchar(255) NOT NULL default '',
   chapter_manager tinyint(3) unsigned NOT NULL default '254',
   chapter_icon varchar(250) NOT NULL default '',
+  chapter_image varchar(250) NOT NULL default '',
   chapter_order int(6) unsigned NOT NULL default '0',
   chapter_template varchar(50) NOT NULL default '',
   chapter_visibility tinyint(3) unsigned NOT NULL default '0',

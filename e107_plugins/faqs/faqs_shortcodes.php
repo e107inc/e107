@@ -90,7 +90,7 @@ class faqs_shortcodes extends e_shortcode
 
 			if(vartrue($params['tags']) && $this->var['faq_tags'])
 			{
-				$text .= "<div class='faq-tags'>".LAN_FAQS_TAGS.": ".$this->sc_faq_tags()."</div>";
+				$text .= "<div class='faq-tags'>".LAN_FAQS_001.": ".$this->sc_faq_tags()."</div>";
 			}
 
 			if($this->datestamp == true)
@@ -277,7 +277,7 @@ class faqs_shortcodes extends e_shortcode
 		if(!empty($parms['expand']) && $faqpref['submit_question'] != e_UC_NOBODY)
 		{
 			$hide = 'e-hideme';
-			$button = "<a class='btn btn-primary e-expandit faq-submit-question' href='#form-ask-a-question'>Ask a Question</a>";
+			$button = "<a class='btn btn-primary e-expandit faq-submit-question' href='#form-ask-a-question'>".LAN_FAQS_ASK_A_QUESTION."</a>";
 		}
 		else
 		{
@@ -297,8 +297,8 @@ class faqs_shortcodes extends e_shortcode
 			{
 				$text .= $frm->open('faq-ask-question','post');
 				//TODO LAN ie. [x] character limit.
-				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength'=>$this->questionCharLimit, 'size'=>'xxlarge','placeholder'=>'Type your question here..', 'wrap'=>'soft'))."
-				<div class='faq-char-limit'><small>".$this->questionCharLimit." character limit</small></div>".$frm->submit('submit_a_question','Submit')."</div>";
+				$text .= "<div>".$frm->textarea('ask_a_question','',3, 80 ,array('maxlength' =>$this->questionCharLimit, 'size' =>'xxlarge', 'placeholder' =>LAN_FAQS_012, 'wrap' =>'soft'))."
+				<div class='faq-char-limit'><small>".$this->questionCharLimit." ".LAN_FAQS_013."</small></div>".$frm->submit('submit_a_question',LAN_SUBMIT)."</div>";
 
 				$text .= $frm->close();
 			}
@@ -308,13 +308,13 @@ class faqs_shortcodes extends e_shortcode
 					'[' => "<a href='".e_SIGNUP."'>",
 					']' => "</a>"
 				);
-				//TODO LAN
-				$text .= str_replace(array_keys($srp), array_values($srp), "Please [register] and/or login to post a question.");
+
+				$text .= str_replace(array_keys($srp), array_values($srp), LAN_FAQS_014);
 			}
 			else
 			{
-				//TODO LAN
-				$text .= "Not permitted at this time.";
+
+			$text .= LAN_FAQS_015;
 			}
 
 			$text .= "</div>";
@@ -339,9 +339,9 @@ class faqs_shortcodes extends e_shortcode
 
 			if(!empty($list))
 			{
-				//TODO LAN
+
 				$text = "<div class='alert alert-warning alert-block faq-submit-question-list'>";
-				$text .= "<h4>You have requested answers to the following questions:</h4>";
+				$text .= "<h4>".LAN_FAQS_016."</h4>";
 				$text .= "<ul>";
 
 				foreach($list as $row)
@@ -386,7 +386,13 @@ class faqs_shortcodes extends e_shortcode
 	function sc_faq_breadcrumb() //TODO Category Detection. and proper SEF Urls with category names. 
 	{
 		$array = array();
-		$array[0] = array('url'=> e_REQUEST_SELF, 'text'=>LAN_PLUGIN_FAQS_NAME);
+	//	$array[0] = array('url'=> e_REQUEST_SELF, 'text'=>LAN_PLUGIN_FAQS_NAME);
+		$array[0] = array('url'=> e107::url('faqs','index'), 'text'=>LAN_PLUGIN_FAQS_NAME);
+
+		if(!empty($_GET['srch']))
+		{
+			$array[1] = array('url'=> null, 'text'=>LAN_FAQS_002 .": ".e107::getParser()->filter($_GET['srch'], 'w'));
+		}
 			
 		return e107::getForm()->breadcrumb($array);
 		

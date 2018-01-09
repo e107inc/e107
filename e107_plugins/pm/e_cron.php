@@ -134,7 +134,7 @@ class pm_cron // include plugin-folder in the name.
 		if ($this->ourDB->select('generic', '*', "`gen_type` = 'pm_bulk' LIMIT 1"))
 		{
 			$pmRow = $this->ourDB->fetch();
-			$this->logLine("\r\n\r\n".str_replace('--NUM--',$pmRow['gen_intdata'],LAN_EC_PM_06).date('D j M Y G:i:s'));
+			$this->logLine("\r\n\r\n".str_replace('[y]',$pmRow['gen_intdata'],LAN_EC_PM_06).date('D j M Y G:i:s'));
 
 			$this->ourDB->delete('generic', "`gen_type` = 'pm_bulk' AND `gen_id` = ".$pmRow['gen_id']);
 

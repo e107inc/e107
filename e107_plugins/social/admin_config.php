@@ -141,13 +141,7 @@ class social_ui extends e_admin_ui
 
 			$this->social_logins = array (
 				// openid providers
-				"OpenID" => array (
-					"enabled" => true
-				),
 
-				"Yahoo" => array (
-					"enabled" => true
-				),
 
 				"AOL"  => array (
 					"enabled" => true
@@ -188,7 +182,7 @@ class social_ui extends e_admin_ui
 
 				"LinkedIn" => array (
 					"enabled" => true,
-					"keys"    => array ( "key" => "", "secret" => "" )
+					"keys"    => array ( "id" => "", "secret" => "" )
 				),
 
 				// windows live
@@ -203,6 +197,11 @@ class social_ui extends e_admin_ui
 					"keys"    => array ( "key" => "", "secret" => "" )
 				),
 				*/
+
+				"OpenID" => array (
+					"enabled" => true
+				),
+
 				"Steam" => array (
 					"enabled" => true,
 					"keys"	 => array ( "key" => "" )
@@ -210,9 +209,15 @@ class social_ui extends e_admin_ui
 
 				"Twitter" => array (
 					"enabled" => true,
-					"keys"    => array ( "key" => "", "secret" => "" )
+					"keys"    => array ( "key" => "", "secret" => "" ),
+					"includeEmail" => true,
 				),
 
+
+				"Yahoo" => array (
+					"enabled" => true,
+					"keys"    => array ( "id" => "", "secret" => "" ),
+				),
 
 
 			);
@@ -454,6 +459,7 @@ class social_ui extends e_admin_ui
 				'flickr'		=>	array('label'=>"Flickr",	"placeholder"=>""),
 				'instagram'		=>	array('label'=>"Instagram",	"placeholder"=>""),
 				'pinterest'		=>	array('label'=>"Pinterest",	"placeholder"=>""),
+				'steam'			=>	array('label'=>"Steam",		"placeholder"=>"eg. http://steamcommunity.com"),
 				'vimeo'			=>	array('label'=>"Vimeo",		"placeholder"=>""),
 			);
 

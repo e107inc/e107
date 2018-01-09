@@ -112,7 +112,7 @@ if (isset($searchflat) && $searchflat)
 }
 else
 {
-	$ns->tablerender(LAN_SEARCH." ".SITENAME, "<div style='text-align:center'>".$text."</div>", 'search');
+	$ns->tablerender(LAN_SEARCH." ".SITENAME, "<div class='search-menu'>".$text."</div>", 'search');
 }
 
 ?>

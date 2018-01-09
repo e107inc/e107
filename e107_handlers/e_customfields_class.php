@@ -14,7 +14,7 @@
 		private $_fieldTypes = array(
 			'number', 'email', 'url', 'password', 'text', 'tags', 'textarea',
 			'bbarea', 'image', 'file', 'icon', 'datestamp', 'checkboxes', 'dropdown', 'radio',
-			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country', 'video'
+			'userclass', 'user', 'boolean', 'checkbox', 'hidden', 'lanlist', 'language', 'country', 'video', 'progressbar'
 
 		);
 
@@ -150,6 +150,8 @@
 					return ($raw) ? 'https://www.youtube.com/watch?v='.str_replace(".youtube", '', $value) : $tp->toVideo($value);
 				break;
 
+
+
 				case "image":
 					return ($raw) ? $tp->thumbUrl($value) : $tp->toImage($value);
 					break;
@@ -190,6 +192,10 @@
 
 				case "userclass":
 					return ($raw) ? $value : e107::getUserClass()->getName($value);
+					break;
+
+				case "progressbar":
+					return ($raw) ? $value.'%' : e107::getForm()->progressBar($key,$value,$this->_config[$key]);
 					break;
 
 				case "textarea":
@@ -274,29 +280,27 @@
 				<tr><th>".LAN_NAME."</th><th>".LAN_TITLE."</th><th>".LAN_TYPE."</th><th>Params</th><th>".LAN_TOOLTIP."</th></tr>
 				";
 
-			for ($i = 0; $i <= $this->_field_limit; $i++)
+			for($i = 0; $i <= $this->_field_limit; $i++)
 			{
-
 				$writeParms = array(
-				//	'class' => 'form-control',
+					//	'class' => 'form-control',
 					'useValues' => 1,
 					'default'   => 'blank',
-					'data-src' => e_REQUEST_URI,
+					'data-src'  => e_REQUEST_URI,
 
 				);
 
-				$parmsWriteParms= array(
-					'size' => 'block-level',
-					'placeholder' => $this->getCustomFieldPlaceholder($value[$i]['type'])
-
+				$parmsWriteParms = array(
+					'size'        => 'block-level',
+					'placeholder' => isset($value[$i]['type']) ? $this->getCustomFieldPlaceholder($value[$i]['type']) : '',
 				);
 
-				$fieldName = $frm->text($name.'['.$i.'][key]', $value[$i]['key'],30, array('pattern'=>'^[a-z0-9-]*'));
-				$fieldTitle = $frm->text($name.'['.$i.'][title]',$value[$i]['title'], 80);
-				$fieldType = $frm->select($name.'['.$i.'][type]',$this->getFieldTypes(),$value[$i]['type'], $writeParms);
-				$fieldParms = $frm->text($name.'['.$i.'][writeParms]',$value[$i]['writeParms'], 255, $parmsWriteParms);
-				$fieldHelp = $frm->text($name.'['.$i.'][help]',$value[$i]['help'], 255, array('size'=>'block-level'));
-			   $text .= "<tr><td>".$fieldName."</td><td>".$fieldTitle."</td><td>".$fieldType."</td><td>".$fieldParms."</td><td>".$fieldHelp."</td></tr>";
+				$fieldName = $frm->text($name . '[' . $i . '][key]', varset($value[$i]['key']), 30, array('pattern' => '^[a-z0-9-]*'));
+				$fieldTitle = $frm->text($name . '[' . $i . '][title]', varset($value[$i]['title']), 80);
+				$fieldType = $frm->select($name . '[' . $i . '][type]', $this->getFieldTypes(), varset($value[$i]['type']), $writeParms);
+				$fieldParms = $frm->text($name . '[' . $i . '][writeParms]', varset($value[$i]['writeParms']), 255, $parmsWriteParms);
+				$fieldHelp = $frm->text($name . '[' . $i . '][help]', varset($value[$i]['help']), 255, array('size' => 'block-level'));
+				$text .= "<tr><td>" . $fieldName . "</td><td>" . $fieldTitle . "</td><td>" . $fieldType . "</td><td>" . $fieldParms . "</td><td>" . $fieldHelp . "</td></tr>";
 			}
 
 			$text .= "</tbody></table>";

@@ -182,3 +182,7 @@ define("LANINS_141", "Please fill in the form below with your MySQL details. If 
 define("LANINS_142", "IMPORTANT: Please rename e107.htaccess to .htaccess");
 define("LANINS_144", "IMPORTANT: Please copy and paste the contents of the [b]e107.htaccess[/b] into your [b].htaccess[/b] file. Please take care NOT to overwrite any existing data that may be in it.");
 define("LANINS_145", "e107 v2.x requires the PHP [x] to be installed. Please contact your host or read the information at [y] before continuing.");
+
+define("LANINS_146", "Admin-area Skin");
+define("LANINS_147", "Administration");
+

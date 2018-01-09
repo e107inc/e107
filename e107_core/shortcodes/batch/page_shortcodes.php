@@ -27,6 +27,7 @@ class cpage_shortcodes extends e_shortcode
 	// Grab all book/chapter data. 
 	function __construct()
 	{
+		parent::__construct();
 		
 		$books = e107::getDb()->retrieve("SELECT * FROM #page_chapters ORDER BY chapter_id ASC" , true);
 				
@@ -36,6 +37,8 @@ class cpage_shortcodes extends e_shortcode
 
 
 			$this->chapterData[$id]			= $row;
+
+
 		}	
 
 
@@ -249,6 +252,12 @@ class cpage_shortcodes extends e_shortcode
 		return '<a class="cpage" href="'.$url.'">'.$this->sc_cpagetitle().'</a>';
 	}
 	
+  	/**
+	 * @param null $parm
+	 * @example {CPAGEBUTTON}
+	 * @example {CPAGEBUTTON: class=btn large default mb&target=blank}
+	 * @return string
+	 */
 	function sc_cpagebutton($parm)
 	{
 		$tp = e107::getParser();
@@ -290,7 +299,10 @@ class cpage_shortcodes extends e_shortcode
 
 		$inc = ($size) ? " btn-".$size : "";
 		
-		return '<a class="cpage btn btn-primary btn-cpage'.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.'>'.$text.'</a>';
+		$class = (!empty($options['class'])) ? $options['class'] : 'cpage btn btn-primary btn-cpage';
+    	$buttonTarget = (!empty($options['target'])) ? ' target="'.$options['target'].'" ' : $buttonTarget;
+
+		return '<a class="'.$class.' '.$inc.'" href="'.$buttonUrl.'" '.$buttonTarget.' title="'.$text.'">'.$text.'</a>';
 	}	
 	
 	
@@ -333,22 +345,54 @@ class cpage_shortcodes extends e_shortcode
 	{
 		$tp = e107::getParser();
 
-		if($video = $tp->toVideo($this->var['menu_image']))
-		{
-			return $video;	
-		}
-		
-
 		if($parm == 'url')
 		{
-			$img = $tp->thumbUrl($this->var['menu_image']);
-			return $img;	
+			$img = ($tp->isVideo($this->var['menu_image'])) ? $tp->toVideo($this->var['menu_image'], array('thumb'=>'src')) : $tp->thumbUrl($this->var['menu_image']);
+			return $img;
+		}
+
+		if($video = $tp->toVideo($this->var['menu_image']))
+		{
+			return $video;
 		}
 
 		return $tp->toImage($this->var['menu_image'], $parm);
 
-		//return "<img class='".$class."' src='".$img."' alt='' ".$dimensions." />";
 	}
+
+
+	function sc_cmenu_tab_active($parm=null)
+	{
+		if(!empty($this->var['cmenu_tab_active']))
+		{
+			return 'active';
+		}
+
+		return null;
+	}
+
+	function sc_cmenu_button($parm=null)
+	{
+		return $this->sc_cpagebutton($parm);
+	}
+
+
+	function sc_cmenu_button_text($parm=null)
+	{
+		if(empty($this->var['menu_button_url']) && empty($this->var['page_text']))
+		{
+			return null;
+		}
+
+
+		return (empty($this->var['menu_button_text'])) ? LAN_READ_MORE : $this->var['menu_button_text'];
+	}
+
+	function sc_cmenu_button_url($parm=null)
+	{
+		return $this->sc_cmenuurl($parm);
+	}
+
 	
 	function sc_cmenuicon($parm='')
 	{
@@ -493,6 +537,14 @@ class cpage_shortcodes extends e_shortcode
 		return $tp->toIcon($row['chapter_icon']);
 	}
 
+	function sc_chapter_image($parm=null)
+	{
+		$tp = e107::getParser();
+		$row = $this->getChapter();
+
+		return $tp->toImage($row['chapter_image'],$parm);
+	}
+
 	/**
 	 * @example {CHAPTER_DESCRIPTION}
 	 */		
@@ -531,6 +583,9 @@ class cpage_shortcodes extends e_shortcode
 		
 		return '<a class="cpage btn btn-primary btn-chapter'.$inc.'" href="'.$url.'">'.$text.'</a>';	
 	}
+
+
+
 
 
 	function sc_chapter_breadcrumb()
@@ -613,6 +668,7 @@ class cpage_shortcodes extends e_shortcode
 
 	function sc_cpagefieldtitle($parm=null)
 	{
+
 		if(empty($parm['name']) || empty($this->var['page_fields']))
 		{
 			return null;
@@ -620,6 +676,12 @@ class cpage_shortcodes extends e_shortcode
 
 		$chap       = $this->var['page_chapter'];
 		$key        = $parm['name'];
+
+
+		if(!empty($this->chapterData[$chap]['chapter_fields']) && is_string($this->chapterData[$chap]['chapter_fields']))
+		{
+			$this->chapterData[$chap]['chapter_fields'] = e107::unserialize($this->chapterData[$chap]['chapter_fields']);
+		}
 
 
 		if(!empty($this->chapterData[$chap]['chapter_fields'][$key]['title']))

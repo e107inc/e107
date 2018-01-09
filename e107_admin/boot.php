@@ -35,6 +35,56 @@ if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_
 	exit;
 }
 
+if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
+{
+
+		require_once(e_ADMIN.'update_routines.php');
+
+		e107::getSession()->set('core-update-checked',false);
+
+		$status = (update_check() === true) ? true : false;
+
+		e107::getSession()->set('core-update-status',$status);
+
+		echo json_encode($status);
+
+		exit;
+
+}
+
+if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
+{
+	e107::getSession()->set('addons-update-checked',true);
+
+	$sc = e107::getScBatch('admin');
+
+	$themes = $sc->getUpdateable('theme');
+	$plugins = $sc->getUpdateable('plugin');
+
+	$text = $sc->renderAddonUpdate($plugins);
+	$text .= $sc->renderAddonUpdate($themes);
+
+	if(empty($text))
+	{
+		exit;
+	}
+
+	$ns = e107::getRender();
+
+	$tp = e107::getParser();
+	$ns->setUniqueId('e-addon-updates');
+	$ns->setStyle('warning');
+	$ret = $ns->tablerender($tp->toGlyph('fa-arrow-circle-o-down').LAN_UPDATE_AVAILABLE,$text,'default', true);
+
+	echo $ret;
+
+	e107::getSession()->set('addons-update-status',$ret);
+
+	exit;
+
+}
+
+
 if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
 {
 
@@ -56,7 +106,7 @@ if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] 
 			$text .= '
 			<div class="media">
 			  <div class="media-body">
-			    <h4 class="media-heading"><a href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
+			    <h4 class="media-heading"><a target="_blank" href="'.$row['link'].'">'.$row['title'].'</a> <small>— '.$row['pubDate'].'</small></h4>
 			   '.$tp->text_truncate($description,150).'
 			  </div></div>';
 			  $count++;
@@ -103,7 +153,7 @@ if(ADMIN && (e_AJAX_REQUEST || deftrue('e_DEBUG_FEEDS')) && varset($_GET['mode']
 		$rows = e107::getXml()->parseXml($data, 'advanced');
 //	print_a($rows);
 //  exit;
-		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=online";
+		$link = ($type == 'plugin') ? e_ADMIN."plugin.php?mode=online" : e_ADMIN."theme.php?mode=main&action=online";
 
 		$text = "<div style='margin-top:10px'>";
 

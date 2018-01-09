@@ -9,7 +9,7 @@
 /**
  * Windows Live OAuth2 Class
  * 
- * @package             HybridAuth providers package 
+ * @package             HybridAuth providers package
  * @author              Lukasz Koprowski <azram19@gmail.com>
  * @version             0.2
  * @license             BSD License
@@ -23,7 +23,7 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2 {
 	/**
 	 * {@inheritdoc}
 	 */
-	public $scope = "wl.basic wl.contacts_emails wl.emails wl.signin wl.share wl.birthday";
+	public $scope = 'wl.basic wl.contacts_emails wl.emails wl.signin wl.share wl.birthday';
 
 	/**
 	 * {@inheritdoc}
@@ -35,8 +35,6 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2 {
 		$this->api->api_base_url = 'https://apis.live.net/v5.0/';
 		$this->api->authorize_url = 'https://login.live.com/oauth20_authorize.srf';
 		$this->api->token_url = 'https://login.live.com/oauth20_token.srf';
-
-		$this->api->curl_authenticate_method = "GET";
 	}
 
 	/**
@@ -59,7 +57,7 @@ class Hybrid_Providers_Live extends Hybrid_Provider_Model_OAuth2 {
 		$this->user->profile->profileURL = (property_exists($data, 'link')) ? $data->link : "";
 
 		//wl.emails
-		$this->user->profile->email = (property_exists($data, 'emails')) ? $data->emails->account : "";
+		$this->user->profile->email = (property_exists($data, 'emails')) ? $data->emails->preferred : "";
 		$this->user->profile->emailVerified = (property_exists($data, 'emails')) ? $data->emails->account : "";
 
 		//wl.birthday

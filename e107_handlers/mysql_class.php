@@ -189,14 +189,14 @@ class e_db_mysql
 		if($this->pdo)
 		{	
 		
-			if(strpos($mySQLserver,':')!==false)
+			if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
 			{
 				list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 			}
 
-			if($this->mySQLserver === 'localhost')
+		//	if($this->mySQLserver === 'localhost') // problematic.
 			{
-				$this->mySQLserver = '127.0.0.1';  // faster by almost 1 second
+		//		$this->mySQLserver = '127.0.0.1';  // faster by almost 1 second
 			}
 
 			try
@@ -285,14 +285,14 @@ class e_db_mysql
 		$this->mySQLpassword 	= $mySQLpassword;
 		$this->mySQLerror 		= false;
 
-		if(strpos($mySQLserver,':')!==false)
+		if(strpos($mySQLserver,':')!==false && substr_count($mySQLserver, ':')===1)
 		{
 			list($this->mySQLserver,$this->mySQLport) = explode(':',$mySQLserver,2);
 		}
 
-		if($this->mySQLserver === 'localhost')
+	//	if($this->mySQLserver === 'localhost') // problematic.
 		{
-			$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second. 
+	//		$this->mySQLserver = '127.0.0.1'; // faster by almost 1 second.
 		}
 
 
@@ -328,7 +328,10 @@ class e_db_mysql
 		$this->db_Set_Charset();
 		$this->setSQLMode();
 		
-		if ($db_ConnectionID == NULL){ 	$db_ConnectionID = $this->mySQLaccess; }
+		//if ($db_ConnectionID == NULL){
+			$db_ConnectionID = $this->mySQLaccess;
+
+	//	}
 		
 		return true;
 	}
@@ -347,18 +350,26 @@ class e_db_mysql
 
 	/**
 	 * Select the database to use. 
-	 * @param string database name
-	 * @param string table prefix . eg. e107_
+	 * @param string $database name
+	 * @param string $table prefix . eg. e107_
+	 * @param boolean $multiple set to maintain connection to a secondary database.
 	 * @return boolean true when database selection was successful otherwise false. 
 	 */
-	public function database($database, $prefix = MPREFIX)
+	public function database($database, $prefix = MPREFIX, $multiple=false)
 	{
 		$this->mySQLdefaultdb 	= $database;
 		$this->mySQLPrefix 		= $prefix;
-		
+
+		if($multiple === true)
+		{
+			$this->mySQLPrefix 		= "`".$database."`.".$prefix;
+			return true;
+		}
+
 		if($this->pdo)
 		{
-			try 
+
+			try
 			{
 				$this->mySQLaccess->query("use ".$database);
         		// $this->mySQLaccess->select_db($database); $dbh->query("use newdatabase");
@@ -464,7 +475,8 @@ class e_db_mysql
 		}
 		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
-			$queryinfo[] = "<b>{$qry_from}</b>: $query";
+			$debugQry = is_array($query) ? print_a($query,true) : $query;
+			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
 		}
 		if ($log_type != '')
 		{
@@ -603,8 +615,14 @@ class e_db_mysql
 					}
 				}
 
-			//	$query = var_export($query,true);
-			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+				if($this->pdo == true && $buglink instanceof PDO)
+				{
+					$db_debug->Mark_Query($query, 'PDO', $sQryRes, $aTrace, $mytime, $pTable);
+				}
+				else
+				{
+					$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+				}
 			}
 			else
 			{
@@ -1816,7 +1834,8 @@ class e_db_mysql
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
-		return ' `'.$this->mySQLPrefix.$table.'`'.substr($matches[0],-1);
+
+		return " ".$this->mySQLPrefix.$table.substr($matches[0],-1);
 	}
 
 
@@ -1865,7 +1884,7 @@ class e_db_mysql
 
 	/**
 	* Check for the existence of a matching language table when multi-language tables are active.
-	* @param string $table Name of table, without the prefix. or an array of table names.
+	* @param string|array $table Name of table, without the prefix. or an array of table names.
 	* @access private
 	* @return mixed the name of the language table (eg. lan_french_news) or an array of all matching language tables. (with mprefix)
 	*/
@@ -2012,6 +2031,121 @@ class e_db_mysql
 		return $this->retrieve($qry);
 
 	}
+
+
+	/**
+	 * Return a sorted list of parent/child tree with an optional where clause.
+	 * @param string $table Name of table (without the prefix)
+	 * @param string $parent Name of the parent field
+	 * @param string $pid  Name of the primary id
+	 * @param string $where (Optional ) where condition.
+	 * @param string $order Name of the order field.
+	 * @todo Add extra params to each procedure so we only need 2 of them site-wide.
+	 * @return boolean | integer with the addition of  _treesort and _depth fields in the results.
+	 */
+	public function selectTree($table, $parent, $pid, $order, $where=null)
+	{
+
+		if(empty($table) || empty($parent) || empty($pid))
+		{
+			$this->mySQLlastErrText = "missing variables in sql->categories()";
+			return false;
+		}
+
+		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
+
+		$this->gen($sql);
+
+		$sql = "
+		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
+		BEGIN
+		    DECLARE depth INT;
+		    SET depth=1;
+
+		    WHILE project_id > 0 DO
+
+		        SELECT IFNULL(".$parent.",-1)
+		        INTO project_id
+		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
+
+		        IF project_id > 0 THEN
+		            SET depth = depth + 1;
+		        END IF;
+
+		    END WHILE;
+
+		    RETURN depth;
+
+		END
+		;
+		";
+
+
+		$this->gen($sql);
+
+		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
+
+		$this->gen($sql);
+
+        $sql = "
+        CREATE FUNCTION getTreeSort(incid INT)
+        RETURNS CHAR(255)
+        BEGIN
+                SET @parentstr = CONVERT(incid, CHAR);
+                SET @parent = -1;
+                label1: WHILE @parent != 0 DO
+                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
+                        SET incid = @parent;
+                END WHILE label1;
+
+                RETURN @parentstr;
+        END
+   ;
+
+        ";
+
+
+        $this->gen($sql);
+
+        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
+
+		if($where !== null)
+		{
+			$qry .= " WHERE ".$where;
+		}
+
+
+		$qry .= " ORDER BY _treesort";
+
+
+		return $this->gen($qry);
+
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2552,7 +2686,7 @@ class e_db_mysql
 		$header = "-- e107 Database Backup File \n";	
 		$header .= "-- Host: ".$_SERVER['SERVER_NAME']."\n";
 		$header .= "-- Generation Time: ".date('r')."\n";
-		$header .= "-- Encoding: ANSI\n\n\n";
+		$header .= "-- Encoding: UTF-8\n\n\n";
 		
 		file_put_contents($backupFile,$header, FILE_APPEND);	
 		
@@ -2583,12 +2717,12 @@ class e_db_mysql
 				$d = array();
 				foreach($fields as $val)
 				{
-					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".mysqli_real_escape_string($row[$val])."'"; 				
+					$d[] = is_numeric($row[$val]) ? $row[$val] : "'".$this->escape($row[$val])."'";
 				}
 	
 				$data_array = "(".implode(", ",$d).");\n"; 
 				file_put_contents($backupFile, $data_array, FILE_APPEND); // Do this here to save memory. 
-		
+
 			}
 				
 			$text = "\n\n\n";		
@@ -2809,7 +2943,8 @@ class e_db_mysql
 	 */
 	protected function loadTableDef($defFile, $tableName)
 	{
-		$result = FALSE;
+		$result =false;
+
 		if (is_readable($defFile))
 		{
 			// Read the file using the array handler routines
@@ -2818,26 +2953,31 @@ class e_db_mysql
 			// Strip any comments  (only /*...*/ supported)
 			$temp = preg_replace("#\/\*.*?\*\/#mis", '', $temp);
 			//echo "Check: {$defFile}, {$tableName}<br />";
-			if ($temp !== FALSE)
+			if ($temp !== false)
 			{
-				$array = e107::getArrayStorage();
-				$typeDefs = $array->ReadArray($temp);
+			//	$array = e107::getArrayStorage();
+				$typeDefs = e107::unserialize($temp);
+
 				unset($temp);
 				if (isset($typeDefs[$tableName]))
 				{
 					$this->dbFieldDefs[$tableName] = $typeDefs[$tableName];
-					$fileData = $array->WriteArray($typeDefs[$tableName], FALSE);
-					if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
+
+					$fileData = e107::serialize($typeDefs[$tableName], false);
+
+					if (false === file_put_contents(e_CACHE_DB.$tableName.'.php', $fileData))
 					{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
+
 					}
-					$result = TRUE;
+
+					$result = true;
 				}
 			}
 		}
 
 		if (!$result)
 		{
-			$this->dbFieldDefs[$tableName] = FALSE;
+			$this->dbFieldDefs[$tableName] = false;
 		}
 		return $result;
 	}
@@ -2857,7 +2997,10 @@ class e_db_mysql
 
 		$baseStruct = $dbAdm->get_current_table($tableName);
 		$fieldDefs = $dbAdm->parse_field_defs($baseStruct[0][2]);					// Required definitions
+
 		$outDefs = array();
+
+
 		foreach ($fieldDefs as $k => $v)
 		{
 			switch ($v['type'])
@@ -2867,17 +3010,25 @@ class e_db_mysql
 					{
 						//break;		Probably include autoinc fields in array
 					}
+
 					$baseType = preg_replace('#\(\d+?\)#', '', $v['fieldtype']);		// Should strip any length
+
 					switch ($baseType)
 					{
 						case 'int' :
+						case 'integer':
 						case 'shortint' :
 						case 'tinyint' :
+						case 'mediumint':
 							$outDefs['_FIELD_TYPES'][$v['name']] = 'int';
 							break;
+
 						case 'char' :
 						case 'text' :
 						case 'varchar' :
+						case 'tinytext' :
+						case 'mediumtext' :
+						case 'longtext' :
 							$outDefs['_FIELD_TYPES'][$v['name']] = 'escape'; //XXX toDB() causes serious BC issues. 
 							break;
 					}
@@ -2899,9 +3050,10 @@ class e_db_mysql
 					echo "Unexpected field type: {$k} => {$v['type']}<br />";
 			}
 		}
-		$array = e107::getArrayStorage();
+	//	$array = e107::getArrayStorage();
 		$this->dbFieldDefs[$tableName] = $outDefs;
-		$toSave = $array->WriteArray($outDefs, FALSE);	// 2nd parameter to TRUE if needs to be written to DB
+		$toSave = e107::serialize($outDefs, false);	// 2nd parameter to TRUE if needs to be written to DB
+
 		if (FALSE === file_put_contents(e_CACHE_DB.$tableName.'.php', $toSave))
 		{	// Could do something with error - but mustn't return FALSE - would trigger auto-generated structure
 			$mes = e107::getMessage();

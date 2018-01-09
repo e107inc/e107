@@ -40,6 +40,14 @@ class download_setup
 	}
 
 
+
+	function upgrade_required()
+	{
+			return false;
+	}
+
+
+
 	// IMPORTANT : This function below is for modifying the CONTENT of the tables only, NOT the table-structure. 
 	// To Modify the table-structure, simply modify your {plugin}_sql.php file and an update will be detected automatically. 
 	/*
@@ -55,52 +63,84 @@ class download_setup
 		 * 		{
 		 * 			$this->upgrade_from_1();
 		 * 		}
-		 */		
-		
+		 */
+
+		$config = e107::getPref('url_config');
+
+		if(!empty($config['download']))
+		{
+			e107::getConfig()
+			->removePref('url_config/download')
+			->removePref('url_locations/download')
+			->save(false,true);
+
+			if(file_exists(e_PLUGIN."download/url/url.php"))
+			{
+				@unlink(e_PLUGIN."download/url/url.php");
+				@unlink(e_PLUGIN."download/url/sef_url.php");
+			}
+
+			$bld = new eRouter;
+			$bld->buildGlobalConfig();
+
+		}
+
+		return $this->upgradeFilePaths($needed);
+
+	}
+
+
+	private function upgradeFilePaths($needed)
+	{
+
+
+
 		$sql = e107::getDb();
 		$mes = e107::getMessage();
 		$qry = "SELECT * FROM #download WHERE download_image !='' AND SUBSTRING(download_image, 1, 3) != '{e_' ";
-		
-		if($sql->db_Select_gen($qry))
+
+		if($sql->gen($qry))
 		{
-			if($needed == TRUE){ return "Incorrect download image paths"; } // Signal that an update is required. 
-			
+			if($needed == TRUE){ return "Incorrect download image paths"; } // Signal that an update is required.
+
 			if($sql->db_Update("download","download_image = CONCAT('{e_FILE}downloadimages/',download_image) WHERE download_image !='' "))
 			{
-				$mes->addSuccess("Updated Download-Image paths");	
+				$mes->addSuccess("Updated Download-Image paths");
 			}
 			else
 			{
-				$mes->addError("Failed to update Download-Image paths");		
+				$mes->addError("Failed to update Download-Image paths");
 			}
-			
+
 			if($sql->db_Update("download"," download_thumb = CONCAT('{e_FILE}downloadthumbs/',download_thumb) WHERE download_thumb !='' "))
 			{
-				$mes->addSuccess("Updated Download-Thumbnail paths");	
+				$mes->addSuccess("Updated Download-Thumbnail paths");
 			}
 			else
 			{
-				$mes->addError("Failed to update Download-Thumbnail paths");		
-			}		
+				$mes->addError("Failed to update Download-Thumbnail paths");
+			}
 		}
-		
+
 		$qry = "SELECT * FROM #download_category WHERE download_category_icon !='' AND SUBSTRING(download_category_icon, 1, 3) != '{e_' ";
-		if($sql->db_Select_gen($qry))
+		if($sql->gen($qry))
 		{
 			// Signal that an update is required.
-			if($needed == TRUE){ return "Downloads-Category icon paths need updating"; } // Must have a value if an update is needed. Text used for debug purposes.  
-			
+			if($needed == TRUE){ return "Downloads-Category icon paths need updating"; } // Must have a value if an update is needed. Text used for debug purposes.
+
 			if($sql->db_Update("download_category","download_category_icon = CONCAT('{e_IMAGE}icons/',download_category_icon) WHERE download_category_icon !='' "))
 			{
-				$mes->addSuccess("Updated Download-Image paths");	
+				$mes->addSuccess("Updated Download-Image paths");
 			}
 			else
 			{
-				$mes->addError("Failed to update Download-Image paths");		
-			}	
+				$mes->addError("Failed to update Download-Image paths");
+			}
 		}
-		
-		if($needed == TRUE){ return FALSE; }	
-			
+
+		if($needed == TRUE){ return FALSE; }
+
+
+
 	}
 }

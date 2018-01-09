@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="List Latest" lan="LAN_PLUGIN_LISTNEW_NAME" version="1.0" date="2012-08-01" compatibility="2.0" installRequired="true">
+<e107Plugin name="List Latest" lan="LAN_PLUGIN_LIST_NEW_NAME" version="1.0.1" date="2012-08-01" compatibility="2.0" installRequired="true">
 	<author name="e107 Inc." url="http://e107.org" />
-	<description lan="LAN_PLUGIN_LISTNEW_DESCRIPTION">This plugin allows you to view a list and/or menu of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list.</description>
+	<description lan="LAN_PLUGIN_LIST_NEW_DESCRIPTION">This plugin allows you to view a list and/or menu of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list.</description>
 	<category>content</category> 
 	<copyright>Copyright e107 Inc e107.org, Licensed under GPL (http://www.gnu.org/licenses/gpl.txt)</copyright>	
 	<adminLinks>
-		<link url='admin_list_config.php' description='LIST_PLUGIN_3' icon='icon/list_32.png' iconSmall='icon/list_16.png' primary='true'>LIST_PLUGIN_3</link>	
+		<link url='admin_list_config.php#nav-list-new-recent-page' description='LIST_PLUGIN_3' icon='icon/list_32.png' iconSmall='icon/list_16.png' primary='true'>LIST_PLUGIN_3</link>	
 	</adminLinks>
 	<siteLinks>
-		<link url="{e_PLUGIN}list_new/list.php" >LAN_PLUGIN_LISTNEW_NAME</link>
+		<link url="{e_PLUGIN}list_new/list.php" >LAN_PLUGIN_LIST_NEW_NAME</link>
 	</siteLinks>
 	<pluginPrefs>
 	</pluginPrefs>

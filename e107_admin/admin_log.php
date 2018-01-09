@@ -87,7 +87,7 @@ class adminlog_admin extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> RL_LAN_030, 'perm' => '5'),
 		'audit/list'		=> array('caption'=> RL_LAN_062, 'perm' => '5'),
 		'rolling/list'		=> array('caption'=> RL_LAN_002, 'perm' => '5'),
-	
+		'divider/01'        => array('divider'=>true),
 		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => '5'),	
 		'main/maintenance'	=> array('caption'=> LAN_OPTIONS, 'perm' => '5')
 
@@ -202,7 +202,8 @@ class admin_log_ui extends e_admin_ui
 			foreach($row as $val)
 			{
 				$id = $val['dblog_eventcode'];
-				$this->eventTypes[$id] = deftrue($val['dblog_title'],$id);
+				$def = strpos($val['dblog_title'], "LAN") !== false ? $id : $val['dblog_title'];
+				$this->eventTypes[$id] = str_replace(': [x]', '', deftrue($val['dblog_title'],$def));
 			}
 
 			asort($this->eventTypes);
@@ -351,7 +352,7 @@ class admin_log_ui extends e_admin_ui
 				if($del_count = $sql->delete($db_table, $qry))
 				{
 					// Add in a log event
-					$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
+					$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
 					$mes->addSuccess($message);
 					$log->log_event($db_msg, "db_Delete - earlier than {$old_string} (past {$back_count} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 				}
@@ -1008,7 +1009,7 @@ if(($action == "backdel") && isset($_POST['backdeltype']))
 		if($del_count = $sql->db_Delete($db_table, $qry))
 		{
 			// Add in a log event
-			$message = $db_name.str_replace(array('--OLD--', '--NUM--'), array($old_string, $del_count), RL_LAN_057);
+			$message = $db_name.str_replace(array('[x]', '[y]'), array($old_string, $del_count), RL_LAN_057);
 			$mes->addSuccess($message);
 			e107::getLog()->add($db_msg, "db_Delete - earlier than {$old_string} (past {$qs[2]} days)[!br!]".$message.'[!br!]'.$db_table.' '.$qry, E_LOG_INFORMATIVE, '');
 		}

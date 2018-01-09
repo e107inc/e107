@@ -10,19 +10,22 @@
 
 	if (!defined('e107_INIT')) { exit; }
 
+    e107::lan('faqs', 'admin',true);
 
 	class faqs_cron // include plugin-folder in the name.
 	{
 		function config()
 		{
-
+			$tp = e107::getParser();
 			$cron = array();
-
+			
+			$siteadminemail  = e107::pref('core','siteadminemail'); 
+			
 			$cron[] = array(
-				'name'			=> "Unanswered Questions Report", //TODO LAN
+				'name'			=> LANA_FAQ_CRON_1,
 				'function'		=> "unanswered",
 				'category'		=> "notify",
-				'description' 	=> "Mails a report of unanswered questions to ".e107::pref('core','siteadminemail').'.' // TODO LAN
+				'description' 	=> $tp->lanVars(LANA_FAQ_CRON_2, $siteadminemail)
 			);
 
 			return $cron;
@@ -57,22 +60,24 @@
 		//	$questions = array( "<i>Test Question</i><br /><small>".$tp->toDate(time(),'short')."</small>");
 
 
-			$name = SITENAME . " Automation";
+			$name = SITENAME." ".LAN_AUTOMATION;
 
 			$email = e107::pref('core','siteadminemail');
 			$name = e107::pref('core','siteadmin');
 
 			$link = $tp->replaceConstants("{e_PLUGIN}faqs/admin_config.php?mode=main&action=list&filter=pending", 'full');
 
-			$body = "<h2>".count($count)." Unuanswered Questions at ".SITENAME."</h2>To answer these questions, please login to ".SITENAME." and then <a href='{$link}'>click here</a>.<br />
-			The ".$limit." most recent questions are displayed below.
-			<ul><li>".implode("</li><li>",$questions)."</li></ul>";
+			$body  = "<h2>".$tp->lanVars(LANA_FAQ_CRON_3, count($count), SITENAME)."</h2>";// Unanswered Questions at
+			$body .= LANA_FAQ_CRON_4."<br />"; //To answer these qus.
+			$body .= "<a href='{$link}'>".LAN_CLICK_HERE."</a><br />";
+			$body .= $tp->lanVars(LANA_FAQ_CRON_5,$limit);//The limit
+			$body .= "<ul><li>".implode("</li><li>",$questions)."</li></ul>";
 
 
 			$eml = array(
-					'subject' 		=> count($count)." Unuanswered Question as of ".date('d-M-Y')." ",
+					'subject' 		=> $tp->lanVars(LANA_FAQ_CRON_6, array('x'=>count($count), 'y'=> date('d-M-Y'))),
 				//	'sender_email'	=> $email,
-					'sender_name'	=> SITENAME . " Automation",
+					'sender_name'	=> SITENAME." ".LAN_AUTOMATION,
 			//		'replyto'		=> $email,
 					'html'			=> true,
 					'template'		=> 'default',

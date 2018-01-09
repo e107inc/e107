@@ -55,7 +55,6 @@ class db_verify
 	function __construct()
 	{
 				
-
 		$sql = e107::getDb();
 		$sql->gen('SET SQL_QUOTE_SHOW_CREATE = 1');
 
@@ -74,14 +73,19 @@ class db_verify
 		}
 
 
-
-
 		$this->sqlLanguageTables = $this->getSqlLanguages();
 
 	//	$this->loadCreateTableData();
 
 		return $this;
 		
+	}
+
+	public function clearCache()
+	{
+
+		return e107::getCache()->clear(self::cachetag, true);
+
 	}
 
 	private function load()
@@ -232,6 +236,7 @@ class db_verify
 				}			
 			}
 		}
+
 	}
 	
 	
@@ -406,8 +411,10 @@ class db_verify
 	{
 		foreach($this->results as $tabs => $field)
 		{
-			$file = varset($this->results[$tabs]['_file']);		
-			if(varset($this->errors[$tabs]['_status']) === 'missing_table') // Missing Table
+			$file = varset($this->results[$tabs]['_file']);
+			$errorStatus = !empty($this->errors[$tabs]['_status']) ? $this->errors[$tabs]['_status'] : null;
+
+			if($errorStatus === 'missing_table') // Missing Table
 			{				
 				$this->fixList[$file][$tabs]['all'][] = 'create';
 			}					
@@ -416,7 +423,11 @@ class db_verify
 				foreach($field as $k=>$f)
 				{
 					if($f['_status']=='ok') continue;
-					$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$f['_status']];
+					$status = $f['_status'];
+					if(!empty($this->modes[$status]))
+					{
+						$this->fixList[$f['_file']][$tabs][$k][] = $this->modes[$status];
+					}
 				}	
 			}
 		}
@@ -436,7 +447,8 @@ class db_verify
 				}				
 			}		
 		}
-	
+
+
 	}
 
 	/** 
@@ -715,7 +727,8 @@ class db_verify
 			{
 				
 				$id = $this->getId($this->sqlFileTables[$j]['tables'],$table);
-						
+				$toFix = count($val);
+
 				foreach($val as $field=>$fixes)
 				{
 					foreach($fixes as $mode)
@@ -768,7 +781,8 @@ class db_verify
 						 
 						if(e107::getDb()->gen($query) !== false)
 						{
-							$log->addDebug(LAN_UPDATED.'  ['.$query.']');	
+							$log->addDebug(LAN_UPDATED.'  ['.$query.']');
+							$toFix--;
 						} 
 						else 
 						{
@@ -781,8 +795,14 @@ class db_verify
 						}
 					}	
 				}
-		
-			}	// 
+
+				if(empty($toFix))
+				{
+					unset($this->errors[$table], $this->fixList[$j][$table]); // remove from error list since we are using a singleton
+				}
+			}	//
+
+
 		}
 
 		$log->flushMessages("Database Table(s) Modified");
@@ -907,29 +927,38 @@ class db_verify
 	function getIndex($data, $print = false)
 	{
 		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT|FOREIGN))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
 		preg_match_all($regex,$data,$m);
 		
 		$ret = array();
 		
-		if($print) var_dump($regex, $m);
+		if($print)
+		{
+			e107::getDebug()->log($m);
+		}
 		
-		// Standard Detection Method. 
+		// Standard Detection Method.
+
+		$fieldReplace = array("`"," ");
+
 		foreach($m[3] as $k=>$val)
 		{
 			if(!$val) continue;
 			$val = str_replace("`","",$val);
-			$ret[$val] = array(
+
+			$key = !empty($m[2][$k]) ? $m[2][$k] : $val;
+
+			$ret[$key] = array(
 				'type'		=> strtoupper($m[1][$k]),
-				'keyname'	=> (vartrue($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
-				'field'		=> str_replace("`","",$m[3][$k])
+				'keyname'	=> (!empty($m[2][$k])) ? str_replace("`","",$m[2][$k]) : str_replace("`","",$m[3][$k]),
+				'field'		=> str_replace($fieldReplace,"",$m[3][$k])
 			);
 		}
 		
 		//Alternate Index detection method. 
 		// eg.  `table_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 		
-		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT)\s?KEY\s?,/i";
+		$regex = "/`?([\w]*)`? .*((?:AUTO_INCREMENT))\s?(PRIMARY|UNIQUE|FULLTEXT|FOREIGN)\s?KEY\s?,/i";
 		preg_match_all($regex,$data,$m);
 		
 		foreach($m[1] as $k=>$val)
@@ -939,8 +968,13 @@ class db_verify
 		    $ret[$val] = array(
 				'type'		=> strtoupper($m[3][$k]),
 				'keyname'	=> $m[1][$k],
-				'field'		=> str_replace("`","",$m[1][$k])
+				'field'		=> str_replace($fieldReplace,"",$m[1][$k])
 			);	
+		}
+
+		if($print)
+		{
+			e107::getDebug()->log($ret);
 		}
 
 		return $ret;

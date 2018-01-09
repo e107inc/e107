@@ -1256,7 +1256,7 @@ class validatorClass
 									break;
 								}
 								$field = varset($options['dbFieldName'],$f);
-								if ($temp = $u_sql->db_Count($targetTable, "(*)", "WHERE `{$f}`='".$v."' AND `user_id` != ".$userID))
+								if ($temp = $u_sql->count($targetTable, "(*)", "WHERE `{$f}`='".filter_var($v, FILTER_SANITIZE_STRING)."' AND `user_id` != ".$userID))
 								{
 									$errMsg = ERR_DUPLICATE;
 								}

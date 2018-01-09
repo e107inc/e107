@@ -62,6 +62,16 @@ Note:
 
 */
 
+/**
+ * Flag used by prepareDirectory() method -- create directory if not present.
+ */
+define('FILE_CREATE_DIRECTORY', 1);
+
+/**
+ * Flag used by prepareDirectory() method -- file permissions may be changed.
+ */
+define('FILE_MODIFY_PERMISSIONS', 2);
+
 
 class e_file
 {
@@ -440,7 +450,7 @@ class e_file
 
         $cp = $this->initCurl($remote_url);
 		curl_setopt($cp, CURLOPT_FILE, $fp);
-		curl_setopt($cp, CURLOPT_TIMEOUT, 20);//FIXME Make Pref - avoids get file timeout on slow connections
+		curl_setopt($cp, CURLOPT_TIMEOUT, 40);//FIXME Make Pref - avoids get file timeout on slow connections
        	/*
        	$cp = curl_init($remote_url);
 
@@ -1142,7 +1152,32 @@ class e_file
 		{
 			return $newFile;		
 		}
-	}		
+	}
+
+
+	/**
+	 * Delete a file.
+	 * @param $file
+	 * @return bool
+	 */
+	public function delete($file)
+	{
+		if(empty($file))
+		{
+			return false;
+		}
+
+		$file = e107::getParser()->replaceConstants($file);
+
+		if(file_exists($file))
+		{
+			return unlink($file);
+		}
+
+		return false;
+
+	}
+
 
 	
 	/**
@@ -1337,6 +1372,12 @@ class e_file
 		$text = `$cmd2 2>&1`;
 		$text .= `$cmd3 2>&1`;
 
+		if(deftrue('e_DEBUG'))
+		{
+			$message = date('r')."\t\tgitPull()\t\t".$text;
+			file_put_contents(e_LOG."fileClass.log",$message,FILE_APPEND);
+		}
+
 	//	$text .= `$cmd4 2>&1`;
 
 	//	$text .= `$cmd5 2>&1`;
@@ -1509,6 +1550,250 @@ class e_file
 		$limits =  get_filetypes($file_mask, $filename);
 		ksort($limits);
 		return $limits; 
+	}
+
+
+
+
+
+	public function unzipGithubArchive($url='core')
+	{
+
+		switch($url)
+		{
+			case "core":
+				$localfile      = 'e107-master.zip';
+				$remotefile     = 'https://codeload.github.com/e107inc/e107/zip/master';
+				$excludes       = array('e107-master/install.php','e107-master/favicon.ico');
+				$excludeMatch   = false;
+				break;
+
+			// language.
+			// eg. https://github.com/e107translations/Spanish/archive/v2.1.5.zip
+			default:
+				$localfile      = str_replace('https://github.com/e107translations/','',$url); // 'e107-master.zip';
+				$localfile      = str_replace('/archive/v','-',$localfile); //remove dirs.
+				$remotefile     = $url;
+				$excludes       = array();
+				$excludeMatch   = array('alt_auth','tagwords','faqs');
+
+		}
+
+		// Delete any existing file.
+		if(file_exists(e_TEMP.$localfile))
+		{
+			unlink(e_TEMP.$localfile);
+		}
+
+		$result = $this->getRemoteFile($remotefile, $localfile, 'temp');
+
+		if($result === false)
+		{
+			return false;
+		}
+
+
+
+		chmod(e_TEMP.$localfile, 0755);
+		require_once(e_HANDLER."pclzip.lib.php");
+
+		$zipBase = str_replace('.zip','',$localfile); // eg. e107-master
+		$excludes[] = $zipBase;
+
+		$newFolders = array(
+			$zipBase.'/e107_admin/'       => e_BASE.e107::getFolder('ADMIN'),
+			$zipBase.'/e107_core/'        => e_BASE.e107::getFolder('CORE'),
+			$zipBase.'/e107_docs/'        => e_BASE.e107::getFolder('DOCS'),
+			$zipBase.'/e107_handlers/'    => e_BASE.e107::getFolder('HANDLERS'),
+			$zipBase.'/e107_images/'      => e_BASE.e107::getFolder('IMAGES'),
+			$zipBase.'/e107_languages/'   => e_BASE.e107::getFolder('LANGUAGES'),
+			$zipBase.'/e107_media/'       => e_BASE.e107::getFolder('MEDIA'),
+			$zipBase.'/e107_plugins/'     => e_BASE.e107::getFolder('PLUGINS'),
+			$zipBase.'/e107_system/'      => e_BASE.e107::getFolder('SYSTEM'),
+			$zipBase.'/e107_themes/'      => e_BASE.e107::getFolder('THEMES'),
+			$zipBase.'/e107_web/'         => e_BASE.e107::getFolder('WEB'),
+			$zipBase.'/'                  => e_BASE
+		);
+
+		$srch = array_keys($newFolders);
+		$repl = array_values($newFolders);
+
+		$archive 	= new PclZip(e_TEMP.$localfile);
+		$unarc 		= ($fileList = $archive -> extract(PCLZIP_OPT_PATH, e_TEMP, PCLZIP_OPT_SET_CHMOD, 0755)); // Store in TEMP first.
+
+		$error = array();
+		$success = array();
+	//	$skipped = array();
+
+
+
+		foreach($unarc as $k=>$v)
+		{
+			if($this->matchFound($v['stored_filename'],$excludeMatch))
+			{
+				continue;
+			}
+
+			if(in_array($v['stored_filename'],$excludes))
+			{
+				continue;
+			}
+
+			$oldPath = $v['filename'];
+			$newPath =  str_replace($srch,$repl, $v['stored_filename']);
+
+/*
+			$success[] = $newPath;
+			continue;*/
+
+			if($v['folder'] ==1 && is_dir($newPath))
+			{
+				// $skipped[] =  $newPath. " (already exists)";
+				continue;
+			}
+
+			if(!rename($oldPath,$newPath))
+			{
+				$error[] =  $newPath;
+			}
+			else
+			{
+				$success[] = $newPath;
+			}
+
+		}
+
+
+		return array('success'=>$success, 'error'=>$error);
+
+	}
+
+
+
+
+	private function matchFound($file,$array)
+	{
+		if(empty($array))
+		{
+			return false;
+		}
+
+		foreach($array as $term)
+		{
+			if(strpos($file,$term)!==false)
+			{
+				return true;
+			}
+
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Checks that the directory exists and is writable.
+	 *
+	 * @param string $directory
+	 *   A string containing the name of a directory path. A trailing slash will be trimmed from a path.
+	 * @param int $options
+	 *   A bitmask to indicate if the directory should be created if it does not exist (FILE_CREATE_DIRECTORY) or
+	 *   made writable if it is read-only (FILE_MODIFY_PERMISSIONS).
+	 *
+	 * @return bool
+	 *   TRUE if the directory exists (or was created) and is writable. FALSE otherwise.
+	 */
+	public function prepareDirectory($directory, $options = FILE_MODIFY_PERMISSIONS)
+	{
+		$directory = e107::getParser()->replaceConstants($directory);
+		$directory = rtrim($directory, '/\\');
+
+		// Check if directory exists.
+		if(!is_dir($directory))
+		{
+			// Let mkdir() recursively create directories and use the default directory permissions.
+			if(($options & FILE_CREATE_DIRECTORY) && @$this->mkDir($directory, null, true))
+			{
+				return $this->_chMod($directory);
+			}
+
+			return false;
+		}
+
+		// The directory exists, so check to see if it is writable.
+		$writable = is_writable($directory);
+
+		if(!$writable && ($options & FILE_MODIFY_PERMISSIONS))
+		{
+			return $this->_chMod($directory);
+		}
+
+		return $writable;
+	}
+
+	/**
+	 * (Non-Recursive) Sets the permissions on a file or directory.
+	 *
+	 * @param string $path
+	 *   A string containing a file, or directory path.
+	 * @param int $mode
+	 *   Integer value for the permissions. Consult PHP chmod() documentation for more information.
+	 *
+	 * @return bool
+	 *   TRUE for success, FALSE in the event of an error.
+	 */
+	public function _chMod($path, $mode = null)
+	{
+		if(!isset($mode))
+		{
+			if(is_dir($path))
+			{
+				$mode = 0775;
+			}
+			else
+			{
+				$mode = 0664;
+			}
+		}
+
+		if(@chmod($path, $mode))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Creates a directory.
+	 *
+	 * @param string $path
+	 *   A string containing a file path.
+	 * @param int $mode
+	 *   Mode is used.
+	 * @param bool $recursive
+	 *   Default to FALSE.
+	 * @param null $context
+	 *   Refer to http://php.net/manual/ref.stream.php
+	 *
+	 * @return bool
+	 *   Boolean TRUE on success, or FALSE on failure.
+	 */
+	public function mkDir($path, $mode = null, $recursive = false, $context = null)
+	{
+		if(!isset($mode))
+		{
+			$mode = 0775;
+		}
+
+		if(!isset($context))
+		{
+			return mkdir($path, $mode, $recursive);
+		}
+		else
+		{
+			return mkdir($path, $mode, $recursive, $context);
+		}
 	}
 
 }

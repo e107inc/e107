@@ -137,8 +137,8 @@ class theme_shortcodes extends e_shortcode
 				$text .='	
 				
 				<form method="post" onsubmit="hashLoginPassword(this);return true" action="'.e_REQUEST_HTTP.'" accept-charset="UTF-8">
-				<p>{LM_USERNAME_INPUT}</p>
-				<p>{LM_PASSWORD_INPUT}</p>
+				<p>{LM_USERNAME_INPUT: idprefix=bs3-}</p>
+				<p>{LM_PASSWORD_INPUT: idprefix=bs3-}</p>
 
 
 				<div class="form-group"></div>
@@ -147,10 +147,10 @@ class theme_shortcodes extends e_shortcode
 				
 				<div class="checkbox">
 				
-				<label class="string optional" for="autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="autologin" value="1">
+				<label class="string optional" for="bs3-autologin"><input style="margin-right: 10px;" type="checkbox" name="autologin" id="bs3-autologin" value="1">
 				'.LAN_LOGINMENU_6.'</label>
 				</div>
-				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="userlogin" value="'.LAN_LOGINMENU_51.'">
+				<input class="btn btn-primary btn-block" type="submit" name="userlogin" id="bs3-userlogin" value="'.LAN_LOGINMENU_51.'">
 				';
 				
 				$text .= '
@@ -195,8 +195,14 @@ class theme_shortcodes extends e_shortcode
 
 		$text = '
 		
-		<ul class="nav navbar-nav navbar-right'.$direction.'">
-		<li class="dropdown">{PM_NAV}</li>
+		<ul class="nav navbar-nav navbar-right'.$direction.'">';
+		
+		if( e107::isInstalled('pm') )
+		{
+			$text .= '<li class="dropdown">{PM_NAV}</li>';
+		}
+		
+		$text .= '
 		<li class="dropdown dropdown-avatar"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{SETIMAGE: w=30} {USER_AVATAR: shape=circle} '. $userNameLabel.' <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		<li>
@@ -256,6 +262,36 @@ class theme_shortcodes extends e_shortcode
 		}
 
 		return $text;
+
+
+	}
+
+
+	/**
+	 * Mega-Menu Shortcode Example.
+	 * @usage Select "bootstrap_megamenu_example" in Admin > Sitelinks > Create/Edit > Function
+	 * @notes Changing the method name will require changing .theme-sc-bootstrap-megamenu-example in style.css
+	 * @param null $data Link data.
+	 * @return string
+	 */
+	function sc_bootstrap_megamenu_example($data)
+	{
+		// include a plugin, custom code, whatever you wish.
+
+		// return print_a($data,true);
+
+		$parm= array();
+		$parm['caption']        = '';
+		$parm['titleLimit']     = 25; //    number of chars fo news title
+		$parm['summaryLimit']   = 50; //   number of chars for new summary
+		$parm['source']         = 'latest'; //      latest (latest news items) | sticky (news items) | template (assigned to news-grid layout)
+		$parm['order']          = 'DESC'; //       n.news_datestamp DESC
+		$parm['limit']          = '6'; //     10
+		$parm['layout']         = 'media-list'; //    default | or any key as defined in news_grid_template.php
+		$parm['featured']       = 0;
+
+
+		return "<div class='container'>". e107::getObject('news')->render_newsgrid($parm) ."</div>";
 
 
 	}
