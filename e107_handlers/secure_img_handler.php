@@ -400,9 +400,9 @@ class secure_image
 		
 		header("Content-type: image/{$type}");
 
-			if(isset($secureimg['font']) && is_readable($fontpath.$secureimg['font']))
+		if(isset($secureimg['font']) && is_readable($fontpath.$secureimg['font']))
 		{
-			imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color,realpath($fontpath.$secureimg['font']), $code);
+			imagettftext($image, $secureimg['size'],$secureimg['angle'], $secureimg['x'], $secureimg['y'], $text_color,$fontpath.$secureimg['font'], $code);
 		}
 		else
 		{
