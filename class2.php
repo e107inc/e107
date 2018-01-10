@@ -973,7 +973,7 @@ if (!class_exists('e107table', false))
 		 */
 		public function setStyle($style)
 		{
-			$this->eSetStyle = $style;
+			$this->eSetStyle = (string) $style;
 		}
 
 		/**
@@ -988,8 +988,8 @@ if (!class_exists('e107table', false))
 
 
 		/**
-		 * Set Advanced Menu content (beyond just $caption and $text)
-		 * @param string $type header|footer|text|title|image
+		 * Set Advanced Page/Menu content (beyond just $caption and $text)
+		 * @param string $type header|footer|text|title|image|list
 		 * @param string $val
 		 */
 		public function setContent($type, $val)
@@ -1000,6 +1000,43 @@ if (!class_exists('e107table', false))
 			}
 
 			$this->content[$type] = (string) $val;
+		}
+
+
+		/**
+		 * Return the value of custom content
+		 * @param string $type header|footer|text|title|image|list
+		 * @return array
+		 */
+		public function getContent($type='')
+		{
+			if(empty($type))
+			{
+				return $this->content;
+			}
+
+			return $this->content[$type];
+
+		}
+
+
+		/**
+		 * Return the current value of {SETSTYLE}
+		 * @return mixed
+		 */
+		public function getStyle()
+		{
+			return $this->eSetStyle;
+		}
+
+
+		/**
+		 * Return the currenty set uniqueId.
+		 * @return mixed
+		 */
+		public function getUniqueId()
+		{
+			return $this->uniqueId;
 		}
 
 
