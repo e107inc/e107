@@ -6706,9 +6706,9 @@ class e_admin_form_ui extends e_form
 		if($this->_list_view === 'grid' && $this->getController()->getGrid('carousel') === true)
 		{
 			return '<div class="btn-group" >
-			<a id="admin-ui-carousel-prev" class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
-			<a id="admin-ui-carousel-index" class="btn btn-default">1</a>
-			<a id="admin-ui-carousel-next" class="btn btn-default" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
+			<a id="admin-ui-carousel-prev" class="btn btn-default btn-secondary" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
+			<a id="admin-ui-carousel-index" class="btn btn-default btn-secondary">1</a>
+			<a id="admin-ui-carousel-next" class="btn btn-default btn-secondary" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
 			</div>';
 		}
 

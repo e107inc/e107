@@ -121,8 +121,8 @@ class core_system_xup_controller extends eController
 			if($var['enabled'] == 1)
 			{
 				echo '<h3>'.$key.'</h3><ul>';
-				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_09, array('x'=>$key)).'</a></li>';
-				echo '<li><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></li>';		
+				echo '<li><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/login?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_09, array('x'=>$key)).'</a></li>';
+				echo '<li><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/signup?provider='.$key.'&back='.base64_encode($testUrl)).'">'.e107::getParser()->lanVars(LAN_XUP_ERRM_10, array('x'=>$key)).'</a></li>';
 			
 				echo "</ul>";
 			}
@@ -130,7 +130,7 @@ class core_system_xup_controller extends eController
 		//	print_a($var);
 		}
 		
-			echo '<br /><br /><a class="btn btn-default" href="'.e107::getUrl()->create('system/xup/test?lgt').'">'.LAN_XUP_ERRM_12.'</a>';
+			echo '<br /><br /><a class="btn btn-default btn-secondary" href="'.e107::getUrl()->create('system/xup/test?lgt').'">'.LAN_XUP_ERRM_12.'</a>';
 		
 		/*
 		echo '<h3>Facebook</h3>';
