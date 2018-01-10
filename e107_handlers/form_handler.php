@@ -1036,7 +1036,7 @@ class e_form
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />";
+			$text .= "<input class='img-rounded rounded btn btn-default btn-secondary button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />";
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -1257,7 +1257,7 @@ class e_form
 			else
 			{
 				$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$sc_parameters);
-				$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
+				$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
 			}
 
 			$ret .= $label; // image
@@ -1347,7 +1347,7 @@ class e_form
 		
 		
 		$default_label 				= ($default) ? $default : LAN_CHOOSE_FILE;
-		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
+		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-secondary btn-small'>".basename($default_label)."</span>";
 			
 		$sc_parameters['mode'] 		= 'main';
 		$sc_parameters['action'] 	= 'dialog';	
@@ -1785,11 +1785,11 @@ class e_form
 		
 		if(vartrue($options['generate']))
 		{
-			$gen = '&nbsp;<a href="#" class="btn btn-default btn-small e-tip" id="Spn_PasswordGenerator" title=" '.LAN_GEN_PW.' " >'.LAN_GENERATE.'</a> ';
+			$gen = '&nbsp;<a href="#" class="btn btn-default btn-secondary btn-small e-tip" id="Spn_PasswordGenerator" title=" '.LAN_GEN_PW.' " >'.LAN_GENERATE.'</a> ';
 			
 			if(empty($options['nomask']))
 			{
-				$gen .= '<a class="btn btn-default btn-small e-tip" href="#" id="showPwd" title=" '.LAN_DISPL_PW.' ">'.LAN_SHOW.'</a><br />';	
+				$gen .= '<a class="btn btn-default btn-secondary btn-small e-tip" href="#" id="showPwd" title=" '.LAN_DISPL_PW.' ">'.LAN_SHOW.'</a><br />';
 			}
 		}
 		
@@ -2985,23 +2985,23 @@ class e_form
 		{
 			case 'edit':
 				$icon = (e_ADMIN_AREA === true) ? ADMIN_EDIT_ICON : $tp->toIcon("e-edit-32");
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action edit' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$icon = (e_ADMIN_AREA === true) ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
 				$icon = (e_ADMIN_AREA === true) ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action execute' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$icon = $tp->toIcon("e-view-32");
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action view' : $options['class'];
 			break;
 		}
 
@@ -4687,7 +4687,7 @@ class e_form
 					if($ttl == 1)
 					{
 						$dataAttr = "data-text-more='" . LAN_MORE . "' data-text-less='" . LAN_LESS . "'";
-						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . "</button>";
+						$ttl = $expand."<button class='btn btn-default btn-secondary btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . "</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit e-expandit-inline">'.defset($ttl, $ttl)."</a>";
@@ -7062,7 +7062,7 @@ class form
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
 		$image = ($form_image ? " src='".$form_image."' " : "");
 		$tooltip = ($form_tooltip ? " title='".$form_tooltip."' " : "");
-		return "\n<input class='btn btn-default button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
+		return "\n<input class='btn btn-default btn-secondary button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
 	}
 
 	function form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = "", $form_style = "", $form_wrap = "", $form_readonly = "", $form_tooltip = "") {

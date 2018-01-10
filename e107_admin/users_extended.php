@@ -2111,7 +2111,7 @@ class users_ext
 				<input type='hidden' name='eu_action' value='delcat' />
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 				<a class='btn btn-default'  href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-				<button class='btn btn-default action delete' type='submit' title='".LAN_DELETE."' name='eudel' data-confirm='".LAN_JSCONFIRM."' >".ADMIN_DELETE_ICON."</button>
+				<button class='btn btn-default btn-secondary action delete' type='submit' title='".LAN_DELETE."' name='eudel' data-confirm='".LAN_JSCONFIRM."' >".ADMIN_DELETE_ICON."</button>
 				</div>
 				</form>
 				</td>

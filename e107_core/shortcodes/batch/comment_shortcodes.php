@@ -105,7 +105,7 @@ class comment_shortcodes extends e_shortcode
 			{
 				if ($thisaction == "comment" && $pref['nested_comments'])
 				{
-					$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-default btn-mini btn-xs' data-type='".$this->var['comment_type']."' data-target='".e_HTTP."comment.php' href='".e_HTTP."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
+					$REPLY = "<a id='e-comment-reply-".$this->var['comment_id']."' class='e-comment-reply btn btn-default btn-secondary btn-mini btn-xs' data-type='".$this->var['comment_type']."' data-target='".e_HTTP."comment.php' href='".e_HTTP."comment.php?reply.".$thistable.".".$this->var['comment_id'].".".$thisid."'>".COMLAN_326."</a>";
 				}
 			}
 		}
@@ -198,11 +198,11 @@ class comment_shortcodes extends e_shortcode
 
 	//	e107::getDebug()->log($this->var);
 
-		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."'  data-type='".$this->var['comment_type']."' data-itemid='".$this->var['comment_item_id']."' class='e-comment-delete btn btn-default btn-mini btn-xs'>".LAN_DELETE."</a> ";
+		$text = "<a href='#' data-target='".e_HTTP."comment.php' id='e-comment-delete-".$this->var['comment_id']."'  data-type='".$this->var['comment_type']."' data-itemid='".$this->var['comment_item_id']."' class='e-comment-delete btn btn-default btn-secondary btn-mini btn-xs'>".LAN_DELETE."</a> ";
 
 		if($this->var['comment_blocked'] == 2) // pending approval. 
 		{
-			$text .= "<a href='#' data-target='" . e_HTTP . "comment.php' id='e-comment-approve-" . $this->var['comment_id'] . "' class='e-comment-approve btn btn-default btn-mini btn-xs'>" . COMLAN_404 . "</a> ";
+			$text .= "<a href='#' data-target='" . e_HTTP . "comment.php' id='e-comment-approve-" . $this->var['comment_id'] . "' class='e-comment-approve btn btn-default btn-secondary btn-mini btn-xs'>" . COMLAN_404 . "</a> ";
 		}
 		return $text;
 		/*
@@ -368,12 +368,12 @@ class comment_shortcodes extends e_shortcode
 			//Searching for '.' is BAD!!! It breaks mod rewritten requests. Why is this needed at all?
 			if (strstr(e_QUERY, "&"))
 			{
-				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-mini btn-xs e-comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
+				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-mini btn-xs e-comment-edit' href='".e_SELF."?".e_QUERY."&amp;comment=edit&amp;comment_id=".$this->var['comment_id']."'>{$adop_icon}</a>";
 			}
 			else
 			{
 				//		return "<a href='".e_SELF."?".$comment_edit_query.".edit.".$this->var['comment_id']."'><img src='".e_IMAGE."generic/newsedit.png' alt='".COMLAN_318."' title='".COMLAN_318."' style='border: 0;' /></a>";
-				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-mini btn-xs e-comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
+				return "<a data-target='".e_HTTP."comment.php' id='e-comment-edit-".$this->var['comment_id']."' class='btn btn-default btn-secondary btn-mini btn-xs e-comment-edit' href='".SITEURL."comment.php?".$comment_edit_query.".edit.".$this->var['comment_id']."#e-comment-form'>".$adop_icon."</a>";
 			}
 		}
 		else

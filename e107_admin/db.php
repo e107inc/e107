@@ -1034,7 +1034,7 @@ class system_tools
 		{
 			
 			$text .= "<div class='pull-left' style='width:50%;padding-bottom:10px'>
-			<a class='btn btn-default btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
+			<a class='btn btn-default btn-secondary btn-large pull-left' style='margin-right:10px' href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".ADMIN_EXECUTE_ICON."</a>
 			<h4 style='margin-bottom:3px'><a href='".e_SELF."?mode=".$key."' title=\"".$val['label']."\">".$val['label']."</a></h4><small>".$val['diz']."</small>
 			</div>";
 		

@@ -519,7 +519,7 @@ class download_shortcodes extends e_shortcode
 	
 		$url = e_PLUGIN_ABS."download/admin_download.php?action=edit&id=".$this->var['download_id'];
 	
-		return (ADMIN && getperms('6')) ? "<a class='e-tip btn btn-default hidden-print' href='".$url."' title='".LAN_EDIT."'>".$icon."</a>" : "";
+		return (ADMIN && getperms('6')) ? "<a class='e-tip btn btn-default btn-secondary hidden-print' href='".$url."' title='".LAN_EDIT."'>".$icon."</a>" : "";
    }
    
    function sc_download_category()
@@ -1010,7 +1010,7 @@ class download_shortcodes extends e_shortcode
 			$link = ($this->var['download_category_id']) ? e107::url('download', 'category', $this->var) : null;
 		}
 
-      	return "<a class='btn btn-default btn-xs btn-mini' href='".$link."'>".LAN_dl_9."</a>";
+      	return "<a class='btn btn-default btn-secondary btn-xs btn-mini' href='".$link."'>".LAN_dl_9."</a>";
    }
    
    

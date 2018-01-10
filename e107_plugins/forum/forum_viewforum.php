@@ -972,7 +972,7 @@ function forumjump()
 	{
 		$text .= "\n<option value='".e107::url('forum','forum',$val, 'full')."'>".$val['forum_name']."</option>";
 	}
-	$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
+	$text .= "</select> <input class='btn btn-default btn-secondary button' type='submit' name='fjsubmit' value='".LAN_GO."' /></form>";
 	return $text;
 }
 
@@ -984,7 +984,7 @@ function fadminoptions($thread_info)
 	$tp = e107::getParser();
 	
 //	$text = "<form method='post' action='".e_REQUEST_URI."' id='frmMod_{$forumId}_{$threadId}' style='margin:0;'>";
-	$text = '<div class="btn-group"><button class="btn btn-default btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
+	$text = '<div class="btn-group"><button class="btn btn-default btn-secondary btn-sm btn-mini dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu pull-right">	

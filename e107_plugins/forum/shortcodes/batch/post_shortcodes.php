@@ -67,7 +67,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 		{
 			$text .= "\n<option value='".e107::url('forum','forum', $val)."'>".$val['forum_name']."</option>";
 		}
-		$text .= "</select><input class='btn btn-default button' type='submit' name='fjsubmit' value='".LAN_GO."' /></p></div></form>";
+		$text .= "</select><input class='btn btn-default btn-secondary button' type='submit' name='fjsubmit' value='".LAN_GO."' /></p></div></form>";
 
 		return $text;
 
@@ -184,7 +184,7 @@ class plugin_forum_post_shortcodes extends e_shortcode
 	function sc_forum_post_buttons()
 	{
 
-		$ret = "<input class='btn btn-default button' type='submit' name='fpreview' value='".LAN_FORUM_3005."' /> ";
+		$ret = "<input class='btn btn-default btn-secondary button' type='submit' name='fpreview' value='".LAN_FORUM_3005."' /> ";
 
 		if($this->var['action'] == 'edit')
 		{

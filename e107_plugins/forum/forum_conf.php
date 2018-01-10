@@ -135,8 +135,8 @@ if ($action == "delete_poll")
 		".LAN_FORUM_5009."
 		<br /><br />
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<input class='btn btn-default button' type='submit' name='deletecancel' value='".LAN_CANCEL."' />
-		<input class='btn btn-default button' type='submit' name='deletepollconfirm' value='".LAN_FORUM_5010."' />
+		<input class='btn btn-default btn-secondary button' type='submit' name='deletecancel' value='".LAN_CANCEL."' />
+		<input class='btn btn-default btn-secondary button' type='submit' name='deletepollconfirm' value='".LAN_FORUM_5010."' />
 		</form>
 		</div>";
 	$ns->tablerender(LAN_UI_DELETE_LABEL, $text);

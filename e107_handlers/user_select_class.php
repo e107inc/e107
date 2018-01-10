@@ -250,7 +250,7 @@ class user_select
 								<input type='text' name='srch' id='srch' class='tbox form-control' value='".$tp -> post_toForm(varset($_POST['srch'],''))."' size='40'>
 							</div>
 							<div class='form-group text-center'>
-								<button class='btn btn-default button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'>".US_LAN_6."</button>
+								<button class='btn btn-default btn-secondary button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'>".US_LAN_6."</button>
 							</div>
 						</form>
 					</div>
@@ -283,7 +283,7 @@ class user_select
 						</select>
 					</div>
 					<div class='form-group text-center'>
-						<input type='button' class='btn btn-default button' value='".US_LAN_1."' onClick='SelectUser()' />
+						<input type='button' class='btn btn-default btn-secondary button' value='".US_LAN_1."' onClick='SelectUser()' />
 					</div>
 				</form>
 			</div>

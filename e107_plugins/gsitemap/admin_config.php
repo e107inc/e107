@@ -165,7 +165,7 @@ class gsitemap
 				<td class='center' style='white-space:nowrap'>
 				<div>
 				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' >".ADMIN_EDIT_ICON."</button>
-				<button class='btn btn-default action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
+				<button class='btn btn-default btn-secondary action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
 				</div>
 				</td>
 				</tr>

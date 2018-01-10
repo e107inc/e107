@@ -156,7 +156,7 @@ e107::getLanguage()->bcDefs($bcDefs);
 
 			function sc_lm_loginbutton($parm='')
 			{
-				return "<input class='button btn btn-default login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
+				return "<input class='button btn btn-default btn-secondary login' type='submit' name='userlogin' id='userlogin' value='".LAN_LOGIN."' />";
 			}
 
 			function sc_lm_rememberme($parm='')

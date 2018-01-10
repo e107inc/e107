@@ -103,7 +103,7 @@ if(is_array($fileList))
 			}
 			else
 			{
-				$txt .= "<td class='forumheader3'>".LAN_FORUM_7008." <input class='btn btn-default button' type='submit' name='delete[{$finfo['fname']}]' value='".LAN_DELETE."' /></td>";
+				$txt .= "<td class='forumheader3'>".LAN_FORUM_7008." <input class='btn btn-default btn-secondary button' type='submit' name='delete[{$finfo['fname']}]' value='".LAN_DELETE."' /></td>";
 			}
 			$txt .= "</tr>";
 		}

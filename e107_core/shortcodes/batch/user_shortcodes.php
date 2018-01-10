@@ -653,7 +653,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<input class='btn btn-default button' type='submit' name='delp' value='".LAN_USER_43."' />
+			<input class='btn btn-default btn-secondary button' type='submit' name='delp' value='".LAN_USER_43."' />
 			</form>
 			";
 		}
@@ -856,7 +856,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_form_submit($parm) 
 	{
-		return "<input class='btn btn-default button' type='submit' name='submit' value='".LAN_GO."' />";
+		return "<input class='btn btn-default btn-secondary button' type='submit' name='submit' value='".LAN_GO."' />";
 	}
 
 

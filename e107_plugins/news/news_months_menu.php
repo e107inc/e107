@@ -129,7 +129,7 @@ if(false === $cached)
 	{
 		if(!$parms['showarchive'])
 		{
-			$footer = '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
+			$footer = '<div class="e-menu-link news-menu-archive"><a class="btn btn-default btn-secondary btn-sm" href="'.e_PLUGIN_ABS.'blogcalendar_menu/archive.php">'.BLOGCAL_L2.'</a></div>';
 			$ns->setContent('footer', $footer);
 			$cached .= $footer;
 
