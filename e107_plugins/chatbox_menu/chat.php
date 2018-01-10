@@ -186,7 +186,7 @@ $text = $textstart.$textstring.$textend;
 
 if(CB_MOD)
 {
-	$text = "<form method='post' action='".e_SELF."'>".$text."<input type='submit' class='btn btn-default button' name='moderate' value='".CHATBOX_L13."' /></form>";
+	$text = "<form method='post' action='".e_SELF."'>".$text."<input type='submit' class='btn btn-default btn-secondary button' name='moderate' value='".CHATBOX_L13."' /></form>";
 }
 
 $parms = "{$chat_total},30,{$from},".e_SELF.'?[FROM]';

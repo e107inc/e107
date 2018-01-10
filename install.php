@@ -332,7 +332,7 @@ class e_install
 		{
 			//		$this->form .= "<a class='btn btn-large ' href='javascript:history.go(-1)'>&laquo; ".LAN_BACK."</a>&nbsp;";
 			$prevStage = ($this->stage - 1);
-			$e_forms->form .= "<button class='btn btn-default btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
+			$e_forms->form .= "<button class='btn btn-default btn-secondary btn-large no-validate ' name='back' value='".$prevStage."' type='submit'>&laquo; ".LAN_BACK."</button>&nbsp;";
 		}
 		if($id != 'back')
 		{

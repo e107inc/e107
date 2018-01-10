@@ -447,7 +447,7 @@ class forum_post_handler
 						<input class='tbox' name='file_userfile[]' type='file' size='47' />
 					</span>
 					</div>
-					<input class='btn btn-default button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+					<input class='btn btn-default btn-secondary button' type='button' name='addoption' value='".LAN_FORUM_3020."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
 				</td>
 			</tr>
 			";
@@ -725,7 +725,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='split_thread' value=\"".LAN_FORUM_3052."\" />
-		<a class='btn btn-default button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -843,7 +843,7 @@ class forum_post_handler
 		</table>
 		<div class='center'>
 		<input class='btn btn-primary button' type='submit' name='move_thread' value='".LAN_FORUM_5019."' />
-		<a class='btn btn-default button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
+		<a class='btn btn-default btn-secondary button'  href='".$_SERVER['HTTP_REFERER']."' >".LAN_CANCEL."</a>
 		</div>
 
 		</div>
@@ -955,7 +955,7 @@ class forum_post_handler
 							<td style='text-align:center;'><textarea cols='40' rows='10' class='tbox' name='report_add'></textarea></td>
 						</tr>
 						<tr>
-							<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
+							<td colspan='2' style='text-align:center;'><br /><input class='btn btn-default btn-secondary button' type='submit' name='report_thread' value='".LAN_FORUM_2029."' /></td>
 						</tr>
 						</table>
 						</form>";

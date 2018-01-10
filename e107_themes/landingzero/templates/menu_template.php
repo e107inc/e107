@@ -46,7 +46,7 @@
                     <h2 class="margin-top-0 text-primary">{CMENUTITLE}</h2>
                     <br>                   
                     <p class="text-faded">{CMENUBODY}</p> 
-                    <a href="{CMENUURL}" class="btn btn-default btn-xl page-scroll">{CMENUTEXT}</a>
+                    <a href="{CMENUURL}" class="btn btn-default btn-secondary btn-xl page-scroll">{CMENUTEXT}</a>
                 </div>';
 	$MENU_TEMPLATE['sectionone']['end'] 				= '';		
 	
@@ -93,7 +93,7 @@
 	$MENU_TEMPLATE['call-to-action']['body'] 				= '        	
             <div class="call-to-action">
                 <h2 class="text-primary">{CMENUTITLE}</h2>
-                <a href="{CMENUURL}" target="ext" class="btn btn-default btn-lg wow flipInX">{CMENUTEXT}</a>
+                <a href="{CMENUURL}" target="ext" class="btn btn-default btn-secondary btn-lg wow flipInX">{CMENUTEXT}</a>
             </div>
             <br>
             <hr/>

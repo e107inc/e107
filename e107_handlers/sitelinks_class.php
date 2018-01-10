@@ -1567,13 +1567,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					break;
 						
 					case 'div':
-						$text .= "<div class='core-mainpanel-block '><a data-toggle='tooltip' class='core-mainpanel-link-icon btn btn-default muted' href='".$link."' title='{$description}'>".$icon."
+						$text .= "<div class='core-mainpanel-block '><a data-toggle='tooltip' class='core-mainpanel-link-icon btn btn-default btn-secondary muted' href='".$link."' title='{$description}'>".$icon."
 						<small class='core-mainpanel-link-text'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</small></a>	
 						</div>";					
 					break;
 					
 					case 'div-icon-only':
-						$text .= "<div class='core-mainpanel-block  e-tip' title='{$description}'><a class='core-mainpanel-link-icon btn btn-default e-tip' href='".$link."' >".$icon."</a></div>";
+						$text .= "<div class='core-mainpanel-block  e-tip' title='{$description}'><a class='core-mainpanel-link-icon btn btn-default btn-secondary e-tip' href='".$link."' >".$icon."</a></div>";
 					break;
 					
 					default:

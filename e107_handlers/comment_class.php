@@ -1145,7 +1145,7 @@ class comment
 			{
 					
 				//	$modcomment .= "<a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".COMLAN_314."</a>";
-					$modcomment .= "<a class='btn btn-default btn-mini btn-sm' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";		
+					$modcomment .= "<a class='btn btn-default btn-secondary btn-mini btn-sm' href='".e_ADMIN_ABS."comment.php?searchquery={$id}&filter_options=comment_type__".$this->getCommentType($table)."'>".COMLAN_314."</a>";
 					
 					
 			}
@@ -1314,8 +1314,8 @@ class comment
 			$prev = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
 			$next = e_HTTP . 'comment.php?mode=list&amp;type=' . $table . '&amp;id=' . $id . '&amp;from=0';
 
-			return "<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
-			<a class='e-ajax btn btn-default btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$next}'>" . LAN_NEXT . "</a>";
+			return "<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='down' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$prev}'>" . LAN_PREVIOUS . "</a>
+			<a class='e-ajax btn btn-default btn-secondary btn-mini btn-sm' href='#' data-nav-total='{$this->totalComments}' data-nav-dir='up' data-nav-inc='{$this->commentsPerPage}' data-target='comments-container' data-src='{$next}'>" . LAN_NEXT . "</a>";
 		}
 		
 	}

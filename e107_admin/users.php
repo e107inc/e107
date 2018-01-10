@@ -1647,7 +1647,7 @@ class users_admin_ui extends e_admin_ui
 				".USRLAN_120."
 			</td>
 			<td>
-				<a href='#set_class' class='btn btn-default e-expandit'>".USRLAN_120."</a>
+				<a href='#set_class' class='btn btn-default btn-secondary e-expandit'>".USRLAN_120."</a>
 				<div class='e-hideme' id='set_class'>
 				{$temp}
 				</div>
@@ -1660,7 +1660,7 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_35."</td>
 			<td>
-				<a href='#set_perms' class='btn btn-default e-expandit'>".USRLAN_243."</a>
+				<a href='#set_perms' class='btn btn-default btn-secondary e-expandit'>".USRLAN_243."</a>
 				<div class='e-hideme' id='set_perms'>
 		";
 			
@@ -2319,10 +2319,10 @@ class users_admin_ui extends e_admin_ui
 		{
 		// Option to delete emails - only if there are some in the list
 			$text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
 			</td></tr>";
 		}
 		$text .= "</table></form></div>";
@@ -2751,7 +2751,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 		$btn =  '<div class="btn-group pull-right">
 
-		<button aria-expanded="false" class="btn btn-default btn-user-action dropdown-toggle" data-toggle="dropdown">
+		<button aria-expanded="false" class="btn btn-default btn-secondary btn-user-action dropdown-toggle" data-toggle="dropdown">
 		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('cog').'</span>
 		<span class="caret"></span>
 		</button>

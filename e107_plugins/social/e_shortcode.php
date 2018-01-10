@@ -304,7 +304,7 @@ class social_shortcodes extends e_shortcode
 
 		$twitterAccount = basename(XURL_TWITTER);
 
-		$btnClass = varset($parm['btnClass'], 'btn btn-default social-share');
+		$btnClass = varset($parm['btnClass'], 'btn btn-default btn-secondary social-share');
 
 	//	return print_a($hashtags,true);
 		foreach($providers as $k=>$val)
@@ -373,7 +373,7 @@ class social_shortcodes extends e_shortcode
 
 
 			$text = '<div class="social-share btn-group hidden-print '.$dir.'">
-				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
+				  <a class="'.$tooltip.' btn btn-dropdown btn-default btn-secondary btn-'.$size.' dropdown-toggle" data-toggle="dropdown" href="#" title="'.LAN_SOCIAL_204.'">'.$label.'</a>
 				 
 				  <ul class="dropdown-menu" role="menu" >
 				  

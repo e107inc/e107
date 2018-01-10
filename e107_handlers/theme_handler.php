@@ -1954,11 +1954,11 @@ class themeHandler
 		$author 		= ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website 		= ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 	//	$preview 		= "<a href='".e_BASE."news.php?themepreview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE_ABS."admin_images/nopreview.png' title='".TPVLAN_12."' alt='' />")."</a>";
-		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['id']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 	//	$info_icon 		= "<a data-toggle='modal' data-target='".e_SELF."' href='#themeInfo_".$theme['id']."' class='e-tip' title='".TPVLAN_7."'><img src='".e_IMAGE_ABS."admin_images/info_32.png' alt='' class='icon S32' /></a>";
-		$info_icon 		= "<a class='btn btn-default btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 //		$preview_icon 	= "<a title='Preview : ".$theme['name']."' rel='external' class='e-dialog' href='".e_BASE."index.php?themepreview.".$theme['id']."'>".E_32_SEARCH."</a>";
-		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+		$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 
 
 		$price 			= '';
@@ -2026,7 +2026,7 @@ class themeHandler
 		//	$main_icon = "<a data-toggle='modal' data-modal-caption=\"".$caption."\" href='{$downloadUrl}' data-cache='false' data-target='#uiModal' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 			
 			$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
-			$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+			$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
 		
 			
 		
@@ -2034,7 +2034,7 @@ class themeHandler
 		//	$main_icon = "<a class='e-modal btn btn-small btn-inverse' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='{$viewUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a> ";
 		
 			
-			$info_icon 	= "<a class='btn btn-default btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+			$info_icon 	= "<a class='btn btn-default btn-secondary btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 			
 			if($theme['livedemo'])
 			{
@@ -2045,7 +2045,7 @@ class themeHandler
 	
 		}
 		
-		$preview_icon 	= "<a class='e-modal btn btn-default btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
+		$preview_icon 	= "<a class='e-modal btn btn-default btn-secondary btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 		
 		
 		if(!in_array($theme['path'], $this->approvedAdminThemes))
@@ -2238,7 +2238,7 @@ class themeHandler
 							{
 								foreach ($pref['sitetheme_custompages'][$key] as $cp)
 								{
-									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-default btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
+									$custompage_diz .= "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-default btn-secondary btn-xs btn-mini e-expandit'>".trim($cp)."</a>&nbsp;";
 									if($count > 4)
 									{
 										$custompage_diz .= "...";
@@ -2249,7 +2249,7 @@ class themeHandler
 							}
 							else
 							{
-								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-xs btn-default btn-mini e-expandit'>".LAN_NONE."</a> ";
+								$custompage_diz = "<a href='#element-to-be-shown-{$key}' title=' ".TPVLAN_72." ' class='e-tip btn btn-xs btn-default btn-secondary btn-mini e-expandit'>".LAN_NONE."</a> ";
 							}
 			
 							

@@ -289,7 +289,7 @@
 			<form method='get' class='form-inline input-append' action='" . e_BASE . "search.php'>
 			<p>
 			<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-			<button class='btn btn-default button' type='submit' name='s' >" . LAN_SEARCH . "</button>
+			<button class='btn btn-default btn-secondary button' type='submit' name='s' >" . LAN_SEARCH . "</button>
 			<input type='hidden' name='r' value='0' />
 			<input type='hidden' name='ref' value='forum' />
 			</p>
@@ -337,7 +337,7 @@
 			{
 				$text .= "\n<option value='" . e107::url('forum', 'forum', $val, 'full') . "'>" . $val['forum_name'] . "</option>";
 			}
-			$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></form>";
+			$text .= "</select> <input class='btn btn-default btn-secondary button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></form>";
 			return $text;
 		}
 

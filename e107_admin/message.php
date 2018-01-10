@@ -77,13 +77,13 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 <b>".MESSLAN_9."</b>: ".$gen->convert_date($gen_datestamp, 'long')."<br />
 <b>".MESSLAN_10."</b>: $user<br />
 <b>".MESSLAN_13."</b>: $link ".
-($gen_chardata ? "<br /><b>".MESSLAN_12."</b>: $gen_chardata" : "")."<br /><input class='btn btn-default button' type='submit' name='delete_message' value='".MESSLAN_2." $gen_id' />
+($gen_chardata ? "<br /><b>".MESSLAN_12."</b>: $gen_chardata" : "")."<br /><input class='btn btn-default btn-secondary button' type='submit' name='delete_message' value='".MESSLAN_2." $gen_id' />
 </td>\n</tr>\n";
 	}
 
 $text .= "
 <tr>
-<td><br /><input class='btn btn-default button' type='submit' name='delete_all' value='".MESSLAN_4."' />
+<td><br /><input class='btn btn-default btn-secondary button' type='submit' name='delete_all' value='".MESSLAN_4."' />
 <input type='checkbox' name='deleteconfirm' value='1' /> ".MESSLAN_5."
 </td>
 </tr>

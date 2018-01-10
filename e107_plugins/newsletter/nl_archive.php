@@ -94,7 +94,7 @@ else
 			if($limit_start + $page_size < $nl_count)
 			{
 				$text .= "<form id='nl' method='post' action='".e_PLUGIN."newsletter/nl_archive.php?showp.".$action_parent_id."'>
-				<br /><input class='btn btn-default button' name='submit' type='submit' value='View older newsletters in archive'/>
+				<br /><input class='btn btn-default btn-secondary button' name='submit' type='submit' value='View older newsletters in archive'/>
 				<input type='hidden' name='limit_start' value='".$limit_start."'/></form>";
 			}
 		}
@@ -116,7 +116,7 @@ else
 				// Display parent footer
 				$text .= "$parent_newsletter_footer<br />";
 				// Display back to newsletter overview button
-				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default button' type='submit' value='".NLLAN_71."'</a>";
+				$text .= "<br /><a href='javascript:history.go(-1);'><input class='btn btn-default btn-secondary button' type='submit' value='".NLLAN_71."'</a>";
 			}
 			else
 			{

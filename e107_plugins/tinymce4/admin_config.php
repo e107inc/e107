@@ -718,7 +718,7 @@ function edit_theme()
     </tr>
 	</table>
 	<div class='buttons-bar center'>";
-    $text .= "<input class='btn btn-default button' type='submit' name='save_settings' value='".LAN_SAVE."' />";
+    $text .= "<input class='btn btn-default btn-secondary button' type='submit' name='save_settings' value='".LAN_SAVE."' />";
     $text .= "
     </div>
 	</fieldset>

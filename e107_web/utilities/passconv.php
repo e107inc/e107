@@ -277,7 +277,7 @@ $text =
   $text .= "
 	<tr>
 	  <td class='forumheader3' colspan='3' style='text-align:center'>
-		<input class='btn btn-default button' type='submit' name='GetOnWithIt' value='".LAN_PCONV_04."' />
+		<input class='btn btn-default btn-secondary button' type='submit' name='GetOnWithIt' value='".LAN_PCONV_04."' />
 	  </td>
 	</tr>";
 
