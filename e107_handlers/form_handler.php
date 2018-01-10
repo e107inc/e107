@@ -4216,7 +4216,7 @@ class e_form
 			}
 
 			$query = http_build_query($query);
-			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 				".$editIconDefault."</a>";
 		}
 

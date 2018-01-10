@@ -1206,7 +1206,7 @@ class plugin_online_ui extends e_admin_ui
 
 	//	$d = http_build_query($srcData,false,'&');
 	//	$url = e_SELF.'?mode=download&src='.base64_encode($d);
-		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
+		$dicon = '<a title="'.EPL_ADLAN_237.'" class="e-modal btn btn-default btn-secondary" href="'.$url.'" rel="external" data-loading="'.e_IMAGE.'/generic/loading_32.gif"  data-cache="false" data-modal-caption="'.$modalCaption.'"  target="_blank" >'.ADMIN_INSTALLPLUGIN_ICON.'</a>';
 
 		/*
 

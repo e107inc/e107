@@ -1032,7 +1032,7 @@ class download_shortcodes extends e_shortcode
 			
 		$text .= '
               <span class="input-group-btn">
-              <button class="btn btn-default" type="submit" name="s"  value="1">';
+              <button class="btn btn-default btn-secondary" type="submit" name="s"  value="1">';
               
               $text .= $tp->toIcon('glyphicon-search.glyph');
 
