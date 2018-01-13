@@ -2087,6 +2087,8 @@ if(!isset($_E107['no_online']) && varset($pref['track_online']))
 	e107::getOnline()->goOnline($pref['track_online'], $pref['flood_protect']);
 }
 
+$sql->db_Mark_Time('(After Go online)');
+
 /**
  * Set Cookie
  * @param string $name
@@ -2795,7 +2797,7 @@ class e_http_header
 
 
 
-$sql->db_Mark_Time('(After class2)');
+
 
 
 function e107_ini_set($var, $value)
@@ -2823,3 +2825,4 @@ function plugInstalled($plugname)
 	return isset($pref['plug_installed'][$plugname]);*/
 }
 
+$sql->db_Mark_Time('(After class2)');
