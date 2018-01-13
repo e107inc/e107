@@ -516,7 +516,7 @@ if(!empty($_GET['iframe']))
 			{
 				$table_to_copy = array();
 				$lang_to_create = array();
-				
+
 				foreach ($tabs as $value)
 				{
 					$lang = strtolower($_POST['language']);

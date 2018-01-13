@@ -141,10 +141,14 @@ class e_online
 			// don't do anything if main admin logged in as another user
 			if ($user->isUser()  && !$user->getParentId())
 			{
+				$sql->db_Mark_Time('Go online (isUser)');
 				// Find record that matches IP or visitor, or matches user info
+				$sql->db_Mark_Time('Go online (db select)');
 				if ($sql->select('online', '*', "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}' LIMIT 1"))
 				{
+					$sql->db_Mark_Time('Go online (db fetch)');
 					$row = $sql->fetch();
+					$sql->db_Mark_Time('Go online (db end)');
 
 					if ($row['online_user_id'] == $udata)
 					{
@@ -230,14 +234,19 @@ class e_online
 						$query['online_location'] = $page;
 					}
 
+					$sql->db_Mark_Time('Go online (update) Line:'.__LINE__);
 					$sql->update('online', $query);
-
+					$sql->db_Mark_Time('Go online (after update) Line:'.__LINE__);
 
 				}
 				else
 				{
+					$sql->db_Mark_Time('Go online (insert) Line: '.__LINE__);
 					$sql->insert('online',$insert_query);
+					$sql->db_Mark_Time('Go online (after insert) Line: '.__LINE__);
 				}
+
+				$sql->db_Mark_Time('Go online (after isUser)');
 			}
 			// don't do anything if main admin logged in as another user
 			elseif(!$user->getParentId())
@@ -259,7 +268,9 @@ class e_online
 						//   echo "here {$online_pagecount}";
 						$query="`online_pagecount` = {$row['online_pagecount']}{$update_page} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0'";
 					}
+					$sql->db_Mark_Time('Go online (update) Line:'.__LINE__);
 					$sql->update('online', $query);
+					$sql->db_Mark_Time('Go online (after update) Line:'.__LINE__);
 				}
 				else
 				{	// New visitor
@@ -301,10 +312,12 @@ class e_online
 			// Speed up ajax requests
 			if(!deftrue('e_AJAX_REQUEST'))
 			{
+				$sql->db_Mark_Time('Go online (delete) Line:'.__LINE__);
 				$sql->delete('online', '`online_timestamp` < '.(time() - $online_timeout));
 
 				// FIXME - don't use constants below, save data in class vars, call e_online signleton - e107::getOnline()
 			//	$total_online = $sql->db_Count('online'); // 1 less query! :-)
+				$sql->db_Mark_Time('Go online (total_online) Line:'.__LINE__);
 				if ($total_online = $sql->gen('SELECT o.*,u.user_image FROM `#online` AS o LEFT JOIN `#user` AS u ON o.online_user_id = u.user_id WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 			//	if ($total_online = $sql->gen('SELECT o  FROM `#online`  WHERE o.online_pagecount > 0 ORDER BY o.online_timestamp DESC'))
 				{
@@ -312,6 +325,7 @@ class e_online
 					$members_online = 0;
 					$listuserson = array();
 
+					$sql->db_Mark_Time('Go online (db fetch) Line:'.__LINE__);
 					while ($row = $sql->fetch())
 					{
 
@@ -359,6 +373,7 @@ class e_online
 				define('TOTAL_ONLINE', $total_online);
 				define('MEMBERS_ONLINE', $members_online);
 				define('GUESTS_ONLINE', $total_online - $members_online);
+				$sql->db_Mark_Time('Go online (db count) Line:'.__LINE__);
 				define('ON_PAGE', $sql->db_Count('online', '(*)', "WHERE `online_location` = '{$page}' "));
 				define('MEMBER_LIST', $member_list);
 
