@@ -71,7 +71,7 @@ class gallery_shortcodes extends e_shortcode
 
 		$template = e107::getTemplate('gallery', 'gallery', 'cat');
 
-		$caption = isset($template['caption']) ? $template['caption'] : LAN_PLUGIN_GALLERY_TITLE;
+		$caption = isset($template['caption']) ? e107::getParser()->toText($template['caption']) : LAN_PLUGIN_GALLERY_TITLE;
 
 		$breadcrumb[] = array('text' => $caption, 'url' => e107::getUrl()->create('gallery', $this->var));
 
