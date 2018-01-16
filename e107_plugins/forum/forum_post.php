@@ -313,7 +313,7 @@ class forum_post_handler
 					".LAN_FORUM_2019.": ".USERNAME. "\n" . $report_add;
 		$subject = LAN_FORUM_2020." ". SITENAME;
 		e107::getNotify()->send('forum_post_rep', $subject, $report);
-		e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report'));
+		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 	}
 
 
@@ -343,7 +343,7 @@ class forum_post_handler
 			require_once(HEADERF);
 			$mes->addError(LAN_FORUM_3001);
 			$mes->addDebug(print_a($this->data, true));
-			$ns->tablerender(LAN_FORUM_1001, $mes->render());
+			$ns->tablerender(LAN_FORUM_1001, $mes->render(), 'forum-post-unauthorized');
 			require_once(FOOTERF);
 			exit;
 		}
@@ -354,7 +354,7 @@ class forum_post_handler
 		{
 			require_once(HEADERF);
 			$mes->addError(LAN_FORUM_3002);
-			$ns->tablerender(LAN_FORUM_1001, $mes->render());
+			$ns->tablerender(LAN_FORUM_1001, $mes->render(), 'forum-post-locked');
 			require_once(FOOTERF);
 			exit;
 		}
@@ -732,7 +732,7 @@ class forum_post_handler
 		</form>";
 
 
-		$ns->tablerender(LAN_FORUM_3052, $text);
+		$ns->tablerender(LAN_FORUM_3052, $text, 'forum-post-split');
 
 
 	}
@@ -850,7 +850,7 @@ class forum_post_handler
 		</form>";
 
 
-		$ns->tablerender(LAN_FORUM_5019, $text);
+		$ns->tablerender(LAN_FORUM_5019, $text, 'forum-post-move');
 
 
 
@@ -965,7 +965,7 @@ class forum_post_handler
 		}
 
 
-		e107::getRender()->tablerender(LAN_FORUM_2023, $text, array('forum_viewtopic', 'report2'));
+		e107::getRender()->tablerender(LAN_FORUM_2023, $text, 'forum-post-report');
 
 
 
@@ -986,7 +986,7 @@ class forum_post_handler
 		{
 
 			$caption = (!empty($caption)) ? $caption : $this->forumObj->prefs->get('title');
-			$ns->tablerender($caption, $text);
+			$ns->tablerender($caption, $text, 'forum-post');
 		}
 		else
 		{
@@ -1066,10 +1066,10 @@ class forum_post_handler
 
 		if ($poll_text)
 		{
-			$ns->tablerender($_POST['poll_title'], $poll_text);
+			$ns->tablerender($_POST['poll_title'], $poll_text, 'forum-post-preview-poll');
 		}
 
-		$ns->tablerender(LAN_FORUM_3005, $text);
+		$ns->tablerender(LAN_FORUM_3005, $text, 'forum-post-preview');
 
 /*
 		if ($this->action == 'edit')
@@ -1230,7 +1230,7 @@ class forum_post_handler
 				require_once(HEADERF);
 				$message = LAN_FORUM_3006."<br ><a class='btn btn-default' href='".$_SERVER['HTTP_REFERER']."'>".LAN_FORUM_8028."</a>";
 				$text = e107::getMessage()->addError($message)->render();
-				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text); // change to forum-title pref.
+				e107::getRender()->tablerender(LAN_PLUGIN_FORUM_NAME, $text, 'forum-post-duplicate'); // change to forum-title pref.
 				require_once(FOOTERF);
 				exit;
 			}
@@ -1282,7 +1282,7 @@ class forum_post_handler
 				$txt = e107::getParser()->parseTemplate($txt,true, $SHORTCODES);
 
 
-				e107::getRender()->tablerender(e_PAGETITLE, e107::getMessage()->render().$txt);
+				e107::getRender()->tablerender(e_PAGETITLE, e107::getMessage()->render().$txt, 'forum-post');
 				require_once(FOOTERF);
 				exit;
 			}
@@ -1417,7 +1417,7 @@ class forum_post_handler
 		$text .= e107::getMessage()->render();
 
 
-		e107::getRender()->tablerender(LAN_FORUM_3052, $text);
+		e107::getRender()->tablerender(LAN_FORUM_3052, $text, 'forum-post-split');
 	}
 
 

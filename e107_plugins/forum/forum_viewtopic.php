@@ -618,7 +618,7 @@ require_once (HEADERF);
 if ($forum->prefs->get('enclose'))
 {
 	$forumTitle = empty($FORUMCAPTION) ? e107::pref('forum','title', LAN_PLUGIN_FORUM_NAME) : $tp->parseTemplate($FORUMCAPTION, true, $sc);
-	$ns->tablerender($forumTitle, $mes->render().$forumstring,  array('forum_viewtopic', 'main'));
+	$ns->tablerender($forumTitle, $mes->render().$forumstring,  'forum-viewtopic');
 }
 else
 {

@@ -367,7 +367,7 @@ $sc->newFlagList = $newflag_list;
 
 if (!$forumList)
 {
-	$ns->tablerender(LAN_PLUGIN_FORUM_NAME, "<div style='text-align:center'>".LAN_FORUM_0067.'</div>', array('forum', '51'));
+	$ns->tablerender(LAN_PLUGIN_FORUM_NAME, LAN_FORUM_0067, 'forum-empty');
 	require_once(FOOTERF);
 	exit;
 }
@@ -647,7 +647,7 @@ if (e_QUERY == 'new')
 
 	if ($forum->prefs->get('enclose'))
 	{
-		$ns->tablerender($forum->prefs->get('title'), $forum_new_start.$forum_newstring.$forum_new_end, array('forum', 'main2'));
+		$ns->tablerender($forum->prefs->get('title'), $forum_new_start.$forum_newstring.$forum_new_end, 'forum');
 	}
 	else
 	{
@@ -731,7 +731,7 @@ function forum_rules($action = 'check')
 	$text .= "<div id='forum-rules'>".$rules_text."</div>";
 	$text .=  "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
 
-	e107::getRender()->tablerender(LAN_FORUM_0016, $text, array('forum', 'forum_rules'));
+	e107::getRender()->tablerender(LAN_FORUM_0016, $text, 'forum-rules');
 }
 
 
@@ -866,7 +866,8 @@ function forum_track()
 	$text .= $tracktext;
 	$text .=  "<div class='center'>".e107::getForm()->pagination(e107::url('forum','index'), LAN_BACK)."</div>";
 
-	e107::getRender()->tablerender(LAN_FORUM_0030, $text, array('forum', 'forum_track'));
+
+	e107::getRender()->tablerender(LAN_FORUM_0030, $text, 'forum-track');
 
 
 }
