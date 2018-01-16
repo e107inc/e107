@@ -62,7 +62,7 @@ $rc->mode = (vartrue($mode) == 'new' ? 'new_page' : 'recent_page');
 $text = $rc->displayPage();
 
 $caption = vartrue($rc->list_pref[$rc->mode."_caption"], LIST_MENU_1);
-$rc->e107->ns->tablerender($caption, $text);
+$rc->e107->ns->tablerender($caption, $text, 'list-new-page');
 unset($text);
 
 require_once(FOOTERF);
