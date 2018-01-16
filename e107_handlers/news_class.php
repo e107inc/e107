@@ -563,7 +563,7 @@ class e_news_item extends e_front_model
 {
 	protected $_db_table = 'news';
 	protected $_field_id = 'news_id';
-	protected $_cache_string = 'news_item_';
+	protected $_cache_string = 'news_item_{ID}';
 
 	/**
 	 * Shortcodes - simple field getter (basic formatting)

@@ -1511,6 +1511,8 @@ class e_model extends e_object
      */
 	public function load($id = null, $force = false)
 	{
+
+
 		if(!$force && $this->getId())
 		{
 			return $this;
@@ -1566,6 +1568,7 @@ class e_model extends e_object
 		}
 		else
 		{
+
 			$this->_setCacheData();
 		}
 
@@ -2578,6 +2581,8 @@ class e_front_model extends e_model
 			// already done by the parent
 			//$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 		}
+
+
 		return $this;
 	}
 
