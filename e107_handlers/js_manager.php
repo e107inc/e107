@@ -1442,16 +1442,16 @@ class e_jsmanager
 		}
 
 
-
-
-
-		if(strpos($path,'?')!==false)
+		if(!defined('e_HTTP_STATIC'))
 		{
-			$path .= "&amp;".$this->getCacheId();
-		}
-		else
-		{
-			$path .= "?".$this->getCacheId();
+			if(strpos($path,'?')!==false)
+			{
+				$path .= "&amp;".$this->getCacheId();
+			}
+			else
+			{
+				$path .= "?".$this->getCacheId();
+			}
 		}
 
 		return $path;

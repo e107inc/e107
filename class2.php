@@ -2773,6 +2773,7 @@ class e_http_header
 		}
 
 
+		$this->setHeader('X-Frame-Options: SAMEORIGIN');
 
 		// should come after the Etag header
 		if ($canCache && isset($_SERVER['HTTP_IF_NONE_MATCH']))
