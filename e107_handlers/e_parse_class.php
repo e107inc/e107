@@ -2665,7 +2665,7 @@ class e_parse extends e_parser
 		$base = '';
 
 		$srch = array(
-			e_HTTP.e107::getFolder('media'),
+		//
 			e_PLUGIN_ABS,
 			e_THEME_ABS,
 			e_WEB_ABS,
@@ -2674,7 +2674,7 @@ class e_parse extends e_parser
 
 
 		$repl = array(
-			$http.$base.e107::getFolder('media'),
+
 			$http.$base.e107::getFolder('plugins'),
 			$http.$base.e107::getFolder('themes'),
 			$http.$base.e107::getFolder('web'),
@@ -2682,6 +2682,11 @@ class e_parse extends e_parser
 		);
 
 		$ret = str_replace($srch,$repl,$path);
+
+		if(strpos($ret, 'http') !== 0) // if not converted, check media folder also. 
+		{
+			$ret = str_replace(e_MEDIA_ABS,$http.$base.e107::getFolder('media'),$ret);
+		}
 
 		return $ret;
 
