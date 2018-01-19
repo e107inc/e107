@@ -24,6 +24,7 @@ e107::includeLan(e_PLUGIN.'log/languages/'.e_LANGUAGE.'.php');
 
 $bar = (file_exists(THEME.'images/bar.png') ? THEME_ABS.'images/bar.png' : e_IMAGE_ABS.'generic/bar.png');
 $mes = e107::getMessage();
+ 
 
 e107::css('inline', "
 /* Site Stats */
@@ -840,7 +841,10 @@ class siteStats
 	 */
 	function renderTodaysVisits($do_errors = FALSE) 
 	{
-		$do_errors = $do_errors && ADMIN && getperms('P');		// Only admins can see page errors
+		$tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'todaysvisits', true, true);
+    
+    $do_errors = $do_errors && ADMIN && getperms('P');		// Only admins can see page errors
 
 		// Now run through and keep either the non-error pages, or the error pages, according to $do_errors
 		$totalArray = array();
@@ -864,23 +868,29 @@ class siteStats
 			$totalu += $info['unq'];
 		}
 
-		$text = "<table class='table table-striped fborder' style='width: 100%;'>
-		<tr>
-			<th class='fcaption' style='width: 20%;'>".ADSTAT_L19."</th>
-			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L20."</th>
-			<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
-		</tr>\n";
+    $text = $template['start'];    
 		
 		foreach($totalArray as $key => $info) 
 		{
 			if($info['ttl'])
-			{
+			{                
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
-				$text .= "<tr>\n<td class='forumheader3' style='width: 20%;text-align:left'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$this->getLabel($key)."</a>
-				</td>\n<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
+        
+    		$var = array('ITEM_URL' => $info['url'],
+                     'ITEM_KEY' => $this->getLabel($key),
+                     'ITEM_BAR' => $this -> bar($percentage, $info['ttl']." [".$info['unq']."]"),
+                     'ITEM_PERC'=> $percentage,                     
+        );
+            
+				$text .= $tp->simpleParse($template['item'], $var);
+
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21." [".ADSTAT_L22."]</td><td class='forumheader' style='text-align: center;'>{$totalv} [{$totalu}]</td><td class='forumheader'></td></tr></table>";
+    $var = array('TOTALV' => $totalv,
+                 'TOTALU' => $totalu,                   
+    );
+    $text .= $tp->simpleParse($template['end'], $var);    
+		
 		return $text;
 	}
 
