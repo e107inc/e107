@@ -238,7 +238,7 @@ class userlogin
 		$user_email = $this->userData['user_email'];
 
 		/* restrict more than one person logging in using same us/pw */
-		if(!empty($pref['disallowMultiLogin']) && !empty($user_id))
+		if(!empty($pref['track_online']) && !empty($pref['disallowMultiLogin']) && !empty($user_id))
 		{
 			if($sql->select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 			{
