@@ -2743,7 +2743,7 @@ class e107
 		$path = self::coreTemplatePath($id, $override);
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
-		
+
 		### Attempt to fix merge issues; in case we override - template array not found in theme, 
 		### so we need to continue and merge with core templates
 		if($merge && $override && empty($ret))
@@ -2751,7 +2751,7 @@ class e107
 			$ret = array();
 		}
 		
-		if((!$merge && !$override) || is_string($ret)) 
+		if((!$merge && !$override) || is_string($ret))
 		{
 			 return $ret;
 		}
@@ -2762,7 +2762,7 @@ class e107
 		$id = str_replace('/', '_', $id);
         // Introducing noWrapper when merging
 		$ret_core = self::_getTemplate($id, $key, $reg_path, $path, $info, true);
-		
+
 		return (is_array($ret_core) ? array_merge($ret_core, $ret) : $ret);
 	}
 
@@ -2812,21 +2812,29 @@ class e107
 		
 		$id = str_replace('/', '_', $id);
 		$ret = self::_getTemplate($id, $key, $reg_path, $path, $info);
-		if(!$merge || !$override || !is_array($ret))
+
+		if($merge === false || $override === false)
 		{
-			return $ret;
+			return ($ret === false) ? '' : $ret;
 		}
 
 		// merge
 		$reg_path = 'plugin/'.$plug_name.'/templates/'.$id;
 		$path = self::templatePath($plug_name, $id, false);
-		
-	
-		
-		
+
 		$id = str_replace('/', '_', $id);
         // Introduced noWrapper when merging
 		$ret_plug = self::_getTemplate($id, $key, $reg_path, $path, $info, true);
+
+		if($merge === true && $key !== null && $ret === false) // key not set, so send 'core' version instead.
+		{
+			return $ret_plug;
+		}
+
+		if($ret === false)
+		{
+			return '';
+		}
 
 		return (is_array($ret_plug) ? array_merge($ret_plug, $ret) : $ret);
 	}
@@ -3041,12 +3049,13 @@ class e107
 		}
 
 		$ret = (!$info ? self::getRegistry($regPath) : self::getRegistry($regPathInfo));
+
 		if(!$key)
 		{
 			return $ret;
 		}
 			
-		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : '');
+		return ($ret && is_array($ret) && isset($ret[$key]) ? $ret[$key] : false);
 	}
 
 	/**
