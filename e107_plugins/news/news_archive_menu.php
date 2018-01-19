@@ -29,7 +29,12 @@ foreach($tmp as $id => $val)
 	// e107::getDebug()->log($val);
 }
 
-$template = e107::getTemplate('news', 'news_menu', 'archive');      
+$template = e107::getTemplate('news', 'news_menu', 'archive',true, true);
+
+if(ADMIN && empty($template))
+{
+	$text = "Missing Template. Check that your theme's news_menu_template.php file contains an 'archive' template. ";
+}
   
 foreach($arr as $year=>$val)
 {
@@ -80,10 +85,10 @@ foreach($arr as $year=>$val)
 			foreach($items as $row)
 			{
 				$url = e107::getUrl()->create('news/view/item', $row, array('allow' => 'news_sef,news_title,news_id,category_sef,category_name,category_id'));
-        $var = array('ITEM_URL'   => $url,
-                     'ITEM_TITLE' => $tp->toHtml($row['news_title'],false,'TITLE'),
-        );      
-        $text .=  $tp->simpleParse($template['item'], $var);
+		        $var = array('ITEM_URL'   => $url,
+		                     'ITEM_TITLE' => $tp->toHtml($row['news_title'],false,'TITLE'),
+		        );
+		        $text .=  $tp->simpleParse($template['item'], $var);
 			}
 			$text .= $template['month_end'];
 		}

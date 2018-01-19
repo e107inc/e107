@@ -137,7 +137,7 @@ $NEWS_MENU_TEMPLATE['archive']['year_start']        = "<li>
 $NEWS_MENU_TEMPLATE['archive']['year_end']        = '</ul></li>';
 
 $NEWS_MENU_TEMPLATE['archive']['month_start']        = "<li>
- <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}<span class='badge'>{MONTH_COUNT}</span></a>
+ <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}</a>
  <ul id='{MONTH_ID}' class='news-archive-menu-items' style='display:none'>
  ";
 $NEWS_MENU_TEMPLATE['archive']['month_end']        = '</ul></li>';
