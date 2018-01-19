@@ -55,7 +55,7 @@ if(!$OTHERNEWS_STYLE)
 		{
 			define("OTHERNEWS_COLS",false);
 		}
-		$template = e107::getTemplate('news', 'news_menu', 'other');
+		$template = e107::getTemplate('news', 'news_menu', 'other', true, true);
 		
 		$item_selector = '<div class="btn-group pull-right"><a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="prev">‹</a>  
  		<a class="btn btn-mini btn-xs btn-default btn-secondary" href="#otherNews" data-slide="next">›</a></div>';

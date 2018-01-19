@@ -51,7 +51,7 @@ if(!$OTHERNEWS2_STYLE)
 			define("OTHERNEWS_COLS",false);
 		}
 
-		$template = e107::getTemplate('news', 'news_menu', 'other2');
+		$template = e107::getTemplate('news', 'news_menu', 'other2', true, true);
 		$OTHERNEWS2_STYLE = $template['item'];
 
 		if(!empty($parms['caption']))

@@ -108,7 +108,7 @@ if(false === $cached)
 
 	// go over the link array and create the option fields
 	$menu_text = array();
-	$template = e107::getTemplate('news', 'news_menu', 'months');
+	$template = e107::getTemplate('news', 'news_menu', 'months', true, true);
 	$bullet = defined('BULLET') ? THEME_ABS.'images/'.BULLET : THEME_ABS.'images/bullet2.gif';
 	$vars = new e_vars(array('bullet' => $bullet));
 	foreach($month_links as $index => $val) 
