@@ -1135,7 +1135,6 @@ class siteStats
         $var = array('TOTAL' => number_format($total),                  
         );
         $text .= $tp->simpleParse($template['end'], $var);
-				$text .= "";
 			}
 			else
 			{
@@ -1235,17 +1234,12 @@ class siteStats
 			}
 
 			$total = array_sum($osArray);
-			$text .= "	
-				<table class='table table-striped fborder' style='width: 100%;'>\n
-				<tr>
-					<th class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</th>
-				</tr>\n
-			  <tr>
-				<th class='fcaption' style='width: 20%;'>
-			  	<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" )."'>".ADSTAT_L27."</a></th>\n
-			  	<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</th>
-				<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
-			</tr>\n";
+      $var = array('START_CAPTION' => $this->browser_headings[$act].$pars['hdg_extra'],
+                   'START_TITLE' => ($this -> order ? "sort by total" : "sort alphabetically"),
+                   'START_URL' => e_SELF."?".($show_version ? "4" : "15").($this -> order ? "" : ".1" ),    
+      );
+      $text .= $tp->simpleParse($template['start'], $var);
+ 
 			  
 			if (count($osArray))
 			{
@@ -1265,19 +1259,22 @@ class siteStats
 					elseif(stristr($key, "Android")) {	$image = "android.png"; }
 
 					$percentage = round(($info/$total) * 100, 2);
-					$text .= "<tr>
-					<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
-					($entries == 1 ? "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>" : "<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>")."
-					<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-					</tr>\n";
+          $var = array(                        
+                       'ITEM_IMAGE' => ($image ? "<img src='".e_PLUGIN_ABS."log/images/{$image}' alt='' style='vertical-align: middle;' /> " : ""),
+                       'ITEM_KEY' => $key,
+                       'ITEM_BAR' => $this -> bar($percentage, $info),
+                       'ITEM_PERC'=> $percentage,       
+          );
+          $text .= $tp->simpleParse($template['item'], $var);
 				}
-				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>{$total}</td><td class='forumheader'>&nbsp;</td></tr>\n";
+        $var = array('TOTAL' => number_format($total),                  
+        );
+        $text .= $tp->simpleParse($template['end'], $var);
 			}
 			else
 			{
-				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+				$text .= $tp->simpleParse($template['nostatistic']);
 			}
-			$text .= "</table><br />";
 		}
 		return $text;
 	}
