@@ -909,7 +909,8 @@ class siteStats
 	{
 		$sql = e107::getDB();
 		$tp = e107::getParser();
-
+    $template = e107::getTemplate('log', 'log', 'alltimevisits_total', true, true);
+    
 		$text = '';
 		$sql->select("logstats", "*", "log_id='pageTotal' ");
 		$row = $sql->fetch();
@@ -940,18 +941,8 @@ class siteStats
 
 		$totalArray = $this -> arraySort($totalArray, "ttlv");
 
-		$text .= "<table class='table table-striped fborder' style='width: 100%;'>\n
-			<colgroup>
-			  <col style='width: 20%;' />
-			  <col style='width: 60%;' />
-			  <col style='width: 10%;' />
-			  <col style='width: 10%;' />
-			</colgroup>
-			<tr>
-				<th class='fcaption' >".ADSTAT_L19."</th>\n
-				<th class='fcaption' colspan='2'>".ADSTAT_L23."</th>
-				<th class='fcaption' style='text-align: center;'>%</th>
-			</tr>\n";
+    $text .= $template['start'];
+
 			
 		foreach($totalArray as $key => $info) 
 		{
@@ -959,20 +950,25 @@ class siteStats
 			{
 			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
-				$text .= "<tr>
-				<td class='forumheader3' >
-				".($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'><img src='".e_PLUGIN_ABS."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : "")."
-				<img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."' title=\"".$this->getLabel($key)."\" >".$this->getLabel($key,true)."</a>
-				";
-				$text .= "</td>
-				<td class='forumheader3' >".$this->bar($percentage, $info['ttlv'])."</td>
-				<td class='forumheader3' style='text-align: center;'>".$percentage."%</td>
-				</tr>\n";
+        
+        $var = array('ITEM_URL' => $info['url'],
+                     'ITEM_KEY' => $this->getLabel($key,true), 
+                     'ITEM_TITLE' => $this->getLabel($key),
+                     'ITEM_BAR' => $this->bar($percentage, $info['ttlv']),
+                     'ITEM_PERC'=> $percentage,  
+                     'ITEM_DELETE'=> ($can_delete ? "<a href='".e_SELF."?{$action}.rem.".rawurlencode($key)."'
+        <img src='".e_PLUGIN_ABS."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle;' /></a> " : ""),                   
+        );
+        $text .= $tp->simpleParse($template['item'], $var);
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>".number_format($total)."</td><td class='forumheader'></td></tr>\n</table>";
+    
+    $var = array('TOTAL' => number_format($total),                  
+    );
+    $text .= $tp->simpleParse($template['end'], $var);     
 
-
+    $template = e107::getTemplate('log', 'log', 'alltimevisits_unique', true, true);
+    
 		$uniqueArray = array();
 		$totalv = 0;
 		foreach ($this -> dbPageInfo as $k => $v)
@@ -986,13 +982,7 @@ class siteStats
 		}
 		$uniqueArray = $this -> arraySort($uniqueArray, "unqv");
 
-		$text .= "<br />
-		<table class='table table-striped fborder' style='width: 100%;'>
-		<tr>
-			<th class='fcaption' style='width: 20%;'>".ADSTAT_L19."</th>
-			<th class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L24."</th>
-			<th class='fcaption' style='width: 10%; text-align: center;'>%</th>
-		</tr>\n";
+		$text .= $template['start'];
 
 		foreach($uniqueArray as $key => $info) 
 		{
@@ -1000,14 +990,18 @@ class siteStats
 			{
 			  if (!$info['url'] && (($key == 'index') || (strpos($key,':index') !== FALSE))) $info['url'] = e_HTTP.'index.php';		// Avoids empty link
 				$percentage = round(($info['unqv']/$totalv) * 100, 2);
-				$text .= "<tr>
-				<td class='forumheader3' style='width: 20%;'><img src='".e_PLUGIN_ABS."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$tp->text_truncate($key, 50)."</a></td>
-				<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info['unqv'])."</td>
-				<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-				</tr>\n";
+        
+        $var = array('ITEM_URL' => $info['url'],
+                     'ITEM_KEY' => $tp->text_truncate($key, 50),
+                     'ITEM_BAR' => $this -> bar($percentage, $info['unqv']),
+                     'ITEM_PERC'=> $percentage,       
+        );
+        $text .= $tp->simpleParse($template['item'], $var);
 			}
 		}
-		$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>".number_format($totalv)."</td><td class='forumheader'></td></tr>\n</table>";
+    $var = array('TOTAL' => number_format($totalv),                  
+    );
+    $text .= $tp->simpleParse($template['end'], $var);
 		return $text;
 	}
 
@@ -1023,7 +1017,10 @@ class siteStats
 	function renderBrowsers($selection = FALSE, $show_version=TRUE) 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'browsers', true, true);
+    
+    
 		if (!$selection) $selection = array(1);
 		if (!is_array($selection)) $selection = array(1);
 		$text = '';
@@ -1099,7 +1096,7 @@ class siteStats
 			}
 
 			$total = array_sum($browserArray);
-			
+ 
 			$text .= "
 				<table class='table table-striped fborder' style='width: 100%;'>\n
 					 <tr>
@@ -1163,6 +1160,8 @@ class siteStats
 	function renderOses($selection = FALSE, $show_version=TRUE) 
 	{
 		$sql = e107::getDB();
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'oses', true, true);
 		if (!$selection) $selection = array(1);
 		if (!is_array($selection)) $selection = array(1);
 		$text = '';
@@ -1296,7 +1295,9 @@ class siteStats
 	function renderDomains($selection = FALSE) 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'domains', true, true);
+    
 		if (!$selection) $selection = array(1);
 		if (!is_array($selection)) $selection = array(1);
 		$text = '';
@@ -1382,7 +1383,9 @@ class siteStats
 	function renderScreens($selection = FALSE) 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'screens', true, true);
+    
 		if (!$selection) $selection = array(1);
 		if (!is_array($selection)) $selection = array(1);
 		$text = '';
@@ -1485,7 +1488,9 @@ class siteStats
 	function renderRefers($selection = FALSE) 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'refers', true, true);
+    
 		if (!$selection) $selection = array(1);
 		if (!is_array($selection)) $selection = array(1);
 		$text = '';
@@ -1578,7 +1583,8 @@ class siteStats
 	function renderQueries($selection = FALSE) 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'queries', true, true);
 
 		if (!$selection) $selection = array(1);
 		if (!is_array($selection)) $selection = array(1);
@@ -1661,7 +1667,11 @@ class siteStats
 	 */
 	function recentVisitors() 
 	{
-		if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) 
+		
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'visitors', true, true);
+    
+    if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) 
 		{
 			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
@@ -1712,7 +1722,9 @@ class siteStats
 	function renderDaily() 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'daily', true, true);   
+    
 		$td = date("Y-m-j", time());
 		$dayarray[$td] = array();
 		$pagearray = array();
@@ -1885,7 +1897,9 @@ class siteStats
 	function renderMonthly() 
 	{
 		$sql = e107::getDB();
-
+    $tp = e107::getParser();
+    $template = e107::getTemplate('log', 'log', 'monthly', true, true); 
+    
 		// Month format entries have log_id = yyyy-mm
 		if(!$entries = $sql->select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) 
 		{
