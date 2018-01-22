@@ -5189,7 +5189,17 @@ $text .= "
 					if($val['type'] == 'image' && empty($val['readParms']))
 					{	
 						$vars['fields'][$key]['readParms'] = 'thumb=80x80'; // provide a thumbnail preview by default. 
-					}	
+					}
+
+					if(empty($vars['fields'][$key]['readParms']))
+					{
+						$vars['fields'][$key]['readParms'] = array();
+					}
+
+					if(empty($vars['fields'][$key]['writeParms']))
+					{
+						$vars['fields'][$key]['writeParms'] = array();
+					}
 				}
 						
 
