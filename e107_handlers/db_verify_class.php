@@ -136,7 +136,7 @@ class db_verify
 	/**
 	 * Permissive field validation
 	 */
-	private function validateFieldPermissive($expected, $actual)
+	private function diffFieldPermissive($expected, $actual)
 	{
 		// Permit actual text types that default to null even when
 		// expected does not explicitly default to null
@@ -153,7 +153,8 @@ class db_verify
 			$expected['default'] = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $expected['default']);
 			$actual['default']   = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $actual['default']  );
 		}
-		return !count($off = array_diff_assoc($expected, $actual));
+
+		return array_diff_assoc($expected, $actual);
 	}
 	
 	/**
@@ -370,11 +371,11 @@ class db_verify
 					$this->results[$tbl][$field]['_valid'] = $info;
 					$this->results[$tbl][$field]['_file'] = $selection;
 				}
-				elseif(!$this->validateFieldPermissive($info, $sqlFieldData[$field]))
+				elseif(count($diff = $this->diffFieldPermissive($info, $sqlFieldData[$field])))
 				{
 					$this->errors[$tbl]['_status'] = 'mismatch';
 					$this->results[$tbl][$field]['_status'] = 'mismatch';
-					$this->results[$tbl][$field]['_diff'] = $off;	
+					$this->results[$tbl][$field]['_diff'] = $diff;
 					$this->results[$tbl][$field]['_valid'] = $info;
 					$this->results[$tbl][$field]['_invalid'] = $sqlFieldData[$field];
 					$this->results[$tbl][$field]['_file'] = $selection;
@@ -398,14 +399,14 @@ class db_verify
 					$this->indices[$tbl][$field]['_valid'] = $info;
 					$this->indices[$tbl][$field]['_file'] = $selection;
 				}
-				elseif(count($offin = array_diff_assoc($info,$sqlIndexData[$field]))) // missmatch data
+				elseif(count($diff = $this->diffFieldPermissive($info, $sqlIndexData[$field]))) // mismatched data
 				{
 					// print_a($info);
 					// print_a($sqlIndexData[$field]);
 					
 					$this->errors[$tbl]['_status'] = 'mismatch_index';
 					$this->indices[$tbl][$field]['_status'] = 'mismatch';
-					$this->indices[$tbl][$field]['_diff'] = $offin;	
+					$this->indices[$tbl][$field]['_diff'] = $diff;
 					$this->indices[$tbl][$field]['_valid'] = $info;
 					$this->indices[$tbl][$field]['_invalid'] = $sqlIndexData[$field];
 					$this->indices[$tbl][$field]['_file'] = $selection;
