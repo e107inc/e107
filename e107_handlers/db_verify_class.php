@@ -356,9 +356,11 @@ class db_verify
 			// Check field and index data
 			foreach(['field', 'index'] as $type)
 			{
+				$results = 'results';
+				if ($type === 'index') $results = 'indices';
 				foreach($fileData[$type] as $key => $value)
 				{
-					$this->results[$tbl][$key]['_status'] = 'ok';
+					$this->{$results}[$tbl][$key]['_status'] = 'ok';
 
 					//print("EXPECTED");
 					//print_a($value);
@@ -368,18 +370,18 @@ class db_verify
 					if(!is_array($sqlData[$type][$key]))
 					{
 						$this->errors[$tbl]['_status'] = 'error'; // table status
-						$this->results[$tbl][$key]['_status'] = "missing_$type"; // type status
-						$this->results[$tbl][$key]['_valid'] = $value;
-						$this->results[$tbl][$key]['_file'] = $selection;
+						$this->{$results}[$tbl][$key]['_status'] = "missing_$type"; // type status
+						$this->{$results}[$tbl][$key]['_valid'] = $value;
+						$this->{$results}[$tbl][$key]['_file'] = $selection;
 					}
 					elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
 					{
 						$this->errors[$tbl]['_status'] = "mismatch_$type";
-						$this->results[$tbl][$key]['_status'] = 'mismatch';
-						$this->results[$tbl][$key]['_diff'] = $diff;
-						$this->results[$tbl][$key]['_valid'] = $value;
-						$this->results[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
-						$this->results[$tbl][$key]['_file'] = $selection;
+						$this->{$results}[$tbl][$key]['_status'] = 'mismatch';
+						$this->{$results}[$tbl][$key]['_diff'] = $diff;
+						$this->{$results}[$tbl][$key]['_valid'] = $value;
+						$this->{$results}[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
+						$this->{$results}[$tbl][$key]['_file'] = $selection;
 					}
 
 					// TODO Check for additional fields in SQL that should be removed.
