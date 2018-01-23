@@ -90,21 +90,22 @@ class admin_start
 {
 	
 	private $incompat = array(
-			'banhelper'		=> 1.7,
-			'slir_admin'	=> 1.0,
-			'facebook_like'	=> 0.7,
-			'unanswered'	=> 1.4,
-			'lightwindow'	=> '1.0b',
-			'aa_jquery'		=> 1.2,
-			'aa_jquery'		=> 1.4,
-			'who'			=> 1.0,
-			'ratings'		=> 4.2,
-			'lightbox'		=> 1.5,
-			'e107slider'	=> 0.1,
-			'forumthanks'   => 0.5,
-			'eclassifieds'   => 1.11,
-			'jshelpers'     => '0.3b'
-
+			array('banhelper',      1.5),
+			array('banhelper',      1.7),
+			array('slir_admin',     1.0),
+			array('facebook_like',  0.7),
+			array('unanswered',     1.4),
+			array('lightwindow',    '1.0b'),
+			array('aa_jquery',      1.2),
+			array('aa_jquery',      1.4),
+			array('who',            1.0),
+			array('ratings',        4.2),
+			array('lightbox',       1.5),
+			array('e107slider',     0.1),
+			array('forumthanks',    0.5),
+			array('eclassifieds',   1.11),
+			array('jshelpers',      '0.3b'),
+			array('akismet',        7.0)
 	);
 
 
@@ -516,9 +517,12 @@ TMPO;
 		$inCompatText = "";
 		$incompatFolders = array_keys($this->incompat);
 		
-		foreach($this->incompat as $folder => $version)
+		foreach($this->incompat as $data)
 		{
-			if(vartrue($installedPlugs[$folder]) && $version == $installedPlugs[$folder])
+			$folder = $data[0];
+			$version = $data[1];
+
+			if(!empty($installedPlugs[$folder]) && ($version == $installedPlugs[$folder] || $version === '*'))
 			{
 				$inCompatText .= "<li>".$folder." v".$installedPlugs[$folder]."</li>";				
 			}	
