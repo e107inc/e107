@@ -132,6 +132,30 @@ class db_verify
 
 
 	}
+
+	/**
+	 * Permissive field validation
+	 */
+	private function diffStructurePermissive($expected, $actual)
+	{
+		// Permit actual text types that default to null even when
+		// expected does not explicitly default to null
+		if(0 === strcasecmp($expected['type'], $actual['type']) &&
+		   1 === preg_match('/[A-Z]*TEXT/i', $expected['type']) &&
+		   0 === strcasecmp($actual['default'], "DEFAULT NULL"))
+		{
+			$expected['default'] = $actual['default'];
+		}
+
+		// Loosely typed default value for int-like types
+		if(1 === preg_match('/[A-Z]*INT/i', $expected['type']))
+		{
+			$expected['default'] = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $expected['default']);
+			$actual['default']   = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $actual['default']  );
+		}
+
+		return array_diff_assoc($expected, $actual);
+	}
 	
 	/**
 	 * Main Routine for checking and rendering results. 
@@ -292,11 +316,11 @@ class db_verify
 		//	echo "<h4>PARSED</h4>";
 		//	print_a($sqlDataArr);
 
-			$fileFieldData	= $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
-			$sqlFieldData	= $this->getFields($sqlDataArr['data'][0]);	
+			$fileData['field']	= $this->getFields($this->sqlFileTables[$selection]['data'][$key]);
+			$sqlData['field']	= $this->getFields($sqlDataArr['data'][0]);
 			
-			$fileIndexData	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
-			$sqlIndexData	= $this->getIndex($sqlDataArr['data'][0]);
+			$fileData['index']	= $this->getIndex($this->sqlFileTables[$selection]['data'][$key]);
+			$sqlData['index']	= $this->getIndex($sqlDataArr['data'][0]);
 		/*		
 			$debugA = print_r($fileFieldData,TRUE);	// Extracted Field Arrays	
 			$debugA .= "<h2>Index</h2>";
@@ -329,73 +353,39 @@ class db_verify
 			 	$tbl = "lan_".$language."_".$tbl;
 			}
 			
-			
-			// Check Field Data. 
-			foreach($fileFieldData as $field => $info )
+			// Check field and index data
+			foreach(['field', 'index'] as $type)
 			{
-				 
-					
-				$this->results[$tbl][$field]['_status'] = 'ok';	
-				
-				if(!is_array($sqlFieldData[$field]))
+				foreach($fileData[$type] as $key => $value)
 				{
-				//	 echo "<h2>".$field."</h2><table><tr><td><pre>".print_r($info,TRUE)."</pre></td>
-				// <td style='border:1px solid silver'><pre> - ".print_r($sqlFieldData[$field],TRUE)."</pre></td></tr></table>";
-					
-					$this->errors[$tbl]['_status'] = 'error'; // table status
-					$this->results[$tbl][$field]['_status'] = 'missing_field';	 // field status					
-					$this->results[$tbl][$field]['_valid'] = $info;
-					$this->results[$tbl][$field]['_file'] = $selection;
+					$this->results[$tbl][$key]['_status'] = 'ok';
+
+					//print("EXPECTED");
+					//print_a($value);
+					//print("ACTUAL");
+					//print_a($sqlData[$type][$key]);
+
+					if(!is_array($sqlData[$type][$key]))
+					{
+						$this->errors[$tbl]['_status'] = 'error'; // table status
+						$this->results[$tbl][$key]['_status'] = "missing_$type"; // type status
+						$this->results[$tbl][$key]['_valid'] = $value;
+						$this->results[$tbl][$key]['_file'] = $selection;
+					}
+					elseif(count($diff = $this->diffStructurePermissive($value, $sqlData[$type][$key])))
+					{
+						$this->errors[$tbl]['_status'] = "mismatch_$type";
+						$this->results[$tbl][$key]['_status'] = 'mismatch';
+						$this->results[$tbl][$key]['_diff'] = $diff;
+						$this->results[$tbl][$key]['_valid'] = $value;
+						$this->results[$tbl][$key]['_invalid'] = $sqlData[$type][$key];
+						$this->results[$tbl][$key]['_file'] = $selection;
+					}
+
+					// TODO Check for additional fields in SQL that should be removed.
+					// TODO Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 				}
-				elseif(count($off = array_diff_assoc($info,$sqlFieldData[$field])))
-				{
-					$this->errors[$tbl]['_status'] = 'mismatch';
-					$this->results[$tbl][$field]['_status'] = 'mismatch';
-					$this->results[$tbl][$field]['_diff'] = $off;	
-					$this->results[$tbl][$field]['_valid'] = $info;
-					$this->results[$tbl][$field]['_invalid'] = $sqlFieldData[$field];
-					$this->results[$tbl][$field]['_file'] = $selection;
-				}
-				
-				
 			}
-
-		//	 print_a($fileIndexData);
-		//	print_a($sqlIndexData);
-			// Check Index data
-			foreach($fileIndexData as $field => $info )
-			{
-				if(!is_array($sqlIndexData[$field])) // missing index. 
-				{
-					// print_a($info);
-					// print_a($sqlIndexData[$field]);
-					
-					$this->errors[$tbl]['_status'] = 'error'; // table status
-					$this->indices[$tbl][$field]['_status'] = 'missing_index';	 // index status					
-					$this->indices[$tbl][$field]['_valid'] = $info;
-					$this->indices[$tbl][$field]['_file'] = $selection;
-				}
-				elseif(count($offin = array_diff_assoc($info,$sqlIndexData[$field]))) // missmatch data
-				{
-					// print_a($info);
-					// print_a($sqlIndexData[$field]);
-					
-					$this->errors[$tbl]['_status'] = 'mismatch_index';
-					$this->indices[$tbl][$field]['_status'] = 'mismatch';
-					$this->indices[$tbl][$field]['_diff'] = $offin;	
-					$this->indices[$tbl][$field]['_valid'] = $info;
-					$this->indices[$tbl][$field]['_invalid'] = $sqlIndexData[$field];
-					$this->indices[$tbl][$field]['_file'] = $selection;
-					 
-				}
-				
-				// TODO Check for additional fields in SQL that should be removed. 
-				// TODO Add support for MYSQL 5 table layout .eg. journal_id INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-
-			}
-
-
-			
 
 			unset($data);
 			
