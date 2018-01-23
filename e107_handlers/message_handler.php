@@ -17,18 +17,13 @@ if (!defined('e107_INIT')) { exit; }
 
 /*
  * Type defines
- * XXX - convert to eMessage class constants
- * @note 07 May 2013: These have been converted to eMessage class constants!
- *       Example: eMessage::E_MESSAGE_SUCCESS is 'success'
- *             -- Deltik
- *       P.S. Now somebody needs to get rid of these universal constants...
  */
-define('E_MESSAGE_INFO', 		'info');
-define('E_MESSAGE_SUCCESS', 	'success');
-define('E_MESSAGE_WARNING', 	'warning');
-define('E_MESSAGE_ERROR', 		'error');
-define('E_MESSAGE_DEBUG', 		'debug');
-define('E_MESSAGE_NODISPLAY',	'nodisplay'); // Appears to be needed by update_routine
+define('E_MESSAGE_INFO',      'info');
+define('E_MESSAGE_SUCCESS',   'success');
+define('E_MESSAGE_WARNING',   'warning');
+define('E_MESSAGE_ERROR',     'error');
+define('E_MESSAGE_DEBUG',     'debug');
+define('E_MESSAGE_NODISPLAY', 'nodisplay'); // Appears to be needed by update_routine
 
 //FIXME - language file! new?
 
