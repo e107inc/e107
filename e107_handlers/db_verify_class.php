@@ -132,6 +132,29 @@ class db_verify
 
 
 	}
+
+	/**
+	 * Permissive field validation
+	 */
+	private function validateFieldPermissive($expected, $actual)
+	{
+		// Permit actual text types that default to null even when
+		// expected does not explicitly default to null
+		if(0 === strcasecmp($expected['type'], $actual['type']) &&
+		   1 === preg_match('/[A-Z]*TEXT/i', $expected['type']) &&
+		   0 === strcasecmp($actual['default'], "DEFAULT NULL"))
+		{
+			$expected['default'] = $actual['default'];
+		}
+
+		// Loosely typed default value for int-like types
+		if(1 === preg_match('/[A-Z]*INT/i', $expected['type']))
+		{
+			$expected['default'] = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $expected['default']);
+			$actual['default']   = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $actual['default']  );
+		}
+		return !count($off = array_diff_assoc($expected, $actual));
+	}
 	
 	/**
 	 * Main Routine for checking and rendering results. 
@@ -347,7 +370,7 @@ class db_verify
 					$this->results[$tbl][$field]['_valid'] = $info;
 					$this->results[$tbl][$field]['_file'] = $selection;
 				}
-				elseif(count($off = array_diff_assoc($info,$sqlFieldData[$field])))
+				elseif(!$this->validateFieldPermissive($info, $sqlFieldData[$field]))
 				{
 					$this->errors[$tbl]['_status'] = 'mismatch';
 					$this->results[$tbl][$field]['_status'] = 'mismatch';
