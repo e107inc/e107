@@ -281,27 +281,6 @@ class user_shortcodes extends e_shortcode
 			//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
 		}
 
-		      ########################################################
-		       # Security Note - 04 May 2013                          #
-		       ########################################################
-		       #                                                      #
-		       # The CSS code direction rtl is an effective way to    #
-		       # prevent spam bots from scraping emails that are      #
-		       # not hidden.                                          #
-		       #                                                      #
-		       # You can find empirical support for this method at    #
-		       # <http://superuser.com/a/235965>.                     #
-		       #                                                      #
-		       # {e_CORE}templates/user_template.php was modified to  #
-		       # support this code.  In $USER_FULL_TEMPLATE, the      #
-		       # LAN_USER_60 value {USER_EMAIL_LINK} was changed to   #
-		       # {USER_EMAIL}.  I couldn't figure out how the two     #
-		       # shortcodes were different, so I took precautions in  #
-		       # hopes that the CSS direction won't break actual HTML #
-		       # tags.                                                #
-		       #                                                      #
-		       #       -- Deltik                                      #
-		       ########################################################
 	}
 
 
