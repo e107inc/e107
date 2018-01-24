@@ -1615,8 +1615,8 @@ class users_admin_ui extends e_admin_ui
 
 		<tr>
 			<td>".LAN_PASSWORD."</td>
-			<td>".$frm->password('password', '', 20, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
-			</td>
+			<td>".$frm->password('password', '', 128, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1, 'autocomplete' => 'new-password'))."
+ 			</td>
 		</tr>";
 		
 
@@ -2493,8 +2493,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			$fieldName = 'user_password_'. $this->getController()->getId();
 
-			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => USRLAN_251, 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
-			";			
+			return $this->password($fieldName, '', 128, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => USRLAN_251, 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'new-password'));
 		}
 			
 		
