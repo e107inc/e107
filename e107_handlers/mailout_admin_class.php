@@ -2141,17 +2141,17 @@ class mailoutAdminClass extends e107MailManager
 		$text .= "
 		<tr>
 		<td>".LAN_MAILOUT_87.":&nbsp;&nbsp;</td>
-		<td>".$frm->text('smtp_server',$pref['smtp_server'], 50, array('size'=>'xxlarge'))."</td>
+		<td>".$frm->text('smtp_server',$pref['smtp_server'], 128, array('size'=>'xxlarge'))."</td>
 		</tr>
 
 		<tr>
 		<td>".LAN_MAILOUT_88.":</td>
-		<td style='width:50%;' >".$frm->text('smtp_username',$pref['smtp_username'], 50, array('size'=>'xxlarge', 'placeholder'=>"(".LAN_OPTIONAL.")"))."</td>
+		<td style='width:50%;' >".$frm->text('smtp_username',$pref['smtp_username'], 128, array('size'=>'xxlarge', 'placeholder'=>"(".LAN_OPTIONAL.")"))."</td>
 		</tr>
 
 		<tr>
 		<td>".LAN_MAILOUT_89.":</td>
-		<td>".$frm->password('smtp_password',$pref['smtp_password'], 50, array('size'=>'xxlarge', 'placeholder'=>"(".LAN_OPTIONAL.")"))."
+		<td>".$frm->password('smtp_password',$pref['smtp_password'], 128, array('size'=>'xxlarge', 'required'=>false, 'pattern'=>'.{4,}', 'placeholder'=>"(".LAN_OPTIONAL.")", 'autocomplete'=>'new-password'))."
 		</td>
 		</tr>
 
