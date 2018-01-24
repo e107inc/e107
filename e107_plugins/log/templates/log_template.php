@@ -130,9 +130,30 @@ $LOG_TEMPLATE['oses']['end']  = "
 $LOG_TEMPLATE['oses']['nostatistic'] = $LOG_TEMPLATE['browsers']['nostatistic'];
 
 
-$LOG_TEMPLATE['domains']['start'] = ""; 
-$LOG_TEMPLATE['domains']['item'] = "";
-$LOG_TEMPLATE['domains']['end']  = "";
+$LOG_TEMPLATE['domains']['start'] = "
+<div class='table-responsive' id='oses'>
+<table class='table table-striped fborder' style='width: 100%;'>
+				<tr><td class='fcaption' colspan='4' style='text-align:center'>{START_CAPTION}</td></tr>
+				<tr><td class='fcaption' style='width: 20%;'>
+				<a title='{START_TITLE}' href='{START_URL}'>".ADSTAT_L28."</a></td>\n
+				<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>
+        <td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>"; 
+        
+$LOG_TEMPLATE['domains']['item'] = "
+<tr>
+<td class='forumheader3' style='width: 20%;'>{ITEM_KEY}</td>
+<td class='forumheader3' style='width: 70%;'>{ITEM_BAR}</td> 
+<td class='forumheader3' style='width: 10%; text-align: center;'>{ITEM_PERC}%</td>
+</tr>";
+$LOG_TEMPLATE['domains']['end']  = "
+<tr>
+  <td class='forumheader' colspan='2'>".ADSTAT_L21."</td>
+  <td class='forumheader' style='text-align: center;'>{TOTAL}</td>
+  <td class='forumheader'>&nbsp;</td>
+</tr>
+</table><br /></div>";
+$LOG_TEMPLATE['domains']['nostatistic'] = $LOG_TEMPLATE['browsers']['nostatistic'];
+
 
 $LOG_TEMPLATE['screens']['start'] = ""; 
 $LOG_TEMPLATE['screens']['item'] = "";

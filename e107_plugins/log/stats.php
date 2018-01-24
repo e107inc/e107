@@ -1267,8 +1267,8 @@ class siteStats
           );
           $text .= $tp->simpleParse($template['item'], $var);
 				}
-        $var = array('TOTAL' => number_format($total),                  
-        );
+        $var = array('TOTAL' => number_format($total));                  
+       
         $text .= $tp->simpleParse($template['end'], $var);
 			}
 			else
@@ -1335,11 +1335,11 @@ class siteStats
 			}
 
 			$total = array_sum($domArray);
-			$text .= "		<table class='table table-striped fborder' style='width: 100%;'>\n
-				<tr><td class='fcaption' colspan='4' style='text-align:center'>".$this->browser_headings[$act].$pars['hdg_extra']."</td></tr>\n
-				<tr>\n<td class='fcaption' style='width: 20%;'>
-				<a title='".($this -> order ? "sort by total" : "sort alphabetically")."' href='".e_SELF."?5".($this -> order ? "" : ".1" )."'>".ADSTAT_L28."</a></td>\n
-				<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+      $var = array('START_CAPTION' => $this->browser_headings[$act].$pars['hdg_extra'],
+                   'START_TITLE' => ($this -> order ? "sort by total" : "sort alphabetically"),
+                   'START_URL' => e_SELF."?5".($this -> order ? "" : ".1" ),    
+      );
+      $text .= $tp->simpleParse($template['start'], $var);
 
 			if (count($domArray))
 			{
@@ -1348,20 +1348,22 @@ class siteStats
 					if($key = $this -> getcountry($key)) 
 					{
 						$percentage = round(($info/$total) * 100, 2);
-						$text .= "<tr>
-						<td class='forumheader3' style='width: 20%;'>".$key."</td>
-						<td class='forumheader3' style='width: 70%;'>".$this -> bar($percentage, $info)."</td>
-						<td class='forumheader3' style='width: 10%; text-align: center;'>".$percentage."%</td>
-						</tr>\n";
+            $var = array(                        
+                         'ITEM_KEY' => $key,
+                         'ITEM_BAR' => $this -> bar($percentage, $info),
+                         'ITEM_PERC'=> $percentage,       
+            );
+            $text .= $tp->simpleParse($template['item'], $var);
 					}
 				}
-				$text .= "<tr><td class='forumheader' colspan='2'>".ADSTAT_L21."</td><td class='forumheader' style='text-align: center;'>$total</td><td class='forumheader'></td></tr>\n";
+        //before: $var = array('TOTAL' => $total,
+        $var = array('TOTAL' => number_format($total)); 
+        $text .= $tp->simpleParse($template['end'], $var);
 			}
 			else
 			{
-				$text .= "<tr><td class='fcaption' colspan='4' style='text-align:center'>".ADSTAT_L25."</td></tr>\n";
+				$text .= $tp->simpleParse($template['nostatistic']);
 			}
-			$text .= "</table><br />";
 		}
 		return $text;
 	}
