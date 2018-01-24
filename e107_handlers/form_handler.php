@@ -1798,7 +1798,7 @@ class e_form
 			$addon .= "<div style='margin-top:4px'><div  class='progress' style='float:left;display:inline-block;width:218px;margin-bottom:0'><div class='progress-bar bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";
 		}
 		
-		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
+		$options['pattern'] = vartrue($options['pattern'],'[\S].{2,}[\S]');
 		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password tbox');
 
