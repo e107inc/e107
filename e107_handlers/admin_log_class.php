@@ -54,7 +54,10 @@ class e_admin_log
 	protected $_messages;
 	
 	
-	protected $_allMessages; // similar to $_messages except it is never flushed. 
+	protected $_allMessages; // similar to $_messages except it is never flushed.
+
+
+	protected $_current_plugin = null;
 	
 
 	/**
@@ -395,7 +398,12 @@ class e_admin_log
 			exit; // Optional abort for all logs
 	}
 
+	public function setCurrentPlugin($plugdir)
+	{
+		$this->_current_plugin = $plugdir;
 
+		return $this;
+	}
 
 	/**--------------------------------------
 	 *		USER AUDIT ENTRY
@@ -819,7 +827,7 @@ class e_admin_log
 	/**
 	 * Save Message stack to File. 
 	 */
-	private function saveToFile($logTitle='', $append=false)
+	private function saveToFile($logTitle='', $append=false, $opts = array())
 	{
 		if($this->logFile == null)
 		{
@@ -844,12 +852,19 @@ class e_admin_log
 		}
 		
 		$date = ($append == true) ? date('Y-m-d') : date('Y-m-d_H-i-s').'_'.crc32($text);
+
+
 		
 		$dir = e_LOG;
-		
-		if(deftrue('e_CURRENT_PLUGIN')) // If it's a plugin, create a subfolder.
+
+		if(empty($this->_current_plugin))
 		{
-			$dir = e_LOG.e_CURRENT_PLUGIN."/";
+			$this->_current_plugin = deftrue('e_CURRENT_PLUGIN');
+		}
+
+		if(!empty($this->_current_plugin)) // If it's a plugin, create a subfolder.
+		{
+			$dir = e_LOG.$this->_current_plugin."/";
 			
 			if(!is_dir($dir))
 			{
@@ -858,6 +873,11 @@ class e_admin_log
 		}
 		
 		$fileName = $dir.$date."_".$this->logFile.".log";
+
+		if(!empty($opts['filename']))
+		{
+			$fileName = $dir.basename($opts['filename']);
+		}
 		
 		if($append == true)
 		{
@@ -876,12 +896,15 @@ class e_admin_log
 		if(file_put_contents($fileName, $text, $app))
 		{
 			$this->_allMessages = array();
+			$this->_current_plugin = null;
 			return $this->logFile;
 		}
 		elseif(getperms('0') && E107_DEBUG_LEVEL > 0)
 		{
 			e107::getMessage()->addDebug("Couldn't Save to Log File: ".$fileName);
 		}	
+
+		$this->_current_plugin = null;
 
 		return false;
 	}	
@@ -896,11 +919,11 @@ class e_admin_log
 	 * @param string Title for use inside the Log file
 	 * @param boolean true = append to file, false = new file each save. 
 	 */
-	public function toFile($name, $logTitle='',$append=false)
+	public function toFile($name, $logTitle='',$append=false, $opts=array())
 	{
 
 		$this->logFile	= $name;
-		$file = $this->saveToFile($logTitle,$append);
+		$file = $this->saveToFile($logTitle,$append,$opts);
 
 		$this->logFile = null;
 		return $file;

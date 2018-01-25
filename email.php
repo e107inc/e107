@@ -61,9 +61,25 @@ $message = '';
 $referrer = strip_tags(urldecode(html_entity_decode(varset($_SERVER['HTTP_REFERER'],''), ENT_QUOTES)));
 $emailurl = ($source == 'referer') ? $referrer : SITEURL;
 
-$comments = $tp->post_toHTML(varset($_POST['comment'],''), TRUE, 'retain_nl, emotes_off, no_make_clickable');
-$author = $tp->post_toHTML(varset($_POST['author_name'],''),FALSE,'emotes_off, no_make_clickable');
-$email_send = check_email(varset($_POST['email_send'],''));
+$comments = '';
+$author = '';
+$email_send = '';
+
+if(!empty($_POST['comment']))
+{
+	$comments = $tp->post_toHTML($_POST['comment'], true, 'retain_nl, emotes_off, no_make_clickable');
+}
+
+if(!empty($_POST['author_name']))
+{
+	$author = $tp->post_toHTML($_POST['author_name'], false,'emotes_off, no_make_clickable');
+}
+
+if(!empty($_POST['email_send']))
+{
+	$email_send = check_email($_POST['email_send']);
+}
+
 
 
 if (isset($_POST['emailsubmit']))

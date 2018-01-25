@@ -98,8 +98,9 @@ class contact_shortcodes extends e_shortcode
 	{
 		$userName = deftrue('USERNAME');
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
-		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';		    
-		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".varset($_POST['author_name'],$userName)."\" />";
+		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
+		$value      = 	!empty($_POST['author_name']) ?  e107::getParser()->filter( $_POST['author_name']) : $userName;
+		return "<input type='text'   id='contactName' title='".LANCONTACT_17."' name='author_name' required='required' size='30' ".$placeholder."  class='".$class."' value=\"".$value."\" />";
 	}
 
 
@@ -115,7 +116,8 @@ class contact_shortcodes extends e_shortcode
 
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
-		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".(vartrue($_POST['email_send']) ? $_POST['email_send'] : USEREMAIL)."' />";
+		$value = !empty($_POST['email_send'] ) ? e107::getParser()->filter($_POST['email_send'],'email') : USEREMAIL;
+		return "<input type='email'   ".$disabled." id='contactEmail' title='".LANCONTACT_18."' name='email_send' required='required' size='30' ".$placeholder." class='".$class."' value='".$value."' />";
 	}
 	
 	
@@ -128,7 +130,8 @@ class contact_shortcodes extends e_shortcode
 	{
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox form-control';
 		$placeholder = (!empty($parm['placeholder'])) ? " placeholder= '".$parm['placeholder']."'" : '';
-		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".varset($_POST['subject'])."\" />";
+		$value = !empty($_POST['subject']) ? e107::getParser()->filter($_POST['subject'], 'str') : '';
+		return "<input type='text' id='contactSubject' title='".LANCONTACT_19."' name='subject' required='required' size='30' ".$placeholder." class='".$class."' value=\"".$value."\" />";
 	}
 	
 	
@@ -149,8 +152,10 @@ class contact_shortcodes extends e_shortcode
 		}
 		$class = (!empty($parm['class'])) ? $parm['class'] : 'tbox '.$size.' form-control';
 
+
+		$value = !empty($_POST['body']) ? stripslashes($_POST['body']) : '';
 		
-		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' ".$placeholder." required='required' class='".$class."'>".stripslashes(varset($_POST['body']))."</textarea>";
+		return "<textarea cols='{$cols}'  id='contactBody' rows='{$rows}' title='".LANCONTACT_20."' name='body' ".$placeholder." required='required' class='".$class."'>".$value."</textarea>";
 	}
 	
 	
