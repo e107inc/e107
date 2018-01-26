@@ -100,10 +100,13 @@ class e107_db_debug {
 		if (!strlen($sMarker)) {
 			$sMarker = "Mark not set";
 		}
-	
+
+		$srch = array('[',']');
+		$repl = array("<small>","</small>");
+
 		$this->aTimeMarks[$nMarks]=array(
 		'Index' => ($this->nTimeMarks),
-		'What' => $sMarker,
+		'What' => str_replace($srch,$repl,$sMarker),
 		'%Time' => 0,
 		'%DB Time' => 0,
 		'%DB Count' => 0,

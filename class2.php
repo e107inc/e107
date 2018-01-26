@@ -482,6 +482,7 @@ $sysprefs = new prefs;
 e107::getConfig()->load(); // extra load, required if mysql handler already called e107::getConfig()
 if(!e107::getConfig()->hasData())
 {
+
 	// Core prefs error - admin log
 	e107::getAdminLog()->log_event('CORE_LAN8', 'CORE_LAN7', E_LOG_WARNING);
 
@@ -823,6 +824,7 @@ if(isset($pref['e_module_list']) && $pref['e_module_list'])
 	{
 		if (is_readable(e_PLUGIN."{$mod}/e_module.php"))
 		{
+			$sql->db_Mark_Time('[e_module in '.$mod.']');
 			require_once(e_PLUGIN."{$mod}/e_module.php");
  		}
 	}
