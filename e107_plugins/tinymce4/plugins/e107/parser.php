@@ -19,6 +19,7 @@ $_E107['no_menus'] = true;
 $_E107['no_forceuserupdate'] = true;
 $_E107['no_maintenance'] = true;
 
+define('e_ADMIN_AREA', true);
 if(!defined('TINYMCE_DEBUG'))
 {
 	require_once("../../../../class2.php");

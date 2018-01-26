@@ -2628,7 +2628,7 @@ class e_parse extends e_parser
 	 */
 	public function staticUrl($path=null)
 	{
-		if(!defined('e_HTTP_STATIC'))
+		if(!defined('e_HTTP_STATIC') || deftrue('e_ADMIN_AREA'))
 		{
 			// e107::getDebug()->log("e_HTTP_STATIC not defined");
 			return ($path === null) ? e_HTTP : $path;
@@ -5466,7 +5466,7 @@ class e_emotefilter
 			return;
 		}
 
-		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC) ? e_HTTP_STATIC : SITEURLBASE;
+		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC)  ? e_HTTP_STATIC : SITEURLBASE;
 
 		foreach($this->emotes as $key => $value)
 		{
