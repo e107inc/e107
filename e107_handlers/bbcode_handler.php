@@ -684,7 +684,7 @@ class e_bbcode
 
 		foreach($arr['img'] as $img)
 		{
-			if(substr($img['src'],0,4) == 'http' || strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			if(/*substr($img['src'],0,4) == 'http' ||*/ strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
 			{
 				continue;
 			}
@@ -693,7 +693,7 @@ class e_bbcode
 
 			$qr = $tp->thumbUrlDecode($img['src']); // extract width/height and src from thumb URLs.
 
-			if(substr($qr['src'],0,4)!=='http' && empty($qr['w']) && empty($qr['aw']))
+			if(strpos($qr['src'],'http')!==0 && empty($qr['w']) && empty($qr['aw']))
 			{
 				$qr['w'] = $img['width'];
 				$qr['h'] = $img['height'];
@@ -701,7 +701,7 @@ class e_bbcode
 
 			$qr['ebase'] = true;
 
-			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
+
 
 			if(!empty($img['class']))
 			{
@@ -729,9 +729,14 @@ class e_bbcode
 
 			}
 
-			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
 
-			$code_text = str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
+
+
+
+			$code_text = (strpos($img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
+
+			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
+			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
 
 			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
 
