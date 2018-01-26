@@ -168,7 +168,7 @@ class bb_img extends e_bb_base
             return $this->mediaImage($code_text, $parm);          
         }
         
-	    
+
 		if (preg_match("#\.php\?.*#",$code_text)){return "";} //XXX Breaks MediaManager Images, so do it after mediaManager check. 
 		
 		$addlink = FALSE;

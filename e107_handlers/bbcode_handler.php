@@ -31,10 +31,13 @@ class e_bbcode
 	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
 	var $core_bb = array();
 	var $class = FALSE;
+	private $resizePrefs = array();
 
 	function __construct()
 	{
 		$pref = e107::getPref();
+
+		$this->resizePrefs = $pref['resize_dimensions'];
 
 		$this->core_bb = array(
 			'alert',
@@ -483,21 +486,21 @@ class e_bbcode
 	
 	function resizeWidth()
 	{
-		$pref = e107::getPref();
-		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['w']))
+		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['w']))
 		{
-			return $pref['resize_dimensions'][$this->class.'-bbcode']['w'];		
+			return (int) $this->resizePrefs[$this->class.'-bbcode']['w'];
 		}
+
 		return false;	
 	}
 	
 	function resizeHeight()
 	{
-		$pref = e107::getPref();
-		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['h']))
+		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['h']))
 		{
-			return $pref['resize_dimensions'][$this->class.'-bbcode']['h'];		
+			return (int) $this->resizePrefs[$this->class.'-bbcode']['h'];
 		}
+
 		return false;	
 	}	
 	
@@ -672,6 +675,10 @@ class e_bbcode
 	    	$html = str_replace('&quot;','"', $html);
 	    }
 
+	//    var_dump($this->defaultImageSizes);
+	    $cl = $this->getClass();
+
+
 		$arr = $tp->getTags($html,'img');
 
 		$srch = array("?","&");
@@ -729,8 +736,10 @@ class e_bbcode
 
 			}
 
-
-
+			if($this->resizeWidth() === (int) $img['width'])
+			{
+				unset($img['width']);
+			}
 
 
 			$code_text = (strpos($img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
