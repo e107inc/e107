@@ -189,6 +189,9 @@ TEMPL;
 	{
 		// echo $_POST['content'];
 		global $pref, $tp;
+
+			e107::getBB()->setClass($_SESSION['media_category']);
+
 		$content = stripslashes($content);
 
 		if(check_class($pref['post_html'])) // Plain HTML mode.
@@ -216,6 +219,7 @@ TEMPL;
 
 		$text = str_replace('[html]<p></p>[/html]','',$text); // cleanup.
 
+		e107::getBB()->clearClass();
 		return $text;
 
 	}

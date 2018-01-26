@@ -17,12 +17,16 @@ define("LAN_IMA_002", "Not enough memory available to rotate");
 define("LAN_IMA_003", "Rotated");
 define("LAN_IMA_004", "Resizing");
 // Options
-define("LAN_IMA_O_001", "News Images");
-define("LAN_IMA_O_002", "News [img] bbcode");
-define("LAN_IMA_O_003", "Page [img] bbcode");
-define("LAN_IMA_O_004", "Featurebox Images");
-define("LAN_IMA_O_005", "Featurebox [img] bbcode");
-define("LAN_IMA_O_006", "[img] bbcode");
+
+// define("LAN_IMA_O_001", "News Images");
+// define("LAN_IMA_O_002", "News [img] bbcode");
+// define("LAN_IMA_O_003", "Page [img] bbcode");
+// define("LAN_IMA_O_004", "Featurebox Images");
+// define("LAN_IMA_O_005", "Featurebox [img] bbcode");
+// define("LAN_IMA_O_006", "[img] bbcode");
+
+
+
 // Work in progress (Moc)
 define("IMALAN_1", "Enable image display");
 define("IMALAN_2", "Display images, this will apply sitewide (comments, chatbox etc) to images posted using the [img] bbcode");
@@ -204,4 +208,5 @@ define("IMALAN_181", "Please remove before proceeding.");
 
 define("IMALAN_182", "Convert to jpeg during import");
 define("IMALAN_183", "PNG and GIF files will be automatically converted to jpeg format. (icons excluded)");
-
+define("IMALAN_184", "Default Image Sizes");
+define("IMALAN_185", "Maximum height in pixels");
