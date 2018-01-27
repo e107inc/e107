@@ -2040,7 +2040,7 @@ class e_form
 
 			case 'large':
 			default:
-				$rows = '15';
+				$rows = '20';
 				$size = 'large input-block-level';
 			//	$height = "style='height:500px;width:1025px'"; // inline required for wysiwyg
 			break;
