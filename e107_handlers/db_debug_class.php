@@ -376,6 +376,19 @@ class e107_db_debug {
 	}
 
 
+	private function highlight($label, $value=0,$threshold=0)
+	{
+
+		if($value > $threshold)
+		{
+			return  "<span class='label label-danger'>".$label."</span>";
+		}
+
+		return $label;
+
+	}
+
+
 	function Show_Performance()
 	{
 			//
@@ -467,10 +480,12 @@ class e107_db_debug {
 				$tUsage = $tMarker['Memory Used'];
 				$tMarker['Memory Used'] = number_format($tUsage / 1024.0, 1);
 
+				$tMarker['Memory Used'] = $this->highlight($tMarker['Memory Used'],$tUsage,400000);
+/*
 				if($tUsage > 400000) // Highlight high memory usage.
 				{
 					$tMarker['Memory Used'] = "<span class='label label-danger'>".$tMarker['Memory Used']."</span>";
-				}
+				}*/
 
 				$aSum['Memory'] = $tMem;
 
@@ -496,6 +511,9 @@ class e107_db_debug {
 					$aSum['DB Time'] += $tMarker['DB Time'];
 					$aSum['DB Count'] += $tMarker['DB Count'];
 					$tMarker['Time'] = number_format($thisDelta * 1000.0, 1);
+					$tMarker['Time'] = $this->highlight($tMarker['Time'],$thisDelta,.5);
+
+
 					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
 					$tMarker['%DB Count'] = number_format(100.0 * $tMarker['DB Count'] / $sql->db_QueryCount(), 0);
 					$tMarker['%DB Time'] = $db_time ? number_format(100.0 * $tMarker['DB Time'] / $db_time, 0) : 0;
@@ -552,7 +570,14 @@ class e107_db_debug {
 			// Stats by Table
 			//
 
-			$text .= "\n<table class='fborder table table-striped table-condensed'>\n";
+			$text .= "\n<table class='fborder table table-striped table-condensed'>
+			<colgroup>
+				<col style='width:auto' />
+				<col style='width:9%' />
+					<col style='width:9%' />
+						<col style='width:9%' />
+							<col style='width:9%' />
+			</colgroup>\n";
 
 			$bRowHeaders = false;
 			$aSum = $this->aDBbyTable['core']; // create a template from the 'real' array
@@ -567,7 +592,7 @@ class e107_db_debug {
 				if(!$bRowHeaders)
 				{
 					$bRowHeaders = true;
-					$text .= "<tr><td class='fcaption'><b>" . implode("</b></td><td class='fcaption'><b>", array_keys($curTable)) . "</b></td></tr>\n";
+					$text .= "<tr><td class='fcaption'><b>" . implode("</b></td><td class='fcaption' style='text-align:right'><b>", array_keys($curTable)) . "</b></td></tr>\n";
 					$aUnits = $curTable;
 					foreach($aUnits as $key => $val)
 					{
