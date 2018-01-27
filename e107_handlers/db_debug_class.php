@@ -613,7 +613,9 @@ class e107_db_debug {
 				$aSum['DB Count'] += $curTable['DB Count'];
 				$curTable['%DB Count'] = number_format(100.0 * $curTable['DB Count'] / $sql->db_QueryCount(), 0);
 				$curTable['%DB Time'] = number_format(100.0 * $curTable['DB Time'] / $db_time, 0);
-				$curTable['DB Time'] = number_format($curTable['DB Time'] * 1000.0, 1);
+				$timeLabel = number_format($curTable['DB Time'] * 1000.0, 1);
+				$curTable['DB Time'] = $this->highlight($timeLabel, ($curTable['DB Time'] * 1000), 500); // 500 msec
+
 				$text .= "<tr><td class='forumheader3'>" . implode("&nbsp;</td><td class='forumheader3' style='text-align:right'>", array_values($curTable)) . "&nbsp;</td></tr>\n";
 			}
 
