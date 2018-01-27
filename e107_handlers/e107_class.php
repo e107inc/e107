@@ -1997,7 +1997,7 @@ class e107
 				$admin = (bool) defset('e_ADMIN_AREA', false);
 
 				// Try to detect and load CDN version.
-				if(!$admin && $cdn && substr($library, 0, 4) != 'cdn.')
+				if(!$admin && $cdn && strpos($library, 'cdn.') !== 0)
 				{
 					$lib = $libraryHandler->detect('cdn.' . $library);
 
@@ -2180,7 +2180,8 @@ class e107
 	 */
 	public static function css($type, $data, $dep = null, $media = 'all', $preComment = '', $postComment = '', $dependence = null)
 	{
-		if((strstr($data,'bootstrap.css') || strstr($data,'bootstrap.min.css')) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently. 
+
+		if((strpos($data,'bootstrap.css')!==false || strpos($data,'bootstrap.min.css')!==false) && !defined("BOOTSTRAP")) // detect bootstrap is enabled. - used in nextprev.sc and forum currently.
 		{
 			define("BOOTSTRAP", true);	
 		}

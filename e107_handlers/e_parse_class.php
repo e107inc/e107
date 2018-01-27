@@ -2623,15 +2623,23 @@ class e_parse extends e_parser
 
 
 	/**
+	 * @todo Move to e107_class ?
 	 * @param string $path - absolute path
 	 * @return string - static path.
 	 */
-	public function staticUrl($path=null)
+	public function staticUrl($path=null, $opts=array())
 	{
 		if(!defined('e_HTTP_STATIC') || deftrue('e_ADMIN_AREA'))
 		{
 			// e107::getDebug()->log("e_HTTP_STATIC not defined");
-			return ($path === null) ? e_HTTP : $path;
+			if($path === null)
+			{
+				return !empty($opts['full']) ? SITEURL : e_HTTP;
+			}
+			else
+			{
+				return $path;
+			}
 		}
 
 

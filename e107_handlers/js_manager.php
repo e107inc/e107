@@ -1606,6 +1606,8 @@ class e_jsmanager
 
 		$basePath = dirname($path)."/";
 
+		$tp = e107::getParser();
+
 		foreach($match[1] as $k=>$v)
 		{
 			if(strpos($v,'data:') === 0 || strpos($v,'http') === 0)
@@ -1614,10 +1616,9 @@ class e_jsmanager
 				continue;
 			}
 
+			$http = $tp->staticUrl(null, array('full'=>1)); // returns SITEURL or Static URL if enabled.
 			$path = $this->normalizePath($basePath.$v);
-			$dir = "url(".SITEURL.$path.")"; // relative to e_WEB_ABS."cache/";
-
-		//	print_a($dir);
+			$dir = "url(".$http.$path.")";
 
 			$newpath[$k] = $dir;
 		}
