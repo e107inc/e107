@@ -3331,7 +3331,12 @@ class e_tree_model extends e_front_model
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
 				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
-				while($tmp = $sql->db_Fetch())
+				$rows = self::flatTreeFromArray($sql->rows(),
+				                                $this->getParam('primary_field'),
+				                                $this->getParam('sort_parent'),
+				                                $this->getParam('sort_field')
+				                                );
+				foreach($rows as $tmp)
 				{
 					$tmp = new $class_name($tmp);
 					if($this->getParam('model_message_stack'))
@@ -3370,6 +3375,84 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
+	}
+
+	/**
+	 * Depth-first sort a relational array with a parent field and a sort order field
+	 * @param array $rows Relational array with a parent field and a sort order field
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @param string $sort_field The field name whose value is the sort order in the current tree node
+	 * @return array Input array sorted depth-first as if it were a tree
+	 */
+	private static function flatTreeFromArray($rows, $primary_field, $sort_parent, $sort_field)
+	{
+		$rows_tree = self::arrayToTree($rows, $primary_field, $sort_parent);
+		return self::flattenTree($rows_tree, $sort_field);
+	}
+
+	/**
+	 * Converts a relational array with a parent field and a sort order field to a tree
+	 * @param array $rows Relational array with a parent field and a sort order field
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @return array Multidimensional array with child nodes under the "_children" key
+	 */
+	private static function arrayToTree($rows, $primary_field, $sort_parent)
+	{
+		$nodes = array();
+		$root = array($primary_field => 0);
+		$nodes[] = &$root;
+
+		while(!empty($nodes))
+		{
+			$node = &$nodes[0];
+			array_shift($nodes);
+			foreach($rows as $key => $row)
+			{
+				if(intval($row[$sort_parent]) === intval($node[$primary_field]))
+				{
+					$node['_children'][] = &$row;
+					unset($rows[$key]);
+					$nodes[] = &$row;
+					unset($row);
+				}
+			}
+		}
+
+		return array(0 => $root);
+	}
+
+	/**
+	 * Flattens a tree into a depth-first array, sorting each node by a field's values
+	 * @param array $tree Tree with child nodes under the "_children" key
+	 * @param string $sort_field The field name whose value is the sort order in the current tree node
+	 * @param int $depth The depth that this level of recursion is entering
+	 * @return array One-dimensional array in depth-first order with depth indicated by the "_depth" key
+	 */
+	private static function flattenTree($tree, $sort_field = null, $depth = 0)
+	{
+		$flat = array();
+
+		foreach($tree as $item)
+		{
+			$children = $item['_children'];
+			unset($item['_children']);
+			$item['_depth'] = $depth;
+			if($depth > 0)
+				$flat[] = $item;
+			if(is_array($children))
+			{
+				uasort($children, function($node1, $node2)
+				{
+					if(intval($node1[$sort_field]) === intval($node2[$sort_field])) return 0;
+					return intval($node1[$sort_field]) < intval($node2[$sort_field]) ? -1 : 1;
+				});
+				$flat = array_merge($flat, self::flattenTree($children, $sort_field, $depth+1));
+			}
+		}
+
+		return $flat;
 	}
 
 	/**
