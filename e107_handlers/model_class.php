@@ -3310,7 +3310,6 @@ class e_tree_model extends e_front_model
 			return $this;
 		}
 
-		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
@@ -3323,6 +3322,7 @@ class e_tree_model extends e_front_model
 			);
 		}
 
+		$class_name = $this->getParam('model_class', 'e_model');
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
@@ -3330,7 +3330,6 @@ class e_tree_model extends e_front_model
 
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
-				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 				$rows = self::flatTreeFromArray($sql->rows(),
 				                                $this->getParam('primary_field'),
 				                                $this->getParam('sort_parent'),
@@ -3345,20 +3344,9 @@ class e_tree_model extends e_front_model
 					}
 					$this->_onLoad($tmp)->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-
-				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
-				{
-					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
-				//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
-
-					// Calculates correct total when using filters and search. //XXX Optimize.
-					$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
-
-					$this->_total = e107::getDb()->gen($countQry);
-
-				}
-
 				unset($tmp);
+
+				$this->countResults($sql);
 			}
 
 			if($sql->getLastErrorNumber())
@@ -3410,7 +3398,9 @@ class e_tree_model extends e_front_model
 			array_shift($nodes);
 			foreach($rows as $key => $row)
 			{
-				if(intval($row[$sort_parent]) === intval($node[$primary_field]))
+				$rowParentID = (int) $row[$sort_parent];
+				$nodeID      = (int) $node[$primary_field];
+				if($rowParentID === $nodeID)
 				{
 					$node['_children'][] = &$row;
 					unset($rows[$key]);
@@ -3453,6 +3443,31 @@ class e_tree_model extends e_front_model
 		}
 
 		return $flat;
+	}
+
+	/**
+	 * Resiliently counts the results from the last SQL query in the given resource
+	 *
+	 * Sets the count in $this->_total
+	 *
+	 * @param resource $sql SQL resource that executed a query
+	 * @return int Number of results from the latest query
+	 */
+	private function countResults($sql)
+	{
+		$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
+		{
+			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
+		//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
+
+			// Calculates correct total when using filters and search. //XXX Optimize.
+			$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
+
+			$this->_total = e107::getDb()->gen($countQry);
+
+		}
+		return $this->_total;
 	}
 
 	/**
