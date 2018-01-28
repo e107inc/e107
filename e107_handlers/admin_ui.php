@@ -4209,8 +4209,8 @@ class e_admin_controller_ui extends e_admin_controller
 			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
 			{
 			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$qry                = $this->getParentChildQry(true);
-				//$this->listOrder	= '_treesort '; // .$this->sortField;
+				$qry                = $this->getParentChildQry();
+				$this->listOrder	= '_treesort '; // .$this->sortField;
 			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
 			}
 			else
@@ -4337,18 +4337,84 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Return a Parent/Child SQL Query based on sortParent and sortField variables
-	 *
-	 * Note: Since 2018-01-28, the queries were replaced with pure PHP sorting. See:
-	 *       https://github.com/e107inc/e107/issues/3015
-	 *
 	 * @param bool|false $orderby - include 'ORDER BY' in the qry.
 	 * @return string
 	 */
 	public function getParentChildQry($orderby=false)
 	{
-		return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ";
-		// Use the following return statement to break e107 native sorting but speed up tree creation by presorting for e_tree_model::arrayToTree()
-		#return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ORDER BY ".$this->getSortParent().", ".$this->getSortField();
+
+		$parent= $this->getSortParent();
+		$table = $this->getTableName();
+		$pid = $this->getPrimaryName();
+		$order = $this->getSortField();
+
+
+
+		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
+
+		e107::getDb()->gen($sql);
+
+
+		$sql = "
+		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
+		BEGIN
+		    DECLARE depth INT;
+		    SET depth=1;
+
+		    WHILE project_id > 0 DO
+
+		        SELECT IFNULL(".$parent.",-1)
+		        INTO project_id
+		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
+
+		        IF project_id > 0 THEN
+		            SET depth = depth + 1;
+		        END IF;
+
+		    END WHILE;
+
+		    RETURN depth;
+
+		END
+		;
+		";
+
+
+		e107::getDb()->gen($sql);
+
+		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
+
+		e107::getDb()->gen($sql);
+        $sql = "
+        CREATE FUNCTION getTreeSort(incid INT)
+        RETURNS CHAR(255)
+        BEGIN
+                SET @parentstr = CONVERT(incid, CHAR);
+                SET @parent = -1;
+                label1: WHILE @parent != 0 DO
+                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
+                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
+                        SET incid = @parent;
+                END WHILE label1;
+
+                RETURN @parentstr;
+        END
+   ;
+
+        ";
+
+
+        e107::getDb()->gen($sql);
+
+        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
+
+		if($orderby === true)
+		{
+			$qry .= " ORDER BY _treesort";
+		}
+
+		return $qry;
 	}
 
 
@@ -6190,14 +6256,7 @@ class e_admin_ui extends e_admin_controller_ui
 			->setFieldIdName($this->pid)
             ->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
-			->setParams(array('model_class' => 'e_admin_model',
-			                  'model_message_stack' => 'admin_ui_model_'.$this->table ,
-			                  'db_query' => $this->listQry,
-			                  // Information necessary for PHP-based tree sort
-			                  'sort_parent' => $this->getSortParent(),
-			                  'sort_field' => $this->getSortField(),
-			                  'primary_field' => $this->getPrimaryName(),
-			                  ));
+			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
 
 		return $this;
 	}

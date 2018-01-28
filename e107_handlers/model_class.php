@@ -3310,6 +3310,7 @@ class e_tree_model extends e_front_model
 			return $this;
 		}
 
+		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
@@ -3322,7 +3323,6 @@ class e_tree_model extends e_front_model
 			);
 		}
 
-		$class_name = $this->getParam('model_class', 'e_model');
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
@@ -3330,12 +3330,8 @@ class e_tree_model extends e_front_model
 
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
-				$rows = self::flatTreeFromArray($sql->rows(),
-				                                $this->getParam('primary_field'),
-				                                $this->getParam('sort_parent'),
-				                                $this->getParam('sort_field')
-				                                );
-				foreach($rows as $tmp)
+				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+				while($tmp = $sql->db_Fetch())
 				{
 					$tmp = new $class_name($tmp);
 					if($this->getParam('model_message_stack'))
@@ -3344,9 +3340,20 @@ class e_tree_model extends e_front_model
 					}
 					$this->_onLoad($tmp)->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-				unset($tmp);
 
-				$this->countResults($sql);
+				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
+				{
+					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
+				//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
+
+					// Calculates correct total when using filters and search. //XXX Optimize.
+					$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
+
+					$this->_total = e107::getDb()->gen($countQry);
+
+				}
+
+				unset($tmp);
 			}
 
 			if($sql->getLastErrorNumber())
@@ -3363,111 +3370,6 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
-	}
-
-	/**
-	 * Depth-first sort a relational array with a parent field and a sort order field
-	 * @param array $rows Relational array with a parent field and a sort order field
-	 * @param string $primary_field The field name of the primary key (matches children to parents)
-	 * @param string $sort_parent The field name whose value is the parent ID
-	 * @param string $sort_field The field name whose value is the sort order in the current tree node
-	 * @return array Input array sorted depth-first as if it were a tree
-	 */
-	private static function flatTreeFromArray($rows, $primary_field, $sort_parent, $sort_field)
-	{
-		$rows_tree = self::arrayToTree($rows, $primary_field, $sort_parent);
-		return self::flattenTree($rows_tree, $sort_field);
-	}
-
-	/**
-	 * Converts a relational array with a parent field and a sort order field to a tree
-	 * @param array $rows Relational array with a parent field and a sort order field
-	 * @param string $primary_field The field name of the primary key (matches children to parents)
-	 * @param string $sort_parent The field name whose value is the parent ID
-	 * @return array Multidimensional array with child nodes under the "_children" key
-	 */
-	private static function arrayToTree($rows, $primary_field, $sort_parent)
-	{
-		$nodes = array();
-		$root = array($primary_field => 0);
-		$nodes[] = &$root;
-
-		while(!empty($nodes))
-		{
-			$node = &$nodes[0];
-			array_shift($nodes);
-			foreach($rows as $key => $row)
-			{
-				$rowParentID = (int) $row[$sort_parent];
-				$nodeID      = (int) $node[$primary_field];
-				if($rowParentID === $nodeID)
-				{
-					$node['_children'][] = &$row;
-					unset($rows[$key]);
-					$nodes[] = &$row;
-					unset($row);
-				}
-			}
-		}
-
-		return array(0 => $root);
-	}
-
-	/**
-	 * Flattens a tree into a depth-first array, sorting each node by a field's values
-	 * @param array $tree Tree with child nodes under the "_children" key
-	 * @param string $sort_field The field name whose value is the sort order in the current tree node
-	 * @param int $depth The depth that this level of recursion is entering
-	 * @return array One-dimensional array in depth-first order with depth indicated by the "_depth" key
-	 */
-	private static function flattenTree($tree, $sort_field = null, $depth = 0)
-	{
-		$flat = array();
-
-		foreach($tree as $item)
-		{
-			$children = $item['_children'];
-			unset($item['_children']);
-			$item['_depth'] = $depth;
-			if($depth > 0)
-				$flat[] = $item;
-			if(is_array($children))
-			{
-				uasort($children, function($node1, $node2)
-				{
-					if(intval($node1[$sort_field]) === intval($node2[$sort_field])) return 0;
-					return intval($node1[$sort_field]) < intval($node2[$sort_field]) ? -1 : 1;
-				});
-				$flat = array_merge($flat, self::flattenTree($children, $sort_field, $depth+1));
-			}
-		}
-
-		return $flat;
-	}
-
-	/**
-	 * Resiliently counts the results from the last SQL query in the given resource
-	 *
-	 * Sets the count in $this->_total
-	 *
-	 * @param resource $sql SQL resource that executed a query
-	 * @return int Number of results from the latest query
-	 */
-	private function countResults($sql)
-	{
-		$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
-		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
-		{
-			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
-		//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
-
-			// Calculates correct total when using filters and search. //XXX Optimize.
-			$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
-
-			$this->_total = e107::getDb()->gen($countQry);
-
-		}
-		return $this->_total;
 	}
 
 	/**
