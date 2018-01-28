@@ -147,11 +147,11 @@ class db_verify
 			$expected['default'] = $actual['default'];
 		}
 
-		// Loosely typed default value for int-like types
-		if(1 === preg_match('/[A-Z]*INT/i', $expected['type']))
+		// Loosely typed default value for numeric types
+		if(1 === preg_match('/([A-Z]*INT|NUMERIC|DEC|FIXED|FLOAT|REAL|DOUBLE)/i', $expected['type']))
 		{
-			$expected['default'] = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $expected['default']);
-			$actual['default']   = preg_replace("/DEFAULT '(\d+)'/i", 'DEFAULT $1', $actual['default']  );
+			$expected['default'] = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $expected['default']);
+			$actual['default']   = preg_replace("/DEFAULT '(\d*\.?\d*)'/i", 'DEFAULT $1', $actual['default']  );
 		}
 
 		return array_diff_assoc($expected, $actual);
