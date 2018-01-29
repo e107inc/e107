@@ -3394,23 +3394,36 @@ class e_tree_model extends e_front_model
 
 		while(!empty($nodes))
 		{
-			$node = &$nodes[0];
-			array_shift($nodes);
-			foreach($rows as $key => $row)
-			{
-				$rowParentID = (int) $row[$sort_parent];
-				$nodeID      = (int) $node[$primary_field];
-				if($rowParentID === $nodeID)
-				{
-					$node['_children'][] = &$row;
-					unset($rows[$key]);
-					$nodes[] = &$row;
-					unset($row);
-				}
-			}
+			self::moveRowsToTreeNodes($nodes, $rows, $primary_field, $sort_parent);
 		}
 
 		return array(0 => $root);
+	}
+
+	/**
+	 * Put rows with parent matching the ID of the first node into the next node's children
+	 * @param array &$nodes Current queue of nodes, the first of which may have children added to it
+	 * @param array &rows The remaining rows that have yet to be converted into children of nodes
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @returns null
+	 */
+	private static function moveRowsToTreeNodes(&$nodes, &$rows, $primary_field, $sort_parent)
+	{
+		$node = &$nodes[0];
+		array_shift($nodes);
+		foreach($rows as $key => $row)
+		{
+			$nodeID      = (int) $node[$primary_field];
+			$rowParentID = (int) $row[$sort_parent];
+			if($nodeID === $rowParentID)
+			{
+				$node['_children'][] = &$row;
+				unset($rows[$key]);
+				$nodes[] = &$row;
+				unset($row);
+			}
+		}
 	}
 
 	/**
