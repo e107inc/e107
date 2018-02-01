@@ -75,6 +75,7 @@ class e_plugin
 		'e_upload',
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
+		'e_gsitemap',
 	);
 
 
@@ -1067,6 +1068,7 @@ class e107plugin
 		'e_upload',
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
+		'e_gsitemap',
 	);
 
 
