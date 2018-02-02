@@ -614,7 +614,7 @@ class e_theme
 		$vars['path'] 			= $path;
 		$vars['@attributes']['default'] = (varset($vars['@attributes']['default']) && strtolower($vars['@attributes']['default']) == 'true') ? 1 : 0;
 		$vars['preview'] 		= varset($vars['screenshots']['image']);
-		$vars['thumbnail'] 		= isset($vars['preview'][0]) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]) ?  $vars['preview'][0] : '';
+		$vars['thumbnail'] 		= isset($vars['preview'][0]['@value']) && file_exists(e_THEME.$path.'/'.$vars['preview'][0]['@value']) ?  $vars['preview'][0]['@value'] : '';
 
 
 		if(!empty($vars['themePrefs']))
