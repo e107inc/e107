@@ -1869,7 +1869,7 @@ class e_model extends e_object
 }
 
 /**
- * Base e107 Fron Model class interface
+ * Base e107 Front Model class interface
  *
  * Some important points:
  * - model data should be always in toDB() format:
@@ -3222,6 +3222,29 @@ class e_tree_model extends e_front_model
 		return $this->_cache_string;
 	}
 
+	public function setCacheString($str = null)
+	{
+		if(isset($str))
+			return parent::setCacheString($str);
+
+		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		{
+			$str = !$this->getParam('db_query')
+				?
+					$this->getModelTable()
+					.$this->getParam('nocount')
+					.$this->getParam('db_where')
+					.$this->getParam('db_order')
+					.$this->getParam('db_limit')
+				:
+					$this->getParam('db_query');
+
+			return $this->setCacheString($this->getCacheString().'_'.md5($str));
+		}
+
+		return parent::setCacheString($str);
+	}
+
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -3274,12 +3297,6 @@ class e_tree_model extends e_front_model
 	 */
 	public function load($force = false)
 	{
-		// XXX What would break if changed to the most proper isTree()?
-		if(!$force && $this->isTree()) //!$this->isEmpty()
-		{
-			return $this;
-		}
-
 		if ($force)
 		{
 			$this->unsetTree()
@@ -3288,21 +3305,13 @@ class e_tree_model extends e_front_model
 			$this->_total = false;
 		}
 
-		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		// XXX What would break if changed to the most proper isTree()?
+		elseif($this->isTree()) //!$this->isEmpty()
 		{
-			$str = !$this->getParam('db_query')
-				?
-					$this->getModelTable()
-					.$this->getParam('nocount')
-					.$this->getParam('db_where')
-					.$this->getParam('db_order')
-					.$this->getParam('db_limit')
-				:
-					$this->getParam('db_query');
-
-			$this->setCacheString($this->getCacheString().'_'.md5($str));
+			return $this;
 		}
 
+		$this->setCacheString();
 		$cached = $this->_getCacheData();
 		if($cached !== false)
 		{
