@@ -1125,6 +1125,10 @@ class e_install
 		{
 			$this->previous_steps['prefs']['admincss'] = $tp->filter($_POST['admincss']);
 		}
+		else // empty
+		{
+			$this->previous_steps['prefs']['admincss'] = 'css/bootstrap-dark.min.css';
+		}
 
 		// -------------   Validate Step 5 Data. --------------------------
 		if(!vartrue($this->previous_steps['admin']['user']) || !vartrue($this->previous_steps['admin']['password']))
@@ -1893,7 +1897,7 @@ if($this->pdo == true)
 
 	//	require_once($this->e107->e107_dirs['HANDLERS_DIRECTORY']."theme_handler.php");
 	//	$tm = new themeHandler;
-		$xmlArray = e107::getTheme($theme_folder)->get();
+		$xmlArray = e107::getTheme($theme_folder, $this->debug)->get();
 
 		return (is_array($xmlArray)) ? $xmlArray : false;
 	}
