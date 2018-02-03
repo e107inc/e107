@@ -3337,6 +3337,9 @@ class e_tree_model extends e_front_model
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
+			// Workaround: Parse and modify db_query param for simulated pagination
+			$this->prepareSimulatedPagination();
+
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
 				$rows = self::flatTreeFromArray($sql->rows(),
@@ -3344,6 +3347,13 @@ class e_tree_model extends e_front_model
 				                                $this->getParam('sort_parent'),
 				                                $this->getParam('sort_field')
 				                                );
+
+				// Simulated pagination
+				$rows = array_splice($rows,
+				                     (int) $this->getParam('db_limit_offset'),
+				                     ($this->getParam('db_limit_count') ? $this->getParam('db_limit_count') : count($rows))
+				                     );
+
 				foreach($rows as $tmp)
 				{
 					$tmp = new $class_name($tmp);
@@ -3490,6 +3500,39 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this->_total;
+	}
+
+	/**
+	 * Workaround: Parse and modify query to prepare for simulation of tree pagination
+	 *
+	 * This is a hack to maintain compatibility of pagination of tree
+	 * models without SQL LIMITs
+	 *
+	 * Implemented out of necessity under
+	 * https://github.com/e107inc/e107/issues/3015
+	 *
+	 * @returns null
+	 */
+	private function prepareSimulatedPagination()
+	{
+		$db_query = $this->getParam('db_query');
+		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(,|OFFSET){0,1}[ ]*([\d]*)/", function($matches)
+		{
+			// Offset and count
+			if (isset($matches[3]))
+			{
+				$this->setParam('db_limit_offset', $matches[1]);
+				$this->setParam('db_limit_count', $matches[3]);
+			}
+			// Count only
+			else
+			{
+				$this->setParam('db_limit_count', $matches[1]);
+			}
+
+			return "";
+		}, $db_query);
+		$this->setParam('db_query', $db_query);
 	}
 
 	/**
