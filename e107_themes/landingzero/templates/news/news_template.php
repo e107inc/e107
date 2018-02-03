@@ -82,7 +82,7 @@ $NEWS_TEMPLATE['default']['item'] = '
 
 
 $NEWS_WRAPPER['default']['item']['NEWSIMAGE: item=1'] = ' ';
-
+$NEWS_TEMPLATE['default']['caption'] = '<!-- -->'; // trick to enable tablerender and display an empty row. .
 $NEWS_TEMPLATE['default']['item'] = '
                     {SETIMAGE: w=600&h=600}
                     <article class="post animated fadeInLeft animation-delay-8">
@@ -125,7 +125,7 @@ $NEWS_WRAPPER['view']['item']['NEWSIMAGE: item=1'] = '<span class="news-images-m
 
 $NEWS_TEMPLATE['view']['item'] = '
 {SETIMAGE: w=900&h=600}
- <section>
+ <section class="news-view-item">
 		<h2 class="post-title">{NEWSTITLELINK}</h2> {TAGS}
     <img src="{NEWSIMAGE: type=src&item=1}" class="img-responsive imageborder" alt="{NEWSTITLE}">
         <hr class="news-heading-sep">
