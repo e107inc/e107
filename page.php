@@ -275,7 +275,7 @@ class pageClass
 		
 		if($text)
 		{
-			$caption = varset($template['caption'], LAN_PAGE_15);
+			$caption = isset($template['caption']) ? $template['caption'] : LAN_PAGE_15;
             $this->pageOutput = array('caption'=>$caption, 'text'=>$text);
 			//e107::getRender()->tablerender($caption, $text, "cpage_list");
 		}
