@@ -313,6 +313,7 @@ class e107
 	 */
 	public function initCore($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
+
 		return $this->_init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override);
 	}
 
@@ -391,7 +392,7 @@ class e107
 			{
 				$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
 			}
-		
+
 			// Set default folder (and override paths) if missing from e107_config.php
 			$this->setDirs($e107_paths, $e107_config_override);
 				
@@ -400,7 +401,7 @@ class e107
 
 			// build all paths
 			$this->set_paths();
-			$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
+			$this->file_path = $this->fix_windows_paths($e107_root_path);
 
 			// set base path, SSL is auto-detected
 			$this->set_base_path();
@@ -425,7 +426,7 @@ class e107
 			$this->prepareDirs();
 		}
 
-		
+
 		return $this;
 	}
 
@@ -4141,15 +4142,8 @@ class e107
 		// Absolute file-path of directory containing class2.php
 		//	define("e_ROOT", realpath(dirname(__FILE__)."/../")."/");
 
-	  
-		$e_ROOT = realpath(dirname(__FILE__)."/../"); 
-          
-		if ((substr($e_ROOT,-1) != '/') && (substr($e_ROOT,-1) != '\\') ) 
-		{
-			$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now. 
-		}
 
-		define('e_ROOT',$e_ROOT);	
+
 
 		$this->relative_base_path = (!self::isCli()) ? $path : e_ROOT;
 		$this->http_path =  filter_var("http://{$_SERVER['HTTP_HOST']}{$this->server_path}", FILTER_SANITIZE_URL);
