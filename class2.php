@@ -113,6 +113,19 @@ if($register_globals == true)
 //	}
 //}
 
+// Set Absolute file-path of directory containing class2.php
+if(!defined('e_ROOT'))
+{
+	$e_ROOT = realpath(dirname(__FILE__)."/");
+
+	if ((substr($e_ROOT,-1) !== '/') && (substr($e_ROOT,-1) !== '\\') )
+	{
+		$e_ROOT .= DIRECTORY_SEPARATOR;  // Should function correctly on both windows and Linux now.
+	}
+
+	define('e_ROOT', $e_ROOT);
+	unset($e_ROOT);
+}
 
 // MOVED TO $e107->prepare_request()
 // e107 uses relative url's, which are broken by "pretty" URL's. So for now we don't support / after .php
@@ -200,7 +213,9 @@ else
 //
 // F: Grab e107_config, get directory paths and create $e107 object
 //
-@include(realpath(dirname(__FILE__).'/e107_config.php'));
+
+
+@include(e_ROOT.'e107_config.php');
 
 if(!defined('e_POWEREDBY_DISABLE'))
 {
@@ -209,7 +224,7 @@ if(!defined('e_POWEREDBY_DISABLE'))
 
 if(isset($CLASS2_INCLUDE) && ($CLASS2_INCLUDE!=''))
 {
-	 require_once(realpath(dirname(__FILE__).'/'.$CLASS2_INCLUDE));
+	 require_once(e_ROOT.$CLASS2_INCLUDE);
 }
 
 //define("MPREFIX", $mySQLprefix); moved to $e107->set_constants()
@@ -222,7 +237,7 @@ if(!isset($ADMIN_DIRECTORY))
 }
 
 // Upgrade Compatibility - Disable CL_WIDGETS before e107_class.php is loaded.
-$tmpPlugDir = realpath(dirname(__FILE__).'/'.$PLUGINS_DIRECTORY);
+$tmpPlugDir = e_ROOT.$PLUGINS_DIRECTORY;
 if(is_dir($tmpPlugDir."/cl_widgets"))
 {
 	rename($tmpPlugDir."/cl_widgets",$tmpPlugDir."/cl_widgets__");
@@ -231,7 +246,7 @@ unset($tmpPlugDir);
 //
 // clever stuff that figures out where the paths are on the fly.. no more need for hard-coded e_HTTP :)
 //
-$tmp = realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY);
+$tmp = e_ROOT.$HANDLERS_DIRECTORY;
 
 //Core functions - now API independent
 @require_once($tmp.'/core_functions.php');
@@ -242,7 +257,7 @@ unset($tmp);
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY','UPLOADS_DIRECTORY','SYSTEM_DIRECTORY', 'MEDIA_DIRECTORY','CACHE_DIRECTORY','LOGS_DIRECTORY', 'CORE_DIRECTORY', 'WEB_DIRECTORY');
 $sql_info = compact('mySQLserver', 'mySQLuser', 'mySQLpassword', 'mySQLdefaultdb', 'mySQLprefix', 'mySQLport');
-$e107 = e107::getInstance()->initCore($e107_paths, realpath(dirname(__FILE__)), $sql_info, varset($E107_CONFIG, array()));
+$e107 = e107::getInstance()->initCore($e107_paths, e_ROOT, $sql_info, varset($E107_CONFIG, array()));
 
 e107::getSingleton('eIPHandler');			// This auto-handles bans etc
 
@@ -253,9 +268,6 @@ if(!function_exists('spl_autoload_register'))
 	// PHP >= 5.1.2 required
 	die('Fatal exception - spl_autoload_* required.');
 }
-
-
-
 
 
 // allow disable of autoloading - may be removed as e107::autoload_register() is flexible enough
@@ -850,7 +862,8 @@ if (!function_exists('checkvalidtheme'))
 	{
 		// arg1 = theme to check
 		//global $ADMIN_DIRECTORY, $tp, $e107;
-		global $sql;
+	//	global $sql;
+		$sql = e107::getDb();
 		$e107 = e107::getInstance();
 		$tp = e107::getParser();
 		$ADMIN_DIRECTORY = $e107->getFolder('admin');
@@ -2354,7 +2367,7 @@ class error_handler
 	{
 		$this->label = array(E_NOTICE => "Notice", E_WARNING => "Warning", E_DEPRECATED => "Deprecated", E_STRICT => "Strict");
 		$this->color = array(E_NOTICE=> 'info', E_WARNING=>'warning', E_DEPRECATED => 'danger', E_STRICT => 'primary');
-		$this->docroot = dirname(realpath(__FILE__)).DIRECTORY_SEPARATOR;
+		$this->docroot = e_ROOT; // dirname(realpath(__FILE__)).DIRECTORY_SEPARATOR;
 
 		// This is initialized before the current debug level is known
 		if(function_exists('xdebug_get_function_stack'))
