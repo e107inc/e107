@@ -561,16 +561,17 @@ class xmlClass
 			//loop through tags
 			foreach ($tags as $tag)
 			{
+				if(is_int($tag)) continue;
 				switch($tag)
 				{
 					case '@attributes':
 						$tmp = (array) $xml->attributes();
 						$ret['@attributes'] = $tmp['@attributes'];
 
-						if($count_tags == 1) //only attributes & possible value
+						if($count_tags == 1 || ['@attributes', 0] === $tags) //only attributes & possible value
 						{
 							$ret[$this->_optValueKey] = trim((string) $xml);
-							return $ret;
+							//return $ret;
 						}
 					break;
 
