@@ -1,0 +1,3 @@
+[submodule "e107"]
+	path = e107
+	url = git@github.com:e107inc/e107.git
