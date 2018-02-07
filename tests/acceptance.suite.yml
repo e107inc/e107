@@ -8,5 +8,11 @@ actor: AcceptanceTester
 modules:
     enabled:
         - PhpBrowser:
-            url: http://localhost/myapp
-        - \Helper\Acceptance
+            url: http://set-this-if-running-acceptance-tests-manually.local
+        - \Helper\Acceptance:
+secrets:
+  cpanel:
+    enabled:  '%cpanel.enabled%'
+    hostname: '%cpanel.hostname%'
+    username: '%cpanel.username%'
+    password: '%cpanel.password%'
