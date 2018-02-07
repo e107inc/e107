@@ -1,0 +1,8 @@
+/secrets.yml
+/tests/_output/*
+/tests/_support/_generated/*
+
+error_log
+
+*.swp
+*.swo
