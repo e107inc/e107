@@ -1,13 +1,15 @@
 <?php
 
-include_once(__DIR__ . "/cpaneluapi/cpaneluapi.class.php");
+include_once(__DIR__ . "/../cpaneluapi/cpaneluapi.class.php");
 
 define('ACCEPTANCE_TEST_PREFIX', 'acceptance-test-');
 
-class Prepare_cPanel
+class cPanelDeployer
 {
 	protected $credentials;
 	protected $cPanel;
+	protected $homedir;
+	protected $docroot;
 	protected $domain;
 	protected $run_id;
 
@@ -24,7 +26,7 @@ class Prepare_cPanel
         public function start()
         {
 		self::println();
-		self::println("=== Prepare cPanel ===");
+		self::println("=== cPanel Deployer – Bring Up ===");
 		$creds = $this->credentials;
 		if (!$creds['hostname'] ||
 		    !$creds['username'] ||
@@ -52,28 +54,28 @@ class Prepare_cPanel
 			throw new Exception("Cannot connect to cPanel at \"${hostname}\" with username \"${username}\" and password \"${password}\"");
 		}
 		$userdata = $domains_data->{'data'};
-		$homedir = $userdata->{'main_domain'}->{'homedir'};
-		$docroot = $userdata->{'main_domain'}->{'documentroot'};
+		$this->homedir = $homedir = $userdata->{'main_domain'}->{'homedir'};
+		$this->docroot = $docroot = $userdata->{'main_domain'}->{'documentroot'};
 		$this->domain = $domain = $userdata->{'main_domain'}->{'domain'};
 
-		self::println("Obtained domain name from cPanel: " . $this->domain);
+		self::println("Obtained home directory from cPanel: " . $this->homedir);
+		self::println("Obtained document root from cPanel:  " . $this->docroot);
+		self::println("Obtained domain name from cPanel:    " . $this->domain);
 
-		self::println("Retrieving existing registered tests from cPanel account…");
 		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $homedir);
 		
+		self::println("Adding this test (".$this->run_id.") to registered tests list…");
 		$run_time = microtime(true);
 		array_push($acceptance_tests,
 		           ['id' => $run_id,
 		            'time' => $run_time
 			   ]);
 		
-		self::println("Writing this test to registered tests list in cPanel account…");
 		self::write_acceptance_tests($cPanel, $homedir, $acceptance_tests);
 		
 		$valid_acceptance_test_ids = self::get_acceptance_test_ids($acceptance_tests);
 		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
 
-		self::println("Pruning expired tests…");
 		self::prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids);
 
 		$db_id = "${username}_${run_id}";
@@ -95,9 +97,16 @@ class Prepare_cPanel
 
 	public function stop()
 	{
-		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $homedir);
-		$acceptance_tests = self::prune_acceptance_tests($acceptance_tests, $this->run_id);
-		self::write_acceptance_tests($cPanel, $homedir, $acceptance_tests);
+		self::println("=== cPanel Deployer – Tear Down ===");
+		$cPanel = $this->cPanel;
+		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $this->homedir);
+		self::println("Removing this test (".$this->run_id.") from registered tests list…");
+		self::prune_acceptance_tests($acceptance_tests, $this->run_id);
+		self::write_acceptance_tests($cPanel, $this->homedir, $acceptance_tests);
+
+		$valid_acceptance_test_ids = self::get_acceptance_test_ids($acceptance_tests);
+		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
+		self::prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids);
 	}
 
 	private static function println($text = '')
@@ -107,6 +116,7 @@ class Prepare_cPanel
 
 	private static function prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids)
 	{
+		self::println("Pruning expired tests…");
 		$listdbs = $cPanel->api2->MysqlFE->listdbs()->{'cpanelresult'}->{'data'};
 		self::prune_mysql_databases($listdbs, $valid_acceptance_test_ids, $cPanel);
 
@@ -116,12 +126,13 @@ class Prepare_cPanel
 
 	private static function get_active_acceptance_tests($cPanel, $homedir)
 	{
+		self::println("Retrieving existing registered tests from cPanel account…");
 		$acceptance_tests = [];
 		$acceptance_tests_apiresponse = $cPanel->uapi->Fileman->get_file_content(['dir' => $homedir, 'file' => 'acceptance_tests.status.txt']);
 		if (!is_null($acceptance_tests_apiresponse->{'data'}))
 		{
 			$acceptance_tests_raw = $acceptance_tests_apiresponse->{'data'}->{'content'};
-			$acceptance_tests = json_decode($acceptance_tests_raw, true);
+			$acceptance_tests = (array) json_decode($acceptance_tests_raw, true);
 			self::prune_acceptance_tests($acceptance_tests);
 		}
 		return $acceptance_tests;
@@ -138,6 +149,7 @@ class Prepare_cPanel
 			}
 		}
 		$list = array_values($list);
+		return $list;
 	}
 
 	private static function get_acceptance_test_ids(array $list)
@@ -154,6 +166,7 @@ class Prepare_cPanel
 	{
 		$acceptance_tests_json = json_encode($acceptance_tests, JSON_PRETTY_PRINT);
 		
+		self::println("Saving registered tests list to cPanel account…");
 		$cPanel->uapi->Fileman->save_file_content(['dir' => $homedir, 'file' => 'acceptance_tests.status.txt', 'content' => $acceptance_tests_json]);
 	}
 
