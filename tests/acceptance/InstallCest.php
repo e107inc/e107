@@ -12,9 +12,10 @@ class InstallCest
     }
 
     // tests
-    public function tryToTest(AcceptanceTester $I)
+    public function installWelcomePageContainsExpectedContent(AcceptanceTester $I)
     {
-    	$I->amOnPage('/');
-	$I->see("Home");
+    	$I->amOnPage('/install.php');
+	$I->see("e107 Installation :: Step 1");
+	$I->see("Language Selection");
     }
 }

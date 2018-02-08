@@ -18,8 +18,8 @@ class Acceptance extends \Codeception\Module
 			$retcode = $this->deployer->start();
 			if ($retcode === true)
 			{
-				$domain = $this->deployer->getDomain();
-		   		$this->getModule('PhpBrowser')->_reconfigure(array('url' => "http://${domain}"));
+				$url = $this->deployer->getUrl();
+		   		$this->getModule('PhpBrowser')->_reconfigure(array('url' => $url));
 			}
 		}
 	}
