@@ -24,6 +24,11 @@ class cPanelDeployer
 		return $this->domain;
 	}
 
+	public function getUrl()
+	{
+		return "http://".$this->domain."/".$this->run_id."/";
+	}
+
         public function start()
         {
 		self::println();
