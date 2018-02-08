@@ -2,34 +2,32 @@
 
 include_once(__DIR__ . "/../cpaneluapi/cpaneluapi.class.php");
 
-define('ACCEPTANCE_TEST_PREFIX', 'acceptance-test-');
-define('TARGET_RELPATH', 'public_html/');
 
 class cPanelDeployer
 {
 	protected $credentials;
 	protected $cPanel;
+	protected $run_id;
+
 	protected $homedir;
 	protected $docroot;
 	protected $domain;
-	protected $run_id;
+
+	protected const TEST_PREFIX = 'test-';
+	protected const TARGET_RELPATH = 'public_html/';
+	protected const DEFAULT_COMPONENTS = ['db', 'fs'];
 
         function __construct($credentials)
         {
                 $this->credentials = $credentials;
         }
 
-	public function getDomain()
-	{
-		return $this->domain;
-	}
-
 	public function getUrl()
 	{
 		return "http://".$this->domain."/".$this->run_id."/";
 	}
 
-        public function start()
+        public function start($components = self::DEFAULT_COMPONENTS)
         {
 		self::println();
 		self::println("=== cPanel Deployer – Bring Up ===");
@@ -42,11 +40,47 @@ class cPanelDeployer
 			return false;
 		}
 
-		$username = &$creds['username'];
-		$password = &$creds['password'];
-		$hostname = &$creds['hostname'];
+		$this->prepare();
+
+		foreach ($components as $component)
+		{
+			$method = "prepare_${component}";
+			if (!method_exists($this, $method))
+			{
+				self::println("Unsupported component \"${component}\" requested. Falling back to manual mode…");
+				return false;
+			}
+		}
+		foreach ($components as $component)
+		{
+			$method = "prepare_${component}";
+			$this->$method();
+		}
+
+		return true;
+	}
+
+	public function stop()
+	{
+		self::println("=== cPanel Deployer – Tear Down ===");
+		$cPanel = $this->cPanel;
+		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $this->homedir);
+		self::println("Removing this test (".$this->run_id.") from registered tests list…");
+		self::prune_acceptance_tests($acceptance_tests, $this->run_id);
+		self::write_acceptance_tests($cPanel, $this->homedir, $acceptance_tests);
+
+		$valid_acceptance_test_ids = self::get_acceptance_test_ids($acceptance_tests);
+		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
+		self::prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids);
+	}
+
+	private function prepare()
+	{
+		$username = &$this->credentials['username'];
+		$password = &$this->credentials['password'];
+		$hostname = &$this->credentials['hostname'];
 		
-		$this->run_id = $run_id = uniqid(ACCEPTANCE_TEST_PREFIX);
+		$this->run_id = $run_id = uniqid(self::TEST_PREFIX);
 
 		self::println("Test run ID: ".$this->run_id);
 
@@ -83,7 +117,13 @@ class cPanelDeployer
 		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
 
 		self::prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids);
+	}
 
+	private function prepare_db()
+	{
+		$cPanel = $this->cPanel;
+		$username = &$this->credentials['username'];
+		$run_id = &$this->run_id;
 		$db_id = "${username}_${run_id}";
 		self::println("Creating new MySQL database \"${db_id}\"…");
 		$cPanel->uapi->Mysql->create_database(['name' => $db_id]);
@@ -91,50 +131,41 @@ class cPanelDeployer
 		self::println("Creating new MySQL user \"${db_id}\" with password \"${run_id}\"…");
 		$cPanel->uapi->Mysql->create_user(['name' => $db_id, 'password' => $run_id]);
 		self::println("Granting ALL PRIVILEGES to MySQL user \"${db_id}\"…");
-		$cPanel->uapi->Mysql->set_privileges_on_database(['user' => "${username}_${run_id}",
-		                                                  'database' => "${username}_${run_id}",
+		$cPanel->uapi->Mysql->set_privileges_on_database(['user' => $db_id,
+		                                                  'database' => $db_id,
 		                                                  'privileges' => 'ALL PRIVILEGES'
 		                                                  ]);
+	}
 
+	private function prepare_fs()
+	{
+		$cPanel = $this->cPanel;
 		$app_archive = self::archive_app(APP_PATH, $this->run_id);
 		$app_archive_path = stream_get_meta_data($app_archive)['uri'];
 		$app_archive_name = basename($app_archive_path);
 		self::println("Sending archive to cPanel server…");
 		$cPanel->uapi->post->Fileman
-		       ->upload_files(['dir' => TARGET_RELPATH,
+		       ->upload_files(['dir' => self::TARGET_RELPATH,
 		                       'file-1' => new CURLFile($app_archive_path)
 		                       ]);
 		self::println("Extracting archive on cPanel server…");
 		$cPanel->api2->Fileman
 		       ->fileop(['op' => 'extract',
-		                 'sourcefiles' => TARGET_RELPATH.$app_archive_name,
+		                 'sourcefiles' => self::TARGET_RELPATH.$app_archive_name,
 		                 'destfiles' => '.'
 		                 ]);
 		self::println("Deleting archive from cPanel server…");
 		$cPanel->api2->Fileman
 		       ->fileop(['op' => 'unlink',
-		                 'sourcefiles' => TARGET_RELPATH.$app_archive_name
+		                 'sourcefiles' => self::TARGET_RELPATH.$app_archive_name
 		                 ]);
-		return true;
-	}
-
-	public function stop()
-	{
-		self::println("=== cPanel Deployer – Tear Down ===");
-		$cPanel = $this->cPanel;
-		$acceptance_tests = self::get_active_acceptance_tests($cPanel, $this->homedir);
-		self::println("Removing this test (".$this->run_id.") from registered tests list…");
-		self::prune_acceptance_tests($acceptance_tests, $this->run_id);
-		self::write_acceptance_tests($cPanel, $this->homedir, $acceptance_tests);
-
-		$valid_acceptance_test_ids = self::get_acceptance_test_ids($acceptance_tests);
-		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
-		self::prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids);
 	}
 
 	private static function println($text = '')
 	{
-		echo($text."\n");
+		echo("${text}\n");
+		//$prefix = debug_backtrace()[1]['function'];
+		//echo("[\033[1m${prefix}\033[0m] ${text}\n");
 	}
 
 	private static function prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids)
@@ -146,16 +177,16 @@ class cPanelDeployer
 		$listdbusers = $cPanel->api2->MysqlFE->listusers()->{'cpanelresult'}->{'data'};
 		self::prune_mysql_users($listdbusers, $valid_acceptance_test_ids, $cPanel);
 
-		$target_files_apiresponse = $cPanel->uapi->Fileman->list_files(['dir' => TARGET_RELPATH]);
+		$target_files_apiresponse = $cPanel->uapi->Fileman->list_files(['dir' => self::TARGET_RELPATH]);
 		$target_files = $target_files_apiresponse->{'data'};
 		foreach ($target_files as $target_file)
 		{
 			$questionable_filename = $target_file->{'file'};
-			if (substr($questionable_filename, 0, strlen(ACCEPTANCE_TEST_PREFIX)) === ACCEPTANCE_TEST_PREFIX &&
+			if (substr($questionable_filename, 0, strlen(self::TEST_PREFIX)) === self::TEST_PREFIX &&
 			    !in_array($questionable_filename, $valid_acceptance_test_ids))
 			{
-				self::println("Deleting expired test folder \"".TARGET_RELPATH.$questionable_filename."\"…");
-				$cPanel->api2->Fileman->fileop(['op' => 'unlink', 'sourcefiles' => TARGET_RELPATH.$questionable_filename]);
+				self::println("Deleting expired test folder \"".self::TARGET_RELPATH.$questionable_filename."\"…");
+				$cPanel->api2->Fileman->fileop(['op' => 'unlink', 'sourcefiles' => self::TARGET_RELPATH.$questionable_filename]);
 			}
 		}
 	}
@@ -211,7 +242,7 @@ class cPanelDeployer
 		foreach ($dbs as $db)
 		{
 			$db = (array) $db;
-			$offset = strpos($db['db'], ACCEPTANCE_TEST_PREFIX);
+			$offset = strpos($db['db'], self::TEST_PREFIX);
 			$questionable_db = substr($db['db'], $offset);
 			if (!in_array($questionable_db, $ids))
 			{
@@ -226,7 +257,7 @@ class cPanelDeployer
 		foreach ($users as $user)
 		{
 			$user = (array) $user;
-			$offset = strpos($user['user'], ACCEPTANCE_TEST_PREFIX);
+			$offset = strpos($user['user'], self::TEST_PREFIX);
 			$questionable_user = substr($user['user'], $offset);
 			if (!in_array($questionable_user, $ids))
 			{
