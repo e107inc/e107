@@ -20,8 +20,8 @@ The acceptance test suite can deploy itself onto a cPanel account automatically.
 ### Limitations
 
 * **PHP version cannot be set** – The test suite currently does not have the ability to set custom versions of PHP for the target app directory.  If the cPanel host supports multiple versions of PHP (e.g. EasyApache 4 MultiPHP, CloudLinux alt-php), they will have to be configured manually to test different PHP versions.
-* **MariaDB username character limit** – cPanel MariaDB usernames are limited to 47 characters in length, and test runs are expected to use 29 plus the length of your cPanel username plus 1.
-* **MariaDB database character limit** – cPanel MariaDB databases are limited to 64 characters in length, and test runs are expected to use 29 plus the length of your cPanel username plus 2.  (cPanel double-counts underscores (`_`), so the visible character count is 1 less than what cPanel counts.)
+* **MariaDB username character limit** – cPanel MariaDB usernames are limited to 47 characters in length, and test runs are expected to use 18 plus the length of your cPanel username plus 1.
+* **MariaDB database character limit** – cPanel MariaDB databases are limited to 64 characters in length, and test runs are expected to use 18 plus the length of your cPanel username plus 2.  (cPanel double-counts underscores (`_`), so the visible character count is 1 less than what cPanel counts.)
 * **cPanel max POST size** – The cPanel PHP maximum POST request size can be as low as 55MiB on some hosts.  If the app's archive form exceeds this size, the upload will fail.  This limit can be adjusted in the hosting provider's server-wide WHM settings.
 
 ### Configuration
