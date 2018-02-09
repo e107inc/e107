@@ -358,18 +358,17 @@ class e_parse_shortcode
 		if(trim($className)==""){ return null; }
 
 		$_class_fname = $className;
-		if($pluginName === TRUE) //XXX When called manually by a plugin, not e_shortcode.php  eg. $sc = e107::getScBatch('faqs',TRUE); for faqs_shortcode.php with class faqs_shortcode
+		if($pluginName === true) //XXX When called manually by a plugin, not e_shortcode.php  eg. $sc = e107::getScBatch('faqs',TRUE); for faqs_shortcode.php with class faqs_shortcode
 		{
+			// @todo FAQs is incorrect and should use plugin_ as a prefix.
 			$pluginName = str_replace("_shortcodes","",$className);	
 			$manualCall = true; 	
 		}
-		elseif(is_string($pluginName))
+		elseif(is_string($pluginName)) //@fixme - stuck with it.
 		{
-			// FIXME "plugin_ " should NOT be used or be necessary. 
-			// FIXME Core classes should use special naming to avoid comflicts, not plugins.  
-			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className); 
+			$className = 'plugin_'.$pluginName.'_'.str_replace('/', '_', $className);
 		}
-		
+
 		$globalOverride = $this->isBatchOverride(str_replace('plugin_', '', $className));
 		
 		// forced override
@@ -451,7 +450,7 @@ class e_parse_shortcode
 		if (is_readable($path))
 		{
 			require_once($path);
-			// e107::getDebug()->log("Loading Class '".$className."' in <b>".$path."</b>");
+			//e107::getDebug()->log("Loading Class '".$className."' in <b>".$path."</b>");
 
 			if (class_exists($className, false)) // don't allow __autoload()
 			{
@@ -460,15 +459,25 @@ class e_parse_shortcode
 				// $this->registerClassMethods($className, $path);  // XXX Global registration should happen separately - here we want only the object. 
 				return $this->scClasses[$className];
 			}
+			elseif(class_exists("plugin_".$className,false)) // v2.1.7 = Fix path issues. getScObject('myplugin',true) should load: plugin_myplugin_shortcodes class.
+			{
+				$className = "plugin_".$className;
+				$this->scClasses[$className] = new $className();
+				return $this->scClasses[$className];
+			}
 			elseif(E107_DBG_BBSC || E107_DBG_SC)
 			{
 			// 	echo "<h3>Couldn't Find Class '".$className."' in <b>".$path."</b></h3>";
 				echo "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>";
 			}
+			else
+			{
+				e107::getDebug()->log("Couldn't Find Class '".$className."' OR 'plugin_".$className."'in <b>".$path."</b>");
+			}
 		}
 		else
 		{
-			e107::getDebug()->log("Couldn't Find Class '".$className."' in <b>".$path."</b>");
+			e107::getDebug()->log("File not available: <i>".$path."</i>. Couldn't Find Class '".$className."' in <b>".$path."</b>");
 		}
 
 	//	e107::getDebug()->log( "<div class='alert alert-danger'>Couldn't Load: <b>".$path."</b> with class-name:<b> {$className}</b> and pluginName <b>{$pluginName}</b></div>");

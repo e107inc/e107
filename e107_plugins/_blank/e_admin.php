@@ -11,7 +11,7 @@ class _blank_admin
 	 * @param $ui admin-ui object
 	 * @return array
 	 */
-	public function config($ui)
+	public function config(e_admin_ui $ui)
 	{
 		$action     = $ui->getAction(); // current mode: create, edit, list
 		$type       = $ui->getEventName(); // 'wmessage', 'news' etc. (core or plugin)
@@ -41,19 +41,20 @@ class _blank_admin
 	 * @param object $ui admin-ui
 	 * @param int|array $id - Primary ID of the record being created/edited/deleted or array data of a batch process.
 	 */
-	public function process($ui, $id=0)
+	public function process(e_admin_ui $ui, $id=0)
 	{
 
-		$data       = $ui->getPosted();
-		$type       = $ui->getEventName();
+		$data       = $ui->getPosted(); // ie $_POST field-data
+		$type       = $ui->getEventName(); // eg. 'news'
 		$action     = $ui->getAction(); // current mode: create, edit, list, batch
+		$changed    = $ui->getModel()->dataHasChanged(); // true when data has changed from what is in the DB.
 
-		if($action == 'delete')
+		if($action === 'delete')
 		{
 			return;
 		}
 
-		if($action == 'batch')
+		if($action === 'batch')
 		{
 			$arrayOfRecordIds = $id['ids'];
 			$command = $id['cmd'];
@@ -68,7 +69,7 @@ class _blank_admin
 			if(!empty($data['x__blank_url']))
 			{
 
-				// Save the data in 'blank' plugin table. .
+				// eg. Save the data in 'blank' plugin table. .
 
 			}
 
@@ -86,4 +87,3 @@ class _blank_admin
 
 
 
-?>

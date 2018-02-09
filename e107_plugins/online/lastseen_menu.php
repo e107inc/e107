@@ -27,7 +27,7 @@ else
 	require_once(e_PLUGIN.'online/online_shortcodes.php');
 }
 
-if(deftrue('BOOTSTRAP'))
+if(THEME_LEGACY !== true)
 {
 	$LASTSEEN_TEMPLATE = e107::getTemplate('online','online_menu', 'lastseen'); // $ONLINE_MENU_TEMPLATE['lastseen'];
 }

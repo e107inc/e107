@@ -34,10 +34,7 @@ $NEWS_MENU_TEMPLATE['months']['item']        = '
 ';
 //$NEWS_MENU_TEMPLATE['months']['separator']   = '<br />';
 
-
-
-
-
+ 
 
 // latest menu
 $NEWS_MENU_TEMPLATE['latest']['start']       = '<ul class="news-menu-latest">';
@@ -130,6 +127,23 @@ $NEWS_MENU_TEMPLATE['carousel']['nav'] = '<li data-target="#news-carousel" data-
 
 
 // TODO
-$NEWS_MENU_TEMPLATE['archive'] = array();
+$NEWS_MENU_TEMPLATE['archive']['start']       = '<ul class="news-archive-menu">';
+$NEWS_MENU_TEMPLATE['archive']['end']         = '</ul>';
+
+$NEWS_MENU_TEMPLATE['archive']['year_start']        = "<li>
+<a class='e-expandit {EXPANDOPEN}' href='#{YEAR_ID}'>{YEAR_NAME}</a>
+<ul id='{YEAR_ID}' class='news-archive-menu-months' style='display:{YEAR_DISPLAY}'>
+";
+$NEWS_MENU_TEMPLATE['archive']['year_end']        = '</ul></li>';
+
+$NEWS_MENU_TEMPLATE['archive']['month_start']        = "<li>
+ <a class='e-expandit' href='#{MONTH_ID}'>{MONTH_NAME}</a>
+ <ul id='{MONTH_ID}' class='news-archive-menu-items' style='display:none'>
+ ";
+$NEWS_MENU_TEMPLATE['archive']['month_end']        = '</ul></li>';
+
+$NEWS_MENU_TEMPLATE['archive']['item']        = "
+	<li><a href='{ITEM_URL}'>{ITEM_TITLE}</a></li>
+";
 
 

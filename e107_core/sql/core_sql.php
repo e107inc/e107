@@ -365,7 +365,7 @@ CREATE TABLE online (
   online_agent varchar(255) NOT NULL default '',
   online_language varchar(2) NOT NULL default '',
   KEY online_ip (online_ip),
-  KEY online_user_id (online_user_id),
+  KEY online_ip_user_id (online_ip, online_user_id),
   KEY online_timestamp (online_timestamp)
 ) ENGINE=InnoDB;
 # --------------------------------------------------------

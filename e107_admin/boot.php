@@ -28,14 +28,14 @@ if(!empty($_GET['iframe'])) // global iframe support.
 }
 
 // .e-sef-generate routine.
-if(ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_POST['source']) && e_AJAX_REQUEST)
+if(e_AJAX_REQUEST && ADMIN && defset('e_ADMIN_UI') && varset($_POST['mode']) == 'sef' && !empty($_POST['source']))
 {
 	$d = array('converted'=> eHelper::title2sef($_POST['source']));
 	echo json_encode($d);
 	exit;
 }
 
-if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
+if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'core' && ($_GET['type'] == 'update'))
 {
 
 		require_once(e_ADMIN.'update_routines.php');
@@ -52,7 +52,7 @@ if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET[
 
 }
 
-if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
+if(e_AJAX_REQUEST && getperms('0') &&  varset($_GET['mode']) == 'addons' && ($_GET['type'] == 'update'))
 {
 	e107::getSession()->set('addons-update-checked',true);
 
@@ -85,7 +85,7 @@ if(getperms('0') && e_AJAX_REQUEST && varset($_GET['mode']) == 'addons' && ($_GE
 }
 
 
-if(ADMIN && e_AJAX_REQUEST && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
+if(e_AJAX_REQUEST &&  ADMIN && varset($_GET['mode']) == 'core' && ($_GET['type'] == 'feed'))
 {
 
 	$limit = 3;
@@ -198,16 +198,25 @@ e107::coreLan('footer', true);
 {
 	$_globalLans = e107::pref('core', 'lan_global_list'); 
 	$_plugins = e107::getPref('plug_installed');
-	if(!deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
+	$plugDir = e107::getFolder('plugins');
+
+	if(strpos(e_REQUEST_URI,$plugDir) !== false && !deftrue('e_ADMIN_UI') && !empty($_plugins) && !empty($_globalLans) && is_array($_plugins) && (count($_plugins) > 0))
 	{
 		$_plugins = array_keys($_plugins);
 		
 		foreach ($_plugins as $_p) 
 		{
-			if(in_array($_p, $_globalLans) && defset('e_CURRENT_PLUGIN') != $_p) // filter out those with globals unless we are in a plugin folder.
+			if(defset('e_CURRENT_PLUGIN') != $_p)
 			{
-				continue; 	
+				continue;
 			}
+
+			if(in_array($_p, $_globalLans)) // filter out those with globals unless we are in a plugin folder.
+			{
+				continue;
+			}
+			
+			e107::getDb()->db_Mark_Time('[boot.php: Loading LANS for '.$_p.']');
 			e107::loadLanFiles($_p, 'admin');
 		}
 	}
@@ -215,6 +224,7 @@ e107::coreLan('footer', true);
 
 
 // Get Icon constants, theme override (theme/templates/admin_icons_template.php) is allowed
+e107::getDb()->db_Mark_Time('[boot.php: Loading admin_icons]');
 include_once(e107::coreTemplatePath('admin_icons'));
 
 

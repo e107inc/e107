@@ -62,7 +62,7 @@ if(isset($message))
 //display admin page
 $text = $rc->admin->display();
 
-e107::getRender()->tablerender(LAN_PLUGIN_LISTNEW_NAME, $mes->render(). $text);
+e107::getRender()->tablerender(LAN_PLUGIN_LIST_NEW_NAME, $mes->render(). $text);
 
 /**
  * Display admin menu

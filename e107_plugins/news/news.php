@@ -92,12 +92,17 @@ class news_front
 
 		$this->text .= $this->renderDefaultTemplate();
 
-		if(isset($this->pref['nfp_display']) && $this->pref['nfp_display'] == 2 && is_readable(e_PLUGIN."newforumposts_main/newforumposts_main.php"))
+		// BC replacement for newforumposts_main
+		if(e107::isInstalled('newforumposts_main') && !empty($this->pref['nfp_display']))
 		{
-			ob_start();
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-			$this->text .= ob_get_contents();
-			ob_end_clean();
+			$parms = array('layout'=>'main', 'display'=>$this->pref['nfp_amount']);
+
+			if(!empty($this->pref['nfp_layer']) && !empty($this->pref['nfp_layer_height']))
+			{
+				$parms['scroll'] = $this->pref['nfp_layer_height'];
+			}
+
+			$this->text .= e107::getMenu()->renderMenu('forum','newforumposts_menu', $parms, true);
 		}
 
 		$this->text .= $this->show_newsarchive();
@@ -105,6 +110,8 @@ class news_front
 		return null;
 
 	}
+
+
 
 
 	private function getRenderId()
@@ -914,7 +921,7 @@ class news_front
 			$c = 1;
 			foreach($newsList as $row)
 			{
-				$tpl = ($c === 1 && !empty($template['first'])) ? $template['first'] : $template['item'];
+				$tpl = ($c === 1 && !empty($template['first']) && $this->from === 0) ? $template['first'] : $template['item'];
 
 				$text .= $this->ix->render_newsitem($row, 'return', '', $tpl, $param);
 				$c++;

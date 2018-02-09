@@ -29,7 +29,7 @@ $GALLERY_TEMPLATE['list']['end'] = '
 <div class="center">
 	<div class="gallery-list-nextprev">{GALLERY_NEXTPREV}</div>
 	<div class="gallery-list-back">
-		<a class="btn btn-default" href="{GALLERY_BASEURL}">' . LAN_BACK . '</a>
+		<a class="btn btn-default btn-secondary" href="{GALLERY_BASEURL}">' . LAN_BACK . '</a>
 	</div>
 </div>
 ';
@@ -66,10 +66,10 @@ $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 </div>
 
 <div class="gallery-slideshow-controls">
-	<a href="#" class="gallery-control gal-next btn btn-xs btn-default pull-right">
+	<a href="#" class="gallery-control gal-next btn btn-xs btn-default btn-secondary pull-right">
 		' . LAN_NEXT . ' {GLYPH=fa-chevron-right}
 	</a>
-	<a href="#" class="gallery-control gal-prev btn btn-xs btn-default">
+	<a href="#" class="gallery-control gal-prev btn btn-xs btn-default btn-secondary">
 		{GLYPH=fa-chevron-left} ' . LAN_PREVIOUS . '
 	</a>
 	<span class="gallery-slide-jumper-container">
@@ -94,7 +94,7 @@ $GALLERY_TEMPLATE['prettyphoto']['content'] = '
 				<div class="pp_content">
 					<div class="pp_loaderIcon"></div>
 					<div class="pp_fade">
-						<a href="#" class="pp_expand" title="'.LAN_GALLERY_FRONT_02.'">'.LAN_EXPAND.'</a>
+						<a href="#" class="pp_expand" title="'.LAN_EXPAND.'">'.LAN_EXPAND.'</a>
 						<div class="pp_hoverContainer">
 							<a class="pp_next" href="#">' . LAN_NEXT . '</a>
 							<a class="pp_previous" href="#">' . LAN_PREVIOUS . '</a>

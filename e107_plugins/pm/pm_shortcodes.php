@@ -556,7 +556,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 			{
 				$icon = (deftrue('FONTAWESOME')) ? e107::getParser()->toGlyph('fa-user-plus','fw=1') : "<img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png'  alt='".LAN_PM_51."' class='icon S16' />";
 
-				return "<a class='btn  btn-default btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
+				return "<a class='btn  btn-default btn-secondary btn-danger' href='".$this->url('action/unblock', 'id='.$this->var['pm_from'])."' title='".LAN_PM_51."'>".$icon."</a>";
 			}
 			else
 			{
@@ -721,7 +721,7 @@ if(!class_exists('plugin_pm_pm_shortcodes'))
 
 		public function sc_pm_delete_blocked_selected()
 		{
-			return "<input type='submit' name='pm_delete_blocked_selected' class='btn btn-default button' value='".LAN_PM_53."' />";
+			return "<input type='submit' name='pm_delete_blocked_selected' class='btn btn-default btn-secondary button' value='".LAN_PM_53."' />";
 		}
 
 

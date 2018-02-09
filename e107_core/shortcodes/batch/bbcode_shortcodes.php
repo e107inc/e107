@@ -46,7 +46,7 @@ class bbcode_shortcodes extends e_shortcode
 		if(BOOTSTRAP)
 		{
 				$text = '<div class="btn-group">';
-				$text .= '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" title="">';
+				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="">';
 				$text .= "Format";
 				$text .= ' <span class="caret"></span></a>';
 				$text .= "<ul class='dropdown-menu'>\n";
@@ -64,7 +64,7 @@ class bbcode_shortcodes extends e_shortcode
 		
 		
 		// Legacy Version. 
-		$text = "<select class='btn btn-default e-bb bbcode_buttons e-pointer' id='{$id}' title='Format text' onchange=\"addtext(this.value);this.value=''\">
+		$text = "<select class='btn btn-default btn-secondary e-bb bbcode_buttons e-pointer' id='{$id}' title='Format text' onchange=\"addtext(this.value);this.value=''\">
 			<option value=''>Format</option>		
 			<option value='[p][/p]'>Paragraph</option>
 			<option value='[h2][/h2]'>Heading</option>
@@ -165,7 +165,7 @@ class bbcode_shortcodes extends e_shortcode
 	{
 		$data = "[link=*]*[/link]";
 		$event = $this->getEvent('addinput',$data,LANHELP_35);
-		$text = "<a {$event} class='btn btn-default e-bb ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_23)."' data-bbcode='{$data}'>\n";
+		$text = "<a {$event} class='btn btn-default btn-secondary e-bb ' id='{$id}' data-function='input' href='#{$this->var['tagid']}' title='".$this->br2nl(LANHELP_23)."' data-bbcode='{$data}'>\n";
 	//	$text .="<img class='btn btn-small bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/link.png' alt='' title='".nl2br(LANHELP_23)."' />";
 		
 		$text .= $this->button(e_IMAGE_ABS.'bbcode/link.png', 'link');
@@ -247,7 +247,7 @@ class bbcode_shortcodes extends e_shortcode
 			$sizes = array(7,8,9,10,11,12,14,15,18,20,22,24,26,28,30,36);
 
 			$text = '<div class="btn-group">';
-			$text .= '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" title="'.LANHELP_22.'">';
+			$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#" title="'.LANHELP_22.'">';
 		//	$text .= "<img src='".e_IMAGE_ABS."bbcode/fontsize.png' alt=''  />\n";
 			$text .= $this->button(e_IMAGE_ABS."bbcode/fontsize.png", 'text-height');
 			
@@ -302,7 +302,7 @@ class bbcode_shortcodes extends e_shortcode
 			if(deftrue('BOOTSTRAP'))
 			{
 				$text = '<div class="btn-group" >';
-				$text .= '<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#"  title="'.LANHELP_44.'">';
+				$text .= '<a class="btn btn-default btn-secondary dropdown-toggle" data-toggle="dropdown" href="#"  title="'.LANHELP_44.'">';
 				$text .= $this->button(e_IMAGE_ABS."bbcode/emotes.png","smile-o"); 
 			//	$text .= ' <span class="caret"></span>';
 				
@@ -371,7 +371,7 @@ class bbcode_shortcodes extends e_shortcode
 		 $event = $this->getEvent('expandit',$formid, LANHELP_22);
 		 
 		 
-		$text = "<a {$event} class='btn btn-default e-bb' id='{id}' data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
+		$text = "<a {$event} class='btn btn-default btn-secondary e-bb' id='{id}' data-function='show' href='#{$this->var['tagid']}' title='".LANHELP_22."' data-bbcode='{$data}'>
 		<img class='bbcode_buttons e-pointer' src='".e_IMAGE_ABS."bbcode/fontcol.png' alt='' title='".LANHELP_21."' /></a>";
 		
 	//	return $text;
@@ -591,12 +591,12 @@ class bbcode_shortcodes extends e_shortcode
 
 		if($_onclick_func == 'e-dialog')
 		{  //  $tagid = "news-body";
-			$pre = "\n<a href='".e_ADMIN."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default e-dialog' >";
+			$pre = "\n<a href='".e_ADMIN."image.php?mode=main&action=dialog&for=news&tagid=".$tagid."&iframe=1&bbcode=1' class='btn btn-default btn-secondary e-dialog' >";
 			$post = "</a>\n";	
 		}
 		else
 		{
-			$pre = "<a class='btn btn-default  ".vartrue($bbcode[$parm][7], 'e-pointer')."' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." >";
+			$pre = "<a class='btn btn-default btn-secondary  ".vartrue($bbcode[$parm][7], 'e-pointer')."' title=\"".str_replace('<br />','\\n',($_helptxt))."\" onclick=\"{$_onclick_func}('".$_onclick_var."')\" ".($bbcode_helpactive ? "onmouseout=\"{$bbcode_help}(''{$bbcode_tag})\" onmouseover=\"{$bbcode_help}('".$_helptxt."'{$bbcode_tag})\"" : "" )." >";
 			$post = "</a>\n";	 // btn-small bbcode bbcode_buttons
 		}
 

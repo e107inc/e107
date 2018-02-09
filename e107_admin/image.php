@@ -593,41 +593,51 @@ class media_form_ui extends e_admin_form_ui
 	{
 
 		$text = "";
-	
-		$frm = e107::getForm();
+
 		$pref 	= e107::getPref();
 		
 		$options = array(
-			"news-image" 			=> LAN_IMA_O_001,
-			"news-bbcode" 			=> LAN_IMA_O_002,
-			"page-bbcode" 			=> LAN_IMA_O_003,
+	//		"news-image" 			=> LAN_IMA_O_001,
+	//		"news-bbcode" 			=> LAN_IMA_O_002,
+	//		"page-bbcode" 			=> LAN_IMA_O_003,
 		//	"featurebox-image" 		=> LAN_IMA_O_004,
 		//	"featurebox-bbcode" 	=> LAN_IMA_O_005,
 		);
-		
-		if(vartrue($pref['e_imageresize']) && is_array($pref['e_imageresize']))
+
+		$options = $pref['resize_dimensions'];
+
+		/* @deprecated  */
+		if(!empty($pref['e_imageresize']) && is_array($pref['e_imageresize']))
 		{
 			foreach($pref['e_imageresize'] as $k=>$val)
 			{
-			
 				$options[$k]		= ucfirst($k)." ".LAN_IMA_O_006;
 			}
 		}
-		
-		$options = $pref['resize_dimensions'];
-		
+
+		unset($options['news-image']); /* @deprecated  */
+
+		$text = "<table class='table table-striped table-condensed table-bordered' style='width:400px; margin-bottom:0'>
+		<tr>
+			<th>".LAN_TYPE."</th>
+			<th class='text-right'>".LAN_WIDTH."</th>
+			<th class='text-right'>".LAN_HEIGHT."</th>
+		</tr>\n";
+
+
 		foreach($options as $key=>$title)
 		{
 			$title = ucwords(str_replace("-"," ",$key));
 			$valW = vartrue($curval[$key]['w']);
 			$valH = vartrue($curval[$key]['h']);
 		
-			$text .= "<div style='margin-bottom:8px; text-align:right; width:400px'>".$title.": ";
-			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' /> X ";
-			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
-			$text .= "</div>";
-		//	$text .= $frm->text("resize_dimensions[{$key}]",$val, 5, array('size'=>'5')).$title."<br />";			
-		}	
+			$text .= "<tr><td style='width:45%'>".$title."</td><td class='text-right'>";
+			$text .= "<input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][w]' value='$valW' size='5' title='maximum width in pixels' />";
+			$text .= "</td><td class='text-right'><input class='e-tip e-spinner input-small' placeholder='ex. 400' style='text-align:right' type='text' name='resize_dimensions[{$key}][h]' value='$valH' size='5' title='maximum height in pixels' />";
+			$text .= "</td></tr>";
+
+		}
+		$text .= "</table>";
 		
 	//	$text .= "<div><br />Warning: This feature is experimental.</div>";
 		
@@ -886,7 +896,7 @@ class media_admin_ui extends e_admin_ui
 
 		'im_width'						=> array('title'=> IMALAN_75, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
 		'im_height'						=> array('title'=> IMALAN_77, 'type'=>'number', 'data'=>'int', 'writeParms'=>'', 'help'=>IMALAN_76),
-		'resize_dimensions'				=> array('title'=> IMALAN_79, 'type'=>'method', 'data'=>'str'),
+		'resize_dimensions'				=> array('title'=> IMALAN_184, 'type'=>'method', 'data'=>'str'),
 		
 		'watermark_activate'			=> array('title'=> IMALAN_80, 'tab'=>1, 'type' => 'number', 'data' => 'str', 'help'=>IMALAN_81), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
 		'watermark_text'				=> array('title'=> IMALAN_82,'tab'=>1, 'type' => 'text', 'data' => 'str', 'help'=>IMALAN_83), // 'validate' => 'regex', 'rule' => '#^[\d]+$#i', 'help' => 'allowed characters are a-zA-Z and underscore')),
@@ -1507,7 +1517,7 @@ class media_admin_ui extends e_admin_ui
 			<button type='submit' class='btn btn-success submit e-dialog-save' data-bbcode='".$options['bbcode']."' data-target='".$this->getQuery('tagid')."' name='save_image' value='Save it'  >
 			<span>".LAN_SAVE."</span>
 			</button>
-			<button type='submit' class=' btn btn-default submit e-dialog-close' name='cancel_image' value='Cancel' >
+			<button type='submit' class=' btn btn-default btn-secondary submit e-dialog-close' name='cancel_image' value='Cancel' >
 			<span>".LAN_CANCEL."</span>
 			</button>
 			</div>";
@@ -1599,8 +1609,8 @@ class media_admin_ui extends e_admin_ui
 		{
 			$items[] = array( 
 					'previewUrl'	=> 'fa fa-'.$val,
-					'saveValue'		=> $val.'.glyph',
-					'thumbUrl'		=> $val,
+					'saveValue'		=> 'fa-'.$val.'.glyph',
+					'thumbUrl'		=> 'fa-'.$val,
 					'title'			=> $val,
 					'slideCaption'	=> 'Font-Awesome 4',
 					'slideCategory'	=> 'font-awesome'
@@ -1617,6 +1627,7 @@ class media_admin_ui extends e_admin_ui
 			foreach($custom as $glyphConfig)
 			{
 
+
 				$tmp = e107::getMedia()->getGlyphs($glyphConfig,$glyphConfig['prefix']);
 
 				if(!empty($tmp))
@@ -1624,7 +1635,7 @@ class media_admin_ui extends e_admin_ui
 					foreach($tmp as $val)
 					{
 						$items[] = array(
-							'previewUrl'	=> $val,
+							'previewUrl'	=> $glyphConfig['class']." ".$val,
 							'saveValue'		=> $val.'.glyph',
 							'thumbUrl'		=> $val,
 							'title'			=> $val,
@@ -2549,6 +2560,20 @@ class media_admin_ui extends e_admin_ui
 
 	function afterDelete($deleted_data, $id) // call after 'delete' is successfully executed. - delete the file with the db record (optional pref)
 	{
+
+		if(!empty($deleted_data['media_url']))
+		{
+			$status = e107::getFile()->delete($deleted_data['media_url']);
+
+			$message = ($status !== false) ? LAN_UI_FILE_DELETED : LAN_UI_FILE_DELETED_FAILED;
+
+			$mes = e107::getParser()->lanVars($message,$deleted_data['media_url'], true);
+
+			$errType = ($status) ? E_MESSAGE_SUCCESS : E_MESSAGE_ERROR;
+
+			e107::getMessage()->add($mes, $errType);
+
+		}
 
 	}
 

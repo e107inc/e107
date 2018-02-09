@@ -533,8 +533,8 @@ class e_form
 
 
 			
-			$active = ($key ==$initTab) ? ' class="active"' : '';
-			$text .= '<li'.$active.'><a href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
+			$active = ($key ==$initTab) ? ' class="nav-item active"' : ' class="nav-item"';
+			$text .= '<li'.$active.'><a class="nav-link" href="#'.$key.'" data-toggle="tab">'.$tab['caption'].'</a></li>';
 			$c++;
 		}
 		
@@ -955,11 +955,15 @@ class e_form
 		}
 		else
 		{
-				$title = LAN_EDIT;
+			$title = LAN_EDIT;
 		}
 
+		$class = !empty($extras['class']) ? $extras['class']." " : '';
+		$title = !empty($extras['title']) ? $extras['title'] : $title;
+
+
 	//	$ret = "<a title=\"{$title}\" rel='external' class='e-dialog' href='".$url."'>".$label."</a>"; // using colorXXXbox. 
-	 $ret = "<a title=\"{$title}\" class='e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap. 
+	    $ret = "<a title=\"{$title}\" class='".$class."e-modal' data-modal-caption='".LAN_EFORM_007."' data-cache='false' data-target='#uiModal' href='".$url."'>".$label."</a>"; // using bootstrap.
 
 	
 	//	$footer = "<div style=\'padding:5px;text-align:center\' <a href=\'#\' >Save</a></div>";
@@ -1032,7 +1036,7 @@ class e_form
 		{			
 			$text = "<input class='tbox' style='width:80%' id='{$idinput}' type='text' name='image' size='40' value='$curVal' maxlength='100' title=\"".LAN_SIGNUP_111."\" />";
 			$text .= "<img src='".$img."' id='{$previnput}' style='display:none' />";
-			$text .= "<input class='img-rounded rounded btn btn-default button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />";
+			$text .= "<input class='img-rounded rounded btn btn-default btn-secondary button e-expandit' type ='button' style='cursor:pointer' size='30' value=\"".LAN_EFORM_002."\"  />";
 		}
 						
 		$avFiles = e107::getFile()->get_files(e_AVATAR_DEFAULT,".jpg|.png|.gif|.jpeg|.JPG|.GIF|.PNG");
@@ -1114,7 +1118,7 @@ class e_form
 
 
 	/**
-	 * FIXME {IMAGESELECTOR} rewrite
+	 * Image Picker
 	
 	 * @param string $name input name
 	 * @param string $default default value
@@ -1140,6 +1144,10 @@ class e_form
 		{
 			if(strpos($sc_parameters, '=') === false) $sc_parameters = 'media='.$sc_parameters;
 			parse_str($sc_parameters, $sc_parameters);
+		}
+		elseif(empty($sc_parameters))
+		{
+			$sc_parameters = array();
 		}
 
 
@@ -1204,17 +1212,18 @@ class e_form
 			$ret = "<div class='imgselector-container'  style='display:block;width:64px;min-height:64px'>";
 			$thpath = isset($sc_parameters['nothumb']) || vartrue($hide) ? $default : $default_thumb;
 			
-			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector img-responsive img-fluid' >";			
+			$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector icon-selector img-responsive img-fluid' >";
 			$label .= $tp->toIcon($default_url,array('class'=>'img-responsive img-fluid'));
 
             //$label = "<div id='{$name_id}_prev' class='text-center well well-small image-selector' >";			
 			//$label .= $tp->toIcon($default_url);
 			
-			$label .= "				
-			</div>";
+			$label .= "</div>";
 			
 		//	$label = "<img id='{$name_id}_prev' src='{$default_url}' alt='{$default_url}' class='well well-small image-selector' style='{$style}' />";
-				
+
+
+			$ret = $this->mediaUrl($cat, $label, $name_id, $sc_parameters);
 		}
 		else // Images 
 		{
@@ -1235,34 +1244,39 @@ class e_form
 			 	$cat = $cat . "_image";		
 			}
 
+			$sc_parameters['class'] = 'btn btn-sm btn-default';
 
+			if($blank === true)
+			{
+				$sc_parameters['title'] = LAN_ADD;
+				$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$sc_parameters);
+				$previewIcon     = '';
+
+				// @todo drag-n-drop upload code in here.
+			}
+			else
+			{
+				$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$sc_parameters);
+				$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
+			}
+
+			$ret .= $label; // image
+
+			$ret .= '<div class="overlay">
+				    <div class="text">'.$editIcon.$previewIcon.'</div>
+				  </div>';
 		}
 
-		if(!empty($previewURL))
-		{
-			$default_url = $previewURL;
-		}
 
-
-		$ret .= $this->mediaUrl($cat, $label,$name_id,$sc_parameters);
-
-		if($cat != '_icon' && $blank == false) // ICONS
-		{
-			$ret .= "<div class='text-right'><a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-block e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$default_url."'>".$tp->toGlyph('fa-search')."</a></div>";
-		}
 		$ret .= "</div>\n";
 		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />"; 
 		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />"; 
-	//	$ret .=	$this->text($name,$default); // to be hidden eventually. 
-		return $ret;
-		
 
-		
-		
-		
-		// ----------------
+		return $ret;
 
 	}
+
+
 
 	private function imagepickerDefault($path, $parms=array())
 	{
@@ -1333,7 +1347,7 @@ class e_form
 		
 		
 		$default_label 				= ($default) ? $default : LAN_CHOOSE_FILE;
-		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-small'>".basename($default_label)."</span>";
+		$label 						= "<span id='{$name_id}_prev' class='btn btn-default btn-secondary btn-small'>".basename($default_label)."</span>";
 			
 		$sc_parameters['mode'] 		= 'main';
 		$sc_parameters['action'] 	= 'dialog';	
@@ -1771,11 +1785,11 @@ class e_form
 		
 		if(vartrue($options['generate']))
 		{
-			$gen = '&nbsp;<a href="#" class="btn btn-default btn-small e-tip" id="Spn_PasswordGenerator" title=" '.LAN_GEN_PW.' " >'.LAN_GENERATE.'</a> ';
+			$gen = '&nbsp;<a href="#" class="btn btn-default btn-secondary btn-small e-tip" id="Spn_PasswordGenerator" title=" '.LAN_GEN_PW.' " >'.LAN_GENERATE.'</a> ';
 			
 			if(empty($options['nomask']))
 			{
-				$gen .= '<a class="btn btn-default btn-small e-tip" href="#" id="showPwd" title=" '.LAN_DISPL_PW.' ">'.LAN_SHOW.'</a><br />';	
+				$gen .= '<a class="btn btn-default btn-secondary btn-small e-tip" href="#" id="showPwd" title=" '.LAN_DISPL_PW.' ">'.LAN_SHOW.'</a><br />';
 			}
 		}
 		
@@ -1784,7 +1798,7 @@ class e_form
 			$addon .= "<div style='margin-top:4px'><div  class='progress' style='float:left;display:inline-block;width:218px;margin-bottom:0'><div class='progress-bar bar' id='pwdMeter' style='width:0%' ></div></div> <div id='pwdStatus' class='smalltext' style='float:left;display:inline-block;width:150px;margin-left:5px'></span></div>";
 		}
 		
-		$options['pattern'] = vartrue($options['pattern'],'[\S]{4,}');
+		$options['pattern'] = vartrue($options['pattern'],'[\S].{2,}[\S]');
 		$options['required'] = varset($options['required'], 1);
 		$options['class'] = vartrue($options['class'],'e-password tbox');
 
@@ -1927,7 +1941,7 @@ class e_form
    		 	$text .= "</div>
     	</div>";
 		
-		$loading = vartrue($options['loading'],LAN_LOADING);
+		$loading = vartrue($options['loading'], defset('LAN_LOADING', "Loading"));
 		
 		$buttonId = $target.'-start';
 		
@@ -2026,7 +2040,7 @@ class e_form
 
 			case 'large':
 			default:
-				$rows = '15';
+				$rows = '20';
 				$size = 'large input-block-level';
 			//	$height = "style='height:500px;width:1025px'"; // inline required for wysiwyg
 			break;
@@ -2971,23 +2985,23 @@ class e_form
 		{
 			case 'edit':
 				$icon = (e_ADMIN_AREA === true) ? ADMIN_EDIT_ICON : $tp->toIcon("e-edit-32");
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action edit' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action edit' : $options['class'];
 			break;
 
 			case 'delete':
 				$icon = (e_ADMIN_AREA === true) ? ADMIN_DELETE_ICON : $tp->toIcon('fa-trash.glyph');
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action delete' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action delete' : $options['class'];
 				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
 			break;
 
 			case 'execute':
 				$icon = (e_ADMIN_AREA === true) ? ADMIN_EXECUTE_ICON : $tp->toIcon('fa-power-off.glyph');
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action execute' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action execute' : $options['class'];
 			break;
 
 			case 'view':
 				$icon = $tp->toIcon("e-view-32");
-				$options['class'] = $options['class'] == 'action' ? 'btn btn-default action view' : $options['class'];
+				$options['class'] = $options['class'] == 'action' ? 'btn btn-default btn-secondary action view' : $options['class'];
 			break;
 		}
 
@@ -3069,13 +3083,14 @@ class e_form
 		
 		$opt = array();
 		
-		$homeIcon = e107::getParser()->toGlyph('icon-home.glyph',false);
+		$homeicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-home' : 'icon-home.glyph'; 
+		$homeIcon = e107::getParser()->toGlyph($homeicon,false);
 		
 		
 		$opt[] = "<a href='".e_HTTP."'>".$homeIcon."</a>"; // Add Site-Pref to disable?
 		
 		$text = '<ul class="breadcrumb">
-			<li>';
+			<li class="breadcrumb-item">';
 
 		foreach($array as $val)
 		{
@@ -3095,9 +3110,9 @@ class e_form
 			}	
 		}
 	
-		$sep = (deftrue('BOOTSTRAP') === 3) ? "" : "<span class='divider'>/</span>";
+		$sep = (deftrue('BOOTSTRAP')) ? "" : "<span class='divider'>/</span>";
 	
-		$text .= implode($sep."</li><li>",$opt); 
+		$text .= implode($sep."</li><li class='breadcrumb-item'>",$opt); 
 	
 		$text .= "</li></ul>";
 		
@@ -4201,7 +4216,7 @@ class e_form
 			}
 
 			$query = http_build_query($query);
-			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
+			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 				".$editIconDefault."</a>";
 		}
 
@@ -4672,7 +4687,7 @@ class e_form
 					if($ttl == 1)
 					{
 						$dataAttr = "data-text-more='" . LAN_MORE . "' data-text-less='" . LAN_LESS . "'";
-						$ttl = $expand."<button class='btn btn-default btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . "</button>";
+						$ttl = $expand."<button class='btn btn-default btn-secondary btn-xs btn-mini pull-right' {$dataAttr}>" . LAN_MORE . "</button>";
 					}
 					
 					$expands = '<a href="#'.$elid.'-expand" class="e-show-if-js e-expandit e-expandit-inline">'.defset($ttl, $ttl)."</a>";
@@ -5245,7 +5260,7 @@ class e_form
 		if(!empty($attributes['multilan']))
 		{
 			$value = is_array($value) ? varset($value[e_LANGUAGE],'') : $value;
-			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>";
+			$parms['post'] = "<small class='e-tip admin-multilanguage-field input-group-addon' style='cursor:help; padding-left:10px' title='".LAN_EFORM_012." (".e_LANGUAGE.")'>".$tp->toGlyph('fa-language')."</small>".varset($parms['post']);
 			$key = $key.'['.e_LANGUAGE.']';
 		}
 		
@@ -5389,7 +5404,8 @@ class e_form
 
 				if(!empty($attributes['multilan']))
 				{
-					$ret = "<span class='input-group input-xxlarge'>".$ret."</span>";
+					$msize = vartrue($parms['size'], 'xxlarge');
+					$ret = "<span class='input-group input-".$msize."'>".$ret."</span>";
 				}
 				
 			break;
@@ -5524,14 +5540,18 @@ class e_form
 			break;
 
 			case 'layouts': //to do - exclude param (exact match)
-				$location = varset($parms['plugin']); // empty - core
-				$ilocation = vartrue($parms['id'], $location); // omit if same as plugin name
-				$where = vartrue($parms['area'], 'front'); //default is 'front'
-				$filter = varset($parms['filter']);
-				$merge = vartrue($parms['merge']) ? true : false;
 
+				$location   = varset($parms['plugin']); // empty - core
+				$ilocation  = vartrue($parms['id'], $location); // omit if same as plugin name
+				$where      = vartrue($parms['area'], 'front'); //default is 'front'
+				$filter     = varset($parms['filter']);
+				$merge      = isset($parms['merge']) ? (bool) $parms['merge'] : true;
 
-				if($tmp = e107::getTemplateInfo($location,$ilocation, null,true,$merge)) // read xxxx_INFO array from template file.
+				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, false);
+
+				return vartrue($parms['pre'],'').$this->select($key, $layouts,$value,$parms).vartrue($parms['post'],'');
+
+			/*	if($tmp = e107::getTemplateInfo($location,$ilocation, null,true,$merge)) // read xxxx_INFO array from template file.
 				{
 					$opt = array();
 					foreach($tmp as $k=>$inf)
@@ -5540,10 +5560,11 @@ class e_form
 					}
 
 					return vartrue($parms['pre'],'').$this->select($key,$opt,$value,$parms).vartrue($parms['post'],'');
-				}
+				}*/
 
-				$layouts = e107::getLayouts($location, $ilocation, $where, $filter, $merge, true);
 
+
+/*
 				if(varset($parms['default']) && !isset($layouts[0]['default']))
 				{
 					$layouts[0] = array('default' => $parms['default']) + $layouts[0];
@@ -5558,8 +5579,10 @@ class e_form
 					}
 				}
 
+				*/
+
 				//$this->selectbox($key, $layouts, $value)
-				$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value,array('sep'=>"<br />"), $info));
+			//	$ret =  (vartrue($parms['raw']) ? $layouts[0] : $this->radio_multi($key, $layouts[0], $value,array('sep'=>"<br />"), $info));
 			break;
 
 			case 'templates': //to do - exclude param (exact match)
@@ -7039,7 +7062,7 @@ class form
 		$name = ($form_name ? " id='".$form_name."' name='".$form_name."'" : "");
 		$image = ($form_image ? " src='".$form_image."' " : "");
 		$tooltip = ($form_tooltip ? " title='".$form_tooltip."' " : "");
-		return "\n<input class='btn btn-default button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
+		return "\n<input class='btn btn-default btn-secondary button' type='".$form_type."' ".$form_js." value='".$form_value."'".$name.$image.$tooltip." />";
 	}
 
 	function form_textarea($form_name, $form_columns, $form_rows, $form_value, $form_js = "", $form_style = "", $form_wrap = "", $form_readonly = "", $form_tooltip = "") {

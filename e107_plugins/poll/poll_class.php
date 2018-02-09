@@ -769,7 +769,7 @@ class poll
 
 				$text .="
 				</div>
-				<input class='btn btn-default button' type='button' name='addoption' value='".LAN_ADD_MORE."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
+				<input class='btn btn-default btn-secondary button' type='button' name='addoption' value='".LAN_ADD_MORE."' onclick=\"duplicateHTML('pollopt','pollsection')\" /><br />
 				</td>
 			</tr>
 			<tr>
@@ -1057,7 +1057,7 @@ class poll_shortcodes extends e_shortcode
 
 		if (('preview' == $this->pollType || $this->pollPreview == true) && strpos(e_REQUEST_SELF, "forum") === false)
 		{
-			return "<input class='button btn btn-default e-tip' type='button' name='null' title='".LAN_SUBMIT."' value='".LAN_SUBMIT."' />";
+			return "<input class='button btn btn-default btn-secondary e-tip' type='button' name='null' title='".LAN_SUBMIT."' value='".LAN_SUBMIT."' />";
 		}
 
 		return "<input class='button btn btn-primary' type='submit' name='pollvote' value='".LAN_SUBMIT."' />";

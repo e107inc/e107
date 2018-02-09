@@ -603,9 +603,10 @@ class e_menu
 		global $sc_style, $e107_debug;
 				
 
-		$sql = e107::getDb();
-		$ns = e107::getRender();
-		$tp = e107::getParser();
+		$sql        = e107::getDb();
+		$ns         = e107::getRender();
+		$tp         = e107::getParser();
+		$e107cache  = e107::getCache(); // Often used by legacy menus.
 
 		if($tmp = e107::unserialize($parm)) // support e_menu.php e107 serialized parm.
 		{

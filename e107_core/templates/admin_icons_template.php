@@ -137,6 +137,11 @@ if (!defined('E_32_LANGUAGE')) {
 }
 
 // Large Admin Other Link Images
+// Large Admin Other Link Images
+if (!defined('E_24_PLUGIN')) {
+	define('E_24_PLUGIN', "<i class='S24 e-plugins-24'></i> ");
+}
+
 if (!defined('E_32_PLUGIN')) {
 	define('E_32_PLUGIN', "<i class='S32 e-plugins-32'></i> ");
 }

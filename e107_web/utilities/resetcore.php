@@ -278,7 +278,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 	}
 	echo "
 		<tr>
-		<td colspan='2' style='text-align:center'><br /><input class='btn btn-default button' type='submit' name='coreedit_sub' value='Save Core Settings' /></td>
+		<td colspan='2' style='text-align:center'><br /><input class='btn btn-default btn-secondary button' type='submit' name='coreedit_sub' value='Save Core Settings' /></td>
 		</tr>
 		</table>
 		<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
@@ -318,7 +318,7 @@ echo "<span class='headertext2'>
 	<tr>
 	<td colspan='2' style='text-align:center'>
 	<br />
-	<input class='btn btn-default button' type='submit' name='usubmit' value='Continue' />
+	<input class='btn btn-default btn-secondary button' type='submit' name='usubmit' value='Continue' />
 	</td>
 	</tr>
 	</table>

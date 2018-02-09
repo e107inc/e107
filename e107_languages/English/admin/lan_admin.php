@@ -353,6 +353,7 @@ define("LAN_UPLOAD_CONFIRM","Any unsaved changes to this page will be lost. Cont
 define("LAN_UPLOAD_777","Folder is missing or not writable, you need to CHMOD 777 the following folder before uploading:");
 define("LAN_UPLOAD_SERVEROFF", "This option is disabled as file uploading is not enabled on your server");
 define("LAN_WIDTH","Width");
+define("LAN_HEIGHT","Height");
 
 define("LAN_ON","On");
 define("LAN_OFF", "Off");
@@ -391,7 +392,6 @@ define("LAN_MEDIAMANAGER", "Media Manager");
 define("LAN_MOREINFO","More Information...");
 define("LAN_COMMENTMAN", "Comments Manager");
 
-define("LAN_LIST", "List");
 define("LAN_FILTER", "Filter");
 // define("LAN_NO_RECORDS", "No Records Found");
 define("LAN_STATUS", "Status");

@@ -21,10 +21,6 @@ $FORUM_VIEW_START = "
 	<div class='spacer'>
 	<table style='".USER_WIDTH."' class='fborder table' >
 	<tr>
-	<td class='fcaption'>{BREADCRUMB}</td>
-	</tr>
-	{SUBFORUMS}
-	<tr>
 	<td style='width:80%' class='forumheader'>
 	<span class='mediumtext'>{FORUMTITLE}</span></td>
 	</tr>
@@ -165,7 +161,7 @@ if (empty($FORUM_VIEW_END))
 		<div class='spacer'>
 		<table class='fborder table' style='".USER_WIDTH."'>
 		<tr>
-		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{MODERATORS}</span></td>
+		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{LAN=LAN_FORUM_1009}: {MODERATORS}</span></td>
 		<td style='vertical-align:middle; width:50%' class='forumheader3'><span class='smalltext'>{BROWSERS}</span></td>
 		</tr>
 		</table>

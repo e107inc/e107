@@ -289,11 +289,11 @@ e107::js('footer-inline', js());
 
 		protected $adminMenu = array(
 
-			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
-			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0'),
-			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0'),
-			'cat/list'		=> array('caption'=> LAN_CATEGORIES, 'perm' => '0'),
-			'cat/create'		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => '0'),
+			'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
+			'main/add'		=> array('caption'=>  EXTLAN_45, 'perm' => '0|4'),
+			'main/create'		=> array('caption'=> EXTLAN_81, 'perm' => '0|4'),
+			'cat/list'		=> array('caption'=> LAN_CATEGORIES, 'perm' => '0|4'),
+			'cat/create'		=> array('caption'=> LAN_CREATE_CATEGORY, 'perm' => '0|4'),
 
 
 			// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
@@ -2111,7 +2111,7 @@ class users_ext
 				<input type='hidden' name='eu_action' value='delcat' />
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
 				<a class='btn btn-default'  href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-				<button class='btn btn-default action delete' type='submit' title='".LAN_DELETE."' name='eudel' data-confirm='".LAN_JSCONFIRM."' >".ADMIN_DELETE_ICON."</button>
+				<button class='btn btn-default btn-secondary action delete' type='submit' title='".LAN_DELETE."' name='eudel' data-confirm='".LAN_JSCONFIRM."' >".ADMIN_DELETE_ICON."</button>
 				</div>
 				</form>
 				</td>

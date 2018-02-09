@@ -21,7 +21,7 @@ vf, vt, etc. in the comments refer to the LAN defined in the previously separate
 vf = viewforum, vt = viewtopic, p = post, etc.
 */
 
-define("e_PAGETITLE", "Forum");
+// define("e_PAGETITLE", "Forum");
 
 // forum.php (forum_template)
 // define("LAN_FORUM_0001", "Forum"); // LAN_46	

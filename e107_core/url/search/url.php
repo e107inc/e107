@@ -29,19 +29,20 @@ class core_search_url extends eUrlConfig
 	/**
 	 * Query mapping
 	 */
-	public function create($route, $params = array(), $options)
+	public function create($route, $params = array(), $options=array())
 	{
 		if(!$params) return 'search.php';
 		
 		return 'search.php?'.eFront::instance()->getRouter()->createPathInfo($params, $options);
 	}
 	
+	/*
 	public function parse($pathInfo)
 	{
 		// this config doesn't support parsing, it's done by the module entry script (search.php)
 		// this means Search is not available via single entry point if this config is currently active
 		return false;
-	}
+	}*/
 	
 	/**
 	 * Admin callback

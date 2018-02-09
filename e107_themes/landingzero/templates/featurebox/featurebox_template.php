@@ -43,7 +43,7 @@ $FEATUREBOX_TEMPLATE['landingzero_homepage_modal'] = '{SETIMAGE: w=900&h=650&cro
                             <hr class="star-primary">
                             {FEATUREBOX_IMAGE}
                             {FEATUREBOX_TEXT}
-                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> ' . LAN_CLOSE . '</button>
+                            <button type="button" class="btn btn-default btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> ' . LAN_CLOSE . '</button>
                         </div>
                     </div>
                 </div>

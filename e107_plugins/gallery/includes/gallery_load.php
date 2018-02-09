@@ -66,7 +66,7 @@ function gallery_load_prettyphoto() // @lonalore FIXME Stop loading this on ever
 		if(vartrue($plugPref['downloadable'], false))
 		{
 			$settings['prettyphoto']['image_markup'] .= '<span class="download-btn">';
-			$settings['prettyphoto']['image_markup'] .= '<a class="btn btn-default btn-xs" href="{path}">' . LAN_DOWNLOAD . '</a>';
+			$settings['prettyphoto']['image_markup'] .= '<a class="btn btn-default btn-secondary btn-xs" href="{path}">' . LAN_DOWNLOAD . '</a>';
 			$settings['prettyphoto']['image_markup'] .= '</span>';
 		}
 

@@ -1479,6 +1479,34 @@ class e_parse extends e_parser
 
 	}
 
+
+
+	function parseBBCodes($text, $postID)
+	{
+		if (!is_object($this->e_bb))
+		{
+			require_once(e_HANDLER.'bbcode_handler.php');
+			$this->e_bb = new e_bbcode;
+		}
+
+
+		$text = $this->e_bb->parseBBCodes($text, $postID);
+
+		return $text;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * Converts the text (presumably retrieved from the database) for HTML output.
 	 *
@@ -1687,10 +1715,14 @@ class e_parse extends e_parser
 							$html_start = "<!-- bbcode-html-start -->"; // markers for html-to-bbcode replacement. 
 							$html_end	= "<!-- bbcode-html-end -->";
 							$full_text = str_replace(array("[html]","[/html]"), "",$code_text); // quick fix.. security issue?
-							$full_text =$this->replaceConstants($full_text,'abs');
+
+							$full_text = $this->parseBBCodes($full_text, $postID); // parse any embedded bbcodes eg. [img]
+							$full_text = $this->replaceConstants($full_text,'abs'); // parse any other paths using {e_....
 							$full_text = $html_start.$full_text.$html_end;
 							$full_text = $this->parseBBTags($full_text); // strip <bbcode> tags. 
 							$opts['nobreak'] = true;
+							$parseBB = false; // prevent further bbcode processing.
+
 
 							break;
 
@@ -2591,15 +2623,23 @@ class e_parse extends e_parser
 
 
 	/**
+	 * @todo Move to e107_class ?
 	 * @param string $path - absolute path
 	 * @return string - static path.
 	 */
-	public function staticUrl($path=null)
+	public function staticUrl($path=null, $opts=array())
 	{
-		if(!defined('e_HTTP_STATIC'))
+		if(!defined('e_HTTP_STATIC') || deftrue('e_ADMIN_AREA'))
 		{
 			// e107::getDebug()->log("e_HTTP_STATIC not defined");
-			return ($path === null) ? e_HTTP : $path;
+			if($path === null)
+			{
+				return !empty($opts['full']) ? SITEURL : e_HTTP;
+			}
+			else
+			{
+				return $path;
+			}
 		}
 
 
@@ -2633,6 +2673,7 @@ class e_parse extends e_parser
 		$base = '';
 
 		$srch = array(
+		//
 			e_PLUGIN_ABS,
 			e_THEME_ABS,
 			e_WEB_ABS,
@@ -2641,6 +2682,7 @@ class e_parse extends e_parser
 
 
 		$repl = array(
+
 			$http.$base.e107::getFolder('plugins'),
 			$http.$base.e107::getFolder('themes'),
 			$http.$base.e107::getFolder('web'),
@@ -2648,6 +2690,11 @@ class e_parse extends e_parser
 		);
 
 		$ret = str_replace($srch,$repl,$path);
+
+		if(strpos($ret, 'http') !== 0) // if not converted, check media folder also. 
+		{
+			$ret = str_replace(e_MEDIA_ABS,$http.$base.e107::getFolder('media'),$ret);
+		}
 
 		return $ret;
 
@@ -2764,12 +2811,16 @@ class e_parse extends e_parser
 
 			$staticFile = $this->thumbCacheFile($url, $opts);
 
+
+
 			if(!empty($staticFile) && is_readable(e_CACHE_IMAGE.$staticFile))
 			{
 				$staticImg = $this->staticUrl(e_CACHE_IMAGE_ABS.$staticFile);
 			//	var_dump($staticImg);
 				return $staticImg;
 			}
+
+		//	echo "<br />static-not-found: ".$staticFile;
 
 			$options['nosef'] = true;
 			$options['x'] = null;
@@ -2798,6 +2849,56 @@ class e_parse extends e_parser
 		return $baseurl.$thurl;
 	}
 
+
+
+	/**
+	 * Split a thumb.php url into an array which can be parsed back into the thumbUrl method. .
+	 * @param $src
+	 * @return array
+	 */
+	function thumbUrlDecode($src)
+	{
+		list($url,$qry) = explode("?",$src);
+
+		$ret = array();
+
+		if(strstr($url,"thumb.php") && !empty($qry)) // Regular
+		{
+			parse_str($qry,$val);
+			$ret = $val;
+		}
+		elseif(preg_match('/media\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/',$url,$match)) // SEF
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_MEDIA_IMAGE/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+		}
+		elseif(preg_match('/theme\/img\/(a)?([\d]*)x(a)?([\d]*)\/(.*)/', $url, $match)) // Theme-image SEF Urls
+		{
+			$wKey = $match[1].'w';
+			$hKey = $match[3].'h';
+
+			$ret = array(
+				'src'=> 'e_THEME/'.$match[5],
+				$wKey => $match[2],
+				$hKey => $match[4]
+			);
+
+		}
+		elseif(defined('TINYMCE_DEBUG'))
+		{
+			print_a("thumbUrlDecode: No Matches");
+
+		}
+
+
+		return $ret;
+	}
 
 
 
@@ -3621,7 +3722,7 @@ class e_parser
 	                                'th'        => array('id', 'style', 'class', 'colspan', 'rowspan'),
 	                                'col'       => array('id', 'span', 'class','style'),
 		                            'embed'     => array('id', 'src', 'style', 'class', 'wmode', 'type', 'title', 'width', 'height'),
-
+									'x-bbcode'  => array('alt'),
                                   );
 
     protected $badAttrValues     = array('javascript[\s]*?:','alert\(','vbscript[\s]*?:','data:text\/html', 'mhtml[\s]*?:', 'data:[\s]*?image');
@@ -3633,7 +3734,7 @@ class e_parser
     protected $allowedTags        = array('html', 'body','div','a','img','table','tr', 'td', 'th', 'tbody', 'thead', 'colgroup', 'b',
                                         'i', 'pre','code', 'strong', 'u', 'em','ul', 'ol', 'li','img','h1','h2','h3','h4','h5','h6','p',
                                         'div','pre','section','article', 'blockquote','hgroup','aside','figure','figcaption', 'abbr','span', 'audio', 'video', 'br',
-                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite'
+                                        'small', 'caption', 'noscript', 'hr', 'section', 'iframe', 'sub', 'sup', 'cite', 'x-bbcode'
                                    );
     protected $scriptTags 		= array('script','applet','form','input','button', 'embed', 'object', 'ins', 'select','textarea'); //allowed when $pref['post_script'] is enabled.
 	
@@ -3982,7 +4083,7 @@ class e_parser
 		$style = (!empty($parm['style'])) ? "style='".$parm['style']."' " : '';
 		$class = (!empty($parm['class'])) ? $parm['class']." " : '';
 
-		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}></".$tag.">" ;
+		$text = "<".$tag." {$idAtt}class='".$class.$prefix.$id.$size.$spin.$rotate.$fixedW."' {$style}><!-- --></".$tag.">" ;
 		$text .= ($options !== false) ? $options : "";
 
 		return $text;
@@ -4654,29 +4755,33 @@ class e_parser
 	
 	
 	/** 
-	 * Parse new <bbcode> tags into bbcode output. 
-	 * @param $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it. 
-	 * @return html 
+	 * Parse new <x-bbcode> tags into bbcode output.
+	 * @param bool $retainTags : when you want to replace html and retain the <bbcode> tags wrapping it.
+	 * @return string html
 	 */
 	function parseBBTags($text,$retainTags = false)
 	{
-		$bbcodes = $this->getTags($text, 'bbcode');
-			
+		$stext = str_replace("&quot;", '"', $text);
+
+		$bbcodes = $this->getTags($stext, 'x-bbcode');
+
 		foreach($bbcodes as $v)
 		{
 			foreach($v as $val)
 			{
-				$tag = urldecode($val['alt']);
+				$tag = base64_decode($val['alt']);
 				$repl = ($retainTags == true) ? '$1'.$tag.'$2' : $tag;
-				$text = preg_replace('/(<bbcode[^>]*>).*(<\/bbcode>)/s',$repl, $text); //FIXME - handle multiple instances of bbcodes. 
+			//	$text = preg_replace('/(<x-bbcode[^>]*>).*(<\/x-bbcode>)/i',$repl, $text);
+				$text = preg_replace('/(<x-bbcode alt=(?:&quot;|")'.$val['alt'].'(?:&quot;|")>).*(<\/x-bbcode>)/i',$repl, $text);
+
 			}	
 		}
+
 		return $text;
 	}
 
 
 
-	
     /**
      * Perform and render XSS Test Comparison
      */
@@ -5044,7 +5149,7 @@ return;
             }
 
 
-            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w]*)(\[(\d)*\])?$/i', "$2", $path);
+            $tag = preg_replace('/([a-z0-9\[\]\/]*)?\/([\w\-]*)(\[(\d)*\])?$/i', "$2", $path);
             if(!in_array($tag, $this->allowedTags))
             {
 
@@ -5369,7 +5474,7 @@ class e_emotefilter
 			return;
 		}
 
-		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC) ? e_HTTP_STATIC : SITEURLBASE;
+		$base = defined('e_HTTP_STATIC') && is_string(e_HTTP_STATIC)  ? e_HTTP_STATIC : SITEURLBASE;
 
 		foreach($this->emotes as $key => $value)
 		{

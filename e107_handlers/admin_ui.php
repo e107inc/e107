@@ -1586,7 +1586,7 @@ class e_admin_dispatcher
 		}
 		elseif(deftrue('e_CURRENT_PLUGIN'))
 		{
-			$icon = e107::getPlugin()->getIcon(e_CURRENT_PLUGIN, 32, '');
+			$icon = e107::getPlug()->load(e_CURRENT_PLUGIN)->getIcon(24);
 		}
 
 		return e107::getNav()->admin($icon."<span>".$this->menuTitle."</span>", $selected, $var);
@@ -1879,14 +1879,43 @@ class e_admin_controller
 			$_dispatcher = $this->getDispatcher();
 			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
-			if(isset($data[$search])) $res['caption'] = $data[$search];
+
+			if(isset($data[$search]))
+			{
+				 $res['caption'] = $data[$search];
+			}
 			else 
 			{
+
+
 				$data = $_dispatcher->getMenuData();
-				if(isset($data[$search])) $res = $data[$search];
-				else return $this;
+
+				if(isset($data[$search]))
+				{
+					 $res = $data[$search];
+				}
+				else
+				{
+					// check for an alias match.
+					$d = $_dispatcher->getMenuAliases();
+					if(isset($d[$search]))
+					{
+						$search = $d[$search];
+						$res = $data[$search];
+
+					}
+					else
+					{
+						 return $this;
+					}
+				//	var_dump($d);
+				//	var_dump("Couldnt find: ".$search);
+
+				}
 			}
 			$title = $res['caption'];
+
+
 		}
 		
 		//	echo "<h3>".__METHOD__." - ".$title."</h3>";
@@ -3018,6 +3047,76 @@ class e_admin_controller_ui extends e_admin_controller
 	}
 
 	/**
+	 * Get ordered models by their parents
+	 * add extra
+	 * @lonalore
+	 * @return e_admin_tree_model
+	 */
+	public function getTreeModelSorted()
+	{
+		$tree = $this->getTreeModel();
+
+		$parentField = $this->getSortParent();
+		$orderField = $this->getSortField();
+
+		$arr = array();
+		foreach ($tree->getTree() as $id => $model)
+		{
+			$parent = $model->get($parentField);
+			$order = $model->get($orderField);
+
+			$model->set('_depth', '9999'); // include extra field in output, just as the MySQL function did.
+
+
+			$arr[$id] = $model;
+		}
+
+
+	//	usort($arr); array_multisort() ?
+
+		$tree->setTree($arr,true); // set the newly ordered tree.
+
+		var_dump($arr);
+
+		return $this->_tree_model;
+	}
+
+
+	/**
+	 * @lonalore - found online.
+	 * @param string $idField       The item's ID identifier (required)
+	 * @param string $parentField   The item's parent identifier (required)
+	 * @param array $els            The array (required)
+	 * @param int   $parentID       The parent ID for which to sort (internal)
+	 * @param array $result         The result set (internal)
+	 * @param int   $depth          The depth (internal)
+	 * @return array
+	 */
+	function parentChildSort_r($idField, $parentField, $els=array(), $parentID = 0, &$result = array(), &$depth = 0)
+	{
+	    foreach ($els as $key => $value)
+	    {
+	        if ($value[$parentField] == $parentID)
+	        {
+	            $value['depth'] = $depth;
+	            array_push($result, $value);
+	            unset($els[$key]);
+	            $oldParent = $parentID;
+	            $parentID = $value[$idField];
+	            $depth++;
+	            $this->parentChildSort_r($idField,$parentField, $els, $parentID, $result, $depth);
+	            $parentID = $oldParent;
+	            $depth--;
+	        }
+	    }
+
+	    return $result;
+	}
+
+
+
+
+	/**
 	 * Set controller tree model
 	 * @param e_admin_tree_model $tree_model
 	 * @return e_admin_controller_ui
@@ -3359,6 +3458,8 @@ class e_admin_controller_ui extends e_admin_controller
 
 				//something like handleListUrlTypeBatch(); for custom handling of 'url_type' field name
 				$method = 'handle'.$actionName.$this->getRequest()->camelize($field).'Batch';
+
+				e107::getDebug()->log("Checking for batch method: ".$method);
 				if(method_exists($this, $method)) // callback handling
 				{
 					$this->$method($selected, $value);
@@ -3368,6 +3469,7 @@ class e_admin_controller_ui extends e_admin_controller
 				//handleListBatch(); for custom handling of all field names
 				if(empty($selected)) return $this;
 				$method = 'handle'.$actionName.'Batch';
+				e107::getDebug()->log("Checking for batch method: ".$method);
 				if(method_exists($this, $method))
 				{
 					$this->$method($selected, $field, $value);
@@ -4104,11 +4206,11 @@ class e_admin_controller_ui extends e_admin_controller
 			{
 				$qry = $this->parseCustomListQry($listQry);
 			}
-			elseif($this->sortField && $this->sortParent) // automated 'tree' sorting.
+			elseif($this->sortField && $this->sortParent && !deftrue('e_DEBUG_TREESORT')) // automated 'tree' sorting.
 			{
 			//	$qry = "SELECT SQL_CALC_FOUND_ROWS a. *, CASE WHEN a.".$this->sortParent." = 0 THEN a.".$this->sortField." ELSE b.".$this->sortField." + (( a.".$this->sortField.")/1000) END AS treesort FROM `#".$this->table."` AS a LEFT JOIN `#".$this->table."` AS b ON a.".$this->sortParent." = b.".$this->pid;
-				$qry                = $this->getParentChildQry();
-				$this->listOrder	= '_treesort '; // .$this->sortField;
+				$qry                = $this->getParentChildQry(true);
+				//$this->listOrder	= '_treesort '; // .$this->sortField;
 			//	$this->orderStep    = ($this->orderStep === 1) ? 100 : $this->orderStep;
 			}
 			else
@@ -4235,84 +4337,18 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Return a Parent/Child SQL Query based on sortParent and sortField variables
+	 *
+	 * Note: Since 2018-01-28, the queries were replaced with pure PHP sorting. See:
+	 *       https://github.com/e107inc/e107/issues/3015
+	 *
 	 * @param bool|false $orderby - include 'ORDER BY' in the qry.
 	 * @return string
 	 */
 	public function getParentChildQry($orderby=false)
 	{
-
-		$parent= $this->getSortParent();
-		$table = $this->getTableName();
-		$pid = $this->getPrimaryName();
-		$order = $this->getSortField();
-
-
-
-		$sql = "DROP FUNCTION IF EXISTS `getDepth` ;";
-
-		e107::getDb()->gen($sql);
-
-
-		$sql = "
-		CREATE FUNCTION `getDepth` (project_id INT) RETURNS int
-		BEGIN
-		    DECLARE depth INT;
-		    SET depth=1;
-
-		    WHILE project_id > 0 DO
-
-		        SELECT IFNULL(".$parent.",-1)
-		        INTO project_id
-		        FROM ( SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." = project_id) AS t;
-
-		        IF project_id > 0 THEN
-		            SET depth = depth + 1;
-		        END IF;
-
-		    END WHILE;
-
-		    RETURN depth;
-
-		END
-		;
-		";
-
-
-		e107::getDb()->gen($sql);
-
-		$sql = "DROP FUNCTION IF EXISTS `getTreeSort`;";
-
-		e107::getDb()->gen($sql);
-        $sql = "
-        CREATE FUNCTION getTreeSort(incid INT)
-        RETURNS CHAR(255)
-        BEGIN
-                SET @parentstr = CONVERT(incid, CHAR);
-                SET @parent = -1;
-                label1: WHILE @parent != 0 DO
-                        SET @parent = (SELECT ".$parent." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @order = (SELECT ".$order." FROM `#".$table."` WHERE ".$pid." =incid);
-                        SET @parentstr = CONCAT(if(@parent = 0,'',@parent), LPAD(@order,4,0), @parentstr);
-                        SET incid = @parent;
-                END WHILE label1;
-
-                RETURN @parentstr;
-        END
-   ;
-
-        ";
-
-
-        e107::getDb()->gen($sql);
-
-        $qry =  "SELECT SQL_CALC_FOUND_ROWS *, getTreeSort(".$pid.") as _treesort, getDepth(".$pid.") as _depth FROM `#".$table."` ";
-
-		if($orderby === true)
-		{
-			$qry .= " ORDER BY _treesort";
-		}
-
-		return $qry;
+		return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ";
+		// Use the following return statement to break e107 native sorting but speed up tree creation by presorting for e_tree_model::arrayToTree()
+		#return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ORDER BY ".$this->getSortParent().", ".$this->getSortField();
 	}
 
 
@@ -4687,6 +4723,19 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->setTriggersEnabled(false); //disable further triggering
 		parent::manageColumns();
 	}
+
+
+	/**
+	 * Detect if a batch function has been fired.
+	 * @param $batchKey
+	 * @return bool
+	 */
+	public function batchTriggered($batchKey)
+	{
+		return (!empty($_POST['e__execute_batch']) && (varset($_POST['etrigger_batch']) == $batchKey));
+	}
+
+
 
 	/**
 	 * Catch batch submit
@@ -6141,7 +6190,14 @@ class e_admin_ui extends e_admin_controller_ui
 			->setFieldIdName($this->pid)
             ->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
-			->setParams(array('model_class' => 'e_admin_model', 'model_message_stack' => 'admin_ui_model_'.$this->table ,'db_query' => $this->listQry));
+			->setParams(array('model_class' => 'e_admin_model',
+			                  'model_message_stack' => 'admin_ui_model_'.$this->table ,
+			                  'db_query' => $this->listQry,
+			                  // Information necessary for PHP-based tree sort
+			                  'sort_parent' => $this->getSortParent(),
+			                  'sort_field' => $this->getSortField(),
+			                  'primary_field' => $this->getPrimaryName(),
+			                  ));
 
 		return $this;
 	}
@@ -6419,6 +6475,12 @@ class e_admin_form_ui extends e_form
 		$tree = $options = array();
 		$tree[$id] = $controller->getTreeModel();
 
+
+		if(deftrue('e_DEBUG_TREESORT') && $view === 'default')
+		{
+			$controller->getTreeModelSorted();
+		}
+
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
@@ -6585,9 +6647,9 @@ class e_admin_form_ui extends e_form
 		if($this->_list_view === 'grid' && $this->getController()->getGrid('carousel') === true)
 		{
 			return '<div class="btn-group" >
-			<a id="admin-ui-carousel-prev" class="btn btn-default" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
-			<a id="admin-ui-carousel-index" class="btn btn-default">1</a>
-			<a id="admin-ui-carousel-next" class="btn btn-default" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
+			<a id="admin-ui-carousel-prev" class="btn btn-default btn-secondary" href="#admin-ui-carousel" data-slide="prev"><i class="fa fa-backward"></i></a>
+			<a id="admin-ui-carousel-index" class="btn btn-default btn-secondary">1</a>
+			<a id="admin-ui-carousel-next" class="btn btn-default btn-secondary" href="#admin-ui-carousel" data-slide="next"><i class="fa fa-forward"></i></a>
 			</div>';
 		}
 

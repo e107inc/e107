@@ -214,6 +214,11 @@ class e_session
 				$options['lifetime'] = (integer) e107::getPref('session_lifetime', 86400); //
 				$options['path'] = e107::getPref('session_cookie_path', ''); // FIXME - new pref
 				$options['secure'] = e107::getPref('ssl_enabled', false); //
+
+				if(!empty($options['secure']))
+				{
+					ini_set('session.cookie_secure', 1);
+				}
 			}
 
 			if(defined('SESSION_SAVE_PATH')) // safer than a pref.

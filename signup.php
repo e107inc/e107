@@ -815,7 +815,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		if (vartrue($pref['allowEmailLogin']))
 		{  // Need to create separate password for email login
 			//$allData['data']['user_prefs'] = serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
-			$allData['data']['user_prefs'] = e107::getArrayStorage()->serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
+			$allData['data']['user_prefs'] = e107::serialize(array('email_password' => $userMethods->HashPassword($savePassword, $allData['data']['user_email'])));
 		}
 
 		$allData['data']['user_join'] = time();

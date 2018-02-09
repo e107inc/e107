@@ -278,6 +278,106 @@ class core_library
 			'library_path'      => '{e_WEB}lib/jquery-ui',
 		);
 
+
+
+		// ----------------- Bootstrap 4 ---------------------------//
+
+			// Bootstrap (CDN).
+		$libraries['cdn.bootstrap4'] = array(
+			'name'              => 'Bootstrap 4 (CDN)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				/*'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'js/bootstrap.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),*/
+
+
+			),
+			// Override library path to CDN.
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap-beta@4.0.0-beta',
+			'path'              => '',
+		);
+
+		// Bootstrap (local).
+		$libraries['bootstrap4'] = array(
+			'name'              => 'Bootstrap 4 (local)',
+			'vendor_url'        => 'http://getbootstrap.com/',
+			'version_arguments' => array(
+				'file'    => 'dist/js/bootstrap.min.js',
+				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
+				'lines'   => 5,
+			),
+			'files'             => array(
+				'js'  => array(
+					'dist/js/bootstrap.min.js' => array(
+						'zone' => 2,
+						'type' => 'footer',
+					),
+				),
+				'css' => array(
+					'dist/css/bootstrap.min.css' => array(
+						'zone' => 2,
+					),
+				),
+			),
+			'variants'          => array(
+				// 'unminified' version for debugging.
+				'dev' => array(
+					'files' => array(
+						'js'  => array(
+							'dist/js/bootstrap.js' => array(
+								'zone' => 2,
+								'type' => 'footer',
+							),
+						),
+						'css' => array(
+							'dist/css/bootstrap.css' => array(
+								'zone' => 2,
+							),
+						),
+					),
+				),
+			),
+			'library_path'      => '{e_WEB}lib/bootstrap',
+			'path'              => '4.0.0-beta',
+		);
+
+
+		// ----------------------------------------------------- //
+
+
+
 		// Bootstrap (CDN).
 		$libraries['cdn.bootstrap'] = array(
 			'name'              => 'Bootstrap (CDN)',
@@ -317,6 +417,8 @@ class core_library
 						),
 					),
 				),
+
+
 			),
 			// Override library path to CDN.
 			'library_path'      => 'https://cdn.jsdelivr.net/bootstrap',
@@ -644,6 +746,10 @@ class core_library
 			'library_path'      => '{e_WEB}lib/animate.css',
 		//	'path'              => '3.5.2',
 		);
+
+
+
+
 
 		return $libraries;
 	}

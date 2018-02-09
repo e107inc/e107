@@ -72,7 +72,7 @@ $text = $pg->sc_page_navigation($parm);
 if($expandable) 
 {
 	e107::js('page','js/jquery.page.navigation.js','jquery');
-	$template['caption'] .= "<span class='btn-group pull-right'><a class='btn btn-default btn-xs btn-mini' id='page-nav-expand'>+</a><a class='btn btn-default btn-xs btn-mini' id='page-nav-collapse'>-</a></span>";
+	$template['caption'] .= "<span class='btn-group pull-right'><a class='btn btn-default btn-secondary btn-xs btn-mini' id='page-nav-expand'>+</a><a class='btn btn-default btn-secondary btn-xs btn-mini' id='page-nav-collapse'>-</a></span>";
 }
 
 

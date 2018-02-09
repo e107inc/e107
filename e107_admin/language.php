@@ -475,13 +475,15 @@ if(!empty($_GET['iframe']))
 
 			if(!empty($_POST['language']))
 			{
-				$_POST['language'] = e107::getParser()->filter($_POST['language']);
+				$_POST['language'] = e107::getParser()->filter($_POST['language'],'w');
 			}
 
 			// ----------------- delete tables ---------------------------------------------
 			if (isset($_POST['del_existing']) && $_POST['lang_choices'] && getperms('0'))
 			{
 				$lang = strtolower($_POST['lang_choices']);
+
+				$_POST['lang_choices'] = e107::getParser()->filter($_POST['lang_choices'],'w');
 
 				foreach ($tabs as $del_table)
 				{
@@ -514,6 +516,7 @@ if(!empty($_GET['iframe']))
 			{
 				$table_to_copy = array();
 				$lang_to_create = array();
+
 				foreach ($tabs as $value)
 				{
 					$lang = strtolower($_POST['language']);
@@ -528,7 +531,7 @@ if(!empty($_GET['iframe']))
 						}
 						else
 						{
-							if (!$_POST['drop'])
+							if (empty($_POST['drop']))
 							{
 								$msg = $tp->lanVars(LANG_LAN_00, $_POST['language'].' '.$value);
 								$message .= $msg . '[!br!]';
@@ -859,7 +862,7 @@ if(!empty($_GET['iframe']))
 
 
 
-
+/*
 
 
 
@@ -1016,12 +1019,12 @@ if (isset($_POST['create_tables']) && $_POST['language'])
 	e107::getLog()->add('LANG_03', $message, E_LOG_INFORMATIVE, '');
 	$sql->db_ResetTableList();
 }
-/*
+
  if(isset($message) && $message)
  {
  $ns->tablerender(LAN_OK, $message);
  }
- */
+
  
 
 
@@ -1200,7 +1203,7 @@ function multilang_prefs()
 }
 
 
-
+*/
 
 
 
@@ -1221,7 +1224,7 @@ class lanDeveloper
 
 	// ------------------------------ TODO -------------------------------
 
-		if(vartrue($_POST['disabled-unused']) && vartrue($_POST['disable-unused-lanfile']))
+		if(!empty($_POST['disabled-unused']) && !empty($_POST['disable-unused-lanfile']))
 		{
 			$disUnusedLanFile = $tp->filter($_POST['disable-unused-lanfile'], 'file');
 

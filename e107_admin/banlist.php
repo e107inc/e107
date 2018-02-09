@@ -1002,7 +1002,7 @@ switch ($action)
 				$text .= "<tr><td colspan='5' style='text-align:center'><br />".$tp->parseTemplate("{NEXTPREV={$parms}}".'<br /><br /></td></tr>');
 			}
 			$text .= "<tr><td colspan='4' style='text-align:center'>
-						<input class='btn btn-default button' type='submit' name='delete_ban_log' value='".BANLAN_88."' />
+						<input class='btn btn-default btn-secondary button' type='submit' name='delete_ban_log' value='".BANLAN_88."' />
 						<input type='hidden' name='e-token' value='".e_TOKEN."' />
 					</td>
 					  </tr>";

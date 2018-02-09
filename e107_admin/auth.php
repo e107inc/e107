@@ -56,6 +56,11 @@ if(USER && !getperms('0') && vartrue($pref['multilanguage']) && !getperms(e_LANG
 	$tmp = explode(".",ADMINPERMS);
 	foreach($tmp as $ln)
 	{
+		if(strlen($ln) < 3) // not a language perm.
+		{
+			continue;
+		}
+
 		if($lng->isValid($ln))
 		{
 			$redirect = deftrue("MULTILANG_SUBDOMAIN") ? $lng->subdomainUrl($ln) : e_SELF."?elan=".$ln;
