@@ -24,10 +24,10 @@ $GALLERY_TEMPLATE['slideshow_wrapper'] = '
 </div>
 
 <div class="gallery-slideshow-controls">
-	<a href="#" class="gallery-control gal-next btn btn-xs btn-default pull-right">
+	<a href="#" class="gallery-control gal-next btn btn-xs btn-default btn-secondary pull-right">
 		' . LAN_NEXT . ' {GLYPH=fa-chevron-right}
 	</a>
-	<a href="#" class="gallery-control gal-prev btn btn-xs btn-default">
+	<a href="#" class="gallery-control gal-prev btn btn-xs btn-default btn-secondary">
 		{GLYPH=fa-chevron-left} ' . LAN_PREVIOUS . '
 	</a>
 	<span class="gallery-slide-jumper-container">

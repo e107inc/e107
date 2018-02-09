@@ -895,14 +895,15 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 		
 			32 => array(e_ADMIN_ABS.'eurl.php', 		ADLAN_159,	ADLAN_160,	'K', 1, E_16_EURL, E_32_EURL),
 			33 => array(e_ADMIN_ABS.'plugin.php', 		ADLAN_98,	ADLAN_99,	'Z', 5 , E_16_PLUGMANAGER, E_32_PLUGMANAGER),
-			34 => array(e_ADMIN_ABS.'docs.php', 		ADLAN_12,	ADLAN_13,	'',	20, E_16_DOCS, E_32_DOCS),
+			34 => array(e_ADMIN_ABS.'docs.php', 		ADLAN_12,	ADLAN_13,	false,	20, E_16_DOCS, E_32_DOCS),
 		// TODO System Info.
 		//	35 => array('#TODO', 'System Info', 'System Information', '', 20, '', ''),
-			36 => array(e_ADMIN_ABS.'credits.php', LAN_CREDITS, LAN_CREDITS, '', 20, E_16_E107, E_32_E107),
+			36 => array(e_ADMIN_ABS.'credits.php', LAN_CREDITS, LAN_CREDITS, false, 20, E_16_E107, E_32_E107),
 		//	37 => array(e_ADMIN.'custom_field.php', ADLAN_161, ADLAN_162, 'U', 4, E_16_CUSTOMFIELD, E_32_CUSTOMFIELD),
 			38 => array(e_ADMIN_ABS.'comment.php', LAN_COMMENTMAN, LAN_COMMENTMAN, 'B', 5, E_16_COMMENT, E_32_COMMENT),
-		);	
-		
+		);
+
+
 		if($mode == 'legacy')
         {
             return $array_functions; // Old BC format.      
@@ -910,6 +911,8 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		$newarray = asortbyindex($array_functions, 1);
     	$array_functions_assoc = $this->convert_core_icons($newarray);
+
+
         
        if($mode == 'core') // Core links only. 
         {          
@@ -937,7 +940,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
                 $array_functions_assoc[$key] = $val;   
             }
         }
-    
+
         return $array_functions_assoc;
     }
 
@@ -1318,10 +1321,12 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 			unset($temp);
 		}
 	
-		if(!is_array($e107_vars))
+		if(empty($e107_vars))
 		{
-			return;	
+			return null;
 		}
+
+
 	
 		$kpost = '';
 		$text = '';
@@ -1353,7 +1358,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 
 		foreach (array_keys($e107_vars) as $act)
 		{
-			if (isset($e107_vars[$act]['perm']) && !getperms($e107_vars[$act]['perm'])) // check perms first.
+			if (isset($e107_vars[$act]['perm']) && $e107_vars[$act]['perm'] !== false && !getperms($e107_vars[$act]['perm'])) // check perms first.
 			{
 				continue;
 			}
@@ -1448,7 +1453,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$replace[9] = varset($e107_vars[$act]['image']);	
 			}
 
-			$replace[10] = count($e107_vars[$act]['sub']) > 20 ? 'oversized' : '';
+			$replace[10] = (isset($e107_vars[$act]['sub']) && count($e107_vars[$act]['sub']) > 20) ? 'oversized' : '';
 
 			if(!empty($e107_vars[$act]['link_data']))
 			{
@@ -1475,7 +1480,7 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 				$START_SUB = $tmpl['start_sub'];	
 			}		
 	
-			if (vartrue($e107_vars[$act]['sub']))
+			if(!empty($e107_vars[$act]['sub']))
 			{
 				$replace[6] = $id ? " id='eplug-nav-{$rid}-sub'" : '';
 				$replace[7] = ' '.varset($e107_vars[$act]['link_class'], 'e-expandit');
@@ -1562,13 +1567,13 @@ i.e-cat_users-32{ background-position: -555px 0; width: 32px; height: 32px; }
 					break;
 						
 					case 'div':
-						$text .= "<div class='core-mainpanel-block '><a data-toggle='tooltip' class='core-mainpanel-link-icon btn btn-default muted' href='".$link."' title='{$description}'>".$icon."
+						$text .= "<div class='core-mainpanel-block '><a data-toggle='tooltip' class='core-mainpanel-link-icon btn btn-default btn-secondary muted' href='".$link."' title='{$description}'>".$icon."
 						<small class='core-mainpanel-link-text'>".$tp->toHTML($title,FALSE,"defs, emotes_off")."</small></a>	
 						</div>";					
 					break;
 					
 					case 'div-icon-only':
-						$text .= "<div class='core-mainpanel-block  e-tip' title='{$description}'><a class='core-mainpanel-link-icon btn btn-default e-tip' href='".$link."' >".$icon."</a></div>";
+						$text .= "<div class='core-mainpanel-block  e-tip' title='{$description}'><a class='core-mainpanel-link-icon btn btn-default btn-secondary e-tip' href='".$link."' >".$icon."</a></div>";
 					break;
 					
 					default:
@@ -1972,13 +1977,13 @@ class navigation_shortcodes extends e_shortcode
 	 */
 	function sc_link_parent($parm='')
 	{
-		return intval($this->var['link_parent']);		
+		return intval($this->var['link_parent']);
 	}
 
 
 	function sc_link_identifier($parm='')
 	{
-		return $this->var['link_identifier'];	
+		return isset($this->var['link_identifier']) ? $this->var['link_identifier'] : '';
 	}
 
 	/**

@@ -8,15 +8,15 @@
     background-color: transparent;
 }
 
+
 @media (min-width: 768px)   {
 #layout-full, #layout-sidebar-right, #layout-sidebar-left   {
-   padding-top: 120px;
+  padding-top: 120px;
  }
 }
 @media (min-width: 992px)   {
-#layout-full, #layout-sidebar-right, #layout-sidebar-left   {
-   padding-top: 60px;
-}
+    #layout-full, #layout-sidebar-right, #layout-sidebar-left   { padding-top: 60px; }
+    #sidebar { margin-top:20px }
 }
 
 .dropdown-menu { 
@@ -30,6 +30,8 @@
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover {
     background-color: #9c27b0;
 }
+
+
 
 
 .panel {
@@ -85,10 +87,12 @@
 
 /* Extra small devices Phones (<768px)  .col-xs */
 @media all and (max-width: 767px) { 
-	
+
+	body                                                                    { padding-top: 50px;  }
 	.featurebox .carousel-indicators 										{ top:10px; }	
 	.featurebox-item-image.pull-left, .featurebox-item-image.pull-right 	{ margin-top: 30px; }
 	.news-images-main                                                       { padding-left: 0; padding-bottom:15px; padding-right:0}
+
 }
 
 /* Small devices Tablets .col-sm */
@@ -99,13 +103,15 @@
 /* Medium devices Desktops (≥992px)  .col-md */
 @media all and (min-width: 992px) and (max-width: 1199px)  {
 	.news-images-main { padding-left: 0; padding-bottom:5px}
-	
+	section.news-view-item { padding-top: 0; }
  }
 
 /* Large devices (large desktops, 1200px and up).col-lg  */
 @media all and (min-width: 1200px) {
 
 	.news-images-main { padding-left: 0; padding-bottom:5px}
+	section.news-view-item { padding-top: 0; }
+	h3.post-title { margin-top:5px }
 }
 
 
@@ -314,3 +320,19 @@ padding-right: 3px;
   background-color: #9c27c1;
 }
 
+
+#layout-sidebar-right .navbar-default, #layout-full .navbar-default {
+
+border-color: rgba(34,34,34,.05);
+background-color: #222;
+
+}
+
+.navbar-default.affix .navbar-header .navbar-brand {
+    font-size: 18px;
+    color: inherit;
+     letter-spacing: 0;
+     text-shadow: none;
+ /*   padding: inherit;*/
+
+}

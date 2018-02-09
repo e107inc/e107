@@ -143,16 +143,30 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$ns->setStyle('flexpanel');
 		$ns->setUniqueId('core-infopanel_help');
 		$info = $this->getMenuPosition('core-infopanel_help');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_HELP}', false, $admin_sc);
+
 
 		// "Latest" box.
 		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-latest-list');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_LATEST=infopanel}', false, $admin_sc);
+
 
 		// "Status" box.
 		$ns->setStyle('flexpanel');
 		$info = $this->getMenuPosition('e-status-list');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $tp->parseTemplate('{ADMIN_STATUS=infopanel}', false, $admin_sc);
 
 
@@ -196,6 +210,10 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$ns->setUniqueId('core-infopanel_mye107');
 		$coreInfoPanelMyE107 = $ns->tablerender($caption, $mainPanel, "core-infopanel_mye107", true);
 		$info = $this->getMenuPosition('core-infopanel_mye107');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $coreInfoPanelMyE107;
 
 
@@ -208,6 +226,10 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$ns->setUniqueId('core-infopanel_news');
 		$coreInfoPanelNews = $ns->tablerender(LAN_LATEST_e107_NEWS, e107::getForm()->tabs($newsTabs, array('active' => 'coreFeed')), "core-infopanel_news", true);
 		$info = $this->getMenuPosition('core-infopanel_news');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $coreInfoPanelNews;
 
 
@@ -228,6 +250,10 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 		$ns->setUniqueId('e-addon-updates');
 		$addonUpdates = $admin_sc->sc_admin_addon_updates();
 		$info = $this->getMenuPosition('e-addon-updates');
+		if (!isset($panels[$info['area']][$info['weight']]))
+		{
+			$panels[$info['area']][$info['weight']] = '';
+		}
 		$panels[$info['area']][$info['weight']] .= $addonUpdates;
 
 
@@ -250,6 +276,10 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 					$inc = $tp->parseTemplate("{PLUGIN=$val|TRUE}");
 				}
 				$info = $this->getMenuPosition($id);
+				if (!isset($panels[$info['area']][$info['weight']]))
+				{
+					$panels[$info['area']][$info['weight']] = '';
+				}
 				$panels[$info['area']][$info['weight']] .= $inc;
 			}
 		}
@@ -265,12 +295,13 @@ class adminstyle_flexpanel extends adminstyle_infopanel
 				$id = $val['mode'];
 				$ns->setUniqueId($id);
 				$inc = $ns->tablerender($val['caption'], $val['text'], $val['mode'], true);
-
 				$info = $this->getMenuPosition($id);
-
+				if (!isset($panels[$info['area']][$info['weight']]))
+				{
+					$panels[$info['area']][$info['weight']] = '';
+				}
 				$panels[$info['area']][$info['weight']] .= $inc;
 			}
-
 		}
 
 

@@ -28,8 +28,9 @@ $_E107['no_forceuserupdate'] = true;
 $_E107['no_menus'] = true;
 $_E107['no_maintenance'] = true;
 //$_E107['no_theme'] = true;
-require_once("../class2.php");
 
+require_once("../class2.php");
+header('Expires: Sat, 26 Jul 1997 05:00:00 GMT', true);
 /*
 define('e_BASE',realpath("..".DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR);
 @include(e_BASE.'e107_config.php');

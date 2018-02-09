@@ -28,7 +28,7 @@ if(false === $cached)
 	$parms['tmpl']      = 'news_menu';
 	$parms['tmpl_key']  = 'category';
 
-	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key']);
+	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key'], true, true);
 
 	$cached = $ctree->loadActive()->render($template, $parms, true);
 	e107::getCache()->set($cacheString, $cached);

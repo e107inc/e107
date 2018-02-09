@@ -52,7 +52,7 @@ if (isset($custom_query[1]) && $custom_query[1] != '')
 } 
 else 
 {
-	$search_button = "<input class='btn btn-default button search' type='submit' name='s' value='".LAN_SEARCH."' />";
+	$search_button = "<input class='btn btn-default btn-secondary button search' type='submit' name='s' value='".LAN_SEARCH."' />";
 }
 
 if (isset($custom_query[5]) && $custom_query[5]) {
@@ -78,7 +78,7 @@ if(deftrue('BOOTSTRAP'))
 		
 	$text .= '
          <span class="input-group-btn">
-         <button class="btn btn-default" type="submit" name="s">'.$tp->toGlyph('search').'</button>
+         <button class="btn btn-default btn-secondary" type="submit" name="s">'.$tp->toGlyph('search').'</button>
          </span>
     </div>
     </form>';

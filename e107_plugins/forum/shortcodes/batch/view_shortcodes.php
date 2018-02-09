@@ -395,9 +395,12 @@
 
 								$url = e_REQUEST_SELF . "?id=" . $this->postInfo['post_id'] . "&amp;dl=" . $key;
 
-								if(defset("BOOTSTRAP") == 3)
+								$saveicon = (deftrue('BOOTSTRAP') === 4) ? 'fa-save' : 'icon-save.glyph'; 
+                				$saveicon = e107::getParser()->toGlyph($saveicon,false);
+								
+								if(defset("BOOTSTRAP"))
 								{
-									$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='" . $url . "'>" . $tp->toGlyph('glyphicon-save') . " {$name}</a><br />";
+									$txt .= "<a class='forum-attachment-file btn btn-sm btn-default' href='" . $url . "'>" . $saveicon . " {$name}</a><br />";
 								}
 								else
 								{
@@ -779,8 +782,8 @@
 			// e_HTTP.'user.php?id.'.$this->postInfo['post_user']
 			$text = '<div class="btn-group ">
 
-    <a class="btn btn-default btn-sm btn-small" href="' . $userUrl . '">' . $username . '</a>
-    <button class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
+    <a class="btn btn-default btn-secondary btn-sm btn-small" href="' . $userUrl . '">' . $username . '</a>
+    <button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu left">
@@ -828,7 +831,7 @@
 			// {EMAILITEM} {PRINTITEM} {REPORTIMG}{EDITIMG}{QUOTEIMG}
 
 			$text = '<div class="btn-group pull-right">
-    	<button class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
+    	<button class="btn btn-default btn-secondary btn-sm btn-small dropdown-toggle" data-toggle="dropdown">
     	' . LAN_FORUM_8013 . '
     	<span class="caret"></span>
     	</button>
@@ -927,11 +930,11 @@
 
 			if($prev !== false)
 			{
-				$options[] = "<a class='btn btn-default btn-sm btn-small' href='" . e107::url('forum', 'topic', $prev) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
+				$options[] = "<a class='btn btn-default btn-secondary btn-sm btn-small' href='" . e107::url('forum', 'topic', $prev) . "'>&laquo; " . LAN_FORUM_2001 . "</a>";
 			}
 			if($next !== false)
 			{
-				$options[] = "<a class='btn btn-default btn-sm btn-small' href='" . e107::url('forum', 'topic', $next) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
+				$options[] = "<a class='btn btn-default btn-secondary btn-sm btn-small' href='" . e107::url('forum', 'topic', $next) . "'>" . LAN_FORUM_2002 . " &raquo;</a>";
 			}
 
 //----	$tVars->NEXTPREV = implode(" | ", $options);
@@ -1164,7 +1167,7 @@
 			{
 				$text .= "\n<option value='" . e107::url('forum', 'forum', $val) . "'>" . $val['forum_name'] . "</option>";
 			}
-			$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
+			$text .= "</select> <input class='btn btn-default btn-secondary button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></p></form>";
 
 			return $text;
 		}

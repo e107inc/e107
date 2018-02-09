@@ -58,7 +58,7 @@ else
 			</select>
 			<br />
 			<br />
-			<button class="btn btn-default button" type="submit" name="setlanguage" value="no-value"><span>'.UTHEME_MENU_L1.'</span></button>';
+			<button class="btn btn-default btn-secondary button" type="submit" name="setlanguage" value="no-value"><span>'.UTHEME_MENU_L1.'</span></button>';
 	$text .= '
 		</div>
 	</form>';

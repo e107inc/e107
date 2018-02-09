@@ -35,7 +35,7 @@ class log_url // plugin-folder + '_url'
 
 		$config['others'] = array(
 			'alias'         => 'stats',
-			'regex'			=> '^{alias}/\?([\d]*)$', 						// matched against url, and if true, redirected to 'redirect' below.
+			'regex'			=> '^{alias}/\?(.*)$', 	 					// matched against url, and if true, redirected to 'redirect' below.
 			'sef'			=> '{alias}', 							// used by e107::url(); to create a url from the db table.
 			'redirect'		=> '{e_PLUGIN}log/stats.php?$1', 		// file-path of what to load when the regex returns true.
 

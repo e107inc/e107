@@ -101,7 +101,7 @@ class admin_shortcodes
 		if (!ADMIN) { return ''; }
 		return "
 		<div style='text-align: center'>
-		<input class='btn btn-default button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
+		<input class='btn btn-default btn-secondary button' type='button' onclick=\"javascript: window.open('".e_ADMIN_ABS."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='".LAN_CREDITS."' />
 		</div>";
 	}
 
@@ -339,7 +339,7 @@ class admin_shortcodes
 		{
 			$text .= $sql->mySQLlanguage;
 			$text .= " (".$slng->convert($sql->mySQLlanguage).")
-			: <span class='btn btn-default button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
+			: <span class='btn btn-default btn-secondary button' style='cursor: pointer;' onclick='expandit(\"lan_tables\");'><a style='text-decoration:none' title='' href=\"javascript:void(0);\" >&nbsp;&nbsp;".count($aff)." ".UTHEME_MENU_L3."&nbsp;&nbsp;</a></span><br />
 			<span style='display:none' id='lan_tables'>
 			";
 			$text .= implode('<br />', $aff);
@@ -816,6 +816,10 @@ class admin_shortcodes
 		$parsed = file_get_contents($file);
 		$tmp = e107::unserialize($parsed);
 
+		if(!defined('e_MULTISITE_MATCH'))
+		{
+			define('e_MULTISITE_MATCH', null);
+		}
 	//	e107::getDebug()->log($tmp);
 
 		  $text = '<ul class="nav nav-admin navbar-nav navbar-right">
@@ -1964,7 +1968,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 		$active = '';
 		foreach ($array_functions as $key => $subitem)
 		{
-			if(!empty($subitem[3]) && !getperms($subitem[3]))
+
+			if(isset($subitem[3]) && $subitem[3] !== false && !getperms($subitem[3]))
 			{
 				continue;
 			}
@@ -2077,8 +2082,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 
 		// ------------------------------------------------------------------
 
-	//	 print_a($menu_vars);
-
+		//	e107::getDebug()->log($menu_vars);
 
 
 		return e107::getNav()->admin('', $active, $menu_vars, $$tmpl, false, false);

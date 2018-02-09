@@ -569,7 +569,7 @@ class file_inspector {
 	//	$dir
 	//	&$tree_end
 	//	&$parent_expand
-	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand)
+	function inspect($list, $deprecated, $level, $dir, &$tree_end = null, &$parent_expand = null)
 	{
 	  global $coredir;
 

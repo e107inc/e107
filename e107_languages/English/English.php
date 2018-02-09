@@ -131,6 +131,7 @@ define("LAN_RE_ORDER", "Re-order");
 define("LAN_RELATED", "Related");
 define("LAN_CLOSE", "Close");
 define("LAN_EXPAND", "Expand");
+define("LAN_LIST", "List");
 
 define("LAN_ENTER_USRNAME_EMAIL", "Please enter your username or email"); // admin php hover field admin name
 define("LAN_PWD_REQUIRED", "Password is required"); // admin php hover field admin password

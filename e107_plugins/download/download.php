@@ -95,16 +95,15 @@ if (!e107::isInstalled('download'))
 	}
 
 
-	$texts = $dl->render(); // Load before header. 
-
+	$dl->load();
 
 	if(!defined("e_PAGETITLE")) {define("e_PAGETITLE", LAN_PLUGIN_DOWNLOAD_NAME);}
 
 	require_once (HEADERF);
+
+//	echo "<div style='background-color: yellow; font-size:1.5em; font-weight:bold;color:black; padding:5px'>".e_PAGETITLE."</div>";
 	
-	
-	
-	echo $texts;
+	echo $dl->render();
 	
 	require_once (FOOTERF);
 	

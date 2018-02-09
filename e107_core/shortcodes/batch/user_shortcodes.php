@@ -165,15 +165,15 @@ class user_shortcodes extends e_shortcode
 		//require_once(e_HANDLER."level_handler.php");
 		//$ldata = get_level($this->var['user_id'], $this->var['user_forums'], $this->var['user_comments'], $this->var['user_chats'], $this->var['user_visits'], $this->var['user_join'], $this->var['user_admin'], $this->var['user_perms'], $pref);
 		$ldata = array();
-		if (strstr($ldata[0], "IMAGE_rank_main_admin_image")) 
+		if (isset($ldata[0]) && strstr($ldata[0], "IMAGE_rank_main_admin_image"))
 		{
 			return LAN_USER_31;
 		}
-		elseif(strstr($ldata[0], "IMAGE")) 
+		elseif(isset($ldata[0]) && strstr($ldata[0], "IMAGE"))
 		{
 			return LAN_USER_32;
 		}
-		else
+		elseif(isset($ldata[1]))
 		{
 			return $ldata[1];
 		}
@@ -281,27 +281,6 @@ class user_shortcodes extends e_shortcode
 			//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
 		}
 
-		      ########################################################
-		       # Security Note - 04 May 2013                          #
-		       ########################################################
-		       #                                                      #
-		       # The CSS code direction rtl is an effective way to    #
-		       # prevent spam bots from scraping emails that are      #
-		       # not hidden.                                          #
-		       #                                                      #
-		       # You can find empirical support for this method at    #
-		       # <http://superuser.com/a/235965>.                     #
-		       #                                                      #
-		       # {e_CORE}templates/user_template.php was modified to  #
-		       # support this code.  In $USER_FULL_TEMPLATE, the      #
-		       # LAN_USER_60 value {USER_EMAIL_LINK} was changed to   #
-		       # {USER_EMAIL}.  I couldn't figure out how the two     #
-		       # shortcodes were different, so I took precautions in  #
-		       # hopes that the CSS direction won't break actual HTML #
-		       # tags.                                                #
-		       #                                                      #
-		       #       -- Deltik                                      #
-		       ########################################################
 	}
 
 
@@ -653,7 +632,7 @@ class user_shortcodes extends e_shortcode
 		{
 			return "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
-			<input class='btn btn-default button' type='submit' name='delp' value='".LAN_USER_43."' />
+			<input class='btn btn-default btn-secondary button' type='submit' name='delp' value='".LAN_USER_43."' />
 			</form>
 			";
 		}
@@ -738,7 +717,7 @@ class user_shortcodes extends e_shortcode
 			
 			$cat_name = true; //XXX TEMP Fix. 
 			
-			if($cat_name != FALSE && count($ueFieldList[$catnum]))
+			if($cat_name != FALSE && isset($ueFieldList[$catnum]) && count($ueFieldList[$catnum]))
 			{
 					
 				$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
@@ -856,7 +835,7 @@ class user_shortcodes extends e_shortcode
 	
 	function sc_user_form_submit($parm) 
 	{
-		return "<input class='btn btn-default button' type='submit' name='submit' value='".LAN_GO."' />";
+		return "<input class='btn btn-default btn-secondary button' type='submit' name='submit' value='".LAN_GO."' />";
 	}
 
 

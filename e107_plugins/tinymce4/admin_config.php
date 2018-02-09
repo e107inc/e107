@@ -15,7 +15,8 @@ if( !e107::isInstalled('tinymce4'))
 	exit();
 }
 
-e107::lan('tinymce4','admin', 'true');
+e107::lan('tinymce4','admin', true);
+
 
 	class tinymce4_admin extends e_admin_dispatcher
 	{
@@ -718,7 +719,7 @@ function edit_theme()
     </tr>
 	</table>
 	<div class='buttons-bar center'>";
-    $text .= "<input class='btn btn-default button' type='submit' name='save_settings' value='".LAN_SAVE."' />";
+    $text .= "<input class='btn btn-default btn-secondary button' type='submit' name='save_settings' value='".LAN_SAVE."' />";
     $text .= "
     </div>
 	</fieldset>

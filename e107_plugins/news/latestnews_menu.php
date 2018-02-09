@@ -39,7 +39,7 @@ if(false === $cached)
 		$parms['tmpl_key'] = 'latest';
 	}
 
-	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key']);
+	$template = e107::getTemplate('news', $parms['tmpl'], $parms['tmpl_key'], true, true);
 
 	$treeparm = array();
 	if(vartrue($parms['count'])) $treeparm['db_limit'] = '0, '.intval($parms['count']);

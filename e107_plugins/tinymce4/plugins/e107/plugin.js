@@ -49,29 +49,55 @@
 
 			});
 			
-		/*
+
 		// Emoticons 
-			ed.addButton('e107-bbcode', {
-				text: 'bbcode',
-				icon: 'emoticons',
+		//	ed.addButton('e107-bbcode', {
+				ed.addMenuItem('e107-bbcode', {
+				text: 'e107 BBcode',
+				context: 'insert',
+				icon: 'code',
 				onclick: function() {
 					// Open window
 										
 					ed.windowManager.open({
-						title: 'Example plugin',
+						title: 'Insert e107 BBcode',
 						body: [
-							{type: 'textbox', name: 'code', label: 'BbCode'},
-                            {type: 'textbox', name: 'parm', label: 'Parameters'}
+							{type: 'textbox', name: 'code', label: 'BbCode', text: 'widget', size: 80, tooltip: 'eg. [b]bold[/b]', autofocus: true} //,
+                        //    {type: 'textbox', name: 'parm', label: 'Parameters'}
 						],
 						onsubmit: function(e) {
+
+							s = e.data.code;
+							s = s.trim(s);
+
+							var html = $.ajax({
+								type: 'POST',
+								url: url +'/parser.php',
+								data: { content: s, mode: 'tohtml' },
+								async       : false,
+
+								dataType: 'html',
+								success: function(html) {
+								  return html;
+								}
+							}).responseText;
+
+							html = '<x-bbcode alt=\"'+btoa(s)+'\">' + html + '</x-bbcode>   ' ;
+
+
+
+							
+
 							// Insert content when the window form is submitted
-							ed.insertContent('Title: ' + e.data.title);
+					//		console.log(url);
+					//		console.log(html);
+							ed.insertContent(html);
 						}
 					});
 				}
 			});
 			
-			*/
+
 			// Media Manager Button 
 			ed.addButton('e107-image', {
 				text: '',
@@ -192,6 +218,8 @@
 		// BBCode -> HTML from PunBB dialect
 		_e107_bbcode2html : function(s, url) {
 			s = tinymce.trim(s);
+
+		// FIXME mod-security might block the ajax call below with Rules: 942230, 949110, 980130 - reason yet unknown.
 
 		//	return s;
 

@@ -261,8 +261,52 @@ td.right, th.right 			{ text-align:right }
 #cboxTitle					{ font-weight:bold; color: black }
 .chzn-container				{ border: 1px solid #ddd; }
 
+
+/* image picker */
+
+.imgselector-container {
+	position: relative;
+}
+
+.imgselector-container .overlay {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  overflow: hidden;
+  width: 100%;
+  height:0;
+  transition: .5s ease;
+  border-radius: 4px;
+}
+
+.imgselector-container:hover .overlay {
+  bottom: 0;
+  height: 100%;
+}
+
+.imgselector-container .text {
+  white-space: nowrap;
+  color: white;
+  font-size: 30px;
+  position: absolute;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.imgselector-container .text .btn-sm {
+	font-size: 20px;
+}
+
+
+
+
 /* icon-picker */
-div.image-selector			{ width:100px; height:60px ; font-size:32px; line-height:40px  }
+div.image-selector.icon-selector { width: 64px; height:64px; margin-bottom:0; font-size:32px; line-height:40px }
 div.imgselector-container a	{ color: inherit;  }
 #link-button_prev i 		{ line-height:40px; }				
 
@@ -470,9 +514,11 @@ i.s-message-warning	{ background-position: -777px -37px; width: 32px; height: 32
 i.s-message-info	{ background-position: -1480px 0; width: 32px; height: 32px;  }
 i.s-message-debug	{ background-position: -1480px 0; width: 32px; height: 32px;  }
 
+.s-message .well { background-color: rgba(0,0,0,0.4) }
 .s-message-body { padding-left: 42px; }
 .s-message-item {}
 .s-message-item .btn { margin-top: 15px; }
+
 
 .e-footer-info 		{ text-align: center }
 
@@ -1778,3 +1824,32 @@ tr.highlight-even, .table-striped > tbody > tr.highlight-even		{ background-colo
 	}
 
 
+/*
+
+@media only screen and (min-width : 768px) {
+    .is-table-row {
+        display: table;
+        width: 100%;
+       margin:0;
+
+    }
+    .is-table-row > .admin-right-panel, .is-table-row > .admin-left-panel{
+        float: none;
+        display: table-cell;
+       vertical-align: top;
+
+    }
+}
+.admin-left-panel {
+background-color: #303030;
+!*margin-top: -37px;*!
+padding-right: 0;
+padding-left: 0;
+background:#3c3c3c;
+
+}
+
+.col-lg-2 { width: 12%}
+.col-lg-10 { width: 88%}
+
+*/

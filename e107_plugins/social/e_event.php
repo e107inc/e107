@@ -26,10 +26,45 @@ class social_event
 
 	function config()
 	{
+		$event = array();
+		
+		$event[] = array(
+			'name'     => "system_meta_pre",
+			'function' => "og_image_add",
+		);
 
+		return $event;
+		
+	}
+
+
+
+	/**
+	 * Callback function to add og:image if there is no any
+	 */
+	function og_image_add($meta)
+	{
+		$ogImage = e107::pref('social', 'og_image', false);
+
+		if(empty($ogImage) || empty($meta) || e_ADMIN_AREA === true)
+		{
+			return null;
+		}
+
+		// check if we have og:image defined
+		foreach($meta as $m)
+		{
+			if($m['name'] === 'og:image')
+			{
+				return null;
+			}
+		}
+
+		e107::meta('og:image', e107::getParser()->thumbUrl($ogImage, 'w=500', false, true));
 
 	}
 
 } //end class
 
-?>
+
+

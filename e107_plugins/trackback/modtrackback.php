@@ -77,7 +77,7 @@ else
 		<td class='forumheader3' style='width: 10%;'><input type='checkbox' name='trackback_delete[]' value='$trackback_id' /> ".TRACKBACK_L14."</td>
 		</tr>\n";
 	}
-	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='btn btn-default button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
+	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='btn btn-default btn-secondary button' type='submit' name='moderate' value='".TRACKBACK_L13."' /></td></tr></table></form></div>";
 }
 	
 $ns->tablerender(TRACKBACK_L13, $text);

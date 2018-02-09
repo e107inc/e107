@@ -1152,7 +1152,32 @@ class e_file
 		{
 			return $newFile;		
 		}
-	}		
+	}
+
+
+	/**
+	 * Delete a file.
+	 * @param $file
+	 * @return bool
+	 */
+	public function delete($file)
+	{
+		if(empty($file))
+		{
+			return false;
+		}
+
+		$file = e107::getParser()->replaceConstants($file);
+
+		if(file_exists($file))
+		{
+			return unlink($file);
+		}
+
+		return false;
+
+	}
+
 
 	
 	/**

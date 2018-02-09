@@ -57,6 +57,10 @@
 
 		function sc_threadpages()
 		{
+			if(empty($this->var['parms']))
+			{
+				return null;
+			}
 			return e107::getParser()->parseTemplate("{NEXTPREV={$this->var['parms']}}");
 		}
 
@@ -143,7 +147,7 @@
 
 		function sc_moderators()
 		{
-			return $this->var['modUser'];
+			return is_array($this->var['modUser']) ? implode(", ",$this->var['modUser']) : $this->var['modUser'];
 		}
 
 		function sc_browsers()
@@ -285,7 +289,7 @@
 			<form method='get' class='form-inline input-append' action='" . e_BASE . "search.php'>
 			<p>
 			<input class='tbox' type='text' name='q' size='20' value='' maxlength='50' />
-			<button class='btn btn-default button' type='submit' name='s' >" . LAN_SEARCH . "</button>
+			<button class='btn btn-default btn-secondary button' type='submit' name='s' >" . LAN_SEARCH . "</button>
 			<input type='hidden' name='r' value='0' />
 			<input type='hidden' name='ref' value='forum' />
 			</p>
@@ -333,7 +337,7 @@
 			{
 				$text .= "\n<option value='" . e107::url('forum', 'forum', $val, 'full') . "'>" . $val['forum_name'] . "</option>";
 			}
-			$text .= "</select> <input class='btn btn-default button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></form>";
+			$text .= "</select> <input class='btn btn-default btn-secondary button' type='submit' name='fjsubmit' value='" . LAN_GO . "' /></form>";
 			return $text;
 		}
 
@@ -635,9 +639,15 @@
 		}
 
 
-		function sc_replies()
+		function sc_replies($parm='')
 		{
 			$val = ($this->var['thread_total_replies']) ? $this->var['thread_total_replies'] : '0';
+
+			if($parm === 'raw')
+			{
+				return $val;
+			}
+
 			return e107::getParser()->toBadge($val);
 		}
 
@@ -895,7 +905,14 @@
 		function sc_pages()
 		{
 //	$tVars['PAGES'] = fpages($thread_info, $tVars['REPLIES']);
-			return fpages($this->var, $this->sc_replies());
+			$ret = fpages($this->var, $this->sc_replies('raw'));
+
+			if(!empty($ret))
+			{
+				return LAN_GOPAGE.": ".$ret;
+			}
+
+			return null;
 		}
 
 

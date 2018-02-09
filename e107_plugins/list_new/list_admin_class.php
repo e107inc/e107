@@ -536,7 +536,12 @@ class list_admin
 	 */
 	function parseTemplate($template)
 	{
-		return preg_replace("/\{(.*?)\}/e", '$this->row[\'\1\']', $this->parent->template[$template]);
+		$text = preg_replace_callback( '/\{(.*?)\}/', function($matches) {
+	        return($this->row[$matches[1]]);
+	    }, $this->parent->template[$template]);
+
+		return $text;
+		//return preg_replace("/\{(.*?)\}/e", '$this->row[\'\1\']', $this->parent->template[$template]);
 	}
 
 	/**
@@ -551,9 +556,10 @@ class list_admin
 		$frm = e107::getForm();
 		
 		$this->row['TOPIC'] = LIST_ADMIN_11;
-		$this->row['FIELD'] = $frm->admin_button('update_menu',LIST_ADMIN_2,'update'); 
+		$this->row['FIELD'] = $frm->admin_button('update_menu',LIST_ADMIN_2,'update');
+
 		return "<tr><td class='buttons-bar center' colspan='2'>".$frm->admin_button('update_menu',LIST_ADMIN_2,'update')."</td></tr>"; 
-		return $this->parseTemplate('TOPIC_ROW_NOEXPAND');
+		// return $this->parseTemplate('TOPIC_ROW_NOEXPAND');
 	}
 }
 

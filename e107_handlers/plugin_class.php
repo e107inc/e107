@@ -75,6 +75,7 @@ class e_plugin
 		'e_upload',
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
+		'e_gsitemap',
 	);
 
 
@@ -247,8 +248,8 @@ class e_plugin
 
 		$link = $this->_data[$this->_plugdir]['adminLinks']['link'][0]['@attributes'];
 
-		$k = array(16 => 'iconSmall', 32 => 'icon', 128=>'icon128');
-		$def = array(16 => E_16_PLUGIN, 32 => E_32_PLUGIN);
+		$k = array(16 => 'iconSmall', 24 => 'icon', 32 => 'icon', 128=>'icon128');
+		$def = array(16 => E_16_PLUGIN, 24 => E_24_PLUGIN, 32 => E_32_PLUGIN);
 
 		$key = $k[$size];
 
@@ -310,6 +311,82 @@ class e_plugin
 		return $this->_data[$this->_plugdir]['legacy'];
 	}
 
+
+	/**
+	 * Check if the currently loaded plugin is installed
+	 * @return mixed
+	 */
+	public function isInstalled()
+	{
+		if(empty($this->_plugdir))
+		{
+			e107::getDebug()->log("\$this->_plugdir is empty ".__FILE__." ". __CLASS__ ."::".__METHOD__);
+		}
+
+
+		return in_array($this->_plugdir, array_keys($this->_installed));
+	}
+
+
+	/**
+	 * Check if the currently loaded plugin's addon has errors.
+	 * @return mixed
+	 */
+	public function getAddonErrors($e_xxx)
+	{
+		if (is_readable(e_PLUGIN.$this->_plugdir."/".$e_xxx.".php"))
+		{
+			$content = file_get_contents(e_PLUGIN.$this->_plugdir."/".$e_xxx.".php");
+		}
+		else
+		{
+			return 2;
+		}
+
+		if(substr($e_xxx, - 4, 4) == '_sql')
+		{
+
+			if(strpos($content,'INSERT INTO')!==false)
+			{
+				return array('type'=> 'error', 'msg'=>"INSERT sql commands are not permitted here. Use a ".$this->_plugdir."_setup.php file instead.");
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		// Generic markup check
+		if ((substr($content, 0, 5) != '<'.'?php') || ((substr($content, -2, 2) != '?'.'>') && (strrpos($content, '?'.'>') !== FALSE)))
+		{
+			return 1;
+		}
+
+
+		if($e_xxx == 'e_meta' && strpos($content,'<script')!==false)
+		{
+			return array('type'=> 'warning', 'msg'=>"Contains script tags. Use e_header.php with the e107::js() function instead.");
+		}
+
+
+		if($e_xxx == 'e_latest' && strpos($content,'<div')!==false)
+		{
+			return array('type'=> 'warning', 'msg'=>"Using deprecated method. See e_latest.php in the forum plugin for an example.");
+		}
+
+		if($e_xxx == 'e_status' && strpos($content,'<div')!==false)
+		{
+			return array('type'=> 'warning', 'msg'=>"Using deprecated method. See e_status.php in the forum plugin for an example.");
+		}
+
+
+		return 0;
+
+
+
+
+
+	}
 
 
 	public function getUpgradableList()
@@ -474,6 +551,7 @@ class e_plugin
 			}
 
 		}
+
 
 
 		return implode(',', $addons);
@@ -817,6 +895,134 @@ class e_plugin
 
 
 
+	public function buildAddonPrefLists()
+	{
+		$core = e107::getConfig('core');
+
+		foreach ($this->_addon_types as $var) // clear all existing prefs.
+		{
+			$core->update($var.'_list', "");
+		}
+
+		// reset
+		$core->set('bbcode_list', array())
+			 ->set('shortcode_legacy_list', array())
+			 ->set('shortcode_list', array());
+
+
+		foreach($this->getDetected() as $path)
+		{
+
+			$this->load($path);
+
+			$is_installed = $this->isInstalled();
+			$tmp = explode(",", $this->getAddons());
+
+
+			if ($is_installed)
+			{
+				foreach ($tmp as $val)
+				{
+					if (strpos($val, 'e_') === 0)
+					{
+						$core->setPref($val.'_list/'.$path, $path);
+					}
+				}
+			}
+
+				// search for .bb and .sc files.
+			$scl_array = array();
+			$sc_array = array();
+			$bb_array = array();
+		//	$sql_array = array();
+
+			foreach ($tmp as $adds)
+			{
+				// legacy shortcodes - plugin root *.sc files
+				if (substr($adds, -3) === ".sc")
+				{
+					$sc_name = substr($adds, 0, -3); // remove the .sc
+					if ($is_installed)
+					{
+						$scl_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
+					}
+					else
+					{
+						$scl_array[$sc_name] = e_UC_NOBODY; // register shortcode, but disable it
+					}
+				}
+				// new shortcodes location - shortcodes/single/*.php
+				elseif (substr($adds, 0, 3) === "sc_")
+				{
+					$sc_name = substr(substr($adds, 3), 0, -4); // remove the sc_ and .php
+
+					if ($is_installed)
+					{
+						$sc_array[$sc_name] = "0"; // default userclass = e_UC_PUBLIC
+					}
+					else
+					{
+						$sc_array[$sc_name] = e_UC_NOBODY; // register shortcode, but disable it
+					}
+				}
+
+				if($is_installed)
+				{
+					// simple bbcode
+					if(substr($adds,-3) == ".bb")
+					{
+						$bb_name = substr($adds, 0,-3); // remove the .bb
+                    	$bb_array[$bb_name] = "0"; // default userclass.
+					}
+					// bbcode class
+					elseif(substr($adds, 0, 3) == "bb_" && substr($adds, -4) == ".php")
+					{
+						$bb_name = substr($adds, 0,-4); // remove the .php
+						$bb_name = substr($bb_name, 3);
+                    	$bb_array[$bb_name] = "0"; // TODO - instance and getPermissions() method
+					}
+				}
+
+					if ($is_installed && (substr($adds, -4) == "_sql"))
+					{
+						$core->setPref('e_sql_list/'.$path, $adds);
+					}
+				}
+
+				// Build Bbcode list (will be empty if plugin not installed)
+				if (count($bb_array) > 0)
+				{
+					ksort($bb_array);
+					$core->setPref('bbcode_list/'.$path, $bb_array);
+				}
+
+				// Build shortcode list - do if uninstalled as well
+				if (count($scl_array) > 0)
+				{
+					ksort($scl_array);
+					$core->setPref('shortcode_legacy_list/'.$path, $scl_array);
+				}
+
+				if (count($sc_array) > 0)
+				{
+					ksort($sc_array);
+					$core->setPref('shortcode_list/'.$path, $sc_array);
+				}
+			}
+
+
+		$core->save(FALSE, false, false);
+
+
+
+
+
+	}
+
+
+
+
+
 }
 
 
@@ -862,6 +1068,7 @@ class e107plugin
 		'e_upload',
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
+		'e_gsitemap',
 	);
 
 
@@ -4069,9 +4276,9 @@ class e107plugin
 
 
 
-	/*
+	/**
 	 *	scan the plugin table and create path-array-prefs for each addon.
-	 *
+	 *  @deprecated Replaced by eplug::refreshAddonPrefList()
 	 *	@param string $mode = install|upgrade|refresh|uninstall - defines the intent of the call
 	 *
 	 *	'upgrade' and 'refresh' are very similar in intent, and often take the same actions:
@@ -4562,7 +4769,12 @@ class e107plugin
 		$xml = e107::getXml();
 		$mes = e107::getMessage();
 
-		e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName);
+		if(E107_DEBUG_LEVEL > 0)
+		{
+			$dbgArr = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,3);
+			unset($dbgArr[0]);
+			e107::getDebug()->log("Legacy Plugin Parse (xml): ".$plugName. print_a($dbgArr,true));
+		}
 
 		//	$xml->setOptArrayTags('extendedField,userclass,menuLink,commentID'); // always arrays for these tags.
 		//	$xml->setOptStringTags('install,uninstall,upgrade');

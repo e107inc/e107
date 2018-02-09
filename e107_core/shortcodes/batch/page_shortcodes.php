@@ -662,7 +662,7 @@ class cpage_shortcodes extends e_shortcode
 		$icon = deftrue('FONTAWESOME') ? $tp->toGlyph('fa-edit') : "<img src='".e_IMAGE_ABS."/admin_images/edit_16.png' alt='edit' style='border: 0px none; height: 16px; width: 16px;' />";
 
 
-	    return "<a rel='external'  title=\"".LAN_EDIT."\"  data-modal-caption=\"".LAN_EDIT."\" class='btn btn-default ".$modal."' href='".e_ADMIN_ABS."cpage.php?action=edit&id=".$this->var['page_id'].$iframe."' >".$icon."</a>";
+	    return "<a rel='external'  title=\"".LAN_EDIT."\"  data-modal-caption=\"".LAN_EDIT."\" class='btn btn-default btn-secondary ".$modal."' href='".e_ADMIN_ABS."cpage.php?action=edit&id=".$this->var['page_id'].$iframe."' >".$icon."</a>";
 	}
 
 

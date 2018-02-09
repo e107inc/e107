@@ -519,7 +519,7 @@ class download_shortcodes extends e_shortcode
 	
 		$url = e_PLUGIN_ABS."download/admin_download.php?action=edit&id=".$this->var['download_id'];
 	
-		return (ADMIN && getperms('6')) ? "<a class='e-tip btn btn-default hidden-print' href='".$url."' title='".LAN_EDIT."'>".$icon."</a>" : "";
+		return (ADMIN && getperms('6')) ? "<a class='e-tip btn btn-default btn-secondary hidden-print' href='".$url."' title='".LAN_EDIT."'>".$icon."</a>" : "";
    }
    
    function sc_download_category()
@@ -1010,7 +1010,7 @@ class download_shortcodes extends e_shortcode
 			$link = ($this->var['download_category_id']) ? e107::url('download', 'category', $this->var) : null;
 		}
 
-      	return "<a class='btn btn-default btn-xs btn-mini' href='".$link."'>".LAN_dl_9."</a>";
+      	return "<a class='btn btn-default btn-secondary btn-xs btn-mini' href='".$link."'>".LAN_dl_9."</a>";
    }
    
    
@@ -1023,7 +1023,7 @@ class download_shortcodes extends e_shortcode
    function sc_download_cat_search()
    {
 		$tp = e107::getParser();
-   		$text = "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>";
+   		$text = "<form class='form-search form-inline' method='get' action='".e_HTTP."search.php'>";
    		$text .= '<div><div class="input-group">';
 		$text .= "<input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_SEARCH."\" maxlength='50' />
 		 			<input type='hidden' name='r' value='0' />
@@ -1032,7 +1032,7 @@ class download_shortcodes extends e_shortcode
 			
 		$text .= '
               <span class="input-group-btn">
-              <button class="btn btn-default" type="submit" name="s"  value="1">';
+              <button class="btn btn-default btn-secondary" type="submit" name="s"  value="1">';
               
               $text .= $tp->toIcon('glyphicon-search.glyph');
 
@@ -1043,13 +1043,13 @@ class download_shortcodes extends e_shortcode
 	
 	return $text;
 	
-      return "<form class='form-search form-inline' method='get' action='".e_BASE."search.php'>
+     /* return "<form class='form-search form-inline' method='get' action='".e_HTTP."search.php'>
       		  <div class='input-group'>
       		  <input class='tbox form-control search-query' type='text' name='q' size='30' value='' placeholder=\"".LAN_SEARCH."\" maxlength='50' />
       		  <button class='btn btn-primary button' type='submit' name='s'  value='1' />".LAN_GO."</button>
       		  <input type='hidden' name='r' value='0' />
       		  </div>
-      		  </form>";
+      		  </form>";*/
    }
    
    

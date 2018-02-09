@@ -873,11 +873,11 @@ class theme_admin_form_ui extends e_admin_form_ui
 		$infoPath       = e_SELF."?mode=".$_GET['mode']."&id=".$theme['path']."&action=info&iframe=1";
 		$previewPath    = $tp->replaceConstants($theme['thumbnail'],'abs');
 
-		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['path']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
-		$info_icon 		= "<a class='btn btn-default btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoPath."'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+		$main_icon 		= ($pref['sitetheme'] != $theme['path']) ? "<button class='btn btn-default btn-secondary btn-small btn-sm btn-inverse' type='submit'   name='selectmain[".$theme['path']."]' alt=\"".TPVLAN_10."\" title=\"".TPVLAN_10."\" >".$tp->toGlyph('fa-home',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-secondary btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
+		$info_icon 		= "<a class='btn btn-default btn-secondary btn-small btn-sm btn-inverse e-modal'  data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoPath."'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 	//	$admin_icon 	= ($pref['admintheme'] != $theme['path'] ) ? "<button class='btn btn-default btn-small btn-sm btn-inverse' type='submit'   name='selectadmin[".$theme['id']."]' alt=\"".TPVLAN_32."\" title=\"".TPVLAN_32."\" >".$tp->toGlyph('fa-gears',array('size'=>'2x'))."</button>" : "<button class='btn btn-small btn-default btn-sm btn-inverse' type='button'>".$tp->toGlyph('fa-check',array('size'=>'2x'))."</button>";
 
-		$preview_icon 	= "<a class='e-modal btn btn-default btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
+		$preview_icon 	= "<a class='e-modal btn btn-default btn-secondary btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 
 		return $main_icon.$info_icon.$preview_icon;
 	}
@@ -913,9 +913,9 @@ class theme_admin_form_ui extends e_admin_form_ui
 	//	$viewUrl = $theme['url'];
 
 		$modalCaption = (empty($theme['price'])) ? ' '.LAN_DOWNLOADING.' '.$theme['name']." ".$theme['version'] :' '.LAN_PURCHASE.' '.$theme['name']." ".$theme['version'];
-		$main_icon = "<a class='e-modal btn-default btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
+		$main_icon = "<a class='e-modal btn-default btn-secondary btn btn-sm btn-small btn-inverse' data-modal-caption=\"".$modalCaption."\" rel='external'  href='{$downloadUrl}' data-cache='false' title='".$LAN_DOWNLOAD."' >".$tp->toGlyph('download',array('size'=>'2x'))."</a>";
 
-		$info_icon 	= "<a class='btn btn-default btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
+		$info_icon 	= "<a class='btn btn-default btn-secondary btn-sm btn-small btn-inverse e-modal' data-toggle='modal' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" href='".$infoUrl."' data-cache='false'  title='".TPVLAN_7."'>".$tp->toGlyph('fa-info-circle',array('size'=>'2x'))."</a>";
 
 		if(!empty($theme['preview'][0]))
 		{
@@ -926,7 +926,7 @@ class theme_admin_form_ui extends e_admin_form_ui
 				$previewPath = $theme['livedemo'];
 			}
 
-			$preview_icon 	= "<a class='e-modal btn btn-default btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
+			$preview_icon 	= "<a class='e-modal btn btn-default btn-secondary btn-sm btn-small btn-inverse' title=' ".TPVLAN_70." ".$theme['name']."' data-modal-caption=\"".$theme['name']." ".$theme['version']."\" rel='external'  href='".$previewPath."'>".$tp->toGlyph('fa-search',array('size'=>'2x'))."</a>";
 		}
 
 		return $main_icon.$info_icon.$preview_icon;

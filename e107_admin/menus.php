@@ -961,7 +961,7 @@ class e_menu_layout
 
 		    <div class="dropdown pull-right e-mm-selector-container">
 
-		        <a class="btn btn-default btn-sm e-mm-selector " title="'.LAN_ACTIVATE.'">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
+		        <a class="btn btn-default btn-secondary btn-sm e-mm-selector " title="'.LAN_ACTIVATE.'">'.LAN_GO." ".e107::getParser()->toGlyph('fa-chevron-right').'</a>';
 
 				$menuButtonLabel = defset("MENLAN_59", "Area [x]");
 

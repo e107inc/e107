@@ -563,7 +563,7 @@ class e_news_item extends e_front_model
 {
 	protected $_db_table = 'news';
 	protected $_field_id = 'news_id';
-	protected $_cache_string = 'news_item_';
+	protected $_cache_string = 'news_item_{ID}';
 
 	/**
 	 * Shortcodes - simple field getter (basic formatting)
@@ -773,7 +773,7 @@ class e_news_tree extends e_front_tree_model
 			LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 			{$where}
 			ORDER BY ".$db_order." LIMIT ".$db_limit;
-		
+
 		$this->setParam('db_query', $query);
 		
 		return parent::load($force);
@@ -799,6 +799,8 @@ class e_news_tree extends e_front_tree_model
 		";
 		
 		$params['db_where'] = $where;
+
+		$this->_cache_string = null; // disable sys cache, otherwise we get a new cache file every time the time() changes.
 		
 		return $this->loadJoin($category_id, $force, $params);
 	}

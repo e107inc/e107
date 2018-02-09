@@ -110,6 +110,10 @@
 
 		if ($parms[1] == 'text')
 		{
+			if(!isset($ueStruct['user_'.$parms[0]]))
+			{
+				return FALSE;
+			}
 			$text_val = $ueStruct['user_'.$parms[0]]['user_extended_struct_text'];
 			if($text_val)
 			{

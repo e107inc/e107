@@ -18,7 +18,7 @@ if(!getperms("P") || !e107::isInstalled('gsitemap'))
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 
-e107::lan('gsitemap',e_LANGUAGE."_admin_gsitemap.php");
+e107::lan('gsitemap',true);
 
 $gsm = new gsitemap;
 
@@ -165,7 +165,7 @@ class gsitemap
 				<td class='center' style='white-space:nowrap'>
 				<div>
 				<button class='btn btn-default' type='submit' name='edit[{$row2['gsitemap_id']}]' value='edit' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' >".ADMIN_EDIT_ICON."</button>
-				<button class='btn btn-default action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
+				<button class='btn btn-default btn-secondary action delete' type='submit' name='delete[{$row2['gsitemap_id']}]' value='del' data-confirm='".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gsitemap_name']."]")."' title='".LAN_DELETE."' >".ADMIN_DELETE_ICON."</button>
 				</div>
 				</td>
 				</tr>
@@ -381,44 +381,27 @@ class gsitemap
 
 
 
-		/* forums ... */
-		if(e107::isInstalled('forum'))
-		{ 
-			$sql -> select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
-			$nfArray = $sql -> db_getList();
-			foreach($nfArray as $row)
+		/* Plugins.. - currently: forums ... */
+		$addons = e107::getAddonConfig('e_gsitemap', null, 'import');
+
+		foreach($addons as $plug => $config)
+		{
+
+			foreach($config as $row)
 			{
-				if(!in_array($row['forum_name'], $existing))
+				if(!in_array($row['name'], $existing))
 				{
-					$importArray[] = array('name' => $row['forum_name'], 'url' => e107::getUrl()->create('forum/forum/view', $row['forum_id']), 'type' => "Forum");
+					$importArray[] = $row;
 				}
 			}
+
 		}
 
-
-		/* DEPRECATED content pages ...
-		if(e107::isInstalled('content'))
-		{ 	
-			$sql -> select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
-			$nfArray = $sql -> db_getList();
-			foreach($nfArray as $row)
-			{
-				$sql2 -> select("pcontent", "content_id, content_heading", "content_parent = '".$row['content_id']."' AND content_refer != 'sa' ORDER BY content_heading");
-				$nfArray2 = $sql2 -> db_getList();
-				foreach($nfArray2 as $row2)
-				{
-					if(!$sql -> select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
-					{
-						$importArray[] = array('name' => $row2['content_heading'], 'url' => $PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
-					}
-				}
-			}
-		}
-		*/
+		$editArray = $_POST;
 
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
-		<table class='table adminlist'>
+		<table class='table adminlist table-striped table-condensed'>
 		<colgroup>
 			<col class='center' style='width:5%;' />
 			<col style='width:15%' />
@@ -427,21 +410,22 @@ class gsitemap
 		</colgroup>
 		<thead>
 			<tr>
-			<td>".GSLAN_2."</td>
-			<td>".LAN_TYPE."</td>
-			<td>".LAN_NAME."</td>
-			<td>".LAN_URL."</td>
+			<th class='center'>".GSLAN_2."</th>
+			<th>".LAN_TYPE."</th>
+			<th>".LAN_NAME."</th>
+			<th>".LAN_URL."</th>
 		</tr>
 		</thead>
 		<tbody>
 		";
 
-		foreach($importArray as $ia)
+		foreach($importArray as $k=>$ia)
 		{
+			$id = 'gs-'.$k;
 			$text .= "
 			<tr>
-				<td><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
-				<td>".$ia['type']."</td>
+				<td class='center'><input id='".$id."' type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
+				<td><label for='".$id."'>".$ia['type']."</label></td>
 				<td>".$ia['name']."</td>
 				<td><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
 			</tr>
@@ -451,16 +435,15 @@ class gsitemap
 		$text .= "
 		<tr>
 		<td colspan='4' class='center'>
-		<div> ".GSLAN_8." &nbsp; ".GSLAN_9." :&nbsp;<select class='tbox' name='import_priority' >\n";
+		<div class='buttons-bar'> ".GSLAN_8." &nbsp; ".GSLAN_9." :&nbsp;<select class='tbox' name='import_priority' >\n";
 
 		for ($i=0.1; $i<1.0; $i=$i+0.1) 
 		{
 			$sel = (vartrue($editArray['gsitemap_priority']) == number_format($i,1))? "selected='selected'" : "";
 			$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
-		};
+		}
 
 		$text.="</select>&nbsp;&nbsp;&nbsp;".GSLAN_10."
-
 
 		<select class='tbox' name='import_freq' >\n";
 		foreach($this->freq_list as $k=>$fq)
@@ -469,7 +452,7 @@ class gsitemap
 			$text .= "<option value='{$k}' {$sel}>{$fq}</option>\n";
 		}
 
-		$text.="</select> <br /><br />
+		$text .= "</select> <br /><br />
 
 		</div>
 		
@@ -479,7 +462,7 @@ class gsitemap
 		</table>
 		<div class='buttons-bar center'>
 		".
-		$frm->admin_button('import_links',GSLAN_18,'submit')."
+			$frm->admin_button('import_links',GSLAN_18,'submit')."
 		</div>
 		</form>
 		";

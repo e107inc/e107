@@ -475,7 +475,8 @@ class e_db_mysql
 		}
 		if ($debug !== FALSE || strstr($_SERVER['QUERY_STRING'], 'showsql'))
 		{
-			$queryinfo[] = "<b>{$qry_from}</b>: $query";
+			$debugQry = is_array($query) ? print_a($query,true) : $query;
+			$queryinfo[] = "<b>{$qry_from}</b>: ".$debugQry;
 		}
 		if ($log_type != '')
 		{
@@ -614,8 +615,14 @@ class e_db_mysql
 					}
 				}
 
-			//	$query = var_export($query,true);
-			   	$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+				if($this->pdo == true && $buglink instanceof PDO)
+				{
+					$db_debug->Mark_Query($query, 'PDO', $sQryRes, $aTrace, $mytime, $pTable);
+				}
+				else
+				{
+					$db_debug->Mark_Query($query, $buglink, $sQryRes, $aTrace, $mytime, $pTable);
+				}
 			}
 			else
 			{

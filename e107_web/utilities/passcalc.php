@@ -107,7 +107,7 @@ if (isset($_POST['show_password']))
   $text .= "
 	<tr>
 	  <td class='forumheader3' colspan='3' style='text-align:center'>
-		<input class='btn btn-default button' type='submit' name='show_password' value='".LAN_PCALC_04."' />
+		<input class='btn btn-default btn-secondary button' type='submit' name='show_password' value='".LAN_PCALC_04."' />
 	  </td>
 	</tr>";
 

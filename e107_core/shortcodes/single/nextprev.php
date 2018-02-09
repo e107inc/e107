@@ -77,6 +77,13 @@ function nextprev_shortcode($parm = '')
 
 		// Calculate
 		$total_items = intval($parm['total']);
+
+		if(empty($total_items))
+		{
+			// e107::getDebug()->log("Next Prev has zero total items");
+			return null;
+		}
+
 		$check_render = true;
 
 		if(vartrue($parm['glyphs']) && (deftrue('BOOTSTRAP')))

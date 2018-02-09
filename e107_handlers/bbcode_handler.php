@@ -31,10 +31,13 @@ class e_bbcode
 	var $preProcess = FALSE;	// Set when processing bbcodes prior to saving
 	var $core_bb = array();
 	var $class = FALSE;
+	private $resizePrefs = array();
 
 	function __construct()
 	{
 		$pref = e107::getPref();
+
+		$this->resizePrefs = $pref['resize_dimensions'];
 
 		$this->core_bb = array(
 			'alert',
@@ -483,21 +486,21 @@ class e_bbcode
 	
 	function resizeWidth()
 	{
-		$pref = e107::getPref();
-		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['w']))
+		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['w']))
 		{
-			return $pref['resize_dimensions'][$this->class.'-bbcode']['w'];		
+			return (int) $this->resizePrefs[$this->class.'-bbcode']['w'];
 		}
+
 		return false;	
 	}
 	
 	function resizeHeight()
 	{
-		$pref = e107::getPref();
-		if($this->class && vartrue($pref['resize_dimensions'][$this->class.'-bbcode']['h']))
+		if($this->class && !empty($this->resizePrefs[$this->class.'-bbcode']['h']))
 		{
-			return $pref['resize_dimensions'][$this->class.'-bbcode']['h'];		
+			return (int) $this->resizePrefs[$this->class.'-bbcode']['h'];
 		}
+
 		return false;	
 	}	
 	
@@ -654,8 +657,115 @@ class e_bbcode
   
         return str_replace(array("<html><body>","</body></html>"),"",$html); 
     }
-        
-    
+
+
+	/**
+	 * Replace all instances of <img> tags with [img] bbcodes - allowing image tags and their 'src' values to remain dynamic.
+	 * @param string $html
+	 * @param bool $fromDB if html source is directly from the database, set to true to handle '&quot;' etc.
+	 * @return string html with <img> tags replaced by [img] bbcodes.
+	 */
+	function imgToBBcode($html, $fromDB = false)
+    {
+
+	    $tp = e107::getParser();
+
+	    if($fromDB === true)
+	    {
+	    	$html = str_replace('&quot;','"', $html);
+	    }
+
+	//    var_dump($this->defaultImageSizes);
+	    $cl = $this->getClass();
+
+
+		$arr = $tp->getTags($html,'img');
+
+		$srch = array("?","&");
+		$repl = array("\?","&amp;");
+
+		if(defined('TINYMCE_DEBUG'))
+		{
+			print_a($arr);
+		}
+
+		foreach($arr['img'] as $img)
+		{
+			if(/*substr($img['src'],0,4) == 'http' ||*/ strpos($img['src'], e_IMAGE_ABS.'emotes/')!==false) // dont resize external images or emoticons.
+			{
+				continue;
+			}
+
+			$regexp = '#(<img[^>]*src="'.str_replace($srch, $repl, $img['src']).'"[^>]*>)#';
+
+			$qr = $tp->thumbUrlDecode($img['src']); // extract width/height and src from thumb URLs.
+
+			if(strpos($qr['src'],'http')!==0 && empty($qr['w']) && empty($qr['aw']))
+			{
+				$qr['w'] = $img['width'];
+				$qr['h'] = $img['height'];
+			}
+
+			$qr['ebase'] = true;
+
+
+
+			if(!empty($img['class']))
+			{
+				$tmp = explode(" ",$img['class']);
+				$cls = array();
+				foreach($tmp as $v)
+				{
+					if($v === 'img-rounded' || $v === 'rounded' || strpos($v,'bbcode') === 0 )
+					{
+						continue;
+					}
+
+					$cls[] = $v;
+
+				}
+
+				if(empty($cls))
+				{
+					unset($img['class']);
+				}
+				else
+				{
+					$img['class'] = implode(" ",$cls);
+				}
+
+			}
+
+			if($this->resizeWidth() === (int) $img['width'])
+			{
+				unset($img['width']);
+			}
+
+
+			$code_text = (strpos($img['src'],'http') === 0) ? $img['src'] : str_replace($tp->getUrlConstants('raw'), $tp->getUrlConstants('sc'), $qr['src']);
+
+			unset($img['src'],$img['srcset'],$img['@value'], $img['caption'], $img['alt']);
+			$parms = !empty($img) ? ' '.str_replace('+', ' ', http_build_query($img,null, '&')) : "";
+
+			$replacement = '[img'.$parms.']'.$code_text.'[/img]';
+
+			$html = preg_replace($regexp, $replacement, $html);
+
+		}
+
+	    if($fromDB === true)
+	    {
+	    	$html = str_replace('"', '&quot;', $html);
+	    }
+
+		return $html;
+
+
+    }
+
+
+
+
     
 	/**
 	 * Convert HTML to bbcode. 

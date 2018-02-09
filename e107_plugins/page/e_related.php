@@ -72,7 +72,7 @@ class page_related // replace 'e_' with 'plugin-folder_'
 				$items[] = array(
 					'title'			=> $title,
 					'url'			=> e107::getUrl()->create('page/view/index',$row), // '{e_BASE}news.php?extend.'.$row['news_id'],
-					'summary'		=> $row['page_metadescr'],
+					'summary'		=> $row['page_metadscr'],
 					'image'			=> $row['menu_image']
 				);
 			}

@@ -15,6 +15,11 @@ if (!defined('e107_INIT'))
 	require_once("../class2.php");
 }
 
+if (!getperms('4|U0|U1|U2|U3'))
+{
+	e107::redirect('admin');
+	exit;
+}
 
 e107::coreLan('user');
 e107::coreLan('users', true);
@@ -52,7 +57,7 @@ class users_admin extends e_admin_dispatcher
 
 
 	protected $adminMenu = array(
-		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
+		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
 		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
@@ -1610,8 +1615,8 @@ class users_admin_ui extends e_admin_ui
 
 		<tr>
 			<td>".LAN_PASSWORD."</td>
-			<td>".$frm->password('password', '', 20, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1))."
-			</td>
+			<td>".$frm->password('password', '', 128, array('size' => 'xlarge', 'class' => 'tbox e-password', 'generate' => 1, 'strength' => 1, 'autocomplete' => 'new-password'))."
+ 			</td>
 		</tr>";
 		
 
@@ -1642,7 +1647,7 @@ class users_admin_ui extends e_admin_ui
 				".USRLAN_120."
 			</td>
 			<td>
-				<a href='#set_class' class='btn btn-default e-expandit'>".USRLAN_120."</a>
+				<a href='#set_class' class='btn btn-default btn-secondary e-expandit'>".USRLAN_120."</a>
 				<div class='e-hideme' id='set_class'>
 				{$temp}
 				</div>
@@ -1655,7 +1660,7 @@ class users_admin_ui extends e_admin_ui
 		<tr>
 			<td>".USRLAN_35."</td>
 			<td>
-				<a href='#set_perms' class='btn btn-default e-expandit'>".USRLAN_243."</a>
+				<a href='#set_perms' class='btn btn-default btn-secondary e-expandit'>".USRLAN_243."</a>
 				<div class='e-hideme' id='set_perms'>
 		";
 			
@@ -2314,10 +2319,10 @@ class users_admin_ui extends e_admin_ui
 		{
 		// Option to delete emails - only if there are some in the list
 			$text .= "</table><table style='".ADMIN_WIDTH."'><tr>
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
-			<td style='text-align: center;'><input class='btn btn-default button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delnonbouncesubmit' value='".USRLAN_183."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='clearemailbouncesubmit' value='".USRLAN_184."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delcheckedsubmit' value='".USRLAN_179."' /></td>\n
+			<td style='text-align: center;'><input class='btn btn-default btn-secondary button' type='submit' name='delallsubmit' value='".USRLAN_180."' /></td>\n
 			</td></tr>";
 		}
 		$text .= "</table></form></div>";
@@ -2379,7 +2384,12 @@ class users_admin_form_ui extends e_admin_form_ui
 //		$uid = $this->getController()->getModel()->get('user_id');
 		$perms = $this->getController()->getModel()->get('user_perms');
 
-		if($mode == 'read'  || (str_replace(".","",$perms) == '0'))
+		if($mode == 'filter' && getperms('3'))
+		{
+			return array(0=>LAN_NO, '1'=>LAN_YES);
+		}
+
+		if($mode == 'read'  || (str_replace(".","",$perms) == '0') || !getperms('3'))
 		{
 			return $this->renderValue('user_admin',$curval,$att);
 		}
@@ -2388,6 +2398,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			return $this->renderElement('user_admin',$curval,$att);
 		}
+
 
 
 	}
@@ -2443,10 +2454,9 @@ class users_admin_form_ui extends e_admin_form_ui
 		$perms = $this->getController()->getModel()->get('user_perms');
 		$uid = $this->getController()->getModel()->get('user_id');
 
-		if($mode == 'read' || (str_replace(".","",$perms) == '0' && $uid == USERID))
+		if($mode == 'read' || (str_replace(".","",$perms) == '0' && $uid == USERID) || !getperms('3'))
 		{
-
-			return e107::getUserPerms()->renderPerms($curval,$uid);		
+			return e107::getUserPerms()->renderPerms($curval,$uid);
 		}
 		if($mode == 'write')
 		{
@@ -2483,8 +2493,7 @@ class users_admin_form_ui extends e_admin_form_ui
 		{
 			$fieldName = 'user_password_'. $this->getController()->getId();
 
-			return $this->password($fieldName, '', 20, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => USRLAN_251, 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'off'))."
-			";			
+			return $this->password($fieldName, '', 128, array('size' => 50, 'class' => 'tbox e-password', 'placeholder' => USRLAN_251, 'generate' => 1, 'strength' => 1, 'required'=>0, 'autocomplete'=>'new-password'));
 		}
 			
 		
@@ -2741,7 +2750,7 @@ class users_admin_form_ui extends e_admin_form_ui
 
 		$btn =  '<div class="btn-group pull-right">
 
-		<button aria-expanded="false" class="btn btn-default btn-user-action dropdown-toggle" data-toggle="dropdown">
+		<button aria-expanded="false" class="btn btn-default btn-secondary btn-user-action dropdown-toggle" data-toggle="dropdown">
 		<span class="user-action-indicators" id="user-action-indicator-'.$user_id.'">'.e107::getParser()->toGlyph('cog').'</span>
 		<span class="caret"></span>
 		</button>

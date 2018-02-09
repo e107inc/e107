@@ -1511,6 +1511,8 @@ class e_model extends e_object
      */
 	public function load($id = null, $force = false)
 	{
+
+
 		if(!$force && $this->getId())
 		{
 			return $this;
@@ -1566,6 +1568,7 @@ class e_model extends e_object
 		}
 		else
 		{
+
 			$this->_setCacheData();
 		}
 
@@ -1866,7 +1869,7 @@ class e_model extends e_object
 }
 
 /**
- * Base e107 Fron Model class interface
+ * Base e107 Front Model class interface
  *
  * Some important points:
  * - model data should be always in toDB() format:
@@ -2578,6 +2581,8 @@ class e_front_model extends e_model
 			// already done by the parent
 			//$this->addMessageDebug('SQL Error #'.$this->_db_errno.': '.$sql->getLastErrorText());
 		}
+
+
 		return $this;
 	}
 
@@ -3217,6 +3222,29 @@ class e_tree_model extends e_front_model
 		return $this->_cache_string;
 	}
 
+	public function setCacheString($str = null)
+	{
+		if(isset($str))
+			return parent::setCacheString($str);
+
+		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		{
+			$str = !$this->getParam('db_query')
+				?
+					$this->getModelTable()
+					.$this->getParam('nocount')
+					.$this->getParam('db_where')
+					.$this->getParam('db_order')
+					.$this->getParam('db_limit')
+				:
+					$this->getParam('db_query');
+
+			return $this->setCacheString($this->getCacheString().'_'.md5($str));
+		}
+
+		return parent::setCacheString($str);
+	}
+
 	protected function _setCacheData()
 	{
 		if(!$this->isCacheEnabled())
@@ -3269,12 +3297,6 @@ class e_tree_model extends e_front_model
 	 */
 	public function load($force = false)
 	{
-		// XXX What would break if changed to the most proper isTree()?
-		if(!$force && $this->isTree()) //!$this->isEmpty()
-		{
-			return $this;
-		}
-
 		if ($force)
 		{
 			$this->unsetTree()
@@ -3283,21 +3305,13 @@ class e_tree_model extends e_front_model
 			$this->_total = false;
 		}
 
-		if($this->isCacheEnabled() && !$this->getParam('noCacheStringModify'))
+		// XXX What would break if changed to the most proper isTree()?
+		elseif($this->isTree()) //!$this->isEmpty()
 		{
-			$str = !$this->getParam('db_query')
-				?
-					$this->getModelTable()
-					.$this->getParam('nocount')
-					.$this->getParam('db_where')
-					.$this->getParam('db_order')
-					.$this->getParam('db_limit')
-				:
-					$this->getParam('db_query');
-
-			$this->setCacheString($this->getCacheString().'_'.md5($str));
+			return $this;
 		}
 
+		$this->setCacheString();
 		$cached = $this->_getCacheData();
 		if($cached !== false)
 		{
@@ -3305,7 +3319,6 @@ class e_tree_model extends e_front_model
 			return $this;
 		}
 
-		$class_name = $this->getParam('model_class', 'e_model');
 		// auto-load all
 		if(!$this->getParam('db_query') && $this->getModelTable())
 		{
@@ -3318,15 +3331,30 @@ class e_tree_model extends e_front_model
 			);
 		}
 
+		$class_name = $this->getParam('model_class', 'e_model');
 		if($this->getParam('db_query') && $class_name && class_exists($class_name))
 		{
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
+			// Workaround: Parse and modify db_query param for simulated pagination
+			$this->prepareSimulatedPagination();
+
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
-				$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
-				while($tmp = $sql->db_Fetch())
+				$rows = self::flatTreeFromArray($sql->rows(),
+				                                $this->getParam('primary_field'),
+				                                $this->getParam('sort_parent'),
+				                                $this->getParam('sort_field')
+				                                );
+
+				// Simulated pagination
+				$rows = array_splice($rows,
+				                     (int) $this->getParam('db_limit_offset'),
+				                     ($this->getParam('db_limit_count') ? $this->getParam('db_limit_count') : count($rows))
+				                     );
+
+				foreach($rows as $tmp)
 				{
 					$tmp = new $class_name($tmp);
 					if($this->getParam('model_message_stack'))
@@ -3335,20 +3363,9 @@ class e_tree_model extends e_front_model
 					}
 					$this->_onLoad($tmp)->setNode($tmp->get($this->getFieldIdName()), $tmp);
 				}
-
-				if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
-				{
-					//SQL_CALC_FOUND_ROWS not found in the query, do one more query
-				//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
-
-					// Calculates correct total when using filters and search. //XXX Optimize.
-					$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
-
-					$this->_total = e107::getDb()->gen($countQry);
-
-				}
-
 				unset($tmp);
+
+				$this->countResults($sql);
 			}
 
 			if($sql->getLastErrorNumber())
@@ -3365,6 +3382,157 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
+	}
+
+	/**
+	 * Depth-first sort a relational array with a parent field and a sort order field
+	 * @param array $rows Relational array with a parent field and a sort order field
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @param string $sort_field The field name whose value is the sort order in the current tree node
+	 * @return array Input array sorted depth-first as if it were a tree
+	 */
+	private static function flatTreeFromArray($rows, $primary_field, $sort_parent, $sort_field)
+	{
+		$rows_tree = self::arrayToTree($rows, $primary_field, $sort_parent);
+		return self::flattenTree($rows_tree, $sort_field);
+	}
+
+	/**
+	 * Converts a relational array with a parent field and a sort order field to a tree
+	 * @param array $rows Relational array with a parent field and a sort order field
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @return array Multidimensional array with child nodes under the "_children" key
+	 */
+	private static function arrayToTree($rows, $primary_field, $sort_parent)
+	{
+		$nodes = array();
+		$root = array($primary_field => 0);
+		$nodes[] = &$root;
+
+		while(!empty($nodes))
+		{
+			self::moveRowsToTreeNodes($nodes, $rows, $primary_field, $sort_parent);
+		}
+
+		return array(0 => $root);
+	}
+
+	/**
+	 * Put rows with parent matching the ID of the first node into the next node's children
+	 * @param array &$nodes Current queue of nodes, the first of which may have children added to it
+	 * @param array &rows The remaining rows that have yet to be converted into children of nodes
+	 * @param string $primary_field The field name of the primary key (matches children to parents)
+	 * @param string $sort_parent The field name whose value is the parent ID
+	 * @returns null
+	 */
+	private static function moveRowsToTreeNodes(&$nodes, &$rows, $primary_field, $sort_parent)
+	{
+		$node = &$nodes[0];
+		array_shift($nodes);
+		foreach($rows as $key => $row)
+		{
+			$nodeID      = (int) $node[$primary_field];
+			$rowParentID = (int) $row[$sort_parent];
+			if($nodeID === $rowParentID)
+			{
+				$node['_children'][] = &$row;
+				unset($rows[$key]);
+				$nodes[] = &$row;
+				unset($row);
+			}
+		}
+	}
+
+	/**
+	 * Flattens a tree into a depth-first array, sorting each node by a field's values
+	 * @param array $tree Tree with child nodes under the "_children" key
+	 * @param string $sort_field The field name whose value is the sort order in the current tree node
+	 * @param int $depth The depth that this level of recursion is entering
+	 * @return array One-dimensional array in depth-first order with depth indicated by the "_depth" key
+	 */
+	private static function flattenTree($tree, $sort_field = null, $depth = 0)
+	{
+		$flat = array();
+
+		foreach($tree as $item)
+		{
+			$children = $item['_children'];
+			unset($item['_children']);
+			$item['_depth'] = $depth;
+			if($depth > 0)
+				$flat[] = $item;
+			if(is_array($children))
+			{
+				uasort($children, function($node1, $node2)
+				{
+					if(intval($node1[$sort_field]) === intval($node2[$sort_field])) return 0;
+					return intval($node1[$sort_field]) < intval($node2[$sort_field]) ? -1 : 1;
+				});
+				$flat = array_merge($flat, self::flattenTree($children, $sort_field, $depth+1));
+			}
+		}
+
+		return $flat;
+	}
+
+	/**
+	 * Resiliently counts the results from the last SQL query in the given resource
+	 *
+	 * Sets the count in $this->_total
+	 *
+	 * @param resource $sql SQL resource that executed a query
+	 * @return int Number of results from the latest query
+	 */
+	private function countResults($sql)
+	{
+		$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
+		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
+		{
+			//SQL_CALC_FOUND_ROWS not found in the query, do one more query
+		//	$this->_total = e107::getDb()->db_Count($this->getModelTable()); // fails with specific listQry
+
+			// Calculates correct total when using filters and search. //XXX Optimize.
+			$countQry = preg_replace('/(LIMIT ([\d,\s])*)$/', "", $this->getParam('db_query'));
+
+			$this->_total = e107::getDb()->gen($countQry);
+
+		}
+		return $this->_total;
+	}
+
+	/**
+	 * Workaround: Parse and modify query to prepare for simulation of tree pagination
+	 *
+	 * This is a hack to maintain compatibility of pagination of tree
+	 * models without SQL LIMITs
+	 *
+	 * Implemented out of necessity under
+	 * https://github.com/e107inc/e107/issues/3015
+	 *
+	 * @returns null
+	 */
+	private function prepareSimulatedPagination()
+	{
+		$db_query = $this->getParam('db_query');
+		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(,|OFFSET){0,1}[ ]*([\d]*)/", function($matches)
+		{
+			// Offset and count
+			if (isset($matches[3]))
+			{
+				$this->setParam('db_limit_offset', $matches[1]);
+				$this->setParam('db_limit_count', $matches[3]);
+			}
+			// Count only
+			else
+			{
+				$this->setParam('db_limit_count', $matches[1]);
+			}
+
+			return "";
+		}, $db_query);
+		$this->setParam('db_query', $db_query);
 	}
 
 	/**

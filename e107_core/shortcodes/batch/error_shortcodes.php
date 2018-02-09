@@ -74,7 +74,7 @@ class error_shortcodes extends e_shortcode
 		$icon = e107::getParser()->toGlyph('fa-search');
 		$url = e107::getUrl()->create('search');
 
-		return '<a href="' . $url . '" class="btn btn-default">' . $icon . ' ' . LAN_ERROR_22 . '</a>';
+		return '<a href="' . $url . '" class="btn btn-default btn-secondary">' . $icon . ' ' . LAN_ERROR_22 . '</a>';
 	}
 
 }

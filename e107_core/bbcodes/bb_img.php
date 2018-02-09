@@ -20,15 +20,17 @@ class bb_img extends e_bb_base
 		$parms = eHelper::scParams($parm);
 		$safe = array();
 		
-		if(vartrue($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
-		if(vartrue($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
-		if(vartrue($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
-		if(vartrue($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['alt'],'str');
+		if(!empty($parms['class'])) 	$safe['class'] = eHelper::secureClassAttr($parms['class']);
+		if(!empty($parms['id']))		$safe['id']     = eHelper::secureIdAttr($parms['id']);
+		if(!empty($parms['style'])) 	$safe['style'] = eHelper::secureStyleAttr($parms['style']);
+		if(!empty($parms['alt'])) 	    $safe['alt'] = e107::getParser()->filter($parms['alt'],'str');
+		if(isset($parms['width'])) 	    $safe['width'] = (int) $parms['width'];
 
-		if($safe)
+		if(!empty($safe))
 		{
 			return '[img '.eHelper::buildAttr($safe).']'.$code_text.'[/img]';
 		}
+
 		return '[img]'.$code_text.'[/img]';
 	}
 	
@@ -48,7 +50,7 @@ class bb_img extends e_bb_base
 
         $figcaption = false;
 
-        if($imgParms['figcaption'])
+        if(!empty($imgParms['figcaption']))
         {
             $figcaption = $imgParms['figcaption'];
             unset($imgParms['figcaption']);
@@ -70,7 +72,7 @@ class bb_img extends e_bb_base
     //    $resize = "&w=".$w; // Always resize - otherwise the thumbnailer returns nothing.
     //    $parmStr = implode(" ",$p);
 
-   //     print_a($imgParms);
+
 
    //     $url = e107::getParser()->thumbUrl($code_text, $resize);
 
@@ -132,8 +134,10 @@ class bb_img extends e_bb_base
 		}
 
 	    $imgParms['title'] = $imgParms['alt'] ;
-        
-        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img');;  //  This will be overridden if a new class is specified
+
+	    $class = !empty($imgParms['class']) ? ' '.$imgParms['class'] : '';
+
+        $imgParms['class']      = "img-rounded rounded bbcode ".e107::getBB()->getClass('img').$class;  //  This will be overridden if a new class is specified
         
         if($mode == 'string')
 		{
@@ -164,9 +168,7 @@ class bb_img extends e_bb_base
             return $this->mediaImage($code_text, $parm);          
         }
         
-     
-    
-        
+
 		if (preg_match("#\.php\?.*#",$code_text)){return "";} //XXX Breaks MediaManager Images, so do it after mediaManager check. 
 		
 		$addlink = FALSE;

@@ -2853,7 +2853,10 @@ abstract class eUrlConfig
 	 * @param array $config
 	 * @return string route or false on error
 	 */
-	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array()) { return false; }
+	public function parse($pathInfo, $params = array(), eRequest $request = null, eRouter $router = null, $config = array())
+	{
+		return false;
+	}
 	
 	/**
 	 * Legacy callback, used called when config option legacy is not empty
@@ -4080,21 +4083,32 @@ class eResponse
 
 
 	/**
-	 * @param $name
-	 * @return $this
+	 * Removes a Meta tag by name/property.
+	 *
+	 * @param string $name
+	 *   'name' or 'property' for the meta tag we want to remove.
+	 *
+	 * @return eResponse $this
 	 */
 	public function removeMeta($name)
 	{
 		foreach($this->_meta as $k=>$v)
 		{
-			if($v['name'] === $name)
+			// Meta tags like: <meta content="..." name="description" />
+			if(isset($v['name']) && $v['name'] === $name)
+			{
+				unset($this->_meta[$k]);
+				continue;
+			}
+
+			// Meta tags like: <meta content="..." property="og:title" />
+			if(isset($v['property']) && $v['property'] === $name)
 			{
 				unset($this->_meta[$k]);
 			}
 		}
 
 		return $this;
-
 	}
 
 	
@@ -4307,7 +4321,7 @@ class eResponse
 	{
 		$attrData = '';
 
-		e107::getEvent()->trigger('system_meta_pre');
+		e107::getEvent()->trigger('system_meta_pre', $this->_meta);
 
 		foreach ($this->_meta as $attr)
 		{
