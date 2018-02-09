@@ -3344,12 +3344,12 @@ class e_tree_model extends e_front_model
 
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
-				$rows = self::flatTreeFromArray($sql->rows(),
-				                                $this->getParam('primary_field'),
-				                                $this->getParam('sort_parent'),
-				                                $this->getParam('sort_field'),
-								$this->getParam('sort_order')
-				                                );
+				$rows_tree = self::arrayToTree($sql->rows,
+				                               $this->getParam('primary_field'),
+				                               $this->getParam('sort_parent'));
+				$rows = self::flattenTree($rows_tree,
+				                          $this->getParam('sort_field'),
+				                          $this->getParam('sort_order'));
 
 				// Simulated pagination
 				$rows = array_splice($rows,
@@ -3385,22 +3385,6 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
-	}
-
-	/**
-	 * Depth-first sort a relational array with a parent field and a sort order field
-	 * @param array $rows Relational array with a parent field and a sort order field
-	 * @param string $primary_field The field name of the primary key (matches children to parents)
-	 * @param string $sort_parent The field name whose value is the parent ID
-	 * @param mixed $sort_field The field name (string) or field names (array) whose value
-	 *                          is or values are the sort order in the current tree node
-	 * @param int $sort_order Desired sorting direction: 1 if ascending, -1 if descending
-	 * @return array Input array sorted depth-first as if it were a tree
-	 */
-	private static function flatTreeFromArray($rows, $primary_field, $sort_parent, $sort_field, $sort_order)
-	{
-		$rows_tree = self::arrayToTree($rows, $primary_field, $sort_parent);
-		return self::flattenTree($rows_tree, $sort_field, $sort_order);
 	}
 
 	/**
@@ -3488,7 +3472,7 @@ class e_tree_model extends e_front_model
 	 * @param array $row1 Associative array to compare to $row2
 	 * @param array $row2 Associative array to compare to $row1
 	 * @param mixed $sort_field Key (string) or keys (array) to compare
-	                            the values of in both $row1 and $row2
+	 *                          the values of in both $row1 and $row2
 	 * @param int $sort_order -1 to reverse the sorting order or 1 to keep the order as ascending
 	 * @return int -1 if $row1 is less than $row2
 	 *             0 if $row1 is equal to $row2

@@ -6167,7 +6167,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
 			->setFieldInputTypes($this->fieldInputTypes)
@@ -6188,10 +6188,10 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-		        ->setUrl($this->url)
+			->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model',
-			                  'model_message_stack' => 'admin_ui_model_'.$this->table ,
+			                  'model_message_stack' => 'admin_ui_model_'.$this->table,
 			                  'db_query' => $this->listQry,
 			                  // Information necessary for PHP-based tree sort
 			                  'sort_parent' => $this->getSortParent(),
