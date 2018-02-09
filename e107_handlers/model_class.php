@@ -3339,14 +3339,17 @@ class e_tree_model extends e_front_model
 
 			// Workaround: Parse and modify db_query param for simulated pagination
 			$this->prepareSimulatedPagination();
+			// Workaround: Parse and modify db_query param for simulated custom ordering
+			$this->prepareSimulatedCustomOrdering();
 
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
-				$rows = self::flatTreeFromArray($sql->rows(),
-				                                $this->getParam('primary_field'),
-				                                $this->getParam('sort_parent'),
-				                                $this->getParam('sort_field')
-				                                );
+				$rows_tree = self::arrayToTree($sql->rows,
+				                               $this->getParam('primary_field'),
+				                               $this->getParam('sort_parent'));
+				$rows = self::flattenTree($rows_tree,
+				                          $this->getParam('sort_field'),
+				                          $this->getParam('sort_order'));
 
 				// Simulated pagination
 				$rows = array_splice($rows,
@@ -3382,20 +3385,6 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
-	}
-
-	/**
-	 * Depth-first sort a relational array with a parent field and a sort order field
-	 * @param array $rows Relational array with a parent field and a sort order field
-	 * @param string $primary_field The field name of the primary key (matches children to parents)
-	 * @param string $sort_parent The field name whose value is the parent ID
-	 * @param string $sort_field The field name whose value is the sort order in the current tree node
-	 * @return array Input array sorted depth-first as if it were a tree
-	 */
-	private static function flatTreeFromArray($rows, $primary_field, $sort_parent, $sort_field)
-	{
-		$rows_tree = self::arrayToTree($rows, $primary_field, $sort_parent);
-		return self::flattenTree($rows_tree, $sort_field);
 	}
 
 	/**
@@ -3448,11 +3437,13 @@ class e_tree_model extends e_front_model
 	/**
 	 * Flattens a tree into a depth-first array, sorting each node by a field's values
 	 * @param array $tree Tree with child nodes under the "_children" key
-	 * @param string $sort_field The field name whose value is the sort order in the current tree node
+	 * @param mixed $sort_field The field name (string) or field names (array) whose value
+	 *                          is or values are the sort order in the current tree node
+	 * @param int $sort_order Desired sorting direction: 1 if ascending, -1 if descending
 	 * @param int $depth The depth that this level of recursion is entering
 	 * @return array One-dimensional array in depth-first order with depth indicated by the "_depth" key
 	 */
-	private static function flattenTree($tree, $sort_field = null, $depth = 0)
+	private static function flattenTree($tree, $sort_field = null, $sort_order = 1, $depth = 0)
 	{
 		$flat = array();
 
@@ -3465,16 +3456,38 @@ class e_tree_model extends e_front_model
 				$flat[] = $item;
 			if(is_array($children))
 			{
-				uasort($children, function($node1, $node2)
+				uasort($children, function($node1, $node2) use ($sort_field, $sort_order)
 				{
-					if(intval($node1[$sort_field]) === intval($node2[$sort_field])) return 0;
-					return intval($node1[$sort_field]) < intval($node2[$sort_field]) ? -1 : 1;
+					return self::multiFieldCmp($node1, $node2, $sort_field, $sort_order);
 				});
-				$flat = array_merge($flat, self::flattenTree($children, $sort_field, $depth+1));
+				$flat = array_merge($flat, self::flattenTree($children, $sort_field, $sort_order, $depth+1));
 			}
 		}
 
 		return $flat;
+	}
+
+	/**
+	 * Naturally compares two associative arrays given multiple sort keys and a reverse order flag
+	 * @param array $row1 Associative array to compare to $row2
+	 * @param array $row2 Associative array to compare to $row1
+	 * @param mixed $sort_field Key (string) or keys (array) to compare
+	 *                          the values of in both $row1 and $row2
+	 * @param int $sort_order -1 to reverse the sorting order or 1 to keep the order as ascending
+	 * @return int -1 if $row1 is less than $row2
+	 *             0 if $row1 is equal to $row2
+	 *             1 if $row1 is greater than $row2
+	 */
+	private static function multiFieldCmp($row1, $row2, $sort_field, $sort_order = 1)
+	{
+		if (is_array($sort_field))
+			$field = array_shift($sort_field);
+		$cmp = strnatcmp((string) $row1[$field], (string) $row2[$field]);
+		if ($sort_order === -1 || $sort_order === 1) $cmp *= $sort_order;
+		if ($cmp === 0 && count($sort_field) >= 1)
+			return self::multiFieldCmp($row1, $row2, $sort_field, $sort_order);
+		return $cmp;
+
 	}
 
 	/**
@@ -3516,13 +3529,13 @@ class e_tree_model extends e_front_model
 	private function prepareSimulatedPagination()
 	{
 		$db_query = $this->getParam('db_query');
-		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(,|OFFSET){0,1}[ ]*([\d]*)/", function($matches)
+		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET){0,1}[ ]*([\d]*)/i", function($matches)
 		{
 			// Offset and count
-			if (isset($matches[3]))
+			if (isset($matches[2]))
 			{
 				$this->setParam('db_limit_offset', $matches[1]);
-				$this->setParam('db_limit_count', $matches[3]);
+				$this->setParam('db_limit_count', $matches[2]);
 			}
 			// Count only
 			else
@@ -3533,6 +3546,42 @@ class e_tree_model extends e_front_model
 			return "";
 		}, $db_query);
 		$this->setParam('db_query', $db_query);
+	}
+
+	/**
+	 * Workaround: Parse and modify query to prepare for simulation of custom ordering
+	 *
+	 * XXX: Not compliant with all forms of ORDER BY clauses
+	 * XXX: Does not support quoted identifiers (`identifier`)
+	 * XXX: Does not support mixed sort orders (identifier1 ASC, identifier2 DESC)
+	 *
+	 * This is a hack to enable custom ordering of tree models when
+	 * flattening the tree.
+	 *
+	 * Implemented out of necessity under
+	 * https://github.com/e107inc/e107/issues/3029
+	 *
+	 * @returns null
+	 */
+	private function prepareSimulatedCustomOrdering()
+	{
+		$db_query = $this->getParam('db_query');
+		$db_query = preg_replace_callback('/ORDER BY (?:.+\.)*[\.]*([A-Za-z0-9$_,]+)[ ]*(ASC|DESC)*/i', function($matches)
+		{
+			if (isset($matches[1]))
+			{
+				$current_sort_field = $this->getParam('sort_field');
+				if (!empty($current_sort_field))
+				{
+					$matches[1] = $current_sort_field.",".$matches[1];
+				}
+				$this->setParam('sort_field', array_map('trim', explode(',', $matches[1])));
+			}
+			if (isset($matches[2]))
+				$this->setParam('sort_order',
+				                (0 === strcasecmp($matches[2], 'DESC') ? -1 : 1)
+				                );
+		}, $db_query);
 	}
 
 	/**

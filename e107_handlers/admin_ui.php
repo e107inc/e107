@@ -6167,7 +6167,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
 			->setFieldInputTypes($this->fieldInputTypes)
@@ -6188,10 +6188,10 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model',
-			                  'model_message_stack' => 'admin_ui_model_'.$this->table ,
+			                  'model_message_stack' => 'admin_ui_model_'.$this->table,
 			                  'db_query' => $this->listQry,
 			                  // Information necessary for PHP-based tree sort
 			                  'sort_parent' => $this->getSortParent(),
@@ -6483,9 +6483,6 @@ class e_admin_form_ui extends e_form
 
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
-
-		$this->listTotal = $tree[$id]->getTotal();
-
 
 		$fields = $controller->getFields();
 
@@ -6916,7 +6913,7 @@ class e_admin_form_ui extends e_form
 
 
 
-	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
+	// FIXME - use e_form::batchoptions(), nice way of building batch dropdown - news administration show_batch_options()
 
 	/**
 	 * @param array $options array of flags for copy, delete, url, featurebox, batch
@@ -7017,7 +7014,7 @@ class e_admin_form_ui extends e_form
 		
 		$text .= "
 
-				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
+				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->getController()->getTreeModel()->getTotal()))."</span></div>
 			</div>
 		";
 
