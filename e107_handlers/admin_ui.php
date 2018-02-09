@@ -6484,9 +6484,6 @@ class e_admin_form_ui extends e_form
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
-		$this->listTotal = $tree[$id]->getTotal();
-
-
 		$fields = $controller->getFields();
 
 		// checks dispatcher acess/perms for create/edit/delete access in list mode.
@@ -7017,7 +7014,7 @@ class e_admin_form_ui extends e_form
 		
 		$text .= "
 
-				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
+				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->getController()->getTreeModel()->getTotal()))."</span></div>
 			</div>
 		";
 
