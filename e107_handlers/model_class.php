@@ -3344,7 +3344,7 @@ class e_tree_model extends e_front_model
 
 			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
 			{
-				$rows_tree = self::arrayToTree($sql->rows,
+				$rows_tree = self::arrayToTree($sql->rows(),
 				                               $this->getParam('primary_field'),
 				                               $this->getParam('sort_parent'));
 				$rows = self::flattenTree($rows_tree,
