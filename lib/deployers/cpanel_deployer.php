@@ -9,6 +9,8 @@ class cPanelDeployer
 	protected $cPanel;
 	protected $run_id;
 
+	protected $db_id;
+
 	protected $homedir;
 	protected $docroot;
 	protected $domain;
@@ -25,6 +27,23 @@ class cPanelDeployer
 	public function getUrl()
 	{
 		return "http://".$this->domain."/".$this->run_id."/";
+	}
+
+	public function getDsn()
+	{
+		$hostname = $this->credentials['hostname'];
+		$db_id = $this->db_id;
+		return "mysql:host=${hostname};dbname=${db_id}";
+	}
+
+	public function getDbUsername()
+	{
+		return $this->db_id;
+	}
+
+	public function getDbPassword()
+	{
+		return $this->run_id;
 	}
 
         public function start($components = self::DEFAULT_COMPONENTS)
@@ -124,7 +143,7 @@ class cPanelDeployer
 		$cPanel = $this->cPanel;
 		$username = &$this->credentials['username'];
 		$run_id = &$this->run_id;
-		$db_id = "${username}_${run_id}";
+		$this->db_id = $db_id = "${username}_${run_id}";
 		self::println("Creating new MySQL database \"${db_id}\"…");
 		$cPanel->uapi->Mysql->create_database(['name' => $db_id]);
 
