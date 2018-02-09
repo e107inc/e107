@@ -1,31 +1,20 @@
 <?php
 namespace Helper;
-include_once(__DIR__ . "/../../../lib/deployers/cpanel_deployer.php");
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-class Acceptance extends \Codeception\Module
+class Acceptance extends Base
 {
-	protected $deployer;
+	protected $deployer_components = ['db', 'fs'];
 
 	public function _beforeSuite($settings = array())
 	{
-		$secrets = $settings['secrets'];
-		if ($secrets['cpanel']['enabled'] === '1')
-		{
-			$this->deployer = new \cPanelDeployer($secrets['cpanel']);
-			$retcode = $this->deployer->start();
-			if ($retcode === true)
-			{
-				$url = $this->deployer->getUrl();
-		   		$this->getModule('PhpBrowser')->_reconfigure(array('url' => $url));
-			}
-		}
+		return parent::_beforeSuite($settings);
 	}
 
 	public function _afterSuite()
 	{
-		$this->deployer->stop();
+		return parent::_afterSuite();
 	}
 }

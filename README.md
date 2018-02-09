@@ -48,4 +48,4 @@ If you do not have a cPanel account that meets the requirements, you can run acc
 4. Grant the MySQL/MariaDB user `ALL PRIVILEGES` on the MySQL/MariaDB database.
 5. Put the app on the web server and note its URL.
 6. Write the URL to `tests/acceptance.suite.yml` in your copy of this repository where the `url` setting for the `PhpBrowser` module is.
-7. **TODO:** Manual database credentials are not supported yet.
+7. Write the database configuration to `codeception.yml` in your copy of this repository under the `\Helper\DelayedDb` module.

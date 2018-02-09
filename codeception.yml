@@ -12,3 +12,9 @@ params:
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+modules:
+    enabled:
+        - \Helper\DelayedDb:
+            dsn: 'mysql:host=set-this-if-running-tests-manually.local;dbname=e107'
+            user: 'root'
+            password: ''
