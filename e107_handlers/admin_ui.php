@@ -6188,7 +6188,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+		        ->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model',
 			                  'model_message_stack' => 'admin_ui_model_'.$this->table ,
@@ -6916,7 +6916,7 @@ class e_admin_form_ui extends e_form
 
 
 
-	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
+	// FIXME - use e_form::batchoptions(), nice way of building batch dropdown - news administration show_batch_options()
 
 	/**
 	 * @param array $options array of flags for copy, delete, url, featurebox, batch
