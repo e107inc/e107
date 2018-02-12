@@ -1,13 +1,56 @@
 e107 Test Suites
 ===
-For developmental use with e107 v2.
 
-- Place all these files inside a 'phpunit' directory in e107's root directory. ie. the same directory as class2.php
-- Set the Custom Working Directory for PHPUNit Test to e107's root. eg. In PHPStorm under "Run/Debug Configurations"
+## Quickstart
 
-## Automatic Acceptance Tests
+1. Check out this repository:
+   ```sh
+   git clone git@github.com:CaMer0n/phpunit.git e107-test
+   ```
+2. Change your current working directory into your copy of the repository:
+   ```sh
+   cd e107-test
+   ```
+3. Update all submodules, which also obtains the latest development code of e107:
+   ```sh
+   git submodule update --init --recursive --remote
+   ```
+4. Configure the testing environment.
 
-The acceptance test suite can deploy itself onto a cPanel account automatically.
+   * **Automatic deployments:** Edit `secrets.yml` to enable deploying to a cPanel account.  See the "Automatic Test Deployments » Configuration" section below for details.
+   * **Manual deployments:** See the "Manual Test Deployments » Configuration" section below for instructions.
+
+5. On PHP 5.6 or newer, install dependencies with [Composer](https://getcomposer.org/):
+   ```sh
+   php -d allow_url_fopen=On $(which composer) update
+   ```
+
+6. Run tests:
+
+   * **All tests:**
+     ```sh
+     ./vendor/bin/codecept run
+     ```
+   * **All tests and details:**
+     ```sh
+     php -d allow_url_fopen=On -d display_errors=On ./vendor/bin/codecept run --step --debug
+     ```
+   * **Unit tests:**
+     ```sh
+     ./vendor/bin/codecept run unit
+     ```
+   * **Functional tests:**
+     ```sh
+     ./vendor/bin/codecept run functional
+     ```
+   * **Acceptance tests:**
+     ```sh
+     ./vendor/bin/codecept run acceptance
+     ```
+
+## Automatic Test Deployment
+
+The test suites can deploy themselves onto a cPanel account automatically.
 
 ### Requirements
 
@@ -27,7 +70,7 @@ The acceptance test suite can deploy itself onto a cPanel account automatically.
 
 ### Configuration
 
-To run automatic acceptance tests, edit `secrets.yml` in the root folder of this repository and input the following configuration information:
+To set up automatically deployed tests, edit `secrets.yml` in the root folder of this repository and input the following configuration information:
 
 ```
 cpanel:
@@ -37,9 +80,9 @@ cpanel:
   password: 'TEST-ACCOUNT-PASS'
 ```
 
-## Manual Acceptance Tests
+## Manual Test Deployment
 
-If you do not have a cPanel account that meets the requirements, you can run acceptance tests manually.
+If you do not have a cPanel account that meets the requirements, you can deploy tests manually.
 
 ### Configuration
 
