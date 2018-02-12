@@ -17,9 +17,9 @@ class cPanelDeployer
 
 	private $skip_mysql_remote_hosts = false;
 
-	protected const TEST_PREFIX = 'test_';
-	protected const TARGET_RELPATH = 'public_html/';
-	protected const DEFAULT_COMPONENTS = ['db', 'fs'];
+	const TEST_PREFIX = 'test_';
+	const TARGET_RELPATH = 'public_html/';
+	const DEFAULT_COMPONENTS = ['db', 'fs'];
 
         function __construct($credentials)
         {
