@@ -1,6 +1,6 @@
 {
     "require-dev": {
         "codeception/codeception": "^2.3",
-        "twig/twig": "~2.0"
+        "twig/twig": ">= 1.28"
     }
 }

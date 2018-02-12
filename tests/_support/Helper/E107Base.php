@@ -7,7 +7,7 @@ namespace Helper;
 abstract class E107Base extends Base
 {
 	public $e107_mySQLprefix = 'e107_';
-	protected const APP_PATH_E107_CONFIG = APP_PATH."/e107_config.php";
+	const APP_PATH_E107_CONFIG = APP_PATH."/e107_config.php";
 
 	public function _beforeSuite($settings = array())
 	{
