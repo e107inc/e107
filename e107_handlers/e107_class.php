@@ -374,58 +374,56 @@ class e107
 	 */
 	protected function _init($e107_paths, $e107_root_path, $e107_config_mysql_info, $e107_config_override = array())
 	{
-		if(empty($this->e107_dirs))
+		if(!empty($this->e107_dirs)) return $this;
+
+		// Do some security checks/cleanup, prepare the environment
+		$this->prepare_request();
+
+		// mysql connection info
+		$this->e107_config_mysql_info = $e107_config_mysql_info;
+
+		// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs()
+		if (!empty($e107_config_override['site_path']))
 		{
-			// Do some security checks/cleanup, prepare the environment
-			$this->prepare_request();
-
-			// mysql connection info
-			$this->e107_config_mysql_info = $e107_config_mysql_info;
-
-			// unique folder for e_MEDIA - support for multiple websites from single-install. Must be set before setDirs()
-			if (!empty($e107_config_override['site_path']))
-			{
-				// $E107_CONFIG['site_path']
-				$this->site_path = $e107_config_override['site_path'];
-			}
-			else
-			{
-				$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
-			}
-
-			// Set default folder (and override paths) if missing from e107_config.php
-			$this->setDirs($e107_paths, $e107_config_override);
-				
-			// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
-			$this->set_constants();
-
-			// build all paths
-			$this->set_paths();
-			$this->file_path = $this->fix_windows_paths($e107_root_path);
-
-			// set base path, SSL is auto-detected
-			$this->set_base_path();
-
-			// cleanup QUERY_STRING and friends, set  related constants
-			$this->set_request();
-
-			// set some core URLs (e_LOGIN/SIGNUP)
-			$this->set_urls();
-
-			if(!is_dir(e_SYSTEM))
-			{
-				mkdir(e_SYSTEM, 0755);
-			}
-
-			if(!is_dir(e_CACHE_IMAGE))
-			{
-				mkdir(e_CACHE_IMAGE, 0755);
-			}
-
-			// Prepare essential directories.
-			$this->prepareDirs();
+			// $E107_CONFIG['site_path']
+			$this->site_path = $e107_config_override['site_path'];
+		}
+		else
+		{
+			$this->site_path = $this->makeSiteHash($e107_config_mysql_info['mySQLdefaultdb'], $e107_config_mysql_info['mySQLprefix']);
 		}
 
+		// Set default folder (and override paths) if missing from e107_config.php
+		$this->setDirs($e107_paths, $e107_config_override);
+			
+		// various constants - MAGIC_QUOTES_GPC, MPREFIX, ...
+		$this->set_constants();
+
+		// build all paths
+		$this->set_paths();
+		$this->file_path = $this->fix_windows_paths($e107_root_path);
+
+		// set base path, SSL is auto-detected
+		$this->set_base_path();
+
+		// cleanup QUERY_STRING and friends, set  related constants
+		$this->set_request();
+
+		// set some core URLs (e_LOGIN/SIGNUP)
+		$this->set_urls();
+
+		if(!is_dir(e_SYSTEM))
+		{
+			mkdir(e_SYSTEM, 0755);
+		}
+
+		if(!is_dir(e_CACHE_IMAGE))
+		{
+			mkdir(e_CACHE_IMAGE, 0755);
+		}
+
+		// Prepare essential directories.
+		$this->prepareDirs();
 
 		return $this;
 	}
@@ -4151,141 +4149,136 @@ class e107
 
 		$this->file_path = $path;
 
-		if(!defined('e_HTTP') || !defined('e_ADMIN') )
+		if(defined('e_HTTP') && defined('e_ADMIN')) return $this;
+
+		if(!defined('e_HTTP'))
 		{
-			if(!defined('e_HTTP'))
-			{
-				define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
-			}
-
-		  	define('e_BASE', $this->relative_base_path);
-
-			// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
-			define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));
-
-			if(isset($_SERVER['DOCUMENT_ROOT']))
-			{
-			  	define('e_DOCROOT', $_SERVER['DOCUMENT_ROOT']."/");
-			}
-			else
-			{
-			  	define('e_DOCROOT', false);
-			}
-
-			//BC temporary fixes
-			if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY']{0} == "/")
-			{
-				$this->e107_dirs['UPLOADS_SERVER'] = $this->e107_dirs['UPLOADS_DIRECTORY'];
-			}
-			if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY']{0} == "/")
-			{
-				$this->e107_dirs['DOWNLOADS_SERVER'] = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
-			}
-
-			//
-			// HTTP relative paths
-			//
-			define('e_ADMIN', $this->get_override_rel('ADMIN'));
-			define('e_IMAGE', $this->get_override_rel('IMAGES'));
-			define('e_THEME', $this->get_override_rel('THEMES'));
-			define('e_PLUGIN', $this->get_override_rel('PLUGINS'));
-			define('e_FILE', $this->get_override_rel('FILES'));
-			define('e_HANDLER', $this->get_override_rel('HANDLERS'));
-			define('e_LANGUAGEDIR', $this->get_override_rel('LANGUAGES'));
-
-			define('e_DOCS', $this->get_override_rel('HELP')); // WILL CHANGE SOON - $this->_get_override_rel('DOCS')
-			define('e_HELP', $this->get_override_rel('HELP'));
-
-			define('e_MEDIA', $this->get_override_rel('MEDIA'));
-			define('e_MEDIA_BASE', $this->get_override_rel('MEDIA_BASE'));
-			define('e_MEDIA_FILE', $this->get_override_rel('MEDIA_FILES'));
-			define('e_MEDIA_VIDEO', $this->get_override_rel('MEDIA_VIDEOS'));
-			define('e_MEDIA_IMAGE', $this->get_override_rel('MEDIA_IMAGES'));
-			define('e_MEDIA_ICON', $this->get_override_rel('MEDIA_ICONS'));
-		//	define('e_MEDIA_AVATAR', $this->get_override_rel('MEDIA_AVATARS'));
-
-			define('e_DOWNLOAD', $this->get_override_rel('DOWNLOADS'));
-			define('e_UPLOAD', $this->get_override_rel('UPLOADS'));
-
-			define('e_CORE', $this->get_override_rel('CORE'));
-			define('e_SYSTEM', $this->get_override_rel('SYSTEM'));
-			define('e_SYSTEM_BASE', $this->get_override_rel('SYSTEM_BASE'));
-
-			define('e_WEB', $this->get_override_rel('WEB'));
-			define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
-			define('e_WEB_CSS', $this->get_override_rel('WEB_CSS'));
-			define('e_WEB_IMAGE', $this->get_override_rel('WEB_IMAGES'));
-	//		define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
-
-			define('e_CACHE', $this->get_override_rel('CACHE'));
-			define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));
-			define('e_CACHE_IMAGE', $this->get_override_rel('CACHE_IMAGE'));
-			define('e_CACHE_DB', $this->get_override_rel('CACHE_DB'));
-			define('e_CACHE_URL', $this->get_override_rel('CACHE_URL'));
-
-			define('e_LOG', $this->get_override_rel('LOGS'));
-			define('e_BACKUP', $this->get_override_rel('BACKUP'));
-			define('e_TEMP', $this->get_override_rel('TEMP'));
-			define('e_IMPORT', $this->get_override_rel('IMPORT'));
-			//
-			// HTTP absolute paths
-			//
-			define("e_ADMIN_ABS", $this->get_override_http('ADMIN'));
-			define("e_IMAGE_ABS", $this->get_override_http('IMAGES'));
-			define("e_THEME_ABS", $this->get_override_http('THEMES'));
-			define("e_PLUGIN_ABS", $this->get_override_http('PLUGINS'));
-			define("e_FILE_ABS", $this->get_override_http('FILES')); // Deprecated!
-			define("e_DOCS_ABS", $this->get_override_http('DOCS'));
-			define("e_HELP_ABS", $this->get_override_http('HELP'));
-			define("e_IMPORT_ABS", false);
-
-			// DEPRECATED - not a legal http query now!
-			//define("e_HANDLER_ABS", $this->get_override_http('HANDLERS'));
-			//define("e_LANGUAGEDIR_ABS", $this->get_override_http('LANGUAGES'));
-			//define("e_LOG_ABS", $this->get_override_http('LOGS'));
-
-			define("e_MEDIA_ABS", $this->get_override_http('MEDIA'));
-			define('e_MEDIA_FILE_ABS', $this->get_override_http('MEDIA_FILES'));
-			define('e_MEDIA_VIDEO_ABS', $this->get_override_http('MEDIA_VIDEOS'));
-			define('e_MEDIA_IMAGE_ABS', $this->get_override_http('MEDIA_IMAGES'));
-			define('e_MEDIA_ICON_ABS', $this->get_override_http('MEDIA_ICONS'));
-	//		define('e_MEDIA_AVATAR_ABS', $this->get_override_http('MEDIA_AVATARS'));
-			
-			
-			
-
-			// XXX DISCUSSS - e_JS_ABS, e_CSS_ABS etc is not following the naming standards but they're more usable.
-			// Example: e_JS_ABS vs e_WEB_JS_ABS
-			
-			//XXX Absolute is assumed. 
-			define('e_WEB_ABS', $this->get_override_http('WEB'));
-			define('e_JS_ABS', $this->get_override_http('WEB_JS'));
-			define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
-	//		define('e_PACK_ABS', $this->get_override_http('WEB_PACKS'));
-			define('e_WEB_IMAGE_ABS', $this->get_override_http('WEB_IMAGES'));
-			
-			define('e_JS', $this->get_override_http('WEB_JS')); // ABS Alias 
-			define('e_CSS', $this->get_override_http('WEB_CSS')); // ABS Alias 
-			
-			define('e_AVATAR', $this->get_override_rel('AVATARS'));
-			define('e_AVATAR_UPLOAD', $this->get_override_rel('AVATARS_UPLOAD'));
-			define('e_AVATAR_DEFAULT', $this->get_override_rel('AVATARS_DEFAULT'));
-			
-			define('e_AVATAR_ABS', $this->get_override_http('AVATARS'));
-			define('e_AVATAR_UPLOAD_ABS', $this->get_override_http('AVATARS_UPLOAD'));
-			define('e_AVATAR_DEFAULT_ABS', $this->get_override_http('AVATARS_DEFAULT'));
-
-			if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
-			{
-				define('e_CACHE_IMAGE_ABS', $this->get_override_http('CACHE_IMAGE'));
-			}
-			
-			// Special
-			
-			define('e_BOOTSTRAP', e_WEB."bootstrap/");
-
-
+			define('e_HTTP', $this->server_path);			// Directory of site root relative to HTML base directory
 		}
+
+	  	define('e_BASE', $this->relative_base_path);
+
+		// Base dir of web stuff in server terms. e_ROOT should always end with e_HTTP, even if e_HTTP = '/'
+		define('SERVERBASE', substr(e_ROOT, 0, -strlen(e_HTTP) + 1));
+
+		if(isset($_SERVER['DOCUMENT_ROOT']))
+		{
+		  	define('e_DOCROOT', $_SERVER['DOCUMENT_ROOT']."/");
+		}
+		else
+		{
+		  	define('e_DOCROOT', false);
+		}
+
+		//BC temporary fixes
+		if (!isset($this->e107_dirs['UPLOADS_SERVER']) && $this->e107_dirs['UPLOADS_DIRECTORY']{0} == "/")
+		{
+			$this->e107_dirs['UPLOADS_SERVER'] = $this->e107_dirs['UPLOADS_DIRECTORY'];
+		}
+		if (!isset($this->e107_dirs['DOWNLOADS_SERVER']) && $this->e107_dirs['DOWNLOADS_DIRECTORY']{0} == "/")
+		{
+			$this->e107_dirs['DOWNLOADS_SERVER'] = $this->e107_dirs['DOWNLOADS_DIRECTORY'];
+		}
+
+		//
+		// HTTP relative paths
+		//
+		define('e_ADMIN', $this->get_override_rel('ADMIN'));
+		define('e_IMAGE', $this->get_override_rel('IMAGES'));
+		define('e_THEME', $this->get_override_rel('THEMES'));
+		define('e_PLUGIN', $this->get_override_rel('PLUGINS'));
+		define('e_FILE', $this->get_override_rel('FILES'));
+		define('e_HANDLER', $this->get_override_rel('HANDLERS'));
+		define('e_LANGUAGEDIR', $this->get_override_rel('LANGUAGES'));
+
+		define('e_DOCS', $this->get_override_rel('HELP')); // WILL CHANGE SOON - $this->_get_override_rel('DOCS')
+		define('e_HELP', $this->get_override_rel('HELP'));
+
+		define('e_MEDIA', $this->get_override_rel('MEDIA'));
+		define('e_MEDIA_BASE', $this->get_override_rel('MEDIA_BASE'));
+		define('e_MEDIA_FILE', $this->get_override_rel('MEDIA_FILES'));
+		define('e_MEDIA_VIDEO', $this->get_override_rel('MEDIA_VIDEOS'));
+		define('e_MEDIA_IMAGE', $this->get_override_rel('MEDIA_IMAGES'));
+		define('e_MEDIA_ICON', $this->get_override_rel('MEDIA_ICONS'));
+	//	define('e_MEDIA_AVATAR', $this->get_override_rel('MEDIA_AVATARS'));
+
+		define('e_DOWNLOAD', $this->get_override_rel('DOWNLOADS'));
+		define('e_UPLOAD', $this->get_override_rel('UPLOADS'));
+
+		define('e_CORE', $this->get_override_rel('CORE'));
+		define('e_SYSTEM', $this->get_override_rel('SYSTEM'));
+		define('e_SYSTEM_BASE', $this->get_override_rel('SYSTEM_BASE'));
+
+		define('e_WEB', $this->get_override_rel('WEB'));
+		define('e_WEB_JS', $this->get_override_rel('WEB_JS'));
+		define('e_WEB_CSS', $this->get_override_rel('WEB_CSS'));
+		define('e_WEB_IMAGE', $this->get_override_rel('WEB_IMAGES'));
+//		define('e_WEB_PACK', $this->get_override_rel('WEB_PACKS'));
+
+		define('e_CACHE', $this->get_override_rel('CACHE'));
+		define('e_CACHE_CONTENT', $this->get_override_rel('CACHE_CONTENT'));
+		define('e_CACHE_IMAGE', $this->get_override_rel('CACHE_IMAGE'));
+		define('e_CACHE_DB', $this->get_override_rel('CACHE_DB'));
+		define('e_CACHE_URL', $this->get_override_rel('CACHE_URL'));
+
+		define('e_LOG', $this->get_override_rel('LOGS'));
+		define('e_BACKUP', $this->get_override_rel('BACKUP'));
+		define('e_TEMP', $this->get_override_rel('TEMP'));
+		define('e_IMPORT', $this->get_override_rel('IMPORT'));
+		//
+		// HTTP absolute paths
+		//
+		define("e_ADMIN_ABS", $this->get_override_http('ADMIN'));
+		define("e_IMAGE_ABS", $this->get_override_http('IMAGES'));
+		define("e_THEME_ABS", $this->get_override_http('THEMES'));
+		define("e_PLUGIN_ABS", $this->get_override_http('PLUGINS'));
+		define("e_FILE_ABS", $this->get_override_http('FILES')); // Deprecated!
+		define("e_DOCS_ABS", $this->get_override_http('DOCS'));
+		define("e_HELP_ABS", $this->get_override_http('HELP'));
+		define("e_IMPORT_ABS", false);
+
+		// DEPRECATED - not a legal http query now!
+		//define("e_HANDLER_ABS", $this->get_override_http('HANDLERS'));
+		//define("e_LANGUAGEDIR_ABS", $this->get_override_http('LANGUAGES'));
+		//define("e_LOG_ABS", $this->get_override_http('LOGS'));
+
+		define("e_MEDIA_ABS", $this->get_override_http('MEDIA'));
+		define('e_MEDIA_FILE_ABS', $this->get_override_http('MEDIA_FILES'));
+		define('e_MEDIA_VIDEO_ABS', $this->get_override_http('MEDIA_VIDEOS'));
+		define('e_MEDIA_IMAGE_ABS', $this->get_override_http('MEDIA_IMAGES'));
+		define('e_MEDIA_ICON_ABS', $this->get_override_http('MEDIA_ICONS'));
+//		define('e_MEDIA_AVATAR_ABS', $this->get_override_http('MEDIA_AVATARS'));
+
+		// XXX DISCUSSS - e_JS_ABS, e_CSS_ABS etc is not following the naming standards but they're more usable.
+		// Example: e_JS_ABS vs e_WEB_JS_ABS
+		
+		//XXX Absolute is assumed. 
+		define('e_WEB_ABS', $this->get_override_http('WEB'));
+		define('e_JS_ABS', $this->get_override_http('WEB_JS'));
+		define('e_CSS_ABS', $this->get_override_http('WEB_CSS'));
+//		define('e_PACK_ABS', $this->get_override_http('WEB_PACKS'));
+		define('e_WEB_IMAGE_ABS', $this->get_override_http('WEB_IMAGES'));
+		
+		define('e_JS', $this->get_override_http('WEB_JS')); // ABS Alias 
+		define('e_CSS', $this->get_override_http('WEB_CSS')); // ABS Alias 
+		
+		define('e_AVATAR', $this->get_override_rel('AVATARS'));
+		define('e_AVATAR_UPLOAD', $this->get_override_rel('AVATARS_UPLOAD'));
+		define('e_AVATAR_DEFAULT', $this->get_override_rel('AVATARS_DEFAULT'));
+		
+		define('e_AVATAR_ABS', $this->get_override_http('AVATARS'));
+		define('e_AVATAR_UPLOAD_ABS', $this->get_override_http('AVATARS_UPLOAD'));
+		define('e_AVATAR_DEFAULT_ABS', $this->get_override_http('AVATARS_DEFAULT'));
+
+		if(defined('e_MEDIA_STATIC')) // experimental - subject to change.
+		{
+			define('e_CACHE_IMAGE_ABS', $this->get_override_http('CACHE_IMAGE'));
+		}
+		
+		// Special
+		
+		define('e_BOOTSTRAP', e_WEB."bootstrap/");
+
 		return $this;
 	}
 
@@ -4473,7 +4466,20 @@ class e107
 
 		define('ADMINDIR', $ADMIN_DIRECTORY);
 
+		return $this;
+	}
 
+	/**
+	 * The second part of e107::set_urls()
+	 * Supposed to load after database has been initialized
+	 *
+	 * Implemented out of necessity due to
+	 * https://github.com/e107inc/e107/issues/3033
+	 *
+	 * @return e107
+	 */
+	public function set_urls_deferred()
+	{
 		if(self::isCli())
 		{
 			define('SITEURL', self::getPref('siteurl'));

@@ -149,9 +149,12 @@ class e_thumbpage
 		// basic Admin area detection - required for proper path parsing
 		define('ADMIN', strpos(e_SELF, ($e107->getFolder('admin')) !== false || strpos(e_PAGE, 'admin') !== false));
 		$e107->set_urls(false);
-			
+		// Next function call maintains behavior identical to before; might not be needed
+		//  See https://github.com/e107inc/e107/issues/3033
+		$e107->set_urls_deferred();
+
 		$pref = $e107->getPref(); //TODO optimize/benchmark
-		
+
 		$this->_watermark = array(
 			'activate'		=> vartrue($pref['watermark_activate'], false),
 			'text'			=> vartrue($pref['watermark_text']),
