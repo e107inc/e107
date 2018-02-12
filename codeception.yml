@@ -18,3 +18,13 @@ modules:
             dsn: 'mysql:host=set-this-if-running-tests-manually.local;dbname=e107'
             user: 'root'
             password: ''
+            populate: true
+            dump: 'tests/_data/e107_v2.1.8.sample.sql'
+            populator: 'mysql -u $user -h $host -p''$password'' $dbname < $dump'
+        - \Helper\DeployerFactory:
+            secrets:
+                cpanel:
+                    enabled:  '%cpanel.enabled%'
+                    hostname: '%cpanel.hostname%'
+                    username: '%cpanel.username%'
+                    password: '%cpanel.password%'

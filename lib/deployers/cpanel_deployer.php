@@ -15,7 +15,9 @@ class cPanelDeployer
 	protected $docroot;
 	protected $domain;
 
-	protected const TEST_PREFIX = 'test-';
+	private $skip_mysql_remote_hosts = false;
+
+	protected const TEST_PREFIX = 'test_';
 	protected const TARGET_RELPATH = 'public_html/';
 	protected const DEFAULT_COMPONENTS = ['db', 'fs'];
 
@@ -34,6 +36,11 @@ class cPanelDeployer
 		$hostname = $this->credentials['hostname'];
 		$db_id = $this->db_id;
 		return "mysql:host=${hostname};dbname=${db_id}";
+	}
+
+	public function getDbName()
+	{
+		return $this->db_id;
 	}
 
 	public function getDbUsername()
@@ -91,6 +98,11 @@ class cPanelDeployer
 		$valid_acceptance_test_ids = self::get_acceptance_test_ids($acceptance_tests);
 		self::println("Current unexpired tests: [".implode(", ", $valid_acceptance_test_ids)."]");
 		self::prune_inactive_acceptance_test_resources($cPanel, $valid_acceptance_test_ids);
+
+		if (!$this->skip_mysql_remote_hosts)
+		{
+			self::clean_mysql_remote_hosts($cPanel);
+		}
 	}
 
 	private function prepare()
@@ -144,6 +156,22 @@ class cPanelDeployer
 		$username = &$this->credentials['username'];
 		$run_id = &$this->run_id;
 		$this->db_id = $db_id = "${username}_${run_id}";
+
+		self::println("Ensuring that MySQL users allow any remote access hosts (%)…");
+		$remote_hosts = $cPanel->api2->MysqlFE->gethosts()->{'cpanelresult'}->{'data'};
+		if (!in_array('%', $remote_hosts, true))
+		{
+			$cPanel->uapi->Mysql->add_host(['host' => '%']);
+			register_shutdown_function(function() use ($cPanel)
+			{
+				self::clean_mysql_remote_hosts($cPanel);
+			});
+		}
+		else
+		{
+			$this->skip_mysql_remote_hosts = true;
+		}
+
 		self::println("Creating new MySQL database \"${db_id}\"…");
 		$cPanel->uapi->Mysql->create_database(['name' => $db_id]);
 
@@ -182,7 +210,10 @@ class cPanelDeployer
 
 	private static function println($text = '')
 	{
-		echo("${text}\n");
+		codecept_debug($text);
+
+		//echo("${text}\n");
+
 		//$prefix = debug_backtrace()[1]['function'];
 		//echo("[\033[1m${prefix}\033[0m] ${text}\n");
 	}
@@ -283,6 +314,16 @@ class cPanelDeployer
 				self::println("Deleting expired MySQL user \"".$user['user']."\"…");
 				$cPanel->uapi->Mysql->delete_user(['name' => $user['user']]);
 			}
+		}
+	}
+
+	private static function clean_mysql_remote_hosts($cPanel)
+	{
+		$remote_hosts = $cPanel->api2->MysqlFE->gethosts()->{'cpanelresult'}->{'data'};
+		if (in_array('%', $remote_hosts, true))
+		{
+			self::println("Removed cPanel MySQL remote host '%'");
+			$response = $cPanel->uapi->Mysql->delete_host(['host' => '%']);
 		}
 	}
 
