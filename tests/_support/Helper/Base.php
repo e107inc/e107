@@ -1,6 +1,5 @@
 <?php
 namespace Helper;
-include_once(__DIR__ . "/../../../lib/deployers/cpanel_deployer.php");
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
@@ -12,21 +11,18 @@ abstract class Base extends \Codeception\Module
 
 	public function _beforeSuite($settings = array())
 	{
-		$secrets = $settings['secrets'];
-		if ($secrets['cpanel']['enabled'] === '1')
+		$this->deployer = $this->getModule('\Helper\DeployerFactory')->create();
+		if (is_object($this->deployer))
 		{
-			$this->deployer = new \cPanelDeployer($secrets['cpanel']);
-			$retcode = $this->deployer->start($this->deployer_components);
-			if ($retcode === true)
-			{
-                                $this->_callbackDeployerStarted();
-			}
+			$this->deployer->start($this->deployer_components);
+			$this->_callbackDeployerStarted();
 		}
 	}
 
         public function _afterSuite()
         {
-		$this->deployer->stop();
+		if (is_object($this->deployer))
+			$this->deployer->stop();
         }
 
         protected function _callbackDeployerStarted()
@@ -46,11 +42,13 @@ abstract class Base extends \Codeception\Module
 
         protected function _reconfigure_db()
         {
-		$Db_config = array();
+		$db = $this->getModule('\Helper\DelayedDb');
+		$Db_config = $db->getConfig();
 		$Db_config['dsn'] = $this->deployer->getDsn();
 		$Db_config['user'] = $this->deployer->getDbUsername();
 		$Db_config['password'] = $this->deployer->getDbPassword();
-		$this->getModule('\Helper\DelayedDb')->_reconfigure($Db_config);
-		$this->getModule('\Helper\DelayedDb')->_delayedInitialize();
+		$db->_reconfigure($Db_config);
+		// Next line is used to make connection available to any code after this point
+		//$this->getModule('\Helper\DelayedDb')->_delayedInitialize();
         }
 }

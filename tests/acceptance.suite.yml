@@ -10,9 +10,3 @@ modules:
         - PhpBrowser:
             url: http://set-this-if-running-acceptance-tests-manually.local
         - \Helper\Acceptance:
-secrets:
-  cpanel:
-    enabled:  '%cpanel.enabled%'
-    hostname: '%cpanel.hostname%'
-    username: '%cpanel.username%'
-    password: '%cpanel.password%'

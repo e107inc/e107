@@ -14,7 +14,7 @@
 	{
 		public function testPathToClass2()
 		{
-			$res = file_exists("class2.php");
+			$res = file_exists(APP_PATH."/class2.php");
 
 			$this->assertTrue($res);
 
