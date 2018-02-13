@@ -11,20 +11,19 @@ e107 Test Suites
    ```sh
    cd e107-test
    ```
-3. Update all submodules, which also obtains the latest development code of e107:
-   ```sh
-   git submodule update --init --recursive --remote
-   ```
-4. Configure the testing environment.
+3. Configure the testing environment.
 
    * **Automatic deployments:** Edit `secrets.yml` to enable deploying to a cPanel account.  See the "Automatic Test Deployments » Configuration" section below for details.
    * **Manual deployments:** See the "Manual Test Deployments » Configuration" section below for instructions.
 
-5. On PHP 5.6 or newer, install dependencies with [Composer](https://getcomposer.org/):
+4. On PHP 5.6 or newer, install dependencies with [Composer](https://getcomposer.org/):
    ```sh
    php -d allow_url_fopen=On $(which composer) update
    ```
-
+5. Update all submodules, which also obtains the latest development code of e107:
+   ```sh
+   git submodule update --init --recursive --remote
+   ```
 6. Run tests:
 
    * **All tests:**
