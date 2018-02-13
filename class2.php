@@ -464,6 +464,10 @@ elseif ($merror === 'e2')
 /* PHP Compatabilty should *always* be on. */
 e107_require_once(e_HANDLER.'php_compatibility_handler.php');
 
+// SITEURL constant depends on the database
+// See https://github.com/e107inc/e107/issues/3033 for details.
+$e107->set_urls_deferred();
+
 //
 // L: Extract core prefs from the database
 //
