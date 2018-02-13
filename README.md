@@ -34,6 +34,11 @@ e107 Test Suites
      ```sh
      php -d allow_url_fopen=On -d display_errors=On ./vendor/bin/codecept run --step --debug
      ```
+   * **All tests with code coverage report:**
+     ```sh
+     /opt/cpanel/ea-php71/root/usr/bin/php -d zend_extension=/opt/alt/php71/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+     ```
+     > **Note:** This command is specific to cPanel EasyApache PHP 7.1 and CloudLinux PHP Selector.  See the "Code Coverage" section below for details.
    * **Unit tests:**
      ```sh
      ./vendor/bin/codecept run unit
@@ -71,7 +76,7 @@ The test suites can deploy themselves onto a cPanel account automatically.
 
 To set up automatically deployed tests, edit `secrets.yml` in the root folder of this repository and input the following configuration information:
 
-```
+```yaml
 cpanel:
   enabled: true
   hostname: 'SHARED-HOSTNAME.YOUR-HOSTING-PROVIDER.EXAMPLE'
@@ -92,3 +97,30 @@ If you do not have a cPanel account that meets the requirements, you can deploy 
 5. Put the app on the web server and note its URL.
 6. Write the URL to `tests/acceptance.suite.yml` in your copy of this repository where the `url` setting for the `PhpBrowser` module is.
 7. Write the database configuration to `codeception.yml` in your copy of this repository under the `\Helper\DelayedDb` module.
+
+## Code Coverage
+
+You can generate code coverage reports for all PHP files in the app.  Code coverage is enabled for local tests (unit and functional tests) but disabled for remote tests (acceptance tests) by default.
+
+The reports may take minutes to be generated.
+
+### Requirements
+
+* **[Xdebug](https://xdebug.org/)** – You'll have to figure out the best way to [install Xdebug](https://xdebug.org/docs/install) in your environment.
+
+### Sample Commands
+
+These commands run all tests and generate a code coverage report in HTML format and [Clover](https://bitbucket.org/atlassian/clover) XML format:
+
+* Using [cPanel EasyApache 4](https://documentation.cpanel.net/display/EA4/PHP+Home) with PHP 7.1 and Xdebug from [CloudLinux PHP Selector](https://docs.cloudlinux.com/php_selector.html):
+  ```sh
+  /opt/cpanel/ea-php71/root/usr/bin/php -d zend_extension=/opt/alt/php71/usr/lib64/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+  ```
+* Using the Xdebug module that you installed with PECL:
+  ```sh
+  php zend_extension=/usr/local/php/modules/xdebug.so -d allow_url_fopen=On ./vendor/bin/codecept run --coverage --coverage-xml --coverage-html
+  ```
+
+### Output
+
+The generated coverage reports are stored in `./tests/_output/` relative to the root of your copy of this repository.
