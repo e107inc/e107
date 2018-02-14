@@ -21,7 +21,7 @@ class news_menu
 
 	function __construct()
 	{
-		e107::lan('news','admin', 'true');
+		e107::lan('news', true);
 
 	}
 
