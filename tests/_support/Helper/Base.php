@@ -37,7 +37,9 @@ abstract class Base extends \Codeception\Module
         protected function _reconfigure_fs()
         {
 		$url = $this->deployer->getUrl();
-		$this->getModule('PhpBrowser')->_reconfigure(array('url' => $url));
+		$browser = $this->getModule('PhpBrowser');
+		$browser->_reconfigure(array('url' => $url));
+		$browser->_beforeSuite();
         }
 
         protected function _reconfigure_db()
@@ -50,5 +52,6 @@ abstract class Base extends \Codeception\Module
 		$db->_reconfigure($Db_config);
 		// Next line is used to make connection available to any code after this point
 		//$this->getModule('\Helper\DelayedDb')->_delayedInitialize();
+		$db->_beforeSuite();
         }
 }
