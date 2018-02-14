@@ -25,7 +25,6 @@ modules:
             password: ''
             populate: true
             dump: 'tests/_data/e107_v2.1.8.sample.sql'
-            populator: 'mysql -u $user -h $host -p''$password'' $dbname < $dump'
         - \Helper\DeployerFactory:
             secrets:
                 cpanel:
