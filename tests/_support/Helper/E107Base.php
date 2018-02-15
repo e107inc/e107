@@ -31,8 +31,7 @@ abstract class E107Base extends Base
 		$db = $this->getModule('\Helper\DelayedDb');
 
 		$e107_config = [];
-		//$e107_config['mySQLserver'] = $db->getDbHostname();
-		$e107_config['mySQLserver'] = 'localhost';
+		$e107_config['mySQLserver'] = $db->getDbHostname();
 		$e107_config['mySQLuser'] = $db->getDbUsername();
 		$e107_config['mySQLpassword'] = $db->getDbPassword();
 		$e107_config['mySQLdefaultdb'] = $db->getDbName();
