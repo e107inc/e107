@@ -14,6 +14,7 @@ class TreeModelTest extends \Codeception\Test\Unit
     protected function _before()
     {
         $class = new \ReflectionClass('e_tree_model');
+
         $method = $class->getMethod('arrayToTree');
         $method->setAccessible(true);
         $this->tree = $method->invoke(null, $this->sample_rows, $this->sample_key, $this->sample_parent_key);
@@ -92,6 +93,35 @@ class TreeModelTest extends \Codeception\Test\Unit
         $this->assertLessThanOrEqual($l2_3, $l2_2);
     }
 
+    public function testPrepareSimulatedPaginationProcessesCountOnly()
+    {
+        $tree_model = $this->make('e_tree_model');
+        $tree_model->setParam('db_query', 'ORDER BY n.news_sticky DESC, n.news_datestamp DESC LIMIT 4');
+
+        $class = new \ReflectionClass(get_class($tree_model));
+        $method = $class->getMethod('prepareSimulatedPagination');
+        $method->setAccessible(true);
+        $method->invoke($tree_model);
+
+        $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
+        $this->assertEquals('4', $tree_model->getParam('db_limit_count'));
+        $this->assertEmpty($tree_model->getParam('db_limit_offset'));
+    }
+
+    public function testPrepareSimulatedPaginationProcessesOffsetAndCount()
+    {
+        $tree_model = $this->make('e_tree_model');
+        $tree_model->setParam('db_query', 'ORDER BY n.news_sticky DESC, n.news_datestamp DESC LIMIT 79,163');
+
+        $class = new \ReflectionClass(get_class($tree_model));
+        $method = $class->getMethod('prepareSimulatedPagination');
+        $method->setAccessible(true);
+        $method->invoke($tree_model);
+
+        $this->assertEquals('ORDER BY n.news_sticky DESC, n.news_datestamp DESC', trim($tree_model->getParam('db_query')));
+        $this->assertEquals('163', $tree_model->getParam('db_limit_count'));
+        $this->assertEquals('79', $tree_model->getParam('db_limit_offset'));
+    }
     protected $sample_rows =
         array (
           1 => 
