@@ -17,6 +17,11 @@ abstract class Base extends \Codeception\Module
 			$this->deployer->start($this->deployer_components);
 			$this->_callbackDeployerStarted();
 		}
+		foreach ($this->getModules() as $module)
+		{
+			if (get_class($module) !== get_class($this))
+				$module->_beforeSuite();
+		}
 	}
 
         public function _afterSuite()
@@ -39,7 +44,6 @@ abstract class Base extends \Codeception\Module
 		$url = $this->deployer->getUrl();
 		$browser = $this->getModule('PhpBrowser');
 		$browser->_reconfigure(array('url' => $url));
-		$browser->_beforeSuite();
         }
 
         protected function _reconfigure_db()
@@ -52,6 +56,5 @@ abstract class Base extends \Codeception\Module
 		$db->_reconfigure($Db_config);
 		// Next line is used to make connection available to any code after this point
 		//$this->getModule('\Helper\DelayedDb')->_delayedInitialize();
-		$db->_beforeSuite();
         }
 }
