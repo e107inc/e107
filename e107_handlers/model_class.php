@@ -3530,16 +3530,16 @@ class e_tree_model extends e_front_model
 		$db_query = $this->getParam('db_query');
 		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET){0,1}[ ]*([\d]*)/i", function($matches)
 		{
+			// Count only
+			if (empty($matches[2]))
+			{
+				$this->setParam('db_limit_count', $matches[1]);
+			}
 			// Offset and count
-			if (isset($matches[2]))
+			else
 			{
 				$this->setParam('db_limit_offset', $matches[1]);
 				$this->setParam('db_limit_count', $matches[2]);
-			}
-			// Count only
-			else
-			{
-				$this->setParam('db_limit_count', $matches[1]);
 			}
 
 			return "";
