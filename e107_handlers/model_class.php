@@ -3394,7 +3394,7 @@ class e_tree_model extends e_front_model
 	 * @param string $sort_parent The field name whose value is the parent ID
 	 * @return array Multidimensional array with child nodes under the "_children" key
 	 */
-	private static function arrayToTree($rows, $primary_field, $sort_parent)
+	protected static function arrayToTree($rows, $primary_field, $sort_parent)
 	{
 		$nodes = array();
 		$root = array($primary_field => 0);
@@ -3416,7 +3416,7 @@ class e_tree_model extends e_front_model
 	 * @param string $sort_parent The field name whose value is the parent ID
 	 * @returns null
 	 */
-	private static function moveRowsToTreeNodes(&$nodes, &$rows, $primary_field, $sort_parent)
+	protected static function moveRowsToTreeNodes(&$nodes, &$rows, $primary_field, $sort_parent)
 	{
 		$node = &$nodes[0];
 		array_shift($nodes);
@@ -3443,7 +3443,7 @@ class e_tree_model extends e_front_model
 	 * @param int $depth The depth that this level of recursion is entering
 	 * @return array One-dimensional array in depth-first order with depth indicated by the "_depth" key
 	 */
-	private static function flattenTree($tree, $sort_field = null, $sort_order = 1, $depth = 0)
+	protected static function flattenTree($tree, $sort_field = null, $sort_order = 1, $depth = 0)
 	{
 		$flat = array();
 
@@ -3478,7 +3478,7 @@ class e_tree_model extends e_front_model
 	 *             0 if $row1 is equal to $row2
 	 *             1 if $row1 is greater than $row2
 	 */
-	private static function multiFieldCmp($row1, $row2, $sort_field, $sort_order = 1)
+	protected static function multiFieldCmp($row1, $row2, $sort_field, $sort_order = 1)
 	{
 		if (is_array($sort_field))
 			$field = array_shift($sort_field);
@@ -3487,7 +3487,6 @@ class e_tree_model extends e_front_model
 		if ($cmp === 0 && count($sort_field) >= 1)
 			return self::multiFieldCmp($row1, $row2, $sort_field, $sort_order);
 		return $cmp;
-
 	}
 
 	/**
@@ -3498,7 +3497,7 @@ class e_tree_model extends e_front_model
 	 * @param resource $sql SQL resource that executed a query
 	 * @return int Number of results from the latest query
 	 */
-	private function countResults($sql)
+	protected function countResults($sql)
 	{
 		$this->_total = is_integer($sql->total_results) ? $sql->total_results : false; //requires SQL_CALC_FOUND_ROWS in query - see db handler
 		if(false === $this->_total && $this->getModelTable() && !$this->getParam('nocount'))
@@ -3526,7 +3525,7 @@ class e_tree_model extends e_front_model
 	 *
 	 * @returns null
 	 */
-	private function prepareSimulatedPagination()
+	protected function prepareSimulatedPagination()
 	{
 		$db_query = $this->getParam('db_query');
 		$db_query = preg_replace_callback("/LIMIT ([\d]+)[ ]*(?:,|OFFSET){0,1}[ ]*([\d]*)/i", function($matches)
@@ -3563,7 +3562,7 @@ class e_tree_model extends e_front_model
 	 *
 	 * @returns null
 	 */
-	private function prepareSimulatedCustomOrdering()
+	protected function prepareSimulatedCustomOrdering()
 	{
 		$db_query = $this->getParam('db_query');
 		$db_query = preg_replace_callback('/ORDER BY (?:.+\.)*[\.]*([A-Za-z0-9$_,]+)[ ]*(ASC|DESC)*/i', function($matches)
