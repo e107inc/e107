@@ -1,5 +1,9 @@
 ---
 
+# Path (absolute or relative) to the app intended to be tested
+# Absolute path begins with "/"; relative path does not begin with "/"
+app_path: 'e107/'
+
 # Configure this section for automated test deployments to cPanel
 cpanel:
 
@@ -21,8 +25,6 @@ manual:
 
   # URL to the app that you deployed manually; needed for acceptance tests
   url: 'http://set-this-if-running-acceptance-tests-manually.local'
-
-  dir: '/e107'
 
   # Only MySQL/MariaDB is supported
   db:
