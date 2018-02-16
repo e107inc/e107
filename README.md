@@ -5,7 +5,7 @@ e107 Test Suites
 
 1. Check out this repository:
    ```sh
-   git clone git@github.com:CaMer0n/phpunit.git e107-test
+   git clone git@github.com:e107inc/e107-test.git e107-test
    ```
 2. Change your current working directory into your copy of the repository:
    ```sh
