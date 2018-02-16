@@ -1,0 +1,40 @@
+---
+
+# Configure this section for automated test deployments to cPanel
+cpanel:
+
+  # If set to true, this section takes precedence over the "manual" section.
+  enabled: false
+
+  # cPanel domain without the port number
+  hostname: ''
+
+  # cPanel account username
+  username: ''
+
+  # cPanel account password
+  password: ''
+
+
+# Configure this section for manual test deployments
+manual:
+
+  # URL to the app that you deployed manually; needed for acceptance tests
+  url: 'http://set-this-if-running-acceptance-tests-manually.local'
+
+  # Only MySQL/MariaDB is supported
+  db:
+    # Hostname or IP address; use 'localhost' for a local server
+    host: 'set-this-if-running-tests-manually.local'
+
+    # Port number of the server
+    port: '3306'
+
+    # Database name; must exist already
+    dbname: 'e107'
+
+    # Username; must exist already
+    user: 'root'
+
+    # Password; set to blank string for no password
+    password: ''

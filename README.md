@@ -13,8 +13,8 @@ e107 Test Suites
    ```
 3. Configure the testing environment.
 
-   * **Automatic deployments:** Edit `secrets.yml` to enable deploying to a cPanel account.  See the "Automatic Test Deployments » Configuration" section below for details.
-   * **Manual deployments:** See the "Manual Test Deployments » Configuration" section below for instructions.
+   * **Automatic deployments:** Copy `config.sample.yml` into a file called `config.yml` and edit `config.yml` enable deploying to a cPanel account.  See the "Automatic Test Deployments » Configuration" section below for details.
+   * **Manual deployments:** See the "Manual Test Deployment » Configuration" section below for instructions.
 
 4. On PHP 5.6 or newer, install dependencies with [Composer](https://getcomposer.org/):
    ```sh
@@ -74,19 +74,28 @@ The test suites can deploy themselves onto a cPanel account automatically.
 
 ### Configuration
 
-To set up automatically deployed tests, edit `secrets.yml` in the root folder of this repository and input the following configuration information:
+To set up automatically deployed tests, copy the file called `config.sample.yml` in the root folder of this repository to a new file called `config.yml` (or create a new file called `config.yml`), open `config.yml`, and input the following configuration information:
 
 ```yaml
+# Configure this section for automated test deployments to cPanel
 cpanel:
+
+  # If set to true, this section takes precedence over the "manual" section.
   enabled: true
+
+  # cPanel domain without the port number
   hostname: 'SHARED-HOSTNAME.YOUR-HOSTING-PROVIDER.EXAMPLE'
+
+  # cPanel account username
   username: 'TEST-ACCOUNT-USER'
+
+  # cPanel account password
   password: 'TEST-ACCOUNT-PASS'
 ```
 
 ## Manual Test Deployment
 
-If you do not have a cPanel account that meets the requirements, you can deploy tests manually.
+If you do not have a cPanel account that meets the requirements or if you would prefer not to use a cPanel account, you can deploy tests manually.
 
 ### Configuration
 
@@ -95,8 +104,31 @@ If you do not have a cPanel account that meets the requirements, you can deploy 
 3. Create a MySQL or MariaDB user.
 4. Grant the MySQL/MariaDB user `ALL PRIVILEGES` on the MySQL/MariaDB database.
 5. Put the app on the web server and note its URL.
-6. Write the URL to `tests/acceptance.suite.yml` in your copy of this repository where the `url` setting for the `PhpBrowser` module is.
-7. Write the database configuration to `codeception.yml` in your copy of this repository under the `\Helper\DelayedDb` module.
+6. Copy the file called `config.sample.yml` in the root folder of this repository to a new file called `config.yml` (or create a new file called `config.yml`), open `config.yml`, and input the following configuration information:
+   ```yaml
+   # Configure this section for manual test deployments
+   manual:
+   
+     # URL to the app that you deployed manually; needed for acceptance tests
+     url: 'http://set-this-if-running-acceptance-tests-manually.local'
+   
+     # Only MySQL/MariaDB is supported
+     db:
+       # Hostname or IP address; use 'localhost' for a local server
+       host: 'set-this-if-running-tests-manually.local'
+   
+       # Port number of the server
+       port: '3306'
+   
+       # Database name; must exist already
+       dbname: 'e107'
+   
+       # Username; must exist already
+       user: 'root'
+   
+       # Password; set to blank string for no password
+       password: ''
+   ```
 
 ## Code Coverage
 

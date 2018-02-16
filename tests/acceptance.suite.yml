@@ -10,5 +10,5 @@ coverage:
 modules:
     enabled:
         - PhpBrowser:
-            url: http://set-this-if-running-acceptance-tests-manually.local
+            url: '%manual.url%'
         - \Helper\Acceptance:

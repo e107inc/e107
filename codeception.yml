@@ -13,16 +13,16 @@ coverage:
         - e107/*.php
         - e107/**/*.php
 params:
-    - secrets.yml
+    - lib/config.php
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
 modules:
     enabled:
         - \Helper\DelayedDb:
-            dsn: 'mysql:host=set-this-if-running-tests-manually.local;dbname=e107'
-            user: 'root'
-            password: ''
+            dsn: 'mysql:host=%manual.db.host%;port=%manual.db.port%;dbname=%manual.db.dbname%'
+            user: '%manual.db.user%'
+            password: '%manual.db.password%'
             populate: true
             dump: 'tests/_data/e107_v2.1.8.sample.sql'
         - \Helper\DeployerFactory:
