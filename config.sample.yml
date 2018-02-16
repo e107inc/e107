@@ -22,6 +22,8 @@ manual:
   # URL to the app that you deployed manually; needed for acceptance tests
   url: 'http://set-this-if-running-acceptance-tests-manually.local'
 
+  dir: '/e107'
+
   # Only MySQL/MariaDB is supported
   db:
     # Hostname or IP address; use 'localhost' for a local server
