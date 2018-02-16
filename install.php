@@ -2072,7 +2072,7 @@ class e_forms
 		<select class='form-control input-large' name='{$id}' id='{$id}'>\n";
 		foreach ($labels as $label)
 		{
-			$this->form .= "<option".($label == $selected ? " selected='selected'" : "").">{$label}</option>\n";
+			$this->form .= "<option value='".$label."' ".($label == $selected ? " selected='selected'" : "").">{$label}</option>\n";
 		}
 		$this->form .= "</select>\n";
 	}
