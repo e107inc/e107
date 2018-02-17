@@ -18,8 +18,6 @@ class Unit extends E107Base
 		$_E107['phpunit'] = true;
 		#$_E107['debug'] = true;
 
-		$db = $this->getModule('\Helper\DelayedDb');
-		$db->_loadDump();
 		codecept_debug("Loading ".APP_PATH."/class2.php…");
 		require_once(APP_PATH."/class2.php");
 	}
