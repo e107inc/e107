@@ -19,12 +19,6 @@ extensions:
         - Codeception\Extension\RunFailed
 modules:
     enabled:
-        - \Helper\DelayedDb:
-            dsn: 'mysql:host=%manual.db.host%;port=%manual.db.port%;dbname=%manual.db.dbname%'
-            user: '%manual.db.user%'
-            password: '%manual.db.password%'
-            populate: true
-            dump: 'tests/_data/e107_v2.1.8.sample.sql'
         - \Helper\DeployerFactory:
             secrets:
                 cpanel:
@@ -32,3 +26,9 @@ modules:
                     hostname: '%cpanel.hostname%'
                     username: '%cpanel.username%'
                     password: '%cpanel.password%'
+        - \Helper\DelayedDb:
+            dsn: 'mysql:host=%manual.db.host%;port=%manual.db.port%;dbname=%manual.db.dbname%'
+            user: '%manual.db.user%'
+            password: '%manual.db.password%'
+            populate: true
+            dump: 'tests/_data/e107_v2.1.8.sample.sql'
