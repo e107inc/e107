@@ -18,41 +18,36 @@ class DelayedDb extends \Codeception\Module\Db
 		return parent::_initialize();
 	}
 
-	public function getConfig()
-	{
-		return $this->config;
-	}
-
-	public function getDbHostname()
+	public function _getDbHostname()
 	{
 		$matches = [];
-	        $matched = preg_match('~host=([^;]+)~s', $this->config['dsn'], $matches);
-	        if (!$matched)
+		$matched = preg_match('~host=([^;]+)~s', $this->config['dsn'], $matches);
+		if (!$matched)
 		{
-	        	return false;
-	        }
+			return false;
+		}
 
-	        return $matches[1];	
+		return $matches[1];
 	}
 
-	public function getDbName()
+	public function _getDbName()
 	{
 		$matches = [];
-	        $matched = preg_match('~dbname=([^;]+)~s', $this->config['dsn'], $matches);
-	        if (!$matched)
+		$matched = preg_match('~dbname=([^;]+)~s', $this->config['dsn'], $matches);
+		if (!$matched)
 		{
-	        	return false;
-	        }
+			return false;
+		}
 
-	        return $matches[1];	
+		return $matches[1];
 	}
 
-	public function getDbUsername()
+	public function _getDbUsername()
 	{
 		return $this->config['user'];
 	}
 
-	public function getDbPassword()
+	public function _getDbPassword()
 	{
 		return $this->config['password'];
 	}
