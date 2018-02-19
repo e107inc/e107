@@ -31,10 +31,10 @@ abstract class E107Base extends Base
 		$db = $this->getModule('\Helper\DelayedDb');
 
 		$e107_config = [];
-		$e107_config['mySQLserver'] = $db->getDbHostname();
-		$e107_config['mySQLuser'] = $db->getDbUsername();
-		$e107_config['mySQLpassword'] = $db->getDbPassword();
-		$e107_config['mySQLdefaultdb'] = $db->getDbName();
+		$e107_config['mySQLserver'] = $db->_getDbHostname();
+		$e107_config['mySQLuser'] = $db->_getDbUsername();
+		$e107_config['mySQLpassword'] = $db->_getDbPassword();
+		$e107_config['mySQLdefaultdb'] = $db->_getDbName();
 		$e107_config['mySQLprefix'] = $this->e107_mySQLprefix;
 
 		$e107_config_contents = $twig->render('e107_config.php', $e107_config);

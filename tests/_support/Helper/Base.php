@@ -9,6 +9,13 @@ abstract class Base extends \Codeception\Module
         protected $deployer;
         protected $deployer_components = ['db', 'fs'];
 
+	protected $db;
+
+	public function getHelperDb()
+	{
+		return $this->db ?: $this->db = $this->getModule('\Helper\DelayedDb');
+	}
+
 	public function _beforeSuite($settings = array())
 	{
 		$this->deployer = $this->getModule('\Helper\DeployerFactory')->create();
@@ -48,8 +55,8 @@ abstract class Base extends \Codeception\Module
 
         protected function _reconfigure_db()
         {
-		$db = $this->getModule('\Helper\DelayedDb');
-		$Db_config = $db->getConfig();
+		$db = $this->getHelperDb();
+		$Db_config = $db->_getConfig();
 		$Db_config['dsn'] = $this->deployer->getDsn();
 		$Db_config['user'] = $this->deployer->getDbUsername();
 		$Db_config['password'] = $this->deployer->getDbPassword();
