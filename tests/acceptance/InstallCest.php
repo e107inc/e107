@@ -34,12 +34,13 @@ class InstallCest
     {
         $I->amOnPage('/install.php');
         $I->wantTo("Verify Proceed to Step 3 of the Installation");
+	$db = $I->getHelperDb();
         $this->installStep1ToStep2($I);
 
-		$I->fillField('server',     $I->getDbHostname());
-		$I->fillField('name',       $I->getDbUsername());
-		$I->fillField('password',   $I->getDbPassword());
-		$I->fillField('db',         $I->getDbName());
+		$I->fillField('server',     $db->_getDbHostname());
+		$I->fillField('name',       $db->_getDbUsername());
+		$I->fillField('password',   $db->_getDbPassword());
+		$I->fillField('db',         $db->_getDbName());
 
 		$I->uncheckOption('createdb');
 		$I->click('submit');
