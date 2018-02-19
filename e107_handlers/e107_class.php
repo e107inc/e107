@@ -461,8 +461,8 @@ class e107
 		$this->e107_dirs = array_merge($this->defaultDirs($override), $override);
 		
 		// Required for e_MEDIA_BASE, e_SYSTEM_BASE (free of site path constants);
-		$this->e107_dirs['MEDIA_BASE_DIRECTORY'] = $this->e107_dirs['MEDIA_DIRECTORY'];
-		$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_DIRECTORY'];
+	//	$this->e107_dirs['MEDIA_BASE_DIRECTORY'] = $this->e107_dirs['MEDIA_DIRECTORY'];
+	//	$this->e107_dirs['SYSTEM_BASE_DIRECTORY'] = $this->e107_dirs['SYSTEM_BASE_DIRECTORY'];
 
 		// FIXME - remove this condition because:
 		// $this->site_path is appended to MEDIA_DIRECTORY in defaultDirs(), which is called above.
@@ -546,7 +546,9 @@ class e107
 			'CORE_DIRECTORY' 		=> 'e107_core/',
 			'WEB_DIRECTORY' 		=> 'e107_web/',
 		), (array) $override_root);
-		
+
+		$ret['MEDIA_BASE_DIRECTORY'] = $ret['MEDIA_DIRECTORY'];
+		$ret['SYSTEM_BASE_DIRECTORY'] = $ret['SYSTEM_DIRECTORY'];
 		$ret['MEDIA_DIRECTORY'] 	.= $this->site_path."/"; // multisite support. 
 		$ret['SYSTEM_DIRECTORY'] 	.= $this->site_path."/"; // multisite support. 
 				
