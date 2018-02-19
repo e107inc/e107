@@ -12,16 +12,16 @@ abstract class E107Base extends Base
 	public function _beforeSuite($settings = array())
 	{
 		parent::_beforeSuite($settings);
-		$this->writeLocalE107Config();
+		//$this->writeLocalE107Config(); // created during installation test.
 	}
 
 	public function _afterSuite()
 	{
 		parent::_afterSuite();
-		$this->revokeLocalE107Config();
+		//$this->revokeLocalE107Config(); // temporarily disabled.
 	}
 
-	protected function writeLocalE107Config()
+	protected function writeLocalE107Config() // TODO create config.yml option to disable adding/removing e107_config.php
 	{
 		$twig_loader = new \Twig_Loader_Array([
 			'e107_config.php' => file_get_contents(codecept_data_dir()."/e107_config.php.sample")
@@ -38,6 +38,12 @@ abstract class E107Base extends Base
 		$e107_config['mySQLprefix'] = $this->e107_mySQLprefix;
 
 		$e107_config_contents = $twig->render('e107_config.php', $e107_config);
+
+		if(file_exists(self::APP_PATH_E107_CONFIG)) // precaution.
+		{
+			rename(self::APP_PATH_E107_CONFIG, str_replace(".php", "_".time().".php", self::APP_PATH_E107_CONFIG));
+		}
+
 		file_put_contents(self::APP_PATH_E107_CONFIG, $e107_config_contents);
 	}
 

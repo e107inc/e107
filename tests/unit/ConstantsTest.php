@@ -8,14 +8,53 @@
 	 *
 	 */
 
-	use PHPUnit\Framework\TestCase;
 
-	class e107ConstantsTest extends TestCase
+	class e107ConstantsTest extends \Codeception\Test\Unit
 	{
-		public function teste_BASE()
+		public function testVerifyE_BASE()
 		{
-			// todo
+
 			$res = defined('e_BASE');
+			$this->assertTrue($res);
+		}
+
+		public function testVerifyE_SYSTEM_BASE()
+		{
+		    $res = true;
+
+		    if(!defined('e_SYSTEM'))
+		    {
+		        $res = false;
+		    }
+		    elseif(!defined('e_SYSTEM_BASE'))
+		    {
+		        $res = false;
+		    }
+		    elseif(e_SYSTEM_BASE === e_SYSTEM)
+		    {
+		        $res = false;
+		    }
+
+			$this->assertTrue($res);
+		}
+
+		public function testVerifyE_MEDIA_BASE()
+		{
+		    $res = true;
+
+		    if(!defined('e_MEDIA'))
+		    {
+		        $res = false;
+		    }
+		    elseif(!defined('e_MEDIA_BASE'))
+		    {
+		        $res = false;
+		    }
+		    elseif(e_MEDIA_BASE === e_MEDIA)
+		    {
+		        $res = false;
+		    }
+
 			$this->assertTrue($res);
 		}
 	}
