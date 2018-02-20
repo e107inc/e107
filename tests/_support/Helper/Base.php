@@ -39,16 +39,16 @@ abstract class Base extends \Codeception\Module
 
 	protected function _callbackDeployerStarted()
 	{
-		return $this->_before();
-	}
-
-	public function _before(\Codeception\TestCase $test = null)
-	{
 		foreach ($this->deployer_components as $component)
 		{
 			$method = "_reconfigure_${component}";
 			$this->$method();
 		}
+	}
+
+	public function _before(\Codeception\TestCase $test = null)
+	{
+		if (is_object($this->deployer)) $this->_callbackDeployerStarted();
 	}
 
 	protected function _reconfigure_fs()
