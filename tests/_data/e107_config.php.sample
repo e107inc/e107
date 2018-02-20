@@ -31,7 +31,8 @@ $PLUGINS_DIRECTORY   = 'e107_plugins/';
 $HANDLERS_DIRECTORY  = 'e107_handlers/';
 $LANGUAGES_DIRECTORY = 'e107_languages/';
 $HELP_DIRECTORY      = 'e107_docs/help/';
-$DOWNLOADS_DIRECTORY = 'e107_files/downloads/';
+$MEDIA_DIRECTORY     = 'e107_media/';
+$SYSTEM_DIRECTORY    = 'e107_system/';
+
 
 define('e_MOD_REWRITE',true);
-?>
