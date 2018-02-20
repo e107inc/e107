@@ -7,4 +7,10 @@ namespace Helper;
 class Acceptance extends E107Base
 {
 	protected $deployer_components = ['db', 'fs'];
+
+	protected function writeLocalE107Config()
+	{
+		// Noop
+		// Acceptance tests will install the app themselves
+	}
 }
