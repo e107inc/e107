@@ -51,9 +51,20 @@ abstract class E107Base extends Base
 
 	protected function cleanVCS()
 	{
-		$pwd = getcwd();
-		chdir(APP_PATH);
-		exec('git clean -fdx');
-		chdir($pwd);
+		$descriptorspec = [
+			1 => ['pipe', 'w'],
+			  2 => ['pipe', 'w'],
+			  ];
+		$pipes = [];
+		$resource = proc_open('git clean -fdx', $descriptorspec, $pipes, APP_PATH);
+		//$stdout = stream_get_contents($pipes[1]);
+		//$stderr = stream_get_contents($pipes[2]);
+		//foreach ($pipes as $pipe)
+		//{
+		//	fclose($pipe);
+		//}
+		//var_dump($stdout);
+		//var_dump($stderr);
+		proc_close($resource);
 	}
 }
