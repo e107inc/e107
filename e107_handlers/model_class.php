@@ -3480,17 +3480,9 @@ class e_tree_model extends e_front_model
 	 */
 	protected static function multiFieldCmp($row1, $row2, $sort_field, $sort_order = 1)
 	{
-		// Multiple sort fields
-		if (is_array($sort_field))
-		{
-			$field = array_shift($sort_field);
-		}
-		// One sort field
-		else
-		{
-			$field = $sort_field;
-			$sort_field = [];
-		}
+		if (!is_array($sort_field))
+			$sort_field = [$sort_field];
+		$field = array_shift($sort_field);
 
 		$cmp = strnatcmp((string) $row1[$field], (string) $row2[$field]);
 		if ($sort_order === -1 || $sort_order === 1) $cmp *= $sort_order;
