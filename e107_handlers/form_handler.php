@@ -2448,7 +2448,7 @@ class e_form
 
 		if(empty($labels))
 		{
-			$labels = array('on' =>LAN_ON, 'off' =>LAN_OFF);
+			$labels = array('on' =>strtoupper(LAN_ON), 'off' =>strtoupper(LAN_OFF));
 		}
 
 		$value = $checked_enabled;
@@ -2465,6 +2465,11 @@ class e_form
 			$options_off['label'] = $on;
 			unset($on);
 
+		}
+
+		if(empty($options['switch']))
+		{
+			$options['switch'] = 'small';
 		}
 
 
@@ -2484,6 +2489,7 @@ class e_form
 		if(e_ADMIN_AREA === true)
 		{
 			$options['data-wrapper'] = 'wrapper form-control';
+
 		}
 
 		e107::library('load', 'bootstrap.switch');
