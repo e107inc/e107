@@ -122,6 +122,76 @@ class TreeModelTest extends \Codeception\Test\Unit
         $this->assertEquals('163', $tree_model->getParam('db_limit_count'));
         $this->assertEquals('79', $tree_model->getParam('db_limit_offset'));
     }
+
+    public function testMultiFieldCompareWithSortFieldsReturnsExpectedValues()
+    {
+    	$tree_model = $this->make('e_tree_model');
+	$class = new \ReflectionClass(get_class($tree_model));
+	$method = $class->getMethod('multiFieldCmp');
+	$method->setAccessible(true);
+
+	$row1 = array(
+	    'field1' => '0',
+	    'field2' => '-1',
+	);
+	$row2 = array(
+	    'field1' => '0',
+	    'field2' => '1',
+	);
+	$sort_fields = ['field1', 'field2'];
+
+	$result = $method->invoke(null, $row1, $row2, $sort_fields, 1);
+	$this->assertEquals(-1, $result);
+
+	$row1['field2'] = 1;
+	$result = $method->invoke(null, $row1, $row2, $sort_fields, 1);
+	$this->assertEquals(0, $result);
+
+	$row1['field2'] = 2;
+	$result = $method->invoke(null, $row1, $row2, $sort_fields, 1);
+	$this->assertEquals(1, $result);
+
+	$row1['field1'] = -1;
+	$result = $method->invoke(null, $row1, $row2, $sort_fields, 1);
+	$this->assertEquals(-1, $result);
+
+	$row1['field1'] = 1;
+	$result = $method->invoke(null, $row1, $row2, $sort_fields, 1);
+	$this->assertEquals(1, $result);
+    }
+
+    public function testMultiFieldCompareWithSortFieldReturnsExpectedValues()
+    {
+    	$tree_model = $this->make('e_tree_model');
+	$class = new \ReflectionClass(get_class($tree_model));
+	$method = $class->getMethod('multiFieldCmp');
+	$method->setAccessible(true);
+
+	$row1 = array(
+	    'field1' => '0',
+	    'field2' => '-1',
+	);
+	$row2 = array(
+	    'field1' => '0',
+	    'field2' => '1',
+	);
+	$sort_field = 'field1';
+
+	$result = $method->invoke(null, $row1, $row2, $sort_field, 1);
+	$this->assertEquals(0, $result);
+
+	$row1['field1'] = -1;
+	$result = $method->invoke(null, $row1, $row2, $sort_field, 1);
+	$this->assertEquals(-1, $result);
+
+	$row1['field1'] = 1;
+	$result = $method->invoke(null, $row1, $row2, $sort_field, 1);
+	$this->assertEquals(1, $result);
+
+	$row1['field2'] = 1337;
+	$this->assertEquals(1, $result);
+    }
+
     protected $sample_rows =
         array (
           1 => 

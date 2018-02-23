@@ -289,11 +289,13 @@ class cPanelDeployer
 
 	private static function prune_mysql_databases($dbs, $ids, $cPanel)
 	{
+		$prefix = $cPanel->user."_".self::TEST_PREFIX;
 		foreach ($dbs as $db)
 		{
 			$db = (array) $db;
-			$offset = strpos($db['db'], self::TEST_PREFIX);
-			$questionable_db = substr($db['db'], $offset);
+			if (substr($db['db'], 0, strlen($prefix)) !== $prefix)
+				continue;
+			$questionable_db = substr($db['db'], strlen($prefix));
 			if (!in_array($questionable_db, $ids))
 			{
 				self::println("Deleting expired MySQL database \"".$db['db']."\"…");
@@ -304,11 +306,13 @@ class cPanelDeployer
 
 	private static function prune_mysql_users($users, $ids, $cPanel)
 	{
+		$prefix = $cPanel->user."_".self::TEST_PREFIX;
 		foreach ($users as $user)
 		{
 			$user = (array) $user;
-			$offset = strpos($user['user'], self::TEST_PREFIX);
-			$questionable_user = substr($user['user'], $offset);
+			if (substr($user['user'], 0, strlen($prefix)) !== $prefix)
+				continue;
+			$questionable_user = substr($user['user'], strlen($prefix));
 			if (!in_array($questionable_user, $ids))
 			{
 				self::println("Deleting expired MySQL user \"".$user['user']."\"…");
