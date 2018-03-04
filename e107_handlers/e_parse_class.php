@@ -4740,13 +4740,17 @@ class e_parser
 	 * Includes support for 'livestamp' (http://mattbradley.github.io/livestampjs/)
 	 * @param integer $datestamp - unix timestamp
 	 * @param string $format - short | long | relative 
-	 * @return HTML with converted date. 
+	 * @return string converted date (html)
 	 */
 	public function toDate($datestamp = null, $format='short')
 	{
 		if(!is_numeric($datestamp)){ return null; }
 
-		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
+		$value = e107::getDate()->convert_date($datestamp, $format);
+
+		$inc = ($format === 'relative') ? ' data-livestamp="'.$datestamp.'"' : '';
+
+		return '<span'.$inc.'>'.$value.'</span>';
 	}
 	
 

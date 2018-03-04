@@ -21,7 +21,7 @@ class convert
 	
 	function __construct()
 	{
-		
+
 		
 	}
 
@@ -148,7 +148,7 @@ class convert
 		{
 			$mask = 'long';
 		}
-		
+
 		switch($mask)
 		{
 			case 'long':
@@ -187,7 +187,7 @@ class convert
 			break;
 			
 			case 'relative':
-				return $this->computeLapse($datestamp, time(), false, false, 'short') ;		
+				return $this->computeLapse($datestamp, time(), false, false, 'short') ;
 			break;
 			
 			default:
@@ -222,7 +222,7 @@ class convert
 	function convert($string=null, $mask = 'inputdate')
 	{
 		if($string == null) return false;
-		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
+		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);
 	}
 	
 	
@@ -660,7 +660,7 @@ class convert
 	 *
 	 * @param string $str date string to parse (e.g. returned from strftime()).
 	 * @param string $sFormat strftime format used to create the date
-	 * @return array Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
+	 * @return array|bool Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
 	 */
 	public function strptime($str, $format)
 	{
@@ -718,7 +718,9 @@ class convert
 		#-- record the positions of all STRFCMD-placeholders
 		preg_match_all('/(%\w)/', $format, $positions);
 		$positions = $positions[1];
-		
+
+		$vals = array();
+
 		#-- get individual values
 		if (preg_match("#$preg#", $str, $extracted))
 		{
@@ -797,7 +799,7 @@ class convert
 			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
 		}
 		
-		return isset($vals) ? $vals : false;
+		return !empty($vals) ? $vals : false;
 		
 	} 
 
