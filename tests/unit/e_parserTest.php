@@ -151,14 +151,19 @@
 			$time = 1519512067; //  Saturday 24 February 2018 - 22:41:07
 
 			$long = $class->toDate($time, 'long');
-			$this->assertContains('<span data-livestamp="1519512067">Saturday 24 February 2018',$long);
+			$this->assertContains('Saturday 24 February 2018',$long);
 
 			$short = $class->toDate($time, 'short');
 			$this->assertContains('Feb 2018', $short);
 
 			$rel = $class->toDate($time, 'relative');
 			$this->assertContains('ago', $rel);
-			
+			$this->assertContains('data-livestamp="1519512067"', $rel);
+
+			$custom = $class->toDate($time, 'dd-M-yy');
+			$this->assertContains('<span>24-Feb-18</span>', $custom);
+
+
 
 		}
 /*
