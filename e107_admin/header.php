@@ -85,10 +85,10 @@ function loadJSAddons()
 
 	$plUpload = 'plupload/i18n/' . e_LAN . '.js';
 
-	if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
-	{
-		e107::js('core', $plUpload, 'jquery', 5);
-	}
+    if(e_LAN != 'en' && file_exists(e_WEB_JS . $plUpload))
+    {
+     e107::js('footer', e_WEB_JS. $plUpload, 'jquery', 5);
+    }
 }
 
 // Load library dependencies.
