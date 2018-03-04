@@ -5037,8 +5037,10 @@ class e_form
 					}
 					
 					$true = varset($parms['true'],'&check;'); // custom representation for 'true'. (supports font-awesome when set by css)
-					
-					
+
+				//	$true = '\f00c';
+				//	$false = '\f00d';
+
 					$value = intval($value);
 							
 					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
@@ -5233,6 +5235,9 @@ class e_form
 	 * @param mixed $value
 	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
 	 * #param array (under construction) $required_data required array as defined in e_model/validator
+	 * @param mixed $attributes['writeParms']['default'] default value when empty (or default option when type='dropdown')
+	 * @param mixed $attributes['writeParms']['defaultValue'] default option value when type='dropdown'
+	 * @param mixed $attributes['writeParms']['empty'] default value when value is empty (dropdown and hidden only right now)
 	 * @return string
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
@@ -5270,7 +5275,7 @@ class e_form
 			$key = $key.'['.e_LANGUAGE.']';
 		}
 		
-		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
+		if(empty($value) && !empty($parms['default']) && $attributes['type'] !== 'dropdown') // Allow writeParms to set default value.
 		{
 			$value = $parms['default'];
 		}
@@ -5644,6 +5649,7 @@ class e_form
 			case 'dropdown':
 			case 'comma':
 
+
 				if(!empty($attributes['writeParms']['optArray']))
 				{
 					$eloptions = $attributes['writeParms'];
@@ -5653,6 +5659,8 @@ class e_form
 				{
 					$eloptions  = vartrue($parms['__options'], array());
 				}
+
+				$value = (isset($eloptions['empty']) && empty($value)) ? $eloptions['empty'] : $value;
 
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
@@ -5668,8 +5676,7 @@ class e_form
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
 
-
-				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->select($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
 			case 'radio':
@@ -6787,6 +6794,7 @@ class e_form
 					// After submit options
 					$defsubmitopt = array('list' => LAN_EFORM_013, 'create' => LAN_EFORM_014, 'edit' => LAN_EFORM_015);
 					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
+
 					if(true === $submitopt)
 					{
 						$submitopt = $defsubmitopt;
@@ -6794,8 +6802,7 @@ class e_form
 
 					if($submitopt)
 					{
-						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
-						
+						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : 'list';
 					}
 
 					$triggers = (empty($fdata['triggers']) && $fdata['triggers'] !== false) ? 'auto' : $fdata['triggers']; // vartrue($fdata['triggers'], 'auto');
