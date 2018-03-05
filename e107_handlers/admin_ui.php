@@ -3484,7 +3484,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Handle requested filter dropdown value
-	 * @param string $value
+	 * @param string $filter_value
 	 * @return array field -> value
 	 */
 	protected function _parseFilterRequest($filter_value)
@@ -3512,6 +3512,11 @@ class e_admin_controller_ui extends e_admin_controller
 					"week"	=> "1 week ago",
 					"month"	=> "1 month ago",
 					"year"	=> "1 year ago",
+					"nhour"	=> "now + 1 hour",
+					"nday"	=> "now + 24 hours",
+					"nweek"	=> "now + 1 week",
+					"nmonth"	=> "now + 1 month",
+					"nyear"	=> "now + 1 year",
 				);
 				
 				$ky = $filter[2];
@@ -4027,7 +4032,17 @@ class e_admin_controller_ui extends e_admin_controller
 					case 'integer':
 						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
 						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);	
+							if($filterValue > time())
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." > ".time();
+								$searchQry[] = $this->fields[$filterField]['__tableField']." < ".intval($filterValue);
+							}
+							else
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);
+								$searchQry[] = $this->fields[$filterField]['__tableField']." < ".time();
+							}
+
 						}
 						else 
 						{
@@ -7218,6 +7233,24 @@ class e_admin_form_ui extends e_form
 							"month"		=> LAN_UI_FILTER_PAST_MONTH,
 							"year"		=> LAN_UI_FILTER_PAST_YEAR
 						);
+
+						$dateFiltersFuture = array (
+								'nhour'		=> LAN_UI_FILTER_NEXT_HOUR,
+								"nday"		=> LAN_UI_FILTER_NEXT_24_HOURS,
+								"nweek"		=> LAN_UI_FILTER_NEXT_WEEK,
+								"nmonth"	=> LAN_UI_FILTER_NEXT_MONTH,
+								"nyear"		=> LAN_UI_FILTER_NEXT_YEAR
+						);
+
+						if($val['filter'] === 'future' )
+						{
+							$dateFilters = $dateFiltersFuture;
+						}
+
+						if($val['filter'] === 'both')
+						{
+							$dateFilters += $dateFiltersFuture;
+						}
 					    
 						foreach($dateFilters as $k => $name)
 						{

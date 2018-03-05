@@ -487,6 +487,12 @@ define("LAN_UI_FILTER_PAST_WEEK", "Past Week");
 define("LAN_UI_FILTER_PAST_MONTH", "Past Month");
 define("LAN_UI_FILTER_PAST_YEAR", "Past Year");
 
+define("LAN_UI_FILTER_NEXT_HOUR", "Next Hour");
+define("LAN_UI_FILTER_NEXT_24_HOURS", "Next 24 hours");
+define("LAN_UI_FILTER_NEXT_WEEK", "Next Week");
+define("LAN_UI_FILTER_NEXT_MONTH", "Next Month");
+define("LAN_UI_FILTER_NEXT_YEAR", "Next Year");
+
 define("LAN_USER_MANAGEALL", "Manage all User, Userclass and Extended User-Field settings");
 define("LAN_USER_LIST", "User List");
 define("LAN_USER_QUICKADD","Quick Add User");

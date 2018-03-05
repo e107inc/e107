@@ -480,7 +480,7 @@ class e_parse extends e_parser
 	/**
 	 * Converts the supplied text (presumed to be from user input) to a format suitable for storing in a database table.
 	 *
-	 * @param string $data
+	 * @param mixed $data
 	 * @param boolean $nostrip [optional] Assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless indicate otherwise by setting this var to TRUE.
 	 * 				If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
 	 * @param boolean $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
