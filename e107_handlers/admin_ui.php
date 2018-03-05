@@ -3505,12 +3505,13 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			case 'datestamp':
 							
+				//XXX DO NOT TRANSLATE THESE VALUES!
 				$dateConvert = array(
-					"hour"	=> LAN_UI_FILTER_PAST_HOUR,//"1 hour ago",//etc
-					"day"	=> LAN_UI_FILTER_PAST_24_HOURS,
-					"week"	=> LAN_UI_FILTER_PAST_WEEK,
-					"month"	=> LAN_UI_FILTER_PAST_MONTH,
-					"year"	=> LAN_UI_FILTER_PAST_YEAR
+					"hour"	=> "1 hour ago",
+					"day"	=> "24 hours ago",
+					"week"	=> "1 week ago",
+					"month"	=> "1 month ago",
+					"year"	=> "1 year ago",
 				);
 				
 				$ky = $filter[2];
