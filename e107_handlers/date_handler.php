@@ -235,7 +235,7 @@ class convert
 		$convert = array(
 			'%Y'	=> 'yyyy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
 			'%d'	=> 'dd',
-			'%e'    => 'd',
+	//		'%e'    => 'd',
 			'%m'	=> 'mm',		
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
@@ -262,7 +262,10 @@ class convert
 		
 		if(strpos($mask, '%') === FALSE && $legacy == TRUE)
 		{
-			return str_replace($r, $s,$mask);
+			$text = str_replace($r, $s,$mask);
+			$text = str_replace('%d', '^^', $text);
+			$text = str_replace('d','%e',$text);
+			return str_replace('^^','%d', $text);
 		}
 		elseif(strpos($mask,'%')!==FALSE)
 		{
