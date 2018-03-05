@@ -235,6 +235,7 @@ class convert
 		$convert = array(
 			'%Y'	=> 'yyyy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
 			'%d'	=> 'dd',
+			'%e'    => 'd',
 			'%m'	=> 'mm',		
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
