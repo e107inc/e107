@@ -227,7 +227,7 @@ else
 {
 
 	$ADMIN_HEADER .= '
-		<div class="col-md-3 col-lg-2 admin-left-panel">
+		<div class="col-md-3 col-lg-2 admin-left-panel hidden-print">
 			{SETSTYLE=warning}
 			{ADMIN_ADDON_UPDATES}
 			{SETSTYLE=site_info}
