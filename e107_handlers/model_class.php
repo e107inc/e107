@@ -3337,26 +3337,8 @@ class e_tree_model extends e_front_model
 			$sql = e107::getDb($this->getParam('model_class', 'e_model'));
 			$this->_total = $sql->total_results = false;
 
-			// Workaround: Parse and modify db_query param for simulated pagination
-			$this->prepareSimulatedPagination();
-			// Workaround: Parse and modify db_query param for simulated custom ordering
-			$this->prepareSimulatedCustomOrdering();
-
-			if($sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false))
+			if($rows = $this->getRows($sql))
 			{
-				$rows_tree = self::arrayToTree($sql->rows(),
-				                               $this->getParam('primary_field'),
-				                               $this->getParam('sort_parent'));
-				$rows = self::flattenTree($rows_tree,
-				                          $this->getParam('sort_field'),
-				                          $this->getParam('sort_order'));
-
-				// Simulated pagination
-				$rows = array_splice($rows,
-				                     (int) $this->getParam('db_limit_offset'),
-				                     ($this->getParam('db_limit_count') ? $this->getParam('db_limit_count') : count($rows))
-				                     );
-
 				foreach($rows as $tmp)
 				{
 					$tmp = new $class_name($tmp);
@@ -3385,6 +3367,51 @@ class e_tree_model extends e_front_model
 
 		}
 		return $this;
+	}
+
+	protected function getRows($sql)
+	{
+		// Tree (Parent-Child Relationship)
+		if ($this->getParam('sort_parent') && $this->getParam('sort_field'))
+		{
+			return $this->getRowsTree($sql);
+		}
+		// Flat List
+		return $this->getRowsList($sql);
+	}
+
+	protected function getRowsList($sql)
+	{
+		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		if (!$success) return false;
+
+		return $sql->rows();
+	}
+
+	protected function getRowsTree($sql)
+	{
+		// Workaround: Parse and modify db_query param for simulated pagination
+		$this->prepareSimulatedPagination();
+		// Workaround: Parse and modify db_query param for simulated custom ordering
+		$this->prepareSimulatedCustomOrdering();
+
+		$success = $sql->gen($this->getParam('db_query'), $this->getParam('db_debug') ? true : false);
+		if (!$success) return false;
+
+		$rows_tree = self::arrayToTree($sql->rows(),
+			$this->getParam('primary_field'),
+			$this->getParam('sort_parent'));
+		$rows = self::flattenTree($rows_tree,
+			$this->getParam('sort_field'),
+			$this->getParam('sort_order'));
+
+		// Simulated pagination
+		$rows = array_splice($rows,
+			(int) $this->getParam('db_limit_offset'),
+			($this->getParam('db_limit_count') ? $this->getParam('db_limit_count') : count($rows))
+		);
+
+		return $rows;
 	}
 
 	/**
@@ -3420,17 +3447,21 @@ class e_tree_model extends e_front_model
 	{
 		$node = &$nodes[0];
 		array_shift($nodes);
+		$nodeID = (int) $node[$primary_field];
 		foreach($rows as $key => $row)
 		{
-			$nodeID      = (int) $node[$primary_field];
 			$rowParentID = (int) $row[$sort_parent];
-			if($nodeID === $rowParentID)
+
+			// Note: This optimization only works if the SQL query executed was ordered by the sort parent.
+			if($nodeID !== $rowParentID)
 			{
-				$node['_children'][] = &$row;
-				unset($rows[$key]);
-				$nodes[] = &$row;
-				unset($row);
+				break;
 			}
+
+			$node['_children'][] = &$row;
+			unset($rows[$key]);
+			$nodes[] = &$row;
+			unset($row);
 		}
 	}
 
@@ -3568,21 +3599,26 @@ class e_tree_model extends e_front_model
 	{
 		$db_query = $this->getParam('db_query');
 		$db_query = preg_replace_callback('/ORDER BY (?:.+\.)*[\.]*([A-Za-z0-9$_,]+)[ ]*(ASC|DESC)*/i', function($matches)
-		{
-			if (isset($matches[1]))
 			{
-				$current_sort_field = $this->getParam('sort_field');
-				if (!empty($current_sort_field))
+				if (!empty($matches[1]))
 				{
-					$matches[1] = $current_sort_field.",".$matches[1];
+					$current_sort_field = $this->getParam('sort_field');
+					if (!empty($current_sort_field))
+					{
+						$matches[1] = $current_sort_field.",".$matches[1];
+					}
+					$this->setParam('sort_field', array_map('trim', explode(',', $matches[1])));
 				}
-				$this->setParam('sort_field', array_map('trim', explode(',', $matches[1])));
-			}
-			if (isset($matches[2]))
-				$this->setParam('sort_order',
-				                (0 === strcasecmp($matches[2], 'DESC') ? -1 : 1)
-				                );
-		}, $db_query);
+				if (!empty($matches[2]))
+					$this->setParam('sort_order',
+						(0 === strcasecmp($matches[2], 'DESC') ? -1 : 1)
+					);
+
+				return "";
+			}, $db_query)
+			// Optimization goes with e_tree_model::moveRowsToTreeNodes()
+			. " ORDER BY " . $this->getParam('sort_parent') . ", " . $this->getParam('sort_field');
+		$this->setParam('db_query', $db_query);
 	}
 
 	/**
