@@ -4058,6 +4058,7 @@ class e_admin_controller_ui extends e_admin_controller
 						{
 							$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
 						}
+
 						else
 						{
 
@@ -7076,6 +7077,14 @@ class e_admin_form_ui extends e_form
 
 					break;
 
+
+					case 'number';
+						if($type === 'filter')
+						{
+							$option[$key.'___ISEMPTY_'] = LAN_UI_FILTER_IS_EMPTY;
+						}
+
+					break;
 
 					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
