@@ -4364,8 +4364,6 @@ class e_admin_controller_ui extends e_admin_controller
 	public function getParentChildQry($orderby=false)
 	{
 		return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ";
-		// Use the following return statement to break e107 native sorting but speed up tree creation by presorting for e_tree_model::arrayToTree()
-		#return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ORDER BY ".$this->getSortParent().", ".$this->getSortField();
 	}
 
 
