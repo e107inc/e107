@@ -6080,6 +6080,13 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->_pref = $this->pluginName === 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
 
+		if($this->pluginName !== 'core' && !e107::isInstalled($this->pluginName))
+		{
+			$obj = get_class($this);
+			e107::getMessage()->addError($obj." \$pluginName: is not valid. (".$this->pluginName. ")"); // debug only.
+			return $this;
+		}
+
 		$dataFields = $validateRules = array();
 		foreach ($this->prefs as $key => $att)
 		{
