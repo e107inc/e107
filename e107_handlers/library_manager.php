@@ -370,7 +370,7 @@ class core_library
 				),
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
-			'path'              => '4.0.0-beta',
+			'path'              => '4.0.0',
 		);
 
 
