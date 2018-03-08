@@ -981,7 +981,7 @@ if (!class_exists('e107table', false))
 		
 		function __construct()
 		{
-		//	$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment. 
+			$this->themeClass 		= e107::getPref('sitetheme')."_theme"; // disabled at the moment.
 			$this->adminThemeClass 	= e107::getPref('admintheme')."_admintheme";	// Check for a class. 
 		}
 

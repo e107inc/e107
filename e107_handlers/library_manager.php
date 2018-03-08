@@ -293,7 +293,7 @@ class core_library
 			),
 			'files'             => array(
 				'js'  => array(
-					'dist/js/bootstrap.min.js' => array(
+					'dist/js/bootstrap.bundle.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
 					),
@@ -325,7 +325,8 @@ class core_library
 
 			),
 			// Override library path to CDN.
-			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap-beta@4.0.0-beta',
+		//	https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js
+			'library_path'      => 'https://cdn.jsdelivr.net/npm/bootstrap@4.0.0',
 			'path'              => '',
 		);
 
@@ -334,19 +335,19 @@ class core_library
 			'name'              => 'Bootstrap 4 (local)',
 			'vendor_url'        => 'http://getbootstrap.com/',
 			'version_arguments' => array(
-				'file'    => 'dist/js/bootstrap.min.js',
+				'file'    => 'js/bootstrap.bundle.min.js',
 				'pattern' => '/Bootstrap\s+v(\d\.\d\.\d+)/',
 				'lines'   => 5,
 			),
 			'files'             => array(
 				'js'  => array(
-					'dist/js/bootstrap.min.js' => array(
+					'js/bootstrap.bundle.min.js' => array(
 						'zone' => 2,
 						'type' => 'footer',
 					),
 				),
 				'css' => array(
-					'dist/css/bootstrap.min.css' => array(
+					'css/bootstrap.min.css' => array(
 						'zone' => 2,
 					),
 				),
@@ -356,13 +357,13 @@ class core_library
 				'dev' => array(
 					'files' => array(
 						'js'  => array(
-							'dist/js/bootstrap.js' => array(
+							'js/bootstrap.bundle.js' => array(
 								'zone' => 2,
 								'type' => 'footer',
 							),
 						),
 						'css' => array(
-							'dist/css/bootstrap.css' => array(
+							'css/bootstrap.css' => array(
 								'zone' => 2,
 							),
 						),
@@ -370,7 +371,7 @@ class core_library
 				),
 			),
 			'library_path'      => '{e_WEB}lib/bootstrap',
-			'path'              => '4.0.0-beta',
+			'path'              => '4',
 		);
 
 
