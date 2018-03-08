@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e107Theme name="Bootstrap 4" version="1.0" date="2018-03-08" compatibility="2.0">
+	<author name ="e107 Inc" email="e107inc@something.com" url="http://e107.org" />
+	<summary>Bootstrap4 generic theme (under development)</summary>
+	<description>For testing only</description>
+	<category>generic</category>
+	<plugins>
+        <plugin name='rss_menu' url='core' />
+		<plugin name='social' url='core' />
+	</plugins>
+	<keywords>
+		<word>bootstrap</word>
+		<word>clean</word>
+	</keywords>
+	<libraries>
+		<library name="bootstrap" version="4" scope="all"/>
+		<library name="fontawesome" scope="all"/>
+	</libraries>
+	<stylesheets>
+		<css file="style.css" name="Default"/>
+           <css file="*" name="*"/>
+	</stylesheets>
+	<layouts>
+		<layout name='test' title='Test' default='true' />
+		<layout name='default' title='Default'  />
+		<layout name='home' title='Home' />
+		<layout name='full' title='Full' />
+	</layouts>
+</e107Theme>
