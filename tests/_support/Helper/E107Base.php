@@ -11,6 +11,7 @@ abstract class E107Base extends Base
 
 	public function _beforeSuite($settings = array())
 	{
+		$this->backupLocalE107Config();
 		$this->cleanVCS();
 		parent::_beforeSuite($settings);
 		$this->writeLocalE107Config();
@@ -21,6 +22,7 @@ abstract class E107Base extends Base
 		parent::_afterSuite();
 		$this->revokeLocalE107Config();
 		$this->cleanVCS();
+		$this->restoreLocalE107Config();
 	}
 
 	protected function writeLocalE107Config()
@@ -67,4 +69,21 @@ abstract class E107Base extends Base
 		//var_dump($stderr);
 		proc_close($resource);
 	}
+
+	protected function backupLocalE107Config()
+	{
+		if(file_exists(self::APP_PATH_E107_CONFIG))
+		{
+			rename(self::APP_PATH_E107_CONFIG, APP_PATH.'/e107_config.bak');
+		}
+	}
+
+	protected function restoreLocalE107Config()
+	{
+		if(file_exists(APP_PATH."/e107_config.bak"))
+		{
+			rename(APP_PATH.'/e107_config.bak', self::APP_PATH_E107_CONFIG);
+		}
+	}
+
 }
