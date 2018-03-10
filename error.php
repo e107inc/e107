@@ -18,7 +18,7 @@ $_E107 = array(
 	'no_online',
 	'no_prunetmp',
 );
-
+define('e_TOKEN_DISABLE', true);
 require_once("class2.php");
 
 
