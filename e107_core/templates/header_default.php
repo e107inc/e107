@@ -789,7 +789,7 @@ if ($e107_popup != 1) {
     /**
      * Display Welcome Message when old method activated.
      * fix - only when e_FRONTPAGE set to true
-     * @see \core_index_index_controller\actionIndex
+     * @see core_index_index_controller/actionIndex
      */
     if(deftrue('e_FRONTPAGE') && strstr($HEADER,"{WMESSAGE")===false && strstr($FOOTER,"{WMESSAGE")===false) // Auto-detection to override old pref.
 	{
