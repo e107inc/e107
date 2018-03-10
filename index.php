@@ -52,7 +52,9 @@
 	
 	define('ROOT', dirname(__FILE__));
 	set_include_path(ROOT.PATH_SEPARATOR.get_include_path());
-	
+
+
+//	define('e_TOKEN_DISABLE', true);  // TODO FIXME cause of "Unauthorized Access!" message. SEF URL of Error pages causes e-token refresh.
 	require_once("class2.php");
 
 // ----------------------------

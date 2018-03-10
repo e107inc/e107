@@ -127,10 +127,15 @@ class signup
 {
 
 	private $testMode = false;
+	private $pref = array();
 
 	function __construct()
 	{
 		$pref = e107::pref('core');
+
+		$this->pref = $pref;
+
+		$this->pref['user_reg_veri'] = intval($this->pref['user_reg_veri']);
 
 		if(getperms('0'))
 		{
@@ -143,7 +148,7 @@ class signup
 			$this->processActivationLink();
 		}
 
-		if((e_QUERY == 'resend') && (!USER || $this->testMode) && ($pref['user_reg_veri'] == 1))
+		if((e_QUERY == 'resend') && (!USER || $this->testMode) && ($this->pref['user_reg_veri'] === 1))
 		{
 			if(empty($_POST['submit_resend']))
 			{
@@ -553,7 +558,7 @@ class signup
 		}
 		else
 		{
-			$text .= ($pref['user_reg_veri'] == 2) ?  LAN_SIGNUP_37 : str_replace($srch,$repl, LAN_SIGNUP_72);
+			$text .= (intval($pref['user_reg_veri']) === 2) ?  LAN_SIGNUP_37 : str_replace($srch,$repl, LAN_SIGNUP_72);
 			$text .= "<br /><br />".$adviseLoginName;
 		}
 
@@ -564,7 +569,9 @@ class signup
 		$caption_arr[1] = LAN_SIGNUP_98; // Confirm Email (Email Confirmation)
 		$caption_arr[2] = LAN_SIGNUP_100; // Approval Pending (Admin Approval)
 
-		$caption = $caption_arr[$pref['user_reg_veri']];
+		$mode = (int) $pref['user_reg_veri'];
+
+		$caption = $caption_arr[$mode];
 
 		$ret['text']    = $text;
 		$ret['caption'] = $caption;
@@ -638,7 +645,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 
 		// generate password if passwords are disabled and email validation is enabled.
 		$noPasswordInput = e107::getPref('signup_option_password', 2); //0 = generate it.
-		if(empty($noPasswordInput) && !isset($_POST['password1']) && intval($pref['user_reg_veri'])===1)
+		if(empty($noPasswordInput) && !isset($_POST['password1']) && $this->pref['user_reg_veri'] === 1)
 		{
 			$_POST['password1'] = $userMethods->generateRandomString("#*******#");
 			$_POST['password2'] = $_POST['password1'];
@@ -892,7 +899,7 @@ if (isset($_POST['register']) && intval($pref['user_reg']) === 1)
 		if ($pref['user_reg_veri'])
 		{	
 			// ========== Send Email =========>
-			if (($pref['user_reg_veri'] != 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
+			if (((int) $pref['user_reg_veri'] !== 2) && $allData['data']['user_email'])		// Don't send if email address blank - means that its not compulsory
 			{
 				$allData['data']['user_id'] = $nid;					// User ID
 				// FIXME build while rendering - user::renderEmail()
@@ -1051,6 +1058,7 @@ $rs = new form;
 
 $text = $tp->parseTemplate($SIGNUP_BEGIN.$SIGNUP_BODY.$SIGNUP_END, TRUE, $signup_shortcodes);
 $ns->tablerender(LAN_SIGNUP_79, e107::getMessage()->render('default', true).$text, 'signup' );
+
 require_once(FOOTERF);
 exit;
 
