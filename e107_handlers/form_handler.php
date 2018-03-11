@@ -4381,32 +4381,30 @@ class e_form
 
 			case 'templates':
 			case 'layouts':
-				$pre = vartrue($parms['pre']);
-				$post = vartrue($parms['post']);
-				unset($parms['pre'], $parms['post']);
-				if($parms)
-				{
-					$attributes['writeParms'] = $parms;
-				}
-				elseif(isset($attributes['writeParms']))
+
+				if(!empty($attributes['writeParms']))
 				{
 					if(is_string($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
 				}
-				$attributes['writeParms']['raw'] = true;
-				$tmp = $this->renderElement($field, '', $attributes);
-				
-				// Inline Editing.  //@SecretR - please FIXME! 
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$source = str_replace('"',"'",json_encode($wparms));
-					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$wparms     = $attributes['writeParms'];
+
+					$location   = vartrue($wparms['plugin']); // empty - core
+					$ilocation  = vartrue($wparms['id'], $location); // omit if same as plugin name
+					$where      = vartrue($wparms['area'], 'front'); //default is 'front'
+					$filter     = varset($wparms['filter']);
+					$merge      = isset($wparms['merge']) ? (bool) $wparms['merge'] : true;
+
+					$layouts    = e107::getLayouts($location, $ilocation, $where, $filter, $merge, false);
+
+					$label      = varset($layouts[$value], $value);
+
+					$value = $this->renderInline($field, $id, $attributes['title'], $value, $label, 'select', $layouts);
 				}
-				
-				
-				
-							
-			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
+
+				$value = vartrue($parms['pre']) . $value . vartrue($parms['post']);
 			break;
 
 			case 'checkboxes':
@@ -5113,7 +5111,7 @@ class e_form
 				{
 					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$methodParms = call_user_func_array(array($this, $meth), array($value, 'inline', $parms));
+					$methodParms = call_user_func_array(array($this, $meth), array($_value, 'inline', $parms));
 
 					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
 
