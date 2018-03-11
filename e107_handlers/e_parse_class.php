@@ -1423,7 +1423,7 @@ class e_parse extends e_parser
 	 * @param bool $opts['ext'] load link in new window (not for email)
 	 * @return string
 	 */
-	private function makeClickable($text='', $type='email', $opts=array())
+	public function makeClickable($text='', $type='email', $opts=array())
 	{
 
 		if(empty($text))
