@@ -214,7 +214,7 @@ class fb_main_ui extends e_admin_ui
 	 	'fb_text' 			=> array('title'=> FBLAN_08,			'type' => 'bbarea',			'width' => '30%', 'readParms' => 'expand=...&truncate=50&bb=1','writeParms'=>'template=admin'), 
 		//DEPRECATED 'fb_mode' 			=> array('title'=> FBLAN_12,			'type' => 'dropdown',		'data'=> 'int',	'width' => '5%', 'filter'=>TRUE, 'batch'=>TRUE),		
 		//DEPRECATED 'fb_rendertype' 	=> array('title'=> FBLAN_22,			'type' => 'dropdown',		'data'=> 'int',	'width' => 'auto', 'noedit' => TRUE),	
-        'fb_template' 		=> array('title'=> LAN_TEMPLATE,			'type' => 'layouts',		'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox', 'filter' => true, 'batch' => true),	 	// Photo
+        'fb_template' 		=> array('title'=> LAN_TEMPLATE,			'type' => 'layouts',	'inline'=>true,	'data'=> 'str', 'width' => 'auto', 'writeParms' => 'plugin=featurebox&merge=true', 'filter' => true, 'batch' => true),	 	// Photo
 		'fb_imageurl' 		=> array('title'=> FBLAN_27,		'type' => 'url',			'width' => 'auto','writeParms'=>'size=xxlarge'),
 		'fb_class' 			=> array('title'=> LAN_VISIBILITY,		'type' => 'userclass',		'data' => 'int', 'inline'=>true, 'width' => 'auto', 'filter' => true, 'batch' => true),	// User id
 		'fb_order' 			=> array('title'=> LAN_ORDER,			'type' => 'number',			'data'=> 'int','width' => '5%' ),
