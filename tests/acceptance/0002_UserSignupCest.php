@@ -42,6 +42,11 @@ class UserSignupCest
 
 	}
 
+
+
+
+
+	// "Admin Approval Pending"
 	//TODO signup under difference conditions (different prefs).. ie. admin approval required etc.
 
 }
