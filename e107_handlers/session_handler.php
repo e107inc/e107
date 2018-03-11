@@ -876,6 +876,13 @@ class e_core_session extends e_session
 
 	private function log($status, $type=E_LOG_FATAL)
 	{
+
+		if(!deftrue('e_DEBUG_SESSION'))
+		{
+			return null;
+		}
+
+
 	//	$details = "USER: ".USERNAME."\n";
 		$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
 		$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
@@ -911,7 +918,7 @@ class e_core_session extends e_session
 		$log = e107::getAdminLog();
 		$log->addDebug($details);
 
-		if(deftrue('e_DEBUG'))
+		if(deftrue('e_DEBUG_SESSION'))
 		{
 			$log->toFile('Unauthorized_access','Unauthorized access Log', true);
 		}
@@ -951,10 +958,8 @@ class e_core_session extends e_session
 				return false;
 			}
 
-			if(deftrue('e_DEBUG'))
-			{
 				$this->log('Session Token Okay!', E_LOG_NOTICE);
-			}
+
 		}
 		
 		if(!defined('e_TOKEN'))
