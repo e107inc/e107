@@ -11,6 +11,31 @@
 
 	class e_parserTest extends \Codeception\Test\Unit
 	{
+		protected $tp;
+		protected $parser;
+
+		protected function _before()
+		{
+			try
+			{
+				$this->tp = $this->make('e_parse');
+			}
+			catch (Exception $e)
+			{
+				$this->assertTrue(false, "Couldn't load e_parser object");
+			}
+
+			try
+			{
+				$this->parser = $this->make('e_parser');
+			}
+			catch (Exception $e)
+			{
+				$this->assertTrue(false, "Couldn't load e_parser object");
+			}
+
+		}
+
 /*
 		public function testAddAllowedTag()
 		{
@@ -66,12 +91,19 @@
 		{
 
 		}
-
+*/
 		public function testToGlyph()
 		{
+			$tp = $this->parser;
+
+			$result = $tp->toGlyph('fa-envelope.glyph');
+
+			$expected = "<i class='fa fa-envelope' ><!-- --></i> ";
+
+			$this->assertEquals($expected,$result);
 
 		}
-
+/*
 		public function testToBadge()
 		{
 
@@ -137,16 +169,32 @@
 
 		}*/
 
+		public function testMakeClickable()
+		{
+			$email = 'myemail@somewhere.com.tk';
+
+			$tp = $this->tp;
+
+			// ----
+
+			$result = $tp->makeClickable($email, 'email', array('sub' => '[email]'));
+
+			$this->assertContains('[email]</a>', $result);
+
+			// -----
+
+			$result = $tp->makeClickable($email, 'email', array('sub' => 'fa-envelope.glyph'));
+
+			$this->assertContains("<i class='fa fa-envelope' ><!-- --></i></a>", $result);
+
+			// -----
+		}
+
 		public function testToDate()
 		{
-			try
-			{
-				$class = $this->make('e_parser');
-			}
-			catch (Exception $e)
-			{
-				$this->assertTrue(false, "Couldn't load e_parser object");
-			}
+
+
+			$class = $this->parser;
 
 			$time = 1519512067; //  Saturday 24 February 2018 - 22:41:07
 
