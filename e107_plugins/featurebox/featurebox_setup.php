@@ -29,6 +29,7 @@ class featurebox_setup
 	function install_post($var)
 	{
 		e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_admin_featurebox.php');
+		e107::includeLan(e_PLUGIN.'featurebox/languages/'.e_LANGUAGE.'_global.php');
 		$mes = e107::getMessage();
 		
 		$e107_featurebox_category = array(
