@@ -12,8 +12,6 @@ Work in progress Moc - commented out are candidate for removal
 LAN file needs working from scratch after development is stabilized
 */
 
-define("FBLAN_INSTALL_01", "Adding Default category table data."); 
-define("FBLAN_INSTALL_02", "Adding Default table data.");
 //define("LAN_PLUGIN_FEATUREBOX_NAME", "Feature Box");
 //define("FBLAN_02", "Displays an animated area on the top of your page with news-items and other content you would like to feature.");
 //define("FBLAN_03", "Configure feature box"); //FIXME LAN  - use generic. 
