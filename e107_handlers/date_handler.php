@@ -250,9 +250,9 @@ class convert
 			'%H'	=> 'hh',	// 24 hour format - leading zero
 			'%M'	=> 'ii',	// Two digit representation of the minute 
 			'%S'	=> 'ss',	// Two digit representation of the second 
-			'%P'	=> 'p',		// %P	lower-case 'am' or 'pm' based on the given time
-			'%p'	=> 'P',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
-		
+			'%P'	=> 'a',		// lower-case 'am' or 'pm' based on the given time
+			'%p'	=> 'A',	    //	UPPER-CASE 'AM' or 'PM' based on the given time
+
 			'%T' 	=> 'hh:mm:ss',
 			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
 		);
@@ -276,6 +276,7 @@ class convert
 		
 		// Keep this info here: 
 		/*
+		 *
 				 * $options allowed keys:
 	
 		 * 
