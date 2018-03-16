@@ -235,7 +235,6 @@ class convert
 		$convert = array(
 			'%Y'	=> 'yyyy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
 			'%d'	=> 'dd',
-	//		'%e'    => 'd',
 			'%m'	=> 'mm',		
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
@@ -250,9 +249,9 @@ class convert
 			'%H'	=> 'hh',	// 24 hour format - leading zero
 			'%M'	=> 'ii',	// Two digit representation of the minute 
 			'%S'	=> 'ss',	// Two digit representation of the second 
-			'%P'	=> 'a',		// lower-case 'am' or 'pm' based on the given time
-			'%p'	=> 'A',	    //	UPPER-CASE 'AM' or 'PM' based on the given time
-
+			'%P'	=> 'p',		// %P	lower-case 'am' or 'pm' based on the given time
+			'%p'	=> 'P',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
+		
 			'%T' 	=> 'hh:mm:ss',
 			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
 		);
@@ -262,10 +261,7 @@ class convert
 		
 		if(strpos($mask, '%') === FALSE && $legacy == TRUE)
 		{
-			$text = str_replace($r, $s,$mask);
-			$text = str_replace('%d', '^^', $text);
-			$text = str_replace('d','%e',$text);
-			return str_replace('^^','%d', $text);
+			return str_replace($r, $s,$mask);
 		}
 		elseif(strpos($mask,'%')!==FALSE)
 		{
@@ -276,7 +272,6 @@ class convert
 		
 		// Keep this info here: 
 		/*
-		 *
 				 * $options allowed keys:
 	
 		 * 
