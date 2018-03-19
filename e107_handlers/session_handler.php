@@ -901,7 +901,8 @@ class e_core_session extends e_session
 */
 
 		$details .= "has __form_token: ";
-		$details .= empty($this->has('__form_token')) ? 'false' : 'true';
+		$hasToken = $this->has('__form_token');
+		$details .= empty($hasToken) ? 'false' : 'true';
 		$details .= "\n";
 
 		$details .= "_SESSION:\n";
