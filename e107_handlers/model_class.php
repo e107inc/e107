@@ -3617,7 +3617,7 @@ class e_tree_model extends e_front_model
 				return "";
 			}, $db_query)
 			// Optimization goes with e_tree_model::moveRowsToTreeNodes()
-			. " ORDER BY " . $this->getParam('sort_parent') . ", " . $this->getParam('sort_field');
+			. " ORDER BY " . $this->getParam('sort_parent');
 		$this->setParam('db_query', $db_query);
 	}
 
