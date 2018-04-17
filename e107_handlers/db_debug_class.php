@@ -511,7 +511,7 @@ class e107_db_debug {
 					$aSum['DB Time'] += $tMarker['DB Time'];
 					$aSum['DB Count'] += $tMarker['DB Count'];
 					$tMarker['Time'] = number_format($thisDelta * 1000.0, 1);
-					$tMarker['Time'] = $this->highlight($tMarker['Time'],$thisDelta,.5);
+					$tMarker['Time'] = $this->highlight($tMarker['Time'],$thisDelta,.2);
 
 
 					$tMarker['%Time'] = $totTime ? number_format(100.0 * ($thisDelta / $totTime), 0) : 0;
