@@ -130,5 +130,6 @@ define("BANLAN_123", "Add to Blacklist");
 define("BANLAN_124", "Expires");   // not ban_lan_34
 define("BANLAN_125", "Use my IP");
 define("BANLAN_126", "IP / Email");
+define("BANLAN_127", "Delete all [x] failed logins from database");
 
 ?>
