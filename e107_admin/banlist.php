@@ -591,7 +591,7 @@ class banlist_form_ui extends e_admin_form_ui
 
 			$allFailedTotal = e107::getDB()->count('generic', '(*)', "gen_type='failed_login'");
 
-			$this->batchOptions = array('delete-all'=>"Delete all ".$allFailedTotal." failed logins from database");
+			$this->batchOptions = array('delete-all'=>str_replace('[x]', $allFailedTotal, BANLAN_127));
 
 			if(!empty($_POST['etrigger_batch']) && $_POST['etrigger_batch'] == "delete-all")
 			{
