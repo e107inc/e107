@@ -373,6 +373,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							if($button.attr('data-disable') == 'true')
 							{
 								$button.addClass('disabled');
+								$button.prop("disabled", true);
 							}
 						});
 
