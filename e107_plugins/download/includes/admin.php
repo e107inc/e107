@@ -2113,6 +2113,14 @@ $columnInfo = array(
 		function show_download_options()
 		{
 		   	global $pref, $ns;
+
+		   	require_once(__DIR__."/../handlers/NginxSecureLinkMd5Decorator.php");
+		   	$supported_secure_link_variables_html = "<ul>";
+		   	foreach(NginxSecureLinkMd5Decorator::supported_variables() as $variable)
+		    {
+		    	$supported_secure_link_variables_html .= "<li><code>$variable</code></li>";
+		    }
+		    $supported_secure_link_variables_html .= "</ul>";
 		
 				require_once(e_HANDLER."form_handler.php");
 				$frm = new e_form(true); //enable inner tabindex counter
@@ -2263,6 +2271,12 @@ $columnInfo = array(
 		            		     	 	<td>
 		            		     	 		".$frm->text('download_security_expression', $pref['download_security_expression'], 1024)."
 		            		     	 		<div class='field-help'>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP."</div>
+		            		     	 		<small><a href='#' onclick='event.preventDefault();$(\"#supported-nginx-variables\").toggle();this.blur()'>
+		            		     	 			".LAN_DL_SECURITY_NGINX_SUPPORTED_VARIABLES_TOGGLE."
+		            		     	 		</a></small>
+		            		     	 		<div id='supported-nginx-variables' style='display:none'>
+		            	   						".$supported_secure_link_variables_html."
+		            		     	 		</div>
 		            		     	 	</td>
 		            		      	</tr>
 		            		      	<tr>
