@@ -440,30 +440,7 @@ function decorate_download_location($url)
 	$pref = e107::getPref();
 	if ($pref['download_security_mode'] !== 'nginx-secure_link_md5')
 		return $url;
-	$expiry = intval($pref['download_security_link_expiry']);
-	if ($expiry <= 0)
-		$expiry = PHP_INT_MAX;
-	else
-		$expiry = time() + $expiry;
-	$url_parts = parse_url($url);
-	$evaluation = str_replace(
-		array(
-			'$secure_link_expires',
-			'$uri',
-			'$remote_addr'
-		),
-		array(
-			$expiry,
-			$url_parts['path'],
-			$_SERVER['REMOTE_ADDR']
-		),
-		$pref['download_security_expression']
-	);
-	$query_string = $url_parts['query'];
-	parse_str($query_string, $query_args);
-	$query_args['md5'] = md5($evaluation);
-	if (strpos($pref['download_security_expression'], '$secure_link_expires') !== false)
-		$query_args['expires'] = $expiry;
-	require_once(__DIR__.'/includes/shim_http_build_url.php');
-	return http_build_url($url_parts, array('query' => http_build_query($query_args)));
+	require_once(__DIR__."/handlers/NginxSecureLinkMd5Decorator.php");
+	$decorator = new NginxSecureLinkMd5Decorator($url, $pref);
+	return $decorator->decorate();
 }

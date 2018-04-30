@@ -235,6 +235,7 @@ define("LAN_DL_SECURITY_DESCRIPTION", "Downloads can make use of server-side URL
 define("LAN_DL_SECURITY_MODE", "URL protection mode");
 define("LAN_DL_SECURITY_MODE_NONE", "None (Default)");
 define("LAN_DL_SECURITY_MODE_NGINX_SECURELINKMD5", "NGINX secure_link_md5");
+define("LAN_DL_SECURITY_NGINX_SUPPORTED_VARIABLES_TOGGLE", "Click to toggle list of supported NGINX variables");
 define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION",
 	"<a target='_blank' href='https://nginx.org/en/docs/http/ngx_http_secure_link_module.html#secure_link_md5'>NGINX secure_link_md5 expression</a>");
 define("LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP", "Same expression as configured on the server");
