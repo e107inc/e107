@@ -72,7 +72,7 @@ if(strstr(e_QUERY, "mirror"))
 			}
 			$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
 			$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '".intval($mirror_id)."'");
-			header("Location: {$gaddress}");
+			header("Location: ".decorate_download_location($gaddress));
 			exit();
 		}
 
@@ -189,7 +189,7 @@ if ($type == "file")
 				$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
 				$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '".intval($mirror_id)."'");
 
-				header("Location: ".$gaddress);
+				header("Location: ".decorate_download_location($gaddress));
 				exit();
 			}
 
@@ -217,7 +217,7 @@ if ($type == "file")
 			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://"))
 			{
 				$download_url = e107::getParser()->parseTemplate($download_url,true); // support for shortcode-driven dynamic URLS.
-				e107::redirect($download_url);
+				e107::redirect(decorate_download_location($download_url));
 				// header("Location: {$download_url}");
 				exit();
 			} 
@@ -435,4 +435,35 @@ function check_download_limits()
 	}
 }
 
-?>
+function decorate_download_location($url)
+{
+	$pref = e107::getPref();
+	if ($pref['download_security_mode'] !== 'nginx-secure_link_md5')
+		return $url;
+	$expiry = intval($pref['download_security_link_expiry']);
+	if ($expiry <= 0)
+		$expiry = PHP_INT_MAX;
+	else
+		$expiry = time() + $expiry;
+	$url_parts = parse_url($url);
+	$evaluation = str_replace(
+		array(
+			'$secure_link_expires',
+			'$uri',
+			'$remote_addr'
+		),
+		array(
+			$expiry,
+			$url_parts['path'],
+			$_SERVER['REMOTE_ADDR']
+		),
+		$pref['download_security_expression']
+	);
+	$query_string = $url_parts['query'];
+	parse_str($query_string, $query_args);
+	$query_args['md5'] = md5($evaluation);
+	if (strpos($pref['download_security_expression'], '$secure_link_expires') !== false)
+		$query_args['expires'] = $expiry;
+	require_once(__DIR__.'/includes/shim_http_build_url.php');
+	return http_build_url($url_parts, array('query' => http_build_query($query_args)));
+}

@@ -286,7 +286,11 @@ class download_main_admin_ui extends e_admin_ui
 		//required - default column user prefs
 		protected $fieldpref = array('checkboxes', 'download_image', 'download_id', 'download_datestamp', 'download_category', 'download_name', 'download_active', 'download_class', 'fb_order', 'options');
 	
-		//
+		// Security modes
+		protected $security_options = array(
+			'none' => LAN_DL_SECURITY_MODE_NONE,
+			'nginx-secure_link_md5' => LAN_DL_SECURITY_MODE_NGINX_SECURELINKMD5
+		);
 
 		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
 		//protected $editQry = "SELECT * FROM #release WHERE release_id = {ID}";
@@ -1149,6 +1153,19 @@ $columnInfo = array(
 						
 			if ($_POST['download_subsub']) $temp['download_subsub'] = '1'; else $temp['download_subsub'] = '0';
 			if ($_POST['download_incinfo']) $temp['download_incinfo'] = '1'; else $temp['download_incinfo'] = '0';
+
+			if ($_POST['download_security_mode'] === 'nginx-secure_link_md5')
+			{
+				$temp['download_security_mode'] = $_POST['download_security_mode'];
+				$temp['download_security_expression'] = $_POST['download_security_expression'];
+				$temp['download_security_link_expiry'] = $_POST['download_security_link_expiry'];
+			}
+			else
+			{
+				e107::getConfig('core')->removePref('download_security_mode');
+				e107::getConfig('core')->removePref('download_security_expression');
+				e107::getConfig('core')->removePref('download_security_link_expiry');
+			}
 			
 			e107::getConfig('core')->setPref($temp)->save(false);
 
@@ -2115,14 +2132,15 @@ $columnInfo = array(
 		         "ASC"    => DOWLAN_62,
 		         "DESC"   => DOWLAN_63
 		      );
-		
+
 		   	$text = "
 				   
 					   <ul class='nav nav-tabs'>
 						   <li class='active'><a data-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
 						   <li><a data-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
 						   <li><a data-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_UPLOAD."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_DOWNLOAD_OPT_SECURITY."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download5'>".LAN_DL_UPLOAD."</a></li>
 					   </ul>
 						
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
@@ -2227,6 +2245,39 @@ $columnInfo = array(
 				   		</div>
 		   				<div class='tab-pane' id='core-download-download4'>
 		            	   <div>
+		            	   		<p style='padding: 8px'>
+		            	   			".LAN_DL_SECURITY_DESCRIPTION."
+								</p>
+		            		   <table class='table adminform'>
+		            		      <colgroup>
+		            		         <col style='width:30%'/>
+		            		         <col style='width:70%'/>
+		            		      </colgroup>
+		            		      <tr>
+		            		         <td>".LAN_DL_SECURITY_MODE."</td>
+		            		         <td>".$frm->select('download_security_mode', $this->security_options, $pref['download_security_mode'])."</td>
+		            		      </tr>
+		            		      <tbody id='nginx-secure_link_md5' ".($pref['download_security_mode'] === 'nginx-secure_link_md5' ? "" : "style='display:none'").">
+		            		      	<tr>
+		            		     	 	<td>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION."</td>
+		            		     	 	<td>
+		            		     	 		".$frm->text('download_security_expression', $pref['download_security_expression'], 1024)."
+		            		     	 		<div class='field-help'>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP."</div>
+		            		     	 	</td>
+		            		      	</tr>
+		            		      	<tr>
+		            		      		<td>".LAN_DL_SECURITY_LINK_EXPIRY."</td>
+		            		      		<td>
+		            		     	 		".$frm->text('download_security_link_expiry', $pref['download_security_link_expiry'], 16, array('pattern' => '\d+'))."
+		            		      			<div class='field-help'>".LAN_DL_SECURITY_LINK_EXPIRY_HELP."</div>
+		            		      		</td>
+		            		      	</tr>
+								  </tbody>
+		            		   </table>
+		            		</div>
+				   		</div>
+				   		<div class='tab-pane' id='core-download-download5'>
+		            	   <div>
 		            		   <table class='table adminform'>
 		            		      <colgroup>
 		            		         <col style='width:30%'/>
@@ -2246,7 +2297,20 @@ $columnInfo = array(
 		           </div>
 		           </form>
 		      ";
-		     // $ns->tablerender(LAN_DL_OPTIONS, $text);
+
+		   	  e107::js('footer-inline', "
+		   	  $('#download-security-mode').on('change', function() {
+		   	    var mode = $(this).val();
+		   	    
+		   	    if (mode == 'nginx-secure_link_md5') {
+		   	        $('#nginx-secure_link_md5').show('slow');
+		   	        return;
+		   	    }
+		   	    
+		   	    $('#nginx-secure_link_md5').hide('slow');
+		   	  });
+		   	  ");
+
 		      echo $text;
 		   }
 
