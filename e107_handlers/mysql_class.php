@@ -1301,11 +1301,13 @@ class e_db_mysql
 
 			case 'float':
 				// fix - convert localized float numbers
-				$larr = localeconv();
-				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				$replace = array('.', '.', '', '', '', '');
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
 
-				return str_replace($search, $replace, floatval($fieldValue));
+				// return str_replace($search, $replace, floatval($fieldValue));
+
+				return $this->_toNumber($fieldValue);
 			break;
 
 			case 'null':
@@ -1360,11 +1362,12 @@ class e_db_mysql
 
 			case 'float':
 				// fix - convert localized float numbers
-				$larr = localeconv();
-				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				$replace = array('.', '.', '', '', '', '');
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
 
-				return str_replace($search, $replace, floatval($fieldValue));
+				// return str_replace($search, $replace, floatval($fieldValue));
+				return $this->_toNumber($fieldValue);
 			break;
 
 			case 'null':
@@ -1436,6 +1439,29 @@ class e_db_mysql
 	}
 
 
+	/**
+	 * Convert a string to a number (int/float)
+	 *
+	 * @param string $value
+	 * @return int|float
+	 */
+	function _toNumber($value) 
+	{
+		// adapted from: https://secure.php.net/manual/en/function.floatval.php#114486
+		$dotPos = strrpos($value, '.');
+		$commaPos = strrpos($value, ',');
+		$sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+	  
+		if (!$sep) {
+			return preg_replace("/[^-0-9]/", "", $value);
+		}
+	
+		return (
+			preg_replace("/[^-0-9]/", "", substr($value, 0, $sep)) . '.' .
+			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
+		);
+	}
 
 
 	/**
