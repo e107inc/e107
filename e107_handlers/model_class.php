@@ -1792,20 +1792,37 @@ class e_model extends e_object
 	 * @param string $value
 	 * @return integer|float
 	 */
-	public function toNumber($value)
-	{
-		$larr = localeconv();
-		$search = array(
-			$larr['decimal_point'],
-			$larr['mon_decimal_point'],
-			$larr['thousands_sep'],
-			$larr['mon_thousands_sep'],
-			$larr['currency_symbol'],
-			$larr['int_curr_symbol']
-		);
-		$replace = array('.', '.', '', '', '', '');
+	// public function toNumber($value)
+	// {
+	// 	$larr = localeconv();
+	// 	$search = array(
+	// 		$larr['decimal_point'],
+	// 		$larr['mon_decimal_point'],
+	// 		$larr['thousands_sep'],
+	// 		$larr['mon_thousands_sep'],
+	// 		$larr['currency_symbol'],
+	// 		$larr['int_curr_symbol']
+	// 	);
+	// 	$replace = array('.', '.', '', '', '', '');
 
-		return str_replace($search, $replace, $value);
+	// 	return str_replace($search, $replace, $value);
+	// }
+	public function toNumber($value) 
+	{
+		// adapted from: https://secure.php.net/manual/en/function.floatval.php#114486
+		$dotPos = strrpos($value, '.');
+		$commaPos = strrpos($value, ',');
+		$sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+	  
+		if (!$sep) {
+			return preg_replace("/[^-0-9]/", "", $value);
+		}
+	
+		return (
+			preg_replace("/[^-0-9]/", "", substr($value, 0, $sep)) . '.' .
+			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
+		);
 	}
 
 	/**
