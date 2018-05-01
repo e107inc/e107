@@ -43,7 +43,7 @@ class NginxSecureLinkMd5Decorator implements SecureLinkDecorator
 		);
 		$query_string = $url_parts['query'];
 		parse_str($query_string, $query_args);
-		$query_args['md5'] = md5($evaluation);
+		$query_args['md5'] = str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode(md5($evaluation, true)));
 		if (strpos($prefs['download_security_expression'], '$secure_link_expires') !== false)
 			$query_args['expires'] = $expiry;
 		require_once(__DIR__.'/../includes/shim_http_build_url.php');

@@ -231,7 +231,7 @@ define("DOWLAN_HELP_10", "Help for upload options");
 // define("DOWLAN_CAPTION", "Configure Download");
 
 define("LAN_DL_SECURITY_DESCRIPTION", "Downloads can make use of server-side URL protection features to prevent hotlinking and/or enforce link expiry. " .
-	"The download server needs to be configured first before setting the options below.");
+	"This section should be configured before the download server is configured to reduce the chance of disruption to downloaders.");
 define("LAN_DL_SECURITY_MODE", "URL protection mode");
 define("LAN_DL_SECURITY_MODE_NONE", "None (Default)");
 define("LAN_DL_SECURITY_MODE_NGINX_SECURELINKMD5", "NGINX secure_link_md5");
