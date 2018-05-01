@@ -1137,31 +1137,28 @@ $columnInfo = array(
 			global $admin_log,$pref;
 					
 			$tp = e107::getParser();
+
+			$expected_params = array(
+				'download_php', 'download_view', 'download_sort', 'download_order',
+				'mirror_order', 'recent_download_days', 'agree_flag', 'download_email',
+				'agree_text', 'download_denied', 'download_reportbroken',
+				'download_security_mode', 'download_security_expression', 'download_security_link_expiry'
+			);
 			
 			$temp = array();
-			$temp['download_php'] = $_POST['download_php'];
-			$temp['download_view'] = $_POST['download_view'];
-			$temp['download_sort'] = $_POST['download_sort'];
-			$temp['download_order'] = $_POST['download_order'];
-			$temp['mirror_order'] = $_POST['mirror_order'];
-			$temp['recent_download_days'] = $_POST['recent_download_days'];
-			$temp['agree_flag'] = $_POST['agree_flag'];
-			$temp['download_email'] = $_POST['download_email'];
-			$temp['agree_text'] = $tp->toDB($_POST['agree_text']);
-			$temp['download_denied'] = $tp->toDB($_POST['download_denied']);
-			$temp['download_reportbroken'] = $_POST['download_reportbroken'];
-						
-			if ($_POST['download_subsub']) $temp['download_subsub'] = '1'; else $temp['download_subsub'] = '0';
-			if ($_POST['download_incinfo']) $temp['download_incinfo'] = '1'; else $temp['download_incinfo'] = '0';
-
-			if ($_POST['download_security_mode'] === 'nginx-secure_link_md5')
+			foreach($expected_params as $expected_param)
 			{
-				$temp['download_security_mode'] = $_POST['download_security_mode'];
-				$temp['download_security_expression'] = $_POST['download_security_expression'];
-				$temp['download_security_link_expiry'] = $_POST['download_security_link_expiry'];
+				$temp[$expected_param] = $_POST[$expected_param];
 			}
-			else
+
+			$temp['download_subsub'] = $_POST['download_subsub'] ? '1' : '0';
+			$temp['download_incinfo'] = $_POST['download_incinfo'] ? '1' : '0';
+
+			if ($_POST['download_security_mode'] !== 'nginx-secure_link_md5')
 			{
+				unset($temp['download_security_mode']);
+				unset($temp['download_security_expression']);
+				unset($temp['download_security_link_expiry']);
 				e107::getConfig('core')->removePref('download_security_mode');
 				e107::getConfig('core')->removePref('download_security_expression');
 				e107::getConfig('core')->removePref('download_security_link_expiry');
@@ -2110,22 +2107,33 @@ $columnInfo = array(
 		      }
 	   }
 
+	private function supported_secure_link_variables_html()
+	{
+		require_once(__DIR__."/../handlers/NginxSecureLinkMd5Decorator.php");
+		$supported_secure_link_variables_html = "<ul>";
+		foreach(NginxSecureLinkMd5Decorator::supported_variables() as $variable)
+		{
+			$supported_secure_link_variables_html .= "<li><code>$variable</code></li>";
+		}
+		$supported_secure_link_variables_html .= "</ul>";
+		return $supported_secure_link_variables_html;
+	}
+
+	private function mirror_order_options_html($pref)
+	{
+		return ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
+			($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
+			($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_12."</option>" : "<option value='2'>".DOWLAN_12."</option>");
+	}
+
 		function show_download_options()
 		{
 		   	global $pref, $ns;
 
-		   	require_once(__DIR__."/../handlers/NginxSecureLinkMd5Decorator.php");
-		   	$supported_secure_link_variables_html = "<ul>";
-		   	foreach(NginxSecureLinkMd5Decorator::supported_variables() as $variable)
-		    {
-		    	$supported_secure_link_variables_html .= "<li><code>$variable</code></li>";
-		    }
-		    $supported_secure_link_variables_html .= "</ul>";
-		
-				require_once(e_HANDLER."form_handler.php");
-				$frm = new e_form(true); //enable inner tabindex counter
-		
-		   	$agree_flag = $pref['agree_flag'];
+			require_once(e_HANDLER."form_handler.php");
+			$frm = new e_form(true); //enable inner tabindex counter
+
+			$agree_flag = $pref['agree_flag'];
 		   	$agree_text = $pref['agree_text'];
 		      $c = $pref['download_php'] ? " checked = 'checked' " : "";
 		      $sacc = (varset($pref['download_incinfo'],0) == '1') ? " checked = 'checked' " : "";
@@ -2196,10 +2204,7 @@ $columnInfo = array(
 		            		      <tr>
 		               		      <td>".DOWLAN_160."</td>
 		               		      <td>
-		                  		      <select name='mirror_order' class='form-control'>".
-		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
-		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
-		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
+		                  		      <select name='mirror_order' class='form-control'>".$this->mirror_order_options_html($pref)."
 		            		            </select>
 		               		      </td>
 		            		      </tr>
@@ -2275,7 +2280,7 @@ $columnInfo = array(
 		            		     	 			".LAN_DL_SECURITY_NGINX_SUPPORTED_VARIABLES_TOGGLE."
 		            		     	 		</a></small>
 		            		     	 		<div id='supported-nginx-variables' style='display:none'>
-		            	   						".$supported_secure_link_variables_html."
+		            	   						".$this->supported_secure_link_variables_html()."
 		            		     	 		</div>
 		            		     	 	</td>
 		            		      	</tr>
