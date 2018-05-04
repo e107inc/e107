@@ -577,7 +577,7 @@ class e_validator
 			break;
 
 			case 'float':
-				$value = $this->toNumber($value);
+				$value = e107::getParser()->toNumber($value);
 				if(!is_numeric($value))
 				{
 					$this->addValidateResult($name, self::ERR_FLOAT_EXPECTED);
@@ -728,22 +728,23 @@ class e_validator
 			break;
 		}
 	}
-	
-	public function toNumber($value)
-	{
-		$larr = localeconv();
-		$search = array(
-			$larr['decimal_point'], 
-			$larr['mon_decimal_point'], 
-			$larr['thousands_sep'], 
-			$larr['mon_thousands_sep'], 
-			$larr['currency_symbol'], 
-			$larr['int_curr_symbol']
-		);
-		$replace = array('.', '.', '', '', '', '');
+
+	// moved to e_parse
+	// public function toNumber($value)
+	// {
+	// 	$larr = localeconv();
+	// 	$search = array(
+	// 		$larr['decimal_point'], 
+	// 		$larr['mon_decimal_point'], 
+	// 		$larr['thousands_sep'], 
+	// 		$larr['mon_thousands_sep'], 
+	// 		$larr['currency_symbol'], 
+	// 		$larr['int_curr_symbol']
+	// 	);
+	// 	$replace = array('.', '.', '', '', '', '');
 			
-		return str_replace($search, $replace, $value);
-	}
+	// 	return str_replace($search, $replace, $value);
+	// }
 
 	protected function parseMinMax($string)
 	{

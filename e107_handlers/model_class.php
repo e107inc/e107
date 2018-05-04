@@ -1792,6 +1792,7 @@ class e_model extends e_object
 	 * @param string $value
 	 * @return integer|float
 	 */
+	// moved to e_parse
 	// public function toNumber($value)
 	// {
 	// 	$larr = localeconv();
@@ -1807,23 +1808,6 @@ class e_model extends e_object
 
 	// 	return str_replace($search, $replace, $value);
 	// }
-	public function toNumber($value) 
-	{
-		// adapted from: https://secure.php.net/manual/en/function.floatval.php#114486
-		$dotPos = strrpos($value, '.');
-		$commaPos = strrpos($value, ',');
-		$sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
-			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
-	  
-		if (!$sep) {
-			return preg_replace("/[^-0-9]/", "", $value);
-		}
-	
-		return (
-			preg_replace("/[^-0-9]/", "", substr($value, 0, $sep)) . '.' .
-			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
-		);
-	}
 
 	/**
 	 * Convert object data to a string
@@ -2721,7 +2705,8 @@ class e_front_model extends e_model
 		{
 			case 'int':
 			case 'integer':
-				return intval($this->toNumber($value));
+				//return intval($this->toNumber($value));
+				return intval($tp->toNumber($value));
 			break;
 
 			case 'safestr':
@@ -2748,7 +2733,8 @@ class e_front_model extends e_model
 			break;
 
 			case 'float':
-				return $this->toNumber($value);
+				// return $this->toNumber($value);
+				return $tp->toNumber($value);
 			break;
 
 			case 'bool':
