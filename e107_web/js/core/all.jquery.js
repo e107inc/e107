@@ -351,7 +351,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						var $button = $(this);
 						var $form = $button.closest('form');
-
+						var form_submited = false;
 						var type = $button.data('loading-icon');
 
 						if(type === undefined || $form.length === 0)
@@ -365,6 +365,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 								return false;
 							}
 
+							if (form_submited) {
+								return false;
+							}
+							
 							var caption = "<i class='fa fa-spin " + type + " fa-fw'></i>";
 							caption += "<span>" + $button.text() + "</span>";
 
@@ -373,6 +377,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							if($button.attr('data-disable') == 'true')
 							{
 								$button.addClass('disabled');
+								form_submited = true;
 							}
 						});
 
