@@ -3788,7 +3788,7 @@ class e107
 		// setup some php options
 		self::ini_set('magic_quotes_runtime',     0);
 		self::ini_set('magic_quotes_sybase',      0);
-		self::ini_set('arg_separator.output',     '&amp;');
+	//	self::ini_set('arg_separator.output',     '&amp;'); // non-standard and bad for third-party script compatibility. @see https://github.com/e107inc/e107/issues/3116
 		self::ini_set('session.use_only_cookies', 1);
 		self::ini_set('session.use_trans_sid',    0);
 		self::ini_set('session.cookie_httponly',  1); // cookie won't be accessible by scripting languages, such as JavaScript. Can effectively help to reduce identity theft through XSS attacks

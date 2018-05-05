@@ -4660,7 +4660,7 @@ class e_parser
 			$ytpref['cc_lang_pref'] = e_LAN; // switch captions with chosen user language.
 		}
 
-		$ytqry = http_build_query($ytpref);
+		$ytqry = http_build_query($ytpref, null, '&amp;');
 
 		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 
