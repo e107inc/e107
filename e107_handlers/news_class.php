@@ -49,7 +49,8 @@ class news {
 		if(empty($news['news_title']))
 		{
 			$error = true;
-			$emessage->add('Validation error: News title can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_47;
+			$emessage->add(LAN_ERROR_47, E_MESSAGE_ERROR, $smessages);
 			if(!empty($news['news_sef']))
 			{
 				$news['news_sef'] = eHelper::secureSef($news['news_sef']);
@@ -72,18 +73,21 @@ class news {
 		if(empty($news['news_sef']))
 		{
 			$error = true;
-			$emessage->add('Validation error: News SEF URL value is required field and can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_48;
+			$emessage->add(LAN_ERROR_48, E_MESSAGE_ERROR, $smessages);
 		}
 		elseif($sql->db_Count('news', '(news_id)', ($news['news_sef'] ? 'news_id<>'.intval($news['news_id']).' AND ' : '')."news_sef='".$tp->toDB($news['news_sef'])."'"))
 		{
 			$error = true;
-			$emessage->add('Validation error: News SEF URL is unique field - current value already in use! Please choose another SEF URL value.', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_49;
+			$emessage->add(LAN_ERROR_49, E_MESSAGE_ERROR, $smessages);
 		}
 
 		if(empty($news['news_category']))
 		{
 			$error = true;
-			$emessage->add('Validation error: News category can\'t be empty!', E_MESSAGE_ERROR, $smessages);
+			$message = LAN_ERROR_50;
+			$emessage->add(LAN_ERROR_50, E_MESSAGE_ERROR, $smessages);
 		}
 
 
