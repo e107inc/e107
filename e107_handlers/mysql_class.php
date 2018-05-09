@@ -867,6 +867,7 @@ class e_db_mysql
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
 		$DUPEKEY_UPDATE = false;
+		$IGNORE = '';
 
 		if(is_array($arg))
 		{
@@ -885,7 +886,12 @@ class e_db_mysql
 			{
 				$DUPEKEY_UPDATE = true;
 				unset($arg['_DUPLICATE_KEY_UPDATE']);
+			}
 
+			if(isset($arg['_IGNORE']))
+			{
+				$IGNORE = ' IGNORE';
+				unset($arg['_IGNORE']);
 			}
 
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
@@ -942,7 +948,7 @@ class e_db_mysql
 
 			if($REPLACE === false)
 			{
-				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+				$query = "INSERT".$IGNORE." INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
 
 				if($DUPEKEY_UPDATE === true)
 				{
