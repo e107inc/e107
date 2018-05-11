@@ -643,7 +643,7 @@ $text .= "
 	";
 
 // Date options.
-$ga = new convert();
+$ga = e107::getDate();
 $date1 = $ga->convert_date(time(), "short");
 $date2 = $ga->convert_date(time(), "long");
 $date3 = $ga->convert_date(time(), "forum");

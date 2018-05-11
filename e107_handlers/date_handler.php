@@ -227,7 +227,8 @@ class e_date
 	
 	
 	/** 
-	 * Converts to new date-mask format or vice-versa when $legacy is TRUE 
+	 * Converts to new date-mask format or vice-versa when $legacy is TRUE
+	 * @see https://github.com/AuspeXeu/bootstrap-datetimepicker
 	 */
 	function toMask($mask, $legacy = false)
 	{
@@ -258,13 +259,15 @@ class e_date
 		$s = array_keys($convert);
 		$r = array_values($convert);	
 		
-		if(strpos($mask, '%') === FALSE && $legacy == TRUE)
+		if(strpos($mask, '%') === false && $legacy === true)
 		{
-			return str_replace($r, $s,$mask);
+			$ret = str_replace($r, $s,$mask);
+			return str_replace('%%p', '%P', $ret); // quick fix.
 		}
-		elseif(strpos($mask,'%')!==FALSE)
+		elseif(strpos($mask,'%')!==false)
 		{
-			return str_replace($s,$r, $mask);	
+			return str_replace($s,$r, $mask);
+
 		}
 		
 		return $mask; 

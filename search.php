@@ -1084,7 +1084,7 @@ if (check_class($search_prefs['google'])) {
 
 if ($perform_search) 
 {
-  $con = new convert;
+  $con = e107::getDate();
  
   $sch = new e_search;
 

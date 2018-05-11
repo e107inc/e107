@@ -161,7 +161,7 @@ class e107
 		'UserHandler'                    => '{e_HANDLER}user_handler.php',
 		'comment'                        => '{e_HANDLER}comment_class.php',
 		'e_date'                         => '{e_HANDLER}date_handler.php',
-		'convert'                        => '{e_HANDLER}date_handler.php', // BC Fix. 
+		'convert'                        => '{e_HANDLER}date_handler.php', // BC Fix.
 		'db'                             => '{e_HANDLER}mysql_class.php',
 		'e107Email'                      => '{e_HANDLER}mail.php',
 		'e107_event'                     => '{e_HANDLER}event_class.php',
