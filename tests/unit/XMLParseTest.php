@@ -17,6 +17,6 @@
 		//	$config = e_CORE."xml/default_install.xml";
 		//	$ret = e107::getXml()->e107Import($config, 'replace', true, true); // Add core pref values
 
-			$this->assertTrue(true);
+			$this->assertTrue(true); // doing nothing right now.
 		}
 	}
