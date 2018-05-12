@@ -141,7 +141,7 @@ class page_admin_form_ui extends e_admin_form_ui
 			parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 			$query['action'] = 'edit';
 			$query['id'] = $id;
-			$query = http_build_query($query);	
+			$query = http_build_query($query,null, '&amp;');
 				
 			$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";

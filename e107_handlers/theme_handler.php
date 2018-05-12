@@ -114,6 +114,16 @@ class e_theme
 			// If no scope set, we load library on both areas.
 			if(empty($library['scope']) || $library['scope'] === 'all')
 			{
+				if($library['name'] === 'bootstrap' && varset($library['version']) == 4) // quick fix.
+				{
+					$library['name'] .= '4';
+
+					if(!defined('BOOTSTRAP'))
+					{
+						define('BOOTSTRAP', 4);
+					}
+				}
+
 				e107::library('load', $library['name']);
 				continue;
 			}
@@ -695,6 +705,7 @@ class e_theme
 			{
 				$vars['library'][] = array(
 					'name'  => $val['@attributes']['name'],
+					'version' => varset($val['@attributes']['version']),
 					'scope' => varset($val['@attributes']['scope']),
 				);
 			}

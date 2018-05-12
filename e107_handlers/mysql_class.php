@@ -867,6 +867,7 @@ class e_db_mysql
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
 		$DUPEKEY_UPDATE = false;
+		$IGNORE = '';
 
 		if(is_array($arg))
 		{
@@ -885,7 +886,12 @@ class e_db_mysql
 			{
 				$DUPEKEY_UPDATE = true;
 				unset($arg['_DUPLICATE_KEY_UPDATE']);
+			}
 
+			if(isset($arg['_IGNORE']))
+			{
+				$IGNORE = ' IGNORE';
+				unset($arg['_IGNORE']);
 			}
 
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
@@ -942,7 +948,7 @@ class e_db_mysql
 
 			if($REPLACE === false)
 			{
-				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+				$query = "INSERT".$IGNORE." INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
 
 				if($DUPEKEY_UPDATE === true)
 				{
@@ -1301,11 +1307,13 @@ class e_db_mysql
 
 			case 'float':
 				// fix - convert localized float numbers
-				$larr = localeconv();
-				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				$replace = array('.', '.', '', '', '', '');
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
 
-				return str_replace($search, $replace, floatval($fieldValue));
+				// return str_replace($search, $replace, floatval($fieldValue));
+
+				return e107::getParser()->toNumber($fieldValue);
 			break;
 
 			case 'null':
@@ -1360,11 +1368,12 @@ class e_db_mysql
 
 			case 'float':
 				// fix - convert localized float numbers
-				$larr = localeconv();
-				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				$replace = array('.', '.', '', '', '', '');
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
 
-				return str_replace($search, $replace, floatval($fieldValue));
+				// return str_replace($search, $replace, floatval($fieldValue));
+				return e107::getParser()->toNumber($fieldValue);
 			break;
 
 			case 'null':
@@ -1434,8 +1443,6 @@ class e_db_mysql
 		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
 		return PDO::PARAM_STR;
 	}
-
-
 
 
 	/**

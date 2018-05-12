@@ -1886,19 +1886,8 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 	{
 
 		if (!ADMIN) return '';
-	//	global $admin_cat, $array_functions, $array_sub_functions, $pref;
-
-		$pref = e107::getPref();
-
-		$admin_cat 				= e107::getNav()->adminCats();
-		$array_functions 		= e107::getNav()->adminLinks('legacy');
-		$array_sub_functions	= e107::getNav()->adminLinks('sub');
-		$array_plugins          = e107::getNav()->adminLinks('plugin2');
-
 
 		$tp 	= e107::getParser();
-		$e107	= e107::getInstance();
-		$sql	= e107::getDb('sqlp');
 
 		parse_str($parm, $parms);
 		$tmpl = strtoupper(varset($parms['tmpl'], 'E_ADMIN_NAVIGATION'));
@@ -1931,6 +1920,13 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 			return e107::getNav()->admin('', '', $menu_vars, $template, FALSE, FALSE);
 		}
 
+
+		$pref = e107::getPref();
+
+		$admin_cat 				= e107::getNav()->adminCats();
+		$array_functions 		= e107::getNav()->adminLinks('legacy');
+		$array_sub_functions	= e107::getNav()->adminLinks('sub');
+		$array_plugins          = e107::getNav()->adminLinks('plugin2');
 
 
 		// MAIN LINK
@@ -1991,9 +1987,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 				{
 					$active = $catid;
 				}
-
-
-
+				
 			//	e107::getDebug()->log($catid);
 
 				if(vartrue($pref['admin_slidedown_subs']) && vartrue($array_sub_functions[$key]))
@@ -2282,7 +2276,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$get = $_GET;
 						$get['elan'] = $code;
 						
-						$qry = http_build_query($get);
+						$qry = http_build_query($get, null, '&amp;');
 						$link = e_REQUEST_SELF.'?'.$qry;
 					}
 					

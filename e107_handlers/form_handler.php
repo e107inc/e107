@@ -2448,7 +2448,7 @@ class e_form
 
 		if(empty($labels))
 		{
-			$labels = array('on' =>LAN_ON, 'off' =>LAN_OFF);
+			$labels = array('on' =>strtoupper(LAN_ON), 'off' =>strtoupper(LAN_OFF));
 		}
 
 		$value = $checked_enabled;
@@ -2465,6 +2465,11 @@ class e_form
 			$options_off['label'] = $on;
 			unset($on);
 
+		}
+
+		if(empty($options['switch']))
+		{
+			$options['switch'] = 'small';
 		}
 
 
@@ -2484,6 +2489,7 @@ class e_form
 		if(e_ADMIN_AREA === true)
 		{
 			$options['data-wrapper'] = 'wrapper form-control';
+
 		}
 
 		e107::library('load', 'bootstrap.switch');
@@ -4215,7 +4221,7 @@ class e_form
 				$eModalCap = "";
 			}
 
-			$query = http_build_query($query);
+			$query = http_build_query($query, null, '&amp;');
 			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 				".$editIconDefault."</a>";
 		}
@@ -4375,32 +4381,30 @@ class e_form
 
 			case 'templates':
 			case 'layouts':
-				$pre = vartrue($parms['pre']);
-				$post = vartrue($parms['post']);
-				unset($parms['pre'], $parms['post']);
-				if($parms)
-				{
-					$attributes['writeParms'] = $parms;
-				}
-				elseif(isset($attributes['writeParms']))
+
+				if(!empty($attributes['writeParms']))
 				{
 					if(is_string($attributes['writeParms'])) parse_str($attributes['writeParms'], $attributes['writeParms']);
 				}
-				$attributes['writeParms']['raw'] = true;
-				$tmp = $this->renderElement($field, '', $attributes);
-				
-				// Inline Editing.  //@SecretR - please FIXME! 
-				if(!vartrue($attributes['noedit']) && vartrue($parms['editable']) && !vartrue($parms['link'])) // avoid bad markup, better solution coming up
+
+				if(empty($attributes['noedit']) && !empty($parms['editable']) && empty($parms['link'])) // avoid bad markup, better solution coming up
 				{
-					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$source = str_replace('"',"'",json_encode($wparms));
-					$value = "<a class='e-tip e-editable editable-click' data-name='".$field."' data-source=\"".$source."\" title=\"".LAN_EDIT." ".$attributes['title']."\" data-type='select' data-pk='".$id."' data-url='".e_SELF."?mode=&amp;action=inline&amp;id={$id}&amp;ajax_used=1' href='#'>".$value."</a>";
+					$wparms     = $attributes['writeParms'];
+
+					$location   = vartrue($wparms['plugin']); // empty - core
+					$ilocation  = vartrue($wparms['id'], $location); // omit if same as plugin name
+					$where      = vartrue($wparms['area'], 'front'); //default is 'front'
+					$filter     = varset($wparms['filter']);
+					$merge      = isset($wparms['merge']) ? (bool) $wparms['merge'] : true;
+
+					$layouts    = e107::getLayouts($location, $ilocation, $where, $filter, $merge, false);
+
+					$label      = varset($layouts[$value], $value);
+
+					$value = $this->renderInline($field, $id, $attributes['title'], $value, $label, 'select', $layouts);
 				}
-				
-				
-				
-							
-			//	$value = $pre.vartrue($tmp[$value]).$post; // FIXME "Fatal error: Only variables can be passed by reference" featurebox list page. 
+
+				$value = vartrue($parms['pre']) . $value . vartrue($parms['post']);
 			break;
 
 			case 'checkboxes':
@@ -5031,8 +5035,10 @@ class e_form
 					}
 					
 					$true = varset($parms['true'],'&check;'); // custom representation for 'true'. (supports font-awesome when set by css)
-					
-					
+
+				//	$true = '\f00c';
+				//	$false = '\f00d';
+
 					$value = intval($value);
 							
 					$wparms = (vartrue($parms['reverse'])) ? array(0=>$true, 1=>$false) : array(0=>$false, 1=>$true);
@@ -5105,7 +5111,7 @@ class e_form
 				{
 					
 					$mode = preg_replace('/[^\w]/', '', vartrue($_GET['mode'], ''));
-					$methodParms = call_user_func_array(array($this, $meth), array($value, 'inline', $parms));
+					$methodParms = call_user_func_array(array($this, $meth), array($_value, 'inline', $parms));
 
 					$inlineParms = (!empty($methodParms['inlineParms'])) ? $methodParms['inlineParms'] : null;
 
@@ -5227,6 +5233,9 @@ class e_form
 	 * @param mixed $value
 	 * @param array $attributes field attributes including render parameters, element options - see e_admin_ui::$fields for required format
 	 * #param array (under construction) $required_data required array as defined in e_model/validator
+	 * @param mixed $attributes['writeParms']['default'] default value when empty (or default option when type='dropdown')
+	 * @param mixed $attributes['writeParms']['defaultValue'] default option value when type='dropdown'
+	 * @param mixed $attributes['writeParms']['empty'] default value when value is empty (dropdown and hidden only right now)
 	 * @return string
 	 */
 	function renderElement($key, $value, $attributes, $required_data = array(), $id = 0)
@@ -5264,7 +5273,7 @@ class e_form
 			$key = $key.'['.e_LANGUAGE.']';
 		}
 		
-		if(empty($value) && !empty($parms['default'])) // Allow writeParms to set default value. 
+		if(empty($value) && !empty($parms['default']) && $attributes['type'] !== 'dropdown') // Allow writeParms to set default value.
 		{
 			$value = $parms['default'];
 		}
@@ -5638,6 +5647,7 @@ class e_form
 			case 'dropdown':
 			case 'comma':
 
+
 				if(!empty($attributes['writeParms']['optArray']))
 				{
 					$eloptions = $attributes['writeParms'];
@@ -5647,6 +5657,8 @@ class e_form
 				{
 					$eloptions  = vartrue($parms['__options'], array());
 				}
+
+				$value = (isset($eloptions['empty']) && empty($value)) ? $eloptions['empty'] : $value;
 
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
@@ -5662,8 +5674,7 @@ class e_form
 					$eloptions['class'] = 'e-ajax ' . varset($eloptions['class']);
 				}
 
-
-				$ret =  vartrue($eloptions['pre']).$this->selectbox($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
+				$ret =  vartrue($eloptions['pre']).$this->select($key, $parms, $value, $eloptions).vartrue($eloptions['post']);
 			break;
 
 			case 'radio':
@@ -6781,6 +6792,7 @@ class e_form
 					// After submit options
 					$defsubmitopt = array('list' => LAN_EFORM_013, 'create' => LAN_EFORM_014, 'edit' => LAN_EFORM_015);
 					$submitopt = isset($fdata['after_submit_options']) ? $fdata['after_submit_options'] : true;
+
 					if(true === $submitopt)
 					{
 						$submitopt = $defsubmitopt;
@@ -6788,8 +6800,7 @@ class e_form
 
 					if($submitopt)
 					{
-						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : '';
-						
+						$selected = isset($fdata['after_submit_default']) && array_key_exists($fdata['after_submit_default'], $submitopt) ? $fdata['after_submit_default'] : 'list';
 					}
 
 					$triggers = (empty($fdata['triggers']) && $fdata['triggers'] !== false) ? 'auto' : $fdata['triggers']; // vartrue($fdata['triggers'], 'auto');

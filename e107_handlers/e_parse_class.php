@@ -480,7 +480,7 @@ class e_parse extends e_parser
 	/**
 	 * Converts the supplied text (presumed to be from user input) to a format suitable for storing in a database table.
 	 *
-	 * @param string $data
+	 * @param mixed $data
 	 * @param boolean $nostrip [optional] Assumes all data is GPC ($_GET, $_POST, $_COOKIE) unless indicate otherwise by setting this var to TRUE.
 	 * 				If magic quotes is enabled on the server and you do not tell toDB() that the data is non GPC then slashes will be stripped when they should not be.
 	 * @param boolean $no_encode [optional] This parameter should nearly always be FALSE. It is used by the save_prefs() function to preserve HTML content within prefs even when
@@ -1423,7 +1423,7 @@ class e_parse extends e_parser
 	 * @param bool $opts['ext'] load link in new window (not for email)
 	 * @return string
 	 */
-	private function makeClickable($text='', $type='email', $opts=array())
+	public function makeClickable($text='', $type='email', $opts=array())
 	{
 
 		if(empty($text))
@@ -2385,6 +2385,32 @@ class e_parse extends e_parser
 	}
 
 
+	/**
+	 * Convert a string to a number (int/float)
+	 *
+	 * @param string $value
+	 * @return int|float
+	 */
+	function toNumber($value) 
+	{
+		// adapted from: https://secure.php.net/manual/en/function.floatval.php#114486
+		$dotPos = strrpos($value, '.');
+		$commaPos = strrpos($value, ',');
+		$sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+	  
+		if (!$sep) {
+			return preg_replace("/[^-0-9]/", "", $value);
+		}
+	
+		return (
+			preg_replace("/[^-0-9]/", "", substr($value, 0, $sep)) . '.' .
+			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
+		);
+	}
+
+
+	
 	/**
 	 * Clean and Encode Ampersands '&' for output to browser.
 	 * @param string $text
@@ -4634,7 +4660,7 @@ class e_parser
 			$ytpref['cc_lang_pref'] = e_LAN; // switch captions with chosen user language.
 		}
 
-		$ytqry = http_build_query($ytpref);
+		$ytqry = http_build_query($ytpref, null, '&amp;');
 
 		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 
@@ -4740,13 +4766,17 @@ class e_parser
 	 * Includes support for 'livestamp' (http://mattbradley.github.io/livestampjs/)
 	 * @param integer $datestamp - unix timestamp
 	 * @param string $format - short | long | relative 
-	 * @return HTML with converted date. 
+	 * @return string converted date (html)
 	 */
 	public function toDate($datestamp = null, $format='short')
 	{
 		if(!is_numeric($datestamp)){ return null; }
 
-		return '<span data-livestamp="'.$datestamp.'">'.e107::getDate()->convert($datestamp, $format).'</span>';	
+		$value = e107::getDate()->convert_date($datestamp, $format);
+
+		$inc = ($format === 'relative') ? ' data-livestamp="'.$datestamp.'"' : '';
+
+		return '<span'.$inc.'>'.$value.'</span>';
 	}
 	
 

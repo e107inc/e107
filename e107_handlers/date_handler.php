@@ -16,12 +16,12 @@ if (!defined('e107_INIT')) { exit; }
 
 e107::includeLan(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
 
-class convert
+class e_date
 {
 	
 	function __construct()
 	{
-		
+
 		
 	}
 
@@ -81,8 +81,7 @@ class convert
 	/**
 	 * Return an array of language terms representing months
 	 * @param $type string : month, month-short, day, day-short, day-shortest
-	 * @return array
-	 * TODO Cache!
+	 * @return array|bool
 	 */
 	public function terms($type='month')
 	{
@@ -148,7 +147,7 @@ class convert
 		{
 			$mask = 'long';
 		}
-		
+
 		switch($mask)
 		{
 			case 'long':
@@ -187,7 +186,7 @@ class convert
 			break;
 			
 			case 'relative':
-				return $this->computeLapse($datestamp, time(), false, false, 'short') ;		
+				return $this->computeLapse($datestamp, time(), false, false, 'short') ;
 			break;
 			
 			default:
@@ -222,13 +221,14 @@ class convert
 	function convert($string=null, $mask = 'inputdate')
 	{
 		if($string == null) return false;
-		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);	
+		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);
 	}
 	
 	
 	
 	/** 
-	 * Converts to new date-mask format or vice-versa when $legacy is TRUE 
+	 * Converts to new date-mask format or vice-versa when $legacy is TRUE
+	 * @see https://github.com/AuspeXeu/bootstrap-datetimepicker
 	 */
 	function toMask($mask, $legacy = false)
 	{
@@ -259,13 +259,15 @@ class convert
 		$s = array_keys($convert);
 		$r = array_values($convert);	
 		
-		if(strpos($mask, '%') === FALSE && $legacy == TRUE)
+		if(strpos($mask, '%') === false && $legacy === true)
 		{
-			return str_replace($r, $s,$mask);
+			$ret = str_replace($r, $s,$mask);
+			return str_replace('%%p', '%P', $ret); // quick fix.
 		}
-		elseif(strpos($mask,'%')!==FALSE)
+		elseif(strpos($mask,'%')!==false)
 		{
-			return str_replace($s,$r, $mask);	
+			return str_replace($s,$r, $mask);
+
 		}
 		
 		return $mask; 
@@ -642,25 +644,23 @@ class convert
 	}
 
 
-
-
 	/**
 	 *  This work of Lionel SAURON (http://sauron.lionel.free.fr:80) is licensed under the
 	 *  Creative Commons Attribution-Noncommercial-Share Alike 2.0 France License.
 	 *  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.0/fr/
 	 *  or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
-	 * 
+	 *
 	 * http://snipplr.com/view/4964/emulate-php-5-for-backwards-compatibility/
-	 * 
+	 *
 	 * Parse a date generated with strftime().
-	 * 
-	 * @author Lionel SAURON and reworked by e107 Inc. for month names. 
+	 *
+	 * @author Lionel SAURON and reworked by e107 Inc. for month names.
 	 * @version 1.0
 	 * @public
 	 *
 	 * @param string $str date string to parse (e.g. returned from strftime()).
-	 * @param string $sFormat strftime format used to create the date
-	 * @return array Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
+	 * @param        $format
+	 * @return array|bool Returns an array with the <code>$str</code> parsed, or <code>false</code> on error.
 	 */
 	public function strptime($str, $format)
 	{
@@ -718,7 +718,9 @@ class convert
 		#-- record the positions of all STRFCMD-placeholders
 		preg_match_all('/(%\w)/', $format, $positions);
 		$positions = $positions[1];
-		
+
+		$vals = array();
+
 		#-- get individual values
 		if (preg_match("#$preg#", $str, $extracted))
 		{
@@ -797,7 +799,7 @@ class convert
 			//var_dump($vals, $str, strftime($format, $unxTimestamp), $unxTimestamp);
 		}
 		
-		return isset($vals) ? $vals : false;
+		return !empty($vals) ? $vals : false;
 		
 	} 
 
@@ -917,4 +919,15 @@ class convert
 
 
 }
-?>
+
+
+/**
+ * BC Fix convert
+ */
+class convert extends e_date
+{
+
+
+
+
+}
