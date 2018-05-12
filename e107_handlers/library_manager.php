@@ -300,7 +300,7 @@ class core_library
 				),
 				'css' => array(
 					'dist/css/bootstrap.min.css' => array(
-						'zone' => 2,
+						'zone' => 1,
 					),
 				),
 			),
@@ -1724,7 +1724,8 @@ class e_library_manager
 					}
 					elseif($type == 'css')
 					{
-						e107::css($options['type'], $data, null);
+						e107::getJs()->libraryCSS($data); // load before others.
+					//	e107::css($options['type'], $data, null);
 					}
 					$count++;
 				}

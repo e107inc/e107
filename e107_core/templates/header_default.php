@@ -172,6 +172,7 @@ echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME
 // D: Register CSS
 //
 $e_js = e107::getJs();
+
 $e_pref = e107::getConfig('core');
 
 // Other Meta tags. 
@@ -315,7 +316,7 @@ else
 
 
 
-$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme','inline');
+$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library', 'other','core','plugin','theme','inline');
 
 
 foreach($CSSORDER as $val)

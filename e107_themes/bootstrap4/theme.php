@@ -7,7 +7,7 @@ if ( ! defined('e107_INIT')) { exit(); }
 e107::meta('viewport', 'width=device-width, initial-scale=1.0');
 //e107::meta('apple-mobile-web-app-capable','yes');
 
-
+e107::css("url", "https://bootswatch.com/4/slate/bootstrap.min.css" );
 
 $HEADER = array();
 $FOOTER = array();
