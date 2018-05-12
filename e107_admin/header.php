@@ -271,6 +271,7 @@ unset($e_headers);
 echo "\n<!-- Library CSS -->\n";
 
 $e_js->renderJs('library_css', false, 'css', false);
+echo "\n<!-- footer_library_css -->\n"; // substituted in footer when detected.
 
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility
 $e_js->renderJs('other_css', false, 'css', false);
