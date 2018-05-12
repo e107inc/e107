@@ -3484,7 +3484,7 @@ class e_admin_controller_ui extends e_admin_controller
 
 	/**
 	 * Handle requested filter dropdown value
-	 * @param string $value
+	 * @param string $filter_value
 	 * @return array field -> value
 	 */
 	protected function _parseFilterRequest($filter_value)
@@ -3505,12 +3505,18 @@ class e_admin_controller_ui extends e_admin_controller
 			
 			case 'datestamp':
 							
+				//XXX DO NOT TRANSLATE THESE VALUES!
 				$dateConvert = array(
-					"hour"	=> LAN_UI_FILTER_PAST_HOUR,//"1 hour ago",//etc
-					"day"	=> LAN_UI_FILTER_PAST_24_HOURS,
-					"week"	=> LAN_UI_FILTER_PAST_WEEK,
-					"month"	=> LAN_UI_FILTER_PAST_MONTH,
-					"year"	=> LAN_UI_FILTER_PAST_YEAR
+					"hour"	=> "1 hour ago",
+					"day"	=> "24 hours ago",
+					"week"	=> "1 week ago",
+					"month"	=> "1 month ago",
+					"year"	=> "1 year ago",
+					"nhour"	=> "now + 1 hour",
+					"nday"	=> "now + 24 hours",
+					"nweek"	=> "now + 1 week",
+					"nmonth"	=> "now + 1 month",
+					"nyear"	=> "now + 1 year",
 				);
 				
 				$ky = $filter[2];
@@ -4026,7 +4032,17 @@ class e_admin_controller_ui extends e_admin_controller
 					case 'integer':
 						if($_fieldType === 'datestamp') // Past Month, Past Year etc.
 						{
-							$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);	
+							if($filterValue > time())
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." > ".time();
+								$searchQry[] = $this->fields[$filterField]['__tableField']." < ".intval($filterValue);
+							}
+							else
+							{
+								$searchQry[] = $this->fields[$filterField]['__tableField']." > ".intval($filterValue);
+								$searchQry[] = $this->fields[$filterField]['__tableField']." < ".time();
+							}
+
 						}
 						else 
 						{
@@ -4042,6 +4058,7 @@ class e_admin_controller_ui extends e_admin_controller
 						{
 							$searchQry[] = $this->fields[$filterField]['__tableField']." = '' ";
 						}
+
 						else
 						{
 
@@ -4347,8 +4364,6 @@ class e_admin_controller_ui extends e_admin_controller
 	public function getParentChildQry($orderby=false)
 	{
 		return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ";
-		// Use the following return statement to break e107 native sorting but speed up tree creation by presorting for e_tree_model::arrayToTree()
-		#return "SELECT SQL_CALC_FOUND_ROWS * FROM `#".$this->getTableName()."` ORDER BY ".$this->getSortParent().", ".$this->getSortField();
 	}
 
 
@@ -6065,6 +6080,13 @@ class e_admin_ui extends e_admin_controller_ui
 	{
 		$this->_pref = $this->pluginName === 'core' ? e107::getConfig() : e107::getPlugConfig($this->pluginName);
 
+		if($this->pluginName !== 'core' && !e107::isInstalled($this->pluginName))
+		{
+			$obj = get_class($this);
+			e107::getMessage()->addError($obj." \$pluginName: is not valid. (".$this->pluginName. ")"); // debug only.
+			return $this;
+		}
+
 		$dataFields = $validateRules = array();
 		foreach ($this->prefs as $key => $att)
 		{
@@ -6167,7 +6189,7 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_model = new e_admin_model();
 		$this->_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setValidationRules($this->validationRules)
 			->setDbTypes($this->fieldTypes)
 			->setFieldInputTypes($this->fieldInputTypes)
@@ -6188,10 +6210,10 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->_tree_model = new e_admin_tree_model();
 		$this->_tree_model->setModelTable($this->table)
 			->setFieldIdName($this->pid)
-            ->setUrl($this->url)
+			->setUrl($this->url)
 			->setMessageStackName('admin_ui_tree_'.$this->table)
 			->setParams(array('model_class' => 'e_admin_model',
-			                  'model_message_stack' => 'admin_ui_model_'.$this->table ,
+			                  'model_message_stack' => 'admin_ui_model_'.$this->table,
 			                  'db_query' => $this->listQry,
 			                  // Information necessary for PHP-based tree sort
 			                  'sort_parent' => $this->getSortParent(),
@@ -6484,9 +6506,6 @@ class e_admin_form_ui extends e_form
 		// if going through confirm screen - no JS confirm
 		$controller->setFieldAttr('options', 'noConfirm', $controller->deleteConfirmScreen);
 
-		$this->listTotal = $tree[$id]->getTotal();
-
-
 		$fields = $controller->getFields();
 
 		// checks dispatcher acess/perms for create/edit/delete access in list mode.
@@ -6661,7 +6680,7 @@ class e_admin_form_ui extends e_form
 		$vars           = $this->getController()->getQuery();
 		$vars['from']   = '[FROM]';
 
-		$paginate       = http_build_query($vars);
+		$paginate       = http_build_query($vars, null, '&amp;');
 
 		return $this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'));
 
@@ -6725,7 +6744,7 @@ class e_admin_form_ui extends e_form
 			$gridAction = $this->getController()->getAction() === 'grid' ? 'list' : 'grid';
 			$gridQuery = (array) $_GET;
 			$gridQuery['action'] = $gridAction;
-			$toggleUrl = e_REQUEST_SELF."?".http_build_query($gridQuery);
+			$toggleUrl = e_REQUEST_SELF."?".http_build_query($gridQuery, null, '&amp;');
 			$gridIcon = ($gridAction === 'grid') ? ADMIN_GRID_ICON : ADMIN_LIST_ICON;
 			$gridTitle = ($gridAction === 'grid') ? LAN_UI_VIEW_GRID_LABEL : LAN_UI_VIEW_LIST_LABEL;
 			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle."\">".$gridIcon."</a>";
@@ -6916,7 +6935,7 @@ class e_admin_form_ui extends e_form
 
 
 
-	// FIXME - use e_form::batchoptions(), nice way of buildig batch dropdown - news administration show_batch_options()
+	// FIXME - use e_form::batchoptions(), nice way of building batch dropdown - news administration show_batch_options()
 
 	/**
 	 * @param array $options array of flags for copy, delete, url, featurebox, batch
@@ -7017,7 +7036,7 @@ class e_admin_form_ui extends e_form
 		
 		$text .= "
 
-				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->listTotal))."</span></div>
+				<div id='admin-ui-list-total-records' class='span6 col-md-6 right'><span>".e107::getParser()->lanVars(LAN_UI_TOTAL_RECORDS,number_format($this->getController()->getTreeModel()->getTotal()))."</span></div>
 			</div>
 		";
 
@@ -7063,6 +7082,14 @@ class e_admin_form_ui extends e_form
 
 					break;
 
+
+					case 'number';
+						if($type === 'filter')
+						{
+							$option[$key.'___ISEMPTY_'] = LAN_UI_FILTER_IS_EMPTY;
+						}
+
+					break;
 
 					case 'bool':
 					case 'boolean': //TODO modify description based on $val['parm]
@@ -7220,6 +7247,24 @@ class e_admin_form_ui extends e_form
 							"month"		=> LAN_UI_FILTER_PAST_MONTH,
 							"year"		=> LAN_UI_FILTER_PAST_YEAR
 						);
+
+						$dateFiltersFuture = array (
+								'nhour'		=> LAN_UI_FILTER_NEXT_HOUR,
+								"nday"		=> LAN_UI_FILTER_NEXT_24_HOURS,
+								"nweek"		=> LAN_UI_FILTER_NEXT_WEEK,
+								"nmonth"	=> LAN_UI_FILTER_NEXT_MONTH,
+								"nyear"		=> LAN_UI_FILTER_NEXT_YEAR
+						);
+
+						if($val['filter'] === 'future' )
+						{
+							$dateFilters = $dateFiltersFuture;
+						}
+
+						if($val['filter'] === 'both')
+						{
+							$dateFilters += $dateFiltersFuture;
+						}
 					    
 						foreach($dateFilters as $k => $name)
 						{

@@ -729,9 +729,14 @@ class e_session
 	 */
 	public function getFormToken($in_form = true)
 	{
-		if(!$this->has('__form_token'))
+		if(!$this->has('__form_token') && !defined('e_TOKEN_DISABLE'))  // TODO FIXME: SEF URL of Error page causes e-token refresh.
 		{
 			$this->set('__form_token', uniqid(md5(rand()), true));
+			if(deftrue('e_DEBUG_SESSION')) // XXX enable to troubleshoot "Unauthorized Access!" issues.
+			{
+				$message = date('r')."\t\t".e_REQUEST_URI."\n";
+				file_put_contents(__DIR__.'/session.log', $message, FILE_APPEND);
+			}
 		}
 		return ($in_form ? md5($this->get('__form_token')) : $this->get('__form_token'));
 	}
@@ -869,7 +874,60 @@ class e_core_session extends e_session
 		$this->end();
 	}
 
+	private function log($status, $type=E_LOG_FATAL)
+	{
 
+		if(!deftrue('e_DEBUG_SESSION'))
+		{
+			return null;
+		}
+
+
+	//	$details = "USER: ".USERNAME."\n";
+		$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
+		$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
+
+		$details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
+		$details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";
+		$details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
+/*
+		$utoken = $this->getFormToken(false);
+		$details .= "raw token: ".$utoken."\n";
+		$details .= "checkFormToken (e-token should match this): ".md5($utoken)."\n";
+		$details .= "md5(e-token): ".md5($_POST['e-token'])."\n";*/
+/*
+		$regenerate = $this->get('__form_token_regenerate');
+		$details .= "Regenerate after: ".date('r', $regenerate)." (".$regenerate.")\n";
+*/
+
+		$details .= "has __form_token: ";
+		$hasToken = $this->has('__form_token');
+		$details .= empty($hasToken) ? 'false' : 'true';
+		$details .= "\n";
+
+		$details .= "_SESSION:\n";
+		$details .= print_r($_SESSION,true);
+
+		/*	if($pref['plug_installed'])
+			{
+				$details .= "\nPlugins:\n";
+				$details .= print_r($pref['plug_installed'],true);
+			}*/
+
+		$details .= $status."\n\n---------------------------------\n\n";
+
+		$log = e107::getAdminLog();
+		$log->addDebug($details);
+
+		if(deftrue('e_DEBUG_SESSION'))
+		{
+			$log->toFile('Unauthorized_access','Unauthorized access Log', true);
+		}
+
+		$log->add($status, $details, $type);
+
+
+	}
 	/**
 	 * Core CSF protection, see class2.php
 	 * Could be adopted by plugins for their own (different) protection logic
@@ -886,40 +944,12 @@ class e_core_session extends e_session
 		
 		if($this->getSessionId())
 		{
+
 			if((isset($_POST['e-token']) && !$this->checkFormToken($_POST['e-token']))
 			|| (isset($_GET['e-token']) && !$this->checkFormToken($_GET['e-token']))
 			|| (isset($_POST['e_token']) && !$this->checkFormToken($_POST['e_token']))) // '-' is not allowed in jquery. b
 			{
-			//	if(defsettrue('e_DEBUG'))
-				{
-					$details = "USER: ".USERNAME."\n";		
-					$details = "HOST: ".$_SERVER['HTTP_HOST']."\n";
-					$details .= "REQUEST_URI: ".$_SERVER['REQUEST_URI']."\n";
-					$details .= ($_POST['e-token']) ? "e-token (POST): ".$_POST['e-token']."\n" : "";
-					$details .= ($_GET['e-token']) ? "e-token (GET): ".$_GET['e-token']."\n" : "";	
-					$details .= ($_POST['e_token']) ? "AJAX e_token (POST): ".$_POST['e_token']."\n" : "";
-				
-					$details .= "_SESSION:\n";
-					$details .= print_r($_SESSION,true);
-				//	$details .= "\n_POST:\n";
-				//	$details .= print_r($_POST,true);
-				//	$details .= "\n_GET:\n";
-				//	$details .= print_r($_GET,true);
-				/*	if($pref['plug_installed'])
-					{
-						$details .= "\nPlugins:\n";
-						$details .= print_r($pref['plug_installed'],true);
-					}*/
-					
-					$details .= "die = ".($die == true ? 'true' : 'false')."\n\n---------------------------------\n\n";
-				
-					$log = e107::getAdminLog();		
-					$log->addDebug($details);			
-					$log->toFile('Unauthorized_access','Unauthorized access Log', true);
-					$log->add('Unauthorized access!', $details, E_LOG_FATAL);	
-					// e107::getAdminLog()->log_event('Unauthorized access!', $details, E_LOG_FATAL);				
-				}	
-
+				$this->log('Unauthorized access!');
 				// do not redirect, prevent dead loop, save server resources
 				if($die == true)
 				{
@@ -928,6 +958,9 @@ class e_core_session extends e_session
 				
 				return false;
 			}
+
+				$this->log('Session Token Okay!', E_LOG_NOTICE);
+
 		}
 		
 		if(!defined('e_TOKEN'))

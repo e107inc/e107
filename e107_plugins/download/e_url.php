@@ -128,7 +128,7 @@ class download_url // plugin-folder + '_url'
 		);
 
 		$config['index'] = array(
-			'regex'		    => '{alias}/?(.*)$',
+			'regex'		    => '^{alias}/?(.*)$',
 			'sef'		    => '{alias}/',
 			'redirect'	    => '{e_PLUGIN}download/download.php$1',
 		);

@@ -64,4 +64,8 @@ define("LAN_ERROR_44", "Site logo");
 
 define("LAN_ERROR_45", "What can you do now?");
 define("LAN_ERROR_46", "Check log for details.");
+define("LAN_ERROR_47", "Validation error: News title can't be empty!");
+define("LAN_ERROR_48", "Validation error: News SEF URL value is required field and can't be empty!");
+define("LAN_ERROR_49", "Validation error: News SEF URL is unique field - current value already in use! Please choose another SEF URL value.");
+define("LAN_ERROR_50", "Validation error: News category can't be empty!");
 ?>

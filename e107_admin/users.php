@@ -306,7 +306,7 @@ class users_admin_ui extends e_admin_ui
 		'user_currentvisit' => array('title' => LAN_USER_16,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
 		'user_comments' 	=> array('title' => LAN_COMMENTS,	'tab'=>0, 'noedit'=>true, 'type' => 'int', 	'width' => 'auto','thclass'=>'right','class'=>'right'),
 		'user_lastpost' 	=> array('title' => USRLAN_195,	'tab'=>0, 'noedit'=>true, 'type' => 'datestamp', 	'width' => 'auto'),
-		'user_ip' 			=> array('title' => LAN_USER_18,	'tab'=>0, 'noedit'=>true, 'type' => 'ip',		'width' => 'auto'),
+		'user_ip' 			=> array('title' => LAN_USER_18,	'tab'=>0, 'noedit'=>true, 'type' => 'ip',	'data'=>'str',	'width' => 'auto'),
 		//	'user_prefs' 		=> array('title' => LAN_USER_20,	'type' => 'text', 	'width' => 'auto'),
 		'user_visits' 		=> array('title' => LAN_USER_21,	'tab'=>0, 'noedit'=>true, 'type' => 'int', 'width' => 'auto','thclass'=>'right','class'=>'right'),
 		'user_admin' 		=> array('title' => LAN_USER_22,	'tab'=>0, 'type' => 'method', 'width' => 'auto', 'thclass'=>'center', 'class'=>'center', 'filter'=>true, 'batch'=>true, 'readParms'=>'trueonly=1'),
@@ -2938,7 +2938,7 @@ class users_admin_form_ui extends e_admin_form_ui
 				parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 				$query['action'] = 'edit';
 				$query['id'] = $id;
-				$query = http_build_query($query);
+				$query = http_build_query($query, null, '&amp;');
 
 				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";

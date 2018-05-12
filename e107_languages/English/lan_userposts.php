@@ -11,8 +11,8 @@
 */
 define("PAGE_NAME", "User Posts");
 
-define("UP_LAN_0", "All Forum Posts for ");
-define("UP_LAN_1", "All Comments for ");
+define("UP_LAN_0", "All Forum Posts for [x]");
+define("UP_LAN_1", "All Comments for [x]");
 define("UP_LAN_2", "Thread");
 define("UP_LAN_3", "Views");
 define("UP_LAN_4", "Replies");

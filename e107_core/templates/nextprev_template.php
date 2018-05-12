@@ -120,7 +120,7 @@ $NEXTPREV_TEMPLATE['admin_nav_caption'] = ''; // NP_3.'&nbsp;';
 $NEXTPREV_TEMPLATE['admin_nav_first'] = '<li><a class="nextprev-item first e-tip" href="{url}" title="{url_label}"><i class="fa fa-fast-backward"></i></a></li>';
 $NEXTPREV_TEMPLATE['admin_nav_prev'] = '<li><a class="nextprev-item prev e-tip" href="{url}" title="{url_label}"><i class="fa fa-backward"></i></a></li>';
 $NEXTPREV_TEMPLATE['admin_nav_last'] = '<li><a class="nextprev-item last e-tip" href="{url}" title="{url_label}"><i class="fa fa-fast-forward"></i></a></li>';
-$NEXTPREV_TEMPLATE['admin_nav_next'] = '<li><a class="nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="fa fa-forward icon-forward"></i></a></li>';
+$NEXTPREV_TEMPLATE['admin_nav_next'] = '<li><a class="nextprev-item next e-tip" href="{url}" title="{url_label}"><i class="fa fa-forward"></i></a></li>';
 
 $NEXTPREV_TEMPLATE['admin_items_start'] = '';
 $NEXTPREV_TEMPLATE['admin_item'] = '<li><a class="nextprev-item e-tip" href="{url}" title="{url_label}">{label}</a></li>';
