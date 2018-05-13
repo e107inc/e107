@@ -77,7 +77,7 @@
 			$expected = "%Y %d %m %B %A %I %H %y %M %S %a %b %b %l %p %P";
 			$actual = $this->dateObj->toMask($new, true);
 
-			$this->assertEquals($expected,$actual);
+			$this->assertEquals($expected, $actual);
 
 
 		//	$this->fail('end');
@@ -90,17 +90,36 @@
 
 		public function testIsValidTimezone()
 		{
+			// should exists
+			$result = $this->dateObj->isValidTimezone('Europe/Berlin');
+			$this->assertTrue($result);
 
+			// should not exist
+			$result = $this->dateObj->isValidTimezone('Europe/Bonn');
+			$this->assertFalse($result);
 		}
 
 		public function testBuildDateLocale()
 		{
+			$actual = $this->dateObj->buildDateLocale();
 
+			$this->assertContains('$.fn.datetimepicker.dates["en"]', $actual);
+			$this->assertContains('days: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],', $actual);
+			$this->assertContains('monthsShort: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],', $actual);
 		}
 
 		public function testToTime()
 		{
+			// This tests fail on my machine.
+			// strptime substracts a month which results in the wrong time // BUG?
 
+			$actual = $this->dateObj->toTime('2018/05/13', '%Y/%m/%d');
+			$expected = mktime(0, 0,0,5, 13, 2018);
+			$this->assertEquals($expected, $actual);
+
+			$actual = $this->dateObj->toTime('2018/05/13 20:10', '%Y/%m/%d %H:%M');
+			$expected = mktime(20, 10,0,5, 13, 2018);
+			$this->assertEquals($expected, $actual);
 		}
 
 		public function testDecodeDateTime()
