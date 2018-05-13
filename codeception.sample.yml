@@ -10,8 +10,18 @@ settings:
 coverage:
     enabled: true
     include:
-        - e107/*.php
-        - e107/**/*.php
+        - ../e107_handlers/*.php
+    exclude:
+        - ../dump/*
+        - ../phpunit/*
+        - ../temp/*
+        - ../test/*
+        - ../tmp/*
+        - ../e107_docs/*
+        - ../e107_files/*
+        - ../e107_media/*
+        - ../e107_system/*
+
 params:
     - lib/config.php
 extensions:
