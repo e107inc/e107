@@ -173,7 +173,7 @@ class convert
 			break;
 			
 			case 'inputtime': 
-				$mask .= e107::getPref('inputtime', '%H:%M');
+				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
 
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
