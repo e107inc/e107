@@ -124,22 +124,70 @@
 
 		public function testDecodeDateTime()
 		{
+			$actual = $this->dateObj->decodeDateTime('09122003', 'date', 'dmy', false);
+			$expected = mktime(0, 0,0,12, 9, 2003);
+			$this->assertEquals($expected, $actual);
 
+			$actual = $this->dateObj->decodeDateTime('153045', 'time', 'dmy', false);
+			$expected = mktime(15, 30,45,0, 0, 0);
+			$this->assertEquals($expected, $actual);
+
+			$actual = $this->dateObj->decodeDateTime('09122003 153045', 'datetime', 'dmy', false);
+			$expected = mktime(15, 30,45,12, 9, 2003);
+			$this->assertEquals($expected, $actual);
 		}
 
 		public function testComputeLapse()
 		{
-
+			$older = mktime(15, 30,45,12, 9, 2003);
+			$newer = mktime(14, 20,40,12, 11, 2003);
+			$actual = $this->dateObj->computeLapse($older, $newer, false, true, 'long');
+			$expected = '1 day, 22 hours, 49 minutes, 55 seconds ago';
+			$this->assertEquals($expected, $actual);
 		}
 
+		/**
+		 *
+		 */
 		public function testStrptime()
 		{
+
+			$actual = $this->dateObj->strptime('2018/05/13', '%Y/%m/%d');
+			$expected = array(
+				'tm_year' => 118,
+				'tm_mon' => 4,
+				'tm_mday' => 13,
+				'tm_fmon' => 'May',
+				'tm_wday' => 0,
+				'tm_yday' => 132,
+			);
+			$this->assertEquals($expected, $actual);
+
+			$actual = $this->dateObj->strptime('2018/05/13 20:10', '%Y/%m/%d %H:%M');
+			$expected = array(
+				'tm_year' => 118,
+				'tm_mon' => 4,
+				'tm_mday' => 13,
+				'tm_hour' => 20,
+				'tm_min' => 10,
+				'tm_fmon' => 'May',
+				'tm_wday' => 0,
+				'tm_yday' => 132,
+			);
+			$this->assertEquals($expected, $actual);
 
 		}
 
 		public function testConvert_date()
 		{
+			// will probably fail on windows
+			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'long');
+			$expected = 'Monday 05 February 2018 - 12:45:03';
+			$this->assertEquals($expected, $actual);
 
+			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'inputtime');
+			$expected = 'Monday 05 February 2018 - 12:45:03';
+			$this->assertEquals($expected, $actual);
 		}
 
 		public function testTerms()
