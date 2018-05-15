@@ -865,7 +865,8 @@ class e_form
 		$options['class'] .= " form-control";
 		$options['type'] ='number';
 		
-		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+		// Not used anymore
+		//$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 
 		// Always define the min. parameter
 		// defaults to 0
