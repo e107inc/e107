@@ -186,7 +186,7 @@
 			$this->assertEquals($expected, $actual);
 
 			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'inputtime');
-			$expected = 'Monday 05 February 2018 - 12:45:03';
+			$expected = '12:45 PM';
 			$this->assertEquals($expected, $actual);
 		}
 
