@@ -820,7 +820,22 @@ class e_form
 	}
 
 
-	
+	/**
+	 * Create a input [type number]
+	 *
+	 * Additional options:
+	 *   - decimals: default 0; defines the number of decimals allowed in this field (0 = only integers; 1 = integers & floats with 1 decimal e.g. 4.1, etc.)
+	 *   - step: default 1; defines the step for the spinner and the max. number of decimals. If decimals is given, step will be ignored
+	 *   - min: default 0; minimum value allowed
+	 *   - max: default empty; maximum value allowed
+	 *   - pattern: default empty; allows to define an complex input pattern
+	 * 
+	 * @param string $name
+	 * @param integer $value
+	 * @param integer $maxlength
+	 * @param array $options decimals, step, min, max, pattern
+	 * @return string
+	 */
 	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
@@ -850,17 +865,67 @@ class e_form
 		$options['class'] .= " form-control";
 		$options['type'] ='number';
 		
-		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+		// Not used anymore
+		//$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 
-		$min = isset($options['min']) ? 'min="'.$options['min'].'"' : '';
-		$max = isset($options['max']) ? 'max="'.$options['max'].'"' : '';
+		// Always define the min. parameter
+		// defaults to 0
+		// setting the min option to a negative value allows negative inputs
+		$min = " min='".varsettrue($options['min'], '0')."'";
+		$max = isset($options['max']) ? " max='".$options['max']."'" : '';
 
+		if (varsettrue($options['pattern']))
+		{
+			$pattern = ' pattern="'.trim($options['pattern']).'"';
+		}
+		else
+		{
+			$options['pattern'] = '^';
+			// ^\-?[0-9]*\.?[0-9]{0,2}
+			if (varset($options['min'], 0) < 0)
+			{
+				$options['pattern'] .= '\-?';
+			}
+			$options['pattern'] .= '[0-9]*';
+
+			// Integer & Floaat/Double value handling
+			if (isset($options['decimals']))
+			{
+				if (intval($options['decimals']) > 0)
+				{
+					$options['pattern'] .= '\.?[0-9]{0,'.intval($options['decimals']).'}';
+				}
+
+				// defined the step based on number of decimals 
+				// 2 = 0.01 > allows integers and float numbers with up to 2 decimals (3.1 = OK; 3.12 = OK; 3.123 = NOK)
+				// 1 = 0.1 > allows integers and float numbers with up to 2 decimals (3.1 = OK; 3.12 = NOK)
+				// 0 = 1 > allows only integers, no float values
+				if (intval($options['decimals']) <= 0)
+				{
+					$step = "step='1'";
+				}
+				else
+				{
+					$step = "step='0." . str_pad(1, intval($options['decimals']), 0, STR_PAD_LEFT)  . "'";
+				}
+			}
+			else
+			{
+				// decimal option not defined
+				// check for step option (1, 0.1, 0.01, and so on)
+				// or set default step 1 (integers only)
+				$step = "step='" . varsettrue($options['step'], '1') . "'";
+			}
+
+			$pattern = ' pattern="'.$options['pattern'].'"';
+		}
 		$options = $this->format_options('text', $name, $options);
 
 		//never allow id in format name-value for text fields
 		if(THEME_LEGACY === false)
 		{
-			return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
+			// return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength} {$step} {$min} {$max} ".$this->get_attributes($options, $name)." />";
+			return "<input type='number' name='{$name}' {$min} {$max} {$step} value='{$value}' {$pattern}".$this->get_attributes($options, $name)." />";
 		}
 		
 		return $this->text($name, $value, $maxlength, $options);	

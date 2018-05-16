@@ -172,7 +172,7 @@ class e_date
 			break;
 			
 			case 'inputtime': 
-				$mask .= e107::getPref('inputtime', '%H:%M');
+				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
 
 			case 'forum': // DEPRECATED - temporary here from BC reasons only
@@ -791,7 +791,7 @@ class e_date
 			
 			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
 			
-			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon']));
+			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon'] + 1));
 			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
 			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
 			
