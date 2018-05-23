@@ -1479,6 +1479,7 @@ class e_admin_dispatcher
 		$tp = e107::getParser();
 		$var = array();
 		$selected = false;
+
 		foreach($this->adminMenu as $key => $val)
 		{
 
@@ -1516,6 +1517,12 @@ class e_admin_dispatcher
 					case 'uri':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs');
+
+						if(!empty($v) && (e_REQUEST_URI === $v))
+						{
+							$selected = $key;
+						}
+
 					break;
 
 					default:
@@ -1880,6 +1887,8 @@ class e_admin_controller
 			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
 
+
+
 			if(isset($data[$search]))
 			{
 				 $res['caption'] = $data[$search];
@@ -2152,9 +2161,9 @@ class e_admin_controller
 			return $response;
 		}
 		
-		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title. 
+		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title.
 		{
-			$this->addTitle(); 	
+			$this->addTitle();
 		}
 
 
@@ -2164,6 +2173,9 @@ class e_admin_controller
 		{
 			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
 		}
+
+
+		
 		
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
@@ -5478,6 +5490,13 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 
 		$this->addTitle();
+
+		if($this->getQuery('filter_options'))
+		{
+		//	var_dump($this);
+			// $this->addTitle("to-do"); // display filter option when active.
+		}
+		
 	}
 
 	/**

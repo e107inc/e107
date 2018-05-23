@@ -5122,7 +5122,9 @@ $text .= "
 ";
 }
 $text .= "
-		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P')
+		// 'main/div0'      => array('divider'=> true),
+		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P'),
+		
 	);
 
 	protected \$adminMenuAliases = array(
