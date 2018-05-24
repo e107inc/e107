@@ -36,7 +36,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                     autoclose: true,
                     format: $item.attr("data-date-format"),
                     weekStart: $item.attr("data-date-firstday"),
-                    language: $item.attr("data-date-language")
+                    language: $item.attr("data-date-language"),
                 }).on("changeDate", function (ev) {
                     var useUnix = $(this).attr("data-date-unix");
                     var newValue = "";
@@ -49,7 +49,11 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
-                    $(newTarget).val(newValue);
+                    // make sure a UTC datestamp is saved
+                    offset = parseInt($item.attr("data-date-timezone-offset"));
+                    newOffsetValue = newValue + offset;
+
+                    $(newTarget).val(newOffsetValue);
                 });
             });
 
@@ -62,6 +66,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                     weekStart: $item.attr("data-date-firstday"),
                     showMeridian: $item.attr("data-date-ampm"),
                     language: $item.attr("data-date-language")
+
                 }).on("changeDate", function (ev) {
                     var useUnix = $(this).attr("data-date-unix");
                     var newValue = "";
@@ -74,7 +79,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
-                    $(newTarget).val(newValue);
+                    // make sure a UTC datestamp is saved
+                     offset = parseInt($item.attr("data-date-timezone-offset"));
+                     newOffsetValue = newValue + offset;
+
+                    $(newTarget).val(newOffsetValue);
+
+                    console.log( newOffsetValue); // remove later.
+
                 })
             });
         }

@@ -1957,6 +1957,9 @@ function init_session()
 		unset($tz);
 	}
 
+e107::getDebug()->log("Timezone: ".USERTIMEZONE); // remove later on.
+
+
 	define('USERIP', e107::getIPHandler()->getIP(FALSE));
 	define('POST_REFERER', md5($user->getToken()));
 
