@@ -840,10 +840,31 @@ class e_date
 			
 			#-- calculate wday/yday
 			//$vals['tm_mon'] = $vals['tm_mon'] + 1; // returns months from 0 - 11 so we need to +1 
-			
-			
+
+			if (!isset($vals['tm_sec']))
+			{
+				$vals['tm_sec'] = 0;
+			}
+
+			if (!isset($vals['tm_min']))
+			{
+				$vals['tm_min'] = 0;
+			}
+
+			if (!isset($vals['tm_hour']))
+			{
+				$vals['tm_hour'] = 0;
+			}
+
+
+			if (!isset($vals['unparsed']))
+			{
+				$vals['unparsed'] = '';
+			}
+
 			$unxTimestamp = mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], ($vals['tm_mon'] + 1), $vals['tm_mday'], ($vals['tm_year'] + 1900));
-			
+
+			$vals['tm_amon'] = strftime('%b', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon'] + 1));
 			$vals['tm_fmon'] = strftime('%B', mktime($vals['tm_hour'], $vals['tm_min'], $vals['tm_sec'], $vals['tm_mon'] + 1));
 			$vals['tm_wday'] = (int) strftime('%w', $unxTimestamp); // Days since Sunday (0-6)
 			$vals['tm_yday'] = (strftime('%j', $unxTimestamp) - 1); // Days since January 1 (0-365)
