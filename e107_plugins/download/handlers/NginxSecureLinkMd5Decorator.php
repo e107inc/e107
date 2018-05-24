@@ -6,14 +6,14 @@ class NginxSecureLinkMd5Decorator implements SecureLinkDecorator
 	protected $url = null;
 	protected $prefs = array();
 
-	const SUPPORTED_VARIABLES = array(
+	public static $SUPPORTED_VARIABLES = array(
 		'$secure_link_expires',
 		'$uri',
 		'$remote_addr'
 	);
 
 	static function supported_variables() {
-		return self::SUPPORTED_VARIABLES;
+		return self::$SUPPORTED_VARIABLES;
 	}
 
 	function __construct($url, $preferences)
