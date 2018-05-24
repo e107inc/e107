@@ -224,18 +224,26 @@ class e_date
 		return is_numeric($string) ? $this->convert_date($string, $mask) : $this->toTime($string, $mask);
 	}
 	
-	
+
+
+
 	
 	/** 
 	 * Converts to new date-mask format or vice-versa when $legacy is TRUE
+	 *
+	 * string       $mask
+	 * string|bool  $legacy false= strftime > datetimepicker,  true = datetimepicker > strftime, 'DateTime' = strftime > DateTime format.
+	 * @see https://secure.php.net/manual/en/function.strftime.php
 	 * @see https://github.com/AuspeXeu/bootstrap-datetimepicker
+	 * @see https://secure.php.net/manual/en/datetime.createfromformat.php
 	 */
 	function toMask($mask, $legacy = false)
 	{
+		//strftime() -> datetimepicker format.
 		$convert = array(
-			'%Y'	=> 'yyyy',	// jquery-ui docs say 'yy' but yy produces '13' instead of '2013'
-			'%d'	=> 'dd',
-			'%m'	=> 'mm',		
+			'%Y'	=> 'yyyy',	// Year 4-digits  '2013'
+			'%d'	=> 'dd',    // day of the month 2-digits
+			'%m'	=> 'mm',	// month number 2-digits
 			'%B'	=> 'MM', 	// Full month name, based on the locale
 			'%A'	=> 'DD', 	// A full textual representation of the day
 	
@@ -250,12 +258,46 @@ class e_date
 			'%M'	=> 'ii',	// Two digit representation of the minute 
 			'%S'	=> 'ss',	// Two digit representation of the second 
 			'%P'	=> 'p',		// %P	lower-case 'am' or 'pm' based on the given time
-			'%p'	=> 'P',	//	%p	UPPER-CASE 'AM' or 'PM' based on the given time
+			'%p'	=> 'P',	    // %p   UPPER-CASE 'AM' or 'PM' based on the given time
 		
 			'%T' 	=> 'hh:mm:ss',
 			'%r' 	=> "hh:mmm:ss TT" // 12 hour format
 		);
-			
+
+		// strftime() > DateTime::
+		if($legacy === 'DateTime')
+		{
+			$convert = array(
+				'%Y'	=> 'Y',	    // Year 4-digits  '2013'
+				'%d'	=> 'd',     // Two-digit day of the month (with leading zeros) (01 through 31)
+				'%e'    => 'j',     // Day of the month, with a space preceding single digits. Not implemented on Windows with strftime.
+				'%m'	=> 'm',     // Two digit representation of the month (01 throught 12)
+				'%B'	=> 'F', 	// Full month name, based on the locale
+				'%A'	=> 'l', 	// A full textual representation of the day
+
+				'%y'	=> 'y',
+				'%a'	=> 'D', 	// An abbreviated textual representation of the day
+				'%b'	=> 'M', 	// Abbreviated month name, based on the locale
+				'%h'	=> 'M', 	// Abbreviated month name, based on the locale (an alias of %b)
+
+				'%k'    => 'G',    // Hour in 24-hour format, with a space preceding single digits (0 through 23)
+				'%I'	=> 'h', 	// Two digit representation of the hour in 12-hour format (	01 through 12)
+				'%l'	=> 'g',		// 12 hour format - no leading zero (1 through 12)
+				'%H'	=> 'H',	    // Two digit representation of the hour in 24-hour format (00 through 23)
+
+				'%M'	=> 'i',	    // Two digit representation of the minute (00 through 59)
+				'%S'	=> 's',	    // Two digit representation of the second (00 through 59)
+				'%P'	=> 'a',		// lower-case 'am' or 'pm' based on the given time
+				'%p'	=> 'A', 	// UPPER-CASE 'AM' or 'PM' based on the given time
+				'%Z'    => 'e',      // The time zone abbreviation. Not implemented as described on Windows with strftime.
+
+				// TODO Add anything that is missing.
+		//		'%T' 	=> 'hh:mm:ss',
+		//		'%r' 	=> "hh:mmm:ss TT" // 12 hour format
+			);
+		}
+
+
 		$s = array_keys($convert);
 		$r = array_values($convert);	
 		
@@ -359,8 +401,24 @@ class e_date
 				$mask = e107::getPref('inputtime', '%H:%M');
 			break;
 		}
-		
-		// also in php compat handler for plugins that might use it. 
+
+		// convert to PHP 5+ @see https://secure.php.net/manual/en/datetime.createfromformat.php
+		$newMask = $this->toMask($mask, 'DateTime');
+		$tdata = date_parse_from_format($newMask, $date_string);
+
+		return mktime(
+			$tdata['hour'],
+			$tdata['minute'],
+			$tdata['second'],
+			$tdata['month'] ,
+			$tdata['day'],
+			$tdata['year']
+		);
+
+
+		// also in php compat handler for plugins that might use it.
+
+		/*
 		$tdata = $this->strptime($date_string, $mask);
 		
 		
@@ -387,14 +445,9 @@ class e_date
 			$tdata['tm_mday'], 
 			($tdata['tm_year'] + 1900) 
 		); 
-		
-		
-	//	echo "<br />UNIX=".$unxTimestamp - TIMEOFFSET;
-	//	echo "<br />".date("l, d M Y g:i A",$unxTimestamp);
-	
-		// var_dump($tdata, $date_string, $this->convert_date($unxTimestamp, $mask), $unxTimestamp);
 
 		return $unxTimestamp;
+		*/
 	}
 
 // -----------------------
