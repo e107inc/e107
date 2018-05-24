@@ -874,7 +874,7 @@ class e_form
 		$min = " min='".varsettrue($options['min'], '0')."'";
 		$max = isset($options['max']) ? " max='".$options['max']."'" : '';
 
-		if (varsettrue($options['pattern']))
+		if (!empty($options['pattern']))
 		{
 			$pattern = ' pattern="'.trim($options['pattern']).'"';
 		}
@@ -925,7 +925,7 @@ class e_form
 		if(THEME_LEGACY === false)
 		{
 			// return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength} {$step} {$min} {$max} ".$this->get_attributes($options, $name)." />";
-			return "<input type='number' name='{$name}' {$min} {$max} {$step} value='{$value}' {$pattern}".$this->get_attributes($options, $name)." />";
+			return "<input type='number' name='{$name}' {$min} {$max} {$step} value='{$value}' ".$this->get_attributes($options, $name)." />";
 		}
 		
 		return $this->text($name, $value, $maxlength, $options);	
@@ -5723,14 +5723,12 @@ class e_form
 					$eloptions  = vartrue($parms['__options'], array());
 				}
 
-				$value = (isset($eloptions['empty']) && empty($value)) ? $eloptions['empty'] : $value;
+				$value = (isset($eloptions['empty']) && ($value === null)) ? $eloptions['empty'] : $value;
 
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
-
-
 
 				// Allow Ajax API.
 				if(!empty($ajaxParms))
