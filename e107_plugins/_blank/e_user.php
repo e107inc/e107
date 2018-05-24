@@ -26,16 +26,17 @@ class _blank_user // plugin-folder + '_user'
 
 
 	/**
-	 * Experimental and subject to change without notice. 
+	 * Experimental and subject to change without notice.
 	 * @return mixed
 	 */
 	function delete()
 	{
 
 		$config['user'] =  array(
-			'user_name'         => 'Deleted User',
-			'user_loginname'    => '',
-			'user_email'        => '',
+			'user_id'           => '[primary]',
+			'user_name'         => '[unique]',
+			'user_loginname'    => '[unique]',
+			'user_email'        => '[unique]',
 			'user_ip'           => '',
 			// etc.
 			'WHERE'             => 'user_id = '.USERID,
