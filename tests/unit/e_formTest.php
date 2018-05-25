@@ -106,7 +106,7 @@
 
 
 
-	/*	public function testAddWarning()
+		public function testAddWarning()
 		{
 
 		}
@@ -204,8 +204,21 @@
 		public function testDatepicker()
 		{
 
-		}
+			date_default_timezone_set('UTC');
+			$time = strtotime('January 1st, 2018 1am');
+			$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
+			$expected = "<input class='e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='January, 01, 2018 01:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'    /><input type='hidden' name='date_field' id='date-field' value='1514768400' />";
 
+			$this->assertEquals($expected, $actual);
+
+			// test timezone change...
+			date_default_timezone_set('America/Los_Angeles');
+			$actual = $this->_frm->datepicker('date_field',$time,'type=datetime&format=MM, dd, yyyy hh:ii');
+			$expected = "<input class='e-datetime input-xlarge form-control' type='text' size='40' id='e-datepicker-date-field' value='December, 31, 2017 17:00' data-date-unix ='true' data-date-format='MM, dd, yyyy hh:ii' data-date-ampm='false' data-date-language='en' data-date-firstday='0'    /><input type='hidden' name='date_field' id='date-field' value='1514768400' />";
+
+			$this->assertEquals($expected, $actual);
+		}
+/*
 		public function testUserlist()
 		{
 
