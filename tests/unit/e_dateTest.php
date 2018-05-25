@@ -177,7 +177,12 @@
 				'tm_year' => 118,
 				'tm_mon' => 4,
 				'tm_mday' => 13,
+				'tm_sec' => 0,
+				'tm_min' => 0,
+				'tm_hour' => 0,
+				'unparsed' => '',
 				'tm_fmon' => 'May',
+				'tm_amon' => 'May',
 				'tm_wday' => 0,
 				'tm_yday' => 132,
 			);
@@ -190,6 +195,9 @@
 				'tm_mday' => 13,
 				'tm_hour' => 20,
 				'tm_min' => 10,
+				'tm_sec' => 0,
+				'unparsed' => '',
+				'tm_amon' => 'May',
 				'tm_fmon' => 'May',
 				'tm_wday' => 0,
 				'tm_yday' => 132,
@@ -200,6 +208,9 @@
 
 		public function testConvert_date()
 		{
+			// Expected values made using the C locale
+			setlocale(LC_TIME, 'C');
+
 			// will probably fail on windows
 			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'long');
 			$expected = 'Monday 05 February 2018 - 12:45:03';
