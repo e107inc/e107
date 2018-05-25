@@ -105,7 +105,7 @@
 	    }
 
 
-
+/*
 		public function testAddWarning()
 		{
 
@@ -199,7 +199,7 @@
 		public function testFilepicker()
 		{
 
-		}
+		}*/
 
 		public function testDatepicker()
 		{
