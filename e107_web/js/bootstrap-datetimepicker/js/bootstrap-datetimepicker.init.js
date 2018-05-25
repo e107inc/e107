@@ -49,11 +49,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
-                    // make sure a UTC datestamp is saved
-                    offset = parseInt($item.attr("data-date-timezone-offset"));
-                    newOffsetValue = newValue + offset;
-
-                    $(newTarget).val(newOffsetValue);
+                    $(newTarget).val( newValue);
                 });
             });
 
@@ -79,13 +75,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
-                    // make sure a UTC datestamp is saved
-                     offset = parseInt($item.attr("data-date-timezone-offset"));
-                     newOffsetValue = newValue + offset;
-
-                    $(newTarget).val(newOffsetValue);
-
-                    console.log( newOffsetValue); // remove later.
+                    $(newTarget).val(newValue);
 
                 })
             });
