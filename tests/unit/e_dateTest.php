@@ -80,7 +80,27 @@
 			$this->assertEquals($expected, $actual);
 
 
-		//	$this->fail('end');
+
+			$unix = strtotime('December 21, 2012 3:45pm');
+			$strftime = "%A, %d %b, %Y %I:%M %p"; // expected Friday, 21 Dec, 2012 03:45 PM
+			$expected = "Friday, 21 Dec, 2012 03:45 PM";
+
+			// test strtotime mask (default)
+			$actual = $this->dateObj->convert_date($unix, $strftime);
+			$this->assertEquals($expected, $actual);
+
+			// test DateTimePicker mask
+			$datepicker = $this->dateObj->toMask($strftime);
+			$actual2 = $this->dateObj->convert_date($unix, $datepicker);
+			$this->assertEquals($expected, $actual2);
+
+			// test DateTime mask
+			$dateTime= $this->dateObj->toMask($strftime, 'DateTime');
+			$d = new DateTime('@'.$unix);
+			$actual3 =  $d->format($dateTime);
+			$this->assertEquals($expected, $actual3);
+
+
 		}
 
 		public function testSupported()
@@ -157,7 +177,12 @@
 				'tm_year' => 118,
 				'tm_mon' => 4,
 				'tm_mday' => 13,
+				'tm_sec' => 0,
+				'tm_min' => 0,
+				'tm_hour' => 0,
+				'unparsed' => '',
 				'tm_fmon' => 'May',
+				'tm_amon' => 'May',
 				'tm_wday' => 0,
 				'tm_yday' => 132,
 			);
@@ -170,6 +195,9 @@
 				'tm_mday' => 13,
 				'tm_hour' => 20,
 				'tm_min' => 10,
+				'tm_sec' => 0,
+				'unparsed' => '',
+				'tm_amon' => 'May',
 				'tm_fmon' => 'May',
 				'tm_wday' => 0,
 				'tm_yday' => 132,
