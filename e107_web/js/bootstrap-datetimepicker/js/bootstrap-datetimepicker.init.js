@@ -75,6 +75,20 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
                         newValue = $("#" + ev.target.id).val();
                     }
 
+                     offset = parseInt($item.attr("data-date-timezone-offset"));
+
+                     if(offset) // adjust UTC value to target timezone. ie. timezone other than the one of the browser.
+                     {
+                        browserOffset = ev.date.getTimezoneOffset() * 60;
+                        relativeOffset = browserOffset + offset;
+
+                        console.log("Browser Offset: " + browserOffset);
+                        console.log('Offset: ' + offset);
+                        console.log('Relative Offset: ' + relativeOffset);
+
+                        newValue = newValue - relativeOffset;
+                     }
+
                     $(newTarget).val(newValue);
 
                 })

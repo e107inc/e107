@@ -1437,7 +1437,10 @@ class e_form
 	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
-	 * @param array or str 
+	 * @param array or str
+	 * @param string $options['type'] date or datetime
+	 * @param string $options['format'] strftime format eg. '%Y-%m-%d'
+	 * @param string $options['timezone'] eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
 	 * @example $frm->datepicker('my_field',time(),'type=date');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
 	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
@@ -1493,6 +1496,15 @@ class e_form
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
+		$timezone    = '';
+
+		if(!empty($options['timezone'])) // since datetimepicker does not support timezones and assumes the browser timezone is the intended timezone.
+		{
+			date_default_timezone_set($options['timezone']);
+			$targetOffset = date('Z');
+			date_default_timezone_set(USERTIMEZONE);
+			$timezone = "data-date-timezone-offset='".$targetOffset."'";
+		}
 
 		$text = "";
 
@@ -1503,7 +1515,7 @@ class e_form
 		}
 		else
 		{
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled}  />";
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} {$timezone} />";
 			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
 			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
