@@ -23,7 +23,15 @@ if((e107::wysiwyg() === true && check_class($pref['post_html'])) || strpos(e_SEL
 
 	//	e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.3/tinymce.min.js');
 
-		e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.12/tinymce.min.js');
+	//	e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.11/tinymce.min.js');
+		/**
+		 * tinymce 4.7.10 and newer do not work. 
+		 * Looks like an issue introduced with 4.7.10
+		 * Reverting back to 4.7.9 makes everything work in e107
+		 * Issue #3136
+		 */
+		e107::js('footer', 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.9/tinymce.min.js');
+
 
 	//	e107::js('footer', "//cdn.tinymce.com/4/tinymce.min.js");
 
