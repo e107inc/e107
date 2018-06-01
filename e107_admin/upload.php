@@ -205,16 +205,13 @@ class upload_ui extends e_admin_ui
 			$new_data['upload_active'] = 0;
             return $new_data;
 		}
+
 		// Make sure the upload_category contains only integers
-		if (substr($new_data['upload_category'], 0, 10) == 'download__')
-		{
-			$new_data['upload_category'] = intval(substr($new_data['upload_category'], 10));
-		}
-		// Make sure the owner is not empty
-		if (trim($new_data['upload_owner']) == '')
-		{
-			$new_data['upload_owner'] = 'download';
-		}
+		// Make sure the owner correspondents to the category id
+		list($catOwner, $catID) = explode("__", $new_data['upload_category'], 2);
+		$new_data['upload_category'] = intval($catID);
+		$new_data['upload_owner'] = $catOwner;
+
 		return $new_data;
     }
 
