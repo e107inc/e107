@@ -107,7 +107,7 @@ class userUpload
 		$catID              = null;
 		$catOwner           = null;
 		$file               = null;
-		$image              = null;
+		$image              = '';
 		$filesize           = 0;
 
 						
