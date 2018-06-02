@@ -204,7 +204,15 @@ class upload_ui extends e_admin_ui
             $this->getModel()->addValidationError(UPLLAN_62);
 			$new_data['upload_active'] = 0;
             return $new_data;
-        }
+		}
+
+		// Make sure the upload_category contains only integers
+		// Make sure the owner correspondents to the category id
+		list($catOwner, $catID) = explode("__", $new_data['upload_category'], 2);
+		$new_data['upload_category'] = intval($catID);
+		$new_data['upload_owner'] = $catOwner;
+
+		return $new_data;
     }
 
     /**
@@ -262,7 +270,8 @@ class upload_ui extends e_admin_ui
             return 0;
         }
 
-        $owner = varset($upload['upload_owner'], 'download');
+		// Make sure the owner is not empty
+        $owner = vartrue($upload['upload_owner'], 'download');
 
         $uploadObj = e107::getAddon($owner,'e_upload');
 
@@ -371,7 +380,9 @@ class upload_form_ui extends e_admin_form_ui
 
 	        case 'write':
 	            $owner =  $this->getController()->getModel()->get('upload_owner');
-                return $value."-- ".$owner; // $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
+				//return $value."-- ".$owner; // $this->radio_switch('upload_active', $value, LAN_ACCEPT, LAN_PENDING, $options);
+				// make category editable instead of just displaying data
+				return e107::getForm()->select('upload_category', $opts, $value);
             break;
 
             case 'batch':
