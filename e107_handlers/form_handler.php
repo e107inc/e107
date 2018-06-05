@@ -3148,7 +3148,7 @@ class e_form
 			return $text;	
 		}			
 				
-			
+
 		
 		return $this->admin_button($name, $value, $action, $label, $options);
 		
@@ -3253,6 +3253,13 @@ class e_form
 			$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
 		}
 
+		$confirmation = LAN_JSCONFIRM;
+
+		if(!empty($options['confirm']))
+		{
+			$confirmation = $options['confirm'];
+		}
+
 		$options = $this->format_options('admin_button', $name, $options);
 
 		$options['class'] = vartrue($options['class']);
@@ -3277,7 +3284,10 @@ class e_form
 
 			case 'delete':
 			case 'danger':
-				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+
+
+
+				$options['other'] = 'data-confirm="'.$confirmation.'"';
 				break;
 
 			case 'batch':

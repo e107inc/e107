@@ -788,6 +788,19 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
+
+		// Basic Delete Confirmation
+		$('input.delete,button.delete,a[data-confirm]').click(function(){
+  			answer = confirm($(this).attr("data-confirm"));
+  			return answer; // answer is a boolean
+		});
+
+		$(".e-confirm").click(function(){
+  			answer = confirm($(this).attr("title"));
+  			return answer; // answer is a boolean
+		});
+
+
 		 //check all
 		 $("#check-all").click(function(event){
 		 		var val = $(this).val(), selector = '.field-spacer';

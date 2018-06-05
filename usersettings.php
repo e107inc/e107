@@ -69,7 +69,7 @@ class usersettings_front // Begin Usersettings rewrite.
 	function __construct()
 	{
 
-		if(deftrue('BOOTSTRAP')===3)
+		if(deftrue('BOOTSTRAP'))
 		{
 			$template = e107::getCoreTemplate('usersettings','', true, true); // always merge
 
@@ -171,6 +171,11 @@ class usersettings_front // Begin Usersettings rewrite.
 		$_uid               = false;			// FALSE if user modifying their own data; otherwise ID of data being modified
 		$adminEdit          = false; // @deprecated		// FALSE if editing own data. TRUE if admin edit
 
+
+		if(!empty($_POST['delete_account']))
+		{
+			echo e107::getMessage()->addWarning("This feature is currently under development. Your data has not been modified")->render(); // do not LAN.
+		}
 
 		/* todo subject of removal */
 		if(is_numeric(e_QUERY))
