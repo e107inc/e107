@@ -348,12 +348,51 @@
 		{
 
 		}
-
+*/
 		public function testSelect()
 		{
+			$options = array('disabled'=>array('opt_2'));
+			$selected =  'opt_3';
+			$opt_array = array('opt_1'=>"Option 1", 'opt_2'=>"Option 2", 'opt_3'=>"Option 3");
+			$actual = $this->_frm->select('name', $opt_array, $selected, $options);
+
+			$actual = str_replace("\n", "", $actual);
+
+			$expected = "<select name='name' id='name' class='tbox select form-control' tabindex='1'><option value='opt_1'>Option 1</option><option value='opt_2' disabled='disabled'>Option 2</option><option value='opt_3' selected='selected'>Option 3</option></select>";
+
+			$this->assertEquals($expected,$actual);
+
+
+			// test group opt-array.
+
+			$opt_array = array(
+				 'GROUP 1' => array ('opt_1'=>"Option 1", 'opt_2'=>"Option 2", 'opt_3'=>"Option 3"),
+				 'GROUP 2' => array ('opt_4'=>"Option 4", 'opt_5'=>"Option 5", 'opt_6'=>"Option 6"),
+			);
+
+			$actual = $this->_frm->select('name', $opt_array, $selected, $options);
+			$expected = "<select name='name' id='name' class='tbox select form-control' tabindex='2'>
+<optgroup class='optgroup level-1' label='GROUP 1'>
+<option value='opt_1'>Option 1</option>
+<option value='opt_2' disabled='disabled'>Option 2</option>
+<option value='opt_3' selected='selected'>Option 3</option>
+</optgroup>
+<optgroup class='optgroup level-1' label='GROUP 2'>
+<option value='opt_4'>Option 4</option>
+<option value='opt_5'>Option 5</option>
+<option value='opt_6'>Option 6</option>
+</optgroup>
+
+</select>";
+
+			$actual = str_replace(array("\n", "\r"), "", $actual);
+			$expected = str_replace(array("\n", "\r"), "", $expected);
+
+			$this->assertEquals($expected,$actual);
+
 
 		}
-
+/*
 		public function testUserclass()
 		{
 
@@ -378,12 +417,17 @@
 		{
 
 		}
-
+*/
 		public function testOption()
 		{
+			$options = array('disabled'=>true);
+			$actual = $this->_frm->option('name','value', '', $options);
+			$expected = "<option value='value' disabled='disabled'>name</option>";
+
+			$this->assertEquals($expected, $actual);
 
 		}
-
+/*
 		public function testOption_multi()
 		{
 
