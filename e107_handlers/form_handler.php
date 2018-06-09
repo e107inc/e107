@@ -2714,6 +2714,7 @@ class e_form
 	 * @param boolean       $selected [optional]
 	 * @param string|array  $options [optional]
 	 * @param bool          $options['useValues']   when true uses array values as the key.
+	 * @param array         $options['disabled'] list of $option_array keys which should be disabled. eg. array('key_1', 'key_2');
 	 * @param bool|string   $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description.
 	 * @return string       HTML text for display
 	 */
@@ -2758,7 +2759,7 @@ class e_form
 			$option_array = $new;	
 		}
 
-		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
+		$text .= $this->option_multi($option_array, $selected, $options)."\n".$this->select_close();
 		return $text;
 	}
 	
@@ -2940,10 +2941,12 @@ class e_form
 	function option($option_title, $value, $selected = false, $options = '')
 	{
 	    if(is_string($options)) parse_str($options, $options);
-       
+
 		if(false === $value) $value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
+
+
 
 		return "<option value='{$value}'".$this->get_attributes($options).">".defset($option_title, $option_title)."</option>";
 	}
@@ -2966,18 +2969,24 @@ class e_form
 			return $this->option('','');
 		}
 
+		$opts = $options;
 
-		foreach ($option_array as $value => $label)
+		foreach ((array) $option_array as $value => $label)
 		{
 			if(is_array($label))
 			{
-				$text .= $this->optgroup($value,$label,$selected,$options, 0);
-
+				$text .= $this->optgroup($value, $label, $selected, $options, 0);
 			}
 			else
 			{
+				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected);
 
-				$text .= $this->option($label, $value, (is_array($selected) ? in_array($value, $selected) : $selected == $value), $options)."\n";
+				if(!empty($options['disabled']))
+				{
+					$opts['disabled'] = in_array($value, $options['disabled']);
+				}
+
+				$text .= $this->option($label, $value, $sel, $opts)."\n";
 			}
 		}
 
@@ -2999,6 +3008,8 @@ class e_form
 		$level++;
 		$text = $this->optgroup_open($value, null, array('class'=>'level-'.$level));
 
+		$opts = $options;
+
 		foreach($label as $val => $lab)
 		{
 			if(is_array($lab))
@@ -3007,7 +3018,12 @@ class e_form
 			}
 			else
 			{
-				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
+				if(!empty($options['disabled']))
+				{
+					$opts['disabled'] = in_array($val, $options['disabled']);
+				}
+
+				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $opts)."\n";
 			}
 
 		}
