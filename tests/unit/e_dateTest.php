@@ -16,6 +16,9 @@
 
 		protected function _before()
 		{
+			// Expected values made using the C locale
+			setlocale(LC_TIME, 'C');
+
 			try
 			{
 				$this->dateObj = $this->make('e_date');
@@ -208,9 +211,6 @@
 
 		public function testConvert_date()
 		{
-			// Expected values made using the C locale
-			setlocale(LC_TIME, 'C');
-
 			// will probably fail on windows
 			$actual = $this->dateObj->convert_date(mktime(12, 45, 03, 2, 5, 2018), 'long');
 			$expected = 'Monday 05 February 2018 - 12:45:03';
