@@ -374,6 +374,22 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 unset($show);
 echo "\n</body>\n</html>";
 
+//hook into the end of page buffering
+//Load e_end.php files.
+if (!empty($pref['e_end_list']) && is_array($pref['e_end_list']))
+{
+	foreach($pref['e_end_list'] as $val)
+	{
+		$fname = e_PLUGIN.$val."/e_end.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			
+			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}
+	}
+	unset($ret);
+}
 
 //
 // I Send the buffered page data, along with appropriate headers
