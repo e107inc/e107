@@ -76,7 +76,7 @@ class e_plugin
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
 		'e_gsitemap',
-		'e_end', // hook into all page at the end
+		'e_output', //hook into all pages at the end (after closing </html>)
 	);
 
 
@@ -1070,7 +1070,7 @@ class e107plugin
 		'e_user',
 		'e_library', // For third-party libraries are defined by plugins/themes.
 		'e_gsitemap',
-		'e_end', // hook into all page at the end
+		'e_output', //hook into all pages at the end (after closing </html>)
 	);
 
 
@@ -1117,7 +1117,7 @@ class e107plugin
 		'e_user'        => "Have your plugin include data on the user-profile page.",
 		'e_library'     => "Include a third-party library",
 		'e_parse'       => "Hook into e107's text/html parser",
-		'e_end'         => "Hook into all page at the end"
+		'e_output'      => "Hook into all pages at the end (after closing </html>)"
 	);
 
 
