@@ -2609,7 +2609,7 @@ class e107
 	 */
 	public static function getThemeInfo($for = true, $path = '')
 	{
-		global $user_pref; // FIXME - user model, kill user_pref global
+	//	global $user_pref; // FIXME - user model, kill user_pref global
 
 		if(true === $for)
 		{
@@ -2629,7 +2629,8 @@ class e107
 				}
 				else
 				{
-					$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : self::getPref('sitetheme');
+					$user_pref = self::getUser()->getPref();
+					$for = !empty($user_pref['sitetheme']) ? $user_pref['sitetheme'] : self::getPref('sitetheme');
 				}
 
 			break;
