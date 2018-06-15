@@ -2357,6 +2357,77 @@ class e_db_mysql
 
 
 	/**
+	 *	Determines if a table index (key) exist.
+	 *
+	 *	@param string $table - table name (no prefix)
+	 *	@param string $keyname - Name of the key to
+	 *  @param array $fields - OPTIONAL list of fieldnames, the index (key) must contain
+	 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all key info
+	 *	@return array|boolean - FALSE on error, key information on success
+	 */
+	function index($table, $keyname, $fields=null, $retinfo = FALSE)
+	{
+		if(!$this->mySQLdefaultdb)
+		{
+			global $mySQLdefaultdb;
+			$this->mySQLdefaultdb = $mySQLdefaultdb;
+		}
+
+		if(!$this->mySQLaccess)
+		{
+			global $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
+		}
+
+		if (!empty($fields) && !is_array($fields))
+		{
+			$fields = explode(',', str_replace(' ', '', $fields));
+		}
+		elseif(empty($fields))
+		{
+			$fields = array();
+		}
+
+		$check_field = count($fields) > 0;
+
+		$info = array();
+		$result = $this->gen("SHOW INDEX FROM ".$this->mySQLPrefix.$table);
+		if ($result && ($this->rowCount() > 0))
+		{
+			$c=0;
+			while ($row = $this->fetch())
+			{
+				// Check for match of key name - and allow that key might not be used
+				if($keyname == $row['Key_name'])
+				{
+					// a key can contain severeal fields which are returned as 1 row per field
+					if (!$check_field)
+					{   // Check only for keyname
+						$info[] = $row;
+					}
+					elseif ($check_field && in_array($row['Column_name'], $fields))
+					{   // Check also for fieldnames
+						$info[] = $row;
+					}
+					$c++;
+				}
+			}
+
+			if (count($info) > 0)
+			{
+				// Kex does not consist of all keys
+				if ($check_field && $c != count($fields)) return false;
+				// Return full information
+				if ($retinfo) return $info;
+				// Return only if index was found
+				return true;
+			}
+		}
+		return FALSE;
+	}
+
+
+	/**
 	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
 	 *
 	 * @param string $data
