@@ -173,6 +173,7 @@ $USERSETTINGS_EDIT = "
 	</table>
 	<div>
 	{UPDATESETTINGSBUTTON}
+	{DELETEACCOUNTBUTTON}
 	</div>
 	</div>
 	";
@@ -303,6 +304,7 @@ $USERSETTINGS_TEMPLATE['edit'] = "
 	 <div class='form-group'>
       <div class='col-sm-offset-3 col-sm-9'>
 		{UPDATESETTINGSBUTTON}
+		{DELETEACCOUNTBUTTON}
 	</div>
 	</div>
 

@@ -72,7 +72,7 @@ if(strstr(e_QUERY, "mirror"))
 			}
 			$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
 			$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '".intval($mirror_id)."'");
-			header("Location: {$gaddress}");
+			header("Location: ".decorate_download_location($gaddress));
 			exit();
 		}
 
@@ -189,7 +189,7 @@ if ($type == "file")
 				$sql->update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
 				$sql->update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '".intval($mirror_id)."'");
 
-				header("Location: ".$gaddress);
+				header("Location: ".decorate_download_location($gaddress));
 				exit();
 			}
 
@@ -217,7 +217,7 @@ if ($type == "file")
 			if (strstr($download_url, "http://") || strstr($download_url, "ftp://") || strstr($download_url, "https://"))
 			{
 				$download_url = e107::getParser()->parseTemplate($download_url,true); // support for shortcode-driven dynamic URLS.
-				e107::redirect($download_url);
+				e107::redirect(decorate_download_location($download_url));
 				// header("Location: {$download_url}");
 				exit();
 			} 
@@ -435,4 +435,12 @@ function check_download_limits()
 	}
 }
 
-?>
+function decorate_download_location($url)
+{
+	$pref = e107::getPref();
+	if ($pref['download_security_mode'] !== 'nginx-secure_link_md5')
+		return $url;
+	require_once(__DIR__."/handlers/NginxSecureLinkMd5Decorator.php");
+	$decorator = new NginxSecureLinkMd5Decorator($url, $pref);
+	return $decorator->decorate();
+}

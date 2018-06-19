@@ -240,7 +240,7 @@ class wysiwyg
 			'Danish'        => 'da',
 			// 'Divehi' => 'dv',
 			'Dutch'         => 'nl',
-			'English'       => 'en', // Default language file.
+			'English'       => 'en_GB', // Default language file.
 			// 'English (Canada)' => 'en_CA',
 			// 'English (United Kingdom)' => 'en_GB',
 			'Esperanto'     => 'eo',

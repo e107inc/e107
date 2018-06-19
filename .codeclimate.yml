@@ -1,5 +1,6 @@
 ---
-engines:
+version: "2"
+plugins:
   csslint:
     enabled: false
     duplication:
@@ -36,20 +37,25 @@ engines:
     config:
       file_extensions: "php"
       rulesets: "cleancode,unusedcode,codesize"
-ratings:
-  paths:
-  - "**.css"
-  - "**.js"
-  - "**.php"
-exclude_paths:
-- e107_admin/core_image.php
-- e107_plugins/log/js/awesomechart.js
-- e107_docs/**/*
-- e107_images/**/*
-- e107_handlers/hybridauth/**/*
-- e107_handlers/jsshrink/**/*
-- e107_handlers/phpmailer/**/*
-- e107_handlers/phpthumb/**/*
-- e107_handlers/xmlrpc/**/*
-- e107_web/**/*
-
+exclude_patterns:
+- "config/"
+- "db/"
+- "dist/"
+- "features/"
+- "**/node_modules/"
+- "script/"
+- "**/spec/"
+- "**/test/"
+- "**/tests/"
+- "**/vendor/"
+- "**/*.d.ts"
+- "e107_admin/core_image.php"
+- "e107_plugins/log/js/awesomechart.js"
+- "e107_docs/**/*"
+- "e107_images/**/*"
+- "e107_handlers/hybridauth/**/*"
+- "e107_handlers/jsshrink/**/*"
+- "e107_handlers/phpmailer/**/*"
+- "e107_handlers/phpthumb/**/*"
+- "e107_handlers/xmlrpc/**/*"
+- "e107_web/**/*"

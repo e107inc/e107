@@ -641,7 +641,10 @@ class db_verify
 			// print_a($data);
 			if($data['type'])
 			{
-				return $data['type']." (".$data['field'].");";	
+				//return $data['type']." (".$data['field'].");";
+				// Check if index keyname exists and add backticks
+				$keyname = (!empty($data['keyname']) ? " `".$data['keyname']."`" : "");
+				return $data['type'] . $keyname . " (" . $data['field'] . ");";
 			}
 			else
 			{
@@ -919,9 +922,15 @@ class db_verify
 	function getIndex($data, $print = false)
 	{
 		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?`?([\w,]*[\s]?)`?\))?,?/i";
-		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT|FOREIGN))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
+		// $regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT|FOREIGN))?[\s]*?KEY (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
+		$regex = "/(?:(PRIMARY|UNIQUE|FULLTEXT|FOREIGN))?[\s]*?(INDEX|KEY) (?: ?`?([\w]*)`?)[\s]* ?(?:\([\s]?([\w\s,`]*[\s]?)`?\))?,?/i";
 		preg_match_all($regex,$data,$m);
-		
+
+		if (count($m) > 0)
+		{
+			unset($m[2]);
+			$m = array_combine(range(0, count($m)-1), array_values($m));
+		}
 		$ret = array();
 		
 		if($print)
@@ -932,6 +941,7 @@ class db_verify
 		// Standard Detection Method.
 
 		$fieldReplace = array("`"," ");
+
 
 		foreach($m[3] as $k=>$val)
 		{

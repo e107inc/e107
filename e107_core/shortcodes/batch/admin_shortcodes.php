@@ -2276,7 +2276,7 @@ Inverse 	10 	<span class="badge badge-inverse">10</span>
 						$get = $_GET;
 						$get['elan'] = $code;
 						
-						$qry = http_build_query($get);
+						$qry = http_build_query($get, null, '&amp;');
 						$link = e_REQUEST_SELF.'?'.$qry;
 					}
 					

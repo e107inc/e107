@@ -867,6 +867,7 @@ class e_db_mysql
 		$this->mySQLcurTable = $table;
 		$REPLACE = false; // kill any PHP notices
 		$DUPEKEY_UPDATE = false;
+		$IGNORE = '';
 
 		if(is_array($arg))
 		{
@@ -885,7 +886,12 @@ class e_db_mysql
 			{
 				$DUPEKEY_UPDATE = true;
 				unset($arg['_DUPLICATE_KEY_UPDATE']);
+			}
 
+			if(isset($arg['_IGNORE']))
+			{
+				$IGNORE = ' IGNORE';
+				unset($arg['_IGNORE']);
 			}
 
 			if(!isset($arg['_FIELD_TYPES']) && !isset($arg['data']))
@@ -942,7 +948,7 @@ class e_db_mysql
 
 			if($REPLACE === false)
 			{
-				$query = "INSERT INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
+				$query = "INSERT".$IGNORE." INTO `".$this->mySQLPrefix."{$table}` ({$keyList}) VALUES ({$valList})";
 
 				if($DUPEKEY_UPDATE === true)
 				{
@@ -1301,11 +1307,13 @@ class e_db_mysql
 
 			case 'float':
 				// fix - convert localized float numbers
-				$larr = localeconv();
-				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				$replace = array('.', '.', '', '', '', '');
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
 
-				return str_replace($search, $replace, floatval($fieldValue));
+				// return str_replace($search, $replace, floatval($fieldValue));
+
+				return e107::getParser()->toNumber($fieldValue);
 			break;
 
 			case 'null':
@@ -1360,11 +1368,12 @@ class e_db_mysql
 
 			case 'float':
 				// fix - convert localized float numbers
-				$larr = localeconv();
-				$search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
-				$replace = array('.', '.', '', '', '', '');
+				// $larr = localeconv();
+				// $search = array($larr['decimal_point'], $larr['mon_decimal_point'], $larr['thousands_sep'], $larr['mon_thousands_sep'], $larr['currency_symbol'], $larr['int_curr_symbol']);
+				// $replace = array('.', '.', '', '', '', '');
 
-				return str_replace($search, $replace, floatval($fieldValue));
+				// return str_replace($search, $replace, floatval($fieldValue));
+				return e107::getParser()->toNumber($fieldValue);
 			break;
 
 			case 'null':
@@ -1434,8 +1443,6 @@ class e_db_mysql
 		// e107::getMessage()->addDebug("MySQL Missing Field-Type: ".$type);
 		return PDO::PARAM_STR;
 	}
-
-
 
 
 	/**
@@ -2343,6 +2350,77 @@ class e_db_mysql
 					}
 				}
 				$c++;
+			}
+		}
+		return FALSE;
+	}
+
+
+	/**
+	 *	Determines if a table index (key) exist.
+	 *
+	 *	@param string $table - table name (no prefix)
+	 *	@param string $keyname - Name of the key to
+	 *  @param array $fields - OPTIONAL list of fieldnames, the index (key) must contain
+	 *	@param boolean $retinfo = FALSE - just returns true|false. TRUE - returns all key info
+	 *	@return array|boolean - FALSE on error, key information on success
+	 */
+	function index($table, $keyname, $fields=null, $retinfo = FALSE)
+	{
+		if(!$this->mySQLdefaultdb)
+		{
+			global $mySQLdefaultdb;
+			$this->mySQLdefaultdb = $mySQLdefaultdb;
+		}
+
+		if(!$this->mySQLaccess)
+		{
+			global $db_ConnectionID;
+			$this->mySQLaccess = $db_ConnectionID;
+		}
+
+		if (!empty($fields) && !is_array($fields))
+		{
+			$fields = explode(',', str_replace(' ', '', $fields));
+		}
+		elseif(empty($fields))
+		{
+			$fields = array();
+		}
+
+		$check_field = count($fields) > 0;
+
+		$info = array();
+		$result = $this->gen("SHOW INDEX FROM ".$this->mySQLPrefix.$table);
+		if ($result && ($this->rowCount() > 0))
+		{
+			$c=0;
+			while ($row = $this->fetch())
+			{
+				// Check for match of key name - and allow that key might not be used
+				if($keyname == $row['Key_name'])
+				{
+					// a key can contain severeal fields which are returned as 1 row per field
+					if (!$check_field)
+					{   // Check only for keyname
+						$info[] = $row;
+					}
+					elseif ($check_field && in_array($row['Column_name'], $fields))
+					{   // Check also for fieldnames
+						$info[] = $row;
+					}
+					$c++;
+				}
+			}
+
+			if (count($info) > 0)
+			{
+				// Kex does not consist of all keys
+				if ($check_field && $c != count($fields)) return false;
+				// Return full information
+				if ($retinfo) return $info;
+				// Return only if index was found
+				return true;
 			}
 		}
 		return FALSE;

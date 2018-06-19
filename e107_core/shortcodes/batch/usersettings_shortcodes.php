@@ -554,5 +554,22 @@ class usersettings_shortcodes extends e_shortcode
 		
 	}
 
+	function sc_deleteaccountbutton($parm=array())
+	{
+
+		if((int) $_GET['id'] !== USERID)
+		{
+			return null;
+		}
+
+		$confirm    = defset("LAN_USET_51", "Are you sure? This procedure cannot be reversed! Once completed all personal data that you have entered on this site will be permanently lost and you will no longer be able to login.");
+		$label      = defset('LAN_USET_50', "Delete All Account Information");
+
+		$parm['confirm'] = $confirm;
+
+		return e107::getForm()->button('delete_account',1, 'delete', $label, $parm);
+
+	}
+
 }
 ?>

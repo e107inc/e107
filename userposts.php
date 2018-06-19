@@ -70,7 +70,8 @@ if ($action == "comments")
 	$sql2 = e107::getDb('sql2');
 	if($user_name)
 	{
-		$ccaption = UP_LAN_1.$user_name;
+	//	$ccaption = UP_LAN_1.$user_name;
+		$ccaption = str_replace('[x]', $user_name, UP_LAN_1);
 		/*$sql->db_Select("user", "user_comments", "user_id=".$id);
 		$row = $sql->db_Fetch();
 		$ctotal = $row['user_comments'];*/
@@ -159,7 +160,8 @@ elseif ($action == 'forums')
 		exit;
 	}
 
-	$fcaption = UP_LAN_0.' '.$user_name;
+//	$fcaption = UP_LAN_0.' '.$user_name;
+	$fcaption = str_replace('[x]', $user_name, UP_LAN_0);
 /*
 	if (!$USERPOSTS_FORUM_TABLE)
 	{

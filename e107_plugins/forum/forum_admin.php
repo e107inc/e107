@@ -116,7 +116,7 @@ if(!deftrue('OLD_FORUMADMIN'))
 		protected $pid				= 'forum_id';
 		protected $perPage			= 30;
 		protected $batchDelete		= true;
-		//	protected $batchCopy		= true;
+		protected $batchCopy		= true;
 		protected $sortField		= 'forum_order';
 		protected $sortParent       = 'forum_parent';
 		protected $orderStep		= 50;

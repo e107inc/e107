@@ -351,7 +351,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					{
 						var $button = $(this);
 						var $form = $button.closest('form');
-
+						var form_submited = false;
 						var type = $button.data('loading-icon');
 
 						if(type === undefined || $form.length === 0)
@@ -365,6 +365,10 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 								return false;
 							}
 
+							if (form_submited) {
+								return false;
+							}
+							
 							var caption = "<i class='fa fa-spin " + type + " fa-fw'></i>";
 							caption += "<span>" + $button.text() + "</span>";
 
@@ -373,6 +377,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 							if($button.attr('data-disable') == 'true')
 							{
 								$button.addClass('disabled');
+								form_submited = true;
 							}
 						});
 
@@ -783,6 +788,19 @@ $.ajaxSetup({
 
 $(document).ready(function()
 {
+
+		// Basic Delete Confirmation
+		$('input.delete,button.delete,a[data-confirm]').click(function(){
+  			answer = confirm($(this).attr("data-confirm"));
+  			return answer; // answer is a boolean
+		});
+
+		$(".e-confirm").click(function(){
+  			answer = confirm($(this).attr("title"));
+  			return answer; // answer is a boolean
+		});
+
+
 		 //check all
 		 $("#check-all").click(function(event){
 		 		var val = $(this).val(), selector = '.field-spacer';

@@ -359,6 +359,21 @@ class e_jsmanager
 	}
 
 	/**
+	 * Add CSS file(s) for inclusion in site header in the 'library' category.
+	 *
+	 * @param string|array $file_path path, shortcodes usage is prefered
+	 * @param string $media any valid media attribute string - http://www.w3schools.com/TAGS/att_link_media.asp
+	 * @return e_jsmanager
+	 */
+	public function libraryCSS($file_path, $media = 'all', $preComment = '', $postComment = '')
+	{
+		$this->addJs('library_css', $file_path, $media, $preComment, $postComment);
+		return $this;
+	}
+
+
+
+	/**
 	 * Add CSS file(s) for inclusion in site header
 	 *
 	 * @param string|array $file_path path, shortcodes usage is prefered
@@ -962,6 +977,14 @@ class e_jsmanager
 				$runtime = true;
 			break;
 
+			case 'library_css':
+				$file_path = $runtime_location.$this->_sep.$tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
+				// 	e107::getDebug()->log($file_path);
+				if(!isset($this->_e_css['library'])) $this->_e_css['library'] = array();
+				$registry = &$this->_e_css['library'];
+				$runtime = true;
+			break;
+
 			case 'inline_css': // no zones, TODO - media?
 				$this->_e_css_src[] = $file_path;
 				return $this;
@@ -1127,6 +1150,11 @@ class e_jsmanager
 			case 'other_css':
 				$this->renderFile(varset($this->_e_css['other'], array()), $external, 'Other CSS', $mod, false);
 				unset($this->_e_css['other']);
+			break;
+
+			case 'library_css':
+				$this->renderFile(varset($this->_e_css['library'], array()), $external, 'Library CSS', $mod, false);
+				unset($this->_e_css['library']);
 			break;
 
 			case 'inline_css':

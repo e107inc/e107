@@ -305,7 +305,7 @@ if(deftrue('e_DEVELOPER'))
 {
 	echo "\n\n<!-- ======= [JSManager] FOOTER: Remaining CSS ======= -->";
 }
-$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
+$CSSORDER = deftrue('CSSORDER') ? explode(",",CSSORDER) : array('library','other','core','plugin','theme');  // INLINE CSS in Body not supported by HTML5. .
 
 foreach($CSSORDER as $val)
 {
@@ -374,6 +374,22 @@ $show = deftrue('e_POWEREDBY_DISABLE') ? "none" : "block"; // Let search engines
 unset($show);
 echo "\n</body>\n</html>";
 
+//hook into the end of page (usefull for example for capturing output buffering)
+//Load e_output.php files.
+if (!empty($pref['e_output_list']) && is_array($pref['e_output_list']))
+{
+	foreach($pref['e_output_list'] as $val)
+	{
+		$fname = e_PLUGIN.$val."/e_output.php"; // Do not place inside a function - BC $pref required. . 
+		
+		if(is_readable($fname))
+		{
+			
+			$ret = ($e107_debug || isset($_E107['debug'])) ? include_once($fname) : @include_once($fname);
+		}
+	}
+	unset($ret);
+}
 
 //
 // I Send the buffered page data, along with appropriate headers

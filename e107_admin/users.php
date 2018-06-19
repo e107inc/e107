@@ -60,7 +60,7 @@ class users_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
-		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
+		'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
 		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perms'=>'4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
@@ -86,11 +86,6 @@ class users_admin extends e_admin_dispatcher
 
 	function init()
 	{
-		if(E107_DEBUG_LEVEL > 0)
-		{
-			$this->adminMenu['ranks/list']	= array('caption'=> LAN_USER_RANKS. " (experimental)", 'perm' => '4|U3');
-		}
-
 
 		$JS = <<<JS
 
@@ -470,7 +465,7 @@ class users_admin_ui extends e_admin_ui
 	}
 
 
-	public function afterDelete($deletedData,$id=null)
+	public function afterDelete($deletedData, $id=null, $deleted_check)
 	{
 		if(!empty($id))
 		{
@@ -2860,10 +2855,10 @@ class users_admin_form_ui extends e_admin_form_ui
 			}
 
 			unset($tmp);
-			natsort($imageList);
+		//	natsort($imageList);
 		}
 
-		public function afterDelete($data)
+		public function afterDelete($data, $id, $deleted_check)
 		{
 			e107::getCache()->clear_sys('nomd5_user_ranks');
 		}
@@ -2938,7 +2933,7 @@ class users_admin_form_ui extends e_admin_form_ui
 				parse_str(str_replace('&amp;', '&', e_QUERY), $query); //FIXME - FIX THIS
 				$query['action'] = 'edit';
 				$query['id'] = $id;
-				$query = http_build_query($query);
+				$query = http_build_query($query, null, '&amp;');
 
 				$text = "<a href='".e_SELF."?{$query}' class='btn btn-default' title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 						".ADMIN_EDIT_ICON."</a>";
