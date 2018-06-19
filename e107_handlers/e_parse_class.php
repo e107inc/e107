@@ -2386,6 +2386,32 @@ class e_parse extends e_parser
 
 
 	/**
+	 * Convert a string to a number (int/float)
+	 *
+	 * @param string $value
+	 * @return int|float
+	 */
+	function toNumber($value) 
+	{
+		// adapted from: https://secure.php.net/manual/en/function.floatval.php#114486
+		$dotPos = strrpos($value, '.');
+		$commaPos = strrpos($value, ',');
+		$sep = (($dotPos > $commaPos) && $dotPos) ? $dotPos :
+			((($commaPos > $dotPos) && $commaPos) ? $commaPos : false);
+	  
+		if (!$sep) {
+			return preg_replace("/[^-0-9]/", "", $value);
+		}
+	
+		return (
+			preg_replace("/[^-0-9]/", "", substr($value, 0, $sep)) . '.' .
+			preg_replace("/[^0-9]/", "", substr($value, $sep+1, strlen($value)))
+		);
+	}
+
+
+	
+	/**
 	 * Clean and Encode Ampersands '&' for output to browser.
 	 * @param string $text
 	 * @return mixed|string
@@ -4634,7 +4660,7 @@ class e_parser
 			$ytpref['cc_lang_pref'] = e_LAN; // switch captions with chosen user language.
 		}
 
-		$ytqry = http_build_query($ytpref);
+		$ytqry = http_build_query($ytpref, null, '&amp;');
 
 		$defClass = (deftrue('BOOTSTRAP')) ? "embed-responsive embed-responsive-16by9" : "video-responsive"; // levacy backup.
 

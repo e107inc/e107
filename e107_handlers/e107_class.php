@@ -160,7 +160,8 @@ class e107
 	protected static $_known_handlers = array(
 		'UserHandler'                    => '{e_HANDLER}user_handler.php',
 		'comment'                        => '{e_HANDLER}comment_class.php',
-		'convert'                        => '{e_HANDLER}date_handler.php',
+		'e_date'                         => '{e_HANDLER}date_handler.php',
+		'convert'                        => '{e_HANDLER}date_handler.php', // BC Fix.
 		'db'                             => '{e_HANDLER}mysql_class.php',
 		'e107Email'                      => '{e_HANDLER}mail.php',
 		'e107_event'                     => '{e_HANDLER}event_class.php',
@@ -1588,7 +1589,7 @@ class e107
 	 */
 	public static function getDateConvert()
 	{
-		return self::getSingleton('convert', true);
+		return self::getSingleton('e_date', true);
 	}
 	
 	/**
@@ -1598,7 +1599,7 @@ class e107
 	 */
 	public static function getDate()
 	{
-		return self::getSingleton('convert', true);
+		return self::getSingleton('e_date', true);
 	}
 
 
@@ -2608,7 +2609,7 @@ class e107
 	 */
 	public static function getThemeInfo($for = true, $path = '')
 	{
-		global $user_pref; // FIXME - user model, kill user_pref global
+	//	global $user_pref; // FIXME - user model, kill user_pref global
 
 		if(true === $for)
 		{
@@ -2628,7 +2629,8 @@ class e107
 				}
 				else
 				{
-					$for = isset($user_pref['sitetheme']) ? $user_pref['sitetheme'] : self::getPref('sitetheme');
+					$user_pref = self::getUser()->getPref();
+					$for = !empty($user_pref['sitetheme']) ? $user_pref['sitetheme'] : self::getPref('sitetheme');
 				}
 
 			break;
@@ -3788,7 +3790,7 @@ class e107
 		// setup some php options
 		self::ini_set('magic_quotes_runtime',     0);
 		self::ini_set('magic_quotes_sybase',      0);
-		self::ini_set('arg_separator.output',     '&amp;');
+	//	self::ini_set('arg_separator.output',     '&amp;'); // non-standard and bad for third-party script compatibility. @see https://github.com/e107inc/e107/issues/3116
 		self::ini_set('session.use_only_cookies', 1);
 		self::ini_set('session.use_trans_sid',    0);
 		self::ini_set('session.cookie_httponly',  1); // cookie won't be accessible by scripting languages, such as JavaScript. Can effectively help to reduce identity theft through XSS attacks

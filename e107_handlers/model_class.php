@@ -1792,21 +1792,22 @@ class e_model extends e_object
 	 * @param string $value
 	 * @return integer|float
 	 */
-	public function toNumber($value)
-	{
-		$larr = localeconv();
-		$search = array(
-			$larr['decimal_point'],
-			$larr['mon_decimal_point'],
-			$larr['thousands_sep'],
-			$larr['mon_thousands_sep'],
-			$larr['currency_symbol'],
-			$larr['int_curr_symbol']
-		);
-		$replace = array('.', '.', '', '', '', '');
+	// moved to e_parse
+	// public function toNumber($value)
+	// {
+	// 	$larr = localeconv();
+	// 	$search = array(
+	// 		$larr['decimal_point'],
+	// 		$larr['mon_decimal_point'],
+	// 		$larr['thousands_sep'],
+	// 		$larr['mon_thousands_sep'],
+	// 		$larr['currency_symbol'],
+	// 		$larr['int_curr_symbol']
+	// 	);
+	// 	$replace = array('.', '.', '', '', '', '');
 
-		return str_replace($search, $replace, $value);
-	}
+	// 	return str_replace($search, $replace, $value);
+	// }
 
 	/**
 	 * Convert object data to a string
@@ -2704,7 +2705,8 @@ class e_front_model extends e_model
 		{
 			case 'int':
 			case 'integer':
-				return intval($this->toNumber($value));
+				//return intval($this->toNumber($value));
+				return intval($tp->toNumber($value));
 			break;
 
 			case 'safestr':
@@ -2731,7 +2733,8 @@ class e_front_model extends e_model
 			break;
 
 			case 'float':
-				return $this->toNumber($value);
+				// return $this->toNumber($value);
+				return $tp->toNumber($value);
 			break;
 
 			case 'bool':

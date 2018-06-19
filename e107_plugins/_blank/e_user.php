@@ -25,16 +25,30 @@ class _blank_user // plugin-folder + '_user'
 	}
 
 
-
-	function fields()
+	/**
+	 * Experimental and subject to change without notice.
+	 * @return mixed
+	 */
+	function delete()
 	{
 
-		$fields = array(
-
-
-
+		$config['user'] =  array(
+			'user_id'           => '[primary]',
+			'user_name'         => '[unique]',
+			'user_loginname'    => '[unique]',
+			'user_email'        => '[unique]',
+			'user_ip'           => '',
+			// etc.
+			'WHERE'             => 'user_id = '.USERID,
+			'MODE'              => 'update'
 		);
 
+		$config['user_extended'] = array(
+			'WHERE'             => 'user_extended_id = '.USERID,
+			'MODE'              => 'delete'
+		);
+
+		return $config;
 
 	}
 

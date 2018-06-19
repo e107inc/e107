@@ -1479,6 +1479,7 @@ class e_admin_dispatcher
 		$tp = e107::getParser();
 		$var = array();
 		$selected = false;
+
 		foreach($this->adminMenu as $key => $val)
 		{
 
@@ -1516,6 +1517,12 @@ class e_admin_dispatcher
 					case 'uri':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs');
+
+						if(!empty($v) && (e_REQUEST_URI === $v))
+						{
+							$selected = $key;
+						}
+
 					break;
 
 					default:
@@ -1880,6 +1887,8 @@ class e_admin_controller
 			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
 
+
+
 			if(isset($data[$search]))
 			{
 				 $res['caption'] = $data[$search];
@@ -2152,9 +2161,9 @@ class e_admin_controller
 			return $response;
 		}
 		
-		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title. 
+		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title.
 		{
-			$this->addTitle(); 	
+			$this->addTitle();
 		}
 
 
@@ -2164,6 +2173,9 @@ class e_admin_controller
 		{
 			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
 		}
+
+
+		
 		
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
@@ -5478,6 +5490,13 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 
 		$this->addTitle();
+
+		if($this->getQuery('filter_options'))
+		{
+		//	var_dump($this);
+			// $this->addTitle("to-do"); // display filter option when active.
+		}
+		
 	}
 
 	/**
@@ -6680,7 +6699,7 @@ class e_admin_form_ui extends e_form
 		$vars           = $this->getController()->getQuery();
 		$vars['from']   = '[FROM]';
 
-		$paginate       = http_build_query($vars);
+		$paginate       = http_build_query($vars, null, '&amp;');
 
 		return $this->pagination(e_REQUEST_SELF.'?'.$paginate,$totalRecords,$fromPage,$perPage,array('template'=>'basic'));
 
@@ -6744,7 +6763,7 @@ class e_admin_form_ui extends e_form
 			$gridAction = $this->getController()->getAction() === 'grid' ? 'list' : 'grid';
 			$gridQuery = (array) $_GET;
 			$gridQuery['action'] = $gridAction;
-			$toggleUrl = e_REQUEST_SELF."?".http_build_query($gridQuery);
+			$toggleUrl = e_REQUEST_SELF."?".http_build_query($gridQuery, null, '&amp;');
 			$gridIcon = ($gridAction === 'grid') ? ADMIN_GRID_ICON : ADMIN_LIST_ICON;
 			$gridTitle = ($gridAction === 'grid') ? LAN_UI_VIEW_GRID_LABEL : LAN_UI_VIEW_LIST_LABEL;
 			$gridToggle = "<a class='btn btn-default' href='".$toggleUrl."' title=\"".$gridTitle."\">".$gridIcon."</a>";

@@ -286,7 +286,11 @@ class download_main_admin_ui extends e_admin_ui
 		//required - default column user prefs
 		protected $fieldpref = array('checkboxes', 'download_image', 'download_id', 'download_datestamp', 'download_category', 'download_name', 'download_active', 'download_class', 'fb_order', 'options');
 	
-		//
+		// Security modes
+		protected $security_options = array(
+			'none' => LAN_DL_SECURITY_MODE_NONE,
+			'nginx-secure_link_md5' => LAN_DL_SECURITY_MODE_NGINX_SECURELINKMD5
+		);
 
 		// optional - required only in case of e.g. tables JOIN. This also could be done with custom model (set it in init())
 		//protected $editQry = "SELECT * FROM #release WHERE release_id = {ID}";
@@ -1133,22 +1137,32 @@ $columnInfo = array(
 			global $admin_log,$pref;
 					
 			$tp = e107::getParser();
+
+			$expected_params = array(
+				'download_php', 'download_view', 'download_sort', 'download_order',
+				'mirror_order', 'recent_download_days', 'agree_flag', 'download_email',
+				'agree_text', 'download_denied', 'download_reportbroken',
+				'download_security_mode', 'download_security_expression', 'download_security_link_expiry'
+			);
 			
 			$temp = array();
-			$temp['download_php'] = $_POST['download_php'];
-			$temp['download_view'] = $_POST['download_view'];
-			$temp['download_sort'] = $_POST['download_sort'];
-			$temp['download_order'] = $_POST['download_order'];
-			$temp['mirror_order'] = $_POST['mirror_order'];
-			$temp['recent_download_days'] = $_POST['recent_download_days'];
-			$temp['agree_flag'] = $_POST['agree_flag'];
-			$temp['download_email'] = $_POST['download_email'];
-			$temp['agree_text'] = $tp->toDB($_POST['agree_text']);
-			$temp['download_denied'] = $tp->toDB($_POST['download_denied']);
-			$temp['download_reportbroken'] = $_POST['download_reportbroken'];
-						
-			if ($_POST['download_subsub']) $temp['download_subsub'] = '1'; else $temp['download_subsub'] = '0';
-			if ($_POST['download_incinfo']) $temp['download_incinfo'] = '1'; else $temp['download_incinfo'] = '0';
+			foreach($expected_params as $expected_param)
+			{
+				$temp[$expected_param] = $_POST[$expected_param];
+			}
+
+			$temp['download_subsub'] = $_POST['download_subsub'] ? '1' : '0';
+			$temp['download_incinfo'] = $_POST['download_incinfo'] ? '1' : '0';
+
+			if ($_POST['download_security_mode'] !== 'nginx-secure_link_md5')
+			{
+				unset($temp['download_security_mode']);
+				unset($temp['download_security_expression']);
+				unset($temp['download_security_link_expiry']);
+				e107::getConfig('core')->removePref('download_security_mode');
+				e107::getConfig('core')->removePref('download_security_expression');
+				e107::getConfig('core')->removePref('download_security_link_expiry');
+			}
 			
 			e107::getConfig('core')->setPref($temp)->save(false);
 
@@ -2093,14 +2107,33 @@ $columnInfo = array(
 		      }
 	   }
 
+	private function supported_secure_link_variables_html()
+	{
+		require_once(__DIR__."/../handlers/NginxSecureLinkMd5Decorator.php");
+		$supported_secure_link_variables_html = "<ul>";
+		foreach(NginxSecureLinkMd5Decorator::supported_variables() as $variable)
+		{
+			$supported_secure_link_variables_html .= "<li><code>$variable</code></li>";
+		}
+		$supported_secure_link_variables_html .= "</ul>";
+		return $supported_secure_link_variables_html;
+	}
+
+	private function mirror_order_options_html($pref)
+	{
+		return ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
+			($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
+			($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_12."</option>" : "<option value='2'>".DOWLAN_12."</option>");
+	}
+
 		function show_download_options()
 		{
 		   	global $pref, $ns;
-		
-				require_once(e_HANDLER."form_handler.php");
-				$frm = new e_form(true); //enable inner tabindex counter
-		
-		   	$agree_flag = $pref['agree_flag'];
+
+			require_once(e_HANDLER."form_handler.php");
+			$frm = new e_form(true); //enable inner tabindex counter
+
+			$agree_flag = $pref['agree_flag'];
 		   	$agree_text = $pref['agree_text'];
 		      $c = $pref['download_php'] ? " checked = 'checked' " : "";
 		      $sacc = (varset($pref['download_incinfo'],0) == '1') ? " checked = 'checked' " : "";
@@ -2115,14 +2148,15 @@ $columnInfo = array(
 		         "ASC"    => DOWLAN_62,
 		         "DESC"   => DOWLAN_63
 		      );
-		
+
 		   	$text = "
 				   
 					   <ul class='nav nav-tabs'>
 						   <li class='active'><a data-toggle='tab' href='#core-download-download1'>".LAN_DL_DOWNLOAD_OPT_GENERAL."</a></li>
 						   <li><a data-toggle='tab' href='#core-download-download2'>".LAN_DL_DOWNLOAD_OPT_BROKEN."</a></li>
 						   <li><a data-toggle='tab' href='#core-download-download3'>".LAN_DL_DOWNLOAD_OPT_AGREE."</a></li>
-						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_UPLOAD."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download4'>".LAN_DL_DOWNLOAD_OPT_SECURITY."</a></li>
+						   <li><a data-toggle='tab' href='#core-download-download5'>".LAN_DL_UPLOAD."</a></li>
 					   </ul>
 						
 		        		<form method='post' action='".e_SELF."?".e_QUERY."'>\n
@@ -2170,10 +2204,7 @@ $columnInfo = array(
 		            		      <tr>
 		               		      <td>".DOWLAN_160."</td>
 		               		      <td>
-		                  		      <select name='mirror_order' class='form-control'>".
-		                  		         ($pref['mirror_order'] == "0" ? "<option value='0' selected='selected'>".DOWLAN_161."</option>" : "<option value='0'>".DOWLAN_161."</option>").
-		                                 ($pref['mirror_order'] == "1" ? "<option value='1' selected='selected'>".LAN_ID."</option>" : "<option value='1'>".LAN_ID."</option>").
-		                                 ($pref['mirror_order'] == "2" ? "<option value='2' selected='selected'>".DOWLAN_163."</option>" : "<option value='2'>".DOWLAN_12."</option>")."
+		                  		      <select name='mirror_order' class='form-control'>".$this->mirror_order_options_html($pref)."
 		            		            </select>
 		               		      </td>
 		            		      </tr>
@@ -2227,6 +2258,45 @@ $columnInfo = array(
 				   		</div>
 		   				<div class='tab-pane' id='core-download-download4'>
 		            	   <div>
+		            	   		<p style='padding: 8px'>
+		            	   			".LAN_DL_SECURITY_DESCRIPTION."
+								</p>
+		            		   <table class='table adminform'>
+		            		      <colgroup>
+		            		         <col style='width:30%'/>
+		            		         <col style='width:70%'/>
+		            		      </colgroup>
+		            		      <tr>
+		            		         <td>".LAN_DL_SECURITY_MODE."</td>
+		            		         <td>".$frm->select('download_security_mode', $this->security_options, $pref['download_security_mode'])."</td>
+		            		      </tr>
+		            		      <tbody id='nginx-secure_link_md5' ".($pref['download_security_mode'] === 'nginx-secure_link_md5' ? "" : "style='display:none'").">
+		            		      	<tr>
+		            		     	 	<td>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION."</td>
+		            		     	 	<td>
+		            		     	 		".$frm->text('download_security_expression', $pref['download_security_expression'], 1024)."
+		            		     	 		<div class='field-help'>".LAN_DL_SECURITY_NGINX_SECURELINKMD5_EXPRESSION_HELP."</div>
+		            		     	 		<small><a href='#' onclick='event.preventDefault();$(\"#supported-nginx-variables\").toggle();this.blur()'>
+		            		     	 			".LAN_DL_SECURITY_NGINX_SUPPORTED_VARIABLES_TOGGLE."
+		            		     	 		</a></small>
+		            		     	 		<div id='supported-nginx-variables' style='display:none'>
+		            	   						".$this->supported_secure_link_variables_html()."
+		            		     	 		</div>
+		            		     	 	</td>
+		            		      	</tr>
+		            		      	<tr>
+		            		      		<td>".LAN_DL_SECURITY_LINK_EXPIRY."</td>
+		            		      		<td>
+		            		     	 		".$frm->text('download_security_link_expiry', $pref['download_security_link_expiry'], 16, array('pattern' => '\d+'))."
+		            		      			<div class='field-help'>".LAN_DL_SECURITY_LINK_EXPIRY_HELP."</div>
+		            		      		</td>
+		            		      	</tr>
+								  </tbody>
+		            		   </table>
+		            		</div>
+				   		</div>
+				   		<div class='tab-pane' id='core-download-download5'>
+		            	   <div>
 		            		   <table class='table adminform'>
 		            		      <colgroup>
 		            		         <col style='width:30%'/>
@@ -2246,7 +2316,20 @@ $columnInfo = array(
 		           </div>
 		           </form>
 		      ";
-		     // $ns->tablerender(LAN_DL_OPTIONS, $text);
+
+		   	  e107::js('footer-inline', "
+		   	  $('#download-security-mode').on('change', function() {
+		   	    var mode = $(this).val();
+		   	    
+		   	    if (mode == 'nginx-secure_link_md5') {
+		   	        $('#nginx-secure_link_md5').show('slow');
+		   	        return;
+		   	    }
+		   	    
+		   	    $('#nginx-secure_link_md5').hide('slow');
+		   	  });
+		   	  ");
+
 		      echo $text;
 		   }
 

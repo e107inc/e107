@@ -291,7 +291,7 @@ class download_shortcodes extends e_shortcode
 		}
 
 
-		return "<a href='".e_REQUEST_SELF."?".http_build_query($qry)."'>".$text."</a>" ;
+		return "<a href='".e_REQUEST_SELF."?".http_build_query($qry, null, '&amp;')."'>".$text."</a>" ;
 	}	
 	
 		

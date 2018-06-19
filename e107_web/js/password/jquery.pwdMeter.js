@@ -201,5 +201,9 @@ jQuery.fn.pwdMeter = function(options){
 	});
 
 }
-
-})(jQuery)
+/**
+ * ALLWAYS add a semicolon at the end, otherwise 
+ * it may cause issues when js is cached! 
+ * see issue e107inc/e107#2265
+ */
+})(jQuery);

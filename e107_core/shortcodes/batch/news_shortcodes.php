@@ -1116,7 +1116,7 @@ class news_shortcodes extends e_shortcode
 	{
 		$news_item = $this->news_item;
 		$param = $this->param;
-		$con = new convert;
+		$con = e107::getDate();
 		$news_item['news_start'] = (isset($news_item['news_start']) && $news_item['news_start'] ? str_replace(' - 00:00:00', '', $con->convert_date($news_item['news_start'], 'long')) : LAN_NEWS_19);
 		$news_item['news_end'] = (isset($news_item['news_end']) && $news_item['news_end'] ? ' to '.str_replace(' - 00:00:00', '', $con->convert_date($news_item['news_end'], 'long')) : '');
 		$info = $news_item['news_render_type'] == 1 ? LAN_NEWS_9 : '';
