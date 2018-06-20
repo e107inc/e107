@@ -44,4 +44,5 @@ define("LAN_LOGIN_32", "You are seeing this message because you are currently lo
 define("LAN_LOGIN_33", "[Return to the homepage]"); // the [ ] brackets are replaced with a button link
 define("LAN_LOGIN_34", "User registration and/or login is currently disabled.");
 define("LAN_LOGIN_35", "[Enable it]"); // the [ ] brackets are replaced with a button link
+define("LAN_LOGIN_36", "Emails to [x] are bouncing back. Please [verify your email address is correct].");// the [ ] brackets are replaced with a button link to usersettings.php
 ?>
