@@ -3458,7 +3458,10 @@ class e_tree_model extends e_front_model
 			// Note: This optimization only works if the SQL query executed was ordered by the sort parent.
 			if($nodeID !== $rowParentID)
 			{
-				break;
+				// workaround in case the rows are not in the expected order
+				// for some reason e.g. if one sort column is not enough.
+				continue;
+				//break;
 			}
 
 			$node['_children'][] = &$row;
