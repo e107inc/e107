@@ -2430,7 +2430,8 @@ class e107forum
 	public function upgradeLegacyPrefs()
 	{
 
-			e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
+			// Commented out as it is irritating to get this message and nothing is done or has to be done.
+			//e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
 
 			$legacyMenuPrefs = array(
 				'newforumposts_caption'     => 'caption',
