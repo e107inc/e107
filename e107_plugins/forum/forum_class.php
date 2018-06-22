@@ -2430,9 +2430,6 @@ class e107forum
 	public function upgradeLegacyPrefs()
 	{
 
-			// Commented out as it is irritating to get this message and nothing is done or has to be done.
-			//e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
-
 			$legacyMenuPrefs = array(
 				'newforumposts_caption'     => 'caption',
 				'newforumposts_display'     => 'display',
@@ -2446,11 +2443,11 @@ class e107forum
 			{
 				if(e107::getMenu()->setParms('forum','newforumposts_menu', $newPrefs) !== false)
 				{
-					e107::getMessage()->addDebug("Sucessfully Migrated newforumposts prefs from core to menu table. ");
+					e107::getMessage()->addDebug("Successfully migrated newforumposts prefs from core to menu table.");
 				}
 				else
 				{
-					e107::getMessage()->addDebug("Legacy Forum Menu Pref Detected. Upgrading..");
+					e107::getMessage()->addDebug("Legacy Forum menu pref detected. Upgrading...");
 				}
 			}
 
