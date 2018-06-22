@@ -52,11 +52,11 @@ class TreeModelTest extends \Codeception\Test\Unit
     {
         $key = $this->sample_key;
         $parent_key = $this->sample_parent_key;
-        $l0_id     = $this->tree[0][$key];
-        $l1_id     = $this->tree[0]['_children'][0][$key];
-        $l1_parent = $this->tree[0]['_children'][0][$parent_key];
-        $l2_id     = $this->tree[0]['_children'][0]['_children'][0][$key];
-        $l2_parent = $this->tree[0]['_children'][0]['_children'][0][$parent_key];
+        $l0_id     = $this->tree[1][$key];
+        $l1_id     = $this->tree[1]['_children'][0][$key];
+        $l1_parent = $this->tree[1]['_children'][0][$parent_key];
+        $l2_id     = $this->tree[1]['_children'][0]['_children'][0][$key];
+        $l2_parent = $this->tree[1]['_children'][0]['_children'][0][$parent_key];
 
         $this->assertEquals($l0_id, $l1_parent);
         $this->assertEquals($l1_id, $l2_parent);
@@ -203,7 +203,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 				),
 			1 =>
 				array (
-					'link_id' => '9',
+					'link_id' => '99',
 					'link_name' => 'Nodes',
 					'link_url' => '',
 					'link_description' => '',
@@ -386,7 +386,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 					'link_button' => 'deltik_x10-favicon.png',
 					'link_category' => '1',
 					'link_order' => '3',
-					'link_parent' => '9',
+					'link_parent' => '99',
 					'link_open' => '0',
 					'link_class' => '255',
 					'link_function' => '',
@@ -402,7 +402,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 					'link_button' => 'deltik_docs-favicon.png',
 					'link_category' => '1',
 					'link_order' => '4',
-					'link_parent' => '9',
+					'link_parent' => '99',
 					'link_open' => '0',
 					'link_class' => '255',
 					'link_function' => '',
@@ -418,7 +418,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 					'link_button' => 'deltik_products-favicon.png',
 					'link_category' => '1',
 					'link_order' => '5',
-					'link_parent' => '9',
+					'link_parent' => '99',
 					'link_open' => '0',
 					'link_class' => '0',
 					'link_function' => '',
@@ -434,7 +434,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 					'link_button' => 'deltik_my-favicon.png',
 					'link_category' => '1',
 					'link_order' => '2',
-					'link_parent' => '9',
+					'link_parent' => '99',
 					'link_open' => '0',
 					'link_class' => '255',
 					'link_function' => '',
@@ -450,7 +450,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 					'link_button' => 'deltik_mc-favicon.png',
 					'link_category' => '1',
 					'link_order' => '6',
-					'link_parent' => '9',
+					'link_parent' => '99',
 					'link_open' => '0',
 					'link_class' => '0',
 					'link_function' => '',
@@ -466,7 +466,7 @@ class TreeModelTest extends \Codeception\Test\Unit
 					'link_button' => 'deltik-favicon.png',
 					'link_category' => '1',
 					'link_order' => '1',
-					'link_parent' => '9',
+					'link_parent' => '99',
 					'link_open' => '0',
 					'link_class' => '0',
 					'link_function' => '',
