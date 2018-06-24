@@ -3934,7 +3934,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$keys = array();
 			foreach($matches[1] AS $k=>$v)
 			{
-				if(varset($matches[3][$k]))
+				if(varset($matches[3][$k]) && !array_key_exists($v, $this->joinAlias))
 				{
 					$this->joinAlias[$v] = $matches[3][$k]; // array. eg $this->joinAlias['core_media'] = 'm';
 				}
