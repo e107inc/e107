@@ -4314,6 +4314,11 @@ class e_admin_controller_ui extends e_admin_controller
 			// add more where details on the fly via $this->listQrySql['db_where'];
 			$qry .= (strripos($qry, 'where')==FALSE) ? " WHERE " : " AND "; // Allow 'where' in custom listqry
 			$qry .= implode(" AND ", $searchQry);
+
+			// Disable tree (use flat list instead) when filters are applied
+			// Implemented out of necessity under https://github.com/e107inc/e107/issues/3204
+			// Horrible hack, but only needs this one line of additional code
+			$this->getTreeModel()->setParam('sort_parent', null);
 		}
 
 		// GROUP BY if needed
