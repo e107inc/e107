@@ -165,7 +165,15 @@ unset($e_headers);
 // echo e107::getUrl()->response()->renderMeta()."\n"; // render all the e107::meta() entries.
 echo e107::getSingleton('eResponse')->renderMeta()."\n";
 
-echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+if (deftrue('e_FRONTPAGE'))
+{
+	// Ignore any additional title when current page is the frontpage
+	echo "<title>".SITENAME."</title>\n\n";
+}
+else
+{
+	echo "<title>".(defined('e_PAGETITLE') ? e_PAGETITLE.' - ' : (defined('PAGE_NAME') ? PAGE_NAME.' - ' : "")).SITENAME."</title>\n\n";
+}
 
 
 //
