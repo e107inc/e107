@@ -1571,7 +1571,7 @@ $text .= "
 							'asc'	=> PRFLAN_237
 						);
 					
-					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_moderate'], array('size'=>'xlarge'))."
+					$text .= $frm->select('comments_sort',$comment_sort, $pref['comments_sort'], array('size'=>'xlarge'))."
 						</td>
 					</tr>
 					
