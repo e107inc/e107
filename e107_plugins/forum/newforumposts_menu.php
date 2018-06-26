@@ -56,6 +56,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			$qry = '';
 
+			$this->menuPref['layout'] = vartrue($this->menuPref['layout'], 'default');
 			switch($this->menuPref['layout'])
 			{
 				case "minimal":
