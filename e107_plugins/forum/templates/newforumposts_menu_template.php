@@ -14,7 +14,7 @@
 															<a href='{POST_URL}'>{POST_AUTHOR_AVATAR: shape=circle}</a>
 															</div>
 															<div class='media-body'>
-																<h4 class='media-header'><a href='{POST_URL}'>{POST_TOPIC}</a></h4>{POST_CONTENT}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {POST_AUTHOR_NAME} {POST_DATESTAMP}</small>
+																<h4 class='media-heading'><a href='{POST_URL}'>{POST_TOPIC}</a></h4>{POST_CONTENT}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {POST_AUTHOR_NAME} {POST_DATESTAMP}</small>
 														</div></li>";
 	 $NEWFORUMPOSTS_MENU_TEMPLATE['default']['end']     = "</ul>";
 
