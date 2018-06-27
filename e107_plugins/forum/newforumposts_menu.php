@@ -232,7 +232,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 					if (!empty($this->menuPref['title']))
 					{
-						$list .= "<h4 class='media-header'><a href='{$url}'>{$topic}</a></h4>{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
+						$list .= "<h4 class='media-heading'><a href='{$url}'>{$topic}</a></h4>{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
 					}
 					else
 					{
