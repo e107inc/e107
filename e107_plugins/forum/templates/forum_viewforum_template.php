@@ -387,7 +387,7 @@ $FORUM_VIEWFORUM_TEMPLATE['iconkey'] 			= "
 												</div>
 												";
 
-
+$FORUM_VIEWFORUM_TEMPLATE['forum-crumb'] =  $FORUM_CRUMB;
 
 // $FORUM_VIEWFORUM_WRAPPER['THREADNAME']          = "<span class='label label-info'>{---}</span>";
 
