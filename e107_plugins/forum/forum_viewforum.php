@@ -178,6 +178,8 @@ if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && T
 	$FORUM_IMPORTANT_ROW			= $FORUM_VIEWFORUM_TEMPLATE['divider-important'];
 	$FORUM_NORMAL_ROW				= $FORUM_VIEWFORUM_TEMPLATE['divider-normal'];	
 	
+	$FORUM_CRUMB				    = $FORUM_VIEWFORUM_TEMPLATE['forum-crumb'];	
+	
 }
 
 
