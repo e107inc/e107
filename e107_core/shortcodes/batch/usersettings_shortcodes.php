@@ -462,7 +462,7 @@ class usersettings_shortcodes extends e_shortcode
 		$ue = e107::getUserExt();
 
 
-		if(THEME_LEGACY === true)
+		if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 		{
 			$USEREXTENDED_FIELD = $this->legacyTemplate['USEREXTENDED_FIELD'];
 			$REQUIRED_FIELD = $this->legacyTemplate['REQUIRED_FIELD'];
