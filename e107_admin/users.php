@@ -502,7 +502,13 @@ class users_admin_ui extends e_admin_ui
 		else 
 		{
 
-			$new_data['user_password']	= e107::getUserSession()->HashPassword($new_data['user_password'], $new_data['user_login']);
+			// issues #3126, #3143: Login not working after admin set a new password using the backend
+			// Backend used user_login instead of user_loginname (used in usersettings) and did't escape the password.
+			$savePassword = $new_data['user_password'];
+			$loginname = $new_data['user_loginname'] ? $new_data['user_loginname'] : $old_data['user_loginname'];
+			$email = (isset($new_data['user_email']) && $new_data['user_email']) ? $new_data['user_email'] : $old_data['user_email'];
+			$new_data['user_password'] = e107::getDb()->escape(e107::getUserSession()->HashPassword($savePassword, $loginname), false);
+
 			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
 		
