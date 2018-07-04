@@ -1153,7 +1153,9 @@ class news_shortcodes extends e_shortcode
 		{
 			if(trim($val))
 			{
-				$url = e107::getUrl()->create('news/list/tag',array('tag'=>rawurlencode($val))); // e_BASE."news.php?tag=".$val
+				// issue #3162 double encoding of the tag leads to a not working link, in case the tag contains spaces, etc.
+				// because the tag value is already encoded during url creation
+				$url = e107::getUrl()->create('news/list/tag',array('tag'=>$val)); // e_BASE."news.php?tag=".$val
 				$words[] = "<a class='".$class."' href='".$url."'>".$start.$val.$end."</a>";
 			}
 		}
