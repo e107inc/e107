@@ -395,6 +395,14 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 			{
 				preview = $htmlHolder.val();
 			}
+
+			// issue #3051 Preview url is wrong when target page is a plugin
+			var s = new RegExp('/' + e107_plugins_directory + '[\\w]+/', 'gmi');
+			if (window.top.document.URL.match(s))
+			{
+				preview = preview.replace(e107_plugins_directory, '');
+			}
+
 		}
 
 		$('div#' + target + "_prev", window.top.document).html(preview); // set new value
