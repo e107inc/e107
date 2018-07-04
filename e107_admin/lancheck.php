@@ -913,11 +913,22 @@ class lancheck
 				return false;
 			}
 
-			foreach($rawData['language'] as $val)
+			foreach($rawData['language'] as $key => $att)
 			{
-				$att = $val['@attributes'];
+				// issue #3059 Language list didn't load
+				if ($key != '@attributes') continue;
 
 				$id = $att['name'];
+
+				// fix github double url bug...
+				if (stripos($att['url'], 'https://github.comhttps://github.com') !== false)
+				{
+					$att['url'] = str_ireplace('https://github.comhttps://github.com', 'https://github.com', $att['url']);
+				}
+				if (stripos($att['infourl'], 'https://github.comhttps://github.com') !== false)
+				{
+					$att['infourl'] = str_ireplace('https://github.comhttps://github.com', 'https://github.com', $att['infourl']);
+				}
 
 				$languages[$id] = array(
 					'name'          => $att['name'],
