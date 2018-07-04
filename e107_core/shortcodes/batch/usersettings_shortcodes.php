@@ -81,16 +81,40 @@ class usersettings_shortcodes extends e_shortcode
 	
 	function sc_customtitle($parm)
 	{ 	
-		if (e107::getPref('signup_option_customtitle'))
+		$pref = e107::getPref();
+		if ($pref['signup_option_customtitle'])
 		{		
-			$options = array('title'=> '', 'size' => 40);	
+			$options = array(
+				'title'=> '', 
+				'size' => 40,
+				'required' => ($pref['signup_option_customtitle'] == 2));	
 			return e107::getForm()->text('customtitle', $this->var['user_customtitle'], 100, $options);
 		}
 	}
 
-
-
+	
 	function sc_realname($parm)
+	{ 	
+		$pref = e107::getPref();
+		if ($pref['signup_option_realname'])
+		{		
+			$sc = e107::getScBatch('usersettings');
+			$options = array(
+				'title'    => '',
+				'size'     => 40,
+				'required' => ($pref['signup_option_realname'] == 2),
+			);
+			if(!empty($sc->var['user_login']) && !empty($sc->var['user_xup'])) // social login active.
+			{
+				$options['readonly'] = true;
+			}
+
+			return e107::getForm()->text('realname', $sc->var['user_login'], 100, $options);
+		}
+	}
+
+/*
+	function sc_realname2($parm)
 	{
 		$pref = e107::getPref();
 		$sc = e107::getScBatch('usersettings');
@@ -108,7 +132,7 @@ class usersettings_shortcodes extends e_shortcode
 
 		return e107::getForm()->text('realname', $sc->var['user_login'], 100, $options);
 	}
-	
+*/	
 	
 	
 	function sc_password1($parm)
