@@ -1021,6 +1021,8 @@ class e_parse_shortcode
 			$fullShortcodeKey = $newMatch[0];
 			$code = $newMatch[1];
 			$parmStr = trim($newMatch[2]);
+			// fix for #3161: htmlized shortcode parameters ...
+			$parmStr = str_ireplace('&amp;', '&', $parmStr);
 			$debugParm = $parmStr;
 			parse_str($parmStr,$parm);
 			$parmArray = true;
