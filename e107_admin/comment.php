@@ -40,7 +40,7 @@ class comments_admin extends e_admin_dispatcher
 	//	'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
 		//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
-		'main/tools' 	=> array('caption'=> 'Tools', 'perm' => '0'),
+		'main/tools' 	=> array('caption'=> ADLAN_CL_6, 'perm' => '0'),
 	);
 
 	protected $adminMenuAliases = array(
@@ -191,7 +191,7 @@ class comments_admin_ui extends e_admin_ui
 			$this->toolsProcessPage();
 
 			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
-			$text .= e107::getForm()->admin_button('recalcComments', 'Recalculate comment count');
+			$text .= e107::getForm()->admin_button('recalcComments', LAN_RECALCULATE_COMMENT_COUNT);
 
 			$text .= "</form>";
 			return $text;
@@ -225,7 +225,7 @@ class comments_admin_ui extends e_admin_ui
 						}
 					}
 				}
-				$mes->addSuccess('Comment count successfully recalculated!');
+				$mes->addSuccess(LAN_SUCC_RECALCULATE_COMMENT_COUNT);
 			}
 
 		}
