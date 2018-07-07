@@ -3996,6 +3996,29 @@ class e_admin_controller_ui extends e_admin_controller
 		return $qry; 
 	}
 
+	/**
+	 * Fix search string by replacing the commonly used '*' wildcard
+	 * with the mysql represenation of it '%' and '?' with '_' (single character)
+	 *
+	 * @param string $search
+	 * @return string
+	 */
+	protected function fixSearchWildcards($search)
+	{
+		$search = trim($search);
+		if (empty($search))
+		{
+			return '';
+		}
+
+		// strip wildcard on the beginning and the end
+		while (substr($search, 0, 1) == '*') $search = substr($search, 1);
+		while (substr($search, -1) == '*') $search = substr($search, 0, -1);
+
+		// replace "*" wildcard with mysql wildcard "%"
+		return str_replace(array('*', '?'), array('%', '_'), $search);
+	}
+
 
 	// TODO - abstract, array return type, move to parent?
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
@@ -4011,7 +4034,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$filter = array();
 
 
-		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
+		$searchQuery = $this->fixSearchWildcards($tp->toDB($request->getQuery('searchquery', '')));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
