@@ -115,6 +115,7 @@ define("LAN_FILES","Files");
 define("LAN_SIZE", "Size");
 define("LAN_VERSION", "Version");
 define("LAN_DOWNLOAD", "Download");
+define("LAN_DOWNLOAD_NO_PERMISSION", "File not found or you have no permission to download this file!");
 define("LAN_WEBSITE", "Website");
 define("LAN_COMMENTS", "Comments");
 define("LAN_LOCATION", "Location");
