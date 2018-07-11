@@ -422,8 +422,9 @@ class user_dashboard // plugin-folder + '_url'
 				<tbody>";
 
 
-
-		$online = $ol->userList() + $ol->guestList();
+		// Fixes #3239: The array merge didn't work correctly by using the + operator
+		$online = $ol->userList();
+		$online = array_merge($online, $ol->guestList());
 
 		if($data == 'count')
 		{
