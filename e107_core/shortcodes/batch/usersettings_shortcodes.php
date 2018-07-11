@@ -81,16 +81,40 @@ class usersettings_shortcodes extends e_shortcode
 	
 	function sc_customtitle($parm)
 	{ 	
-		if (e107::getPref('signup_option_customtitle'))
+		$pref = e107::getPref();
+		if ($pref['signup_option_customtitle'])
 		{		
-			$options = array('title'=> '', 'size' => 40);	
+			$options = array(
+				'title'=> '', 
+				'size' => 40,
+				'required' => ($pref['signup_option_customtitle'] == 2));	
 			return e107::getForm()->text('customtitle', $this->var['user_customtitle'], 100, $options);
 		}
 	}
 
-
-
+	
 	function sc_realname($parm)
+	{ 	
+		$pref = e107::getPref();
+		if ($pref['signup_option_realname'])
+		{		
+			$sc = e107::getScBatch('usersettings');
+			$options = array(
+				'title'    => '',
+				'size'     => 40,
+				'required' => ($pref['signup_option_realname'] == 2),
+			);
+			if(!empty($sc->var['user_login']) && !empty($sc->var['user_xup'])) // social login active.
+			{
+				$options['readonly'] = true;
+			}
+
+			return e107::getForm()->text('realname', $sc->var['user_login'], 100, $options);
+		}
+	}
+
+/*
+	function sc_realname2($parm)
 	{
 		$pref = e107::getPref();
 		$sc = e107::getScBatch('usersettings');
@@ -108,7 +132,7 @@ class usersettings_shortcodes extends e_shortcode
 
 		return e107::getForm()->text('realname', $sc->var['user_login'], 100, $options);
 	}
-	
+*/	
 	
 	
 	function sc_password1($parm)
@@ -462,7 +486,7 @@ class usersettings_shortcodes extends e_shortcode
 		$ue = e107::getUserExt();
 
 
-		if(THEME_LEGACY === true)
+		if(THEME_LEGACY === true || !deftrue('BOOTSTRAP'))
 		{
 			$USEREXTENDED_FIELD = $this->legacyTemplate['USEREXTENDED_FIELD'];
 			$REQUIRED_FIELD = $this->legacyTemplate['REQUIRED_FIELD'];
@@ -552,6 +576,23 @@ class usersettings_shortcodes extends e_shortcode
 		
 		return "<input class='button btn btn-primary' type='submit' name='updatesettings' value='".LAN_USET_37."' />";	
 		
+	}
+
+	function sc_deleteaccountbutton($parm=array())
+	{
+
+		if((int) $_GET['id'] !== USERID)
+		{
+			return null;
+		}
+
+		$confirm    = defset("LAN_USET_51", "Are you sure? This procedure cannot be reversed! Once completed all personal data that you have entered on this site will be permanently lost and you will no longer be able to login.");
+		$label      = defset('LAN_USET_50', "Delete All Account Information");
+
+		$parm['confirm'] = $confirm;
+
+		return e107::getForm()->button('delete_account',1, 'delete', $label, $parm);
+
 	}
 
 }

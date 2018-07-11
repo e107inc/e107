@@ -41,6 +41,10 @@ e107::js('core', 'plupload/plupload.full.js', 'jquery', 2);
 e107::css('core', 'plupload/jquery.plupload.queue/css/jquery.plupload.queue.css', 'jquery');
 e107::js('core', 'plupload/jquery.plupload.queue/jquery.plupload.queue.min.js', 'jquery', 2);
 e107::js('core', 'core/mediaManager.js',"jquery",5);
+// issue #3051 Preview url is wrong when target page is a plugin
+// Using this variable to check for the plugins directory and replace with empty space in case of...
+// see mediaManager.js (line ~399ff)
+e107::js('inline', 'var e107_plugins_directory = "' . str_replace('../', '', e_PLUGIN) . '";');
 e107::wysiwyg(true);
 /*
  * CLOSE - GO TO MAIN SCREEN

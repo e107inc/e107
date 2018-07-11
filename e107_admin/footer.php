@@ -367,6 +367,14 @@ echo "</body></html>";
 // SecretR - EXPERIMENT! SEND CSS data to header. Performance tests in progress.
 $tmp = array();
 $e_js =  e107::getJs();
+
+$tmp0 = $e_js->renderJs('library_css', false, 'css', true);
+if($tmp0)
+{
+	$tmp['search'][] = '<!-- footer_library_css -->';
+	$tmp['replace'][] = $tmp0;
+}
+
 // Other CSS - from unknown location, different from core/theme/plugin location or backward compatibility
 $tmp1 = $e_js->renderJs('other_css', false, 'css', true);
 if($tmp1) 

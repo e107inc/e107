@@ -60,7 +60,7 @@ class users_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0|4'),
 		'main/add' 		=> array('caption'=> LAN_USER_QUICKADD, 'perm' => '4|U0|U1'),
 		'main/prefs' 	=> array('caption'=> LAN_OPTIONS, 'perm' => '4|U2'),
-		'main/ranks'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
+		'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3'),
 		'main/maintenance'  => array('caption'=> LAN_MAINTENANCE, 'perms'=>'4')
 	//	'ranks/list'	=> array('caption'=> LAN_USER_RANKS, 'perm' => '4|U3')
 	);
@@ -86,11 +86,6 @@ class users_admin extends e_admin_dispatcher
 
 	function init()
 	{
-		if(E107_DEBUG_LEVEL > 0)
-		{
-			$this->adminMenu['ranks/list']	= array('caption'=> LAN_USER_RANKS. " (experimental)", 'perm' => '4|U3');
-		}
-
 
 		$JS = <<<JS
 
@@ -470,7 +465,7 @@ class users_admin_ui extends e_admin_ui
 	}
 
 
-	public function afterDelete($deletedData,$id=null)
+	public function afterDelete($deletedData, $id=null, $deleted_check)
 	{
 		if(!empty($id))
 		{
@@ -507,7 +502,13 @@ class users_admin_ui extends e_admin_ui
 		else 
 		{
 
-			$new_data['user_password']	= e107::getUserSession()->HashPassword($new_data['user_password'], $new_data['user_login']);
+			// issues #3126, #3143: Login not working after admin set a new password using the backend
+			// Backend used user_login instead of user_loginname (used in usersettings) and did't escape the password.
+			$savePassword = $new_data['user_password'];
+			$loginname = $new_data['user_loginname'] ? $new_data['user_loginname'] : $old_data['user_loginname'];
+			$email = (isset($new_data['user_email']) && $new_data['user_email']) ? $new_data['user_email'] : $old_data['user_email'];
+			$new_data['user_password'] = e107::getDb()->escape(e107::getUserSession()->HashPassword($savePassword, $loginname), false);
+
 			e107::getMessage()->addDebug("Password Hash: ".$new_data['user_password']);
 		}
 		
@@ -2860,10 +2861,10 @@ class users_admin_form_ui extends e_admin_form_ui
 			}
 
 			unset($tmp);
-			natsort($imageList);
+		//	natsort($imageList);
 		}
 
-		public function afterDelete($data)
+		public function afterDelete($data, $id, $deleted_check)
 		{
 			e107::getCache()->clear_sys('nomd5_user_ranks');
 		}

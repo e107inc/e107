@@ -12,3 +12,5 @@ e107_core/override
 # Ignore Vim swap files
 *.swp
 *.swo
+e107.htaccess
+e107InstallLog.log

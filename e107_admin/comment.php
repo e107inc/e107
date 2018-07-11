@@ -39,7 +39,8 @@ class comments_admin extends e_admin_dispatcher
 		'main/list'		=> array('caption'=> LAN_MANAGE, 'perm' => '0'),
 	//	'main/create' 	=> array('caption'=> LAN_CREATE, 'perm' => '0'),
 		'main/prefs' 	=> array('caption'=> LAN_PREFS, 'perm' => '0'),
-	//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
+		//	'main/custom'	=> array('caption'=> 'Custom Page', 'perm' => '0')		
+		'main/tools' 	=> array('caption'=> ADLAN_CL_6, 'perm' => '0'),
 	);
 
 	protected $adminMenuAliases = array(
@@ -183,6 +184,52 @@ class comments_admin_ui extends e_admin_ui
 			}
 		}
 		
+
+		public function toolsPage()
+		{
+
+			$this->toolsProcessPage();
+
+			$text = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
+			$text .= e107::getForm()->admin_button('recalcComments', LAN_RECALCULATE_COMMENT_COUNT);
+
+			$text .= "</form>";
+			return $text;
+
+		}
+
+		public function toolsProcessPage()
+		{
+			$mes = e107::getMessage();
+			$sql = e107::getDb();
+			$sql2 = e107::getDb('replace');
+
+			if (isset($_POST['recalcComments']))
+			{
+				//
+				// Recalculate the comment count
+				//
+
+				$qry = 'SELECT u.user_id, u.user_comments, COUNT(c.comment_id) as new_comments
+				FROM e107_user u 
+				LEFT JOIN e107_comments AS c ON (u.user_id = c.comment_author_id)
+				GROUP BY u.user_id';
+
+				if ($sql->gen($qry))
+				{
+					while($row = $sql->fetch())
+					{
+						if (intval($row['user_id'])>0 && intval($row['user_comments']) != intval($row['new_comments']))
+						{
+							$sql2->update('user', array('data' => array('user_comments' => $row['new_comments']), 'WHERE' => 'user_id = "'.$row['user_id'].'"'));
+						}
+					}
+				}
+				$mes->addSuccess(LAN_SUCC_RECALCULATE_COMMENT_COUNT);
+			}
+
+		}
+
 }
 
 //TODO Block and Unblock buttons, moderated comments?

@@ -1479,6 +1479,7 @@ class e_admin_dispatcher
 		$tp = e107::getParser();
 		$var = array();
 		$selected = false;
+
 		foreach($this->adminMenu as $key => $val)
 		{
 
@@ -1516,6 +1517,12 @@ class e_admin_dispatcher
 					case 'uri':
 						$k2 = 'link';
 						$v = $tp->replaceConstants($v, 'abs');
+
+						if(!empty($v) && (e_REQUEST_URI === $v))
+						{
+							$selected = $key;
+						}
+
 					break;
 
 					default:
@@ -1880,6 +1887,8 @@ class e_admin_controller
 			$data = $_dispatcher->getPageTitles();
 			$search = $this->getMode().'/'.$this->getAction();
 
+
+
 			if(isset($data[$search]))
 			{
 				 $res['caption'] = $data[$search];
@@ -2152,9 +2161,9 @@ class e_admin_controller
 			return $response;
 		}
 		
-		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title. 
+		if($action != 'Prefs' && $action != 'Create' && $action !='Edit' && $action != 'List') // Custom Page method in use, so add the title.
 		{
-			$this->addTitle(); 	
+			$this->addTitle();
 		}
 
 
@@ -2164,6 +2173,9 @@ class e_admin_controller
 		{
 			$this->addTitle('#'.$this->getId()); // Inform user of which record is being edited. 	
 		}
+
+
+		
 		
 		ob_start(); //catch any output
 		$ret = $this->{$actionName}();
@@ -3922,7 +3934,7 @@ class e_admin_controller_ui extends e_admin_controller
 			$keys = array();
 			foreach($matches[1] AS $k=>$v)
 			{
-				if(varset($matches[3][$k]))
+				if(varset($matches[3][$k]) && !array_key_exists($v, $this->joinAlias))
 				{
 					$this->joinAlias[$v] = $matches[3][$k]; // array. eg $this->joinAlias['core_media'] = 'm';
 				}
@@ -3984,6 +3996,29 @@ class e_admin_controller_ui extends e_admin_controller
 		return $qry; 
 	}
 
+	/**
+	 * Fix search string by replacing the commonly used '*' wildcard
+	 * with the mysql represenation of it '%' and '?' with '_' (single character)
+	 *
+	 * @param string $search
+	 * @return string
+	 */
+	protected function fixSearchWildcards($search)
+	{
+		$search = trim($search);
+		if (empty($search))
+		{
+			return '';
+		}
+
+		// strip wildcard on the beginning and the end
+		while (substr($search, 0, 1) == '*') $search = substr($search, 1);
+		while (substr($search, -1) == '*') $search = substr($search, 0, -1);
+
+		// replace "*" wildcard with mysql wildcard "%"
+		return str_replace(array('*', '?'), array('%', '_'), $search);
+	}
+
 
 	// TODO - abstract, array return type, move to parent?
 	protected function _modifyListQry($raw = false, $isfilter = false, $forceFrom = false, $forceTo = false, $listQry = '')
@@ -3999,7 +4034,7 @@ class e_admin_controller_ui extends e_admin_controller
 		$filter = array();
 
 
-		$searchQuery = $tp->toDB($request->getQuery('searchquery', ''));
+		$searchQuery = $this->fixSearchWildcards($tp->toDB($request->getQuery('searchquery', '')));
 		$searchFilter = $this->_parseFilterRequest($request->getQuery('filter_options', ''));
 		
 		if(E107_DEBUG_LEVEL == E107_DBG_SQLQUERIES)
@@ -4302,6 +4337,11 @@ class e_admin_controller_ui extends e_admin_controller
 			// add more where details on the fly via $this->listQrySql['db_where'];
 			$qry .= (strripos($qry, 'where')==FALSE) ? " WHERE " : " AND "; // Allow 'where' in custom listqry
 			$qry .= implode(" AND ", $searchQry);
+
+			// Disable tree (use flat list instead) when filters are applied
+			// Implemented out of necessity under https://github.com/e107inc/e107/issues/3204
+			// Horrible hack, but only needs this one line of additional code
+			$this->getTreeModel()->setParam('sort_parent', null);
 		}
 
 		// GROUP BY if needed
@@ -5478,6 +5518,13 @@ class e_admin_ui extends e_admin_controller_ui
 		$this->getTreeModel()->setParam('db_query', $this->_modifyListQry(false, false, false, false, $this->listQry))->load();
 
 		$this->addTitle();
+
+		if($this->getQuery('filter_options'))
+		{
+		//	var_dump($this);
+			// $this->addTitle("to-do"); // display filter option when active.
+		}
+		
 	}
 
 	/**

@@ -194,7 +194,7 @@ class userlogin
 			case USER_VALIDATED :		// Valid user
 				break;			// Nothing to do ATM
 			case USER_EMAIL_BOUNCED:
-				$bounceLAN      = "Emails to [x] are bouncing back. Please [verify your email address is correct]."; //TODO LAN
+				$bounceLAN      = LAN_LOGIN_36;
 				$bounceMessage  =  $tp->lanVars($bounceLAN, $this->userData['user_email'],true );
 				$bounceMessage  = str_replace(array('[',']'),array("<a href='".e_HTTP."usersettings.php'>","</a>"), $bounceMessage);
 

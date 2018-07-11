@@ -820,7 +820,22 @@ class e_form
 	}
 
 
-	
+	/**
+	 * Create a input [type number]
+	 *
+	 * Additional options:
+	 *   - decimals: default 0; defines the number of decimals allowed in this field (0 = only integers; 1 = integers & floats with 1 decimal e.g. 4.1, etc.)
+	 *   - step: default 1; defines the step for the spinner and the max. number of decimals. If decimals is given, step will be ignored
+	 *   - min: default 0; minimum value allowed
+	 *   - max: default empty; maximum value allowed
+	 *   - pattern: default empty; allows to define an complex input pattern
+	 * 
+	 * @param string $name
+	 * @param integer $value
+	 * @param integer $maxlength
+	 * @param array $options decimals, step, min, max, pattern
+	 * @return string
+	 */
 	function number($name, $value=0, $maxlength = 200, $options = array())
 	{
 		if(is_string($options)) parse_str($options, $options);
@@ -850,17 +865,67 @@ class e_form
 		$options['class'] .= " form-control";
 		$options['type'] ='number';
 		
-		$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
+		// Not used anymore
+		//$mlength = vartrue($maxlength) ? "maxlength=".$maxlength : "";
 
-		$min = isset($options['min']) ? 'min="'.$options['min'].'"' : '';
-		$max = isset($options['max']) ? 'max="'.$options['max'].'"' : '';
+		// Always define the min. parameter
+		// defaults to 0
+		// setting the min option to a negative value allows negative inputs
+		$min = " min='".varsettrue($options['min'], '0')."'";
+		$max = isset($options['max']) ? " max='".$options['max']."'" : '';
 
+		if (!empty($options['pattern']))
+		{
+			$pattern = ' pattern="'.trim($options['pattern']).'"';
+		}
+		else
+		{
+			$options['pattern'] = '^';
+			// ^\-?[0-9]*\.?[0-9]{0,2}
+			if (varset($options['min'], 0) < 0)
+			{
+				$options['pattern'] .= '\-?';
+			}
+			$options['pattern'] .= '[0-9]*';
+
+			// Integer & Floaat/Double value handling
+			if (isset($options['decimals']))
+			{
+				if (intval($options['decimals']) > 0)
+				{
+					$options['pattern'] .= '\.?[0-9]{0,'.intval($options['decimals']).'}';
+				}
+
+				// defined the step based on number of decimals 
+				// 2 = 0.01 > allows integers and float numbers with up to 2 decimals (3.1 = OK; 3.12 = OK; 3.123 = NOK)
+				// 1 = 0.1 > allows integers and float numbers with up to 2 decimals (3.1 = OK; 3.12 = NOK)
+				// 0 = 1 > allows only integers, no float values
+				if (intval($options['decimals']) <= 0)
+				{
+					$step = "step='1'";
+				}
+				else
+				{
+					$step = "step='0." . str_pad(1, intval($options['decimals']), 0, STR_PAD_LEFT)  . "'";
+				}
+			}
+			else
+			{
+				// decimal option not defined
+				// check for step option (1, 0.1, 0.01, and so on)
+				// or set default step 1 (integers only)
+				$step = "step='" . varsettrue($options['step'], '1') . "'";
+			}
+
+			$pattern = ' pattern="'.$options['pattern'].'"';
+		}
 		$options = $this->format_options('text', $name, $options);
 
 		//never allow id in format name-value for text fields
 		if(THEME_LEGACY === false)
 		{
-			return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength}  {$min} {$max} ".$this->get_attributes($options, $name)." />";
+			// return "<input pattern='[0-9]*' type='number' name='{$name}' value='{$value}' {$mlength} {$step} {$min} {$max} ".$this->get_attributes($options, $name)." />";
+			return "<input type='number' name='{$name}' {$min} {$max} {$step} value='{$value}' ".$this->get_attributes($options, $name)." />";
 		}
 		
 		return $this->text($name, $value, $maxlength, $options);	
@@ -1372,7 +1437,10 @@ class e_form
 	 * on Submit returns unix timestamp or string value.
 	 * @param string $name the name of the field
 	 * @param integer $datestamp UNIX timestamp - default value of the field
-	 * @param array or str 
+	 * @param array or str
+	 * @param string $options['type'] date or datetime
+	 * @param string $options['format'] strftime format eg. '%Y-%m-%d'
+	 * @param string $options['timezone'] eg. 'America/Los_Angeles' - intended timezone of the date/time entered. (offsets UTC value)
 	 * @example $frm->datepicker('my_field',time(),'type=date');
 	 * @example $frm->datepicker('my_field',time(),'type=datetime&inline=1');
 	 * @example $frm->datepicker('my_field',time(),'type=date&format=yyyy-mm-dd');
@@ -1428,17 +1496,26 @@ class e_form
 		$firstDay	= vartrue($options['firstDay']) ? $options['firstDay'] : 0;
 		$xsize		= (vartrue($options['size']) && !is_numeric($options['size'])) ? $options['size'] : 'xlarge';
 		$disabled 	= vartrue($options['disabled']) ? "disabled" : "";
+		$timezone    = '';
+
+		if(!empty($options['timezone'])) // since datetimepicker does not support timezones and assumes the browser timezone is the intended timezone.
+		{
+			date_default_timezone_set($options['timezone']);
+			$targetOffset = date('Z');
+			date_default_timezone_set(USERTIMEZONE);
+			$timezone = "data-date-timezone-offset='".$targetOffset."'";
+		}
 
 		$text = "";
 
 		if(vartrue($options['inline']))
 		{
 			$text .= "<div class='{$class}' id='inline-{$id}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}'></div>";
-			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}' />";
+			$text .= "<input type='hidden' name='{$name}' id='{$id}' value='{$value}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-firstday='{$firstDay}'  />";
 		}
 		else
 		{
-			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} />";
+			$text .= "<input class='{$class} input-".$xsize." form-control' type='text' size='{$size}' id='e-datepicker-{$id}' value='{$value}' data-date-unix ='{$useUnix}' data-date-format='{$dformat}' data-date-ampm='{$ampm}' data-date-language='".e_LAN."' data-date-firstday='{$firstDay}' {$required} {$disabled} {$timezone} />";
 			$ftype = (!empty($options['debug'])) ? 'text' : 'hidden';
 			$text .= "<input type='{$ftype}' name='{$name}' id='{$id}' value='{$hiddenValue}' />";
 		}
@@ -2637,6 +2714,7 @@ class e_form
 	 * @param boolean       $selected [optional]
 	 * @param string|array  $options [optional]
 	 * @param bool          $options['useValues']   when true uses array values as the key.
+	 * @param array         $options['disabled'] list of $option_array keys which should be disabled. eg. array('key_1', 'key_2');
 	 * @param bool|string   $defaultBlank [optional] set to TRUE if the first entry should be blank, or to a string to use it for the blank description.
 	 * @return string       HTML text for display
 	 */
@@ -2681,7 +2759,7 @@ class e_form
 			$option_array = $new;	
 		}
 
-		$text .= $this->option_multi($option_array, $selected)."\n".$this->select_close();
+		$text .= $this->option_multi($option_array, $selected, $options)."\n".$this->select_close();
 		return $text;
 	}
 	
@@ -2863,10 +2941,12 @@ class e_form
 	function option($option_title, $value, $selected = false, $options = '')
 	{
 	    if(is_string($options)) parse_str($options, $options);
-       
+
 		if(false === $value) $value = '';
 		$options = $this->format_options('option', '', $options);
 		$options['selected'] = $selected; //comes as separate argument just for convenience
+
+
 
 		return "<option value='{$value}'".$this->get_attributes($options).">".defset($option_title, $option_title)."</option>";
 	}
@@ -2889,18 +2969,24 @@ class e_form
 			return $this->option('','');
 		}
 
+		$opts = $options;
 
-		foreach ($option_array as $value => $label)
+		foreach ((array) $option_array as $value => $label)
 		{
 			if(is_array($label))
 			{
-				$text .= $this->optgroup($value,$label,$selected,$options, 0);
-
+				$text .= $this->optgroup($value, $label, $selected, $options, 0);
 			}
 			else
 			{
+				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected);
 
-				$text .= $this->option($label, $value, (is_array($selected) ? in_array($value, $selected) : $selected == $value), $options)."\n";
+				if(!empty($options['disabled']))
+				{
+					$opts['disabled'] = in_array($value, $options['disabled']);
+				}
+
+				$text .= $this->option($label, $value, $sel, $opts)."\n";
 			}
 		}
 
@@ -2922,6 +3008,8 @@ class e_form
 		$level++;
 		$text = $this->optgroup_open($value, null, array('class'=>'level-'.$level));
 
+		$opts = $options;
+
 		foreach($label as $val => $lab)
 		{
 			if(is_array($lab))
@@ -2930,7 +3018,12 @@ class e_form
 			}
 			else
 			{
-				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $options)."\n";
+				if(!empty($options['disabled']))
+				{
+					$opts['disabled'] = in_array($val, $options['disabled']);
+				}
+
+				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $opts)."\n";
 			}
 
 		}
@@ -3071,7 +3164,7 @@ class e_form
 			return $text;	
 		}			
 				
-			
+
 		
 		return $this->admin_button($name, $value, $action, $label, $options);
 		
@@ -3176,6 +3269,13 @@ class e_form
 			$include = (deftrue("FONTAWESOME")) ? "data-loading-icon='fa-spinner' data-disable='true'" : "";
 		}
 
+		$confirmation = LAN_JSCONFIRM;
+
+		if(!empty($options['confirm']))
+		{
+			$confirmation = $options['confirm'];
+		}
+
 		$options = $this->format_options('admin_button', $name, $options);
 
 		$options['class'] = vartrue($options['class']);
@@ -3200,7 +3300,10 @@ class e_form
 
 			case 'delete':
 			case 'danger':
-				$options['other'] = 'data-confirm="'.LAN_JSCONFIRM.'"';
+
+
+
+				$options['other'] = 'data-confirm="'.$confirmation.'"';
 				break;
 
 			case 'batch':
@@ -5658,14 +5761,12 @@ class e_form
 					$eloptions  = vartrue($parms['__options'], array());
 				}
 
-				$value = (isset($eloptions['empty']) && empty($value)) ? $eloptions['empty'] : $value;
+				$value = (isset($eloptions['empty']) && ($value === null)) ? $eloptions['empty'] : $value;
 
 				if(is_string($eloptions)) parse_str($eloptions, $eloptions);
 				if($attributes['type'] === 'comma') $eloptions['multiple'] = true;
 				unset($parms['__options']);
 				if(vartrue($eloptions['multiple']) && !is_array($value)) $value = explode(',', $value);
-
-
 
 				// Allow Ajax API.
 				if(!empty($ajaxParms))

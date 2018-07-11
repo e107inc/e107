@@ -979,6 +979,7 @@ class e_jsmanager
 
 			case 'library_css':
 				$file_path = $runtime_location.$this->_sep.$tp->createConstants($file_path, 'mix').$this->_sep.$pre.$this->_sep.$post;
+				// 	e107::getDebug()->log($file_path);
 				if(!isset($this->_e_css['library'])) $this->_e_css['library'] = array();
 				$registry = &$this->_e_css['library'];
 				$runtime = true;

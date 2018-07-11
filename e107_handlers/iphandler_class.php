@@ -991,6 +991,11 @@ class eIPHandler
 				echo "\nBanned</pre>";
 			}
 
+			// added missing if clause
+			if ($do_return)
+			{
+				return false;
+			}
 			exit();
 		}
 
