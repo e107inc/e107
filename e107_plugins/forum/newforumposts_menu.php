@@ -30,6 +30,16 @@ if(!class_exists('forum_newforumposts_menu'))
 			$this->plugPref = e107::pref('forum'); // general forum preferences.
 			$this->menuPref = e107::getMenu()->pref();// ie. popup config details from within menu-manager.
 
+			// Set some defaults ...
+			if (!isset($this->menuPref['title'])) $this->menuPref['title'] = "";
+			if (empty($this->menuPref['display'])) $this->menuPref['display'] = 10;
+			if (empty($this->menuPref['maxage'])) $this->menuPref['maxage'] = 0;
+			if (empty($this->menuPref['characters'])) $this->menuPref['characters'] = 120;
+			if (empty($this->menuPref['postfix'])) $this->menuPref['postfix'] = '...';
+			if (!isset($this->menuPref['scroll'])) $this->menuPref['scroll'] = "";
+			if (empty($this->menuPref['layout'])) $this->menuPref['layout'] = 'default';
+
+
 			$sql = e107::getDb();
 
 			$this->total['topics'] = $sql->count("forum_thread");
@@ -56,6 +66,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			$qry = '';
 
+			$this->menuPref['layout'] = vartrue($this->menuPref['layout'], 'default');
 			switch($this->menuPref['layout'])
 			{
 				case "minimal":
@@ -221,7 +232,7 @@ if(!class_exists('forum_newforumposts_menu'))
 
 					if (!empty($this->menuPref['title']))
 					{
-						$list .= "<h4 class='media-header'><a href='{$url}'>{$topic}</a></h4>{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
+						$list .= "<h4 class='media-heading'><a href='{$url}'>{$topic}</a></h4>{$post}<br /><small class='text-muted muted'>".LAN_FORUM_MENU_001." {$poster} {$datestamp}</small>";
 					}
 					else
 					{
@@ -248,7 +259,24 @@ if(!class_exists('forum_newforumposts_menu'))
 
 			if(!empty($this->menuPref['caption']))
 			{
-				$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
+				if (array_key_exists(e_LANGUAGE, $this->menuPref['caption']))
+				{
+					// Language key exists
+					$caption = vartrue($this->menuPref['caption'][e_LANGUAGE], LAN_PLUGIN_FORUM_LATESTPOSTS);
+				}
+				elseif (is_array($this->menuPref['caption']))
+				{
+					// Language key not found
+					$keys = array_keys($caption = $this->menuPref['caption']);
+					// Just first language key from the list
+					$caption = vartrue($this->menuPref['caption'][$keys[0]], LAN_PLUGIN_FORUM_LATESTPOSTS);
+				}
+				else
+				{
+					// No multilan array, just plain text
+					$caption = vartrue($this->menuPref['caption'], LAN_PLUGIN_FORUM_LATESTPOSTS);
+				}
+				//$caption = !empty($this->menuPref['caption'][e_LANGUAGE])  ? $this->menuPref['caption'][e_LANGUAGE] : $this->menuPref['caption'];
 			}
 
 

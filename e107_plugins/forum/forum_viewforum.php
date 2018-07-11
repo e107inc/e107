@@ -178,6 +178,8 @@ if(!empty($FORUM_VIEWFORUM_TEMPLATE) && is_array($FORUM_VIEWFORUM_TEMPLATE) && T
 	$FORUM_IMPORTANT_ROW			= $FORUM_VIEWFORUM_TEMPLATE['divider-important'];
 	$FORUM_NORMAL_ROW				= $FORUM_VIEWFORUM_TEMPLATE['divider-normal'];	
 	
+	$FORUM_CRUMB				    = $FORUM_VIEWFORUM_TEMPLATE['forum-crumb'];	
+	
 }
 
 
@@ -270,11 +272,14 @@ if ($pages)
 {
 	if(strpos($FORUM_VIEW_START, 'THREADPAGES') !== false || strpos($FORUM_VIEW_END, 'THREADPAGES') !== false)
 	{
-		$url = e107::url('forum','forum',$forumInfo, array('query'=>array('p'=>'[FROM]')));
-/*--
+		// issue #3087 url need to be decoded first (because the [FROM] get's encoded in url())
+		// and to encode the full url to not loose the id param when being used in the $forumSCvars['parms']
+		$url = rawurlencode(rawurldecode(e107::url('forum','forum',$forumInfo, array('query'=>array('p'=>'[FROM]')))));
+
+		/*--
 		$parms = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 		$fVars->THREADPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
---*/
+		--*/
 		$forumSCvars['parms'] = "total={$pages}&type=page&current={$page}&url=".$url."&caption=off";
 //-- ?????????? unset $ulrparms????
 		unset($urlparms);

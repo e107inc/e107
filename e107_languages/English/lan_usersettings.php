@@ -145,4 +145,6 @@ define("LAN_CUSTOMTITLE", "Custom title");
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
 // define("LAN_USET_8", "Signature / Time zone");
-?>
+
+define("LAN_USET_50", "Delete Account");
+define("LAN_USET_51", "Are you sure? This procedure cannot be reversed! Once completed, your account and any personal data that you have entered on this site will be permanently lost and you will no longer be able to login.");

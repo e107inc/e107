@@ -369,7 +369,22 @@ class user_mailout
 		return $var;
 	}
 
-
+	/**
+	 * Manage Sent. 
+	 */
+	public function sent($data) // trigerred when email sent from queue.
+	{
+		if($data['status'] == 1) // Successfully sent
+		{
+			// e107::getLog()->add($this->mailerSource . ' email sent', $data, E_LOG_INFORMATIVE, 'SENT');		
+			return true;
+		}
+		else // Failed 
+		{
+			// e107::getLog()->add($this->mailerSource . ' email not sent', $data, E_LOG_FATAL, 'SENT');		
+			return false;
+		}
+	}
 
 
 

@@ -3456,10 +3456,7 @@ class e_tree_model extends e_front_model
 			$rowParentID = (int) $row[$sort_parent];
 
 			// Note: This optimization only works if the SQL query executed was ordered by the sort parent.
-			if($nodeID !== $rowParentID)
-			{
-				break;
-			}
+			if($rowParentID > $nodeID) break;
 
 			$node['_children'][] = &$row;
 			unset($rows[$key]);
@@ -3620,7 +3617,7 @@ class e_tree_model extends e_front_model
 				return "";
 			}, $db_query)
 			// Optimization goes with e_tree_model::moveRowsToTreeNodes()
-			. " ORDER BY " . $this->getParam('sort_parent');
+			. " ORDER BY " . $this->getParam('sort_parent') . "," . $this->getParam('primary_field');
 		$this->setParam('db_query', $db_query);
 	}
 

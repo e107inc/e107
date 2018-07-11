@@ -1526,7 +1526,7 @@ $columnInfo = array(
 	           $download_datestamp = time();
 	      }
 	
-			$text .= $frm->datepicker('download_datestamp',$download_datestamp);
+			$text .= $frm->datepicker('download_datestamp', $download_datestamp, 'type=datetime');
 			
 	  //    $update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
 	  //    $text .= "        &nbsp;&nbsp;<span><input type='checkbox' value='1' name='update_datestamp' $update_checked/>".DOWLAN_148."</span>";
