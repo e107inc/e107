@@ -55,7 +55,7 @@ $tp = e107::getParser();
 /*	RESET DISPLAY NAMES	*/
 if(isset($_POST['submit_resetdisplaynames']))
 {
-	e107::getDb()->db_Update('user', 'user_name=user_loginname');
+	e107::getDb()->update('user', 'user_name=user_loginname');
 	$mes->addInfo(PRFLAN_157);
 }
 
@@ -647,7 +647,8 @@ $ga = e107::getDate();
 $date1 = $ga->convert_date(time(), "short");
 $date2 = $ga->convert_date(time(), "long");
 $date3 = $ga->convert_date(time(), "forum");
-$date4 = e107::getDate()->convert(time(),"input");
+//$core_pref$date4 = e107::getDate()->convert(time(),"input");
+$date4 = $tp->toDate(time(),"input");
 
 $text .= "
 		<fieldset class='e-hideme' id='core-prefs-date'>
@@ -1086,14 +1087,37 @@ $text .= "
 
 
 /* text render options */
-
+$savePrefs = false;
 if(!isset($pref['post_html']))
 {
 	$pref['post_html'] = '250';
-	save_prefs();
+	$savePrefs = true;
+	//save_prefs();
 }
 
-$text .= "
+// Make sure, the "post_script" setting is set and if not, set it to "No One" (255)
+// This should close a possible security hole...
+if(!isset($pref['post_script']))
+{
+	$pref['post_script'] = '255';
+	$savePrefs = true;
+	//save_prefs();
+}
+else
+{
+	// Make sure, that the pref is one of the allowed userclasses
+	// Close possible security hole
+	if (!array_key_exists($pref['post_script'], $e_userclass->uc_required_class_list('nobody,admin,main,classes,no-excludes', true)))
+	{
+		$pref['post_script'] = 255; //set to userclass "no one" if the old class isn't part of the list of allowed userclasses
+		$savePrefs = true;
+	}
+}
+
+if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
+
+
+	$text .= "
 		<fieldset class='e-hideme' id='core-prefs-textpost'>
 			<legend>".PRFLAN_101."</legend>
 			<table class='table adminform'>
@@ -1186,7 +1210,9 @@ $text .= "
 					<tr>
 						<td><label for='post-script'>".PRFLAN_215.":</label></td>
 						<td>
-							".r_userclass('post_script',$pref['post_script'],'off','nobody,member,admin,main,classes')."
+							".//r_userclass('post_script',$pref['post_script'],'off','nobody,member,admin,main,classes')
+							$e_userclass->uc_dropdown('post_script',$pref['post_script'],'off','nobody,admin,main,classes,no-excludes')
+							."
 							<div class='smalltext field-help'>".PRFLAN_216."</div>
 						</td>
 					</tr>
