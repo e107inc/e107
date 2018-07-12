@@ -563,7 +563,8 @@ class download
 		$ns = e107::getRender();
 		$sc = $this->sc;
 
-		$count = $sc->getVars();
+		// @see: #3056 fixes fatal error in case $sc is empty (what happens, if no record was found)
+		$count = empty($sc) ? 0 : $sc->getVars();
 
 		if(empty($count))
 		{
