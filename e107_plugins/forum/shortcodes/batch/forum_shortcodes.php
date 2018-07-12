@@ -64,7 +64,7 @@ class forum_shortcodes extends e_shortcode
 
 	function sc_statlink()
 	{
-		 return "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_FORUM_0017."</a>\n";
+		return "<a href='".e107::url('forum','stats')."'>".LAN_FORUM_0017."</a>\n";
 	}
 
 	function sc_iconkey()
