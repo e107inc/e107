@@ -138,6 +138,114 @@ class usersettings_front // Begin Usersettings rewrite.
 	{
 		return $this->template[$id];
 	}
+	
+	
+	
+	private function sendDeleteConfirmationEmail()
+	{
+		$tp = e107::getParser();
+
+		$message = defset('LAN_USET_52', "A confirmation email has been sent to [x]. Please click the link in the email to permanently delete your account."); // Load LAN with fall-back.
+		$subject = defset("LAN_USET_53", "Account Removal Confirmation"); // Load LAN with fall-back.
+		$caption = defset('LAN_USET_54', "Confirmation Email Sent"); // Load LAN with fall-back.
+
+		$hash = e107::getUserSession()->generateRandomString("#**************************************************************************#");
+
+		$link = SITEURL."usersettings.php?del=".$hash; // Security measure - user must be logged in to utilize the link.
+
+		$text = LAN_USET_55; // "Please click the following link to complete the deletion of your account.";
+		$text .= "<br /><br />";
+		$text .= "<a href='".$link."' target='_blank'>".$link."</a>";
+
+
+		$eml = array(
+			'subject' 		=> $subject,
+			'html'			=> true,
+			'priority'      => 1,
+			'template'		=> 'default',
+			'body'			=> $text,
+		);
+
+		if(e107::getEmail()->sendEmail(USEREMAIL,USERNAME, $eml))
+		{
+			$update = array(
+				'user_sess' => $hash,
+				'WHERE' => 'user_id = '.USERID
+			);
+
+			e107::getDb()->update('user',$update);
+
+			$alert = $tp->lanVars($message, USEREMAIL);
+			return e107::getMessage()->setTitle($caption, E_MESSAGE_INFO)->addInfo($alert)->render();
+
+		}
+
+		//todo Email Failure message.
+		return null;
+
+
+
+	}
+
+/*
+	private function processUserDeleteFields($vars)
+	{
+		$qry = array();
+
+		foreach($vars as $field => $var)
+		{
+
+
+
+		}
+
+		return $qry;
+	}*/
+
+
+	private function processUserDelete($hash)
+	{
+		if(!e107::getDb()->select('user',"user_id = ".USERID." AND user_sess=".$hash." LIMIT 1")) // user must be logged in AND have correct hash.
+		{
+			return false;
+		}
+
+		$arr = e107::getAddonConfig('e_user', '', 'delete', USERID);
+
+		$sql = e107::getDb();
+
+		foreach($arr as $plugin)
+		{
+			foreach($plugin as $table => $query)
+			{
+				$mode = $query['MODE'];
+				unset($query['MODE']);
+
+				// $query = $this->processUserDeleteFields($query); //optional pre-processing..
+
+				if($mode === 'update')
+				{
+					//echo "<h3>UPDATE ".$table."</h3>";
+				//	print_a($query);
+					$sql->update($table,$query); // todo check query ran successfully.
+				}
+				elseif($mode === 'delete')
+				{
+					//echo "<h3>DELETE ".$table."</h3>";
+					//print_a($query);
+					$sql->delete($table,$query); //  todo check query ran successfully.
+				}
+
+			}
+
+
+		}
+
+		$alert = defset('LAN_USET_56', "Your account has been successfully deleted.");
+
+		return e107::getMessage()->addSuccess($alert)->render();
+
+	}
 
 	/**
 	 * @return bool
@@ -172,9 +280,15 @@ class usersettings_front // Begin Usersettings rewrite.
 		$adminEdit          = false; // @deprecated		// FALSE if editing own data. TRUE if admin edit
 
 
-		if(!empty($_POST['delete_account']))
+		if(!empty($_POST['delete_account'])) // button clicked.
 		{
-			echo e107::getMessage()->addWarning("This feature is currently under development. Your data has not been modified")->render(); // do not LAN.
+			echo $this->sendDeleteConfirmationEmail();
+		}
+
+		if(!empty($_GET['del'])) // delete account via confirmation email link.
+		{
+			echo $this->processUserDelete($_GET['del']);
+			e107::getSession()->destroy();
 		}
 
 		/* todo subject of removal */

@@ -2511,7 +2511,8 @@ class users_admin_form_ui extends e_admin_form_ui
 			'<span class="label label-success label-status">'.LAN_ACTIVE.'</span>',
 			"<span class='label label-important label-danger label-status'>".LAN_BANNED."</span>",
 			"<span class='label label-default label-status'>".LAN_NOTVERIFIED."</span>",
-			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>"
+			"<span class='label label-info label-status'>".LAN_BOUNCED."</span>",
+			"<span class='label label-important label-danger label-status'>".USRLAN_56."</span>", // Deleted
 		);
 		
 		if($mode == 'filter' || $mode == 'batch')
