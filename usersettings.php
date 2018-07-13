@@ -39,7 +39,7 @@ if (!USER)
 	exit();
 }
 
-if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" )
+if ((!ADMIN || !getperms("4")) && e_QUERY && e_QUERY != "update" && substr(e_QUERY, 0, 4) !== 'del=')
 {
 	header('location:'.e_BASE.'usersettings.php');
 	exit();
@@ -205,7 +205,7 @@ class usersettings_front // Begin Usersettings rewrite.
 
 	private function processUserDelete($hash)
 	{
-		if(!e107::getDb()->select('user',"user_id = ".USERID." AND user_sess=".$hash." LIMIT 1")) // user must be logged in AND have correct hash.
+		if(!e107::getDb()->select('user', '*',"user_id = ".USERID." AND user_sess='".$hash."' LIMIT 1")) // user must be logged in AND have correct hash.
 		{
 			return false;
 		}
@@ -227,13 +227,13 @@ class usersettings_front // Begin Usersettings rewrite.
 				{
 					//echo "<h3>UPDATE ".$table."</h3>";
 				//	print_a($query);
-					$sql->update($table,$query); // todo check query ran successfully.
+					$sql->update($table, $query); // todo check query ran successfully.
 				}
 				elseif($mode === 'delete')
 				{
 					//echo "<h3>DELETE ".$table."</h3>";
 					//print_a($query);
-					$sql->delete($table,$query); //  todo check query ran successfully.
+					$sql->delete($table, $query['WHERE']); //  todo check query ran successfully.
 				}
 
 			}
@@ -287,8 +287,11 @@ class usersettings_front // Begin Usersettings rewrite.
 
 		if(!empty($_GET['del'])) // delete account via confirmation email link.
 		{
+
 			echo $this->processUserDelete($_GET['del']);
-			e107::getSession()->destroy();
+			//e107::getSession()->destroy();
+			e107::getUser()->logout();
+			return null;
 		}
 
 		/* todo subject of removal */

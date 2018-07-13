@@ -31,6 +31,7 @@ class user_user // plugin-folder + '_user'
 	 */
 	function delete($uid)
 	{
+		$us = e107::getUserSession();
 
 		$config = array();
 
@@ -41,6 +42,7 @@ class user_user // plugin-folder + '_user'
 			'user_email'        => 'noreply-'.$uid.'@nowhere.com',
 			'user_ip'           => '',
 			'user_lastvisit'    => time(),
+			'user_password'     => $us->HashPassword($us->generateRandomString("#??????????#"), 'Deleted-Login-'.$uid),
 			'user_ban'          => 5, // 'deleted' status'
 			// etc.
 			'WHERE'             => 'user_id = '.$uid,
