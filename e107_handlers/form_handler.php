@@ -2981,7 +2981,7 @@ class e_form
 			{
 				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected);
 
-				if(!empty($options['disabled']))
+				if(!empty($options['disabled']) && is_array($options['disabled']))
 				{
 					$opts['disabled'] = in_array($value, $options['disabled']);
 				}
