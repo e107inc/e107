@@ -584,10 +584,23 @@ function update_core_database($type = '')
 		}
 
 
-		//todo add check for post_html pref value. 
+		// Make sure, that the pref "post_script" contains one of the allowed userclasses
+		// Close possible security hole
+		if (!array_key_exists(e107::getPref('post_script'), e107::getUserClass()->uc_required_class_list('nobody,admin,main,classes,no-excludes', true)))
+		{
+			if ($just_check)
+			{
+				return update_needed("Pref 'Class which can post < script > and similar tags' contains an invalid value"); // NO LAN.
+			}
+			else
+			{
+				e107::getConfig()->setPref('post_script', 255)->save(false, true);
+			}
+		}
 
 
 		return $just_check;
+
 
 
 	}

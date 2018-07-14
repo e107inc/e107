@@ -1210,9 +1210,7 @@ if ($savePrefs) $core_pref->setPref($pref)->save(false, true);
 					<tr>
 						<td><label for='post-script'>".PRFLAN_215.":</label></td>
 						<td>
-							".//r_userclass('post_script',$pref['post_script'],'off','nobody,member,admin,main,classes')
-							$e_userclass->uc_dropdown('post_script',$pref['post_script'],'off','nobody,admin,main,classes,no-excludes')
-							."
+							".$e_userclass->uc_dropdown('post_script',$pref['post_script'],'nobody,admin,main,classes,no-excludes')."
 							<div class='smalltext field-help'>".PRFLAN_216."</div>
 						</td>
 					</tr>
