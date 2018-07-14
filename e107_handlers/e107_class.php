@@ -3486,14 +3486,26 @@ class e107
 
 				if(!empty($tmp))
 				{
-					parse_str($tmp,$qry);
-
-					foreach($qry as $k=>$v)
+					if (strpos($tmp, '=') === false)
 					{
-						if(!isset($options['query'][$k])) // $options['query'] overrides any in the original URL.
+						// required for legacy urls of type "request.php?download.43"
+						// @see: issue #3275
+						$legacyUrl .= '?' . $tmp;
+						$options['query'] = null;
+					}
+					else
+					{
+
+						parse_str($tmp,$qry);
+
+						foreach($qry as $k=>$v)
 						{
-							$options['query'][$k] = $v;
+							if(!isset($options['query'][$k])) // $options['query'] overrides any in the original URL.
+							{
+								$options['query'][$k] = $v;
+							}
 						}
+
 					}
 				}
 
