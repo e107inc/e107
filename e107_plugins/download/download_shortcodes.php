@@ -653,7 +653,16 @@ class download_shortcodes extends e_shortcode
       }
       elseif($this->var['download_image'])
       {
-         return "<a href='" . $url . "'>" . LAN_dl_40 . "</a>";
+	      $opts = array(
+		      //'legacy' => "{e_FILE}downloadthumbs/",
+		      'class'  => 'download-image dl_image img-responsive img-fluid',
+		      'w' => 200
+	      );
+	      $image = $tp->toImage($this->var['download_image'], $opts);
+
+
+	      return "<a href='" . $url . "'>" . $image . "</a>";
+          //return "<a href='" . $url . "'>" . LAN_dl_40 . "</a>";
       }
       else
       {
