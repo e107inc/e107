@@ -19,7 +19,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 				{
 					var $this = $(this);
 
-					if($this.attr('data-cache') == 'false')
+					if($this.attr('data-cache') === 'false')
 					{
 						$('#uiModal').on('shown.bs.modal', function ()
 						{
@@ -30,6 +30,7 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					var url = $this.attr('href');
 					var caption = $this.attr('data-modal-caption');
 					var height = ($(window).height() * 0.7) - 120;
+
 
 					if(caption === undefined)
 					{
@@ -43,7 +44,17 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 					$("#e-modal-iframe").on("load", function ()
 					{
 						$('#e-modal-loading').hide();
+
+						if($this.attr('data-modal-submit'))
+						{
+							var buttonCaption = $('#e-modal-iframe').contents().find('#etrigger-submit').text(); // copy submit button caption from iframe form.
+							$('#e-modal-submit').text(buttonCaption).fadeIn(); // display the button in the modal footer.
+							$('#e-modal-iframe').contents().find('.buttons-bar').hide(); // hide buttons in the iframe's form.
+						}
+
 					});
+
+
 
 					return false;
 				});
@@ -138,6 +149,45 @@ var e107 = e107 || {'settings': {}, 'behaviors': {}};
 
 $(document).ready(function()
 {
+
+			$('#e-modal-submit').click(function () {
+			  $('#e-modal-iframe').contents().find('#etrigger-submit').trigger('click');
+
+			  	var type = $(this).data('loading-icon');
+			  	var orig = $(this).text();
+
+				var caption = "<i class='fa fa-spin " + type + " fa-fw'></i>";
+				caption += "<span>" + orig + "</span>";
+
+				$(this).html(caption);
+
+				  $('#e-modal-iframe').on('load', function(){
+
+				  	 var buttonFound = $('#e-modal-iframe').contents().find('#etrigger-submit');
+
+				  	if(buttonFound.length === 0) // disable resubmitting if not button found after submit.
+				  	{
+				  		$('#e-modal-submit').fadeOut(1000);
+				  	}
+
+				  	$('#e-modal-submit').text(orig); // remove spinner.
+
+				  });
+
+			});
+
+			$('[data-dismiss="modal"]').click(function(){ // hide button for next modal popup usage.
+
+				$('#e-modal-submit').hide(1000);
+
+			});
+
+
+
+
+
+
+
 		$('form').h5Validate(
 			{ errorClass: 'has-error' }
 		); // allow older browsers to use html5 validation. 

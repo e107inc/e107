@@ -4324,6 +4324,11 @@ class e_form
 				$eModalCap = "";
 			}
 
+			if(!empty($parms['modalSubmit']))
+			{
+				$eModalCap .= " data-modal-submit='true'";
+			}
+
 			$query = http_build_query($query, null, '&amp;');
 			$value .= "<a href='".e_SELF."?{$query}' class='btn btn-default btn-secondary".$eModal."' ".$eModalCap." title='".LAN_EDIT."' data-toggle='tooltip' data-placement='left'>
 				".$editIconDefault."</a>";
