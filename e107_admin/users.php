@@ -2724,7 +2724,7 @@ class users_admin_form_ui extends e_admin_form_ui
 			//		$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
 
 					$opts['adminperms'] = USRLAN_221;
-					$opts['uadmin']     = USRLAN_34;
+					$opts['unadmin']     = USRLAN_34;
 				}
 		}
 		elseif(USERID ===  $user_id ||  $user_id > USERID)
