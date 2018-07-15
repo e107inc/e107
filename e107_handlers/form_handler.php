@@ -2672,10 +2672,10 @@ class e_form
 
 	function select_open($name, $options = array())
 	{
+
 		if(!is_array($options)) parse_str($options, $options);
 
 
-		
 		if(vartrue($options['size']) && !is_numeric($options['size']))
 		{
 			if(!empty($options['class']))
@@ -2981,9 +2981,9 @@ class e_form
 			{
 				$sel = is_array($selected) ? in_array($value, $selected) : ($value == $selected);
 
-				if(!empty($options['disabled']) && is_array($options['disabled']))
+				if(!empty($options['optDisabled']) && is_array($options['optDisabled']))
 				{
-					$opts['disabled'] = in_array($value, $options['disabled']);
+					$opts['disabled'] = in_array($value, $options['optDisabled']);
 				}
 
 				$text .= $this->option($label, $value, $sel, $opts)."\n";
@@ -3018,9 +3018,9 @@ class e_form
 			}
 			else
 			{
-				if(!empty($options['disabled']))
+				if(!empty($options['optDisabled']) && is_array($options['optDisabled']))
 				{
-					$opts['disabled'] = in_array($val, $options['disabled']);
+					$opts['disabled'] = in_array($val, $options['optDisabled']);
 				}
 
 				$text .= $this->option($lab, $val, (is_array($selected) ? in_array($val, $selected) : $selected == $val), $opts)."\n";
