@@ -351,7 +351,7 @@
 */
 		public function testSelect()
 		{
-			$options = array('disabled'=>array('opt_2'));
+			$options = array('optDisabled'=>array('opt_2'));
 			$selected =  'opt_3';
 			$opt_array = array('opt_1'=>"Option 1", 'opt_2'=>"Option 2", 'opt_3'=>"Option 3");
 			$actual = $this->_frm->select('name', $opt_array, $selected, $options);
