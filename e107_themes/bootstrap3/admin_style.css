@@ -1,5 +1,6 @@
 
 body						{ padding-top: 75px; font-size: 14px;  }
+body#admin-admin .popover   { position: fixed }
 
 @media (max-width: 992px) {
     body { height: 100vh; overflow-y: auto!important; }
@@ -217,6 +218,8 @@ td.options .btn-group                   {  display: flex; }
 
 .table .nav-tabs a,
 .table th a, .table td a                { text-decoration: none }
+
+
 
 .table > thead > tr > th, tr > th      { padding: 15px 10px;  font-weight:bold; font-variant: small-caps; }
 
