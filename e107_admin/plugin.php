@@ -365,6 +365,9 @@ class plugin_ui extends e_admin_ui
 
 			//	$log->log_event('PLUGMAN_01', $name, E_LOG_INFORMATIVE, '');
 
+				// make sure ALL plugin/addon pref lists get update and are current
+				e107::getPlug()->clearCache()->buildAddonPrefLists();
+
 				e107::getMessage()->add($text, E_MESSAGE_SUCCESS);
 			}
 
@@ -422,6 +425,9 @@ class plugin_ui extends e_admin_ui
 
 			$text = e107::getPlugin()->uninstall($id, $post);
 
+			// make sure ALL plugin/addon pref lists get update and are current
+			e107::getPlug()->clearCache()->buildAddonPrefLists();
+
 			e107::getMessage()->add($text, E_MESSAGE_SUCCESS);
 			$log = e107::getPlugin()->getLog();
 			e107::getDebug()->log($log);
@@ -446,7 +452,7 @@ class plugin_ui extends e_admin_ui
 
 			e107::getMessage()->addSuccess("Repair Complete (".$id.")"); // Repair Complete ([x])
 
-			 $this->redirectAction('list');
+			$this->redirectAction('list');
 		}
 
 
@@ -641,7 +647,10 @@ class plugin_ui extends e_admin_ui
 
 
 			$mes->addSuccess($text);
-			$plugin->save_addon_prefs('update');
+			//$plugin->save_addon_prefs('update');
+
+			// make sure ALL plugin/addon pref lists get update and are current
+			e107::getPlug()->clearCache()->buildAddonPrefLists();
 
 			$this->redirectAction('list');
 	   }
