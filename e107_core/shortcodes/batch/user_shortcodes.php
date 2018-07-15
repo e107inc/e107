@@ -525,7 +525,8 @@ class user_shortcodes extends e_shortcode
 		if (USERID == $this->var['user_id']) 
 		{
 			//return "<a href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>";
-			return "<a class='btn btn-default' href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			//return "<a class='btn btn-default' href='".e_HTTP."usersettings.php'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
+			return "<a class='btn btn-default' href='".$url->create('user/myprofile/edit')."'>".LAN_USER_38."</a>"; // TODO: repair dirty fix for usersettings
 		}
 		else if(ADMIN && getperms("4") && !$this->var['user_admin']) 
 		{
@@ -534,6 +535,7 @@ class user_shortcodes extends e_shortcode
 			return "<a class='btn btn-default' href='".$editUrl."'>".LAN_USER_39."</a>";
 
 			//	return "<a class='btn btn-default' href='".$url->create('user/profile/edit', array('id' => $this->var['user_id'], 'name' => $this->var['user_name']))."'>".LAN_USER_39."</a>";
+
 		}
 	}
 	
