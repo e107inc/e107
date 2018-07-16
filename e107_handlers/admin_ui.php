@@ -6682,7 +6682,7 @@ class e_admin_form_ui extends e_form
 			'table_rows' => '', // rows array (<td> tags)
 			'table_body' => '', // string body - used only if rows empty
 			'pre_triggers' => '',
-			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
+			'triggers' => array('hidden' => $this->hidden('etrigger_delete['.$ids.']', $ids) . $this->token(), 'delete_confirm' => array(LAN_CONFDELETE, 'confirm', $ids), 'cancel' => array(LAN_CANCEL, 'cancel')),
 		);
 		if($delcount > 1)
 		{
