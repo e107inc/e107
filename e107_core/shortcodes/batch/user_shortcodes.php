@@ -265,23 +265,29 @@ class user_shortcodes extends e_shortcode
 
 
 	
-	function sc_user_email($parm='')
+function sc_user_email($parm='')
+{
+
+	$tp = e107::getParser();
+	
+	$aCurUserData = e107::user(USERID);
+
+	if( ($this->var['user_hideemail'] && !ADMIN ) && ( $this->var['user_email']!=$aCurUserData['user_email'] ) )
 	{
-
-		$tp = e107::getParser();
-
-		if($this->var['user_hideemail'] && !ADMIN)
-		{
-			return "<i>".LAN_USER_35."</i>";
-		}
-		else
-		{
+		return "<i>".LAN_USER_35."</i>";
+	}
+	else
+	{
+		if($this->var['user_email']!=$aCurUserData['user_email']){
 			return $tp->emailObfuscate($this->var['user_email']);
 			//list($user,$dom) = explode('@', $this->var['user_email']);
 			//return "<span class='e-email' data-user='".$user."' data-dom='".$dom."'>&#64;</span>";
+		}else{
+			return $this->var['user_email'];
 		}
-
 	}
+
+}
 
 
 	/**
