@@ -10,6 +10,11 @@
 *
 */
 
+if(!empty($_POST) && !isset($_POST['e-token']))
+{
+	$_POST['e-token'] = ''; // make sure e-token hasn't been deliberately removed.
+}
+
 if (!defined('e107_INIT'))
 {
 	require_once("../class2.php");
@@ -149,7 +154,7 @@ JS;
 				case 'deluser':
 					if($_POST['userid'])
 					{
-						$id = $_POST['userid'];
+						$id = (int) $_POST['userid'];
 						$_POST['etrigger_delete'] = array($id => $id);
 						$user = e107::getDb()->retrieve('user', 'user_email, user_name', 'user_id='.$id);
 						$rplc_from = array('[x]', '[y]', '[z]');
@@ -960,7 +965,7 @@ class users_admin_ui extends e_admin_ui
 		$response->appendBody($frm->open('adminperms'))
 			->appendBody($prm->renderPermTable('grouped', $sysuser->getValue('perms')))
 			->appendBody($prm->renderCheckAllButtons())
-			->appendBody($prm->renderSubmitButtons())
+			->appendBody($prm->renderSubmitButtons().$frm->token())
 			->appendBody($frm->close());
 		
 		$this->addTitle(str_replace(array('[x]', '[y]'), array($sysuser->getName(), $sysuser->getValue('email')), USRLAN_230));
