@@ -161,22 +161,19 @@ class user_shortcodes extends e_shortcode
 	function sc_user_level($parm) 
 	{
 		$pref = e107::getPref();
-		//FIXME - new level handler, currently commented to avoid parse errors
-		//require_once(e_HANDLER."level_handler.php");
-		//$ldata = get_level($this->var['user_id'], $this->var['user_forums'], $this->var['user_comments'], $this->var['user_chats'], $this->var['user_visits'], $this->var['user_join'], $this->var['user_admin'], $this->var['user_perms'], $pref);
-		$ldata = array();
-		if (isset($ldata[0]) && strstr($ldata[0], "IMAGE_rank_main_admin_image"))
+
+		$ldata = e107::getRank()->getRanks($this->var['user_id']); //, (USER && $forum->isModerator(USERID)));
+		if(vartrue($ldata['special']))
 		{
-			return LAN_USER_31;
+			$r = $ldata['special'];
 		}
-		elseif(isset($ldata[0]) && strstr($ldata[0], "IMAGE"))
+		else
 		{
-			return LAN_USER_32;
+			$r = $ldata['pic'] ? $ldata['pic'] : varset($ldata['name'], $ldata['name']);
 		}
-		elseif(isset($ldata[1]))
-		{
-			return $ldata[1];
-		}
+		if(!$r) $r = 'n/a';
+		return $r;
+
 	}
 	
 	
