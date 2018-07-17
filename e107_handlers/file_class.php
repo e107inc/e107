@@ -411,7 +411,28 @@ class e_file
 
 		if(empty($finfo['mime'])) // last resort. 
 		{
-			$finfo['mime'] = 'application/'.$finfo['pathinfo']['extension'];
+			switch($finfo['pathinfo']['extension'])
+			{
+				case "mp3":
+					$finfo['mime'] = 'audio/mpeg';
+					break;
+
+				case "ogg":
+					$finfo['mime'] = 'audio/ogg';
+					break;
+
+				case "mp4":
+					$finfo['mime'] = 'video/mp4';
+					break;
+
+				case "3gp":
+					$finfo['mime'] = 'video/3gpp';
+					break;
+
+				default:
+					$finfo['mime'] = 'application/'.$finfo['pathinfo']['extension'];
+			}
+
 		}
 	
 		

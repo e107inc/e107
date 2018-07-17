@@ -1077,17 +1077,31 @@ class media_admin_ui extends e_admin_ui
 
 
 		
-		if($this->getAction() == 'youtube')
+		if($this->getAction() === 'youtube')
 		{
 			$parm = array('search' => $tp->filter($_GET['search']));	
-			echo $this->videoTab($parm);
+			echo $this->youtubeTab($parm);
 			exit;
 		}
 		
-		if($this->getAction() == 'glyph')
+		if($this->getAction() === 'glyph')
 		{
 			$parm = array('search' => $tp->filter($_GET['search']));	
 			echo $this->glyphTab($parm);
+			exit;
+		}
+
+		if($this->getAction() === 'video')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			echo $this->videoTab($parm);
+			exit;
+		}
+
+		if($this->getAction() === 'audio')
+		{
+			$parm = array('search' => $tp->filter($_GET['search']));
+			echo $this->audioTab($parm);
 			exit;
 		}
 		
@@ -1315,7 +1329,7 @@ class media_admin_ui extends e_admin_ui
 		if($type === 'video')
 		{
 			$tabs = array(
-				'youtube' => array('caption'=>'Youtube', 'text' => $this->videoTab())
+				'youtube' => array('caption'=>'Youtube', 'text' => $this->youtubeTab())
 			);
 
 			return $frm->tabs($tabs, array('class'=>'media-manager'));
@@ -1324,7 +1338,7 @@ class media_admin_ui extends e_admin_ui
 
 
 
-		$videoActive = 'inactive';
+		$youtubeActive = 'inactive';
 		
 		$options = array();
 		$options['bbcode'] = ($this->getQuery('bbcode')=='img') ? 'img' : FALSE;
@@ -1344,7 +1358,7 @@ class media_admin_ui extends e_admin_ui
 			}
 			else 
 			{
-				$videoActive = 'active';		
+				$youtubeActive = 'active';
 			}
 				
 					
@@ -1367,7 +1381,12 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
 		{
-			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Youtube</a></li>\n";	
+			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>Youtube</a></li>\n";
+
+			if(deftrue('e_DEBUG_VIDEO'))
+			{
+			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Videos</a></li>\n";
+			}
 		}
 		
 		
@@ -1496,15 +1515,33 @@ class media_admin_ui extends e_admin_ui
 		
 		if($this->getQuery('video') || $this->getQuery('bbcode') == 'video')
 		{
-			$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
+			$text .= "<div class='tab-pane clearfix {$youtubeActive}' id='core-media-youtube' >";
 		//	$text .= "<div class='row-fluid'>";
-			$text .= $this->videoTab();
-			$text .= "</div>";	
-		//	$text .= "</div>";	
+			$text .= $this->youtubeTab();
+			$text .= "</div>";
+
+			if(deftrue('e_DEBUG_VIDEO'))
+			{
+				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
+			//	$text .= "<div class='row-fluid'>";
+				$text .= $this->videoTab();
+				$text .= "</div>";
+			}
+
 		}
 			
-		
-		
+		// todo
+		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
+		{
+			if(deftrue('e_DEBUG_AUDIO'))
+			{
+				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
+			//	$text .= "<div class='row-fluid'>";
+				$text .= $this->audioTab();
+				$text .= "</div>";
+			}
+
+		}
 		
 		
 		
@@ -1566,13 +1603,74 @@ class media_admin_ui extends e_admin_ui
 		return $text;
 	}
 		
-		
+	function audioTab($parm=array())
+	{
+		//todo (@see videoTab)
+
+	}
+
+
+	function videoTab($parm=array())
+	{
+
+		$tp = e107::getParser();
+
+		$parms = array(
+			'width'	 	=> 340,
+			'height'	=> 220,
+			'type'		=>'video',
+			'tagid'		=> $this->getQuery('tagid'),
+			'action'	=>'video', 								// Used by AJAX to identify correct function.
+			'perPage'	=> 12,
+			'gridClass'	=> 'media-carousel-item-video pull-left',
+			'bbcode'	=> 'video',
+			'close'		=> 'true'
+
+		);
+
+		$items = array();
+
+		$videos = e107::getMedia()->getVideos();
+
+		foreach($videos as $val)
+		{
+			$items[] = array(
+					'previewUrl'	=> e_IMAGE_ABS."generic/playlist_120.png", //todo place entire video tag into imagepicker when saving.
+					'saveValue'		=> $val['media_url'],
+					'thumbUrl'		=> $tp->replaceConstants($val['media_url']),
+					'title'			=> $val['media_name'],
+					'slideCaption'	=> '',
+					'slideCategory'	=> 'bootstrap',
+					'mime'          => $val['media_type']
+			);
+
+		}
+
+
+		if(!empty($parm['search']))
+		{
+			$filtered = array();
+			if(!empty($items))
+			{
+				foreach($items as $v)
+				{
+					if(strpos($v['title'], $parm['search'])!==false)
+					{
+						$filtered[] = $v;
+					}
+				}
+			}
+			$items = $filtered;
+		}
+
+		return e107::getMedia()->browserCarousel($items, $parms);
+	}
 		
 		
 
 	
 	
-	function glyphTab($parm='')
+	function glyphTab($parm=array())
 	{
 
 		$parms = array(
@@ -1663,9 +1761,6 @@ class media_admin_ui extends e_admin_ui
 		}
 
 
-
-
-
 		
 		if(!empty($parm['search']))
 		{
@@ -1726,7 +1821,7 @@ class media_admin_ui extends e_admin_ui
 	 * @return mixed|string
 	 * @see https://www.googleapis.com/youtube/v3/search
 	 */
-	function videoTab($parm='')
+	function youtubeTab($parm='')
 	{
 		$apiKey = e107::pref('core','youtube_apikey');
 
@@ -2691,7 +2786,7 @@ class media_admin_ui extends e_admin_ui
 
 			$default = $this->getFileXml($f['fname']);
 			$f = $fl->cleanFileName($f,true);
-			
+
 			$c = md5($f['path'].$f['fname']);
 			
 			if($f['error'])
