@@ -431,6 +431,11 @@ class e_media
 	}
 
 
+	public function getVideos($from=0, $amount = null, $search = null)
+	{
+		return $this->getImages('_common_video', $from, $amount, $search);
+	}
+
 	/**
 	 * Return an array of Images in a particular category
 	 * @param string $cat : category name. use + to include _common eg. 'news+'
@@ -1265,28 +1270,65 @@ class e_media
 		$close = (E107_DEBUG_LEVEL > 0) ? "" : "  data-close='true' ";	//
 		$select = (E107_DEBUG_LEVEL > 0) ? '' : " e-dialog-save e-dialog-close";
 
-
-
-		$text = "\n\n<!-- Start Item -->\n<div class='media-carousel ".$data['gridClass']."'>
+		$text = "\n\n<!-- Start Item -->
 		
-			<div class='well clearfix'>
-
-				<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+		<div class='media-carousel ".$data['gridClass']."'>
 		
-				if($data['type'] == 'image')
+			<div class='well clearfix'>\n";
+
+				$linkTag = "<a data-toggle='context' class='e-media-select e-tip".$select."' ".$close." data-id='".$data['id']."' data-width='".$data['width']."' data-height='".$data['height']."' data-src='".$data['previewUrl']."' data-type='".$data['type']."' data-bbcode='".$data['bbcode']."' data-target='".$data['tagid']."' data-path='".$data['saveValue']."' data-preview='".$data['previewUrl']."' title=\"".$data['title']."\" style='float:left' href='#' >";
+
+				switch($data['type'])
 				{
-					$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+					case "video":
+						$mime = vartrue($data['mime'],"video/mp4");
+
+						$text .= '<video width="'.$data['width'].'" height="'.$data['height'].'" controls >
+						  <source src="'.$data['thumbUrl'].'" type="'.$mime.'">
+						  Your browser does not support the video tag.
+						</video>
+						<div class="clearfix" style="text-align:center">';
+
+						$text .= $linkTag;
+						$text .= "\n".$data['title'];
+						$text .= "\n</a></div>\n\n";
+						break;
+
+					case "audio":
+						$mime = vartrue($data['mime'],"audio/mpeg");
+						$text .= '<audio controls>
+						  <source src="'.$data['thumbUrl'].'" type="'.$mime.'">
+	
+						  Your browser does not support the audio tag.
+						</audio>
+						<div class="clearfix" style="text-align:center">';
+
+						$text .= $linkTag;
+						$text .= "\n".$data['title'];
+						$text .= "\n</a></div>\n\n";
+
+						break;
+
+
+					case "image":
+						$text .= $linkTag;
+						$text .= '<img class="img-responsive img-fluid" alt="" src="'.$data['thumbUrl'].'" style="width:100%;display:inline-block" />';
+						$text .= "\n</a>\n\n";
+						$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
+						break;
+
+
+					case "glyph":
+						$text .= $linkTag;
+						$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";
+						$text .= "\n</a>\n\n";
+						break;
+
+
+					default:
+						// code to be executed if n is different from all labels;
 				}
-				elseif($data['type'] == 'glyph')
-				{
-					$text .= "\n<span style='margin:7px;display:inline-block;color: inherit'>".$tp->toGlyph($data['thumbUrl'],false)."</span>";	
-				}		
-				$text .= "\n</a>\n\n";
-				
-				if($data['type'] == 'image')
-				{
-					$text .= "\n<div><small class='media-carousel-item-caption'>".$data['title']."</small></div>";
-				}
+
 			
 			$text .= "</div>
 			
@@ -1452,7 +1494,6 @@ class e_media
 								$text .= "<h4>".$val['slideCaption']."</h4>";
 							}
 						}
-
 
 						$val['width']	= $parm['width'];
 						$val['height']	= $parm['height'];
