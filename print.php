@@ -48,13 +48,14 @@ e107::css('inline',$CSS);
 
 define('e_IFRAME', true); 
 
-$source = e107::getParser()->filter($qs[0],'wds');
+$source = preg_replace('/[^\w\d_\:]/',"", $qs[0]);
 $parms = varset($qs[1],'');
 unset($qs);
 
 if(strpos($source,'plugin:') !== FALSE)
 {
 	$plugin = substr($source,7);
+
 	if(file_exists(e_PLUGIN.$plugin."/e_emailprint.php"))
 	{
 		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
