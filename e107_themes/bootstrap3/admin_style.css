@@ -265,6 +265,25 @@ td.right, th.right 			{ text-align:right }
 .chzn-container				{ border: 1px solid #ddd; }
 
 
+/* media picker */
+
+.mediaselector-preview img,
+.mediaselector-preview video,
+.mediaselector-preview audio {	max-width: 100% 	}
+
+.mediaselector-preview video { position: absolute; top: 0; }
+.mediaselector-preview audio { height: 70px }
+.mediaselector-preview  i   { padding: 20% 40%; }
+
+.mediaselector-container .overlay {
+position: absolute;
+bottom: 5px;
+text-align: right;
+display: block;
+width: 100%;
+right: 10px;
+}
+
 /* image picker */
 
 .imgselector-container {

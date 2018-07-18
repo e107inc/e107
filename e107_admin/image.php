@@ -1382,11 +1382,8 @@ class media_admin_ui extends e_admin_ui
 		if($this->getQuery('video') == 1 || $this->getQuery('bbcode') == 'video')
 		{
 			$text .= "<li class='{$youtubeActive}'><a data-toggle='tab' href='#core-media-youtube'>Youtube</a></li>\n";
-
-			if(deftrue('e_DEBUG_VIDEO'))
-			{
 			$text .= "<li class='{$videoActive}'><a data-toggle='tab' href='#core-media-video'>Videos</a></li>\n";
-			}
+
 		}
 		
 		
@@ -1520,27 +1517,21 @@ class media_admin_ui extends e_admin_ui
 			$text .= $this->youtubeTab();
 			$text .= "</div>";
 
-			if(deftrue('e_DEBUG_VIDEO'))
-			{
-				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
+			$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-video' >";
 			//	$text .= "<div class='row-fluid'>";
 				$text .= $this->videoTab();
 				$text .= "</div>";
-			}
+
 
 		}
 			
 		// todo
 		if($this->getQuery('audio') || $this->getQuery('bbcode') == 'audio')
 		{
-			if(deftrue('e_DEBUG_AUDIO'))
-			{
 				$text .= "<div class='tab-pane clearfix {$videoActive}' id='core-media-audio' >";
 			//	$text .= "<div class='row-fluid'>";
 				$text .= $this->audioTab();
 				$text .= "</div>";
-			}
-
 		}
 		
 		
