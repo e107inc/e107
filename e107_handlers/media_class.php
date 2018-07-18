@@ -29,6 +29,17 @@ class e_media
 				'video'			=> e_MEDIA_VIDEO,
 				'other'			=> e_MEDIA_FILE
 		);
+
+	protected $mimeExtensions = array(
+				'text'			=> array('txt'),
+				'multipart'		=> array(),
+				'application'	=> array('zip','doc','gz'),
+				'audio'			=> array('mp3','wav'),
+				'image'			=> array('jpeg','jpg','png','gif', 'svg'),
+				'video'			=> array('mp4', 'youtube','youtubepl'),
+				'other'			=> array(),
+			//	'glyph'         => array('glyph')
+		);
 	
 	function __construct()
 	{
@@ -1063,9 +1074,31 @@ class e_media
 		}
 		return $dir;
 	}
-	
-	
-	
+
+	/**
+	 * detected Media Type from Media URL
+	 * @param $file
+	 * @return int|string
+	 */
+	public function detectType($mediaURL)
+	{
+		list($id,$type) = explode(".",$mediaURL,2);
+
+		foreach($this->mimeExtensions as $key=>$exts)
+		{
+			if(!in_array($type, $exts))
+			{
+				continue;
+			}
+
+			return $key;
+		}
+
+		return null;
+	}
+
+
+
 	public function mediaData($sc_path)
 	{
 		if(!$sc_path) return array();

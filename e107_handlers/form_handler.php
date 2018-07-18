@@ -1342,6 +1342,146 @@ class e_form
 	}
 
 
+/**
+	 * Media Picker
+
+	 * @param string $name input name
+	 * @param string $default default value
+	 * @param string $parms shortcode parameters
+	 *  --- SC Parameter list ---
+	 * - media: if present - load from media category table
+	 * - w: preview width in pixels
+	 * - h: preview height in pixels
+	 * - help: tooltip
+	 * - video: when set to true, will enable the Youtube  (video) tab.
+	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'banner'); // all images from category 'banner_image' + common images.
+	 * @example $frm->imagepicker('banner_image', $_POST['banner_image'], '', 'media=banner&w=600');
+	 * @return string html output
+	 */
+	function mediapicker($name, $default, $parms = '')
+	{
+		$tp = e107::getParser();
+		$name_id = $this->name2id($name);
+		$meta_id = $name_id."-meta";
+
+		if(is_string($parms))
+		{
+			if(strpos($parms, '=') === false) $parms = 'media='.$parms;
+			parse_str($parms, $parms);
+		}
+		elseif(empty($parms))
+		{
+			$parms = array();
+		}
+
+		if(empty($parms['media']))
+		{
+			$parms['media'] = '_common';
+		}
+
+		$title = !empty($parms['help']) ? "title='".$parms['help']."'" : "";
+		$width = vartrue($parms['w'], 210);
+		$height = vartrue($parms['h'], 190);
+	// e107::getDebug()->log($parms);
+
+		// Test Files...
+	//	$default = '{e_MEDIA_VIDEO}2018-07/samplevideo_720x480_2mb.mp4';
+	//	$default = '{e_MEDIA_FILE}2016-03/Colony_Harry_Gregson_Williams.mp3';
+	//	$default = '{e_PLUGIN}gallery/images/butterfly.jpg';
+	//	$default = 'NuIAYHVeFYs.youtube';
+	//	$default = ''; // empty
+
+		$type = e107::getMedia()->detectType($default);
+
+		$class = '';
+
+		switch($type)
+		{
+			case "video":
+				$preview = $tp->toVideo($default, array('w'=>$width, 'h'=> ($height - 50)));
+				$previewURL = $tp->toVideo($default, array('mode'=>'url'));
+				break;
+
+			case "audio":
+				$preview = $tp->toAudio($default);
+				$previewURL = false;
+				break;
+
+			case "image":
+				/*
+
+				if('{' != $default[0]) // legacy path or one without {}
+				{
+					list($default_thumb,$default) = $this->imagepickerDefault($default, $parms);
+				}
+
+				$default = $tp->replaceConstants($default, 'abs');
+
+				*/
+
+				$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
+				$previewURL = $tp->thumbUrl($default, array('w'=>800));
+
+
+				break;
+
+			case "application": // file.
+			//	$preview = $tp->toImage($default, array('w'=>$width, 'h'=>$height, 'class'=>'image-selector img-responsive img-fluid'));
+			//	$previewURL = $tp->thumbUrl($default, array('w'=>800));
+				break;
+			/*
+			case "glyph":
+				$preview = $tp->toGlyph($default, array('size'=>'3x'));
+				$previewURL = false;
+			break;*/
+
+			default: // blank
+
+		}
+
+
+
+		$cat = $tp->toDB(vartrue($parms['media']));
+
+
+		$ret = "<div  class='mediaselector-container e-tip well well-small ".$class."' {$title} style='position:relative;vertical-align:top;margin-right:25px; display:inline-block; width:".$width."px;min-height:".$height."px;'>";
+		$ret .= "<div id='{$name_id}_prev' class='mediaselector-preview'>";
+
+		$parms['class'] = 'btn btn-sm btn-default';
+
+		if(empty($preview))
+		{
+			$parms['title'] = LAN_ADD;
+			$editIcon        = $this->mediaUrl($cat, $tp->toGlyph('fa-plus', array('fw'=>1)), $name_id,$parms);
+			$previewIcon     = '';
+
+			// @todo drag-n-drop upload code in here.
+		}
+		else
+		{
+			$editIcon       = $this->mediaUrl($cat, $tp->toGlyph('fa-edit', array('fw'=>1)), $name_id,$parms);
+			$previewIcon    = "<a title='".LAN_PREVIEW."' class='btn btn-sm btn-default btn-secondary e-modal' data-modal-caption='".LAN_PREVIEW."' href='".$previewURL."'>".$tp->toGlyph('fa-search', array('fw'=>1))."</a>";
+		}
+
+		$ret .= $preview; // image, video. audo tag etc.
+
+		$ret .= '</div><div class="overlay">
+				    <div class="text">'.$editIcon.$previewIcon.'</div>
+				  </div>';
+
+		$ret .= "</div>\n";
+		$ret .=	"<input type='hidden' name='{$name}' id='{$name_id}' value='{$default}' />";
+		$ret .=	"<input type='hidden' name='mediameta_{$name}' id='{$meta_id}' value='' />";
+
+		return $ret;
+
+	}
+
+
+
+
+
+
 
 	private function imagepickerDefault($path, $parms=array())
 	{
